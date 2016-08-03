@@ -228,4 +228,7 @@ public abstract class ToolWindow {
 		tabTopPanel.add(msgBox);
 	}
 
+	public FlowPanel getTabTopPanel() {
+		return tabTopPanel;
+	}
 }

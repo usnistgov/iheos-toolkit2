@@ -702,7 +702,7 @@ public abstract class GenericQueryTab  extends ToolWindow {
 		return true;
 	}
 
-	protected Panel rigForRunning() {
+	protected HorizontalPanel rigForRunning() {
 		resultPanel.clear();
 		// Where the bottom-of-screen listing from server goes
 		addStatusBox();

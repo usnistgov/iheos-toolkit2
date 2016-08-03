@@ -32,7 +32,7 @@ import java.util.*;
 public class OddsSimConfigMgr implements SimConfigMgrIntf {
 
     private SimulatorControlTab simulatorControlTab;
-    VerticalPanel panel;
+    FlowPanel panel;
     HorizontalPanel hpanel;
     SimulatorConfig config;
     String testSession;
@@ -64,7 +64,7 @@ public class OddsSimConfigMgr implements SimConfigMgrIntf {
     Image refreshImg = new Image(((OddsResources)GWT.create(OddsResources.class)).getRefreshIcon());
 
 
-    public OddsSimConfigMgr(SimulatorControlTab simulatorControlTab, VerticalPanel panel, SimulatorConfig config, String testSession) {
+    public OddsSimConfigMgr(SimulatorControlTab simulatorControlTab, FlowPanel panel, SimulatorConfig config, String testSession) {
 
         this.simulatorControlTab = simulatorControlTab;
         this.panel = panel;
@@ -540,7 +540,7 @@ public class OddsSimConfigMgr implements SimConfigMgrIntf {
 
 
     void loadTestsFromCollection(final ListBox lbx, final String testCollectionName) {
-        getSimulatorControlTab().toolkitService.getCollection(testSession,"collections", testCollectionName, new AsyncCallback<Map<String, String>>() {
+        getSimulatorControlTab().toolkitService.getCollection("collections", testCollectionName, new AsyncCallback<Map<String, String>>() {
 
             public void onFailure(Throwable caught) {
                 new PopupMessage("getCollection(" + testCollectionName + "): " +  " -----  " + caught.getMessage());
@@ -715,7 +715,7 @@ public class OddsSimConfigMgr implements SimConfigMgrIntf {
         return simulatorControlTab;
     }
 
-    public VerticalPanel getPanel() {
+    public FlowPanel getPanel() {
         return panel;
     }
 }

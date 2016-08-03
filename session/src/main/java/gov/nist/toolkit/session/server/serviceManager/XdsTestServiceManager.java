@@ -252,13 +252,7 @@ public class XdsTestServiceManager extends CommonService {
 		if (session != null)
 			logger.debug(session.id() + ": " + "getCollectionMembers " + collectionSetName + ":" + collectionName);
 		try {
-<<<<<<< HEAD
-            TestKit tk=new TestKit(Installation.installation().findTestkitFromTest(Installation.installation().testkitFiles(session.getCurrentEnvName(),session.getMesaSessionName()),test));
-			TestDefinition tt = new TestDefinition(tk.getTestDir(test));
-			return tt.getReadme();
-=======
 			return getTestKit().getCollectionMembers(collectionSetName, collectionName);
->>>>>>> feature/testlog-listing
 		} catch (Exception e) {
 			logger.error("getCollection", e);
 			throw new Exception(e.getMessage());
@@ -310,10 +304,6 @@ public class XdsTestServiceManager extends CommonService {
 
 	public String getTestplanAsText(TestInstance testInstance, String section) throws Exception {
 		try {
-<<<<<<< HEAD
-			logger.debug(session.id() + ": " + "getTestplanAsText");
-			TestDetails ts = getTestDetails(testInstance, section);
-=======
 			if (session != null)
 				logger.debug(session.id() + ": " + "getTestplanAsText");
 			List<String> sections = new ArrayList<String>();
@@ -322,7 +312,6 @@ public class XdsTestServiceManager extends CommonService {
 			Xdstest2 xt2 = getNewXt();
 			xt2.addTest(testInstance, sections, null, false);
 			TestLogDetails ts = xt2.getTestSpec(testInstance);
->>>>>>> feature/testlog-listing
 
 			File tsFile;
 
@@ -345,7 +334,7 @@ public class XdsTestServiceManager extends CommonService {
 		}
 	}
 
-	public TestDetails getTestDetails(TestInstance testInstance, String section) throws Exception {
+	public TestLogDetails getTestDetails(TestInstance testInstance, String section) throws Exception {
 		List<String> sections = new ArrayList<String>();
 		sections.add(section);
 
@@ -847,7 +836,6 @@ public class XdsTestServiceManager extends CommonService {
 		session.setMesaSessionName(sessionName);
 	}
 
-<<<<<<< HEAD
 	public List<String> getTestdataSetListing(String environmentName,String testSessionName,String testdataSetName) {
 		logger.debug(session.id() + ": " + "getTestdataSetListing:" + testdataSetName);
 		Set<String> testdataSetListing = new HashSet<String>();
@@ -856,12 +844,6 @@ public class XdsTestServiceManager extends CommonService {
 		}
 		testdataSetListing.addAll(getTestKit().getTestdataSetListing(testdataSetName));
 		return new ArrayList<String>(testdataSetListing);
-=======
-	public List<String> getTestdataSetListing(String testdataSetName) {
-		if (session != null)
-			logger.debug(session.id() + ": " + "getTestdataSetListing:" + testdataSetName);
-		return getTestKit().getTestdataSetListing(testdataSetName);
->>>>>>> feature/testlog-listing
 	}
 
 	public List<String> getTestdataRegistryTests() {
@@ -883,36 +865,15 @@ public class XdsTestServiceManager extends CommonService {
 	}
 
 	public String getNewPatientId(String assigningAuthority) {
-<<<<<<< HEAD
-		logger.debug(session.id() + ": " +
-                "getNewPatientId()");
-=======
 		if (session != null)
 			logger.debug(session.id() + ": " + "getNewPatientId()");
->>>>>>> feature/testlog-listing
 		return session.allocateNewPid(assigningAuthority).asString();
 	}
 
 	public Map<String, String> getCollectionNames(String collectionSetName) throws Exception  {
-<<<<<<< HEAD
-		logger.debug(session.id() + ": " + "getCollectionNames(" + collectionSetName + ")");
-        Map<String,String> collectionNames=new HashMap<String,String>();
-        List<File> testkitsFiles=Installation.installation().testkitFiles(session.getCurrentEnvName(),session.getMesaSessionName());
-        for (File testkitFile:testkitsFiles){
-            TestKit tk=new TestKit(testkitFile);
-            Map<String, String> tmpCollectionNames=tk.getCollectionNames(collectionSetName);
-            for (String key:tmpCollectionNames.keySet()) {
-                if (!collectionNames.containsKey(key)) {
-                    collectionNames.put(key, tmpCollectionNames.get(key));
-                }
-            }
-        }
-        return collectionNames;
-=======
 		if (session != null)
 			logger.debug(session.id() + ": " + "getCollectionNames(" + collectionSetName + ")");
 		return getTestKit().getCollectionNames(collectionSetName);
->>>>>>> feature/testlog-listing
 	}
 
 	public List<Result> sendPidToRegistry(SiteSpec site, Pid pid) {

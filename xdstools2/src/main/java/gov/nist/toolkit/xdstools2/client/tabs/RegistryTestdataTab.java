@@ -56,7 +56,7 @@ public class RegistryTestdataTab  extends GenericQueryTab {
 		row++;
 
 		testlistBox.setVisibleItemCount(1);
-		toolkitService.getTestdataSetListing(getEnvironmentSelection(),getCurrentTestSession(),"testdata-registry", loadRegistryTestListCallback);
+		toolkitService.getTestdataSetListing(getEnvironmentSelection(), getCurrentTestSession(), "testdata-registry", loadRegistryTestListCallback);
 
 		queryBoilerplate = addQueryBoilerplate(new Runner(), transactionTypes, couplings, true);
 	}
@@ -95,7 +95,7 @@ public class RegistryTestdataTab  extends GenericQueryTab {
 			String testdataSetName = testlistBox.getItemText(selected);	
 
 			rigForRunning();
-			toolkitService.submitRegistryTestdata(getCurrentTestSession(),getSiteSelection(), testdataSetName, pidTextBox.getValue().trim(), queryCallback);
+			toolkitService.submitRegistryTestdata(getCurrentTestSession(), getSiteSelection(), testdataSetName, pidTextBox.getValue().trim(), queryCallback);
 		}
 		
 	}

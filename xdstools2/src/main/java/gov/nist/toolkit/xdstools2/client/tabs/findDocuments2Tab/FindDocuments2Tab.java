@@ -48,7 +48,6 @@ public class FindDocuments2Tab extends GenericQueryTab {
 
         genericQueryTab = this;   // share with other methods
 
-
         registerTab(select, eventName);  // link into container/tab management
 
         HTML title = new HTML();

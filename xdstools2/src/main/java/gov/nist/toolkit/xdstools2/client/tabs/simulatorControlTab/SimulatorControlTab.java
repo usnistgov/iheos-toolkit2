@@ -38,7 +38,7 @@ public class SimulatorControlTab extends GenericQueryTab {
 
 	ListBox         actorSelectListBox = new ListBox();
 	HorizontalPanel simConfigWrapperPanel = new HorizontalPanel();
-	VerticalPanel   simConfigPanel = new VerticalPanel();
+	FlowPanel   simConfigPanel = new FlowPanel();
 	TextArea        simIdsTextArea = new TextArea();
 	TextBox         newSimIdTextBox = new TextBox();
 	Button          createActorSimulatorButton = new Button("Create Actor Simulator");
@@ -303,11 +303,11 @@ public class SimulatorControlTab extends GenericQueryTab {
 								// This simulator requires content state initialization
 								OddsEditTab editTab;
 								editTab = new OddsEditTab(self, config);
-								editTab.onTabLoad(myContainer, true, null);
+								editTab.onTabLoad(true, null);
 							} else {
 								// Generic state-less type simulators
 								GenericQueryTab editTab = new EditTab(self, config);
-								editTab.onTabLoad(myContainer, true, null);
+								editTab.onTabLoad(true, null);
 							}
 
 

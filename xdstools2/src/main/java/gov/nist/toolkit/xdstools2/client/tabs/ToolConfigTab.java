@@ -75,7 +75,8 @@ public class ToolConfigTab extends GenericQueryTab {
 		else {
 			PasswordManagement.addSignInCallback(signedInCallback);
 
-			new AdminPasswordDialogBox(getRawPanel());
+//			new AdminPasswordDialogBox(getRawPanel());
+			new AdminPasswordDialogBox(tabTopPanel);
 
 			return;
 		}

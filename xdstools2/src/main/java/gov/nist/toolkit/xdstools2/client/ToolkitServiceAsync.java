@@ -12,14 +12,9 @@ import gov.nist.toolkit.registrymetadata.client.AnyIds;
 import gov.nist.toolkit.registrymetadata.client.ObjectRef;
 import gov.nist.toolkit.registrymetadata.client.ObjectRefs;
 import gov.nist.toolkit.registrymetadata.client.Uids;
-import gov.nist.toolkit.results.client.CodesResult;
-import gov.nist.toolkit.results.client.Result;
-import gov.nist.toolkit.results.client.TestInstance;
-import gov.nist.toolkit.results.client.TestLogs;
+import gov.nist.toolkit.results.client.*;
 import gov.nist.toolkit.results.shared.Test;
-import gov.nist.toolkit.services.client.IgOrchestrationRequest;
-import gov.nist.toolkit.services.client.RawResponse;
-import gov.nist.toolkit.services.client.RgOrchestrationRequest;
+import gov.nist.toolkit.services.client.*;
 import gov.nist.toolkit.session.client.TestOverviewDTO;
 import gov.nist.toolkit.sitemanagement.client.Site;
 import gov.nist.toolkit.sitemanagement.client.SiteSpec;
@@ -101,7 +96,7 @@ public interface ToolkitServiceAsync {
 	void getRGNames(AsyncCallback<List<String>> callback);
 	void getIGNames(AsyncCallback<List<String>> callback);
 	void getRawLogs(TestInstance logId, AsyncCallback<TestLogs> callback);
-	void getTestdataSetListing(String testdataSetName, AsyncCallback<List<String>> callback);
+	void getTestdataSetListing(String environmentName, String sessionName, String testdataSetName, AsyncCallback<List<String>> callback);
 	void getCodesConfiguration(AsyncCallback<CodesResult> callback);
 	void getSite(String siteName, AsyncCallback<Site> callback);
 	void getAllSites(AsyncCallback<Collection<Site>> callback);
@@ -110,7 +105,7 @@ public interface ToolkitServiceAsync {
 	void reloadExternalSites(AsyncCallback<List<String>> callback);
 	void deleteSite(String siteName, AsyncCallback<String> callback);
 
-	void getSSandContents(SiteSpec site, String ssuid, AsyncCallback<List<Result>> callback);
+	void getSSandContents(SiteSpec site, String ssuid, Map<String, List<String>> codeSpec, AsyncCallback<List<Result>> callback);
 	void srcStoresDocVal(SiteSpec site, String ssuid, AsyncCallback<List<Result>> callback);
 	void findDocuments(SiteSpec site, String pid, boolean onDemand, AsyncCallback<List<Result>> callback);
 	void findDocumentsByRefId(SiteSpec site, String pid, List<String> refIds, AsyncCallback<List<Result>> callback) ;
@@ -133,9 +128,9 @@ public interface ToolkitServiceAsync {
 	void getRelated(SiteSpec site, ObjectRef or, List<String> assocs, AsyncCallback<List<Result>> callback);
 	void retrieveDocument(SiteSpec site, Uids uids, AsyncCallback<List<Result>> callback);
 	void retrieveImagingDocSet(SiteSpec site, Uids uids, String studyRequest, String transferSyntax, AsyncCallback<List<Result>> callback);
-	void submitRegistryTestdata(SiteSpec site, String datasetName, String pid, AsyncCallback<List<Result>> callback);	
-	void submitRepositoryTestdata(SiteSpec site, String datasetName, String pid, AsyncCallback<List<Result>> callback);	
-	void submitXDRTestdata(SiteSpec site, String datasetName, String pid, AsyncCallback<List<Result>> callback);	
+	void submitRegistryTestdata(String testSessionName, SiteSpec site, String datasetName, String pid, AsyncCallback<List<Result>> callback);
+	void submitRepositoryTestdata(String testSessionName, SiteSpec site, String datasetName, String pid, AsyncCallback<List<Result>> callback);
+	void submitXDRTestdata(String testSessionName, SiteSpec site, String datasetName, String pid, AsyncCallback<List<Result>> callback);
 	void provideAndRetrieve(SiteSpec site, String pid, AsyncCallback<List<Result>> callback);
 	void lifecycleValidation(SiteSpec site, String pid, AsyncCallback<List<Result>> callback);
 	void folderValidation(SiteSpec site, String pid, AsyncCallback<List<Result>> callback);
@@ -187,7 +182,7 @@ public interface ToolkitServiceAsync {
 	void getTestLogDetails(String sessionName, TestInstance testInstance, AsyncCallback<LogFileContentDTO> callback);
 
 
-	void getTestplanAsText(TestInstance testInstance, String section, AsyncCallback<String> callback);
+	void getTestplanAsText(String testSession, TestInstance testInstance, String section, AsyncCallback<String> callback);
 
 	void configureTestkit(String selectedEnvironment,AsyncCallback<String> callback);
 
@@ -212,6 +207,14 @@ public interface ToolkitServiceAsync {
     void getTransactionErrorCodeRefs(String transactionName, Severity severity, AsyncCallback<List<String>> callback);
     void buildIgTestOrchestration(IgOrchestrationRequest request, AsyncCallback<RawResponse> callback);
     void buildRgTestOrchestration(RgOrchestrationRequest request, AsyncCallback<RawResponse> callback);
+	void buildIigTestOrchestration(IigOrchestrationRequest request, AsyncCallback<RawResponse> callback);
+	void buildRigTestOrchestration(RigOrchestrationRequest request, AsyncCallback<RawResponse> callback);
+	void buildIdsTestOrchestration(IdsOrchestrationRequest request, AsyncCallback<RawResponse> callback);
+	void getSiteNamesWithRIG(AsyncCallback<List<String>> callback) throws Exception;
+	void getSiteNamesWithIDS(AsyncCallback<List<String>> callback) throws Exception;
+	void register(String username, TestInstance testInstance, SiteSpec registry, Map<String, String> params, AsyncCallback<Result> callback) throws Exception;
+	void registerWithLocalizedTrackingInODDS(String username, TestInstance testInstance, SiteSpec registry, SimId oddsSimId, Map<String, String> params, AsyncCallback<Map<String, String>> callback);
+	void getOnDemandDocumentEntryDetails(SimId oddsSimId, AsyncCallback<List<DocumentEntryDetail>> callback);
 
 
 	void getServletContextName(AsyncCallback<String> callback);

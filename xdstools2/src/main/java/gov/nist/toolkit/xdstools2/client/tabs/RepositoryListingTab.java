@@ -5,6 +5,7 @@ import com.google.gwt.user.client.ui.FlexTable;
 import com.google.gwt.user.client.ui.HTML;
 import gov.nist.toolkit.http.client.HtmlMarkup;
 import gov.nist.toolkit.sitemanagement.client.Site;
+import gov.nist.toolkit.sitemanagement.client.TransactionBean;
 import gov.nist.toolkit.xdstools2.client.PopupMessage;
 import gov.nist.toolkit.xdstools2.client.siteActorManagers.NullSiteActorManager;
 import gov.nist.toolkit.xdstools2.client.tabs.genericQueryTab.GenericQueryTab;
@@ -14,10 +15,14 @@ import java.util.*;
 public class RepositoryListingTab extends GenericQueryTab {
 	FlexTable byNameTable = new FlexTable();
 	FlexTable byUidTable = new FlexTable();
-	
+
+	FlexTable oddsByNameTable = new FlexTable();
+	FlexTable oddsByUidTable = new FlexTable();
+
+
 	String happyGif = "icons/happy0024.gif";
 	String sadGif = "icons/sad0019.gif";
-	
+
 	String happyHtml = "<img src=\"" + happyGif + "\"/>";
 	String sadHtml = "<img src=\"" + sadGif + "\"/>";
 
@@ -28,7 +33,6 @@ public class RepositoryListingTab extends GenericQueryTab {
 
 	@Override
 	public void onTabLoad(boolean select, String eventName) {
-		registerTab(select, eventName);
 
 		HTML title = new HTML();
 		title.setHTML("<h2>Repository Listing</h2>");
@@ -47,6 +51,25 @@ public class RepositoryListingTab extends GenericQueryTab {
 
 		byUidTable.setBorderWidth(1);
 		byUidTable.setCellSpacing(0);
+
+		/* ODDS */
+		HTML oddsTitle = new HTML();
+		oddsTitle.setHTML("<hr><h2>On-Demand Document Source Listing</h2>");
+		tabTopPanel.add(oddsTitle);
+
+		tabTopPanel.add(HtmlMarkup.html(HtmlMarkup.h3("By Name")));
+
+		oddsByNameTable.setBorderWidth(1);
+		oddsByNameTable.setCellSpacing(0);
+
+		tabTopPanel.add(oddsByNameTable);
+
+		tabTopPanel.add(HtmlMarkup.html(HtmlMarkup.h3("By repositoryUniqueId")));
+
+		tabTopPanel.add(oddsByUidTable);
+
+		oddsByUidTable.setBorderWidth(1);
+		oddsByUidTable.setCellSpacing(0);
 
 		reload();
 
@@ -69,18 +92,19 @@ public class RepositoryListingTab extends GenericQueryTab {
 		}
 
 		public void onSuccess(Collection<Site> result) {
-			display(result);
+			display(result,TransactionBean.RepositoryType.REPOSITORY, byNameTable, byUidTable);
+			display(result,TransactionBean.RepositoryType.ODDS, oddsByNameTable, oddsByUidTable);
 		}
 
 	};
 
-	void display(Collection<Site> sites) {
+	void display(Collection<Site> sites, TransactionBean.RepositoryType repositoryType, FlexTable byNameTbl, FlexTable byUidTbl) {
 		Map<String, Site> byName = new HashMap<String, Site>();
 		Map<String, Site> byUid = new HashMap<String, Site>();
 
 		for (Site site : sites) {
 			try {
-				byUid.put(site.getRepositoryUniqueId(), site);
+				byUid.put(site.getRepositoryUniqueId(repositoryType), site); // TransactionBean.RepositoryType.REPOSITORY
 			} catch (Exception e) {}
 			byName.put(site.getSiteName(), site);
 		}
@@ -102,15 +126,15 @@ public class RepositoryListingTab extends GenericQueryTab {
 
 		row=0;
 		col = 0;
-		byNameTable.setHTML(row, col++, HtmlMarkup.bold("Repository Name"));
-		byNameTable.setHTML(row, col++, HtmlMarkup.bold("repositoryUniqueId"));
+		byNameTbl.setHTML(row, col++, HtmlMarkup.bold("Repository Name"));
+		byNameTbl.setHTML(row, col++, HtmlMarkup.bold("repositoryUniqueId"));
 		row++;
 
 		for (String name : namea) {
 			col = 0;
 			try {
-				byNameTable.setText(row, 1, byName.get(name).getRepositoryUniqueId());
-				byNameTable.setText(row, 0, name);
+				byNameTbl.setText(row, 1, byName.get(name).getRepositoryUniqueId(repositoryType));
+				byNameTbl.setText(row, 0, name);
 				row++;
 			} catch (Exception e) {
 			}
@@ -118,39 +142,39 @@ public class RepositoryListingTab extends GenericQueryTab {
 
 		row=0;
 		col=1;
-		byUidTable.setHTML(row, col++, HtmlMarkup.bold("repositoryUniqueId"));
-		byUidTable.setHTML(row, col++, HtmlMarkup.bold("Repository Name"));
+		byUidTbl.setHTML(row, col++, HtmlMarkup.bold("repositoryUniqueId"));
+		byUidTbl.setHTML(row, col++, HtmlMarkup.bold("Repository Name"));
 		row++;
 
 		for (String uid : uids)	 {
 			for (String name : namea) {
 				Site s = byName.get(name);
 				try {
-					String uidx = s.getRepositoryUniqueId();
+					String uidx = s.getRepositoryUniqueId(repositoryType);
 					if (!uid.equals(uidx))
 						continue;
 					col=1;
-					byUidTable.setText(row, col++, uid);
-					byUidTable.setText(row, col++, s.getName());
+					byUidTbl.setText(row, col++, uid);
+					byUidTbl.setText(row, col++, s.getName());
 					row++;
 				} catch (Exception e) {}
 			}
 		}
-		
+
 		// duplicate uids getRetrievedDocumentsModel sad face
-		for (int r=1; r<byUidTable.getRowCount()-1; r++) {
-			if (byUidTable.getText(r, 1).equals(byUidTable.getText(r+1, 1))) {
-				byUidTable.setHTML(r, 0, sadHtml);
-				byUidTable.setHTML(r+1, 0, sadHtml);
-			} else if (byUidTable.getHTML(r, 0) == null || byUidTable.getHTML(r, 0).equals("")){
-				byUidTable.setHTML(r, 0, happyHtml);
+		for (int r=1; r<byUidTbl.getRowCount()-1; r++) {
+			if (byUidTbl.getText(r, 1).equals(byUidTbl.getText(r+1, 1))) {
+				byUidTbl.setHTML(r, 0, sadHtml);
+				byUidTbl.setHTML(r+1, 0, sadHtml);
+			} else if (byUidTbl.getHTML(r, 0) == null || byUidTbl.getHTML(r, 0).equals("")){
+				byUidTbl.setHTML(r, 0, happyHtml);
 			} else {
-				byUidTable.setHTML(r, 0, sadHtml);
+				byUidTbl.setHTML(r, 0, sadHtml);
 			}
 		}
-		
+
 	}
-	
+
 	void sort(String[] a) {
 		for (int i=0; i<a.length-1; i++) {
 			for (int j=i+1; j<a.length; j++) {
@@ -159,7 +183,7 @@ public class RepositoryListingTab extends GenericQueryTab {
 			}
 		}
 	}
-	
+
 	void swap(String[] a, int i, int j) {
 		String b;
 		b = a[i];

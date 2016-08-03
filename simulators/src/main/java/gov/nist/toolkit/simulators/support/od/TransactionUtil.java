@@ -14,7 +14,7 @@ import gov.nist.toolkit.simulators.sim.rep.RepIndex;
 import gov.nist.toolkit.simulators.support.StoredDocument;
 import gov.nist.toolkit.sitemanagement.client.SiteSpec;
 import gov.nist.toolkit.testengine.engine.ResultPersistence;
-import gov.nist.toolkit.testenginelogging.TestDetails;
+import gov.nist.toolkit.testenginelogging.TestLogDetails;
 import gov.nist.toolkit.utilities.xml.Util;
 import gov.nist.toolkit.utilities.xml.XmlUtil;
 import gov.nist.toolkit.xdsexception.ExceptionUtil;
@@ -316,7 +316,7 @@ public class TransactionUtil {
             int nextContentIdx = (contentBundleIdx < lastBundleIdx) ? contentBundleIdx + 1 : lastBundleIdx;
 
 
-            TestDetails ts = xdsTestServiceManager.getTestDetails(testInstance, section);
+            TestLogDetails ts = xdsTestServiceManager.getTestDetails(testInstance, section);
             File documentFile = getDocumentFile(ts.getTestplanFile(section));  // IMPORTANT NOTE: In a Content Bundle: Make an assumption of only step per section
             String snapshotUniqueId = "";
 

@@ -34,7 +34,7 @@ class DeleteSite implements ClickHandler {
 			PasswordManagement.addSignInCallback(deleteSignedInCallback);
 			PasswordManagement.addSignInCallback(updateSignInStatusCallback);
 
-			new AdminPasswordDialogBox(actorConfigTab.getRawPanel());
+			new AdminPasswordDialogBox(actorConfigTab.getTabTopPanel());
 
 			//				PasswordManagement.rmSignInCallback(deleteSignedInCallback);
 			//				PasswordManagement.rmSignInCallback(updateSignInStatusCallback);

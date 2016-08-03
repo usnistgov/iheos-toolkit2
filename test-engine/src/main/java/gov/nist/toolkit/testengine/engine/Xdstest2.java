@@ -1,10 +1,5 @@
 package gov.nist.toolkit.testengine.engine;
 
-<<<<<<< HEAD
-import gov.nist.toolkit.installation.Installation;
-import gov.nist.toolkit.registrymetadata.Metadata;
-=======
->>>>>>> feature/testlog-listing
 import gov.nist.toolkit.results.client.TestInstance;
 import gov.nist.toolkit.securityCommon.SecurityParams;
 import gov.nist.toolkit.sitemanagement.Sites;
@@ -193,13 +188,7 @@ public class Xdstest2 {
 	 */
 	public void addTest(TestInstance testInstance) throws Exception {
 		this.testInstance = testInstance;
-<<<<<<< HEAD
-		File tk=Installation.installation().findTestkitFromTest(testkits,testInstance.getId());
-		if (tk==null) tk=xt.getTestkit();
-		xt.addTestSpec(new TestDetails(tk, testInstance));
-=======
 		xt.addTestSpec(new TestLogDetails(xt.getTestkit(), testInstance));
->>>>>>> feature/testlog-listing
 
 	}
 
@@ -216,21 +205,11 @@ public class Xdstest2 {
 	public void addTest(TestInstance testInstance, List<String> sections, String[] areas, boolean doLogCheck) throws Exception {
 		this.testInstance = testInstance;
 		this.sections = sections;
-<<<<<<< HEAD
-		TestDetails testDetails;
-		File tk=Installation.installation().findTestkitFromTest(testkits,testInstance.getId());
-		if (tk==null) tk=xt.getTestkit();
-		if (areas == null)
-			testDetails = new TestDetails(tk, testInstance);
-		else
-			testDetails = new TestDetails(tk, testInstance, areas);
-=======
 		TestLogDetails testLogDetails;
 		if (areas == null)
 			testLogDetails = new TestLogDetails(xt.getTestkit(), testInstance);
 		else
 			testLogDetails = new TestLogDetails(xt.getTestkit(), testInstance, areas);
->>>>>>> feature/testlog-listing
 		if (logRepository != null)
 			testLogDetails.setLogRepository(logRepository);
 		if (doLogCheck) {

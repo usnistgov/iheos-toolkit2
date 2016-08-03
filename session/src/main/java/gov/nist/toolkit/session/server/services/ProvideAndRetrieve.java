@@ -5,16 +5,12 @@ import gov.nist.toolkit.results.CommonService;
 import gov.nist.toolkit.results.ResultBuilder;
 import gov.nist.toolkit.results.client.AssertionResult;
 import gov.nist.toolkit.results.client.Result;
-import gov.nist.toolkit.sitemanagement.client.SiteSpec;
 import gov.nist.toolkit.results.client.TestInstance;
 import gov.nist.toolkit.session.server.Session;
 import gov.nist.toolkit.sitemanagement.client.Site;
-<<<<<<< HEAD
+import gov.nist.toolkit.sitemanagement.client.SiteSpec;
 import gov.nist.toolkit.sitemanagement.client.TransactionBean;
-import gov.nist.toolkit.xdsexception.XdsException;
-=======
 import gov.nist.toolkit.xdsexception.client.XdsException;
->>>>>>> feature/testlog-listing
 
 import java.util.ArrayList;
 import java.util.HashMap;

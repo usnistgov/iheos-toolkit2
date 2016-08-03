@@ -212,7 +212,7 @@ public class IGTestTab extends GenericQueryTab implements GatewayTool {
 
             TestInstance testInstance = new TestInstance(testToRun);
             testInstance.setUser(getCurrentTestSession());
-            toolkitService.runMesaTest(getEnvironmentSelection(),getCurrentTestSession(), getSiteSelection(), new TestInstance(testToRun), testSelectionManager.getSelectedSections(), parms, true, queryCallback);
+            toolkitService.runMesaTest(getCurrentTestSession(), getSiteSelection(), new TestInstance(testToRun), testSelectionManager.getSelectedSections(), parms, true, queryCallback);
         }
 
     }

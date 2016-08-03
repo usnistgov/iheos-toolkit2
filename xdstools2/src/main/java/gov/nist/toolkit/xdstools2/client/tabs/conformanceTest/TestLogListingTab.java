@@ -152,7 +152,7 @@ public class TestLogListingTab extends ToolWindow {
 					}
 
 					public void onSuccess(List<TestOverviewDTO> testOverviews) {
-						testFlowPanels.clear();
+						testsPanel.clear();
 						for (TestOverviewDTO testOverview : testOverviews) {
 							me.testOverviews.put(testOverview.getName(), testOverview);
 							displayTest(testOverview);
@@ -229,7 +229,7 @@ public class TestLogListingTab extends ToolWindow {
 
 	private void runTest(final TestInstance testInstance, SiteSpec siteSpec) {
 		Map<String, String> parms = new HashMap<>();
-		parms.put("$patientid$", pidTextBox.getValue().trim());
+//		parms.put("$patientid$", pidTextBox.getValue().trim());
 		List<String> selectedSections = new ArrayList<>();
 
 		try {

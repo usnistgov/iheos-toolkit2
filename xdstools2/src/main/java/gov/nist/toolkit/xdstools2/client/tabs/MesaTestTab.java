@@ -178,7 +178,7 @@ public class MesaTestTab extends GenericQueryTab {
 			}
 
 			rigForRunning();
-			toolkitService.runMesaTest(getEnvironmentSelection(),getCurrentTestSession(), getSiteSelection(), new TestInstance(selectedTest), selectedSections, parms, true, queryCallback);
+			toolkitService.runMesaTest(getCurrentTestSession(), getSiteSelection(), new TestInstance(selectedTest), selectedSections, parms, true, queryCallback);
 
 		}
 
@@ -220,7 +220,7 @@ public class MesaTestTab extends GenericQueryTab {
 	}
 	
 	void loadSectionNames() {
-		toolkitService.getTestIndex(getCurrentTestSession(),selectedTest, new AsyncCallback<List<String>>() {
+		toolkitService.getTestIndex(selectedTest, new AsyncCallback<List<String>>() {
 
 			public void onFailure(Throwable caught) {
 				new PopupMessage("getTestIndex: " + caught.getMessage());
@@ -272,7 +272,7 @@ public class MesaTestTab extends GenericQueryTab {
 	}
 	
 	void loadTestReadme() {
-		toolkitService.getTestReadme(getCurrentTestSession(),selectedTest, new AsyncCallback<String>() {
+		toolkitService.getTestReadme(selectedTest, new AsyncCallback<String>() {
 
 			public void onFailure(Throwable caught) {
 				new PopupMessage("getTestReadme: " + caught.getMessage());
@@ -336,7 +336,7 @@ public class MesaTestTab extends GenericQueryTab {
 	}
 	
 	void loadTestsForActor() {
-		toolkitService.getCollection(getCurrentTestSession(),"actorcollections", selectedActor, new AsyncCallback<Map<String, String>>() {
+		toolkitService.getCollection("actorcollections", selectedActor, new AsyncCallback<Map<String, String>>() {
 
 			public void onFailure(Throwable caught) {
 				new PopupMessage("getCollection(actorcollections): " + selectedActor + " -----  " + caught.getMessage());
@@ -362,7 +362,7 @@ public class MesaTestTab extends GenericQueryTab {
 	
 
 	void loadActorNames() {
-		toolkitService.getCollectionNames(getCurrentTestSession(),"actorcollections", new AsyncCallback<Map<String, String>>() {
+		toolkitService.getCollectionNames("actorcollections", new AsyncCallback<Map<String, String>>() {
 
 			public void onFailure(Throwable caught) {
 				new PopupMessage("getCollectionNames: " + caught.getMessage());

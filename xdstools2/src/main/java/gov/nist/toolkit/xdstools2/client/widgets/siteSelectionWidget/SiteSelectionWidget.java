@@ -52,7 +52,7 @@ public class SiteSelectionWidget extends HorizontalPanel {
 	 * Loads the list of actor types from the back-end and populates the display on the UI
 	 */
 	private void loadActorNames() {
-		toolkitService.getCollectionNames(parent.getCurrentTestSession(),"actorcollections", new AsyncCallback<Map<String, String>>() {
+		toolkitService.getCollectionNames("actorcollections", new AsyncCallback<Map<String, String>>() {
 
 			public void onFailure(Throwable caught) {
 				new PopupMessage("getCollectionNames: " + caught.getMessage());

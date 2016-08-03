@@ -25,6 +25,7 @@ import gov.nist.toolkit.services.client.*;
 import gov.nist.toolkit.services.server.RawResponseBuilder;
 import gov.nist.toolkit.services.server.orchestration.OrchestrationManager;
 import gov.nist.toolkit.services.shared.SimulatorServiceManager;
+import gov.nist.toolkit.session.client.TestOverviewDTO;
 import gov.nist.toolkit.session.server.Session;
 import gov.nist.toolkit.session.server.serviceManager.QueryServiceManager;
 import gov.nist.toolkit.simulators.support.od.TransactionUtil;
@@ -32,6 +33,8 @@ import gov.nist.toolkit.sitemanagement.client.Site;
 import gov.nist.toolkit.sitemanagement.client.SiteSpec;
 import gov.nist.toolkit.sitemanagement.client.TransactionOfferings;
 import gov.nist.toolkit.testengine.scripts.CodesUpdater;
+import gov.nist.toolkit.testenginelogging.client.LogFileContentDTO;
+import gov.nist.toolkit.testkitutilities.client.TestCollectionDefinitionDAO;
 import gov.nist.toolkit.tk.TkLoader;
 import gov.nist.toolkit.tk.client.TkProps;
 import gov.nist.toolkit.valregmsg.message.SchemaValidation;
@@ -244,9 +247,10 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements
         session().setMesaSessionName(testSession);
         return session().xdsTestServiceManager().getCollectionNames(collectionSetName);
     }
-	public List<Result> getLogContent(String sessionName, TestInstance testInstance) throws Exception { return session().xdsTestServiceManager().getLogContent(sessionName, testInstance); }
+//	public List<Result> getLogContent(String sessionName, TestInstance testInstance) throws Exception { return session().xdsTestServiceManager().getLogContent(sessionName, testInstance); }
 	public List<Result> runMesaTest(String environmentName,String mesaTestSession, SiteSpec siteSpec, TestInstance testInstance, List<String> sections, Map<String, String> params, boolean stopOnFirstFailure)  throws NoServletSessionException {
-		return session().xdsTestServiceManager().runMesaTest(environmentName,mesaTestSession, siteSpec, testInstance, sections, params, null, stopOnFirstFailure);
+		return session().xdsTestServiceManager().runMesaTest(environmentName, mesaTestSession, siteSpec, testInstance, sections, params, null, stopOnFirstFailure);
+	}
     /**
      * Get list of section names defined for the test in the order they should be executed
      * @param test test name
@@ -266,10 +270,21 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements
 	public List<TestOverviewDTO> getTestsOverview(String sessionName, List<TestInstance> testInstances) throws Exception { return session().xdsTestServiceManager().getTestsOverview(sessionName, testInstances); }
 	public LogFileContentDTO getTestLogDetails(String sessionName, TestInstance testInstance) throws Exception { return session().xdsTestServiceManager().getTestLogDetails(sessionName, testInstance); }
 	public List<TestCollectionDefinitionDAO> getTestCollections(String collectionSetName) throws Exception { return session().xdsTestServiceManager().getTestCollections(collectionSetName); }
-	public List<Result> runMesaTest(String mesaTestSession, SiteSpec siteSpec, TestInstance testInstance, List<String> sections, Map<String, String> params, boolean stopOnFirstFailure)  throws NoServletSessionException {
-		return session().xdsTestServiceManager().runMesaTest(mesaTestSession, siteSpec, testInstance, sections, params, null, stopOnFirstFailure);
+
+	@Override
+	public Map<String, String> getCollection(String collectionSetName, String collectionName) throws Exception {
+		return session().xdsTestServiceManager().getCollection(collectionSetName, collectionName);
 	}
-	public TestOverviewDTO runTest(String mesaTestSession, SiteSpec siteSpec, TestInstance testInstance, List<String> sections, Map<String, String> params, boolean stopOnFirstFailure) throws NoServletSessionException {
+
+	@Override
+	public String getTestReadme(String test) throws Exception {
+		return session().xdsTestServiceManager().getTestReadme(test);
+	}
+
+	public List<Result> runMesaTest(String mesaTestSession, SiteSpec siteSpec, TestInstance testInstance, List<String> sections, Map<String, String> params, boolean stopOnFirstFailure)  throws NoServletSessionException {
+		return session().xdsTestServiceManager().runMesaTest(getCurrentEnvironment(), mesaTestSession, siteSpec, testInstance, sections, params, null, stopOnFirstFailure);
+	}
+	public TestOverviewDTO runTest(String mesaTestSession, SiteSpec siteSpec, TestInstance testInstance, List<String> sections, Map<String, String> params, boolean stopOnFirstFailure) throws Exception {
 		return session().xdsTestServiceManager().runTest(mesaTestSession, siteSpec, testInstance, sections, params, null, stopOnFirstFailure);
 	}
 
@@ -660,5 +675,6 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements
 	public List<DocumentEntryDetail> getOnDemandDocumentEntryDetails(SimId oddsSimId) {
 		return TransactionUtil.getOnDemandDocumentEntryDetails(oddsSimId);
 	}
+
 
 }

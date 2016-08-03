@@ -22,7 +22,7 @@ import gov.nist.toolkit.valregmsg.registry.RetrieveMultipleResponse;
 import gov.nist.toolkit.valsupport.engine.MessageValidatorEngine;
 import gov.nist.toolkit.valsupport.message.AbstractMessageValidator;
 import gov.nist.toolkit.xdsexception.ExceptionUtil;
-import gov.nist.toolkit.xdsexception.XdsInternalException;
+import gov.nist.toolkit.xdsexception.client.XdsInternalException;
 import groovy.transform.TypeChecked;
 import org.apache.axiom.om.OMElement;
 import org.apache.commons.lang.StringUtils;
