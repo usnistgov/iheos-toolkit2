@@ -70,6 +70,7 @@ public class XMLErrorRecorder implements ErrorRecorder {
     }
 
     @Override
+    // TODO this is the only syntax that works. Propagate it to rest of document.
     public void err(Code _code, String _msg, String _location, String _resource) {
         println("err2")
        if (_msg == null || _msg.trim().equals("")) { return; }
@@ -153,10 +154,13 @@ public class XMLErrorRecorder implements ErrorRecorder {
     @Override
     public void sectionHeading(String msg) {
         println("sectionheading")
-        //tagLastInfo2(); // TODO let's see if it works without saving location of item
-        def newElement = '''<SectionHeading>''' + msg + '''</SectionHeading>'''
-        def newRecord = new XmlParser().parseText(newElement)
-        errRecords.add(newRecord)
+        def sw = new StringWriter()
+        def builder = new MarkupBuilder(sw)
+        builder.SectionHeading(message:msg){
+        }
+
+        def el = new XmlParser().parseText(sw.toString())
+        errRecords.add(el)
     }
 
     @Override
