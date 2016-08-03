@@ -14,9 +14,10 @@ public class XMLErrorRecorder implements ErrorRecorder {
     public ErrorRecorderBuilder errorRecorderBuilder;
 
     static Logger logger = Logger.getLogger(XMLErrorRecorder.class);
+    boolean sectionHeading = false;
 
     def errXml = '''<ErrorLog></ErrorLog>'''
-    def errMsgs = new XmlParser().parseText(errXml) // should be called ErrorLog to be accurate
+    def errMsgs = new XmlParser().parseText(errXml)
     def errRecords = errMsgs.children()
 
 
@@ -150,13 +151,21 @@ public class XMLErrorRecorder implements ErrorRecorder {
     @Override
     public void sectionHeading(String msg) {
         println("sectionheading")
-        def sw = new StringWriter()
-        def builder = new MarkupBuilder(sw)
-        builder.SectionHeading(message:msg){
-        }
+        def el;
 
-        def el = new XmlParser().parseText(sw.toString())
-        errRecords.add(el)
+        if (sectionHeading){
+            el = "</SectionHeading>"
+        } else {
+            el = "<SectionHeading message=\"" + msg + "\">";
+        }
+        sectionHeading = !sectionHeading;
+        //def newRecord = new XmlParser().parseText(el)
+        //def newXml = errMsgs.toString() + newRecord
+        println(el)
+       // errMsgs = new XmlParser().parseText(newXml)
+       // errRecords = errMsgs.children()
+
+       // errRecords.add(newRecord)
     }
 
     @Override
