@@ -15,16 +15,12 @@ public class XMLErrorRecorder implements ErrorRecorder {
 
     static Logger logger = Logger.getLogger(XMLErrorRecorder.class);
 
-
-    //def summary = // former List<GwtValidatorErrorItem> summary = new ArrayList<>();
-    //List<ErrorRecorder> children = new ArrayList<>();  // Probably not useful in new XML validator and should be removed
     def errXml = '''<ErrorLog></ErrorLog>'''
     def errMsgs = new XmlParser().parseText(errXml) // should be called ErrorLog to be accurate
     def errRecords = errMsgs.children()
 
 
     /**
-     * //TODO
      * Temporary toString function for testing purposes, may need upgrade later
      * @return
      */
