@@ -303,7 +303,7 @@ public class SimulatorControlTab extends GenericQueryTab {
 								// This simulator requires content state initialization
 								OddsEditTab editTab;
 								editTab = new OddsEditTab(self, config);
-								editTab.onTabLoad(true, null);
+								editTab.onTabLoad(true, "ODDS");
 							} else {
 								// Generic state-less type simulators
 								GenericQueryTab editTab = new EditTab(self, config);

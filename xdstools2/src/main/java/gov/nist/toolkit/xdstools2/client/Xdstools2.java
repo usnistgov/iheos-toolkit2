@@ -212,7 +212,7 @@ public class Xdstools2  implements AcceptsOneWidget, IsWidget {
 				// Parse the history token
 				try {
 					if (historyToken.equals("mv")) {
-						new MessageValidatorTab().onTabLoad(true, null);
+						new MessageValidatorTab().onTabLoad(true, "MsgVal");
 					}
 
 				} catch (IndexOutOfBoundsException e) {

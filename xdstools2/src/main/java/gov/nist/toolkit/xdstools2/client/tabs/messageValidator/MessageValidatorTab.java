@@ -994,13 +994,13 @@ public class MessageValidatorTab extends ToolWindow {
 		it.setResults(results);
 		it.setSiteSpec(null);
 		it.setToolkitService(toolkitService);
-		it.onTabLoad(true, null);
+		it.onTabLoad(true, "Insp");
 	}
 
 	void viewText(List<Result> results) {
 		TextViewerTab v = new TextViewerTab();
 		v.setResult(results);
-		v.onTabLoad(true, null);
+		v.onTabLoad(true, "Text");
 	}
 
 	protected AsyncCallback<MessageValidationResults> messageValidationCallback = new AsyncCallback<MessageValidationResults> () {

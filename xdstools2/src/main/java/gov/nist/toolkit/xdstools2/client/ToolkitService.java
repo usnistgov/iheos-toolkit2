@@ -104,7 +104,7 @@ public interface ToolkitService extends RemoteService  {
 	List<String> getRGNames() throws NoServletSessionException ;
 	List<String> getIGNames() throws NoServletSessionException ;
 	List<String> getTestdataSetListing(String environmentName, String sessionName,String testdataSetName)  throws NoServletSessionException;
-	CodesResult getCodesConfiguration() throws NoServletSessionException ;
+	CodesResult getCodesConfiguration(String getCodesConfiguration) throws NoServletSessionException ;
 	TransactionOfferings getTransactionOfferings() throws Exception;
 	
 	List<String> reloadSites(boolean simAlso) throws Exception;

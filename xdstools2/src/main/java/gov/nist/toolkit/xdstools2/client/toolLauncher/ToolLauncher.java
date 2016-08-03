@@ -6,7 +6,9 @@ import gov.nist.toolkit.registrymetadata.client.RegistryObject;
 import gov.nist.toolkit.sitemanagement.client.SiteSpec;
 import gov.nist.toolkit.xdstools2.client.ToolWindow;
 import gov.nist.toolkit.xdstools2.client.tabs.*;
+import gov.nist.toolkit.xdstools2.client.tabs.GatewayTestsTabs.IDSTestTab;
 import gov.nist.toolkit.xdstools2.client.tabs.GatewayTestsTabs.IGTestTab;
+import gov.nist.toolkit.xdstools2.client.tabs.GatewayTestsTabs.IIGTestTab;
 import gov.nist.toolkit.xdstools2.client.tabs.GatewayTestsTabs.RGTestTab;
 import gov.nist.toolkit.xdstools2.client.tabs.actorConfigTab.ActorConfigTab;
 import gov.nist.toolkit.xdstools2.client.tabs.conformanceTest.TestLogListingTab;
@@ -174,6 +176,8 @@ public class ToolLauncher implements ClickHandler {
 		if (menuName.equals(pidFavoritesLabel)) return new PidFavoritesTab();
 		if (menuName.equals(testsOverviewTabLabel)) return new TestsOverviewTab();
 		if (menuName.equals(homeTabLabel)) return new HomeTab();
+		if (menuName.equals(iigTestsTabLabel)) return new IIGTestTab();
+		if (menuName.equals(idsTestsTabLabel)) return new IDSTestTab();
 		return null;
 	}
 

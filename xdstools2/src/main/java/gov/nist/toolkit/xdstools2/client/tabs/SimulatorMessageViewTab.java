@@ -431,7 +431,7 @@ public class SimulatorMessageViewTab extends ToolWindow {
 						SiteSpec siteSpec = new SiteSpec(getSimid().toString(), currentTransactionInstance.actorType, null);
 						tab.setSiteSpec(siteSpec);
 						tab.setToolkitService(toolkitService);
-						tab.onTabLoad(true, null);
+						tab.onTabLoad(true, "Insp");
                     }
                 });
 			} catch (Exception e) {
@@ -459,7 +459,7 @@ public class SimulatorMessageViewTab extends ToolWindow {
 						SiteSpec siteSpec = new SiteSpec(getSimid().toString(), currentTransactionInstance.actorType, null);
 						tab.setSiteSpec(siteSpec);
 						tab.setToolkitService(toolkitService);
-						tab.onTabLoad(true, null);
+						tab.onTabLoad(true, "Insp");
 					}
 				});
 			} catch (Exception e) {

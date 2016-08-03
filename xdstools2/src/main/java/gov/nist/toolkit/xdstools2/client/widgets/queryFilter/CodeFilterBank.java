@@ -14,7 +14,7 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Created by bill on 8/25/15.
+ *
  */
 public class CodeFilterBank  {
     List<CodeFilter> codeFilters = new ArrayList<>();
@@ -27,7 +27,7 @@ public class CodeFilterBank  {
     public CodeFilterBank(ToolkitServiceAsync toolkitService, GenericQueryTab genericQueryTab) {
         this.toolkitService = toolkitService;
         this.genericQueryTab = genericQueryTab;
-        toolkitService.getCodesConfiguration(loadCodeConfigCallback);
+        toolkitService.getCodesConfiguration(genericQueryTab.getEnvironmentSelection(), loadCodeConfigCallback);
     }
 
     public void addFilter(FlexTable paramGrid, int prow, int col, String filterName) {

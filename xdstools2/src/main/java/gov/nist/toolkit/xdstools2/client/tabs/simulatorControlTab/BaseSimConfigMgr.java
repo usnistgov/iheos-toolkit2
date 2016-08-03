@@ -23,7 +23,7 @@ public abstract class BaseSimConfigMgr implements SimConfigMgrIntf {
     /**
      *
      */
-    SimulatorControlTab simulatorControlTab;
+    private SimulatorControlTab simulatorControlTab;
     FlowPanel panel;
     HorizontalPanel hpanel;
     SimulatorConfig config;
@@ -40,7 +40,7 @@ public abstract class BaseSimConfigMgr implements SimConfigMgrIntf {
         this.testSession = testSession;
     }
 
-   public void removeFromPanel() {
+    public void removeFromPanel() {
         if (hpanel != null) {
             panel.remove(hpanel);
             hpanel = null;
@@ -117,7 +117,7 @@ public abstract class BaseSimConfigMgr implements SimConfigMgrIntf {
                             @Override
                             public void onClick(ClickEvent clickEvent) {
                                 configEle.setValue(erSelectionPresenter.getSelected());
-  //                              saveSimConfig();
+                                //                              saveSimConfig();
                             }
                         }
                 );

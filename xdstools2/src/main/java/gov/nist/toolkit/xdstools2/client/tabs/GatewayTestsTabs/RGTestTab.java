@@ -357,7 +357,7 @@ public class RGTestTab extends GenericQueryTab implements GatewayTool {
                         itab.setResults(results);
                         itab.setSiteSpec(siteSpec);
                         itab.setToolkitService(toolkitService);
-                        itab.onTabLoad(true, null);
+                        itab.onTabLoad(true, "Insp");
                     }
                 });
             }

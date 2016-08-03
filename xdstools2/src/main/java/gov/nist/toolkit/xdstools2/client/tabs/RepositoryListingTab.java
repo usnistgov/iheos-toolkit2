@@ -33,6 +33,7 @@ public class RepositoryListingTab extends GenericQueryTab {
 
 	@Override
 	public void onTabLoad(boolean select, String eventName) {
+		registerTab(select, eventName);  // link into container/tab management
 
 		HTML title = new HTML();
 		title.setHTML("<h2>Repository Listing</h2>");

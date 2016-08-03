@@ -296,7 +296,10 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements
         session().setMesaSessionName(testSession);
         return session().xdsTestServiceManager().getTestplanAsText(testInstance, section);
     }
-	public CodesResult getCodesConfiguration()  throws NoServletSessionException { return session().xdsTestServiceManager().getCodesConfiguration(); }
+	public CodesResult getCodesConfiguration(String environmentName)  throws NoServletSessionException {
+		setEnvironment(environmentName);
+		return session().xdsTestServiceManager().getCodesConfiguration();
+	}
 
 	/**
 	 * Get test names and descriptions from a named test collection

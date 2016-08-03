@@ -57,6 +57,7 @@ public class IIGTestTab extends GenericQueryTab implements GatewayTool {
     @Override
     public void onTabLoad(boolean select, String eventName) {
         genericQueryTab = this;
+        registerTab(select, eventName);  // link into container/tab management
 
         tlsOptionEnabled = false;
 
@@ -239,7 +240,7 @@ public class IIGTestTab extends GenericQueryTab implements GatewayTool {
                         itab.setResults(results);
                         itab.setSiteSpec(siteSpec);
                         itab.setToolkitService(toolkitService);
-                        itab.onTabLoad(true, null);
+                        itab.onTabLoad(true, "Insp");
                     }
                 });
             }
