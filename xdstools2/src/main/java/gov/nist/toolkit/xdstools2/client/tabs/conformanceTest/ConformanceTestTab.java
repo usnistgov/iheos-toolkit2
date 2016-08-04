@@ -242,6 +242,7 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner {
 		play.addClickHandler(new RunClickHandler(testOverview.getTestInstance()));
 		header.add(play);
 		Image delete = new Image("icons2/garbage-24.png");
+		delete.addClickHandler(new DeleteClickHandler(testOverview.getTestInstance()));
 		delete.setTitle("Delete Log");
 		header.add(delete);
 
@@ -261,6 +262,29 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner {
 		@Override
 		public void onClick(ClickEvent clickEvent) {
 			runTest(testInstance);
+		}
+	}
+
+	private class DeleteClickHandler implements ClickHandler {
+		TestInstance testInstance;
+
+		DeleteClickHandler(TestInstance testInstance) {
+			this.testInstance = testInstance;
+		}
+
+		@Override
+		public void onClick(ClickEvent clickEvent) {
+			toolkitService.deleteSingleTestResult(getCurrentTestSession(), testInstance, new AsyncCallback<TestOverviewDTO>() {
+				@Override
+				public void onFailure(Throwable throwable) {
+					new PopupMessage(throwable.getMessage());
+				}
+
+				@Override
+				public void onSuccess(TestOverviewDTO testOverviewDTO) {
+					displayTest(testOverviewDTO);
+				}
+			});
 		}
 	}
 

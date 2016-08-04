@@ -69,9 +69,9 @@ public class TestSectionComponent implements IsWidget {
         play.addClickHandler(new RunSection(fullTestInstance));
         play.setTitle("Run");
         header.add(play);
-        Image delete = new Image("icons2/garbage-16.png");
-        delete.setTitle("Delete Log");
-        header.add(delete);
+//        Image delete = new Image("icons2/garbage-16.png");
+//        delete.setTitle("Delete Log");
+//        header.add(delete);
     }
 
     class RunSection implements ClickHandler {

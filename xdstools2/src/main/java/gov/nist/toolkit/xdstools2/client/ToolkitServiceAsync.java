@@ -201,7 +201,7 @@ public interface ToolkitServiceAsync {
 	void setMesaTestSession(String sessionName, AsyncCallback callback);
 	void getMesaTestSessionNames(AsyncCallback<List<String>> callback);
 	void deleteAllTestResults(Site site, AsyncCallback<List<Test>> callback);
-	void deleteSingleTestResult(Site site, int testId, AsyncCallback<Test> callback);
+	void deleteSingleTestResult(String testSession, TestInstance testInstance, AsyncCallback<TestOverviewDTO> callback);
 	void runAllTests(Site site, AsyncCallback<List<Test>> callback);
 	void runSingleTest(Site site, int testId, AsyncCallback<Test> callback);
     void getTransactionErrorCodeRefs(String transactionName, Severity severity, AsyncCallback<List<String>> callback);

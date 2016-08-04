@@ -190,7 +190,10 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements
 	public String getNewPatientId(String assigningAuthority)  throws NoServletSessionException { return session().xdsTestServiceManager().getNewPatientId(assigningAuthority); }
 	public String delTestResults(List<TestInstance> testInstances, String testSession )  throws NoServletSessionException { session().xdsTestServiceManager().delTestResults(testInstances, testSession); return ""; }
 	public List<Test> deleteAllTestResults(Site site) throws NoServletSessionException { return session().xdsTestServiceManager().deleteAllTestResults(getSession().getMesaSessionName(), site); }
-	public Test deleteSingleTestResult(Site site, int testId) throws NoServletSessionException { return session().xdsTestServiceManager().deleteSingleTestResult(getSession().getMesaSessionName(), site, testId); }
+	public TestOverviewDTO deleteSingleTestResult(String testSession, TestInstance testInstance) throws Exception {
+		testInstance.setUser(testSession);
+		return session().xdsTestServiceManager().deleteSingleTestResult(testInstance);
+	}
 	public List<Test> runAllTests(Site site) throws NoServletSessionException { return session().xdsTestServiceManager().runAllTests(getSession().getMesaSessionName(), site); }
 	public Test runSingleTest(Site site, int testId) throws NoServletSessionException { return session().xdsTestServiceManager().runSingleTest(getSession().getMesaSessionName(), site, testId); }
 

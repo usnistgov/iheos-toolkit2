@@ -218,7 +218,7 @@ public interface ToolkitService extends RemoteService  {
 	public List<Test> runAllTests(Site site) throws NoServletSessionException;
 	public List<Test> deleteAllTestResults(Site site) throws NoServletSessionException;
 	public Test runSingleTest(Site site, int testId) throws NoServletSessionException;
-	public Test deleteSingleTestResult(Site site, int testId) throws NoServletSessionException;
+	public TestOverviewDTO deleteSingleTestResult(String testSession, TestInstance testInstance) throws Exception;
 
 	 String setMesaTestSession(String sessionName) throws NoServletSessionException ;
 	 String getNewPatientId(String assigningAuthority) throws NoServletSessionException ;
