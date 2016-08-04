@@ -11,7 +11,7 @@ import gov.nist.toolkit.xdstools2.client.tabs.GatewayTestsTabs.IGTestTab;
 import gov.nist.toolkit.xdstools2.client.tabs.GatewayTestsTabs.IIGTestTab;
 import gov.nist.toolkit.xdstools2.client.tabs.GatewayTestsTabs.RGTestTab;
 import gov.nist.toolkit.xdstools2.client.tabs.actorConfigTab.ActorConfigTab;
-import gov.nist.toolkit.xdstools2.client.tabs.conformanceTest.TestLogListingTab;
+import gov.nist.toolkit.xdstools2.client.tabs.conformanceTest.ConformanceTestTab;
 import gov.nist.toolkit.xdstools2.client.tabs.findDocuments2Tab.FindDocuments2Tab;
 import gov.nist.toolkit.xdstools2.client.tabs.getAllTab.GetAllTab;
 import gov.nist.toolkit.xdstools2.client.tabs.messageValidator.MessageValidatorTab;
@@ -170,7 +170,7 @@ public class ToolLauncher implements ClickHandler {
 		if (menuName.equals(toolConfigTabLabel)) return new ToolConfigTab();
 		if (menuName.equals(mesaTabLabel)) return new MesaTestTab();
 		if (menuName.equals(nwhinTabLabel)) return new MesaTestTab();
-		if (menuName.equals(testLogLabel)) return new TestLogListingTab();
+		if (menuName.equals(testLogLabel)) return new ConformanceTestTab();
 		if (menuName.equals(dashboardTabLabel)) return new DashboardTab();
 		if (menuName.equals(repositoryTabLabel)) return new RepositoryListingTab();
 		if (menuName.equals(pidFavoritesLabel)) return new PidFavoritesTab();

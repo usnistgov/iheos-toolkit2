@@ -62,14 +62,24 @@ public class TestOverviewBuilder {
                 }
                 return;
             } catch (Exception e) {
-                return; // no index.idx - no sections
+                // no sections defined - maybe single un-named section
+                if (testLogDetails.getTestPlanLogs().get("log.xml") != null) {
+                    LogFileContentDTO logFileContentDTO = testLogDetails.getTestPlanLogs().get("log.xml");
+                    SectionOverviewDTO sectionOverview = addSection("", logFileContentDTO);
+                    if (!sectionOverview.isPass())
+                        testOverview.setPass(false);
+                }
+                return;
             }
         }
         for (String sectionName : sectionNames) {
             LogFileContentDTO logFileContentDTO = testLogDetails.sectionLogMapDTO.get(sectionName);
-            SectionOverviewDTO sectionOverview = addSection(sectionName, logFileContentDTO);
-            if (!sectionOverview.isPass())
+            if (testId.equals("12346"))
                 testOverview.setPass(false);
+            SectionOverviewDTO sectionOverview = addSection(sectionName, logFileContentDTO);
+            if (!sectionOverview.isPass()) {
+                testOverview.setPass(false);
+            }
         }
     }
 
@@ -98,8 +108,9 @@ public class TestOverviewBuilder {
         stepOverview.setName(stepContent.getId());
         stepOverview.setPass(stepContent.isSuccess());
         stepOverview.setDetails(stepContent.getDetails());
-        stepOverview.setErrors(stepContent.getErrors());
-
+        stepOverview.addErrors(stepContent.getSoapFaults());
+        stepOverview.addErrors(stepContent.getErrors());
+        stepOverview.addErrors(stepContent.getAssertionErrors());
         sectionOverview.addStep(stepName, stepOverview);
     }
 }

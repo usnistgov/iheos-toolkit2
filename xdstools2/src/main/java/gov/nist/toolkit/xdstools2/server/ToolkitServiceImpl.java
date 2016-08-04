@@ -284,8 +284,12 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements
 	public List<Result> runMesaTest(String mesaTestSession, SiteSpec siteSpec, TestInstance testInstance, List<String> sections, Map<String, String> params, boolean stopOnFirstFailure)  throws NoServletSessionException {
 		return session().xdsTestServiceManager().runMesaTest(getCurrentEnvironment(), mesaTestSession, siteSpec, testInstance, sections, params, null, stopOnFirstFailure);
 	}
-	public TestOverviewDTO runTest(String mesaTestSession, SiteSpec siteSpec, TestInstance testInstance, List<String> sections, Map<String, String> params, boolean stopOnFirstFailure) throws Exception {
-		return session().xdsTestServiceManager().runTest(mesaTestSession, siteSpec, testInstance, sections, params, null, stopOnFirstFailure);
+	public TestOverviewDTO runTest(String environmentName, String mesaTestSession, SiteSpec siteSpec, TestInstance testInstance, Map<String, String> params, boolean stopOnFirstFailure) throws Exception {
+		List<String> sections = new ArrayList<>();
+		if (testInstance.getSection() != null) sections.add(testInstance.getSection());
+		setEnvironment(environmentName);
+		TestOverviewDTO testOverviewDTO = session().xdsTestServiceManager().runTest(mesaTestSession, siteSpec, testInstance, sections, params, null, stopOnFirstFailure);
+		return testOverviewDTO;
 	}
 
 	public TestLogs getRawLogs(TestInstance logId)  throws NoServletSessionException { return session().xdsTestServiceManager().getRawLogs(logId); }

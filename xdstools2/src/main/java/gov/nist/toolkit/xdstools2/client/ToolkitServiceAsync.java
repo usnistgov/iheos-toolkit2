@@ -169,7 +169,7 @@ public interface ToolkitServiceAsync {
 	void getTestReadme(String test, AsyncCallback<String> callback);
 	void getTestIndex(String test, AsyncCallback<List<String>> callback);
 	void runMesaTest(String mesaTestSession, SiteSpec siteSpec, TestInstance testInstance, List<String> sections, Map<String, String> params, boolean stopOnFirstFailure, AsyncCallback<List<Result>> callback);
-	void runTest(String mesaTestSession, SiteSpec siteSpec, TestInstance testInstance, List<String> sections, Map<String, String> params, boolean stopOnFirstFailure, AsyncCallback<TestOverviewDTO> callback) throws NoServletSessionException;
+	void runTest(String environment, String mesaTestSession, SiteSpec siteSpec, TestInstance testInstance, Map<String, String> params, boolean stopOnFirstFailure, AsyncCallback<TestOverviewDTO> callback) throws NoServletSessionException;
 	void isPrivateMesaTesting(AsyncCallback<Boolean> callback);
 	void addMesaTestSession(String name, AsyncCallback<Boolean> callback);
 	void delMesaTestSession(String name, AsyncCallback<Boolean> callback);
