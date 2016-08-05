@@ -16,9 +16,9 @@ public class XMLErrorRecorder implements ErrorRecorder {
     static Logger logger = Logger.getLogger(XMLErrorRecorder.class);
     boolean sectionHeading = false;
 
-    def errXml = '''<ErrorLog></ErrorLog>'''
-    def errMsgs = new XmlParser().parseText(errXml)
-    def errRecords = errMsgs.children()
+    def errXml = "<ErrorLog>\n"
+    //def errMsgs = new XmlParser().parseText(errXml)
+    //def errRecords = errMsgs.children()
 
 
     /**
@@ -28,11 +28,13 @@ public class XMLErrorRecorder implements ErrorRecorder {
     @Override
     def String toString() {
         // Convert back to String / XML
-        StringWriter sw = new StringWriter()
-        new XmlNodePrinter(new PrintWriter(sw)).print(errMsgs)
+        //StringWriter sw = new StringWriter()
+        //println(errXml)
+        //new XmlNodePrinter(new PrintWriter(sw)).print(errMsgs)
 
         //println("\n--- XML output: ---\n\n" + sw.toString())
-        return sw.toString()
+        return errXml + "\n</ErrorLog>\n"
+        //return sw.toString()
     }
 
 
@@ -81,8 +83,8 @@ public class XMLErrorRecorder implements ErrorRecorder {
         }
 
         // Parse and add
-        def el = new XmlParser().parseText(sw.toString())
-        errRecords.add(el)
+        //def el = new XmlParser().parseText(sw.toString())
+        errXml = errXml.concat(sw.toString())
     }
 
     @Override
@@ -162,29 +164,26 @@ public class XMLErrorRecorder implements ErrorRecorder {
         sectionHeading = !sectionHeading;
         //def newRecord = new XmlParser().parseText(el)
         //def newXml = errMsgs.toString() + newRecord
-        println(el)
-       // errMsgs = new XmlParser().parseText(newXml)
-       // errRecords = errMsgs.children()
-
-       // errRecords.add(newRecord)
+        el = el + "\n"
+        errXml = errXml.concat(el)
     }
 
     @Override
     public void challenge(String msg) {
         println("challenge")
-        errRecords.add(createXMLElement("Challenge", msg))
+        errXml = errXml.concat(createXMLString("Challenge", msg))
     }
 
     @Override
     public void externalChallenge(String msg) {
         println("extchallenge")
-        errRecords.add(createXMLElement("ExternalChallenge", msg))
+        //errRecords.add(createXMLElement("ExternalChallenge", msg))
     }
 
     @Override
     public void detail(String msg) {
         println("detail")
-        errRecords.add(createXMLElement("Detail", msg))
+        errXml = errXml.concat(createXMLString("Detail", msg))
     }
 
     @Override
@@ -210,7 +209,7 @@ public class XMLErrorRecorder implements ErrorRecorder {
             Success (name:_name, dts:_dts, found:_found, expected:_expected, rfc:_rfc)
         }
         def el = new XmlSlurper().parseText(sw.toString())
-        errRecords.add(el)
+        //errRecords.add(el)
     }
 
     @Override
@@ -222,7 +221,7 @@ public class XMLErrorRecorder implements ErrorRecorder {
             Error (name:_name, dts:_dts, found:_found, expected:_expected, rfc:_rfc)
         }
         def el = sw.write()
-        errRecords.add(el)
+        //errRecords.add(el)
     }
 
     @Override
@@ -239,7 +238,7 @@ public class XMLErrorRecorder implements ErrorRecorder {
             Warning (name:_name, dts:_dts, found:_found, expected:_expected, rfc:_rfc)
         }
         def el = sw.write()
-        errRecords.add(el)
+        //errRecords.add(el)
     }
 
     @Override
@@ -251,7 +250,7 @@ public class XMLErrorRecorder implements ErrorRecorder {
             Info (name:_name, dts:_dts, found:_found, expected:_expected, rfc:_rfc)
         }
         def el = sw.write()
-        errRecords.add(el)
+        //errRecords.add(el)
     }
 
     @Override
@@ -265,7 +264,7 @@ public class XMLErrorRecorder implements ErrorRecorder {
             }
         }
         def el = sw.write()
-        errRecords.add(el)
+        //errRecords.add(el)
     }
 
     @Override
@@ -341,6 +340,16 @@ public class XMLErrorRecorder implements ErrorRecorder {
         def newRecord = new XmlParser().parseText(newElement)
         return newRecord
     }
+
+    /**
+     * Creates XML elements as text
+     * @param name The name of the new XML element to create.
+     * @return The new XML element as text.
+     */
+    def private static String createXMLString(String name, String msg){
+        return "<" + name + ">" + msg + "</" + name + ">\n"
+    }
+
 
     private String getSimpleName(Object location){
         if (location != null)
