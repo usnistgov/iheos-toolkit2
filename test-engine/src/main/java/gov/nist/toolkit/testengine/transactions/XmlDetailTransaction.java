@@ -30,12 +30,12 @@ public class XmlDetailTransaction extends BasicTransaction {
    
    @Override
    protected void run(OMElement stdResponse) throws Exception {
-      OMElement testResponse = linkage.findResultInLog("retrieve", "");
+      OMElement testResponse = linkage.findResultInLog("retrieve", "").getFirstElement();
+      
       assign_patient_id = false;
       /* TODO Working here
        * At this point stdResponse and testResponse have the data we want to
-       * validate, with the exception that test is wrapped in a "Result" 
-       * element. Need to incorporate the xml validation stuff from ixds and
+       * validate. Need to incorporate the xml validation stuff from xdsi and
        * figure out how to put the results into the output log.
        */
    }
