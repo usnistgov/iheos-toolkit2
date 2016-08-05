@@ -40,7 +40,7 @@ public class XMLErrorRecorder implements ErrorRecorder {
     public void err(Code code, String msg, String location, String resource, Object log_message) {
         println("err")
         // Check if error message is not null
-        if (msg == null || msg.trim().equals(""))
+        /*if (msg == null || msg.trim().equals(""))
             return;
 
         // Set parameters on the XMLValidatorErrorItem and run it
@@ -60,6 +60,7 @@ public class XMLErrorRecorder implements ErrorRecorder {
 
         // propagate error to Challenge level
         propagateError();
+        */
     }
 
     def addElement(XMLValidatorErrorItem ei){
