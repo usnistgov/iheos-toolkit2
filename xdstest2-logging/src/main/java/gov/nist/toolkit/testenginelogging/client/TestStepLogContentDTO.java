@@ -194,4 +194,6 @@ public class TestStepLogContentDTO implements Serializable, IsSerializable {
 	public void addUseReport(UseReportDTO useReport) {
 		this.useReports.add(useReport);
 	}
+
+
 }

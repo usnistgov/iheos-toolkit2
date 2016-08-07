@@ -9,6 +9,7 @@ import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.*;
+import gov.nist.toolkit.results.client.Result;
 import gov.nist.toolkit.results.client.TestInstance;
 import gov.nist.toolkit.session.client.SectionOverviewDTO;
 import gov.nist.toolkit.session.client.TestOverviewDTO;
@@ -17,6 +18,7 @@ import gov.nist.toolkit.testkitutilities.client.TestCollectionDefinitionDAO;
 import gov.nist.toolkit.xdstools2.client.*;
 import gov.nist.toolkit.xdstools2.client.event.TestSessionChangedEvent;
 import gov.nist.toolkit.xdstools2.client.event.testSession.TestSessionChangedEventHandler;
+import gov.nist.toolkit.xdstools2.client.inspector.MetadataInspectorTab;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -142,6 +144,7 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner {
 
 	// load test results for a single test collection (actor type) for a single site
 	private void loadTestCollection(final String collectionName) {
+		testDisplays.clear();  // so they reload
 
 		// what tests are in the collection
 		toolkitService.getCollectionMembers("actorcollections", collectionName, new AsyncCallback<List<String>>() {
@@ -232,7 +235,7 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner {
 			Image status = (testOverview.isPass()) ?
 					new Image("icons2/correct-24.png")
 					:
-					new Image("icons2/cancel-24.png");
+					new Image("icons/ic_warning_black_24dp_1x.png");
 			status.addStyleName("right");
 			header.add(status);
 		}
@@ -241,10 +244,19 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner {
 		play.setTitle("Run");
 		play.addClickHandler(new RunClickHandler(testOverview.getTestInstance()));
 		header.add(play);
-		Image delete = new Image("icons2/garbage-24.png");
-		delete.addClickHandler(new DeleteClickHandler(testOverview.getTestInstance()));
-		delete.setTitle("Delete Log");
-		header.add(delete);
+		if (testOverview.isRun()) {
+			Image delete = new Image("icons2/garbage-24.png");
+			delete.addStyleName("right");
+			delete.addClickHandler(new DeleteClickHandler(testOverview.getTestInstance()));
+			delete.setTitle("Delete Log");
+			header.add(delete);
+
+			Image inspect = new Image("icons2/visible-32.png");
+			inspect.addStyleName("right");
+			inspect.addClickHandler(new InspectClickHandler(testOverview.getTestInstance()));
+			inspect.setTitle("Inspect results");
+			header.add(inspect);
+		}
 
 		body.add(new HTML(testOverview.getDescription()));
 
@@ -283,6 +295,35 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner {
 				@Override
 				public void onSuccess(TestOverviewDTO testOverviewDTO) {
 					displayTest(testOverviewDTO);
+				}
+			});
+		}
+	}
+
+	private class InspectClickHandler implements ClickHandler {
+		TestInstance testInstance;
+
+		InspectClickHandler(TestInstance testInstance) {
+			this.testInstance = testInstance;
+		}
+
+		@Override
+		public void onClick(ClickEvent clickEvent) {
+			List<TestInstance> testInstances = new ArrayList<>();
+			testInstances.add(testInstance);
+			toolkitService.getTestResults(testInstances, getCurrentTestSession(), new AsyncCallback<Map<String, Result>>() {
+				@Override
+				public void onFailure(Throwable throwable) {
+					new PopupMessage(throwable.getMessage());
+				}
+
+				@Override
+				public void onSuccess(Map<String, Result> resultMap) {
+					MetadataInspectorTab itab = new MetadataInspectorTab();
+					itab.setResults(resultMap.values());
+					itab.setSiteSpec(new SiteSpec(currentSiteName));
+					itab.setToolkitService(me.toolkitService);
+					itab.onTabLoad(true, "Insp");
 				}
 			});
 		}

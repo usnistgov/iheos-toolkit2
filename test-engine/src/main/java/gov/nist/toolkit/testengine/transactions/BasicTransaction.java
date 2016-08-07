@@ -153,51 +153,56 @@ public abstract class BasicTransaction  {
 
 	public void doRun() throws Exception {
 
-        Iterator<OMElement> elements = instruction.getChildElements();
-		while (elements.hasNext()) {
-			OMElement part = (OMElement) elements.next();
-			parseInstruction(part);
-		}
+		try {
+			Iterator<OMElement> elements = instruction.getChildElements();
+			while (elements.hasNext()) {
+				OMElement part = (OMElement) elements.next();
+				parseInstruction(part);
+			}
 
-		applyTransactionSettings();
+			applyTransactionSettings();
 
 
-		String trans = getBasicTransactionName();
-		if (trans == null)
-			fatal("Internal error: No transaction name declared");
+			String trans = getBasicTransactionName();
+			if (trans == null)
+				fatal("Internal error: No transaction name declared");
 
-		if (async)
-			xds_version = BasicTransaction.xds_b;
+			if (async)
+				xds_version = BasicTransaction.xds_b;
 
-		if (trans.equals("sq") || trans.equals("pr") || trans.equals("r")) {
-			//			if (async)
-			//				trans = trans + ".as";
-			//			else
-			if (isB())
-				trans = trans + ".b";
-			else
-				trans = trans + ".a";
-		}
-		//		else if (async)
-		//			trans = trans + ".as";
+			if (trans.equals("sq") || trans.equals("pr") || trans.equals("r")) {
+				//			if (async)
+				//				trans = trans + ".as";
+				//			else
+				if (isB())
+					trans = trans + ".b";
+				else
+					trans = trans + ".a";
+			}
+			//		else if (async)
+			//			trans = trans + ".as";
 
-		TransactionType ttype = TransactionType.find(trans);
+			TransactionType ttype = TransactionType.find(trans);
 
 //		if (ttype == null)
 //			fatal("Do not understand transaction type " + trans);
 
-		if (defaultEndpointProcessing && ttype != null)
-			parseEndpoint(ttype);
+			if (defaultEndpointProcessing && ttype != null)
+				parseEndpoint(ttype);
 
-		Metadata metadata = prepareMetadata();
-		if (metadata != null)
-			request_element = metadata.getRoot();
+			Metadata metadata = prepareMetadata();
+			if (metadata != null)
+				request_element = metadata.getRoot();
 
-		//		reportManagerPreRun(request_element);  // must run before prepareMetadata (assign uuids)
+			//		reportManagerPreRun(request_element);  // must run before prepareMetadata (assign uuids)
 
-		run(request_element);
+			run(request_element);
 
-		reportManagerPostRun();
+			reportManagerPostRun();
+		} catch (Exception e) {
+			s_ctx.set_error("Internal Error: " + ExceptionUtil.exception_details(e));
+			step_failure = true;
+		}
 	}
 
 	protected void reportManagerPostRun() throws XdsInternalException {

@@ -6,6 +6,7 @@ import gov.nist.toolkit.testenginelogging.client.LogFileContentDTO;
 import gov.nist.toolkit.testenginelogging.client.LogMapDTO;
 import gov.nist.toolkit.testenginelogging.client.LogMapItemDTO;
 import gov.nist.toolkit.testenginelogging.client.TestStepLogContentDTO;
+import gov.nist.toolkit.utilities.xml.OMFormatter;
 
 import java.util.List;
 
@@ -23,16 +24,16 @@ public class TestLogsBuilder {
 
 				testLog.stepName = stepName;
 				testLog.endpoint = stepLog.getEndpoint();
-				testLog.inHeader = stepLog.getInHeader();
-				testLog.inputMetadata = stepLog.getInputMetadata();
-				testLog.outHeader = stepLog.getOutHeader();
-				testLog.result = stepLog.getResult();
+				testLog.inHeader = new OMFormatter(stepLog.getInHeader()).toHtml();
+				testLog.inputMetadata = new OMFormatter(stepLog.getInputMetadata()).toHtml();
+				testLog.outHeader = new OMFormatter(stepLog.getOutHeader()).toHtml();
+				testLog.result = new OMFormatter(stepLog.getResult()).toHtml();
 				testLog.status = stepLog.getStatus();
                 testLog.assignedIds  = stepLog.getAssignedIds();
                 testLog.assignedUids = stepLog.getAssignedUids();
 				testLog.errors = listAsString(stepLog.getErrors());
 
-				testLog.log = stepLog.getRoot();
+				testLog.log = new OMFormatter(stepLog.getRoot()).toHtml();
 			}
 		}
 

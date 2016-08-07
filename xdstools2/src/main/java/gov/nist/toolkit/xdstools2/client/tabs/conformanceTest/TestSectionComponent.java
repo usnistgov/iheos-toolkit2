@@ -58,7 +58,7 @@ public class TestSectionComponent implements IsWidget {
             Image status = (sectionOverview.isPass()) ?
                     new Image("icons2/correct-16.png")
                     :
-                    new Image("icons2/cancel-16.png");
+                    new Image("icons/ic_warning_black_24dp_1x.png");
             status.addStyleName("right");
             header.add(status);
             panel.add(body);
@@ -114,13 +114,20 @@ public class TestSectionComponent implements IsWidget {
                         StringBuilder buf = new StringBuilder();
                         buf.append("Goal: " + step.getStepGoalsDTO().getGoals()).append("<br />");
                         buf.append("Endpoint: " + step.getEndpoint()).append("<br />");
-                        for (String fault : step.getSoapFaults())
-                            buf.append("Fault: " + fault).append("<br />");
-                        for (String error : step.getErrors())
-                            buf.append("Error: " + error).append("<br />");
-                        for (String assertion : step.getAssertionErrors())
-                            buf.append("Error: " + assertion).append("<br />");
+                        if (step.isExpectedSuccess())
+                            buf.append("Expected Status: Success").append("<br />");
+                        else
+                            buf.append("Expected Status: Failure").append("<br />");
 
+                        for (String fault : step.getSoapFaults()) {
+                            buf.append("Fault: " + fault).append("<br />");
+                        }
+                        for (String error : step.getErrors()) {
+                            buf.append("Error: " + error).append("<br />");
+                        }
+                        for (String assertion : step.getAssertionErrors()) {
+                            buf.append("Error: " + assertion).append("<br />");
+                        }
                         body.add(new HTML(buf.toString()));
 
                         // ******************************************************

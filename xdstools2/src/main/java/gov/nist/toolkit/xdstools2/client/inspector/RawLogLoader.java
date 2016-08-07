@@ -29,6 +29,10 @@ class RawLogLoader implements ClickHandler {
 	}
 
 	public void onClick(ClickEvent event) {
+		loadTestLogs();
+	}
+
+	public void loadTestLogs() {
 		this.metadataInspectorTab.data.toolkitService.getRawLogs(logId, new AsyncCallback<TestLogs> () {
 
 			public void onFailure(Throwable caught) {
