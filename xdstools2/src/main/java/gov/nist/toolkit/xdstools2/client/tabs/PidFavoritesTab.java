@@ -11,7 +11,11 @@ import gov.nist.toolkit.configDatatypes.client.Pid;
 import gov.nist.toolkit.configDatatypes.client.PidBuilder;
 import gov.nist.toolkit.configDatatypes.client.PidSet;
 import gov.nist.toolkit.configDatatypes.client.TransactionType;
-import gov.nist.toolkit.xdstools2.client.*;
+import gov.nist.toolkit.xdstools2.client.CookieManager;
+import gov.nist.toolkit.xdstools2.client.CoupledTransactions;
+import gov.nist.toolkit.xdstools2.client.NoServletSessionException;
+import gov.nist.toolkit.xdstools2.client.PopupMessage;
+import gov.nist.toolkit.xdstools2.client.command.GetAssigningAuthorities;
 import gov.nist.toolkit.xdstools2.client.siteActorManagers.GetDocumentsSiteActorManager;
 import gov.nist.toolkit.xdstools2.client.tabs.genericQueryTab.GenericQueryTab;
 
@@ -32,14 +36,14 @@ public class PidFavoritesTab  extends GenericQueryTab {
         super(new GetDocumentsSiteActorManager());
     }
 
-    ListBox favoritesListBox = new ListBox();
-    TextArea pidBox = new TextArea();
-    VerticalPanel assigningAuthorityPanel = new VerticalPanel();
-    HTML selectedPids = new HTML();
+    private ListBox favoritesListBox = new ListBox();
+    private TextArea pidBox = new TextArea();
+    private VerticalPanel assigningAuthorityPanel = new VerticalPanel();
+    private HTML selectedPids = new HTML();
 
     // model
-    Set<Pid> favoritePids = new HashSet<>();  // the database of values
-    List<String> assigningAuthorities = null;
+    private Set<Pid> favoritePids = new HashSet<>();  // the database of values
+    private List<String> assigningAuthorities = null;
 
     @Override
     public void onTabLoad(boolean select, String eventName) {
@@ -209,7 +213,7 @@ public class PidFavoritesTab  extends GenericQueryTab {
         }
     }
 
-    void deleteFromFavorites(List<Pid> pids) {
+    private void deleteFromFavorites(List<Pid> pids) {
         List<Pid> deletables = new ArrayList<>();
         for (Pid pid : pids) {
             if (favoritePids.contains(pid)) deletables.add(pid);
@@ -218,23 +222,14 @@ public class PidFavoritesTab  extends GenericQueryTab {
         updateFavoritesFromModel();
     }
 
-    void loadAssigningAuthorities() {
-        try {
-            toolkitService.getAssigningAuthorities(new AsyncCallback<List<String>>() {
-                @Override
-                public void onFailure(Throwable e) {
-                    new PopupMessage("Error loading Assigning Authorities - usually caused by session timeout - " + e.getMessage());
-                }
-
-                @Override
-                public void onSuccess(List<String> s) {
-                    assigningAuthorities = s;
-                    updateAssigningAuthorities();
-                }
-            });
-        } catch (Exception e) {
-            new PopupMessage(e.getMessage());
-        }
+    private void loadAssigningAuthorities() {
+        new GetAssigningAuthorities(this) {
+            @Override
+            public void onComplete(List<String> var1) {
+                assigningAuthorities = var1;
+                updateAssigningAuthorities();
+            }
+        }.run(getCommandContext());
     }
 
     List<Pid> getSelectedPids() {

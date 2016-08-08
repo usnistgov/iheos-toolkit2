@@ -46,6 +46,7 @@ import gov.nist.toolkit.xdstools2.client.NoServletSessionException;
 import gov.nist.toolkit.xdstools2.client.RegistryStatus;
 import gov.nist.toolkit.xdstools2.client.RepositoryStatus;
 import gov.nist.toolkit.xdstools2.client.ToolkitService;
+import gov.nist.toolkit.xdstools2.client.command.CommandContext;
 import gov.nist.toolkit.xdstools2.server.serviceManager.DashboardServiceManager;
 import gov.nist.toolkit.xdstools2.server.serviceManager.GazelleServiceManager;
 import org.apache.log4j.Logger;
@@ -85,6 +86,11 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements
 		if (MessageValidatorFactoryFactory.messageValidatorFactory2I == null) {
 			MessageValidatorFactoryFactory.messageValidatorFactory2I = new CommonMessageValidatorFactory("a");
 		}
+	}
+
+	void installCommandContext(CommandContext commandContext) throws NoServletSessionException {
+		setEnvironment(commandContext.getEnvironmentName());
+		setMesaTestSession(commandContext.getTestSessionName());
 	}
 
 	//------------------------------------------------------------------------
@@ -380,8 +386,14 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements
 	public Map<String, String> getSessionProperties() throws NoServletSessionException { return session().getSessionPropertiesAsMap(); }
 	public void setSessionProperties(Map<String, String> props) throws NoServletSessionException { session().setSessionProperties(props); }
 	public Pid createPid(String assigningAuthority) throws NoServletSessionException { return session().allocateNewPid(assigningAuthority); }
-	public String getAssigningAuthority() throws Exception { return session().getAssigningAuthority(); }
-	public List<String> getAssigningAuthorities() throws Exception { return session().getAssigningAuthorities(); }
+	public String getAssigningAuthority(CommandContext commandContext) throws Exception {
+		installCommandContext(commandContext);
+		return session().getAssigningAuthority();
+	}
+	public List<String> getAssigningAuthorities(CommandContext commandContext) throws Exception {
+		installCommandContext(commandContext);
+		return session().getAssigningAuthorities();
+	}
 
 	//------------------------------------------------------------------------
 	//------------------------------------------------------------------------

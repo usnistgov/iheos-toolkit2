@@ -38,14 +38,14 @@ class TestSelectionManager {
 //    String selectedSection = TestSelectionManager.ALL_SELECTION;
     ToolkitServiceAsync toolkitService;
     Map<String, String> testCollectionMap;  // name => description for selected actor
-    List<String> assigningAuthorities = null;
+//    List<String> assigningAuthorities = null;
     TestSelectionManager me;
 
     TestSelectionManager(GatewayTool tool) {
         me = this;
         this.tool = tool;
         toolkitService = tool.getToolkitService();
-        loadAssigningAuthorities();
+//        loadAssigningAuthorities();
 
         selectSectionList.addChangeHandler(new SectionSelectionChangeHandler());
     }
@@ -79,23 +79,23 @@ class TestSelectionManager {
         });
     }
 
-    void loadAssigningAuthorities() {
-        try {
-            toolkitService.getAssigningAuthorities(new AsyncCallback<List<String>>() {
-                @Override
-                public void onFailure(Throwable e) {
-                    new PopupMessage("Error loading Assigning Authorities - usually caused by session timeout - " + e.getMessage());
-                }
-
-                @Override
-                public void onSuccess(List<String> s) {
-                    assigningAuthorities = s;
-                }
-            });
-        } catch (Exception e) {
-            new PopupMessage(e.getMessage());
-        }
-    }
+//    void loadAssigningAuthorities() {
+//        try {
+//            toolkitService.getAssigningAuthorities(new AsyncCallback<List<String>>() {
+//                @Override
+//                public void onFailure(Throwable e) {
+//                    new PopupMessage("Error loading Assigning Authorities - usually caused by session timeout - " + e.getMessage());
+//                }
+//
+//                @Override
+//                public void onSuccess(List<String> s) {
+//                    assigningAuthorities = s;
+//                }
+//            });
+//        } catch (Exception e) {
+//            new PopupMessage(e.getMessage());
+//        }
+//    }
 
     Widget buildSectionSelector() {
         HorizontalPanel selectSectionPanel = new HorizontalPanel();
