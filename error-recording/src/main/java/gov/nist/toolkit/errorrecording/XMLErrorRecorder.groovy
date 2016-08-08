@@ -14,7 +14,7 @@ public class XMLErrorRecorder implements ErrorRecorder {
     public ErrorRecorderBuilder errorRecorderBuilder;
 
     static Logger logger = Logger.getLogger(XMLErrorRecorder.class);
-    boolean sectionHeading = false;
+    boolean firstSectionHeading = true;
 
     def errXml = "<ErrorLog>\n"
     //def errMsgs = new XmlParser().parseText(errXml)
@@ -33,7 +33,7 @@ public class XMLErrorRecorder implements ErrorRecorder {
         //new XmlNodePrinter(new PrintWriter(sw)).print(errMsgs)
 
         //println("\n--- XML output: ---\n\n" + sw.toString())
-        return errXml + "\n</ErrorLog>\n"
+        return errXml + "</SectionHeading>\n</ErrorLog>\n"
         //return sw.toString()
     }
 
@@ -84,7 +84,7 @@ public class XMLErrorRecorder implements ErrorRecorder {
 
         // Parse and add
         //def el = new XmlParser().parseText(sw.toString())
-        errXml = errXml.concat(sw.toString())
+        errXml = errXml.concat(sw.toString() + "\n")
     }
 
     @Override
@@ -153,18 +153,14 @@ public class XMLErrorRecorder implements ErrorRecorder {
     //TODO last because a SectionHeading element needs to wrap an entire section
     @Override
     public void sectionHeading(String msg) {
-        println("sectionheading")
-        def el;
+        println("sectionheading " + msg)
+        def el = "";
 
-        if (sectionHeading){
-            el = "</SectionHeading>"
-        } else {
-            el = "<SectionHeading message=\"" + msg + "\">";
+        if (firstSectionHeading) { firstSectionHeading = false; }
+        else {
+            el = "</SectionHeading>\n"
         }
-        sectionHeading = !sectionHeading;
-        //def newRecord = new XmlParser().parseText(el)
-        //def newXml = errMsgs.toString() + newRecord
-        el = el + "\n"
+        el = el + "<SectionHeading message=\"" + msg + "\">\n";
         errXml = errXml.concat(el)
     }
 
