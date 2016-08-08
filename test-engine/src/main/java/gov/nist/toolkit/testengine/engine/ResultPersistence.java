@@ -51,7 +51,8 @@ public class ResultPersistence {
 				"Results");
 		if (write)
 			dir.mkdirs();
-		
-		return dir.toString() + File.separator + testInstance + ".ser";
+
+		return dir.toString() + File.separator + testInstance.toString().replace(":","") + ".ser";
+
 	}
 }
