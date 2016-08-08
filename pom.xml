@@ -78,6 +78,7 @@
         <module>it-tests</module>
         <module>validators-soap-message</module>
         <module>new-validation-system</module>
+        <module>interaction-model</module>
     </modules>
 
 

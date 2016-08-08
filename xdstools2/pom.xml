@@ -437,6 +437,10 @@
             <artifactId>httpclient</artifactId>
             <version>4.0-alpha4</version>
         </dependency>
+        <dependency>
+            <groupId>gov.nist.toolkit</groupId>
+            <artifactId>interaction-model</artifactId>
+        </dependency>
 
         <!--<dependency>-->
             <!--<groupId>com.sun.jersey</groupId>-->
@@ -536,6 +540,7 @@
                         <compileSourcesArtifact>${project.groupId}:testkit-utilities</compileSourcesArtifact>
                         <compileSourcesArtifact>${project.groupId}:xdstest2-logging</compileSourcesArtifact>
                         <compileSourcesArtifact>${project.groupId}:xds-exceptions</compileSourcesArtifact>
+                        <compileSourcesArtifact>${project.groupId}:interaction-model</compileSourcesArtifact>
                     </compileSourcesArtifacts>
                     <runTarget>Xdstools2.html</runTarget>
                     <modules>

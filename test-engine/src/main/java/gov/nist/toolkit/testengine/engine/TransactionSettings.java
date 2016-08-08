@@ -23,6 +23,10 @@ public class TransactionSettings {
 	public LogRepository logRepository = null;
 	public boolean writeLogs = false;
 	public SiteSpec siteSpec;
+	/**
+	 *Origin, null or default value is interpreted as "TestClient". For other Toolkit to Toolkit uses, use the originating simulator name/site name here.
+	 */
+	public String origin;
 	public AssertionResults res = null;
 	public String user = null;
 	public TransactionTransport transactionTransport = null;

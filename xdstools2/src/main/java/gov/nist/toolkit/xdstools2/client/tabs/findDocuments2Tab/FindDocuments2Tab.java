@@ -5,11 +5,13 @@ import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.ui.FlexTable;
 import com.google.gwt.user.client.ui.HTML;
 import gov.nist.toolkit.configDatatypes.client.TransactionType;
+import gov.nist.toolkit.interactionmodel.client.InteractingEntity;
 import gov.nist.toolkit.xdstools2.client.CoupledTransactions;
 import gov.nist.toolkit.xdstools2.client.siteActorManagers.FindDocumentsSiteActorManager;
 import gov.nist.toolkit.xdstools2.client.tabs.genericQueryTab.GenericQueryTab;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -89,6 +91,21 @@ class Runner implements ClickHandler {
         // tell the server to run the query. The display is handled by GenericQueryTab which
         // is linked in via the queryCallback parameter
         rigForRunning();
+        InteractingEntity testClient = new InteractingEntity(); // Origin. (Head)
+        InteractingEntity registryEntity = new InteractingEntity(); // Destination
+
+        testClient.setName(null); // Matches with the transactionSettings origin. null=TestClient
+        testClient.setDescription("Document Consumer - Toolkit");
+        testClient.setBegin(new Date());
+        // TODO: setEnd in callback
+
+        registryEntity.setName(getSiteSelection().getName());
+        registryEntity.setDescription("Registry - SUT");
+        registryEntity.setSourceInteractionLabel("Stored Query (ITI-18)");
+
+        testClient.setInteractions(new ArrayList<InteractingEntity>());
+        testClient.getInteractions().add(registryEntity);
+
         toolkitService.findDocuments2(getSiteSelection(), pidTextBox.getValue().trim(), codeSpec, queryCallback);
     }
     }
