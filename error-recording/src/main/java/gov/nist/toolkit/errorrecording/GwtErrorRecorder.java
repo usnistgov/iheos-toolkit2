@@ -173,9 +173,6 @@ public class GwtErrorRecorder implements ErrorRecorder  {
 		errMsgs.add(ei);
 	}
 
-	public void showErrorInfo() {
-	}
-
 	public void detail(String msg) {
 		tagLastInfo2();
 		GwtValidatorErrorItem ei = new GwtValidatorErrorItem();

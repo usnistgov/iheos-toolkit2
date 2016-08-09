@@ -32,11 +32,8 @@ public interface ErrorRecorder extends ErrorRecorderBuilder {
 	void info(String dts, String name, String found, String expected, String RFC);
 	void summary(String msg, boolean success, boolean part);
 	void finish();
-	void showErrorInfo();
 	boolean hasErrors();
 	int getNbErrors();
-	//void concat(ErrorRecorder er);
-	//List<GwtValidatorErrorItem> getErrMsgs();
 
 	List<ErrorRecorder> getChildren();
     int depth();

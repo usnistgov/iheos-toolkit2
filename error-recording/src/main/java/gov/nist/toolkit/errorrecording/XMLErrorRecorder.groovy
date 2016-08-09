@@ -15,29 +15,18 @@ public class XMLErrorRecorder implements ErrorRecorder {
 
     static Logger logger = Logger.getLogger(XMLErrorRecorder.class);
     boolean firstSectionHeading = true;
-
     def errXml = "<ErrorLog>\n"
-    //def errMsgs = new XmlParser().parseText(errXml)
-    //def errRecords = errMsgs.children()
-
 
     /**
-     * Temporary toString function for testing purposes, may need upgrade later
-     * @return
+     * Adds the end elements to the XML and returns the XML output as a String
+     * @return the XML output
      */
     @Override
     def String toString() {
-        // Convert back to String / XML
-        //StringWriter sw = new StringWriter()
-        //println(errXml)
-        //new XmlNodePrinter(new PrintWriter(sw)).print(errMsgs)
-
-        //println("\n--- XML output: ---\n\n" + sw.toString())
         return errXml + "</SectionHeading>\n</ErrorLog>\n"
-        //return sw.toString()
     }
 
-
+    // Not used
     @Override
     public void err(Code code, String msg, String location, String resource, Object log_message) {
         println("err")
@@ -65,10 +54,6 @@ public class XMLErrorRecorder implements ErrorRecorder {
         */
     }
 
-    def addElement(XMLValidatorErrorItem ei){
-
-    }
-
     @Override
     // TODO this is the only syntax that works. Propagate it to rest of document.
     public void err(Code _code, String _msg, String _location, String _resource) {
@@ -94,19 +79,21 @@ public class XMLErrorRecorder implements ErrorRecorder {
         err(code, msg, loc, resource);
     }
 
+    // Not used
     @Override
     public void err(Code code, Exception e) {
         println("err4")
         err(code, ExceptionUtil.exception_details(e), null, "");
     }
 
+    // Not used
     @Override
     public void err(Code _code, String _msg, String _location, String _severity, String _resource) {
         println("err5")
         err(_code.toString(), _msg, _location, _severity, _resource)
     }
 
-    // Untested, need real test data to complete
+    // Not used
     @Override
     public void err(String _code, String _msg, String _location, String _severity, String _resource) {
         println("err6")
@@ -131,26 +118,30 @@ public class XMLErrorRecorder implements ErrorRecorder {
             //err(_code, _msg, _location, _resource)
         }    }
 
+    // Untested / not used
     @Override
     public void warning(String _code, String _msg, String _location, String _resource) {
         println("warning1")
         err(_code, _msg, _location, "Warning", _resource);
     }
 
+    // Untested / not used
     @Override
     public void warning(Code _code, String _msg, String _location, String _resource) {
         println("warning2")
         err(_code.toString(), _msg, _location, "Warning", _resource);
     }
 
+    // Not used
     private void propagateError() {
         println("NYI-propagateerr")
         // Test if in a section heading or challenge section. If challenge then set the ReportingCompletionType to Error.
     }
 
-
-
-    //TODO last because a SectionHeading element needs to wrap an entire section
+    /**
+     * Opens a new Section and optionally closes the previous one
+     * @param msg
+     */
     @Override
     public void sectionHeading(String msg) {
         println("sectionheading " + msg)
@@ -170,18 +161,21 @@ public class XMLErrorRecorder implements ErrorRecorder {
         errXml = errXml.concat(createXMLString("Challenge", msg))
     }
 
+    // Not used / not tested
     @Override
     public void externalChallenge(String msg) {
         println("extchallenge")
         //errRecords.add(createXMLElement("ExternalChallenge", msg))
     }
 
+    // Not used / Not tested
     @Override
     public void detail(String msg) {
         println("detail")
         errXml = errXml.concat(createXMLString("Detail", msg))
     }
 
+    // Not used / Not tested
     @Override
     public void report(String name, String found) {
         println("report")
@@ -189,7 +183,7 @@ public class XMLErrorRecorder implements ErrorRecorder {
     }
 
     /**
-     * 	Note: This section was stored but not displayed when using the GWTErrorRecorder
+     * Not used / Not tested
      * @param dts
      * @param name
      * @param found
@@ -208,6 +202,7 @@ public class XMLErrorRecorder implements ErrorRecorder {
         //errRecords.add(el)
     }
 
+    // Not used / Not tested
     @Override
     public void error(String _dts, String _name, String _found, String _expected, String _rfc) {
         println("error")
@@ -220,11 +215,13 @@ public class XMLErrorRecorder implements ErrorRecorder {
         //errRecords.add(el)
     }
 
+    // Not used / Not tested
     @Override
     public void test(boolean good, String dts, String name, String found, String expected, String RFC) {
         println("NYI-test")
     }
 
+    // Not used / Not tested
     @Override
     public void warning(String _dts, String _name, String _found, String _expected, String _rfc) {
         println("warning")
@@ -237,6 +234,7 @@ public class XMLErrorRecorder implements ErrorRecorder {
         //errRecords.add(el)
     }
 
+    // Not used / Not tested
     @Override
     public void info(String _dts, String _name, String _found, String _expected, String _rfc) {
         println("info")
@@ -249,6 +247,7 @@ public class XMLErrorRecorder implements ErrorRecorder {
         //errRecords.add(el)
     }
 
+    // Not used / Not tested
     @Override
     public void summary(String _msg, boolean _success, boolean _part) {
         println("summary")
@@ -263,29 +262,27 @@ public class XMLErrorRecorder implements ErrorRecorder {
         //errRecords.add(el)
     }
 
+    // Not used / Not tested
     @Override
     public void finish() {
         println("NYI-finish")
     }
 
-    // Looks like an old function, not used in GwtErrorRecorder
-    @Override
-    public void showErrorInfo() {
-        println("NYI-showerrinfo")
-    }
-
+    // Not used / Not tested
     @Override
     public boolean hasErrors() {
         println("boolhaserrors")
          return (errRecords.contains("Error"));
     }
 
+    // Not used / Not tested
     @Override
     public int getNbErrors() {
         println("NYI-getnberrors")
         return 0;
     }
 
+    // Not used / Not tested
     @Override
     public List<ErrorRecorder> getChildren() {
         println("NYI-errrecorder")
