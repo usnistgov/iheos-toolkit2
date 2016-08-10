@@ -35,7 +35,7 @@ public class ValidateSubmissionMain  {
 			er.err(XdsErrorCode.Code.XDSRegistryMetadataError, e);
 		}
 		
-		er.showErrorInfo();
+		//er.showErrorInfo();
 	}
 	
 
