@@ -1,6 +1,5 @@
 package gov.nist.toolkit.errorrecording
 
-import gov.nist.toolkit.errorrecording.client.XMLValidatorErrorItem
 import gov.nist.toolkit.errorrecording.client.XdsErrorCode.Code
 import gov.nist.toolkit.errorrecording.factories.ErrorRecorderBuilder
 import gov.nist.toolkit.xdsexception.ExceptionUtil
@@ -23,10 +22,11 @@ public class XMLErrorRecorder implements ErrorRecorder {
      */
     @Override
     def String toString() {
-        return errXml + "</SectionHeading>\n</ErrorLog>\n"
+        String output = errXml + "</SectionHeading>\n</ErrorLog>\n"
+        return prettyPrint(output)
     }
 
-    // Not used
+// Not used
     @Override
     public void err(Code code, String msg, String location, String resource, Object log_message) {
         println("err")
@@ -343,10 +343,32 @@ public class XMLErrorRecorder implements ErrorRecorder {
         return "<" + name + ">" + msg + "</" + name + ">\n"
     }
 
-
     private String getSimpleName(Object location){
         if (location != null)
             return location.getClass().getSimpleName();
+        return ""
     }
+
+    /**
+     * Validates an XML string by running it through SAX / Groovy parser. Pretty prints the XML as a string.
+     * @param input
+     * @return
+     */
+    private String prettyPrint(String input) {
+            try {
+                // parse existing XML string into a Node. This has the advantage of also validating the XML.
+                def xml = new XmlParser().parseText(input)
+
+                // pretty print the Node
+                StringWriter sw = new StringWriter();
+                def printer = new XmlNodePrinter(new PrintWriter(sw))
+                printer.preserveWhitespace = true
+                printer.print(xml)
+                return sw.toString()
+            } catch (e) {
+                println("Error in output pretty print in XMLErrorRecorder. The XML could not be validated or formatted :" + e)
+            }
+            return input
+        }
 
 }
