@@ -111,4 +111,21 @@ class HTTPTransactionSpec extends ToolkitSpecification {
         results.get(0).passed()
 
     }
+
+    def 'encoded URL test'() {
+        when:
+        List<String> sections = new ArrayList<>()
+        sections.add("encodedURL")
+        Map<String, String> params = new HashMap<>()
+        params.put('$patientid$', patientId)
+
+        and: 'Run'
+        List<Result> results = api.runTest(testSession, siteName, testId, sections, params, stopOnFirstError)
+        println "Results are " + results.get(0).toString()
+
+        then:
+        results.size() == 1
+        results.get(0).passed()
+
+    }
 }
