@@ -13,8 +13,8 @@ import java.util.List;
  * in the base class.  To give user chance to capture callback, delete that auto-generated onComplete()
  * from this class.
  */
-abstract public class GetAssigningAuthorities extends GenericCommand<CommandContext, List<String>> {
-    public GetAssigningAuthorities(ToolWindow toolWindow) {
+abstract public class GetAssigningAuthoritiesCommand extends GenericCommand<CommandContext, List<String>> {
+    public GetAssigningAuthoritiesCommand(ToolWindow toolWindow) {
         super(toolWindow);
     }
 

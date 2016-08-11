@@ -26,7 +26,7 @@ abstract class CommandModule<C> implements AsyncCallback<C> {
     // This may be further overridden by Command Class (class that extends GenericCommand)
     @Override
      public void onFailure(Throwable throwable) {
-        new PopupMessage("Command Failed: " + throwable.getMessage());
+        new PopupMessage("Request to server failed: " + throwable.getMessage());
     }
 
     @Override

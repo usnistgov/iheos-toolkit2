@@ -47,6 +47,8 @@ import gov.nist.toolkit.xdstools2.client.RegistryStatus;
 import gov.nist.toolkit.xdstools2.client.RepositoryStatus;
 import gov.nist.toolkit.xdstools2.client.ToolkitService;
 import gov.nist.toolkit.xdstools2.client.command.CommandContext;
+import gov.nist.toolkit.xdstools2.client.command.GeneratePidRequest;
+import gov.nist.toolkit.xdstools2.client.command.SendPidToRegistryRequest;
 import gov.nist.toolkit.xdstools2.server.serviceManager.DashboardServiceManager;
 import gov.nist.toolkit.xdstools2.server.serviceManager.GazelleServiceManager;
 import org.apache.log4j.Logger;
@@ -88,7 +90,11 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements
 		}
 	}
 
-	void installCommandContext(CommandContext commandContext) throws NoServletSessionException {
+	void installCommandContext(CommandContext commandContext) throws Exception {
+		if (commandContext.getEnvironmentName() == null)
+			throw new Exception("installCommandContext: environment name is null");
+		if (commandContext.getTestSessionName() == null)
+			throw new Exception("installCommandContext: test session name is null");
 		setEnvironment(commandContext.getEnvironmentName());
 		setMesaTestSession(commandContext.getTestSessionName());
 	}
@@ -327,7 +333,10 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements
         return session().xdsTestServiceManager().getCollection(collectionSetName, collectionName);
     }
 	public boolean isPrivateMesaTesting()  throws NoServletSessionException { return session().xdsTestServiceManager().isPrivateMesaTesting(); }
-	public List<Result> sendPidToRegistry(SiteSpec site, Pid pid) throws NoServletSessionException { return session().xdsTestServiceManager().sendPidToRegistry(site, pid); }
+	public List<Result> sendPidToRegistry(SendPidToRegistryRequest request) throws Exception {
+		installCommandContext(request);
+		return session().xdsTestServiceManager().sendPidToRegistry(request.getSiteSpec(), request.getPid());
+	}
 
 	/**
 	 * This method copies the default testkit to a selected environment and triggers a code update based on
@@ -385,7 +394,10 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements
 	//------------------------------------------------------------------------
 	public Map<String, String> getSessionProperties() throws NoServletSessionException { return session().getSessionPropertiesAsMap(); }
 	public void setSessionProperties(Map<String, String> props) throws NoServletSessionException { session().setSessionProperties(props); }
-	public Pid createPid(String assigningAuthority) throws NoServletSessionException { return session().allocateNewPid(assigningAuthority); }
+	public Pid createPid(GeneratePidRequest generatePidRequest) throws Exception {
+		installCommandContext(generatePidRequest);
+		return session().allocateNewPid(generatePidRequest.getAssigningAuthority());
+	}
 	public String getAssigningAuthority(CommandContext commandContext) throws Exception {
 		installCommandContext(commandContext);
 		return session().getAssigningAuthority();

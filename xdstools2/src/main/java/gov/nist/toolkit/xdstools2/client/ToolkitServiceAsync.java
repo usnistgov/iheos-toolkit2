@@ -25,6 +25,8 @@ import gov.nist.toolkit.tk.client.TkProps;
 import gov.nist.toolkit.valsupport.client.MessageValidationResults;
 import gov.nist.toolkit.valsupport.client.ValidationContext;
 import gov.nist.toolkit.xdstools2.client.command.CommandContext;
+import gov.nist.toolkit.xdstools2.client.command.GeneratePidRequest;
+import gov.nist.toolkit.xdstools2.client.command.SendPidToRegistryRequest;
 
 import java.util.Collection;
 import java.util.List;
@@ -174,10 +176,10 @@ public interface ToolkitServiceAsync {
 	void isPrivateMesaTesting(AsyncCallback<Boolean> callback);
 	void addMesaTestSession(String name, AsyncCallback<Boolean> callback);
 	void delMesaTestSession(String name, AsyncCallback<Boolean> callback);
-	void createPid(String assigningAuthority, AsyncCallback<Pid> callback) throws NoServletSessionException;
+	void createPid(GeneratePidRequest generatePidRequest, AsyncCallback<Pid> callback);
 	void getAssigningAuthority(CommandContext commandContext, AsyncCallback<String> callback);
 	void getAssigningAuthorities(CommandContext commandContext, AsyncCallback<List<String>> callback);
-	void sendPidToRegistry(SiteSpec site, Pid pid, AsyncCallback<List<Result>> callback) throws NoServletSessionException;
+	void sendPidToRegistry(SendPidToRegistryRequest request, AsyncCallback<List<Result>> callback);
 	void getSimulatorEventRequest(TransactionInstance ti, AsyncCallback<Result> callback) throws Exception;
 	void getSimulatorEventResponse(TransactionInstance ti, AsyncCallback<Result> callback) throws Exception;
 	void getTestLogDetails(String sessionName, TestInstance testInstance, AsyncCallback<LogFileContentDTO> callback);

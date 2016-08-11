@@ -5,17 +5,16 @@ import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.Cookies;
-import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.*;
 import gov.nist.toolkit.configDatatypes.client.Pid;
 import gov.nist.toolkit.configDatatypes.client.PidBuilder;
 import gov.nist.toolkit.configDatatypes.client.PidSet;
 import gov.nist.toolkit.configDatatypes.client.TransactionType;
+import gov.nist.toolkit.results.client.Result;
 import gov.nist.toolkit.xdstools2.client.CookieManager;
 import gov.nist.toolkit.xdstools2.client.CoupledTransactions;
-import gov.nist.toolkit.xdstools2.client.NoServletSessionException;
 import gov.nist.toolkit.xdstools2.client.PopupMessage;
-import gov.nist.toolkit.xdstools2.client.command.GetAssigningAuthorities;
+import gov.nist.toolkit.xdstools2.client.command.*;
 import gov.nist.toolkit.xdstools2.client.siteActorManagers.GetDocumentsSiteActorManager;
 import gov.nist.toolkit.xdstools2.client.tabs.genericQueryTab.GenericQueryTab;
 
@@ -44,9 +43,11 @@ public class PidFavoritesTab  extends GenericQueryTab {
     // model
     private Set<Pid> favoritePids = new HashSet<>();  // the database of values
     private List<String> assigningAuthorities = null;
+    PidFavoritesTab me;
 
     @Override
     public void onTabLoad(boolean select, String eventName) {
+        me = this;
         registerTab(select, eventName);
 
         tabTopPanel.add(new HTML("<h2>Manage Patient IDs</h2>"));
@@ -176,7 +177,7 @@ public class PidFavoritesTab  extends GenericQueryTab {
 
     Map<Button, String> authorityButtons = new HashMap<>();
 
-    void updateAssigningAuthorities() {
+    private void updateAssigningAuthorities() {
         assigningAuthorityPanel.clear();
         authorityButtons.clear();
         for (String aa : assigningAuthorities) {
@@ -195,22 +196,15 @@ public class PidFavoritesTab  extends GenericQueryTab {
     }
 
     // and add it to favorites
-    void generatePid(String assigningAuthority) {
-        try {
-            toolkitService.createPid(assigningAuthority, new AsyncCallback<Pid>() {
-                @Override
-                public void onFailure(Throwable throwable) {
-                    new PopupMessage(throwable.getMessage());
-                }
+    private void generatePid(String assigningAuthority) {
+        new GeneratePidCommand(this) {
 
-                @Override
-                public void onSuccess(Pid pid) {
-                    addToFavorities(pid);
-                }
-            });
-        } catch (NoServletSessionException e) {
-            new PopupMessage(e.getMessage());
-        }
+            @Override
+            public void onComplete(Pid pid) {
+                addToFavorities(pid);
+            }
+        }.run(new GeneratePidRequest(getCommandContext(), assigningAuthority));
+
     }
 
     private void deleteFromFavorites(List<Pid> pids) {
@@ -223,7 +217,7 @@ public class PidFavoritesTab  extends GenericQueryTab {
     }
 
     private void loadAssigningAuthorities() {
-        new GetAssigningAuthorities(this) {
+        new GetAssigningAuthoritiesCommand(this) {
             @Override
             public void onComplete(List<String> var1) {
                 assigningAuthorities = var1;
@@ -232,7 +226,7 @@ public class PidFavoritesTab  extends GenericQueryTab {
         }.run(getCommandContext());
     }
 
-    List<Pid> getSelectedPids() {
+    private List<Pid> getSelectedPids() {
         List<Pid> pids = new ArrayList<>();
 
         for (int i=0; i<favoritesListBox.getItemCount(); i++) {
@@ -279,11 +273,13 @@ public class PidFavoritesTab  extends GenericQueryTab {
 
             rigForRunning();
 
-            try {
-                toolkitService.sendPidToRegistry(getSiteSelection(), pid, queryCallback);
-            } catch (NoServletSessionException e) {
-                e.printStackTrace();
-            }
+            new SendPidToRegistryCommand(me) {
+
+                @Override
+                public void onComplete(List<Result> var1) {
+                    queryCallback.onSuccess(var1);
+                }
+            }.run(new SendPidToRegistryRequest(getCommandContext(), getSiteSelection(), pid));
         }
 
     }

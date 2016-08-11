@@ -19,6 +19,11 @@ public class CommandContext implements Serializable, IsSerializable {
         this.testSessionName = testSessionName;
     }
 
+    public void copyFrom(CommandContext commandContext) {
+        environmentName = commandContext.getEnvironmentName();
+        testSessionName = commandContext.getTestSessionName();
+    }
+
     public String getEnvironmentName() {
         return environmentName;
     }
@@ -34,4 +39,5 @@ public class CommandContext implements Serializable, IsSerializable {
     public void setTestSessionName(String testSessionName) {
         this.testSessionName = testSessionName;
     }
+
 }

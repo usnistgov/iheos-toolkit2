@@ -27,6 +27,8 @@ import gov.nist.toolkit.tk.client.TkProps;
 import gov.nist.toolkit.valsupport.client.MessageValidationResults;
 import gov.nist.toolkit.valsupport.client.ValidationContext;
 import gov.nist.toolkit.xdstools2.client.command.CommandContext;
+import gov.nist.toolkit.xdstools2.client.command.GeneratePidRequest;
+import gov.nist.toolkit.xdstools2.client.command.SendPidToRegistryRequest;
 
 import java.util.Collection;
 import java.util.List;
@@ -189,10 +191,10 @@ public interface ToolkitService extends RemoteService  {
 
         Map<String, String> getSessionProperties() throws NoServletSessionException;
 	 void setSessionProperties(Map<String, String> props) throws NoServletSessionException;
-	Pid createPid(String assigningAuthority) throws NoServletSessionException;
+	Pid createPid(GeneratePidRequest generatePidRequest) throws Exception;
 	String getAssigningAuthority(CommandContext commandContext) throws Exception;
 	List<String> getAssigningAuthorities(CommandContext commandContext) throws Exception;
-	List<Result> sendPidToRegistry(SiteSpec site, Pid pid) throws NoServletSessionException;
+	List<Result> sendPidToRegistry(SendPidToRegistryRequest request) throws Exception;
 	/**
 	 * This method copy the default testkit to a selected environment and triggers a code update based on
 	 * the affinity domain configuration file (codes.xml) located in the selected environment.

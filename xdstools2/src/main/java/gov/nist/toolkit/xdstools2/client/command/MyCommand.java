@@ -8,7 +8,7 @@ import java.util.List;
 public class MyCommand {
 
     public void doit() throws Exception {
-        new GetAssigningAuthorities(null /* ToolWindow, usually this */) {
+        new GetAssigningAuthoritiesCommand(null /* ToolWindow, usually this */) {
 
             // Completion callback
             @Override

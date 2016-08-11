@@ -13,9 +13,9 @@ import java.util.List;
  *
  */
 public class EnvironmentState {
-	String environmentName = null;
-	List<String> environmentNameChoices = new ArrayList<String>();
-	List<EnvironmentManager> managers = new ArrayList<EnvironmentManager>();
+	private String environmentName = null;
+	private List<String> environmentNameChoices = new ArrayList<String>();
+	private List<EnvironmentManager> managers = new ArrayList<EnvironmentManager>();
 
 	public boolean isFirstManager() { return managers.size() == 1; }
 	
