@@ -10,15 +10,16 @@ import gov.nist.toolkit.results.client.TestInstance
 import gov.nist.toolkit.testengine.scripts.BuildCollections
 import gov.nist.toolkit.toolkitApi.SimulatorBuilder
 import spock.lang.Shared
+
 /**
  *
  */
-class HTTPTransactionSpec extends ToolkitSpecification {
+class DicomSpec extends ToolkitSpecification {
     @Shared SimulatorBuilder spi
 
 
     @Shared String urlRoot = String.format("http://localhost:%s/xdstools2", remoteToolkitPort)
-    @Shared String patientId = 'SR7^^^&1.2.260&ISO'
+    @Shared String patientId = 'IDS-AD027-a^^^&1.3.6.1.4.1.21367.2005.13.20.1000&ISO'
     @Shared String testSession = 'test'
     @Shared String simName = 'rr'
     @Shared SimId simId = new SimId(testSession, simName)
@@ -53,7 +54,6 @@ class HTTPTransactionSpec extends ToolkitSpecification {
     def cleanupSpec() {  // one time shutdown when everything is done
         server.stop()
         ListenerFactory.terminateAll()
-        api.deleteSimulatorIfItExists(simId)
     }
 
     TestInstance testId = new TestInstance("PnrXop")
@@ -78,27 +78,10 @@ class HTTPTransactionSpec extends ToolkitSpecification {
         results.get(0).passed()
     }
 
-    def 'XOP test'() {
+    def 'dicom test'() {
         when:
         List<String> sections = new ArrayList<>()
-        sections.add("Xop")
-        Map<String, String> params = new HashMap<>()
-//        params.put('$patientid$', patientId)
-
-        and: 'Run'
-        List<Result> results = api.runTest(testSession, siteName, testId, sections, params, stopOnFirstError)
-
-        then:
-        results.size() == 1
-        results.get(0).passed()
-
-    }
-
-
-    def 'NoXOP test'() {
-        when:
-        List<String> sections = new ArrayList<>()
-        sections.add("NoXop")
+        sections.add("dicom")
         Map<String, String> params = new HashMap<>()
         params.put('$patientid$', patientId)
 
@@ -111,23 +94,5 @@ class HTTPTransactionSpec extends ToolkitSpecification {
         results.get(0).passed()
 
     }
-
-    def 'encoded URL test'() {
-        when:
-        List<String> sections = new ArrayList<>()
-        sections.add("encodedURL")
-        Map<String, String> params = new HashMap<>()
-        params.put('$patientid$', patientId)
-
-        and: 'Run'
-        List<Result> results = api.runTest(testSession, siteName, testId, sections, params, stopOnFirstError)
-        println "Results are " + results.get(0).toString()
-
-        then:
-        results.size() == 1
-        results.get(0).passed()
-
-    }
-
 
 }
