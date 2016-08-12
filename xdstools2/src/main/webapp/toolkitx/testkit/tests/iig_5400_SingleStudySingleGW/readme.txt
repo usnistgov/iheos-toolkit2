@@ -1,5 +1,5 @@
-Single image
-Retrieve Image Document Set test
+Single image, Single GW
+
 <h2>Single image study, single Responding Gateway</h2>
 
 <p>Although the test environment provides for three Responding Imaging
