@@ -16,6 +16,7 @@ import org.apache.axiom.om.OMAbstractFactory;
 import org.apache.axiom.om.OMElement;
 import org.apache.axiom.om.OMFactory;
 import org.apache.axiom.om.OMNamespace;
+import org.apache.commons.lang3.StringUtils;
 import org.w3c.dom.Document;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
@@ -42,6 +43,29 @@ public class XmlUtil {
 		}
 		return null;
 	}
+   /**
+    * Get the one and only one child element of parent with given name.
+    * @param ele parent element
+    * @param localName of desired child. if blank, matches any name
+    * @return child element with local name, provided there is one and only one
+    * such child. 
+    * @throws Exception on error, or if child is not unique or doesn't exist.
+    */
+   public static OMElement onlyChildWithLocalName(OMElement ele, String localName) 
+      throws Exception {
+      List<OMElement> children = new ArrayList<>();
+      for (Iterator<?> it=ele.getChildElements(); it.hasNext(); ) {
+         OMElement child = (OMElement) it.next();
+         if (StringUtils.isBlank(localName) || child.getLocalName().equals(localName)) children.add(child);
+      }
+      if (children.size() == 1) return children.get(0);
+      StringBuilder em = new StringBuilder("error in XmlUtil#onlyChildWithLocalName: parent element ");
+      em.append(ele.getLocalName()).append(" has ").append(children.size())
+        .append(" children"); 
+      if (StringUtils.isNotBlank(localName)) em.append(" with local name ").append(localName);
+      throw new Exception(em.toString());
+   }
+	
 
 	public static List<OMElement> childrenWithLocalName(OMElement ele, String localName) {
 		List<OMElement> al = new ArrayList<OMElement>();

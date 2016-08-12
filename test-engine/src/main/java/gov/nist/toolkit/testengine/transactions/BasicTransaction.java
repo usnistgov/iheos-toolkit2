@@ -13,6 +13,8 @@ import gov.nist.toolkit.soap.axis2.Soap;
 import gov.nist.toolkit.testengine.assertionEngine.AssertionEngine;
 import gov.nist.toolkit.testengine.engine.*;
 import gov.nist.toolkit.testenginelogging.LogFileContentBuilder;
+import gov.nist.toolkit.testengine.engine.AssertionEngine.Assertion;
+import gov.nist.toolkit.testenginelogging.LogFileContent;
 import gov.nist.toolkit.testenginelogging.NotALogFileException;
 import gov.nist.toolkit.testenginelogging.client.ReportDTO;
 import gov.nist.toolkit.testenginelogging.client.SectionLogMapDTO;
@@ -1177,8 +1179,9 @@ public abstract class BasicTransaction  {
 
 	public void runAssertionEngine(OMElement step_output, ErrorReportingInterface eri, OMElement assertion_output) throws XdsInternalException {
 
-        AssertionEngine engine = new AssertionEngine();
-		engine.setDataRefs(data_refs);
+      AssertionEngine engine = new AssertionEngine();
+      engine.setDataRefs(data_refs);
+      engine.setCaller(this);
 
         try {
             if (useReportManager != null) {
@@ -1426,7 +1429,24 @@ public abstract class BasicTransaction  {
 		v.setTestConfig(testConfig);
 		v.run_test_assertions(m);
 
-		return v.getErrors();
-	}
+      return v.getErrors();
+   }
+
+   /**
+    * This method is overriden in subclasses which implement custom assertion
+    * processing routines, as indicated by the {@code <Assertion>} element
+    * having a process attribute. This code would only be called if an
+    * {@code <Assertion>} element had such a value erroneously, that is, the
+    * subclass does not actually implement this method. It is placed here to
+    * avoid having to instantiate it in those classes.
+    * @param engine AssertionEngine instance
+    * @param assertion Assert being processed
+    * @param assertion_output log.xml output element for that assert
+    * @throws XdsInternalException if this method is invoked.
+    */
+   public void processAssertion(AssertionEngine engine, Assertion assertion, OMElement assertion_output)
+      throws XdsInternalException {
+      throw new XdsInternalException("BasicTransaction#processAssertion: unknown process " + assertion.toString());
+   }
 
 }
