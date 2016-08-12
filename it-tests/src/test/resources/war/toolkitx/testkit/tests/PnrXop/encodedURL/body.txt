@@ -201,7 +201,7 @@ Content-ID: <0.85b57d7287e4fa4b528a8f050c41f8ad829c20332f23b48d@apache.org>
                                 <rim:LocalizedString value="XDSDocumentEntry.patientId"/>
                             </rim:Name>
                         </rim:ExternalIdentifier>
-                        <rim:ExternalIdentifier value="1.42.20160705093311.6"
+                        <rim:ExternalIdentifier value="1.42.20160705093311.6.7"
                             identificationScheme="urn:uuid:2e82c1f6-a085-4c72-9da3-8640a32e42ab"
                             objectType="urn:oasis:names:tc:ebxml-regrep:ObjectType:RegistryObject:ExternalIdentifier"
                             id="id_10" registryObject="Document01">
@@ -263,7 +263,7 @@ Content-ID: <0.85b57d7287e4fa4b528a8f050c41f8ad829c20332f23b48d@apache.org>
                                 <rim:LocalizedString value="Summary of Episode Note"/>
                             </rim:Name>
                         </rim:Classification>
-                        <rim:ExternalIdentifier value="1.42.20160705093311.7"
+                        <rim:ExternalIdentifier value="1.42.20160705093311.7.8.3"
                             identificationScheme="urn:uuid:96fdda7c-d067-4183-912e-bf5ee74998a8"
                             objectType="urn:oasis:names:tc:ebxml-regrep:ObjectType:RegistryObject:ExternalIdentifier"
                             id="id_13" registryObject="SubmissionSet01">
