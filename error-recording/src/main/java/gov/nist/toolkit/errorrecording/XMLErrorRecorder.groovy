@@ -58,7 +58,7 @@ public class XMLErrorRecorder implements ErrorRecorder {
     // TODO this is the only syntax that works. Propagate it to rest of document.
     public void err(Code _code, String _msg, String _location, String _resource) {
         println("err2")
-       if (_msg == null || _msg.trim().equals("")) { return; }
+        if (_msg == null || _msg.trim().equals("")) { return; }
 
         // Generate the new element
         def sw = new StringWriter()
@@ -68,7 +68,6 @@ public class XMLErrorRecorder implements ErrorRecorder {
         }
 
         // Parse and add
-        //def el = new XmlParser().parseText(sw.toString())
         errXml = errXml.concat(sw.toString() + "\n")
     }
 
@@ -111,7 +110,7 @@ public class XMLErrorRecorder implements ErrorRecorder {
         // Generate the new element
         if (isWarning) {
             println("this should print a warning")
-           // warning(_code, _msg, _location, _resource)
+            // warning(_code, _msg, _location, _resource)
         }
         else {
             println("this should print an error")
@@ -147,11 +146,22 @@ public class XMLErrorRecorder implements ErrorRecorder {
         println("sectionheading " + msg)
         def el = "";
 
+        // Process the text of the message
+        XMLErrorRecorderMessage processedMsg = processMessage(msg)
+
+        // Create the SectionHeading element
         if (firstSectionHeading) { firstSectionHeading = false; }
         else {
             el = "</SectionHeading>\n"
         }
-        el = el + "<SectionHeading message=\"" + msg + "\">\n";
+        if (processedMsg.getXDS_DOCUMENT_TYPE() == null) {
+            el = el + "<SectionHeading message=\"" + msg + "\">\n";
+        } else {
+            el = el + "<SectionHeading " +
+            "type=\"" + processedMsg.getXDS_DOCUMENT_TYPE() + "\" " +
+             "id=\"" + processedMsg.getId() + "\"" +
+            ">\n";
+        }
         errXml = errXml.concat(el)
     }
 
@@ -161,35 +171,35 @@ public class XMLErrorRecorder implements ErrorRecorder {
         errXml = errXml.concat(createXMLString("Challenge", msg))
     }
 
-    // Not used / not tested
+// Not used / not tested
     @Override
     public void externalChallenge(String msg) {
         println("extchallenge")
-        //errRecords.add(createXMLElement("ExternalChallenge", msg))
+//errRecords.add(createXMLElement("ExternalChallenge", msg))
     }
 
-    // Not used / Not tested
+// Not used / Not tested
     @Override
     public void detail(String msg) {
         println("detail")
         errXml = errXml.concat(createXMLString("Detail", msg))
     }
 
-    // Not used / Not tested
+// Not used / Not tested
     @Override
     public void report(String name, String found) {
         println("report")
         detail(name + " " + found);
     }
 
-    /**
-     * Not used / Not tested
-     * @param dts
-     * @param name
-     * @param found
-     * @param expected
-     * @param RFC
-     */
+/**
+ * Not used / Not tested
+ * @param dts
+ * @param name
+ * @param found
+ * @param expected
+ * @param RFC
+ */
     @Override
     public void success(String _dts, String _name, String _found, String _expected, String _rfc) {
         println("success")
@@ -272,7 +282,7 @@ public class XMLErrorRecorder implements ErrorRecorder {
     @Override
     public boolean hasErrors() {
         println("boolhaserrors")
-         return (errRecords.contains("Error"));
+        return (errRecords.contains("Error"));
     }
 
     // Not used / Not tested
@@ -355,20 +365,30 @@ public class XMLErrorRecorder implements ErrorRecorder {
      * @return
      */
     private String prettyPrint(String input) {
-            try {
-                // parse existing XML string into a Node. This has the advantage of also validating the XML.
-                def xml = new XmlParser().parseText(input)
+        try {
+            // parse existing XML string into a Node. This has the advantage of also validating the XML.
+            def xml = new XmlParser().parseText(input)
 
-                // pretty print the Node
-                StringWriter sw = new StringWriter();
-                def printer = new XmlNodePrinter(new PrintWriter(sw))
-                printer.preserveWhitespace = true
-                printer.print(xml)
-                return sw.toString()
-            } catch (e) {
-                println("Error in output pretty print in XMLErrorRecorder. The XML could not be validated or formatted :" + e)
-            }
-            return input
+            // pretty print the Node
+            StringWriter sw = new StringWriter();
+            def printer = new XmlNodePrinter(new PrintWriter(sw))
+            printer.preserveWhitespace = true
+            printer.print(xml)
+            return sw.toString()
+        } catch (e) {
+            println("Error in output pretty print in XMLErrorRecorder. The XML could not be validated or formatted :" + e)
         }
+        return input
+    }
+
+    /**
+     * Takes a message item from the XMLErrorRecorder output and processes it to extract separate pieces of information.
+     * @see XMLErrorRecorderMessage for more information.
+     * @param msg
+     * @return
+     */
+    private XMLErrorRecorderMessage processMessage(String msg){
+        return new XMLErrorRecorderMessage(msg);
+    }
 
 }
