@@ -50,7 +50,7 @@ public abstract class ToolWindow {
 		// .addNorth MUST come before .add - a condition of DockLayoutPanel
 		if (title != null)
 			tabTopRawPanel.addNorth(new HTML("<h1>" + title + "</h1>"), 4.0);
-		tabTopRawPanel.addEast(eastPanel, 0);
+		tabTopRawPanel.addEast(eastPanel, 10.0);
 		tabTopRawPanel.addWest(westPanel, 0);
 		tabTopRawPanel.add(innerPanel);
 		innerPanel.setWidget(tabTopPanel);

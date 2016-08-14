@@ -55,9 +55,12 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner {
 	@Override
 	public void onTabLoad(boolean select, String eventName) {
 
+		addEast(new HTML("Test Session"));
+
 		registerTab(select, eventName);
 
 		tabTopPanel.add(toolPanel);
+
 
 		// Reload if the test session changes
 		Xdstools2.getEventBus().addHandler(TestSessionChangedEvent.TYPE, new TestSessionChangedEventHandler() {
@@ -331,7 +334,7 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner {
 
 	// display sections within test
 	private void displaySections(TestOverviewDTO testOverview, FlowPanel parent) {
-		parent.clear();
+//		parent.clear();
 		for (String sectionName : testOverview.getSectionNames()) {
 			SectionOverviewDTO sectionOverview = testOverview.getSectionOverview(sectionName);
 			parent.add(new TestSectionComponent(toolkitService, getCurrentTestSession(), new TestInstance(testOverview.getName()), sectionOverview, this).asWidget());
