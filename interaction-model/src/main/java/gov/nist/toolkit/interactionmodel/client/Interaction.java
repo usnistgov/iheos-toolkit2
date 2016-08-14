@@ -8,6 +8,7 @@ import com.google.gwt.user.client.rpc.IsSerializable;
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.Map;
 
 /**
  * Created by skb1 on 8/1/2016.
@@ -25,6 +26,7 @@ public class Interaction implements IsSerializable, Serializable {
     String messageId;
     boolean claimed;
     InteractingEntity.INTERACTIONSTATUS status;
+    Map<String, String> params = null;
 
     public Interaction() {
     }
@@ -75,5 +77,21 @@ public class Interaction implements IsSerializable, Serializable {
 
     public void setStatus(InteractingEntity.INTERACTIONSTATUS status) {
         this.status = status;
+    }
+
+    public String getFrom() {
+        return from;
+    }
+
+    public String getTo() {
+        return to;
+    }
+
+    public Map<String, String> getParams() {
+        return params;
+    }
+
+    public void setParams(Map<String, String> params) {
+        this.params = params;
     }
 }

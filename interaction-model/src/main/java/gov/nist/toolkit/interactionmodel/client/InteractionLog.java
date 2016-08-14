@@ -20,7 +20,11 @@ public class InteractionLog {
     public static InteractionLog getInstance() { return instance; }
 
     public boolean add(Interaction interaction)  {
+        System.out.println("adding interaction: " + interaction.getFrom() + " to: " + interaction.getTo() + " begin: " + interaction.getTime()) ;
         return interactions.add(interaction);
     }
 
+    public static Vector<Interaction> getInteractions() {
+        return interactions;
+    }
 }

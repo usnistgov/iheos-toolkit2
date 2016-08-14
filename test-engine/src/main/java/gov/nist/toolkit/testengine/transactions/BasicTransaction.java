@@ -1336,6 +1336,7 @@ public abstract class BasicTransaction  {
 					getResponseAction(), this.planContext.getExtraLinkage()
 			);
 			logger.info("back from making soap call");
+			interaction.setParams(this.planContext.getExtraLinkage());
 			interaction.setStatus(InteractingEntity.INTERACTIONSTATUS.COMPLETED);
 		}
 		catch (AxisFault e) {

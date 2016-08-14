@@ -441,6 +441,14 @@
             <groupId>gov.nist.toolkit</groupId>
             <artifactId>interaction-model</artifactId>
         </dependency>
+        <dependency>
+            <groupId>gov.nist.toolkit</groupId>
+            <artifactId>interaction-mapper</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>gov.nist.toolkit</groupId>
+            <artifactId>interaction-diagram</artifactId>
+        </dependency>
 
         <!--<dependency>-->
             <!--<groupId>com.sun.jersey</groupId>-->
@@ -541,6 +549,7 @@
                         <compileSourcesArtifact>${project.groupId}:xdstest2-logging</compileSourcesArtifact>
                         <compileSourcesArtifact>${project.groupId}:xds-exceptions</compileSourcesArtifact>
                         <compileSourcesArtifact>${project.groupId}:interaction-model</compileSourcesArtifact>
+                        <compileSourcesArtifact>${project.groupId}:interaction-diagram</compileSourcesArtifact>
                     </compileSourcesArtifacts>
                     <runTarget>Xdstools2.html</runTarget>
                     <modules>

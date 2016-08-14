@@ -36,7 +36,7 @@
     <inherits name="gov.nist.toolkit.testenginelogging.testenginelogging"/>
     <inherits name="gov.nist.toolkit.xdsexception.xdsexceptions"/>
     <inherits name="gov.nist.toolkit.interactionmodel.interactionModel"/>
-
+    <inherits name="gov.nist.toolkit.interactiondiagram.interactionDiagram"/>
 
     <!-- Specify the app entry point class.                         -->
     <entry-point class='gov.nist.toolkit.xdstools2.client.Xdstools2EP'/>

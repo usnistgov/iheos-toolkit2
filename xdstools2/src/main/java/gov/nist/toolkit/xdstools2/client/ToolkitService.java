@@ -10,6 +10,7 @@ import gov.nist.toolkit.actorfactory.client.SimulatorStats;
 import gov.nist.toolkit.actortransaction.client.Severity;
 import gov.nist.toolkit.actortransaction.client.TransactionInstance;
 import gov.nist.toolkit.configDatatypes.client.Pid;
+import gov.nist.toolkit.interactionmodel.client.InteractingEntity;
 import gov.nist.toolkit.registrymetadata.client.AnyIds;
 import gov.nist.toolkit.registrymetadata.client.ObjectRef;
 import gov.nist.toolkit.registrymetadata.client.ObjectRefs;
@@ -235,4 +236,11 @@ public interface ToolkitService extends RemoteService  {
 	public Map<String, String> registerWithLocalizedTrackingInODDS(String username, TestInstance testInstance, SiteSpec registry, SimId oddsSimId, Map<String, String> params) throws Exception;
 	public List<DocumentEntryDetail> getOnDemandDocumentEntryDetails(SimId oddsSimId);
 
+
+	//------------------------------------------------------------------------
+	//------------------------------------------------------------------------
+	// Interaction methods
+	//------------------------------------------------------------------------
+	//------------------------------------------------------------------------
+	public InteractingEntity getInteractionFromModel(InteractingEntity model) throws Exception;
 }

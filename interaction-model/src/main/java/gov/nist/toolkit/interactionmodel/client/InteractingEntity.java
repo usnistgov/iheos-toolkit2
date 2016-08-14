@@ -5,6 +5,7 @@ import com.google.gwt.user.client.rpc.IsSerializable;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 /**
  * Created by skb1 on 8/1/2016.
@@ -29,7 +30,11 @@ public class InteractingEntity implements IsSerializable, Serializable {
      *
      InteractionIdentifiers = {PatientId, timestamp}
      */
-    ArrayList<InteractionIdentifierTerm> interactionIdentifierTerms;
+    List<InteractionIdentifierTerm> interactionIdentifierTerms;
+    // TODO: is request status needed here?
+    /**
+     *  Repsonse status
+     */
     INTERACTIONSTATUS status;
 
     /**
@@ -81,11 +86,11 @@ public class InteractingEntity implements IsSerializable, Serializable {
         this.interactions = interactions;
     }
 
-    public ArrayList<InteractionIdentifierTerm> getInteractionIdentifierTerms() {
+    public List<InteractionIdentifierTerm> getInteractionIdentifierTerms() {
         return interactionIdentifierTerms;
     }
 
-    public void setInteractionIdentifierTerms(ArrayList<InteractionIdentifierTerm> interactionIdentifierTerms) {
+    public void setInteractionIdentifierTerms(List<InteractionIdentifierTerm> interactionIdentifierTerms) {
         this.interactionIdentifierTerms = interactionIdentifierTerms;
     }
 

@@ -15,13 +15,25 @@ import gov.nist.toolkit.configDatatypes.client.TransactionType;
 import gov.nist.toolkit.installation.ExternalCacheManager;
 import gov.nist.toolkit.installation.Installation;
 import gov.nist.toolkit.installation.PropertyServiceManager;
+import gov.nist.toolkit.interactionmapper.InteractionMapper;
+import gov.nist.toolkit.interactionmodel.client.InteractingEntity;
 import gov.nist.toolkit.registrymetadata.client.AnyIds;
 import gov.nist.toolkit.registrymetadata.client.ObjectRef;
 import gov.nist.toolkit.registrymetadata.client.ObjectRefs;
 import gov.nist.toolkit.registrymetadata.client.Uids;
-import gov.nist.toolkit.results.client.*;
+import gov.nist.toolkit.results.client.CodesResult;
+import gov.nist.toolkit.results.client.DocumentEntryDetail;
+import gov.nist.toolkit.results.client.Result;
+import gov.nist.toolkit.results.client.TestInstance;
+import gov.nist.toolkit.results.client.TestLogs;
 import gov.nist.toolkit.results.shared.Test;
-import gov.nist.toolkit.services.client.*;
+import gov.nist.toolkit.services.client.EnvironmentNotSelectedClientException;
+import gov.nist.toolkit.services.client.IdsOrchestrationRequest;
+import gov.nist.toolkit.services.client.IgOrchestrationRequest;
+import gov.nist.toolkit.services.client.IigOrchestrationRequest;
+import gov.nist.toolkit.services.client.RawResponse;
+import gov.nist.toolkit.services.client.RgOrchestrationRequest;
+import gov.nist.toolkit.services.client.RigOrchestrationRequest;
 import gov.nist.toolkit.services.server.RawResponseBuilder;
 import gov.nist.toolkit.services.server.orchestration.OrchestrationManager;
 import gov.nist.toolkit.services.shared.SimulatorServiceManager;
@@ -56,7 +68,12 @@ import javax.servlet.http.HttpSession;
 import javax.xml.parsers.FactoryConfigurationError;
 import java.io.File;
 import java.io.IOException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 @SuppressWarnings("serial")
 public class ToolkitServiceImpl extends RemoteServiceServlet implements
@@ -678,6 +695,16 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements
 	public List<DocumentEntryDetail> getOnDemandDocumentEntryDetails(SimId oddsSimId) {
 		return TransactionUtil.getOnDemandDocumentEntryDetails(oddsSimId);
 	}
+
+	//------------------------------------------------------------------------
+	//------------------------------------------------------------------------
+	// Interaction methods
+	//------------------------------------------------------------------------
+	//------------------------------------------------------------------------
+	public InteractingEntity getInteractionFromModel(InteractingEntity model) throws Exception {
+		return new InteractionMapper().map(model);
+	}
+
 
 
 }

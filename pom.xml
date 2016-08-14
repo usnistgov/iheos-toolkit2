@@ -79,6 +79,8 @@
         <module>validators-soap-message</module>
         <module>new-validation-system</module>
         <module>interaction-model</module>
+        <module>interaction-mapper</module>
+        <module>interaction-diagram</module>
     </modules>
 
 
