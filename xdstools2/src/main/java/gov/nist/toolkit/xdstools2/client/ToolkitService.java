@@ -26,6 +26,9 @@ import gov.nist.toolkit.testkitutilities.client.TestCollectionDefinitionDAO;
 import gov.nist.toolkit.tk.client.TkProps;
 import gov.nist.toolkit.valsupport.client.MessageValidationResults;
 import gov.nist.toolkit.valsupport.client.ValidationContext;
+import gov.nist.toolkit.xdstools2.client.command.CommandContext;
+import gov.nist.toolkit.xdstools2.client.command.GeneratePidRequest;
+import gov.nist.toolkit.xdstools2.client.command.SendPidToRegistryRequest;
 
 import java.util.Collection;
 import java.util.List;
@@ -47,7 +50,7 @@ public interface ToolkitService extends RemoteService  {
 	public String getTestReadme(String test) throws Exception;
 	public List<String> getTestIndex(String test) throws Exception;
 	public List<Result> runMesaTest(String mesaTestSession, SiteSpec siteSpec, TestInstance testInstance, List<String> sections, Map<String, String> params, boolean stopOnFirstFailure) throws NoServletSessionException ;
-	public TestOverviewDTO runTest(String mesaTestSession, SiteSpec siteSpec, TestInstance testInstance, List<String> sections, Map<String, String> params, boolean stopOnFirstFailure) throws NoServletSessionException, Exception;
+	public TestOverviewDTO runTest(String environment, String mesaTestSession, SiteSpec siteSpec, TestInstance testInstance, Map<String, String> params, boolean stopOnFirstFailure) throws NoServletSessionException, Exception;
 	public boolean isPrivateMesaTesting() throws NoServletSessionException ;
 	public List<String> getMesaTestSessionNames() throws Exception;
 	public boolean addMesaTestSession(String name) throws Exception;
@@ -188,10 +191,10 @@ public interface ToolkitService extends RemoteService  {
 
         Map<String, String> getSessionProperties() throws NoServletSessionException;
 	 void setSessionProperties(Map<String, String> props) throws NoServletSessionException;
-	Pid createPid(String assigningAuthority) throws NoServletSessionException;
-	String getAssigningAuthority() throws Exception;
-	List<String> getAssigningAuthorities() throws Exception;
-	List<Result> sendPidToRegistry(SiteSpec site, Pid pid) throws NoServletSessionException;
+	Pid createPid(GeneratePidRequest generatePidRequest) throws Exception;
+	String getAssigningAuthority(CommandContext commandContext) throws Exception;
+	List<String> getAssigningAuthorities(CommandContext commandContext) throws Exception;
+	List<Result> sendPidToRegistry(SendPidToRegistryRequest request) throws Exception;
 	/**
 	 * This method copy the default testkit to a selected environment and triggers a code update based on
 	 * the affinity domain configuration file (codes.xml) located in the selected environment.
@@ -218,7 +221,7 @@ public interface ToolkitService extends RemoteService  {
 	public List<Test> runAllTests(Site site) throws NoServletSessionException;
 	public List<Test> deleteAllTestResults(Site site) throws NoServletSessionException;
 	public Test runSingleTest(Site site, int testId) throws NoServletSessionException;
-	public Test deleteSingleTestResult(Site site, int testId) throws NoServletSessionException;
+	public TestOverviewDTO deleteSingleTestResult(String testSession, TestInstance testInstance) throws Exception;
 
 	 String setMesaTestSession(String sessionName) throws NoServletSessionException ;
 	 String getNewPatientId(String assigningAuthority) throws NoServletSessionException ;

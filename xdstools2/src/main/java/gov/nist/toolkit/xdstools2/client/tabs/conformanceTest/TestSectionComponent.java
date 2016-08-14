@@ -1,5 +1,7 @@
 package gov.nist.toolkit.xdstools2.client.tabs.conformanceTest;
 
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.logical.shared.OpenEvent;
 import com.google.gwt.event.logical.shared.OpenHandler;
 import com.google.gwt.user.client.rpc.AsyncCallback;
@@ -29,11 +31,18 @@ public class TestSectionComponent implements IsWidget {
     private final String sessionName;
     private final TestInstance testInstance;
     private final FlowPanel body = new FlowPanel();
+    private TestInstance fullTestInstance;
+    TestRunner testRunner;
+    TestSectionComponent me;
 
-    public TestSectionComponent(ToolkitServiceAsync toolkitService, String sessionName, TestInstance testInstance, SectionOverviewDTO sectionOverview) {
+
+    public TestSectionComponent(ToolkitServiceAsync toolkitService, String sessionName, TestInstance testInstance, SectionOverviewDTO sectionOverview, TestRunner testRunner) {
+        me = this;
         this.toolkitService = toolkitService;
         this.sessionName = sessionName;
         this.testInstance = testInstance;
+        this.testRunner = testRunner;
+        fullTestInstance = new TestInstance(testInstance.getId(), sectionOverview.getName());
 
         HTML sectionLabel = new HTML("Section: " + sectionOverview.getName());
         sectionLabel.addStyleName("section-title");
@@ -49,7 +58,7 @@ public class TestSectionComponent implements IsWidget {
             Image status = (sectionOverview.isPass()) ?
                     new Image("icons2/correct-16.png")
                     :
-                    new Image("icons2/cancel-16.png");
+                    new Image("icons/ic_warning_black_24dp_1x.png");
             status.addStyleName("right");
             header.add(status);
             panel.add(body);
@@ -57,11 +66,25 @@ public class TestSectionComponent implements IsWidget {
             panel.addOpenHandler(new SectionOpenHandler(new TestInstance(testInstance.getId(), sectionOverview.getName())));
         }
         Image play = new Image("icons2/play-16.png");
+        play.addClickHandler(new RunSection(fullTestInstance));
         play.setTitle("Run");
         header.add(play);
-        Image delete = new Image("icons2/garbage-16.png");
-        delete.setTitle("Delete Log");
-        header.add(delete);
+//        Image delete = new Image("icons2/garbage-16.png");
+//        delete.setTitle("Delete Log");
+//        header.add(delete);
+    }
+
+    class RunSection implements ClickHandler {
+        TestInstance testInstance;
+
+        RunSection(TestInstance testInstance) {
+            this.testInstance = testInstance;
+        }
+
+        @Override
+        public void onClick(ClickEvent clickEvent) {
+            me.testRunner.runTest(testInstance);
+        }
     }
 
     private class SectionOpenHandler implements OpenHandler<DisclosurePanel> {
@@ -91,8 +114,19 @@ public class TestSectionComponent implements IsWidget {
                         StringBuilder buf = new StringBuilder();
                         buf.append("Goal: " + step.getStepGoalsDTO().getGoals()).append("<br />");
                         buf.append("Endpoint: " + step.getEndpoint()).append("<br />");
+                        if (step.isExpectedSuccess())
+                            buf.append("Expected Status: Success").append("<br />");
+                        else
+                            buf.append("Expected Status: Failure").append("<br />");
+
+                        for (String fault : step.getSoapFaults()) {
+                            buf.append("Fault: " + fault).append("<br />");
+                        }
                         for (String error : step.getErrors()) {
                             buf.append("Error: " + error).append("<br />");
+                        }
+                        for (String assertion : step.getAssertionErrors()) {
+                            buf.append("Error: " + assertion).append("<br />");
                         }
                         body.add(new HTML(buf.toString()));
 

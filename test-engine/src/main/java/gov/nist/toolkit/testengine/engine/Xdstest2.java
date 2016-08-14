@@ -11,7 +11,7 @@ import gov.nist.toolkit.testenginelogging.client.LogMapDTO;
 import gov.nist.toolkit.testenginelogging.client.StepGoalsDTO;
 import gov.nist.toolkit.testenginelogging.client.TestStepLogContentDTO;
 import gov.nist.toolkit.testenginelogging.logrepository.LogRepository;
-import gov.nist.toolkit.xdsexception.EnvironmentNotSelectedException;
+import gov.nist.toolkit.xdsexception.client.EnvironmentNotSelectedException;
 import org.apache.log4j.Logger;
 
 import javax.net.ssl.*;

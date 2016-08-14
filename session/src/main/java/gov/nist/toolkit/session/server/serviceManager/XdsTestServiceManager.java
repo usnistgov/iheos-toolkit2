@@ -10,6 +10,7 @@ import gov.nist.toolkit.registrymetadata.UuidAllocator;
 import gov.nist.toolkit.registrymetadata.client.Document;
 import gov.nist.toolkit.registrymsg.repository.RetrievedDocumentModel;
 import gov.nist.toolkit.results.CommonService;
+import gov.nist.toolkit.results.MetadataToMetadataCollectionParser;
 import gov.nist.toolkit.results.ResultBuilder;
 import gov.nist.toolkit.results.client.*;
 import gov.nist.toolkit.results.shared.Test;
@@ -38,7 +39,7 @@ import gov.nist.toolkit.utilities.io.Io;
 import gov.nist.toolkit.utilities.xml.OMFormatter;
 import gov.nist.toolkit.utilities.xml.Util;
 import gov.nist.toolkit.utilities.xml.XmlUtil;
-import gov.nist.toolkit.xdsexception.EnvironmentNotSelectedException;
+import gov.nist.toolkit.xdsexception.client.EnvironmentNotSelectedException;
 import gov.nist.toolkit.xdsexception.ExceptionUtil;
 import gov.nist.toolkit.xdsexception.client.XdsInternalException;
 import org.apache.axiom.om.OMElement;
@@ -436,6 +437,11 @@ public class XdsTestServiceManager extends CommonService {
 		}
 	}
 
+	// testInstance.user must be set or null will be returned
+	private File getTestLogDir(TestInstance testInstance) throws IOException {
+		return getTestLogCache().getTestDir(testInstance);
+	}
+
 	public LogFileContentDTO getTestLogDetails(String sessionName, TestInstance testInstance) throws Exception {
 		try {
 			if (session != null)
@@ -727,7 +733,7 @@ public class XdsTestServiceManager extends CommonService {
 
 	}
 
-	String getRepositoryCacheWebPrefix() {
+	private String getRepositoryCacheWebPrefix() {
 		String toolkitHost = session.getServerIP();
 		// context.getInitParameter("toolkit-host").trim();
 		String toolkitPort = session.getServerPort();
@@ -737,13 +743,13 @@ public class XdsTestServiceManager extends CommonService {
 		return  "DocumentCache/";
 	}
 
-	File getRepositoryCache() {
+	private File getRepositoryCache() {
 		File cache = new File(Installation.installation().warHome(), "DocumentCache");
 		cache.mkdirs();
 		return cache;
 	}
 
-	String getRepositoryCacheFileExtension(String mimetype) {
+	private String getRepositoryCacheFileExtension(String mimetype) {
 		if (mimetype == null)
 			return "";
 		else if (mimetype.equals("text/xml"))
@@ -978,16 +984,16 @@ public class XdsTestServiceManager extends CommonService {
 		return new Test(testId, false, "test#", "test name", "returned result test", "05:23 PM EST", "failed");
 	}
 
-	/**
-	 * Delete logs for a single test
-	 * @param sessionName
-	 * @param site
-	 * @param testId
-	 * @return
-	 */
-	public Test deleteSingleTestResult(String sessionName, Site site, int testId) {
-		// Test data, status must be "NOT RUN"
-		return new Test(testId, false, "test#", "test name", "test description", "10:20 PM EST", "not run");
+	public TestOverviewDTO deleteSingleTestResult(TestInstance testInstance) throws Exception {
+		try {
+			File dir = getTestLogDir(testInstance);
+			if (dir != null)
+				Io.delete(dir);
+		} catch (Exception e) {
+			// oh well
+		}
+		return getTestOverview(testInstance.getUser(), testInstance);
+
 	}
 
 

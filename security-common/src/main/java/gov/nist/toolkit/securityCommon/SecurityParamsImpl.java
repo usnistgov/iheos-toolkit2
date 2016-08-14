@@ -2,7 +2,7 @@ package gov.nist.toolkit.securityCommon;
 
 import gov.nist.toolkit.envSetting.EnvSetting;
 import gov.nist.toolkit.installation.Installation;
-import gov.nist.toolkit.xdsexception.EnvironmentNotSelectedException;
+import gov.nist.toolkit.xdsexception.client.EnvironmentNotSelectedException;
 
 import java.io.File;
 import java.io.IOException;

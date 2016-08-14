@@ -1,6 +1,6 @@
 package gov.nist.toolkit.soap.axis2;
 
-import gov.nist.toolkit.xdsexception.EnvironmentNotSelectedException;
+import gov.nist.toolkit.xdsexception.client.EnvironmentNotSelectedException;
 import gov.nist.toolkit.xdsexception.LoadKeystoreException;
 import gov.nist.toolkit.xdsexception.XdsFormatException;
 import gov.nist.toolkit.xdsexception.client.XdsInternalException;

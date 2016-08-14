@@ -1,9 +1,9 @@
 package gov.nist.toolkit.registrymetadata.client;
 
+import com.google.gwt.user.client.rpc.IsSerializable;
+
 import java.util.List;
 import java.util.Map;
-
-import com.google.gwt.user.client.rpc.IsSerializable;
 
 /**
  * Base model for carrying the content of a metadata model. Each attribute

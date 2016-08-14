@@ -46,6 +46,9 @@ import gov.nist.toolkit.xdstools2.client.NoServletSessionException;
 import gov.nist.toolkit.xdstools2.client.RegistryStatus;
 import gov.nist.toolkit.xdstools2.client.RepositoryStatus;
 import gov.nist.toolkit.xdstools2.client.ToolkitService;
+import gov.nist.toolkit.xdstools2.client.command.CommandContext;
+import gov.nist.toolkit.xdstools2.client.command.GeneratePidRequest;
+import gov.nist.toolkit.xdstools2.client.command.SendPidToRegistryRequest;
 import gov.nist.toolkit.xdstools2.server.serviceManager.DashboardServiceManager;
 import gov.nist.toolkit.xdstools2.server.serviceManager.GazelleServiceManager;
 import org.apache.log4j.Logger;
@@ -85,6 +88,15 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements
 		if (MessageValidatorFactoryFactory.messageValidatorFactory2I == null) {
 			MessageValidatorFactoryFactory.messageValidatorFactory2I = new CommonMessageValidatorFactory("a");
 		}
+	}
+
+	void installCommandContext(CommandContext commandContext) throws Exception {
+		if (commandContext.getEnvironmentName() == null)
+			throw new Exception("installCommandContext: environment name is null");
+		if (commandContext.getTestSessionName() == null)
+			throw new Exception("installCommandContext: test session name is null");
+		setEnvironment(commandContext.getEnvironmentName());
+		setMesaTestSession(commandContext.getTestSessionName());
 	}
 
 	//------------------------------------------------------------------------
@@ -190,7 +202,10 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements
 	public String getNewPatientId(String assigningAuthority)  throws NoServletSessionException { return session().xdsTestServiceManager().getNewPatientId(assigningAuthority); }
 	public String delTestResults(List<TestInstance> testInstances, String testSession )  throws NoServletSessionException { session().xdsTestServiceManager().delTestResults(testInstances, testSession); return ""; }
 	public List<Test> deleteAllTestResults(Site site) throws NoServletSessionException { return session().xdsTestServiceManager().deleteAllTestResults(getSession().getMesaSessionName(), site); }
-	public Test deleteSingleTestResult(Site site, int testId) throws NoServletSessionException { return session().xdsTestServiceManager().deleteSingleTestResult(getSession().getMesaSessionName(), site, testId); }
+	public TestOverviewDTO deleteSingleTestResult(String testSession, TestInstance testInstance) throws Exception {
+		testInstance.setUser(testSession);
+		return session().xdsTestServiceManager().deleteSingleTestResult(testInstance);
+	}
 	public List<Test> runAllTests(Site site) throws NoServletSessionException { return session().xdsTestServiceManager().runAllTests(getSession().getMesaSessionName(), site); }
 	public Test runSingleTest(Site site, int testId) throws NoServletSessionException { return session().xdsTestServiceManager().runSingleTest(getSession().getMesaSessionName(), site, testId); }
 
@@ -284,8 +299,12 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements
 	public List<Result> runMesaTest(String mesaTestSession, SiteSpec siteSpec, TestInstance testInstance, List<String> sections, Map<String, String> params, boolean stopOnFirstFailure)  throws NoServletSessionException {
 		return session().xdsTestServiceManager().runMesaTest(getCurrentEnvironment(), mesaTestSession, siteSpec, testInstance, sections, params, null, stopOnFirstFailure);
 	}
-	public TestOverviewDTO runTest(String mesaTestSession, SiteSpec siteSpec, TestInstance testInstance, List<String> sections, Map<String, String> params, boolean stopOnFirstFailure) throws Exception {
-		return session().xdsTestServiceManager().runTest(mesaTestSession, siteSpec, testInstance, sections, params, null, stopOnFirstFailure);
+	public TestOverviewDTO runTest(String environmentName, String mesaTestSession, SiteSpec siteSpec, TestInstance testInstance, Map<String, String> params, boolean stopOnFirstFailure) throws Exception {
+		List<String> sections = new ArrayList<>();
+		if (testInstance.getSection() != null) sections.add(testInstance.getSection());
+		setEnvironment(environmentName);
+		TestOverviewDTO testOverviewDTO = session().xdsTestServiceManager().runTest(mesaTestSession, siteSpec, testInstance, sections, params, null, stopOnFirstFailure);
+		return testOverviewDTO;
 	}
 
 	public TestLogs getRawLogs(TestInstance logId)  throws NoServletSessionException { return session().xdsTestServiceManager().getRawLogs(logId); }
@@ -314,7 +333,10 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements
         return session().xdsTestServiceManager().getCollection(collectionSetName, collectionName);
     }
 	public boolean isPrivateMesaTesting()  throws NoServletSessionException { return session().xdsTestServiceManager().isPrivateMesaTesting(); }
-	public List<Result> sendPidToRegistry(SiteSpec site, Pid pid) throws NoServletSessionException { return session().xdsTestServiceManager().sendPidToRegistry(site, pid); }
+	public List<Result> sendPidToRegistry(SendPidToRegistryRequest request) throws Exception {
+		installCommandContext(request);
+		return session().xdsTestServiceManager().sendPidToRegistry(request.getSiteSpec(), request.getPid());
+	}
 
 	/**
 	 * This method copies the default testkit to a selected environment and triggers a code update based on
@@ -372,9 +394,18 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements
 	//------------------------------------------------------------------------
 	public Map<String, String> getSessionProperties() throws NoServletSessionException { return session().getSessionPropertiesAsMap(); }
 	public void setSessionProperties(Map<String, String> props) throws NoServletSessionException { session().setSessionProperties(props); }
-	public Pid createPid(String assigningAuthority) throws NoServletSessionException { return session().allocateNewPid(assigningAuthority); }
-	public String getAssigningAuthority() throws Exception { return session().getAssigningAuthority(); }
-	public List<String> getAssigningAuthorities() throws Exception { return session().getAssigningAuthorities(); }
+	public Pid createPid(GeneratePidRequest generatePidRequest) throws Exception {
+		installCommandContext(generatePidRequest);
+		return session().allocateNewPid(generatePidRequest.getAssigningAuthority());
+	}
+	public String getAssigningAuthority(CommandContext commandContext) throws Exception {
+		installCommandContext(commandContext);
+		return session().getAssigningAuthority();
+	}
+	public List<String> getAssigningAuthorities(CommandContext commandContext) throws Exception {
+		installCommandContext(commandContext);
+		return session().getAssigningAuthorities();
+	}
 
 	//------------------------------------------------------------------------
 	//------------------------------------------------------------------------

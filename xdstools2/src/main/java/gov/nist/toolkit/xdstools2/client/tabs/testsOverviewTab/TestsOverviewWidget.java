@@ -182,7 +182,7 @@ public class TestsOverviewWidget extends CellTable<Test> {
 
     //TODO replace the hardcoded site name with the one retrieved from the UI
     private void deleteSingleTestResults(int testId){
-        service.deleteSingleTestResult(new Site("testEHR"), testId, deleteSingleLogCallback);
+//        service.deleteSingleTestResult(testId, deleteSingleLogCallback);
     }
 
     /**
