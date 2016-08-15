@@ -57,6 +57,13 @@ public class InteractingEntity implements IsSerializable, Serializable {
 
     }
 
+    public InteractingEntity() {
+    }
+
+    public InteractingEntity(String name) {
+        this.name = name;
+    }
+
     public String getName() {
         return name;
     }

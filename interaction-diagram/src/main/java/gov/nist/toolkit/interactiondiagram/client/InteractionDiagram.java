@@ -8,7 +8,7 @@ import com.google.gwt.xml.client.XMLParser;
 import gov.nist.toolkit.interactionmodel.client.InteractingEntity;
 
 /**
- * Created by skb1 on 8/12/2016.
+ * Created by skb1 Sunil.Bhaskarla on 8/12/2016.
  */
 public class InteractionDiagram {
 
@@ -18,7 +18,7 @@ public class InteractionDiagram {
     int ll_boxWidth = 70;
     int ll_boxHeight = 25;
     int ll_margin = 40;
-    int connection_topmargin = 10;
+    int connection_topmargin = 22;
     int diagramHeight = 0;
     int diagramWidth = 0;
     int ll_count = 0;
@@ -39,7 +39,7 @@ public class InteractionDiagram {
 
     public String draw(InteractingEntity parent_entity, int local_depth) {
 
-        sequence(parent_entity,local_depth);
+        sequence(parent_entity,null);
         ll_stem();
 
         return doc.toString();
@@ -55,44 +55,93 @@ public class InteractionDiagram {
             line.setAttribute("y1",""+y);
             line.setAttribute("x2",""+ll_stem_center[cx]);
             line.setAttribute("y2",""+(g_y+10));
-            line.setAttribute("style","stroke:rgb(0,0,0);stroke-width:3");
+            line.setAttribute("style","stroke:rgb(0,0,0);stroke-width:2");
 
             svg.appendChild(line);
         }
 
     }
 
-    void sequence(InteractingEntity parent_entity, int local_depth) {
-        Element parentEl = create_LL(parent_entity);
-        svg.appendChild(parentEl);
+    void sequence(InteractingEntity parent_entity, Element parent ) {
+        Element parentEl = null;
+        if (parent==null) {
+            parentEl = create_LL(parent_entity);
+            svg.appendChild(parentEl);
+        } else {
+            parentEl = parent;
+        }
+        Element childEl = null;
 
-
-        g_depth++;
         if (parent_entity.getInteractions()!=null) {
+            int childCt = 0;
             for (InteractingEntity child : parent_entity.getInteractions()) {
-                local_depth++;
-                Element childEl = create_LL(child);
+                g_depth++;
+                childCt++;
+                childEl = create_LL(child);
                 svg.appendChild(childEl);
-                svg.appendChild(connect(parentEl,childEl));
-                if (child.getInteractions()!=null)
-                    draw(child,local_depth);
+                svg.appendChild(connect(parentEl,childEl,false));
+                if (child.getInteractions()!=null) {
+                    sequence(child, childEl);
+                    if (childEl!=null) {
+                        g_depth++;
+                        svg.appendChild(connect(childEl, parentEl, true));
+                    }
+                } else {
+                    g_depth++;
+                    svg.appendChild(connect(childEl, parentEl, true));
+                }
             }
+
         }
 
-//        return doc.toString();
+
+
+
     }
 
-    Element connect(Element origin, Element destination) {
+    Element connect(Element origin, Element destination, boolean response) {
         Element line = doc.createElement("line");
         line.setAttribute("x1",""+(Integer.parseInt(origin.getFirstChild().getAttributes().getNamedItem("x").toString())+(ll_boxWidth/2)));
         int y = Integer.parseInt(origin.getFirstChild().getAttributes().getNamedItem("y").toString())+ll_boxHeight+g_depth*connection_topmargin;
+//        if (response)
+//            y = y+ connection_topmargin;
         g_y = y;
         line.setAttribute("y1",""+y);
-        line.setAttribute("x2",""+(Integer.parseInt(destination.getFirstChild().getAttributes().getNamedItem("x").toString())+(ll_boxWidth/2)));
+        int x2 = (Integer.parseInt(destination.getFirstChild().getAttributes().getNamedItem("x").toString())+(ll_boxWidth/2));
+        line.setAttribute("x2",""+x2);
         line.setAttribute("y2",""+y);
-        line.setAttribute("style","stroke:rgb(0,0,0);stroke-width:2");
+        line.setAttribute("style","stroke:rgb(0,0,0);stroke-width:1;" + ((response)?"stroke-dasharray:4,8":""));
 
-        return line;
+        Element group = doc.createElement("g");
+        group.appendChild(line);
+        if (!response)
+            group.appendChild(arrow_request(x2,y));
+        else
+            group.appendChild(arrow_response(x2,y));
+
+        return group;
+    }
+
+    Element arrow_request(int x, int y) {
+        Element arrow = doc.createElement("polygon");
+        arrow.setAttribute("points",
+                   "" + x + "," + y
+                + " " + (x-5) + "," + (y-5)
+                + " " + (x-5) + "," + (y+5)
+        );
+        arrow.setAttribute("style","fill:black");
+        return arrow;
+    }
+
+    Element arrow_response(int x, int y) {
+        Element arrow = doc.createElement("polygon");
+        arrow.setAttribute("points",
+                         " " + (x+5) + "," + (y-5)
+                       + " " + x + "," + y
+                        + " " + (x+5) + "," + (y+5)
+        );
+        arrow.setAttribute("style","fill:white;stroke:black;stroke-width:1");
+        return arrow;
     }
 
     Element create_LL(InteractingEntity entity) {
@@ -115,8 +164,6 @@ public class InteractionDiagram {
         String name = (entity.getName()==null)?"Toolkit":entity.getName();
         Text textValue = doc.createTextNode(name);
         text.appendChild(textValue);
-
-
 
         Element group = doc.createElement("g");
         group.appendChild(rect);
