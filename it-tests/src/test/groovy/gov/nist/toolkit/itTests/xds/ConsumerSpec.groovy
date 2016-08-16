@@ -113,6 +113,12 @@ class ConsumerSpec extends ToolkitSpecification {
     }
 
     def 'retrieve' () {
+//        when: ''
+//
+//        then:
+//        repTestLogs
+//        repTestLogs.size() == 1
+
         when:
         def docUid = repTestLogs.getTestLog(1).assignedUids.get('Document01')
         def repUid = rrConfig.asString(SimulatorProperties.repositoryUniqueId)

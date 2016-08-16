@@ -11,7 +11,7 @@ class MarkdownTest extends Specification {
         when:
         def markdown = 'This is my **bold** text.'
         def html = '''<p>
-This is my <span class="boldtext">bold</span> text.'''
+This is my <span style="font-weight:bold">bold</span> text.'''
 
         then:
         Markdown.toHtml(markdown).trim() == html
@@ -21,7 +21,7 @@ This is my <span class="boldtext">bold</span> text.'''
         when:
         def markdown = '**This** is my bold text.'
         def html = '''<p>
-<span class="boldtext">This</span> is my bold text.'''
+<span style="font-weight:bold">This</span> is my bold text.'''
 
         then:
         Markdown.toHtml(markdown).trim() == html
@@ -49,7 +49,6 @@ para 2
         def html = '''
 <p>
 This is a test
-
 <p>
 para 2
 '''.trim()
@@ -71,7 +70,6 @@ Or so I say it is.
 <p>
 This is a test.
 It really is.
-
 <p>
 para 2
 Or so I say it is.
@@ -124,7 +122,12 @@ This is a test.
 
 Had this been a real emergency.
 '''.trim()
-        def html = markdown
+        def html = '''
+<p>
+This is a test.
+<p>
+Had this been a real emergency.
+'''.trim()
 
         then:
         Markdown.toHtml(markdown).trim() == html
@@ -136,7 +139,7 @@ Had this been a real emergency.
 * One
 * Two
 * Three
-'''
+'''.trim()
         def html = '''
 <ul>
 <li>One
@@ -159,16 +162,17 @@ First paragraph.
 * Three
 
 Last paragraph.
-'''
+'''.trim()
         def html = '''
+<p>
 First paragraph.
-
 <ul>
 <li>One
 <li>Two
 <li>Three
 </ul>
 
+<p>
 Last paragraph.
 '''.trim()
 
@@ -207,14 +211,15 @@ First paragraph.
 Last paragraph.
 '''
         def html = '''
+<p>
 First paragraph.
-
 <ol>
 <li>One
 <li>Two
 <li>Three
 </ol>
 
+<p>
 Last paragraph.
 '''.trim()
 
@@ -241,8 +246,8 @@ There is no section two.
         def html= '''
 <h1>This is my test</h1>
 
+<p>
 About my test.
-
 <h2>Section one</h2>
 
 <ol>
@@ -252,11 +257,31 @@ About my test.
 
 <h2>Section two</h2>
 
+<p>
 There is no section two.
 '''.trim()
 
         then:
         Markdown.toHtml(markdown).trim() == html
 
+    }
+
+    def 'empty lines' () {
+        when:
+        def markdown = '''
+Line 1.
+
+
+Line 2.
+'''.trim()
+        def html = '''
+<p>
+Line 1.
+<p>
+Line 2.
+'''.trim()
+
+        then:
+        Markdown.toHtml(markdown).trim() == html
     }
 }

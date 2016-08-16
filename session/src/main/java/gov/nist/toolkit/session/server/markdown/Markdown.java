@@ -6,7 +6,7 @@ package gov.nist.toolkit.session.server.markdown;
 public class Markdown {
     static public String toHtml(String markdown) {
         StringBuilder buf = new StringBuilder();
-        boolean plain = false;
+        boolean lastIsPlain = true;
         String lastLine = "";
 
         String[] lines = markdown.split("\n");
@@ -16,35 +16,35 @@ public class Markdown {
             line = line.trim();
             line = processBold(line);
             if (line.startsWith("####")) {
-                plain = false;
+                lastIsPlain = false;
                 buf.append("<h4>");
                 line = line.substring(4).trim();
                 buf.append(line);
                 buf.append("</h4>\n");
             }
             else if (line.startsWith("###")) {
-                plain = false;
+                lastIsPlain = false;
                 buf.append("<h3>");
                 line = line.substring(3).trim();
                 buf.append(line);
                 buf.append("</h3>\n");
             }
             else if (line.startsWith("##")) {
-                plain = false;
+                lastIsPlain = false;
                 buf.append("<h2>");
                 line = line.substring(2).trim();
                 buf.append(line);
                 buf.append("</h2>\n");
             }
             else if (line.startsWith("#")) {
-                plain = false;
+                lastIsPlain = false;
                 buf.append("<h1>");
                 line = line.substring(1).trim();
                 buf.append(line);
                 buf.append("</h1>\n");
             }
             else if (line.startsWith("* ")) {
-                plain = false;
+                lastIsPlain = false;
                 buf.append("<ul>\n");
                 while (line.length() > 0 && line.startsWith("* ")) {
                     line = line.substring(2).trim();
@@ -61,7 +61,7 @@ public class Markdown {
                 buf.append("</ul>\n");
             }
             else if (line.startsWith("1.")) {
-                plain = false;
+                lastIsPlain = false;
                 buf.append("<ol>\n");
                 while (line.length() > 0 && Character.isDigit(line.charAt(0))) {
                     line = line.substring(2).trim();
@@ -77,12 +77,28 @@ public class Markdown {
                 i--;
                 buf.append("</ol>\n");
             } else {
-                if (!plain
-                        || lastLine.equals(""))
+                if (lastIsPlain && lastLine.equals("") && !line.equals("")) {
                     buf.append("<p>\n");
-                plain = true;
-                buf.append(line).append("\n");
+                    buf.append(line).append("\n");
+                }
+                else if (lastIsPlain && !lastLine.equals("") && !line.equals("")) {
+                    buf.append(line).append("\n");
+                }
+                else if (lastIsPlain && lastLine.equals("") && line.equals("")) {
+
+                }
+                else if (!lastIsPlain) {
+                    lastIsPlain = true;
+                    buf.append(line).append("\n");
+                }
                 lastLine = line;
+
+//                if (!lastIsPlain
+//                        || lastLine.equals(""))
+//                    buf.append("<p>\n");
+//                lastIsPlain = true;
+//                buf.append(line).append("\n");
+//                lastLine = line;
             }
         }
 
