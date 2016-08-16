@@ -18,6 +18,7 @@ import gov.nist.toolkit.tk.client.TkProps;
 import gov.nist.toolkit.valsupport.client.MessageValidationResults;
 import gov.nist.toolkit.valsupport.client.ValidationContext;
 
+import java.io.IOException;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
@@ -223,5 +224,5 @@ public interface ToolkitServiceAsync {
 	void registerWithLocalizedTrackingInODDS(String username, TestInstance testInstance, SiteSpec registry, SimId odds, Map<String, String> params, AsyncCallback<Map<String, String>> callback);
 	void getOnDemandDocumentEntryDetails(SimId oddsSimId, AsyncCallback<List<DocumentEntryDetail>> callback);
 
-
+	void retrieveConfiguredFavoritesPid(String environment, AsyncCallback<List<Pid>> callback) throws IOException;
 }

@@ -36,7 +36,7 @@ public class PidSet implements Serializable {
         if (s.equals("")) return;
         if (s.charAt(0) != '[') return;
         if (s.charAt(s.length()-1) != ']') return;
-        s = s.substring(1, s.length());
+        s = s.substring(1, s.length()-1);
         String[] pidStr = s.split(",");
         for (int i=0; i<pidStr.length; i++) {
             Pid pid = PidBuilder.createPid(pidStr[i]);

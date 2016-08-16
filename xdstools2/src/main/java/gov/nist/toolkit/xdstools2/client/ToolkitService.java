@@ -28,6 +28,7 @@ import gov.nist.toolkit.tk.client.TkProps;
 import gov.nist.toolkit.valsupport.client.MessageValidationResults;
 import gov.nist.toolkit.valsupport.client.ValidationContext;
 
+import java.io.IOException;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
@@ -189,6 +190,8 @@ public interface ToolkitService extends RemoteService  {
 	String getAssigningAuthority() throws Exception;
 	List<String> getAssigningAuthorities() throws Exception;
 	List<Result> sendPidToRegistry(SiteSpec site, Pid pid) throws NoServletSessionException;
+
+	List<Pid> retrieveConfiguredFavoritesPid(String environment) throws IOException;
 	/**
 	 * This method copy the default testkit to a selected environment and triggers a code update based on
 	 * the affinity domain configuration file (codes.xml) located in the selected environment.
@@ -231,5 +234,4 @@ public interface ToolkitService extends RemoteService  {
 	public Result register(String username, TestInstance testInstance, SiteSpec registry, Map<String, String> params) throws Exception;
 	public Map<String, String> registerWithLocalizedTrackingInODDS(String username, TestInstance testInstance, SiteSpec registry, SimId oddsSimId, Map<String, String> params) throws Exception;
 	public List<DocumentEntryDetail> getOnDemandDocumentEntryDetails(SimId oddsSimId);
-
 }

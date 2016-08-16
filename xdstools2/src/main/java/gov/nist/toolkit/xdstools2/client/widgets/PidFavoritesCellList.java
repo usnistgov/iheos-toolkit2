@@ -39,7 +39,7 @@ public class PidFavoritesCellList extends Composite{
         }
     };
 
-    private EventBus eventBus = ((ClientFactory) GWT.create(ClientFactory.class)).getEventBus();
+//    private EventBus eventBus = ((ClientFactory) GWT.create(ClientFactory.class)).getEventBus();
 
     public PidFavoritesCellList(){
         // Create a Cell renderer.
@@ -99,16 +99,17 @@ public class PidFavoritesCellList extends Composite{
 
             safeHtmlBuilder.appendHtmlConstant("<table>");
 
-            // Add the name and address.
-            safeHtmlBuilder.appendHtmlConstant("<td><span style='font-weight: bold;'>");
-            safeHtmlBuilder.appendEscaped(pid.getExtra());
+            safeHtmlBuilder.appendHtmlConstant("<tr><td><span style='font-size:75%;'>");
+            safeHtmlBuilder.appendEscaped(pid.toString());
             safeHtmlBuilder.appendHtmlConstant("</span>");
+            // Add the name.
             if (!pid.getExtra().equals("")) {
                 safeHtmlBuilder.appendHtmlConstant(" - ");
+                safeHtmlBuilder.appendHtmlConstant("<span style='font-weight: bold;'>");
+                safeHtmlBuilder.appendEscaped(pid.getExtra());
+                safeHtmlBuilder.appendHtmlConstant("</span>");
             }
-            safeHtmlBuilder.appendHtmlConstant("<span style='font-size:75%;'>");
-            safeHtmlBuilder.appendEscaped(pid.toString());
-            safeHtmlBuilder.appendHtmlConstant("</span></td></tr></table>");
+            safeHtmlBuilder.appendHtmlConstant("</td></tr></table>");
         }
     }
 

@@ -11,6 +11,7 @@ import gov.nist.toolkit.actortransaction.TransactionErrorCodeDbLoader;
 import gov.nist.toolkit.actortransaction.client.Severity;
 import gov.nist.toolkit.actortransaction.client.TransactionInstance;
 import gov.nist.toolkit.configDatatypes.client.Pid;
+import gov.nist.toolkit.configDatatypes.client.PidSet;
 import gov.nist.toolkit.configDatatypes.client.TransactionType;
 import gov.nist.toolkit.installation.ExternalCacheManager;
 import gov.nist.toolkit.installation.Installation;
@@ -52,6 +53,8 @@ import javax.servlet.http.HttpSession;
 import javax.xml.parsers.FactoryConfigurationError;
 import java.io.File;
 import java.io.IOException;
+import java.nio.charset.Charset;
+import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
@@ -276,6 +279,25 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements
     }
 	public boolean isPrivateMesaTesting()  throws NoServletSessionException { return session().xdsTestServiceManager().isPrivateMesaTesting(); }
 	public List<Result> sendPidToRegistry(SiteSpec site, Pid pid) throws NoServletSessionException { return session().xdsTestServiceManager().sendPidToRegistry(site, pid); }
+
+	@Override
+	public List<Pid> retrieveConfiguredFavoritesPid(String environmentName) throws IOException {
+	    List<Pid> pids = new ArrayList<Pid>();
+        File environmentFile;
+        if (environmentName!=null) {
+            environmentFile=Installation.installation().environmentFile(environmentName);
+        }else{
+            environmentFile=Installation.installation().environmentFile(Installation.DEFAULT_ENVIRONMENT_NAME);
+        }
+		File favPidsFile = new File(environmentFile,"pids.txt");
+        if (favPidsFile.exists()) {
+            for (String pidString : Files.readAllLines(favPidsFile.toPath(), Charset.defaultCharset())) {
+                PidSet pid = new PidSet(pidString);
+                pids.addAll(pid.get());
+            }
+        }
+		return pids;
+	}
 
 	/**
 	 * This method copies the default testkit to a selected environment and triggers a code update based on

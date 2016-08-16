@@ -2,12 +2,13 @@ package gov.nist.toolkit.xdstools2.client.tabs;
 
 import com.google.gwt.cell.client.EditTextCell;
 import com.google.gwt.cell.client.FieldUpdater;
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.cellview.client.CellTable;
 import com.google.gwt.user.cellview.client.Column;
-import com.google.gwt.user.client.Cookies;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.*;
 import com.google.gwt.view.client.ListDataProvider;
@@ -15,15 +16,15 @@ import com.google.gwt.view.client.MultiSelectionModel;
 import com.google.gwt.view.client.SelectionChangeEvent;
 import gov.nist.toolkit.configDatatypes.client.Pid;
 import gov.nist.toolkit.configDatatypes.client.PidBuilder;
-import gov.nist.toolkit.configDatatypes.client.PidSet;
 import gov.nist.toolkit.configDatatypes.client.TransactionType;
 import gov.nist.toolkit.xdstools2.client.*;
 import gov.nist.toolkit.xdstools2.client.siteActorManagers.GetDocumentsSiteActorManager;
 import gov.nist.toolkit.xdstools2.client.tabs.genericQueryTab.GenericQueryTab;
 import gov.nist.toolkit.xdstools2.client.util.CookiesServices;
-import gov.nist.toolkit.xdstools2.client.widgets.PidFavoritesCellList;
 
+import java.io.IOException;
 import java.util.*;
+import java.util.logging.Logger;
 
 /**
  *
@@ -31,6 +32,7 @@ import java.util.*;
 public class PidFavoritesTab extends GenericQueryTab {
     static List<TransactionType> transactionTypes = new ArrayList<TransactionType>();
     static CoupledTransactions couplings = new CoupledTransactions();
+    private static final ToolkitServiceAsync tkServices = GWT.create(ToolkitService.class);
 
     static {
         transactionTypes.add(TransactionType.REGISTER);
@@ -49,6 +51,7 @@ public class PidFavoritesTab extends GenericQueryTab {
 
     List<String> assigningAuthorities = null;
     Map<Button, String> authorityButtons = new HashMap<>();
+    private Set<Pid> configuredPids=new HashSet<Pid>();
 
     public PidFavoritesTab() {
         super(new GetDocumentsSiteActorManager());
@@ -184,8 +187,12 @@ public class PidFavoritesTab extends GenericQueryTab {
                 "for private testing only.</p>"));
         queryBoilerplate = addQueryBoilerplate(new Runner(), transactionTypes, couplings, false);
 
-        model.setList(new LinkedList<Pid>(fromCookie()));
-        updateFavoritesFromModel();
+        try {
+            retrieveAndInitFavPids();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+//        updateFavoritesFromModel();
         loadAssigningAuthorities();
     }
 
@@ -195,11 +202,32 @@ public class PidFavoritesTab extends GenericQueryTab {
     }
 
     void toCookie() {
-        CookiesServices.savePidFavoritesToCookies(model.getList());
+        List<Pid> pids = new ArrayList<Pid>();
+        for (Pid pid:model.getList()){
+            if (!configuredPids.contains(pid)){
+                pids.add(pid);
+            }
+        }
+        CookiesServices.savePidFavoritesToCookies(pids);
     }
 
-    Set<Pid> fromCookie() {
-        return CookiesServices.retrievePidFavoritesFromCookies();
+    void retrieveAndInitFavPids() throws IOException {
+        final Set<Pid> pidsList=new HashSet<Pid>();
+        tkServices.retrieveConfiguredFavoritesPid(getEnvironmentSelection(), new AsyncCallback<List<Pid>>() {
+            @Override
+            public void onFailure(Throwable throwable) {
+                Window.alert("failure");
+                Logger.getLogger(this.getClass().getName()).warning("Error!");
+            }
+
+            @Override
+            public void onSuccess(List<Pid> pids) {
+                pidsList.addAll(pids);
+                configuredPids.addAll(pidsList);
+                pidsList.addAll(CookiesServices.retrievePidFavoritesFromCookies());
+                model.setList(new LinkedList<Pid>(pidsList));
+            }
+        });
     }
 
     void addToFavorites(Set<Pid> pids) {
