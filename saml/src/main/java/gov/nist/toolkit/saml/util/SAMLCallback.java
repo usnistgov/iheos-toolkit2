@@ -75,10 +75,10 @@ public class SAMLCallback implements Callback {
 
     /**
      * Method getAuthenticationStatementData returns the authenticationStatementData of this 
-     * SAMLCallback object.
+     * SAMLCallback model.
      *
      * @return the authenticationStatementData (type List<AuthenticationStatementBean>) of 
-     *         this SAMLCallback object.
+     *         this SAMLCallback model.
      */
     public List<AuthenticationStatementBean> getAuthenticationStatementData() {
         return authenticationStatementData;
@@ -86,10 +86,10 @@ public class SAMLCallback implements Callback {
 
     /**
      * Method setAuthenticationStatementData sets the authenticationStatementData of this 
-     * SAMLCallback object.
+     * SAMLCallback model.
      *
      * @param authenticationStatementData the authenticationStatementData of this 
-     *        SAMLCallback object.
+     *        SAMLCallback model.
      */
     public void setAuthenticationStatementData(
         List<AuthenticationStatementBean> authenticationStatementData
@@ -99,19 +99,19 @@ public class SAMLCallback implements Callback {
 
     /**
      * Method getAttributeStatementData returns the attributeStatementData of this 
-     * SAMLCallback object.
+     * SAMLCallback model.
      *
      * @return the attributeStatementData (type List<AttributeStatementBean>) of this 
-     *         SAMLCallback object.
+     *         SAMLCallback model.
      */
     public List<AttributeStatementBean> getAttributeStatementData() {
         return attributeStatementData;
     }
 
     /**
-     * Method setAttributeStatementData sets the attributeStatementData of this SAMLCallback object.
+     * Method setAttributeStatementData sets the attributeStatementData of this SAMLCallback model.
      *
-     * @param attributeStatementData the attributeStatementData of this SAMLCallback object.
+     * @param attributeStatementData the attributeStatementData of this SAMLCallback model.
      */
     public void setAttributeStatementData(List<AttributeStatementBean> attributeStatementData) {
         this.attributeStatementData = attributeStatementData;
@@ -119,10 +119,10 @@ public class SAMLCallback implements Callback {
 
     /**
      * Method getAuthDecisionStatementData returns the authDecisionStatementData of this 
-     * SAMLCallback object.
+     * SAMLCallback model.
      *
      * @return the authDecisionStatementData (type List<AuthDecisionStatementBean>) of this 
-     *         SAMLCallback object.
+     *         SAMLCallback model.
      */
     public List<AuthDecisionStatementBean> getAuthDecisionStatementData() {
         return authDecisionStatementData;
@@ -130,10 +130,10 @@ public class SAMLCallback implements Callback {
 
     /**
      * Method setAuthDecisionStatementData sets the authDecisionStatementData of this 
-     * SAMLCallback object.
+     * SAMLCallback model.
      *
      * @param authDecisionStatementData the authDecisionStatementData of this 
-     *        SAMLCallback object.
+     *        SAMLCallback model.
      */
     public void setAuthDecisionStatementData(
         List<AuthDecisionStatementBean> authDecisionStatementData
@@ -142,54 +142,54 @@ public class SAMLCallback implements Callback {
     }
 
     /**
-     * Method getSubject returns the subject of this SAMLCallback object.
+     * Method getSubject returns the subject of this SAMLCallback model.
      *
-     * @return the subject (type SubjectBean) of this SAMLCallback object.
+     * @return the subject (type SubjectBean) of this SAMLCallback model.
      */
     public SubjectBean getSubject() {
         return subject;
     }
 
     /**
-     * Method setSubject sets the subject of this SAMLCallback object.
+     * Method setSubject sets the subject of this SAMLCallback model.
      *
-     * @param subject the subject of this SAMLCallback object.
+     * @param subject the subject of this SAMLCallback model.
      */
     public void setSubject(SubjectBean subject) {
         this.subject = subject;
     }
     
     /**
-     * Method getIssuer returns the issuer of this SAMLCallback object.
+     * Method getIssuer returns the issuer of this SAMLCallback model.
      *
-     * @return the issuer of this SAMLCallback object.
+     * @return the issuer of this SAMLCallback model.
      */
     public String getIssuer() {
         return issuer;
     }
 
     /**
-     * Method setIssuer sets the issuer of this SAMLCallback object.
+     * Method setIssuer sets the issuer of this SAMLCallback model.
      *
-     * @param issuer the issuer of this SAMLCallback object.
+     * @param issuer the issuer of this SAMLCallback model.
      */
     public void setIssuer(String issuer) {
         this.issuer = issuer;
     }
     
     /**
-     * Method getConditions returns the conditions of this SAMLCallback object.
+     * Method getConditions returns the conditions of this SAMLCallback model.
      *
-     * @return the conditions (type ConditionsBean) of this SAMLCallback object.
+     * @return the conditions (type ConditionsBean) of this SAMLCallback model.
      */
     public ConditionsBean getConditions() {
         return conditions;
     }
 
     /**
-     * Method setConditions sets the conditions of this SAMLCallback object.
+     * Method setConditions sets the conditions of this SAMLCallback model.
      *
-     * @param conditions the conditions of this SAMLCallback object.
+     * @param conditions the conditions of this SAMLCallback model.
      */
     public void setConditions(ConditionsBean conditions) {
         this.conditions = conditions;

@@ -6,7 +6,7 @@ import gov.nist.toolkit.simulators.sim.reg.store.RegIndex
 import gov.nist.toolkit.valregmsg.registry.storedquery.generic.QueryReturnType
 import gov.nist.toolkit.valregmsg.registry.storedquery.support.SqParams
 import gov.nist.toolkit.valregmsg.registry.storedquery.support.StoredQuerySupport
-import gov.nist.toolkit.xdsexception.MetadataValidationException
+import gov.nist.toolkit.xdsexception.client.MetadataValidationException
 import spock.lang.Specification
 /**
  * Created by bill on 8/24/15.

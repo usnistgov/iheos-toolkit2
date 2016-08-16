@@ -4,8 +4,6 @@ import gov.nist.toolkit.actorfactory.client.SimId
 import gov.nist.toolkit.actorfactory.client.SimulatorConfig
 import gov.nist.toolkit.actortransaction.client.ActorType
 import gov.nist.toolkit.configDatatypes.SimulatorProperties
-import gov.nist.toolkit.results.SiteBuilder
-import gov.nist.toolkit.results.client.SiteSpec
 import gov.nist.toolkit.services.client.IdsOrchestrationRequest
 import gov.nist.toolkit.services.client.IdsOrchestrationResponse
 import gov.nist.toolkit.services.client.RawResponse

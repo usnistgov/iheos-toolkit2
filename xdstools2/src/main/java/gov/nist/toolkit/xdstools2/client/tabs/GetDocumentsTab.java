@@ -5,11 +5,9 @@ import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.ui.FlexTable;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.TextArea;
-import com.google.gwt.user.client.ui.VerticalPanel;
 import gov.nist.toolkit.configDatatypes.client.TransactionType;
 import gov.nist.toolkit.xdstools2.client.CoupledTransactions;
 import gov.nist.toolkit.xdstools2.client.PopupMessage;
-import gov.nist.toolkit.xdstools2.client.TabContainer;
 import gov.nist.toolkit.xdstools2.client.siteActorManagers.GetDocumentsSiteActorManager;
 import gov.nist.toolkit.xdstools2.client.tabs.genericQueryTab.GenericQueryTab;
 
@@ -44,22 +42,19 @@ public class GetDocumentsTab  extends GenericQueryTab {
 		super(new GetDocumentsSiteActorManager());
 	}
 	
-
-	public void onTabLoad(TabContainer container, boolean select, String eventName) {
+	@Override
+	public void onTabLoad(boolean select, String eventName) {
 		tab = this;
-		myContainer = container;
-		topPanel = new VerticalPanel();
-		container.addTab(topPanel, "GetDocuments", select);
-		addCloseButton(container,topPanel, help);
+		registerTab(select, "GetDocuments");
 
 		HTML title = new HTML();
 		title.setHTML("<h2>Get Documents</h2>");
-		topPanel.add(title);
+		tabTopPanel.add(title);
 
 		mainGrid = new FlexTable();
 		int row = 0;
 		
-		topPanel.add(mainGrid);
+		tabTopPanel.add(mainGrid);
 
 		mainGrid.setWidget(row,0, new HTML("Document Entry UUIDs or UIDs"));
 

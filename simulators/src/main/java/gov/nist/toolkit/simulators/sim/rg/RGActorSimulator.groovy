@@ -26,7 +26,7 @@ import gov.nist.toolkit.simulators.support.*
 import gov.nist.toolkit.soap.axis2.Soap
 import gov.nist.toolkit.testengine.engine.RetrieveB
 import gov.nist.toolkit.utilities.xml.XmlUtil
-import gov.nist.toolkit.valregmsg.message.SoapMessageValidator
+import gov.nist.toolkit.validatorsSoapMessage.message.SoapMessageValidator
 import gov.nist.toolkit.valregmsg.service.SoapActionFactory
 import gov.nist.toolkit.valsupport.client.ValidationContext
 import gov.nist.toolkit.valsupport.engine.MessageValidatorEngine

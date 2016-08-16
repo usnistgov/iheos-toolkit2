@@ -1,7 +1,7 @@
 package gov.nist.toolkit.testengine.test;
 
 import gov.nist.toolkit.testengine.engine.TestCollection;
-import gov.nist.toolkit.testenginelogging.TestDetails;
+import gov.nist.toolkit.testenginelogging.TestLogDetails;
 import gov.nist.toolkit.xdsexception.ExceptionUtil;
 
 import java.io.File;
@@ -39,11 +39,11 @@ public class TestCollectionTest {
 	public void getTestSpecs() {
 		try {
 			TestCollection tc = new TestCollection(testkit, "sql");
-			List<TestDetails> col = tc.getTestSpecs();
+			List<TestLogDetails> col = tc.getTestSpecs();
 			assert col.size() == 2;
 			
 			// 11801
-			TestDetails ts0 = col.get(0);
+			TestLogDetails ts0 = col.get(0);
 			assert ts0.getTestPlans().size() == 1;
 			
 			String testPlanPath = ts0.getTestPlans().get(0).getAbsolutePath();

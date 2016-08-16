@@ -1,5 +1,7 @@
 package gov.nist.toolkit.xdsexception;
 
+import gov.nist.toolkit.xdsexception.client.XdsException;
+
 public class XMLParserException extends XdsException {
 	/**
 	 * 

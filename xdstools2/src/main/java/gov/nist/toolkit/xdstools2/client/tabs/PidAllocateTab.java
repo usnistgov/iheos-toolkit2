@@ -10,24 +10,21 @@ import com.google.gwt.user.client.ui.RadioButton;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import gov.nist.toolkit.xdstools2.client.PidAllocateService;
 import gov.nist.toolkit.xdstools2.client.PidAllocateServiceAsync;
-import gov.nist.toolkit.xdstools2.client.TabContainer;
-import gov.nist.toolkit.xdstools2.client.TabbedWindow;
+import gov.nist.toolkit.xdstools2.client.ToolWindow;
 
 import java.util.ArrayList;
 import java.util.List;
 
 @Deprecated
-public class PidAllocateTab extends TabbedWindow {
+public class PidAllocateTab extends ToolWindow {
 	
 	final PidAllocateServiceAsync pidAllocateService = GWT
 	.create(PidAllocateService.class);
 
-	
-	public void onTabLoad(TabContainer container, boolean select, String eventName) {
-		topPanel = new VerticalPanel();
-		container.addTab(topPanel, "Patient ID", select);
-		addCloseButton(container, topPanel, null);
-		
+	@Override
+	public void onTabLoad(boolean select, String eventName) {
+		registerTab(select, "Patient ID");
+
 		HTML intro = new HTML();
 		intro.setHTML(
 			"<h2>Public Registry Patient ID Allocation Service</h2>" +
@@ -40,11 +37,11 @@ public class PidAllocateTab extends TabbedWindow {
 			"<p>Note: The Public Registry software can be installed on any machine.  This tool references " +
 			"the Registry on localhost (local to where the xdstools2 package is loaded)."
 		);
-		topPanel.add(intro);
+		tabTopPanel.add(intro);
 				
 		HTML selectPID = new HTML();
 		selectPID.setHTML("Select an Assigning Authority for the new Patient ID:");
-		topPanel.add(selectPID);
+		tabTopPanel.add(selectPID);
 		
 		
 		getAAsFromServer();
@@ -78,7 +75,7 @@ public class PidAllocateTab extends TabbedWindow {
 						HTML h = new HTML();
 						h.setHTML("<br /><br />");
 						panel.add(h);
-						topPanel.add(panel);
+						tabTopPanel.add(panel);
 						
 						sendButton.addClickHandler(new ClickHandler() {
 							public void onClick(ClickEvent event) {
@@ -108,7 +105,7 @@ public class PidAllocateTab extends TabbedWindow {
 						HTML resultBox = new HTML();
 						resultBox.setText(result);
 						
-						topPanel.add(resultBox);
+						tabTopPanel.add(resultBox);
 					}
 				});
 	}

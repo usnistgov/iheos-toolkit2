@@ -14,7 +14,6 @@ import gov.nist.toolkit.sitemanagement.client.TransactionCollection;
 import gov.nist.toolkit.xdstools2.client.PasswordManagement;
 import gov.nist.toolkit.xdstools2.client.PopupMessage;
 import gov.nist.toolkit.xdstools2.client.StringSort;
-import gov.nist.toolkit.xdstools2.client.TabContainer;
 import gov.nist.toolkit.xdstools2.client.siteActorManagers.NullSiteActorManager;
 import gov.nist.toolkit.xdstools2.client.tabs.genericQueryTab.GenericQueryTab;
 
@@ -38,18 +37,15 @@ public class ActorConfigTab extends GenericQueryTab {
 		super(new NullSiteActorManager());
 	}
 
-	public void onTabLoad(TabContainer container, boolean select, String eventName) {
-		myContainer = container;
-		topPanel = new VerticalPanel();
+	@Override
+	public void onTabLoad(boolean select, String eventName) {
+		registerTab(select, "ActorConfig");
 
-		container.addTab(topPanel, "ActorConfig", select);
-		addCloseButton(container,topPanel, null);
-		
 		loadGazelleFeedAvailableStatus();
 
 		HTML title = new HTML();
 		title.setHTML("<h2>Configure Sites</h2>");
-		topPanel.add(title);
+		tabTopPanel.add(title);
 
 		Anchor reload = new Anchor();
 		reload.setText("[reload]");
@@ -59,7 +55,7 @@ public class ActorConfigTab extends GenericQueryTab {
 		mainGrid = new FlexTable();
 		int row = 0;
 
-		topPanel.add(mainGrid);
+		tabTopPanel.add(mainGrid);
 
 		reloadExternalSites();
 

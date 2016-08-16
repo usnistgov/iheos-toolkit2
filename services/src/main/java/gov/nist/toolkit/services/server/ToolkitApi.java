@@ -11,7 +11,7 @@ import gov.nist.toolkit.envSetting.EnvSetting;
 import gov.nist.toolkit.installation.Installation;
 import gov.nist.toolkit.registrymetadata.client.Uids;
 import gov.nist.toolkit.results.client.Result;
-import gov.nist.toolkit.results.client.SiteSpec;
+import gov.nist.toolkit.sitemanagement.client.SiteSpec;
 import gov.nist.toolkit.results.client.TestInstance;
 import gov.nist.toolkit.results.client.TestLogs;
 import gov.nist.toolkit.services.shared.SimulatorServiceManager;
@@ -163,7 +163,7 @@ public class ToolkitApi {
     /**
      * Get Site for a simulator.
      * @param simId - id of the simulator
-     * @return - site object
+     * @return - site model
      * @throws Exception if there is a problem finding or interpreting the sim
      */
     public Site getSiteForSimulator(SimId simId) throws Exception {

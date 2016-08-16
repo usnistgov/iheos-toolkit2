@@ -92,11 +92,11 @@ class RetrieveSpec extends ToolkitSpecification {
         results.get(0).passed()
     }
 
-    def 'Run all tests'() {
+    def 'Setup test with submissions'() {
         when:
         String siteName = 'sunil__rr'
         TestInstance testId = new TestInstance("15816")
-        List<String> sections = new ArrayList<>()
+        List<String> sections = ['Register_Stable', 'PnR']
         Map<String, String> params = new HashMap<>()
         params.put('$patientid$', patientId)
         params.put('$repuid$', repUid)
@@ -118,7 +118,8 @@ class RetrieveSpec extends ToolkitSpecification {
         when:
         String siteName = 'sunil__rr'
         TestInstance testId = new TestInstance("15816")
-        List<String> sections = ["Retrieve"]
+        List<String> sections = ["Retrieve_Doc", 'Retrieve_Bad_Doc_Uid', 'Retrieve_Partial_Uid']
+//        List<String> sections = ['Retrieve_Partial_Uid']
         Map<String, String> params = new HashMap<>()
         params.put('$patientid$', patientId)
         params.put('$repuid$', repUid)
@@ -128,7 +129,6 @@ class RetrieveSpec extends ToolkitSpecification {
         List<Result> results = api.runTest(testSession, siteName, testId, sections, params, stopOnFirstError)
 
         then:
-        true
         results.size() == 1
         results.get(0).passed()
 

@@ -81,7 +81,7 @@ public class ConditionsBean {
     }
     
     /**
-     * Get the tokenPeriodMinutes of this object.
+     * Get the tokenPeriodMinutes of this model.
      *
      * @return the tokenPeriodMinutes (type int)
      */
@@ -153,7 +153,7 @@ public class ConditionsBean {
     }
 
     /**
-     * @return the hashcode of this object
+     * @return the hashcode of this model
      */
     @Override
     public int hashCode() {

@@ -11,8 +11,8 @@ import gov.nist.toolkit.valregmsg.registry.SQCodeOr;
 import gov.nist.toolkit.valregmsg.registry.storedquery.generic.FindFolders;
 import gov.nist.toolkit.valregmsg.registry.storedquery.generic.QueryReturnType;
 import gov.nist.toolkit.valregmsg.registry.storedquery.support.StoredQuerySupport;
-import gov.nist.toolkit.xdsexception.MetadataException;
-import gov.nist.toolkit.xdsexception.XdsException;
+import gov.nist.toolkit.xdsexception.client.MetadataException;
+import gov.nist.toolkit.xdsexception.client.XdsException;
 
 import java.util.List;
 
@@ -52,7 +52,7 @@ public class FindFoldersSim extends FindFolders {
 			else if (codes instanceof SQCodeAnd) {
 					results = mc.folCollection.filterByFolderCodeList((SQCodeAnd)codes, results);
 			} else {
-				throw new XdsException("FindDocumentsSim: cannot cast object of type " + codes.getClass().getName() + " (from eventCode) into an instance of class SQCodeOr or SQCodeAnd", null);
+				throw new XdsException("FindDocumentsSim: cannot cast model of type " + codes.getClass().getName() + " (from eventCode) into an instance of class SQCodeOr or SQCodeAnd", null);
 			}
 		}
 		

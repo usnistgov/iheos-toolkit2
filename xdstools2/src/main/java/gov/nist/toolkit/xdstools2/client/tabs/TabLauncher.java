@@ -3,20 +3,22 @@ package gov.nist.toolkit.xdstools2.client.tabs;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import gov.nist.toolkit.registrymetadata.client.RegistryObject;
-import gov.nist.toolkit.results.client.SiteSpec;
+import gov.nist.toolkit.sitemanagement.client.SiteSpec;
 import gov.nist.toolkit.xdstools2.client.TabContainer;
 import gov.nist.toolkit.xdstools2.client.inspector.MetadataEditorTab;
+import gov.nist.toolkit.xdstools2.client.tabs.GatewayTestsTabs.IDSTestTab;
 import gov.nist.toolkit.xdstools2.client.tabs.GatewayTestsTabs.IGTestTab;
 import gov.nist.toolkit.xdstools2.client.tabs.GatewayTestsTabs.IIGTestTab;
 import gov.nist.toolkit.xdstools2.client.tabs.GatewayTestsTabs.RGTestTab;
-import gov.nist.toolkit.xdstools2.client.tabs.GatewayTestsTabs.IDSTestTab;
 import gov.nist.toolkit.xdstools2.client.tabs.actorConfigTab.ActorConfigTab;
+import gov.nist.toolkit.xdstools2.client.tabs.conformanceTest.TestLogListingTab;
 import gov.nist.toolkit.xdstools2.client.tabs.findDocuments2Tab.FindDocuments2Tab;
 import gov.nist.toolkit.xdstools2.client.tabs.getAllTab.GetAllTab;
 import gov.nist.toolkit.xdstools2.client.tabs.messageValidator.MessageValidatorTab;
 import gov.nist.toolkit.xdstools2.client.tabs.simulatorControlTab.SimulatorControlTab;
 import gov.nist.toolkit.xdstools2.client.tabs.testsOverviewTab.TestsOverviewTab;
 
+@Deprecated
 public class TabLauncher implements ClickHandler {
 	TabContainer container;
 	String tabType;
@@ -71,90 +73,90 @@ public class TabLauncher implements ClickHandler {
 	
 	public void onClick(ClickEvent event) {
 		if (tabType.equals(findDocumentsTabLabel)) 
-			new FindDocumentsTab().onAbstractTabLoad(container, true, null);
+			new FindDocumentsTab().onAbstractTabLoad(true, null);
 		else if (tabType.equals(igTestsTabLabel))
-			new IGTestTab().onAbstractTabLoad(container, true, "IG Tests");
+			new IGTestTab().onAbstractTabLoad(true, "IG Tests");
 		else if (tabType.equals(iigTestsTabLabel))
-			new IIGTestTab().onAbstractTabLoad(container, true, "IIG Tests");
+			new IIGTestTab().onAbstractTabLoad(true, "IIG Tests");
 		else if (tabType.equals(idsTestsTabLabel))
-			new IDSTestTab().onAbstractTabLoad(container, true, "IDS Tests");
+			new IDSTestTab().onAbstractTabLoad(true, "IDS Tests");
         else if (tabType.equals(rgTestsTabLabel))
-            new RGTestTab().onAbstractTabLoad(container, true, "RG Tests");
+            new RGTestTab().onAbstractTabLoad(true, "RG Tests");
         else if (tabType.equals(findDocumentsByRefIdTabLabel))
-            new FindDocumentsByRefIdTab().onAbstractTabLoad(container, true, null);
+            new FindDocumentsByRefIdTab().onAbstractTabLoad(true, null);
 		else if (tabType.equals(findDocumentsAllParametersTabLabel))
-			new FindDocuments2Tab().onAbstractTabLoad(container, true, null);
+			new FindDocuments2Tab().onAbstractTabLoad(true, null);
 		else if (tabType.equals(findPatientTabLabel)) 
-			new FindPatientTab().onAbstractTabLoad(container, true, null);		
+			new FindPatientTab().onAbstractTabLoad(true, null);
 		else if (tabType.equals(findFoldersTabLabel)) 
-			new FindFoldersTab().onAbstractTabLoad(container, true, null);
+			new FindFoldersTab().onAbstractTabLoad(true, null);
 		else if (tabType.equals(getDocumentsTabLabel)) 
-			new GetDocumentsTab().onAbstractTabLoad(container, true, null);
+			new GetDocumentsTab().onAbstractTabLoad(true, null);
 		else if (tabType.equals(getFoldersTabLabel)) 
-			new GetFoldersTab().onAbstractTabLoad(container, true, null);
+			new GetFoldersTab().onAbstractTabLoad(true, null);
 		else if (tabType.equals(getFolderAndContentsTabLabel)) 
-			new GetFolderAndContentsTab().onAbstractTabLoad(container, true, null);
+			new GetFolderAndContentsTab().onAbstractTabLoad(true, null);
 		else if (tabType.equals(mpqFindDocumentsTabLabel)) 
-			new MPQFindDocumentsTab().onAbstractTabLoad(container, true, null);
+			new MPQFindDocumentsTab().onAbstractTabLoad(true, null);
 		else if (tabType.equals(getSubmissionSetTabLabel)) 
-			new GetSubmissionSetAndContentsTab().onAbstractTabLoad(container, true, null);
+			new GetSubmissionSetAndContentsTab().onAbstractTabLoad(true, null);
 		else if (tabType.equals(registryDoThisFirstTabLabel)) 
-			new RegisterAndQueryTab().onAbstractTabLoad(container, true, null);
+			new RegisterAndQueryTab().onAbstractTabLoad(true, null);
 		else if (tabType.equals(getRelatedTabLabel)) 
-			new GetRelatedTab().onAbstractTabLoad(container, true, null);
+			new GetRelatedTab().onAbstractTabLoad(true, null);
 		else if (tabType.equals(getAllTabLabel))
-			new GetAllTab().onAbstractTabLoad(container, true, null);
+			new GetAllTab().onAbstractTabLoad(true, null);
 		else if (tabType.equals(connectathonTabLabel))
-			new ConnectathonTab().onAbstractTabLoad(container, true, null);
+			new ConnectathonTab().onAbstractTabLoad(true, null);
 		else if (tabType.equals(srcStoresDocValTabLabel)) 
-			new SourceStoredDocValTab().onAbstractTabLoad(container, true, null);
+			new SourceStoredDocValTab().onAbstractTabLoad(true, null);
 		else if (tabType.equals(documentRetrieveTabLabel)) 
-			new DocRetrieveTab().onAbstractTabLoad(container, true, null);
+			new DocRetrieveTab().onAbstractTabLoad(true, null);
 		else if (tabType.equals(imagingDocumentSetRetrieveTabLabel)) 
-			new ImagingDocSetRetrieveTab().onAbstractTabLoad(container, true, null);
+			new ImagingDocSetRetrieveTab().onAbstractTabLoad(true, null);
 		else if (tabType.equals(allocatePatientIdTabLabel)) 
-			new PidAllocateTab().onAbstractTabLoad(container, true, null);
+			new PidAllocateTab().onAbstractTabLoad(true, null);
 		else if (tabType.equals(registryTestDataTabLabel)) 
-			new RegistryTestdataTab().onAbstractTabLoad(container, true, null);
+			new RegistryTestdataTab().onAbstractTabLoad(true, null);
 		else if (tabType.equals(repositoryTestDataTabLabel)) 
-			new RepositoryTestdataTab().onAbstractTabLoad(container, true, null);
+			new RepositoryTestdataTab().onAbstractTabLoad(true, null);
 		else if (tabType.equals(recipientTestDataTabLabel)) 
-			new XDRTestdataTab().onAbstractTabLoad(container, true, null);
+			new XDRTestdataTab().onAbstractTabLoad(true, null);
 		else if (tabType.equals(repositoryDoThisFirstTabLabel)) 
-			new ProvideAndRetrieveTab().onAbstractTabLoad(container, true, null);
+			new ProvideAndRetrieveTab().onAbstractTabLoad(true, null);
 		else if (tabType.equals(registryLifecycleTabLabel)) 
-			new LifecycleTab().onAbstractTabLoad(container, true, null);
+			new LifecycleTab().onAbstractTabLoad(true, null);
 		else if (tabType.equals(registryFolderHandlingTabLabel)) 
-			new FolderTab().onAbstractTabLoad(container, true, null);
+			new FolderTab().onAbstractTabLoad(true, null);
 		else if (tabType.equals(adminTabLabel)) 
-			new ActorConfigTab().onAbstractTabLoad(container, true, null);
+			new ActorConfigTab().onAbstractTabLoad(true, null);
 		else if (tabType.equals(messageValidatorTabLabel)) 
-			new MessageValidatorTab().onAbstractTabLoad(container, true, null);
+			new MessageValidatorTab().onAbstractTabLoad(true, null);
 		else if (tabType.equals(simulatorMessageViewTabLabel)) 
-			new SimulatorMessageViewTab().onAbstractTabLoad(container, true, null);
+			new SimulatorMessageViewTab().onAbstractTabLoad(true, null);
 		else if (tabType.equals(simulatorControlTabLabel)) 
-			new SimulatorControlTab().onAbstractTabLoad(container, true, null);
+			new SimulatorControlTab().onAbstractTabLoad(true, null);
 		else if (tabType.equals(toolConfigTabLabel)) 
-			new ToolConfigTab().onAbstractTabLoad(container, true, null);
+			new ToolConfigTab().onAbstractTabLoad(true, null);
 		else if (tabType.equals(mesaTabLabel)) 
-			new MesaTestTab().onAbstractTabLoad(container, true, "Pre-Con Tests");
+			new MesaTestTab().onAbstractTabLoad(true, "Pre-Con Tests");
 		else if (tabType.equals(nwhinTabLabel))
-			new MesaTestTab().onAbstractTabLoad(container, true, "On-Boarding Tests");
+			new MesaTestTab().onAbstractTabLoad(true, "On-Boarding Tests");
 		else if (tabType.equals(testLogLabel)) 
-			new TestLogListingTab().onAbstractTabLoad(container, true, null);
+			new TestLogListingTab().onAbstractTabLoad(true, null);
 		else if (tabType.equals(dashboardTabLabel)) 
-			new DashboardTab().onAbstractTabLoad(container, true, null);
+			new DashboardTab().onAbstractTabLoad(true, null);
 		else if (tabType.equals(repositoryTabLabel)) 
-			new RepositoryListingTab().onAbstractTabLoad(container, true, null);
+			new RepositoryListingTab().onAbstractTabLoad(true, null);
 		else if (tabType.equals(pidFavoritesLabel))
-			new PidFavoritesTab().onAbstractTabLoad(container, true, null);
+			new PidFavoritesTab().onAbstractTabLoad(true, null);
 		else if (tabType.equals(testsOverviewTabLabel))
-			new TestsOverviewTab().onAbstractTabLoad(container, true, null);
+			new TestsOverviewTab().onAbstractTabLoad(true, null);
 		else if (tabType.equals(metadataEditorTabLabel)) {
 			MetadataEditorTab t = new MetadataEditorTab();
 			t.setSiteSpec(siteSpec);
 			t.setRegistryObject(ro);
-			t.onAbstractTabLoad(container, true, null);
+			t.onAbstractTabLoad(true, null);
 		}
 		
 	}

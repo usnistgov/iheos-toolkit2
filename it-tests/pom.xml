@@ -111,18 +111,14 @@
                 <artifactId>maven-failsafe-plugin</artifactId>
                 <version>2.19.1</version>
                 <configuration>
-                    <forkCount>1</forkCount>
-                    <reuseForks>false</reuseForks>
                     <includes>
-                        <!-- orig begin -->
                         <include>**/*Spec.groovy</include>
                         <include>**/*Spec.java</include>
                         <include>**/*Test.java</include>
                         <include>**/*IT.java</include>
-                        <!--orig end-->
                     </includes>
                     <!-- This is temporarily enabled because it is a known issue that some of the Query Spec integrations tests fail! -->
-                    <!--<testFailureIgnore>true</testFailureIgnore>-->
+                    <testFailureIgnore>false</testFailureIgnore>
                 </configuration>
                 <executions>
                     <execution>

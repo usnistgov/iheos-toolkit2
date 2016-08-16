@@ -6,6 +6,7 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 import gov.nist.toolkit.actorfactory.client.SimulatorConfig;
 import gov.nist.toolkit.sitemanagement.client.TransactionOfferings;
 import gov.nist.toolkit.xdstools2.client.*;
+import gov.nist.toolkit.xdstools2.client.event.TestSessionChangedEvent;
 
 import java.util.List;
 
@@ -41,7 +42,6 @@ public class TestSessionManager2 {
                     case SELECT:
                         setCurrentTestSession(event.value);
                         toCookie(event.value);
-                        Xdstools2.DEBUG("testSession is " + currentTestSession);
                 }
             }
         });

@@ -9,14 +9,14 @@ import gov.nist.toolkit.errorrecording.GwtErrorRecorderBuilder;
 import gov.nist.toolkit.errorrecording.client.ValidationStepResult;
 import gov.nist.toolkit.installation.Installation;
 import gov.nist.toolkit.utilities.io.Io;
-import gov.nist.toolkit.valregmsg.validation.engine.ValidateMessageService;
+import gov.nist.toolkit.validatorsSoapMessage.engine.ValidateMessageService;
 import gov.nist.toolkit.valsupport.client.MessageValidationResults;
 import gov.nist.toolkit.valsupport.client.ValidationContext;
 import gov.nist.toolkit.valsupport.engine.MessageValidatorEngine;
 import gov.nist.toolkit.valsupport.engine.ValidationStep;
 import gov.nist.toolkit.valsupport.message.AbstractMessageValidator;
 import gov.nist.toolkit.valsupport.message.ServiceRequestContainer;
-import gov.nist.toolkit.xdsexception.XdsException;
+import gov.nist.toolkit.xdsexception.client.XdsException;
 import org.apache.log4j.Logger;
 
 import javax.servlet.http.HttpServletResponse;
@@ -55,12 +55,12 @@ public class SimCommon {
 
 
 	/**
-	 * Build a new simulator support object
-	 * @param db the simulator database object supporting this simulator
+	 * Build a new simulator support model
+	 * @param db the simulator database model supporting this simulator
 	 * @param tls is tls employed
 	 * @param vc validation context used to validate the input message
 	 * @param mvc message validation engine
-	 * @param response HttpServletResponse object for accepting eventual output
+	 * @param response HttpServletResponse model for accepting eventual output
 	 * @throws IOException
 	 * @throws XdsException 
 	 */

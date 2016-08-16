@@ -3,10 +3,7 @@ package gov.nist.toolkit.xdstools2.client.tabs.simulatorControlTab;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.rpc.AsyncCallback;
-import com.google.gwt.user.client.ui.Button;
-import com.google.gwt.user.client.ui.FlexTable;
-import com.google.gwt.user.client.ui.HorizontalPanel;
-import com.google.gwt.user.client.ui.VerticalPanel;
+import com.google.gwt.user.client.ui.*;
 import gov.nist.toolkit.actorfactory.client.SimulatorConfig;
 import gov.nist.toolkit.actortransaction.client.ActorType;
 import gov.nist.toolkit.configDatatypes.SimulatorProperties;
@@ -26,8 +23,8 @@ public abstract class BaseSimConfigMgr implements SimConfigMgrIntf {
     /**
      *
      */
-    SimulatorControlTab simulatorControlTab;
-    VerticalPanel panel;
+    private SimulatorControlTab simulatorControlTab;
+    FlowPanel panel;
     HorizontalPanel hpanel;
     SimulatorConfig config;
     String testSession;
@@ -36,14 +33,14 @@ public abstract class BaseSimConfigMgr implements SimConfigMgrIntf {
 
     int row = 0;
 
-    public BaseSimConfigMgr(SimulatorControlTab simulatorControlTab, VerticalPanel panel, SimulatorConfig config, String testSession) {
+    public BaseSimConfigMgr(SimulatorControlTab simulatorControlTab, FlowPanel panel, SimulatorConfig config, String testSession) {
         this.simulatorControlTab = simulatorControlTab;
         this.panel = panel;
         this.config = config;
         this.testSession = testSession;
     }
 
-   public void removeFromPanel() {
+    public void removeFromPanel() {
         if (hpanel != null) {
             panel.remove(hpanel);
             hpanel = null;
@@ -120,7 +117,7 @@ public abstract class BaseSimConfigMgr implements SimConfigMgrIntf {
                             @Override
                             public void onClick(ClickEvent clickEvent) {
                                 configEle.setValue(erSelectionPresenter.getSelected());
-  //                              saveSimConfig();
+                                //                              saveSimConfig();
                             }
                         }
                 );
@@ -214,7 +211,7 @@ public abstract class BaseSimConfigMgr implements SimConfigMgrIntf {
         return saveButton;
     }
 
-    public VerticalPanel getPanel() {
+    public FlowPanel getPanel() {
         return panel;
     }
 

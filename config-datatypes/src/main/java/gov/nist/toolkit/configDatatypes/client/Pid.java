@@ -91,7 +91,7 @@ public class Pid implements Serializable {
     public String asParsableString() {
         if (extra == null)
             return toString();
-        return toString() + " - " + extra;
+        return toString() + " "+PidBuilder.SEPARATOR+" " + extra;
     }
 
     // String representation - as required in protocols

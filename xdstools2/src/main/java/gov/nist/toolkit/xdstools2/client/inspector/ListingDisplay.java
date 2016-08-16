@@ -1,16 +1,8 @@
 package gov.nist.toolkit.xdstools2.client.inspector;
 
-import gov.nist.toolkit.registrymetadata.client.Association;
-import gov.nist.toolkit.registrymetadata.client.Document;
-import gov.nist.toolkit.registrymetadata.client.DocumentEntry;
-import gov.nist.toolkit.registrymetadata.client.Folder;
-import gov.nist.toolkit.registrymetadata.client.ObjectRef;
-import gov.nist.toolkit.registrymetadata.client.ObjectRefs;
-import gov.nist.toolkit.registrymetadata.client.SubmissionSet;
-import gov.nist.toolkit.xdstools2.client.TabContainer;
-
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.TreeItem;
+import gov.nist.toolkit.registrymetadata.client.*;
 
 
 public class ListingDisplay {
@@ -24,7 +16,7 @@ public class ListingDisplay {
 		this.root = root;
 	}
 	
-	void listing(TabContainer container) {
+	void listing() {
 		for (SubmissionSet ss : data.combinedMetadata.submissionSets) {
 			TreeItem item = new TreeItem(HyperlinkFactory.link(tab, ss));
 			root.addItem(item);

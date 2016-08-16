@@ -1,14 +1,15 @@
 package gov.nist.toolkit.results.client;
 
-import java.io.Serializable;
-
 import com.google.gwt.user.client.rpc.IsSerializable;
+
+import java.io.Serializable;
 
 /**
  * Identify a test instance, the combination of a test definition and the state of the running test.
  */
 public class TestInstance implements IsSerializable, Serializable {
 	String id = null;    //  id of the test
+	String section = null;  // this is optional
 	String event = null;
 	String eventDir;
 
@@ -18,8 +19,11 @@ public class TestInstance implements IsSerializable, Serializable {
 	LogIdIOFormat format = null;
 	LogIdType idType = null;
 	
-	public TestInstance() {
+	public TestInstance() {}
+	public TestInstance(String id) {
+		this.id = id;
 	}
+	public TestInstance(String id, String section) { this.id = id; this.section = section; }
 
     public String describe() {
         StringBuilder buf = new StringBuilder();
@@ -37,6 +41,7 @@ public class TestInstance implements IsSerializable, Serializable {
     public TestInstance copy() {
         TestInstance x = new TestInstance();
         x.id = id;
+		x.section = section;
         x.event = event;
         x.eventDir = eventDir;
         x.location = location;
@@ -100,7 +105,15 @@ public class TestInstance implements IsSerializable, Serializable {
 
 	public boolean isEmpty() { return id == null || id.equals(""); }
 
-    /**
+	public String getSection() {
+		return section;
+	}
+
+	public void setSection(String section) {
+		this.section = section;
+	}
+
+	/**
      * Set the test identifier (11901 for example)
      * @param id the identifier
      */
@@ -123,10 +136,6 @@ public class TestInstance implements IsSerializable, Serializable {
 	public String getEventDir() { return eventDir; }
 	public void setEventDir(String eventDir) { this.eventDir = eventDir; }
 
-	public TestInstance(String id) {
-		this.id = id;
-	}
-	
 	@Override
 	public boolean equals(Object o) {
 		if (o == null) return false;
@@ -134,6 +143,8 @@ public class TestInstance implements IsSerializable, Serializable {
 		TestInstance x = (TestInstance) o;
 		if (id == null && x.id != null) return false;
 		if (id != null && !id.equals(x.id)) return false;
+		if (section == null && x.section != null) return false;
+		if (section != null && !section.equals(x.section)) return false;
 		if (event == null && x.event != null) return false;
 		if (event != null && !event.equals(x.event)) return false;
 		return true;
@@ -146,6 +157,14 @@ public class TestInstance implements IsSerializable, Serializable {
 						((event == null) ? 43 : event.hashCode());
 	}
 
-	public String toString() { return event + ":" + id; }
+	public String toString() {
+		StringBuilder buf = new StringBuilder();
+		if (event != null) buf.append(event);
+		buf.append(':');
+		if (section != null) buf.append(section);
+		buf.append(':');
+		buf.append(id);
+		return buf.toString();
+	}
 
 }

@@ -8,41 +8,22 @@ import com.google.gwt.resources.client.ClientBundle;
 import com.google.gwt.resources.client.ImageResource;
 import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
 import com.google.gwt.user.client.rpc.AsyncCallback;
-import com.google.gwt.user.client.ui.Button;
-import com.google.gwt.user.client.ui.CheckBox;
-import com.google.gwt.user.client.ui.FlexTable;
-import com.google.gwt.user.client.ui.HTML;
-import com.google.gwt.user.client.ui.HasHorizontalAlignment;
-import com.google.gwt.user.client.ui.HasVerticalAlignment;
-import com.google.gwt.user.client.ui.HorizontalPanel;
-import com.google.gwt.user.client.ui.Image;
-import com.google.gwt.user.client.ui.ListBox;
-import com.google.gwt.user.client.ui.VerticalPanel;
+import com.google.gwt.user.client.ui.*;
 import gov.nist.toolkit.actorfactory.client.SimulatorConfig;
 import gov.nist.toolkit.actortransaction.client.ActorType;
 import gov.nist.toolkit.configDatatypes.SimulatorProperties;
 import gov.nist.toolkit.configDatatypes.client.TransactionType;
 import gov.nist.toolkit.http.client.HtmlMarkup;
 import gov.nist.toolkit.results.client.DocumentEntryDetail;
-import gov.nist.toolkit.results.client.SiteSpec;
 import gov.nist.toolkit.results.client.TestInstance;
 import gov.nist.toolkit.simcommon.client.config.SimulatorConfigElement;
+import gov.nist.toolkit.sitemanagement.client.SiteSpec;
 import gov.nist.toolkit.xdstools2.client.PopupMessage;
 import gov.nist.toolkit.xdstools2.client.StringSort;
-import gov.nist.toolkit.xdstools2.client.tabs.simulatorControlTab.ConfigBooleanBox;
-import gov.nist.toolkit.xdstools2.client.tabs.simulatorControlTab.ConfigEditBox;
-import gov.nist.toolkit.xdstools2.client.tabs.simulatorControlTab.ConfigTextDisplayBox;
-import gov.nist.toolkit.xdstools2.client.tabs.simulatorControlTab.LoadSimulatorsClickHandler;
-import gov.nist.toolkit.xdstools2.client.tabs.simulatorControlTab.SimulatorControlTab;
-import gov.nist.toolkit.xdstools2.client.tabs.simulatorControlTab.SingleSelectionView;
-import gov.nist.toolkit.xdstools2.client.tabs.simulatorControlTab.SiteSelectionPresenter;
+import gov.nist.toolkit.xdstools2.client.tabs.simulatorControlTab.*;
 import gov.nist.toolkit.xdstools2.client.tabs.simulatorControlTab.intf.SimConfigMgrIntf;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 /**
  *
@@ -51,7 +32,7 @@ import java.util.Set;
 public class OddsSimConfigMgr implements SimConfigMgrIntf {
 
     private SimulatorControlTab simulatorControlTab;
-    VerticalPanel panel;
+    FlowPanel panel;
     HorizontalPanel hpanel;
     SimulatorConfig config;
     String testSession;
@@ -83,7 +64,7 @@ public class OddsSimConfigMgr implements SimConfigMgrIntf {
     Image refreshImg = new Image(((OddsResources)GWT.create(OddsResources.class)).getRefreshIcon());
 
 
-    public OddsSimConfigMgr(SimulatorControlTab simulatorControlTab, VerticalPanel panel, SimulatorConfig config, String testSession) {
+    public OddsSimConfigMgr(SimulatorControlTab simulatorControlTab, FlowPanel panel, SimulatorConfig config, String testSession) {
 
         this.simulatorControlTab = simulatorControlTab;
         this.panel = panel;
@@ -559,7 +540,7 @@ public class OddsSimConfigMgr implements SimConfigMgrIntf {
 
 
     void loadTestsFromCollection(final ListBox lbx, final String testCollectionName) {
-        getSimulatorControlTab().toolkitService.getCollection(testSession,"collections", testCollectionName, new AsyncCallback<Map<String, String>>() {
+        getSimulatorControlTab().toolkitService.getCollection("collections", testCollectionName, new AsyncCallback<Map<String, String>>() {
 
             public void onFailure(Throwable caught) {
                 new PopupMessage("getCollection(" + testCollectionName + "): " +  " -----  " + caught.getMessage());
@@ -734,7 +715,7 @@ public class OddsSimConfigMgr implements SimConfigMgrIntf {
         return simulatorControlTab;
     }
 
-    public VerticalPanel getPanel() {
+    public FlowPanel getPanel() {
         return panel;
     }
 }

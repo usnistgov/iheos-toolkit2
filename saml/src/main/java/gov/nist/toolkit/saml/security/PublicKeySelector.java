@@ -27,7 +27,7 @@ public class PublicKeySelector extends KeySelector
 	public KeySelectorResult select(KeyInfo keyInfo, KeySelector.Purpose purpose, AlgorithmMethod method, XMLCryptoContext context) throws KeySelectorException 
 	{
 		if (keyInfo == null)
-			throw new KeySelectorException("Null KeyInfo object!");
+			throw new KeySelectorException("Null KeyInfo model!");
 
 		SignatureMethod signMethod = (SignatureMethod) method;
 		List list = keyInfo.getContent();

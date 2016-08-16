@@ -95,7 +95,7 @@ public class W3CXMLSchemaValidator implements SchemaValidatorInterface {
 
 
 	/**
-	 * Create a Validator instance with the Schema represented by the given File object.
+	 * Create a Validator instance with the Schema represented by the given File model.
 	 * 
 	 * @param schemaFile File that contains the Schema to be used
 	 * @throws org.xml.sax.SAXException Thrown if parsing of the Schema file fails
@@ -186,7 +186,7 @@ public class W3CXMLSchemaValidator implements SchemaValidatorInterface {
 
 	/**
 	 * Get a meaningful report about a validation exception.
-	 * The report includes complete data from the exception object.
+	 * The report includes complete data from the exception model.
 	 *  
 	 * @param ex SAXParseException to get the report for
 	 * @return String report of the meaningful data contained in the exception

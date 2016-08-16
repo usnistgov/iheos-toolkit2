@@ -16,12 +16,14 @@ import java.util.logging.Logger;
  */
 public class CookiesServices {
     public static final Set<Pid> retrievePidFavoritesFromCookies() {
+//        Window.alert("Read :"+new PidSet(Cookies.getCookie(CookieManager.FAVORITEPIDSCOOKIENAME)).asParsableString());
         return new PidSet(Cookies.getCookie(CookieManager.FAVORITEPIDSCOOKIENAME)).get();
     }
 
     public static void savePidFavoritesToCookies(List<Pid> favorites){
         if (!favorites.isEmpty()){
             Cookies.setCookie(CookieManager.FAVORITEPIDSCOOKIENAME, new PidSet(new HashSet(favorites)).asParsableString());
+//            Window.alert("Write: "+new PidSet(new HashSet(favorites)).asParsableString());
         }else {
             Cookies.setCookie(CookieManager.FAVORITEPIDSCOOKIENAME, " ");
         }

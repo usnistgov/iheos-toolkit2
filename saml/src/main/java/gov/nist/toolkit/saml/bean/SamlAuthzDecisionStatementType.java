@@ -26,7 +26,7 @@ public class SamlAuthzDecisionStatementType {
      * Gets the value of the decision property.
      * 
      * @return
-     *     possible object is
+     *     possible model is
      *     {@link String }
      *     
      */
@@ -38,7 +38,7 @@ public class SamlAuthzDecisionStatementType {
      * Sets the value of the decision property.
      * 
      * @param value
-     *     allowed object is
+     *     allowed model is
      *     {@link String }
      *     
      */
@@ -50,7 +50,7 @@ public class SamlAuthzDecisionStatementType {
      * Gets the value of the resource property.
      * 
      * @return
-     *     possible object is
+     *     possible model is
      *     {@link String }
      *     
      */
@@ -62,7 +62,7 @@ public class SamlAuthzDecisionStatementType {
      * Sets the value of the resource property.
      * 
      * @param value
-     *     allowed object is
+     *     allowed model is
      *     {@link String }
      *     
      */
@@ -74,7 +74,7 @@ public class SamlAuthzDecisionStatementType {
      * Gets the value of the action property.
      * 
      * @return
-     *     possible object is
+     *     possible model is
      *     {@link String }
      *     
      */
@@ -86,7 +86,7 @@ public class SamlAuthzDecisionStatementType {
      * Sets the value of the action property.
      * 
      * @param value
-     *     allowed object is
+     *     allowed model is
      *     {@link String }
      *     
      */
@@ -98,7 +98,7 @@ public class SamlAuthzDecisionStatementType {
      * Gets the value of the evidence property.
      * 
      * @return
-     *     possible object is
+     *     possible model is
      *     {@link SamlAuthzDecisionStatementEvidenceType }
      *     
      */
@@ -110,7 +110,7 @@ public class SamlAuthzDecisionStatementType {
      * Sets the value of the evidence property.
      * 
      * @param value
-     *     allowed object is
+     *     allowed model is
      *     {@link SamlAuthzDecisionStatementEvidenceType }
      *     
      */

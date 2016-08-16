@@ -7,20 +7,21 @@ import gov.nist.toolkit.registrymetadata.Metadata
 import gov.nist.toolkit.registrymetadata.MetadataParser
 import gov.nist.toolkit.results.client.LogIdIOFormat
 import gov.nist.toolkit.results.client.LogIdType
-import gov.nist.toolkit.results.client.SiteSpec
 import gov.nist.toolkit.results.client.TestInstance
 import gov.nist.toolkit.session.server.Session
 import gov.nist.toolkit.sitemanagement.SeparateSiteLoader
 import gov.nist.toolkit.sitemanagement.Sites
 import gov.nist.toolkit.sitemanagement.client.Site
+import gov.nist.toolkit.sitemanagement.client.SiteSpec
 import gov.nist.toolkit.testengine.engine.TransactionSettings
 import gov.nist.toolkit.testengine.engine.Xdstest2
-import gov.nist.toolkit.testenginelogging.LogFileContent
-import gov.nist.toolkit.testenginelogging.LogMap
-import gov.nist.toolkit.testenginelogging.LogMapItem
-import gov.nist.toolkit.testenginelogging.TestStepLogContent
+import gov.nist.toolkit.testenginelogging.client.LogFileContentDTO
+import gov.nist.toolkit.testenginelogging.client.LogMapDTO
+import gov.nist.toolkit.testenginelogging.client.LogMapItemDTO
+import gov.nist.toolkit.testenginelogging.client.TestStepLogContentDTO
 import gov.nist.toolkit.testenginelogging.logrepository.LogRepository
 import gov.nist.toolkit.testenginelogging.logrepository.LogRepositoryFactory
+import gov.nist.toolkit.utilities.xml.Util
 import gov.nist.toolkit.utilities.xml.XmlUtil
 import gov.nist.toolkit.xdsexception.ExceptionUtil
 import gov.nist.toolkit.xdstools2.client.RegistryStatus
@@ -173,7 +174,7 @@ public class DashboardDaemon {
 				registrySave(regStatus, new File(dir, regSiteName + ".ser"))
 				continue;
 			}
-			LogMap logMap;
+			LogMapDTO logMap;
 			try {
 				logMap = xdstest.getLogMap();
 			} catch (Exception e1) {
@@ -182,9 +183,9 @@ public class DashboardDaemon {
 				registrySave(regStatus, new File(dir, regSiteName + ".ser"))
 				continue;
 			}
-			LogMapItem item = logMap.getItems().get(0);
-			LogFileContent logFile = item.log;
-			List<TestStepLogContent> testStepLogs;
+			LogMapItemDTO item = logMap.getItems().get(0);
+			LogFileContentDTO logFile = item.log;
+			List<TestStepLogContentDTO> testStepLogs;
 			try {
 				testStepLogs = logFile.getStepLogs();
 			} catch (Exception e1) {
@@ -193,10 +194,10 @@ public class DashboardDaemon {
 				registrySave(regStatus, new File(dir, regSiteName + ".ser"))
 				continue;
 			}
-			TestStepLogContent tsl = testStepLogs.get(0);
+			TestStepLogContentDTO testStepLogContentDTO = testStepLogs.get(0);
 
 			try {
-				OMElement ele = tsl.getRawResult();
+				OMElement ele = Util.parse_xml(testStepLogContentDTO.getResult());
 				List<OMElement> objrefs = XmlUtil.decendentsWithLocalName(ele, "ObjectRef");
 				Metadata m = new Metadata();
 				for (OMElement objref : objrefs) {
@@ -217,7 +218,7 @@ public class DashboardDaemon {
 			regStatus.fatalError = logFile.getFatalError();
 
 			try {
-				regStatus.errors = tsl.getErrors();
+				regStatus.errors = testStepLogContentDTO.getErrors();
 			} catch (Exception e) {
 			}
 
@@ -310,7 +311,7 @@ public class DashboardDaemon {
 				repositorySave(rstatus);
 				continue;
 			}
-			LogMap logMap;
+			LogMapDTO logMap;
 			try {
 				logMap = xdstest.getLogMap();
 			} catch (Exception e1) {
@@ -319,9 +320,9 @@ public class DashboardDaemon {
 				repositorySave(rstatus);
 				continue;
 			}
-			LogMapItem item = logMap.getItems().get(0);
-			LogFileContent logFile = item.log;
-			List<TestStepLogContent> testStepLogs;
+			LogMapItemDTO item = logMap.getItems().get(0);
+			LogFileContentDTO logFile = item.log;
+			List<TestStepLogContentDTO> testStepLogs;
 			try {
 				testStepLogs = logFile.getStepLogs();
 			} catch (Exception e1) {
@@ -330,10 +331,10 @@ public class DashboardDaemon {
 				repositorySave(rstatus);
 				continue;
 			}
-			TestStepLogContent tsl = testStepLogs.get(0);
+			TestStepLogContentDTO stepLogContentDTO = testStepLogs.get(0);
 
 			try {
-				OMElement ele = tsl.getRawInputMetadata();
+				OMElement ele = Util.parse_xml(stepLogContentDTO.getInputMetadata());
 				Metadata m = MetadataParser.parseNonSubmission(ele);
 				OMElement de = m.getExtrinsicObject(0);
 				String docUUID = m.getId(de);
@@ -348,7 +349,7 @@ public class DashboardDaemon {
 			System.out.println("Fatal error is " + rstatus.fatalError);
 
 			try {
-				rstatus.errors = tsl.getErrors();
+				rstatus.errors = stepLogContentDTO.getErrors();
 			} catch (Exception e) {
 			}
 

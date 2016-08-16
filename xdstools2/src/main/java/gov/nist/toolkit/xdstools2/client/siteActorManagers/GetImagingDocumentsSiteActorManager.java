@@ -3,7 +3,8 @@
  */
 package gov.nist.toolkit.xdstools2.client.siteActorManagers;
 
-import gov.nist.toolkit.results.client.SiteSpec;
+
+import gov.nist.toolkit.sitemanagement.client.SiteSpec;
 
 /**
  *
@@ -31,7 +32,7 @@ public class GetImagingDocumentsSiteActorManager extends BaseSiteActorManager {
              "the test results.";
    }
    
-   @Override
+
    public SiteSpec verifySiteSelection() {
       // TODO Auto-generated method stub
       return null;

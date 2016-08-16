@@ -12,7 +12,7 @@ public class SamlAuthnStatementType {
      * Gets the value of the authInstant property.
      * 
      * @return
-     *     possible object is
+     *     possible model is
      *     {@link String }
      *     
      */
@@ -24,7 +24,7 @@ public class SamlAuthnStatementType {
      * Sets the value of the authInstant property.
      * 
      * @param value
-     *     allowed object is
+     *     allowed model is
      *     {@link String }
      *     
      */
@@ -36,7 +36,7 @@ public class SamlAuthnStatementType {
      * Gets the value of the sessionIndex property.
      * 
      * @return
-     *     possible object is
+     *     possible model is
      *     {@link String }
      *     
      */
@@ -48,7 +48,7 @@ public class SamlAuthnStatementType {
      * Sets the value of the sessionIndex property.
      * 
      * @param value
-     *     allowed object is
+     *     allowed model is
      *     {@link String }
      *     
      */
@@ -60,7 +60,7 @@ public class SamlAuthnStatementType {
      * Gets the value of the authContextClassRef property.
      * 
      * @return
-     *     possible object is
+     *     possible model is
      *     {@link String }
      *     
      */
@@ -72,7 +72,7 @@ public class SamlAuthnStatementType {
      * Sets the value of the authContextClassRef property.
      * 
      * @param value
-     *     allowed object is
+     *     allowed model is
      *     {@link String }
      *     
      */
@@ -84,7 +84,7 @@ public class SamlAuthnStatementType {
      * Gets the value of the subjectLocalityAddress property.
      * 
      * @return
-     *     possible object is
+     *     possible model is
      *     {@link String }
      *     
      */
@@ -96,7 +96,7 @@ public class SamlAuthnStatementType {
      * Sets the value of the subjectLocalityAddress property.
      * 
      * @param value
-     *     allowed object is
+     *     allowed model is
      *     {@link String }
      *     
      */
@@ -108,7 +108,7 @@ public class SamlAuthnStatementType {
      * Gets the value of the subjectLocalityDNSName property.
      * 
      * @return
-     *     possible object is
+     *     possible model is
      *     {@link String }
      *     
      */
@@ -120,7 +120,7 @@ public class SamlAuthnStatementType {
      * Sets the value of the subjectLocalityDNSName property.
      * 
      * @param value
-     *     allowed object is
+     *     allowed model is
      *     {@link String }
      *     
      */

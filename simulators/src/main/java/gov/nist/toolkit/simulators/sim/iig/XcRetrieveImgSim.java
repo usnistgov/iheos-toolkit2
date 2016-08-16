@@ -9,12 +9,7 @@ import gov.nist.toolkit.configDatatypes.SimulatorProperties;
 import gov.nist.toolkit.configDatatypes.client.TransactionType;
 import gov.nist.toolkit.errorrecording.ErrorRecorder;
 import gov.nist.toolkit.errorrecording.client.XdsErrorCode;
-import gov.nist.toolkit.registrymsg.repository.RetImgDocSetReqParser;
-import gov.nist.toolkit.registrymsg.repository.RetrieveDocumentResponseGenerator;
-import gov.nist.toolkit.registrymsg.repository.RetrieveImageRequestGenerator;
-import gov.nist.toolkit.registrymsg.repository.RetrieveImageRequestModel;
-import gov.nist.toolkit.registrymsg.repository.RetrievedDocumentModel;
-import gov.nist.toolkit.registrymsg.repository.RetrievedDocumentsModel;
+import gov.nist.toolkit.registrymsg.repository.*;
 import gov.nist.toolkit.simulators.support.DsSimCommon;
 import gov.nist.toolkit.simulators.support.SimCommon;
 import gov.nist.toolkit.sitemanagement.Sites;
@@ -22,24 +17,21 @@ import gov.nist.toolkit.sitemanagement.client.Site;
 import gov.nist.toolkit.soap.axis2.Soap;
 import gov.nist.toolkit.testengine.engine.RetrieveB;
 import gov.nist.toolkit.utilities.xml.XmlUtil;
-import gov.nist.toolkit.valregmsg.message.SoapMessageValidator;
+import gov.nist.toolkit.validatorsSoapMessage.message.SoapMessageValidator;
 import gov.nist.toolkit.valregmsg.registry.RetrieveMultipleResponse;
 import gov.nist.toolkit.valsupport.engine.MessageValidatorEngine;
 import gov.nist.toolkit.valsupport.message.AbstractMessageValidator;
 import gov.nist.toolkit.xdsexception.ExceptionUtil;
-import gov.nist.toolkit.xdsexception.XdsInternalException;
-
+import gov.nist.toolkit.xdsexception.client.XdsInternalException;
 import groovy.transform.TypeChecked;
-
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-
-import javax.xml.stream.XMLStreamException;
-
 import org.apache.axiom.om.OMElement;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
+
+import javax.xml.stream.XMLStreamException;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Handles receipt of RAD-69 by IG, generation of RAD-75(s), collection of

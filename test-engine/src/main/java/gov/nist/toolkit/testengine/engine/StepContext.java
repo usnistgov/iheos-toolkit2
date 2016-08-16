@@ -2,7 +2,7 @@ package gov.nist.toolkit.testengine.engine;
 
 import gov.nist.toolkit.configDatatypes.client.Pid;
 import gov.nist.toolkit.testengine.transactions.*;
-import gov.nist.toolkit.xdsexception.XdsInternalException;
+import gov.nist.toolkit.xdsexception.client.XdsInternalException;
 import org.apache.axiom.om.OMAttribute;
 import org.apache.axiom.om.OMElement;
 import org.apache.axis2.AxisFault;
@@ -324,9 +324,9 @@ public class StepContext extends BasicContext implements ErrorReportingInterface
 					transaction = new EchoV2Transaction(this, instruction, instruction_output);
 				} else if (instruction_name.equals("EchoV3Transaction")) {
 					transaction = new EchoV3Transaction(this, instruction, instruction_output);
-				} else if (instruction_name.equals("XcpdTransaction")) {
-					transaction = new XcpdTransaction(this, instruction, instruction_output);
-				} else if (instruction_name.equals("SocketTransaction")) {
+				} 
+				else if (instruction_name.equals("SocketTransaction"))
+				{
 					transaction = new SocketTransaction(this, instruction, instruction_output);
 				} else if (instruction_name.equals("RetrieveImagingDocSetTransaction")) {
 					transaction = new ImagingDocSetRetrieveTransaction(this, instruction, instruction_output);

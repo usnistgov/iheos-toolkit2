@@ -214,6 +214,17 @@ public class SimulatorProperties {
     public static final String                     PERSISTENCE_OF_RETRIEVED_DOCS = "Persistence of Retrieved Documents Option";
 
     /**
+     * The current index state of the content bundle. The index number is the item ordinal from the bundle index.
+     */
+    public static final String                      currentContentBundleIdx = "Current Content Bundle Idx";
+
+    /**
+     * Content bundle
+     * Should be in the format of "9999/Trans/ContentBundle" where 9999 is a test number.
+     * @See https://bitbucket.org/iheos/toolkit/wiki/blog/odds_overview
+     */
+    public static final String                      contentBundle = "Content Bundle";
+    /**
      * Testplan to register On-Demand Document Entry and supply content
      * Look up will be in this order: "{Test plan#}/{section[0]}/ContentBundle" Example: 15812/Register_OD/ContentBundle
      * @See https://bitbucket.org/iheos/toolkit/wiki/blog/odds_overview

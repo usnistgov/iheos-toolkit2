@@ -5,13 +5,12 @@ import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.*;
-import com.google.gwt.user.client.ui.Panel;
 import gov.nist.toolkit.actorfactory.client.SimulatorConfig;
 import gov.nist.toolkit.actortransaction.client.ActorType;
 import gov.nist.toolkit.configDatatypes.client.TransactionType;
 import gov.nist.toolkit.results.client.Result;
-import gov.nist.toolkit.results.client.SiteSpec;
 import gov.nist.toolkit.results.client.TestInstance;
+import gov.nist.toolkit.sitemanagement.client.SiteSpec;
 import gov.nist.toolkit.xdstools2.client.*;
 import gov.nist.toolkit.xdstools2.client.inspector.MetadataInspectorTab;
 import gov.nist.toolkit.xdstools2.client.siteActorManagers.GetDocumentsSiteActorManager;
@@ -59,20 +58,16 @@ public class IDSTestTab extends GenericQueryTab implements GatewayTool {
     public ToolkitServiceAsync getToolkitService() { return toolkitService; }
 
     @Override
-    public TabContainer getToolContainer() { return myContainer; }
+    public TabContainer getToolContainer() { return getTabContainer(); }
 
     public void onTabLoad(TabContainer container, boolean select) {
     }
 
-    public void onTabLoad(TabContainer container, boolean select, String eventName) {
-        myContainer = container;
-        topPanel = new VerticalPanel();
+    @Override
+    public void onTabLoad(boolean select, String eventName) {
         genericQueryTab = this;
+        registerTab(select, eventName);  // link into container/tab management
 
-        container.addTab(topPanel, eventName, select);
-
-
-        addCloseButton(container,topPanel, null);
         tlsOptionEnabled = false;
 
         genericQueryTab.reloadTransactionOfferings();
@@ -99,16 +94,16 @@ public class IDSTestTab extends GenericQueryTab implements GatewayTool {
 
 
         ////////////////////////////////////////////////////////////////////////////////////////////////
-        topPanel.add(new HTML("<h1>Imaging Document Source Test Tool</h1>"));
+        tabTopPanel.add(new HTML("<h1>Imaging Document Source Test Tool</h1>"));
 
         Image initiatingGatewayDiagram=new Image();
         // TODO: Update Image
         initiatingGatewayDiagram.setUrl("diagrams/IGdiagram.png");
         initiatingGatewayDiagram.setHeight("300px");
-        topPanel.add(initiatingGatewayDiagram);
+        tabTopPanel.add(initiatingGatewayDiagram);
 
         // TODO: Update HTML
-        topPanel.add(new HTML("<p>" +
+        tabTopPanel.add(new HTML("<p>" +
                 "This tool tests an Initiating Gateway with Affinity Domain option.  The tests are driven by " +
                 "a Document Consumer as defined by the Affinity Domain option. The Initiating Gateway " +
                 "(System Under Test) will " +
@@ -129,7 +124,7 @@ public class IDSTestTab extends GenericQueryTab implements GatewayTool {
 
         ////////////////////////////////////////////////////////////////////////////////////////////////
         // TODO: Update HTML
-        topPanel.add(new HTML(
+        tabTopPanel.add(new HTML(
                 "<hr />" +
                 "<h2>Build Test Environment</h2>" +
                 "<p>" +
@@ -144,7 +139,7 @@ public class IDSTestTab extends GenericQueryTab implements GatewayTool {
         ));
 
         HorizontalPanel testEnvironmentsPanel = new HorizontalPanel();
-        topPanel.add(testEnvironmentsPanel);
+        tabTopPanel.add(testEnvironmentsPanel);
 
         new BuildIDSTestOrchestrationButton(this, testEnvironmentsPanel, "Build Test Environment", false);
 
@@ -166,18 +161,18 @@ public class IDSTestTab extends GenericQueryTab implements GatewayTool {
                 new CoupledTransactions(),
                 false  /* display patient id param */);
 
-        topPanel.add(testSelectionManager.buildTestSelector());
+        tabTopPanel.add(testSelectionManager.buildTestSelector());
 
-        topPanel.add(testSelectionManager.buildSectionSelector());
+        tabTopPanel.add(testSelectionManager.buildSectionSelector());
 
-        topPanel.add(mainGrid);
+        tabTopPanel.add(mainGrid);
 
         testSelectionManager.loadTestsFromCollection(COLLECTION_NAME);
 
 
         ////////////////////////////////////////////////////////////////////////////////////////////////
         // TODO: Update HTML
-        topPanel.add(new HTML(
+        tabTopPanel.add(new HTML(
                 "<hr />" +
                         "<h2>Run Test</h2>" +
                         "<p>" +
@@ -186,9 +181,9 @@ public class IDSTestTab extends GenericQueryTab implements GatewayTool {
                         "</p>"
         ));
 
-        addRunnerButtons(topPanel);
+        addRunnerButtons(tabTopPanel);
 
-        topPanel.add(resultPanel);
+        tabTopPanel.add(resultPanel);
     }
 
     class Runner implements ClickHandler {
@@ -209,7 +204,7 @@ public class IDSTestTab extends GenericQueryTab implements GatewayTool {
 
             Map<String, String> parms = new HashMap<>();
 
-            Panel logLaunchButtonPanel = rigForRunning();
+            HorizontalPanel logLaunchButtonPanel = rigForRunning();
 //            logLaunchButtonPanel.clear();
 //            logLaunchButtonPanel.add(testSelectionManager.buildLogLauncher(new List<>(rrConfig)));
             String testToRun = selectedTest;
@@ -217,7 +212,7 @@ public class IDSTestTab extends GenericQueryTab implements GatewayTool {
                 testToRun = "tc:" + COLLECTION_NAME;
             }
 
-            toolkitService.runMesaTest(getEnvironmentSelection(), getCurrentTestSession(), getSiteSelection(), new TestInstance(testToRun), testSelectionManager.getSelectedSections(), parms, true, queryCallback);
+            toolkitService.runMesaTest(getCurrentTestSession(), getSiteSelection(), new TestInstance(testToRun), testSelectionManager.getSelectedSections(), parms, true, queryCallback);
         }
 
     }
@@ -254,7 +249,7 @@ public class IDSTestTab extends GenericQueryTab implements GatewayTool {
                         itab.setResults(results);
                         itab.setSiteSpec(siteSpec);
                         itab.setToolkitService(toolkitService);
-                        itab.onTabLoad(myContainer, true, null);
+                        itab.onTabLoad(true, "Insp");
                     }
                 });
             }

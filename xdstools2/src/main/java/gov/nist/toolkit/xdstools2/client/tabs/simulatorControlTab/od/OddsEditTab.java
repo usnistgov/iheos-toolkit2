@@ -1,8 +1,6 @@
 package gov.nist.toolkit.xdstools2.client.tabs.simulatorControlTab.od;
 
-import com.google.gwt.user.client.ui.VerticalPanel;
 import gov.nist.toolkit.actorfactory.client.SimulatorConfig;
-import gov.nist.toolkit.xdstools2.client.TabContainer;
 import gov.nist.toolkit.xdstools2.client.siteActorManagers.BaseSiteActorManager;
 import gov.nist.toolkit.xdstools2.client.siteActorManagers.FindDocumentsSiteActorManager;
 import gov.nist.toolkit.xdstools2.client.tabs.genericQueryTab.GenericQueryTab;
@@ -25,15 +23,11 @@ public class OddsEditTab extends GenericQueryTab {
         this.simulatorControlTab = simulatorControlTab;
     }
 
-    public void onTabLoad(TabContainer container, boolean select, String eventName) {
-        myContainer = container;
-        topPanel = new VerticalPanel();
+    @Override
+    public void onTabLoad(boolean select, String eventName) {
+        registerTab(select, eventName);
 
-
-        container.addTab(topPanel, "Odds Sim Edit", select);
-        addCloseButton(container, topPanel, null);
-
-        OddsSimConfigMgr simConfigMgr = new OddsSimConfigMgr(simulatorControlTab, topPanel, config, getCurrentTestSession());
+        OddsSimConfigMgr simConfigMgr = new OddsSimConfigMgr(simulatorControlTab, tabTopPanel, config, getCurrentTestSession());
         simConfigMgr.displayHeader();
         simConfigMgr.displayInPanel();
     }

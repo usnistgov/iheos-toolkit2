@@ -3,20 +3,14 @@ package gov.nist.toolkit.xdstools2.client.tabs;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.FlexTable;
 import com.google.gwt.user.client.ui.HTML;
-import com.google.gwt.user.client.ui.VerticalPanel;
 import gov.nist.toolkit.http.client.HtmlMarkup;
 import gov.nist.toolkit.sitemanagement.client.Site;
 import gov.nist.toolkit.sitemanagement.client.TransactionBean;
 import gov.nist.toolkit.xdstools2.client.PopupMessage;
-import gov.nist.toolkit.xdstools2.client.TabContainer;
 import gov.nist.toolkit.xdstools2.client.siteActorManagers.NullSiteActorManager;
 import gov.nist.toolkit.xdstools2.client.tabs.genericQueryTab.GenericQueryTab;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class RepositoryListingTab extends GenericQueryTab {
 	FlexTable byNameTable = new FlexTable();
@@ -28,7 +22,7 @@ public class RepositoryListingTab extends GenericQueryTab {
 
 	String happyGif = "icons/happy0024.gif";
 	String sadGif = "icons/sad0019.gif";
-	
+
 	String happyHtml = "<img src=\"" + happyGif + "\"/>";
 	String sadHtml = "<img src=\"" + sadGif + "\"/>";
 
@@ -37,28 +31,24 @@ public class RepositoryListingTab extends GenericQueryTab {
 		super(new NullSiteActorManager());
 	}
 
-	public void onTabLoad(TabContainer container, boolean select, String eventName) {
-		myContainer = container;
-		topPanel = new VerticalPanel();
-
-
-		container.addTab(topPanel, "Rep List", select);
-		addCloseButton(container,topPanel, null);
+	@Override
+	public void onTabLoad(boolean select, String eventName) {
+		registerTab(select, eventName);  // link into container/tab management
 
 		HTML title = new HTML();
 		title.setHTML("<h2>Repository Listing</h2>");
-		topPanel.add(title);
+		tabTopPanel.add(title);
 
-		topPanel.add(HtmlMarkup.html(HtmlMarkup.h3("By Name")));
+		tabTopPanel.add(HtmlMarkup.html(HtmlMarkup.h3("By Name")));
 
 		byNameTable.setBorderWidth(1);
 		byNameTable.setCellSpacing(0);
 
-		topPanel.add(byNameTable);
+		tabTopPanel.add(byNameTable);
 
-		topPanel.add(HtmlMarkup.html(HtmlMarkup.h3("By repositoryUniqueId")));
+		tabTopPanel.add(HtmlMarkup.html(HtmlMarkup.h3("By repositoryUniqueId")));
 
-		topPanel.add(byUidTable);
+		tabTopPanel.add(byUidTable);
 
 		byUidTable.setBorderWidth(1);
 		byUidTable.setCellSpacing(0);
@@ -66,18 +56,18 @@ public class RepositoryListingTab extends GenericQueryTab {
 		/* ODDS */
 		HTML oddsTitle = new HTML();
 		oddsTitle.setHTML("<hr><h2>On-Demand Document Source Listing</h2>");
-		topPanel.add(oddsTitle);
+		tabTopPanel.add(oddsTitle);
 
-		topPanel.add(HtmlMarkup.html(HtmlMarkup.h3("By Name")));
+		tabTopPanel.add(HtmlMarkup.html(HtmlMarkup.h3("By Name")));
 
 		oddsByNameTable.setBorderWidth(1);
 		oddsByNameTable.setCellSpacing(0);
 
-		topPanel.add(oddsByNameTable);
+		tabTopPanel.add(oddsByNameTable);
 
-		topPanel.add(HtmlMarkup.html(HtmlMarkup.h3("By repositoryUniqueId")));
+		tabTopPanel.add(HtmlMarkup.html(HtmlMarkup.h3("By repositoryUniqueId")));
 
-		topPanel.add(oddsByUidTable);
+		tabTopPanel.add(oddsByUidTable);
 
 		oddsByUidTable.setBorderWidth(1);
 		oddsByUidTable.setCellSpacing(0);
@@ -171,7 +161,7 @@ public class RepositoryListingTab extends GenericQueryTab {
 				} catch (Exception e) {}
 			}
 		}
-		
+
 		// duplicate uids getRetrievedDocumentsModel sad face
 		for (int r=1; r<byUidTbl.getRowCount()-1; r++) {
 			if (byUidTbl.getText(r, 1).equals(byUidTbl.getText(r+1, 1))) {
@@ -183,9 +173,9 @@ public class RepositoryListingTab extends GenericQueryTab {
 				byUidTbl.setHTML(r, 0, sadHtml);
 			}
 		}
-		
+
 	}
-	
+
 	void sort(String[] a) {
 		for (int i=0; i<a.length-1; i++) {
 			for (int j=i+1; j<a.length; j++) {
@@ -194,7 +184,7 @@ public class RepositoryListingTab extends GenericQueryTab {
 			}
 		}
 	}
-	
+
 	void swap(String[] a, int i, int j) {
 		String b;
 		b = a[i];

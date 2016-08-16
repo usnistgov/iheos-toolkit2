@@ -1,12 +1,16 @@
 package gov.nist.toolkit.testengine.engine;
 
-import gov.nist.toolkit.registrymsg.repository.RetrievedDocumentModel;
 import gov.nist.toolkit.commondatatypes.MetadataSupport;
+import gov.nist.toolkit.registrymsg.repository.RetrievedDocumentModel;
 import gov.nist.toolkit.results.client.TestInstance;
-import gov.nist.toolkit.testenginelogging.*;
+import gov.nist.toolkit.testenginelogging.LogFileContentBuilder;
+import gov.nist.toolkit.testenginelogging.TestLogDetails;
+import gov.nist.toolkit.testenginelogging.client.LogFileContentDTO;
+import gov.nist.toolkit.testenginelogging.client.ReportDTO;
+import gov.nist.toolkit.testenginelogging.client.SectionLogMapDTO;
+import gov.nist.toolkit.testenginelogging.client.TestStepLogContentDTO;
 import gov.nist.toolkit.utilities.xml.OMFormatter;
-import gov.nist.toolkit.utilities.xml.XmlUtil;
-import gov.nist.toolkit.xdsexception.XdsInternalException;
+import gov.nist.toolkit.xdsexception.client.XdsInternalException;
 import org.apache.axiom.om.OMElement;
 import org.apache.log4j.Logger;
 
@@ -21,7 +25,13 @@ public class UseReportManager  {
 	RetrievedDocumentModel retrievedDocumentModel;
 	ReportManager reportManager; // things reported from query results
 	TestConfig testConfig;
-	SectionLogMap priorTests = new SectionLogMap();
+	SectionLogMapDTO sectionLogMapDTO;
+
+	public UseReportManager(TestConfig config) {
+		testConfig = config;
+		useReports = new ArrayList<>();
+		sectionLogMapDTO = new SectionLogMapDTO(testConfig.testInstance);
+	}
 
 	/**
 	 * Return TestSections necessary to satisfy these UseReport instances.
@@ -44,22 +54,23 @@ public class UseReportManager  {
 			String section = tsec.section;
 			if (testInstance == null || testInstance.isEmpty())
 				testInstance = config.testInstance;
+			sectionLogMapDTO.setTestInstance(testInstance);
 			if (section != null && section.equals("THIS"))
 				continue;
 			if (config.verbose)
 				System.out.println("\tLoading logs for test " + testInstance + " section " + section + "...");
-			TestDetails tspec = null;
+			TestLogDetails tspec = null;
 			try {
-				tspec = new TestDetails(config.altTestkitHome, testInstance);
+				tspec = new TestLogDetails(config.altTestkitHome, testInstance);
 			} catch (Exception e) {
-				tspec = new TestDetails(config.testkitHome, testInstance);
+				tspec = new TestLogDetails(config.testkitHome, testInstance);
 			}
-            System.out.println("TestDetails are: " + tspec.toString());
+            System.out.println("TestLogDetails are: " + tspec.toString());
 			tspec.setLogRepository(config.logRepository);
 			File testlogFile = tspec.getTestLog(testInstance, section);
             System.out.println("Loading log " + testlogFile);
 			if (testlogFile != null)
-				priorTests.put((section.equals("") ? "None" : section), new LogFileContent(testlogFile));
+				sectionLogMapDTO.put((section.equals("") ? "None" : section), new LogFileContentBuilder().build(testlogFile));
 		}
 	}
 
@@ -76,11 +87,6 @@ public class UseReportManager  {
 		}
 
 		return buf.toString();
-	}
-
-	public UseReportManager(TestConfig config) {
-		testConfig = config;
-		useReports = new ArrayList<UseReport>();
 	}
 
 	public OMElement toXML() {
@@ -163,34 +169,43 @@ public class UseReportManager  {
 		reportManager = rm;
 	}
 
-	public void resolve(SectionLogMap previousLogs) throws XdsInternalException {
-		for (UseReport ur : useReports) {
-            if (ur.useAs != null && !ur.useAs.equals("") &&
-                    ur.value != null && !ur.value.equals(""))
-                continue;  // already resolved
-			LogFileContent log = previousLogs.get(ur.section);
-			if (log == null)
-				log = priorTests.get(ur.section);
-			if (log == null)
-				throw new XdsInternalException("UseReportManager#resolve: cannot find Report for " + ur.getURI() + "\n");
-			TestStepLogContent stepLog = log.getStepLog(ur.step);
-			if (stepLog == null)
-                throw new XdsInternalException("UseReportManager#resolve: cannot find Report for " + ur.getURI() + "\n");
+	public void resolve(SectionLogMapDTO previousLogs) throws XdsInternalException {
+		for (UseReport useReport : useReports) {
+            if (useReport.isResolved())
+                continue;
 
-			OMElement reportEles = stepLog.getRawReports();
-			if (reportEles == null)
-                throw new XdsInternalException("UseReportManager#resolve: cannot find Report for " + ur.getURI() + "\n");
+			LogFileContentDTO logFileContentDTO = previousLogs.get(useReport.section);
+			if (logFileContentDTO == null)
+				logFileContentDTO = sectionLogMapDTO.get(useReport.section);
+			if (logFileContentDTO == null)
+				throw new XdsInternalException("UseReportManager#resolve: cannot find Report for " + useReport.getURI() + "\n");
 
-			String reportName = ur.reportName;
-			for (OMElement rep : XmlUtil.childrenWithLocalName(reportEles, "Report")) {
-				Report r = Report.parse(rep);
-				if (reportName.equals(r.name)) {
-					ur.value = r.getValue();
+			TestStepLogContentDTO testStepLogContentDTO = logFileContentDTO.getStepLog(useReport.step);
+			if (testStepLogContentDTO == null)
+                throw new XdsInternalException("UseReportManager#resolve: cannot find Report for " + useReport.getURI() + "\n");
+
+			String reportName = useReport.reportName;
+			boolean satisfied = false;
+			for (ReportDTO reportDTO : testStepLogContentDTO.getReportDTOs()) {
+				if (reportName.equals(reportDTO.getName())) {
+					useReport.value = reportDTO.getValue();
+					satisfied = true;
+					break;
 				}
 			}
+			if (!satisfied)
+                throw new XdsInternalException("UseReportManager#resolve: cannot find Report for " + useReport.getURI() + "\n");
+
+//			for (OMElement rep : XmlUtil.childrenWithLocalName(reportEles, "Report")) {
+//				ReportDTO r = ReportBuilder.parse(rep);
+//				if (reportName.equals(r.getName())) {
+//					useReport.value = r.getValue();
+//				}
+//			}
 
 		}
 	}
+
 
 	public void apply(List<OMElement> xmls) throws XdsInternalException {
 		for (OMElement xml : xmls)

@@ -15,7 +15,7 @@ import gov.nist.toolkit.simulators.support.DsSimCommon;
 import gov.nist.toolkit.valsupport.engine.MessageValidatorEngine;
 
 /**
- * Created by bill on 11/16/15.
+ *
  */
 public class RGADActorSimulator extends BaseDsActorSimulator {
     static final Logger logger = Logger.getLogger(RGADActorSimulator.class);

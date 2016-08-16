@@ -14,8 +14,8 @@ import gov.nist.toolkit.actorfactory.client.SimId;
 import gov.nist.toolkit.actortransaction.client.TransactionInstance;
 import gov.nist.toolkit.http.client.HtmlMarkup;
 import gov.nist.toolkit.results.client.Result;
-import gov.nist.toolkit.results.client.SiteSpec;
-import gov.nist.toolkit.xdstools2.client.Panel;
+import gov.nist.toolkit.sitemanagement.client.SiteSpec;
+import gov.nist.toolkit.xdstools2.client.Panel1;
 import gov.nist.toolkit.xdstools2.client.*;
 import gov.nist.toolkit.xdstools2.client.inspector.MetadataInspectorTab;
 
@@ -24,8 +24,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class SimulatorMessageViewTab extends TabbedWindow {
-	protected TabContainer myContainer;
+public class SimulatorMessageViewTab extends ToolWindow {
 
 	final protected ToolkitServiceAsync toolkitService = GWT
 	.create(ToolkitService.class);
@@ -70,10 +69,8 @@ public class SimulatorMessageViewTab extends TabbedWindow {
 
 	// If eventName is null then display list of simulators.  If non-null then it is
 	// the simulator id. In this case do not allow simulator selection.
-	public void onTabLoad(TabContainer container, boolean select, String simIdString) {
-		myContainer = container;
-		topPanel = new VerticalPanel();
-
+	@Override
+	public void onTabLoad(boolean select, String simIdString) {
 		if (simIdString != null) {
             try {
                 simid = new SimId(simIdString);
@@ -83,10 +80,9 @@ public class SimulatorMessageViewTab extends TabbedWindow {
             }
         }
 
-		container.addTab(topPanel, simIdString + " Logs", select);
-		addCloseButton(container, topPanel, null);
+		registerTab(select, simIdString);
 
-		topPanel.add(simDisplayPanel);
+		tabTopPanel.add(simDisplayPanel);
 		simDisplayPanel.add(simControlPanel);
 		simDisplayPanel.add(detailPanel);
 
@@ -210,7 +206,7 @@ public class SimulatorMessageViewTab extends TabbedWindow {
 //				transactionNamesPanel.add(HtmlMarkup.html(HtmlMarkup.bold("Transaction: ")));
 //
 //
-//				transactionRadButtons = new TransactionNamesRadioButtonGroup(new Panel(transactionNamesPanel), simidFinal);
+//				transactionRadButtons = new TransactionNamesRadioButtonGroup(new Panel1(transactionNamesPanel), simidFinal);
 //				transactionRadButtons.addButton("All");
 //				transactionRadButtons.buttons.getRetrievedDocumentsModel(0).setValue(true);
 //
@@ -243,7 +239,7 @@ public class SimulatorMessageViewTab extends TabbedWindow {
 //				transactionNamesPanel.add(html(bold("Transaction: ")));
 //
 //
-//				transactionRadButtons = new TransactionNamesRadioButtonGroup(new Panel(transactionNamesPanel), actorNameFinal);
+//				transactionRadButtons = new TransactionNamesRadioButtonGroup(new Panel1(transactionNamesPanel), actorNameFinal);
 //				transactionRadButtons.addButtons(result);
 //
 //			}
@@ -432,11 +428,10 @@ public class SimulatorMessageViewTab extends TabbedWindow {
 						results.add(result);
 						MetadataInspectorTab tab = new MetadataInspectorTab();
 						tab.setResults(results);
-						Xdstools2.DEBUG("simdb is " + getSimid().toString());
 						SiteSpec siteSpec = new SiteSpec(getSimid().toString(), currentTransactionInstance.actorType, null);
 						tab.setSiteSpec(siteSpec);
 						tab.setToolkitService(toolkitService);
-						tab.onTabLoad(myContainer, true, null);
+						tab.onTabLoad(true, "Insp");
                     }
                 });
 			} catch (Exception e) {
@@ -464,7 +459,7 @@ public class SimulatorMessageViewTab extends TabbedWindow {
 						SiteSpec siteSpec = new SiteSpec(getSimid().toString(), currentTransactionInstance.actorType, null);
 						tab.setSiteSpec(siteSpec);
 						tab.setToolkitService(toolkitService);
-						tab.onTabLoad(myContainer, true, null);
+						tab.onTabLoad(true, "Insp");
 					}
 				});
 			} catch (Exception e) {
@@ -550,7 +545,7 @@ public class SimulatorMessageViewTab extends TabbedWindow {
 	class TransactionNamesRadioButtonGroup extends RadioButtonGroup {
 		SimId simid;
 
-		TransactionNamesRadioButtonGroup(Panel p, SimId simid) {
+		TransactionNamesRadioButtonGroup(Panel1 p, SimId simid) {
 			super("TransactionNamesGroup", p);
 			this.simid = simid;
 			simidFinal = simid;

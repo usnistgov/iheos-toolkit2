@@ -8,7 +8,7 @@ import java.util.Locale;
 public class Hl7Date {
 	public String now() {
 		StringBuilder sb = new StringBuilder();
-		// Send all output to the Appendable object sb
+		// Send all output to the Appendable model sb
 		Formatter formatter = new Formatter(sb, Locale.US);
 		Calendar c = new GregorianCalendar();
 		formatter.format("%s%02d%02d%02d%02d%02d", 
@@ -41,7 +41,7 @@ public class Hl7Date {
 
 	public String plusMinutes(int minutes) {
 		StringBuilder sb = new StringBuilder();
-		// Send all output to the Appendable object sb
+		// Send all output to the Appendable model sb
 		Formatter formatter = new Formatter(sb, Locale.US);
 		Calendar c = new GregorianCalendar();
 		int year = c.get(Calendar.YEAR);
@@ -79,7 +79,7 @@ public class Hl7Date {
 	// useful for testing
 	public String lastyear() {
 		StringBuilder sb = new StringBuilder();
-		// Send all output to the Appendable object sb
+		// Send all output to the Appendable model sb
 		Formatter formatter = new Formatter(sb, Locale.US);
 		Calendar c = new GregorianCalendar();
 		formatter.format("%s%02d%02d%02d%02d%02d", 

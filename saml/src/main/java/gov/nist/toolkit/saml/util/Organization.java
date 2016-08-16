@@ -36,7 +36,7 @@ public class Organization implements Serializable
 	 	    private int _iMetadataTimeout;
 	 	   
 		    /**
-	 	     * Creates an organization object.
+	 	     * Creates an organization model.
 	 	     *
 		     * @param sID The id of the organization
 	 	     * @param baSourceID the SourceID of the organization

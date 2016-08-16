@@ -1,7 +1,6 @@
 package gov.nist.toolkit.services.server.orchestration
 
 import gov.nist.toolkit.actorfactory.SimCache
-import gov.nist.toolkit.actorfactory.SimDb
 import gov.nist.toolkit.configDatatypes.SimulatorProperties
 import gov.nist.toolkit.actorfactory.client.SimId
 import gov.nist.toolkit.actorfactory.client.SimulatorConfig
@@ -12,7 +11,7 @@ import gov.nist.toolkit.configDatatypes.client.PatientErrorList
 import gov.nist.toolkit.configDatatypes.client.PatientErrorMap
 import gov.nist.toolkit.configDatatypes.client.Pid
 import gov.nist.toolkit.installation.Installation
-import gov.nist.toolkit.results.SiteBuilder
+import gov.nist.toolkit.results.shared.SiteBuilder
 import gov.nist.toolkit.results.client.TestInstance
 import gov.nist.toolkit.services.client.IgOrchestrationRequest
 import gov.nist.toolkit.services.client.IgOrchestrationResponse

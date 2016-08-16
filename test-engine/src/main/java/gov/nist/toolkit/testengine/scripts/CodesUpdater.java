@@ -14,7 +14,7 @@ import gov.nist.toolkit.valregmsg.registry.SQCodedTerm;
 import gov.nist.toolkit.valregmsg.registry.storedquery.support.ParamParser;
 import gov.nist.toolkit.valregmsg.registry.storedquery.support.SqParams;
 import gov.nist.toolkit.valregmsg.registry.storedquery.support.StoredQueryGenerator;
-import gov.nist.toolkit.xdsexception.XdsInternalException;
+import gov.nist.toolkit.xdsexception.client.XdsInternalException;
 import org.apache.axiom.om.OMAttribute;
 import org.apache.axiom.om.OMElement;
 import org.apache.commons.io.FileUtils;
@@ -399,7 +399,7 @@ public class CodesUpdater {
     /**
      * This method returns a Code out of a classification element.
      * @param classificationElement classification element to extract
-     * @return code object
+     * @return code model
      */
     private Code getCode(OMElement classificationElement){
         // getRetrievedDocumentsModel coding scheme
@@ -422,7 +422,7 @@ public class CodesUpdater {
             codeSystemElement= v;
         }
 
-        // return the code object
+        // return the code model
         if (codeSystemElement == null) return new Code(value, codeSystem, displayName);
         codeSystem = codeSystemElement.getText();
         return new Code(value, codeSystem, displayName);

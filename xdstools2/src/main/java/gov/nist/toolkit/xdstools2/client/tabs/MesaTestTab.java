@@ -13,6 +13,7 @@ import gov.nist.toolkit.results.client.TestInstance;
 import gov.nist.toolkit.xdstools2.client.*;
 import gov.nist.toolkit.xdstools2.client.siteActorManagers.GetDocumentsSiteActorManager;
 import gov.nist.toolkit.xdstools2.client.tabs.genericQueryTab.GenericQueryTab;
+import gov.nist.toolkit.session.client.Htmlize;
 
 import java.util.*;
 
@@ -48,25 +49,21 @@ public class MesaTestTab extends GenericQueryTab {
 	public void onTabLoad(TabContainer container, boolean select) {
 	}
 
-	public void onTabLoad(TabContainer container, boolean select, String eventName) {
-		myContainer = container;
-		topPanel = new VerticalPanel();
-
-
-		container.addTab(topPanel, eventName, select);
-		addCloseButton(container,topPanel, null);
-//		testSessionSelector = TestSessionSelector.getInstance(toolkitService, new Panel(menuPanel));
+	@Override
+	public void onTabLoad(boolean select, String eventName) {
+		registerTab(select, eventName);
+//		testSessionSelector = TestSessionSelector.getInstance(toolkitService, new Panel1(menuPanel));
 
 		HTML title = new HTML();
 		title.setHTML("<h2>" + eventName + "</h2>");
-		topPanel.add(title);
+		tabTopPanel.add(title);
 		
 //		// test session
-//		testSessionSelector = new TestSessionSelector(toolkitService, new Panel(topPanel));
+//		testSessionSelector = new TestSessionSelector(toolkitService, new Panel1(tabTopPanel));
 		
 		// Actor Selection
 		HorizontalPanel selectActorPanel = new HorizontalPanel();
-		topPanel.add(selectActorPanel);
+		tabTopPanel.add(selectActorPanel);
 		
 		HTML selectTestCollectionLabel = new HTML();
 		selectTestCollectionLabel.setText("Select Actor Name: ");
@@ -78,7 +75,7 @@ public class MesaTestTab extends GenericQueryTab {
 		
 		// test selection
 		HorizontalPanel selectTestPanel = new HorizontalPanel();
-		topPanel.add(selectTestPanel);
+		tabTopPanel.add(selectTestPanel);
 		
 		HTML selectTestLabel = new HTML();
 		selectTestLabel.setText("Select Test: ");
@@ -90,7 +87,7 @@ public class MesaTestTab extends GenericQueryTab {
 		addReadme();
 
 		// section selection
-		topPanel.add(selectSectionPanel);
+		tabTopPanel.add(selectSectionPanel);
 		
 		HTML selectSectionLabel = new HTML();
 		selectSectionLabel.setText("Select Section: ");
@@ -104,7 +101,7 @@ public class MesaTestTab extends GenericQueryTab {
 		
 		// Patient ID
 		HorizontalPanel patientIdPanel = new HorizontalPanel();
-		topPanel.add(patientIdPanel);
+		tabTopPanel.add(patientIdPanel);
 		
 //		HTML patientIdLabel = new HTML();
 //		patientIdLabel.setText("Patient ID");
@@ -115,7 +112,7 @@ public class MesaTestTab extends GenericQueryTab {
 	
 		// Alt Patient ID
 		HorizontalPanel altPatientIdPanel = new HorizontalPanel();
-//		topPanel.add(altPatientIdPanel);
+//		tabTopPanel.add(altPatientIdPanel);
 		
 		HTML altPatientIdLabel = new HTML();
 		altPatientIdLabel.setText("Alternate Patient ID");
@@ -126,7 +123,7 @@ public class MesaTestTab extends GenericQueryTab {
 	
 		mainGrid = new FlexTable();
 		
-		topPanel.add(mainGrid);
+		tabTopPanel.add(mainGrid);
 
 
 	}
@@ -181,7 +178,7 @@ public class MesaTestTab extends GenericQueryTab {
 			}
 
 			rigForRunning();
-			toolkitService.runMesaTest(getEnvironmentSelection(),getCurrentTestSession(), getSiteSelection(), new TestInstance(selectedTest), selectedSections, parms, true, queryCallback);
+			toolkitService.runMesaTest(getCurrentTestSession(), getSiteSelection(), new TestInstance(selectedTest), selectedSections, parms, true, queryCallback);
 
 		}
 
@@ -192,16 +189,16 @@ public class MesaTestTab extends GenericQueryTab {
 	void addReadme() {
 		HTML readmeBefore = new HTML();
 		readmeBefore.setHTML("<hr />");
-		topPanel.add(readmeBefore);
+		tabTopPanel.add(readmeBefore);
 		
 		// readme box
 		
 		readmeBox.setSize("600px", "200px");
-		topPanel.add(readmeBox);
+		tabTopPanel.add(readmeBox);
 		
 		HTML readmeAfter = new HTML();
 		readmeAfter.setHTML("<hr />");
-		topPanel.add(readmeAfter);
+		tabTopPanel.add(readmeAfter);
 	}
 	
 	class SelectSectionViewButtonClickHandler implements ClickHandler {
@@ -214,7 +211,7 @@ public class MesaTestTab extends GenericQueryTab {
 				}
 
 				public void onSuccess(String result) {
-					new TextViewerTab().onTabLoad(myContainer, true, result, selectedTest + "#" + selectedSection);
+					new TextViewerTab().onTabLoad(true, result, selectedTest + "#" + selectedSection);
 				}
 				
 			});
@@ -223,7 +220,7 @@ public class MesaTestTab extends GenericQueryTab {
 	}
 	
 	void loadSectionNames() {
-		toolkitService.getTestIndex(getCurrentTestSession(),selectedTest, new AsyncCallback<List<String>>() {
+		toolkitService.getTestIndex(selectedTest, new AsyncCallback<List<String>>() {
 
 			public void onFailure(Throwable caught) {
 				new PopupMessage("getTestIndex: " + caught.getMessage());
@@ -275,7 +272,7 @@ public class MesaTestTab extends GenericQueryTab {
 	}
 	
 	void loadTestReadme() {
-		toolkitService.getTestReadme(getCurrentTestSession(),selectedTest, new AsyncCallback<String>() {
+		toolkitService.getTestReadme(selectedTest, new AsyncCallback<String>() {
 
 			public void onFailure(Throwable caught) {
 				new PopupMessage("getTestReadme: " + caught.getMessage());
@@ -285,7 +282,7 @@ public class MesaTestTab extends GenericQueryTab {
 				Widget w = readmeBox.getWidget();
 				if (w != null)
 					readmeBox.remove(w);
-				readmeBox.add(htmlize("README", result));
+				readmeBox.add(Htmlize.asHtml("README", result));
 			}
 			
 		});
@@ -339,7 +336,7 @@ public class MesaTestTab extends GenericQueryTab {
 	}
 	
 	void loadTestsForActor() {
-		toolkitService.getCollection(getCurrentTestSession(),"actorcollections", selectedActor, new AsyncCallback<Map<String, String>>() {
+		toolkitService.getCollection("actorcollections", selectedActor, new AsyncCallback<Map<String, String>>() {
 
 			public void onFailure(Throwable caught) {
 				new PopupMessage("getCollection(actorcollections): " + selectedActor + " -----  " + caught.getMessage());
@@ -365,7 +362,7 @@ public class MesaTestTab extends GenericQueryTab {
 	
 
 	void loadActorNames() {
-		toolkitService.getCollectionNames(getCurrentTestSession(),"actorcollections", new AsyncCallback<Map<String, String>>() {
+		toolkitService.getCollectionNames("actorcollections", new AsyncCallback<Map<String, String>>() {
 
 			public void onFailure(Throwable caught) {
 				new PopupMessage("getCollectionNames: " + caught.getMessage());
@@ -387,18 +384,6 @@ public class MesaTestTab extends GenericQueryTab {
 	}
 	
 
-	HTML htmlize(String header, String in) {
-		HTML h = new HTML(
-				"<br />" +
-				"<b>" + header + "</b><br /><br />" +
-
-				in.replaceAll("<", "&lt;")
-				.replaceAll("\t", "&nbsp;&nbsp;&nbsp;")
-				.replaceAll(" ", "&nbsp;")
-				.replaceAll("\n", "<br />")
-		);
-		return h;
-	}
 
 
 	public String getWindowShortName() {

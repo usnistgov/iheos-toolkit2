@@ -3,11 +3,6 @@
  */
 package gov.nist.toolkit.simulators.sim.iig;
 
-import java.io.IOException;
-
-import org.apache.axiom.om.OMElement;
-import org.apache.log4j.Logger;
-
 import gov.nist.toolkit.actorfactory.SimDb;
 import gov.nist.toolkit.actorfactory.client.SimulatorConfig;
 import gov.nist.toolkit.configDatatypes.client.TransactionType;
@@ -15,9 +10,13 @@ import gov.nist.toolkit.errorrecording.client.XdsErrorCode.Code;
 import gov.nist.toolkit.simulators.support.BaseDsActorSimulator;
 import gov.nist.toolkit.simulators.support.DsSimCommon;
 import gov.nist.toolkit.simulators.support.SimCommon;
-import gov.nist.toolkit.valregmsg.message.SoapMessageValidator;
+import gov.nist.toolkit.validatorsSoapMessage.message.SoapMessageValidator;
 import gov.nist.toolkit.valsupport.engine.MessageValidatorEngine;
 import gov.nist.toolkit.valsupport.message.AbstractMessageValidator;
+import org.apache.axiom.om.OMElement;
+import org.apache.log4j.Logger;
+
+import java.io.IOException;
 
 /**
  * Initiating Imaging Gateway Simulator

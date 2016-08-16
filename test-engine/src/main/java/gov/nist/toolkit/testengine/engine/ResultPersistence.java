@@ -3,7 +3,7 @@ package gov.nist.toolkit.testengine.engine;
 import gov.nist.toolkit.installation.Installation;
 import gov.nist.toolkit.results.client.Result;
 import gov.nist.toolkit.results.client.TestInstance;
-import gov.nist.toolkit.xdsexception.XdsException;
+import gov.nist.toolkit.xdsexception.client.XdsException;
 
 import java.io.*;
 
@@ -51,7 +51,8 @@ public class ResultPersistence {
 				"Results");
 		if (write)
 			dir.mkdirs();
-		
-		return dir.toString() + File.separator + testInstance + ".ser";
+
+		return dir.toString() + File.separator + testInstance.toString().replace(":","") + ".ser";
+
 	}
 }

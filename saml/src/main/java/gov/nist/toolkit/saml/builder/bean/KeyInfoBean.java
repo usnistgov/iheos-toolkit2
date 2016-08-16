@@ -28,72 +28,72 @@ public class KeyInfoBean {
     }
 
     /**
-     * Method getCertificate returns the certificate of this KeyInfoBean object.
+     * Method getCertificate returns the certificate of this KeyInfoBean model.
      *
-     * @return the cert (type X509Certificate) of this KeyInfoBean object.
+     * @return the cert (type X509Certificate) of this KeyInfoBean model.
      */
     public X509Certificate getCertificate() {
         return cert;
     }
 
     /**
-     * Method setCertificate sets the cert of this KeyInfoBean object.
+     * Method setCertificate sets the cert of this KeyInfoBean model.
      *
-     * @param cert the cert of this KeyInfoBean object.
+     * @param cert the cert of this KeyInfoBean model.
      */
     public void setCertificate(X509Certificate cert) {
         this.cert = cert;
     }
     
     /**
-     * Method getPublicKey returns the public key of this KeyInfoBean object.
+     * Method getPublicKey returns the public key of this KeyInfoBean model.
      *
-     * @return the publicKey (type PublicKey) of this KeyInfoBean object.
+     * @return the publicKey (type PublicKey) of this KeyInfoBean model.
      */
     public PublicKey getPublicKey() {
         return publicKey;
     }
 
     /**
-     * Method setPublicKey sets the publicKey of this KeyInfoBean object.
+     * Method setPublicKey sets the publicKey of this KeyInfoBean model.
      *
-     * @param publicKey the publicKey of this KeyInfoBean object.
+     * @param publicKey the publicKey of this KeyInfoBean model.
      */
     public void setPublicKey(PublicKey publicKey) {
         this.publicKey = publicKey;
     }
     
     /**
-     * Method getCertIdentifer returns the cert identifer of this KeyInfoBean object.
+     * Method getCertIdentifer returns the cert identifer of this KeyInfoBean model.
      *
-     * @return the certIdentifier (type CERT_IDENTIFIER) of this KeyInfoBean object.
+     * @return the certIdentifier (type CERT_IDENTIFIER) of this KeyInfoBean model.
      */
     public CERT_IDENTIFIER getCertIdentifer() {
         return certIdentifier;
     }
 
     /**
-     * Method setCertIdentifer sets the cert identifier of this KeyInfoBean object.
+     * Method setCertIdentifer sets the cert identifier of this KeyInfoBean model.
      *
-     * @param certIdentifier the certIdentifier of this KeyInfoBean object.
+     * @param certIdentifier the certIdentifier of this KeyInfoBean model.
      */
     public void setCertIdentifer(CERT_IDENTIFIER certIdentifier) {
         this.certIdentifier = certIdentifier;
     }
     
     /**
-     * Method getElement returns the DOM Element of this KeyInfoBean object.
+     * Method getElement returns the DOM Element of this KeyInfoBean model.
      *
-     * @return the keyInfoElement (type Element) of this KeyInfoBean object.
+     * @return the keyInfoElement (type Element) of this KeyInfoBean model.
      */
     public Element getElement() {
         return keyInfoElement;
     }
 
     /**
-     * Method setElement sets the DOM Element of this KeyInfoBean object.
+     * Method setElement sets the DOM Element of this KeyInfoBean model.
      *
-     * @param keyInfoElement the DOM Element of this KeyInfoBean object.
+     * @param keyInfoElement the DOM Element of this KeyInfoBean model.
      */
     public void setElement(Element keyInfoElement) {
         this.keyInfoElement = keyInfoElement;
@@ -135,7 +135,7 @@ public class KeyInfoBean {
     }
 
     /**
-     * @return the hashCode of this object
+     * @return the hashCode of this model
      */
     @Override
     public int hashCode() {

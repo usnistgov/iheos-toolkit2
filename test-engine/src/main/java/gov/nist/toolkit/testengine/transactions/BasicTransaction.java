@@ -1,46 +1,32 @@
 package gov.nist.toolkit.testengine.transactions;
 
 import gov.nist.toolkit.common.datatypes.Hl7Date;
+import gov.nist.toolkit.commondatatypes.MetadataSupport;
 import gov.nist.toolkit.configDatatypes.client.TransactionType;
 import gov.nist.toolkit.registrymetadata.IdParser;
 import gov.nist.toolkit.registrymetadata.Metadata;
 import gov.nist.toolkit.registrymetadata.MetadataParser;
-import gov.nist.toolkit.registrymsg.registry.RegistryErrorListGenerator;
 import gov.nist.toolkit.registrymsg.registry.RegistryResponseParser;
-import gov.nist.toolkit.commondatatypes.MetadataSupport;
+import gov.nist.toolkit.registrysupport.RegistryErrorListGenerator;
 import gov.nist.toolkit.securityCommon.SecurityParams;
 import gov.nist.toolkit.soap.axis2.Soap;
-import gov.nist.toolkit.testengine.engine.AssertionEngine;
-import gov.nist.toolkit.testengine.engine.ErrorReportingInterface;
-import gov.nist.toolkit.testengine.engine.Linkage;
-import gov.nist.toolkit.testengine.engine.OmLogger;
-import gov.nist.toolkit.testengine.engine.PatientIdAllocator;
-import gov.nist.toolkit.testengine.engine.PlanContext;
-import gov.nist.toolkit.testengine.engine.RegistryUtility;
-import gov.nist.toolkit.testengine.engine.ReportManager;
-import gov.nist.toolkit.testengine.engine.StepContext;
-import gov.nist.toolkit.testengine.engine.TestConfig;
-import gov.nist.toolkit.testengine.engine.TestLogFactory;
-import gov.nist.toolkit.testengine.engine.TestMgmt;
-import gov.nist.toolkit.testengine.engine.TransactionSettings;
-import gov.nist.toolkit.testengine.engine.TransactionStatus;
-import gov.nist.toolkit.testengine.engine.UseReportManager;
-import gov.nist.toolkit.testengine.engine.Validator;
-import gov.nist.toolkit.testenginelogging.LogFileContent;
+import gov.nist.toolkit.testengine.assertionEngine.AssertionEngine;
+import gov.nist.toolkit.testengine.engine.*;
+import gov.nist.toolkit.testenginelogging.LogFileContentBuilder;
 import gov.nist.toolkit.testenginelogging.NotALogFileException;
-import gov.nist.toolkit.testenginelogging.Report;
-import gov.nist.toolkit.testenginelogging.SectionLogMap;
+import gov.nist.toolkit.testenginelogging.client.ReportDTO;
+import gov.nist.toolkit.testenginelogging.client.SectionLogMapDTO;
 import gov.nist.toolkit.utilities.xml.Util;
 import gov.nist.toolkit.utilities.xml.XmlUtil;
 import gov.nist.toolkit.valregmsg.service.SoapActionFactory;
 import gov.nist.toolkit.valsupport.client.ValidationContext;
 import gov.nist.toolkit.valsupport.engine.DefaultValidationContextFactory;
 import gov.nist.toolkit.xdsexception.ExceptionUtil;
-import gov.nist.toolkit.xdsexception.MetadataException;
-import gov.nist.toolkit.xdsexception.MetadataValidationException;
 import gov.nist.toolkit.xdsexception.NoMetadataException;
 import gov.nist.toolkit.xdsexception.SchemaValidationException;
-import gov.nist.toolkit.xdsexception.XdsInternalException;
+import gov.nist.toolkit.xdsexception.client.MetadataException;
+import gov.nist.toolkit.xdsexception.client.MetadataValidationException;
+import gov.nist.toolkit.xdsexception.client.XdsInternalException;
 import org.apache.axiom.om.OMAbstractFactory;
 import org.apache.axiom.om.OMElement;
 import org.apache.axiom.om.OMFactory;
@@ -50,12 +36,7 @@ import org.apache.log4j.Logger;
 import javax.xml.namespace.QName;
 import javax.xml.parsers.FactoryConfigurationError;
 import java.io.File;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public abstract class BasicTransaction  {
 	protected OMElement instruction;
@@ -75,7 +56,7 @@ public abstract class BasicTransaction  {
 	protected ArrayList<OMElement> use_repository_unique_id;
 	// assertion linkage
 	protected ArrayList<OMElement> data_refs;
-	protected ArrayList<OMElement> assertions;
+	protected ArrayList<OMElement> assertionEleList;
 
 	static public final short xds_none = 0;
 	static public final short xds_a = 1;
@@ -220,7 +201,7 @@ public abstract class BasicTransaction  {
 	}
 
 	protected void reportManagerPostRun() throws XdsInternalException {
-		SectionLogMap sectionLogs = getPlan().getPreviousSectionLogs();
+		SectionLogMapDTO sectionLogs = getPlan().getPreviousSectionLogs();
 
 		try {
 			sectionLogs.remove("THIS");
@@ -251,10 +232,10 @@ public abstract class BasicTransaction  {
 
 		if (useReportManager != null) {
 
-			SectionLogMap sectionLogs = getPlan().getPreviousSectionLogs();
+			SectionLogMapDTO sectionLogs = getPlan().getPreviousSectionLogs();
 			// add in current section log so we can reference ourself
 			try {
-				sectionLogs.put("THIS", new LogFileContent(getPlan().getLog(), true /* incomplete is ok */));
+				sectionLogs.put("THIS", new LogFileContentBuilder().build(getPlan().getLog(), true /* incomplete is ok */));
 			} catch (NotALogFileException e) {
 				e.printStackTrace();
 			} catch (Exception e) {
@@ -315,7 +296,7 @@ public abstract class BasicTransaction  {
 		.append("use_object_ref = ").append((use_object_ref == null) ? null : use_object_ref.toString())
 		.append("use_repository_unique_id = ").append((use_repository_unique_id == null) ? null : use_repository_unique_id.toString())
 		.append("data_refs = ").append((data_refs == null) ? null : data_refs.toString())
-		.append("assertions = ").append((assertions == null) ? null : assertions.toString())
+		.append("assertionEleList = ").append((assertionEleList == null) ? null : assertionEleList.toString())
 		.append("endpoint = ").append(endpoint).append("\n")
 		.append("linkage = ").append((local_linkage_data == null) ? null : local_linkage_data.toString())
 		.append("metadata_filename = ").append(metadata_filename).append("\n")
@@ -356,7 +337,7 @@ public abstract class BasicTransaction  {
 		use_object_ref = new ArrayList<OMElement>();
 		use_repository_unique_id = new ArrayList<OMElement>();
 		data_refs = new ArrayList<OMElement>();
-		assertions = new ArrayList<OMElement>();
+		assertionEleList = new ArrayList<OMElement>();
 		local_linkage_data = new HashMap<String, String>();
 		isSQ = false;
 
@@ -977,13 +958,13 @@ public abstract class BasicTransaction  {
 				data_refs.add(part);
 			}
 			else if (part_name.equals("Assert")) {
-				assertions.add(part);
+				assertionEleList.add(part);
 			}
 		}
 	}
 
     // report the parameters to the request as Reports so they can be referenced
-    // in assertions
+    // in assertionEleList
     void reportStepParameters() {
         logger.info("generating linkageAsReports");
         if (reportManager == null)
@@ -992,10 +973,10 @@ public abstract class BasicTransaction  {
         logger.info("transaction: " + params);
         for (String name : params.keySet()) {
             String value = params.get(name);
-            Report report = new Report(name, value);
-            logger.info("adding Report " + report);
-            reportManager.addReport(report);
-            logger.info("Report manager has " + reportManager.toString());
+            ReportDTO reportDTO = new ReportDTO(name, value);
+            logger.info("adding ReportDTO " + reportDTO);
+            reportManager.addReport(reportDTO);
+            logger.info("ReportBuilder manager has " + reportManager.toString());
         }
     }
 
@@ -1196,13 +1177,13 @@ public abstract class BasicTransaction  {
 
         try {
             if (useReportManager != null) {
-                useReportManager.apply(assertions);
+                useReportManager.apply(assertionEleList);
             }
         } catch (Exception e) {
             failed();
         }
 
-		engine.setAssertions(assertions);
+		engine.setAssertions(assertionEleList);
 		engine.setLinkage(linkage);
 		engine.setOutput(step_output);
 		engine.setTestConfig(testConfig);

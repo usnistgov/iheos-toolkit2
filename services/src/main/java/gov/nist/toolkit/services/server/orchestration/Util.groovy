@@ -2,7 +2,7 @@ package gov.nist.toolkit.services.server.orchestration
 
 import gov.nist.toolkit.configDatatypes.client.Pid
 import gov.nist.toolkit.results.client.Result
-import gov.nist.toolkit.results.client.SiteSpec
+import gov.nist.toolkit.sitemanagement.client.SiteSpec
 import gov.nist.toolkit.results.client.TestInstance
 import gov.nist.toolkit.services.server.ToolkitApi
 import groovy.transform.TypeChecked

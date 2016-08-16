@@ -147,8 +147,8 @@ public class EngineSpi {
 
     /**
      * Send an XDR Provide and Register transaction.  The engine is identified by parameters to the class
-     * constructor.  The simulator id is contained in the SendRequest object.
-     * @param request SendRequest object
+     * constructor.  The simulator id is contained in the SendRequest model.
+     * @param request SendRequest model
      * @return Response Object
      * @throws ToolkitServiceException on error
      */

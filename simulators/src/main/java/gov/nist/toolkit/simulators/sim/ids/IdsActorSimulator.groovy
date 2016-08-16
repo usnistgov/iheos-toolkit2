@@ -4,7 +4,7 @@ import gov.nist.toolkit.actorfactory.client.SimulatorConfig
 import gov.nist.toolkit.configDatatypes.client.TransactionType
 import gov.nist.toolkit.errorrecording.GwtErrorRecorderBuilder
 import gov.nist.toolkit.errorrecording.client.XdsErrorCode.Code
-import gov.nist.toolkit.registrymsg.registry.RegistryErrorListGenerator
+import gov.nist.toolkit.registrysupport.RegistryErrorListGenerator
 import gov.nist.toolkit.registrymsg.registry.Response
 import gov.nist.toolkit.simulators.sim.reg.AdhocQueryResponseGenerator
 import gov.nist.toolkit.simulators.sim.reg.SoapWrapperRegistryResponseSim
@@ -12,7 +12,7 @@ import gov.nist.toolkit.simulators.support.DsSimCommon
 import gov.nist.toolkit.simulators.support.GatewaySimulatorCommon
 import gov.nist.toolkit.simulators.support.SimCommon
 import gov.nist.toolkit.utilities.xml.XmlUtil
-import gov.nist.toolkit.valregmsg.message.SoapMessageValidator
+import gov.nist.toolkit.validatorsSoapMessage.message.SoapMessageValidator
 import gov.nist.toolkit.valsupport.engine.MessageValidatorEngine
 import groovy.transform.TypeChecked
 

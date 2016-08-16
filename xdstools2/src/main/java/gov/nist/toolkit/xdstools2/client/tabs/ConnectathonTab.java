@@ -1,13 +1,11 @@
 package gov.nist.toolkit.xdstools2.client.tabs;
 
-import gov.nist.toolkit.xdstools2.client.TabContainer;
+import com.google.gwt.user.client.ui.FlexTable;
+import com.google.gwt.user.client.ui.HTML;
 import gov.nist.toolkit.xdstools2.client.inspector.HyperlinkFactory;
 import gov.nist.toolkit.xdstools2.client.siteActorManagers.GetDocumentsSiteActorManager;
 import gov.nist.toolkit.xdstools2.client.tabs.genericQueryTab.GenericQueryTab;
-
-import com.google.gwt.user.client.ui.FlexTable;
-import com.google.gwt.user.client.ui.HTML;
-import com.google.gwt.user.client.ui.VerticalPanel;
+import gov.nist.toolkit.xdstools2.client.toolLauncher.ToolLauncher;
 
 public class ConnectathonTab extends GenericQueryTab {
 
@@ -15,18 +13,13 @@ public class ConnectathonTab extends GenericQueryTab {
 		super(new GetDocumentsSiteActorManager());
 	}
 	
-
-	public void onTabLoad(TabContainer container, boolean select, String eventName) {
-		myContainer = container;
-		topPanel = new VerticalPanel();
-		
-		
-		container.addTab(topPanel, "Connectathon", select);
-		addCloseButton(container,topPanel, null);
+	@Override
+	public void onTabLoad(boolean select, String eventName) {
+		registerTab(select, eventName);
 
 		HTML title = new HTML();
 		title.setHTML("<h2>Connectathon Tools</h2>");
-		topPanel.add(title);
+		tabTopPanel.add(title);
 
 		mainGrid = new FlexTable();
 		mainGrid.setCellSpacing(20);
@@ -37,7 +30,7 @@ public class ConnectathonTab extends GenericQueryTab {
 		mainGrid.setWidget(row, col, addHTML("<b>Connectathon Validations</b>"));
 		row++;
 		
-		mainGrid.setWidget(row, col, HyperlinkFactory.link(TabLauncher.srcStoresDocValTabLabel, new TabLauncher(container, TabLauncher.srcStoresDocValTabLabel)));
+		mainGrid.setWidget(row, col, HyperlinkFactory.link(ToolLauncher.srcStoresDocValTabLabel, new ToolLauncher(ToolLauncher.srcStoresDocValTabLabel)));
 		row++;
 
         row = 0;
@@ -46,13 +39,13 @@ public class ConnectathonTab extends GenericQueryTab {
 		mainGrid.setWidget(row, col, addHTML("<b>Registry Validations</b>"));
 		row++;
 		
-		mainGrid.setWidget(row, col, HyperlinkFactory.link(TabLauncher.registryDoThisFirstTabLabel, new TabLauncher(container, TabLauncher.registryDoThisFirstTabLabel)));
+		mainGrid.setWidget(row, col, HyperlinkFactory.link(ToolLauncher.registryDoThisFirstTabLabel, new ToolLauncher(ToolLauncher.registryDoThisFirstTabLabel)));
 		row++;
 		
-		mainGrid.setWidget(row, col, HyperlinkFactory.link(TabLauncher.registryLifecycleTabLabel, new TabLauncher(container, TabLauncher.registryLifecycleTabLabel)));
+		mainGrid.setWidget(row, col, HyperlinkFactory.link(ToolLauncher.registryLifecycleTabLabel, new ToolLauncher(ToolLauncher.registryLifecycleTabLabel)));
 		row++;
 		
-		mainGrid.setWidget(row, col, HyperlinkFactory.link(TabLauncher.registryFolderHandlingTabLabel, new TabLauncher(container, TabLauncher.registryFolderHandlingTabLabel)));
+		mainGrid.setWidget(row, col, HyperlinkFactory.link(ToolLauncher.registryFolderHandlingTabLabel, new ToolLauncher(ToolLauncher.registryFolderHandlingTabLabel)));
 		row++;
 		
 		row = 0;
@@ -61,7 +54,7 @@ public class ConnectathonTab extends GenericQueryTab {
 		mainGrid.setWidget(row, col, addHTML("<b>Repository Validations</b>"));
 		row++;
 				
-		mainGrid.setWidget(row, col, HyperlinkFactory.link(TabLauncher.repositoryDoThisFirstTabLabel, new TabLauncher(container, TabLauncher.repositoryDoThisFirstTabLabel)));
+		mainGrid.setWidget(row, col, HyperlinkFactory.link(ToolLauncher.repositoryDoThisFirstTabLabel, new ToolLauncher(ToolLauncher.repositoryDoThisFirstTabLabel)));
 		row++;
 		
 		row = 0;
@@ -70,10 +63,10 @@ public class ConnectathonTab extends GenericQueryTab {
 		mainGrid.setWidget(row, col, addHTML("<b>Load Test Data</b>"));
 		row++;
 		
-		mainGrid.setWidget(row, col, HyperlinkFactory.link(TabLauncher.registryTestDataTabLabel, new TabLauncher(container, TabLauncher.registryTestDataTabLabel)));
+		mainGrid.setWidget(row, col, HyperlinkFactory.link(ToolLauncher.registryTestDataTabLabel, new ToolLauncher(ToolLauncher.registryTestDataTabLabel)));
 		row++;
 		
-		mainGrid.setWidget(row, col, HyperlinkFactory.link(TabLauncher.repositoryTestDataTabLabel, new TabLauncher(container, TabLauncher.repositoryTestDataTabLabel)));
+		mainGrid.setWidget(row, col, HyperlinkFactory.link(ToolLauncher.repositoryTestDataTabLabel, new ToolLauncher(ToolLauncher.repositoryTestDataTabLabel)));
 		row++;
 		
 		row = 0;
@@ -82,16 +75,16 @@ public class ConnectathonTab extends GenericQueryTab {
 		mainGrid.setWidget(row, col, addHTML("<b>Tools</b>"));
 		row ++;
 		
-		mainGrid.setWidget(row, col, HyperlinkFactory.launchTool(TabLauncher.adminTabLabel, new TabLauncher(myContainer, TabLauncher.adminTabLabel)));
+		mainGrid.setWidget(row, col, HyperlinkFactory.launchTool(ToolLauncher.sitesTabLabel, new ToolLauncher(ToolLauncher.sitesTabLabel)));
 		row++;
 
-		mainGrid.setWidget(row, col, HyperlinkFactory.launchTool(TabLauncher.repositoryTabLabel, new TabLauncher(myContainer, TabLauncher.repositoryTabLabel)));
+		mainGrid.setWidget(row, col, HyperlinkFactory.launchTool(ToolLauncher.repositoryTabLabel, new ToolLauncher(ToolLauncher.repositoryTabLabel)));
 		row++;
 
-		mainGrid.setWidget(row, col, HyperlinkFactory.link(TabLauncher.dashboardTabLabel, new TabLauncher(container, TabLauncher.dashboardTabLabel)));
+		mainGrid.setWidget(row, col, HyperlinkFactory.link(ToolLauncher.dashboardTabLabel, new ToolLauncher(ToolLauncher.dashboardTabLabel)));
 		row++;
 
-		topPanel.add(mainGrid);
+		tabTopPanel.add(mainGrid);
 
 	}
 

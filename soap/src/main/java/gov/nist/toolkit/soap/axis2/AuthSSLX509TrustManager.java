@@ -43,7 +43,7 @@ import org.apache.commons.logging.LogFactory;
 public class AuthSSLX509TrustManager implements X509TrustManager {
 	private X509TrustManager defaultTrustManager = null;
 
-	/** Log object for this class. */
+	/** Log model for this class. */
 	private static final Log LOG = LogFactory.getLog(AuthSSLX509TrustManager.class);
 
 	/**

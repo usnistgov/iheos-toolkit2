@@ -2,23 +2,23 @@ package gov.nist.toolkit.testengine.engine;
 
 import gov.nist.toolkit.results.client.TestLog;
 import gov.nist.toolkit.results.client.TestLogs;
-import gov.nist.toolkit.testenginelogging.LogFileContent;
-import gov.nist.toolkit.testenginelogging.LogMap;
-import gov.nist.toolkit.testenginelogging.LogMapItem;
-import gov.nist.toolkit.testenginelogging.TestStepLogContent;
+import gov.nist.toolkit.testenginelogging.client.LogFileContentDTO;
+import gov.nist.toolkit.testenginelogging.client.LogMapDTO;
+import gov.nist.toolkit.testenginelogging.client.LogMapItemDTO;
+import gov.nist.toolkit.testenginelogging.client.TestStepLogContentDTO;
 
 import java.util.List;
 
 public class TestLogsBuilder {
 
-	static public TestLogs build(LogMap logMap) throws Exception {
+	static public TestLogs build(LogMapDTO logMapDTO) throws Exception {
 		TestLogs logs = new TestLogs();
 		
-		for (LogMapItem item : logMap.getItems()) {
-			LogFileContent logFile = item.log;
-			for (TestStepLogContent stepLog : logFile.getStepLogs()) {
+		for (LogMapItemDTO item : logMapDTO.getItems()) {
+			LogFileContentDTO logFile = item.getLog();
+			for (TestStepLogContentDTO stepLog : logFile.getStepLogs()) {
 				TestLog testLog = new TestLog();
-				String stepName = stepLog.getName();
+				String stepName = stepLog.getId();
 				logs.logs.add(testLog);
 
 				testLog.stepName = stepName;

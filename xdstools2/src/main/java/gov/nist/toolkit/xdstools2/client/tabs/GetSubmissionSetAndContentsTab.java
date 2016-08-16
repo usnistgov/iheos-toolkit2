@@ -5,13 +5,11 @@ import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.ui.FlexTable;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.TextBox;
-import com.google.gwt.user.client.ui.VerticalPanel;
 import gov.nist.toolkit.configDatatypes.client.TransactionType;
 import gov.nist.toolkit.results.client.CodesConfiguration;
-import gov.nist.toolkit.results.client.SiteSpec;
+import gov.nist.toolkit.sitemanagement.client.SiteSpec;
 import gov.nist.toolkit.xdstools2.client.CoupledTransactions;
 import gov.nist.toolkit.xdstools2.client.PopupMessage;
-import gov.nist.toolkit.xdstools2.client.TabContainer;
 import gov.nist.toolkit.xdstools2.client.siteActorManagers.GetDocumentsSiteActorManager;
 import gov.nist.toolkit.xdstools2.client.tabs.genericQueryTab.GenericQueryTab;
 import gov.nist.toolkit.xdstools2.client.widgets.queryFilter.OnDemandFilter;
@@ -32,12 +30,12 @@ public class GetSubmissionSetAndContentsTab extends GenericQueryTab {
 		transactionTypes.add(TransactionType.IG_QUERY);
 		transactionTypes.add(TransactionType.XC_QUERY);
 	}
-	
+
 	static CoupledTransactions couplings = new CoupledTransactions();
 	static {
-		// If an Initiating Gateway is selected (IG_QUERY) then 
+		// If an Initiating Gateway is selected (IG_QUERY) then
 		// a Responding Gateway (XC_QUERY) must also be selected
-		// to determine the homeCommunityId to put in the 
+		// to determine the homeCommunityId to put in the
 		// query request to be sent to the Initiating Gateway
 		couplings.add(TransactionType.IG_QUERY, TransactionType.XC_QUERY);
 	}
@@ -47,22 +45,18 @@ public class GetSubmissionSetAndContentsTab extends GenericQueryTab {
 	public GetSubmissionSetAndContentsTab() {
 		super(new GetDocumentsSiteActorManager());
 	}
-	
 
-	public void onTabLoad(TabContainer container, boolean select, String eventName) {
-		myContainer = container;
-		topPanel = new VerticalPanel();
-		container.addTab(topPanel, "SubmissionSetAndContents", select);
-		addCloseButton(container,topPanel, null);
-
+	@Override
+	public void onTabLoad(boolean select, String eventName) {
+		registerTab(select, eventName);  // link into container/tab management
 		HTML title = new HTML();
 		title.setHTML("<h2>Get Submission Set and Contents</h2>");
-		topPanel.add(title);
+		tabTopPanel.add(title);
 
 		mainGrid = new FlexTable();
 		int row = 0;
-		
-		topPanel.add(mainGrid);
+
+		tabTopPanel.add(mainGrid);
 
 		// On Demand
 		mainGrid.setText(row, 0, "DocumentEntry Type");
@@ -110,7 +104,7 @@ public class GetSubmissionSetAndContentsTab extends GenericQueryTab {
 
 			toolkitService.getSSandContents(siteSpec, ssid.getValue().trim(), codeSpec, queryCallback);
 		}
-		
+
 	}
 
 	public String getWindowShortName() {

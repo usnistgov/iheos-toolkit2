@@ -20,8 +20,7 @@ import gov.nist.toolkit.xdstools2.client.tabs.TextViewerTab;
 
 import java.util.*;
 
-public class MessageValidatorTab extends TabbedWindow {
-	protected TabContainer myContainer;
+public class MessageValidatorTab extends ToolWindow {
 	VerticalPanel resultsContainer = new VerticalPanel();
 	FlexTable resultsTable = new FlexTable();
 	HTML htmlReport = new HTML();
@@ -328,17 +327,18 @@ public class MessageValidatorTab extends TabbedWindow {
 		
 	}
 
-	public void onTabLoad(TabContainer container, boolean select, String eventName) {
-		myContainer = container;
-		topPanel = new VerticalPanel();
+	MessageValidatorTab me;
+
+	@Override
+	public void onTabLoad(boolean select, String eventName) {
+		me = this;
 		ccdaSel = new CcdaTypeSelection(tkProps(), null);
 
-		container.addTab(topPanel, "Message Validator", select);
-		addCloseButton(container,topPanel, null);
+		registerTab(select, eventName);
 
-		topPanel.add(HtmlMarkup.html(HtmlMarkup.h2("Message Validator")));
+		tabTopPanel.add(HtmlMarkup.html(HtmlMarkup.h2("Message Validator")));
 
-		topPanel.add(HtmlMarkup.html("<hr />"));
+		tabTopPanel.add(HtmlMarkup.html("<hr />"));
 
 		VerticalPanel messageTypeArea = new VerticalPanel();	
 		VerticalPanel validationCheckBoxes = new VerticalPanel();
@@ -348,7 +348,7 @@ public class MessageValidatorTab extends TabbedWindow {
 		HorizontalPanel typesAndWrappers = new HorizontalPanel();
 
 		// build structure
-		topPanel.add(topH);
+		tabTopPanel.add(topH);
 		topH.add(messageTypeArea);
 		topH.add(rightSideVert);
 		rightSideVert.add(typesAndWrappers);
@@ -415,7 +415,7 @@ public class MessageValidatorTab extends TabbedWindow {
 		//
 
 
-		topPanel.add(HtmlMarkup.html("<hr />"));
+		tabTopPanel.add(HtmlMarkup.html("<hr />"));
 		VerticalPanel fromWhereArea = new VerticalPanel();
 		HorizontalPanel inputTypeArea = new HorizontalPanel();
 		//		inputTypeArea.add(fromFileRadioButton);
@@ -424,7 +424,7 @@ public class MessageValidatorTab extends TabbedWindow {
 		fromWhereArea.add(inputTypeArea);
 		fromWhereArea.add(uploadForm);
 
-		topPanel.add(fromWhereArea);
+		tabTopPanel.add(fromWhereArea);
 
 		VerticalPanel simArea = new VerticalPanel();
 
@@ -538,7 +538,7 @@ public class MessageValidatorTab extends TabbedWindow {
 					return;
 				}
 				filename = simFilesListBox.getValue(sel);
-				new RenameSimFileDialogBox(topPanel, filename, reloadSimMessages);
+				new RenameSimFileDialogBox(me.getRawPanel(), filename, reloadSimMessages);
 			}
 		});
 
@@ -585,7 +585,7 @@ public class MessageValidatorTab extends TabbedWindow {
 			}
 		});
 
-		topPanel.add(HtmlMarkup.html("<hr/>"));
+		tabTopPanel.add(HtmlMarkup.html("<hr/>"));
 	} //end onTabLoad
 	
 	private void refreshFileUploadPanel() {
@@ -955,14 +955,14 @@ public class MessageValidatorTab extends TabbedWindow {
 
 		public void onFailure(Throwable caught) {
 			new GwtValFormatter().addCell(caught.getMessage(), 0);
-			topPanel.add(resultsTable);
+			tabTopPanel.add(resultsTable);
 		}
 
 		public void onSuccess(List<Result> results) {
 			try {
 				inspect(results);
 				//			InspectorTab itab = new InspectorTab();
-				//			itab.onTabLoad(myContainer, true, toolkitService, results, null);
+				//			itab.onTabLoad(getTabContainer(), true, toolkitService, results, null);
 			} catch (Exception e) {
 				new PopupMessage(e.getMessage());
 			}
@@ -975,7 +975,7 @@ public class MessageValidatorTab extends TabbedWindow {
 
 		public void onFailure(Throwable caught) {
 			new GwtValFormatter().addCell(caught.getMessage(), 0);
-			topPanel.add(resultsTable);
+			tabTopPanel.add(resultsTable);
 		}
 
 		public void onSuccess(List<Result> result) {
@@ -994,20 +994,20 @@ public class MessageValidatorTab extends TabbedWindow {
 		it.setResults(results);
 		it.setSiteSpec(null);
 		it.setToolkitService(toolkitService);
-		it.onTabLoad(myContainer, true, null);
+		it.onTabLoad(true, "Insp");
 	}
 
 	void viewText(List<Result> results) {
 		TextViewerTab v = new TextViewerTab();
 		v.setResult(results);
-		v.onTabLoad(myContainer, true, null);
+		v.onTabLoad(true, "Text");
 	}
 
 	protected AsyncCallback<MessageValidationResults> messageValidationCallback = new AsyncCallback<MessageValidationResults> () {
 
 		public void onFailure(Throwable caught) {
 			new GwtValFormatter().addCell(caught.getMessage(), 0);
-			topPanel.add(resultsTable);
+			tabTopPanel.add(resultsTable);
 		}
 
 		public void onSuccess(MessageValidationResults result) {
@@ -1237,8 +1237,8 @@ public class MessageValidatorTab extends TabbedWindow {
 		
 		this.htmlReport.removeFromParent();
 		this.htmlReport = new HTML(results.getHtmlResults());
-		topPanel.add(this.htmlReport);
-		//topPanel.add(resultsTable);
+		tabTopPanel.add(this.htmlReport);
+		//tabTopPanel.add(resultsTable);
 
 		inspectButton.setEnabled(true);
 	}

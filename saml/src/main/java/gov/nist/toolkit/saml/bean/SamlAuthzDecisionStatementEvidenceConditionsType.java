@@ -9,7 +9,7 @@ public class SamlAuthzDecisionStatementEvidenceConditionsType {
      * Gets the value of the notBefore property.
      * 
      * @return
-     *     possible object is
+     *     possible model is
      *     {@link String }
      *     
      */
@@ -21,7 +21,7 @@ public class SamlAuthzDecisionStatementEvidenceConditionsType {
      * Sets the value of the notBefore property.
      * 
      * @param value
-     *     allowed object is
+     *     allowed model is
      *     {@link String }
      *     
      */
@@ -33,7 +33,7 @@ public class SamlAuthzDecisionStatementEvidenceConditionsType {
      * Gets the value of the notOnOrAfter property.
      * 
      * @return
-     *     possible object is
+     *     possible model is
      *     {@link String }
      *     
      */
@@ -45,7 +45,7 @@ public class SamlAuthzDecisionStatementEvidenceConditionsType {
      * Sets the value of the notOnOrAfter property.
      * 
      * @param value
-     *     allowed object is
+     *     allowed model is
      *     {@link String }
      *     
      */

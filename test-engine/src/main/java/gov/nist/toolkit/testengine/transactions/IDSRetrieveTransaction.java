@@ -1,24 +1,28 @@
 package gov.nist.toolkit.testengine.transactions;
 
-import java.io.File;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-
-import javax.xml.namespace.QName;
-
+import gov.nist.toolkit.registrymetadata.Metadata;
+import gov.nist.toolkit.registrymsg.repository.RetrievedDocumentModel;
+import gov.nist.toolkit.registrymsg.repository.RetrievedDocumentsModel;
+import gov.nist.toolkit.testengine.engine.Linkage;
+import gov.nist.toolkit.testengine.engine.Rad69;
+import gov.nist.toolkit.testengine.engine.RetContext;
+import gov.nist.toolkit.testengine.engine.StepContext;
+import gov.nist.toolkit.utilities.io.Sha1Bean;
+import gov.nist.toolkit.utilities.xml.OMFormatter;
+import gov.nist.toolkit.utilities.xml.XmlUtil;
+import gov.nist.toolkit.xdsexception.XdsPreparsedException;
+import gov.nist.toolkit.xdsexception.client.MetadataException;
+import gov.nist.toolkit.xdsexception.client.XdsException;
+import gov.nist.toolkit.xdsexception.client.XdsInternalException;
 import org.apache.axiom.om.OMElement;
 import org.apache.axiom.om.xpath.AXIOMXPath;
 import org.apache.log4j.Logger;
 
-import gov.nist.toolkit.registrymetadata.Metadata;
-import gov.nist.toolkit.registrymsg.repository.RetrievedDocumentModel;
-import gov.nist.toolkit.registrymsg.repository.RetrievedDocumentsModel;
-import gov.nist.toolkit.testengine.engine.*;
-import gov.nist.toolkit.utilities.io.Sha1Bean;
-import gov.nist.toolkit.utilities.xml.OMFormatter;
-import gov.nist.toolkit.utilities.xml.XmlUtil;
-import gov.nist.toolkit.xdsexception.*;
+import javax.xml.namespace.QName;
+import java.io.File;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
 
 public class IDSRetrieveTransaction extends BasicTransaction {
    String uri = null;

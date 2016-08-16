@@ -76,6 +76,8 @@
         <module>config-datatypes</module>
         <module>config-datatypes-io</module>
         <module>it-tests</module>
+        <module>validators-soap-message</module>
+        <module>new-validation-system</module>
     </modules>
 
 

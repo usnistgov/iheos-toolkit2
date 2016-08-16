@@ -6,18 +6,19 @@ import gov.nist.toolkit.adt.ListenerFactory
 import gov.nist.toolkit.configDatatypes.SimulatorActorType
 import gov.nist.toolkit.configDatatypes.SimulatorProperties
 import gov.nist.toolkit.itTests.support.ToolkitSpecification
+import gov.nist.toolkit.registrymetadata.client.Document
 import gov.nist.toolkit.results.client.Result
-import gov.nist.toolkit.results.client.SiteSpec
 import gov.nist.toolkit.results.client.StepResult
 import gov.nist.toolkit.results.client.TestInstance
-import gov.nist.toolkit.registrymetadata.client.Document
 import gov.nist.toolkit.services.server.UnitTestEnvironmentManager
 import gov.nist.toolkit.session.server.Session
 import gov.nist.toolkit.simulators.support.od.TransactionUtil
+import gov.nist.toolkit.sitemanagement.client.SiteSpec
 import gov.nist.toolkit.testengine.scripts.BuildCollections
 import gov.nist.toolkit.toolkitApi.SimulatorBuilder
 import gov.nist.toolkit.toolkitServicesCommon.SimConfig
 import spock.lang.Shared
+
 /**
  * Test the OD Document Consumer Retrieve
  */

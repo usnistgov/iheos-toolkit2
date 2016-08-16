@@ -51,7 +51,7 @@ public class TimeStamp {
 	}
 
 	/**
-     * Constructs a <code>Timestamp</code> object and parses the
+     * Constructs a <code>Timestamp</code> model and parses the
      * <code>wsu:Timestamp</code> element to initialize it.
      *
      * @param timestampElement the <code>wsu:Timestamp</code> element that
@@ -62,7 +62,7 @@ public class TimeStamp {
     }
 
     /**
-     * Constructs a <code>Timestamp</code> object and parses the
+     * Constructs a <code>Timestamp</code> model and parses the
      * <code>wsu:Timestamp</code> element to initialize it.
      *
      * @param timestampElement the <code>wsu:Timestamp</code> element that
@@ -163,7 +163,7 @@ public class TimeStamp {
 
 
     /**
-     * Constructs a <code>Timestamp</code> object according
+     * Constructs a <code>Timestamp</code> model according
      * to the defined parameters.
      *
      * @param doc the SOAP envelope as <code>Document</code>
@@ -213,7 +213,7 @@ public class TimeStamp {
     }
 
     /**
-     * Returns the dom element of this <code>Timestamp</code> object.
+     * Returns the dom element of this <code>Timestamp</code> model.
      *
      * @return the <code>wsse:UsernameToken</code> element
      */

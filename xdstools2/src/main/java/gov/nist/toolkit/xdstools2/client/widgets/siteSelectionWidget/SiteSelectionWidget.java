@@ -11,7 +11,7 @@ import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import gov.nist.toolkit.actortransaction.client.ActorType;
 import gov.nist.toolkit.configDatatypes.client.TransactionType;
-import gov.nist.toolkit.results.client.SiteSpec;
+import gov.nist.toolkit.sitemanagement.client.SiteSpec;
 import gov.nist.toolkit.xdstools2.client.PopupMessage;
 import gov.nist.toolkit.xdstools2.client.ToolkitService;
 import gov.nist.toolkit.xdstools2.client.ToolkitServiceAsync;
@@ -52,7 +52,7 @@ public class SiteSelectionWidget extends HorizontalPanel {
 	 * Loads the list of actor types from the back-end and populates the display on the UI
 	 */
 	private void loadActorNames() {
-		toolkitService.getCollectionNames(parent.getCurrentTestSession(),"actorcollections", new AsyncCallback<Map<String, String>>() {
+		toolkitService.getCollectionNames("actorcollections", new AsyncCallback<Map<String, String>>() {
 
 			public void onFailure(Throwable caught) {
 				new PopupMessage("getCollectionNames: " + caught.getMessage());

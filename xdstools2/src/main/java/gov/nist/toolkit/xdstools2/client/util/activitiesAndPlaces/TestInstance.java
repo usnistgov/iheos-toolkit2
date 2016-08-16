@@ -2,12 +2,13 @@ package gov.nist.toolkit.xdstools2.client.util.activitiesAndPlaces;
 
 import com.google.gwt.place.shared.Place;
 import com.google.gwt.place.shared.PlaceTokenizer;
+import gov.nist.toolkit.xdstools2.client.toolLauncher.ToolLauncher;
 
 /**
  * TabPlace and its tokenizer are used for browser history and URL creation.
  *
- * The URL will be created as http://app-main-url#TabPlace:tabId
- * The different tabId are defined in {@link gov.nist.toolkit.xdstools2.client.tabs.TabLauncher}.
+ * The URL will be created as http://app-main-url#TestInstance:tabId
+ * The different tabId are defined in {@link ToolLauncher}.
  *
  * Created by onh2 on 9/22/2014.
  */

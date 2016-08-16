@@ -8,7 +8,7 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.*;
 import gov.nist.toolkit.actorfactory.client.SimulatorConfig;
 import gov.nist.toolkit.results.client.Result;
-import gov.nist.toolkit.results.client.SiteSpec;
+import gov.nist.toolkit.sitemanagement.client.SiteSpec;
 import gov.nist.toolkit.results.client.TestInstance;
 import gov.nist.toolkit.xdstools2.client.PopupMessage;
 import gov.nist.toolkit.xdstools2.client.StringSort;
@@ -51,7 +51,7 @@ class TestSelectionManager {
     }
 
     void loadTestsFromCollection(final String testCollectionName) {
-        toolkitService.getCollection(tool.getCurrentTestSession(),"collections", testCollectionName, new AsyncCallback<Map<String, String>>() {
+        toolkitService.getCollection("collections", testCollectionName, new AsyncCallback<Map<String, String>>() {
 
             public void onFailure(Throwable caught) {
                 new PopupMessage("getCollection(" + testCollectionName + "): " +  " -----  " + caught.getMessage());
@@ -167,7 +167,7 @@ class TestSelectionManager {
                         itab.setResults(results);
                         itab.setSiteSpec(siteSpec);
                         itab.setToolkitService(toolkitService);
-                        itab.onTabLoad(tool.getToolContainer(), true, null);
+                        itab.onTabLoad(true, "Insp");
                     }
                 });
             }
@@ -176,7 +176,7 @@ class TestSelectionManager {
     }
 
     void loadSectionNames() {
-        toolkitService.getTestIndex(tool.getCurrentTestSession(),tool.getSelectedTest(), new AsyncCallback<List<String>>() {
+        toolkitService.getTestIndex(tool.getSelectedTest(), new AsyncCallback<List<String>>() {
 
             public void onFailure(Throwable caught) {
                 new PopupMessage("getTestIndex: " + caught.getMessage());
@@ -222,7 +222,7 @@ class TestSelectionManager {
                 }
 
                 public void onSuccess(String result) {
-                    new TextViewerTab().onTabLoad(tool.getToolContainer(), true, result, tool.getSelectedTest() + "#" + selectSectionList.getSelectedItemText());
+                    new TextViewerTab().onTabLoad(true, result, tool.getSelectedTest() + "#" + selectSectionList.getSelectedItemText());
                 }
 
             });
@@ -262,7 +262,7 @@ class TestSelectionManager {
     }
 
     void loadTestReadme(final HTML documentation) {
-        toolkitService.getTestReadme(tool.getCurrentTestSession(),tool.getSelectedTest(), new AsyncCallback<String>() {
+        toolkitService.getTestReadme(tool.getSelectedTest(), new AsyncCallback<String>() {
 
             public void onFailure(Throwable caught) {
                 new PopupMessage("getTestReadme: " + caught.getMessage());
@@ -281,7 +281,7 @@ class TestSelectionManager {
             @Override
             public void onClick(ClickEvent clickEvent) {
                 SimulatorMessageViewTab viewTab = new SimulatorMessageViewTab();
-                viewTab.onTabLoad(tool.getToolContainer(), true, simId);
+                viewTab.onTabLoad(true, simId);
             }
         });
 

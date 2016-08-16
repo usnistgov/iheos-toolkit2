@@ -170,10 +170,10 @@ public class SAMLAssertionBuilder {
     
     
     /**
-     * Create an Issuer object
+     * Create an Issuer model
      *
      * @param issuerValue of type String
-     * @return an Issuer object
+     * @return an Issuer model
      */
     @SuppressWarnings("unchecked")
     public static Issuer createIssuer(String issuerValue) {
@@ -328,13 +328,13 @@ public class SAMLAssertionBuilder {
     
     
     /**
-     * Create a SubjectConfirmationData object
+     * Create a SubjectConfirmationData model
      *
      * @param inResponseTo of type String
      * @param recipient    of type String
      * @param notOnOrAfter of type DateTime
      * @param keyInfoBean of type KeyInfoBean
-     * @return a SubjectConfirmationData object
+     * @return a SubjectConfirmationData model
      */
     @SuppressWarnings("unchecked")
     public static SubjectConfirmationData createSubjectConfirmationData(
@@ -375,7 +375,7 @@ public class SAMLAssertionBuilder {
     }
     
     /**
-     * Create a SubjectConfirmation object
+     * Create a SubjectConfirmation model
      * One of the following subject confirmation methods MUST be used:
      *   urn:oasis:names:tc:SAML:2.0:cm:holder-of-key
      *   urn:oasis:names:tc:SAML:2.0:cm:sender-vouches
@@ -383,7 +383,7 @@ public class SAMLAssertionBuilder {
      *
      * @param method of type String
      * @param subjectConfirmationData of type SubjectConfirmationData
-     * @return a SubjectConfirmation object
+     * @return a SubjectConfirmation model
      */
     @SuppressWarnings("unchecked")
     public static SubjectConfirmation createSubjectConfirmation(
@@ -402,7 +402,7 @@ public class SAMLAssertionBuilder {
     }
 
     /**
-     * Create a NameID object
+     * Create a NameID model
      * One of the following formats MUST be used:
      *   urn:oasis:names:tc:SAML:1.1:nameid-format:unspecified
      *   urn:oasis:names:tc:SAML:1.1:nameid-format:emailAddress
@@ -429,7 +429,7 @@ public class SAMLAssertionBuilder {
         return nameID;
     }
     /**
-     * Create a SubjectLocality object
+     * Create a SubjectLocality model
      * One of the following formats MUST be used:
      *   urn:oasis:names:tc:SAML:1.1:nameid-format:unspecified
      *   urn:oasis:names:tc:SAML:1.1:nameid-format:emailAddress
@@ -460,9 +460,9 @@ public class SAMLAssertionBuilder {
     
     
     /**
-     * Create an Opensaml KeyInfo object from the parameters
+     * Create an Opensaml KeyInfo model from the parameters
      * @param keyInfo the KeyInfo bean from which to extract security credentials
-     * @return the KeyInfo object
+     * @return the KeyInfo model
      * @throws org.opensaml.xml.security.SecurityException
      */
     public static KeyInfo createKeyInfo(KeyInfoBean keyInfo) 
@@ -551,12 +551,12 @@ public class SAMLAssertionBuilder {
     }
     
     /**
-     * Create an Attribute object.
+     * Create an Attribute model.
      *
      * @param friendlyName of type String
      * @param name of type String
      * @param nameFormat of type String
-     * @return an Attribute object
+     * @return an Attribute model
      */
     @SuppressWarnings("unchecked")
     public static Attribute createAttribute(String friendlyName, String name, String nameFormat) {
@@ -644,10 +644,10 @@ public class SAMLAssertionBuilder {
     }
     
     /**
-     * Create an Evidence object
+     * Create an Evidence model
      *
      * @param evidence An Object instance
-     * @return an Action object
+     * @return an Action model
      */
     @SuppressWarnings("unchecked")
     public static Evidence createSamlEvidence() {
@@ -679,10 +679,10 @@ public class SAMLAssertionBuilder {
     
     
     /**
-     * Create an Action object
+     * Create an Action model
      *
      * @param actionBean An ActionBean instance
-     * @return an Action object
+     * @return an Action model
      */
     @SuppressWarnings("unchecked")
     public static Action createSamlAction(ActionBean actionBean) {
@@ -698,10 +698,10 @@ public class SAMLAssertionBuilder {
     }
 
     /**
-     * Create a DecisionTypeEnumeration object
+     * Create a DecisionTypeEnumeration model
      *
      * @param decision of type Decision
-     * @return a DecisionTypeEnumeration object 
+     * @return a DecisionTypeEnumeration model
      */
     private static DecisionTypeEnumeration transformDecisionType(
         AuthDecisionStatementBean.Decision decision
@@ -716,10 +716,10 @@ public class SAMLAssertionBuilder {
         return decisionTypeEnum;
     }
     /**
-     * Create a Conditions object
+     * Create a Conditions model
      *
-     * @param conditionsBean A ConditionsBean object
-     * @return a Conditions object
+     * @param conditionsBean A ConditionsBean model
+     * @return a Conditions model
      */
     @SuppressWarnings("unchecked")
     public static Conditions createConditions(ConditionsBean conditionsBean) {
@@ -764,10 +764,10 @@ public class SAMLAssertionBuilder {
         return conditions;
     }
     /**
-     * Create an AudienceRestriction object
+     * Create an AudienceRestriction model
      *
      * @param audienceURI of type String
-     * @return an AudienceRestriction object
+     * @return an AudienceRestriction model
      */
     @SuppressWarnings("unchecked")
     public static AudienceRestriction createAudienceRestriction(String audienceURI) {

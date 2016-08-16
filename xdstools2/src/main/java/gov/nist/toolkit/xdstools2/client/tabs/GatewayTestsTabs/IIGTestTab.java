@@ -11,8 +11,8 @@ import gov.nist.toolkit.actortransaction.client.ActorType;
 import gov.nist.toolkit.configDatatypes.SimulatorProperties;
 import gov.nist.toolkit.configDatatypes.client.TransactionType;
 import gov.nist.toolkit.results.client.Result;
-import gov.nist.toolkit.results.client.SiteSpec;
 import gov.nist.toolkit.results.client.TestInstance;
+import gov.nist.toolkit.sitemanagement.client.SiteSpec;
 import gov.nist.toolkit.xdstools2.client.*;
 import gov.nist.toolkit.xdstools2.client.inspector.MetadataInspectorTab;
 import gov.nist.toolkit.xdstools2.client.siteActorManagers.GetImagingDocumentsSiteActorManager;
@@ -49,20 +49,16 @@ public class IIGTestTab extends GenericQueryTab implements GatewayTool {
     public ToolkitServiceAsync getToolkitService() { return toolkitService; }
 
     @Override
-    public TabContainer getToolContainer() { return myContainer; }
+    public TabContainer getToolContainer() { return getTabContainer(); }
 
     public void onTabLoad(TabContainer container, boolean select) {
     }
 
-    public void onTabLoad(TabContainer container, boolean select, String eventName) {
-        myContainer = container;
-        topPanel = new VerticalPanel();
+    @Override
+    public void onTabLoad(boolean select, String eventName) {
         genericQueryTab = this;
+        registerTab(select, eventName);  // link into container/tab management
 
-        container.addTab(topPanel, eventName, select);
-
-
-        addCloseButton(container,topPanel, null);
         tlsOptionEnabled = false;
 
         genericQueryTab.reloadTransactionOfferings();
@@ -87,14 +83,14 @@ public class IIGTestTab extends GenericQueryTab implements GatewayTool {
         addResultsPanel = false;  // manually done below
 
         ////////////////////////////////////////////////////////////////////////////////////////////////
-        topPanel.add(new HTML("<h1>Initiating Imaging Gateway Test Tool</h1>"));
+        tabTopPanel.add(new HTML("<h1>Initiating Imaging Gateway Test Tool</h1>"));
 
         Image initiatingGatewayDiagram=new Image();
         initiatingGatewayDiagram.setUrl("diagrams/IIGdiagram.png");
         initiatingGatewayDiagram.setHeight("300px");
-        topPanel.add(initiatingGatewayDiagram);
+        tabTopPanel.add(initiatingGatewayDiagram);
 
-        topPanel.add(new HTML(
+        tabTopPanel.add(new HTML(
            
            "<p>This tool tests an Initiating Imaging Gateway.  The tests are " +
            "driven by an Imaging Document Consumer simulator. The Initiating " +
@@ -113,7 +109,7 @@ public class IIGTestTab extends GenericQueryTab implements GatewayTool {
         ));
 
         ////////////////////////////////////////////////////////////////////////////////////////////////
-        topPanel.add(new HTML(
+        tabTopPanel.add(new HTML(
                 
            "<hr />" +
            
@@ -132,7 +128,7 @@ public class IIGTestTab extends GenericQueryTab implements GatewayTool {
         ));
 
         HorizontalPanel testEnvironmentsPanel = new HorizontalPanel();
-        topPanel.add(testEnvironmentsPanel);
+        tabTopPanel.add(testEnvironmentsPanel);
 
         new BuildIIGTestOrchestrationButton(this, testEnvironmentsPanel, "Build Test Environment", false);
 
@@ -153,17 +149,17 @@ public class IIGTestTab extends GenericQueryTab implements GatewayTool {
                 new CoupledTransactions(),
                 false  /* display patient id param */);
 
-        topPanel.add(testSelectionManager.buildTestSelector());
+        tabTopPanel.add(testSelectionManager.buildTestSelector());
 
-        topPanel.add(testSelectionManager.buildSectionSelector());
+        tabTopPanel.add(testSelectionManager.buildSectionSelector());
 
-        topPanel.add(mainGrid);
+        tabTopPanel.add(mainGrid);
 
         testSelectionManager.loadTestsFromCollection(COLLECTION_NAME);
 
 
         ////////////////////////////////////////////////////////////////////////////////////////////////
-        topPanel.add(new HTML(
+        tabTopPanel.add(new HTML(
                 
            "<hr />" +
                         
@@ -174,9 +170,9 @@ public class IIGTestTab extends GenericQueryTab implements GatewayTool {
            "displayed with Inspect Results.</p>"
         ));
 
-        addRunnerButtons(topPanel);
+        addRunnerButtons(tabTopPanel);
 
-        topPanel.add(resultPanel);
+        tabTopPanel.add(resultPanel);
     }
 
     class Runner implements ClickHandler {
@@ -208,7 +204,7 @@ public class IIGTestTab extends GenericQueryTab implements GatewayTool {
 
             TestInstance testInstance = new TestInstance(testToRun);
             testInstance.setUser(getCurrentTestSession());
-            toolkitService.runMesaTest(getEnvironmentSelection(), getCurrentTestSession(), getSiteSelection(), new TestInstance(testToRun), testSelectionManager.getSelectedSections(), parms, true, queryCallback);
+            toolkitService.runMesaTest(getCurrentTestSession(), getSiteSelection(), new TestInstance(testToRun), testSelectionManager.getSelectedSections(), parms, true, queryCallback);
         }
     }
 
@@ -244,7 +240,7 @@ public class IIGTestTab extends GenericQueryTab implements GatewayTool {
                         itab.setResults(results);
                         itab.setSiteSpec(siteSpec);
                         itab.setToolkitService(toolkitService);
-                        itab.onTabLoad(myContainer, true, null);
+                        itab.onTabLoad(true, "Insp");
                     }
                 });
             }

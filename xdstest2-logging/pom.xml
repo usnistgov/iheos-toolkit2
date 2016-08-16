@@ -13,6 +13,10 @@
     <dependencies>
         <dependency>
             <groupId>gov.nist.toolkit</groupId>
+            <artifactId>testkit-utilities</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>gov.nist.toolkit</groupId>
             <artifactId>xds-exceptions</artifactId>
         </dependency>
         <dependency>
@@ -41,9 +45,9 @@
         </dependency>
     </dependencies>
 
-<build>
+    <build>
         <plugins>
-<plugin>
+            <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-source-plugin</artifactId>
                 <version>${maven-source-plugin.version}</version>
@@ -56,10 +60,10 @@
                     </execution>
                 </executions>
             </plugin>
- 	</plugins>
-</build>
+        </plugins>
+    </build>
 
-  <scm>
-    <tag>v3.0.2a</tag>
-  </scm>
+    <scm>
+        <tag>v3.0.2a</tag>
+    </scm>
 </project>

@@ -6,9 +6,9 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.*;
 import gov.nist.toolkit.registrymetadata.client.ObjectRefs;
 import gov.nist.toolkit.results.client.*;
+import gov.nist.toolkit.sitemanagement.client.SiteSpec;
 import gov.nist.toolkit.xdstools2.client.PopupMessage;
-import gov.nist.toolkit.xdstools2.client.TabContainer;
-import gov.nist.toolkit.xdstools2.client.TabbedWindow;
+import gov.nist.toolkit.xdstools2.client.ToolWindow;
 import gov.nist.toolkit.xdstools2.client.ToolkitServiceAsync;
 
 import java.util.ArrayList;
@@ -16,9 +16,7 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-public class MetadataInspectorTab extends TabbedWindow {
-
-	TabContainer container;
+public class MetadataInspectorTab extends ToolWindow {
 	VerticalPanel historyPanel;
 	VerticalPanel detailPanel;
 	VerticalPanel structPanel;
@@ -56,8 +54,8 @@ public class MetadataInspectorTab extends TabbedWindow {
 	public void setResults(List<Result> results) { this.results = results; }
 	public void setSiteSpec(SiteSpec ss) { siteSpec = ss; }
 
-	public void onTabLoad(TabContainer container, boolean select, String eventName) {
-		this.container = container;
+	@Override
+	public void onTabLoad(boolean select, String eventName) {
 
 		logger.log(Level.INFO, "Inspector started");
 
@@ -69,18 +67,16 @@ public class MetadataInspectorTab extends TabbedWindow {
 			data.enableActions = false;
 
 		data.toolkitService = toolkitService;
-		topPanel = new VerticalPanel();
-		container.addTab(topPanel, "Inspector", select);
-		topPanel.setWidth("100%");
-		addCloseButton(container,topPanel, null, siteSpec);
+		registerTab(select, "Inspector");
+		tabTopPanel.setWidth("100%");
 
 		HTML title = new HTML();
 		title.setHTML("<h2>Inspector</h2>");
-		topPanel.add(title);
+		tabTopPanel.add(title);
 
 		hpanel = new HorizontalPanel();
-		topPanel.add(hpanel);
-		topPanel.setCellWidth(hpanel, "100%");
+		tabTopPanel.add(hpanel);
+//		tabTopPanel.setCellWidth(hpanel, "100%");
 		hpanel.setBorderWidth(1);
 
 		historyPanel = new VerticalPanel();
@@ -184,7 +180,7 @@ public class MetadataInspectorTab extends TabbedWindow {
 
 			Tree contentTree = new Tree();
 
-			new ListingDisplay(this, data, new TreeThing(contentTree)).listing(container);
+			new ListingDisplay(this, data, new TreeThing(contentTree)).listing();
 
 			historyPanel.add(contentTree);
 		}
@@ -296,7 +292,7 @@ public class MetadataInspectorTab extends TabbedWindow {
 				dm.combinedMetadata = stepResult.getMetadata(); 
 				dm.allDocs = stepResult.documents;
 				
-				new ListingDisplay(this, dm, new TreeThing(stepTreeItem)).listing(container);
+				new ListingDisplay(this, dm, new TreeThing(stepTreeItem)).listing();
 				
 //				listing(stepResult.getMetadata(), stepResult.documents, new TreeThing(stepTreeItem));
 

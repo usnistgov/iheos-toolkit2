@@ -6,7 +6,7 @@ import java.util.Map;
 import com.google.gwt.user.client.rpc.IsSerializable;
 
 /**
- * Base object for carrying the content of a metadata object. Each attribute
+ * Base model for carrying the content of a metadata model. Each attribute
  * is represented by three fields: name, nameX, and nameDoc.  Name is the value of the field.
  * NameX is the XML representation. The XML representation is only fit for display.
  * NameDoc is some arbitrary information about the attribute. One use is to hold comments

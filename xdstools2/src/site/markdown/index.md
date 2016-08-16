@@ -2,8 +2,9 @@
 
 <a href="faq/toolkitterms.html" target="_blank">Common Toolkit terms</a>
 
-
 <a href="../javadoc/index.html" target="_blank">JavaDocs for API</a>
+
+<a href="tools/toolurls.html" target="_blank">Individual Tool URLs</a>
 
 ## HOW TO
 
@@ -13,3 +14,6 @@
 
 <a href="tools/gatewaytesting.html" target="_blank">XCA Gateway testing tools</a>
 
+<hr />
+
+<a href="http://www.flaticon.com/packs/free-basic-ui-elements">Some Icons "Designed by Freepik and distributed by Flaticon"</a>

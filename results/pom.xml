@@ -21,6 +21,10 @@
         </dependency>
         <dependency>
             <groupId>gov.nist.toolkit</groupId>
+            <artifactId>site-management</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>gov.nist.toolkit</groupId>
             <artifactId>actorfactory</artifactId>
         </dependency>
         <dependency>
@@ -38,6 +42,31 @@
         <dependency>
             <groupId>com.google.gwt</groupId>
             <artifactId>gwt-user</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>gov.nist.toolkit</groupId>
+            <artifactId>site-management</artifactId>
+            <version>2.202.0-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>gov.nist.toolkit</groupId>
+            <artifactId>site-management</artifactId>
+            <version>2.202.0-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>gov.nist.toolkit</groupId>
+            <artifactId>actorfactory</artifactId>
+            <version>2.202.0-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>gov.nist.toolkit</groupId>
+            <artifactId>actorfactory</artifactId>
+            <version>2.202.0-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>gov.nist.toolkit</groupId>
+            <artifactId>site-management</artifactId>
+            <version>2.202.0-SNAPSHOT</version>
         </dependency>
     </dependencies>
 

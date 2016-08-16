@@ -6,19 +6,15 @@ import gov.nist.toolkit.actorfactory.client.SimulatorConfig;
 import gov.nist.toolkit.actortransaction.client.ActorType;
 import gov.nist.toolkit.commondatatypes.MetadataSupport;
 import gov.nist.toolkit.configDatatypes.SimulatorProperties;
-import gov.nist.toolkit.results.client.AssertionResult;
-import gov.nist.toolkit.results.client.DocumentEntryDetail;
-import gov.nist.toolkit.results.client.Result;
-import gov.nist.toolkit.results.client.SiteSpec;
-import gov.nist.toolkit.results.client.StepResult;
-import gov.nist.toolkit.results.client.TestInstance;
+import gov.nist.toolkit.results.client.*;
 import gov.nist.toolkit.session.server.Session;
 import gov.nist.toolkit.session.server.serviceManager.XdsTestServiceManager;
 import gov.nist.toolkit.simcommon.client.config.SimulatorConfigElement;
 import gov.nist.toolkit.simulators.sim.rep.RepIndex;
 import gov.nist.toolkit.simulators.support.StoredDocument;
+import gov.nist.toolkit.sitemanagement.client.SiteSpec;
 import gov.nist.toolkit.testengine.engine.ResultPersistence;
-import gov.nist.toolkit.testenginelogging.TestDetails;
+import gov.nist.toolkit.testenginelogging.TestLogDetails;
 import gov.nist.toolkit.utilities.xml.Util;
 import gov.nist.toolkit.utilities.xml.XmlUtil;
 import gov.nist.toolkit.xdsexception.ExceptionUtil;
@@ -320,7 +316,7 @@ public class TransactionUtil {
             int nextContentIdx = (contentBundleIdx < lastBundleIdx) ? contentBundleIdx + 1 : lastBundleIdx;
 
 
-            TestDetails ts = xdsTestServiceManager.getTestDetails(testInstance, section);
+            TestLogDetails ts = xdsTestServiceManager.getTestDetails(testInstance, section);
             File documentFile = getDocumentFile(ts.getTestplanFile(section));  // IMPORTANT NOTE: In a Content Bundle: Make an assumption of only step per section
             String snapshotUniqueId = "";
 

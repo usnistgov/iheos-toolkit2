@@ -3,12 +3,10 @@
  */
 package gov.nist.toolkit.testengine.transactions;
 
-import org.apache.axiom.om.OMElement;
-
-import gov.nist.toolkit.testengine.engine.Linkage;
 import gov.nist.toolkit.testengine.engine.StepContext;
-import gov.nist.toolkit.xdsexception.MetadataException;
-import gov.nist.toolkit.xdsexception.XdsInternalException;
+import gov.nist.toolkit.xdsexception.client.MetadataException;
+import gov.nist.toolkit.xdsexception.client.XdsInternalException;
+import org.apache.axiom.om.OMElement;
 
 /**
  * Handles XmlDetail validations

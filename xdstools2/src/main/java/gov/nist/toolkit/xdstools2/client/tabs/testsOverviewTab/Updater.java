@@ -30,7 +30,7 @@ public class Updater {
     }
 
     /**
-     * Accesses the Session object from inside the TabbedWindow contained of the Tab
+     * Accesses the Session model from inside the ToolWindow contained of the Tab
      * @return the current user session name
      */
     public String getCurrentTestSession(){

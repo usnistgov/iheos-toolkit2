@@ -8,7 +8,7 @@ public class TokenRetrieveInfoType {
      * Gets the value of the request property.
      * 
      * @return
-     *     possible object is
+     *     possible model is
      *     {@link String }
      *     
      */
@@ -20,7 +20,7 @@ public class TokenRetrieveInfoType {
      * Sets the value of the request property.
      * 
      * @param value
-     *     allowed object is
+     *     allowed model is
      *     {@link String }
      *     
      */

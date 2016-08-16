@@ -6,7 +6,7 @@ import gov.nist.toolkit.registrymetadata.client.MetadataCollection
 import gov.nist.toolkit.commondatatypes.MetadataSupport
 import gov.nist.toolkit.results.client.CodesConfiguration
 import gov.nist.toolkit.results.client.Result
-import gov.nist.toolkit.results.client.SiteSpec
+import gov.nist.toolkit.sitemanagement.client.SiteSpec
 import gov.nist.toolkit.toolkitApi.SimulatorBuilder
 import gov.nist.toolkit.valregmsg.registry.storedquery.generic.QueryReturnType
 import spock.lang.Shared

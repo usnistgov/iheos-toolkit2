@@ -1,13 +1,15 @@
 package gov.nist.toolkit.testengine.engine;
 
-import gov.nist.toolkit.installation.Installation;
-import gov.nist.toolkit.registrymetadata.Metadata;
 import gov.nist.toolkit.results.client.TestInstance;
 import gov.nist.toolkit.securityCommon.SecurityParams;
 import gov.nist.toolkit.sitemanagement.Sites;
 import gov.nist.toolkit.sitemanagement.client.Site;
 import gov.nist.toolkit.testengine.errormgr.AssertionResults;
-import gov.nist.toolkit.testenginelogging.*;
+import gov.nist.toolkit.testenginelogging.TestLogDetails;
+import gov.nist.toolkit.testenginelogging.client.LogFileContentDTO;
+import gov.nist.toolkit.testenginelogging.client.LogMapDTO;
+import gov.nist.toolkit.testenginelogging.client.StepGoalsDTO;
+import gov.nist.toolkit.testenginelogging.client.TestStepLogContentDTO;
 import gov.nist.toolkit.testenginelogging.logrepository.LogRepository;
 import gov.nist.toolkit.xdsexception.EnvironmentNotSelectedException;
 import org.apache.log4j.Logger;
@@ -40,7 +42,7 @@ public class Xdstest2 {
 	Site site;
 	File toolkitDir;   // never referenced
 	List<String> sections;
-	List<TestDetails> testDetails;
+	List<TestLogDetails> testLogDetails;
 	SecurityParams tki;
 	public boolean involvesMetadata = false;   // affects logging
 	static Logger logger = Logger.getLogger(Xdstest2.class);
@@ -186,9 +188,7 @@ public class Xdstest2 {
 	 */
 	public void addTest(TestInstance testInstance) throws Exception {
 		this.testInstance = testInstance;
-		File tk=Installation.installation().findTestkitFromTest(testkits,testInstance.getId());
-		if (tk==null) tk=xt.getTestkit();
-		xt.addTestSpec(new TestDetails(tk, testInstance));
+		xt.addTestSpec(new TestLogDetails(xt.getTestkit(), testInstance));
 
 	}
 
@@ -205,36 +205,34 @@ public class Xdstest2 {
 	public void addTest(TestInstance testInstance, List<String> sections, String[] areas, boolean doLogCheck) throws Exception {
 		this.testInstance = testInstance;
 		this.sections = sections;
-		TestDetails testDetails;
-		File tk=Installation.installation().findTestkitFromTest(testkits,testInstance.getId());
-		if (tk==null) tk=xt.getTestkit();
+		TestLogDetails testLogDetails;
 		if (areas == null)
-			testDetails = new TestDetails(tk, testInstance);
+			testLogDetails = new TestLogDetails(xt.getTestkit(), testInstance);
 		else
-			testDetails = new TestDetails(tk, testInstance, areas);
+			testLogDetails = new TestLogDetails(xt.getTestkit(), testInstance, areas);
 		if (logRepository != null)
-			testDetails.setLogRepository(logRepository);
+			testLogDetails.setLogRepository(logRepository);
 		if (doLogCheck) {
 			if (sections != null && sections.size() != 0)
-				testDetails.selectSections(sections);
+				testLogDetails.selectSections(sections);
 		}
-		xt.addTestSpec(testDetails);
+		xt.addTestSpec(testLogDetails);
 	}
 	
 	public void addTest(TestInstance testInstance, File testDir) throws Exception {
 		this.testInstance = testInstance;
-		TestDetails testDetails = new TestDetails(testDir);
+		TestLogDetails testLogDetails = new TestLogDetails(testDir, testInstance);
 		if (logRepository != null)
-			testDetails.setLogRepository(logRepository);
-		xt.addTestSpec(testDetails);
+			testLogDetails.setLogRepository(logRepository);
+		xt.addTestSpec(testLogDetails);
 	}
 
 	public void addTest(TestInstance testInstance, List<String> sections, String[] areas) throws Exception {
 		addTest(testInstance, sections, areas, true);
 	}
 	
-	public TestDetails getTestSpec(TestInstance testInstance) throws Exception {
-		return new TestDetails(xt.getTestkit(), testInstance);
+	public TestLogDetails getTestSpec(TestInstance testInstance) throws Exception {
+		return new TestLogDetails(xt.getTestkit(), testInstance);
 	}
 
 	/**
@@ -305,8 +303,8 @@ public class Xdstest2 {
 	public boolean run(Map<String, String> externalLinkage, Map<String, Object> externalLinkage2,  boolean stopOnFirstFailure, TransactionSettings ts) throws Exception {
 		xt.stopOnFirstFailure = stopOnFirstFailure;
 		logger.debug("Running " + testInstance.getId());
-		testDetails = xt.runAndReturnLogs(externalLinkage, externalLinkage2, ts, ts.writeLogs);
-		if (testDetails == null)
+		testLogDetails = xt.runAndReturnLogs(externalLinkage, externalLinkage2, ts, ts.writeLogs);
+		if (testLogDetails == null)
 			throw new Exception("Xdstest2#run: runAndReturnLogs return null (testSpecs)");
 		return xt.status;
 	}
@@ -329,7 +327,7 @@ public class Xdstest2 {
 
 	/**
 	 * Gather and return the assertion results from the test logs. Once a test has been run, 
-	 * it is usually necessary to display the details of the assertions that failed. This includes 
+	 * it is usually necessary to display the details of the assertionEleList that failed. This includes
 	 * the receipt of SOAPFaults, teststeps that failed, and general error messages that appear
 	 * in the testlog.
 	 * @return - Organized collection of error messages
@@ -340,14 +338,14 @@ public class Xdstest2 {
 		if (sectionsToScan != null && sectionsToScan.size() == 0) 
 			sectionsToScan = null;
 
-		if (testDetails.size() > 1) 
+		if (testLogDetails.size() > 1)
 			sectionsToScan = null;
 
 		AssertionResults res = new AssertionResults();
 		String dashes = "------------------------------------------------------------------------------------------------";
 
 		res.add(dashes);
-		for (TestDetails testSpec : testDetails) {
+		for (TestLogDetails testSpec : testLogDetails) {
 //            logger.info("Scanning Test: " + testSpec.getTestInstance());
 			res.add("Test: " + testSpec.getTestInstance());
 			res.add(dashes);
@@ -360,7 +358,7 @@ public class Xdstest2 {
 			for (String section : sections) {
 				if (section.equals("THIS"))
 					continue;
-				LogFileContent testLog = testSpec.getTestPlanLogs().get(section);
+				LogFileContentDTO testLog = testSpec.getTestPlanLogs().get(section);
 				if (testLog == null) {
 					// this section failed - report it and continue;
 					res.add("Section: " + section);
@@ -372,13 +370,13 @@ public class Xdstest2 {
 					res.add(testLog.getFatalError(), false);
 					continue;
 				}
-				for (TestStepLogContent stepLog : testLog.getStepLogs()) {
-					res.add("Section: " + testLog.getTestAttribute() + " Step: " + stepLog.getName());
+				for (TestStepLogContentDTO stepLog : testLog.getStepLogs()) {
+					res.add("Section: " + testLog.getTestAttribute() + " Step: " + stepLog.getId());
 					res.add("Endpoint: " + stepLog.getEndpoint());
 
-					StepGoals stepGoals = stepLog.getGoals();
+					StepGoalsDTO stepGoalsDTO = stepLog.getStepGoalsDTO();
 					res.add("Goals:", true);
-					for (String goal : stepGoals.goals) {
+					for (String goal : stepGoalsDTO.goals) {
 						res.add(formatGoal(goal), true);
 					}
 
@@ -399,23 +397,23 @@ public class Xdstest2 {
 
 					res.add("Status: " + ((stepLog.isSuccess()) ? "Pass" : "Fail"), stepLog.isSuccess());
 					
-                    for (String report : stepLog.getUseReports()) {
-                        res.add("UseReport: " + report);
+//                    for (String report : stepLog.getUseReports()) {
+//                        res.add("UseReport: " + report);
+//                    }
+                    for (String report : stepLog.getReportsSummary()) {
+                        res.add("ReportBuilder: " + report);
                     }
-                    for (String report : stepLog.getReports()) {
-                        res.add("Report: " + report);
-                    }
-					try {
-						Metadata m;
-						m = stepLog.getParsedInputMetadata();
-						if (m != null && m.hasMetadata()) 
-							res.add("Contents Sent:\n" + m.getContentsDescription());
-						m = stepLog.getMetadata();
-						if (m != null && m.hasMetadata()) 
-							res.add("Contents Returned:\n" + m.getContentsDescription());
-					} catch (Exception e) {
-
-					}
+//					try {
+//						Metadata m;
+//						m = stepLog.getParsedInputMetadata();
+//						if (m != null && m.hasMetadata())
+//							res.add("Contents Sent:\n" + m.getContentsDescription());
+//						m = stepLog.getMetadata();
+//						if (m != null && m.hasMetadata())
+//							res.add("Contents Returned:\n" + m.getContentsDescription());
+//					} catch (Exception e) {
+//
+//					}
 
 					res.add(dashes);
 				}
@@ -430,26 +428,26 @@ public class Xdstest2 {
 	 * log information is stored when a test completes. It is initialized by the test execution.
 	 * @return
 	 */
-	public List<TestDetails> getTestSpecs() {
-		return testDetails;
+	public List<TestLogDetails> getTestSpecs() {
+		return testLogDetails;
 	}
 
 	/**
-	 * Return LogMap, the collection of information from the log.xml files generated by
+	 * Return LogMapDTO, the collection of information from the log.xml files generated by
 	 * the running of one or more tests.
-	 * @return LogMap 
+	 * @return LogMapDTO
 	 * @throws Exception - No tests have been specified, no logs can be found, or the log files cannot
 	 * be parsed.
 	 */
-	public LogMap getLogMap() throws Exception {
-		LogMap lm = new LogMap();
+	public LogMapDTO getLogMap() throws Exception {
+		LogMapDTO lm = new LogMapDTO();
 
-		if (testDetails == null)
+		if (testLogDetails == null)
 			throw new Exception("Xdstest2#getLogMap: testSpecs is null");
 
-		for (TestDetails testSpec : testDetails) {
+		for (TestLogDetails testSpec : testLogDetails) {
 			for (String section : testSpec.getTestPlanLogs().keySet()) {
-				LogFileContent testLog = testSpec.getTestPlanLogs().get(section);
+				LogFileContentDTO testLog = testSpec.getTestPlanLogs().get(section);
 				if (testLog == null) {
 					if (section.equals("THIS"))
 						continue;

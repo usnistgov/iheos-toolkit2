@@ -6,7 +6,7 @@
 
 package gov.nist.toolkit.utilities.xsl;
 
-import gov.nist.toolkit.xdsexception.XdsInternalException;
+import gov.nist.toolkit.xdsexception.client.XdsInternalException;
 
 import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerConfigurationException;
@@ -74,10 +74,10 @@ public class Transform {
 	}
 
 	/**
-	 * Loads a transform file and returns that transform in a Transform object.
+	 * Loads a transform file and returns that transform in a Transform model.
 	 * @param f The transform file.
 	 * @throws java.lang.Exception Thrown if there is a parsing error.
-	 * @return A Tranform object representing the transform.
+	 * @return A Tranform model representing the transform.
 	 */
 	static public Transform load(File f)
 	throws Exception {
@@ -105,7 +105,7 @@ public class Transform {
 	}
 
 	/**
-	 * Set the transform by providing a File object.
+	 * Set the transform by providing a File model.
 	 * @param f The File representing the transform file.
 	 * @throws java.lang.Exception Thrown if there is a problem accessing the file.
 	 */
@@ -165,7 +165,7 @@ public class Transform {
 	}
 
 	/**
-	 * Set the input as a String object.
+	 * Set the input as a String model.
 	 * @param input The input String.
 	 */
 	public void setInput(String input) {

@@ -17,7 +17,7 @@ public class CeType {
      * Gets the value of the code property.
      * 
      * @return
-     *     possible object is
+     *     possible model is
      *     {@link String }
      *     
      */
@@ -29,7 +29,7 @@ public class CeType {
      * Sets the value of the code property.
      * 
      * @param value
-     *     allowed object is
+     *     allowed model is
      *     {@link String }
      *     
      */
@@ -41,7 +41,7 @@ public class CeType {
      * Gets the value of the codeSystem property.
      * 
      * @return
-     *     possible object is
+     *     possible model is
      *     {@link String }
      *     
      */
@@ -53,7 +53,7 @@ public class CeType {
      * Sets the value of the codeSystem property.
      * 
      * @param value
-     *     allowed object is
+     *     allowed model is
      *     {@link String }
      *     
      */
@@ -65,7 +65,7 @@ public class CeType {
      * Gets the value of the codeSystemName property.
      * 
      * @return
-     *     possible object is
+     *     possible model is
      *     {@link String }
      *     
      */
@@ -77,7 +77,7 @@ public class CeType {
      * Sets the value of the codeSystemName property.
      * 
      * @param value
-     *     allowed object is
+     *     allowed model is
      *     {@link String }
      *     
      */
@@ -89,7 +89,7 @@ public class CeType {
      * Gets the value of the codeSystemVersion property.
      * 
      * @return
-     *     possible object is
+     *     possible model is
      *     {@link String }
      *     
      */
@@ -101,7 +101,7 @@ public class CeType {
      * Sets the value of the codeSystemVersion property.
      * 
      * @param value
-     *     allowed object is
+     *     allowed model is
      *     {@link String }
      *     
      */
@@ -113,7 +113,7 @@ public class CeType {
      * Gets the value of the displayName property.
      * 
      * @return
-     *     possible object is
+     *     possible model is
      *     {@link String }
      *     
      */
@@ -125,7 +125,7 @@ public class CeType {
      * Sets the value of the displayName property.
      * 
      * @param value
-     *     allowed object is
+     *     allowed model is
      *     {@link String }
      *     
      */
@@ -137,7 +137,7 @@ public class CeType {
      * Gets the value of the originalText property.
      * 
      * @return
-     *     possible object is
+     *     possible model is
      *     {@link String }
      *     
      */
@@ -149,7 +149,7 @@ public class CeType {
      * Sets the value of the originalText property.
      * 
      * @param value
-     *     allowed object is
+     *     allowed model is
      *     {@link String }
      *     
      */
@@ -163,7 +163,7 @@ public class CeType {
      * <p>
      * This accessor method returns a reference to the live list,
      * not a snapshot. Therefore any modification you make to the
-     * returned list will be present inside the JAXB object.
+     * returned list will be present inside the JAXB model.
      * This is why there is not a <CODE>set</CODE> method for the translation property.
      * 
      * <p>

@@ -251,7 +251,7 @@ public class WSSESecurityHeaderUtil {
 	 * Returns UTC String representation of a date. For instance,
 	 * 2004-03-20T05:53:32Z.
 	 * 
-	 * @param date Date object.
+	 * @param date Date model.
 	 */
 	public static String toUTCDateFormat(Date date) {
 		final String UTC_DATE_Z_FORMAT = "{0}-{1}-{2}T{3}:{4}:{5}Z";	 

@@ -1,7 +1,7 @@
 package gov.nist.toolkit.xdstools2.client.tabs.simulatorControlTab;
 
 import com.google.gwt.user.client.rpc.AsyncCallback;
-import com.google.gwt.user.client.ui.VerticalPanel;
+import com.google.gwt.user.client.ui.FlowPanel;
 import gov.nist.toolkit.actorfactory.client.SimId;
 import gov.nist.toolkit.actorfactory.client.SimulatorConfig;
 import gov.nist.toolkit.xdstools2.client.PopupMessage;
@@ -16,12 +16,12 @@ import java.util.List;
  *
  */
 class SimConfigSuper {
-	VerticalPanel panel;
+	FlowPanel panel;
 	List<SimConfigMgr> mgrs = new ArrayList<>();
 	SimulatorControlTab simulatorControlTab;
 	String testSession;
 
-	SimConfigSuper(SimulatorControlTab simulatorControlTab, VerticalPanel panel, String testSession) {
+	SimConfigSuper(SimulatorControlTab simulatorControlTab, FlowPanel panel, String testSession) {
 		this.simulatorControlTab = simulatorControlTab;
 		this.panel = panel;
 		this.testSession = testSession;

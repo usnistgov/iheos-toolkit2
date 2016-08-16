@@ -1,14 +1,9 @@
 package gov.nist.toolkit.xdstools2.client.tabs.simulatorControlTab;
 
 
-import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.user.client.ui.HorizontalPanel;
-import com.google.gwt.user.client.ui.VerticalPanel;
+import com.google.gwt.user.client.ui.FlowPanel;
 import gov.nist.toolkit.actorfactory.client.SimulatorConfig;
-import gov.nist.toolkit.configDatatypes.SimulatorProperties;
-import gov.nist.toolkit.http.client.HtmlMarkup;
-import gov.nist.toolkit.simcommon.client.config.SimulatorConfigElement;
+
 
 
 /**
@@ -20,7 +15,7 @@ public class SimConfigMgr extends BaseSimConfigMgr {
     /**
      *
      */
-    SimConfigMgr(SimulatorControlTab simulatorControlTab, VerticalPanel panel, SimulatorConfig config, String testSession) {
+    SimConfigMgr(SimulatorControlTab simulatorControlTab, FlowPanel panel, SimulatorConfig config, String testSession) {
         super(simulatorControlTab, panel, config, testSession);
     }
 
@@ -29,94 +24,13 @@ public class SimConfigMgr extends BaseSimConfigMgr {
         super.displayBasicSimulatorConfig();
     }
 
+
+    @Override
     public void displayInPanel() {
-        tbl.clear();
-        int row = 0;
+        super.displayInPanel();
 
-        tbl.setWidget(row, 0, HtmlMarkup.html("Simulator Type"));
-        tbl.setWidget(row, 1, HtmlMarkup.html(config.getActorTypeFullName()));
+        addTable(getTbl());
 
-        row++;
-
-        tbl.setWidget(row, 0, HtmlMarkup.html("Simulator ID"));
-        tbl.setWidget(row, 1, HtmlMarkup.html(config.getId().toString()));
-
-        row++;
-
-        for (SimulatorConfigElement ele : config.getElements()) {
-
-            // String
-            if (ele.isString()) {
-                if (ele.isEditable()) {
-                    new ConfigEditBox(ele, tbl, row);
-                } else {
-                    new ConfigTextDisplayBox(ele, tbl, row);
-                }
-                row++;
-            }
-
-            // Boolean
-            else if (ele.isBoolean()) {
-                new ConfigBooleanBox(ele, tbl, row);
-                row++;
-            }
-
-            // Selecting RGs for the IG
-            else if (SimulatorProperties.respondingGateways.equals(ele.name)) {
-                final SimulatorConfigElement configEle = ele;
-                HorizontalPanel rgBoxes = new HorizontalPanel();
-                final RGSelectionPresenter rgSelectionPresenter = new RGSelectionPresenter(simulatorControlTab.toolkitService, configEle.asList(), rgBoxes);
-                tbl.setWidget(row, 0, HtmlMarkup.html(ele.name));
-                tbl.setWidget(row, 1, rgBoxes);
-                saveButton.addClickHandler(
-                        new ClickHandler() {
-                            @Override
-                            public void onClick(ClickEvent clickEvent) {
-                                configEle.setValue(rgSelectionPresenter.getSelected());
-//                                config.updateDocTypeSelection();
-//                                saveSimConfig();
-                            }
-                        }
-                );
-                row++;
-            }
-
-            // Selecting RIGs for the IIG
-            else if (SimulatorProperties.respondingImagingGateways.equals(ele.name)) {
-                final SimulatorConfigElement configEle = ele;
-                HorizontalPanel rigBoxes = new HorizontalPanel();
-                final RigSelectionPresenter rigSelectionPresenter = new RigSelectionPresenter(simulatorControlTab.toolkitService, configEle.asList(), rigBoxes);
-                tbl.setWidget(row, 0, HtmlMarkup.html(ele.name));
-                tbl.setWidget(row, 1, rigBoxes);
-                saveButton.addClickHandler(
-                        new ClickHandler() {
-                            @Override
-                            public void onClick(ClickEvent clickEvent) {
-                                configEle.setValue(rigSelectionPresenter.getSelected());
-                            }
-                        }
-                );
-                row++;
-            }
-
-            // Selecting IDS for the RG
-            else if (SimulatorProperties.imagingDocumentSources.equals(ele.name)) {
-                final SimulatorConfigElement configEle = ele;
-                HorizontalPanel idsBoxes = new HorizontalPanel();
-                final IDSSelectionPresenter idsSelectionPresenter = new IDSSelectionPresenter(simulatorControlTab.toolkitService, configEle.asList(), idsBoxes);
-                tbl.setWidget(row, 0, HtmlMarkup.html(ele.name));
-                tbl.setWidget(row, 1, idsBoxes);
-                saveButton.addClickHandler(
-                        new ClickHandler() {
-                            @Override
-                            public void onClick(ClickEvent clickEvent) {
-                                configEle.setValue(idsSelectionPresenter.getSelected());
-                            }
-                        }
-                );
-                row++;
-            }
-
-        }
+        addSaveHandler();
     }
 }

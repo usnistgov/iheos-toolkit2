@@ -1,5 +1,6 @@
 package gov.nist.toolkit.simulators.support;
 
+import gov.nist.toolkit.actorfactory.SimDb;
 import gov.nist.toolkit.actorfactory.client.SimulatorConfig;
 import gov.nist.toolkit.commondatatypes.MetadataSupport;
 import gov.nist.toolkit.configDatatypes.SimulatorProperties;
@@ -9,11 +10,12 @@ import gov.nist.toolkit.errorrecording.GwtErrorRecorderBuilder;
 import gov.nist.toolkit.errorrecording.client.ValidationStepResult;
 import gov.nist.toolkit.errorrecording.client.ValidatorErrorItem;
 import gov.nist.toolkit.errorrecording.client.XdsErrorCode;
+import gov.nist.toolkit.errorrecording.factories.ErrorRecorderBuilder;
 import gov.nist.toolkit.installation.Installation;
 import gov.nist.toolkit.registrymetadata.Metadata;
-import gov.nist.toolkit.registrymsg.registry.RegistryErrorListGenerator;
 import gov.nist.toolkit.registrymsg.registry.RegistryResponse;
 import gov.nist.toolkit.registrymsg.registry.Response;
+import gov.nist.toolkit.registrysupport.RegistryErrorListGenerator;
 import gov.nist.toolkit.simulators.sim.reg.RegistryResponseSendingSim;
 import gov.nist.toolkit.simulators.sim.reg.store.RegIndex;
 import gov.nist.toolkit.simulators.sim.rep.RepIndex;
@@ -22,15 +24,21 @@ import gov.nist.toolkit.soap.http.SoapUtil;
 import gov.nist.toolkit.utilities.io.Io;
 import gov.nist.toolkit.utilities.xml.OMFormatter;
 import gov.nist.toolkit.utilities.xml.XmlUtil;
-import gov.nist.toolkit.valregmsg.message.*;
+import gov.nist.toolkit.validatorsSoapMessage.engine.ValidateMessageService;
+import gov.nist.toolkit.validatorsSoapMessage.message.HttpMessageValidator;
+import gov.nist.toolkit.validatorsSoapMessage.message.MtomMessageValidator;
+import gov.nist.toolkit.validatorsSoapMessage.message.SimpleSoapHttpHeaderValidator;
+import gov.nist.toolkit.validatorsSoapMessage.message.SoapMessageValidator;
+import gov.nist.toolkit.valregmsg.message.StoredDocumentInt;
 import gov.nist.toolkit.valregmsg.service.SoapActionFactory;
-import gov.nist.toolkit.valregmsg.validation.engine.ValidateMessageService;
+import gov.nist.toolkit.valsupport.client.ValidationContext;
+import gov.nist.toolkit.valsupport.engine.MessageValidatorEngine;
 import gov.nist.toolkit.valsupport.engine.ValidationStep;
 import gov.nist.toolkit.valsupport.message.AbstractMessageValidator;
 import gov.nist.toolkit.xdsexception.ExceptionUtil;
-import gov.nist.toolkit.xdsexception.MetadataException;
-import gov.nist.toolkit.xdsexception.XdsException;
-import gov.nist.toolkit.xdsexception.XdsInternalException;
+import gov.nist.toolkit.xdsexception.client.MetadataException;
+import gov.nist.toolkit.xdsexception.client.XdsException;
+import gov.nist.toolkit.xdsexception.client.XdsInternalException;
 import org.apache.axiom.om.OMElement;
 import org.apache.log4j.Logger;
 
@@ -76,14 +84,20 @@ public class DsSimCommon {
         this.simCommon = simCommon;
     }
 
-    public void setSimulatorConfig(SimulatorConfig config) { this.simulatorConfig = config; }
-    public SimulatorConfig getSimulatorConfig() { return simulatorConfig; }
+    public void setSimulatorConfig(SimulatorConfig config) {
+        this.simulatorConfig = config;
+    }
+
+    public SimulatorConfig getSimulatorConfig() {
+        return simulatorConfig;
+    }
 
     /**
      * Starts the validation process by scheduling the HTTP parser. This is called
      * once per input message only.
      * Returns status indicating whether it is ok to continue.  If false then exit
      * immediately without returning a message.  A SOAPFault has already been returned;
+     *
      * @return true if successful and false if fault sent
      * @throws IOException
      */
@@ -95,7 +109,7 @@ public class DsSimCommon {
     public void runInitialValidations() throws IOException {
         GwtErrorRecorderBuilder gerb = new GwtErrorRecorderBuilder();
 
-        simCommon.mvc = simCommon.vms.runValidation(simCommon.vc, simCommon.db, simCommon.mvc, gerb);
+        simCommon.mvc = runValidation(simCommon.vc, simCommon.db, simCommon.mvc, gerb);
         simCommon.mvc.run();
         simCommon.buildMVR();
 
@@ -109,6 +123,21 @@ public class DsSimCommon {
             logger.debug("no steps with errors");
         }
     }
+
+    /**
+     * Starts the validation/simulator process by pulling the HTTP wrapper from the db, creating a validation engine if necessary,
+     * and starting an HTTP validator. It returns the validation engine. Remember that the basic abstract
+     * Simulator class inherits directly from the abstract MessageValidator class.
+     * @param vc
+     * @param db
+     * @param mvc
+     * @return
+     * @throws IOException
+     */
+    public MessageValidatorEngine runValidation(ValidationContext vc, SimDb db, MessageValidatorEngine mvc, ErrorRecorderBuilder gerb) throws IOException {
+        return new ValidateMessageService(regIndex).runValidation(vc, db.getRequestMessageHeader(), db.getRequestMessageBody(), mvc, gerb);
+    }
+
 
     public void sendErrorsInRegistryResponse(ErrorRecorder er) {
         if (er == null)
@@ -126,6 +155,7 @@ public class DsSimCommon {
     /**
      * Wrap response in a SOAP Envelope (and body), header is generated by
      * examining the request header
+     *
      * @param body response to be wrapped
      * @return SOAP Envelope
      */
@@ -161,7 +191,7 @@ public class DsSimCommon {
         return rdsr;
     }
 
-    public RegistryResponse getRegistryResponse () throws XdsInternalException {
+    public RegistryResponse getRegistryResponse() throws XdsInternalException {
         simCommon.buildMVR();
         return getRegistryResponse(simCommon.mvr.getResults());
     }
@@ -170,7 +200,9 @@ public class DsSimCommon {
         return getRegistryErrorList(simCommon.getErrors());
     }
 
-    public boolean hasErrors() { return simCommon.hasErrors(); }
+    public boolean hasErrors() {
+        return simCommon.hasErrors();
+    }
 
     public void setRegistryErrorListGenerator(RegistryErrorListGenerator relg) {
         registryErrorListGenerator = relg;
@@ -201,8 +233,7 @@ public class DsSimCommon {
                 }
             }
             return rel;
-        }
-        finally {
+        } finally {
             registryErrorListGenerator = null;
         }
     }
@@ -216,7 +247,7 @@ public class DsSimCommon {
     public void addDocumentAttachments(Metadata m, ErrorRecorder er) {
         try {
             List<String> uids = new ArrayList<String>();
-            for (OMElement eo : m.getExtrinsicObjects() ) {
+            for (OMElement eo : m.getExtrinsicObjects()) {
                 String uid = m.getUniqueIdValue(eo);
                 uids.add(uid);
             }
@@ -240,7 +271,7 @@ public class DsSimCommon {
         }
 
         int foundDocuments = 0;
-        if (documentsToAttach!=null)
+        if (documentsToAttach != null)
             foundDocuments = documentsToAttach.size();
 
         if (notFound > 0 && foundDocuments > 0) {
@@ -252,16 +283,17 @@ public class DsSimCommon {
     }
 
 
-   /**
-    * Attempts to retrieve DICOM documents from passed list of UIDs in one of
-    * the passed list of transfer syntaxes.
-    * @param imagingDocumentUids List of composite UIDs (studyUid:SeriesUid:InstanceUID)
-    * for DICOM documents requested by caller.
-    * @param transferSyntaxUids List of transfer syntax UIDs acceptable to caller
-    * @param er ErrorRecorder to store errors found during processing.
-    */
-   public void addImagingDocumentAttachments(List<String> imagingDocumentUids, List<String> transferSyntaxUids, ErrorRecorder er) {
-	logger.debug("DsSimComon#addImagingDocumentAttachments");
+    /**
+     * Attempts to retrieve DICOM documents from passed list of UIDs in one of
+     * the passed list of transfer syntaxes.
+     *
+     * @param imagingDocumentUids List of composite UIDs (studyUid:SeriesUid:InstanceUID)
+     *                            for DICOM documents requested by caller.
+     * @param transferSyntaxUids  List of transfer syntax UIDs acceptable to caller
+     * @param er                  ErrorRecorder to store errors found during processing.
+     */
+    public void addImagingDocumentAttachments(List<String> imagingDocumentUids, List<String> transferSyntaxUids, ErrorRecorder er) {
+        logger.debug("DsSimComon#addImagingDocumentAttachments");
         for (String uid : imagingDocumentUids) {
             StoredDocument sd = this.getStoredImagingDocument(uid, transferSyntaxUids);
             logger.debug(" uid=" + uid);
@@ -279,7 +311,7 @@ public class DsSimCommon {
     }
 
     String mkCid(int i) {
-        return "doc" + i +"@ihexds.nist.gov";
+        return "doc" + i + "@ihexds.nist.gov";
     }
 
     public void addDocumentAttachment(StoredDocument sd) {
@@ -293,6 +325,7 @@ public class DsSimCommon {
 
     /**
      * Insert document Includes into DocumentResponse cluster
+     *
      * @param env
      * @throws MetadataException
      */
@@ -330,6 +363,7 @@ public class DsSimCommon {
 
     /**
      * Used to build RetrieveDocumentSetRespoinse
+     *
      * @param env
      * @param er
      * @return
@@ -401,6 +435,7 @@ public class DsSimCommon {
 
     /**
      * Used to build RetrieveDocumentSetResponse
+     *
      * @param env
      * @param er
      * @return
@@ -443,7 +478,6 @@ public class DsSimCommon {
             er.detail("Attaching " + documentsToAttach.size() + " documents as separate Parts in the Multipart");
             for (String cid : documentsToAttach.keySet()) {
                 StoredDocument sd = documentsToAttach.get(cid);
-
                 body.append("--").append(boundary).append(rn);
                 body.append("Content-Type: ").append(sd.getMimeType()).append(rn);
                 body.append("Content-Transfer-Encoding: binary").append(rn);
@@ -471,6 +505,7 @@ public class DsSimCommon {
 
         return body;
     }
+
     public StringBuffer getTrailer() {
         String rn = "\r\n";
         String boundary = "MIMEBoundary112233445566778899";
@@ -486,12 +521,13 @@ public class DsSimCommon {
 
     /**
      * Generate HTTP wrapper in correct format (SIMPLE or MTOM)
-     * @param env SOAPEnvelope
+     *
+     * @param env         SOAPEnvelope
      * @param er
      * @param multipartOk
      * @throws IOException
      */
-    public void sendHttpResponse(OMElement env, ErrorRecorder er, boolean multipartOk)  {
+    public void sendHttpResponse(OMElement env, ErrorRecorder er, boolean multipartOk) {
         if (simCommon.responseSent) {
             // this should never happen
             logger.fatal(ExceptionUtil.here("Attempted to send second response"));
@@ -528,6 +564,7 @@ public class DsSimCommon {
             logger.fatal(ExceptionUtil.exception_details(e));
         }
     }
+
     private void writeAttachments(OutputStream os, ErrorRecorder er) {
         String boundary = "MIMEBoundary112233445566778899";
         String rn = "\r\n";
@@ -550,13 +587,11 @@ public class DsSimCommon {
 /*
                 try {
                     String contents = "ZZZ";
-
                     if (sd.getCharset() != null) {
                         contents = new String(sd.getContent(), sd.getCharset());
                     } else {
                         contents = new String(sd.getContent());
                     }
-
 		    logger.debug("Attaching " + cid + " length " + contents.length());
                     body.append(contents);
                 } catch (Exception e) {
@@ -576,11 +611,11 @@ public class DsSimCommon {
         ErrorRecorder er = simCommon.getUnconnectedErrorRecorder();
 
         for (OMElement re : XmlUtil.decendentsWithLocalName(regResp, "RegistryError")) {
-            String errorCode   = re.getAttributeValue(MetadataSupport.error_code_qname);
+            String errorCode = re.getAttributeValue(MetadataSupport.error_code_qname);
             String codeContext = re.getAttributeValue(MetadataSupport.code_context_qname);
-            String location    = re.getAttributeValue(MetadataSupport.location_qname);
-            String severity    = re.getAttributeValue(MetadataSupport.severity_qname);
-            String resource    = "";
+            String location = re.getAttributeValue(MetadataSupport.location_qname);
+            String severity = re.getAttributeValue(MetadataSupport.severity_qname);
+            String resource = "";
             er.err(errorCode, codeContext, location, severity, resource);
         }
 
@@ -589,6 +624,7 @@ public class DsSimCommon {
 
     /**
      * Send a SOAP Fault if soap errors are present
+     *
      * @return fault sent?
      * @throws IOException
      */
@@ -610,8 +646,9 @@ public class DsSimCommon {
 
     /**
      * Send a SOAP Fault
+     *
      * @param description description of problem
-     * @param e exception causing fault
+     * @param e           exception causing fault
      */
     public void sendFault(String description, Exception e) {
         logger.info("Sending SoapFault - " + description + " - " + ((e == null) ? "" : ExceptionUtil.exception_details(e)));
@@ -620,9 +657,9 @@ public class DsSimCommon {
     }
 
 
-
     /**
      * Generate HTTP wrapper in correct format (SIMPLE or MTOM)
+     *
      * @param env SOAPEnvelope
      * @param er
      * @throws IOException
@@ -645,6 +682,7 @@ public class DsSimCommon {
      * is specific to that messaging architecture.
      * Returns null
      * if no errors found.
+     *
      * @return
      */
     SoapFault getSoapErrors() {
@@ -670,6 +708,7 @@ public class DsSimCommon {
     /**
      * Examine simulator/validator step defined by designated class
      * and if error(s) is found then generate SOAP fault message.
+     *
      * @param clas Java class to look for on simulator stack
      * @return SoapFault instance
      */
@@ -707,83 +746,83 @@ public class DsSimCommon {
     }
 
 
-   /**
-    * Attempts to retrieve the referenced DICOM document in one of the
-    * referenced Transfer Syntaxes.
-    * @param compositeUid composite UID of DICOM document desired by caller
-    * (studyUid:SeriesUid:InstanceUid)
-    * @param transferSyntaxUids List of Transfer Syntax UIDs for syntaxes
-    * acceptable to caller
-    * @return StoredDocument instance for the DICOM document referenced by the
-    * compositeUid, or null if no document can be returned. A side effect is
-    * that the current ErrorRecorder has an error added to it if no document can
-    * be returned.
-    */
-	public StoredDocument getStoredImagingDocument(String compositeUid, List<String> transferSyntaxUids) {
-		logger.debug("DsSimCommon#getStoredImagingDocument: " + compositeUid);
-		String[] uids = compositeUid.split(":");
+    /**
+     * Attempts to retrieve the referenced DICOM document in one of the
+     * referenced Transfer Syntaxes.
+     *
+     * @param compositeUid       composite UID of DICOM document desired by caller
+     *                           (studyUid:SeriesUid:InstanceUid)
+     * @param transferSyntaxUids List of Transfer Syntax UIDs for syntaxes
+     *                           acceptable to caller
+     * @return StoredDocument instance for the DICOM document referenced by the
+     * compositeUid, or null if no document can be returned. A side effect is
+     * that the current ErrorRecorder has an error added to it if no document can
+     * be returned.
+     */
+    public StoredDocument getStoredImagingDocument(String compositeUid, List<String> transferSyntaxUids) {
+        logger.debug("DsSimCommon#getStoredImagingDocument: " + compositeUid);
+        String[] uids = compositeUid.split(":");
       /*
-       * The image cache is in the IDS Simulator config, absolute, or relative 
+       * The image cache is in the IDS Simulator config, absolute, or relative
        * to the image cache in the toolkit properties.
        */
-		Path imageCacheRoot = Paths.get(getImageCache());
-		String simCache = simulatorConfig.get(SimulatorProperties.idsImageCache).asString();
-      Path idsRepositoryPath = imageCacheRoot.resolve(simCache);
-		File idsRepositoryDir = idsRepositoryPath.toFile();
-		if (!idsRepositoryDir.exists() || !idsRepositoryDir.isDirectory()) {
-         logger.warn("Could not file image cache directory " + idsRepositoryDir);
-		   er.err(XdsErrorCode.Code.XDSRepositoryError,
-		      "Could not find image cache [" + idsRepositoryPath + "] ",
-		      "IdsActorSimulator EL-1", MetadataSupport.error_severity, "Internal error");
-		   return null;
-		}
-		Path folderPath = idsRepositoryPath.resolve(uids[0]).resolve(uids[1]).resolve(uids[2]);
-		logger.debug(" " + folderPath);
-		File folder = folderPath.toFile();
-		if (!folder.exists()) {
-			logger.debug("Could not find file folder for composite UID: " + compositeUid);
-			er.err(XdsErrorCode.Code.XDSDocumentUniqueIdError,
-			   "No document matching composite UID [" + compositeUid + "] ",
-			   "IdsActorSimulator EL-2", MetadataSupport.error_severity, "ITI TF-3 Table 4.2.4.1-2");
-			return null;
-		}
-		boolean found = false;
-		Iterator<String> it = transferSyntaxUids.iterator();
-		Path finalPath = Paths.get("");
-		while (it.hasNext() && !found) {
-		   finalPath = folderPath.resolve(it.next());
-			if(finalPath.toFile().exists()) found = true;
-		}
-		StoredDocument sd = null;
-		if (found) {
-			logger.debug("Found path to file: " + finalPath);
-			StoredDocumentInt sdi = new StoredDocumentInt();
-			sdi.pathToDocument = finalPath.toString();
-			sdi.uid = uids[2];
-			logger.debug(" Instance UID: " + sdi.uid);
-			sdi.mimeType = "application/dicom";
-			sdi.charset = "UTF-8";
-			sdi.content = null;
-			sd = new StoredDocument(sdi);
-		} else {
-			logger.debug("Did not find an image file that matched transfer syntax");
-			logger.debug(" Composite UID: " + compositeUid);
-			it = transferSyntaxUids.iterator();
-			while (it.hasNext()) {
-				logger.debug("  Xfer syntax: " + it.next());
-			}
-			er.err(XdsErrorCode.Code.XDSRepositoryError,
-			   "IDS cannot encode the pixel data using any of the requested transfer syntaxes",
-			   uids[2], MetadataSupport.error_severity, "RAD TF-3 4.69.4.2.3");
-		}
-		return sd;
-	}
-	
-	private String getImageCache() {
-      String c = Installation.installation().propertyServiceManager().getPropertyManager().getImageCache();
-      logger.debug("Image Cache: " + c);
-      return c;
-   }
+        Path imageCacheRoot = Paths.get(getImageCache());
+        String simCache = simulatorConfig.get(SimulatorProperties.idsImageCache).asString();
+        Path idsRepositoryPath = imageCacheRoot.resolve(simCache);
+        File idsRepositoryDir = idsRepositoryPath.toFile();
+        if (!idsRepositoryDir.exists() || !idsRepositoryDir.isDirectory()) {
+            logger.warn("Could not file image cache directory " + idsRepositoryDir);
+            er.err(XdsErrorCode.Code.XDSRepositoryError,
+                    "Could not find image cache [" + idsRepositoryPath + "] ",
+                    "IdsActorSimulator EL-1", MetadataSupport.error_severity, "Internal error");
+            return null;
+        }
+        Path folderPath = idsRepositoryPath.resolve(uids[0]).resolve(uids[1]).resolve(uids[2]);
+        logger.debug(" " + folderPath);
+        File folder = folderPath.toFile();
+        if (!folder.exists()) {
+            logger.debug("Could not find file folder for composite UID: " + compositeUid);
+            er.err(XdsErrorCode.Code.XDSDocumentUniqueIdError,
+                    "No document matching composite UID [" + compositeUid + "] ",
+                    "IdsActorSimulator EL-2", MetadataSupport.error_severity, "ITI TF-3 Table 4.2.4.1-2");
+            return null;
+        }
+        boolean found = false;
+        Iterator<String> it = transferSyntaxUids.iterator();
+        Path finalPath = Paths.get("");
+        while (it.hasNext() && !found) {
+            finalPath = folderPath.resolve(it.next());
+            if (finalPath.toFile().exists()) found = true;
+        }
+        StoredDocument sd = null;
+        if (found) {
+            logger.debug("Found path to file: " + finalPath);
+            StoredDocumentInt sdi = new StoredDocumentInt();
+            sdi.pathToDocument = finalPath.toString();
+            sdi.uid = uids[2];
+            logger.debug(" Instance UID: " + sdi.uid);
+            sdi.mimeType = "application/dicom";
+            sdi.charset = "UTF-8";
+            sdi.content = null;
+            sd = new StoredDocument(sdi);
+        } else {
+            logger.debug("Did not find an image file that matched transfer syntax");
+            logger.debug(" Composite UID: " + compositeUid);
+            it = transferSyntaxUids.iterator();
+            while (it.hasNext()) {
+                logger.debug("  Xfer syntax: " + it.next());
+            }
+            er.err(XdsErrorCode.Code.XDSRepositoryError,
+                    "IDS cannot encode the pixel data using any of the requested transfer syntaxes",
+                    uids[2], MetadataSupport.error_severity, "RAD TF-3 4.69.4.2.3");
+        }
+        return sd;
+    }
 
+    private String getImageCache() {
+        String c = Installation.installation().propertyServiceManager().getPropertyManager().getImageCache();
+        logger.debug("Image Cache: " + c);
+        return c;
+    }
 
 }

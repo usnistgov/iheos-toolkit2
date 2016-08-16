@@ -50,7 +50,7 @@ import java.util.Enumeration;
 
 public class AuthSSLProtocolSocketFactory implements SecureProtocolSocketFactory {
 
-    /** Log object for this class. */
+    /** Log model for this class. */
     private static final Log LOG = LogFactory.getLog(AuthSSLProtocolSocketFactory.class);
 
     private URL keystoreUrl = null;

@@ -31,12 +31,9 @@ import java.util.logging.Logger;
  */
 public class PidFavoritesTab extends GenericQueryTab {
     static List<TransactionType> transactionTypes = new ArrayList<TransactionType>();
+    static {transactionTypes.add(TransactionType.REGISTER);}
     static CoupledTransactions couplings = new CoupledTransactions();
     private static final ToolkitServiceAsync tkServices = GWT.create(ToolkitService.class);
-
-    static {
-        transactionTypes.add(TransactionType.REGISTER);
-    }
 
     // table selection tool
     final MultiSelectionModel<Pid> selectionModel = new MultiSelectionModel<Pid>();
@@ -57,21 +54,18 @@ public class PidFavoritesTab extends GenericQueryTab {
         super(new GetDocumentsSiteActorManager());
     }
 
-    public void onTabLoad(TabContainer container, boolean select, String eventName) {
-        myContainer = container;
-        topPanel = new VerticalPanel();
+    @Override
+    public void onTabLoad(boolean select, String eventName) {
+        registerTab(select, eventName);
 
-        container.addTab(topPanel, "Patient IDs", select);
-        addCloseButton(container, topPanel, null);
-
-        topPanel.add(new HTML("<h2>Manage Patient IDs</h2>"));
+        tabTopPanel.add(new HTML("<h2>Manage Patient IDs</h2>"));
 
         mainGrid = new FlexTable();
 
-        topPanel.add(mainGrid);
+        tabTopPanel.add(mainGrid);
 
         HorizontalPanel panel = new HorizontalPanel();
-        topPanel.add(panel);
+        tabTopPanel.add(panel);
 
         VerticalPanel favoritesListPanel = new VerticalPanel();
         panel.add(favoritesListPanel);
@@ -132,7 +126,6 @@ public class PidFavoritesTab extends GenericQueryTab {
         });
         favoritesListPanel.add(new HTML("Favorite Patient IDs"));
         ScrollPanel p = new ScrollPanel(favoritesListBox);
-//        ScrollPanel p = new ScrollPanel(new PidFavoritesCellList());
         p.setHeight("350px");
         favoritesListPanel.add(p);
 
@@ -182,7 +175,7 @@ public class PidFavoritesTab extends GenericQueryTab {
         setTlsEnabled(false);
         setSamlEnabled(false);
         setShowInspectButton(false);
-        topPanel.add(new HTML("<h3>Generate V2 Patient Identity Feed</h3><br />(From selection in Favorites)" +
+        tabTopPanel.add(new HTML("<h3>Generate V2 Patient Identity Feed</h3><br />(From selection in Favorites)" +
                 "<p>Note that this is NOT integrated with Gazelle Patient Management.  It should be used " +
                 "for private testing only.</p>"));
         queryBoilerplate = addQueryBoilerplate(new Runner(), transactionTypes, couplings, false);
@@ -192,7 +185,6 @@ public class PidFavoritesTab extends GenericQueryTab {
         } catch (IOException e) {
             e.printStackTrace();
         }
-//        updateFavoritesFromModel();
         loadAssigningAuthorities();
     }
 

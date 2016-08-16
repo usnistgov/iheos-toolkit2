@@ -12,6 +12,8 @@ import gov.nist.toolkit.services.server.UnitTestEnvironmentManager
 import gov.nist.toolkit.session.server.Session
 import gov.nist.toolkit.toolkitApi.SimulatorBuilder
 import gov.nist.toolkit.toolkitServicesCommon.SimId
+import org.junit.Rule
+import org.junit.rules.TestName
 import spock.lang.Shared
 import spock.lang.Specification
 /**
@@ -19,6 +21,7 @@ import spock.lang.Specification
  */
 
 class ToolkitSpecification extends Specification {
+    @Rule TestName name = new TestName()
     // these are usable by the specification that extend this class
     @Shared GrizzlyController server = null
     @Shared ToolkitApi api
@@ -28,6 +31,10 @@ class ToolkitSpecification extends Specification {
     def setupSpec() {  // there can be multiple setupSpec() fixture methods - they all get run
         session = UnitTestEnvironmentManager.setupLocalToolkit()
         api = UnitTestEnvironmentManager.localToolkitApi()
+    }
+
+    def setup() {
+        println 'Running method: ' + name.methodName
     }
 
     def startGrizzly(String port) {
@@ -50,7 +57,7 @@ class ToolkitSpecification extends Specification {
     }
 
     def cleanupSpec() {  // one time shutdown when everything is done
-//        System.gc()
+        System.gc()
         if (server) {
             server.stop()
             server = null

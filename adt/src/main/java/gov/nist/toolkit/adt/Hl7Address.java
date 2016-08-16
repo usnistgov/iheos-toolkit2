@@ -6,7 +6,7 @@ package gov.nist.toolkit.adt;
  */
 public class Hl7Address {
 
-    private String parent = null;   //  uuid link to record... used in database but may not be used in actuality in java object
+    private String parent = null;   //  uuid link to record... used in database but may not be used in actuality in java model
 
     private String streetAddress = null;
     private String otherDesignation = null;

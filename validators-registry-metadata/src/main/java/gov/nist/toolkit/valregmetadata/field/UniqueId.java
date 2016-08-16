@@ -1,9 +1,9 @@
 package gov.nist.toolkit.valregmetadata.field;
 
-import gov.nist.toolkit.registrymetadata.Metadata;
-import gov.nist.toolkit.registrymsg.registry.RegistryErrorListGenerator;
 import gov.nist.toolkit.commondatatypes.MetadataSupport;
-import gov.nist.toolkit.xdsexception.MetadataException;
+import gov.nist.toolkit.registrymetadata.Metadata;
+import gov.nist.toolkit.registrysupport.RegistryErrorListGenerator;
+import gov.nist.toolkit.xdsexception.client.MetadataException;
 
 import java.util.ArrayList;
 

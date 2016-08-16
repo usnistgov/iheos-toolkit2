@@ -9,7 +9,7 @@ package gov.nist.toolkit.http.httpclient;
 
 /**
  * This class was created so that all the information needed by HttpClient could be
- * gathered easily into a single (JavaBean) object.
+ * gathered easily into a single (JavaBean) model.
  * @author Andrew McCaffrey
  */
 public class HttpClientInfo {

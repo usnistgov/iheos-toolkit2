@@ -18,8 +18,8 @@ import gov.nist.toolkit.simulators.support.SimCommon;
 import gov.nist.toolkit.simulators.support.TransactionSimulator;
 import gov.nist.toolkit.valregmsg.message.MetadataContainer;
 import gov.nist.toolkit.valsupport.engine.MessageValidatorEngine;
-import gov.nist.toolkit.xdsexception.MetadataException;
-import gov.nist.toolkit.xdsexception.XdsInternalException;
+import gov.nist.toolkit.xdsexception.client.MetadataException;
+import gov.nist.toolkit.xdsexception.client.XdsInternalException;
 import org.apache.axiom.om.OMAttribute;
 import org.apache.axiom.om.OMElement;
 import org.apache.log4j.Logger;
@@ -153,7 +153,7 @@ public class RegRSim extends TransactionSimulator   {
 		// This is done now because the operations below need this index
 		buildMetadataIndex(m);
 
-		// verify object/patient id linking rules are observed
+		// verify model/patient id linking rules are observed
 		pmi.associationPatientIdRules();
 
 		// set folder lastUpdateTime on folders in the submission
@@ -166,8 +166,8 @@ public class RegRSim extends TransactionSimulator   {
 		pmi.updateExistingFolderTimes(m);
 
 		// verify that no associations are being added that:
-		//     reference a non-existant object in submission or registry
-		//     reference a Deprecated object in registry
+		//     reference a non-existant model in submission or registry
+		//     reference a Deprecated model in registry
 		pmi.verifyAssocReferences(m);
 
 		// check for RPLC and RPLC_XFRM and do the deprecation

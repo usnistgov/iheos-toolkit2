@@ -1,6 +1,7 @@
 package gov.nist.toolkit.xdstools2.client.event.testSession;
 
 import com.google.gwt.event.shared.EventHandler;
+import gov.nist.toolkit.xdstools2.client.event.TestSessionChangedEvent;
 
 /**
  * Created by bill on 9/16/15.
