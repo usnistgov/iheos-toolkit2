@@ -18,9 +18,10 @@ import gov.nist.toolkit.configDatatypes.client.Pid;
 import gov.nist.toolkit.configDatatypes.client.PidBuilder;
 import gov.nist.toolkit.configDatatypes.client.TransactionType;
 import gov.nist.toolkit.results.client.Result;
-import gov.nist.toolkit.xdstools2.client.CookieManager;
 import gov.nist.toolkit.xdstools2.client.CoupledTransactions;
 import gov.nist.toolkit.xdstools2.client.PopupMessage;
+import gov.nist.toolkit.xdstools2.client.ToolkitService;
+import gov.nist.toolkit.xdstools2.client.ToolkitServiceAsync;
 import gov.nist.toolkit.xdstools2.client.command.*;
 import gov.nist.toolkit.xdstools2.client.siteActorManagers.GetDocumentsSiteActorManager;
 import gov.nist.toolkit.xdstools2.client.tabs.genericQueryTab.GenericQueryTab;
@@ -46,15 +47,10 @@ public class PidFavoritesTab extends GenericQueryTab {
     // table data model
     ListDataProvider<Pid> model = new ListDataProvider<Pid>();
 
-    VerticalPanel assigningAuthorityPanel = new VerticalPanel();
-    TextArea pidBox = new TextArea();
-    HTML selectedPids = new HTML();
-    private ListBox favoritesListBox = new ListBox();
     private TextArea pidBox = new TextArea();
     private VerticalPanel assigningAuthorityPanel = new VerticalPanel();
     private HTML selectedPids = new HTML();
 
-    List<String> assigningAuthorities = null;
     Map<Button, String> authorityButtons = new HashMap<>();
     private Set<Pid> configuredPids=new HashSet<Pid>();
 

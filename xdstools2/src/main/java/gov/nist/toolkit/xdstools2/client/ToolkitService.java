@@ -192,10 +192,6 @@ public interface ToolkitService extends RemoteService  {
 
         Map<String, String> getSessionProperties() throws NoServletSessionException;
 	 void setSessionProperties(Map<String, String> props) throws NoServletSessionException;
-    Pid createPid(GeneratePidRequest generatePidRequest) throws Exception;
-    String getAssigningAuthority(CommandContext commandContext) throws Exception;
-    List<String> getAssigningAuthorities(CommandContext commandContext) throws Exception;
-    List<Result> sendPidToRegistry(SendPidToRegistryRequest request) throws Exception;
 
 	List<Pid> retrieveConfiguredFavoritesPid(String environment) throws IOException;
 	Pid createPid(GeneratePidRequest generatePidRequest) throws Exception;
