@@ -30,6 +30,7 @@ import gov.nist.toolkit.xdstools2.client.command.CommandContext;
 import gov.nist.toolkit.xdstools2.client.command.GeneratePidRequest;
 import gov.nist.toolkit.xdstools2.client.command.SendPidToRegistryRequest;
 
+import java.io.IOException;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
@@ -191,6 +192,12 @@ public interface ToolkitService extends RemoteService  {
 
         Map<String, String> getSessionProperties() throws NoServletSessionException;
 	 void setSessionProperties(Map<String, String> props) throws NoServletSessionException;
+    Pid createPid(GeneratePidRequest generatePidRequest) throws Exception;
+    String getAssigningAuthority(CommandContext commandContext) throws Exception;
+    List<String> getAssigningAuthorities(CommandContext commandContext) throws Exception;
+    List<Result> sendPidToRegistry(SendPidToRegistryRequest request) throws Exception;
+
+	List<Pid> retrieveConfiguredFavoritesPid(String environment) throws IOException;
 	Pid createPid(GeneratePidRequest generatePidRequest) throws Exception;
 	String getAssigningAuthority(CommandContext commandContext) throws Exception;
 	List<String> getAssigningAuthorities(CommandContext commandContext) throws Exception;
@@ -237,5 +244,4 @@ public interface ToolkitService extends RemoteService  {
 	public Result register(String username, TestInstance testInstance, SiteSpec registry, Map<String, String> params) throws Exception;
 	public Map<String, String> registerWithLocalizedTrackingInODDS(String username, TestInstance testInstance, SiteSpec registry, SimId oddsSimId, Map<String, String> params) throws Exception;
 	public List<DocumentEntryDetail> getOnDemandDocumentEntryDetails(SimId oddsSimId);
-
 }

@@ -17,11 +17,7 @@ import com.google.gwt.view.client.SelectionChangeEvent;
 import gov.nist.toolkit.configDatatypes.client.Pid;
 import gov.nist.toolkit.configDatatypes.client.PidBuilder;
 import gov.nist.toolkit.configDatatypes.client.TransactionType;
-import gov.nist.toolkit.results.client.Result;
-import gov.nist.toolkit.xdstools2.client.CookieManager;
-import gov.nist.toolkit.xdstools2.client.CoupledTransactions;
-import gov.nist.toolkit.xdstools2.client.PopupMessage;
-import gov.nist.toolkit.xdstools2.client.command.*;
+import gov.nist.toolkit.xdstools2.client.*;
 import gov.nist.toolkit.xdstools2.client.siteActorManagers.GetDocumentsSiteActorManager;
 import gov.nist.toolkit.xdstools2.client.tabs.genericQueryTab.GenericQueryTab;
 import gov.nist.toolkit.xdstools2.client.util.CookiesServices;
@@ -49,10 +45,6 @@ public class PidFavoritesTab extends GenericQueryTab {
     VerticalPanel assigningAuthorityPanel = new VerticalPanel();
     TextArea pidBox = new TextArea();
     HTML selectedPids = new HTML();
-    private ListBox favoritesListBox = new ListBox();
-    private TextArea pidBox = new TextArea();
-    private VerticalPanel assigningAuthorityPanel = new VerticalPanel();
-    private HTML selectedPids = new HTML();
 
     List<String> assigningAuthorities = null;
     Map<Button, String> authorityButtons = new HashMap<>();
@@ -61,24 +53,18 @@ public class PidFavoritesTab extends GenericQueryTab {
     public PidFavoritesTab() {
         super(new GetDocumentsSiteActorManager());
     }
-    // model
-    private Set<Pid> favoritePids = new HashSet<>();  // the database of values
-    private List<String> assigningAuthorities = null;
-    PidFavoritesTab me;
 
-    @Override
     public void onTabLoad(boolean select, String eventName) {
-        me = this;
         registerTab(select, eventName);
 
         tabTopPanel.add(new HTML("<h2>Manage Patient IDs</h2>"));
 
         mainGrid = new FlexTable();
 
-        tabTopPanel.add(mainGrid);
+        topPanel.add(mainGrid);
 
         HorizontalPanel panel = new HorizontalPanel();
-        tabTopPanel.add(panel);
+        topPanel.add(panel);
 
         VerticalPanel favoritesListPanel = new VerticalPanel();
         panel.add(favoritesListPanel);
@@ -188,7 +174,7 @@ public class PidFavoritesTab extends GenericQueryTab {
         setTlsEnabled(false);
         setSamlEnabled(false);
         setShowInspectButton(false);
-        tabTopPanel.add(new HTML("<h3>Generate V2 Patient Identity Feed</h3><br />(From selection in Favorites)" +
+        topPanel.add(new HTML("<h3>Generate V2 Patient Identity Feed</h3><br />(From selection in Favorites)" +
                 "<p>Note that this is NOT integrated with Gazelle Patient Management.  It should be used " +
                 "for private testing only.</p>"));
         queryBoilerplate = addQueryBoilerplate(new Runner(), transactionTypes, couplings, false);
@@ -261,7 +247,7 @@ public class PidFavoritesTab extends GenericQueryTab {
         toCookie();
     }
 
-    private void updateAssigningAuthorities() {
+    void updateAssigningAuthorities() {
         assigningAuthorityPanel.clear();
         authorityButtons.clear();
         for (String aa : assigningAuthorities) {
@@ -280,15 +266,22 @@ public class PidFavoritesTab extends GenericQueryTab {
     }
 
     // and add it to favorites
-    private void generatePid(String assigningAuthority) {
-        new GeneratePidCommand(this) {
+    void generatePid(String assigningAuthority) {
+        try {
+            toolkitService.createPid(assigningAuthority, new AsyncCallback<Pid>() {
+                @Override
+                public void onFailure(Throwable throwable) {
+                    new PopupMessage(throwable.getMessage());
+                }
 
-            @Override
-            public void onComplete(Pid pid) {
-                addToFavorities(pid);
-            }
-        }.run(new GeneratePidRequest(getCommandContext(), assigningAuthority));
-
+                @Override
+                public void onSuccess(Pid pid) {
+                    addToFavorities(pid);
+                }
+            });
+        } catch (NoServletSessionException e) {
+            new PopupMessage(e.getMessage());
+        }
     }
 
     void deleteFromFavorites(List<Pid> pids) {
@@ -300,14 +293,23 @@ public class PidFavoritesTab extends GenericQueryTab {
         updateFavoritesFromModel();
     }
 
-    private void loadAssigningAuthorities() {
-        new GetAssigningAuthoritiesCommand(this) {
-            @Override
-            public void onComplete(List<String> var1) {
-                assigningAuthorities = var1;
-                updateAssigningAuthorities();
-            }
-        }.run(getCommandContext());
+    void loadAssigningAuthorities() {
+        try {
+            toolkitService.getAssigningAuthorities(new AsyncCallback<List<String>>() {
+                @Override
+                public void onFailure(Throwable e) {
+                    new PopupMessage("Error loading Assigning Authorities - usually caused by session timeout - " + e.getMessage());
+                }
+
+                @Override
+                public void onSuccess(List<String> s) {
+                    assigningAuthorities = s;
+                    updateAssigningAuthorities();
+                }
+            });
+        } catch (Exception e) {
+            new PopupMessage(e.getMessage());
+        }
     }
 
     List<Pid> getSelectedPids() {
@@ -349,13 +351,11 @@ public class PidFavoritesTab extends GenericQueryTab {
 
             rigForRunning();
 
-            new SendPidToRegistryCommand(me) {
-
-                @Override
-                public void onComplete(List<Result> var1) {
-                    queryCallback.onSuccess(var1);
-                }
-            }.run(new SendPidToRegistryRequest(getCommandContext(), getSiteSelection(), pid));
+            try {
+                toolkitService.sendPidToRegistry(getSiteSelection(), pid, queryCallback);
+            } catch (NoServletSessionException e) {
+                e.printStackTrace();
+            }
         }
 
     }
