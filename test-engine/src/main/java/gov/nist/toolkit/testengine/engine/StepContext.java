@@ -264,7 +264,7 @@ public class StepContext extends BasicContext implements ErrorReportingInterface
 				testLog.add_name_value(test_step_output, instruction);
 			}
             else if (instruction_name.equals("Standard")) {
-			else {
+			} else {
 				resetStatus();
 				OMElement instruction_output = null;
 				BasicTransaction transaction = null;
@@ -345,9 +345,6 @@ public class StepContext extends BasicContext implements ErrorReportingInterface
                case "EchoV3Transaction":
                   transaction = new EchoV3Transaction(this, instruction, instruction_output);
                   break;
-               case "XcpdTransaction":
-                  transaction = new XcpdTransaction(this, instruction, instruction_output);
-                  break;
                case "SocketTransaction":
                   transaction = new SocketTransaction(this, instruction, instruction_output);
                   break;
@@ -360,6 +357,11 @@ public class StepContext extends BasicContext implements ErrorReportingInterface
                case "XmlDetailTransaction":
                   transaction = new XmlDetailTransaction(this, step, instruction, instruction_output);
                   break;
+				case "HttpTransaction":
+					HTTPTransaction hTransaction = new HTTPTransaction(this, instruction, instruction_output);
+					hTransaction.setTransType(instruction.getAttributeValue(new QName("type")));
+					transaction = hTransaction;
+					break;
                default:
                   dumpContextIntoOutput(test_step_output);
                   throw new XdsInternalException(

@@ -3,20 +3,19 @@
  */
 package gov.nist.toolkit.testengine.transactions;
 
+import gov.nist.toolkit.testengine.assertionEngine.Assertion;
+import gov.nist.toolkit.testengine.assertionEngine.AssertionEngine;
+import gov.nist.toolkit.testengine.engine.ErrorReportingInterface;
+import gov.nist.toolkit.testengine.engine.ILogger;
+import gov.nist.toolkit.testengine.engine.StepContext;
+import gov.nist.toolkit.testengine.engine.TestLogFactory;
+import gov.nist.toolkit.utilities.xml.XmlUtil;
 import gov.nist.toolkit.xdsexception.client.MetadataException;
 import gov.nist.toolkit.xdsexception.client.XdsInternalException;
 import org.apache.axiom.om.OMElement;
-import java.io.File;
-import java.util.*;
-
-import org.apache.axiom.om.OMElement;
 import org.apache.commons.lang.StringEscapeUtils;
-import org.w3c.dom.Element;
-import org.w3c.dom.NodeList;
 
-import gov.nist.toolkit.testengine.engine.*;
-import gov.nist.toolkit.testengine.engine.AssertionEngine.Assertion;
-import gov.nist.toolkit.utilities.xml.XmlUtil;
+import java.util.*;
 
 /**
  * Handles XmlDetail validations
@@ -49,13 +48,13 @@ public class XmlDetailTransaction extends BasicTransaction {
 
       try {
          if (useReportManager != null) {
-            useReportManager.apply(assertions);
+            useReportManager.apply(assertionEleList);
          }
       } catch (Exception e) {
          failed();
       }
 
-      engine.setAssertions(assertions);
+      engine.setAssertions(assertionEleList);
       engine.setLinkage(linkage);
       engine.setOutput(step_output);
       engine.setTestConfig(testConfig);
