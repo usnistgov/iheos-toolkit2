@@ -355,7 +355,7 @@ public class StepContext extends BasicContext implements ErrorReportingInterface
                   transaction = new IDSRetrieveTransaction(this, instruction, instruction_output, true);
                   break;
                case "XmlDetailTransaction":
-                  transaction = new XmlDetailTransaction(this, step, instruction, instruction_output);
+                  transaction = new ImgDetailTransaction(this, step, instruction, instruction_output);
                   break;
 				case "HttpTransaction":
 					HTTPTransaction hTransaction = new HTTPTransaction(this, instruction, instruction_output);
