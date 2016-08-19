@@ -152,13 +152,22 @@ public abstract class GenericQueryTab  extends ToolWindow {
 					buf.append(mc.docEntries.size()).append(" DocumentEntries ");
 					buf.append(mc.folders.size()).append(" Folders ");
 					buf.append(mc.objectRefs.size()).append(" ObjectRefs ");
+					if (theresult.get(0).getStepResults().get(0).documents!=null) {
+						buf.append(theresult.get(0).getStepResults().get(0).documents.size()).append(" Documents");
+					}
 					resultsShortDescription.setText(buf.toString());
 				}
 			} catch (Exception e) {}
             DetailsTree detailsTree = null;
 			boolean status = true;
+			boolean partialSuccess = false;
 			results = theresult;
 			for (Result result : results) {
+				if (result.getStepResults().size()>0) {
+					if ("urn:ihe:iti:2007:ResponseStatusType:PartialSuccess".equals((result.getStepResults().get(0).getRegistryResponseStatus()))) {
+						partialSuccess = true;
+					}
+				}
 				for (AssertionResult ar : result.assertions.assertions) {
 
                     if (ar.assertion.startsWith("ReportBuilder") && detailsTree != null) {
@@ -183,9 +192,12 @@ public abstract class GenericQueryTab  extends ToolWindow {
                     }
 				}
 			}
-			if (status)
-				setStatus("Status: Success", true);
-			else
+			if (status) {
+				if (partialSuccess)
+					setStatus("<span style=\"color:orange;font-weight:bold;\">Status:</span>&nbsp;<span style=\"color:orange;font-weight:bold;\">PartialSuccess</span>");
+				else
+					setStatus("Status: Success", true);
+			} else
 				setStatus("Status: Failure", false);
 
 			getInspectButton().setEnabled(true);
@@ -373,6 +385,10 @@ public abstract class GenericQueryTab  extends ToolWindow {
 
 	public void setStatus(String message, boolean status) {
 		statusBox.setHTML(HtmlMarkup.bold(red(message,status)));
+	}
+
+	public void setStatus(String message) {
+		statusBox.setHTML(message);
 	}
 
 	public String getRunningMessage() {
