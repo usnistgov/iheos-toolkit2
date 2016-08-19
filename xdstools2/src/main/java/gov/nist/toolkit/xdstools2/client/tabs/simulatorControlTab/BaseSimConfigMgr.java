@@ -89,7 +89,7 @@ public abstract class BaseSimConfigMgr implements SimConfigMgrIntf {
             else if (SimulatorProperties.respondingGateways.equals(ele.name)) {
                 final SimulatorConfigElement configEle = ele;
                 HorizontalPanel rgBoxes = new HorizontalPanel();
-                final RGSelectionPresenter rgSelectionPresenter = new RGSelectionPresenter(simulatorControlTab.toolkitService, configEle.asList(), rgBoxes);
+                final RGSelectionPresenter rgSelectionPresenter = new RGSelectionPresenter(/*simulatorControlTab.toolkitService, */configEle.asList(), rgBoxes);
                 tbl.setWidget(row, 0, HtmlMarkup.html(ele.name));
                 tbl.setWidget(row, 1, rgBoxes);
                 saveButton.addClickHandler(
@@ -109,7 +109,7 @@ public abstract class BaseSimConfigMgr implements SimConfigMgrIntf {
             else if (SimulatorProperties.errors.equals(ele.name)) {
                 final SimulatorConfigElement configEle = ele;
                 HorizontalPanel erBoxes = new HorizontalPanel();
-                final ErrorSelectionPresenter erSelectionPresenter = new ErrorSelectionPresenter(simulatorControlTab.toolkitService, TransactionType.XC_QUERY.getName(), configEle.asList(), erBoxes);
+                final ErrorSelectionPresenter erSelectionPresenter = new ErrorSelectionPresenter(/*simulatorControlTab.toolkitService,*/ TransactionType.XC_QUERY.getName(), configEle.asList(), erBoxes);
                 tbl.setWidget(row, 0, HtmlMarkup.html(ele.name));
                 tbl.setWidget(row, 1, erBoxes);
                 saveButton.addClickHandler(
@@ -130,7 +130,7 @@ public abstract class BaseSimConfigMgr implements SimConfigMgrIntf {
 //                List<TransactionType> transactionTypes = ActorType.findActor(config.getActorType()).getTransactions();
                 ActorType actorType = ActorType.findActor(config.getActorType());
                 final PatientErrorMap map = config.getConfigEle(SimulatorProperties.errorForPatient).asPatientErrorMap();
-                final PatientErrorMapPresenter presenter = new PatientErrorMapPresenter(map, actorType, simulatorControlTab.toolkitService);
+                final PatientErrorMapPresenter presenter = new PatientErrorMapPresenter(map, actorType/*, simulatorControlTab.toolkitService*/);
                 tbl.setWidget(row, 0, HtmlMarkup.html(ele.name));
                 tbl.setWidget(row, 1, presenter.asWidget());
                 saveButton.addClickHandler(

@@ -3,6 +3,8 @@ package gov.nist.toolkit.xdstools2.client.command;
 import gov.nist.toolkit.configDatatypes.client.Pid;
 import gov.nist.toolkit.xdstools2.client.ToolWindow;
 
+import static gov.nist.toolkit.xdstools2.client.ToolWindow.toolkitService;
+
 /**
  *
  */

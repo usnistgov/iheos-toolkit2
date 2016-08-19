@@ -1,6 +1,5 @@
 package gov.nist.toolkit.xdstools2.client.tabs.conformanceTest;
 
-import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.logical.shared.SelectionEvent;
@@ -15,7 +14,10 @@ import gov.nist.toolkit.session.client.SectionOverviewDTO;
 import gov.nist.toolkit.session.client.TestOverviewDTO;
 import gov.nist.toolkit.sitemanagement.client.SiteSpec;
 import gov.nist.toolkit.testkitutilities.client.TestCollectionDefinitionDAO;
-import gov.nist.toolkit.xdstools2.client.*;
+import gov.nist.toolkit.xdstools2.client.HorizontalFlowPanel;
+import gov.nist.toolkit.xdstools2.client.PopupMessage;
+import gov.nist.toolkit.xdstools2.client.ToolWindow;
+import gov.nist.toolkit.xdstools2.client.Xdstools2;
 import gov.nist.toolkit.xdstools2.client.event.TestSessionChangedEvent;
 import gov.nist.toolkit.xdstools2.client.event.testSession.TestSessionChangedEventHandler;
 import gov.nist.toolkit.xdstools2.client.inspector.MetadataInspectorTab;
@@ -26,8 +28,8 @@ import java.util.List;
 import java.util.Map;
 
 public class ConformanceTestTab extends ToolWindow implements TestRunner {
-	final protected ToolkitServiceAsync toolkitService = GWT
-			.create(ToolkitService.class);
+//	final protected ToolkitServiceAsync toolkitService = GWT
+//			.create(ToolkitService.class);
 
 	private final ConformanceTestTab me;
 	private final FlowPanel toolPanel = new FlowPanel();   // Outer-most panel for the tool
@@ -325,7 +327,7 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner {
 					MetadataInspectorTab itab = new MetadataInspectorTab();
 					itab.setResults(resultMap.values());
 					itab.setSiteSpec(new SiteSpec(currentSiteName));
-					itab.setToolkitService(me.toolkitService);
+//					itab.setToolkitService(me.toolkitService);
 					itab.onTabLoad(true, "Insp");
 				}
 			});
@@ -337,7 +339,7 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner {
 //		parent.clear();
 		for (String sectionName : testOverview.getSectionNames()) {
 			SectionOverviewDTO sectionOverview = testOverview.getSectionOverview(sectionName);
-			parent.add(new TestSectionComponent(toolkitService, getCurrentTestSession(), new TestInstance(testOverview.getName()), sectionOverview, this).asWidget());
+			parent.add(new TestSectionComponent(/*toolkitService, */getCurrentTestSession(), new TestInstance(testOverview.getName()), sectionOverview, this).asWidget());
 		}
 	}
 

@@ -4,7 +4,7 @@ import gov.nist.toolkit.envSetting.EnvSetting
 import gov.nist.toolkit.installation.ExternalCacheManager
 import gov.nist.toolkit.installation.Installation
 import gov.nist.toolkit.session.server.Session
-import gov.nist.toolkit.xdsexception.ToolkitRuntimeException
+import gov.nist.toolkit.xdsexception.client.ToolkitRuntimeException
 import groovy.transform.TypeChecked
 import org.apache.log4j.Logger
 

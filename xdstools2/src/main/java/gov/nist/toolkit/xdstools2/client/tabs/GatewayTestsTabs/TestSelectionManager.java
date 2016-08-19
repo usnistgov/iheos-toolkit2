@@ -8,11 +8,10 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.*;
 import gov.nist.toolkit.actorfactory.client.SimulatorConfig;
 import gov.nist.toolkit.results.client.Result;
-import gov.nist.toolkit.sitemanagement.client.SiteSpec;
 import gov.nist.toolkit.results.client.TestInstance;
+import gov.nist.toolkit.sitemanagement.client.SiteSpec;
 import gov.nist.toolkit.xdstools2.client.PopupMessage;
 import gov.nist.toolkit.xdstools2.client.StringSort;
-import gov.nist.toolkit.xdstools2.client.ToolkitServiceAsync;
 import gov.nist.toolkit.xdstools2.client.inspector.MetadataInspectorTab;
 import gov.nist.toolkit.xdstools2.client.tabs.SimulatorMessageViewTab;
 import gov.nist.toolkit.xdstools2.client.tabs.TextViewerTab;
@@ -21,6 +20,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+
+import static gov.nist.toolkit.xdstools2.client.ToolWindow.toolkitService;
 
 /**
  *
@@ -36,7 +37,7 @@ class TestSelectionManager {
     final static public String ALL_SELECTION = "-- All --";
     List<String> sections = new ArrayList<String>();
 //    String selectedSection = TestSelectionManager.ALL_SELECTION;
-    ToolkitServiceAsync toolkitService;
+//    ToolkitServiceAsync toolkitService;
     Map<String, String> testCollectionMap;  // name => description for selected actor
 //    List<String> assigningAuthorities = null;
     TestSelectionManager me;
@@ -44,7 +45,7 @@ class TestSelectionManager {
     TestSelectionManager(GatewayTool tool) {
         me = this;
         this.tool = tool;
-        toolkitService = tool.getToolkitService();
+//        toolkitService = tool.getToolkitService();
 //        loadAssigningAuthorities();
 
         selectSectionList.addChangeHandler(new SectionSelectionChangeHandler());
@@ -166,7 +167,7 @@ class TestSelectionManager {
                         results.add(result);
                         itab.setResults(results);
                         itab.setSiteSpec(siteSpec);
-                        itab.setToolkitService(toolkitService);
+//                        itab.setToolkitService(toolkitService);
                         itab.onTabLoad(true, "Insp");
                     }
                 });

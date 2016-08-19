@@ -5,27 +5,28 @@ import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.*;
 import gov.nist.toolkit.actortransaction.client.Severity;
-import gov.nist.toolkit.configDatatypes.client.TransactionType;
 import gov.nist.toolkit.configDatatypes.client.PatientError;
 import gov.nist.toolkit.configDatatypes.client.Pid;
 import gov.nist.toolkit.configDatatypes.client.PidBuilder;
+import gov.nist.toolkit.configDatatypes.client.TransactionType;
 import gov.nist.toolkit.xdstools2.client.PopupMessage;
-import gov.nist.toolkit.xdstools2.client.ToolkitServiceAsync;
 
 import java.util.List;
+
+import static gov.nist.toolkit.xdstools2.client.ToolWindow.toolkitService;
 
 /**
  *
  */
 public class PatientErrorNewEntryPresentation  {
 
-    public PatientErrorNewEntryPresentation(ToolkitServiceAsync toolkitService, TransactionType transactionType, SaveHandler<PatientError> saveHandler) {
-        new Dialog(toolkitService, transactionType, saveHandler).show();
+    public PatientErrorNewEntryPresentation(/*ToolkitServiceAsync toolkitService, */TransactionType transactionType, SaveHandler<PatientError> saveHandler) {
+        new Dialog(/*toolkitService, */transactionType, saveHandler).show();
     }
 
     private static class Dialog extends DialogBox {
 
-        Dialog(ToolkitServiceAsync toolkitService, TransactionType transactionType, final SaveHandler<PatientError> saveHandler) {
+        Dialog(/*ToolkitServiceAsync toolkitService, */TransactionType transactionType, final SaveHandler<PatientError> saveHandler) {
             Panel surroundPanel = new VerticalPanel();
             Panel panel = new HorizontalPanel();
             final TextBox patientIdTextBox = new TextBox();

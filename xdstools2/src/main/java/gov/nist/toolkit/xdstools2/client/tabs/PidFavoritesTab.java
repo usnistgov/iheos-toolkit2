@@ -2,7 +2,6 @@ package gov.nist.toolkit.xdstools2.client.tabs;
 
 import com.google.gwt.cell.client.EditTextCell;
 import com.google.gwt.cell.client.FieldUpdater;
-import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
@@ -20,8 +19,6 @@ import gov.nist.toolkit.configDatatypes.client.TransactionType;
 import gov.nist.toolkit.results.client.Result;
 import gov.nist.toolkit.xdstools2.client.CoupledTransactions;
 import gov.nist.toolkit.xdstools2.client.PopupMessage;
-import gov.nist.toolkit.xdstools2.client.ToolkitService;
-import gov.nist.toolkit.xdstools2.client.ToolkitServiceAsync;
 import gov.nist.toolkit.xdstools2.client.command.*;
 import gov.nist.toolkit.xdstools2.client.siteActorManagers.GetDocumentsSiteActorManager;
 import gov.nist.toolkit.xdstools2.client.tabs.genericQueryTab.GenericQueryTab;
@@ -38,7 +35,7 @@ public class PidFavoritesTab extends GenericQueryTab {
     static List<TransactionType> transactionTypes = new ArrayList<TransactionType>();
     static {transactionTypes.add(TransactionType.REGISTER);}
     static CoupledTransactions couplings = new CoupledTransactions();
-    private static final ToolkitServiceAsync tkServices = GWT.create(ToolkitService.class);
+//    private static final ToolkitServiceAsync tkServices = GWT.create(ToolkitService.class);
 
     // table selection tool
     final MultiSelectionModel<Pid> selectionModel = new MultiSelectionModel<Pid>();
@@ -214,7 +211,7 @@ public class PidFavoritesTab extends GenericQueryTab {
 
     void retrieveAndInitFavPids() throws IOException {
         final Set<Pid> pidsList=new HashSet<Pid>();
-        tkServices.retrieveConfiguredFavoritesPid(getEnvironmentSelection(), new AsyncCallback<List<Pid>>() {
+        toolkitService.retrieveConfiguredFavoritesPid(getEnvironmentSelection(), new AsyncCallback<List<Pid>>() {
             @Override
             public void onFailure(Throwable throwable) {
                 Window.alert("failure");

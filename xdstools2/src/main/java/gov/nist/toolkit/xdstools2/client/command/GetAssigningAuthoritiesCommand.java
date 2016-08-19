@@ -4,6 +4,8 @@ import gov.nist.toolkit.xdstools2.client.ToolWindow;
 
 import java.util.List;
 
+import static gov.nist.toolkit.xdstools2.client.ToolWindow.toolkitService;
+
 /**
  * Request type (R) is CommandContext (base class is used because no other parms needed
  * Callback type (C) is List<String></String>

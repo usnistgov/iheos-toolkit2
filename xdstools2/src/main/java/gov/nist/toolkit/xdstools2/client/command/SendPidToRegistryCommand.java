@@ -5,6 +5,8 @@ import gov.nist.toolkit.xdstools2.client.ToolWindow;
 
 import java.util.List;
 
+import static gov.nist.toolkit.xdstools2.client.ToolWindow.toolkitService;
+
 /**
  *
  */

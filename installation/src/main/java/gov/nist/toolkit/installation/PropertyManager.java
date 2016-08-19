@@ -1,7 +1,7 @@
 package gov.nist.toolkit.installation;
 
 import gov.nist.toolkit.utilities.io.Io;
-import gov.nist.toolkit.xdsexception.ToolkitRuntimeException;
+import gov.nist.toolkit.xdsexception.client.ToolkitRuntimeException;
 import org.apache.log4j.Logger;
 
 import java.io.*;

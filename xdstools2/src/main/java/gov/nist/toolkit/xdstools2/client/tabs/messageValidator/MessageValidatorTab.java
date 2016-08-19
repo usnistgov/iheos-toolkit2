@@ -46,8 +46,8 @@ public class MessageValidatorTab extends ToolWindow {
 	CcdaTypeSelection ccdaSel;
 
 
-	final protected ToolkitServiceAsync toolkitService = GWT
-			.create(ToolkitService.class);
+//	final protected ToolkitServiceAsync toolkitService = GWT
+//			.create(ToolkitService.class);
 
 	static final String ValidationType_PnR_b = "ProvideAndRegister.b";
 	static final String ValidationTypeR_b = "Register.b";
@@ -993,7 +993,7 @@ public class MessageValidatorTab extends ToolWindow {
 		MetadataInspectorTab it = new MetadataInspectorTab();
 		it.setResults(results);
 		it.setSiteSpec(null);
-		it.setToolkitService(toolkitService);
+//		it.setToolkitService(toolkitService);
 		it.onTabLoad(true, "Insp");
 	}
 

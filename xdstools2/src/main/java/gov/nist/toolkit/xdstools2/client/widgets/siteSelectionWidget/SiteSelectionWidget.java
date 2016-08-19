@@ -1,6 +1,5 @@
 package gov.nist.toolkit.xdstools2.client.widgets.siteSelectionWidget;
 
-import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -13,8 +12,6 @@ import gov.nist.toolkit.actortransaction.client.ActorType;
 import gov.nist.toolkit.configDatatypes.client.TransactionType;
 import gov.nist.toolkit.sitemanagement.client.SiteSpec;
 import gov.nist.toolkit.xdstools2.client.PopupMessage;
-import gov.nist.toolkit.xdstools2.client.ToolkitService;
-import gov.nist.toolkit.xdstools2.client.ToolkitServiceAsync;
 import gov.nist.toolkit.xdstools2.client.tabs.genericQueryTab.GenericQueryTab;
 import gov.nist.toolkit.xdstools2.client.tabs.genericQueryTab.QueryBoilerplate;
 import gov.nist.toolkit.xdstools2.client.tabs.testsOverviewTab.TestsOverviewTab;
@@ -22,12 +19,14 @@ import gov.nist.toolkit.xdstools2.client.tabs.testsOverviewTab.TestsOverviewTab;
 import java.util.List;
 import java.util.Map;
 
+import static gov.nist.toolkit.xdstools2.client.ToolWindow.toolkitService;
+
 /**
  * Created by Diane Azais local on 11/1/2015.
  */
 public class SiteSelectionWidget extends HorizontalPanel {
 	ListBox selectActorList = new ListBox();
-	final protected ToolkitServiceAsync toolkitService = GWT.create(ToolkitService.class);
+//	final protected ToolkitServiceAsync toolkitService = GWT.create(ToolkitService.class);
 	Map<String, String> actorCollectionMap;  // name => description
 	String selectedActor;
 	protected QueryBoilerplate queryBoilerplate = null;

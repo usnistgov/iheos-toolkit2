@@ -1,5 +1,7 @@
 package gov.nist.toolkit.xdsexception;
 
+import gov.nist.toolkit.xdsexception.client.ToolkitRuntimeException;
+
 /**
  * Created by bill on 10/9/15.
  */

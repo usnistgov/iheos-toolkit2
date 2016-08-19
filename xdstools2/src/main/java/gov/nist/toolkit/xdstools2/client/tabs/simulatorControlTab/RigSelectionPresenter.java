@@ -6,10 +6,11 @@ package gov.nist.toolkit.xdstools2.client.tabs.simulatorControlTab;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Panel;
 import gov.nist.toolkit.xdstools2.client.PopupMessage;
-import gov.nist.toolkit.xdstools2.client.ToolkitServiceAsync;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import static gov.nist.toolkit.xdstools2.client.ToolWindow.toolkitService;
 
 /**
  * Load RIG actors for selection by IIG actor
@@ -23,7 +24,7 @@ public class RigSelectionPresenter {
    MultiSelectionView view;
    List<String> sites;
 
-   public RigSelectionPresenter(ToolkitServiceAsync toolkitService, final List<String> selected, final Panel panel) {
+   public RigSelectionPresenter(/*ToolkitServiceAsync toolkitService, */final List<String> selected, final Panel panel) {
        try {
            toolkitService.getSiteNamesWithRIG(new AsyncCallback<List<String>>() {
 

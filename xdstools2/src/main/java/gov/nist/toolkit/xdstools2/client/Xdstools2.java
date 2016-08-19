@@ -31,13 +31,21 @@ public class Xdstools2  implements AcceptsOneWidget, IsWidget {
 	public static final int TRAY_SIZE = 190;
 	public static final int TRAY_CTL_BTN_SIZE = 9; // 23
 
-	private static Xdstools2 ME = null;
+	private static Xdstools2 ME = new Xdstools2();
+
 	private static final ClientFactory clientFactory = GWT.create(ClientFactory.class);
 	private final static Logger logger=Logger.getLogger(Xdstools2.class.getName());
 
 	public SplitLayoutPanel mainSplitPanel = new SplitLayoutPanel(3);
 	private FlowPanel mainMenuPanel = new FlowPanel();
-	HomeTab ht = null;
+	static final HomeTab ht = new HomeTab();
+	// This must be the only instance of ToolkitServiceAsync since the browser session
+	// is linked to the caching of environment setting on the server
+	static public ToolkitServiceAsync toolkitService() {
+		if (ME == null)
+			ME = new Xdstools2();
+		return ME.ht.toolkitService;
+	}
 
 	private HorizontalPanel uiDebugPanel = new HorizontalPanel();
 	boolean UIDebug = false;
@@ -45,7 +53,6 @@ public class Xdstools2  implements AcceptsOneWidget, IsWidget {
 	private static TkProps props = new TkProps();
 
 	public Xdstools2() {
-		ME = this;
 	}
 
 	static public Xdstools2 getInstance() {
@@ -59,8 +66,12 @@ public class Xdstools2  implements AcceptsOneWidget, IsWidget {
 	EventBus v2V3IntegrationEventBus = null;
 
 	// This is as toolkit wide singleton.  See class for details.
-	TestSessionManager2 testSessionManager = new TestSessionManager2();
-	static public TestSessionManager2 getTestSessionManager() { return ME.testSessionManager; }
+	TestSessionManager2 testSessionManager = null;
+	static public TestSessionManager2 getTestSessionManager() {
+		if (ME.testSessionManager == null)
+			ME.testSessionManager = new TestSessionManager2();
+		return ME.testSessionManager;
+	}
 
 	EnvironmentState environmentState = new EnvironmentState();
 
@@ -87,7 +98,7 @@ public class Xdstools2  implements AcceptsOneWidget, IsWidget {
 		TabContainer.setHeight("100%");
 
 		HorizontalPanel menuPanel = new HorizontalPanel();
-		EnvironmentManager environmentManager = new EnvironmentManager(TabContainer.instance(), ToolWindow.toolkitService);
+		EnvironmentManager environmentManager = new EnvironmentManager(TabContainer.instance()/*, ToolWindow.toolkitService*/);
 		menuPanel.add(environmentManager);
 		menuPanel.setSpacing(10);
 		menuPanel.add(new TestSessionSelector(testSessionManager.getTestSessions(), testSessionManager.getCurrentTestSession()).asWidget());
@@ -202,7 +213,6 @@ public class Xdstools2  implements AcceptsOneWidget, IsWidget {
 	 */
 	void run() {
 		buildTabsWrapper();
-		ht = new HomeTab();
 		ht.onAbstractTabLoad(false, "Home");
 
 		History.addValueChangeHandler(new ValueChangeHandler<String>() {

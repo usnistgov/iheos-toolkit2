@@ -9,27 +9,28 @@ import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import gov.nist.toolkit.xdstools2.client.TabContainer;
-import gov.nist.toolkit.xdstools2.client.ToolkitServiceAsync;
 import gov.nist.toolkit.xdstools2.client.selectors.EnvironmentManager;
 
 import java.util.logging.Logger;
+
+import static gov.nist.toolkit.xdstools2.client.ToolWindow.toolkitService;
 
 /**
  * Created by oherrmann on 3/3/16.
  */
 public class TestkitConfigTool extends Composite {
-    private final ToolkitServiceAsync toolkitService;
+//    private final ToolkitServiceAsync toolkitService;
     private final HTML resultPanel=new HTML();
     private VerticalPanel container = new VerticalPanel();
     private EnvironmentManager environmentManager ;
 
-    public TestkitConfigTool(TabContainer mytabContainer, ToolkitServiceAsync toolkitService) {
-        this.toolkitService=toolkitService;
+    public TestkitConfigTool(TabContainer mytabContainer/*, ToolkitServiceAsync toolkitService*/) {
+//        this.toolkitService=toolkitService;
         container.add(new HTML("<h3>Configure Testkit</h3>"));
         container.add(new HTML("This tool will create a new copy of testkit configured for a selected affinity " +
                 "domain configuration. An affinity domain is chosen by selecting an environment. <br/>The affinity testkit created will be placed in " +
                 "the environment selected.<br/><br/>"));
-        environmentManager = new EnvironmentManager(mytabContainer, toolkitService);
+        environmentManager = new EnvironmentManager(mytabContainer/*, toolkitService*/);
         container.add(environmentManager);
         Button runUpdater=new Button("Run",new RunTestkitConfigHandler());
         container.add(runUpdater);

@@ -3,7 +3,6 @@ package gov.nist.toolkit.xdstools2.client.tabs.getAllTab;
 import com.google.gwt.user.client.ui.FlexTable;
 import com.google.gwt.user.client.ui.Widget;
 import gov.nist.toolkit.results.client.CodesConfiguration;
-import gov.nist.toolkit.xdstools2.client.ToolkitServiceAsync;
 import gov.nist.toolkit.xdstools2.client.tabs.genericQueryTab.GenericQueryTab;
 import gov.nist.toolkit.xdstools2.client.widgets.queryFilter.CodeFilterBank;
 import gov.nist.toolkit.xdstools2.client.widgets.queryFilter.OnDemandFilter;
@@ -41,9 +40,9 @@ public class GetAllParams {
     CodeFilterBank codeFilterBank;
     final int idHashCode = System.identityHashCode(this);
 
-    public GetAllParams(ToolkitServiceAsync toolkitService, GenericQueryTab genericQueryTab) {
+    public GetAllParams(/*ToolkitServiceAsync toolkitService, */GenericQueryTab genericQueryTab) {
         // The collective filter bank being assembled
-        codeFilterBank = new CodeFilterBank(toolkitService, genericQueryTab);
+        codeFilterBank = new CodeFilterBank(/*toolkitService, */genericQueryTab);
 
         // What to include
         paramGrid.setText(prow, 0, "Include:");

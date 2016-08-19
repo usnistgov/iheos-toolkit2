@@ -102,11 +102,11 @@ public class ToolConfigTab extends GenericQueryTab {
 		tabTopPanel.add(subtitle2);
 
 		tabTopPanel.add(loadAllGazelleConfigs);
-		loadAllGazelleConfigs.addClickHandler(new LoadGazelleConfigsClickHandler(toolkitService, getTabContainer(), "ALL"));
+		loadAllGazelleConfigs.addClickHandler(new LoadGazelleConfigsClickHandler(/*toolkitService, */getTabContainer(), "ALL"));
 
 		tabTopPanel.add(new HTML("<hr />"));
 		/* new code for testkit update */
-        TestkitConfigTool tkconf=new TestkitConfigTool(getTabContainer(),toolkitService);
+        TestkitConfigTool tkconf=new TestkitConfigTool(getTabContainer() /*,toolkitService*/);
         tabTopPanel.add(tkconf);
 	}
 

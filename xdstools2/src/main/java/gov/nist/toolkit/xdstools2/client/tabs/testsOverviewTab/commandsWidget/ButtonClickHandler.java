@@ -1,14 +1,11 @@
 package gov.nist.toolkit.xdstools2.client.tabs.testsOverviewTab.commandsWidget;
 
-import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Button;
 import gov.nist.toolkit.results.shared.Test;
 import gov.nist.toolkit.sitemanagement.client.Site;
-import gov.nist.toolkit.xdstools2.client.ToolkitService;
-import gov.nist.toolkit.xdstools2.client.ToolkitServiceAsync;
 import gov.nist.toolkit.xdstools2.client.tabs.testsOverviewTab.ReloadAllTestResultsCallback;
 import gov.nist.toolkit.xdstools2.client.tabs.testsOverviewTab.Updater;
 
@@ -16,11 +13,13 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
 
+import static gov.nist.toolkit.xdstools2.client.ToolWindow.toolkitService;
+
 /**
  * Created by Diane Azais local on 10/20/2015.
  */
 public class ButtonClickHandler implements ClickHandler {
-    ToolkitServiceAsync service = (ToolkitServiceAsync) GWT.create(ToolkitService.class);
+//    ToolkitServiceAsync service = (ToolkitServiceAsync) GWT.create(ToolkitService.class);
     Logger LOGGER = Logger.getLogger("ButtonClickHandler");
     Updater updater;
     CommandsWidget commandsWidget;
@@ -38,17 +37,17 @@ public class ButtonClickHandler implements ClickHandler {
 
         if (source == commandsWidget.getPlayAllButton()){
             //TODO replace bogus site with actual site selected by user
-           service.runAllTests(new Site("testEHR"), runAllTestsCallback);
+            toolkitService.runAllTests(new Site("testEHR"), runAllTestsCallback);
         }
         else if (source == commandsWidget.getRemoveAllButton()){
             //TODO replace bogus site with actual site selected by user
-            service.deleteAllTestResults(new Site("testEHR"), deleteAllLogsCallback);
+            toolkitService.deleteAllTestResults(new Site("testEHR"), deleteAllLogsCallback);
         }
         else if (source == commandsWidget.getRefreshAllButton()){
             //TODO replace bogus site with actual site selected by user
             ReloadAllTestResultsCallback reloadAllTestResultsCallback = new ReloadAllTestResultsCallback(updater);
             try {
-                service.reloadAllTestResults(updater.getCurrentTestSession(), reloadAllTestResultsCallback);
+                toolkitService.reloadAllTestResults(updater.getCurrentTestSession(), reloadAllTestResultsCallback);
             } catch (Exception e) {
                 LOGGER.warning(e.getMessage());
             }

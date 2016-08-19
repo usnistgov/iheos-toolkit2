@@ -1,21 +1,21 @@
 package gov.nist.toolkit.xdstools2.client.tabs.GatewayTestsTabs;
 
-import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.*;
-import com.google.gwt.user.client.ui.Panel;
 import gov.nist.toolkit.actortransaction.client.ActorType;
 import gov.nist.toolkit.configDatatypes.client.TransactionType;
 import gov.nist.toolkit.results.client.Result;
-import gov.nist.toolkit.sitemanagement.client.SiteSpec;
 import gov.nist.toolkit.results.client.TestInstance;
 import gov.nist.toolkit.services.client.RgOrchestrationResponse;
+import gov.nist.toolkit.sitemanagement.client.SiteSpec;
 import gov.nist.toolkit.sitemanagement.client.TransactionOfferings;
-import gov.nist.toolkit.xdstools2.client.*;
+import gov.nist.toolkit.xdstools2.client.CoupledTransactions;
+import gov.nist.toolkit.xdstools2.client.PopupMessage;
+import gov.nist.toolkit.xdstools2.client.TabContainer;
 import gov.nist.toolkit.xdstools2.client.inspector.MetadataInspectorTab;
 import gov.nist.toolkit.xdstools2.client.siteActorManagers.GetDocumentsSiteActorManager;
 import gov.nist.toolkit.xdstools2.client.tabs.genericQueryTab.GenericQueryTab;
@@ -26,8 +26,8 @@ import java.util.List;
 import java.util.Map;
 
 public class RGTestTab extends GenericQueryTab implements GatewayTool {
-    final protected ToolkitServiceAsync toolkitService = GWT
-            .create(ToolkitService.class);
+//    final protected ToolkitServiceAsync toolkitService = GWT
+//            .create(ToolkitService.class);
 
     static CoupledTransactions couplings = new CoupledTransactions();
 
@@ -51,8 +51,8 @@ public class RGTestTab extends GenericQueryTab implements GatewayTool {
         testSelectionManager = new TestSelectionManager(this);
     }
 
-    @Override
-    public ToolkitServiceAsync getToolkitService() { return toolkitService; }
+//    @Override
+//    public ToolkitServiceAsync getToolkitService() { return toolkitService; }
 
     @Override
     public TabContainer getToolContainer() { return getTabContainer(); }
@@ -356,7 +356,7 @@ public class RGTestTab extends GenericQueryTab implements GatewayTool {
                         results.add(result);
                         itab.setResults(results);
                         itab.setSiteSpec(siteSpec);
-                        itab.setToolkitService(toolkitService);
+//                        itab.setToolkitService(toolkitService);
                         itab.onTabLoad(true, "Insp");
                     }
                 });

@@ -5,13 +5,14 @@ import com.google.gwt.user.client.ui.FlexTable;
 import gov.nist.toolkit.results.client.AssertionResult;
 import gov.nist.toolkit.results.client.CodesConfiguration;
 import gov.nist.toolkit.results.client.CodesResult;
-import gov.nist.toolkit.xdstools2.client.ToolkitServiceAsync;
 import gov.nist.toolkit.xdstools2.client.tabs.genericQueryTab.CodeEditButtonSelector;
 import gov.nist.toolkit.xdstools2.client.tabs.genericQueryTab.GenericQueryTab;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+
+import static gov.nist.toolkit.xdstools2.client.ToolWindow.toolkitService;
 
 /**
  *
@@ -21,11 +22,11 @@ public class CodeFilterBank  {
     public CodesConfiguration codesConfiguration = null;
     public int codeBoxSize = 2;
 
-    ToolkitServiceAsync toolkitService;
+//    ToolkitServiceAsync toolkitService;
     GenericQueryTab genericQueryTab;
 
-    public CodeFilterBank(ToolkitServiceAsync toolkitService, GenericQueryTab genericQueryTab) {
-        this.toolkitService = toolkitService;
+    public CodeFilterBank(/*ToolkitServiceAsync toolkitService, */GenericQueryTab genericQueryTab) {
+//        this.toolkitService = toolkitService;
         this.genericQueryTab = genericQueryTab;
         toolkitService.getCodesConfiguration(genericQueryTab.getEnvironmentSelection(), loadCodeConfigCallback);
     }
