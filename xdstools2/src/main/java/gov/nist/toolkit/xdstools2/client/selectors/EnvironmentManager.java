@@ -13,9 +13,11 @@ import gov.nist.toolkit.xdstools2.client.tabs.EnvironmentState;
 
 import java.util.List;
 
+import static gov.nist.toolkit.xdstools2.client.ToolWindow.toolkitService;
+
 public class EnvironmentManager extends Composite{
 	TabContainer tabContainer;
-	ToolkitServiceAsync toolkitService;
+//	ToolkitServiceAsync toolkitService;
 	EnvironmentState environmentState;
 	Panel1 menuPanel;
 	HorizontalPanel environmentPanel = new HorizontalPanel();
@@ -26,9 +28,9 @@ public class EnvironmentManager extends Composite{
 
 
 	
-	public EnvironmentManager(TabContainer tabContainer, ToolkitServiceAsync toolkitService/*, Panel1 menuPanel*/) {
+	public EnvironmentManager(TabContainer tabContainer/*, ToolkitServiceAsync toolkitService, Panel1 menuPanel*/) {
 		this.tabContainer = tabContainer;
-		this.toolkitService = toolkitService;
+//		this.toolkitService = toolkitService;
 		this.environmentState = Xdstools2.getInstance().getEnvironmentState();
 //		this.menuPanel = menuPanel;
 		environmentManager = this;

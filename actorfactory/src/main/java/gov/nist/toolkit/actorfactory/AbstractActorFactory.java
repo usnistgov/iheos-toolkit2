@@ -18,7 +18,7 @@ import gov.nist.toolkit.simcommon.client.config.SimulatorConfigElement;
 import gov.nist.toolkit.sitemanagement.client.Site;
 import gov.nist.toolkit.xdsexception.ExceptionUtil;
 import gov.nist.toolkit.xdsexception.NoSimulatorException;
-import gov.nist.toolkit.xdsexception.ToolkitRuntimeException;
+import gov.nist.toolkit.xdsexception.client.ToolkitRuntimeException;
 import org.apache.log4j.Logger;
 
 import java.io.File;

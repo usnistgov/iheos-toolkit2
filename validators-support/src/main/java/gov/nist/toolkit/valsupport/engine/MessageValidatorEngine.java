@@ -3,7 +3,7 @@ package gov.nist.toolkit.valsupport.engine;
 import gov.nist.toolkit.errorrecording.ErrorRecorder;
 import gov.nist.toolkit.valsupport.message.AbstractMessageValidator;
 import gov.nist.toolkit.valsupport.message.ServiceRequestContainer;
-import gov.nist.toolkit.xdsexception.ToolkitRuntimeException;
+import gov.nist.toolkit.xdsexception.client.ToolkitRuntimeException;
 import org.apache.log4j.Logger;
 
 import java.util.ArrayList;

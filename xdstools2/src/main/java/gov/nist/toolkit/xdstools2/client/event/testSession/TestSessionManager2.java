@@ -1,14 +1,17 @@
 package gov.nist.toolkit.xdstools2.client.event.testSession;
 
-import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.Cookies;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import gov.nist.toolkit.actorfactory.client.SimulatorConfig;
 import gov.nist.toolkit.sitemanagement.client.TransactionOfferings;
-import gov.nist.toolkit.xdstools2.client.*;
+import gov.nist.toolkit.xdstools2.client.CookieManager;
+import gov.nist.toolkit.xdstools2.client.PopupMessage;
+import gov.nist.toolkit.xdstools2.client.Xdstools2;
 import gov.nist.toolkit.xdstools2.client.event.TestSessionChangedEvent;
 
 import java.util.List;
+
+import static gov.nist.toolkit.xdstools2.client.ToolWindow.toolkitService;
 
 /**
  * When this finally replaced TestSessionManager it will loose the 2.
@@ -16,8 +19,8 @@ import java.util.List;
  * is where the current list is maintained so that new tabs can be initialized.
  */
 public class TestSessionManager2 {
-    final public ToolkitServiceAsync toolkitService = GWT
-            .create(ToolkitService.class);
+//    final public ToolkitServiceAsync toolkitService = GWT
+//            .create(ToolkitService.class);
 
     List<String> testSessions;  // this is maintained to initialize new tabs with
     String currentTestSession;

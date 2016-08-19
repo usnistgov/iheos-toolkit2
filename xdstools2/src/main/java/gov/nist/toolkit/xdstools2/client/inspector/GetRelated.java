@@ -9,6 +9,8 @@ import gov.nist.toolkit.results.client.TestInstance;
 
 import java.util.List;
 
+import static gov.nist.toolkit.xdstools2.client.ToolWindow.toolkitService;
+
 public class GetRelated implements ClickHandler {
 	MetadataInspectorTab it;
 	ObjectRef or;
@@ -35,7 +37,7 @@ public class GetRelated implements ClickHandler {
 	};
 	
 	void run() {
-		it.data.toolkitService.getRelated(null, or, assocs, queryCallback);
+		/*it.data.*/toolkitService.getRelated(null, or, assocs, queryCallback);
 	}
 	
 	public void onClick(ClickEvent event) {

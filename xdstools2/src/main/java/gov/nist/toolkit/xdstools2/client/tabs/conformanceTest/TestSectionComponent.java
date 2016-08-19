@@ -14,12 +14,13 @@ import gov.nist.toolkit.testenginelogging.client.TestStepLogContentDTO;
 import gov.nist.toolkit.testenginelogging.client.UseReportDTO;
 import gov.nist.toolkit.xdstools2.client.HorizontalFlowPanel;
 import gov.nist.toolkit.xdstools2.client.PopupMessage;
-import gov.nist.toolkit.xdstools2.client.ToolkitServiceAsync;
 
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+
+import static gov.nist.toolkit.xdstools2.client.ToolWindow.toolkitService;
 
 /**
  *
@@ -27,7 +28,7 @@ import java.util.Set;
 public class TestSectionComponent implements IsWidget {
     private final HorizontalFlowPanel header = new HorizontalFlowPanel();
     private final DisclosurePanel panel = new DisclosurePanel(header);
-    private final ToolkitServiceAsync toolkitService;
+//    private final ToolkitServiceAsync toolkitService;
     private final String sessionName;
     private final TestInstance testInstance;
     private final FlowPanel body = new FlowPanel();
@@ -38,9 +39,9 @@ public class TestSectionComponent implements IsWidget {
     TestSectionComponent me;
 
 
-    public TestSectionComponent(ToolkitServiceAsync toolkitService, String sessionName, TestInstance testInstance, SectionOverviewDTO sectionOverview, TestRunner testRunner) {
+    public TestSectionComponent(/*ToolkitServiceAsync toolkitService, */String sessionName, TestInstance testInstance, SectionOverviewDTO sectionOverview, TestRunner testRunner) {
         me = this;
-        this.toolkitService = toolkitService;
+//        this.toolkitService = toolkitService;
         this.sessionName = sessionName;
         this.testInstance = testInstance;
         this.testRunner = testRunner;

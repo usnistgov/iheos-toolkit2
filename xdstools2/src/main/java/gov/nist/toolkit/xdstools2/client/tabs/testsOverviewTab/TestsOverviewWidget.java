@@ -9,8 +9,6 @@ import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import gov.nist.toolkit.results.shared.Test;
 import gov.nist.toolkit.sitemanagement.client.Site;
-import gov.nist.toolkit.xdstools2.client.ToolkitService;
-import gov.nist.toolkit.xdstools2.client.ToolkitServiceAsync;
 import gov.nist.toolkit.xdstools2.client.resources.TableResources;
 import gov.nist.toolkit.xdstools2.client.tabs.testsOverviewTab.commandsWidget.CommandsCell;
 import gov.nist.toolkit.xdstools2.client.tabs.testsOverviewTab.commandsWidget.CommandsColumn;
@@ -19,12 +17,14 @@ import gov.nist.toolkit.xdstools2.client.tabs.testsOverviewTab.statusCell.Status
 import java.util.List;
 import java.util.logging.Logger;
 
+import static gov.nist.toolkit.xdstools2.client.ToolWindow.toolkitService;
+
 /**
  * Created by Diane Azais local on 10/11/2015.
  */
 public class TestsOverviewWidget extends CellTable<Test> {
 
-    ToolkitServiceAsync service = (ToolkitServiceAsync) GWT.create(ToolkitService.class);
+//    ToolkitServiceAsync service = (ToolkitServiceAsync) GWT.create(ToolkitService.class);
     Logger LOGGER = Logger.getLogger("TestsOverviewWidget");
 
     TextColumn<Test> testnumberColumn, descriptionColumn, timeColumn;
@@ -131,7 +131,7 @@ public class TestsOverviewWidget extends CellTable<Test> {
      */
     private void loadTestsData(AsyncCallback<List<Test>> testsListCallback) {
         try {
-            service.reloadAllTestResults(updater.getCurrentTestSession(), testsListCallback);
+            toolkitService.reloadAllTestResults(updater.getCurrentTestSession(), testsListCallback);
         } catch (Exception e) {
             LOGGER.warning("Failed to retrieve test results.");
         }
@@ -158,7 +158,7 @@ public class TestsOverviewWidget extends CellTable<Test> {
 
     //TODO replace the hardcoded site name with the one retrieved from the UI
     private void runSingleTest(int testId, int index){
-        service.runSingleTest(new Site("testEHR"), testId, runSingleTestCallback);
+        toolkitService.runSingleTest(new Site("testEHR"), testId, runSingleTestCallback);
     }
 
 

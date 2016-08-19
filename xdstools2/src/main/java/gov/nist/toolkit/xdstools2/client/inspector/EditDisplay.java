@@ -1,14 +1,11 @@
 package gov.nist.toolkit.xdstools2.client.inspector;
 
-import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.ui.*;
 import gov.nist.toolkit.registrymetadata.client.Author;
 import gov.nist.toolkit.registrymetadata.client.DocumentEntry;
 import gov.nist.toolkit.registrymetadata.client.RegistryObject;
-import gov.nist.toolkit.xdstools2.client.ToolkitService;
-import gov.nist.toolkit.xdstools2.client.ToolkitServiceAsync;
 
 import java.util.List;
 
@@ -20,8 +17,8 @@ public class EditDisplay {
 	RegistryObject currentObject;
 	VerticalPanel buttonPanel;
 	
-	final protected ToolkitServiceAsync toolkitService = GWT
-	.create(ToolkitService.class);
+//	final protected ToolkitServiceAsync toolkitService = GWT
+//	.create(ToolkitService.class);
 
 
 	public EditDisplay(VerticalPanel detailPanel, VerticalPanel buttonPanel, MetadataEditorTab it) {

@@ -3,9 +3,8 @@ package gov.nist.toolkit.xdstools2.client.inspector;
 import gov.nist.toolkit.registrymetadata.client.Document;
 import gov.nist.toolkit.registrymetadata.client.MetadataCollection;
 import gov.nist.toolkit.results.client.Result;
-import gov.nist.toolkit.sitemanagement.client.SiteSpec;
 import gov.nist.toolkit.results.client.StepResult;
-import gov.nist.toolkit.xdstools2.client.ToolkitServiceAsync;
+import gov.nist.toolkit.sitemanagement.client.SiteSpec;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -21,7 +20,7 @@ public class DataModel {
 
 	SiteSpec siteSpec = null;
 	
-	ToolkitServiceAsync toolkitService = null;
+//	ToolkitServiceAsync toolkitService = null;
 
 	List<Document> allDocs = null;
 	Map<String, Document> docMap = null;  //key is uid
@@ -34,7 +33,7 @@ public class DataModel {
 		results = data.results;
 		combinedMetadata = data.combinedMetadata;
 		siteSpec = data.siteSpec;
-		toolkitService = data.toolkitService;
+//		toolkitService = data.toolkitService;
 		allDocs = data.allDocs;
 		docMap = data.docMap;
 		enableActions = data.enableActions;

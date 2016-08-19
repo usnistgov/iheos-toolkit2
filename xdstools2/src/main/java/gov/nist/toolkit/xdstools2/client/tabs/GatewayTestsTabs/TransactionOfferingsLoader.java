@@ -3,16 +3,17 @@ package gov.nist.toolkit.xdstools2.client.tabs.GatewayTestsTabs;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import gov.nist.toolkit.sitemanagement.client.TransactionOfferings;
 import gov.nist.toolkit.xdstools2.client.PopupMessage;
-import gov.nist.toolkit.xdstools2.client.ToolkitServiceAsync;
+
+import static gov.nist.toolkit.xdstools2.client.ToolWindow.toolkitService;
 
 /**
  *
  */
 public class TransactionOfferingsLoader {
-    ToolkitServiceAsync toolkitService;
+//    ToolkitServiceAsync toolkitService;
 
-    public TransactionOfferingsLoader(ToolkitServiceAsync toolkitService) {
-        this.toolkitService = toolkitService;
+    public TransactionOfferingsLoader(/*ToolkitServiceAsync toolkitService*/) {
+//        this.toolkitService = toolkitService;
     }
 
     public void run(final ServiceCallCompletionHandler<TransactionOfferings> transOff) {

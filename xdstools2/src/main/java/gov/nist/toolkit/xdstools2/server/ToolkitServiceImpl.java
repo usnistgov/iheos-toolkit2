@@ -400,13 +400,19 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements
 	//------------------------------------------------------------------------
 	//------------------------------------------------------------------------
 	public List<String> getEnvironmentNames() throws NoServletSessionException { return session().getEnvironmentNames(); }
-	public String setEnvironment(String name) throws NoServletSessionException { session().setEnvironment(name); return name; }
+	public String setEnvironment(String name) throws NoServletSessionException {
+		logger.info("set environment - " + name);
+		session().setEnvironment(name); return name;
+	}
 	public String getCurrentEnvironment() throws NoServletSessionException { return session().getCurrentEnvironment(); }
 	public String getDefaultEnvironment()  throws NoServletSessionException  {
 		String defaultEnvironment = Installation.installation().propertyServiceManager().getDefaultEnvironment();
+		String name;
 		if (Session.environmentExists(defaultEnvironment))
-			return defaultEnvironment;
-		return Installation.DEFAULT_ENVIRONMENT_NAME;
+			name = defaultEnvironment;
+		name = Installation.DEFAULT_ENVIRONMENT_NAME;
+		logger.info("getDefaultEnvironment - " + name);
+		return name;
 	}
 
 	//------------------------------------------------------------------------
@@ -607,9 +613,25 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements
 		Session s = getSession();
 		if (s == null)
 			throw new NoServletSessionException("");
+		logHere("On Session " + s.getId());
+//		String msg = ExceptionUtil.here("On Session " + s.getId());
+//		Scanner scanner = new Scanner(msg);
+//		while(scanner.hasNextLine()) {
+//			String line = scanner.nextLine();
+//			logger.info(line);
+//		}
+//		logger.info(msg);
 		return s;
 	}
 
+	private void logHere(String themsg) {
+		String msg = ExceptionUtil.here(themsg);
+		Scanner scanner = new Scanner(msg);
+		while(scanner.hasNextLine()) {
+			String line = scanner.nextLine();
+			logger.info(line);
+		}
+	}
 
 	public Session getSession() {
 		HttpServletRequest request = this.getThreadLocalRequest();
@@ -658,6 +680,7 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements
 				s = new Session(warHome, getSessionId());
 				if (hsession != null) {
 					s.setSessionId(hsession.getId());
+//					logger.info("New Session ID " + hsession.getId());
 					s.addSession();
 					hsession.setAttribute(sessionVarName, s);
 				} else

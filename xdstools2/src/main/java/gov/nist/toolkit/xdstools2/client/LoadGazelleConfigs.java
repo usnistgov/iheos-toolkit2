@@ -4,13 +4,15 @@ import gov.nist.toolkit.xdstools2.client.tabs.TextViewerTab;
 
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
+import static gov.nist.toolkit.xdstools2.client.ToolWindow.toolkitService;
+
 public class LoadGazelleConfigs  {
 	TabContainer container;
-	ToolkitServiceAsync toolkitService;
+//	ToolkitServiceAsync toolkitService;
 	String type;
 	
-	public LoadGazelleConfigs(ToolkitServiceAsync toolkitService, TabContainer container, String type) {
-		this.toolkitService = toolkitService;
+	public LoadGazelleConfigs(/*ToolkitServiceAsync toolkitService, */TabContainer container, String type) {
+//		this.toolkitService = toolkitService;
 		this.container = container;
 		this.type = type;  // System name or ALL
 	}

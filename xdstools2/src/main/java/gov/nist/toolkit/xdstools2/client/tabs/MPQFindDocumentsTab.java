@@ -59,7 +59,7 @@ public class MPQFindDocumentsTab extends GenericQueryTab {
 
 		registerTab(select, "MPQFindDocuments");
 
-		codeFilterBank = new CodeFilterBank(toolkitService, genericQueryTab);
+		codeFilterBank = new CodeFilterBank(/*toolkitService, */genericQueryTab);
 
 		FlexTable paramGrid = new FlexTable();
 

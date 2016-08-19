@@ -1,6 +1,5 @@
 package gov.nist.toolkit.xdstools2.client.tabs;
 
-import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -9,9 +8,10 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.*;
 import gov.nist.toolkit.actortransaction.client.ActorType;
 import gov.nist.toolkit.configDatatypes.client.TransactionType;
-import gov.nist.toolkit.sitemanagement.client.SiteSpec;
 import gov.nist.toolkit.results.client.TestInstance;
-import gov.nist.toolkit.xdstools2.client.*;
+import gov.nist.toolkit.sitemanagement.client.SiteSpec;
+import gov.nist.toolkit.xdstools2.client.CoupledTransactions;
+import gov.nist.toolkit.xdstools2.client.PopupMessage;
 import gov.nist.toolkit.xdstools2.client.siteActorManagers.GetDocumentsSiteActorManager;
 import gov.nist.toolkit.xdstools2.client.tabs.genericQueryTab.GenericQueryTab;
 
@@ -21,8 +21,8 @@ import java.util.List;
 import java.util.Map;
 
 public class OnBoardingTestTab extends GenericQueryTab {
-	final protected ToolkitServiceAsync toolkitService = GWT
-	.create(ToolkitService.class);
+//	final protected ToolkitServiceAsync toolkitService = GWT
+//	.create(ToolkitService.class);
 
 	final String allSelection = "-- All --";
 	final String chooseSelection = "-- Choose --";

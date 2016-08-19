@@ -8,15 +8,16 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.*;
 import gov.nist.toolkit.actortransaction.client.ActorType;
 import gov.nist.toolkit.configDatatypes.client.TransactionType;
-import gov.nist.toolkit.sitemanagement.client.SiteSpec;
 import gov.nist.toolkit.sitemanagement.client.Site;
+import gov.nist.toolkit.sitemanagement.client.SiteSpec;
 import gov.nist.toolkit.sitemanagement.client.TransactionOfferings;
 import gov.nist.toolkit.xdstools2.client.CoupledTransactions;
 import gov.nist.toolkit.xdstools2.client.PopupMessage;
 import gov.nist.toolkit.xdstools2.client.StringSort;
-import gov.nist.toolkit.xdstools2.client.ToolkitServiceAsync;
 
 import java.util.*;
+
+import static gov.nist.toolkit.xdstools2.client.ToolWindow.toolkitService;
 
 public class SiteSelectionWidget extends Composite   {
 	VerticalPanel panel = new VerticalPanel();
@@ -31,23 +32,23 @@ public class SiteSelectionWidget extends Composite   {
 	CoupledTransactions couplings;
 	ActorType actorType;
 	TransactionOfferings transactionOfferings;
-	ToolkitServiceAsync toolkitService;
+//	ToolkitServiceAsync toolkitService;
 	
 	boolean samlSelected = false;
 	boolean tlsSelected = true;
 	
 	/**
 	 * 
-	 * @param transactionOfferings
+	 * @param couplings
 	 * @param couplings - Coupled transactions. Pass null if none.
 	 * @param actorType
 	 */
-	public SiteSelectionWidget(CoupledTransactions couplings, ActorType actorType,
-			ToolkitServiceAsync toolkitService
+	public SiteSelectionWidget(CoupledTransactions couplings, ActorType actorType/*,
+			ToolkitServiceAsync toolkitService */
 			) {
 		this.couplings = couplings;
 		this.actorType = actorType;
-		this.toolkitService = toolkitService;
+//		this.toolkitService = toolkitService;
 		
 		transactionTypes = actorType.getTransactions();
 		if (this.couplings == null)

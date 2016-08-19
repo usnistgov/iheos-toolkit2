@@ -4,7 +4,7 @@ import gov.nist.toolkit.configDatatypes.client.Pid;
 import gov.nist.toolkit.configDatatypes.client.PidBuilder;
 import gov.nist.toolkit.actorfactory.client.SimId;
 import gov.nist.toolkit.adt.PifCallback;
-import gov.nist.toolkit.xdsexception.ToolkitRuntimeException;
+import gov.nist.toolkit.xdsexception.client.ToolkitRuntimeException;
 import org.apache.log4j.Logger;
 
 /**

@@ -1,6 +1,5 @@
 package gov.nist.toolkit.xdstools2.client;
 
-import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.KeyPressEvent;
@@ -8,9 +7,11 @@ import com.google.gwt.event.dom.client.KeyPressHandler;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.*;
 
+import static gov.nist.toolkit.xdstools2.client.ToolWindow.toolkitService;
+
 public class RenameSimFileDialogBox extends DialogBox {
-	final protected ToolkitServiceAsync toolkitService = GWT
-	.create(ToolkitService.class);
+//	final protected ToolkitServiceAsync toolkitService = GWT
+//	.create(ToolkitService.class);
 	TextBox newNameBox;
 	String oldSimFileSpec;
 	AsyncCallback afterRename;

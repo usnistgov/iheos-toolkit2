@@ -9,7 +9,6 @@ import gov.nist.toolkit.results.client.*;
 import gov.nist.toolkit.sitemanagement.client.SiteSpec;
 import gov.nist.toolkit.xdstools2.client.PopupMessage;
 import gov.nist.toolkit.xdstools2.client.ToolWindow;
-import gov.nist.toolkit.xdstools2.client.ToolkitServiceAsync;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -46,11 +45,11 @@ public class MetadataInspectorTab extends ToolWindow {
 	
 	HorizontalPanel hpanel;
 	
-	ToolkitServiceAsync toolkitService;
+//	ToolkitServiceAsync toolkitService;
 	Collection<Result> results;
 	SiteSpec siteSpec;
 	
-	public void setToolkitService(ToolkitServiceAsync tsa) { toolkitService = tsa; }
+//	public void setToolkitService(ToolkitServiceAsync tsa) { toolkitService = tsa; }
 	public void setResults(Collection<Result> results) { this.results = results; }
 	public void setSiteSpec(SiteSpec ss) { siteSpec = ss; }
 
@@ -66,7 +65,7 @@ public class MetadataInspectorTab extends ToolWindow {
 		if (siteSpec == null)
 			data.enableActions = false;
 
-		data.toolkitService = toolkitService;
+//		data.toolkitService = toolkitService;
 		registerTab(select, "Inspector");
 		tabTopPanel.setWidth("100%");
 

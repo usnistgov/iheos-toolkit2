@@ -9,6 +9,8 @@ import gov.nist.toolkit.results.client.*;
 
 import java.util.List;
 
+import static gov.nist.toolkit.xdstools2.client.ToolWindow.toolkitService;
+
 class RawLogLoader implements ClickHandler {
 	/**
 	 * 
@@ -33,7 +35,7 @@ class RawLogLoader implements ClickHandler {
 	}
 
 	public void loadTestLogs() {
-		this.metadataInspectorTab.data.toolkitService.getRawLogs(logId, new AsyncCallback<TestLogs> () {
+		/*this.metadataInspectorTab.data.*/toolkitService.getRawLogs(logId, new AsyncCallback<TestLogs> () {
 
 			public void onFailure(Throwable caught) {
 				RawLogLoader.this.metadataInspectorTab.error(caught.getMessage());
