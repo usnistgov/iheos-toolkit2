@@ -83,9 +83,10 @@ public class FindDocumentsTab extends AbstractTool {
 						@Override
 						public void onSuccess(InteractingEntity interactingEntity) {
 							String mapMsg = "mapping was successful!!" + " return is null? " + (interactingEntity==null) + " desc: " + interactingEntity.getInteractions().get(0).getName();
-							new PopupMessage(mapMsg + " interaction status: " + interactingEntity.getInteractions().get(0).getStatus().name());
-							InteractionDiagram diagram = new InteractionDiagram(500,500);
-							String svg = diagram.draw(interactingEntity,0);
+//							new PopupMessage(mapMsg + " interaction status: " + interactingEntity.getInteractions().get(0).getStatus().name());
+							InteractionDiagram diagram = new InteractionDiagram(500,900);
+//							String svg = diagram.draw(interactingEntity,0);
+							String svg = diagram.draw(testIG(),0);
 							System.out.println(svg);
 							resultPanel.add(new HTML(svg));
 						}
@@ -128,5 +129,41 @@ public class FindDocumentsTab extends AbstractTool {
 		// end
 		return origin;
 	}
+
+
+	public InteractingEntity testIG() {
+		InteractingEntity initiator = new InteractingEntity();
+		initiator.setName("Toolkit");
+
+		InteractingEntity ig = new InteractingEntity();
+		ig.setName("IG");
+
+		InteractingEntity rg1 = new InteractingEntity("rg1");
+		InteractingEntity reg1 = new InteractingEntity("reg1");
+		InteractingEntity rep1 = new InteractingEntity("rep1");
+
+		rg1.setInteractions(new ArrayList<InteractingEntity>());
+		rg1.getInteractions().add(reg1);
+		rg1.getInteractions().add(rep1);
+
+		ig.setInteractions(new ArrayList<InteractingEntity>());
+		ig.getInteractions().add(rg1);
+
+		InteractingEntity rg2 = new InteractingEntity("rg2");
+		InteractingEntity reg2 = new InteractingEntity("reg2");
+		InteractingEntity rep2 = new InteractingEntity("rep2");
+
+		rg2.setInteractions(new ArrayList<InteractingEntity>());
+		rg2.getInteractions().add(reg2);
+		rg2.getInteractions().add(rep2);
+
+		ig.getInteractions().add(rg2);
+
+		initiator.setInteractions(new ArrayList<InteractingEntity>());
+		initiator.getInteractions().add(ig);
+
+		return initiator;
+	}
+
 
 }
