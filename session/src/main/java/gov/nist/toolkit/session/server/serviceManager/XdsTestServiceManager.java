@@ -700,22 +700,11 @@ public class XdsTestServiceManager extends CommonService {
 										doc.homeCommunityId = ri.getHome();
 										doc.cacheURL = getRepositoryCacheWebPrefix()
 												+ doc.uid
-												+ getRepositoryCacheFileExtension(doc.mimeType);
+												+ LogFileContentBuilder.getRepositoryCacheFileExtension(doc.mimeType);
 
 										if (stepResult.documents == null)
 											stepResult.documents = new ArrayList<Document>();
 										stepResult.documents.add(doc);
-
-										File localFile = new File(getRepositoryCache(), doc.uid.replace(":","") + getRepositoryCacheFileExtension(doc.mimeType));
-
-//                                                new File(
-//												Installation.installation().warHome() + File.separator +
-//														"xdstools2" + File.separator + "DocumentCache" + File.separator
-//														+ doc.uid
-//														+ getRepositoryCacheFileExtension(doc.mimeType));
-
-										Io.bytesToFile(localFile,
-												ri.getContents());
 									}
 								}
 							}
@@ -742,26 +731,6 @@ public class XdsTestServiceManager extends CommonService {
 //				+ Session.servletContextName + "/DocumentCache/";
 		return  "DocumentCache/";
 	}
-
-	private File getRepositoryCache() {
-		File cache = new File(Installation.installation().warHome(), "DocumentCache");
-		cache.mkdirs();
-		return cache;
-	}
-
-	private String getRepositoryCacheFileExtension(String mimetype) {
-		if (mimetype == null)
-			return "";
-		else if (mimetype.equals("text/xml"))
-			return ".xml";
-		else if (mimetype.startsWith("text"))
-			return ".txt";
-		else if (mimetype.startsWith("application/pdf"))
-			return ".pdf";
-		return "";
-
-	}
-
 
 	public List<String> getMesaTestSessionNames() throws Exception  {
 		if (session != null)

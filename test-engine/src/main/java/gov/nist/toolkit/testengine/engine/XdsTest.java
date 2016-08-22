@@ -1,6 +1,7 @@
 package gov.nist.toolkit.testengine.engine;
 
 import gov.nist.toolkit.installation.Installation;
+import gov.nist.toolkit.registrymsg.repository.RetrievedDocumentModel;
 import gov.nist.toolkit.results.client.LogIdIOFormat;
 import gov.nist.toolkit.results.client.LogIdType;
 import gov.nist.toolkit.results.client.TestInstance;
@@ -14,15 +15,22 @@ import gov.nist.toolkit.testenginelogging.client.LogFileContentDTO;
 import gov.nist.toolkit.testenginelogging.logrepository.LogRepository;
 import gov.nist.toolkit.testenginelogging.logrepository.LogRepositoryFactory;
 import gov.nist.toolkit.utilities.io.Io;
+import gov.nist.toolkit.utilities.xml.XmlUtil;
 import gov.nist.toolkit.xdsexception.ExceptionUtil;
 import gov.nist.toolkit.xdsexception.XdsParameterException;
 import gov.nist.toolkit.xdsexception.client.XdsInternalException;
+import org.apache.axiom.om.OMElement;
 import org.apache.log4j.Logger;
 
 import javax.xml.parsers.FactoryConfigurationError;
 import java.io.File;
 import java.io.IOException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 
 
 public class XdsTest {
@@ -740,6 +748,8 @@ public class XdsTest {
 				// this.status records whether any test failed
                 if (this.status)
     				this.status = status;
+				// Write document cache before the contents get stripped for response logging. Contents are preserved in  the full log.
+				writeDocumentCache(plan.getResultsDocument());
                 // This use of section is used to link reportDTOs in log files
 				testSpec.addTestPlanLog(section, new LogFileContentBuilder().build(plan.results_document));
 
@@ -761,6 +771,37 @@ public class XdsTest {
 			}
 		}
 		return testSpecs;
+	}
+
+	void writeDocumentCache(OMElement el) {
+		try {
+			el = XmlUtil.firstDecendentWithLocalName(
+					el,
+					"RetrieveDocumentSetResponse");
+
+			if (el!=null) {
+				RetrieveB rb = new RetrieveB();
+				Map<String, RetrievedDocumentModel> resMap = rb
+						.parse_rep_response(el).getMap();
+
+				for (String docUid : resMap.keySet()) {
+					RetrievedDocumentModel ri = resMap.get(docUid);
+					File localFile = new File(getRepositoryCache(), ri.getDocUid().replace(":","") + LogFileContentBuilder.getRepositoryCacheFileExtension(ri.getContent_type()));
+
+					Io.bytesToFile(localFile,
+							ri.getContents());
+				}
+			}
+
+		} catch (Throwable t) {
+			System.out.println(t.toString());
+		}
+	}
+
+	private File getRepositoryCache() {
+		File cache = new File(Installation.installation().warHome(), "DocumentCache");
+		cache.mkdirs();
+		return cache;
 	}
 
 	public void resetTestSpecLogs() {

@@ -16,6 +16,8 @@ import org.junit.Rule
 import org.junit.rules.TestName
 import spock.lang.Shared
 import spock.lang.Specification
+import org.apache.commons.io.FileUtils
+
 /**
  *
  */
@@ -31,10 +33,26 @@ class ToolkitSpecification extends Specification {
     def setupSpec() {  // there can be multiple setupSpec() fixture methods - they all get run
         session = UnitTestEnvironmentManager.setupLocalToolkit()
         api = UnitTestEnvironmentManager.localToolkitApi()
+
+        cleanupDir()
     }
 
     def setup() {
         println 'Running method: ' + name.methodName
+    }
+
+    def cleanupDir() {
+        File testDataDir = Installation.installation().propertyServiceManager().getTestLogCache()
+        if (testDataDir.exists()) {
+            System.out.println("Clearing TEST (testLogCache) data before testing...")
+            FileUtils.cleanDirectory(testDataDir)
+        }
+
+        testDataDir = Installation.installation().simDbFile()
+        if (testDataDir.exists()) {
+            System.out.println("Clearing TEST (simdb) data before testing...")
+            FileUtils.cleanDirectory(testDataDir)
+        }
     }
 
     def startGrizzly(String port) {
