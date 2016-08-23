@@ -140,5 +140,17 @@ public class LogFileContentBuilder {
             c.setSuccess(false);
     }
 
+    public static String getRepositoryCacheFileExtension(String mimetype) {
+        if (mimetype == null)
+            return "";
+        else if (mimetype.equals("text/xml"))
+            return ".xml";
+        else if (mimetype.startsWith("text"))
+            return ".txt";
+        else if (mimetype.startsWith("application/pdf"))
+            return ".pdf";
+        return "";
+
+    }
 
 }
