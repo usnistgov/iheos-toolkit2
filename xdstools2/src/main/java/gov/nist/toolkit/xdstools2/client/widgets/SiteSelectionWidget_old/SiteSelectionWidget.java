@@ -4,17 +4,16 @@ import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.*;
 import gov.nist.toolkit.actortransaction.client.ActorType;
 import gov.nist.toolkit.configDatatypes.client.TransactionType;
-import gov.nist.toolkit.sitemanagement.client.SiteSpec;
 import gov.nist.toolkit.sitemanagement.client.Site;
+import gov.nist.toolkit.sitemanagement.client.SiteSpec;
 import gov.nist.toolkit.sitemanagement.client.TransactionOfferings;
 import gov.nist.toolkit.xdstools2.client.CoupledTransactions;
-import gov.nist.toolkit.xdstools2.client.PopupMessage;
 import gov.nist.toolkit.xdstools2.client.StringSort;
-import gov.nist.toolkit.xdstools2.client.ToolkitServiceAsync;
+import gov.nist.toolkit.xdstools2.client.Xdstools2;
+import gov.nist.toolkit.xdstools2.client.command.command.GetTransactionOfferingsCommand;
 
 import java.util.*;
 
@@ -31,23 +30,23 @@ public class SiteSelectionWidget extends Composite   {
 	CoupledTransactions couplings;
 	ActorType actorType;
 	TransactionOfferings transactionOfferings;
-	ToolkitServiceAsync toolkitService;
+//	ToolkitServiceAsync toolkitService;
 	
 	boolean samlSelected = false;
 	boolean tlsSelected = true;
 	
 	/**
 	 * 
-	 * @param transactionOfferings
+	 * @param couplings
 	 * @param couplings - Coupled transactions. Pass null if none.
 	 * @param actorType
 	 */
-	public SiteSelectionWidget(CoupledTransactions couplings, ActorType actorType,
-			ToolkitServiceAsync toolkitService
+	public SiteSelectionWidget(CoupledTransactions couplings, ActorType actorType/*,
+			ToolkitServiceAsync toolkitService */
 			) {
 		this.couplings = couplings;
 		this.actorType = actorType;
-		this.toolkitService = toolkitService;
+//		this.toolkitService = toolkitService;
 		
 		transactionTypes = actorType.getTransactions();
 		if (this.couplings == null)
@@ -256,23 +255,13 @@ public class SiteSelectionWidget extends Composite   {
 	}
 
 	void reloadTransactionOfferings() {
-		try {
-			toolkitService.getTransactionOfferings(new AsyncCallback<TransactionOfferings> () {
+		new GetTransactionOfferingsCommand(Xdstools2.getHomeTab()) {
 
-				public void onFailure(Throwable caught) {
-					if (!isEmpty(caught))
-						new PopupMessage(caught.getMessage());
-				}
-
-				public void onSuccess(TransactionOfferings to) {
-					redisplay(to);
-				}
-
-			});
-		} catch (Exception e) {
-			if (!isEmpty(e))
-				new PopupMessage(e.getMessage());
-		}
+			@Override
+			public void onComplete(TransactionOfferings var1) {
+				redisplay(var1);
+			}
+		}.run(Xdstools2.getHomeTab().getCommandContext());
 	}
 
 	boolean samlSelected() { return samlSelected; }

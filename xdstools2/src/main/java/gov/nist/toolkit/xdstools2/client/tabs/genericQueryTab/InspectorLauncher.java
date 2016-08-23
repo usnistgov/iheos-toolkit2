@@ -16,7 +16,7 @@ class InspectorLauncher implements ClickHandler {
 		MetadataInspectorTab itab = new MetadataInspectorTab();
 		itab.setResults(tab.results);
 		itab.setSiteSpec(tab.getCommonSiteSpec());
-		itab.setToolkitService(tab.toolkitService);
+//		itab.setToolkitService(tab.toolkitService);
 		itab.onTabLoad(true, "Insp");
 	}
 

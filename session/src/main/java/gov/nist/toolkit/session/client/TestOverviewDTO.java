@@ -1,6 +1,7 @@
 package gov.nist.toolkit.session.client;
 
 import com.google.gwt.user.client.rpc.IsSerializable;
+import gov.nist.toolkit.results.client.TestInstance;
 import gov.nist.toolkit.testenginelogging.client.LogMapDTO;
 
 import java.io.Serializable;
@@ -10,7 +11,7 @@ import java.util.List;
 import java.util.Map;
 
 /**
- *
+ * Should be renamed TestResultsDTO!!!!
  */
 public class TestOverviewDTO implements Serializable, IsSerializable {
     private String name;
@@ -23,6 +24,8 @@ public class TestOverviewDTO implements Serializable, IsSerializable {
     private LogMapDTO logMapDTO = null;
 
     public TestOverviewDTO() {}
+
+    public TestInstance getTestInstance() { return new TestInstance(name); }
 
     public String getName() {
         return name;

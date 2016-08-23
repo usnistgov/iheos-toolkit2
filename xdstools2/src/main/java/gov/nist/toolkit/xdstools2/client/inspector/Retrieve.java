@@ -10,12 +10,14 @@ import gov.nist.toolkit.results.client.TestInstance;
 
 import java.util.List;
 
+import static gov.nist.toolkit.xdstools2.client.ToolWindow.toolkitService;
+
 public class Retrieve implements ClickHandler {
 	MetadataInspectorTab it;
 	Uids uids;
 
 	 void run() {
-			it.data.toolkitService.retrieveDocument(null, uids, queryCallback);    
+			/*it.data.*/toolkitService.retrieveDocument(null, uids, queryCallback);
 		}
 
 		AsyncCallback<List<Result>> queryCallback = new AsyncCallback<List<Result>> () {

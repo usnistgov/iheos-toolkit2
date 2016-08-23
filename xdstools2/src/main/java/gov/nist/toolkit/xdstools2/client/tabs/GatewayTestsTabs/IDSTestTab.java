@@ -54,8 +54,8 @@ public class IDSTestTab extends GenericQueryTab implements GatewayTool {
         testSelectionManager = new TestSelectionManager(this);
     }
 
-    @Override
-    public ToolkitServiceAsync getToolkitService() { return toolkitService; }
+//    @Override
+//    public ToolkitServiceAsync getToolkitService() { return toolkitService; }
 
     @Override
     public TabContainer getToolContainer() { return getTabContainer(); }
@@ -248,7 +248,7 @@ public class IDSTestTab extends GenericQueryTab implements GatewayTool {
                         results.add(result);
                         itab.setResults(results);
                         itab.setSiteSpec(siteSpec);
-                        itab.setToolkitService(toolkitService);
+//                        itab.setToolkitService(toolkitService);
                         itab.onTabLoad(true, "Insp");
                     }
                 });

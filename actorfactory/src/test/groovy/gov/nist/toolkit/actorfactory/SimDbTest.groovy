@@ -5,7 +5,7 @@ import gov.nist.toolkit.actortransaction.client.ActorType
 import gov.nist.toolkit.installation.ExternalCacheManager
 import gov.nist.toolkit.installation.Installation
 import gov.nist.toolkit.utilities.io.Io
-import gov.nist.toolkit.xdsexception.ToolkitRuntimeException
+import gov.nist.toolkit.xdsexception.client.ToolkitRuntimeException
 import spock.lang.Specification
 
 /**

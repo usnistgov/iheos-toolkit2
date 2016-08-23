@@ -8,6 +8,7 @@ import gov.nist.toolkit.utilities.xml.Util;
 import gov.nist.toolkit.utilities.xml.XmlUtil;
 import gov.nist.toolkit.wsseTool.api.config.SecurityContext;
 import gov.nist.toolkit.xdsexception.*;
+import gov.nist.toolkit.xdsexception.client.EnvironmentNotSelectedException;
 import gov.nist.toolkit.xdsexception.client.XdsInternalException;
 import org.apache.axiom.om.OMAbstractFactory;
 import org.apache.axiom.om.OMElement;
@@ -342,7 +343,7 @@ public class Soap implements SoapInterface {
 	 */
 	@Override
    public void soapCallWithWSSEC() throws XdsInternalException, AxisFault,
-			EnvironmentNotSelectedException, LoadKeystoreException {
+            EnvironmentNotSelectedException, LoadKeystoreException {
 		System.out.println("soapCallWithWSSEC() ----- useWSSEC :" + useWSSEC);
 		ConfigurationContext cc = null;
 		if (useWSSEC)

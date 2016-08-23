@@ -298,6 +298,7 @@ public class TestLogDetails {
 	 * @throws Exception
 	 */
 	List<File> getTestLogsForThisTest(File index, String upToSection) throws Exception {
+		logger.info("GGetTestLogsForThisTest(" + index + ", " + upToSection + ")");
 		List<File> logs = new ArrayList<File>();
 		if (logRepository == null)
 			return logs;
@@ -310,12 +311,14 @@ public class TestLogDetails {
 			String dir = lof.next().trim();
 			if (dir.length() ==0)
 				continue;
+			logger.info("*******    upto " + upToSection + " this is " + dir  + "     ************");
 			if (upToSection != null && dir.equals(upToSection))
 				return logs;
 			File path = new File(logdir + File.separator + dir + File.separatorChar + "log.xml");
-			if ( ! path.exists() )
-				throw new Exception("TestSpec " + toString() + " references the section " + dir + 
-						" - no log file exists ( file " + path.toString() + " does not exist");
+			logger.info("  section " + dir  + " path = " + path);
+			if ( ! path.exists() ) continue;
+//				throw new Exception("TestSpec " + toString() + " references the section " + dir +
+//						" - no log file exists ( file " + path.toString() + " does not exist");
 			logs.add(path);
 		}
 		return logs;

@@ -9,9 +9,9 @@ import gov.nist.toolkit.actorfactory.client.SimId;
 import gov.nist.toolkit.actorfactory.client.Simulator;
 import gov.nist.toolkit.actorfactory.client.SimulatorConfig;
 import gov.nist.toolkit.session.server.Session;
-import gov.nist.toolkit.xdsexception.EnvironmentNotSelectedException;
+import gov.nist.toolkit.xdsexception.client.EnvironmentNotSelectedException;
 import gov.nist.toolkit.xdsexception.ExceptionUtil;
-import gov.nist.toolkit.xdsexception.ToolkitRuntimeException;
+import gov.nist.toolkit.xdsexception.client.ToolkitRuntimeException;
 import org.apache.log4j.Logger;
 
 import java.io.IOException;
@@ -44,8 +44,9 @@ public class SimulatorApi {
             logger.info("New simulator for session " + session.id() + ": " + actorTypeName + " ==> " + scl.getIds());
             return scl;
         } catch (EnvironmentNotSelectedException e) {
-            logger.error("Environment Not Selected");
+            logger.error("Cannot create Simulator - Environment Not Selected");
             throw e;
+//            throw new Exception("Cannot create Simulator - Environment Not Selected", e);
         } catch (Exception e) {
             logger.error("getNewSimulator:\n" + ExceptionUtil.exception_details(e));
             throw e;

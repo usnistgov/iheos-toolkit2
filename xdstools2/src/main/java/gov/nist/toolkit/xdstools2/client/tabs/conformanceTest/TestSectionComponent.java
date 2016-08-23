@@ -1,5 +1,7 @@
 package gov.nist.toolkit.xdstools2.client.tabs.conformanceTest;
 
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.logical.shared.OpenEvent;
 import com.google.gwt.event.logical.shared.OpenHandler;
 import com.google.gwt.user.client.rpc.AsyncCallback;
@@ -12,12 +14,13 @@ import gov.nist.toolkit.testenginelogging.client.TestStepLogContentDTO;
 import gov.nist.toolkit.testenginelogging.client.UseReportDTO;
 import gov.nist.toolkit.xdstools2.client.HorizontalFlowPanel;
 import gov.nist.toolkit.xdstools2.client.PopupMessage;
-import gov.nist.toolkit.xdstools2.client.ToolkitServiceAsync;
 
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+
+import static gov.nist.toolkit.xdstools2.client.ToolWindow.toolkitService;
 
 /**
  *
@@ -25,18 +28,28 @@ import java.util.Set;
 public class TestSectionComponent implements IsWidget {
     private final HorizontalFlowPanel header = new HorizontalFlowPanel();
     private final DisclosurePanel panel = new DisclosurePanel(header);
-    private final ToolkitServiceAsync toolkitService;
+//    private final ToolkitServiceAsync toolkitService;
     private final String sessionName;
     private final TestInstance testInstance;
     private final FlowPanel body = new FlowPanel();
+    private final FlowPanel sectionDescription = new FlowPanel();
+    private final FlowPanel sectionResults = new FlowPanel();
+    private TestInstance fullTestInstance;
+    TestRunner testRunner;
+    TestSectionComponent me;
 
-    public TestSectionComponent(ToolkitServiceAsync toolkitService, String sessionName, TestInstance testInstance, SectionOverviewDTO sectionOverview) {
-        this.toolkitService = toolkitService;
+
+    public TestSectionComponent(/*ToolkitServiceAsync toolkitService, */String sessionName, TestInstance testInstance, SectionOverviewDTO sectionOverview, TestRunner testRunner) {
+        me = this;
+//        this.toolkitService = toolkitService;
         this.sessionName = sessionName;
         this.testInstance = testInstance;
+        this.testRunner = testRunner;
+        fullTestInstance = new TestInstance(testInstance.getId(), sectionOverview.getName());
 
         HTML sectionLabel = new HTML("Section: " + sectionOverview.getName());
         sectionLabel.addStyleName("section-title");
+        sectionLabel.setTitle("A section can be run independently although frequently a test section depends on the output of a previous section in the test.");
         if (sectionOverview.isRun()) {
             if (sectionOverview.isPass())
                 header.addStyleName("testOverviewHeaderSuccess");
@@ -49,19 +62,33 @@ public class TestSectionComponent implements IsWidget {
             Image status = (sectionOverview.isPass()) ?
                     new Image("icons2/correct-16.png")
                     :
-                    new Image("icons2/cancel-16.png");
+                    new Image("icons/ic_warning_black_24dp_1x.png");
             status.addStyleName("right");
             header.add(status);
-            panel.add(body);
 
             panel.addOpenHandler(new SectionOpenHandler(new TestInstance(testInstance.getId(), sectionOverview.getName())));
         }
+        panel.add(body);
         Image play = new Image("icons2/play-16.png");
+        play.addClickHandler(new RunSection(fullTestInstance));
         play.setTitle("Run");
         header.add(play);
-        Image delete = new Image("icons2/garbage-16.png");
-        delete.setTitle("Delete Log");
-        header.add(delete);
+        body.add(sectionDescription);
+        sectionDescription.add(new HTML(sectionOverview.getDescription()));
+        body.add(sectionResults);
+    }
+
+    class RunSection implements ClickHandler {
+        TestInstance testInstance;
+
+        RunSection(TestInstance testInstance) {
+            this.testInstance = testInstance;
+        }
+
+        @Override
+        public void onClick(ClickEvent clickEvent) {
+            me.testRunner.runTest(testInstance);
+        }
     }
 
     private class SectionOpenHandler implements OpenHandler<DisclosurePanel> {
@@ -80,7 +107,7 @@ public class TestSectionComponent implements IsWidget {
                 @Override
                 public void onSuccess(LogFileContentDTO log) {
                     if (log == null) new PopupMessage("section is " + testInstance.getSection());
-                    body.clear();
+                    sectionResults.clear();
                     int row;
                     if (log.hasFatalError()) body.add(new HTML("Fatal Error: " + log.getFatalError() + "<br />"));
                     for (TestStepLogContentDTO step : log.getSteps()) {
@@ -91,10 +118,21 @@ public class TestSectionComponent implements IsWidget {
                         StringBuilder buf = new StringBuilder();
                         buf.append("Goal: " + step.getStepGoalsDTO().getGoals()).append("<br />");
                         buf.append("Endpoint: " + step.getEndpoint()).append("<br />");
+                        if (step.isExpectedSuccess())
+                            buf.append("Expected Status: Success").append("<br />");
+                        else
+                            buf.append("Expected Status: Failure").append("<br />");
+
+                        for (String fault : step.getSoapFaults()) {
+                            buf.append("Fault: " + fault).append("<br />");
+                        }
                         for (String error : step.getErrors()) {
                             buf.append("Error: " + error).append("<br />");
                         }
-                        body.add(new HTML(buf.toString()));
+                        for (String assertion : step.getAssertionErrors()) {
+                            buf.append("Error: " + assertion).append("<br />");
+                        }
+                        sectionResults.add(new HTML(buf.toString()));
 
                         // ******************************************************
                         // IDs
@@ -122,8 +160,8 @@ public class TestSectionComponent implements IsWidget {
                                 idTable.setWidget(row, 2, new HTML(assignedUids.get(idName)));
                             row++;
                         }
-                        body.add(new HTML("IDs"));
-                        body.add(idTable);
+                        sectionResults.add(new HTML("IDs"));
+                        sectionResults.add(idTable);
 
                         // ******************************************************
                         // UseReports
@@ -147,8 +185,8 @@ public class TestSectionComponent implements IsWidget {
                             useTable.setWidget(row, 4, new HTML(useReport.getStep()));
                             row++;
                         }
-                        body.add(new HTML("Use Reports"));
-                        body.add(useTable);
+                        sectionResults.add(new HTML("Use Reports"));
+                        sectionResults.add(useTable);
 
                         // ******************************************************
                         // Reports
@@ -166,8 +204,8 @@ public class TestSectionComponent implements IsWidget {
                             reportsTable.setWidget(row, 1, new HTML(report.getValue()));
                             row++;
                         }
-                        body.add(new HTML("Reports"));
-                        body.add(reportsTable);
+                        sectionResults.add(new HTML("Reports"));
+                        sectionResults.add(reportsTable);
                     }
                 }
             });

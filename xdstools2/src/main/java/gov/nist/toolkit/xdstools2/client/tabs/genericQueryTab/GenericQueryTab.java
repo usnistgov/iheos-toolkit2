@@ -6,7 +6,6 @@ import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.*;
-import com.google.gwt.user.client.ui.Panel;
 import gov.nist.toolkit.actortransaction.client.ActorType;
 import gov.nist.toolkit.configDatatypes.client.TransactionType;
 import gov.nist.toolkit.http.client.HtmlMarkup;
@@ -17,8 +16,10 @@ import gov.nist.toolkit.sitemanagement.client.SiteSpec;
 import gov.nist.toolkit.sitemanagement.client.Site;
 import gov.nist.toolkit.sitemanagement.client.TransactionOfferings;
 import gov.nist.toolkit.xdstools2.client.*;
+import gov.nist.toolkit.xdstools2.client.command.command.GetTransactionOfferingsCommand;
 import gov.nist.toolkit.xdstools2.client.event.testSession.TestSessionManager2;
 import gov.nist.toolkit.xdstools2.client.siteActorManagers.BaseSiteActorManager;
+import gov.nist.toolkit.xdstools2.client.widgets.PidWidget;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -30,7 +31,6 @@ import java.util.Set;
  * issue a transaction, getRetrievedDocumentsModel back results,
  * and allow the results to be inspected
  * @author bill
- *
  */
 public abstract class GenericQueryTab  extends ToolWindow {
 	private final SiteLoader siteLoader = new SiteLoader(this);
@@ -54,8 +54,9 @@ public abstract class GenericQueryTab  extends ToolWindow {
     HorizontalPanel runnerPanel = new HorizontalPanel();
 
 	public VerticalPanel resultPanel = new VerticalPanel();
-    // if false then tool takes responsibliity for placing it
-    public boolean addResultsPanel = true;
+	// if false then tool takes responsibliity for placing it
+	public boolean addResultsPanel = true;
+	public TabContainer myContainer;
 	CheckBox doTls = new CheckBox("TLS?");
 	ListBox samlListBox = new ListBox();
 	List<RadioButton> byActorButtons = null;
@@ -89,10 +90,9 @@ public abstract class GenericQueryTab  extends ToolWindow {
 
 	protected QueryBoilerplate queryBoilerplate = null;
 
-
 	HTML statusBox = new HTML();
-	public TextBox pidTextBox = new TextBox();
-
+	public PidWidget pidTextBox = new PidWidget();
+//	public TextBox pidTextBox = new TextBox();
 
 	public GenericQueryTab(BaseSiteActorManager siteActorManager) {
 		me = this;
@@ -105,10 +105,18 @@ public abstract class GenericQueryTab  extends ToolWindow {
 		//		EnvironmentSelector.SETENVIRONMENT(toolkitService);
 	}
 
-	protected TestSessionManager2 getTestSessionManager() { return testSessionManager; }
+	protected TestSessionManager2 getTestSessionManager() {
+		return testSessionManager;
+	}
 
-	public void setTlsEnabled(boolean value) { tlsEnabled = value; }
-	public void setSamlEnabled(boolean value) { samlEnabled = value; }
+	public void setTlsEnabled(boolean value) {
+		tlsEnabled = value;
+	}
+
+	public void setSamlEnabled(boolean value) {
+		samlEnabled = value;
+	}
+
 	public void setShowInspectButton(boolean value) {
 		showInspectButton = value;
 		if (inspectButton != null)
@@ -128,7 +136,6 @@ public abstract class GenericQueryTab  extends ToolWindow {
 
 	protected AsyncCallback<List<Result>> queryCallback = new AsyncCallback<List<Result>> () {
 
-
 		public void onFailure(Throwable caught) {
 //			resultPanel.clear();
 			resultPanel.add(addHTML("<font color=\"#FF0000\">" + "Error running validation: " + caught.getMessage() + "</font>"));
@@ -146,13 +153,22 @@ public abstract class GenericQueryTab  extends ToolWindow {
 					buf.append(mc.docEntries.size()).append(" DocumentEntries ");
 					buf.append(mc.folders.size()).append(" Folders ");
 					buf.append(mc.objectRefs.size()).append(" ObjectRefs ");
+					if (theresult.get(0).getStepResults().get(0).documents!=null) {
+						buf.append(theresult.get(0).getStepResults().get(0).documents.size()).append(" Documents");
+					}
 					resultsShortDescription.setText(buf.toString());
 				}
 			} catch (Exception e) {}
             DetailsTree detailsTree = null;
 			boolean status = true;
+			boolean partialSuccess = false;
 			results = theresult;
 			for (Result result : results) {
+				if (result.getStepResults().size()>0) {
+					if ("urn:ihe:iti:2007:ResponseStatusType:PartialSuccess".equals((result.getStepResults().get(0).getRegistryResponseStatus()))) {
+						partialSuccess = true;
+					}
+				}
 				for (AssertionResult ar : result.assertions.assertions) {
 
                     if (ar.assertion.startsWith("ReportBuilder") && detailsTree != null) {
@@ -177,11 +193,13 @@ public abstract class GenericQueryTab  extends ToolWindow {
                     }
 				}
 			}
-			if (status)
-				setStatus("Status: Success", true);
-			else
+			if (status) {
+				if (partialSuccess)
+					setStatus("<span style=\"color:orange;font-weight:bold;\">Status:</span>&nbsp;<span style=\"color:orange;font-weight:bold;\">PartialSuccess</span>");
+				else
+					setStatus("Status: Success", true);
+			} else
 				setStatus("Status: Failure", false);
-
 
 			getInspectButton().setEnabled(true);
 			getGoButton().setEnabled(true);
@@ -219,7 +237,9 @@ public abstract class GenericQueryTab  extends ToolWindow {
 
 	}
 
-	public void setSiteSpec(SiteSpec siteSpec) { setCommonSiteSpec(siteSpec); }
+	public void setSiteSpec(SiteSpec siteSpec) {
+		setCommonSiteSpec(siteSpec);
+	}
 
 	//	protected SiteSpec verifySiteSelection() {
 	//		setCommonSiteSpec(siteActorManager.verifySiteSelection());
@@ -368,6 +388,10 @@ public abstract class GenericQueryTab  extends ToolWindow {
 		statusBox.setHTML(HtmlMarkup.bold(red(message,status)));
 	}
 
+	public void setStatus(String message) {
+		statusBox.setHTML(message);
+	}
+
 	public String getRunningMessage() {
 		return "Running (connection timeout is 30 sec) ...";
 	}
@@ -434,24 +458,15 @@ public abstract class GenericQueryTab  extends ToolWindow {
 	public void onReload() {}
 
 	public void reloadTransactionOfferings() {
-		try {
-			toolkitService.getTransactionOfferings(new AsyncCallback<TransactionOfferings> () {
+		new GetTransactionOfferingsCommand(this) {
 
-				public void onFailure(Throwable caught) {
-					resultPanel.clear();
-					resultPanel.add(addHTML("<font color=\"#FF0000\">" + "Error: " + caught.getMessage() + " Your external cache may be corrupted." +"</font>"));
-				}
+			@Override
+			public void onComplete(TransactionOfferings var1) {
+				GenericQueryTab.transactionOfferings = var1;
+				redisplay(false);
 
-				public void onSuccess(TransactionOfferings to) {
-					GenericQueryTab.transactionOfferings = to;
-					redisplay(false);
-				}
-
-			});
-		} catch (Exception e) {
-			resultPanel.clear();
-			resultPanel.add(addHTML("<font color=\"#FF0000\">" + "Error: " + e.getMessage() + " Your external cache may be corrupted." +"</font>"));
-		}
+			}
+		}.run(getCommandContext());
 	}
 
 	// clean out mainGrid so the actors can be re-added
@@ -494,8 +509,12 @@ public abstract class GenericQueryTab  extends ToolWindow {
 
 		if (hasPatientIdParam) {
 			commonParamGrid.setWidget(commonGridRow, titleColumn, new HTML("Patient ID"));
+			HTMLTable.CellFormatter formatter = commonParamGrid.getCellFormatter();
+			formatter.setHorizontalAlignment(0, 0, HasHorizontalAlignment.ALIGN_LEFT);
+			formatter.setVerticalAlignment(0, 0, HasVerticalAlignment.ALIGN_TOP);
 
-			pidTextBox = new TextBox();
+//			pidTextBox = new TextBox();
+			pidTextBox = new PidWidget();
 			pidTextBox.setWidth("400px");
 			pidTextBox.setText(getCommonPatientId());
 			pidTextBox.addChangeHandler(new PidChangeHandler(this));
@@ -506,7 +525,6 @@ public abstract class GenericQueryTab  extends ToolWindow {
         commonSiteSpec = getCommonSiteSpec();
 		if (samlEnabled) {
 			commonParamGrid.setWidget(commonGridRow, titleColumn, new HTML("SAML"));
-
 
 			samlListBox = new ListBox();
 			samlListBox.addItem("SAML OFF", "0");
@@ -529,7 +547,6 @@ public abstract class GenericQueryTab  extends ToolWindow {
 //			commonParamGrid.setWidget(commonGridRow, titleColumn, new HTML("TLS"));
 			commonParamGrid.setWidget(commonGridRow++, contentsColumn, doTls);
 		}
-
 
 		if (asyncEnabled) {
 			CheckBox doAsync = new CheckBox("Async?");

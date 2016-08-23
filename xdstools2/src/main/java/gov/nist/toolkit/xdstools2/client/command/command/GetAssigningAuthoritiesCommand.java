@@ -1,0 +1,29 @@
+package gov.nist.toolkit.xdstools2.client.command.command;
+
+import gov.nist.toolkit.xdstools2.client.ToolWindow;
+import gov.nist.toolkit.xdstools2.client.command.CommandContext;
+
+import java.util.List;
+
+import static gov.nist.toolkit.xdstools2.client.ToolWindow.toolkitService;
+
+/**
+ * Request type (R) is CommandContext (base class is used because no other parms needed
+ * Callback type (C) is List<String></String>
+ *
+ * onComplete is callback to user of this command. When creating new commands, IntelliJ
+ * auto-completion will fill in an empty onComplete method because it is defined as abstract
+ * in the base class.  To give user chance to capture callback, delete that auto-generated onComplete()
+ * from this class.
+ */
+abstract public class GetAssigningAuthoritiesCommand extends GenericCommand<CommandContext, List<String>> {
+    public GetAssigningAuthoritiesCommand(ToolWindow toolWindow) {
+        super(toolWindow);
+    }
+
+    @Override
+    public void run(CommandContext var1) {
+        toolkitService.getAssigningAuthorities(var1, this); // this because primary callback is offered by base class
+    }
+
+}

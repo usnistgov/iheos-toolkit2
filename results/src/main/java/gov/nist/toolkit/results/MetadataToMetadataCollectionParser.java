@@ -1,4 +1,4 @@
-package gov.nist.toolkit.results.client;
+package gov.nist.toolkit.results;
 
 import gov.nist.toolkit.commondatatypes.MetadataSupport;
 import gov.nist.toolkit.registrymetadata.Metadata;

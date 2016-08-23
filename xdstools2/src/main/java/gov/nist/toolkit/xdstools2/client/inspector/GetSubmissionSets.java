@@ -11,13 +11,15 @@ import gov.nist.toolkit.results.client.TestInstance;
 
 import java.util.List;
 
+import static gov.nist.toolkit.xdstools2.client.ToolWindow.toolkitService;
+
 public class GetSubmissionSets implements ClickHandler {
 
 	MetadataInspectorTab it;
 	ObjectRefs ids;
 
 	void run() {
-		it.data.toolkitService.getSubmissionSets(null, new AnyIds(ids), queryCallback);
+		/*it.data.*/toolkitService.getSubmissionSets(null, new AnyIds(ids), queryCallback);
 	}
 
 	AsyncCallback<List<Result>> queryCallback = new AsyncCallback<List<Result>> () {

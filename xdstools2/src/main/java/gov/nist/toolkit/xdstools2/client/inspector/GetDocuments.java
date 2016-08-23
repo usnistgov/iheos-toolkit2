@@ -12,6 +12,8 @@ import gov.nist.toolkit.results.client.TestInstance;
 
 import java.util.List;
 
+import static gov.nist.toolkit.xdstools2.client.ToolWindow.toolkitService;
+
 public class GetDocuments implements ClickHandler {
 	MetadataInspectorTab it;
 	StepResult originatingResult = null;
@@ -23,7 +25,7 @@ public class GetDocuments implements ClickHandler {
 		if (isLid)
 			aids.labelAsLids();
 		
-		it.data.toolkitService.getDocuments(null, aids, queryCallback);
+		/*it.data.*/toolkitService.getDocuments(null, aids, queryCallback);
 		if (originatingResult != null)
 			originatingResult.rmFromToBeRetrieved(ids);
 	}

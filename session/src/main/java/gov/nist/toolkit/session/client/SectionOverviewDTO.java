@@ -12,11 +12,12 @@ import java.util.Map;
  *
  */
 public class SectionOverviewDTO implements Serializable, IsSerializable {
-    String name;
-    boolean pass;
-    boolean run = true;
-    List<String> stepNames = new ArrayList<>();
-    Map<String, StepOverviewDTO> steps = new HashMap<>();
+    private String name;
+    private String description;
+    private boolean pass;
+    private boolean run = true;
+    private List<String> stepNames = new ArrayList<>();
+    private Map<String, StepOverviewDTO> steps = new HashMap<>();
 
     public SectionOverviewDTO() {}
 
@@ -63,5 +64,13 @@ public class SectionOverviewDTO implements Serializable, IsSerializable {
 
     public void setRun(boolean run) {
         this.run = run;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
     }
 }

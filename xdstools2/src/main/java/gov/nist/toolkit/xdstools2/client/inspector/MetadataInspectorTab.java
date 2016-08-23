@@ -9,10 +9,9 @@ import gov.nist.toolkit.results.client.*;
 import gov.nist.toolkit.sitemanagement.client.SiteSpec;
 import gov.nist.toolkit.xdstools2.client.PopupMessage;
 import gov.nist.toolkit.xdstools2.client.ToolWindow;
-import gov.nist.toolkit.xdstools2.client.ToolkitServiceAsync;
 
 import java.util.ArrayList;
-import java.util.List;
+import java.util.Collection;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -29,7 +28,7 @@ public class MetadataInspectorTab extends ToolWindow {
 	DataModel data;
 	Logger logger = Logger.getLogger("");
 
-	public void addToHistory(List<Result> results) {
+	public void addToHistory(Collection<Result> results) {
 		for (Result result : results)
 			addToHistory(result);
 	}
@@ -46,12 +45,12 @@ public class MetadataInspectorTab extends ToolWindow {
 	
 	HorizontalPanel hpanel;
 	
-	ToolkitServiceAsync toolkitService;
-	List<Result> results;
+//	ToolkitServiceAsync toolkitService;
+	Collection<Result> results;
 	SiteSpec siteSpec;
 	
-	public void setToolkitService(ToolkitServiceAsync tsa) { toolkitService = tsa; }
-	public void setResults(List<Result> results) { this.results = results; }
+//	public void setToolkitService(ToolkitServiceAsync tsa) { toolkitService = tsa; }
+	public void setResults(Collection<Result> results) { this.results = results; }
 	public void setSiteSpec(SiteSpec ss) { siteSpec = ss; }
 
 	@Override
@@ -66,7 +65,7 @@ public class MetadataInspectorTab extends ToolWindow {
 		if (siteSpec == null)
 			data.enableActions = false;
 
-		data.toolkitService = toolkitService;
+//		data.toolkitService = toolkitService;
 		registerTab(select, "Inspector");
 		tabTopPanel.setWidth("100%");
 
@@ -101,13 +100,13 @@ public class MetadataInspectorTab extends ToolWindow {
 			if (selectDiff != null) selectDiff.setEnabled(false);
 			
 			if (results.size() == 1 && !hasContents(results))
-				showAssertions(results.get(0));
+				showAssertions(results.iterator().next());
 			else 
 				showHistory();
 		}
 	}
 	
-	boolean hasContents(List<Result> results) {
+	boolean hasContents(Collection<Result> results) {
 		for (Result result : results) {
 			if (result.hasContent()) return true;
 		}
@@ -313,6 +312,7 @@ public class MetadataInspectorTab extends ToolWindow {
 				if (firstStepResult.getTestLog() == null) {
 
 					RawLogLoader ll = new RawLogLoader(this, res.logId, res.stepResults);
+//					ll.loadTestLogs();
 					TreeItem loadLogs = new TreeItem(HyperlinkFactory.link("load logs", ll));
 					ll.setLoadLogsTreeItem(loadLogs);
 

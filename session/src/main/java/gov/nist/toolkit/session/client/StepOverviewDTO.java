@@ -3,6 +3,7 @@ package gov.nist.toolkit.session.client;
 import com.google.gwt.user.client.rpc.IsSerializable;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -11,7 +12,7 @@ import java.util.List;
 public class StepOverviewDTO implements Serializable, IsSerializable {
     String name;
     boolean pass;
-    List<String> errors;
+    List<String> errors = null;
     List<String> details;
 
     public StepOverviewDTO() {}
@@ -36,8 +37,11 @@ public class StepOverviewDTO implements Serializable, IsSerializable {
         return errors;
     }
 
-    public void setErrors(List<String> errors) {
-        this.errors = errors;
+    public void addErrors(List<String> errors) {
+        if (errors == null) return;
+        if (this.errors == null)
+            this.errors = new ArrayList<>();
+        this.errors.addAll(errors);
     }
 
     public List<String> getDetails() {

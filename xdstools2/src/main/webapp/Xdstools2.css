@@ -148,6 +148,17 @@ h3 {
   background-color: lavender;
 }
 
+.paddedHorizontalPanel {
+  margin-left:20px;
+}
+
+.borderedTable {
+  border:2px solid darkslategray;
+}
+
+.list-border {
+  border: 1px solid rgba(169, 169, 169, 0.67);
+}
 .section-title {
   font-size: 14pt;
   text-align: left;
@@ -163,4 +174,5 @@ h3 {
   /*position: absolute;*/
   /*right: 0px;*/
 }
+
 

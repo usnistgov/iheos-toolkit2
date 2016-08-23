@@ -161,9 +161,9 @@ public class TestInstance implements IsSerializable, Serializable {
 		StringBuilder buf = new StringBuilder();
 		if (event != null) buf.append(event);
 		buf.append(':');
-		if (section != null) buf.append(section);
-		buf.append(':');
 		buf.append(id);
+		buf.append(':');
+		if (section != null) buf.append(section);
 		return buf.toString();
 	}
 

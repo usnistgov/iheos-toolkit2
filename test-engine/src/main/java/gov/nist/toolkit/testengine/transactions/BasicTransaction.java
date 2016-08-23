@@ -13,6 +13,7 @@ import gov.nist.toolkit.registrymsg.registry.RegistryResponseParser;
 import gov.nist.toolkit.registrysupport.RegistryErrorListGenerator;
 import gov.nist.toolkit.securityCommon.SecurityParams;
 import gov.nist.toolkit.soap.axis2.Soap;
+import gov.nist.toolkit.testengine.assertionEngine.Assertion;
 import gov.nist.toolkit.testengine.assertionEngine.AssertionEngine;
 import gov.nist.toolkit.testengine.engine.ErrorReportingInterface;
 import gov.nist.toolkit.testengine.engine.Linkage;
@@ -176,51 +177,56 @@ public abstract class BasicTransaction  {
 
 	public void doRun() throws Exception {
 
-        Iterator<OMElement> elements = instruction.getChildElements();
-		while (elements.hasNext()) {
-			OMElement part = (OMElement) elements.next();
-			parseInstruction(part);
-		}
+		try {
+			Iterator<OMElement> elements = instruction.getChildElements();
+			while (elements.hasNext()) {
+				OMElement part = (OMElement) elements.next();
+				parseInstruction(part);
+			}
 
-		applyTransactionSettings();
+			applyTransactionSettings();
 
 
-		String trans = getBasicTransactionName();
-		if (trans == null)
-			fatal("Internal error: No transaction name declared");
+			String trans = getBasicTransactionName();
+			if (trans == null)
+				fatal("Internal error: No transaction name declared");
 
-		if (async)
-			xds_version = BasicTransaction.xds_b;
+			if (async)
+				xds_version = BasicTransaction.xds_b;
 
-		if (trans.equals("sq") || trans.equals("pr") || trans.equals("r")) {
-			//			if (async)
-			//				trans = trans + ".as";
-			//			else
-			if (isB())
-				trans = trans + ".b";
-			else
-				trans = trans + ".a";
-		}
-		//		else if (async)
-		//			trans = trans + ".as";
+			if (trans.equals("sq") || trans.equals("pr") || trans.equals("r")) {
+				//			if (async)
+				//				trans = trans + ".as";
+				//			else
+				if (isB())
+					trans = trans + ".b";
+				else
+					trans = trans + ".a";
+			}
+			//		else if (async)
+			//			trans = trans + ".as";
 
-		TransactionType ttype = TransactionType.find(trans);
+			TransactionType ttype = TransactionType.find(trans);
 
 //		if (ttype == null)
 //			fatal("Do not understand transaction type " + trans);
 
-		if (defaultEndpointProcessing && ttype != null)
-			parseEndpoint(ttype);
+			if (defaultEndpointProcessing && ttype != null)
+				parseEndpoint(ttype);
 
-		Metadata metadata = prepareMetadata();
-		if (metadata != null)
-			request_element = metadata.getRoot();
+			Metadata metadata = prepareMetadata();
+			if (metadata != null)
+				request_element = metadata.getRoot();
 
-		//		reportManagerPreRun(request_element);  // must run before prepareMetadata (assign uuids)
+			//		reportManagerPreRun(request_element);  // must run before prepareMetadata (assign uuids)
 
-		run(request_element);
+			run(request_element);
 
-		reportManagerPostRun();
+			reportManagerPostRun();
+		} catch (Exception e) {
+			s_ctx.set_error("Internal Error: " + ExceptionUtil.exception_details(e));
+			step_failure = true;
+		}
 	}
 
 	protected void reportManagerPostRun() throws XdsInternalException {
@@ -1195,8 +1201,9 @@ public abstract class BasicTransaction  {
 
 	public void runAssertionEngine(OMElement step_output, ErrorReportingInterface eri, OMElement assertion_output) throws XdsInternalException {
 
-        AssertionEngine engine = new AssertionEngine();
-		engine.setDataRefs(data_refs);
+      AssertionEngine engine = new AssertionEngine();
+      engine.setDataRefs(data_refs);
+      engine.setCaller(this);
 
         try {
             if (useReportManager != null) {
@@ -1459,7 +1466,24 @@ public abstract class BasicTransaction  {
 		v.setTestConfig(testConfig);
 		v.run_test_assertions(m);
 
-		return v.getErrors();
-	}
+      return v.getErrors();
+   }
+
+   /**
+    * This method is overriden in subclasses which implement custom assertion
+    * processing routines, as indicated by the {@code <Assertion>} element
+    * having a process attribute. This code would only be called if an
+    * {@code <Assertion>} element had such a value erroneously, that is, the
+    * subclass does not actually implement this method. It is placed here to
+    * avoid having to instantiate it in those classes.
+    * @param engine AssertionEngine instance
+    * @param assertion Assert being processed
+    * @param assertion_output log.xml output element for that assert
+    * @throws XdsInternalException if this method is invoked.
+    */
+   public void processAssertion(AssertionEngine engine, Assertion assertion, OMElement assertion_output)
+      throws XdsInternalException {
+      throw new XdsInternalException("BasicTransaction#processAssertion: unknown process " + assertion.toString());
+   }
 
 }

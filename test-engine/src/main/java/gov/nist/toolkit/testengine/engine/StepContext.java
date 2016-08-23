@@ -26,44 +26,44 @@ public class StepContext extends BasicContext implements ErrorReportingInterface
 	boolean useAltPatientId = false;
 	TestConfig testConfig;
 	TransactionSettings transactionSettings = null;
-	
+
 	public void setTransationSettings(TransactionSettings ts) {
 		this.transactionSettings = ts;
 	}
-	
+
 	public TransactionSettings getTransactionSettings() {
 		return transactionSettings;
 	}
-	
+
 	public void setTestConfig(TestConfig config) {
 		testConfig = config;
 	}
-	
+
 	public boolean useAltPatientId() {
 		return useAltPatientId;
 	}
-	
+
 	public String getId() {
 		return stepId;
 	}
-	
+
 	boolean expectFault = false;
 	String expectedFaultCode = null;
-	
+
 	public boolean expectFault() {
 		return expectFault;
 	}
-	
+
 	public String getExpectedFaultCode() {
 		return expectedFaultCode;
 	}
-	
+
 	boolean status = true;
 
 	@Override
    public String toString() {
 		StringBuffer buf = new StringBuffer();
-		
+
 		buf
 //		.append("XDS Version = ").append(xdsVersionName()).append("\n")
 		.append("Expected Status = ").append(Arrays.toString(expectedStatus.toArray())).append("\n")
@@ -83,7 +83,7 @@ public class StepContext extends BasicContext implements ErrorReportingInterface
 	public List<TransactionStatus> getExpectedStatus() {
 		return expectedStatus;
 	}
-	
+
 	public StepContext(PlanContext plan) {
 		super(plan);
 	}
@@ -132,7 +132,7 @@ public class StepContext extends BasicContext implements ErrorReportingInterface
 		setStatus(false);
 		fault(test_step_output, code, msg);
 	}
-	
+
 	public void set_fault(AxisFault e) throws XdsInternalException {
 //		String code = "";
 		String detail = "";
@@ -140,7 +140,7 @@ public class StepContext extends BasicContext implements ErrorReportingInterface
 			//code = e.getFaultCode().getLocalPart();
 			detail = e.getCause().toString();
 		} catch (Exception ex) {
-			
+
 		}
 		detail = detail + " : " + e.getMessage();
 		setStatus(false);
@@ -154,11 +154,11 @@ public class StepContext extends BasicContext implements ErrorReportingInterface
 	public void setInContext(String title, Object value) {
 		set(title, value);
 	}
-	
+
 	public String getExpectedErrorCode() {
 		return expected_error_code;
 	}
-	
+
 	void run(OMElement step, PlanContext plan_context) throws Exception, FileNotFoundException {
 		String step_id = null;
 		step_id = null;
@@ -169,16 +169,16 @@ public class StepContext extends BasicContext implements ErrorReportingInterface
 		if (id == null)
 			throw new XdsInternalException("Found TestStep without an id attribute");
 		step_id = id.getAttributeValue();
-		
+
 		testConfig.currentStep = step_id;
-		
+
 		setId(step_id);
 		System.out.println("\tStep: " + step_id);
 
 
 		test_step_output = testLog.add_simple_element_with_id(
-				plan_context.getResultsDocument(), 
-				"TestStep", 
+				plan_context.getResultsDocument(),
+				"TestStep",
 				step_id);
 
 		Iterator elements = step.getChildElements();
@@ -186,9 +186,9 @@ public class StepContext extends BasicContext implements ErrorReportingInterface
 			OMElement instruction = (OMElement) elements.next();
 			String instruction_name = instruction.getLocalName();
 			InstructionContext ins_context = new InstructionContext(this);
-			//System.out.println("******* " + instruction_name + " ***"); 
+			//System.out.println("******* " + instruction_name + " ***");
 
-			if (instruction_name.equals("ExpectedStatus")) 
+			if (instruction_name.equals("ExpectedStatus"))
 			{
 				expected_status = instruction.getText();
 				testLog.add_name_value(test_step_output, instruction_name, expected_status);
@@ -225,45 +225,46 @@ public class StepContext extends BasicContext implements ErrorReportingInterface
 				}
 				testLog.add_name_value(test_step_output, instruction_name, acceptableStatusEle);
 			} */
-			else if (instruction_name.equals("Rule")) 
+			else if (instruction_name.equals("Rule"))
 			{
-			} 
-			else if (instruction_name.equals("Goal")) 
+			}
+			else if (instruction_name.equals("Goal"))
 			{
 				String goal = instruction.getText();
 				testLog.add_name_value(test_step_output, instruction_name, goal);
-			} 
-			else if (instruction_name.equals("RegistryEndpoint")) 
+			}
+			else if (instruction_name.equals("RegistryEndpoint"))
 			{
 				plan_context.defaultRegistryEndpoint = instruction.getText();
-				testLog.add_name_value(test_step_output, instruction); 
+				testLog.add_name_value(test_step_output, instruction);
 				plan_context.setRegistryEndpoint(plan_context.defaultRegistryEndpoint);
-			} 
-			else if (instruction_name.equals("NewPatientId"))  
+			}
+			else if (instruction_name.equals("NewPatientId"))
 			{
 				Pid pid = PatientIdAllocator.getNew(transactionSettings.patientIdAssigningAuthorityOid);
 				testLog.add_name_value(test_step_output, "NewPatientId", pid.toString());
 				transactionSettings.patientId = pid.toString();
 			}
-			else if (instruction_name.equals("AltPatientId"))  
+			else if (instruction_name.equals("AltPatientId"))
 			{
 				useAltPatientId = true;
 				Pid pid = PatientIdAllocator.getNew(transactionSettings.patientIdAssigningAuthorityOid);
 				testLog.add_name_value(test_step_output, "AltPatientId", pid.toString());
 				transactionSettings.altPatientId = pid.toString();
 			}
-			else if (instruction_name.equals("ExpectedErrorMessage")) 
+			else if (instruction_name.equals("ExpectedErrorMessage"))
 			{
 				expected_error_message = instruction.getText();
 				testLog.add_name_value(test_step_output, instruction_name, expected_error_message);
 				setExpectedErrorMessage(expected_error_message);
-			} 
-			else if (instruction_name.equals("ExpectedErrorCode")) 
+			}
+			else if (instruction_name.equals("ExpectedErrorCode"))
 			{
 				expected_error_code = instruction.getText();
-				testLog.add_name_value(test_step_output, instruction); 
-			} 
-			else {
+				testLog.add_name_value(test_step_output, instruction);
+			}
+            else if (instruction_name.equals("Standard")) {
+			} else {
 				resetStatus();
 				OMElement instruction_output = null;
 				BasicTransaction transaction = null;
@@ -271,76 +272,101 @@ public class StepContext extends BasicContext implements ErrorReportingInterface
 				instruction_output = testLog.add_simple_element(test_step_output, instruction_name);
 				instruction_output.addAttribute("step", step_id, null);
 
-				if (instruction_name.equals("SqlQueryTransaction")) {
-					transaction = new SqlQueryTransaction(this, instruction, instruction_output);
-				} else if (instruction_name.equals("StoredQueryTransaction")) {
-					transaction = new StoredQueryTransaction(this, instruction, instruction_output);
-				} else if (instruction_name.equals("GenericSoap11Transaction")) {
-					transaction = new GenericSoap11Transaction(this, instruction, instruction_output);
-				} else if (instruction_name.equals("DsubSubscribeTransaction")) {
-					transaction = new DsubSubscribeTransaction(this, instruction, instruction_output);
-				} else if (instruction_name.equals("PatientIdentityFeedTransaction")) {
-					transaction = new PatientIdentityFeedTransaction(this, instruction, instruction_output);
-				} else if (instruction_name.equals("IGQTransaction")) {
-					transaction = new IGQTransaction(this, instruction, instruction_output);
-				} else if (instruction_name.equals("XCQTransaction")) {
-					transaction = new XCQTransaction(this, instruction, instruction_output);
-				} else if (instruction_name.equals("EpsosTransaction")) {
-					transaction = new EpsosTransaction(this, instruction, instruction_output);
-				} else if (instruction_name.equals("MPQTransaction")) {
-					transaction = new MPQTransaction(this, instruction, instruction_output);
-				} else if (instruction_name.equals("SimpleTransaction")) {
-					transaction = new SimpleTransaction(this, instruction, instruction_output);
-				} else if (instruction_name.equals("RetrieveTransaction")) {
-					transaction = new RetrieveTransaction(this, instruction, instruction_output);
-				} else if (instruction_name.equals("NullTransaction")) {
-					transaction = new NullTransaction(this, instruction, instruction_output);
-				} else if (instruction_name.equals("XCRTransaction")) {
-					transaction = new RetrieveTransaction(this, instruction, instruction_output);
-					((RetrieveTransaction) transaction).setIsXca(true);
-				} else if (instruction_name.equals("IGRTransaction")) {
-					transaction = new RetrieveTransaction(this, instruction, instruction_output);
-					((RetrieveTransaction) transaction).setIsXca(true);
-					((RetrieveTransaction) transaction).setUseIG(true);
-				} else if (instruction_name.equals("RegisterTransaction")) {
-					transaction = new RegisterTransaction(this, instruction, instruction_output);
-				} else if (instruction_name.equals("RegisterODDETransaction")) {
-					transaction = new RegisterODDETransaction(this, instruction, instruction_output);
-				} else if (instruction_name.equals("MuTransaction")) {
-					transaction = new MuTransaction(this, instruction, instruction_output);
-				} else if (instruction_name.equals("PublishTransaction")) {
-					transaction = new DsubPublishTransaction(this, instruction, instruction_output);
-				} else if (instruction_name.equals("MockTransaction")) {
-					transaction = new MockTransaction(this, instruction, instruction_output);
-				} else if (instruction_name.equals("ProvideAndRegisterTransaction")) {
-					transaction = new ProvideAndRegisterTransaction(this, instruction, instruction_output);
-				} else if (instruction_name.equals("HttpTransaction")) {
+            switch (instruction_name) {
+               case "SqlQueryTransaction":
+                  transaction = new SqlQueryTransaction(this, instruction, instruction_output);
+                  break;
+               case "StoredQueryTransaction":
+                  transaction = new StoredQueryTransaction(this, instruction, instruction_output);
+                  break;
+               case "GenericSoap11Transaction":
+                  transaction = new GenericSoap11Transaction(this, instruction, instruction_output);
+                  break;
+               case "DsubSubscribeTransaction":
+                  transaction = new DsubSubscribeTransaction(this, instruction, instruction_output);
+                  break;
+               case "PatientIdentityFeedTransaction":
+                  transaction = new PatientIdentityFeedTransaction(this, instruction, instruction_output);
+                  break;
+               case "IGQTransaction":
+                  transaction = new IGQTransaction(this, instruction, instruction_output);
+                  break;
+               case "XCQTransaction":
+                  transaction = new XCQTransaction(this, instruction, instruction_output);
+                  break;
+               case "EpsosTransaction":
+                  transaction = new EpsosTransaction(this, instruction, instruction_output);
+                  break;
+               case "MPQTransaction":
+                  transaction = new MPQTransaction(this, instruction, instruction_output);
+                  break;
+               case "SimpleTransaction":
+                  transaction = new SimpleTransaction(this, instruction, instruction_output);
+                  break;
+               case "RetrieveTransaction":
+                  transaction = new RetrieveTransaction(this, instruction, instruction_output);
+                  break;
+               case "NullTransaction":
+                  transaction = new NullTransaction(this, instruction, instruction_output);
+                  break;
+               case "XCRTransaction":
+                  transaction = new RetrieveTransaction(this, instruction, instruction_output);
+                  ((RetrieveTransaction) transaction).setIsXca(true);
+                  break;
+               case "IGRTransaction":
+                  transaction = new RetrieveTransaction(this, instruction, instruction_output);
+                  ((RetrieveTransaction) transaction).setIsXca(true);
+                  ((RetrieveTransaction) transaction).setUseIG(true);
+                  break;
+               case "RegisterTransaction":
+                  transaction = new RegisterTransaction(this, instruction, instruction_output);
+                  break;
+               case "RegisterODDETransaction":
+                  transaction = new RegisterODDETransaction(this, instruction, instruction_output);
+                  break;
+               case "MuTransaction":
+                  transaction = new MuTransaction(this, instruction, instruction_output);
+                  break;
+               case "PublishTransaction":
+                  transaction = new DsubPublishTransaction(this, instruction, instruction_output);
+                  break;
+               case "MockTransaction":
+                  transaction = new MockTransaction(this, instruction, instruction_output);
+                  break;
+               case "ProvideAndRegisterTransaction":
+                  transaction = new ProvideAndRegisterTransaction(this, instruction, instruction_output);
+                  break;
+               case "XDRProvideAndRegisterTransaction":
+                  transaction = new XDRProvideAndRegisterTransaction(this, instruction, instruction_output);
+                  break;
+               case "EchoV2Transaction":
+                  transaction = new EchoV2Transaction(this, instruction, instruction_output);
+                  break;
+               case "EchoV3Transaction":
+                  transaction = new EchoV3Transaction(this, instruction, instruction_output);
+                  break;
+               case "SocketTransaction":
+                  transaction = new SocketTransaction(this, instruction, instruction_output);
+                  break;
+               case "ImagingDocSetRetrieveTransaction":
+                  transaction = new IDSRetrieveTransaction(this, instruction, instruction_output, false);
+                  break;
+               case "ImagingDocSetIigRetrieveTransaction":
+                  transaction = new IDSRetrieveTransaction(this, instruction, instruction_output, true);
+                  break;
+               case "XmlDetailTransaction":
+                  transaction = new ImgDetailTransaction(this, step, instruction, instruction_output);
+                  break;
+				case "HttpTransaction":
 					HTTPTransaction hTransaction = new HTTPTransaction(this, instruction, instruction_output);
 					hTransaction.setTransType(instruction.getAttributeValue(new QName("type")));
 					transaction = hTransaction;
-				} else if (instruction_name.equals("XDRProvideAndRegisterTransaction")) {
-					transaction = new XDRProvideAndRegisterTransaction(this, instruction, instruction_output);
-				} else if (instruction_name.equals("EchoV2Transaction")) {
-					transaction = new EchoV2Transaction(this, instruction, instruction_output);
-				} else if (instruction_name.equals("EchoV3Transaction")) {
-					transaction = new EchoV3Transaction(this, instruction, instruction_output);
-				} 
-				else if (instruction_name.equals("SocketTransaction"))
-				{
-					transaction = new SocketTransaction(this, instruction, instruction_output);
-				} else if (instruction_name.equals("RetrieveImagingDocSetTransaction")) {
-					transaction = new ImagingDocSetRetrieveTransaction(this, instruction, instruction_output);
-				} else if (instruction_name.equals("ImagingDocSetRetrieveTransaction")) {
-					transaction = new IDSRetrieveTransaction(this, instruction, instruction_output, false);
-				} else if (instruction_name.equals("ImagingDocSetIigRetrieveTransaction")) {
-					transaction = new IDSRetrieveTransaction(this, instruction, instruction_output, true);
-				} else if (instruction_name.equals("XmlDetailTransaction")) {
-					transaction = new XmlDetailTransaction(this, instruction, instruction_output);
-			    }
-				else {
-					dumpContextIntoOutput(test_step_output);
-					throw new XdsInternalException(ins_context.error("StepContext: Don't understand instruction named " + instruction_name));
-				}
+					break;
+               default:
+                  dumpContextIntoOutput(test_step_output);
+                  throw new XdsInternalException(
+                     ins_context.error("StepContext: Don't understand instruction named " + instruction_name));
+            }
 
 				setTransaction(transaction);
 				transaction.setPlanContext(plan_context);
@@ -348,11 +374,11 @@ public class StepContext extends BasicContext implements ErrorReportingInterface
 				transaction.setTransactionSettings(transactionSettings);
 				if (transactionSettings.transactionTransport != null)
 					transactionSettings.transactionTransport.attach(transaction);
-				transaction.doRun();				
-				
+				transaction.doRun();
+
 				if (transaction != null && getStatus() /*== false*/) {
 					OMElement assertion_output = testLog.add_simple_element(
-							test_step_output, 
+							test_step_output,
 							"Assertions");
 					transaction.runAssertionEngine(instruction_output, this, assertion_output);
 				}
@@ -362,7 +388,7 @@ public class StepContext extends BasicContext implements ErrorReportingInterface
 				//System.out.println("xdstest2 step status : " + ((this.getStatus()) ? "Pass" : "Fail"));
 				System.out.flush();
 				setStatusInOutput();
-				
+
 				PatientIdAllocator.reset();
 
 			}

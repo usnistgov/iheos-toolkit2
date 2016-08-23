@@ -1,7 +1,6 @@
 package gov.nist.toolkit.xdstools2.client.tabs.simulatorControlTab;
 
 import com.google.gwt.user.client.ui.Panel;
-import gov.nist.toolkit.xdstools2.client.ToolkitServiceAsync;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -43,11 +42,10 @@ public class SiteSelectionPresenter {
 
     /**
      *
-     * @param toolkitService
      * @param selected
      * @param panel
      */
-    public SiteSelectionPresenter(ToolkitServiceAsync toolkitService, final List<String> selected, final Panel panel) {
+    public SiteSelectionPresenter(/*ToolkitServiceAsync toolkitService, */final List<String> selected, final Panel panel) {
         // Sorry, this method is not yet implemented.
         // It can be added when all sites are desired without a transactionType filter.
     }

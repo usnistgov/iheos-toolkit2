@@ -12,6 +12,11 @@ public class TestLogCache {
 		this.cache = cache;
 	}
 
+	public File getTestDir(TestInstance testInstance) {
+		if (testInstance.getUser() == null) return null;
+		return getTestDir(testInstance.getUser(), testInstance);
+	}
+
 	public File getTestDir(String sessionName, TestInstance testInstance) {
 		// find test directory under external_cache/TestLogCache/<sessionName>/
 

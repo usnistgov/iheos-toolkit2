@@ -26,8 +26,8 @@ import java.util.Map;
 
 public class SimulatorMessageViewTab extends ToolWindow {
 
-	final protected ToolkitServiceAsync toolkitService = GWT
-	.create(ToolkitService.class);
+//	final protected ToolkitServiceAsync toolkitService = GWT
+//	.create(ToolkitService.class);
 
 	HorizontalPanel simDisplayPanel = new HorizontalPanel();
 	VerticalPanel simControlPanel = new VerticalPanel();
@@ -430,7 +430,6 @@ public class SimulatorMessageViewTab extends ToolWindow {
 						tab.setResults(results);
 						SiteSpec siteSpec = new SiteSpec(getSimid().toString(), currentTransactionInstance.actorType, null);
 						tab.setSiteSpec(siteSpec);
-						tab.setToolkitService(toolkitService);
 						tab.onTabLoad(true, "Insp");
                     }
                 });
@@ -458,7 +457,7 @@ public class SimulatorMessageViewTab extends ToolWindow {
 						tab.setResults(results);
 						SiteSpec siteSpec = new SiteSpec(getSimid().toString(), currentTransactionInstance.actorType, null);
 						tab.setSiteSpec(siteSpec);
-						tab.setToolkitService(toolkitService);
+//						tab.setToolkitService(toolkitService);
 						tab.onTabLoad(true, "Insp");
 					}
 				});

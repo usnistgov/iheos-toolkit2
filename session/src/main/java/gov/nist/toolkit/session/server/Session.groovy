@@ -23,8 +23,8 @@ import gov.nist.toolkit.testengine.engine.TransactionSettings
 import gov.nist.toolkit.testengine.engine.Xdstest2
 import gov.nist.toolkit.tk.TkLoader
 import gov.nist.toolkit.tk.client.TkProps
-import gov.nist.toolkit.xdsexception.EnvironmentNotSelectedException
-import gov.nist.toolkit.xdsexception.ToolkitRuntimeException
+import gov.nist.toolkit.xdsexception.client.EnvironmentNotSelectedException
+import gov.nist.toolkit.xdsexception.client.ToolkitRuntimeException
 import gov.nist.toolkit.xdsexception.client.XdsInternalException
 import groovy.transform.TypeChecked
 import org.apache.log4j.Logger

@@ -1,0 +1,177 @@
+/** Add css rules here for your application. */
+
+.extraBottomMargin {
+  margin-bottom: 10px;
+}
+
+/** Example rules used by the template application (remove for your app) */
+h1 {
+  font-size: 2em;
+  font-weight: bold;
+  color: black;
+  margin: 10px 0px 10px;
+  text-align: center;
+}
+
+h3 {
+  font-size: 1.1em;
+  font-weight: bold;
+  color: #777777;
+  margin: 20px 10px 0;
+  text-align: left;
+}
+
+.sendButton, #closeButton, .iconbutton {
+  cursor: pointer;
+}
+
+/** Set ids using widget.getElement().setId("idOfElement") */
+#closeButton {
+  margin: 15px 6px 6px;
+}
+
+.sendButton {
+  display: block;
+  font-size: 16pt;
+}
+
+.iconbutton {
+  background-color: transparent !important;
+  opacity: 0.6;
+  border: 0;
+}
+
+.iconbutton:hover {
+  border: 0;
+  opacity: .8;
+}
+
+.roundedButton1 {
+  margin: 0;
+  padding: 1px 3px;
+  text-decoration: none;
+  color:blue;
+  cursor: pointer;
+  cursor: hand;
+  font-weight:normal;font-size:smaller;
+  background: url("images/hborder.png") repeat-x 0px -2077px;
+  border:1px solid #bbb;
+  border-bottom: 1px solid #a0a0a0;
+  border-radius: 16px;
+  -moz-border-radius: 16px;
+}
+
+/** Most GWT widgets already have a style name defined */
+.gwt-DialogBox {
+  width: 400px;
+}
+
+.dialogVPanel {
+  margin: 5px;
+}
+
+.serverResponseLabelError {
+  color: red;
+}
+
+.requiredFieldLabel {
+	color: red;
+}
+
+.my-table-header {
+	background-color: #B0B0B0
+}
+
+.my-table-band {
+	background-color: #D8D8D8
+}
+
+.my-table-noband {
+	background-color: white
+}
+
+.my-table-error {
+	background-color: #FF0000
+}
+
+.my-table-not-run {
+	background-color: #99FFFF
+}
+.test-table{
+    border-width: 0;
+}
+
+.with-border{
+  border: 2px solid black;
+}
+
+.test-row-white {
+  background-color: #90A4AE !important;
+}
+
+.test-row-yellow {
+  background-color: #FFF176 !important;
+}
+
+.test-row-green {
+  background-color: #81C784 !important;
+}
+
+.test-row-red {
+  background-color: #E57373 !important;
+}
+
+.testOverviewHeaderSuccess {
+  background-color: PaleTurquoise !important;
+  border-radius: 10px;
+  border: 2px solid #90A4AE;
+}
+
+.testOverviewHeaderFail {
+  background-color: LightCoral !important;
+  border-radius: 10px;
+  border: 2px solid #90A4AE;
+}
+
+.testOverviewHeaderNotRun {
+  background-color: white !important;
+  border-radius: 10px;
+  border: 2px solid #90A4AE;
+}
+
+.menuCollapse {
+  cursor: pointer;
+  cursor: hand;
+}
+
+.menuCollapse:hover {
+  background-color: lavender;
+}
+
+.paddedHorizontalPanel {
+  margin-left:20px;
+}
+
+.borderedTable {
+  border:2px solid darkslategray;
+}
+
+.list-border {
+  border: 1px solid rgba(169, 169, 169, 0.67);
+}
+.section-title {
+  font-size: 14pt;
+  text-align: left;
+}
+
+.test-title {
+  font-size: 16pt;
+  text-align: left;
+}
+
+.right {
+  float: right;
+  /*position: absolute;*/
+  /*right: 0px;*/
+}
+

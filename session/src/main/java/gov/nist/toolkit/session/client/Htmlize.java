@@ -26,8 +26,9 @@ public class Htmlize {
                 .replaceAll("\n", "<br />");
     }
 
-    private static boolean isHtml(String in) {
+    public static boolean isHtml(String in) {
         return in.contains("<p>") || in.contains("<h2>") || in.contains("<br");
     }
+
 
 }

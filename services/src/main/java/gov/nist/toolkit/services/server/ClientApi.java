@@ -13,7 +13,7 @@ import gov.nist.toolkit.testengine.engine.Xdstest2;
 import gov.nist.toolkit.testengine.transactions.CallType;
 import gov.nist.toolkit.testengine.transactions.TransactionTransportFactory;
 import gov.nist.toolkit.testenginelogging.logrepository.LogRepositoryFactory;
-import gov.nist.toolkit.xdsexception.EnvironmentNotSelectedException;
+import gov.nist.toolkit.xdsexception.client.EnvironmentNotSelectedException;
 import org.apache.log4j.Logger;
 
 import java.io.File;

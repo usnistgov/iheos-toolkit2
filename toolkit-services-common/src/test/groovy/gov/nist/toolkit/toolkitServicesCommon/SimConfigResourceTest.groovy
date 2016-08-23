@@ -1,5 +1,6 @@
 package gov.nist.toolkit.toolkitServicesCommon
 
+import gov.nist.toolkit.toolkitServicesCommon.resource.SimConfigResource
 import spock.lang.Specification
 
 /**

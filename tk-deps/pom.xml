@@ -57,7 +57,16 @@
             <id>apache-central</id>
             <url>https://repo.maven.apache.org/maven2</url>
         </repository>
-    </repositories>
+        <repository>
+            <id>docshare-test.local</id>
+            <url>https://libs.imphub.org/artifactory/ext-release-local</url>
+            <releases>
+                <enabled>true</enabled>
+            </releases>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
+        </repository>    </repositories>
 
     <scm>
         <connection>scm:hg:https://bitbucket.org/iheos/toolkit</connection>

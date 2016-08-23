@@ -62,7 +62,7 @@ public class FindDocuments2Tab extends GenericQueryTab {
 
         // Generate the composite widget that allows selection of all the GetAll query parameters. Below is the call
         // sqParams.asWidget() which gets the actual Widget.
-        sqParams = new FindDocuments2Params(toolkitService, genericQueryTab);
+        sqParams = new FindDocuments2Params(/*toolkitService, */genericQueryTab);
 
         mainGrid = new FlexTable();  // this is important in some tabs, not this one.  This init should be moved to definition
         tabTopPanel.add(sqParams.asWidget());

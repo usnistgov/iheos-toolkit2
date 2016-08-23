@@ -9,13 +9,16 @@ import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.ListBox;
 import gov.nist.toolkit.xdstools2.client.*;
+import gov.nist.toolkit.xdstools2.client.command.command.GetEnvironmentNamesCommand;
 import gov.nist.toolkit.xdstools2.client.tabs.EnvironmentState;
 
 import java.util.List;
 
+import static gov.nist.toolkit.xdstools2.client.ToolWindow.toolkitService;
+
 public class EnvironmentManager extends Composite{
 	TabContainer tabContainer;
-	ToolkitServiceAsync toolkitService;
+//	ToolkitServiceAsync toolkitService;
 	EnvironmentState environmentState;
 	Panel1 menuPanel;
 	HorizontalPanel environmentPanel = new HorizontalPanel();
@@ -26,11 +29,9 @@ public class EnvironmentManager extends Composite{
 
 
 	
-	public EnvironmentManager(TabContainer tabContainer, ToolkitServiceAsync toolkitService/*, Panel1 menuPanel*/) {
+	public EnvironmentManager(TabContainer tabContainer) {
 		this.tabContainer = tabContainer;
-		this.toolkitService = toolkitService;
 		this.environmentState = Xdstools2.getInstance().getEnvironmentState();
-//		this.menuPanel = menuPanel;
 		environmentManager = this;
 		
 		environmentState.addManager(this);
@@ -45,7 +46,6 @@ public class EnvironmentManager extends Composite{
 	
 	void init() {
 		menuPanel=new Panel1(environmentPanel);
-//		menuPanel.add(environmentPanel);
 
 		HTML environmentLabel = new HTML();
 		environmentLabel.setText("Environment: ");
@@ -54,15 +54,16 @@ public class EnvironmentManager extends Composite{
 		environmentPanel.add(environmentListBox);
 		environmentListBox.addChangeHandler(new EnvironmentChangeHandler());
 
-		updateEnvironmentListBox();
+//		updateEnvironmentListBox();
 		
-		loadEnvironmentNames(null);
-		getDefaultEnvironment();
+//		loadEnvironmentNames(null);
+//		getDefaultEnvironment();
+
+		updateEnvironmentListBox();
+		updateSelectionOnScreen();
+		updateCookie();
 
 		initWidget(environmentPanel);
-
-//		loadEnvironmentNames(Cookies.getCookie(CookieManager.ENVIRONMENTCOOKIENAME));
-		
 	}
 	
 	
@@ -80,7 +81,7 @@ public class EnvironmentManager extends Composite{
 		updateSelectionOnScreen();
 	}
 		
-	boolean updateSelectionOnScreen() {
+	private boolean updateSelectionOnScreen() {
 		String sel = null;
 		if (environmentState.isValid())
 			sel = environmentState.getEnvironmentName();
@@ -97,7 +98,7 @@ public class EnvironmentManager extends Composite{
 	}
 
 	
-	void updateEnvironmentListBox() {
+	private void updateEnvironmentListBox() {
 		environmentListBox.clear();
 		environmentListBox.addItem(choose, "");
 		for (String val : environmentState.getEnvironmentNameChoices())
@@ -113,14 +114,12 @@ public class EnvironmentManager extends Composite{
 
 	
 	@SuppressWarnings("rawtypes")
-	void loadEnvironmentNames(final String initialEnvironmentName) {
-		toolkitService.getEnvironmentNames(new AsyncCallback<List<String>>() {
+	private void loadEnvironmentNames(final String initialEnvironmentName) {
 
-			public void onFailure(Throwable caught) {
-				new PopupMessage("getEnvironmentNames: " + caught.getMessage());
-			}
+		new GetEnvironmentNamesCommand(Xdstools2.getHomeTab()) {
 
-			public void onSuccess(List<String> result) {
+			@Override
+			public void onComplete(List<String> result) {
 				environmentState.setEnvironmentNameChoices(result);
 				if (environmentState.getEnvironmentName() == null)
 					environmentState.setEnvironmentName(initialEnvironmentName);
@@ -133,9 +132,8 @@ public class EnvironmentManager extends Composite{
 					updateCookie();
 				}
 			}
+		}.run(Xdstools2.getHomeTab().getCommandContext());
 
-		});
-		
 		toolkitService.setEnvironment(initialEnvironmentName, new AsyncCallback() {
 
 			@Override
@@ -176,10 +174,7 @@ public class EnvironmentManager extends Composite{
 	
 	
 	void updateCookie() {
-//		if (environmentState.isValid())
-//			Cookies.setCookie(CookieManager.ENVIRONMENTCOOKIENAME, environmentState.getEnvironmentName());
-//		else
-			Cookies.removeCookie(CookieManager.ENVIRONMENTCOOKIENAME);		
+			Cookies.removeCookie(CookieManager.ENVIRONMENTCOOKIENAME);
 	}
 	
 	void updateServer() {

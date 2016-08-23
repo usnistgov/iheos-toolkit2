@@ -1,7 +1,7 @@
 package gov.nist.toolkit.adt;
 
 import gov.nist.toolkit.xdsexception.ThreadPoolExhaustedException;
-import gov.nist.toolkit.xdsexception.ToolkitRuntimeException;
+import gov.nist.toolkit.xdsexception.client.ToolkitRuntimeException;
 import org.apache.log4j.Logger;
 
 import java.util.ArrayList;

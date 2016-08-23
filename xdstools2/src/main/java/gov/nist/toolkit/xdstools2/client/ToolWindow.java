@@ -5,6 +5,7 @@ import com.google.gwt.dom.client.Style;
 import com.google.gwt.user.client.ui.*;
 import gov.nist.toolkit.sitemanagement.client.SiteSpec;
 import gov.nist.toolkit.tk.client.TkProps;
+import gov.nist.toolkit.xdstools2.client.command.CommandContext;
 import gov.nist.toolkit.xdstools2.client.event.testSession.TestSessionManager2;
 import gov.nist.toolkit.xdstools2.client.selectors.EnvironmentManager;
 
@@ -29,7 +30,6 @@ import java.util.logging.Logger;
  */
 public abstract class ToolWindow {
 	private DockLayoutPanel tabTopRawPanel = new DockLayoutPanel(Style.Unit.EM);
-//	private SimpleLayoutPanel innerPanel = new SimpleLayoutPanel();
 	private ScrollPanel innerPanel = new ScrollPanel();
 	public FlowPanel tabTopPanel = new FlowPanel();
 	private FlowPanel eastPanel = new FlowPanel();
@@ -49,7 +49,7 @@ public abstract class ToolWindow {
 		// .addNorth MUST come before .add - a condition of DockLayoutPanel
 		if (title != null)
 			tabTopRawPanel.addNorth(new HTML("<h1>" + title + "</h1>"), 4.0);
-		tabTopRawPanel.addEast(eastPanel, 0);
+		tabTopRawPanel.addEast(eastPanel, 10.0);
 		tabTopRawPanel.addWest(westPanel, 0);
 		tabTopRawPanel.add(innerPanel);
 		innerPanel.setWidget(tabTopPanel);
@@ -63,6 +63,13 @@ public abstract class ToolWindow {
 
 	public void useRawPanel(Widget windowRoot) {
 		innerPanel.setWidget(windowRoot);
+	}
+
+	public CommandContext getCommandContext() {
+		// this is a horrible hack until the initialization is cleaned up
+		String env = getEnvironmentSelection();
+		if (env == null || env.equals("null")) env = "default";
+		return new CommandContext(env, getCurrentTestSession());
 	}
 
 	/**
