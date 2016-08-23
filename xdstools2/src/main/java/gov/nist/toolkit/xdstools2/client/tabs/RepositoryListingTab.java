@@ -1,12 +1,11 @@
 package gov.nist.toolkit.xdstools2.client.tabs;
 
-import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.FlexTable;
 import com.google.gwt.user.client.ui.HTML;
 import gov.nist.toolkit.http.client.HtmlMarkup;
 import gov.nist.toolkit.sitemanagement.client.Site;
 import gov.nist.toolkit.sitemanagement.client.TransactionBean;
-import gov.nist.toolkit.xdstools2.client.PopupMessage;
+import gov.nist.toolkit.xdstools2.client.command.command.GetAllSitesCommand;
 import gov.nist.toolkit.xdstools2.client.siteActorManagers.NullSiteActorManager;
 import gov.nist.toolkit.xdstools2.client.tabs.genericQueryTab.GenericQueryTab;
 
@@ -82,22 +81,16 @@ public class RepositoryListingTab extends GenericQueryTab {
 
 		byUidTable.clear();
 
-		toolkitService.getAllSites(loadSitesCallback);
+		new GetAllSitesCommand(this) {
+
+			@Override
+			public void onComplete(Collection<Site> var1) {
+				display(var1,TransactionBean.RepositoryType.REPOSITORY, byNameTable, byUidTable);
+				display(var1,TransactionBean.RepositoryType.ODDS, oddsByNameTable, oddsByUidTable);
+			}
+		}.run(getCommandContext());
 
 	}
-
-	AsyncCallback<Collection<Site>> loadSitesCallback = new AsyncCallback<Collection<Site>>() {
-
-		public void onFailure(Throwable caught) {
-			new PopupMessage("GetAllSites() failed: " + caught.getMessage());
-		}
-
-		public void onSuccess(Collection<Site> result) {
-			display(result,TransactionBean.RepositoryType.REPOSITORY, byNameTable, byUidTable);
-			display(result,TransactionBean.RepositoryType.ODDS, oddsByNameTable, oddsByUidTable);
-		}
-
-	};
 
 	void display(Collection<Site> sites, TransactionBean.RepositoryType repositoryType, FlexTable byNameTbl, FlexTable byUidTbl) {
 		Map<String, Site> byName = new HashMap<String, Site>();

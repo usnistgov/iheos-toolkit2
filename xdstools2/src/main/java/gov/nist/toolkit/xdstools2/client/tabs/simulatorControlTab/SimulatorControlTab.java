@@ -15,6 +15,9 @@ import gov.nist.toolkit.sitemanagement.client.Site;
 import gov.nist.toolkit.xdstools2.client.ClickHandlerData;
 import gov.nist.toolkit.xdstools2.client.PopupMessage;
 import gov.nist.toolkit.xdstools2.client.Xdstools2;
+import gov.nist.toolkit.xdstools2.client.command.command.GetAllSimConfigsCommand;
+import gov.nist.toolkit.xdstools2.client.command.command.GetAllSitesCommand;
+import gov.nist.toolkit.xdstools2.client.command.request.GetAllSimConfigsRequest;
 import gov.nist.toolkit.xdstools2.client.event.TestSessionChangedEvent;
 import gov.nist.toolkit.xdstools2.client.event.testSession.TestSessionChangedEventHandler;
 import gov.nist.toolkit.xdstools2.client.siteActorManagers.BaseSiteActorManager;
@@ -96,15 +99,13 @@ public class SimulatorControlTab extends GenericQueryTab {
 
 		// force loading of sites in the back end
 		// funny errors occur without this
-		toolkitService.getAllSites(new AsyncCallback<Collection<Site>>() {
+		new GetAllSitesCommand(this) {
 
-			public void onFailure(Throwable caught) {
+			@Override
+			public void onComplete(Collection<Site> var1) {
+
 			}
-
-			public void onSuccess(Collection<Site> result) {
-			}
-
-		});
+		}.run(getCommandContext());
 
 		Xdstools2.getEventBus().addHandler(TestSessionChangedEvent.TYPE, new TestSessionChangedEventHandler() {
 			@Override
@@ -186,160 +187,154 @@ public class SimulatorControlTab extends GenericQueryTab {
 	}
 
 	void loadSimStatus(String user)  {
-		try {
-			toolkitService.getAllSimConfigs(user, new AsyncCallback<List<SimulatorConfig>>() {
-				public void onFailure(Throwable caught) {
-					new PopupMessage("loadSimStatus:" + caught.getMessage());
-				}
+		new GetAllSimConfigsCommand(this) {
 
-				public void onSuccess(List<SimulatorConfig> configs2) {
-					final List<SimulatorConfig> configs = configs2;
-					List<SimId> simIds = new ArrayList<>();
-					for (SimulatorConfig config : configs)
-						simIds.add(config.getId());
-					try {
-						toolkitService.getSimulatorStats(simIds, new AsyncCallback<List<SimulatorStats>>() {
-							@Override
-							public void onFailure(Throwable throwable) {
-								new PopupMessage("Cannot load simulator stats - " + throwable.getMessage());
-							}
-
-							@Override
-							public void onSuccess(List<SimulatorStats> simulatorStatses) {
-								buildTable(configs, simulatorStatses);
-							}
-						});
-					} catch (Exception e) {}
-				}
-
-				private void buildTable(List<SimulatorConfig> configs, List<SimulatorStats> stats) {
-					buildTableHeader();
-					int row = 1;
-					for (SimulatorConfig config : configs) {
-						table.setText(row, nameColumn, config.getDefaultName());
-						table.setText(row, idColumn, config.getId().toString());
-						table.setText(row, typeColumn, ActorType.findActor(config.getActorType()).getName());
-						SimulatorConfigElement portConfig = config.get(SimulatorProperties.PIF_PORT);
-						if (portConfig != null) {
-							String pifPort = portConfig.asString();
-							table.setText(row, pidPortColumn, pifPort);
-						}
-						row++;
-					}
-					// add the variable width stats columns and keep track of max column used
-					int column = addSimStats(statsColumn, configs, stats);
-
-					// now we know width of statsColumn so we can add button column after it
-					row = 1;
-					for (SimulatorConfig config : configs) {
-						addButtonPanel(row, column, config);
-						row++;
-					}
-				}
-
-				// returns next available column
-				private int addSimStats(int column, List<SimulatorConfig> configs, List<SimulatorStats> statss) {
-					for (int colOffset=0; colOffset<SimulatorStats.displayOrder.size(); colOffset++) {
-						String statType = SimulatorStats.displayOrder.get(colOffset);
-						table.setText(0, column+colOffset, statType);
-					}
-					int row = 1;
-					for (SimulatorConfig config : configs) {
-						SimulatorStats stats = findSimulatorStats(statss, config.getId());
-						if (stats == null) continue;
-						for (int colOffset=0; colOffset<SimulatorStats.displayOrder.size(); colOffset++) {
-							String statType = SimulatorStats.displayOrder.get(colOffset);
-							String value = stats.stats.get(statType);
-							if (value == null) value = "";
-							table.setText(row, column+colOffset, value);
-						}
-						row++;
-					}
-					return column + SimulatorStats.displayOrder.size();
-				}
-
-				private SimulatorStats findSimulatorStats(List<SimulatorStats> statss, SimId simId) {
-					for (SimulatorStats ss : statss) {
-						if (ss.simId.equals(simId)) return ss;
-					}
-					return null;
-				}
-
-				private void addButtonPanel(int row, int maxColumn, final SimulatorConfig config) {
-					SimId simId = config.getId();
-					HorizontalPanel buttonPanel = new HorizontalPanel();
-					table.setWidget(row, maxColumn, buttonPanel);
-
-					Button logButton = new Button("Transaction Log");
-					logButton.addClickHandler(new ClickHandlerData<SimulatorConfig>(config) {
-                        @Override
-                        public void onClick(ClickEvent clickEvent) {
-                            SimulatorConfig config = getData();
-							SimulatorMessageViewTab viewTab = new SimulatorMessageViewTab();
-							viewTab.onTabLoad(true, config.getId().toString());
-                        }
-                    });
-					buttonPanel.add(logButton);
-
-					Button pidButton = new Button("Patient ID Feed");
-					pidButton.addClickHandler(new ClickHandlerData<SimulatorConfig>(config) {
+			@Override
+			public void onComplete(List<SimulatorConfig> var1) {
+				final List<SimulatorConfig> configs = var1;
+				List<SimId> simIds = new ArrayList<>();
+				for (SimulatorConfig config : configs)
+					simIds.add(config.getId());
+				try {
+					toolkitService.getSimulatorStats(simIds, new AsyncCallback<List<SimulatorStats>>() {
 						@Override
-						public void onClick(ClickEvent clickEvent) {
-							SimulatorConfig config = getData();
-							PidEditTab editTab = new PidEditTab(config);
-							editTab.onTabLoad(true, "PID-Edit");
+						public void onFailure(Throwable throwable) {
+							new PopupMessage("Cannot load simulator stats - " + throwable.getMessage());
+						}
+
+						@Override
+						public void onSuccess(List<SimulatorStats> simulatorStatses) {
+							buildTable(configs, simulatorStatses);
 						}
 					});
-					buttonPanel.add(pidButton);
+				} catch (Exception e) {}
 
-					Button editButton = new Button("Configure");
-					editButton.addClickHandler(new ClickHandlerData<SimulatorConfig>(config) {
-						@Override
-						public void onClick(ClickEvent clickEvent) {
-							SimulatorConfig config = getData();
+			}
+		}.run(new GetAllSimConfigsRequest(getCommandContext(), user));
+	}
 
-//							GenericQueryTab editTab;
-							if (ActorType.ONDEMAND_DOCUMENT_SOURCE.getShortName().equals(config.getActorType())) {
-								// This simulator requires content state initialization
-								OddsEditTab editTab;
-								editTab = new OddsEditTab(self, config);
-								editTab.onTabLoad(true, "ODDS");
-							} else {
-								// Generic state-less type simulators
-								GenericQueryTab editTab = new EditTab(self, config);
-								editTab.onTabLoad(true, "SimConfig");
-							}
+	private void buildTable(List<SimulatorConfig> configs, List<SimulatorStats> stats) {
+		buildTableHeader();
+		int row = 1;
+		for (SimulatorConfig config : configs) {
+			table.setText(row, nameColumn, config.getDefaultName());
+			table.setText(row, idColumn, config.getId().toString());
+			table.setText(row, typeColumn, ActorType.findActor(config.getActorType()).getName());
+			SimulatorConfigElement portConfig = config.get(SimulatorProperties.PIF_PORT);
+			if (portConfig != null) {
+				String pifPort = portConfig.asString();
+				table.setText(row, pidPortColumn, pifPort);
+			}
+			row++;
+		}
+		// add the variable width stats columns and keep track of max column used
+		int column = addSimStats(statsColumn, configs, stats);
 
-
-						}
-					});
-					buttonPanel.add(editButton);
-
-					Button deleteButton = new Button("Delete");
-					deleteButton.addClickHandler(new ClickHandlerData<SimulatorConfig>(config) {
-                        @Override
-                        public void onClick(ClickEvent clickEvent) {
-                            SimulatorConfig config = getData();
-                            DeleteButtonClickHandler handler = new DeleteButtonClickHandler(self, config);
-                            handler.delete();
-                        }
-                    });
-					buttonPanel.add(deleteButton);
-
-					String u = "<a href=\"" +
-							"siteconfig/" + simId.toString() + "\"" +
- 							" target=\"_blank\"" +
-							">Download Site File</a>";
-					HTML siteDownload = new HTML(u);
-
-					buttonPanel.add(siteDownload);
-				}
-			});
-		} catch (Exception e) {
-			new PopupMessage("Cannot load sim status for user " + user + ": " + e.getClass());
+		// now we know width of statsColumn so we can add button column after it
+		row = 1;
+		for (SimulatorConfig config : configs) {
+			addButtonPanel(row, column, config);
+			row++;
 		}
 	}
-	
+
+	// returns next available column
+	private int addSimStats(int column, List<SimulatorConfig> configs, List<SimulatorStats> statss) {
+		for (int colOffset=0; colOffset<SimulatorStats.displayOrder.size(); colOffset++) {
+			String statType = SimulatorStats.displayOrder.get(colOffset);
+			table.setText(0, column+colOffset, statType);
+		}
+		int row = 1;
+		for (SimulatorConfig config : configs) {
+			SimulatorStats stats = findSimulatorStats(statss, config.getId());
+			if (stats == null) continue;
+			for (int colOffset=0; colOffset<SimulatorStats.displayOrder.size(); colOffset++) {
+				String statType = SimulatorStats.displayOrder.get(colOffset);
+				String value = stats.stats.get(statType);
+				if (value == null) value = "";
+				table.setText(row, column+colOffset, value);
+			}
+			row++;
+		}
+		return column + SimulatorStats.displayOrder.size();
+	}
+
+	private SimulatorStats findSimulatorStats(List<SimulatorStats> statss, SimId simId) {
+		for (SimulatorStats ss : statss) {
+			if (ss.simId.equals(simId)) return ss;
+		}
+		return null;
+	}
+
+	private void addButtonPanel(int row, int maxColumn, final SimulatorConfig config) {
+		SimId simId = config.getId();
+		HorizontalPanel buttonPanel = new HorizontalPanel();
+		table.setWidget(row, maxColumn, buttonPanel);
+
+		Button logButton = new Button("Transaction Log");
+		logButton.addClickHandler(new ClickHandlerData<SimulatorConfig>(config) {
+			@Override
+			public void onClick(ClickEvent clickEvent) {
+				SimulatorConfig config = getData();
+				SimulatorMessageViewTab viewTab = new SimulatorMessageViewTab();
+				viewTab.onTabLoad(true, config.getId().toString());
+			}
+		});
+		buttonPanel.add(logButton);
+
+		Button pidButton = new Button("Patient ID Feed");
+		pidButton.addClickHandler(new ClickHandlerData<SimulatorConfig>(config) {
+			@Override
+			public void onClick(ClickEvent clickEvent) {
+				SimulatorConfig config = getData();
+				PidEditTab editTab = new PidEditTab(config);
+				editTab.onTabLoad(true, "PID-Edit");
+			}
+		});
+		buttonPanel.add(pidButton);
+
+		Button editButton = new Button("Configure");
+		editButton.addClickHandler(new ClickHandlerData<SimulatorConfig>(config) {
+			@Override
+			public void onClick(ClickEvent clickEvent) {
+				SimulatorConfig config = getData();
+
+//							GenericQueryTab editTab;
+				if (ActorType.ONDEMAND_DOCUMENT_SOURCE.getShortName().equals(config.getActorType())) {
+					// This simulator requires content state initialization
+					OddsEditTab editTab;
+					editTab = new OddsEditTab(self, config);
+					editTab.onTabLoad(true, "ODDS");
+				} else {
+					// Generic state-less type simulators
+					GenericQueryTab editTab = new EditTab(self, config);
+					editTab.onTabLoad(true, "SimConfig");
+				}
+
+
+			}
+		});
+		buttonPanel.add(editButton);
+
+		Button deleteButton = new Button("Delete");
+		deleteButton.addClickHandler(new ClickHandlerData<SimulatorConfig>(config) {
+			@Override
+			public void onClick(ClickEvent clickEvent) {
+				SimulatorConfig config = getData();
+				DeleteButtonClickHandler handler = new DeleteButtonClickHandler(self, config);
+				handler.delete();
+			}
+		});
+		buttonPanel.add(deleteButton);
+
+		String u = "<a href=\"" +
+				"siteconfig/" + simId.toString() + "\"" +
+				" target=\"_blank\"" +
+				">Download Site File</a>";
+		HTML siteDownload = new HTML(u);
+
+		buttonPanel.add(siteDownload);
+	}
 
 	public String getWindowShortName() {
 		return "simmgr";

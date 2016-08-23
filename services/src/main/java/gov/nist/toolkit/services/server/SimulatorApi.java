@@ -45,7 +45,8 @@ public class SimulatorApi {
             return scl;
         } catch (EnvironmentNotSelectedException e) {
             logger.error("Cannot create Simulator - Environment Not Selected");
-            throw new Exception("Cannot create Simulator - Environment Not Selected", e);
+            throw e;
+//            throw new Exception("Cannot create Simulator - Environment Not Selected", e);
         } catch (Exception e) {
             logger.error("getNewSimulator:\n" + ExceptionUtil.exception_details(e));
             throw e;

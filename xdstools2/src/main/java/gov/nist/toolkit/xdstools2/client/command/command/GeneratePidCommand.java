@@ -1,7 +1,8 @@
-package gov.nist.toolkit.xdstools2.client.command;
+package gov.nist.toolkit.xdstools2.client.command.command;
 
 import gov.nist.toolkit.configDatatypes.client.Pid;
 import gov.nist.toolkit.xdstools2.client.ToolWindow;
+import gov.nist.toolkit.xdstools2.client.command.request.GeneratePidRequest;
 
 import static gov.nist.toolkit.xdstools2.client.ToolWindow.toolkitService;
 

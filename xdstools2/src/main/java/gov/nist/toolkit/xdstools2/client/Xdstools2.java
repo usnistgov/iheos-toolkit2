@@ -10,11 +10,13 @@ import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.user.client.History;
 import com.google.gwt.user.client.Window;
-import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.*;
 import com.google.web.bindery.event.shared.EventBus;
 import gov.nist.toolkit.sitemanagement.client.TransactionOfferings;
 import gov.nist.toolkit.tk.client.TkProps;
+import gov.nist.toolkit.xdstools2.client.command.command.GetTransactionOfferingsCommand;
+import gov.nist.toolkit.xdstools2.client.command.command.InitializationCommand;
+import gov.nist.toolkit.xdstools2.client.command.response.InitializationResponse;
 import gov.nist.toolkit.xdstools2.client.event.testSession.TestSessionManager2;
 import gov.nist.toolkit.xdstools2.client.selectors.EnvironmentManager;
 import gov.nist.toolkit.xdstools2.client.selectors.TestSessionSelector;
@@ -66,7 +68,7 @@ public class Xdstools2  implements AcceptsOneWidget, IsWidget {
 	EventBus v2V3IntegrationEventBus = null;
 
 	// This is as toolkit wide singleton.  See class for details.
-	TestSessionManager2 testSessionManager = null;
+	private TestSessionManager2 testSessionManager = null;
 	static public TestSessionManager2 getTestSessionManager() {
 		if (ME.testSessionManager == null)
 			ME.testSessionManager = new TestSessionManager2();
@@ -87,6 +89,8 @@ public class Xdstools2  implements AcceptsOneWidget, IsWidget {
 	static public TransactionOfferings transactionOfferings = null;
 
 	void buildTabsWrapper() {
+		HorizontalPanel menuPanel = new HorizontalPanel();
+		EnvironmentManager environmentManager = new EnvironmentManager(TabContainer.instance());
 
 		Widget decoratedTray = decorateMenuContainer();
 
@@ -97,23 +101,13 @@ public class Xdstools2  implements AcceptsOneWidget, IsWidget {
 		TabContainer.setWidth("100%");
 		TabContainer.setHeight("100%");
 
-		HorizontalPanel menuPanel = new HorizontalPanel();
-		EnvironmentManager environmentManager = new EnvironmentManager(TabContainer.instance()/*, ToolWindow.toolkitService*/);
 		menuPanel.add(environmentManager);
 		menuPanel.setSpacing(10);
 		menuPanel.add(new TestSessionSelector(testSessionManager.getTestSessions(), testSessionManager.getCurrentTestSession()).asWidget());
 
 		DockLayoutPanel mainPanel = new DockLayoutPanel(Style.Unit.EM);
 		mainPanel.addNorth(menuPanel, 4);
-//		mainPanel.add(new HTML("<hr />"));
-
-		// Wrap tab panel in a scroll panel
-//			ScrollPanel spTabPanel = new ScrollPanel(TabContainer.getTabPanel());
-//			spTabPanel.setAlwaysShowScrollBars(false);
-
-
 		mainPanel.add(TabContainer.getTabPanel());
-//			spTabPanel.add();
 		mainSplitPanel.add(mainPanel);
 
 		Window.addResizeHandler(new ResizeHandler() {
@@ -124,8 +118,6 @@ public class Xdstools2  implements AcceptsOneWidget, IsWidget {
 
 		});
 	}
-
-//	}
 
 	static public void addtoMainMenu(Widget w) { ME.mainMenuPanel.add(w); }
 
@@ -149,9 +141,7 @@ public class Xdstools2  implements AcceptsOneWidget, IsWidget {
 		menuTrayStateToBe.setWidth("15px");
 		menuTrayStateToBe.setWidth("100%");
 
-//		vpCollapsible.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_RIGHT);
 		vpCollapsible.add(menuTrayStateToBe);
-//		vpCollapsible.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_LEFT);
 		vpCollapsible.add(mainMenuPanel);
 
 		// Wrap menu in a scroll panel
@@ -182,22 +172,6 @@ public class Xdstools2  implements AcceptsOneWidget, IsWidget {
 	}
 
 	public void resizeToolkit() {
-//        try {
-//			if (mainSplitPanel.getParent()!=null) {
-//				long containerWidth = mainSplitPanel.getParent().getElement().getClientWidth();
-//				long containerHeight = mainSplitPanel.getParent().getElement().getClientHeight() - 42; /* compensate for tab bar height, which is a fixed size */
-//
-//				int selectedTabIndex = TabContainer.getSelectedTab();
-//
-//				if (selectedTabIndex >= 0) {
-//					TabContainer.getWidget(selectedTabIndex).setHeight(containerHeight + "px");
-//				}
-//			}else{
-//				logger.fine("mainSplitPanel parent is null");
-//			}
-//        }catch (Throwable t) {
-//			logger.warning("Window resize failed:" + t.toString());
-//		}
 	}
 
 	static boolean newHomeTab = false;
@@ -212,6 +186,23 @@ public class Xdstools2  implements AcceptsOneWidget, IsWidget {
 	 * It's now being used as an initialization method the GUI and the environment
 	 */
 	void run() {
+		new InitializationCommand(getHomeTab()) {
+
+			@Override
+			public void onComplete(InitializationResponse var1) {
+				// default environment
+				// environment names
+				// test session names
+				toolkitName = var1.getServletContextName();
+				environmentState.setEnvironmentNameChoices(var1.getEnvironments());
+				environmentState.setEnvironmentName(var1.getDefaultEnvironment());
+				getTestSessionManager().setTestSessions(var1.getTestSessions());
+				run2();  // cannot be run until this completes
+			}
+		}.run(getHomeTab().getCommandContext());  // command context will be ignored by this cmd
+	}
+
+	private void run2() {
 		buildTabsWrapper();
 		ht.onAbstractTabLoad(false, "Home");
 
@@ -232,50 +223,40 @@ public class Xdstools2  implements AcceptsOneWidget, IsWidget {
 		});
 
 
-		testSessionManager.load();
-		loadServletContext();
+		String currentTestSession = getTestSessionManager().fromCookie();
+		if (getTestSessionManager().isLegalTestSession(currentTestSession)) {
+			getTestSessionManager().setCurrentTestSession(currentTestSession);
+		}
+//		testSessionManager.load();
+//		loadServletContext();
 		reloadTransactionOfferings();
 	}
 
 	public String toolkitName;
 
-	private void loadServletContext() {
-		ht.toolkitService.getServletContextName(new AsyncCallback<String>() {
-			@Override
-			public void onFailure(Throwable throwable) {
-				new PopupMessage("Failed to load servletContextName - " + throwable.getMessage());
-			}
-
-			@Override
-			public void onSuccess(String s) {
-				toolkitName = s;
-			}
-		});
-	}
-
-	private void reloadTransactionOfferings() {
-		try {
-			ht.toolkitService.getTransactionOfferings(new AsyncCallback<TransactionOfferings> () {
-
-				public void onFailure(Throwable caught) {
-					new PopupMessage("Error: " + caught.getMessage() + " Your external cache may be corrupted." +"</font>");
-				}
-
-				public void onSuccess(TransactionOfferings to) {
-					transactionOfferings = to;
-				}
-
-			});
-		} catch (Exception e) {
-			new PopupMessage("Error: " + e.getMessage() + " Your external cache may be corrupted." +"</font>");
-		}
-	}
-
-
-//	public TabPanel getTabPanel() {
-//		return tabPanel;
+//	private void loadServletContext() {
+//		ht.toolkitService.getServletContextName(new AsyncCallback<String>() {
+//			@Override
+//			public void onFailure(Throwable throwable) {
+//				new PopupMessage("Failed to load servletContextName - " + throwable.getMessage());
+//			}
+//
+//			@Override
+//			public void onSuccess(String s) {
+//				toolkitName = s;
+//			}
+//		});
 //	}
 
+	private void reloadTransactionOfferings() {
+		new GetTransactionOfferingsCommand(getHomeTab()) {
+
+			@Override
+			public void onComplete(TransactionOfferings var1) {
+				transactionOfferings = var1;
+			}
+		}.run(getHomeTab().getCommandContext());
+	}
 
 	static public EventBus getEventBus() {
 		return clientFactory.getEventBus();
@@ -299,5 +280,7 @@ public class Xdstools2  implements AcceptsOneWidget, IsWidget {
 	public Widget asWidget() {
 		return mainSplitPanel;
 	}
+
+	public static HomeTab getHomeTab() { return ht; }
 
 }

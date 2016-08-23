@@ -1,10 +1,8 @@
 package gov.nist.toolkit.xdstools2.client.tabs.GatewayTestsTabs;
 
-import com.google.gwt.user.client.rpc.AsyncCallback;
 import gov.nist.toolkit.sitemanagement.client.TransactionOfferings;
-import gov.nist.toolkit.xdstools2.client.PopupMessage;
-
-import static gov.nist.toolkit.xdstools2.client.ToolWindow.toolkitService;
+import gov.nist.toolkit.xdstools2.client.Xdstools2;
+import gov.nist.toolkit.xdstools2.client.command.command.GetTransactionOfferingsCommand;
 
 /**
  *
@@ -17,21 +15,11 @@ public class SiteTransactionConfigLoader {
     }
 
     public void load(final CompletionHandler<TransactionOfferings> handler) {
-        try {
-            toolkitService.getTransactionOfferings(new AsyncCallback<TransactionOfferings>() {
-
-                public void onFailure(Throwable caught) {
-                    new PopupMessage("SiteTransactionConfigLoader failed: " + caught.getMessage());
-                }
-
-                public void onSuccess(TransactionOfferings to) {
-                    handler.OnCompletion(to);
-                }
-
-            });
-        } catch (Exception e) {
-            new PopupMessage("SiteTransactionConfigLoader failed: " + e.getMessage());
-        }
-
+        new GetTransactionOfferingsCommand(Xdstools2.getHomeTab()) {
+            @Override
+            public void onComplete(TransactionOfferings var1) {
+                handler.OnCompletion(var1);
+            }
+        }.run(Xdstools2.getHomeTab().getCommandContext());
     }
 }

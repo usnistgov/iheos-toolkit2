@@ -25,8 +25,10 @@ import gov.nist.toolkit.tk.client.TkProps;
 import gov.nist.toolkit.valsupport.client.MessageValidationResults;
 import gov.nist.toolkit.valsupport.client.ValidationContext;
 import gov.nist.toolkit.xdstools2.client.command.CommandContext;
-import gov.nist.toolkit.xdstools2.client.command.GeneratePidRequest;
-import gov.nist.toolkit.xdstools2.client.command.SendPidToRegistryRequest;
+import gov.nist.toolkit.xdstools2.client.command.request.GeneratePidRequest;
+import gov.nist.toolkit.xdstools2.client.command.request.GetAllSimConfigsRequest;
+import gov.nist.toolkit.xdstools2.client.command.request.SendPidToRegistryRequest;
+import gov.nist.toolkit.xdstools2.client.command.response.InitializationResponse;
 
 import java.io.IOException;
 import java.util.Collection;
@@ -35,6 +37,7 @@ import java.util.Map;
 
 public interface ToolkitServiceAsync {
 
+	void getInitialization(AsyncCallback<InitializationResponse> callback);
 	void getTkProps(AsyncCallback<TkProps> callback);
 	void getSessionProperties(AsyncCallback<Map<String, String>> callback);
 	void setSessionProperties(Map<String, String> props, AsyncCallback callback);
@@ -48,7 +51,7 @@ public interface ToolkitServiceAsync {
 	void getCurrentEnvironment(AsyncCallback<String> callback);
 	void getDefaultEnvironment(AsyncCallback<String> callback);
 	void setEnvironment(String name, AsyncCallback callback);
-	void getEnvironmentNames(AsyncCallback<List<String>> callback);
+	void getEnvironmentNames(CommandContext context, AsyncCallback<List<String>> callback);
 	void isGazelleConfigFeedEnabled(AsyncCallback<Boolean> callback);
 	void reloadSystemFromGazelle(String systemName, AsyncCallback<String> callback);
 	void getSiteNamesWithRG(AsyncCallback<List<String>> callback);
@@ -94,7 +97,7 @@ public interface ToolkitServiceAsync {
 	
 	void getSiteNames(boolean reload, boolean simAlso, AsyncCallback<List<String>> callback);
 
-	void getTransactionOfferings(AsyncCallback<TransactionOfferings> callback) throws Exception;
+	void getTransactionOfferings(CommandContext commandContext, AsyncCallback<TransactionOfferings> callback);
 	void getRegistryNames(AsyncCallback<List<String>> callback);
 	void getRepositoryNames(AsyncCallback<List<String>> callback);
 	void getRGNames(AsyncCallback<List<String>> callback);
@@ -103,7 +106,7 @@ public interface ToolkitServiceAsync {
 	void getTestdataSetListing(String environmentName, String sessionName, String testdataSetName, AsyncCallback<List<String>> callback);
 	void getCodesConfiguration(String getCodesConfiguration, AsyncCallback<CodesResult> callback);
 	void getSite(String siteName, AsyncCallback<Site> callback);
-	void getAllSites(AsyncCallback<Collection<Site>> callback);
+	void getAllSites(CommandContext commandContext, AsyncCallback<Collection<Site>> callback);
 	void saveSite(Site site, AsyncCallback<String> callback);
 	void reloadSites(boolean simAlso, AsyncCallback<List<String>> callback);
 	void reloadExternalSites(AsyncCallback<List<String>> callback);
@@ -155,7 +158,7 @@ public interface ToolkitServiceAsync {
 	void  getActorTypeNames(AsyncCallback<List<String>> callback);
 	void  getNewSimulator(String actorTypeName, SimId simId, AsyncCallback<Simulator> callback);
 	void getSimConfigs(List<SimId> ids, AsyncCallback<List<SimulatorConfig>> callback);
-	void getAllSimConfigs(String user, AsyncCallback<List<SimulatorConfig>> callback) throws Exception;
+	void getAllSimConfigs(GetAllSimConfigsRequest user, AsyncCallback<List<SimulatorConfig>> callback);
 	void putSimConfig(SimulatorConfig config, AsyncCallback<String> callback);
 	void deleteConfig(SimulatorConfig config, AsyncCallback<String> callback);
 	void getActorSimulatorNameMap(AsyncCallback<Map<String, SimId>> callback);
@@ -203,7 +206,7 @@ public interface ToolkitServiceAsync {
 	void getTestlogListing(String sessionName, AsyncCallback<List<TestInstance>> callback);
 	void getTestResults(List<TestInstance> testIds, String testSession, AsyncCallback<Map<String, Result>> callback);
 	void setMesaTestSession(String sessionName, AsyncCallback callback);
-	void getMesaTestSessionNames(AsyncCallback<List<String>> callback);
+	void getMesaTestSessionNames(CommandContext request, AsyncCallback<List<String>> callback);
 	void deleteAllTestResults(Site site, AsyncCallback<List<Test>> callback);
 	void deleteSingleTestResult(String testSession, TestInstance testInstance, AsyncCallback<TestOverviewDTO> callback);
 	void runAllTests(Site site, AsyncCallback<List<Test>> callback);

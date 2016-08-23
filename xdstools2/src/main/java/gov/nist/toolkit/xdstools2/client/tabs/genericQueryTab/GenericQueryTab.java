@@ -16,6 +16,7 @@ import gov.nist.toolkit.sitemanagement.client.SiteSpec;
 import gov.nist.toolkit.sitemanagement.client.Site;
 import gov.nist.toolkit.sitemanagement.client.TransactionOfferings;
 import gov.nist.toolkit.xdstools2.client.*;
+import gov.nist.toolkit.xdstools2.client.command.command.GetTransactionOfferingsCommand;
 import gov.nist.toolkit.xdstools2.client.event.testSession.TestSessionManager2;
 import gov.nist.toolkit.xdstools2.client.siteActorManagers.BaseSiteActorManager;
 import gov.nist.toolkit.xdstools2.client.widgets.PidWidget;
@@ -457,24 +458,15 @@ public abstract class GenericQueryTab  extends ToolWindow {
 	public void onReload() {}
 
 	public void reloadTransactionOfferings() {
-		try {
-			toolkitService.getTransactionOfferings(new AsyncCallback<TransactionOfferings> () {
+		new GetTransactionOfferingsCommand(this) {
 
-				public void onFailure(Throwable caught) {
-					resultPanel.clear();
-					resultPanel.add(addHTML("<font color=\"#FF0000\">" + "Error: " + caught.getMessage() + " Your external cache may be corrupted." +"</font>"));
-				}
+			@Override
+			public void onComplete(TransactionOfferings var1) {
+				GenericQueryTab.transactionOfferings = var1;
+				redisplay(false);
 
-				public void onSuccess(TransactionOfferings to) {
-					GenericQueryTab.transactionOfferings = to;
-					redisplay(false);
-				}
-
-			});
-		} catch (Exception e) {
-			resultPanel.clear();
-			resultPanel.add(addHTML("<font color=\"#FF0000\">" + "Error: " + e.getMessage() + " Your external cache may be corrupted." +"</font>"));
-		}
+			}
+		}.run(getCommandContext());
 	}
 
 	// clean out mainGrid so the actors can be re-added

@@ -30,7 +30,6 @@ import java.util.logging.Logger;
  */
 public abstract class ToolWindow {
 	private DockLayoutPanel tabTopRawPanel = new DockLayoutPanel(Style.Unit.EM);
-//	private SimpleLayoutPanel innerPanel = new SimpleLayoutPanel();
 	private ScrollPanel innerPanel = new ScrollPanel();
 	public FlowPanel tabTopPanel = new FlowPanel();
 	private FlowPanel eastPanel = new FlowPanel();
@@ -67,7 +66,10 @@ public abstract class ToolWindow {
 	}
 
 	public CommandContext getCommandContext() {
-		return new CommandContext(getEnvironmentSelection(), getCurrentTestSession());
+		// this is a horrible hack until the initialization is cleaned up
+		String env = getEnvironmentSelection();
+		if (env == null || env.equals("null")) env = "default";
+		return new CommandContext(env, getCurrentTestSession());
 	}
 
 	/**

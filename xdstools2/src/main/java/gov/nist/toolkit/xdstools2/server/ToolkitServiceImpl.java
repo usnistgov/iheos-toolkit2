@@ -48,8 +48,10 @@ import gov.nist.toolkit.xdstools2.client.RegistryStatus;
 import gov.nist.toolkit.xdstools2.client.RepositoryStatus;
 import gov.nist.toolkit.xdstools2.client.ToolkitService;
 import gov.nist.toolkit.xdstools2.client.command.CommandContext;
-import gov.nist.toolkit.xdstools2.client.command.GeneratePidRequest;
-import gov.nist.toolkit.xdstools2.client.command.SendPidToRegistryRequest;
+import gov.nist.toolkit.xdstools2.client.command.request.GeneratePidRequest;
+import gov.nist.toolkit.xdstools2.client.command.request.GetAllSimConfigsRequest;
+import gov.nist.toolkit.xdstools2.client.command.request.SendPidToRegistryRequest;
+import gov.nist.toolkit.xdstools2.client.command.response.InitializationResponse;
 import gov.nist.toolkit.xdstools2.server.serviceManager.DashboardServiceManager;
 import gov.nist.toolkit.xdstools2.server.serviceManager.GazelleServiceManager;
 import org.apache.log4j.Logger;
@@ -60,9 +62,9 @@ import javax.servlet.http.HttpSession;
 import javax.xml.parsers.FactoryConfigurationError;
 import java.io.File;
 import java.io.IOException;
-import java.util.*;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
+import java.util.*;
 
 @SuppressWarnings("serial")
 public class ToolkitServiceImpl extends RemoteServiceServlet implements
@@ -93,14 +95,27 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements
 		}
 	}
 
-	void installCommandContext(CommandContext commandContext) throws Exception {
-		if (commandContext.getEnvironmentName() == null)
+	private void installCommandContext(CommandContext commandContext) throws Exception {
+		if (commandContext.getEnvironmentName() == null) {
+			logger.error(ExceptionUtil.here("session: " + getSessionId() + " installCommandContext: environment name is null"));
 			throw new Exception("installCommandContext: environment name is null");
-		if (commandContext.getTestSessionName() == null)
-			throw new Exception("installCommandContext: test session name is null");
+		}
+//		if (commandContext.getTestSessionName() == null) {
+//			throw new Exception("installCommandContext: test session name is null");
+//		}
 		setEnvironment(commandContext.getEnvironmentName());
 		setMesaTestSession(commandContext.getTestSessionName());
 	}
+
+	public InitializationResponse getInitialization() throws Exception {
+		InitializationResponse response = new InitializationResponse();
+		response.setDefaultEnvironment(Installation.DEFAULT_ENVIRONMENT_NAME);
+		response.setEnvironments(Session.getEnvironmentNames());
+		response.setTestSessions(session().xdsTestServiceManager().getMesaTestSessionNames());
+		response.setServletContextName(getServletContextName());
+		return response;
+	}
+
 
 	//------------------------------------------------------------------------
 	//------------------------------------------------------------------------
@@ -108,14 +123,20 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements
 	//------------------------------------------------------------------------
 	//------------------------------------------------------------------------
 	public List<String> getSiteNames(boolean reload, boolean simAlso)  throws NoServletSessionException { return siteServiceManager.getSiteNames(session().getId(), reload, simAlso); }
-	public Collection<Site> getAllSites() throws Exception { return siteServiceManager.getAllSites(session().getId()); }
+	public Collection<Site> getAllSites(CommandContext commandContext) throws Exception {
+		installCommandContext(commandContext);
+		return siteServiceManager.getAllSites(session().getId());
+	}
 	public List<String> reloadSites(boolean simAlso) throws FactoryConfigurationError, Exception { return siteServiceManager.reloadSites(session().getId(), simAlso); }
 	public Site getSite(String siteName) throws Exception { return siteServiceManager.getSite(session().getId(), siteName); }
 	public String saveSite(Site site) throws Exception { return siteServiceManager.saveSite(session().getId(), site); }
 	public String deleteSite(String siteName) throws Exception { return siteServiceManager.deleteSite(session().getId(), siteName); }
 	//	public String getHome() throws Exception { return session().getHome(); }
 	public List<String> getUpdateNames()  throws NoServletSessionException { return siteServiceManager.getUpdateNames(session().getId()); }
-	public TransactionOfferings getTransactionOfferings() throws Exception { return siteServiceManager.getTransactionOfferings(session().getId()); }
+	public TransactionOfferings getTransactionOfferings(CommandContext commandContext) throws Exception {
+		installCommandContext(commandContext);
+		return siteServiceManager.getTransactionOfferings(session().getId());
+	}
 	public List<String> reloadExternalSites() throws FactoryConfigurationError, Exception { return siteServiceManager.reloadCommonSites(); }
 	public List<String> getRegistryNames()  throws NoServletSessionException { return siteServiceManager.getRegistryNames(session().getId()); }
 	public List<String> getRepositoryNames()  throws NoServletSessionException { return siteServiceManager.getRepositoryNames(session().getId()); }
@@ -199,7 +220,10 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements
 	public List<TestInstance> getTestlogListing(String sessionName) throws Exception { return session().xdsTestServiceManager().getTestlogListing(sessionName); }
 	public Map<String, Result> getTestResults(List<TestInstance> testIds, String testSession)  throws NoServletSessionException { return session().xdsTestServiceManager().getTestResults(testIds, testSession); }
 	public String setMesaTestSession(String sessionName)  throws NoServletSessionException { session().xdsTestServiceManager().setMesaTestSession(sessionName); return sessionName;}
-	public List<String> getMesaTestSessionNames() throws Exception { return session().xdsTestServiceManager().getMesaTestSessionNames(); }
+	public List<String> getMesaTestSessionNames(CommandContext request) throws Exception {
+		installCommandContext(request);
+		return session().xdsTestServiceManager().getMesaTestSessionNames();
+	}
 	public boolean addMesaTestSession(String name) throws Exception { return session().xdsTestServiceManager().addMesaTestSession(name); }
 	public boolean delMesaTestSession(String name) throws Exception { return session().xdsTestServiceManager().delMesaTestSession(name); }
 	public String getNewPatientId(String assigningAuthority)  throws NoServletSessionException { return session().xdsTestServiceManager().getNewPatientId(assigningAuthority); }
@@ -399,7 +423,10 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements
 	// Environment management
 	//------------------------------------------------------------------------
 	//------------------------------------------------------------------------
-	public List<String> getEnvironmentNames() throws NoServletSessionException { return session().getEnvironmentNames(); }
+	public List<String> getEnvironmentNames(CommandContext context) throws Exception {
+//		installCommandContext(context);  // not needed - may not be initialized
+		return session().getEnvironmentNames();
+	}
 	public String setEnvironment(String name) throws NoServletSessionException {
 		logger.info("set environment - " + name);
 		session().setEnvironment(name); return name;
@@ -473,7 +500,10 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements
 	public Map<String, SimId> getActorSimulatorNameMap() throws NoServletSessionException { return new SimulatorServiceManager(session()).getSimulatorNameMap(); }
 	public MessageValidationResults validateMessage(ValidationContext vc) throws NoServletSessionException, EnvironmentNotSelectedClientException { return new SimulatorServiceManager(session()).validateMessage(vc); }
 	public List<SimulatorConfig> getSimConfigs(List<SimId> ids) throws Exception { return new SimulatorServiceManager(session()).getSimConfigs(ids); }
-	public List<SimulatorConfig> getAllSimConfigs(String user) throws Exception { return new SimulatorServiceManager(session()).getAllSimConfigs(user); }
+	public List<SimulatorConfig> getAllSimConfigs(GetAllSimConfigsRequest request) throws Exception {
+		installCommandContext(request);
+		return new SimulatorServiceManager(session()).getAllSimConfigs(request.getUser());
+	}
 	public Simulator getNewSimulator(String actorTypeName, SimId simId) throws Exception { return new SimulatorServiceManager(session()).getNewSimulator(actorTypeName, simId); }
 	public void deleteSimFile(String simFileSpec) throws Exception { new SimulatorServiceManager(session()).deleteSimFile(simFileSpec); }
 	public List<String> getTransactionsForSimulator(SimId simid) throws Exception { return new SimulatorServiceManager(session()).getTransactionsForSimulator(simid); }

@@ -1,6 +1,7 @@
-package gov.nist.toolkit.xdstools2.client.command;
+package gov.nist.toolkit.xdstools2.client.command.command;
 
 import gov.nist.toolkit.xdstools2.client.ToolWindow;
+import gov.nist.toolkit.xdstools2.client.command.CommandContext;
 
 import java.util.List;
 
@@ -25,8 +26,4 @@ abstract public class GetAssigningAuthoritiesCommand extends GenericCommand<Comm
         toolkitService.getAssigningAuthorities(var1, this); // this because primary callback is offered by base class
     }
 
-//    @Override
-//    void onComplete(List<String> var1) {
-//
-//    }
 }

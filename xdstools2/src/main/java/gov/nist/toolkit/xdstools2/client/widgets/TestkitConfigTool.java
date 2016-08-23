@@ -30,7 +30,7 @@ public class TestkitConfigTool extends Composite {
         container.add(new HTML("This tool will create a new copy of testkit configured for a selected affinity " +
                 "domain configuration. An affinity domain is chosen by selecting an environment. <br/>The affinity testkit created will be placed in " +
                 "the environment selected.<br/><br/>"));
-        environmentManager = new EnvironmentManager(mytabContainer/*, toolkitService*/);
+        environmentManager = new EnvironmentManager(mytabContainer);
         container.add(environmentManager);
         Button runUpdater=new Button("Run",new RunTestkitConfigHandler());
         container.add(runUpdater);

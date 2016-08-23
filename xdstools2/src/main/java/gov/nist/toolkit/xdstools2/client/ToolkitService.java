@@ -27,8 +27,10 @@ import gov.nist.toolkit.tk.client.TkProps;
 import gov.nist.toolkit.valsupport.client.MessageValidationResults;
 import gov.nist.toolkit.valsupport.client.ValidationContext;
 import gov.nist.toolkit.xdstools2.client.command.CommandContext;
-import gov.nist.toolkit.xdstools2.client.command.GeneratePidRequest;
-import gov.nist.toolkit.xdstools2.client.command.SendPidToRegistryRequest;
+import gov.nist.toolkit.xdstools2.client.command.request.GeneratePidRequest;
+import gov.nist.toolkit.xdstools2.client.command.request.GetAllSimConfigsRequest;
+import gov.nist.toolkit.xdstools2.client.command.request.SendPidToRegistryRequest;
+import gov.nist.toolkit.xdstools2.client.command.response.InitializationResponse;
 
 import java.io.IOException;
 import java.util.Collection;
@@ -40,6 +42,8 @@ import java.util.Map;
 public interface ToolkitService extends RemoteService  {
 
     public TkProps getTkProps() throws NoServletSessionException;
+
+	public InitializationResponse getInitialization() throws Exception;
 	
 	/* Test management */
 	public Map<String, Result> getTestResults(List<TestInstance> testInstances, String testSession) throws NoServletSessionException ;
@@ -53,7 +57,7 @@ public interface ToolkitService extends RemoteService  {
 	public List<Result> runMesaTest(String mesaTestSession, SiteSpec siteSpec, TestInstance testInstance, List<String> sections, Map<String, String> params, boolean stopOnFirstFailure) throws NoServletSessionException ;
 	public TestOverviewDTO runTest(String environment, String mesaTestSession, SiteSpec siteSpec, TestInstance testInstance, Map<String, String> params, boolean stopOnFirstFailure) throws NoServletSessionException, Exception;
 	public boolean isPrivateMesaTesting() throws NoServletSessionException ;
-	public List<String> getMesaTestSessionNames() throws Exception;
+	public List<String> getMesaTestSessionNames(CommandContext request) throws Exception;
 	public boolean addMesaTestSession(String name) throws Exception;
 	public boolean delMesaTestSession(String name) throws Exception;
 
@@ -61,7 +65,7 @@ public interface ToolkitService extends RemoteService  {
 	public List<String> getActorTypeNames() throws NoServletSessionException ;
 	public Simulator getNewSimulator(String actorTypeName, SimId simId) throws Exception;
 	public List<SimulatorConfig> getSimConfigs(List<SimId> ids) throws Exception;
-	List<SimulatorConfig> getAllSimConfigs(String user) throws Exception;
+	List<SimulatorConfig> getAllSimConfigs(GetAllSimConfigsRequest user) throws Exception;
 	public String putSimConfig(SimulatorConfig config) throws Exception;
 	public String deleteConfig(SimulatorConfig config) throws Exception;
 	public Map<String, SimId> getActorSimulatorNameMap() throws NoServletSessionException;
@@ -109,12 +113,12 @@ public interface ToolkitService extends RemoteService  {
 	List<String> getIGNames() throws NoServletSessionException ;
 	List<String> getTestdataSetListing(String environmentName, String sessionName,String testdataSetName)  throws NoServletSessionException;
 	CodesResult getCodesConfiguration(String getCodesConfiguration) throws NoServletSessionException ;
-	TransactionOfferings getTransactionOfferings() throws Exception;
+	TransactionOfferings getTransactionOfferings(CommandContext commandContext) throws Exception;
 	
 	List<String> reloadSites(boolean simAlso) throws Exception;
 	List<String> reloadExternalSites() throws Exception;
 	Site getSite(String siteName) throws Exception;
-	Collection<Site> getAllSites() throws Exception;
+	Collection<Site> getAllSites(CommandContext commandContext) throws Exception;
 	String saveSite(Site site) throws Exception;
 	String deleteSite(String siteName) throws Exception;
 	
@@ -177,7 +181,7 @@ public interface ToolkitService extends RemoteService  {
 
 	 String reloadSystemFromGazelle(String systemName) throws Exception;
 	 boolean isGazelleConfigFeedEnabled() throws NoServletSessionException ;
-	 List<String> getEnvironmentNames() throws NoServletSessionException;
+	 List<String> getEnvironmentNames(CommandContext context) throws Exception;
 	 String setEnvironment(String name) throws NoServletSessionException;
 	 String getCurrentEnvironment() throws NoServletSessionException;
 	 String getDefaultEnvironment() throws NoServletSessionException ;
