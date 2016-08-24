@@ -1,0 +1,21 @@
+
+<TestPlan>
+  <Test>11909/no_initial_doc</Test>
+  <?xml version="1.0" encoding="UTF-8"?><TestStep id="no_initial_doc">
+  <Rule>
+    <Transaction>SQ</Transaction>
+    <SQ>GetRelatedDocuments</SQ>
+    <Assertion>Original document does not exist</Assertion>
+  </Rule>
+  <ExpectedStatus>Success</ExpectedStatus>
+  <StoredQueryTransaction>
+    <XDSb/>
+    <MetadataFile>query1.xml</MetadataFile>
+    <ExpectedContents>
+      <Associations count="0"/>
+      <Documents count="0"/>
+    </ExpectedContents>
+  </StoredQueryTransaction>
+</TestStep>
+
+</TestPlan>

@@ -1,0 +1,23 @@
+
+<TestPlan>
+  <Test>11904/uniqueids</Test>
+  <?xml version="1.0" encoding="UTF-8"?><TestStep id="uniqueids">
+  <Rule>
+    <Transaction>SQ</Transaction>
+    <SQ>GetDocumentsAndAssociations</SQ>
+    <Assertion>Operation with multiple UniqueIds</Assertion>
+  </Rule>
+  <ExpectedStatus>Success</ExpectedStatus>
+  <StoredQueryTransaction>
+    <XDSb/>
+    <MetadataFile>query2.xml</MetadataFile>
+    <UseId testdir="../12346/single_doc" id="Document01" symbol="$uniqueid1$" step="submit_doc" section="AssignedUids"/>
+    <UseId testdir="../12346/doc_w_fol" id="Document01" symbol="$uniqueid2$" step="submit_doc_w_fol" section="AssignedUids"/>
+    <ExpectedContents>
+      <Associations count="3"/>
+      <Documents count="2"/>
+    </ExpectedContents>
+  </StoredQueryTransaction>
+</TestStep>
+
+</TestPlan>

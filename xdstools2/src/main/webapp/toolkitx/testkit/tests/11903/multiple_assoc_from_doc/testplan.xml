@@ -1,0 +1,21 @@
+
+<TestPlan>
+  <Test>11903/multiple_assoc_from_doc</Test>
+  <?xml version="1.0" encoding="UTF-8"?><TestStep id="multiple_assoc_from_doc">
+  <Rule>
+    <Transaction>SQ</Transaction>
+    <SQ>GetAssociations</SQ>
+    <Assertion>multiple associations referencing document</Assertion>
+  </Rule>
+  <ExpectedStatus>Success</ExpectedStatus>
+  <StoredQueryTransaction>
+    <XDSb/>
+    <MetadataFile>query2.xml</MetadataFile>
+    <UseId testdir="../12346/doc_w_fol" id="Document01" symbol="$uuid$" step="submit_doc_w_fol" section="AssignedUuids"/>
+    <ExpectedContents>
+      <Associations count="2"/>
+    </ExpectedContents>
+  </StoredQueryTransaction>
+</TestStep>
+
+</TestPlan>

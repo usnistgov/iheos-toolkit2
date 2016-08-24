@@ -1,0 +1,22 @@
+
+<TestPlan>
+  <Test>11909/uuid</Test>
+  <?xml version="1.0" encoding="UTF-8"?><TestStep id="uuid">
+  <Rule>
+    <Transaction>SQ</Transaction>
+    <SQ>GetRelatedDocuments</SQ>
+    <Assertion>Operation near a folder</Assertion>
+  </Rule>
+  <ExpectedStatus>Success</ExpectedStatus>
+  <StoredQueryTransaction>
+    <XDSb/>
+    <MetadataFile>query6.xml</MetadataFile>
+    <UseId testdir="../12346/two_doc_w_fol" id="Document02" symbol="$uuid$" step="submit_2doc_w_fol" section="AssignedUuids"/>
+    <ExpectedContents>
+      <Associations count="0"/>
+      <Documents count="0"/>
+    </ExpectedContents>
+  </StoredQueryTransaction>
+</TestStep>
+
+</TestPlan>

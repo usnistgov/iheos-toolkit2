@@ -2,4 +2,10 @@ single_doc
 doc_w_fol
 two_doc_w_fol
 doc_for_rplc
+rplcregister_new_patient_id
+submit_doc
+submit_doc_w_fol
+submit_2doc_w_fol
+submit_doc_for_rplc
 rplc
+reset_patient_id

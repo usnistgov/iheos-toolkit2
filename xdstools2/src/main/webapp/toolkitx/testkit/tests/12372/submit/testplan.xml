@@ -1,0 +1,13 @@
+
+<TestPlan>
+  <Test>12372/submit</Test>
+  <?xml version="1.0" encoding="UTF-8"?><TestStep id="submit">
+  <ExpectedStatus>Success</ExpectedStatus>
+  <XDRProvideAndRegisterTransaction>
+    <XDSb/>
+    <MetadataFile>single_doc.xml</MetadataFile>
+    <Document id="Document01">my_document.txt</Document>
+  </XDRProvideAndRegisterTransaction>
+</TestStep>
+
+</TestPlan>

@@ -1,0 +1,21 @@
+
+<TestPlan>
+  <Test>11903/multiple_assoc_from_ss</Test>
+  <?xml version="1.0" encoding="UTF-8"?><TestStep id="multiple_assoc_from_ss">
+  <Rule>
+    <Transaction>SQ</Transaction>
+    <SQ>GetAssociations</SQ>
+    <Assertion>multiple associations referencing ss</Assertion>
+  </Rule>
+  <ExpectedStatus>Success</ExpectedStatus>
+  <StoredQueryTransaction>
+    <XDSb/>
+    <MetadataFile>query3.xml</MetadataFile>
+    <UseId testdir="../12346/doc_w_fol" id="SubmissionSet01" symbol="$uuid$" step="submit_doc_w_fol" section="AssignedUuids"/>
+    <ExpectedContents>
+      <Associations count="3"/>
+    </ExpectedContents>
+  </StoredQueryTransaction>
+</TestStep>
+
+</TestPlan>

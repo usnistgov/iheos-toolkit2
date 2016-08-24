@@ -1,0 +1,17 @@
+
+<TestPlan>
+  <Test>12327/submit_doc_w_fol</Test>
+  <?xml version="1.0" encoding="UTF-8"?><TestStep id="submit_doc_w_fol">
+  <ExpectedStatus>Success</ExpectedStatus>
+  <Rule>
+    <Transaction>R</Transaction>
+    <Assertion>Accept Create Folder with Initial Document</Assertion>
+  </Rule>
+  <RegisterTransaction>
+    <XDSb/>
+    <AssignUuids/>
+    <MetadataFile>single_doc_w_fol.xml</MetadataFile>
+  </RegisterTransaction>
+</TestStep>
+
+</TestPlan>

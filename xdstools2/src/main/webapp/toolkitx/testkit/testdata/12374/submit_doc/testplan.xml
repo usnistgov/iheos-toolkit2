@@ -1,0 +1,17 @@
+
+<TestPlan>
+  <Test>12374/submit_doc</Test>
+  <?xml version="1.0" encoding="UTF-8"?><TestStep id="submit_doc">
+  <Rule>
+    <Transaction>R</Transaction>
+    <Assertion>Single document submission supports various query testing</Assertion>
+  </Rule>
+  <ExpectedStatus>Success</ExpectedStatus>
+  <RegisterTransaction>
+    <XDSb/>
+    <AssignUuids/>
+    <MetadataFile>single_doc.xml</MetadataFile>
+  </RegisterTransaction>
+</TestStep>
+
+</TestPlan>

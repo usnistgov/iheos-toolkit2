@@ -1,0 +1,16 @@
+
+<TestPlan>
+  <Test>11710/submit</Test>
+  <?xml version="1.0" encoding="UTF-8"?><TestStep id="submit">
+  <ExpectedStatus>Success</ExpectedStatus>
+  <SimpleTransaction>
+    <NoMetadata/>
+    <Metadata>
+      <hello>
+        <caller tester="your_name" email="your_email" vendor="your_company_name"/>
+      </hello>
+    </Metadata>
+  </SimpleTransaction>
+</TestStep>
+
+</TestPlan>

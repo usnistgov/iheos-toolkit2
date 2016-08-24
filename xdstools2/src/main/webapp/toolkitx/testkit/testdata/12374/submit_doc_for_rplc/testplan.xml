@@ -1,0 +1,17 @@
+
+<TestPlan>
+  <Test>12374/submit_doc_for_rplc</Test>
+  <?xml version="1.0" encoding="UTF-8"?><TestStep id="submit_doc_for_rplc">
+  <ExpectedStatus>Success</ExpectedStatus>
+  <Rule>
+    <Transaction>R</Transaction>
+    <Assertion>Single document submission supports RPLC</Assertion>
+  </Rule>
+  <RegisterTransaction>
+    <XDSb/>
+    <AssignUuids/>
+    <MetadataFile>single_doc_for_rplc.xml</MetadataFile>
+  </RegisterTransaction>
+</TestStep>
+
+</TestPlan>

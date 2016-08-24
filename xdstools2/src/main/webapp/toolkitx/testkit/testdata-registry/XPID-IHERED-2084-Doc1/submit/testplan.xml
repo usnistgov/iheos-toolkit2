@@ -1,0 +1,13 @@
+
+<TestPlan>
+  <Test>XPID-IHERED-2084-Doc1/submit</Test>
+  <?xml version="1.0" encoding="UTF-8"?><TestStep id="submit">
+  <ExpectedStatus>Success</ExpectedStatus>
+  <RegisterTransaction>
+    <NoPatientId/>
+    <XDSb/>
+    <MetadataFile>metadata.xml</MetadataFile>
+  </RegisterTransaction>
+</TestStep>
+
+</TestPlan>

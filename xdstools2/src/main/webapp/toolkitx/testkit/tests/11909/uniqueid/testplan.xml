@@ -1,0 +1,22 @@
+
+<TestPlan>
+  <Test>11909/uniqueid</Test>
+  <?xml version="1.0" encoding="UTF-8"?><TestStep id="uniqueid">
+  <Rule>
+    <Transaction>SQ</Transaction>
+    <SQ>GetRelatedDocuments</SQ>
+    <Assertion>Operation with single UniqueId as input</Assertion>
+  </Rule>
+  <ExpectedStatus>Success</ExpectedStatus>
+  <StoredQueryTransaction>
+    <XDSb/>
+    <MetadataFile>query4.xml</MetadataFile>
+    <UseId testdir="../12346/doc_for_rplc" id="Document01" symbol="$uniqueid$" step="doc_for_rplc" section="AssignedUids"/>
+    <ExpectedContents>
+      <Associations count="1"/>
+      <Documents count="2"/>
+    </ExpectedContents>
+  </StoredQueryTransaction>
+</TestStep>
+
+</TestPlan>

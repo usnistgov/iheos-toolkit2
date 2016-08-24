@@ -1,0 +1,22 @@
+
+<TestPlan>
+  <Test>11904/uuid</Test>
+  <?xml version="1.0" encoding="UTF-8"?><TestStep id="uuid">
+  <Rule>
+    <Transaction>SQ</Transaction>
+    <SQ>GetDocumentsAndAssociations</SQ>
+    <Assertion>Operation with UUID</Assertion>
+  </Rule>
+  <ExpectedStatus>Success</ExpectedStatus>
+  <StoredQueryTransaction>
+    <XDSb/>
+    <MetadataFile>query3.xml</MetadataFile>
+    <UseId testdir="../12346/single_doc" id="Document01" symbol="$uuid$" step="submit_doc" section="AssignedUuids"/>
+    <ExpectedContents>
+      <Associations count="1"/>
+      <Documents count="1"/>
+    </ExpectedContents>
+  </StoredQueryTransaction>
+</TestStep>
+
+</TestPlan>

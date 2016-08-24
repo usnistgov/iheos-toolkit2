@@ -1,0 +1,24 @@
+
+<TestPlan>
+  <Test>11908/uniqueid</Test>
+  <?xml version="1.0" encoding="UTF-8"?><TestStep id="uniqueid">
+  <Rule>
+    <Transaction>SQ</Transaction>
+    <SQ>GetFoldersForDocument</SQ>
+    <Assertion>Query based on uniqueId</Assertion>
+  </Rule>
+  <ExpectedStatus>Success</ExpectedStatus>
+  <StoredQueryTransaction>
+    <XDSb/>
+    <MetadataFile>query1.xml</MetadataFile>
+    <UseId testdir="../12346/two_doc_w_fol" id="Document01" symbol="$uniqueid$" step="submit_2doc_w_fol" section="AssignedUids"/>
+    <ExpectedContents>
+      <SubmissionSets count="0"/>
+      <Associations count="0"/>
+      <Documents count="0"/>
+      <Folders count="1"/>
+    </ExpectedContents>
+  </StoredQueryTransaction>
+</TestStep>
+
+</TestPlan>
