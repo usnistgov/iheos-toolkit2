@@ -28,23 +28,24 @@ import static gov.nist.toolkit.xdstools2.client.ToolWindow.toolkitService;
 public class TestSectionComponent implements IsWidget {
     private final HorizontalFlowPanel header = new HorizontalFlowPanel();
     private final DisclosurePanel panel = new DisclosurePanel(header);
-//    private final ToolkitServiceAsync toolkitService;
     private final String sessionName;
     private final TestInstance testInstance;
     private final FlowPanel body = new FlowPanel();
     private final FlowPanel sectionDescription = new FlowPanel();
     private final FlowPanel sectionResults = new FlowPanel();
     private TestInstance fullTestInstance;
+    private SectionOverviewDTO sectionOverview;
     TestRunner testRunner;
     TestSectionComponent me;
 
 
-    public TestSectionComponent(/*ToolkitServiceAsync toolkitService, */String sessionName, TestInstance testInstance, SectionOverviewDTO sectionOverview, TestRunner testRunner) {
+    public TestSectionComponent(String sessionName, TestInstance testInstance, SectionOverviewDTO sectionOverview, TestRunner testRunner) {
         me = this;
 //        this.toolkitService = toolkitService;
         this.sessionName = sessionName;
         this.testInstance = testInstance;
         this.testRunner = testRunner;
+        this.sectionOverview = sectionOverview;
         fullTestInstance = new TestInstance(testInstance.getId(), sectionOverview.getName());
 
         HTML sectionLabel = new HTML("Section: " + sectionOverview.getName());
@@ -78,7 +79,7 @@ public class TestSectionComponent implements IsWidget {
         body.add(sectionResults);
     }
 
-    class RunSection implements ClickHandler {
+    private class RunSection implements ClickHandler {
         TestInstance testInstance;
 
         RunSection(TestInstance testInstance) {
@@ -87,6 +88,9 @@ public class TestSectionComponent implements IsWidget {
 
         @Override
         public void onClick(ClickEvent clickEvent) {
+            clickEvent.preventDefault();
+            clickEvent.stopPropagation();
+
             me.testRunner.runTest(testInstance);
         }
     }
@@ -110,13 +114,26 @@ public class TestSectionComponent implements IsWidget {
                     sectionResults.clear();
                     int row;
                     if (log.hasFatalError()) body.add(new HTML("Fatal Error: " + log.getFatalError() + "<br />"));
+                    boolean singleStep = log.getSteps().size() == 1;
                     for (TestStepLogContentDTO step : log.getSteps()) {
-                        HTML stepHeader = new HTML("Step: " + step.getId());
-                        if (step.isSuccess()) stepHeader.addStyleName("testOverviewHeaderSuccess");
-                        else stepHeader.addStyleName("testOverviewHeaderFail");
-                        body.add(stepHeader);
+                        String stepName = step.getId();
+                        HorizontalFlowPanel stepHeader = new HorizontalFlowPanel();
+                        FlowPanel stepResults = new FlowPanel();
+
+                        HTML stepHeaderTitle = new HTML("Step: " + step.getId());
+                        if (step.isSuccess()) stepHeaderTitle.addStyleName("testOverviewHeaderSuccess");
+                        else stepHeaderTitle.addStyleName("testOverviewHeaderFail");
+                        stepHeader.add(stepHeaderTitle);
+
+                        DisclosurePanel stepPanel = new DisclosurePanel(stepHeader);
+                        stepPanel.setOpen(singleStep);
+
                         StringBuilder buf = new StringBuilder();
-                        buf.append("Goal: " + step.getStepGoalsDTO().getGoals()).append("<br />");
+                        buf.append("Goals:<br />");
+                        List<String> goals = sectionOverview.getStep(stepName).getGoals();
+                        for (String goal : goals)  buf.append("&nbsp;&nbsp;&nbsp;&nbsp;").append(goal).append("<br />");
+
+
                         buf.append("Endpoint: " + step.getEndpoint()).append("<br />");
                         if (step.isExpectedSuccess())
                             buf.append("Expected Status: Success").append("<br />");
@@ -132,7 +149,7 @@ public class TestSectionComponent implements IsWidget {
                         for (String assertion : step.getAssertionErrors()) {
                             buf.append("Error: " + assertion).append("<br />");
                         }
-                        sectionResults.add(new HTML(buf.toString()));
+                        stepResults.add(new HTML(buf.toString()));
 
                         // ******************************************************
                         // IDs
@@ -160,8 +177,8 @@ public class TestSectionComponent implements IsWidget {
                                 idTable.setWidget(row, 2, new HTML(assignedUids.get(idName)));
                             row++;
                         }
-                        sectionResults.add(new HTML("IDs"));
-                        sectionResults.add(idTable);
+                        stepResults.add(new HTML("IDs"));
+                        stepResults.add(idTable);
 
                         // ******************************************************
                         // UseReports
@@ -185,8 +202,8 @@ public class TestSectionComponent implements IsWidget {
                             useTable.setWidget(row, 4, new HTML(useReport.getStep()));
                             row++;
                         }
-                        sectionResults.add(new HTML("Use Reports"));
-                        sectionResults.add(useTable);
+                        stepResults.add(new HTML("Use Reports"));
+                        stepResults.add(useTable);
 
                         // ******************************************************
                         // Reports
@@ -204,8 +221,10 @@ public class TestSectionComponent implements IsWidget {
                             reportsTable.setWidget(row, 1, new HTML(report.getValue()));
                             row++;
                         }
-                        sectionResults.add(new HTML("Reports"));
-                        sectionResults.add(reportsTable);
+                        stepResults.add(new HTML("Reports"));
+                        stepResults.add(reportsTable);
+                        stepPanel.add(stepResults);
+                        sectionResults.add(stepPanel);
                     }
                 }
             });

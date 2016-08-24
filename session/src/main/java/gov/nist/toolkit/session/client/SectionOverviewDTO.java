@@ -58,6 +58,10 @@ public class SectionOverviewDTO implements Serializable, IsSerializable {
         steps.put(name, stepOverview);
     }
 
+    public StepOverviewDTO getStep(String stepName) {
+        return steps.get(stepName);
+    }
+
     public boolean isRun() {
         return run;
     }

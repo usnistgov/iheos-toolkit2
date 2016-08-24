@@ -1,6 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?><TestPlan>
   <Test>12360/submit</Test>
   <TestStep id="submit">
+    <Goal>
+      Transaction - Provide and Register
+
+      Metadata pattern - Single Document submission
+
+      Metadata contents - The phony mimeType text/goofy
+
+      Evaluation - Transaction is successful
+    </Goal>
     <ExpectedStatus>Success</ExpectedStatus>
     <ProvideAndRegisterTransaction>
       <XDSb/>

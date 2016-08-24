@@ -1,7 +1,14 @@
 package gov.nist.toolkit.testkitutilities;
 
+import gov.nist.toolkit.testkitutilities.client.SectionDefinitionDAO;
+import gov.nist.toolkit.testkitutilities.client.StepDefinitionDAO;
 import gov.nist.toolkit.utilities.io.Io;
+import gov.nist.toolkit.utilities.xml.Util;
+import gov.nist.toolkit.utilities.xml.XmlUtil;
+import gov.nist.toolkit.xdsexception.client.XdsInternalException;
+import org.apache.axiom.om.OMElement;
 
+import javax.xml.namespace.QName;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -55,6 +62,37 @@ public class TestDefinition {
 		}
 		
 		return names;
+	}
+
+	public SectionDefinitionDAO getSection(String sectionName) throws XdsInternalException {
+		if (sectionName == null) {
+			return parseTestPlan(Util.parse_xml(new File(testDir, "testplan.xml")));
+		}
+		return parseTestPlan(Util.parse_xml(new File(new File(testDir, sectionName), "testplan.xml")));
+	}
+
+	private SectionDefinitionDAO parseTestPlan(OMElement sectionEle) {
+		SectionDefinitionDAO section = new SectionDefinitionDAO();
+		for (OMElement stepEle : XmlUtil.decendentsWithLocalName(sectionEle, "TestStep")) {
+			StepDefinitionDAO step = new StepDefinitionDAO();
+			step.setId(stepEle.getAttributeValue(new QName("id")));
+			OMElement goalEle = XmlUtil.firstChildWithLocalName(stepEle, "Goal");
+			if (goalEle == null) continue;
+			String goalsString = goalEle.getText();
+			if (goalsString != null) goalsString = goalsString.trim();
+			Scanner scanner = new Scanner(goalsString);
+			while (scanner.hasNextLine()) {
+				String line = scanner.nextLine();
+				if (line == null) continue;
+				line = line.trim();
+				if (line.length() == 0) continue;
+				step.addGoals(line);
+			}
+
+			section.addStep(step);
+		}
+
+		return section;
 	}
 
 	public ReadMe getTestReadme()  {
