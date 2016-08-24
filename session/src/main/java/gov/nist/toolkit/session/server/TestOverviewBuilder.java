@@ -63,7 +63,7 @@ public class TestOverviewBuilder {
         } catch (Exception e) {
             return;
         }
-        if (testId.equals("12360")) {
+//        if (testId.equals("12360")) {
             // No test results available - scan
             // test definition to get section names
             TestDefinition testDefinition = new TestDefinition(testDir);
@@ -124,7 +124,7 @@ public class TestOverviewBuilder {
                 }
                 return;
             }
-        }
+//        }
     }
 
     private SectionOverviewDTO addSection(String sectionName, LogFileContentDTO logFileContentDTO) {
