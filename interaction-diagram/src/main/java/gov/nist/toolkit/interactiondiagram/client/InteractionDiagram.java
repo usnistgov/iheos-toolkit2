@@ -15,9 +15,7 @@ import java.util.List;
  */
 public class InteractionDiagram {
 
-    public static final int LL_MAX = 100;
     int g_depth = 0;
-    int g_x = 0;
     int g_y = 0;
     int ll_boxWidth = 70;
     int ll_boxHeight = 25;
@@ -39,6 +37,8 @@ public class InteractionDiagram {
         int x_min;
         int y_min;
         int y_max;
+        String from;
+        String to;
 
         public TouchPoint() {
         }
@@ -66,6 +66,22 @@ public class InteractionDiagram {
         public void setX_min(int x_min) {
             this.x_min = x_min;
         }
+
+        public String getFrom() {
+            return from;
+        }
+
+        public void setFrom(String from) {
+            this.from = from;
+        }
+
+        public String getTo() {
+            return to;
+        }
+
+        public void setTo(String to) {
+            this.to = to;
+        }
     }
     int activity_box_width = 8;
     /**
@@ -75,7 +91,13 @@ public class InteractionDiagram {
 
         int ll_stem_center; // only the x coordinate of the center
         Element llEl; // life line element
-        TouchPoint tp = new TouchPoint();
+        // Leaf node draws each interaction activity box separately
+        List<TouchPoint> activityFrames = new ArrayList<TouchPoint>();
+        TouchPoint activityRange = new TouchPoint();
+        TouchPoint tempTp = new TouchPoint();
+
+        String name;
+        boolean root;
 
         public LL() {
         }
@@ -96,12 +118,45 @@ public class InteractionDiagram {
             this.llEl = llEl;
         }
 
-        public TouchPoint getTp() {
-            return tp;
+        public String getName() {
+            return name;
         }
 
-        public void setTp(TouchPoint tp) {
-            this.tp = tp;
+        public void setName(String name) {
+            this.name = name;
+        }
+
+
+        public boolean isRoot() {
+            return root;
+        }
+
+        public void setRoot(boolean root) {
+            this.root = root;
+        }
+
+        public TouchPoint getActivityRange() {
+            return activityRange;
+        }
+
+        public void setActivityRange(TouchPoint activityRange) {
+            this.activityRange = activityRange;
+        }
+
+        public TouchPoint getTempTp() {
+            return tempTp;
+        }
+
+        public void setTempTp(TouchPoint tempTp) {
+            this.tempTp = tempTp;
+        }
+
+        public List<TouchPoint> getActivityFrames() {
+            return activityFrames;
+        }
+
+        public void setActivityFrames(List<TouchPoint> activityFrames) {
+            this.activityFrames = activityFrames;
         }
     }
 
@@ -129,16 +184,30 @@ public class InteractionDiagram {
 
     void ll_activitybox() {
             for (LL ll : lls) {
-                Element box = doc.createElement("rect");
-                box.setAttribute("width", "" + activity_box_width);
-                box.setAttribute("height", "" + (ll.getTp().getY_max() - ll.getTp().getY_min()));
-                box.setAttribute("x", "" + (ll.getTp().getX_min()-(activity_box_width/2)));
-                box.setAttribute("y", "" + ll.getTp().getY_min());
-                box.setAttribute("style", "fill:rgb(255,255,255);stroke-width:1;stroke:rgb(0,0,0)");
+                if (ll.getActivityFrames().size()>0) {
+                    int lastFrameIdx = ll.getActivityFrames().size()-1;
+                    TouchPoint tpLast = ll.getActivityFrames().get(lastFrameIdx);
+//                    if (!ll.isRoot() && ll.getActivityRange().getY_max()>=tpLast.getY_max())
+//                        svg.appendChild(getAcitivyBoxEl(ll.getActivityRange().getX_min(), ll.getActivityRange().getY_min(), ll.getActivityRange().getY_max()));
+//                    else
+                       for (TouchPoint activityFrame : ll.getActivityFrames()) {
+                         svg.appendChild(getAcitivyBoxEl(activityFrame.getX_min(), activityFrame.getY_min(), activityFrame.getY_max()));
+                       }
+                }
 
-                svg.appendChild(box);
             }
     }
+
+    Element getAcitivyBoxEl(int x, int y1, int y2) {
+        Element box = doc.createElement("rect");
+        box.setAttribute("width", "" + activity_box_width);
+        box.setAttribute("height", "" + (y2 - y1));
+        box.setAttribute("x", "" + (x-(activity_box_width/2)));
+        box.setAttribute("y", "" + y1);
+        box.setAttribute("style", "fill:rgb(255,255,255);stroke-width:1;stroke:rgb(0,0,0)");
+        return box;
+    }
+
 
     void ll_stem() {
 
@@ -166,10 +235,8 @@ public class InteractionDiagram {
         LL childll = null;
 
         if (parent_entity.getInteractions()!=null) {
-            int childCt = 0;
             for (InteractingEntity child : parent_entity.getInteractions()) {
                 g_depth++;
-                childCt++;
                 childll = create_LL(child);
                 svg.appendChild(childll.getLlEl());
                 svg.appendChild(connect(parentll,childll,false));
@@ -196,9 +263,9 @@ public class InteractionDiagram {
         int x1 = (Integer.parseInt(origin.getFirstChild().getAttributes().getNamedItem("x").toString())+(ll_boxWidth/2));
         line.setAttribute("x1",""+x1);
         int y = Integer.parseInt(origin.getFirstChild().getAttributes().getNamedItem("y").toString())+ll_boxHeight+g_depth*connection_topmargin;
+        g_y = y;
 //        if (response)
 //            y = y+ connection_topmargin;
-        g_y = y;
         line.setAttribute("y1",""+y);
         int x2 = (Integer.parseInt(destination.getFirstChild().getAttributes().getNamedItem("x").toString())+(ll_boxWidth/2));
         line.setAttribute("x2",""+x2);
@@ -212,19 +279,96 @@ public class InteractionDiagram {
         else
             group.appendChild(arrow_response(x2,y));
 
-        // Touch points
+        // Min/max Touch points
         // Origin y
-        if (originll.getTp().getY_min()==0 || y<originll.getTp().getY_min())
-            originll.getTp().setY_min(y);
-        if (originll.getTp().getY_max()==0 || y>originll.getTp().getY_max())
-            originll.getTp().setY_max(y);
-        if (originll.getTp().getX_min()==0 || x1<originll.getTp().getX_min())
-            originll.getTp().setX_min(x1);
+        /*
+        if (originll.getActivityRange().getY_min()==0 || y<originll.getActivityRange().getY_min())
+            originll.getActivityRange().setY_min(y);
+        if (originll.getActivityRange().getY_max()==0 || y>originll.getActivityRange().getY_max())
+            originll.getActivityRange().setY_max(y);
+        if (originll.getActivityRange().getX_min()==0 || x1<originll.getActivityRange().getX_min())
+            originll.getActivityRange().setX_min(x1);
         // Destination y
-        if (destinationll.getTp().getY_min()==0 || y<destinationll.getTp().getY_min())
-            destinationll.getTp().setY_min(y);
-        if (destinationll.getTp().getY_max()==0 || y>destinationll.getTp().getY_max())
-            destinationll.getTp().setY_max(y);
+        if (destinationll.getActivityRange().getY_min()==0 || y<destinationll.getActivityRange().getY_min())
+            destinationll.getActivityRange().setY_min(y);
+        if (destinationll.getActivityRange().getY_max()==0 || y>destinationll.getActivityRange().getY_max())
+            destinationll.getActivityRange().setY_max(y);
+            */
+
+        if (response) {
+            /*
+
+             request frame:
+             [from:origin] -> [to:destination]
+
+             response frame match:
+             [to:destination] <- [from:origin]
+
+            What origin means:
+            Origin is the entity that is sending source be it the request or the response.
+
+            General diagram idea:
+            Only a new activity box is opened for closed frames in the list. If a frame is open (y_max=0) then we assume that a synchronous socket is previously pending.
+
+             */
+
+
+            TouchPoint originFrame = null;
+            int idx = originll.getActivityFrames().size()-1;
+            for (int cx = idx; 0 <= cx; cx--) {
+               originFrame = originll.getActivityFrames().get(cx);
+                if (originFrame.getY_max() == 0 && originFrame.getFrom().equals(destinationll.getName()) && originFrame.getTo().equals(originll.getName())) { // This is would be the request frame match
+                    originFrame.setY_max(y);
+                }
+            }
+
+            TouchPoint destFrame = null;
+            idx = destinationll.getActivityFrames().size()-1;
+            for (int cx = idx; 0 <= cx; cx--) {
+                destFrame = destinationll.getActivityFrames().get(cx);
+                if (destFrame.getY_max() == 0 && destFrame.getFrom().equals(destinationll.getName()) && destFrame.getTo().equals(originll.getName())) {
+                    destFrame.setY_max(y);
+                }
+            }
+
+
+        } else {
+            int lastOriginAf = originll.getActivityFrames().size()-1;
+
+            TouchPoint originFrame = null;
+            if (lastOriginAf>-1) {
+                originFrame = originll.getActivityFrames().get(lastOriginAf);
+            }
+                if (lastOriginAf==-1 || (originFrame!=null && originFrame.getY_max()!=0)) {// Previous frame unfinished, do not start a new one
+                   originFrame = new TouchPoint();
+                    originFrame.setX_min(x1);
+                    originFrame.setY_min(y);
+                    originFrame.setY_max(0);
+                    originFrame.setFrom(originll.getName());
+                    originFrame.setTo(destinationll.getName());
+                    originll.getActivityFrames().add(originFrame);
+                }
+
+
+            int lastDestAf = destinationll.getActivityFrames().size()-1;
+            TouchPoint destFrame = null;
+            if (lastDestAf>-1) {
+                destFrame = destinationll.getActivityFrames().get(lastDestAf);
+            }
+                if (lastDestAf==-1 || (destFrame!=null && destFrame.getY_max()!=0)) {
+                    destFrame = new TouchPoint();
+                    destFrame.setX_min(x2);
+                    destFrame.setY_min(y);
+                    destFrame.setY_max(0);
+                    destFrame.setFrom(originll.getName());
+                    destFrame.setTo(destinationll.getName());
+                    destinationll.getActivityFrames().add(destFrame);
+                }
+
+
+
+
+        }
 
         return group;
     }
@@ -255,8 +399,18 @@ public class InteractionDiagram {
 
     LL create_LL(InteractingEntity entity) {
 
-        LL ll = new LL();
+        String name = (entity.getName()==null)?"Toolkit":entity.getName();
+        LL ll = getLL(name);
+
+        if (ll!=null)
+            return ll;
+
+        ll = new LL();
+        ll.setName(name);
+
         int ll_count = lls.size();
+        if (ll_count==0) // First LL being created is the root
+            ll.setRoot(true);
 
         Element rect = doc.createElement("rect");
         rect.setAttribute("width",""+ll_boxWidth);
@@ -274,7 +428,6 @@ public class InteractionDiagram {
         text.setAttribute("font-family","Verdana");
         text.setAttribute("font-size","10");
 
-        String name = (entity.getName()==null)?"Toolkit":entity.getName();
         Text textValue = doc.createTextNode(name);
         text.appendChild(textValue);
 
@@ -286,6 +439,17 @@ public class InteractionDiagram {
         lls.add(ll);
 
         return ll;
+    }
+
+    LL getLL(String name) {
+        if (name==null)
+            return null;
+        for (LL ll : lls) {
+            if (name.equals(ll.getName())) {
+                return ll;
+            }
+        }
+        return null;
     }
 
     public int getDiagramHeight() {
