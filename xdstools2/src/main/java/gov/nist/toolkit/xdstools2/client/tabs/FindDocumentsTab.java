@@ -3,9 +3,6 @@ package gov.nist.toolkit.xdstools2.client.tabs;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.CheckBox;
 import com.google.gwt.user.client.ui.HTML;
-import com.google.gwt.user.client.ui.FlexTable;
-import com.google.gwt.user.client.ui.HTML;
-import com.google.gwt.user.client.ui.VerticalPanel;
 import gov.nist.toolkit.configDatatypes.client.TransactionType;
 import gov.nist.toolkit.interactiondiagram.client.InteractionDiagram;
 import gov.nist.toolkit.interactionmodel.client.InteractingEntity;
@@ -89,8 +86,10 @@ public class FindDocumentsTab extends AbstractTool {
 //							new PopupMessage(mapMsg + " interaction status: " + interactingEntity.getInteractions().get(0).getStatus().name());
 							InteractionDiagram diagram = new InteractionDiagram(500,900);
 //							String svg = diagram.draw(interactingEntity,0);
-							String svg = diagram.draw(testIG(),0);
+//							String svg = diagram.draw(testIG(),0);
+							String svg = diagram.draw(testReuseLL(),0);
 							System.out.println(svg);
+							resultPanel.add(new HTML("<p style='font-weight:bold'>Interaction Sequence:</p>"));
 							resultPanel.add(new HTML(svg));
 						}
 					});
@@ -167,6 +166,34 @@ public class FindDocumentsTab extends AbstractTool {
 
 		return initiator;
 	}
+
+	public InteractingEntity testReuseLL() {
+		InteractingEntity initiator = new InteractingEntity();
+		initiator.setName("Toolkit");
+
+		InteractingEntity ig = new InteractingEntity();
+		ig.setName("IG");
+
+		InteractingEntity rg1 = new InteractingEntity("rg1");
+		InteractingEntity reg1 = new InteractingEntity("reg1");
+		InteractingEntity rep1 = new InteractingEntity("rep1");
+
+		rg1.setInteractions(new ArrayList<InteractingEntity>());
+		rg1.getInteractions().add(reg1);
+		rg1.getInteractions().add(rep1);
+
+		ig.setInteractions(new ArrayList<InteractingEntity>());
+		ig.getInteractions().add(rg1);
+
+		ig.getInteractions().add(rep1);
+
+//		initiator.setInteractions(new ArrayList<InteractingEntity>());
+//		initiator.getInteractions().add(ig);
+//
+//		return initiator;
+		return ig;
+	}
+
 
 
 }
