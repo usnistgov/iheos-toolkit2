@@ -1,4 +1,3 @@
-
 <rs:SubmitObjectsRequest xmlns="urn:oasis:names:tc:ebxml-regrep:rim:xsd:2.1"
       xmlns:rs="urn:oasis:names:tc:ebxml-regrep:registry:xsd:2.1">
    <LeafRegistryObjectList>

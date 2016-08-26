@@ -1,7 +1,7 @@
 
 <TestPlan>
   <Test>12336/finddocs</Test>
-  <?xml version="1.0" encoding="UTF-8"?><TestStep id="finddocs">
+  <TestStep id="finddocs">
   <ExpectedStatus>Success</ExpectedStatus>
   <Rule>
     <Transaction>XGQ</Transaction>

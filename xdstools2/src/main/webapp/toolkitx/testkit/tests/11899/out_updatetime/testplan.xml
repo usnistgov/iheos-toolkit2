@@ -1,7 +1,7 @@
 
 <TestPlan>
   <Test>11899/out_updatetime</Test>
-  <?xml version="1.0" encoding="UTF-8"?><TestStep id="out_updatetime">
+  <TestStep id="out_updatetime">
   <Rule>
     <Transaction>SQ</Transaction>
     <SQ>FindFolders</SQ>

@@ -1,7 +1,7 @@
 
 <TestPlan>
   <Test>Direct1/send</Test>
-  <?xml version="1.0" encoding="UTF-8"?><TestStep id="send">
+  <TestStep id="send">
   <ExpectedStatus>Success</ExpectedStatus>
   <DirectTransaction>
     <NoMetadata/>

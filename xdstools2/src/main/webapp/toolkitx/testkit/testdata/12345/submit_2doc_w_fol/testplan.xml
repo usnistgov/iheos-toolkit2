@@ -1,7 +1,7 @@
 
 <TestPlan>
   <Test>12345/submit_2doc_w_fol</Test>
-  <?xml version="1.0" encoding="UTF-8"?><TestStep id="submit_2doc_w_fol">
+  <TestStep id="submit_2doc_w_fol">
   <Rule>
     <Transaction>R</Transaction>
     <Assertion>Two documents in a folder submission supports various query

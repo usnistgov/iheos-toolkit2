@@ -1,7 +1,7 @@
 
 <TestPlan>
   <Test>SingleDocument/submit_doc</Test>
-  <?xml version="1.0" encoding="UTF-8"?><TestStep id="submit_doc">
+  <TestStep id="submit_doc">
   <ExpectedStatus>Success</ExpectedStatus>
   <XDRProvideAndRegisterTransaction>
     <XDSb/>

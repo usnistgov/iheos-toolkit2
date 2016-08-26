@@ -1,7 +1,7 @@
 
 <TestPlan>
   <Test>12344/submit_doc_for_rplc</Test>
-  <?xml version="1.0" encoding="UTF-8"?><TestStep id="submit_doc_for_rplc">
+  <TestStep id="submit_doc_for_rplc">
   <ExpectedStatus>Success</ExpectedStatus>
   <Rule>
     <Transaction>R</Transaction>

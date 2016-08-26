@@ -1,7 +1,7 @@
 
 <TestPlan>
   <Test>11901/uuid_multiple_slot_values</Test>
-  <?xml version="1.0" encoding="UTF-8"?><TestStep id="uuid_multiple_slot_values">
+  <TestStep id="uuid_multiple_slot_values">
   <Rule>
     <Transaction>SQ</Transaction>
     <SQ>GetDocuments</SQ>

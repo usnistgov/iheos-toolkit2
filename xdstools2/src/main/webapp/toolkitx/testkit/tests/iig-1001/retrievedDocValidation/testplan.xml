@@ -1,7 +1,7 @@
 
 <TestPlan>
   <Test>iig-1001/retrievedDocValidation</Test>
-  <?xml version="1.0" encoding="UTF-8"?><TestStep id="retrievedDocValidation">
+  <TestStep id="retrievedDocValidation">
   <Goal>Correct RetrieveDocumentSetResponse values</Goal>
   <Standard>
     <ResponseBody>

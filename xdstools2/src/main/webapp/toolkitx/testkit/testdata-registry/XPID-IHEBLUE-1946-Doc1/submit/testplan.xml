@@ -1,7 +1,7 @@
 
 <TestPlan>
   <Test>XPID-IHEBLUE-1946-Doc1/submit</Test>
-  <?xml version="1.0" encoding="UTF-8"?><TestStep id="submit">
+  <TestStep id="submit">
   <ExpectedStatus>Success</ExpectedStatus>
   <RegisterTransaction>
     <NoPatientId/>

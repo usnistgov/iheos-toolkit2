@@ -1,7 +1,7 @@
 
 <TestPlan>
   <Test>BasicXcpd/305</Test>
-  <?xml version="1.0" encoding="UTF-8"?><TestStep id="305">
+  <TestStep id="305">
   <ExpectedStatus>Success</ExpectedStatus>
   <Rule>
     <Transaction>XCPD</Transaction>

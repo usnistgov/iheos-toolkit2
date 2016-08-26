@@ -135,7 +135,7 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner {
 	// load tab bar with actor types
 	private void loadTestCollections() {
 		// TabBar listing actor types
-		toolkitService.getTestCollections("actorCollections", new AsyncCallback<List<TestCollectionDefinitionDAO>>() {
+		toolkitService.getTestCollections("actorcollections", new AsyncCallback<List<TestCollectionDefinitionDAO>>() {
 			@Override
 			public void onFailure(Throwable throwable) { new PopupMessage("getTestCollections: " + throwable.getMessage()); }
 

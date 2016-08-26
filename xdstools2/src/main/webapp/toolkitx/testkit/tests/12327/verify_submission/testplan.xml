@@ -1,7 +1,7 @@
 
 <TestPlan>
   <Test>12327/verify_submission</Test>
-  <?xml version="1.0" encoding="UTF-8"?><TestStep id="verify_submission">
+  <TestStep id="verify_submission">
   <Rule>
     <Transaction>SQ</Transaction>
     <SQ>GetSubmissionSetAndContents</SQ>

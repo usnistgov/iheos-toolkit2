@@ -1,7 +1,7 @@
 
 <TestPlan>
   <Test>12315/retrieve_big</Test>
-  <?xml version="1.0" encoding="UTF-8"?><TestStep id="retrieve_big">
+  <TestStep id="retrieve_big">
   <ExpectedStatus>Success</ExpectedStatus>
   <XCRTransaction>
     <UseXPath testdir="../12311" symbol="$docuid$" step="getdocs">

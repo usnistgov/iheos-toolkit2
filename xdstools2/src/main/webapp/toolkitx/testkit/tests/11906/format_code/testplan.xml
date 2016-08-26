@@ -1,7 +1,7 @@
 
 <TestPlan>
   <Test>11906/format_code</Test>
-  <?xml version="1.0" encoding="UTF-8"?><TestStep id="format_code">
+  <TestStep id="format_code">
   <Rule>
     <Transaction>SQ</Transaction>
     <SQ>GetSubmissionSetAndContents</SQ>

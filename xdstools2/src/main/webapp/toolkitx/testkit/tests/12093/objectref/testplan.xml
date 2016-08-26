@@ -1,7 +1,7 @@
 
 <TestPlan>
   <Test>12093/objectref</Test>
-  <?xml version="1.0" encoding="UTF-8"?><TestStep id="objectref">
+  <TestStep id="objectref">
   <Rule>
     <Transaction>XGQ</Transaction>
     <SQ>FindDocuments</SQ>

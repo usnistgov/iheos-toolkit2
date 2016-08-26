@@ -1,7 +1,7 @@
 
 <TestPlan>
   <Test>12342/pid</Test>
-  <?xml version="1.0" encoding="UTF-8"?><TestStep id="pid">
+  <TestStep id="pid">
   <Rule>
     <Transaction>SQ</Transaction>
     <SQ>FindDocuments</SQ>

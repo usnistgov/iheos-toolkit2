@@ -1,7 +1,7 @@
 
 <TestPlan>
   <Test>11899/codelist</Test>
-  <?xml version="1.0" encoding="UTF-8"?><TestStep id="codelist">
+  <TestStep id="codelist">
   <Rule>
     <Transaction>SQ</Transaction>
     <SQ>FindFolders</SQ>

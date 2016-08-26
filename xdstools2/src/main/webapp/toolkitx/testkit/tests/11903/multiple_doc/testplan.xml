@@ -1,7 +1,7 @@
 
 <TestPlan>
   <Test>11903/multiple_doc</Test>
-  <?xml version="1.0" encoding="UTF-8"?><TestStep id="multiple_doc">
+  <TestStep id="multiple_doc">
   <Rule>
     <Transaction>SQ</Transaction>
     <SQ>GetAssociations</SQ>

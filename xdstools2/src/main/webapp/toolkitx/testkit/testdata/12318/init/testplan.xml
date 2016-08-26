@@ -1,7 +1,7 @@
 
 <TestPlan>
   <Test>12318/init</Test>
-  <?xml version="1.0" encoding="UTF-8"?><TestStep id="init">
+  <TestStep id="init">
   <ExpectedStatus>Success</ExpectedStatus>
   <ProvideAndRegisterTransaction>
     <XDSb/>

@@ -1,7 +1,7 @@
 
 <TestPlan>
   <Test>11971/add_doc_to_fol</Test>
-  <?xml version="1.0" encoding="UTF-8"?><TestStep id="add_doc_to_fol">
+  <TestStep id="add_doc_to_fol">
   <ExpectedStatus>Success</ExpectedStatus>
   <Rule>
     <Transaction>PnR</Transaction>

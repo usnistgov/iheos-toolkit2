@@ -1,7 +1,7 @@
 
 <TestPlan>
   <Test>iig-1001/homeValidation</Test>
-  <?xml version="1.0" encoding="UTF-8"?><TestStep id="homeValidation">
+  <TestStep id="homeValidation">
   <Goal>Home Community Id returned in metadata matches Responding
 			Gateway configuration
 		</Goal>

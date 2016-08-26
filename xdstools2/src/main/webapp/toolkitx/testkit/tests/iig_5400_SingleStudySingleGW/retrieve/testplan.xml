@@ -1,7 +1,7 @@
 
 <TestPlan>
   <Test>iig_5400_SingleStudySingleGW/retrieve</Test>
-  <?xml version="1.0" encoding="UTF-8"?><TestStep id="retrieve">
+  <TestStep id="retrieve">
   <Goal>Imaging Document Set Retrieve of a single image</Goal>
   <ExpectedStatus>Success</ExpectedStatus>
   <ImagingDocSetIigRetrieveTransaction>

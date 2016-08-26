@@ -1,7 +1,7 @@
 
 <TestPlan>
   <Test>11901/homeCommunityId</Test>
-  <?xml version="1.0" encoding="UTF-8"?><TestStep id="homeCommunityId">
+  <TestStep id="homeCommunityId">
   <Rule>
     <Transaction>SQ</Transaction>
     <SQ>GetDocuments</SQ>

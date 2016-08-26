@@ -1,7 +1,7 @@
 
 <TestPlan>
   <Test>11906/folder_and_docs</Test>
-  <?xml version="1.0" encoding="UTF-8"?><TestStep id="folder_and_docs">
+  <TestStep id="folder_and_docs">
   <Rule>
     <Transaction>SQ</Transaction>
     <SQ>GetSubmissionSetAndContents</SQ>

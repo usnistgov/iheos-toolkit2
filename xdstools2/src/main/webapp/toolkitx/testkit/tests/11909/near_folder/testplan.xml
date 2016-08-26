@@ -1,7 +1,7 @@
 
 <TestPlan>
   <Test>11909/near_folder</Test>
-  <?xml version="1.0" encoding="UTF-8"?><TestStep id="near_folder">
+  <TestStep id="near_folder">
   <Rule>
     <Transaction>SQ</Transaction>
     <SQ>GetRelatedDocuments</SQ>

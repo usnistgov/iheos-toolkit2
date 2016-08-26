@@ -1,7 +1,7 @@
 
 <TestPlan>
   <Test>12374/reset_patient_id</Test>
-  <?xml version="1.0" encoding="UTF-8"?><TestStep id="reset_patient_id">
+  <TestStep id="reset_patient_id">
   <ExpectedStatus>Success</ExpectedStatus>
   <NewPatientId/>
 </TestStep>
