@@ -5,6 +5,8 @@
   can translate into JavaScript to use client side -->
 <module>
     <inherits name='com.google.gwt.user.User' />
-    <inherits name="com.google.gwt.xml.XML" />
+    <!--For plain vanilla SVG, use gwt XML-->
+    <!--<inherits name="com.google.gwt.xml.XML" />-->
+    <inherits name='org.vectomatic.libgwtsvg'/>
     <source path="client" />
 </module>

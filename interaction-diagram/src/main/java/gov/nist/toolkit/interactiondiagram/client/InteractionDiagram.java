@@ -1,11 +1,21 @@
 package gov.nist.toolkit.interactiondiagram.client;
 
 
-import com.google.gwt.xml.client.Document;
-import com.google.gwt.xml.client.Element;
-import com.google.gwt.xml.client.Text;
-import com.google.gwt.xml.client.XMLParser;
+import com.google.gwt.dom.client.Element;
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.user.client.Window;
 import gov.nist.toolkit.interactionmodel.client.InteractingEntity;
+import org.vectomatic.dom.svg.OMSVGDocument;
+import org.vectomatic.dom.svg.OMSVGElement;
+import org.vectomatic.dom.svg.OMSVGGElement;
+import org.vectomatic.dom.svg.OMSVGLineElement;
+import org.vectomatic.dom.svg.OMSVGPolygonElement;
+import org.vectomatic.dom.svg.OMSVGRectElement;
+import org.vectomatic.dom.svg.OMSVGSVGElement;
+import org.vectomatic.dom.svg.OMSVGTextElement;
+import org.vectomatic.dom.svg.OMText;
+import org.vectomatic.dom.svg.utils.OMSVGParser;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,8 +34,8 @@ public class InteractionDiagram {
     int diagramHeight = 0;
     int diagramWidth = 0;
 
-    final Document doc = XMLParser.createDocument();
-    final Element svg = doc.createElement("svg");
+    OMSVGDocument doc = OMSVGParser.createDocument();
+    OMSVGSVGElement svg =  doc.createSVGSVGElement();
 
     /**
      * Touch points of a life line (LL)
@@ -89,7 +99,7 @@ public class InteractionDiagram {
     class LL {
 
         int ll_stem_center; // only the x coordinate of the center
-        Element llEl; // life line element
+        OMSVGGElement llEl; // life line element
         // Leaf node draws each interaction activity box separately
         List<TouchPoint> activityFrames = new ArrayList<TouchPoint>();
         TouchPoint activityRange = new TouchPoint();
@@ -109,13 +119,6 @@ public class InteractionDiagram {
             this.ll_stem_center = ll_stem_center;
         }
 
-        public Element getLlEl() {
-            return llEl;
-        }
-
-        public void setLlEl(Element llEl) {
-            this.llEl = llEl;
-        }
 
         public String getName() {
             return name;
@@ -157,6 +160,14 @@ public class InteractionDiagram {
         public void setActivityFrames(List<TouchPoint> activityFrames) {
             this.activityFrames = activityFrames;
         }
+
+        public OMSVGGElement getLlEl() {
+            return llEl;
+        }
+
+        public void setLlEl(OMSVGGElement llEl) {
+            this.llEl = llEl;
+        }
     }
 
     List<LL> lls = new ArrayList<LL>();
@@ -168,9 +179,10 @@ public class InteractionDiagram {
         svg.setAttribute("height",""+ getDiagramHeight());
         svg.setAttribute("width",""+ getDiagramWidth());
         svg.setNodeValue("Sorry, your browser does not seem to support inline SVG.");
-        doc.appendChild(svg);
+//        doc.appendChild(svg);
     }
 
+    /*
     public String draw(InteractingEntity parent_entity, int local_depth) {
 
         sequence(parent_entity,null);
@@ -180,8 +192,19 @@ public class InteractionDiagram {
         return doc.toString();
 
     }
+    */
 
-    public String draw(List<InteractingEntity> entityList, int local_depth) {
+    public Element draw(InteractingEntity parent_entity, int local_depth) {
+
+        sequence(parent_entity,null);
+        ll_stem();
+        ll_activitybox();
+
+        return svg.getElement();
+
+    }
+
+    public Element draw(List<InteractingEntity> entityList, int local_depth) {
 
         for (InteractingEntity interactingEntity : entityList) {
             sequence(interactingEntity,null);
@@ -189,7 +212,7 @@ public class InteractionDiagram {
         ll_stem();
         ll_activitybox();
 
-        return doc.toString();
+        return svg.getElement();
 
     }
 
@@ -209,21 +232,22 @@ public class InteractionDiagram {
             }
     }
 
-    Element getAcitivyBoxEl(int x, int y1, int y2) {
-        Element box = doc.createElement("rect");
+    OMSVGElement getAcitivyBoxEl(int x, int y1, int y2) {
+        OMSVGRectElement box = doc.createSVGRectElement();
         box.setAttribute("width", "" + activity_box_width);
         box.setAttribute("height", "" + (y2 - y1));
         box.setAttribute("x", "" + (x-(activity_box_width/2)));
         box.setAttribute("y", "" + y1);
         box.setAttribute("style", "fill:rgb(255,255,255);stroke-width:1;stroke:rgb(0,0,0)");
         return box;
+
     }
 
 
     void ll_stem() {
 
         for (LL ll: lls) {
-            Element line = doc.createElement("line");
+            OMSVGLineElement line = doc.createSVGLineElement();
             line.setAttribute("x1",""+ll.getLl_stem_center());
             int y = ll_boxHeight;
             line.setAttribute("y1",""+y);
@@ -266,24 +290,23 @@ public class InteractionDiagram {
         }
     }
 
-    Element connect(LL originll, LL destinationll, boolean response) {
-        Element origin = originll.getLlEl();
-        Element destination = destinationll.getLlEl();
+    OMSVGElement connect(LL originll, LL destinationll, boolean response) {
+        OMSVGGElement origin = originll.getLlEl();
+        OMSVGGElement destination = destinationll.getLlEl();
 
-        Element line = doc.createElement("line");
-        int x1 = (Integer.parseInt(origin.getFirstChild().getAttributes().getNamedItem("x").toString())+(ll_boxWidth/2));
+        OMSVGLineElement line = doc.createSVGLineElement();
+        int x1 = (Integer.parseInt(((OMSVGRectElement)origin.getFirstChild()).getAttribute("x").toString())+(ll_boxWidth/2));
         line.setAttribute("x1",""+x1);
-        int y = Integer.parseInt(origin.getFirstChild().getAttributes().getNamedItem("y").toString())+ll_boxHeight+g_depth*connection_topmargin;
+        int y = Integer.parseInt(((OMSVGRectElement)origin.getFirstChild()).getAttribute("y").toString())+ll_boxHeight+g_depth*connection_topmargin;
         g_y = y;
-//        if (response)
-//            y = y+ connection_topmargin;
+
         line.setAttribute("y1",""+y);
-        int x2 = (Integer.parseInt(destination.getFirstChild().getAttributes().getNamedItem("x").toString())+(ll_boxWidth/2));
+        int x2 = (Integer.parseInt(((OMSVGRectElement)destination.getFirstChild()).getAttribute("x").toString())+(ll_boxWidth/2));
         line.setAttribute("x2",""+x2);
         line.setAttribute("y2",""+y);
         line.setAttribute("style","stroke:rgb(0,0,0);stroke-width:1;" + ((response)?"stroke-dasharray:4,8":""));
 
-        Element group = doc.createElement("g");
+        OMSVGGElement group = doc.createSVGGElement();
         group.appendChild(line);
         if (!response) {
             if (x2>x1)
@@ -391,11 +414,10 @@ public class InteractionDiagram {
         return group;
     }
 
-    Element arrow_request_left(int x, int y) {
+    OMSVGPolygonElement arrow_request_left(int x, int y) {
             x += (activity_box_width/2);
 
-        Element arrow = doc.createElement("polygon");
-
+        OMSVGPolygonElement arrow = doc.createSVGPolygonElement();
         arrow.setAttribute("points",
                    "" + x + "," + y
                 + " " + (x+5) + "," + (y-5)
@@ -405,10 +427,10 @@ public class InteractionDiagram {
 
         return arrow;
     }
-    Element arrow_request_right(int x, int y) {
+    OMSVGPolygonElement arrow_request_right(int x, int y) {
         x -= (activity_box_width/2);
 
-        Element arrow = doc.createElement("polygon");
+        OMSVGPolygonElement arrow = doc.createSVGPolygonElement();
         arrow.setAttribute("points",
               "" + x + "," + y
                + " " + (x-5) + "," + (y-5)
@@ -419,20 +441,23 @@ public class InteractionDiagram {
         return arrow;
     }
 
-    Element arrow_response_left(int x, int y) {
+    OMSVGPolygonElement arrow_response_left(int x, int y) {
         x += (activity_box_width/2);
-        Element arrow = doc.createElement("polygon");
+
+        OMSVGPolygonElement arrow = doc.createSVGPolygonElement();
         arrow.setAttribute("points",
                          " " + (x+5) + "," + (y-5)
                        + " " + x + "," + y
                         + " " + (x+5) + "," + (y+5)
         );
         arrow.setAttribute("style","fill:white;stroke:black;stroke-width:1");
+
         return arrow;
     }
-    Element arrow_response_right(int x, int y) {
+    OMSVGPolygonElement arrow_response_right(int x, int y) {
         x -= (activity_box_width/2);
-        Element arrow = doc.createElement("polygon");
+
+        OMSVGPolygonElement arrow = doc.createSVGPolygonElement();
         arrow.setAttribute("points",
                 " " + (x-5) + "," + (y-5)
                         + " " + x + "," + y
@@ -444,7 +469,7 @@ public class InteractionDiagram {
 
     LL create_LL(InteractingEntity entity) {
 
-        String name = (entity.getName()==null)?"Toolkit":entity.getName();
+        final String name = (entity.getName()==null)?"Toolkit":entity.getName();
         LL ll = getLL(name);
 
         if (ll!=null)
@@ -457,7 +482,7 @@ public class InteractionDiagram {
         if (ll_count==0) // First LL being created is the root
             ll.setRoot(true);
 
-        Element rect = doc.createElement("rect");
+        OMSVGRectElement rect = doc.createSVGRectElement();
         rect.setAttribute("width",""+ll_boxWidth);
         rect.setAttribute("height",""+ll_boxHeight);
         int x = ll_count* ll_boxWidth;
@@ -467,16 +492,23 @@ public class InteractionDiagram {
         rect.setAttribute("y","0");
         rect.setAttribute("style","fill:rgb(255,255,255);stroke-width:2;stroke:rgb(0,0,0)" );
 
-        Element text = doc.createElement("text");
+        rect.addClickHandler(new ClickHandler() {
+            @Override
+            public void onClick(ClickEvent clickEvent) {
+                Window.alert(name);
+            }
+        });
+
+        OMSVGTextElement text = doc.createSVGTextElement();
         text.setAttribute("x",""+x);
         text.setAttribute("y","10");
         text.setAttribute("font-family","Verdana");
         text.setAttribute("font-size","10");
 
-        Text textValue = doc.createTextNode(name);
+        OMText textValue = doc.createTextNode(name);
         text.appendChild(textValue);
 
-        Element group = doc.createElement("g");
+        OMSVGGElement group = doc.createSVGGElement();
         group.appendChild(rect);
         group.appendChild(text);
 
