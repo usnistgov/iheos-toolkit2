@@ -1,7 +1,9 @@
 package gov.nist.toolkit.xdstools2.client.tabs;
 
+import com.google.gwt.dom.client.Element;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.CheckBox;
+import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HTML;
 import gov.nist.toolkit.configDatatypes.client.TransactionType;
 import gov.nist.toolkit.interactiondiagram.client.InteractionDiagram;
@@ -69,7 +71,9 @@ public class FindDocumentsTab extends AbstractTool {
 
 		@Override
 		public void onSuccess(List<Result> results) {
+			queryCallback.onSuccess(results);
 			try {
+				/*
 				if (getInteractionModel()!=null) {
 					getInteractionModel().setEnd(new Date());
 
@@ -83,24 +87,28 @@ public class FindDocumentsTab extends AbstractTool {
 						@Override
 						public void onSuccess(InteractingEntity interactingEntity) {
 							String mapMsg = "mapping was successful!!" + " return is null? " + (interactingEntity==null) + " desc: " + interactingEntity.getInteractions().get(0).getName();
-//							new PopupMessage(mapMsg + " interaction status: " + interactingEntity.getInteractions().get(0).getStatus().name());
-							InteractionDiagram diagram = new InteractionDiagram(500,900);
-//							String svg = diagram.draw(interactingEntity,0);
-//							String svg = diagram.draw(testIG(),0);
-//							String svg = diagram.draw(testReuseLL(),0);
-							String svg = diagram.draw(testTwoActors(),0);
-							System.out.println(svg);
-							resultPanel.add(new HTML("<p style='font-weight:bold'>Interaction Sequence:</p>"));
-							resultPanel.add(new HTML(svg));
+							new PopupMessage(mapMsg + " interaction status: " + interactingEntity.getInteractions().get(0).getStatus().name());
+
 						}
 					});
 				}
 				else {
 					new PopupMessage("Null origin");
 				}
+				*/
+
+				InteractionDiagram diagram = new InteractionDiagram(500,900);
+//							Element svg = diagram.draw(interactingEntity,0);
+//							Element svg = diagram.draw(testIG(),0);
+//							Element svg = diagram.draw(testReuseLL(),0);
+				Element svg = diagram.draw(testTwoActors(),0);
+//							System.out.println(svg);
+				resultPanel.add(new HTML("<p style='font-weight:bold'>Interaction Sequence:</p>"));
+				FlowPanel flowPanel = new FlowPanel();
+				flowPanel.getElement().appendChild(svg);
+				resultPanel.add(flowPanel);
 			} catch (Throwable t){ new PopupMessage(t.toString());}
 
-			queryCallback.onSuccess(results);
 		}
 	};
 
