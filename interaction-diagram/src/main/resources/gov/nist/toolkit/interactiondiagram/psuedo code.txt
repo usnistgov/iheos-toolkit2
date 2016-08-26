@@ -63,3 +63,12 @@ x=the horizontal distance marker
 </body>
 </html>
 
+----
+Link example:
+
+<svg width="400" height="110">
+  <rect width="300" height="100" style="fill:rgb(0,0,255);stroke-width:3;stroke:rgb(0,0,0)"/>
+<a href="javascript:alert('a');"><text x="20" y="35" font-family="Verdana" font-size="14" fill="white">Link</text></a>
+  Sorry, your browser does not support inline SVG.
+</svg>
+

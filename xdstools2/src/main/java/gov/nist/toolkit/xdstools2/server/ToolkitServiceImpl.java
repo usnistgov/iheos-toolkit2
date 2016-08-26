@@ -800,11 +800,14 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements
 	//------------------------------------------------------------------------
 	//------------------------------------------------------------------------
 	// Interaction methods
+	// TODO: this mapping method is to be replaced by the test log map method.
 	//------------------------------------------------------------------------
 	//------------------------------------------------------------------------
 	public InteractingEntity getInteractionFromModel(InteractingEntity model) throws Exception {
 		return new InteractionMapper().map(model);
 	}
+
+
 
 
 

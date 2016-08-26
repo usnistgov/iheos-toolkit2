@@ -87,7 +87,8 @@ public class FindDocumentsTab extends AbstractTool {
 							InteractionDiagram diagram = new InteractionDiagram(500,900);
 //							String svg = diagram.draw(interactingEntity,0);
 //							String svg = diagram.draw(testIG(),0);
-							String svg = diagram.draw(testReuseLL(),0);
+//							String svg = diagram.draw(testReuseLL(),0);
+							String svg = diagram.draw(testTwoActors(),0);
 							System.out.println(svg);
 							resultPanel.add(new HTML("<p style='font-weight:bold'>Interaction Sequence:</p>"));
 							resultPanel.add(new HTML(svg));
@@ -192,6 +193,31 @@ public class FindDocumentsTab extends AbstractTool {
 //
 //		return initiator;
 		return ig;
+	}
+
+	public List<InteractingEntity> testTwoActors() {
+
+		List<InteractingEntity> interactingEntityList = new ArrayList<InteractingEntity>();
+
+		InteractingEntity initiator = new InteractingEntity();
+		initiator.setName("Tc/Rep");
+
+
+		InteractingEntity reg = new InteractingEntity("reg");
+
+		initiator.setInteractions(new ArrayList<InteractingEntity>());
+		initiator.getInteractions().add(reg);
+
+		InteractingEntity initiator2 = new InteractingEntity();
+		initiator2.setName("Tc/DocCons");
+		initiator2.setInteractions(new ArrayList<InteractingEntity>());
+		initiator2.getInteractions().add(reg);
+
+		interactingEntityList.add(initiator);
+		interactingEntityList.add(initiator2);
+
+		return interactingEntityList;
+
 	}
 
 

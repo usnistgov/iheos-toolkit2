@@ -27,7 +27,6 @@ public class InteractionDiagram {
     final Document doc = XMLParser.createDocument();
     final Element svg = doc.createElement("svg");
 
-
     /**
      * Touch points of a life line (LL)
      * Touch point means a contact point either a request/response touching the LL.
@@ -182,6 +181,18 @@ public class InteractionDiagram {
 
     }
 
+    public String draw(List<InteractingEntity> entityList, int local_depth) {
+
+        for (InteractingEntity interactingEntity : entityList) {
+            sequence(interactingEntity,null);
+        }
+        ll_stem();
+        ll_activitybox();
+
+        return doc.toString();
+
+    }
+
     void ll_activitybox() {
             for (LL ll : lls) {
                 if (ll.getActivityFrames().size()>0) {
@@ -274,10 +285,17 @@ public class InteractionDiagram {
 
         Element group = doc.createElement("g");
         group.appendChild(line);
-        if (!response)
-            group.appendChild(arrow_request(x2,y));
-        else
-            group.appendChild(arrow_response(x2,y));
+        if (!response) {
+            if (x2>x1)
+                group.appendChild(arrow_request_right(x2, y));
+            else
+                group.appendChild(arrow_request_left(x2, y));
+        } else {
+            if (x2<x1)
+                group.appendChild(arrow_response_left(x2, y));
+            else
+                group.appendChild(arrow_response_right(x2, y));
+        }
 
         // Min/max Touch points
         // Origin y
@@ -373,25 +391,52 @@ public class InteractionDiagram {
         return group;
     }
 
-    Element arrow_request(int x, int y) {
-        x -= (activity_box_width/2);
+    Element arrow_request_left(int x, int y) {
+            x += (activity_box_width/2);
+
         Element arrow = doc.createElement("polygon");
+
         arrow.setAttribute("points",
                    "" + x + "," + y
-                + " " + (x-5) + "," + (y-5)
-                + " " + (x-5) + "," + (y+5)
+                + " " + (x+5) + "," + (y-5)
+                + " " + (x+5) + "," + (y+5)
         );
         arrow.setAttribute("style","fill:black");
+
+        return arrow;
+    }
+    Element arrow_request_right(int x, int y) {
+        x -= (activity_box_width/2);
+
+        Element arrow = doc.createElement("polygon");
+        arrow.setAttribute("points",
+              "" + x + "," + y
+               + " " + (x-5) + "," + (y-5)
+               + " " + (x-5) + "," + (y+5)
+            );
+            arrow.setAttribute("style","fill:black");
+
         return arrow;
     }
 
-    Element arrow_response(int x, int y) {
+    Element arrow_response_left(int x, int y) {
         x += (activity_box_width/2);
         Element arrow = doc.createElement("polygon");
         arrow.setAttribute("points",
                          " " + (x+5) + "," + (y-5)
                        + " " + x + "," + y
                         + " " + (x+5) + "," + (y+5)
+        );
+        arrow.setAttribute("style","fill:white;stroke:black;stroke-width:1");
+        return arrow;
+    }
+    Element arrow_response_right(int x, int y) {
+        x -= (activity_box_width/2);
+        Element arrow = doc.createElement("polygon");
+        arrow.setAttribute("points",
+                " " + (x-5) + "," + (y-5)
+                        + " " + x + "," + y
+                        + " " + (x-5) + "," + (y+5)
         );
         arrow.setAttribute("style","fill:white;stroke:black;stroke-width:1");
         return arrow;
