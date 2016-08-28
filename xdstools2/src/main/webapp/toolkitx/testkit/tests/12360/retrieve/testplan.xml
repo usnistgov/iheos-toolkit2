@@ -1,6 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?><TestPlan>
   <Test>12360/retrieve</Test>
   <TestStep id="retrieve">
+    <Goal>
+      Transaction - Retrieve Document
+      Target - Document just submitted
+      Evaluation - Returned mimeType matches submission
+    </Goal>
     <ExpectedStatus>Success</ExpectedStatus>
     <RetrieveTransaction>
       <UseReport reportName="repuid" section="query" step="by_uid" useAs="$repuid$"/>

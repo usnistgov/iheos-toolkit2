@@ -14,6 +14,7 @@ public class StepOverviewDTO implements Serializable, IsSerializable {
     boolean pass;
     List<String> errors = null;
     List<String> details;
+    List<String> goals = new ArrayList<>();
 
     public StepOverviewDTO() {}
 
@@ -52,4 +53,11 @@ public class StepOverviewDTO implements Serializable, IsSerializable {
         this.details = details;
     }
 
+    public void setGoals(List<String> goals) {
+        this.goals = goals;
+    }
+
+    public List<String> getGoals() {
+        return goals;
+    }
 }

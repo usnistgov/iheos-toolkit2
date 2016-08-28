@@ -1,0 +1,27 @@
+
+<TestPlan>
+  <Test>12342/uuid</Test>
+  <TestStep id="uuid">
+  <Rule>
+    <Transaction>SQ</Transaction>
+    <SQ>GetDocuments</SQ>
+    <Assertion>Operation with UUID, verify Public Registry code returns home</Assertion>
+  </Rule>
+  <ExpectedStatus>Success</ExpectedStatus>
+  <IGQTransaction>
+    <XDSb/>
+    <Metadata>query1.xml</Metadata>
+    <UseId testdir="../../testdata/12344" id="Document01" step="submit_doc" section="AssignedUuids" symbol="$uuid$"/>
+    <ExpectedContents>
+      <Documents count="1"/>
+    </ExpectedContents>
+    <Assertions>
+      <DataRef file="THIS" as="output"/>
+      <Assert id="vaidateHome"> 
+                    count(//IGQTransaction[@step="uuid"]/Result//*[local-name(.)='ExtrinsicObject'][@home='$configHome$']) = 1
+                </Assert>
+    </Assertions>
+  </IGQTransaction>
+</TestStep>
+
+</TestPlan>

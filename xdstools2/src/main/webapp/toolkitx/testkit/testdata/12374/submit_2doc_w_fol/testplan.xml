@@ -1,0 +1,18 @@
+
+<TestPlan>
+  <Test>12374/submit_2doc_w_fol</Test>
+  <TestStep id="submit_2doc_w_fol">
+  <Rule>
+    <Transaction>R</Transaction>
+    <Assertion>Two documents in a folder submission supports various query
+                testing</Assertion>
+  </Rule>
+  <ExpectedStatus>Success</ExpectedStatus>
+  <RegisterTransaction>
+    <XDSb/>
+    <AssignUuids/>
+    <MetadataFile>two_doc_w_fol.xml</MetadataFile>
+  </RegisterTransaction>
+</TestStep>
+
+</TestPlan>

@@ -1,0 +1,9 @@
+
+<TestPlan>
+  <Test>12329/allocate_patient_id</Test>
+  <TestStep id="allocate_patient_id">
+  <ExpectedStatus>Success</ExpectedStatus>
+  <NewPatientId/>
+</TestStep>
+
+</TestPlan>
