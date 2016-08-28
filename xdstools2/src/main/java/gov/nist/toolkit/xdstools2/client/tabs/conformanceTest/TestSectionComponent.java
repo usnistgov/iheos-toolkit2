@@ -59,6 +59,7 @@ public class TestSectionComponent implements IsWidget {
         } else
             header.addStyleName("testOverviewHeaderNotRun");
         header.add(sectionLabel);
+        header.add(new HTML(sectionOverview.getDisplayableTime()));
         if (sectionOverview.isRun()) {
             Image status = (sectionOverview.isPass()) ?
                     new Image("icons2/correct-16.png")

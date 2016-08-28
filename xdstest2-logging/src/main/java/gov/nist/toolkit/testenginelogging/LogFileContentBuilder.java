@@ -51,6 +51,15 @@ public class LogFileContentBuilder {
             if ( ! incompleteOk )
                 throw new NotALogFileException(e.getMessage() + " log is [" + firstNChars(log.toString(), 20) + "]");
         }
+
+        for (OMElement timeEle : XmlUtil.childrenWithLocalName(log, "Time")) {
+            c.setHl7Time(timeEle.getText());
+        }
+
+        for (OMElement siteEle : XmlUtil.childrenWithLocalName(log, "Site")) {
+            c.setSiteName(siteEle.getText());
+        }
+
         parseTest();
         parseTestSteps();
         calcGoals();

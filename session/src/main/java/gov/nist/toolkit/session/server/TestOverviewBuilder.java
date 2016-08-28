@@ -137,6 +137,8 @@ public class TestOverviewBuilder {
             return sectionOverview;
         }
         sectionOverview.setPass(logFileContentDTO.isSuccess());
+        sectionOverview.setHl7Time(logFileContentDTO.getHl7Time());
+        sectionOverview.setSite(logFileContentDTO.getSiteName());
         for (String stepName : logFileContentDTO.getStepMap().keySet()) {
             TestStepLogContentDTO stepContent = logFileContentDTO.getStepLog(stepName);
             addStep(stepName, stepContent, sectionOverview);

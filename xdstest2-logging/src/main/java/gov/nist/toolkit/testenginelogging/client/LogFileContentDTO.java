@@ -26,6 +26,8 @@ public class LogFileContentDTO implements Serializable, IsSerializable {
 	private String testAttribute;
 	private String test = null;
 	private String section = null;
+	String hl7Time;
+	String siteName;
 	private SectionGoalsDTO sectionGoalsDTO;
 	private String fatalError = null;
 	private List<ReportDTO> reportDTOs = new ArrayList<>();
@@ -190,5 +192,21 @@ public class LogFileContentDTO implements Serializable, IsSerializable {
 
 	public void setHasRun(boolean hasRun) {
 		this.hasRun = hasRun;
+	}
+
+	public String getHl7Time() {
+		return hl7Time;
+	}
+
+	public void setHl7Time(String hl7Time) {
+		this.hl7Time = hl7Time;
+	}
+
+	public String getSiteName() {
+		return siteName;
+	}
+
+	public void setSiteName(String siteName) {
+		this.siteName = siteName;
 	}
 }

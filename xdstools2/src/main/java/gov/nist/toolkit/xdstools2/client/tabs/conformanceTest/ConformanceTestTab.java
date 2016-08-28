@@ -236,6 +236,7 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner {
 		HTML testHeader = new HTML("Test: " + testOverview.getName() + " - " +testOverview.getTitle());
 		testHeader.addStyleName("test-title");
 		header.add(testHeader);
+		header.add(new HTML(testOverview.getLatestSectionTime()));
 		if (testOverview.isRun()) {
 			Image status = (testOverview.isPass()) ?
 					new Image("icons2/correct-24.png")
