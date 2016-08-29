@@ -8,6 +8,7 @@ import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.*;
+import gov.nist.toolkit.interactiondiagram.client.widgets.InteractionDiagram;
 import gov.nist.toolkit.results.client.Result;
 import gov.nist.toolkit.results.client.TestInstance;
 import gov.nist.toolkit.session.client.SectionOverviewDTO;
@@ -268,6 +269,18 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner {
 
 		// display sections within test
 		displaySections(testOverview, body);
+
+		if (testOverview.isRun()) {
+			// display an interaction sequence diagram
+			displayInteractionDiagram(testOverview, body);
+		}
+
+	}
+
+	private void displayInteractionDiagram(TestOverviewDTO testResultDTO, FlowPanel body) {
+		InteractionDiagram diagram = new InteractionDiagram(testResultDTO);
+		body.add(new HTML("<p style='font-weight:bold'>Interaction Sequence:</p>"));
+		body.add(diagram);
 	}
 
 	private class RunClickHandler implements ClickHandler {
@@ -368,6 +381,7 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner {
 				public void onSuccess(TestOverviewDTO testOverviewDTO) {
 					// returned status of entire test
 					displayTest(testOverviewDTO);
+
 				}
 			});
 		} catch (Exception e) {
@@ -375,6 +389,8 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner {
 		}
 
 	}
+
+
 
 
 
