@@ -315,7 +315,7 @@ public class InteractionDiagram extends Composite {
             line.setAttribute("y1",""+y);
             line.setAttribute("x2",""+ll.getLl_stem_center());
             line.setAttribute("y2",""+(g_y+10));
-            line.setAttribute("style","stroke:rgb(0,0,0);stroke-width:2;" + ((lls.size()>2)?"stroke-dasharray:2,2":""));
+            line.setAttribute("style","stroke:rgb(0,0,0);stroke-dasharray:2,2");
 
             svg.appendChild(line);
         }
