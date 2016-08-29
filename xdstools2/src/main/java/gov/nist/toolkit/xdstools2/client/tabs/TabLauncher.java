@@ -9,6 +9,7 @@ import gov.nist.toolkit.xdstools2.client.inspector.MetadataEditorTab;
 import gov.nist.toolkit.xdstools2.client.tabs.GatewayTestsTabs.IDSTestTab;
 import gov.nist.toolkit.xdstools2.client.tabs.GatewayTestsTabs.IGTestTab;
 import gov.nist.toolkit.xdstools2.client.tabs.GatewayTestsTabs.IIGTestTab;
+import gov.nist.toolkit.xdstools2.client.tabs.GatewayTestsTabs.RSNAEdgeTestTab;
 import gov.nist.toolkit.xdstools2.client.tabs.GatewayTestsTabs.RGTestTab;
 import gov.nist.toolkit.xdstools2.client.tabs.actorConfigTab.ActorConfigTab;
 import gov.nist.toolkit.xdstools2.client.tabs.conformanceTest.ConformanceTestTab;
@@ -61,6 +62,7 @@ public class TabLauncher implements ClickHandler {
 	final static public String testsOverviewTabLabel = "Tests Overview";
     final static public String igTestsTabLabel = "Initiating Gateway Tests";
 	final static public String iigTestsTabLabel = "Initiating Imaging Gateway Tests";
+	final static public String rsnaEdgeTestsTabLabel = "RSNA Image Share Tests";
     final static public String rgTestsTabLabel = "Responding Gateway Tests";
 	final static public String imagingDocumentSetRetrieveTabLabel = "RetrieveImagingDocumentSet";
 	final static public String idsTestsTabLabel = "Imaging Document Source Tests";
@@ -78,6 +80,8 @@ public class TabLauncher implements ClickHandler {
 			new IGTestTab().onAbstractTabLoad(true, "IG Tests");
 		else if (tabType.equals(iigTestsTabLabel))
 			new IIGTestTab().onAbstractTabLoad(true, "IIG Tests");
+		else if (tabType.equals(rsnaEdgeTestsTabLabel))
+			new RSNAEdgeTestTab().onAbstractTabLoad(true, "RSNA Edge Tests");
 		else if (tabType.equals(idsTestsTabLabel))
 			new IDSTestTab().onAbstractTabLoad(true, "IDS Tests");
         else if (tabType.equals(rgTestsTabLabel))

@@ -7,6 +7,7 @@ import gov.nist.toolkit.sitemanagement.client.SiteSpec;
 import gov.nist.toolkit.xdstools2.client.ToolWindow;
 import gov.nist.toolkit.xdstools2.client.tabs.*;
 import gov.nist.toolkit.xdstools2.client.tabs.GatewayTestsTabs.IDSTestTab;
+import gov.nist.toolkit.xdstools2.client.tabs.GatewayTestsTabs.RSNAEdgeTestTab;
 import gov.nist.toolkit.xdstools2.client.tabs.GatewayTestsTabs.IGTestTab;
 import gov.nist.toolkit.xdstools2.client.tabs.GatewayTestsTabs.IIGTestTab;
 import gov.nist.toolkit.xdstools2.client.tabs.GatewayTestsTabs.RGTestTab;
@@ -64,6 +65,7 @@ public class ToolLauncher implements ClickHandler {
 	final static public String rgTestsTabLabel = "Responding Gateway Tests";
 	final static public String iigTestsTabLabel = "Initiating Imaging Gateway Tests";
 	final static public String idsTestsTabLabel = "Imaging Document Source Tests";
+	final static public String rsnaedgeTestsTabLabel = "RSNA Edge Device Tests";
 	final static public String imagingDocumentSetRetrieveTabLabel = "RetrieveImagingDocumentSet";
 	final static public String homeTabLabel = "Home";
 	final static public String adminTabLabel = "Site/Actor Configuration";
@@ -114,6 +116,7 @@ public class ToolLauncher implements ClickHandler {
 		tools.add(new ToolDef(igTestsTabLabel, "IGTests", "IGTests"));
 		tools.add(new ToolDef(iigTestsTabLabel, "IIGTests", "IIGTests"));
 		tools.add(new ToolDef(idsTestsTabLabel, "IDSTests", "IDSTests"));
+		tools.add(new ToolDef(rsnaedgeTestsTabLabel, "RSNA Edge Tests", "RSNAEdgeTests"));
 		tools.add(new ToolDef(rgTestsTabLabel, "RGTests", "RGTests"));
 		tools.add(new ToolDef(imagingDocumentSetRetrieveTabLabel, "RetIDS", "RetIDS"));
 		tools.add(new ToolDef(testLogLabel, "TestLog", "TestLog"));
@@ -178,6 +181,7 @@ public class ToolLauncher implements ClickHandler {
 		if (menuName.equals(homeTabLabel)) return new HomeTab();
 		if (menuName.equals(iigTestsTabLabel)) return new IIGTestTab();
 		if (menuName.equals(idsTestsTabLabel)) return new IDSTestTab();
+		if (menuName.equals(rsnaedgeTestsTabLabel)) return new RSNAEdgeTestTab();
 		return null;
 	}
 
