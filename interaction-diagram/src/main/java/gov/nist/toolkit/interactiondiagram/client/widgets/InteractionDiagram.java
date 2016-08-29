@@ -8,6 +8,8 @@ import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
 import gov.nist.toolkit.interactionmodel.client.InteractingEntity;
+import gov.nist.toolkit.session.client.SectionOverviewDTO;
+import gov.nist.toolkit.session.client.TestOverviewDTO;
 import org.vectomatic.dom.svg.OMSVGDocument;
 import org.vectomatic.dom.svg.OMSVGElement;
 import org.vectomatic.dom.svg.OMSVGGElement;
@@ -28,6 +30,7 @@ import java.util.List;
 public class InteractionDiagram extends Composite {
 
     int g_depth = 0;
+    int g_x = 0;
     int g_y = 0;
     int ll_boxWidth = 70;
     int ll_boxHeight = 25;
@@ -196,6 +199,56 @@ public class InteractionDiagram extends Composite {
         initWidget(container);
     }
 
+    public InteractionDiagram(TestOverviewDTO testOverviewDTO) {
+        setDiagramArea(diagramHeight, diagramWidth);
+
+        List<InteractingEntity> interactingEntity = transformTestResultToInteractingEntity(testOverviewDTO);
+        if (interactingEntity==null)
+            return;
+
+        Element svg = draw(interactingEntity);
+        setDiagramArea(g_y+10,g_x);
+
+        FlowPanel container = new FlowPanel();
+        container.getElement().appendChild(svg);
+
+        initWidget(container);
+    }
+
+    List<InteractingEntity> transformTestResultToInteractingEntity(TestOverviewDTO testResultDTO) {
+        if (testResultDTO==null || testResultDTO.getSectionNames()==null) return null;
+
+        List<String> sectionNames = testResultDTO.getSectionNames();
+
+        if (sectionNames==null || (sectionNames!=null && sectionNames.isEmpty()))
+            return null;
+
+        List<InteractingEntity> result = new ArrayList<InteractingEntity>();
+
+        for (String section : sectionNames) {
+           SectionOverviewDTO sectionOverviewDTO = testResultDTO.getSectionOverview(section);
+            if (sectionOverviewDTO.isRun()) {
+                InteractingEntity source = new InteractingEntity();
+                source.setName("Toolkit"); // TODO: Source should come from the SectionOverviewDTO
+                InteractingEntity destination = new InteractingEntity();
+                destination.setName(sectionOverviewDTO.getSite());
+                destination.setSourceInteractionLabel(sectionOverviewDTO.getName());
+                if (sectionOverviewDTO.isPass())
+                    destination.setStatus(InteractingEntity.INTERACTIONSTATUS.COMPLETED);
+                else
+                    destination.setStatus(InteractingEntity.INTERACTIONSTATUS.ERROR);
+                source.setInteractions(new ArrayList<InteractingEntity>());
+                source.getInteractions().add(destination);
+                result.add(source);
+            }
+        }
+
+        return result;
+    }
+
+
+
+
     private void setDiagramArea(int diagramHeight, int diagramWidth) {
         setDiagramHeight(diagramHeight);
         setDiagramWidth(diagramWidth);
@@ -283,23 +336,23 @@ public class InteractionDiagram extends Composite {
                 g_depth++;
                 childll = create_LL(child);
                 svg.appendChild(childll.getLlEl());
-                svg.appendChild(connect(parentll,childll,false));
+                svg.appendChild(connect(parentll,childll,false,child.getSourceInteractionLabel(),child.getStatus()));
                 if (child.getInteractions()!=null) {
                     sequence(child, childll);
                     if (childll!=null) {
                         g_depth++;
-                        svg.appendChild(connect(childll, parentll, true));
+                        svg.appendChild(connect(childll, parentll, true, child.getSourceInteractionLabel(), child.getStatus()));
                     }
                 } else {
                     g_depth++;
-                    svg.appendChild(connect(childll, parentll, true));
+                    svg.appendChild(connect(childll, parentll, true, child.getSourceInteractionLabel(), child.getStatus()));
                 }
             }
 
         }
     }
 
-    OMSVGElement connect(LL originll, LL destinationll, boolean response) {
+    OMSVGElement connect(LL originll, LL destinationll, boolean response, String description, InteractingEntity.INTERACTIONSTATUS status) {
         OMSVGGElement origin = originll.getLlEl();
         OMSVGGElement destination = destinationll.getLlEl();
 
@@ -317,17 +370,41 @@ public class InteractionDiagram extends Composite {
 
         OMSVGGElement group = doc.createSVGGElement();
         group.appendChild(line);
+
         if (!response) {
             if (x2>x1)
                 group.appendChild(arrow_request_right(x2, y));
             else
                 group.appendChild(arrow_request_left(x2, y));
+
+            // Set description
+            OMSVGTextElement text = doc.createSVGTextElement();
+            int centerTextX = (x2+x1)/2;
+            text.setAttribute("x",""+centerTextX);
+            text.setAttribute("y",""+y);
+            text.setAttribute("dy","-"+3); // Shift text up the connecting line
+            text.setAttribute("text-anchor","middle");
+            text.setAttribute("font-family","Verdana");
+            text.setAttribute("font-size","10");
+            if (InteractingEntity.INTERACTIONSTATUS.ERROR.equals(status))
+                text.setAttribute("fill","red");
+
+            String shortDesc = description;
+            if (description!=null && description.length()>21)
+                shortDesc = description.substring(0,18) + "..."; // Truncate so the text does not overflow
+            OMText textValue = doc.createTextNode(shortDesc);
+            text.appendChild(textValue);
+            group.appendChild(text);
+
         } else {
             if (x2<x1)
                 group.appendChild(arrow_response_left(x2, y));
             else
                 group.appendChild(arrow_response_right(x2, y));
         }
+
+
+
 
         // Min/max Touch points
         // Origin y
@@ -496,6 +573,7 @@ public class InteractionDiagram extends Composite {
         rect.setAttribute("height",""+ll_boxHeight);
         int x = ll_count* ll_boxWidth;
         x+=ll_margin*ll_count; // margin that separates this lifeline from the previous one
+        g_x = x + ll_boxWidth;
         ll.setLl_stem_center(x + (ll_boxWidth/2));
         rect.setAttribute("x",""+x);
         rect.setAttribute("y","0");
@@ -509,12 +587,18 @@ public class InteractionDiagram extends Composite {
         });
 
         OMSVGTextElement text = doc.createSVGTextElement();
-        text.setAttribute("x",""+x);
-        text.setAttribute("y","10");
+        text.setAttribute("x",""+ll.getLl_stem_center());
+        text.setAttribute("y","" + (ll_boxHeight/2));
+        text.setAttribute("dy","3");
         text.setAttribute("font-family","Verdana");
         text.setAttribute("font-size","10");
+        text.setAttribute("text-anchor","middle");
 
-        OMText textValue = doc.createTextNode(name);
+        String shortName = name;
+        if (name.length()>12)
+            shortName = name.substring(0,12);
+
+        OMText textValue = doc.createTextNode(shortName);
         text.appendChild(textValue);
 
         OMSVGGElement group = doc.createSVGGElement();
@@ -523,6 +607,7 @@ public class InteractionDiagram extends Composite {
 
         ll.setLlEl(group);
         lls.add(ll);
+
 
         return ll;
     }
