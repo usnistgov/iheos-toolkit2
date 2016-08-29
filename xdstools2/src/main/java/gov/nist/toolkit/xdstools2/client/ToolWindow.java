@@ -81,6 +81,8 @@ public abstract class ToolWindow {
 	// Used to be protected but impractical for use with the new widget-based architecture in for ex. TestsOverviewTab
 	public String getCurrentTestSession() { return testSessionManager.getCurrentTestSession(); }
 
+	public void setCurrentTestSession(String testSession) { testSessionManager.setCurrentTestSession(testSession);}
+
 	abstract public void onTabLoad(boolean select, String eventName);
 
 	// getWindowShortName() + ".html"is documentation file in /doc

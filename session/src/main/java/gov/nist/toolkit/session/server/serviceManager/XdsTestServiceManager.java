@@ -747,7 +747,7 @@ public class XdsTestServiceManager extends CommonService {
 		String[] namea = cache.list();
 
 		for (int i=0; i<namea.length; i++) {
-			File dir = new File(namea[i]);
+			File dir = new File(cache, namea[i]);
 			if (!dir.isDirectory()) continue;
 			if (!namea[i].startsWith("."))
 				names.add(namea[i]);
