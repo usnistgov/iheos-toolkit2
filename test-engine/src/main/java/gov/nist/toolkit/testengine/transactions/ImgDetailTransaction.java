@@ -113,6 +113,9 @@ public class ImgDetailTransaction extends BasicTransaction {
       throws XdsInternalException {
       errs = new ArrayList <>();
       switch (a.process) {
+         /*
+          * Matches documents and their values in SOAP Response body to standard
+          */
          case "sameRetImgs":
             try {
                OMElement std = getStdResponseBody();
@@ -152,6 +155,9 @@ public class ImgDetailTransaction extends BasicTransaction {
                throw new XdsInternalException("sameRetImgs error: " + e.getMessage());
             }
             break;
+         /*
+          * Matches DICOM tag values in returned images to standard   
+          */
          case "sameDcmImgs":
             try {
                OMElement std = getStdResponseBody();
@@ -225,7 +231,7 @@ public class ImgDetailTransaction extends BasicTransaction {
                      }
                   }
                   if (mismatchFound == false) {
-                     store(engine, CAT.SUCCESS, "std doc UID " + stdDocUID + " found in test, all tag values match");
+                     store(engine, CAT.SUCCESS, "test img UID " + stdDocUID + " found in standard, all tag values match");
                      continue;
                   }
                   // mismatch found; second pass generates messages for each tag
@@ -352,12 +358,9 @@ public class ImgDetailTransaction extends BasicTransaction {
 
    private void store(AssertionEngine e, CAT cat, String msg) {
       if (cat == CAT.SILENT) return;
-      if (cat != CAT.ERROR) {
-         e.addDetail(cat.name() + " " + msg);
-         return;
-      }
-      errs.add(cat.name() + " " + msg);
-      // TODO method stub
+      e.addDetail(cat.name() + " " + msg);
+      if (cat == CAT.ERROR) 
+         errs.add(cat.name() + " " + msg);
    }
 
    /*
