@@ -15,6 +15,8 @@ public class SectionOverviewDTO implements Serializable, IsSerializable {
     private String name;
     private String description;
     private boolean pass;
+    String site = "";
+    String hl7Time = "";
     private boolean run = true;
     private List<String> stepNames = new ArrayList<>();
     private Map<String, StepOverviewDTO> steps = new HashMap<>();
@@ -58,6 +60,10 @@ public class SectionOverviewDTO implements Serializable, IsSerializable {
         steps.put(name, stepOverview);
     }
 
+    public StepOverviewDTO getStep(String stepName) {
+        return steps.get(stepName);
+    }
+
     public boolean isRun() {
         return run;
     }
@@ -72,5 +78,44 @@ public class SectionOverviewDTO implements Serializable, IsSerializable {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public String getSite() {
+        return site;
+    }
+
+    public void setSite(String site) {
+        this.site = site;
+    }
+
+    public String getHl7Time() {
+        return hl7Time;
+    }
+
+    public void setHl7Time(String hl7Time) {
+        this.hl7Time = hl7Time;
+    }
+
+    // 2016 08 28 1429 54
+    public String getDisplayableTime() {
+        try {
+            return hl7Time.substring(8, 10) + ":" + hl7Time.substring(10, 12) + " " +
+                    asMonth(hl7Time.substring(4, 6)) + " " +
+                    hl7Time.substring(6, 8) + ", " +
+                    hl7Time.substring(0, 4);
+        } catch (Exception e) {
+            return "";
+        }
+    }
+
+    private String[] months = { "Jan", "Feb", "Mar", "April", "May", "June", "July", "Aug", "Sept", "Oct", "Nov", "Dec"};
+
+    private String asMonth(String in) {
+        int ini = Integer.parseInt(in);
+        try {
+            return months[ini];
+        } catch (Exception e) {
+            return "__";
+        }
     }
 }

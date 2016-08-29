@@ -321,8 +321,14 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements
      */
 	public Map<String, String> getCollectionNames(String collectionSetName) throws Exception { return session().xdsTestServiceManager().getCollectionNames(collectionSetName); }
 	public List<String> getCollectionMembers(String collectionSetName, String collectionName) throws Exception { return session().xdsTestServiceManager().getCollectionMembers(collectionSetName, collectionName); }
-	public List<TestOverviewDTO> getTestsOverview(String sessionName, List<TestInstance> testInstances) throws Exception { return session().xdsTestServiceManager().getTestsOverview(sessionName, testInstances); }
-	public LogFileContentDTO getTestLogDetails(String sessionName, TestInstance testInstance) throws Exception { return session().xdsTestServiceManager().getTestLogDetails(sessionName, testInstance); }
+	public List<TestOverviewDTO> getTestsOverview(String sessionName, List<TestInstance> testInstances) throws Exception {
+		List<TestOverviewDTO> o = session().xdsTestServiceManager().getTestsOverview(sessionName, testInstances);
+		return o;
+	}
+	public LogFileContentDTO getTestLogDetails(String sessionName, TestInstance testInstance) throws Exception {
+		LogFileContentDTO o = session().xdsTestServiceManager().getTestLogDetails(sessionName, testInstance);
+		return o;
+	}
 	public List<TestCollectionDefinitionDAO> getTestCollections(String collectionSetName) throws Exception { return session().xdsTestServiceManager().getTestCollections(collectionSetName); }
 
 	@Override

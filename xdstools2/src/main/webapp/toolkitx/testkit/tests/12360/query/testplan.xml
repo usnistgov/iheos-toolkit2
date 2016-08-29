@@ -2,6 +2,11 @@
   <Test>12360/query</Test>
   <Rule>Retrieve metadata to get access to XDSDocumentEntry.repositoryUniqueId and XDSDocumentEntry.uniqueId</Rule>
   <TestStep id="by_uid">
+    <Goal>
+      Transaction - GetDocuments Stored Query
+      Target - DocumentEntry just submitted
+      Evaluation - Transaction is successful
+    </Goal>
     <ExpectedStatus>Success</ExpectedStatus>
     <StoredQueryTransaction>
       <XDSb/>

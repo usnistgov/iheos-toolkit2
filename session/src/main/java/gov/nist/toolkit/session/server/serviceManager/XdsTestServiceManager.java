@@ -432,7 +432,7 @@ public class XdsTestServiceManager extends CommonService {
 				dto.setLogMapDTO(lm);
 			return dto;
 		} catch (Exception e) {
-			if (e.getMessage() != null) throw e;
+			if (e.getMessage() != null && !e.getMessage().equals("")) throw e;
 			throw new Exception(ExceptionUtil.exception_details(e));
 		}
 	}
@@ -747,8 +747,17 @@ public class XdsTestServiceManager extends CommonService {
 		String[] namea = cache.list();
 
 		for (int i=0; i<namea.length; i++) {
+			File dir = new File(namea[i]);
+			if (!dir.isDirectory()) continue;
 			if (!namea[i].startsWith("."))
 				names.add(namea[i]);
+
+		}
+
+		if (names.size() == 0) {
+			names.add("default");
+			File def = new File(cache, "default");
+			def.mkdirs();
 		}
 
 		logger.debug("testSession names are " + names);

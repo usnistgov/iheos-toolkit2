@@ -1,0 +1,21 @@
+
+<TestPlan>
+  <Test>11899/basic</Test>
+  <TestStep id="basic">
+  <Rule>
+    <Transaction>SQ</Transaction>
+    <SQ>FindFolders</SQ>
+    <Assertion>Basic operation based on Patient ID parameter</Assertion>
+  </Rule>
+  <ExpectedStatus>Success</ExpectedStatus>
+  <StoredQueryTransaction>
+    <XDSb/>
+    <MetadataFile>query1.xml</MetadataFile>
+    <UseId testdir="../12346/single_doc" id="SubmissionSet01" symbol="$patient_id$" step="submit_doc" section="AssignedPatientId"/>
+    <ExpectedContents>
+      <Folders count="2"/>
+    </ExpectedContents>
+  </StoredQueryTransaction>
+</TestStep>
+
+</TestPlan>

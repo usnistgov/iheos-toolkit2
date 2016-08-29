@@ -1,0 +1,17 @@
+
+<TestPlan>
+  <Test>12374/register_new_patient_id</Test>
+  <TestStep id="register_new_patient_id">
+  <Rule>
+    <Transaction>Patient Identity Feed</Transaction>
+    <Assertion>Send to Registry</Assertion>
+  </Rule>
+  <ExpectedStatus>Success</ExpectedStatus>
+  <PatientIdentityFeedTransaction>
+    <XDSb/>
+    <CreateNewPatientId/>
+    <NoMetadata/>
+  </PatientIdentityFeedTransaction>
+</TestStep>
+
+</TestPlan>
