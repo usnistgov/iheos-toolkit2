@@ -1,10 +1,12 @@
-package gov.nist.toolkit.interactiondiagram.client;
+package gov.nist.toolkit.interactiondiagram.client.widgets;
 
 
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.Window;
+import com.google.gwt.user.client.ui.Composite;
+import com.google.gwt.user.client.ui.FlowPanel;
 import gov.nist.toolkit.interactionmodel.client.InteractingEntity;
 import org.vectomatic.dom.svg.OMSVGDocument;
 import org.vectomatic.dom.svg.OMSVGElement;
@@ -23,7 +25,7 @@ import java.util.List;
 /**
  * Created by skb1 Sunil.Bhaskarla on 8/12/2016.
  */
-public class InteractionDiagram {
+public class InteractionDiagram extends Composite {
 
     int g_depth = 0;
     int g_y = 0;
@@ -172,39 +174,47 @@ public class InteractionDiagram {
 
     List<LL> lls = new ArrayList<LL>();
 
-    public InteractionDiagram(int diagramHeight, int diagramWidth) {
+    public InteractionDiagram() {}
+
+    public InteractionDiagram(InteractingEntity interactingEntity, int diagramHeight, int diagramWidth) {
+        setDiagramArea(diagramHeight, diagramWidth);
+
+        Element svg = draw(interactingEntity);
+        FlowPanel container = new FlowPanel();
+        container.getElement().appendChild(svg);
+
+      initWidget(container);
+    }
+
+    public InteractionDiagram(List<InteractingEntity> interactingEntity, int diagramHeight, int diagramWidth) {
+        setDiagramArea(diagramHeight, diagramWidth);
+
+        Element svg = draw(interactingEntity);
+        FlowPanel container = new FlowPanel();
+        container.getElement().appendChild(svg);
+
+        initWidget(container);
+    }
+
+    private void setDiagramArea(int diagramHeight, int diagramWidth) {
         setDiagramHeight(diagramHeight);
         setDiagramWidth(diagramWidth);
 
         svg.setAttribute("height",""+ getDiagramHeight());
         svg.setAttribute("width",""+ getDiagramWidth());
         svg.setNodeValue("Sorry, your browser does not seem to support inline SVG.");
-//        doc.appendChild(svg);
     }
 
-    /*
-    public String draw(InteractingEntity parent_entity, int local_depth) {
-
-        sequence(parent_entity,null);
-        ll_stem();
-        ll_activitybox();
-
-        return doc.toString();
-
-    }
-    */
-
-    public Element draw(InteractingEntity parent_entity, int local_depth) {
+    public Element draw(InteractingEntity parent_entity) {
 
         sequence(parent_entity,null);
         ll_stem();
         ll_activitybox();
 
         return svg.getElement();
-
     }
 
-    public Element draw(List<InteractingEntity> entityList, int local_depth) {
+    public Element draw(List<InteractingEntity> entityList) {
 
         for (InteractingEntity interactingEntity : entityList) {
             sequence(interactingEntity,null);
@@ -213,7 +223,6 @@ public class InteractionDiagram {
         ll_activitybox();
 
         return svg.getElement();
-
     }
 
     void ll_activitybox() {

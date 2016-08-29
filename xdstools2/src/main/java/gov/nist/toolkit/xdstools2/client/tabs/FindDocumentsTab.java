@@ -1,12 +1,10 @@
 package gov.nist.toolkit.xdstools2.client.tabs;
 
-import com.google.gwt.dom.client.Element;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.CheckBox;
-import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HTML;
 import gov.nist.toolkit.configDatatypes.client.TransactionType;
-import gov.nist.toolkit.interactiondiagram.client.InteractionDiagram;
+import gov.nist.toolkit.interactiondiagram.client.widgets.InteractionDiagram;
 import gov.nist.toolkit.interactionmodel.client.InteractingEntity;
 import gov.nist.toolkit.interactionmodel.client.InteractionIdentifierTerm;
 import gov.nist.toolkit.results.client.Result;
@@ -97,16 +95,13 @@ public class FindDocumentsTab extends AbstractTool {
 				}
 				*/
 
-				InteractionDiagram diagram = new InteractionDiagram(500,900);
+				InteractionDiagram diagram = new InteractionDiagram(testTwoActors(), 500,900);
 //							Element svg = diagram.draw(interactingEntity,0);
 //							Element svg = diagram.draw(testIG(),0);
 //							Element svg = diagram.draw(testReuseLL(),0);
-				Element svg = diagram.draw(testTwoActors(),0);
 //							System.out.println(svg);
 				resultPanel.add(new HTML("<p style='font-weight:bold'>Interaction Sequence:</p>"));
-				FlowPanel flowPanel = new FlowPanel();
-				flowPanel.getElement().appendChild(svg);
-				resultPanel.add(flowPanel);
+				resultPanel.add(diagram);
 			} catch (Throwable t){ new PopupMessage(t.toString());}
 
 		}

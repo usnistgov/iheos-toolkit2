@@ -1,7 +1,9 @@
 package gov.nist.toolkit.interactiondiagram.client;
 
+import gov.nist.toolkit.interactiondiagram.client.widgets.InteractionDiagram;
 import gov.nist.toolkit.interactionmodel.client.InteractingEntity;
 import gov.nist.toolkit.interactionmodel.client.InteractionIdentifierTerm;
+import org.junit.Assert;
 import org.junit.Ignore;
 import org.junit.Test;
 
@@ -24,9 +26,10 @@ public class InteractionDiagramTest /*extends GWTTestCase*/ {
 	public void testGen() {
 		System.out.println("Running...");
 
-		InteractionDiagram diagram = new InteractionDiagram(500,500);
-		String svg = diagram.draw(getFDInteractionModel(),0);
-		System.out.println(svg);
+		InteractionDiagram diagram = new InteractionDiagram(getFDInteractionModel(),500,500);
+		if (diagram==null)
+			Assert.fail("Null svg element");
+//		System.out.println(svg);
 
 	}
 
