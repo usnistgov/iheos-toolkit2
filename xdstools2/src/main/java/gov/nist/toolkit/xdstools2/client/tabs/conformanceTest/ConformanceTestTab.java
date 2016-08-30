@@ -135,7 +135,7 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner {
 	// load tab bar with actor types
 	private void loadTestCollections() {
 		// TabBar listing actor types
-		toolkitService.getTestCollections("actorCollections", new AsyncCallback<List<TestCollectionDefinitionDAO>>() {
+		toolkitService.getTestCollections("actorcollections", new AsyncCallback<List<TestCollectionDefinitionDAO>>() {
 			@Override
 			public void onFailure(Throwable throwable) { new PopupMessage("getTestCollections: " + throwable.getMessage()); }
 
@@ -236,6 +236,7 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner {
 		HTML testHeader = new HTML("Test: " + testOverview.getName() + " - " +testOverview.getTitle());
 		testHeader.addStyleName("test-title");
 		header.add(testHeader);
+		header.add(new HTML(testOverview.getLatestSectionTime()));
 		if (testOverview.isRun()) {
 			Image status = (testOverview.isPass()) ?
 					new Image("icons2/correct-24.png")
@@ -278,6 +279,9 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner {
 
 		@Override
 		public void onClick(ClickEvent clickEvent) {
+			clickEvent.preventDefault();
+			clickEvent.stopPropagation();
+
 			runTest(testInstance);
 		}
 	}
@@ -291,6 +295,8 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner {
 
 		@Override
 		public void onClick(ClickEvent clickEvent) {
+			clickEvent.preventDefault();
+			clickEvent.stopPropagation();
 			toolkitService.deleteSingleTestResult(getCurrentTestSession(), testInstance, new AsyncCallback<TestOverviewDTO>() {
 				@Override
 				public void onFailure(Throwable throwable) {
@@ -314,6 +320,9 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner {
 
 		@Override
 		public void onClick(ClickEvent clickEvent) {
+			clickEvent.preventDefault();
+			clickEvent.stopPropagation();
+
 			List<TestInstance> testInstances = new ArrayList<>();
 			testInstances.add(testInstance);
 			toolkitService.getTestResults(testInstances, getCurrentTestSession(), new AsyncCallback<Map<String, Result>>() {
@@ -339,7 +348,7 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner {
 //		parent.clear();
 		for (String sectionName : testOverview.getSectionNames()) {
 			SectionOverviewDTO sectionOverview = testOverview.getSectionOverview(sectionName);
-			parent.add(new TestSectionComponent(/*toolkitService, */getCurrentTestSession(), new TestInstance(testOverview.getName()), sectionOverview, this).asWidget());
+			parent.add(new TestSectionComponent(getCurrentTestSession(), new TestInstance(testOverview.getName()), sectionOverview, this).asWidget());
 		}
 	}
 

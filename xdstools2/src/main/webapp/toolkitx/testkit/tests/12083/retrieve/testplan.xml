@@ -1,0 +1,13 @@
+
+<TestPlan>
+  <Test>12083/retrieve</Test>
+  <TestStep id="retrieve">
+  <ExpectedStatus>Success</ExpectedStatus>
+  <RetrieveTransaction>
+    <XDSb/>
+    <MetadataFile>query.xml</MetadataFile>
+    <ExpectedContents/>
+  </RetrieveTransaction>
+</TestStep>
+
+</TestPlan>

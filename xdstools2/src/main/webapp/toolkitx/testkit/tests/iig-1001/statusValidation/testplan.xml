@@ -1,0 +1,17 @@
+
+<TestPlan>
+  <Test>iig-1001/statusValidation</Test>
+  <TestStep id="statusValidation">
+  <Goal>Status value returned in SOAP Body matches "Success"
+		</Goal>
+  <NullTransaction>
+    <UseReport reportName="$status$" section="THIS" step="retrieve" useAs="returnedValue"/>
+    <Assertions>
+      <Assert id="status">
+					'returnedValue' = 'urn:oasis:names:tc:ebxml-regrep:ResponseStatusType:Success'
+				</Assert>
+    </Assertions>
+  </NullTransaction>
+</TestStep>
+
+</TestPlan>

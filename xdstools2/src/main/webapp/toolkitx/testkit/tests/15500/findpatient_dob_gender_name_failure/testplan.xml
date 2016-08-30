@@ -1,0 +1,16 @@
+
+<TestPlan>
+  <Test>FindPatient/findpatient_dob_gender_name_failure</Test>
+  <TestStep id="findpatient_dob_gender_name_failure">
+  <ExpectedStatus>Failure</ExpectedStatus>
+  <Rule>
+    <Transaction>Xcpd</Transaction>
+    <SQ>Test findpatient XGC</SQ>
+  </Rule>
+  <XcpdTransaction>
+    <ParseMetadata>False</ParseMetadata>
+    <MetadataFile>test3_findpatient_dob_gender_name_failure.xml</MetadataFile>
+  </XcpdTransaction>
+</TestStep>
+
+</TestPlan>

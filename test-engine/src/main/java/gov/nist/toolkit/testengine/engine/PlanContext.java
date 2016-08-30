@@ -1,5 +1,7 @@
 package gov.nist.toolkit.testengine.engine;
 
+import gov.nist.toolkit.common.datatypes.Hl7Date;
+import gov.nist.toolkit.commondatatypes.MetadataSupport;
 import gov.nist.toolkit.testengine.transactions.BasicTransaction;
 import gov.nist.toolkit.testenginelogging.LogFileContentBuilder;
 import gov.nist.toolkit.testenginelogging.NotALogFileException;
@@ -181,7 +183,15 @@ public class PlanContext extends BasicContext {
 		if (testConfig.verbose)
 			System.out.println("Run section " + testplanFile);
 		try {
-			results_document = build_results_document();	
+			results_document = build_results_document();
+
+			OMElement timeEle = MetadataSupport.om_factory.createOMElement("Time", null);
+			timeEle.setText(new Hl7Date().now());
+			results_document.addChild(timeEle);
+
+			OMElement siteEle = MetadataSupport.om_factory.createOMElement("Site", null);
+			siteEle.setText(testConfig.site.getName());
+			results_document.addChild(siteEle);
 
 			testLog.add_name_value(results_document, "Xdstest2_version", testConfig.testkitVersion);
 			testLog.add_name_value(results_document, "Xdstest2_args", testConfig.args);

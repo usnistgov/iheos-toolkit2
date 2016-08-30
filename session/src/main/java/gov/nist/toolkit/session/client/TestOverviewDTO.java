@@ -99,4 +99,31 @@ public class TestOverviewDTO implements Serializable, IsSerializable {
     public void setLogMapDTO(LogMapDTO logMapDTO) {
         this.logMapDTO = logMapDTO;
     }
+
+    private SectionOverviewDTO latestSection() {
+        String latest = "0";
+        SectionOverviewDTO latestSection = null;
+        try {
+            for (String name : sections.keySet()) {
+                SectionOverviewDTO section = sections.get(name);
+                try {
+                    if (section.hl7Time.compareTo(latest) > 0) {
+                        latest = section.hl7Time;
+                        latestSection = section;
+                    }
+                } catch (Exception e) {
+                    //
+                }
+            }
+        } catch (Exception e) {
+            return null;
+        }
+        return latestSection;
+    }
+
+    public String getLatestSectionTime() {
+        SectionOverviewDTO section = latestSection();
+        if (section  == null) return "";
+        return section.getDisplayableTime();
+    }
 }

@@ -1,0 +1,13 @@
+
+<TestPlan>
+  <Test>MPQ_IHEGREEN-1021/submit</Test>
+  <TestStep id="submit">
+  <ExpectedStatus>Success</ExpectedStatus>
+  <RegisterTransaction>
+    <NoPatientId/>
+    <XDSb/>
+    <MetadataFile>metadata.xml</MetadataFile>
+  </RegisterTransaction>
+</TestStep>
+
+</TestPlan>

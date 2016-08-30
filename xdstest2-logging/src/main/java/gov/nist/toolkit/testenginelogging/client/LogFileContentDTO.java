@@ -19,12 +19,15 @@ public class LogFileContentDTO implements Serializable, IsSerializable {
 	 *
 	 */
 	private static final long serialVersionUID = -2046605414265224604L;
+	private boolean hasRun = false;
 	private boolean success;
 	private List<TestStepLogContentDTO> steps = new ArrayList<>();
 	private Map<String, TestStepLogContentDTO> stepMap = new HashMap<>();
 	private String testAttribute;
 	private String test = null;
 	private String section = null;
+	String hl7Time;
+	String siteName;
 	private SectionGoalsDTO sectionGoalsDTO;
 	private String fatalError = null;
 	private List<ReportDTO> reportDTOs = new ArrayList<>();
@@ -146,6 +149,15 @@ public class LogFileContentDTO implements Serializable, IsSerializable {
 		this.stepMap = stepMap;
 	}
 
+	public void addStep(String id, TestStepLogContentDTO step) {
+		steps.add(step);
+		stepMap.put(id, step);
+	}
+
+	public TestStepLogContentDTO getStep(String stepName) {
+		return stepMap.get(stepName);
+	}
+
 	public void setTestAttribute(String testAttribute) {
 		this.testAttribute = testAttribute;
 	}
@@ -172,5 +184,29 @@ public class LogFileContentDTO implements Serializable, IsSerializable {
 
 	public void setReportDTOs(List<ReportDTO> reportDTOs) {
 		this.reportDTOs = reportDTOs;
+	}
+
+	public boolean isRun() {
+		return hasRun;
+	}
+
+	public void setHasRun(boolean hasRun) {
+		this.hasRun = hasRun;
+	}
+
+	public String getHl7Time() {
+		return hl7Time;
+	}
+
+	public void setHl7Time(String hl7Time) {
+		this.hl7Time = hl7Time;
+	}
+
+	public String getSiteName() {
+		return siteName;
+	}
+
+	public void setSiteName(String siteName) {
+		this.siteName = siteName;
 	}
 }
