@@ -108,7 +108,7 @@ public class SectionOverviewDTO implements Serializable, IsSerializable {
         }
     }
 
-    private String[] months = { "Jan", "Feb", "Mar", "April", "May", "June", "July", "Aug", "Sept", "Oct", "Nov", "Dec"};
+    private String[] months = { "", "Jan", "Feb", "Mar", "April", "May", "June", "July", "Aug", "Sept", "Oct", "Nov", "Dec"};
 
     private String asMonth(String in) {
         int ini = Integer.parseInt(in);

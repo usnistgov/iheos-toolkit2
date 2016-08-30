@@ -52,6 +52,7 @@ import gov.nist.toolkit.xdstools2.client.command.request.GeneratePidRequest;
 import gov.nist.toolkit.xdstools2.client.command.request.GetAllSimConfigsRequest;
 import gov.nist.toolkit.xdstools2.client.command.request.SendPidToRegistryRequest;
 import gov.nist.toolkit.xdstools2.client.command.response.InitializationResponse;
+import gov.nist.toolkit.session.client.ConformanceSessionValidationStatus;
 import gov.nist.toolkit.xdstools2.server.serviceManager.DashboardServiceManager;
 import gov.nist.toolkit.xdstools2.server.serviceManager.GazelleServiceManager;
 import org.apache.log4j.Logger;
@@ -474,6 +475,12 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements
 	//------------------------------------------------------------------------
 	//------------------------------------------------------------------------
 	public TkProps getTkProps() throws NoServletSessionException { return session().tkProps(); }
+
+	@Override
+	public ConformanceSessionValidationStatus validateConformanceSession(String testSession, String siteName) throws Exception {
+		return session().xdsTestServiceManager().validateConformanceSession(testSession, siteName);
+	}
+
 	public String getDefaultAssigningAuthority()  throws NoServletSessionException { return Installation.installation().propertyServiceManager().getDefaultAssigningAuthority(); }
 	public String getImplementationVersion() throws NoServletSessionException  { return Installation.installation().propertyServiceManager().getImplementationVersion(); }
 	public Map<String, String> getToolkitProperties()  throws NoServletSessionException { return Installation.installation().propertyServiceManager().getToolkitProperties(); }

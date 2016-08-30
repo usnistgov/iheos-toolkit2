@@ -14,6 +14,7 @@ import gov.nist.toolkit.results.MetadataToMetadataCollectionParser;
 import gov.nist.toolkit.results.ResultBuilder;
 import gov.nist.toolkit.results.client.*;
 import gov.nist.toolkit.results.shared.Test;
+import gov.nist.toolkit.session.client.ConformanceSessionValidationStatus;
 import gov.nist.toolkit.session.client.TestOverviewDTO;
 import gov.nist.toolkit.session.server.CodesConfigurationBuilder;
 import gov.nist.toolkit.session.server.Session;
@@ -39,8 +40,8 @@ import gov.nist.toolkit.utilities.io.Io;
 import gov.nist.toolkit.utilities.xml.OMFormatter;
 import gov.nist.toolkit.utilities.xml.Util;
 import gov.nist.toolkit.utilities.xml.XmlUtil;
-import gov.nist.toolkit.xdsexception.client.EnvironmentNotSelectedException;
 import gov.nist.toolkit.xdsexception.ExceptionUtil;
+import gov.nist.toolkit.xdsexception.client.EnvironmentNotSelectedException;
 import gov.nist.toolkit.xdsexception.client.XdsInternalException;
 import org.apache.axiom.om.OMElement;
 import org.apache.log4j.Logger;
@@ -495,7 +496,7 @@ public class XdsTestServiceManager extends CommonService {
 
 		List<String> sectionNames = testLogDetails.getSectionsFromTestDef(new File(testkitDir + File.separator + testInstance));
 
-		if (sectionNames.size() == 0) {
+		if (sectionNames.size() == 0) {   // now illegal
 			for (File f : testDir.listFiles()) {
 				if (f.isFile() && f.getName().equals("log.xml")) {
 					LogFileContentDTO ll = new LogFileContentBuilder().build(f);
@@ -518,6 +519,58 @@ public class XdsTestServiceManager extends CommonService {
 		}
 
 		return lm;
+	}
+
+	List<File> testLogDirsInTestSession(String testSession) throws IOException {
+		List<File> testLogDirs = new ArrayList<>();
+		TestLogCache testLogCache = getTestLogCache();
+		File sessionDir = testLogCache.getSessionDir(testSession);
+		File[] files = sessionDir.listFiles();
+		for (File file : files) {
+			if (!file.isDirectory()) continue;
+			testLogDirs.add(file);
+		}
+		return testLogDirs;
+	}
+
+	List<LogMapDTO> getLogsForTestSession(String testSession) throws Exception {
+		List<LogMapDTO> logs = new ArrayList<>();
+
+		for (File testLogDir : testLogDirsInTestSession(testSession)) {
+			String testId = testLogDir.getName();
+			LogMapDTO logMapDTO = buildLogMap(testLogDir, new TestInstance(testId));
+			logs.add(logMapDTO);
+		}
+
+		return logs;
+	}
+
+	/**
+	 * Validate testSession and site exist and that either the testSession is empty or it contains
+	 * only test results for that site.
+	 * @param testSession
+	 * @param siteName
+	 * @return status
+	 */
+	public ConformanceSessionValidationStatus validateConformanceSession(String testSession, String siteName) throws Exception {
+		List<LogMapDTO> logMapDTOs = getLogsForTestSession(testSession);
+		if (siteName == null || siteName.equals("")) return new ConformanceSessionValidationStatus();
+		Set<String> badSites = new HashSet<>();
+		for (LogMapDTO logMapDTO : logMapDTOs) {
+			Map<String, LogFileContentDTO> map = logMapDTO.getLogFileContentMap();
+			for (LogFileContentDTO logFileContentDTO : map.values()) {
+				String site = logFileContentDTO.getSiteName();
+				if (site == null || site.equals("")) continue;
+				if (!site.equals(siteName)) {
+					badSites.add(site);
+				}
+			}
+		}
+		if (badSites.size() == 0) return new ConformanceSessionValidationStatus();
+		StringBuilder buf = new StringBuilder();
+		buf.append("Test Session ").append(testSession).append(" already has results for these sites: ").append(badSites.toString() +
+		" you cannot use it to test " + siteName);
+		return new ConformanceSessionValidationStatus(false, buf.toString());
 	}
 
 	public CodesResult getCodesConfiguration() {
@@ -977,6 +1030,5 @@ public class XdsTestServiceManager extends CommonService {
 		return getTestOverview(testInstance.getUser(), testInstance);
 
 	}
-
 
 }

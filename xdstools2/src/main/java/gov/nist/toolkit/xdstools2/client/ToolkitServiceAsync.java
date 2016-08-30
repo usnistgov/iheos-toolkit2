@@ -29,6 +29,7 @@ import gov.nist.toolkit.xdstools2.client.command.request.GeneratePidRequest;
 import gov.nist.toolkit.xdstools2.client.command.request.GetAllSimConfigsRequest;
 import gov.nist.toolkit.xdstools2.client.command.request.SendPidToRegistryRequest;
 import gov.nist.toolkit.xdstools2.client.command.response.InitializationResponse;
+import gov.nist.toolkit.session.client.ConformanceSessionValidationStatus;
 
 import java.io.IOException;
 import java.util.Collection;
@@ -37,6 +38,7 @@ import java.util.Map;
 
 public interface ToolkitServiceAsync {
 
+	void validateConformanceSession(String testSession, String siteName, AsyncCallback<ConformanceSessionValidationStatus> callback);
 	void getInitialization(AsyncCallback<InitializationResponse> callback);
 	void getTkProps(AsyncCallback<TkProps> callback);
 	void getSessionProperties(AsyncCallback<Map<String, String>> callback);

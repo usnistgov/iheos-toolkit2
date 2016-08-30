@@ -1,9 +1,12 @@
 package gov.nist.toolkit.xdstools2.client.tabs.conformanceTest;
 
+import com.google.gwt.event.dom.client.ChangeEvent;
+import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.*;
+import gov.nist.toolkit.session.client.ConformanceSessionValidationStatus;
 import gov.nist.toolkit.xdstools2.client.HorizontalFlowPanel;
 import gov.nist.toolkit.xdstools2.client.PopupMessage;
 import gov.nist.toolkit.xdstools2.client.ToolWindow;
@@ -23,6 +26,9 @@ class TestEnvironmentDialog extends DialogBox {
     private TextBox textBox = new TextBox();
     private ListBox siteListBox = new ListBox();
     private SiteManager siteManager;
+    private HTML validationMessage = new HTML();
+    private Button validateButton = new Button("Validate");
+    private Button acceptButton = new Button("Accept");
 
     TestEnvironmentDialog(ToolWindow toolWindow, SiteManager siteManager) {
         super(true, true);
@@ -52,6 +58,7 @@ class TestEnvironmentDialog extends DialogBox {
         HorizontalFlowPanel testSessionEdit = new HorizontalFlowPanel();
         testSessionEdit.add(new HTML("Test Session"));
         testSessionListBox.setVisibleItemCount(10);
+        testSessionListBox.addChangeHandler(new TestSessionChangeHandler());
         loadTestSessions(toolWindow.getCurrentTestSession());
         testSessionEdit.add(testSessionListBox);
         testSessionEdit.add(textBox);
@@ -67,11 +74,83 @@ class TestEnvironmentDialog extends DialogBox {
         siteSelection.add(new HTML("Site under test"));
         siteSelection.add(siteListBox);
         siteListBox.setVisibleItemCount(10);
+        siteListBox.addChangeHandler(new SiteSelectionChangeHandler());
         loadSites();
 
         panel.add(siteSelection);
+        panel.add(validationMessage);
+        validateButton.setVisible(false);
+        validateButton.addClickHandler(new ValidateClickHandler());
+        panel.add(validateButton);
+        acceptButton.addClickHandler(new AcceptClickHandler());
+        panel.add(acceptButton);
 
         this.add(panel);
+    }
+
+    private class AcceptClickHandler implements ClickHandler {
+
+        @Override
+        public void onClick(ClickEvent clickEvent) {
+            siteManager.setSite(getSelectedSite());
+            toolWindow.setCurrentTestSession(getSelectedTestSession());
+            siteManager.update();
+            hide();
+        }
+    }
+
+    private String validationMessageContents =
+            "<hr /><br />Test Session can only hold test results for selected Site. Contents of Test Session must be validated before configuration can be saved.";
+
+    private class TestSessionChangeHandler implements ChangeHandler {
+
+        @Override
+        public void onChange(ChangeEvent changeEvent) {
+            validationMessage.setHTML(validationMessageContents);
+            validateButton.setVisible(true);
+        }
+    }
+
+    private class SiteSelectionChangeHandler implements ChangeHandler {
+
+        @Override
+        public void onChange(ChangeEvent changeEvent) {
+            validationMessage.setHTML(validationMessageContents);
+            validateButton.setVisible(true);
+        }
+    }
+
+    private class ValidateClickHandler implements ClickHandler {
+
+        @Override
+        public void onClick(ClickEvent clickEvent) {
+            if (getSelectedSite() == null || getSelectedSite().equals("")) {
+                new PopupMessage("Select Site first.");
+                return;
+            }
+            if (getSelectedTestSession() == null || getSelectedTestSession().equals("")) {
+                new PopupMessage("Select Test Session first.");
+                return;
+            }
+            String site = getSelectedSite();
+            String testSession = getSelectedTestSession();
+            toolkitService.validateConformanceSession(testSession, site, new AsyncCallback<ConformanceSessionValidationStatus>() {
+                @Override
+                public void onFailure(Throwable throwable) {
+                    new PopupMessage("Validation error: " + throwable.getMessage());
+                }
+
+                @Override
+                public void onSuccess(ConformanceSessionValidationStatus status) {
+                    if (status.isPass()) {
+                        new PopupMessage("Validates");
+                    }
+                    else {
+                        new PopupMessage(status.getMessage());
+                    }
+                }
+            });
+        }
     }
 
     private String getSelectedTestSession() {
@@ -80,6 +159,14 @@ class TestEnvironmentDialog extends DialogBox {
 
     private String getSelectedSite() {
         return siteListBox.getSelectedItemText();
+    }
+
+    private boolean siteSelected() {
+        return siteManager.getSite() != null && !siteManager.getSite().equals("");
+    }
+
+    private boolean testSessionSelected() {
+        return getSelectedTestSession() != null && !getSelectedTestSession().equals("");
     }
 
     private class NewTestSessionClickHandler implements ClickHandler {
@@ -145,9 +232,6 @@ class TestEnvironmentDialog extends DialogBox {
         });
     }
 
-    private boolean siteSelected() {
-        return siteManager.getSite() != null && !siteManager.getSite().equals("");
-    }
 
     private class CloseClickHandler implements ClickHandler {
 
