@@ -11,8 +11,8 @@ import static gov.nist.toolkit.xdstools2.client.ToolWindow.toolkitService;
  *
  */
 abstract public class GetTestSessionNamesCommand extends GenericCommand<CommandContext, List<String>> {
-    public GetTestSessionNamesCommand(ToolWindow toolWindow) {
-        super(toolWindow);
+    public GetTestSessionNamesCommand() {
+        super();
     }
 
     @Override

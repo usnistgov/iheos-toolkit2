@@ -10,7 +10,7 @@ import java.util.List;
 public class MyCommand {
 
     public void doit() throws Exception {
-        new GetAssigningAuthoritiesCommand(null /* ToolWindow, usually this */) {
+        new GetAssigningAuthoritiesCommand() {
 
             // Completion callback
             @Override

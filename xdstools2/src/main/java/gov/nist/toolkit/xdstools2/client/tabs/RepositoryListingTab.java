@@ -81,7 +81,7 @@ public class RepositoryListingTab extends GenericQueryTab {
 
 		byUidTable.clear();
 
-		new GetAllSitesCommand(this) {
+		new GetAllSitesCommand() {
 
 			@Override
 			public void onComplete(Collection<Site> var1) {

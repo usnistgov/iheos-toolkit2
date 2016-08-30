@@ -67,7 +67,7 @@ public class TestSessionManager2 {
     // get sessionNames from server and broadcast to all tabs
     public void load() { load(fromCookie()); }
     public void load(final String initialSelection) {
-        new GetTestSessionNamesCommand(Xdstools2.getHomeTab()) {
+        new GetTestSessionNamesCommand() {
 
             @Override
             public void onComplete(List<String> var1) {

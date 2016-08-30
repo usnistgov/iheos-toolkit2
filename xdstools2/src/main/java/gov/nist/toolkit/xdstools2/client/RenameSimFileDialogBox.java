@@ -6,12 +6,11 @@ import com.google.gwt.event.dom.client.KeyPressEvent;
 import com.google.gwt.event.dom.client.KeyPressHandler;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.*;
+import gov.nist.toolkit.xdstools2.client.util.ClientFactory;
 
 import static gov.nist.toolkit.xdstools2.client.ToolWindow.toolkitService;
 
 public class RenameSimFileDialogBox extends DialogBox {
-//	final protected ToolkitServiceAsync toolkitService = GWT
-//	.create(ToolkitService.class);
 	TextBox newNameBox;
 	String oldSimFileSpec;
 	AsyncCallback afterRename;

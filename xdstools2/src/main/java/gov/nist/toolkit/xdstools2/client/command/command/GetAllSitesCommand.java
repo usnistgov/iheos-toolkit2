@@ -1,7 +1,6 @@
 package gov.nist.toolkit.xdstools2.client.command.command;
 
 import gov.nist.toolkit.sitemanagement.client.Site;
-import gov.nist.toolkit.xdstools2.client.ToolWindow;
 import gov.nist.toolkit.xdstools2.client.command.CommandContext;
 
 import java.util.Collection;
@@ -12,8 +11,8 @@ import static gov.nist.toolkit.xdstools2.client.ToolWindow.toolkitService;
  *
  */
 public abstract class GetAllSitesCommand extends GenericCommand<CommandContext, Collection<Site>> {
-    public GetAllSitesCommand(ToolWindow toolWindow) {
-        super(toolWindow);
+    public GetAllSitesCommand() {
+        super();
     }
 
     @Override

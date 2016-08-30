@@ -30,8 +30,7 @@ public class SiteSelectionWidget extends Composite   {
 	CoupledTransactions couplings;
 	ActorType actorType;
 	TransactionOfferings transactionOfferings;
-//	ToolkitServiceAsync toolkitService;
-	
+
 	boolean samlSelected = false;
 	boolean tlsSelected = true;
 	
@@ -41,13 +40,11 @@ public class SiteSelectionWidget extends Composite   {
 	 * @param couplings - Coupled transactions. Pass null if none.
 	 * @param actorType
 	 */
-	public SiteSelectionWidget(CoupledTransactions couplings, ActorType actorType/*,
-			ToolkitServiceAsync toolkitService */
+	public SiteSelectionWidget(CoupledTransactions couplings, ActorType actorType
 			) {
 		this.couplings = couplings;
 		this.actorType = actorType;
-//		this.toolkitService = toolkitService;
-		
+
 		transactionTypes = actorType.getTransactions();
 		if (this.couplings == null)
 			this.couplings = new CoupledTransactions();
@@ -255,7 +252,7 @@ public class SiteSelectionWidget extends Composite   {
 	}
 
 	void reloadTransactionOfferings() {
-		new GetTransactionOfferingsCommand(Xdstools2.getHomeTab()) {
+		new GetTransactionOfferingsCommand() {
 
 			@Override
 			public void onComplete(TransactionOfferings var1) {

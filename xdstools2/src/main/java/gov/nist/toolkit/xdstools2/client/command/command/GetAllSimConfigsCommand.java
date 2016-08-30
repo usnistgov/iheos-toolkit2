@@ -1,7 +1,6 @@
 package gov.nist.toolkit.xdstools2.client.command.command;
 
 import gov.nist.toolkit.actorfactory.client.SimulatorConfig;
-import gov.nist.toolkit.xdstools2.client.ToolWindow;
 import gov.nist.toolkit.xdstools2.client.command.request.GetAllSimConfigsRequest;
 
 import java.util.List;
@@ -12,8 +11,8 @@ import static gov.nist.toolkit.xdstools2.client.ToolWindow.toolkitService;
  *
  */
 abstract public class GetAllSimConfigsCommand extends GenericCommand<GetAllSimConfigsRequest, List<SimulatorConfig>> {
-    public GetAllSimConfigsCommand(ToolWindow toolWindow) {
-        super(toolWindow);
+    public GetAllSimConfigsCommand() {
+        super();
     }
 
     @Override

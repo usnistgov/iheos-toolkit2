@@ -1,6 +1,5 @@
 package gov.nist.toolkit.xdstools2.client.command.command;
 
-import gov.nist.toolkit.xdstools2.client.ToolWindow;
 import gov.nist.toolkit.xdstools2.client.command.CommandContext;
 
 import java.util.List;
@@ -17,8 +16,8 @@ import static gov.nist.toolkit.xdstools2.client.ToolWindow.toolkitService;
  * from this class.
  */
 abstract public class GetAssigningAuthoritiesCommand extends GenericCommand<CommandContext, List<String>> {
-    public GetAssigningAuthoritiesCommand(ToolWindow toolWindow) {
-        super(toolWindow);
+    public GetAssigningAuthoritiesCommand() {
+        super();
     }
 
     @Override

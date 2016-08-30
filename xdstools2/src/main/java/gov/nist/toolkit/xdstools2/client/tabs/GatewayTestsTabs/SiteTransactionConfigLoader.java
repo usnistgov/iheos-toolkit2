@@ -8,14 +8,12 @@ import gov.nist.toolkit.xdstools2.client.command.command.GetTransactionOfferings
  *
  */
 public class SiteTransactionConfigLoader {
-//    ToolkitServiceAsync toolkitService;
 
-    public SiteTransactionConfigLoader(/*ToolkitServiceAsync toolkitService*/) {
-//        this.toolkitService = toolkitService;
+    public SiteTransactionConfigLoader() {
     }
 
     public void load(final CompletionHandler<TransactionOfferings> handler) {
-        new GetTransactionOfferingsCommand(Xdstools2.getHomeTab()) {
+        new GetTransactionOfferingsCommand() {
             @Override
             public void onComplete(TransactionOfferings var1) {
                 handler.OnCompletion(var1);
