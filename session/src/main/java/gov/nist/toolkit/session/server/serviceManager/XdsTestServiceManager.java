@@ -373,8 +373,12 @@ public class XdsTestServiceManager extends CommonService {
 
 	public List<TestOverviewDTO> getTestsOverview(String sessionName, List<TestInstance> testInstances) throws Exception {
 		List<TestOverviewDTO> results = new ArrayList<>();
-		for (TestInstance testInstance : testInstances) {
-			results.add(getTestOverview(sessionName, testInstance));
+		try {
+			for (TestInstance testInstance : testInstances) {
+				results.add(getTestOverview(sessionName, testInstance));
+			}
+		} catch (Exception e) {
+			throw e;
 		}
 		return results;
 	}
