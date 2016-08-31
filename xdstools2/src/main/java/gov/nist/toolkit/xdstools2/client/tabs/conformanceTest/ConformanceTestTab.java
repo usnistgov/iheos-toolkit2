@@ -265,21 +265,23 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner {
 			header.add(inspect);
 		}
 
+		body.add(new HTML("<p><b>Description:</b></p>"));
 		body.add(new HTML(testOverview.getDescription()));
 
-		// display sections within test
-		displaySections(testOverview, body);
-
+		// display an interaction sequence diagram
 		if (testOverview.isRun()) {
-			// display an interaction sequence diagram
 			displayInteractionDiagram(testOverview, body);
 		}
+
+		// display sections within test
+		body.add(new HTML("<p><b>Sections:</b></p>"));
+		displaySections(testOverview, body);
 
 	}
 
 	private void displayInteractionDiagram(TestOverviewDTO testResultDTO, FlowPanel body) {
 		InteractionDiagram diagram = new InteractionDiagram(testResultDTO);
-		body.add(new HTML("<p style='font-weight:bold'>Interaction Sequence:</p>"));
+		body.add(new HTML("<p><b>Interaction Sequence:</b></p>"));
 		body.add(diagram);
 	}
 

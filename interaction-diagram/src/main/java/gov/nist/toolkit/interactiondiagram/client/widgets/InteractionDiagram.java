@@ -14,6 +14,7 @@ import org.vectomatic.dom.svg.OMSVGDocument;
 import org.vectomatic.dom.svg.OMSVGElement;
 import org.vectomatic.dom.svg.OMSVGGElement;
 import org.vectomatic.dom.svg.OMSVGLineElement;
+import org.vectomatic.dom.svg.OMSVGPathElement;
 import org.vectomatic.dom.svg.OMSVGPolygonElement;
 import org.vectomatic.dom.svg.OMSVGRectElement;
 import org.vectomatic.dom.svg.OMSVGSVGElement;
@@ -27,6 +28,7 @@ import java.util.List;
 /**
  * Created by skb1 Sunil.Bhaskarla on 8/12/2016.
  */
+// TODO: Use a style sheet.
 public class InteractionDiagram extends Composite {
 
     int g_depth = 0;
@@ -34,8 +36,8 @@ public class InteractionDiagram extends Composite {
     int g_y = 0;
     int ll_boxWidth = 70;
     int ll_boxHeight = 25;
-    int ll_margin = 40;
-    int connection_topmargin = 22;
+    int ll_margin = 48; // 40
+    int connection_topmargin = 29; // 22
     int diagramHeight = 0;
     int diagramWidth = 0;
 
@@ -314,7 +316,7 @@ public class InteractionDiagram extends Composite {
             int y = ll_boxHeight;
             line.setAttribute("y1",""+y);
             line.setAttribute("x2",""+ll.getLl_stem_center());
-            line.setAttribute("y2",""+(g_y+10));
+            line.setAttribute("y2",""+(g_y+10)); // +10
             line.setAttribute("style","stroke:rgb(0,0,0);stroke-dasharray:2,2");
 
             svg.appendChild(line);
@@ -386,8 +388,6 @@ public class InteractionDiagram extends Composite {
             text.setAttribute("text-anchor","middle");
             text.setAttribute("font-family","Verdana");
             text.setAttribute("font-size","10");
-            if (InteractingEntity.INTERACTIONSTATUS.ERROR.equals(status))
-                text.setAttribute("fill","red");
 
             String shortDesc = description;
             if (description!=null && description.length()>21)
@@ -395,6 +395,28 @@ public class InteractionDiagram extends Composite {
             OMText textValue = doc.createTextNode(shortDesc);
             text.appendChild(textValue);
             group.appendChild(text);
+
+            if (InteractingEntity.INTERACTIONSTATUS.ERROR.equals(status)) {
+                int errorBoxX = (centerTextX-5);
+                int errorBoxY = y-27;
+                OMSVGPathElement errorBox = doc.createSVGPathElement();
+
+                errorBox.setAttribute("d","M " + errorBoxX + " " + errorBoxY // rest is relative
+                        + " l10 0 l3 5 l0 5 l-3 5 l-10 0 l-3 -5 l0 -5 z");
+                errorBox.setAttribute("style","fill:rgb(255,255,255);stroke-width:.5;stroke:rgb(255,0,0)");
+                group.appendChild(errorBox);
+
+                OMSVGTextElement xMark = doc.createSVGTextElement();
+                xMark.setAttribute("x",""+(errorBoxX+1));
+                xMark.setAttribute("y",""+(errorBoxY+12));
+                xMark.setAttribute("font-size","11");
+                xMark.setAttribute("font-weight","bold");
+                xMark.setAttribute("fill","red");
+                OMText xMarkText = doc.createTextNode("X");
+                xMark.appendChild(xMarkText);
+                group.appendChild(xMark);
+            }
+
 
         } else {
             if (x2<x1)
