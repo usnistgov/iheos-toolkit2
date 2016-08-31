@@ -8,6 +8,8 @@ import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.*;
+import gov.nist.toolkit.interactiondiagram.client.events.DiagramClickedEvent;
+import gov.nist.toolkit.interactiondiagram.client.events.DiagramPartClickedEventHandler;
 import gov.nist.toolkit.interactiondiagram.client.widgets.InteractionDiagram;
 import gov.nist.toolkit.results.client.Result;
 import gov.nist.toolkit.results.client.TestInstance;
@@ -82,6 +84,18 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner {
 
 		// Initial load of tests in a test session
 		loadTestCollections();
+
+		// Register the Diagram clicked event handler
+		Xdstools2.getEventBus().addHandler(DiagramClickedEvent.TYPE, new DiagramPartClickedEventHandler() {
+			@Override
+			public void onClicked(TestInstance testInstance, InteractionDiagram.DiagramPart part) {
+				if (InteractionDiagram.DiagramPart.RequestConnector.equals(part)) {
+					List<TestInstance> testInstances = new ArrayList<>();
+					testInstances.add(testInstance);
+					displayInspectorTab(testInstances);
+				}
+			}
+		});
 	}
 
 	// actor selection changes
@@ -280,7 +294,7 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner {
 	}
 
 	private void displayInteractionDiagram(TestOverviewDTO testResultDTO, FlowPanel body) {
-		InteractionDiagram diagram = new InteractionDiagram(testResultDTO);
+		InteractionDiagram diagram = new InteractionDiagram(Xdstools2.getEventBus(), testResultDTO);
 		body.add(new HTML("<p><b>Interaction Sequence:</b></p>"));
 		body.add(diagram);
 	}
@@ -340,22 +354,26 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner {
 
 			List<TestInstance> testInstances = new ArrayList<>();
 			testInstances.add(testInstance);
-			toolkitService.getTestResults(testInstances, getCurrentTestSession(), new AsyncCallback<Map<String, Result>>() {
-				@Override
-				public void onFailure(Throwable throwable) {
-					new PopupMessage(throwable.getMessage());
-				}
-
-				@Override
-				public void onSuccess(Map<String, Result> resultMap) {
-					MetadataInspectorTab itab = new MetadataInspectorTab();
-					itab.setResults(resultMap.values());
-					itab.setSiteSpec(new SiteSpec(currentSiteName));
-//					itab.setToolkitService(me.toolkitService);
-					itab.onTabLoad(true, "Insp");
-				}
-			});
+			displayInspectorTab(testInstances);
 		}
+	}
+
+	private void displayInspectorTab(List<TestInstance> testInstances) {
+		toolkitService.getTestResults(testInstances, getCurrentTestSession(), new AsyncCallback<Map<String, Result>>() {
+            @Override
+            public void onFailure(Throwable throwable) {
+                new PopupMessage(throwable.getMessage());
+            }
+
+            @Override
+            public void onSuccess(Map<String, Result> resultMap) {
+                MetadataInspectorTab itab = new MetadataInspectorTab();
+                itab.setResults(resultMap.values());
+                itab.setSiteSpec(new SiteSpec(currentSiteName));
+//					itab.setToolkitService(me.toolkitService);
+                itab.onTabLoad(true, "Insp");
+            }
+        });
 	}
 
 	// display sections within test

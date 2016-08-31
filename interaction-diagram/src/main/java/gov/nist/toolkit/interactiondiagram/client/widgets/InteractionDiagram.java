@@ -4,9 +4,13 @@ package gov.nist.toolkit.interactiondiagram.client.widgets;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.event.dom.client.MouseDownEvent;
+import com.google.gwt.event.dom.client.MouseDownHandler;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
+import com.google.web.bindery.event.shared.EventBus;
+import gov.nist.toolkit.interactiondiagram.client.events.DiagramClickedEvent;
 import gov.nist.toolkit.interactionmodel.client.InteractingEntity;
 import gov.nist.toolkit.session.client.SectionOverviewDTO;
 import gov.nist.toolkit.session.client.TestOverviewDTO;
@@ -43,6 +47,13 @@ public class InteractionDiagram extends Composite {
 
     OMSVGDocument doc = OMSVGParser.createDocument();
     OMSVGSVGElement svg =  doc.createSVGSVGElement();
+
+    TestOverviewDTO testOverviewDTO;
+    EventBus eventBus;
+
+    public static enum DiagramPart {
+       RequestConnector
+    }
 
     /**
      * Touch points of a life line (LL)
@@ -201,8 +212,10 @@ public class InteractionDiagram extends Composite {
         initWidget(container);
     }
 
-    public InteractionDiagram(TestOverviewDTO testOverviewDTO) {
+    public InteractionDiagram(EventBus eventBus, TestOverviewDTO testOverviewDTO) {
         setDiagramArea(diagramHeight, diagramWidth);
+        setEventBus(eventBus);
+        setTestOverviewDTO(testOverviewDTO);
 
         List<InteractingEntity> interactingEntity = transformTestResultToInteractingEntity(testOverviewDTO);
         if (interactingEntity==null)
@@ -371,6 +384,7 @@ public class InteractionDiagram extends Composite {
         line.setAttribute("style","stroke:rgb(0,0,0);stroke-width:1;" + ((response)?"stroke-dasharray:4,8":""));
 
         OMSVGGElement group = doc.createSVGGElement();
+        group.setAttribute("style","cursor:pointer");
         group.appendChild(line);
 
         if (!response) {
@@ -426,6 +440,12 @@ public class InteractionDiagram extends Composite {
         }
 
 
+        group.addMouseDownHandler(new MouseDownHandler() {
+            @Override
+            public void onMouseDown(MouseDownEvent mouseDownEvent) {
+                getEventBus().fireEvent(new DiagramClickedEvent(getTestOverviewDTO().getTestInstance(), DiagramPart.RequestConnector));
+            }
+        });
 
 
         // Min/max Touch points
@@ -661,4 +681,19 @@ public class InteractionDiagram extends Composite {
         this.diagramWidth = diagramWidth;
     }
 
+    public EventBus getEventBus() {
+        return eventBus;
+    }
+
+    public void setEventBus(EventBus eventBus) {
+        this.eventBus = eventBus;
+    }
+
+    public TestOverviewDTO getTestOverviewDTO() {
+        return testOverviewDTO;
+    }
+
+    public void setTestOverviewDTO(TestOverviewDTO testOverviewDTO) {
+        this.testOverviewDTO = testOverviewDTO;
+    }
 }
