@@ -4,8 +4,6 @@ package gov.nist.toolkit.interactiondiagram.client.widgets;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.event.dom.client.MouseDownEvent;
-import com.google.gwt.event.dom.client.MouseDownHandler;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
@@ -23,6 +21,7 @@ import org.vectomatic.dom.svg.OMSVGPolygonElement;
 import org.vectomatic.dom.svg.OMSVGRectElement;
 import org.vectomatic.dom.svg.OMSVGSVGElement;
 import org.vectomatic.dom.svg.OMSVGTextElement;
+import org.vectomatic.dom.svg.OMSVGTitleElement;
 import org.vectomatic.dom.svg.OMText;
 import org.vectomatic.dom.svg.utils.OMSVGParser;
 
@@ -38,10 +37,17 @@ public class InteractionDiagram extends Composite {
     int g_depth = 0;
     int g_x = 0;
     int g_y = 0;
-    int ll_boxWidth = 70;
-    int ll_boxHeight = 25;
-    int ll_margin = 48; // 40
-    int connection_topmargin = 29; // 22
+
+    static final int ll_boxWidth = 70;
+    static final int ll_boxHeight = 25;
+    static final int LL_FEET = 10; // life line feet (extra) lines after the last transaction
+
+    int ll_margin = 108; // The with of transaction connector
+    int maxLabelDisplayLen = 0;
+    int max_label_len = 27;
+    int connection_topmargin = 32; // top margin of a transaction
+    int error_box_offset = 30;
+
     int diagramHeight = 0;
     int diagramWidth = 0;
 
@@ -212,8 +218,7 @@ public class InteractionDiagram extends Composite {
         initWidget(container);
     }
 
-    public InteractionDiagram(EventBus eventBus, TestOverviewDTO testOverviewDTO) {
-        setDiagramArea(diagramHeight, diagramWidth);
+    public InteractionDiagram(EventBus eventBus, final TestOverviewDTO testOverviewDTO) {
         setEventBus(eventBus);
         setTestOverviewDTO(testOverviewDTO);
 
@@ -221,13 +226,40 @@ public class InteractionDiagram extends Composite {
         if (interactingEntity==null)
             return;
 
+        if (maxLabelDisplayLen>max_label_len) {
+            maxLabelDisplayLen=max_label_len;
+            ll_margin = 108;
+            connection_topmargin = 32;
+            error_box_offset = connection_topmargin - 1;
+        }
+        else {
+            ll_margin = maxLabelDisplayLen * 4;
+            connection_topmargin = 28;
+            error_box_offset = connection_topmargin - 2;
+        }
+
         Element svg = draw(interactingEntity);
-        setDiagramArea(g_y+10,g_x);
+        setDiagramArea(g_y+ LL_FEET,g_x);
 
         FlowPanel container = new FlowPanel();
         container.getElement().appendChild(svg);
 
         initWidget(container);
+    }
+
+
+    String makeLabel(SectionOverviewDTO sectionOverviewDTO) {
+        String label = "";
+        if (sectionOverviewDTO.getStepNames().size()>0)
+            label = sectionOverviewDTO.getName() + ": " + sectionOverviewDTO.getStepNames().get(0);
+        else
+            label = sectionOverviewDTO.getName();
+
+        int labelLen = label.length();
+        if (labelLen>maxLabelDisplayLen)
+            maxLabelDisplayLen=labelLen;
+
+        return label;
     }
 
     List<InteractingEntity> transformTestResultToInteractingEntity(TestOverviewDTO testResultDTO) {
@@ -247,7 +279,7 @@ public class InteractionDiagram extends Composite {
                 source.setName("Toolkit"); // TODO: Source should come from the SectionOverviewDTO
                 InteractingEntity destination = new InteractingEntity();
                 destination.setName(sectionOverviewDTO.getSite());
-                destination.setSourceInteractionLabel(sectionOverviewDTO.getName());
+                destination.setSourceInteractionLabel(makeLabel(sectionOverviewDTO));
                 if (sectionOverviewDTO.isPass())
                     destination.setStatus(InteractingEntity.INTERACTIONSTATUS.COMPLETED);
                 else
@@ -384,10 +416,11 @@ public class InteractionDiagram extends Composite {
         line.setAttribute("style","stroke:rgb(0,0,0);stroke-width:1;" + ((response)?"stroke-dasharray:4,8":""));
 
         OMSVGGElement group = doc.createSVGGElement();
-        group.setAttribute("style","cursor:pointer");
         group.appendChild(line);
 
         if (!response) {
+            group.setAttribute("style","cursor:pointer");
+
             if (x2>x1)
                 group.appendChild(arrow_request_right(x2, y));
             else
@@ -404,21 +437,33 @@ public class InteractionDiagram extends Composite {
             text.setAttribute("font-size","10");
 
             String shortDesc = description;
-            if (description!=null && description.length()>21)
-                shortDesc = description.substring(0,18) + "..."; // Truncate so the text does not overflow
+            if (description!=null && description.length()>maxLabelDisplayLen) {
+                shortDesc = description.substring(0, maxLabelDisplayLen-3) + "..."; // Truncate so the text does not overflow
+                OMSVGTitleElement title = doc.createSVGTitleElement();
+                OMText titleText = doc.createTextNode(description);
+                title.appendChild(titleText);
+                group.appendChild(title);
+            }
+
             OMText textValue = doc.createTextNode(shortDesc);
             text.appendChild(textValue);
             group.appendChild(text);
 
             if (InteractingEntity.INTERACTIONSTATUS.ERROR.equals(status)) {
+                OMSVGGElement errorGroup = doc.createSVGGElement();
+                OMSVGTitleElement errorTitle = doc.createSVGTitleElement();
+                OMText errorText = doc.createTextNode("Error: Transaction failed.");
+                errorTitle.appendChild(errorText);
+                errorGroup.appendChild(errorTitle);
+
                 int errorBoxX = (centerTextX-5);
-                int errorBoxY = y-27;
+                int errorBoxY = y-error_box_offset;
                 OMSVGPathElement errorBox = doc.createSVGPathElement();
 
                 errorBox.setAttribute("d","M " + errorBoxX + " " + errorBoxY // rest is relative
                         + " l10 0 l3 5 l0 5 l-3 5 l-10 0 l-3 -5 l0 -5 z");
                 errorBox.setAttribute("style","fill:rgb(255,255,255);stroke-width:.5;stroke:rgb(255,0,0)");
-                group.appendChild(errorBox);
+                errorGroup.appendChild(errorBox);
 
                 OMSVGTextElement xMark = doc.createSVGTextElement();
                 xMark.setAttribute("x",""+(errorBoxX+1));
@@ -428,7 +473,8 @@ public class InteractionDiagram extends Composite {
                 xMark.setAttribute("fill","red");
                 OMText xMarkText = doc.createTextNode("X");
                 xMark.appendChild(xMarkText);
-                group.appendChild(xMark);
+                errorGroup.appendChild(xMark);
+                group.appendChild(errorGroup);
             }
 
 
@@ -439,14 +485,13 @@ public class InteractionDiagram extends Composite {
                 group.appendChild(arrow_response_right(x2, y));
         }
 
-
-        group.addMouseDownHandler(new MouseDownHandler() {
-            @Override
-            public void onMouseDown(MouseDownEvent mouseDownEvent) {
-                getEventBus().fireEvent(new DiagramClickedEvent(getTestOverviewDTO().getTestInstance(), DiagramPart.RequestConnector));
-            }
-        });
-
+        group.addClickHandler(new ClickHandler() {
+                                  @Override
+                                  public void onClick(ClickEvent clickEvent) {
+                                      getEventBus().fireEvent(new DiagramClickedEvent(getTestOverviewDTO().getTestInstance(), DiagramPart.RequestConnector));
+                                  }
+                              }
+        );
 
         // Min/max Touch points
         // Origin y
