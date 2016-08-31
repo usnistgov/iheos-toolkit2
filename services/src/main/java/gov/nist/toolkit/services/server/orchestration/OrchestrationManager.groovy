@@ -4,6 +4,7 @@ import gov.nist.toolkit.installation.Installation
 import gov.nist.toolkit.services.client.IdsOrchestrationRequest
 import gov.nist.toolkit.services.client.IgOrchestrationRequest
 import gov.nist.toolkit.services.client.IigOrchestrationRequest
+import gov.nist.toolkit.services.client.RSNAEdgeOrchestrationRequest
 import gov.nist.toolkit.services.client.RawResponse
 import gov.nist.toolkit.services.client.RgOrchestrationRequest
 import gov.nist.toolkit.services.client.RigOrchestrationRequest
@@ -87,5 +88,18 @@ class OrchestrationManager {
         }
     }
 
+    public RawResponse buildRSNAEdgeTestEnvironment(Session session, RSNAEdgeOrchestrationRequest request) {
+        try {
+            ToolkitApi api
+            if(Installation.installation().warHome()) {
+                api = ToolkitApi.forNormalUse(session)
+            } else {
+                api = ToolkitApi.forInternalUse()
+            }
+            return new RSNAEdgeOrchestrationBuilder(api, session, request).buildTestEnvironment();
+        } catch (Exception e) {
+            return RawResponseBuilder.build(e);
+        }
+    }
 
 }

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <TestPlan>
 	<!-- Data for this test is loaded by xxxx -->
-	<Test>iig-1001</Test>
+	<Test>rsnaedge-1001</Test>
 	<TestStep id="retrieve">
 		<Goal>Imaging Document Set Retrieve of a single image</Goal>
 		<ExpectedStatus>Success</ExpectedStatus>

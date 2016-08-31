@@ -4,6 +4,7 @@ import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.*;
+import edu.emory.mathcs.backport.java.util.Arrays;
 import gov.nist.toolkit.actorfactory.client.SimulatorConfig;
 import gov.nist.toolkit.actortransaction.client.ActorType;
 import gov.nist.toolkit.configDatatypes.SimulatorProperties;
@@ -35,7 +36,7 @@ public class RSNAEdgeTestTab extends GenericQueryTab implements GatewayTool {
 //    final protected ToolkitServiceAsync toolkitService = GWT
 //            .create(ToolkitService.class);
     String selectedActor = ActorType.RSNA_EDGE_DEVICE.getShortName();
-    List<SimulatorConfig> rgConfigs;
+    SimulatorConfig config;
     GenericQueryTab genericQueryTab;
     static final String COLLECTION_NAME =  "rsnaedgetool";
     final TestSelectionManager testSelectionManager;
@@ -115,8 +116,8 @@ public class RSNAEdgeTestTab extends GenericQueryTab implements GatewayTool {
            
            "<h2>Build Test Environment</h2>" +
            
-           "<p><strike>The Build Test Environment button will create the necessary " +
-           "simulators to test your Initiating Imaging Gateway:  an Imaging " +
+           "<p><The Build Test Environment button will create the necessary " +
+           "simulators to test your RSNA Edge Device:  <strike>an Imaging " +
            "Document Consumer to drive the test, three Responding Imaging " +
            "Gateways, along with necessary Imaging Document Sources to " + 
            "service requests from your Initiating Imaging Gateway. The " +
@@ -192,11 +193,12 @@ public class RSNAEdgeTestTab extends GenericQueryTab implements GatewayTool {
 			getInspectButton().setEnabled(false);
 
             Map<String, String> parms = new HashMap<>();
-            parms.put("$testdata_home$", rgConfigs.get(0).get(SimulatorProperties.homeCommunityId).asString());
+            parms.put("$testdata_home$", config.get(SimulatorProperties.homeCommunityId).asString());
 
             Panel logLaunchButtonPanel = rigForRunning();
             logLaunchButtonPanel.clear();
-            logLaunchButtonPanel.add(testSelectionManager.buildLogLauncher(rgConfigs));
+//            List configs = Arrays.asList(config);
+//            logLaunchButtonPanel.add(testSelectionManager.buildLogLauncher(configs));
             String testToRun = selectedTest;
             if (TestSelectionManager.ALL.equals(testToRun)) {
                 testToRun = "tc:" + COLLECTION_NAME;

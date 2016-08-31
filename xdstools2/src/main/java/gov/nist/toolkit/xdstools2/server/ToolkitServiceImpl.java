@@ -241,7 +241,11 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements
 		if (s == null) return RawResponseBuilder.build(new NoServletSessionException(""));
 		return new OrchestrationManager().buildIdsTestEnvironment(s, request);
 	}
-
+	public RawResponse buildRSNAEdgeTestOrchestration(RSNAEdgeOrchestrationRequest request) {
+		Session s = getSession();
+		if (s == null) return RawResponseBuilder.build(new NoServletSessionException(""));
+		return new OrchestrationManager().buildRSNAEdgeTestEnvironment(s, request);
+	}
 	/**
 	 * Get list of section names defined for the test in the order they should be executed
      * @param testSession test session name (mesa session name)
