@@ -2,14 +2,11 @@ package gov.nist.toolkit.xdstools2.client.tabs;
 
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.CheckBox;
-import com.google.gwt.user.client.ui.HTML;
 import gov.nist.toolkit.configDatatypes.client.TransactionType;
-import gov.nist.toolkit.interactiondiagram.client.widgets.InteractionDiagram;
 import gov.nist.toolkit.interactionmodel.client.InteractingEntity;
 import gov.nist.toolkit.interactionmodel.client.InteractionIdentifierTerm;
 import gov.nist.toolkit.results.client.Result;
 import gov.nist.toolkit.xdstools2.client.CoupledTransactions;
-import gov.nist.toolkit.xdstools2.client.PopupMessage;
 import gov.nist.toolkit.xdstools2.client.tabs.genericQueryTab.AbstractTool;
 
 import java.util.ArrayList;
@@ -70,7 +67,7 @@ public class FindDocumentsTab extends AbstractTool {
 		@Override
 		public void onSuccess(List<Result> results) {
 			queryCallback.onSuccess(results);
-			try {
+//			try {
 				/*
 				if (getInteractionModel()!=null) {
 					getInteractionModel().setEnd(new Date());
@@ -93,7 +90,6 @@ public class FindDocumentsTab extends AbstractTool {
 				else {
 					new PopupMessage("Null origin");
 				}
-				*/
 
 				InteractionDiagram diagram = new InteractionDiagram(testTwoActors(), 500,900);
 //							Element svg = diagram.draw(interactingEntity,0);
@@ -102,7 +98,8 @@ public class FindDocumentsTab extends AbstractTool {
 //							System.out.println(svg);
 				resultPanel.add(new HTML("<p style='font-weight:bold'>Interaction Sequence:</p>"));
 				resultPanel.add(diagram);
-			} catch (Throwable t){ new PopupMessage(t.toString());}
+				*/
+//			} catch (Throwable t){ new PopupMessage(t.toString());}
 
 		}
 	};
