@@ -32,6 +32,7 @@ import gov.nist.toolkit.xdstools2.client.command.request.GeneratePidRequest;
 import gov.nist.toolkit.xdstools2.client.command.request.GetAllSimConfigsRequest;
 import gov.nist.toolkit.xdstools2.client.command.request.SendPidToRegistryRequest;
 import gov.nist.toolkit.xdstools2.client.command.response.InitializationResponse;
+import gov.nist.toolkit.session.client.ConformanceSessionValidationStatus;
 
 import java.io.IOException;
 import java.util.Collection;
@@ -42,9 +43,10 @@ import java.util.Map;
 @RemoteServiceRelativePath("toolkit")
 public interface ToolkitService extends RemoteService  {
 
-    public TkProps getTkProps() throws NoServletSessionException;
+    TkProps getTkProps() throws NoServletSessionException;
 
-	public InitializationResponse getInitialization() throws Exception;
+	ConformanceSessionValidationStatus validateConformanceSession(String testSession, String siteName) throws Exception;
+	InitializationResponse getInitialization() throws Exception;
 	
 	/* Test management */
 	public Map<String, Result> getTestResults(List<TestInstance> testInstances, String testSession) throws NoServletSessionException ;
@@ -194,6 +196,7 @@ public interface ToolkitService extends RemoteService  {
     RawResponse buildRigTestOrchestration(RigOrchestrationRequest request);
 	RawResponse buildRgTestOrchestration(RgOrchestrationRequest request);
 	RawResponse buildIdsTestOrchestration(IdsOrchestrationRequest request);
+	RawResponse buildRepTestOrchestration(RepOrchestrationRequest request);
 
         Map<String, String> getSessionProperties() throws NoServletSessionException;
 	 void setSessionProperties(Map<String, String> props) throws NoServletSessionException;

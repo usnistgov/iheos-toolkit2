@@ -116,7 +116,7 @@ public class EnvironmentManager extends Composite{
 	@SuppressWarnings("rawtypes")
 	private void loadEnvironmentNames(final String initialEnvironmentName) {
 
-		new GetEnvironmentNamesCommand(Xdstools2.getHomeTab()) {
+		new GetEnvironmentNamesCommand() {
 
 			@Override
 			public void onComplete(List<String> result) {

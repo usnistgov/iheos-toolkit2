@@ -47,4 +47,8 @@ public class Xdstools2EP implements EntryPoint{
         // Goes to place represented on URL or default place
         historyHandler.handleCurrentHistory();
     }
+
+    public static final ClientFactory getClientFactory(){
+        return CLIENT_FACTORY;
+    }
 }

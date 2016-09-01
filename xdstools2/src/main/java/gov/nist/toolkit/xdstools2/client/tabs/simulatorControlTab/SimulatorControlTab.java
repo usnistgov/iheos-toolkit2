@@ -99,7 +99,7 @@ public class SimulatorControlTab extends GenericQueryTab {
 
 		// force loading of sites in the back end
 		// funny errors occur without this
-		new GetAllSitesCommand(this) {
+		new GetAllSitesCommand() {
 
 			@Override
 			public void onComplete(Collection<Site> var1) {
@@ -187,7 +187,7 @@ public class SimulatorControlTab extends GenericQueryTab {
 	}
 
 	void loadSimStatus(String user)  {
-		new GetAllSimConfigsCommand(this) {
+		new GetAllSimConfigsCommand() {
 
 			@Override
 			public void onComplete(List<SimulatorConfig> var1) {

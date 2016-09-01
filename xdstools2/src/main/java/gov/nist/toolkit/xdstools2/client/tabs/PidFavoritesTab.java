@@ -39,7 +39,6 @@ public class PidFavoritesTab extends GenericQueryTab {
     static List<TransactionType> transactionTypes = new ArrayList<TransactionType>();
     static {transactionTypes.add(TransactionType.REGISTER);}
     static CoupledTransactions couplings = new CoupledTransactions();
-//    private static final ToolkitServiceAsync tkServices = GWT.create(ToolkitService.class);
 
     // table selection tool
     final MultiSelectionModel<Pid> selectionModel = new MultiSelectionModel<Pid>();
@@ -49,23 +48,19 @@ public class PidFavoritesTab extends GenericQueryTab {
     ListDataProvider<Pid> model = new ListDataProvider<Pid>();
 
     private TextArea pidBox = new TextArea();
-    private VerticalPanel assigningAuthorityPanel = new VerticalPanel();
     private HTML selectedPids = new HTML();
-
+    private VerticalPanel assigningAuthorityPanel = new VerticalPanel();
     Map<Button, String> authorityButtons = new HashMap<>();
+
+    private List<String> assigningAuthorities = null;
     private Set<Pid> configuredPids=new HashSet<Pid>();
 
     public PidFavoritesTab() {
         super(new GetDocumentsSiteActorManager());
     }
-    // model
-    private Set<Pid> favoritePids = new HashSet<>();  // the database of values
-    private List<String> assigningAuthorities = null;
-    PidFavoritesTab me;
 
     @Override
     public void onTabLoad(boolean select, String eventName) {
-        me = this;
         registerTab(select, eventName);
 
         tabTopPanel.add(new HTML("<h2>Manage Patient IDs</h2>"));
@@ -278,7 +273,7 @@ public class PidFavoritesTab extends GenericQueryTab {
 
     // and add it to favorites
     private void generatePid(String assigningAuthority) {
-        new GeneratePidCommand(this) {
+        new GeneratePidCommand() {
 
             @Override
             public void onComplete(Pid pid) {
@@ -298,7 +293,7 @@ public class PidFavoritesTab extends GenericQueryTab {
     }
 
     private void loadAssigningAuthorities() {
-        new GetAssigningAuthoritiesCommand(this) {
+        new GetAssigningAuthoritiesCommand() {
             @Override
             public void onComplete(List<String> var1) {
                 assigningAuthorities = var1;
@@ -346,7 +341,7 @@ public class PidFavoritesTab extends GenericQueryTab {
 
             rigForRunning();
 
-            new SendPidToRegistryCommand(me) {
+            new SendPidToRegistryCommand() {
 
                 @Override
                 public void onComplete(List<Result> var1) {

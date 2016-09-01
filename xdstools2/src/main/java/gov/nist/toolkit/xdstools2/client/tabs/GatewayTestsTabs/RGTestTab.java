@@ -29,18 +29,18 @@ public class RGTestTab extends GenericQueryTab implements GatewayTool {
 //    final protected ToolkitServiceAsync toolkitService = GWT
 //            .create(ToolkitService.class);
 
-    static CoupledTransactions couplings = new CoupledTransactions();
+    private static CoupledTransactions couplings = new CoupledTransactions();
 
     //    TextBox patientIdBox = new TextBox();
-    String selectedActor = ActorType.RESPONDING_GATEWAY.getShortName();
-    GenericQueryTab genericQueryTab;
-    static final String COLLECTION_NAME =  "rgtool";
-    final TestSelectionManager testSelectionManager;
-    Panel siteSelectionPanel = new VerticalPanel();
+    private String selectedActor = ActorType.RESPONDING_GATEWAY.getShortName();
+    private GenericQueryTab genericQueryTab;
+    private static final String COLLECTION_NAME =  "rgtool";
+    private final TestSelectionManager testSelectionManager;
+    private Panel siteSelectionPanel = new VerticalPanel();
 
-    String systemTypeGroup = "System Type Group";
-    RadioButton exposed = new RadioButton(systemTypeGroup, "Exposed Registry/Repository");
-    RadioButton external = new RadioButton(systemTypeGroup, "External Registry/Repository");
+    private String systemTypeGroup = "System Type Group";
+    private RadioButton exposed = new RadioButton(systemTypeGroup, "Exposed Registry/Repository");
+    private RadioButton external = new RadioButton(systemTypeGroup, "External Registry/Repository");
     boolean isExposed() { return exposed.getValue(); }
     boolean isExternal() { return external.getValue(); }
     boolean usingExposedRR() { return exposed.getValue(); }
@@ -148,23 +148,6 @@ public class RGTestTab extends GenericQueryTab implements GatewayTool {
             }
         });
 
-//        final Panel1 externalSystemSelectionPanel = new VerticalPanel();
-//        externalSystemSelectionPanel.setVisible(false);  // until needed
-//        tabTopPanel.add(externalSystemSelectionPanel);
-//
-//        new TransactionOfferingsLoader(toolkitService).run(new ServiceCallCompletionHandler<TransactionOfferings>() {
-//            @Override
-//            public void onCompletion(TransactionOfferings to) {
-//                externalSystemSelectionPanel.add(new HTML("<h3>Registry/Repository Selection</h3>"));
-//                final List<TransactionType> transactionTypes = new ArrayList<TransactionType>();
-//                transactionTypes.add(TransactionType.PROVIDE_AND_REGISTER);
-//                transactionTypes.add(TransactionType.STORED_QUERY);
-//                transactionTypes.add(TransactionType.RETRIEVE);
-//                externalSystemSelectionPanel.add(new SiteSelectionWidget(to, transactionTypes, new CoupledTransactions(), getCurrentTestSession()).build(null, ""));
-//            }
-//        });
-
-
         // exposed means using reg/rep from same site as RG
         exposed.addValueChangeHandler(new ValueChangeHandler<Boolean>() {
             @Override
@@ -202,16 +185,6 @@ public class RGTestTab extends GenericQueryTab implements GatewayTool {
                 new CoupledTransactions(),
                 false  /* display patient id param */);
 
-//        tabTopPanel.add(systemTypePanel);
-
-        ////////////////////////////////////////////////////////////////////////////////////////////////
-//        // Select SUT
-//
-//        tabTopPanel.add(new HTML("<hr />"));
-//
-//        tabTopPanel.add(siteSelectionPanel);
-//
-//        new SiteTransactionConfigLoader(toolkitService).load(new SiteDisplayer());
 
         ////////////////////////////////////////////////////////////////////////////////////////////////
         tabTopPanel.add(new HTML(
@@ -230,12 +203,6 @@ public class RGTestTab extends GenericQueryTab implements GatewayTool {
         BuildRGTestOrchestrationButton testEnvButton = new BuildRGTestOrchestrationButton(this, testEnvironmentsPanel, "Build Test Environment", false);
 
         tabTopPanel.add(new HTML("<hr />"));
-
-//        BuildRGTestOrchestrationButton demoEnvButton = new BuildRGTestOrchestrationButton(this, testEnvironmentsPanel, "Build Demonstration Environment", true);
-//
-//        // link the two buttons so clicking one clears text output of both
-//        testEnvButton.addLinkedOrchestrationButton(demoEnvButton);
-//        demoEnvButton.addLinkedOrchestrationButton(testEnvButton);
 
         tabTopPanel.add(testSelectionManager.buildTestSelector());
 

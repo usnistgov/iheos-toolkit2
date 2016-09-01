@@ -39,8 +39,10 @@ public class TestOverviewBuilder {
         testOverview.setPass(true);  // will be updated by addSections()
         testOverview.setName(testId);
         ReadMe readme = new TestDefinition(testDir).getTestReadme();
-        testOverview.setTitle(stripHeaderMarkup(readme.line1));
-        testOverview.setDescription(Markdown.toHtml(readme.rest));
+        if (readme != null) {
+            testOverview.setTitle(stripHeaderMarkup(readme.line1));
+            testOverview.setDescription(Markdown.toHtml(readme.rest));
+        }
         addSections();
         return testOverview;
     }

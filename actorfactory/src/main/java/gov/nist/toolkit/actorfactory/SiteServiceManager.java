@@ -56,10 +56,15 @@ public class SiteServiceManager {
 		ArrayList<Site> sites = new ArrayList<>();   //getCommonSites().asCollection());
 		sites.addAll(new SimCache().getSimManagerForSession(sessionId).getAllSites().asCollection());
 		List<String> names = new ArrayList<>();
-		for (Site s : sites)
+
+		List<Site> sites2 = new ArrayList<>();
+		for (Site s : sites) {
+			if (s.getName().equals("allRepositories")) continue;
+			sites2.add(s);
 			names.add(s.getName());
+		}
 		logger.debug(names);
-		return sites;
+		return sites2;
 	}
 
 	public List<String> getSiteNamesWithRG(String sessionId) throws Exception {

@@ -298,7 +298,9 @@ public class PlanContext extends BasicContext {
 				//String results_string = results_document.toString();
 				results_document.build();
 				String results_string = new OMFormatter(results_document).toString();
-				os.write(results_string.getBytes());
+				byte[] bytes = results_string.getBytes();
+				String x = new String(bytes);
+				os.write(x.getBytes());
 				os.flush();
 				os.close();
 

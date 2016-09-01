@@ -41,13 +41,6 @@ public class Xdstools2  implements AcceptsOneWidget, IsWidget {
 	public SplitLayoutPanel mainSplitPanel = new SplitLayoutPanel(3);
 	private FlowPanel mainMenuPanel = new FlowPanel();
 	static final HomeTab ht = new HomeTab();
-	// This must be the only instance of ToolkitServiceAsync since the browser session
-	// is linked to the caching of environment setting on the server
-	static public ToolkitServiceAsync toolkitService() {
-		if (ME == null)
-			ME = new Xdstools2();
-		return ME.ht.toolkitService;
-	}
 
 	private HorizontalPanel uiDebugPanel = new HorizontalPanel();
 	boolean UIDebug = false;
@@ -186,7 +179,7 @@ public class Xdstools2  implements AcceptsOneWidget, IsWidget {
 	 * It's now being used as an initialization method the GUI and the environment
 	 */
 	void run() {
-		new InitializationCommand(getHomeTab()) {
+		new InitializationCommand() {
 
 			@Override
 			public void onComplete(InitializationResponse var1) {
@@ -249,7 +242,7 @@ public class Xdstools2  implements AcceptsOneWidget, IsWidget {
 //	}
 
 	private void reloadTransactionOfferings() {
-		new GetTransactionOfferingsCommand(getHomeTab()) {
+		new GetTransactionOfferingsCommand() {
 
 			@Override
 			public void onComplete(TransactionOfferings var1) {

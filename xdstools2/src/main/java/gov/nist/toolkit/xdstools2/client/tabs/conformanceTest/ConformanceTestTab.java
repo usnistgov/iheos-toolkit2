@@ -6,6 +6,7 @@ import com.google.gwt.event.logical.shared.SelectionEvent;
 import com.google.gwt.event.logical.shared.SelectionHandler;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.*;
 import gov.nist.toolkit.interactiondiagram.client.events.DiagramClickedEvent;
@@ -13,11 +14,11 @@ import gov.nist.toolkit.interactiondiagram.client.events.DiagramPartClickedEvent
 import gov.nist.toolkit.interactiondiagram.client.widgets.InteractionDiagram;
 import gov.nist.toolkit.results.client.Result;
 import gov.nist.toolkit.results.client.TestInstance;
+import gov.nist.toolkit.services.client.RepOrchestrationResponse;
 import gov.nist.toolkit.session.client.SectionOverviewDTO;
 import gov.nist.toolkit.session.client.TestOverviewDTO;
 import gov.nist.toolkit.sitemanagement.client.SiteSpec;
 import gov.nist.toolkit.testkitutilities.client.TestCollectionDefinitionDAO;
-import gov.nist.toolkit.xdstools2.client.HorizontalFlowPanel;
 import gov.nist.toolkit.xdstools2.client.PopupMessage;
 import gov.nist.toolkit.xdstools2.client.ToolWindow;
 import gov.nist.toolkit.xdstools2.client.Xdstools2;
@@ -30,7 +31,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class ConformanceTestTab extends ToolWindow implements TestRunner {
+public class ConformanceTestTab extends ToolWindow implements TestRunner, SiteManager {
 //	final protected ToolkitServiceAsync toolkitService = GWT
 //			.create(ToolkitService.class);
 
@@ -39,13 +40,14 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner {
 	private final FlowPanel testsPanel = new FlowPanel();  // panel for displaying tests
 	private final TabBar tabBar = new TabBar();            // tab bar at the top for selecting actor types
 	private final FlowPanel sitesPanel = new FlowPanel();
-	private String currentActorTypeName;
 	private String currentSiteName = null;
+	private HTML testSession = new HTML();
+	RepOrchestrationResponse repOrchestrationResponse;
 
 	// Testable actors
 	private List<TestCollectionDefinitionDAO> testCollectionDefinitionDAOs;
 	// testId ==> overview
-	private final Map<String, TestOverviewDTO> testOverviews = new HashMap<>();
+//	private final Map<String, TestOverviewDTO> testOverviews = new HashMap<>();
 
 	public ConformanceTestTab() {
 		me = this;
@@ -59,9 +61,12 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner {
 
 	@Override
 	public void onTabLoad(boolean select, String eventName) {
+		updateTestSession();
+		testSession.addClickHandler(new TestSessionClickHandler());
 
-		addEast(new HTML("Test Session"));
 
+		addEast(testSession);
+		updateTestSession();
 		registerTab(select, eventName);
 
 		tabTopPanel.add(toolPanel);
@@ -98,12 +103,46 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner {
 		});
 	}
 
+	private void updateTestSession() {
+		testSession.setHTML("Test Session<br />" +
+				"Name: " + getCurrentTestSession() + "<br />" +
+				"Environment: " + getEnvironmentSelection() + "<br />" +
+				"Site: " + getSite());
+	}
+
+	@Override
+	public String getSite() {
+		return currentSiteName;
+	}
+
+	@Override
+	public void setSite(String site) {
+		currentSiteName = site;
+	}
+
+	@Override
+	public void update() {
+		updateTestSession();
+	}
+
+	private class TestSessionClickHandler implements ClickHandler {
+
+		@Override
+		public void onClick(ClickEvent clickEvent) {
+			TestEnvironmentDialog dialog = new TestEnvironmentDialog(me, me);
+			int left = Window.getClientWidth()/ 3;
+			int top = Window.getClientHeight()/ 6;
+			dialog.setPopupPosition(left, top);
+			dialog.show();
+		}
+	}
+
 	// actor selection changes
 	private SelectionHandler<Integer> actorSelectionHandler = new SelectionHandler<Integer>() {
 		@Override
 		public void onSelection(SelectionEvent<Integer> selectionEvent) {
 			int i = selectionEvent.getSelectedItem();
-			currentActorTypeName = testCollectionDefinitionDAOs.get(i).getCollectionID();
+			String currentActorTypeName = testCollectionDefinitionDAOs.get(i).getCollectionID();
 			loadTestCollection(currentActorTypeName);
 		}
 	};
@@ -166,6 +205,10 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner {
 	private void loadTestCollection(final String collectionName) {
 		testDisplays.clear();  // so they reload
 
+		if (collectionName.equals("")) {
+			testsPanel.add(new BuildRepTestOrchestrationButton(this, null, "MyLabel").panel());
+		}
+
 		// what tests are in the collection
 		toolkitService.getCollectionMembers("actorcollections", collectionName, new AsyncCallback<List<String>>() {
 
@@ -188,7 +231,7 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner {
 					public void onSuccess(List<TestOverviewDTO> testOverviews) {
 						testsPanel.clear();
 						for (TestOverviewDTO testOverview : testOverviews) {
-							me.testOverviews.put(testOverview.getName(), testOverview);
+//							me.testOverviews.put(testOverview.getName(), testOverview);
 							displayTest(testOverview);
 						}
 					}
@@ -211,7 +254,7 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner {
 	// key is testOverview.getName()
 	private Map<String, TestDisplay> testDisplays = new HashMap<>();
 	private class TestDisplay {
-		HorizontalFlowPanel header = new HorizontalFlowPanel();
+		TestDisplayHeader header = new TestDisplayHeader();
 		FlowPanel body = new FlowPanel();
 		DisclosurePanel panel = new DisclosurePanel(header);
 
@@ -233,7 +276,7 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner {
 	private void displayTest(TestOverviewDTO testOverview) {
 		boolean isNew = !testDisplayExists(testOverview.getName());
 		TestDisplay testDisplay = buildTestDisplay(testOverview.getName());
-		HorizontalFlowPanel header = testDisplay.header;
+		TestDisplayHeader header = testDisplay.header;
 		FlowPanel body = testDisplay.body;
 
 		if (isNew) {
@@ -410,7 +453,13 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner {
 
 	}
 
+	public RepOrchestrationResponse getRepOrchestrationResponse() {
+		return repOrchestrationResponse;
+	}
 
+	public void setRepOrchestrationResponse(RepOrchestrationResponse repOrchestrationResponse) {
+		this.repOrchestrationResponse = repOrchestrationResponse;
+	}
 
 
 

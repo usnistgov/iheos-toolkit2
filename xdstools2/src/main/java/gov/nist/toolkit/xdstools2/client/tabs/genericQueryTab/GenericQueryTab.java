@@ -458,7 +458,7 @@ public abstract class GenericQueryTab  extends ToolWindow {
 	public void onReload() {}
 
 	public void reloadTransactionOfferings() {
-		new GetTransactionOfferingsCommand(this) {
+		new GetTransactionOfferingsCommand() {
 
 			@Override
 			public void onComplete(TransactionOfferings var1) {
