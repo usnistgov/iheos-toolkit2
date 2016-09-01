@@ -9,6 +9,9 @@ import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.*;
+import gov.nist.toolkit.interactiondiagram.client.events.DiagramClickedEvent;
+import gov.nist.toolkit.interactiondiagram.client.events.DiagramPartClickedEventHandler;
+import gov.nist.toolkit.interactiondiagram.client.widgets.InteractionDiagram;
 import gov.nist.toolkit.results.client.Result;
 import gov.nist.toolkit.results.client.TestInstance;
 import gov.nist.toolkit.services.client.RepOrchestrationResponse;
@@ -86,6 +89,18 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner, SiteMa
 
 		// Initial load of tests in a test session
 		loadTestCollections();
+
+		// Register the Diagram clicked event handler
+		Xdstools2.getEventBus().addHandler(DiagramClickedEvent.TYPE, new DiagramPartClickedEventHandler() {
+			@Override
+			public void onClicked(TestInstance testInstance, InteractionDiagram.DiagramPart part) {
+				if (InteractionDiagram.DiagramPart.RequestConnector.equals(part)) {
+					List<TestInstance> testInstances = new ArrayList<>();
+					testInstances.add(testInstance);
+					displayInspectorTab(testInstances);
+				}
+			}
+		});
 	}
 
 	private void updateTestSession() {
@@ -307,10 +322,24 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner, SiteMa
 			header.add(inspect);
 		}
 
+		body.add(new HTML("<p><b>Description:</b></p>"));
 		body.add(new HTML(testOverview.getDescription()));
 
+		// display an interaction sequence diagram
+		if (testOverview.isRun()) {
+			displayInteractionDiagram(testOverview, body);
+		}
+
 		// display sections within test
+		body.add(new HTML("<p><b>Sections:</b></p>"));
 		displaySections(testOverview, body);
+
+	}
+
+	private void displayInteractionDiagram(TestOverviewDTO testResultDTO, FlowPanel body) {
+		InteractionDiagram diagram = new InteractionDiagram(Xdstools2.getEventBus(), testResultDTO);
+		body.add(new HTML("<p><b>Interaction Sequence:</b></p>"));
+		body.add(diagram);
 	}
 
 	private class RunClickHandler implements ClickHandler {
@@ -368,22 +397,26 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner, SiteMa
 
 			List<TestInstance> testInstances = new ArrayList<>();
 			testInstances.add(testInstance);
-			toolkitService.getTestResults(testInstances, getCurrentTestSession(), new AsyncCallback<Map<String, Result>>() {
-				@Override
-				public void onFailure(Throwable throwable) {
-					new PopupMessage(throwable.getMessage());
-				}
-
-				@Override
-				public void onSuccess(Map<String, Result> resultMap) {
-					MetadataInspectorTab itab = new MetadataInspectorTab();
-					itab.setResults(resultMap.values());
-					itab.setSiteSpec(new SiteSpec(currentSiteName));
-//					itab.setToolkitService(me.toolkitService);
-					itab.onTabLoad(true, "Insp");
-				}
-			});
+			displayInspectorTab(testInstances);
 		}
+	}
+
+	private void displayInspectorTab(List<TestInstance> testInstances) {
+		toolkitService.getTestResults(testInstances, getCurrentTestSession(), new AsyncCallback<Map<String, Result>>() {
+            @Override
+            public void onFailure(Throwable throwable) {
+                new PopupMessage(throwable.getMessage());
+            }
+
+            @Override
+            public void onSuccess(Map<String, Result> resultMap) {
+                MetadataInspectorTab itab = new MetadataInspectorTab();
+                itab.setResults(resultMap.values());
+                itab.setSiteSpec(new SiteSpec(currentSiteName));
+//					itab.setToolkitService(me.toolkitService);
+                itab.onTabLoad(true, "Insp");
+            }
+        });
 	}
 
 	// display sections within test
@@ -411,6 +444,7 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner, SiteMa
 				public void onSuccess(TestOverviewDTO testOverviewDTO) {
 					// returned status of entire test
 					displayTest(testOverviewDTO);
+
 				}
 			});
 		} catch (Exception e) {
@@ -426,6 +460,8 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner, SiteMa
 	public void setRepOrchestrationResponse(RepOrchestrationResponse repOrchestrationResponse) {
 		this.repOrchestrationResponse = repOrchestrationResponse;
 	}
+
+
 
 	public String getWindowShortName() {
 		return "testloglisting";

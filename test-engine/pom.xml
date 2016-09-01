@@ -150,6 +150,10 @@
 			<artifactId>dcm4che-imageio</artifactId>
 			<version>${dcm4che.version}</version>
 		</dependency>
+		<dependency>
+			<groupId>gov.nist.toolkit</groupId>
+			<artifactId>interaction-model</artifactId>
+		</dependency>
 	</dependencies>
 
 	<build>

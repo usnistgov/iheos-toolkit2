@@ -3,6 +3,9 @@ package gov.nist.toolkit.testengine.transactions;
 import gov.nist.toolkit.common.datatypes.Hl7Date;
 import gov.nist.toolkit.commondatatypes.MetadataSupport;
 import gov.nist.toolkit.configDatatypes.client.TransactionType;
+import gov.nist.toolkit.interactionmodel.client.InteractingEntity;
+import gov.nist.toolkit.interactionmodel.client.Interaction;
+import gov.nist.toolkit.interactionmodel.client.InteractionLog;
 import gov.nist.toolkit.registrymetadata.IdParser;
 import gov.nist.toolkit.registrymetadata.Metadata;
 import gov.nist.toolkit.registrymetadata.MetadataParser;
@@ -12,7 +15,21 @@ import gov.nist.toolkit.securityCommon.SecurityParams;
 import gov.nist.toolkit.soap.axis2.Soap;
 import gov.nist.toolkit.testengine.assertionEngine.Assertion;
 import gov.nist.toolkit.testengine.assertionEngine.AssertionEngine;
-import gov.nist.toolkit.testengine.engine.*;
+import gov.nist.toolkit.testengine.engine.ErrorReportingInterface;
+import gov.nist.toolkit.testengine.engine.Linkage;
+import gov.nist.toolkit.testengine.engine.OmLogger;
+import gov.nist.toolkit.testengine.engine.PatientIdAllocator;
+import gov.nist.toolkit.testengine.engine.PlanContext;
+import gov.nist.toolkit.testengine.engine.RegistryUtility;
+import gov.nist.toolkit.testengine.engine.ReportManager;
+import gov.nist.toolkit.testengine.engine.StepContext;
+import gov.nist.toolkit.testengine.engine.TestConfig;
+import gov.nist.toolkit.testengine.engine.TestLogFactory;
+import gov.nist.toolkit.testengine.engine.TestMgmt;
+import gov.nist.toolkit.testengine.engine.TransactionSettings;
+import gov.nist.toolkit.testengine.engine.TransactionStatus;
+import gov.nist.toolkit.testengine.engine.UseReportManager;
+import gov.nist.toolkit.testengine.engine.Validator;
 import gov.nist.toolkit.testenginelogging.LogFileContentBuilder;
 import gov.nist.toolkit.testenginelogging.NotALogFileException;
 import gov.nist.toolkit.testenginelogging.client.ReportDTO;
@@ -37,7 +54,13 @@ import org.apache.log4j.Logger;
 import javax.xml.namespace.QName;
 import javax.xml.parsers.FactoryConfigurationError;
 import java.io.File;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 
 public abstract class BasicTransaction  {
 	protected OMElement instruction;
@@ -1261,6 +1284,12 @@ public abstract class BasicTransaction  {
 	}
 
 	protected void soapCall(OMElement requestBody) throws Exception {
+
+		Interaction interaction = new Interaction();
+		interaction.setTime(new Date());
+		interaction.setFrom(transactionSettings.origin);
+		interaction.setTo(transactionSettings.siteSpec.getName());
+
 		soap = new Soap();
 		testConfig.soap = soap;
 		if(transactionSettings.siteSpec != null && transactionSettings.siteSpec.isSaml){
@@ -1314,6 +1343,8 @@ public abstract class BasicTransaction  {
 					getResponseAction(), this.planContext.getExtraLinkage()
 			);
 			logger.info("back from making soap call");
+			interaction.setParams(this.planContext.getExtraLinkage());
+			interaction.setStatus(InteractingEntity.INTERACTIONSTATUS.COMPLETED);
 		}
 		catch (AxisFault e) {
 			logger.info("soap fault");
@@ -1326,14 +1357,15 @@ public abstract class BasicTransaction  {
 					s_ctx.set_fault(e);
 			} catch (Exception e1) { // throws fault - deal with it
 			}
-				logger.info("soap fault reported 3");
-
+			logger.info("soap fault reported 3");
+			interaction.setStatus(InteractingEntity.INTERACTIONSTATUS.ERROR);
 		}
 		catch (XdsInternalException e) {
 			logger.info("internal exception");
 			s_ctx.set_error(e.getMessage());
 			failed();
 			logSoapRequest(soap);
+			interaction.setStatus(InteractingEntity.INTERACTIONSTATUS.ERROR);
 		}
 		finally {
 			logger.info("finally");
@@ -1343,6 +1375,12 @@ public abstract class BasicTransaction  {
 		logSoapRequest(soap);
 
 		scanResponseForErrors();
+		if (!scanResponseForErrors()) {
+			interaction.setStatus(InteractingEntity.INTERACTIONSTATUS.ERROR);
+		}
+
+		InteractionLog.getInstance().add(interaction);
+
 	}
 
 	protected boolean scanResponseForErrors() throws XdsInternalException {

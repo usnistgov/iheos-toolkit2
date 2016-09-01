@@ -8,6 +8,7 @@ import gov.nist.toolkit.actorfactory.client.SimulatorStats;
 import gov.nist.toolkit.actortransaction.client.Severity;
 import gov.nist.toolkit.actortransaction.client.TransactionInstance;
 import gov.nist.toolkit.configDatatypes.client.Pid;
+import gov.nist.toolkit.interactionmodel.client.InteractingEntity;
 import gov.nist.toolkit.registrymetadata.client.AnyIds;
 import gov.nist.toolkit.registrymetadata.client.ObjectRef;
 import gov.nist.toolkit.registrymetadata.client.ObjectRefs;
@@ -225,6 +226,7 @@ public interface ToolkitServiceAsync {
 	void register(String username, TestInstance testInstance, SiteSpec registry, Map<String, String> params, AsyncCallback<Result> callback) throws Exception;
 	void registerWithLocalizedTrackingInODDS(String username, TestInstance testInstance, SiteSpec registry, SimId oddsSimId, Map<String, String> params, AsyncCallback<Map<String, String>> callback);
 	void getOnDemandDocumentEntryDetails(SimId oddsSimId, AsyncCallback<List<DocumentEntryDetail>> callback);
+	void getInteractionFromModel(InteractingEntity model, AsyncCallback<InteractingEntity> callback);
 
 
 	void getServletContextName(AsyncCallback<String> callback);

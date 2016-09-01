@@ -2,14 +2,19 @@ package gov.nist.toolkit.xdstools2.client.tabs.findDocuments2Tab;
 
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.FlexTable;
 import com.google.gwt.user.client.ui.HTML;
 import gov.nist.toolkit.configDatatypes.client.TransactionType;
+import gov.nist.toolkit.interactionmodel.client.InteractingEntity;
+import gov.nist.toolkit.results.client.Result;
 import gov.nist.toolkit.xdstools2.client.CoupledTransactions;
+import gov.nist.toolkit.xdstools2.client.PopupMessage;
 import gov.nist.toolkit.xdstools2.client.siteActorManagers.FindDocumentsSiteActorManager;
 import gov.nist.toolkit.xdstools2.client.tabs.genericQueryTab.GenericQueryTab;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -36,6 +41,7 @@ public class FindDocuments2Tab extends GenericQueryTab {
     GenericQueryTab genericQueryTab;
     FindDocuments2Params sqParams;
 
+    InteractingEntity origin = new InteractingEntity(); //  new InteractingEntity(); // Destination
 
     public FindDocuments2Tab() {
         super(new FindDocumentsSiteActorManager());
@@ -89,12 +95,76 @@ class Runner implements ClickHandler {
         // tell the server to run the query. The display is handled by GenericQueryTab which
         // is linked in via the queryCallback parameter
         rigForRunning();
-        toolkitService.findDocuments2(getSiteSelection(), pidTextBox.getValue().trim(), codeSpec, queryCallback);
+
+        origin.setBegin(new Date());
+
+        toolkitService.findDocuments2(getSiteSelection(), pidTextBox.getValue().trim(), codeSpec, fd2Callback);
+
     }
     }
+
+    protected AsyncCallback<List<Result>> fd2Callback = new AsyncCallback<List<Result>>() {
+        @Override
+        public void onFailure(Throwable throwable) {
+            queryCallback.onFailure(throwable);
+
+            //			TODO: handle interaction onFailure
+//			try {
+//				origin.setEnd(new Date());
+//			} catch (Throwable t){}
+
+        }
+
+        @Override
+        public void onSuccess(List<Result> results) {
+            try {
+                if (getInteractionModel()!=null) {
+                    getInteractionModel().setEnd(new Date());
+
+                    toolkitService.getInteractionFromModel(getInteractionModel(), new AsyncCallback<InteractingEntity>() {
+                        @Override
+                        public void onFailure(Throwable throwable) {
+                            String mapMsg = "mapping failed!";
+                            System.out.println(mapMsg);
+                            new PopupMessage(mapMsg);
+                        }
+
+                        @Override
+                        public void onSuccess(InteractingEntity interactingEntity) {
+                            String mapMsg = "mapping was successful!!";
+                            System.out.println(mapMsg);
+                            new PopupMessage(mapMsg);
+                        }
+                    });
+                }
+                else {
+                    new PopupMessage("Null origin");
+                }
+            } catch (Throwable t){ new PopupMessage(t.toString());}
+
+            queryCallback.onSuccess(results);
+        }
+    };
 
     @Override
     public String getWindowShortName() {
         return "finddocuments2";
+    }
+
+    public InteractingEntity getInteractionModel() {
+        // begin interaction model
+        InteractingEntity registryEntity = new InteractingEntity(); // Destination
+
+        origin.setName(null); // Matches with the transactionSettings origin. null=TestClient
+        origin.setDescription("Document Consumer - Toolkit");
+
+        registryEntity.setName(getSiteSelection().getName());
+        registryEntity.setDescription("Registry - SUT");
+        registryEntity.setSourceInteractionLabel("Stored Query (ITI-18)");
+
+        origin.setInteractions(new ArrayList<InteractingEntity>());
+        origin.getInteractions().add(registryEntity);
+        // end
+        return origin;
     }
 }

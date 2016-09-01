@@ -1,0 +1,123 @@
+
+ Tk(head)
+	IG(sut)
+		Rg1
+			reg
+			rep
+		Rg2
+			reg
+			rep
+
+--
+g_depth=0
+x=0
+y=0
+
+draw(origin,depth)
+
+draw(parent_entity,local_depth)
+	if (g_depth==0)
+		create LL(parent_entity,x=0,y=0) # Initially x=0 and y=0
+
+	for each (interactionEntity child: parent_entity.getInteractions)
+		child_ll = create LL(child,parent.x+1,y=0)
+		local_depth_y++
+		line from parent_ll.midline_x,local_depth_y to child_ll.midline_x,local_depth_y
+		g_depth++
+
+		if (child.interactions!=null)
+			for each (subint : child.interactions)
+				draw(child,local_depth_y)
+
+LL=LifeLine
+x=the horizontal distance marker
+
+
+----
+
+
+<!DOCTYPE html>
+<html>
+<body>
+
+<svg height="500" width="600">
+  <text x="0" y="15" fill="red">I love SVG!</text>
+
+
+ <rect width="70" height="25" x="0" y="30"  style="fill:rgb(0,255,0);stroke-width:3;stroke:rgb(0,0,0)" />
+
+ <rect width="70" height="25" x="80" y="30"  style="fill:rgb(0,20,00);stroke-width:3;stroke:rgb(0,0,0)" />
+
+ <line x1="35" y1="75" x2="115" y2="75" style="stroke:rgb(255,0,0);stroke-width:2"/>
+
+
+<g>
+  <rect x="0" y="100" width="100" height="100" fill="red" ></rect>
+  <text x="0" y="110" font-family="Verdana" font-size="10" fill="blue" > Hello </text>
+</g>
+
+
+  Sorry, your browser does not support inline SVG.
+</svg>
+
+</body>
+</html>
+
+----
+Link example:
+
+<svg width="400" height="110">
+  <rect width="300" height="100" style="fill:rgb(0,0,255);stroke-width:3;stroke:rgb(0,0,0)"/>
+<a href="javascript:alert('a');"><text x="20" y="35" font-family="Verdana" font-size="14" fill="white">Link</text></a>
+  Sorry, your browser does not support inline SVG.
+</svg>
+
+---
+
+<!DOCTYPE html>
+<html>
+<body>
+
+<svg height="210" width="400">
+
+<!--
+  <path d="M50 0 L60 0 L62 5 L62 10 L60 15 L50 15 L48 10 L48 5 L50 0"   style="fill:rgb(255,255,255);stroke-width:1;stroke:rgb(255,0,0)" />
+
+<text x="50" y="10"  font-size="10" font-weight="bold" fill="red">&cross;</text>
+-->
+
+
+  <path d="M50 0 L60 0 L63 5 L63 10 L60 15 L50 15 L47 10 L47 5 "   fill="red" />
+
+<text x="50" y="10"  font-size="10" font-weight="bold" fill="white">&cross;</text>
+
+
+<!--
+  <path d="M50 0 L55 0 L57 5 L55 10 L57 15 L50 15 L47 10 L47 5 L50 0"   style="fill:rgb(255,255,255);stroke-width:.5;stroke:rgb(255,0,0)" />
+-->
+
+<text x="50" y="11"  font-size="12" font-weight="bold" fill="red">&times;</text>
+
+
+<text x="100" y="30"  font-size="18" font-weight="bold" fill="red">&times;</text>
+
+<text x="100" y="50"  font-size="10" font-weight="normal" fill="red">&osol;</text>
+
+
+<text x="140" y="50"  font-size="10" font-weight="normal" fill="red">&xotime;</text>
+
+
+<text x="160" y="50"  font-size="10" font-weight="normal" fill="red">&otimes;</text>
+
+<text x="10" y="20" style="fill:red;">Several lines:
+    <tspan >First line.</tspan>
+    <tspan >Second line.</tspan>
+  </text>
+
+  Sorry, your browser does not support inline SVG.
+</svg>
+
+</body>
+</html>
+
+

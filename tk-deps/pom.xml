@@ -669,6 +669,26 @@
                 <artifactId>commons-collections4</artifactId>
                 <version>4.0</version>
             </dependency>
+            <dependency>
+                <groupId>gov.nist.toolkit</groupId>
+                <artifactId>interaction-model</artifactId>
+                <version>2.202.0-SNAPSHOT</version>
+            </dependency>
+            <dependency>
+                <groupId>gov.nist.toolkit</groupId>
+                <artifactId>interaction-mapper</artifactId>
+                <version>2.202.0-SNAPSHOT</version>
+            </dependency>
+            <dependency>
+                <groupId>gov.nist.toolkit</groupId>
+                <artifactId>interaction-diagram</artifactId>
+                <version>2.202.0-SNAPSHOT</version>
+            </dependency>
+            <dependency>
+                <groupId>org.vectomatic</groupId>
+                <artifactId>lib-gwt-svg</artifactId>
+                <version>0.5.11</version>
+            </dependency>
         </dependencies>
 
     </dependencyManagement>

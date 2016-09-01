@@ -16,16 +16,30 @@ import gov.nist.toolkit.configDatatypes.client.TransactionType;
 import gov.nist.toolkit.installation.ExternalCacheManager;
 import gov.nist.toolkit.installation.Installation;
 import gov.nist.toolkit.installation.PropertyServiceManager;
+import gov.nist.toolkit.interactionmapper.InteractionMapper;
+import gov.nist.toolkit.interactionmodel.client.InteractingEntity;
 import gov.nist.toolkit.registrymetadata.client.AnyIds;
 import gov.nist.toolkit.registrymetadata.client.ObjectRef;
 import gov.nist.toolkit.registrymetadata.client.ObjectRefs;
 import gov.nist.toolkit.registrymetadata.client.Uids;
-import gov.nist.toolkit.results.client.*;
+import gov.nist.toolkit.results.client.CodesResult;
+import gov.nist.toolkit.results.client.DocumentEntryDetail;
+import gov.nist.toolkit.results.client.Result;
+import gov.nist.toolkit.results.client.TestInstance;
+import gov.nist.toolkit.results.client.TestLogs;
 import gov.nist.toolkit.results.shared.Test;
-import gov.nist.toolkit.services.client.*;
+import gov.nist.toolkit.services.client.EnvironmentNotSelectedClientException;
+import gov.nist.toolkit.services.client.IdsOrchestrationRequest;
+import gov.nist.toolkit.services.client.IgOrchestrationRequest;
+import gov.nist.toolkit.services.client.IigOrchestrationRequest;
+import gov.nist.toolkit.services.client.RawResponse;
+import gov.nist.toolkit.services.client.RepOrchestrationRequest;
+import gov.nist.toolkit.services.client.RgOrchestrationRequest;
+import gov.nist.toolkit.services.client.RigOrchestrationRequest;
 import gov.nist.toolkit.services.server.RawResponseBuilder;
 import gov.nist.toolkit.services.server.orchestration.OrchestrationManager;
 import gov.nist.toolkit.services.shared.SimulatorServiceManager;
+import gov.nist.toolkit.session.client.ConformanceSessionValidationStatus;
 import gov.nist.toolkit.session.client.TestOverviewDTO;
 import gov.nist.toolkit.session.server.Session;
 import gov.nist.toolkit.session.server.serviceManager.QueryServiceManager;
@@ -52,7 +66,6 @@ import gov.nist.toolkit.xdstools2.client.command.request.GeneratePidRequest;
 import gov.nist.toolkit.xdstools2.client.command.request.GetAllSimConfigsRequest;
 import gov.nist.toolkit.xdstools2.client.command.request.SendPidToRegistryRequest;
 import gov.nist.toolkit.xdstools2.client.command.response.InitializationResponse;
-import gov.nist.toolkit.session.client.ConformanceSessionValidationStatus;
 import gov.nist.toolkit.xdstools2.server.serviceManager.DashboardServiceManager;
 import gov.nist.toolkit.xdstools2.server.serviceManager.GazelleServiceManager;
 import org.apache.log4j.Logger;
@@ -65,7 +78,13 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Scanner;
 
 @SuppressWarnings("serial")
 public class ToolkitServiceImpl extends RemoteServiceServlet implements
@@ -802,5 +821,19 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements
 	public List<DocumentEntryDetail> getOnDemandDocumentEntryDetails(SimId oddsSimId) {
 		return TransactionUtil.getOnDemandDocumentEntryDetails(oddsSimId);
 	}
+
+	//------------------------------------------------------------------------
+	//------------------------------------------------------------------------
+	// Interaction methods
+	// TODO: this mapping method is to be replaced by the test log map method.
+	//------------------------------------------------------------------------
+	//------------------------------------------------------------------------
+	public InteractingEntity getInteractionFromModel(InteractingEntity model) throws Exception {
+		return new InteractionMapper().map(model);
+	}
+
+
+
+
 
 }

@@ -454,6 +454,18 @@
 			<artifactId>httpclient</artifactId>
 			<version>4.0-alpha4</version>
 		</dependency>
+		<dependency>
+			<groupId>gov.nist.toolkit</groupId>
+			<artifactId>interaction-model</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>gov.nist.toolkit</groupId>
+			<artifactId>interaction-mapper</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>gov.nist.toolkit</groupId>
+			<artifactId>interaction-diagram</artifactId>
+		</dependency>
 
 		<!--<dependency> -->
 		<!--<groupId>com.sun.jersey</groupId> -->
@@ -479,7 +491,6 @@
 
 
 		<plugins>
-
 			<plugin>
 				<artifactId>maven-compiler-plugin</artifactId>
 				<!-- 2.8.0-01 and later require maven-compiler-plugin 3.1 or higher -->
@@ -547,6 +558,8 @@
 						<compileSourcesArtifact>${project.groupId}:testkit-utilities</compileSourcesArtifact>
 						<compileSourcesArtifact>${project.groupId}:xdstest2-logging</compileSourcesArtifact>
 						<compileSourcesArtifact>${project.groupId}:xds-exceptions</compileSourcesArtifact>
+						<compileSourcesArtifact>${project.groupId}:interaction-model</compileSourcesArtifact>
+						<compileSourcesArtifact>${project.groupId}:interaction-diagram</compileSourcesArtifact>
 					</compileSourcesArtifacts>
 					<runTarget>Xdstools2.html</runTarget>
 					<modules>

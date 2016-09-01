@@ -193,7 +193,7 @@ class TestEnvironmentDialog extends DialogBox {
         }
     }
     private void loadTestSessions(final String initialSelection) {
-        new GetTestSessionNamesCommand(Xdstools2.getHomeTab()) {
+        new GetTestSessionNamesCommand() {
 
             @Override
             public void onComplete(List<String> var1) {
