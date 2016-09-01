@@ -104,6 +104,42 @@ public abstract class BaseSimConfigMgr implements SimConfigMgrIntf {
                 );
                 row++;
             }
+            
+            // Selecting RIGs for the IIG
+            else if (SimulatorProperties.respondingImagingGateways.equals(ele.name)) {
+               final SimulatorConfigElement configEle = ele;
+               HorizontalPanel rigBoxes = new HorizontalPanel();
+               final RigSelectionPresenter rigSelectionPresenter = new RigSelectionPresenter(simulatorControlTab.toolkitService, configEle.asList(), rigBoxes);
+               tbl.setWidget(row, 0, HtmlMarkup.html(ele.name));
+               tbl.setWidget(row, 1, rigBoxes);
+               saveButton.addClickHandler(
+                       new ClickHandler() {
+                           @Override
+                           public void onClick(ClickEvent clickEvent) {
+                               configEle.setValue(rigSelectionPresenter.getSelected());
+                           }
+                       }
+               );
+               row++;
+            }
+            
+            // Selecting IDS for the RG
+            else if (SimulatorProperties.imagingDocumentSources.equals(ele.name)) {
+               final SimulatorConfigElement configEle = ele;
+               HorizontalPanel idsBoxes = new HorizontalPanel();
+               final IDSSelectionPresenter idsSelectionPresenter = new IDSSelectionPresenter(simulatorControlTab.toolkitService, configEle.asList(), idsBoxes);
+               tbl.setWidget(row, 0, HtmlMarkup.html(ele.name));
+               tbl.setWidget(row, 1, idsBoxes);
+               saveButton.addClickHandler(
+                  new ClickHandler() {
+                      @Override
+                      public void onClick(ClickEvent clickEvent) {
+                          configEle.setValue(idsSelectionPresenter.getSelected());
+                      }
+                  }
+               );
+               row++;
+           }
 
             // Should the RG return an error instead of content?
             else if (SimulatorProperties.errors.equals(ele.name)) {
