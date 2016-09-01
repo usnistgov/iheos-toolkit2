@@ -2,6 +2,7 @@ package gov.nist.toolkit.registrymetadata.client;
 
 import com.google.gwt.user.client.rpc.IsSerializable;
 
+import java.io.Serializable;
 import java.util.List;
 import java.util.Map;
 
@@ -14,7 +15,7 @@ import java.util.Map;
  * @author bmajur
  *
  */
-public abstract class MetadataObject implements IsSerializable {
+public abstract class MetadataObject implements IsSerializable, Serializable {
 	public String id;
 	public String idX;
 	public String idDoc;

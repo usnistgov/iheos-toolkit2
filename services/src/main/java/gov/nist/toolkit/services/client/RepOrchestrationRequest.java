@@ -7,11 +7,13 @@ import java.io.Serializable;
 /**
  *
  */
-public class IdsOrchestrationRequest implements Serializable, IsSerializable {
-    String userName;
-    String environmentName;
+public class RepOrchestrationRequest implements Serializable, IsSerializable {
+    private String userName;
+    private String environmentName;
+    private boolean useExistingSimulator = false;
 
-    public IdsOrchestrationRequest() {}
+    public RepOrchestrationRequest() {
+    }
 
     public String getUserName() {
         return userName;
@@ -29,4 +31,11 @@ public class IdsOrchestrationRequest implements Serializable, IsSerializable {
         this.environmentName = environmentName;
     }
 
+    public boolean isUseExistingSimulator() {
+        return useExistingSimulator;
+    }
+
+    public void setUseExistingSimulator(boolean useExistingSimulator) {
+        this.useExistingSimulator = useExistingSimulator;
+    }
 }

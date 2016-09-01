@@ -29,6 +29,7 @@ import gov.nist.toolkit.xdstools2.client.command.request.GeneratePidRequest;
 import gov.nist.toolkit.xdstools2.client.command.request.GetAllSimConfigsRequest;
 import gov.nist.toolkit.xdstools2.client.command.request.SendPidToRegistryRequest;
 import gov.nist.toolkit.xdstools2.client.command.response.InitializationResponse;
+import gov.nist.toolkit.session.client.ConformanceSessionValidationStatus;
 
 import java.io.IOException;
 import java.util.Collection;
@@ -37,6 +38,7 @@ import java.util.Map;
 
 public interface ToolkitServiceAsync {
 
+	void validateConformanceSession(String testSession, String siteName, AsyncCallback<ConformanceSessionValidationStatus> callback);
 	void getInitialization(AsyncCallback<InitializationResponse> callback);
 	void getTkProps(AsyncCallback<TkProps> callback);
 	void getSessionProperties(AsyncCallback<Map<String, String>> callback);
@@ -217,6 +219,7 @@ public interface ToolkitServiceAsync {
 	void buildIigTestOrchestration(IigOrchestrationRequest request, AsyncCallback<RawResponse> callback);
 	void buildRigTestOrchestration(RigOrchestrationRequest request, AsyncCallback<RawResponse> callback);
 	void buildIdsTestOrchestration(IdsOrchestrationRequest request, AsyncCallback<RawResponse> callback);
+	void buildRepTestOrchestration(RepOrchestrationRequest request, AsyncCallback<RawResponse> callback);
 	void getSiteNamesWithRIG(AsyncCallback<List<String>> callback) throws Exception;
 	void getSiteNamesWithIDS(AsyncCallback<List<String>> callback) throws Exception;
 	void register(String username, TestInstance testInstance, SiteSpec registry, Map<String, String> params, AsyncCallback<Result> callback) throws Exception;
