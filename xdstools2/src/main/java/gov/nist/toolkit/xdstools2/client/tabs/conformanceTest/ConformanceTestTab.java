@@ -11,6 +11,7 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.*;
 import gov.nist.toolkit.results.client.Result;
 import gov.nist.toolkit.results.client.TestInstance;
+import gov.nist.toolkit.services.client.RepOrchestrationResponse;
 import gov.nist.toolkit.session.client.SectionOverviewDTO;
 import gov.nist.toolkit.session.client.TestOverviewDTO;
 import gov.nist.toolkit.sitemanagement.client.SiteSpec;
@@ -38,6 +39,7 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner, SiteMa
 	private final FlowPanel sitesPanel = new FlowPanel();
 	private String currentSiteName = null;
 	private HTML testSession = new HTML();
+	RepOrchestrationResponse repOrchestrationResponse;
 
 	// Testable actors
 	private List<TestCollectionDefinitionDAO> testCollectionDefinitionDAOs;
@@ -187,6 +189,10 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner, SiteMa
 	// load test results for a single test collection (actor type) for a single site
 	private void loadTestCollection(final String collectionName) {
 		testDisplays.clear();  // so they reload
+
+		if (collectionName.equals("")) {
+			testsPanel.add(new BuildRepTestOrchestrationButton(this, null, "MyLabel").panel());
+		}
 
 		// what tests are in the collection
 		toolkitService.getCollectionMembers("actorcollections", collectionName, new AsyncCallback<List<String>>() {
@@ -413,7 +419,13 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner, SiteMa
 
 	}
 
+	public RepOrchestrationResponse getRepOrchestrationResponse() {
+		return repOrchestrationResponse;
+	}
 
+	public void setRepOrchestrationResponse(RepOrchestrationResponse repOrchestrationResponse) {
+		this.repOrchestrationResponse = repOrchestrationResponse;
+	}
 
 	public String getWindowShortName() {
 		return "testloglisting";

@@ -241,6 +241,11 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements
         session().setMesaSessionName(testSession);
         return session().xdsTestServiceManager().getTestReadme(test);
     }
+	public RawResponse buildRepTestOrchestration(RepOrchestrationRequest request) {
+		Session s = getSession();
+		if (s == null) return RawResponseBuilder.build(new NoServletSessionException(""));
+		return new OrchestrationManager().buildRepTestEnvironment(s, request);
+	}
 	public RawResponse buildIgTestOrchestration(IgOrchestrationRequest request) {
 		Session s = getSession();
 		if (s == null) return RawResponseBuilder.build(new NoServletSessionException(""));

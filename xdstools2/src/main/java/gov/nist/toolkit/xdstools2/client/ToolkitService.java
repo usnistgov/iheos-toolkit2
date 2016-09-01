@@ -195,6 +195,7 @@ public interface ToolkitService extends RemoteService  {
     RawResponse buildRigTestOrchestration(RigOrchestrationRequest request);
 	RawResponse buildRgTestOrchestration(RgOrchestrationRequest request);
 	RawResponse buildIdsTestOrchestration(IdsOrchestrationRequest request);
+	RawResponse buildRepTestOrchestration(RepOrchestrationRequest request);
 
         Map<String, String> getSessionProperties() throws NoServletSessionException;
 	 void setSessionProperties(Map<String, String> props) throws NoServletSessionException;
