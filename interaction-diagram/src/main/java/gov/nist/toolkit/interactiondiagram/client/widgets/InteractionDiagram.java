@@ -20,8 +20,8 @@ import org.vectomatic.dom.svg.OMSVGPathElement;
 import org.vectomatic.dom.svg.OMSVGPolygonElement;
 import org.vectomatic.dom.svg.OMSVGRectElement;
 import org.vectomatic.dom.svg.OMSVGSVGElement;
+import org.vectomatic.dom.svg.OMSVGTSpanElement;
 import org.vectomatic.dom.svg.OMSVGTextElement;
-import org.vectomatic.dom.svg.OMSVGTitleElement;
 import org.vectomatic.dom.svg.OMText;
 import org.vectomatic.dom.svg.utils.OMSVGParser;
 
@@ -38,13 +38,15 @@ public class InteractionDiagram extends Composite {
     int g_x = 0;
     int g_y = 0;
 
+    static final int half_cross_height = 5;
+    static final int line_height = 10;
     static final int ll_boxWidth = 70;
     static final int ll_boxHeight = 25;
     static final int LL_FEET = 10; // life line feet (extra) lines after the last transaction
 
     int ll_margin = 108; // The with of transaction connector
-    int maxLabelDisplayLen = 0;
-    int max_label_len = 27;
+    int maxLabelLen = 0;
+    int MAX_LABEL_DISPLAY_LEN = 27;
     int connection_topmargin = 32; // top margin of a transaction
     int error_box_offset = 30;
 
@@ -226,14 +228,14 @@ public class InteractionDiagram extends Composite {
         if (interactingEntity==null)
             return;
 
-        if (maxLabelDisplayLen>max_label_len) {
-            maxLabelDisplayLen=max_label_len;
+        if (maxLabelLen > MAX_LABEL_DISPLAY_LEN) {
+            maxLabelLen = MAX_LABEL_DISPLAY_LEN;
             ll_margin = 108;
             connection_topmargin = 32;
             error_box_offset = connection_topmargin - 1;
         }
         else {
-            ll_margin = maxLabelDisplayLen * 4;
+            ll_margin = maxLabelLen * 4;
             connection_topmargin = 28;
             error_box_offset = connection_topmargin - 2;
         }
@@ -251,13 +253,13 @@ public class InteractionDiagram extends Composite {
     String makeLabel(SectionOverviewDTO sectionOverviewDTO) {
         String label = "";
         if (sectionOverviewDTO.getStepNames().size()>0)
-            label = sectionOverviewDTO.getName() + ": " + sectionOverviewDTO.getStepNames().get(0);
+            label = sectionOverviewDTO.getName() + ":" + sectionOverviewDTO.getStepNames().get(0);
         else
             label = sectionOverviewDTO.getName();
 
         int labelLen = label.length();
-        if (labelLen>maxLabelDisplayLen)
-            maxLabelDisplayLen=labelLen;
+        if (labelLen> maxLabelLen)
+            maxLabelLen =labelLen;
 
         return label;
     }
@@ -418,6 +420,9 @@ public class InteractionDiagram extends Composite {
         OMSVGGElement group = doc.createSVGGElement();
         group.appendChild(line);
 
+        int centerTextX = (x2+x1)/2;
+        int textY = y;
+
         if (!response) {
             group.setAttribute("style","cursor:pointer");
 
@@ -426,56 +431,17 @@ public class InteractionDiagram extends Composite {
             else
                 group.appendChild(arrow_request_left(x2, y));
 
-            // Set description
-            OMSVGTextElement text = doc.createSVGTextElement();
-            int centerTextX = (x2+x1)/2;
-            text.setAttribute("x",""+centerTextX);
-            text.setAttribute("y",""+y);
-            text.setAttribute("dy","-"+3); // Shift text up the connecting line
-            text.setAttribute("text-anchor","middle");
-            text.setAttribute("font-family","Verdana");
-            text.setAttribute("font-size","10");
+            // -----
+             if (InteractingEntity.INTERACTIONSTATUS.ERROR.equals(status)) {
+                 group.appendChild(centered_cross_mark(centerTextX,y));
+                 textY -= (half_cross_height); // two lines of text
+             }
 
-            String shortDesc = description;
-            if (description!=null && description.length()>maxLabelDisplayLen) {
-                shortDesc = description.substring(0, maxLabelDisplayLen-3) + "..."; // Truncate so the text does not overflow
-                OMSVGTitleElement title = doc.createSVGTitleElement();
-                OMText titleText = doc.createTextNode(description);
-                title.appendChild(titleText);
-                group.appendChild(title);
-            }
+            String[] lines = description.split(":");
+            group.appendChild(getTransactionLabel(centerTextX,textY,lines[0],lines[1]));
 
-            OMText textValue = doc.createTextNode(shortDesc);
-            text.appendChild(textValue);
-            group.appendChild(text);
 
-            if (InteractingEntity.INTERACTIONSTATUS.ERROR.equals(status)) {
-                OMSVGGElement errorGroup = doc.createSVGGElement();
-                OMSVGTitleElement errorTitle = doc.createSVGTitleElement();
-                OMText errorText = doc.createTextNode("Error: Transaction failed.");
-                errorTitle.appendChild(errorText);
-                errorGroup.appendChild(errorTitle);
-
-                int errorBoxX = (centerTextX-5);
-                int errorBoxY = y-error_box_offset;
-                OMSVGPathElement errorBox = doc.createSVGPathElement();
-
-                errorBox.setAttribute("d","M " + errorBoxX + " " + errorBoxY // rest is relative
-                        + " l10 0 l3 5 l0 5 l-3 5 l-10 0 l-3 -5 l0 -5 z");
-                errorBox.setAttribute("style","fill:rgb(255,255,255);stroke-width:.5;stroke:rgb(255,0,0)");
-                errorGroup.appendChild(errorBox);
-
-                OMSVGTextElement xMark = doc.createSVGTextElement();
-                xMark.setAttribute("x",""+(errorBoxX+1));
-                xMark.setAttribute("y",""+(errorBoxY+12));
-                xMark.setAttribute("font-size","11");
-                xMark.setAttribute("font-weight","bold");
-                xMark.setAttribute("fill","red");
-                OMText xMarkText = doc.createTextNode("X");
-                xMark.appendChild(xMarkText);
-                errorGroup.appendChild(xMark);
-                group.appendChild(errorGroup);
-            }
+            // -----
 
 
         } else {
@@ -586,6 +552,53 @@ public class InteractionDiagram extends Composite {
 
         return group;
     }
+
+    /**
+     * x,y is the center the cross mark
+     * @param x
+     * @param y
+     * @return
+     */
+    OMSVGGElement centered_cross_mark(int x, int y) {
+        OMSVGGElement x_group = doc.createSVGGElement();
+        OMSVGPathElement l_part = doc.createSVGPathElement();
+       l_part.setAttribute("d","M " + (x-half_cross_height) + " " + (y-half_cross_height) // constant is the half-height of the cross
+               + " l5 5 l-5 5");
+        l_part.setAttribute("style","fill:rgb(255,255,255);stroke-width:1;stroke:rgb(255,0,0);stroke-linecap:round");
+        x_group.appendChild(l_part);
+        OMSVGPathElement r_part = doc.createSVGPathElement();
+        r_part.setAttribute("d","M " + (x+half_cross_height) + " " + (y-half_cross_height)
+                + " l-5 5 l5 5");
+        r_part.setAttribute("style","fill:rgb(255,255,255);stroke-width:1;stroke:rgb(255,0,0);stroke-linecap:round");
+        x_group.appendChild(r_part);
+        return x_group;
+    }
+
+    OMSVGTextElement getTransactionLabel(int x, int y, String string1, String string2) {
+        OMSVGTextElement text = doc.createSVGTextElement();
+        text.setAttribute("x",""+x);
+        text.setAttribute("y",""+(y-(3+(line_height*2)))); // Shift text up the connecting line, 3 for top of the line
+        text.setAttribute("text-anchor","middle");
+        text.setAttribute("font-family","Verdana");
+        text.setAttribute("font-size","10");
+
+        OMSVGTSpanElement line1 = doc.createSVGTSpanElement();
+        OMText line1Node = doc.createTextNode(string1+":");
+        line1.setAttribute("x",""+x);
+         line1.setAttribute("dy",""+line_height);
+        line1.appendChild(line1Node);
+        text.appendChild(line1);
+
+        OMSVGTSpanElement line2 = doc.createSVGTSpanElement();
+        OMText line2Node = doc.createTextNode(string2);
+        line2.setAttribute("x",""+x);
+        line2.setAttribute("dy",""+line_height);
+        line2.appendChild(line2Node);
+        text.appendChild(line2);
+
+       return text;
+    }
+
 
     OMSVGPolygonElement arrow_request_left(int x, int y) {
             x += (activity_box_width/2);
