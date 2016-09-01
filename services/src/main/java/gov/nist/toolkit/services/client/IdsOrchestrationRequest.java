@@ -2,10 +2,12 @@ package gov.nist.toolkit.services.client;
 
 import java.io.Serializable;
 
+import com.google.gwt.user.client.rpc.IsSerializable;
+
 /**
  *
  */
-public class IdsOrchestrationRequest implements Serializable {
+public class IdsOrchestrationRequest implements Serializable, IsSerializable {
     String userName;
     String environmentName;
 

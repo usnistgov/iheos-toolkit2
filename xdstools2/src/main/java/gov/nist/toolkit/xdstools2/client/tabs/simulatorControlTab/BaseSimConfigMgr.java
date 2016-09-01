@@ -109,7 +109,7 @@ public abstract class BaseSimConfigMgr implements SimConfigMgrIntf {
             else if (SimulatorProperties.respondingImagingGateways.equals(ele.name)) {
                final SimulatorConfigElement configEle = ele;
                HorizontalPanel rigBoxes = new HorizontalPanel();
-               final RigSelectionPresenter rigSelectionPresenter = new RigSelectionPresenter(simulatorControlTab.toolkitService, configEle.asList(), rigBoxes);
+               final RigSelectionPresenter rigSelectionPresenter = new RigSelectionPresenter(configEle.asList(), rigBoxes);
                tbl.setWidget(row, 0, HtmlMarkup.html(ele.name));
                tbl.setWidget(row, 1, rigBoxes);
                saveButton.addClickHandler(
@@ -127,7 +127,7 @@ public abstract class BaseSimConfigMgr implements SimConfigMgrIntf {
             else if (SimulatorProperties.imagingDocumentSources.equals(ele.name)) {
                final SimulatorConfigElement configEle = ele;
                HorizontalPanel idsBoxes = new HorizontalPanel();
-               final IDSSelectionPresenter idsSelectionPresenter = new IDSSelectionPresenter(simulatorControlTab.toolkitService, configEle.asList(), idsBoxes);
+               final IDSSelectionPresenter idsSelectionPresenter = new IDSSelectionPresenter(configEle.asList(), idsBoxes);
                tbl.setWidget(row, 0, HtmlMarkup.html(ele.name));
                tbl.setWidget(row, 1, idsBoxes);
                saveButton.addClickHandler(
