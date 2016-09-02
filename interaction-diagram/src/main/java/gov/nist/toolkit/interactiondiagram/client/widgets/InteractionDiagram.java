@@ -583,20 +583,27 @@ public class InteractionDiagram extends Composite {
         text.setAttribute("font-size","10");
 
         OMSVGTSpanElement line1 = doc.createSVGTSpanElement();
-        OMText line1Node = doc.createTextNode(string1+":");
+        OMText line1Node = doc.createTextNode(getShortLabel(string1+":"));
         line1.setAttribute("x",""+x);
          line1.setAttribute("dy",""+line_height);
         line1.appendChild(line1Node);
         text.appendChild(line1);
 
         OMSVGTSpanElement line2 = doc.createSVGTSpanElement();
-        OMText line2Node = doc.createTextNode(string2);
+        OMText line2Node = doc.createTextNode(getShortLabel(string2));
         line2.setAttribute("x",""+x);
         line2.setAttribute("dy",""+line_height);
         line2.appendChild(line2Node);
         text.appendChild(line2);
 
        return text;
+    }
+
+    String getShortLabel(String label) {
+       if (label.length()>MAX_LABEL_DISPLAY_LEN) {
+          return label.substring(0,MAX_LABEL_DISPLAY_LEN-3) + "...";
+       } else
+           return label;
     }
 
 
