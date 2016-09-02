@@ -25,8 +25,10 @@ public class TabContainer {
 
 	private static TabBar TABBAR = new TabBar();
 
-//	// this hosts one element from deck at a time
-	private static SimpleLayoutPanel INNERPANEL = new SimpleLayoutPanel();
+//	// this hosts one element from deck at a time -- PROBLEM: the scroll position is lost since SimpleLayoutPanel can only hold one widget and it is reset everytime a new tab is selected.
+//	private static SimpleLayoutPanel INNERPANEL = new SimpleLayoutPanel();
+
+	private static DeckLayoutPanel INNER_DECKPANEL = new DeckLayoutPanel();
 
 	// Each element of TABBAR maps to one element of deck
 	private static List<DockLayoutPanel> deck = new ArrayList<>();
@@ -34,7 +36,8 @@ public class TabContainer {
 	static {
 		OUTERPANEL.addNorth(TABBAR, 2.0);
 		OUTERPANEL.addNorth(new HTML("<hr style=\"background:#6495ED; border:0; height:5px\" />"), 1.0);
-		OUTERPANEL.add(INNERPANEL);
+		OUTERPANEL.add(INNER_DECKPANEL);
+//		OUTERPANEL.add(INNERPANEL);
 
 		TABBAR.addSelectionHandler(new SelectionHandler<Integer>() {
 			@Override
@@ -66,7 +69,14 @@ public class TabContainer {
 	}
 
 	public static void selectTab() {
-		INNERPANEL.setWidget(deck.get(TABBAR.getSelectedTab()));
+//		INNERPANEL.setWidget(deck.get(TABBAR.getSelectedTab()));
+		Widget dockLp = deck.get(TABBAR.getSelectedTab());
+
+		if (INNER_DECKPANEL.getWidgetIndex(dockLp)==-1) {
+			INNER_DECKPANEL.add(dockLp);
+		}
+		INNER_DECKPANEL.showWidget(dockLp);
+
 	}
 
 	private void announceOpen(String title) {
@@ -115,8 +125,12 @@ public class TabContainer {
 
 	public static void selectTab(int tabIndex) {
 		TABBAR.selectTab(tabIndex);
+
+		INNER_DECKPANEL.showWidget(tabIndex);
+		/*
 		INNERPANEL.clear();
 		INNERPANEL.add(deck.get(tabIndex));
+		*/
 //		TABPANEL.selectTab(tabIndex);
 	}
 
