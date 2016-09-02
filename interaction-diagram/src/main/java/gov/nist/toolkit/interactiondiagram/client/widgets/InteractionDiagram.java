@@ -4,9 +4,18 @@ package gov.nist.toolkit.interactiondiagram.client.widgets;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.event.dom.client.MouseEvent;
+import com.google.gwt.event.dom.client.MouseOutEvent;
+import com.google.gwt.event.dom.client.MouseOutHandler;
+import com.google.gwt.event.dom.client.MouseOverEvent;
+import com.google.gwt.event.dom.client.MouseOverHandler;
+import com.google.gwt.event.shared.EventHandler;
+import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
+import com.google.gwt.user.client.ui.HTML;
+import com.google.gwt.user.client.ui.PopupPanel;
 import com.google.web.bindery.event.shared.EventBus;
 import gov.nist.toolkit.interactiondiagram.client.events.DiagramClickedEvent;
 import gov.nist.toolkit.interactionmodel.client.InteractingEntity;
@@ -49,6 +58,7 @@ public class InteractionDiagram extends Composite {
     int MAX_LABEL_DISPLAY_LEN = 27;
     int connection_topmargin = 32; // top margin of a transaction
     int error_box_offset = 30;
+    static final int max_tooltips = 5;
 
     int diagramHeight = 0;
     int diagramWidth = 0;
@@ -59,8 +69,56 @@ public class InteractionDiagram extends Composite {
     TestOverviewDTO testOverviewDTO;
     EventBus eventBus;
 
+    Tooltip tooltip = new Tooltip();
+
     public static enum DiagramPart {
        RequestConnector
+    }
+
+    private static class Tooltip extends PopupPanel {
+        private HTML contents;
+        private Timer timer;
+
+        public Tooltip() {
+            super(true);
+            contents = new HTML();
+            add(contents);
+//            setStyleName(WidgetsSampleBundle.INSTANCE.getCss().tooltip());
+        }
+
+        void setContents(List<String> text) {
+
+            contents.setHTML("");
+
+           if (text!=null)  {
+              int count = text.size();
+               for (int cx=0; cx<count; cx++) {
+                  contents.setHTML(contents.getHTML() + "<p>" + text.get(cx) + "</p>");
+                   if (cx==max_tooltips) {
+                      contents.setHTML(contents.getHTML() + "<p>"+ (count-max_tooltips) +" more...</p>");
+                   }
+               }
+           }
+        }
+
+        public void show(int x, int y, final List<String> text, final int delay) {
+
+            if (text==null) return;
+
+            setContents(text);
+            setPopupPosition(x, y);
+            super.show();
+            if (timer != null) {
+                timer.cancel();
+            }
+            timer = new Timer() {
+                public void run() {
+                    Tooltip.this.hide();
+                    timer = null;
+                }
+            };
+            timer.schedule(delay);
+        }
     }
 
     /**
@@ -118,7 +176,9 @@ public class InteractionDiagram extends Composite {
             this.to = to;
         }
     }
+
     int activity_box_width = 8;
+
     /**
      * Life line
      */
@@ -250,17 +310,21 @@ public class InteractionDiagram extends Composite {
     }
 
 
-    String makeLabel(SectionOverviewDTO sectionOverviewDTO) {
+    String setLabelAndErrors(InteractingEntity entity, SectionOverviewDTO sectionOverviewDTO) {
         String label = "";
-        if (sectionOverviewDTO.getStepNames().size()>0)
-            label = sectionOverviewDTO.getName() + ":" + sectionOverviewDTO.getStepNames().get(0);
-        else
+        if (sectionOverviewDTO.getStepNames().size()>0) {
+            String stepName = sectionOverviewDTO.getStepNames().get(0);
+            label = sectionOverviewDTO.getName() + ":" + stepName;
+            entity.setErrors(sectionOverviewDTO.getStep(stepName).getErrors());
+        } else
             label = sectionOverviewDTO.getName();
 
         int labelLen = label.length();
         if (labelLen> maxLabelLen)
             maxLabelLen =labelLen;
 
+
+        entity.setSourceInteractionLabel(label);
         return label;
     }
 
@@ -281,11 +345,12 @@ public class InteractionDiagram extends Composite {
                 source.setName("Toolkit"); // TODO: Source should come from the SectionOverviewDTO
                 InteractingEntity destination = new InteractingEntity();
                 destination.setName(sectionOverviewDTO.getSite());
-                destination.setSourceInteractionLabel(makeLabel(sectionOverviewDTO));
+                setLabelAndErrors(destination,sectionOverviewDTO);
                 if (sectionOverviewDTO.isPass())
                     destination.setStatus(InteractingEntity.INTERACTIONSTATUS.COMPLETED);
-                else
+                else {
                     destination.setStatus(InteractingEntity.INTERACTIONSTATUS.ERROR);
+                }
                 source.setInteractions(new ArrayList<InteractingEntity>());
                 source.getInteractions().add(destination);
                 result.add(source);
@@ -385,25 +450,28 @@ public class InteractionDiagram extends Composite {
                 g_depth++;
                 childll = create_LL(child);
                 svg.appendChild(childll.getLlEl());
-                svg.appendChild(connect(parentll,childll,false,child.getSourceInteractionLabel(),child.getStatus()));
+                svg.appendChild(connect(parentll,childll,false,child));
                 if (child.getInteractions()!=null) {
                     sequence(child, childll);
                     if (childll!=null) {
                         g_depth++;
-                        svg.appendChild(connect(childll, parentll, true, child.getSourceInteractionLabel(), child.getStatus()));
+                        svg.appendChild(connect(childll, parentll, true, child));
                     }
                 } else {
                     g_depth++;
-                    svg.appendChild(connect(childll, parentll, true, child.getSourceInteractionLabel(), child.getStatus()));
+                    svg.appendChild(connect(childll, parentll, true, child));
                 }
             }
 
         }
     }
 
-    OMSVGElement connect(LL originll, LL destinationll, boolean response, String description, InteractingEntity.INTERACTIONSTATUS status) {
+    OMSVGElement connect(LL originll, LL destinationll, boolean response, final InteractingEntity entity) {
         OMSVGGElement origin = originll.getLlEl();
         OMSVGGElement destination = destinationll.getLlEl();
+
+        String description = entity.getSourceInteractionLabel();
+        InteractingEntity.INTERACTIONSTATUS status = entity.getStatus();
 
         OMSVGLineElement line = doc.createSVGLineElement();
         int x1 = (Integer.parseInt(((OMSVGRectElement)origin.getFirstChild()).getAttribute("x").toString())+(ll_boxWidth/2));
@@ -433,9 +501,27 @@ public class InteractionDiagram extends Composite {
 
             // -----
              if (InteractingEntity.INTERACTIONSTATUS.ERROR.equals(status)) {
+                 final List<String> errors = entity.getErrors();
                  group.appendChild(centered_cross_mark(centerTextX,y));
                  textY -= (half_cross_height); // two lines of text
+
+                 if (errors!=null) {
+                     group.addMouseOverHandler(new MouseOverHandler() {
+                         @Override
+                         public void onMouseOver(MouseOverEvent mouseOverEvent) {
+                             showTooltip(mouseOverEvent, errors);
+                         }
+                     });
+
+                     group.addMouseOutHandler(new MouseOutHandler() {
+                         @Override
+                         public void onMouseOut(MouseOutEvent mouseOutEvent) {
+                             getTooltip().hide();
+                         }
+                     });
+                 }
              }
+
 
             String[] lines = description.split(":");
             group.appendChild(getTransactionLabel(centerTextX,textY,lines[0],lines[1]));
@@ -571,6 +657,7 @@ public class InteractionDiagram extends Composite {
                 + " l-5 5 l5 5");
         r_part.setAttribute("style","fill:rgb(255,255,255);stroke-width:1;stroke:rgb(255,0,0);stroke-linecap:round");
         x_group.appendChild(r_part);
+
         return x_group;
     }
 
@@ -730,6 +817,13 @@ public class InteractionDiagram extends Composite {
         return null;
     }
 
+
+    private void showTooltip(MouseEvent<? extends EventHandler> e, List<String> text) {
+        tooltip.show(e.getClientX() + 20, e.getClientY() + 30, text, 3000);
+    }
+
+
+
     public int getDiagramHeight() {
         return diagramHeight;
     }
@@ -760,5 +854,9 @@ public class InteractionDiagram extends Composite {
 
     public void setTestOverviewDTO(TestOverviewDTO testOverviewDTO) {
         this.testOverviewDTO = testOverviewDTO;
+    }
+
+    public Tooltip getTooltip() {
+        return tooltip;
     }
 }
