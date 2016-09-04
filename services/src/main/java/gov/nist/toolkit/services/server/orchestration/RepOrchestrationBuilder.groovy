@@ -4,14 +4,15 @@ import gov.nist.toolkit.actorfactory.client.SimId
 import gov.nist.toolkit.actorfactory.client.SimulatorConfig
 import gov.nist.toolkit.actortransaction.client.ActorType
 import gov.nist.toolkit.configDatatypes.SimulatorProperties
-import gov.nist.toolkit.services.client.IdsOrchestrationResponse
 import gov.nist.toolkit.services.client.RawResponse
 import gov.nist.toolkit.services.client.RepOrchestrationRequest
+import gov.nist.toolkit.services.client.RepOrchestrationResponse
 import gov.nist.toolkit.services.server.RawResponseBuilder
 import gov.nist.toolkit.services.server.ToolkitApi
 import gov.nist.toolkit.session.server.Session
 import gov.nist.toolkit.simcommon.client.config.SimulatorConfigElement
 import groovy.transform.TypeChecked
+
 /**
  *
  */
@@ -31,10 +32,10 @@ class RepOrchestrationBuilder {
 
     RawResponse buildTestEnvironment() {
         try {
-            String supportIdName = 'rr'
+            String supportIdName = 'rep_test_support'
             SimId supportId
             SimulatorConfig supportSimConfig = null
-            IdsOrchestrationResponse response = new IdsOrchestrationResponse()
+            RepOrchestrationResponse response = new RepOrchestrationResponse()
 
             boolean reuse = false
             supportId = new SimId(request.userName, supportIdName, ActorType.REGISTRY.name, request.environmentName)
@@ -59,7 +60,7 @@ class RepOrchestrationBuilder {
                 api.saveSimulator(supportSimConfig)
             }
 
-            response.regrepConfig = supportSimConfig
+            response.regConfig = supportSimConfig
 
             return response
         } catch (Exception e) {

@@ -117,6 +117,16 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements
 		return response;
 	}
 
+	@Override
+	public String getAssignedSiteForTestSession(String testSession) throws Exception {
+		return session().xdsTestServiceManager().getAssignedSiteForTestSession(testSession);
+	}
+
+	@Override
+	public void setAssignedSiteForTestSession(String testSession, String siteName) throws Exception {
+		session().xdsTestServiceManager().setAssignedSiteForTestSession(testSession, siteName);
+	}
+
 
 	//------------------------------------------------------------------------
 	//------------------------------------------------------------------------
@@ -486,6 +496,11 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements
 		return session().xdsTestServiceManager().validateConformanceSession(testSession, siteName);
 	}
 
+	@Override
+	public Collection<String> getSitesForTestSession(String testSession) throws Exception {
+		return session().xdsTestServiceManager().getSitesForTestSession(testSession);
+	}
+
 	public String getDefaultAssigningAuthority()  throws NoServletSessionException { return Installation.installation().propertyServiceManager().getDefaultAssigningAuthority(); }
 	public String getImplementationVersion() throws NoServletSessionException  { return Installation.installation().propertyServiceManager().getImplementationVersion(); }
 	public Map<String, String> getToolkitProperties()  throws NoServletSessionException { return Installation.installation().propertyServiceManager().getToolkitProperties(); }
@@ -801,6 +816,11 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements
 
 	public List<DocumentEntryDetail> getOnDemandDocumentEntryDetails(SimId oddsSimId) {
 		return TransactionUtil.getOnDemandDocumentEntryDetails(oddsSimId);
+	}
+
+	@Override
+	public String clearTestSession(String testSession) throws Exception {
+		return session().xdsTestServiceManager().clearTestSession(testSession);
 	}
 
 }

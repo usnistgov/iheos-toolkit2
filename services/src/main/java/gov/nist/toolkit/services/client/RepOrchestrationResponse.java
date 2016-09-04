@@ -1,5 +1,6 @@
 package gov.nist.toolkit.services.client;
 
+import gov.nist.toolkit.actorfactory.client.SimulatorConfig;
 import gov.nist.toolkit.sitemanagement.client.SiteSpec;
 
 /**
@@ -7,7 +8,8 @@ import gov.nist.toolkit.sitemanagement.client.SiteSpec;
  */
 public class RepOrchestrationResponse extends RawResponse {
     private SiteSpec repSite;
-    private  String message;
+    private  String message = "";
+    private SimulatorConfig regConfig;
 
     public RepOrchestrationResponse() {
     }
@@ -26,5 +28,13 @@ public class RepOrchestrationResponse extends RawResponse {
 
     public void setMessage(String message) {
         this.message = message;
+    }
+
+    public SimulatorConfig getRegConfig() {
+        return regConfig;
+    }
+
+    public void setRegConfig(SimulatorConfig regConfig) {
+        this.regConfig = regConfig;
     }
 }

@@ -105,6 +105,12 @@ h3 {
   border: 2px solid black;
 }
 
+.with-rounded-border{
+  background-color: PaleTurquoise !important;
+  border-radius: 10px;
+  border: 2px solid #90A4AE;
+}
+
 .test-row-white {
   background-color: #90A4AE !important;
 }

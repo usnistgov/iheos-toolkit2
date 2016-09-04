@@ -573,6 +573,20 @@ public class XdsTestServiceManager extends CommonService {
 		return new ConformanceSessionValidationStatus(false, buf.toString());
 	}
 
+	public Collection<String> getSitesForTestSession(String testSession) throws Exception {
+		Set<String> sites = new HashSet<>();
+		List<LogMapDTO> logMapDTOs = getLogsForTestSession(testSession);
+		for (LogMapDTO logMapDTO : logMapDTOs) {
+			Map<String, LogFileContentDTO> map = logMapDTO.getLogFileContentMap();
+			for (LogFileContentDTO logFileContentDTO : map.values()) {
+				String site = logFileContentDTO.getSiteName();
+				if (site != null && !site.equals(""))
+					sites.add(site);
+			}
+		}
+		return sites;
+	}
+
 	public CodesResult getCodesConfiguration() {
 		if (session != null)
 			logger.debug(session.id() + ": " + "currentCodesConfiguration");
@@ -1030,5 +1044,47 @@ public class XdsTestServiceManager extends CommonService {
 		return getTestOverview(testInstance.getUser(), testInstance);
 
 	}
+
+	private static final String SITEFILE = "site.txt";
+
+	public String getAssignedSiteForTestSession(String testSession) throws IOException {
+		TestLogCache testLogCache = getTestLogCache();
+		File testSessionDir = testLogCache.getSessionDir(testSession);
+		if (!testSessionDir.exists() || !testSessionDir.isDirectory()) return null;
+		try {
+			return Io.stringFromFile(new File(testSessionDir, SITEFILE)).trim();
+		} catch (IOException e) {
+			// none assigned
+			return null;
+		}
+	}
+
+	public void setAssignedSiteForTestSession(String testSession, String siteName) throws IOException {
+		TestLogCache testLogCache = getTestLogCache();
+		File testSessionDir = testLogCache.getSessionDir(testSession);
+		if (!testSessionDir.exists() || !testSessionDir.isDirectory())
+			throw new IOException("Test Session " + testSession + " does not exist");
+		if (siteName == null) {
+			Io.delete(new File(testSessionDir, SITEFILE));
+		} else {
+			Io.stringToFile(new File(testSessionDir, SITEFILE), siteName);
+		}
+	}
+
+	private void clearAssignedSiteForTestSession(String testSession) throws IOException {
+		TestLogCache testLogCache = getTestLogCache();
+		File testSessionDir = testLogCache.getSessionDir(testSession);
+		if (!testSessionDir.exists() || !testSessionDir.isDirectory())
+			return;
+		Io.delete(new File(testSessionDir, SITEFILE));
+	}
+
+	public String clearTestSession(String testSession) throws IOException {
+		TestLogCache testLogCache = getTestLogCache();
+		File testSessionDir = testLogCache.getSessionDir(testSession);
+		Io.deleteContents(testSessionDir);
+		return null;
+	}
+
 
 }

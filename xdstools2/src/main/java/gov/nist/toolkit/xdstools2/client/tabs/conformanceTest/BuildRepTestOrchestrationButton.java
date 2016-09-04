@@ -5,40 +5,43 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.FlexTable;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.Panel;
+import gov.nist.toolkit.configDatatypes.SimulatorProperties;
 import gov.nist.toolkit.services.client.RawResponse;
 import gov.nist.toolkit.services.client.RepOrchestrationRequest;
 import gov.nist.toolkit.services.client.RepOrchestrationResponse;
-import gov.nist.toolkit.services.client.RgOrchestrationResponse;
-import gov.nist.toolkit.xdstools2.client.PopupMessage;
-import gov.nist.toolkit.xdstools2.client.tabs.genericQueryTab.GenericQueryTab;
 import gov.nist.toolkit.xdstools2.client.widgets.buttons.ReportableButton;
+
+import static gov.nist.toolkit.xdstools2.client.ToolWindow.toolkitService;
 
 /**
  *
  */
-public class BuildRepTestOrchestrationButton extends ReportableButton {
+class BuildRepTestOrchestrationButton extends ReportableButton {
     private ConformanceTestTab testTab;
+    private Panel initializationPanel;
 
-    public BuildRepTestOrchestrationButton(ConformanceTestTab testTab, Panel topPanel, String label) {
-        super(topPanel, label);
+    BuildRepTestOrchestrationButton(ConformanceTestTab testTab, Panel initializationPanel, String label) {
+        super(initializationPanel, label);
+        this.initializationPanel = initializationPanel;
         this.testTab = testTab;
     }
 
     @Override
     public void handleClick(ClickEvent clickEvent) {
-        if (GenericQueryTab.empty(testTab.getCurrentTestSession())) {
-            new PopupMessage("Must select test session first");
+        String msg = testTab.verifyConformanceTestEnvironment();
+        if (msg != null) {
+            testTab.launchTestEnvironmentDialog(msg);
             return;
         }
 
         // clear previous display
-        clean();
+//        clean();
 
         RepOrchestrationRequest request = new RepOrchestrationRequest();
         request.setUserName(testTab.getCurrentTestSession());
         request.setEnvironmentName(testTab.getEnvironmentSelection());
 
-        testTab.toolkitService.buildRepTestOrchestration(request, new AsyncCallback<RawResponse>() {
+        toolkitService.buildRepTestOrchestration(request, new AsyncCallback<RawResponse>() {
             @Override
             public void onFailure(Throwable throwable) {
                 handleError(throwable);
@@ -46,7 +49,7 @@ public class BuildRepTestOrchestrationButton extends ReportableButton {
 
             @Override
             public void onSuccess(RawResponse rawResponse) {
-                if (handleError(rawResponse, RgOrchestrationResponse.class)) return;
+                if (handleError(rawResponse, RepOrchestrationResponse.class)) return;
                 RepOrchestrationResponse orchResponse = (RepOrchestrationResponse) rawResponse;
                 testTab.setRepOrchestrationResponse(orchResponse);
                 panel().add(new HTML("<h2>Generated Environment</h2>"));
@@ -57,7 +60,22 @@ public class BuildRepTestOrchestrationButton extends ReportableButton {
 
                 FlexTable table = new FlexTable();
                 panel().add(table);
+
+                int row = 0;
+
+                table.setHTML(row++, 0, "<h3>Supporting Registry Configuration</h3>");
+                table.setText(row, 0, "Register");
+                table.setText(row++, 1, orchResponse.getRegConfig().getConfigEle(SimulatorProperties.registerEndpoint).asString());
+                table.setText(row, 0, "Query");
+                table.setText(row++, 1, orchResponse.getRegConfig().getConfigEle(SimulatorProperties.storedQueryEndpoint).asString());
+
+                panel().add(new HTML("<p>Configure your Repository to forward Register transactions to the above endpoint.<hr />"));
+
             }
+
+
         });
     }
+
+
 }

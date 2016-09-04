@@ -45,8 +45,12 @@ public interface ToolkitService extends RemoteService  {
     TkProps getTkProps() throws NoServletSessionException;
 
 	ConformanceSessionValidationStatus validateConformanceSession(String testSession, String siteName) throws Exception;
+	Collection<String> getSitesForTestSession(String testSession) throws Exception;
 	InitializationResponse getInitialization() throws Exception;
-	
+	String getAssignedSiteForTestSession(String testSession) throws Exception;
+	void setAssignedSiteForTestSession(String testSession, String siteName) throws Exception;
+
+
 	/* Test management */
 	public Map<String, Result> getTestResults(List<TestInstance> testInstances, String testSession) throws NoServletSessionException ;
 	public LogFileContentDTO getTestLogDetails(String sessionName, TestInstance testInstance) throws Exception;
@@ -247,4 +251,6 @@ public interface ToolkitService extends RemoteService  {
 	public Result register(String username, TestInstance testInstance, SiteSpec registry, Map<String, String> params) throws Exception;
 	public Map<String, String> registerWithLocalizedTrackingInODDS(String username, TestInstance testInstance, SiteSpec registry, SimId oddsSimId, Map<String, String> params) throws Exception;
 	public List<DocumentEntryDetail> getOnDemandDocumentEntryDetails(SimId oddsSimId);
+
+	String clearTestSession(String testSession) throws Exception;
 }

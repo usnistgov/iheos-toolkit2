@@ -38,7 +38,9 @@ import java.util.Map;
 
 public interface ToolkitServiceAsync {
 
+	void clearTestSession(String testSession, AsyncCallback<String> callback);
 	void validateConformanceSession(String testSession, String siteName, AsyncCallback<ConformanceSessionValidationStatus> callback);
+	void getSitesForTestSession(String testSession, AsyncCallback<Collection<String>> callback);
 	void getInitialization(AsyncCallback<InitializationResponse> callback);
 	void getTkProps(AsyncCallback<TkProps> callback);
 	void getSessionProperties(AsyncCallback<Map<String, String>> callback);
@@ -229,4 +231,8 @@ public interface ToolkitServiceAsync {
 
 	void getServletContextName(AsyncCallback<String> callback);
 	void retrieveConfiguredFavoritesPid(String environment, AsyncCallback<List<Pid>> callback) throws IOException;
+
+	void getAssignedSiteForTestSession(String testSession, AsyncCallback<String> async);
+
+	void setAssignedSiteForTestSession(String testSession, String siteName, AsyncCallback<Void> async);
 }
