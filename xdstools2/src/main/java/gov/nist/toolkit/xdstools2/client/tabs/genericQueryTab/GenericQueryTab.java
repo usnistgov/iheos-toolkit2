@@ -1,9 +1,11 @@
 package gov.nist.toolkit.xdstools2.client.tabs.genericQueryTab;
 
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Style;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.*;
 import gov.nist.toolkit.actortransaction.client.ActorType;
@@ -17,8 +19,11 @@ import gov.nist.toolkit.sitemanagement.client.Site;
 import gov.nist.toolkit.sitemanagement.client.TransactionOfferings;
 import gov.nist.toolkit.xdstools2.client.*;
 import gov.nist.toolkit.xdstools2.client.command.command.GetTransactionOfferingsCommand;
+import gov.nist.toolkit.xdstools2.client.event.EnvironmentChangedEvent;
+import gov.nist.toolkit.xdstools2.client.event.Xdstools2EventBus;
 import gov.nist.toolkit.xdstools2.client.event.testSession.TestSessionManager2;
 import gov.nist.toolkit.xdstools2.client.siteActorManagers.BaseSiteActorManager;
+import gov.nist.toolkit.xdstools2.client.util.ClientFactory;
 import gov.nist.toolkit.xdstools2.client.widgets.PidWidget;
 
 import java.util.ArrayList;
@@ -100,6 +105,13 @@ public abstract class GenericQueryTab  extends ToolWindow {
 		if (siteActorManager != null)
 			siteActorManager.setGenericQueryTab(this);
 
+		ClientFactory cf = GWT.create(ClientFactory.class);
+		((Xdstools2EventBus)cf.getEventBus()).addEnvironmentChangedEventHandler(new EnvironmentChangedEvent.EnvironmentChangedEventHandler() {
+			@Override
+			public void onEnvironmentChange(EnvironmentChangedEvent event) {
+				Window.alert("redisplay!");
+			}
+		});
 		// when called as HomeTab is built, the wrong session services this call, this
 		// makes sure the job gets done
 		//		EnvironmentSelector.SETENVIRONMENT(toolkitService);

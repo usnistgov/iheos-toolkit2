@@ -185,7 +185,7 @@ public class ToolLauncher implements ClickHandler {
 		ToolDef def = getToolDef(requestedName);
 		ToolWindow tool = getTool(def);
 		if (tool == null) return;
-		tool.onAbstractTabLoad(true, def.tabName);
+		tool.onTabLoad(true, def.tabName);
 	}
 
 	public void launch() {

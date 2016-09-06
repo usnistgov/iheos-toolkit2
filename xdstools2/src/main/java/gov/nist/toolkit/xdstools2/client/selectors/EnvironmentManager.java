@@ -1,5 +1,6 @@
 package gov.nist.toolkit.xdstools2.client.selectors;
 
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.user.client.Cookies;
@@ -8,9 +9,12 @@ import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.ListBox;
+import com.sun.deploy.util.SessionState;
 import gov.nist.toolkit.xdstools2.client.*;
 import gov.nist.toolkit.xdstools2.client.command.command.GetEnvironmentNamesCommand;
+import gov.nist.toolkit.xdstools2.client.event.Xdstools2EventBus;
 import gov.nist.toolkit.xdstools2.client.tabs.EnvironmentState;
+import gov.nist.toolkit.xdstools2.client.util.ClientFactory;
 
 import java.util.List;
 
@@ -204,7 +208,8 @@ public class EnvironmentManager extends Composite{
 			change(value);
 			
 			environmentState.updated(environmentManager);
-
+			ClientFactory cf= GWT.create(ClientFactory.class);
+			((Xdstools2EventBus) cf.getEventBus()).fireEnvironmentChangedEvent(value);
 			toolkitService.setEnvironment(value, setEnvironmentCallback);
 		}
 
