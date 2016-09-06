@@ -106,7 +106,7 @@ class ClientApiITh extends Specification {
 //        Simulator sim = simApi.create('rr', rrSimId)
 //
 //        when: 'Create site for simulator'
-//        Site site = SimManager.getSite(sim.configs.getRetrievedDocumentsModel(0))
+//        Site site = SimManager.getSiteName(sim.configs.getRetrievedDocumentsModel(0))
 //
 //        then: 'site exists'
 //        site

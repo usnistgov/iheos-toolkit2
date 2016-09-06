@@ -43,6 +43,8 @@ public class SiteServiceManager {
 		return siteServiceManager;
 	}
 
+	static public SiteServiceManager getInstance() { return getSiteServiceManager(); }
+
 //	public void setCommonSites(Sites commonSites) {
 //		this.commonSites = commonSites;
 //	}
@@ -265,7 +267,8 @@ public class SiteServiceManager {
 		logger.debug(sessionId + ": " + "getSite");
 		try {
 			getAllSites(sessionId);
-			return SimCache.getSimManagerForSession(sessionId).getAllSites().getSite(siteName);
+			Site site = SimCache.getSimManagerForSession(sessionId).getAllSites().getSite(siteName);
+			return site;
 		} catch (Exception e) {
 			logger.error("getSite", e);
 			throw new Exception(e.getMessage());

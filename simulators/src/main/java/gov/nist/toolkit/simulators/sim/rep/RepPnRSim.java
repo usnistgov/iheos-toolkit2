@@ -192,7 +192,16 @@ public class RepPnRSim extends TransactionSimulator implements MetadataGeneratin
 
 			if (isForward()) {
 				// issue soap call to registry
-				String endpoint = simulatorConfig.get(SimulatorProperties.registerEndpoint).asString();
+				String endpoint = null;
+				try {
+					endpoint = simulatorConfig.get(SimulatorProperties.registerEndpoint).asString();
+				} catch (Exception e) {
+				}
+				if (endpoint == null) {
+					logger.error("No register endpoint configured");
+					er.err(Code.XDSRepositoryError, "No register endpoint configured", this, "");
+					return;
+				}
 
 				Soap soap = new Soap();
 				try {

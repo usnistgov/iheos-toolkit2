@@ -3,6 +3,7 @@ package gov.nist.toolkit.xdstools2.client.widgets.buttons;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.ui.Button;
+import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.Panel;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import gov.nist.toolkit.services.client.RawResponse;
@@ -12,11 +13,18 @@ import gov.nist.toolkit.xdstools2.client.ErrorHandler;
  *
  */
 abstract public class ReportableButton implements ClickHandler {
-    final VerticalPanel panel = new VerticalPanel();
+    private final VerticalPanel panel = new VerticalPanel();
 
     public ReportableButton(Panel topPanel, String label) {
+
+        panel.add(new HTML("<hr /><h2>Initialization</h2><p>The test environment needs to be initialized before tests can be run."));
+
+
         final Button button = new Button(label);
         panel.add(button);
+
+        panel.add(new HTML("<br /><hr />"));
+
         topPanel.add(panel);
         button.addClickHandler(this);
     }
@@ -25,7 +33,7 @@ abstract public class ReportableButton implements ClickHandler {
 
     @Override
     public void onClick(ClickEvent clickEvent) {
-        clean();
+//        clean();
         handleClick(clickEvent);
     }
 
@@ -42,7 +50,7 @@ abstract public class ReportableButton implements ClickHandler {
     public boolean handleError(RawResponse rawResponse, Class clas) {
         if (ErrorHandler.handleError(panel, rawResponse)) return true;
         if (rawResponse.getClass().equals(clas)) return false;
-        ErrorHandler.handleError(panel, clas.getName(), clas);
+        ErrorHandler.handleError(panel, rawResponse.getClass().getName(), clas);
         return true;
     }
 

@@ -12,13 +12,15 @@ import gov.nist.toolkit.xdstools2.client.PopupMessage;
 import gov.nist.toolkit.xdstools2.client.tabs.genericQueryTab.GenericQueryTab;
 import gov.nist.toolkit.xdstools2.client.widgets.buttons.ReportableButton;
 
+import static gov.nist.toolkit.xdstools2.client.ToolWindow.toolkitService;
+
 
 /**
  *
  */
 class BuildIGTestOrchestrationButton extends ReportableButton {
     private IGTestTab testTab;
-    boolean includeIG;
+    private boolean includeIG;
 
     BuildIGTestOrchestrationButton(IGTestTab testTab, Panel topPanel, String label, boolean includeIG) {
         super(topPanel, label);
@@ -34,7 +36,7 @@ class BuildIGTestOrchestrationButton extends ReportableButton {
         IgOrchestrationRequest request = new IgOrchestrationRequest();
         request.setUserName(testTab.getCurrentTestSession());
         request.setIncludeLinkedIG(includeIG);
-        testTab.toolkitService.buildIgTestOrchestration(request, new AsyncCallback<RawResponse>() {
+        toolkitService.buildIgTestOrchestration(request, new AsyncCallback<RawResponse>() {
             @Override
             public void onFailure(Throwable throwable) {
                 handleError(throwable);

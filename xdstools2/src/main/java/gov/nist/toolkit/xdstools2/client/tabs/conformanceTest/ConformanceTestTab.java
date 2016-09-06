@@ -12,11 +12,13 @@ import com.google.gwt.user.client.ui.*;
 import gov.nist.toolkit.interactiondiagram.client.events.DiagramClickedEvent;
 import gov.nist.toolkit.interactiondiagram.client.events.DiagramPartClickedEventHandler;
 import gov.nist.toolkit.interactiondiagram.client.widgets.InteractionDiagram;
+import gov.nist.toolkit.actortransaction.client.ActorType;
 import gov.nist.toolkit.results.client.Result;
 import gov.nist.toolkit.results.client.TestInstance;
 import gov.nist.toolkit.services.client.RepOrchestrationResponse;
 import gov.nist.toolkit.session.client.SectionOverviewDTO;
 import gov.nist.toolkit.session.client.TestOverviewDTO;
+import gov.nist.toolkit.sitemanagement.client.Site;
 import gov.nist.toolkit.sitemanagement.client.SiteSpec;
 import gov.nist.toolkit.testkitutilities.client.TestCollectionDefinitionDAO;
 import gov.nist.toolkit.xdstools2.client.PopupMessage;
@@ -37,12 +39,17 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner, SiteMa
 
 	private final ConformanceTestTab me;
 	private final FlowPanel toolPanel = new FlowPanel();   // Outer-most panel for the tool
+	private final FlowPanel initializationPanel = new FlowPanel();
 	private final FlowPanel testsPanel = new FlowPanel();  // panel for displaying tests
 	private final TabBar tabBar = new TabBar();            // tab bar at the top for selecting actor types
 	private final FlowPanel sitesPanel = new FlowPanel();
 	private String currentSiteName = null;
-	private HTML testSession = new HTML();
-	RepOrchestrationResponse repOrchestrationResponse;
+	private HTML testSessionDescription = new HTML();
+	private FlowPanel testSessionDescriptionPanel = new FlowPanel();
+	private RepOrchestrationResponse repOrchestrationResponse;
+	private String currentActorTypeName;
+	private Site siteUnderTest = null;
+	private SiteSpec sitetoIssueTestAgainst = null;
 
 	// Testable actors
 	private List<TestCollectionDefinitionDAO> testCollectionDefinitionDAOs;
@@ -53,6 +60,7 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner, SiteMa
 		me = this;
 		toolPanel.add(sitesPanel);
 		toolPanel.add(tabBar);
+		toolPanel.add(initializationPanel);
 		toolPanel.add(testsPanel);
 	}
 
@@ -61,12 +69,13 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner, SiteMa
 
 	@Override
 	public void onTabLoad(boolean select, String eventName) {
-		updateTestSession();
-		testSession.addClickHandler(new TestSessionClickHandler());
+		updateTestSessionDisplay();
+		testSessionDescription.addClickHandler(new TestSessionClickHandler());
+		testSessionDescriptionPanel.setStyleName("with-rounded-border");
+		testSessionDescriptionPanel.add(testSessionDescription);
 
-
-		addEast(testSession);
-		updateTestSession();
+		addEast(testSessionDescriptionPanel);
+		initializeTestSession();
 		registerTab(select, eventName);
 
 		tabTopPanel.add(toolPanel);
@@ -83,7 +92,7 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner, SiteMa
 		});
 
 		// List of sites
-		buildSiteSelector();
+//		buildSiteSelector();
 
 		tabBar.addSelectionHandler(actorSelectionHandler);
 
@@ -103,38 +112,106 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner, SiteMa
 		});
 	}
 
-	private void updateTestSession() {
-		testSession.setHTML("Test Session<br />" +
+	@Override
+	public Site getSiteUnderTest() {
+		return siteUnderTest;
+	}
+
+	private void initializeTestSession() {
+		if (getCurrentTestSession() == null || getCurrentTestSession().equals("")) {
+			updateTestSessionDisplay();
+			return;
+		}
+		toolkitService.getAssignedSiteForTestSession(getCurrentTestSession(), new AsyncCallback<String>() {
+			@Override
+			public void onFailure(Throwable throwable) {
+				new PopupMessage("getAssignedSiteForTestSession failed: " + throwable.getMessage());
+			}
+
+			@Override
+			public void onSuccess(String s) {
+				setSiteName(s);
+				updateTestSessionDisplay();
+			}
+		});
+	}
+
+	private void updateTestSessionDisplay() {
+		testSessionDescription.setHTML("Test Session<br />" +
 				"Name: " + getCurrentTestSession() + "<br />" +
 				"Environment: " + getEnvironmentSelection() + "<br />" +
-				"Site: " + getSite());
+				"SUT: " + getSiteName());
+	}
+
+	String verifyConformanceTestEnvironment() {
+		String msg;
+		msg = verifyEnvironmentSelection();
+		if (msg != null) return msg;
+
+		msg = verifyTestSession();
+		if (msg != null) return msg;
+
+		msg = verifySite();
+		if (msg != null) return msg;
+
+		return null;
+	}
+
+	private String verifyEnvironmentSelection() {
+		if (getEnvironmentSelection() != null) return null;
+		return "Environment must be selected before you proceed.";
+	}
+
+	private String verifyTestSession() {
+		if (getCurrentTestSession() != null) return null;
+		return "Test Session must be selected before you proceed.";
+	}
+
+	private String verifySite() {
+		if (getSiteName() != null) return null;
+		return "Site under test must be selected before you proceed.";
 	}
 
 	@Override
-	public String getSite() {
+	public String getSiteName() {
 		return currentSiteName;
 	}
 
 	@Override
-	public void setSite(String site) {
+	public void setSiteName(String site) {
 		currentSiteName = site;
+		toolkitService.getSite(site, new AsyncCallback<Site>() {
+			@Override
+			public void onFailure(Throwable throwable) {
+				new PopupMessage("getSiteName threw error: " + throwable.getMessage());
+			}
+
+			@Override
+			public void onSuccess(Site site) {
+				siteUnderTest = site;
+			}
+		});
 	}
 
 	@Override
 	public void update() {
-		updateTestSession();
+		updateTestSessionDisplay();
 	}
 
 	private class TestSessionClickHandler implements ClickHandler {
 
 		@Override
 		public void onClick(ClickEvent clickEvent) {
-			TestEnvironmentDialog dialog = new TestEnvironmentDialog(me, me);
-			int left = Window.getClientWidth()/ 3;
-			int top = Window.getClientHeight()/ 6;
-			dialog.setPopupPosition(left, top);
-			dialog.show();
+			launchTestEnvironmentDialog(null);
 		}
+	}
+
+	void launchTestEnvironmentDialog(String msg) {
+		TestEnvironmentDialog dialog = new TestEnvironmentDialog(me, me, msg);
+		int left = Window.getClientWidth()/ 3;
+		int top = Window.getClientHeight()/ 6;
+		dialog.setPopupPosition(left, top);
+		dialog.show();
 	}
 
 	// actor selection changes
@@ -142,8 +219,8 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner, SiteMa
 		@Override
 		public void onSelection(SelectionEvent<Integer> selectionEvent) {
 			int i = selectionEvent.getSelectedItem();
-			String currentActorTypeName = testCollectionDefinitionDAOs.get(i).getCollectionID();
-			loadTestCollection(currentActorTypeName);
+			currentActorTypeName = testCollectionDefinitionDAOs.get(i).getCollectionID();
+			loadTestCollection();
 		}
 	};
 
@@ -170,8 +247,7 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner, SiteMa
 	private String getSelectedTestCollection() {
 		int selected = tabBar.getSelectedTab();
 		if (selected < testCollectionDefinitionDAOs.size()) {
-			String name = testCollectionDefinitionDAOs.get(selected).getCollectionID();
-			return name;
+			return testCollectionDefinitionDAOs.get(selected).getCollectionID();
 		}
 		return null;
 	}
@@ -201,23 +277,31 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner, SiteMa
 		});
 	}
 
-	// load test results for a single test collection (actor type) for a single site
-	private void loadTestCollection(final String collectionName) {
-		testDisplays.clear();  // so they reload
+	private boolean isRepSut() {
+		return currentActorTypeName != null && ActorType.REPOSITORY.getShortName().equals(currentActorTypeName);
+	}
 
-		if (collectionName.equals("")) {
-			testsPanel.add(new BuildRepTestOrchestrationButton(this, null, "MyLabel").panel());
+	// load test results for a single test collection (actor type) for a single site
+	private void loadTestCollection() {
+		testDisplays.clear();  // so they reload
+		testsPanel.clear();
+
+		initializationPanel.clear();
+
+		if (isRepSut()) {
+			initializationPanel.add(new BuildRepTestOrchestrationButton(this, initializationPanel, "Initialize Test Environment").panel());
+		} else {
+			sitetoIssueTestAgainst = new SiteSpec(siteUnderTest.getName());
 		}
 
 		// what tests are in the collection
-		toolkitService.getCollectionMembers("actorcollections", collectionName, new AsyncCallback<List<String>>() {
+		toolkitService.getCollectionMembers("actorcollections", currentActorTypeName, new AsyncCallback<List<String>>() {
 
 			public void onFailure(Throwable caught) {
 				new PopupMessage("getTestlogListing: " + caught.getMessage());
 			}
 
 			public void onSuccess(List<String> testIds) {
-				testsPanel.clear();
 				List<TestInstance> testInstances = new ArrayList<>();
 				for (String testId : testIds) testInstances.add(new TestInstance(testId));
 
@@ -229,7 +313,7 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner, SiteMa
 					}
 
 					public void onSuccess(List<TestOverviewDTO> testOverviews) {
-						testsPanel.clear();
+						testsPanel.add(new HTML("<h2>Tests</h2>"));
 						for (TestOverviewDTO testOverview : testOverviews) {
 //							me.testOverviews.put(testOverview.getName(), testOverview);
 							displayTest(testOverview);
@@ -433,10 +517,13 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner, SiteMa
 	// if testInstance contains a sectionName then run that section, otherwise run entire test.
 	public void runTest(final TestInstance testInstance) {
 		Map<String, String> parms = new HashMap<>();
-		parms.put("$patientid$", "P20160803215512.2^^^&1.3.6.1.4.1.21367.2005.13.20.1000&ISO");
+		parms.put("$patientid$", repOrchestrationResponse.getPid().asString());
 
 		try {
-			toolkitService.runTest(getEnvironmentSelection(), getCurrentTestSession(), new SiteSpec(currentSiteName), testInstance, parms, true, new AsyncCallback<TestOverviewDTO>() {
+			// Site is support site since it has the supporting Registry sim and as part of orchestration we added
+			// the Repository Pnr and Ret transactions
+			// was currentSiteName
+			toolkitService.runTest(getEnvironmentSelection(), getCurrentTestSession(), sitetoIssueTestAgainst, testInstance, parms, true, new AsyncCallback<TestOverviewDTO>() {
 				@Override
 				public void onFailure(Throwable throwable) {
 					new PopupMessage(throwable.getMessage());
@@ -467,5 +554,13 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner, SiteMa
 
 	public String getWindowShortName() {
 		return "testloglisting";
+	}
+
+	public SiteSpec getSitetoIssueTestAgainst() {
+		return sitetoIssueTestAgainst;
+	}
+
+	public void setSitetoIssueTestAgainst(SiteSpec sitetoIssueTestAgainst) {
+		this.sitetoIssueTestAgainst = sitetoIssueTestAgainst;
 	}
 }

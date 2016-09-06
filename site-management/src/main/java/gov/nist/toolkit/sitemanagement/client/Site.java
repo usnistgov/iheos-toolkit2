@@ -19,6 +19,25 @@ import java.util.Set;
  * A SiteSpec is a reference to a Site and a selection of one actor type. Having a SiteSpec you know
  * exactly which transactions are possible.
  *
+ * Usage for Orchestration
+ *
+ * From the perspective of SiteSpec:
+ * 	For tests that depend on Orchestration, we sometimes need to configure supporting actors into the
+ * Site. To do this and not alter the Vendor configured Site, a Orchestration Site is created with the following
+ * rules.
+ *   1. name refers to vendor site
+ *   2. orchestrationSiteName refers to orchestration site
+ *   3. When searching for endpoint or other facet, look in orchestration site first, vendor site second
+ *
+ * When a SiteSpec gets translated into a Site:
+ *
+ * 1. Orchestration Site has non-null mainSite attribute naming the Vendor Site
+ * 2. Searches for things like endpoints start with Orchestration Site and if not found proceed to search
+ * Vendor Site.
+ *
+ * The class Sites is used internally to look up the Vendor Site from the Orchestration Site (by name)
+ *
+ *
  * SiteSpec reference the Site through the name attribute.
  * @author bill
  *
@@ -42,6 +61,18 @@ public class Site  implements IsSerializable, Serializable {
 	public String pidAllocateURI = null;
 	transient public boolean changed = false;
 	public String user = null;  // loaded from SimId - when non-null this site represents a sim
+
+
+	public void addLinkedSite(Site linkedSite) {
+		transactions.mergeIn(linkedSite.transactions());
+		repositories.mergeIn(linkedSite.repositories());
+		if (home == null)
+			home = linkedSite.home;
+		if (pifHost == null)
+			pifHost = linkedSite.pifHost;
+		if (pifPort == null)
+			pifPort = linkedSite.pifPort;
+	}
 
 	@Override
 	public int hashCode() {

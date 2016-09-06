@@ -242,4 +242,15 @@ public class Io {
 		}
 	}
 
+	static public void deleteContents(File f) {
+		if (!f.exists()) return;
+		if (f.isDirectory()) {
+			String[] contents = f.list();
+			for (int i = 0; i < contents.length; i++) {
+				File fn = new File(f, contents[i]);
+				delete(fn);
+			}
+		}
+	}
+
 }
