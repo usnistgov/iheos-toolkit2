@@ -46,7 +46,7 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner, SiteMa
 	private RepOrchestrationResponse repOrchestrationResponse;
 	private String currentActorTypeName;
 	private Site siteUnderTest = null;
-	private String supportSiteName;
+	private SiteSpec sitetoIssueTestAgainst = null;
 
 	// Testable actors
 	private List<TestCollectionDefinitionDAO> testCollectionDefinitionDAOs;
@@ -275,6 +275,8 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner, SiteMa
 
 		if (isRepSut()) {
 			initializationPanel.add(new BuildRepTestOrchestrationButton(this, initializationPanel, "Initialize Test Environment").panel());
+		} else {
+			sitetoIssueTestAgainst = new SiteSpec(siteUnderTest.getName());
 		}
 
 		// what tests are in the collection
@@ -486,7 +488,7 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner, SiteMa
 			// Site is support site since it has the supporting Registry sim and as part of orchestration we added
 			// the Repository Pnr and Ret transactions
 			// was currentSiteName
-			toolkitService.runTest(getEnvironmentSelection(), getCurrentTestSession(), new SiteSpec(supportSiteName), testInstance, parms, true, new AsyncCallback<TestOverviewDTO>() {
+			toolkitService.runTest(getEnvironmentSelection(), getCurrentTestSession(), sitetoIssueTestAgainst, testInstance, parms, true, new AsyncCallback<TestOverviewDTO>() {
 				@Override
 				public void onFailure(Throwable throwable) {
 					new PopupMessage(throwable.getMessage());
@@ -516,11 +518,11 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner, SiteMa
 		return "testloglisting";
 	}
 
-	public String getSupportSiteName() {
-		return supportSiteName;
+	public SiteSpec getSitetoIssueTestAgainst() {
+		return sitetoIssueTestAgainst;
 	}
 
-	public void setSupportSiteName(String supportSiteName) {
-		this.supportSiteName = supportSiteName;
+	public void setSitetoIssueTestAgainst(SiteSpec sitetoIssueTestAgainst) {
+		this.sitetoIssueTestAgainst = sitetoIssueTestAgainst;
 	}
 }

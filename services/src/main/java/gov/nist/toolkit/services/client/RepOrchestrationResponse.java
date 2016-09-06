@@ -10,6 +10,7 @@ public class RepOrchestrationResponse extends RawResponse {
     private SiteSpec repSite;
     private  String message = "";
     private SimulatorConfig regConfig;
+    private SiteSpec supportSite;
 
     public RepOrchestrationResponse() {
     }
@@ -36,5 +37,13 @@ public class RepOrchestrationResponse extends RawResponse {
 
     public void setRegConfig(SimulatorConfig regConfig) {
         this.regConfig = regConfig;
+    }
+
+    public SiteSpec getSupportSite() {
+        return supportSite;
+    }
+
+    public void setSupportSite(SiteSpec supportSite) {
+        this.supportSite = supportSite;
     }
 }

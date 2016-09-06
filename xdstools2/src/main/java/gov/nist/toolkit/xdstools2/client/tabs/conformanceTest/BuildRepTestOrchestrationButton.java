@@ -104,7 +104,7 @@ class BuildRepTestOrchestrationButton extends ReportableButton {
 
 
                 // test will be run out of support site so pass it back to conformance test tab
-                testTab.setSupportSiteName(orchResponse.getRepSite().getName());
+                testTab.setSitetoIssueTestAgainst(orchResponse.getSupportSite());
             }
 
 
