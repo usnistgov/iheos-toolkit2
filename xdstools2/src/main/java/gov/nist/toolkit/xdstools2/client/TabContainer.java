@@ -70,12 +70,14 @@ public class TabContainer {
 
 	public static void selectTab() {
 //		INNERPANEL.setWidget(deck.get(TABBAR.getSelectedTab()));
+
 		Widget dockLp = deck.get(TABBAR.getSelectedTab());
 
 		if (INNER_DECKPANEL.getWidgetIndex(dockLp)==-1) {
 			INNER_DECKPANEL.add(dockLp);
 		}
 		INNER_DECKPANEL.showWidget(dockLp);
+
 
 	}
 
@@ -104,6 +106,7 @@ public class TabContainer {
 			public void onClick(ClickEvent clickEvent) {
 				int i = deck.indexOf(content);
 				deck.remove(i);
+				INNER_DECKPANEL.remove(i);
 				TABBAR.removeTab(i);
 				i = deck.size() - 1;
 				selectTab(i);
@@ -131,6 +134,7 @@ public class TabContainer {
 		INNERPANEL.clear();
 		INNERPANEL.add(deck.get(tabIndex));
 		*/
+
 //		TABPANEL.selectTab(tabIndex);
 	}
 
