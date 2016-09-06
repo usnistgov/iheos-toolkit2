@@ -21,6 +21,13 @@ import java.io.Serializable;
 public class SiteSpec implements Serializable, IsSerializable {
 
 	public String name = "";   // site name
+	// For tests that depend on Orchestration, we sometimes need to configure supporting actors into the
+	// Site. To do this and not alter the Vendor configured Site, a Orchestration Site is created with the following
+	// rules.
+	//   1. name refers to vendor site
+	//   2. orchestrationSiteName refers to orchestration site
+	//   3. When searching for endpoint or other facet, look in orchestration site first, vendor site second
+	public String orchestrationSiteName = null;
 	public ActorType actorType = null;
 	public String homeId = "";
 	public String homeName = "";
@@ -57,11 +64,13 @@ public class SiteSpec implements Serializable, IsSerializable {
 	public SiteSpec() {
 		this("", null, null);
 	}
-	
+
 	public String toString() {
 		StringBuffer buf = new StringBuffer();
 		
 		buf.append("SiteSpec: ").append(name).append(" (").append(actorType).append(") ");
+		if (orchestrationSiteName != null)
+			buf.append(" (orch=").append(orchestrationSiteName).append(") ");
 		buf.append((isTls) ? " isTLS" : " notTls");
 		buf.append((isSaml) ? " isSaml" : " notSaml");
 				
@@ -118,5 +127,13 @@ public class SiteSpec implements Serializable, IsSerializable {
 
 	public void setActorType(ActorType actorType) {
 		this.actorType = actorType;
+	}
+
+	public String getOrchestrationSiteName() {
+		return orchestrationSiteName;
+	}
+
+	public void setOrchestrationSiteName(String orchestrationSiteName) {
+		this.orchestrationSiteName = orchestrationSiteName;
 	}
 }

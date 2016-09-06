@@ -128,7 +128,10 @@ public class UtilityRunner {
                 Sites theSites = new Sites(siteCollection);
                 // Only for SOAP messages will siteSpec.name be filled in.  For Direct it is not expected
                 if (session.siteSpec != null && session.siteSpec.name != null && !session.siteSpec.name.equals("")) {
-                    Site site = theSites.getSite(session.siteSpec.name);
+                    // See Site.java for details on this lookup
+//                    Site site = theSites.getSite(session.siteSpec.name);
+                    Site site = theSites.getOrchestrationLinkedSites(session.siteSpec);
+
                     if (site == null)
                         throw new Exception("Cannot find site " + session.siteSpec.name);
                     logger.info("Using site: " + site.describe());
