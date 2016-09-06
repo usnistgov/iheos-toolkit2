@@ -667,12 +667,12 @@ public class InteractionDiagram extends Composite {
         OMSVGPathElement l_part = doc.createSVGPathElement();
        l_part.setAttribute("d","M " + (x-half_cross_height) + " " + (y-half_cross_height) // constant is the half-height of the cross
                + " l5 5 l-5 5");
-        l_part.setAttribute("style","fill:rgb(255,255,255);stroke-width:1;stroke:rgb(255,0,0);stroke-linecap:round");
+        l_part.setAttribute("style","fill:rgb(255,255,255);stroke-width:1.5;stroke:rgb(255,0,0);stroke-linecap:round");
         x_group.appendChild(l_part);
         OMSVGPathElement r_part = doc.createSVGPathElement();
         r_part.setAttribute("d","M " + (x+half_cross_height) + " " + (y-half_cross_height)
                 + " l-5 5 l5 5");
-        r_part.setAttribute("style","fill:rgb(255,255,255);stroke-width:1;stroke:rgb(255,0,0);stroke-linecap:round");
+        r_part.setAttribute("style","fill:rgb(255,255,255);stroke-width:1.5;stroke:rgb(255,0,0);stroke-linecap:round");
         x_group.appendChild(r_part);
 
         return x_group;
@@ -681,7 +681,7 @@ public class InteractionDiagram extends Composite {
     OMSVGTextElement getTransactionLabel(int x, int y, String[] lines) {
         OMSVGTextElement text = doc.createSVGTextElement();
         text.setAttribute("x",""+x);
-        text.setAttribute("y",""+(y-(3+(line_height * NUM_LINES)))); // Shift text up the connecting line, 3 for top of the line
+        text.setAttribute("y",""+(y-(4+(line_height * NUM_LINES)))); // Shift text up the connecting line, 3 for top of the line
         text.setAttribute("text-anchor","middle");
         text.setAttribute("font-family","Verdana");
         text.setAttribute("font-size","10");
