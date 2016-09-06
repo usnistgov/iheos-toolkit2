@@ -19,6 +19,7 @@ public class TestStepLogContentDTO implements Serializable, IsSerializable {
 	private boolean expectedWarning;
 	private StepGoalsDTO stepGoalsDTO;
 	private String endpoint;
+	private String transaction;
 	private List<String> errors = new ArrayList<>();
 	private List<String> details = new ArrayList<>();
 	private List<ReportDTO> reportDTOs = new ArrayList<>();
@@ -195,5 +196,11 @@ public class TestStepLogContentDTO implements Serializable, IsSerializable {
 		this.useReports.add(useReport);
 	}
 
+	public String getTransaction() {
+		return transaction;
+	}
 
+	public void setTransaction(String transaction) {
+		this.transaction = transaction;
+	}
 }

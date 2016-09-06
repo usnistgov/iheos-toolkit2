@@ -155,10 +155,12 @@ public class TestOverviewBuilder {
 
         stepOverview.setName(stepContent.getId());
         stepOverview.setPass(stepContent.isSuccess());
+        stepOverview.setExpectedSuccess(stepContent.isExpectedSuccess());
         stepOverview.setDetails(stepContent.getDetails());
         stepOverview.addErrors(stepContent.getSoapFaults());
         stepOverview.addErrors(stepContent.getErrors());
         stepOverview.addErrors(stepContent.getAssertionErrors());
+        stepOverview.setTransaction(stepContent.getTransaction());
         sectionOverview.addStep(stepName, stepOverview);
     }
 }
