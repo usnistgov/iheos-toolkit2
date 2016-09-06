@@ -224,9 +224,21 @@ public class TestStepLogContentBuilder {
      * @param child
      */
     private void parseTransaction(OMElement child) {
-        if (child==null)
-            c.setTransaction("UnknownTx");
-        else {
+        if (child==null) {
+            // Alternative method #2
+            OMElement el = null;
+            List<OMElement> transactions = XmlUtil.descendantsWithLocalNameEndsWith(root, "Transaction");
+            if (!transactions.isEmpty()) {
+                el = transactions.get(0);
+            }
+
+            if (el==null) {
+                c.setTransaction("UnknownTx");
+            } else {
+                c.setTransaction(el.getLocalName());
+            }
+
+        } else { // Method #1
             c.setTransaction(((OMElement)child.getParent()).getLocalName());
         }
     }

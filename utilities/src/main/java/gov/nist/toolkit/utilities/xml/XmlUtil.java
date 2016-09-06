@@ -6,12 +6,6 @@
 
 package gov.nist.toolkit.utilities.xml;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-
-import javax.xml.namespace.QName;
-
 import org.apache.axiom.om.OMAbstractFactory;
 import org.apache.axiom.om.OMElement;
 import org.apache.axiom.om.OMFactory;
@@ -21,6 +15,11 @@ import org.w3c.dom.Document;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
+
+import javax.xml.namespace.QName;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 
 public class XmlUtil {
 	static public OMFactory om_factory = OMAbstractFactory.getOMFactory();
@@ -112,6 +111,25 @@ public class XmlUtil {
 			if (child.getLocalName().equals(localName))
 				decendents.add(child);
 			decendentsWithLocalName1(decendents, child, localName, depth - 1);
+		}
+	}
+
+	public static List<OMElement> descendantsWithLocalNameEndsWith(OMElement ele, String localName) {
+		List<OMElement> al = new ArrayList<OMElement>();
+		if (ele == null || localName == null)
+			return al;
+		descendantsWithLocalNameEndsWith(al, ele, localName, -1);
+		return al;
+	}
+
+	private static void descendantsWithLocalNameEndsWith(List<OMElement> descendants, OMElement ele, String localName, int depth) {
+		if (depth == 0)
+			return;
+		for (Iterator<?> it=ele.getChildElements(); it.hasNext(); ) {
+			OMElement child = (OMElement) it.next();
+			if (child.getLocalName().toLowerCase().endsWith(localName.toLowerCase()))
+				descendants.add(child);
+			decendentsWithLocalName1(descendants, child, localName, depth - 1);
 		}
 	}
 	
