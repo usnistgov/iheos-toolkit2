@@ -94,6 +94,7 @@ class RepOrchestrationBuilder {
 //            // Set it into SimCache so it is found later
 //            SimCache.addToSession(session.id(), supportSimConfig)
 
+            response.setPid(session.allocateNewPid())
             return response
         } catch (Exception e) {
             return RawResponseBuilder.build(e);

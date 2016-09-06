@@ -88,19 +88,21 @@ class BuildRepTestOrchestrationButton extends ReportableButton {
 
                 initializationResultsPanel.add(new HTML("<h3>Supporting Registry Configuration</h3>"));
                 initializationResultsPanel.add(new HTML("Site: " + orchResponse.getRepSite().getName()));
+                initializationResultsPanel.add(new HTML("Patient ID: " + orchResponse.getPid().toString()));
+                initializationResultsPanel.add(new HTML("<br />"));
 
                 FlexTable table = new FlexTable();
 
                 int row = 0;
 
-                table.setText(row, 0, "Register");
+                table.setText(row, 0, "Register endpoint");
                 table.setText(row++, 1, orchResponse.getRegConfig().getConfigEle(SimulatorProperties.registerEndpoint).asString());
-                table.setText(row, 0, "Query");
+                table.setText(row, 0, "Stored Query endpoint");
                 table.setText(row++, 1, orchResponse.getRegConfig().getConfigEle(SimulatorProperties.storedQueryEndpoint).asString());
 
                 initializationResultsPanel.add(table);
 
-                initializationResultsPanel.add(new HTML("<p>Configure your Repository to forward Register transactions to the above endpoint.<hr />"));
+                initializationResultsPanel.add(new HTML("<p>Configure your Repository to forward Register transactions to the above Register endpoint.<hr />"));
 
 
                 // test will be run out of support site so pass it back to conformance test tab

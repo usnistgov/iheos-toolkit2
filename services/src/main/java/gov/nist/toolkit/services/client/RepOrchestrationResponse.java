@@ -1,6 +1,7 @@
 package gov.nist.toolkit.services.client;
 
 import gov.nist.toolkit.actorfactory.client.SimulatorConfig;
+import gov.nist.toolkit.configDatatypes.client.Pid;
 import gov.nist.toolkit.sitemanagement.client.SiteSpec;
 
 /**
@@ -11,6 +12,7 @@ public class RepOrchestrationResponse extends RawResponse {
     private  String message = "";
     private SimulatorConfig regConfig;
     private SiteSpec supportSite;
+    private Pid pid;
 
     public RepOrchestrationResponse() {
     }
@@ -45,5 +47,13 @@ public class RepOrchestrationResponse extends RawResponse {
 
     public void setSupportSite(SiteSpec supportSite) {
         this.supportSite = supportSite;
+    }
+
+    public Pid getPid() {
+        return pid;
+    }
+
+    public void setPid(Pid pid) {
+        this.pid = pid;
     }
 }

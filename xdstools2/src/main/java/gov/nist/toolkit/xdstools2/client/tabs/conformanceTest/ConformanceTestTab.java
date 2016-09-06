@@ -482,7 +482,7 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner, SiteMa
 	// if testInstance contains a sectionName then run that section, otherwise run entire test.
 	public void runTest(final TestInstance testInstance) {
 		Map<String, String> parms = new HashMap<>();
-		parms.put("$patientid$", "P20160803215512.2^^^&1.3.6.1.4.1.21367.2005.13.20.1000&ISO");
+		parms.put("$patientid$", repOrchestrationResponse.getPid().asString());
 
 		try {
 			// Site is support site since it has the supporting Registry sim and as part of orchestration we added
