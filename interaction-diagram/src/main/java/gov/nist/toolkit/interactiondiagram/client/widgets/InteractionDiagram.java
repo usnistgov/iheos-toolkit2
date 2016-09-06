@@ -880,4 +880,8 @@ public class InteractionDiagram extends Composite {
     public Tooltip getTooltip() {
         return tooltip;
     }
+
+    public boolean hasMeaningfulDiagram() { // At-least two life lines for a meaningful diagram
+       return (lls.size()>1);
+    }
 }

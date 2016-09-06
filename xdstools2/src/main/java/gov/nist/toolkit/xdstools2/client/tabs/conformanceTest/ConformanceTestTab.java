@@ -338,8 +338,10 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner, SiteMa
 
 	private void displayInteractionDiagram(TestOverviewDTO testResultDTO, FlowPanel body) {
 		InteractionDiagram diagram = new InteractionDiagram(Xdstools2.getEventBus(), testResultDTO);
-		body.add(new HTML("<p><b>Interaction Sequence:</b></p>"));
-		body.add(diagram);
+		if (diagram!=null && diagram.hasMeaningfulDiagram()) {
+			body.add(new HTML("<p><b>Interaction Sequence:</b></p>"));
+			body.add(diagram);
+		}
 	}
 
 	private class RunClickHandler implements ClickHandler {
