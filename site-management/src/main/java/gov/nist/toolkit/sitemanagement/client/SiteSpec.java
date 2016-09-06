@@ -64,7 +64,7 @@ public class SiteSpec implements Serializable, IsSerializable {
 	public SiteSpec() {
 		this("", null, null);
 	}
-	
+
 	public String toString() {
 		StringBuffer buf = new StringBuffer();
 		
@@ -127,5 +127,13 @@ public class SiteSpec implements Serializable, IsSerializable {
 
 	public void setActorType(ActorType actorType) {
 		this.actorType = actorType;
+	}
+
+	public String getOrchestrationSiteName() {
+		return orchestrationSiteName;
+	}
+
+	public void setOrchestrationSiteName(String orchestrationSiteName) {
+		this.orchestrationSiteName = orchestrationSiteName;
 	}
 }

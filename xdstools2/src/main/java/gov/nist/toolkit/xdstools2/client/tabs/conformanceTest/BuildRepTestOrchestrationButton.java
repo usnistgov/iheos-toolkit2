@@ -87,7 +87,7 @@ class BuildRepTestOrchestrationButton extends ReportableButton {
                 }
 
                 initializationResultsPanel.add(new HTML("<h3>Supporting Registry Configuration</h3>"));
-                initializationResultsPanel.add(new HTML("Site: " + orchResponse.getRepSite().getName()));
+                initializationResultsPanel.add(new HTML("Site: " + orchResponse.getSupportSite().getOrchestrationSiteName()));
                 initializationResultsPanel.add(new HTML("Patient ID: " + orchResponse.getPid().toString()));
                 initializationResultsPanel.add(new HTML("<br />"));
 
