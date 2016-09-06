@@ -36,6 +36,7 @@ public class InteractingEntity implements IsSerializable, Serializable {
      *  Repsonse status
      */
     INTERACTIONSTATUS status;
+    List<String> errors;
 
     /**
      *(null if leaf)
@@ -139,5 +140,13 @@ public class InteractingEntity implements IsSerializable, Serializable {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public List<String> getErrors() {
+        return errors;
+    }
+
+    public void setErrors(List<String> errors) {
+        this.errors = errors;
     }
 }

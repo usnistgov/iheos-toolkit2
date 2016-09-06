@@ -12,6 +12,8 @@ import java.util.List;
 public class StepOverviewDTO implements Serializable, IsSerializable {
     String name;
     boolean pass;
+    boolean expectedSuccess;
+    String transaction;
     List<String> errors = null;
     List<String> details;
     List<String> goals = new ArrayList<>();
@@ -59,5 +61,21 @@ public class StepOverviewDTO implements Serializable, IsSerializable {
 
     public List<String> getGoals() {
         return goals;
+    }
+
+    public String getTransaction() {
+        return transaction;
+    }
+
+    public void setTransaction(String transaction) {
+        this.transaction = transaction;
+    }
+
+    public boolean isExpectedSuccess() {
+        return expectedSuccess;
+    }
+
+    public void setExpectedSuccess(boolean expectedSuccess) {
+        this.expectedSuccess = expectedSuccess;
     }
 }
