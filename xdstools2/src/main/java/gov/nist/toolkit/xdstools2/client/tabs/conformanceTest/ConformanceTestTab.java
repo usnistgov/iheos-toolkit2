@@ -44,8 +44,9 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner, SiteMa
 	private HTML testSessionDescription = new HTML();
 	private FlowPanel testSessionDescriptionPanel = new FlowPanel();
 	private RepOrchestrationResponse repOrchestrationResponse;
-	String currentActorTypeName;
-	Site siteUnderTest = null;
+	private String currentActorTypeName;
+	private Site siteUnderTest = null;
+	private String supportSiteName;
 
 	// Testable actors
 	private List<TestCollectionDefinitionDAO> testCollectionDefinitionDAOs;
@@ -65,7 +66,7 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner, SiteMa
 
 	@Override
 	public void onTabLoad(boolean select, String eventName) {
-		updateTestSession();
+		updateTestSessionDisplay();
 		testSessionDescription.addClickHandler(new TestSessionClickHandler());
 		testSessionDescriptionPanel.setStyleName("with-rounded-border");
 		testSessionDescriptionPanel.add(testSessionDescription);
@@ -96,9 +97,14 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner, SiteMa
 		loadTestCollections();
 	}
 
+	@Override
+	public Site getSiteUnderTest() {
+		return siteUnderTest;
+	}
+
 	private void initializeTestSession() {
 		if (getCurrentTestSession() == null || getCurrentTestSession().equals("")) {
-			updateTestSession();
+			updateTestSessionDisplay();
 			return;
 		}
 		toolkitService.getAssignedSiteForTestSession(getCurrentTestSession(), new AsyncCallback<String>() {
@@ -109,17 +115,17 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner, SiteMa
 
 			@Override
 			public void onSuccess(String s) {
-				setSite(s);
-				updateTestSession();
+				setSiteName(s);
+				updateTestSessionDisplay();
 			}
 		});
 	}
 
-	private void updateTestSession() {
+	private void updateTestSessionDisplay() {
 		testSessionDescription.setHTML("Test Session<br />" +
 				"Name: " + getCurrentTestSession() + "<br />" +
 				"Environment: " + getEnvironmentSelection() + "<br />" +
-				"Site: " + getSite());
+				"SUT: " + getSiteName());
 	}
 
 	String verifyConformanceTestEnvironment() {
@@ -147,22 +153,22 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner, SiteMa
 	}
 
 	private String verifySite() {
-		if (getSite() != null) return null;
+		if (getSiteName() != null) return null;
 		return "Site under test must be selected before you proceed.";
 	}
 
 	@Override
-	public String getSite() {
+	public String getSiteName() {
 		return currentSiteName;
 	}
 
 	@Override
-	public void setSite(String site) {
+	public void setSiteName(String site) {
 		currentSiteName = site;
 		toolkitService.getSite(site, new AsyncCallback<Site>() {
 			@Override
 			public void onFailure(Throwable throwable) {
-				new PopupMessage("getSite threw error: " + throwable.getMessage());
+				new PopupMessage("getSiteName threw error: " + throwable.getMessage());
 			}
 
 			@Override
@@ -174,7 +180,7 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner, SiteMa
 
 	@Override
 	public void update() {
-		updateTestSession();
+		updateTestSessionDisplay();
 	}
 
 	private class TestSessionClickHandler implements ClickHandler {
@@ -477,7 +483,10 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner, SiteMa
 		parms.put("$patientid$", "P20160803215512.2^^^&1.3.6.1.4.1.21367.2005.13.20.1000&ISO");
 
 		try {
-			toolkitService.runTest(getEnvironmentSelection(), getCurrentTestSession(), new SiteSpec(currentSiteName), testInstance, parms, true, new AsyncCallback<TestOverviewDTO>() {
+			// Site is support site since it has the supporting Registry sim and as part of orchestration we added
+			// the Repository Pnr and Ret transactions
+			// was currentSiteName
+			toolkitService.runTest(getEnvironmentSelection(), getCurrentTestSession(), new SiteSpec(supportSiteName), testInstance, parms, true, new AsyncCallback<TestOverviewDTO>() {
 				@Override
 				public void onFailure(Throwable throwable) {
 					new PopupMessage(throwable.getMessage());
@@ -505,5 +514,13 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner, SiteMa
 
 	public String getWindowShortName() {
 		return "testloglisting";
+	}
+
+	public String getSupportSiteName() {
+		return supportSiteName;
+	}
+
+	public void setSupportSiteName(String supportSiteName) {
+		this.supportSiteName = supportSiteName;
 	}
 }

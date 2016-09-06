@@ -147,7 +147,7 @@ class TestEnvironmentDialog extends DialogBox {
                     loadTestSessions(toolWindow.getCurrentTestSession());
                     loadSitesForTestSession(toolWindow.getCurrentTestSession());
                     loadSites();
-                    siteManager.setSite(NONE);
+                    siteManager.setSiteName(NONE);
                 }
             });
         }
@@ -160,7 +160,7 @@ class TestEnvironmentDialog extends DialogBox {
             String selectedSite = getSelectedSite();
             if (NONE.equals(selectedSite))
                 selectedSite = null;
-            siteManager.setSite(selectedSite);
+            siteManager.setSiteName(selectedSite);
             toolWindow.setCurrentTestSession(getSelectedTestSession());
             siteManager.update();
 //                       hide();
@@ -197,7 +197,7 @@ class TestEnvironmentDialog extends DialogBox {
 
                 @Override
                 public void onSuccess(String s) {
-                    siteManager.setSite(s);
+                    siteManager.setSiteName(s);
                     selectSite(s);
                 }
             });
@@ -254,7 +254,7 @@ class TestEnvironmentDialog extends DialogBox {
     }
 
     private boolean siteSelected() {
-        return siteManager.getSite() != null && !siteManager.getSite().equals("");
+        return siteManager.getSiteName() != null && !siteManager.getSiteName().equals("");
     }
 
     private boolean testSessionSelected() {
@@ -321,7 +321,7 @@ class TestEnvironmentDialog extends DialogBox {
                     siteListBox.addItem(site);
                 }
                 if (siteSelected()) {
-                    int index = contents.indexOf(siteManager.getSite());
+                    int index = contents.indexOf(siteManager.getSiteName());
                     if (index != -1)
                         siteListBox.setSelectedIndex(index);
                 } else {
@@ -353,7 +353,7 @@ class TestEnvironmentDialog extends DialogBox {
             if (session != null && !session.equals(""))
                 toolWindow.setCurrentTestSession(session);
 
-            siteManager.setSite(getSelectedSite());
+            siteManager.setSiteName(getSelectedSite());
             siteManager.update();
             hide();
         }

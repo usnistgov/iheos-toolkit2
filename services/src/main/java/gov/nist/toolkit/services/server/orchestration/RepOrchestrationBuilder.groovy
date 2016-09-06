@@ -1,9 +1,13 @@
 package gov.nist.toolkit.services.server.orchestration
 
+import gov.nist.toolkit.actorfactory.SimCache
+import gov.nist.toolkit.actorfactory.SiteServiceManager
 import gov.nist.toolkit.actorfactory.client.SimId
 import gov.nist.toolkit.actorfactory.client.SimulatorConfig
 import gov.nist.toolkit.actortransaction.client.ActorType
+import gov.nist.toolkit.actortransaction.client.ParamType
 import gov.nist.toolkit.configDatatypes.SimulatorProperties
+import gov.nist.toolkit.configDatatypes.client.TransactionType
 import gov.nist.toolkit.services.client.RawResponse
 import gov.nist.toolkit.services.client.RepOrchestrationRequest
 import gov.nist.toolkit.services.client.RepOrchestrationResponse
@@ -11,8 +15,10 @@ import gov.nist.toolkit.services.server.RawResponseBuilder
 import gov.nist.toolkit.services.server.ToolkitApi
 import gov.nist.toolkit.session.server.Session
 import gov.nist.toolkit.simcommon.client.config.SimulatorConfigElement
+import gov.nist.toolkit.sitemanagement.client.Site
+import gov.nist.toolkit.sitemanagement.client.SiteSpec
+import gov.nist.toolkit.sitemanagement.client.TransactionBean
 import groovy.transform.TypeChecked
-
 /**
  *
  */
@@ -39,6 +45,7 @@ class RepOrchestrationBuilder {
 
             boolean reuse = false
             supportId = new SimId(request.userName, supportIdName, ActorType.REGISTRY.name, request.environmentName)
+            response.repSite = new SiteSpec(supportId.toString())
             if (request.isUseExistingSimulator()) {
                 if (api.simulatorExists(supportId)) {
                     supportSimConfig = api.getConfig(supportId)
@@ -61,6 +68,16 @@ class RepOrchestrationBuilder {
             }
 
             response.regConfig = supportSimConfig
+
+            // Add SUT Repository elements to Sim/Site so they are in one place
+            Site repSite = SiteServiceManager.getInstance().getSite(session.id(), request.getSutSite().getName())
+            supportSimConfig.add(new SimulatorConfigElement(SimulatorProperties.pnrEndpoint, ParamType.ENDPOINT, repSite.getEndpoint(TransactionType.PROVIDE_AND_REGISTER, false, false)))
+            String repUid = repSite.getRepositoryUniqueId(TransactionBean.RepositoryType.REPOSITORY)
+            supportSimConfig.add(new SimulatorConfigElement(SimulatorProperties.retrieveEndpoint, ParamType.ENDPOINT, repSite.getRetrieveEndpoint(repUid, false, false)))
+            supportSimConfig.add(new SimulatorConfigElement(SimulatorProperties.repositoryUniqueId, ParamType.OID, repUid))
+
+            // Set it into SimCache so it is found later
+            SimCache.addToSession(session.id(), supportSimConfig)
 
             return response
         } catch (Exception e) {
