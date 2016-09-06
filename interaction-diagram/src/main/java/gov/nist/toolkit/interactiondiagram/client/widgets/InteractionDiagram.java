@@ -840,7 +840,7 @@ public class InteractionDiagram extends Composite {
 
 
     private void showTooltip(MouseEvent<? extends EventHandler> e, List<String> text) {
-        tooltip.show(e.getClientX() + 20, e.getClientY() + 30, text, 3000);
+        tooltip.show(e.getClientX() + 20, e.getClientY() + 30, text, 5000);
     }
 
 
