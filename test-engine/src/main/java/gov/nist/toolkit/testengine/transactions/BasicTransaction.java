@@ -3,9 +3,6 @@ package gov.nist.toolkit.testengine.transactions;
 import gov.nist.toolkit.common.datatypes.Hl7Date;
 import gov.nist.toolkit.commondatatypes.MetadataSupport;
 import gov.nist.toolkit.configDatatypes.client.TransactionType;
-import gov.nist.toolkit.interactionmodel.client.InteractingEntity;
-import gov.nist.toolkit.interactionmodel.client.Interaction;
-import gov.nist.toolkit.interactionmodel.client.InteractionLog;
 import gov.nist.toolkit.registrymetadata.IdParser;
 import gov.nist.toolkit.registrymetadata.Metadata;
 import gov.nist.toolkit.registrymetadata.MetadataParser;
@@ -56,7 +53,6 @@ import javax.xml.parsers.FactoryConfigurationError;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -1285,11 +1281,6 @@ public abstract class BasicTransaction  {
 
 	protected void soapCall(OMElement requestBody) throws Exception {
 
-		Interaction interaction = new Interaction();
-		interaction.setTime(new Date());
-		interaction.setFrom(transactionSettings.origin);
-		interaction.setTo(transactionSettings.siteSpec.getName());
-
 		soap = new Soap();
 		testConfig.soap = soap;
 		if(transactionSettings.siteSpec != null && transactionSettings.siteSpec.isSaml){
@@ -1343,8 +1334,6 @@ public abstract class BasicTransaction  {
 					getResponseAction(), this.planContext.getExtraLinkage()
 			);
 			logger.info("back from making soap call");
-			interaction.setParams(this.planContext.getExtraLinkage());
-			interaction.setStatus(InteractingEntity.INTERACTIONSTATUS.COMPLETED);
 		}
 		catch (AxisFault e) {
 			logger.info("soap fault");
@@ -1358,14 +1347,12 @@ public abstract class BasicTransaction  {
 			} catch (Exception e1) { // throws fault - deal with it
 			}
 			logger.info("soap fault reported 3");
-			interaction.setStatus(InteractingEntity.INTERACTIONSTATUS.ERROR);
 		}
 		catch (XdsInternalException e) {
 			logger.info("internal exception");
 			s_ctx.set_error(e.getMessage());
 			failed();
 			logSoapRequest(soap);
-			interaction.setStatus(InteractingEntity.INTERACTIONSTATUS.ERROR);
 		}
 		finally {
 			logger.info("finally");
@@ -1375,12 +1362,6 @@ public abstract class BasicTransaction  {
 		logSoapRequest(soap);
 
 		scanResponseForErrors();
-		if (!scanResponseForErrors()) {
-			interaction.setStatus(InteractingEntity.INTERACTIONSTATUS.ERROR);
-		}
-
-		InteractionLog.getInstance().add(interaction);
-
 	}
 
 	protected boolean scanResponseForErrors() throws XdsInternalException {
