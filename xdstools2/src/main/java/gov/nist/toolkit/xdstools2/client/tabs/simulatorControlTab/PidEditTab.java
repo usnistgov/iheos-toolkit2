@@ -25,9 +25,24 @@ public class PidEditTab extends GenericQueryTab {
     TextArea pidBox = new TextArea();
 
     public PidEditTab(SimulatorConfig config) {
-        super(new FindDocumentsSiteActorManager());
+        super(new FindDocumentsSiteActorManager(),"");
         this.config = config;
         simId = config.getId();
+    }
+
+    @Override
+    protected Widget buildUI() {
+        return null;
+    }
+
+    @Override
+    protected void bindUI() {
+
+    }
+
+    @Override
+    protected void configureTabView() {
+
     }
 
     @Override

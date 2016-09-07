@@ -4,6 +4,7 @@ import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.ui.FlexTable;
 import com.google.gwt.user.client.ui.HTML;
+import com.google.gwt.user.client.ui.Widget;
 import gov.nist.toolkit.configDatatypes.client.TransactionType;
 import gov.nist.toolkit.xdstools2.client.CoupledTransactions;
 import gov.nist.toolkit.xdstools2.client.siteActorManagers.FindDocumentsSiteActorManager;
@@ -55,7 +56,22 @@ public class GetAllTab extends GenericQueryTab {
 
 	public GetAllTab() {
 		// this super is kinda useless now - was a good idea for documentation at one time
-		super(new FindDocumentsSiteActorManager());
+		super(new FindDocumentsSiteActorManager(),"");
+	}
+
+	@Override
+	protected Widget buildUI() {
+		return null;
+	}
+
+	@Override
+	protected void bindUI() {
+
+	}
+
+	@Override
+	protected void configureTabView() {
+
 	}
 
 	// Tab initialization

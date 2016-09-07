@@ -330,6 +330,16 @@ public class MessageValidatorTab extends ToolWindow {
 	MessageValidatorTab me;
 
 	@Override
+	protected Widget buildUI() {
+		return null;
+	}
+
+	@Override
+	protected void bindUI() {
+
+	}
+
+	@Override
 	public void onTabLoad(boolean select, String eventName) {
 		me = this;
 		ccdaSel = new CcdaTypeSelection(tkProps(), null);

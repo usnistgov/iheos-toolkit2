@@ -1,6 +1,7 @@
 package gov.nist.toolkit.xdstools2.client.tabs;
 
 import com.google.gwt.user.client.ui.HTML;
+import com.google.gwt.user.client.ui.Widget;
 import gov.nist.toolkit.results.client.AssertionResult;
 import gov.nist.toolkit.results.client.Result;
 import gov.nist.toolkit.xdstools2.client.TabContainer;
@@ -14,7 +15,17 @@ public class TextViewerTab extends ToolWindow {
 	public TextViewerTab(boolean escapeHTML) {
 		this.escapeHTML = escapeHTML;
 	}
-	
+
+	@Override
+	protected Widget buildUI() {
+		return null;
+	}
+
+	@Override
+	protected void bindUI() {
+
+	}
+
 	public TextViewerTab() {}
 
 	public void onTabLoad(TabContainer container, boolean select) {

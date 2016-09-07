@@ -6,6 +6,7 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.FlexTable;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.ListBox;
+import com.google.gwt.user.client.ui.Widget;
 import gov.nist.toolkit.configDatatypes.client.TransactionType;
 import gov.nist.toolkit.xdstools2.client.CoupledTransactions;
 import gov.nist.toolkit.xdstools2.client.PopupMessage;
@@ -31,7 +32,22 @@ public class RegistryTestdataTab  extends GenericQueryTab {
 	"in a Register transaction"; 
 	
 	public RegistryTestdataTab() {
-		super(new GetDocumentsSiteActorManager());
+		super(new GetDocumentsSiteActorManager(),"");
+	}
+
+	@Override
+	protected Widget buildUI() {
+		return null;
+	}
+
+	@Override
+	protected void bindUI() {
+
+	}
+
+	@Override
+	protected void configureTabView() {
+
 	}
 
 	@Override

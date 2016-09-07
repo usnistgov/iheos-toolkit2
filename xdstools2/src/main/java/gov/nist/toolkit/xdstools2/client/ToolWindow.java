@@ -44,6 +44,9 @@ public abstract class ToolWindow {
 	final static public ToolkitServiceAsync toolkitService = GWT
 			.create(ToolkitService.class);
 
+    protected abstract Widget buildUI();
+    protected abstract void bindUI();
+
 	public ToolWindow() {
 		String title = getTitle();
 		// .addNorth MUST come before .add - a condition of DockLayoutPanel
@@ -87,16 +90,6 @@ public abstract class ToolWindow {
 
 	// getWindowShortName() + ".html"is documentation file in /doc
 	abstract public String getWindowShortName();
-
-	public void onAbstractTabLoad(boolean select, String eventName) {
-		onTabLoad(select, eventName);
-//		registerTab(container);
-//		onTabSelection();
-
-//		environmentManager = new EnvironmentManager(tabContainer, toolkitService/*, new Panel1(menuPanel)*/);
-//		menuPanel.add(environmentManager);
-//		menuPanel.add(new TestSessionSelector(testSessionManager.getTestSessions(), testSessionManager.getCurrentTestSession()).asWidget());
-	}
 
 	public void registerTab(boolean select, String tabName) {
 		TabContainer.instance().addTab(tabTopRawPanel, tabName, select);

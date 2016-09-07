@@ -49,6 +49,16 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner, SiteMa
 	// testId ==> overview
 //	private final Map<String, TestOverviewDTO> testOverviews = new HashMap<>();
 
+	@Override
+	protected Widget buildUI() {
+		return null;
+	}
+
+	@Override
+	protected void bindUI() {
+
+	}
+
 	public ConformanceTestTab() {
 		me = this;
 		toolPanel.add(sitesPanel);

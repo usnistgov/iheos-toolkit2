@@ -67,6 +67,16 @@ public class SimulatorMessageViewTab extends ToolWindow {
 	
 	public SimId getSimid() { return simid; }
 
+	@Override
+	protected Widget buildUI() {
+		return null;
+	}
+
+	@Override
+	protected void bindUI() {
+
+	}
+
 	// If eventName is null then display list of simulators.  If non-null then it is
 	// the simulator id. In this case do not allow simulator selection.
 	@Override

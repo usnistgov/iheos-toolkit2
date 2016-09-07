@@ -173,7 +173,7 @@ public class ToolLauncher implements ClickHandler {
 		if (menuName.equals(testLogLabel)) return new ConformanceTestTab();
 		if (menuName.equals(dashboardTabLabel)) return new DashboardTab();
 		if (menuName.equals(repositoryTabLabel)) return new RepositoryListingTab();
-		if (menuName.equals(pidFavoritesLabel)) return new PidFavoritesTab();
+		if (menuName.equals(pidFavoritesLabel)) return new PidFavoritesTab(def.getTabName());
 		if (menuName.equals(testsOverviewTabLabel)) return new TestsOverviewTab();
 		if (menuName.equals(homeTabLabel)) return new HomeTab();
 		if (menuName.equals(iigTestsTabLabel)) return new IIGTestTab();

@@ -55,22 +55,21 @@ public class PidFavoritesTab extends GenericQueryTab {
     private List<String> assigningAuthorities = null;
     private Set<Pid> configuredPids=new HashSet<Pid>();
 
-    public PidFavoritesTab() {
-        super(new GetDocumentsSiteActorManager());
+    public PidFavoritesTab(String tabName) {
+        super(new GetDocumentsSiteActorManager(),tabName);
     }
 
     @Override
-    public void onTabLoad(boolean select, String eventName) {
-        registerTab(select, eventName);
-
-        tabTopPanel.add(new HTML("<h2>Manage Patient IDs</h2>"));
+    protected Widget buildUI() {
+        FlowPanel tpanel=new FlowPanel();
+        tpanel.add(new HTML("<h2>Manage Patient IDs</h2>"));
 
         mainGrid = new FlexTable();
 
-        tabTopPanel.add(mainGrid);
+        tpanel.add(mainGrid);
 
         HorizontalPanel panel = new HorizontalPanel();
-        tabTopPanel.add(panel);
+        tpanel.add(panel);
 
         VerticalPanel favoritesListPanel = new VerticalPanel();
         panel.add(favoritesListPanel);
@@ -175,7 +174,21 @@ public class PidFavoritesTab extends GenericQueryTab {
         });
         pidButtonPanel.add(addToFavoritesButton);
 
+        return tpanel;
+    }
 
+    @Override
+    protected void bindUI() {
+        try {
+            retrieveAndInitFavPids();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        loadAssigningAuthorities();
+    }
+
+    @Override
+    protected void configureTabView() {
         setRunButtonText("Send Patient Identity Feed");
         setTlsEnabled(false);
         setSamlEnabled(false);
@@ -184,13 +197,6 @@ public class PidFavoritesTab extends GenericQueryTab {
                 "<p>Note that this is NOT integrated with Gazelle Patient Management.  It should be used " +
                 "for private testing only.</p>"));
         queryBoilerplate = addQueryBoilerplate(new Runner(), transactionTypes, couplings, false);
-
-        try {
-            retrieveAndInitFavPids();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        loadAssigningAuthorities();
     }
 
     @Override

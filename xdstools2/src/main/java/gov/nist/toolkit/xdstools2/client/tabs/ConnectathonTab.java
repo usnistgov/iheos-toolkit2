@@ -2,6 +2,7 @@ package gov.nist.toolkit.xdstools2.client.tabs;
 
 import com.google.gwt.user.client.ui.FlexTable;
 import com.google.gwt.user.client.ui.HTML;
+import com.google.gwt.user.client.ui.Widget;
 import gov.nist.toolkit.xdstools2.client.inspector.HyperlinkFactory;
 import gov.nist.toolkit.xdstools2.client.siteActorManagers.GetDocumentsSiteActorManager;
 import gov.nist.toolkit.xdstools2.client.tabs.genericQueryTab.GenericQueryTab;
@@ -10,9 +11,24 @@ import gov.nist.toolkit.xdstools2.client.toolLauncher.ToolLauncher;
 public class ConnectathonTab extends GenericQueryTab {
 
 	public ConnectathonTab() {
-		super(new GetDocumentsSiteActorManager());
+		super(new GetDocumentsSiteActorManager(),"");
 	}
-	
+
+	@Override
+	protected Widget buildUI() {
+		return null;
+	}
+
+	@Override
+	protected void bindUI() {
+
+	}
+
+	@Override
+	protected void configureTabView() {
+
+	}
+
 	@Override
 	public void onTabLoad(boolean select, String eventName) {
 		registerTab(select, eventName);

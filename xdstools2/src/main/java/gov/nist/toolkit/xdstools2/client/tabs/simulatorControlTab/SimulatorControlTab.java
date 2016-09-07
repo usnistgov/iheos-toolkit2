@@ -33,11 +33,11 @@ import java.util.List;
 public class SimulatorControlTab extends GenericQueryTab {
 
 	public SimulatorControlTab(BaseSiteActorManager siteActorManager) {
-		super(siteActorManager);
+		super(siteActorManager,"");
 	}
 
 	public SimulatorControlTab() {
-		super(new FindDocumentsSiteActorManager());	}
+		super(new FindDocumentsSiteActorManager(),"");	}
 
 	ListBox         actorSelectListBox = new ListBox();
 	HorizontalPanel simConfigWrapperPanel = new HorizontalPanel();
@@ -50,6 +50,21 @@ public class SimulatorControlTab extends GenericQueryTab {
 
 	SimConfigSuper simConfigSuper;
 	SimulatorControlTab self;
+
+	@Override
+	protected Widget buildUI() {
+		return null;
+	}
+
+	@Override
+	protected void bindUI() {
+
+	}
+
+	@Override
+	protected void configureTabView() {
+
+	}
 
 	@Override
 	public void onTabLoad(boolean select, String eventName) {

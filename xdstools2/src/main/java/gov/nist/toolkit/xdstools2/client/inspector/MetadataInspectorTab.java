@@ -54,6 +54,16 @@ public class MetadataInspectorTab extends ToolWindow {
 	public void setSiteSpec(SiteSpec ss) { siteSpec = ss; }
 
 	@Override
+	protected Widget buildUI() {
+		return null;
+	}
+
+	@Override
+	protected void bindUI() {
+
+	}
+
+	@Override
 	public void onTabLoad(boolean select, String eventName) {
 
 		logger.log(Level.INFO, "Inspector started");

@@ -5,6 +5,7 @@ import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.FlexTable;
 import com.google.gwt.user.client.ui.HTML;
+import com.google.gwt.user.client.ui.Widget;
 import gov.nist.toolkit.configDatatypes.client.TransactionType;
 import gov.nist.toolkit.interactionmodel.client.InteractingEntity;
 import gov.nist.toolkit.results.client.Result;
@@ -44,7 +45,22 @@ public class FindDocuments2Tab extends GenericQueryTab {
     InteractingEntity origin = new InteractingEntity(); //  new InteractingEntity(); // Destination
 
     public FindDocuments2Tab() {
-        super(new FindDocumentsSiteActorManager());
+        super(new FindDocumentsSiteActorManager(),"");
+    }
+
+    @Override
+    protected Widget buildUI() {
+        return null;
+    }
+
+    @Override
+    protected void bindUI() {
+
+    }
+
+    @Override
+    protected void configureTabView() {
+
     }
 
     // Tab initialization

@@ -14,10 +14,25 @@ public class HomeTab extends GenericQueryTab {
 
 
 	public HomeTab() {
-		super(new FindDocumentsSiteActorManager());
+		super(new FindDocumentsSiteActorManager(),"");
 //		super(new GetDocumentsSiteActorManager());
 	}
 
+
+	@Override
+	protected Widget buildUI() {
+		return null;
+	}
+
+	@Override
+	protected void bindUI() {
+
+	}
+
+	@Override
+	protected void configureTabView() {
+
+	}
 
 	@Override
 //	public void onTabLoad(final Xdstools2 container, boolean select, String eventName) {

@@ -149,7 +149,7 @@ public class TabLauncher implements ClickHandler {
 		else if (tabType.equals(repositoryTabLabel)) 
 			new RepositoryListingTab().onTabLoad(true, null);
 		else if (tabType.equals(pidFavoritesLabel))
-			new PidFavoritesTab().onTabLoad(true, null);
+			new PidFavoritesTab(null).onTabLoad(true, null);
 		else if (tabType.equals(testsOverviewTabLabel))
 			new TestsOverviewTab().onTabLoad(true, null);
 		else if (tabType.equals(metadataEditorTabLabel)) {

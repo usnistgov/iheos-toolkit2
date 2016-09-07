@@ -45,10 +45,25 @@ public class MesaTestTab extends GenericQueryTab {
 
 
 	public MesaTestTab() {
-		super(new GetDocumentsSiteActorManager());
+		super(new GetDocumentsSiteActorManager(),"");
 	}
 	
 	public void onTabLoad(TabContainer container, boolean select) {
+	}
+
+	@Override
+	protected Widget buildUI() {
+		return null;
+	}
+
+	@Override
+	protected void bindUI() {
+
+	}
+
+	@Override
+	protected void configureTabView() {
+
 	}
 
 	@Override

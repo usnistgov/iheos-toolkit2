@@ -3,10 +3,7 @@ package gov.nist.toolkit.xdstools2.client.tabs;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.rpc.AsyncCallback;
-import com.google.gwt.user.client.ui.Anchor;
-import com.google.gwt.user.client.ui.FlexTable;
-import com.google.gwt.user.client.ui.HTML;
-import com.google.gwt.user.client.ui.VerticalPanel;
+import com.google.gwt.user.client.ui.*;
 import gov.nist.toolkit.http.client.HtmlMarkup;
 import gov.nist.toolkit.xdstools2.client.RegistryStatus;
 import gov.nist.toolkit.xdstools2.client.RepositoryStatus;
@@ -27,7 +24,22 @@ public class DashboardTab  extends GenericQueryTab {
 
 
 	public DashboardTab() {
-		super(new GetDocumentsSiteActorManager());
+		super(new GetDocumentsSiteActorManager(),"");
+	}
+
+	@Override
+	protected Widget buildUI() {
+		return null;
+	}
+
+	@Override
+	protected void bindUI() {
+
+	}
+
+	@Override
+	protected void configureTabView() {
+
 	}
 
 	@Override

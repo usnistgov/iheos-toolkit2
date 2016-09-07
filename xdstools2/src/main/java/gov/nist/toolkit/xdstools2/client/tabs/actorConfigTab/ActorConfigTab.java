@@ -34,7 +34,22 @@ public class ActorConfigTab extends GenericQueryTab {
 
 
 	public ActorConfigTab() {
-		super(new NullSiteActorManager());
+		super(new NullSiteActorManager(),"");
+	}
+
+	@Override
+	protected Widget buildUI() {
+		return null;
+	}
+
+	@Override
+	protected void bindUI() {
+
+	}
+
+	@Override
+	protected void configureTabView() {
+
 	}
 
 	@Override

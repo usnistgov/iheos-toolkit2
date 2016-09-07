@@ -197,7 +197,7 @@ public class Xdstools2  implements AcceptsOneWidget, IsWidget {
 
 	private void run2() {
 		buildTabsWrapper();
-		ht.onAbstractTabLoad(false, "Home");
+		ht.onTabLoad(false, "Home");
 
 		History.addValueChangeHandler(new ValueChangeHandler<String>() {
 			public void onValueChange(ValueChangeEvent<String> event) {

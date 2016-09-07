@@ -47,7 +47,7 @@ public class RGTestTab extends GenericQueryTab implements GatewayTool {
     RgOrchestrationResponse orch;
 
     public RGTestTab() {
-        super(new GetDocumentsSiteActorManager());
+        super(new GetDocumentsSiteActorManager(),"");
         testSelectionManager = new TestSelectionManager(this);
     }
 
@@ -58,6 +58,21 @@ public class RGTestTab extends GenericQueryTab implements GatewayTool {
     public TabContainer getToolContainer() { return getTabContainer(); }
 
     public void onTabLoad(TabContainer container, boolean select) {
+    }
+
+    @Override
+    protected Widget buildUI() {
+        return null;
+    }
+
+    @Override
+    protected void bindUI() {
+
+    }
+
+    @Override
+    protected void configureTabView() {
+
     }
 
     @Override

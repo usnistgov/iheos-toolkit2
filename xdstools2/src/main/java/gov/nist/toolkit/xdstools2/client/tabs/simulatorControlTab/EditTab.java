@@ -1,5 +1,6 @@
 package gov.nist.toolkit.xdstools2.client.tabs.simulatorControlTab;
 
+import com.google.gwt.user.client.ui.Widget;
 import gov.nist.toolkit.actorfactory.client.SimulatorConfig;
 import gov.nist.toolkit.xdstools2.client.siteActorManagers.BaseSiteActorManager;
 import gov.nist.toolkit.xdstools2.client.siteActorManagers.FindDocumentsSiteActorManager;
@@ -13,13 +14,28 @@ public class EditTab extends GenericQueryTab {
     SimulatorControlTab simulatorControlTab = null;
 
     public EditTab(BaseSiteActorManager siteActorManager) {
-        super(siteActorManager);
+        super(siteActorManager,"");
     }
 
     public EditTab(SimulatorControlTab simulatorControlTab, SimulatorConfig config) {
-        super(new FindDocumentsSiteActorManager());
+        super(new FindDocumentsSiteActorManager(),"");
         this.config = config;
         this.simulatorControlTab = simulatorControlTab;
+    }
+
+    @Override
+    protected Widget buildUI() {
+        return null;
+    }
+
+    @Override
+    protected void bindUI() {
+
+    }
+
+    @Override
+    protected void configureTabView() {
+
     }
 
     @Override
