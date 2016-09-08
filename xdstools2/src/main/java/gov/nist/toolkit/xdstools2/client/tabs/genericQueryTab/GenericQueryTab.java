@@ -130,6 +130,10 @@ public abstract class GenericQueryTab  extends ToolWindow {
 	@Override
     public void onTabLoad(boolean select, String eventName) {
         registerTab(true, eventName);
+        buildView();
+    }
+
+    protected void buildView(){
         widget=buildUI();
         tabTopPanel.add(widget);
         configureTabView();

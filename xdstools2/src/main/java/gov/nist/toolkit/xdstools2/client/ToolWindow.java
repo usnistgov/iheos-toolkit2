@@ -29,22 +29,28 @@ import java.util.logging.Logger;
  * registerTab(boolean select, String eventName)
  */
 public abstract class ToolWindow {
-	private DockLayoutPanel tabTopRawPanel = new DockLayoutPanel(Style.Unit.EM);
+	Logger logger = Logger.getLogger("Tabbed window");
+
+    private DockLayoutPanel tabTopRawPanel = new DockLayoutPanel(Style.Unit.EM);
 	private ScrollPanel innerPanel = new ScrollPanel();
 	public FlowPanel tabTopPanel = new FlowPanel();
 	private FlowPanel eastPanel = new FlowPanel();
 	private FlowPanel westPanel = new FlowPanel();
+
+	public HorizontalPanel menuPanel = new HorizontalPanel();
+	protected TabContainer tabContainer;
 	String helpHTML;
 	String topMessage = null;
-	public HorizontalPanel menuPanel = new HorizontalPanel();
-	EnvironmentManager environmentManager = null;
-	protected TestSessionManager2 testSessionManager = Xdstools2.getTestSessionManager();
-	protected TabContainer tabContainer;
-	Logger logger = Logger.getLogger("Tabbed window");
+
+    EnvironmentManager environmentManager = null;
+    protected TestSessionManager2 testSessionManager = Xdstools2.getTestSessionManager();
     private ToolkitServiceAsync toolkitService=getToolkitServices();
 
     protected abstract Widget buildUI();
     protected abstract void bindUI();
+    public abstract void onTabLoad(boolean select, String eventName);
+    // getWindowShortName() + ".html"is documentation file in /doc
+    abstract public String getWindowShortName();
 
 	public ToolWindow() {
 		String title = getTitle();
@@ -85,11 +91,6 @@ public abstract class ToolWindow {
 
 	public void setCurrentTestSession(String testSession) { testSessionManager.setCurrentTestSession(testSession);}
 
-	abstract public void onTabLoad(boolean select, String eventName);
-
-	// getWindowShortName() + ".html"is documentation file in /doc
-	abstract public String getWindowShortName();
-
 	public void registerTab(boolean select, String tabName) {
 		TabContainer.instance().addTab(tabTopRawPanel, tabName, select);
 	}
@@ -97,14 +98,6 @@ public abstract class ToolWindow {
 	public TkProps tkProps() {
 		return Xdstools2.tkProps();
 	}
-
-//	void registerTab(TabContainer container) {
-//		TabPanel tabPanel = container.getTabPanel();
-//		int count = tabPanel.getWidgetCount();
-//		int lastAdded = count -1 ;  // would be count - 1 if home ever got registered
-//		if (lastAdded < 0) return;
-//		TabManager.addTab(lastAdded, this);
-//	}
 
 	// access to params shared between tabs
 	// delegate to proper model
@@ -141,10 +134,6 @@ public abstract class ToolWindow {
 
 		environmentManager.update();
 	}
-
-//	public void onTabSelection() {
-//		System.out.println("Tab " + getWindowShortName() + " selected");
-//	}
 
 	protected void setTopMessage(String msg) {
 		topMessage = msg;
@@ -193,7 +182,6 @@ public abstract class ToolWindow {
 
 		this.helpHTML = (helpHTML == null) ? "No Help Available" : helpHTML;
 
-//		menuPanel.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_RIGHT);
 		HTML help = new HTML();
 		help.setHTML("<a href=\"" + "site/tools/" +  getWindowShortName()  + ".html" + "\" target=\"_blank\">" +  "[" + "help" + "]" + "</a>");
 		menuPanel.add(help);
@@ -203,20 +191,14 @@ public abstract class ToolWindow {
 			top.setHTML(topMessage);
 			menuPanel.add(top);
 		}
-//		menuPanel.setSpacing(30);
-//		menuPanel.setWidth("100%");
 
 		topPanel.addNorth(new HTML("<hr />"), 4);
 		menuPanel.setSpacing(10);
 		topPanel.addNorth(menuPanel, 4);
-
-//		tabTopPanel.setCellWidth(menuPanel, "100%");
 	}
 
 	public void addToMenu(Anchor anchor) {
 		menuPanel.add(anchor);
-		//		else
-		//			menuPanel.insert(anchor, menuPanel.getWidgetIndex(environmentSelector.getPanel()));
 	}
 
 	protected void showMessage(Throwable caught) {
@@ -233,7 +215,7 @@ public abstract class ToolWindow {
 		return tabTopPanel;
 	}
 
-    public ToolkitServiceAsync getToolkitServices() {
+    protected ToolkitServiceAsync getToolkitServices() {
         if (toolkitService==null)
             toolkitService=ClientUtils.INSTANCE.getToolkitServices();
         return toolkitService;

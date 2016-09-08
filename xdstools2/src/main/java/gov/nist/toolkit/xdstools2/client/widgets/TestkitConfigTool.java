@@ -8,6 +8,7 @@ import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.VerticalPanel;
+import gov.nist.toolkit.xdstools2.client.PopupMessage;
 import gov.nist.toolkit.xdstools2.client.TabContainer;
 import gov.nist.toolkit.xdstools2.client.ToolkitServiceAsync;
 import gov.nist.toolkit.xdstools2.client.selectors.EnvironmentManager;
@@ -17,22 +18,27 @@ import java.util.logging.Logger;
 
 
 /**
+ * Code for the widget that updates the codes in a selected testkit.
  * Created by oherrmann on 3/3/16.
  */
 public class TestkitConfigTool extends Composite {
-//    private final ToolkitServiceAsync toolkitService;
-    private final HTML resultPanel=new HTML();
-    private VerticalPanel container = new VerticalPanel();
-    private EnvironmentManager environmentManager ;
     private ToolkitServiceAsync toolkitService= ClientUtils.INSTANCE.getToolkitServices();
 
-    public TestkitConfigTool(TabContainer mytabContainer/*, ToolkitServiceAsync toolkitService*/) {
-//        this.toolkitService=toolkitService;
+    private VerticalPanel container = new VerticalPanel();
+    private final HTML resultPanel=new HTML();
+
+    private EnvironmentManager environmentManager ;
+
+    /**
+     * Main constructor (default)
+     * @param myTabContainer tab container
+     */
+    public TestkitConfigTool(TabContainer myTabContainer) {
         container.add(new HTML("<h3>Configure Testkit</h3>"));
         container.add(new HTML("This tool will create a new copy of testkit configured for a selected affinity " +
                 "domain configuration. An affinity domain is chosen by selecting an environment. <br/>The affinity testkit created will be placed in " +
                 "the environment selected.<br/><br/>"));
-        environmentManager = new EnvironmentManager(mytabContainer);
+        environmentManager = new EnvironmentManager(myTabContainer);
         container.add(environmentManager);
         Button runUpdater=new Button("Run",new RunTestkitConfigHandler());
         container.add(runUpdater);
@@ -40,6 +46,9 @@ public class TestkitConfigTool extends Composite {
         initWidget(container);
     }
 
+    /**
+     * ClickHandler Runner class for the button in Testkit configuration widget.
+     */
     public class RunTestkitConfigHandler implements ClickHandler {
 
         @Override
@@ -50,6 +59,7 @@ public class TestkitConfigTool extends Composite {
                 @Override
                 public void onFailure(Throwable throwable) {
                     Logger.getLogger(this.getClass().getName()).info(throwable.getMessage());
+                    new PopupMessage("Error when trying to configure testkit.");
                 }
 
                 @Override
@@ -64,7 +74,9 @@ public class TestkitConfigTool extends Composite {
                 }
             });
         }
-        public void runConfigTestkit() {
+
+        /** Method that actually runs the configuration (code update) of the testkit. **/
+        private void runConfigTestkit() {
             toolkitService.configureTestkit(environmentManager.getSelectedEnvironment(), new AsyncCallback<String>() {
                 @Override
                 public void onFailure(Throwable throwable) {
