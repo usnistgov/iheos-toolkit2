@@ -15,11 +15,11 @@ import gov.nist.toolkit.xdstools2.client.PopupMessage;
 import gov.nist.toolkit.xdstools2.client.tabs.genericQueryTab.GenericQueryTab;
 import gov.nist.toolkit.xdstools2.client.tabs.genericQueryTab.QueryBoilerplate;
 import gov.nist.toolkit.xdstools2.client.tabs.testsOverviewTab.TestsOverviewTab;
+import gov.nist.toolkit.xdstools2.client.util.ClientUtils;
 
 import java.util.List;
 import java.util.Map;
 
-import static gov.nist.toolkit.xdstools2.client.ToolWindow.toolkitService;
 
 /**
  * Created by Diane Azais local on 11/1/2015.
@@ -51,7 +51,7 @@ public class SiteSelectionWidget extends HorizontalPanel {
 	 * Loads the list of actor types from the back-end and populates the display on the UI
 	 */
 	private void loadActorNames() {
-		toolkitService.getCollectionNames("actorcollections", new AsyncCallback<Map<String, String>>() {
+		ClientUtils.INSTANCE.getToolkitServices().getCollectionNames("actorcollections", new AsyncCallback<Map<String, String>>() {
 
 			public void onFailure(Throwable caught) {
 				new PopupMessage("getCollectionNames: " + caught.getMessage());

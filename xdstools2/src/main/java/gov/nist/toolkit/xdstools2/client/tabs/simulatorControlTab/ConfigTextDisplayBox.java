@@ -1,9 +1,8 @@
 package gov.nist.toolkit.xdstools2.client.tabs.simulatorControlTab;
 
-import gov.nist.toolkit.simcommon.client.config.SimulatorConfigElement;
-
 import com.google.gwt.user.client.ui.FlexTable;
 import com.google.gwt.user.client.ui.HTML;
+import gov.nist.toolkit.simcommon.client.config.SimulatorConfigElement;
 
 public class ConfigTextDisplayBox {
 	

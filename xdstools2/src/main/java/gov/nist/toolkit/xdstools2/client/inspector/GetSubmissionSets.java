@@ -8,10 +8,10 @@ import gov.nist.toolkit.registrymetadata.client.ObjectRef;
 import gov.nist.toolkit.registrymetadata.client.ObjectRefs;
 import gov.nist.toolkit.results.client.Result;
 import gov.nist.toolkit.results.client.TestInstance;
+import gov.nist.toolkit.xdstools2.client.util.ClientUtils;
 
 import java.util.List;
 
-import static gov.nist.toolkit.xdstools2.client.ToolWindow.toolkitService;
 
 public class GetSubmissionSets implements ClickHandler {
 
@@ -19,7 +19,8 @@ public class GetSubmissionSets implements ClickHandler {
 	ObjectRefs ids;
 
 	void run() {
-		/*it.data.*/toolkitService.getSubmissionSets(null, new AnyIds(ids), queryCallback);
+		/*it.data.*/
+		ClientUtils.INSTANCE.getToolkitServices().getSubmissionSets(null, new AnyIds(ids), queryCallback);
 	}
 
 	AsyncCallback<List<Result>> queryCallback = new AsyncCallback<List<Result>> () {

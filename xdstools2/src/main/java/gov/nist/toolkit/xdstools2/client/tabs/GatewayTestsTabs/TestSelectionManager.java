@@ -15,13 +15,13 @@ import gov.nist.toolkit.xdstools2.client.StringSort;
 import gov.nist.toolkit.xdstools2.client.inspector.MetadataInspectorTab;
 import gov.nist.toolkit.xdstools2.client.tabs.SimulatorMessageViewTab;
 import gov.nist.toolkit.xdstools2.client.tabs.TextViewerTab;
+import gov.nist.toolkit.xdstools2.client.util.ClientUtils;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import static gov.nist.toolkit.xdstools2.client.ToolWindow.toolkitService;
 
 /**
  *
@@ -52,7 +52,7 @@ class TestSelectionManager {
     }
 
     void loadTestsFromCollection(final String testCollectionName) {
-        toolkitService.getCollection("collections", testCollectionName, new AsyncCallback<Map<String, String>>() {
+        ClientUtils.INSTANCE.getToolkitServices().getCollection("collections", testCollectionName, new AsyncCallback<Map<String, String>>() {
 
             public void onFailure(Throwable caught) {
                 new PopupMessage("getCollection(" + testCollectionName + "): " +  " -----  " + caught.getMessage());
@@ -145,7 +145,7 @@ class TestSelectionManager {
             public void onClick(ClickEvent clickEvent) {
                 List<TestInstance> tests = new ArrayList<TestInstance>();
                 tests.add(new TestInstance(tool.getSelectedTest()));
-                toolkitService.getTestResults(tests, tool.getCurrentTestSession(), new AsyncCallback<Map<String, Result>>() {
+                ClientUtils.INSTANCE.getToolkitServices().getTestResults(tests, tool.getCurrentTestSession(), new AsyncCallback<Map<String, Result>>() {
                     @Override
                     public void onFailure(Throwable throwable) {
                         new PopupMessage(throwable.getMessage());
@@ -177,7 +177,7 @@ class TestSelectionManager {
     }
 
     void loadSectionNames() {
-        toolkitService.getTestIndex(tool.getSelectedTest(), new AsyncCallback<List<String>>() {
+        ClientUtils.INSTANCE.getToolkitServices().getTestIndex(tool.getSelectedTest(), new AsyncCallback<List<String>>() {
 
             public void onFailure(Throwable caught) {
                 new PopupMessage("getTestIndex: " + caught.getMessage());
@@ -216,7 +216,7 @@ class TestSelectionManager {
     class SelectSectionViewButtonClickHandler implements ClickHandler {
 
         public void onClick(ClickEvent event) {
-            toolkitService.getTestplanAsText(tool.getCurrentTestSession(),new TestInstance(tool.getSelectedTest()), selectSectionList.getSelectedItemText(), new AsyncCallback<String>() {
+            ClientUtils.INSTANCE.getToolkitServices().getTestplanAsText(tool.getCurrentTestSession(),new TestInstance(tool.getSelectedTest()), selectSectionList.getSelectedItemText(), new AsyncCallback<String>() {
 
                 public void onFailure(Throwable caught) {
                     new PopupMessage("getTestplanAsText: " + caught.getMessage());
@@ -263,7 +263,7 @@ class TestSelectionManager {
     }
 
     void loadTestReadme(final HTML documentation) {
-        toolkitService.getTestReadme(tool.getSelectedTest(), new AsyncCallback<String>() {
+        ClientUtils.INSTANCE.getToolkitServices().getTestReadme(tool.getSelectedTest(), new AsyncCallback<String>() {
 
             public void onFailure(Throwable caught) {
                 new PopupMessage("getTestReadme: " + caught.getMessage());

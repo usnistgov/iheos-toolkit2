@@ -11,6 +11,7 @@ import gov.nist.toolkit.services.client.RepOrchestrationResponse;
 import gov.nist.toolkit.services.client.RgOrchestrationResponse;
 import gov.nist.toolkit.xdstools2.client.PopupMessage;
 import gov.nist.toolkit.xdstools2.client.tabs.genericQueryTab.GenericQueryTab;
+import gov.nist.toolkit.xdstools2.client.util.ClientUtils;
 import gov.nist.toolkit.xdstools2.client.widgets.buttons.ReportableButton;
 
 /**
@@ -38,7 +39,7 @@ public class BuildRepTestOrchestrationButton extends ReportableButton {
         request.setUserName(testTab.getCurrentTestSession());
         request.setEnvironmentName(testTab.getEnvironmentSelection());
 
-        testTab.toolkitService.buildRepTestOrchestration(request, new AsyncCallback<RawResponse>() {
+        ClientUtils.INSTANCE.getToolkitServices().buildRepTestOrchestration(request, new AsyncCallback<RawResponse>() {
             @Override
             public void onFailure(Throwable throwable) {
                 handleError(throwable);

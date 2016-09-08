@@ -9,10 +9,10 @@ import gov.nist.toolkit.registrymetadata.client.ObjectRefs;
 import gov.nist.toolkit.results.client.Result;
 import gov.nist.toolkit.results.client.StepResult;
 import gov.nist.toolkit.results.client.TestInstance;
+import gov.nist.toolkit.xdstools2.client.util.ClientUtils;
 
 import java.util.List;
 
-import static gov.nist.toolkit.xdstools2.client.ToolWindow.toolkitService;
 
 public class GetDocuments implements ClickHandler {
 	MetadataInspectorTab it;
@@ -25,7 +25,8 @@ public class GetDocuments implements ClickHandler {
 		if (isLid)
 			aids.labelAsLids();
 		
-		/*it.data.*/toolkitService.getDocuments(null, aids, queryCallback);
+		/*it.data.*/
+		ClientUtils.INSTANCE.getToolkitServices().getDocuments(null, aids, queryCallback);
 		if (originatingResult != null)
 			originatingResult.rmFromToBeRetrieved(ids);
 	}

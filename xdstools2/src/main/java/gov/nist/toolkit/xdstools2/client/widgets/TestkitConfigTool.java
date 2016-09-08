@@ -9,11 +9,12 @@ import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import gov.nist.toolkit.xdstools2.client.TabContainer;
+import gov.nist.toolkit.xdstools2.client.ToolkitServiceAsync;
 import gov.nist.toolkit.xdstools2.client.selectors.EnvironmentManager;
+import gov.nist.toolkit.xdstools2.client.util.ClientUtils;
 
 import java.util.logging.Logger;
 
-import static gov.nist.toolkit.xdstools2.client.ToolWindow.toolkitService;
 
 /**
  * Created by oherrmann on 3/3/16.
@@ -23,6 +24,7 @@ public class TestkitConfigTool extends Composite {
     private final HTML resultPanel=new HTML();
     private VerticalPanel container = new VerticalPanel();
     private EnvironmentManager environmentManager ;
+    private ToolkitServiceAsync toolkitService= ClientUtils.INSTANCE.getToolkitServices();
 
     public TestkitConfigTool(TabContainer mytabContainer/*, ToolkitServiceAsync toolkitService*/) {
 //        this.toolkitService=toolkitService;

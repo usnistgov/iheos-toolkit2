@@ -13,11 +13,11 @@ import gov.nist.toolkit.xdstools2.client.resources.TableResources;
 import gov.nist.toolkit.xdstools2.client.tabs.testsOverviewTab.commandsWidget.CommandsCell;
 import gov.nist.toolkit.xdstools2.client.tabs.testsOverviewTab.commandsWidget.CommandsColumn;
 import gov.nist.toolkit.xdstools2.client.tabs.testsOverviewTab.statusCell.StatusColumn;
+import gov.nist.toolkit.xdstools2.client.util.ClientUtils;
 
 import java.util.List;
 import java.util.logging.Logger;
 
-import static gov.nist.toolkit.xdstools2.client.ToolWindow.toolkitService;
 
 /**
  * Created by Diane Azais local on 10/11/2015.
@@ -131,7 +131,7 @@ public class TestsOverviewWidget extends CellTable<Test> {
      */
     private void loadTestsData(AsyncCallback<List<Test>> testsListCallback) {
         try {
-            toolkitService.reloadAllTestResults(updater.getCurrentTestSession(), testsListCallback);
+            ClientUtils.INSTANCE.getToolkitServices().reloadAllTestResults(updater.getCurrentTestSession(), testsListCallback);
         } catch (Exception e) {
             LOGGER.warning("Failed to retrieve test results.");
         }
@@ -158,7 +158,8 @@ public class TestsOverviewWidget extends CellTable<Test> {
 
     //TODO replace the hardcoded site name with the one retrieved from the UI
     private void runSingleTest(int testId, int index){
-        toolkitService.runSingleTest(new Site("testEHR"), testId, runSingleTestCallback);
+        ClientUtils.INSTANCE.getToolkitServices()
+                .runSingleTest(new Site("testEHR"), testId, runSingleTestCallback);
     }
 
 

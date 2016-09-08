@@ -6,6 +6,7 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 import gov.nist.toolkit.actorfactory.client.SimId;
 import gov.nist.toolkit.actorfactory.client.SimulatorConfig;
 import gov.nist.toolkit.xdstools2.client.PopupMessage;
+import gov.nist.toolkit.xdstools2.client.util.ClientUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -45,7 +46,7 @@ public class LoadSimulatorsClickHandler implements ClickHandler {
             }
 		}
 
-		simulatorControlTab.toolkitService.getSimConfigs(ids, new AsyncCallback<List<SimulatorConfig>>() {
+		ClientUtils.INSTANCE.getToolkitServices().getSimConfigs(ids, new AsyncCallback<List<SimulatorConfig>>() {
 
 			public void onFailure(Throwable caught) {
 				new PopupMessage("getSimConfigs:" + caught.getMessage());

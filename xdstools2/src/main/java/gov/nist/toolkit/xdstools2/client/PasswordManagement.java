@@ -1,9 +1,9 @@
 package gov.nist.toolkit.xdstools2.client;
 
+import com.google.gwt.user.client.rpc.AsyncCallback;
+
 import java.util.ArrayList;
 import java.util.List;
-
-import com.google.gwt.user.client.rpc.AsyncCallback;
 
 /**
  * Manage details of user's password and authentication into the server. This is initialized 

@@ -1,6 +1,5 @@
 package gov.nist.toolkit.xdstools2.client.command.command;
 
-import gov.nist.toolkit.xdstools2.client.ToolWindow;
 import gov.nist.toolkit.xdstools2.client.command.CommandModule;
 import gov.nist.toolkit.xdstools2.client.command.request.CommandRequest;
 

@@ -7,10 +7,10 @@ import gov.nist.toolkit.xdstools2.client.PopupMessage;
 import gov.nist.toolkit.xdstools2.client.Xdstools2;
 import gov.nist.toolkit.xdstools2.client.command.command.GetTestSessionNamesCommand;
 import gov.nist.toolkit.xdstools2.client.event.TestSessionChangedEvent;
+import gov.nist.toolkit.xdstools2.client.util.ClientUtils;
 
 import java.util.List;
 
-import static gov.nist.toolkit.xdstools2.client.ToolWindow.toolkitService;
 
 /**
  * When this finally replaced TestSessionManager it will loose the 2.
@@ -91,7 +91,7 @@ public class TestSessionManager2 {
 
     // save new sessionName to server and broadcast updates to all tabs
     public void add(final String sessionName) {
-        toolkitService.addMesaTestSession(sessionName, new AsyncCallback<Boolean>() {
+        ClientUtils.INSTANCE.getToolkitServices().addMesaTestSession(sessionName, new AsyncCallback<Boolean>() {
             @Override
             public void onFailure(Throwable throwable) {
                 new PopupMessage("Cannot add test session - " + throwable.getMessage());
@@ -106,7 +106,7 @@ public class TestSessionManager2 {
 
     // delete new sessionName from server and broadcast updates to all tabs
     public void delete(String sessionName) {
-        toolkitService.delMesaTestSession(sessionName, new AsyncCallback<Boolean>() {
+        ClientUtils.INSTANCE.getToolkitServices().delMesaTestSession(sessionName, new AsyncCallback<Boolean>() {
             @Override
             public void onFailure(Throwable throwable) {
                 new PopupMessage("Cannot delete test session - " + throwable.getMessage());

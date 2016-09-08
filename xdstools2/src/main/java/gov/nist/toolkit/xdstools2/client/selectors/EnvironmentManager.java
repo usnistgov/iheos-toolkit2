@@ -9,16 +9,15 @@ import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.ListBox;
-import com.sun.deploy.util.SessionState;
 import gov.nist.toolkit.xdstools2.client.*;
 import gov.nist.toolkit.xdstools2.client.command.command.GetEnvironmentNamesCommand;
 import gov.nist.toolkit.xdstools2.client.event.Xdstools2EventBus;
 import gov.nist.toolkit.xdstools2.client.tabs.EnvironmentState;
 import gov.nist.toolkit.xdstools2.client.util.ClientFactory;
+import gov.nist.toolkit.xdstools2.client.util.ClientUtils;
 
 import java.util.List;
 
-import static gov.nist.toolkit.xdstools2.client.ToolWindow.toolkitService;
 
 public class EnvironmentManager extends Composite{
 	TabContainer tabContainer;
@@ -138,7 +137,7 @@ public class EnvironmentManager extends Composite{
 			}
 		}.run(Xdstools2.getHomeTab().getCommandContext());
 
-		toolkitService.setEnvironment(initialEnvironmentName, new AsyncCallback() {
+		ClientUtils.INSTANCE.getToolkitServices().setEnvironment(initialEnvironmentName, new AsyncCallback() {
 
 			@Override
 			public void onFailure(Throwable caught) {
@@ -155,7 +154,7 @@ public class EnvironmentManager extends Composite{
 	
 	void getDefaultEnvironment() {
 		if (environmentState.getEnvironmentName() == null)
-			toolkitService.getDefaultEnvironment(getDefaultEnvironmentCallback);
+			ClientUtils.INSTANCE.getToolkitServices().getDefaultEnvironment(getDefaultEnvironmentCallback);
 	}
 	
 	AsyncCallback<String> getDefaultEnvironmentCallback = new AsyncCallback<String> () {
@@ -185,7 +184,7 @@ public class EnvironmentManager extends Composite{
 		String envName = environmentState.getEnvironmentName();
 		if (envName == null || envName.equals(""))
 			return;
-		toolkitService.setEnvironment(envName, setEnvironmentCallback);
+		ClientUtils.INSTANCE.getToolkitServices().setEnvironment(envName, setEnvironmentCallback);
 	}
 
 
@@ -208,9 +207,8 @@ public class EnvironmentManager extends Composite{
 			change(value);
 			
 			environmentState.updated(environmentManager);
-			ClientFactory cf= GWT.create(ClientFactory.class);
-			((Xdstools2EventBus) cf.getEventBus()).fireEnvironmentChangedEvent(value);
-			toolkitService.setEnvironment(value, setEnvironmentCallback);
+			((Xdstools2EventBus) ClientUtils.INSTANCE.getEventBus()).fireEnvironmentChangedEvent(value);
+			ClientUtils.INSTANCE.getToolkitServices().setEnvironment(value, setEnvironmentCallback);
 		}
 
 	}

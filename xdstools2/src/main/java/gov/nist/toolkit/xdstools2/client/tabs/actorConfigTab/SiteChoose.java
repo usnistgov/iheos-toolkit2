@@ -1,11 +1,11 @@
 package gov.nist.toolkit.xdstools2.client.tabs.actorConfigTab;
 
-import gov.nist.toolkit.sitemanagement.client.Site;
-import gov.nist.toolkit.xdstools2.client.PopupMessage;
-
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.rpc.AsyncCallback;
+import gov.nist.toolkit.sitemanagement.client.Site;
+import gov.nist.toolkit.xdstools2.client.PopupMessage;
+import gov.nist.toolkit.xdstools2.client.util.ClientUtils;
 
 class SiteChoose implements ClickHandler {
 	/**
@@ -29,7 +29,7 @@ class SiteChoose implements ClickHandler {
 			return;
 		}
 		actorConfigTab.newActorEditGrid();
-		actorConfigTab.toolkitService.getSite(
+		ClientUtils.INSTANCE.getToolkitServices().getSite(
 				actorConfigTab.getSelectedValueFromListBox(actorConfigTab.siteSelector), 
 				loadSiteCallback);
 		currentSelection = actorConfigTab.siteSelector.getSelectedIndex();

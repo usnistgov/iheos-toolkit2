@@ -6,12 +6,13 @@ import com.google.gwt.user.client.ui.FlexTable;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.Panel;
 import gov.nist.toolkit.configDatatypes.SimulatorProperties;
-import gov.nist.toolkit.sitemanagement.client.SiteSpec;
 import gov.nist.toolkit.services.client.RawResponse;
 import gov.nist.toolkit.services.client.RgOrchestrationRequest;
 import gov.nist.toolkit.services.client.RgOrchestrationResponse;
+import gov.nist.toolkit.sitemanagement.client.SiteSpec;
 import gov.nist.toolkit.xdstools2.client.PopupMessage;
 import gov.nist.toolkit.xdstools2.client.tabs.genericQueryTab.GenericQueryTab;
+import gov.nist.toolkit.xdstools2.client.util.ClientUtils;
 import gov.nist.toolkit.xdstools2.client.widgets.buttons.ReportableButton;
 
 import java.util.ArrayList;
@@ -68,7 +69,7 @@ class BuildRGTestOrchestrationButton extends ReportableButton {
         request.setUseExposedRR(useExposedRR);
         request.setUseSimAsSUT(useSimAsSUT);
 
-        testTab.toolkitService.buildRgTestOrchestration(request, new AsyncCallback<RawResponse>() {
+        ClientUtils.INSTANCE.getToolkitServices().buildRgTestOrchestration(request, new AsyncCallback<RawResponse>() {
             @Override
             public void onFailure(Throwable throwable) {
                 handleError(throwable);

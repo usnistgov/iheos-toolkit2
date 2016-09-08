@@ -8,6 +8,7 @@ import com.google.gwt.place.shared.PlaceController;
 import com.google.gwt.place.shared.PlaceHistoryHandler;
 import com.google.gwt.user.client.ui.RootLayoutPanel;
 import gov.nist.toolkit.xdstools2.client.util.ClientFactory;
+import gov.nist.toolkit.xdstools2.client.util.ClientUtils;
 import gov.nist.toolkit.xdstools2.client.util.activitiesAndPlaces.TestInstance;
 import gov.nist.toolkit.xdstools2.client.util.activitiesAndPlaces.TestInstanceActivity;
 import gov.nist.toolkit.xdstools2.client.util.activitiesAndPlaces.Xdstools2ActivityMapper;
@@ -18,7 +19,7 @@ import gov.nist.toolkit.xdstools2.client.util.activitiesAndPlaces.Xdstools2Place
  *
  */
 public class Xdstools2EP implements EntryPoint{
-    private static final ClientFactory CLIENT_FACTORY=GWT.create(ClientFactory.class);
+    private  ClientFactory CLIENT_FACTORY= GWT.create(ClientFactory.class);
     //    private static final EventBus EVENT_BUS= .getEventBus();
     private TestInstanceActivity testInstanceActivity =CLIENT_FACTORY.getTestInstanceActivity();
 
@@ -48,7 +49,4 @@ public class Xdstools2EP implements EntryPoint{
         historyHandler.handleCurrentHistory();
     }
 
-    public static final ClientFactory getClientFactory(){
-        return CLIENT_FACTORY;
-    }
 }

@@ -10,10 +10,10 @@ import gov.nist.toolkit.configDatatypes.client.Pid;
 import gov.nist.toolkit.configDatatypes.client.PidBuilder;
 import gov.nist.toolkit.configDatatypes.client.TransactionType;
 import gov.nist.toolkit.xdstools2.client.PopupMessage;
+import gov.nist.toolkit.xdstools2.client.util.ClientUtils;
 
 import java.util.List;
 
-import static gov.nist.toolkit.xdstools2.client.ToolWindow.toolkitService;
 
 /**
  *
@@ -47,7 +47,7 @@ public class PatientErrorNewEntryPresentation  {
             setWidget(surroundPanel);
 
 
-            toolkitService.getTransactionErrorCodeRefs(transactionType.getName(), Severity.Error, new AsyncCallback<List<String>>() {
+            ClientUtils.INSTANCE.getToolkitServices().getTransactionErrorCodeRefs(transactionType.getName(), Severity.Error, new AsyncCallback<List<String>>() {
 
                 public void onFailure(Throwable caught) {
                     new PopupMessage("getTransactionErrorCodeRefs:" + caught.getMessage());

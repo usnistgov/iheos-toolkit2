@@ -1,10 +1,9 @@
 package gov.nist.toolkit.xdstools2.client;
 
-import gov.nist.toolkit.xdstools2.client.tabs.TextViewerTab;
-
 import com.google.gwt.user.client.rpc.AsyncCallback;
+import gov.nist.toolkit.xdstools2.client.tabs.TextViewerTab;
+import gov.nist.toolkit.xdstools2.client.util.ClientUtils;
 
-import static gov.nist.toolkit.xdstools2.client.ToolWindow.toolkitService;
 
 public class LoadGazelleConfigs  {
 	TabContainer container;
@@ -18,7 +17,7 @@ public class LoadGazelleConfigs  {
 	}
 
 	public void load() {
-		toolkitService.reloadSystemFromGazelle(type, new AsyncCallback<String> () {
+		ClientUtils.INSTANCE.getToolkitServices().reloadSystemFromGazelle(type, new AsyncCallback<String> () {
 
 			public void onFailure(Throwable caught) {
 				launchTextViewer(container, "Gazelle", "reloadSystemFromGazelle(\""+ type + "\") call failed: " + caught.getMessage(), true);

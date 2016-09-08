@@ -1,6 +1,5 @@
 package gov.nist.toolkit.xdstools2.client;
 
-import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Style;
 import com.google.gwt.user.client.ui.*;
 import gov.nist.toolkit.sitemanagement.client.SiteSpec;
@@ -8,6 +7,7 @@ import gov.nist.toolkit.tk.client.TkProps;
 import gov.nist.toolkit.xdstools2.client.command.CommandContext;
 import gov.nist.toolkit.xdstools2.client.event.testSession.TestSessionManager2;
 import gov.nist.toolkit.xdstools2.client.selectors.EnvironmentManager;
+import gov.nist.toolkit.xdstools2.client.util.ClientUtils;
 
 import java.util.logging.Logger;
 
@@ -41,8 +41,7 @@ public abstract class ToolWindow {
 	protected TestSessionManager2 testSessionManager = Xdstools2.getTestSessionManager();
 	protected TabContainer tabContainer;
 	Logger logger = Logger.getLogger("Tabbed window");
-	final static public ToolkitServiceAsync toolkitService = GWT
-			.create(ToolkitService.class);
+	protected final ToolkitServiceAsync toolkitService = ClientUtils.INSTANCE.getToolkitServices();
 
     protected abstract Widget buildUI();
     protected abstract void bindUI();

@@ -1,7 +1,6 @@
 package gov.nist.toolkit.xdstools2.client.util;
 
 import com.google.gwt.user.client.Cookies;
-import com.google.gwt.user.client.Window;
 import gov.nist.toolkit.configDatatypes.client.Pid;
 import gov.nist.toolkit.configDatatypes.client.PidSet;
 import gov.nist.toolkit.xdstools2.client.CookieManager;
@@ -9,7 +8,6 @@ import gov.nist.toolkit.xdstools2.client.CookieManager;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.logging.Logger;
 
 /**
  * Created by onh2 on 7/20/16.

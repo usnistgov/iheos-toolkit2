@@ -1,9 +1,7 @@
 package gov.nist.toolkit.xdstools2.client.tabs.testsOverviewTab.commandsWidget;
 
 import com.google.gwt.user.client.ui.*;
-import gov.nist.toolkit.xdstools2.client.resources.TestsOverviewResources;
 import gov.nist.toolkit.xdstools2.client.tabs.testsOverviewTab.Updater;
-import gov.nist.toolkit.xdstools2.client.tabs.testsOverviewTab.Utils;
 import gov.nist.toolkit.xdstools2.client.widgets.buttons.ButtonFactory;
 import gov.nist.toolkit.xdstools2.client.widgets.buttons.ButtonType;
 

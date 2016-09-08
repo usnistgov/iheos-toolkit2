@@ -12,10 +12,10 @@ import gov.nist.toolkit.xdstools2.client.PopupMessage;
 import gov.nist.toolkit.xdstools2.client.ToolWindow;
 import gov.nist.toolkit.xdstools2.client.Xdstools2;
 import gov.nist.toolkit.xdstools2.client.command.command.GetTestSessionNamesCommand;
+import gov.nist.toolkit.xdstools2.client.util.ClientUtils;
 
 import java.util.List;
 
-import static gov.nist.toolkit.xdstools2.client.ToolWindow.toolkitService;
 
 /**
  *
@@ -134,7 +134,7 @@ class TestEnvironmentDialog extends DialogBox {
             }
             String site = getSelectedSite();
             String testSession = getSelectedTestSession();
-            toolkitService.validateConformanceSession(testSession, site, new AsyncCallback<ConformanceSessionValidationStatus>() {
+            ClientUtils.INSTANCE.getToolkitServices().validateConformanceSession(testSession, site, new AsyncCallback<ConformanceSessionValidationStatus>() {
                 @Override
                 public void onFailure(Throwable throwable) {
                     new PopupMessage("Validation error: " + throwable.getMessage());
@@ -176,7 +176,8 @@ class TestEnvironmentDialog extends DialogBox {
             final String newItem = textBox.getText();
             if (newItem == null || newItem.equals("")) return;
 
-            toolkitService.addMesaTestSession(newItem, new AsyncCallback<Boolean>() {
+            ClientUtils.INSTANCE.getToolkitServices()
+                    .addMesaTestSession(newItem, new AsyncCallback<Boolean>() {
                 @Override
                 public void onFailure(Throwable throwable) {
                     new PopupMessage("Cannot add test session - " + throwable.getMessage());
@@ -211,7 +212,7 @@ class TestEnvironmentDialog extends DialogBox {
     }
 
     private void loadSites() {
-        toolkitService.getSiteNames(true, true, new AsyncCallback<List<String>>() {
+        ClientUtils.INSTANCE.getToolkitServices().getSiteNames(true, true, new AsyncCallback<List<String>>() {
             @Override
             public void onFailure(Throwable throwable) {
                 new PopupMessage("Cannot load sites.");

@@ -6,14 +6,15 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Button;
 import gov.nist.toolkit.results.shared.Test;
 import gov.nist.toolkit.sitemanagement.client.Site;
+import gov.nist.toolkit.xdstools2.client.ToolkitServiceAsync;
 import gov.nist.toolkit.xdstools2.client.tabs.testsOverviewTab.ReloadAllTestResultsCallback;
 import gov.nist.toolkit.xdstools2.client.tabs.testsOverviewTab.Updater;
+import gov.nist.toolkit.xdstools2.client.util.ClientUtils;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
 
-import static gov.nist.toolkit.xdstools2.client.ToolWindow.toolkitService;
 
 /**
  * Created by Diane Azais local on 10/20/2015.
@@ -23,6 +24,7 @@ public class ButtonClickHandler implements ClickHandler {
     Logger LOGGER = Logger.getLogger("ButtonClickHandler");
     Updater updater;
     CommandsWidget commandsWidget;
+    private ToolkitServiceAsync toolkitService= ClientUtils.INSTANCE.getToolkitServices();
 
 
     public ButtonClickHandler(CommandsWidget _commandsWidget){

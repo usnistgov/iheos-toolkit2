@@ -6,11 +6,12 @@ package gov.nist.toolkit.xdstools2.client.tabs.simulatorControlTab;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Panel;
 import gov.nist.toolkit.xdstools2.client.PopupMessage;
+import gov.nist.toolkit.xdstools2.client.ToolkitServiceAsync;
+import gov.nist.toolkit.xdstools2.client.util.ClientUtils;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import static gov.nist.toolkit.xdstools2.client.ToolWindow.toolkitService;
 
 /**
  *
@@ -21,7 +22,8 @@ import static gov.nist.toolkit.xdstools2.client.ToolWindow.toolkitService;
  */
 public class IDSSelectionPresenter {
 
-   MultiSelectionView view;
+    private final ToolkitServiceAsync toolkitService= ClientUtils.INSTANCE.getToolkitServices();
+    MultiSelectionView view;
    List<String> sites;
 
    public IDSSelectionPresenter(/*ToolkitServiceAsync toolkitService, */final List<String> selected, final Panel panel) {
