@@ -50,7 +50,7 @@ public class FindDocumentsTab extends AbstractTool {
 	@Override
 	public void run() {
 		origin.setBegin(new Date());
-		toolkitService.findDocuments(queryBoilerplate.getSiteSelection(), pidTextBox.getValue().trim(), selectOnDemand.getValue(), fdCallback);
+		getToolkitServices().findDocuments(queryBoilerplate.getSiteSelection(), pidTextBox.getValue().trim(), selectOnDemand.getValue(), fdCallback);
 	}
 
 	protected AsyncCallback<List<Result>> fdCallback = new AsyncCallback<List<Result>>() {

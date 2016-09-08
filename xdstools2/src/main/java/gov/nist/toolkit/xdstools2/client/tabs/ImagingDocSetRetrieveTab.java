@@ -110,7 +110,7 @@ public class ImagingDocSetRetrieveTab extends GenericQueryTab {
 			getInspectButton().setEnabled(false);
 
 
-			toolkitService.retrieveImagingDocSet(siteSpec, uids, fullRequest, "", queryCallback);
+			getToolkitServices().retrieveImagingDocSet(siteSpec, uids, fullRequest, "", queryCallback);
 
 		}
 		private Uids extractDocumentUids(String s) {

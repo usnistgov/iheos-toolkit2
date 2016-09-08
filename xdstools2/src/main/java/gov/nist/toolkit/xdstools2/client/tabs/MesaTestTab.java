@@ -195,7 +195,7 @@ public class MesaTestTab extends GenericQueryTab {
 			}
 
 			rigForRunning();
-			toolkitService.runMesaTest(getCurrentTestSession(), getSiteSelection(), new TestInstance(selectedTest), selectedSections, parms, true, queryCallback);
+			getToolkitServices().runMesaTest(getCurrentTestSession(), getSiteSelection(), new TestInstance(selectedTest), selectedSections, parms, true, queryCallback);
 
 		}
 
@@ -221,7 +221,7 @@ public class MesaTestTab extends GenericQueryTab {
 	class SelectSectionViewButtonClickHandler implements ClickHandler {
 
 		public void onClick(ClickEvent event) {
-			toolkitService.getTestplanAsText(getCurrentTestSession(),new TestInstance(selectedTest), selectedSection, new AsyncCallback<String>() {
+			getToolkitServices().getTestplanAsText(getCurrentTestSession(),new TestInstance(selectedTest), selectedSection, new AsyncCallback<String>() {
 
 				public void onFailure(Throwable caught) {
 					new PopupMessage("getTestplanAsText: " + caught.getMessage());
@@ -237,7 +237,7 @@ public class MesaTestTab extends GenericQueryTab {
 	}
 	
 	void loadSectionNames() {
-		toolkitService.getTestIndex(selectedTest, new AsyncCallback<List<String>>() {
+		getToolkitServices().getTestIndex(selectedTest, new AsyncCallback<List<String>>() {
 
 			public void onFailure(Throwable caught) {
 				new PopupMessage("getTestIndex: " + caught.getMessage());
@@ -289,7 +289,7 @@ public class MesaTestTab extends GenericQueryTab {
 	}
 	
 	void loadTestReadme() {
-		toolkitService.getTestReadme(selectedTest, new AsyncCallback<String>() {
+		getToolkitServices().getTestReadme(selectedTest, new AsyncCallback<String>() {
 
 			public void onFailure(Throwable caught) {
 				new PopupMessage("getTestReadme: " + caught.getMessage());
@@ -353,7 +353,7 @@ public class MesaTestTab extends GenericQueryTab {
 	}
 	
 	void loadTestsForActor() {
-		toolkitService.getCollection("actorcollections", selectedActor, new AsyncCallback<Map<String, String>>() {
+		getToolkitServices().getCollection("actorcollections", selectedActor, new AsyncCallback<Map<String, String>>() {
 
 			public void onFailure(Throwable caught) {
 				new PopupMessage("getCollection(actorcollections): " + selectedActor + " -----  " + caught.getMessage());
@@ -379,7 +379,7 @@ public class MesaTestTab extends GenericQueryTab {
 	
 
 	void loadActorNames() {
-		toolkitService.getCollectionNames("actorcollections", new AsyncCallback<Map<String, String>>() {
+		getToolkitServices().getCollectionNames("actorcollections", new AsyncCallback<Map<String, String>>() {
 
 			public void onFailure(Throwable caught) {
 				new PopupMessage("getCollectionNames: " + caught.getMessage());

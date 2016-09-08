@@ -118,7 +118,7 @@ public class GetSubmissionSetAndContentsTab extends GenericQueryTab {
 			getGoButton().setEnabled(false);
 			getInspectButton().setEnabled(false);
 
-			toolkitService.getSSandContents(siteSpec, ssid.getValue().trim(), codeSpec, queryCallback);
+			getToolkitServices().getSSandContents(siteSpec, ssid.getValue().trim(), codeSpec, queryCallback);
 		}
 
 	}

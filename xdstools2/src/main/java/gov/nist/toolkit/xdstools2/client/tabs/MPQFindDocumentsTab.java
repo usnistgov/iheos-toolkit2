@@ -121,7 +121,7 @@ public class MPQFindDocumentsTab extends GenericQueryTab {
 			getGoButton().setEnabled(false);
 			getInspectButton().setEnabled(false);
 
-			toolkitService.mpqFindDocuments(siteSpec,
+			getToolkitServices().mpqFindDocuments(siteSpec,
 					pid.trim(), 
 //					getValuesFromListBox(codeFilterBank.getCodeFilter(CodesConfiguration.ClassCode).selectedCodes),
 //					getValuesFromListBox(codeFilterBank.getCodeFilter(CodesConfiguration.HealthcareFacilityTypeCode).selectedCodes),

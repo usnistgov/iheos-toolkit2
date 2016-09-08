@@ -119,7 +119,7 @@ public class GetAllTab extends GenericQueryTab {
 			// tell the server to run the query. The display is handled by GenericQueryTab which
 			// is linked in via the queryCallback parameter
 			rigForRunning();
-			toolkitService.getAll(getSiteSelection(), pidTextBox.getValue().trim(), codeSpec, queryCallback);
+			getToolkitServices().getAll(getSiteSelection(), pidTextBox.getValue().trim(), codeSpec, queryCallback);
 		}
 	}
 

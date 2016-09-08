@@ -86,7 +86,7 @@ public class FolderTab extends GenericQueryTab {
             getGoButton().setEnabled(false);
             getInspectButton().setEnabled(false);
 
-			toolkitService.folderValidation(siteSpec, pidTextBox.getValue().trim(), queryCallback);
+			getToolkitServices().folderValidation(siteSpec, pidTextBox.getValue().trim(), queryCallback);
 		}
 		
 	}

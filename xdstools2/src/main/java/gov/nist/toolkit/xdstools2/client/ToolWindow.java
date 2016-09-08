@@ -41,7 +41,7 @@ public abstract class ToolWindow {
 	protected TestSessionManager2 testSessionManager = Xdstools2.getTestSessionManager();
 	protected TabContainer tabContainer;
 	Logger logger = Logger.getLogger("Tabbed window");
-	protected final ToolkitServiceAsync toolkitService = ClientUtils.INSTANCE.getToolkitServices();
+    private ToolkitServiceAsync toolkitService=getToolkitServices();
 
     protected abstract Widget buildUI();
     protected abstract void bindUI();
@@ -232,4 +232,10 @@ public abstract class ToolWindow {
 	public FlowPanel getTabTopPanel() {
 		return tabTopPanel;
 	}
+
+    public ToolkitServiceAsync getToolkitServices() {
+        if (toolkitService==null)
+            toolkitService=ClientUtils.INSTANCE.getToolkitServices();
+        return toolkitService;
+    }
 }

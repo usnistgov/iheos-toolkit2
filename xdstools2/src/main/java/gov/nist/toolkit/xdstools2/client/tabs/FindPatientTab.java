@@ -435,7 +435,7 @@ public class FindPatientTab extends GenericQueryTab {
 			addStatusBox();
 			getGoButton().setEnabled(false);
 			getInspectButton().setEnabled(false);
-			toolkitService.findPatient(siteSpec, firstName.getValue().trim(), secondName.getValue().trim(), lastName.getValue().trim(), suffix.getValue().trim(), 
+			getToolkitServices().findPatient(siteSpec, firstName.getValue().trim(), secondName.getValue().trim(), lastName.getValue().trim(), suffix.getValue().trim(),
 					                   gender.getValue().trim(), dob.getValue().trim(), ssn.getValue().trim(), pid.getValue().trim(),
 					                   homeAddress1.getValue().trim(), homeAddress2.getValue().trim(), homeCity.getValue().trim(), homeState.getValue().trim(), homeZip.getValue().trim(), homeCountry.getValue().trim(),
 					                   mothersFirstName.getValue().trim(), mothersSecondName.getValue().trim(), mothersLastName.getValue().trim(), mothersSuffix.getValue().trim(), 

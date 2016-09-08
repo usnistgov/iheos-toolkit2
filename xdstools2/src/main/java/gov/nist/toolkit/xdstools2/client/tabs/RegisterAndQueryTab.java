@@ -86,7 +86,7 @@ public class RegisterAndQueryTab extends GenericQueryTab {
 			getGoButton().setEnabled(false);
 			getInspectButton().setEnabled(false);
 
-			toolkitService.registerAndQuery(siteSpec, pidTextBox.getValue().trim(), queryCallback);
+			getToolkitServices().registerAndQuery(siteSpec, pidTextBox.getValue().trim(), queryCallback);
 		}
 		
 	}

@@ -143,7 +143,7 @@ public class SimulatorControlTab extends GenericQueryTab {
 			new PopupMessage("SimId " + simId + " is not valid");
 			return;
 		}
-		toolkitService.getNewSimulator(actorTypeName, simId, new AsyncCallback<Simulator>() {
+		getToolkitServices().getNewSimulator(actorTypeName, simId, new AsyncCallback<Simulator>() {
 
 			public void onFailure(Throwable caught) {
 				new PopupMessage("Error creating new simulator: " + caught.getMessage());
@@ -161,7 +161,7 @@ public class SimulatorControlTab extends GenericQueryTab {
 	
 	
 	void loadActorSelectListBox() {
-		toolkitService.getActorTypeNames(new AsyncCallback<List<String>>() {
+		getToolkitServices().getActorTypeNames(new AsyncCallback<List<String>>() {
 
 			public void onFailure(Throwable caught) {
 				new PopupMessage("getActorTypeNames:" + caught.getMessage());
@@ -211,7 +211,7 @@ public class SimulatorControlTab extends GenericQueryTab {
 				for (SimulatorConfig config : configs)
 					simIds.add(config.getId());
 				try {
-					toolkitService.getSimulatorStats(simIds, new AsyncCallback<List<SimulatorStats>>() {
+					getToolkitServices().getSimulatorStats(simIds, new AsyncCallback<List<SimulatorStats>>() {
 						@Override
 						public void onFailure(Throwable throwable) {
 							new PopupMessage("Cannot load simulator stats - " + throwable.getMessage());

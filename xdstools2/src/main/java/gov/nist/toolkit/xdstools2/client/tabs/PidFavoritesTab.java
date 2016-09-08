@@ -216,7 +216,7 @@ public class PidFavoritesTab extends GenericQueryTab {
 
     void retrieveAndInitFavPids() throws IOException {
         final Set<Pid> pidsList=new HashSet<Pid>();
-        toolkitService.retrieveConfiguredFavoritesPid(getEnvironmentSelection(), new AsyncCallback<List<Pid>>() {
+        getToolkitServices().retrieveConfiguredFavoritesPid(getEnvironmentSelection(), new AsyncCallback<List<Pid>>() {
             @Override
             public void onFailure(Throwable throwable) {
                 Window.alert("failure");

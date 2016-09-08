@@ -119,7 +119,7 @@ public class DocRetrieveTab extends GenericQueryTab {
 //			siteSpec.isTls = doTLS;
 //			siteSpec.isSaml = doSAML;
 //			siteSpec.isAsync = doASYNC;
-			toolkitService.retrieveDocument(siteSpec, uids, queryCallback);
+			getToolkitServices().retrieveDocument(siteSpec, uids, queryCallback);
 		}
 		
 	}

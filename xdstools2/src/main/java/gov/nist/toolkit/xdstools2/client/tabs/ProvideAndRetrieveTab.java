@@ -89,7 +89,7 @@ public class ProvideAndRetrieveTab extends GenericQueryTab {
             getGoButton().setEnabled(false);
             getInspectButton().setEnabled(false);
 
-			toolkitService.provideAndRetrieve(siteSpec, pidTextBox.getValue().trim(), queryCallback);
+			getToolkitServices().provideAndRetrieve(siteSpec, pidTextBox.getValue().trim(), queryCallback);
 		}
 		
 	}

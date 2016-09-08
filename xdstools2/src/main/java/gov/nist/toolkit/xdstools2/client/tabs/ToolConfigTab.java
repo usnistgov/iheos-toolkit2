@@ -56,7 +56,7 @@ public class ToolConfigTab extends GenericQueryTab {
 	class RmOldSimsClickHandler implements ClickHandler {
 
 		public void onClick(ClickEvent event) {
-			toolkitService.removeOldSimulators(new AsyncCallback<Integer> () {
+			getToolkitServices().removeOldSimulators(new AsyncCallback<Integer> () {
 
 				public void onFailure(Throwable caught) {
 					new PopupMessage("removeOldSimulators() call failed: " + caught.getMessage());
@@ -195,7 +195,7 @@ public class ToolConfigTab extends GenericQueryTab {
 
 
     void savePropertyFile() {
-		toolkitService.setToolkitProperties(props, savePropertiesCallback);
+		getToolkitServices().setToolkitProperties(props, savePropertiesCallback);
 	}
 	
 	AsyncCallback<String> savePropertiesCallback = new AsyncCallback<String> () {
@@ -211,7 +211,7 @@ public class ToolConfigTab extends GenericQueryTab {
 	};
 	
 	void loadPropertyFile() {
-		toolkitService.getToolkitProperties(getToolkitPropertiesCallback);
+		getToolkitServices().getToolkitProperties(getToolkitPropertiesCallback);
 	}
 	
 	AsyncCallback<Map<String, String>> getToolkitPropertiesCallback = new AsyncCallback<Map<String, String>> () {

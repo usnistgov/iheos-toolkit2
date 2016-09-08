@@ -501,7 +501,7 @@ public class MessageValidatorTab extends ToolWindow {
 					return;
 				}
 				filename = simFilesListBox.getValue(sel);
-				toolkitService.getSelectedMessage(filename, getTextCallback);
+				getToolkitServices().getSelectedMessage(filename, getTextCallback);
 			}
 		});
 
@@ -518,7 +518,7 @@ public class MessageValidatorTab extends ToolWindow {
 					return;
 				}
 				filename = simFilesListBox.getValue(sel);
-				toolkitService.getSelectedMessageResponse(filename, getTextCallback);
+				getToolkitServices().getSelectedMessageResponse(filename, getTextCallback);
 			}
 		});
 		endpointAreaButtonPanel.setWidget(1, 1, viewRespFromEndpointButton);
@@ -534,7 +534,7 @@ public class MessageValidatorTab extends ToolWindow {
 					return;
 				}
 				filename = simFilesListBox.getValue(sel);
-				toolkitService.executeSimMessage(filename, messageValidationCallback);
+				getToolkitServices().executeSimMessage(filename, messageValidationCallback);
 			}
 		});
 
@@ -567,7 +567,7 @@ public class MessageValidatorTab extends ToolWindow {
 					return;
 				}
 				filename = simFilesListBox.getValue(sel);
-				toolkitService.deleteSimFile(filename, reloadSimMessages );
+				getToolkitServices().deleteSimFile(filename, reloadSimMessages );
 			}
 		});
 
@@ -642,7 +642,7 @@ public class MessageValidatorTab extends ToolWindow {
 		inspectButton.setEnabled(false);
 		inspectButton.addClickHandler(new ClickHandler() {
 			public void onClick(ClickEvent event) {
-				toolkitService.getLastMetadata(getLastMetadataCallback);
+				getToolkitServices().getLastMetadata(getLastMetadataCallback);
 			}
 		});
 
@@ -667,7 +667,7 @@ public class MessageValidatorTab extends ToolWindow {
 
 	HTML simEndpointMessage;
 	void requestSimEndpoint() {
-		toolkitService.getSimulatorEndpoint(new AsyncCallback<String>() {
+		getToolkitServices().getSimulatorEndpoint(new AsyncCallback<String>() {
 
 			public void onFailure(Throwable caught) {
 				new PopupMessage(caught.getMessage());
@@ -686,7 +686,7 @@ public class MessageValidatorTab extends ToolWindow {
 
 	String uploadFilename;
 	void requestFilename() {
-		toolkitService.getLastFilename(new AsyncCallback<String>() {
+		getToolkitServices().getLastFilename(new AsyncCallback<String>() {
 
 			public void onFailure(Throwable caught) {
 				new PopupMessage(caught.getMessage());			
@@ -709,7 +709,7 @@ public class MessageValidatorTab extends ToolWindow {
 
 	String timeAndDate;
 	void requestTimeAndDate() {
-		toolkitService.getTimeAndDate(new AsyncCallback<String>() {
+		getToolkitServices().getTimeAndDate(new AsyncCallback<String>() {
 
 			public void onFailure(Throwable caught) {
 				new PopupMessage(caught.getMessage());			
@@ -732,7 +732,7 @@ public class MessageValidatorTab extends ToolWindow {
 	String clientIP = null;
 	@SuppressWarnings("deprecation")
 	void requestClientIP() {
-		toolkitService.getClientIPAddress(new AsyncCallback<String>() {
+		getToolkitServices().getClientIPAddress(new AsyncCallback<String>() {
 
 			public void onFailure(Throwable caught) {
 				new PopupMessage(caught.getMessage());			
@@ -758,7 +758,7 @@ public class MessageValidatorTab extends ToolWindow {
 
 		System.out.println(vc);
 		
-		toolkitService.validateMessage(vc, messageValidationCallback);
+		getToolkitServices().validateMessage(vc, messageValidationCallback);
 	}
 
 	final AsyncCallback<List<String>> getSimFileNamesCallback = new AsyncCallback<List<String>>() {

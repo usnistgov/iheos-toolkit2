@@ -1,15 +1,14 @@
 package gov.nist.toolkit.xdstools2.client.tabs;
 
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
-import com.google.gwt.user.client.ui.FlexTable;
-import com.google.gwt.user.client.ui.Frame;
-import com.google.gwt.user.client.ui.ListBox;
-import com.google.gwt.user.client.ui.Widget;
+import com.google.gwt.user.client.ui.*;
 import gov.nist.toolkit.xdstools2.client.*;
 import gov.nist.toolkit.xdstools2.client.inspector.HyperlinkFactory;
 import gov.nist.toolkit.xdstools2.client.siteActorManagers.FindDocumentsSiteActorManager;
 import gov.nist.toolkit.xdstools2.client.tabs.genericQueryTab.GenericQueryTab;
 import gov.nist.toolkit.xdstools2.client.toolLauncher.ToolLauncher;
+import gov.nist.toolkit.xdstools2.client.util.ClientUtils;
 
 public class HomeTab extends GenericQueryTab {
 	String aboutMessage = null;
@@ -24,29 +23,8 @@ public class HomeTab extends GenericQueryTab {
 
 	@Override
 	protected Widget buildUI() {
-		return null;
-	}
-
-	@Override
-	protected void bindUI() {
-
-	}
-
-	@Override
-	protected void configureTabView() {
-
-	}
-
-	@Override
-//	public void onTabLoad(final Xdstools2 container, boolean select, String eventName) {
-	public void onTabLoad(boolean select, String eventName) {
-
-		addActorReloader();
-
-		select = true;
-		registerTab(select, eventName);
-//		tabTopPanel.add(new HTML("Menu Bar"));
-		tabTopPanel.add(menubar);
+		FlowPanel panel = new FlowPanel();
+		panel.add(menubar);
 
 		menubar.add(
 				HyperlinkFactory.launchTool("&nbsp;&nbsp;[" + ToolLauncher.toolConfigTabLabel + "]&nbsp;&nbsp;", new ToolLauncher(ToolLauncher.toolConfigTabLabel))
@@ -54,10 +32,46 @@ public class HomeTab extends GenericQueryTab {
 
 		Frame frame = new Frame("site/index.html");
 		frame.setSize("100em", "100em");
-		tabTopPanel.add(frame);
-
-		new MainGridLoader().featuresLoadedCallback();
+		panel.add(frame);
+		return panel;
 	}
+
+	@Override
+	protected void bindUI() {
+		String th = "";
+
+		try {
+			th = Xdstools2.tkProps().get("toolkit.home","");
+		} catch (Throwable t) {
+
+		}
+
+		mainGrid = new FlexTable();
+		mainGrid.setCellSpacing(20);
+
+		loadIHEGrid(0);
+		getToolkitServices().getAdminPassword(getPasswordCallback);
+		loadVersion();
+	}
+
+	@Override
+	protected void configureTabView() {
+		addActorReloader();
+	}
+
+//	@Override
+////	public void onTabLoad(final Xdstools2 container, boolean select, String eventName) {
+//	public void onTabLoad(boolean select, String eventName) {
+//
+//
+//
+//		select = true;
+//		registerTab(select, eventName);
+////		tabTopPanel.add(new HTML("Menu Bar"));
+////		tabTopPanel.
+//
+//
+//	}
 
 	boolean forDirect = false;
 	boolean forIHE = false;
@@ -67,22 +81,9 @@ public class HomeTab extends GenericQueryTab {
 
 		//@Override
 		public void featuresLoadedCallback() {
-			String th = "";
-
-			try {
-				th = Xdstools2.tkProps().get("toolkit.home","");
-			} catch (Throwable t) {
-
-			}
-
-			mainGrid = new FlexTable();
-			mainGrid.setCellSpacing(20);
-
-			loadIHEGrid(0);
 
 //				tabTopPanel.add(mainGrid);
-			toolkitService.getAdminPassword(getPasswordCallback);
-			loadVersion();
+
 
 		}
 
@@ -266,7 +267,7 @@ public class HomeTab extends GenericQueryTab {
 
 	void loadVersion() {
 
-		toolkitService.getImplementationVersion(new AsyncCallback<String>() {
+		getToolkitServices().getImplementationVersion(new AsyncCallback<String>() {
 
 			public void onFailure(Throwable caught) {
 				aboutMessage =  caught.getMessage();

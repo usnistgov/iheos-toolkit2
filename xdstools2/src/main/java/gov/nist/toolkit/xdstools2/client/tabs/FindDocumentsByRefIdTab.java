@@ -115,7 +115,7 @@ public class FindDocumentsByRefIdTab extends GenericQueryTab {
 			getGoButton().setEnabled(false);
 			getInspectButton().setEnabled(false);
 
-			toolkitService.findDocumentsByRefId(siteSpec, pidTextBox.getValue().trim(), refIds, queryCallback);
+			getToolkitServices().findDocumentsByRefId(siteSpec, pidTextBox.getValue().trim(), refIds, queryCallback);
 		}
 
 	}

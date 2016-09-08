@@ -117,7 +117,7 @@ public class SourceStoredDocValTab extends GenericQueryTab {
 			getGoButton().setEnabled(false);
 			getInspectButton().setEnabled(false);
 
-			toolkitService.srcStoresDocVal(siteSpec, ssid.getValue().trim(), queryCallback);
+			getToolkitServices().srcStoresDocVal(siteSpec, ssid.getValue().trim(), queryCallback);
 		}
 		
 	}

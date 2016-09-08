@@ -105,7 +105,7 @@ public class GetDocumentsTab  extends GenericQueryTab {
 			}
 			
 			rigForRunning();
-			toolkitService.getDocuments(getSiteSelection(), getAnyIds(values), queryCallback);
+			getToolkitServices().getDocuments(getSiteSelection(), getAnyIds(values), queryCallback);
 		}
 		
 	}

@@ -81,7 +81,7 @@ public class FindFoldersTab extends GenericQueryTab {
 			getGoButton().setEnabled(false);
 			getInspectButton().setEnabled(false);
 
-			toolkitService.findFolders(siteSpec, pid.trim(), queryCallback);
+			getToolkitServices().findFolders(siteSpec, pid.trim(), queryCallback);
 		}
 		
 	}

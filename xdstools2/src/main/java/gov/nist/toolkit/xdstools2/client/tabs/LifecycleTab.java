@@ -85,7 +85,7 @@ public class LifecycleTab extends GenericQueryTab {
             getInspectButton().setEnabled(false);
 
 
-            toolkitService.lifecycleValidation(siteSpec, pidTextBox.getValue().trim(), queryCallback);
+            getToolkitServices().lifecycleValidation(siteSpec, pidTextBox.getValue().trim(), queryCallback);
 		}
 		
 	}

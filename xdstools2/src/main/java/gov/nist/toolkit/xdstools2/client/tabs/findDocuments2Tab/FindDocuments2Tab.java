@@ -110,7 +110,7 @@ class Runner implements ClickHandler {
 
         origin.setBegin(new Date());
 
-        toolkitService.findDocuments2(getSiteSelection(), pidTextBox.getValue().trim(), codeSpec, fd2Callback);
+        getToolkitServices().findDocuments2(getSiteSelection(), pidTextBox.getValue().trim(), codeSpec, fd2Callback);
 
     }
     }
@@ -133,7 +133,7 @@ class Runner implements ClickHandler {
                 if (getInteractionModel()!=null) {
                     getInteractionModel().setEnd(new Date());
 
-                    toolkitService.getInteractionFromModel(getInteractionModel(), new AsyncCallback<InteractingEntity>() {
+                    getToolkitServices().getInteractionFromModel(getInteractionModel(), new AsyncCallback<InteractingEntity>() {
                         @Override
                         public void onFailure(Throwable throwable) {
                             String mapMsg = "mapping failed!";

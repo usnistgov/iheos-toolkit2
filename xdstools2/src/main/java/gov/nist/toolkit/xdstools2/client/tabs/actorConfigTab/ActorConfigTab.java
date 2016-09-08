@@ -149,7 +149,7 @@ public class ActorConfigTab extends GenericQueryTab {
 
 		};
 
-		toolkitService.isGazelleConfigFeedEnabled(gazelleConfigEnabledCallback);
+		getToolkitServices().isGazelleConfigFeedEnabled(gazelleConfigEnabledCallback);
 
 	}
 
@@ -181,7 +181,7 @@ public class ActorConfigTab extends GenericQueryTab {
 				loadSiteNames(result);
 			}
 		};
-		toolkitService.reloadExternalSites(loadSiteNamesCallback);
+		getToolkitServices().reloadExternalSites(loadSiteNamesCallback);
 	}
 
 
@@ -493,7 +493,7 @@ public class ActorConfigTab extends GenericQueryTab {
 
 			public void onSuccess(String ignore) {
 				currentEditSite.changed = false;
-				toolkitService.getSiteNames(true, showSims.getValue(), new AsyncCallback<List<String>>() {
+				getToolkitServices().getSiteNames(true, showSims.getValue(), new AsyncCallback<List<String>>() {
 					public void onFailure(Throwable caught) {
 						new PopupMessage(caught.getMessage());
 					}
@@ -505,7 +505,7 @@ public class ActorConfigTab extends GenericQueryTab {
 			}
 
 		};
-		toolkitService.saveSite(currentEditSite, saveSiteCallback);
+		getToolkitServices().saveSite(currentEditSite, saveSiteCallback);
 	}
 	
 	void loadExternalSites() {
@@ -519,7 +519,7 @@ public class ActorConfigTab extends GenericQueryTab {
 				loadSiteNames(result);
 			}
 		};
-		toolkitService.getSiteNames(true, showSims.getValue(), loadSiteNamesCallback);
+		getToolkitServices().getSiteNames(true, showSims.getValue(), loadSiteNamesCallback);
 	}
 
 	void loadSiteNames(List<String> result) {

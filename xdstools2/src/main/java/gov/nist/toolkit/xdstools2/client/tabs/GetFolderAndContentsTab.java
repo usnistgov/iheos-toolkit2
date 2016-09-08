@@ -107,7 +107,7 @@ public class GetFolderAndContentsTab extends GenericQueryTab {
 			getGoButton().setEnabled(false);
 			getInspectButton().setEnabled(false);
 
-			toolkitService.getFolderAndContents(siteSpec, getAnyIds(values), queryCallback);
+			getToolkitServices().getFolderAndContents(siteSpec, getAnyIds(values), queryCallback);
 		}
 		
 	}

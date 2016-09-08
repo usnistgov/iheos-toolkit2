@@ -130,7 +130,7 @@ public class GetRelatedTab  extends GenericQueryTab {
 			}
 
 			rigForRunning();
-			toolkitService.getRelated(getSiteSelection(), new ObjectRef(uuid.getValue().trim()), assocs, queryCallback);
+			getToolkitServices().getRelated(getSiteSelection(), new ObjectRef(uuid.getValue().trim()), assocs, queryCallback);
 		}
 
 	}

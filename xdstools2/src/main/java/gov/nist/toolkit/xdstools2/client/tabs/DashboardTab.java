@@ -164,7 +164,7 @@ public class DashboardTab  extends GenericQueryTab {
 
 		mainDataArea.clear();
 
-		toolkitService.getDashboardRegistryData(new AsyncCallback<List<RegistryStatus>>() {
+		getToolkitServices().getDashboardRegistryData(new AsyncCallback<List<RegistryStatus>>() {
 
 			public void onFailure(Throwable caught) {
 				mainDataArea.add(HtmlMarkup.html(caught.getMessage()));
@@ -180,7 +180,7 @@ public class DashboardTab  extends GenericQueryTab {
 
 		});
 
-		toolkitService.getDashboardRepositoryData(new AsyncCallback<List<RepositoryStatus>>() {
+		getToolkitServices().getDashboardRepositoryData(new AsyncCallback<List<RepositoryStatus>>() {
 
 			public void onFailure(Throwable caught) {
 				mainDataArea.add(HtmlMarkup.html(caught.getMessage()));

@@ -199,7 +199,7 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner, SiteMa
 	// load tab bar with actor types
 	private void loadTestCollections() {
 		// TabBar listing actor types
-		toolkitService.getTestCollections("actorcollections", new AsyncCallback<List<TestCollectionDefinitionDAO>>() {
+		getToolkitServices().getTestCollections("actorcollections", new AsyncCallback<List<TestCollectionDefinitionDAO>>() {
 			@Override
 			public void onFailure(Throwable throwable) { new PopupMessage("getTestCollections: " + throwable.getMessage()); }
 
@@ -220,7 +220,7 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner, SiteMa
 		}
 
 		// what tests are in the collection
-		toolkitService.getCollectionMembers("actorcollections", collectionName, new AsyncCallback<List<String>>() {
+		getToolkitServices().getCollectionMembers("actorcollections", collectionName, new AsyncCallback<List<String>>() {
 
 			public void onFailure(Throwable caught) {
 				new PopupMessage("getTestlogListing: " + caught.getMessage());
@@ -232,7 +232,7 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner, SiteMa
 				for (String testId : testIds) testInstances.add(new TestInstance(testId));
 
 				// results (including logs) for a collection of tests
-				toolkitService.getTestsOverview(getCurrentTestSession(), testInstances, new AsyncCallback<List<TestOverviewDTO>>() {
+				getToolkitServices().getTestsOverview(getCurrentTestSession(), testInstances, new AsyncCallback<List<TestOverviewDTO>>() {
 
 					public void onFailure(Throwable caught) {
 						new PopupMessage("getTestOverview: " + caught.getMessage());
@@ -379,7 +379,7 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner, SiteMa
 		public void onClick(ClickEvent clickEvent) {
 			clickEvent.preventDefault();
 			clickEvent.stopPropagation();
-			toolkitService.deleteSingleTestResult(getCurrentTestSession(), testInstance, new AsyncCallback<TestOverviewDTO>() {
+			getToolkitServices().deleteSingleTestResult(getCurrentTestSession(), testInstance, new AsyncCallback<TestOverviewDTO>() {
 				@Override
 				public void onFailure(Throwable throwable) {
 					new PopupMessage(throwable.getMessage());
@@ -412,7 +412,7 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner, SiteMa
 	}
 
 	private void displayInspectorTab(List<TestInstance> testInstances) {
-		toolkitService.getTestResults(testInstances, getCurrentTestSession(), new AsyncCallback<Map<String, Result>>() {
+		getToolkitServices().getTestResults(testInstances, getCurrentTestSession(), new AsyncCallback<Map<String, Result>>() {
             @Override
             public void onFailure(Throwable throwable) {
                 new PopupMessage(throwable.getMessage());
@@ -444,7 +444,7 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner, SiteMa
 		parms.put("$patientid$", "P20160803215512.2^^^&1.3.6.1.4.1.21367.2005.13.20.1000&ISO");
 
 		try {
-			toolkitService.runTest(getEnvironmentSelection(), getCurrentTestSession(), new SiteSpec(currentSiteName), testInstance, parms, true, new AsyncCallback<TestOverviewDTO>() {
+			getToolkitServices().runTest(getEnvironmentSelection(), getCurrentTestSession(), new SiteSpec(currentSiteName), testInstance, parms, true, new AsyncCallback<TestOverviewDTO>() {
 				@Override
 				public void onFailure(Throwable throwable) {
 					new PopupMessage(throwable.getMessage());
