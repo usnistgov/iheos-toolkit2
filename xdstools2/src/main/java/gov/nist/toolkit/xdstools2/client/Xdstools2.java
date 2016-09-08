@@ -192,6 +192,18 @@ public class Xdstools2  implements AcceptsOneWidget, IsWidget {
 				getTestSessionManager().setTestSessions(var1.getTestSessions());
 				run2();  // cannot be run until this completes
 			}
+
+			// this is included because even if init fails (bad EC location for example)
+			// startup must continue
+			@Override
+			public void onFailure(Throwable throwable) {
+				String msg = throwable.getMessage();
+				if (msg == null)
+					msg = this.getClass().getName();
+				new PopupMessage("Request to server failed: " + msg);
+
+				run2();  // cannot be run until this completes
+			}
 		}.run(getHomeTab().getCommandContext());  // command context will be ignored by this cmd
 	}
 

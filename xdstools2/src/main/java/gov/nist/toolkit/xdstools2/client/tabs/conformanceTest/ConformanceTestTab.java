@@ -183,7 +183,7 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner, SiteMa
 		toolkitService.getSite(site, new AsyncCallback<Site>() {
 			@Override
 			public void onFailure(Throwable throwable) {
-				new PopupMessage("getSiteName threw error: " + throwable.getMessage());
+//				new PopupMessage("getSiteName threw error: " + throwable.getMessage());
 			}
 
 			@Override
@@ -517,7 +517,11 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner, SiteMa
 	// if testInstance contains a sectionName then run that section, otherwise run entire test.
 	public void runTest(final TestInstance testInstance) {
 		Map<String, String> parms = new HashMap<>();
-		parms.put("$patientid$", repOrchestrationResponse.getPid().asString());
+		if (repOrchestrationResponse != null) {
+			parms.put("$patientid$", repOrchestrationResponse.getPid().asString());
+		} else {
+			parms.put("$patientid$", "P20160907182617.2^^^&1.3.6.1.4.1.21367.2005.13.20.1000&ISO");
+		}
 
 		try {
 			// Site is support site since it has the supporting Registry sim and as part of orchestration we added
