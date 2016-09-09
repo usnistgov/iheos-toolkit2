@@ -1,13 +1,11 @@
 package gov.nist.toolkit.adt;
 
 
+import gov.nist.toolkit.utilities.io.Io;
 import gov.nist.toolkit.xdsexception.ExceptionUtil;
 import org.apache.log4j.Logger;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.io.PrintWriter;
+import java.io.*;
 import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
@@ -163,8 +161,14 @@ public class AdtSocketListener implements Runnable{
                 }
                 if(sendError == true)
                     writer.write(message.getNack());
-                else
-                    writer.write(message.getAck());
+                else {
+                    writer.write(0x0b);
+                    String adtAckString = new A01Sender().getClass().getResource("/adt/ACK.txt").getFile();
+                    writer.write(Io.stringFromFile(new File(adtAckString)).toCharArray());
+                    writer.write(0x1c);
+                    writer.write(0x0d);
+                    //writer.write(message.getAck());
+                }
                 writer.flush();
                 socket.shutdownOutput();
                 socket.close();
