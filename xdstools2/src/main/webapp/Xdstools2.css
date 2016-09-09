@@ -181,4 +181,30 @@ h3 {
   /*right: 0px;*/
 }
 
+.gwt-TabBarItem { /* folder-type rounded tab edges */
+  border-top-left-radius: .7em;
+  border-top-right-radius: .7em;
+}
+
+.roundedButton2 {
+  border-radius:32px;
+  border:1px solid #bbb;
+  text-decoration:none;
+  font-family:monospace;
+  font-size:default;
+  background:#f5f5f5;
+  padding:1px 3px;
+  color:#4B00FF;
+}
+
+.gwt-TabBar {
+  border-bottom: 3px solid #92C1F0;
+}
+
+.gwt-TabBarItem-selected {
+  border-top-left-radius: .75em;
+  border-top-right-radius: .75em;
+  outline:none !important;
+}
+
 
