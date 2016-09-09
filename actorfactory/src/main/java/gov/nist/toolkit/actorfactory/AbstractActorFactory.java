@@ -125,7 +125,7 @@ public abstract class AbstractActorFactory {
 		ele.name = name;
 		ele.type = ParamType.TEXT;
 		ele.setValue(sc.getId().toString());
-		addUser(sc, ele);
+		addFixed(sc, ele);
 
         addEditableConfig(sc, SimulatorProperties.FORCE_FAULT, ParamType.BOOLEAN, false);
 		addFixedConfig(sc, SimulatorProperties.environment, ParamType.TEXT, "null");
@@ -494,6 +494,15 @@ public abstract class AbstractActorFactory {
 		ele.type = ParamType.ENDPOINT;
 		ele.transType = transactionType;
 		ele.setValue(mkEndpoint(sc, ele, actorType.getShortName(), tls));
+		addUser(sc, ele);
+	}
+
+	public void addEditableNullEndpoint(SimulatorConfig sc, String endpointName, ActorType actorType, TransactionType transactionType, boolean tls) {
+		SimulatorConfigElement ele = new SimulatorConfigElement();
+		ele.name = endpointName;
+		ele.type = ParamType.ENDPOINT;
+		ele.transType = transactionType;
+		ele.setValue("");
 		addUser(sc, ele);
 	}
 
