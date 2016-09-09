@@ -4,7 +4,7 @@
 package gov.nist.toolkit.testengine.transactions;
 
 import java.io.ByteArrayInputStream;
-import java.io.File;
+import java.nio.file.Paths;
 import java.util.*;
 import java.util.Map.Entry;
 
@@ -13,16 +13,21 @@ import org.apache.commons.lang.StringEscapeUtils;
 import org.dcm4che3.data.Attributes;
 import org.dcm4che3.data.Tag;
 import org.dcm4che3.io.DicomInputStream;
-import org.w3c.dom.Element;
-import org.w3c.dom.NodeList;
 
+import gov.nist.toolkit.actorfactory.client.SimId;
+import gov.nist.toolkit.actortransaction.client.ActorType;
+import gov.nist.toolkit.configDatatypes.client.TransactionType;
 import gov.nist.toolkit.registrymsg.repository.Mtom;
+import gov.nist.toolkit.results.client.TestInstance;
 import gov.nist.toolkit.testengine.assertionEngine.Assertion;
 import gov.nist.toolkit.testengine.assertionEngine.AssertionEngine;
 import gov.nist.toolkit.testengine.engine.*;
 import gov.nist.toolkit.utilities.xml.XmlUtil;
 import gov.nist.toolkit.xdsexception.client.MetadataException;
 import gov.nist.toolkit.xdsexception.client.XdsInternalException;
+
+import edu.wustl.mir.erl.ihe.xdsi.validation.Results;
+import edu.wustl.mir.erl.ihe.xdsi.validation.TestRAD68;
 
 /**
  * Handles Image detail validations
@@ -45,6 +50,10 @@ public class ImgDetailTransaction extends BasicTransaction {
       tagMap.put("PatientSex", Tag.PatientSex);
       tagMap.put("StudyInstanceUID", Tag.StudyInstanceUID);
       tagMap.put("SeriesInstanceUID", Tag.SeriesInstanceUID);
+      tagMap.put("AccessionNumber", Tag.AccessionNumber);
+      tagMap.put("Modality", Tag.Modality);
+      tagMap.put("PatientName", Tag.PatientName);
+      tagMap.put("ContentSequence", Tag.ContentSequence);
    }
 
    /**
@@ -156,7 +165,7 @@ public class ImgDetailTransaction extends BasicTransaction {
             }
             break;
          /*
-          * Matches DICOM tag values in returned images to standard   
+          * Matches DICOM tag values in returned images to standard
           */
          case "sameDcmImgs":
             try {
@@ -165,16 +174,16 @@ public class ImgDetailTransaction extends BasicTransaction {
                String t = std.getLocalName();
                if (t.endsWith("RetrieveDocumentSetResponse") == false)
                   throw new XdsInternalException("sameDcmImgs assertion only applies to RetrieveDocumentSetResponse");
-               
+
                // Load tags for std documents
-               Map <String, Map<String, String>> stdImgs = new HashMap<>();
-               Iterator<?> docRespEles = std.getChildrenWithLocalName("DocumentResponse");
+               Map <String, Map <String, String>> stdImgs = new HashMap <>();
+               Iterator <?> docRespEles = std.getChildrenWithLocalName("DocumentResponse");
                while (docRespEles.hasNext()) {
                   OMElement docRespEle = (OMElement) docRespEles.next();
                   String docUID = XmlUtil.onlyChildWithLocalName(docRespEle, "DocumentUniqueId").getText();
                   OMElement docEle = XmlUtil.onlyChildWithLocalName(docRespEle, "Document");
-                  Map<String, String> imgTags = new HashMap<>();
-                  Iterator<?> tagEles = docEle.getChildElements();
+                  Map <String, String> imgTags = new HashMap <>();
+                  Iterator <?> tagEles = docEle.getChildElements();
                   while (tagEles.hasNext()) {
                      OMElement tagEle = (OMElement) tagEles.next();
                      String tagName = tagEle.getLocalName();
@@ -187,14 +196,14 @@ public class ImgDetailTransaction extends BasicTransaction {
                   if (stdImgs.put(docUID, imgTags) != null)
                      throw new XdsInternalException("sameDcmImgs error: duplicate DocumentUniqueId " + docUID);
                }
-               
+
                // load tags for test documents which exist in standard
-               Map<String, Map<String, String>> testImgs = new HashMap<>();
+               Map <String, Map <String, String>> testImgs = new HashMap <>();
                docRespEles = test.getChildrenWithLocalName("DocumentResponse");
                while (docRespEles.hasNext()) {
                   OMElement docRespEle = (OMElement) docRespEles.next();
                   String docUID = XmlUtil.onlyChildWithLocalName(docRespEle, "DocumentUniqueId").getText();
-                  Map<String, String> stdTags = stdImgs.get(docUID);
+                  Map <String, String> stdTags = stdImgs.get(docUID);
                   if (stdTags == null) {
                      store(engine, CAT.ERROR, "test doc UID " + docUID + ", not found in standard.");
                      continue;
@@ -204,26 +213,27 @@ public class ImgDetailTransaction extends BasicTransaction {
                   mtom.decode(docEle);
                   DicomInputStream din = new DicomInputStream(new ByteArrayInputStream(mtom.getContents()));
                   Attributes attributes = din.readDataset(-1, Tag.PixelData);
-                  din.close(); din = null;
-                  Map<String, String> testTags = new HashMap<>();
+                  din.close();
+                  din = null;
+                  Map <String, String> testTags = new HashMap <>();
                   for (String stdTag : stdTags.keySet()) {
                      int tag = tagMap.get(stdTag);
                      testTags.put(stdTag, attributes.getString(tag, null));
                   }
                   testImgs.put(docUID, testTags);
                }
-               
+
                // Now pass std images, matching against test
                for (String stdDocUID : stdImgs.keySet()) {
-                  Map<String, String> testTags = testImgs.get(stdDocUID);
+                  Map <String, String> testTags = testImgs.get(stdDocUID);
                   if (testTags == null) {
                      store(engine, CAT.ERROR, "std doc UID " + stdDocUID + ", not found in test.");
                      continue;
                   }
-                  Map<String, String> stdTags = stdImgs.get(stdDocUID);
+                  Map <String, String> stdTags = stdImgs.get(stdDocUID);
                   // First pass through tags, one success msg if all match.
                   boolean mismatchFound = false;
-                  for ( Entry <String, String> stdTag : stdTags.entrySet()) {
+                  for (Entry <String, String> stdTag : stdTags.entrySet()) {
                      String testValue = testTags.get(stdTag.getKey());
                      if (stdTag.getValue().equals(testValue) == false) {
                         mismatchFound = true;
@@ -231,11 +241,12 @@ public class ImgDetailTransaction extends BasicTransaction {
                      }
                   }
                   if (mismatchFound == false) {
-                     store(engine, CAT.SUCCESS, "test img UID " + stdDocUID + " found in standard, all tag values match");
+                     store(engine, CAT.SUCCESS,
+                        "test img UID " + stdDocUID + " found in standard, all tag values match");
                      continue;
                   }
                   // mismatch found; second pass generates messages for each tag
-                  for ( Entry <String, String> stdTag : stdTags.entrySet()) {
+                  for (Entry <String, String> stdTag : stdTags.entrySet()) {
                      String em = "std doc UID " + stdDocUID + " found in test, " + stdTag.getKey() + " ";
                      String testValue = testTags.get(stdTag.getKey());
                      if (stdTag.getValue().equals(testValue)) {
@@ -250,8 +261,52 @@ public class ImgDetailTransaction extends BasicTransaction {
                throw new XdsInternalException("sameRetImgs error: " + e.getMessage());
             }
             break;
+         // Matches values in KON to standard. Used on PnR transactions
+         case "sameKONDcm":
+            try {
+               // pfn of std KON.dcm
+               String stdDcmPfn = Paths.get(testConfig.testplanDir.getAbsolutePath(), a.xpath).toString();
+               TestInstance ti = testConfig.testInstance; 
+               SimId simId = new SimId(ti.getUser(), "rep_reg", ActorType.REPOSITORY.getShortName(), "xdsi");
+               
+               SimulatorTransaction simulatorTransaction =
+                  SimulatorTransaction.get(simId, TransactionType.PROVIDE_AND_REGISTER, null, null);
+               simulatorTransaction.setStdPfn(stdDcmPfn);
+               TestRAD68 testInstance = new TestRAD68();
+               testInstance.initializeTest(a.process, simulatorTransaction);
+               testInstance.runTest();
+               Results results = testInstance.getResults(a.process);
+               String rep = results.toString();
+               CAT cat = CAT.SUCCESS;
+               if (results.getErrorCount() > 0) cat = CAT.ERROR;
+               store(engine, cat, rep);
+            } catch (Exception e) {
+               throw new XdsInternalException("ImgDetailTransaction - sameKONDcm: " + e.getMessage());
+            }
+            break;
+         case "sameKONMetadata":try {
+            // pfn of std metadata
+            String stdMetadataPfn = Paths.get(testConfig.testplanDir.getAbsolutePath(), a.xpath).toString();
+            TestInstance ti = testConfig.testInstance; 
+            SimId simId = new SimId(ti.getUser(), "rep_reg", ActorType.REPOSITORY.getShortName(), "xdsi");
+            
+            SimulatorTransaction simulatorTransaction =
+               SimulatorTransaction.get(simId, TransactionType.PROVIDE_AND_REGISTER, null, null);
+            simulatorTransaction.setStdPfn(stdMetadataPfn);
+            TestRAD68 testInstance = new TestRAD68();
+            testInstance.initializeTest(a.process, simulatorTransaction);
+            testInstance.runTest();
+            Results results = testInstance.getResults(a.process);
+            String rep = results.toString();
+            CAT cat = CAT.SUCCESS;
+            if (results.getErrorCount() > 0) cat = CAT.ERROR;
+            store(engine, cat, rep);
+         } catch (Exception e) {
+            throw new XdsInternalException("ImgDetailTransaction - sameKONDcm: " + e.getMessage());
+         }
+            break;
          default:
-            throw new XdsInternalException("XmlDetailTransaction: Unknown assertion.process " + a.process);
+            throw new XdsInternalException("ImgDetailTransaction: Unknown assertion.process " + a.process);
       }
       if (errs.isEmpty() == false) {
          StringBuilder em = new StringBuilder();
@@ -262,7 +317,7 @@ public class ImgDetailTransaction extends BasicTransaction {
          testLogger.add_name_value_with_id(assertion_output, "AssertionStatus", a.id, "fail");
          s_ctx.fail(em.toString());
       }
-   }
+   } // EO processAssertion method
 
    private Map <String, RetImg> loadRetImgs(AssertionEngine engine, Assertion a, OMElement msg) {
       Map <String, RetImg> imgs = new LinkedHashMap <>();
@@ -359,8 +414,7 @@ public class ImgDetailTransaction extends BasicTransaction {
    private void store(AssertionEngine e, CAT cat, String msg) {
       if (cat == CAT.SILENT) return;
       e.addDetail(cat.name() + " " + msg);
-      if (cat == CAT.ERROR) 
-         errs.add(cat.name() + " " + msg);
+      if (cat == CAT.ERROR) errs.add(cat.name() + " " + msg);
    }
 
    /*

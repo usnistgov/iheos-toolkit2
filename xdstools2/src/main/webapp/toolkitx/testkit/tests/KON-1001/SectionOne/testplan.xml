@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<TestPlan>
+	<!-- Data for this test is loaded by xxxx -->
+	<Test>kon-1001/SectionOne</Test>
+	<TestStep id="konValidate">
+		<Goal>Validate KON sent to Repository simulator</Goal>
+		<ExpectedStatus>Success</ExpectedStatus>
+		<ImgDetailTransaction>
+			<Assertions>
+            <Assert id="Submitted Metadata" process="sameKONMetadata">metadata.xml</Assert>
+				<!--  <Assert id="Submitted KON" process="sameKONDcm">kon.dcm</Assert> -->
+			</Assertions>
+		</ImgDetailTransaction>
+	</TestStep>
+
+</TestPlan>

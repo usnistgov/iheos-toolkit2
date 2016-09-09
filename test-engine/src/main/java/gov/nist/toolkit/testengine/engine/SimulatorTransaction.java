@@ -3,11 +3,16 @@
  */
 package gov.nist.toolkit.testengine.engine;
 
+import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import org.apache.commons.lang3.StringUtils;
+
+import gov.nist.toolkit.actorfactory.client.SimId;
 import gov.nist.toolkit.actorfactory.client.SimulatorConfig;
 import gov.nist.toolkit.configDatatypes.client.TransactionType;
 import gov.nist.toolkit.installation.Installation;
@@ -15,7 +20,9 @@ import gov.nist.toolkit.installation.PropertyManager;
 import gov.nist.toolkit.installation.PropertyServiceManager;
 import gov.nist.toolkit.xdsexception.client.XdsInternalException;
 
+import edu.wustl.mir.erl.ihe.xdsi.util.PfnType;
 import edu.wustl.mir.erl.ihe.xdsi.util.PrsSimLogs;
+import edu.wustl.mir.erl.ihe.xdsi.util.Utility;
 
 /**
  * Used to retrieve results of a transaction previously sent to a simulator
@@ -25,12 +32,8 @@ import edu.wustl.mir.erl.ihe.xdsi.util.PrsSimLogs;
  *
  */
 public class SimulatorTransaction {
-   
-   private static Installation installation = Installation.installation();
-   private static PropertyServiceManager propertyServiceManager = installation.propertyServiceManager();
-   private static PropertyManager propertyManager = propertyServiceManager.getPropertyManager();
       
-   private SimulatorConfig simulatorConfig;
+   private SimId simId;
    private TransactionType transactionType;
    private String pid;
    private Date timeStamp;
@@ -42,32 +45,30 @@ public class SimulatorTransaction {
    private String responseHeader;
    private String requestBody;
    private String responseBody;
+   private String metadata;
    private List<String> pfns = new ArrayList<>();
+   private String stdPfn;
    
-   private SimulatorTransaction(SimulatorConfig simConfig, 
-      TransactionType transactionType, String pid, Date timeStamp) {
-      this.simulatorConfig = simConfig;
+   private SimulatorTransaction(SimId simId, TransactionType transactionType, String pid, Date timeStamp) {
+      this.simId = simId;
       this.transactionType = transactionType;
       this.pid = pid;
       this.timeStamp = timeStamp;
    }
    
-   
    /**
-    * @return the {@link #simulatorConfig} value.
+    * @return the {@link #simId} value.
     */
-   public SimulatorConfig getSimulatorConfig() {
-      return simulatorConfig;
+   public SimId getSimId() {
+      return simId;
    }
 
-
    /**
-    * @param simulatorConfig the {@link #simulatorConfig} to set
+    * @param simId the {@link #simId} to set
     */
-   public void setSimulatorConfig(SimulatorConfig simulatorConfig) {
-      this.simulatorConfig = simulatorConfig;
+   public void setSimId(SimId simId) {
+      this.simId = simId;
    }
-
 
    /**
     * @return the {@link #transactionType} value.
@@ -229,6 +230,23 @@ public class SimulatorTransaction {
    public void setResponseBody(String responseBody) {
       this.responseBody = responseBody;
    }
+   
+
+   /**
+    * @return the {@link #metadata} value.
+    */
+   public String getMetadata() {
+      return metadata;
+   }
+
+
+   /**
+    * @param metadata the {@link #metadata} to set
+    */
+   public void setMetadata(String metadata) {
+      this.metadata = metadata;
+   }
+
 
    /**
     * @return the {@link #pfns} value.
@@ -243,10 +261,24 @@ public class SimulatorTransaction {
    public void setPfns(List <String> pfns) {
       this.pfns = pfns;
    }
+   
+   /**
+    * @return the {@link #stdPfn} value.
+    */
+   public String getStdPfn() {
+      return stdPfn;
+   }
+
+   /**
+    * @param stdPfn the {@link #stdPfn} to set
+    */
+   public void setStdPfn(String stdPfn) {
+      this.stdPfn = stdPfn;
+   }
 
    /**
     * Generates instance of this class for specified simulator transaction.
-    * @param simConfig for the simulator which received the transaction
+    * @param simId for the simulator which received the transaction. Must exist.
     * @param transactionType TransactionType value we are looking for. For 
     * example {@link TransactionType#PROVIDE_AND_REGISTER}.
     * @param pid <u>Complete</u> patient id if transaction is for a particular
@@ -259,15 +291,46 @@ public class SimulatorTransaction {
     * @throws XdsInternalException on error, such as: no such simulator, no
     * transaction matching parameters, and so on.
     */
-   public static SimulatorTransaction get(SimulatorConfig simConfig, 
+   public static SimulatorTransaction get(SimId simId, 
       TransactionType transactionType, String pid, Date timeStamp) 
       throws XdsInternalException {
       try {
-         SimulatorTransaction trn = new SimulatorTransaction(simConfig, 
-            transactionType, pid, timeStamp);
+         // Verify that simId represents an existing file
+         Installation installation = Installation.installation();
+         PropertyServiceManager propertyServiceManager = installation.propertyServiceManager();
+         PropertyManager propertyManager = propertyServiceManager.getPropertyManager();
+         String cache = propertyManager.getExternalCache();
+         String name = simId.toString();
+         Path simPath = Paths.get(cache, "simdb", name);
+         Utility.isValidPfn("simulator " + name,  simPath, PfnType.DIRECTORY, "r");
+         
+         // Load simulator type
+         String actorType = new String(Files.readAllBytes(simPath.resolve("sim_type.txt"))).trim();
+         String requestedActorType = StringUtils.trimToEmpty(simId.getActorType());
+         switch (requestedActorType) {
+            // No requested actor type; use whatever type is there.
+            case "":
+               simId.setActorType(actorType);
+               break;
+            // repository/registry OK for requested repository or registry.
+            case "rep":
+            case "reg":
+               if (actorType.equalsIgnoreCase("rr")) break;
+            // All other types much match
+            //$FALL-THROUGH$
+            default:
+               if (actorType.equalsIgnoreCase(requestedActorType)) break;
+               String em = simId.toString() + " is actor type " + actorType +
+                  ". actor type " + requestedActorType + " expected.";
+               throw new Exception(em);
+         }
+         
+         // Create instance and load transaction
+         SimulatorTransaction trn = 
+            new SimulatorTransaction(simId, transactionType, pid, timeStamp);
          PrsSimLogs.loadTransaction(trn);
-      
-      return null;
+         
+         return trn;
       } catch (Exception e) {
          throw new XdsInternalException("SimulatorTransaction.get error: " + 
             e.getMessage());

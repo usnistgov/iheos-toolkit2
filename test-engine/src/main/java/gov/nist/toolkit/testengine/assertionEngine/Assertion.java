@@ -18,7 +18,7 @@ public class Assertion {
 	/**
 	 * String assertion xpath expression
 	 */
-	String xpath;
+	public String xpath;
 
 	Assertion(String id, String xpath, TestConfig testConfig) {
 		this.id = id;

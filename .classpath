@@ -138,7 +138,6 @@
 	<classpathentry combineaccessrules="false" kind="src" path="/docref"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/dsig"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/envSettings"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/erl-ihe-xdsi"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/error-recording"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/grizzly-support"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/http"/>

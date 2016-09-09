@@ -354,6 +354,7 @@ public class StepContext extends BasicContext implements ErrorReportingInterface
                case "ImagingDocSetIigRetrieveTransaction":
                   transaction = new IDSRetrieveTransaction(this, instruction, instruction_output, true);
                   break;
+               case "ImgDetailTransaction":
                case "XmlDetailTransaction":
                   transaction = new ImgDetailTransaction(this, step, instruction, instruction_output);
                   break;

@@ -17,6 +17,7 @@ import org.apache.log4j.Logger;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
+import gov.nist.toolkit.actorfactory.client.SimId;
 import gov.nist.toolkit.actorfactory.client.SimulatorConfig;
 import gov.nist.toolkit.installation.Installation;
 import gov.nist.toolkit.installation.PropertyManager;
@@ -71,8 +72,10 @@ public class PrsSimLogs {
     */
    public static void loadTransaction(SimulatorTransaction trn) throws Exception {
       
-      Path path = getTransactionLogDirectoryPath(trn.getSimulatorConfig(), 
-         trn.getTransactionType().getCode(), trn.getPid(), trn.getTimeStamp());
+      Path path = getTransactionLogDirectoryPath(trn.getSimId(), 
+         trn.getTransactionType().getShortName(), trn.getPid(), trn.getTimeStamp());
+      if (path == null)
+         throw new Exception("No valid transactions for " + trn.getSimId());
       trn.setLogDirPath(path);
       
       // SOAP Request
@@ -80,6 +83,7 @@ public class PrsSimLogs {
       try {
          soapRequest = getSOAPRequest(path);
          trn.setRequest(soapRequest);
+         trn.setMetadata(getSOAPMetaData(soapRequest));
          try {
             Element reqElement = XmlUtil.strToElement(soapRequest);
             String env = reqElement.getLocalName();
@@ -175,7 +179,10 @@ public class PrsSimLogs {
       }
       
       Path repDir = path.resolve("Repository");
-      trn.setPfns(Arrays.asList(repDir.toFile().list()));
+      List<String> pfns = new ArrayList<>();
+      for (String name : repDir.toFile().list())
+         pfns.add(repDir.resolve(name).toString());
+      trn.setPfns(pfns);
       
    } // EO getSOAPComponents
 
@@ -254,6 +261,36 @@ public class PrsSimLogs {
          String tag = "SubmitObjectsRequest";
          String str = getSOAPRequest(dir);
          int p = str.indexOf(tag);
+         if (p < 0) {
+            log.debug("getSOAPMetaData: No SubmitObjectsRequest element found");
+            return null;
+         }
+         while (str.substring(p).startsWith("<") == false)
+            p-- ;
+         str = str.substring(p);
+         p = str.lastIndexOf(tag);
+         while (str.substring(p).startsWith(">") == false)
+            p++ ;
+         str = str.substring(0, p + 1);
+         return str;
+      } catch (Exception e) {
+         e.printStackTrace();
+      }
+      return null;
+   }
+
+   /**
+    * Get SubmitObjectsRequest element from SOAP Request string
+    * 
+    * @param str SOAP Request xml string
+    * @return xml SubmitObjectsRequest element and contents.
+    */
+   public static String getSOAPMetaData(String str) {
+      if (str == null) return null;
+      try {
+         String tag = "SubmitObjectsRequest";
+         int p = str.indexOf(tag);
+         if (p < 0) return null;
          while (str.substring(p).startsWith("<") == false)
             p-- ;
          str = str.substring(p);
@@ -271,7 +308,7 @@ public class PrsSimLogs {
    /**
     * Gets the Path of the log directory for a specific transaction.
     * 
-    * @param simConfig for the simulator which received the transaction.
+    * @param simId for the simulator which received the transaction.
     * @param transactionCode the xtools transaction code, for example "prb" for
     * "provide and register". Default is "prb".
     * @param pid the Patient ID. If not null, only transactions for this patient
@@ -283,11 +320,11 @@ public class PrsSimLogs {
     * there are no transactions or that all transactions were logged before the
     * passed time (probably an error).
     */
-   public static Path getTransactionLogDirectoryPath(SimulatorConfig simConfig, 
+   public static Path getTransactionLogDirectoryPath(SimId simId, 
       String transactionCode, String pid, Date timeOfTransaction) {
       try {
-         String simulatorName = simConfig.getId().toString();
-         String simulatorType = simConfig.getActorType();
+         String simulatorName = simId.toString();
+         String simulatorType = simId.getActorType();
          FilenameFilter filter = new PidDateFilenameFilter(pid, timeOfTransaction);
          if (StringUtils.isBlank(transactionCode)) transactionCode = "prb";
          Path base = Paths.get(externalCache, "simdb", simulatorName, simulatorType, transactionCode);
@@ -349,6 +386,9 @@ public class PrsSimLogs {
     * 
     * @param args arguments
     */
+   public static void main(String[] args) {
+      throw new UnsupportedOperationException("PrsSmLogs#main");
+   }
 //   public static void main(String[] args) {
 //      try {
 //         xdsiPath = Paths.get(Utility.getXDSIRoot());

@@ -27,7 +27,7 @@ class IdsOrchestrationBuilder {
    static Logger log = Logger.getLogger(IdsOrchestrationBuilder.class);   
 
    static final String sutSimulatorName = "simulator_ids";
-   static final String rrSimulatorName = "reg_rep";
+   public static final String rrSimulatorName = "rep_reg";
    
     Session session;
     IdsOrchestrationRequest request;
@@ -94,7 +94,8 @@ class IdsOrchestrationBuilder {
               new SimulatorConfigElement(SimulatorProperties.idsRepositoryUniqueId, ParamType.TEXT, "1.3.6.1.4.1.21367.13.71.101"),
               new SimulatorConfigElement(SimulatorProperties.idsImageCache, ParamType.TEXT, "ids-community-A")}),
            
-           reg_rep ("Repository Registry", ActorType.REPOSITORY_REGISTRY, new SimulatorConfigElement[] {
+           rep_reg ("Repository Registry", ActorType.REPOSITORY_REGISTRY, new SimulatorConfigElement[] {
+              new SimulatorConfigElement(SimulatorProperties.VALIDATE_AGAINST_PATIENT_IDENTITY_FEED, ParamType.BOOLEAN, false),
               new SimulatorConfigElement(SimulatorProperties.repositoryUniqueId, ParamType.TEXT, "1.3.6.1.4.1.21367.13.71.101.1")}),
            
            idc ("Imaging Document Consumer", ActorType.IMAGING_DOC_CONSUMER, new SimulatorConfigElement[] {
