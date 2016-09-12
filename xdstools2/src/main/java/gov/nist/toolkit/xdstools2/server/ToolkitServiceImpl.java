@@ -57,6 +57,7 @@ import gov.nist.toolkit.valregmsg.validation.factories.CommonMessageValidatorFac
 import gov.nist.toolkit.valsupport.client.MessageValidationResults;
 import gov.nist.toolkit.valsupport.client.ValidationContext;
 import gov.nist.toolkit.xdsexception.ExceptionUtil;
+import gov.nist.toolkit.xdsexception.client.EnvironmentNotSelectedException;
 import gov.nist.toolkit.xdstools2.client.NoServletSessionException;
 import gov.nist.toolkit.xdstools2.client.RegistryStatus;
 import gov.nist.toolkit.xdstools2.client.RepositoryStatus;
@@ -468,7 +469,7 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements
 //		installCommandContext(context);  // not needed - may not be initialized
 		return session().getEnvironmentNames();
 	}
-	public String setEnvironment(String name) throws NoServletSessionException {
+	public String setEnvironment(String name) throws NoServletSessionException, EnvironmentNotSelectedException {
 		logger.info("set environment - " + name);
 		session().setEnvironment(name); return name;
 	}
