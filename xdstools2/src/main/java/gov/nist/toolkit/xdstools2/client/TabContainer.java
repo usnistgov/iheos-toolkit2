@@ -6,7 +6,13 @@ import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.logical.shared.SelectionEvent;
 import com.google.gwt.event.logical.shared.SelectionHandler;
 import com.google.gwt.user.client.Window;
-import com.google.gwt.user.client.ui.*;
+import com.google.gwt.user.client.ui.Anchor;
+import com.google.gwt.user.client.ui.DeckLayoutPanel;
+import com.google.gwt.user.client.ui.DockLayoutPanel;
+import com.google.gwt.user.client.ui.HTML;
+import com.google.gwt.user.client.ui.HorizontalPanel;
+import com.google.gwt.user.client.ui.TabBar;
+import com.google.gwt.user.client.ui.Widget;
 import gov.nist.toolkit.xdstools2.client.event.tabContainer.V2TabOpenedEvent;
 
 import java.util.ArrayList;
@@ -25,16 +31,19 @@ public class TabContainer {
 
 	private static TabBar TABBAR = new TabBar();
 
-//	// this hosts one element from deck at a time
-	private static SimpleLayoutPanel INNERPANEL = new SimpleLayoutPanel();
+//	// this hosts one element from deck at a time -- PROBLEM: the scroll position is lost since SimpleLayoutPanel can only hold one widget and it is reset everytime a new tab is selected.
+//	private static SimpleLayoutPanel INNERPANEL = new SimpleLayoutPanel();
+
+	private static DeckLayoutPanel INNER_DECKPANEL = new DeckLayoutPanel();
 
 	// Each element of TABBAR maps to one element of deck
 	private static List<DockLayoutPanel> deck = new ArrayList<>();
 
 	static {
-		OUTERPANEL.addNorth(TABBAR, 2.0);
-		OUTERPANEL.addNorth(new HTML("<hr style=\"background:#6495ED; border:0; height:5px\" />"), 1.0);
-		OUTERPANEL.add(INNERPANEL);
+		OUTERPANEL.addNorth(TABBAR, 3.0);
+//		OUTERPANEL.addNorth(new HTML("<hr style=\"background:#6495ED; border:0; height:5px\" />"), 1.0);
+		OUTERPANEL.add(INNER_DECKPANEL);
+//		OUTERPANEL.add(INNERPANEL);
 
 		TABBAR.addSelectionHandler(new SelectionHandler<Integer>() {
 			@Override
@@ -56,6 +65,7 @@ public class TabContainer {
      */
 	public void addTab(DockLayoutPanel w, String title, boolean select) {
 		TABBAR.addTab(buildTabHeaderWidget(title, w));
+
 		deck.add(w);
 		TABBAR.selectTab(TABBAR.getTabCount() - 1);
 		selectTab();
@@ -66,7 +76,14 @@ public class TabContainer {
 	}
 
 	public static void selectTab() {
-		INNERPANEL.setWidget(deck.get(TABBAR.getSelectedTab()));
+//		INNERPANEL.setWidget(deck.get(TABBAR.getSelectedTab()));
+
+		Widget dockLp = deck.get(TABBAR.getSelectedTab());
+
+		if (INNER_DECKPANEL.getWidgetIndex(dockLp)==-1) {
+			INNER_DECKPANEL.add(dockLp);
+		}
+		INNER_DECKPANEL.showWidget(dockLp);
 	}
 
 	private void announceOpen(String title) {
@@ -88,12 +105,13 @@ public class TabContainer {
 	private Widget buildTabHeaderWidget(String title, final DockLayoutPanel content) {
 		HorizontalPanel panel = new HorizontalPanel();
 		Anchor x = new Anchor("X");
-		x.setStyleName("roundedButton1");
+		x.setStyleName("roundedButton2");
 		x.addClickHandler(new ClickHandler() {
 			@Override
 			public void onClick(ClickEvent clickEvent) {
 				int i = deck.indexOf(content);
 				deck.remove(i);
+				INNER_DECKPANEL.remove(i);
 				TABBAR.removeTab(i);
 				i = deck.size() - 1;
 				selectTab(i);
@@ -115,8 +133,13 @@ public class TabContainer {
 
 	public static void selectTab(int tabIndex) {
 		TABBAR.selectTab(tabIndex);
+
+		INNER_DECKPANEL.showWidget(tabIndex);
+		/*
 		INNERPANEL.clear();
 		INNERPANEL.add(deck.get(tabIndex));
+		*/
+
 //		TABPANEL.selectTab(tabIndex);
 	}
 

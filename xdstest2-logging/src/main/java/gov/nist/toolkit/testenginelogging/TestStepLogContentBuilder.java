@@ -83,7 +83,8 @@ public class TestStepLogContentBuilder {
 
         }
         parseGoals();
-        parseEndpoint();
+        OMElement endpointEl = parseEndpoint();
+        parseTransaction(endpointEl);
         parseDetails();
         parseErrors();
         parseInHeader();
@@ -208,11 +209,38 @@ public class TestStepLogContentBuilder {
         }
     }
 
-    private void parseEndpoint() {
+    private OMElement parseEndpoint() {
+        OMElement endpointEl = null;
         List<OMElement> endpoints = XmlUtil.decendentsWithLocalName(root, "Endpoint");
-        if (endpoints.isEmpty())
-            return;
-        c.setEndpoint(endpoints.get(0).getText());
+        if (!endpoints.isEmpty()) {
+            endpointEl = endpoints.get(0);
+            c.setEndpoint(endpointEl.getText());
+        }
+        return endpointEl;
+    }
+
+    /**
+     * The transaction element would be the parent of the endpoint (the transaction element does not have a consistent identifier to parse directly).
+     * @param child
+     */
+    private void parseTransaction(OMElement child) {
+        if (child==null) {
+            // Alternative method #2
+            OMElement el = null;
+            List<OMElement> transactions = XmlUtil.descendantsWithLocalNameEndsWith(root, "Transaction");
+            if (!transactions.isEmpty()) {
+                el = transactions.get(0);
+            }
+
+            if (el==null) {
+                c.setTransaction("UnknownTx");
+            } else {
+                c.setTransaction(el.getLocalName());
+            }
+
+        } else { // Method #1
+            c.setTransaction(((OMElement)child.getParent()).getLocalName());
+        }
     }
 
     private void parseGoals() {

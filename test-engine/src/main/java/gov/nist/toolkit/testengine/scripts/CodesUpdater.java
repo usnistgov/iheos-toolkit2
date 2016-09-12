@@ -30,7 +30,7 @@ import java.util.*;
  * Created by oherrmann on 1/11/16.
  */
 public class CodesUpdater {
-    private final static String sections[] = { "tests", "testdata",  "examples"/*, "selftest"*/ };
+    private final static String sections[] = { "tests", "testdata", "testdata-registry","testdata-repository","testdata-xdr","utilities", "examples","xcpd", "selftest"};
 
     private File testkit;
     private AllCodes allCodes=null;
@@ -257,7 +257,7 @@ public class CodesUpdater {
      */
     private List<SQCodeOr.CodeLet> findNonConformingCodes(SqParams params){
         List<SQCodeOr.CodeLet> badCodes = new ArrayList<SQCodeOr.CodeLet>();
-        Map<String,SQCodedTerm> codes=params.getCodedParms();
+        Map<String,Object> codes=params.getCodedParms();
         for (String key:codes.keySet()){
             if (codes.get(key) instanceof SQCodeOr){
                 List<SQCodeOr.CodeLet> codesList=((SQCodeOr) codes.get(key)).getCodeValues();
@@ -275,6 +275,7 @@ public class CodesUpdater {
                         c.setClassificationUUID(classificationUuid);
                         badCodes.add(c);
                     }
+
                 }
             }else if(codes.get(key) instanceof SQCodeAnd){
                 for (SQCodeOr sqCodeOr:((SQCodeAnd) codes.get(key)).codeOrs){

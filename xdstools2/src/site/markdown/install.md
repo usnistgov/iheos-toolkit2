@@ -1,7 +1,7 @@
 # Toolkit Installation #
 
 This tool is downloadable from
-<a href="https://github.com/usnistgov/iheos-toolkit2/releases/latest.html">https://github.com/usnistgov/iheos-toolkit2/releases/latest.html</a>.
+<a href="https://github.com/usnistgov/iheos-toolkit2/releases/latest.html">here</a>.
 Always grab the latest release. The release notes are 
 <a href="http://ihexds.nist.gov/XdsDocs/site/releasenotes/index.html">here</a>.
 

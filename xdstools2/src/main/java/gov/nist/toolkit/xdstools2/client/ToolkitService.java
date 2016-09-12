@@ -28,6 +28,7 @@ import gov.nist.toolkit.testkitutilities.client.TestCollectionDefinitionDAO;
 import gov.nist.toolkit.tk.client.TkProps;
 import gov.nist.toolkit.valsupport.client.MessageValidationResults;
 import gov.nist.toolkit.valsupport.client.ValidationContext;
+import gov.nist.toolkit.xdsexception.client.EnvironmentNotSelectedException;
 import gov.nist.toolkit.xdstools2.client.command.CommandContext;
 import gov.nist.toolkit.xdstools2.client.command.request.GeneratePidRequest;
 import gov.nist.toolkit.xdstools2.client.command.request.GetAllSimConfigsRequest;
@@ -46,8 +47,12 @@ public interface ToolkitService extends RemoteService  {
     TkProps getTkProps() throws NoServletSessionException;
 
 	ConformanceSessionValidationStatus validateConformanceSession(String testSession, String siteName) throws Exception;
+	Collection<String> getSitesForTestSession(String testSession) throws Exception;
 	InitializationResponse getInitialization() throws Exception;
-	
+	String getAssignedSiteForTestSession(String testSession) throws Exception;
+	void setAssignedSiteForTestSession(String testSession, String siteName) throws Exception;
+
+
 	/* Test management */
 	public Map<String, Result> getTestResults(List<TestInstance> testInstances, String testSession) throws NoServletSessionException ;
 	public LogFileContentDTO getTestLogDetails(String sessionName, TestInstance testInstance) throws Exception;
@@ -185,7 +190,7 @@ public interface ToolkitService extends RemoteService  {
 	 String reloadSystemFromGazelle(String systemName) throws Exception;
 	 boolean isGazelleConfigFeedEnabled() throws NoServletSessionException ;
 	 List<String> getEnvironmentNames(CommandContext context) throws Exception;
-	 String setEnvironment(String name) throws NoServletSessionException;
+	 String setEnvironment(String name) throws NoServletSessionException, EnvironmentNotSelectedException;
 	 String getCurrentEnvironment() throws NoServletSessionException;
 	 String getDefaultEnvironment() throws NoServletSessionException ;
 	 String getDefaultAssigningAuthority() throws NoServletSessionException ;
@@ -255,4 +260,6 @@ public interface ToolkitService extends RemoteService  {
 	//------------------------------------------------------------------------
 	//------------------------------------------------------------------------
 	public InteractingEntity getInteractionFromModel(InteractingEntity model) throws Exception;
+
+	String clearTestSession(String testSession) throws Exception;
 }

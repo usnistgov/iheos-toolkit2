@@ -3,8 +3,8 @@ package gov.nist.toolkit.xdstools2.client.tabs.GatewayTestsTabs;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.*;
-import gov.nist.toolkit.actorfactory.client.SimulatorConfig;
 import gov.nist.toolkit.configDatatypes.SimulatorProperties;
+import gov.nist.toolkit.actorfactory.client.SimulatorConfig;
 import gov.nist.toolkit.services.client.IgOrchestrationRequest;
 import gov.nist.toolkit.services.client.IgOrchestrationResponse;
 import gov.nist.toolkit.services.client.RawResponse;
@@ -13,13 +13,12 @@ import gov.nist.toolkit.xdstools2.client.tabs.genericQueryTab.GenericQueryTab;
 import gov.nist.toolkit.xdstools2.client.util.ClientUtils;
 import gov.nist.toolkit.xdstools2.client.widgets.buttons.ReportableButton;
 
-
 /**
  *
  */
 class BuildIGTestOrchestrationButton extends ReportableButton {
     private IGTestTab testTab;
-    boolean includeIG;
+    private boolean includeIG;
 
     BuildIGTestOrchestrationButton(IGTestTab testTab, Panel topPanel, String label, boolean includeIG) {
         super(topPanel, label);

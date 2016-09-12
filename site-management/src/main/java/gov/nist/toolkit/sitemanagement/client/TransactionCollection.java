@@ -19,7 +19,13 @@ public class TransactionCollection implements IsSerializable, Serializable {
 	public String collectionName;    // never really used
 	boolean isRepositories = false; // a TransactionCollection is either for Repositories
 									// or not
-	
+
+	public void mergeIn(TransactionCollection tc) {
+		for (TransactionBean bean : tc.transactions) {
+			transactions.add(bean);
+		}
+	}
+
 	public boolean equals(TransactionCollection tc) {
 		if (tc == null)
 			return false;

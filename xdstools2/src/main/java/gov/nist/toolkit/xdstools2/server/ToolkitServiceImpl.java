@@ -57,6 +57,7 @@ import gov.nist.toolkit.valregmsg.validation.factories.CommonMessageValidatorFac
 import gov.nist.toolkit.valsupport.client.MessageValidationResults;
 import gov.nist.toolkit.valsupport.client.ValidationContext;
 import gov.nist.toolkit.xdsexception.ExceptionUtil;
+import gov.nist.toolkit.xdsexception.client.EnvironmentNotSelectedException;
 import gov.nist.toolkit.xdstools2.client.NoServletSessionException;
 import gov.nist.toolkit.xdstools2.client.RegistryStatus;
 import gov.nist.toolkit.xdstools2.client.RepositoryStatus;
@@ -134,6 +135,16 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements
 		response.setTestSessions(session().xdsTestServiceManager().getMesaTestSessionNames());
 		response.setServletContextName(getServletContextName());
 		return response;
+	}
+
+	@Override
+	public String getAssignedSiteForTestSession(String testSession) throws Exception {
+		return session().xdsTestServiceManager().getAssignedSiteForTestSession(testSession);
+	}
+
+	@Override
+	public void setAssignedSiteForTestSession(String testSession, String siteName) throws Exception {
+		session().xdsTestServiceManager().setAssignedSiteForTestSession(testSession, siteName);
 	}
 
 
@@ -458,7 +469,7 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements
 //		installCommandContext(context);  // not needed - may not be initialized
 		return session().getEnvironmentNames();
 	}
-	public String setEnvironment(String name) throws NoServletSessionException {
+	public String setEnvironment(String name) throws NoServletSessionException, EnvironmentNotSelectedException {
 		logger.info("set environment - " + name);
 		session().setEnvironment(name); return name;
 	}
@@ -503,6 +514,11 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements
 	@Override
 	public ConformanceSessionValidationStatus validateConformanceSession(String testSession, String siteName) throws Exception {
 		return session().xdsTestServiceManager().validateConformanceSession(testSession, siteName);
+	}
+
+	@Override
+	public Collection<String> getSitesForTestSession(String testSession) throws Exception {
+		return session().xdsTestServiceManager().getSitesForTestSession(testSession);
 	}
 
 	public String getDefaultAssigningAuthority()  throws NoServletSessionException { return Installation.installation().propertyServiceManager().getDefaultAssigningAuthority(); }
@@ -835,5 +851,10 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements
 
 
 
+
+	@Override
+	public String clearTestSession(String testSession) throws Exception {
+		return session().xdsTestServiceManager().clearTestSession(testSession);
+	}
 
 }

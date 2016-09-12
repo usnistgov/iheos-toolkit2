@@ -3,6 +3,7 @@ package gov.nist.toolkit.sitemanagement;
 import gov.nist.toolkit.actortransaction.client.ActorType;
 import gov.nist.toolkit.configDatatypes.client.TransactionType;
 import gov.nist.toolkit.sitemanagement.client.Site;
+import gov.nist.toolkit.sitemanagement.client.SiteSpec;
 import gov.nist.toolkit.sitemanagement.client.TransactionBean;
 import gov.nist.toolkit.sitemanagement.client.TransactionBean.RepositoryType;
 import gov.nist.toolkit.sitemanagement.client.TransactionCollection;
@@ -296,5 +297,19 @@ public class Sites {
 		return defaultSiteName;
 	}
 
+	/**
+	 * Site may be linked by orchestration.  If it is return accoring to documentation in Site.java
+	 * @param siteSpec
+	 * @return
+	 */
+	public Site getOrchestrationLinkedSites(SiteSpec siteSpec) throws Exception {
+		if (siteSpec.orchestrationSiteName != null) {
+			Site oSite = getSite(siteSpec.orchestrationSiteName);
+			Site sutSite = getSite(siteSpec.name);
+			oSite.addLinkedSite(sutSite);
+			return oSite;
+		}
+		return getSite(siteSpec.name);
+	}
 
 }

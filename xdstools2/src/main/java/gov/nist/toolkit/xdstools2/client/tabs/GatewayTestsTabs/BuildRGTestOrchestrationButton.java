@@ -15,18 +15,15 @@ import gov.nist.toolkit.xdstools2.client.tabs.genericQueryTab.GenericQueryTab;
 import gov.nist.toolkit.xdstools2.client.util.ClientUtils;
 import gov.nist.toolkit.xdstools2.client.widgets.buttons.ReportableButton;
 
-import java.util.ArrayList;
-import java.util.List;
-
 /**
  *
  */
 class BuildRGTestOrchestrationButton extends ReportableButton {
     private RGTestTab testTab;
-    SiteSpec siteUnderTest;
-    boolean useExposedRR;
-    boolean useSimAsSUT;
-    List<ReportableButton> linkedOrchestrationButtons = new ArrayList<>();
+    private SiteSpec siteUnderTest;
+    private boolean useExposedRR;
+    private boolean useSimAsSUT;
+//    private List<ReportableButton> linkedOrchestrationButtons = new ArrayList<>();
 
     BuildRGTestOrchestrationButton(RGTestTab testTab, Panel topPanel, String label, boolean useSimAsSUT) {
         super(topPanel, label);
@@ -34,9 +31,9 @@ class BuildRGTestOrchestrationButton extends ReportableButton {
         this.useSimAsSUT = useSimAsSUT;
     }
 
-    public void addLinkedOrchestrationButton(ReportableButton orchestrationButton) {
-        linkedOrchestrationButtons.add(orchestrationButton);
-    }
+//    public void addLinkedOrchestrationButton(ReportableButton orchestrationButton) {
+//        linkedOrchestrationButtons.add(orchestrationButton);
+//    }
 
     public void handleClick(ClickEvent event) {
         if (GenericQueryTab.empty(testTab.getCurrentTestSession())) {
@@ -58,9 +55,9 @@ class BuildRGTestOrchestrationButton extends ReportableButton {
         }
 
         // get rid of past reports
-        for (ReportableButton b : linkedOrchestrationButtons) {
-            b.clean();
-        }
+//        for (ReportableButton b : linkedOrchestrationButtons) {
+//            b.clean();
+//        }
 
         RgOrchestrationRequest request = new RgOrchestrationRequest();
         request.setUserName(testTab.getCurrentTestSession());
