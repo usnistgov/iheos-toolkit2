@@ -208,3 +208,15 @@ h3 {
 }
 
 
+/*
+#simConfigTable td  {
+   border: 1px solid black;
+}
+
+#simConfigTable {
+    border-collapse: collapse;
+}*/
+
+#simConfigTable tr:nth-child(even) {background-color: #f2f2f2}
+
+.lavenderTh {font-size:16px; background-color: lavender;}
