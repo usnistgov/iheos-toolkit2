@@ -1,6 +1,8 @@
 package gov.nist.toolkit.itTests.xds.rep
 
+import gov.nist.toolkit.actorfactory.SimManager
 import gov.nist.toolkit.actorfactory.client.SimId
+import gov.nist.toolkit.actorfactory.client.SimulatorConfig
 import gov.nist.toolkit.adt.ListenerFactory
 import gov.nist.toolkit.configDatatypes.SimulatorActorType
 import gov.nist.toolkit.configDatatypes.SimulatorProperties
@@ -11,11 +13,14 @@ import gov.nist.toolkit.services.client.RepOrchestrationRequest
 import gov.nist.toolkit.services.client.RepOrchestrationResponse
 import gov.nist.toolkit.services.server.orchestration.RepOrchestrationBuilder
 import gov.nist.toolkit.session.client.TestOverviewDTO
+import gov.nist.toolkit.sitemanagement.Sites
+import gov.nist.toolkit.sitemanagement.client.Site
 import gov.nist.toolkit.sitemanagement.client.SiteSpec
 import gov.nist.toolkit.testengine.scripts.BuildCollections
 import gov.nist.toolkit.toolkitApi.SimulatorBuilder
 import gov.nist.toolkit.toolkitServicesCommon.SimConfig
 import spock.lang.Shared
+
 /**
  *
  */
@@ -44,11 +49,14 @@ class RepSpec extends ToolkitSpecification {
         if (spi.get(id, testSession))
             spi.delete(id, testSession)
 
+        api.deleteSimulatorIfItExists(simId)
+
         repSimConfig = spi.create(
                 id,
                 testSession,
                 SimulatorActorType.REPOSITORY,
                 envName)
+
         api.createTestSession(testSession)
     }
 
@@ -79,14 +87,21 @@ class RepSpec extends ToolkitSpecification {
 
         when:
         RepOrchestrationResponse response = (RepOrchestrationResponse) rawResponse
+        SimulatorConfig supportConfig = response.regConfig
 
         then: // orchestration completed successfully
         !response.isError()
-        response.regConfig.getConfigEle(SimulatorProperties.registerEndpoint) != null
-        response.regConfig.getConfigEle(SimulatorProperties.storedQueryEndpoint) != null
+        supportConfig.getConfigEle(SimulatorProperties.registerEndpoint) != null
+        supportConfig.getConfigEle(SimulatorProperties.storedQueryEndpoint) != null
 
         when:
         SiteSpec siteSpec = response.repSite
+        siteSpec.orchestrationSiteName = supportConfig.id
+
+        SimManager simManager = new SimManager(api.getSession().id)
+        Sites sites = simManager.getAllSites(new Sites())
+        Site sutSite = sites.getSite(siteSpec.name)
+
         TestInstance testInstance = new TestInstance('12360')
         List<String> sections = []
         Map<String, String> params = new HashMap<>()

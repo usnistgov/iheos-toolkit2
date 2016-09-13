@@ -15,7 +15,8 @@ import gov.nist.toolkit.simcommon.client.config.SimulatorConfigElement
 import gov.nist.toolkit.sitemanagement.client.SiteSpec
 import groovy.transform.TypeChecked
 /**
- *
+ * Build orchestration for testing a Repository.
+ * A Registry sim is built and configured to not validate Register transactions agains PIF.
  */
 @TypeChecked
 class RepOrchestrationBuilder {
@@ -38,7 +39,7 @@ class RepOrchestrationBuilder {
             SimulatorConfig supportSimConfig = null
             RepOrchestrationResponse response = new RepOrchestrationResponse()
 
-            boolean reuse = false
+            boolean reuse = false  // updated as we progress
             supportId = new SimId(request.userName, supportIdName, ActorType.REGISTRY.name, request.environmentName)
             response.repSite = new SiteSpec(request.sutSite.name)
             response.repSite.orchestrationSiteName = supportId.toString()
@@ -65,6 +66,7 @@ class RepOrchestrationBuilder {
 
             // if SUT is simulator and it does not have a Register endpoint, add endpoint from
             // support sim
+            // This is a Integration Test convenience
             SimulatorConfig sutSim = null
             try {
                 sutSim = api.getConfig(new SimId(request.sutSite.name))
@@ -73,9 +75,11 @@ class RepOrchestrationBuilder {
                 // not a sim
             } else {
                 // is a sim
-                if (sutSim.getConfigEle(SimulatorProperties.registerEndpoint) == null) {
+                String registerEndpoint = sutSim.getConfigEle(SimulatorProperties.registerEndpoint).asString()
+                if (registerEndpoint == null || registerEndpoint.equals("")) {
                     // set in endpoint from support site
-                    sutSim.add(new SimulatorConfigElement(SimulatorProperties.registerEndpoint, ParamType.ENDPOINT, supportSimConfig.getConfigEle(SimulatorProperties.registerEndpoint).asString()))
+                    String endpoint = supportSimConfig.getConfigEle(SimulatorProperties.registerEndpoint).asString()
+                    sutSim.add(new SimulatorConfigElement(SimulatorProperties.registerEndpoint, ParamType.ENDPOINT, endpoint))
                     api.saveSimulator(sutSim)
                 }
             }

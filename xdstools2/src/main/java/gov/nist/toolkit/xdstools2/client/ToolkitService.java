@@ -27,6 +27,7 @@ import gov.nist.toolkit.testkitutilities.client.TestCollectionDefinitionDAO;
 import gov.nist.toolkit.tk.client.TkProps;
 import gov.nist.toolkit.valsupport.client.MessageValidationResults;
 import gov.nist.toolkit.valsupport.client.ValidationContext;
+import gov.nist.toolkit.xdsexception.client.EnvironmentNotSelectedException;
 import gov.nist.toolkit.xdstools2.client.command.CommandContext;
 import gov.nist.toolkit.xdstools2.client.command.request.GeneratePidRequest;
 import gov.nist.toolkit.xdstools2.client.command.request.GetAllSimConfigsRequest;
@@ -189,7 +190,7 @@ public interface ToolkitService extends RemoteService  {
 	 String reloadSystemFromGazelle(String systemName) throws Exception;
 	 boolean isGazelleConfigFeedEnabled() throws NoServletSessionException ;
 	 List<String> getEnvironmentNames(CommandContext context) throws Exception;
-	 String setEnvironment(String name) throws NoServletSessionException;
+	 String setEnvironment(String name) throws NoServletSessionException, EnvironmentNotSelectedException;
 	 String getCurrentEnvironment() throws NoServletSessionException;
 	 String getDefaultEnvironment() throws NoServletSessionException ;
 	 String getDefaultAssigningAuthority() throws NoServletSessionException ;

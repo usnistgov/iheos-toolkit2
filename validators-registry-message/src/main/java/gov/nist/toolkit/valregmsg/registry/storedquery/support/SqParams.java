@@ -162,12 +162,12 @@ public class SqParams {
 	}
 
     // TODO can I replace Object by SQCodeOr (which if I am right is supposed to be the type of model)
-	public Map<String, SQCodedTerm> getCodedParms() {
-		Map<String,SQCodedTerm> codes=new HashMap<String,SQCodedTerm>();
-		for (String key:params.keySet()){
-			if (key.endsWith("Code")){
-                codes.put(key,((SQCodedTerm) params.get(key)));
-            }
+	public Map<String, Object> getCodedParms() {
+		Map<String, Object> codes = new HashMap<String, Object>();
+		for (String key : params.keySet()) {
+			if (key.endsWith("Code")) {
+				codes.put(key, params.get(key));
+			}
 		}
 		return codes;
 	}

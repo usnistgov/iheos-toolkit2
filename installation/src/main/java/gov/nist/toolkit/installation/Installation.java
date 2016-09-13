@@ -276,6 +276,10 @@ public class Installation {
         return new File(externalCache + sep + "TestLogCache");
     }
 
+    public File imageCache(String cacheName) {
+        return new File(externalCache + sep + "ImageCache" + sep + cacheName);
+    }
+
     public static String defaultSessionName() { return "STANDALONE"; }
     public static String defaultServiceSessionName() { return "SERVICE"; }
 
