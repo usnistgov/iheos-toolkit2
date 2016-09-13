@@ -3,9 +3,19 @@ package gov.nist.toolkit.xdstools2.client.tabs.simulatorControlTab;
 import com.google.gwt.dom.client.Style;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
-import com.google.gwt.user.client.ui.*;
+import com.google.gwt.user.client.ui.Button;
+import com.google.gwt.user.client.ui.FlexTable;
+import com.google.gwt.user.client.ui.FlowPanel;
+import com.google.gwt.user.client.ui.HTML;
+import com.google.gwt.user.client.ui.HorizontalPanel;
+import com.google.gwt.user.client.ui.Image;
+import com.google.gwt.user.client.ui.ListBox;
+import com.google.gwt.user.client.ui.TextArea;
+import com.google.gwt.user.client.ui.TextBox;
+import com.google.gwt.user.client.ui.VerticalPanel;
 import gov.nist.toolkit.actorfactory.client.SimId;
 import gov.nist.toolkit.actorfactory.client.Simulator;
 import gov.nist.toolkit.actorfactory.client.SimulatorConfig;
@@ -340,17 +350,36 @@ public class SimulatorControlTab extends GenericQueryTab {
 		buttonPanel.add(editImg);
 
 		Image deleteImg = new Image("icons2/garbage.png");
-		deleteImg.setTitle("Delete permanently");
+		deleteImg.setTitle("Delete");
 		deleteImg.setAltText("A garbage can.");
 		applyImgIconStyle(deleteImg);
-		deleteImg.addClickHandler(new ClickHandlerData<SimulatorConfig>(config) {
+
+		final ClickHandlerData<SimulatorConfig> clickHandlerData =  new ClickHandlerData<SimulatorConfig>(config) {
 			@Override
 			public void onClick(ClickEvent clickEvent) {
 				SimulatorConfig config = getData();
 				DeleteButtonClickHandler handler = new DeleteButtonClickHandler(self, config);
 				handler.delete();
 			}
+		};
+
+		deleteImg.addClickHandler(new ClickHandler() {
+			@Override
+			public void onClick(ClickEvent clickEvent) {
+				VerticalPanel body = new VerticalPanel();
+				body.add(new HTML("<p>Delete " + config.getId().toString() + "?</p>"));
+				Button actionButton = new Button("Yes");
+				actionButton.addClickHandler(
+					clickHandlerData
+				);
+				SafeHtmlBuilder safeHtmlBuilder = new SafeHtmlBuilder();
+				safeHtmlBuilder.appendHtmlConstant("<img src=\"icons2/garbage.png\" height=\"16\" width=\"16\"/>");
+				safeHtmlBuilder.appendHtmlConstant("Confirm Delete Simulator");
+                new PopupMessage(safeHtmlBuilder.toSafeHtml() , body, actionButton);
+			}
 		});
+
+
 		buttonPanel.add(deleteImg);
 
 		Image fileDownload = new Image("icons2/download.png");

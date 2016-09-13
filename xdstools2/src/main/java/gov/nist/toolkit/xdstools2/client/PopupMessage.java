@@ -1,12 +1,14 @@
 package gov.nist.toolkit.xdstools2.client;
 
 
+import com.google.gwt.dom.client.Style;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.safehtml.shared.SafeHtml;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.DialogBox;
 import com.google.gwt.user.client.ui.HTML;
+import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 import gov.nist.toolkit.results.client.AssertionResult;
@@ -21,13 +23,15 @@ public class PopupMessage  extends DialogBox {
 		frameMessage(null);
 	}
 
-	private Widget getOkBtn() {
-		Button ok = new Button("OK");
-		ok.addClickHandler(new ClickHandler() {
-			public void onClick(ClickEvent event) {
+	ClickHandler removeParentClickHandler = new ClickHandler() {
+		@Override
+		public void onClick(ClickEvent clickEvent) {
 				removeFromParent();
-			}
-		});
+		}
+	};
+	private Widget getOkBtn(String buttonText) {
+		Button ok = new Button(buttonText);
+		ok.addClickHandler(removeParentClickHandler);
 		ok.setFocus(true);
 		return ok;
 	}
@@ -37,11 +41,27 @@ public class PopupMessage  extends DialogBox {
 		frameMessage(content);
 	}
 
+	public PopupMessage(SafeHtml caption, Widget body, Button actionButton) {
+		HorizontalPanel buttonBar = new HorizontalPanel();
+		setHTML(caption);
+		VerticalPanel messageContainer	= new VerticalPanel();
+		messageContainer.getElement().getStyle().setMargin(40, Style.Unit.PX);
+		messageContainer.add(body);
+		actionButton.addClickHandler(removeParentClickHandler);
+		buttonBar.add(actionButton);
+		buttonBar.add(new HTML("&nbsp;&nbsp;&nbsp;"));
+		buttonBar.add(getOkBtn("Cancel"));
+		messageContainer.add(buttonBar);
+		setWidget(messageContainer);
+		center();
+		show();
+	}
+
 	private void frameMessage(Widget content) {
 		// DialogBox is a SimplePanel, so you have to set its widget property to
 		// whatever you want its contents to be.
 
-		Widget ok = getOkBtn();
+		Widget ok = getOkBtn("Ok");
 
 		VerticalPanel verticalPanel = new VerticalPanel();
 		if (content!=null)
