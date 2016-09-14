@@ -32,7 +32,7 @@ public class ToolConfigTab extends GenericQueryTab {
 	int gridRow;
 
 	public ToolConfigTab() {
-		super(new NullSiteActorManager(),"ToolConfig");
+		super(new NullSiteActorManager());
 	}
 
 	@Override

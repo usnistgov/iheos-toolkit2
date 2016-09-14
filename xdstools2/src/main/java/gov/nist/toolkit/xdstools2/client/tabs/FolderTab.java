@@ -32,7 +32,7 @@ public class FolderTab extends GenericQueryTab {
 	String help = "";
 
 	public FolderTab() {
-		super(new GetDocumentsSiteActorManager(),"");
+		super(new GetDocumentsSiteActorManager());
 	}
 
 	@Override

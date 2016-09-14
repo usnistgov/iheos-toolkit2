@@ -32,7 +32,7 @@ public class RegistryTestdataTab  extends GenericQueryTab {
 	"in a Register transaction"; 
 	
 	public RegistryTestdataTab() {
-		super(new GetDocumentsSiteActorManager(),"");
+		super(new GetDocumentsSiteActorManager());
 	}
 
 	@Override

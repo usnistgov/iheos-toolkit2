@@ -56,7 +56,7 @@ public class PidFavoritesTab extends GenericQueryTab {
     private Set<Pid> configuredPids=new HashSet<Pid>();
 
     public PidFavoritesTab(String tabName) {
-        super(new GetDocumentsSiteActorManager(),tabName);
+        super(new GetDocumentsSiteActorManager());
     }
 
     @Override

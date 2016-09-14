@@ -47,7 +47,7 @@ public class RGTestTab extends GenericQueryTab implements GatewayTool {
     RgOrchestrationResponse orch;
 
     public RGTestTab() {
-        super(new GetDocumentsSiteActorManager(),"");
+        super(new GetDocumentsSiteActorManager());
         testSelectionManager = new TestSelectionManager(this);
     }
 

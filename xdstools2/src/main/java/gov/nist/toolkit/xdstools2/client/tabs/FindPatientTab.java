@@ -66,7 +66,7 @@ public class FindPatientTab extends GenericQueryTab {
 	TextBox pobCountry;
 	
 	public FindPatientTab() {
-		super(new FindDocumentsSiteActorManager(),"");
+		super(new FindDocumentsSiteActorManager());
 	}
 
 	@Override

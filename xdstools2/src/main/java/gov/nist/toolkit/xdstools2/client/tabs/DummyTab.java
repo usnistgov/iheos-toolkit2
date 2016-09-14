@@ -9,7 +9,7 @@ import gov.nist.toolkit.xdstools2.client.tabs.genericQueryTab.GenericQueryTab;
  */
 public class DummyTab extends GenericQueryTab {
     public DummyTab() {
-        super(new FindDocumentsSiteActorManager(),"");	}
+        super(new FindDocumentsSiteActorManager());	}
 
     @Override
     protected Widget buildUI() {

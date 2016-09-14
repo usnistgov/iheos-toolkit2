@@ -32,7 +32,7 @@ public class RegisterAndQueryTab extends GenericQueryTab {
 	" running this test.";
 
 	public RegisterAndQueryTab() {
-		super(new GetDocumentsSiteActorManager(),"");
+		super(new GetDocumentsSiteActorManager());
 	}
 
 	@Override

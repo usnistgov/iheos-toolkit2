@@ -41,7 +41,7 @@ public class IIGTestTab extends GenericQueryTab implements GatewayTool {
     final TestSelectionManager testSelectionManager;
 
     public IIGTestTab() {
-        super(new GetImagingDocumentsSiteActorManager(),"");
+        super(new GetImagingDocumentsSiteActorManager());
         testSelectionManager = new TestSelectionManager(this);
     }
 

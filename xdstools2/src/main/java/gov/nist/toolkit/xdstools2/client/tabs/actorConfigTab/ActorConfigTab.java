@@ -34,7 +34,7 @@ public class ActorConfigTab extends GenericQueryTab {
 
 
 	public ActorConfigTab() {
-		super(new NullSiteActorManager(),"");
+		super(new NullSiteActorManager());
 	}
 
 	@Override

@@ -50,7 +50,7 @@ public class IDSTestTab extends GenericQueryTab implements GatewayTool {
     final TestSelectionManager testSelectionManager;
 
     public IDSTestTab() {
-        super(new GetDocumentsSiteActorManager(),"");
+        super(new GetDocumentsSiteActorManager());
         testSelectionManager = new TestSelectionManager(this);
     }
 

@@ -40,7 +40,7 @@ public class GetRelatedTab  extends GenericQueryTab {
 	List<CheckBox> assocCheckBoxes;
 	
 	public GetRelatedTab() {
-		super(new GetDocumentsSiteActorManager(),"");
+		super(new GetDocumentsSiteActorManager());
 	}
 	
 

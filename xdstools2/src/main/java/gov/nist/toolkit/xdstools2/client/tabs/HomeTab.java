@@ -16,7 +16,7 @@ public class HomeTab extends GenericQueryTab {
 
 
 	public HomeTab() {
-		super(new FindDocumentsSiteActorManager(),"");
+		super(new FindDocumentsSiteActorManager());
 //		super(new GetDocumentsSiteActorManager());
 	}
 

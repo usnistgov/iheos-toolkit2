@@ -35,7 +35,7 @@ public class RepositoryTestdataTab  extends GenericQueryTab {
 	"in a Provide and Register transaction"; 
 	
 	public RepositoryTestdataTab() {
-		super(new GetDocumentsSiteActorManager(),"");
+		super(new GetDocumentsSiteActorManager());
 	}
 
 	@Override

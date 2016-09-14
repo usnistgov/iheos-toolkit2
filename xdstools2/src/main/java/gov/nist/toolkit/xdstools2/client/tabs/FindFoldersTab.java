@@ -27,7 +27,7 @@ public class FindFoldersTab extends GenericQueryTab {
 	static CoupledTransactions couplings = new CoupledTransactions();
 
 	public FindFoldersTab() {
-		super(new FindDocumentsSiteActorManager(),"");
+		super(new FindDocumentsSiteActorManager());
 	}
 
 	@Override

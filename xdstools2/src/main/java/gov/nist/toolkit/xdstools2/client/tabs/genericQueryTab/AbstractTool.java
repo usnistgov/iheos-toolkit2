@@ -36,7 +36,7 @@ public abstract class AbstractTool extends GenericQueryTab {
     abstract public String getWindowShortName();
 
     public AbstractTool() {
-        super(null,"");
+        super(null);
     }
 
     /**

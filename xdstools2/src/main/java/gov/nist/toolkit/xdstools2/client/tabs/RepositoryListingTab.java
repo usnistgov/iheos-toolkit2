@@ -28,7 +28,7 @@ public class RepositoryListingTab extends GenericQueryTab {
 
 
 	public RepositoryListingTab() {
-		super(new NullSiteActorManager(),"");
+		super(new NullSiteActorManager());
 	}
 
 	@Override

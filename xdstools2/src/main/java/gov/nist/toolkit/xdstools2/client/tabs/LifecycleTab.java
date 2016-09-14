@@ -30,7 +30,7 @@ public class LifecycleTab extends GenericQueryTab {
 	"stored query to verify the Registry contents."; 
 
 	public LifecycleTab() {
-		super(new GetDocumentsSiteActorManager(),"");
+		super(new GetDocumentsSiteActorManager());
 	}
 
 	@Override

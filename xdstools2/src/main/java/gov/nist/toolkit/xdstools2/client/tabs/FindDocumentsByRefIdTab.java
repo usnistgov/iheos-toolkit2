@@ -31,7 +31,7 @@ public class FindDocumentsByRefIdTab extends GenericQueryTab {
 	
 
 	public FindDocumentsByRefIdTab() {
-		super(new FindDocumentsSiteActorManager(),"");
+		super(new FindDocumentsSiteActorManager());
 	}
 
 	@Override

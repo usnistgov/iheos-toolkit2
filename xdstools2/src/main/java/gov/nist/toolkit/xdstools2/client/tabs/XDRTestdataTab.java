@@ -32,7 +32,7 @@ public class XDRTestdataTab  extends GenericQueryTab {
 	"in a Provide and Register transaction"; 
 	
 	public XDRTestdataTab() {
-		super(new GetDocumentsSiteActorManager(),"");
+		super(new GetDocumentsSiteActorManager());
 	}
 
 	@Override

@@ -56,7 +56,7 @@ public class GetAllTab extends GenericQueryTab {
 
 	public GetAllTab() {
 		// this super is kinda useless now - was a good idea for documentation at one time
-		super(new FindDocumentsSiteActorManager(),"");
+		super(new FindDocumentsSiteActorManager());
 	}
 
 	@Override

@@ -109,7 +109,7 @@ public abstract class GenericQueryTab  extends ToolWindow {
      * Super constructor.
      * @param siteActorManager
      */
-	public GenericQueryTab(BaseSiteActorManager siteActorManager, String tabName) {
+	public GenericQueryTab(BaseSiteActorManager siteActorManager) {
 		me = this;
 		this.siteActorManager = siteActorManager;
 		if (siteActorManager != null)

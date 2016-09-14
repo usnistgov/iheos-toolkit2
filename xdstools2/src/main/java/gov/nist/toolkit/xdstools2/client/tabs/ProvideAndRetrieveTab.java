@@ -36,7 +36,7 @@ public class ProvideAndRetrieveTab extends GenericQueryTab {
 	"This test is repeated 3 times with text, xml, and pdf documents.";
 
 	public ProvideAndRetrieveTab() {
-		super(new GetDocumentsSiteActorManager(),"");
+		super(new GetDocumentsSiteActorManager());
 	}
 
 	@Override

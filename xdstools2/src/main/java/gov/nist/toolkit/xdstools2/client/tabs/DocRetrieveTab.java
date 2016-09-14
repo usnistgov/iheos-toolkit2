@@ -28,10 +28,9 @@ public class DocRetrieveTab extends GenericQueryTab {
 
 	TextBox docUidBox;
 	TextArea textArea;
-//	TextBox repUidBox;
-	
+
 	public DocRetrieveTab() {
-		super(new RetrieveSiteActorManager(),"");
+		super(new RetrieveSiteActorManager());
 	}
 
 	@Override

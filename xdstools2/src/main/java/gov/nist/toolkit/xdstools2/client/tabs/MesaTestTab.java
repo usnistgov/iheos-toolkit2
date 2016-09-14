@@ -45,7 +45,7 @@ public class MesaTestTab extends GenericQueryTab {
 
 
 	public MesaTestTab() {
-		super(new GetDocumentsSiteActorManager(),"");
+		super(new GetDocumentsSiteActorManager());
 	}
 	
 	public void onTabLoad(TabContainer container, boolean select) {

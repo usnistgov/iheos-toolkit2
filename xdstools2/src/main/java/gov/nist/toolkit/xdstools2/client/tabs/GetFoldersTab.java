@@ -40,7 +40,7 @@ public class GetFoldersTab extends GenericQueryTab {
 	"UUIDs can be separated by any of [,;() \\t\\n\\r']";
 	
 	public GetFoldersTab() {
-		super(new GetDocumentsSiteActorManager(),"");
+		super(new GetDocumentsSiteActorManager());
 	}
 
 	@Override

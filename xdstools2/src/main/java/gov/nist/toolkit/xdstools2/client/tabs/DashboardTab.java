@@ -13,9 +13,6 @@ import gov.nist.toolkit.xdstools2.client.tabs.genericQueryTab.GenericQueryTab;
 import java.util.List;
 
 public class DashboardTab  extends GenericQueryTab {
-	//	final protected ToolkitServiceAsync toolkitService = GWT
-	//	.create(ToolkitService.class);
-
 	List<RegistryStatus> regData;
 	List<RepositoryStatus> repData;
 
@@ -24,7 +21,7 @@ public class DashboardTab  extends GenericQueryTab {
 
 
 	public DashboardTab() {
-		super(new GetDocumentsSiteActorManager(),"");
+		super(new GetDocumentsSiteActorManager());
 	}
 
 	@Override

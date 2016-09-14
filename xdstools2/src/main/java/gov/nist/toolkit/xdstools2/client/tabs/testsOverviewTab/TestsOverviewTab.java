@@ -37,7 +37,7 @@ public class TestsOverviewTab extends GenericQueryTab {
 
     // this super is kinda useless now - was a good idea for documentation at one time
     public TestsOverviewTab(){
-        super(new FindDocumentsSiteActorManager(),"");
+        super(new FindDocumentsSiteActorManager());
     }
 
 

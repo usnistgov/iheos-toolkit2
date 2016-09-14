@@ -31,7 +31,7 @@ public class ImagingDocSetRetrieveTab extends GenericQueryTab {
 //	TextBox repUidBox;
 	
 	public ImagingDocSetRetrieveTab() {
-		super(new RetrieveSiteActorManager(),"");
+		super(new RetrieveSiteActorManager());
 	}
 
 

@@ -15,11 +15,11 @@ public class OddsEditTab extends GenericQueryTab {
     SimulatorControlTab simulatorControlTab = null;
 
     public OddsEditTab(BaseSiteActorManager siteActorManager) {
-        super(siteActorManager,"");
+        super(siteActorManager);
     }
 
     public OddsEditTab(SimulatorControlTab simulatorControlTab, SimulatorConfig config) {
-        super(new FindDocumentsSiteActorManager(),"");
+        super(new FindDocumentsSiteActorManager());
         this.config = config;
         this.simulatorControlTab = simulatorControlTab;
     }

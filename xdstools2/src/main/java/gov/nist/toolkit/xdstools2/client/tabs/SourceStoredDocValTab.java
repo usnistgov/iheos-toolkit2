@@ -53,7 +53,7 @@ public class SourceStoredDocValTab extends GenericQueryTab {
 	"required by test.";
 
 	public SourceStoredDocValTab() {
-		super(new GetDocumentsSiteActorManager(),"");
+		super(new GetDocumentsSiteActorManager());
 	}
 
 	@Override

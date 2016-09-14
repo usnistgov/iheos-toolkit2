@@ -48,7 +48,7 @@ public class MPQFindDocumentsTab extends GenericQueryTab {
 	GenericQueryTab genericQueryTab;
 
 	public MPQFindDocumentsTab() {
-		super(new GetDocumentsSiteActorManager(),"");
+		super(new GetDocumentsSiteActorManager());
 	}
 	
 	QueryBoilerplate queryBoilerplate = null;

@@ -41,7 +41,7 @@ public class FindDocuments2Tab extends GenericQueryTab {
     InteractingEntity origin = new InteractingEntity(); //  new InteractingEntity(); // Destination
 
     public FindDocuments2Tab() {
-        super(new FindDocumentsSiteActorManager(),"");
+        super(new FindDocumentsSiteActorManager());
     }
 
     @Override

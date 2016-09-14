@@ -44,7 +44,7 @@ public class GetSubmissionSetAndContentsTab extends GenericQueryTab {
 	TextBox ssid;
 
 	public GetSubmissionSetAndContentsTab() {
-		super(new GetDocumentsSiteActorManager(),"");
+		super(new GetDocumentsSiteActorManager());
 	}
 
 	@Override
