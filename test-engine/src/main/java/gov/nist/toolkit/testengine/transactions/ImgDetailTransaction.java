@@ -57,10 +57,12 @@ public class ImgDetailTransaction extends BasicTransaction {
    }
 
    /**
-    * @param s_ctx
-    * @param step
-    * @param instruction
-    * @param instruction_output
+    * @param s_ctx StepContext instance
+    * @param step {@code <TestStep>} element from the textplan.xml
+    * @param instruction {@code <ImgDetailTransaction>} element from the 
+    * testplan.xml 
+    * @param instruction_output {@code <ImgDetailTransaction>} element from the 
+    * log.xml file.
     */
    public ImgDetailTransaction(StepContext s_ctx, OMElement step, OMElement instruction, OMElement instruction_output) {
       super(s_ctx, instruction, instruction_output);
@@ -92,11 +94,7 @@ public class ImgDetailTransaction extends BasicTransaction {
 
    @Override
    protected void run(OMElement request) throws Exception {
-      /*
-       * TODO Working here At this point stdResponse and testResponse have the
-       * data we want to validate. Need to incorporate the xml validation stuff
-       * from xdsi and figure out how to put the results into the output log.
-       */
+      return;
    }
 
    @Override
@@ -106,7 +104,6 @@ public class ImgDetailTransaction extends BasicTransaction {
 
    @Override
    protected String getRequestAction() {
-      // TODO Auto-generated method stub
       return null;
    }
 

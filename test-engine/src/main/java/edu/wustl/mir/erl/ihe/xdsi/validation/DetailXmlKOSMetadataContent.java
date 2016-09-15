@@ -14,7 +14,7 @@ public class DetailXmlKOSMetadataContent extends DetailXmlContent {
    
    @Override
    protected void initializeTests() {
-      // TODO Is 2.1 is the right one ???
+      // TODO Is 3.0 is the right one ???
       qnames = new QName[] 
          {  new QName("urn:oasis:names:tc:ebxml-regrep:xsd:lcm:3.0", "dummy", "lcm"),
             new QName("urn:oasis:names:tc:ebxml-regrep:xsd:rs:3.0", "dummy", "rs"),

@@ -31,6 +31,11 @@ import gov.nist.toolkit.xdsexception.client.XdsException;
 import gov.nist.toolkit.xdsexception.client.XdsInternalException;
 import gov.nist.toolkit.xdsexception.XdsPreparsedException;
 
+/**
+ * This class is not currently used, and it's functionality is found in another
+ * class. An Exception is thrown by the constructor so that, if it is used,
+ * proper consideration can be given. R Moulton
+ */
 public class ImagingDocSetRetrieveTransaction extends BasicTransaction {
 //	String metadata_filename = null;
 //	OMElement request_ele = null;
@@ -79,14 +84,23 @@ public class ImagingDocSetRetrieveTransaction extends BasicTransaction {
 
 	public void setUseIG(boolean useIG) { this.useIG = useIG; }
 
-	public ImagingDocSetRetrieveTransaction(StepContext s_ctx, OMElement instruction, OMElement instruction_output) {
+	/**
+	 * Not currently in use
+	 */
+	@SuppressWarnings("javadoc")
+   public ImagingDocSetRetrieveTransaction(StepContext s_ctx, OMElement instruction, OMElement instruction_output)
+	   throws Exception {
 		super(s_ctx, instruction, instruction_output);
 		defaultEndpointProcessing = false;
 		parse_metadata = false;
 		noMetadataProcessing = true;
+		throw new Exception("This class is not currently in use. " + 
+		   "Please review to make sure you want to use it, and if so," +
+		   "remove this Exception.");
 	}
 
-	@Override
+	@SuppressWarnings({ "null", "unused" })
+   @Override
    public void run(OMElement request_ele)
 	throws Exception {
 	logger.debug("ImagingDocSetRetrieveTransaction#run");

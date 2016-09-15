@@ -35,9 +35,9 @@ public class DetailDcmKOSContent extends DetailDcmContent {
       // Study Instance UID (0020,000D)
       assertions.add(new DCMAssertion(TYPE.SAME, Tag.StudyInstanceUID));
       // Series Instance UID (0020,000E)
-      assertions.add(new DCMAssertion(TYPE.DIFFERENT, Tag.SeriesInstanceUID));
+      // assertions.add(new DCMAssertion(TYPE.DIFFERENT, Tag.SeriesInstanceUID));
       // SOP Instance UID (0008,0018)
-      assertions.add(new DCMAssertion(TYPE.DIFFERENT, Tag.SOPInstanceUID));
+      // assertions.add(new DCMAssertion(TYPE.DIFFERENT, Tag.SOPInstanceUID));
       // Content Sequence size (0040,A730)
       assertions.add(new DCMAssertion(TYPE.SAME_SIZE, Tag.ContentSequence));
    }

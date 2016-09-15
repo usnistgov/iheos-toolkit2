@@ -7,8 +7,8 @@
 		<ExpectedStatus>Success</ExpectedStatus>
 		<ImgDetailTransaction>
 			<Assertions>
-            <Assert id="Submitted Metadata" process="sameKONMetadata">metadata.xml</Assert>
-				<!--  <Assert id="Submitted KON" process="sameKONDcm">kon.dcm</Assert> -->
+       <!--       <Assert id="Submitted Metadata" process="sameKONMetadata">metadata.xml</Assert> -->
+				<Assert id="Submitted KON" process="sameKONDcm">kon.dcm</Assert> 
 			</Assertions>
 		</ImgDetailTransaction>
 	</TestStep>

@@ -30,7 +30,7 @@ public class IDSRetrieveTransaction extends BasicTransaction {
    HashMap<String, String> referenced_documents = new HashMap<String, String>();  // uid, filename
    Metadata reference_metadata = null;
    boolean isXDSI;
-   static Logger logger = Logger.getLogger(ImagingDocSetRetrieveTransaction.class);
+   static Logger logger = Logger.getLogger(IDSRetrieveTransaction.class);
    @Override
    public String toString() {
 
@@ -247,7 +247,7 @@ public class IDSRetrieveTransaction extends BasicTransaction {
       else if (part_name.equals("ReferenceMetadata")) {
          String testdir = part.getAttributeValue(new QName("testdir"));
          String step = part.getAttributeValue(new QName("step"));
-         if (testdir == null || testdir.equals("") | step == null || step.equals(""))
+         if (testdir == null || testdir.equals("") || step == null || step.equals(""))
             throw new XdsInternalException("ReferenceMetadata instruction: both testdir and step are required attributes");
          reference_metadata = new Linkage(testConfig).getResult(testdir, step);
       }
