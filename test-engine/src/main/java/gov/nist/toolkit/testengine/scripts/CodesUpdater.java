@@ -81,7 +81,7 @@ public class CodesUpdater {
                 System.out.println("No tests defined in " + testFile.toString());
                 // TODO throw an exception?!
                 out+="No tests defined in " + testFile.toString() +"\n";
-                error = true;
+//                error = true;
             }else {
                 for (int i = 0; i < dirs.length; i++) {
                     File testDir = dirs[i];
