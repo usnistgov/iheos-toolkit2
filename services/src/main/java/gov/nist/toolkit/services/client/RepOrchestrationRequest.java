@@ -11,7 +11,7 @@ import java.io.Serializable;
 public class RepOrchestrationRequest implements Serializable, IsSerializable {
     private String userName;
     private String environmentName;
-    private boolean useExistingSimulator = false;
+    private boolean useExistingSimulator = true;
     private SiteSpec sutSite;
 
     public RepOrchestrationRequest() {

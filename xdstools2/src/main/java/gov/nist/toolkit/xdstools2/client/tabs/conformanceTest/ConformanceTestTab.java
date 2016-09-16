@@ -27,6 +27,7 @@ import gov.nist.toolkit.xdstools2.client.Xdstools2;
 import gov.nist.toolkit.xdstools2.client.event.TestSessionChangedEvent;
 import gov.nist.toolkit.xdstools2.client.event.testSession.TestSessionChangedEventHandler;
 import gov.nist.toolkit.xdstools2.client.inspector.MetadataInspectorTab;
+import gov.nist.toolkit.xdstools2.client.widgets.buttons.ReportableButton;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -288,11 +289,7 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner, SiteMa
 
 		initializationPanel.clear();
 
-		if (isRepSut()) {
-			initializationPanel.add(new BuildRepTestOrchestrationButton(this, initializationPanel, "Initialize Test Environment").panel());
-		} else {
-			sitetoIssueTestAgainst = new SiteSpec(siteUnderTest.getName());
-		}
+		orchestrationInitialization();
 
 		// what tests are in the collection
 		toolkitService.getCollectionMembers("actorcollections", currentActorTypeName, new AsyncCallback<List<String>>() {
@@ -321,8 +318,34 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner, SiteMa
 					}
 
 				});
+
 			}
 		});
+
+		toolkitService.getAutoInitConformanceTesting(new AsyncCallback<Boolean>() {
+			@Override
+			public void onFailure(Throwable throwable) {
+
+			}
+
+			@Override
+			public void onSuccess(Boolean aBoolean) {
+				if (aBoolean)
+					orchInit.handleClick(null);   // auto init orchestration
+			}
+		});
+
+	}
+
+	private ReportableButton orchInit = null;
+
+	private void orchestrationInitialization() {
+		if (isRepSut()) {
+			orchInit = new BuildRepTestOrchestrationButton(this, initializationPanel, "Initialize Test Environment");
+			initializationPanel.add(orchInit.panel());
+		} else {
+			sitetoIssueTestAgainst = new SiteSpec(siteUnderTest.getName());
+		}
 
 	}
 

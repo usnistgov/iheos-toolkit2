@@ -262,4 +262,6 @@ public interface ToolkitService extends RemoteService  {
 	public InteractingEntity getInteractionFromModel(InteractingEntity model) throws Exception;
 
 	String clearTestSession(String testSession) throws Exception;
+
+    boolean getAutoInitConformanceTesting();
 }

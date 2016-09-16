@@ -24,11 +24,16 @@ class BuildRepTestOrchestrationButton extends ReportableButton {
     private FlowPanel initializationResultsPanel = new FlowPanel();
 
     BuildRepTestOrchestrationButton(ConformanceTestTab testTab, Panel initializationPanel, String label) {
-        super(new VerticalPanel(), label);
         this.initializationPanel = initializationPanel;
         this.testTab = testTab;
+
+        setParentPanel(initializationPanel);
+        setLabel(label);
+        setResetLabel("Reset");
+        build();
         panel().add(initializationResultsPanel);
     }
+
 
     @Override
     public void handleClick(ClickEvent clickEvent) {
@@ -44,6 +49,7 @@ class BuildRepTestOrchestrationButton extends ReportableButton {
         request.setSutSite(new SiteSpec(testTab.getSiteName()));
         request.setUserName(testTab.getCurrentTestSession());
         request.setEnvironmentName(testTab.getEnvironmentSelection());
+        request.setUseExistingSimulator(!isResetRequested());
 
         toolkitService.buildRepTestOrchestration(request, new AsyncCallback<RawResponse>() {
             @Override
@@ -56,6 +62,8 @@ class BuildRepTestOrchestrationButton extends ReportableButton {
                 if (handleError(rawResponse, RepOrchestrationResponse.class)) return;
                 RepOrchestrationResponse orchResponse = (RepOrchestrationResponse) rawResponse;
                 testTab.setRepOrchestrationResponse(orchResponse);
+
+                initializationResultsPanel.add(new HTML("Initialization Complete"));
 
                 if (testTab.getSiteUnderTest() != null) {
                     initializationResultsPanel.add(new HTML("<h2>System Under Test Configuration</h2>"));
