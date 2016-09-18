@@ -145,9 +145,9 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner, SiteMa
 	}
 
 	private void displayTestSessionDisplay() {
-		testSessionDescription.setHTML("Test Session<br />" +
-				"Name: " + getCurrentTestSession() + "<br />" +
+		testSessionDescription.setHTML("Test Context<br />" +
 				"Environment: " + getEnvironmentSelection() + "<br />" +
+				"TestSesson: " + getCurrentTestSession() + "<br />" +
 				"SUT: " + getSiteName());
 	}
 
@@ -188,6 +188,7 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner, SiteMa
 	@Override
 	public void setSiteName(String site) {
 		currentSiteName = site;
+		if (site == null) return;
 		toolkitService.getSite(site, new AsyncCallback<Site>() {
 			@Override
 			public void onFailure(Throwable throwable) {
