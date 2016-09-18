@@ -19,7 +19,7 @@ import static gov.nist.toolkit.xdstools2.client.ToolWindow.toolkitService;
  */
 public class TestSessionManager2 {
     private List<String> testSessions;  // this is maintained to initialize new tabs with
-    private String currentTestSession;
+    private String currentTestSession = null;
 
     public TestSessionManager2() {
         Xdstools2.getEventBus().addHandler(TestSessionsUpdatedEvent.TYPE, new TestSessionsUpdatedEventHandler() {

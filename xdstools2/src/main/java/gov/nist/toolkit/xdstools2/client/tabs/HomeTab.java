@@ -166,9 +166,6 @@ public class HomeTab extends GenericQueryTab {
 		Xdstools2.addtoMainMenu(HyperlinkFactory.launchTool(ToolLauncher.repositoryTabLabel, new ToolLauncher(ToolLauncher.repositoryTabLabel)));
 		row++;
 
-		Xdstools2.addtoMainMenu(HyperlinkFactory.launchTool(ToolLauncher.testLogLabel, new ToolLauncher(ToolLauncher.testLogLabel)));
-		row++;
-
 		Xdstools2.addtoMainMenu(HyperlinkFactory.launchTool(ToolLauncher.connectathonTabLabel, new ToolLauncher(ToolLauncher.connectathonTabLabel)));
 		row++;
 
@@ -179,6 +176,9 @@ public class HomeTab extends GenericQueryTab {
 		// Tests
 
 		Xdstools2.addtoMainMenu(addHTML("<h3>Tests</h3>"));
+		row++;
+
+		Xdstools2.addtoMainMenu(HyperlinkFactory.launchTool(ToolLauncher.conformanceTestsLabel, new ToolLauncher(ToolLauncher.conformanceTestsLabel)));
 		row++;
 
 		Xdstools2.addtoMainMenu(HyperlinkFactory.launchTool(ToolLauncher.mesaTabLabel, new ToolLauncher(ToolLauncher.mesaTabLabel)));

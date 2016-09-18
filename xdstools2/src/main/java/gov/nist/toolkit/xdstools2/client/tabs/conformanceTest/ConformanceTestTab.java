@@ -48,9 +48,13 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner, SiteMa
 	private HTML testSessionDescription = new HTML();
 	private FlowPanel testSessionDescriptionPanel = new FlowPanel();
 	private RepOrchestrationResponse repOrchestrationResponse;
-	private String currentActorTypeName;
+	private String currentActorTypeId;
+	private String currentActorTypeDescription;
 	private Site siteUnderTest = null;
 	private SiteSpec sitetoIssueTestAgainst = null;
+
+	// stuff that needs delayed setting when launched via activity
+	private String initTestSession = null;
 
 	// Testable actors
 	private List<TestCollectionDefinitionDAO> testCollectionDefinitionDAOs;
@@ -70,13 +74,12 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner, SiteMa
 
 	@Override
 	public void onTabLoad(boolean select, String eventName) {
-		updateTestSessionDisplay();
+		displayTestSessionDisplay();
 		testSessionDescription.addClickHandler(new TestSessionClickHandler());
 		testSessionDescriptionPanel.setStyleName("with-rounded-border");
 		testSessionDescriptionPanel.add(testSessionDescription);
 
 		addEast(testSessionDescriptionPanel);
-		initializeTestSession();
 		registerTab(select, eventName);
 
 		tabTopPanel.add(toolPanel);
@@ -119,8 +122,12 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner, SiteMa
 	}
 
 	private void initializeTestSession() {
+		if (initTestSession != null) {
+			setCurrentTestSession(initTestSession);
+			initTestSession = null;
+		}
 		if (getCurrentTestSession() == null || getCurrentTestSession().equals("")) {
-			updateTestSessionDisplay();
+			displayTestSessionDisplay();
 			return;
 		}
 		toolkitService.getAssignedSiteForTestSession(getCurrentTestSession(), new AsyncCallback<String>() {
@@ -132,12 +139,12 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner, SiteMa
 			@Override
 			public void onSuccess(String s) {
 				setSiteName(s);
-				updateTestSessionDisplay();
+				displayTestSessionDisplay();
 			}
 		});
 	}
 
-	private void updateTestSessionDisplay() {
+	private void displayTestSessionDisplay() {
 		testSessionDescription.setHTML("Test Session<br />" +
 				"Name: " + getCurrentTestSession() + "<br />" +
 				"Environment: " + getEnvironmentSelection() + "<br />" +
@@ -196,7 +203,7 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner, SiteMa
 
 	@Override
 	public void update() {
-		updateTestSessionDisplay();
+		displayTestSessionDisplay();
 	}
 
 	private class TestSessionClickHandler implements ClickHandler {
@@ -210,7 +217,7 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner, SiteMa
 	void launchTestEnvironmentDialog(String msg) {
 		TestEnvironmentDialog dialog = new TestEnvironmentDialog(me, me, msg);
 		int left = Window.getClientWidth()/ 3;
-		int top = Window.getClientHeight()/ 6;
+		int top = Window.getClientHeight()/ 20;
 		dialog.setPopupPosition(left, top);
 		dialog.show();
 	}
@@ -220,10 +227,26 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner, SiteMa
 		@Override
 		public void onSelection(SelectionEvent<Integer> selectionEvent) {
 			int i = selectionEvent.getSelectedItem();
-			currentActorTypeName = testCollectionDefinitionDAOs.get(i).getCollectionID();
+			currentActorTypeId = testCollectionDefinitionDAOs.get(i).getCollectionID();
+			currentActorTypeDescription = testCollectionDefinitionDAOs.get(i).getCollectionTitle();
 			loadTestCollection();
 		}
 	};
+
+	public void displayActor(String actorTypeName) {
+		currentActorTypeId = actorTypeName;
+		loadTestCollection();
+	}
+
+	private String getDescriptionForTestCollection(String collectionId) {
+		if (testCollectionDefinitionDAOs == null) return "not initialized";
+		for (TestCollectionDefinitionDAO dao : testCollectionDefinitionDAOs) {
+			if (dao.getCollectionID().equals(collectionId)) {
+				return dao.getCollectionTitle();
+			}
+		}
+		return "???";
+	}
 
 	// selection of site to be tested
 	private void buildSiteSelector() {
@@ -274,12 +297,17 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner, SiteMa
 			public void onSuccess(List<TestCollectionDefinitionDAO> testCollectionDefinitionDAOs) {
 				me.testCollectionDefinitionDAOs = testCollectionDefinitionDAOs;
 				displayTestCollectionsTabBar();
+
+				// This is a little wierd being here. This depends on initTestSession
+				// which is set AFTER onTabLoad is run so run here - later in the initialization
+				// initTestSession is set from ConfActorActivity
+				initializeTestSession();
 			}
 		});
 	}
 
 	private boolean isRepSut() {
-		return currentActorTypeName != null && ActorType.REPOSITORY.getShortName().equals(currentActorTypeName);
+		return currentActorTypeId != null && ActorType.REPOSITORY.getShortName().equals(currentActorTypeId);
 	}
 
 	// load test results for a single test collection (actor type) for a single site
@@ -292,7 +320,7 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner, SiteMa
 		orchestrationInitialization();
 
 		// what tests are in the collection
-		toolkitService.getCollectionMembers("actorcollections", currentActorTypeName, new AsyncCallback<List<String>>() {
+		toolkitService.getCollectionMembers("actorcollections", currentActorTypeId, new AsyncCallback<List<String>>() {
 
 			public void onFailure(Throwable caught) {
 				new PopupMessage("getTestlogListing: " + caught.getMessage());
@@ -310,11 +338,25 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner, SiteMa
 					}
 
 					public void onSuccess(List<TestOverviewDTO> testOverviews) {
-						testsPanel.add(new HTML("<h2>Tests</h2>"));
+						testsPanel.add(new HTML("<h2>" + currentActorTypeDescription + " Tests</h2>"));
 						for (TestOverviewDTO testOverview : testOverviews) {
 //							me.testOverviews.put(testOverview.getName(), testOverview);
 							displayTest(testOverview);
 						}
+
+						toolkitService.getAutoInitConformanceTesting(new AsyncCallback<Boolean>() {
+							@Override
+							public void onFailure(Throwable throwable) {
+
+							}
+
+							@Override
+							public void onSuccess(Boolean aBoolean) {
+								if (aBoolean)
+									orchInit.handleClick(null);   // auto init orchestration
+							}
+						});
+
 					}
 
 				});
@@ -322,18 +364,6 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner, SiteMa
 			}
 		});
 
-		toolkitService.getAutoInitConformanceTesting(new AsyncCallback<Boolean>() {
-			@Override
-			public void onFailure(Throwable throwable) {
-
-			}
-
-			@Override
-			public void onSuccess(Boolean aBoolean) {
-				if (aBoolean)
-					orchInit.handleClick(null);   // auto init orchestration
-			}
-		});
 
 	}
 
@@ -589,5 +619,9 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner, SiteMa
 
 	public void setSitetoIssueTestAgainst(SiteSpec sitetoIssueTestAgainst) {
 		this.sitetoIssueTestAgainst = sitetoIssueTestAgainst;
+	}
+
+	public void setInitTestSession(String initTestSession) {
+		this.initTestSession = initTestSession;
 	}
 }

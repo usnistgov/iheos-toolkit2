@@ -39,11 +39,18 @@ public class Xdstools2ActivityMapper implements ActivityMapper {
             return testInstanceActivity;
         }
 
-        if (place instanceof Tool) {
+        if (place instanceof  Tool) {
             ToolActivity toolActivity = clientFactory.getToolActivity();
             toolActivity.setToolId(((Tool) place).getToolId());
             System.out.println("Go to " + ((Tool) place).getToolId());
             return toolActivity;
+        }
+
+        if (place instanceof ConfActor) {
+            ConfActor confActor = (ConfActor) place;
+            ConfActorActivity confActorActivity = clientFactory.getConfActorActivity();
+            confActorActivity.setConfActor(confActor);
+            return confActorActivity;
         }
         return null;
     }
