@@ -12,14 +12,11 @@ public class TestStatistics {
         this.testCount = count;
     }
 
-    public void addSuccessfulTest() {
+    public void addSuccessful() {
         testsRun++;
     }
 
-    public void addUnrunTest() {
-    }
-
-    public void addTestWithError() {
+    public void addWithError() {
         testsWithErrors++;
     }
 
@@ -27,7 +24,7 @@ public class TestStatistics {
         return testCount == testsRun;
     }
 
-    public boolean isErrors() {
+    public boolean hasErrors() {
         return testsWithErrors > 0;
     }
 
@@ -42,6 +39,7 @@ public class TestStatistics {
         buf.append(" Successful: ").append(testsRun);
         buf.append(" With Errors: ").append(testsWithErrors);
         buf.append(" Not Run: ").append(testCount - testsRun - testsWithErrors);
+        buf.append(" Test Count: ").append(testCount);
 
         return buf.toString();
     }

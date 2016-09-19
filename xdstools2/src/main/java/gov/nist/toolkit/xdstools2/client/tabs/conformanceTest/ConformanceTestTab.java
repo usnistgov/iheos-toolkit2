@@ -99,12 +99,10 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner, SiteMa
 			for (TestOverviewDTO testOverview : testOverviewDTOs.values()) {
 				if (testOverview.isRun()) {
 					if (testOverview.isPass()) {
-						testStatistics.addSuccessfulTest();
+						testStatistics.addSuccessful();
 					} else {
-						testStatistics.addTestWithError();
+						testStatistics.addWithError();
 					}
-				} else {
-					testStatistics.addUnrunTest();
 				}
 			}
 		}
@@ -115,18 +113,20 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner, SiteMa
 		testsHeaderBody.add(new HTML(testStatistics.getReport()));
 
 		if (testStatistics.isAllRun()) {
-			if (testStatistics.isErrors()) {
+			if (testStatistics.hasErrors()) {
 				testsHeaderBody.setBackgroundColorFailure();
 				testsHeaderBody.add(getStatusIcon(false));
 			} else {
 				testsHeaderBody.setBackgroundColorSuccess();
 				testsHeaderBody.add(getStatusIcon(true));
 			}
-		} else if (testStatistics.isNoneRun()) {
-			testsHeaderBody.setBackgroundColorNotRun();
-		} else {
+		}
+		else if (testStatistics.hasErrors()) {
 			testsHeaderBody.setBackgroundColorFailure();
 			testsHeaderBody.add(getStatusIcon(false));
+		}
+		else {
+			testsHeaderBody.setBackgroundColorNotRun();
 		}
 
 		testsHeaderBody.addStyleName("test-summary");
