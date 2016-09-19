@@ -64,8 +64,8 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner, SiteMa
 	private List<TestCollectionDefinitionDAO> testCollectionDefinitionDAOs;
 	// testname ==> results
 	private Map<String, TestOverviewDTO> testOverviewDTOs = new HashMap<>();
-	// testId ==> overview
-//	private final Map<String, TestOverviewDTO> testOverviews = new HashMap<>();
+	// for each actor type id, the list of tests for it
+	private Map<String, List<TestInstance>> testsPerActor = new HashMap<>();
 
 	public ConformanceTestTab() {
 		me = this;
@@ -111,6 +111,19 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner, SiteMa
 		testsHeaderTitle.setHTML("<h2>" + currentActorTypeDescription + " Tests</h2>");
 		testsHeaderBody.clear();
 		testsHeaderBody.add(new HTML(testStatistics.getReport()));
+
+		Image delete = new Image("icons2/garbage-24.png");
+		delete.addStyleName("right");
+		delete.addClickHandler(new DeleteAllClickHandler(currentActorTypeId));
+		delete.setTitle("Delete Log");
+		delete.addStyleName("right");
+		testsHeaderBody.add(delete);
+
+		Image play = new Image("icons2/play-24.png");
+		play.setTitle("Run");
+		play.addClickHandler(new RunAllClickHandler(currentActorTypeId));
+//		play.addStyleName("right");
+		testsHeaderBody.add(play);
 
 		if (testStatistics.isAllRun()) {
 			if (testStatistics.hasErrors()) {
@@ -301,14 +314,14 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner, SiteMa
 			int i = selectionEvent.getSelectedItem();
 			currentActorTypeId = testCollectionDefinitionDAOs.get(i).getCollectionID();
 			currentActorTypeDescription = testCollectionDefinitionDAOs.get(i).getCollectionTitle();
-			loadTestCollection();
+			displayTestCollection();
 		}
 	};
 
 	public void displayActor(String actorTypeName) {
 		currentActorTypeId = actorTypeName;
 		currentActorTypeDescription = getDescriptionForTestCollection(currentActorTypeId);
-		loadTestCollection();
+		displayTestCollection();
 	}
 
 	public void showActorTypeSelection() {
@@ -395,7 +408,7 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner, SiteMa
 	}
 
 	// load test results for a single test collection (actor type) for a single site
-	private void loadTestCollection() {
+	private void displayTestCollection() {
 		testDisplays.clear();  // so they reload
 		testsPanel.clear();
 
@@ -413,6 +426,7 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner, SiteMa
 			public void onSuccess(List<String> testIds) {
 				List<TestInstance> testInstances = new ArrayList<>();
 				for (String testId : testIds) testInstances.add(new TestInstance(testId));
+				testsPerActor.put(currentActorTypeId, testInstances);
 
 				// results (including logs) for a collection of tests
 				toolkitService.getTestsOverview(getCurrentTestSession(), testInstances, new AsyncCallback<List<TestOverviewDTO>>() {
@@ -582,7 +596,34 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner, SiteMa
 			clickEvent.preventDefault();
 			clickEvent.stopPropagation();
 
-			runTest(testInstance);
+			runTest(testInstance, null);
+		}
+	}
+
+	private class RunAllClickHandler implements ClickHandler, TestDone {
+		String actorTypeId;
+		List<TestInstance> tests = new ArrayList<TestInstance>();
+
+		RunAllClickHandler(String actorTypeId ) {
+			this.actorTypeId = actorTypeId;
+		}
+
+		@Override
+		public void onClick(ClickEvent clickEvent) {
+			clickEvent.preventDefault();
+			clickEvent.stopPropagation();
+
+			for (TestInstance testInstance : testsPerActor.get(actorTypeId))
+				tests.add(testInstance);
+			onDone(null);
+		}
+
+		@Override
+		public void onDone(TestInstance testInstance) {
+			if (tests.size() == 0) return;
+			TestInstance next = tests.get(0);
+			tests.remove(0);
+			runTest(next, this);
 		}
 	}
 
@@ -610,6 +651,36 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner, SiteMa
 					updateTestsHeader();
 				}
 			});
+		}
+	}
+
+	private class DeleteAllClickHandler implements ClickHandler {
+		String actorTypeId;
+
+		DeleteAllClickHandler(String actorTypeId) {
+			this.actorTypeId = actorTypeId;
+		}
+
+		@Override
+		public void onClick(ClickEvent clickEvent) {
+			clickEvent.preventDefault();
+			clickEvent.stopPropagation();
+			List<TestInstance> tests = testsPerActor.get(actorTypeId);
+			for (TestInstance testInstance : tests) {
+				toolkitService.deleteSingleTestResult(getCurrentTestSession(), testInstance, new AsyncCallback<TestOverviewDTO>() {
+					@Override
+					public void onFailure(Throwable throwable) {
+						new PopupMessage(throwable.getMessage());
+					}
+
+					@Override
+					public void onSuccess(TestOverviewDTO testOverviewDTO) {
+						displayTest(testOverviewDTO);
+						removeTestOverview(testOverviewDTO);
+						updateTestsHeader();
+					}
+				});
+			}
 		}
 	}
 
@@ -659,7 +730,7 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner, SiteMa
 	}
 
 	// if testInstance contains a sectionName then run that section, otherwise run entire test.
-	public void runTest(final TestInstance testInstance) {
+	public void runTest(final TestInstance testInstance, final TestDone testDone) {
 		Map<String, String> parms = new HashMap<>();
 		if (repOrchestrationResponse != null) {
 			parms.put("$patientid$", repOrchestrationResponse.getPid().asString());
@@ -683,6 +754,9 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner, SiteMa
 					displayTest(testOverviewDTO);
 					addTestOverview(testOverviewDTO);
 					updateTestsHeader();
+					// Schedule next test to be run
+					if (testDone != null)
+						testDone.onDone(testInstance);
 				}
 			});
 		} catch (Exception e) {

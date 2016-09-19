@@ -92,7 +92,7 @@ public class TestSectionComponent implements IsWidget {
             clickEvent.preventDefault();
             clickEvent.stopPropagation();
 
-            me.testRunner.runTest(testInstance);
+            me.testRunner.runTest(testInstance, null);
         }
     }
 

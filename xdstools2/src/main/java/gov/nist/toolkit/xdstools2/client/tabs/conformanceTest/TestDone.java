@@ -5,6 +5,6 @@ import gov.nist.toolkit.results.client.TestInstance;
 /**
  *
  */
-public interface TestRunner {
-    void runTest(final TestInstance testInstance, TestDone testDone);
+public interface TestDone {
+    void onDone(TestInstance testInstance);
 }
