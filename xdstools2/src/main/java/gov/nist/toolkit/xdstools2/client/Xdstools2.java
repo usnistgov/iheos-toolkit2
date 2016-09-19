@@ -213,8 +213,11 @@ public class Xdstools2  implements AcceptsOneWidget, IsWidget {
 
 	private void run2() {
 		buildTabsWrapper();
-		if (displayHomeTab)
-			ht.onAbstractTabLoad(false, "Home");
+
+		// If using ConfActor activity then home tab is a distraction
+		if (!displayHomeTab)
+			ht.setDisplayTab(false);
+		ht.onAbstractTabLoad(false, "Home");
 
 		History.addValueChangeHandler(new ValueChangeHandler<String>() {
 			public void onValueChange(ValueChangeEvent<String> event) {

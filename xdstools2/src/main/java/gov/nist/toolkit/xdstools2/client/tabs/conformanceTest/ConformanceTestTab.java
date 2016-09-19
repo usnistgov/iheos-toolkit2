@@ -52,12 +52,18 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner, SiteMa
 	private String currentActorTypeDescription;
 	private Site siteUnderTest = null;
 	private SiteSpec sitetoIssueTestAgainst = null;
+	private FlowPanel testsHeader = new FlowPanel();
+	private HTML testsHeaderTitle = new HTML("<h2>" + currentActorTypeDescription + " Tests</h2>");
+	private TestDisplayHeader testsHeaderBody = new TestDisplayHeader();
+	private final TestStatistics testStatistics = new TestStatistics();
 
 	// stuff that needs delayed setting when launched via activity
 	private String initTestSession = null;
 
 	// Testable actors
 	private List<TestCollectionDefinitionDAO> testCollectionDefinitionDAOs;
+	// testname ==> results
+	private Map<String, TestOverviewDTO> testOverviewDTOs = new HashMap<>();
 	// testId ==> overview
 //	private final Map<String, TestOverviewDTO> testOverviews = new HashMap<>();
 
@@ -67,6 +73,74 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner, SiteMa
 		toolPanel.add(tabBar);
 		toolPanel.add(initializationPanel);
 		toolPanel.add(testsPanel);
+
+		testsHeader.add(testsHeaderBody);
+		testsHeader.add(testsHeaderTitle);
+	}
+
+	private void addTestOverview(TestOverviewDTO dto) {
+		testOverviewDTOs.put(dto.getName(), dto);
+	}
+
+	private void removeTestOverview(TestOverviewDTO dto) {
+		testOverviewDTOs.remove(dto.getName());
+	}
+
+	/**
+	 * currentActorTypeDescription is initialized late so calling this when it is available
+	 * updates the display since it could not be constructed correctly at first.
+	 * This must be called after testCollectionDefinitionDAOs is initialized.
+	 */
+	private void updateTestsHeader() {
+
+		// Build statistics
+		testStatistics.clear();
+		if (testOverviewDTOs != null) {
+			for (TestOverviewDTO testOverview : testOverviewDTOs.values()) {
+				if (testOverview.isRun()) {
+					if (testOverview.isPass()) {
+						testStatistics.addSuccessfulTest();
+					} else {
+						testStatistics.addTestWithError();
+					}
+				} else {
+					testStatistics.addUnrunTest();
+				}
+			}
+		}
+
+		// Display statistics
+		testsHeaderTitle.setHTML("<h2>" + currentActorTypeDescription + " Tests</h2>");
+		testsHeaderBody.clear();
+		testsHeaderBody.add(new HTML(testStatistics.getReport()));
+
+		if (testStatistics.isAllRun()) {
+			if (testStatistics.isErrors()) {
+				testsHeaderBody.setBackgroundColorFailure();
+				testsHeaderBody.add(getStatusIcon(false));
+			} else {
+				testsHeaderBody.setBackgroundColorSuccess();
+				testsHeaderBody.add(getStatusIcon(true));
+			}
+		} else if (testStatistics.isNoneRun()) {
+			testsHeaderBody.setBackgroundColorNotRun();
+		} else {
+			testsHeaderBody.setBackgroundColorFailure();
+			testsHeaderBody.add(getStatusIcon(false));
+		}
+
+		testsHeaderBody.addStyleName("test-summary");
+	}
+
+	Image getStatusIcon(boolean good) {
+		Image status;
+		if (good) {
+			status = new Image("icons2/correct-24.png");
+		} else {
+			status = new Image("icons/ic_warning_black_24dp_1x.png");
+		}
+		status.addStyleName("right");
+		return status;
 	}
 
 	@Override
@@ -94,9 +168,6 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner, SiteMa
 				}
 			}
 		});
-
-		// List of sites
-//		buildSiteSelector();
 
 		tabBar.addSelectionHandler(actorSelectionHandler);
 
@@ -236,7 +307,17 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner, SiteMa
 
 	public void displayActor(String actorTypeName) {
 		currentActorTypeId = actorTypeName;
+		currentActorTypeDescription = getDescriptionForTestCollection(currentActorTypeId);
 		loadTestCollection();
+	}
+
+	public void showActorTypeSelection() {
+		for (int i=0; i<tabBar.getTabCount(); i++) {
+			if (currentActorTypeDescription.equals(tabBar.getTitle())) {
+				tabBar.selectTab(i);
+				return;
+			}
+		}
 	}
 
 	private String getDescriptionForTestCollection(String collectionId) {
@@ -298,6 +379,8 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner, SiteMa
 			public void onSuccess(List<TestCollectionDefinitionDAO> testCollectionDefinitionDAOs) {
 				me.testCollectionDefinitionDAOs = testCollectionDefinitionDAOs;
 				displayTestCollectionsTabBar();
+				currentActorTypeDescription = getDescriptionForTestCollection(currentActorTypeId);
+				updateTestsHeader();
 
 				// This is a little wierd being here. This depends on initTestSession
 				// which is set AFTER onTabLoad is run so run here - later in the initialization
@@ -339,11 +422,13 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner, SiteMa
 					}
 
 					public void onSuccess(List<TestOverviewDTO> testOverviews) {
-						testsPanel.add(new HTML("<h2>" + currentActorTypeDescription + " Tests</h2>"));
+						testsPanel.add(testsHeader);
+						testStatistics.setTestCount(testOverviews.size());
 						for (TestOverviewDTO testOverview : testOverviews) {
-//							me.testOverviews.put(testOverview.getName(), testOverview);
+							addTestOverview(testOverview);
 							displayTest(testOverview);
 						}
+						updateTestsHeader();
 
 						toolkitService.getAutoInitConformanceTesting(new AsyncCallback<Boolean>() {
 							@Override
@@ -472,6 +557,9 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner, SiteMa
 		body.add(new HTML("<p><b>Sections:</b></p>"));
 		displaySections(testOverview, body);
 
+		if (!isNew)
+			updateTestsHeader();
+
 	}
 
 	private void displayInteractionDiagram(TestOverviewDTO testResultDTO, FlowPanel body) {
@@ -518,6 +606,8 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner, SiteMa
 				@Override
 				public void onSuccess(TestOverviewDTO testOverviewDTO) {
 					displayTest(testOverviewDTO);
+					removeTestOverview(testOverviewDTO);
+					updateTestsHeader();
 				}
 			});
 		}
@@ -543,20 +633,20 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner, SiteMa
 
 	private void displayInspectorTab(List<TestInstance> testInstances) {
 		toolkitService.getTestResults(testInstances, getCurrentTestSession(), new AsyncCallback<Map<String, Result>>() {
-            @Override
-            public void onFailure(Throwable throwable) {
-                new PopupMessage(throwable.getMessage());
-            }
+			@Override
+			public void onFailure(Throwable throwable) {
+				new PopupMessage(throwable.getMessage());
+			}
 
-            @Override
-            public void onSuccess(Map<String, Result> resultMap) {
-                MetadataInspectorTab itab = new MetadataInspectorTab();
-                itab.setResults(resultMap.values());
-                itab.setSiteSpec(new SiteSpec(currentSiteName));
+			@Override
+			public void onSuccess(Map<String, Result> resultMap) {
+				MetadataInspectorTab itab = new MetadataInspectorTab();
+				itab.setResults(resultMap.values());
+				itab.setSiteSpec(new SiteSpec(currentSiteName));
 //					itab.setToolkitService(me.toolkitService);
-                itab.onTabLoad(true, "Insp");
-            }
-        });
+				itab.onTabLoad(true, "Insp");
+			}
+		});
 	}
 
 	// display sections within test
@@ -591,7 +681,8 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner, SiteMa
 				public void onSuccess(TestOverviewDTO testOverviewDTO) {
 					// returned status of entire test
 					displayTest(testOverviewDTO);
-
+					addTestOverview(testOverviewDTO);
+					updateTestsHeader();
 				}
 			});
 		} catch (Exception e) {

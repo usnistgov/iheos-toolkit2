@@ -9,34 +9,37 @@ import gov.nist.toolkit.xdstools2.client.tabs.genericQueryTab.GenericQueryTab;
 import gov.nist.toolkit.xdstools2.client.toolLauncher.ToolLauncher;
 
 public class HomeTab extends GenericQueryTab {
-	String aboutMessage = null;
-	HorizontalFlowPanel menubar = new HorizontalFlowPanel();
-
+	private String aboutMessage = null;
+	private HorizontalFlowPanel menubar = new HorizontalFlowPanel();
+	private boolean displayTab = true;
 
 	public HomeTab() {
 		super(new FindDocumentsSiteActorManager());
-//		super(new GetDocumentsSiteActorManager());
 	}
 
+	public void setDisplayTab(boolean displayTab) {
+		this.displayTab = displayTab;
+	}
 
 	@Override
 //	public void onTabLoad(final Xdstools2 container, boolean select, String eventName) {
 	public void onTabLoad(boolean select, String eventName) {
 
-		addActorReloader();
+		if (displayTab) {
+			addActorReloader();
 
-		select = true;
-		registerTab(select, eventName);
-//		tabTopPanel.add(new HTML("Menu Bar"));
-		tabTopPanel.add(menubar);
+			select = true;
+			registerTab(select, eventName);
+			tabTopPanel.add(menubar);
 
-		menubar.add(
-				HyperlinkFactory.launchTool("&nbsp;&nbsp;[" + ToolLauncher.toolConfigTabLabel + "]&nbsp;&nbsp;", new ToolLauncher(ToolLauncher.toolConfigTabLabel))
-		);
+			menubar.add(
+					HyperlinkFactory.launchTool("&nbsp;&nbsp;[" + ToolLauncher.toolConfigTabLabel + "]&nbsp;&nbsp;", new ToolLauncher(ToolLauncher.toolConfigTabLabel))
+			);
 
-		Frame frame = new Frame("site/index.html");
-		frame.setSize("100em", "100em");
-		tabTopPanel.add(frame);
+			Frame frame = new Frame("site/index.html");
+			frame.setSize("100em", "100em");
+			tabTopPanel.add(frame);
+		}
 
 		new MainGridLoader().featuresLoadedCallback();
 	}
@@ -70,7 +73,7 @@ public class HomeTab extends GenericQueryTab {
 
 	}
 
-	private void loadIHEGrid(int startingColumn) {
+	public void loadIHEGrid(int startingColumn) {
 
 
 		// ************************************************************************	
@@ -83,6 +86,9 @@ public class HomeTab extends GenericQueryTab {
 		Xdstools2.addtoMainMenu(addHTML("<h2>Toolkit</h2>"));
 
 		Xdstools2.addtoMainMenu(HyperlinkFactory.launchTool(ToolLauncher.homeTabLabel, new ToolLauncher(ToolLauncher.homeTabLabel)));
+		row++;
+
+		Xdstools2.addtoMainMenu(HyperlinkFactory.launchTool(ToolLauncher.toolConfigTabLabel, new ToolLauncher(ToolLauncher.toolConfigTabLabel)));
 		row++;
 
 		Xdstools2.addtoMainMenu(addHTML("<h3>Queries & Retrieves</h3>"));
@@ -226,7 +232,7 @@ public class HomeTab extends GenericQueryTab {
 		return -1;
 	}
 
-	AsyncCallback<String> getPasswordCallback = new AsyncCallback<String> () {
+	private AsyncCallback<String> getPasswordCallback = new AsyncCallback<String> () {
 
 		public void onFailure(Throwable caught) {
 			new PopupMessage("Call to retrieve admin password failed: " + caught.getMessage());
