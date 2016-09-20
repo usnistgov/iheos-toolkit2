@@ -19,25 +19,20 @@ import gov.nist.toolkit.xdstools2.client.command.command.GetAllSimConfigsCommand
 import gov.nist.toolkit.xdstools2.client.command.command.GetAllSitesCommand;
 import gov.nist.toolkit.xdstools2.client.command.request.GetAllSimConfigsRequest;
 import gov.nist.toolkit.xdstools2.client.event.TestSessionChangedEvent;
+import gov.nist.toolkit.xdstools2.client.event.Xdstools2EventBus;
 import gov.nist.toolkit.xdstools2.client.event.testSession.TestSessionChangedEventHandler;
 import gov.nist.toolkit.xdstools2.client.siteActorManagers.BaseSiteActorManager;
 import gov.nist.toolkit.xdstools2.client.siteActorManagers.FindDocumentsSiteActorManager;
 import gov.nist.toolkit.xdstools2.client.tabs.SimulatorMessageViewTab;
 import gov.nist.toolkit.xdstools2.client.tabs.genericQueryTab.GenericQueryTab;
 import gov.nist.toolkit.xdstools2.client.tabs.simulatorControlTab.od.OddsEditTab;
+import gov.nist.toolkit.xdstools2.client.util.ClientUtils;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
 public class SimulatorControlTab extends GenericQueryTab {
-
-	public SimulatorControlTab(BaseSiteActorManager siteActorManager) {
-		super(siteActorManager);
-	}
-
-	public SimulatorControlTab() {
-		super(new FindDocumentsSiteActorManager());	}
 
 	ListBox         actorSelectListBox = new ListBox();
 	HorizontalPanel simConfigWrapperPanel = new HorizontalPanel();
@@ -50,6 +45,13 @@ public class SimulatorControlTab extends GenericQueryTab {
 
 	SimConfigSuper simConfigSuper;
 	SimulatorControlTab self;
+
+	public SimulatorControlTab(BaseSiteActorManager siteActorManager) {
+		super(siteActorManager);
+	}
+
+	public SimulatorControlTab() {
+		super(new FindDocumentsSiteActorManager());	}
 
 	@Override
 	protected Widget buildUI() {
@@ -75,7 +77,7 @@ public class SimulatorControlTab extends GenericQueryTab {
 		registerTab(select, eventName);
 
 		addActorReloader();
-		
+
 		runEnabled = false;
 		samlEnabled = false;
 		tlsEnabled = false;
@@ -154,12 +156,13 @@ public class SimulatorControlTab extends GenericQueryTab {
 					simConfigSuper.add(config);
 				simConfigSuper.reloadSimulators();
 				loadSimStatus(getCurrentTestSession());
+				((Xdstools2EventBus) ClientUtils.INSTANCE.getEventBus()).fireSimulatorsUpdatedEvent();
 			}
 		});
 	} // createNewSimulator
-	
-	
-	
+
+
+
 	void loadActorSelectListBox() {
 		getToolkitServices().getActorTypeNames(new AsyncCallback<List<String>>() {
 

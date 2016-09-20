@@ -1,6 +1,5 @@
 package gov.nist.toolkit.xdstools2.client.tabs.genericQueryTab;
 
-import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Style;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
@@ -19,10 +18,10 @@ import gov.nist.toolkit.sitemanagement.client.TransactionOfferings;
 import gov.nist.toolkit.xdstools2.client.*;
 import gov.nist.toolkit.xdstools2.client.command.command.GetTransactionOfferingsCommand;
 import gov.nist.toolkit.xdstools2.client.event.EnvironmentChangedEvent;
+import gov.nist.toolkit.xdstools2.client.event.SimulatorUpdatedEvent;
 import gov.nist.toolkit.xdstools2.client.event.Xdstools2EventBus;
 import gov.nist.toolkit.xdstools2.client.event.testSession.TestSessionManager2;
 import gov.nist.toolkit.xdstools2.client.siteActorManagers.BaseSiteActorManager;
-import gov.nist.toolkit.xdstools2.client.util.ClientFactory;
 import gov.nist.toolkit.xdstools2.client.util.ClientUtils;
 import gov.nist.toolkit.xdstools2.client.widgets.PidWidget;
 
@@ -121,6 +120,13 @@ public abstract class GenericQueryTab  extends ToolWindow {
                 refreshData();
 			}
 		});
+
+        ((Xdstools2EventBus) ClientUtils.INSTANCE.getEventBus()).addSimulatorsUpdatedEventHandler(new SimulatorUpdatedEvent.SimulatorUpdatedEventHandler() {
+            @Override
+            public void onSimulatorsUpdate(SimulatorUpdatedEvent simulatorUpdatedEvent) {
+                reloadTransactionOfferings();
+            }
+        });
 
 		// when called as HomeTab is built, the wrong session services this call, this
 		// makes sure the job gets done
@@ -359,6 +365,9 @@ public abstract class GenericQueryTab  extends ToolWindow {
 	// so it can be overloaded
 	public void onReload() {}
 
+    /**
+     * Call on backend to reload transactions (simulators).
+     */
 	public void reloadTransactionOfferings() {
 		new GetTransactionOfferingsCommand() {
 
@@ -366,7 +375,6 @@ public abstract class GenericQueryTab  extends ToolWindow {
 			public void onComplete(TransactionOfferings var1) {
 				GenericQueryTab.transactionOfferings = var1;
 				redisplay(false);
-
 			}
 		}.run(getCommandContext());
 	}
@@ -567,7 +575,6 @@ public abstract class GenericQueryTab  extends ToolWindow {
 
     List<Site> getSiteList(TransactionType tt) {
         List<Site> sites = siteLoader.findSites(tt, isTLS());
-
         List<String> siteNames = new ArrayList<String>();
         for (Site site : sites)
             siteNames.add(site.getName());
@@ -589,6 +596,7 @@ public abstract class GenericQueryTab  extends ToolWindow {
         if (transactionSelectionManager == null)
             transactionSelectionManager = new TransactionSelectionManager(couplings, this);
         List<Site> sites = getSiteList(tt);
+
         transactionSelectionManager.addTransactionType(tt, sites);
 
         int cols = 5;

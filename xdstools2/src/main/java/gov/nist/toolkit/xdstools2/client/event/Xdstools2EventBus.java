@@ -23,4 +23,12 @@ public class Xdstools2EventBus extends SimpleEventBus {
     public void fireEnvironmentChangedEvent(String selectedEnvironment) {
         fireEvent(new EnvironmentChangedEvent(selectedEnvironment));
     }
+
+    public void fireSimulatorsUpdatedEvent() {
+        fireEvent(new SimulatorUpdatedEvent());
+    }
+
+    public HandlerRegistration addSimulatorsUpdatedEventHandler(SimulatorUpdatedEvent.SimulatorUpdatedEventHandler handler){
+        return addHandler(SimulatorUpdatedEvent.TYPE,handler);
+    }
 }
