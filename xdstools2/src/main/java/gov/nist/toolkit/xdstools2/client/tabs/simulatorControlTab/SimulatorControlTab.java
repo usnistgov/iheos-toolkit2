@@ -1,6 +1,10 @@
 package gov.nist.toolkit.xdstools2.client.tabs.simulatorControlTab;
 
+import com.google.gwt.dom.client.Style;
 import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.*;
 import gov.nist.toolkit.actorfactory.client.SimId;
@@ -103,9 +107,9 @@ public class SimulatorControlTab extends GenericQueryTab {
 		tabTopPanel.add(HtmlMarkup.html("<br />"));
 
 		VerticalPanel tableWrapper = new VerticalPanel();
-		table.setBorderWidth(1);
+//		table.setBorderWidth(1);
 		HTML tableTitle = new HTML();
-		tableTitle.setHTML("<h3>Simulators for this test session</h3>");
+		tableTitle.setHTML("<h2>Simulators for this test session</h2>");
 		tableWrapper.add(tableTitle);
 		tableWrapper.add(table);
 
@@ -193,11 +197,16 @@ public class SimulatorControlTab extends GenericQueryTab {
 		table.removeAllRows();
 		table.clear();
 
+		table.getElement().setId("simConfigTable");
 		int row = 0;
-		table.setText(row, nameColumn, "Name");
-		table.setText(row, idColumn, "ID");
-		table.setText(row, typeColumn, "Type");
-		table.setText(row, pidPortColumn, "Patient Feed Port");
+		table.setHTML(row, nameColumn, "<b>Name</b>");
+		table.getFlexCellFormatter().setStyleName(0,nameColumn,"lavenderTh");
+		table.setHTML(row, idColumn, "<b>ID</b>");
+		table.getFlexCellFormatter().setStyleName(0,idColumn,"lavenderTh");
+		table.setHTML(row, typeColumn, "<b>Type</b>");
+		table.getFlexCellFormatter().setStyleName(0,typeColumn,"lavenderTh");
+		table.setHTML(row, pidPortColumn, "<b>Patient Feed Port</b>");
+		table.getFlexCellFormatter().setStyleName(0,pidPortColumn,"lavenderTh");
 	}
 
 	void loadSimStatus() {
@@ -260,7 +269,8 @@ public class SimulatorControlTab extends GenericQueryTab {
 	private int addSimStats(int column, List<SimulatorConfig> configs, List<SimulatorStats> statss) {
 		for (int colOffset=0; colOffset<SimulatorStats.displayOrder.size(); colOffset++) {
 			String statType = SimulatorStats.displayOrder.get(colOffset);
-			table.setText(0, column+colOffset, statType);
+			table.setHTML(0, column+colOffset, "<b>" + statType + "</b>");
+			table.getFlexCellFormatter().setStyleName(0,column+colOffset,"lavenderTh");
 		}
 		int row = 1;
 		for (SimulatorConfig config : configs) {
@@ -285,12 +295,20 @@ public class SimulatorControlTab extends GenericQueryTab {
 	}
 
 	private void addButtonPanel(int row, int maxColumn, final SimulatorConfig config) {
-		SimId simId = config.getId();
+
+		table.setHTML(0, maxColumn, "<b>Action</b>");
+		table.getFlexCellFormatter().setStyleName(0,maxColumn,"lavenderTh");
+
+		final SimId simId = config.getId();
 		HorizontalPanel buttonPanel = new HorizontalPanel();
+		buttonPanel.getElement().setId("scmButtonPanel");
 		table.setWidget(row, maxColumn, buttonPanel);
 
-		Button logButton = new Button("Transaction Log");
-		logButton.addClickHandler(new ClickHandlerData<SimulatorConfig>(config) {
+		Image logImg = new Image("icons2/log-file-format-symbol.png");
+		logImg.setTitle("View transaction logs");
+		logImg.setAltText("A picture of a log book.");
+		applyImgIconStyle(logImg);
+		logImg.addClickHandler(new ClickHandlerData<SimulatorConfig>(config) {
 			@Override
 			public void onClick(ClickEvent clickEvent) {
 				SimulatorConfig config = getData();
@@ -298,10 +316,13 @@ public class SimulatorControlTab extends GenericQueryTab {
 				viewTab.onTabLoad(true, config.getId().toString());
 			}
 		});
-		buttonPanel.add(logButton);
+		buttonPanel.add(logImg);
 
-		Button pidButton = new Button("Patient ID Feed");
-		pidButton.addClickHandler(new ClickHandlerData<SimulatorConfig>(config) {
+		Image pidImg = new Image("icons2/id.png");
+		pidImg.setTitle("Patient ID Feed");
+		pidImg.setAltText("An ID element.");
+		applyImgIconStyle(pidImg);
+		pidImg.addClickHandler(new ClickHandlerData<SimulatorConfig>(config) {
 			@Override
 			public void onClick(ClickEvent clickEvent) {
 				SimulatorConfig config = getData();
@@ -309,10 +330,13 @@ public class SimulatorControlTab extends GenericQueryTab {
 				editTab.onTabLoad(true, "PID-Edit");
 			}
 		});
-		buttonPanel.add(pidButton);
+		buttonPanel.add(pidImg);
 
-		Button editButton = new Button("Configure");
-		editButton.addClickHandler(new ClickHandlerData<SimulatorConfig>(config) {
+		Image editImg = new Image("icons2/edit.png");
+		editImg.setTitle("Edit Simulator Configuration");
+		editImg.setAltText("A pencil writing.");
+		applyImgIconStyle(editImg);
+		editImg.addClickHandler(new ClickHandlerData<SimulatorConfig>(config) {
 			@Override
 			public void onClick(ClickEvent clickEvent) {
 				SimulatorConfig config = getData();
@@ -332,10 +356,14 @@ public class SimulatorControlTab extends GenericQueryTab {
 
 			}
 		});
-		buttonPanel.add(editButton);
+		buttonPanel.add(editImg);
 
-		Button deleteButton = new Button("Delete");
-		deleteButton.addClickHandler(new ClickHandlerData<SimulatorConfig>(config) {
+		Image deleteImg = new Image("icons2/garbage.png");
+		deleteImg.setTitle("Delete");
+		deleteImg.setAltText("A garbage can.");
+		applyImgIconStyle(deleteImg);
+
+		final ClickHandlerData<SimulatorConfig> clickHandlerData =  new ClickHandlerData<SimulatorConfig>(config) {
 			@Override
 			public void onClick(ClickEvent clickEvent) {
 				SimulatorConfig config = getData();
@@ -343,16 +371,53 @@ public class SimulatorControlTab extends GenericQueryTab {
 				handler.delete();
                 ((Xdstools2EventBus) ClientUtils.INSTANCE.getEventBus()).fireSimulatorsUpdatedEvent();
 			}
+		};
+
+		deleteImg.addClickHandler(new ClickHandler() {
+			@Override
+			public void onClick(ClickEvent clickEvent) {
+				VerticalPanel body = new VerticalPanel();
+				body.add(new HTML("<p>Delete " + config.getId().toString() + "?</p>"));
+				Button actionButton = new Button("Yes");
+				actionButton.addClickHandler(
+					clickHandlerData
+				);
+				SafeHtmlBuilder safeHtmlBuilder = new SafeHtmlBuilder();
+				safeHtmlBuilder.appendHtmlConstant("<img src=\"icons2/garbage.png\" height=\"16\" width=\"16\"/>");
+				safeHtmlBuilder.appendHtmlConstant("Confirm Delete Simulator");
+                new PopupMessage(safeHtmlBuilder.toSafeHtml() , body, actionButton);
+			}
 		});
-		buttonPanel.add(deleteButton);
 
-		String u = "<a href=\"" +
-				"siteconfig/" + simId.toString() + "\"" +
-				" target=\"_blank\"" +
-				">Download Site File</a>";
-		HTML siteDownload = new HTML(u);
 
-		buttonPanel.add(siteDownload);
+		buttonPanel.add(deleteImg);
+
+		Image fileDownload = new Image("icons2/download.png");
+		fileDownload.setTitle("Download Site File");
+		fileDownload.setAltText("An XML document with a download arrow.");
+		applyImgIconStyle(fileDownload);
+		fileDownload.addClickHandler(new ClickHandler() {
+			@Override
+			public void onClick(ClickEvent clickEvent) {
+				Window.open("siteconfig/"+simId.toString(), "_blank","");
+			}
+		});
+
+		buttonPanel.add(fileDownload);
+
+		// Flaticon credits
+		// <div>Icons made by <a href="http://www.flaticon.com/authors/madebyoliver" title="Madebyoliver">Madebyoliver</a> from <a href="http://www.flaticon.com" title="Flaticon">www.flaticon.com</a> is licensed by <a href="http://creativecommons.org/licenses/by/3.0/" title="Creative Commons BY 3.0" target="_blank">CC 3.0 BY</a></div>
+		// <div>Icons made by <a href="http://www.freepik.com" title="Freepik">Freepik</a> from <a href="http://www.flaticon.com" title="Flaticon">www.flaticon.com</a> is licensed by <a href="http://creativecommons.org/licenses/by/3.0/" title="Creative Commons BY 3.0" target="_blank">CC 3.0 BY</a></div>
+		// <div>Icons made by <a href="http://www.flaticon.com/authors/retinaicons" title="Retinaicons">Retinaicons</a> from <a href="http://www.flaticon.com" title="Flaticon">www.flaticon.com</a> is licensed by <a href="http://creativecommons.org/licenses/by/3.0/" title="Creative Commons BY 3.0" target="_blank">CC 3.0 BY</a></div>
+		// <div>Icons made by <a href="http://www.flaticon.com/authors/gregor-cresnar" title="Gregor Cresnar">Gregor Cresnar</a> from <a href="http://www.flaticon.com" title="Flaticon">www.flaticon.com</a> is licensed by <a href="http://creativecommons.org/licenses/by/3.0/" title="Creative Commons BY 3.0" target="_blank">CC 3.0 BY</a></div>
+	}
+
+	private void applyImgIconStyle(Image imgIcon) {
+		imgIcon.setWidth("24px");
+		imgIcon.setHeight("24px");
+		imgIcon.getElement().getStyle().setVerticalAlign(Style.VerticalAlign.BOTTOM);
+		imgIcon.getElement().getStyle().setCursor(Style.Cursor.POINTER);
+		imgIcon.getElement().getStyle().setMargin(6, Style.Unit.PX);
 	}
 
 	public String getWindowShortName() {

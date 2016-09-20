@@ -82,6 +82,35 @@ public class CodesUpdater {
      * @param testFile path to the testkit folder which contains the test section to explore.
      * @throws IOException
      */
+<<<<<<< HEAD
+    void exploreTests(File testFile) throws IOException {
+        try {
+            File[] dirs = testFile.listFiles();
+            if (dirs == null) {
+                System.out.println("No tests defined in " + testFile.toString());
+                // TODO throw an exception?!
+                out+="No tests defined in " + testFile.toString() +"\n";
+//                error = true;
+            }else {
+                for (int i = 0; i < dirs.length; i++) {
+                    File testDir = dirs[i];
+                    if (testDir.getName().equals(".svn"))
+                        continue;
+                    if (testDir.isDirectory()) {
+                        exploreTests(testDir);
+                    } else {
+                        if ("testplan.xml".equals(testDir.getName())) {
+                            // read testplan.xml
+                            String testplanContent = Io.stringFromFile(testDir);
+                            OMElement testplanNode = Util.parse_xml(testplanContent);
+                            // retrieve the TestStep nodes
+                            Iterator<OMElement> steps = testplanNode.getChildrenWithName(new QName("TestStep"));
+                            while (steps.hasNext()) {
+                                // find transaction nodes among the nodes under exploration (Under a TestStep)
+                                Iterator<OMElement> children = steps.next().getChildElements();
+                                exploreChildren(children, testFile);
+                            }
+=======
     void exploreTests(File testFile) throws IOException,XdsInternalException {
         File[] dirs = testFile.listFiles();
         if (dirs == null) {
@@ -107,6 +136,7 @@ public class CodesUpdater {
                             // find transaction nodes among the nodes under exploration (Under a TestStep)
                             Iterator<OMElement> children = steps.next().getChildElements();
                             exploreChildren(children, testFile);
+>>>>>>> feature/repackage
                         }
                     }
                 }

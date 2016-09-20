@@ -191,7 +191,7 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner, SiteMa
 		getToolkitServices().getSite(site, new AsyncCallback<Site>() {
 			@Override
 			public void onFailure(Throwable throwable) {
-//				new PopupMessage("getSiteName threw error: " + throwable.getMessage());
+				new PopupMessage("getSiteName threw error: " + throwable.getMessage());
 			}
 
 			@Override
