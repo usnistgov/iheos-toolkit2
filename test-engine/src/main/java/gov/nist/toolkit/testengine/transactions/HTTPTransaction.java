@@ -6,6 +6,7 @@ import gov.nist.toolkit.registrymsg.registry.RegistryResponseParser;
 import gov.nist.toolkit.testengine.engine.StepContext;
 import gov.nist.toolkit.utilities.io.Io;
 import gov.nist.toolkit.utilities.xml.Util;
+import gov.nist.toolkit.xdsexception.ExceptionUtil;
 import gov.nist.toolkit.xdsexception.client.MetadataException;
 import gov.nist.toolkit.xdsexception.client.XdsInternalException;
 import org.apache.axiom.om.OMElement;
@@ -71,19 +72,19 @@ public class HTTPTransaction extends BasicTransaction {
                 throw new XdsInternalException("Endpoint is null");
         }
 
-        CloseableHttpClient httpClient = HttpClients.createDefault();
-        HttpPost httpPost = new HttpPost(endpoint);
-
-        for (String name : headers.keySet()) {
-            List<String> values = headers.get(name);
-            for (String value : values) {
-                httpPost.addHeader(name, value);
-            }
-        }
-        testLog.add_name_value(instruction_output, "OutHeader", headersToString());
-        testLog.add_name_value(instruction_output, "InputMetadata", Io.stringFromFile(file));
-
         try {
+            CloseableHttpClient httpClient = HttpClients.createDefault();
+            HttpPost httpPost = new HttpPost(endpoint);
+
+            for (String name : headers.keySet()) {
+                List<String> values = headers.get(name);
+                for (String value : values) {
+                    httpPost.addHeader(name, value);
+                }
+            }
+            testLog.add_name_value(instruction_output, "OutHeader", headersToString());
+            testLog.add_name_value(instruction_output, "InputMetadata", Io.stringFromFile(file));
+
             InputStreamEntity reqEntity = new InputStreamEntity(new FileInputStream(file), -1, ContentType.APPLICATION_OCTET_STREAM);
             reqEntity.setChunked(true);
             httpPost.setEntity(reqEntity);
@@ -126,8 +127,8 @@ public class HTTPTransaction extends BasicTransaction {
             } finally {
                 //response.close();
             }
-        } catch (Exception e) {
-            s_ctx.set_error(e.getMessage());
+        } catch (Throwable e) {
+            s_ctx.set_error(ExceptionUtil.exception_details(e));
             failed();
         } finally {
             //httpclient.close();

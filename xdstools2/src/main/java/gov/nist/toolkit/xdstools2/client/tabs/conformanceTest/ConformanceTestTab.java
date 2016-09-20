@@ -91,7 +91,7 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner, SiteMa
 	 * updates the display since it could not be constructed correctly at first.
 	 * This must be called after testCollectionDefinitionDAOs is initialized.
 	 */
-	private void updateTestsHeader() {
+	private void updateTestsOverviewHeader() {
 
 		// Build statistics
 		testStatistics.clear();
@@ -112,13 +112,8 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner, SiteMa
 		testsHeaderBody.clear();
 		testsHeaderBody.add(new HTML(testStatistics.getReport()));
 
-		Image delete = new Image("icons2/garbage-24.png");
-		delete.addStyleName("right");
-		delete.addClickHandler(new DeleteAllClickHandler(currentActorTypeId));
-		delete.setTitle("Delete Log");
-		delete.addStyleName("right");
-		testsHeaderBody.add(delete);
 
+		// Add controls
 		Image play = new Image("icons2/play-24.png");
 		play.setTitle("Run");
 		play.addClickHandler(new RunAllClickHandler(currentActorTypeId));
@@ -141,6 +136,13 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner, SiteMa
 		else {
 			testsHeaderBody.setBackgroundColorNotRun();
 		}
+
+		Image delete = new Image("icons2/garbage-24.png");
+		delete.addStyleName("right");
+		delete.addClickHandler(new DeleteAllClickHandler(currentActorTypeId));
+		delete.setTitle("Delete Log");
+		delete.addStyleName("right");
+		testsHeaderBody.add(delete);
 
 		testsHeaderBody.addStyleName("test-summary");
 	}
@@ -393,7 +395,7 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner, SiteMa
 				me.testCollectionDefinitionDAOs = testCollectionDefinitionDAOs;
 				displayTestCollectionsTabBar();
 				currentActorTypeDescription = getDescriptionForTestCollection(currentActorTypeId);
-				updateTestsHeader();
+				updateTestsOverviewHeader();
 
 				// This is a little wierd being here. This depends on initTestSession
 				// which is set AFTER onTabLoad is run so run here - later in the initialization
@@ -442,7 +444,7 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner, SiteMa
 							addTestOverview(testOverview);
 							displayTest(testOverview);
 						}
-						updateTestsHeader();
+						updateTestsOverviewHeader();
 
 						toolkitService.getAutoInitConformanceTesting(new AsyncCallback<Boolean>() {
 							@Override
@@ -572,7 +574,7 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner, SiteMa
 		displaySections(testOverview, body);
 
 		if (!isNew)
-			updateTestsHeader();
+			updateTestsOverviewHeader();
 
 	}
 
@@ -648,7 +650,7 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner, SiteMa
 				public void onSuccess(TestOverviewDTO testOverviewDTO) {
 					displayTest(testOverviewDTO);
 					removeTestOverview(testOverviewDTO);
-					updateTestsHeader();
+					updateTestsOverviewHeader();
 				}
 			});
 		}
@@ -677,7 +679,7 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner, SiteMa
 					public void onSuccess(TestOverviewDTO testOverviewDTO) {
 						displayTest(testOverviewDTO);
 						removeTestOverview(testOverviewDTO);
-						updateTestsHeader();
+						updateTestsOverviewHeader();
 					}
 				});
 			}
@@ -753,7 +755,7 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner, SiteMa
 					// returned status of entire test
 					displayTest(testOverviewDTO);
 					addTestOverview(testOverviewDTO);
-					updateTestsHeader();
+					updateTestsOverviewHeader();
 					// Schedule next test to be run
 					if (testDone != null)
 						testDone.onDone(testInstance);
