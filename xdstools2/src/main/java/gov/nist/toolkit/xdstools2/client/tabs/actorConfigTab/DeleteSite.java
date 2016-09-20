@@ -6,6 +6,7 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 import gov.nist.toolkit.xdstools2.client.AdminPasswordDialogBox;
 import gov.nist.toolkit.xdstools2.client.PasswordManagement;
 import gov.nist.toolkit.xdstools2.client.PopupMessage;
+import gov.nist.toolkit.xdstools2.client.event.Xdstools2EventBus;
 import gov.nist.toolkit.xdstools2.client.util.ClientUtils;
 
 class DeleteSite implements ClickHandler {
@@ -29,6 +30,7 @@ class DeleteSite implements ClickHandler {
 		}
 		if (PasswordManagement.isSignedIn) {
 			deleteSignedInCallback.onSuccess(true);
+			((Xdstools2EventBus) ClientUtils.INSTANCE.getEventBus()).fireActorsConfigUpdatedEvent();
 		}
 		else {
 			PasswordManagement.addSignInCallback(deleteSignedInCallback);

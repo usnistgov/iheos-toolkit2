@@ -24,11 +24,37 @@ public class Xdstools2EventBus extends SimpleEventBus {
         fireEvent(new EnvironmentChangedEvent(selectedEnvironment));
     }
 
+    /**
+     * Notify the other tabs though the eventbus that the simulators have been updated.
+     */
     public void fireSimulatorsUpdatedEvent() {
         fireEvent(new SimulatorUpdatedEvent());
     }
 
+    /**
+     * Enable to know when the event bus is notified that the simulators have been updated and the handler itself
+     * tells what to do after getting notified.
+     * @param handler
+     * @return
+     */
     public HandlerRegistration addSimulatorsUpdatedEventHandler(SimulatorUpdatedEvent.SimulatorUpdatedEventHandler handler){
         return addHandler(SimulatorUpdatedEvent.TYPE,handler);
+    }
+
+    /**
+     * Notify the event bus that the actors config has changed.
+     */
+    public void fireActorsConfigUpdatedEvent() {
+        fireEvent(new ActorConfigUpdatedEvent());
+    }
+
+    /**
+     * Enable to know when the event bus is notified that the actors config has changed and the handler itself
+     * tells what to do after getting notified.
+     * @param handler
+     * @return
+     */
+    public HandlerRegistration addActorsConfigUpdatedEventHandler(ActorConfigUpdatedEvent.ActorConfigUpdatedEventHandler handler){
+        return addHandler(ActorConfigUpdatedEvent.TYPE,handler);
     }
 }

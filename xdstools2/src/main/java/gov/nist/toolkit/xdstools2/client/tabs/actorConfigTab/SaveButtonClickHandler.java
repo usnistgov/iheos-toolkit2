@@ -5,6 +5,8 @@ import com.google.gwt.event.dom.client.ClickHandler;
 import gov.nist.toolkit.xdstools2.client.AdminPasswordDialogBox;
 import gov.nist.toolkit.xdstools2.client.PasswordManagement;
 import gov.nist.toolkit.xdstools2.client.PopupMessage;
+import gov.nist.toolkit.xdstools2.client.event.Xdstools2EventBus;
+import gov.nist.toolkit.xdstools2.client.util.ClientUtils;
 
 class SaveButtonClickHandler implements ClickHandler {
 	/**
@@ -24,13 +26,13 @@ class SaveButtonClickHandler implements ClickHandler {
 
 		if (PasswordManagement.isSignedIn) {
 			actorConfigTab.saveSignedInCallback.onSuccess(true);
+			((Xdstools2EventBus) ClientUtils.INSTANCE.getEventBus()).fireActorsConfigUpdatedEvent();
 		}
 		else {
 			PasswordManagement.addSignInCallback(actorConfigTab.saveSignedInCallback);
 
 			new AdminPasswordDialogBox(actorConfigTab.getTabTopPanel());
 		}
-
 	}
 
 }

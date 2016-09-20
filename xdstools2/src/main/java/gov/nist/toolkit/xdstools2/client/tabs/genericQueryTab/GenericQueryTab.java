@@ -4,6 +4,7 @@ import com.google.gwt.dom.client.Style;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.*;
 import gov.nist.toolkit.actortransaction.client.ActorType;
@@ -17,6 +18,7 @@ import gov.nist.toolkit.sitemanagement.client.SiteSpec;
 import gov.nist.toolkit.sitemanagement.client.TransactionOfferings;
 import gov.nist.toolkit.xdstools2.client.*;
 import gov.nist.toolkit.xdstools2.client.command.command.GetTransactionOfferingsCommand;
+import gov.nist.toolkit.xdstools2.client.event.ActorConfigUpdatedEvent;
 import gov.nist.toolkit.xdstools2.client.event.EnvironmentChangedEvent;
 import gov.nist.toolkit.xdstools2.client.event.SimulatorUpdatedEvent;
 import gov.nist.toolkit.xdstools2.client.event.Xdstools2EventBus;
@@ -108,7 +110,7 @@ public abstract class GenericQueryTab  extends ToolWindow {
      * Super constructor.
      * @param siteActorManager
      */
-	public GenericQueryTab(BaseSiteActorManager siteActorManager) {
+	public GenericQueryTab(final BaseSiteActorManager siteActorManager) {
 		me = this;
 		this.siteActorManager = siteActorManager;
 		if (siteActorManager != null)
@@ -127,6 +129,14 @@ public abstract class GenericQueryTab  extends ToolWindow {
                 reloadTransactionOfferings();
             }
         });
+
+        ((Xdstools2EventBus) ClientUtils.INSTANCE.getEventBus()).addActorsConfigUpdatedEventHandler(new ActorConfigUpdatedEvent.ActorConfigUpdatedEventHandler() {
+            @Override
+            public void onActorsConfigUpdate() {
+                reloadTransactionOfferings();
+            }
+        });
+
 
 		// when called as HomeTab is built, the wrong session services this call, this
 		// makes sure the job gets done
