@@ -276,6 +276,20 @@ public class Installation {
         return new File(externalCache + sep + "TestLogCache");
     }
 
+    public File testLogCache(String testSessionName) {
+        return new File(testLogCache(), testSessionName);
+    }
+
+    public File orchestrationCache(String testSessionName, String actorType) {
+        return new File(new File(testLogCache(testSessionName), "orchestration"), actorType);
+    }
+
+    public File orchestrationPropertiesFile(String testSessionName, String actorType) {
+        File orchestrationCacheDir = orchestrationCache(testSessionName, actorType);
+        File propFile = new File(orchestrationCacheDir, "orchestration.properties");
+        return propFile;
+    }
+
     public File imageCache(String cacheName) {
         return new File(externalCache + sep + "ImageCache" + sep + cacheName);
     }

@@ -3,6 +3,7 @@ package gov.nist.toolkit.xdstools2.client.util;
 import com.google.gwt.place.shared.PlaceController;
 import com.google.web.bindery.event.shared.EventBus;
 import gov.nist.toolkit.xdstools2.client.ToolkitServiceAsync;
+import gov.nist.toolkit.xdstools2.client.util.activitiesAndPlaces.ConfActorActivity;
 import gov.nist.toolkit.xdstools2.client.util.activitiesAndPlaces.TestInstanceActivity;
 import gov.nist.toolkit.xdstools2.client.util.activitiesAndPlaces.ToolActivity;
 
@@ -15,6 +16,7 @@ public interface ClientFactory {
     PlaceController getPlaceController();
     TestInstanceActivity getTestInstanceActivity();
     ToolActivity getToolActivity();
+    ConfActorActivity getConfActorActivity();
 
     ToolkitServiceAsync getToolkitServices();
 }

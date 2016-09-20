@@ -141,7 +141,11 @@ public class SimulatorConfigElement implements Serializable,IsSerializable {
 	}
 
 	public void setValue(Boolean o) { booleanValue = o; valueType = ValueType.BOOLEAN; }
-	public void setValue(String o) { stringValue = o; valueType = ValueType.STRING; }
+	public void setValue(String o) {
+		if (o != null) o = o.trim();
+		stringValue = o;
+		valueType = ValueType.STRING;
+	}
     public void setValue(List<String> o, ValueType valueType) { listValue = o; this.valueType = valueType; }
     public void setValue(List<String> o) { listValue = o; }
     public void setValue(PatientErrorMap o) { patientErrorMap = o; valueType = ValueType.PATIENT_ERROR_MAP; }

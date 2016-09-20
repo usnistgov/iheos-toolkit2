@@ -27,7 +27,7 @@ public class BuildCollections extends HttpServlet {
         run();
     }
 
-    String listAsFileContents(List<String> list) {
+    String listAsFileContents(Collection<String> list) {
         StringBuilder buf = new StringBuilder();
         for (String ele : list) {
             buf.append(ele).append("\n");
@@ -41,7 +41,7 @@ public class BuildCollections extends HttpServlet {
         // ActorType => list of test names
         // This layer is necessary because multiple collectionNames can map to single
         // actorCollection since some collections are based on the actor and some on transactions
-        Map<ActorType, List<String>> actorTestMap = new HashMap<>();
+        Map<ActorType, Set<String>> actorTestMap = new HashMap<>();
 
         collectionsDir.mkdirs();  // create if doesn't exist
         actorCollectionsDir.mkdirs();
@@ -55,7 +55,7 @@ public class BuildCollections extends HttpServlet {
             List<String> contents = collections.get(collectionName);
             if (actorType != null) {
                 if (actorTestMap.get(actorType) == null) {
-                    actorTestMap.put(actorType, new ArrayList<String>());
+                    actorTestMap.put(actorType, new HashSet<String>());
                 }
                 actorTestMap.get(actorType).addAll(contents);
             }

@@ -70,7 +70,7 @@ public class ToolLauncher implements ClickHandler {
 
 
 
-	final static public String testLogLabel = "Test Log Listing";
+	final static public String conformanceTestsLabel = "Conformance Tests";
 	final static public String toolConfigTabLabel = "Toolkit Configuration";
 
 	private static List<ToolDef> tools = new ArrayList<>();
@@ -116,7 +116,7 @@ public class ToolLauncher implements ClickHandler {
 		tools.add(new ToolDef(idsTestsTabLabel, "IDSTests", "IDSTests"));
 		tools.add(new ToolDef(rgTestsTabLabel, "RGTests", "RGTests"));
 		tools.add(new ToolDef(imagingDocumentSetRetrieveTabLabel, "RetIDS", "RetIDS"));
-		tools.add(new ToolDef(testLogLabel, "TestLog", "TestLog"));
+		tools.add(new ToolDef(conformanceTestsLabel, "ConfTests", "ConfTests"));
 		tools.add(new ToolDef(toolConfigTabLabel, "ToolkitConf", "ToolkitConf"));
 		tools.add(new ToolDef(homeTabLabel, "Home", "Home"));
 		tools.add(new ToolDef(adminTabLabel, "Admin", "Admin"));
@@ -170,7 +170,7 @@ public class ToolLauncher implements ClickHandler {
 		if (menuName.equals(toolConfigTabLabel)) return new ToolConfigTab();
 		if (menuName.equals(mesaTabLabel)) return new MesaTestTab();
 		if (menuName.equals(nwhinTabLabel)) return new MesaTestTab();
-		if (menuName.equals(testLogLabel)) return new ConformanceTestTab();
+		if (menuName.equals(conformanceTestsLabel)) return new ConformanceTestTab();
 		if (menuName.equals(dashboardTabLabel)) return new DashboardTab();
 		if (menuName.equals(repositoryTabLabel)) return new RepositoryListingTab();
 		if (menuName.equals(pidFavoritesLabel)) return new PidFavoritesTab(def.getTabName());
@@ -181,15 +181,16 @@ public class ToolLauncher implements ClickHandler {
 		return null;
 	}
 
-	private void launch(String requestedName) {
+	private ToolWindow launch(String requestedName) {
 		ToolDef def = getToolDef(requestedName);
 		ToolWindow tool = getTool(def);
-		if (tool == null) return;
-		tool.onTabLoad(true, def.tabName);
+		if (tool == null) return null;
+		tool.onAbstractTabLoad(true, def.tabName);
+		return tool;
 	}
 
-	public void launch() {
-		launch(tabType);
+	public ToolWindow launch() {
+		return launch(tabType);
 	}
 
 	public void onClick(ClickEvent event) {

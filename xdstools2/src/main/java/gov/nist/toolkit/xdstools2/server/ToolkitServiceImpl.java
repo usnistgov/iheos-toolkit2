@@ -857,4 +857,9 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements
 		return session().xdsTestServiceManager().clearTestSession(testSession);
 	}
 
+	@Override
+	public boolean getAutoInitConformanceTesting() {
+		return Installation.installation().propertyServiceManager().getAutoInitializeConformanceTool();
+	}
+
 }

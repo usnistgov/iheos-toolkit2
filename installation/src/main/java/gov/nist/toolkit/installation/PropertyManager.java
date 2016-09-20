@@ -9,20 +9,21 @@ import java.util.*;
 
 public class PropertyManager {
 
-	static Logger logger = Logger.getLogger(PropertyManager.class);
+	static private Logger logger = Logger.getLogger(PropertyManager.class);
 
-	static public final String ADMIN_PASSWORD      = "Admin_password";
-	static public final String TOOLKIT_HOST        = "Toolkit_Host";
-	static public final String TOOLKIT_PORT        = "Toolkit_Port";
-	static public final String TOOLKIT_TLS_PORT    = "Toolkit_TLS_Port";
-	static public final String GAZELLE_CONFIG_URL  = "Gazelle_Config_URL";
-	static public final String EXTERNAL_CACHE      = "External_Cache";
-	static public final String USE_ACTORS_FILE     = "Use_Actors_File";
-	static public final String TESTKIT             = "Testkit";
-	static public final String LISTENER_PORT_RANGE = "Listener_Port_Range";
+	static private final String ADMIN_PASSWORD      = "Admin_password";
+	static private final String TOOLKIT_HOST        = "Toolkit_Host";
+	static private final String TOOLKIT_PORT        = "Toolkit_Port";
+	static private final String TOOLKIT_TLS_PORT    = "Toolkit_TLS_Port";
+	static private final String GAZELLE_CONFIG_URL  = "Gazelle_Config_URL";
+	static private final String EXTERNAL_CACHE      = "External_Cache";
+	static private final String USE_ACTORS_FILE     = "Use_Actors_File";
+	static private final String TESTKIT             = "Testkit";
+	static private final String LISTENER_PORT_RANGE = "Listener_Port_Range";
+	static private final String AUTO_INIT_CONFORMANCE_TOOL = "Auto_init_conformance_tool";
 
-	String propFile;
-	Properties toolkitProperties = null;
+	private String propFile;
+	private Properties toolkitProperties = null;
 	
 	public PropertyManager(String propFile) {
         this.propFile = propFile;
@@ -38,8 +39,8 @@ public class PropertyManager {
 			save(props);
 		}
 	}
-	
-	void validateProperty(String name, String value) throws Exception {
+
+	private void validateProperty(String name, String value) throws Exception {
 		if (name == null)
 			throw new Exception("Property with name null not allowed");
 		if (name.equals(ADMIN_PASSWORD)) {
@@ -107,6 +108,14 @@ public class PropertyManager {
 		range.add(parts[0].trim());
 		range.add(parts[1].trim());
 		return range;
+	}
+
+	public boolean getAutoInitializeConformanceTool() {
+		loadProperties();
+		String value = (String) toolkitProperties.get(AUTO_INIT_CONFORMANCE_TOOL);
+		if (value == null) return false;
+		if (value.trim().equalsIgnoreCase("true")) return true;
+		return false;
 	}
 
 	public String getToolkitGazelleConfigURL() {

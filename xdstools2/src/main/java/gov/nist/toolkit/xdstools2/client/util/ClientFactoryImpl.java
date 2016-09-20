@@ -6,6 +6,7 @@ import com.google.web.bindery.event.shared.EventBus;
 import gov.nist.toolkit.xdstools2.client.ToolkitService;
 import gov.nist.toolkit.xdstools2.client.ToolkitServiceAsync;
 import gov.nist.toolkit.xdstools2.client.event.Xdstools2EventBus;
+import gov.nist.toolkit.xdstools2.client.util.activitiesAndPlaces.ConfActorActivity;
 import gov.nist.toolkit.xdstools2.client.util.activitiesAndPlaces.TestInstanceActivity;
 import gov.nist.toolkit.xdstools2.client.util.activitiesAndPlaces.ToolActivity;
 
@@ -18,6 +19,7 @@ public class ClientFactoryImpl implements ClientFactory {
     private final static PlaceController placeController = new PlaceController(eventBus);
     private final static TestInstanceActivity TEST_INSTANCE_ACTIVITY = new TestInstanceActivity();
     private final static ToolActivity TOOL_ACTIVITY = new ToolActivity();
+    private final static ConfActorActivity CONF_ACTOR_ACTIVITY = new ConfActorActivity();
     private final static ToolkitServiceAsync toolkitServices = GWT.create(ToolkitService.class);
 
     @Override
@@ -38,6 +40,11 @@ public class ClientFactoryImpl implements ClientFactory {
     @Override
     public ToolActivity getToolActivity() {
         return TOOL_ACTIVITY;
+    }
+
+    @Override
+    public ConfActorActivity getConfActorActivity() {
+        return CONF_ACTOR_ACTIVITY;
     }
 
     @Override

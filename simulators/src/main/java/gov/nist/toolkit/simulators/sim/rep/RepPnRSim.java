@@ -103,6 +103,10 @@ public class RepPnRSim extends TransactionSimulator implements MetadataGeneratin
 
 				} else {  // Optimized
 					String cid = dam.getOptimizedDocumentCid(eoId);
+					if (cid == null) {
+						er.err(XdsErrorCode.Code.XDSMissingDocument, "Document contents for document " + eoId + " not available in message",null, Mtom.XOP_example2);
+						throw new XDSMissingDocumentException("Document contents for document " + eoId + " not available in message", Mtom.XOP_example2);
+					}
 					sdi = multipartContainer.getContent(cid);
 					if (sdi != null) {
 						storedDocument = new StoredDocument(sdi);

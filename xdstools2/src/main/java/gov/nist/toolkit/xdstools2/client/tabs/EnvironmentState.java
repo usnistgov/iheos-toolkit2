@@ -28,6 +28,14 @@ public class EnvironmentState {
 		validate();
 	}
 
+	/**
+	 * Set environment name without validation - needed to init from GWT Activity
+	 * @param environmentName
+	 */
+	public void initEnvironmentName(String environmentName) {
+		this.environmentName = environmentName;
+	}
+
 	public List<String> getEnvironmentNameChoices() {
 		return environmentNameChoices;
 	}

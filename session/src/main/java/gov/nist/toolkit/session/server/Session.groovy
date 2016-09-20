@@ -157,7 +157,7 @@ public class Session implements SecurityParams {
 
 		} catch (Exception e) {
 			logger.warn(e.toString());
-			throw e;
+//			throw e;
 		}
 
 
