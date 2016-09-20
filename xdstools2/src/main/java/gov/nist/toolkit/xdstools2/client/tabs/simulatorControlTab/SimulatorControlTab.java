@@ -341,6 +341,7 @@ public class SimulatorControlTab extends GenericQueryTab {
 				SimulatorConfig config = getData();
 				DeleteButtonClickHandler handler = new DeleteButtonClickHandler(self, config);
 				handler.delete();
+                ((Xdstools2EventBus) ClientUtils.INSTANCE.getEventBus()).fireSimulatorsUpdatedEvent();
 			}
 		});
 		buttonPanel.add(deleteButton);
