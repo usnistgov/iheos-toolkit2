@@ -26,7 +26,6 @@ class SaveButtonClickHandler implements ClickHandler {
 
 		if (PasswordManagement.isSignedIn) {
 			actorConfigTab.saveSignedInCallback.onSuccess(true);
-			((Xdstools2EventBus) ClientUtils.INSTANCE.getEventBus()).fireActorsConfigUpdatedEvent();
 		}
 		else {
 			PasswordManagement.addSignInCallback(actorConfigTab.saveSignedInCallback);

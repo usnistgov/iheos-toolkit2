@@ -24,6 +24,8 @@ import gov.nist.toolkit.xdstools2.client.event.SimulatorUpdatedEvent;
 import gov.nist.toolkit.xdstools2.client.event.Xdstools2EventBus;
 import gov.nist.toolkit.xdstools2.client.event.testSession.TestSessionManager2;
 import gov.nist.toolkit.xdstools2.client.siteActorManagers.BaseSiteActorManager;
+import gov.nist.toolkit.xdstools2.client.tabs.actorConfigTab.ActorConfigTab;
+import gov.nist.toolkit.xdstools2.client.toolLauncher.ToolLauncher;
 import gov.nist.toolkit.xdstools2.client.util.ClientUtils;
 import gov.nist.toolkit.xdstools2.client.widgets.PidWidget;
 
@@ -133,7 +135,9 @@ public abstract class GenericQueryTab  extends ToolWindow {
         ((Xdstools2EventBus) ClientUtils.INSTANCE.getEventBus()).addActorsConfigUpdatedEventHandler(new ActorConfigUpdatedEvent.ActorConfigUpdatedEventHandler() {
             @Override
             public void onActorsConfigUpdate() {
-                reloadTransactionOfferings();
+                if(!tabName.equals(ActorConfigTab.TAB_NAME)) {
+                    reloadTransactionOfferings();
+                }
             }
         });
 

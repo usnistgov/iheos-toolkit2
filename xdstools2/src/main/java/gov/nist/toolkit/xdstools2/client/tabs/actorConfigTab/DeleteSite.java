@@ -30,7 +30,6 @@ class DeleteSite implements ClickHandler {
 		}
 		if (PasswordManagement.isSignedIn) {
 			deleteSignedInCallback.onSuccess(true);
-			((Xdstools2EventBus) ClientUtils.INSTANCE.getEventBus()).fireActorsConfigUpdatedEvent();
 		}
 		else {
 			PasswordManagement.addSignInCallback(deleteSignedInCallback);
@@ -51,6 +50,7 @@ class DeleteSite implements ClickHandler {
 
 		public void onSuccess(Boolean ignored) {
 			ClientUtils.INSTANCE.getToolkitServices().deleteSite(actorConfigTab.currentEditSite.getName(), deleteSiteCallback);
+			((Xdstools2EventBus) ClientUtils.INSTANCE.getEventBus()).fireActorsConfigUpdatedEvent();
 		}
 
 	};

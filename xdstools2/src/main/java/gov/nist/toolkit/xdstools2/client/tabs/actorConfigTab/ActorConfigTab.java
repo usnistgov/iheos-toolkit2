@@ -14,14 +14,17 @@ import gov.nist.toolkit.sitemanagement.client.TransactionCollection;
 import gov.nist.toolkit.xdstools2.client.PasswordManagement;
 import gov.nist.toolkit.xdstools2.client.PopupMessage;
 import gov.nist.toolkit.xdstools2.client.StringSort;
+import gov.nist.toolkit.xdstools2.client.event.Xdstools2EventBus;
 import gov.nist.toolkit.xdstools2.client.siteActorManagers.NullSiteActorManager;
 import gov.nist.toolkit.xdstools2.client.tabs.genericQueryTab.GenericQueryTab;
+import gov.nist.toolkit.xdstools2.client.util.ClientUtils;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class ActorConfigTab extends GenericQueryTab {
-	ListBox siteSelector;
+    public static final String TAB_NAME = "ActorConfig";
+    ListBox siteSelector;
 	FlexTable actorEditGrid;
 	int actorEditRow = -1;
 	HTML signInStatus;
@@ -54,7 +57,7 @@ public class ActorConfigTab extends GenericQueryTab {
 
 	@Override
 	public void onTabLoad(boolean select, String eventName) {
-		registerTab(select, "ActorConfig");
+		registerTab(select, TAB_NAME);
 
 		loadGazelleFeedAvailableStatus();
 
@@ -506,6 +509,7 @@ public class ActorConfigTab extends GenericQueryTab {
 
 		};
 		getToolkitServices().saveSite(currentEditSite, saveSiteCallback);
+        ((Xdstools2EventBus) ClientUtils.INSTANCE.getEventBus()).fireActorsConfigUpdatedEvent();
 	}
 	
 	void loadExternalSites() {

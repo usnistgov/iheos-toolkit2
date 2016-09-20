@@ -45,8 +45,9 @@ public abstract class ToolWindow {
     EnvironmentManager environmentManager = null;
     protected TestSessionManager2 testSessionManager = Xdstools2.getTestSessionManager();
     private ToolkitServiceAsync toolkitService=getToolkitServices();
+	protected String tabName=new String();
 
-    protected abstract Widget buildUI();
+	protected abstract Widget buildUI();
     protected abstract void bindUI();
     public abstract void onTabLoad(boolean select, String eventName);
     // getWindowShortName() + ".html"is documentation file in /doc
@@ -92,6 +93,7 @@ public abstract class ToolWindow {
 	public void setCurrentTestSession(String testSession) { testSessionManager.setCurrentTestSession(testSession);}
 
 	public void registerTab(boolean select, String tabName) {
+		this.tabName=tabName;
 		TabContainer.instance().addTab(tabTopRawPanel, tabName, select);
 	}
 	
