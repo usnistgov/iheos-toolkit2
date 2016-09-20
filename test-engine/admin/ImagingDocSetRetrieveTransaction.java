@@ -33,8 +33,7 @@ import gov.nist.toolkit.xdsexception.XdsPreparsedException;
 
 /**
  * This class is not currently used, and it's functionality is found in another
- * class. An Exception is thrown by the constructor so that, if it is used,
- * proper consideration can be given. R Moulton
+ * class.  R Moulton
  */
 public class ImagingDocSetRetrieveTransaction extends BasicTransaction {
 //	String metadata_filename = null;
@@ -84,9 +83,7 @@ public class ImagingDocSetRetrieveTransaction extends BasicTransaction {
 
 	public void setUseIG(boolean useIG) { this.useIG = useIG; }
 
-	/**
-	 * Not currently in use
-	 */
+	
 	@SuppressWarnings("javadoc")
    public ImagingDocSetRetrieveTransaction(StepContext s_ctx, OMElement instruction, OMElement instruction_output)
 	   throws Exception {
@@ -94,9 +91,7 @@ public class ImagingDocSetRetrieveTransaction extends BasicTransaction {
 		defaultEndpointProcessing = false;
 		parse_metadata = false;
 		noMetadataProcessing = true;
-		throw new Exception("This class is not currently in use. " + 
-		   "Please review to make sure you want to use it, and if so," +
-		   "remove this Exception.");
+		
 	}
 
 	@SuppressWarnings({ "null", "unused" })

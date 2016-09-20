@@ -178,35 +178,43 @@ public class RIGTestTab extends GenericQueryTab implements GatewayTool {
 
     class Runner implements ClickHandler {
 
-        public void onClick(ClickEvent event) {
-            resultPanel.clear();
+      public void onClick(ClickEvent event) {
+         
+         try {
+
+         resultPanel.clear();
 
          if (getCurrentTestSession().isEmpty()) {
             new PopupMessage("Test Session must be selected");
             return;
          }
 
-            if (!verifySiteProvided()) return;
+         if (!verifySiteProvided()) return;
+         
+//         addStatusBox();
+//         getGoButton().setEnabled(false);
+//         getInspectButton().setEnabled(false);
 
-         addStatusBox();
-         getGoButton().setEnabled(false);
-         getInspectButton().setEnabled(false);
+         Map <String, String> parms = new HashMap <>();
+//         parms.put("$testdata_home$", rgConfigs.get(0).get(SimulatorProperties.homeCommunityId).asString());
 
-            Map<String, String> parms = new HashMap<>();
-            parms.put("$testdata_home$", rgConfigs.get(0).get(SimulatorProperties.homeCommunityId).asString());
+         Panel logLaunchButtonPanel = rigForRunning();
+         logLaunchButtonPanel.clear();
+         logLaunchButtonPanel.add(testSelectionManager.buildLogLauncher(rgConfigs));
+         String testToRun = selectedTest;
+         if (TestSelectionManager.ALL.equals(testToRun)) {
+            testToRun = "tc:" + COLLECTION_NAME;
+         }
 
-            Panel logLaunchButtonPanel = rigForRunning();
-            logLaunchButtonPanel.clear();
-            logLaunchButtonPanel.add(testSelectionManager.buildLogLauncher(rgConfigs));
-            String testToRun = selectedTest;
-            if (TestSelectionManager.ALL.equals(testToRun)) {
-                testToRun = "tc:" + COLLECTION_NAME;
-            }
-
-            TestInstance testInstance = new TestInstance(testToRun);
-            testInstance.setUser(getCurrentTestSession());
-            toolkitService.runMesaTest(getCurrentTestSession(), getSiteSelection(), new TestInstance(testToRun), testSelectionManager.getSelectedSections(), parms, true, queryCallback);
-        }
+         TestInstance testInstance = new TestInstance(testToRun);
+         testInstance.setUser(getCurrentTestSession());
+         toolkitService.runMesaTest(getCurrentTestSession(), getSiteSelection(), new TestInstance(testToRun),
+            testSelectionManager.getSelectedSections(), parms, true, queryCallback);
+         
+         } catch (Exception e) {
+            new PopupMessage(e.getMessage());
+         }
+      }
     }
 
     Button addTestEnvironmentInspectorButton(final String siteName) {

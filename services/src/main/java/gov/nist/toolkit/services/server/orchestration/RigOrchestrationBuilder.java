@@ -91,15 +91,15 @@ public class RigOrchestrationBuilder {
       
       ids_e ("Imaging Document Source E", ActorType.IMAGING_DOC_SOURCE, new SimulatorConfigElement[] {
          new SimulatorConfigElement(SimulatorProperties.idsRepositoryUniqueId, ParamType.TEXT, "1.3.6.1.4.1.21367.13.71.201.1"),
-         new SimulatorConfigElement(SimulatorProperties.idsImageCache, ParamType.TEXT, "ids-community-E")}),
+         new SimulatorConfigElement(SimulatorProperties.idsImageCache, ParamType.TEXT, "ids-dataset-E")}),
       
       ids_f ("Imaging Document Source F", ActorType.IMAGING_DOC_SOURCE, new SimulatorConfigElement[] {
          new SimulatorConfigElement(SimulatorProperties.idsRepositoryUniqueId, ParamType.TEXT, "1.3.6.1.4.1.21367.13.71.201.2"),
-         new SimulatorConfigElement(SimulatorProperties.idsImageCache, ParamType.TEXT, "ids-community-F")}),
+         new SimulatorConfigElement(SimulatorProperties.idsImageCache, ParamType.TEXT, "ids-dataset-F")}),
       
       ids_g ("Imaging Document Source G", ActorType.IMAGING_DOC_SOURCE, new SimulatorConfigElement[] {
          new SimulatorConfigElement(SimulatorProperties.idsRepositoryUniqueId, ParamType.TEXT, "1.3.6.1.4.1.21367.13.71.201.3"),
-         new SimulatorConfigElement(SimulatorProperties.idsImageCache, ParamType.TEXT, "ids-community-G")}),
+         new SimulatorConfigElement(SimulatorProperties.idsImageCache, ParamType.TEXT, "ids-dataset-G")}),
       
       simulator_rig ("Simulated RIG SUT", ActorType.RESPONDING_IMAGING_GATEWAY, new SimulatorConfigElement[] {
          new SimulatorConfigElement(SimulatorProperties.homeCommunityId, ParamType.TEXT, "urn:oid:1.3.6.1.4.1.21367.13.70.201"),

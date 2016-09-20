@@ -1,6 +1,7 @@
 package gov.nist.toolkit.testengine.engine;
 
 import gov.nist.toolkit.configDatatypes.client.Pid;
+import gov.nist.toolkit.configDatatypes.client.TransactionType;
 import gov.nist.toolkit.testengine.transactions.*;
 import gov.nist.toolkit.xdsexception.client.XdsInternalException;
 import org.apache.axiom.om.OMAttribute;
@@ -349,10 +350,16 @@ public class StepContext extends BasicContext implements ErrorReportingInterface
                   transaction = new SocketTransaction(this, instruction, instruction_output);
                   break;
                case "ImagingDocSetRetrieveTransaction":
-                  transaction = new IDSRetrieveTransaction(this, instruction, instruction_output, false);
+                  transaction = new RetrieveImgDocSetTransaction(this, 
+                     instruction, instruction_output, TransactionType.RET_IMG_DOC_SET);
                   break;
                case "ImagingDocSetIigRetrieveTransaction":
-                  transaction = new IDSRetrieveTransaction(this, instruction, instruction_output, true);
+                  transaction = new RetrieveImgDocSetTransaction(this, 
+                     instruction, instruction_output, TransactionType.RET_IMG_DOC_SET_GW);
+                  break;
+               case "ImagingDocSetRigRetrieveTransaction":
+                  transaction = new RetrieveImgDocSetTransaction(this, 
+                     instruction, instruction_output, TransactionType.XC_RET_IMG_DOC_SET);
                   break;
                case "ImgDetailTransaction":
                case "XmlDetailTransaction":

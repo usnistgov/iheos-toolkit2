@@ -65,7 +65,7 @@ public class DCMAssertion {
       failDetail = dtl;
    }
    
-   protected enum TYPE { 
+   public enum TYPE { 
       
       PRESENT("% present", "% missing"), 
       NOT_EMPTY("% present and not empty", "% empty or missing"), 

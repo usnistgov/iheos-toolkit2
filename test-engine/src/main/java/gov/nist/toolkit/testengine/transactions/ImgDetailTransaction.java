@@ -3,20 +3,24 @@
  */
 package gov.nist.toolkit.testengine.transactions;
 
-import java.io.ByteArrayInputStream;
+import java.io.File;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.*;
-import java.util.Map.Entry;
+
+import javax.xml.namespace.QName;
 
 import org.apache.axiom.om.OMElement;
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.filefilter.FileFilterUtils;
 import org.apache.commons.lang.StringEscapeUtils;
-import org.dcm4che3.data.Attributes;
 import org.dcm4che3.data.Tag;
-import org.dcm4che3.io.DicomInputStream;
 
 import gov.nist.toolkit.actorfactory.client.SimId;
 import gov.nist.toolkit.actortransaction.client.ActorType;
 import gov.nist.toolkit.configDatatypes.client.TransactionType;
+import gov.nist.toolkit.installation.Installation;
+import gov.nist.toolkit.installation.PropertyManager;
 import gov.nist.toolkit.registrymsg.repository.Mtom;
 import gov.nist.toolkit.results.client.TestInstance;
 import gov.nist.toolkit.testengine.assertionEngine.Assertion;
@@ -26,8 +30,10 @@ import gov.nist.toolkit.utilities.xml.XmlUtil;
 import gov.nist.toolkit.xdsexception.client.MetadataException;
 import gov.nist.toolkit.xdsexception.client.XdsInternalException;
 
-import edu.wustl.mir.erl.ihe.xdsi.validation.Results;
-import edu.wustl.mir.erl.ihe.xdsi.validation.TestRAD68;
+import edu.wustl.mir.erl.ihe.xdsi.util.OMEUtil;
+import edu.wustl.mir.erl.ihe.xdsi.util.PfnType;
+import edu.wustl.mir.erl.ihe.xdsi.util.Utility;
+import edu.wustl.mir.erl.ihe.xdsi.validation.*;
 
 /**
  * Handles Image detail validations
@@ -38,9 +44,13 @@ import edu.wustl.mir.erl.ihe.xdsi.validation.TestRAD68;
 public class ImgDetailTransaction extends BasicTransaction {
 
    private OMElement step;
+   private PropertyManager pMgr;
 
+   /*
+    * These are the DICOM tags currently supported for evaluation tasks. New
+    * ones can be added to this map if needed.
+    */
    private static Map <String, Integer> tagMap;
-
    static {
       tagMap = new HashMap <>();
       tagMap.put("SOPClassUID", Tag.SOPClassUID);
@@ -66,6 +76,7 @@ public class ImgDetailTransaction extends BasicTransaction {
     */
    public ImgDetailTransaction(StepContext s_ctx, OMElement step, OMElement instruction, OMElement instruction_output) {
       super(s_ctx, instruction, instruction_output);
+      pMgr = Installation.installation().propertyServiceManager().getPropertyManager();
       this.step = step;
    }
 
@@ -162,98 +173,118 @@ public class ImgDetailTransaction extends BasicTransaction {
             }
             break;
          /*
-          * Matches DICOM tag values in returned images to standard
+          * Matches DICOM tag values in returned images to standard. Uses this
+          * format of assert tag in testplan.xml
+          * <Assert id="Returned img(s)" process="sameDcmImgs" >
+               <TagList>
+                  Elements in TagList are the dcm4che Tag names for the DICOM
+                  tags which are to be compared. They must appear in tagMap
+                  (above). There are two optional attributes for these elements:
+                  1. type - which should have the type of assertion, taken from
+                     the TYPE enum in DCMAssertion. The default value is "SAME",
+                     which is most common.
+                  2. value - which should have the string value which the DICOM
+                     tag should match. Only used in CONSTANT type assertions.
+                     The default value is the empty string.
+                  <SOPClassUID />
+                  <SOPInstanceUID />
+                  <PatientID />
+                  <PatientBirthDate />
+                  <PatientSex />
+                  <StudyInstanceUID />
+                  <SeriesInstanceUID />
+               </TagList>
+               <DirList>
+                  StdDir elements contain paths of directories which contain
+                  std image files for testing. May have more than one. All files
+                  in the directory are added to the list. Subdirectories are
+                  ignored. Directories may be absolute, or relative to the
+                  External Cache root.
+                  <StdDir>path1</StdDir>
+                  <StdDir>path2</StdDir>
+                  <StdDir>path3</StdDir>
+                  TestDir element contains the path where the test images from
+                  the test are to be stored. Only one directory. May be 
+                  absolute, or relative to the test step log directory. Default
+                  is "testImages" in the test step log directory.
+                  <TestDir>path</TestDir>
+               </DirList>
+            </Assert>
           */
          case "sameDcmImgs":
             try {
-               OMElement std = getStdResponseBody();
-               OMElement test = getTestResponseBody();
-               String t = std.getLocalName();
-               if (t.endsWith("RetrieveDocumentSetResponse") == false)
-                  throw new XdsInternalException("sameDcmImgs assertion only applies to RetrieveDocumentSetResponse");
-
-               // Load tags for std documents
-               Map <String, Map <String, String>> stdImgs = new HashMap <>();
-               Iterator <?> docRespEles = std.getChildrenWithLocalName("DocumentResponse");
-               while (docRespEles.hasNext()) {
-                  OMElement docRespEle = (OMElement) docRespEles.next();
-                  String docUID = XmlUtil.onlyChildWithLocalName(docRespEle, "DocumentUniqueId").getText();
-                  OMElement docEle = XmlUtil.onlyChildWithLocalName(docRespEle, "Document");
-                  Map <String, String> imgTags = new HashMap <>();
-                  Iterator <?> tagEles = docEle.getChildElements();
-                  while (tagEles.hasNext()) {
-                     OMElement tagEle = (OMElement) tagEles.next();
-                     String tagName = tagEle.getLocalName();
-                     if (tagMap.containsKey(tagName) == false)
-                        throw new XdsInternalException("sameDcmImgs error: unsupported dicom tag " + tagName);
-                     String tagValue = tagEle.getText();
-                     if (imgTags.put(tagName, tagValue) != null)
-                        throw new XdsInternalException("sameDcmImgs error: duplicate dicom tag " + tagName);
-                  }
-                  if (stdImgs.put(docUID, imgTags) != null)
-                     throw new XdsInternalException("sameDcmImgs error: duplicate DocumentUniqueId " + docUID);
-               }
-
-               // load tags for test documents which exist in standard
-               Map <String, Map <String, String>> testImgs = new HashMap <>();
-               docRespEles = test.getChildrenWithLocalName("DocumentResponse");
-               while (docRespEles.hasNext()) {
-                  OMElement docRespEle = (OMElement) docRespEles.next();
-                  String docUID = XmlUtil.onlyChildWithLocalName(docRespEle, "DocumentUniqueId").getText();
-                  Map <String, String> stdTags = stdImgs.get(docUID);
-                  if (stdTags == null) {
-                     store(engine, CAT.ERROR, "test doc UID " + docUID + ", not found in standard.");
-                     continue;
-                  }
-                  OMElement docEle = XmlUtil.onlyChildWithLocalName(docRespEle, "Document");
-                  Mtom mtom = new Mtom();
-                  mtom.decode(docEle);
-                  DicomInputStream din = new DicomInputStream(new ByteArrayInputStream(mtom.getContents()));
-                  Attributes attributes = din.readDataset(-1, Tag.PixelData);
-                  din.close();
-                  din = null;
-                  Map <String, String> testTags = new HashMap <>();
-                  for (String stdTag : stdTags.keySet()) {
-                     int tag = tagMap.get(stdTag);
-                     testTags.put(stdTag, attributes.getString(tag, null));
-                  }
-                  testImgs.put(docUID, testTags);
-               }
-
-               // Now pass std images, matching against test
-               for (String stdDocUID : stdImgs.keySet()) {
-                  Map <String, String> testTags = testImgs.get(stdDocUID);
-                  if (testTags == null) {
-                     store(engine, CAT.ERROR, "std doc UID " + stdDocUID + ", not found in test.");
-                     continue;
-                  }
-                  Map <String, String> stdTags = stdImgs.get(stdDocUID);
-                  // First pass through tags, one success msg if all match.
-                  boolean mismatchFound = false;
-                  for (Entry <String, String> stdTag : stdTags.entrySet()) {
-                     String testValue = testTags.get(stdTag.getKey());
-                     if (stdTag.getValue().equals(testValue) == false) {
-                        mismatchFound = true;
-                        break;
-                     }
-                  }
-                  if (mismatchFound == false) {
-                     store(engine, CAT.SUCCESS,
-                        "test img UID " + stdDocUID + " found in standard, all tag values match");
-                     continue;
-                  }
-                  // mismatch found; second pass generates messages for each tag
-                  for (Entry <String, String> stdTag : stdTags.entrySet()) {
-                     String em = "std doc UID " + stdDocUID + " found in test, " + stdTag.getKey() + " ";
-                     String testValue = testTags.get(stdTag.getKey());
-                     if (stdTag.getValue().equals(testValue)) {
-                        store(engine, CAT.SUCCESS, em + "values match");
-                        continue;
-                     }
-                     if (testValue == null) testValue = "no value";
-                     store(engine, CAT.ERROR, em + "expected [" + stdTag.getValue() + "], found [" + testValue + "]");
-                  }
-               }
+              OMElement assertElement = a.assertElement;
+              // Pull TagList and DirList child elements
+              OMElement dirListElement = OMEUtil.firstChildWithLocalName(assertElement, "DirList");
+              OMElement tagListElement = OMEUtil.firstChildWithLocalName(assertElement, "TagList");
+              
+              // Store images to testImgPath directory.
+              Path testImgPath = Paths.get(linkage.getLogFileDir());
+              String subDir = "testImages";
+              if (dirListElement != null) {
+                 OMElement testDirElement = OMEUtil.firstChildWithLocalName(dirListElement, "TestDir");
+                 if (testDirElement != null) {
+                    subDir = testDirElement.getText();
+                 }
+              }
+              testImgPath = testImgPath.resolve(subDir);
+              File testImgDir = testImgPath.toFile();
+              testImgDir.mkdirs();
+              FileUtils.cleanDirectory(testImgDir);
+              OMElement testResponseBody = getTestResponseBody();
+              storeFiles(testResponseBody, testImgPath);
+              // Make list of test image pfns
+              List<String> testPfns = new ArrayList<>();
+              for (String file : testImgDir.list()) {
+                 testPfns.add(testImgPath.resolve(file).toString());
+              }
+              
+              //Make list of std image pfns
+              Path extCache = Paths.get(pMgr.getExternalCache());
+              List<String> stdPfns = new ArrayList<>();
+              for (OMElement stdDirElement : OMEUtil.childrenWithLocalName(dirListElement, "StdDir")) {
+                 Path stdDirPath = extCache.resolve(stdDirElement.getText());
+                 Utility.isValidPfn("test std img dir", stdDirPath, PfnType.DIRECTORY, "r");
+                 Collection<File> files = FileUtils.listFiles(stdDirPath.toFile(), FileFilterUtils.fileFileFilter(), null);
+                 for (File file : files) stdPfns.add(file.getPath());
+              }
+              
+              /* 
+               * Build list of assertions to be applied to image sets.
+               * Assertions are in <TagList> Element. Element name is Tag name
+               * (from dcm4che). type attribute is name of DCMAssertion#TYPE,
+               * default is SAME. value attribute is constant to compare to,
+               * which only applies to type CONSTANT, default is empty string.
+               */
+              List<DCMAssertion> assertions = new ArrayList<>();
+              @SuppressWarnings("unchecked")
+            Iterator<OMElement> tags = tagListElement.getChildElements();
+              while (tags.hasNext()) {
+                 OMElement tag = tags.next();
+                 String tagName = tag.getLocalName().trim();
+                 if (tagMap.containsKey(tagName) == false)
+                    throw new Exception("Unknown DICOM Tag " + tagName);
+                 int dcmTag = tagMap.get(tagName);
+                 String typeName = tag.getAttributeValue(new QName("type"));
+                 if (typeName == null) typeName = "SAME";
+                 typeName = typeName.trim().toUpperCase();
+                 DCMAssertion.TYPE type = DCMAssertion.TYPE.valueOf(typeName);
+                 String value = tag.getAttributeValue(new QName("value"));
+                 if (value == null) value = "";
+                 value = value.trim();
+                 assertions.add(new DCMAssertion(type, dcmTag, value));
+              }
+              
+              // Now we run the tests
+              TestDcmSetContent test = new TestDcmSetContent();
+              test.initializeTest(testPfns, stdPfns, assertions);
+              test.runTest();
+              Results results = test.getResults(a.process); 
+              String rep = results.toString();
+              CAT cat = CAT.SUCCESS;
+              if (results.getErrorCount() > 0) cat = CAT.ERROR;
+              store(engine, cat, rep);
+              
             } catch (Exception e) {
                throw new XdsInternalException("sameRetImgs error: " + e.getMessage());
             }
@@ -424,4 +455,19 @@ public class ImgDetailTransaction extends BasicTransaction {
       if (test == null || test.length() == 0) return false;
       return std.equals(test);
    }
-}
+   
+   private void storeFiles(OMElement respBody, Path dirPath) throws Exception {
+      Iterator<OMElement> docRespEles = respBody.getChildrenWithLocalName("DocumentResponse");
+      while (docRespEles.hasNext()) {
+         OMElement docRespEle = docRespEles.next();
+         String docUID = XmlUtil.onlyChildWithLocalName(docRespEle, "DocumentUniqueId").getText();
+         OMElement docEle = XmlUtil.onlyChildWithLocalName(docRespEle, "Document");
+         Mtom mtom = new Mtom();
+         mtom.decode(docEle);
+         File dcmFile = dirPath.resolve(docUID + ".dcm").toFile();
+         FileUtils.writeByteArrayToFile(dcmFile, mtom.getContents());
+      }
+      
+   }
+   
+} // EO ImgDetailTransaction class

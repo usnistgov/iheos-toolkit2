@@ -4,21 +4,14 @@
 package edu.wustl.mir.erl.ihe.xdsi.validation;
 
 import java.io.File;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.commons.io.FileUtils;
-import org.apache.commons.io.filefilter.TrueFileFilter;
 import org.apache.log4j.Logger;
 import org.dcm4che3.data.Attributes;
 import org.dcm4che3.data.Tag;
 import org.dcm4che3.io.DicomInputStream;
 
-import edu.wustl.mir.erl.ihe.xdsi.util.PfnType;
-import edu.wustl.mir.erl.ihe.xdsi.util.Utility;
 import edu.wustl.mir.erl.ihe.xdsi.validation.DCMAssertion.TYPE;
 
 /**
@@ -48,17 +41,16 @@ public class DetailDcmSetContent extends DetailDcmSequenceContent  {
    }
 
    /**
-    * args[0] String directory containing test images.
-    * args[1] String directory containing std images.
-    * Directories can be absolute, or relative to XDSI root.
+    * args[0] {@code List<String>} of absolute pfns of test images.<br/>
+    * args[1] {@code List<String>} of absolute pfns of std images.<br/>
+    * args[2] {@code List<DCMAssretion>} of assertions to be applied to images.
     */
+   @SuppressWarnings("unchecked")
    @Override
    protected void initializeDetail(Object[] args) throws Exception {
       uniqueSequenceTag = Tag.SOPInstanceUID;
       desc = "dicom files";
-      if (assertions == null)
-    	  initializeTest();
- //        throw new Exception("Must run initializeTests before initializeDetail");
+      assertions = (List<DCMAssertion>) args[2];
       List<Integer> a = new ArrayList<>();
       boolean flag = false;
       for (DCMAssertion assertion : assertions) {
@@ -69,24 +61,17 @@ public class DetailDcmSetContent extends DetailDcmSequenceContent  {
       int[] tags = new int[a.size()];
       for (int i = 0; i < a.size(); i++) tags[i] = a.get(i);      
       
-      Path root = Paths.get(Utility.getXDSIRoot());
-      Path testPath = root.resolve((String) args[0]);
-      Utility.isValidPfn("test dicom images" , testPath, PfnType.DIRECTORY, "r");
-      test = loadAttributesList(testPath, tags);
+      test = loadAttributesList((List<String>) args[0], tags);
       
-      Path stdPath = root.resolve((String) args[1]);
-      Utility.isValidPfn("std dicom images" , stdPath, PfnType.DIRECTORY, "r");
-      std = loadAttributesList(stdPath, tags);      
+      std = loadAttributesList((List<String>) args[1], tags);      
    }
 
-   private List<Attributes> loadAttributesList(Path path, int[]tags) throws Exception {
+   private List<Attributes> loadAttributesList(List<String> pfns, int[]tags) throws Exception {
       List<Attributes> list = new ArrayList<>();
       DicomInputStream din = null;
       try {
-         List<File> files = (List<File>) FileUtils.listFiles(path.toFile(), 
-            TrueFileFilter.TRUE, TrueFileFilter.TRUE);
-         for (File file : files) {
-            din = new DicomInputStream(file);
+         for (String pfn : pfns) {
+            din = new DicomInputStream(new File(pfn));
             Attributes dataSet = din.readDataset(-1, -1);
             list.add(new Attributes(dataSet, tags));
             din.close();
@@ -96,45 +81,5 @@ public class DetailDcmSetContent extends DetailDcmSequenceContent  {
          if (din != null) din.close();
       }
    }
-   /**
-    * Test harness.
-    * <ol>
-    * <li>First argument indicates method to test</li>
-    * <ol>
-    * <li>RUNTEST = initialize, run, get results</li>
-    * </ol>
-    * <li/>Remainder of arguments are passed to method in order.
-    * <li/>args[1] String directory containing test dicom objects.
-    * <li/>args[2] String directory containing std dicom objects.
-    * </ol>
-    * Note: Directories may be entered as absolute, or relative to XDSI root.
-    * 
-    * @param args arguments
-    */
-   public static void main(String[] args) {
-      String cmd;
-      log = Utility.getLog();
-/*      if (args.length > 0) {
-         cmd = args[0];
-         log.info("Running " + cmd + " test");
-         try {
-            if (cmd.equalsIgnoreCase("RUNTEST")) {
-               DetailDcmSetContent test = new DetailDcmSetContent();
-               test.initializeTest();
-               test.initializeDetail(new Object[] {args[1], args[2]});
-               test.runDetail();
-               Results results = new Results();
-               test.getResults(results);
-               log.info("Test Results:" + Utility.nl + results);
-            }
-
-            log.info(cmd + " test completed");
-         } catch (Exception e) {
-            log.fatal(cmd + " test failed");
-            e.printStackTrace();
-         }
-      }*/
-   }
    
-
 }

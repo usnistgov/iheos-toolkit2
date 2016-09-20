@@ -2,10 +2,9 @@ Single image
 Retrieve Image Document Set test
 <h2>Single image study, single Imaging Document Source</h2>
 
-<p>Although the test environment provides for three Responding Imaging
-Gateways and multiple Image Document Sources, this test expects a single
-image to be returned, from a single Imaging Document Source (E) behind the 
-Responding Imaging gateway SUT.</p>
+<p>Although the test environment provides for three Image Document Sources, this 
+test expects a single image to be returned, from a single Imaging Document 
+Source (E) behind the Responding Imaging gateway SUT.</p>
 
 <p>When the test is run:
 <ol>

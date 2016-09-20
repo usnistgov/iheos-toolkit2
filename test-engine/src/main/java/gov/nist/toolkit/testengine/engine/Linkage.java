@@ -237,6 +237,12 @@ public class Linkage extends BasicLinkage {
       if (testConfig.logFile == null) throw new ToolkitRuntimeException("testConfig.logFile not initialized");
       return testConfig.logFile.getParent() + File.separator + test_dir + File.separator + "log.xml";
    }
+   /**
+    * @return log file directory name for this test step
+    */
+   public String getLogFileDir() {
+      return testConfig.logFile.getParent();
+   }
 
    public void replace_string_in_text_and_attributes(OMElement root, String old_text, String new_text)
       throws XdsInternalException {
