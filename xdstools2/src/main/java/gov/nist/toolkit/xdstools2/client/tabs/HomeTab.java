@@ -1,6 +1,5 @@
 package gov.nist.toolkit.xdstools2.client.tabs;
 
-import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.*;
 import gov.nist.toolkit.xdstools2.client.*;
@@ -8,19 +7,13 @@ import gov.nist.toolkit.xdstools2.client.inspector.HyperlinkFactory;
 import gov.nist.toolkit.xdstools2.client.siteActorManagers.FindDocumentsSiteActorManager;
 import gov.nist.toolkit.xdstools2.client.tabs.genericQueryTab.GenericQueryTab;
 import gov.nist.toolkit.xdstools2.client.toolLauncher.ToolLauncher;
-import gov.nist.toolkit.xdstools2.client.util.ClientUtils;
 
 public class HomeTab extends GenericQueryTab {
 	private String aboutMessage = null;
 	private HorizontalFlowPanel menubar = new HorizontalFlowPanel();
-	private boolean displayTab = true;
 
 	public HomeTab() {
 		super(new FindDocumentsSiteActorManager());
-	}
-
-	public void setDisplayTab(boolean displayTab) {
-		this.displayTab = displayTab;
 	}
 
 	@Override
@@ -28,9 +21,9 @@ public class HomeTab extends GenericQueryTab {
 		FlowPanel panel = new FlowPanel();
 		panel.add(menubar);
 
-		menubar.add(
-				HyperlinkFactory.launchTool("&nbsp;&nbsp;[" + ToolLauncher.toolConfigTabLabel + "]&nbsp;&nbsp;", new ToolLauncher(ToolLauncher.toolConfigTabLabel))
-		);
+//		menubar.add(
+//				HyperlinkFactory.launchTool("&nbsp;&nbsp;[" + ToolLauncher.toolConfigTabLabel + "]&nbsp;&nbsp;", new ToolLauncher(ToolLauncher.toolConfigTabLabel))
+//		);
 
 		Frame frame = new Frame("site/index.html");
 		frame.setSize("100em", "100em");

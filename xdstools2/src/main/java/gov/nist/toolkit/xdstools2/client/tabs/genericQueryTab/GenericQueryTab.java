@@ -4,7 +4,6 @@ import com.google.gwt.dom.client.Style;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
-import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.*;
 import gov.nist.toolkit.actortransaction.client.ActorType;
@@ -25,7 +24,6 @@ import gov.nist.toolkit.xdstools2.client.event.Xdstools2EventBus;
 import gov.nist.toolkit.xdstools2.client.event.testSession.TestSessionManager2;
 import gov.nist.toolkit.xdstools2.client.siteActorManagers.BaseSiteActorManager;
 import gov.nist.toolkit.xdstools2.client.tabs.actorConfigTab.ActorConfigTab;
-import gov.nist.toolkit.xdstools2.client.toolLauncher.ToolLauncher;
 import gov.nist.toolkit.xdstools2.client.util.ClientUtils;
 import gov.nist.toolkit.xdstools2.client.widgets.PidWidget;
 
@@ -106,6 +104,9 @@ public abstract class GenericQueryTab  extends ToolWindow {
     Anchor reload = null;
     private Widget widget;
 
+    private boolean displayTab = true;
+
+
     protected abstract void configureTabView();
 
     /**
@@ -149,15 +150,18 @@ public abstract class GenericQueryTab  extends ToolWindow {
 
 	@Override
     public void onTabLoad(boolean select, String eventName) {
-        registerTab(true, eventName);
-        buildView();
+	    if (displayTab)
+            registerTab(true, eventName);
+        buildView();  // the view is still built because of old code in HomeTab -
     }
 
     protected void buildView(){
         widget=buildUI();
-        tabTopPanel.add(widget);
-        configureTabView();
-        bindUI();
+        if (widget != null) {
+            tabTopPanel.add(widget);
+            configureTabView();
+            bindUI();
+        }
     }
 
     private void refreshData(){
@@ -796,4 +800,10 @@ public abstract class GenericQueryTab  extends ToolWindow {
         }
 
     };
+
+    public void setDisplayTab(boolean displayTab) {
+        this.displayTab = displayTab;
+    }
+
+
 }

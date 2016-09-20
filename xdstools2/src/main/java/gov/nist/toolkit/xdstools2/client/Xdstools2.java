@@ -44,7 +44,7 @@ public class Xdstools2  implements AcceptsOneWidget, IsWidget {
 
 	private HorizontalPanel uiDebugPanel = new HorizontalPanel();
 	boolean UIDebug = false;
-	boolean displayHomeTab = true;
+	private boolean displayHomeTab = true;
 
 	private static TkProps props = new TkProps();
 
@@ -217,7 +217,7 @@ public class Xdstools2  implements AcceptsOneWidget, IsWidget {
 		// If using ConfActor activity then home tab is a distraction
 		if (!displayHomeTab)
 			ht.setDisplayTab(false);
-		ht.onAbstractTabLoad(false, "Home");
+		ht.onTabLoad(false, "Home");
 
 		History.addValueChangeHandler(new ValueChangeHandler<String>() {
 			public void onValueChange(ValueChangeEvent<String> event) {

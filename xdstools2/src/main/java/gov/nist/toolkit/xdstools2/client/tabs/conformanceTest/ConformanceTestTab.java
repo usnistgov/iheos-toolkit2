@@ -282,9 +282,9 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner, SiteMa
 	@Override
 	public void setSiteName(String site) {
 		currentSiteName = site;
-		getToolkitServices().getSite(site, new AsyncCallback<Site>() {
+//		getToolkitServices().getSite(site, new AsyncCallback<Site>() {
 		if (site == null) return;
-		toolkitService.getSite(site, new AsyncCallback<Site>() {
+		getToolkitServices().getSite(site, new AsyncCallback<Site>() {
 			@Override
 			public void onFailure(Throwable throwable) {
 				new PopupMessage("getSiteName threw error: " + throwable.getMessage());
@@ -455,7 +455,7 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner, SiteMa
 						}
 						updateTestsOverviewHeader();
 
-						toolkitService.getAutoInitConformanceTesting(new AsyncCallback<Boolean>() {
+						getToolkitServices().getAutoInitConformanceTesting(new AsyncCallback<Boolean>() {
 							@Override
 							public void onFailure(Throwable throwable) {
 
@@ -678,7 +678,7 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner, SiteMa
 			clickEvent.stopPropagation();
 			List<TestInstance> tests = testsPerActor.get(actorTypeId);
 			for (TestInstance testInstance : tests) {
-				toolkitService.deleteSingleTestResult(getCurrentTestSession(), testInstance, new AsyncCallback<TestOverviewDTO>() {
+				getToolkitServices().deleteSingleTestResult(getCurrentTestSession(), testInstance, new AsyncCallback<TestOverviewDTO>() {
 					@Override
 					public void onFailure(Throwable throwable) {
 						new PopupMessage(throwable.getMessage());
