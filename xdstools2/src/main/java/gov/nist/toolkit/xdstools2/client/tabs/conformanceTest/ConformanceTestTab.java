@@ -9,12 +9,14 @@ import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.*;
+import gov.nist.toolkit.actortransaction.client.ActorType;
 import gov.nist.toolkit.interactiondiagram.client.events.DiagramClickedEvent;
 import gov.nist.toolkit.interactiondiagram.client.events.DiagramPartClickedEventHandler;
 import gov.nist.toolkit.interactiondiagram.client.widgets.InteractionDiagram;
-import gov.nist.toolkit.actortransaction.client.ActorType;
 import gov.nist.toolkit.results.client.Result;
 import gov.nist.toolkit.results.client.TestInstance;
+import gov.nist.toolkit.services.client.AbstractOrchestrationResponse;
+import gov.nist.toolkit.services.client.RegOrchestrationResponse;
 import gov.nist.toolkit.services.client.RepOrchestrationResponse;
 import gov.nist.toolkit.session.client.SectionOverviewDTO;
 import gov.nist.toolkit.session.client.TestOverviewDTO;
@@ -45,8 +47,12 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner, SiteMa
 	private String currentSiteName = null;
 	private HTML testSessionDescription = new HTML();
 	private FlowPanel testSessionDescriptionPanel = new FlowPanel();
+
 	private RepOrchestrationResponse repOrchestrationResponse;
-	private String currentActorTypeId;
+    private RegOrchestrationResponse regOrchestrationResponse;
+    private AbstractOrchestrationResponse orchestrationResponse;  // can be any of the above - contains common elements
+
+    private String currentActorTypeId;
 	private String currentActorTypeDescription;
 	private Site siteUnderTest = null;
 	private SiteSpec sitetoIssueTestAgainst = null;
@@ -145,7 +151,7 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner, SiteMa
 		testsHeaderBody.addStyleName("test-summary");
 	}
 
-	Image getStatusIcon(boolean good) {
+	private Image getStatusIcon(boolean good) {
 		Image status;
 		if (good) {
 			status = new Image("icons2/correct-24.png");
@@ -418,7 +424,11 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner, SiteMa
 		return currentActorTypeId != null && ActorType.REPOSITORY.getShortName().equals(currentActorTypeId);
 	}
 
-	// load test results for a single test collection (actor type) for a single site
+    private boolean isRegSut() {
+        return currentActorTypeId != null && ActorType.REGISTRY.getShortName().equals(currentActorTypeId);
+    }
+
+    // load test results for a single test collection (actor type) for a single site
 	private void displayTestCollection() {
 		testDisplays.clear();  // so they reload
 		testsPanel.clear();
@@ -438,53 +448,82 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner, SiteMa
 				List<TestInstance> testInstances = new ArrayList<>();
 				for (String testId : testIds) testInstances.add(new TestInstance(testId));
 				testsPerActor.put(currentActorTypeId, testInstances);
+                displayManagedTests(testInstances);
 
-				// results (including logs) for a collection of tests
-				getToolkitServices().getTestsOverview(getCurrentTestSession(), testInstances, new AsyncCallback<List<TestOverviewDTO>>() {
 
-					public void onFailure(Throwable caught) {
-						new PopupMessage("getTestOverview: " + caught.getMessage());
-					}
-
-					public void onSuccess(List<TestOverviewDTO> testOverviews) {
-						testsPanel.add(testsHeader);
-						testStatistics.setTestCount(testOverviews.size());
-						for (TestOverviewDTO testOverview : testOverviews) {
-							addTestOverview(testOverview);
-							displayTest(testOverview);
-						}
-						updateTestsOverviewHeader();
-
-						getToolkitServices().getAutoInitConformanceTesting(new AsyncCallback<Boolean>() {
-							@Override
-							public void onFailure(Throwable throwable) {
-
-							}
-
-							@Override
-							public void onSuccess(Boolean aBoolean) {
-								if (aBoolean)
-									orchInit.handleClick(null);   // auto init orchestration
-							}
-						});
-
-					}
-
-				});
-
-			}
+            }
 		});
-
 
 	}
 
-	private ReportableButton orchInit = null;
+    private void displayManagedTests(List<TestInstance> testInstances) {
+        // results (including logs) for a collection of tests
+        getToolkitServices().getTestsOverview(getCurrentTestSession(), testInstances, new AsyncCallback<List<TestOverviewDTO>>() {
+
+            public void onFailure(Throwable caught) {
+                new PopupMessage("getTestOverview: " + caught.getMessage());
+            }
+
+            public void onSuccess(List<TestOverviewDTO> testOverviews) {
+                testsPanel.add(testsHeader);
+                testStatistics.setTestCount(testOverviews.size());
+                for (TestOverviewDTO testOverview : testOverviews) {
+                    addTestOverview(testOverview);
+                    displayTest(testOverview);
+                }
+                updateTestsOverviewHeader();
+
+                getToolkitServices().getAutoInitConformanceTesting(new AsyncCallback<Boolean>() {
+                    @Override
+                    public void onFailure(Throwable throwable) {
+
+                    }
+
+                    @Override
+                    public void onSuccess(Boolean aBoolean) {
+                        if (aBoolean)
+                            orchInit.handleClick(null);   // auto init orchestration
+                    }
+                });
+
+            }
+
+        });
+    }
+
+    private void displayIsolatedTests(List<TestInstance> testInstances) {
+        // results (including logs) for a collection of tests
+        getToolkitServices().getTestsOverview(getCurrentTestSession(), testInstances, new AsyncCallback<List<TestOverviewDTO>>() {
+
+            public void onFailure(Throwable caught) {
+                new PopupMessage("getTestOverview: " + caught.getMessage());
+            }
+
+            public void onSuccess(List<TestOverviewDTO> testOverviews) {
+                testsPanel.add(testsHeader);
+                for (TestOverviewDTO testOverview : testOverviews) {
+                    addTestOverview(testOverview);
+                    displayTest(testOverview);
+                }
+            }
+
+        });
+    }
+
+
+
+    private ReportableButton orchInit = null;
 
 	private void orchestrationInitialization() {
 		if (isRepSut()) {
 			orchInit = new BuildRepTestOrchestrationButton(this, initializationPanel, "Initialize Test Environment");
 			initializationPanel.add(orchInit.panel());
-		} else {
+		}
+        else if (isRegSut()) {
+            orchInit = new BuildRegTestOrchestrationButton(this, initializationPanel, "Initialize Test Environment");
+            initializationPanel.add(orchInit.panel());
+        }
+        else {
 			sitetoIssueTestAgainst = new SiteSpec(siteUnderTest.getName());
 		}
 
@@ -743,17 +782,19 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner, SiteMa
 	// if testInstance contains a sectionName then run that section, otherwise run entire test.
 	public void runTest(final TestInstance testInstance, final TestDone testDone) {
 		Map<String, String> parms = new HashMap<>();
-		if (repOrchestrationResponse != null) {
-			parms.put("$patientid$", repOrchestrationResponse.getPid().asString());
-		} else {
-			parms.put("$patientid$", "P20160907182617.2^^^&1.3.6.1.4.1.21367.2005.13.20.1000&ISO");
-		}
+
+        if (ActorType.REPOSITORY.getShortName().equals(currentActorTypeId) && repOrchestrationResponse != null) {
+            parms.put("$patientid$", repOrchestrationResponse.getPid().asString());
+        }
+        else if (ActorType.REGISTRY.getShortName().equals(currentActorTypeId) && regOrchestrationResponse != null) {
+            parms.put("$patientid$", regOrchestrationResponse.getPid().asString());
+        }
+		else { // mostly for early debugging
+            parms.put("$patientid$", "P20160907182617.2^^^&1.3.6.1.4.1.21367.2005.13.20.1000&ISO");
+        }
 
 		try {
-			// Site is support site since it has the supporting Registry sim and as part of orchestration we added
-			// the Repository Pnr and Ret transactions
-			// was currentSiteName
-			getToolkitServices().runTest(getEnvironmentSelection(), getCurrentTestSession(), sitetoIssueTestAgainst, testInstance, parms, true, new AsyncCallback<TestOverviewDTO>() {
+			getToolkitServices().runTest(getEnvironmentSelection(), getCurrentTestSession(), getSitetoIssueTestAgainst(), testInstance, parms, true, new AsyncCallback<TestOverviewDTO>() {
 				@Override
 				public void onFailure(Throwable throwable) {
 					new PopupMessage(throwable.getMessage());
@@ -780,21 +821,32 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner, SiteMa
 		return repOrchestrationResponse;
 	}
 
-	public void setRepOrchestrationResponse(RepOrchestrationResponse repOrchestrationResponse) {
+    //
+    // These are managed as a group.  Each must set orchestrationResponse
+    //
+	void setRepOrchestrationResponse(RepOrchestrationResponse repOrchestrationResponse) {
 		this.repOrchestrationResponse = repOrchestrationResponse;
+        this.orchestrationResponse = repOrchestrationResponse;
 	}
 
+    void setRegOrchestrationResponse(RegOrchestrationResponse regOrchestrationResponse) {
+        this.regOrchestrationResponse = regOrchestrationResponse;
+        this.orchestrationResponse = regOrchestrationResponse;
+    }
 
+    //
+    // End of group
+    //
 
-	public String getWindowShortName() {
+    public String getWindowShortName() {
 		return "testloglisting";
 	}
 
-	public SiteSpec getSitetoIssueTestAgainst() {
+	private SiteSpec getSitetoIssueTestAgainst() {
 		return sitetoIssueTestAgainst;
 	}
 
-	public void setSitetoIssueTestAgainst(SiteSpec sitetoIssueTestAgainst) {
+	void setSitetoIssueTestAgainst(SiteSpec sitetoIssueTestAgainst) {
 		this.sitetoIssueTestAgainst = sitetoIssueTestAgainst;
 	}
 

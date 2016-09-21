@@ -97,5 +97,19 @@ class OrchestrationManager {
         }
     }
 
+    public RawResponse buildRegTestEnvironment(Session session, RegOrchestrationRequest request) {
+        try {
+            ToolkitApi api
+            if(Installation.installation().warHome()) {
+                api = ToolkitApi.forNormalUse(session)
+            } else {
+                api = ToolkitApi.forInternalUse()
+            }
+            return new RegOrchestrationBuilder(api, session, request).buildTestEnvironment()
+        } catch (Exception e) {
+            return RawResponseBuilder.build(e);
+        }
+    }
+
 
 }

@@ -38,12 +38,12 @@ class RepOrchestrationBuilder {
     RawResponse buildTestEnvironment() {
         try {
             String supportIdName = 'rep_test_support'
-            SimId supportId
+            SimId supportSimId
             SimulatorConfig supportSimConfig = null
             RepOrchestrationResponse response = new RepOrchestrationResponse()
 
             boolean reuse = false  // updated as we progress
-            supportId = new SimId(request.userName, supportIdName, ActorType.REGISTRY.name, request.environmentName)
+            supportSimId = new SimId(request.userName, supportIdName, ActorType.REGISTRY.name, request.environmentName)
             File orchestrationPropFile = Installation.installation().orchestrationPropertiesFile(request.userName, ActorType.REPOSITORY.shortName)
             Properties orchProps = new Properties()
             boolean propertiesUpdated = false
@@ -52,16 +52,16 @@ class RepOrchestrationBuilder {
             Pid pid
 
             response.repSite = new SiteSpec(request.sutSite.name)
-            response.repSite.orchestrationSiteName = supportId.toString()
+            response.repSite.orchestrationSiteName = supportSimId.toString()
             if (!request.isUseExistingSimulator()) {
-                api.deleteSimulatorIfItExists(supportId)
+                api.deleteSimulatorIfItExists(supportSimId)
                 orchProps.clear()
             }
-            if (api.simulatorExists(supportId)) {
-                supportSimConfig = api.getConfig(supportId)
+            if (api.simulatorExists(supportSimId)) {
+                supportSimConfig = api.getConfig(supportSimId)
                 reuse = true
             } else {
-                supportSimConfig = api.createSimulator(supportId).getConfig(0)
+                supportSimConfig = api.createSimulator(supportSimId).getConfig(0)
             }
             if (orchProps.getProperty("pid") != null) {
                 pid = PidBuilder.createPid(orchProps.getProperty("pid"))
@@ -107,7 +107,7 @@ class RepOrchestrationBuilder {
 
             response.regConfig = supportSimConfig     //
             response.supportSite = new SiteSpec(request.sutSite.name)
-            response.supportSite.orchestrationSiteName = supportId.toString()
+            response.supportSite.orchestrationSiteName = supportSimId.toString()
             return response
         } catch (Exception e) {
             return RawResponseBuilder.build(e);

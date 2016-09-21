@@ -3,6 +3,7 @@ package gov.nist.toolkit.xdstools2.client.widgets.buttons;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.ui.*;
+import gov.nist.toolkit.services.client.AbstractOrchestrationResponse;
 import gov.nist.toolkit.services.client.RawResponse;
 import gov.nist.toolkit.xdstools2.client.ErrorHandler;
 
@@ -16,6 +17,7 @@ abstract public class ReportableButton implements ClickHandler {
     private String resetLabel = null;
     private boolean resetRequested = false;
     private CheckBox resetCheckBox = null;
+    private Panel customPanel = null;
 
     public ReportableButton(Panel topPanel, String label) {
         this.topPanel = topPanel;
@@ -23,22 +25,30 @@ abstract public class ReportableButton implements ClickHandler {
         build();
     }
 
-    public ReportableButton() {}
+    protected ReportableButton() {}
 
-    public void setParentPanel(Panel parent) {
+    protected void setParentPanel(Panel parent) {
         this.topPanel = parent;
     }
 
-    public void setLabel(String label) {
+    protected void setLabel(String label) {
         this.label = label;
     }
 
-    public void setResetLabel(String resetLabel) {
+    protected void setCustomPanel(Panel panel) {
+        this.customPanel = panel;
+    }
+
+    protected void setResetLabel(String resetLabel) {
         this.resetLabel = resetLabel;
     }
 
     public Panel build() {
         panel.add(new HTML("<hr /><h2>Initialization</h2><p>The test environment needs to be initialized before tests can be run."));
+
+        if (customPanel != null) {
+            panel.add(customPanel);
+        }
 
         if (resetLabel != null) {
             resetCheckBox = new CheckBox(resetLabel);
@@ -81,7 +91,11 @@ abstract public class ReportableButton implements ClickHandler {
 
     public VerticalPanel panel() { return panel; }
 
-    public boolean isResetRequested() {
+    protected boolean isResetRequested() {
         return resetCheckBox != null && resetCheckBox.getValue();
+    }
+
+    protected void displayOrchestrationSupportTests(AbstractOrchestrationResponse orchestrationResponse) {
+
     }
 }
