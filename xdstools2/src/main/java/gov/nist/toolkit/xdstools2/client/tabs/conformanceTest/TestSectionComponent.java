@@ -1,19 +1,32 @@
 package gov.nist.toolkit.xdstools2.client.tabs.conformanceTest;
 
+import com.google.gwt.dom.client.Style;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.logical.shared.OpenEvent;
 import com.google.gwt.event.logical.shared.OpenHandler;
+import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
 import com.google.gwt.user.client.rpc.AsyncCallback;
-import com.google.gwt.user.client.ui.*;
+import com.google.gwt.user.client.ui.DisclosurePanel;
+import com.google.gwt.user.client.ui.FlexTable;
+import com.google.gwt.user.client.ui.FlowPanel;
+import com.google.gwt.user.client.ui.HTML;
+import com.google.gwt.user.client.ui.Image;
+import com.google.gwt.user.client.ui.IsWidget;
+import com.google.gwt.user.client.ui.SplitLayoutPanel;
+import com.google.gwt.user.client.ui.VerticalPanel;
+import com.google.gwt.user.client.ui.Widget;
 import gov.nist.toolkit.results.client.TestInstance;
 import gov.nist.toolkit.session.client.SectionOverviewDTO;
+import gov.nist.toolkit.session.client.TestPartFileDTO;
 import gov.nist.toolkit.testenginelogging.client.LogFileContentDTO;
 import gov.nist.toolkit.testenginelogging.client.ReportDTO;
 import gov.nist.toolkit.testenginelogging.client.TestStepLogContentDTO;
 import gov.nist.toolkit.testenginelogging.client.UseReportDTO;
 import gov.nist.toolkit.xdstools2.client.HorizontalFlowPanel;
 import gov.nist.toolkit.xdstools2.client.PopupMessage;
+import gov.nist.toolkit.xdstools2.client.sh.BrushFactory;
+import gov.nist.toolkit.xdstools2.client.sh.SyntaxHighlighter;
 
 import java.util.HashSet;
 import java.util.List;
@@ -71,13 +84,82 @@ public class TestSectionComponent implements IsWidget {
             panel.addOpenHandler(new SectionOpenHandler(new TestInstance(testInstance.getId(), sectionOverview.getName())));
         }
         panel.add(body);
-        Image play = new Image("icons2/play-16.png");
+
+        Image viewTestPlan = getImg("icons2/ic_assignment_black_36dp_1x.png","View testplan details", "A clipboard of tasks");
+        viewTestPlan.addClickHandler(new ViewTestplan(sessionName, testInstance, sectionOverview.getName()));
+        header.add(viewTestPlan);
+
+        Image play = getImg("icons2/play-16.png","Run","Play button");
         play.addClickHandler(new RunSection(fullTestInstance));
-        play.setTitle("Run");
         header.add(play);
+
         body.add(sectionDescription);
         sectionDescription.add(new HTML(sectionOverview.getDescription()));
         body.add(sectionResults);
+    }
+
+    private Image getImg(String iconFile, String tooltip, String altText) {
+        Image imgIcon = new Image(iconFile);
+        imgIcon.addStyleName("iconStyle");
+        imgIcon.addStyleName("iconStyle_20x20");
+        imgIcon.setTitle(tooltip);
+        imgIcon.setAltText(altText);
+        return imgIcon;
+    }
+
+
+    private class ViewTestplan implements ClickHandler {
+
+        String sessionName;
+        TestInstance testInstance;
+        String section;
+
+        public ViewTestplan(String sessionName, TestInstance testInstance, String section) {
+            this.sessionName = sessionName;
+            this.testInstance = testInstance;
+            this.section = section;
+        }
+
+        @Override
+        public void onClick(ClickEvent clickEvent) {
+            toolkitService.getSectionTestPartFile(sessionName, testInstance, section, new AsyncCallback<TestPartFileDTO>() {
+                @Override
+                public void onFailure(Throwable throwable) {
+                    new PopupMessage("TestSectionComponent: getTestplanAsFile error: " + throwable.toString());
+                }
+
+                @Override
+                public void onSuccess(TestPartFileDTO sectionTp) {
+
+
+                            SafeHtmlBuilder testplanContentSh = new SafeHtmlBuilder();
+                            String testplanXmlStr = sectionTp.getHtlmizedContent().replace("<br/>", "\r\n");
+
+                            testplanContentSh.appendHtmlConstant(SyntaxHighlighter.highlight(testplanXmlStr, BrushFactory.newXmlBrush(), false)); // section testplan content
+
+                            SplitLayoutPanel slp = new SplitLayoutPanel(2);
+                            slp.addEast(new HTML(""),10); // testplan content
+
+                            VerticalPanel vp = new VerticalPanel();
+                            vp.getElement().getStyle().setMargin(30, Style.Unit.PX);
+                            vp.add(new HTML( testplanContentSh.toSafeHtml()) );
+
+                            for (String key : sectionTp.getStepTpfMap().keySet()) { // Step and file name
+                                vp.add(new HTML(key + ": " + sectionTp.getStepTpfMap().get(key)));
+                            }
+
+                            slp.add(vp);
+                            slp.setWidth("700px");
+                            slp.setHeight("500px");
+
+
+                            // TODO: add a call to retrieve the metadata content using the filename from here.
+
+                            new PopupMessage(new SafeHtmlBuilder().toSafeHtml(),slp);
+
+                        }
+            });
+        }
     }
 
     private class RunSection implements ClickHandler {

@@ -2,6 +2,7 @@ package gov.nist.toolkit.session.server.serviceManager;
 
 import gov.nist.toolkit.actorfactory.SimCache;
 import gov.nist.toolkit.actorfactory.SimDb;
+import gov.nist.toolkit.commondatatypes.MetadataSupport;
 import gov.nist.toolkit.configDatatypes.client.Pid;
 import gov.nist.toolkit.installation.Installation;
 import gov.nist.toolkit.registrymetadata.Metadata;
@@ -12,10 +13,18 @@ import gov.nist.toolkit.registrymsg.repository.RetrievedDocumentModel;
 import gov.nist.toolkit.results.CommonService;
 import gov.nist.toolkit.results.MetadataToMetadataCollectionParser;
 import gov.nist.toolkit.results.ResultBuilder;
-import gov.nist.toolkit.results.client.*;
+import gov.nist.toolkit.results.client.AssertionResult;
+import gov.nist.toolkit.results.client.AssertionResults;
+import gov.nist.toolkit.results.client.CodesConfiguration;
+import gov.nist.toolkit.results.client.CodesResult;
+import gov.nist.toolkit.results.client.Result;
+import gov.nist.toolkit.results.client.StepResult;
+import gov.nist.toolkit.results.client.TestInstance;
+import gov.nist.toolkit.results.client.TestLogs;
 import gov.nist.toolkit.results.shared.Test;
 import gov.nist.toolkit.session.client.ConformanceSessionValidationStatus;
 import gov.nist.toolkit.session.client.TestOverviewDTO;
+import gov.nist.toolkit.session.client.TestPartFileDTO;
 import gov.nist.toolkit.session.server.CodesConfigurationBuilder;
 import gov.nist.toolkit.session.server.Session;
 import gov.nist.toolkit.session.server.TestOverviewBuilder;
@@ -38,7 +47,9 @@ import gov.nist.toolkit.testkitutilities.TestkitBuilder;
 import gov.nist.toolkit.testkitutilities.client.TestCollectionDefinitionDAO;
 import gov.nist.toolkit.utilities.io.Io;
 import gov.nist.toolkit.utilities.xml.OMFormatter;
+import gov.nist.toolkit.utilities.xml.Parse;
 import gov.nist.toolkit.utilities.xml.Util;
+import gov.nist.toolkit.utilities.xml.XmlFormatter;
 import gov.nist.toolkit.utilities.xml.XmlUtil;
 import gov.nist.toolkit.xdsexception.ExceptionUtil;
 import gov.nist.toolkit.xdsexception.client.EnvironmentNotSelectedException;
@@ -50,7 +61,14 @@ import javax.xml.namespace.QName;
 import javax.xml.parsers.FactoryConfigurationError;
 import java.io.File;
 import java.io.IOException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 
 public class XdsTestServiceManager extends CommonService {
@@ -304,7 +322,26 @@ public class XdsTestServiceManager extends CommonService {
 		return Installation.installation().propertyServiceManager().isTestLogCachePrivate();
 	}
 
+	/**
+	 *
+	 * @param testInstance
+	 * @param section
+	 * @return
+	 * @throws Exception
+     */
 	public String getTestplanAsText(TestInstance testInstance, String section) throws Exception {
+		TestPartFileDTO testplanTpf = getTestplanFile(testInstance,section);
+		return testplanTpf.getContent();
+	}
+
+	/**
+	 *
+	 * @param testInstance
+	 * @param section
+	 * @return
+	 * @throws Exception
+     */
+	public TestPartFileDTO getTestplanFile(TestInstance testInstance, String section) throws Exception {
 		try {
 			if (session != null)
 				logger.debug(session.id() + ": " + "getTestplanAsText");
@@ -330,11 +367,72 @@ public class XdsTestServiceManager extends CommonService {
 				} else
 					throw new Exception("Cannot load test plan " + testInstance + "#" + section);
 			}
-			return new OMFormatter(tsFile).toString();
+			TestPartFileDTO testplanTpf = new TestPartFileDTO(TestPartFileDTO.TestPartFileType.SECTION_TESTPLAN_FILE);
+			String content = new OMFormatter(tsFile).toString();
+			testplanTpf.setPartName(section);
+			testplanTpf.setFile(tsFile.toString());
+			testplanTpf.setContent(content);
+			testplanTpf.setHtlmizedContent(XmlFormatter.htmlize(content));
+			return testplanTpf;
 		} catch (Throwable t) {
 			throw new Exception(t.getMessage() + "\n" + ExceptionUtil.exception_details(t));
 		}
 	}
+
+	public TestPartFileDTO popStepMetadataFile(TestPartFileDTO sectionTpf) throws Exception{
+		String testplanFileString = sectionTpf.getFile();
+		File testplanFile = new File(testplanFileString);
+		String testplanXmlString = sectionTpf.getContent();
+
+		try {
+			OMElement testplanEle = Parse.parse_xml_string(testplanXmlString);
+			List<OMElement> testSteps = XmlUtil.decendentsWithLocalName(testplanEle, "TestStep");
+			for (OMElement testStep : testSteps) {
+				String stepName = testStep.getAttributeValue(MetadataSupport.id_qname);
+				OMElement metadataFileEle = XmlUtil.firstDecendentWithLocalName(testStep, "MetadataFile");
+				if (metadataFileEle == null) continue;
+				String metadataFileName = metadataFileEle.getText();
+				if (metadataFileName == null || metadataFileName.equals("")) continue;
+				File metadataFile = new File(testplanFile.getParent(), metadataFileName);
+				if (!(metadataFile.exists())) continue;
+				TestPartFileDTO stepTpf = new TestPartFileDTO(TestPartFileDTO.TestPartFileType.STEP_METADATA_FILE);
+				stepTpf.setPartName(stepName);
+				stepTpf.setFile(metadataFile.toString());
+				sectionTpf.getStepList().add(stepName);
+				sectionTpf.getStepTpfMap().put(stepName,stepTpf);
+			}
+		} catch (Throwable t) {
+            throw new Exception("Error traversing metadataFile elements:" + t.toString() + " testplan file: " + testplanFileString + " xmlString: " + testplanXmlString);
+		}
+		return sectionTpf;
+	}
+
+	public TestPartFileDTO getSectionTestPartFile(TestInstance testInstance, String section) throws Exception {
+
+		TestPartFileDTO sectionTpf = getTestplanFile(testInstance, section);
+
+		if (sectionTpf!=null) {
+			popStepMetadataFile(sectionTpf);
+
+			// See if this section has a ContentBundle
+			File contentBundle = new File(new File(sectionTpf.getFile()).getParentFile(),"ContentBundle");
+			if (contentBundle.exists() && contentBundle.isDirectory()) {
+				List<TestPartFileDTO> cbSections = new ArrayList<>();
+				List<String> contentBundleSections = getTestIndex(contentBundle.toString());
+				if (contentBundleSections.size()>0) {
+					for (String cbSectionName : contentBundleSections) {
+						TestPartFileDTO cbSection = getTestplanFile(testInstance, section + File.separator + "ContentBundle" + File.separator + cbSectionName);
+						popStepMetadataFile(cbSection);
+						cbSections.add(cbSection);
+					}
+					sectionTpf.setContentBundle(cbSections);
+				}
+
+			}
+		}
+		return sectionTpf;
+	}
+
 
 	public TestLogDetails getTestDetails(TestInstance testInstance, String section) throws Exception {
 		List<String> sections = new ArrayList<String>();

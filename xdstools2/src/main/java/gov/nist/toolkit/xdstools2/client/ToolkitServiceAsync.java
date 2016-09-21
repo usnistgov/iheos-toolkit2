@@ -17,6 +17,7 @@ import gov.nist.toolkit.results.client.*;
 import gov.nist.toolkit.results.shared.Test;
 import gov.nist.toolkit.services.client.*;
 import gov.nist.toolkit.session.client.TestOverviewDTO;
+import gov.nist.toolkit.session.client.TestPartFileDTO;
 import gov.nist.toolkit.sitemanagement.client.Site;
 import gov.nist.toolkit.sitemanagement.client.SiteSpec;
 import gov.nist.toolkit.sitemanagement.client.TransactionOfferings;
@@ -193,8 +194,9 @@ public interface ToolkitServiceAsync {
 	void getSimulatorEventResponse(TransactionInstance ti, AsyncCallback<Result> callback) throws Exception;
 	void getTestLogDetails(String sessionName, TestInstance testInstance, AsyncCallback<LogFileContentDTO> callback);
 
-
 	void getTestplanAsText(String testSession, TestInstance testInstance, String section, AsyncCallback<String> callback);
+	void getSectionTestPartFile(String testSession, TestInstance testInstance, String section, AsyncCallback<TestPartFileDTO> callback);
+	void getHtmlizedString(String xml, AsyncCallback<String> callback);
 
 	void configureTestkit(String selectedEnvironment,AsyncCallback<String> callback);
 

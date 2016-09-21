@@ -41,6 +41,7 @@ import gov.nist.toolkit.services.server.orchestration.OrchestrationManager;
 import gov.nist.toolkit.services.shared.SimulatorServiceManager;
 import gov.nist.toolkit.session.client.ConformanceSessionValidationStatus;
 import gov.nist.toolkit.session.client.TestOverviewDTO;
+import gov.nist.toolkit.session.client.TestPartFileDTO;
 import gov.nist.toolkit.session.server.Session;
 import gov.nist.toolkit.session.server.serviceManager.QueryServiceManager;
 import gov.nist.toolkit.simulators.support.od.TransactionUtil;
@@ -52,6 +53,7 @@ import gov.nist.toolkit.testenginelogging.client.LogFileContentDTO;
 import gov.nist.toolkit.testkitutilities.client.TestCollectionDefinitionDAO;
 import gov.nist.toolkit.tk.TkLoader;
 import gov.nist.toolkit.tk.client.TkProps;
+import gov.nist.toolkit.utilities.xml.XmlFormatter;
 import gov.nist.toolkit.valregmsg.message.SchemaValidation;
 import gov.nist.toolkit.valregmsg.validation.factories.CommonMessageValidatorFactory;
 import gov.nist.toolkit.valsupport.client.MessageValidationResults;
@@ -384,6 +386,14 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements
         session().setMesaSessionName(testSession);
         return session().xdsTestServiceManager().getTestplanAsText(testInstance, section);
     }
+	public TestPartFileDTO getSectionTestPartFile(String testSession, TestInstance testInstance, String section) throws Exception {
+		session().setMesaSessionName(testSession);
+		return session().xdsTestServiceManager().getSectionTestPartFile(testInstance, section);
+	}
+	public String getHtmlizedString(String xml) { // This is different than the Htmlize class in the client code works (see its isHtml method)
+		return XmlFormatter.htmlize(xml)
+				.replace("<br/>", "\r\n");
+	}
 	public CodesResult getCodesConfiguration(String environmentName)  throws NoServletSessionException {
 		setEnvironment(environmentName);
 		return session().xdsTestServiceManager().getCodesConfiguration();

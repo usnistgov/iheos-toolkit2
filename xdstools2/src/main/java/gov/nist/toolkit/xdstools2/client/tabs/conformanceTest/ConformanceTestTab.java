@@ -1,5 +1,6 @@
 package gov.nist.toolkit.xdstools2.client.tabs.conformanceTest;
 
+import com.google.gwt.dom.client.Style;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.logical.shared.SelectionEvent;
@@ -58,6 +59,8 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner, SiteMa
 
 	public ConformanceTestTab() {
 		me = this;
+		toolPanel.getElement().getStyle().setMargin(4, Style.Unit.PX);
+		toolPanel.getElement().getStyle().setMarginLeft(0, Style.Unit.PX);
 		toolPanel.add(sitesPanel);
 		toolPanel.add(tabBar);
 		toolPanel.add(initializationPanel);
@@ -73,6 +76,7 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner, SiteMa
 		testSessionDescription.addClickHandler(new TestSessionClickHandler());
 		testSessionDescriptionPanel.setStyleName("with-rounded-border");
 		testSessionDescriptionPanel.add(testSessionDescription);
+		testSessionDescriptionPanel.getElement().getStyle().setMarginLeft(2, Style.Unit.PX);
 
 		addEast(testSessionDescriptionPanel);
 		initializeTestSession();
@@ -389,6 +393,7 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner, SiteMa
 		}
 
 		Image play = new Image("icons2/play-24.png");
+		play.setStyleName("iconStyle");
 		play.setTitle("Run");
 		play.addClickHandler(new RunClickHandler(testOverview.getTestInstance()));
 		header.add(play);

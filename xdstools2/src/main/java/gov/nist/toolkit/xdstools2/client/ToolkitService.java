@@ -19,6 +19,7 @@ import gov.nist.toolkit.results.client.*;
 import gov.nist.toolkit.results.shared.Test;
 import gov.nist.toolkit.services.client.*;
 import gov.nist.toolkit.session.client.TestOverviewDTO;
+import gov.nist.toolkit.session.client.TestPartFileDTO;
 import gov.nist.toolkit.sitemanagement.client.Site;
 import gov.nist.toolkit.sitemanagement.client.SiteSpec;
 import gov.nist.toolkit.sitemanagement.client.TransactionOfferings;
@@ -172,6 +173,8 @@ public interface ToolkitService extends RemoteService  {
 	String getAdminPassword() throws NoServletSessionException ;
 	
 	String getTestplanAsText(String testSession,TestInstance testInstance, String section) throws Exception;
+	TestPartFileDTO getSectionTestPartFile(String testSession, TestInstance testInstance, String section) throws Exception;
+	String getHtmlizedString(String xml) throws Exception;
 	
 	 String getImplementationVersion() throws NoServletSessionException ;
 	

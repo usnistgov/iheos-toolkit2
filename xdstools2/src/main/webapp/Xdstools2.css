@@ -198,7 +198,7 @@ h3 {
 }
 
 .gwt-TabBar {
-  border-bottom: 3px solid #92C1F0;
+  border-bottom: 4px solid #92C1F0;
 }
 
 .gwt-TabBarItem-selected {
@@ -220,3 +220,11 @@ h3 {
 #simConfigTable tr:nth-child(even) {background-color: #f2f2f2}
 
 .lavenderTh {font-size:16px; background-color: lavender;}
+
+.iconStyle {
+  vertical-align: bottom; cursor: pointer; margin: 6px; display:inline-block;
+}
+
+.iconStyle_20x20 {
+  width: 20px; height: 20px;
+}
