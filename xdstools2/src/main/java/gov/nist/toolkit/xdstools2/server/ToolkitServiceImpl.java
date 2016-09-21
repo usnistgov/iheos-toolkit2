@@ -360,6 +360,9 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements
 		List<String> sections = new ArrayList<>();
 		if (testInstance.getSection() != null) sections.add(testInstance.getSection());
 		setEnvironment(environmentName);
+		Session session = session().xdsTestServiceManager().session;
+		session.setCurrentEnvName(environmentName);
+		session.setMesaSessionName(mesaTestSession);
 		TestOverviewDTO testOverviewDTO = session().xdsTestServiceManager().runTest(mesaTestSession, siteSpec, testInstance, sections, params, null, stopOnFirstFailure);
 		return testOverviewDTO;
 	}

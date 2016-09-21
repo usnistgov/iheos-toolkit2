@@ -540,7 +540,7 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner, SiteMa
 	// header and body per test
 	// key is testOverview.getName()
 	private Map<String, TestDisplay> testDisplays = new HashMap<>();
-	private class TestDisplay {
+	class TestDisplay {
 		TestDisplayHeader header = new TestDisplayHeader();
 		FlowPanel body = new FlowPanel();
 		DisclosurePanel panel = new DisclosurePanel(header);
