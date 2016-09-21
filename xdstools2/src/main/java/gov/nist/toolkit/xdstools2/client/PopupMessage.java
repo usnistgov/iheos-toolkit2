@@ -108,4 +108,3 @@ public class PopupMessage  extends DialogBox {
 		return msgBox;		
 	}
 }
-

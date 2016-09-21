@@ -6,6 +6,7 @@ import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.ui.FlexTable;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.TextBox;
+import com.google.gwt.user.client.ui.Widget;
 import gov.nist.toolkit.configDatatypes.client.TransactionType;
 import gov.nist.toolkit.sitemanagement.client.SiteSpec;
 import gov.nist.toolkit.xdstools2.client.CoupledTransactions;
@@ -66,6 +67,21 @@ public class FindPatientTab extends GenericQueryTab {
 	
 	public FindPatientTab() {
 		super(new FindDocumentsSiteActorManager());
+	}
+
+	@Override
+	protected Widget buildUI() {
+		return null;
+	}
+
+	@Override
+	protected void bindUI() {
+
+	}
+
+	@Override
+	protected void configureTabView() {
+
 	}
 
 	@Override
@@ -419,7 +435,7 @@ public class FindPatientTab extends GenericQueryTab {
 			addStatusBox();
 			getGoButton().setEnabled(false);
 			getInspectButton().setEnabled(false);
-			toolkitService.findPatient(siteSpec, firstName.getValue().trim(), secondName.getValue().trim(), lastName.getValue().trim(), suffix.getValue().trim(), 
+			getToolkitServices().findPatient(siteSpec, firstName.getValue().trim(), secondName.getValue().trim(), lastName.getValue().trim(), suffix.getValue().trim(),
 					                   gender.getValue().trim(), dob.getValue().trim(), ssn.getValue().trim(), pid.getValue().trim(),
 					                   homeAddress1.getValue().trim(), homeAddress2.getValue().trim(), homeCity.getValue().trim(), homeState.getValue().trim(), homeZip.getValue().trim(), homeCountry.getValue().trim(),
 					                   mothersFirstName.getValue().trim(), mothersSecondName.getValue().trim(), mothersLastName.getValue().trim(), mothersSuffix.getValue().trim(), 

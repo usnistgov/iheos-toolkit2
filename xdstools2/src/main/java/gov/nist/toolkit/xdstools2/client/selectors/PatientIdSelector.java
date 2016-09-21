@@ -10,11 +10,11 @@ import com.google.gwt.user.client.ui.*;
 import gov.nist.toolkit.xdstools2.client.CookieManager;
 import gov.nist.toolkit.xdstools2.client.Panel1;
 import gov.nist.toolkit.xdstools2.client.PopupMessage;
+import gov.nist.toolkit.xdstools2.client.util.ClientUtils;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import static gov.nist.toolkit.xdstools2.client.ToolWindow.toolkitService;
 
 public class PatientIdSelector {
 	HorizontalPanel patientIdPanel = new HorizontalPanel();
@@ -37,7 +37,7 @@ public class PatientIdSelector {
 		}
 
 		if (instances.isEmpty()) {
-			toolkitService.getDefaultAssigningAuthority(new AsyncCallback<String>() {
+			ClientUtils.INSTANCE.getToolkitServices().getDefaultAssigningAuthority(new AsyncCallback<String>() {
 
 				public void onFailure(Throwable caught) { new PopupMessage("getDefaultAssigningAuthority(): " + caught.getMessage()); }
 

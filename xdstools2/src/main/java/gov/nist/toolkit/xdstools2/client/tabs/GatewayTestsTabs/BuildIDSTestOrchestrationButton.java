@@ -2,10 +2,15 @@ package gov.nist.toolkit.xdstools2.client.tabs.GatewayTestsTabs;
 
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.user.client.rpc.AsyncCallback;
-import com.google.gwt.user.client.ui.*;
+import com.google.gwt.user.client.ui.FlexTable;
+import com.google.gwt.user.client.ui.HTML;
+import com.google.gwt.user.client.ui.Panel;
+import com.google.gwt.user.client.ui.Widget;
 import gov.nist.toolkit.actorfactory.client.SimulatorConfig;
 import gov.nist.toolkit.configDatatypes.SimulatorProperties;
-import gov.nist.toolkit.services.client.*;
+import gov.nist.toolkit.services.client.IdsOrchestrationRequest;
+import gov.nist.toolkit.services.client.IdsOrchestrationResponse;
+import gov.nist.toolkit.services.client.RawResponse;
 import gov.nist.toolkit.xdstools2.client.PopupMessage;
 import gov.nist.toolkit.xdstools2.client.tabs.genericQueryTab.GenericQueryTab;
 import gov.nist.toolkit.xdstools2.client.widgets.buttons.ReportableButton;

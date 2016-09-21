@@ -14,7 +14,9 @@ import gov.nist.toolkit.actorfactory.client.CcdaTypeSelection;
 import gov.nist.toolkit.http.client.HtmlMarkup;
 import gov.nist.toolkit.results.client.Result;
 import gov.nist.toolkit.valsupport.client.*;
-import gov.nist.toolkit.xdstools2.client.*;
+import gov.nist.toolkit.xdstools2.client.PopupMessage;
+import gov.nist.toolkit.xdstools2.client.RenameSimFileDialogBox;
+import gov.nist.toolkit.xdstools2.client.ToolWindow;
 import gov.nist.toolkit.xdstools2.client.inspector.MetadataInspectorTab;
 import gov.nist.toolkit.xdstools2.client.tabs.TextViewerTab;
 
@@ -330,6 +332,16 @@ public class MessageValidatorTab extends ToolWindow {
 	MessageValidatorTab me;
 
 	@Override
+	protected Widget buildUI() {
+		return null;
+	}
+
+	@Override
+	protected void bindUI() {
+
+	}
+
+	@Override
 	public void onTabLoad(boolean select, String eventName) {
 		me = this;
 		ccdaSel = new CcdaTypeSelection(tkProps(), null);
@@ -489,7 +501,7 @@ public class MessageValidatorTab extends ToolWindow {
 					return;
 				}
 				filename = simFilesListBox.getValue(sel);
-				toolkitService.getSelectedMessage(filename, getTextCallback);
+				getToolkitServices().getSelectedMessage(filename, getTextCallback);
 			}
 		});
 
@@ -506,7 +518,7 @@ public class MessageValidatorTab extends ToolWindow {
 					return;
 				}
 				filename = simFilesListBox.getValue(sel);
-				toolkitService.getSelectedMessageResponse(filename, getTextCallback);
+				getToolkitServices().getSelectedMessageResponse(filename, getTextCallback);
 			}
 		});
 		endpointAreaButtonPanel.setWidget(1, 1, viewRespFromEndpointButton);
@@ -522,7 +534,7 @@ public class MessageValidatorTab extends ToolWindow {
 					return;
 				}
 				filename = simFilesListBox.getValue(sel);
-				toolkitService.executeSimMessage(filename, messageValidationCallback);
+				getToolkitServices().executeSimMessage(filename, messageValidationCallback);
 			}
 		});
 
@@ -555,7 +567,7 @@ public class MessageValidatorTab extends ToolWindow {
 					return;
 				}
 				filename = simFilesListBox.getValue(sel);
-				toolkitService.deleteSimFile(filename, reloadSimMessages );
+				getToolkitServices().deleteSimFile(filename, reloadSimMessages );
 			}
 		});
 
@@ -630,7 +642,7 @@ public class MessageValidatorTab extends ToolWindow {
 		inspectButton.setEnabled(false);
 		inspectButton.addClickHandler(new ClickHandler() {
 			public void onClick(ClickEvent event) {
-				toolkitService.getLastMetadata(getLastMetadataCallback);
+				getToolkitServices().getLastMetadata(getLastMetadataCallback);
 			}
 		});
 
@@ -655,7 +667,7 @@ public class MessageValidatorTab extends ToolWindow {
 
 	HTML simEndpointMessage;
 	void requestSimEndpoint() {
-		toolkitService.getSimulatorEndpoint(new AsyncCallback<String>() {
+		getToolkitServices().getSimulatorEndpoint(new AsyncCallback<String>() {
 
 			public void onFailure(Throwable caught) {
 				new PopupMessage(caught.getMessage());
@@ -674,7 +686,7 @@ public class MessageValidatorTab extends ToolWindow {
 
 	String uploadFilename;
 	void requestFilename() {
-		toolkitService.getLastFilename(new AsyncCallback<String>() {
+		getToolkitServices().getLastFilename(new AsyncCallback<String>() {
 
 			public void onFailure(Throwable caught) {
 				new PopupMessage(caught.getMessage());			
@@ -697,7 +709,7 @@ public class MessageValidatorTab extends ToolWindow {
 
 	String timeAndDate;
 	void requestTimeAndDate() {
-		toolkitService.getTimeAndDate(new AsyncCallback<String>() {
+		getToolkitServices().getTimeAndDate(new AsyncCallback<String>() {
 
 			public void onFailure(Throwable caught) {
 				new PopupMessage(caught.getMessage());			
@@ -720,7 +732,7 @@ public class MessageValidatorTab extends ToolWindow {
 	String clientIP = null;
 	@SuppressWarnings("deprecation")
 	void requestClientIP() {
-		toolkitService.getClientIPAddress(new AsyncCallback<String>() {
+		getToolkitServices().getClientIPAddress(new AsyncCallback<String>() {
 
 			public void onFailure(Throwable caught) {
 				new PopupMessage(caught.getMessage());			
@@ -746,7 +758,7 @@ public class MessageValidatorTab extends ToolWindow {
 
 		System.out.println(vc);
 		
-		toolkitService.validateMessage(vc, messageValidationCallback);
+		getToolkitServices().validateMessage(vc, messageValidationCallback);
 	}
 
 	final AsyncCallback<List<String>> getSimFileNamesCallback = new AsyncCallback<List<String>>() {

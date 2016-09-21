@@ -18,6 +18,7 @@ import gov.nist.toolkit.registrymetadata.client.Uids;
 import gov.nist.toolkit.results.client.*;
 import gov.nist.toolkit.results.shared.Test;
 import gov.nist.toolkit.services.client.*;
+import gov.nist.toolkit.session.client.ConformanceSessionValidationStatus;
 import gov.nist.toolkit.session.client.TestOverviewDTO;
 import gov.nist.toolkit.session.client.TestPartFileDTO;
 import gov.nist.toolkit.sitemanagement.client.Site;
@@ -34,7 +35,6 @@ import gov.nist.toolkit.xdstools2.client.command.request.GeneratePidRequest;
 import gov.nist.toolkit.xdstools2.client.command.request.GetAllSimConfigsRequest;
 import gov.nist.toolkit.xdstools2.client.command.request.SendPidToRegistryRequest;
 import gov.nist.toolkit.xdstools2.client.command.response.InitializationResponse;
-import gov.nist.toolkit.session.client.ConformanceSessionValidationStatus;
 
 import java.io.IOException;
 import java.util.Collection;
@@ -205,6 +205,7 @@ public interface ToolkitService extends RemoteService  {
 	RawResponse buildRgTestOrchestration(RgOrchestrationRequest request);
 	RawResponse buildIdsTestOrchestration(IdsOrchestrationRequest request);
 	RawResponse buildRepTestOrchestration(RepOrchestrationRequest request);
+    RawResponse buildRegTestOrchestration(RegOrchestrationRequest request);
 
         Map<String, String> getSessionProperties() throws NoServletSessionException;
 	 void setSessionProperties(Map<String, String> props) throws NoServletSessionException;
@@ -265,4 +266,6 @@ public interface ToolkitService extends RemoteService  {
 	public InteractingEntity getInteractionFromModel(InteractingEntity model) throws Exception;
 
 	String clearTestSession(String testSession) throws Exception;
+
+    boolean getAutoInitConformanceTesting();
 }

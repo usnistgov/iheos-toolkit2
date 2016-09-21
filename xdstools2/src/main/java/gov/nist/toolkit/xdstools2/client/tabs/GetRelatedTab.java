@@ -3,10 +3,7 @@ package gov.nist.toolkit.xdstools2.client.tabs;
 
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.user.client.ui.CheckBox;
-import com.google.gwt.user.client.ui.FlexTable;
-import com.google.gwt.user.client.ui.HTML;
-import com.google.gwt.user.client.ui.TextBox;
+import com.google.gwt.user.client.ui.*;
 import gov.nist.toolkit.configDatatypes.client.TransactionType;
 import gov.nist.toolkit.registrymetadata.client.ObjectRef;
 import gov.nist.toolkit.xdstools2.client.CoupledTransactions;
@@ -55,6 +52,21 @@ public class GetRelatedTab  extends GenericQueryTab {
 		}
 		
 		return as;
+	}
+
+	@Override
+	protected Widget buildUI() {
+		return null;
+	}
+
+	@Override
+	protected void bindUI() {
+
+	}
+
+	@Override
+	protected void configureTabView() {
+
 	}
 
 	@Override
@@ -118,7 +130,7 @@ public class GetRelatedTab  extends GenericQueryTab {
 			}
 
 			rigForRunning();
-			toolkitService.getRelated(getSiteSelection(), new ObjectRef(uuid.getValue().trim()), assocs, queryCallback);
+			getToolkitServices().getRelated(getSiteSelection(), new ObjectRef(uuid.getValue().trim()), assocs, queryCallback);
 		}
 
 	}

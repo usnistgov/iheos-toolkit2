@@ -5,6 +5,7 @@ import com.google.gwt.user.client.ui.FlowPanel;
 import gov.nist.toolkit.actorfactory.client.SimId;
 import gov.nist.toolkit.actorfactory.client.SimulatorConfig;
 import gov.nist.toolkit.xdstools2.client.PopupMessage;
+import gov.nist.toolkit.xdstools2.client.util.ClientUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -94,7 +95,7 @@ class SimConfigSuper {
 	}
 	
 	void reloadSimulators() {
-		simulatorControlTab.toolkitService.getSimConfigs(getIds(), new AsyncCallback<List<SimulatorConfig>>() {
+		ClientUtils.INSTANCE.getToolkitServices().getSimConfigs(getIds(), new AsyncCallback<List<SimulatorConfig>>() {
 
 			public void onFailure(Throwable caught) {
 				new PopupMessage("getSimConfigs:" + caught.getMessage());

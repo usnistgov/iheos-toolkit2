@@ -78,7 +78,7 @@ class RepSpec extends ToolkitSpecification {
         request.useExistingSimulator = false
         request.sutSite = new SiteSpec(simId.toString())
 
-        when:
+        when: 'build orchestration'
         def builder = new RepOrchestrationBuilder(api, session, request)
         RawResponse rawResponse = builder.buildTestEnvironment()
 
@@ -89,12 +89,16 @@ class RepSpec extends ToolkitSpecification {
         RepOrchestrationResponse response = (RepOrchestrationResponse) rawResponse
         SimulatorConfig supportConfig = response.regConfig
 
-        then: // orchestration completed successfully
+        then: 'orchestration completed successfully'
         !response.isError()
         supportConfig.getConfigEle(SimulatorProperties.registerEndpoint) != null
         supportConfig.getConfigEle(SimulatorProperties.storedQueryEndpoint) != null
 
-        when:
+        when: 'configure repository SUT to forward to registry built by orchestration'
+        repSimConfig.setProperty(SimulatorProperties.registerEndpoint, supportConfig.getConfigEle(SimulatorProperties.registerEndpoint).asString())
+        repSimConfig = spi.update(repSimConfig)
+
+        and: 'run test'
         SiteSpec siteSpec = response.repSite
         siteSpec.orchestrationSiteName = supportConfig.id
 

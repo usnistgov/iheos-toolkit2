@@ -22,20 +22,9 @@ import gov.nist.toolkit.registrymetadata.client.AnyIds;
 import gov.nist.toolkit.registrymetadata.client.ObjectRef;
 import gov.nist.toolkit.registrymetadata.client.ObjectRefs;
 import gov.nist.toolkit.registrymetadata.client.Uids;
-import gov.nist.toolkit.results.client.CodesResult;
-import gov.nist.toolkit.results.client.DocumentEntryDetail;
-import gov.nist.toolkit.results.client.Result;
-import gov.nist.toolkit.results.client.TestInstance;
-import gov.nist.toolkit.results.client.TestLogs;
+import gov.nist.toolkit.results.client.*;
 import gov.nist.toolkit.results.shared.Test;
-import gov.nist.toolkit.services.client.EnvironmentNotSelectedClientException;
-import gov.nist.toolkit.services.client.IdsOrchestrationRequest;
-import gov.nist.toolkit.services.client.IgOrchestrationRequest;
-import gov.nist.toolkit.services.client.IigOrchestrationRequest;
-import gov.nist.toolkit.services.client.RawResponse;
-import gov.nist.toolkit.services.client.RepOrchestrationRequest;
-import gov.nist.toolkit.services.client.RgOrchestrationRequest;
-import gov.nist.toolkit.services.client.RigOrchestrationRequest;
+import gov.nist.toolkit.services.client.*;
 import gov.nist.toolkit.services.server.RawResponseBuilder;
 import gov.nist.toolkit.services.server.orchestration.OrchestrationManager;
 import gov.nist.toolkit.services.shared.SimulatorServiceManager;
@@ -81,13 +70,7 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Scanner;
+import java.util.*;
 
 @SuppressWarnings("serial")
 public class ToolkitServiceImpl extends RemoteServiceServlet implements
@@ -278,6 +261,11 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements
 		if (s == null) return RawResponseBuilder.build(new NoServletSessionException(""));
 		return new OrchestrationManager().buildRepTestEnvironment(s, request);
 	}
+	public RawResponse buildRegTestOrchestration(RegOrchestrationRequest request) {
+		Session s = getSession();
+		if (s == null) return RawResponseBuilder.build(new NoServletSessionException(""));
+		return new OrchestrationManager().buildRegTestEnvironment(s, request);
+	}
 	public RawResponse buildIgTestOrchestration(IgOrchestrationRequest request) {
 		Session s = getSession();
 		if (s == null) return RawResponseBuilder.build(new NoServletSessionException(""));
@@ -374,6 +362,9 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements
 		List<String> sections = new ArrayList<>();
 		if (testInstance.getSection() != null) sections.add(testInstance.getSection());
 		setEnvironment(environmentName);
+		Session session = session().xdsTestServiceManager().session;
+		session.setCurrentEnvName(environmentName);
+		session.setMesaSessionName(mesaTestSession);
 		TestOverviewDTO testOverviewDTO = session().xdsTestServiceManager().runTest(mesaTestSession, siteSpec, testInstance, sections, params, null, stopOnFirstFailure);
 		return testOverviewDTO;
 	}
@@ -865,6 +856,11 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements
 	@Override
 	public String clearTestSession(String testSession) throws Exception {
 		return session().xdsTestServiceManager().clearTestSession(testSession);
+	}
+
+	@Override
+	public boolean getAutoInitConformanceTesting() {
+		return Installation.installation().propertyServiceManager().getAutoInitializeConformanceTool();
 	}
 
 }

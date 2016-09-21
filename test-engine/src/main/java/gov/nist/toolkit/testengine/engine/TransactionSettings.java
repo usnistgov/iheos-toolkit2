@@ -23,6 +23,8 @@ public class TransactionSettings {
 	public LogRepository logRepository = null;
 	public boolean writeLogs = false;
 	public SiteSpec siteSpec;
+	public String testSession;
+	public String environmentName;
 	/**
 	 *Origin, null or default value is interpreted as "TestClient". For other Toolkit to Toolkit uses, use the originating simulator name/site name here.
 	 */
@@ -51,6 +53,8 @@ public class TransactionSettings {
 		ts.user = user;
 		ts.transactionTransport = transactionTransport;
 		ts.securityParams = securityParams;
+		ts.testSession = testSession;
+		ts.environmentName = environmentName;
 		return ts;
 	}
 }

@@ -1,9 +1,8 @@
 package gov.nist.toolkit.xdstools2.client.tabs.actorConfigTab;
 
-import gov.nist.toolkit.xdstools2.client.LoadGazelleConfigs;
-
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import gov.nist.toolkit.xdstools2.client.LoadGazelleConfigs;
 
 class ReloadSystemFromGazelleClickHandler implements ClickHandler {
 

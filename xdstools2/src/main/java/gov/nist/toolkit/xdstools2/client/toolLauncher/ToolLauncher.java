@@ -22,14 +22,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ToolLauncher implements ClickHandler {
-	String tabType;
-	SiteSpec siteSpec = null;
-	RegistryObject ro = null;
+	private String tabType;
+	private SiteSpec siteSpec = null;
+	private RegistryObject ro = null;
 
 	final static public String findDocumentsTabLabel = "FindDocuments";
 	final static public String findDocumentsByRefIdTabLabel = "FindDocumentsByRefId";
 	final static public String findDocumentsAllParametersTabLabel = "Find Documents (All Parameters)";
-	final static public String findPatientTabLabel = "XCPD-FindPatient";
 	final static public String findFoldersTabLabel = "FindFolders";
 	final static public String getDocumentsTabLabel = "GetDocuments";
 	final static public String getFoldersTabLabel = "GetFolders";
@@ -41,8 +40,8 @@ public class ToolLauncher implements ClickHandler {
 	final static public String getRelatedTabLabel = "GetRelated";
 	final static public String connectathonTabLabel = "Connectathon Tools";
 	final static public String messageValidatorTabLabel = "Message Validator";
-	final static public String simulatorMessageViewTabLabel = "Simulator Log Viewer";
-	final static public String simulatorControlTabLabel = "Simulator Manager";
+	final static public String simulatorMessageViewTabLabel = " View Simulator Logs";
+	final static public String simulatorControlTabLabel = "Manage Simulators";
 	final static public String srcStoresDocValTabLabel = "XDS.b_Doc_Source_Stores_Document";
 	final static public String documentRetrieveTabLabel = "RetrieveDocuments";
 	final static public String allocatePatientIdTabLabel = "Allocate Patient ID for the Public Registry";
@@ -53,11 +52,10 @@ public class ToolLauncher implements ClickHandler {
 	final static public String repositoryDoThisFirstTabLabel = "XDS.b_Repository_Do_This_First";
 	final static public String registryLifecycleTabLabel = "XDS.b_Lifecycle";
 	final static public String registryFolderHandlingTabLabel = "XDS.b_Registry_Folder_Handling";
-	final static public String sitesTabLabel = "Site/Actor Configuration";
+	final static public String sitesTabLabel = "Configure Systems";
 	final static public String repositoryTabLabel = "Repository Listing";
 	final static public String mesaTabLabel = "Pre-Connectathon Tests";
 	final static public String testRunnerTabLabel = "Conformance Tests";
-	final static public String nwhinTabLabel = "Pre-OnBoarding Tests";
 	final static public String pidFavoritesLabel = "Manage Patient IDs";
 	final static public String testsOverviewTabLabel = "Tests Overview";
 	final static public String igTestsTabLabel = "Initiating Gateway Tests";
@@ -66,12 +64,12 @@ public class ToolLauncher implements ClickHandler {
 	final static public String idsTestsTabLabel = "Imaging Document Source Tests";
 	final static public String imagingDocumentSetRetrieveTabLabel = "RetrieveImagingDocumentSet";
 	final static public String homeTabLabel = "Home";
-	final static public String adminTabLabel = "Site/Actor Configuration";
+	final static public String SysConfigTabLabel = "SUT Configuration";
 
 
 
-	final static public String testLogLabel = "Test Log Listing";
-	final static public String toolConfigTabLabel = "Toolkit Configuration";
+	final static public String conformanceTestsLabel = "Conformance Tests";
+	final static public String toolConfigTabLabel = " Configure Toolkit";
 
 	private static List<ToolDef> tools = new ArrayList<>();
 
@@ -116,10 +114,10 @@ public class ToolLauncher implements ClickHandler {
 		tools.add(new ToolDef(idsTestsTabLabel, "IDSTests", "IDSTests"));
 		tools.add(new ToolDef(rgTestsTabLabel, "RGTests", "RGTests"));
 		tools.add(new ToolDef(imagingDocumentSetRetrieveTabLabel, "RetIDS", "RetIDS"));
-		tools.add(new ToolDef(testLogLabel, "TestLog", "TestLog"));
+		tools.add(new ToolDef(conformanceTestsLabel, "ConfTests", "ConfTests"));
 		tools.add(new ToolDef(toolConfigTabLabel, "ToolkitConf", "ToolkitConf"));
 		tools.add(new ToolDef(homeTabLabel, "Home", "Home"));
-		tools.add(new ToolDef(adminTabLabel, "Admin", "Admin"));
+		tools.add(new ToolDef(SysConfigTabLabel, "Admin", "Admin"));
 	}
 
 	private ToolDef getToolDef(String requestedName) {
@@ -144,7 +142,6 @@ public class ToolLauncher implements ClickHandler {
 		if (menuName.equals(rgTestsTabLabel)) return new RGTestTab();
 		if (menuName.equals(findDocumentsByRefIdTabLabel)) return new FindDocumentsByRefIdTab();
 		if (menuName.equals(findDocumentsAllParametersTabLabel)) return new FindDocuments2Tab();
-		if (menuName.equals(findPatientTabLabel)) return new FindPatientTab();
 		if (menuName.equals(findFoldersTabLabel)) return new FindFoldersTab();
 		if (menuName.equals(getDocumentsTabLabel)) return new GetDocumentsTab();
 		if (menuName.equals(getFoldersTabLabel)) return new GetFoldersTab();
@@ -169,11 +166,10 @@ public class ToolLauncher implements ClickHandler {
 		if (menuName.equals(simulatorControlTabLabel)) return new SimulatorControlTab();
 		if (menuName.equals(toolConfigTabLabel)) return new ToolConfigTab();
 		if (menuName.equals(mesaTabLabel)) return new MesaTestTab();
-		if (menuName.equals(nwhinTabLabel)) return new MesaTestTab();
-		if (menuName.equals(testLogLabel)) return new ConformanceTestTab();
+		if (menuName.equals(conformanceTestsLabel)) return new ConformanceTestTab();
 		if (menuName.equals(dashboardTabLabel)) return new DashboardTab();
 		if (menuName.equals(repositoryTabLabel)) return new RepositoryListingTab();
-		if (menuName.equals(pidFavoritesLabel)) return new PidFavoritesTab();
+		if (menuName.equals(pidFavoritesLabel)) return new PidFavoritesTab(def.getTabName());
 		if (menuName.equals(testsOverviewTabLabel)) return new TestsOverviewTab();
 		if (menuName.equals(homeTabLabel)) return new HomeTab();
 		if (menuName.equals(iigTestsTabLabel)) return new IIGTestTab();
@@ -181,15 +177,16 @@ public class ToolLauncher implements ClickHandler {
 		return null;
 	}
 
-	private void launch(String requestedName) {
+	private ToolWindow launch(String requestedName) {
 		ToolDef def = getToolDef(requestedName);
 		ToolWindow tool = getTool(def);
-		if (tool == null) return;
-		tool.onAbstractTabLoad(true, def.tabName);
+		if (tool == null) return null;
+		tool.onTabLoad(true, def.tabName);
+		return tool;
 	}
 
-	public void launch() {
-		launch(tabType);
+	public ToolWindow launch() {
+		return launch(tabType);
 	}
 
 	public void onClick(ClickEvent event) {

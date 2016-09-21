@@ -31,6 +31,21 @@ public class PidEditTab extends GenericQueryTab {
     }
 
     @Override
+    protected Widget buildUI() {
+        return null;
+    }
+
+    @Override
+    protected void bindUI() {
+
+    }
+
+    @Override
+    protected void configureTabView() {
+
+    }
+
+    @Override
     public void onTabLoad(boolean select, String eventName) {
         registerTab(select, "PidEdit");
 
@@ -64,7 +79,7 @@ public class PidEditTab extends GenericQueryTab {
                         if (p != null) pidsToDelete.add(p);
                     }
                     try {
-                        toolkitService.deletePatientIds(simId, pidsToDelete, new AsyncCallback<Boolean>() {
+                        getToolkitServices().deletePatientIds(simId, pidsToDelete, new AsyncCallback<Boolean>() {
                             @Override
                             public void onFailure(Throwable throwable) {
                                 new PopupMessage("Error deleting Patient IDs - " + throwable.getMessage());
@@ -114,7 +129,7 @@ public class PidEditTab extends GenericQueryTab {
                     return;
                 }
                 try {
-                    toolkitService.addPatientIds(simId, pids, new AsyncCallback<String>() {
+                    getToolkitServices().addPatientIds(simId, pids, new AsyncCallback<String>() {
                         @Override
                         public void onFailure(Throwable throwable) {
                             new PopupMessage("Error saving Patient ID - " + throwable.getMessage());
@@ -156,7 +171,7 @@ public class PidEditTab extends GenericQueryTab {
 
     private void loadPids() {
         try {
-            toolkitService.getPatientIds(simId, new AsyncCallback<List<Pid>>() {
+            getToolkitServices().getPatientIds(simId, new AsyncCallback<List<Pid>>() {
                 @Override
                 public void onFailure(Throwable throwable) {
                     new PopupMessage("Error retrieving Patient IDs - " + throwable.getMessage());

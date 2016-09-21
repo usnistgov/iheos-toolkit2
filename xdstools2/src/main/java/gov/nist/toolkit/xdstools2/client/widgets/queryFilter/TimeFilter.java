@@ -5,7 +5,6 @@ import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.user.datepicker.client.DateBox;
-import gov.nist.toolkit.xdstools2.client.PopupMessage;
 
 import java.util.ArrayList;
 import java.util.Date;

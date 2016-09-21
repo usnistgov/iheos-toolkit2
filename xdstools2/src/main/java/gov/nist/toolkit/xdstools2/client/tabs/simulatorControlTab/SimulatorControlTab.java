@@ -6,16 +6,7 @@ import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
-import com.google.gwt.user.client.ui.Button;
-import com.google.gwt.user.client.ui.FlexTable;
-import com.google.gwt.user.client.ui.FlowPanel;
-import com.google.gwt.user.client.ui.HTML;
-import com.google.gwt.user.client.ui.HorizontalPanel;
-import com.google.gwt.user.client.ui.Image;
-import com.google.gwt.user.client.ui.ListBox;
-import com.google.gwt.user.client.ui.TextArea;
-import com.google.gwt.user.client.ui.TextBox;
-import com.google.gwt.user.client.ui.VerticalPanel;
+import com.google.gwt.user.client.ui.*;
 import gov.nist.toolkit.actorfactory.client.SimId;
 import gov.nist.toolkit.actorfactory.client.Simulator;
 import gov.nist.toolkit.actorfactory.client.SimulatorConfig;
@@ -32,25 +23,20 @@ import gov.nist.toolkit.xdstools2.client.command.command.GetAllSimConfigsCommand
 import gov.nist.toolkit.xdstools2.client.command.command.GetAllSitesCommand;
 import gov.nist.toolkit.xdstools2.client.command.request.GetAllSimConfigsRequest;
 import gov.nist.toolkit.xdstools2.client.event.TestSessionChangedEvent;
+import gov.nist.toolkit.xdstools2.client.event.Xdstools2EventBus;
 import gov.nist.toolkit.xdstools2.client.event.testSession.TestSessionChangedEventHandler;
 import gov.nist.toolkit.xdstools2.client.siteActorManagers.BaseSiteActorManager;
 import gov.nist.toolkit.xdstools2.client.siteActorManagers.FindDocumentsSiteActorManager;
 import gov.nist.toolkit.xdstools2.client.tabs.SimulatorMessageViewTab;
 import gov.nist.toolkit.xdstools2.client.tabs.genericQueryTab.GenericQueryTab;
 import gov.nist.toolkit.xdstools2.client.tabs.simulatorControlTab.od.OddsEditTab;
+import gov.nist.toolkit.xdstools2.client.util.ClientUtils;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
 public class SimulatorControlTab extends GenericQueryTab {
-
-	public SimulatorControlTab(BaseSiteActorManager siteActorManager) {
-		super(siteActorManager);
-	}
-
-	public SimulatorControlTab() {
-		super(new FindDocumentsSiteActorManager());	}
 
 	ListBox         actorSelectListBox = new ListBox();
 	HorizontalPanel simConfigWrapperPanel = new HorizontalPanel();
@@ -64,6 +50,28 @@ public class SimulatorControlTab extends GenericQueryTab {
 	SimConfigSuper simConfigSuper;
 	SimulatorControlTab self;
 
+	public SimulatorControlTab(BaseSiteActorManager siteActorManager) {
+		super(siteActorManager);
+	}
+
+	public SimulatorControlTab() {
+		super(new FindDocumentsSiteActorManager());	}
+
+	@Override
+	protected Widget buildUI() {
+		return null;
+	}
+
+	@Override
+	protected void bindUI() {
+
+	}
+
+	@Override
+	protected void configureTabView() {
+
+	}
+
 	@Override
 	public void onTabLoad(boolean select, String eventName) {
 		self = this;
@@ -73,7 +81,7 @@ public class SimulatorControlTab extends GenericQueryTab {
 		registerTab(select, eventName);
 
 		addActorReloader();
-		
+
 		runEnabled = false;
 		samlEnabled = false;
 		tlsEnabled = false;
@@ -141,7 +149,7 @@ public class SimulatorControlTab extends GenericQueryTab {
 			new PopupMessage("SimId " + simId + " is not valid");
 			return;
 		}
-		toolkitService.getNewSimulator(actorTypeName, simId, new AsyncCallback<Simulator>() {
+		getToolkitServices().getNewSimulator(actorTypeName, simId, new AsyncCallback<Simulator>() {
 
 			public void onFailure(Throwable caught) {
 				new PopupMessage("Error creating new simulator: " + caught.getMessage());
@@ -152,14 +160,15 @@ public class SimulatorControlTab extends GenericQueryTab {
 					simConfigSuper.add(config);
 				simConfigSuper.reloadSimulators();
 				loadSimStatus(getCurrentTestSession());
+				((Xdstools2EventBus) ClientUtils.INSTANCE.getEventBus()).fireSimulatorsUpdatedEvent();
 			}
 		});
 	} // createNewSimulator
-	
-	
-	
+
+
+
 	void loadActorSelectListBox() {
-		toolkitService.getActorTypeNames(new AsyncCallback<List<String>>() {
+		getToolkitServices().getActorTypeNames(new AsyncCallback<List<String>>() {
 
 			public void onFailure(Throwable caught) {
 				new PopupMessage("getActorTypeNames:" + caught.getMessage());
@@ -214,7 +223,7 @@ public class SimulatorControlTab extends GenericQueryTab {
 				for (SimulatorConfig config : configs)
 					simIds.add(config.getId());
 				try {
-					toolkitService.getSimulatorStats(simIds, new AsyncCallback<List<SimulatorStats>>() {
+					getToolkitServices().getSimulatorStats(simIds, new AsyncCallback<List<SimulatorStats>>() {
 						@Override
 						public void onFailure(Throwable throwable) {
 							new PopupMessage("Cannot load simulator stats - " + throwable.getMessage());
@@ -360,6 +369,7 @@ public class SimulatorControlTab extends GenericQueryTab {
 				SimulatorConfig config = getData();
 				DeleteButtonClickHandler handler = new DeleteButtonClickHandler(self, config);
 				handler.delete();
+                ((Xdstools2EventBus) ClientUtils.INSTANCE.getEventBus()).fireSimulatorsUpdatedEvent();
 			}
 		};
 

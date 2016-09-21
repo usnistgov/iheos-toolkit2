@@ -1,12 +1,12 @@
 package gov.nist.toolkit.xdstools2.client;
 
+import com.google.gwt.event.logical.shared.ValueChangeHandler;
+import com.google.gwt.user.client.ui.RadioButton;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import com.google.gwt.event.logical.shared.ValueChangeHandler;
-import com.google.gwt.user.client.ui.RadioButton;
 
 abstract public class RadioButtonGroup  {
 	public String groupName;

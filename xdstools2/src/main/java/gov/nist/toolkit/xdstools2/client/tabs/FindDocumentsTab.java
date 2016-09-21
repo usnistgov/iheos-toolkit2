@@ -2,6 +2,7 @@ package gov.nist.toolkit.xdstools2.client.tabs;
 
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.CheckBox;
+import com.google.gwt.user.client.ui.Widget;
 import gov.nist.toolkit.configDatatypes.client.TransactionType;
 import gov.nist.toolkit.interactionmodel.client.InteractingEntity;
 import gov.nist.toolkit.interactionmodel.client.InteractionIdentifierTerm;
@@ -49,7 +50,7 @@ public class FindDocumentsTab extends AbstractTool {
 	@Override
 	public void run() {
 		origin.setBegin(new Date());
-		toolkitService.findDocuments(queryBoilerplate.getSiteSelection(), pidTextBox.getValue().trim(), selectOnDemand.getValue(), fdCallback);
+		getToolkitServices().findDocuments(queryBoilerplate.getSiteSelection(), pidTextBox.getValue().trim(), selectOnDemand.getValue(), fdCallback);
 	}
 
 	protected AsyncCallback<List<Result>> fdCallback = new AsyncCallback<List<Result>>() {
@@ -221,5 +222,18 @@ public class FindDocumentsTab extends AbstractTool {
 	}
 
 
+	@Override
+	protected Widget buildUI() {
+		return null;
+	}
 
+	@Override
+	protected void bindUI() {
+
+	}
+
+	@Override
+	protected void configureTabView() {
+
+	}
 }

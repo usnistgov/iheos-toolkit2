@@ -6,6 +6,7 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.FlexTable;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.ListBox;
+import com.google.gwt.user.client.ui.Widget;
 import gov.nist.toolkit.configDatatypes.client.TransactionType;
 import gov.nist.toolkit.xdstools2.client.CoupledTransactions;
 import gov.nist.toolkit.xdstools2.client.PopupMessage;
@@ -35,6 +36,21 @@ public class XDRTestdataTab  extends GenericQueryTab {
 	}
 
 	@Override
+	protected Widget buildUI() {
+		return null;
+	}
+
+	@Override
+	protected void bindUI() {
+
+	}
+
+	@Override
+	protected void configureTabView() {
+
+	}
+
+	@Override
 	public void onTabLoad(boolean select, String eventName) {
 		registerTab(select, eventName);
 
@@ -54,7 +70,7 @@ public class XDRTestdataTab  extends GenericQueryTab {
 		row++;
 
 		testlistBox.setVisibleItemCount(1);
-		toolkitService.getTestdataSetListing(getEnvironmentSelection(), getCurrentTestSession(), "testdata-xdr", loadRecipientTestListCallback);
+		getToolkitServices().getTestdataSetListing(getEnvironmentSelection(), getCurrentTestSession(), "testdata-xdr", loadRecipientTestListCallback);
 
 		queryBoilerplate = addQueryBoilerplate(new Runner(), transactionTypes, couplings, true);
 	}
@@ -94,7 +110,7 @@ public class XDRTestdataTab  extends GenericQueryTab {
 			String testdataSetName = testlistBox.getItemText(selected);	
 
 			rigForRunning();
-			toolkitService.submitXDRTestdata(getCurrentTestSession(),getSiteSelection(), testdataSetName, pidTextBox.getValue().trim(), queryCallback);
+			getToolkitServices().submitXDRTestdata(getCurrentTestSession(),getSiteSelection(), testdataSetName, pidTextBox.getValue().trim(), queryCallback);
 		}
 		
 	}

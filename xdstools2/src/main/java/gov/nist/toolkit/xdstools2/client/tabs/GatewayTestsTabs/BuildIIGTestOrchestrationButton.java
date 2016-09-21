@@ -2,15 +2,21 @@ package gov.nist.toolkit.xdstools2.client.tabs.GatewayTestsTabs;
 
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.user.client.rpc.AsyncCallback;
-import com.google.gwt.user.client.ui.*;
+import com.google.gwt.user.client.ui.FlexTable;
+import com.google.gwt.user.client.ui.HTML;
+import com.google.gwt.user.client.ui.HorizontalPanel;
+import com.google.gwt.user.client.ui.Panel;
 import gov.nist.toolkit.actorfactory.client.SimulatorConfig;
 import gov.nist.toolkit.actortransaction.client.ActorType;
 import gov.nist.toolkit.actortransaction.client.ParamType;
 import gov.nist.toolkit.configDatatypes.SimulatorProperties;
-import gov.nist.toolkit.services.client.*;
+import gov.nist.toolkit.services.client.IigOrchestrationRequest;
+import gov.nist.toolkit.services.client.IigOrchestrationResponse;
+import gov.nist.toolkit.services.client.RawResponse;
 import gov.nist.toolkit.simcommon.client.config.SimulatorConfigElement;
 import gov.nist.toolkit.xdstools2.client.PopupMessage;
 import gov.nist.toolkit.xdstools2.client.tabs.genericQueryTab.GenericQueryTab;
+import gov.nist.toolkit.xdstools2.client.util.ClientUtils;
 import gov.nist.toolkit.xdstools2.client.widgets.buttons.ReportableButton;
 
 /**
@@ -36,7 +42,7 @@ class BuildIIGTestOrchestrationButton extends ReportableButton {
       IigOrchestrationRequest request = new IigOrchestrationRequest();
       request.setUserName(testTab.getCurrentTestSession());
       request.setIncludeLinkedIIG(includeIIG);
-      testTab.toolkitService.buildIigTestOrchestration(request, new AsyncCallback <RawResponse>() {
+      ClientUtils.INSTANCE.getToolkitServices().buildIigTestOrchestration(request, new AsyncCallback <RawResponse>() {
 
          @Override
          public void onFailure(Throwable throwable) {

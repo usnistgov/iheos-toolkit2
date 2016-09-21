@@ -5,6 +5,7 @@ import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.ui.FlexTable;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.TextArea;
+import com.google.gwt.user.client.ui.Widget;
 import gov.nist.toolkit.configDatatypes.client.TransactionType;
 import gov.nist.toolkit.registrymetadata.client.Uid;
 import gov.nist.toolkit.registrymetadata.client.Uids;
@@ -33,6 +34,21 @@ public class ImagingDocSetRetrieveTab extends GenericQueryTab {
 		super(new RetrieveSiteActorManager());
 	}
 
+
+	@Override
+	protected Widget buildUI() {
+		return null;
+	}
+
+	@Override
+	protected void bindUI() {
+
+	}
+
+	@Override
+	protected void configureTabView() {
+
+	}
 
 	@Override
 	public void onTabLoad(boolean select, String eventName) {
@@ -94,7 +110,7 @@ public class ImagingDocSetRetrieveTab extends GenericQueryTab {
 			getInspectButton().setEnabled(false);
 
 
-			toolkitService.retrieveImagingDocSet(siteSpec, uids, fullRequest, "", queryCallback);
+			getToolkitServices().retrieveImagingDocSet(siteSpec, uids, fullRequest, "", queryCallback);
 
 		}
 		private Uids extractDocumentUids(String s) {

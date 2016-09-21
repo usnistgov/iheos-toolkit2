@@ -27,6 +27,13 @@ import java.text.SimpleDateFormat;
 import java.util.*;
 
 /**
+ * This class performs an update on the default testkit for it to match the configuration file
+ * (affinity domain) of a given environment.
+ *
+ * @see #run(String, String)
+ * @see #getOutput()
+ * @see #hasErrors()
+ *
  * Created by oherrmann on 1/11/16.
  */
 public class CodesUpdater {
@@ -61,8 +68,9 @@ public class CodesUpdater {
 
             try {
                 exploreTests(sectionFile);
-            } catch (IOException e) {
-                out+=e.getMessage();
+            } catch (Exception e) {
+                error=true;
+                out+="FAILURE.\n"+e.getMessage();
                 e.printStackTrace();
             }
         }
@@ -74,41 +82,35 @@ public class CodesUpdater {
      * @param testFile path to the testkit folder which contains the test section to explore.
      * @throws IOException
      */
-    void exploreTests(File testFile) throws IOException {
-        try {
-            File[] dirs = testFile.listFiles();
-            if (dirs == null) {
-                System.out.println("No tests defined in " + testFile.toString());
-                // TODO throw an exception?!
-                out+="No tests defined in " + testFile.toString() +"\n";
-                error = true;
-            }else {
-                for (int i = 0; i < dirs.length; i++) {
-                    File testDir = dirs[i];
-                    if (testDir.getName().equals(".svn"))
-                        continue;
-                    if (testDir.isDirectory()) {
-                        exploreTests(testDir);
-                    } else {
-                        if ("testplan.xml".equals(testDir.getName())) {
-                            // read testplan.xml
-                            String testplanContent = Io.stringFromFile(testDir);
-                            OMElement testplanNode = Util.parse_xml(testplanContent);
-                            // retrieve the TestStep nodes
-                            Iterator<OMElement> steps = testplanNode.getChildrenWithName(new QName("TestStep"));
-                            while (steps.hasNext()) {
-                                // find transaction nodes among the nodes under exploration (Under a TestStep)
-                                Iterator<OMElement> children = steps.next().getChildElements();
-                                exploreChildren(children, testFile);
-                            }
+    void exploreTests(File testFile) throws IOException,XdsInternalException {
+        File[] dirs = testFile.listFiles();
+        if (dirs == null) {
+            System.out.println("No tests defined in " + testFile.toString());
+            error = true;
+            out+="No tests defined in " + testFile.toString() +"\n";
+            throw new IOException("No tests defined in " +testFile.toString());
+        }else {
+            for (int i = 0; i < dirs.length; i++) {
+                File testDir = dirs[i];
+                if (testDir.getName().equals(".svn"))
+                    continue;
+                if (testDir.isDirectory()) {
+                    exploreTests(testDir);
+                } else {
+                    if ("testplan.xml".equals(testDir.getName())) {
+                        // read testplan.xml
+                        String testplanContent = Io.stringFromFile(testDir);
+                        OMElement testplanNode = Util.parse_xml(testplanContent);
+                        // retrieve the TestStep nodes
+                        Iterator<OMElement> steps = testplanNode.getChildrenWithName(new QName("TestStep"));
+                        while (steps.hasNext()) {
+                            // find transaction nodes among the nodes under exploration (Under a TestStep)
+                            Iterator<OMElement> children = steps.next().getChildElements();
+                            exploreChildren(children, testFile);
                         }
                     }
                 }
             }
-        }catch (Exception e){
-            out+=e.getMessage();
-            error=true;
-            throw new RuntimeException(e.getMessage());
         }
     }
 
@@ -187,7 +189,9 @@ public class CodesUpdater {
                         }
                     }
                 } else {
-                    System.err.println("WARNING: " + filePath + " file does not exist in Testkit where it should be.");
+                    String warning="WARNING: " + filePath + " file does not exist in Testkit where it should be.";
+                    System.err.println(warning);
+                    out+=warning;
                 }
             }
         }catch(Exception e){
@@ -216,7 +220,6 @@ public class CodesUpdater {
                 filesTreated.add(filePath);
                 file = new File(filePath);
                 if (file.exists()) {
-                    // TODO something is probably missing here (else?)
                     // read the file
                     OMElement metadataElement = Util.parse_xml(file);
                     List<OMElement> badCodes = findNonConformingCodes(metadataElement);
@@ -321,7 +324,7 @@ public class CodesUpdater {
             newCode=allCodes.pick(code.getClassificationUUID());
             replacementMap.put(tmpCode.toString(),newCode);
         }
-//        out+=tmpCode.toString() + " REPLACED BY "+newCode.toString()+" in " + filePath + "\n";
+        // out+=tmpCode.toString() + " REPLACED BY "+newCode.toString()+" in " + filePath + "\n";
         code.code=newCode.getCode();
         code.scheme=newCode.getScheme();
     }
@@ -365,7 +368,7 @@ public class CodesUpdater {
             codeToReplace.setAttributeValue(replacementCode.getCode());
             nameToReplace.setAttributeValue(replacementCode.getDisplay());
             valueToReplace.setText(replacementCode.getScheme());
-//            out+=oldCode.toString() + " REPLACE BY "+replacementCode.toString()+" in "+filePath+"\n";
+            // out+=oldCode.toString() + " REPLACE BY "+replacementCode.toString()+" in "+filePath+"\n";
         }
     }
 
@@ -448,23 +451,28 @@ public class CodesUpdater {
             System.out.println("... testkit copied.");
             out+="Testkit of referenced copied successfully to "+testkit;
         } catch (IOException e) {
+            error=true;
+            out+="FAILURE. Could not copy testkit into environment.";
             e.printStackTrace();
+            return;
         }
         execute();
+        if (error) return;
         reset();
         execute();
-        String outputSeparator=new String("----------------------------------------------------");
-        out=outputSeparator+outputSeparator+"\n"+"   SUCCESS on generating testkit in environment in " +
-                pathToEnvironment.split("/")[pathToEnvironment.split("/").length-1] + "\n" +
-                outputSeparator+outputSeparator +"\n\n"+out;
+        if (error) return;
+        String outputSeparator = new String("----------------------------------------------------");
+        out = outputSeparator + outputSeparator + "\n" + "   SUCCESS on generating testkit in environment in " +
+                pathToEnvironment.split("/")[pathToEnvironment.split("/").length - 1] + "\n" +
+                outputSeparator + outputSeparator + "\n\n" + out;
         try {
-            SimpleDateFormat dateFormatter=new SimpleDateFormat("yyyyMMddHHmmss");
-            File logDirectory=new File(pathToEnvironment,"Testkit update logs");
-            if (!logDirectory.exists()){
+            SimpleDateFormat dateFormatter = new SimpleDateFormat("yyyyMMddHHmmss");
+            File logDirectory = new File(pathToEnvironment, "Testkit update logs");
+            if (!logDirectory.exists()) {
                 logDirectory.mkdir();
             }
-            File f = new File(logDirectory,dateFormatter.format(new Date())+".out");
-            System.out.println("Creating output log file in "+f.getPath()+"...");
+            File f = new File(logDirectory, dateFormatter.format(new Date()) + ".out");
+            System.out.println("Creating output log file in " + f.getPath() + "...");
             Io.stringToFile(f, out);
             System.out.println("... file created.");
         } catch (IOException e) {

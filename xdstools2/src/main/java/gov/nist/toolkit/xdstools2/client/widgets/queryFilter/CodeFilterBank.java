@@ -7,12 +7,12 @@ import gov.nist.toolkit.results.client.CodesConfiguration;
 import gov.nist.toolkit.results.client.CodesResult;
 import gov.nist.toolkit.xdstools2.client.tabs.genericQueryTab.CodeEditButtonSelector;
 import gov.nist.toolkit.xdstools2.client.tabs.genericQueryTab.GenericQueryTab;
+import gov.nist.toolkit.xdstools2.client.util.ClientUtils;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import static gov.nist.toolkit.xdstools2.client.ToolWindow.toolkitService;
 
 /**
  *
@@ -28,7 +28,7 @@ public class CodeFilterBank  {
     public CodeFilterBank(/*ToolkitServiceAsync toolkitService, */GenericQueryTab genericQueryTab) {
 //        this.toolkitService = toolkitService;
         this.genericQueryTab = genericQueryTab;
-        toolkitService.getCodesConfiguration(genericQueryTab.getEnvironmentSelection(), loadCodeConfigCallback);
+        ClientUtils.INSTANCE.getToolkitServices().getCodesConfiguration(genericQueryTab.getEnvironmentSelection(), loadCodeConfigCallback);
     }
 
     public void addFilter(FlexTable paramGrid, int prow, int col, String filterName) {

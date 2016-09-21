@@ -71,6 +71,10 @@ public class PropertyServiceManager {
 		return getPropertyManager().getListenerPortRange();
 	}
 
+	public boolean getAutoInitializeConformanceTool() {
+		return getPropertyManager().getAutoInitializeConformanceTool();
+	}
+
 	public String getToolkitEnableAllCiphers() {
 		logger.debug(": " + "getToolkitEnableAllCiphers");
 		return getPropertyManager().getToolkitEnableAllCiphers();

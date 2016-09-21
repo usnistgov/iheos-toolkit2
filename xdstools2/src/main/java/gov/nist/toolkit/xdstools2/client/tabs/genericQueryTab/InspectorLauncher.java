@@ -1,9 +1,8 @@
 package gov.nist.toolkit.xdstools2.client.tabs.genericQueryTab;
 
-import gov.nist.toolkit.xdstools2.client.inspector.MetadataInspectorTab;
-
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import gov.nist.toolkit.xdstools2.client.inspector.MetadataInspectorTab;
 
 class InspectorLauncher implements ClickHandler {
 	GenericQueryTab tab;

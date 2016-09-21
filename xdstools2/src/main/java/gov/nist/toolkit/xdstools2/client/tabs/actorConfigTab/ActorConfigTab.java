@@ -14,14 +14,17 @@ import gov.nist.toolkit.sitemanagement.client.TransactionCollection;
 import gov.nist.toolkit.xdstools2.client.PasswordManagement;
 import gov.nist.toolkit.xdstools2.client.PopupMessage;
 import gov.nist.toolkit.xdstools2.client.StringSort;
+import gov.nist.toolkit.xdstools2.client.event.Xdstools2EventBus;
 import gov.nist.toolkit.xdstools2.client.siteActorManagers.NullSiteActorManager;
 import gov.nist.toolkit.xdstools2.client.tabs.genericQueryTab.GenericQueryTab;
+import gov.nist.toolkit.xdstools2.client.util.ClientUtils;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class ActorConfigTab extends GenericQueryTab {
-	ListBox siteSelector;
+    public static final String TAB_NAME = "SystemConfig";
+    ListBox siteSelector;
 	FlexTable actorEditGrid;
 	int actorEditRow = -1;
 	HTML signInStatus;
@@ -38,13 +41,28 @@ public class ActorConfigTab extends GenericQueryTab {
 	}
 
 	@Override
+	protected Widget buildUI() {
+		return null;
+	}
+
+	@Override
+	protected void bindUI() {
+
+	}
+
+	@Override
+	protected void configureTabView() {
+
+	}
+
+	@Override
 	public void onTabLoad(boolean select, String eventName) {
-		registerTab(select, "ActorConfig");
+		registerTab(select, TAB_NAME);
 
 		loadGazelleFeedAvailableStatus();
 
 		HTML title = new HTML();
-		title.setHTML("<h2>Configure Sites</h2>");
+		title.setHTML("<h2>Configure Systems</h2>");
 		tabTopPanel.add(title);
 
 		Anchor reload = new Anchor();
@@ -134,7 +152,7 @@ public class ActorConfigTab extends GenericQueryTab {
 
 		};
 
-		toolkitService.isGazelleConfigFeedEnabled(gazelleConfigEnabledCallback);
+		getToolkitServices().isGazelleConfigFeedEnabled(gazelleConfigEnabledCallback);
 
 	}
 
@@ -166,7 +184,7 @@ public class ActorConfigTab extends GenericQueryTab {
 				loadSiteNames(result);
 			}
 		};
-		toolkitService.reloadExternalSites(loadSiteNamesCallback);
+		getToolkitServices().reloadExternalSites(loadSiteNamesCallback);
 	}
 
 
@@ -478,7 +496,7 @@ public class ActorConfigTab extends GenericQueryTab {
 
 			public void onSuccess(String ignore) {
 				currentEditSite.changed = false;
-				toolkitService.getSiteNames(true, showSims.getValue(), new AsyncCallback<List<String>>() {
+				getToolkitServices().getSiteNames(true, showSims.getValue(), new AsyncCallback<List<String>>() {
 					public void onFailure(Throwable caught) {
 						new PopupMessage(caught.getMessage());
 					}
@@ -490,7 +508,8 @@ public class ActorConfigTab extends GenericQueryTab {
 			}
 
 		};
-		toolkitService.saveSite(currentEditSite, saveSiteCallback);
+		getToolkitServices().saveSite(currentEditSite, saveSiteCallback);
+        ((Xdstools2EventBus) ClientUtils.INSTANCE.getEventBus()).fireActorsConfigUpdatedEvent();
 	}
 	
 	void loadExternalSites() {
@@ -504,7 +523,7 @@ public class ActorConfigTab extends GenericQueryTab {
 				loadSiteNames(result);
 			}
 		};
-		toolkitService.getSiteNames(true, showSims.getValue(), loadSiteNamesCallback);
+		getToolkitServices().getSiteNames(true, showSims.getValue(), loadSiteNamesCallback);
 	}
 
 	void loadSiteNames(List<String> result) {

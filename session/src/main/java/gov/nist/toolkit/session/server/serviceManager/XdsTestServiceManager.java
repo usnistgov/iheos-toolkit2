@@ -280,9 +280,15 @@ public class XdsTestServiceManager extends CommonService {
 	}
 
 	public String getTestReadme(String test) throws Exception {
-		if (session != null)
-			logger.debug(session.id() + ": " + "getTestReadme " + test);
-		return new TestDefinition(getTestKit().getTestDir(test)).getFullTestReadme();
+		logger.debug(session.id() + ": " + "getTestReadme " + test);
+		try {
+			TestKit tk=new TestKit(Installation.installation().findTestkitFromTest(Installation.installation().testkitFiles(session.getCurrentEnvName(),session.getMesaSessionName()),test));
+			TestDefinition tt = new TestDefinition(tk.getTestDir(test));
+			return tt.getFullTestReadme();
+		} catch (Exception e) {
+			logger.error("getTestReadme", e);
+			throw new Exception(e.getMessage());
+		}
 	}
 
 	public List<String> getTestIndex(String test) throws Exception   {
@@ -1024,9 +1030,19 @@ public class XdsTestServiceManager extends CommonService {
 	}
 
 	public Map<String, String> getCollectionNames(String collectionSetName) throws Exception  {
-		if (session != null)
-			logger.debug(session.id() + ": " + "getCollectionNames(" + collectionSetName + ")");
-		return getTestKit().getCollectionNames(collectionSetName);
+		logger.debug(session.id() + ": " + "getCollectionNames(" + collectionSetName + ")");
+		Map<String,String> collectionNames=new HashMap<String,String>();
+		List<File> testkitsFiles=Installation.installation().testkitFiles(session.getCurrentEnvName(),session.getMesaSessionName());
+		for (File testkitFile:testkitsFiles){
+			TestKit tk=new TestKit(testkitFile);
+			Map<String, String> tmpCollectionNames=tk.getCollectionNames(collectionSetName);
+			for (String key:tmpCollectionNames.keySet()) {
+				if (!collectionNames.containsKey(key)) {
+					collectionNames.put(key, tmpCollectionNames.get(key));
+				}
+			}
+		}
+		return collectionNames;
 	}
 
 	public List<Result> sendPidToRegistry(SiteSpec site, Pid pid) {

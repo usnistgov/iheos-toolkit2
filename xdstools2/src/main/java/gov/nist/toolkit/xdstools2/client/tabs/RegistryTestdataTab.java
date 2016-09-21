@@ -6,6 +6,7 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.FlexTable;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.ListBox;
+import com.google.gwt.user.client.ui.Widget;
 import gov.nist.toolkit.configDatatypes.client.TransactionType;
 import gov.nist.toolkit.xdstools2.client.CoupledTransactions;
 import gov.nist.toolkit.xdstools2.client.PopupMessage;
@@ -35,6 +36,21 @@ public class RegistryTestdataTab  extends GenericQueryTab {
 	}
 
 	@Override
+	protected Widget buildUI() {
+		return null;
+	}
+
+	@Override
+	protected void bindUI() {
+
+	}
+
+	@Override
+	protected void configureTabView() {
+
+	}
+
+	@Override
 	public void onTabLoad(boolean select, String eventName) {
 		registerTab(select, eventName);
 
@@ -56,7 +72,7 @@ public class RegistryTestdataTab  extends GenericQueryTab {
 		row++;
 
 		testlistBox.setVisibleItemCount(1);
-		toolkitService.getTestdataSetListing(getEnvironmentSelection(), getCurrentTestSession(), "testdata-registry", loadRegistryTestListCallback);
+		getToolkitServices().getTestdataSetListing(getEnvironmentSelection(), getCurrentTestSession(), "testdata-registry", loadRegistryTestListCallback);
 
 		queryBoilerplate = addQueryBoilerplate(new Runner(), transactionTypes, couplings, true);
 	}
@@ -95,7 +111,7 @@ public class RegistryTestdataTab  extends GenericQueryTab {
 			String testdataSetName = testlistBox.getItemText(selected);	
 
 			rigForRunning();
-			toolkitService.submitRegistryTestdata(getCurrentTestSession(), getSiteSelection(), testdataSetName, pidTextBox.getValue().trim(), queryCallback);
+			getToolkitServices().submitRegistryTestdata(getCurrentTestSession(), getSiteSelection(), testdataSetName, pidTextBox.getValue().trim(), queryCallback);
 		}
 		
 	}

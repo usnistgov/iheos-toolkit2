@@ -2,8 +2,7 @@ package gov.nist.toolkit.xdstools2.client.command.command;
 
 import gov.nist.toolkit.configDatatypes.client.Pid;
 import gov.nist.toolkit.xdstools2.client.command.request.GeneratePidRequest;
-
-import static gov.nist.toolkit.xdstools2.client.ToolWindow.toolkitService;
+import gov.nist.toolkit.xdstools2.client.util.ClientUtils;
 
 /**
  *
@@ -16,6 +15,6 @@ abstract public class GeneratePidCommand extends GenericCommand<GeneratePidReque
 
     @Override
     public void run(GeneratePidRequest var1) {
-        toolkitService.createPid(var1, this);
+        ClientUtils.INSTANCE.getToolkitServices().createPid(var1, this);
     }
 }

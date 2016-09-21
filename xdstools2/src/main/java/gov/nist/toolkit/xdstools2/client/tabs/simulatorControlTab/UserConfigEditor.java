@@ -1,11 +1,10 @@
 package gov.nist.toolkit.xdstools2.client.tabs.simulatorControlTab;
 
+import com.google.gwt.user.client.ui.TextBox;
 import gov.nist.toolkit.simcommon.client.config.SimulatorConfigElement;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import com.google.gwt.user.client.ui.TextBox;
 
 public class UserConfigEditor {
 

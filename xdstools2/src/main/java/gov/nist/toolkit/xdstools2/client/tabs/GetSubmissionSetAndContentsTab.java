@@ -5,6 +5,7 @@ import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.ui.FlexTable;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.TextBox;
+import com.google.gwt.user.client.ui.Widget;
 import gov.nist.toolkit.configDatatypes.client.TransactionType;
 import gov.nist.toolkit.results.client.CodesConfiguration;
 import gov.nist.toolkit.sitemanagement.client.SiteSpec;
@@ -44,6 +45,21 @@ public class GetSubmissionSetAndContentsTab extends GenericQueryTab {
 
 	public GetSubmissionSetAndContentsTab() {
 		super(new GetDocumentsSiteActorManager());
+	}
+
+	@Override
+	protected Widget buildUI() {
+		return null;
+	}
+
+	@Override
+	protected void bindUI() {
+
+	}
+
+	@Override
+	protected void configureTabView() {
+
 	}
 
 	@Override
@@ -102,7 +118,7 @@ public class GetSubmissionSetAndContentsTab extends GenericQueryTab {
 			getGoButton().setEnabled(false);
 			getInspectButton().setEnabled(false);
 
-			toolkitService.getSSandContents(siteSpec, ssid.getValue().trim(), codeSpec, queryCallback);
+			getToolkitServices().getSSandContents(siteSpec, ssid.getValue().trim(), codeSpec, queryCallback);
 		}
 
 	}

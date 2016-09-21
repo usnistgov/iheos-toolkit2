@@ -7,17 +7,18 @@ import gov.nist.toolkit.registrymetadata.client.Uid;
 import gov.nist.toolkit.registrymetadata.client.Uids;
 import gov.nist.toolkit.results.client.Result;
 import gov.nist.toolkit.results.client.TestInstance;
+import gov.nist.toolkit.xdstools2.client.util.ClientUtils;
 
 import java.util.List;
 
-import static gov.nist.toolkit.xdstools2.client.ToolWindow.toolkitService;
 
 public class Retrieve implements ClickHandler {
 	MetadataInspectorTab it;
 	Uids uids;
 
 	 void run() {
-			/*it.data.*/toolkitService.retrieveDocument(null, uids, queryCallback);
+			/*it.data.*/
+		 ClientUtils.INSTANCE.getToolkitServices().retrieveDocument(null, uids, queryCallback);
 		}
 
 		AsyncCallback<List<Result>> queryCallback = new AsyncCallback<List<Result>> () {

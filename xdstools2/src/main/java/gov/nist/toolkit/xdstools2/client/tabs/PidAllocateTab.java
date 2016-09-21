@@ -4,10 +4,7 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.rpc.AsyncCallback;
-import com.google.gwt.user.client.ui.Button;
-import com.google.gwt.user.client.ui.HTML;
-import com.google.gwt.user.client.ui.RadioButton;
-import com.google.gwt.user.client.ui.VerticalPanel;
+import com.google.gwt.user.client.ui.*;
 import gov.nist.toolkit.xdstools2.client.PidAllocateService;
 import gov.nist.toolkit.xdstools2.client.PidAllocateServiceAsync;
 import gov.nist.toolkit.xdstools2.client.ToolWindow;
@@ -20,6 +17,16 @@ public class PidAllocateTab extends ToolWindow {
 	
 	final PidAllocateServiceAsync pidAllocateService = GWT
 	.create(PidAllocateService.class);
+
+	@Override
+	protected Widget buildUI() {
+		return null;
+	}
+
+	@Override
+	protected void bindUI() {
+
+	}
 
 	@Override
 	public void onTabLoad(boolean select, String eventName) {

@@ -3,7 +3,10 @@ package gov.nist.toolkit.xdstools2.client.tabs.simulatorControlTab;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.rpc.AsyncCallback;
-import com.google.gwt.user.client.ui.*;
+import com.google.gwt.user.client.ui.Button;
+import com.google.gwt.user.client.ui.FlexTable;
+import com.google.gwt.user.client.ui.FlowPanel;
+import com.google.gwt.user.client.ui.HorizontalPanel;
 import gov.nist.toolkit.actorfactory.client.SimulatorConfig;
 import gov.nist.toolkit.actortransaction.client.ActorType;
 import gov.nist.toolkit.configDatatypes.SimulatorProperties;
@@ -13,6 +16,7 @@ import gov.nist.toolkit.http.client.HtmlMarkup;
 import gov.nist.toolkit.simcommon.client.config.SimulatorConfigElement;
 import gov.nist.toolkit.xdstools2.client.PopupMessage;
 import gov.nist.toolkit.xdstools2.client.tabs.simulatorControlTab.intf.SimConfigMgrIntf;
+import gov.nist.toolkit.xdstools2.client.util.ClientUtils;
 
 /**
  * Manages the content of a single Simulator on the screen
@@ -178,7 +182,7 @@ public abstract class BaseSimConfigMgr implements SimConfigMgrIntf {
     }
 
     public void saveSimConfig() {
-        simulatorControlTab.toolkitService.putSimConfig(config, new AsyncCallback<String>() {
+        ClientUtils.INSTANCE.getToolkitServices().putSimConfig(config, new AsyncCallback<String>() {
 
             public void onFailure(Throwable caught) {
                 new PopupMessage("saveSimConfig:" + caught.getMessage());

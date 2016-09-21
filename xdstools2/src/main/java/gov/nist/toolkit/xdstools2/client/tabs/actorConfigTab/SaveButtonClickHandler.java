@@ -1,11 +1,12 @@
 package gov.nist.toolkit.xdstools2.client.tabs.actorConfigTab;
 
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
 import gov.nist.toolkit.xdstools2.client.AdminPasswordDialogBox;
 import gov.nist.toolkit.xdstools2.client.PasswordManagement;
 import gov.nist.toolkit.xdstools2.client.PopupMessage;
-
-import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.event.dom.client.ClickHandler;
+import gov.nist.toolkit.xdstools2.client.event.Xdstools2EventBus;
+import gov.nist.toolkit.xdstools2.client.util.ClientUtils;
 
 class SaveButtonClickHandler implements ClickHandler {
 	/**
@@ -31,7 +32,6 @@ class SaveButtonClickHandler implements ClickHandler {
 
 			new AdminPasswordDialogBox(actorConfigTab.getTabTopPanel());
 		}
-
 	}
 
 }

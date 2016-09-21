@@ -5,6 +5,7 @@ import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.FlexTable;
 import com.google.gwt.user.client.ui.HTML;
+import com.google.gwt.user.client.ui.Widget;
 import gov.nist.toolkit.configDatatypes.client.TransactionType;
 import gov.nist.toolkit.interactionmodel.client.InteractingEntity;
 import gov.nist.toolkit.results.client.Result;
@@ -13,11 +14,7 @@ import gov.nist.toolkit.xdstools2.client.PopupMessage;
 import gov.nist.toolkit.xdstools2.client.siteActorManagers.FindDocumentsSiteActorManager;
 import gov.nist.toolkit.xdstools2.client.tabs.genericQueryTab.GenericQueryTab;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Created by Diane Azais local on 9/23/2015.
@@ -45,6 +42,21 @@ public class FindDocuments2Tab extends GenericQueryTab {
 
     public FindDocuments2Tab() {
         super(new FindDocumentsSiteActorManager());
+    }
+
+    @Override
+    protected Widget buildUI() {
+        return null;
+    }
+
+    @Override
+    protected void bindUI() {
+
+    }
+
+    @Override
+    protected void configureTabView() {
+
     }
 
     // Tab initialization
@@ -98,7 +110,7 @@ class Runner implements ClickHandler {
 
         origin.setBegin(new Date());
 
-        toolkitService.findDocuments2(getSiteSelection(), pidTextBox.getValue().trim(), codeSpec, fd2Callback);
+        getToolkitServices().findDocuments2(getSiteSelection(), pidTextBox.getValue().trim(), codeSpec, fd2Callback);
 
     }
     }
@@ -121,7 +133,7 @@ class Runner implements ClickHandler {
                 if (getInteractionModel()!=null) {
                     getInteractionModel().setEnd(new Date());
 
-                    toolkitService.getInteractionFromModel(getInteractionModel(), new AsyncCallback<InteractingEntity>() {
+                    getToolkitServices().getInteractionFromModel(getInteractionModel(), new AsyncCallback<InteractingEntity>() {
                         @Override
                         public void onFailure(Throwable throwable) {
                             String mapMsg = "mapping failed!";

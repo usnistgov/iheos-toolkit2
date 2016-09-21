@@ -5,6 +5,7 @@ import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.ui.FlexTable;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.TextBox;
+import com.google.gwt.user.client.ui.Widget;
 import gov.nist.toolkit.configDatatypes.client.TransactionType;
 import gov.nist.toolkit.sitemanagement.client.SiteSpec;
 import gov.nist.toolkit.xdstools2.client.CoupledTransactions;
@@ -56,6 +57,21 @@ public class SourceStoredDocValTab extends GenericQueryTab {
 	}
 
 	@Override
+	protected Widget buildUI() {
+		return null;
+	}
+
+	@Override
+	protected void bindUI() {
+
+	}
+
+	@Override
+	protected void configureTabView() {
+
+	}
+
+	@Override
 	public void onTabLoad(boolean select, String eventName) {
 		registerTab(select, "SourceStoresDocVal");
 
@@ -101,7 +117,7 @@ public class SourceStoredDocValTab extends GenericQueryTab {
 			getGoButton().setEnabled(false);
 			getInspectButton().setEnabled(false);
 
-			toolkitService.srcStoresDocVal(siteSpec, ssid.getValue().trim(), queryCallback);
+			getToolkitServices().srcStoresDocVal(siteSpec, ssid.getValue().trim(), queryCallback);
 		}
 		
 	}

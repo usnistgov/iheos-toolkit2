@@ -4,6 +4,7 @@ import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.ui.FlexTable;
 import com.google.gwt.user.client.ui.HTML;
+import com.google.gwt.user.client.ui.Widget;
 import gov.nist.toolkit.configDatatypes.client.TransactionType;
 import gov.nist.toolkit.xdstools2.client.CoupledTransactions;
 import gov.nist.toolkit.xdstools2.client.siteActorManagers.FindDocumentsSiteActorManager;
@@ -58,6 +59,21 @@ public class GetAllTab extends GenericQueryTab {
 		super(new FindDocumentsSiteActorManager());
 	}
 
+	@Override
+	protected Widget buildUI() {
+		return null;
+	}
+
+	@Override
+	protected void bindUI() {
+
+	}
+
+	@Override
+	protected void configureTabView() {
+
+	}
+
 	// Tab initialization
 	@Override
 	public void onTabLoad(boolean select, String eventName) {
@@ -103,7 +119,7 @@ public class GetAllTab extends GenericQueryTab {
 			// tell the server to run the query. The display is handled by GenericQueryTab which
 			// is linked in via the queryCallback parameter
 			rigForRunning();
-			toolkitService.getAll(getSiteSelection(), pidTextBox.getValue().trim(), codeSpec, queryCallback);
+			getToolkitServices().getAll(getSiteSelection(), pidTextBox.getValue().trim(), codeSpec, queryCallback);
 		}
 	}
 

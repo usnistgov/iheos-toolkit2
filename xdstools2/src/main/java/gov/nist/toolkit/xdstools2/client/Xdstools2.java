@@ -44,6 +44,7 @@ public class Xdstools2  implements AcceptsOneWidget, IsWidget {
 
 	private HorizontalPanel uiDebugPanel = new HorizontalPanel();
 	boolean UIDebug = false;
+	private boolean displayHomeTab = true;
 
 	private static TkProps props = new TkProps();
 
@@ -56,6 +57,8 @@ public class Xdstools2  implements AcceptsOneWidget, IsWidget {
 		}
 		return ME;
 	}
+
+	public void doNotDisplayHomeTab() { displayHomeTab = false; }
 
 	// This bus is used for v2 v3 integration that signals v2 launch tab event inside the v3 environment
 	EventBus v2V3IntegrationEventBus = null;
@@ -188,7 +191,8 @@ public class Xdstools2  implements AcceptsOneWidget, IsWidget {
 				// test session names
 				toolkitName = var1.getServletContextName();
 				environmentState.setEnvironmentNameChoices(var1.getEnvironments());
-				environmentState.setEnvironmentName(var1.getDefaultEnvironment());
+				if (environmentState.getEnvironmentName() == null)
+					environmentState.setEnvironmentName(var1.getDefaultEnvironment());
 				getTestSessionManager().setTestSessions(var1.getTestSessions());
 				run2();  // cannot be run until this completes
 			}
@@ -209,7 +213,11 @@ public class Xdstools2  implements AcceptsOneWidget, IsWidget {
 
 	private void run2() {
 		buildTabsWrapper();
-		ht.onAbstractTabLoad(false, "Home");
+
+		// If using ConfActor activity then home tab is a distraction
+		if (!displayHomeTab)
+			ht.setDisplayTab(false);
+		ht.onTabLoad(false, "Home");
 
 		History.addValueChangeHandler(new ValueChangeHandler<String>() {
 			public void onValueChange(ValueChangeEvent<String> event) {
@@ -230,7 +238,9 @@ public class Xdstools2  implements AcceptsOneWidget, IsWidget {
 
 		String currentTestSession = getTestSessionManager().fromCookie();
 		if (getTestSessionManager().isLegalTestSession(currentTestSession)) {
-			getTestSessionManager().setCurrentTestSession(currentTestSession);
+			// Don't overwrite initialization by ConfActor activity
+			if (getTestSessionManager().getCurrentTestSession() == null)
+				getTestSessionManager().setCurrentTestSession(currentTestSession);
 		}
 //		testSessionManager.load();
 //		loadServletContext();

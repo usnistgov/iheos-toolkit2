@@ -6,10 +6,10 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 import gov.nist.toolkit.registrymetadata.client.ObjectRef;
 import gov.nist.toolkit.results.client.Result;
 import gov.nist.toolkit.results.client.TestInstance;
+import gov.nist.toolkit.xdstools2.client.util.ClientUtils;
 
 import java.util.List;
 
-import static gov.nist.toolkit.xdstools2.client.ToolWindow.toolkitService;
 
 public class GetRelated implements ClickHandler {
 	MetadataInspectorTab it;
@@ -37,7 +37,8 @@ public class GetRelated implements ClickHandler {
 	};
 	
 	void run() {
-		/*it.data.*/toolkitService.getRelated(null, or, assocs, queryCallback);
+		/*it.data.*/
+		ClientUtils.INSTANCE.getToolkitServices().getRelated(null, or, assocs, queryCallback);
 	}
 	
 	public void onClick(ClickEvent event) {

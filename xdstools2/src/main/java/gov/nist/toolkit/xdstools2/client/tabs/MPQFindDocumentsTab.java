@@ -5,6 +5,7 @@ import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.ui.FlexTable;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.ListBox;
+import com.google.gwt.user.client.ui.Widget;
 import gov.nist.toolkit.configDatatypes.client.TransactionType;
 import gov.nist.toolkit.results.client.CodesConfiguration;
 import gov.nist.toolkit.sitemanagement.client.SiteSpec;
@@ -51,6 +52,21 @@ public class MPQFindDocumentsTab extends GenericQueryTab {
 	}
 	
 	QueryBoilerplate queryBoilerplate = null;
+
+	@Override
+	protected Widget buildUI() {
+		return null;
+	}
+
+	@Override
+	protected void bindUI() {
+
+	}
+
+	@Override
+	protected void configureTabView() {
+
+	}
 
 	@Override
 	public void onTabLoad(boolean select, String eventName) {
@@ -105,7 +121,7 @@ public class MPQFindDocumentsTab extends GenericQueryTab {
 			getGoButton().setEnabled(false);
 			getInspectButton().setEnabled(false);
 
-			toolkitService.mpqFindDocuments(siteSpec,
+			getToolkitServices().mpqFindDocuments(siteSpec,
 					pid.trim(), 
 //					getValuesFromListBox(codeFilterBank.getCodeFilter(CodesConfiguration.ClassCode).selectedCodes),
 //					getValuesFromListBox(codeFilterBank.getCodeFilter(CodesConfiguration.HealthcareFacilityTypeCode).selectedCodes),

@@ -8,12 +8,12 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.*;
 import gov.nist.toolkit.xdstools2.client.*;
 import gov.nist.toolkit.xdstools2.client.command.command.GetTestSessionNamesCommand;
+import gov.nist.toolkit.xdstools2.client.util.ClientUtils;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import static gov.nist.toolkit.xdstools2.client.ToolWindow.toolkitService;
 
 /**
  *
@@ -26,7 +26,7 @@ class TestEnvironmentDialog extends DialogBox {
     private SiteManager siteManager;
     private HTML validationMessage = new HTML();
     private Button validateButton = new Button("Validate");
-    private Button acceptButton = new Button("Assign Site for Test Session");
+    private Button acceptButton = new Button("Assign System for Test Session");
     private Button clearTestSessionButton = new Button("Clear Test Session");
     private FlowPanel sitesForTestSessionPanel = new FlowPanel();
 
@@ -46,7 +46,7 @@ class TestEnvironmentDialog extends DialogBox {
         close.addClickHandler(new CloseClickHandler());
         header.add(close);
 
-        header.add(new HTML("<h2>Conformance test environment</h2>"));
+        header.add(new HTML("<h2>Conformance test context</h2>"));
 
         panel.add(new HTML("<hr />"));
 
@@ -61,7 +61,7 @@ class TestEnvironmentDialog extends DialogBox {
 
         panel.add(new HTML("<hr />"));
 
-        panel.add(new HTML("A Test Session holds the test results for a single Site under test (System)."));
+        panel.add(new HTML("A Test Session holds the test results for a single system under test."));
 
         HorizontalFlowPanel testSessionEdit = new HorizontalFlowPanel();
         testSessionEdit.add(new HTML("Test Session"));
@@ -84,10 +84,10 @@ class TestEnvironmentDialog extends DialogBox {
         panel.add(testSessionEdit);
         panel.add(new HTML("<hr />"));
 
-        panel.add(new HTML("Site under test selected for Test Session"));
+        panel.add(new HTML("System under test for this Test Session"));
 
         HorizontalFlowPanel siteSelection = new HorizontalFlowPanel();
-        siteSelection.add(new HTML("Site under test"));
+        siteSelection.add(new HTML("System under test"));
         siteSelection.add(siteListBox);
         siteListBox.setVisibleItemCount(10);
         siteListBox.addChangeHandler(new SiteSelectionChangeHandler());
@@ -111,7 +111,7 @@ class TestEnvironmentDialog extends DialogBox {
             sitesForTestSessionPanel.clear();
             return;
         }
-        toolkitService.getSitesForTestSession(testSession, new AsyncCallback<Collection<String>>() {
+        ClientUtils.INSTANCE.getToolkitServices().getSitesForTestSession(testSession, new AsyncCallback<Collection<String>>() {
             @Override
             public void onFailure(Throwable throwable) {
                 new PopupMessage("getSitesForTestSession failed: " + throwable.getMessage());
@@ -136,7 +136,7 @@ class TestEnvironmentDialog extends DialogBox {
 
         @Override
         public void onClick(ClickEvent clickEvent) {
-            toolkitService.clearTestSession(getSelectedTestSession(), new AsyncCallback<String>() {
+            ClientUtils.INSTANCE.getToolkitServices().clearTestSession(getSelectedTestSession(), new AsyncCallback<String>() {
                 @Override
                 public void onFailure(Throwable throwable) {
                     new PopupMessage("Clear Test Session failed: " + throwable.getMessage());
@@ -164,7 +164,7 @@ class TestEnvironmentDialog extends DialogBox {
             toolWindow.setCurrentTestSession(getSelectedTestSession());
             siteManager.update();
 //                       hide();
-            toolkitService.setAssignedSiteForTestSession(getSelectedTestSession(), selectedSite, new AsyncCallback<Void>() {
+            ClientUtils.INSTANCE.getToolkitServices().setAssignedSiteForTestSession(getSelectedTestSession(), selectedSite, new AsyncCallback<Void>() {
                 @Override
                 public void onFailure(Throwable throwable) {
                     new PopupMessage("SetAssignedSiteForTestSession failed: " + throwable.getMessage());
@@ -189,7 +189,7 @@ class TestEnvironmentDialog extends DialogBox {
 
             loadSitesForTestSession(newTestSession);
 
-            toolkitService.getAssignedSiteForTestSession(newTestSession, new AsyncCallback<String>() {
+            ClientUtils.INSTANCE.getToolkitServices().getAssignedSiteForTestSession(newTestSession, new AsyncCallback<String>() {
                 @Override
                 public void onFailure(Throwable throwable) {
                     new PopupMessage("getAssignedSiteForTestSession failed: " + throwable.getMessage());
@@ -268,7 +268,7 @@ class TestEnvironmentDialog extends DialogBox {
             final String newItem = textBox.getText();
             if (newItem == null || newItem.equals("")) return;
 
-            toolkitService.addMesaTestSession(newItem, new AsyncCallback<Boolean>() {
+            ClientUtils.INSTANCE.getToolkitServices().addMesaTestSession(newItem, new AsyncCallback<Boolean>() {
                 @Override
                 public void onFailure(Throwable throwable) {
                     new PopupMessage("Cannot add test session - " + throwable.getMessage());
@@ -305,7 +305,7 @@ class TestEnvironmentDialog extends DialogBox {
     static final private String NONE = "--none--";
 
     private void loadSites() {
-        toolkitService.getSiteNames(true, true, new AsyncCallback<List<String>>() {
+        ClientUtils.INSTANCE.getToolkitServices().getSiteNames(true, true, new AsyncCallback<List<String>>() {
             @Override
             public void onFailure(Throwable throwable) {
                 new PopupMessage("Cannot load sites.");

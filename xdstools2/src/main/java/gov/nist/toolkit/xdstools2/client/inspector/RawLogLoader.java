@@ -6,10 +6,10 @@ import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.TreeItem;
 import gov.nist.toolkit.results.client.*;
+import gov.nist.toolkit.xdstools2.client.util.ClientUtils;
 
 import java.util.List;
 
-import static gov.nist.toolkit.xdstools2.client.ToolWindow.toolkitService;
 
 class RawLogLoader implements ClickHandler {
 	/**
@@ -35,7 +35,8 @@ class RawLogLoader implements ClickHandler {
 	}
 
 	public void loadTestLogs() {
-		/*this.metadataInspectorTab.data.*/toolkitService.getRawLogs(logId, new AsyncCallback<TestLogs> () {
+		/*this.metadataInspectorTab.data.*/
+		ClientUtils.INSTANCE.getToolkitServices().getRawLogs(logId, new AsyncCallback<TestLogs> () {
 
 			public void onFailure(Throwable caught) {
 				RawLogLoader.this.metadataInspectorTab.error(caught.getMessage());

@@ -1,21 +1,15 @@
 package gov.nist.toolkit.xdstools2.client.inspector;
 
-import gov.nist.toolkit.registrymetadata.client.DocumentEntry;
-import gov.nist.toolkit.registrymetadata.client.Folder;
-import gov.nist.toolkit.registrymetadata.client.MetadataCollection;
-import gov.nist.toolkit.registrymetadata.client.MetadataDiff;
-import gov.nist.toolkit.registrymetadata.client.MetadataObject;
-import gov.nist.toolkit.registrymetadata.client.SubmissionSet;
-
-import java.util.ArrayList;
-import java.util.List;
-
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.ui.FlexTable;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.RadioButton;
 import com.google.gwt.user.client.ui.VerticalPanel;
+import gov.nist.toolkit.registrymetadata.client.*;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class DiffDisplay {
 	MetadataInspectorTab tab;

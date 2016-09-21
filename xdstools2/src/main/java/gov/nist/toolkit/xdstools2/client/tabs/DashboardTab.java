@@ -3,10 +3,7 @@ package gov.nist.toolkit.xdstools2.client.tabs;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.rpc.AsyncCallback;
-import com.google.gwt.user.client.ui.Anchor;
-import com.google.gwt.user.client.ui.FlexTable;
-import com.google.gwt.user.client.ui.HTML;
-import com.google.gwt.user.client.ui.VerticalPanel;
+import com.google.gwt.user.client.ui.*;
 import gov.nist.toolkit.http.client.HtmlMarkup;
 import gov.nist.toolkit.xdstools2.client.RegistryStatus;
 import gov.nist.toolkit.xdstools2.client.RepositoryStatus;
@@ -16,9 +13,6 @@ import gov.nist.toolkit.xdstools2.client.tabs.genericQueryTab.GenericQueryTab;
 import java.util.List;
 
 public class DashboardTab  extends GenericQueryTab {
-	//	final protected ToolkitServiceAsync toolkitService = GWT
-	//	.create(ToolkitService.class);
-
 	List<RegistryStatus> regData;
 	List<RepositoryStatus> repData;
 
@@ -28,6 +22,21 @@ public class DashboardTab  extends GenericQueryTab {
 
 	public DashboardTab() {
 		super(new GetDocumentsSiteActorManager());
+	}
+
+	@Override
+	protected Widget buildUI() {
+		return null;
+	}
+
+	@Override
+	protected void bindUI() {
+
+	}
+
+	@Override
+	protected void configureTabView() {
+
 	}
 
 	@Override
@@ -152,7 +161,7 @@ public class DashboardTab  extends GenericQueryTab {
 
 		mainDataArea.clear();
 
-		toolkitService.getDashboardRegistryData(new AsyncCallback<List<RegistryStatus>>() {
+		getToolkitServices().getDashboardRegistryData(new AsyncCallback<List<RegistryStatus>>() {
 
 			public void onFailure(Throwable caught) {
 				mainDataArea.add(HtmlMarkup.html(caught.getMessage()));
@@ -168,7 +177,7 @@ public class DashboardTab  extends GenericQueryTab {
 
 		});
 
-		toolkitService.getDashboardRepositoryData(new AsyncCallback<List<RepositoryStatus>>() {
+		getToolkitServices().getDashboardRepositoryData(new AsyncCallback<List<RepositoryStatus>>() {
 
 			public void onFailure(Throwable caught) {
 				mainDataArea.add(HtmlMarkup.html(caught.getMessage()));

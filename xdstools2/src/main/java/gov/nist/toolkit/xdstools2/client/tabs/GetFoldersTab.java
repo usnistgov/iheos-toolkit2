@@ -5,6 +5,7 @@ import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.ui.FlexTable;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.TextArea;
+import com.google.gwt.user.client.ui.Widget;
 import gov.nist.toolkit.configDatatypes.client.TransactionType;
 import gov.nist.toolkit.sitemanagement.client.SiteSpec;
 import gov.nist.toolkit.xdstools2.client.CoupledTransactions;
@@ -41,7 +42,22 @@ public class GetFoldersTab extends GenericQueryTab {
 	public GetFoldersTab() {
 		super(new GetDocumentsSiteActorManager());
 	}
-	
+
+	@Override
+	protected Widget buildUI() {
+		return null;
+	}
+
+	@Override
+	protected void bindUI() {
+
+	}
+
+	@Override
+	protected void configureTabView() {
+
+	}
+
 	@Override
 	public void onTabLoad(boolean select, String eventName) {
 		tab = this;
@@ -93,7 +109,7 @@ public class GetFoldersTab extends GenericQueryTab {
 			getGoButton().setEnabled(false);
 			getInspectButton().setEnabled(false);
 
-			toolkitService.getFolders(siteSpec, getAnyIds(values), queryCallback);
+			getToolkitServices().getFolders(siteSpec, getAnyIds(values), queryCallback);
 		}
 		
 	}

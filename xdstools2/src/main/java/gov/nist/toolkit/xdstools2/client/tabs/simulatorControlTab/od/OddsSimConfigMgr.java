@@ -22,6 +22,7 @@ import gov.nist.toolkit.xdstools2.client.PopupMessage;
 import gov.nist.toolkit.xdstools2.client.StringSort;
 import gov.nist.toolkit.xdstools2.client.tabs.simulatorControlTab.*;
 import gov.nist.toolkit.xdstools2.client.tabs.simulatorControlTab.intf.SimConfigMgrIntf;
+import gov.nist.toolkit.xdstools2.client.util.ClientUtils;
 
 import java.util.*;
 
@@ -212,7 +213,7 @@ public class OddsSimConfigMgr implements SimConfigMgrIntf {
         final SimulatorConfigElement oddsReposSite = config.get(SimulatorProperties.oddsRepositorySite);
         if (oddsReposSite!=null) {
             // Selecting a Repository for the ODDS
-                simulatorControlTab.toolkitService.getSiteNamesByTranType(TransactionType.PROVIDE_AND_REGISTER.getName(), new AsyncCallback<List<String>>() {
+            ClientUtils.INSTANCE.getToolkitServices().getSiteNamesByTranType(TransactionType.PROVIDE_AND_REGISTER.getName(), new AsyncCallback<List<String>>() {
 
                     public void onFailure(Throwable caught) {
                         new PopupMessage("getSiteNamesByTranType PROVIDE_AND_REGISTER:" + caught.getMessage());
@@ -310,7 +311,7 @@ public class OddsSimConfigMgr implements SimConfigMgrIntf {
 
 
     private void getOdDocumentEntries(SimulatorControlTab simulatorControlTab) {
-        simulatorControlTab.toolkitService.getOnDemandDocumentEntryDetails(getConfig().getId(), new AsyncCallback<List<DocumentEntryDetail>>() {
+        ClientUtils.INSTANCE.getToolkitServices().getOnDemandDocumentEntryDetails(getConfig().getId(), new AsyncCallback<List<DocumentEntryDetail>>() {
             @Override
             public void onFailure(Throwable throwable) {
                 regActionMessage.getElement().getStyle().setColor("red");
@@ -477,7 +478,7 @@ public class OddsSimConfigMgr implements SimConfigMgrIntf {
             tbl.getFlexCellFormatter().setColSpan(getRow(),0,2);
 
 
-            simulatorControlTab.toolkitService.getSiteNamesByTranType(TransactionType.REGISTER_ODDE.getName(), new AsyncCallback<List<String>>() {
+            ClientUtils.INSTANCE.getToolkitServices().getSiteNamesByTranType(TransactionType.REGISTER_ODDE.getName(), new AsyncCallback<List<String>>() {
 
                 public void onFailure(Throwable caught) {
                     new PopupMessage("getSiteNamesByTranType REGISTER_ODDE:" + caught.getMessage());
@@ -540,7 +541,7 @@ public class OddsSimConfigMgr implements SimConfigMgrIntf {
 
 
     void loadTestsFromCollection(final ListBox lbx, final String testCollectionName) {
-        getSimulatorControlTab().toolkitService.getCollection("collections", testCollectionName, new AsyncCallback<Map<String, String>>() {
+        ClientUtils.INSTANCE.getToolkitServices().getCollection("collections", testCollectionName, new AsyncCallback<Map<String, String>>() {
 
             public void onFailure(Throwable caught) {
                 new PopupMessage("getCollection(" + testCollectionName + "): " +  " -----  " + caught.getMessage());
@@ -579,7 +580,7 @@ public class OddsSimConfigMgr implements SimConfigMgrIntf {
         params.put("$patientid$", oddePatientIdCEBox.getTb().getValue());
         params.put("$repuid$", getConfig().get(SimulatorProperties.repositoryUniqueId).asString()); // oddsReposTDBox.toString() getTb().getValue());
 
-        getSimulatorControlTab().toolkitService.registerWithLocalizedTrackingInODDS(getConfig().getId().getUser(), new TestInstance(contentBundleLbx.getSelectedValue())
+        ClientUtils.INSTANCE.getToolkitServices().registerWithLocalizedTrackingInODDS(getConfig().getId().getUser(), new TestInstance(contentBundleLbx.getSelectedValue())
                 , new SiteSpec(regSSP.getSelected().get(0), ActorType.REGISTRY, null), getConfig().getId() , params
                 , new AsyncCallback<Map<String, String>>() {
                     @Override
@@ -681,7 +682,7 @@ public class OddsSimConfigMgr implements SimConfigMgrIntf {
         getConfig().get(SimulatorProperties.oddsRepositorySite).setValue(reposSSP.getSelected());
         getConfig().get(SimulatorProperties.oddsRegistrySite).setValue(regSSP.getSelected());
 
-        simulatorControlTab.toolkitService.putSimConfig(config, new AsyncCallback<String>() {
+        ClientUtils.INSTANCE.getToolkitServices().putSimConfig(config, new AsyncCallback<String>() {
 
             public void onFailure(Throwable caught) {
                 new PopupMessage("saveSimConfig:" + caught.getMessage());

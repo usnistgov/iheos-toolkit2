@@ -6,6 +6,7 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.FlexTable;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.ListBox;
+import com.google.gwt.user.client.ui.Widget;
 import gov.nist.toolkit.configDatatypes.client.TransactionType;
 import gov.nist.toolkit.xdstools2.client.CoupledTransactions;
 import gov.nist.toolkit.xdstools2.client.PopupMessage;
@@ -38,6 +39,21 @@ public class RepositoryTestdataTab  extends GenericQueryTab {
 	}
 
 	@Override
+	protected Widget buildUI() {
+		return null;
+	}
+
+	@Override
+	protected void bindUI() {
+
+	}
+
+    @Override
+    protected void configureTabView() {
+
+    }
+
+    @Override
 	public void onTabLoad(boolean select, String eventName) {
 		registerTab(select, eventName);
 
@@ -58,7 +74,7 @@ public class RepositoryTestdataTab  extends GenericQueryTab {
 		// build drop down box for selecting data set to send. Initiate call to 
 		// back end to load this list.
 		testlistBox.setVisibleItemCount(1); 
-		toolkitService.getTestdataSetListing(getEnvironmentSelection(), getCurrentTestSession(), "testdata-repository", loadRepositoryTestListCallback);
+		getToolkitServices().getTestdataSetListing(getEnvironmentSelection(), getCurrentTestSession(), "testdata-repository", loadRepositoryTestListCallback);
 
 		queryBoilerplate = addQueryBoilerplate(new Runner(), transactionTypes, couplings, true);
 	}
@@ -102,7 +118,7 @@ public class RepositoryTestdataTab  extends GenericQueryTab {
 			// Initiate the transaction
 			// queryCallback comes out of GenericQueryTab, the super class of the main class of this tab.
 			rigForRunning();
-			toolkitService.submitRepositoryTestdata(getCurrentTestSession(),getSiteSelection(), testdataSetName, pidTextBox.getValue().trim(), queryCallback);
+			getToolkitServices().submitRepositoryTestdata(getCurrentTestSession(),getSiteSelection(), testdataSetName, pidTextBox.getValue().trim(), queryCallback);
 		}
 		
 	}

@@ -1,10 +1,9 @@
 package gov.nist.toolkit.xdstools2.client.tabs.actorConfigTab;
 
-import gov.nist.toolkit.sitemanagement.client.Site;
-import gov.nist.toolkit.xdstools2.client.PopupMessage;
-
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import gov.nist.toolkit.sitemanagement.client.Site;
+import gov.nist.toolkit.xdstools2.client.PopupMessage;
 
 class CreateNewSite implements ClickHandler {
 

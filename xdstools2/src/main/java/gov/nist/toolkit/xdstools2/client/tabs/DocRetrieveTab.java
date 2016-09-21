@@ -2,10 +2,7 @@ package gov.nist.toolkit.xdstools2.client.tabs;
 
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.user.client.ui.FlexTable;
-import com.google.gwt.user.client.ui.HTML;
-import com.google.gwt.user.client.ui.TextArea;
-import com.google.gwt.user.client.ui.TextBox;
+import com.google.gwt.user.client.ui.*;
 import gov.nist.toolkit.configDatatypes.client.TransactionType;
 import gov.nist.toolkit.registrymetadata.client.Uid;
 import gov.nist.toolkit.registrymetadata.client.Uids;
@@ -31,10 +28,24 @@ public class DocRetrieveTab extends GenericQueryTab {
 
 	TextBox docUidBox;
 	TextArea textArea;
-//	TextBox repUidBox;
-	
+
 	public DocRetrieveTab() {
 		super(new RetrieveSiteActorManager());
+	}
+
+	@Override
+	protected Widget buildUI() {
+		return null;
+	}
+
+	@Override
+	protected void bindUI() {
+
+	}
+
+	@Override
+	protected void configureTabView() {
+
 	}
 
 	@Override
@@ -107,7 +118,7 @@ public class DocRetrieveTab extends GenericQueryTab {
 //			siteSpec.isTls = doTLS;
 //			siteSpec.isSaml = doSAML;
 //			siteSpec.isAsync = doASYNC;
-			toolkitService.retrieveDocument(siteSpec, uids, queryCallback);
+			getToolkitServices().retrieveDocument(siteSpec, uids, queryCallback);
 		}
 		
 	}

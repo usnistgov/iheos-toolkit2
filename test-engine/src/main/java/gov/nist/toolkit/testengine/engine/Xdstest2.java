@@ -1,5 +1,6 @@
 package gov.nist.toolkit.testengine.engine;
 
+import gov.nist.toolkit.installation.Installation;
 import gov.nist.toolkit.results.client.TestInstance;
 import gov.nist.toolkit.securityCommon.SecurityParams;
 import gov.nist.toolkit.sitemanagement.Sites;
@@ -188,7 +189,10 @@ public class Xdstest2 {
 	 */
 	public void addTest(TestInstance testInstance) throws Exception {
 		this.testInstance = testInstance;
-		xt.addTestSpec(new TestLogDetails(xt.getTestkit(), testInstance));
+		File tk = Installation.installation().findTestkitFromTest(testkits, testInstance.getId());
+		if (tk == null) tk = xt.getTestkit();
+		xt.addTestSpec(new TestLogDetails(tk, testInstance));
+//		xt.addTestSpec(new TestLogDetails(xt.getTestkit(), testInstance));
 
 	}
 
@@ -206,10 +210,12 @@ public class Xdstest2 {
 		this.testInstance = testInstance;
 		this.sections = sections;
 		TestLogDetails testLogDetails;
+		File tk = Installation.installation().findTestkitFromTest(testkits, testInstance.getId());
+		if (tk == null) tk = xt.getTestkit();
 		if (areas == null)
-			testLogDetails = new TestLogDetails(xt.getTestkit(), testInstance);
+			testLogDetails = new TestLogDetails(tk, testInstance);
 		else
-			testLogDetails = new TestLogDetails(xt.getTestkit(), testInstance, areas);
+			testLogDetails = new TestLogDetails(tk, testInstance, areas);
 		if (logRepository != null)
 			testLogDetails.setLogRepository(logRepository);
 		if (doLogCheck) {

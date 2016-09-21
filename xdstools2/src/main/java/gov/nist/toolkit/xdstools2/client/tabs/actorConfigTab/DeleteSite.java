@@ -1,12 +1,13 @@
 package gov.nist.toolkit.xdstools2.client.tabs.actorConfigTab;
 
-import gov.nist.toolkit.xdstools2.client.AdminPasswordDialogBox;
-import gov.nist.toolkit.xdstools2.client.PasswordManagement;
-import gov.nist.toolkit.xdstools2.client.PopupMessage;
-
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.rpc.AsyncCallback;
+import gov.nist.toolkit.xdstools2.client.AdminPasswordDialogBox;
+import gov.nist.toolkit.xdstools2.client.PasswordManagement;
+import gov.nist.toolkit.xdstools2.client.PopupMessage;
+import gov.nist.toolkit.xdstools2.client.event.Xdstools2EventBus;
+import gov.nist.toolkit.xdstools2.client.util.ClientUtils;
 
 class DeleteSite implements ClickHandler {
 
@@ -48,7 +49,8 @@ class DeleteSite implements ClickHandler {
 		}
 
 		public void onSuccess(Boolean ignored) {
-			actorConfigTab.toolkitService.deleteSite(actorConfigTab.currentEditSite.getName(), deleteSiteCallback);
+			ClientUtils.INSTANCE.getToolkitServices().deleteSite(actorConfigTab.currentEditSite.getName(), deleteSiteCallback);
+			((Xdstools2EventBus) ClientUtils.INSTANCE.getEventBus()).fireActorsConfigUpdatedEvent();
 		}
 
 	};

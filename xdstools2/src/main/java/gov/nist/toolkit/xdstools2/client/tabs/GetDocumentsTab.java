@@ -5,6 +5,7 @@ import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.ui.FlexTable;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.TextArea;
+import com.google.gwt.user.client.ui.Widget;
 import gov.nist.toolkit.configDatatypes.client.TransactionType;
 import gov.nist.toolkit.xdstools2.client.CoupledTransactions;
 import gov.nist.toolkit.xdstools2.client.PopupMessage;
@@ -41,7 +42,22 @@ public class GetDocumentsTab  extends GenericQueryTab {
 	public GetDocumentsTab() {
 		super(new GetDocumentsSiteActorManager());
 	}
-	
+
+	@Override
+	protected Widget buildUI() {
+		return null;
+	}
+
+	@Override
+	protected void bindUI() {
+
+	}
+
+	@Override
+	protected void configureTabView() {
+
+	}
+
 	@Override
 	public void onTabLoad(boolean select, String eventName) {
 		tab = this;
@@ -89,7 +105,7 @@ public class GetDocumentsTab  extends GenericQueryTab {
 			}
 			
 			rigForRunning();
-			toolkitService.getDocuments(getSiteSelection(), getAnyIds(values), queryCallback);
+			getToolkitServices().getDocuments(getSiteSelection(), getAnyIds(values), queryCallback);
 		}
 		
 	}

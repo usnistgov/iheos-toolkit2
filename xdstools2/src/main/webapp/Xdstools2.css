@@ -175,6 +175,15 @@ h3 {
   text-align: left;
 }
 
+.test-summary {
+  font-size: 2em;
+  font-weight: bold;
+  color: black;
+  margin: 10px 0 20px 0;
+  /*font-size: 16pt;*/
+  text-align: left;
+}
+
 .right {
   float: right;
   /*position: absolute;*/

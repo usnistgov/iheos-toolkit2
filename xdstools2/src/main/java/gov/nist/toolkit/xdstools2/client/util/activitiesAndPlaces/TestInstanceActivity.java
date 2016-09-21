@@ -20,7 +20,7 @@ public class TestInstanceActivity extends AbstractActivity {
             // Open required tab
             System.out.println("GO TO");
             if (tabId.equals("1234"))
-                new FindDocumentsTab().onAbstractTabLoad(true, null);
+                new FindDocumentsTab().onTabLoad(true, null);
             xdstools2view.resizeToolkit();
         }
     }

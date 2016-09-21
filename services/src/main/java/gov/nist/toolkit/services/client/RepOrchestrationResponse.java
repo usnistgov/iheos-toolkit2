@@ -7,9 +7,8 @@ import gov.nist.toolkit.sitemanagement.client.SiteSpec;
 /**
  *
  */
-public class RepOrchestrationResponse extends RawResponse {
+public class RepOrchestrationResponse extends AbstractOrchestrationResponse {
     private SiteSpec repSite;
-    private  String message = "";
     private SimulatorConfig regConfig;
     private SiteSpec supportSite;
     private Pid pid;
@@ -23,14 +22,6 @@ public class RepOrchestrationResponse extends RawResponse {
 
     public void setRepSite(SiteSpec repSite) {
         this.repSite = repSite;
-    }
-
-    public String getMessage() {
-        return message;
-    }
-
-    public void setMessage(String message) {
-        this.message = message;
     }
 
     public SimulatorConfig getRegConfig() {

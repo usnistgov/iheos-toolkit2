@@ -27,13 +27,13 @@ import gov.nist.toolkit.xdstools2.client.HorizontalFlowPanel;
 import gov.nist.toolkit.xdstools2.client.PopupMessage;
 import gov.nist.toolkit.xdstools2.client.sh.BrushFactory;
 import gov.nist.toolkit.xdstools2.client.sh.SyntaxHighlighter;
+import gov.nist.toolkit.xdstools2.client.util.ClientUtils;
 
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import static gov.nist.toolkit.xdstools2.client.ToolWindow.toolkitService;
 
 /**
  *
@@ -122,7 +122,7 @@ public class TestSectionComponent implements IsWidget {
 
         @Override
         public void onClick(ClickEvent clickEvent) {
-            toolkitService.getSectionTestPartFile(sessionName, testInstance, section, new AsyncCallback<TestPartFileDTO>() {
+            ClientUtils.INSTANCE.getToolkitServices().getSectionTestPartFile(sessionName, testInstance, section, new AsyncCallback<TestPartFileDTO>() {
                 @Override
                 public void onFailure(Throwable throwable) {
                     new PopupMessage("TestSectionComponent: getTestplanAsFile error: " + throwable.toString());
@@ -174,7 +174,7 @@ public class TestSectionComponent implements IsWidget {
             clickEvent.preventDefault();
             clickEvent.stopPropagation();
 
-            me.testRunner.runTest(testInstance);
+            me.testRunner.runTest(testInstance, null);
         }
     }
 
@@ -185,7 +185,7 @@ public class TestSectionComponent implements IsWidget {
 
         @Override
         public void onOpen(OpenEvent<DisclosurePanel> openEvent) {
-            toolkitService.getTestLogDetails(sessionName, testInstance, new AsyncCallback<LogFileContentDTO>() {
+            ClientUtils.INSTANCE.getToolkitServices().getTestLogDetails(sessionName, testInstance, new AsyncCallback<LogFileContentDTO>() {
                 @Override
                 public void onFailure(Throwable throwable) {
                     new PopupMessage("getTestLogDetails failed " + throwable.getMessage());

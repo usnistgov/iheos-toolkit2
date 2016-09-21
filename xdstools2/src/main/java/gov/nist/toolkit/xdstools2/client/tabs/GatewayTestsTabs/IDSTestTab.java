@@ -15,6 +15,7 @@ import gov.nist.toolkit.xdstools2.client.*;
 import gov.nist.toolkit.xdstools2.client.inspector.MetadataInspectorTab;
 import gov.nist.toolkit.xdstools2.client.siteActorManagers.GetDocumentsSiteActorManager;
 import gov.nist.toolkit.xdstools2.client.tabs.genericQueryTab.GenericQueryTab;
+import gov.nist.toolkit.xdstools2.client.util.ClientUtils;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -41,8 +42,7 @@ Negative tests
     more coming...
  */
 public class IDSTestTab extends GenericQueryTab implements GatewayTool {
-    final protected ToolkitServiceAsync toolkitService = GWT
-            .create(ToolkitService.class);
+    protected final ToolkitServiceAsync toolkitService = ClientUtils.INSTANCE.getToolkitServices();
     String selectedActor = ActorType.IMAGING_DOC_SOURCE.getShortName();
     SimulatorConfig rrConfig;
     GenericQueryTab genericQueryTab;
@@ -61,6 +61,21 @@ public class IDSTestTab extends GenericQueryTab implements GatewayTool {
     public TabContainer getToolContainer() { return getTabContainer(); }
 
     public void onTabLoad(TabContainer container, boolean select) {
+    }
+
+    @Override
+    protected Widget buildUI() {
+        return null;
+    }
+
+    @Override
+    protected void bindUI() {
+
+    }
+
+    @Override
+    protected void configureTabView() {
+
     }
 
     @Override

@@ -1,11 +1,11 @@
 package gov.nist.toolkit.xdstools2.client.tabs.simulatorControlTab;
 
-import gov.nist.toolkit.actorfactory.client.SimulatorConfig;
-import gov.nist.toolkit.xdstools2.client.PopupMessage;
-
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.rpc.AsyncCallback;
+import gov.nist.toolkit.actorfactory.client.SimulatorConfig;
+import gov.nist.toolkit.xdstools2.client.PopupMessage;
+import gov.nist.toolkit.xdstools2.client.util.ClientUtils;
 
 class DeleteButtonClickHandler implements ClickHandler {
 	SimulatorConfig config;
@@ -19,7 +19,7 @@ class DeleteButtonClickHandler implements ClickHandler {
 	public void onClick(ClickEvent event) {
 		simulatorControlTab.simConfigSuper.delete(config);
 		simulatorControlTab.simConfigSuper.refresh();
-		simulatorControlTab.toolkitService.deleteConfig(config, new AsyncCallback<String>() {
+		ClientUtils.INSTANCE.getToolkitServices().deleteConfig(config, new AsyncCallback<String>() {
 
 			public void onFailure(Throwable caught) {
 				new PopupMessage("deleteConfig:" + caught.getMessage());
@@ -33,7 +33,7 @@ class DeleteButtonClickHandler implements ClickHandler {
 	}
 
 	public void delete() {
-		simulatorControlTab.toolkitService.deleteConfig(config, new AsyncCallback<String>() {
+		ClientUtils.INSTANCE.getToolkitServices().deleteConfig(config, new AsyncCallback<String>() {
 
 			public void onFailure(Throwable caught) {
 				new PopupMessage("deleteConfig:" + caught.getMessage());

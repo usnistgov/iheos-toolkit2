@@ -16,7 +16,9 @@ import gov.nist.toolkit.http.client.HtmlMarkup;
 import gov.nist.toolkit.results.client.Result;
 import gov.nist.toolkit.sitemanagement.client.SiteSpec;
 import gov.nist.toolkit.xdstools2.client.Panel1;
-import gov.nist.toolkit.xdstools2.client.*;
+import gov.nist.toolkit.xdstools2.client.PopupMessage;
+import gov.nist.toolkit.xdstools2.client.RadioButtonGroup;
+import gov.nist.toolkit.xdstools2.client.ToolWindow;
 import gov.nist.toolkit.xdstools2.client.inspector.MetadataInspectorTab;
 
 import java.util.ArrayList;
@@ -66,6 +68,16 @@ public class SimulatorMessageViewTab extends ToolWindow {
 	HTML download = new HTML();
 	
 	public SimId getSimid() { return simid; }
+
+	@Override
+	protected Widget buildUI() {
+		return null;
+	}
+
+	@Override
+	protected void bindUI() {
+
+	}
 
 	// If eventName is null then display list of simulators.  If non-null then it is
 	// the simulator id. In this case do not allow simulator selection.
@@ -172,7 +184,7 @@ public class SimulatorMessageViewTab extends ToolWindow {
 
 	void loadSimulatorNamesListBox() {
 		simulatorNamesListBox.clear();
-		toolkitService.getActorSimulatorNameMap(new AsyncCallback<Map<String, SimId>>() {
+		getToolkitServices().getActorSimulatorNameMap(new AsyncCallback<Map<String, SimId>>() {
 
 			public void onFailure(Throwable caught) {
 				new PopupMessage("getActorSimulatorNameMap: " + caught.getMessage());
@@ -195,7 +207,7 @@ public class SimulatorMessageViewTab extends ToolWindow {
 		simidFinal = simid;
 		transInstanceListBox.clear();
 		//getSimulatorTransactionNames
-		toolkitService.getTransactionsForSimulator(simid, new AsyncCallback<List<String>>() {
+		getToolkitServices().getTransactionsForSimulator(simid, new AsyncCallback<List<String>>() {
 
 			public void onFailure(Throwable caught) {
 				new PopupMessage("getSimulatorTransactionNames: " + caught.getMessage());
@@ -275,8 +287,7 @@ public class SimulatorMessageViewTab extends ToolWindow {
 		
 		if ("all".equalsIgnoreCase(transName))
 			transName = null;
-
-		toolkitService.getTransInstances(simid, "", transName, new AsyncCallback<List<TransactionInstance>>() {
+			getToolkitServices().getTransInstances(simid, "", transName, new AsyncCallback<List<TransactionInstance>>() {
 
 			public void onFailure(Throwable caught) {
 				if (caught.getMessage() != null)
@@ -360,7 +371,7 @@ public class SimulatorMessageViewTab extends ToolWindow {
 		scrollOutPanel.clear();
 		scrollLogPanel.clear();
 
-		toolkitService.getTransactionRequest(simid, actor, trans, messageId, new AsyncCallback<String>() {
+		getToolkitServices().getTransactionRequest(simid, actor, trans, messageId, new AsyncCallback<String>() {
 
 			public void onFailure(Throwable caught) {
 				if (caught.getMessage() != null)
@@ -373,7 +384,7 @@ public class SimulatorMessageViewTab extends ToolWindow {
 
 		});
 
-		toolkitService.getTransactionResponse(simid, actor, trans, messageId, new AsyncCallback<String>() {
+		getToolkitServices().getTransactionResponse(simid, actor, trans, messageId, new AsyncCallback<String>() {
 
 			public void onFailure(Throwable caught) {
 				if (caught.getMessage() != null)
@@ -386,7 +397,7 @@ public class SimulatorMessageViewTab extends ToolWindow {
 
 		});
 
-		toolkitService.getTransactionLog(simid, actor, trans, messageId, new AsyncCallback<String>() {
+		getToolkitServices().getTransactionLog(simid, actor, trans, messageId, new AsyncCallback<String>() {
 
 			public void onFailure(Throwable caught) {
 				if (caught.getMessage() != null)
@@ -416,7 +427,7 @@ public class SimulatorMessageViewTab extends ToolWindow {
 		@Override
 		public void onClick(ClickEvent clickEvent) {
 			try {
-				toolkitService.getSimulatorEventRequest(currentTransactionInstance, new AsyncCallback<Result>() {
+				getToolkitServices().getSimulatorEventRequest(currentTransactionInstance, new AsyncCallback<Result>() {
                     @Override
                     public void onFailure(Throwable throwable) {
                         new PopupMessage(throwable.getMessage());
@@ -443,7 +454,7 @@ public class SimulatorMessageViewTab extends ToolWindow {
 		@Override
 		public void onClick(ClickEvent clickEvent) {
 			try {
-				toolkitService.getSimulatorEventResponse(currentTransactionInstance, new AsyncCallback<Result>() {
+				getToolkitServices().getSimulatorEventResponse(currentTransactionInstance, new AsyncCallback<Result>() {
 					@Override
 					public void onFailure(Throwable throwable) {
 						new PopupMessage(throwable.getMessage());

@@ -4,11 +4,11 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Panel;
 import gov.nist.toolkit.actortransaction.client.Severity;
 import gov.nist.toolkit.xdstools2.client.PopupMessage;
+import gov.nist.toolkit.xdstools2.client.util.ClientUtils;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import static gov.nist.toolkit.xdstools2.client.ToolWindow.toolkitService;
 
 /**
  * Uses SingleSelectionView to build specifics.
@@ -20,7 +20,7 @@ public class ErrorSelectionPresenter {
     final static String none = "None";
 
     public ErrorSelectionPresenter(/*ToolkitServiceAsync toolkitService, */String transactionName, final List<String> selected, final Panel panel) {
-        toolkitService.getTransactionErrorCodeRefs(transactionName, Severity.Error, new AsyncCallback<List<String>>() {
+        ClientUtils.INSTANCE.getToolkitServices().getTransactionErrorCodeRefs(transactionName, Severity.Error, new AsyncCallback<List<String>>() {
 
             public void onFailure(Throwable caught) {
                 new PopupMessage("getTransactionErrorCodeRefs:" + caught.getMessage());
