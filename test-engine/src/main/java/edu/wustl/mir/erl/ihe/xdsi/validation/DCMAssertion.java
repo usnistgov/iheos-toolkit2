@@ -65,6 +65,10 @@ public class DCMAssertion {
       failDetail = dtl;
    }
    
+   public void setTagName(String name) {
+      tagName = name;
+   }
+   
    public enum TYPE { 
       
       PRESENT("% present", "% missing"), 

@@ -30,7 +30,7 @@
 		</Standard>
 		<ImgDetailTransaction>
 			<Assertions>
-				<Assert id="Returned doc(s)" process="sameRetImgs" />
+				<Assert id="Returned doc(s)" process="sameRetImgs"/>
 				<Assert id="Returned img(s)" process="sameDcmImgs">
 					<TagList>
 						<SOPClassUID />
@@ -40,6 +40,7 @@
 						<PatientSex />
 						<StudyInstanceUID />
 						<SeriesInstanceUID />
+						<Tag hex="0020,0020"/>
 					</TagList>
 					<DirList>
 						<StdDir>../../stdImgs/rig-2001</StdDir>
