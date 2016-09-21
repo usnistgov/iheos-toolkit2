@@ -64,6 +64,10 @@ public class TabContainer {
 	 * @param select - should be selected upon creation (ignored)
      */
 	public void addTab(DockLayoutPanel w, String title, boolean select) {
+
+		w.getElement().getStyle().setMarginLeft(4, Style.Unit.PX);
+		w.getElement().getStyle().setMarginRight(4, Style.Unit.PX);
+
 		TABBAR.addTab(buildTabHeaderWidget(title, w));
 
 		deck.add(w);
@@ -83,6 +87,7 @@ public class TabContainer {
 		if (INNER_DECKPANEL.getWidgetIndex(dockLp)==-1) {
 			INNER_DECKPANEL.add(dockLp);
 		}
+//		INNER_DECKPANEL.getElement().getStyle().setMargin(4, Style.Unit.PX);
 		INNER_DECKPANEL.showWidget(dockLp);
 	}
 
