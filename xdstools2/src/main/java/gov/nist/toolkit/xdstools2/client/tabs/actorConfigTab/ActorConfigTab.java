@@ -23,7 +23,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ActorConfigTab extends GenericQueryTab {
-    public static final String TAB_NAME = "ActorConfig";
+    public static final String TAB_NAME = "SystemConfig";
     ListBox siteSelector;
 	FlexTable actorEditGrid;
 	int actorEditRow = -1;
@@ -62,7 +62,7 @@ public class ActorConfigTab extends GenericQueryTab {
 		loadGazelleFeedAvailableStatus();
 
 		HTML title = new HTML();
-		title.setHTML("<h2>Configure Sites</h2>");
+		title.setHTML("<h2>Configure Systems</h2>");
 		tabTopPanel.add(title);
 
 		Anchor reload = new Anchor();

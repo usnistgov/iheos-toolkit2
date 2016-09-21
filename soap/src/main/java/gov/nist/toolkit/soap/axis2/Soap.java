@@ -855,6 +855,9 @@ public class Soap implements SoapInterface {
 //		log.info("params in soap : " + params.toString());
 //		log.info("pid in soap :" + params.get("$patientid$"));
 
+		if (endpoint == null || endpoint.equals(""))
+			throw new XdsInternalException("No endpoint configured for SOAP action " + action);
+
 		return soapCall();
 	}
 

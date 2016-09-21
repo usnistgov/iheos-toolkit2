@@ -26,7 +26,7 @@ class TestEnvironmentDialog extends DialogBox {
     private SiteManager siteManager;
     private HTML validationMessage = new HTML();
     private Button validateButton = new Button("Validate");
-    private Button acceptButton = new Button("Assign Site for Test Session");
+    private Button acceptButton = new Button("Assign System for Test Session");
     private Button clearTestSessionButton = new Button("Clear Test Session");
     private FlowPanel sitesForTestSessionPanel = new FlowPanel();
 
@@ -46,7 +46,7 @@ class TestEnvironmentDialog extends DialogBox {
         close.addClickHandler(new CloseClickHandler());
         header.add(close);
 
-        header.add(new HTML("<h2>Conformance test environment</h2>"));
+        header.add(new HTML("<h2>Conformance test context</h2>"));
 
         panel.add(new HTML("<hr />"));
 
@@ -61,7 +61,7 @@ class TestEnvironmentDialog extends DialogBox {
 
         panel.add(new HTML("<hr />"));
 
-        panel.add(new HTML("A Test Session holds the test results for a single Site under test (System)."));
+        panel.add(new HTML("A Test Session holds the test results for a single system under test."));
 
         HorizontalFlowPanel testSessionEdit = new HorizontalFlowPanel();
         testSessionEdit.add(new HTML("Test Session"));
@@ -84,10 +84,10 @@ class TestEnvironmentDialog extends DialogBox {
         panel.add(testSessionEdit);
         panel.add(new HTML("<hr />"));
 
-        panel.add(new HTML("Site under test selected for Test Session"));
+        panel.add(new HTML("System under test for this Test Session"));
 
         HorizontalFlowPanel siteSelection = new HorizontalFlowPanel();
-        siteSelection.add(new HTML("Site under test"));
+        siteSelection.add(new HTML("System under test"));
         siteSelection.add(siteListBox);
         siteListBox.setVisibleItemCount(10);
         siteListBox.addChangeHandler(new SiteSelectionChangeHandler());

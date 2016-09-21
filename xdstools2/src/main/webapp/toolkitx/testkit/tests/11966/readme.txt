@@ -1,10 +1,11 @@
-PnR.b Accept document
+# PnR.b Accept document
 
-submit - Generate a Provide and Register.b transaction to the Repository
-under test which is already configured to forward Register.b
-transactions to the Public Registry.
+## Overview
 
-eval - The Public Registry is queried to validate the metadata forwarded.
-When using xdstest to run this step, make sure it sends to the Public
-Registry.  This can be done using the -s pub command line option to
-xdstest.
+Send a Provide and Register transaction to the Repository under test containing a single document.
+The Repository is expected to forward the metadata to a Registry simulator.
+
+Initialization instructions for the Repository under test are at the top of the window.
+The forwarding of the metadata will be validated by querying the Registry simulator.
+
+This test does not Retrieve the document.  This tests the submission only.

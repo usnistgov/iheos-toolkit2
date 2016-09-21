@@ -271,7 +271,7 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner, SiteMa
 
 	private String verifySite() {
 		if (getSiteName() != null) return null;
-		return "Site under test must be selected before you proceed.";
+		return "System under test must be selected before you proceed.";
 	}
 
 	@Override
