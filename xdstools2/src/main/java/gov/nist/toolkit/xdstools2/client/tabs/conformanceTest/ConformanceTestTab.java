@@ -38,7 +38,7 @@ import java.util.List;
 import java.util.Map;
 
 /**
- *
+ * All Conformance tests will be run out of here
  */
 public class ConformanceTestTab extends ToolWindow implements TestRunner, SiteManager, TestsHeaderView.Controller {
 
