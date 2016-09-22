@@ -29,7 +29,7 @@ import gov.nist.toolkit.xdstools2.client.Xdstools2;
 import gov.nist.toolkit.xdstools2.client.event.TestSessionChangedEvent;
 import gov.nist.toolkit.xdstools2.client.event.testSession.TestSessionChangedEventHandler;
 import gov.nist.toolkit.xdstools2.client.inspector.MetadataInspectorTab;
-import gov.nist.toolkit.xdstools2.client.widgets.buttons.ReportableButton;
+import gov.nist.toolkit.xdstools2.client.widgets.buttons.OrchestrationButton;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -380,10 +380,16 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner, SiteMa
         return currentActorTypeId != null && ActorType.REGISTRY.getShortName().equals(currentActorTypeId);
     }
 
-    // load test results for a single test collection (actor type) for a single site
+	private HTML loadingMessage;
+
+	// load test results for a single test collection (actor type) for a single site
 	private void displayTestCollection() {
 		testDisplays.clear();  // so they reload
 		testsPanel.clear();
+
+		loadingMessage = new HTML("Initializing...");
+		loadingMessage.setStyleName("loadingMessage");
+		testsPanel.add(loadingMessage);
 
 		initializationPanel.clear();
 
@@ -400,6 +406,7 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner, SiteMa
 				List<TestInstance> testInstances = new ArrayList<>();
 				for (String testId : testIds) testInstances.add(new TestInstance(testId));
 				testsPerActor.put(currentActorTypeId, testInstances);
+				loadingMessage.setHTML("Loading...");
                 displayTests(testInstances);
 
 
@@ -417,6 +424,7 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner, SiteMa
             }
 
             public void onSuccess(List<TestOverviewDTO> testOverviews) {
+				testsPanel.clear();
                 testsPanel.add(testsHeaderView.asWidget());
                 testStatistics.setTestCount(testOverviews.size());
                 for (TestOverviewDTO testOverview : testOverviews) {
@@ -464,7 +472,7 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner, SiteMa
 
 
 
-    private ReportableButton orchInit = null;
+    private OrchestrationButton orchInit = null;
 
 	private void orchestrationInitialization() {
 		if (isRepSut()) {
