@@ -91,7 +91,7 @@ public class IIGTestTab extends GenericQueryTab implements GatewayTool {
                         
            "<p> This tool uses only non-TLS endpoints. TLS selection is disabled.</p>" +
 
-           "<p>It may ne necessary to refresh the selection list at times.  " +
+           "<p>It may be necessary to refresh the selection list at times.  " +
            "The Reload button at the top of the screen performs this refresh.</p>"
 
         );

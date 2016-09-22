@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<TestPlan>
+	<!-- Data for this test is loaded by xxxx -->
+	<Test>rsnaedge-1001</Test>
+	<TestStep id="retrieve">
+		<Goal>Imaging Document Set Retrieve of a single image</Goal>
+		<ExpectedStatus>Success</ExpectedStatus>
+		<ImagingDocSetIigRetrieveTransaction>
+			<MetadataFile>RAD-69Request.xml</MetadataFile>
+			<Report name="$home$" section="Result">
+				//*[local-name()='HomeCommunityId']/text()
+			</Report>
+			<Report name="$status$" section="Result">
+				//*[local-name()='RegistryResponse']/@status
+			</Report>
+		</ImagingDocSetIigRetrieveTransaction>
+	</TestStep>
+	<TestStep id="homeValidation">
+		<Goal>Home Community Id returned in metadata matches Responding
+			Gateway configuration
+		</Goal>
+		<NullTransaction>
+			<UseReport reportName="$testdata_home$" section="THIS"
+				step="retrieve" useAs="submittedValue" />
+			<UseReport reportName="$home$" section="THIS" step="retrieve"
+				useAs="returnedValue" />
+			<Assertions>
+				<Assert id="homeCommunityId">
+					'submittedValue' = 'returnedValue'
+				</Assert>
+			</Assertions>
+		</NullTransaction>
+	</TestStep>
+	<TestStep id="statusValidation">
+		<Goal>Status value returned in SOAP Body matches "Success"
+		</Goal>
+		<NullTransaction>
+			<UseReport reportName="$status$" section="THIS" step="retrieve"
+				useAs="returnedValue" />
+			<Assertions>
+				<Assert id="status">
+					'returnedValue' = 'urn:oasis:names:tc:ebxml-regrep:ResponseStatusType:Success'
+				</Assert>
+			</Assertions>
+		</NullTransaction>
+	</TestStep>
+	<TestStep id="retrievedDocValidation">
+		<Goal>Correct RetrieveDocumentSetResponse values</Goal>
+		<Standard>
+			<ResponseBody>
+				<xdsb:RetrieveDocumentSetResponse
+					xmlns:xdsb="urn:ihe:iti:xds-b:2007">
+					<rs:RegistryResponse
+						status="urn:oasis:names:tc:ebxml-regrep:ResponseStatusType:Success"
+						xmlns:rs="urn:oasis:names:tc:ebxml-regrep:xsd:rs:3.0" />
+					<xdsb:DocumentResponse>
+						<xdsb:HomeCommunityId>urn:oid:1.3.6.1.4.1.21367.13.70.101</xdsb:HomeCommunityId>
+						<xdsb:RepositoryUniqueId>1.3.6.1.4.1.21367.13.71.101</xdsb:RepositoryUniqueId>
+						<xdsb:DocumentUniqueId>1.3.6.1.4.1.21367.201599.3.201606010958036.1</xdsb:DocumentUniqueId>
+						<xdsb:mimeType>application/mocid</xdsb:mimeType>
+						<xdsb:Document>...</xdsb:Document>
+					</xdsb:DocumentResponse>
+				</xdsb:RetrieveDocumentSetResponse>
+			</ResponseBody>
+		</Standard>
+		<XmlDetailTransaction>
+			<Assertions>
+				<Assert id="Returned doc(s)" process="sameRetImgs" />
+			</Assertions>
+		</XmlDetailTransaction>
+	</TestStep>
+</TestPlan>

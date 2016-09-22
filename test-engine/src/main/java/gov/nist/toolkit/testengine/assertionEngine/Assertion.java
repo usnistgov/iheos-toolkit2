@@ -1,12 +1,21 @@
 package gov.nist.toolkit.testengine.assertionEngine;
 
 import gov.nist.toolkit.testengine.engine.TestConfig;
+
+import javax.xml.namespace.QName;
+
+import org.apache.axiom.om.OMElement;
 import org.apache.commons.lang.StringUtils;
 
 /**
  * struct to hold parsed {@code <Assert>} element
  */
 public class Assertion {
+   
+   /**
+    * {@code <Assert>} element from testplan.xml
+    */
+   public OMElement assertElement;
 	/**
 	 * unique (inside {@code <Assertions>} element) id.
 	 */
@@ -18,16 +27,15 @@ public class Assertion {
 	/**
 	 * String assertion xpath expression
 	 */
-	String xpath;
-
-	Assertion(String id, String xpath, TestConfig testConfig) {
-		this.id = id;
-		this.xpath = xpath.replaceAll("SITE", testConfig.siteXPath);
-	}
-
-	Assertion(String id, String xpath, TestConfig testConfig, String process) {
-		this(id, xpath, testConfig);
-		this.process = process;
+	public String xpath;
+	
+	Assertion(OMElement asser, TestConfig testConfig, String date) {
+	   assertElement = asser;
+	   id = asser.getAttributeValue(new QName("id"));
+      process = asser.getAttributeValue(new QName("process"));
+      this.xpath = asser.getText()
+         .replaceAll("\\$DATE\\$", date)
+         .replaceAll("SITE", testConfig.siteXPath);
 	}
 
 	@Override

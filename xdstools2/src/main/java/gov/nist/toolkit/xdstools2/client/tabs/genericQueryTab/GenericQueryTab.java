@@ -460,12 +460,6 @@ public abstract class GenericQueryTab  extends ToolWindow {
     public void addRunnerButtons(Panel panel) {
         boolean hasRunButton = runnerPanel.getWidgetIndex(runButton) > -1;
 
-        // messed normal query tools
-//        if (hasRunButton) {
-//            new PopupMessage("already has run button");
-//            return;
-//        }
-
         panel.add(runnerPanel);
         if (runEnabled) {
             setGoButton(runButton);

@@ -31,6 +31,10 @@ import gov.nist.toolkit.xdsexception.client.XdsException;
 import gov.nist.toolkit.xdsexception.client.XdsInternalException;
 import gov.nist.toolkit.xdsexception.XdsPreparsedException;
 
+/**
+ * This class is not currently used, and it's functionality is found in another
+ * class.  R Moulton
+ */
 public class ImagingDocSetRetrieveTransaction extends BasicTransaction {
 //	String metadata_filename = null;
 //	OMElement request_ele = null;
@@ -79,14 +83,19 @@ public class ImagingDocSetRetrieveTransaction extends BasicTransaction {
 
 	public void setUseIG(boolean useIG) { this.useIG = useIG; }
 
-	public ImagingDocSetRetrieveTransaction(StepContext s_ctx, OMElement instruction, OMElement instruction_output) {
+	
+	@SuppressWarnings("javadoc")
+   public ImagingDocSetRetrieveTransaction(StepContext s_ctx, OMElement instruction, OMElement instruction_output)
+	   throws Exception {
 		super(s_ctx, instruction, instruction_output);
 		defaultEndpointProcessing = false;
 		parse_metadata = false;
 		noMetadataProcessing = true;
+		
 	}
 
-	@Override
+	@SuppressWarnings({ "null", "unused" })
+   @Override
    public void run(OMElement request_ele)
 	throws Exception {
 	logger.debug("ImagingDocSetRetrieveTransaction#run");

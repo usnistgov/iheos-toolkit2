@@ -175,7 +175,7 @@ public interface ToolkitService extends RemoteService  {
 	String getTestplanAsText(String testSession,TestInstance testInstance, String section) throws Exception;
 	TestPartFileDTO getSectionTestPartFile(String testSession, TestInstance testInstance, String section) throws Exception;
 	String getHtmlizedString(String xml) throws Exception;
-	
+
 	 String getImplementationVersion() throws NoServletSessionException ;
 	
 	 List<String> getUpdateNames() throws NoServletSessionException ;
@@ -206,6 +206,7 @@ public interface ToolkitService extends RemoteService  {
 	RawResponse buildIdsTestOrchestration(IdsOrchestrationRequest request);
 	RawResponse buildRepTestOrchestration(RepOrchestrationRequest request);
     RawResponse buildRegTestOrchestration(RegOrchestrationRequest request);
+	RawResponse buildRSNAEdgeTestOrchestration(RSNAEdgeOrchestrationRequest request);
 
         Map<String, String> getSessionProperties() throws NoServletSessionException;
 	 void setSessionProperties(Map<String, String> props) throws NoServletSessionException;

@@ -122,6 +122,7 @@ public class AdtMessage {
     }
 
     public char[] getAck() {
+
         char[] val = new char[4];
 
         val[0] = 0x0b;

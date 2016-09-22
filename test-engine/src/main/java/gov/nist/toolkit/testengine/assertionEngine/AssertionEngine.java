@@ -180,12 +180,7 @@ public class AssertionEngine {
          if (linkage != null) {
             linkage.apply(asser);
          }
-         String id = asser.getAttributeValue(new QName("id"));
-         String process = asser.getAttributeValue(new QName("process"));
-         String xpath = asser.getText();
-         xpath = xpath.replaceAll("\\$DATE\\$", date());
-
-         assertions.add(new Assertion(id, xpath, testConfig, process));
+         assertions.add(new Assertion(asser, testConfig, date()));
       }
    }
 

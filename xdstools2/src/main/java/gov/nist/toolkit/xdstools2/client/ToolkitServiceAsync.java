@@ -227,6 +227,7 @@ public interface ToolkitServiceAsync {
 	void buildIdsTestOrchestration(IdsOrchestrationRequest request, AsyncCallback<RawResponse> callback);
 	void buildRepTestOrchestration(RepOrchestrationRequest request, AsyncCallback<RawResponse> callback);
 	void buildRegTestOrchestration(RegOrchestrationRequest request, AsyncCallback<RawResponse> callback);
+	void buildRSNAEdgeTestOrchestration(RSNAEdgeOrchestrationRequest request, AsyncCallback<RawResponse> callback);
 	void getSiteNamesWithRIG(AsyncCallback<List<String>> callback) throws Exception;
 	void getSiteNamesWithIDS(AsyncCallback<List<String>> callback) throws Exception;
 	void register(String username, TestInstance testInstance, SiteSpec registry, Map<String, String> params, AsyncCallback<Result> callback) throws Exception;

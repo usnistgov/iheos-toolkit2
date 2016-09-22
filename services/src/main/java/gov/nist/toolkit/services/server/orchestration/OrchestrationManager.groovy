@@ -111,5 +111,18 @@ class OrchestrationManager {
         }
     }
 
+    public RawResponse buildRSNAEdgeTestEnvironment(Session session, RSNAEdgeOrchestrationRequest request) {
+        try {
+            ToolkitApi api
+            if(Installation.installation().warHome()) {
+                api = ToolkitApi.forNormalUse(session)
+            } else {
+                api = ToolkitApi.forInternalUse()
+            }
+            return new RSNAEdgeOrchestrationBuilder(api, session, request).buildTestEnvironment();
+        } catch (Exception e) {
+            return RawResponseBuilder.build(e);
+        }
+    }
 
 }

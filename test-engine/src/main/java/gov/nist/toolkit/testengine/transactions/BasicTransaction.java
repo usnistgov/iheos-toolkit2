@@ -764,30 +764,17 @@ public abstract class BasicTransaction  {
 		showEndpoint();
 	}
 
-	protected void parseIDSEndpoint(String home, boolean isSecure) throws Exception {
+	protected void parseIDSEndpoint(String home, TransactionType transactionType, boolean isSecure) throws Exception {
 		if (endpoint == null || endpoint.equals("")) {
 			if (s_ctx.getPlan().getRegistryEndpoint() != null)
 				endpoint = s_ctx.getPlan().getRegistryEndpoint();
 			else
 				try {
-					endpoint = testConfig.site.getEndpoint(TransactionType.RET_IMG_DOC_SET, isSecure, async);
+					endpoint = testConfig.site.getEndpoint(transactionType, isSecure, async);
 //					endpoint = testConfig.site.getIGRetrieve(home, isSecure, async);
 				} catch (XdsInternalException e) {
 					fatal(ExceptionUtil.exception_details(e, 5));
 				}
-		}
-		testLog.add_name_value(instruction_output, "Endpoint", endpoint);
-		showEndpoint();
-	}
-
-	protected void parseIDSIigEndpoint(String home, boolean isSecure) throws Exception {
-		if (endpoint == null || endpoint.equals("")) {
-			if (s_ctx.getPlan().getRegistryEndpoint() != null) endpoint = s_ctx.getPlan().getRegistryEndpoint();
-			else try {
-				endpoint = testConfig.site.getEndpoint(TransactionType.RET_IMG_DOC_SET_GW, isSecure, async);
-			} catch (XdsInternalException e) {
-				fatal(ExceptionUtil.exception_details(e, 5));
-			}
 		}
 		testLog.add_name_value(instruction_output, "Endpoint", endpoint);
 		showEndpoint();

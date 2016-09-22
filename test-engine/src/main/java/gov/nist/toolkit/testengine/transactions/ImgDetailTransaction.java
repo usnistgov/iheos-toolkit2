@@ -3,20 +3,29 @@
  */
 package gov.nist.toolkit.testengine.transactions;
 
-import java.io.ByteArrayInputStream;
 import java.io.File;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.*;
-import java.util.Map.Entry;
+
+import javax.xml.namespace.QName;
+import javax.xml.stream.XMLStreamException;
 
 import org.apache.axiom.om.OMElement;
+import org.apache.axiom.om.util.AXIOMUtil;
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.filefilter.FileFilterUtils;
 import org.apache.commons.lang.StringEscapeUtils;
-import org.dcm4che3.data.Attributes;
 import org.dcm4che3.data.Tag;
-import org.dcm4che3.io.DicomInputStream;
-import org.w3c.dom.Element;
-import org.w3c.dom.NodeList;
+import org.dcm4che3.util.TagUtils;
 
+import gov.nist.toolkit.actorfactory.client.SimId;
+import gov.nist.toolkit.actortransaction.client.ActorType;
+import gov.nist.toolkit.configDatatypes.client.TransactionType;
+import gov.nist.toolkit.installation.Installation;
+import gov.nist.toolkit.installation.PropertyManager;
 import gov.nist.toolkit.registrymsg.repository.Mtom;
+import gov.nist.toolkit.results.client.TestInstance;
 import gov.nist.toolkit.testengine.assertionEngine.Assertion;
 import gov.nist.toolkit.testengine.assertionEngine.AssertionEngine;
 import gov.nist.toolkit.testengine.engine.*;
@@ -24,16 +33,28 @@ import gov.nist.toolkit.utilities.xml.XmlUtil;
 import gov.nist.toolkit.xdsexception.client.MetadataException;
 import gov.nist.toolkit.xdsexception.client.XdsInternalException;
 
+import edu.wustl.mir.erl.ihe.xdsi.util.OMEUtil;
+import edu.wustl.mir.erl.ihe.xdsi.util.PfnType;
+import edu.wustl.mir.erl.ihe.xdsi.util.Utility;
+import edu.wustl.mir.erl.ihe.xdsi.validation.*;
+
 /**
- * Handles Image detail validations
- * 
- * @author Ralph Moulton / MIR WUSTL IHE Development Project
- * <a href="mailto:moultonr@mir.wustl.edu">moultonr@mir.wustl.edu</a>
+ * Handles validations for Retrieve Image Document Set Transactions:
+ * <ul>
+ * <li/>RAD-68
+ * <li/>RAD-69
+ * <li/>RAD-75
+ * </ul>
  */
 public class ImgDetailTransaction extends BasicTransaction {
 
    private OMElement step;
+   private PropertyManager pMgr;
 
+   /*
+    * These are the DICOM tags currently supported for evaluation tasks. New
+    * ones can be added to this map if needed.
+    */
    private static Map <String, Integer> tagMap;
 
    static {
@@ -45,16 +66,23 @@ public class ImgDetailTransaction extends BasicTransaction {
       tagMap.put("PatientSex", Tag.PatientSex);
       tagMap.put("StudyInstanceUID", Tag.StudyInstanceUID);
       tagMap.put("SeriesInstanceUID", Tag.SeriesInstanceUID);
+      tagMap.put("AccessionNumber", Tag.AccessionNumber);
+      tagMap.put("Modality", Tag.Modality);
+      tagMap.put("PatientName", Tag.PatientName);
+      tagMap.put("ContentSequence", Tag.ContentSequence);
    }
 
    /**
-    * @param s_ctx
-    * @param step
-    * @param instruction
-    * @param instruction_output
+    * @param s_ctx StepContext instance
+    * @param step {@code <TestStep>} element from the textplan.xml
+    * @param instruction {@code <ImgDetailTransaction>} element from the
+    * testplan.xml
+    * @param instruction_output {@code <ImgDetailTransaction>} element from the
+    * log.xml file.
     */
    public ImgDetailTransaction(StepContext s_ctx, OMElement step, OMElement instruction, OMElement instruction_output) {
       super(s_ctx, instruction, instruction_output);
+      pMgr = Installation.installation().propertyServiceManager().getPropertyManager();
       this.step = step;
    }
 
@@ -83,11 +111,7 @@ public class ImgDetailTransaction extends BasicTransaction {
 
    @Override
    protected void run(OMElement request) throws Exception {
-      /*
-       * TODO Working here At this point stdResponse and testResponse have the
-       * data we want to validate. Need to incorporate the xml validation stuff
-       * from xdsi and figure out how to put the results into the output log.
-       */
+      return;
    }
 
    @Override
@@ -97,7 +121,6 @@ public class ImgDetailTransaction extends BasicTransaction {
 
    @Override
    protected String getRequestAction() {
-      // TODO Auto-generated method stub
       return null;
    }
 
@@ -108,144 +131,29 @@ public class ImgDetailTransaction extends BasicTransaction {
 
    private List <String> errs;
 
+   /**
+    * Handles validations based on the {@code <Assert>} Element process 
+    * attribute value
+    */
    @Override
    public void processAssertion(AssertionEngine engine, Assertion a, OMElement assertion_output)
       throws XdsInternalException {
       errs = new ArrayList <>();
       switch (a.process) {
          case "sameRetImgs":
-            try {
-               OMElement std = getStdResponseBody();
-               OMElement test = getTestResponseBody();
-               String t = std.getLocalName();
-               if (t.endsWith("RetrieveDocumentSetResponse") == false)
-                  throw new XdsInternalException("sameRetImgs assertion only applies to RetrieveDocumentSetResponse");
-               Map <String, RetImg> testImgs = loadRetImgs(engine, a, test);
-               Map <String, RetImg> stdImgs = loadRetImgs(engine, a, std);
-               Set <String> testKeys = testImgs.keySet();
-               for (String testKey : testKeys) {
-                  if (stdImgs.containsKey(testKey) == false) {
-                     store(engine, CAT.ERROR, "test doc UID " + testKey + ", not found in standard.");
-                     continue;
-                  }
-                  RetImg testImg = testImgs.get(testKey);
-                  RetImg stdImg = stdImgs.get(testKey);
-                  stdImgs.remove(testKey);
-                  if (comp(stdImg.home, testImg.home) && comp(stdImg.repo, testImg.repo)
-                     && comp(stdImg.mime, testImg.mime)) {
-                     store(engine, CAT.SUCCESS, "test doc UID " + testKey + ", all values match.");
-                     continue;
-                  }
-                  store(engine, CAT.SUCCESS, "test doc UID " + testKey + ", found in std.");
-                  if (comp(stdImg.home, testImg.home) == false) store(engine, CAT.ERROR, "for doc with UID: " + testKey
-                     + " homeCommunityID mismatch (std/test): (" + stdImg.home + "/" + testImg.home + ")");
-                  if (comp(stdImg.repo, testImg.repo) == false) store(engine, CAT.ERROR, "for doc with UID: " + testKey
-                     + " RepositoryUniqueID mismatch (std/test): (" + stdImg.repo + "/" + testImg.repo + ")");
-                  if (comp(stdImg.mime, testImg.mime) == false) store(engine, CAT.ERROR, "for doc with UID: " + testKey
-                     + " mimeType mismatch (std/test): (" + stdImg.mime + "/" + testImg.mime + ")");
-               }
-               if (stdImgs.isEmpty()) break;
-               Set <String> stdKeys = stdImgs.keySet();
-               for (String key : stdKeys)
-                  store(engine, CAT.ERROR, "std doc UID: " + key + " not found in test msg.");
-            } catch (Exception e) {
-               throw new XdsInternalException("sameRetImgs error: " + e.getMessage());
-            }
+            prsSameRetImgs(engine, a, assertion_output);
             break;
          case "sameDcmImgs":
-            try {
-               OMElement std = getStdResponseBody();
-               OMElement test = getTestResponseBody();
-               String t = std.getLocalName();
-               if (t.endsWith("RetrieveDocumentSetResponse") == false)
-                  throw new XdsInternalException("sameDcmImgs assertion only applies to RetrieveDocumentSetResponse");
-               
-               // Load tags for std documents
-               Map <String, Map<String, String>> stdImgs = new HashMap<>();
-               Iterator<?> docRespEles = std.getChildrenWithLocalName("DocumentResponse");
-               while (docRespEles.hasNext()) {
-                  OMElement docRespEle = (OMElement) docRespEles.next();
-                  String docUID = XmlUtil.onlyChildWithLocalName(docRespEle, "DocumentUniqueId").getText();
-                  OMElement docEle = XmlUtil.onlyChildWithLocalName(docRespEle, "Document");
-                  Map<String, String> imgTags = new HashMap<>();
-                  Iterator<?> tagEles = docEle.getChildElements();
-                  while (tagEles.hasNext()) {
-                     OMElement tagEle = (OMElement) tagEles.next();
-                     String tagName = tagEle.getLocalName();
-                     if (tagMap.containsKey(tagName) == false)
-                        throw new XdsInternalException("sameDcmImgs error: unsupported dicom tag " + tagName);
-                     String tagValue = tagEle.getText();
-                     if (imgTags.put(tagName, tagValue) != null)
-                        throw new XdsInternalException("sameDcmImgs error: duplicate dicom tag " + tagName);
-                  }
-                  if (stdImgs.put(docUID, imgTags) != null)
-                     throw new XdsInternalException("sameDcmImgs error: duplicate DocumentUniqueId " + docUID);
-               }
-               
-               // load tags for test documents which exist in standard
-               Map<String, Map<String, String>> testImgs = new HashMap<>();
-               docRespEles = test.getChildrenWithLocalName("DocumentResponse");
-               while (docRespEles.hasNext()) {
-                  OMElement docRespEle = (OMElement) docRespEles.next();
-                  String docUID = XmlUtil.onlyChildWithLocalName(docRespEle, "DocumentUniqueId").getText();
-                  Map<String, String> stdTags = stdImgs.get(docUID);
-                  if (stdTags == null) {
-                     store(engine, CAT.ERROR, "test doc UID " + docUID + ", not found in standard.");
-                     continue;
-                  }
-                  OMElement docEle = XmlUtil.onlyChildWithLocalName(docRespEle, "Document");
-                  Mtom mtom = new Mtom();
-                  mtom.decode(docEle);
-                  DicomInputStream din = new DicomInputStream(new ByteArrayInputStream(mtom.getContents()));
-                  Attributes attributes = din.readDataset(-1, Tag.PixelData);
-                  din.close(); din = null;
-                  Map<String, String> testTags = new HashMap<>();
-                  for (String stdTag : stdTags.keySet()) {
-                     int tag = tagMap.get(stdTag);
-                     testTags.put(stdTag, attributes.getString(tag, null));
-                  }
-                  testImgs.put(docUID, testTags);
-               }
-               
-               // Now pass std images, matching against test
-               for (String stdDocUID : stdImgs.keySet()) {
-                  Map<String, String> testTags = testImgs.get(stdDocUID);
-                  if (testTags == null) {
-                     store(engine, CAT.ERROR, "std doc UID " + stdDocUID + ", not found in test.");
-                     continue;
-                  }
-                  Map<String, String> stdTags = stdImgs.get(stdDocUID);
-                  // First pass through tags, one success msg if all match.
-                  boolean mismatchFound = false;
-                  for ( Entry <String, String> stdTag : stdTags.entrySet()) {
-                     String testValue = testTags.get(stdTag.getKey());
-                     if (stdTag.getValue().equals(testValue) == false) {
-                        mismatchFound = true;
-                        break;
-                     }
-                  }
-                  if (mismatchFound == false) {
-                     store(engine, CAT.SUCCESS, "std doc UID " + stdDocUID + " found in test, all tag values match");
-                     continue;
-                  }
-                  // mismatch found; second pass generates messages for each tag
-                  for ( Entry <String, String> stdTag : stdTags.entrySet()) {
-                     String em = "std doc UID " + stdDocUID + " found in test, " + stdTag.getKey() + " ";
-                     String testValue = testTags.get(stdTag.getKey());
-                     if (stdTag.getValue().equals(testValue)) {
-                        store(engine, CAT.SUCCESS, em + "values match");
-                        continue;
-                     }
-                     if (testValue == null) testValue = "no value";
-                     store(engine, CAT.ERROR, em + "expected [" + stdTag.getValue() + "], found [" + testValue + "]");
-                  }
-               }
-            } catch (Exception e) {
-               throw new XdsInternalException("sameRetImgs error: " + e.getMessage());
-            }
+            prsSameDcmImgs(engine, a, assertion_output);
+            break;
+         case "sameKONDcm":
+            prsSameKONDcm(engine, a, assertion_output);
+            break;
+         case "sameKONMetadata":
+            prsSameKONMetadata(engine, a, assertion_output);
             break;
          default:
-            throw new XdsInternalException("XmlDetailTransaction: Unknown assertion.process " + a.process);
+            throw new XdsInternalException("ImgDetailTransaction: Unknown assertion.process " + a.process);
       }
       if (errs.isEmpty() == false) {
          StringBuilder em = new StringBuilder();
@@ -255,6 +163,263 @@ public class ImgDetailTransaction extends BasicTransaction {
          ILogger testLogger = new TestLogFactory().getLogger();
          testLogger.add_name_value_with_id(assertion_output, "AssertionStatus", a.id, "fail");
          s_ctx.fail(em.toString());
+      }
+   } // EO processAssertion method
+
+   /**
+    * Matches documents in a {@code <RetrieveDocumentSetResponse>} against a 
+    * "gold standard". Expects the current testplan.xml {@code <TestStep>} 
+    * element to contain the "gold standard" message, like this: 
+    * <pre>
+    *  {@code
+    *  ... 
+    * <Standard> exactly one of these
+    *    ... 
+    *    <ResponseBody> exactly one of these
+    *       <RetrieveDocumentSetResponse>...</RetrieveDocumentSetResponse> only this
+    *    </ResponseBody>
+    *    ...
+    * </Standard>
+    *  ...}
+    * </pre>
+    * 
+    * @param engine AssertionEngine instance
+    * @param a Assert being processed
+    * @param assertion_output log.xml output element for that assert
+    * @throws XdsInternalException on error
+    */
+   private void prsSameRetImgs(AssertionEngine engine, Assertion a, OMElement assertion_output)
+      throws XdsInternalException {
+      try {
+         OMElement std = getStdResponseBody();
+         OMElement test = getTestResponseBody(a);
+         String t = std.getLocalName();
+         if (t.endsWith("RetrieveDocumentSetResponse") == false)
+            throw new XdsInternalException("sameRetImgs assertion only applies to RetrieveDocumentSetResponse");
+         Map <String, RetImg> testImgs = loadRetImgs(engine, a, test);
+         Map <String, RetImg> stdImgs = loadRetImgs(engine, a, std);
+         Set <String> testKeys = testImgs.keySet();
+         for (String testKey : testKeys) {
+            if (stdImgs.containsKey(testKey) == false) {
+               store(engine, CAT.ERROR, "test doc UID " + testKey + ", not found in standard.");
+               continue;
+            }
+            RetImg testImg = testImgs.get(testKey);
+            RetImg stdImg = stdImgs.get(testKey);
+            stdImgs.remove(testKey);
+            if (comp(stdImg.home, testImg.home) && comp(stdImg.repo, testImg.repo) && comp(stdImg.mime, testImg.mime)) {
+               store(engine, CAT.SUCCESS, "test doc UID " + testKey + ", all values match.");
+               continue;
+            }
+            store(engine, CAT.SUCCESS, "test doc UID " + testKey + ", found in std.");
+            if (comp(stdImg.home, testImg.home) == false) store(engine, CAT.ERROR, "for doc with UID: " + testKey
+               + " homeCommunityID mismatch (std/test): (" + stdImg.home + "/" + testImg.home + ")");
+            if (comp(stdImg.repo, testImg.repo) == false) store(engine, CAT.ERROR, "for doc with UID: " + testKey
+               + " RepositoryUniqueID mismatch (std/test): (" + stdImg.repo + "/" + testImg.repo + ")");
+            if (comp(stdImg.mime, testImg.mime) == false) store(engine, CAT.ERROR, "for doc with UID: " + testKey
+               + " mimeType mismatch (std/test): (" + stdImg.mime + "/" + testImg.mime + ")");
+         }
+         if (stdImgs.isEmpty()) return;
+         Set <String> stdKeys = stdImgs.keySet();
+         for (String key : stdKeys)
+            store(engine, CAT.ERROR, "std doc UID: " + key + " not found in test msg.");
+      } catch (Exception e) {
+         throw new XdsInternalException("sameRetImgs error: " + e.getMessage());
+      }
+   }
+
+
+   /**
+    * Matches DICOM tag values in returned images to standard. Uses this format
+    * of assert tag in testplan.xml:
+    * 
+    * <pre>
+    * {@code
+    * <Assert id="Returned img(s)" process="sameDcmImgs" >
+         <TagList>
+            Elements in TagList are the dcm4che Tag names for the DICOM
+            tags which are to be compared. They must appear in tagMap
+            (above), or have the Element name "TAG" and an attribute "hex" with
+            a value which is a valid dicom tag group and element number 
+            separated by a comma (for example hex="0020,0020") There are 
+            two optional attributes for these elements:
+            1. type - which should have the type of assertion, taken from
+               the TYPE enum in DCMAssertion. The default value is "SAME",
+               which is most common.
+            2. value - which should have the string value which the DICOM
+               tag should match. Only used in CONSTANT type assertions.
+               The default value is the empty string.
+            <SOPClassUID />
+            <SOPInstanceUID />
+            <PatientID />
+            <PatientBirthDate />
+            <PatientSex />
+            <StudyInstanceUID />
+            <SeriesInstanceUID />
+         </TagList>
+         <DirList>
+            StdDir elements contain paths of directories which contain
+            std image files for testing. May have more than one. All files
+            in the directory are added to the list. Subdirectories are
+            ignored. Directories may be absolute, or relative to the
+            External Cache root.
+            <StdDir>path1</StdDir>
+            <StdDir>path2</StdDir>
+            <StdDir>path3</StdDir>
+            TestDir element contains the path where the test images from
+            the test are to be stored. Only one directory. May be 
+            absolute, or relative to the test step log directory. Default
+            is "testImages" in the test step log directory.
+            <TestDir>path</TestDir>
+         </DirList>
+      </Assert>}
+    * </pre>
+    */
+   private void prsSameDcmImgs(AssertionEngine engine, Assertion a, OMElement assertion_output)
+      throws XdsInternalException {
+      try {
+         OMElement assertElement = a.assertElement;
+         // Pull TagList and DirList child elements
+         OMElement dirListElement = OMEUtil.firstChildWithLocalName(assertElement, "DirList");
+         OMElement tagListElement = OMEUtil.firstChildWithLocalName(assertElement, "TagList");
+
+         // Store images to testImgPath directory.
+         Path testImgPath = Paths.get(linkage.getLogFileDir());
+         String subDir = "testImages";
+         if (dirListElement != null) {
+            OMElement testDirElement = OMEUtil.firstChildWithLocalName(dirListElement, "TestDir");
+            if (testDirElement != null) {
+               subDir = testDirElement.getText();
+            }
+         }
+         testImgPath = testImgPath.resolve(subDir);
+         File testImgDir = testImgPath.toFile();
+         testImgDir.mkdirs();
+         FileUtils.cleanDirectory(testImgDir);
+         OMElement testResponseBody = getTestResponseBody(a);
+         storeFiles(testResponseBody, testImgPath);
+         // Make list of test image pfns
+         List <String> testPfns = new ArrayList <>();
+         for (String file : testImgDir.list()) {
+            testPfns.add(testImgPath.resolve(file).toString());
+         }
+
+         // Make list of std image pfns
+         Path extCache = Paths.get(pMgr.getExternalCache());
+         List <String> stdPfns = new ArrayList <>();
+         for (OMElement stdDirElement : OMEUtil.childrenWithLocalName(dirListElement, "StdDir")) {
+            Path stdDirPath = extCache.resolve(stdDirElement.getText());
+            Utility.isValidPfn("test std img dir", stdDirPath, PfnType.DIRECTORY, "r");
+            Collection <File> files = FileUtils.listFiles(stdDirPath.toFile(), FileFilterUtils.fileFileFilter(), null);
+            for (File file : files)
+               stdPfns.add(file.getPath());
+         }
+
+         /*
+          * Build list of assertions to be applied to image sets. Assertions are
+          * in <TagList> Element. Element name is Tag name (from dcm4che). type
+          * attribute is name of DCMAssertion#TYPE, default is SAME. value
+          * attribute is constant to compare to, which only applies to type
+          * CONSTANT, default is empty string.
+          */
+         List <DCMAssertion> assertions = new ArrayList <>();
+         @SuppressWarnings("unchecked")
+         Iterator <OMElement> tags = tagListElement.getChildElements();
+         while (tags.hasNext()) {
+            int dcmTag;
+            OMElement tag = tags.next();
+            String tagName = tag.getLocalName().trim();
+            // Tag defined with hex value
+            if (tagName.equalsIgnoreCase("Tag")) {
+               String hex = tag.getAttributeValue(new QName("hex"));
+               if (hex == null)
+                  throw new Exception("TagList Tag element has no hex attribute");
+               String[] tkns = hex.split(",");
+               if (tkns.length != 2)
+                  throw new Exception("TagList Tag element inv hex attr value [" + hex + "]");
+               int group = 0, element = 0;
+               try {
+                  group = Integer.parseInt(tkns[0], 16);
+                  element = Integer.parseInt(tkns[1], 16);
+               } catch (Exception e) {
+                  throw new Exception("TagList Tag element inv hex attr value [" + hex + "] " + e.getMessage());
+               }
+               dcmTag = TagUtils.toTag(group, element);
+               tagName = TagUtils.toString(dcmTag);
+            } else {
+               // tags defined in tag map.
+               if (tagMap.containsKey(tagName) == false) 
+                  throw new Exception("Unknown DICOM Tag " + tagName);
+               dcmTag = tagMap.get(tagName);
+            }
+            String typeName = tag.getAttributeValue(new QName("type"));
+            if (typeName == null) typeName = "SAME";
+            typeName = typeName.trim().toUpperCase();
+            DCMAssertion.TYPE type = DCMAssertion.TYPE.valueOf(typeName);
+            String value = tag.getAttributeValue(new QName("value"));
+            if (value == null) value = "";
+            value = value.trim();
+            DCMAssertion dcmAssertion = new DCMAssertion(type, dcmTag, value);
+            dcmAssertion.setTagName(tagName);
+            assertions.add(dcmAssertion);
+         }
+
+         // Now we run the tests
+         TestDcmSetContent test = new TestDcmSetContent();
+         test.initializeTest(testPfns, stdPfns, assertions);
+         test.runTest();
+         Results results = test.getResults(a.process);
+         String rep = results.toString();
+         CAT cat = CAT.SUCCESS;
+         if (results.getErrorCount() > 0) cat = CAT.ERROR;
+         store(engine, cat, rep);
+
+      } catch (Exception e) {
+         throw new XdsInternalException("sameRetImgs error: " + e.getMessage());
+      }
+   }
+
+   // Matches values in KON to standard. Used on PnR transactions
+   private void prsSameKONDcm(AssertionEngine engine, Assertion a, OMElement assertion_output)
+      throws XdsInternalException {
+      try {
+         // pfn of std KON.dcm
+         String pfn = a.xpath.trim();
+         String stdDcmPfn = Paths.get(testConfig.testplanDir.getAbsolutePath(), pfn).toString();
+         SimulatorTransaction simulatorTransaction = getSimulatorTransaction(a);
+         simulatorTransaction.setStdPfn(stdDcmPfn);
+         TestRAD68 testInstance = new TestRAD68();
+         testInstance.initializeTest(a.process, simulatorTransaction);
+         testInstance.runTest();
+         Results results = testInstance.getResults(a.process);
+         String rep = results.toString();
+         CAT cat = CAT.SUCCESS;
+         if (results.getErrorCount() > 0) cat = CAT.ERROR;
+         store(engine, cat, rep);
+      } catch (Exception e) {
+         throw new XdsInternalException("ImgDetailTransaction - sameKONDcm: " + e.getMessage());
+      }
+   }
+
+   private void prsSameKONMetadata(AssertionEngine engine, Assertion a, OMElement assertion_output)
+      throws XdsInternalException {
+      try {
+         // pfn of std metadata
+         String pfn = a.xpath.trim();
+         String stdMetadataPfn = Paths.get(testConfig.testplanDir.getAbsolutePath(), pfn).toString();
+
+         SimulatorTransaction simulatorTransaction = getSimulatorTransaction(a);
+         simulatorTransaction.setStdPfn(stdMetadataPfn);
+         TestRAD68 testInstance = new TestRAD68();
+         testInstance.initializeTest(a.process, simulatorTransaction);
+         testInstance.runTest();
+         Results results = testInstance.getResults(a.process);
+         String rep = results.toString();
+         CAT cat = CAT.SUCCESS;
+         if (results.getErrorCount() > 0) cat = CAT.ERROR;
+         store(engine, cat, rep);
+      } catch (Exception e) {
+         throw new XdsInternalException("ImgDetailTransaction - sameKONDcm: " + e.getMessage());
       }
    }
 
@@ -283,6 +448,25 @@ public class ImgDetailTransaction extends BasicTransaction {
       String mime;
    }
 
+   /**
+    * Expects the current testplan.xml {@code <TestStep>} element to contain:
+    * 
+    * <pre>
+    *  {@code
+    * <Standard>
+    *    ...
+    *    <ResponseBody>
+    *       <SomeSingleElement>...</SomeSingleElement>
+    *    </ResponseBody>
+    *    ...
+    * </Standard>}
+    * </pre>
+    * 
+    * @return OMElement for the internal element, in this example
+    * {@code <SomeSingleElement>}.
+    * @throws XdsInternalException on error, typically xml that is missing (or
+    * has more than one of) a required Element.
+    */
    private OMElement getStdResponseBody() throws XdsInternalException {
       try {
          OMElement standard = XmlUtil.onlyChildWithLocalName(step, "Standard");
@@ -293,8 +477,51 @@ public class ImgDetailTransaction extends BasicTransaction {
       }
    }
 
-   private OMElement getTestResponseBody() throws XdsInternalException {
-      return linkage.findResultInLog("retrieve", "").getFirstElement();
+   private OMElement getTestResponseBody(Assertion a) throws XdsInternalException {
+      // Get response from log.xml... somewhere.
+      OMElement testResponseElement = XmlUtil.firstChildWithLocalName(a.assertElement, "TestResponse");
+      if (testResponseElement != null) {
+         String testDir = testResponseElement.getAttributeValue(new QName("testDir"));
+         if (testDir.equalsIgnoreCase("THIS")) testDir = null;
+         String stepp = testResponseElement.getAttributeValue(new QName("step"));
+         return linkage.findResultInLog(stepp, testDir).getFirstElement();
+      }
+      // Get response from simulator transaction
+      OMElement simTransactionElement = XmlUtil.firstChildWithLocalName(a.assertElement, "SimTransaction");
+      if (simTransactionElement != null) {
+         String id = simTransactionElement.getAttributeValue(new QName("id"));
+         String trans = simTransactionElement.getAttributeValue(new QName("transaction"));
+         String pid = simTransactionElement.getAttributeValue(new QName("pid"));
+         TransactionType tType = TransactionType.find(trans);
+         if (tType == null)
+            throw new XdsInternalException(a.toString() + " invalid transaction");
+         ActorType aType = ActorType.getActorType(tType);
+         TestInstance ti = testConfig.testInstance; 
+         SimId simId = new SimId(ti.getUser(), id, aType.getShortName());
+         SimulatorTransaction simulatorTransaction = 
+            SimulatorTransaction.get(simId, tType, pid, null);
+         try {
+            return AXIOMUtil.stringToOM(simulatorTransaction.getResponseBody());
+         } catch (XMLStreamException e) {
+            throw new XdsInternalException(e.getMessage());
+         }
+      }
+      throw new XdsInternalException(a.toString() + " no TestResponse or SimTransaction element");
+   }
+
+   private SimulatorTransaction getSimulatorTransaction(Assertion a) throws XdsInternalException {
+      OMElement simTransactionElement = XmlUtil.firstChildWithLocalName(a.assertElement, "SimTransaction");
+      if (simTransactionElement == null)
+         throw new XdsInternalException(a.toString() + " has no SimTransaction element");
+      String id = simTransactionElement.getAttributeValue(new QName("id"));
+      String trans = simTransactionElement.getAttributeValue(new QName("transaction"));
+      String pid = simTransactionElement.getAttributeValue(new QName("pid"));
+      TransactionType tType = TransactionType.find(trans);
+      if (tType == null) throw new XdsInternalException(a.toString() + " invalid transaction");
+      ActorType aType = ActorType.getActorType(tType);
+      TestInstance ti = testConfig.testInstance;
+      SimId simId = new SimId(ti.getUser(), id, aType.getShortName());
+      return SimulatorTransaction.get(simId, tType, pid, null);
    }
 
    /*
@@ -352,12 +579,8 @@ public class ImgDetailTransaction extends BasicTransaction {
 
    private void store(AssertionEngine e, CAT cat, String msg) {
       if (cat == CAT.SILENT) return;
-      if (cat != CAT.ERROR) {
-         e.addDetail(cat.name() + " " + msg);
-         return;
-      }
-      errs.add(cat.name() + " " + msg);
-      // TODO method stub
+      e.addDetail(cat.name() + " " + msg);
+      if (cat == CAT.ERROR) errs.add(cat.name() + " " + msg);
    }
 
    /*
@@ -370,4 +593,19 @@ public class ImgDetailTransaction extends BasicTransaction {
       if (test == null || test.length() == 0) return false;
       return std.equals(test);
    }
-}
+
+   private void storeFiles(OMElement respBody, Path dirPath) throws Exception {
+      Iterator <OMElement> docRespEles = respBody.getChildrenWithLocalName("DocumentResponse");
+      while (docRespEles.hasNext()) {
+         OMElement docRespEle = docRespEles.next();
+         String docUID = XmlUtil.onlyChildWithLocalName(docRespEle, "DocumentUniqueId").getText();
+         OMElement docEle = XmlUtil.onlyChildWithLocalName(docRespEle, "Document");
+         Mtom mtom = new Mtom();
+         mtom.decode(docEle);
+         File dcmFile = dirPath.resolve(docUID + ".dcm").toFile();
+         FileUtils.writeByteArrayToFile(dcmFile, mtom.getContents());
+      }
+
+   }
+
+} // EO ImgDetailTransaction class
