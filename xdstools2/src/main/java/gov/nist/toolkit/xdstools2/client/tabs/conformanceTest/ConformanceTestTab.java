@@ -37,6 +37,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+/**
+ *
+ */
 public class ConformanceTestTab extends ToolWindow implements TestRunner, SiteManager, TestsHeaderView.Controller {
 
 	private final ConformanceTestTab me;
