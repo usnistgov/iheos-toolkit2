@@ -7,29 +7,10 @@
 		<ExpectedStatus>Success</ExpectedStatus>
 		<ImagingDocSetIigRetrieveTransaction>
 			<MetadataFile>RAD-69Request.xml</MetadataFile>
-			<Report name="$home$" section="Result">
-				//*[local-name()='HomeCommunityId']/text()
-			</Report>
 			<Report name="$status$" section="Result">
 				//*[local-name()='RegistryResponse']/@status
 			</Report>
 		</ImagingDocSetIigRetrieveTransaction>
-	</TestStep>
-	<TestStep id="homeValidation">
-		<Goal>Home Community Id returned in metadata matches Responding
-			Gateway configuration
-		</Goal>
-		<NullTransaction>
-			<UseReport reportName="$testdata_home$" section="THIS"
-				step="retrieve" useAs="submittedValue" />
-			<UseReport reportName="$home$" section="THIS" step="retrieve"
-				useAs="returnedValue" />
-			<Assertions>
-				<Assert id="homeCommunityId">
-					'submittedValue' = 'returnedValue'
-				</Assert>
-			</Assertions>
-		</NullTransaction>
 	</TestStep>
 	<TestStep id="statusValidation">
 		<Goal>Status value returned in SOAP Body matches "Success"
@@ -66,9 +47,12 @@
 		</Standard>
 		<XmlDetailTransaction>
 			<Assertions>
-				<Assert id="Returned doc(s)" process="sameRetImgs" />
+				<Assert id="Returned doc(s)" process="sameRetImgs">
+               <TestResponse testDir="THIS" step="retrieve"/> 
+               </Assert>
 				<Assert id="Returned img(s)" process="sameDcmImgs">
-					<DICOMTagList>
+               <TestResponse testDir="THIS" step="retrieve"/> 
+					<TagList>
 						<SOPClassUID />
 						<SOPInstanceUID />
 						<PatientID />
@@ -76,12 +60,11 @@
 						<PatientSex />
 						<StudyInstanceUID />
 						<SeriesInstanceUID />
-					</DICOMTagList>
-					<DICOMImgDirList>
-						<DICOMImgDir>path1</DICOMImgDir>
-						<DICOMImgDir>path2</DICOMImgDir>
-						<DICOMImgDir>path3</DICOMImgDir>
-					</DICOMImgDirList>
+                  <Tag hex="0020,0020"/>
+					</TagList>
+					<DirList>
+                  <StdDir>../../stdImgs/iig-1001</StdDir>
+					</DirList>
 				</Assert>
 			</Assertions>
 		</XmlDetailTransaction>

@@ -6,6 +6,8 @@ Retrieve Image Document Set test
 test expects a single image to be returned, from a single Imaging Document 
 Source (E) behind the Responding Imaging gateway SUT.</p>
 
+<h2>SingleDocumentRetrieve</h2>
+
 <p>When the test is run:
 <ol>
 <li/>The Initiating Imaging Gateway simulator (IIG sim) sends a Cross Gateway 
@@ -22,6 +24,8 @@ response, which will be returned to the IIG sim.
 image.
 </ol>
 </p>
+
+<h2>Validate</h2>
 
 <p>
 The following validations are performed:

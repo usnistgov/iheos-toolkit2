@@ -179,6 +179,11 @@ public class PrsSimLogs {
       }
       
       Path repDir = path.resolve("Repository");
+      try { 
+         Utility.isValidPfn("", repDir, PfnType.DIRECTORY, "r");
+      } catch (Exception e) {
+         return;
+      }
       List<String> pfns = new ArrayList<>();
       for (String name : repDir.toFile().list())
          pfns.add(repDir.resolve(name).toString());

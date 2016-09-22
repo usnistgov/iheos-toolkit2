@@ -9,8 +9,10 @@ import java.nio.file.Paths;
 import java.util.*;
 
 import javax.xml.namespace.QName;
+import javax.xml.stream.XMLStreamException;
 
 import org.apache.axiom.om.OMElement;
+import org.apache.axiom.om.util.AXIOMUtil;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.filefilter.FileFilterUtils;
 import org.apache.commons.lang.StringEscapeUtils;
@@ -190,7 +192,7 @@ public class ImgDetailTransaction extends BasicTransaction {
       throws XdsInternalException {
       try {
          OMElement std = getStdResponseBody();
-         OMElement test = getTestResponseBody();
+         OMElement test = getTestResponseBody(a);
          String t = std.getLocalName();
          if (t.endsWith("RetrieveDocumentSetResponse") == false)
             throw new XdsInternalException("sameRetImgs assertion only applies to RetrieveDocumentSetResponse");
@@ -294,7 +296,7 @@ public class ImgDetailTransaction extends BasicTransaction {
          File testImgDir = testImgPath.toFile();
          testImgDir.mkdirs();
          FileUtils.cleanDirectory(testImgDir);
-         OMElement testResponseBody = getTestResponseBody();
+         OMElement testResponseBody = getTestResponseBody(a);
          storeFiles(testResponseBody, testImgPath);
          // Make list of test image pfns
          List <String> testPfns = new ArrayList <>();
@@ -382,12 +384,9 @@ public class ImgDetailTransaction extends BasicTransaction {
       throws XdsInternalException {
       try {
          // pfn of std KON.dcm
-         String stdDcmPfn = Paths.get(testConfig.testplanDir.getAbsolutePath(), a.xpath).toString();
-         TestInstance ti = testConfig.testInstance;
-         SimId simId = new SimId(ti.getUser(), "rep_reg", ActorType.REPOSITORY.getShortName(), "xdsi");
-
-         SimulatorTransaction simulatorTransaction =
-            SimulatorTransaction.get(simId, TransactionType.PROVIDE_AND_REGISTER, null, null);
+         String pfn = a.xpath.trim();
+         String stdDcmPfn = Paths.get(testConfig.testplanDir.getAbsolutePath(), pfn).toString();
+         SimulatorTransaction simulatorTransaction = getSimulatorTransaction(a);
          simulatorTransaction.setStdPfn(stdDcmPfn);
          TestRAD68 testInstance = new TestRAD68();
          testInstance.initializeTest(a.process, simulatorTransaction);
@@ -406,12 +405,10 @@ public class ImgDetailTransaction extends BasicTransaction {
       throws XdsInternalException {
       try {
          // pfn of std metadata
-         String stdMetadataPfn = Paths.get(testConfig.testplanDir.getAbsolutePath(), a.xpath).toString();
-         TestInstance ti = testConfig.testInstance;
-         SimId simId = new SimId(ti.getUser(), "rep_reg", ActorType.REPOSITORY.getShortName(), "xdsi");
+         String pfn = a.xpath.trim();
+         String stdMetadataPfn = Paths.get(testConfig.testplanDir.getAbsolutePath(), pfn).toString();
 
-         SimulatorTransaction simulatorTransaction =
-            SimulatorTransaction.get(simId, TransactionType.PROVIDE_AND_REGISTER, null, null);
+         SimulatorTransaction simulatorTransaction = getSimulatorTransaction(a);
          simulatorTransaction.setStdPfn(stdMetadataPfn);
          TestRAD68 testInstance = new TestRAD68();
          testInstance.initializeTest(a.process, simulatorTransaction);
@@ -480,8 +477,51 @@ public class ImgDetailTransaction extends BasicTransaction {
       }
    }
 
-   private OMElement getTestResponseBody() throws XdsInternalException {
-      return linkage.findResultInLog("retrieve", "").getFirstElement();
+   private OMElement getTestResponseBody(Assertion a) throws XdsInternalException {
+      // Get response from log.xml... somewhere.
+      OMElement testResponseElement = XmlUtil.firstChildWithLocalName(a.assertElement, "TestResponse");
+      if (testResponseElement != null) {
+         String testDir = testResponseElement.getAttributeValue(new QName("testDir"));
+         if (testDir.equalsIgnoreCase("THIS")) testDir = null;
+         String stepp = testResponseElement.getAttributeValue(new QName("step"));
+         return linkage.findResultInLog(stepp, testDir).getFirstElement();
+      }
+      // Get response from simulator transaction
+      OMElement simTransactionElement = XmlUtil.firstChildWithLocalName(a.assertElement, "SimTransaction");
+      if (simTransactionElement != null) {
+         String id = simTransactionElement.getAttributeValue(new QName("id"));
+         String trans = simTransactionElement.getAttributeValue(new QName("transaction"));
+         String pid = simTransactionElement.getAttributeValue(new QName("pid"));
+         TransactionType tType = TransactionType.find(trans);
+         if (tType == null)
+            throw new XdsInternalException(a.toString() + " invalid transaction");
+         ActorType aType = ActorType.getActorType(tType);
+         TestInstance ti = testConfig.testInstance; 
+         SimId simId = new SimId(ti.getUser(), id, aType.getShortName());
+         SimulatorTransaction simulatorTransaction = 
+            SimulatorTransaction.get(simId, tType, pid, null);
+         try {
+            return AXIOMUtil.stringToOM(simulatorTransaction.getResponseBody());
+         } catch (XMLStreamException e) {
+            throw new XdsInternalException(e.getMessage());
+         }
+      }
+      throw new XdsInternalException(a.toString() + " no TestResponse or SimTransaction element");
+   }
+
+   private SimulatorTransaction getSimulatorTransaction(Assertion a) throws XdsInternalException {
+      OMElement simTransactionElement = XmlUtil.firstChildWithLocalName(a.assertElement, "SimTransaction");
+      if (simTransactionElement == null)
+         throw new XdsInternalException(a.toString() + " has no SimTransaction element");
+      String id = simTransactionElement.getAttributeValue(new QName("id"));
+      String trans = simTransactionElement.getAttributeValue(new QName("transaction"));
+      String pid = simTransactionElement.getAttributeValue(new QName("pid"));
+      TransactionType tType = TransactionType.find(trans);
+      if (tType == null) throw new XdsInternalException(a.toString() + " invalid transaction");
+      ActorType aType = ActorType.getActorType(tType);
+      TestInstance ti = testConfig.testInstance;
+      SimId simId = new SimId(ti.getUser(), id, aType.getShortName());
+      return SimulatorTransaction.get(simId, tType, pid, null);
    }
 
    /*
