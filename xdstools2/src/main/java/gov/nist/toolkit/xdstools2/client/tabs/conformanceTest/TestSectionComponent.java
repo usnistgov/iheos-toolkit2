@@ -123,6 +123,8 @@ public class TestSectionComponent implements IsWidget {
 
         @Override
         public void onClick(ClickEvent clickEvent) {
+            clickEvent.preventDefault();
+            clickEvent.stopPropagation();
             ClientUtils.INSTANCE.getToolkitServices().getSectionTestPartFile(sessionName, testInstance, section, new AsyncCallback<TestPartFileDTO>() {
                 @Override
                 public void onFailure(Throwable throwable) {
