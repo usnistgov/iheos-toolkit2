@@ -12,24 +12,20 @@ import gov.nist.toolkit.services.client.RegOrchestrationRequest;
 import gov.nist.toolkit.services.client.RegOrchestrationResponse;
 import gov.nist.toolkit.sitemanagement.client.SiteSpec;
 import gov.nist.toolkit.xdstools2.client.util.ClientUtils;
-import gov.nist.toolkit.xdstools2.client.widgets.buttons.ReportableButton;
+import gov.nist.toolkit.xdstools2.client.widgets.buttons.OrchestrationButton;
 
 
 /**
  *
  */
-public class BuildRegTestOrchestrationButton extends ReportableButton {
+public class BuildRegTestOrchestrationButton extends OrchestrationButton {
     private ConformanceTestTab testTab;
     private Panel initializationPanel;
     private FlowPanel initializationResultsPanel = new FlowPanel();
-    private RadioButton noFeed = new RadioButton("pidFeedGroup", "No Feed");
-    private RadioButton v2Feed = new RadioButton("pidFeedGroup", "V2 Feed");
+    private RadioButton noFeed = new RadioButton("pidFeedGroup", "No Patient Identity Feed");
+    private RadioButton v2Feed = new RadioButton("pidFeedGroup", "V2 Patient Identitfy Feed");
 
     BuildRegTestOrchestrationButton(ConformanceTestTab testTab, Panel initializationPanel, String label) {
-//        super(new VerticalPanel(), label);
-//        this.initializationPanel = initializationPanel;
-//        this.testTab = testTab;
-//        panel().add(initializationResultsPanel);
         this.initializationPanel = initializationPanel;
         this.testTab = testTab;
 

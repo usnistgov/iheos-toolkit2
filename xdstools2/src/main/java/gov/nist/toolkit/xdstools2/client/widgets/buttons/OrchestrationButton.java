@@ -10,22 +10,21 @@ import gov.nist.toolkit.xdstools2.client.ErrorHandler;
 /**
  *
  */
-abstract public class ReportableButton implements ClickHandler {
+abstract public class OrchestrationButton implements ClickHandler {
     private final VerticalPanel panel = new VerticalPanel();
     private Panel topPanel;
     private String label = null;
     private String resetLabel = null;
-    private boolean resetRequested = false;
     private CheckBox resetCheckBox = null;
     private Panel customPanel = null;
 
-    public ReportableButton(Panel topPanel, String label) {
+    public OrchestrationButton(Panel topPanel, String label) {
         this.topPanel = topPanel;
         this.label = label;
         build();
     }
 
-    protected ReportableButton() {}
+    protected OrchestrationButton() {}
 
     protected void setParentPanel(Panel parent) {
         this.topPanel = parent;

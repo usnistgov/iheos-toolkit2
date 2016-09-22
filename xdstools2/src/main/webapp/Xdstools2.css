@@ -133,16 +133,28 @@ h3 {
   border: 2px solid #90A4AE;
 }
 
+.testSuccess {
+  background-color: PaleTurquoise !important;
+}
+
 .testOverviewHeaderFail {
   background-color: LightCoral !important;
   border-radius: 10px;
   border: 2px solid #90A4AE;
 }
 
+.testFail {
+  background-color: LightCoral !important;
+}
+
 .testOverviewHeaderNotRun {
   background-color: white !important;
   border-radius: 10px;
   border: 2px solid #90A4AE;
+}
+
+.testNotRun {
+  background-color: white !important;
 }
 
 .menuCollapse {
@@ -168,6 +180,13 @@ h3 {
 .section-title {
   font-size: 14pt;
   text-align: left;
+}
+
+.loadingMessage {
+  border:2px solid darkslategray;
+  font-size: 16pt;
+  background-color: yellow !important;
+  text-align: center;
 }
 
 .test-title {
