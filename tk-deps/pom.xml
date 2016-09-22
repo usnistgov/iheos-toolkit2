@@ -34,16 +34,6 @@
 
 
     <repositories>
-      <repository>
-         <id>docshare-test.local</id>
-         <url>https://libs.imphub.org/artifactory/ext-release-local</url>
-         <releases>
-            <enabled>true</enabled>
-         </releases>
-         <snapshots>
-            <enabled>false</enabled>
-         </snapshots>
-      </repository>
         <repository>
             <id>gazelle-3rd-party</id>
             <name>gazelle nexus</name>
