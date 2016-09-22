@@ -2,21 +2,26 @@ package gov.nist.toolkit.xdstools2.client.tabs.GatewayTestsTabs;
 
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.user.client.rpc.AsyncCallback;
-import com.google.gwt.user.client.ui.*;
+import com.google.gwt.user.client.ui.FlexTable;
+import com.google.gwt.user.client.ui.HTML;
+import com.google.gwt.user.client.ui.HorizontalPanel;
+import com.google.gwt.user.client.ui.Panel;
 import gov.nist.toolkit.actorfactory.client.SimulatorConfig;
 import gov.nist.toolkit.actortransaction.client.ActorType;
 import gov.nist.toolkit.actortransaction.client.ParamType;
 import gov.nist.toolkit.configDatatypes.SimulatorProperties;
-import gov.nist.toolkit.services.client.*;
+import gov.nist.toolkit.services.client.IigOrchestrationResponse;
+import gov.nist.toolkit.services.client.RawResponse;
+import gov.nist.toolkit.services.client.RigOrchestrationRequest;
 import gov.nist.toolkit.simcommon.client.config.SimulatorConfigElement;
 import gov.nist.toolkit.xdstools2.client.PopupMessage;
 import gov.nist.toolkit.xdstools2.client.tabs.genericQueryTab.GenericQueryTab;
-import gov.nist.toolkit.xdstools2.client.widgets.buttons.ReportableButton;
+import gov.nist.toolkit.xdstools2.client.widgets.buttons.OrchestrationButton;
 
 /**
  * Handles "Build Test Environment" Button for RIG Test Orchestration
  */
-class BuildRIGTestOrchestrationButton extends ReportableButton {
+class BuildRIGTestOrchestrationButton extends OrchestrationButton {
    private RIGTestTab testTab;
    boolean includeRIG;
 
@@ -36,7 +41,7 @@ class BuildRIGTestOrchestrationButton extends ReportableButton {
       RigOrchestrationRequest request = new RigOrchestrationRequest();
       request.setUserName(testTab.getCurrentTestSession());
       request.setIncludeLinkedRIG(includeRIG);
-      testTab.toolkitService.buildRigTestOrchestration(request, new AsyncCallback <RawResponse>() {
+      testTab.getToolkitServices().buildRigTestOrchestration(request, new AsyncCallback <RawResponse>() {
 
          @Override
          public void onFailure(Throwable throwable) {

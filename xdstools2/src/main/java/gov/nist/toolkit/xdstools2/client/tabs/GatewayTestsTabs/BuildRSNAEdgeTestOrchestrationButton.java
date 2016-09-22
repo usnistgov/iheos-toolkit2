@@ -2,23 +2,23 @@ package gov.nist.toolkit.xdstools2.client.tabs.GatewayTestsTabs;
 
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.user.client.rpc.AsyncCallback;
-import com.google.gwt.user.client.ui.*;
+import com.google.gwt.user.client.ui.FlexTable;
+import com.google.gwt.user.client.ui.HTML;
+import com.google.gwt.user.client.ui.Panel;
+import com.google.gwt.user.client.ui.Widget;
 import gov.nist.toolkit.actorfactory.client.SimulatorConfig;
-import gov.nist.toolkit.actortransaction.client.ActorType;
-import gov.nist.toolkit.actortransaction.client.ParamType;
 import gov.nist.toolkit.configDatatypes.SimulatorProperties;
-import gov.nist.toolkit.services.client.*;
-import gov.nist.toolkit.simcommon.client.config.SimulatorConfigElement;
+import gov.nist.toolkit.services.client.RSNAEdgeOrchestrationRequest;
+import gov.nist.toolkit.services.client.RSNAEdgeOrchestrationResponse;
+import gov.nist.toolkit.services.client.RawResponse;
 import gov.nist.toolkit.xdstools2.client.PopupMessage;
 import gov.nist.toolkit.xdstools2.client.tabs.genericQueryTab.GenericQueryTab;
-import gov.nist.toolkit.xdstools2.client.widgets.buttons.ReportableButton;
-
-import java.util.Arrays;
+import gov.nist.toolkit.xdstools2.client.widgets.buttons.OrchestrationButton;
 
 /**
  * Handles "Build Test Environment" Button for IIG Test Orchestration
  */
-class BuildRSNAEdgeTestOrchestrationButton extends ReportableButton {
+class BuildRSNAEdgeTestOrchestrationButton extends OrchestrationButton {
    private RSNAEdgeTestTab testTab;
    boolean includeEdge;
 
@@ -37,7 +37,7 @@ class BuildRSNAEdgeTestOrchestrationButton extends ReportableButton {
        }
        RSNAEdgeOrchestrationRequest request = new RSNAEdgeOrchestrationRequest();
        request.setUserName(testTab.getCurrentTestSession());
-       testTab.toolkitService.buildRSNAEdgeTestOrchestration(request, new AsyncCallback<RawResponse>() {
+       testTab.getToolkitServices().buildRSNAEdgeTestOrchestration(request, new AsyncCallback<RawResponse>() {
 
            @Override
            public void onFailure(Throwable throwable) {

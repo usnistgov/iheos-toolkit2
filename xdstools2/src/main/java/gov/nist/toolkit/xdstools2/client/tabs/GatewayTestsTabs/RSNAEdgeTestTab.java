@@ -4,7 +4,6 @@ import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.*;
-import edu.emory.mathcs.backport.java.util.Arrays;
 import gov.nist.toolkit.actorfactory.client.SimulatorConfig;
 import gov.nist.toolkit.actortransaction.client.ActorType;
 import gov.nist.toolkit.configDatatypes.SimulatorProperties;
@@ -53,6 +52,21 @@ public class RSNAEdgeTestTab extends GenericQueryTab implements GatewayTool {
     public TabContainer getToolContainer() { return getTabContainer(); }
 
     public void onTabLoad(TabContainer container, boolean select) {
+    }
+
+    @Override
+    protected Widget buildUI() {
+        return null;
+    }
+
+    @Override
+    protected void bindUI() {
+
+    }
+
+    @Override
+    protected void configureTabView() {
+
     }
 
     @Override
@@ -206,7 +220,7 @@ public class RSNAEdgeTestTab extends GenericQueryTab implements GatewayTool {
 
             TestInstance testInstance = new TestInstance(testToRun);
             testInstance.setUser(getCurrentTestSession());
-            toolkitService.runMesaTest(getCurrentTestSession(), getSiteSelection(), new TestInstance(testToRun), testSelectionManager.getSelectedSections(), parms, true, queryCallback);
+            getToolkitServices().runMesaTest(getCurrentTestSession(), getSiteSelection(), new TestInstance(testToRun), testSelectionManager.getSelectedSections(), parms, true, queryCallback);
         }
     }
 
@@ -221,7 +235,7 @@ public class RSNAEdgeTestTab extends GenericQueryTab implements GatewayTool {
             public void onClick(ClickEvent clickEvent) {
                 List<TestInstance> tests = new ArrayList<TestInstance>();
                 tests.add(new TestInstance("15807"));
-                toolkitService.getTestResults(tests, getCurrentTestSession(), new AsyncCallback<Map<String, Result>>() {
+                getToolkitServices().getTestResults(tests, getCurrentTestSession(), new AsyncCallback<Map<String, Result>>() {
                     @Override
                     public void onFailure(Throwable throwable) {
                         new PopupMessage(throwable.getMessage());

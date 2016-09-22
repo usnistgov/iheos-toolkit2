@@ -217,7 +217,7 @@ public abstract class ToolWindow {
 		return tabTopPanel;
 	}
 
-    protected ToolkitServiceAsync getToolkitServices() {
+    public ToolkitServiceAsync getToolkitServices() {
         if (toolkitService==null)
             toolkitService=ClientUtils.INSTANCE.getToolkitServices();
         return toolkitService;

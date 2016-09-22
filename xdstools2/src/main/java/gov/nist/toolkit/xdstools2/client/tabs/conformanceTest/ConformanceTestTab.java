@@ -26,7 +26,6 @@ import gov.nist.toolkit.sitemanagement.client.SiteSpec;
 import gov.nist.toolkit.testkitutilities.client.TestCollectionDefinitionDAO;
 import gov.nist.toolkit.xdstools2.client.PopupMessage;
 import gov.nist.toolkit.xdstools2.client.ToolWindow;
-import gov.nist.toolkit.xdstools2.client.ToolkitServiceAsync;
 import gov.nist.toolkit.xdstools2.client.Xdstools2;
 import gov.nist.toolkit.xdstools2.client.event.TestSessionChangedEvent;
 import gov.nist.toolkit.xdstools2.client.event.testSession.TestSessionChangedEventHandler;
@@ -472,10 +471,6 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner, SiteMa
 
         });
     }
-
-	protected ToolkitServiceAsync getToolkitServices() {
-		return super.getToolkitServices();
-	}
 
     private OrchestrationButton orchInit = null;
 

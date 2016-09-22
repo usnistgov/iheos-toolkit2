@@ -9,7 +9,6 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.*;
 import gov.nist.toolkit.actorfactory.client.SimulatorConfig;
 import gov.nist.toolkit.actortransaction.client.ActorType;
-import gov.nist.toolkit.configDatatypes.SimulatorProperties;
 import gov.nist.toolkit.configDatatypes.client.TransactionType;
 import gov.nist.toolkit.results.client.Result;
 import gov.nist.toolkit.results.client.TestInstance;
@@ -55,6 +54,21 @@ public class RIGTestTab extends GenericQueryTab implements GatewayTool {
     public TabContainer getToolContainer() { return getTabContainer(); }
 
     public void onTabLoad(TabContainer container, boolean select) {
+    }
+
+    @Override
+    protected Widget buildUI() {
+        return null;
+    }
+
+    @Override
+    protected void bindUI() {
+
+    }
+
+    @Override
+    protected void configureTabView() {
+
     }
 
     @Override
@@ -208,7 +222,7 @@ public class RIGTestTab extends GenericQueryTab implements GatewayTool {
 
          TestInstance testInstance = new TestInstance(testToRun);
          testInstance.setUser(getCurrentTestSession());
-         toolkitService.runMesaTest(getCurrentTestSession(), getSiteSelection(), new TestInstance(testToRun),
+         getToolkitServices().runMesaTest(getCurrentTestSession(), getSiteSelection(), new TestInstance(testToRun),
             testSelectionManager.getSelectedSections(), parms, true, queryCallback);
          
          } catch (Exception e) {
@@ -228,7 +242,7 @@ public class RIGTestTab extends GenericQueryTab implements GatewayTool {
             public void onClick(ClickEvent clickEvent) {
                 List<TestInstance> tests = new ArrayList<TestInstance>();
                 tests.add(new TestInstance("15807"));
-                toolkitService.getTestResults(tests, getCurrentTestSession(), new AsyncCallback<Map<String, Result>>() {
+                getToolkitServices().getTestResults(tests, getCurrentTestSession(), new AsyncCallback<Map<String, Result>>() {
                     @Override
                     public void onFailure(Throwable throwable) {
                         new PopupMessage(throwable.getMessage());
