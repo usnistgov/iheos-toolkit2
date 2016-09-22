@@ -79,6 +79,7 @@ public class TestSectionComponent implements IsWidget {
                     :
                     new Image("icons/ic_warning_black_24dp_1x.png");
             status.addStyleName("right");
+            status.addStyleName("iconStyle");
             header.add(status);
 
             panel.addOpenHandler(new SectionOpenHandler(new TestInstance(testInstance.getId(), sectionOverview.getName())));
