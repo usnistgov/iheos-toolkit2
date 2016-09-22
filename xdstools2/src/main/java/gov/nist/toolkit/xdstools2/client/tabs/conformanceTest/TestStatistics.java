@@ -32,6 +32,16 @@ public class TestStatistics {
         return testsRun == 0;
     }
 
+    public String getTitle() { return "Overview: "; }
+
+    public int getTestCount() { return testCount; }
+
+    public int getSuccesses() { return testsRun; }
+
+    public int getFailures() { return testsWithErrors; }
+
+    public int getNotRun() { return testCount - testsRun - testsWithErrors; }
+
     public String getReport() {
         StringBuilder buf = new StringBuilder();
 

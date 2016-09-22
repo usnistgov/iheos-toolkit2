@@ -36,7 +36,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class ConformanceTestTab extends ToolWindow implements TestRunner, SiteManager {
+public class ConformanceTestTab extends ToolWindow implements TestRunner, SiteManager, TestsHeaderView.Controller {
 
 	private final ConformanceTestTab me;
 	private final FlowPanel toolPanel = new FlowPanel();   // Outer-most panel for the tool
@@ -48,18 +48,14 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner, SiteMa
 	private HTML testSessionDescription = new HTML();
 	private FlowPanel testSessionDescriptionPanel = new FlowPanel();
 
+	private AbstractOrchestrationResponse orchestrationResponse;  // can be any of the following - contains common elements
 	private RepOrchestrationResponse repOrchestrationResponse;
     private RegOrchestrationResponse regOrchestrationResponse;
-    private AbstractOrchestrationResponse orchestrationResponse;  // can be any of the above - contains common elements
 
     private String currentActorTypeId;
 	private String currentActorTypeDescription;
 	private Site siteUnderTest = null;
 	private SiteSpec sitetoIssueTestAgainst = null;
-	private FlowPanel testsHeader = new FlowPanel();
-	private HTML testsHeaderTitle = new HTML("<h2>" + currentActorTypeDescription + " Tests</h2>");
-	private TestDisplayHeader testsHeaderBody = new TestDisplayHeader();
-	private final TestStatistics testStatistics = new TestStatistics();
 
 	// stuff that needs delayed setting when launched via activity
 	private String initTestSession = null;
@@ -77,9 +73,6 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner, SiteMa
 		toolPanel.add(tabBar);
 		toolPanel.add(initializationPanel);
 		toolPanel.add(testsPanel);
-
-		testsHeader.add(testsHeaderBody);
-		testsHeader.add(testsHeaderTitle);
 	}
 
 	private void addTestOverview(TestOverviewDTO dto) {
@@ -89,6 +82,11 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner, SiteMa
 	private void removeTestOverview(TestOverviewDTO dto) {
 		testOverviewDTOs.remove(dto.getName());
 	}
+
+
+	private TestsHeaderView testsHeaderView = new TestsHeaderView(this);
+	private final TestStatistics testStatistics = new TestStatistics();
+
 
 	/**
 	 * currentActorTypeDescription is initialized late so calling this when it is available
@@ -111,56 +109,10 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner, SiteMa
 			}
 		}
 
-		// Display statistics
-		testsHeaderTitle.setHTML("<h2>" + currentActorTypeDescription + " Tests</h2>");
-		testsHeaderBody.clear();
-		testsHeaderBody.add(new HTML(testStatistics.getReport()));
-
-
-		// Add controls
-		Image play = new Image("icons2/play-24.png");
-		play.setTitle("Run");
-		play.addClickHandler(new RunAllClickHandler(currentActorTypeId));
-//		play.addStyleName("right");
-		testsHeaderBody.add(play);
-
-		if (testStatistics.isAllRun()) {
-			if (testStatistics.hasErrors()) {
-				testsHeaderBody.setBackgroundColorFailure();
-				testsHeaderBody.add(getStatusIcon(false));
-			} else {
-				testsHeaderBody.setBackgroundColorSuccess();
-				testsHeaderBody.add(getStatusIcon(true));
-			}
-		}
-		else if (testStatistics.hasErrors()) {
-			testsHeaderBody.setBackgroundColorFailure();
-			testsHeaderBody.add(getStatusIcon(false));
-		}
-		else {
-			testsHeaderBody.setBackgroundColorNotRun();
-		}
-
-		Image delete = new Image("icons2/garbage-24.png");
-		delete.addStyleName("right");
-		delete.addClickHandler(new DeleteAllClickHandler(currentActorTypeId));
-		delete.setTitle("Delete Log");
-		delete.addStyleName("right");
-		testsHeaderBody.add(delete);
-
-		testsHeaderBody.addStyleName("test-summary");
+		// Display header with statistics
+		testsHeaderView.update(testStatistics, currentActorTypeDescription);
 	}
 
-	private Image getStatusIcon(boolean good) {
-		Image status;
-		if (good) {
-			status = new Image("icons2/correct-24.png");
-		} else {
-			status = new Image("icons/ic_warning_black_24dp_1x.png");
-		}
-		status.addStyleName("right");
-		return status;
-	}
 
 	@Override
 	public String getTitle() { return "Conformance Tests"; }
@@ -448,7 +400,7 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner, SiteMa
 				List<TestInstance> testInstances = new ArrayList<>();
 				for (String testId : testIds) testInstances.add(new TestInstance(testId));
 				testsPerActor.put(currentActorTypeId, testInstances);
-                displayManagedTests(testInstances);
+                displayTests(testInstances);
 
 
             }
@@ -456,7 +408,7 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner, SiteMa
 
 	}
 
-    private void displayManagedTests(List<TestInstance> testInstances) {
+    private void displayTests(List<TestInstance> testInstances) {
         // results (including logs) for a collection of tests
         getToolkitServices().getTestsOverview(getCurrentTestSession(), testInstances, new AsyncCallback<List<TestOverviewDTO>>() {
 
@@ -465,7 +417,7 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner, SiteMa
             }
 
             public void onSuccess(List<TestOverviewDTO> testOverviews) {
-                testsPanel.add(testsHeader);
+                testsPanel.add(testsHeaderView.asWidget());
                 testStatistics.setTestCount(testOverviews.size());
                 for (TestOverviewDTO testOverview : testOverviews) {
                     addTestOverview(testOverview);
@@ -500,7 +452,7 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner, SiteMa
             }
 
             public void onSuccess(List<TestOverviewDTO> testOverviews) {
-                testsPanel.add(testsHeader);
+                testsPanel.add(testsHeaderView.asWidget());
                 for (TestOverviewDTO testOverview : testOverviews) {
                     addTestOverview(testOverview);
                     displayTest(testOverview);
@@ -650,6 +602,11 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner, SiteMa
 		}
 	}
 
+	@Override
+	public RunAllClickHandler getRunAllClickHandler() {
+		return new RunAllClickHandler(currentActorTypeId);
+	}
+
 	private class RunAllClickHandler implements ClickHandler, TestDone {
 		String actorTypeId;
 		List<TestInstance> tests = new ArrayList<TestInstance>();
@@ -702,6 +659,11 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner, SiteMa
 				}
 			});
 		}
+	}
+
+	@Override
+	public DeleteAllClickHandler getDeleteAllClickHandler() {
+		return new DeleteAllClickHandler(currentActorTypeId);
 	}
 
 	private class DeleteAllClickHandler implements ClickHandler {
