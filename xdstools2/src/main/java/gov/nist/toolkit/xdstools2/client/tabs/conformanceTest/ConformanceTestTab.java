@@ -26,6 +26,7 @@ import gov.nist.toolkit.sitemanagement.client.SiteSpec;
 import gov.nist.toolkit.testkitutilities.client.TestCollectionDefinitionDAO;
 import gov.nist.toolkit.xdstools2.client.PopupMessage;
 import gov.nist.toolkit.xdstools2.client.ToolWindow;
+import gov.nist.toolkit.xdstools2.client.ToolkitServiceAsync;
 import gov.nist.toolkit.xdstools2.client.Xdstools2;
 import gov.nist.toolkit.xdstools2.client.event.TestSessionChangedEvent;
 import gov.nist.toolkit.xdstools2.client.event.testSession.TestSessionChangedEventHandler;
@@ -164,9 +165,7 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner, SiteMa
 			@Override
 			public void onClicked(TestInstance testInstance, InteractionDiagram.DiagramPart part) {
 				if (InteractionDiagram.DiagramPart.RequestConnector.equals(part)) {
-					List<TestInstance> testInstances = new ArrayList<>();
-					testInstances.add(testInstance);
-					displayInspectorTab(testInstances);
+					displayInspectorTab(testInstance, getCurrentTestSession());
 				}
 			}
 		});
@@ -474,7 +473,9 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner, SiteMa
         });
     }
 
-
+	protected ToolkitServiceAsync getToolkitServices() {
+		return super.getToolkitServices();
+	}
 
     private OrchestrationButton orchInit = null;
 
@@ -710,6 +711,10 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner, SiteMa
 		}
 	}
 
+	ClickHandler getInspectClickHandler(TestInstance testInstance) {
+		return new InspectClickHandler(testInstance);
+	}
+
 	private class InspectClickHandler implements ClickHandler {
 		TestInstance testInstance;
 
@@ -722,14 +727,14 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner, SiteMa
 			clickEvent.preventDefault();
 			clickEvent.stopPropagation();
 
-			List<TestInstance> testInstances = new ArrayList<>();
-			testInstances.add(testInstance);
-			displayInspectorTab(testInstances);
+			displayInspectorTab(testInstance, getCurrentTestSession());
 		}
 	}
 
-	private void displayInspectorTab(List<TestInstance> testInstances) {
-		getToolkitServices().getTestResults(testInstances, getCurrentTestSession(), new AsyncCallback<Map<String, Result>>() {
+	private void displayInspectorTab(final TestInstance testInstance, String testSession) {
+		List<TestInstance> testInstances = new ArrayList<>();
+		testInstances.add(testInstance);
+		getToolkitServices().getTestResults(testInstances, testSession, new AsyncCallback<Map<String, Result>>() {
             @Override
             public void onFailure(Throwable throwable) {
                 new PopupMessage(throwable.getMessage());
@@ -740,8 +745,7 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner, SiteMa
 				MetadataInspectorTab itab = new MetadataInspectorTab();
 				itab.setResults(resultMap.values());
 				itab.setSiteSpec(new SiteSpec(currentSiteName));
-//					itab.setToolkitService(me.toolkitService);
-				itab.onTabLoad(true, "Insp");
+				itab.onTabLoad(true, "Test:" + testInstance.getId() );
 			}
 		});
 	}

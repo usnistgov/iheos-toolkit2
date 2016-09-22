@@ -2,17 +2,19 @@ package gov.nist.toolkit.xdstools2.client.tabs.conformanceTest;
 
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.user.client.rpc.AsyncCallback;
-import com.google.gwt.user.client.ui.FlowPanel;
-import com.google.gwt.user.client.ui.HTML;
-import com.google.gwt.user.client.ui.Panel;
-import com.google.gwt.user.client.ui.RadioButton;
+import com.google.gwt.user.client.ui.*;
 import gov.nist.toolkit.services.client.PifType;
 import gov.nist.toolkit.services.client.RawResponse;
 import gov.nist.toolkit.services.client.RegOrchestrationRequest;
 import gov.nist.toolkit.services.client.RegOrchestrationResponse;
+import gov.nist.toolkit.session.client.TestOverviewDTO;
 import gov.nist.toolkit.sitemanagement.client.SiteSpec;
+import gov.nist.toolkit.xdstools2.client.HorizontalFlowPanel;
+import gov.nist.toolkit.xdstools2.client.PopupMessage;
 import gov.nist.toolkit.xdstools2.client.util.ClientUtils;
 import gov.nist.toolkit.xdstools2.client.widgets.buttons.OrchestrationButton;
+
+import java.util.List;
 
 
 /**
@@ -87,10 +89,37 @@ public class BuildRegTestOrchestrationButton extends OrchestrationButton {
                     initializationResultsPanel.add(h);
                 }
 
+                // Display tests run as part of orchestration - so links to their logs are available
+                testTab.getToolkitServices().getTestsOverview(testTab.getCurrentTestSession(), orchResponse.getOrchestrationTests(), new AsyncCallback<List<TestOverviewDTO>>() {
+
+                    public void onFailure(Throwable caught) {
+                        new PopupMessage("getTestOverview: " + caught.getMessage());
+                    }
+
+                    public void onSuccess(List<TestOverviewDTO> testOverviews) {
+                        for (TestOverviewDTO testOverview : testOverviews) {
+                            HorizontalFlowPanel orchTest = new HorizontalFlowPanel();
+                            orchTest.add(new HTML(testOverview.getName() + " - " + testOverview.getTitle()));
+                            Image inspect = new Image("icons2/visible-32.png");
+                            inspect.addStyleName("right");
+                            inspect.addClickHandler(testTab.getInspectClickHandler(testOverview.getTestInstance()));
+                            inspect.setTitle("Inspect results");
+                            orchTest.setStyleName("testSuccess");
+                            orchTest.add(inspect);
+
+                            initializationResultsPanel.add(new HTML("Utilities run to initialize environment"));
+                            initializationResultsPanel.add(orchTest);
+                        }
+
+                    }
+
+                });
+
                 initializationResultsPanel.add(new HTML("Patient ID: " + orchResponse.getPid().toString()));
                 initializationResultsPanel.add(new HTML("<br />"));
 
             }
+
 
 
         });
