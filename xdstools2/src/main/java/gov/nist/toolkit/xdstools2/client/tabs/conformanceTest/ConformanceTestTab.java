@@ -76,6 +76,7 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner, SiteMa
 		me = this;
 		toolPanel.getElement().getStyle().setMargin(4, Style.Unit.PX);
 		toolPanel.getElement().getStyle().setMarginLeft(0, Style.Unit.PX);
+		testsPanel.getElement().getStyle().setMarginRight(4, Style.Unit.PX);
 		toolPanel.add(sitesPanel);
 		toolPanel.add(tabBar);
 		toolPanel.add(initializationPanel);
@@ -620,7 +621,6 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner, SiteMa
 			header.add(inspect);
 		}
 
-		body.add(new HTML("<p><b>Description:</b></p>"));
 		body.add(new HTML(testOverview.getDescription()));
 
 		// display an interaction sequence diagram
@@ -629,7 +629,6 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner, SiteMa
 		}
 
 		// display sections within test
-		body.add(new HTML("<p><b>Sections:</b></p>"));
 		displaySections(testOverview, body);
 
 		if (!isNew)
