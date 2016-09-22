@@ -210,7 +210,12 @@ public class Xdstest2 {
 		this.testInstance = testInstance;
 		this.sections = sections;
 		TestLogDetails testLogDetails;
-		File tk = Installation.installation().findTestkitFromTest(testkits, testInstance.getId());
+		File tk;
+		try {
+			tk = Installation.installation().findTestkitFromTest(testkits, testInstance.getId());
+		} catch (NullPointerException npe) {
+			tk = xt.getTestkit();
+		}
 		if (tk == null) tk = xt.getTestkit();
 		if (areas == null)
 			testLogDetails = new TestLogDetails(tk, testInstance);
