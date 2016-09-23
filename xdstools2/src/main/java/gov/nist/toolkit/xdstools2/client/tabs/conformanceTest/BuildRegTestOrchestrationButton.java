@@ -1,5 +1,6 @@
 package gov.nist.toolkit.xdstools2.client.tabs.conformanceTest;
 
+import com.google.gwt.dom.client.Style;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.*;
@@ -99,6 +100,7 @@ public class BuildRegTestOrchestrationButton extends OrchestrationButton {
                     public void onSuccess(List<TestOverviewDTO> testOverviews) {
                         for (TestOverviewDTO testOverview : testOverviews) {
                             HorizontalFlowPanel orchTest = new HorizontalFlowPanel();
+                            orchTest.getElement().getStyle().setHeight(32, Style.Unit.PX);
                             orchTest.add(new HTML(testOverview.getName() + " - " + testOverview.getTitle()));
                             Image inspect = new Image("icons2/visible-32.png");
                             inspect.addStyleName("right");
