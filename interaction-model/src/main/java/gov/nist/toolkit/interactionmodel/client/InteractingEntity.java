@@ -54,8 +54,8 @@ public class InteractingEntity implements IsSerializable, Serializable {
     public static enum INTERACTIONSTATUS {
         COMPLETED,
         ERROR,
+        ERROR_EXPECTED,
         UNKNOWN
-
     }
 
     public InteractingEntity() {

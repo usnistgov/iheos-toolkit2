@@ -166,7 +166,8 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner, SiteMa
 		Xdstools2.getEventBus().addHandler(DiagramClickedEvent.TYPE, new DiagramPartClickedEventHandler() {
 			@Override
 			public void onClicked(TestInstance testInstance, InteractionDiagram.DiagramPart part) {
-				if (InteractionDiagram.DiagramPart.RequestConnector.equals(part)) {
+				if (InteractionDiagram.DiagramPart.RequestConnector.equals(part)
+						|| InteractionDiagram.DiagramPart.ResponseConnector.equals(part)) {
 					displayInspectorTab(testInstance, getCurrentTestSession());
 				}
 			}
@@ -596,6 +597,7 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner, SiteMa
 		if (diagram!=null && diagram.hasMeaningfulDiagram()) {
 			body.add(new HTML("<p><b>Interaction Sequence:</b></p>"));
 			body.add(diagram);
+			body.add(new HTML("<br/>"));
 		}
 	}
 
