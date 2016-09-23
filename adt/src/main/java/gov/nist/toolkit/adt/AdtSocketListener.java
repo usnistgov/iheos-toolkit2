@@ -1,11 +1,13 @@
 package gov.nist.toolkit.adt;
 
 
-import gov.nist.toolkit.utilities.io.Io;
 import gov.nist.toolkit.xdsexception.ExceptionUtil;
 import org.apache.log4j.Logger;
 
-import java.io.*;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.io.PrintWriter;
 import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
@@ -16,6 +18,11 @@ import java.net.SocketTimeoutException;
  */
 public class AdtSocketListener implements Runnable{
     static Logger logger = Logger.getLogger(AdtSocketListener.class);
+    private static String[] ackTemplate = new String[2];
+    static {
+        ackTemplate[0] = "MSH|^~\\&|LABADT|DH|EPICADT|DH|$timestamp$||ACK^A01^ACK |HL7ACK00001|P|2.3";
+        ackTemplate[1] = "MSA|AA|HL7MSG00001";
+    }
 
     ServerSocket server = null;
     ThreadPoolItem threadPoolItem;
@@ -159,12 +166,19 @@ public class AdtSocketListener implements Runnable{
                     sendError = true;
                     logger.fatal(ExceptionUtil.exception_details(e));
                 }
-                if(sendError == true)
+                if(sendError)
                     writer.write(message.getNack());
                 else {
+                    StringBuilder buf = new StringBuilder();
+
+                    for (int i=0; i<ackTemplate.length; i++) {
+                        buf.append(ackTemplate[i].trim()).append("\r\b");
+                    }
+                    String adtAckFile = AdtSocketListener.class.getResource("/adt/ACK.txt").getFile();
+                    logger.info("Loading template from " + adtAckFile);
+
                     writer.write(0x0b);
-                    String adtAckString = new A01Sender().getClass().getResource("/adt/ACK.txt").getFile();
-                    writer.write(Io.stringFromFile(new File(adtAckString)).toCharArray());
+                    writer.write(buf.toString());
                     writer.write(0x1c);
                     writer.write(0x0d);
                     //writer.write(message.getAck());
