@@ -167,9 +167,9 @@ public class ImgDetailTransaction extends BasicTransaction {
    } // EO processAssertion method
 
    /**
-    * Matches documents in a {@code <RetrieveDocumentSetResponse>} against a 
-    * "gold standard". Expects the current testplan.xml {@code <TestStep>} 
-    * element to contain the "gold standard" message, like this: 
+    * Matches documents and status in a {@code <RetrieveDocumentSetResponse>} 
+    * against a "gold standard". Expects the current testplan.xml {@code 
+    * <TestStep>} element to contain the "gold standard" message, like this: 
     * <pre>
     *  {@code
     *  ... 
@@ -194,8 +194,16 @@ public class ImgDetailTransaction extends BasicTransaction {
          OMElement std = getStdResponseBody();
          OMElement test = getTestResponseBody(a);
          String t = std.getLocalName();
-         if (t.endsWith("RetrieveDocumentSetResponse") == false)
+         if (t.endsWith("RetrieveDocumentSetResponse") == false) 
             throw new XdsInternalException("sameRetImgs assertion only applies to RetrieveDocumentSetResponse");
+         // Check RegistryResponse status attribute
+         String stdStatus = getResponseStatus(std);
+         String testStatus = getResponseStatus(test);
+         if (comp(stdStatus, testStatus)) {
+            store(engine, CAT.SUCCESS, "RegistryResponse status match: " + testStatus);
+         } else {
+            store(engine, CAT.ERROR, " RegistryResponse status mismatch (std/test): (" + stdStatus + "/" + testStatus + ")");
+         }
          Map <String, RetImg> testImgs = loadRetImgs(engine, a, test);
          Map <String, RetImg> stdImgs = loadRetImgs(engine, a, std);
          Set <String> testKeys = testImgs.keySet();
@@ -446,6 +454,17 @@ public class ImgDetailTransaction extends BasicTransaction {
       String home;
       String repo;
       String mime;
+   }
+   
+   private String getResponseStatus(OMElement retDocSetRespElement) {
+      String status = "No RegistryReponse Element";
+      try {
+         OMElement regRespElement = 
+            XmlUtil.onlyChildWithLocalName(retDocSetRespElement, "RegistryResponse");
+         status = regRespElement.getAttributeValue(new QName("status"));
+         if (status == null) status = "No status attribute";
+      } catch (Exception e) {}
+      return status;
    }
 
    /**
