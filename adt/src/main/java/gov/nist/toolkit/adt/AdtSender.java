@@ -1,28 +1,23 @@
 package gov.nist.toolkit.adt;
 
 
-import gov.nist.toolkit.utilities.io.Io;
 import org.apache.log4j.Logger;
 
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.PrintWriter;
 import java.net.Socket;
 import java.net.UnknownHostException;
 
 public class AdtSender {
-    static Logger logger = Logger.getLogger(AdtSender.class);
-    String templateFile = null;
-    InputStream templateInputStream = null;
-    String server;
-    int port;
+    private static Logger logger = Logger.getLogger(AdtSender.class);
+    private String server;
+    private int port;
+    private String[] message;
 
-    public AdtSender(String templateFile, String server, int port) {
-        this.templateFile = templateFile;
-        this.server = server;
-        this.port = port;
-    }
-
-    public AdtSender(InputStream templateInputStream, String server, int port) {
-        this.templateInputStream = templateInputStream;
+    public AdtSender(String[] message, String server, int port) {
+        this.message = message;
         this.server = server;
         this.port = port;
     }
@@ -55,19 +50,13 @@ public class AdtSender {
         c = 0x0b;
         out.print(c);
 
+        StringBuilder buf = new StringBuilder();
 
-        String template;
+        for (int i=0; i<message.length; i++) {
+            buf.append(message[i].trim()).append("\r\n");
+        }
 
-        if (templateInputStream != null)
-            template = Io.getStringFromInputStream(templateInputStream);
-        else
-            template = Io.stringFromFile(new File(templateFile));
-
-
-        template = template.replace("$pid$", pid);
-
-
-        out.print(template);
+        out.print(buf.toString().replace("$pid$", pid));
 
         c = 0x1c;
         out.print(c);
