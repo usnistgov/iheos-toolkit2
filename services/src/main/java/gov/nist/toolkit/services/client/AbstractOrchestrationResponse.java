@@ -9,19 +9,36 @@ import java.util.List;
  *
  */
 abstract public class AbstractOrchestrationResponse extends RawResponse {
-    private List<TestInstance> orchestrationTests = new ArrayList<>();  // test definitions used to build the orchestration
+//    private List<TestInstance> orchestrationTests = new ArrayList<>();  // test definitions used to build the orchestration
     private  String message = "";
+    private List<MessageItem> messages = new ArrayList<>();
 
-    public List<TestInstance> getOrchestrationTests() {
-        return orchestrationTests;
+    public MessageItem addMessage(TestInstance testInstance, boolean success, String message) {
+        MessageItem item = new MessageItem(testInstance, success, message);
+        messages.add(item);
+        return item;
     }
 
-    public void setOrchestrationTests(List<TestInstance> orchestrationTests) {
-        this.orchestrationTests = orchestrationTests;
+    public int getMessageItemCount() { return messages.size(); }
+
+    public MessageItem getMessageItem(int i) {
+        return messages.get(i);
     }
 
-    public void addOrchestrationTest(TestInstance testInstance) {
-        this.orchestrationTests.add(testInstance);
+    public List<TestInstance> getTestInstances() {
+        List<TestInstance> testInstances = new ArrayList<>();
+        for (MessageItem item : messages) {
+            testInstances.add(item.getTestInstance());
+        }
+        return testInstances;
+    }
+
+    public MessageItem getItemForTest(TestInstance testInstance) {
+        for (MessageItem item : messages) {
+            if (item.getTestInstance().equals(testInstance))
+                return item;
+        }
+        return null;
     }
 
     public String getMessage() {

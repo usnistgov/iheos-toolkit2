@@ -37,6 +37,7 @@ import gov.nist.toolkit.simulators.support.od.TransactionUtil;
 import gov.nist.toolkit.sitemanagement.client.Site;
 import gov.nist.toolkit.sitemanagement.client.SiteSpec;
 import gov.nist.toolkit.sitemanagement.client.TransactionOfferings;
+import gov.nist.toolkit.testengine.scripts.BuildCollections;
 import gov.nist.toolkit.testengine.scripts.CodesUpdater;
 import gov.nist.toolkit.testenginelogging.client.LogFileContentDTO;
 import gov.nist.toolkit.testkitutilities.client.TestCollectionDefinitionDAO;
@@ -865,6 +866,12 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements
 	@Override
 	public boolean getAutoInitConformanceTesting() {
 		return Installation.installation().propertyServiceManager().getAutoInitializeConformanceTool();
+	}
+
+	@Override
+	public boolean indexTestKits() {
+		new BuildCollections().run();
+		return true;
 	}
 
 }

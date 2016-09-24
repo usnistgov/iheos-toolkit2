@@ -7,7 +7,6 @@ import gov.nist.toolkit.configDatatypes.client.Pid;
  */
 public class RegOrchestrationResponse extends AbstractOrchestrationResponse {
     private Pid pid;
-    private  String message = "";
 
     public RegOrchestrationResponse() {
     }
@@ -20,11 +19,4 @@ public class RegOrchestrationResponse extends AbstractOrchestrationResponse {
         this.pid = pid;
     }
 
-    public String getMessage() {
-        return message;
-    }
-
-    public void setMessage(String message) {
-        this.message = message;
-    }
 }

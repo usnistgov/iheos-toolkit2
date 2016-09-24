@@ -3,10 +3,7 @@ package gov.nist.toolkit.xdstools2.client.tabs.conformanceTest;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.*;
-import gov.nist.toolkit.services.client.PifType;
-import gov.nist.toolkit.services.client.RawResponse;
-import gov.nist.toolkit.services.client.RegOrchestrationRequest;
-import gov.nist.toolkit.services.client.RegOrchestrationResponse;
+import gov.nist.toolkit.services.client.*;
 import gov.nist.toolkit.session.client.TestOverviewDTO;
 import gov.nist.toolkit.sitemanagement.client.SiteSpec;
 import gov.nist.toolkit.xdstools2.client.HorizontalFlowPanel;
@@ -76,7 +73,7 @@ public class BuildRegTestOrchestrationButton extends OrchestrationButton {
             @Override
             public void onSuccess(RawResponse rawResponse) {
                 if (handleError(rawResponse, RegOrchestrationResponse.class)) return;
-                RegOrchestrationResponse orchResponse = (RegOrchestrationResponse) rawResponse;
+                final RegOrchestrationResponse orchResponse = (RegOrchestrationResponse) rawResponse;
                 testTab.setRegOrchestrationResponse(orchResponse);
 
                 initializationResultsPanel.add(new HTML("Initialization Complete"));
@@ -90,24 +87,30 @@ public class BuildRegTestOrchestrationButton extends OrchestrationButton {
                 }
 
                 // Display tests run as part of orchestration - so links to their logs are available
-                testTab.getToolkitServices().getTestsOverview(testTab.getCurrentTestSession(), orchResponse.getOrchestrationTests(), new AsyncCallback<List<TestOverviewDTO>>() {
+                testTab.getToolkitServices().getTestsOverview(testTab.getCurrentTestSession(), orchResponse.getTestInstances(), new AsyncCallback<List<TestOverviewDTO>>() {
 
                     public void onFailure(Throwable caught) {
                         new PopupMessage("getTestOverview: " + caught.getMessage());
                     }
 
                     public void onSuccess(List<TestOverviewDTO> testOverviews) {
+                        initializationResultsPanel.add(new HTML("Utilities run to initialize environment"));
                         for (TestOverviewDTO testOverview : testOverviews) {
+                            MessageItem item = orchResponse.getItemForTest(testOverview.getTestInstance());
                             HorizontalFlowPanel orchTest = new HorizontalFlowPanel();
-                            orchTest.add(new HTML(testOverview.getName() + " - " + testOverview.getTitle()));
+                            orchTest.add(new HTML(testOverview.getName() + " - " + testOverview.getTitle() +
+                                    ((item.isSuccess()) ? "  - SUCCESS" : "  - FAILURE")
+                            ));
                             Image inspect = new Image("icons2/visible-32.png");
                             inspect.addStyleName("right");
                             inspect.addClickHandler(testTab.getInspectClickHandler(testOverview.getTestInstance()));
                             inspect.setTitle("Inspect results");
-                            orchTest.setStyleName("testSuccess");
+                            if (item.isSuccess())
+                                orchTest.setStyleName("testOverviewHeaderSuccess");
+                            else
+                                orchTest.setStyleName("testOverviewHeaderFail");
                             orchTest.add(inspect);
 
-                            initializationResultsPanel.add(new HTML("Utilities run to initialize environment"));
                             initializationResultsPanel.add(orchTest);
                         }
 

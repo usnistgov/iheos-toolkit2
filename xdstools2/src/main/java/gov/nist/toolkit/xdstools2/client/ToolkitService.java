@@ -269,4 +269,6 @@ public interface ToolkitService extends RemoteService  {
 	String clearTestSession(String testSession) throws Exception;
 
     boolean getAutoInitConformanceTesting();
+
+    boolean indexTestKits();
 }

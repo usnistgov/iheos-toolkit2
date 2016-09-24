@@ -1,5 +1,6 @@
 package gov.nist.toolkit.testenginelogging;
 
+import gov.nist.toolkit.installation.Installation;
 import gov.nist.toolkit.results.client.TestInstance;
 import gov.nist.toolkit.testenginelogging.client.LogFileContentDTO;
 import gov.nist.toolkit.testenginelogging.client.SectionLogMapDTO;
@@ -29,14 +30,12 @@ public class TestLogDetails {
 	private static Logger logger = Logger.getLogger(TestLogDetails.class);
 
 
-	private static final String[] defaultAreas = new String [] { "tests", "testdata", "examples", "internal", "play",
-		"selftest", "development", "utilities", "xcpd", "collection", "static.collections"};
 	private static final String testPlanFileName = "testplan.xml";
 
 	public TestLogDetails(File testkit, TestInstance testInstance) throws Exception {
 		this.testkit = testkit;
 		this.testInstance = testInstance;
-		areas = defaultAreas;
+		areas = Installation.defaultAreas;
 		sectionLogMapDTO = new SectionLogMapDTO(testInstance);
 		verifyCurrentTestExists(testkit, testInstance);
 		testPlanFileMap = getTestPlans();

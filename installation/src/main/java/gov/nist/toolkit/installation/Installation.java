@@ -297,12 +297,16 @@ public class Installation {
     public static String defaultSessionName() { return "STANDALONE"; }
     public static String defaultServiceSessionName() { return "SERVICE"; }
 
+    public static final String[] defaultAreas = new String [] { "tests", "testdata", "examples", "internal", "play",
+            "selftest", "development", "utilities", "collection", "static.collections"};
+
     public File findTestkitFromTest(List<File> testkits, String id) {
         for (File testkit:testkits){
             if (testkit!=null)
                 if (testkit.exists()){
                     File[] areas=testkit.listFiles();
-                    for (File area:areas){
+                    for (String areaName : defaultAreas){
+                        File area = new File(testkit, areaName);
                         File test=new File(area,id);
                         if (test.exists()){
                             return testkit;
