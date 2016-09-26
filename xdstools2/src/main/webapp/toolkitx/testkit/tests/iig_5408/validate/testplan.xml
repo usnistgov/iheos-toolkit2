@@ -1,7 +1,7 @@
 
 <TestPlan>
 	<Test>iig_5408/validate</Test>
-	<TestStep id="retrievedDocValidation">
+	<TestStep id="validate">
 		<Goal>Correct RetrieveDocumentSetResponse values</Goal>
 		<Standard>
 			<ResponseBody>

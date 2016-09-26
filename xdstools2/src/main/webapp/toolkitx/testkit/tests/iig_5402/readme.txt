@@ -7,7 +7,7 @@ Xfer Syntax JPEG Lossless, Single GW
 one image studies from Community A that with a JPEG transfer syntax.</p>
 <table border="1">
  <tr><td>RIG Home Community ID (A)</td><td>urn:oid:1.3.6.1.4.1.21367.13.70.101</td><tr>
- <tr><td>IDS Repository Unique ID (A1)</td><td>1.3.6.1.4.1.21367.13.71.10NU1</td></tr>
+ <tr><td>IDS Repository Unique ID (A1)</td><td>1.3.6.1.4.1.21367.13.71.101</td></tr>
  <tr><td>Transfer Syntax UID</td><td>1.2.840.10008.1.2.4.70: JPEG lossless</td></tr>
 </table>
 

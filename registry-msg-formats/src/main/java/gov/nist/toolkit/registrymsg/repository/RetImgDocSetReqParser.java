@@ -46,11 +46,11 @@ public class RetImgDocSetReqParser {
                RetrieveItemRequestModel documentModel = new RetrieveItemRequestModel();
                seriesModel.addDocumentRequest(documentModel);
                OMElement homeEle = documentElement.getFirstChildWithName(MetadataSupport.home_community_id_qname);
-               if (homeEle != null) documentModel.setHomeId(homeEle.getText());
+               if (homeEle != null) documentModel.setHomeId(homeEle.getText().trim());
                OMElement repoEle = documentElement.getFirstChildWithName(MetadataSupport.repository_unique_id_qnamens);
-               if (repoEle != null) documentModel.setRepositoryId(repoEle.getText());
+               if (repoEle != null) documentModel.setRepositoryId(repoEle.getText().trim());
                OMElement docEle = documentElement.getFirstChildWithName(MetadataSupport.document_unique_id_qnamens);
-               if (docEle != null) documentModel.setDocumentId(docEle.getText());
+               if (docEle != null) documentModel.setDocumentId(docEle.getText().trim());
             }
          }
       }
