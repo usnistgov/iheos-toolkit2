@@ -32,7 +32,7 @@ image.
 </ol>
 </p>
 
-<h2>Validate SOAP Response and returned DICOM Image files
+<h2>Validate SOAP Response and returned DICOM Image files</h2>
 
 <p>
 The following validations are performed:

@@ -18,6 +18,8 @@ requests to both communities and provide a consolidated result.
  <tr><td>Transfer Syntax UID</td><td>1.2.840.10008.1.2.1</td></tr>
 </table>
 
+<h2>Retrieve from multiple Responding Gateways</h2>
+
 <h3>Test Steps</h3>
 <ol>
 <li/>The Image Document Consumer simulator (IDC sim) sends a Retrieve Image 
@@ -46,6 +48,8 @@ one RAD-69 response and returning it to the IDC sim.
 images.
 </ol>
 </p>
+
+<h2>Validate</h2>
 
 <p>
 The following validations are performed:

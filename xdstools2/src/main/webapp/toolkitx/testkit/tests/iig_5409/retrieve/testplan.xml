@@ -1,14 +1,11 @@
 
 <TestPlan>
-  <Test>iig_5400_SingleStudySingleGW/retrieve</Test>
+  <Test>iig_5409/retrieve</Test>
   <TestStep id="retrieve">
-  <Goal>Imaging Document Set Retrieve of a single image</Goal>
+  <Goal>Imaging Document Set Retrieve from multiple Responding Gateways</Goal>
   <ExpectedStatus>Success</ExpectedStatus>
   <ImagingDocSetIigRetrieveTransaction>
     <MetadataFile>RAD-69Request.xml</MetadataFile>
-    <Report name="$home$" section="Result">
-				//*[local-name()='HomeCommunityId']/text()
-			</Report>
   </ImagingDocSetIigRetrieveTransaction>
 </TestStep>
 
