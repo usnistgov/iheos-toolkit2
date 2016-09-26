@@ -387,6 +387,14 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner, SiteMa
 
 	private HTML loadingMessage;
 
+	class RefreshTestCollectionClickHandler implements ClickHandler {
+
+		@Override
+		public void onClick(ClickEvent clickEvent) {
+			displayTestCollection();
+		}
+	}
+
 	// load test results for a single test collection (actor type) for a single site
 	private void displayTestCollection() {
 		testDisplays.clear();  // so they reload
@@ -677,6 +685,11 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner, SiteMa
 	@Override
 	public DeleteAllClickHandler getDeleteAllClickHandler() {
 		return new DeleteAllClickHandler(currentActorTypeId);
+	}
+
+	@Override
+	public ClickHandler getRefreshTestCollectionClickHandler() {
+		return new RefreshTestCollectionClickHandler();
 	}
 
 	private class DeleteAllClickHandler implements ClickHandler {

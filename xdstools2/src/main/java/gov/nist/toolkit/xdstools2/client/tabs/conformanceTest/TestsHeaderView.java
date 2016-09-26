@@ -10,6 +10,7 @@ class TestsHeaderView {
     interface Controller {
         ClickHandler getRunAllClickHandler();
         ClickHandler getDeleteAllClickHandler();
+        ClickHandler getRefreshTestCollectionClickHandler();
     }
     private Controller controller;
     private FlowPanel testsHeader = new FlowPanel();
@@ -75,16 +76,22 @@ class TestsHeaderView {
         notRun.setHTML(String.valueOf(testStatistics.getNotRun()));
 
         // Add controls
-        Image play = new Image("icons2/play-24.png");
-        play.setTitle("Run");
+        Image play = new Image("icons2/play-32.png");
+        play.setTitle("Run All");
         play.addClickHandler(controller.getRunAllClickHandler());
         play.addStyleName("iconStyle");
         bar.add(play);
 
-        Image delete = new Image("icons2/garbage-24.png");
+        Image refresh = new Image("icons2/refresh-32.png");
+        refresh.setTitle("Reload");
+        refresh.addClickHandler(controller.getRefreshTestCollectionClickHandler());
+        refresh.addStyleName("iconStyle");
+        bar.add(refresh);
+
+        Image delete = new Image("icons2/garbage-32.png");
         delete.addStyleName("right");
         delete.addClickHandler(controller.getDeleteAllClickHandler());
-        delete.setTitle("Delete Log");
+        delete.setTitle("Delete All Logs");
         delete.addStyleName("right");
         delete.addStyleName("iconStyle");
         bar.add(delete);
@@ -113,7 +120,7 @@ class TestsHeaderView {
     private Image getStatusIcon(boolean good) {
         Image status;
         if (good) {
-            status = new Image("icons2/correct-24.png");
+            status = new Image("icons2/correct-32.png");
         } else {
             status = new Image("icons/ic_warning_black_24dp_1x.png");
         }
