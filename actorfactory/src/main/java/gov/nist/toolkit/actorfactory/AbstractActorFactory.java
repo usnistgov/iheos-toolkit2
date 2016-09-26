@@ -238,15 +238,15 @@ public abstract class AbstractActorFactory {
 	protected String mkEndpoint(SimulatorConfig asc, SimulatorConfigElement ele, String actor, boolean isTLS) {
 		String transtype = SimDb.getTransactionDirName(ele.transType);
 
-//		String contextName = Installation.installation().tkProps.get("toolkit.servlet.context", "xdstools2");
-		String contextName = Installation.installation().getServletContextName();
+//		String contextName = Installation.instance().tkProps.get("toolkit.servlet.context", "xdstools2");
+		String contextName = Installation.instance().getServletContextName();
 
 		return "http"
 		+ ((isTLS) ? "s" : "")
 		+ "://" 
-		+ Installation.installation().propertyServiceManager().getToolkitHost() 
+		+ Installation.instance().propertyServiceManager().getToolkitHost()
 		+ ":" 
-		+ ((isTLS) ? Installation.installation().propertyServiceManager().getToolkitTlsPort() : Installation.installation().propertyServiceManager().getToolkitPort()) 
+		+ ((isTLS) ? Installation.instance().propertyServiceManager().getToolkitTlsPort() : Installation.instance().propertyServiceManager().getToolkitPort())
 //		+ "/"  context name includes preceding /
 		+ contextName  
 		+ "/sim/" 
@@ -260,7 +260,7 @@ public abstract class AbstractActorFactory {
 	public void saveConfiguration(SimulatorConfig config) throws Exception {
 		verifyActorConfigurationOptions(config);
 
-		SimDb simdb = SimDb.mkSim(Installation.installation().simDbFile(), config.getId(), config.getActorType());
+		SimDb simdb = SimDb.mkSim(Installation.instance().simDbFile(), config.getId(), config.getActorType());
 		File simCntlFile = simdb.getSimulatorControlFile();
 		new SimulatorConfigIo().save(config, simCntlFile.toString());   //config.save(simCntlFile.toString());
 	}

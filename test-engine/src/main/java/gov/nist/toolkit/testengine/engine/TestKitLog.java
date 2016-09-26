@@ -8,14 +8,12 @@ import java.io.File;
 import java.util.regex.Matcher;
 
 public class TestKitLog {
-	File testLog;
-	File testKit;
-	File altTestKit;
+	private File testLog;
+	private File testKit;
 
-	public TestKitLog(File testLogBaseDir, File testkitBaseDir, File altTestkitBaseDir) throws Exception {
+	public TestKitLog(File testLogBaseDir, File testkitBaseDir) throws Exception {
 		testLog = testLogBaseDir;
 		testKit = testkitBaseDir;
-		altTestKit = altTestkitBaseDir;
 
 		if ( !testLog.isDirectory() )
 			throw new Exception("TestLog: log directory " + testLog + " does not exist");
@@ -30,11 +28,7 @@ public class TestKitLog {
 	public File getLogFile(File testPlan) throws Exception {
 		String relativePath = null;
 
-		try {
-			relativePath = TestLogDetails.getLogicalPath(testPlan.getParentFile(), altTestKit);
-		} catch (Exception e) {
-			relativePath = TestLogDetails.getLogicalPath(testPlan.getParentFile(), testKit);
-		}
+		relativePath = TestLogDetails.getLogicalPath(testPlan.getParentFile(), testKit);
 		// formats:
 		//	tests/testname/section
 		// or

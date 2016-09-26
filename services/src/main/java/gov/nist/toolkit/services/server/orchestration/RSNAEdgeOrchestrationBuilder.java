@@ -6,7 +6,6 @@ package gov.nist.toolkit.services.server.orchestration;
 import gov.nist.toolkit.actorfactory.client.SimId;
 import gov.nist.toolkit.actorfactory.client.SimulatorConfig;
 import gov.nist.toolkit.actortransaction.client.ActorType;
-import gov.nist.toolkit.actortransaction.client.ParamType;
 import gov.nist.toolkit.configDatatypes.SimulatorProperties;
 import gov.nist.toolkit.installation.Installation;
 import gov.nist.toolkit.services.client.*;
@@ -77,7 +76,7 @@ public class RSNAEdgeOrchestrationBuilder {
    
 
    private String getImageCache() {
-      String c = Installation.installation().propertyServiceManager().getPropertyManager().getImageCache();
+      String c = Installation.instance().propertyServiceManager().getPropertyManager().getImageCache();
       log.debug("Image Cache: " + c);
       return c;
    }

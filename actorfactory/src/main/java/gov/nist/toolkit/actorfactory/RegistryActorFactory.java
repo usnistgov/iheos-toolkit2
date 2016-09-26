@@ -196,7 +196,7 @@ public class RegistryActorFactory extends AbstractActorFactory {
 //		}
 		SimulatorConfigElement pifPortElement = asc.get(SimulatorProperties.PIF_PORT);
 		site.pifPort = pifPortElement.asString();
-		site.pifHost = Installation.installation().propertyServiceManager().getToolkitHost();
+		site.pifHost = Installation.instance().propertyServiceManager().getToolkitHost();
 
 		return site;
 	}

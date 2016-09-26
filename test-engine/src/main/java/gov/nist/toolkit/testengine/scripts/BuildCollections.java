@@ -18,7 +18,7 @@ public class BuildCollections extends HttpServlet {
     File testkitIn;
     File testkitOut;
 
-    String sections[] = { "testdata", "tests", "examples", "selftest" };
+    public static String sections[] = { "testdata", "tests", "examples", "selftest" };
     Map<String, List<String>> collections = new HashMap<String, List<String>>();
     boolean error;
 
@@ -36,8 +36,8 @@ public class BuildCollections extends HttpServlet {
     }
 
     void write() throws IOException {
-        File collectionsDir = new File(testkitOut + File.separator + "collections");
-        File actorCollectionsDir = new File(testkitOut + File.separator + "actorcollections");
+        File collectionsDir = new File(testkitOut + File.separator + Installation.collectionsDirName);
+        File actorCollectionsDir = new File(testkitOut + File.separator + Installation.actorCollectionsDirName);
         // ActorType => list of test names
         // This layer is necessary because multiple collectionNames can map to single
         // actorCollection since some collections are based on the actor and some on transactions
@@ -167,8 +167,8 @@ public class BuildCollections extends HttpServlet {
     }
 
     public void run() {
-        for (File testkit:Installation.installation().getAllTestkits()) {
-//        File testkit = Installation.installation().testkitFile();
+        for (File testkit:Installation.instance().getAllTestkits()) {
+//        File testkit = Installation.instance().internalTestkitFile();
             testkitIn = testkit;
             testkitOut = testkit;
             scan();

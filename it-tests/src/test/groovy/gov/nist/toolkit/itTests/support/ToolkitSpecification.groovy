@@ -42,13 +42,13 @@ class ToolkitSpecification extends Specification {
     }
 
     def cleanupDir() {
-        File testDataDir = Installation.installation().propertyServiceManager().getTestLogCache()
+        File testDataDir = Installation.instance().propertyServiceManager().getTestLogCache()
         if (testDataDir.exists()) {
             System.out.println("Clearing TEST (testLogCache) data before testing...")
             FileUtils.cleanDirectory(testDataDir)
         }
 
-        testDataDir = Installation.installation().simDbFile()
+        testDataDir = Installation.instance().simDbFile()
         if (testDataDir.exists()) {
             System.out.println("Clearing TEST (simdb) data before testing...")
             FileUtils.cleanDirectory(testDataDir)
@@ -60,7 +60,7 @@ class ToolkitSpecification extends Specification {
         server = new GrizzlyController()
         server.start(remoteToolkitPort);
         server.withToolkit()
-        Installation.installation().overrideToolkitPort(remoteToolkitPort)  // ignore toolkit.properties
+        Installation.instance().overrideToolkitPort(remoteToolkitPort)  // ignore toolkit.properties
 
     }
 

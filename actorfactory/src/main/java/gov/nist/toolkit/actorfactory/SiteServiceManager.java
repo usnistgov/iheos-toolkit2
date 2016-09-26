@@ -153,13 +153,13 @@ public class SiteServiceManager {
 			Exception {
 		if (commonSites == null) {
 			if (!useActorsFile()) {
-				File dir = Installation.installation().getActorsDirName();
+				File dir = Installation.instance().getActorsDirName();
 				logger.debug("loading sites from " + dir);
 				commonSites = new SeparateSiteLoader().load(dir, commonSites);
 			} else {
-				File loc = Installation.installation().propertyServiceManager().configuredActorsFile(true);
+				File loc = Installation.instance().propertyServiceManager().configuredActorsFile(true);
 				if (loc == null)
-					loc = Installation.installation().propertyServiceManager().internalActorsFile();
+					loc = Installation.instance().propertyServiceManager().internalActorsFile();
 				logger.debug("loading sites from " + loc);
 				commonSites = new CombinedSiteLoader().load(loc, commonSites);
 			}
@@ -180,12 +180,12 @@ public class SiteServiceManager {
 	boolean useActorsFile() {
 		if (useGazelleConfigFeed())
 			return false;
-		return Installation.installation().propertyServiceManager().getPropertyManager()
+		return Installation.instance().propertyServiceManager().getPropertyManager()
 				.isUseActorsFile();
 	}
 
 	public boolean useGazelleConfigFeed() {
-		String c = Installation.installation().propertyServiceManager().getPropertyManager()
+		String c = Installation.instance().propertyServiceManager().getPropertyManager()
 				.getToolkitGazelleConfigURL();
 		return c.trim().length() > 0;
 	}
@@ -282,11 +282,11 @@ public class SiteServiceManager {
             commonSites.putSite(site);
 			// sites.saveToFile(configuredActorsFile(false));
 			if (!useActorsFile())
-				new SeparateSiteLoader().saveToFile(Installation.installation()
+				new SeparateSiteLoader().saveToFile(Installation.instance()
 						.getActorsDirName(), site);
 			else {
 				CombinedSiteLoader loader = new CombinedSiteLoader();
-				loader.saveToFile(Installation.installation().propertyServiceManager()
+				loader.saveToFile(Installation.instance().propertyServiceManager()
 						.configuredActorsFile(false), loader.toXML(commonSites));
 			}
 			addSimulatorSites(sessionId);
@@ -305,10 +305,10 @@ public class SiteServiceManager {
 		try {
 			// sites.saveToFile(configuredActorsFile(false));
 			if (!useActorsFile())
-				new SeparateSiteLoader().delete(Installation.installation()
+				new SeparateSiteLoader().delete(Installation.instance()
 						.getActorsDirName(), siteName);
 			else
-				new CombinedSiteLoader().saveToFile(Installation.installation().propertyServiceManager()
+				new CombinedSiteLoader().saveToFile(Installation.instance().propertyServiceManager()
 						.configuredActorsFile(false), commonSites);
 			addSimulatorSites(sessionId);
 		} catch (Exception e) {

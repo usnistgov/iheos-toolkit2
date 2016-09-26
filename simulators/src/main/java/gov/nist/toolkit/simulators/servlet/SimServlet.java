@@ -68,10 +68,10 @@ public class SimServlet  extends HttpServlet {
 		logger.info("Initializing toolkit in SimServlet");
 		File warHome = new File(config.getServletContext().getRealPath("/"));
 		logger.info("...warHome is " + warHome);
-		Installation.installation().warHome(warHome);
-        logger.info("...warHome initialized to " + Installation.installation().warHome());
+		Installation.instance().warHome(warHome);
+        logger.info("...warHome initialized to " + Installation.instance().warHome());
 
-		Installation.installation().setServletContextName(getServletContext().getContextPath());
+		Installation.instance().setServletContextName(getServletContext().getContextPath());
 
 
 		patientIdentityFeedServlet = new PatientIdentityFeedServlet();
@@ -153,7 +153,7 @@ public class SimServlet  extends HttpServlet {
 
 		if (actor == null || actor.equals("null")) {
 			try {
-				SimDb sdb = new SimDb(Installation.installation().simDbFile(), new SimId(simid), null, null);
+				SimDb sdb = new SimDb(Installation.instance().simDbFile(), new SimId(simid), null, null);
 				actor = sdb.getActorsForSimulator().get(0);
 			} catch (IOException e) {
 				e.printStackTrace();
@@ -170,7 +170,7 @@ public class SimServlet  extends HttpServlet {
 
 		SimDb db;
 		try {
-			db = new SimDb(Installation.installation().simDbFile(), new SimId(simid), actor, transaction);
+			db = new SimDb(Installation.instance().simDbFile(), new SimId(simid), actor, transaction);
 		}
 		catch (Exception e) {
 			response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
@@ -247,7 +247,7 @@ public class SimServlet  extends HttpServlet {
 
 		if (actor == null || actor.equals("null")) {
 			try {
-				SimDb sdb = new SimDb(Installation.installation().simDbFile(), new SimId(simid), null, null);
+				SimDb sdb = new SimDb(Installation.instance().simDbFile(), new SimId(simid), null, null);
 				actor = sdb.getActorsForSimulator().get(0);
 			} catch (IOException e) {
 				e.printStackTrace();
@@ -264,7 +264,7 @@ public class SimServlet  extends HttpServlet {
 
 		SimDb db;
 		try {
-			db = new SimDb(Installation.installation().simDbFile(), new SimId(simid), actor, transaction);
+			db = new SimDb(Installation.instance().simDbFile(), new SimId(simid), actor, transaction);
 			response.setContentType("application/zip");
 			db.getMessageLogZip(response.getOutputStream(), message);
 			response.getOutputStream().close();
@@ -332,7 +332,7 @@ public class SimServlet  extends HttpServlet {
 
 		if (actor == null || actor.equals("null")) {
 			try {
-				SimDb sdb = new SimDb(Installation.installation().simDbFile(), new SimId(simid), null, null);
+				SimDb sdb = new SimDb(Installation.instance().simDbFile(), new SimId(simid), null, null);
 				actor = sdb.getActorsForSimulator().get(0);
 			} catch (IOException e) {
 				e.printStackTrace();
@@ -349,7 +349,7 @@ public class SimServlet  extends HttpServlet {
 
 		SimDb db;
 		try {
-			db = new SimDb(Installation.installation().simDbFile(), new SimId(simid), actor, transaction);
+			db = new SimDb(Installation.instance().simDbFile(), new SimId(simid), actor, transaction);
 		} catch (Exception e) {
 			response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
 			return;
@@ -378,7 +378,7 @@ public class SimServlet  extends HttpServlet {
 		String uri  = request.getRequestURI().toLowerCase();
 		logger.info("+ + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + ");
 		logger.info("uri is " + uri);
-		logger.info("warHome is " + Installation.installation().warHome());
+		logger.info("warHome is " + Installation.instance().warHome());
 		RegIndex regIndex = null;
 		RepIndex repIndex = null;
 		ServletContext servletContext = config.getServletContext();
@@ -460,12 +460,12 @@ public class SimServlet  extends HttpServlet {
 		try {
 
 			// DB space for this simulator
-			SimDb db = new SimDb(Installation.installation().simDbFile(), simid, actor, transaction);
+			SimDb db = new SimDb(Installation.instance().simDbFile(), simid, actor, transaction);
 			request.setAttribute("SimDb", db);
 
 			logRequest(request, db, actor, transaction);
 
-			SimulatorConfig asc = GenericSimulatorFactory.getSimConfig(Installation.installation().simDbFile(), simid);
+			SimulatorConfig asc = GenericSimulatorFactory.getSimConfig(Installation.instance().simDbFile(), simid);
             request.setAttribute("SimulatorConfig", asc);
 
 			regIndex = getRegIndex(simid);

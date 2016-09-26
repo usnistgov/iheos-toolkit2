@@ -5,6 +5,8 @@ import gov.nist.toolkit.results.client.TestInstance;
 import gov.nist.toolkit.testenginelogging.client.LogFileContentDTO;
 import gov.nist.toolkit.testenginelogging.client.SectionLogMapDTO;
 import gov.nist.toolkit.testenginelogging.logrepository.LogRepository;
+import gov.nist.toolkit.testkitutilities.SectionTestPlanFileMap;
+import gov.nist.toolkit.testkitutilities.TestDefinition;
 import gov.nist.toolkit.utilities.io.LinesOfFile;
 import gov.nist.toolkit.xdsexception.client.XdsInternalException;
 import org.apache.log4j.Logger;
@@ -19,7 +21,8 @@ import java.util.Map;
 
 public class TestLogDetails {
 
-	private File testkit;
+//	private File testkit;
+	private TestDefinition testDefinition;
 	private LogRepository logRepository = null;
 	private String area;  // examples, tests etc
 	private TestInstance testInstance;
@@ -30,25 +33,26 @@ public class TestLogDetails {
 	private static Logger logger = Logger.getLogger(TestLogDetails.class);
 
 
-	private static final String testPlanFileName = "testplan.xml";
 
-	public TestLogDetails(File testkit, TestInstance testInstance) throws Exception {
-		this.testkit = testkit;
+	public TestLogDetails(TestDefinition testDefinition, TestInstance testInstance) throws Exception {
+		this.testDefinition = testDefinition;
 		this.testInstance = testInstance;
 		areas = Installation.defaultAreas;
+//		if (!testDefinition.isTest())
+//			throw new Exception("Test " + testDefinition.getId() + " does not exist");
 		sectionLogMapDTO = new SectionLogMapDTO(testInstance);
-		verifyCurrentTestExists(testkit, testInstance);
-		testPlanFileMap = getTestPlans();
-//		logRepository = LogRepositoryFactory.getRepository(Installation.installation().testLogCache(), testInstance.getUser(), LogIdIOFormat.JAVA_SERIALIZATION, LogIdType.SPECIFIC_ID, testInstance);
+		testPlanFileMap = testDefinition.getTestPlans();
+//		logRepository = LogRepositoryFactory.getRepository(Installation.instance().testLogCache(), testInstance.getUser(), LogIdIOFormat.JAVA_SERIALIZATION, LogIdType.SPECIFIC_ID, testInstance);
 	}
 
-	public TestLogDetails(File testkit, TestInstance testInstance, String[] areas) throws Exception {
-		this.testkit = testkit;
+	public TestLogDetails(TestDefinition testDefinition, TestInstance testInstance, String[] areas) throws Exception {
+		this.testDefinition = testDefinition;
 		this.testInstance = testInstance;
 		this.areas = areas;
+		if (!testDefinition.isTest())
+			throw new Exception("Test " + testDefinition.getId() + " does not exist");
 		sectionLogMapDTO = new SectionLogMapDTO(testInstance);
-		verifyCurrentTestExists(testkit, testInstance);
-		testPlanFileMap = getTestPlans();
+		testPlanFileMap = testDefinition.getTestPlans();
 	}
 
 //	public TestLogDetails(File testkit) throws Exception {
@@ -64,10 +68,10 @@ public class TestLogDetails {
 //	}
 
 
-	public String toString() { return "[TestLogDetails: testkit=" + testkit + " area=" + area +
+	public String toString() { return "[TestLogDetails: " + " area=" + area +
 		"<br />testnum=" + testInstance +
 		"<br />sections= " + testPlansToString() +
-		"<br />logs= " + sectionLogMapDTO.toString() +
+		"<br />logs= " + ((sectionLogMapDTO == null) ? "none" : sectionLogMapDTO.toString()) +
 		"]";
 	}
 	
@@ -141,30 +145,6 @@ public class TestLogDetails {
         return testPath.subpath(testkitSize, testPathSize);
     }
 
-
-	File simpleTestDir() throws Exception {
-		File file = new File(getTestDir() + File.separator + testPlanFileName);
-		if ( !file.exists())
-			throw new Exception("Test plan " + file + " does not exist");
-		return file;
-	}
-
-	private void verifyCurrentTestExists(File testkit, TestInstance testInstance)
-			throws Exception {
-		for (int i=0; i<areas.length; i++) {
-			area = areas[i];
-			if (exists())
-				break;
-		}
-		if ( ! exists() ) {
-			String msg = "TestSpec (testkit=" + testkit + " testId=" + testInstance + ", no " + testPlanFileName + " files found";
-			logger.error(msg);
-//			throw new Exception(msg);
-		} else {
-            logger.info("Using (testkit=" + testkit + " testId=" + testInstance + ")");
-        }
-	}
-
 	static public void listTestKitContents(File testkit) throws Exception {
 //		TestLogDetails ts = new TestLogDetails(testkit);
 //
@@ -233,60 +213,15 @@ public class TestLogDetails {
 		return lof.next();
 	}
 
-	public File getReadme() {
-		return new File(getTestDir() + File.separator + "readme.txt");
-	}
+//	public File getReadme() {
+//		return new File(getTestDir() + File.separator + "readme.txt");
+//	}
+//
+//	public String getReadmeFirstLine() throws IOException {
+//		return new LinesOfFile(getReadme()).next();
+//	}
 
-	public String getReadmeFirstLine() throws IOException {
-		return new LinesOfFile(getReadme()).next();
-	}
 
-	File getSectionDir() {
-		return new File(testkit + File.separator + area);
-	}
-
-	public File getTestDir() {
-		return new File(testkit + File.separator + area + File.separatorChar + testInstance.getId());
-	}
-
-	public boolean exists() {
-		return getTestDir().isDirectory();
-	}
-
-	public SectionTestPlanFileMap getTestPlans() throws Exception {
-
-		File index = new File(getTestDir() + File.separator + "index.idx");
-		return getSectionTestPlanFileMap(index);
-
-	}
-
-	private SectionTestPlanFileMap getSectionTestPlanFileMap(File index) throws Exception {
-		if (index.exists())
-			return getTestPlansFromIndex(index);
-		else
-			return getTestPlanFromDir(getTestDir());
-	}
-
-	public File getIndexFile() {
-		return new File(getTestDir() + File.separator + "index.idx");
-	}
-
-	SectionTestPlanFileMap getTestPlansFromIndex(File index) throws Exception {
-		SectionTestPlanFileMap plans = new SectionTestPlanFileMap();
-		File testdir = getTestDir();
-
-		for (LinesOfFile lof = new LinesOfFile(index); lof.hasNext(); ) {
-			String dir = lof.next().trim();
-			if (dir.length() ==0)
-				continue;
-			File path = new File(testdir + File.separator + dir + File.separatorChar + testPlanFileName);
-			if ( ! path.exists() )
-				throw new Exception("TestSpec " + toString() + " references sub-directory " + dir + 
-						" which does not exist or does not contain a " + testPlanFileName + " file");
-			plans.put(dir, path);
-		}
-		return plans;
-	}
 
 	/**
 	 * Read test logs based on index.idx file up to but not including section upToSection. If 
@@ -363,7 +298,7 @@ public class TestLogDetails {
 		loadTestPlansFromSectionList(sectionNames);
 		
 		// will need to load all previous section logs for referencing
-		List<File> previousLogFiles = getTestLogsForThisTest(getIndexFile(), sectionNames.get(0));
+		List<File> previousLogFiles = getTestLogsForThisTest(testDefinition.getIndexFile(), sectionNames.get(0));
 				
 		for (File f : previousLogFiles) {
 			LogFileContentDTO lf = new LogFileContentBuilder().build(f);
@@ -374,48 +309,14 @@ public class TestLogDetails {
 		
 	}
 	
-	public File getTestplanFile(String section) throws Exception {
-		File testdir = getTestDir();
-		File path;
-		
-		if (section == null) {
-			path = new File(testdir + File.separator + testPlanFileName);
-		} else {
-			path = new File(testdir + File.separator + section + File.separator + testPlanFileName);
-		}
-		if ( ! path.exists() )
-			throw new Exception("Test Section " + section + 
-					" has been requested but does not exist or does not contain a " + testPlanFileName + " file (" + path + ")");
-		return path;
-	}
 
-	void loadTestPlansFromSectionList(List<String> sections) throws Exception {
+	private void loadTestPlansFromSectionList(List<String> sections) throws Exception {
 		testPlanFileMap = new SectionTestPlanFileMap();
 
 		for (String sectionName : sections ) {
-			File path = getTestplanFile(sectionName);
+			File path = testDefinition.getTestplanFile(sectionName);
 			testPlanFileMap.put(sectionName, path);
 		}
-	}
-
-	SectionTestPlanFileMap getTestPlanFromDir(File dir) throws Exception {
-		SectionTestPlanFileMap plans = new SectionTestPlanFileMap();
-
-		File path = new File(dir + File.separator + testPlanFileName);
-		if ( ! path.exists() ) 
-			return plans;
-//			throw new Exception("TestSpec " + toString() + " does not have index.idx or " + testPlanFileName + " file");
-		plans.put(".", path);
-
-		return plans;
-	}
-
-	public boolean isTestDir() {
-		if ( new File(getTestDir() + File.separator + "index.idx").exists())
-			return true;
-		if ( new File(getTestDir() + File.separator + testPlanFileName).exists())
-			return true;
-		return false;
 	}
 
 	public void validateTestPlans() throws XdsInternalException {

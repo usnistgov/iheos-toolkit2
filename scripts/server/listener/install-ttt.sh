@@ -15,5 +15,5 @@ fi
 # install WAR file
 (cd ~bill; cp ttt-upload/ttt.war ${ttt_tomcat}/webapps)
 
-# restart ttt tomcat to force unpacking/installation of new war
+# restart ttt tomcat to force unpacking/instance of new war
 sudo service tomcat_ttt restart

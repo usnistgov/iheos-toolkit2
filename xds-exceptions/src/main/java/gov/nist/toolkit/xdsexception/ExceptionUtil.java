@@ -21,14 +21,14 @@ public class ExceptionUtil {
 		String stackTrace = new String(baos.toByteArray());
 		StringBuilder buf = new StringBuilder();
 		Scanner scanner = new Scanner(stackTrace);
-		if (scanner.hasNextLine()) scanner.nextLine();  // heading
-		if (scanner.hasNextLine()) scanner.nextLine();  // here()
+//		if (scanner.hasNextLine()) scanner.nextLine();  // heading
+//		if (scanner.hasNextLine()) scanner.nextLine();  // here()
 		while (scanner.hasNextLine()) {
 			String line = scanner.nextLine().trim();
-			if (!line.contains("gov.nist.toolkit")) break;
+			if (!line.contains("gov.nist.toolkit")) continue;
 			buf.append("\n\t").append(line);
 		}
-		stackTrace = buf.toString();
+//		stackTrace = buf.toString();
 
 		StringBuilder msg = new StringBuilder();
 		if (message != null)

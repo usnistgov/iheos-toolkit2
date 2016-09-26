@@ -60,7 +60,7 @@ class StoredQuerySpec extends ToolkitSpecification {
     }
 
     def setup() {
-        println "EC is ${Installation.installation().externalCache().toString()}"
+        println "EC is ${Installation.instance().externalCache().toString()}"
         println "${api.getSiteNames(true)}"
         api.createTestSession(testSession)
         if (!api.simulatorExists(simId)) {

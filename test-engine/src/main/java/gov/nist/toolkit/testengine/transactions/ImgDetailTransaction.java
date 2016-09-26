@@ -82,7 +82,7 @@ public class ImgDetailTransaction extends BasicTransaction {
     */
    public ImgDetailTransaction(StepContext s_ctx, OMElement step, OMElement instruction, OMElement instruction_output) {
       super(s_ctx, instruction, instruction_output);
-      pMgr = Installation.installation().propertyServiceManager().getPropertyManager();
+      pMgr = Installation.instance().propertyServiceManager().getPropertyManager();
       this.step = step;
    }
 

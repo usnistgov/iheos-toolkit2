@@ -7,7 +7,6 @@ import java.io.FilenameFilter;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.nio.file.StandardCopyOption;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
@@ -15,10 +14,8 @@ import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
 import org.w3c.dom.Element;
-import org.w3c.dom.NodeList;
 
 import gov.nist.toolkit.actorfactory.client.SimId;
-import gov.nist.toolkit.actorfactory.client.SimulatorConfig;
 import gov.nist.toolkit.installation.Installation;
 import gov.nist.toolkit.installation.PropertyManager;
 import gov.nist.toolkit.installation.PropertyServiceManager;
@@ -34,7 +31,7 @@ public class PrsSimLogs {
 
    private static Logger log = Utility.getLog();
    
-   private static Installation installation = Installation.installation();
+   private static Installation installation = Installation.instance();
    private static PropertyServiceManager propertyServiceManager = installation.propertyServiceManager();
    private static PropertyManager propertyManager = propertyServiceManager.getPropertyManager();
    

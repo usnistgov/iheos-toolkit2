@@ -21,6 +21,8 @@ import gov.nist.toolkit.testenginelogging.client.LogMapItemDTO
 import gov.nist.toolkit.testenginelogging.client.TestStepLogContentDTO
 import gov.nist.toolkit.testenginelogging.logrepository.LogRepository
 import gov.nist.toolkit.testenginelogging.logrepository.LogRepositoryFactory
+import gov.nist.toolkit.testkitutilities.TestKit
+import gov.nist.toolkit.testkitutilities.TestKitSearchPath
 import gov.nist.toolkit.utilities.xml.Util
 import gov.nist.toolkit.utilities.xml.XmlUtil
 import gov.nist.toolkit.xdsexception.ExceptionUtil
@@ -119,9 +121,10 @@ public class DashboardDaemon {
 				continue;
 			}
 
+			TestKitSearchPath searchPath = new TestKitSearchPath(environmentName, "default");
 			Xdstest2 xdstest;
 			try {
-				xdstest = new Xdstest2(new File(warHome + File.separator + "toolkitx"), null);
+				xdstest = new Xdstest2(new File(warHome + File.separator + "toolkitx"), searchPath, null);
 			} catch (Exception e) {
 				regStatus.status = false;
 				regStatus.fatalError = ExceptionUtil.exception_details(e, exceptionReportingDepth);
@@ -136,7 +139,10 @@ public class DashboardDaemon {
 			List<String> sections = new ArrayList<String>();
 			sections.add("XDS");
 			try {
-				xdstest.addTest(testInstance, sections, (String[]) areas.toArray());
+				TestKit testKit = searchPath.getTestKitForTest(testInstance.getId());
+				if (testKit == null)
+					throw new Exception("Test " + testInstance + " not found");
+				xdstest.addTest(testKit, testInstance, sections, (String[]) areas.toArray());
 			} catch (Exception e1) {
 				regStatus.status = false;
 				regStatus.fatalError = ExceptionUtil.exception_details(e1, exceptionReportingDepth);
@@ -160,7 +166,7 @@ public class DashboardDaemon {
             ts.logRepository =
             LogRepositoryFactory.
                     getRepository(
-                            Installation.installation().sessionCache(),
+                            Installation.instance().sessionCache(),
                             session.getId(),
                             LogIdIOFormat.JAVA_SERIALIZATION,
                             LogIdType.TIME_ID,
@@ -266,7 +272,8 @@ public class DashboardDaemon {
 
 			Xdstest2 xdstest;
 			try {
-				xdstest = new Xdstest2(new File(warHome + File.separator + "toolkitx"), null);
+				TestKitSearchPath searchPath = new TestKitSearchPath(environmentName, "default");
+				xdstest = new Xdstest2(new File(warHome + File.separator + "toolkitx"), searchPath, null);
 			} catch (Exception e) {
 				rstatus.status = false;
 				rstatus.fatalError = ExceptionUtil.exception_details(e, exceptionReportingDepth)
@@ -279,7 +286,7 @@ public class DashboardDaemon {
             TestInstance testInstance = new TestInstance("SingleDocument")
             LogRepository logRepository = LogRepositoryFactory.
                     getRepository(
-                            Installation.installation().sessionCache(),
+                            Installation.instance().sessionCache(),
                             session.getId(),
                             LogIdIOFormat.JAVA_SERIALIZATION,
                             LogIdType.TIME_ID,
@@ -288,7 +295,11 @@ public class DashboardDaemon {
             println logRepository
             List<String> areas = ['testdata-repository']
 			try {
-				xdstest.addTest(testInstance, null, (String[]) areas.toArray());
+				TestKitSearchPath searchPath = new TestKitSearchPath(environmentName, "default");
+				TestKit testKit = searchPath.getTestKitForTest(testInstance.getId());
+				if (testKit == null)
+					throw new Exception("Test " + testInstance + " not found");
+				xdstest.addTest(testKit, testInstance, null, (String[]) areas.toArray());
 			} catch (Exception e1) {
 				rstatus.status = false;
 				rstatus.fatalError = ExceptionUtil.exception_details(e1, exceptionReportingDepth)

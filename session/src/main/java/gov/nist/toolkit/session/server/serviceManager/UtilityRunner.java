@@ -10,10 +10,11 @@ import gov.nist.toolkit.sitemanagement.Sites;
 import gov.nist.toolkit.sitemanagement.client.Site;
 import gov.nist.toolkit.testengine.engine.TestCollection;
 import gov.nist.toolkit.testengine.engine.TransactionSettings;
-import gov.nist.toolkit.testenginelogging.logrepository.LogRepository;
 import gov.nist.toolkit.testenginelogging.logrepository.LogRepositoryFactory;
-import gov.nist.toolkit.xdsexception.client.EnvironmentNotSelectedException;
+import gov.nist.toolkit.testkitutilities.TestKit;
+import gov.nist.toolkit.testkitutilities.TestKitSearchPath;
 import gov.nist.toolkit.xdsexception.ExceptionUtil;
+import gov.nist.toolkit.xdsexception.client.EnvironmentNotSelectedException;
 import org.apache.log4j.Logger;
 
 import java.util.Collection;
@@ -60,7 +61,7 @@ public class UtilityRunner {
             session.transactionSettings.patientIdAssigningAuthorityOid = session.currentCodesConfiguration().getAssigningAuthorityOid();
 
             if (session.xt == null)
-                session.xt = xdsTestServiceManager.getNewXt();
+                throw new Exception("UtilityRunner#run: session.xt not initialized");
 
 //            if (assertionResults == null)
 //                assertionResults = new AssertionResults();
@@ -74,7 +75,7 @@ public class UtilityRunner {
                     session.transactionSettings.logRepository =
                             LogRepositoryFactory.
                                     getRepository(
-                                            Installation.installation().sessionCache(),
+                                            Installation.instance().sessionCache(),
                                             session.getId(),
                                             LogIdIOFormat.JAVA_SERIALIZATION,
                                             LogIdType.TIME_ID,
@@ -84,7 +85,7 @@ public class UtilityRunner {
                     session.transactionSettings.logRepository =
                             LogRepositoryFactory.
                                     getRepository(
-                                            Installation.installation().testLogCache(),
+                                            Installation.instance().testLogCache(),
                                             session.getMesaSessionName(),
                                             LogIdIOFormat.JAVA_SERIALIZATION,
                                             LogIdType.SPECIFIC_ID,
@@ -94,7 +95,6 @@ public class UtilityRunner {
             session.xt.setLogRepository(session.transactionSettings.logRepository);
             logger.info("*** logRepository user (sessionName): " + session.transactionSettings.logRepository.getUser());
 
-            session.xt.setTestkits(Installation.installation().testkitFiles(session.getCurrentEnvironment(),session.getMesaSessionName()));
             try {
                 if (testInstance.getId().startsWith("tc:")) {
                     String collectionName = testInstance.getId().split(":")[1];
@@ -104,19 +104,23 @@ public class UtilityRunner {
                     // collection.  We replace it with a list of linked TestInstances, one for each
                     // contained test.
 
-                    TestCollection testCollection = new TestCollection(Installation.installation().testkitFile(), collectionName);
+                    TestCollection testCollection = new TestCollection(Installation.instance().internalTestkitFile(), collectionName);
                     List<String> testIds = testCollection.getTestIds();
-                    TestInstance ti = null;
                     for (String id : testIds) {
-                        if (ti == null) {
-                            ti = new TestInstance(id);
-                            session.xt.addTest(ti);
-                            continue;
-                        }
-                        session.xt.addTest(LogRepository.cloneTestInstance(ti, id)); // this cloning links them
+                        TestInstance ti = new TestInstance(id);
+                        TestKitSearchPath searchPath = session.getTestkitSearchPath();
+                        TestKit testKit = searchPath.getTestKitForTest(id);
+                        if (testKit == null)
+                            throw new Exception("Test " + ti + " not found");
+                        session.xt.addTest(testKit, ti);
                     }
+//                        session.xt.addTest(LogRepository.cloneTestInstance(ti, id)); // this cloning links them
                 } else {
-                    session.xt.addTest(testInstance, sections, areas);
+                    TestKitSearchPath searchPath = session.getTestkitSearchPath();
+                    TestKit testKit = searchPath.getTestKitForTest(testInstance.getId());
+                    if (testKit == null)
+                        throw new Exception("Test " + testInstance + " not found");
+                    session.xt.addTest(testKit, testInstance, sections, areas);
                 }
 
                 // force loading of site definitions

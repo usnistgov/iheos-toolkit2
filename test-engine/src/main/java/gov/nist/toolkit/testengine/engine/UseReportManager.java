@@ -9,6 +9,8 @@ import gov.nist.toolkit.testenginelogging.client.LogFileContentDTO;
 import gov.nist.toolkit.testenginelogging.client.ReportDTO;
 import gov.nist.toolkit.testenginelogging.client.SectionLogMapDTO;
 import gov.nist.toolkit.testenginelogging.client.TestStepLogContentDTO;
+import gov.nist.toolkit.testkitutilities.TestDefinition;
+import gov.nist.toolkit.testkitutilities.TestKitSearchPath;
 import gov.nist.toolkit.utilities.xml.OMFormatter;
 import gov.nist.toolkit.xdsexception.client.XdsInternalException;
 import org.apache.axiom.om.OMElement;
@@ -37,7 +39,7 @@ public class UseReportManager  {
 	 * Return TestSections necessary to satisfy these UseReport instances.
 	 * @return
 	 */
-	public TestSections getTestSections() {
+	public TestSections getTestSectionsReferencedInUseReports() {
 		TestSections ts = new TestSections();
 
 		for (UseReport ur : useReports) {
@@ -47,30 +49,26 @@ public class UseReportManager  {
 		return ts;
 	}
 
-	public void loadPriorTestSections(TestConfig config) throws Exception {
-		TestSections ts = getTestSections();
+	public void loadPriorTestSections(TransactionSettings transactionSettings, TestConfig config) throws Exception {
+		TestSections ts = getTestSectionsReferencedInUseReports();
 		for (TestSection tsec : ts.getTestSections()) {
 			TestInstance testInstance = tsec.testInstance;
+			TestKitSearchPath searchPath = new TestKitSearchPath(transactionSettings.environmentName, transactionSettings.testSession);
+			TestDefinition testDefinition = searchPath.getTestDefinition(testInstance.getId());
 			String section = tsec.section;
-			if (testInstance == null || testInstance.isEmpty())
-				testInstance = config.testInstance;
 			sectionLogMapDTO.setTestInstance(testInstance);
 			if (section != null && section.equals("THIS"))
 				continue;
 			if (config.verbose)
 				System.out.println("\tLoading logs for test " + testInstance + " section " + section + "...");
 			TestLogDetails tspec = null;
-			try {
-				tspec = new TestLogDetails(config.altTestkitHome, testInstance);
-			} catch (Exception e) {
-				tspec = new TestLogDetails(config.testkitHome, testInstance);
-			}
+			tspec = new TestLogDetails(testDefinition, testInstance);
             System.out.println("TestLogDetails are: " + tspec.toString());
 			tspec.setLogRepository(config.logRepository);
 			File testlogFile = tspec.getTestLog(testInstance, section);
             System.out.println("Loading log " + testlogFile);
 			if (testlogFile != null)
-				sectionLogMapDTO.put((section.equals("") ? "None" : section), new LogFileContentBuilder().build(testlogFile));
+				sectionLogMapDTO.put(section, new LogFileContentBuilder().build(testlogFile));
 		}
 	}
 

@@ -30,7 +30,7 @@ public class SimManager {
 
 	public SimManager(String sessionId) {
 		this.sessionId = sessionId;
-		if (Installation.installation().propertyServiceManager().getCacheDisabled()) {
+		if (Installation.instance().propertyServiceManager().getCacheDisabled()) {
 			List<SimId> simIds = loadAllSims();
 			logger.debug("Cache disabled - loaded " + simIds.size() + "  sims");
 		}

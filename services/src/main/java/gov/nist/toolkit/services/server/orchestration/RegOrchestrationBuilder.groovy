@@ -33,7 +33,7 @@ class RegOrchestrationBuilder {
 
         boolean initialize = false;
 
-        File orchestrationPropFile = Installation.installation().orchestrationPropertiesFile(request.userName, ActorType.REPOSITORY.shortName)
+        File orchestrationPropFile = Installation.instance().orchestrationPropertiesFile(request.userName, ActorType.REPOSITORY.shortName)
         Properties orchProps = new Properties()
         if (orchestrationPropFile.exists())
             orchProps.load(new FileInputStream(orchestrationPropFile))
@@ -103,7 +103,7 @@ class RegOrchestrationBuilder {
 
     TestInstance initializeTestInstance(TestInstance testInstance) {
         testInstance.setUser(request.getUserName());
-        testInstance.setLocation(Installation.installation().testLogCache().toString())
+        testInstance.setLocation(Installation.instance().testLogCache().toString())
         testInstance.setIdType(LogIdType.SPECIFIC_ID)
         return testInstance;
     }

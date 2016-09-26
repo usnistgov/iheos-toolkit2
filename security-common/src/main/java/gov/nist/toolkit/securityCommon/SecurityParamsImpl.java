@@ -26,7 +26,7 @@ public class SecurityParamsImpl implements SecurityParams {
     public File getKeystore() throws EnvironmentNotSelectedException {
         if (environmentName == null)
             throw new EnvironmentNotSelectedException("Environment not specified in call");
-        File keystoreFile = Installation.installation().getKeystore(environmentName);
+        File keystoreFile = Installation.instance().getKeystore(environmentName);
         if (!keystoreFile.exists())
             throw new EnvironmentNotSelectedException("Environment " + environmentName + " does not have a keystore (file is " + keystoreFile + ")");
         return keystoreFile;
@@ -34,19 +34,19 @@ public class SecurityParamsImpl implements SecurityParams {
 
     @Override
     public String getKeystorePassword() throws IOException, EnvironmentNotSelectedException {
-        return Installation.installation().getKeystorePassword(environmentName);
+        return Installation.instance().getKeystorePassword(environmentName);
     }
 
     @Override
     public File getKeystoreDir() throws EnvironmentNotSelectedException {
-        File f = Installation.installation().getKeystoreDir(environmentName);
+        File f = Installation.instance().getKeystoreDir(environmentName);
         if (f.exists() && f.isDirectory())
             return f;
         throw new EnvironmentNotSelectedException("Environment " + environmentName + " does not have a keystore");
     }
 
     private File getEnvironmentDir() throws EnvironmentNotSelectedException {
-        File env = Installation.installation().environmentFile(environmentName);
+        File env = Installation.instance().environmentFile(environmentName);
         if (!env.exists() || !env.isDirectory())
             throw new EnvironmentNotSelectedException("Environment " + environmentName + " does not exist");
         return env;

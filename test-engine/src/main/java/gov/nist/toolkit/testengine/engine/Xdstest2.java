@@ -1,6 +1,5 @@
 package gov.nist.toolkit.testengine.engine;
 
-import gov.nist.toolkit.installation.Installation;
 import gov.nist.toolkit.results.client.TestInstance;
 import gov.nist.toolkit.securityCommon.SecurityParams;
 import gov.nist.toolkit.sitemanagement.Sites;
@@ -12,6 +11,9 @@ import gov.nist.toolkit.testenginelogging.client.LogMapDTO;
 import gov.nist.toolkit.testenginelogging.client.StepGoalsDTO;
 import gov.nist.toolkit.testenginelogging.client.TestStepLogContentDTO;
 import gov.nist.toolkit.testenginelogging.logrepository.LogRepository;
+import gov.nist.toolkit.testkitutilities.TestDefinition;
+import gov.nist.toolkit.testkitutilities.TestKit;
+import gov.nist.toolkit.testkitutilities.TestKitSearchPath;
 import gov.nist.toolkit.xdsexception.client.EnvironmentNotSelectedException;
 import org.apache.log4j.Logger;
 
@@ -34,17 +36,14 @@ import java.util.Properties;
  */
 public class Xdstest2 {
 
-	XdsTest xt;
-	LogRepository logRepository;
-	File testkit;
-	File altTestkit;
-	List<File> testkits;
+	private XdsTest xt;
+	private LogRepository logRepository;
+	private TestKitSearchPath searchPath;
 	TestInstance testInstance;
-	Site site;
-	File toolkitDir;   // never referenced
-	List<String> sections;
-	List<TestLogDetails> testLogDetails;
-	SecurityParams tki;
+	private Site site;
+	private List<String> sections;
+	private List<TestLogDetails> testLogDetails;
+	private SecurityParams tki;
 	public boolean involvesMetadata = false;   // affects logging
 	static Logger logger = Logger.getLogger(Xdstest2.class);
 
@@ -55,11 +54,10 @@ public class Xdstest2 {
 	 * @throws Exception 
 	 * @throws FileNotFoundException 
 	 */
-	public Xdstest2(File toolkitDir, SecurityParams tki) throws Exception {
-		this.toolkitDir = toolkitDir;
-		xt = new XdsTest();
+	public Xdstest2(File toolkitDir, TestKitSearchPath searchPath, SecurityParams tki) throws Exception {
+		this.searchPath = searchPath;
+		xt = new XdsTest(searchPath);
 		xt.setToolkit(toolkitDir);
-		setTestkitLocation(new File(toolkitDir + File.separator + "testkit"));
 		xt.loadTestKitVersion();
 		this.tki = tki;
 		initSecurity(toolkitDir);
@@ -134,37 +132,6 @@ public class Xdstest2 {
 	}
 
 	/**
-	 * Set Testkit location.
-	 * Testkit is a file/directory based database of test descriptions. Each test description
-	 * includes one or more testplans.  A testplan is a script that runs the test. Xdstest or 
-	 * the test engine (same thing) is the language interpreter for the testplan language. Each
-	 * test has a name.  These names frequently map to Kudu/Gazelle test numbers. The simplest
-	 * test has a single testplan.  A testplan is a sequence of steps.  The steps are executed
-	 * in order. A testplan is executed start to finish. There is no way to say - execute step 3.  
-	 * Frequently, the early test steps initialize the SUT for later steps. More complicated tests 
-	 * can have multiple sections with each section containing a testplan.  A test can be run in
-	 * two ways: execute test x (run all sections of the test) or execute test x section y (where
-	 * only the specified test section is run). Within the testkit, tests are segregated into
-	 * areas. Current area names are: tests, examples, testdata. By default, the testplan 
-	 * lookup function searches all areas for a given named test so these divisions are purely
-	 * administrative.  Not all areas are distributed with the testkit. Some, like selftest, are
-	 * used for extended regression testing of the Public Registry services. Note, not all 
-	 * tests from the testkit are imported into the GUI tool which uses this interface.  The
-	 * ant build.xml controls this.
-	 * 
-	 * @param locationDir
-	 */
-	public void setTestkitLocation(File locationDir) {
-		testkit = locationDir;
-		xt.setTestkit(locationDir);
-	}
-
-	public void setAlternateTestkitLocation(File dir) {
-		altTestkit = dir;
-		xt.setAltTestkit(dir);
-	}
-
-	/**
 	 * LogDir location - logDir is a directory where the xdstest log files will be written.
 	 * Each log file is named log.xml. The directory structure of logDir reflects that of the
 	 * testkit.
@@ -187,12 +154,10 @@ public class Xdstest2 {
 	 * of the test are executed in the default order.
 	 * @throws Exception - Thrown if testname does not exist in the testkit
 	 */
-	public void addTest(TestInstance testInstance) throws Exception {
+	public void addTest(TestKit testKit, TestInstance testInstance) throws Exception {
 		this.testInstance = testInstance;
-		File tk = Installation.installation().findTestkitFromTest(testkits, testInstance.getId());
-		if (tk == null) tk = xt.getTestkit();
-		xt.addTestSpec(new TestLogDetails(tk, testInstance));
-//		xt.addTestSpec(new TestLogDetails(xt.getTestkit(), testInstance));
+		TestDefinition testDefinition = testKit.getTestDef(testInstance.getId());
+		xt.addTestSpec(new TestLogDetails(testDefinition, testInstance));
 
 	}
 
@@ -206,21 +171,16 @@ public class Xdstest2 {
 	 * @param areas - controls which areas of the testkit should be searched
 	 * @throws Exception - Thrown if testname does not exist in the testkit
 	 */
-	public void addTest(TestInstance testInstance, List<String> sections, String[] areas, boolean doLogCheck) throws Exception {
+	public void addTest(TestKit testKit, TestInstance testInstance, List<String> sections, String[] areas, boolean doLogCheck) throws Exception {
 		this.testInstance = testInstance;
 		this.sections = sections;
+		TestDefinition testDefinition = testKit.getTestDef(testInstance.getId());
 		TestLogDetails testLogDetails;
-		File tk;
-		try {
-			tk = Installation.installation().findTestkitFromTest(testkits, testInstance.getId());
-		} catch (NullPointerException npe) {
-			tk = xt.getTestkit();
-		}
-		if (tk == null) tk = xt.getTestkit();
+		File tk = testKit.getTestKitDir();
 		if (areas == null)
-			testLogDetails = new TestLogDetails(tk, testInstance);
+			testLogDetails = new TestLogDetails(testDefinition, testInstance);
 		else
-			testLogDetails = new TestLogDetails(tk, testInstance, areas);
+			testLogDetails = new TestLogDetails(testDefinition, testInstance, areas);
 		if (logRepository != null)
 			testLogDetails.setLogRepository(logRepository);
 		if (doLogCheck) {
@@ -230,35 +190,22 @@ public class Xdstest2 {
 		xt.addTestSpec(testLogDetails);
 	}
 	
-	public void addTest(TestInstance testInstance, File testDir) throws Exception {
+	public void addTest(TestKit testKit, TestInstance testInstance, File testDir) throws Exception {
 		this.testInstance = testInstance;
-		TestLogDetails testLogDetails = new TestLogDetails(testDir, testInstance);
+		TestDefinition testDefinition = testKit.getTestDef(testInstance.getId());
+		TestLogDetails testLogDetails = new TestLogDetails(testDefinition, testInstance);
 		if (logRepository != null)
 			testLogDetails.setLogRepository(logRepository);
 		xt.addTestSpec(testLogDetails);
 	}
 
-	public void addTest(TestInstance testInstance, List<String> sections, String[] areas) throws Exception {
-		addTest(testInstance, sections, areas, true);
+	public void addTest(TestKit testKit, TestInstance testInstance, List<String> sections, String[] areas) throws Exception {
+		addTest(testKit, testInstance, sections, areas, true);
 	}
 	
-	public TestLogDetails getTestSpec(TestInstance testInstance) throws Exception {
-		return new TestLogDetails(xt.getTestkit(), testInstance);
-	}
-
-	/**
-	 * Select test collection to be run. Overrides earlier calls to addTest*
-	 * methods. A test collection is a list of tests which are executed in the
-	 * order of the list.  This is useful for creating regression tests where you
-	 * might collect all Stored Query tests to completely exercise the Stored Query 
-	 * interface of a Document Registry.
-	 * 
-	 * @param collectionName - collection name.  Collections are stored in the collections subdirectory
-	 * of the testkit.
-	 * @throws Exception - If the collection does not exist.
-	 */
-	public void addTestCollection(String collectionName) throws Exception {
-		xt.addTestCollection(collectionName);
+	public TestLogDetails getTestSpec(TestKit testKit, TestInstance testInstance) throws Exception {
+		TestDefinition testDefinition = testKit.getTestDef(testInstance.getId());
+		return new TestLogDetails(testDefinition, testInstance);
 	}
 
 	/**
@@ -471,11 +418,11 @@ public class Xdstest2 {
 		return lm;
 	}
 
-	public void setTestkits(List<File> testkits) {
-		this.testkits = testkits;
-	}
+//	public void setTestkits(TestKitSearchPath searchPath) {
+//		this.searchPath = searchPath;
+//	}
 
-	public List<File> getTestkits() {
-		return testkits;
+	public TestKitSearchPath getTestkits() {
+		return searchPath;
 	}
 }
