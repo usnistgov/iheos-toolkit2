@@ -11,6 +11,9 @@ import com.google.gwt.view.client.ProvidesKey;
 import com.google.gwt.view.client.SelectionChangeEvent;
 import com.google.gwt.view.client.SingleSelectionModel;
 import gov.nist.toolkit.configDatatypes.client.Pid;
+import gov.nist.toolkit.xdstools2.client.event.FavoritePidsUpdatedEvent;
+import gov.nist.toolkit.xdstools2.client.event.Xdstools2EventBus;
+import gov.nist.toolkit.xdstools2.client.util.ClientUtils;
 import gov.nist.toolkit.xdstools2.client.util.CookiesServices;
 
 import java.util.LinkedList;
@@ -64,6 +67,20 @@ public class PidFavoritesCellList extends Composite{
         container.addStyleName("list-border");
 
         initWidget(container);
+
+        bindUI();
+    }
+
+    private void bindUI() {
+        ((Xdstools2EventBus) ClientUtils.INSTANCE.getEventBus()).addFavoritePidsUpdateEventHandler(new FavoritePidsUpdatedEvent.FavoritePidsUpdatedEventHandler() {
+            @Override
+            public void onFavPidsUpdate() {
+                model.setList(new LinkedList<Pid>(CookiesServices.retrievePidFavoritesFromCookies()));
+
+                model.refresh();
+                cellList.redraw();
+            }
+        });
     }
 
     public void addSelectionChangeHandler(SelectionChangeEvent.Handler handler){

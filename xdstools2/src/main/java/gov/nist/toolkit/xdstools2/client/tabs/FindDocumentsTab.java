@@ -229,7 +229,6 @@ public class FindDocumentsTab extends AbstractTool {
 
 	@Override
 	protected void bindUI() {
-
 	}
 
 	@Override
