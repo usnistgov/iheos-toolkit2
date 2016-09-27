@@ -174,6 +174,7 @@ public interface ToolkitService extends RemoteService  {
 	
 	String getTestplanAsText(String testSession,TestInstance testInstance, String section) throws Exception;
 	TestPartFileDTO getSectionTestPartFile(String testSession, TestInstance testInstance, String section) throws Exception;
+	TestPartFileDTO loadTestPartContent(TestPartFileDTO testPartFileDTO) throws Exception;
 	String getHtmlizedString(String xml) throws Exception;
 
 	 String getImplementationVersion() throws NoServletSessionException ;

@@ -33,6 +33,7 @@ import gov.nist.toolkit.session.client.TestOverviewDTO;
 import gov.nist.toolkit.session.client.TestPartFileDTO;
 import gov.nist.toolkit.session.server.Session;
 import gov.nist.toolkit.session.server.serviceManager.QueryServiceManager;
+import gov.nist.toolkit.session.server.serviceManager.XdsTestServiceManager;
 import gov.nist.toolkit.simulators.support.od.TransactionUtil;
 import gov.nist.toolkit.sitemanagement.client.Site;
 import gov.nist.toolkit.sitemanagement.client.SiteSpec;
@@ -384,6 +385,9 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements
 	public TestPartFileDTO getSectionTestPartFile(String testSession, TestInstance testInstance, String section) throws Exception {
 		session().setMesaSessionName(testSession);
 		return session().xdsTestServiceManager().getSectionTestPartFile(testInstance, section);
+	}
+	public TestPartFileDTO loadTestPartContent(TestPartFileDTO testPartFileDTO) throws Exception {
+		return XdsTestServiceManager.loadTestPartContent(testPartFileDTO);
 	}
 	public String getHtmlizedString(String xml) { // This is different than the Htmlize class in the client code works (see its isHtml method)
 		return XmlFormatter.htmlize(xml)

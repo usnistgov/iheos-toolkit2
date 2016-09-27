@@ -439,6 +439,15 @@ public class XdsTestServiceManager extends CommonService {
 		return sectionTpf;
 	}
 
+	public static TestPartFileDTO loadTestPartContent(TestPartFileDTO testPartFileDTO) throws Exception {
+		File f = new File(testPartFileDTO.getFile());
+		if (f.exists()) {
+			String content = new OMFormatter(f).toString();
+			testPartFileDTO.setContent(content);
+			testPartFileDTO.setHtlmizedContent(XmlFormatter.htmlize(content));
+		}
+		return testPartFileDTO;
+	}
 
 	public TestLogDetails getTestDetails(TestInstance testInstance, String section) throws Exception {
 		List<String> sections = new ArrayList<String>();

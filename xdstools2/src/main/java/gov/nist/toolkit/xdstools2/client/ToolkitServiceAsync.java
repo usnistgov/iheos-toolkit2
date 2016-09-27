@@ -197,6 +197,7 @@ public interface ToolkitServiceAsync {
 
 	void getTestplanAsText(String testSession, TestInstance testInstance, String section, AsyncCallback<String> callback);
 	void getSectionTestPartFile(String testSession, TestInstance testInstance, String section, AsyncCallback<TestPartFileDTO> callback);
+	void loadTestPartContent(TestPartFileDTO testPartFileDTO, AsyncCallback<TestPartFileDTO> callback);
 	void getHtmlizedString(String xml, AsyncCallback<String> callback);
 
 	void configureTestkit(String selectedEnvironment,AsyncCallback<String> callback);

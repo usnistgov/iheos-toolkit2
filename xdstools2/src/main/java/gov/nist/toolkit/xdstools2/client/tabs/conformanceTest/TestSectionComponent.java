@@ -1,11 +1,9 @@
 package gov.nist.toolkit.xdstools2.client.tabs.conformanceTest;
 
-import com.google.gwt.dom.client.Style;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.logical.shared.OpenEvent;
 import com.google.gwt.event.logical.shared.OpenHandler;
-import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.DisclosurePanel;
 import com.google.gwt.user.client.ui.FlexTable;
@@ -13,8 +11,7 @@ import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.IsWidget;
-import com.google.gwt.user.client.ui.SplitLayoutPanel;
-import com.google.gwt.user.client.ui.VerticalPanel;
+import com.google.gwt.user.client.ui.ScrollPanel;
 import com.google.gwt.user.client.ui.Widget;
 import gov.nist.toolkit.results.client.TestInstance;
 import gov.nist.toolkit.session.client.SectionOverviewDTO;
@@ -83,12 +80,10 @@ public class TestSectionComponent implements IsWidget {
             header.add(status);
 
             panel.addOpenHandler(new SectionOpenHandler(new TestInstance(testInstance.getId(), sectionOverview.getName())));
+        } else {
+            panel.addOpenHandler(new SectionNotRunOpenHandler(sessionName, testInstance, sectionOverview.getName()));
         }
         panel.add(body);
-
-        Image viewTestPlan = getImg("icons2/ic_assignment_black_36dp_1x.png","View testplan details", "A clipboard of tasks");
-        viewTestPlan.addClickHandler(new ViewTestplan(sessionName, testInstance, sectionOverview.getName()));
-        header.add(viewTestPlan);
 
         Image play = getImg("icons2/play-16.png","Run","Play button");
         play.addClickHandler(new RunSection(fullTestInstance));
@@ -108,62 +103,138 @@ public class TestSectionComponent implements IsWidget {
         return imgIcon;
     }
 
+    final static String viewTestplanLabel  = "&boxplus;View Testplan";
+    final static String hideTestplanLabel = "&boxminus;Hide Testplan";
+    final static String viewMetadataLabel = "&boxplus;View Metadata";
+    final static String hideMetadataLabel = "&boxminus;Hide Metadata";
 
-    private class ViewTestplan implements ClickHandler {
 
+    private class ViewTestplanClickHandler implements ClickHandler {
+     private ScrollPanel viewerPanel;
+     private HTML ctl;
+     private String htmlizedStr;
+
+    public ViewTestplanClickHandler(ScrollPanel testplanViewerPanel, HTML testplanCtl, String secTestplanStr) {
+        this.viewerPanel = testplanViewerPanel;
+        this.ctl = testplanCtl;
+        this.htmlizedStr = secTestplanStr;
+    }
+
+    @Override
+      public void onClick(ClickEvent clickEvent) {
+        viewerPanel.setVisible(!viewerPanel.isVisible());
+        if (!viewerPanel.isVisible()) {
+            ctl.setHTML(viewTestplanLabel);
+        } else {
+            ctl.setHTML(hideTestplanLabel);
+        }
+        if (viewerPanel.getWidget()==null) {
+           viewerPanel.add(getShHtml(htmlizedStr));
+        }
+     }
+    }
+
+    private class ViewMetadataClickHandler implements ClickHandler {
+        private ScrollPanel viewerPanel;
+        private HTML ctl;
+        private TestPartFileDTO metadataDTO;
+
+        public ViewMetadataClickHandler(ScrollPanel viewerPanel, HTML ctl, TestPartFileDTO testPartFileDTO) {
+            this.viewerPanel = viewerPanel;
+            this.ctl = ctl;
+            this.metadataDTO = testPartFileDTO;
+        }
+        @Override
+        public void onClick(ClickEvent clickEvent) {
+            viewerPanel.setVisible(!viewerPanel.isVisible());
+            if (!viewerPanel.isVisible()) {
+                ctl.setHTML(viewMetadataLabel);
+            } else {
+                ctl.setHTML(hideMetadataLabel);
+            }
+            if (viewerPanel.getWidget()==null) {
+                ClientUtils.INSTANCE.getToolkitServices().loadTestPartContent(metadataDTO, new AsyncCallback<TestPartFileDTO>() { //
+                    @Override
+                    public void onFailure(Throwable throwable) {
+                        new PopupMessage(throwable.toString());
+                    }
+
+                    @Override
+                    public void onSuccess(TestPartFileDTO testPartFileDTO) {
+                        String metadataStr = testPartFileDTO.getHtlmizedContent().replace("<br/>", "\r\n");
+                        viewerPanel.add(getShHtml(metadataStr));
+                    }
+                });
+
+            }
+        }
+    }
+
+    private class SectionNotRunOpenHandler implements OpenHandler<DisclosurePanel> {
         String sessionName;
         TestInstance testInstance;
         String section;
 
-        public ViewTestplan(String sessionName, TestInstance testInstance, String section) {
+        public SectionNotRunOpenHandler(String sessionName, TestInstance testInstance, String section) {
             this.sessionName = sessionName;
             this.testInstance = testInstance;
             this.section = section;
         }
 
         @Override
-        public void onClick(ClickEvent clickEvent) {
-            clickEvent.preventDefault();
-            clickEvent.stopPropagation();
+        public void onOpen(OpenEvent<DisclosurePanel> openEvent) {
             ClientUtils.INSTANCE.getToolkitServices().getSectionTestPartFile(sessionName, testInstance, section, new AsyncCallback<TestPartFileDTO>() {
                 @Override
                 public void onFailure(Throwable throwable) {
-                    new PopupMessage("TestSectionComponent: getTestplanAsFile error: " + throwable.toString());
+                    new PopupMessage("TestSectionComponent: SectionNotRun: getTestplanAsFile error: " + throwable.toString());
                 }
 
                 @Override
-                public void onSuccess(TestPartFileDTO sectionTp) {
+                public void onSuccess(final TestPartFileDTO sectionTp) {
+                    sectionResults.clear();
+                    final ScrollPanel testplanViewerPanel = new ScrollPanel();
+                    testplanViewerPanel.setVisible(false);
+                    final HTML testplanCtl = new HTML(viewTestplanLabel);
+                    testplanCtl.addStyleName("iconStyle");
+                    testplanCtl.addStyleName("inlineLink");
+                    testplanCtl.addClickHandler(new ViewTestplanClickHandler(testplanViewerPanel,testplanCtl,sectionTp.getHtlmizedContent().replace("<br/>", "\r\n")));
+                    sectionResults.add(testplanCtl);
+                    sectionResults.add(testplanViewerPanel);
 
+                    boolean singleStep = sectionTp.getStepList().size() == 1;
+                    for (final String stepName : sectionTp.getStepList()) {
+                        HorizontalFlowPanel stepHeader = new HorizontalFlowPanel();
 
-                            SafeHtmlBuilder testplanContentSh = new SafeHtmlBuilder();
-                            String testplanXmlStr = sectionTp.getHtlmizedContent().replace("<br/>", "\r\n");
+                        HTML stepHeaderTitle = new HTML("Step: " + stepName);
+                        stepHeaderTitle.addStyleName("testOverviewHeaderNotRun");
+                        stepHeader.add(stepHeaderTitle);
 
-                            testplanContentSh.appendHtmlConstant(SyntaxHighlighter.highlight(testplanXmlStr, BrushFactory.newXmlBrush(), false)); // section testplan content
+                        DisclosurePanel stepPanel = new DisclosurePanel(stepHeader);
+                        stepPanel.setOpen(singleStep);
+                        final ScrollPanel metadataViewerPanel = new ScrollPanel();
+                        metadataViewerPanel.setVisible(false);
+                        final HTML metadataCtl = new HTML(viewMetadataLabel);
+                        metadataCtl.addStyleName("iconStyle");
+                        metadataCtl.addStyleName("inlineLink");
+                        metadataCtl.addClickHandler(new ViewMetadataClickHandler(metadataViewerPanel,metadataCtl,sectionTp.getStepTpfMap().get(stepName)));
 
-                            SplitLayoutPanel slp = new SplitLayoutPanel(2);
-                            slp.addEast(new HTML(""),10); // testplan content
+                        final FlowPanel stepResults = new FlowPanel();
+                        stepResults.add(metadataCtl);
+                        stepResults.add(metadataViewerPanel);
 
-                            VerticalPanel vp = new VerticalPanel();
-                            vp.getElement().getStyle().setMargin(30, Style.Unit.PX);
-                            vp.add(new HTML( testplanContentSh.toSafeHtml()) );
+                        stepPanel.add(stepResults);
+                        sectionResults.add(stepPanel);
+                    }
 
-                            for (String key : sectionTp.getStepTpfMap().keySet()) { // Step and file name
-                                vp.add(new HTML(key + ": " + sectionTp.getStepTpfMap().get(key)));
-                            }
-
-                            slp.add(vp);
-                            slp.setWidth("700px");
-                            slp.setHeight("500px");
-
-
-                            // TODO: add a call to retrieve the metadata content using the filename from here.
-
-                            new PopupMessage(new SafeHtmlBuilder().toSafeHtml(),slp);
-
-                        }
+                }
             });
         }
     }
+
+    private HTML getShHtml(String xmlStr) {
+        return new HTML(SyntaxHighlighter.highlight(xmlStr, BrushFactory.newXmlBrush(), false));
+    }
+
 
     private class RunSection implements ClickHandler {
         TestInstance testInstance;
@@ -195,123 +266,153 @@ public class TestSectionComponent implements IsWidget {
                 }
 
                 @Override
-                public void onSuccess(LogFileContentDTO log) {
+                public void onSuccess(final LogFileContentDTO log) {
                     if (log == null) new PopupMessage("section is " + testInstance.getSection());
                     sectionResults.clear();
-                    int row;
-                    if (log.hasFatalError()) body.add(new HTML("Fatal Error: " + log.getFatalError() + "<br />"));
-                    boolean singleStep = log.getSteps().size() == 1;
-                    for (TestStepLogContentDTO step : log.getSteps()) {
-                        String stepName = step.getId();
-                        HorizontalFlowPanel stepHeader = new HorizontalFlowPanel();
-                        FlowPanel stepResults = new FlowPanel();
 
-                        HTML stepHeaderTitle = new HTML("Step: " + step.getId());
-                        if (step.isSuccess()) stepHeaderTitle.addStyleName("testOverviewHeaderSuccess");
-                        else stepHeaderTitle.addStyleName("testOverviewHeaderFail");
-                        stepHeader.add(stepHeaderTitle);
-
-                        DisclosurePanel stepPanel = new DisclosurePanel(stepHeader);
-                        stepPanel.setOpen(singleStep);
-
-                        StringBuilder buf = new StringBuilder();
-                        buf.append("Goals:<br />");
-                        List<String> goals = sectionOverview.getStep(stepName).getGoals();
-                        for (String goal : goals)  buf.append("&nbsp;&nbsp;&nbsp;&nbsp;").append(goal).append("<br />");
-
-
-                        buf.append("Endpoint: " + step.getEndpoint()).append("<br />");
-                        if (step.isExpectedSuccess())
-                            buf.append("Expected Status: Success").append("<br />");
-                        else
-                            buf.append("Expected Status: Failure").append("<br />");
-
-                        for (String fault : step.getSoapFaults()) {
-                            buf.append("Fault: " + fault).append("<br />");
+                    final ScrollPanel testplanViewerPanel = new ScrollPanel();
+                    testplanViewerPanel.setVisible(false);
+                    final HTML testplanCtl = new HTML(viewTestplanLabel);
+                    testplanCtl.addStyleName("iconStyle");
+                    testplanCtl.addStyleName("inlineLink");
+                    sectionResults.add(testplanCtl);
+                    sectionResults.add(testplanViewerPanel);
+                    ClientUtils.INSTANCE.getToolkitServices().getSectionTestPartFile(sessionName, testInstance, testInstance.getSection(), new AsyncCallback<TestPartFileDTO>() {
+                        @Override
+                        public void onFailure(Throwable throwable) {
+                            new PopupMessage("TestSectionComponent: getTestplanAsFile error: " + throwable.toString());
                         }
-                        for (String error : step.getErrors()) {
-                            buf.append("Error: " + error).append("<br />");
-                        }
-                        for (String assertion : step.getAssertionErrors()) {
-                            buf.append("Error: " + assertion).append("<br />");
-                        }
-                        stepResults.add(new HTML(buf.toString()));
+                        @Override
+                        public void onSuccess(final TestPartFileDTO sectionTp) {
+                            testplanCtl.addClickHandler(new ViewTestplanClickHandler(testplanViewerPanel,testplanCtl,sectionTp.getHtlmizedContent().replace("<br/>", "\r\n")));
 
-                        // ******************************************************
-                        // IDs
-                        // ******************************************************
-                        Map<String, String> assignedIds = step.getAssignedIds();
-                        Map<String, String> assignedUids = step.getAssignedUids();
-                        Set<String> idNames = new HashSet<String>();
-                        idNames.addAll(assignedIds.keySet());
-                        idNames.addAll(assignedUids.keySet());
-                        FlexTable idTable = new FlexTable();
-                        idTable.setCellPadding(3);
-                        idTable.setStyleName("with-border");
-                        row = 0;
-                        idTable.setTitle("Assigned IDs");
-                        idTable.setWidget(row, 0, new HTML("Object"));
-                        idTable.setWidget(row, 1, new HTML("ID"));
-                        idTable.setWidget(row, 2, new HTML("UID"));
-                        row++;
+                            int row;
+                            if (log.hasFatalError()) body.add(new HTML("Fatal Error: " + log.getFatalError() + "<br />"));
+                            boolean singleStep = log.getSteps().size() == 1;
+                            for (TestStepLogContentDTO step : log.getSteps()) {
+                                String stepName = step.getId();
+                                HorizontalFlowPanel stepHeader = new HorizontalFlowPanel();
+                                FlowPanel stepResults = new FlowPanel();
 
-                        for (String idName : idNames) {
-                            idTable.setWidget(row, 0, new HTML(idName));
-                            if (assignedIds.containsKey(idName))
-                                idTable.setWidget(row, 1, new HTML(assignedIds.get(idName)));
-                            if (assignedUids.containsKey(idName))
-                                idTable.setWidget(row, 2, new HTML(assignedUids.get(idName)));
-                            row++;
-                        }
-                        stepResults.add(new HTML("IDs"));
-                        stepResults.add(idTable);
+                                HTML stepHeaderTitle = new HTML("Step: " + step.getId());
+                                if (step.isSuccess()) stepHeaderTitle.addStyleName("testOverviewHeaderSuccess");
+                                else stepHeaderTitle.addStyleName("testOverviewHeaderFail");
+                                stepHeader.add(stepHeaderTitle);
 
-                        // ******************************************************
-                        // UseReports
-                        // ******************************************************
-                        FlexTable useTable = new FlexTable();
-                        useTable.setStyleName("with-border");
-                        useTable.setCellPadding(3);
-                        row = 0;
-                        useTable.setWidget(row, 0, new HTML("Name"));
-                        useTable.setWidget(row, 1, new HTML("Value"));
-                        useTable.setWidget(row, 2, new HTML("Test"));
-                        useTable.setWidget(row, 3, new HTML("Section"));
-                        useTable.setWidget(row, 4, new HTML("Step"));
-                        row++;
-                        List<UseReportDTO> useReports = step.getUseReports();
-                        for (UseReportDTO useReport : useReports) {
-                            useTable.setWidget(row, 0, new HTML(useReport.getName()));
-                            useTable.setWidget(row, 1, new HTML(useReport.getValue()));
-                            useTable.setWidget(row, 2, new HTML(useReport.getTest()));
-                            useTable.setWidget(row, 3, new HTML(useReport.getSection()));
-                            useTable.setWidget(row, 4, new HTML(useReport.getStep()));
-                            row++;
-                        }
-                        stepResults.add(new HTML("Use Reports"));
-                        stepResults.add(useTable);
+                                DisclosurePanel stepPanel = new DisclosurePanel(stepHeader);
+                                stepPanel.setOpen(singleStep);
 
-                        // ******************************************************
-                        // Reports
-                        // ******************************************************
-                        FlexTable reportsTable = new FlexTable();
-                        reportsTable.setStyleName("with-border");
-                        reportsTable.setCellPadding(3);
-                        List<ReportDTO> reports = step.getReportDTOs();
-                        row = 0;
-                        reportsTable.setWidget(row, 0, new HTML("Name"));
-                        reportsTable.setWidget(row, 1, new HTML("Value"));
-                        row++;
-                        for (ReportDTO report : reports) {
-                            reportsTable.setWidget(row, 0, new HTML(report.getName()));
-                            reportsTable.setWidget(row, 1, new HTML(report.getValue()));
-                            row++;
+                                final ScrollPanel metadataViewerPanel = new ScrollPanel();
+                                metadataViewerPanel.setVisible(false);
+                                final HTML metadataCtl = new HTML(viewMetadataLabel);
+                                metadataCtl.addStyleName("iconStyle");
+                                metadataCtl.addStyleName("inlineLink");
+                                metadataCtl.addClickHandler(new ViewMetadataClickHandler(metadataViewerPanel,metadataCtl,sectionTp.getStepTpfMap().get(stepName)));
+                                stepResults.add(metadataCtl);
+                                stepResults.add(metadataViewerPanel);
+
+                                StringBuilder buf = new StringBuilder();
+                                buf.append("Goals:<br />");
+                                List<String> goals = sectionOverview.getStep(stepName).getGoals();
+                                for (String goal : goals)  buf.append("&nbsp;&nbsp;&nbsp;&nbsp;").append(goal).append("<br />");
+
+
+                                buf.append("Endpoint: " + step.getEndpoint()).append("<br />");
+                                if (step.isExpectedSuccess())
+                                    buf.append("Expected Status: Success").append("<br />");
+                                else
+                                    buf.append("Expected Status: Failure").append("<br />");
+
+                                for (String fault : step.getSoapFaults()) {
+                                    buf.append("Fault: " + fault).append("<br />");
+                                }
+                                for (String error : step.getErrors()) {
+                                    buf.append("Error: " + error).append("<br />");
+                                }
+                                for (String assertion : step.getAssertionErrors()) {
+                                    buf.append("Error: " + assertion).append("<br />");
+                                }
+                                stepResults.add(new HTML(buf.toString()));
+
+                                // ******************************************************
+                                // IDs
+                                // ******************************************************
+                                Map<String, String> assignedIds = step.getAssignedIds();
+                                Map<String, String> assignedUids = step.getAssignedUids();
+                                Set<String> idNames = new HashSet<String>();
+                                idNames.addAll(assignedIds.keySet());
+                                idNames.addAll(assignedUids.keySet());
+                                FlexTable idTable = new FlexTable();
+                                idTable.setCellPadding(3);
+                                idTable.setStyleName("with-border");
+                                row = 0;
+                                idTable.setTitle("Assigned IDs");
+                                idTable.setWidget(row, 0, new HTML("Object"));
+                                idTable.setWidget(row, 1, new HTML("ID"));
+                                idTable.setWidget(row, 2, new HTML("UID"));
+                                row++;
+
+                                for (String idName : idNames) {
+                                    idTable.setWidget(row, 0, new HTML(idName));
+                                    if (assignedIds.containsKey(idName))
+                                        idTable.setWidget(row, 1, new HTML(assignedIds.get(idName)));
+                                    if (assignedUids.containsKey(idName))
+                                        idTable.setWidget(row, 2, new HTML(assignedUids.get(idName)));
+                                    row++;
+                                }
+                                stepResults.add(new HTML("IDs"));
+                                stepResults.add(idTable);
+
+                                // ******************************************************
+                                // UseReports
+                                // ******************************************************
+                                FlexTable useTable = new FlexTable();
+                                useTable.setStyleName("with-border");
+                                useTable.setCellPadding(3);
+                                row = 0;
+                                useTable.setWidget(row, 0, new HTML("Name"));
+                                useTable.setWidget(row, 1, new HTML("Value"));
+                                useTable.setWidget(row, 2, new HTML("Test"));
+                                useTable.setWidget(row, 3, new HTML("Section"));
+                                useTable.setWidget(row, 4, new HTML("Step"));
+                                row++;
+                                List<UseReportDTO> useReports = step.getUseReports();
+                                for (UseReportDTO useReport : useReports) {
+                                    useTable.setWidget(row, 0, new HTML(useReport.getName()));
+                                    useTable.setWidget(row, 1, new HTML(useReport.getValue()));
+                                    useTable.setWidget(row, 2, new HTML(useReport.getTest()));
+                                    useTable.setWidget(row, 3, new HTML(useReport.getSection()));
+                                    useTable.setWidget(row, 4, new HTML(useReport.getStep()));
+                                    row++;
+                                }
+                                stepResults.add(new HTML("Use Reports"));
+                                stepResults.add(useTable);
+
+                                // ******************************************************
+                                // Reports
+                                // ******************************************************
+                                FlexTable reportsTable = new FlexTable();
+                                reportsTable.setStyleName("with-border");
+                                reportsTable.setCellPadding(3);
+                                List<ReportDTO> reports = step.getReportDTOs();
+                                row = 0;
+                                reportsTable.setWidget(row, 0, new HTML("Name"));
+                                reportsTable.setWidget(row, 1, new HTML("Value"));
+                                row++;
+                                for (ReportDTO report : reports) {
+                                    reportsTable.setWidget(row, 0, new HTML(report.getName()));
+                                    reportsTable.setWidget(row, 1, new HTML(report.getValue()));
+                                    row++;
+                                }
+                                stepResults.add(new HTML("Reports"));
+                                stepResults.add(reportsTable);
+                                stepPanel.add(stepResults);
+                                sectionResults.add(stepPanel);
+                            }
                         }
-                        stepResults.add(new HTML("Reports"));
-                        stepResults.add(reportsTable);
-                        stepPanel.add(stepResults);
-                        sectionResults.add(stepPanel);
-                    }
+                    });
+
+
                 }
             });
 
