@@ -35,6 +35,11 @@
 
     <repositories>
         <repository>
+            <id>dcm4che</id>
+            <name>dcm4che</name>
+            <url>http://www.dcm4che.org/maven2</url>
+        </repository>
+        <repository>
             <id>gazelle-3rd-party</id>
             <name>gazelle nexus</name>
             <url>https://gazelle.ihe.net/nexus/content/repositories/thirdparty</url>
@@ -57,16 +62,7 @@
             <id>apache-central</id>
             <url>https://repo.maven.apache.org/maven2</url>
         </repository>
-        <repository>
-            <id>docshare-test.local</id>
-            <url>https://libs.imphub.org/artifactory/ext-release-local</url>
-            <releases>
-                <enabled>true</enabled>
-            </releases>
-            <snapshots>
-                <enabled>false</enabled>
-            </snapshots>
-        </repository>    </repositories>
+    </repositories>
 
     <scm>
         <connection>scm:hg:https://bitbucket.org/iheos/toolkit</connection>

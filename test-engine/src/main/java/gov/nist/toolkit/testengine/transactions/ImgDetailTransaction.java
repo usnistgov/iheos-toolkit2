@@ -16,6 +16,7 @@ import org.apache.axiom.om.util.AXIOMUtil;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.filefilter.FileFilterUtils;
 import org.apache.commons.lang.StringEscapeUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.dcm4che3.data.Tag;
 import org.dcm4che3.util.TagUtils;
 
@@ -140,6 +141,9 @@ public class ImgDetailTransaction extends BasicTransaction {
       throws XdsInternalException {
       errs = new ArrayList <>();
       switch (a.process) {
+         case "sameReqImgs":
+            prsSameReqImgs(engine, a, assertion_output);
+            break;
          case "sameRetImgs":
             prsSameRetImgs(engine, a, assertion_output);
             break;
@@ -165,24 +169,144 @@ public class ImgDetailTransaction extends BasicTransaction {
          s_ctx.fail(em.toString());
       }
    } // EO processAssertion method
+   
+   private void prsSameReqImgs(AssertionEngine engine, Assertion a, OMElement assertion_output)
+      throws XdsInternalException {
+      try {
+         // Get gold standard request, validate
+         String stdName = a.assertElement.getAttributeValue(new QName("std"));
+         if (StringUtils.isBlank(stdName)) stdName = "RequestBody";
+         OMElement std = getStdElement(stdName);
+         String t = std.getLocalName();
+         if (t.endsWith("RetrieveImagingDocumentSetRequest") == false) {
+            throw new XdsInternalException("sameReQImgs assertion only applies to RetrieveImagingDocumentSetRequest");
+         }
+         // get test request
+         OMElement test = getTestTrans(a, "request");
+         // load requested docs data for test/std
+         Map<String, ReqImg> testImgs = loadReqImgs(engine, a, test);
+         Map<String, ReqImg> stdImgs = loadReqImgs(engine, a, std);
+         // load xfer syntax data for test/std
+         Set<String> testSyntaxes = loadXferSyntaxes(engine, test);
+         Set<String> stdSyntaxes = loadXferSyntaxes(engine, std);
+         // pass test request docs against std
+         Set<String> testKeys = testImgs.keySet();
+         for (String testKey : testKeys) {
+            if (stdImgs.containsKey(testKey) == false) {
+               store(engine, CAT.ERROR, "test doc UID " + testKey + ", not found in standard.");
+               continue;
+            }
+            ReqImg testImg = testImgs.get(testKey);
+            ReqImg stdImg = stdImgs.get(testKey);
+            stdImgs.remove(testKey);
+            // found and everything matches
+            if (comp(stdImg, testImg)) {
+               store(engine, CAT.SUCCESS, "test doc UID " + testKey + ", all values match.");
+               continue;
+            }
+            // found, but not everything matches
+            store(engine, CAT.SUCCESS, "test doc UID " + testKey + ", found in std.");
+            if (!comp(stdImg.studyUID, testImg.studyUID))
+               store(engine, CAT.ERROR, "for doc with UID: " + testKey + 
+               " studyUID mismatch (std/test): (" + stdImg.studyUID + "/" + 
+               testImg.studyUID + ")");
+            if (!comp(stdImg.seriesUID, testImg.seriesUID))
+               store(engine, CAT.ERROR, "for doc with UID: " + testKey + 
+               " seriesUID mismatch (std/test): (" + stdImg.seriesUID + "/" + 
+               testImg.seriesUID + ")");
+            if (!comp(stdImg.homeCommunityUID, testImg.homeCommunityUID)) 
+               store(engine, CAT.ERROR, "for doc with UID: " + testKey
+               + " homeCommunityID mismatch (std/test): (" + 
+               stdImg.homeCommunityUID + "/" + testImg.homeCommunityUID + ")");
+            if (!comp(stdImg.repositoryUID, testImg.repositoryUID)) 
+               store(engine, CAT.ERROR, "for doc with UID: " + testKey
+               + " RepositoryUniqueID mismatch (std/test): (" + 
+               stdImg.repositoryUID + "/" + testImg.repositoryUID + ")");
+         }
+         // list any std docs which weren't in test
+         for (String key : stdImgs.keySet()) 
+            store(engine, CAT.ERROR, "std doc UID: " + key + " not found in test msg.");
+         // match xfer syntaxes
+         boolean errorFound = false;
+         for (String syntax : testSyntaxes) {
+            if (stdSyntaxes.contains(syntax)) {
+               stdSyntaxes.remove(syntax);
+               continue;
+            }
+            store(engine, CAT.ERROR, "transfer syntax " + syntax + 
+               "in test, not found in standard.");
+            errorFound = true;
+         }
+         for (String syntax : stdSyntaxes) {
+            store(engine, CAT.ERROR, "transfer syntax " + syntax + 
+               "in standard, not found in test.");
+               errorFound = true;
+         }
+         if (!errorFound) 
+            store(engine, CAT.SUCCESS, "transfer syntax lists match.");
+      } catch (Exception e) {
+         throw new XdsInternalException("sameRetImgs error: " + e.getMessage());
+      }
+   }
+   
+   private Map<String, ReqImg> loadReqImgs(AssertionEngine engine, Assertion a, OMElement msg) {
+      Map<String, ReqImg> imgs = new LinkedHashMap<>();
+      for (OMElement study : XmlUtil.decendentsWithLocalName(msg, "StudyRequest")) {
+         String studyUID = study.getAttributeValue(new QName("studyInstanceUID"));
+         for (OMElement series : XmlUtil.decendentsWithLocalName(study, "SeriesRequest")) {
+            String seriesUID = series.getAttributeValue(new QName("seriesInstanceUID"));
+            for (OMElement doc : XmlUtil.decendentsWithLocalName(series, "DocumentRequest")) {
+               String docUID = loadTxt(doc, "DocumentUniqueId");
+               if (StringUtils.isBlank(docUID)) {
+                  String em = "Doc request with no UID. study=" + studyUID +
+                     ", series=" + seriesUID;
+                  store(engine, CAT.ERROR, em);
+                  continue;
+               }
+               ReqImg reqImg = new ReqImg();
+               reqImg.studyUID = studyUID;
+               reqImg.seriesUID = seriesUID;
+               reqImg.homeCommunityUID = loadTxt(doc, "HomeCommunityId");
+               reqImg.repositoryUID = loadTxt(doc, "RepositoryUniqueId");
+               imgs.put(studyUID, reqImg);
+            }
+         }
+      }
+      return imgs;
+   }
+   
+   private Set<String> loadXferSyntaxes(AssertionEngine engine, OMElement msg) {
+      Set<String> syntaxes = new HashSet<>();
+      try {
+         OMElement sList = XmlUtil.onlyChildWithLocalName(msg, "TransferSyntaxUIDList");
+         for (OMElement s : XmlUtil.childrenWithLocalName(sList, "TransferSyntaxUID")) {
+            String x = s.getText().trim();
+            if (StringUtils.isNotBlank(x)) syntaxes.add(x);
+         }
+      } catch (Exception e) {
+         store(engine, CAT.ERROR, "no TransferSyntaxUIDList element found.");
+      }
+      return syntaxes;
+   }
+
+   
+   class ReqImg {
+      String studyUID;
+      String seriesUID;
+      String homeCommunityUID;
+      String repositoryUID;
+   }
+   private boolean comp(ReqImg std, ReqImg test) {
+      return comp(std.studyUID, test.studyUID) && 
+             comp(std.seriesUID, test.seriesUID) &&
+             comp(std.homeCommunityUID, test.homeCommunityUID) &&
+             comp(std.repositoryUID, test.repositoryUID);
+   }
 
    /**
-    * Matches documents in a {@code <RetrieveDocumentSetResponse>} against a 
-    * "gold standard". Expects the current testplan.xml {@code <TestStep>} 
-    * element to contain the "gold standard" message, like this: 
-    * <pre>
-    *  {@code
-    *  ... 
-    * <Standard> exactly one of these
-    *    ... 
-    *    <ResponseBody> exactly one of these
-    *       <RetrieveDocumentSetResponse>...</RetrieveDocumentSetResponse> only this
-    *    </ResponseBody>
-    *    ...
-    * </Standard>
-    *  ...}
-    * </pre>
-    * 
+    * Matches documents and status in a {@code <RetrieveDocumentSetResponse>} 
+    * against a "gold standard" response which is in the {@code <ResponseBody>} 
+    * child element of the testplan.xml {@code <Standard>} element. 
     * @param engine AssertionEngine instance
     * @param a Assert being processed
     * @param assertion_output log.xml output element for that assert
@@ -191,11 +315,19 @@ public class ImgDetailTransaction extends BasicTransaction {
    private void prsSameRetImgs(AssertionEngine engine, Assertion a, OMElement assertion_output)
       throws XdsInternalException {
       try {
-         OMElement std = getStdResponseBody();
-         OMElement test = getTestResponseBody(a);
+         OMElement std = getStdElement("ResponseBody");
+         OMElement test = getTestTrans(a, "response");
          String t = std.getLocalName();
-         if (t.endsWith("RetrieveDocumentSetResponse") == false)
+         if (t.endsWith("RetrieveDocumentSetResponse") == false) 
             throw new XdsInternalException("sameRetImgs assertion only applies to RetrieveDocumentSetResponse");
+         // Check RegistryResponse status attribute
+         String stdStatus = getResponseStatus(std);
+         String testStatus = getResponseStatus(test);
+         if (comp(stdStatus, testStatus)) {
+            store(engine, CAT.SUCCESS, "RegistryResponse status match: " + testStatus);
+         } else {
+            store(engine, CAT.ERROR, " RegistryResponse status mismatch (std/test): (" + stdStatus + "/" + testStatus + ")");
+         }
          Map <String, RetImg> testImgs = loadRetImgs(engine, a, test);
          Map <String, RetImg> stdImgs = loadRetImgs(engine, a, std);
          Set <String> testKeys = testImgs.keySet();
@@ -296,7 +428,7 @@ public class ImgDetailTransaction extends BasicTransaction {
          File testImgDir = testImgPath.toFile();
          testImgDir.mkdirs();
          FileUtils.cleanDirectory(testImgDir);
-         OMElement testResponseBody = getTestResponseBody(a);
+         OMElement testResponseBody = getTestTrans(a, "response");
          storeFiles(testResponseBody, testImgPath);
          // Make list of test image pfns
          List <String> testPfns = new ArrayList <>();
@@ -447,6 +579,17 @@ public class ImgDetailTransaction extends BasicTransaction {
       String repo;
       String mime;
    }
+   
+   private String getResponseStatus(OMElement retDocSetRespElement) {
+      String status = "No RegistryReponse Element";
+      try {
+         OMElement regRespElement = 
+            XmlUtil.onlyChildWithLocalName(retDocSetRespElement, "RegistryResponse");
+         status = regRespElement.getAttributeValue(new QName("status"));
+         if (status == null) status = "No status attribute";
+      } catch (Exception e) {}
+      return status;
+   }
 
    /**
     * Expects the current testplan.xml {@code <TestStep>} element to contain:
@@ -455,29 +598,33 @@ public class ImgDetailTransaction extends BasicTransaction {
     *  {@code
     * <Standard>
     *    ...
-    *    <ResponseBody>
+    *    <name>
     *       <SomeSingleElement>...</SomeSingleElement>
-    *    </ResponseBody>
+    *    </name>
     *    ...
     * </Standard>}
     * </pre>
     * 
+    * @param name String element name for {@code <Standard>} child element to
+    * return.
     * @return OMElement for the internal element, in this example
     * {@code <SomeSingleElement>}.
     * @throws XdsInternalException on error, typically xml that is missing (or
     * has more than one of) a required Element.
     */
-   private OMElement getStdResponseBody() throws XdsInternalException {
+   private OMElement getStdElement(String name) throws XdsInternalException {
       try {
          OMElement standard = XmlUtil.onlyChildWithLocalName(step, "Standard");
-         OMElement responseBody = XmlUtil.onlyChildWithLocalName(standard, "ResponseBody");
-         return XmlUtil.onlyChildWithLocalName(responseBody, null);
+         OMElement element = XmlUtil.onlyChildWithLocalName(standard, name);
+         OMElement retVal = XmlUtil.onlyChildWithLocalName(element, null);
+         if (retVal == null) throw new Exception("std name has no child element");
+         return retVal;
       } catch (Exception e) {
          throw new XdsInternalException(e.getMessage());
       }
    }
 
-   private OMElement getTestResponseBody(Assertion a) throws XdsInternalException {
+   private OMElement getTestTrans(Assertion a, String piece) throws XdsInternalException {
       // Get response from log.xml... somewhere.
       OMElement testResponseElement = XmlUtil.firstChildWithLocalName(a.assertElement, "TestResponse");
       if (testResponseElement != null) {
@@ -501,7 +648,14 @@ public class ImgDetailTransaction extends BasicTransaction {
          SimulatorTransaction simulatorTransaction = 
             SimulatorTransaction.get(simId, tType, pid, null);
          try {
-            return AXIOMUtil.stringToOM(simulatorTransaction.getResponseBody());
+            switch (piece.toUpperCase()) {
+               case "RESPONSE":
+                  return AXIOMUtil.stringToOM(simulatorTransaction.getResponseBody());
+               case "REQUEST":
+                  return AXIOMUtil.stringToOM(simulatorTransaction.getRequestBody());
+               default:
+                  throw new XdsInternalException("invalid test transaction piece " + piece);
+            }
          } catch (XMLStreamException e) {
             throw new XdsInternalException(e.getMessage());
          }
@@ -607,5 +761,6 @@ public class ImgDetailTransaction extends BasicTransaction {
       }
 
    }
+  
 
 } // EO ImgDetailTransaction class
