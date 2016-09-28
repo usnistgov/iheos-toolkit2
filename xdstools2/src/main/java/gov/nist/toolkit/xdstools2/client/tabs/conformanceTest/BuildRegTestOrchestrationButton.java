@@ -101,10 +101,24 @@ public class BuildRegTestOrchestrationButton extends OrchestrationButton {
                             orchTest.add(new HTML(testOverview.getName() + " - " + testOverview.getTitle() +
                                     ((item.isSuccess()) ? "  - SUCCESS" : "  - FAILURE")
                             ));
-                            Image inspect = new Image("icons2/visible-32.png");
+
+                            Image inspect = new Image("icons2/visible-16.png");
                             inspect.addStyleName("right");
                             inspect.addClickHandler(testTab.getInspectClickHandler(testOverview.getTestInstance()));
                             inspect.setTitle("Inspect results");
+
+                            if (item.isSuccess()) {
+                                Image status = new Image("icons2/correct-16.png");
+                                status.addStyleName("right");
+                                status.setTitle("Success");
+                                orchTest.add(status);
+                            } else {
+                                Image status = new Image("icons/ic_warning_black_24dp_1x.png");
+                                status.addStyleName("right");
+                                status.setTitle("Failure");
+                                orchTest.add(status);
+                            }
+
                             if (item.isSuccess())
                                 orchTest.setStyleName("testOverviewHeaderSuccess");
                             else
@@ -118,7 +132,10 @@ public class BuildRegTestOrchestrationButton extends OrchestrationButton {
 
                 });
 
-                initializationResultsPanel.add(new HTML("Patient ID: " + orchResponse.getPid().toString()));
+                initializationResultsPanel.add(new HTML("Patient ID for Register tests: " + orchResponse.getRegisterPid().toString()));
+                initializationResultsPanel.add(new HTML("Patient ID for Stored Query tests: " + orchResponse.getSqPid().toString()));
+                initializationResultsPanel.add(new HTML("Patient ID for MPQ tests: " + orchResponse.getMpq1Pid().toString()));
+                initializationResultsPanel.add(new HTML("Patient ID for MPQ tests: " + orchResponse.getMpq2Pid().toString()));
                 initializationResultsPanel.add(new HTML("<br />"));
 
             }

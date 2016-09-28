@@ -22,12 +22,15 @@ class TestsHeaderView {
     private HTML failures = new HTML();
     private HTML notRun = new HTML();
     private FlexTable table = new FlexTable();
+    private String headerText = "";
+    private HTML testsHeaderRunningMessage = new HTML();
 
     TestsHeaderView(Controller controller) {
         this.controller = controller;
         testsHeader.add(bar);
 
         bar.add(testsHeaderTitle);
+        bar.add(testsHeaderRunningMessage);
 
 //        testsHeader.add(testsHeaderTitle);
 
@@ -54,8 +57,13 @@ class TestsHeaderView {
         testsHeader.add(table);
 
         testsHeader.add(new HTML("<hr />"));
+    }
 
-
+    void showRunningMessage(boolean running) {
+        if (running)
+            testsHeaderRunningMessage.setHTML("Running...");
+        else
+            testsHeaderRunningMessage.setHTML("");
     }
 
     Widget asWidget() {
@@ -63,8 +71,9 @@ class TestsHeaderView {
     }
 
     protected void update(TestStatistics testStatistics, String bodyText) {
+        this.headerText = bodyText + " Tests";
 
-        testsHeaderTitle.setHTML(bodyText + " Tests");
+        testsHeaderTitle.setHTML(headerText);
 
         bar.clear();
         bar.add(testsHeaderTitle);

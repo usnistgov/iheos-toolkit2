@@ -10,7 +10,7 @@
   <RegisterTransaction>
     <XDSb/>
     <AssignUuids/>
-    <UseId id="Document01" symbol="$rplc_doc_uuid$" step="submit_doc_for_rplc" section="AssignedUuids"/>
+    <UseId testdir="../submit_doc_for_rplc" id="Document01" symbol="$rplc_doc_uuid$" step="submit_doc_for_rplc" section="AssignedUuids"/>
     <MetadataFile>rplc.xml</MetadataFile>
   </RegisterTransaction>
 </TestStep>

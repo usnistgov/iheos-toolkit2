@@ -11,7 +11,7 @@
   <StoredQueryTransaction>
     <XDSb/>
     <MetadataFile>query2.xml</MetadataFile>
-    <UseId testdir="../12346/single_doc" id="SubmissionSet01" symbol="$patient_id$" step="submit_doc" section="AssignedPatientId"/>
+    <UseId testdir="../../12346/single_doc" id="SubmissionSet01" symbol="$patient_id$" step="submit_doc" section="AssignedPatientId"/>
     <ExpectedContents>
       <Folders count="2"/>
     </ExpectedContents>

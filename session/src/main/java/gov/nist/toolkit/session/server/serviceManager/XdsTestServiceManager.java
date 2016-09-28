@@ -579,8 +579,13 @@ public class XdsTestServiceManager extends CommonService {
 		} else {
 			for (String sectionName : sectionNames ) {
 				File lfx = new File(testDir + File.separator + sectionName + File.separator + "log.xml");
-				LogFileContentDTO ll = new LogFileContentBuilder().build(lfx);
-				lm.add(sectionName, ll);
+				try {
+					LogFileContentDTO ll = new LogFileContentBuilder().build(lfx);
+					lm.add(sectionName, ll);
+				} catch (Exception e)
+				{
+
+				}
 			}
 		}
 

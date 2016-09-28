@@ -51,6 +51,8 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner, SiteMa
 	private String currentSiteName = null;
 	private HTML testSessionDescription = new HTML();
 	private FlowPanel testSessionDescriptionPanel = new FlowPanel();
+	private TestsHeaderView testsHeaderView = new TestsHeaderView(this);
+	private final TestStatistics testStatistics = new TestStatistics();
 
 	private AbstractOrchestrationResponse orchestrationResponse;  // can be any of the following - contains common elements
 	private RepOrchestrationResponse repOrchestrationResponse;
@@ -89,11 +91,6 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner, SiteMa
 	private void removeTestOverview(TestOverviewDTO dto) {
 		testOverviewDTOs.remove(dto.getName());
 	}
-
-
-	private TestsHeaderView testsHeaderView = new TestsHeaderView(this);
-	private final TestStatistics testStatistics = new TestStatistics();
-
 
 	/**
 	 * currentActorTypeDescription is initialized late so calling this when it is available
@@ -647,8 +644,12 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner, SiteMa
 		}
 
 		@Override
-		public void onDone(TestInstance testInstance) {
-			if (tests.size() == 0) return;
+		public void onDone(TestInstance unused) {
+			testsHeaderView.showRunningMessage(true);
+			if (tests.size() == 0) {
+				testsHeaderView.showRunningMessage(false);
+				return;
+			}
 			TestInstance next = tests.get(0);
 			tests.remove(0);
 			runTest(next, this);
@@ -778,7 +779,7 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner, SiteMa
             parms.put("$patientid$", repOrchestrationResponse.getPid().asString());
         }
         else if (ActorType.REGISTRY.getShortName().equals(currentActorTypeId) && regOrchestrationResponse != null) {
-            parms.put("$patientid$", regOrchestrationResponse.getPid().asString());
+//            parms.put("$patientid$", regOrchestrationResponse.getPid().asString());
         }
 		else { // mostly for early debugging
             parms.put("$patientid$", "P20160907182617.2^^^&1.3.6.1.4.1.21367.2005.13.20.1000&ISO");

@@ -11,6 +11,7 @@
         <ExpectedStatus>Success</ExpectedStatus>
         <RegisterTransaction>
             <XDSb/>
+	    <UseReport reportName="$patientid$" test="15818" section="pif" step="step" useAs="$patientid$"/>
             <AssignUuids/>
             <MetadataFile>two_doc_w_fol.xml</MetadataFile>
         </RegisterTransaction>

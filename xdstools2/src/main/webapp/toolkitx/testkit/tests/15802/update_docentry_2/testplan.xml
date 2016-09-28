@@ -5,6 +5,8 @@
     <MuTransaction>
       <NoAssignUids id="Document01"/>
       <XDSb/>
+      <NoPatientId/>
+      <UseReport reportName="$patientid$" test="15817" section="pif" step="step" useAs="$patientid$"/>
       <AssignUuids/>
       <MetadataFile>single_doc.xml</MetadataFile>
       <UseId testdir="../load_docentry_2" id="Document01" symbol="$lid$" step="load_docentry_2" section="AssignedUuids"/>
