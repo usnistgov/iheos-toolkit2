@@ -1,0 +1,126 @@
+Test number management at
+http://ihewiki.wustl.edu/wiki/index.php/PM-ITI_Test_Numbers
+
+Last test number in this allocation is 12499
+
+
+12320 - Registry.b WS Pattern
+12321 - Repository.b WS Patterns
+12322 - XDS.a Folder lastUpdateTime
+12323 - XDS.a Folder lastUpdateTime
+
+12324 - XDS.a Accept Document Replace, Document in Folder
+12327 - XDS.b Accept Document Replace, Document in Folder
+
+12325 - XDS.a Add existing Document to existing Folder
+12326 - XDS.b Add existing Document to existing Folder
+
+12328 - XDS.a - Initialization for Repository and Registry testing
+
+New (not in Kudu at beginning of season - need to be checked)
+
+12329 - Allocate Patient ID
+12330 - XDS.b Accept PDF
+12331 - Async SQ
+12332 - SQ SOAP versions  (selftest for Public Registry)
+12333 - ASync PnR.b  (Async repeat of 11966)
+12334 - ASync R.b (ASync repeat of 11990)
+12335 - ASync Ret.b (ASync repeat of 12029)
+12336 - ASync XGQ (ASync repeat of 12309)
+12337 - ASync XGR (ASync repeat of 12312)
+12338 - Generate ASync Provide and Register-b
+12339 - Generate Async Stored Query
+12340 - Accept Async XGQ
+12341 - Accept Async XGR
+
+
+
+New for Europe 2009
+12344 - Repository test data (upgrade to 11890)
+
+12345 - XDS.b - Initialization for Repository and Registry testing 
+12346 - XDS.b - Initialization for Registry testing (XDS.b version of 11890)
+
+12347 - XDS.a FindDocuments
+12348 - XDS.a FindSubmissionSets
+12349 - XDS.a FindFolders
+12350 - XDS.a GetDocuments
+12351 - XDS.a GetFolders
+12352 - XDS.a GetAssociations
+12353 - XDS.a GetDocumentsAndAssociations
+12354 - XDS.a GetSubmissionSets
+12355 - XDS.a GetSubmissionSetAndContents
+12356 - XDS.a GetFolderAndContents
+12357 - XDS.a GetFoldersForDocument
+12358 - XDS.a GetRelatedDocuments
+
+11897 - 11909 get renamed SQ.b ... (was just SQ)
+
+12342 - SQ in presence of XCA
+12343 - Ret in presence of XCA
+
+To be written
+12359 - XDS.a Retrieve mimetype (XDS.a Repository test)
+12360 - XDS.b Retrieve mimetype (XDS.b Repository test)
+12362 - XDS.a vs XDS.b Retrieve  (XDS.a and XDS.b Repository test)
+
+12363 Demonstrate use of at least one SQ
+
+Fall 2009
+
+MPQ
+12361 - LoadTestdataForMPQ
+12364 - FindDocumentsForMultiplePatients - registry tests
+12365 - FindFoldersForMultiplePatients - registry tests
+12366 - FindDocumentsForMultiplePatients - consumer tests
+12367 - FindFoldersForMultiplePatients - consumer tests
+
+General
+12368 - Result not single patient error (XDS.b SQ Registry test)
+12369 - RepositoryMetadataError
+12370 - associationDocumentation Classification (Registry test)
+
+New
+
+12371 - XDR accept one document
+12372 - XDR accept one document over TLS
+12373 - XDR accept two documents
+
+12374 - XDS.b Initialization for Registry
+
+Summer 2011 development
+
+XCPD allocation is 15500 to 15599
+
+Added step homeCommunityId to test 11901
+
+12375 -  (Optional) XDR Provide and Register.b with Limited Metadata
+
+12376 - (Optional) XDR Provide and Register.b with Limited Metadata but without Limited Metadata Label
+
+12377 - (Required) XDM Validate XDM Zip format against Message Validator
+
+12378 - (Optional) XDR Provide and Register.b with Limited or Full Metadata
+
+12379 - (Required) Extra metadata
+
+
+15800 - start of MU tests
+
+15800 - MU Update DocumentEntry
+
+15802 - MU Update DocumentEntry Status
+
+Summer 2015 development
+
+15803 - GetAll Stored Query
+15804 - Simple Patient Identity Feed
+
+15805 - On Demand DocumentEntry Submit
+15806 - On Demand Stable DocumentEntry Submit
+
+
+
+
+
+

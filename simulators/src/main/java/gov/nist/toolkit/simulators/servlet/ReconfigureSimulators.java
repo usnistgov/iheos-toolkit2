@@ -34,9 +34,9 @@ public class ReconfigureSimulators extends HttpServlet {
     private static Logger logger = Logger.getLogger(ReconfigureSimulators.class);
 
     public void init(ServletConfig sConfig) {
-        configuredHost = Installation.installation().propertyServiceManager().getToolkitHost();
-        configuredPort = Installation.installation().propertyServiceManager().getToolkitPort();
-        configuredTlsPort = Installation.installation().propertyServiceManager().getToolkitTlsPort();
+        configuredHost = Installation.instance().propertyServiceManager().getToolkitHost();
+        configuredPort = Installation.instance().propertyServiceManager().getToolkitPort();
+        configuredTlsPort = Installation.instance().propertyServiceManager().getToolkitTlsPort();
 
         db = new SimDb();
         for (SimId simId : db.getAllSimIds()) {

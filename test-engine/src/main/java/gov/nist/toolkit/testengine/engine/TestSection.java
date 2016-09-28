@@ -3,6 +3,9 @@ package gov.nist.toolkit.testengine.engine;
 
 import gov.nist.toolkit.results.client.TestInstance;
 
+/**
+ * Reference to a section of a test
+ */
 public class TestSection {
 	public TestInstance testInstance;
 	public String section;

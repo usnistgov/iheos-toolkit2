@@ -83,7 +83,7 @@ public class LogRepository  {
             log.debug(String.format("Loading LogMapDTO for test %s from %s", testInstance, dir));
             return repo.logger.logIn(testInstance, dir);
         } catch (Exception e) {
-            log.error("Cannot load " + testInstance.describe());
+            log.error("Cannot load " + testInstance.describe() + "\n" + ExceptionUtil.exception_details(e));
             throw e;
         }
     }

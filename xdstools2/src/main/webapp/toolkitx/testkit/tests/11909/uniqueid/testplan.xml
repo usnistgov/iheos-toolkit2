@@ -11,7 +11,7 @@
   <StoredQueryTransaction>
     <XDSb/>
     <MetadataFile>query4.xml</MetadataFile>
-    <UseId testdir="../12346/doc_for_rplc" id="Document01" symbol="$uniqueid$" step="doc_for_rplc" section="AssignedUids"/>
+    <UseId testdir="../../12346/doc_for_rplc" id="Document01" symbol="$uniqueid$" step="doc_for_rplc" section="AssignedUids"/>
     <ExpectedContents>
       <Associations count="1"/>
       <Documents count="2"/>

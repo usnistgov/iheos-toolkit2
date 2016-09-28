@@ -174,7 +174,7 @@ public class IigOrchestrationBuilder {
    } // EO Orchestra enum
    
    private String getImageCache() {
-      String c = Installation.installation().propertyServiceManager().getPropertyManager().getImageCache();
+      String c = Installation.instance().propertyServiceManager().getPropertyManager().getImageCache();
       log.debug("Image Cache: " + c);
       return c;
    }

@@ -18,7 +18,7 @@ import java.util.Map;
 
 public class ToolConfigTab extends GenericQueryTab {
     // Special handling for these properties
-    static List<String> specialProperties = new ArrayList<>();
+    private static List<String> specialProperties = new ArrayList<>();
     static {
         specialProperties.add("External_Cache");
         specialProperties.add("Toolkit_Host");
@@ -26,10 +26,10 @@ public class ToolConfigTab extends GenericQueryTab {
         specialProperties.add("Toolkit_TLS_Port");
     }
 	
-	FlexTable grid = new FlexTable();
-	Map<String, String> props;
-	Button loadAllGazelleConfigsBtn = new Button("Load all Gazelle configs");
-	int gridRow;
+	private FlexTable grid = new FlexTable();
+    private Map<String, String> props;
+    private Button loadAllGazelleConfigsBtn = new Button("Load all Gazelle configs");
+    private int gridRow;
 
 	public ToolConfigTab() {
 		super(new NullSiteActorManager());

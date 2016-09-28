@@ -14,7 +14,8 @@ import gov.nist.toolkit.simulators.sim.rep.RepIndex;
 import gov.nist.toolkit.simulators.support.StoredDocument;
 import gov.nist.toolkit.sitemanagement.client.SiteSpec;
 import gov.nist.toolkit.testengine.engine.ResultPersistence;
-import gov.nist.toolkit.testenginelogging.TestLogDetails;
+import gov.nist.toolkit.testkitutilities.TestDefinition;
+import gov.nist.toolkit.testkitutilities.TestKitSearchPath;
 import gov.nist.toolkit.utilities.xml.Util;
 import gov.nist.toolkit.utilities.xml.XmlUtil;
 import gov.nist.toolkit.xdsexception.ExceptionUtil;
@@ -34,7 +35,7 @@ public class TransactionUtil {
     public static final int ALL_OD_DOCS_SUPPLIED = -1;
     static Logger logger = Logger.getLogger(TransactionUtil.class);
 
-    static public List<Result> Transaction(SiteSpec siteSpec, String sessionName, TestInstance testId, Map<String, String> params, boolean stopOnFirstError, Session myTestSession, XdsTestServiceManager xdsTestServiceManager, List<String> sections) {
+    static public List<Result> Transaction(SiteSpec siteSpec, String environment, String sessionName, TestInstance testId, Map<String, String> params, boolean stopOnFirstError, Session myTestSession, XdsTestServiceManager xdsTestServiceManager, List<String> sections) {
 
 //        UtilityRunner utilityRunner = new UtilityRunner(xdsTestServiceManager, TestRunType.TEST);
 
@@ -42,7 +43,16 @@ public class TransactionUtil {
 //        logger.info("Transaction index 0 has:" + siteName); // This should always be the selected value
 //        myTestSession.transactionSettings.patientId
 
-        List<Result> results = xdsTestServiceManager.runMesaTest(null,sessionName, siteSpec, testId, sections, params, null, stopOnFirstError); // This wrapper does two important things of interest: 1) set patient id 2) eventually calls the UtilityRunner
+        List<Result> results; // This wrapper does two important things of interest: 1) set patient id 2) eventually calls the UtilityRunner
+        try {
+            results = xdsTestServiceManager.runMesaTest(environment, sessionName, siteSpec, testId, sections, params, null, stopOnFirstError);
+        } catch (Exception e) {
+            results = new ArrayList<>();
+            Result result = new Result();
+            result.assertions.add(ExceptionUtil.exception_details(e), false);
+            results.add(result);
+            return results;
+        }
 
 
 //        Result result = utilityRunner.run(myTestSession, params, null, sections, testId, null, stopOnFirstError);
@@ -70,7 +80,7 @@ public class TransactionUtil {
         // pid format "SKB1^^^&1.2.960&ISO";
 
         boolean stopOnFirstError = true;
-        //new Session(Installation.installation().warHome(), username);
+        //new Session(Installation.instance().warHome(), username);
 
         XdsTestServiceManager xdsTestServiceManager = new XdsTestServiceManager(session);
 
@@ -85,7 +95,7 @@ public class TransactionUtil {
             if (session.getMesaSessionName() == null) session.setMesaSessionName(username);
             session.setSiteSpec(registry);
 
-            results = Transaction(registry, username, testInstance, params, stopOnFirstError, session, xdsTestServiceManager, sections);
+            results = Transaction(registry, session.getCurrentEnvironment(), username, testInstance, params, stopOnFirstError, session, xdsTestServiceManager, sections);
 
             printResult(results);
             return results.get(0);
@@ -192,10 +202,10 @@ public class TransactionUtil {
 
 
                     XdsTestServiceManager xdsTestServiceManager = new XdsTestServiceManager(session);
-                    List<String> testPlanSections = xdsTestServiceManager.getTestIndex(testInstance.getId());
+                    List<String> testPlanSections = xdsTestServiceManager.getTestSections(testInstance.getId());
                     String registerSection = testPlanSections.get(0); // IMPORTANT NOTE: In a Content Bundle: Make an assumption that the only (first) section is always the Register section which has the ContentBundle
                     String contentBundle = testInstance.getId() + "/" + registerSection + "/" + "ContentBundle";
-                    List<String> contentBundleSections = xdsTestServiceManager.getTestIndex(contentBundle);
+                    List<String> contentBundleSections = xdsTestServiceManager.getTestSections(contentBundle);
 
                     // Save document entry detail to the repository index
                     SimDb simDb = new SimDb(oddsSimId);
@@ -304,10 +314,10 @@ public class TransactionUtil {
         try {
             XdsTestServiceManager xdsTestServiceManager = new XdsTestServiceManager(session);
             TestInstance testInstance = ded.getTestInstance();
-            List<String> testPlanSections = xdsTestServiceManager.getTestIndex(testInstance.getId());
+            List<String> testPlanSections = xdsTestServiceManager.getTestSections(testInstance.getId());
             String registerSection = testPlanSections.get(0); // IMPORTANT NOTE: In a Content Bundle: Make an assumption that the only (first) section is always the Register section which has the ContentBundle
             String contentBundle = testInstance.getId() + "/" + registerSection + "/" + "ContentBundle";
-            List<String> contentBundleSections = xdsTestServiceManager.getTestIndex(contentBundle);
+            List<String> contentBundleSections = xdsTestServiceManager.getTestSections(contentBundle);
 
             int contentBundleIdx = ded.getSupplyStateIndex();
             String section = registerSection + "/" + "ContentBundle" + "/" + contentBundleSections.get(contentBundleIdx);
@@ -316,8 +326,11 @@ public class TransactionUtil {
             int nextContentIdx = (contentBundleIdx < lastBundleIdx) ? contentBundleIdx + 1 : lastBundleIdx;
 
 
-            TestLogDetails ts = xdsTestServiceManager.getTestDetails(testInstance, section);
-            File documentFile = getDocumentFile(ts.getTestplanFile(section));  // IMPORTANT NOTE: In a Content Bundle: Make an assumption of only step per section
+//            TestLogDetails ts = xdsTestServiceManager.getTestDetails(testInstance, section);
+            TestKitSearchPath searchPath = session.getTestkitSearchPath();
+            TestDefinition testDefinition = searchPath.getTestDefinition(testInstance.getId());
+            File testPlanFile = testDefinition.getTestplanFile(section);
+            File documentFile = getDocumentFile(testPlanFile);  // IMPORTANT NOTE: In a Content Bundle: Make an assumption of only step per section
             String snapshotUniqueId = "";
 
 
@@ -342,7 +355,7 @@ public class TransactionUtil {
                 // Ret 2: ODD has 1, Snapshot has -1
                 // Ret 3: ODD has 1, Snapshot has -1 to indicate end of documents
                 if (ded.getSnapshot() == null /* first retrieve attempt */ || ALL_OD_DOCS_SUPPLIED != ded.getSnapshot().getSupplyStateIndex() /* subsequent attempt until the last */ ) {
-                    results = Transaction(repository, username, testInstance, params, stopOnFirstError, session, xdsTestServiceManager, sections);
+                    results = Transaction(repository, session.getCurrentEnvName(), username, testInstance, params, stopOnFirstError, session, xdsTestServiceManager, sections);
 
                     printResult(results);
 

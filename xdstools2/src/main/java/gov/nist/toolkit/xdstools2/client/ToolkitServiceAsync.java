@@ -40,6 +40,7 @@ import java.util.Map;
 
 public interface ToolkitServiceAsync {
 
+	void indexTestKits(AsyncCallback<Boolean> callback);
 	void getAutoInitConformanceTesting(AsyncCallback<Boolean> callback);
 	void clearTestSession(String testSession, AsyncCallback<String> callback);
 	void validateConformanceSession(String testSession, String siteName, AsyncCallback<ConformanceSessionValidationStatus> callback);

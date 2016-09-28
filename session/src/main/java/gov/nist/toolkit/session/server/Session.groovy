@@ -10,17 +10,18 @@ import gov.nist.toolkit.installation.PropertyServiceManager
 import gov.nist.toolkit.registrymetadata.Metadata
 import gov.nist.toolkit.results.client.AssertionResults
 import gov.nist.toolkit.results.client.CodesConfiguration
-import gov.nist.toolkit.sitemanagement.client.SiteSpec
 import gov.nist.toolkit.securityCommon.SecurityParams
 import gov.nist.toolkit.session.server.serviceManager.QueryServiceManager
 import gov.nist.toolkit.session.server.serviceManager.XdsTestServiceManager
 import gov.nist.toolkit.simcommon.server.ExtendedPropertyManager
 import gov.nist.toolkit.sitemanagement.Sites
 import gov.nist.toolkit.sitemanagement.client.Site
+import gov.nist.toolkit.sitemanagement.client.SiteSpec
 import gov.nist.toolkit.sitemanagement.client.TransactionBean
 import gov.nist.toolkit.testengine.engine.PatientIdAllocator
 import gov.nist.toolkit.testengine.engine.TransactionSettings
 import gov.nist.toolkit.testengine.engine.Xdstest2
+import gov.nist.toolkit.testkitutilities.TestKitSearchPath
 import gov.nist.toolkit.tk.TkLoader
 import gov.nist.toolkit.tk.client.TkProps
 import gov.nist.toolkit.xdsexception.client.EnvironmentNotSelectedException
@@ -73,7 +74,7 @@ public class Session implements SecurityParams {
 	String serverIP = null;
 	String serverPort = null;
 	SimCache simCache = new SimCache();
-	String sessionId = Installation.installation().defaultSessionName();
+	String sessionId = Installation.instance().defaultSessionName();
 	
 	File toolkit = null;
 	
@@ -177,26 +178,26 @@ public class Session implements SecurityParams {
 	}
 	
 	public Session(File warHome) {
-		Installation.installation().warHome(warHome);
+		Installation.instance().warHome(warHome);
 		ExtendedPropertyManager.load(warHome);
 		System.out.print("warHome[Session]: " + warHome + "\n");
 
         ExternalCacheManager.initialize();
-//		File externalCache = new File(Installation.installation().propertyServiceManager().getPropertyManager().getExternalCache());
+//		File externalCache = new File(Installation.instance().propertyServiceManager().getPropertyManager().getExternalCache());
 //        System.out.println("External Cache from WAR set to " + externalCache.toString());
-//		Installation.installation().externalCache(externalCache);
+//		Installation.instance().externalCache(externalCache);
 //		if (externalCache == null || !externalCache.exists() || !externalCache.isDirectory())
 //			externalCache = null;
-//		Installation.installation().externalCache(externalCache);
+//		Installation.instance().externalCache(externalCache);
 	}
 
 	public Session(File warHome, File externalCache) {
-		Installation.installation().warHome(warHome);
+		Installation.instance().warHome(warHome);
 		ExtendedPropertyManager.load(warHome);
 		System.out.print("warHome[Session]: " + warHome + "\n");
 
 //		System.out.println("External Cache set to " + externalCache.toString());
-//		Installation.installation().externalCache(externalCache);
+//		Installation.instance().externalCache(externalCache);
         ExternalCacheManager.initialize(externalCache);
 	}
 
@@ -217,7 +218,7 @@ public class Session implements SecurityParams {
 
 		File testLogCache;
 		try {
-			testLogCache = Installation.installation().propertyServiceManager().getTestLogCache();
+			testLogCache = Installation.instance().propertyServiceManager().getTestLogCache();
 		} catch (Exception e) {
 			return;
 		}
@@ -342,7 +343,7 @@ public class Session implements SecurityParams {
 	}
 		
 //	public File getTestkitFile() {
-//		return new File(Installation.installation().warHome() + File.separator + "toolkitx" + File.separator + "testkit");
+//		return new File(Installation.instance().warHome() + File.separator + "toolkitx" + File.separator + "testkit");
 //	}
 			
 	/**
@@ -375,28 +376,32 @@ public class Session implements SecurityParams {
 	}
 	
 	public File getEnvironment() throws EnvironmentNotSelectedException { return getEnvironmentDir(); }
-	
+
+	@Override
 	public File getCodesFile() throws EnvironmentNotSelectedException {
 		if (getEnvironmentDir() == null) 
-			return null; // new File(Installation.installation().warHome() + File.separator + "toolkitx" + File.separator + "codes" + File.separator + "codes.xml");
+			return null; // new File(Installation.instance().warHome() + File.separator + "toolkitx" + File.separator + "codes" + File.separator + "codes.xml");
 		File f = new File(getEnvironmentDir(), "codes.xml");
 		if (f.exists())
 			return f;
 		return null;
 	}
-	
+
+	@Override
 	public File getKeystoreDir() throws EnvironmentNotSelectedException {
 		File f = new File(getEnvironmentDir(), "keystore");
 		if (f.exists() && f.isDirectory())
 			return f;
 		throw new EnvironmentNotSelectedException("");
 	}
-	
+
+	@Override
 	public File getKeystore() throws EnvironmentNotSelectedException {
 		File kd = getKeystoreDir();
 		return new File(kd, "keystore");
 	}
-	
+
+	@Override
 	public String getKeystorePassword() throws IOException, EnvironmentNotSelectedException {
 		Properties p = new Properties();
 		File f = new File(getKeystoreDir(), "keystore.properties");
@@ -411,7 +416,7 @@ public class Session implements SecurityParams {
 		logger.debug( ": " + "getEnvironmentNames");
 		List<String> names = new ArrayList<String>();
 		
-		File k = Installation.installation().environmentFile();     //propertyServiceManager().getPropertyManager().getExternalCache() + File.separator + "environment");
+		File k = Installation.instance().environmentFile();     //propertyServiceManager().getPropertyManager().getExternalCache() + File.separator + "environment");
 		if (!k.exists() || !k.isDirectory())
 			return names;
 		File[] files = k.listFiles();
@@ -428,7 +433,7 @@ public class Session implements SecurityParams {
 	
 	public TkProps tkProps() {
 		try {
-			return TkLoader.tkProps(Installation.installation().getTkPropsFile());
+			return TkLoader.tkProps(Installation.instance().getTkPropsFile());
 		} catch (Throwable t) {
 			return new TkProps();
 		}
@@ -444,11 +449,11 @@ public class Session implements SecurityParams {
             return;
         }
 		logger.info("Session: " + getId() + ": " + " Environment set to " + name);
-		setEnvironment(name, Installation.installation().propertyServiceManager().getPropertyManager().getExternalCache());
+		setEnvironment(name, Installation.instance().propertyServiceManager().getPropertyManager().getExternalCache());
 	}
 	
 	public void setEnvironment(String name, String externalCache) {
-		File k = Installation.installation().environmentFile(name);
+		File k = Installation.instance().environmentFile(name);
 		if (!k.exists() || !k.isDirectory())
 			throw new ToolkitRuntimeException("Environment " + name + " does not exist");
 		currentEnvName = name;
@@ -459,7 +464,7 @@ public class Session implements SecurityParams {
 	
 	public String getCurrentEnvironment() {
         if (!currentEnvName)
-            currentEnvName = Installation.installation().defaultEnvironmentName()
+            currentEnvName = Installation.instance().defaultEnvironmentName()
 		return currentEnvName;
 	}
 	
@@ -470,7 +475,7 @@ public class Session implements SecurityParams {
 		if (sessionProperties == null) {
 			File testLogCache;
 			try {
-				testLogCache = Installation.installation().propertyServiceManager().getTestLogCache();
+				testLogCache = Installation.instance().propertyServiceManager().getTestLogCache();
 			} catch (Exception e) {
 				return null;
 			}
@@ -488,7 +493,7 @@ public class Session implements SecurityParams {
 
 	public File getToolkitFile() {
 		if (toolkit == null)
-			toolkit = Installation.installation().toolkitxFile();
+			toolkit = Installation.instance().toolkitxFile();
 		return toolkit;
 	}
 
@@ -539,6 +544,10 @@ public class Session implements SecurityParams {
 			throw new Exception("Error loading current Assigning Authority", e);
 		}
 		return config.getAssigningAuthorityOids();
+	}
+
+	public TestKitSearchPath getTestkitSearchPath() {
+		return new TestKitSearchPath(getCurrentEnvironment(), getMesaSessionName());
 	}
 
 }

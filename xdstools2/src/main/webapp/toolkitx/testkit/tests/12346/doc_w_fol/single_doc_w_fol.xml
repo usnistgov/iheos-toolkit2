@@ -195,7 +195,7 @@
           </rim:ValueList>
         </rim:Slot>
       </rim:Classification>
-      <rim:ExternalIdentifier value="SELF-5^^^&amp;1.3.6.1.4.1.21367.2005.3.7&amp;ISO" identificationScheme="urn:uuid:58a6f841-87b3-4a3e-92fd-a8ffeff98427">
+      <rim:ExternalIdentifier value="$patientid$" identificationScheme="urn:uuid:58a6f841-87b3-4a3e-92fd-a8ffeff98427">
         <rim:Name>
           <rim:LocalizedString value="XDSDocumentEntry.patientId"/>
         </rim:Name>
@@ -233,7 +233,7 @@
           <rim:LocalizedString value="XDSFolder.uniqueId"/>
         </rim:Name>
       </rim:ExternalIdentifier>
-      <rim:ExternalIdentifier value="ST-1000^^^&amp;1.3.6.1.4.1.21367.2005.3.7&amp;ISO" identificationScheme="urn:uuid:f64ffdf0-4b97-4e06-b79f-a52b38ec2f8a">
+      <rim:ExternalIdentifier value="$patientid$" identificationScheme="urn:uuid:f64ffdf0-4b97-4e06-b79f-a52b38ec2f8a">
         <rim:Name>
           <rim:LocalizedString value="XDSFolder.patientId"/>
         </rim:Name>
@@ -294,7 +294,7 @@
           <rim:LocalizedString value="XDSSubmissionSet.sourceId"/>
         </rim:Name>
       </rim:ExternalIdentifier>
-      <rim:ExternalIdentifier value="SELF-5^^^&amp;1.3.6.1.4.1.21367.2005.3.7&amp;ISO" identificationScheme="urn:uuid:6b5aea1a-874d-4603-a4bc-96a0a7b38446">
+      <rim:ExternalIdentifier value="$patientid$" identificationScheme="urn:uuid:6b5aea1a-874d-4603-a4bc-96a0a7b38446">
         <rim:Name>
           <rim:LocalizedString value="XDSSubmissionSet.patientId"/>
         </rim:Name>

@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?><TestPlan>
+  <Test>12022/xfrmapnd</Test>
+  <TestStep id="xfrm_apnd">
+    <ExpectedStatus>Success</ExpectedStatus>
+    <Rule>
+      <Transaction>R</Transaction>
+      <Assertion>add doc05 as XFRM of doc01, add doc06 as APND of doc01</Assertion>
+    </Rule>
+    <RegisterTransaction>
+      <XDSb/>
+      <NoPatientId/>
+      <UseReport reportName="$patientid$" test="15817" section="pif" step="step" useAs="$patientid$"/>
+      <UseId testdir="../submit" id="doc01" symbol="$doc01$" step="submit" section="AssignedUuids"/>
+      <UseId testdir="../submit" id="doc02" symbol="$doc02$" step="submit" section="AssignedUuids"/>
+      <MetadataFile>xfrm_apnd.xml</MetadataFile>
+    </RegisterTransaction>
+  </TestStep>
+</TestPlan>

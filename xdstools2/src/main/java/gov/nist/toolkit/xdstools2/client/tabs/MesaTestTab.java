@@ -240,7 +240,7 @@ public class MesaTestTab extends GenericQueryTab {
 		getToolkitServices().getTestIndex(selectedTest, new AsyncCallback<List<String>>() {
 
 			public void onFailure(Throwable caught) {
-				new PopupMessage("getTestIndex: " + caught.getMessage());
+				new PopupMessage("getTestSectionsReferencedInUseReports: " + caught.getMessage());
 			}
 
 			public void onSuccess(List<String> result) {

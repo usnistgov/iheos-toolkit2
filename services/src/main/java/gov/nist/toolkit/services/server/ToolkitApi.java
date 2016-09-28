@@ -67,7 +67,7 @@ public class ToolkitApi {
             api = new ToolkitApi();
             EnvSetting.installServiceEnvironment();
             api.session = new Session(
-                    Installation.installation().warHome(),
+                    Installation.instance().warHome(),
                     Installation.defaultServiceSessionName());
             api.internalUse = false;
             return api;

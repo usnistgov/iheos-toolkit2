@@ -38,12 +38,12 @@ public class PatientIdentityFeedServlet extends HttpServlet {
     public void initPatientIdentityFeed() {
         logger.info("Initializing AdtServlet");
         try {
-//            Installation.installation().warHome(warHome);
+//            Installation.instance().warHome(warHome);
 
             logger.info("Initializing ADT Listeners...");
 
             // Initialize available port range
-            List<String> portRange = Installation.installation().propertyServiceManager().getListenerPortRange();
+            List<String> portRange = Installation.instance().propertyServiceManager().getListenerPortRange();
             logger.info("Port range is " + portRange);
             int from = Integer.parseInt(portRange.get(0));
             int to = Integer.parseInt(portRange.get(1));

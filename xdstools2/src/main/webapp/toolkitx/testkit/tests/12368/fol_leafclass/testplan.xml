@@ -14,7 +14,7 @@
       <XDSb/>
       <MetadataFile>query.xml</MetadataFile>
       <UseId testdir="../../12346/doc_w_fol" id="Folder" symbol="$uuid1$" step="submit_doc_w_fol" section="AssignedUuids"/>
-      <UseId testdir="../../12374" id="Folder" symbol="$uuid2$" step="submit_doc_w_fol" section="AssignedUuids"/>
+      <UseId testdir="../../12374/submit_doc_w_fol" id="Folder" symbol="$uuid2$" step="submit_doc_w_fol" section="AssignedUuids"/>
       <ExpectedContents>
         <Documents count="0"/>
       </ExpectedContents>

@@ -5,6 +5,8 @@
     <RegisterTransaction>
       <AssignUuids/>
       <XDSb/>
+      <NoPatientId/>
+      <UseReport reportName="$patientid$" test="15817" section="pif" step="step" useAs="$patientid$"/>
       <MetadataFile>single_doc.xml</MetadataFile>
       <Report name="doc_uuid" section="InputMetadata">
                 //*[local-name()='ExtrinsicObject'][1]/@id

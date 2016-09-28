@@ -11,8 +11,8 @@
   <StoredQueryTransaction>
     <XDSb/>
     <MetadataFile>query4.xml</MetadataFile>
-    <UseId testdir="../12346/doc_w_fol" id="SubmissionSet01" symbol="$uuid1$" step="submit_doc_w_fol" section="AssignedUuids"/>
-    <UseId testdir="../12346/single_doc" id="SubmissionSet01" symbol="$uuid2$" step="submit_doc" section="AssignedUuids"/>
+    <UseId testdir="../../12346/doc_w_fol" id="SubmissionSet01" symbol="$uuid1$" step="submit_doc_w_fol" section="AssignedUuids"/>
+    <UseId testdir="../../12346/single_doc" id="SubmissionSet01" symbol="$uuid2$" step="submit_doc" section="AssignedUuids"/>
     <ExpectedContents>
       <Associations count="4"/>
     </ExpectedContents>

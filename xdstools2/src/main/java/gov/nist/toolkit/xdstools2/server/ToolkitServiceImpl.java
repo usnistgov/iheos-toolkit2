@@ -38,6 +38,7 @@ import gov.nist.toolkit.simulators.support.od.TransactionUtil;
 import gov.nist.toolkit.sitemanagement.client.Site;
 import gov.nist.toolkit.sitemanagement.client.SiteSpec;
 import gov.nist.toolkit.sitemanagement.client.TransactionOfferings;
+import gov.nist.toolkit.testengine.scripts.BuildCollections;
 import gov.nist.toolkit.testengine.scripts.CodesUpdater;
 import gov.nist.toolkit.testenginelogging.client.LogFileContentDTO;
 import gov.nist.toolkit.testkitutilities.client.TestCollectionDefinitionDAO;
@@ -306,7 +307,7 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements
 	 */
 	public List<String> getTestIndex(String testSession,String test) throws Exception {
         session().setMesaSessionName(testSession);
-        return session().xdsTestServiceManager().getTestIndex(test);
+        return session().xdsTestServiceManager().getTestSections(test);
     }
 
 	/**
@@ -321,7 +322,7 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements
         return session().xdsTestServiceManager().getCollectionNames(collectionSetName);
     }
 //	public List<Result> getLogContent(String sessionName, TestInstance testInstance) throws Exception { return session().xdsTestServiceManager().getLogContent(sessionName, testInstance); }
-	public List<Result> runMesaTest(String environmentName,String mesaTestSession, SiteSpec siteSpec, TestInstance testInstance, List<String> sections, Map<String, String> params, boolean stopOnFirstFailure)  throws NoServletSessionException {
+	public List<Result> runMesaTest(String environmentName,String mesaTestSession, SiteSpec siteSpec, TestInstance testInstance, List<String> sections, Map<String, String> params, boolean stopOnFirstFailure)  throws Exception {
 		return session().xdsTestServiceManager().runMesaTest(environmentName, mesaTestSession, siteSpec, testInstance, sections, params, null, stopOnFirstFailure);
 	}
     /**
@@ -330,7 +331,7 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements
      * @return list of sections
      * @throws Exception if something goes wrong
      */
-	public List<String> getTestIndex(String test) throws Exception { return session().xdsTestServiceManager().getTestIndex(test); }
+	public List<String> getTestIndex(String test) throws Exception { return session().xdsTestServiceManager().getTestSections(test); }
 
     /**
      * Get map of (collection name, collection description) pairs contained in testkit
@@ -360,7 +361,7 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements
 		return session().xdsTestServiceManager().getTestReadme(test);
 	}
 
-	public List<Result> runMesaTest(String mesaTestSession, SiteSpec siteSpec, TestInstance testInstance, List<String> sections, Map<String, String> params, boolean stopOnFirstFailure)  throws NoServletSessionException {
+	public List<Result> runMesaTest(String mesaTestSession, SiteSpec siteSpec, TestInstance testInstance, List<String> sections, Map<String, String> params, boolean stopOnFirstFailure)  throws Exception {
 		return session().xdsTestServiceManager().runMesaTest(getCurrentEnvironment(), mesaTestSession, siteSpec, testInstance, sections, params, null, stopOnFirstFailure);
 	}
 	public TestOverviewDTO runTest(String environmentName, String mesaTestSession, SiteSpec siteSpec, TestInstance testInstance, Map<String, String> params, boolean stopOnFirstFailure) throws Exception {
@@ -370,7 +371,7 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements
 		Session session = session().xdsTestServiceManager().session;
 		session.setCurrentEnvName(environmentName);
 		session.setMesaSessionName(mesaTestSession);
-		TestOverviewDTO testOverviewDTO = session().xdsTestServiceManager().runTest(mesaTestSession, siteSpec, testInstance, sections, params, null, stopOnFirstFailure);
+		TestOverviewDTO testOverviewDTO = session().xdsTestServiceManager().runTest(environmentName, mesaTestSession, siteSpec, testInstance, sections, params, null, stopOnFirstFailure);
 		return testOverviewDTO;
 	}
 
@@ -421,9 +422,9 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements
 	    List<Pid> pids = new ArrayList<Pid>();
         File environmentFile;
         if (environmentName!=null) {
-            environmentFile=Installation.installation().environmentFile(environmentName);
+            environmentFile=Installation.instance().environmentFile(environmentName);
         }else{
-            environmentFile=Installation.installation().environmentFile(Installation.DEFAULT_ENVIRONMENT_NAME);
+            environmentFile=Installation.instance().environmentFile(Installation.DEFAULT_ENVIRONMENT_NAME);
         }
 		File favPidsFile = new File(environmentFile,"pids.txt");
         if (favPidsFile.exists()) {
@@ -443,8 +444,8 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements
 	 */
 	@Override
 	public String configureTestkit(String selectedEnvironmentName) {
-		File environmentFile = Installation.installation().environmentFile(selectedEnvironmentName);
-		File defaultTestkit = Installation.installation().testkitFile();
+		File environmentFile = Installation.instance().environmentFile(selectedEnvironmentName);
+		File defaultTestkit = Installation.instance().internalTestkitFile();
 		CodesUpdater updater = new CodesUpdater();
 		updater.run(environmentFile.getAbsolutePath(),defaultTestkit.getAbsolutePath());
 		return updater.getOutput();
@@ -457,7 +458,7 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements
 	 */
 	@Override
 	public boolean doesTestkitExist(String selectedEnvironment) {
-		File environmentFile = Installation.installation().environmentFile(selectedEnvironment);
+		File environmentFile = Installation.instance().environmentFile(selectedEnvironment);
 		File testkit=new File(environmentFile,"testkit");
 		return testkit.exists();
 	}
@@ -484,7 +485,7 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements
 	}
 	public String getCurrentEnvironment() throws NoServletSessionException { return session().getCurrentEnvironment(); }
 	public String getDefaultEnvironment()  throws NoServletSessionException  {
-		String defaultEnvironment = Installation.installation().propertyServiceManager().getDefaultEnvironment();
+		String defaultEnvironment = Installation.instance().propertyServiceManager().getDefaultEnvironment();
 		String name;
 		if (Session.environmentExists(defaultEnvironment))
 			name = defaultEnvironment;
@@ -530,16 +531,16 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements
 		return session().xdsTestServiceManager().getSitesForTestSession(testSession);
 	}
 
-	public String getDefaultAssigningAuthority()  throws NoServletSessionException { return Installation.installation().propertyServiceManager().getDefaultAssigningAuthority(); }
-	public String getImplementationVersion() throws NoServletSessionException  { return Installation.installation().propertyServiceManager().getImplementationVersion(); }
-	public Map<String, String> getToolkitProperties()  throws NoServletSessionException { return Installation.installation().propertyServiceManager().getToolkitProperties(); }
+	public String getDefaultAssigningAuthority()  throws NoServletSessionException { return Installation.instance().propertyServiceManager().getDefaultAssigningAuthority(); }
+	public String getImplementationVersion() throws NoServletSessionException  { return Installation.instance().propertyServiceManager().getImplementationVersion(); }
+	public Map<String, String> getToolkitProperties()  throws NoServletSessionException { return Installation.instance().propertyServiceManager().getToolkitProperties(); }
 	public boolean isGazelleConfigFeedEnabled() throws NoServletSessionException  { return SiteServiceManager.getSiteServiceManager().useGazelleConfigFeed(); }
 	//	public String getToolkitEnableNwHIN() { return propertyServiceManager.getToolkitEnableNwHIN(); }
 	public String setToolkitProperties(Map<String, String> props) throws Exception { return setToolkitPropertiesImpl(props); }
-	public String getAdminPassword() throws NoServletSessionException  { return Installation.installation().propertyServiceManager().getAdminPassword(); }
-	public boolean reloadPropertyFile() throws NoServletSessionException  { return Installation.installation().propertyServiceManager().reloadPropertyFile(); }
-	public String getAttributeValue(String username, String attName) throws Exception { return Installation.installation().propertyServiceManager().getAttributeValue(username, attName); }
-	public void setAttributeValue(String username, String attName, String attValue) throws Exception { Installation.installation().propertyServiceManager().setAttributeValue(username, attName, attValue); }
+	public String getAdminPassword() throws NoServletSessionException  { return Installation.instance().propertyServiceManager().getAdminPassword(); }
+	public boolean reloadPropertyFile() throws NoServletSessionException  { return Installation.instance().propertyServiceManager().reloadPropertyFile(); }
+	public String getAttributeValue(String username, String attName) throws Exception { return Installation.instance().propertyServiceManager().getAttributeValue(username, attName); }
+	public void setAttributeValue(String username, String attName, String attValue) throws Exception { Installation.instance().propertyServiceManager().setAttributeValue(username, attName, attValue); }
 
 
 	//------------------------------------------------------------------------
@@ -612,13 +613,13 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements
 			if (!eCacheFile.canWrite())
 				throw new IOException("Cannot save toolkit properties: property External_Cache points to a directory that is not writable");
 
-//            File warhome = Installation.installation().warHome();
+//            File warhome = Installation.instance().warHome();
 			new PropertyServiceManager().getPropertyManager().update(props);
 			reloadPropertyFile();
-//		Installation.installation().externalCache(eCacheFile);
+//		Installation.instance().externalCache(eCacheFile);
 			ExternalCacheManager.reinitialize(eCacheFile);
 			try {
-				TkLoader.tkProps(Installation.installation().getTkPropsFile());
+				TkLoader.tkProps(Installation.instance().getTkPropsFile());
 			} catch (Throwable t) {
 
 			}
@@ -648,7 +649,7 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements
 		}
 		logger.info("Context Name is " + context.getServletContextName());
 		logger.info("Context Path is " + context.getContextPath());
-		Installation.installation().setServletContextName(context.getContextPath());
+		Installation.instance().setServletContextName(context.getContextPath());
 	}
 
 	public ServletContext servletContext() {
@@ -662,12 +663,12 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements
 		} catch (Exception e) {
 
 		}
-		if (context != null && Installation.installation().warHome() == null) {
+		if (context != null && Installation.instance().warHome() == null) {
 
 			File warHome = new File(context.getRealPath("/"));
 			System.setProperty("warHome", warHome.toString());
 			logger.info("warHome [ToolkitServiceImpl]: " + warHome);
-			Installation.installation().warHome(warHome);
+			Installation.instance().warHome(warHome);
 		}
 		return context;
 	}
@@ -757,13 +758,13 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements
 		File warHome = null;
 		if (s == null) {
 			ServletContext sc = servletContext();
-			warHome = Installation.installation().warHome();
+			warHome = Installation.instance().warHome();
 			if (sc != null && warHome == null) {
 				warHome = new File(sc.getRealPath("/"));
-				Installation.installation().warHome(warHome);
+				Installation.instance().warHome(warHome);
 				System.setProperty("warHome", warHome.toString());
 				System.out.print("warHome [ToolkitServiceImp]: " + warHome);
-				Installation.installation().warHome(warHome);
+				Installation.instance().warHome(warHome);
 			}
 			if (warHome != null)
 				System.setProperty("warHome", warHome.toString());
@@ -812,7 +813,7 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements
 	}
 
 	public String getServletContextName() {
-		return Installation.installation().getServletContextName();
+		return Installation.instance().getServletContextName();
 	}
 
 	//------------------------------------------------------------------------
@@ -868,7 +869,13 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements
 
 	@Override
 	public boolean getAutoInitConformanceTesting() {
-		return Installation.installation().propertyServiceManager().getAutoInitializeConformanceTool();
+		return Installation.instance().propertyServiceManager().getAutoInitializeConformanceTool();
+	}
+
+	@Override
+	public boolean indexTestKits() {
+		new BuildCollections().run();
+		return true;
 	}
 
 }

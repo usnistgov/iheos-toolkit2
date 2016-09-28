@@ -9,10 +9,10 @@ import org.apache.log4j.Logger;
 
 import javax.servlet.ServletContext;
 import java.io.File;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Properties;
 
@@ -40,25 +40,25 @@ public class Installation {
         // This works for unit tests if warhome.txt is installed as part of a unit test environment
         String warhomeTxt = null;
         try {
-            warhomeTxt = installation().getClass().getResource("/warhome/warhome.txt").getFile();
+            warhomeTxt = instance().getClass().getResource("/warhome/warhome.txt").getFile();
         } catch (Throwable t) {}
         if (warhomeTxt != null) {
-            installation().warHome(new File(warhomeTxt).getParentFile());
+            instance().warHome(new File(warhomeTxt).getParentFile());
         }
 //        String warTxt = null;
 //        try {
-//            warTxt = installation().getClass().getResource("/war/war.txt").getFile();
+//            warTxt = instance().getClass().getResource("/war/war.txt").getFile();
 //        } catch (Throwable t) {}
 //        if (warTxt != null) {
-//            installation().warHome(new File(warTxt).getParentFile());
+//            instance().warHome(new File(warTxt).getParentFile());
 //        }
     }
 
-    static public Installation installation() {
+    static public Installation instance() {
         return me;
     }
 
-    static public Installation installation(ServletContext servletContext) {
+    static public Installation instance(ServletContext servletContext) {
         if (me.warHome == null)
             me.warHome(new File(servletContext.getRealPath("/")));
         return me;
@@ -72,10 +72,10 @@ public class Installation {
         if (warHome == null) {
             String warTxt = null;
             try {
-                warTxt = installation().getClass().getResource("/war/war.txt").getFile();
+                warTxt = instance().getClass().getResource("/war/war.txt").getFile();
             } catch (Throwable t) {}
             if (warTxt != null) {
-                installation().warHome(new File(warTxt).getParentFile());
+                instance().warHome(new File(warTxt).getParentFile());
             }
         }
         return warHome;
@@ -102,7 +102,7 @@ public class Installation {
 			this.externalCache = externalCache;
         logger.info("Installation: External Cache set to " + externalCache);
 		try {
-			tkProps = TkLoader.tkProps(installation().getTkPropsFile()); //TkLoader.tkProps(new File(Installation.installation().externalCache() + File.separator + "tk_props.txt"));
+			tkProps = TkLoader.tkProps(instance().getTkPropsFile()); //TkLoader.tkProps(new File(Installation.instance().externalCache() + File.separator + "tk_props.txt"));
 		} catch (Exception e) {
 //			logger.warn("Cannot load tk_props.txt file from External Cache");
             tkProps = new TkProps();
@@ -115,7 +115,7 @@ public class Installation {
     }
 
     public File getTkPropsFile() {
-        return new File(Installation.installation().externalCache() + File.separator + "tk_props.txt");
+        return new File(Installation.instance().externalCache() + File.separator + "tk_props.txt");
     }
 
 
@@ -148,7 +148,7 @@ public class Installation {
     public File schemaFile() {
         return new File(toolkitxFile(), "schema");
     }
-    public File testkitFile() {
+    public File internalTestkitFile() {
         File testkit = propertyServiceManager().getTestkit();
         if (testkit != null) {
             logger.info(String.format("Testkit source is %s", testkit));
@@ -184,7 +184,8 @@ public class Installation {
             }
             // path to the environment specific testkit (generated from Code Update)
             File environmentDefaultTestkit = new File(environmentTestkitsFile, "default");
-            if (usrTestkit != null && usrTestkit.exists()) testkits.add(usrTestkit);
+            if (usrTestkit != null && usrTestkit.exists() && !mesaSessionName.equals("default"))
+                testkits.add(usrTestkit);
             if (environmentDefaultTestkit != null && environmentDefaultTestkit.exists()) {
                 testkits.add(environmentDefaultTestkit);
             }
@@ -192,27 +193,7 @@ public class Installation {
             LOGGER.info("Environment name is null");
         }
         // toolkit default testkit
-        testkits.add(testkitFile());
-        return testkits;
-    }
-
-    /**
-     * This method returns all the existing testkits.
-     * @return list of all existing testkits.
-     */
-    public List<File> getAllTestkits(){
-        List<File> testkits=new ArrayList<File>();
-        File environmentsRootFile=environmentFile();
-        File[] envList=environmentsRootFile.listFiles();
-        if (envList!=null) {
-            for (File environment : envList) {
-                File testkitsContainer = new File(environment, "testkits");
-                if (testkitsContainer.exists()) {
-                    testkits.addAll(Arrays.asList(testkitsContainer.listFiles()));
-                }
-            }
-        }
-        testkits.add(testkitFile());
+        testkits.add(internalTestkitFile());
         return testkits;
     }
 
@@ -297,21 +278,119 @@ public class Installation {
     public static String defaultSessionName() { return "STANDALONE"; }
     public static String defaultServiceSessionName() { return "SERVICE"; }
 
-    public File findTestkitFromTest(List<File> testkits, String id) {
-        for (File testkit:testkits){
-            if (testkit!=null)
-                if (testkit.exists()){
-                    File[] areas=testkit.listFiles();
-                    for (File area:areas){
-                        File test=new File(area,id);
-                        if (test.exists()){
-                            return testkit;
-                        }
-                    }
+    public static final String[] defaultAreas = new String [] { "tests", "testdata", "examples", "internal", "play",
+            "selftest", "development", "utilities", "collection", "static.collections"};
+
+    public static final String collectionsDirName = "collections";
+    public static final String actorCollectionsDirName = "actorcollections";
+
+//    private File findTestkitFromTest(String environment, String testSession, String testId) {
+//        return findTestkitFromTest(getAllTestkits(environment, testSession), testId);
+//    }
+//
+//    public File findTestkitFromCollection(String environment, String testSession, String collection) {
+//        return findTestkitFromCollection(getAllTestkits(environment, testSession), collectionsDirName, collection);
+//    }
+//
+//    public File findTestkitFromActorCollection(String environment, String testSession, String collection) {
+//        return findTestkitFromCollection(getAllTestkits(environment, testSession), actorCollectionsDirName, collection);
+//    }
+
+//    private File findTestkitFromCollection(String environment, String testSession, String collectionSetName, String collection) {
+//        return findTestkitFromCollection(getAllTestkits(environment, testSession), collectionSetName, collection);
+//    }
+//
+//
+//    private File findTestkitFromTest(List<File> testkits, String id) {
+//        for (File testkit:testkits){
+//            if (testkit!=null)
+//                if (testkit.exists()){
+//                    File[] areas=testkit.listFiles();
+//                    for (String areaName : defaultAreas){
+//                        File area = new File(testkit, areaName);
+//                        File test=new File(area,id);
+//                        if (test.exists()){
+//                            return testkit;
+//                        }
+//                    }
+//                }
+//        }
+//        return null;
+//    }
+
+//    /**
+//     *
+//     * @param environment
+//     * @param testSession
+//     * @param collectionSetName
+//     * @return
+//     */
+//    private List<File> findTestkitsForCollectionSetName(String environment, String testSession, String collectionSetName) {
+//        List<File> testkits = getAllTestkits(environment, testSession);
+//        List<File> result = new ArrayList<>();
+//        for (File testkit:testkits){
+//            if (testkit!=null) {
+//                if (testkit.exists()) {
+//                    File collectionsDir = new File(testkit, collectionSetName);
+//                    if (collectionsDir.exists() || collectionsDir.isDirectory())
+//                        result.add(collectionsDir);
+//                }
+//            }
+//        }
+//        return result;
+//    }
+//
+//    private File findTestkitFromCollection(List<File> testkits, String collectionSetName, String collection) {
+//        for (File testkit:testkits){
+//            if (testkit!=null) {
+//                if (testkit.exists()) {
+//                    File collectionsDir = new File(testkit, collectionSetName);
+//                    if (!collectionsDir.exists() || !collectionsDir.isDirectory()) continue;
+//                    File collectionFile = new File(collectionsDir, collection);
+//                    if (collectionFile.exists()) return testkit;
+//                }
+//            }
+//        }
+//        return null;
+//    }
+
+//    /**
+//     * This method returns all test kits in the search path for this environment and testSession.
+//     * @return list of all existing testkits.
+//     */
+//    private List<File> getAllTestkits(String environment, String testSession){
+//        List<File> testkits=new ArrayList<File>();
+//        File environmentFile=environmentFile(environment);
+//        File testkitsContainer = new File(environmentFile, "testkits");
+//        if (testkitsContainer.exists()) {
+//            File testSessionSpecificTestkitFile = new File(testkitsContainer, testSession);
+//            if (testSessionSpecificTestkitFile.exists())
+//                testkits.add(testSessionSpecificTestkitFile);
+//        }
+//        testkits.add(internalTestkitFile());  // internal testkit
+//        return testkits;
+//    }
+
+    /**
+     * This method returns all the existing testkits.
+     * @return list of all existing testkits.
+     */
+    public List<File> getAllTestkits(){
+        List<File> testkits=new ArrayList<File>();
+        File environmentsRootFile=environmentFile();
+        File[] envList=environmentsRootFile.listFiles();
+        if (envList!=null) {
+            for (File environment : envList) {
+                File testkitsContainer = new File(environment, "testkits");
+                if (testkitsContainer.exists()) {
+                    testkits.addAll(Arrays.asList(testkitsContainer.listFiles()));
                 }
+            }
         }
-        return null;
+        testkits.add(internalTestkitFile());
+        return testkits;
     }
+
     public String getServletContextName() {
 		return servletContextName;
 	}

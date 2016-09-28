@@ -267,10 +267,10 @@ public abstract class BasicTransaction  {
 				e.printStackTrace();
 			}
 
-			//TestSections dependencies = useReportManager.getTestSections();
+			//TestSections dependencies = useReportManager.getTestSectionsReferencedInUseReports();
 
 			try {
-				useReportManager.loadPriorTestSections(testConfig);
+				useReportManager.loadPriorTestSections(transactionSettings, testConfig);
 			} catch (Exception e) {
 
 				// because useReportManager.resolve below will take care of many problems

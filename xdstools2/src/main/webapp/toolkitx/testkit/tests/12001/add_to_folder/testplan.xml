@@ -5,6 +5,8 @@
     <ExpectedStatus>Success</ExpectedStatus>
     <RegisterTransaction>
       <XDSb/>
+      <NoPatientId/>
+      <UseReport reportName="$patientid$" test="15817" section="pif" step="step" useAs="$patientid$"/>
       <UseReport reportName="folid" section="create_folder" step="submit_fol" useAs="$Folder$"/>
       <MetadataFile>metadata.xml</MetadataFile>
     </RegisterTransaction>

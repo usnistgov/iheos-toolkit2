@@ -111,7 +111,7 @@ class RepSpec extends ToolkitSpecification {
         Map<String, String> params = new HashMap<>()
         params.put('$patientid$', "P20160803215512.2^^^&1.3.6.1.4.1.21367.2005.13.20.1000&ISO");
 
-        TestOverviewDTO testOverviewDTO = session.xdsTestServiceManager().runTest(testSession, siteSpec, testInstance, sections, params, null, true)
+        TestOverviewDTO testOverviewDTO = session.xdsTestServiceManager().runTest(envName, testSession, siteSpec, testInstance, sections, params, null, true)
 
         then:
         testOverviewDTO.pass

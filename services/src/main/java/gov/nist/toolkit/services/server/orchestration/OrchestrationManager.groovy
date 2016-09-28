@@ -16,7 +16,7 @@ class OrchestrationManager {
     public RawResponse buildIgTestEnvironment(Session session, IgOrchestrationRequest request) {
         try {
             ToolkitApi api
-            if(Installation.installation().warHome()) {
+            if(Installation.instance().warHome()) {
                 api = ToolkitApi.forNormalUse(session)
             } else {
                 api = ToolkitApi.forInternalUse()
@@ -30,7 +30,7 @@ class OrchestrationManager {
     public RawResponse buildIigTestEnvironment(Session session, IigOrchestrationRequest request) {
         try {
             ToolkitApi api
-            if(Installation.installation().warHome()) {
+            if(Installation.instance().warHome()) {
                 api = ToolkitApi.forNormalUse(session)
             } else {
                 api = ToolkitApi.forInternalUse()
@@ -44,7 +44,7 @@ class OrchestrationManager {
     public RawResponse buildRgTestEnvironment(Session session, RgOrchestrationRequest request) {
         try {
             ToolkitApi api
-            if(Installation.installation().warHome()) {
+            if(Installation.instance().warHome()) {
                 api = ToolkitApi.forNormalUse(session)
             } else {
                 api = ToolkitApi.forInternalUse()
@@ -58,7 +58,7 @@ class OrchestrationManager {
     public RawResponse buildRigTestEnvironment(Session session, RigOrchestrationRequest request) {
         try {
             ToolkitApi api
-            if(Installation.installation().warHome()) {
+            if(Installation.instance().warHome()) {
                 api = ToolkitApi.forNormalUse(session)
             } else {
                 api = ToolkitApi.forInternalUse()
@@ -72,7 +72,7 @@ class OrchestrationManager {
     public RawResponse buildIdsTestEnvironment(Session session, IdsOrchestrationRequest request) {
         try {
             ToolkitApi api
-            if(Installation.installation().warHome()) {
+            if(Installation.instance().warHome()) {
                 api = ToolkitApi.forNormalUse(session)
             } else {
                 api = ToolkitApi.forInternalUse()
@@ -86,7 +86,7 @@ class OrchestrationManager {
     public RawResponse buildRepTestEnvironment(Session session, RepOrchestrationRequest request) {
         try {
             ToolkitApi api
-            if(Installation.installation().warHome()) {
+            if(Installation.instance().warHome()) {
                 api = ToolkitApi.forNormalUse(session)
             } else {
                 api = ToolkitApi.forInternalUse()
@@ -100,7 +100,7 @@ class OrchestrationManager {
     public RawResponse buildRegTestEnvironment(Session session, RegOrchestrationRequest request) {
         try {
             ToolkitApi api
-            if(Installation.installation().warHome()) {
+            if(Installation.instance().warHome()) {
                 api = ToolkitApi.forNormalUse(session)
             } else {
                 api = ToolkitApi.forInternalUse()
@@ -114,7 +114,7 @@ class OrchestrationManager {
     public RawResponse buildRSNAEdgeTestEnvironment(Session session, RSNAEdgeOrchestrationRequest request) {
         try {
             ToolkitApi api
-            if(Installation.installation().warHome()) {
+            if(Installation.instance().warHome()) {
                 api = ToolkitApi.forNormalUse(session)
             } else {
                 api = ToolkitApi.forInternalUse()

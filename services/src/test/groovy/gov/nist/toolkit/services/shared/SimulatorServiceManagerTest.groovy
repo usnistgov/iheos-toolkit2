@@ -13,7 +13,7 @@ import spock.lang.Specification
  *
  */
 class SimulatorServiceManagerTest extends Specification {
-    Session session = new Session(Installation.installation().warHome(), Installation.defaultSessionName())
+    Session session = new Session(Installation.instance().warHome(), Installation.defaultSessionName())
     SimulatorServiceManager mgr = new SimulatorServiceManager(session)
 
     def setupSpec() {
@@ -116,7 +116,7 @@ class SimulatorServiceManagerTest extends Specification {
 
     def 'delete sim'() {
         setup:
-        println "External Cache is " + Installation.installation().externalCache()
+        println "External Cache is " + Installation.instance().externalCache()
 
         when:
         SimId simId = new SimId('bill', 'aa')
@@ -128,7 +128,7 @@ class SimulatorServiceManagerTest extends Specification {
 
     def 'Create simulator with lower case name'() {
         setup:
-        println "External Cache is " + Installation.installation().externalCache()
+        println "External Cache is " + Installation.instance().externalCache()
 
         when:
         SimId simId = new SimId('bill', 'aa')
@@ -143,7 +143,7 @@ class SimulatorServiceManagerTest extends Specification {
 
     def 'Create simulator with upper case name'() {
         setup:
-        println "External Cache is " + Installation.installation().externalCache()
+        println "External Cache is " + Installation.instance().externalCache()
 
         when:
         SimId simId = new SimId('bill', 'AA')

@@ -40,9 +40,9 @@ public class GazelleServiceManager extends CommonService {
             actorsDir = new File("/Users/bmajur/tmp/toolkit2/actors");
             externalCacheFile = new File("/Users/bmajur/tmp/toolkit2");
         } else {
-            gazelleUrl = Installation.installation().propertyServiceManager().getPropertyManager().getToolkitGazelleConfigURL();
-            actorsDir = new File(Installation.installation().propertyServiceManager().getPropertyManager().getExternalCache() + File.separator + "actors");
-            externalCacheFile = new File(Installation.installation().propertyServiceManager().getPropertyManager().getExternalCache());
+            gazelleUrl = Installation.instance().propertyServiceManager().getPropertyManager().getToolkitGazelleConfigURL();
+            actorsDir = new File(Installation.instance().propertyServiceManager().getPropertyManager().getExternalCache() + File.separator + "actors");
+            externalCacheFile = new File(Installation.instance().propertyServiceManager().getPropertyManager().getExternalCache());
         }
 
         System.out.println("Pull config from " + gazelleUrl);

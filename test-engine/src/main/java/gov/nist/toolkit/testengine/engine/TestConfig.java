@@ -14,11 +14,7 @@ public class TestConfig {
 	
 	// current test number
 	public TestInstance testInstance;
-	
-	// location of testkit
-	public File testkitHome = null;   // how is this used?
-	public File altTestkitHome = null;
-	
+
 	// location of log directory
 	public LogRepository logRepository = null;
 	

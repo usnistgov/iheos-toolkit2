@@ -22,7 +22,7 @@ class PifServiceITh extends Specification {
         api = new ToolkitApi()
         session = api.session
         api.deleteSimulatorIfItExists(new SimId(siteName))
-        println "EC is ${Installation.installation().externalCache().toString()}"
+        println "EC is ${Installation.instance().externalCache().toString()}"
         println "${api.getSiteNames(true)}"
     }
 

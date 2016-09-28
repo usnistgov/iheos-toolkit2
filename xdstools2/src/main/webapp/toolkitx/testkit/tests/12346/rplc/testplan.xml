@@ -10,6 +10,7 @@
         </Rule>
         <RegisterTransaction>
             <XDSb/>
+	    <UseReport reportName="$patientid$" test="15818" section="pif" step="step" useAs="$patientid$"/>
             <AssignUuids/>
             <UseId id="Document01" symbol="$rplc_doc_uuid$" step="doc_for_rplc" section="AssignedUuids" testdir="../doc_for_rplc"/>
             <MetadataFile>rplc.xml</MetadataFile>
