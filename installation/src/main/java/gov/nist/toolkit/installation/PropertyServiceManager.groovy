@@ -82,7 +82,7 @@ public class PropertyServiceManager {
 
 	public File getActorsFileName() {
 		logger.debug(": " + "getActorsFileName");
-		return new File(Installation.installation().externalCache(), "actors.xml");
+		return new File(Installation.instance().externalCache(), "actors.xml");
 	}
 
     public File getTestkit() {
@@ -114,7 +114,7 @@ public class PropertyServiceManager {
 			return;
 
 		// Create a File from the properties file in order to pass it to v3
-		assert Installation.installation().warHome()
+		assert Installation.instance().warHome()
 		File propPath = null;
 		try {
 			logger.debug("*** getting toolkit.properties file:" + getClass().getResource("/toolkit.properties"));
@@ -137,17 +137,17 @@ public class PropertyServiceManager {
 		// has on port 9080
 		// Schema references will be made directly through the file system and not
 		// via "system" references (via a URI)
-		System.setProperty("XDSSchemaDir", new File(new File(Installation.installation().warHome(), "toolkitx"), "schema").toString());
+		System.setProperty("XDSSchemaDir", new File(new File(Installation.instance().warHome(), "toolkitx"), "schema").toString());
 	}
 
 	public File internalActorsFile() {
-        assert Installation.installation().warHome()
-		return new File(new File(new File(Installation.installation().warHome(), "toolkitx"),  "xdstest"), "actors.xml");
+        assert Installation.instance().warHome()
+		return new File(new File(new File(Installation.instance().warHome(), "toolkitx"),  "xdstest"), "actors.xml");
 	}
 
 
 	public File getTestLogCache() throws IOException {
-		File testLogCache = Installation.installation().testLogCache();
+		File testLogCache = Installation.instance().testLogCache();
 		File f;
 		
 		f = testLogCache;
@@ -188,7 +188,7 @@ public class PropertyServiceManager {
 	}
 	
 	File getAttributeCache(String username) throws Exception {
-		String attributeCache = new File(new File(Installation.installation().externalCache(), "Attributes"), username);
+		String attributeCache = new File(new File(Installation.instance().externalCache(), "Attributes"), username);
 		File f = new File(attributeCache);
 
 		if (!( f.exists() && f.isDirectory() && f.canWrite()  )) {
@@ -218,8 +218,8 @@ public class PropertyServiceManager {
 
 	public String getImplementationVersion() {
 		logger.debug(": " + "getImplementationVersion");
-        assert Installation.installation().warHome()
-		File f = new File(Installation.installation().warHome(), "build.num");
+        assert Installation.instance().warHome()
+		File f = new File(Installation.instance().warHome(), "build.num");
 		String ver = null;
 		try {
 			ver = Io.stringFromFile(f);

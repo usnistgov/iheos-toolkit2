@@ -257,3 +257,7 @@ h3 {
 .iconStyle_20x20 {
   width: 20px; height: 20px;
 }
+
+.inlineLink {
+ color: #0000ad;
+}

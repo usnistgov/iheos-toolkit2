@@ -52,7 +52,7 @@ class SimDbTest extends Specification {
         SimDb.mkSim(new SimId('bill', 'foo'), ActorType.REPOSITORY.name)
 
         and:
-        File sdb = Installation.installation().simDbFile()
+        File sdb = Installation.instance().simDbFile()
         File file = new File(sdb, 'foo')
         file.mkdir()
 
@@ -67,7 +67,7 @@ class SimDbTest extends Specification {
         SimDb.mkSim(new SimId('bill', 'foo'), ActorType.REPOSITORY.name)
 
         and:
-        File sdb = Installation.installation().simDbFile()
+        File sdb = Installation.instance().simDbFile()
         File file = new File(sdb, 'a_file.txt')
         Io.stringToFile(file, "hello")
         println file.toString()

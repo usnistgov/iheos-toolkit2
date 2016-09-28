@@ -20,7 +20,7 @@ public class UnitTestEnvironmentManager {
 
     static public Session setupLocalToolkit(String environmentName) {
         Session session = setupLocalToolkit()
-        new EnvSetting(session.getId(), environmentName, Installation.installation().environmentFile(environmentName))
+        new EnvSetting(session.getId(), environmentName, Installation.instance().environmentFile(environmentName))
         return session
     }
 
@@ -42,14 +42,14 @@ public class UnitTestEnvironmentManager {
         // Important to set this before war home since it is overriding contents of toolkit.properties
         if (!externalCache || !externalCache.isDirectory())throw new ToolkitRuntimeException('External Cache not found')
         ExternalCacheManager.initialize(externalCache)
-//        Installation.installation().externalCache(externalCache)
+//        Installation.instance().externalCache(externalCache)
 
         Session session = new Session(warHome, externalCache)
-        String defaultEnvName = Installation.installation().defaultEnvironmentName();
+        String defaultEnvName = Installation.instance().defaultEnvironmentName();
         session.setEnvironment(defaultEnvName)
-        new EnvSetting(session.getId(), defaultEnvName, Installation.installation().environmentFile(defaultEnvName))
+        new EnvSetting(session.getId(), defaultEnvName, Installation.instance().environmentFile(defaultEnvName))
 
-        ListenerFactory.init(Installation.installation().listenerPortRange);
+        ListenerFactory.init(Installation.instance().listenerPortRange);
         return session
     }
 

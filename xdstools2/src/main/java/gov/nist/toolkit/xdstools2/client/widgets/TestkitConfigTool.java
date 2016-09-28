@@ -26,6 +26,7 @@ public class TestkitConfigTool extends Composite {
 
     private VerticalPanel container = new VerticalPanel();
     private final HTML resultPanel=new HTML();
+    private HTML indexStatus = new HTML();
 
     private EnvironmentManager environmentManager ;
 
@@ -42,8 +43,29 @@ public class TestkitConfigTool extends Composite {
         container.add(environmentManager);
         Button runUpdater=new Button("Run",new RunTestkitConfigHandler());
         container.add(runUpdater);
+        container.add(new Button("Reindex Test Kits", new IndexTestKitsHandler()));
+        container.add(indexStatus);
 
         initWidget(container);
+    }
+
+    private class IndexTestKitsHandler implements ClickHandler {
+
+        @Override
+        public void onClick(ClickEvent clickEvent) {
+            indexStatus.setHTML("Running...");
+            toolkitService.indexTestKits(new AsyncCallback<Boolean>() {
+                @Override
+                public void onFailure(Throwable throwable) {
+                    indexStatus.setHTML("Failed - " + throwable.getMessage());
+                }
+
+                @Override
+                public void onSuccess(Boolean aBoolean) {
+                    indexStatus.setHTML("Success");
+                }
+            });
+        }
     }
 
     /**

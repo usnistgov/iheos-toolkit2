@@ -46,7 +46,7 @@ public class TestRunner {
             if (session.transactionSettings.logRepository == null && !testInstance.getId().startsWith("tc:")) {
                 session.transactionSettings.logRepository = LogRepositoryFactory.
                         getRepository(
-                                Installation.installation().testLogCache(),
+                                Installation.instance().testLogCache(),
                                 mesaTestSession,
                                 LogIdIOFormat.JAVA_SERIALIZATION,
                                 LogIdType.SPECIFIC_ID,

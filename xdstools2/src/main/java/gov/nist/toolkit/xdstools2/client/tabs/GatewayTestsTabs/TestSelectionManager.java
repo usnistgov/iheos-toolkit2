@@ -180,7 +180,7 @@ class TestSelectionManager {
         ClientUtils.INSTANCE.getToolkitServices().getTestIndex(tool.getSelectedTest(), new AsyncCallback<List<String>>() {
 
             public void onFailure(Throwable caught) {
-                new PopupMessage("getTestIndex: " + caught.getMessage());
+                new PopupMessage("getTestSectionsReferencedInUseReports: " + caught.getMessage());
             }
 
             public void onSuccess(List<String> result) {

@@ -44,7 +44,7 @@ class RepOrchestrationBuilder {
 
             boolean reuse = false  // updated as we progress
             supportSimId = new SimId(request.userName, supportIdName, ActorType.REGISTRY.name, request.environmentName)
-            File orchestrationPropFile = Installation.installation().orchestrationPropertiesFile(request.userName, ActorType.REPOSITORY.shortName)
+            File orchestrationPropFile = Installation.instance().orchestrationPropertiesFile(request.userName, ActorType.REPOSITORY.shortName)
             Properties orchProps = new Properties()
             boolean propertiesUpdated = false
             if (orchestrationPropFile.exists())

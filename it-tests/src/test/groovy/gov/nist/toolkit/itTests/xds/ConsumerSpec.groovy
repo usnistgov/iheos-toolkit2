@@ -31,7 +31,7 @@ class ConsumerSpec extends ToolkitSpecification {
     def setupSpec() {   // one time setup done when class launched
         startGrizzly('8889')
 
-        println "EC is ${Installation.installation().externalCache().toString()}"
+        println "EC is ${Installation.instance().externalCache().toString()}"
         println "${api.getSiteNames(true)}"
         api.createTestSession(testSession)
 

@@ -112,7 +112,7 @@ public class IigOrchestrationBuilder {
       
       ids_b1 ("Imaging Document Source B1", ActorType.IMAGING_DOC_SOURCE, new SimulatorConfigElement[] {
          new SimulatorConfigElement(SimulatorProperties.idsRepositoryUniqueId, ParamType.TEXT, "1.3.6.1.4.1.21367.13.71.102"),
-         new SimulatorConfigElement(SimulatorProperties.idsImageCache, ParamType.TEXT, "ids-community-A")}),
+         new SimulatorConfigElement(SimulatorProperties.idsImageCache, ParamType.TEXT, "ids-community-B")}),
       
       rig_c ("Responding Imaging Gateway C", ActorType.RESPONDING_IMAGING_GATEWAY, new SimulatorConfigElement[] {
          new SimulatorConfigElement(SimulatorProperties.homeCommunityId, ParamType.TEXT, "urn:oid:1.3.6.1.4.1.21367.13.70.103"),
@@ -174,7 +174,7 @@ public class IigOrchestrationBuilder {
    } // EO Orchestra enum
    
    private String getImageCache() {
-      String c = Installation.installation().propertyServiceManager().getPropertyManager().getImageCache();
+      String c = Installation.instance().propertyServiceManager().getPropertyManager().getImageCache();
       log.debug("Image Cache: " + c);
       return c;
    }

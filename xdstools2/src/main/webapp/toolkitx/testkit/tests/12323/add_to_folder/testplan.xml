@@ -6,6 +6,8 @@
     <RegisterTransaction>
       <WaitBefore>4000</WaitBefore>
       <XDSb/>
+      <NoPatientId/>
+      <UseReport reportName="$patientid$" test="15817" section="pif" step="step" useAs="$patientid$"/>
       <AssignUuids/>
       <UseReport reportName="folid" section="has_time" step="has_time" useAs="$folid$"/>
       <MetadataFile>metadata.xml</MetadataFile>

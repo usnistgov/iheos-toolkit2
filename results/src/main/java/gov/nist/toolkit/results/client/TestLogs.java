@@ -28,6 +28,15 @@ public class TestLogs implements IsSerializable {
 		return logs.get(i);
 	}
 	
+	public boolean isSuccess() {
+		boolean success = true;
 
+		if (assertionResult != null && !assertionResult.passed()) success = false;
+		for (TestLog log : logs) {
+			if (!log.status) success = false;
+		}
+
+		return success;
+	}
 
 }

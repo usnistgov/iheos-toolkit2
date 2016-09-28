@@ -1,0 +1,11 @@
+
+<TestPlan>
+	<Test>iig_5407/retrieve</Test>
+	<TestStep id="retrieve">
+		<Goal>Imaging Document Set Retrieve Partial Success, Single Responding Gateway</Goal>
+		<ExpectedStatus>PartialSuccess</ExpectedStatus>
+		<ImagingDocSetIigRetrieveTransaction>
+			<MetadataFile>RAD-69Request.xml</MetadataFile>
+		</ImagingDocSetIigRetrieveTransaction>
+	</TestStep>
+</TestPlan>

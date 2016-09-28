@@ -13,7 +13,6 @@ import java.util.List;
 import org.apache.commons.lang3.StringUtils;
 
 import gov.nist.toolkit.actorfactory.client.SimId;
-import gov.nist.toolkit.actorfactory.client.SimulatorConfig;
 import gov.nist.toolkit.configDatatypes.client.TransactionType;
 import gov.nist.toolkit.installation.Installation;
 import gov.nist.toolkit.installation.PropertyManager;
@@ -296,7 +295,7 @@ public class SimulatorTransaction {
       throws XdsInternalException {
       try {
          // Verify that simId represents an existing file
-         Installation installation = Installation.installation();
+         Installation installation = Installation.instance();
          PropertyServiceManager propertyServiceManager = installation.propertyServiceManager();
          PropertyManager propertyManager = propertyServiceManager.getPropertyManager();
          String cache = propertyManager.getExternalCache();

@@ -53,7 +53,7 @@ public class SimDb {
 
 	static public SimDb mkSim(SimId simid, String actor) throws IOException, NoSimException {
         validateSimId(simid);
-		return mkSim(Installation.installation().simDbFile(), simid, actor);
+		return mkSim(Installation.instance().simDbFile(), simid, actor);
 	}
 
 	static public SimDb mkSim(File dbRoot, SimId simid, String actor) throws IOException, NoSimException {
@@ -76,15 +76,15 @@ public class SimDb {
 	}
 	
 	public SimDb() {
-		dbRoot = Installation.installation().simDbFile();
+		dbRoot = Installation.instance().simDbFile();
 	}
 	
 	public SimDb(SimId simulatorId) throws IOException, NoSimException {
-		this(Installation.installation().simDbFile(), simulatorId, null, null);
+		this(Installation.instance().simDbFile(), simulatorId, null, null);
 	}
 
 	public boolean exists(SimId simId) {
-		return new File(Installation.installation().simDbFile(), simId.toString()).exists();
+		return new File(Installation.instance().simDbFile(), simId.toString()).exists();
 	}
 
 	public SimDb(File dbRoot, SimId simId) throws IOException, NoSimException {
@@ -158,7 +158,7 @@ public class SimDb {
 	}
 
 	public SimDb(TransactionInstance ti) throws IOException, NoSimException, BadSimIdException {
-		this(Installation.installation().simDbFile(), new SimId(ti.simId));
+		this(Installation.instance().simDbFile(), new SimId(ti.simId));
 
 		this.actor = ti.actorType.getShortName();
 		this.transaction = ti.name;

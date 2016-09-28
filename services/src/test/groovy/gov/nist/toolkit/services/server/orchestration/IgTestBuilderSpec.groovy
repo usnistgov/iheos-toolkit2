@@ -23,7 +23,7 @@ class IgTestBuilderSpec extends Specification {
 
     def setupSpec() {
         new PatientIdentityFeedServlet().initPatientIdentityFeed()
-        Installation.installation().overrideToolkitPort('8888')  // match toolkit
+        Installation.instance().overrideToolkitPort('8888')  // match toolkit
         ExternalCacheManager.reinitialize(new File('/Users/bill/tmp/toolkit2a'))  // match toolkit
     }
 

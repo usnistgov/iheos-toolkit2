@@ -26,7 +26,7 @@ public class DashboardServiceManager extends CommonService {
 	
 	public List<RegistryStatus> getDashboardRegistryData() throws Exception  {
 		logger.debug(session.id() + ": " + "getDashboardRegistryData(" + "" + ")");
-		String dashboard = Installation.installation().propertyServiceManager().getPropertyManager().getExternalCache() + File.separator + "Dashboard";
+		String dashboard = Installation.instance().propertyServiceManager().getPropertyManager().getExternalCache() + File.separator + "Dashboard";
 		try {
 			return new DashboardAccess(dashboard).getRegistryData();
 		} catch (Exception e) {
@@ -38,7 +38,7 @@ public class DashboardServiceManager extends CommonService {
 
 	public List<RepositoryStatus> getDashboardRepositoryData() throws Exception {
 		logger.debug(session.id() + ": " + "getDashboardRepositoryData(" + "" + ")");
-		String dashboard = Installation.installation().propertyServiceManager().getPropertyManager().getExternalCache() + File.separator + "Dashboard";
+		String dashboard = Installation.instance().propertyServiceManager().getPropertyManager().getExternalCache() + File.separator + "Dashboard";
 		try {
 			return new DashboardAccess(dashboard).getRepositoryData();
 		} catch (Exception e) {

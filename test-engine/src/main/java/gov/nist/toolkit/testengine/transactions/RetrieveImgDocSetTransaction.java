@@ -17,9 +17,12 @@ import gov.nist.toolkit.xdsexception.client.XdsException;
 import gov.nist.toolkit.xdsexception.client.XdsInternalException;
 import org.apache.axiom.om.OMElement;
 import org.apache.axiom.om.xpath.AXIOMXPath;
+import org.apache.commons.io.FileUtils;
 import org.apache.log4j.Logger;
 
 import javax.xml.namespace.QName;
+import javax.xml.stream.XMLStreamException;
+
 import java.io.File;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -141,6 +144,7 @@ public class RetrieveImgDocSetTransaction extends BasicTransaction {
          rad69.setReferenceMetadata(reference_metadata);
          logger.debug("ImagingDocSetRetrieveTransaction about to call ret_b.run()");
          OMElement result = rad69.run();
+        // abbreviate(result);
          logger.debug("ImagingDocSetRetrieveTransaction after rad69.run()");
          // testLog.add_name_value(instruction_output, "Result", result);
          rad69.validate();
@@ -172,8 +176,8 @@ public class RetrieveImgDocSetTransaction extends BasicTransaction {
       boolean containsVariable(OMElement ele) {
       String valueStr = ele.getText();
       if (containsVariable(valueStr)) return true;
-      for (Iterator <OMElement> it = (Iterator <OMElement>) ele.getChildElements(); it.hasNext();) {
-         OMElement child = (OMElement) it.next();
+      for (Iterator <OMElement> it = ele.getChildElements(); it.hasNext();) {
+         OMElement child = it.next();
          if (containsVariable(child)) return true;
       }
       return false;
@@ -293,6 +297,37 @@ public class RetrieveImgDocSetTransaction extends BasicTransaction {
    @Override
    protected String getBasicTransactionName() {
       return transactionType.getShortName();
+   }
+   
+   private boolean abbrFlag;
+   private void abbreviate(OMElement msg) {
+      try {
+      abbrFlag = false;
+      prs(msg);
+      if (abbrFlag) {
+         String str = msg.toStringWithConsume();
+         FileUtils.writeStringToFile(new File("/opt/xdsi/last-trans.xml"), str);
+      }
+      } catch (Exception e) {
+         logger.warn("abbreviate error: " + e.getMessage());
+      }
+   }
+   /**
+    * recursive rtn find descendant {@code <Document>} elements and replaces 
+    * their text with ...
+    * @param ele to process
+    */
+   private void prs(OMElement ele) {
+      if (ele.getLocalName().equals("Document")) {
+         ele.setText("...");
+         abbrFlag = true;
+         return;
+      }
+      @SuppressWarnings("unchecked")
+      Iterator<OMElement> i = ele.getChildElements();
+      while (i.hasNext()) {
+         prs(i.next());
+      }
    }
 
 }

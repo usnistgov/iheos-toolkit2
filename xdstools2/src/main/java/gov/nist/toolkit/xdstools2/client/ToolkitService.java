@@ -63,7 +63,7 @@ public interface ToolkitService extends RemoteService  {
 	public Map<String, String> getCollection(String collectionSetName, String collectionName) throws Exception;
 	public String getTestReadme(String test) throws Exception;
 	public List<String> getTestIndex(String test) throws Exception;
-	public List<Result> runMesaTest(String mesaTestSession, SiteSpec siteSpec, TestInstance testInstance, List<String> sections, Map<String, String> params, boolean stopOnFirstFailure) throws NoServletSessionException ;
+	public List<Result> runMesaTest(String mesaTestSession, SiteSpec siteSpec, TestInstance testInstance, List<String> sections, Map<String, String> params, boolean stopOnFirstFailure) throws Exception ;
 	public TestOverviewDTO runTest(String environment, String mesaTestSession, SiteSpec siteSpec, TestInstance testInstance, Map<String, String> params, boolean stopOnFirstFailure) throws NoServletSessionException, Exception;
 	public boolean isPrivateMesaTesting() throws NoServletSessionException ;
 	public List<String> getMesaTestSessionNames(CommandContext request) throws Exception;
@@ -174,6 +174,7 @@ public interface ToolkitService extends RemoteService  {
 	
 	String getTestplanAsText(String testSession,TestInstance testInstance, String section) throws Exception;
 	TestPartFileDTO getSectionTestPartFile(String testSession, TestInstance testInstance, String section) throws Exception;
+	TestPartFileDTO loadTestPartContent(TestPartFileDTO testPartFileDTO) throws Exception;
 	String getHtmlizedString(String xml) throws Exception;
 
 	 String getImplementationVersion() throws NoServletSessionException ;
@@ -269,4 +270,6 @@ public interface ToolkitService extends RemoteService  {
 	String clearTestSession(String testSession) throws Exception;
 
     boolean getAutoInitConformanceTesting();
+
+    boolean indexTestKits();
 }

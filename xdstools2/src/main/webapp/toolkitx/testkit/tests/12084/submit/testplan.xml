@@ -4,6 +4,7 @@
     <ExpectedStatus>Failure</ExpectedStatus>
     <RegisterTransaction>
       <XDSb/>
+      <UseReport reportName="$patientid$" test="15817" section="pif" step="step" useAs="$patientid$"/>
       <MetadataFile>two_doc.xml</MetadataFile>
     </RegisterTransaction>
   </TestStep>

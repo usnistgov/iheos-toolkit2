@@ -15,6 +15,7 @@ class Util {
 
     public Util(ToolkitApi api) {
         this.api = api
+        api.withEnvironment(api.session.currentEnvironment);
     }
 
     public void submit(String userName, SiteSpec site, TestInstance testId, String section, Pid patientId, String home) {

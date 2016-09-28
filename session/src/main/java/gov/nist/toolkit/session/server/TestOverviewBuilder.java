@@ -11,10 +11,8 @@ import gov.nist.toolkit.testenginelogging.client.StepGoalsDTO;
 import gov.nist.toolkit.testenginelogging.client.TestStepLogContentDTO;
 import gov.nist.toolkit.testkitutilities.ReadMe;
 import gov.nist.toolkit.testkitutilities.TestDefinition;
-import gov.nist.toolkit.testkitutilities.TestkitBuilder;
 import gov.nist.toolkit.testkitutilities.client.SectionDefinitionDAO;
 
-import java.io.File;
 import java.io.IOException;
 import java.util.List;
 
@@ -24,21 +22,21 @@ import java.util.List;
 public class TestOverviewBuilder {
     private TestLogDetails testLogDetails;
     private String testId;
-    private File testDir;
+    private TestDefinition testDefinition;
     private TestOverviewDTO testOverview = new TestOverviewDTO();
     private XdsTestServiceManager testServiceManager;
 
     public TestOverviewBuilder(Session session, TestLogDetails testLogDetails) throws Exception {
         this.testLogDetails = testLogDetails;
         this.testId = testLogDetails.getTestInstance().getId();
-        this.testDir = TestkitBuilder.getTestDir(testId);
+        this.testDefinition = session.getTestkitSearchPath().getTestDefinition(testId);
         testServiceManager = new XdsTestServiceManager(session);
     }
 
     public TestOverviewDTO build() throws Exception {
         testOverview.setPass(true);  // will be updated by addSections()
         testOverview.setName(testId);
-        ReadMe readme = new TestDefinition(testDir).getTestReadme();
+        ReadMe readme = testDefinition.getTestReadme();
         if (readme != null) {
             testOverview.setTitle(stripHeaderMarkup(readme.line1));
             testOverview.setDescription(Markdown.toHtml(readme.rest));
@@ -61,14 +59,13 @@ public class TestOverviewBuilder {
     private void addSections() throws Exception {
         List<String> sectionNames = null;
         try {
-            sectionNames = testServiceManager.getTestIndex(testId);
+            sectionNames = testServiceManager.getTestSections(testId);
         } catch (Exception e) {
             return;
         }
 //        if (testId.equals("12360")) {
             // No test results available - scan
             // test definition to get section names
-            TestDefinition testDefinition = new TestDefinition(testDir);
             try {
                 List<String> sections = testDefinition.getSectionIndex();
                 for (String section : sections) {

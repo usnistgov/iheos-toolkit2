@@ -13,9 +13,6 @@ import java.util.*;
  * @author bill
  *
  */
-
-
-
 public class TestKit {
 	File	testKit;
 //	String sessionId;
@@ -44,7 +41,7 @@ public class TestKit {
 	}
 
 	
-	String[] testkitSections = { "tests", "testdata", "xcpd", "examples" };
+	private String[] testkitSections = { "tests", "testdata", "xcpd", "examples", "utilities" };
 	
 	/**
 	 * Get File representing directory containing test definition
@@ -52,14 +49,14 @@ public class TestKit {
 	 * @return File representing directory
 	 * @throws Exception if test does not exist
 	 */
-	public File getTestDir(String testname) throws Exception {
+	public TestDefinition getTestDef(String testname) throws Exception {
 
 		File testdir = null;
 
 		for (String section : testkitSections) {
 			testdir = new File(testKit.toString() + File.separator + section + File.separator + testname);
 			if (testdir.exists() && testdir.isDirectory())
-				return testdir;
+				return new TestDefinition(testdir);
 		}
 				
 		throw new Exception("test " + testdir + " does not exist");
@@ -69,7 +66,7 @@ public class TestKit {
 	 * Get test names and descriptions from a named test collection
 	 * @param collectionSetName name of directory holding tc files (collection definitions)
 	 * @param collectionName name of a collection 
-	 * @return list of test name = description
+	 * @return list of test name => description
 	 * @throws Exception oops - collection doesn't exist or cannot be read
 	 */
 	public Map<String, String> getCollection(String collectionSetName, String collectionName) throws Exception {
@@ -84,7 +81,7 @@ public class TestKit {
 			name = name.trim();
 			if (name.length() == 0)
 				continue;
-			TestDefinition tt = new TestDefinition(getTestDir(name));
+			TestDefinition tt = getTestDef(name);
 			String description = tt.getTestTitle();
 			testNames.put(name, description);
 		}
@@ -103,7 +100,12 @@ public class TestKit {
 	public List<String> getCollectionMembers(String collectionSetName, String collectionName) throws Exception {
 		Set<String> names = new HashSet<>();
 
-		String[] parts = Io.stringFromFile(getCollectionFileByName(collectionSetName, collectionName)).split("\n");
+		String[] parts;
+		try {
+			parts = Io.stringFromFile(getCollectionFileByName(collectionSetName, collectionName)).split("\n");
+		} catch (Exception e) {
+			return new ArrayList<>();
+		}
 
 		for (int i=0; i<parts.length; i++) {
 			String name = parts[i];
@@ -145,7 +147,7 @@ public class TestKit {
 
 
 	/**
-	 * Given the name of a collection, return File reference.
+	 * Given the name of a collection, return File reference. This format is used by collections and actorcollections
 	 * @param collectionSetName
 	 * @param collectionName
 	 * @return
@@ -221,4 +223,7 @@ public class TestKit {
 		return tests;
 	}
 
+	public File getTestKitDir() {
+		return testKit;
+	}
 }

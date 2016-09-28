@@ -1,0 +1,37 @@
+
+<TestPlan>
+	<Test>iig_5403/validate</Test>
+	<TestStep id="retrievedDocValidation">
+		<Goal>Correct RetrieveDocumentSetResponse values</Goal>
+		<Standard>
+			<ResponseBody>
+				TODO Add response body
+			</ResponseBody>
+		</Standard>
+		<XmlDetailTransaction>
+			<Assertions>
+				<Assertions>
+					<Assert id="Returned doc(s)" process="sameRetImgs">
+						<TestResponse testDir="../retrieve" step="retrieve" />
+					</Assert>
+					<Assert id="Returned img(s)" process="sameDcmImgs">
+						<TestResponse testDir="../retrieve" step="retrieve" />
+						<TagList>
+							<SOPClassUID />
+							<SOPInstanceUID />
+							<PatientID />
+							<PatientBirthDate />
+							<PatientSex />
+							<StudyInstanceUID />
+							<SeriesInstanceUID />
+						</TagList>
+						<DirList>
+							<StdDir>../../stdImgs/iig-5403</StdDir>
+						</DirList>
+					</Assert>
+				</Assertions>
+			</Assertions>
+		</XmlDetailTransaction>
+	</TestStep>
+
+</TestPlan>

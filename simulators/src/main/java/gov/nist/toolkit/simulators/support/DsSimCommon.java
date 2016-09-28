@@ -820,7 +820,7 @@ public class DsSimCommon {
     }
 
     private String getImageCache() {
-        String c = Installation.installation().propertyServiceManager().getPropertyManager().getImageCache();
+        String c = Installation.instance().propertyServiceManager().getPropertyManager().getImageCache();
         logger.debug("Image Cache: " + c);
         return c;
     }

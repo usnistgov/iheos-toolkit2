@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?><TestPlan>
+  <Test>DirectSendTemplate</Test>
+  <TestStep id="send">
+    <ExpectedStatus>Success</ExpectedStatus>
+    <DirectTransaction>
+      <NoMetadata/>
+      <CertFile>hit-testing.nist.gov.p12</CertFile>
+      <CertFilePassword/>
+      <BodyContentFile>body.txt</BodyContentFile>
+      <DirectFromAddress>$direct_from_address$</DirectFromAddress>
+      <DirectToAddress>$direct_to_address$</DirectToAddress>
+      <Subject>Direct Validation Request</Subject>
+      <AttachmentContentFile>$messagePath$</AttachmentContentFile>
+      <DirectSystemMailerHostname>$direct_server_name$</DirectSystemMailerHostname>
+      <DirectSystemMailerPort>25</DirectSystemMailerPort>
+      <Wrapped>$send_wrapped$</Wrapped>
+    </DirectTransaction>
+  </TestStep>
+</TestPlan>

@@ -200,7 +200,7 @@ public class SimCommon {
 	static public void deleteSim(SimId simulatorId) {
 		try {
 			logger.info("Delete sim " + simulatorId);
-			SimDb simdb = new SimDb(Installation.installation().simDbFile(), simulatorId, null, null);
+			SimDb simdb = new SimDb(Installation.instance().simDbFile(), simulatorId, null, null);
 			File simdir = simdb.getIpDir();
 			Io.delete(simdir);
 		} catch (IOException e) {

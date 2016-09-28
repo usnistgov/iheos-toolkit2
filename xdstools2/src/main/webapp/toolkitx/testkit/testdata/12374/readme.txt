@@ -1,4 +1,4 @@
-Initialize XDS.b for Registry Stored Query testing
+Initialize Registry for Stored Query testing - different Patient ID
 
 This test data is used for testing patient id conflicts in queries and must be submitted
 using a new/unique patient id.  Specifically, this test and 12346 must

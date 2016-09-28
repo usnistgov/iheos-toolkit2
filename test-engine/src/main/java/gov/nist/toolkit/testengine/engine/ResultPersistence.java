@@ -46,7 +46,7 @@ public class ResultPersistence {
 
 	String getFilePath(TestInstance testInstance,String testSession, boolean write) throws IOException {
 		File dir = new File(
-				Installation.installation().propertyServiceManager().getTestLogCache().toString() + File.separator + 
+				Installation.instance().propertyServiceManager().getTestLogCache().toString() + File.separator +
 				testSession + File.separator + 
 				"Results");
 		if (write)
