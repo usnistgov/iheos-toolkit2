@@ -766,10 +766,12 @@ public class DsSimCommon {
        * The image cache is in the IDS Simulator config, absolute, or relative
        * to the image cache in the toolkit properties.
        */
-        Path imageCacheRoot = Paths.get(getImageCache());
+        //Path imageCacheRoot = Paths.get(getImageCache());
         String simCache = simulatorConfig.get(SimulatorProperties.idsImageCache).asString();
-        Path idsRepositoryPath = imageCacheRoot.resolve(simCache);
-        File idsRepositoryDir = idsRepositoryPath.toFile();
+        //Path idsRepositoryPath = imageCacheRoot.resolve(simCache);
+        //File idsRepositoryDir = idsRepositoryPath.toFile();
+        File idsRepositoryDir = Installation.instance().imageCache(simCache);
+        Path idsRepositoryPath = idsRepositoryDir.toPath();
         if (!idsRepositoryDir.exists() || !idsRepositoryDir.isDirectory()) {
             logger.warn("Could not file image cache directory " + idsRepositoryDir);
             er.err(XdsErrorCode.Code.XDSRepositoryError,
@@ -819,10 +821,12 @@ public class DsSimCommon {
         return sd;
     }
 
+/*
     private String getImageCache() {
         String c = Installation.instance().propertyServiceManager().getPropertyManager().getImageCache();
         logger.debug("Image Cache: " + c);
         return c;
     }
+*/
 
 }
