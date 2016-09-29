@@ -115,7 +115,8 @@ public class TestSessionManager2 {
 
             @Override
             public void onSuccess(Boolean aBoolean) {
-                load(testSessions.get(0));  // getRetrievedDocumentsModel full list and update all tabs
+                currentTestSession=testSessions.get(0);
+                load(currentTestSession);  // getRetrievedDocumentsModel full list and update all tabs
             }
         });
     }
