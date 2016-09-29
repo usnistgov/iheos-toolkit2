@@ -92,26 +92,29 @@ public class Session implements SecurityParams {
 	static final Logger logger = Logger.getLogger(Session.class);
 	
 	public boolean isTls() {
-		return siteSpec.isTls;
+		return siteSpec && siteSpec.isTls;
 	}
 	
 	public boolean isSaml() {
-		return siteSpec.isSaml;
+		return siteSpec && siteSpec.isSaml;
 	}
 	
 	public boolean isAsync() {
-		return siteSpec.isAsync;
+		return siteSpec && siteSpec.isAsync;
 	}
 	
 	public void setTls(boolean tls) {
+		if (siteSpec)
 		siteSpec.isTls = tls;
 	}
 	
 	public void setSaml(boolean saml) {
+		if (siteSpec)
 		siteSpec.isSaml = saml;
 	}
 	
 	public void setAsync(boolean async) {
+		if (siteSpec)
 		siteSpec.isAsync = async;
 	}
 	

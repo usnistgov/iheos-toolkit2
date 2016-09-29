@@ -7,14 +7,13 @@ import gov.nist.toolkit.sitemanagement.client.SiteSpec;
 /**
  *
  */
-public class RgOrchestrationResponse  extends RawResponse {
-    Pid oneDocPid;
-    Pid twoDocPid;
-    SiteSpec siteUnderTest;
-    SiteSpec regrepSite;
-    SimulatorConfig regrepConfig;
-    boolean sameSite;
-    String message = "";
+public class RgOrchestrationResponse  extends AbstractOrchestrationResponse {
+    private Pid oneDocPid;
+    private Pid twoDocPid;
+    private SiteSpec siteUnderTest;
+    private SiteSpec regrepSite;
+    private SimulatorConfig regrepConfig;
+    private boolean sameSite;
 
     public RgOrchestrationResponse() {}
 
@@ -66,12 +65,4 @@ public class RgOrchestrationResponse  extends RawResponse {
         this.regrepConfig = regrepConfig;
     }
 
-    public String getMessage() {
-        return message;
-    }
-
-    public void addMessage(String message) {
-        if (this.message.length() > 0) this.message += "\n";
-        this.message += message;
-    }
 }

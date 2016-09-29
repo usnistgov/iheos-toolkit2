@@ -46,9 +46,9 @@ public class BuildRegTestOrchestrationButton extends OrchestrationButton {
 
     @Override
     public void handleClick(ClickEvent clickEvent) {
-        String msg = testTab.verifyConformanceTestEnvironment();
+        String msg = testTab.verifyTestContext();
         if (msg != null) {
-            testTab.launchTestEnvironmentDialog(msg);
+            testTab.launchTestContextDialog(msg);
             return;
         }
 

@@ -18,7 +18,7 @@ import java.util.List;
 /**
  *
  */
-class TestEnvironmentDialog extends DialogBox {
+class TestContextDialog extends DialogBox {
     private ToolWindow toolWindow;
     private ListBox testSessionListBox = new ListBox();
     private TextBox textBox = new TextBox();
@@ -31,7 +31,7 @@ class TestEnvironmentDialog extends DialogBox {
     private FlowPanel sitesForTestSessionPanel = new FlowPanel();
 
 
-    TestEnvironmentDialog(ToolWindow toolWindow, SiteManager siteManager, String message) {
+    TestContextDialog(ToolWindow toolWindow, SiteManager siteManager, String message) {
         super(true, true);
         this.toolWindow = toolWindow;
         this.siteManager = siteManager;

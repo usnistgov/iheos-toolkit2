@@ -1,15 +1,14 @@
 package gov.nist.toolkit.services.server.orchestration
 
 import gov.nist.toolkit.actorfactory.SimCache
-import gov.nist.toolkit.configDatatypes.client.Pid
 import gov.nist.toolkit.actorfactory.client.SimId
 import gov.nist.toolkit.actorfactory.client.SimulatorConfig
 import gov.nist.toolkit.actortransaction.client.ActorType
+import gov.nist.toolkit.configDatatypes.client.Pid
 import gov.nist.toolkit.configDatatypes.client.TransactionType
 import gov.nist.toolkit.installation.Installation
-import gov.nist.toolkit.results.shared.SiteBuilder
-import gov.nist.toolkit.sitemanagement.client.SiteSpec
 import gov.nist.toolkit.results.client.TestInstance
+import gov.nist.toolkit.results.shared.SiteBuilder
 import gov.nist.toolkit.services.client.RawResponse
 import gov.nist.toolkit.services.client.RgOrchestrationRequest
 import gov.nist.toolkit.services.client.RgOrchestrationResponse
@@ -17,6 +16,7 @@ import gov.nist.toolkit.services.server.RawResponseBuilder
 import gov.nist.toolkit.services.server.ToolkitApi
 import gov.nist.toolkit.session.server.Session
 import gov.nist.toolkit.sitemanagement.client.Site
+import gov.nist.toolkit.sitemanagement.client.SiteSpec
 import groovy.transform.TypeChecked
 
 /**
@@ -81,28 +81,31 @@ class RgOrchestrationBuilder {
             oneDocPid = session.allocateNewPid()
             twoDocPid = session.allocateNewPid()
 
+            TestInstance testInstance15804 = new TestInstance("15804")
+
             // register patient id with registry
             try {
-                util.submit(request.userName, rrSite, new TestInstance("15804"), 'section', oneDocPid, null)
+                util.submit(request.userName, rrSite, testInstance15804, 'section', oneDocPid, null)
             } catch (Exception e) {
-                response.addMessage("V2 Patient Identity Feed to " + rrSite.name + " failed");
+                response.addMessage(testInstance15804, false, "V2 Patient Identity Feed to " + rrSite.name + " failed");
             }
             try {
-                util.submit(request.userName, rrSite, new TestInstance("15804"), 'section', twoDocPid, null)
+                util.submit(request.userName, rrSite, testInstance15804, 'section', twoDocPid, null)
             } catch (Exception e) {
-                response.addMessage("V2 Patient Identity Feed to " + rrSite.name + " failed");
+                response.addMessage(testInstance15804, false, "V2 Patient Identity Feed to " + rrSite.name + " failed");
             }
 
+            TestInstance testInstance15807 = new TestInstance("15807")
             // Submit test data
             try {
-                util.submit(request.userName, rrSite, new TestInstance("15807"), 'onedoc1', oneDocPid, home)
+                util.submit(request.userName, rrSite, testInstance15807, 'onedoc1', oneDocPid, home)
             } catch (Exception e) {
-                response.addMessage("Provide and Register to " + rrSite.name + " failed");
+                response.addMessage(testInstance15807, false, "Provide and Register to " + rrSite.name + " failed");
             }
             try {
-                util.submit(request.userName, rrSite, new TestInstance("15807"), 'twodoc', twoDocPid, home)
+                util.submit(request.userName, rrSite, testInstance15807, 'twodoc', twoDocPid, home)
             } catch (Exception e) {
-                response.addMessage("Provide and Register to " + rrSite.name + " failed");
+                response.addMessage(testInstance15807, false, "Provide and Register to " + rrSite.name + " failed");
             }
 
             response.oneDocPid = oneDocPid

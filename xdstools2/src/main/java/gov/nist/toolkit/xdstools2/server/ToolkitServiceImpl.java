@@ -140,7 +140,9 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements
 	// Site Services
 	//------------------------------------------------------------------------
 	//------------------------------------------------------------------------
-	public List<String> getSiteNames(boolean reload, boolean simAlso)  throws NoServletSessionException { return siteServiceManager.getSiteNames(session().getId(), reload, simAlso); }
+	public List<String> getSiteNames(boolean reload, boolean simAlso)  throws NoServletSessionException {
+		return siteServiceManager.getSiteNames(session().getId(), reload, simAlso);
+	}
 	public Collection<Site> getAllSites(CommandContext commandContext) throws Exception {
 		installCommandContext(commandContext);
 		return siteServiceManager.getAllSites(session().getId());
@@ -528,6 +530,8 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements
 
 	@Override
 	public Collection<String> getSitesForTestSession(String testSession) throws Exception {
+		if (testSession == null)
+			return new ArrayList<>();
 		return session().xdsTestServiceManager().getSitesForTestSession(testSession);
 	}
 

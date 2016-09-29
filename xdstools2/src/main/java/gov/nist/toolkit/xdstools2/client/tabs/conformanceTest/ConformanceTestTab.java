@@ -19,6 +19,7 @@ import gov.nist.toolkit.results.client.TestInstance;
 import gov.nist.toolkit.services.client.AbstractOrchestrationResponse;
 import gov.nist.toolkit.services.client.RegOrchestrationResponse;
 import gov.nist.toolkit.services.client.RepOrchestrationResponse;
+import gov.nist.toolkit.services.client.RgOrchestrationResponse;
 import gov.nist.toolkit.session.client.SectionOverviewDTO;
 import gov.nist.toolkit.session.client.TestOverviewDTO;
 import gov.nist.toolkit.sitemanagement.client.Site;
@@ -57,6 +58,7 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner, SiteMa
 	private AbstractOrchestrationResponse orchestrationResponse;  // can be any of the following - contains common elements
 	private RepOrchestrationResponse repOrchestrationResponse;
     private RegOrchestrationResponse regOrchestrationResponse;
+    private RgOrchestrationResponse rgOrchestrationResponse;
 
     private String currentActorTypeId;
 	private String currentActorTypeDescription;
@@ -132,7 +134,7 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner, SiteMa
 
 	@Override
 	public void onTabLoad(boolean select, String eventName) {
-		displayTestSessionDisplay();
+		updateTestingContextDisplay();
 		testSessionDescription.addClickHandler(new TestSessionClickHandler());
 		testSessionDescriptionPanel.setStyleName("with-rounded-border");
 		testSessionDescriptionPanel.add(testSessionDescription);
@@ -176,13 +178,16 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner, SiteMa
 		return siteUnderTest;
 	}
 
-	private void initializeTestSession() {
+    /**
+     *
+     */
+	private void initializeTestingContext() {
 		if (initTestSession != null) {
 			setCurrentTestSession(initTestSession);
 			initTestSession = null;
 		}
 		if (getCurrentTestSession() == null || getCurrentTestSession().equals("")) {
-			displayTestSessionDisplay();
+			updateTestingContextDisplay();
 			return;
 		}
 		getToolkitServices().getAssignedSiteForTestSession(getCurrentTestSession(), new AsyncCallback<String>() {
@@ -194,19 +199,19 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner, SiteMa
 			@Override
 			public void onSuccess(String s) {
 				setSiteName(s);
-				displayTestSessionDisplay();
+				updateTestingContextDisplay();
 			}
 		});
 	}
 
-	private void displayTestSessionDisplay() {
+	private void updateTestingContextDisplay() {
 		testSessionDescription.setHTML("Test Context<br />" +
 				"Environment: " + getEnvironmentSelection() + "<br />" +
 				"TestSesson: " + getCurrentTestSession() + "<br />" +
 				"SUT: " + getSiteName());
 	}
 
-	String verifyConformanceTestEnvironment() {
+	String verifyTestContext() {
 		String msg;
 		msg = verifyEnvironmentSelection();
 		if (msg != null) return msg;
@@ -217,7 +222,7 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner, SiteMa
 		msg = verifySite();
 		if (msg != null) return msg;
 
-		return null;
+		return null;  // good
 	}
 
 	private String verifyEnvironmentSelection() {
@@ -260,19 +265,19 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner, SiteMa
 
 	@Override
 	public void update() {
-		displayTestSessionDisplay();
+		updateTestingContextDisplay();
 	}
 
 	private class TestSessionClickHandler implements ClickHandler {
 
 		@Override
 		public void onClick(ClickEvent clickEvent) {
-			launchTestEnvironmentDialog(null);
+			launchTestContextDialog(null);
 		}
 	}
 
-	void launchTestEnvironmentDialog(String msg) {
-		TestEnvironmentDialog dialog = new TestEnvironmentDialog(me, me, msg);
+	void launchTestContextDialog(String msg) {
+		TestContextDialog dialog = new TestContextDialog(me, me, msg);
 		int left = Window.getClientWidth()/ 3;
 		int top = Window.getClientHeight()/ 20;
 		dialog.setPopupPosition(left, top);
@@ -315,17 +320,17 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner, SiteMa
 		return "???";
 	}
 
-	// selection of site to be tested
-	private void buildSiteSelector() {
-		SiteSelectionComponent siteSelectionComponent = new SiteSelectionComponent(null, getCurrentTestSession());
-		siteSelectionComponent.addValueChangeHandler(new ValueChangeHandler<String>() {
-			@Override
-			public void onValueChange(ValueChangeEvent<String> siteSelected) {
-				currentSiteName = siteSelected.getValue();
-			}
-		});
-		sitesPanel.add(siteSelectionComponent.asWidget());
-	}
+//	// selection of site to be tested
+//	private void buildSiteSelector() {
+//		SiteSelectionComponent siteSelectionComponent = new SiteSelectionComponent(null, getCurrentTestSession());
+//		siteSelectionComponent.addValueChangeHandler(new ValueChangeHandler<String>() {
+//			@Override
+//			public void onValueChange(ValueChangeEvent<String> siteSelected) {
+//				currentSiteName = siteSelected.getValue();
+//			}
+//		});
+//		sitesPanel.add(siteSelectionComponent.asWidget());
+//	}
 
 	// update things when site selection changes
 	private ValueChangeHandler siteChangeHandler = new ValueChangeHandler() {
@@ -370,7 +375,7 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner, SiteMa
 				// This is a little wierd being here. This depends on initTestSession
 				// which is set AFTER onTabLoad is run so run here - later in the initialization
 				// initTestSession is set from ConfActorActivity
-				initializeTestSession();
+				initializeTestingContext();
 			}
 		});
 	}
@@ -378,6 +383,10 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner, SiteMa
 	private boolean isRepSut() {
 		return currentActorTypeId != null && ActorType.REPOSITORY.getShortName().equals(currentActorTypeId);
 	}
+
+    private boolean isRgSut() {
+        return currentActorTypeId != null && ActorType.RESPONDING_GATEWAY.getShortName().equals(currentActorTypeId);
+    }
 
     private boolean isRegSut() {
         return currentActorTypeId != null && ActorType.REGISTRY.getShortName().equals(currentActorTypeId);
@@ -404,7 +413,7 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner, SiteMa
 
 		initializationPanel.clear();
 
-		orchestrationInitialization();
+		initializeOrchestration();
 
 		// what tests are in the collection
 		getToolkitServices().getCollectionMembers("actorcollections", currentActorTypeId, new AsyncCallback<List<String>>() {
@@ -483,7 +492,7 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner, SiteMa
 
     private OrchestrationButton orchInit = null;
 
-	private void orchestrationInitialization() {
+	private void initializeOrchestration() {
 		if (isRepSut()) {
 			orchInit = new BuildRepTestOrchestrationButton(this, initializationPanel, "Initialize Test Environment");
 			initializationPanel.add(orchInit.panel());
@@ -492,8 +501,13 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner, SiteMa
             orchInit = new BuildRegTestOrchestrationButton(this, initializationPanel, "Initialize Test Environment");
             initializationPanel.add(orchInit.panel());
         }
+        else if (isRgSut()) {
+            orchInit = new BuildRgTestOrchestrationButton(this, initializationPanel, "Initialize Test Environment");
+            initializationPanel.add(orchInit.panel());
+        }
         else {
-			sitetoIssueTestAgainst = new SiteSpec(siteUnderTest.getName());
+            if (siteUnderTest != null)
+			    sitetoIssueTestAgainst = new SiteSpec(siteUnderTest.getName());
 		}
 
 	}
@@ -618,7 +632,12 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner, SiteMa
 			clickEvent.preventDefault();
 			clickEvent.stopPropagation();
 
-			runTest(testInstance, null);
+            String msg = verifyTestContext();
+            if (msg == null)
+			    runTest(testInstance, null);
+            else
+                launchTestContextDialog(msg);
+
 		}
 	}
 
@@ -828,6 +847,10 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner, SiteMa
         this.orchestrationResponse = regOrchestrationResponse;
     }
 
+    void setRgOrchestrationResponse(RgOrchestrationResponse rgOrchestrationResponse) {
+        this.rgOrchestrationResponse = rgOrchestrationResponse;
+        this.orchestrationResponse = rgOrchestrationResponse;
+    }
     //
     // End of group
     //
