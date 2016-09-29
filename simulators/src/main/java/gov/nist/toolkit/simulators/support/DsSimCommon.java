@@ -793,7 +793,7 @@ public class DsSimCommon {
         Iterator<String> it = transferSyntaxUids.iterator();
         Path finalPath = Paths.get("");
         while (it.hasNext() && !found) {
-            finalPath = folderPath.resolve(it.next());
+            finalPath = folderPath.resolve(it.next().trim());
             if (finalPath.toFile().exists()) found = true;
         }
         StoredDocument sd = null;

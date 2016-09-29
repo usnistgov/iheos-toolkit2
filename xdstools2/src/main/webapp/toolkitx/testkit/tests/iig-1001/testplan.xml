@@ -63,7 +63,7 @@
                   <Tag hex="0020,0020"/>
 					</TagList>
 					<DirList>
-                  <StdDir>../../stdImgs/iig-1001</StdDir>
+                  <StdDir>iig-1001</StdDir>
 					</DirList>
 				</Assert>
 			</Assertions>

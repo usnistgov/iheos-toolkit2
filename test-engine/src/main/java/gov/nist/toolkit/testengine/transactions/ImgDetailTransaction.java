@@ -393,8 +393,7 @@ public class ImgDetailTransaction extends BasicTransaction {
             StdDir elements contain paths of directories which contain
             std image files for testing. May have more than one. All files
             in the directory are added to the list. Subdirectories are
-            ignored. Directories may be absolute, or relative to the
-            External Cache root.
+            ignored. Directories are relative to the Image Cache
             <StdDir>path1</StdDir>
             <StdDir>path2</StdDir>
             <StdDir>path3</StdDir>
@@ -437,12 +436,11 @@ public class ImgDetailTransaction extends BasicTransaction {
          }
 
          // Make list of std image pfns
-         Path extCache = Paths.get(pMgr.getExternalCache());
          List <String> stdPfns = new ArrayList <>();
          for (OMElement stdDirElement : OMEUtil.childrenWithLocalName(dirListElement, "StdDir")) {
-            Path stdDirPath = extCache.resolve(stdDirElement.getText());
-            Utility.isValidPfn("test std img dir", stdDirPath, PfnType.DIRECTORY, "r");
-            Collection <File> files = FileUtils.listFiles(stdDirPath.toFile(), FileFilterUtils.fileFileFilter(), null);
+            File stdDirFile = Installation.instance().imageCache(stdDirElement.getText());
+            Utility.isValidPfn("test std img dir", stdDirFile, PfnType.DIRECTORY, "r");
+            Collection <File> files = FileUtils.listFiles(stdDirFile, FileFilterUtils.fileFileFilter(), null);
             for (File file : files)
                stdPfns.add(file.getPath());
          }

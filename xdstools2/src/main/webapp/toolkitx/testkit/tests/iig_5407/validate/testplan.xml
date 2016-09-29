@@ -25,7 +25,7 @@
 						<SeriesInstanceUID />
 					</TagList>
 					<DirList>
-						<StdDir>../../stdImgs/iig-5407</StdDir>
+						<StdDir>iig-5407</StdDir>
 					</DirList>
 				</Assert>
 			</Assertions>
