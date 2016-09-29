@@ -250,10 +250,13 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner, SiteMa
 		currentSiteName = site;
 //		getToolkitServices().getSite(site, new AsyncCallback<Site>() {
 		if (site == null) return;
-		getToolkitServices().getSite(site, new AsyncCallback<Site>() {
+		getToolkitServices().getSite(currentSiteName, new AsyncCallback<Site>() {
 			@Override
 			public void onFailure(Throwable throwable) {
-				new PopupMessage("getSiteName threw error: " + throwable.getMessage());
+				new PopupMessage("System " + currentSiteName + " does not exist.");
+                currentSiteName = null;
+                siteUnderTest = null;
+                updateTestingContextDisplay();
 			}
 
 			@Override
@@ -804,6 +807,11 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner, SiteMa
         }
 		else { // mostly for early debugging
             parms.put("$patientid$", "P20160907182617.2^^^&1.3.6.1.4.1.21367.2005.13.20.1000&ISO");
+        }
+
+        if (getSitetoIssueTestAgainst() == null) {
+            new PopupMessage("Test Environment must be initialized");
+            return;
         }
 
 		try {

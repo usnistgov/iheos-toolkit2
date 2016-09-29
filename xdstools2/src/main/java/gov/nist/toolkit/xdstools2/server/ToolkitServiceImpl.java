@@ -2,6 +2,7 @@ package gov.nist.toolkit.xdstools2.server;
 
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 import gov.nist.toolkit.MessageValidatorFactory2.MessageValidatorFactoryFactory;
+import gov.nist.toolkit.actorfactory.SimManager;
 import gov.nist.toolkit.actorfactory.SiteServiceManager;
 import gov.nist.toolkit.actorfactory.client.SimId;
 import gov.nist.toolkit.actorfactory.client.Simulator;
@@ -373,6 +374,10 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements
 		Session session = session().xdsTestServiceManager().session;
 		session.setCurrentEnvName(environmentName);
 		session.setMesaSessionName(mesaTestSession);
+		if (siteSpec == null)
+			throw new Exception("No site selected");
+		if (!new SimManager(mesaTestSession).exists(siteSpec.name))
+			throw new Exception("Site " + siteSpec.name + " does not exist");
 		TestOverviewDTO testOverviewDTO = session().xdsTestServiceManager().runTest(environmentName, mesaTestSession, siteSpec, testInstance, sections, params, null, stopOnFirstFailure);
 		return testOverviewDTO;
 	}

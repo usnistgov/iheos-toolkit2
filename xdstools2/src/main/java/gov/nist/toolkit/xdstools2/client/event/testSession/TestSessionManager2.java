@@ -19,7 +19,7 @@ import java.util.List;
  */
 public class TestSessionManager2 {
     private List<String> testSessions;  // this is maintained to initialize new tabs with
-    private String currentTestSession = null;
+    private String currentTestSession = "default";
 
     public TestSessionManager2() {
         Xdstools2.getEventBus().addHandler(TestSessionsUpdatedEvent.TYPE, new TestSessionsUpdatedEventHandler() {

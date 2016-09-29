@@ -146,6 +146,14 @@ public class SimManager {
 		return getAllSites(SiteServiceManager.getSiteServiceManager().getCommonSites());
 	}
 
+	public boolean exists(String siteName) {
+		try {
+			return getAllSites().exists(siteName);
+		} catch (Exception e) {
+			return false;
+		}
+	}
+
     public List<Site> getSites(List<String> siteNames) throws Exception {
         List<Site> siteList = new ArrayList<>();
 
