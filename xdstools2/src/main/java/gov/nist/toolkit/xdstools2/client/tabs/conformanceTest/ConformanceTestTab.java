@@ -292,13 +292,15 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner, SiteMa
 		@Override
 		public void onSelection(SelectionEvent<Integer> selectionEvent) {
 			int i = selectionEvent.getSelectedItem();
-			currentActorTypeId = testCollectionDefinitionDAOs.get(i).getCollectionID();
-			currentActorTypeDescription = testCollectionDefinitionDAOs.get(i).getCollectionTitle();
-			displayTestCollection();
+            String newActorTypeId = testCollectionDefinitionDAOs.get(i).getCollectionID();
+            if (!newActorTypeId.equals(currentActorTypeId)) {
+                orchestrationResponse = null;  // so we know orchestration not set up
+                changeDisplayedActorType(newActorTypeId);
+            }
 		}
 	};
 
-	public void displayActor(String actorTypeName) {
+	public void changeDisplayedActorType(String actorTypeName) {
 		currentActorTypeId = actorTypeName;
 		currentActorTypeDescription = getDescriptionForTestCollection(currentActorTypeId);
 		displayTestCollection();
@@ -428,6 +430,8 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner, SiteMa
 			public void onSuccess(List<String> testIds) {
 				List<TestInstance> testInstances = new ArrayList<>();
 				for (String testId : testIds) testInstances.add(new TestInstance(testId));
+                testStatistics.clear();
+                testStatistics.setTestCount(testIds.size());
 				testsPerActor.put(currentActorTypeId, testInstances);
 				loadingMessage.setHTML("Loading...");
                 displayTests(testInstances);
@@ -811,6 +815,11 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner, SiteMa
 
         if (getSitetoIssueTestAgainst() == null) {
             new PopupMessage("Test Environment must be initialized");
+            return;
+        }
+
+        if (orchestrationResponse == null) {
+            new PopupMessage("Initialize Test Environment before running tests.");
             return;
         }
 

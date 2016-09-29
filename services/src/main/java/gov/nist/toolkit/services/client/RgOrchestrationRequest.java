@@ -1,39 +1,17 @@
 package gov.nist.toolkit.services.client;
 
-import com.google.gwt.user.client.rpc.IsSerializable;
 import gov.nist.toolkit.sitemanagement.client.SiteSpec;
-
-import java.io.Serializable;
 
 /**
  *
  */
-public class RgOrchestrationRequest implements Serializable, IsSerializable {
-    private String userName;
-    private String environmentName;
+public class RgOrchestrationRequest extends AbstractOrchestrationRequest {
     private SiteSpec siteUnderTest;
     private boolean useExposedRR;
     private boolean useSimAsSUT;   // no longer used
-    private PifType pifType;
     private boolean useExistingSimulator = true;
 
     public RgOrchestrationRequest() {}
-
-    public String getUserName() {
-        return userName;
-    }
-
-    public void setUserName(String userName) {
-        this.userName = userName;
-    }
-
-    public String getEnvironmentName() {
-        return environmentName;
-    }
-
-    public void setEnvironmentName(String environmentName) {
-        this.environmentName = environmentName;
-    }
 
     public SiteSpec getSiteUnderTest() {
         return siteUnderTest;
@@ -57,14 +35,6 @@ public class RgOrchestrationRequest implements Serializable, IsSerializable {
 
     public void setUseSimAsSUT(boolean useSimAsSUT) {
         this.useSimAsSUT = useSimAsSUT;
-    }
-
-    public PifType getPifType() {
-        return pifType;
-    }
-
-    public void setPifType(PifType pifType) {
-        this.pifType = pifType;
     }
 
     public boolean isUseExistingSimulator() {

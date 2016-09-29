@@ -49,7 +49,7 @@ public class BuildRgTestOrchestrationButton extends OrchestrationButton {
                         "<ul>" +
                         "<li>Exposed Registry/Repository endpoints - your implementation includes Registry/Repository " +
                         "functionality and you expose the required endpoints for these actors. " +
-                        "A single site (system configuration in toolkit) must contain the Responding Gateway " +
+                        "A single system configuration in toolkit must contain the Responding Gateway " +
                         "(system under test), and the related Registry and Repository configurations." +
                         "<li>External Registry/Repository - your implementation can be configured to work with an " +
                         "external Registry and Repository which will be selected below. This tool will provide " +
@@ -61,7 +61,7 @@ public class BuildRgTestOrchestrationButton extends OrchestrationButton {
 
                         "<p>When the test is run a Cross Gateway Query or Retrieve transaction will be sent to the " +
                         "Responding Gateway " +
-                        "selected below. This will start the test. Before running a test, make sure your " +
+                        "selected in the Test Context (located to the right). This will start the test. Before running a test, make sure your " +
                         "Responding Gateway is configured to forward requests to the Document Repository and Document Registry above.  This " +
                         "test only uses non-TLS endpoints (for now). TLS selection is disabled.</p>"
         );

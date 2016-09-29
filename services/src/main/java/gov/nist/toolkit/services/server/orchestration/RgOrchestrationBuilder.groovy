@@ -4,6 +4,7 @@ import gov.nist.toolkit.actorfactory.SimCache
 import gov.nist.toolkit.actorfactory.client.SimId
 import gov.nist.toolkit.actorfactory.client.SimulatorConfig
 import gov.nist.toolkit.actortransaction.client.ActorType
+import gov.nist.toolkit.configDatatypes.SimulatorProperties
 import gov.nist.toolkit.configDatatypes.client.Pid
 import gov.nist.toolkit.configDatatypes.client.TransactionType
 import gov.nist.toolkit.installation.Installation
@@ -15,6 +16,7 @@ import gov.nist.toolkit.services.client.RgOrchestrationResponse
 import gov.nist.toolkit.services.server.RawResponseBuilder
 import gov.nist.toolkit.services.server.ToolkitApi
 import gov.nist.toolkit.session.server.Session
+import gov.nist.toolkit.simcommon.client.config.SimulatorConfigElement
 import gov.nist.toolkit.sitemanagement.client.Site
 import gov.nist.toolkit.sitemanagement.client.SiteSpec
 import groovy.transform.TypeChecked
@@ -42,14 +44,21 @@ class RgOrchestrationBuilder {
         try {
             String home
             RgOrchestrationResponse response = new RgOrchestrationResponse()
+            Map<String, TestInstanceManager> pidNameMap = [
+                    oneDocPid:  new TestInstanceManager(request, response, '15817'),
+                    twoDocPid:  new TestInstanceManager(request, response, '15818'),
+            ]
+
+            OrchestrationProperties orchProps = new OrchestrationProperties(session, request.userName, ActorType.RESPONDING_GATEWAY, pidNameMap.keySet())
 
             // clear out test session
 //            new SimDb().getSimIdsForUser(request.userName).each { SimId simId -> api.deleteSimulator(simId) }
 
-            String supportIdName = 'support'
-            SimId supportId
+            String supportIdName = 'rg_support'
+            SimId supportSimId
             SimulatorConfig supportSimConfig
             SiteSpec rrSite
+            boolean reuse = false  // updated as we progress
 
             if (request.useExposedRR) {
                 // RG and RR in same site - verify site contents
@@ -65,9 +74,30 @@ class RgOrchestrationBuilder {
             } else {  // use external RR
                 // build RR sim - pass back details for configuration of SUT
                 // SUT and supporting RR are defined by different sites
-                supportId = new SimId(request.userName, supportIdName, ActorType.REPOSITORY_REGISTRY.name, request.environmentName)
-                supportSimConfig = api.createSimulator(supportId).getConfig(0)
-                rrSite = new SiteBuilder().siteSpecFromSimId(supportId)
+
+                supportSimId = new SimId(request.userName, supportIdName, ActorType.REPOSITORY_REGISTRY.name, request.environmentName)
+                if (!request.isUseExistingSimulator()) {
+                    api.deleteSimulatorIfItExists(supportSimId)
+                    orchProps.clear()
+                }
+
+                if (api.simulatorExists(supportSimId)) {
+                    supportSimConfig = api.getConfig(supportSimId)
+                    reuse = true
+                } else {
+                    supportSimConfig = api.createSimulator(supportSimId).getConfig(0)
+                }
+
+                // disable checking of Patient Identity Feed
+                if (!reuse) {
+                    SimulatorConfigElement idsEle = supportSimConfig.getConfigEle(SimulatorProperties.VALIDATE_AGAINST_PATIENT_IDENTITY_FEED)
+                    idsEle.setValue(false)
+
+                    api.saveSimulator(supportSimConfig)
+                }
+                orchProps.save()
+
+                rrSite = new SiteBuilder().siteSpecFromSimId(supportSimId)
                 response.siteUnderTest = request.siteUnderTest
                 response.regrepSite = rrSite
                 response.sameSite = false

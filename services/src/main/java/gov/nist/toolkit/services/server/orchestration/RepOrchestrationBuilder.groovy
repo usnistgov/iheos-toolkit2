@@ -7,7 +7,6 @@ import gov.nist.toolkit.actortransaction.client.ParamType
 import gov.nist.toolkit.configDatatypes.SimulatorProperties
 import gov.nist.toolkit.configDatatypes.client.Pid
 import gov.nist.toolkit.configDatatypes.client.PidBuilder
-import gov.nist.toolkit.installation.Installation
 import gov.nist.toolkit.services.client.RawResponse
 import gov.nist.toolkit.services.client.RepOrchestrationRequest
 import gov.nist.toolkit.services.client.RepOrchestrationResponse
@@ -41,14 +40,13 @@ class RepOrchestrationBuilder {
             SimId supportSimId
             SimulatorConfig supportSimConfig = null
             RepOrchestrationResponse response = new RepOrchestrationResponse()
+            Map<String, TestInstanceManager> pidNameMap = [
+                    pid:  new TestInstanceManager(request, response, ''), // No testId needed since PIF won't be sent
+            ]
 
             boolean reuse = false  // updated as we progress
             supportSimId = new SimId(request.userName, supportIdName, ActorType.REGISTRY.name, request.environmentName)
-            File orchestrationPropFile = Installation.instance().orchestrationPropertiesFile(request.userName, ActorType.REPOSITORY.shortName)
-            Properties orchProps = new Properties()
-            boolean propertiesUpdated = false
-            if (orchestrationPropFile.exists())
-                orchProps.load(new FileInputStream(orchestrationPropFile))
+            OrchestrationProperties orchProps = new OrchestrationProperties(session, request.userName, ActorType.REPOSITORY, pidNameMap.keySet())
             Pid pid
 
             response.repSite = new SiteSpec(request.sutSite.name)
@@ -68,22 +66,18 @@ class RepOrchestrationBuilder {
             } else {
                 pid  = session.allocateNewPid()
                 orchProps.setProperty("pid", pid.asString())
-                propertiesUpdated = true
             }
             response.setPid(pid)
 
-            SimulatorConfigElement idsEle
+
             // disable checking of Patient Identity Feed
             if (!reuse) {
-                idsEle = supportSimConfig.getConfigEle(SimulatorProperties.VALIDATE_AGAINST_PATIENT_IDENTITY_FEED)
+                SimulatorConfigElement idsEle = supportSimConfig.getConfigEle(SimulatorProperties.VALIDATE_AGAINST_PATIENT_IDENTITY_FEED)
                 idsEle.setValue(false)
 
                 api.saveSimulator(supportSimConfig)
             }
-            if (propertiesUpdated) {
-                orchestrationPropFile.parentFile.mkdirs()
-                orchProps.store(new FileOutputStream(orchestrationPropFile), null)
-            }
+            orchProps.save()
 
             // if SUT is simulator and it does not have a Register endpoint, add endpoint from
             // support sim
