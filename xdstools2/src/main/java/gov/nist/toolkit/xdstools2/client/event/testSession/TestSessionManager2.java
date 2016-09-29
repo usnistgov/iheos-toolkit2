@@ -1,6 +1,7 @@
 package gov.nist.toolkit.xdstools2.client.event.testSession;
 
 import com.google.gwt.user.client.Cookies;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import gov.nist.toolkit.xdstools2.client.CookieManager;
 import gov.nist.toolkit.xdstools2.client.PopupMessage;
@@ -114,7 +115,7 @@ public class TestSessionManager2 {
 
             @Override
             public void onSuccess(Boolean aBoolean) {
-                load();  // getRetrievedDocumentsModel full list and update all tabs
+                load(testSessions.get(0));  // getRetrievedDocumentsModel full list and update all tabs
             }
         });
     }
