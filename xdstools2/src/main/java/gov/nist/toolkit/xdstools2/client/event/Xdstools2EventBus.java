@@ -57,4 +57,28 @@ public class Xdstools2EventBus extends SimpleEventBus {
     public HandlerRegistration addActorsConfigUpdatedEventHandler(ActorConfigUpdatedEvent.ActorConfigUpdatedEventHandler handler){
         return addHandler(ActorConfigUpdatedEvent.TYPE,handler);
     }
+
+    /**
+     * Notify the event bus that a new tab has been selected.
+     */
+    public void fireTabSelectedEvent(String tabName) {
+        fireEvent(new TabSelectedEvent(tabName));
+    }
+
+    /**
+     * Enable to know when the event bus is notified that an opened tab has been selected.
+     * @param handler
+     * @return
+     */
+    public HandlerRegistration addTabSelectedEventHandler(TabSelectedEvent.TabSelectedEventHandler handler){
+        return addHandler(TabSelectedEvent.TYPE,handler);
+    }
+
+    public void fireFavoritePidsUpdateEvent() {
+        fireEvent(new FavoritePidsUpdatedEvent());
+    }
+
+    public HandlerRegistration addFavoritePidsUpdateEventHandler(FavoritePidsUpdatedEvent.FavoritePidsUpdatedEventHandler handler){
+        return addHandler(FavoritePidsUpdatedEvent.TYPE,handler);
+    }
 }

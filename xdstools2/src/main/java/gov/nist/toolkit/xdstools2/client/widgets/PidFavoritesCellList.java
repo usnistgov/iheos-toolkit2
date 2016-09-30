@@ -4,6 +4,7 @@ import com.google.gwt.cell.client.AbstractCell;
 import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
 import com.google.gwt.user.cellview.client.CellList;
 import com.google.gwt.user.cellview.client.HasKeyboardSelectionPolicy;
+import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.view.client.ListDataProvider;
@@ -11,9 +12,14 @@ import com.google.gwt.view.client.ProvidesKey;
 import com.google.gwt.view.client.SelectionChangeEvent;
 import com.google.gwt.view.client.SingleSelectionModel;
 import gov.nist.toolkit.configDatatypes.client.Pid;
+import gov.nist.toolkit.xdstools2.client.event.FavoritePidsUpdatedEvent;
+import gov.nist.toolkit.xdstools2.client.event.Xdstools2EventBus;
+import gov.nist.toolkit.xdstools2.client.util.ClientUtils;
 import gov.nist.toolkit.xdstools2.client.util.CookiesServices;
 
+import java.io.IOException;
 import java.util.LinkedList;
+import java.util.List;
 
 /**
  * Created by onh2 on 7/11/16.
@@ -49,21 +55,57 @@ public class PidFavoritesCellList extends Composite{
         model.addDataDisplay(cellList);
         //        cellList.setPageSize(30);
         //        cellList.setKeyboardPagingPolicy(KeyboardPagingPolicy.INCREASE_RANGE);
-                cellList.setKeyboardSelectionPolicy(HasKeyboardSelectionPolicy.KeyboardSelectionPolicy.BOUND_TO_SELECTION);
+        cellList.setKeyboardSelectionPolicy(HasKeyboardSelectionPolicy.KeyboardSelectionPolicy.BOUND_TO_SELECTION);
 
         // Add a selection model so we can select cells.
         cellList.setSelectionModel(selectionModel);
 
         container.add(cellList);
 
-        model.setList(new LinkedList<Pid>(CookiesServices.retrievePidFavoritesFromCookies()));
-
-        model.refresh();
-        cellList.redraw();
-
         container.addStyleName("list-border");
 
         initWidget(container);
+
+        bindUI();
+    }
+
+    private void bindUI() {
+        ((Xdstools2EventBus) ClientUtils.INSTANCE.getEventBus()).addFavoritePidsUpdateEventHandler(new FavoritePidsUpdatedEvent.FavoritePidsUpdatedEventHandler() {
+            @Override
+            public void onFavPidsUpdate() {
+                model.setList(new LinkedList<Pid>(CookiesServices.retrievePidFavoritesFromCookies()));
+
+                model.refresh();
+                cellList.redraw();
+            }
+        });
+        try {
+            loadData();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void loadData() throws IOException {
+        String environmentName = ClientUtils.INSTANCE.getEnvironmentState().getEnvironmentName();
+        if (environmentName!=null) {
+            ClientUtils.INSTANCE.getToolkitServices().retrieveConfiguredFavoritesPid(environmentName, new AsyncCallback<List<Pid>>() {
+                @Override
+                public void onFailure(Throwable throwable) {
+
+                }
+
+                @Override
+                public void onSuccess(List<Pid> pids) {
+                    List<Pid> pidList=new LinkedList<Pid>();
+                    pidList.addAll(pids);
+                    pidList.addAll(CookiesServices.retrievePidFavoritesFromCookies());
+                    model.setList(new LinkedList<Pid>(pidList));
+                    model.refresh();
+                    cellList.redraw();
+                }
+            });
+        }
     }
 
     public void addSelectionChangeHandler(SelectionChangeEvent.Handler handler){

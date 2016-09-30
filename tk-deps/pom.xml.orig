@@ -62,6 +62,19 @@
             <id>apache-central</id>
             <url>https://repo.maven.apache.org/maven2</url>
         </repository>
+<<<<<<< HEAD
+        <repository>
+            <id>docshare-test.local</id>
+            <url>https://libs.imphub.org/artifactory/ext-release-local</url>
+            <releases>
+                <enabled>true</enabled>
+            </releases>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
+        </repository>
+=======
+>>>>>>> develop
     </repositories>
 
     <scm>

@@ -63,9 +63,7 @@ public class PidWidget implements IsWidget{
     }
 
     public void setWidth(String width) {
-//        container.setWidth(width);
         pidInput.setWidth(width);
-//        favContainer.setWidth(width);
         favoritePidWidget.setWidth(width);
     }
 

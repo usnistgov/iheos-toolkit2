@@ -13,7 +13,9 @@ import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.TabBar;
 import com.google.gwt.user.client.ui.Widget;
+import gov.nist.toolkit.xdstools2.client.event.Xdstools2EventBus;
 import gov.nist.toolkit.xdstools2.client.event.tabContainer.V2TabOpenedEvent;
+import gov.nist.toolkit.xdstools2.client.util.ClientUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -80,12 +82,13 @@ public class TabContainer {
 	}
 
 	public static void selectTab() {
-//		INNERPANEL.setWidget(deck.get(TABBAR.getSelectedTab()));
-
 		Widget dockLp = deck.get(TABBAR.getSelectedTab());
 
 		if (INNER_DECKPANEL.getWidgetIndex(dockLp)==-1) {
 			INNER_DECKPANEL.add(dockLp);
+		}else {
+            String tabName=TABBAR.getTab(TABBAR.getSelectedTab()).toString().split("<div class=\"gwt-HTML\">")[1].split("</div>")[0];
+			((Xdstools2EventBus) ClientUtils.INSTANCE.getEventBus()).fireTabSelectedEvent(tabName);
 		}
 //		INNER_DECKPANEL.getElement().getStyle().setMargin(4, Style.Unit.PX);
 		INNER_DECKPANEL.showWidget(dockLp);
