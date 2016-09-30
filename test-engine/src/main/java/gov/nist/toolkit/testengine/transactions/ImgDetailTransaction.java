@@ -683,7 +683,7 @@ public class ImgDetailTransaction extends BasicTransaction {
    private String loadTxt(OMElement e, String tagName) {
       try {
          OMElement child = XmlUtil.onlyChildWithLocalName(e, tagName);
-         return child.getText();
+         return child.getText().trim();
       } catch (Exception e1) {}
       return null;
    }
