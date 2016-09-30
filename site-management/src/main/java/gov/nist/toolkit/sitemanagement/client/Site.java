@@ -353,4 +353,7 @@ public class Site  implements IsSerializable, Serializable {
 		return name;
 	}
 
+	public SiteSpec siteSpec() {
+		return new SiteSpec(getSiteName());
+	}
 }

@@ -226,7 +226,8 @@ public abstract class BaseSimConfigMgr implements SimConfigMgrIntf {
 
             public void onSuccess(String result) {
                 // reload simulators to getRetrievedDocumentsModel updates
-                new LoadSimulatorsClickHandler(simulatorControlTab, testSession).onClick(null);
+                if (simulatorControlTab != null)
+                    new LoadSimulatorsClickHandler(simulatorControlTab, testSession).onClick(null);
             }
         });
     }

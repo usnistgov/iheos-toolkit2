@@ -167,7 +167,7 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner, SiteMa
 			public void onClicked(TestInstance testInstance, InteractionDiagram.DiagramPart part) {
 				if (InteractionDiagram.DiagramPart.RequestConnector.equals(part)
 						|| InteractionDiagram.DiagramPart.ResponseConnector.equals(part)) {
-					displayInspectorTab(testInstance, getCurrentTestSession());
+					launchInspectorTab(testInstance, getCurrentTestSession());
 				}
 			}
 		});
@@ -767,11 +767,11 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner, SiteMa
 			clickEvent.preventDefault();
 			clickEvent.stopPropagation();
 
-			displayInspectorTab(testInstance, getCurrentTestSession());
+			launchInspectorTab(testInstance, getCurrentTestSession());
 		}
 	}
 
-	private void displayInspectorTab(final TestInstance testInstance, String testSession) {
+	private void launchInspectorTab(final TestInstance testInstance, String testSession) {
 		List<TestInstance> testInstances = new ArrayList<>();
 		testInstances.add(testInstance);
 		getToolkitServices().getTestResults(testInstances, testSession, new AsyncCallback<Map<String, Result>>() {

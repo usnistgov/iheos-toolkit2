@@ -14,6 +14,7 @@ import gov.nist.toolkit.services.client.RepOrchestrationResponse;
 import gov.nist.toolkit.sitemanagement.client.SiteSpec;
 import gov.nist.toolkit.sitemanagement.client.TransactionBean;
 import gov.nist.toolkit.xdstools2.client.util.ClientUtils;
+import gov.nist.toolkit.xdstools2.client.widgets.SimSystemAnchor;
 import gov.nist.toolkit.xdstools2.client.widgets.buttons.OrchestrationButton;
 
 /**
@@ -68,7 +69,7 @@ class BuildRepTestOrchestrationButton extends OrchestrationButton {
 
                 if (testTab.getSiteUnderTest() != null) {
                     initializationResultsPanel.add(new HTML("<h2>System Under Test Configuration</h2>"));
-                    initializationResultsPanel.add(new HTML("Site: " + testTab.getSiteUnderTest().getName()));
+                    initializationResultsPanel.add(new SimSystemAnchor("System: " + testTab.getSiteUnderTest().getName(), testTab.getSiteUnderTest().siteSpec()));
                     FlexTable table = new FlexTable();
                     int row = 0;
                     table.setText(row, 0, "Provide and Register");
@@ -96,7 +97,7 @@ class BuildRepTestOrchestrationButton extends OrchestrationButton {
                 }
 
                 initializationResultsPanel.add(new HTML("<h3>Supporting Registry Configuration</h3>"));
-                initializationResultsPanel.add(new HTML("Site: " + orchResponse.getSupportSite().getOrchestrationSiteName()));
+                initializationResultsPanel.add(new SimSystemAnchor("System: " + orchResponse.getSupportSite().getOrchestrationSiteName(), new SiteSpec(orchResponse.getSupportSite().getOrchestrationSiteName())));
                 initializationResultsPanel.add(new HTML("Patient ID: " + orchResponse.getPid().toString()));
                 initializationResultsPanel.add(new HTML("<br />"));
 

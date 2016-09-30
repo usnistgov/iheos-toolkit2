@@ -4,10 +4,11 @@ import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import gov.nist.toolkit.sitemanagement.client.Site;
+import gov.nist.toolkit.sitemanagement.client.SiteSpec;
 import gov.nist.toolkit.xdstools2.client.PopupMessage;
 import gov.nist.toolkit.xdstools2.client.util.ClientUtils;
 
-class SiteChoose implements ClickHandler {
+public class SiteChoose implements ClickHandler {
 	/**
 	 * 
 	 */
@@ -16,7 +17,7 @@ class SiteChoose implements ClickHandler {
 	/**
 	 * @param actorConfigTab
 	 */
-	SiteChoose(ActorConfigTab actorConfigTab) {
+	public SiteChoose(ActorConfigTab actorConfigTab) {
 		this.actorConfigTab = actorConfigTab;
 	}
 
@@ -33,6 +34,10 @@ class SiteChoose implements ClickHandler {
 				actorConfigTab.getSelectedValueFromListBox(actorConfigTab.siteSelector), 
 				loadSiteCallback);
 		currentSelection = actorConfigTab.siteSelector.getSelectedIndex();
+	}
+
+	public void editSite(SiteSpec siteSpec) {
+		ClientUtils.INSTANCE.getToolkitServices().getSite(siteSpec.getName(), loadSiteCallback);
 	}
 	
 	protected AsyncCallback<Site> loadSiteCallback = new AsyncCallback<Site>() {
