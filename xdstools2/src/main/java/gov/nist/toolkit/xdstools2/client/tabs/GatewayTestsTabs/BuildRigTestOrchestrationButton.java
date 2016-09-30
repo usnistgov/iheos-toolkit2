@@ -16,12 +16,12 @@ import gov.nist.toolkit.services.client.RigOrchestrationRequest;
 import gov.nist.toolkit.simcommon.client.config.SimulatorConfigElement;
 import gov.nist.toolkit.xdstools2.client.PopupMessage;
 import gov.nist.toolkit.xdstools2.client.tabs.genericQueryTab.GenericQueryTab;
-import gov.nist.toolkit.xdstools2.client.widgets.buttons.OrchestrationButton;
+import gov.nist.toolkit.xdstools2.client.widgets.buttons.AbstractOrchestrationButton;
 
 /**
  * Handles "Build Test Environment" Button for RIG Test Orchestration
  */
-class BuildRIGTestOrchestrationButton extends OrchestrationButton {
+class BuildRIGTestOrchestrationButton extends AbstractOrchestrationButton {
    private RIGTestTab testTab;
    boolean includeRIG;
 

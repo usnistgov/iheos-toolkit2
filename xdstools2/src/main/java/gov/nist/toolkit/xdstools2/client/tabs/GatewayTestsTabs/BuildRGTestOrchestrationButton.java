@@ -13,17 +13,17 @@ import gov.nist.toolkit.sitemanagement.client.SiteSpec;
 import gov.nist.toolkit.xdstools2.client.PopupMessage;
 import gov.nist.toolkit.xdstools2.client.tabs.genericQueryTab.GenericQueryTab;
 import gov.nist.toolkit.xdstools2.client.util.ClientUtils;
-import gov.nist.toolkit.xdstools2.client.widgets.buttons.OrchestrationButton;
+import gov.nist.toolkit.xdstools2.client.widgets.buttons.AbstractOrchestrationButton;
 
 /**
  *
  */
-class BuildRGTestOrchestrationButton extends OrchestrationButton {
+class BuildRGTestOrchestrationButton extends AbstractOrchestrationButton {
     private RGTestTab testTab;
     private SiteSpec siteUnderTest;
     private boolean useExposedRR;
     private boolean useSimAsSUT;
-//    private List<OrchestrationButton> linkedOrchestrationButtons = new ArrayList<>();
+//    private List<AbstractOrchestrationButton> linkedOrchestrationButtons = new ArrayList<>();
 
     BuildRGTestOrchestrationButton(RGTestTab testTab, Panel topPanel, String label, boolean useSimAsSUT) {
         super(topPanel, label);
@@ -31,7 +31,7 @@ class BuildRGTestOrchestrationButton extends OrchestrationButton {
         this.useSimAsSUT = useSimAsSUT;
     }
 
-//    public void addLinkedOrchestrationButton(OrchestrationButton orchestrationButton) {
+//    public void addLinkedOrchestrationButton(AbstractOrchestrationButton orchestrationButton) {
 //        linkedOrchestrationButtons.add(orchestrationButton);
 //    }
 
@@ -55,7 +55,7 @@ class BuildRGTestOrchestrationButton extends OrchestrationButton {
         }
 
         // get rid of past reports
-//        for (OrchestrationButton b : linkedOrchestrationButtons) {
+//        for (AbstractOrchestrationButton b : linkedOrchestrationButtons) {
 //            b.clean();
 //        }
 

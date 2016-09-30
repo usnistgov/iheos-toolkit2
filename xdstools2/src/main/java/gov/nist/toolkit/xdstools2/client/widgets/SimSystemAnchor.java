@@ -34,7 +34,7 @@ public class SimSystemAnchor extends HorizontalFlowPanel {
                 if (simulatorConfigs.size() == 1) {
                     final SimulatorConfig simConfig = simulatorConfigs.get(0);
                     add(new SimConfigEditAnchor("[Simulator Configuration]", simConfig));
-                    add(new SimLogViewerAnchor("[Simulator Log Viewer]", simConfig.getId()));
+                    add(new SimLogViewerAnchor("[Simulator Log]", simConfig.getId()));
                 } else {
                     add(new SiteEditAnchor("[System Configuration]", siteSpec));
                 }

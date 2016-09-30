@@ -36,15 +36,10 @@ class RegOrchestrationBuilder {
 
         OrchestrationProperties orchProps = new OrchestrationProperties(session, request.userName, ActorType.REPOSITORY, pidNameMap.keySet())
 
-        Pid registerPid
-        Pid sqPid
-        Pid mpq1Pid
-        Pid mpq2Pid
-
-        registerPid = PidBuilder.createPid(orchProps.getProperty("registerPid"))
-        sqPid = PidBuilder.createPid(orchProps.getProperty("sqPid"))
-        mpq1Pid = PidBuilder.createPid(orchProps.getProperty("mpq1Pid"))
-        mpq2Pid = PidBuilder.createPid(orchProps.getProperty("mpq2Pid"))
+        Pid registerPid = PidBuilder.createPid(orchProps.getProperty("registerPid"))
+        Pid sqPid       = PidBuilder.createPid(orchProps.getProperty("sqPid"))
+        Pid mpq1Pid     = PidBuilder.createPid(orchProps.getProperty("mpq1Pid"))
+        Pid mpq2Pid     = PidBuilder.createPid(orchProps.getProperty("mpq2Pid"))
 
         response.setRegisterPid(registerPid)
         response.setSqPid(sqPid)

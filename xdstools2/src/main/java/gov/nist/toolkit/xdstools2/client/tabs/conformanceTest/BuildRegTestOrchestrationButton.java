@@ -1,26 +1,25 @@
 package gov.nist.toolkit.xdstools2.client.tabs.conformanceTest;
 
-import com.google.gwt.dom.client.Style;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.user.client.rpc.AsyncCallback;
-import com.google.gwt.user.client.ui.*;
-import gov.nist.toolkit.configDatatypes.client.TransactionType;
-import gov.nist.toolkit.services.client.*;
-import gov.nist.toolkit.session.client.TestOverviewDTO;
+import com.google.gwt.user.client.ui.FlowPanel;
+import com.google.gwt.user.client.ui.HTML;
+import com.google.gwt.user.client.ui.Panel;
+import com.google.gwt.user.client.ui.RadioButton;
+import gov.nist.toolkit.services.client.PifType;
+import gov.nist.toolkit.services.client.RawResponse;
+import gov.nist.toolkit.services.client.RegOrchestrationRequest;
+import gov.nist.toolkit.services.client.RegOrchestrationResponse;
 import gov.nist.toolkit.sitemanagement.client.SiteSpec;
-import gov.nist.toolkit.xdstools2.client.HorizontalFlowPanel;
-import gov.nist.toolkit.xdstools2.client.PopupMessage;
 import gov.nist.toolkit.xdstools2.client.util.ClientUtils;
-import gov.nist.toolkit.xdstools2.client.widgets.SimSystemAnchor;
-import gov.nist.toolkit.xdstools2.client.widgets.buttons.OrchestrationButton;
-
-import java.util.List;
+import gov.nist.toolkit.xdstools2.client.widgets.OrchestrationSupportTestsDisplay;
+import gov.nist.toolkit.xdstools2.client.widgets.buttons.AbstractOrchestrationButton;
 
 
 /**
  *
  */
-public class BuildRegTestOrchestrationButton extends OrchestrationButton {
+public class BuildRegTestOrchestrationButton extends AbstractOrchestrationButton {
     private ConformanceTestTab testTab;
     private Panel initializationPanel;
     private FlowPanel initializationResultsPanel = new FlowPanel();
@@ -82,29 +81,10 @@ public class BuildRegTestOrchestrationButton extends OrchestrationButton {
                 initializationResultsPanel.add(new HTML("Initialization Complete"));
 
                 if (testTab.getSiteUnderTest() != null) {
-                    initializationResultsPanel.add(new HTML("<h2>System Under Test Configuration</h2>"));
-                    initializationResultsPanel.add(new SimSystemAnchor("System: " + testTab.getSiteUnderTest().getName(), testTab.getSiteUnderTest().siteSpec()));
-                    FlexTable table = new FlexTable();
-                    int row = 0;
-                    table.setText(row++, 0, "Endpoints");
-                    table.setText(row, 0, "Register");
-                    try {
-                        table.setText(row++, 1, testTab.getSiteUnderTest().getRawEndpoint(TransactionType.REGISTER, false, false));
-                    } catch (Exception e) {
-                    }
-
-                    table.setText(row, 0, "Stored Query");
-                    try {
-                        table.setText(row++, 1, testTab.getSiteUnderTest().getRawEndpoint(TransactionType.STORED_QUERY, false, false));
-                    } catch (Exception e) {
-                        //
-                    }
-
-                    initializationResultsPanel.add(new HTML("<br />"));
-                    initializationResultsPanel.add(table);
+                    initializationResultsPanel.add(new SiteDisplay("System Under Test Configuration", testTab.getSiteUnderTest()));
                 }
 
-                initializationResultsPanel.add(new HTML("<h2>Generated Environment</h2>"));
+                initializationResultsPanel.add(new HTML("<h2>Supporting Environment Configuration</h2>"));
 
                 if (orchResponse.getMessage().length() > 0) {
                     HTML h = new HTML("<p>" + orchResponse.getMessage().replaceAll("\n", "<br />")  + "</p>");
@@ -113,48 +93,9 @@ public class BuildRegTestOrchestrationButton extends OrchestrationButton {
                 }
 
                 // Display tests run as part of orchestration - so links to their logs are available
-                testTab.getToolkitServices().getTestsOverview(testTab.getCurrentTestSession(), orchResponse.getTestInstances(), new AsyncCallback<List<TestOverviewDTO>>() {
+                initializationResultsPanel.add(new OrchestrationSupportTestsDisplay(orchResponse, testTab.getCurrentTestSession(), testTab.getSiteUnderTest().siteSpec() ));
 
-                    public void onFailure(Throwable caught) {
-                        new PopupMessage("getTestOverview: " + caught.getMessage());
-                    }
-
-                    public void onSuccess(List<TestOverviewDTO> testOverviews) {
-                        initializationResultsPanel.add(new HTML("Utilities run to initialize environment"));
-                        for (TestOverviewDTO testOverview : testOverviews) {
-                            MessageItem item = orchResponse.getItemForTest(testOverview.getTestInstance());
-                            HorizontalFlowPanel orchTest = new HorizontalFlowPanel();
-                            orchTest.getElement().getStyle().setHeight(32, Style.Unit.PX);
-                            orchTest.add(new HTML(testOverview.getName() + " - " + testOverview.getTitle()));
-                            Image inspect = new Image("icons2/visible-32.png");
-                            inspect.addStyleName("right");
-                            inspect.addClickHandler(testTab.getInspectClickHandler(testOverview.getTestInstance()));
-                            inspect.setTitle("Inspect results");
-
-                            if (item.isSuccess()) {
-                                Image status = new Image("icons2/correct-16.png");
-                                status.addStyleName("right");
-                                status.setTitle("Success");
-                                orchTest.add(status);
-                            } else {
-                                Image status = new Image("icons/ic_warning_black_24dp_1x.png");
-                                status.addStyleName("right");
-                                status.setTitle("Failure");
-                                orchTest.add(status);
-                            }
-
-                            if (item.isSuccess())
-                                orchTest.setStyleName("testOverviewHeaderSuccess");
-                            else
-                                orchTest.setStyleName("testOverviewHeaderFail");
-                            orchTest.add(inspect);
-
-                            initializationResultsPanel.add(orchTest);
-                        }
-
-                    }
-
-                });
+                initializationResultsPanel.add(new HTML("<br />"));
 
                 initializationResultsPanel.add(new HTML("Patient ID for Register tests: " + orchResponse.getRegisterPid().toString()));
                 initializationResultsPanel.add(new HTML("Patient ID for Stored Query tests: " + orchResponse.getSqPid().toString()));
@@ -163,9 +104,6 @@ public class BuildRegTestOrchestrationButton extends OrchestrationButton {
                 initializationResultsPanel.add(new HTML("<br />"));
 
             }
-
-
-
         });
 
     }

@@ -25,6 +25,10 @@ abstract public class AbstractOrchestrationResponse extends RawResponse {
         return messages.get(i);
     }
 
+    /**
+     * Tests used to build up test environment
+     * @return
+     */
     public List<TestInstance> getTestInstances() {
         List<TestInstance> testInstances = new ArrayList<>();
         for (MessageItem item : messages) {

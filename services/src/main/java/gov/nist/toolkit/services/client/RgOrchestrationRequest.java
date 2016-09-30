@@ -7,9 +7,9 @@ import gov.nist.toolkit.sitemanagement.client.SiteSpec;
  */
 public class RgOrchestrationRequest extends AbstractOrchestrationRequest {
     private SiteSpec siteUnderTest;
-    private boolean useExposedRR;
+    private boolean useExposedRR;  // alternative is External RR (Registry/Repository)
     private boolean useSimAsSUT;   // no longer used
-    private boolean useExistingSimulator = true;
+    private boolean useExistingState = true;   // useExistingState == !reset
 
     public RgOrchestrationRequest() {}
 
@@ -37,12 +37,12 @@ public class RgOrchestrationRequest extends AbstractOrchestrationRequest {
         this.useSimAsSUT = useSimAsSUT;
     }
 
-    public boolean isUseExistingSimulator() {
-        return useExistingSimulator;
+    public boolean isUseExistingState() {
+        return useExistingState;
     }
 
-    public void setUseExistingSimulator(boolean useExistingSimulator) {
-        this.useExistingSimulator = useExistingSimulator;
+    public void setUseExistingState(boolean useExistingState) {
+        this.useExistingState = useExistingState;
     }
 
 }

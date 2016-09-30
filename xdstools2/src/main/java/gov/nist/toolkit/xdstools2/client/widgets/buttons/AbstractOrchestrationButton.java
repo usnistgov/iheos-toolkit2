@@ -3,14 +3,13 @@ package gov.nist.toolkit.xdstools2.client.widgets.buttons;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.ui.*;
-import gov.nist.toolkit.services.client.AbstractOrchestrationResponse;
 import gov.nist.toolkit.services.client.RawResponse;
 import gov.nist.toolkit.xdstools2.client.ErrorHandler;
 
 /**
  *
  */
-abstract public class OrchestrationButton implements ClickHandler {
+abstract public class AbstractOrchestrationButton implements ClickHandler {
     private final VerticalPanel panel = new VerticalPanel();
     private Panel topPanel;
     private String label = null;
@@ -18,13 +17,13 @@ abstract public class OrchestrationButton implements ClickHandler {
     private CheckBox resetCheckBox = null;
     private Panel customPanel = null;
 
-    public OrchestrationButton(Panel topPanel, String label) {
+    public AbstractOrchestrationButton(Panel topPanel, String label) {
         this.topPanel = topPanel;
         this.label = label;
         build();
     }
 
-    protected OrchestrationButton() {}
+    protected AbstractOrchestrationButton() {}
 
     protected void setParentPanel(Panel parent) {
         this.topPanel = parent;
@@ -67,20 +66,25 @@ abstract public class OrchestrationButton implements ClickHandler {
 
     @Override
     public void onClick(ClickEvent clickEvent) {
-//        clean();
+        clear();
         handleClick(clickEvent);
     }
 
     // First element is button, rest is display material
-    public void clean() {
-        while (panel.getWidgetCount() > 1)
-            panel.remove(1);
+    public void clear() {
+        panel.clear();
     }
 
     public void handleError(Throwable throwable) {
         ErrorHandler.handleError(panel, throwable);
     }
 
+    /**
+     * Display error messages
+     * @param rawResponse
+     * @param clas
+     * @return errors occured
+     */
     public boolean handleError(RawResponse rawResponse, Class clas) {
         if (ErrorHandler.handleError(panel, rawResponse)) return true;
         if (rawResponse.getClass().equals(clas)) return false;
@@ -94,7 +98,4 @@ abstract public class OrchestrationButton implements ClickHandler {
         return resetCheckBox != null && resetCheckBox.getValue();
     }
 
-    protected void displayOrchestrationSupportTests(AbstractOrchestrationResponse orchestrationResponse) {
-
-    }
 }

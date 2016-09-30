@@ -135,6 +135,9 @@ Summer 2015 development
 15818 - PID Feed for Registry/SQ tests
 15819 - PID Feed for MPQ
 15820 - PID Feed for MPQ
+15821 - PID Feed for single doc RG supporting submission
+15822 - PID Feed for two doc RG supporting submission
+15823 - PID Feed for simple RG supporting submission
 
 
 

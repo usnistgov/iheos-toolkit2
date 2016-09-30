@@ -10,10 +10,12 @@ import gov.nist.toolkit.sitemanagement.client.SiteSpec;
 public class RgOrchestrationResponse  extends AbstractOrchestrationResponse {
     private Pid oneDocPid;
     private Pid twoDocPid;
+    private Pid simplePid;
     private SiteSpec siteUnderTest;
     private SiteSpec regrepSite;
     private SimulatorConfig regrepConfig;
     private boolean sameSite;
+    private boolean useExposedRR;  // alternative is External RR (Registry/Repository)
 
     public RgOrchestrationResponse() {}
 
@@ -65,4 +67,19 @@ public class RgOrchestrationResponse  extends AbstractOrchestrationResponse {
         this.regrepConfig = regrepConfig;
     }
 
+    public boolean isUseExposedRR() {
+        return useExposedRR;
+    }
+
+    public void setUseExposedRR(boolean useExposedRR) {
+        this.useExposedRR = useExposedRR;
+    }
+
+    public Pid getSimplePid() {
+        return simplePid;
+    }
+
+    public void setSimplePid(Pid simplePid) {
+        this.simplePid = simplePid;
+    }
 }

@@ -14,7 +14,6 @@ import gov.nist.toolkit.actortransaction.client.ActorType;
 import gov.nist.toolkit.interactiondiagram.client.events.DiagramClickedEvent;
 import gov.nist.toolkit.interactiondiagram.client.events.DiagramPartClickedEventHandler;
 import gov.nist.toolkit.interactiondiagram.client.widgets.InteractionDiagram;
-import gov.nist.toolkit.results.client.Result;
 import gov.nist.toolkit.results.client.TestInstance;
 import gov.nist.toolkit.services.client.AbstractOrchestrationResponse;
 import gov.nist.toolkit.services.client.RegOrchestrationResponse;
@@ -30,8 +29,8 @@ import gov.nist.toolkit.xdstools2.client.ToolWindow;
 import gov.nist.toolkit.xdstools2.client.Xdstools2;
 import gov.nist.toolkit.xdstools2.client.event.TestSessionChangedEvent;
 import gov.nist.toolkit.xdstools2.client.event.testSession.TestSessionChangedEventHandler;
-import gov.nist.toolkit.xdstools2.client.inspector.MetadataInspectorTab;
-import gov.nist.toolkit.xdstools2.client.widgets.buttons.OrchestrationButton;
+import gov.nist.toolkit.xdstools2.client.widgets.LaunchInspectorClickHandler;
+import gov.nist.toolkit.xdstools2.client.widgets.buttons.AbstractOrchestrationButton;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -167,7 +166,8 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner, SiteMa
 			public void onClicked(TestInstance testInstance, InteractionDiagram.DiagramPart part) {
 				if (InteractionDiagram.DiagramPart.RequestConnector.equals(part)
 						|| InteractionDiagram.DiagramPart.ResponseConnector.equals(part)) {
-					launchInspectorTab(testInstance, getCurrentTestSession());
+					new LaunchInspectorClickHandler(testInstance, getCurrentTestSession(), new SiteSpec(currentSiteName)).onClick(null);
+//					launchInspectorTab(testInstance, getCurrentTestSession());
 				}
 			}
 		});
@@ -453,6 +453,7 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner, SiteMa
             public void onSuccess(List<TestOverviewDTO> testOverviews) {
 				testsPanel.clear();
                 testsPanel.add(testsHeaderView.asWidget());
+				testStatistics.clear();
                 testStatistics.setTestCount(testOverviews.size());
                 for (TestOverviewDTO testOverview : testOverviews) {
                     addTestOverview(testOverview);
@@ -497,19 +498,20 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner, SiteMa
         });
     }
 
-    private OrchestrationButton orchInit = null;
+    private AbstractOrchestrationButton orchInit = null;
 
 	private void initializeOrchestration() {
+		String label = "Initialize Test Environment";
 		if (isRepSut()) {
-			orchInit = new BuildRepTestOrchestrationButton(this, initializationPanel, "Initialize Test Environment");
+			orchInit = new BuildRepTestOrchestrationButton(this, initializationPanel, label);
 			initializationPanel.add(orchInit.panel());
 		}
         else if (isRegSut()) {
-            orchInit = new BuildRegTestOrchestrationButton(this, initializationPanel, "Initialize Test Environment");
+            orchInit = new BuildRegTestOrchestrationButton(this, initializationPanel, label);
             initializationPanel.add(orchInit.panel());
         }
         else if (isRgSut()) {
-            orchInit = new BuildRgTestOrchestrationButton(this, initializationPanel, "Initialize Test Environment");
+            orchInit = new BuildRgTestOrchestrationButton(this, initializationPanel, label);
             initializationPanel.add(orchInit.panel());
         }
         else {
@@ -598,7 +600,8 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner, SiteMa
 			Image inspect = new Image("icons2/visible-32.png");
 			inspect.addStyleName("right");
 //			inspect.addStyleName("iconStyle");
-			inspect.addClickHandler(new InspectClickHandler(testOverview.getTestInstance()));
+			inspect.addClickHandler(new LaunchInspectorClickHandler(testOverview.getTestInstance(), getCurrentTestSession(), new SiteSpec(currentSiteName)));
+//			inspect.addClickHandler(new InspectClickHandler(testOverview.getTestInstance()));
 			inspect.setTitle("Inspect results");
 			header.add(inspect);
 		}
@@ -752,43 +755,44 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner, SiteMa
 	}
 
 	ClickHandler getInspectClickHandler(TestInstance testInstance) {
-		return new InspectClickHandler(testInstance);
+//		return new InspectClickHandler(testInstance);
+		return new LaunchInspectorClickHandler(testInstance, getCurrentTestSession(), new SiteSpec(currentSiteName));
 	}
 
-	private class InspectClickHandler implements ClickHandler {
-		TestInstance testInstance;
-
-		InspectClickHandler(TestInstance testInstance) {
-			this.testInstance = testInstance;
-		}
-
-		@Override
-		public void onClick(ClickEvent clickEvent) {
-			clickEvent.preventDefault();
-			clickEvent.stopPropagation();
-
-			launchInspectorTab(testInstance, getCurrentTestSession());
-		}
-	}
-
-	private void launchInspectorTab(final TestInstance testInstance, String testSession) {
-		List<TestInstance> testInstances = new ArrayList<>();
-		testInstances.add(testInstance);
-		getToolkitServices().getTestResults(testInstances, testSession, new AsyncCallback<Map<String, Result>>() {
-            @Override
-            public void onFailure(Throwable throwable) {
-                new PopupMessage(throwable.getMessage());
-            }
-
-			@Override
-			public void onSuccess(Map<String, Result> resultMap) {
-				MetadataInspectorTab itab = new MetadataInspectorTab();
-				itab.setResults(resultMap.values());
-				itab.setSiteSpec(new SiteSpec(currentSiteName));
-				itab.onTabLoad(true, "Test:" + testInstance.getId() );
-			}
-		});
-	}
+//	public class InspectClickHandler implements ClickHandler {
+//		TestInstance testInstance;
+//
+//		InspectClickHandler(TestInstance testInstance) {
+//			this.testInstance = testInstance;
+//		}
+//
+//		@Override
+//		public void onClick(ClickEvent clickEvent) {
+//			clickEvent.preventDefault();
+//			clickEvent.stopPropagation();
+//
+//			launchInspectorTab(testInstance, getCurrentTestSession());
+//		}
+//	}
+//
+//	private void launchInspectorTab(final TestInstance testInstance, String testSession) {
+//		List<TestInstance> testInstances = new ArrayList<>();
+//		testInstances.add(testInstance);
+//		getToolkitServices().getTestResults(testInstances, testSession, new AsyncCallback<Map<String, Result>>() {
+//            @Override
+//            public void onFailure(Throwable throwable) {
+//                new PopupMessage(throwable.getMessage());
+//            }
+//
+//			@Override
+//			public void onSuccess(Map<String, Result> resultMap) {
+//				MetadataInspectorTab itab = new MetadataInspectorTab();
+//				itab.setResults(resultMap.values());
+//				itab.setSiteSpec(new SiteSpec(currentSiteName));
+//				itab.onTabLoad(true, "Test:" + testInstance.getId() );
+//			}
+//		});
+//	}
 
 	// display sections within test
 	private void displaySections(TestOverviewDTO testOverview, FlowPanel parent) {

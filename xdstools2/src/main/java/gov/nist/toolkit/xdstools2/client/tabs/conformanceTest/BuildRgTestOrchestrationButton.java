@@ -4,7 +4,6 @@ import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.*;
-import gov.nist.toolkit.configDatatypes.SimulatorProperties;
 import gov.nist.toolkit.services.client.PifType;
 import gov.nist.toolkit.services.client.RawResponse;
 import gov.nist.toolkit.services.client.RgOrchestrationRequest;
@@ -12,19 +11,20 @@ import gov.nist.toolkit.services.client.RgOrchestrationResponse;
 import gov.nist.toolkit.sitemanagement.client.SiteSpec;
 import gov.nist.toolkit.xdstools2.client.PopupMessage;
 import gov.nist.toolkit.xdstools2.client.util.ClientUtils;
-import gov.nist.toolkit.xdstools2.client.widgets.buttons.OrchestrationButton;
+import gov.nist.toolkit.xdstools2.client.widgets.OrchestrationSupportTestsDisplay;
+import gov.nist.toolkit.xdstools2.client.widgets.buttons.AbstractOrchestrationButton;
 
 /**
  *
  */
-public class BuildRgTestOrchestrationButton extends OrchestrationButton {
+public class BuildRgTestOrchestrationButton extends AbstractOrchestrationButton {
     private ConformanceTestTab testTab;
     private Panel initializationPanel;
     private FlowPanel initializationResultsPanel = new FlowPanel();
-    private RadioButton noFeed = new RadioButton("pidFeedGroup", "No Patient Identity Feed");
-    private RadioButton v2Feed = new RadioButton("pidFeedGroup", "V2 Patient Identitfy Feed");
+    private RadioButton noFeed = new RadioButton("rgpidFeedGroup", "No Patient Identity Feed");
+    private RadioButton v2Feed = new RadioButton("rgpidFeedGroup", "V2 Patient Identitfy Feed");
 
-    private String systemTypeGroup = "System Type Group";
+    private String systemTypeGroup = "RG System Type Group";
     private RadioButton exposed = new RadioButton(systemTypeGroup, "Exposed Registry/Repository");
     private RadioButton external = new RadioButton(systemTypeGroup, "External Registry/Repository");
     boolean isExposed() { return exposed.getValue(); }
@@ -70,6 +70,7 @@ public class BuildRgTestOrchestrationButton extends OrchestrationButton {
         Panel systemTypePanel = new HorizontalPanel();
         systemTypePanel.add(exposed);
         systemTypePanel.add(external);
+        exposed.setChecked(true);
         Panel editExposedSystemConfigPanel = new HorizontalPanel();
         systemTypePanel.add(editExposedSystemConfigPanel);
         final Button editExposedSiteButton = new Button("Edit Site Configuration");
@@ -113,7 +114,7 @@ public class BuildRgTestOrchestrationButton extends OrchestrationButton {
         request.setPifType((v2Feed.isChecked()) ? PifType.V2 : PifType.NONE);
         request.setUserName(testTab.getCurrentTestSession());
         request.setEnvironmentName(testTab.getEnvironmentSelection());
-        request.setUseExistingSimulator(!isResetRequested());
+        request.setUseExistingState(!isResetRequested());
         SiteSpec siteSpec = new SiteSpec(testTab.getSiteName());
         request.setSiteUnderTest(siteSpec);
 
@@ -130,65 +131,34 @@ public class BuildRgTestOrchestrationButton extends OrchestrationButton {
                 if (handleError(rawResponse, RgOrchestrationResponse.class)) return;
                 RgOrchestrationResponse orchResponse = (RgOrchestrationResponse) rawResponse;
                 testTab.setRgOrchestrationResponse(orchResponse);
-                panel().add(new HTML("<h2>Generated Environment</h2>"));
+
+            initializationResultsPanel.add(new HTML("Initialization Complete"));
+
+                if (testTab.getSiteUnderTest() != null) {
+                    initializationResultsPanel.add(new SiteDisplay("System Under Test Configuration", testTab.getSiteUnderTest()));
+                }
+
+                initializationResultsPanel.add(new HTML("<h2>Supporting Environment Configuration</h2>"));
+
+                initializationResultsPanel.add(new HTML("System: None"));
 
                 if (orchResponse.getMessage().length() > 0) {
-                    panel().add(new HTML("<h3>" + orchResponse.getMessage().replaceAll("\n", "<br />")  + "</h3>"));
+                    HTML h = new HTML("<p>" + orchResponse.getMessage().replaceAll("\n", "<br />")  + "</p>");
+                    h.setStyleName("serverResponseLabelError");
+                    initializationResultsPanel.add(h);
                 }
+                initializationResultsPanel.add(new HTML("<br />"));
+
+                initializationResultsPanel.add(new OrchestrationSupportTestsDisplay(orchResponse, testTab.getCurrentTestSession(), testTab.getSiteUnderTest().siteSpec() ));
+
+                initializationResultsPanel.add(new HTML("<br />"));
 
                 FlexTable table = new FlexTable();
-                panel().add(table);
-                if (usingExposedRR()) {
-                    exposedRRReport(table, orchResponse);
-                } else {
-                    HTML instructions = externalRRReport(table, orchResponse);
-                    panel().add(instructions);
-                }
+
+                displayPIDs(table, orchResponse, 0);
+                initializationResultsPanel.add(table);
             }
         });
-    }
-
-    private void exposedRRReport(FlexTable table, RgOrchestrationResponse response) {
-        int row = 0;
-
-        row = displayPIDs(table, response, row);
-
-        table.setHTML(row++, 0, "<h3>Simulators</h3>");
-        if (response.getRegrepConfig() == null)
-            table.setText(row++, 1, "None");
-        else {
-            table.setHTML(row++, 0, "<h3>Supporting Registry/Repository");
-            table.setText(row, 0, "Query");
-            table.setText(row++, 1, response.getRegrepConfig().getConfigEle(SimulatorProperties.storedQueryEndpoint).asString());
-            table.setText(row, 0, "Retrieve");
-            table.setText(row++, 1, response.getRegrepConfig().getConfigEle(SimulatorProperties.retrieveEndpoint).asString());
-        }
-
-        table.setWidget(row, 0, new HTML("<h3>System under test</h3>"));
-        table.setText(row++, 1, response.getSiteUnderTest().getName());
-
-    }
-
-    private HTML externalRRReport(FlexTable table, RgOrchestrationResponse response) {
-        int row = 0;
-
-        row = displayPIDs(table, response, row);
-
-        table.setHTML(row++, 0, "<h3>Simulators</h3>");
-        table.setText(row++, 1, response.getRegrepConfig().getId().toString());
-
-        table.setWidget(row, 0, new HTML("<h3>System under test</h3>"));
-        table.setText(row++, 1, response.getSiteUnderTest().getName());
-
-        table.setHTML(row++, 0, "<h3>Supporting Registry/Repository");
-        table.setText(row, 0, "Query");
-        table.setText(row++, 1, response.getRegrepConfig().getConfigEle(SimulatorProperties.storedQueryEndpoint).asString());
-        table.setText(row, 0, "Retrieve");
-        table.setText(row++, 1, response.getRegrepConfig().getConfigEle(SimulatorProperties.retrieveEndpoint).asString());
-
-        return new HTML(
-                "Configure your Responding Gateway to use the above Registry and Repository."
-        );
     }
 
     private int displayPIDs(FlexTable table, RgOrchestrationResponse response, int row) {

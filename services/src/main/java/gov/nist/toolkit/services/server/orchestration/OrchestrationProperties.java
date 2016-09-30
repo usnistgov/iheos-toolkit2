@@ -12,7 +12,9 @@ import java.util.Collection;
 import java.util.Properties;
 
 /**
- *
+ * Manage a Properties file for the Orchestration process.  This is where the process state
+ * is maintained. In general there are two types of properties:  Patient Ids which get special automation
+ * because we can; and all other properties.
  */
 public class OrchestrationProperties {
     private File orchestrationPropFile;

@@ -13,13 +13,13 @@ import gov.nist.toolkit.services.client.IdsOrchestrationResponse;
 import gov.nist.toolkit.services.client.RawResponse;
 import gov.nist.toolkit.xdstools2.client.PopupMessage;
 import gov.nist.toolkit.xdstools2.client.tabs.genericQueryTab.GenericQueryTab;
-import gov.nist.toolkit.xdstools2.client.widgets.buttons.OrchestrationButton;
+import gov.nist.toolkit.xdstools2.client.widgets.buttons.AbstractOrchestrationButton;
 
 
 /**
  *
  */
-class BuildIDSTestOrchestrationButton extends OrchestrationButton {
+class BuildIDSTestOrchestrationButton extends AbstractOrchestrationButton {
     private IDSTestTab testTab;
     boolean includeIG;
 

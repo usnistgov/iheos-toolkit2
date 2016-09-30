@@ -11,12 +11,12 @@ import gov.nist.toolkit.services.client.RawResponse;
 import gov.nist.toolkit.xdstools2.client.PopupMessage;
 import gov.nist.toolkit.xdstools2.client.tabs.genericQueryTab.GenericQueryTab;
 import gov.nist.toolkit.xdstools2.client.util.ClientUtils;
-import gov.nist.toolkit.xdstools2.client.widgets.buttons.OrchestrationButton;
+import gov.nist.toolkit.xdstools2.client.widgets.buttons.AbstractOrchestrationButton;
 
 /**
  *
  */
-class BuildIGTestOrchestrationButton extends OrchestrationButton {
+class BuildIGTestOrchestrationButton extends AbstractOrchestrationButton {
     private IGTestTab testTab;
     private boolean includeIG;
 

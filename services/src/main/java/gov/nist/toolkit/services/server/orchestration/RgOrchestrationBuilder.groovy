@@ -6,10 +6,12 @@ import gov.nist.toolkit.actorfactory.client.SimulatorConfig
 import gov.nist.toolkit.actortransaction.client.ActorType
 import gov.nist.toolkit.configDatatypes.SimulatorProperties
 import gov.nist.toolkit.configDatatypes.client.Pid
+import gov.nist.toolkit.configDatatypes.client.PidBuilder
 import gov.nist.toolkit.configDatatypes.client.TransactionType
 import gov.nist.toolkit.installation.Installation
 import gov.nist.toolkit.results.client.TestInstance
 import gov.nist.toolkit.results.shared.SiteBuilder
+import gov.nist.toolkit.services.client.MessageItem
 import gov.nist.toolkit.services.client.RawResponse
 import gov.nist.toolkit.services.client.RgOrchestrationRequest
 import gov.nist.toolkit.services.client.RgOrchestrationResponse
@@ -28,8 +30,6 @@ import groovy.transform.TypeChecked
 class RgOrchestrationBuilder {
     Session session
     RgOrchestrationRequest request
-    Pid oneDocPid
-    Pid twoDocPid
     ToolkitApi api
     Util util
 
@@ -45,14 +45,20 @@ class RgOrchestrationBuilder {
             String home
             RgOrchestrationResponse response = new RgOrchestrationResponse()
             Map<String, TestInstanceManager> pidNameMap = [
-                    oneDocPid:  new TestInstanceManager(request, response, '15817'),
-                    twoDocPid:  new TestInstanceManager(request, response, '15818'),
+                    simplePid:  new TestInstanceManager(request, response, '15823'),
+                    oneDocPid:  new TestInstanceManager(request, response, '15821'),
+                    twoDocPid:  new TestInstanceManager(request, response, '15822'),
             ]
 
             OrchestrationProperties orchProps = new OrchestrationProperties(session, request.userName, ActorType.RESPONDING_GATEWAY, pidNameMap.keySet())
 
-            // clear out test session
-//            new SimDb().getSimIdsForUser(request.userName).each { SimId simId -> api.deleteSimulator(simId) }
+            Pid simplePid = PidBuilder.createPid(orchProps.getProperty("simplePid"))
+            Pid singleDocPid = PidBuilder.createPid(orchProps.getProperty("oneDocPid"))
+            Pid doubleDocPid = PidBuilder.createPid(orchProps.getProperty("twoDocPid"))
+
+            response.setSimplePid(simplePid)
+            response.setOneDocPid(singleDocPid)
+            response.setTwoDocPid(doubleDocPid)
 
             String supportIdName = 'rg_support'
             SimId supportSimId
@@ -67,6 +73,7 @@ class RgOrchestrationBuilder {
                 // TODO - document that SUT with exposed RR must support PIF v2 or have PID validation disabled
                 if (!site.hasTransaction(TransactionType.PROVIDE_AND_REGISTER)) return RawResponseBuilder.build("RG under test is not configured to accept a Provide and Register transaction.")
                 rrSite = request.siteUnderTest
+                request.registrySut = request.siteUnderTest  // PifSender expects this
                 response.siteUnderTest = rrSite
                 response.regrepSite = rrSite
                 response.sameSite = true
@@ -76,7 +83,7 @@ class RgOrchestrationBuilder {
                 // SUT and supporting RR are defined by different sites
 
                 supportSimId = new SimId(request.userName, supportIdName, ActorType.REPOSITORY_REGISTRY.name, request.environmentName)
-                if (!request.isUseExistingSimulator()) {
+                if (!request.isUseExistingState()) {
                     api.deleteSimulatorIfItExists(supportSimId)
                     orchProps.clear()
                 }
@@ -95,7 +102,7 @@ class RgOrchestrationBuilder {
 
                     api.saveSimulator(supportSimConfig)
                 }
-                orchProps.save()
+//                orchProps.save()
 
                 rrSite = new SiteBuilder().siteSpecFromSimId(supportSimId)
                 response.siteUnderTest = request.siteUnderTest
@@ -108,38 +115,43 @@ class RgOrchestrationBuilder {
             if (supportSimConfig)
                 SimCache.addToSession(Installation.defaultSessionName(), supportSimConfig)
 
-            oneDocPid = session.allocateNewPid()
-            twoDocPid = session.allocateNewPid()
-
-            TestInstance testInstance15804 = new TestInstance("15804")
-
-            // register patient id with registry
-            try {
-                util.submit(request.userName, rrSite, testInstance15804, 'section', oneDocPid, null)
-            } catch (Exception e) {
-                response.addMessage(testInstance15804, false, "V2 Patient Identity Feed to " + rrSite.name + " failed");
-            }
-            try {
-                util.submit(request.userName, rrSite, testInstance15804, 'section', twoDocPid, null)
-            } catch (Exception e) {
-                response.addMessage(testInstance15804, false, "V2 Patient Identity Feed to " + rrSite.name + " failed");
-            }
+            TestInstance testInstance12318 = new TestInstance('12318')
+            MessageItem item12318 = response.addMessage(testInstance12318, true, "")
 
             TestInstance testInstance15807 = new TestInstance("15807")
-            // Submit test data
-            try {
-                util.submit(request.userName, rrSite, testInstance15807, 'onedoc1', oneDocPid, home)
-            } catch (Exception e) {
-                response.addMessage(testInstance15807, false, "Provide and Register to " + rrSite.name + " failed");
-            }
-            try {
-                util.submit(request.userName, rrSite, testInstance15807, 'twodoc', twoDocPid, home)
-            } catch (Exception e) {
-                response.addMessage(testInstance15807, false, "Provide and Register to " + rrSite.name + " failed");
-            }
+            MessageItem item15807 = response.addMessage(testInstance15807, true, "")
 
-            response.oneDocPid = oneDocPid
-            response.twoDocPid = twoDocPid
+            if (orchProps.updated()) {
+                // send necessary Patient ID Feed messages
+                new PifSender(api, orchProps, request).send(pidNameMap)
+
+                // Submit test data
+                try {
+                    util.submit(request.userName, rrSite, testInstance12318, 'init', simplePid, home)
+                } catch (Exception e) {
+//                response.addMessage(testInstance12318, false, "Provide and Register to " + rrSite.name + " failed");
+                    item12318.setMessage("Initialization of " + request.siteUnderTest.name + " failed:\n" + e.getMessage())
+                    item12318.setSuccess(false)
+                }
+
+                try {
+                    util.submit(request.userName, rrSite, testInstance15807, 'onedoc1', singleDocPid, home)
+                } catch (Exception e) {
+//                response.addMessage(testInstance15807, false, "Provide and Register to " + rrSite.name + " failed");
+                    item15807.setMessage("Initialization of " + request.siteUnderTest.name + " failed:\n" + e.getMessage())
+                    item15807.setSuccess(false)
+                }
+                try {
+                    util.submit(request.userName, rrSite, testInstance15807, 'twodoc', doubleDocPid, home)
+                } catch (Exception e) {
+//                response.addMessage(testInstance15807, false, "Provide and Register to " + rrSite.name + " failed");
+                    item15807.setMessage("Initialization of " + request.siteUnderTest.name + " failed:\n" + e.getMessage())
+                    item15807.setSuccess(false)
+                }
+            } else {
+                item12318.setSuccess(api.getTestLogs(testInstance12318).isSuccess());
+                item15807.setSuccess(api.getTestLogs(testInstance15807).isSuccess());
+            }
 
             return response;
         }
