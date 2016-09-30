@@ -601,7 +601,6 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner, SiteMa
 			inspect.addStyleName("right");
 //			inspect.addStyleName("iconStyle");
 			inspect.addClickHandler(new LaunchInspectorClickHandler(testOverview.getTestInstance(), getCurrentTestSession(), new SiteSpec(currentSiteName)));
-//			inspect.addClickHandler(new InspectClickHandler(testOverview.getTestInstance()));
 			inspect.setTitle("Inspect results");
 			header.add(inspect);
 		}

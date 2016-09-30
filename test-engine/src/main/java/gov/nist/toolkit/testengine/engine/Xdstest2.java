@@ -175,6 +175,7 @@ public class Xdstest2 {
 		this.testInstance = testInstance;
 		this.sections = sections;
 		TestDefinition testDefinition = testKit.getTestDef(testInstance.getId());
+		logger.info("Running test from " + testDefinition.toString());
 		TestLogDetails testLogDetails;
 		File tk = testKit.getTestKitDir();
 		if (areas == null)

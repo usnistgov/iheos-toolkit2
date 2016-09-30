@@ -151,11 +151,11 @@ public class Installation {
     public File internalTestkitFile() {
         File testkit = propertyServiceManager().getTestkit();
         if (testkit != null) {
-            logger.info(String.format("Testkit source is %s", testkit));
+//            logger.info(String.format("Testkit source is %s", testkit));
             return testkit;
         }
         testkit = new File(toolkitxFile(), "testkit");
-        logger.info(String.format("Testkit source is %s", testkit));
+//        logger.info(String.format("Testkit source is %s", testkit));
         return testkit;
     }
 

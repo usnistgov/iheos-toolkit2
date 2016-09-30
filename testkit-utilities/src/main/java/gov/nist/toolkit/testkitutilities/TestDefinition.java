@@ -225,4 +225,9 @@ public class TestDefinition {
 		return Io.stringFromFile(file);
 	}
 
+	@Override
+	public String toString() {
+		return testDir.toString();
+	}
+
 }

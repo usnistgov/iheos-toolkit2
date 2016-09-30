@@ -226,4 +226,9 @@ public class TestKit {
 	public File getTestKitDir() {
 		return testKit;
 	}
+
+	@Override
+	public String toString() {
+		return testKit.toString();
+	}
 }
