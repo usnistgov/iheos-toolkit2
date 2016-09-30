@@ -3,7 +3,6 @@ package gov.nist.toolkit.services.server.orchestration
 import gov.nist.toolkit.actorfactory.client.SimId
 import gov.nist.toolkit.actorfactory.client.SimulatorConfig
 import gov.nist.toolkit.actortransaction.client.ActorType
-import gov.nist.toolkit.actortransaction.client.ParamType
 import gov.nist.toolkit.configDatatypes.SimulatorProperties
 import gov.nist.toolkit.configDatatypes.client.Pid
 import gov.nist.toolkit.configDatatypes.client.PidBuilder
@@ -94,7 +93,7 @@ class RepOrchestrationBuilder {
                 if (registerEndpoint == null || registerEndpoint.equals("")) {
                     // set in endpoint from support site
                     String endpoint = supportSimConfig.getConfigEle(SimulatorProperties.registerEndpoint).asString()
-                    sutSim.add(new SimulatorConfigElement(SimulatorProperties.registerEndpoint, ParamType.ENDPOINT, endpoint))
+//                    sutSim.add(new SimulatorConfigElement(SimulatorProperties.registerEndpoint, ParamType.ENDPOINT, endpoint))
                     api.saveSimulator(sutSim)
                 }
             }

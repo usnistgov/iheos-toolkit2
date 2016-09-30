@@ -4,12 +4,14 @@ import com.google.gwt.dom.client.Style;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.*;
+import gov.nist.toolkit.configDatatypes.client.TransactionType;
 import gov.nist.toolkit.services.client.*;
 import gov.nist.toolkit.session.client.TestOverviewDTO;
 import gov.nist.toolkit.sitemanagement.client.SiteSpec;
 import gov.nist.toolkit.xdstools2.client.HorizontalFlowPanel;
 import gov.nist.toolkit.xdstools2.client.PopupMessage;
 import gov.nist.toolkit.xdstools2.client.util.ClientUtils;
+import gov.nist.toolkit.xdstools2.client.widgets.SimSystemAnchor;
 import gov.nist.toolkit.xdstools2.client.widgets.buttons.OrchestrationButton;
 
 import java.util.List;
@@ -78,6 +80,29 @@ public class BuildRegTestOrchestrationButton extends OrchestrationButton {
                 testTab.setRegOrchestrationResponse(orchResponse);
 
                 initializationResultsPanel.add(new HTML("Initialization Complete"));
+
+                if (testTab.getSiteUnderTest() != null) {
+                    initializationResultsPanel.add(new HTML("<h2>System Under Test Configuration</h2>"));
+                    initializationResultsPanel.add(new SimSystemAnchor("System: " + testTab.getSiteUnderTest().getName(), testTab.getSiteUnderTest().siteSpec()));
+                    FlexTable table = new FlexTable();
+                    int row = 0;
+                    table.setText(row++, 0, "Endpoints");
+                    table.setText(row, 0, "Register");
+                    try {
+                        table.setText(row++, 1, testTab.getSiteUnderTest().getRawEndpoint(TransactionType.REGISTER, false, false));
+                    } catch (Exception e) {
+                    }
+
+                    table.setText(row, 0, "Stored Query");
+                    try {
+                        table.setText(row++, 1, testTab.getSiteUnderTest().getRawEndpoint(TransactionType.STORED_QUERY, false, false));
+                    } catch (Exception e) {
+                        //
+                    }
+
+                    initializationResultsPanel.add(new HTML("<br />"));
+                    initializationResultsPanel.add(table);
+                }
 
                 initializationResultsPanel.add(new HTML("<h2>Generated Environment</h2>"));
 

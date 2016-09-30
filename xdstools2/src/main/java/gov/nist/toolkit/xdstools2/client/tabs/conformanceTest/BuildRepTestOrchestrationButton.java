@@ -72,6 +72,7 @@ class BuildRepTestOrchestrationButton extends OrchestrationButton {
                     initializationResultsPanel.add(new SimSystemAnchor("System: " + testTab.getSiteUnderTest().getName(), testTab.getSiteUnderTest().siteSpec()));
                     FlexTable table = new FlexTable();
                     int row = 0;
+                    table.setText(row++, 0, "Endpoints");
                     table.setText(row, 0, "Provide and Register");
                     try {
                         table.setText(row++, 1, testTab.getSiteUnderTest().getRawEndpoint(TransactionType.PROVIDE_AND_REGISTER, false, false));
@@ -86,6 +87,7 @@ class BuildRepTestOrchestrationButton extends OrchestrationButton {
                         //
                     }
 
+                    initializationResultsPanel.add(new HTML("<br />"));
                     initializationResultsPanel.add(table);
                 }
 
@@ -104,6 +106,8 @@ class BuildRepTestOrchestrationButton extends OrchestrationButton {
                 FlexTable table = new FlexTable();
 
                 int row = 0;
+
+                table.setText(row++, 0, "Endpoints");
 
                 table.setText(row, 0, "Register endpoint");
                 table.setText(row++, 1, orchResponse.getRegConfig().getConfigEle(SimulatorProperties.registerEndpoint).asString());
