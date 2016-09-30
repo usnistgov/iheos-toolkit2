@@ -71,6 +71,7 @@ import javax.xml.parsers.FactoryConfigurationError;
 import java.io.File;
 import java.io.IOException;
 import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.util.*;
 
@@ -428,10 +429,10 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements
         }
 		File favPidsFile = new File(environmentFile,"pids.txt");
         if (favPidsFile.exists()) {
-            for (String pidString : Files.readAllLines(favPidsFile.toPath(), Charset.defaultCharset())) {
-                PidSet pid = new PidSet(pidString);
-                pids.addAll(pid.get());
-            }
+            byte[] pidBytes = Files.readAllBytes(favPidsFile.toPath());
+			String str = new String(pidBytes, Charset.defaultCharset());
+			PidSet pidSet = new PidSet(str.replace("\\n",""));
+			pids.addAll(pidSet.get());
         }
 		return pids;
 	}
