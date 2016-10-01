@@ -7,7 +7,6 @@ import com.google.gwt.event.logical.shared.SelectionEvent;
 import com.google.gwt.event.logical.shared.SelectionHandler;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
-import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.*;
 import gov.nist.toolkit.actortransaction.client.ActorType;
@@ -21,7 +20,6 @@ import gov.nist.toolkit.services.client.RepOrchestrationResponse;
 import gov.nist.toolkit.services.client.RgOrchestrationResponse;
 import gov.nist.toolkit.session.client.SectionOverviewDTO;
 import gov.nist.toolkit.session.client.TestOverviewDTO;
-import gov.nist.toolkit.sitemanagement.client.Site;
 import gov.nist.toolkit.sitemanagement.client.SiteSpec;
 import gov.nist.toolkit.testkitutilities.client.TestCollectionDefinitionDAO;
 import gov.nist.toolkit.xdstools2.client.PopupMessage;
@@ -40,7 +38,7 @@ import java.util.Map;
 /**
  * All Conformance tests will be run out of here
  */
-public class ConformanceTestTab extends ToolWindow implements TestRunner, SiteManager, TestsHeaderView.Controller {
+public class ConformanceTestTab extends ToolWindow implements TestRunner, TestsHeaderView.Controller {
 
 	private final ConformanceTestTab me;
 	private final FlowPanel toolPanel = new FlowPanel();   // Outer-most panel for the tool
@@ -48,11 +46,14 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner, SiteMa
 	private final FlowPanel testsPanel = new FlowPanel();  // panel for displaying tests
 	private final TabBar tabBar = new TabBar();            // tab bar at the top for selecting actor types
 	private final FlowPanel sitesPanel = new FlowPanel();
-	private String currentSiteName = null;
+//	private String currentSiteName = null;
 	private HTML testSessionDescription = new HTML();
 	private FlowPanel testSessionDescriptionPanel = new FlowPanel();
 	private TestsHeaderView testsHeaderView = new TestsHeaderView(this);
 	private final TestStatistics testStatistics = new TestStatistics();
+	private TestDisplayGroup testDisplayGroup = new TestDisplayGroup();
+	private TestContext testContext = new TestContext(this);
+	private TestContextDisplay testContextDisplay = new TestContextDisplay(this, testSessionDescription, testContext);
 
 	private AbstractOrchestrationResponse orchestrationResponse;  // can be any of the following - contains common elements
 	private RepOrchestrationResponse repOrchestrationResponse;
@@ -61,7 +62,7 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner, SiteMa
 
     private String currentActorTypeId;
 	private String currentActorTypeDescription;
-	private Site siteUnderTest = null;
+//	private Site siteUnderTest = null;
 	private SiteSpec sitetoIssueTestAgainst = null;
 
 	// stuff that needs delayed setting when launched via activity
@@ -76,6 +77,7 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner, SiteMa
 
 	public ConformanceTestTab() {
 		me = this;
+		testContext.setTestContextDisplay(testContextDisplay);
 		toolPanel.getElement().getStyle().setMargin(4, Style.Unit.PX);
 		toolPanel.getElement().getStyle().setMarginLeft(0, Style.Unit.PX);
 		testsPanel.getElement().getStyle().setMarginRight(4, Style.Unit.PX);
@@ -133,8 +135,8 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner, SiteMa
 
 	@Override
 	public void onTabLoad(boolean select, String eventName) {
-		updateTestingContextDisplay();
-		testSessionDescription.addClickHandler(new TestSessionClickHandler());
+		testContextDisplay.updateTestingContextDisplay();
+		testSessionDescription.addClickHandler(testContextDisplay);
 		testSessionDescriptionPanel.setStyleName("with-rounded-border");
 		testSessionDescriptionPanel.add(testSessionDescription);
 		testSessionDescriptionPanel.getElement().getStyle().setMarginLeft(2, Style.Unit.PX);
@@ -166,17 +168,13 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner, SiteMa
 			public void onClicked(TestInstance testInstance, InteractionDiagram.DiagramPart part) {
 				if (InteractionDiagram.DiagramPart.RequestConnector.equals(part)
 						|| InteractionDiagram.DiagramPart.ResponseConnector.equals(part)) {
-					new LaunchInspectorClickHandler(testInstance, getCurrentTestSession(), new SiteSpec(currentSiteName)).onClick(null);
+					new LaunchInspectorClickHandler(testInstance, getCurrentTestSession(), new SiteSpec(testContext.getSiteName())).onClick(null);
 //					launchInspectorTab(testInstance, getCurrentTestSession());
 				}
 			}
 		});
 	}
 
-	@Override
-	public Site getSiteUnderTest() {
-		return siteUnderTest;
-	}
 
     /**
      *
@@ -187,7 +185,7 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner, SiteMa
 			initTestSession = null;
 		}
 		if (getCurrentTestSession() == null || getCurrentTestSession().equals("")) {
-			updateTestingContextDisplay();
+			testContextDisplay.updateTestingContextDisplay();
 			return;
 		}
 		getToolkitServices().getAssignedSiteForTestSession(getCurrentTestSession(), new AsyncCallback<String>() {
@@ -198,18 +196,18 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner, SiteMa
 
 			@Override
 			public void onSuccess(String s) {
-				setSiteName(s);
-				updateTestingContextDisplay();
+				testContext.setSiteName(s);
+				testContextDisplay.updateTestingContextDisplay();
 			}
 		});
 	}
 
-	private void updateTestingContextDisplay() {
-		testSessionDescription.setHTML("Test Context<br />" +
-				"Environment: " + getEnvironmentSelection() + "<br />" +
-				"TestSesson: " + getCurrentTestSession() + "<br />" +
-				"SUT: " + getSiteName());
-	}
+//	private void updateTestingContextDisplay() {
+//		testSessionDescription.setHTML("Test Context<br />" +
+//				"Environment: " + getEnvironmentSelection() + "<br />" +
+//				"TestSesson: " + getCurrentTestSession() + "<br />" +
+//				"SUT: " + testContext.getSiteName());
+//	}
 
 	String verifyTestContext() {
 		String msg;
@@ -236,56 +234,56 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner, SiteMa
 	}
 
 	private String verifySite() {
-		if (getSiteName() != null) return null;
+		if (testContext.getSiteName() != null) return null;
 		return "System under test must be selected before you proceed.";
 	}
 
-	@Override
-	public String getSiteName() {
-		return currentSiteName;
-	}
+//	@Override
+//	public String getSiteName() {
+//		return currentSiteName;
+//	}
+//
+//	@Override
+//	public void setSiteName(String site) {
+//		currentSiteName = site;
+////		getToolkitServices().getSite(site, new AsyncCallback<Site>() {
+//		if (site == null) return;
+//		getToolkitServices().getSite(currentSiteName, new AsyncCallback<Site>() {
+//			@Override
+//			public void onFailure(Throwable throwable) {
+//				new PopupMessage("System " + currentSiteName + " does not exist.");
+//                currentSiteName = null;
+//                siteUnderTest = null;
+//                updateTestingContextDisplay();
+//			}
+//
+//			@Override
+//			public void onSuccess(Site site) {
+//				siteUnderTest = site;
+//			}
+//		});
+//	}
 
-	@Override
-	public void setSiteName(String site) {
-		currentSiteName = site;
-//		getToolkitServices().getSite(site, new AsyncCallback<Site>() {
-		if (site == null) return;
-		getToolkitServices().getSite(currentSiteName, new AsyncCallback<Site>() {
-			@Override
-			public void onFailure(Throwable throwable) {
-				new PopupMessage("System " + currentSiteName + " does not exist.");
-                currentSiteName = null;
-                siteUnderTest = null;
-                updateTestingContextDisplay();
-			}
+//	@Override
+//	public void update() {
+//		updateTestingContextDisplay();
+//	}
 
-			@Override
-			public void onSuccess(Site site) {
-				siteUnderTest = site;
-			}
-		});
-	}
+//	private class TestSessionClickHandler implements ClickHandler {
+//
+//		@Override
+//		public void onClick(ClickEvent clickEvent) {
+//			launchTestContextDialog(null);
+//		}
+//	}
 
-	@Override
-	public void update() {
-		updateTestingContextDisplay();
-	}
-
-	private class TestSessionClickHandler implements ClickHandler {
-
-		@Override
-		public void onClick(ClickEvent clickEvent) {
-			launchTestContextDialog(null);
-		}
-	}
-
-	void launchTestContextDialog(String msg) {
-		TestContextDialog dialog = new TestContextDialog(me, me, msg);
-		int left = Window.getClientWidth()/ 3;
-		int top = Window.getClientHeight()/ 20;
-		dialog.setPopupPosition(left, top);
-		dialog.show();
-	}
+//	void launchTestContextDialog(String msg) {
+//		TestContextDialog dialog = new TestContextDialog(me, testContext, msg);
+//		int left = Window.getClientWidth()/ 3;
+//		int top = Window.getClientHeight()/ 20;
+//		dialog.setPopupPosition(left, top);
+//		dialog.show();
+//	}
 
 	// actor selection changes
 	private SelectionHandler<Integer> actorSelectionHandler = new SelectionHandler<Integer>() {
@@ -409,7 +407,7 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner, SiteMa
 
 	// load test results for a single test collection (actor type) for a single site
 	private void displayTestCollection() {
-		testDisplays.clear();  // so they reload
+		testDisplayGroup.clear();  // so they reload
 		testsPanel.clear();
 
 		loadingMessage = new HTML("Initializing...");
@@ -457,7 +455,7 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner, SiteMa
                 testStatistics.setTestCount(testOverviews.size());
                 for (TestOverviewDTO testOverview : testOverviews) {
                     addTestOverview(testOverview);
-                    displayTest(testOverview);
+                    displayTest(testsPanel, testDisplayGroup, testOverview);
                 }
                 updateTestsOverviewHeader();
 
@@ -491,7 +489,7 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner, SiteMa
                 testsPanel.add(testsHeaderView.asWidget());
                 for (TestOverviewDTO testOverview : testOverviews) {
                     addTestOverview(testOverview);
-                    displayTest(testOverview);
+                    displayTest(testsPanel, testDisplayGroup, testOverview);
                 }
             }
 
@@ -515,8 +513,8 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner, SiteMa
             initializationPanel.add(orchInit.panel());
         }
         else {
-            if (siteUnderTest != null)
-			    sitetoIssueTestAgainst = new SiteSpec(siteUnderTest.getName());
+            if (testContext.getSiteUnderTest() != null)
+			    sitetoIssueTestAgainst = testContext.getSiteUnderTestAsSiteSpec();
 		}
 
 	}
@@ -531,30 +529,18 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner, SiteMa
 
 	// header and body per test
 	// key is testOverview.getName()
-	private Map<String, TestDisplay> testDisplays = new HashMap<>();
-	class TestDisplay {
-		TestDisplayHeader header = new TestDisplayHeader();
-		FlowPanel body = new FlowPanel();
-		DisclosurePanel panel = new DisclosurePanel(header);
+//	private Map<String, TestDisplay> testDisplays = new HashMap<>();
 
-		TestDisplay(String name) {
-			header.fullWidth();
-			panel.setWidth("100%");
-			panel.add(body);
-			testDisplays.put(name, this);
-		}
+	private boolean testDisplayExists(String name) { return testDisplayGroup.containsKey(name); }
+
+	private TestDisplay buildTestDisplay(TestDisplayGroup testDisplayGroup, String name) {
+		if (testDisplayExists(name)) return testDisplayGroup.get(name);
+		return new TestDisplay(getCurrentTestSession(), testDisplayGroup, name);
 	}
 
-	private boolean testDisplayExists(String name) { return testDisplays.containsKey(name); }
-
-	private TestDisplay buildTestDisplay(String name) {
-		if (testDisplayExists(name)) return testDisplays.get(name);
-		return new TestDisplay(name);
-	}
-
-	private void displayTest(TestOverviewDTO testOverview) {
+	private void displayTest(FlowPanel testsPanel, TestDisplayGroup testDisplayGroup, TestOverviewDTO testOverview) {
 		boolean isNew = !testDisplayExists(testOverview.getName());
-		TestDisplay testDisplay = buildTestDisplay(testOverview.getName());
+		TestDisplay testDisplay = buildTestDisplay(testDisplayGroup, testOverview.getName());
 		TestDisplayHeader header = testDisplay.header;
 		FlowPanel body = testDisplay.body;
 
@@ -600,7 +586,7 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner, SiteMa
 			Image inspect = new Image("icons2/visible-32.png");
 			inspect.addStyleName("right");
 //			inspect.addStyleName("iconStyle");
-			inspect.addClickHandler(new LaunchInspectorClickHandler(testOverview.getTestInstance(), getCurrentTestSession(), new SiteSpec(currentSiteName)));
+			inspect.addClickHandler(new LaunchInspectorClickHandler(testOverview.getTestInstance(), getCurrentTestSession(), new SiteSpec(testContext.getSiteName())));
 			inspect.setTitle("Inspect results");
 			header.add(inspect);
 		}
@@ -645,7 +631,8 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner, SiteMa
             if (msg == null)
 			    runTest(testInstance, null);
             else
-                launchTestContextDialog(msg);
+            	testContextDisplay.launchDialog(msg);
+//                launchTestContextDialog(msg);
 
 		}
 	}
@@ -686,32 +673,32 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner, SiteMa
 		}
 	}
 
-	private class DeleteClickHandler implements ClickHandler {
-		TestInstance testInstance;
-
-		DeleteClickHandler(TestInstance testInstance) {
-			this.testInstance = testInstance;
-		}
-
-		@Override
-		public void onClick(ClickEvent clickEvent) {
-			clickEvent.preventDefault();
-			clickEvent.stopPropagation();
-			getToolkitServices().deleteSingleTestResult(getCurrentTestSession(), testInstance, new AsyncCallback<TestOverviewDTO>() {
-				@Override
-				public void onFailure(Throwable throwable) {
-					new PopupMessage(throwable.getMessage());
-				}
-
-				@Override
-				public void onSuccess(TestOverviewDTO testOverviewDTO) {
-					displayTest(testOverviewDTO);
-					removeTestOverview(testOverviewDTO);
-					updateTestsOverviewHeader();
-				}
-			});
-		}
-	}
+//	private class DeleteClickHandler implements ClickHandler {
+//		TestInstance testInstance;
+//
+//		DeleteClickHandler(TestInstance testInstance) {
+//			this.testInstance = testInstance;
+//		}
+//
+//		@Override
+//		public void onClick(ClickEvent clickEvent) {
+//			clickEvent.preventDefault();
+//			clickEvent.stopPropagation();
+//			getToolkitServices().deleteSingleTestResult(getCurrentTestSession(), testInstance, new AsyncCallback<TestOverviewDTO>() {
+//				@Override
+//				public void onFailure(Throwable throwable) {
+//					new PopupMessage(throwable.getMessage());
+//				}
+//
+//				@Override
+//				public void onSuccess(TestOverviewDTO testOverviewDTO) {
+//					displayTest(testsPanel, testDisplayGroup, testOverviewDTO);
+//					removeTestOverview(testOverviewDTO);
+//					updateTestsOverviewHeader();
+//				}
+//			});
+//		}
+//	}
 
 	@Override
 	public DeleteAllClickHandler getDeleteAllClickHandler() {
@@ -744,7 +731,7 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner, SiteMa
 
 					@Override
 					public void onSuccess(TestOverviewDTO testOverviewDTO) {
-						displayTest(testOverviewDTO);
+						displayTest(testsPanel, testDisplayGroup, testOverviewDTO);
 						removeTestOverview(testOverviewDTO);
 						updateTestsOverviewHeader();
 					}
@@ -755,7 +742,7 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner, SiteMa
 
 	ClickHandler getInspectClickHandler(TestInstance testInstance) {
 //		return new InspectClickHandler(testInstance);
-		return new LaunchInspectorClickHandler(testInstance, getCurrentTestSession(), new SiteSpec(currentSiteName));
+		return new LaunchInspectorClickHandler(testInstance, getCurrentTestSession(), new SiteSpec(testContext.getSiteName()));
 	}
 
 //	public class InspectClickHandler implements ClickHandler {
@@ -836,7 +823,7 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner, SiteMa
 				@Override
 				public void onSuccess(TestOverviewDTO testOverviewDTO) {
 					// returned status of entire test
-					displayTest(testOverviewDTO);
+					displayTest(testsPanel, testDisplayGroup, testOverviewDTO);
 					addTestOverview(testOverviewDTO);
 					updateTestsOverviewHeader();
 					// Schedule next test to be run

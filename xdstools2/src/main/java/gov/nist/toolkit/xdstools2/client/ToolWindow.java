@@ -109,7 +109,7 @@ public abstract class ToolWindow {
 	public void setCommonPatientId(String p) { Xdstools2.getInstance().getQueryState().setPatientId(p); }
 
 	public String getEnvironmentSelection() { return ClientUtils.INSTANCE.getEnvironmentState().getEnvironmentName(); }
-	public void setEnvironmentSelection(String envName) { ClientUtils.INSTANCE.getEnvironmentState().setEnvironmentName(envName); }
+//	public void setEnvironmentSelection(String envName) { ClientUtils.INSTANCE.getEnvironmentState().setEnvironmentName(envName); }
 
 
 	/**
