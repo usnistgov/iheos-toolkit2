@@ -595,7 +595,7 @@ public class XdsTestServiceManager extends CommonService {
 					lm.add(sectionName, ll);
 				} catch (Exception e)
 				{
-
+					continue;
 				}
 			}
 		}

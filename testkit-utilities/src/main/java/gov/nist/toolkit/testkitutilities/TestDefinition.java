@@ -67,19 +67,21 @@ public class TestDefinition {
 	 * @return list of section names
 	 * @throws IOException
 	 */
-	public List<String> getSectionIndex() throws IOException {
+	public List<String> getSectionIndex() {
 		List<String> names = new ArrayList<String>();
-		
-		String[] parts = Io.stringFromFile(new File(testDir, "index.idx")).split("\n");
-		
-		for (int i=0; i<parts.length; i++) {
-			String name = parts[i];
-			if (name == null)
-				continue;
-			name = name.trim();
-			if (name.length() > 0)
-				names.add(name);
-		}
+
+		try {
+			String[] parts = Io.stringFromFile(new File(testDir, "index.idx")).split("\n");
+
+			for (int i = 0; i < parts.length; i++) {
+				String name = parts[i];
+				if (name == null)
+					continue;
+				name = name.trim();
+				if (name.length() > 0)
+					names.add(name);
+			}
+		} catch (Exception e) {}
 		
 		return names;
 	}

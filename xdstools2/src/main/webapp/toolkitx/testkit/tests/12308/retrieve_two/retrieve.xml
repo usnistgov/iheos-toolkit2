@@ -3,6 +3,11 @@
     <DocumentRequest>
         <HomeCommunityId>$home$</HomeCommunityId>
         <RepositoryUniqueId>$repositoryuid$</RepositoryUniqueId>
-        <DocumentUniqueId>$docuid$</DocumentUniqueId>
+        <DocumentUniqueId>$docuid1$</DocumentUniqueId>
+    </DocumentRequest>
+    <DocumentRequest>
+        <HomeCommunityId>$home$</HomeCommunityId>
+        <RepositoryUniqueId>$repositoryuid$</RepositoryUniqueId>
+        <DocumentUniqueId>$docuid2$</DocumentUniqueId>
     </DocumentRequest>
 </RetrieveDocumentSetRequest>

@@ -8,9 +8,10 @@ import gov.nist.toolkit.sitemanagement.client.SiteSpec;
  *
  */
 public class RgOrchestrationResponse  extends AbstractOrchestrationResponse {
-    private Pid oneDocPid;
-    private Pid twoDocPid;
+//    private Pid oneDocPid;
+//    private Pid twoDocPid;
     private Pid simplePid;
+//    private Pid t12306Pid;
     private SiteSpec siteUnderTest;
     private SiteSpec regrepSite;
     private SimulatorConfig regrepConfig;
@@ -19,21 +20,21 @@ public class RgOrchestrationResponse  extends AbstractOrchestrationResponse {
 
     public RgOrchestrationResponse() {}
 
-    public Pid getOneDocPid() {
-        return oneDocPid;
-    }
-
-    public void setOneDocPid(Pid oneDocPid) {
-        this.oneDocPid = oneDocPid;
-    }
-
-    public Pid getTwoDocPid() {
-        return twoDocPid;
-    }
-
-    public void setTwoDocPid(Pid twoDocPid) {
-        this.twoDocPid = twoDocPid;
-    }
+//    public Pid getOneDocPid() {
+//        return oneDocPid;
+//    }
+//
+//    public void setOneDocPid(Pid oneDocPid) {
+//        this.oneDocPid = oneDocPid;
+//    }
+//
+//    public Pid getTwoDocPid() {
+//        return twoDocPid;
+//    }
+//
+//    public void setTwoDocPid(Pid twoDocPid) {
+//        this.twoDocPid = twoDocPid;
+//    }
 
     public SiteSpec getSiteUnderTest() {
         return siteUnderTest;
@@ -82,4 +83,12 @@ public class RgOrchestrationResponse  extends AbstractOrchestrationResponse {
     public void setSimplePid(Pid simplePid) {
         this.simplePid = simplePid;
     }
+
+//    public Pid getT12306Pid() {
+//        return t12306Pid;
+//    }
+//
+//    public void setT12306Pid(Pid t12306Pid) {
+//        this.t12306Pid = t12306Pid;
+//    }
 }

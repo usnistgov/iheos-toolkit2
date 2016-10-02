@@ -21,6 +21,8 @@ public class TestDisplay extends FlowPanel {
     private TestRunner testRunner;
     private TestContextDisplay testContextDisplay;
     private TestInstance testInstance;
+    private boolean allowDelete= true;
+    private boolean allowRun = true;
 
     public TestDisplay(TestInstance testInstance, TestDisplayGroup testDisplayGroup, TestRunner testRunner, TestContext testContext, TestContextDisplay testContextDisplay) {
         this.testInstance = testInstance;
@@ -32,6 +34,14 @@ public class TestDisplay extends FlowPanel {
         panel.setWidth("100%");
         panel.add(body);
         add(panel);
+    }
+
+    public void setAllowDelete(boolean allowDelete) {
+        this.allowDelete = allowDelete;
+    }
+
+    public void setAllowRun(boolean allowRun) {
+        this.allowRun = allowRun;
     }
 
     public void display(TestOverviewDTO testOverview) {
@@ -57,18 +67,23 @@ public class TestDisplay extends FlowPanel {
             header.add(status);
         }
 
-        Image play = new Image("icons2/play-24.png");
-        play.setStyleName("iconStyle");
-        play.setTitle("Run");
-        play.addClickHandler(new RunClickHandler(testRunner, testInstance, testContext, testContextDisplay));
-        header.add(play);
+        if (allowRun) {
+            Image play = new Image("icons2/play-24.png");
+            play.setStyleName("iconStyle");
+            play.setTitle("Run");
+            play.addClickHandler(new RunClickHandler(testRunner, testInstance, testContext, testContextDisplay));
+            header.add(play);
+        }
+
         if (testOverview.isRun()) {
-            Image delete = new Image("icons2/garbage-24.png");
-            delete.addStyleName("right");
-            delete.addStyleName("iconStyle");
-            delete.addClickHandler(new DeleteClickHandler(testDisplayGroup, testContext, testRunner, testInstance));
-            delete.setTitle("Delete Log");
-            header.add(delete);
+            if (allowDelete) {
+                Image delete = new Image("icons2/garbage-24.png");
+                delete.addStyleName("right");
+                delete.addStyleName("iconStyle");
+                delete.addClickHandler(new DeleteClickHandler(testDisplayGroup, testContext, testRunner, testInstance));
+                delete.setTitle("Delete Log");
+                header.add(delete);
+            }
 
             Image inspect = new Image("icons2/visible-32.png");
             inspect.addStyleName("right");
@@ -88,7 +103,8 @@ public class TestDisplay extends FlowPanel {
         // display sections within test
         for (String sectionName : testOverview.getSectionNames()) {
             SectionOverviewDTO sectionOverview = testOverview.getSectionOverview(sectionName);
-            body.add(new TestSectionComponent(testContext.getTestSession(), testOverview.getTestInstance(), sectionOverview, testRunner).asWidget());
+            TestSectionComponent sectionComponent = new TestSectionComponent(testContext.getTestSession(), testOverview.getTestInstance(), sectionOverview, testRunner, allowRun);
+            body.add(sectionComponent.asWidget());
         }
     }
 }

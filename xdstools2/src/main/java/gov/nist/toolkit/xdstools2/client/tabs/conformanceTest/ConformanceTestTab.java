@@ -521,7 +521,7 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner, TestsH
             initializationPanel.add(orchInit.panel());
         }
         else if (isRgSut()) {
-            orchInit = new BuildRgTestOrchestrationButton(this, initializationPanel, label, testContext);
+            orchInit = new BuildRgTestOrchestrationButton(this, initializationPanel, label, testContext, testContextDisplay, this);
             initializationPanel.add(orchInit.panel());
         }
         else {

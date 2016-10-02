@@ -97,7 +97,7 @@ public class BuildRegTestOrchestrationButton extends AbstractOrchestrationButton
                 }
 
                 // Display tests run as part of orchestration - so links to their logs are available
-                initializationResultsPanel.add(new OrchestrationSupportTestsDisplay(orchResponse, testTab.getCurrentTestSession(), testContext.getSiteUnderTest().siteSpec() ));
+                initializationResultsPanel.add(new OrchestrationSupportTestsDisplay(orchResponse, testContext, testContextDisplay, testTab ));
 
                 initializationResultsPanel.add(new HTML("<br />"));
 

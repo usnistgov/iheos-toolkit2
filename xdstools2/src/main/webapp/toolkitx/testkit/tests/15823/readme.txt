@@ -1,1 +1,1 @@
-Send Patient Identity Feed - Simple Submission
+Send Patient Identity Feed 

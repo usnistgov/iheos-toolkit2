@@ -102,9 +102,9 @@ class BuildRGTestOrchestrationButton extends AbstractOrchestrationButton {
     int displayPIDs(FlexTable table, RgOrchestrationResponse response, int row) {
         table.setHTML(row++, 0, "<h3>Patient IDs</h3>");
         table.setText(row, 0, "Single document Patient ID");
-        table.setText(row++, 1, response.getOneDocPid().asString());
-        table.setText(row, 0, "Two document Patient ID");
-        table.setText(row++, 1, response.getTwoDocPid().asString());
+//        table.setText(row++, 1, response.getOneDocPid().asString());
+//        table.setText(row, 0, "Two document Patient ID");
+//        table.setText(row++, 1, response.getTwoDocPid().asString());
 
         return row;
     }

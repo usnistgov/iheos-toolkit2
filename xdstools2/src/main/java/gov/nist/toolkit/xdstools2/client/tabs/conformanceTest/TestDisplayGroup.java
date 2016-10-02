@@ -15,6 +15,8 @@ public class TestDisplayGroup {
     private TestRunner testRunner;
     private TestContext testContext;
     private TestContextDisplay testContextDisplay;
+    private boolean allowRun = true;
+    private boolean allowDelete = true;
 
     public TestDisplayGroup(TestContext testContext, TestContextDisplay testContextDisplay, TestRunner testRunner) {
         this.testContext = testContext;
@@ -26,6 +28,8 @@ public class TestDisplayGroup {
         TestDisplay testDisplay = get(testOverview.getTestInstance());
         if (testDisplay == null) {
             testDisplay = new TestDisplay(testOverview.getTestInstance(), this, testRunner, testContext, testContextDisplay);
+            testDisplay.setAllowDelete(allowDelete);
+            testDisplay.setAllowRun(allowRun);
             put(testOverview.getTestInstance(), testDisplay);
         }
         testDisplay.display(testOverview);
@@ -45,4 +49,12 @@ public class TestDisplayGroup {
     public boolean containsKey(TestInstance testInstance) { return testDisplays.containsKey(testInstance.getId()); }
 
     public void clear() { testDisplays.clear(); }
+
+    public void setAllowRun(boolean allowRun) {
+        this.allowRun = allowRun;
+    }
+
+    public void setAllowDelete(boolean allowDelete) {
+        this.allowDelete = allowDelete;
+    }
 }
