@@ -61,6 +61,7 @@ public class Site  implements IsSerializable, Serializable {
 	public String pidAllocateURI = null;
 	transient public boolean changed = false;
 	public String user = null;  // loaded from SimId - when non-null this site represents a sim
+	private String orchestrationSiteName = null;
 
 
 	/**
@@ -361,6 +362,16 @@ public class Site  implements IsSerializable, Serializable {
 	}
 
 	public SiteSpec siteSpec() {
-		return new SiteSpec(getSiteName());
+		SiteSpec siteSpec = new SiteSpec(getSiteName());
+		siteSpec.orchestrationSiteName = orchestrationSiteName;
+		return siteSpec;
+	}
+
+	public String getOrchestrationSiteName() {
+		return orchestrationSiteName;
+	}
+
+	public void setOrchestrationSiteName(String orchestrationSiteName) {
+		this.orchestrationSiteName = orchestrationSiteName;
 	}
 }

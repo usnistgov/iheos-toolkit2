@@ -14,6 +14,7 @@ import gov.nist.toolkit.services.server.RawResponseBuilder
 import gov.nist.toolkit.services.server.ToolkitApi
 import gov.nist.toolkit.session.server.Session
 import gov.nist.toolkit.simcommon.client.config.SimulatorConfigElement
+import gov.nist.toolkit.sitemanagement.client.Site
 import groovy.transform.TypeChecked
 /**
  * Build orchestration for testing a Repository.
@@ -48,7 +49,8 @@ class RepOrchestrationBuilder {
             OrchestrationProperties orchProps = new OrchestrationProperties(session, request.userName, ActorType.REPOSITORY, pidNameMap.keySet())
             Pid pid
 
-            response.repSite = SimCache.getSite(session.getId(), request.sutSite.name)
+            Site sutSite = SimCache.getSite(session.getId(), request.sutSite.name)
+            response.repSite = sutSite
             if (!request.isUseExistingSimulator()) {
                 api.deleteSimulatorIfItExists(supportSimId)
                 orchProps.clear()
@@ -68,10 +70,18 @@ class RepOrchestrationBuilder {
             response.setPid(pid)
 
 
-            // disable checking of Patient Identity Feed
-            if (!reuse) {
+            if (!request.isUseExistingSimulator()) {
                 SimulatorConfigElement idsEle = supportSimConfig.getConfigEle(SimulatorProperties.VALIDATE_AGAINST_PATIENT_IDENTITY_FEED)
+
+                // disable checking of Patient Identity Feed
                 idsEle.setValue(false)
+
+                // test will be run out of support site - copy both PNR endpoints from SUT site
+//                String endpoint
+//                endpoint = sutSite.getEndpoint(TransactionType.PROVIDE_AND_REGISTER, false, false)
+//                supportSimConfig.add(new SimulatorConfigElement(SimulatorProperties.pnrEndpoint, ParamType.ENDPOINT, endpoint))
+//                endpoint = sutSite.getEndpoint(TransactionType.PROVIDE_AND_REGISTER, true, false)
+//                supportSimConfig.add(new SimulatorConfigElement(SimulatorProperties.pnrTlsEndpoint, ParamType.ENDPOINT, endpoint))
 
                 api.saveSimulator(supportSimConfig)
             }
@@ -80,25 +90,29 @@ class RepOrchestrationBuilder {
             // if SUT is simulator and it does not have a Register endpoint, add endpoint from
             // support sim
             // This is a Integration Test convenience
-            SimulatorConfig sutSim = null
-            try {
-                sutSim = api.getConfig(new SimId(request.sutSite.name))
-            } catch (Exception e) {}
-            if (sutSim == null) {
-                // not a sim
-            } else {
-                // is a sim
-                String registerEndpoint = sutSim.getConfigEle(SimulatorProperties.registerEndpoint).asString()
-                if (registerEndpoint == null || registerEndpoint.equals("")) {
-                    // set in endpoint from support site
-                    String endpoint = supportSimConfig.getConfigEle(SimulatorProperties.registerEndpoint).asString()
-//                    sutSim.add(new SimulatorConfigElement(SimulatorProperties.registerEndpoint, ParamType.ENDPOINT, endpoint))
-                    api.saveSimulator(sutSim)
-                }
-            }
+//            SimulatorConfig sutSim = null
+//            try {
+//                sutSim = api.getConfig(new SimId(request.sutSite.name))
+//            } catch (Exception e) {}
+//            if (sutSim == null) {
+//                // not a sim
+//            } else {
+//                // is a sim
+//                String registerEndpoint = sutSim.getConfigEle(SimulatorProperties.registerEndpoint).asString()
+//                if (registerEndpoint == null || registerEndpoint.equals("")) {
+//                    // set in endpoint from support site
+//                    String endpoint = supportSimConfig.getConfigEle(SimulatorProperties.registerEndpoint).asString()
+////                    sutSim.add(new SimulatorConfigElement(SimulatorProperties.registerEndpoint, ParamType.ENDPOINT, endpoint))
+//                    api.saveSimulator(sutSim)
+//                }
+//            }
 
             response.regConfig = supportSimConfig     //
             response.supportSite = SimCache.getSite(session.getId(), supportSimId.toString())
+
+            // Transactions will be initiated on support site.  Link it to SUT site so that at the last minute
+            // the SUT transactions will be added to support site.
+            response.supportSite.setOrchestrationSiteName(sutSite.getSiteName())
             return response
         } catch (Exception e) {
             return RawResponseBuilder.build(e);
