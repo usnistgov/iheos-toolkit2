@@ -97,8 +97,8 @@ public class FindDocumentsTab extends AbstractTool {
 //							Element svg = diagram.draw(testIG(),0);
 //							Element svg = diagram.draw(testReuseLL(),0);
 //							System.out.println(svg);
-				resultPanel.add(new HTML("<p style='font-weight:bold'>Interaction Sequence:</p>"));
-				resultPanel.add(diagram);
+				resultPanel.display(new HTML("<p style='font-weight:bold'>Interaction Sequence:</p>"));
+				resultPanel.display(diagram);
 				*/
 //			} catch (Throwable t){ new PopupMessage(t.toString());}
 
@@ -190,7 +190,7 @@ public class FindDocumentsTab extends AbstractTool {
 		ig.getInteractions().add(rep1);
 
 //		initiator.setInteractions(new ArrayList<InteractingEntity>());
-//		initiator.getInteractions().add(ig);
+//		initiator.getInteractions().addTest(ig);
 //
 //		return initiator;
 		return ig;

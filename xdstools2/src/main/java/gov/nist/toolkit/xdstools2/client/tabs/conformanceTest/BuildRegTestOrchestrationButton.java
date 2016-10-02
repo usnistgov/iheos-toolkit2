@@ -22,13 +22,17 @@ import gov.nist.toolkit.xdstools2.client.widgets.buttons.AbstractOrchestrationBu
 public class BuildRegTestOrchestrationButton extends AbstractOrchestrationButton {
     private ConformanceTestTab testTab;
     private Panel initializationPanel;
+    private TestContext testContext;
+    private TestContextDisplay testContextDisplay;
     private FlowPanel initializationResultsPanel = new FlowPanel();
     private RadioButton noFeed = new RadioButton("pidFeedGroup", "No Patient Identity Feed");
     private RadioButton v2Feed = new RadioButton("pidFeedGroup", "V2 Patient Identitfy Feed");
 
-    BuildRegTestOrchestrationButton(ConformanceTestTab testTab, Panel initializationPanel, String label) {
+    BuildRegTestOrchestrationButton(ConformanceTestTab testTab, TestContext testContext, TestContextDisplay testContextDisplay, Panel initializationPanel, String label) {
         this.initializationPanel = initializationPanel;
         this.testTab = testTab;
+        this.testContext = testContext;
+        this.testContextDisplay = testContextDisplay;
 
         setParentPanel(initializationPanel);
         setLabel(label);
@@ -49,7 +53,7 @@ public class BuildRegTestOrchestrationButton extends AbstractOrchestrationButton
     public void handleClick(ClickEvent clickEvent) {
         String msg = testTab.verifyTestContext();
         if (msg != null) {
-            testTab.launchTestContextDialog(msg);
+            testContextDisplay.launchDialog(msg);
             return;
         }
 
@@ -60,10 +64,10 @@ public class BuildRegTestOrchestrationButton extends AbstractOrchestrationButton
         request.setUserName(testTab.getCurrentTestSession());
         request.setEnvironmentName(testTab.getEnvironmentSelection());
         request.setUseExistingSimulator(!isResetRequested());
-        SiteSpec siteSpec = new SiteSpec(testTab.getSiteName());
-        request.setRegistrySut(siteSpec);
+        SiteSpec sutSiteSpec = testContext.getSiteUnderTest().siteSpec();
+        request.setRegistrySut(sutSiteSpec);
 
-        testTab.setSitetoIssueTestAgainst(siteSpec);
+        testTab.setSitetoIssueTestAgainst(sutSiteSpec);
 
 
         ClientUtils.INSTANCE.getToolkitServices().buildRegTestOrchestration(request, new AsyncCallback<RawResponse>() {
@@ -80,8 +84,8 @@ public class BuildRegTestOrchestrationButton extends AbstractOrchestrationButton
 
                 initializationResultsPanel.add(new HTML("Initialization Complete"));
 
-                if (testTab.getSiteUnderTest() != null) {
-                    initializationResultsPanel.add(new SiteDisplay("System Under Test Configuration", testTab.getSiteUnderTest()));
+                if (testContext.getSiteUnderTest() != null) {
+                    initializationResultsPanel.add(new SiteDisplay("System Under Test Configuration", testContext.getSiteUnderTest()));
                 }
 
                 initializationResultsPanel.add(new HTML("<h2>Supporting Environment Configuration</h2>"));
@@ -93,7 +97,7 @@ public class BuildRegTestOrchestrationButton extends AbstractOrchestrationButton
                 }
 
                 // Display tests run as part of orchestration - so links to their logs are available
-                initializationResultsPanel.add(new OrchestrationSupportTestsDisplay(orchResponse, testTab.getCurrentTestSession(), testTab.getSiteUnderTest().siteSpec() ));
+                initializationResultsPanel.add(new OrchestrationSupportTestsDisplay(orchResponse, testTab.getCurrentTestSession(), testContext.getSiteUnderTest().siteSpec() ));
 
                 initializationResultsPanel.add(new HTML("<br />"));
 

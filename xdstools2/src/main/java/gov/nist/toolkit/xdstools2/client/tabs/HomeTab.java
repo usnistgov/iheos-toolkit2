@@ -21,7 +21,7 @@ public class HomeTab extends GenericQueryTab {
 		FlowPanel panel = new FlowPanel();
 		panel.add(menubar);
 
-//		menubar.add(
+//		menubar.addTest(
 //				HyperlinkFactory.launchTool("&nbsp;&nbsp;[" + ToolLauncher.toolConfigTabLabel + "]&nbsp;&nbsp;", new ToolLauncher(ToolLauncher.toolConfigTabLabel))
 //		);
 
@@ -62,7 +62,7 @@ public class HomeTab extends GenericQueryTab {
 //
 //		select = true;
 //		registerTab(select, eventName);
-////		tabTopPanel.add(new HTML("Menu Bar"));
+////		tabTopPanel.addTest(new HTML("Menu Bar"));
 ////		tabTopPanel.
 //
 //
@@ -77,7 +77,7 @@ public class HomeTab extends GenericQueryTab {
 		//@Override
 		public void featuresLoadedCallback() {
 
-//				tabTopPanel.add(mainGrid);
+//				tabTopPanel.addTest(mainGrid);
 
 
 		}

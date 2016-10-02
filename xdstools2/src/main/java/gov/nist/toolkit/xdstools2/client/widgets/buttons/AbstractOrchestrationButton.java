@@ -10,7 +10,7 @@ import gov.nist.toolkit.xdstools2.client.ErrorHandler;
  *
  */
 abstract public class AbstractOrchestrationButton implements ClickHandler {
-    private final VerticalPanel panel = new VerticalPanel();
+    private final VerticalPanel panel = new VerticalPanel();  // top panel
     private Panel topPanel;
     private String label = null;
     private String resetLabel = null;
@@ -42,7 +42,7 @@ abstract public class AbstractOrchestrationButton implements ClickHandler {
     }
 
     public Panel build() {
-        panel.add(new HTML("<hr /><h2>Initialization</h2><p>The test environment needs to be initialized before tests can be run."));
+        panel.add(new HTML("<hr /><h2>Test Setup</h2><p>The test setup needs to be initialized before tests can be run."));
 
         if (customPanel != null) {
             panel.add(customPanel);
@@ -72,7 +72,7 @@ abstract public class AbstractOrchestrationButton implements ClickHandler {
 
     // First element is button, rest is display material
     public void clear() {
-        panel.clear();
+//        panel.clear();
     }
 
     public void handleError(Throwable throwable) {

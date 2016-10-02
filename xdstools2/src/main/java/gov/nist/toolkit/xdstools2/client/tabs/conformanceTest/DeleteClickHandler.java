@@ -14,9 +14,13 @@ import gov.nist.toolkit.xdstools2.client.util.ClientUtils;
 public class DeleteClickHandler implements ClickHandler {
     private TestInstance testInstance;
     private TestContext testContext;
+    private TestRunner testRunner;
+    private TestDisplayGroup testDisplayGroup;
 
-    DeleteClickHandler(TestContext testContext, TestInstance testInstance) {
+    public DeleteClickHandler(TestDisplayGroup testDisplayGroup, TestContext testContext, TestRunner testRunner, TestInstance testInstance) {
+        this.testDisplayGroup = testDisplayGroup;
         this.testContext = testContext;
+        this.testRunner = testRunner;
         this.testInstance = testInstance;
     }
 
@@ -32,9 +36,9 @@ public class DeleteClickHandler implements ClickHandler {
 
             @Override
             public void onSuccess(TestOverviewDTO testOverviewDTO) {
-                displayTest(testsPanel, testDisplayGroup, testOverviewDTO);
-                removeTestOverview(testOverviewDTO);
-                updateTestsOverviewHeader();
+//                testRunner.displayTest(testsPanel, testDisplayGroup, testOverviewDTO);
+                testRunner.removeTestDetails(testOverviewDTO.getTestInstance());
+                testDisplayGroup.display(testOverviewDTO);
             }
         });
     }

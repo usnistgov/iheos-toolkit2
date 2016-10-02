@@ -113,11 +113,11 @@ class BuildIGTestOrchestrationButton extends AbstractOrchestrationButton {
                     table.setWidget(row, 1, new HTML("Query"));
                     table.setWidget(row++, 2, new HTML(config.getConfigEle(SimulatorProperties.storedQueryEndpoint).asString()));
 
-//                    panel().add(testTab.addTestEnvironmentInspectorButton(config.getId().toString()));
+//                    panel().display(testTab.addTestEnvironmentInspectorButton(config.getId().toString()));
                 }
 
                 // generate log launcher buttons
-//                panel().add(testTab.testSelectionManager.buildLogLauncher(testTab.rgConfigs));
+//                panel().display(testTab.testSelectionManager.buildLogLauncher(testTab.rgConfigs));
 
                 testTab.genericQueryTab.reloadTransactionOfferings();
             }

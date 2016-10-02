@@ -97,7 +97,7 @@ class TestContextDialog extends DialogBox {
         panel.add(validationMessage);
 //        validateButton.setVisible(false);
 //        validateButton.addClickHandler(new ValidateClickHandler());
-//        panel.add(validateButton);
+//        panel.display(validateButton);
         acceptButton.addClickHandler(new AcceptButtonClickHandler());
         panel.add(acceptButton);
 
@@ -271,7 +271,7 @@ class TestContextDialog extends DialogBox {
             ClientUtils.INSTANCE.getToolkitServices().addMesaTestSession(newItem, new AsyncCallback<Boolean>() {
                 @Override
                 public void onFailure(Throwable throwable) {
-                    new PopupMessage("Cannot add test session - " + throwable.getMessage());
+                    new PopupMessage("Cannot display test session - " + throwable.getMessage());
                 }
 
                 @Override

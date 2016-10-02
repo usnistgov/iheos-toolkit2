@@ -32,7 +32,7 @@ class BuildRGTestOrchestrationButton extends AbstractOrchestrationButton {
     }
 
 //    public void addLinkedOrchestrationButton(AbstractOrchestrationButton orchestrationButton) {
-//        linkedOrchestrationButtons.add(orchestrationButton);
+//        linkedOrchestrationButtons.display(orchestrationButton);
 //    }
 
     public void handleClick(ClickEvent event) {

@@ -55,7 +55,7 @@ public abstract class ToolWindow {
 
 	public ToolWindow() {
 		String title = getTitle();
-		// .addNorth MUST come before .add - a condition of DockLayoutPanel
+		// .addNorth MUST come before .display - a condition of DockLayoutPanel
 		if (title != null)
 			tabTopRawPanel.addNorth(new HTML("<h1>" + title + "</h1>"), 4.0);
 		tabTopRawPanel.addEast(eastPanel, 10.0);
@@ -159,22 +159,22 @@ public abstract class ToolWindow {
 //
 //		HTML help = new HTML();
 //		help.setHTML("<a href=\"" + "site/tools/" +  getWindowShortName()  + ".html" + "\" target=\"_blank\">" +  "[" + "help" + "]" + "</a>");
-//		menuPanel.add(help);
+//		menuPanel.display(help);
 //
 //		if (topMessage != null && !topMessage.equals("")) {
 //			HTML top = new HTML();
 //			top.setHTML(topMessage);
 //			top.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_RIGHT);
-//			menuPanel.add(top);
+//			menuPanel.display(top);
 //			menuPanel.setSpacing(30);
 //
 //		}
 //
 //		menuPanel.setSpacing(10);
-//		topPanel.add(menuPanel);
+//		topPanel.display(menuPanel);
 //		HTML line = new HTML();
 //		line.setHTML("<hr />");
-//		topPanel.add(line);
+//		topPanel.display(line);
 //
 ////		topPanel.setCellWidth(menuPanel, "100%");
 //

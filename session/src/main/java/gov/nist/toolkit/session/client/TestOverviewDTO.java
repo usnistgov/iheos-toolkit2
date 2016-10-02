@@ -15,6 +15,7 @@ import java.util.Map;
  */
 public class TestOverviewDTO implements Serializable, IsSerializable {
     private String name;
+    private TestInstance testInstance;
     private String title;
     private String description;
     private boolean pass;
@@ -25,7 +26,7 @@ public class TestOverviewDTO implements Serializable, IsSerializable {
 
     public TestOverviewDTO() {}
 
-    public TestInstance getTestInstance() { return new TestInstance(name); }
+    public TestInstance getTestInstance() { return testInstance; }
 
     public String getName() {
         return name;
@@ -33,6 +34,7 @@ public class TestOverviewDTO implements Serializable, IsSerializable {
 
     public void setName(String name) {
         this.name = name;
+        this.testInstance = new TestInstance(name);
     }
 
     public boolean isPass() {
@@ -126,4 +128,6 @@ public class TestOverviewDTO implements Serializable, IsSerializable {
         if (section  == null) return "";
         return section.getDisplayableTime();
     }
+
+
 }

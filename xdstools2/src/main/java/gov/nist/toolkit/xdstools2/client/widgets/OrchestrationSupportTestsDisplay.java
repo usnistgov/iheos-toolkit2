@@ -11,7 +11,6 @@ import gov.nist.toolkit.session.client.TestOverviewDTO;
 import gov.nist.toolkit.sitemanagement.client.SiteSpec;
 import gov.nist.toolkit.xdstools2.client.HorizontalFlowPanel;
 import gov.nist.toolkit.xdstools2.client.PopupMessage;
-import gov.nist.toolkit.xdstools2.client.tabs.conformanceTest.TestDisplayGroup;
 import gov.nist.toolkit.xdstools2.client.util.ClientUtils;
 
 import java.util.List;
@@ -20,7 +19,6 @@ import java.util.List;
  * Display results of running tests that initialize SUT or orchestration support actors
  */
 public class OrchestrationSupportTestsDisplay extends FlowPanel {
-    private TestDisplayGroup testDisplayGroup = new TestDisplayGroup();
 
     public OrchestrationSupportTestsDisplay(final AbstractOrchestrationResponse orchResponse, final String testSession, final SiteSpec siteSpec) {
         ClientUtils.INSTANCE.getToolkitServices().getTestsOverview(testSession, orchResponse.getTestInstances(), new AsyncCallback<List<TestOverviewDTO>>() {

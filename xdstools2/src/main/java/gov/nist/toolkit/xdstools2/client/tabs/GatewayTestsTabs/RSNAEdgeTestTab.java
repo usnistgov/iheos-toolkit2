@@ -212,7 +212,7 @@ public class RSNAEdgeTestTab extends GenericQueryTab implements GatewayTool {
             Panel logLaunchButtonPanel = rigForRunning();
             logLaunchButtonPanel.clear();
 //            List configs = Arrays.asList(config);
-//            logLaunchButtonPanel.add(testSelectionManager.buildLogLauncher(configs));
+//            logLaunchButtonPanel.addTest(testSelectionManager.buildLogLauncher(configs));
             String testToRun = selectedTest;
             if (TestSelectionManager.ALL.equals(testToRun)) {
                 testToRun = "tc:" + COLLECTION_NAME;

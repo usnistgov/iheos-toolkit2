@@ -8,7 +8,6 @@ import com.google.gwt.user.client.ui.Panel;
 import gov.nist.toolkit.services.client.RawResponse;
 import gov.nist.toolkit.services.client.RepOrchestrationRequest;
 import gov.nist.toolkit.services.client.RepOrchestrationResponse;
-import gov.nist.toolkit.sitemanagement.client.SiteSpec;
 import gov.nist.toolkit.xdstools2.client.util.ClientUtils;
 import gov.nist.toolkit.xdstools2.client.widgets.buttons.AbstractOrchestrationButton;
 
@@ -18,11 +17,15 @@ import gov.nist.toolkit.xdstools2.client.widgets.buttons.AbstractOrchestrationBu
 class BuildRepTestOrchestrationButton extends AbstractOrchestrationButton {
     private ConformanceTestTab testTab;
     private Panel initializationPanel;
+    private TestContext testContext;
+    private TestContextDisplay testContextDisplay;
     private FlowPanel initializationResultsPanel = new FlowPanel();
 
-    BuildRepTestOrchestrationButton(ConformanceTestTab testTab, Panel initializationPanel, String label) {
+    BuildRepTestOrchestrationButton(ConformanceTestTab testTab, TestContext testContext, TestContextDisplay testContextDisplay, Panel initializationPanel, String label) {
         this.initializationPanel = initializationPanel;
         this.testTab = testTab;
+        this.testContext = testContext;
+        this.testContextDisplay = testContextDisplay;
 
         setParentPanel(initializationPanel);
         setLabel(label);
@@ -35,14 +38,14 @@ class BuildRepTestOrchestrationButton extends AbstractOrchestrationButton {
     public void handleClick(ClickEvent clickEvent) {
         String msg = testTab.verifyTestContext();
         if (msg != null) {
-            testTab.launchTestContextDialog(msg);
+            testContextDisplay.launchDialog(msg);
             return;
         }
 
         initializationResultsPanel.clear();
 
         RepOrchestrationRequest request = new RepOrchestrationRequest();
-        request.setSutSite(new SiteSpec(testTab.getSiteName()));
+        request.setSutSite(testContext.getSiteUnderTest().siteSpec());
         request.setUserName(testTab.getCurrentTestSession());
         request.setEnvironmentName(testTab.getEnvironmentSelection());
         request.setUseExistingSimulator(!isResetRequested());
@@ -61,8 +64,8 @@ class BuildRepTestOrchestrationButton extends AbstractOrchestrationButton {
 
                 initializationResultsPanel.add(new HTML("Initialization Complete"));
 
-                if (testTab.getSiteUnderTest() != null) {
-                    initializationResultsPanel.add(new SiteDisplay("System Under Test Configuration", testTab.getSiteUnderTest()));
+                if (testContext.getSiteUnderTest() != null) {
+                    initializationResultsPanel.add(new SiteDisplay("System Under Test Configuration", testContext.getSiteUnderTest()));
                 }
 
                 if (orchResponse.getMessage().length() > 0) {
@@ -73,8 +76,8 @@ class BuildRepTestOrchestrationButton extends AbstractOrchestrationButton {
                     initializationResultsPanel.add(new SiteDisplay("Supporting Environment Configuration", orchResponse.getSupportSite()));
                 }
 
-//                initializationResultsPanel.add(new HTML("<h3>Supporting Environment</h3>"));
-//                initializationResultsPanel.add(new SimSystemAnchor("System: " + orchResponse.getSupportSite().getName(), new SiteSpec(orchResponse.getSupportSite().getName())));
+//                initializationResultsPanel.display(new HTML("<h3>Supporting Environment</h3>"));
+//                initializationResultsPanel.display(new SimSystemAnchor("System: " + orchResponse.getSupportSite().getName(), new SiteSpec(orchResponse.getSupportSite().getName())));
 
 
 

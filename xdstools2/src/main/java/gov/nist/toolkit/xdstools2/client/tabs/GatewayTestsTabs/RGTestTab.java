@@ -110,7 +110,7 @@ public class RGTestTab extends GenericQueryTab implements GatewayTool {
         ));
 
         ////////////////////////////////////////////////////////////////////////////////////////////////
-//        tabTopPanel.add(new HTML(
+//        tabTopPanel.display(new HTML(
 //                "<hr /><h2>System under test</h2>" +
 //                "<p>" +
 //                "The system under test is a Responding Gateway. To be testable by this tool one of the following " +

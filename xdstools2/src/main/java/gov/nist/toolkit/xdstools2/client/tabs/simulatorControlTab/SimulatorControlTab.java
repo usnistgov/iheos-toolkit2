@@ -254,10 +254,10 @@ public class SimulatorControlTab extends GenericQueryTab {
 			}
 			row++;
 		}
-		// add the variable width stats columns and keep track of max column used
+		// addTest the variable width stats columns and keep track of max column used
 		int column = addSimStats(statsColumn, configs, stats);
 
-		// now we know width of statsColumn so we can add button column after it
+		// now we know width of statsColumn so we can addTest button column after it
 		row = 1;
 		for (SimulatorConfig config : configs) {
 			addButtonPanel(row, column, config);

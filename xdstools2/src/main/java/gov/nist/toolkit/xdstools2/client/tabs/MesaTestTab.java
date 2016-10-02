@@ -122,14 +122,14 @@ public class MesaTestTab extends GenericQueryTab {
 		
 //		HTML patientIdLabel = new HTML();
 //		patientIdLabel.setText("Patient ID");
-//		patientIdPanel.add(patientIdLabel);
+//		patientIdPanel.addTest(patientIdLabel);
 //
 //		patientIdBox.setWidth("400px");
-//		patientIdPanel.add(patientIdBox);
+//		patientIdPanel.addTest(patientIdBox);
 	
 		// Alt Patient ID
 		HorizontalPanel altPatientIdPanel = new HorizontalPanel();
-//		tabTopPanel.add(altPatientIdPanel);
+//		tabTopPanel.addTest(altPatientIdPanel);
 		
 		HTML altPatientIdLabel = new HTML();
 		altPatientIdLabel.setText("Alternate Patient ID");

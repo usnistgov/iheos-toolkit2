@@ -131,7 +131,7 @@ public class SimulatorMessageViewTab extends ToolWindow {
 		loadSimulatorNamesListBox();
 		simulatorNamesListBox.addChangeHandler(new SimulatorNameChangeHandler());
 
-		//		simControlPanel.add(actorNamesPanel);
+		//		simControlPanel.addTest(actorNamesPanel);
 		//		loadActorNames();
 
 		simControlPanel.add(transactionDisplayPanel);
@@ -154,7 +154,7 @@ public class SimulatorMessageViewTab extends ToolWindow {
 		transactionDisplayPanel.add(inspectResponseButton);
 
 //		deleteButton.addClickHandler(deleteClickHandler);
-//		transactionDisplayPanel.add(deleteButton);
+//		transactionDisplayPanel.addTest(deleteButton);
 		
 		
 		transactionDisplayPanel.add(download);
@@ -215,7 +215,7 @@ public class SimulatorMessageViewTab extends ToolWindow {
 
 			public void onSuccess(List<String> transNames) {
 				transactionNamesPanel.clear();
-//				transactionNamesPanel.add(HtmlMarkup.html(HtmlMarkup.bold("Transaction: ")));
+//				transactionNamesPanel.addTest(HtmlMarkup.html(HtmlMarkup.bold("Transaction: ")));
 //
 //
 //				transactionRadButtons = new TransactionNamesRadioButtonGroup(new Panel1(transactionNamesPanel), simidFinal);
@@ -228,7 +228,7 @@ public class SimulatorMessageViewTab extends ToolWindow {
 //					TransactionType transType = TransactionType.find(name);
 //					if (transType == null) continue;
 //					if (transType.getId().equals("PIF")) continue;
-//					fullNames.add(transType.getName());
+//					fullNames.addTest(transType.getName());
 //					fullNameMap.put(name, transType.getName());
 //
 //				}
@@ -248,7 +248,7 @@ public class SimulatorMessageViewTab extends ToolWindow {
 //
 //			public void onSuccess(List<String> result) {
 //				transactionNamesPanel.clear();
-//				transactionNamesPanel.add(html(bold("Transaction: ")));
+//				transactionNamesPanel.addTest(html(bold("Transaction: ")));
 //
 //
 //				transactionRadButtons = new TransactionNamesRadioButtonGroup(new Panel1(transactionNamesPanel), actorNameFinal);

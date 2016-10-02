@@ -19,6 +19,7 @@ import gov.nist.toolkit.xdstools2.client.widgets.buttons.AbstractOrchestrationBu
  */
 public class BuildRgTestOrchestrationButton extends AbstractOrchestrationButton {
     private ConformanceTestTab testTab;
+    private TestContext testContext;
     private Panel initializationPanel;
     private FlowPanel initializationResultsPanel = new FlowPanel();
     private RadioButton noFeed = new RadioButton("rgpidFeedGroup", "No Patient Identity Feed");
@@ -32,9 +33,10 @@ public class BuildRgTestOrchestrationButton extends AbstractOrchestrationButton 
     boolean usingExposedRR() { return exposed.getValue(); }
 
 
-    BuildRgTestOrchestrationButton(ConformanceTestTab testTab, Panel initializationPanel, String label) {
+    BuildRgTestOrchestrationButton(ConformanceTestTab testTab, Panel initializationPanel, String label, TestContext testContext) {
         this.initializationPanel = initializationPanel;
         this.testTab = testTab;
+        this.testContext = testContext;
 
         setParentPanel(initializationPanel);
         setLabel(label);
@@ -115,7 +117,7 @@ public class BuildRgTestOrchestrationButton extends AbstractOrchestrationButton 
         request.setUserName(testTab.getCurrentTestSession());
         request.setEnvironmentName(testTab.getEnvironmentSelection());
         request.setUseExistingState(!isResetRequested());
-        SiteSpec siteSpec = new SiteSpec(testTab.getSiteName());
+        SiteSpec siteSpec = new SiteSpec(testContext.getSiteName());
         request.setSiteUnderTest(siteSpec);
 
         testTab.setSitetoIssueTestAgainst(siteSpec);
@@ -134,8 +136,8 @@ public class BuildRgTestOrchestrationButton extends AbstractOrchestrationButton 
 
             initializationResultsPanel.add(new HTML("Initialization Complete"));
 
-                if (testTab.getSiteUnderTest() != null) {
-                    initializationResultsPanel.add(new SiteDisplay("System Under Test Configuration", testTab.getSiteUnderTest()));
+                if (testContext.getSiteUnderTest() != null) {
+                    initializationResultsPanel.add(new SiteDisplay("System Under Test Configuration", testContext.getSiteUnderTest()));
                 }
 
                 initializationResultsPanel.add(new HTML("<h2>Supporting Environment Configuration</h2>"));
@@ -149,7 +151,7 @@ public class BuildRgTestOrchestrationButton extends AbstractOrchestrationButton 
                 }
                 initializationResultsPanel.add(new HTML("<br />"));
 
-                initializationResultsPanel.add(new OrchestrationSupportTestsDisplay(orchResponse, testTab.getCurrentTestSession(), testTab.getSiteUnderTest().siteSpec() ));
+                initializationResultsPanel.add(new OrchestrationSupportTestsDisplay(orchResponse, testTab.getCurrentTestSession(), testContext.getSiteUnderTest().siteSpec() ));
 
                 initializationResultsPanel.add(new HTML("<br />"));
 

@@ -430,8 +430,8 @@ public class MessageValidatorTab extends ToolWindow {
 		tabTopPanel.add(HtmlMarkup.html("<hr />"));
 		VerticalPanel fromWhereArea = new VerticalPanel();
 		HorizontalPanel inputTypeArea = new HorizontalPanel();
-		//		inputTypeArea.add(fromFileRadioButton);
-		//		inputTypeArea.add(fromEndpointRadioButton);
+		//		inputTypeArea.addTest(fromFileRadioButton);
+		//		inputTypeArea.addTest(fromEndpointRadioButton);
 
 		fromWhereArea.add(inputTypeArea);
 		fromWhereArea.add(uploadForm);
@@ -485,7 +485,7 @@ public class MessageValidatorTab extends ToolWindow {
 		});
 
 		endpointAreaButtonPanel.setWidget(0, 0, validateFromEndpointButton);
-		//		endpointPartsArea.add(validateFromEndpointButton);
+		//		endpointPartsArea.addTest(validateFromEndpointButton);
 
 		Button validateRespFromEndpointButton = new Button("Validate Response");
 		validateRespFromEndpointButton.setEnabled(false);
@@ -506,7 +506,7 @@ public class MessageValidatorTab extends ToolWindow {
 		});
 
 		endpointAreaButtonPanel.setWidget(1, 0, viewFromEndpointButton);
-		//		endpointPartsArea.add(viewFromEndpointButton);
+		//		endpointPartsArea.addTest(viewFromEndpointButton);
 
 		Button viewRespFromEndpointButton = new Button("View Response");
 		viewRespFromEndpointButton.addClickHandler(new ClickHandler() {
@@ -555,7 +555,7 @@ public class MessageValidatorTab extends ToolWindow {
 		});
 
 		endpointAreaButtonPanel.setWidget(3, 0, renameMessageButton);
-		//		endpointPartsArea.add(renameMessageButton);
+		//		endpointPartsArea.addTest(renameMessageButton);
 
 		Button deleteFromEndpointButton = new Button("Delete");
 		deleteFromEndpointButton.addClickHandler(new ClickHandler() {
@@ -572,7 +572,7 @@ public class MessageValidatorTab extends ToolWindow {
 		});
 
 		endpointAreaButtonPanel.setWidget(4, 0, deleteFromEndpointButton);
-		//		endpointPartsArea.add(deleteFromEndpointButton);
+		//		endpointPartsArea.addTest(deleteFromEndpointButton);
 
 		endpointPartsArea.add(endpointAreaButtonPanel);
 
@@ -1250,7 +1250,7 @@ public class MessageValidatorTab extends ToolWindow {
 		this.htmlReport.removeFromParent();
 		this.htmlReport = new HTML(results.getHtmlResults());
 		tabTopPanel.add(this.htmlReport);
-		//tabTopPanel.add(resultsTable);
+		//tabTopPanel.addTest(resultsTable);
 
 		inspectButton.setEnabled(true);
 	}

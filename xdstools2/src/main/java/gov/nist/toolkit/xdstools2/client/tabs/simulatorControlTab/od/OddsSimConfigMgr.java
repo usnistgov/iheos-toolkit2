@@ -178,14 +178,14 @@ public class OddsSimConfigMgr implements SimConfigMgrIntf {
             tbl.setText(getRow(), 0, persistenceOption.name.replace('_', ' '));
 
 //            List<String> pOtpn = new ArrayList<>();
-//            pOtpn.add("Off");
-//            pOtpn.add("On");
+//            pOtpn.display("Off");
+//            pOtpn.display("On");
 //            persistenceSsv.setData("persistenceOptn",pOtpn);
 //            List<Integer> selectedRow = new ArrayList<>();
 //            if (persistenceOption.asBoolean())
-//                selectedRow.add(1);
+//                selectedRow.display(1);
 //            else
-//                selectedRow.add(0);
+//                selectedRow.display(0);
 //            persistenceSsv.setSelectedRows(selectedRow);
 //            tbl.setWidget(getRow(), 1, persistenceSsv.asWidget());
 
@@ -268,7 +268,7 @@ public class OddsSimConfigMgr implements SimConfigMgrIntf {
             }
 
 
-            // Can add more elements here
+            // Can display more elements here
 
         }
 
@@ -303,7 +303,7 @@ public class OddsSimConfigMgr implements SimConfigMgrIntf {
         panel.add(hpanel);
         hpanel.add(tbl);
 
-//        hpanel.add(saveButton);
+//        hpanel.display(saveButton);
         hpanel.add(HtmlMarkup.html("&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"));
         panel.add(HtmlMarkup.html("<br />"));
 
@@ -343,7 +343,7 @@ public class OddsSimConfigMgr implements SimConfigMgrIntf {
                 ssHp.add(new HTML("<b>Supply State</b>"));
                 ssHp.setVerticalAlignment(HasVerticalAlignment.ALIGN_MIDDLE);
 //                refreshSupplyState.getElement().addClassName("roundedButton1");
-//                ssHp.add(refreshSupplyState);
+//                ssHp.display(refreshSupplyState);
                 refreshImg.setAltText("Refresh");
                 refreshImg.setTitle("Refresh");
                 refreshImg.getElement().getStyle().setCursor(Style.Cursor.POINTER);
@@ -399,7 +399,7 @@ public class OddsSimConfigMgr implements SimConfigMgrIntf {
 
         newRow();
         FlexTable sectionHeaderTbl = new FlexTable();
-        sectionHeaderTbl.setWidget(0,0,new HTML("<h2>First, Initialize this Simulator by Registering an On-Demand Document Entry</h2><p>Enter a Patient Id for the ODDE. You may use the Patient Identity Feed (PIF) tool to add a new patient Id. If persistence of On-Demand documents is desired, you must select the Persistence Option before clicking the Initialize button.</p>" ));
+        sectionHeaderTbl.setWidget(0,0,new HTML("<h2>First, Initialize this Simulator by Registering an On-Demand Document Entry</h2><p>Enter a Patient Id for the ODDE. You may use the Patient Identity Feed (PIF) tool to display a new patient Id. If persistence of On-Demand documents is desired, you must select the Persistence Option before clicking the Initialize button.</p>" ));
         Button saveButton = new Button("Save");
         saveButton.addClickHandler(
                 new ClickHandler() {
@@ -496,7 +496,7 @@ public class OddsSimConfigMgr implements SimConfigMgrIntf {
                     if (siteNames==null || (siteNames!=null && siteNames.size()==0)) {
 
                         errMsg += "<li style='color:red'>No registry sites supporting an ODDE transaction are found/configured.</li>"+
-                                "<li style='color:red'>Please add a Registry site using the Simulator Manager or configure a Site that supports an ODDE transaction.</li>";
+                                "<li style='color:red'>Please display a Registry site using the Simulator Manager or configure a Site that supports an ODDE transaction.</li>";
 
                         regSiteBoxes.add(new HTML("<ul>" +  errMsg + "</ul>"));
 
@@ -654,7 +654,7 @@ public class OddsSimConfigMgr implements SimConfigMgrIntf {
                 if (selectedRepos==null || (selectedRepos!=null && selectedRepos.size()==0)) {
                     errMsg += "<li>The persistence option requires a repository but none are selected. Please select a repository.</li>";
                 } else if (siteNames==null || (siteNames!=null && siteNames.size()==0)) {
-                    errMsg += "<li>Persistence option requires a repository but none are found/configured. Please add a Repository using the Simulator Manager or configure a Site that supports a PnR transaction.</li>";
+                    errMsg += "<li>Persistence option requires a repository but none are found/configured. Please display a Repository using the Simulator Manager or configure a Site that supports a PnR transaction.</li>";
                 }
             } else {
                 errMsg += "<li>siteSelectionPresenter is null!</li>";

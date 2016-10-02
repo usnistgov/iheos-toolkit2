@@ -31,7 +31,7 @@ public class TestsOverviewTab extends GenericQueryTab {
         transactionTypes.add(TransactionType.XC_QUERY);
     }
 
-    // TODO - add proper transaction couplings
+    // TODO - addTest proper transaction couplings
     public static CoupledTransactions couplings = new CoupledTransactions();
 
 

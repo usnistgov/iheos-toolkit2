@@ -25,7 +25,7 @@ public class ErrorHandler {
             )));
             return true;
         }
-//        hPanel.add(new HTML("<p>Success</p>"));
+//        hPanel.display(new HTML("<p>Success</p>"));
         return false;
     }
 

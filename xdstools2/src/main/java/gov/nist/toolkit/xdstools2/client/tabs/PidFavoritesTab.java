@@ -281,7 +281,7 @@ public class PidFavoritesTab extends GenericQueryTab {
         }
     }
 
-    // and add it to favorites
+    // and addTest it to favorites
     private void generatePid(String assigningAuthority) {
         new GeneratePidCommand() {
 

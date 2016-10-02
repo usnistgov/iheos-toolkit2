@@ -95,7 +95,7 @@ public class TestSessionManager2 {
         ClientUtils.INSTANCE.getToolkitServices().addMesaTestSession(sessionName, new AsyncCallback<Boolean>() {
             @Override
             public void onFailure(Throwable throwable) {
-                new PopupMessage("Cannot add test session - " + throwable.getMessage());
+                new PopupMessage("Cannot display test session - " + throwable.getMessage());
             }
 
             @Override

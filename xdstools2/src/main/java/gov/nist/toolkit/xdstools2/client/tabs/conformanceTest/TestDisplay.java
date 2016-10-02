@@ -5,24 +5,25 @@ import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.Image;
 import gov.nist.toolkit.results.client.TestInstance;
+import gov.nist.toolkit.session.client.SectionOverviewDTO;
 import gov.nist.toolkit.session.client.TestOverviewDTO;
 import gov.nist.toolkit.xdstools2.client.widgets.LaunchInspectorClickHandler;
 
 /**
- *
+ * Display of a single test
  */
 public class TestDisplay extends FlowPanel {
-    TestDisplayHeader header = new TestDisplayHeader();
-    FlowPanel body = new FlowPanel();
-    DisclosurePanel panel = new DisclosurePanel(header);
-    TestDisplayGroup testDisplayGroup;
-    String testSession;
+    private TestDisplayHeader header = new TestDisplayHeader();
+    private FlowPanel body = new FlowPanel();
+    private DisclosurePanel panel = new DisclosurePanel(header);
+    private TestDisplayGroup testDisplayGroup;
     private TestContext testContext;
     private TestRunner testRunner;
     private TestContextDisplay testContextDisplay;
+    private TestInstance testInstance;
 
-    public TestDisplay(TestDisplayGroup testDisplayGroup, String testSession, TestRunner testRunner, TestContext testContext, TestContextDisplay testContextDisplay) {
-        this.testSession = testSession;
+    public TestDisplay(TestInstance testInstance, TestDisplayGroup testDisplayGroup, TestRunner testRunner, TestContext testContext, TestContextDisplay testContextDisplay) {
+        this.testInstance = testInstance;
         this.testRunner = testRunner;
         this.testDisplayGroup = testDisplayGroup;
         this.testContext = testContext;
@@ -30,15 +31,10 @@ public class TestDisplay extends FlowPanel {
         header.fullWidth();
         panel.setWidth("100%");
         panel.add(body);
+        add(panel);
     }
 
-    public void build(TestOverviewDTO testOverview, TestInstance testInstance) {
-        testDisplayGroup.put(testInstance, this);
-        boolean isNew = !testDisplayExists(testOverview.getTestInstance());
-        TestDisplay testDisplay = buildTestDisplay(testDisplayGroup, testOverview.getTestInstance());
-        TestDisplayHeader header = testDisplay.header;
-        FlowPanel body = testDisplay.body;
-
+    public void display(TestOverviewDTO testOverview) {
         header.clear();
         body.clear();
 
@@ -70,14 +66,14 @@ public class TestDisplay extends FlowPanel {
             Image delete = new Image("icons2/garbage-24.png");
             delete.addStyleName("right");
             delete.addStyleName("iconStyle");
-            delete.addClickHandler(new ConformanceTestTab.DeleteClickHandler(testOverview.getTestInstance()));
+            delete.addClickHandler(new DeleteClickHandler(testDisplayGroup, testContext, testRunner, testInstance));
             delete.setTitle("Delete Log");
             header.add(delete);
 
             Image inspect = new Image("icons2/visible-32.png");
             inspect.addStyleName("right");
 //			inspect.addStyleName("iconStyle");
-            inspect.addClickHandler(new LaunchInspectorClickHandler(testOverview.getTestInstance(), testSession, testContext.getCurrentSiteSpec()));
+            inspect.addClickHandler(new LaunchInspectorClickHandler(testOverview.getTestInstance(), testContext.getTestSession(), testContext.getCurrentSiteSpec()));
             inspect.setTitle("Inspect results");
             header.add(inspect);
         }
@@ -86,22 +82,13 @@ public class TestDisplay extends FlowPanel {
 
         // display an interaction sequence diagram
         if (testOverview.isRun()) {
-            displayInteractionDiagram(testOverview, body);
+            body.add(new InteractionDiagramDisplay(testOverview));
         }
 
         // display sections within test
-        displaySections(testOverview, body);
-
-        if (!isNew)
-            updateTestsOverviewHeader();
-
+        for (String sectionName : testOverview.getSectionNames()) {
+            SectionOverviewDTO sectionOverview = testOverview.getSectionOverview(sectionName);
+            body.add(new TestSectionComponent(testContext.getTestSession(), testOverview.getTestInstance(), sectionOverview, testRunner).asWidget());
+        }
     }
-
-    private boolean testDisplayExists(TestInstance testInstance) { return testDisplayGroup.containsKey(testInstance); }
-
-    private TestDisplay buildTestDisplay(TestDisplayGroup testDisplayGroup, TestInstance testInstance) {
-        if (testDisplayExists(testInstance)) return testDisplayGroup.get(testInstance);
-        return new TestDisplay(testDisplayGroup, testInstance);
-    }
-
 }

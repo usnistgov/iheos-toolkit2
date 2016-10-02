@@ -8,7 +8,10 @@ import com.google.gwt.event.logical.shared.SelectionHandler;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.user.client.rpc.AsyncCallback;
-import com.google.gwt.user.client.ui.*;
+import com.google.gwt.user.client.ui.FlowPanel;
+import com.google.gwt.user.client.ui.HTML;
+import com.google.gwt.user.client.ui.TabBar;
+import com.google.gwt.user.client.ui.Widget;
 import gov.nist.toolkit.actortransaction.client.ActorType;
 import gov.nist.toolkit.interactiondiagram.client.events.DiagramClickedEvent;
 import gov.nist.toolkit.interactiondiagram.client.events.DiagramPartClickedEventHandler;
@@ -18,7 +21,6 @@ import gov.nist.toolkit.services.client.AbstractOrchestrationResponse;
 import gov.nist.toolkit.services.client.RegOrchestrationResponse;
 import gov.nist.toolkit.services.client.RepOrchestrationResponse;
 import gov.nist.toolkit.services.client.RgOrchestrationResponse;
-import gov.nist.toolkit.session.client.SectionOverviewDTO;
 import gov.nist.toolkit.session.client.TestOverviewDTO;
 import gov.nist.toolkit.sitemanagement.client.SiteSpec;
 import gov.nist.toolkit.testkitutilities.client.TestCollectionDefinitionDAO;
@@ -51,7 +53,7 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner, TestsH
 	private FlowPanel testSessionDescriptionPanel = new FlowPanel();
 	private TestsHeaderView testsHeaderView = new TestsHeaderView(this);
 	private final TestStatistics testStatistics = new TestStatistics();
-	private TestDisplayGroup testDisplayGroup = new TestDisplayGroup();
+	private TestDisplayGroup testDisplayGroup;
 	private TestContext testContext = new TestContext(this);
 	private TestContextDisplay testContextDisplay = new TestContextDisplay(this, testSessionDescription, testContext);
 
@@ -78,6 +80,7 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner, TestsH
 	public ConformanceTestTab() {
 		me = this;
 		testContext.setTestContextDisplay(testContextDisplay);
+		testDisplayGroup = new TestDisplayGroup(testContext, testContextDisplay, this);
 		toolPanel.getElement().getStyle().setMargin(4, Style.Unit.PX);
 		toolPanel.getElement().getStyle().setMarginLeft(0, Style.Unit.PX);
 		testsPanel.getElement().getStyle().setMarginRight(4, Style.Unit.PX);
@@ -85,6 +88,11 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner, TestsH
 		toolPanel.add(tabBar);
 		toolPanel.add(initializationPanel);
 		toolPanel.add(testsPanel);
+	}
+
+	public void removeTestDetails(TestInstance testInstance) {
+		testOverviewDTOs.remove(testInstance.getId());
+		updateTestsOverviewHeader();
 	}
 
 	private void addTestOverview(TestOverviewDTO dto) {
@@ -304,14 +312,14 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner, TestsH
 		displayTestCollection();
 	}
 
-	public void showActorTypeSelection() {
-		for (int i=0; i<tabBar.getTabCount(); i++) {
-			if (currentActorTypeDescription.equals(tabBar.getTitle())) {
-				tabBar.selectTab(i);
-				return;
-			}
-		}
-	}
+//	public void showActorTypeSelection() {
+//		for (int i=0; i<tabBar.getTabCount(); i++) {
+//			if (currentActorTypeDescription.equals(tabBar.getTitle())) {
+//				tabBar.selectTab(i);
+//				return;
+//			}
+//		}
+//	}
 
 	private String getDescriptionForTestCollection(String collectionId) {
 		if (testCollectionDefinitionDAOs == null) return "not initialized";
@@ -332,7 +340,7 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner, TestsH
 //				currentSiteName = siteSelected.getValue();
 //			}
 //		});
-//		sitesPanel.add(siteSelectionComponent.asWidget());
+//		sitesPanel.display(siteSelectionComponent.asWidget());
 //	}
 
 	// update things when site selection changes
@@ -416,7 +424,7 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner, TestsH
 
 		initializationPanel.clear();
 
-		initializeOrchestration();
+		displayOrchestrationHeader();
 
 		// what tests are in the collection
 		getToolkitServices().getCollectionMembers("actorcollections", currentActorTypeId, new AsyncCallback<List<String>>() {
@@ -455,7 +463,10 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner, TestsH
                 testStatistics.setTestCount(testOverviews.size());
                 for (TestOverviewDTO testOverview : testOverviews) {
                     addTestOverview(testOverview);
-                    displayTest(testsPanel, testDisplayGroup, testOverview);
+//                    displayTest(testsPanel, testDisplayGroup, testOverview);
+					TestDisplay testDisplay = testDisplayGroup.display(testOverview);
+					testDisplay.display(testOverview);
+					testsPanel.add(testDisplay);
                 }
                 updateTestsOverviewHeader();
 
@@ -489,7 +500,8 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner, TestsH
                 testsPanel.add(testsHeaderView.asWidget());
                 for (TestOverviewDTO testOverview : testOverviews) {
                     addTestOverview(testOverview);
-                    displayTest(testsPanel, testDisplayGroup, testOverview);
+//                    displayTest(testsPanel, testDisplayGroup, testOverview);
+					testDisplayGroup.display(testOverview);
                 }
             }
 
@@ -498,18 +510,18 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner, TestsH
 
     private AbstractOrchestrationButton orchInit = null;
 
-	private void initializeOrchestration() {
+	private void displayOrchestrationHeader() {
 		String label = "Initialize Test Environment";
 		if (isRepSut()) {
-			orchInit = new BuildRepTestOrchestrationButton(this, initializationPanel, label);
+			orchInit = new BuildRepTestOrchestrationButton(this, testContext, testContextDisplay, initializationPanel, label);
 			initializationPanel.add(orchInit.panel());
 		}
         else if (isRegSut()) {
-            orchInit = new BuildRegTestOrchestrationButton(this, initializationPanel, label);
+            orchInit = new BuildRegTestOrchestrationButton(this, testContext, testContextDisplay, initializationPanel, label);
             initializationPanel.add(orchInit.panel());
         }
         else if (isRgSut()) {
-            orchInit = new BuildRgTestOrchestrationButton(this, initializationPanel, label);
+            orchInit = new BuildRgTestOrchestrationButton(this, initializationPanel, label, testContext);
             initializationPanel.add(orchInit.panel());
         }
         else {
@@ -531,80 +543,80 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner, TestsH
 	// key is testOverview.getName()
 //	private Map<String, TestDisplay> testDisplays = new HashMap<>();
 
-	private boolean testDisplayExists(String name) { return testDisplayGroup.containsKey(name); }
+//	private boolean testDisplayExists(String name) { return testDisplayGroup.containsKey(name); }
 
-	private TestDisplay buildTestDisplay(TestDisplayGroup testDisplayGroup, String name) {
-		if (testDisplayExists(name)) return testDisplayGroup.get(name);
-		return new TestDisplay(getCurrentTestSession(), testDisplayGroup, name);
-	}
-
-	private void displayTest(FlowPanel testsPanel, TestDisplayGroup testDisplayGroup, TestOverviewDTO testOverview) {
-		boolean isNew = !testDisplayExists(testOverview.getName());
-		TestDisplay testDisplay = buildTestDisplay(testDisplayGroup, testOverview.getName());
-		TestDisplayHeader header = testDisplay.header;
-		FlowPanel body = testDisplay.body;
-
-		if (isNew) {
-			testsPanel.add(testDisplay.panel);
-		}
-
-		header.clear();
-		body.clear();
-
-		if (testOverview.isRun()) {
-			if (testOverview.isPass()) header.setBackgroundColorSuccess();
-			else header.setBackgroundColorFailure();
-		} else header.setBackgroundColorNotRun();
-
-		HTML testHeader = new HTML("Test: " + testOverview.getName() + " - " +testOverview.getTitle());
-		testHeader.addStyleName("test-title");
-		header.add(testHeader);
-		header.add(new HTML(testOverview.getLatestSectionTime()));
-		if (testOverview.isRun()) {
-			Image status = (testOverview.isPass()) ?
-					new Image("icons2/correct-24.png")
-					:
-					new Image("icons/ic_warning_black_24dp_1x.png");
-			status.addStyleName("right");
-			status.addStyleName("iconStyle");
-			header.add(status);
-		}
-
-		Image play = new Image("icons2/play-24.png");
-		play.setStyleName("iconStyle");
-		play.setTitle("Run");
-		play.addClickHandler(new RunClickHandler(testOverview.getTestInstance()));
-		header.add(play);
-		if (testOverview.isRun()) {
-			Image delete = new Image("icons2/garbage-24.png");
-			delete.addStyleName("right");
-			delete.addStyleName("iconStyle");
-			delete.addClickHandler(new DeleteClickHandler(testOverview.getTestInstance()));
-			delete.setTitle("Delete Log");
-			header.add(delete);
-
-			Image inspect = new Image("icons2/visible-32.png");
-			inspect.addStyleName("right");
-//			inspect.addStyleName("iconStyle");
-			inspect.addClickHandler(new LaunchInspectorClickHandler(testOverview.getTestInstance(), getCurrentTestSession(), new SiteSpec(testContext.getSiteName())));
-			inspect.setTitle("Inspect results");
-			header.add(inspect);
-		}
-
-		body.add(new HTML(testOverview.getDescription()));
-
-		// display an interaction sequence diagram
-		if (testOverview.isRun()) {
-			displayInteractionDiagram(testOverview, body);
-		}
-
-		// display sections within test
-		displaySections(testOverview, body);
-
-		if (!isNew)
-			updateTestsOverviewHeader();
-
-	}
+//	private TestDisplay buildTestDisplay(TestDisplayGroup testDisplayGroup, String name) {
+//		if (testDisplayExists(name)) return testDisplayGroup.get(name);
+//		return new TestDisplay(getCurrentTestSession(), testDisplayGroup, name);
+//	}
+//
+//	private void displayTest(FlowPanel testsPanel, TestDisplayGroup testDisplayGroup, TestOverviewDTO testOverview) {
+//		boolean isNew = !testDisplayExists(testOverview.getName());
+//		TestDisplay testDisplay = buildTestDisplay(testDisplayGroup, testOverview.getName());
+//		TestDisplayHeader header = testDisplay.header;
+//		FlowPanel body = testDisplay.body;
+//
+//		if (isNew) {
+//			testsPanel.display(testDisplay.panel);
+//		}
+//
+//		header.clear();
+//		body.clear();
+//
+//		if (testOverview.isRun()) {
+//			if (testOverview.isPass()) header.setBackgroundColorSuccess();
+//			else header.setBackgroundColorFailure();
+//		} else header.setBackgroundColorNotRun();
+//
+//		HTML testHeader = new HTML("Test: " + testOverview.getName() + " - " +testOverview.getTitle());
+//		testHeader.addStyleName("test-title");
+//		header.display(testHeader);
+//		header.display(new HTML(testOverview.getLatestSectionTime()));
+//		if (testOverview.isRun()) {
+//			Image status = (testOverview.isPass()) ?
+//					new Image("icons2/correct-24.png")
+//					:
+//					new Image("icons/ic_warning_black_24dp_1x.png");
+//			status.addStyleName("right");
+//			status.addStyleName("iconStyle");
+//			header.display(status);
+//		}
+//
+//		Image play = new Image("icons2/play-24.png");
+//		play.setStyleName("iconStyle");
+//		play.setTitle("Run");
+//		play.addClickHandler(new RunClickHandler(testOverview.getTestInstance()));
+//		header.display(play);
+//		if (testOverview.isRun()) {
+//			Image delete = new Image("icons2/garbage-24.png");
+//			delete.addStyleName("right");
+//			delete.addStyleName("iconStyle");
+//			delete.addClickHandler(new DeleteClickHandler(testOverview.getTestInstance()));
+//			delete.setTitle("Delete Log");
+//			header.display(delete);
+//
+//			Image inspect = new Image("icons2/visible-32.png");
+//			inspect.addStyleName("right");
+////			inspect.addStyleName("iconStyle");
+//			inspect.addClickHandler(new LaunchInspectorClickHandler(testOverview.getTestInstance(), getCurrentTestSession(), new SiteSpec(testContext.getSiteName())));
+//			inspect.setTitle("Inspect results");
+//			header.display(inspect);
+//		}
+//
+//		body.display(new HTML(testOverview.getDescription()));
+//
+//		// display an interaction sequence diagram
+//		if (testOverview.isRun()) {
+//			displayInteractionDiagram(testOverview, body);
+//		}
+//
+//		// display sections within test
+//		displaySections(testOverview, body);
+//
+//		if (!isNew)
+//			updateTestsOverviewHeader();
+//
+//	}
 
 	private void displayInteractionDiagram(TestOverviewDTO testResultDTO, FlowPanel body) {
 		InteractionDiagram diagram = new InteractionDiagram(Xdstools2.getEventBus(), testResultDTO);
@@ -731,7 +743,8 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner, TestsH
 
 					@Override
 					public void onSuccess(TestOverviewDTO testOverviewDTO) {
-						displayTest(testsPanel, testDisplayGroup, testOverviewDTO);
+						testDisplayGroup.display(testOverviewDTO);
+//						displayTest(testsPanel, testDisplayGroup, testOverviewDTO);
 						removeTestOverview(testOverviewDTO);
 						updateTestsOverviewHeader();
 					}
@@ -763,7 +776,7 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner, TestsH
 //
 //	private void launchInspectorTab(final TestInstance testInstance, String testSession) {
 //		List<TestInstance> testInstances = new ArrayList<>();
-//		testInstances.add(testInstance);
+//		testInstances.display(testInstance);
 //		getToolkitServices().getTestResults(testInstances, testSession, new AsyncCallback<Map<String, Result>>() {
 //            @Override
 //            public void onFailure(Throwable throwable) {
@@ -780,14 +793,14 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner, TestsH
 //		});
 //	}
 
-	// display sections within test
-	private void displaySections(TestOverviewDTO testOverview, FlowPanel parent) {
-//		parent.clear();
-		for (String sectionName : testOverview.getSectionNames()) {
-			SectionOverviewDTO sectionOverview = testOverview.getSectionOverview(sectionName);
-			parent.add(new TestSectionComponent(getCurrentTestSession(), new TestInstance(testOverview.getName()), sectionOverview, this).asWidget());
-		}
-	}
+//	// display sections within test
+//	private void displaySections(TestOverviewDTO testOverview, FlowPanel parent) {
+////		parent.clear();
+//		for (String sectionName : testOverview.getSectionNames()) {
+//			SectionOverviewDTO sectionOverview = testOverview.getSectionOverview(sectionName);
+//			parent.add(new TestSectionComponent(getCurrentTestSession(), new TestInstance(testOverview.getName()), sectionOverview, this).asWidget());
+//		}
+//	}
 
 	// if testInstance contains a sectionName then run that section, otherwise run entire test.
 	public void runTest(final TestInstance testInstance, final TestDone testDone) {
@@ -804,7 +817,7 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner, TestsH
         }
 
         if (getSitetoIssueTestAgainst() == null) {
-            new PopupMessage("Test Environment must be initialized");
+            new PopupMessage("Test Setup must be initialized");
             return;
         }
 
@@ -823,7 +836,8 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner, TestsH
 				@Override
 				public void onSuccess(TestOverviewDTO testOverviewDTO) {
 					// returned status of entire test
-					displayTest(testsPanel, testDisplayGroup, testOverviewDTO);
+//					displayTest(testsPanel, testDisplayGroup, testOverviewDTO);
+					testDisplayGroup.display(testOverviewDTO);
 					addTestOverview(testOverviewDTO);
 					updateTestsOverviewHeader();
 					// Schedule next test to be run

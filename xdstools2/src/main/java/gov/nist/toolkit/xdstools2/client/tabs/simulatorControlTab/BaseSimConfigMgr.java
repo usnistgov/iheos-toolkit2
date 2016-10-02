@@ -184,7 +184,7 @@ public abstract class BaseSimConfigMgr implements SimConfigMgrIntf {
                 );
                 row++;
             } else {
-                // Base class does not recognize this element, add a spacer
+                // Base class does not recognize this element, addTest a spacer
                 row++;
             }
 

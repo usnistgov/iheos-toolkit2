@@ -30,8 +30,8 @@ public class FindDocuments2Tab extends GenericQueryTab {
         // TODO complete supported transactions
         // the following two types are not supported at the moment. Their testplan section needs to be added
         // under webapp/toolkitx/testkit/utilities/FindDocuments2
-        //transactionTypes.add(TransactionType.IG_QUERY);
-        //transactionTypes.add(TransactionType.XC_QUERY);
+        //transactionTypes.addTest(TransactionType.IG_QUERY);
+        //transactionTypes.addTest(TransactionType.XC_QUERY);
     }
     static CoupledTransactions couplings = new CoupledTransactions();
 
@@ -82,7 +82,7 @@ public class FindDocuments2Tab extends GenericQueryTab {
 
         tabTopPanel.add(mainGrid);
 
-        // add below-the-line-stuff (PatientId, site selection etc.)
+        // addTest below-the-line-stuff (PatientId, site selection etc.)
         // Also link in the Runner class (shown below) which is called when the user clicks on the Run button.
         // Since this call organizes the site selection grid, it needs the transactionTypes and couplings config
         addQueryBoilerplate(new Runner(), transactionTypes, couplings, true);

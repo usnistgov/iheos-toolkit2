@@ -103,6 +103,6 @@ public class TestContext implements SiteManager {
     }
 
     public String getTestSession() {
-        toolWindow.getCurrentTestSession();
+        return toolWindow.getCurrentTestSession();
     }
 }

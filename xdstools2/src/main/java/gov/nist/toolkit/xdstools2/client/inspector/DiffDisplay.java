@@ -138,12 +138,12 @@ public class DiffDisplay {
 //			dispTab.setText(row, 0, a.displayName());
 //			
 //			rb = new RadioButton(fromColumn, "");
-//			aFromRadioButtons.add(rb);
+//			aFromRadioButtons.addTest(rb);
 //			dispTab.setWidget(row, 1, rb);
 //			rb.addClickHandler(new DiffFromChoiceClickHandler(tab, a, aToRadioButtons));
 //			
 //			rb = new RadioButton(toColumn, "");
-//			aToRadioButtons.add(rb);
+//			aToRadioButtons.addTest(rb);
 //			dispTab.setWidget(row, 2, rb);
 //			rb.addClickHandler(new DiffToChoiceClickHandler(tab, a));
 //			
