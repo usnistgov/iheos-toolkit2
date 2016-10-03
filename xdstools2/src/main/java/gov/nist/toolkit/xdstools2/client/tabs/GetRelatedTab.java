@@ -22,7 +22,7 @@ public class GetRelatedTab  extends GenericQueryTab {
 		transactionTypes.add(TransactionType.IG_QUERY);
 		transactionTypes.add(TransactionType.XC_QUERY);
 	}
-	
+
 	static CoupledTransactions couplings = new CoupledTransactions();
 	static {
 		// If an Initiating Gateway is selected (IG_QUERY) then 
@@ -38,49 +38,33 @@ public class GetRelatedTab  extends GenericQueryTab {
 	};
 
 	List<CheckBox> assocCheckBoxes;
-	
+
 	public GetRelatedTab() {
 		super(new GetDocumentsSiteActorManager());
 	}
-	
+
 
 	static public List<String> getAllAssocTypes() {
 		List<String> as = new ArrayList<String>();
-		
+
 		for (int i=0; i<assocTypes.length; i++) {
 			as.add(assocTypes[i]);
 		}
-		
+
 		return as;
 	}
 
 	@Override
 	protected Widget buildUI() {
-		return null;
-	}
-
-	@Override
-	protected void bindUI() {
-
-	}
-
-	@Override
-	protected void configureTabView() {
-
-	}
-
-	@Override
-	public void onTabLoad(boolean select, String eventName) {
-		registerTab(select, "GetRelated");
-
+		FlowPanel flowPanel=new FlowPanel();
 		HTML title = new HTML();
 		title.setHTML("<h2>Get Related Documents</h2>");
-		tabTopPanel.add(title);
+		flowPanel.add(title);
 
 		mainGrid = new FlexTable();
 		int row = 0;
 
-		tabTopPanel.add(mainGrid);
+		flowPanel.add(mainGrid);
 
 
 		HTML pidLabel = new HTML();
@@ -95,7 +79,7 @@ public class GetRelatedTab  extends GenericQueryTab {
 		HTML assocsLabel = new HTML();
 		assocsLabel.setText("Association Types");
 		mainGrid.setWidget(row, 0, assocsLabel);
-		
+
 		assocCheckBoxes = new ArrayList<CheckBox>();
 		for (int i=0; i<assocTypes.length; i++) {
 			CheckBox cb = new CheckBox(assocTypes[i]);
@@ -103,9 +87,18 @@ public class GetRelatedTab  extends GenericQueryTab {
 			mainGrid.setWidget(row, 1, cb);
 			row++;
 		}
-		queryBoilerplate = addQueryBoilerplate(new Runner(), transactionTypes, couplings, false);
+		return flowPanel;
 	}
 
+	@Override
+	protected void bindUI() {
+		addOnTabSelectionRedisplay();
+	}
+
+	@Override
+	protected void configureTabView() {
+		queryBoilerplate = addQueryBoilerplate(new Runner(), transactionTypes, couplings, false);
+	}
 
 	class Runner implements ClickHandler {
 
@@ -118,7 +111,7 @@ public class GetRelatedTab  extends GenericQueryTab {
 				new PopupMessage("You must enter a UUID first");
 				return;
 			}
-			
+
 			List<String> assocs = new ArrayList<String>();
 			for (CheckBox cb : assocCheckBoxes) {
 				if (cb.getValue())

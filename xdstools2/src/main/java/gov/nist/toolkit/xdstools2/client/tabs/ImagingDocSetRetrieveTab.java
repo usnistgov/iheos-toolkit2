@@ -2,10 +2,7 @@ package gov.nist.toolkit.xdstools2.client.tabs;
 
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.user.client.ui.FlexTable;
-import com.google.gwt.user.client.ui.HTML;
-import com.google.gwt.user.client.ui.TextArea;
-import com.google.gwt.user.client.ui.Widget;
+import com.google.gwt.user.client.ui.*;
 import gov.nist.toolkit.configDatatypes.client.TransactionType;
 import gov.nist.toolkit.registrymetadata.client.Uid;
 import gov.nist.toolkit.registrymetadata.client.Uids;
@@ -37,30 +34,14 @@ public class ImagingDocSetRetrieveTab extends GenericQueryTab {
 
 	@Override
 	protected Widget buildUI() {
-		return null;
-	}
-
-	@Override
-	protected void bindUI() {
-
-	}
-
-	@Override
-	protected void configureTabView() {
-
-	}
-
-	@Override
-	public void onTabLoad(boolean select, String eventName) {
-		registerTab(select, "RetrieveImagingDocSet");
-
+		FlowPanel flowPanel=new FlowPanel();
 		HTML title = new HTML();
 		title.setHTML("<h2>Retrieve Imaging Document Set</h2>");
-		tabTopPanel.add(title);
+		flowPanel.add(title);
 
 		mainGrid = new FlexTable();
 		int row = 0;
-		
+
 		tabTopPanel.add(mainGrid);
 
 		HTML studyRequestLabel = new HTML();
@@ -74,19 +55,17 @@ public class ImagingDocSetRetrieveTab extends GenericQueryTab {
 		mainGrid.setWidget(row, 1, studyRequestArea);
 		row++;
 
-/*
-		HTML transferSyntaxLabel = new HTML();
-		transferSyntaxLabel.setText("Transfer Syntax");
-		mainGrid.setWidget(row,0, transferSyntaxLabel);
+		return flowPanel;
+	}
 
-		transferSyntaxBox = new TextBox();
-		transferSyntaxBox.setWidth("500px");
-		mainGrid.setWidget(row, 1, transferSyntaxBox);
-		row++;
-*/
-		
+	@Override
+	protected void bindUI() {
+		addOnTabSelectionRedisplay();
+	}
+
+	@Override
+	protected void configureTabView() {
 		queryBoilerplate = addQueryBoilerplate(new Runner(), transactionTypes, couplings, false);
-
 	}
 
 	class Runner implements ClickHandler {

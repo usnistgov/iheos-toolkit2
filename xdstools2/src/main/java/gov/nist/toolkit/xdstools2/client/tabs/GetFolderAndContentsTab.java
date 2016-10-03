@@ -2,10 +2,7 @@ package gov.nist.toolkit.xdstools2.client.tabs;
 
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.user.client.ui.FlexTable;
-import com.google.gwt.user.client.ui.HTML;
-import com.google.gwt.user.client.ui.TextBox;
-import com.google.gwt.user.client.ui.Widget;
+import com.google.gwt.user.client.ui.*;
 import gov.nist.toolkit.configDatatypes.client.TransactionType;
 import gov.nist.toolkit.sitemanagement.client.SiteSpec;
 import gov.nist.toolkit.xdstools2.client.CoupledTransactions;
@@ -45,46 +42,40 @@ public class GetFolderAndContentsTab extends GenericQueryTab {
 
     @Override
     protected Widget buildUI() {
-        return null;
-    }
-
-    @Override
-    protected void bindUI() {
-
-    }
-
-    @Override
-    protected void configureTabView() {
-
-    }
-
-    @Override
-	public void onTabLoad(boolean select, String eventName) {
 		tab = this;
-		registerTab(select, "GetFolderAndContents");
 
+		FlowPanel flowPanel=new FlowPanel();
 		HTML title = new HTML();
 		title.setHTML("<h2>Get FolderAndContents</h2>");
-		tabTopPanel.add(title);
+		flowPanel.add(title);
 
 		mainGrid = new FlexTable();
 		int row = 0;
-		
-		tabTopPanel.add(mainGrid);
-		
+
+		flowPanel.add(mainGrid);
+
 
 		HTML pidLabel = new HTML();
 		pidLabel.setText("Folder UUID or UID");
 		mainGrid.setWidget(row,0, pidLabel);
 
 		ta = new TextBox();
-	    ta.setWidth("400px");
+		ta.setWidth("400px");
 		mainGrid.setWidget(row, 1, ta);
 		row++;
+		return flowPanel;
+    }
 
+    @Override
+    protected void bindUI() {
+		addOnTabSelectionRedisplay();
+    }
+
+    @Override
+    protected void configureTabView() {
 		queryBoilerplate = addQueryBoilerplate(new Runner(), transactionTypes, couplings, false);
-	}
-	
+    }
+
 	class Runner implements ClickHandler {
 
 		public void onClick(ClickEvent event) {

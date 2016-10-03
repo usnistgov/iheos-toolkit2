@@ -35,22 +35,7 @@ public class DocRetrieveTab extends GenericQueryTab {
 
 	@Override
 	protected Widget buildUI() {
-		return null;
-	}
-
-	@Override
-	protected void bindUI() {
-
-	}
-
-	@Override
-	protected void configureTabView() {
-
-	}
-
-	@Override
-	public void onTabLoad(boolean select, String eventName) {
-		registerTab(select, "RetrieveDoc");
+		FlowPanel container = new FlowPanel();
 
 		HTML title = new HTML();
 		title.setHTML("<h2>Retrieve Documents</h2>");
@@ -58,16 +43,12 @@ public class DocRetrieveTab extends GenericQueryTab {
 
 		mainGrid = new FlexTable();
 		int row = 0;
-		
-		tabTopPanel.add(mainGrid);
+
+		container.add(mainGrid);
 
 		HTML docUidLabel = new HTML();
 		docUidLabel.setText("Document UniqueIds");
 		mainGrid.setWidget(row,0, docUidLabel);
-
-//		docUidBox = new TextBox();
-//		docUidBox.setWidth("500px");
-//		mainGrid.setWidget(row, 1, docUidBox);
 
 		textArea = new TextArea();
 		textArea.setCharacterWidth(40);
@@ -75,9 +56,17 @@ public class DocRetrieveTab extends GenericQueryTab {
 		mainGrid.setWidget(row, 1, textArea);
 
 		row++;
-		
-		queryBoilerplate = addQueryBoilerplate(new Runner(), transactionTypes, couplings, false);
+		return container;
+	}
 
+	@Override
+	protected void bindUI() {
+		addOnTabSelectionRedisplay();
+	}
+
+	@Override
+	protected void configureTabView() {
+		queryBoilerplate = addQueryBoilerplate(new Runner(), transactionTypes, couplings, false);
 	}
 
 	class Runner implements ClickHandler {
@@ -88,11 +77,6 @@ public class DocRetrieveTab extends GenericQueryTab {
 			SiteSpec siteSpec = queryBoilerplate.getSiteSelection();
 			if (siteSpec == null)
 				return;
-
-//			if (docUidBox.getValue() == null || docUidBox.getValue().equals("")) {
-//				new PopupMessage("You must enter a Document UniqueId first");
-//				return;
-//			}
 
 			if (textArea.getValue() == null || textArea.getValue().equals("")) {
 				new PopupMessage("You must enter a Document UniqueId first");
@@ -115,71 +99,10 @@ public class DocRetrieveTab extends GenericQueryTab {
 			getGoButton().setEnabled(false);
 			getInspectButton().setEnabled(false);
 
-//			siteSpec.isTls = doTLS;
-//			siteSpec.isSaml = doSAML;
-//			siteSpec.isAsync = doASYNC;
 			getToolkitServices().retrieveDocument(siteSpec, uids, queryCallback);
 		}
 		
 	}
-
-//	class RegSelect implements ClickHandler {
-//
-//		public void onClick(ClickEvent event) {
-//			for (RadioButton rb : rgButtons) {
-//				rb.setValue(false);
-//			}
-//			for (RadioButton rb : repositoryButtons) {
-//				rb.setValue(false);
-//			}
-//			for (RadioButton rb : igButtons) {
-//				rb.setValue(false);
-//			}
-//		}
-//
-//	}
-//
-//	class RepSelect implements ClickHandler {
-//
-//		public void onClick(ClickEvent event) {
-//			for (RadioButton rb : registryButtons) {
-//				rb.setValue(false);
-//			}
-//			for (RadioButton rb : rgButtons) {
-//				rb.setValue(false);
-//			}
-//			for (RadioButton rb : igButtons) {
-//				rb.setValue(false);
-//			}
-//		}
-//
-//	}
-//
-//	class RGSelect implements ClickHandler {
-//
-//		public void onClick(ClickEvent event) {
-//			for (RadioButton rb : registryButtons) {
-//				rb.setValue(false);
-//			}
-//			for (RadioButton rb : repositoryButtons) {
-//				rb.setValue(false);
-//			}
-//		}
-//
-//	}
-//
-//	class IGSelect implements ClickHandler {
-//
-//		public void onClick(ClickEvent event) {
-//			for (RadioButton rb : registryButtons) {
-//				rb.setValue(false);
-//			}
-//			for (RadioButton rb : repositoryButtons) {
-//				rb.setValue(false);
-//			}
-//		}
-//
-//	}
 
 	public String getWindowShortName() {
 		return "docretrieve";

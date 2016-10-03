@@ -91,8 +91,10 @@ public class PidFavoritesCellList extends Composite{
         return selectionModel.getSelectedObject();
     }
 
-    public void clear() {
+    public void clearSelection() {
         selectionModel.clear();
+        model.refresh();
+        cellList.redraw();
     }
 
     /**
