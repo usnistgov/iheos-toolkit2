@@ -3,10 +3,7 @@ package gov.nist.toolkit.xdstools2.client.tabs;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.rpc.AsyncCallback;
-import com.google.gwt.user.client.ui.FlexTable;
-import com.google.gwt.user.client.ui.HTML;
-import com.google.gwt.user.client.ui.ListBox;
-import com.google.gwt.user.client.ui.Widget;
+import com.google.gwt.user.client.ui.*;
 import gov.nist.toolkit.configDatatypes.client.TransactionType;
 import gov.nist.toolkit.xdstools2.client.CoupledTransactions;
 import gov.nist.toolkit.xdstools2.client.PopupMessage;
@@ -37,29 +34,13 @@ public class RegistryTestdataTab  extends GenericQueryTab {
 
 	@Override
 	protected Widget buildUI() {
-		return null;
-	}
-
-	@Override
-	protected void bindUI() {
-
-	}
-
-	@Override
-	protected void configureTabView() {
-
-	}
-
-	@Override
-	public void onTabLoad(boolean select, String eventName) {
-		registerTab(select, eventName);
-
-		tabTopPanel.add(new HTML("<h2>Send XDS Register transaction</h2>"));
+		FlowPanel flowPanel=new FlowPanel();
+		flowPanel.add(new HTML("<h2>Send XDS Register transaction</h2>"));
 
 		mainGrid = new FlexTable();
 		int row = 0;
-		
-		tabTopPanel.add(mainGrid);
+
+		flowPanel.add(mainGrid);
 
 //		mainGrid.setWidget(row,0, new HTML("Patient ID"));
 
@@ -72,11 +53,20 @@ public class RegistryTestdataTab  extends GenericQueryTab {
 		row++;
 
 		testlistBox.setVisibleItemCount(1);
-		getToolkitServices().getTestdataSetListing(getEnvironmentSelection(), getCurrentTestSession(), "testdata-registry", loadRegistryTestListCallback);
+		return flowPanel;
+	}
 
+	@Override
+	protected void bindUI() {
+		getToolkitServices().getTestdataSetListing(getEnvironmentSelection(), getCurrentTestSession(), "testdata-registry", loadRegistryTestListCallback);
+		addOnTabSelectionRedisplay();
+	}
+
+	@Override
+	protected void configureTabView() {
 		queryBoilerplate = addQueryBoilerplate(new Runner(), transactionTypes, couplings, true);
 	}
-	
+
 	protected AsyncCallback<List<String>> loadRegistryTestListCallback = new AsyncCallback<List<String>>() {
 
 		public void onFailure(Throwable caught) {
@@ -92,8 +82,6 @@ public class RegistryTestdataTab  extends GenericQueryTab {
 
 	};
 
-
-	
 	class Runner implements ClickHandler {
 
 		public void onClick(ClickEvent event) {
