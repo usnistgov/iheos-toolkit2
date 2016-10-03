@@ -138,6 +138,10 @@ Summer 2015 development
 15821 - PID Feed for single doc RG supporting submission
 15822 - PID Feed for two doc RG supporting submission
 15823 - PID Feed for simple RG supporting submission
+15824 - PID Feed for IG one doc
+15825 - PID Feed for IG two doc
+15826 - PID Feed for IG two RG
+15827 - PID Feed for IG registry error
 
 
 

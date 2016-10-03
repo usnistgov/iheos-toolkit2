@@ -10,12 +10,14 @@ import gov.nist.toolkit.xdstools2.client.ErrorHandler;
  *
  */
 abstract public class AbstractOrchestrationButton implements ClickHandler {
-    private final VerticalPanel panel = new VerticalPanel();  // top panel
+    private final FlowPanel panel = new FlowPanel();  // top panel
+    private final FlowPanel errorPanel = new FlowPanel();
     private Panel topPanel;
     private String label = null;
     private String resetLabel = null;
     private CheckBox resetCheckBox = null;
     private Panel customPanel = null;
+    private boolean errorPanelAdded = false;
 
     public AbstractOrchestrationButton(Panel topPanel, String label) {
         this.topPanel = topPanel;
@@ -42,7 +44,11 @@ abstract public class AbstractOrchestrationButton implements ClickHandler {
     }
 
     public Panel build() {
-        panel.add(new HTML("<hr /><h2>Test Setup</h2><p>The test setup needs to be initialized before tests can be run."));
+        if (!errorPanelAdded) {
+            errorPanelAdded = true;
+            panel.add(errorPanel);
+        }
+        errorPanel.add(new HTML("<hr /><h2>Test Setup</h2><p>The test setup needs to be initialized before tests can be run."));
 
         if (customPanel != null) {
             panel.add(customPanel);
@@ -72,7 +78,7 @@ abstract public class AbstractOrchestrationButton implements ClickHandler {
 
     // First element is button, rest is display material
     public void clear() {
-//        panel.clear();
+        errorPanel.clear();
     }
 
     public void handleError(Throwable throwable) {
@@ -86,13 +92,13 @@ abstract public class AbstractOrchestrationButton implements ClickHandler {
      * @return errors occured
      */
     public boolean handleError(RawResponse rawResponse, Class clas) {
-        if (ErrorHandler.handleError(panel, rawResponse)) return true;
+        if (ErrorHandler.handleError(errorPanel, rawResponse)) return true;
         if (rawResponse.getClass().equals(clas)) return false;
-        ErrorHandler.handleError(panel, rawResponse.getClass().getName(), clas);
+        ErrorHandler.handleError(errorPanel, rawResponse.getClass().getName(), clas);
         return true;
     }
 
-    public VerticalPanel panel() { return panel; }
+    public FlowPanel panel() { return panel; }
 
     protected boolean isResetRequested() {
         return resetCheckBox != null && resetCheckBox.getValue();

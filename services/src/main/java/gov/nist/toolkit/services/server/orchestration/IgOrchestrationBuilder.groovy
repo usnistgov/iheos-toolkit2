@@ -5,6 +5,7 @@ import gov.nist.toolkit.configDatatypes.SimulatorProperties
 import gov.nist.toolkit.actorfactory.client.SimId
 import gov.nist.toolkit.actorfactory.client.SimulatorConfig
 import gov.nist.toolkit.actortransaction.client.ActorType
+import gov.nist.toolkit.configDatatypes.client.PidBuilder
 import gov.nist.toolkit.configDatatypes.client.TransactionType
 import gov.nist.toolkit.configDatatypes.client.PatientError
 import gov.nist.toolkit.configDatatypes.client.PatientErrorList
@@ -29,10 +30,6 @@ import groovy.transform.TypeChecked
 class IgOrchestrationBuilder {
     Session session
     IgOrchestrationRequest request
-    Pid oneDocPid
-    Pid twoDocPid
-    Pid twoRgPid
-    Pid registryError
     ToolkitApi api
     Util util
     List<SimulatorConfig> rgConfigs = []
@@ -47,14 +44,27 @@ class IgOrchestrationBuilder {
 
     RawResponse buildTestEnvironment() {
         try {
-//            new SimDb().getSimIdsForUser(request.userName).each { SimId simId -> api.deleteSimulator(simId) }
+            IgOrchestrationResponse response = new IgOrchestrationResponse()
+            Map<String, TestInstanceManager> pidNameMap = [
+                    oneDocPid:  new TestInstanceManager(request, response, '15824'),
+                    twoDocPid:  new TestInstanceManager(request, response, '15825'),
+                    twoRgPid:  new TestInstanceManager(request, response, '15826'),
+                    registryErrorPid:  new TestInstanceManager(request, response, '15827'),
+            ]
 
-            oneDocPid = session.allocateNewPid()
-            twoDocPid = session.allocateNewPid()
-            twoRgPid = session.allocateNewPid()
-            registryError = session.allocateNewPid()
+            OrchestrationProperties orchProps = new OrchestrationProperties(session, request.userName, ActorType.INITIATING_GATEWAY, pidNameMap.keySet())
 
-            buildRGs(registryError)
+            Pid oneDocPid = PidBuilder.createPid(orchProps.getProperty("oneDocPid"))
+            Pid twoDocPid = PidBuilder.createPid(orchProps.getProperty("twoDocPid"))
+            Pid twoRgPid = PidBuilder.createPid(orchProps.getProperty("twoRgPid"))
+            Pid registryErrorPid = PidBuilder.createPid(orchProps.getProperty("registryErrorPid"))
+
+            response.setOneDocPid(oneDocPid)
+            response.setTwoDocPid(twoDocPid)
+            response.setTwoRgPid(twoRgPid)
+            response.setUnknownPid(registryErrorPid)
+
+            buildRGs(registryErrorPid)
 
             String home0 = rgConfigs.get(0).get(SimulatorProperties.homeCommunityId).asString()
             String home1 = rgConfigs.get(1).get(SimulatorProperties.homeCommunityId).asString()
@@ -78,17 +88,16 @@ class IgOrchestrationBuilder {
             util.submit(request.userName, SiteBuilder.siteSpecFromSimId(rgConfigs.get(1).id), new TestInstance("15807"), 'onedoc3', params)
 
             params = [
-                    '$patientid$': registryError.asString(),
+                    '$patientid$': registryErrorPid.asString(),
                     '$testdata_home$': home1,
                     '$testdata_repid$': rgConfigs[1].getConfigEle(SimulatorProperties.repositoryUniqueId).asString()]
-            util.submit(request.userName, SiteBuilder.siteSpecFromSimId(rgConfigs.get(1).id), new TestInstance("15807"), 'registryError', params)
+            util.submit(request.userName, SiteBuilder.siteSpecFromSimId(rgConfigs.get(1).id), new TestInstance("15807"), 'registryErrorPid', params)
 
 
-            IgOrchestrationResponse response = new IgOrchestrationResponse()
             response.oneDocPid = oneDocPid
             response.twoDocPid = twoDocPid
             response.twoRgPid = twoRgPid
-            response.unknownPid = registryError
+            response.unknownPid = registryErrorPid
             response.simulatorConfigs = rgConfigs
             response.igSimulatorConfig = igConfig
 
@@ -126,7 +135,7 @@ class IgOrchestrationBuilder {
         rgEle = rgSimConfig1.getConfigEle(SimulatorProperties.homeCommunityId)
         rgEle.setValue('urn:oid:1.2.34.567.8.1')
 
-        // config rg1 to return XDSRegistryError for registryError query requests
+        // config rg1 to return XDSRegistryError for registryErrorPid query requests
         rgEle = rgSimConfig1.getConfigEle(SimulatorProperties.errorForPatient)
         PatientErrorMap pem = new PatientErrorMap()
         PatientErrorList pel = new PatientErrorList()

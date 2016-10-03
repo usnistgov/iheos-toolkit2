@@ -46,22 +46,13 @@ class RgOrchestrationBuilder {
             RgOrchestrationResponse response = new RgOrchestrationResponse()
             Map<String, TestInstanceManager> pidNameMap = [
                     simplePid:  new TestInstanceManager(request, response, '15823'),
-//                    oneDocPid:  new TestInstanceManager(request, response, '15821'),
-//                    twoDocPid:  new TestInstanceManager(request, response, '15822'),
-//                    t12306Pid:  new TestInstanceManager(request, response, '12306'),
             ]
 
             OrchestrationProperties orchProps = new OrchestrationProperties(session, request.userName, ActorType.RESPONDING_GATEWAY, pidNameMap.keySet())
 
             Pid simplePid = PidBuilder.createPid(orchProps.getProperty("simplePid"))
-//            Pid singleDocPid = PidBuilder.createPid(orchProps.getProperty("oneDocPid"))
-//            Pid doubleDocPid = PidBuilder.createPid(orchProps.getProperty("twoDocPid"))
-//            Pid t12306Pid = PidBuilder.createPid(orchProps.getProperty("t12306Pid"))
 
             response.setSimplePid(simplePid)
-//            response.setOneDocPid(singleDocPid)
-//            response.setTwoDocPid(doubleDocPid)
-//            response.setT12306Pid(t12306Pid)
 
             String supportIdName = 'rg_support'
             SimId supportSimId
@@ -105,7 +96,6 @@ class RgOrchestrationBuilder {
 
                     api.saveSimulator(supportSimConfig)
                 }
-//                orchProps.save()
 
                 rrSite = new SiteBuilder().siteSpecFromSimId(supportSimId)
                 response.siteUnderTest = request.siteUnderTest
@@ -121,12 +111,6 @@ class RgOrchestrationBuilder {
             TestInstance testInstance12318 = new TestInstance('12318')
             MessageItem item12318 = response.addMessage(testInstance12318, true, "")
 
-//            TestInstance testInstance15807 = new TestInstance("15807")
-//            MessageItem item15807 = response.addMessage(testInstance15807, true, "")
-//
-//            TestInstance testInstance12306 = new TestInstance("12306")
-//            MessageItem item12306 = response.addMessage(testInstance12306, true, "")
-
             if (orchProps.updated()) {
                 // send necessary Patient ID Feed messages
                 new PifSender(api, orchProps, request).send(pidNameMap)
@@ -135,36 +119,12 @@ class RgOrchestrationBuilder {
                 try {
                     util.submit(request.userName, rrSite, testInstance12318, simplePid, home)
                 } catch (Exception e) {
-//                response.addMessage(testInstance12318, false, "Provide and Register to " + rrSite.name + " failed");
                     item12318.setMessage("Initialization of " + request.siteUnderTest.name + " failed:\n" + e.getMessage())
                     item12318.setSuccess(false)
                 }
 
-//                try {
-//                    util.submit(request.userName, rrSite, testInstance15807, 'onedoc1', singleDocPid, home)
-//                } catch (Exception e) {
-////                response.addMessage(testInstance15807, false, "Provide and Register to " + rrSite.name + " failed");
-//                    item15807.setMessage("Initialization of " + request.siteUnderTest.name + " failed:\n" + e.getMessage())
-//                    item15807.setSuccess(false)
-//                }
-//                try {
-//                    util.submit(request.userName, rrSite, testInstance15807, 'twodoc', doubleDocPid, home)
-//                } catch (Exception e) {
-////                response.addMessage(testInstance15807, false, "Provide and Register to " + rrSite.name + " failed");
-//                    item15807.setMessage("Initialization of " + request.siteUnderTest.name + " failed:\n" + e.getMessage())
-//                    item15807.setSuccess(false)
-//                }
-//                try {
-//                    util.submit(request.userName, rrSite, testInstance12306, t12306Pid)
-//                } catch (Exception e) {
-////                response.addMessage(testInstance15807, false, "Provide and Register to " + rrSite.name + " failed");
-//                    item12306.setMessage("Initialization of " + request.siteUnderTest.name + " failed:\n" + e.getMessage())
-//                    item12306.setSuccess(false)
-//                }
             } else {
                 item12318.setSuccess(api.getTestLogs(testInstance12318).isSuccess());
-//                item15807.setSuccess(api.getTestLogs(testInstance15807).isSuccess());
-//                item12306.setSuccess(api.getTestLogs(testInstance12306).isSuccess());
             }
 
             return response;

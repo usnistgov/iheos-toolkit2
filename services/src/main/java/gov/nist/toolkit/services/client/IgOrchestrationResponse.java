@@ -9,13 +9,13 @@ import java.util.List;
 /**
  *
  */
-public class IgOrchestrationResponse extends RawResponse {
-    List<SimulatorConfig> simulatorConfigs = new ArrayList<>()  ;
-    SimulatorConfig igSimulatorConfig;
-    Pid oneDocPid;
-    Pid twoDocPid;
-    Pid twoRgPid;
-    Pid unknownPid;
+public class IgOrchestrationResponse extends AbstractOrchestrationResponse {
+    private List<SimulatorConfig> simulatorConfigs = new ArrayList<>()  ;
+    private SimulatorConfig igSimulatorConfig;
+    private Pid oneDocPid;
+    private Pid twoDocPid;
+    private Pid twoRgPid;
+    private Pid unknownPid;
 
     public IgOrchestrationResponse() {}
 

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <TestPlan>
-    <Test>15814/MissingCommunity</Test>
+    <Test>15815/MissingCommunity</Test>
     <TestStep id="getdocs">
         <ExpectedStatus>Failure</ExpectedStatus>
         <ExpectedErrorCode>XDSMissingHomeCommunityId</ExpectedErrorCode>
