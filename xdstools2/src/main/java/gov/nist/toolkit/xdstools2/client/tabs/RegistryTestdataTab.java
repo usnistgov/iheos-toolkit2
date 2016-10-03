@@ -22,7 +22,6 @@ public class RegistryTestdataTab  extends GenericQueryTab {
 	
 	static CoupledTransactions couplings = new CoupledTransactions();
 
-//	TextBox pid;
 	ListBox testlistBox;
 	
 	String help = "Submit selected test data set to the selected Registry " +
@@ -41,8 +40,6 @@ public class RegistryTestdataTab  extends GenericQueryTab {
 		int row = 0;
 
 		flowPanel.add(mainGrid);
-
-//		mainGrid.setWidget(row,0, new HTML("Patient ID"));
 
 		HTML dataLabel = new HTML();
 		dataLabel.setText("Select Test Data Set");

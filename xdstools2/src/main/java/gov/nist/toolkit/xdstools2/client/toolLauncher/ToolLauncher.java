@@ -87,7 +87,7 @@ public class ToolLauncher implements ClickHandler {
 		tools.add(new ToolDef(getAllTabLabel, "GetAll", "GetAll"));
 		tools.add(new ToolDef(registryDoThisFirstTabLabel, "RegFirst", "RegFirst"));
 		tools.add(new ToolDef(getRelatedTabLabel, "GetRelated", "GetRelated"));
-		tools.add(new ToolDef(connectathonTabLabel, "CAT", "CAT"));
+		tools.add(new ToolDef(connectathonTabLabel, "Connectathon", "Connectathon"));
 		tools.add(new ToolDef(messageValidatorTabLabel, "MsgVal", "MsgVal"));
 		tools.add(new ToolDef(simulatorMessageViewTabLabel, "SimMsgs", "SimMsgs"));
 		tools.add(new ToolDef(simulatorControlTabLabel, "SimCntl", "SimCntl"));
@@ -110,7 +110,7 @@ public class ToolLauncher implements ClickHandler {
 		tools.add(new ToolDef(testsOverviewTabLabel, "TestsOver", "TestsOver"));
 		tools.add(new ToolDef(igTestsTabLabel, "IGTests", "IGTests"));
 		tools.add(new ToolDef(iigTestsTabLabel, "IIGTests", "IIGTests"));
-      tools.add(new ToolDef(rigTestsTabLabel, "RIGTests", "RIGTests"));
+		tools.add(new ToolDef(rigTestsTabLabel, "RIGTests", "RIGTests"));
 		tools.add(new ToolDef(idsTestsTabLabel, "IDSTests", "IDSTests"));
 		tools.add(new ToolDef(rsnaedgeTestsTabLabel, "RSNA Edge Tests", "RSNAEdgeTests"));
 		tools.add(new ToolDef(rgTestsTabLabel, "RGTests", "RGTests"));

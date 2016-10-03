@@ -2,16 +2,16 @@ package gov.nist.toolkit.xdstools2.client.tabs;
 
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.user.client.ui.FlexTable;
-import com.google.gwt.user.client.ui.HTML;
-import com.google.gwt.user.client.ui.TextBox;
-import com.google.gwt.user.client.ui.Widget;
+import com.google.gwt.user.client.ui.*;
 import gov.nist.toolkit.configDatatypes.client.TransactionType;
 import gov.nist.toolkit.sitemanagement.client.SiteSpec;
 import gov.nist.toolkit.xdstools2.client.CoupledTransactions;
 import gov.nist.toolkit.xdstools2.client.PopupMessage;
+import gov.nist.toolkit.xdstools2.client.event.TabSelectedEvent;
+import gov.nist.toolkit.xdstools2.client.event.Xdstools2EventBus;
 import gov.nist.toolkit.xdstools2.client.siteActorManagers.GetDocumentsSiteActorManager;
 import gov.nist.toolkit.xdstools2.client.tabs.genericQueryTab.GenericQueryTab;
+import gov.nist.toolkit.xdstools2.client.util.ClientUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -58,31 +58,15 @@ public class SourceStoredDocValTab extends GenericQueryTab {
 
 	@Override
 	protected Widget buildUI() {
-		return null;
-	}
-
-	@Override
-	protected void bindUI() {
-
-	}
-
-	@Override
-	protected void configureTabView() {
-
-	}
-
-	@Override
-	public void onTabLoad(boolean select, String eventName) {
-		registerTab(select, "SourceStoresDocVal");
-
+		FlowPanel container = new FlowPanel();
 		HTML title = new HTML();
 		title.setHTML("<h2>Source Stores Document Validation</h2>");
-		tabTopPanel.add(title);
+		container.add(title);
 
 		mainGrid = new FlexTable();
 		int row = 0;
-		
-		tabTopPanel.add(mainGrid);
+
+		container.add(mainGrid);
 
 		HTML ssidLabel = new HTML();
 		ssidLabel.setText("Submission Set Unique ID or UUID");
@@ -92,10 +76,23 @@ public class SourceStoredDocValTab extends GenericQueryTab {
 		ssid.setWidth("500px");
 		mainGrid.setWidget(row, 1, ssid);
 		row++;
+		return container;
+	}
 
+	@Override
+	protected void bindUI() {
+		addOnTabSelectionRedisplay();
+		((Xdstools2EventBus) ClientUtils.INSTANCE.getEventBus()).addTabSelectedEventHandler(new TabSelectedEvent.TabSelectedEventHandler() {
+			@Override
+			public void onTabSelection(TabSelectedEvent event) {
+				ssid.setText("");
+			}
+		});
+	}
 
+	@Override
+	protected void configureTabView() {
 		queryBoilerplate = addQueryBoilerplate(new GetSSandContentsRunner(), transactionTypes, couplings, false);
-
 	}
 
 	class GetSSandContentsRunner implements ClickHandler {
