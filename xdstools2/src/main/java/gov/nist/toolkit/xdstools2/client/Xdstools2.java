@@ -25,6 +25,7 @@ import gov.nist.toolkit.xdstools2.client.tabs.HomeTab;
 import gov.nist.toolkit.xdstools2.client.tabs.QueryState;
 import gov.nist.toolkit.xdstools2.client.tabs.messageValidator.MessageValidatorTab;
 import gov.nist.toolkit.xdstools2.client.util.ClientFactory;
+import gov.nist.toolkit.xdstools2.client.util.ClientUtils;
 
 import java.util.logging.Logger;
 
@@ -71,9 +72,9 @@ public class Xdstools2  implements AcceptsOneWidget, IsWidget {
 		return ME.testSessionManager;
 	}
 
-	EnvironmentState environmentState = new EnvironmentState();
+//	EnvironmentState environmentState = new EnvironmentState();
 
-	public EnvironmentState getEnvironmentState() { return environmentState; }
+//	public EnvironmentState getEnvironmentState() { return environmentState; }
 
 	// Central storage for parameters shared across all
 	// query type tabs
@@ -190,6 +191,7 @@ public class Xdstools2  implements AcceptsOneWidget, IsWidget {
 				// environment names
 				// test session names
 				toolkitName = var1.getServletContextName();
+				EnvironmentState environmentState= ClientUtils.INSTANCE.getEnvironmentState();
 				environmentState.setEnvironmentNameChoices(var1.getEnvironments());
 				if (environmentState.getEnvironmentName() == null)
 					environmentState.setEnvironmentName(var1.getDefaultEnvironment());

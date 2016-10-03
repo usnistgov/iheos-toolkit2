@@ -7,6 +7,7 @@ import gov.nist.toolkit.xdstools2.client.ToolWindow;
 import gov.nist.toolkit.xdstools2.client.Xdstools2;
 import gov.nist.toolkit.xdstools2.client.tabs.conformanceTest.ConformanceTestTab;
 import gov.nist.toolkit.xdstools2.client.toolLauncher.ToolLauncher;
+import gov.nist.toolkit.xdstools2.client.util.ClientUtils;
 
 /**
  *
@@ -21,7 +22,7 @@ public class ConfActorActivity extends AbstractActivity {
             Xdstools2.getInstance().doNotDisplayHomeTab();
 
             // Override start-up initialization of environment
-            Xdstools2.getInstance().getEnvironmentState().initEnvironmentName(confActor.getEnvironmentName());
+            ClientUtils.INSTANCE.getEnvironmentState().initEnvironmentName(confActor.getEnvironmentName());
 
             ToolWindow toolWindow = new ToolLauncher(ToolLauncher.conformanceTestsLabel).launch();
             toolWindow.setCurrentTestSession(confActor.getTestSessionName());

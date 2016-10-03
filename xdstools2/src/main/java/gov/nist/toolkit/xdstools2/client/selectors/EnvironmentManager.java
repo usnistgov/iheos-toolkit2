@@ -34,7 +34,7 @@ public class EnvironmentManager extends Composite{
 	
 	public EnvironmentManager(TabContainer tabContainer) {
 		this.tabContainer = tabContainer;
-		this.environmentState = Xdstools2.getInstance().getEnvironmentState();
+		this.environmentState = ClientUtils.INSTANCE.getEnvironmentState();
 		environmentManager = this;
 		
 		environmentState.addManager(this);
