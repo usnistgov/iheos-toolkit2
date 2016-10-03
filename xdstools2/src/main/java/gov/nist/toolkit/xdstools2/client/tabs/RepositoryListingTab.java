@@ -1,6 +1,7 @@
 package gov.nist.toolkit.xdstools2.client.tabs;
 
 import com.google.gwt.user.client.ui.FlexTable;
+import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.Widget;
 import gov.nist.toolkit.http.client.HtmlMarkup;
@@ -33,37 +34,21 @@ public class RepositoryListingTab extends GenericQueryTab {
 
 	@Override
 	protected Widget buildUI() {
-		return null;
-	}
-
-	@Override
-	protected void bindUI() {
-
-	}
-
-	@Override
-	protected void configureTabView() {
-
-	}
-
-	@Override
-	public void onTabLoad(boolean select, String eventName) {
-		registerTab(select, eventName);  // link into container/tab management
-
+		FlowPanel container=new FlowPanel();
 		HTML title = new HTML();
 		title.setHTML("<h2>Repository Listing</h2>");
-		tabTopPanel.add(title);
+		container.add(title);
 
-		tabTopPanel.add(HtmlMarkup.html(HtmlMarkup.h3("By Name")));
+		container.add(HtmlMarkup.html(HtmlMarkup.h3("By Name")));
 
 		byNameTable.setBorderWidth(1);
 		byNameTable.setCellSpacing(0);
 
-		tabTopPanel.add(byNameTable);
+		container.add(byNameTable);
 
-		tabTopPanel.add(HtmlMarkup.html(HtmlMarkup.h3("By repositoryUniqueId")));
+		container.add(HtmlMarkup.html(HtmlMarkup.h3("By repositoryUniqueId")));
 
-		tabTopPanel.add(byUidTable);
+		container.add(byUidTable);
 
 		byUidTable.setBorderWidth(1);
 		byUidTable.setCellSpacing(0);
@@ -71,32 +56,30 @@ public class RepositoryListingTab extends GenericQueryTab {
 		/* ODDS */
 		HTML oddsTitle = new HTML();
 		oddsTitle.setHTML("<hr><h2>On-Demand Document Source Listing</h2>");
-		tabTopPanel.add(oddsTitle);
+		container.add(oddsTitle);
 
-		tabTopPanel.add(HtmlMarkup.html(HtmlMarkup.h3("By Name")));
+		container.add(HtmlMarkup.html(HtmlMarkup.h3("By Name")));
 
 		oddsByNameTable.setBorderWidth(1);
 		oddsByNameTable.setCellSpacing(0);
 
-		tabTopPanel.add(oddsByNameTable);
+		container.add(oddsByNameTable);
 
-		tabTopPanel.add(HtmlMarkup.html(HtmlMarkup.h3("By repositoryUniqueId")));
+		container.add(HtmlMarkup.html(HtmlMarkup.h3("By repositoryUniqueId")));
 
-		tabTopPanel.add(oddsByUidTable);
+		container.add(oddsByUidTable);
 
 		oddsByUidTable.setBorderWidth(1);
 		oddsByUidTable.setCellSpacing(0);
 
-		reload();
-
-	}
-
-	void reload() {
-
 		byNameTable.clear();
-
 		byUidTable.clear();
 
+		return container;
+	}
+
+	@Override
+	protected void bindUI() {
 		new GetAllSitesCommand() {
 
 			@Override
@@ -105,7 +88,11 @@ public class RepositoryListingTab extends GenericQueryTab {
 				display(var1,TransactionBean.RepositoryType.ODDS, oddsByNameTable, oddsByUidTable);
 			}
 		}.run(getCommandContext());
+	}
 
+	@Override
+	protected void configureTabView() {
+		// Doesn't need to do anything here
 	}
 
 	void display(Collection<Site> sites, TransactionBean.RepositoryType repositoryType, FlexTable byNameTbl, FlexTable byUidTbl) {
