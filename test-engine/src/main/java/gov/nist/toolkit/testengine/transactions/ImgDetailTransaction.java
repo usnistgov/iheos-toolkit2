@@ -268,7 +268,7 @@ public class ImgDetailTransaction extends BasicTransaction {
                reqImg.seriesUID = seriesUID;
                reqImg.homeCommunityUID = loadTxt(doc, "HomeCommunityId");
                reqImg.repositoryUID = loadTxt(doc, "RepositoryUniqueId");
-               imgs.put(studyUID, reqImg);
+               imgs.put(docUID, reqImg);
             }
          }
       }

@@ -1,5 +1,5 @@
 <TestPlan>
-  <Test>iig_5403/validate</Test>
+  <Test>iig_5403/validate-Img</Test>
   <TestStep id="validate">
     <Goal>Correct RetrieveDocumentSetResponse images</Goal>
     <XmlDetailTransaction>
