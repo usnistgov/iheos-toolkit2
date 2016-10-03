@@ -72,12 +72,7 @@ public class FindDocuments2Tab extends GenericQueryTab {
 
     @Override
     protected void bindUI() {
-        ((Xdstools2EventBus) ClientUtils.INSTANCE.getEventBus()).addTabSelectedEventHandler(new TabSelectedEvent.TabSelectedEventHandler() {
-            @Override
-            public void onTabSelection(TabSelectedEvent event) {
-                redisplay(true);
-            }
-        });
+        addOnTabSelectionRedisplay();
     }
 
     @Override

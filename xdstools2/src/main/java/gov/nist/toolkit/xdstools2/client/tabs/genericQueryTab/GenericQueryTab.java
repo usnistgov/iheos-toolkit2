@@ -17,10 +17,7 @@ import gov.nist.toolkit.sitemanagement.client.SiteSpec;
 import gov.nist.toolkit.sitemanagement.client.TransactionOfferings;
 import gov.nist.toolkit.xdstools2.client.*;
 import gov.nist.toolkit.xdstools2.client.command.command.GetTransactionOfferingsCommand;
-import gov.nist.toolkit.xdstools2.client.event.ActorConfigUpdatedEvent;
-import gov.nist.toolkit.xdstools2.client.event.EnvironmentChangedEvent;
-import gov.nist.toolkit.xdstools2.client.event.SimulatorUpdatedEvent;
-import gov.nist.toolkit.xdstools2.client.event.Xdstools2EventBus;
+import gov.nist.toolkit.xdstools2.client.event.*;
 import gov.nist.toolkit.xdstools2.client.event.testSession.TestSessionManager2;
 import gov.nist.toolkit.xdstools2.client.siteActorManagers.BaseSiteActorManager;
 import gov.nist.toolkit.xdstools2.client.tabs.actorConfigTab.ActorConfigTab;
@@ -799,5 +796,13 @@ public abstract class GenericQueryTab  extends ToolWindow {
         this.displayTab = displayTab;
     }
 
-
+    protected void addOnTabSelectionRedisplay(){
+        // this handle the refresh of the UI for FindDocumentsByRef tab everytime the tab is reselected
+        ((Xdstools2EventBus) ClientUtils.INSTANCE.getEventBus()).addTabSelectedEventHandler(new TabSelectedEvent.TabSelectedEventHandler() {
+            @Override
+            public void onTabSelection(TabSelectedEvent event) {
+                redisplay(true);
+            }
+        });
+    }
 }
