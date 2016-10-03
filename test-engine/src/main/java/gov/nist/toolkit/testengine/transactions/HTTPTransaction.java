@@ -1,9 +1,11 @@
 package gov.nist.toolkit.testengine.transactions;
 
 import gov.nist.toolkit.configDatatypes.client.TransactionType;
+import gov.nist.toolkit.http.HttpParseException;
 import gov.nist.toolkit.http.HttpParserBa;
 import gov.nist.toolkit.registrymsg.registry.RegistryResponseParser;
 import gov.nist.toolkit.testengine.engine.StepContext;
+import gov.nist.toolkit.testengine.engine.Transactions;
 import gov.nist.toolkit.utilities.io.Io;
 import gov.nist.toolkit.utilities.xml.Util;
 import gov.nist.toolkit.xdsexception.ExceptionUtil;
@@ -36,6 +38,7 @@ public class HTTPTransaction extends BasicTransaction {
     Map<String, List<String>> headers = new HashMap<>();
     File file;
     String transType;
+    String stsQuery;
 
     public HTTPTransaction(StepContext s_ctx, OMElement instruction, OMElement instruction_output) {
         super(s_ctx, instruction, instruction_output);
@@ -91,42 +94,29 @@ public class HTTPTransaction extends BasicTransaction {
 
             HttpResponse response = httpClient.execute(httpPost);
 
-            try {
-                System.out.println("----------------------------------------");
-                System.out.println(response.getStatusLine());
-                testLog.add_name_value(instruction_output, "InHeader", response.getStatusLine().toString());
-                Header[] responseHeaders = response.getAllHeaders();
-                HttpEntity responseEntity = response.getEntity();
-                String responseString = EntityUtils.toString(responseEntity);
-                testLog.add_name_value(instruction_output, "Result", responseString);
+                try {
+                    System.out.println("----------------------------------------");
+                    System.out.println(response.getStatusLine());
+                    testLog.add_name_value(instruction_output, "InHeader", response.getStatusLine().toString());
+                    Header[] responseHeaders = response.getAllHeaders();
+                    HttpEntity responseEntity = response.getEntity();
+                    String responseString = EntityUtils.toString(responseEntity);
+                    System.out.println(responseString);
+                    testLog.add_name_value(instruction_output, "Result", responseString);
 
-                Map<String, List<String>> rspHeaders = new HashMap<>();
-                for (int i=0; i<responseHeaders.length; i++) {
-                    Header h = responseHeaders[i];
-                    addHeader(rspHeaders, h.getName(), h.getValue());
-                }
+                    if (Transactions.ProvideAndRegister_b.equals(transType)) {
+                        if (validatePnr(responseHeaders, responseString)) return;
+                    } else if (Transactions.SecureTokenService.equals(transType)) { // Gazelle's Picketlink STS
+                        if (validateSts(responseHeaders, responseString)) return;
+                    }
 
-                HttpParserBa parser = new HttpParserBa(rspHeaders, responseString.getBytes());
-
-                if (!parser.isMultipart()) {
-                    s_ctx.set_error("Response is not multipart");
+                } catch (Exception e) {
+                    s_ctx.set_error(e.getMessage());
                     failed();
-                    return;
+                } finally {
+                    //response.close();
                 }
-                if (parser.getMultipart().getPartCount() != 1) {
-                    s_ctx.set_error("Expected single part in multipart response");
-                    failed();
-                    return;
-                }
-                byte[] partContent = parser.getMultipart().getPart(0).getBody();
 
-                loadStepContextwithResponseErrors(new String(partContent));
-            } catch (Exception e) {
-                s_ctx.set_error(e.getMessage());
-                failed();
-            } finally {
-                //response.close();
-            }
         } catch (Throwable e) {
             s_ctx.set_error(ExceptionUtil.exception_details(e));
             failed();
@@ -135,8 +125,45 @@ public class HTTPTransaction extends BasicTransaction {
         }
     }
 
+    private boolean validateSts(Header[] responseHeaders, String responseString) throws Exception {
+        OMElement envelopeEle = Util.parse_xml(responseString);
+
+        AXIOMXPath xpathExpression = new AXIOMXPath ("");
+        List nodeList = xpathExpression.selectNodes(envelopeEle);
+        if (nodeList.size() != 1) {
+            s_ctx.set_error("Cannot extract RegistryResponse from SOAP Message");
+            failed();
+            return false;
+        }
+        return true;
+    }
+
+    private boolean validatePnr(Header[] responseHeaders, String responseString) throws HttpParseException, XdsInternalException, JaxenException {
+        Map<String, List<String>> rspHeaders = new HashMap<>();
+        for (int i = 0; i < responseHeaders.length; i++) {
+            Header h = responseHeaders[i];
+            addHeader(rspHeaders, h.getName(), h.getValue());
+        }
+
+        HttpParserBa parser = new HttpParserBa(rspHeaders, responseString.getBytes());
+
+        if (!parser.isMultipart()) {
+            s_ctx.set_error("Response is not multipart");
+            failed();
+            return false;
+        }
+        if (parser.getMultipart().getPartCount() != 1) {
+            s_ctx.set_error("Expected single part in multipart response");
+            failed();
+            return false;
+        }
+        byte[] partContent = parser.getMultipart().getPart(0).getBody();
+
+        loadStepContextwithResponseErrors(new String(partContent));
+        return true;
+    }
+
     private void loadStepContextwithResponseErrors(String responseString) throws XdsInternalException, JaxenException {
-        System.out.println(responseString);
         OMElement envelopeEle = Util.parse_xml(responseString);
 
         AXIOMXPath xpathExpression = new AXIOMXPath ("//*[local-name()='RegistryResponse']");
@@ -196,5 +223,13 @@ public class HTTPTransaction extends BasicTransaction {
     @Override
     protected String getBasicTransactionName() {
         return transType;
+    }
+
+    public String getStsQuery() {
+        return stsQuery;
+    }
+
+    public void setStsQuery(String stsQuery) {
+        this.stsQuery = stsQuery;
     }
 }

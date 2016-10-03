@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?><TestPlan>
+  <Test>GazelleSts/samlassertion-issue</Test>
+  <TestStep id="issue">
+    <ExpectedStatus>Success</ExpectedStatus>
+    <HttpTransaction type="sts" stsQuery="issue">
+      <Headers>
+        Content-Type: application/soap+xml;charset=UTF-8
+      </Headers>
+      <BodyFile>body.txt</BodyFile>
+    </HttpTransaction>
+  </TestStep>
+</TestPlan>
