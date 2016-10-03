@@ -223,8 +223,8 @@ public class PidFavoritesTab extends GenericQueryTab {
         getToolkitServices().retrieveConfiguredFavoritesPid(getEnvironmentSelection(), new AsyncCallback<List<Pid>>() {
             @Override
             public void onFailure(Throwable throwable) {
-                Window.alert("failure");
-                Logger.getLogger(this.getClass().getName()).warning("Error!");
+                Logger.getLogger(this.getClass().getName()).warning("Error requesting server!");
+                new PopupMessage("Failure requesting server.");
             }
 
             @Override

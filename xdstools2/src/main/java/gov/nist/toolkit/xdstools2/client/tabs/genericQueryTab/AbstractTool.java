@@ -3,7 +3,9 @@ package gov.nist.toolkit.xdstools2.client.tabs.genericQueryTab;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.ui.FlexTable;
+import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HTML;
+import com.google.gwt.user.client.ui.Widget;
 import gov.nist.toolkit.configDatatypes.client.TransactionType;
 import gov.nist.toolkit.xdstools2.client.CoupledTransactions;
 import gov.nist.toolkit.xdstools2.client.PopupMessage;
@@ -27,7 +29,7 @@ public abstract class AbstractTool extends GenericQueryTab {
     /**
      * @return Full title to be displayed at top of tool.
      */
-    abstract public String getToolTitle();
+    public abstract String getToolTitle();
 
     /**
      * @return a short name for tool that corresponds to its documentation in
@@ -50,27 +52,28 @@ public abstract class AbstractTool extends GenericQueryTab {
     abstract public void run();
 
     @Override
-    public void onTabLoad(boolean select, String eventName) {
-        me = this;
-
-        registerTab(select, getTabTitle());
-//        addToolHeader(getRawPanel(), null);
-
+    protected Widget buildUI() {
+        FlowPanel fp=new FlowPanel();
         HTML title = new HTML();
         title.setHTML("<h2>" + getToolTitle() + "</h2>");
-        tabTopPanel.add(title);
+        fp.add(title);
 
         mainGrid = new FlexTable();
-        tabTopPanel.add(mainGrid);
+        fp.add(mainGrid);
 
         initTool();
 
         // TODO - throw error
         if (transactionTypes == null && checkSite) {
             new PopupMessage("Tool " + getToolTitle() + " does not declare any transactionTypes");
-            return;
+//            return;
         }
 
+        return fp;
+    }
+
+    @Override
+    protected void configureTabView() {
         addQueryBoilerplate(new Runner(), transactionTypes, couplings, hasPatientIdParam);
     }
 
