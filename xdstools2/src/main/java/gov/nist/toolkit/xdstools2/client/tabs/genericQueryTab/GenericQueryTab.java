@@ -279,9 +279,9 @@ public abstract class GenericQueryTab  extends ToolWindow {
 
             FlexTable siteGrid = new FlexTable();
             siteSelectionPanel.getFlexCellFormatter().setVerticalAlignment(0,1,HasVerticalAlignment.ALIGN_TOP);
-            siteSelectionPanel.setWidget(0, 1, siteGrid);
+            siteSelectionPanel.setWidget(1, 1, siteGrid);
 
-            int siteGridRow = 0;
+            int siteGridRow = 1;
             Set<String> actorTypeNamesAlreadyDisplayed = new HashSet<>();
             for (TransactionType tt : transactionTypes) {
                 Set<ActorType> ats = ActorType.getActorTypes(tt);
