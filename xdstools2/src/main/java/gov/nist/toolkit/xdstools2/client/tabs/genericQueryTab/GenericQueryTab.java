@@ -275,7 +275,7 @@ public abstract class GenericQueryTab  extends ToolWindow {
         } else if (transactionTypes != null){    // most queries and retrieves use this
             FlexTable siteSelectionPanel = new FlexTable();
             siteSelectionPanel.getFlexCellFormatter().setVerticalAlignment(0,0,HasVerticalAlignment.ALIGN_TOP);
-            siteSelectionPanel.setWidget(0, 0, new HTML("<div style='margin-top:5px;'>Send to</div>"));
+            siteSelectionPanel.setWidget(0, 0, new HTML("<div style='margin-top:2px;font-size:1.1em;'>Send to</div>"));
 
             FlexTable siteGrid = new FlexTable();
             siteSelectionPanel.getFlexCellFormatter().setVerticalAlignment(0,1,HasVerticalAlignment.ALIGN_TOP);
@@ -302,6 +302,7 @@ public abstract class GenericQueryTab  extends ToolWindow {
             }
 
             DecoratorPanel decoration = new DecoratorPanel();
+            decoration.setStyleName("queryBoilerPlate");
             decoration.add(siteSelectionPanel);
             mainConfigPanel.add(decoration);
         }
