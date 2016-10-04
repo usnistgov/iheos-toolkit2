@@ -7,10 +7,7 @@ import gov.nist.toolkit.interactionmodel.client.InteractingEntity;
 import gov.nist.toolkit.interactionmodel.client.InteractionIdentifierTerm;
 import gov.nist.toolkit.results.client.Result;
 import gov.nist.toolkit.xdstools2.client.CoupledTransactions;
-import gov.nist.toolkit.xdstools2.client.event.TabSelectedEvent;
-import gov.nist.toolkit.xdstools2.client.event.Xdstools2EventBus;
 import gov.nist.toolkit.xdstools2.client.tabs.genericQueryTab.AbstractTool;
-import gov.nist.toolkit.xdstools2.client.util.ClientUtils;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -111,11 +108,6 @@ public class FindDocumentsTab extends AbstractTool {
 
 		}
 	};
-
-	@Override
-	public String getWindowShortName() {
-		return "finddocuments";
-	}
 
     public InteractingEntity getInteractionModel() {
         // begin interaction model
