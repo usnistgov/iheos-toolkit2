@@ -1,8 +1,7 @@
-package gov.nist.toolkit.xdstools2.client.command.request;
+package gov.nist.toolkit.xdstools2.shared.command;
 
 import gov.nist.toolkit.configDatatypes.client.Pid;
 import gov.nist.toolkit.sitemanagement.client.SiteSpec;
-import gov.nist.toolkit.xdstools2.client.command.CommandContext;
 
 /**
  *

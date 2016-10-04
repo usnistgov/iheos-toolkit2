@@ -48,7 +48,8 @@
   <inherits name="com.google.gwt.logging.Logging"/>
 
   <source path="doc/howto/index.html"/>
-
+  <source path="client"/>
+  <source path="shared"/>
 </module>
 
 

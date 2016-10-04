@@ -1,6 +1,7 @@
 package gov.nist.toolkit.xdstools2.client.command;
 
 import gov.nist.toolkit.xdstools2.client.command.command.GetAssigningAuthoritiesCommand;
+import gov.nist.toolkit.xdstools2.shared.command.CommandContext;
 
 import java.util.List;
 

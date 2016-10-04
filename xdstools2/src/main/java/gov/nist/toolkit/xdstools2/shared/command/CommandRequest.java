@@ -1,4 +1,4 @@
-package gov.nist.toolkit.xdstools2.client.command.request;
+package gov.nist.toolkit.xdstools2.shared.command;
 
 /**
  *

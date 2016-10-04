@@ -26,8 +26,8 @@ import gov.nist.toolkit.testkitutilities.TestKitSearchPath
 import gov.nist.toolkit.utilities.xml.Util
 import gov.nist.toolkit.utilities.xml.XmlUtil
 import gov.nist.toolkit.xdsexception.ExceptionUtil
-import gov.nist.toolkit.xdstools2.client.RegistryStatus
-import gov.nist.toolkit.xdstools2.client.RepositoryStatus
+import gov.nist.toolkit.xdstools2.shared.RegistryStatus
+import gov.nist.toolkit.xdstools2.shared.RepositoryStatus
 import groovy.transform.TypeChecked
 import org.apache.axiom.om.OMElement
 

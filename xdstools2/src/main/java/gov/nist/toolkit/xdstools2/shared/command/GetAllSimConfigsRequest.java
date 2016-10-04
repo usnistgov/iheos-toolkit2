@@ -1,6 +1,4 @@
-package gov.nist.toolkit.xdstools2.client.command.request;
-
-import gov.nist.toolkit.xdstools2.client.command.CommandContext;
+package gov.nist.toolkit.xdstools2.shared.command;
 
 /**
  *

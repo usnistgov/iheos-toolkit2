@@ -63,6 +63,8 @@
     </replace-with>
 
     <public path="public"/>
+    <source path="client"/>
+    <source path="shared"/>
 </module>
 
 

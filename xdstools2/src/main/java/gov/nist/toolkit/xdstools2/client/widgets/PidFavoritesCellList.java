@@ -11,7 +11,7 @@ import com.google.gwt.view.client.ProvidesKey;
 import com.google.gwt.view.client.SelectionChangeEvent;
 import com.google.gwt.view.client.SingleSelectionModel;
 import gov.nist.toolkit.configDatatypes.client.Pid;
-import gov.nist.toolkit.xdstools2.client.command.CommandContext;
+import gov.nist.toolkit.xdstools2.shared.command.CommandContext;
 import gov.nist.toolkit.xdstools2.client.command.command.RetrieveFavPidsCommand;
 import gov.nist.toolkit.xdstools2.client.event.FavoritePidsUpdatedEvent;
 import gov.nist.toolkit.xdstools2.client.event.Xdstools2EventBus;
