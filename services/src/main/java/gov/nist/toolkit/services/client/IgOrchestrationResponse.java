@@ -1,7 +1,8 @@
 package gov.nist.toolkit.services.client;
 
-import gov.nist.toolkit.configDatatypes.client.Pid;
 import gov.nist.toolkit.actorfactory.client.SimulatorConfig;
+import gov.nist.toolkit.configDatatypes.client.Pid;
+import gov.nist.toolkit.sitemanagement.client.Site;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -16,6 +17,8 @@ public class IgOrchestrationResponse extends AbstractOrchestrationResponse {
     private Pid twoDocPid;
     private Pid twoRgPid;
     private Pid unknownPid;
+    private Site supportRG1;
+    private Site supportRG2;
 
     public IgOrchestrationResponse() {}
 
@@ -65,5 +68,21 @@ public class IgOrchestrationResponse extends AbstractOrchestrationResponse {
 
     public void setIgSimulatorConfig(SimulatorConfig igSimulatorConfig) {
         this.igSimulatorConfig = igSimulatorConfig;
+    }
+
+    public Site getSupportRG1() {
+        return supportRG1;
+    }
+
+    public void setSupportRG1(Site supportRG1) {
+        this.supportRG1 = supportRG1;
+    }
+
+    public Site getSupportRG2() {
+        return supportRG2;
+    }
+
+    public void setSupportRG2(Site supportRG2) {
+        this.supportRG2 = supportRG2;
     }
 }

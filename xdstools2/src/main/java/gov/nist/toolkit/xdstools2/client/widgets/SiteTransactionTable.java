@@ -17,6 +17,9 @@ public class SiteTransactionTable extends FlexTable {
     private void build(Site site) {
         setText(row++, 0, "Endpoints");
 
+        setText(row, 0, "homeCommunityId");
+        setText(row++, 1, site.getHome());
+
         for (TransactionBean trans : site.transactions().transactions) {
             setText(row, 0, trans.getName());
             setText(row++, 1, trans.getEndpoint());

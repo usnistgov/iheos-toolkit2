@@ -33,38 +33,6 @@ public class OrchestrationSupportTestsDisplay extends FlowPanel {
                     TestDisplay testDisplay = orchGroup.display(testOverview);
                     add(testDisplay);
                 }
-//                for (TestOverviewDTO testOverview : testOverviews) {
-//                    MessageItem item = orchResponse.getItemForTest(testOverview.getTestInstance());
-//                    HorizontalFlowPanel orchTest = new HorizontalFlowPanel();
-//                    orchTest.getElement().getStyle().setHeight(32, Style.Unit.PX);
-//                    orchTest.add(new HTML(testOverview.getName() + " - " + testOverview.getTitle()));
-//                    Image inspect = new Image("icons2/visible-32.png");
-//                    inspect.addStyleName("right");
-//                    inspect.addClickHandler(new LaunchInspectorClickHandler(testOverview.getTestInstance(), testSession, siteSpec));
-////                    inspect.addClickHandler(testTab.getInspectClickHandler(testOverview.getTestInstance()));
-//                    inspect.setTitle("Inspect results");
-//
-//                    if (item.isSuccess()) {
-//                        Image status = new Image("icons2/correct-16.png");
-//                        status.addStyleName("right");
-//                        status.setTitle("Success");
-//                        orchTest.add(status);
-//                    } else {
-//                        Image status = new Image("icons/ic_warning_black_24dp_1x.png");
-//                        status.addStyleName("right");
-//                        status.setTitle("Failure");
-//                        orchTest.add(status);
-//                    }
-//
-//                    if (item.isSuccess())
-//                        orchTest.setStyleName("testOverviewHeaderSuccess");
-//                    else
-//                        orchTest.setStyleName("testOverviewHeaderFail");
-//                    orchTest.add(inspect);
-//
-//                    add(orchTest);
-//                }
-
             }
 
         });

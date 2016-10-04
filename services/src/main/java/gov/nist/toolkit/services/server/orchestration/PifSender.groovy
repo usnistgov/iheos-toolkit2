@@ -1,38 +1,41 @@
 package gov.nist.toolkit.services.server.orchestration
 
 import gov.nist.toolkit.configDatatypes.client.PidBuilder
-import gov.nist.toolkit.services.client.AbstractOrchestrationRequest
 import gov.nist.toolkit.services.client.PifType
 import gov.nist.toolkit.services.server.ToolkitApi
+import gov.nist.toolkit.sitemanagement.client.SiteSpec
 
 /**
  *
  */
 class PifSender {
     private OrchestrationProperties orchProps
-    AbstractOrchestrationRequest request
-    ToolkitApi api
+//    AbstractOrchestrationRequest request
+    private SiteSpec regSite
+    private ToolkitApi api
     private Util util
+    private String testSession
 
-    public PifSender(ToolkitApi api,  OrchestrationProperties orchProps, AbstractOrchestrationRequest request) {
+    public PifSender(ToolkitApi api, String testSession, SiteSpec regSite, OrchestrationProperties orchProps) {
         this.api = api
+        this.testSession = testSession
+        this.regSite = regSite
         this.orchProps = orchProps
-        this.request = request
         util = new Util(api)
     }
 
-    def send(Map<String, TestInstanceManager> pidNameMap) {
+    def send(PifType pifType, Map<String, TestInstanceManager> pidNameMap) {
         if (orchProps.updated()) {
-            if (request.pifType == PifType.V2) {
+            if (pifType == PifType.V2) {
                 // register patient ids with registry
                 pidNameMap.each {
                     String pidId = it.key
                     TestInstanceManager testInstanceManager = it.value
                     try {
-                        util.submit(request.userName, request.registrySut, testInstanceManager.testInstance, 'pif', PidBuilder.createPid(orchProps.getProperty(pidId)), null)
+                        util.submit(testSession, regSite, testInstanceManager.testInstance, 'pif', PidBuilder.createPid(orchProps.getProperty(pidId)), null)
                     }
                     catch (Exception e) {
-                        testInstanceManager.messageItem.setMessage("V2 Patient Identity Feed to " + request.registrySut.name + " failed\n" + e.getMessage());
+                        testInstanceManager.messageItem.setMessage("V2 Patient Identity Feed to " + regSite.name + " failed\n" + e.getMessage());
                         testInstanceManager.messageItem.setSuccess(false);
                     }
                 }

@@ -79,9 +79,7 @@ class BuildRGTestOrchestrationButton extends AbstractOrchestrationButton {
                 testTab.orch = orchResponse;
                 panel().add(new HTML("<h2>Generated Environment</h2>"));
 
-                if (orchResponse.getMessage().length() > 0) {
-                    panel().add(new HTML("<h3>" + orchResponse.getMessage().replaceAll("\n", "<br />")  + "</h3>"));
-                }
+                handleMessages(null, orchResponse);
 
                 FlexTable table = new FlexTable();
                 panel().add(table);

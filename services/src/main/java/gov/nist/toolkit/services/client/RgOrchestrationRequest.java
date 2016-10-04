@@ -9,7 +9,6 @@ public class RgOrchestrationRequest extends AbstractOrchestrationRequest {
     private SiteSpec siteUnderTest;
     private boolean useExposedRR;  // alternative is External RR (Registry/Repository)
     private boolean useSimAsSUT;   // no longer used
-    private boolean useExistingState = true;   // useExistingState == !reset
 
     public RgOrchestrationRequest() {}
 
@@ -35,14 +34,6 @@ public class RgOrchestrationRequest extends AbstractOrchestrationRequest {
 
     public void setUseSimAsSUT(boolean useSimAsSUT) {
         this.useSimAsSUT = useSimAsSUT;
-    }
-
-    public boolean isUseExistingState() {
-        return useExistingState;
-    }
-
-    public void setUseExistingState(boolean useExistingState) {
-        this.useExistingState = useExistingState;
     }
 
 }

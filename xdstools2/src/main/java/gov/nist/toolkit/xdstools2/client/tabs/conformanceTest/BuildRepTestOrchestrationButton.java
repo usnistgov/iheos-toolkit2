@@ -68,9 +68,7 @@ class BuildRepTestOrchestrationButton extends AbstractOrchestrationButton {
                     initializationResultsPanel.add(new SiteDisplay("System Under Test Configuration", testContext.getSiteUnderTest()));
                 }
 
-                if (orchResponse.getMessage().length() > 0) {
-                    initializationResultsPanel.add(new HTML("<h3>" + orchResponse.getMessage().replaceAll("\n", "<br />")  + "</h3>"));
-                }
+                handleMessages(initializationResultsPanel, orchResponse);
 
                 if (orchResponse.getSupportSite() != null) {
                     initializationResultsPanel.add(new SiteDisplay("Supporting Environment Configuration", orchResponse.getSupportSite()));

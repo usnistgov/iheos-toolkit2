@@ -54,7 +54,7 @@ class RegOrchestrationBuilder {
 
 
         // send necessary Patient ID Feed messages
-        new PifSender(api, orchProps, request).send(pidNameMap)
+        new PifSender(api, request.getUserName(), request.registrySut, orchProps).send(PifType.V2, pidNameMap)
 
         if (orchProps.updated()) {
 

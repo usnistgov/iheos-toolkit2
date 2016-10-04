@@ -80,7 +80,7 @@ public class BuildRegTestOrchestrationButton extends AbstractOrchestrationButton
             public void onSuccess(RawResponse rawResponse) {
                 if (handleError(rawResponse, RegOrchestrationResponse.class)) return;
                 final RegOrchestrationResponse orchResponse = (RegOrchestrationResponse) rawResponse;
-                testTab.setRegOrchestrationResponse(orchResponse);
+                testTab.setOrchestrationResponse(orchResponse);
 
                 initializationResultsPanel.add(new HTML("Initialization Complete"));
 
@@ -90,11 +90,7 @@ public class BuildRegTestOrchestrationButton extends AbstractOrchestrationButton
 
                 initializationResultsPanel.add(new HTML("<h2>Supporting Environment Configuration</h2>"));
 
-                if (orchResponse.getMessage().length() > 0) {
-                    HTML h = new HTML("<p>" + orchResponse.getMessage().replaceAll("\n", "<br />")  + "</p>");
-                    h.setStyleName("serverResponseLabelError");
-                    initializationResultsPanel.add(h);
-                }
+                handleMessages(initializationResultsPanel, orchResponse);
 
                 // Display tests run as part of orchestration - so links to their logs are available
                 initializationResultsPanel.add(new OrchestrationSupportTestsDisplay(orchResponse, testContext, testContextDisplay, testTab ));

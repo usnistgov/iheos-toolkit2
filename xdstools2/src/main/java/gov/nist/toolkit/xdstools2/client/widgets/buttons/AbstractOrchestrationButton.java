@@ -3,6 +3,8 @@ package gov.nist.toolkit.xdstools2.client.widgets.buttons;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.ui.*;
+import gov.nist.toolkit.services.client.AbstractOrchestrationResponse;
+import gov.nist.toolkit.services.client.MessageItem;
 import gov.nist.toolkit.services.client.RawResponse;
 import gov.nist.toolkit.xdstools2.client.ErrorHandler;
 
@@ -102,6 +104,17 @@ abstract public class AbstractOrchestrationButton implements ClickHandler {
 
     protected boolean isResetRequested() {
         return resetCheckBox != null && resetCheckBox.getValue();
+    }
+
+    public void handleMessages(Panel panel, AbstractOrchestrationResponse response) {
+        for (MessageItem msg : response.getMessages()) {
+            HTML h = new HTML("<p>" + msg.getMessage().replaceAll("\n", "<br />")  + "</p>");
+            if (!msg.isSuccess()) {
+                h.setStyleName("serverResponseLabelError");
+            }
+            panel.add(h);
+        }
+
     }
 
 }

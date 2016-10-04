@@ -3,6 +3,7 @@ package gov.nist.toolkit.services.client;
 import gov.nist.toolkit.results.client.TestInstance;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 /**
@@ -10,7 +11,6 @@ import java.util.List;
  */
 abstract public class AbstractOrchestrationResponse extends RawResponse {
 //    private List<TestInstance> orchestrationTests = new ArrayList<>();  // test definitions used to build the orchestration
-    private  String message = "";
     private List<MessageItem> messages = new ArrayList<>();
 
     public MessageItem addMessage(TestInstance testInstance, boolean success, String message) {
@@ -19,11 +19,7 @@ abstract public class AbstractOrchestrationResponse extends RawResponse {
         return item;
     }
 
-    public int getMessageItemCount() { return messages.size(); }
-
-    public MessageItem getMessageItem(int i) {
-        return messages.get(i);
-    }
+    public Collection<MessageItem> getMessages() { return messages; }
 
     /**
      * Tests used to build up test environment
@@ -43,14 +39,6 @@ abstract public class AbstractOrchestrationResponse extends RawResponse {
                 return item;
         }
         return null;
-    }
-
-    public String getMessage() {
-        return message;
-    }
-
-    public void setMessage(String message) {
-        this.message = message;
     }
 
 }

@@ -12,6 +12,7 @@ import gov.nist.toolkit.installation.Installation
 import gov.nist.toolkit.results.client.TestInstance
 import gov.nist.toolkit.results.shared.SiteBuilder
 import gov.nist.toolkit.services.client.MessageItem
+import gov.nist.toolkit.services.client.PifType
 import gov.nist.toolkit.services.client.RawResponse
 import gov.nist.toolkit.services.client.RgOrchestrationRequest
 import gov.nist.toolkit.services.client.RgOrchestrationResponse
@@ -113,7 +114,7 @@ class RgOrchestrationBuilder {
 
             if (orchProps.updated()) {
                 // send necessary Patient ID Feed messages
-                new PifSender(api, orchProps, request).send(pidNameMap)
+                new PifSender(api, request.getUserName(), rrSite, orchProps).send(PifType.V2, pidNameMap)
 
                 // Submit test data
                 try {

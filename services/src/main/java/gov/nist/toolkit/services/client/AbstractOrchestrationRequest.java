@@ -13,6 +13,7 @@ abstract public class AbstractOrchestrationRequest implements Serializable, IsSe
     private String environmentName;
     private PifType pifType;
     private SiteSpec registrySut;
+    private boolean useExistingState = true;   // useExistingState == !reset
 
 
     public String getUserName() {
@@ -45,6 +46,14 @@ abstract public class AbstractOrchestrationRequest implements Serializable, IsSe
 
     public void setRegistrySut(SiteSpec registrySut) {
         this.registrySut = registrySut;
+    }
+
+    public boolean isUseExistingState() {
+        return useExistingState;
+    }
+
+    public void setUseExistingState(boolean useExistingState) {
+        this.useExistingState = useExistingState;
     }
 
 }
