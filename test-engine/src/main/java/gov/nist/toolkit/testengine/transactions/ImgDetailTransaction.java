@@ -556,10 +556,6 @@ public class ImgDetailTransaction extends BasicTransaction {
    private Map <String, RetImg> loadRetImgs(AssertionEngine engine, Assertion a, OMElement msg) {
       Map <String, RetImg> imgs = new LinkedHashMap <>();
       List <OMElement> docs = XmlUtil.decendentsWithLocalName(msg, "DocumentResponse");
-      if (docs.isEmpty()) {
-         store(engine, CAT.ERROR, "No DocumentResponse element(s) found.");
-         return imgs;
-      }
       for (OMElement docReq : docs) {
          RetImg img = new RetImg();
          img.instance = loadTxt(docReq, "DocumentUniqueId");
