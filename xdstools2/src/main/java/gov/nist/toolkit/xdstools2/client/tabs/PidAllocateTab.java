@@ -19,16 +19,6 @@ public class PidAllocateTab extends ToolWindow {
 	.create(PidAllocateService.class);
 
 	@Override
-	protected Widget buildUI() {
-		return null;
-	}
-
-	@Override
-	protected void bindUI() {
-
-	}
-
-	@Override
 	public void onTabLoad(boolean select, String eventName) {
 		registerTab(select, "Patient ID");
 

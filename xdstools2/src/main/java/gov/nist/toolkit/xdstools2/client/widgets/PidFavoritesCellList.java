@@ -4,7 +4,6 @@ import com.google.gwt.cell.client.AbstractCell;
 import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
 import com.google.gwt.user.cellview.client.CellList;
 import com.google.gwt.user.cellview.client.HasKeyboardSelectionPolicy;
-import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.view.client.ListDataProvider;
@@ -12,6 +11,8 @@ import com.google.gwt.view.client.ProvidesKey;
 import com.google.gwt.view.client.SelectionChangeEvent;
 import com.google.gwt.view.client.SingleSelectionModel;
 import gov.nist.toolkit.configDatatypes.client.Pid;
+import gov.nist.toolkit.xdstools2.client.command.CommandContext;
+import gov.nist.toolkit.xdstools2.client.command.command.RetrieveFavPidsCommand;
 import gov.nist.toolkit.xdstools2.client.event.FavoritePidsUpdatedEvent;
 import gov.nist.toolkit.xdstools2.client.event.Xdstools2EventBus;
 import gov.nist.toolkit.xdstools2.client.util.ClientUtils;
@@ -89,14 +90,9 @@ public class PidFavoritesCellList extends Composite{
     private void loadData() throws IOException {
         String environmentName = ClientUtils.INSTANCE.getEnvironmentState().getEnvironmentName();
         if (environmentName!=null) {
-            ClientUtils.INSTANCE.getToolkitServices().retrieveConfiguredFavoritesPid(environmentName, new AsyncCallback<List<Pid>>() {
+            new RetrieveFavPidsCommand() {
                 @Override
-                public void onFailure(Throwable throwable) {
-
-                }
-
-                @Override
-                public void onSuccess(List<Pid> pids) {
+                public void onComplete(List<Pid> pids) {
                     List<Pid> pidList=new LinkedList<Pid>();
                     pidList.addAll(pids);
                     pidList.addAll(CookiesServices.retrievePidFavoritesFromCookies());
@@ -104,7 +100,7 @@ public class PidFavoritesCellList extends Composite{
                     model.refresh();
                     cellList.redraw();
                 }
-            });
+            }.run(new CommandContext(environmentName, ClientUtils.INSTANCE.getTestSessionManager().getCurrentTestSession()));
         }
     }
 

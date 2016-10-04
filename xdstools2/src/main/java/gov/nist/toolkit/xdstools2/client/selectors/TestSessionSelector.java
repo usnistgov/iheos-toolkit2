@@ -7,6 +7,7 @@ import gov.nist.toolkit.xdstools2.client.event.TestSessionChangedEvent;
 import gov.nist.toolkit.xdstools2.client.event.testSession.TestSessionChangedEventHandler;
 import gov.nist.toolkit.xdstools2.client.event.testSession.TestSessionsUpdatedEvent;
 import gov.nist.toolkit.xdstools2.client.event.testSession.TestSessionsUpdatedEventHandler;
+import gov.nist.toolkit.xdstools2.client.util.ClientUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -77,7 +78,7 @@ public class TestSessionSelector {
             public void onChange(ChangeEvent changeEvent) {
                 String newValue = listBox.getValue(listBox.getSelectedIndex());
                 if (NONSELECTION.equals(newValue)) return;
-                Xdstools2.getTestSessionManager().setCurrentTestSession(newValue);
+                ClientUtils.INSTANCE.getTestSessionManager().setCurrentTestSession(newValue);
                 Xdstools2.getEventBus().fireEvent(new TestSessionChangedEvent(TestSessionChangedEvent.ChangeType.SELECT, newValue));
             }
         });

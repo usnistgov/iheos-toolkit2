@@ -121,16 +121,6 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner, SiteMa
 	public String getTitle() { return "Conformance Tests"; }
 
 	@Override
-	protected Widget buildUI() {
-		return null;
-	}
-
-	@Override
-	protected void bindUI() {
-
-	}
-
-	@Override
 	public void onTabLoad(boolean select, String eventName) {
 		displayTestSessionDisplay();
 		testSessionDescription.addClickHandler(new TestSessionClickHandler());

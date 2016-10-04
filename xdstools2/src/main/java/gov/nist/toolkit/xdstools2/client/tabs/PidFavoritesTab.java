@@ -7,8 +7,6 @@ import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.cellview.client.CellTable;
 import com.google.gwt.user.cellview.client.Column;
-import com.google.gwt.user.client.Window;
-import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.*;
 import com.google.gwt.view.client.ListDataProvider;
 import com.google.gwt.view.client.MultiSelectionModel;
@@ -21,10 +19,10 @@ import gov.nist.toolkit.xdstools2.client.CoupledTransactions;
 import gov.nist.toolkit.xdstools2.client.PopupMessage;
 import gov.nist.toolkit.xdstools2.client.command.command.GeneratePidCommand;
 import gov.nist.toolkit.xdstools2.client.command.command.GetAssigningAuthoritiesCommand;
+import gov.nist.toolkit.xdstools2.client.command.command.RetrieveFavPidsCommand;
 import gov.nist.toolkit.xdstools2.client.command.command.SendPidToRegistryCommand;
 import gov.nist.toolkit.xdstools2.client.command.request.GeneratePidRequest;
 import gov.nist.toolkit.xdstools2.client.command.request.SendPidToRegistryRequest;
-import gov.nist.toolkit.xdstools2.client.event.TabSelectedEvent;
 import gov.nist.toolkit.xdstools2.client.event.Xdstools2EventBus;
 import gov.nist.toolkit.xdstools2.client.siteActorManagers.GetDocumentsSiteActorManager;
 import gov.nist.toolkit.xdstools2.client.tabs.genericQueryTab.GenericQueryTab;
@@ -33,7 +31,6 @@ import gov.nist.toolkit.xdstools2.client.util.CookiesServices;
 
 import java.io.IOException;
 import java.util.*;
-import java.util.logging.Logger;
 
 /**
  *
@@ -220,21 +217,15 @@ public class PidFavoritesTab extends GenericQueryTab {
 
     void retrieveAndInitFavPids() throws IOException {
         final Set<Pid> pidsList=new HashSet<Pid>();
-        getToolkitServices().retrieveConfiguredFavoritesPid(getEnvironmentSelection(), new AsyncCallback<List<Pid>>() {
+        new RetrieveFavPidsCommand() {
             @Override
-            public void onFailure(Throwable throwable) {
-                Logger.getLogger(this.getClass().getName()).warning("Error requesting server!");
-                new PopupMessage("Failure requesting server.");
-            }
-
-            @Override
-            public void onSuccess(List<Pid> pids) {
-                pidsList.addAll(pids);
+            public void onComplete(List<Pid> result) {
+                pidsList.addAll(result);
                 configuredPids.addAll(pidsList);
                 pidsList.addAll(CookiesServices.retrievePidFavoritesFromCookies());
                 model.setList(new LinkedList<Pid>(pidsList));
             }
-        });
+        }.run(getCommandContext());
     }
 
     void addToFavorites(Set<Pid> pids) {

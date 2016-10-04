@@ -65,16 +65,9 @@ public class Xdstools2  implements AcceptsOneWidget, IsWidget {
 	EventBus v2V3IntegrationEventBus = null;
 
 	// This is as toolkit wide singleton.  See class for details.
-	private TestSessionManager2 testSessionManager = null;
-	static public TestSessionManager2 getTestSessionManager() {
-		if (ME.testSessionManager == null)
-			ME.testSessionManager = new TestSessionManager2();
-		return ME.testSessionManager;
+	public TestSessionManager2 getTestSessionManager() {
+		return ClientUtils.INSTANCE.getTestSessionManager();
 	}
-
-//	EnvironmentState environmentState = new EnvironmentState();
-
-//	public EnvironmentState getEnvironmentState() { return environmentState; }
 
 	// Central storage for parameters shared across all
 	// query type tabs
@@ -100,7 +93,7 @@ public class Xdstools2  implements AcceptsOneWidget, IsWidget {
 
 		menuPanel.add(environmentManager);
 		menuPanel.setSpacing(10);
-		menuPanel.add(new TestSessionSelector(testSessionManager.getTestSessions(), testSessionManager.getCurrentTestSession()).asWidget());
+		menuPanel.add(new TestSessionSelector(getTestSessionManager().getTestSessions(), getTestSessionManager().getCurrentTestSession()).asWidget());
 
 		DockLayoutPanel mainPanel = new DockLayoutPanel(Style.Unit.EM);
 		mainPanel.addNorth(menuPanel, 4);

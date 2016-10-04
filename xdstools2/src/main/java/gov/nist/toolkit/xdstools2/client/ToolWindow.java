@@ -31,7 +31,7 @@ import java.util.logging.Logger;
 public abstract class ToolWindow {
 	Logger logger = Logger.getLogger("Tabbed window");
 
-    private DockLayoutPanel tabTopRawPanel = new DockLayoutPanel(Style.Unit.EM);
+	private DockLayoutPanel tabTopRawPanel = new DockLayoutPanel(Style.Unit.EM);
 	private ScrollPanel innerPanel = new ScrollPanel();
 	public FlowPanel tabTopPanel = new FlowPanel();
 	private FlowPanel eastPanel = new FlowPanel();
@@ -42,16 +42,16 @@ public abstract class ToolWindow {
 	String helpHTML;
 	String topMessage = null;
 
-    EnvironmentManager environmentManager = null;
-    protected TestSessionManager2 testSessionManager = Xdstools2.getTestSessionManager();
-    private ToolkitServiceAsync toolkitService=getToolkitServices();
+	EnvironmentManager environmentManager = null;
+	protected TestSessionManager2 testSessionManager = ClientUtils.INSTANCE.getTestSessionManager();
+	private ToolkitServiceAsync toolkitService=getToolkitServices();
 	protected String tabName=new String();
 
-	protected abstract Widget buildUI();
-    protected abstract void bindUI();
-    public abstract void onTabLoad(boolean select, String eventName);
-    // getWindowShortName() + ".html"is documentation file in /doc
-    abstract public String getWindowShortName();
+//	protected abstract Widget buildUI();
+//	protected abstract void bindUI();
+	public abstract void onTabLoad(boolean select, String eventName);
+	// getWindowShortName() + ".html"is documentation file in /doc
+	abstract public String getWindowShortName();
 
 	public ToolWindow() {
 		String title = getTitle();
@@ -84,11 +84,13 @@ public abstract class ToolWindow {
 	/**
 	 * Override when using Raw Mode - only way to set title in raw mode
 	 * @return
-     */
+	 */
 	public String getTitle() { return null; }
 
 	// Used to be protected but impractical for use with the new widget-based architecture in for ex. TestsOverviewTab
-	public String getCurrentTestSession() { return testSessionManager.getCurrentTestSession(); }
+	public String getCurrentTestSession() {
+		return testSessionManager.getCurrentTestSession();
+	}
 
 	public void setCurrentTestSession(String testSession) { testSessionManager.setCurrentTestSession(testSession);}
 
@@ -96,7 +98,7 @@ public abstract class ToolWindow {
 		this.tabName=tabName;
 		TabContainer.instance().addTab(tabTopRawPanel, tabName, select);
 	}
-	
+
 	public TkProps tkProps() {
 		return Xdstools2.tkProps();
 	}
@@ -124,7 +126,7 @@ public abstract class ToolWindow {
 
 		try {
 			tabIsSelected();
-		} 
+		}
 		catch (RuntimeException e) {
 			e.printStackTrace();
 		}
@@ -207,7 +209,7 @@ public abstract class ToolWindow {
 		showMessage(caught.getMessage());
 	}
 
-	protected void showMessage(String message) {		
+	protected void showMessage(String message) {
 		HTML msgBox = new HTML();
 		msgBox.setHTML("<b>" + message + "</b>");
 		tabTopPanel.add(msgBox);
@@ -217,9 +219,9 @@ public abstract class ToolWindow {
 		return tabTopPanel;
 	}
 
-    public ToolkitServiceAsync getToolkitServices() {
-        if (toolkitService==null)
-            toolkitService=ClientUtils.INSTANCE.getToolkitServices();
-        return toolkitService;
-    }
+	public ToolkitServiceAsync getToolkitServices() {
+		if (toolkitService==null)
+			toolkitService=ClientUtils.INSTANCE.getToolkitServices();
+		return toolkitService;
+	}
 }
