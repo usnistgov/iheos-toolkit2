@@ -15,7 +15,8 @@ import gov.nist.toolkit.xdstools2.client.widgets.OrchestrationSupportTestsDispla
 import gov.nist.toolkit.xdstools2.client.widgets.buttons.AbstractOrchestrationButton;
 
 /**
- *
+ * Build orchestration for testing a Responding Gateway
+ * This code id tied to the button that launches it.
  */
 public class BuildRgTestOrchestrationButton extends AbstractOrchestrationButton {
     private ConformanceTestTab testTab;
@@ -30,9 +31,9 @@ public class BuildRgTestOrchestrationButton extends AbstractOrchestrationButton 
     private String systemTypeGroup = "RG System Type Group";
     private RadioButton exposed = new RadioButton(systemTypeGroup, "Exposed Registry/Repository");
     private RadioButton external = new RadioButton(systemTypeGroup, "External Registry/Repository");
-    boolean isExposed() { return exposed.getValue(); }
+    private boolean isExposed() { return exposed.getValue(); }
     boolean isExternal() { return external.getValue(); }
-    boolean usingExposedRR() { return exposed.getValue(); }
+    private boolean usingExposedRR() { return exposed.getValue(); }
 
 
     BuildRgTestOrchestrationButton(ConformanceTestTab testTab, Panel initializationPanel, String label, TestContext testContext, TestContextDisplay testContextDisplay, TestRunner testRunner) {
@@ -138,7 +139,7 @@ public class BuildRgTestOrchestrationButton extends AbstractOrchestrationButton 
             public void onSuccess(RawResponse rawResponse) {
                 if (handleError(rawResponse, RgOrchestrationResponse.class)) return;
                 RgOrchestrationResponse orchResponse = (RgOrchestrationResponse) rawResponse;
-                testTab.setRgOrchestrationResponse(orchResponse);
+                testTab.setOrchestrationResponse(orchResponse);
 
                 initializationResultsPanel.add(new HTML("Initialization Complete"));
 
@@ -150,11 +151,8 @@ public class BuildRgTestOrchestrationButton extends AbstractOrchestrationButton 
 
                 initializationResultsPanel.add(new HTML("System: None"));
 
-                if (orchResponse.getMessage().length() > 0) {
-                    HTML h = new HTML("<p>" + orchResponse.getMessage().replaceAll("\n", "<br />")  + "</p>");
-                    h.setStyleName("serverResponseLabelError");
-                    initializationResultsPanel.add(h);
-                }
+                handleMessages(initializationResultsPanel, orchResponse);
+
                 initializationResultsPanel.add(new HTML("<br />"));
 
                 initializationResultsPanel.add(new OrchestrationSupportTestsDisplay(orchResponse, testContext, testContextDisplay, testRunner ));
