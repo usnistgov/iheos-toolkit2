@@ -36,7 +36,7 @@ public class PatientErrorMapPresenter {
                 return;
             }
             PatientErrorList patientErrorList = map.get(transactionTypeName);
-//            panel.add(new HTML("<h3>" + transactionTypeName + "</h3>"));
+//            panel.addTest(new HTML("<h3>" + transactionTypeName + "</h3>"));
             PatientErrorSelectionPresenter patientErrorSelectionPresenter =
                     new PatientErrorSelectionPresenter(
                             patientErrorList,

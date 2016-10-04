@@ -6,7 +6,7 @@ public class TabManager {
 //
 //	static public void addTab(int index, ToolWindow win) {
 //		while( index >= tabs.size())
-//			tabs.add(null);
+//			tabs.addTest(null);
 //		tabs.set(index, win);
 //	}
 //

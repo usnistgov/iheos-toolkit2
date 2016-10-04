@@ -15,7 +15,7 @@ import java.util.Map;
 /**
  * Widget for capturing the parameters for the GetAll query. This does not include PatientID
  * since that is handled elsewhere.
- * Use codeFilterBank.addFilter(paramGrid, prow, 1, CodesConfiguration.***Code); to add XDS codes as widgets
+ * Use codeFilterBank.addFilter(paramGrid, prow, 1, CodesConfiguration.***Code); to addTest XDS codes as widgets
  */
 public class GetAllParams {
     // container for the composite widget being built

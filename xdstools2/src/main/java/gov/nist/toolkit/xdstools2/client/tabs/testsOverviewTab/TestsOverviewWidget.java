@@ -84,10 +84,10 @@ public class TestsOverviewWidget extends CellTable<Test> {
                     //TODO retrieve test plan page based on Test or TestNumber and open link to that page
                     Window.open("link_to_HTML_page", "_blank", "");
                 } else if (value == CommandsCell.LOG_BUTTON_NAME) {
-                    //TODO add link to log page
+                    //TODO addTest link to log page
                     Window.open("link_to_HTML_page", "_blank", "");
                 } else if (value == CommandsCell.TEST_DESCRIPTION_BUTTON_NAME) {
-                    //TODO add link to description page
+                    //TODO addTest link to description page
                     Window.open("link_to_HTML_page", "_blank", "");
                 }
             }

@@ -2,25 +2,25 @@ package gov.nist.toolkit.services.client;
 
 import gov.nist.toolkit.actorfactory.client.SimulatorConfig;
 import gov.nist.toolkit.configDatatypes.client.Pid;
-import gov.nist.toolkit.sitemanagement.client.SiteSpec;
+import gov.nist.toolkit.sitemanagement.client.Site;
 
 /**
  *
  */
 public class RepOrchestrationResponse extends AbstractOrchestrationResponse {
-    private SiteSpec repSite;
+    private Site repSite;
     private SimulatorConfig regConfig;
-    private SiteSpec supportSite;
+    private Site supportSite;
     private Pid pid;
 
     public RepOrchestrationResponse() {
     }
 
-    public SiteSpec getRepSite() {
+    public Site getRepSite() {
         return repSite;
     }
 
-    public void setRepSite(SiteSpec repSite) {
+    public void setRepSite(Site repSite) {
         this.repSite = repSite;
     }
 
@@ -32,11 +32,11 @@ public class RepOrchestrationResponse extends AbstractOrchestrationResponse {
         this.regConfig = regConfig;
     }
 
-    public SiteSpec getSupportSite() {
+    public Site getSupportSite() {
         return supportSite;
     }
 
-    public void setSupportSite(SiteSpec supportSite) {
+    public void setSupportSite(Site supportSite) {
         this.supportSite = supportSite;
     }
 

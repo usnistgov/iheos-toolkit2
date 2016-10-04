@@ -49,7 +49,7 @@ public class GetAllTab extends GenericQueryTab {
 	// in general, if you focus on a GET* style transaction (no Patient ID parameter)
 	// an example of couplings is that if you choose an Intitiating Gateway then you must choose
 	// the Responding Gateway that it routes to.
-	//  - add proper transaction couplings
+	//  - addTest proper transaction couplings
 	static CoupledTransactions couplings = new CoupledTransactions();
 
 	GenericQueryTab genericQueryTab;

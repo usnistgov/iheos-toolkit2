@@ -41,7 +41,7 @@
     <TestStep id="homeValidation1">
         <Goal>Home Community Id returned in first returned DocumentEntry matches test configuration</Goal>
         <NullTransaction>
-            <UseReport reportName="$testdata_home$" section="THIS" step="finddocs" useAs="submittedValue"/>
+            <UseReport test="15807" section="onedoc1"                      step="submit_single_doc" reportName="$testdata_home$"   useAs="submittedValue"/>
             <UseReport reportName="$home1$"          section="THIS" step="finddocs" useAs="returnedValue"/>
             <Assertions>
                 <Assert id="homeCommunityId returned must match RG simulator configuration">
@@ -53,7 +53,7 @@
     <TestStep id="homeValidation2">
         <Goal>Home Community Id returned in second returned DocumentEntry matches test configuration</Goal>
         <NullTransaction>
-            <UseReport reportName="$testdata_home$" section="THIS" step="finddocs" useAs="submittedValue"/>
+            <UseReport test="15807" section="onedoc1"                      step="submit_single_doc" reportName="$testdata_home$"   useAs="submittedValue"/>
             <UseReport reportName="$home2$"          section="THIS" step="finddocs" useAs="returnedValue"/>
             <Assertions>
                 <Assert id="homeCommunityId returned must match RG simulator configuration">

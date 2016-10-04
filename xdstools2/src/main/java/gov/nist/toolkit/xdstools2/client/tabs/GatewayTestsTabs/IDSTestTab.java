@@ -238,7 +238,7 @@ public class IDSTestTab extends GenericQueryTab implements GatewayTool {
 
             HorizontalPanel logLaunchButtonPanel = rigForRunning();
 //            logLaunchButtonPanel.clear();
-//            logLaunchButtonPanel.add(testSelectionManager.buildLogLauncher(new List<>(rrConfig)));
+//            logLaunchButtonPanel.addTest(testSelectionManager.buildLogLauncher(new List<>(rrConfig)));
             String testToRun = selectedTest;
             if (TestSelectionManager.ALL.equals(testToRun)) {
                 testToRun = "tc:" + COLLECTION_NAME;

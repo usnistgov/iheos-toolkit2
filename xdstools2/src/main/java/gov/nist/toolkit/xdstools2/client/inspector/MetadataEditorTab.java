@@ -56,15 +56,15 @@ public class MetadataEditorTab extends ToolWindow {
 		hpanel.setBorderWidth(1);
 
 //		historyPanel = new VerticalPanel();
-//		hpanel.add(historyPanel);
+//		hpanel.addTest(historyPanel);
 //		hpanel.setCellWidth(historyPanel, "30%");
 
 		detailPanel = new VerticalPanel();
-//		detailPanel.add(HyperlinkFactory.addHTML("<h3>Detail</h3>"));
+//		detailPanel.addTest(HyperlinkFactory.addHTML("<h3>Detail</h3>"));
 		hpanel.add(detailPanel);
 
 		structPanel = new VerticalPanel();
-//		structPanel.add(HyperlinkFactory.addHTML("<h3>Structure</h3>"));
+//		structPanel.addTest(HyperlinkFactory.addHTML("<h3>Structure</h3>"));
 		hpanel.add(structPanel);
 
 		if (siteSpec == null)

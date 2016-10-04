@@ -72,11 +72,50 @@ public class FindDocumentsTab extends AbstractTool {
             queryCallback.onFailure(throwable);
         }
 
-        @Override
-        public void onSuccess(List<Result> results) {
-            queryCallback.onSuccess(results);
-        }
-    };
+		@Override
+		public void onSuccess(List<Result> results) {
+			queryCallback.onSuccess(results);
+//			try {
+				/*
+				if (getInteractionModel()!=null) {
+					getInteractionModel().setEnd(new Date());
+
+					toolkitService.getInteractionFromModel(getInteractionModel(), new AsyncCallback<InteractingEntity>() {
+						@Override
+						public void onFailure(Throwable throwable) {
+							String mapMsg = "mapping failed!";
+							new PopupMessage(mapMsg);
+						}
+
+						@Override
+						public void onSuccess(InteractingEntity interactingEntity) {
+							String mapMsg = "mapping was successful!!" + " return is null? " + (interactingEntity==null) + " desc: " + interactingEntity.getInteractions().get(0).getName();
+							new PopupMessage(mapMsg + " interaction status: " + interactingEntity.getInteractions().get(0).getStatus().name());
+
+						}
+					});
+				}
+				else {
+					new PopupMessage("Null origin");
+				}
+
+				InteractionDiagram diagram = new InteractionDiagram(testTwoActors(), 500,900);
+//							Element svg = diagram.draw(interactingEntity,0);
+//							Element svg = diagram.draw(testIG(),0);
+//							Element svg = diagram.draw(testReuseLL(),0);
+//							System.out.println(svg);
+				resultPanel.display(new HTML("<p style='font-weight:bold'>Interaction Sequence:</p>"));
+				resultPanel.display(diagram);
+				*/
+//			} catch (Throwable t){ new PopupMessage(t.toString());}
+
+		}
+	};
+
+	@Override
+	public String getWindowShortName() {
+		return "finddocuments";
+	}
 
     public InteractingEntity getInteractionModel() {
         // begin interaction model

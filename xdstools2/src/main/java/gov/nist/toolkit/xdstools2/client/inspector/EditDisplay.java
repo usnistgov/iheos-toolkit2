@@ -313,7 +313,7 @@ public class EditDisplay {
 
 		row = displayDetailAuthor(ft, row, de.authors);
 
-		detailPanel.add(ft);
+		detailPanel.addTest(ft);
 
 	}
 

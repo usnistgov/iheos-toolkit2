@@ -61,8 +61,16 @@ public class Site  implements IsSerializable, Serializable {
 	public String pidAllocateURI = null;
 	transient public boolean changed = false;
 	public String user = null;  // loaded from SimId - when non-null this site represents a sim
+	private String orchestrationSiteName = null;
 
 
+	/**
+	 * Site linkage is used to combine two sites into one.  Use case: The SUT is defined in a site. We
+	 * need to add other actors to the mix through orchestration.  Because the vendor controls the SUT site,
+	 * we create a separate site for the orchestration actors. We then link in the SUT site into
+	 * the orchestration site to have a single site to target.
+	 * @param linkedSite
+	 */
 	public void addLinkedSite(Site linkedSite) {
 		transactions.mergeIn(linkedSite.transactions());
 		repositories.mergeIn(linkedSite.repositories());
@@ -353,4 +361,17 @@ public class Site  implements IsSerializable, Serializable {
 		return name;
 	}
 
+	public SiteSpec siteSpec() {
+		SiteSpec siteSpec = new SiteSpec(getSiteName());
+		siteSpec.orchestrationSiteName = orchestrationSiteName;
+		return siteSpec;
+	}
+
+	public String getOrchestrationSiteName() {
+		return orchestrationSiteName;
+	}
+
+	public void setOrchestrationSiteName(String orchestrationSiteName) {
+		this.orchestrationSiteName = orchestrationSiteName;
+	}
 }

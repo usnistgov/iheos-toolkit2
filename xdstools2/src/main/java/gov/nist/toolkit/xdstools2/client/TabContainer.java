@@ -45,7 +45,7 @@ public class TabContainer {
 		OUTERPANEL.addNorth(TABBAR, 3.0);
 //		OUTERPANEL.addNorth(new HTML("<hr style=\"background:#6495ED; border:0; height:5px\" />"), 1.0);
 		OUTERPANEL.add(INNER_DECKPANEL);
-//		OUTERPANEL.add(INNERPANEL);
+//		OUTERPANEL.addTest(INNERPANEL);
 
 		TABBAR.addSelectionHandler(new SelectionHandler<Integer>() {
 			@Override
@@ -145,7 +145,7 @@ public class TabContainer {
 		INNER_DECKPANEL.showWidget(tabIndex);
 		/*
 		INNERPANEL.clear();
-		INNERPANEL.add(deck.get(tabIndex));
+		INNERPANEL.addTest(deck.get(tabIndex));
 		*/
 
 //		TABPANEL.selectTab(tabIndex);

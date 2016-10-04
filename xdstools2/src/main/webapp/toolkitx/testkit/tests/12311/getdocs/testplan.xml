@@ -10,10 +10,14 @@
   </Rule>
   <XCQTransaction>
     <MetadataFile>query.xml</MetadataFile>
-    <UseXPath testdir="../12309" symbol="$home$" step="finddocs">
-                //TestStep[@id='finddocs']/XCQTransaction/Result/*[local-name()='AdhocQueryResponse']/*[local-name()='RegistryObjectList']/*[local-name()='ObjectRef'][1]/@home</UseXPath>
-    <UseObjectRef testdir="../12309" index="0" symbol="$doc_uuid_1$" step="finddocs"/>
-    <UseObjectRef testdir="../12309" index="1" symbol="$doc_uuid_2$" step="finddocs"/>
+    
+    <UseId testdir="../../12318/init" step="init" section="AssignedUuids" id="Document01" symbol="$doc_uuid_1$"/>
+    <UseId testdir="../../12318/init" step="init" section="AssignedUuids" id="Document02" symbol="$doc_uuid_2$"/>
+    <UseReport test="12318" section="init" step="init" reportName="$testdata_home$" useAs="$home$"/>
+
+    
+    
+    
     <Report name="$requestHome$" section="InputMetadata">
                 //*[local-name()='AdhocQuery']/@home
             </Report>

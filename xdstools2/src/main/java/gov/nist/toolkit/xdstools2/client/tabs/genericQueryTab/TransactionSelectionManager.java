@@ -93,7 +93,7 @@ public class TransactionSelectionManager {
 //		for (TransactionType t : perTransTypeRadioButtons.keySet()) {
 //			for (RadioButton rb : perTransTypeRadioButtons.getRetrievedDocumentsModel(t)) {
 //				if (rb.getValue()) {
-//					selections.add(t);
+//					selections.addTest(t);
 //					break;
 //				}
 //			}

@@ -154,7 +154,7 @@ public class IGTestTab extends GenericQueryTab implements GatewayTool {
         HorizontalPanel testEnvironmentsPanel = new HorizontalPanel();
         tabTopPanel.add(testEnvironmentsPanel);
 
-        new BuildIGTestOrchestrationButton(this, testEnvironmentsPanel, "Build Test Environment", false);
+//        new BuildIGTestOrchestrationButton(this, testEnvironmentsPanel, "Build Test Environment", false);
 
 //        new BuildIGTestOrchestrationButton(this, testEnvironmentsPanel, "Build Demonstration Environment", true);
 

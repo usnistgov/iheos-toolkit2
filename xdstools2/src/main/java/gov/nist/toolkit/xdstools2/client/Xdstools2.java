@@ -232,6 +232,8 @@ public class Xdstools2  implements AcceptsOneWidget, IsWidget {
 
 
 		String currentTestSession = getTestSessionManager().fromCookie();
+		if (currentTestSession == null)
+			currentTestSession = "default";
 		if (getTestSessionManager().isLegalTestSession(currentTestSession)) {
 			// Don't overwrite initialization by ConfActor activity
 			if (getTestSessionManager().getCurrentTestSession() == null)

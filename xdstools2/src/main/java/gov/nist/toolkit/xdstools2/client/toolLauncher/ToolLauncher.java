@@ -77,7 +77,7 @@ public class ToolLauncher implements ClickHandler {
 		tools.add(new ToolDef(findDocumentsAllParametersTabLabel, "FindDocs", "FindDocs"));
 		tools.add(new ToolDef(findDocumentsTabLabel, "FindDocs", "FindDocs"));
 		tools.add(new ToolDef(findDocumentsByRefIdTabLabel, "DocsByRefId", "DocsByRefId"));
-//		tools.add(new ToolDef(findPatientTabLabel, "FindPatients", "FindPatients"));
+//		tools.addTest(new ToolDef(findPatientTabLabel, "FindPatients", "FindPatients"));
 		tools.add(new ToolDef(findFoldersTabLabel, "FindFolders", "FindFolders"));
 		tools.add(new ToolDef(getDocumentsTabLabel, "GetDocs", "GetDocs"));
 		tools.add(new ToolDef(getFoldersTabLabel, "GetFolders", "GetFolders"));
@@ -93,7 +93,7 @@ public class ToolLauncher implements ClickHandler {
 		tools.add(new ToolDef(simulatorControlTabLabel, "SimCntl", "SimCntl"));
 		tools.add(new ToolDef(srcStoresDocValTabLabel, "SrcStores", "SrcStores"));
 		tools.add(new ToolDef(documentRetrieveTabLabel, "DocRet", "DocRet"));
-//		tools.add(new ToolDef(allocatePatientIdTabLabel, "FindDocs", "FindDocs"));
+//		tools.addTest(new ToolDef(allocatePatientIdTabLabel, "FindDocs", "FindDocs"));
 		tools.add(new ToolDef(registryTestDataTabLabel, "RegData", "RegData"));
 		tools.add(new ToolDef(dashboardTabLabel, "Dash", "Dash"));
 		tools.add(new ToolDef(repositoryTestDataTabLabel, "RepData", "RepData"));
@@ -104,8 +104,8 @@ public class ToolLauncher implements ClickHandler {
 		tools.add(new ToolDef(sitesTabLabel, "Sites", "Sites"));
 		tools.add(new ToolDef(repositoryTabLabel, "Repositories", "Repositories"));
 		tools.add(new ToolDef(mesaTabLabel, "PreCAT", "PreCAT"));
-//		tools.add(new ToolDef(testRunnerTabLabel, "FindDocs", "FindDocs"));
-//		tools.add(new ToolDef(nwhinTabLabel, "FindDocs", "FindDocs"));
+//		tools.addTest(new ToolDef(testRunnerTabLabel, "FindDocs", "FindDocs"));
+//		tools.addTest(new ToolDef(nwhinTabLabel, "FindDocs", "FindDocs"));
 		tools.add(new ToolDef(pidFavoritesLabel, "PIDFav", "PIDFav"));
 		tools.add(new ToolDef(testsOverviewTabLabel, "TestsOver", "TestsOver"));
 		tools.add(new ToolDef(igTestsTabLabel, "IGTests", "IGTests"));

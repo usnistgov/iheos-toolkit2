@@ -6,7 +6,7 @@ import gov.nist.toolkit.xdstools2.client.event.testSession.TestSessionChangedEve
 /**
  * Can carry one of three changes:
  *  delete
- *  add
+ *  display
  *  selection change
  */
 public class TestSessionChangedEvent extends GwtEvent<TestSessionChangedEventHandler> {

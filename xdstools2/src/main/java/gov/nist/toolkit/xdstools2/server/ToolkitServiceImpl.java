@@ -2,6 +2,7 @@ package gov.nist.toolkit.xdstools2.server;
 
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 import gov.nist.toolkit.MessageValidatorFactory2.MessageValidatorFactoryFactory;
+import gov.nist.toolkit.actorfactory.SimManager;
 import gov.nist.toolkit.actorfactory.SiteServiceManager;
 import gov.nist.toolkit.actorfactory.client.SimId;
 import gov.nist.toolkit.actorfactory.client.Simulator;
@@ -361,19 +362,23 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements
         return session().xdsTestServiceManager().getTestReadme(test);
     }
 
-    public List<Result> runMesaTest(String mesaTestSession, SiteSpec siteSpec, TestInstance testInstance, List<String> sections, Map<String, String> params, boolean stopOnFirstFailure)  throws Exception {
-        return session().xdsTestServiceManager().runMesaTest(getCurrentEnvironment(), mesaTestSession, siteSpec, testInstance, sections, params, null, stopOnFirstFailure);
-    }
-    public TestOverviewDTO runTest(String environmentName, String mesaTestSession, SiteSpec siteSpec, TestInstance testInstance, Map<String, String> params, boolean stopOnFirstFailure) throws Exception {
-        List<String> sections = new ArrayList<>();
-        if (testInstance.getSection() != null) sections.add(testInstance.getSection());
-        setEnvironment(environmentName);
-        Session session = session().xdsTestServiceManager().session;
-        session.setCurrentEnvName(environmentName);
-        session.setMesaSessionName(mesaTestSession);
-        TestOverviewDTO testOverviewDTO = session().xdsTestServiceManager().runTest(environmentName, mesaTestSession, siteSpec, testInstance, sections, params, null, stopOnFirstFailure);
-        return testOverviewDTO;
-    }
+	public List<Result> runMesaTest(String mesaTestSession, SiteSpec siteSpec, TestInstance testInstance, List<String> sections, Map<String, String> params, boolean stopOnFirstFailure)  throws Exception {
+		return session().xdsTestServiceManager().runMesaTest(getCurrentEnvironment(), mesaTestSession, siteSpec, testInstance, sections, params, null, stopOnFirstFailure);
+	}
+	public TestOverviewDTO runTest(String environmentName, String mesaTestSession, SiteSpec siteSpec, TestInstance testInstance, Map<String, String> params, boolean stopOnFirstFailure) throws Exception {
+		List<String> sections = new ArrayList<>();
+		if (testInstance.getSection() != null) sections.add(testInstance.getSection());
+		setEnvironment(environmentName);
+		Session session = session().xdsTestServiceManager().session;
+		session.setCurrentEnvName(environmentName);
+		session.setMesaSessionName(mesaTestSession);
+		if (siteSpec == null)
+			throw new Exception("No site selected");
+		if (!new SimManager(mesaTestSession).exists(siteSpec.name))
+			throw new Exception("Site " + siteSpec.name + " does not exist");
+		TestOverviewDTO testOverviewDTO = session().xdsTestServiceManager().runTest(environmentName, mesaTestSession, siteSpec, testInstance, sections, params, null, stopOnFirstFailure);
+		return testOverviewDTO;
+	}
 
     public TestLogs getRawLogs(TestInstance logId)  throws NoServletSessionException { return session().xdsTestServiceManager().getRawLogs(logId); }
     public List<String> getTestdataSetListing(String environmentName, String testSessionName, String testdataSetName)  throws NoServletSessionException {
@@ -528,10 +533,12 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements
         return session().xdsTestServiceManager().validateConformanceSession(testSession, siteName);
     }
 
-    @Override
-    public Collection<String> getSitesForTestSession(String testSession) throws Exception {
-        return session().xdsTestServiceManager().getSitesForTestSession(testSession);
-    }
+	@Override
+	public Collection<String> getSitesForTestSession(String testSession) throws Exception {
+		if (testSession == null)
+			return new ArrayList<>();
+		return session().xdsTestServiceManager().getSitesForTestSession(testSession);
+	}
 
     public String getDefaultAssigningAuthority()  throws NoServletSessionException { return Installation.instance().propertyServiceManager().getDefaultAssigningAuthority(); }
     public String getImplementationVersion() throws NoServletSessionException  { return Installation.instance().propertyServiceManager().getImplementationVersion(); }
