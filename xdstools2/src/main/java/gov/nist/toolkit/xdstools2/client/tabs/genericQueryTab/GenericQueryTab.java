@@ -103,7 +103,24 @@ public abstract class GenericQueryTab  extends ToolWindow {
 
     private boolean displayTab = true;
 
+    /**
+     * This is the method that should build the specific content of a tab.
+     * This method should mostly only contain GWT client widget.
+     * @return UI of the tab as a Widget
+     */
+    protected abstract Widget buildUI();
 
+    /**
+     * This is the method that should bind the tab's widgets with actions, the eventbus and the server.
+     * This methoud could contains eventbus handlers, calls to the server or even action handlers like click handler,
+     * valuechange handler...
+     */
+    protected abstract void bindUI();
+
+    /**
+     * This is the method where all the UI configurations though call to existing method in GenericQueryTab should be.
+     * It is mostly used for {@link #addQueryBoilerplate} methods so far.
+     */
     protected abstract void configureTabView();
 
     /**
@@ -297,19 +314,7 @@ public abstract class GenericQueryTab  extends ToolWindow {
 		samlListBox.setSelectedIndex((getCommonSiteSpec().isSaml) ? 1 : 0);
 		if (pidTextBox != null)
 			pidTextBox.setText(getCommonPatientId());
-
-		//		String defaultName = defaultSiteSpec.getName();
-		//		for (RadioButton rb : byActorButtons) {
-		//			String name = rb.getName();
-		//			if (defaultName.equals(name)) rb.setValue(true);
-		//		}
-
 	}
-
-	//	protected SiteSpec verifySiteSelection() {
-	//		setCommonSiteSpec(siteActorManager.verifySiteSelection());
-	//		return getCommonSiteSpec();
-	//	}
 
 	// These three versions of addQueryBoilerplate should be made into static methods
 	//  probably hung off a QueryBoilerplateFactory class
