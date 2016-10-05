@@ -1,0 +1,14 @@
+<TestPlan>
+	<Test>ids-1001/validate-metadata</Test>
+	<TestStep id="validate-metadata">
+		<Goal>Validate KOS metadata sent to Repository simulator</Goal>
+		<ExpectedStatus>Success</ExpectedStatus>
+		<ImgDetailTransaction>
+			<Assertions>
+            <Assert id="Submitted Metadata Validation" process="sameKOSMetadata">
+            <SimTransaction id="rep_reg" transaction="prb"/>
+            metadata.xml</Assert>
+			</Assertions>
+		</ImgDetailTransaction>
+	</TestStep>
+</TestPlan>

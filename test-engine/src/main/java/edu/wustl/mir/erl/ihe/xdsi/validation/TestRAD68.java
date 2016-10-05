@@ -23,18 +23,18 @@ public class TestRAD68 extends Test {
     */
    public void initializeTest(String cmd, SimulatorTransaction trn) throws Exception {
       switch (cmd) {
-         case "sameKONDcm":
-            initializeKONDcm(trn);
+         case "sameKOSDcm":
+            initializeKOSDcm(trn);
             break;
-         case "sameKONMetadata":
-            initializeKONMetadata(trn);
+         case "sameKOSMetadata":
+            initializeKOSMetadata(trn);
             break;
          default:
             throw new Exception("Don't understand test name " + cmd);
       }
    }
    
-   private void initializeKONDcm(SimulatorTransaction trn) throws Exception {
+   private void initializeKOSDcm(SimulatorTransaction trn) throws Exception {
 
       StepRAD68KOSDocument stepRAD68KOSDocument = new StepRAD68KOSDocument();
       stepRAD68KOSDocument.initializeStep(new Object[] { trn.getPfns().get(0),
@@ -42,7 +42,7 @@ public class TestRAD68 extends Test {
       addStep(stepRAD68KOSDocument);
    }
    
-   private void initializeKONMetadata(SimulatorTransaction trn) throws Exception {
+   private void initializeKOSMetadata(SimulatorTransaction trn) throws Exception {
 
       StepRAD68KOSMetadata stepRAD68KOSMetadata = new StepRAD68KOSMetadata();
       stepRAD68KOSMetadata.initializeStep(new Object[] { trn.getMetadata(),

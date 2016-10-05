@@ -150,11 +150,11 @@ public class ImgDetailTransaction extends BasicTransaction {
          case "sameDcmImgs":
             prsSameDcmImgs(engine, a, assertion_output);
             break;
-         case "sameKONDcm":
-            prsSameKONDcm(engine, a, assertion_output);
+         case "sameKOSDcm":
+            prsSameKOSDcm(engine, a, assertion_output);
             break;
-         case "sameKONMetadata":
-            prsSameKONMetadata(engine, a, assertion_output);
+         case "sameKOSMetadata":
+            prsSameKOSMetadata(engine, a, assertion_output);
             break;
          default:
             throw new XdsInternalException("ImgDetailTransaction: Unknown assertion.process " + a.process);
@@ -509,8 +509,8 @@ public class ImgDetailTransaction extends BasicTransaction {
       }
    }
 
-   // Matches values in KON to standard. Used on PnR transactions
-   private void prsSameKONDcm(AssertionEngine engine, Assertion a, OMElement assertion_output)
+   // Matches values in KOS to standard. Used on PnR transactions
+   private void prsSameKOSDcm(AssertionEngine engine, Assertion a, OMElement assertion_output)
       throws XdsInternalException {
       try {
          // pfn of std KON.dcm
@@ -527,11 +527,11 @@ public class ImgDetailTransaction extends BasicTransaction {
          if (results.getErrorCount() > 0) cat = CAT.ERROR;
          store(engine, cat, rep);
       } catch (Exception e) {
-         throw new XdsInternalException("ImgDetailTransaction - sameKONDcm: " + e.getMessage());
+         throw new XdsInternalException("ImgDetailTransaction - sameKOSDcm: " + e.getMessage());
       }
    }
 
-   private void prsSameKONMetadata(AssertionEngine engine, Assertion a, OMElement assertion_output)
+   private void prsSameKOSMetadata(AssertionEngine engine, Assertion a, OMElement assertion_output)
       throws XdsInternalException {
       try {
          // pfn of std metadata
@@ -549,7 +549,7 @@ public class ImgDetailTransaction extends BasicTransaction {
          if (results.getErrorCount() > 0) cat = CAT.ERROR;
          store(engine, cat, rep);
       } catch (Exception e) {
-         throw new XdsInternalException("ImgDetailTransaction - sameKONDcm: " + e.getMessage());
+         throw new XdsInternalException("ImgDetailTransaction - sameKOSDcm: " + e.getMessage());
       }
    }
 
