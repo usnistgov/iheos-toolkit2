@@ -31,7 +31,7 @@ public class AssertionLoader {
             // Skip the first line (column names)
             br.readLine();
 
-            // process the rest
+            // Process the rest
             while ((line = br.readLine()) != null) {
 
                 String[] ta = line.split(cvsSplitBy);
@@ -40,7 +40,7 @@ public class AssertionLoader {
                 assertionsMap.put(ta[0], list);
 
                 System.out.println("Toolkit Assertion [TA= " + ta[0] + " , Toolkit Error Message=" + ta[1] + " , Gazelle Scheme ID=" + ta[2] +
-                        "Gazelle Assertion ID=" + ta[3] + "]");
+                        " , Gazelle Assertion ID=" + ta[3] + "]");
             }
         } catch (IOException e) {
             e.printStackTrace();
