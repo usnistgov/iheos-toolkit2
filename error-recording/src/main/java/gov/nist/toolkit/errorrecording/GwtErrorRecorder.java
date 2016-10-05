@@ -301,15 +301,10 @@ public class GwtErrorRecorder implements ErrorRecorder  {
 	}
 
 	@Override
-	public void success(String dts, String name, String found, String expected, String RFC) {
+	public void success(String location, String resource) {
 		tagLastInfo2();
 		GwtValidatorErrorItem ei = new GwtValidatorErrorItem();
 		ei.level = GwtValidatorErrorItem.ReportingLevel.D_SUCCESS;
-		ei.dts = dts;
-		ei.name = name;
-		ei.found = found;
-		ei.expected = expected;
-		ei.rfc = RFC;
 		ei.status = "Success";
 		errMsgs.add(ei);
 	}
@@ -334,7 +329,7 @@ public class GwtErrorRecorder implements ErrorRecorder  {
 
 	@Override
 	public void test(boolean good, String dts, String name, String found, String expected, String RFC) {
-		if (good) success(dts, name, found, expected, RFC);
+		if (good) success(found, dts);
 		else error(dts, name, found, expected, RFC);
 	}
 

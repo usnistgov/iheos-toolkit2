@@ -236,8 +236,8 @@ public class TextErrorRecorder implements ErrorRecorder {
 	}
 
 	@Override
-	public void success(String dts, String name, String found, String expected, String RFC) {
-		detail(dts + ": " + name + " " + found);		
+	public void success(String location, String resource) {
+		//detail(dts + ": " + name + " " + found);
 	}
 
 	@Override

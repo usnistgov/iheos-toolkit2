@@ -25,7 +25,7 @@ public interface ErrorRecorder extends ErrorRecorderBuilder {
 	void externalChallenge(String msg); // statement of challenge that requires registry query
 	void detail(String msg); // detail findings
     void report(String name, String found);
-	void success(String dts, String name, String found, String expected, String RFC);
+	void success(String location, String resource);
 	void error(String dts, String name, String found, String expected, String RFC);
     void test(boolean good, String dts, String name, String found, String expected, String RFC);
 	void warning(String dts, String name, String found, String expected, String RFC);

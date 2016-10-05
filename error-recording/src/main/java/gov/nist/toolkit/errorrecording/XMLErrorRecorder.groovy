@@ -201,15 +201,16 @@ public class XMLErrorRecorder implements ErrorRecorder {
  * @param RFC
  */
     @Override
-    public void success(String _dts, String _name, String _found, String _expected, String _rfc) {
+    public void success(String _location, String _resource) {
         println("success")
+
+        // Generate the new element
         def sw = new StringWriter()
         def builder = new MarkupBuilder(sw)
-        builder.records() {
-            Success (name:_name, dts:_dts, found:_found, expected:_expected, rfc:_rfc)
-        }
-        def el = new XmlSlurper().parseText(sw.toString())
-        //errRecords.add(el)
+        builder.Success(location:_location, resource:_resource){}
+
+        // Parse and add
+        errXml = errXml.concat(sw.toString() + "\n")
     }
 
     // Not used / Not tested
