@@ -63,7 +63,7 @@ class StsSamlAssertionSpec extends ToolkitSpecification {
 //        ListenerFactory.terminateAll()
     }
 
-    def 'Make sure the GazelleSts site can be retrieved'() {
+    def 'Make sure the GazelleSts site can be retrieved from the Actor file'() {
         when:
         Collection<Site> sites = new SimCache().getAllSites()
 
@@ -115,6 +115,25 @@ class StsSamlAssertionSpec extends ToolkitSpecification {
         results.get(0).passed()
     }
 
+    def 'Validate SAML Assertion'() {
+        when:
+        String siteName = gazelleStsSite.getName()
+        TestInstance testId = new TestInstance("GazelleSts")
+        List<String> sections = new ArrayList<>()
+        sections.add("samlassertion-validate")
+        Map<String, String> params = new HashMap<>()
+        boolean stopOnFirstError = true
+
+        and: 'Run samlassertion-validate'
+//        No need to set this: session.setTls(true)
+        // Main parameter for the TLS is the isTls flag in the runTest method
+        List<Result> results = api.runTest(testSession, siteName, true, testId, sections, params, stopOnFirstError)
+
+        then:
+        true
+        results.size() == 1
+        results.get(0).passed()
+    }
 
 
 

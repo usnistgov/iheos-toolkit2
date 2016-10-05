@@ -367,6 +367,8 @@ public class StepContext extends BasicContext implements ErrorReportingInterface
                   break;
 				case "HttpTransaction":
 					HTTPTransaction hTransaction = new HTTPTransaction(this, instruction, instruction_output);
+					hTransaction.setNoMetadataProcessing(true);
+					hTransaction.setNoReportManagerPreRun(true);
 					hTransaction.setTransType(instruction.getAttributeValue(new QName("type")));
 					hTransaction.setStsQuery(instruction.getAttributeValue(new QName("stsQuery")));
 					transaction = hTransaction;
