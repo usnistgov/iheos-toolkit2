@@ -81,7 +81,7 @@ class StsSamlAssertionSpec extends ToolkitSpecification {
 
     def 'set Truststore'() {
         when:
-        URL trustStoreURL = getClass().getResource("/war/toolkitx/environment/default/cacerts")
+        URL trustStoreURL = getClass().getResource("/war/toolkitx/environment/default/gazelle_sts_cert_truststore")
         File trustStoreFile = new File(trustStoreURL.getFile())
 
         System.out.println(trustStoreFile)
