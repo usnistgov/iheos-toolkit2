@@ -1,6 +1,6 @@
-KOS Validation, single image
+KOS Validation, multi-image
 Validate Key Object Note Test
-<h2>Single image study</h2>
+<h2>Multi image study</h2>
 
 <p>Prior to running this test:
 <ol>

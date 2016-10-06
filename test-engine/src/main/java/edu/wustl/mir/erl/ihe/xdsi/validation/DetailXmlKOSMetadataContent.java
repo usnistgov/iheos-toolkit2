@@ -18,9 +18,7 @@ public class DetailXmlKOSMetadataContent extends DetailXmlContent {
       qnames = new QName[] 
          {  new QName("urn:oasis:names:tc:ebxml-regrep:xsd:lcm:3.0", "dummy", "lcm"),
             new QName("urn:oasis:names:tc:ebxml-regrep:xsd:rs:3.0", "dummy", "rs"),
-            new QName("urn:oasis:names:tc:ebxml-regrep:xsd:rim:3.0", "dummy", "rim") 
-          // new QName("urn:oasis:names:tc:ebxml-regrep:registry:xsd:2.1", "dummy", "rs"),
-          // new QName("urn:oasis:names:tc:ebxml-regrep:rim:xsd:2.1", "dummy", "rim") 
+            new QName("urn:oasis:names:tc:ebxml-regrep:xsd:rim:3.0", "dummy", "rim")
          };
       desc = "KOS Metadata";
       assertions = new ArrayList<>();

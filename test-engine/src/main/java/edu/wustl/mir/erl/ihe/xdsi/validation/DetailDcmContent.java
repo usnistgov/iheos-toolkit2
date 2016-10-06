@@ -115,10 +115,12 @@ public abstract class DetailDcmContent extends Detail {
                    else fail(assertion, t, s);
                    break;
                case SAME_SIZE:
-                  Integer testSize = testAttr.getSequence(assertion.tag).size();
-                  Integer stdSize = stdAttr.getSequence(assertion.tag).size();
-                  if (testSize == stdSize) pass(assertion, testSize.toString());
-                  else fail(assertion, testSize.toString(), stdSize.toString());
+                  int testSize = testAttr.getSequence(assertion.tag).size();
+                  int stdSize = stdAttr.getSequence(assertion.tag).size();
+                  if (testSize == stdSize) 
+                     pass(assertion, Integer.toString(testSize));
+                  else 
+                     fail(assertion, Integer.toString(testSize), Integer.toString(stdSize));
                   break;
                default:
                   throw new Exception("invalid test type");
