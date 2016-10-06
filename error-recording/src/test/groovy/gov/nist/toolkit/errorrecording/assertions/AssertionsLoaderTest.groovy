@@ -10,13 +10,14 @@ class AssertionsLoaderTest extends Specification {
 
         def 'Load assertions'() {
             setup:
-            // TODO need to define a test CSV file for the assertions
+            String testFile = "/assertions/Toolkit_assertions_TEST.csv"
             AssertionLoader loader = new AssertionLoader()
 
             when: 'Load assertions from file into Map'
-            Map<String, List<String>> assertionsMap = loader.loadAssertions()
+            Map<String, List<String>> assertionsMap = loader.loadAssertions(testFile)
 
             then: ''
-            //ErrorRecorderUtil.errorRecorderChainAsList(erParent).size() == 4
+            assertionsMap.size() == 1
+            // TODO this test needs more detail to test the contents of the map, once the final map object is implemented
         }
 }

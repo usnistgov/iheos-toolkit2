@@ -25,5 +25,9 @@ public class ResourceLoader {
         return getClass().getResourceAsStream("/assertions/Toolkit_assertions.csv");
     }
 
+    public InputStream getFileAsInputStream(String fileLocation){
+        return getClass().getResourceAsStream(fileLocation);
+    }
+
 
 }
