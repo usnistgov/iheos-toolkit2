@@ -1,11 +1,11 @@
-R.b Accept association documenation classification
+R.b Accept association documentation classification
 
 Lifecycle management type associations may contain an optional classification labeling the
-reason for the update.  This association may be present on RPLC, APND, XFRM etc. assocations.
+reason for the update.  This association may be present on RPLC, APND, XFRM etc. associations.
 
 Sub Tests
 
-not_configured - attempt to add this association on a HasMember assocation - fails
+not_configured - attempt to add this association on a HasMember association - fails
 
 submit - submit a document
 
