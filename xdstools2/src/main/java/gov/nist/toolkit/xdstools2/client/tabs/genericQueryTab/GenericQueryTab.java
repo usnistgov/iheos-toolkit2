@@ -193,6 +193,11 @@ public abstract class GenericQueryTab  extends ToolWindow {
         row = row_initial;
     }
 
+    void resdisplay2(SiteSpec siteSpec) {
+        redisplay(false);
+        transactionSelectionManager.selectSite(siteSpec);
+    }
+
     // TODO this is a big method, try to figure out what it is for
     public void redisplay(boolean clearResults) {
         if (resultPanel != null && clearResults)

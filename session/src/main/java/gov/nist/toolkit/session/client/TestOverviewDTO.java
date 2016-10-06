@@ -5,10 +5,7 @@ import gov.nist.toolkit.results.client.TestInstance;
 import gov.nist.toolkit.testenginelogging.client.LogMapDTO;
 
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Should be renamed TestResultsDTO!!!!
@@ -23,6 +20,7 @@ public class TestOverviewDTO implements Serializable, IsSerializable {
     private List<String> sectionNames = new ArrayList<>();
     private Map<String, SectionOverviewDTO> sections = new HashMap<>();
     private LogMapDTO logMapDTO = null;
+    private Collection<String> dependencies;
 
     public TestOverviewDTO() {}
 
@@ -129,5 +127,11 @@ public class TestOverviewDTO implements Serializable, IsSerializable {
         return section.getDisplayableTime();
     }
 
+    public Collection<String> getDependencies() {
+        return dependencies;
+    }
 
+    public void setDependencies(Collection<String> dependencies) {
+        this.dependencies = dependencies;
+    }
 }

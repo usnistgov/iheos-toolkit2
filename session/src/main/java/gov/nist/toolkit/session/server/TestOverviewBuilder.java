@@ -14,7 +14,10 @@ import gov.nist.toolkit.testkitutilities.TestDefinition;
 import gov.nist.toolkit.testkitutilities.client.SectionDefinitionDAO;
 
 import java.io.IOException;
+import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 /**
  *
@@ -22,6 +25,7 @@ import java.util.List;
 public class TestOverviewBuilder {
     private TestLogDetails testLogDetails;
     private String testId;
+    private Set<String> testDependencies = new HashSet<>();
     private TestDefinition testDefinition;
     private TestOverviewDTO testOverview = new TestOverviewDTO();
     private XdsTestServiceManager testServiceManager;
@@ -42,6 +46,7 @@ public class TestOverviewBuilder {
             testOverview.setDescription(Markdown.toHtml(readme.rest));
         }
         addSections();
+        testOverview.setDependencies(testDependencies);
         return testOverview;
     }
 
@@ -80,6 +85,7 @@ public class TestOverviewBuilder {
 
                     try {
                         SectionDefinitionDAO sectionDef = testDefinition.getSection(section);
+                        testDependencies.addAll(sectionDef.getSectionDependencies());
                         for (String stepName : sectionDef.getStepNames()) {
                             StepOverviewDTO stepOverview = sectionOverview.getStep(stepName);
                             stepOverview.setGoals(sectionDef.getStep(stepName).getGoals());
@@ -159,5 +165,9 @@ public class TestOverviewBuilder {
         stepOverview.addErrors(stepContent.getAssertionErrors());
         stepOverview.setTransaction(stepContent.getTransaction());
         sectionOverview.addStep(stepName, stepOverview);
+    }
+
+    public Collection<String> getTestDependencies() {
+        return testDependencies;
     }
 }

@@ -2,10 +2,12 @@ package gov.nist.toolkit.xdstools2.client.tabs;
 
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.CheckBox;
+import gov.nist.toolkit.configDatatypes.client.Pid;
 import gov.nist.toolkit.configDatatypes.client.TransactionType;
 import gov.nist.toolkit.interactionmodel.client.InteractingEntity;
 import gov.nist.toolkit.interactionmodel.client.InteractionIdentifierTerm;
 import gov.nist.toolkit.results.client.Result;
+import gov.nist.toolkit.sitemanagement.client.SiteSpec;
 import gov.nist.toolkit.xdstools2.client.CoupledTransactions;
 import gov.nist.toolkit.xdstools2.client.tabs.genericQueryTab.AbstractTool;
 
@@ -42,7 +44,7 @@ public class FindDocumentsTab extends AbstractTool {
 
     @Override
     protected void bindUI() {
-        addOnTabSelectionRedisplay();
+//        addOnTabSelectionRedisplay();
     }
 
     @Override
@@ -56,6 +58,36 @@ public class FindDocumentsTab extends AbstractTool {
     @Override
     public String getToolTitle() { return "Find Documents Stored Query"; }
 
+    /**
+     * run as a utility from another tool
+     * @param patientID
+     * @param siteSpec
+     * @param onDemand
+     */
+    public void run(Pid patientID, SiteSpec siteSpec, boolean onDemand) {
+        getToolkitServices().findDocuments(siteSpec, patientID.asString(), onDemand, new RunCallback(siteSpec));
+    }
+
+    private class RunCallback implements AsyncCallback<List<Result>> {
+        private SiteSpec siteSpec;
+
+        RunCallback(SiteSpec siteSpec) {
+            this.siteSpec = siteSpec;
+        }
+
+
+        @Override
+        public void onFailure(Throwable throwable) {
+            queryCallback.onFailure(throwable);
+        }
+
+        @Override
+        public void onSuccess(List<Result> results) {
+            queryCallback.onSuccess(results);
+            transactionSelectionManager.selectSite(siteSpec);
+        }
+    }
+
 
     @Override
     public void run() {
@@ -63,7 +95,7 @@ public class FindDocumentsTab extends AbstractTool {
         getToolkitServices().findDocuments(queryBoilerplate.getSiteSelection(), pidTextBox.getValue().trim(), selectOnDemand.getValue(), fdCallback);
     }
 
-    protected AsyncCallback<List<Result>> fdCallback = new AsyncCallback<List<Result>>() {
+    private AsyncCallback<List<Result>> fdCallback = new AsyncCallback<List<Result>>() {
         @Override
         public void onFailure(Throwable throwable) {
             queryCallback.onFailure(throwable);
@@ -72,40 +104,6 @@ public class FindDocumentsTab extends AbstractTool {
 		@Override
 		public void onSuccess(List<Result> results) {
 			queryCallback.onSuccess(results);
-//			try {
-				/*
-				if (getInteractionModel()!=null) {
-					getInteractionModel().setEnd(new Date());
-
-					toolkitService.getInteractionFromModel(getInteractionModel(), new AsyncCallback<InteractingEntity>() {
-						@Override
-						public void onFailure(Throwable throwable) {
-							String mapMsg = "mapping failed!";
-							new PopupMessage(mapMsg);
-						}
-
-						@Override
-						public void onSuccess(InteractingEntity interactingEntity) {
-							String mapMsg = "mapping was successful!!" + " return is null? " + (interactingEntity==null) + " desc: " + interactingEntity.getInteractions().get(0).getName();
-							new PopupMessage(mapMsg + " interaction status: " + interactingEntity.getInteractions().get(0).getStatus().name());
-
-						}
-					});
-				}
-				else {
-					new PopupMessage("Null origin");
-				}
-
-				InteractionDiagram diagram = new InteractionDiagram(testTwoActors(), 500,900);
-//							Element svg = diagram.draw(interactingEntity,0);
-//							Element svg = diagram.draw(testIG(),0);
-//							Element svg = diagram.draw(testReuseLL(),0);
-//							System.out.println(svg);
-				resultPanel.display(new HTML("<p style='font-weight:bold'>Interaction Sequence:</p>"));
-				resultPanel.display(diagram);
-				*/
-//			} catch (Throwable t){ new PopupMessage(t.toString());}
-
 		}
 	};
 

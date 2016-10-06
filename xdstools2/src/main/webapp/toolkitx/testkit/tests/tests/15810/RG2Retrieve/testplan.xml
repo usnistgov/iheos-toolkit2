@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<TestPlan>
+    <Test>15810/RG2Retrieve</Test>
+    <TestStep id="retrieveCommunity2">
+        <Goal>
+            Retrieve sent to IG (forwarded to two RGs).  Should return the document
+            from Community 2. 
+            The Document was submitted by /15807/onedoc3/submit_single_doc.
+        </Goal>
+        <ExpectedStatus>Success</ExpectedStatus>
+        <IGRTransaction>
+            <UseReport test="15810"  section="TwoRGFindDocuments" step="finddocs" reportName="$uid_2$" useAs="$docuid$"/>
+            <UseReport test="15810"  section="TwoRGFindDocuments" step="finddocs" reportName="$home2$" useAs="$home$"/>
+            <UseReport test="15810"  section="TwoRGFindDocuments" step="finddocs" reportName="$returned_repositoryUniqueId2$" useAs="$repositoryuid$"/>
+            
+            
+            <ExpectedMimeType>text/plain</ExpectedMimeType>
+            <ReferenceDocument uid="$docuid$">../../15807/onedoc3/my_document.txt</ReferenceDocument>
+            <MetadataFile>retrieve.xml</MetadataFile>
+            
+            <!-- Document Request-->
+            <Report name="$home_request$" section="InputMetadata">
+                //*[local-name()='RetrieveDocumentSetRequest']/*[local-name()='DocumentRequest'][1]/*[local-name()='HomeCommunityId']
+            </Report>
+            <Report name="$repid_request$" section="InputMetadata">
+                //*[local-name()='RetrieveDocumentSetRequest']/*[local-name()='DocumentRequest'][1]/*[local-name()='RepositoryUniqueId']
+            </Report>
+            <Report name="$docuid_request$" section="InputMetadata">
+                //*[local-name()='RetrieveDocumentSetRequest']/*[local-name()='DocumentRequest'][1]/*[local-name()='DocumentUniqueId']
+            </Report>
+
+            <!-- Document 1 Response-->
+            <Report name="$home_response$" section="Result">
+                //*[local-name()='RetrieveDocumentSetResponse']/*[local-name()='DocumentResponse'][1]/*[local-name()='HomeCommunityId']
+            </Report>
+            <Report name="$repid_response$" section="Result">
+                //*[local-name()='RetrieveDocumentSetResponse']/*[local-name()='DocumentResponse'][1]/*[local-name()='RepositoryUniqueId']
+            </Report>
+            <Report name="$docuid_response$" section="Result">
+                //*[local-name()='RetrieveDocumentSetResponse']/*[local-name()='DocumentResponse'][1]/*[local-name()='DocumentUniqueId']
+            </Report>
+            <Report name="$mimetype_response$" section="Result">
+                //*[local-name()='RetrieveDocumentSetResponse']/*[local-name()='DocumentResponse'][1]/*[local-name()='mimeType']
+            </Report>
+
+        </IGRTransaction>
+    </TestStep>
+    <TestStep id="VerifyHomeCommunityId">
+        <Goal>Verify homeCommunityId for Document from Community 2</Goal>
+        <NullTransaction>
+            <UseReport reportName="$home_request$"  section="THIS" step="retrieveCommunity2" useAs="requested"/>
+            <UseReport reportName="$home_response$" section="THIS" step="retrieveCommunity2" useAs="returned"/>
+            <Assertions>
+                <Assert>
+                    'requested' = 'returned'
+                </Assert>
+            </Assertions>
+        </NullTransaction>
+    </TestStep>
+    <TestStep id="VerifyRepositoryId">
+        <Goal>Verify repositoryUniqueId for Document from Community 2</Goal>
+        <NullTransaction>
+            <UseReport reportName="$repid_request$"  section="THIS" step="retrieveCommunity2" useAs="requested"/>
+            <UseReport reportName="$repid_response$" section="THIS" step="retrieveCommunity2" useAs="returned"/>
+            <Assertions>
+                <Assert>
+                    'requested' = 'returned'
+                </Assert>
+            </Assertions>
+        </NullTransaction>
+    </TestStep>
+    <TestStep id="VerifyDocumentId">
+        <Goal>Verify repositoryUniqueId for Document from Community 2</Goal>
+        <NullTransaction>
+            <UseReport reportName="$docuid_request$"  section="THIS" step="retrieveCommunity2" useAs="requested"/>
+            <UseReport reportName="$docuid_response$" section="THIS" step="retrieveCommunity2" useAs="returned"/>
+            <Assertions>
+                <Assert>
+                    'requested' = 'returned'
+                </Assert>
+            </Assertions>
+        </NullTransaction>
+    </TestStep>
+    <TestStep id="VerifyMimeType">
+        <Goal>Verify Mime Type for Document from Community 2</Goal>
+        <NullTransaction>
+            <UseReport test="15810" section="TwoRGFindDocuments" step="finddocs" reportName="$mimeType2$" useAs="queryValue"/>
+            <UseReport reportName="$mimetype_response$" section="THIS" step="retrieveCommunity2" useAs="retrievedValue"/>
+            <Assertions>
+                <Assert>
+                    'queryValue' = 'retrievedValue'
+                </Assert>
+            </Assertions>
+        </NullTransaction>
+    </TestStep>
+
+</TestPlan>
