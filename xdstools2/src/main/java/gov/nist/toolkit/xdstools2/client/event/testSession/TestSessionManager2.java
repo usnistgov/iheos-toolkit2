@@ -1,6 +1,7 @@
 package gov.nist.toolkit.xdstools2.client.event.testSession;
 
 import com.google.gwt.user.client.Cookies;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import gov.nist.toolkit.xdstools2.client.CookieManager;
 import gov.nist.toolkit.xdstools2.client.PopupMessage;
@@ -19,7 +20,7 @@ import java.util.List;
  */
 public class TestSessionManager2 {
     private List<String> testSessions;  // this is maintained to initialize new tabs with
-    private String currentTestSession = null;
+    private String currentTestSession = "default";
 
     public TestSessionManager2() {
         Xdstools2.getEventBus().addHandler(TestSessionsUpdatedEvent.TYPE, new TestSessionsUpdatedEventHandler() {
@@ -94,7 +95,7 @@ public class TestSessionManager2 {
         ClientUtils.INSTANCE.getToolkitServices().addMesaTestSession(sessionName, new AsyncCallback<Boolean>() {
             @Override
             public void onFailure(Throwable throwable) {
-                new PopupMessage("Cannot add test session - " + throwable.getMessage());
+                new PopupMessage("Cannot display test session - " + throwable.getMessage());
             }
 
             @Override
@@ -114,7 +115,8 @@ public class TestSessionManager2 {
 
             @Override
             public void onSuccess(Boolean aBoolean) {
-                load();  // getRetrievedDocumentsModel full list and update all tabs
+                currentTestSession=testSessions.get(0);
+                load(currentTestSession);  // getRetrievedDocumentsModel full list and update all tabs
             }
         });
     }

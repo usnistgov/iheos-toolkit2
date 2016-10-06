@@ -11,7 +11,7 @@ public class AuthorPicker extends DialogBox {
 
 	@SuppressWarnings("unchecked")
 	public AuthorPicker(ListBox toUpdate) throws Exception {
-		final ListBox listBoxToUpdate = toUpdate; // add the selected author names to the list displayed on the tab, when closing the dialogbox
+		final ListBox listBoxToUpdate = toUpdate; // addTest the selected author names to the list displayed on the tab, when closing the dialogbox
 		setText("Enter Author Person(s) Names (use % to match any characters and _ to match a single character):");
 
 		FlexTable mainTable = new FlexTable();

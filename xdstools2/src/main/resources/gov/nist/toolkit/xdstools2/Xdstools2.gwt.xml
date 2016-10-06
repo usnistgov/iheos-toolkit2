@@ -48,7 +48,7 @@
     <!-- Use Super Dev Mode -->
     <!--From GWT 2.7, the xsiframe linker is the default-->
     <!-- See http://www.gwtproject.org/articles/superdevmode.html -->
-    <!--<add-linker name="xsiframe"/>-->
+    <!--<display-linker name="xsiframe"/>-->
     <!--<set-configuration-property name="devModeRedirectEnabled" value="true"/>-->
     <!--<set-property name="compiler.useSourceMaps" value="true"/>-->
 
@@ -63,6 +63,8 @@
     </replace-with>
 
     <public path="public"/>
+    <source path="client"/>
+    <source path="shared"/>
 </module>
 
 

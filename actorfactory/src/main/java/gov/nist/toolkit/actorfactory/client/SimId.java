@@ -1,6 +1,8 @@
 package gov.nist.toolkit.actorfactory.client;
 
 import com.google.gwt.user.client.rpc.IsSerializable;
+import gov.nist.toolkit.actortransaction.client.ActorType;
+import gov.nist.toolkit.sitemanagement.client.SiteSpec;
 
 import java.io.Serializable;
 
@@ -9,14 +11,14 @@ import java.io.Serializable;
  */
 public class SimId implements Serializable, IsSerializable {
 
-    static final String DEFAULT_USER = "nouser";
-    static final String SEPARATOR = "__";
-    static final String SLASH = "/";
+    private static final String DEFAULT_USER = "nouser";
+    private static final String SEPARATOR = "__";
+    private static final String SLASH = "/";
 
     public String user;
     public String id;
-    String actorType;
-    String environmentName;
+    private String actorType;
+    private String environmentName;
 
     // server only
     public SimId(String user, String id, String actorType, String environmentName) throws BadSimIdException {
@@ -30,23 +32,18 @@ public class SimId implements Serializable, IsSerializable {
         this.actorType = actorType;
     }
 
+    public SimId(SiteSpec siteSpec) {
+        this(siteSpec.getName());
+        if (siteSpec.getActorType() != null)
+            actorType = siteSpec.getTypeName();
+    }
+
     // client and server
     public SimId(String user, String id) throws BadSimIdException {
         build(user, id);
     }
-//    public SimId(String user, String id) {
-//        if (id.contains(SEPARATOR)) {
-//            String[] parts = id.split(SEPARATOR);
-//            this.user = parts[0];
-//            this.id = parts[1];
-//        } else {
-//            this.user = user;
-//            this.id = id;
-//        }
-//        this.id = cleanId(this.id);
-//    }
 
-    // server
+    // server  ?????? why ???????
     public SimId(String id) throws BadSimIdException {
         if (id.contains(SEPARATOR)) {
             String[] parts = id.split(SEPARATOR, 2);
@@ -56,7 +53,7 @@ public class SimId implements Serializable, IsSerializable {
         }
     }
 
-    void build(String user, String id) throws BadSimIdException {
+    private void build(String user, String id) throws BadSimIdException {
         user = cleanId(user);
         id = cleanId(id);
         if (user.contains(SEPARATOR)) throw new BadSimIdException(SEPARATOR + " is illegal in simulator user name");
@@ -117,5 +114,13 @@ public class SimId implements Serializable, IsSerializable {
     }
     public boolean isValid() { return (!isEmpty(user)) && (!isEmpty(id)); }
     boolean isEmpty(String x) { return x == null || x.trim().equals(""); }
+
+    SiteSpec getSiteSpec() {
+        SiteSpec siteSpec = new SiteSpec();
+        siteSpec.setName(toString());
+        if (actorType != null)
+            siteSpec.setActorType(ActorType.findActor(actorType));
+        return siteSpec;
+    }
 
 }

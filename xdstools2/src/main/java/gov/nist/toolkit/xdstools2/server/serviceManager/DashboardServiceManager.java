@@ -5,8 +5,8 @@ import gov.nist.toolkit.installation.Installation;
 import gov.nist.toolkit.session.server.Session;
 import gov.nist.toolkit.xdsexception.ExceptionUtil;
 import gov.nist.toolkit.xdsexception.client.XdsException;
-import gov.nist.toolkit.xdstools2.client.RegistryStatus;
-import gov.nist.toolkit.xdstools2.client.RepositoryStatus;
+import gov.nist.toolkit.xdstools2.shared.RegistryStatus;
+import gov.nist.toolkit.xdstools2.shared.RepositoryStatus;
 import gov.nist.toolkit.xdstools2.scripts.DashboardAccess;
 
 import java.io.File;

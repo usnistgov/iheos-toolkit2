@@ -25,9 +25,9 @@ public class PatientErrorSelectionPresenter {
 
         Panel addPanel = new HorizontalPanel();
         Anchor addButton = new Anchor();
-        addButton.getElement().appendChild(new Image("icons/add-button.png").getElement());
+        addButton.getElement().appendChild(new Image("icons/display-button.png").getElement());
 
-//        panel.add(new HTML("<h2>Patient ID ==> Error mapping</h2>"));
+//        panel.display(new HTML("<h2>Patient ID ==> Error mapping</h2>"));
         addPanel.add(new HTML(transactionType.getName()));
         addPanel.add(addButton);
         panel.add(addPanel);

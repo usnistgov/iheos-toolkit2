@@ -117,6 +117,7 @@ public class UtilityRunner {
 //                        session.xt.addTest(LogRepository.cloneTestInstance(ti, id)); // this cloning links them
                 } else {
                     TestKitSearchPath searchPath = session.getTestkitSearchPath();
+                    logger.info(searchPath.toString());
                     TestKit testKit = searchPath.getTestKitForTest(testInstance.getId());
                     if (testKit == null)
                         throw new Exception("Test " + testInstance + " not found");

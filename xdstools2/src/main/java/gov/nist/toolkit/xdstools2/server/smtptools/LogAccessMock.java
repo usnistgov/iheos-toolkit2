@@ -1,6 +1,6 @@
 package gov.nist.toolkit.xdstools2.server.smtptools;
 
-import gov.nist.toolkit.xdstools2.client.SmtpMessageStatus;
+import gov.nist.toolkit.xdstools2.shared.SmtpMessageStatus;
 
 import java.util.ArrayList;
 import java.util.HashMap;

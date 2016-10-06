@@ -32,7 +32,7 @@ class TestsHeaderView {
         bar.add(testsHeaderTitle);
         bar.add(testsHeaderRunningMessage);
 
-//        testsHeader.add(testsHeaderTitle);
+//        testsHeader.display(testsHeaderTitle);
 
         testCount.setWidth("12em");
 

@@ -13,6 +13,7 @@ h1 {
   text-align: center;
 }
 
+/*
 h3 {
   font-size: 1.1em;
   font-weight: bold;
@@ -20,6 +21,7 @@ h3 {
   margin: 20px 10px 0;
   text-align: left;
 }
+*/
 
 .sendButton, #closeButton, .iconbutton {
   cursor: pointer;
@@ -260,4 +262,15 @@ h3 {
 
 .inlineLink {
  color: #0000ad;
+}
+
+.queryBoilerPlate {
+  color: #4a4e51;
+  background-color: #f9f9f9;
+  border: 1px solid #d4d4d4;
+  box-shadow: 1px 2px 3px #f2f2f2;
+  padding: 4px 6px 5px;
+  margin-top:2px;
+  margin-left:2px;
+  margin-bottom: 10px;
 }

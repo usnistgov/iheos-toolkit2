@@ -1,6 +1,9 @@
 package gov.nist.toolkit.xdstools2.client.widgets;
 
 import com.google.gwt.event.dom.client.*;
+import com.google.gwt.event.logical.shared.ValueChangeEvent;
+import com.google.gwt.event.logical.shared.ValueChangeHandler;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.*;
 import com.google.gwt.view.client.SelectionChangeEvent;
 import gov.nist.toolkit.configDatatypes.client.Pid;
@@ -41,14 +44,10 @@ public class PidWidget implements IsWidget{
                 pidInput.setText(selectedPid.toString());
             }
         });
-        pidInput.addKeyDownHandler(new KeyDownHandler() {
+        pidInput.addFocusHandler(new FocusHandler() {
             @Override
-            public void onKeyDown(KeyDownEvent keyDownEvent) {
-                if (!(keyDownEvent.isAnyModifierKeyDown() ||
-                        (keyDownEvent.getNativeKeyCode()== KeyCodes.KEY_ENTER) ||
-                        (keyDownEvent.getNativeKeyCode() == KeyCodes.KEY_TAB))){
-                    favoritePidWidget.clear();
-                }
+            public void onFocus(FocusEvent focusEvent) {
+                favoritePidWidget.clearSelection();
             }
         });
     }

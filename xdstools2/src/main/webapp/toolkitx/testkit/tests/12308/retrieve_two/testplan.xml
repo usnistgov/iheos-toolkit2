@@ -1,0 +1,16 @@
+
+<TestPlan>
+  <Test>12308/retrieve_two</Test>
+  <TestStep id="retrieve_two">
+  <ExpectedStatus>Success</ExpectedStatus>
+  <XCRTransaction>
+    <UseId testdir="../../12318/init" step="init" section="AssignedUids" id="Document01" symbol="$docuid1$"/>
+    <UseId testdir="../../12318/init" step="init" section="AssignedUids" id="Document02" symbol="$docuid2$"/>
+    <UseReport test="12318" section="init" step="init" reportName="$testdata_home$" useAs="$home$"/>
+    <ExpectedMimeType>text/plain</ExpectedMimeType>
+    <ReferenceDocument uid="$docuid$">../../testdata/12318/my_document.txt</ReferenceDocument>
+    <MetadataFile>retrieve.xml</MetadataFile>
+  </XCRTransaction>
+</TestStep>
+
+</TestPlan>

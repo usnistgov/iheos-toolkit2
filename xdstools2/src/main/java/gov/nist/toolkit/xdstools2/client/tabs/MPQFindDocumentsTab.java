@@ -2,10 +2,7 @@ package gov.nist.toolkit.xdstools2.client.tabs;
 
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.user.client.ui.FlexTable;
-import com.google.gwt.user.client.ui.HTML;
-import com.google.gwt.user.client.ui.ListBox;
-import com.google.gwt.user.client.ui.Widget;
+import com.google.gwt.user.client.ui.*;
 import gov.nist.toolkit.configDatatypes.client.TransactionType;
 import gov.nist.toolkit.results.client.CodesConfiguration;
 import gov.nist.toolkit.sitemanagement.client.SiteSpec;
@@ -55,33 +52,16 @@ public class MPQFindDocumentsTab extends GenericQueryTab {
 
 	@Override
 	protected Widget buildUI() {
-		return null;
-	}
+		genericQueryTab=this;
 
-	@Override
-	protected void bindUI() {
-
-	}
-
-	@Override
-	protected void configureTabView() {
-
-	}
-
-	@Override
-	public void onTabLoad(boolean select, String eventName) {
-		genericQueryTab = this;
-
-
-		registerTab(select, "MPQFindDocuments");
-
+		FlowPanel flowPanel=new FlowPanel();
 		codeFilterBank = new CodeFilterBank(/*toolkitService, */genericQueryTab);
 
 		FlexTable paramGrid = new FlexTable();
 
 		HTML title = new HTML();
 		title.setHTML("<h2>Multi-Patient Find Documents</h2>");
-		tabTopPanel.add(title);
+		flowPanel.add(title);
 
 		mainGrid = new FlexTable();
 		int prow = 0;
@@ -100,9 +80,18 @@ public class MPQFindDocumentsTab extends GenericQueryTab {
 		prow++;
 		prow = codeFilterBank.addCodeFiltersByName(otherFilterNames, paramGrid, prow, 1, 2);
 
-		tabTopPanel.add(paramGrid);
-		tabTopPanel.add(mainGrid);
+		flowPanel.add(paramGrid);
+		flowPanel.add(mainGrid);
+		return flowPanel;
+	}
 
+	@Override
+	protected void bindUI() {
+		addOnTabSelectionRedisplay();
+	}
+
+	@Override
+	protected void configureTabView() {
 		queryBoilerplate = addQueryBoilerplate(new Runner(), transactionTypes, couplings, true);
 	}
 
@@ -123,9 +112,6 @@ public class MPQFindDocumentsTab extends GenericQueryTab {
 
 			getToolkitServices().mpqFindDocuments(siteSpec,
 					pid.trim(), 
-//					getValuesFromListBox(codeFilterBank.getCodeFilter(CodesConfiguration.ClassCode).selectedCodes),
-//					getValuesFromListBox(codeFilterBank.getCodeFilter(CodesConfiguration.HealthcareFacilityTypeCode).selectedCodes),
-//					getValuesFromListBox(codeFilterBank.getCodeFilter(CodesConfiguration.EventCodeList).selectedCodes),
 					codesSpec(),
 					queryCallback);
 		}

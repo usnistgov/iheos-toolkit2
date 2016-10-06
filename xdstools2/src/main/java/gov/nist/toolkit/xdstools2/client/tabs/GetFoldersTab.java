@@ -2,10 +2,7 @@ package gov.nist.toolkit.xdstools2.client.tabs;
 
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.user.client.ui.FlexTable;
-import com.google.gwt.user.client.ui.HTML;
-import com.google.gwt.user.client.ui.TextArea;
-import com.google.gwt.user.client.ui.Widget;
+import com.google.gwt.user.client.ui.*;
 import gov.nist.toolkit.configDatatypes.client.TransactionType;
 import gov.nist.toolkit.sitemanagement.client.SiteSpec;
 import gov.nist.toolkit.xdstools2.client.CoupledTransactions;
@@ -17,14 +14,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class GetFoldersTab extends GenericQueryTab {
-	
+
 	static List<TransactionType> transactionTypes = new ArrayList<TransactionType>();
 	static {
 		transactionTypes.add(TransactionType.STORED_QUERY);
 		transactionTypes.add(TransactionType.IG_QUERY);
 		transactionTypes.add(TransactionType.XC_QUERY);
 	}
-	
+
 	static CoupledTransactions couplings = new CoupledTransactions();
 	static {
 		// If an Initiating Gateway is selected (IG_QUERY) then 
@@ -37,56 +34,50 @@ public class GetFoldersTab extends GenericQueryTab {
 	TextArea ta;
 	GetFoldersTab tab;
 	String help ="Retrieve full metadata for list of Folder UUIDs. " +
-	"UUIDs can be separated by any of [,;() \\t\\n\\r']";
-	
+			"UUIDs can be separated by any of [,;() \\t\\n\\r']";
+
 	public GetFoldersTab() {
 		super(new GetDocumentsSiteActorManager());
 	}
 
 	@Override
 	protected Widget buildUI() {
-		return null;
-	}
-
-	@Override
-	protected void bindUI() {
-
-	}
-
-	@Override
-	protected void configureTabView() {
-
-	}
-
-	@Override
-	public void onTabLoad(boolean select, String eventName) {
 		tab = this;
-		registerTab(select, "GetFolders");
 
+		FlowPanel flowPanel=new FlowPanel();
 		HTML title = new HTML();
 		title.setHTML("<h2>Get Folders</h2>");
-		tabTopPanel.add(title);
+		flowPanel.add(title);
 
 		mainGrid = new FlexTable();
 		int row = 0;
-		
-		
+
+
 
 		HTML pidLabel = new HTML();
 		pidLabel.setText("Folder UUIDs or UIDs");
 		mainGrid.setWidget(row,0, pidLabel);
 
 		ta = new TextArea();
-	    ta.setCharacterWidth(40);
-	    ta.setVisibleLines(10);
+		ta.setCharacterWidth(40);
+		ta.setVisibleLines(10);
 		mainGrid.setWidget(row, 1, ta);
 		row++;
 
-		tabTopPanel.add(mainGrid);
-		
+		flowPanel.add(mainGrid);
+		return flowPanel;
+	}
+
+	@Override
+	protected void bindUI() {
+		addOnTabSelectionRedisplay();
+	}
+
+	@Override
+	protected void configureTabView() {
 		queryBoilerplate = addQueryBoilerplate(new Runner(), transactionTypes, couplings, false);
 	}
-	
+
 	class Runner implements ClickHandler {
 
 		public void onClick(ClickEvent event) {
@@ -97,21 +88,21 @@ public class GetFoldersTab extends GenericQueryTab {
 				new PopupMessage("You must select a site first");
 				return;
 			}
-			
+
 			List<String> values = formatIds(ta.getValue());
-			
+
 			if (!verifyUuids(values)) {
 				new PopupMessage("All values must be a UUID (have urn:uuid: prefix) or be UIDs (not have urn:uuid: prefix)");
 				return;
 			}
-			
+
 			addStatusBox();
 			getGoButton().setEnabled(false);
 			getInspectButton().setEnabled(false);
 
 			getToolkitServices().getFolders(siteSpec, getAnyIds(values), queryCallback);
 		}
-		
+
 	}
 
 	public String getWindowShortName() {

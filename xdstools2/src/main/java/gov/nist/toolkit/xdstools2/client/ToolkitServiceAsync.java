@@ -27,13 +27,15 @@ import gov.nist.toolkit.testkitutilities.client.TestCollectionDefinitionDAO;
 import gov.nist.toolkit.tk.client.TkProps;
 import gov.nist.toolkit.valsupport.client.MessageValidationResults;
 import gov.nist.toolkit.valsupport.client.ValidationContext;
-import gov.nist.toolkit.xdstools2.client.command.CommandContext;
-import gov.nist.toolkit.xdstools2.client.command.request.GeneratePidRequest;
-import gov.nist.toolkit.xdstools2.client.command.request.GetAllSimConfigsRequest;
-import gov.nist.toolkit.xdstools2.client.command.request.SendPidToRegistryRequest;
-import gov.nist.toolkit.xdstools2.client.command.response.InitializationResponse;
+import gov.nist.toolkit.xdstools2.shared.NoServletSessionException;
+import gov.nist.toolkit.xdstools2.shared.command.CommandContext;
+import gov.nist.toolkit.xdstools2.shared.command.GeneratePidRequest;
+import gov.nist.toolkit.xdstools2.shared.command.GetAllSimConfigsRequest;
+import gov.nist.toolkit.xdstools2.shared.command.SendPidToRegistryRequest;
+import gov.nist.toolkit.xdstools2.shared.command.InitializationResponse;
+import gov.nist.toolkit.xdstools2.shared.RegistryStatus;
+import gov.nist.toolkit.xdstools2.shared.RepositoryStatus;
 
-import java.io.IOException;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
@@ -50,7 +52,7 @@ public interface ToolkitServiceAsync {
 	void getSessionProperties(AsyncCallback<Map<String, String>> callback);
 	void setSessionProperties(Map<String, String> props, AsyncCallback callback);
 	void getNewPatientId(String assigningAuthority, AsyncCallback<String> callback);
-	
+
 	void getDefaultAssigningAuthority(AsyncCallback<String> callback);
 	void getAttributeValue(String username, String attName, AsyncCallback<String> callback);
 	void setAttributeValue(String username, String attName, String attValue, AsyncCallback callback);
@@ -70,7 +72,7 @@ public interface ToolkitServiceAsync {
 
 	void getTestsOverview(String sessionName, List<TestInstance> testInstances, AsyncCallback<List<TestOverviewDTO>> callback);
 	void getUpdateNames(AsyncCallback<List<String>> callback);
-	
+
 	void getTransactionRequest(SimId simName, String actor, String trans, String event, AsyncCallback<String> callback);
 	void getTransactionResponse(SimId simName, String actor, String trans, String event, AsyncCallback<String> callback);
 	void getTransactionLog(SimId simName, String actor, String trans, String event, AsyncCallback<String> callback);
@@ -81,7 +83,7 @@ public interface ToolkitServiceAsync {
 
 	void executeSimMessage(String simFileSpec, AsyncCallback<MessageValidationResults> callback);
 
-	
+
 	void renameSimFile(String simFileSpec, String newSimFileSpec, AsyncCallback callback);
 
 	void deleteSimFile(String simFileSpec, AsyncCallback callback);
@@ -96,13 +98,13 @@ public interface ToolkitServiceAsync {
 //	void  validateMessage(ValidationContext vc, String simFileName, AsyncCallback<MessageValidationResults> notify);
 
 	void  getTransInstances(SimId simid, String actor, String trans, AsyncCallback<List<TransactionInstance>> callback);
-  
+
 	void getLastMetadata(AsyncCallback<List<Result>> callback);
 	void getLastFilename(AsyncCallback<String> callback);
 	void getTimeAndDate(AsyncCallback<String> callback);
-	
+
 	void validateMessage(ValidationContext vc, AsyncCallback<MessageValidationResults> callback);
-	
+
 	void getSiteNames(boolean reload, boolean simAlso, AsyncCallback<List<String>> callback);
 
 	void getTransactionOfferings(CommandContext commandContext, AsyncCallback<TransactionOfferings> callback);
@@ -126,12 +128,12 @@ public interface ToolkitServiceAsync {
 	void findDocumentsByRefId(SiteSpec site, String pid, List<String> refIds, AsyncCallback<List<Result>> callback) ;
 	void findFolders(SiteSpec site, String pid, AsyncCallback<List<Result>> callback);
 	void findPatient(SiteSpec site, String firstName, String secondName, String lastName, String suffix,
-			String gender, String dob, String ssn, String pid,
-			String homeAddress1, String homeAddress2, String homeCity, String homeState, String homeZip, String homeCountry,
-            String mothersFirstName, String mothersSecondName, String mothersLastName, String mothersSuffix, 
-            String homePhone, String workPhone, String principleCareProvider, 
-            String pob, String pobAddress1, String pobAddress2, String pobCity, String pobState, String pobZip, String pobCountry,
-            AsyncCallback<List<Result>> callback);
+					 String gender, String dob, String ssn, String pid,
+					 String homeAddress1, String homeAddress2, String homeCity, String homeState, String homeZip, String homeCountry,
+					 String mothersFirstName, String mothersSecondName, String mothersLastName, String mothersSuffix,
+					 String homePhone, String workPhone, String principleCareProvider,
+					 String pob, String pobAddress1, String pobAddress2, String pobCity, String pobState, String pobZip, String pobCountry,
+					 AsyncCallback<List<Result>> callback);
 	void getDocuments(SiteSpec site, AnyIds ids, AsyncCallback<List<Result>> callback);
 	void getFolders(SiteSpec site, AnyIds aids, AsyncCallback<List<Result>> callback);
 	void getFoldersForDocument(SiteSpec site, AnyIds aids, AsyncCallback<List<Result>> callback);
@@ -150,19 +152,19 @@ public interface ToolkitServiceAsync {
 	void lifecycleValidation(SiteSpec site, String pid, AsyncCallback<List<Result>> callback);
 	void folderValidation(SiteSpec site, String pid, AsyncCallback<List<Result>> callback);
 
-//	void mpqFindDocuments(SiteSpec site, String pid, List<String> classCodes, List<String> hcftCodes, List<String> eventCodes, AsyncCallback<List<Result>> notify);
+	//	void mpqFindDocuments(SiteSpec site, String pid, List<String> classCodes, List<String> hcftCodes, List<String> eventCodes, AsyncCallback<List<Result>> notify);
 	void mpqFindDocuments(SiteSpec site, String pid, Map<String, List<String>> selectedCodes, AsyncCallback<List<Result>> callback);
 	void getAll(SiteSpec site, String pid, Map<String, List<String>> codesSpec, AsyncCallback<List<Result>> callback);
 	void findDocuments2(SiteSpec site, String pid, Map<String, List<String>> codesSpec, AsyncCallback<List<Result>> callback);
 
 	void getAdminPassword(AsyncCallback<String> callback);
-	
+
 	void getImplementationVersion(AsyncCallback<String> callback);
-	 
+
 	void setToolkitProperties(Map<String, String> props, AsyncCallback<String> callback);
 	void getToolkitProperties(AsyncCallback<Map<String, String>> callback);
 	void reloadPropertyFile(AsyncCallback<Boolean> callback);
-	
+
 	void  getActorTypeNames(AsyncCallback<List<String>> callback);
 	void  getNewSimulator(String actorTypeName, SimId simId, AsyncCallback<Simulator> callback);
 	void getSimConfigs(List<SimId> ids, AsyncCallback<List<SimulatorConfig>> callback);
@@ -170,7 +172,7 @@ public interface ToolkitServiceAsync {
 	void putSimConfig(SimulatorConfig config, AsyncCallback<String> callback);
 	void deleteConfig(SimulatorConfig config, AsyncCallback<String> callback);
 	void getActorSimulatorNameMap(AsyncCallback<Map<String, SimId>> callback);
-//	void getSimulatorTransactionNames(String simid, AsyncCallback<List<String>> notify);
+	//	void getSimulatorTransactionNames(String simid, AsyncCallback<List<String>> notify);
 	void removeOldSimulators(AsyncCallback<Integer> callback);
 	void getSimulatorStats(List<SimId> simid, AsyncCallback<List<SimulatorStats>> callback) throws Exception;
 	void getPatientIds(SimId simId, AsyncCallback<List<Pid>> callback) throws Exception;
@@ -221,9 +223,9 @@ public interface ToolkitServiceAsync {
 	void deleteSingleTestResult(String testSession, TestInstance testInstance, AsyncCallback<TestOverviewDTO> callback);
 	void runAllTests(Site site, AsyncCallback<List<Test>> callback);
 	void runSingleTest(Site site, int testId, AsyncCallback<Test> callback);
-    void getTransactionErrorCodeRefs(String transactionName, Severity severity, AsyncCallback<List<String>> callback);
-    void buildIgTestOrchestration(IgOrchestrationRequest request, AsyncCallback<RawResponse> callback);
-    void buildRgTestOrchestration(RgOrchestrationRequest request, AsyncCallback<RawResponse> callback);
+	void getTransactionErrorCodeRefs(String transactionName, Severity severity, AsyncCallback<List<String>> callback);
+	void buildIgTestOrchestration(IgOrchestrationRequest request, AsyncCallback<RawResponse> callback);
+	void buildRgTestOrchestration(RgOrchestrationRequest request, AsyncCallback<RawResponse> callback);
 	void buildIigTestOrchestration(IigOrchestrationRequest request, AsyncCallback<RawResponse> callback);
 	void buildRigTestOrchestration(RigOrchestrationRequest request, AsyncCallback<RawResponse> callback);
 	void buildIdsTestOrchestration(IdsOrchestrationRequest request, AsyncCallback<RawResponse> callback);
@@ -239,7 +241,7 @@ public interface ToolkitServiceAsync {
 
 
 	void getServletContextName(AsyncCallback<String> callback);
-	void retrieveConfiguredFavoritesPid(String environment, AsyncCallback<List<Pid>> callback) throws IOException;
+	void retrieveConfiguredFavoritesPid(CommandContext commandContext, AsyncCallback<List<Pid>> callback);
 
 	void getAssignedSiteForTestSession(String testSession, AsyncCallback<String> async);
 

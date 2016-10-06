@@ -17,10 +17,7 @@ import gov.nist.toolkit.sitemanagement.client.SiteSpec;
 import gov.nist.toolkit.sitemanagement.client.TransactionOfferings;
 import gov.nist.toolkit.xdstools2.client.*;
 import gov.nist.toolkit.xdstools2.client.command.command.GetTransactionOfferingsCommand;
-import gov.nist.toolkit.xdstools2.client.event.ActorConfigUpdatedEvent;
-import gov.nist.toolkit.xdstools2.client.event.EnvironmentChangedEvent;
-import gov.nist.toolkit.xdstools2.client.event.SimulatorUpdatedEvent;
-import gov.nist.toolkit.xdstools2.client.event.Xdstools2EventBus;
+import gov.nist.toolkit.xdstools2.client.event.*;
 import gov.nist.toolkit.xdstools2.client.event.testSession.TestSessionManager2;
 import gov.nist.toolkit.xdstools2.client.siteActorManagers.BaseSiteActorManager;
 import gov.nist.toolkit.xdstools2.client.tabs.actorConfigTab.ActorConfigTab;
@@ -106,7 +103,24 @@ public abstract class GenericQueryTab  extends ToolWindow {
 
     private boolean displayTab = true;
 
+    /**
+     * This is the method that should build the specific content of a tab.
+     * This method should mostly only contain GWT client widget.
+     * @return UI of the tab as a Widget
+     */
+    protected abstract Widget buildUI();
 
+    /**
+     * This is the method that should bind the tab's widgets with actions, the eventbus and the server.
+     * This methoud could contains eventbus handlers, calls to the server or even action handlers like click handler,
+     * valuechange handler...
+     */
+    protected abstract void bindUI();
+
+    /**
+     * This is the method where all the UI configurations though call to existing method in GenericQueryTab should be.
+     * It is mostly used for {@link #addQueryBoilerplate} methods so far.
+     */
     protected abstract void configureTabView();
 
     /**
@@ -260,12 +274,14 @@ public abstract class GenericQueryTab  extends ToolWindow {
             row++;
         } else if (transactionTypes != null){    // most queries and retrieves use this
             FlexTable siteSelectionPanel = new FlexTable();
-            siteSelectionPanel.setWidget(0, 0, new HTML("Send to"));
+            siteSelectionPanel.getFlexCellFormatter().setVerticalAlignment(0,0,HasVerticalAlignment.ALIGN_TOP);
+            siteSelectionPanel.setWidget(0, 0, new HTML("<div style='margin-top:2px;font-size:1.1em;'>Send to</div>"));
 
             FlexTable siteGrid = new FlexTable();
-            siteSelectionPanel.setWidget(0, 1, siteGrid);
+            siteSelectionPanel.getFlexCellFormatter().setVerticalAlignment(0,1,HasVerticalAlignment.ALIGN_TOP);
+            siteSelectionPanel.setWidget(1, 1, siteGrid);
 
-            int siteGridRow = 0;
+            int siteGridRow = 1;
             Set<String> actorTypeNamesAlreadyDisplayed = new HashSet<>();
             for (TransactionType tt : transactionTypes) {
                 Set<ActorType> ats = ActorType.getActorTypes(tt);
@@ -286,6 +302,7 @@ public abstract class GenericQueryTab  extends ToolWindow {
             }
 
             DecoratorPanel decoration = new DecoratorPanel();
+            decoration.setStyleName("queryBoilerPlate");
             decoration.add(siteSelectionPanel);
             mainConfigPanel.add(decoration);
         }
@@ -300,19 +317,7 @@ public abstract class GenericQueryTab  extends ToolWindow {
 		samlListBox.setSelectedIndex((getCommonSiteSpec().isSaml) ? 1 : 0);
 		if (pidTextBox != null)
 			pidTextBox.setText(getCommonPatientId());
-
-		//		String defaultName = defaultSiteSpec.getName();
-		//		for (RadioButton rb : byActorButtons) {
-		//			String name = rb.getName();
-		//			if (defaultName.equals(name)) rb.setValue(true);
-		//		}
-
 	}
-
-	//	protected SiteSpec verifySiteSelection() {
-	//		setCommonSiteSpec(siteActorManager.verifySiteSelection());
-	//		return getCommonSiteSpec();
-	//	}
 
 	// These three versions of addQueryBoilerplate should be made into static methods
 	//  probably hung off a QueryBoilerplateFactory class
@@ -799,5 +804,13 @@ public abstract class GenericQueryTab  extends ToolWindow {
         this.displayTab = displayTab;
     }
 
-
+    protected void addOnTabSelectionRedisplay(){
+        // this handle the refresh of the UI for FindDocumentsByRef tab everytime the tab is reselected
+        ((Xdstools2EventBus) ClientUtils.INSTANCE.getEventBus()).addTabSelectedEventHandler(new TabSelectedEvent.TabSelectedEventHandler() {
+            @Override
+            public void onTabSelection(TabSelectedEvent event) {
+                redisplay(true);
+            }
+        });
+    }
 }

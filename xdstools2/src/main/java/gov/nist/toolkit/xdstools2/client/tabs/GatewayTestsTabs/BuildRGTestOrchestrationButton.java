@@ -13,17 +13,17 @@ import gov.nist.toolkit.sitemanagement.client.SiteSpec;
 import gov.nist.toolkit.xdstools2.client.PopupMessage;
 import gov.nist.toolkit.xdstools2.client.tabs.genericQueryTab.GenericQueryTab;
 import gov.nist.toolkit.xdstools2.client.util.ClientUtils;
-import gov.nist.toolkit.xdstools2.client.widgets.buttons.OrchestrationButton;
+import gov.nist.toolkit.xdstools2.client.widgets.buttons.AbstractOrchestrationButton;
 
 /**
  *
  */
-class BuildRGTestOrchestrationButton extends OrchestrationButton {
+class BuildRGTestOrchestrationButton extends AbstractOrchestrationButton {
     private RGTestTab testTab;
     private SiteSpec siteUnderTest;
     private boolean useExposedRR;
     private boolean useSimAsSUT;
-//    private List<OrchestrationButton> linkedOrchestrationButtons = new ArrayList<>();
+//    private List<AbstractOrchestrationButton> linkedOrchestrationButtons = new ArrayList<>();
 
     BuildRGTestOrchestrationButton(RGTestTab testTab, Panel topPanel, String label, boolean useSimAsSUT) {
         super(topPanel, label);
@@ -31,8 +31,8 @@ class BuildRGTestOrchestrationButton extends OrchestrationButton {
         this.useSimAsSUT = useSimAsSUT;
     }
 
-//    public void addLinkedOrchestrationButton(OrchestrationButton orchestrationButton) {
-//        linkedOrchestrationButtons.add(orchestrationButton);
+//    public void addLinkedOrchestrationButton(AbstractOrchestrationButton orchestrationButton) {
+//        linkedOrchestrationButtons.display(orchestrationButton);
 //    }
 
     public void handleClick(ClickEvent event) {
@@ -55,7 +55,7 @@ class BuildRGTestOrchestrationButton extends OrchestrationButton {
         }
 
         // get rid of past reports
-//        for (OrchestrationButton b : linkedOrchestrationButtons) {
+//        for (AbstractOrchestrationButton b : linkedOrchestrationButtons) {
 //            b.clean();
 //        }
 
@@ -79,9 +79,7 @@ class BuildRGTestOrchestrationButton extends OrchestrationButton {
                 testTab.orch = orchResponse;
                 panel().add(new HTML("<h2>Generated Environment</h2>"));
 
-                if (orchResponse.getMessage().length() > 0) {
-                    panel().add(new HTML("<h3>" + orchResponse.getMessage().replaceAll("\n", "<br />")  + "</h3>"));
-                }
+                handleMessages(null, orchResponse);
 
                 FlexTable table = new FlexTable();
                 panel().add(table);
@@ -102,9 +100,9 @@ class BuildRGTestOrchestrationButton extends OrchestrationButton {
     int displayPIDs(FlexTable table, RgOrchestrationResponse response, int row) {
         table.setHTML(row++, 0, "<h3>Patient IDs</h3>");
         table.setText(row, 0, "Single document Patient ID");
-        table.setText(row++, 1, response.getOneDocPid().asString());
-        table.setText(row, 0, "Two document Patient ID");
-        table.setText(row++, 1, response.getTwoDocPid().asString());
+//        table.setText(row++, 1, response.getOneDocPid().asString());
+//        table.setText(row, 0, "Two document Patient ID");
+//        table.setText(row++, 1, response.getTwoDocPid().asString());
 
         return row;
     }

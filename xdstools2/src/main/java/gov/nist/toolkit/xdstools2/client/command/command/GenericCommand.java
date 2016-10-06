@@ -1,7 +1,7 @@
 package gov.nist.toolkit.xdstools2.client.command.command;
 
 import gov.nist.toolkit.xdstools2.client.command.CommandModule;
-import gov.nist.toolkit.xdstools2.client.command.request.CommandRequest;
+import gov.nist.toolkit.xdstools2.shared.command.CommandRequest;
 
 /**
  * Utility to compose commands to the server.

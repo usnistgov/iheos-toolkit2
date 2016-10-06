@@ -99,7 +99,7 @@ class RepSpec extends ToolkitSpecification {
         repSimConfig = spi.update(repSimConfig)
 
         and: 'run test'
-        SiteSpec siteSpec = response.repSite
+        SiteSpec siteSpec = response.repSite.siteSpec()
         siteSpec.orchestrationSiteName = supportConfig.id
 
         SimManager simManager = new SimManager(api.getSession().id)

@@ -3,10 +3,7 @@ package gov.nist.toolkit.xdstools2.client.tabs;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.rpc.AsyncCallback;
-import com.google.gwt.user.client.ui.FlexTable;
-import com.google.gwt.user.client.ui.HTML;
-import com.google.gwt.user.client.ui.ListBox;
-import com.google.gwt.user.client.ui.Widget;
+import com.google.gwt.user.client.ui.*;
 import gov.nist.toolkit.configDatatypes.client.TransactionType;
 import gov.nist.toolkit.xdstools2.client.CoupledTransactions;
 import gov.nist.toolkit.xdstools2.client.PopupMessage;
@@ -40,30 +37,14 @@ public class RepositoryTestdataTab  extends GenericQueryTab {
 
 	@Override
 	protected Widget buildUI() {
-		return null;
-	}
-
-	@Override
-	protected void bindUI() {
-
-	}
-
-    @Override
-    protected void configureTabView() {
-
-    }
-
-    @Override
-	public void onTabLoad(boolean select, String eventName) {
-		registerTab(select, eventName);
-
+		FlowPanel container=new FlowPanel();
 		// Build UI content of tab
-		tabTopPanel.add(new HTML("<h2>Send XDS Provide & Register transaction</h2>"));
+		container.add(new HTML("<h2>Send XDS Provide & Register transaction</h2>"));
 
 		mainGrid = new FlexTable();
 		int row = 0;
-		
-		tabTopPanel.add(mainGrid);
+
+		container.add(mainGrid);
 
 		mainGrid.setWidget(row,0, new HTML("Select Test Data Set"));
 
@@ -71,14 +52,22 @@ public class RepositoryTestdataTab  extends GenericQueryTab {
 		mainGrid.setWidget(row, 1, testlistBox);
 		row++;
 
-		// build drop down box for selecting data set to send. Initiate call to 
-		// back end to load this list.
-		testlistBox.setVisibleItemCount(1); 
-		getToolkitServices().getTestdataSetListing(getEnvironmentSelection(), getCurrentTestSession(), "testdata-repository", loadRepositoryTestListCallback);
-
-		queryBoilerplate = addQueryBoilerplate(new Runner(), transactionTypes, couplings, true);
+		// build drop down box for selecting data set to send.
+		testlistBox.setVisibleItemCount(1);
+		return container;
 	}
-	
+
+	@Override
+	protected void bindUI() {
+		getToolkitServices().getTestdataSetListing(getEnvironmentSelection(), getCurrentTestSession(), "testdata-repository", loadRepositoryTestListCallback);
+		addOnTabSelectionRedisplay();
+	}
+
+    @Override
+    protected void configureTabView() {
+		queryBoilerplate = addQueryBoilerplate(new Runner(), transactionTypes, couplings, true);
+    }
+
 	// Callback for data set listing.  Add it to the screen.
 	protected AsyncCallback<List<String>> loadRepositoryTestListCallback = new AsyncCallback<List<String>>() {
 

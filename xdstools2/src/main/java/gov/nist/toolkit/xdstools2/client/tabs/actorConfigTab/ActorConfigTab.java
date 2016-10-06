@@ -198,7 +198,7 @@ public class ActorConfigTab extends GenericQueryTab {
 		String boxwidth = "600px";
 		boolean TLS = true;
 
-		HTML nameLabel = new HTML(HtmlMarkup.bold("Site Name"));
+		HTML nameLabel = new HTML(HtmlMarkup.bold("System Name"));
 		actorEditGrid.setWidget(row, 0, nameLabel);
 
 		TextBox nameBox = new TextBox();

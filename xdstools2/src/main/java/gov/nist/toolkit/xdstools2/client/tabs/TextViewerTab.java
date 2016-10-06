@@ -16,16 +16,6 @@ public class TextViewerTab extends ToolWindow {
 		this.escapeHTML = escapeHTML;
 	}
 
-	@Override
-	protected Widget buildUI() {
-		return null;
-	}
-
-	@Override
-	protected void bindUI() {
-
-	}
-
 	public TextViewerTab() {}
 
 	public void onTabLoad(TabContainer container, boolean select) {

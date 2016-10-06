@@ -1,13 +1,12 @@
 package gov.nist.toolkit.services.server.orchestration
 
+import gov.nist.toolkit.actorfactory.SimCache
 import gov.nist.toolkit.actorfactory.client.SimId
 import gov.nist.toolkit.actorfactory.client.SimulatorConfig
 import gov.nist.toolkit.actortransaction.client.ActorType
-import gov.nist.toolkit.actortransaction.client.ParamType
 import gov.nist.toolkit.configDatatypes.SimulatorProperties
 import gov.nist.toolkit.configDatatypes.client.Pid
 import gov.nist.toolkit.configDatatypes.client.PidBuilder
-import gov.nist.toolkit.installation.Installation
 import gov.nist.toolkit.services.client.RawResponse
 import gov.nist.toolkit.services.client.RepOrchestrationRequest
 import gov.nist.toolkit.services.client.RepOrchestrationResponse
@@ -15,7 +14,7 @@ import gov.nist.toolkit.services.server.RawResponseBuilder
 import gov.nist.toolkit.services.server.ToolkitApi
 import gov.nist.toolkit.session.server.Session
 import gov.nist.toolkit.simcommon.client.config.SimulatorConfigElement
-import gov.nist.toolkit.sitemanagement.client.SiteSpec
+import gov.nist.toolkit.sitemanagement.client.Site
 import groovy.transform.TypeChecked
 /**
  * Build orchestration for testing a Repository.
@@ -41,18 +40,17 @@ class RepOrchestrationBuilder {
             SimId supportSimId
             SimulatorConfig supportSimConfig = null
             RepOrchestrationResponse response = new RepOrchestrationResponse()
+            Map<String, TestInstanceManager> pidNameMap = [
+                    pid:  new TestInstanceManager(request, response, ''), // No testId needed since PIF won't be sent
+            ]
 
             boolean reuse = false  // updated as we progress
             supportSimId = new SimId(request.userName, supportIdName, ActorType.REGISTRY.name, request.environmentName)
-            File orchestrationPropFile = Installation.instance().orchestrationPropertiesFile(request.userName, ActorType.REPOSITORY.shortName)
-            Properties orchProps = new Properties()
-            boolean propertiesUpdated = false
-            if (orchestrationPropFile.exists())
-                orchProps.load(new FileInputStream(orchestrationPropFile))
+            OrchestrationProperties orchProps = new OrchestrationProperties(session, request.userName, ActorType.REPOSITORY, pidNameMap.keySet())
             Pid pid
 
-            response.repSite = new SiteSpec(request.sutSite.name)
-            response.repSite.orchestrationSiteName = supportSimId.toString()
+            Site sutSite = SimCache.getSite(session.getId(), request.sutSite.name)
+            response.repSite = sutSite
             if (!request.isUseExistingSimulator()) {
                 api.deleteSimulatorIfItExists(supportSimId)
                 orchProps.clear()
@@ -68,46 +66,26 @@ class RepOrchestrationBuilder {
             } else {
                 pid  = session.allocateNewPid()
                 orchProps.setProperty("pid", pid.asString())
-                propertiesUpdated = true
             }
             response.setPid(pid)
 
-            SimulatorConfigElement idsEle
-            // disable checking of Patient Identity Feed
-            if (!reuse) {
-                idsEle = supportSimConfig.getConfigEle(SimulatorProperties.VALIDATE_AGAINST_PATIENT_IDENTITY_FEED)
+
+            if (!request.isUseExistingSimulator()) {
+                SimulatorConfigElement idsEle = supportSimConfig.getConfigEle(SimulatorProperties.VALIDATE_AGAINST_PATIENT_IDENTITY_FEED)
+
+                // disable checking of Patient Identity Feed
                 idsEle.setValue(false)
 
                 api.saveSimulator(supportSimConfig)
             }
-            if (propertiesUpdated) {
-                orchestrationPropFile.parentFile.mkdirs()
-                orchProps.store(new FileOutputStream(orchestrationPropFile), null)
-            }
-
-            // if SUT is simulator and it does not have a Register endpoint, add endpoint from
-            // support sim
-            // This is a Integration Test convenience
-            SimulatorConfig sutSim = null
-            try {
-                sutSim = api.getConfig(new SimId(request.sutSite.name))
-            } catch (Exception e) {}
-            if (sutSim == null) {
-                // not a sim
-            } else {
-                // is a sim
-                String registerEndpoint = sutSim.getConfigEle(SimulatorProperties.registerEndpoint).asString()
-                if (registerEndpoint == null || registerEndpoint.equals("")) {
-                    // set in endpoint from support site
-                    String endpoint = supportSimConfig.getConfigEle(SimulatorProperties.registerEndpoint).asString()
-                    sutSim.add(new SimulatorConfigElement(SimulatorProperties.registerEndpoint, ParamType.ENDPOINT, endpoint))
-                    api.saveSimulator(sutSim)
-                }
-            }
+            orchProps.save()
 
             response.regConfig = supportSimConfig     //
-            response.supportSite = new SiteSpec(request.sutSite.name)
-            response.supportSite.orchestrationSiteName = supportSimId.toString()
+            response.supportSite = SimCache.getSite(session.getId(), supportSimId.toString())
+
+            // Transactions will be initiated on support site.  Link it to SUT site so that at the last minute
+            // the SUT transactions will be added to support site.
+            response.supportSite.setOrchestrationSiteName(sutSite.getSiteName())
             return response
         } catch (Exception e) {
             return RawResponseBuilder.build(e);

@@ -13,12 +13,12 @@ import gov.nist.toolkit.services.client.RSNAEdgeOrchestrationResponse;
 import gov.nist.toolkit.services.client.RawResponse;
 import gov.nist.toolkit.xdstools2.client.PopupMessage;
 import gov.nist.toolkit.xdstools2.client.tabs.genericQueryTab.GenericQueryTab;
-import gov.nist.toolkit.xdstools2.client.widgets.buttons.OrchestrationButton;
+import gov.nist.toolkit.xdstools2.client.widgets.buttons.AbstractOrchestrationButton;
 
 /**
  * Handles "Build Test Environment" Button for IIG Test Orchestration
  */
-class BuildRSNAEdgeTestOrchestrationButton extends OrchestrationButton {
+class BuildRSNAEdgeTestOrchestrationButton extends AbstractOrchestrationButton {
    private RSNAEdgeTestTab testTab;
    boolean includeEdge;
 

@@ -11,7 +11,7 @@
   <XCQTransaction>
     <XDSb/>
     <MetadataFile>query.xml</MetadataFile>
-    <UseId testdir="../12318" id="SubmissionSet01" symbol="$patient_id$" step="init" section="AssignedPatientId"/>
+    <UseId testdir="../../12318/init" id="SubmissionSet01" symbol="$patient_id$" step="init" section="AssignedPatientId"/>
     <ExpectedContents>
       <ObjectRefs count="2"/>
     </ExpectedContents>

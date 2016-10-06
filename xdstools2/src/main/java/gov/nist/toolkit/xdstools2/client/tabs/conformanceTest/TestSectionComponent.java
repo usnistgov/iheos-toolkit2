@@ -49,7 +49,7 @@ public class TestSectionComponent implements IsWidget {
     TestSectionComponent me;
 
 
-    public TestSectionComponent(String sessionName, TestInstance testInstance, SectionOverviewDTO sectionOverview, TestRunner testRunner) {
+    public TestSectionComponent(String sessionName, TestInstance testInstance, SectionOverviewDTO sectionOverview, TestRunner testRunner, boolean allowRun) {
         me = this;
 //        this.toolkitService = toolkitService;
         this.sessionName = sessionName;
@@ -85,9 +85,11 @@ public class TestSectionComponent implements IsWidget {
         }
         panel.add(body);
 
-        Image play = getImg("icons2/play-16.png","Run","Play button");
-        play.addClickHandler(new RunSection(fullTestInstance));
-        header.add(play);
+        if (allowRun) {
+            Image play = getImg("icons2/play-16.png", "Run", "Play button");
+            play.addClickHandler(new RunSection(fullTestInstance));
+            header.add(play);
+        }
 
         body.add(sectionDescription);
         sectionDescription.add(new HTML(sectionOverview.getDescription()));
@@ -423,4 +425,5 @@ public class TestSectionComponent implements IsWidget {
     public Widget asWidget() {
         return panel;
     }
+
 }

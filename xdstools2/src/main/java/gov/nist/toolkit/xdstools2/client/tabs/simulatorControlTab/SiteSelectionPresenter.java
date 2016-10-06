@@ -23,7 +23,7 @@ public class SiteSelectionPresenter {
     public SiteSelectionPresenter(String groupName, List<String> results, final List<String> selected, final Panel panel) {
 
             siteNames.addAll(results);
-//                siteNames.add(0, none);
+//                siteNames.addTest(0, none);
             view = new SingleSelectionView();
             view.setData(groupName, siteNames);
 

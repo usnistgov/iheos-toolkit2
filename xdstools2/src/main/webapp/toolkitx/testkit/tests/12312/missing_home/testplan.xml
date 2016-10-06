@@ -4,8 +4,8 @@
     <ExpectedStatus>Failure</ExpectedStatus>
     <ExpectedErrorCode>XDSMissingHomeCommunityId</ExpectedErrorCode>
     <XCRTransaction>
-      <UseReport test="12311" reportName="$doc_uid_1$" step="getdocs" useAs="$docuid$"/>
-      <UseReport test="12311" reportName="$repositoryUniqueId$" step="getdocs" useAs="$repositoryuid$"/>
+      <UseReport test="12318" section="init" reportName="Document01_uid" step="init" useAs="$docuid$"/>
+      <UseReport test="12318" section="query" step="query" reportName="repuid" useAs="$repositoryuid$"/>
       <MetadataFile>query.xml</MetadataFile>
       <Assertions>
         <DataRef file="THIS" as="output"/>

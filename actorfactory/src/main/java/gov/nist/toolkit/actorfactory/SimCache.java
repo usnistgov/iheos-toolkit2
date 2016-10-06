@@ -81,6 +81,14 @@ public class SimCache {
         return getSimManagerForSession(sessionId, false);
     }
 
+    static public Site getSite(String sessionId, String siteName) {
+        try {
+            return getSimManagerForSession(sessionId).getAllSites().getSite(siteName);
+        } catch (Exception e) {
+            return null;
+        }
+    }
+
     static public SimManager getSimManagerForSession(String sessionId, boolean create) {
         SimManager s =  mgrs.get(sessionId);
         if (s == null) {

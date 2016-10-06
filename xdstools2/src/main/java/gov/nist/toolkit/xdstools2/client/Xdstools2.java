@@ -16,7 +16,7 @@ import gov.nist.toolkit.sitemanagement.client.TransactionOfferings;
 import gov.nist.toolkit.tk.client.TkProps;
 import gov.nist.toolkit.xdstools2.client.command.command.GetTransactionOfferingsCommand;
 import gov.nist.toolkit.xdstools2.client.command.command.InitializationCommand;
-import gov.nist.toolkit.xdstools2.client.command.response.InitializationResponse;
+import gov.nist.toolkit.xdstools2.shared.command.InitializationResponse;
 import gov.nist.toolkit.xdstools2.client.event.testSession.TestSessionManager2;
 import gov.nist.toolkit.xdstools2.client.selectors.EnvironmentManager;
 import gov.nist.toolkit.xdstools2.client.selectors.TestSessionSelector;
@@ -25,6 +25,7 @@ import gov.nist.toolkit.xdstools2.client.tabs.HomeTab;
 import gov.nist.toolkit.xdstools2.client.tabs.QueryState;
 import gov.nist.toolkit.xdstools2.client.tabs.messageValidator.MessageValidatorTab;
 import gov.nist.toolkit.xdstools2.client.util.ClientFactory;
+import gov.nist.toolkit.xdstools2.client.util.ClientUtils;
 
 import java.util.logging.Logger;
 
@@ -64,16 +65,9 @@ public class Xdstools2  implements AcceptsOneWidget, IsWidget {
 	EventBus v2V3IntegrationEventBus = null;
 
 	// This is as toolkit wide singleton.  See class for details.
-	private TestSessionManager2 testSessionManager = null;
-	static public TestSessionManager2 getTestSessionManager() {
-		if (ME.testSessionManager == null)
-			ME.testSessionManager = new TestSessionManager2();
-		return ME.testSessionManager;
+	public TestSessionManager2 getTestSessionManager() {
+		return ClientUtils.INSTANCE.getTestSessionManager();
 	}
-
-	EnvironmentState environmentState = new EnvironmentState();
-
-	public EnvironmentState getEnvironmentState() { return environmentState; }
 
 	// Central storage for parameters shared across all
 	// query type tabs
@@ -99,7 +93,7 @@ public class Xdstools2  implements AcceptsOneWidget, IsWidget {
 
 		menuPanel.add(environmentManager);
 		menuPanel.setSpacing(10);
-		menuPanel.add(new TestSessionSelector(testSessionManager.getTestSessions(), testSessionManager.getCurrentTestSession()).asWidget());
+		menuPanel.add(new TestSessionSelector(getTestSessionManager().getTestSessions(), getTestSessionManager().getCurrentTestSession()).asWidget());
 
 		DockLayoutPanel mainPanel = new DockLayoutPanel(Style.Unit.EM);
 		mainPanel.addNorth(menuPanel, 4);
@@ -190,6 +184,7 @@ public class Xdstools2  implements AcceptsOneWidget, IsWidget {
 				// environment names
 				// test session names
 				toolkitName = var1.getServletContextName();
+				EnvironmentState environmentState= ClientUtils.INSTANCE.getEnvironmentState();
 				environmentState.setEnvironmentNameChoices(var1.getEnvironments());
 				if (environmentState.getEnvironmentName() == null)
 					environmentState.setEnvironmentName(var1.getDefaultEnvironment());
@@ -237,6 +232,8 @@ public class Xdstools2  implements AcceptsOneWidget, IsWidget {
 
 
 		String currentTestSession = getTestSessionManager().fromCookie();
+		if (currentTestSession == null)
+			currentTestSession = "default";
 		if (getTestSessionManager().isLegalTestSession(currentTestSession)) {
 			// Don't overwrite initialization by ConfActor activity
 			if (getTestSessionManager().getCurrentTestSession() == null)

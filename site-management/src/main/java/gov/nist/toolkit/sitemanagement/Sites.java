@@ -29,6 +29,10 @@ public class Sites {
 				((defaultSiteName == null) ? s.defaultSiteName == null : defaultSiteName.equals(s.defaultSiteName)) &&
 				mapped;
 	}
+
+	public boolean exists(String siteName) {
+		return siteMap.keySet().contains(siteName);
+	}
 	
 	public int size() {
 		return siteMap.size();

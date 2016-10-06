@@ -10,7 +10,7 @@
   </Rule>
   <XCQTransaction>
     <MetadataFile>query.xml</MetadataFile>
-    <UseId testdir="../12318" id="SubmissionSet01" symbol="$patient_id$" step="init" section="AssignedPatientId"/>
+    <UseId testdir="../../12318/init" id="SubmissionSet01" symbol="$patient_id$" step="init" section="AssignedPatientId"/>
     <Assertions>
       <DataRef file="THIS" as="output"/>
       <Assert id="ExtrinsicObjectCount"> 

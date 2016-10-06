@@ -10,6 +10,12 @@ import gov.nist.toolkit.services.client.RawResponse;
  */
 public class ErrorHandler {
 
+    /**
+     * Display error messages.
+     * @param hPanel
+     * @param rawResponse
+     * @return error occured
+     */
     public static boolean handleError(final Panel hPanel, final RawResponse rawResponse) {
         if (rawResponse.isError()) {
             hPanel.add(new HTML(HtmlMarkup.red(
@@ -19,7 +25,7 @@ public class ErrorHandler {
             )));
             return true;
         }
-//        hPanel.add(new HTML("<p>Success</p>"));
+//        hPanel.display(new HTML("<p>Success</p>"));
         return false;
     }
 

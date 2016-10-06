@@ -77,8 +77,19 @@ public class TestKitSearchPath {
 
     }
 
-
     public List<TestKit> getTestkits() {
         return testkits;
+    }
+
+    @Override
+    public String toString() {
+        StringBuilder buf = new StringBuilder();
+
+        buf.append("TestKitSearchPath: environment=" + environment + " testSession=" + testSession).append("\n");
+        for (TestKit testkit : testkits) {
+            buf.append(testkit.toString()).append("\n");
+        }
+
+        return buf.toString();
     }
 }

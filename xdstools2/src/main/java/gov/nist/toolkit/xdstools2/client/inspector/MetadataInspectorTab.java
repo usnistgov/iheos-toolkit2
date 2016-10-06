@@ -45,23 +45,11 @@ public class MetadataInspectorTab extends ToolWindow {
 	
 	HorizontalPanel hpanel;
 	
-//	ToolkitServiceAsync toolkitService;
 	Collection<Result> results;
 	SiteSpec siteSpec;
 	
-//	public void setToolkitService(ToolkitServiceAsync tsa) { toolkitService = tsa; }
 	public void setResults(Collection<Result> results) { this.results = results; }
 	public void setSiteSpec(SiteSpec ss) { siteSpec = ss; }
-
-	@Override
-	protected Widget buildUI() {
-		return null;
-	}
-
-	@Override
-	protected void bindUI() {
-
-	}
 
 	@Override
 	public void onTabLoad(boolean select, String eventName) {

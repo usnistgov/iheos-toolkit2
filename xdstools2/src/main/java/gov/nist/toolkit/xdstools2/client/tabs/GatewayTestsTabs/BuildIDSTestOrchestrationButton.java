@@ -13,13 +13,13 @@ import gov.nist.toolkit.services.client.IdsOrchestrationResponse;
 import gov.nist.toolkit.services.client.RawResponse;
 import gov.nist.toolkit.xdstools2.client.PopupMessage;
 import gov.nist.toolkit.xdstools2.client.tabs.genericQueryTab.GenericQueryTab;
-import gov.nist.toolkit.xdstools2.client.widgets.buttons.OrchestrationButton;
+import gov.nist.toolkit.xdstools2.client.widgets.buttons.AbstractOrchestrationButton;
 
 
 /**
  *
  */
-class BuildIDSTestOrchestrationButton extends OrchestrationButton {
+class BuildIDSTestOrchestrationButton extends AbstractOrchestrationButton {
     private IDSTestTab testTab;
     boolean includeIG;
 
@@ -77,10 +77,10 @@ class BuildIDSTestOrchestrationButton extends OrchestrationButton {
                 table.setWidget(row++, 2, new HTML(config.getConfigEle(SimulatorProperties.pnrTlsEndpoint).asString()));
 
 
-//                    panel().add(testTab.addTestEnvironmentInspectorButton(config.getId().toString()));
+//                    panel().display(testTab.addTestEnvironmentInspectorButton(config.getId().toString()));
 
                 // generate log launcher buttons
-//                panel().add(testTab.testSelectionManager.buildLogLauncher(testTab.rgConfigs));
+//                panel().display(testTab.testSelectionManager.buildLogLauncher(testTab.rgConfigs));
 
                 testTab.genericQueryTab.reloadTransactionOfferings();
             }

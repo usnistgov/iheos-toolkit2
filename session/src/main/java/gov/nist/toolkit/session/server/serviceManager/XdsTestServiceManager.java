@@ -566,6 +566,8 @@ public class XdsTestServiceManager extends CommonService {
 		LogMapDTO lm = new LogMapDTO();
 
 		TestDefinition testDefinition = session.getTestkitSearchPath().getTestDefinition(testInstance.getId());
+		if (testDefinition == null)
+			return lm;
 		List<String> sectionNames = testDefinition.getSectionIndex();
 
 		if (sectionNames.size() == 0) {   // now illegal
@@ -593,7 +595,7 @@ public class XdsTestServiceManager extends CommonService {
 					lm.add(sectionName, ll);
 				} catch (Exception e)
 				{
-
+					continue;
 				}
 			}
 		}

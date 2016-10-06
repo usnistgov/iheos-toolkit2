@@ -7,8 +7,11 @@ import gov.nist.toolkit.configDatatypes.client.TransactionType;
 import gov.nist.toolkit.sitemanagement.client.SiteSpec;
 import gov.nist.toolkit.xdstools2.client.CoupledTransactions;
 import gov.nist.toolkit.xdstools2.client.PopupMessage;
+import gov.nist.toolkit.xdstools2.client.event.TabSelectedEvent;
+import gov.nist.toolkit.xdstools2.client.event.Xdstools2EventBus;
 import gov.nist.toolkit.xdstools2.client.siteActorManagers.FindDocumentsSiteActorManager;
 import gov.nist.toolkit.xdstools2.client.tabs.genericQueryTab.GenericQueryTab;
+import gov.nist.toolkit.xdstools2.client.util.ClientUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,7 +27,7 @@ public class FindDocumentsByRefIdTab extends GenericQueryTab {
 
 	static CoupledTransactions couplings = new CoupledTransactions();
 
-//	CheckBox selectOnDemand;
+    //	CheckBox selectOnDemand;
 	TextBox refIdTextBox1 = new TextBox();
 	TextBox refIdTextBox2 = new TextBox();
 	TextBox refIdTextBox3 = new TextBox();
@@ -36,37 +39,16 @@ public class FindDocumentsByRefIdTab extends GenericQueryTab {
 
 	@Override
 	protected Widget buildUI() {
-		return null;
-	}
-
-	@Override
-	protected void bindUI() {
-
-	}
-
-	@Override
-	protected void configureTabView() {
-
-	}
-
-	@Override
-	public void onTabLoad(boolean select, String eventName) {
-		registerTab(select, "FindDocumentsByRefId");
-
+		FlowPanel flowPanel=new FlowPanel();
 		HTML title = new HTML();
 		title.setHTML("<h2>Find Documents by Reference ID Stored Query</h2>");
-		tabTopPanel.add(title);
+		flowPanel.add(title);
 
 		mainGrid = new FlexTable();
 		int row = 0;
 
-//		selectOnDemand = new CheckBox();
-//		selectOnDemand.setText("Include On-Demand DocumentEntries");
-//		mainGrid.setWidget(row, 0, selectOnDemand);
-//		row++;
-		
 		mainGrid.setWidget(row, 0, new HTML("Reference IDs"));
-		
+
 		HorizontalPanel horizPanel = new HorizontalPanel();
 		refIdTextBox1.setWidth("25em");
 		refIdTextBox2.setWidth("25em");
@@ -77,12 +59,22 @@ public class FindDocumentsByRefIdTab extends GenericQueryTab {
 		mainGrid.setWidget(row, 1, horizPanel);
 		row++;
 
-		tabTopPanel.add(mainGrid);
+		flowPanel.add(mainGrid);
+		return flowPanel;
+	}
 
+	@Override
+	protected void bindUI() {
+        // this is what handle redisplay on tab selection
+        addOnTabSelectionRedisplay();
+	}
+
+	@Override
+	protected void configureTabView() {
 		addQueryBoilerplate(new Runner(), transactionTypes, couplings, true);
 	}
 
-	class Runner implements ClickHandler {
+    class Runner implements ClickHandler {
 
 		public void onClick(ClickEvent event) {
 			resultPanel.clear();
