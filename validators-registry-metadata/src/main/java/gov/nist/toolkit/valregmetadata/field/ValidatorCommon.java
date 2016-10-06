@@ -348,7 +348,7 @@ public class ValidatorCommon implements ErrorRecorder {
 	}
 
 	@Override
-	public void success(String dts, String name, String found, String expected, String RFC) {
+	public void success(String dts, String RFC) {
 
 	}
 
