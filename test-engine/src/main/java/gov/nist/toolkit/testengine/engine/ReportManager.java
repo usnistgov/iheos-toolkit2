@@ -41,6 +41,7 @@ public class ReportManager {
 		reportDTO.setName(r.getAttributeValue(new QName("name")));
 		reportDTO.setSection(r.getAttributeValue(new QName("section")));
 		reportDTO.setXpath(r.getText());
+		reportDTO.setEscapedCharsInXml(r.getAttributeValue(new QName("escapedCharsInXml")));
 		addReport(reportDTO);
 	}
 
@@ -82,21 +83,44 @@ public class ReportManager {
 			try {
 				if (reportDTO.getXpath() != null && !reportDTO.getXpath().equals("")) {
 					OMElement section = getSection(reportDTO.getSection());
+					/*
+					if ("false".equals(reportDTO.getEncodeXml()) && section!=null && section.toString().contains("&lt;")) {
+						String sectionStr = section.toString();
+						sectionStr = sectionStr.replaceAll("&lt;","<");
+						section = Util.parse_xml(sectionStr);
+					}
+					*/
+					logger.info("Got section: " + section.toString());
 					xpathExpression = new AXIOMXPath (reportDTO.getXpath());
 					String val;
 					try {
-						val = xpathExpression.stringValueOf(section);
+						if ("true".equals(reportDTO.getEscapedCharsInXml())) {
+							String sectionStr = section.toString();
+							sectionStr = getDecodedStr(sectionStr);
+							section = Util.parse_xml(sectionStr);
+							List nodeList = xpathExpression.selectNodes(section);
+							if (nodeList.size() != 1) {
+								logger.info("ReportManager: section path extraction failed! ReportDTO: " + reportDTO.toString());
+							}
+							OMElement targetEle = (OMElement) nodeList.get(0);
+							val = targetEle.toString();
+						} else { // The default
+							val = xpathExpression.stringValueOf(section);
+						}
 					} catch (Exception e) {
                         val = String.format("Error generating report: %s", e.getMessage());
+						logger.info(val);
 //						throw new XdsInternalException("Error evaluating XPath expression [" +
 //								reportBuilder.getXpath() + "] against output of section [" + reportBuilder.getSection() + "]");
 					}
 					reportDTO.setValue(val);
-					if (val == null || val.equals(""))
+					if (val == null || val.equals("")) {
 						val = "Report " + reportDTO.getName() +
 								" which has XPath " + reportDTO.getXpath() +
 								" evaluates to [" + val + "] when evaluated " +
 								"against section " + reportDTO.getSection();
+						logger.info(val);
+					}
 //                    throw new XdsInternalException("ReportBuilder " + reportBuilder.name +
 //                            " which has XPath " + reportBuilder.getXpath() +
 //                            " evaluates to [" + val + "] when evaluated " +
@@ -108,6 +132,11 @@ public class ReportManager {
 			}
 
 		}
+	}
+
+	public static String getDecodedStr(String sectionStr) {
+		sectionStr = sectionStr.replace("&lt;","<").replace("&gt;",">");
+		return sectionStr;
 	}
 
 	public void report(Map<String, String> map) {

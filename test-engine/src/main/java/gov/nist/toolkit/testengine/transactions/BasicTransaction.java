@@ -94,10 +94,14 @@ public abstract class BasicTransaction  {
 	protected boolean soap_1_2 = true;
 	protected boolean async = false;
 	protected boolean isStableOrODDE = false;
+	/**
+	HttpTransaction uses a separate Body.txt file. In this case we need to tell not run reportManagerPreRun since the subclass will run the parameter replacement on its own.
+	 */
+	boolean noReportManagerPreRun = false;
+	boolean noMetadataProcessing = false;  // example Retrieve request - no metadata to process
 	boolean useMtom;
 	boolean useAddressing;
 	boolean isSQ;
-	boolean noMetadataProcessing = false;  // example Retrieve request - no metadata to process
 	boolean defaultEndpointProcessing = true;
 
 	protected String repositoryUniqueId = null;
@@ -832,8 +836,9 @@ public abstract class BasicTransaction  {
 
 //        if (request_element == null)
 //            fatal("BasicTransaction:prepare_metadata(): metadata_element is null");
-		if (noMetadataProcessing) {
-			reportManagerPreRun(request_element);  // must run before prepareMetadata (assign uuids)
+		if (isNoMetadataProcessing()) {
+			if (!isNoReportManagerPreRun())
+				reportManagerPreRun(request_element);  // must run before prepareMetadata (assign uuids)
 			return null;
 		}
 		try {
@@ -1020,14 +1025,10 @@ public abstract class BasicTransaction  {
 			this.no_convert = true;
 		}
 		else if (part_name.equals("Report")) {
-			if (reportManager == null)
-				reportManager = new ReportManager(testConfig);
-			reportManager.addReport(part);
+			parseReportInstruction(part);
 		}
 		else if (part_name.equals("UseReport")) {
-			if (useReportManager == null)
-				useReportManager = new UseReportManager(testConfig);
-			useReportManager.add(part);
+			parseUseReportInstruction(part);
 		}
 		else if (part_name.equals("ParseMetadata")) {
 			String value = part.getText();
@@ -1127,6 +1128,18 @@ public abstract class BasicTransaction  {
 //		if (testConfig.verbose)
 //			System.out.println("<<<PRE-TRANSACTION>>>\n" + toString() + "<<<///PRE-TRANSACTION>>>\n");
 
+	}
+
+	protected void parseUseReportInstruction(OMElement part) throws XdsInternalException {
+		if (useReportManager == null)
+            useReportManager = new UseReportManager(testConfig);
+		useReportManager.add(part);
+	}
+
+	protected void parseReportInstruction(OMElement part) {
+		if (reportManager == null)
+            reportManager = new ReportManager(testConfig);
+		reportManager.addReport(part);
 	}
 
 	public class DocDetails {
@@ -1454,4 +1467,19 @@ public abstract class BasicTransaction  {
       throw new XdsInternalException("BasicTransaction#processAssertion: unknown process " + assertion.toString());
    }
 
+	public boolean isNoReportManagerPreRun() {
+		return noReportManagerPreRun;
+	}
+
+	public void setNoReportManagerPreRun(boolean noReportManagerPreRun) {
+		this.noReportManagerPreRun = noReportManagerPreRun;
+	}
+
+	public boolean isNoMetadataProcessing() {
+		return noMetadataProcessing;
+	}
+
+	public void setNoMetadataProcessing(boolean noMetadataProcessing) {
+		this.noMetadataProcessing = noMetadataProcessing;
+	}
 }

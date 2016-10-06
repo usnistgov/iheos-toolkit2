@@ -213,12 +213,17 @@ public class ToolkitApi {
      * @throws Exception if testSession could not be created
      */
     public List<Result> runTest(String testSessionName, String siteName, TestInstance testInstance, List<String> sections, Map<String, String> params, boolean stopOnFirstFailure) throws Exception {
+        return runTest(testSessionName,siteName,false,testInstance,sections,params,stopOnFirstFailure);
+    }
+
+    public List<Result> runTest(String testSessionName, String siteName, boolean isTls, TestInstance testInstance, List<String> sections, Map<String, String> params, boolean stopOnFirstFailure) throws Exception {
         if (testSessionName == null) {
             testSessionName = "API";
             xdsTestServiceManager().addMesaTestSession(testSessionName);
         }
         SiteSpec siteSpec = new SiteSpec();
         siteSpec.setName(siteName);
+        siteSpec.setTls(isTls);
         if (session.getMesaSessionName() == null) session.setMesaSessionName(testSessionName);
         // TODO add environment name in following call?
         return xdsTestServiceManager().runMesaTest(environmentName,testSessionName, siteSpec, testInstance, sections, params, null, stopOnFirstFailure);

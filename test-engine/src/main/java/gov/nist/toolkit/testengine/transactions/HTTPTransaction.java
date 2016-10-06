@@ -1,10 +1,12 @@
 package gov.nist.toolkit.testengine.transactions;
 
 import gov.nist.toolkit.configDatatypes.client.TransactionType;
+import gov.nist.toolkit.http.HttpParseException;
 import gov.nist.toolkit.http.HttpParserBa;
 import gov.nist.toolkit.registrymsg.registry.RegistryResponseParser;
+import gov.nist.toolkit.testengine.engine.ReportManager;
 import gov.nist.toolkit.testengine.engine.StepContext;
-import gov.nist.toolkit.utilities.io.Io;
+import gov.nist.toolkit.testengine.engine.Transactions;
 import gov.nist.toolkit.utilities.xml.Util;
 import gov.nist.toolkit.xdsexception.ExceptionUtil;
 import gov.nist.toolkit.xdsexception.client.MetadataException;
@@ -14,6 +16,7 @@ import org.apache.axiom.om.xpath.AXIOMXPath;
 import org.apache.http.Header;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
+import org.apache.http.StatusLine;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.ContentType;
 import org.apache.http.entity.InputStreamEntity;
@@ -22,8 +25,12 @@ import org.apache.http.impl.client.HttpClients;
 import org.apache.http.util.EntityUtils;
 import org.jaxen.JaxenException;
 
+import javax.xml.namespace.QName;
+import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -36,6 +43,7 @@ public class HTTPTransaction extends BasicTransaction {
     Map<String, List<String>> headers = new HashMap<>();
     File file;
     String transType;
+    String stsQuery;
 
     public HTTPTransaction(StepContext s_ctx, OMElement instruction, OMElement instruction_output) {
         super(s_ctx, instruction, instruction_output);
@@ -83,50 +91,53 @@ public class HTTPTransaction extends BasicTransaction {
                 }
             }
             testLog.add_name_value(instruction_output, "OutHeader", headersToString());
-            testLog.add_name_value(instruction_output, "InputMetadata", Io.stringFromFile(file));
 
-            InputStreamEntity reqEntity = new InputStreamEntity(new FileInputStream(file), -1, ContentType.APPLICATION_OCTET_STREAM);
+            InputStream inputStream;
+            if (Transactions.SecureTokenService.equals(transType)) {
+               inputStream = prepareInputStream();
+            } else {
+                inputStream = new FileInputStream(file);
+            }
+            InputStreamEntity reqEntity = new InputStreamEntity(inputStream, -1, ContentType.APPLICATION_OCTET_STREAM);
             reqEntity.setChunked(true);
             httpPost.setEntity(reqEntity);
 
             HttpResponse response = httpClient.execute(httpPost);
 
-            try {
-                System.out.println("----------------------------------------");
-                System.out.println(response.getStatusLine());
-                testLog.add_name_value(instruction_output, "InHeader", response.getStatusLine().toString());
-                Header[] responseHeaders = response.getAllHeaders();
-                HttpEntity responseEntity = response.getEntity();
-                String responseString = EntityUtils.toString(responseEntity);
-                testLog.add_name_value(instruction_output, "Result", responseString);
+                try {
+                    System.out.println("----------------------------------------");
+                    StatusLine statusLine = response.getStatusLine();
+                    System.out.println(statusLine);
+                    testLog.add_name_value(instruction_output, "InHeader", statusLine.toString());
+                    Header[] responseHeaders = response.getAllHeaders();
+                    HttpEntity responseEntity = response.getEntity();
+                    String responseString = EntityUtils.toString(responseEntity);
+                    System.out.println(responseString);
+                    testLog.add_name_value(instruction_output, "Result", responseString);
 
-                Map<String, List<String>> rspHeaders = new HashMap<>();
-                for (int i=0; i<responseHeaders.length; i++) {
-                    Header h = responseHeaders[i];
-                    addHeader(rspHeaders, h.getName(), h.getValue());
-                }
+                    if (Transactions.ProvideAndRegister_b.equals(transType)) {
+                        if (validatePnr(responseHeaders, responseString)) return;
+                    } else if (Transactions.SecureTokenService.equals(transType)) { // Gazelle's Picketlink STS
+                        if (200 == statusLine.getStatusCode()) {
+                            if ("issue".equals(stsQuery)) {
+                                if (validateStsIssue(responseHeaders, responseString)) return;
+                            } else if ("validate".equals(stsQuery)) {
+                                if (validateStsValidate(responseHeaders, responseString)) return;
+                            }
+                        } else {
+                            s_ctx.set_error("HTTP error code: " + statusLine.getStatusCode()  + " Reason: " + statusLine.getReasonPhrase());
+                            failed();
+                            return;
+                        }
+                    }
 
-                HttpParserBa parser = new HttpParserBa(rspHeaders, responseString.getBytes());
-
-                if (!parser.isMultipart()) {
-                    s_ctx.set_error("Response is not multipart");
+                } catch (Exception e) {
+                    s_ctx.set_error(e.getMessage());
                     failed();
-                    return;
+                } finally {
+                    //response.close();
                 }
-                if (parser.getMultipart().getPartCount() != 1) {
-                    s_ctx.set_error("Expected single part in multipart response");
-                    failed();
-                    return;
-                }
-                byte[] partContent = parser.getMultipart().getPart(0).getBody();
 
-                loadStepContextwithResponseErrors(new String(partContent));
-            } catch (Exception e) {
-                s_ctx.set_error(e.getMessage());
-                failed();
-            } finally {
-                //response.close();
-            }
         } catch (Throwable e) {
             s_ctx.set_error(ExceptionUtil.exception_details(e));
             failed();
@@ -135,8 +146,79 @@ public class HTTPTransaction extends BasicTransaction {
         }
     }
 
+    private InputStream prepareInputStream() throws XdsInternalException {
+        OMElement ele = Util.parse_xml(file);
+        reportManagerPreRun(ele);
+        String body = ele.toString();
+        body = ReportManager.getDecodedStr(body);
+        testLog.add_name_value(instruction_output, "InputMetadata", body);
+        return new ByteArrayInputStream(body.getBytes(StandardCharsets.UTF_8));
+    }
+
+    private boolean validateStsValidate(Header[] responseHeaders, String responseString) throws Exception {
+        OMElement envelopeEle = Util.parse_xml(responseString);
+
+        AXIOMXPath xpathExpression = new AXIOMXPath("//*[local-name()='Body']/*[local-name()='RequestSecurityTokenResponseCollection']/*[local-name()='RequestSecurityTokenResponse']/*[local-name()='Status']/*[local-name()='Code']");
+        String val = xpathExpression.stringValueOf(envelopeEle);
+
+        if (val==null || !"http://docs.oasis-open.org/ws-sx/ws-trust/200512/status/valid".equals(val)) {
+            s_ctx.set_error("SAML Assertion: Null Status Code or invalid value.");
+            failed();
+            return false;
+        }
+
+        return true;
+    }
+
+    private boolean validateStsIssue(Header[] responseHeaders, String responseString) throws Exception {
+        OMElement envelopeEle = Util.parse_xml(responseString);
+
+        AXIOMXPath xpathExpression = new AXIOMXPath ("//*[local-name()='Body']/*[local-name()='RequestSecurityTokenResponseCollection']/*[local-name()='RequestSecurityTokenResponse']/*[local-name()='RequestedSecurityToken']/*[local-name()='Assertion']");
+        List nodeList = xpathExpression.selectNodes(envelopeEle);
+        if (nodeList.size() != 1) {
+            s_ctx.set_error("Cannot extract SAML Assertion from SOAP Message");
+            failed();
+            return false;
+        }
+        OMElement responseEle = (OMElement) nodeList.get(0);
+        String assertionId = responseEle.getAttributeValue(new QName("ID")).toString();
+        String issueInstant = responseEle.getAttributeValue(new QName("IssueInstant"));
+
+        if (assertionId==null && issueInstant==null) {
+            s_ctx.set_error("SAML Assertion: Null ID or IssueInstant attribute value.");
+            failed();
+            return false;
+        }
+
+        return true;
+    }
+
+    private boolean validatePnr(Header[] responseHeaders, String responseString) throws HttpParseException, XdsInternalException, JaxenException {
+        Map<String, List<String>> rspHeaders = new HashMap<>();
+        for (int i = 0; i < responseHeaders.length; i++) {
+            Header h = responseHeaders[i];
+            addHeader(rspHeaders, h.getName(), h.getValue());
+        }
+
+        HttpParserBa parser = new HttpParserBa(rspHeaders, responseString.getBytes());
+
+        if (!parser.isMultipart()) {
+            s_ctx.set_error("Response is not multipart");
+            failed();
+            return false;
+        }
+        if (parser.getMultipart().getPartCount() != 1) {
+            s_ctx.set_error("Expected single part in multipart response");
+            failed();
+            return false;
+        }
+        byte[] partContent = parser.getMultipart().getPart(0).getBody();
+
+        loadStepContextwithResponseErrors(new String(partContent));
+        return true;
+    }
+
     private void loadStepContextwithResponseErrors(String responseString) throws XdsInternalException, JaxenException {
-        System.out.println(responseString);
         OMElement envelopeEle = Util.parse_xml(responseString);
 
         AXIOMXPath xpathExpression = new AXIOMXPath ("//*[local-name()='RegistryResponse']");
@@ -157,6 +239,7 @@ public class HTTPTransaction extends BasicTransaction {
 
     @Override
     protected void parseInstruction(OMElement part) throws XdsInternalException, MetadataException {
+
         String part_name = part.getLocalName();
         if (part_name.equals("Headers")) {
             String text = part.getText();
@@ -171,9 +254,14 @@ public class HTTPTransaction extends BasicTransaction {
                 }
             }
         }
-
-        if (part_name.equals("BodyFile")) {
+        else  if (part_name.equals("BodyFile")) {
             file = new File(testConfig.testplanDir, part.getText());
+        }
+        else if (part_name.equals("Report")) {
+            parseReportInstruction(part);
+        }
+        else if (part_name.equals("UseReport")) {
+            parseUseReportInstruction(part);
         }
     }
 
@@ -196,5 +284,13 @@ public class HTTPTransaction extends BasicTransaction {
     @Override
     protected String getBasicTransactionName() {
         return transType;
+    }
+
+    public String getStsQuery() {
+        return stsQuery;
+    }
+
+    public void setStsQuery(String stsQuery) {
+        this.stsQuery = stsQuery;
     }
 }

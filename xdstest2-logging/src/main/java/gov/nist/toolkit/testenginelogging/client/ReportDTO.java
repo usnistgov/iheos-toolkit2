@@ -12,6 +12,7 @@ public class ReportDTO implements Serializable, IsSerializable {
     private String value = "Unavailable";
     private String section;
     private String xpath;
+    private String escapedCharsInXml;
 
     public ReportDTO() {
     }
@@ -62,4 +63,11 @@ public class ReportDTO implements Serializable, IsSerializable {
         this.xpath = xpath;
     }
 
+    public String getEscapedCharsInXml() {
+        return escapedCharsInXml;
+    }
+
+    public void setEscapedCharsInXml(String escapedCharsInXml) {
+        this.escapedCharsInXml = escapedCharsInXml;
+    }
 }
