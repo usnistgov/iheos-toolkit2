@@ -34,7 +34,9 @@ class RegOrchestrationBuilder {
                 mpq2Pid:      new TestInstanceManager(request, response, '15820')
         ]
 
-        OrchestrationProperties orchProps = new OrchestrationProperties(session, request.userName, ActorType.REPOSITORY, pidNameMap.keySet())
+        boolean forceNewPatientIds = !request.isUseExistingState()
+
+        OrchestrationProperties orchProps = new OrchestrationProperties(session, request.userName, ActorType.REGISTRY, pidNameMap.keySet(), forceNewPatientIds)
 
         Pid registerPid = PidBuilder.createPid(orchProps.getProperty("registerPid"))
         Pid sqPid       = PidBuilder.createPid(orchProps.getProperty("sqPid"))
@@ -46,17 +48,17 @@ class RegOrchestrationBuilder {
         response.setMpq1Pid(mpq1Pid)
         response.setMpq2Pid(mpq2Pid)
 
-        TestInstance testInstance12346 = TestInstanceManager.initializeTestInstance(request, new TestInstance("12346"))
+        TestInstance testInstance12346 = TestInstanceManager.initializeTestInstance(request.getUserName(), new TestInstance("12346"))
         MessageItem item12346 = response.addMessage(testInstance12346, true, "");
 
-        TestInstance testInstance12374 = TestInstanceManager.initializeTestInstance(request, new TestInstance("12374"))
+        TestInstance testInstance12374 = TestInstanceManager.initializeTestInstance(request.getUserName(), new TestInstance("12374"))
         MessageItem item12374 = response.addMessage(testInstance12374, true, "");
 
 
-        // send necessary Patient ID Feed messages
-        new PifSender(api, request.getUserName(), request.registrySut, orchProps).send(PifType.V2, pidNameMap)
 
         if (orchProps.updated()) {
+            // send necessary Patient ID Feed messages
+            new PifSender(api, request.getUserName(), request.registrySut, orchProps).send(PifType.V2, pidNameMap)
 
             // Initialize Registry for Stored Query testing
             Map<String, String> parms = new HashMap<>();

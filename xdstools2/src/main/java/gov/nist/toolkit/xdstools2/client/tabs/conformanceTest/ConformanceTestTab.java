@@ -11,7 +11,6 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.TabBar;
-import com.google.gwt.user.client.ui.Widget;
 import gov.nist.toolkit.actortransaction.client.ActorType;
 import gov.nist.toolkit.interactiondiagram.client.events.DiagramClickedEvent;
 import gov.nist.toolkit.interactiondiagram.client.events.DiagramPartClickedEventHandler;
@@ -20,6 +19,7 @@ import gov.nist.toolkit.results.client.TestInstance;
 import gov.nist.toolkit.services.client.AbstractOrchestrationResponse;
 import gov.nist.toolkit.services.client.RepOrchestrationResponse;
 import gov.nist.toolkit.session.client.TestOverviewDTO;
+import gov.nist.toolkit.session.client.sort.TestSorter;
 import gov.nist.toolkit.sitemanagement.client.SiteSpec;
 import gov.nist.toolkit.testkitutilities.client.TestCollectionDefinitionDAO;
 import gov.nist.toolkit.xdstools2.client.PopupMessage;
@@ -353,14 +353,11 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner, TestsH
 				for (String testId : testIds) testInstances.add(new TestInstance(testId));
                 testStatistics.clear();
                 testStatistics.setTestCount(testIds.size());
-				testsPerActor.put(currentActorTypeId, testInstances);
+//				testsPerActor.put(currentActorTypeId, testInstances);
 				loadingMessage.setHTML("Loading...");
                 displayTests(testInstances);
-
-
             }
 		});
-
 	}
 
     private void displayTests(List<TestInstance> testInstances) {
@@ -372,6 +369,16 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner, TestsH
             }
 
             public void onSuccess(List<TestOverviewDTO> testOverviews) {
+
+				// sort tests by dependencies and alphabetically
+				// save in testsPerActor so they run in this order as well
+				List<TestInstance> testInstances1 = new ArrayList<>();
+				testOverviews = new TestSorter().sort(testOverviews);
+				for (TestOverviewDTO dto : testOverviews) {
+					testInstances1.add(dto.getTestInstance());
+				}
+				testsPerActor.put(currentActorTypeId, testInstances1);
+
 				testsPanel.clear();
                 testsPanel.add(testsHeaderView.asWidget());
 				testStatistics.clear();
@@ -457,37 +464,6 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner, TestsH
 			}
 		}
 	}
-
-//	private void displayInteractionDiagram(TestOverviewDTO testResultDTO, FlowPanel body) {
-//		InteractionDiagram diagram = new InteractionDiagram(Xdstools2.getEventBus(), testResultDTO);
-//		if (diagram!=null && diagram.hasMeaningfulDiagram()) {
-//			body.add(new HTML("<p><b>Interaction Sequence:</b></p>"));
-//			body.add(diagram);
-//			body.add(new HTML("<br/>"));
-//		}
-//	}
-//
-//	private class RunClickHandler implements ClickHandler {
-//		TestInstance testInstance;
-//
-//		RunClickHandler(TestInstance testInstance) {
-//			this.testInstance = testInstance;
-//		}
-//
-//		@Override
-//		public void onClick(ClickEvent clickEvent) {
-//			clickEvent.preventDefault();
-//			clickEvent.stopPropagation();
-//
-//            String msg = verifyTestContext();
-//            if (msg == null)
-//			    runTest(testInstance, null);
-//            else
-//            	testContextDisplay.launchDialog(msg);
-////                launchTestContextDialog(msg);
-//
-//		}
-//	}
 
 	@Override
 	public RunAllClickHandler getRunAllClickHandler() {

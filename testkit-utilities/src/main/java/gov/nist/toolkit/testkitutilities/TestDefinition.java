@@ -93,11 +93,15 @@ public class TestDefinition {
 		return parseTestPlan(Util.parse_xml(new File(new File(testDir, sectionName), "testplan.xml")));
 	}
 
+	final static QName TEST_QNAME = new QName("test");
+
 	private SectionDefinitionDAO parseTestPlan(OMElement sectionEle) {
 		SectionDefinitionDAO section = new SectionDefinitionDAO();
 		for (OMElement stepEle : XmlUtil.decendentsWithLocalName(sectionEle, "TestStep")) {
 			StepDefinitionDAO step = new StepDefinitionDAO();
 			step.setId(stepEle.getAttributeValue(new QName("id")));
+
+			// parse goals
 			OMElement goalEle = XmlUtil.firstChildWithLocalName(stepEle, "Goal");
 			if (goalEle == null) continue;
 			String goalsString = goalEle.getText();
@@ -109,6 +113,15 @@ public class TestDefinition {
 				line = line.trim();
 				if (line.length() == 0) continue;
 				step.addGoals(line);
+			}
+
+			for (OMElement trans : XmlUtil.descendantsWithLocalNameEndsWith(stepEle, "Transaction")) {
+				for (OMElement useReport : XmlUtil.childrenWithLocalName(trans, "UseReport")) {
+					String testId = useReport.getAttributeValue(TEST_QNAME);
+					if (testId != null) {
+						section.addTestDependency(testId);
+					}
+				}
 			}
 
 			section.addStep(step);

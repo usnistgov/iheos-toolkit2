@@ -48,7 +48,9 @@ class IgOrchestrationBuilder {
                     registryErrorPid: new TestInstanceManager(request, response, '15827'),
             ]
 
-            orchProps = new OrchestrationProperties(session, request.userName, ActorType.INITIATING_GATEWAY, pidNameMap.keySet())
+            boolean forceNewPatientIds = !request.isUseExistingState()
+
+            orchProps = new OrchestrationProperties(session, request.userName, ActorType.INITIATING_GATEWAY, pidNameMap.keySet(), forceNewPatientIds)
 
             Pid oneDocPid = PidBuilder.createPid(orchProps.getProperty("oneDocPid"))
             Pid twoDocPid = PidBuilder.createPid(orchProps.getProperty("twoDocPid"))
@@ -68,13 +70,13 @@ class IgOrchestrationBuilder {
             String home0 = rgConfigs.get(0).get(SimulatorProperties.homeCommunityId).asString()
             String home1 = rgConfigs.get(1).get(SimulatorProperties.homeCommunityId).asString()
 
-            if (orchProps.updated()) {
+            if (!request.useExistingState) {
                 // send necessary Patient ID Feed messages
                 request.setPifType(PifType.V2)
                 new PifSender(api, request.getUserName(), rg1Site.siteSpec(), orchProps).send(PifType.V2, pidNameMap)
                 new PifSender(api, request.getUserName(), rg2Site.siteSpec(), orchProps).send(PifType.V2, pidNameMap)
 
-                TestInstance testInstance15807 = TestInstanceManager.initializeTestInstance(request, new TestInstance('15807'))
+                TestInstance testInstance15807 = TestInstanceManager.initializeTestInstance(request.getUserName(), new TestInstance('15807'))
                 MessageItem itemOneDoc1 = response.addMessage(testInstance15807, true, "")
                 MessageItem itemTwoDoc = response.addMessage(testInstance15807, true, "")
                 MessageItem itemOneDoc2 = response.addMessage(testInstance15807, true, "")
@@ -160,7 +162,6 @@ class IgOrchestrationBuilder {
         if (!request.isUseExistingState()) {
             api.deleteSimulator(rgSimId1);
             api.deleteSimulator(rgSimId2);
-            orchProps.clear()
         }
 
         if (api.simulatorExists(rgSimId1)) {
