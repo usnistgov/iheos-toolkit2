@@ -213,12 +213,16 @@ public class TestSectionComponent implements IsWidget {
 
                         DisclosurePanel stepPanel = new DisclosurePanel(stepHeader);
                         stepPanel.setOpen(singleStep);
+
                         final ScrollPanel metadataViewerPanel = new ScrollPanel();
                         metadataViewerPanel.setVisible(false);
-                        final HTML metadataCtl = new HTML(viewMetadataLabel);
+                        String metadataCtlLabel = getMetadataCtlLabel(sectionTp, stepName);
+                        final HTML metadataCtl = new HTML(metadataCtlLabel);
                         metadataCtl.addStyleName("iconStyle");
                         metadataCtl.addStyleName("inlineLink");
-                        metadataCtl.addClickHandler(new ViewMetadataClickHandler(metadataViewerPanel,metadataCtl,sectionTp.getStepTpfMap().get(stepName)));
+                        if (sectionTp.getStepTpfMap().get(stepName)!=null) {
+                            metadataCtl.addClickHandler(new ViewMetadataClickHandler(metadataViewerPanel,metadataCtl,sectionTp.getStepTpfMap().get(stepName)));
+                        }
 
                         final FlowPanel stepResults = new FlowPanel();
                         stepResults.add(metadataCtl);
@@ -231,6 +235,16 @@ public class TestSectionComponent implements IsWidget {
                 }
             });
         }
+    }
+
+    protected String getMetadataCtlLabel(TestPartFileDTO sectionTp, String stepName) {
+        String metadataCtlLabel;
+        if (sectionTp.getStepTpfMap().get(stepName)!=null) {
+            metadataCtlLabel = viewMetadataLabel;
+        } else {
+            metadataCtlLabel = "No Metadata.";
+        }
+        return metadataCtlLabel;
     }
 
     private HTML getShHtml(String xmlStr) {
@@ -294,7 +308,7 @@ public class TestSectionComponent implements IsWidget {
                             for (TestStepLogContentDTO step : log.getSteps()) {
                                 String stepName = step.getId();
                                 HorizontalFlowPanel stepHeader = new HorizontalFlowPanel();
-                                FlowPanel stepResults = new FlowPanel();
+
 
                                 HTML stepHeaderTitle = new HTML("Step: " + step.getId());
                                 if (step.isSuccess()) stepHeaderTitle.addStyleName("testOverviewHeaderSuccess");
@@ -306,10 +320,15 @@ public class TestSectionComponent implements IsWidget {
 
                                 final ScrollPanel metadataViewerPanel = new ScrollPanel();
                                 metadataViewerPanel.setVisible(false);
-                                final HTML metadataCtl = new HTML(viewMetadataLabel);
+                                String metadataCtlLabel = getMetadataCtlLabel(sectionTp, stepName);
+                                final HTML metadataCtl = new HTML(metadataCtlLabel);
                                 metadataCtl.addStyleName("iconStyle");
                                 metadataCtl.addStyleName("inlineLink");
-                                metadataCtl.addClickHandler(new ViewMetadataClickHandler(metadataViewerPanel,metadataCtl,sectionTp.getStepTpfMap().get(stepName)));
+                                if (sectionTp.getStepTpfMap().get(stepName)!=null) {
+                                    metadataCtl.addClickHandler(new ViewMetadataClickHandler(metadataViewerPanel,metadataCtl,sectionTp.getStepTpfMap().get(stepName)));
+                                }
+
+                                FlowPanel stepResults = new FlowPanel();
                                 stepResults.add(metadataCtl);
                                 stepResults.add(metadataViewerPanel);
 
