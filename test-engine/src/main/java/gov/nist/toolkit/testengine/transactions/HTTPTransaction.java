@@ -139,7 +139,7 @@ public class HTTPTransaction extends BasicTransaction {
                 }
 
         } catch (Throwable e) {
-            s_ctx.set_error(ExceptionUtil.exception_details(e));
+            s_ctx.set_error(e.toString() + ":\n" + ExceptionUtil.exception_details(e));
             failed();
         } finally {
             //httpclient.close();
