@@ -1,5 +1,6 @@
-package gov.nist.toolkit.session.server;
+package gov.nist.toolkit.session.server.testlog;
 
+import gov.nist.toolkit.session.server.Session;
 import gov.nist.toolkit.testenginelogging.TestLogDetails;
 import gov.nist.toolkit.testenginelogging.client.SectionLogMapDTO;
 

@@ -1,4 +1,4 @@
-package gov.nist.toolkit.session.client;
+package gov.nist.toolkit.session.client.logtypes;
 
 import com.google.gwt.user.client.rpc.IsSerializable;
 
@@ -11,7 +11,7 @@ import java.util.Map;
 /**
  *
  */
-public class SectionOverviewDTO implements Serializable, IsSerializable {
+public class SectionOverviewDTO implements BasicSectionOverview, Serializable, IsSerializable {
     private String name;
     private String description;
     private boolean pass;

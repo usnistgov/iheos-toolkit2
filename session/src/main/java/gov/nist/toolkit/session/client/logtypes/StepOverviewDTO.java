@@ -1,6 +1,7 @@
-package gov.nist.toolkit.session.client;
+package gov.nist.toolkit.session.client.logtypes;
 
 import com.google.gwt.user.client.rpc.IsSerializable;
+import gov.nist.toolkit.session.client.logtypes.BasicStepOverview;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -9,7 +10,7 @@ import java.util.List;
 /**
  *
  */
-public class StepOverviewDTO implements Serializable, IsSerializable {
+public class StepOverviewDTO implements BasicStepOverview, Serializable, IsSerializable {
     String name;
     boolean pass;
     boolean expectedSuccess;
@@ -45,6 +46,12 @@ public class StepOverviewDTO implements Serializable, IsSerializable {
         if (this.errors == null)
             this.errors = new ArrayList<>();
         this.errors.addAll(errors);
+    }
+
+    public void addError(String error) {
+        if (this.errors == null)
+            this.errors = new ArrayList<>();
+        this.errors.add(error);
     }
 
     public List<String> getDetails() {

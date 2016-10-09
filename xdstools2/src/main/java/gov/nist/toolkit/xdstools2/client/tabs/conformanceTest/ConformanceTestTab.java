@@ -18,7 +18,7 @@ import gov.nist.toolkit.interactiondiagram.client.widgets.InteractionDiagram;
 import gov.nist.toolkit.results.client.TestInstance;
 import gov.nist.toolkit.services.client.AbstractOrchestrationResponse;
 import gov.nist.toolkit.services.client.RepOrchestrationResponse;
-import gov.nist.toolkit.session.client.TestOverviewDTO;
+import gov.nist.toolkit.session.client.logtypes.TestOverviewDTO;
 import gov.nist.toolkit.session.client.sort.TestSorter;
 import gov.nist.toolkit.sitemanagement.client.SiteSpec;
 import gov.nist.toolkit.testkitutilities.client.TestCollectionDefinitionDAO;

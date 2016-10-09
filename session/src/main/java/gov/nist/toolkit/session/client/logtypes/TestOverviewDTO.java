@@ -1,4 +1,4 @@
-package gov.nist.toolkit.session.client;
+package gov.nist.toolkit.session.client.logtypes;
 
 import com.google.gwt.user.client.rpc.IsSerializable;
 import gov.nist.toolkit.results.client.TestInstance;
@@ -10,7 +10,7 @@ import java.util.*;
 /**
  * Should be renamed TestResultsDTO!!!!
  */
-public class TestOverviewDTO implements Serializable, IsSerializable {
+public class TestOverviewDTO implements BasicTestOverview, Serializable, IsSerializable {
     private String name;
     private TestInstance testInstance;
     private String title;
@@ -33,6 +33,11 @@ public class TestOverviewDTO implements Serializable, IsSerializable {
     public void setName(String name) {
         this.name = name;
         this.testInstance = new TestInstance(name);
+    }
+
+    public void setTestInstance(TestInstance testInstance) {
+        this.testInstance = testInstance;
+        this.name = testInstance.getId();
     }
 
     public boolean isPass() {

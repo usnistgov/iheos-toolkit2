@@ -1,8 +1,9 @@
-package gov.nist.toolkit.session.server;
+package gov.nist.toolkit.session.server.testlog;
 
-import gov.nist.toolkit.session.client.SectionOverviewDTO;
-import gov.nist.toolkit.session.client.StepOverviewDTO;
-import gov.nist.toolkit.session.client.TestOverviewDTO;
+import gov.nist.toolkit.session.client.logtypes.SectionOverviewDTO;
+import gov.nist.toolkit.session.client.logtypes.StepOverviewDTO;
+import gov.nist.toolkit.session.client.logtypes.TestOverviewDTO;
+import gov.nist.toolkit.session.server.Session;
 import gov.nist.toolkit.session.server.markdown.Markdown;
 import gov.nist.toolkit.session.server.serviceManager.XdsTestServiceManager;
 import gov.nist.toolkit.testenginelogging.TestLogDetails;

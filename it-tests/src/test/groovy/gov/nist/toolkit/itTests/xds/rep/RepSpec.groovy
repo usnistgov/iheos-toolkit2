@@ -12,7 +12,7 @@ import gov.nist.toolkit.services.client.RawResponse
 import gov.nist.toolkit.services.client.RepOrchestrationRequest
 import gov.nist.toolkit.services.client.RepOrchestrationResponse
 import gov.nist.toolkit.services.server.orchestration.RepOrchestrationBuilder
-import gov.nist.toolkit.session.client.TestOverviewDTO
+import gov.nist.toolkit.session.client.logtypes.TestOverviewDTO
 import gov.nist.toolkit.sitemanagement.Sites
 import gov.nist.toolkit.sitemanagement.client.Site
 import gov.nist.toolkit.sitemanagement.client.SiteSpec

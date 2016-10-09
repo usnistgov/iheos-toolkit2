@@ -1,7 +1,7 @@
 package gov.nist.toolkit.xdstools2.client.tabs.conformanceTest;
 
 import gov.nist.toolkit.results.client.TestInstance;
-import gov.nist.toolkit.session.client.TestOverviewDTO;
+import gov.nist.toolkit.session.client.logtypes.TestOverviewDTO;
 
 import java.util.HashMap;
 import java.util.Map;
