@@ -1,11 +1,13 @@
 package gov.nist.toolkit.simulators.sim.ids
 import gov.nist.toolkit.actorfactory.SimDb
 import gov.nist.toolkit.actorfactory.client.SimulatorConfig
+import gov.nist.toolkit.configDatatypes.SimulatorProperties;
 import gov.nist.toolkit.configDatatypes.client.TransactionType
 import gov.nist.toolkit.errorrecording.GwtErrorRecorderBuilder
 import gov.nist.toolkit.errorrecording.client.XdsErrorCode.Code
 import gov.nist.toolkit.registrysupport.RegistryErrorListGenerator
 import gov.nist.toolkit.registrymsg.registry.Response
+import gov.nist.toolkit.simcommon.client.config.SimulatorConfigElement
 import gov.nist.toolkit.simulators.sim.reg.AdhocQueryResponseGenerator
 import gov.nist.toolkit.simulators.sim.reg.SoapWrapperRegistryResponseSim
 import gov.nist.toolkit.simulators.support.DsSimCommon
@@ -19,6 +21,7 @@ import groovy.transform.TypeChecked
 import javax.xml.namespace.QName
 
 import org.apache.axiom.om.OMElement
+import org.apache.commons.lang3.StringUtils
 import org.apache.log4j.Logger
 
 // XCAI_TODO Add handling for error cases, image not found.
@@ -73,12 +76,14 @@ public class IdsActorSimulator extends GatewaySimulatorCommon {
             common.vc.hasHttp = true;
 
             logger.debug("dsSimCommon.runInitialValidationsAndFaultIfNecessary()");
-            if (!dsSimCommon.runInitialValidationsAndFaultIfNecessary())
+            if (!dsSimCommon.runInitialValidationsAndFaultIfNecessary()) {
+               returnRetrieveError(mvc);
                return false;
+            }
 
             logger.debug("mvc.hasErrors()");
             if (mvc.hasErrors()) {
-               dsSimCommon.sendErrorsInRegistryResponse(er);
+               returnRetrieveError(mvc);
                return false;
             }
 
@@ -88,7 +93,7 @@ public class IdsActorSimulator extends GatewaySimulatorCommon {
             if (smv == null || !(smv instanceof SoapMessageValidator)) {
                er.err(Code.XDSRegistryError, "IDS Internal Error - cannot find SoapMessageValidator instance",
                      "IdsActorSimulator", "");
-               dsSimCommon.sendErrorsInRegistryResponse(er);
+               returnRetrieveError(mvc);
                return false;
             }
             logger.debug("Got AbstractMessageValidator");
@@ -103,30 +108,55 @@ public class IdsActorSimulator extends GatewaySimulatorCommon {
 
             boolean errors = true;
 
-			List<String> imagingUids = new ArrayList<String>();
-			for (OMElement studyEle : XmlUtil.decendentsWithLocalName(retrieveRequest, "StudyRequest")) {
-				String studyUid = studyEle.getAttributeValue(new QName("studyInstanceUID"));
-				logger.debug("Study UID: " + studyUid);
-				Iterator<OMElement> seriesIterator = studyEle.getChildElements();
-				while (seriesIterator.hasNext()) {
-					OMElement seriesEle = (OMElement)seriesIterator.next();
-					String seriesUid = seriesEle.getAttributeValue(new QName("seriesInstanceUID"));
-					logger.debug(" Series UID: " + seriesUid);
-					for (OMElement instanceEle : XmlUtil.decendentsWithLocalName(seriesEle, "DocumentUniqueId")) {
-						String uid = instanceEle.getText();
-						String fullUid=studyUid + ":" + seriesUid + ":" + uid;
-						imagingUids.add(fullUid);
-						logger.debug(fullUid);
-					}
-				}
-			}
-			List<String> transferSyntaxUids = new ArrayList<String>();
-			for (OMElement transferSyntaxEle : XmlUtil.decendentsWithLocalName(retrieveRequest, "TransferSyntaxUID")) {
-				String xferSyntaxUid = transferSyntaxEle.getText();
-				logger.debug("Transfer Syntax UID: " + xferSyntaxUid);
-				//logger.debug(" to string: " + transferSyntaxEle.toString());
-				transferSyntaxUids.add(xferSyntaxUid);
-			}
+            String repUid = getSimulatorConfig().getConfigEle(SimulatorProperties.idsRepositoryUniqueId).asString();
+
+            List<String> imagingUids = new ArrayList<String>();
+         prsImgs:
+            for (OMElement studyEle : XmlUtil.decendentsWithLocalName(retrieveRequest, "StudyRequest")) {
+               String studyUid = studyEle.getAttributeValue(new QName("studyInstanceUID"));
+               logger.debug("Study UID: " + studyUid);
+               Iterator<OMElement> seriesIterator = studyEle.getChildElements();
+               while (seriesIterator.hasNext()) {
+                  OMElement seriesEle = (OMElement)seriesIterator.next();
+                  String seriesUid = seriesEle.getAttributeValue(new QName("seriesInstanceUID"));
+                  logger.debug(" Series UID: " + seriesUid);
+                  Iterator<OMElement> docIterator = seriesEle.getChildElements();
+                  while (docIterator.hasNext()) {
+                     OMElement docEle = (OMElement)docIterator.next();
+                     OMElement docUidEle = XmlUtil.decendentWithLocalName(docEle, "DocumentUniqueId");
+                     String uid = docUidEle.getText().trim();
+                     String fullUid=studyUid + ":" + seriesUid + ":" + uid;
+                     imagingUids.add(fullUid);
+                     logger.debug(fullUid);
+
+                     OMElement ruidEle = XmlUtil.decendentWithLocalName(docEle, "RepositoryUniqueId");
+                     String ruid = ruidEle.getText().trim();
+                     if (ruid.equals(repUid) == false) {
+                        er.err(Code.XDSUnknownRepositoryId, "Unknown Repository UID [" +
+                              ruid + "]. Expected [" + repUid + "]",
+                              "IdsActorSimulator", "");
+                        returnRetrieveError(mvc);
+                        return false;
+                     }
+                  }
+               }
+            }
+            List<String> transferSyntaxUids = new ArrayList<String>();
+            for (OMElement transferSyntaxEle : XmlUtil.decendentsWithLocalName(retrieveRequest, "TransferSyntaxUID")) {
+               String xferSyntaxUid = transferSyntaxEle.getText();
+               if (StringUtils.isBlank(xferSyntaxUid)) continue;
+               xferSyntaxUid = xferSyntaxUid.trim();
+               logger.debug("Transfer Syntax UID: " + xferSyntaxUid);
+               //logger.debug(" to string: " + transferSyntaxEle.toString());
+               transferSyntaxUids.add(xferSyntaxUid);
+            }
+            if (transferSyntaxUids.isEmpty()) {
+               er.err(Code.XDSIRequestError, "No valid Xfer Syntax",
+                     "IdsActorSimulator", "");
+               returnRetrieveError(mvc);
+               return false;
+            }
+
 
             RetrieveImagingDocSetResponseSim dms = null;
             String repositoryUniqueId="";
@@ -238,9 +268,9 @@ public class IdsActorSimulator extends GatewaySimulatorCommon {
          default:
             er.err(Code.XDSRegistryError, "Don't understand transaction " + transactionType, "ImagingDocSourceActorSimulator", "");
             dsSimCommon.sendFault("Don't understand transaction " + transactionType, null);
-			return true;
-		}
-	}
+            return true;
+      }
+   }
 
 
    /**
@@ -267,6 +297,22 @@ public class IdsActorSimulator extends GatewaySimulatorCommon {
    private boolean isOid(String value, boolean blankOk) {
       if (value == null || value.length() == 0) return blankOk;
       return value.matches("\\d(?=\\d*\\.)(?:\\.(?=\\d)|\\d){0,255}");
+   }
+
+   private void returnRetrieveError(MessageValidatorEngine mvc) {
+      mvc.run();
+      Response response = null;
+      try {
+         response = dsSimCommon.getRegistryResponse();
+         er.detail("Wrapping response in RetrieveDocumentSetResponse and then SOAP Message");
+         OMElement rdsr = dsSimCommon.wrapResponseInRetrieveDocumentSetResponse(response.getResponse());
+         OMElement env = dsSimCommon.wrapResponseInSoapEnvelope(rdsr);
+
+         dsSimCommon.sendHttpResponse(env, er);
+
+      } catch (Exception e) {
+
+      }
    }
 
 

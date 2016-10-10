@@ -91,7 +91,7 @@ class IdsOrchestrationBuilder {
         public enum Orchestra {
            
            simulator_ids ("Simulated IDS SUT", ActorType.IMAGING_DOC_SOURCE, new SimulatorConfigElement[] {
-              new SimulatorConfigElement(SimulatorProperties.idsRepositoryUniqueId, ParamType.TEXT, "1.3.6.1.4.1.21367.13.71.101"),
+              new SimulatorConfigElement(SimulatorProperties.idsRepositoryUniqueId, ParamType.TEXT, "1.3.6.1.4.1.21367.13.80.110"),
               new SimulatorConfigElement(SimulatorProperties.idsImageCache, ParamType.TEXT, "xca-dataset-a1")}),
            
            rep_reg ("Repository Registry", ActorType.REPOSITORY_REGISTRY, new SimulatorConfigElement[] {

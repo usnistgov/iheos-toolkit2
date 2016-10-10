@@ -90,6 +90,17 @@ public class XmlUtil {
 		if (decendents.size() == 0) return null;
 		return decendents.get(0);
 	}
+	
+	public static OMElement decendentWithLocalName(OMElement ele, String localName)
+	   throws Exception {
+	   List<OMElement> decendents = decendentsWithLocalName(ele, localName);
+	   if (decendents.size() != 1) {
+	      String em = ele.getLocalName() + " had " + decendents.size() +
+	         " children with name " + localName;
+	      throw new Exception(em);
+	   }
+	   return decendents.get(0);
+	}
 
 	public static List<OMElement> decendentsWithLocalName(OMElement ele, String localName) {
 		return decendentsWithLocalName(ele, localName, -1);
