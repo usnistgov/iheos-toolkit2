@@ -383,6 +383,22 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner, SiteMa
         return currentActorTypeId != null && ActorType.REGISTRY.getShortName().equals(currentActorTypeId);
     }
 
+	private boolean isInitiatingImagingGatewaySut() {
+		return currentActorTypeId != null && ActorType.INITIATING_IMAGING_GATEWAY.getShortName().equals(currentActorTypeId);
+	}
+
+	private boolean isRespondingingImagingGatewaySut() {
+		return currentActorTypeId != null && ActorType.RESPONDING_IMAGING_GATEWAY.getShortName().equals(currentActorTypeId);
+	}
+
+	private boolean isEdgeServerSut() {
+		return false;
+	}
+
+	private boolean isImagingDocSourceSut() {
+		return false;
+	}
+
 	private HTML loadingMessage;
 
 	class RefreshTestCollectionClickHandler implements ClickHandler {
@@ -492,6 +508,20 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner, SiteMa
             orchInit = new BuildRegTestOrchestrationButton(this, initializationPanel, "Initialize Test Environment");
             initializationPanel.add(orchInit.panel());
         }
+		else if (isInitiatingImagingGatewaySut()) {
+			orchInit = new BuildIIGTestOrchestrationButton(this, initializationPanel, "Initialize Test Environment");
+			initializationPanel.add(orchInit.panel());
+		}
+		else if (isRespondingingImagingGatewaySut()) {
+			orchInit = new BuildRIGTestOrchestrationButton(this, initializationPanel, "Initialize Test Environment");
+			initializationPanel.add(orchInit.panel());
+		}
+		else if (isImagingDocSourceSut()) {
+
+		}
+		else if (isEdgeServerSut()) {
+
+		}
         else {
 			sitetoIssueTestAgainst = new SiteSpec(siteUnderTest.getName());
 		}
