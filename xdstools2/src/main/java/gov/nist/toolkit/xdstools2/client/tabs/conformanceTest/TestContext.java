@@ -15,6 +15,7 @@ public class TestContext implements SiteManager {
     private SiteSpec currentSiteSpec = new SiteSpec();
     private Site siteUnderTest = null;
     private TestContextDisplay testContextDisplay;
+    static final protected String NONE = "--none--";
 
     public TestContext(ToolWindow toolWindow) {
         this.toolWindow = toolWindow;
@@ -63,6 +64,7 @@ public class TestContext implements SiteManager {
         currentSiteSpec.setName(site);
 //		getToolkitServices().getSite(site, new AsyncCallback<Site>() {
         if (site == null) return;
+        if (site.equals(NONE)) return;
         ClientUtils.INSTANCE.getToolkitServices().getSite(currentSiteSpec.getName(), new AsyncCallback<Site>() {
             @Override
             public void onFailure(Throwable throwable) {

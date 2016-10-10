@@ -46,6 +46,7 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner, TestsH
 	private final FlowPanel initializationPanel = new FlowPanel();
 	private final FlowPanel testsPanel = new FlowPanel();  // panel for displaying tests
 	private final TabBar tabBar = new TabBar();            // tab bar at the top for selecting actor types
+	private final OptionsTabBar optionsTabBar = new OptionsTabBar();
 	private final FlowPanel sitesPanel = new FlowPanel();
 //	private String currentSiteName = null;
 	private HTML testSessionDescription = new HTML();
@@ -60,6 +61,7 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner, TestsH
 	private RepOrchestrationResponse repOrchestrationResponse;
     private String currentActorTypeId;
 	private String currentActorTypeDescription;
+	private String currentActorOption;
 //	private Site siteUnderTest = null;
 	private SiteSpec sitetoIssueTestAgainst = null;
 
@@ -82,6 +84,7 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner, TestsH
 		testsPanel.getElement().getStyle().setMarginRight(4, Style.Unit.PX);
 		toolPanel.add(sitesPanel);
 		toolPanel.add(tabBar);
+		toolPanel.add(optionsTabBar);
 		toolPanel.add(initializationPanel);
 		toolPanel.add(testsPanel);
 	}
@@ -151,7 +154,7 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner, TestsH
 			}
 		});
 
-		tabBar.addSelectionHandler(actorSelectionHandler);
+		tabBar.addSelectionHandler(new ActorSelectionHandler());
 
 		// Initial load of tests in a test session
 		loadTestCollections();
@@ -225,22 +228,40 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner, TestsH
 		return "System under test must be selected before you proceed.";
 	}
 
-	// actor selection changes
-	private SelectionHandler<Integer> actorSelectionHandler = new SelectionHandler<Integer>() {
+//	// actor type selection changes
+//	private SelectionHandler<Integer> actorSelectionHandler = new SelectionHandler<Integer>() {
+//		@Override
+//		public void onSelection(SelectionEvent<Integer> selectionEvent) {
+//			int i = selectionEvent.getSelectedItem();
+//            String newActorTypeId = testCollectionDefinitionDAOs.get(i).getCollectionID();
+//            if (!newActorTypeId.equals(currentActorTypeId)) {
+//                orchestrationResponse = null;  // so we know orchestration not set up
+//                changeDisplayedActorType(newActorTypeId);
+//            }
+//		}
+//	};
+
+	// actor type selection changes
+	private class ActorSelectionHandler implements SelectionHandler<Integer> {
+
 		@Override
 		public void onSelection(SelectionEvent<Integer> selectionEvent) {
 			int i = selectionEvent.getSelectedItem();
-            String newActorTypeId = testCollectionDefinitionDAOs.get(i).getCollectionID();
-            if (!newActorTypeId.equals(currentActorTypeId)) {
-                orchestrationResponse = null;  // so we know orchestration not set up
-                changeDisplayedActorType(newActorTypeId);
-            }
+			String newActorTypeId = testCollectionDefinitionDAOs.get(i).getCollectionID();
+			if (!newActorTypeId.equals(currentActorTypeId)) {
+				orchestrationResponse = null;  // so we know orchestration not set up
+				changeDisplayedActorType(newActorTypeId);
+				optionsTabBar.display(newActorTypeId);
+			}
 		}
-	};
+	}
+
+
 
 	public void changeDisplayedActorType(String actorTypeName) {
 		currentActorTypeId = actorTypeName;
 		currentActorTypeDescription = getDescriptionForTestCollection(currentActorTypeId);
+		currentActorOption = "";
 		displayTestCollection();
 	}
 
@@ -320,11 +341,35 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner, TestsH
 
 	private HTML loadingMessage;
 
-	class RefreshTestCollectionClickHandler implements ClickHandler {
+	private class RefreshTestCollectionClickHandler implements ClickHandler {
 
 		@Override
 		public void onClick(ClickEvent clickEvent) {
 			displayTestCollection();
+		}
+	}
+
+	/**
+	 * A type that takes into account both the actor type and option selected
+	 */
+	class ActorOptionType {
+		ActorType actorType;
+		String optionName;
+
+		ActorOptionType(ActorType actorType) {
+			this.actorType = actorType;
+			optionName = "";
+		}
+
+		ActorOptionType(ActorType actorType, String optionName) {
+			this.actorType = actorType;
+			this.optionName = optionName;
+		}
+
+		void loadTests(AsyncCallback<List<String>> callback) {
+			getToolkitServices().getCollectionMembers(
+					(optionName == null || optionName.equals("")) ? "actorCollections" : "collections",
+					actorType.getName(), callback);
 		}
 	}
 
@@ -456,6 +501,38 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner, TestsH
 		}
 
 	}
+
+	// ActorType => list of options
+	private static final Map<String, List<String>> actorOptions;
+	static {
+		actorOptions = new HashMap<>();
+		actorOptions.put("ig", java.util.Arrays.asList("Required", "Affinity Domain Option"));
+	};
+	private class OptionsTabBar extends TabBar implements SelectionHandler<Integer> {
+
+		OptionsTabBar() {
+			addSelectionHandler(this);
+		}
+
+		void clear() { while(getTabCount() > 0) removeTab(0); }
+
+		void display(String actorTypeId) {
+			clear();
+			List<String> options = actorOptions.get(actorTypeId);
+			if (options == null)
+				addTab("Required");
+			else {
+				for (String option : options) {
+					addTab(option);
+				}
+			}
+		}
+
+		@Override
+		public void onSelection(SelectionEvent<Integer> selectionEvent) {
+
+		}
+	};
 
 	private void displayTestCollectionsTabBar() {
 		if (tabBar.getTabCount() == 0) {
