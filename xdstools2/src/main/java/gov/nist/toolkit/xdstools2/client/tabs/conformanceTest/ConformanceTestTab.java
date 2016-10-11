@@ -5,8 +5,6 @@ import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.logical.shared.SelectionEvent;
 import com.google.gwt.event.logical.shared.SelectionHandler;
-import com.google.gwt.event.logical.shared.ValueChangeEvent;
-import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HTML;
@@ -59,9 +57,9 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner, TestsH
 
 	private AbstractOrchestrationResponse orchestrationResponse;  // can be any of the following - contains common elements
 	private RepOrchestrationResponse repOrchestrationResponse;
-    private String currentActorTypeId;
+	private ActorOption currentActorOption = new ActorOption("none");
+//    private String currentActorTypeId;
 	private String currentActorTypeDescription;
-	private String currentActorOption;
 //	private Site siteUnderTest = null;
 	private SiteSpec sitetoIssueTestAgainst = null;
 
@@ -228,18 +226,7 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner, TestsH
 		return "System under test must be selected before you proceed.";
 	}
 
-//	// actor type selection changes
-//	private SelectionHandler<Integer> actorSelectionHandler = new SelectionHandler<Integer>() {
-//		@Override
-//		public void onSelection(SelectionEvent<Integer> selectionEvent) {
-//			int i = selectionEvent.getSelectedItem();
-//            String newActorTypeId = testCollectionDefinitionDAOs.get(i).getCollectionID();
-//            if (!newActorTypeId.equals(currentActorTypeId)) {
-//                orchestrationResponse = null;  // so we know orchestration not set up
-//                changeDisplayedActorType(newActorTypeId);
-//            }
-//		}
-//	};
+
 
 	// actor type selection changes
 	private class ActorSelectionHandler implements SelectionHandler<Integer> {
@@ -248,20 +235,17 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner, TestsH
 		public void onSelection(SelectionEvent<Integer> selectionEvent) {
 			int i = selectionEvent.getSelectedItem();
 			String newActorTypeId = testCollectionDefinitionDAOs.get(i).getCollectionID();
-			if (!newActorTypeId.equals(currentActorTypeId)) {
+			if (!newActorTypeId.equals(currentActorOption.actorTypeId)) {
 				orchestrationResponse = null;  // so we know orchestration not set up
-				changeDisplayedActorType(newActorTypeId);
+				changeDisplayedActorType(new ActorOption(newActorTypeId));
 				optionsTabBar.display(newActorTypeId);
 			}
 		}
 	}
 
-
-
-	public void changeDisplayedActorType(String actorTypeName) {
-		currentActorTypeId = actorTypeName;
-		currentActorTypeDescription = getDescriptionForTestCollection(currentActorTypeId);
-		currentActorOption = "";
+	public void changeDisplayedActorType(ActorOption actorOption) {
+		currentActorOption = actorOption;
+		currentActorTypeDescription = getDescriptionForTestCollection(currentActorOption.actorTypeId);
 		displayTestCollection();
 	}
 
@@ -275,32 +259,6 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner, TestsH
 		return "???";
 	}
 
-	// update things when site selection changes
-	private ValueChangeHandler siteChangeHandler = new ValueChangeHandler() {
-		@Override
-		public void onValueChange(ValueChangeEvent valueChangeEvent) {
-
-		}
-	};
-
-	private String getSelectedTestCollection() {
-		int selected = tabBar.getSelectedTab();
-		if (selected < testCollectionDefinitionDAOs.size()) {
-			return testCollectionDefinitionDAOs.get(selected).getCollectionID();
-		}
-		return null;
-	}
-
-	private int getTestCollectionIndex(String name) {
-		int i = 0;
-		for (TestCollectionDefinitionDAO def : testCollectionDefinitionDAOs) {
-			if (def.getCollectionID().equals(name))
-				return i;
-			i++;
-		}
-		return -1;
-	}
-
 	// load tab bar with actor types
 	private void loadTestCollections() {
 		// TabBar listing actor types
@@ -312,7 +270,7 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner, TestsH
 			public void onSuccess(List<TestCollectionDefinitionDAO> testCollectionDefinitionDAOs) {
 				me.testCollectionDefinitionDAOs = testCollectionDefinitionDAOs;
 				displayTestCollectionsTabBar();
-				currentActorTypeDescription = getDescriptionForTestCollection(currentActorTypeId);
+				currentActorTypeDescription = getDescriptionForTestCollection(currentActorOption.actorTypeId);
 				updateTestsOverviewHeader();
 
 				// This is a little wierd being here. This depends on initTestSession
@@ -323,21 +281,7 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner, TestsH
 		});
 	}
 
-	private boolean isRepSut() {
-		return currentActorTypeId != null && ActorType.REPOSITORY.getShortName().equals(currentActorTypeId);
-	}
 
-    private boolean isRgSut() {
-        return currentActorTypeId != null && ActorType.RESPONDING_GATEWAY.getShortName().equals(currentActorTypeId);
-    }
-
-	private boolean isIgSut() {
-		return currentActorTypeId != null && ActorType.INITIATING_GATEWAY.getShortName().equals(currentActorTypeId);
-	}
-
-	private boolean isRegSut() {
-        return currentActorTypeId != null && ActorType.REGISTRY.getShortName().equals(currentActorTypeId);
-    }
 
 	private HTML loadingMessage;
 
@@ -346,30 +290,6 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner, TestsH
 		@Override
 		public void onClick(ClickEvent clickEvent) {
 			displayTestCollection();
-		}
-	}
-
-	/**
-	 * A type that takes into account both the actor type and option selected
-	 */
-	class ActorOptionType {
-		ActorType actorType;
-		String optionName;
-
-		ActorOptionType(ActorType actorType) {
-			this.actorType = actorType;
-			optionName = "";
-		}
-
-		ActorOptionType(ActorType actorType, String optionName) {
-			this.actorType = actorType;
-			this.optionName = optionName;
-		}
-
-		void loadTests(AsyncCallback<List<String>> callback) {
-			getToolkitServices().getCollectionMembers(
-					(optionName == null || optionName.equals("")) ? "actorCollections" : "collections",
-					actorType.getName(), callback);
 		}
 	}
 
@@ -387,21 +307,22 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner, TestsH
 		displayOrchestrationHeader();
 
 		// what tests are in the collection
-		getToolkitServices().getCollectionMembers("actorcollections", currentActorTypeId, new AsyncCallback<List<String>>() {
-
-			public void onFailure(Throwable caught) {
-				new PopupMessage("getTestlogListing: " + caught.getMessage());
+		currentActorOption.loadTests(new AsyncCallback<List<String>>() {
+			@Override
+			public void onFailure(Throwable throwable) {
+				new PopupMessage("getTestlogListing: " + throwable.getMessage());
 			}
 
+			@Override
 			public void onSuccess(List<String> testIds) {
 				List<TestInstance> testInstances = new ArrayList<>();
 				for (String testId : testIds) testInstances.add(new TestInstance(testId));
-                testStatistics.clear();
-                testStatistics.setTestCount(testIds.size());
+				testStatistics.clear();
+				testStatistics.setTestCount(testIds.size());
 //				testsPerActor.put(currentActorTypeId, testInstances);
 				loadingMessage.setHTML("Loading...");
-                displayTests(testInstances);
-            }
+				displayTests(testInstances);
+			}
 		});
 	}
 
@@ -422,7 +343,7 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner, TestsH
 				for (TestOverviewDTO dto : testOverviews) {
 					testInstances1.add(dto.getTestInstance());
 				}
-				testsPerActor.put(currentActorTypeId, testInstances1);
+				testsPerActor.put(currentActorOption.actorTypeId, testInstances1);
 
 				testsPanel.clear();
                 testsPanel.add(testsHeaderView.asWidget());
@@ -455,43 +376,23 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner, TestsH
         });
     }
 
-    private void displayIsolatedTests(List<TestInstance> testInstances) {
-        // results (including logs) for a collection of tests
-        getToolkitServices().getTestsOverview(getCurrentTestSession(), testInstances, new AsyncCallback<List<TestOverviewDTO>>() {
-
-            public void onFailure(Throwable caught) {
-                new PopupMessage("getTestOverview: " + caught.getMessage());
-            }
-
-            public void onSuccess(List<TestOverviewDTO> testOverviews) {
-                testsPanel.add(testsHeaderView.asWidget());
-                for (TestOverviewDTO testOverview : testOverviews) {
-                    addTestOverview(testOverview);
-//                    displayTest(testsPanel, testDisplayGroup, testOverview);
-					testDisplayGroup.display(testOverview);
-                }
-            }
-
-        });
-    }
-
     private AbstractOrchestrationButton orchInit = null;
 
 	private void displayOrchestrationHeader() {
 		String label = "Initialize Test Environment";
-		if (isRepSut()) {
+		if (currentActorOption.isRep()) {
 			orchInit = new BuildRepTestOrchestrationButton(this, testContext, testContextDisplay, initializationPanel, label);
 			initializationPanel.add(orchInit.panel());
 		}
-        else if (isRegSut()) {
+        else if (currentActorOption.isReg()) {
             orchInit = new BuildRegTestOrchestrationButton(this, testContext, testContextDisplay, initializationPanel, label);
             initializationPanel.add(orchInit.panel());
         }
-        else if (isRgSut()) {
+        else if (currentActorOption.isRg()) {
             orchInit = new BuildRgTestOrchestrationButton(this, initializationPanel, label, testContext, testContextDisplay, this);
             initializationPanel.add(orchInit.panel());
         }
-		else if (isIgSut()) {
+		else if (currentActorOption.isIg()) {
 			orchInit = new BuildIGTestOrchestrationButton(this, initializationPanel, label, testContext, testContextDisplay, this, false);
 			initializationPanel.add(orchInit.panel());
 		}
@@ -502,37 +403,6 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner, TestsH
 
 	}
 
-	// ActorType => list of options
-	private static final Map<String, List<String>> actorOptions;
-	static {
-		actorOptions = new HashMap<>();
-		actorOptions.put("ig", java.util.Arrays.asList("Required", "Affinity Domain Option"));
-	};
-	private class OptionsTabBar extends TabBar implements SelectionHandler<Integer> {
-
-		OptionsTabBar() {
-			addSelectionHandler(this);
-		}
-
-		void clear() { while(getTabCount() > 0) removeTab(0); }
-
-		void display(String actorTypeId) {
-			clear();
-			List<String> options = actorOptions.get(actorTypeId);
-			if (options == null)
-				addTab("Required");
-			else {
-				for (String option : options) {
-					addTab(option);
-				}
-			}
-		}
-
-		@Override
-		public void onSelection(SelectionEvent<Integer> selectionEvent) {
-
-		}
-	};
 
 	private void displayTestCollectionsTabBar() {
 		if (tabBar.getTabCount() == 0) {
@@ -544,7 +414,7 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner, TestsH
 
 	@Override
 	public RunAllClickHandler getRunAllClickHandler() {
-		return new RunAllClickHandler(currentActorTypeId);
+		return new RunAllClickHandler(currentActorOption.actorTypeId);
 	}
 
 	private class RunAllClickHandler implements ClickHandler, TestDone {
@@ -580,7 +450,7 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner, TestsH
 
 	@Override
 	public DeleteAllClickHandler getDeleteAllClickHandler() {
-		return new DeleteAllClickHandler(currentActorTypeId);
+		return new DeleteAllClickHandler(currentActorOption.actorTypeId);
 	}
 
 	@Override
@@ -632,7 +502,7 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner, TestsH
 			return;
 		}
 
-        if (ActorType.REPOSITORY.getShortName().equals(currentActorTypeId)) {
+        if (ActorType.REPOSITORY.getShortName().equals(currentActorOption.actorTypeId)) {
             parms.put("$patientid$", repOrchestrationResponse.getPid().asString());
         }
 
