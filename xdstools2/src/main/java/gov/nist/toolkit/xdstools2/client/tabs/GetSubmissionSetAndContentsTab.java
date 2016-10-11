@@ -76,7 +76,6 @@ public class GetSubmissionSetAndContentsTab extends GenericQueryTab {
 
 	@Override
 	protected void bindUI() {
-		addOnTabSelectionRedisplay();
 	}
 
 	@Override

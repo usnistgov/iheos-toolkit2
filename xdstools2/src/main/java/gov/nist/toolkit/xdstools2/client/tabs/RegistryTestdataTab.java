@@ -56,7 +56,6 @@ public class RegistryTestdataTab  extends GenericQueryTab {
 	@Override
 	protected void bindUI() {
 		getToolkitServices().getTestdataSetListing(getEnvironmentSelection(), getCurrentTestSession(), "testdata-registry", loadRegistryTestListCallback);
-		addOnTabSelectionRedisplay();
 	}
 
 	@Override

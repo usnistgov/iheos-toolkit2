@@ -60,7 +60,6 @@ public class RepositoryTestdataTab  extends GenericQueryTab {
 	@Override
 	protected void bindUI() {
 		getToolkitServices().getTestdataSetListing(getEnvironmentSelection(), getCurrentTestSession(), "testdata-repository", loadRepositoryTestListCallback);
-		addOnTabSelectionRedisplay();
 	}
 
     @Override

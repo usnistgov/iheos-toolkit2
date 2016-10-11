@@ -65,8 +65,6 @@ public class FindDocumentsByRefIdTab extends GenericQueryTab {
 
 	@Override
 	protected void bindUI() {
-        // this is what handle redisplay on tab selection
-        addOnTabSelectionRedisplay();
 	}
 
 	@Override

@@ -68,7 +68,6 @@ public class GetFolderAndContentsTab extends GenericQueryTab {
 
     @Override
     protected void bindUI() {
-		addOnTabSelectionRedisplay();
     }
 
     @Override

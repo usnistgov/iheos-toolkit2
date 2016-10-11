@@ -65,7 +65,6 @@ public class GetDocumentsTab  extends GenericQueryTab {
 
     @Override
     protected void bindUI() {
-        addOnTabSelectionRedisplay();
     }
 
     @Override

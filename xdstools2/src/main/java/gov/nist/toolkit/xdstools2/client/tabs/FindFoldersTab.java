@@ -47,7 +47,6 @@ public class FindFoldersTab extends GenericQueryTab {
 
 	@Override
 	protected void bindUI() {
-		addOnTabSelectionRedisplay();
 	}
 
 	@Override

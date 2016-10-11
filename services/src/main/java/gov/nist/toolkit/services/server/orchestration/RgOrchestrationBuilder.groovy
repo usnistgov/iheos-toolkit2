@@ -49,7 +49,9 @@ class RgOrchestrationBuilder {
                     simplePid:  new TestInstanceManager(request, response, '15823'),
             ]
 
-            OrchestrationProperties orchProps = new OrchestrationProperties(session, request.userName, ActorType.RESPONDING_GATEWAY, pidNameMap.keySet())
+            boolean forceNewPatientIds = !request.isUseExistingState()
+
+            OrchestrationProperties orchProps = new OrchestrationProperties(session, request.userName, ActorType.REGISTRY, pidNameMap.keySet(), forceNewPatientIds)
 
             Pid simplePid = PidBuilder.createPid(orchProps.getProperty("simplePid"))
 

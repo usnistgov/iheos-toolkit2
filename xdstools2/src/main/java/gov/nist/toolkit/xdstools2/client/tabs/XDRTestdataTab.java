@@ -57,7 +57,6 @@ public class XDRTestdataTab  extends GenericQueryTab {
 	@Override
 	protected void bindUI() {
 		getToolkitServices().getTestdataSetListing(getEnvironmentSelection(), getCurrentTestSession(), "testdata-xdr", loadRecipientTestListCallback);
-		addOnTabSelectionRedisplay();
 	}
 
 	@Override

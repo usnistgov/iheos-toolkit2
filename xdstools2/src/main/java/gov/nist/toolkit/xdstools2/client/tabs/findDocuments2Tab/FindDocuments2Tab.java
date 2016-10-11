@@ -72,7 +72,6 @@ public class FindDocuments2Tab extends GenericQueryTab {
 
     @Override
     protected void bindUI() {
-        addOnTabSelectionRedisplay();
     }
 
     @Override

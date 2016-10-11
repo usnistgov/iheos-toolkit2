@@ -81,13 +81,6 @@ public class SourceStoredDocValTab extends GenericQueryTab {
 
 	@Override
 	protected void bindUI() {
-		addOnTabSelectionRedisplay();
-		((Xdstools2EventBus) ClientUtils.INSTANCE.getEventBus()).addTabSelectedEventHandler(new TabSelectedEvent.TabSelectedEventHandler() {
-			@Override
-			public void onTabSelection(TabSelectedEvent event) {
-				ssid.setText("");
-			}
-		});
 	}
 
 	@Override
