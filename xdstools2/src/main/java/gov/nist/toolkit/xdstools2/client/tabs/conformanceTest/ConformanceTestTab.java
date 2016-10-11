@@ -38,13 +38,22 @@ import java.util.Map;
  * All Conformance tests will be run out of here
  */
 public class ConformanceTestTab extends ToolWindow implements TestRunner, TestsHeaderView.Controller {
+	// ActorType => list of options
+	private static final Map<String, List<ActorAndOptions>> actorOptions;
+	static {
+		actorOptions = new HashMap<>();
+		actorOptions.put("ig",
+				java.util.Arrays.asList(
+						new ActorAndOptions("ig", "", "Required"),
+						new ActorAndOptions("ig", "ad", "Affinity Domain Option")));
+	};
 
 	private final ConformanceTestTab me;
 	private final FlowPanel toolPanel = new FlowPanel();   // Outer-most panel for the tool
 	private final FlowPanel initializationPanel = new FlowPanel();
 	private final FlowPanel testsPanel = new FlowPanel();  // panel for displaying tests
-	private final TabBar tabBar = new TabBar();            // tab bar at the top for selecting actor types
-	private final OptionsTabBar optionsTabBar = new OptionsTabBar();
+	private final TabBar actorTabBar = new TabBar();            // tab bar at the top for selecting actor types
+	private final OptionsTabBar optionsTabBar = new OptionsTabBar(actorOptions);
 	private final FlowPanel sitesPanel = new FlowPanel();
 //	private String currentSiteName = null;
 	private HTML testSessionDescription = new HTML();
@@ -73,6 +82,8 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner, TestsH
 	// for each actor type id, the list of tests for it
 	private Map<String, List<TestInstance>> testsPerActor = new HashMap<>();
 
+
+
 	public ConformanceTestTab() {
 		me = this;
 		testContext.setTestContextDisplay(testContextDisplay);
@@ -81,10 +92,53 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner, TestsH
 		toolPanel.getElement().getStyle().setMarginLeft(0, Style.Unit.PX);
 		testsPanel.getElement().getStyle().setMarginRight(4, Style.Unit.PX);
 		toolPanel.add(sitesPanel);
-		toolPanel.add(tabBar);
+		toolPanel.add(actorTabBar);
 		toolPanel.add(optionsTabBar);
 		toolPanel.add(initializationPanel);
 		toolPanel.add(testsPanel);
+	}
+
+	@Override
+	public void onTabLoad(boolean select, String eventName) {
+		testContextDisplay.updateTestingContextDisplay();
+		testSessionDescription.addClickHandler(testContextDisplay);
+		testSessionDescriptionPanel.setStyleName("with-rounded-border");
+		testSessionDescriptionPanel.add(testSessionDescription);
+		testSessionDescriptionPanel.getElement().getStyle().setMarginLeft(2, Style.Unit.PX);
+
+		addEast(testSessionDescriptionPanel);
+		registerTab(select, eventName);
+
+		tabTopPanel.add(toolPanel);
+
+
+		// Reload if the test session changes
+		Xdstools2.getEventBus().addHandler(TestSessionChangedEvent.TYPE, new TestSessionChangedEventHandler() {
+			@Override
+			public void onTestSessionChanged(TestSessionChangedEvent event) {
+				if (event.changeType == TestSessionChangedEvent.ChangeType.SELECT) {
+					loadTestCollections();
+				}
+			}
+		});
+
+		actorTabBar.addSelectionHandler(new ActorSelectionHandler());
+		optionsTabBar.addSelectionHandler(new OptionSelectionHandler());
+
+		// Initial load of tests in a test session
+		loadTestCollections();
+
+		// Register the Diagram clicked event handler
+		Xdstools2.getEventBus().addHandler(DiagramClickedEvent.TYPE, new DiagramPartClickedEventHandler() {
+			@Override
+			public void onClicked(TestInstance testInstance, InteractionDiagram.DiagramPart part) {
+				if (InteractionDiagram.DiagramPart.RequestConnector.equals(part)
+						|| InteractionDiagram.DiagramPart.ResponseConnector.equals(part)) {
+					new LaunchInspectorClickHandler(testInstance, getCurrentTestSession(), new SiteSpec(testContext.getSiteName())).onClick(null);
+//					launchInspectorTab(testInstance, getCurrentTestSession());
+				}
+			}
+		});
 	}
 
 	public void removeTestDetails(TestInstance testInstance) {
@@ -122,54 +176,22 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner, TestsH
 		}
 
 		// Display header with statistics
-		testsHeaderView.update(testStatistics, currentActorTypeDescription);
+		testsHeaderView.update(testStatistics, currentActorTypeDescription + " - " + getCurrentOptionTitle());
+	}
+
+	private String getCurrentOptionTitle() {
+		List<ActorAndOptions> aos =  actorOptions.get(currentActorOption.actorTypeId);
+		if (aos != null) {
+			for (ActorAndOptions ao : aos) {
+				if (ao.getOptionId().equals(currentActorOption.optionId))
+					return ao.getOptionTitle();
+			}
+		}
+		return "Required";
 	}
 
 	@Override
 	public String getTitle() { return "Conformance Tests"; }
-
-	@Override
-	public void onTabLoad(boolean select, String eventName) {
-		testContextDisplay.updateTestingContextDisplay();
-		testSessionDescription.addClickHandler(testContextDisplay);
-		testSessionDescriptionPanel.setStyleName("with-rounded-border");
-		testSessionDescriptionPanel.add(testSessionDescription);
-		testSessionDescriptionPanel.getElement().getStyle().setMarginLeft(2, Style.Unit.PX);
-
-		addEast(testSessionDescriptionPanel);
-		registerTab(select, eventName);
-
-		tabTopPanel.add(toolPanel);
-
-
-		// Reload if the test session changes
-		Xdstools2.getEventBus().addHandler(TestSessionChangedEvent.TYPE, new TestSessionChangedEventHandler() {
-			@Override
-			public void onTestSessionChanged(TestSessionChangedEvent event) {
-				if (event.changeType == TestSessionChangedEvent.ChangeType.SELECT) {
-					loadTestCollections();
-				}
-			}
-		});
-
-		tabBar.addSelectionHandler(new ActorSelectionHandler());
-
-		// Initial load of tests in a test session
-		loadTestCollections();
-
-		// Register the Diagram clicked event handler
-		Xdstools2.getEventBus().addHandler(DiagramClickedEvent.TYPE, new DiagramPartClickedEventHandler() {
-			@Override
-			public void onClicked(TestInstance testInstance, InteractionDiagram.DiagramPart part) {
-				if (InteractionDiagram.DiagramPart.RequestConnector.equals(part)
-						|| InteractionDiagram.DiagramPart.ResponseConnector.equals(part)) {
-					new LaunchInspectorClickHandler(testInstance, getCurrentTestSession(), new SiteSpec(testContext.getSiteName())).onClick(null);
-//					launchInspectorTab(testInstance, getCurrentTestSession());
-				}
-			}
-		});
-	}
-
 
     /**
      *
@@ -226,8 +248,6 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner, TestsH
 		return "System under test must be selected before you proceed.";
 	}
 
-
-
 	// actor type selection changes
 	private class ActorSelectionHandler implements SelectionHandler<Integer> {
 
@@ -237,9 +257,24 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner, TestsH
 			String newActorTypeId = testCollectionDefinitionDAOs.get(i).getCollectionID();
 			if (!newActorTypeId.equals(currentActorOption.actorTypeId)) {
 				orchestrationResponse = null;  // so we know orchestration not set up
-				changeDisplayedActorType(new ActorOption(newActorTypeId));
+				currentActorOption = new ActorOption(newActorTypeId);
 				optionsTabBar.display(newActorTypeId);
 			}
+		}
+	}
+
+
+
+	private class OptionSelectionHandler implements SelectionHandler<Integer> {
+
+		@Override
+		public void onSelection(SelectionEvent<Integer> selectionEvent) {
+			int i = selectionEvent.getSelectedItem();
+			List<ActorAndOptions> options = actorOptions.get(currentActorOption.actorTypeId);
+			if (i < options.size()) {
+				currentActorOption.setOptionId(options.get(i).getOptionId());
+			}
+ 			changeDisplayedActorType(currentActorOption);
 		}
 	}
 
@@ -405,9 +440,9 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner, TestsH
 
 
 	private void displayTestCollectionsTabBar() {
-		if (tabBar.getTabCount() == 0) {
+		if (actorTabBar.getTabCount() == 0) {
 			for (TestCollectionDefinitionDAO def : testCollectionDefinitionDAOs) {
-				tabBar.addTab(def.getCollectionTitle());
+				actorTabBar.addTab(def.getCollectionTitle());
 			}
 		}
 	}

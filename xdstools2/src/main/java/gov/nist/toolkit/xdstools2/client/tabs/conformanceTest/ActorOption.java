@@ -11,27 +11,27 @@ import java.util.List;
  */
 public class ActorOption {
     String actorTypeId;
-    String optionName;
+    String optionId;
 
     public ActorOption(String actorTypeId) {
         this.actorTypeId = actorTypeId;
-        optionName = "";
+        optionId = "";
     }
 
-    public ActorOption(String actorTypeId, String optionName) {
+    public ActorOption(String actorTypeId, String optionId) {
         this.actorTypeId = actorTypeId;
-        this.optionName = optionName;
+        this.optionId = optionId;
     }
 
     /**
      * Tests for options are listed in collections as actorType_optionName
      * @param callback
      */
-    public void loadTests(AsyncCallback<List<String>> callback) {
-        if (optionName == null || optionName.equals("")) {
+    void loadTests(AsyncCallback<List<String>> callback) {
+        if (optionId == null || optionId.equals("")) {
             ClientUtils.INSTANCE.getToolkitServices().getCollectionMembers("actorCollections", actorTypeId, callback);
         } else {
-            ClientUtils.INSTANCE.getToolkitServices().getCollectionMembers("collections", actorTypeId + "_" + optionName, callback);
+            ClientUtils.INSTANCE.getToolkitServices().getCollectionMembers("collections", actorTypeId + "_" + optionId, callback);
         }
     }
 
@@ -49,5 +49,14 @@ public class ActorOption {
 
     public boolean isReg() {
         return actorTypeId != null && ActorType.REGISTRY.getShortName().equals(actorTypeId);
+    }
+
+    void setOptionId(String optionId) {
+        this.optionId = optionId;
+    }
+
+    @Override
+    public String toString() {
+        return "ActorOption: actorType=" + actorTypeId + " option=" + optionId;
     }
 }
