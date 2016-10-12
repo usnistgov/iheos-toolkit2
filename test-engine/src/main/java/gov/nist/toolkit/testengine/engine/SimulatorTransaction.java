@@ -3,25 +3,23 @@
  */
 package gov.nist.toolkit.testengine.engine;
 
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-
-import org.apache.commons.lang3.StringUtils;
-
+import edu.wustl.mir.erl.ihe.xdsi.util.PfnType;
+import edu.wustl.mir.erl.ihe.xdsi.util.PrsSimLogs;
+import edu.wustl.mir.erl.ihe.xdsi.util.Utility;
 import gov.nist.toolkit.actorfactory.client.SimId;
 import gov.nist.toolkit.configDatatypes.client.TransactionType;
 import gov.nist.toolkit.installation.Installation;
 import gov.nist.toolkit.installation.PropertyManager;
 import gov.nist.toolkit.installation.PropertyServiceManager;
 import gov.nist.toolkit.xdsexception.client.XdsInternalException;
+import org.apache.commons.lang3.StringUtils;
 
-import edu.wustl.mir.erl.ihe.xdsi.util.PfnType;
-import edu.wustl.mir.erl.ihe.xdsi.util.PrsSimLogs;
-import edu.wustl.mir.erl.ihe.xdsi.util.Utility;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 
 /**
  * Used to retrieve results of a transaction previously sent to a simulator
@@ -47,6 +45,7 @@ public class SimulatorTransaction {
    private String metadata;
    private List<String> pfns = new ArrayList<>();
    private String stdPfn;
+   private String url;
    
    private SimulatorTransaction(SimId simId, TransactionType transactionType, String pid, Date timeStamp) {
       this.simId = simId;
@@ -273,6 +272,14 @@ public class SimulatorTransaction {
     */
    public void setStdPfn(String stdPfn) {
       this.stdPfn = stdPfn;
+   }
+
+   public String getUrl() {
+      return url;
+   }
+
+   public void setUrl(String url) {
+      this.url = url;
    }
 
    /**

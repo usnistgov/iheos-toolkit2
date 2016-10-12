@@ -3,23 +3,27 @@
  */
 package edu.wustl.mir.erl.ihe.xdsi.util;
 
-import java.io.FilenameFilter;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.text.SimpleDateFormat;
-import java.util.*;
-
-import org.apache.commons.io.FileUtils;
-import org.apache.commons.lang3.StringUtils;
-import org.apache.log4j.Logger;
-import org.w3c.dom.Element;
-
 import gov.nist.toolkit.actorfactory.client.SimId;
 import gov.nist.toolkit.installation.Installation;
 import gov.nist.toolkit.installation.PropertyManager;
 import gov.nist.toolkit.installation.PropertyServiceManager;
 import gov.nist.toolkit.testengine.engine.SimulatorTransaction;
+import org.apache.commons.codec.Charsets;
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.log4j.Logger;
+import org.w3c.dom.Element;
+
+import java.io.File;
+import java.io.FilenameFilter;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Date;
+import java.util.List;
 
 
 /**
@@ -78,6 +82,8 @@ public class PrsSimLogs {
       // SOAP Request
       String soapRequest;
       try {
+         String url = getRequestURL(path);
+         trn.setUrl(url);
          soapRequest = getSOAPRequest(path);
          trn.setRequest(soapRequest);
          trn.setMetadata(getSOAPMetaData(soapRequest));
@@ -227,8 +233,53 @@ public class PrsSimLogs {
       return null;
    }
 
-   
+   private static String getRequestURL(Path dir) {
+      try {
+         List<String> lines = Files.readAllLines(dir.resolve("request_hdr.txt"), Charsets.UTF_8);
+         String line1 = lines.get(0);
+         String[] parts = line1.split(" ");
+         return parts[1];
+      } catch (Exception e) {
+         e.printStackTrace();
+      }
+      return null;
+   }
 
+   /**
+    * Pull the mime boundary string out of the message header
+    * @param headerFile
+    * @return
+    */
+   public static String getMimeBoundaryFromHeaderFile(File headerFile) {
+      try {
+         String str = FileUtils.readFileToString(headerFile);
+         String lcStr = str.toLowerCase();
+         String match = "boundary=";
+         int p = lcStr.indexOf(match);
+         if (p == -1)
+            return null;
+         p = p + match.length();
+         if (p >= str.length())
+            return null;
+         int q;
+         if (str.charAt(p) == '"') {
+            q = str.indexOf('"', p+1);
+            p++;
+         } else {
+            q = str.indexOf(' ', p+1);
+            if (q == -1)
+               q = str.indexOf('\t', p+1);
+            if (q == -1)
+               q = str.indexOf('\n', p+1);
+         }
+         if (q == -1)
+            return null;
+         return str.substring(p, q);
+      } catch (Exception e) {
+         e.printStackTrace();
+         return null;
+      }
+   }
    /**
     * Get SOAP Response message from xdstools log
     * 
@@ -238,11 +289,12 @@ public class PrsSimLogs {
    public static String getSOAPResponse(Path dir) {
       try {
          String str = FileUtils.readFileToString(dir.resolve("response_body.txt").toFile());
+         String mimeBoundary = getMimeBoundaryFromHeaderFile(dir.resolve("response_hdr.txt").toFile());
          int p = str.indexOf("Envelope");
          while (str.substring(p).startsWith("<") == false)
             p-- ;
          str = str.substring(p);
-         p = str.indexOf("--MIMEBoundary");
+         p = str.indexOf(mimeBoundary);
          if (p != -1) str = str.substring(0, p);
          str = new String(str.replaceAll("\\s+", " "));
          return str;

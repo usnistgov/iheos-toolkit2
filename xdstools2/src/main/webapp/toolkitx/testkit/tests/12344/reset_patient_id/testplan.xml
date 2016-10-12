@@ -1,9 +1,0 @@
-
-<TestPlan>
-  <Test>12344/reset_patient_id</Test>
-  <TestStep id="reset_patient_id">
-  <ExpectedStatus>Success</ExpectedStatus>
-  <NewPatientId/>
-</TestStep>
-
-</TestPlan>

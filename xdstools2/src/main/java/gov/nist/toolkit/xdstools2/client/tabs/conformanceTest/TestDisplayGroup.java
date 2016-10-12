@@ -1,7 +1,7 @@
 package gov.nist.toolkit.xdstools2.client.tabs.conformanceTest;
 
 import gov.nist.toolkit.results.client.TestInstance;
-import gov.nist.toolkit.session.client.TestOverviewDTO;
+import gov.nist.toolkit.session.client.logtypes.TestOverviewDTO;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -14,20 +14,20 @@ public class TestDisplayGroup {
     private Map<String, TestDisplay> testDisplays = new HashMap<>();
     private TestRunner testRunner;
     private TestContext testContext;
-    private TestContextDisplay testContextDisplay;
+    private TestContextView testContextView;
     private boolean allowRun = true;
     private boolean allowDelete = true;
 
-    public TestDisplayGroup(TestContext testContext, TestContextDisplay testContextDisplay, TestRunner testRunner) {
+    public TestDisplayGroup(TestContext testContext, TestContextView testContextView, TestRunner testRunner) {
         this.testContext = testContext;
-        this.testContextDisplay = testContextDisplay;
+        this.testContextView = testContextView;
         this.testRunner = testRunner;
     }
 
     public TestDisplay display(TestOverviewDTO testOverview) {
         TestDisplay testDisplay = get(testOverview.getTestInstance());
         if (testDisplay == null) {
-            testDisplay = new TestDisplay(testOverview.getTestInstance(), this, testRunner, testContext, testContextDisplay);
+            testDisplay = new TestDisplay(testOverview.getTestInstance(), this, testRunner, testContext, testContextView);
             testDisplay.setAllowDelete(allowDelete);
             testDisplay.setAllowRun(allowRun);
             put(testOverview.getTestInstance(), testDisplay);

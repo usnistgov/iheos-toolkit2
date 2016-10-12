@@ -14,20 +14,20 @@ import java.io.IOException;
 import java.util.*;
 
 public class BuildCollections extends HttpServlet {
-    static Logger logger = Logger.getLogger(BuildCollections.class);
-    File testkitIn;
-    File testkitOut;
+    private static Logger logger = Logger.getLogger(BuildCollections.class);
+    private File testkitIn;
+    private File testkitOut;
 
     public static String sections[] = { "testdata", "tests", "examples", "selftest" };
-    Map<String, List<String>> collections = new HashMap<String, List<String>>();
-    boolean error;
+    private Map<String, List<String>> collections = new HashMap<String, List<String>>();
+    private boolean error;
 
     public void init(ServletConfig sConfig) throws ServletException {
         logger.info("Indexing testkit");
         run();
     }
 
-    String listAsFileContents(Collection<String> list) {
+    private String listAsFileContents(Collection<String> list) {
         StringBuilder buf = new StringBuilder();
         for (String ele : list) {
             buf.append(ele).append("\n");
@@ -35,7 +35,7 @@ public class BuildCollections extends HttpServlet {
         return buf.toString();
     }
 
-    void write() throws IOException {
+    private void write() throws IOException {
         File collectionsDir = new File(testkitOut + File.separator + Installation.collectionsDirName);
         File actorCollectionsDir = new File(testkitOut + File.separator + Installation.actorCollectionsDirName);
         // ActorType => list of test names
@@ -73,7 +73,7 @@ public class BuildCollections extends HttpServlet {
         }
     }
 
-    ActorType findActorType(String collectionName) {
+    private ActorType findActorType(String collectionName) {
         ActorType at;
 
         collectionName = collectionName.toLowerCase();
@@ -87,7 +87,7 @@ public class BuildCollections extends HttpServlet {
         return at;
     }
 
-    void add(String collection, String testnum) {
+    private void add(String collection, String testnum) {
         List<String> c = collections.get(collection);
         if (c == null) {
             c = new ArrayList<String>();
@@ -97,15 +97,15 @@ public class BuildCollections extends HttpServlet {
             c.add(testnum);
     }
 
-    void tokenize(String tokenStr, String testnum) {
-        StringTokenizer st = new StringTokenizer(tokenStr);
-        while (st.hasMoreElements()) {
-            String tok = st.nextToken();
-            add(tok, testnum);
+    private void tokenize(String tokenStr, String testnum) {
+        String[] tokens = tokenStr.split("\\n");
+        for (String token : tokens) {
+            token = token.trim();
+            add(token, testnum);
         }
     }
 
-    void tokenize(File testDir) {
+    private void tokenize(File testDir) {
         File collFile = new File(testDir + File.separator + "collections.txt");
         if ( !collFile.exists()) {
             error = true;
@@ -122,7 +122,7 @@ public class BuildCollections extends HttpServlet {
         }
     }
 
-    void scan() {
+    private void scan() {
         error = false;
         for (int i=0; i<sections.length; i++) {
             String section = sections[i];

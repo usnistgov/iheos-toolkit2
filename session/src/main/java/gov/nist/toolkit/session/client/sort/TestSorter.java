@@ -1,6 +1,6 @@
 package gov.nist.toolkit.session.client.sort;
 
-import gov.nist.toolkit.session.client.TestOverviewDTO;
+import gov.nist.toolkit.session.client.logtypes.TestOverviewDTO;
 
 import java.util.*;
 

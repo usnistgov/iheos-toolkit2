@@ -20,6 +20,7 @@ abstract public class AbstractOrchestrationButton implements ClickHandler {
     private CheckBox resetCheckBox = null;
     private Panel customPanel = null;
     private boolean errorPanelAdded = false;
+    private CheckBox selftestCheckBox = new CheckBox("Self Test");
 
     public AbstractOrchestrationButton(Panel topPanel, String label) {
         this.topPanel = topPanel;
@@ -63,11 +64,17 @@ abstract public class AbstractOrchestrationButton implements ClickHandler {
         final Button button = new Button(label);
         panel.add(button);
 
+        panel.add(selftestCheckBox);
+
         panel.add(new HTML("<br /><hr />"));
 
         topPanel.add(panel);
         button.addClickHandler(this);
         return panel;
+    }
+
+    public boolean isSelfTest() {
+        return selftestCheckBox.getValue();
     }
 
     public abstract void handleClick(ClickEvent clickEvent);

@@ -46,6 +46,7 @@ class IgOrchestrationBuilder {
                     twoDocPid       : new TestInstanceManager(request, response, '15825'),
                     twoRgPid        : new TestInstanceManager(request, response, '15826'),
                     registryErrorPid: new TestInstanceManager(request, response, '15827'),
+                    noAdOptionPid     : new TestInstanceManager(request, response, '15828'),
             ]
 
             boolean forceNewPatientIds = !request.isUseExistingState()
@@ -56,11 +57,13 @@ class IgOrchestrationBuilder {
             Pid twoDocPid = PidBuilder.createPid(orchProps.getProperty("twoDocPid"))
             Pid twoRgPid = PidBuilder.createPid(orchProps.getProperty("twoRgPid"))
             Pid registryErrorPid = PidBuilder.createPid(orchProps.getProperty("registryErrorPid"))
+            Pid noAdOptionPid = PidBuilder.createPid(orchProps.getProperty("noAdOptionPid"))
 
             response.setOneDocPid(oneDocPid)
             response.setTwoDocPid(twoDocPid)
             response.setTwoRgPid(twoRgPid)
             response.setUnknownPid(registryErrorPid)
+            response.setNoAdOptionPid(noAdOptionPid)
 
             List<String> simIds = buildRGs(registryErrorPid)
 
@@ -83,6 +86,8 @@ class IgOrchestrationBuilder {
                 MessageItem itemOneDoc3 = response.addMessage(testInstance15807, true, "")
                 MessageItem itemRegistryError = response.addMessage(testInstance15807, true, "")
 
+                TestInstance testInstance12318 = TestInstanceManager.initializeTestInstance(request.getUserName(), new TestInstance('12318'))
+                MessageItem item12318 = response.addMessage(testInstance12318, true, "")
 
                 // Submit test data
                 try {
@@ -132,12 +137,22 @@ class IgOrchestrationBuilder {
                     itemRegistryError.setMessage("Initialization of " + rgConfigs.get(1).id + " (section registryError) failed:\n" + e.getMessage());
                     itemRegistryError.setSuccess(false)
                 }
+
+                params = [
+                        '$patientid$'     : noAdOptionPid.asString()]
+                try {
+                    util.submit(request.userName, SiteBuilder.siteSpecFromSimId(rgConfigs.get(0).id), new TestInstance("12318"), params)
+                } catch (Exception e) {
+                    item12318.setMessage("Initialization of " + rgConfigs.get(0).id + " failed:\n" + e.getMessage());
+                    item12318.setSuccess(false)
+                }
             }
 
             response.oneDocPid = oneDocPid
             response.twoDocPid = twoDocPid
             response.twoRgPid = twoRgPid
             response.unknownPid = registryErrorPid
+            response.noAdOptionPid = noAdOptionPid
             response.simulatorConfigs = rgConfigs
             response.igSimulatorConfig = igConfig
             response.supportRG1 = SimCache.getSite(session.getId(), simIds[0])

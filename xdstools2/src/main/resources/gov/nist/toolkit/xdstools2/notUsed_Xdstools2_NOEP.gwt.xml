@@ -26,6 +26,7 @@
   <inherits name="gov.nist.toolkit.session.session"/>
   <inherits name="gov.nist.toolkit.testkitutilities.testkitutilities"/>
   <inherits name="gov.nist.toolkit.interactiondiagram.interactionDiagram"/>
+  <inherits name="gov.nist.toolkit.testengine.testengine"/>
   <inherits name="gov.nist.toolkit.tk.tk"/>
   <inherits name="gov.nist.toolkit.results.results"/>
     <inherits name="gov.nist.toolkit.services.services"/>

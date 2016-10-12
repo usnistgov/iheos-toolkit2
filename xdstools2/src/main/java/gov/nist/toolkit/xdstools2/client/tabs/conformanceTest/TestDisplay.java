@@ -5,8 +5,8 @@ import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.Image;
 import gov.nist.toolkit.results.client.TestInstance;
-import gov.nist.toolkit.session.client.SectionOverviewDTO;
-import gov.nist.toolkit.session.client.TestOverviewDTO;
+import gov.nist.toolkit.session.client.logtypes.SectionOverviewDTO;
+import gov.nist.toolkit.session.client.logtypes.TestOverviewDTO;
 import gov.nist.toolkit.xdstools2.client.widgets.LaunchInspectorClickHandler;
 
 /**
@@ -19,17 +19,17 @@ public class TestDisplay extends FlowPanel {
     private TestDisplayGroup testDisplayGroup;
     private TestContext testContext;
     private TestRunner testRunner;
-    private TestContextDisplay testContextDisplay;
+    private TestContextView testContextView;
     private TestInstance testInstance;
     private boolean allowDelete= true;
     private boolean allowRun = true;
 
-    public TestDisplay(TestInstance testInstance, TestDisplayGroup testDisplayGroup, TestRunner testRunner, TestContext testContext, TestContextDisplay testContextDisplay) {
+    public TestDisplay(TestInstance testInstance, TestDisplayGroup testDisplayGroup, TestRunner testRunner, TestContext testContext, TestContextView testContextView) {
         this.testInstance = testInstance;
         this.testRunner = testRunner;
         this.testDisplayGroup = testDisplayGroup;
         this.testContext = testContext;
-        this.testContextDisplay = testContextDisplay;
+        this.testContextView = testContextView;
         header.fullWidth();
         panel.setWidth("100%");
         panel.add(body);
@@ -71,7 +71,7 @@ public class TestDisplay extends FlowPanel {
             Image play = new Image("icons2/play-24.png");
             play.setStyleName("iconStyle");
             play.setTitle("Run");
-            play.addClickHandler(new RunClickHandler(testRunner, testInstance, testContext, testContextDisplay));
+            play.addClickHandler(new RunClickHandler(testRunner, testInstance, testContext, testContextView));
             header.add(play);
         }
 

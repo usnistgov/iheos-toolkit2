@@ -147,7 +147,7 @@ class TestContextDialog extends DialogBox {
                     loadTestSessions(toolWindow.getCurrentTestSession());
                     loadSitesForTestSession(toolWindow.getCurrentTestSession());
                     loadSites();
-                    siteManager.setSiteName(NONE);
+                    siteManager.setSiteName(TestContext.NONE);
                 }
             });
         }
@@ -158,7 +158,7 @@ class TestContextDialog extends DialogBox {
         @Override
         public void onClick(ClickEvent clickEvent) {
             String selectedSite = getSelectedSite();
-            if (NONE.equals(selectedSite))
+            if (TestContext.NONE.equals(selectedSite))
                 selectedSite = null;
             siteManager.setSiteName(selectedSite);
             toolWindow.setCurrentTestSession(getSelectedTestSession());
@@ -302,7 +302,6 @@ class TestContextDialog extends DialogBox {
         }.run(Xdstools2.getHomeTab().getCommandContext());
     }
 
-    static final private String NONE = "--none--";
 
     private void loadSites() {
         ClientUtils.INSTANCE.getToolkitServices().getSiteNames(true, true, new AsyncCallback<List<String>>() {
@@ -314,7 +313,7 @@ class TestContextDialog extends DialogBox {
             @Override
             public void onSuccess(List<String> strings) {
                 List<String> contents = new ArrayList<String>();
-                contents.add(NONE);
+                contents.add(TestContext.NONE);
                 contents.addAll(strings);
                 siteListBox.clear();
                 for (String site : contents) {
