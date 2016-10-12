@@ -125,7 +125,7 @@ public class BuildRgTestOrchestrationButton extends AbstractOrchestrationButton 
         SiteSpec siteSpec = new SiteSpec(testContext.getSiteName());
         request.setSiteUnderTest(siteSpec);
 
-        testTab.setSitetoIssueTestAgainst(siteSpec);
+        testTab.setSiteToIssueTestAgainst(siteSpec);
 
         initializationResultsPanel.clear();
 

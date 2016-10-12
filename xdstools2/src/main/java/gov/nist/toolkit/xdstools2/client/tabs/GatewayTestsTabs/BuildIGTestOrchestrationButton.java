@@ -75,7 +75,7 @@ public class BuildIGTestOrchestrationButton extends AbstractOrchestrationButton 
                 if (handleError(rawResponse, IgOrchestrationResponse.class)) return;
                 IgOrchestrationResponse orchResponse = (IgOrchestrationResponse) rawResponse;
                 testTab.setOrchestrationResponse(orchResponse);
-                testTab.setSitetoIssueTestAgainst(testContext.getSiteUnderTest().siteSpec());
+                testTab.setSiteToIssueTestAgainst(testContext.getSiteUnderTest().siteSpec());
 
                 initializationResultsPanel.add(new HTML("Initialization Complete"));
 
@@ -141,6 +141,9 @@ public class BuildIGTestOrchestrationButton extends AbstractOrchestrationButton 
                 table.setWidget(row++, 1, new HTML(orchResponse.getUnknownPid().asString()));
                 table.setWidget(row++, 0, buildFindDocumentsLauncher(siteSpecRg1, orchResponse.getUnknownPid(), "Community 1 returns Registry Error"));
                 table.setWidget(row++, 0, buildFindDocumentsLauncher(siteSpecRg2, orchResponse.getUnknownPid(), "Community 2 returns single document"));
+
+                table.setWidget(row, 0, buildFindDocumentsLauncher(siteSpecRg1, orchResponse.getNoAdOptionPid(), "No XDS Affinity Domain Option"));
+                table.setWidget(row++, 1, new HTML(orchResponse.getNoAdOptionPid().asString()));
 
                 initializationResultsPanel.add(new HTML("<h3>Configure your Initiating Gateway to forward requests to both of the above Responding Gateways.</h3><hr />"));
 

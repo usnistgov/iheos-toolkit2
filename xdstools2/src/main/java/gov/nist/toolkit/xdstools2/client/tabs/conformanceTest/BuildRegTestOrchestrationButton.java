@@ -67,7 +67,7 @@ public class BuildRegTestOrchestrationButton extends AbstractOrchestrationButton
         SiteSpec sutSiteSpec = testContext.getSiteUnderTest().siteSpec();
         request.setRegistrySut(sutSiteSpec);
 
-        testTab.setSitetoIssueTestAgainst(sutSiteSpec);
+        testTab.setSiteToIssueTestAgainst(sutSiteSpec);
 
 
         ClientUtils.INSTANCE.getToolkitServices().buildRegTestOrchestration(request, new AsyncCallback<RawResponse>() {

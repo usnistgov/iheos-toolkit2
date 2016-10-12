@@ -25,7 +25,7 @@ public class ActorOption {
 
     /**
      * Tests for options are listed in collections as actorType_optionName
-     * @param callback
+     * @param callback with list of testIds
      */
     void loadTests(AsyncCallback<List<String>> callback) {
         if (optionId == null || optionId.equals("")) {

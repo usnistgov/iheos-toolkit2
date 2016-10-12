@@ -55,7 +55,7 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner, TestsH
 	private final TabBar actorTabBar = new TabBar();            // tab bar at the top for selecting actor types
 	private final OptionsTabBar optionsTabBar = new OptionsTabBar(actorOptions);
 	private final FlowPanel sitesPanel = new FlowPanel();
-//	private String currentSiteName = null;
+
 	private HTML testSessionDescription = new HTML();
 	private FlowPanel testSessionDescriptionPanel = new FlowPanel();
 	private TestsHeaderView testsHeaderView = new TestsHeaderView(this);
@@ -66,19 +66,22 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner, TestsH
 
 	private AbstractOrchestrationResponse orchestrationResponse;  // can be any of the following - contains common elements
 	private RepOrchestrationResponse repOrchestrationResponse;
+
+
 	private ActorOption currentActorOption = new ActorOption("none");
-//    private String currentActorTypeId;
 	private String currentActorTypeDescription;
-//	private Site siteUnderTest = null;
-	private SiteSpec sitetoIssueTestAgainst = null;
+	private SiteSpec siteToIssueTestAgainst = null;
 
 	// stuff that needs delayed setting when launched via activity
 	private String initTestSession = null;
 
-	// Testable actors
+	// Descriptions of current test list
 	private List<TestCollectionDefinitionDAO> testCollectionDefinitionDAOs;
+
+	// Test results
 	// testname ==> results
 	private Map<String, TestOverviewDTO> testOverviewDTOs = new HashMap<>();
+
 	// for each actor type id, the list of tests for it
 	private Map<String, List<TestInstance>> testsPerActor = new HashMap<>();
 
@@ -433,7 +436,7 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner, TestsH
 		}
         else {
             if (testContext.getSiteUnderTest() != null)
-			    sitetoIssueTestAgainst = testContext.getSiteUnderTestAsSiteSpec();
+			    siteToIssueTestAgainst = testContext.getSiteUnderTestAsSiteSpec();
 		}
 
 	}
@@ -541,13 +544,13 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner, TestsH
             parms.put("$patientid$", repOrchestrationResponse.getPid().asString());
         }
 
-        if (getSitetoIssueTestAgainst() == null) {
+        if (getSiteToIssueTestAgainst() == null) {
             new PopupMessage("Test Setup must be initialized");
             return;
         }
 
 		try {
-			getToolkitServices().runTest(getEnvironmentSelection(), getCurrentTestSession(), getSitetoIssueTestAgainst(), testInstance, parms, true, new AsyncCallback<TestOverviewDTO>() {
+			getToolkitServices().runTest(getEnvironmentSelection(), getCurrentTestSession(), getSiteToIssueTestAgainst(), testInstance, parms, true, new AsyncCallback<TestOverviewDTO>() {
 				@Override
 				public void onFailure(Throwable throwable) {
 					new PopupMessage(throwable.getMessage());
@@ -583,12 +586,12 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner, TestsH
 		return "testloglisting";
 	}
 
-	private SiteSpec getSitetoIssueTestAgainst() {
-		return sitetoIssueTestAgainst;
+	private SiteSpec getSiteToIssueTestAgainst() {
+		return siteToIssueTestAgainst;
 	}
 
-	public void setSitetoIssueTestAgainst(SiteSpec sitetoIssueTestAgainst) {
-		this.sitetoIssueTestAgainst = sitetoIssueTestAgainst;
+	public void setSiteToIssueTestAgainst(SiteSpec siteToIssueTestAgainst) {
+		this.siteToIssueTestAgainst = siteToIssueTestAgainst;
 	}
 
 	public void setInitTestSession(String initTestSession) {
