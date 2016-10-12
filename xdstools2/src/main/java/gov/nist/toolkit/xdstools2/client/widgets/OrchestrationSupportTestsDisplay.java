@@ -17,7 +17,7 @@ import java.util.List;
 public class OrchestrationSupportTestsDisplay extends FlowPanel {
 
 //    public OrchestrationSupportTestsDisplay(final AbstractOrchestrationResponse orchResponse, final String testSession, final SiteSpec siteSpec) {
-    public OrchestrationSupportTestsDisplay(final AbstractOrchestrationResponse orchResponse, final TestContext testContext, final TestContextDisplay testContextDisplay, final TestRunner testRunner) {
+    public OrchestrationSupportTestsDisplay(final AbstractOrchestrationResponse orchResponse, final TestContext testContext, final TestContextView testContextView, final TestRunner testRunner) {
         ClientUtils.INSTANCE.getToolkitServices().getTestsOverview(testContext.getTestSession(), orchResponse.getTestInstances(), new AsyncCallback<List<TestOverviewDTO>>() {
 
             public void onFailure(Throwable caught) {
@@ -26,7 +26,7 @@ public class OrchestrationSupportTestsDisplay extends FlowPanel {
 
             public void onSuccess(List<TestOverviewDTO> testOverviews) {
                 add(new HTML("Utilities run to initialize environment"));
-                TestDisplayGroup orchGroup = new TestDisplayGroup(testContext, testContextDisplay, testRunner);
+                TestDisplayGroup orchGroup = new TestDisplayGroup(testContext, testContextView, testRunner);
                 orchGroup.setAllowRun(false);
                 orchGroup.setAllowDelete(false);
                 for (TestOverviewDTO testOverview : testOverviews) {

@@ -23,16 +23,16 @@ public class BuildRegTestOrchestrationButton extends AbstractOrchestrationButton
     private ConformanceTestTab testTab;
     private Panel initializationPanel;
     private TestContext testContext;
-    private TestContextDisplay testContextDisplay;
+    private TestContextView testContextView;
     private FlowPanel initializationResultsPanel = new FlowPanel();
     private RadioButton noFeed = new RadioButton("pidFeedGroup", "No Patient Identity Feed");
     private RadioButton v2Feed = new RadioButton("pidFeedGroup", "V2 Patient Identitfy Feed");
 
-    BuildRegTestOrchestrationButton(ConformanceTestTab testTab, TestContext testContext, TestContextDisplay testContextDisplay, Panel initializationPanel, String label) {
+    BuildRegTestOrchestrationButton(ConformanceTestTab testTab, TestContext testContext, TestContextView testContextView, Panel initializationPanel, String label) {
         this.initializationPanel = initializationPanel;
         this.testTab = testTab;
         this.testContext = testContext;
-        this.testContextDisplay = testContextDisplay;
+        this.testContextView = testContextView;
 
         setParentPanel(initializationPanel);
         setLabel(label);
@@ -51,9 +51,9 @@ public class BuildRegTestOrchestrationButton extends AbstractOrchestrationButton
 
     @Override
     public void handleClick(ClickEvent clickEvent) {
-        String msg = testTab.verifyTestContext();
+        String msg = testContext.verifyTestContext();
         if (msg != null) {
-            testContextDisplay.launchDialog(msg);
+            testContextView.launchDialog(msg);
             return;
         }
 
@@ -93,7 +93,7 @@ public class BuildRegTestOrchestrationButton extends AbstractOrchestrationButton
                 handleMessages(initializationResultsPanel, orchResponse);
 
                 // Display tests run as part of orchestration - so links to their logs are available
-                initializationResultsPanel.add(new OrchestrationSupportTestsDisplay(orchResponse, testContext, testContextDisplay, testTab ));
+                initializationResultsPanel.add(new OrchestrationSupportTestsDisplay(orchResponse, testContext, testContextView, testTab ));
 
                 initializationResultsPanel.add(new HTML("<br />"));
 

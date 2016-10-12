@@ -9,12 +9,12 @@ import gov.nist.toolkit.xdstools2.client.ToolWindow;
 /**
  *
  */
-public class TestContextDisplay implements ClickHandler {
+public class TestContextView implements ClickHandler {
     private TestContext testContext;
     private ToolWindow toolWindow;
     private HTML testSessionDescription;
 
-    public TestContextDisplay(ToolWindow toolWindow, HTML testSessionDescription, TestContext testContext) {
+    public TestContextView(ToolWindow toolWindow, HTML testSessionDescription, TestContext testContext) {
         this.toolWindow = toolWindow;
         this.testSessionDescription = testSessionDescription;
         this.testContext = testContext;

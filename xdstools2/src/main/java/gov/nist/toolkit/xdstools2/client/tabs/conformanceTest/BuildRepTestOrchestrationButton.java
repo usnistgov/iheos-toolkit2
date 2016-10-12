@@ -18,14 +18,14 @@ class BuildRepTestOrchestrationButton extends AbstractOrchestrationButton {
     private ConformanceTestTab testTab;
     private Panel initializationPanel;
     private TestContext testContext;
-    private TestContextDisplay testContextDisplay;
+    private TestContextView testContextView;
     private FlowPanel initializationResultsPanel = new FlowPanel();
 
-    BuildRepTestOrchestrationButton(ConformanceTestTab testTab, TestContext testContext, TestContextDisplay testContextDisplay, Panel initializationPanel, String label) {
+    BuildRepTestOrchestrationButton(ConformanceTestTab testTab, TestContext testContext, TestContextView testContextView, Panel initializationPanel, String label) {
         this.initializationPanel = initializationPanel;
         this.testTab = testTab;
         this.testContext = testContext;
-        this.testContextDisplay = testContextDisplay;
+        this.testContextView = testContextView;
 
         setParentPanel(initializationPanel);
         setLabel(label);
@@ -36,9 +36,9 @@ class BuildRepTestOrchestrationButton extends AbstractOrchestrationButton {
 
     @Override
     public void handleClick(ClickEvent clickEvent) {
-        String msg = testTab.verifyTestContext();
+        String msg = testContext.verifyTestContext();
         if (msg != null) {
-            testContextDisplay.launchDialog(msg);
+            testContextView.launchDialog(msg);
             return;
         }
 
