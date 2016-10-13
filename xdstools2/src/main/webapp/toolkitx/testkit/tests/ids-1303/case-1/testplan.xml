@@ -1,0 +1,10 @@
+<TestPlan>
+    <Test>ids-1303/Case 1: Invalid Repository UID</Test>>
+    <TestStep id="request">
+        <Goal>Imaging Document Set Retrieve exception: Invalid Repository UID</Goal>
+        <ExpectedStatus>Failure</ExpectedStatus>
+        <ImagingDocSetRetrieveTransaction>
+            <MetadataFile>RAD-69Request.xml</MetadataFile>
+        </ImagingDocSetRetrieveTransaction>
+    </TestStep>
+</TestPlan>

@@ -1,0 +1,10 @@
+<TestPlan>
+    <Test>ids-1303/Case 7: Empty Study and Series Instance UIDs</Test>
+    <TestStep id="request">
+        <Goal>Imaging Document Set Retrieve exception: Empty Study and Series Instance UIDs</Goal>
+        <ExpectedStatus>Failure</ExpectedStatus>
+        <ImagingDocSetRetrieveTransaction>
+            <MetadataFile>RAD-69Request.xml</MetadataFile>
+        </ImagingDocSetRetrieveTransaction>
+    </TestStep>
+</TestPlan>

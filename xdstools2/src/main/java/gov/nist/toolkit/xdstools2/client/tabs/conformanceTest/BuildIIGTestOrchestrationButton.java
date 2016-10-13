@@ -2,129 +2,200 @@ package gov.nist.toolkit.xdstools2.client.tabs.conformanceTest;
 
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.user.client.rpc.AsyncCallback;
-import com.google.gwt.user.client.ui.FlexTable;
-import com.google.gwt.user.client.ui.FlowPanel;
-import com.google.gwt.user.client.ui.HTML;
-import com.google.gwt.user.client.ui.Panel;
+import com.google.gwt.user.client.ui.*;
+
+import gov.nist.toolkit.actorfactory.client.SimulatorConfig;
+import gov.nist.toolkit.actortransaction.client.ActorType;
+import gov.nist.toolkit.actortransaction.client.ParamType;
 import gov.nist.toolkit.configDatatypes.SimulatorProperties;
 import gov.nist.toolkit.configDatatypes.client.TransactionType;
-import gov.nist.toolkit.services.client.RawResponse;
 import gov.nist.toolkit.services.client.IigOrchestrationRequest;
 import gov.nist.toolkit.services.client.IigOrchestrationResponse;
-import gov.nist.toolkit.sitemanagement.client.SiteSpec;
-import gov.nist.toolkit.sitemanagement.client.TransactionBean;
+import gov.nist.toolkit.services.client.RawResponse;
+import gov.nist.toolkit.simcommon.client.config.SimulatorConfigElement;
 import gov.nist.toolkit.xdstools2.client.util.ClientUtils;
 import gov.nist.toolkit.xdstools2.client.widgets.buttons.OrchestrationButton;
-
-
 
 /**
  * Created by smm on 10/9/16.
  */
 
+public class BuildIIGTestOrchestrationButton extends OrchestrationButton {
+   private ConformanceTestTab testTab;
+   private Panel initializationPanel;
+   private FlowPanel initializationResultsPanel = new FlowPanel();
 
-public class BuildIIGTestOrchestrationButton extends OrchestrationButton{
-    private ConformanceTestTab testTab;
-    private Panel initializationPanel;
-    private FlowPanel initializationResultsPanel = new FlowPanel();
+   BuildIIGTestOrchestrationButton(ConformanceTestTab testTab, Panel initializationPanel, String label) {
+      this.initializationPanel = initializationPanel;
+      this.testTab = testTab;
 
-    BuildIIGTestOrchestrationButton(ConformanceTestTab testTab, Panel initializationPanel, String label) {
-        this.initializationPanel = initializationPanel;
-        this.testTab = testTab;
+      setParentPanel(initializationPanel);
+      setLabel(label);
+      setResetLabel("Reset");
+      build();
+      panel().add(initializationResultsPanel);
+   }
 
-        setParentPanel(initializationPanel);
-        setLabel(label);
-        setResetLabel("Reset");
-        build();
-        panel().add(initializationResultsPanel);
-    }
+   @Override
+   public void handleClick(ClickEvent clickEvent) {
+      String msg = testTab.verifyConformanceTestEnvironment();
+      if (msg != null) {
+         testTab.launchTestEnvironmentDialog(msg);
+         return;
+      }
 
+      initializationResultsPanel.clear();
 
-    @Override
-    public void handleClick(ClickEvent clickEvent) {
-        String msg = testTab.verifyConformanceTestEnvironment();
-        if (msg != null) {
-            testTab.launchTestEnvironmentDialog(msg);
-            return;
-        }
+      IigOrchestrationRequest request = new IigOrchestrationRequest();
+      request.setUserName(testTab.getCurrentTestSession());
+      request.setEnvironmentName(testTab.getEnvironmentSelection());
 
-        initializationResultsPanel.clear();
+      ClientUtils.INSTANCE.getToolkitServices().buildIigTestOrchestration(request, new AsyncCallback <RawResponse>() {
+         @Override
+         public void onFailure(Throwable throwable) {
+            handleError(throwable);
+         }
 
-        IigOrchestrationRequest request = new IigOrchestrationRequest();
-        //request.setSutSite(new SiteSpec(testTab.getSiteName()));
-        request.setUserName(testTab.getCurrentTestSession());
-        request.setEnvironmentName(testTab.getEnvironmentSelection());
-        //request.setUseExistingSimulator(!isResetRequested());
+         @Override
+         public void onSuccess(RawResponse rawResponse) {
+            if (handleError(rawResponse, IigOrchestrationResponse.class)) return;
+            IigOrchestrationResponse orchResponse = (IigOrchestrationResponse) rawResponse;
 
-        ClientUtils.INSTANCE.getToolkitServices().buildIigTestOrchestration(request, new AsyncCallback<RawResponse>() {
-            @Override
-            public void onFailure(Throwable throwable) {
-                handleError(throwable);
+            initializationResultsPanel.add(new HTML("Initialization Complete"));
+
+            if (testTab.getSiteUnderTest() != null) {
+               initializationResultsPanel.add(new HTML("<h2>System Under Test Configuration</h2>"));
+               initializationResultsPanel.add(new HTML("Site: " + testTab.getSiteUnderTest().getName()));
+               FlexTable table = new FlexTable();
+               int row = 0;
+               table.setText(row, 0, "Retrieve Img Doc Set: ");
+               try {
+                  table.setText(row++ , 1,
+                     testTab.getSiteUnderTest().getRawEndpoint(TransactionType.RET_IMG_DOC_SET_GW, false, false));
+               } catch (Exception e) {}
+
+               initializationResultsPanel.add(table);
             }
 
-            @Override
-            public void onSuccess(RawResponse rawResponse) {
-                if (handleError(rawResponse, IigOrchestrationResponse.class)) return;
-                IigOrchestrationResponse orchResponse = (IigOrchestrationResponse) rawResponse;
-                //testTab.setIigOrchestrationResponse(orchResponse);
+            initializationResultsPanel.add(new HTML("<h2>Generated Environment</h2>"));
 
-                initializationResultsPanel.add(new HTML("Initialization Complete"));
+            FlexTable table = new FlexTable();
+            int row = 0;
+            // Pass through simulators in Orchestra enum order
+            for (Orchestra o : Orchestra.values()) {
+               // get matching simulator config
+               SimulatorConfig sim = null;
+               for (SimulatorConfig c : orchResponse.getSimulatorConfigs()) {
+                  if (c.getId().getId().equals(o.name())) {
+                     sim = c;
+                     break;
+                  }
+               }
+               if (sim == null) continue;
 
-                if (testTab.getSiteUnderTest() != null) {
-                    initializationResultsPanel.add(new HTML("<h2>System Under Test Configuration</h2>"));
-                    initializationResultsPanel.add(new HTML("Site: " + testTab.getSiteUnderTest().getName()));
-                    FlexTable table = new FlexTable();
-                    int row = 0;
-                    table.setText(row, 0, "Provide and Register");
-                    try {
-                        table.setText(row++, 1, testTab.getSiteUnderTest().getRawEndpoint(TransactionType.PROVIDE_AND_REGISTER, false, false));
-                    } catch (Exception e) {
-                    }
+               try {
+               // First row: title, sim id, test data and log buttons
+               table.setWidget(row, 0, new HTML("<h3>" + o.title + "</h3>"));
+               table.setText(row++ , 1, sim.getId().toString());
 
-                    table.setText(row, 0, "Retrieve");
-                    try {
-                        String repUid = testTab.getSiteUnderTest().getRepositoryUniqueId(TransactionBean.RepositoryType.REPOSITORY);
-                        table.setText(row++, 1, testTab.getSiteUnderTest().getRetrieveEndpoint(repUid, false, false));
-                    } catch (Exception e) {
-                        //
-                    }
-
-                    initializationResultsPanel.add(table);
-                }
-
-
-                initializationResultsPanel.add(new HTML("<h2>Generated Environment</h2>"));
-
-                //if (orchResponse.getMessage().length() > 0) {
-                    //initializationResultsPanel.add(new HTML("<h3>" + orchResponse.getMessage().replaceAll("\n", "<br />")  + "</h3>"));
-                //}
-
-                initializationResultsPanel.add(new HTML("<h3>Supporting Registry Configuration</h3>"));
-                //initializationResultsPanel.add(new HTML("Site: " + orchResponse.getSupportSite().getOrchestrationSiteName()));
-                //initializationResultsPanel.add(new HTML("Patient ID: " + orchResponse.getPid().toString()));
-                initializationResultsPanel.add(new HTML("<br />"));
-
-                FlexTable table = new FlexTable();
-
-                int row = 0;
-
-                table.setText(row, 0, "Register endpoint");
-                //table.setText(row++, 1, orchResponse.getRegConfig().getConfigEle(SimulatorProperties.registerEndpoint).asString());
-                table.setText(row, 0, "Stored Query endpoint");
-                //table.setText(row++, 1, orchResponse.getRegConfig().getConfigEle(SimulatorProperties.storedQueryEndpoint).asString());
-
-                initializationResultsPanel.add(table);
-
-                initializationResultsPanel.add(new HTML("<p>Configure your Repository to forward Register transactions to the above Register endpoint.<hr />"));
-
-
-                // test will be run out of support site so pass it back to conformance test tab
-                //testTab.setSitetoIssueTestAgainst(orchResponse.getSupportSite());
+               // Property rows, based on ActorType and Orchestration enum
+               for (String property : o.getDisplayProps()) {
+                  table.setWidget(row, 1, new HTML(property));
+                  SimulatorConfigElement prop = sim.get(property);
+                  String value = prop.asString();
+                  if (prop.isList()) value = prop.asList().toString();
+                  table.setWidget(row++ , 2, new HTML(value));
+               }
+               } catch (Exception e) {
+                  initializationResultsPanel.add(new HTML("<h3>exception " + o.name() + " " + e.getMessage() + "/h3>"));
+               }
             }
+            initializationResultsPanel.add(table);
 
-
-        });
-    }
-
+             initializationResultsPanel.add(new HTML("<p>Configure your " +
+             "Initiating Imaging Gateway SUT to forward Retrieve Imaging " +
+             "Document Set Requests to these Responding Imaging Gateways<hr/>"));
+         }
+      });
+   } @SuppressWarnings("javadoc")
+   public enum Orchestra {
+      
+      rig_a ("Responding Imaging Gateway A", ActorType.RESPONDING_IMAGING_GATEWAY, new SimulatorConfigElement[] {
+         new SimulatorConfigElement(SimulatorProperties.homeCommunityId, ParamType.TEXT, "urn:oid:1.3.6.1.4.1.21367.13.70.101"),
+         new SimulatorConfigElement(SimulatorProperties.imagingDocumentSources, ParamType.SELECTION, new String[] {"${user}__ids_a1","${user}__ids_a2"}, true)}),
+      
+      ids_a1 ("Imaging Document Source A1", ActorType.IMAGING_DOC_SOURCE, new SimulatorConfigElement[] {
+         new SimulatorConfigElement(SimulatorProperties.idsRepositoryUniqueId, ParamType.TEXT, "1.3.6.1.4.1.21367.13.71.101"),
+         new SimulatorConfigElement(SimulatorProperties.idsImageCache, ParamType.TEXT, "xca-dataset-a1")}),
+      
+      ids_a2 ("Imaging Document Source A2", ActorType.IMAGING_DOC_SOURCE, new SimulatorConfigElement[] {
+         new SimulatorConfigElement(SimulatorProperties.idsRepositoryUniqueId, ParamType.TEXT, "1.3.6.1.4.1.21367.13.71.101.1"),
+         new SimulatorConfigElement(SimulatorProperties.idsImageCache, ParamType.TEXT, "xca-dataset-a2")}),
+      
+      rig_b ("Responding Imaging Gateway B", ActorType.RESPONDING_IMAGING_GATEWAY, new SimulatorConfigElement[] {
+         new SimulatorConfigElement(SimulatorProperties.homeCommunityId, ParamType.TEXT, "urn:oid:1.3.6.1.4.1.21367.13.70.102"),
+         new SimulatorConfigElement(SimulatorProperties.imagingDocumentSources, ParamType.SELECTION, new String[] {"${user}__ids_b1"}, true)}),
+      
+      ids_b1 ("Imaging Document Source B1", ActorType.IMAGING_DOC_SOURCE, new SimulatorConfigElement[] {
+         new SimulatorConfigElement(SimulatorProperties.idsRepositoryUniqueId, ParamType.TEXT, "1.3.6.1.4.1.21367.13.71.102"),
+         new SimulatorConfigElement(SimulatorProperties.idsImageCache, ParamType.TEXT, "xca-dataset-b")}),
+      
+      rig_c ("Responding Imaging Gateway C", ActorType.RESPONDING_IMAGING_GATEWAY, new SimulatorConfigElement[] {
+         new SimulatorConfigElement(SimulatorProperties.homeCommunityId, ParamType.TEXT, "urn:oid:1.3.6.1.4.1.21367.13.70.103"),
+         new SimulatorConfigElement(SimulatorProperties.imagingDocumentSources, ParamType.SELECTION, new String[] {"${user}__ids_c1"}, true)}),
+      
+      ids_c1 ("Imaging Document Source C1", ActorType.IMAGING_DOC_SOURCE, new SimulatorConfigElement[] {
+         new SimulatorConfigElement(SimulatorProperties.idsRepositoryUniqueId, ParamType.TEXT, "1.3.6.1.4.1.21367.13.71.103"),
+         new SimulatorConfigElement(SimulatorProperties.idsImageCache, ParamType.TEXT, "xca-dataset-c")}),
+      
+      simulator_iig ("Simulated IIG SUT", ActorType.INITIATING_IMAGING_GATEWAY, new SimulatorConfigElement[] {
+         new SimulatorConfigElement(SimulatorProperties.respondingImagingGateways, ParamType.SELECTION, new String[] {"${user}__rig_a","${user}__rig_b","${user}__rig_c"}, true),
+         
+      });      
+      
+      public final String title;
+      public final ActorType actorType;
+      public final SimulatorConfigElement[] elements;      
+      
+      Orchestra (String title, ActorType actorType, SimulatorConfigElement[] elements) {
+         this.title = title;
+         this.actorType = actorType;
+         this.elements = elements;
+      }
+      
+      public ActorType getActorType() {
+         return actorType;
+      }
+      public SimulatorConfigElement[] getElements() {
+         return elements;
+      }
+      public String[] getDisplayProps() {
+         switch (actorType) {
+            case RESPONDING_IMAGING_GATEWAY:
+               return new String[] {
+                  SimulatorProperties.homeCommunityId,
+                  SimulatorProperties.xcirEndpoint,
+                  // SimulatorProperties.xcirTlsEndpoint,
+                  SimulatorProperties.imagingDocumentSources,
+               };
+            case IMAGING_DOC_SOURCE:
+               return new String[] {
+                  SimulatorProperties.idsRepositoryUniqueId,
+                  SimulatorProperties.idsrEndpoint,
+                  //SimulatorProperties.idsrTlsEndpoint,
+                  //SimulatorProperties.idsImageCache,
+               };
+            case INITIATING_IMAGING_GATEWAY:
+               return new String[] {
+                  SimulatorProperties.idsrIigEndpoint,
+                  //SimulatorProperties.idsrTlsEndpoint,
+                  SimulatorProperties.respondingImagingGateways,
+               };
+               default:
+         }
+         return new String[0];
+      }
+      
+   } // EO Orchestra enum
 
 }

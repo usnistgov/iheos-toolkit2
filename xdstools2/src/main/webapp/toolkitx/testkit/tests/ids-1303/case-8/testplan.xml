@@ -1,0 +1,10 @@
+<TestPlan>
+    <Test>ids-1303/Case 8: Empty Transfer Syntax UID</Test>
+    <TestStep id="request">
+        <Goal>Imaging Document Set Retrieve exception: Empty Transfer Syntax UID</Goal>
+        <ExpectedStatus>Failure</ExpectedStatus>
+        <ImagingDocSetRetrieveTransaction>
+            <MetadataFile>RAD-69Request.xml</MetadataFile>
+        </ImagingDocSetRetrieveTransaction>
+    </TestStep>
+</TestPlan>

@@ -1,0 +1,10 @@
+<TestPlan>
+    <Test>ids-1303/Case 3: Instance UID from different series</Test>
+    <TestStep id="request">
+        <Goal>Imaging Document Set Retrieve exception: Instance UID from different series</Goal>
+        <ExpectedStatus>Failure</ExpectedStatus>
+        <ImagingDocSetRetrieveTransaction>
+            <MetadataFile>RAD-69Request.xml</MetadataFile>
+        </ImagingDocSetRetrieveTransaction>
+    </TestStep>
+</TestPlan>

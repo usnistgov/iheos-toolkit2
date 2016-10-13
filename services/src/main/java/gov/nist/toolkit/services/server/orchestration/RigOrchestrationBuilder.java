@@ -77,8 +77,8 @@ public class RigOrchestrationBuilder {
             simConfigs.add(simConfig);
          }
 
-         IigOrchestrationResponse response = new IigOrchestrationResponse();
-         response.setIigSimulatorConfig(sutSimulatorConfig);
+         RigOrchestrationResponse response = new RigOrchestrationResponse();
+         response.setRigSimulatorConfig(sutSimulatorConfig);
          response.setSimulatorConfigs(simConfigs);
          return response;
 
@@ -141,7 +141,7 @@ public class RigOrchestrationBuilder {
                };
             case INITIATING_IMAGING_GATEWAY:
                return new String[] {
-                  SimulatorProperties.idsrEndpoint,
+                  SimulatorProperties.idsrIigEndpoint,
                   //SimulatorProperties.idsrTlsEndpoint,
                   SimulatorProperties.respondingImagingGateways,
                };

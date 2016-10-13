@@ -1,0 +1,11 @@
+<TestPlan>
+	<Test>ids-1303/Case 5: Empty Study Instance UID</Test>
+	<TestStep id="request">
+		<Goal>Imaging Document Set Retrieve exception: Empty Study Instance UID</Goal>
+		<ExpectedStatus>Failure</ExpectedStatus>
+		<ExpectedErrorMessage>XDSIRequestError</ExpectedErrorMessage>
+		<ImagingDocSetRetrieveTransaction>
+			<MetadataFile>RAD-69Request.xml</MetadataFile>
+		</ImagingDocSetRetrieveTransaction>
+	</TestStep>
+</TestPlan>
