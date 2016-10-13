@@ -13,21 +13,21 @@ import gov.nist.toolkit.xdstools2.client.util.activitiesAndPlaces.ToolActivity;
  * throughout the application like the event bus.
  */
 public class ClientFactoryImpl implements ClientFactory {
-    private final static EventBus eventBus = new Xdstools2EventBus();
-    private final static PlaceController placeController = new PlaceController(eventBus);
-    private final static TestInstanceActivity TEST_INSTANCE_ACTIVITY = new TestInstanceActivity();
-    private final static ToolActivity TOOL_ACTIVITY = new ToolActivity();
-    private final static ConfActorActivity CONF_ACTOR_ACTIVITY = new ConfActorActivity();
-    private final static ToolkitServiceAsync toolkitServices = GWT.create(ToolkitService.class);
+    private static final EventBus EVENT_BUS = new Xdstools2EventBus();
+    private static final PlaceController PLACE_CONTROLLER = new PlaceController(EVENT_BUS);
+    private static final TestInstanceActivity TEST_INSTANCE_ACTIVITY = new TestInstanceActivity();
+    private static final ToolActivity TOOL_ACTIVITY = new ToolActivity();
+    private static final ConfActorActivity CONF_ACTOR_ACTIVITY = new ConfActorActivity();
+    private static final ToolkitServiceAsync TOOLKIT_SERVICES = GWT.create(ToolkitService.class);
 
     @Override
     public EventBus getEventBus() {
-        return eventBus;
+        return EVENT_BUS;
     }
 
     @Override
     public PlaceController getPlaceController() {
-        return placeController;
+        return PLACE_CONTROLLER;
     }
 
     @Override
@@ -47,6 +47,6 @@ public class ClientFactoryImpl implements ClientFactory {
 
     @Override
     public ToolkitServiceAsync getToolkitServices(){
-        return toolkitServices;
+        return TOOLKIT_SERVICES;
     }
 }

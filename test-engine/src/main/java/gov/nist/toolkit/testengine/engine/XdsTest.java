@@ -677,19 +677,19 @@ public class XdsTest {
 //				if (verbose) System.out.println("testspec is " + ts);
 //				bshow();
 //				if (bhas() && !bpeek().startsWith("-")) {
-//					if (verbose) System.out.println("Looking for sections");
+//					if (verbose) System.out.println("Looking for SECTIONS");
 //					bshow();
-//					List<String> sections = null;
+//					List<String> SECTIONS = null;
 //					while (bhas() && !bpeek().startsWith("-")) {
 //						String section = bpop("oops");
 //						if (verbose) System.out.println("found section=" + section);
-//						if (sections == null)
-//							sections = new ArrayList<String>();
-//						sections.add(section);
+//						if (SECTIONS == null)
+//							SECTIONS = new ArrayList<String>();
+//						SECTIONS.add(section);
 //					}
-//					if (sections != null) {
+//					if (SECTIONS != null) {
 //						ts.setLogRepository(logRepository);
-//						ts.selectSections(sections);
+//						ts.selectSections(SECTIONS);
 //					}
 //				}
 //				testSpecs.add(ts);

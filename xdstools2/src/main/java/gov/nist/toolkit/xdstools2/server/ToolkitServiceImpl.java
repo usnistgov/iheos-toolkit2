@@ -52,17 +52,13 @@ import gov.nist.toolkit.valsupport.client.MessageValidationResults;
 import gov.nist.toolkit.valsupport.client.ValidationContext;
 import gov.nist.toolkit.xdsexception.ExceptionUtil;
 import gov.nist.toolkit.xdsexception.client.EnvironmentNotSelectedException;
+import gov.nist.toolkit.xdstools2.client.util.ToolkitService;
+import gov.nist.toolkit.xdstools2.server.serviceManager.DashboardServiceManager;
+import gov.nist.toolkit.xdstools2.server.serviceManager.GazelleServiceManager;
 import gov.nist.toolkit.xdstools2.shared.NoServletSessionException;
 import gov.nist.toolkit.xdstools2.shared.RegistryStatus;
 import gov.nist.toolkit.xdstools2.shared.RepositoryStatus;
-import gov.nist.toolkit.xdstools2.client.util.ToolkitService;
-import gov.nist.toolkit.xdstools2.shared.command.CommandContext;
-import gov.nist.toolkit.xdstools2.shared.command.GeneratePidRequest;
-import gov.nist.toolkit.xdstools2.shared.command.GetAllSimConfigsRequest;
-import gov.nist.toolkit.xdstools2.shared.command.SendPidToRegistryRequest;
-import gov.nist.toolkit.xdstools2.shared.command.InitializationResponse;
-import gov.nist.toolkit.xdstools2.server.serviceManager.DashboardServiceManager;
-import gov.nist.toolkit.xdstools2.server.serviceManager.GazelleServiceManager;
+import gov.nist.toolkit.xdstools2.shared.command.*;
 import org.apache.log4j.Logger;
 
 import javax.servlet.ServletContext;
@@ -303,7 +299,7 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements
      * Get list of section names defined for the test in the order they should be executed
      * @param testSession test session name (mesa session name)
      * @param test test name
-     * @return list of sections
+     * @return list of SECTIONS
      * @throws Exception if something goes wrong
      */
     public List<String> getTestIndex(String testSession,String test) throws Exception {
@@ -329,7 +325,7 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements
     /**
      * Get list of section names defined for the test in the order they should be executed
      * @param test test name
-     * @return list of sections
+     * @return list of SECTIONS
      * @throws Exception if something goes wrong
      */
     public List<String> getTestIndex(String test) throws Exception { return session().xdsTestServiceManager().getTestSections(test); }

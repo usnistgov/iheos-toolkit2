@@ -6,7 +6,6 @@ import gov.nist.toolkit.xdstools2.client.CookieManager;
 import gov.nist.toolkit.xdstools2.client.widgets.PopupMessage;
 import gov.nist.toolkit.xdstools2.client.Xdstools2;
 import gov.nist.toolkit.xdstools2.client.command.command.GetTestSessionNamesCommand;
-import gov.nist.toolkit.xdstools2.client.event.TestSessionChangedEvent;
 import gov.nist.toolkit.xdstools2.client.util.ClientUtils;
 
 import java.util.List;
@@ -31,16 +30,16 @@ public class TestSessionManager2 {
         Xdstools2.getEventBus().addHandler(TestSessionChangedEvent.TYPE, new TestSessionChangedEventHandler() {
             @Override
             public void onTestSessionChanged(TestSessionChangedEvent event) {
-                switch (event.changeType) {
+                switch (event.getChangeType()) {
                     case ADD:
-                        add(event.value);
+                        add(event.getValue());
                         break;
                     case DELETE:
-                        delete(event.value);
+                        delete(event.getValue());
                         break;
                     case SELECT:
-                        setCurrentTestSession(event.value);
-                        toCookie(event.value);
+                        setCurrentTestSession(event.getValue());
+                        toCookie(event.getValue());
                 }
             }
         });

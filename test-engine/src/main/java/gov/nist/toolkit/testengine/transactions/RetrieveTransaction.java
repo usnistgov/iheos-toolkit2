@@ -181,7 +181,7 @@ public class RetrieveTransaction extends BasicTransaction {
 
 
 			} else {
-				// The above 'compile' steps may have updated critical sections of the metadata.  repositoryUniqueId is critical here.
+				// The above 'compile' steps may have updated critical SECTIONS of the metadata.  repositoryUniqueId is critical here.
 				if (repositoryUniqueId == null || repositoryUniqueId.equals("")) {
 					String xpath = "//*[local-name()='RetrieveDocumentSetRequest']/*[local-name()='DocumentRequest']/*[local-name()='RepositoryUniqueId']/text()";
 					try {

@@ -9,10 +9,7 @@ import java.util.List;
 /**
  *
  */
-abstract public class GetAllSimConfigsCommand extends GenericCommand<GetAllSimConfigsRequest, List<SimulatorConfig>> {
-    public GetAllSimConfigsCommand() {
-        super();
-    }
+public abstract class GetAllSimConfigsCommand extends GenericCommand<GetAllSimConfigsRequest, List<SimulatorConfig>> {
 
     @Override
     public void run(GetAllSimConfigsRequest var1) {

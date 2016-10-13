@@ -42,8 +42,6 @@ public class PidFavoritesCellList extends Composite{
         }
     };
 
-//    private EventBus eventBus = ((ClientFactory) GWT.create(ClientFactory.class)).getEventBus();
-
     public PidFavoritesCellList(){
         // Create a Cell renderer.
         PidCell pidCell = new PidCell();
@@ -54,8 +52,6 @@ public class PidFavoritesCellList extends Composite{
 
         // this links the data model with the actual table widget
         model.addDataDisplay(cellList);
-        //        cellList.setPageSize(30);
-        //        cellList.setKeyboardPagingPolicy(KeyboardPagingPolicy.INCREASE_RANGE);
         cellList.setKeyboardSelectionPolicy(HasKeyboardSelectionPolicy.KeyboardSelectionPolicy.BOUND_TO_SELECTION);
 
         // Add a selection model so we can select cells.
@@ -71,23 +67,22 @@ public class PidFavoritesCellList extends Composite{
     }
 
     private void bindUI() {
+        // this refresh the list of PIDs after a new PID is added though the PID Manager.
         ((Xdstools2EventBus) ClientUtils.INSTANCE.getEventBus()).addFavoritePidsUpdateEventHandler(new FavoritePidsUpdatedEvent.FavoritePidsUpdatedEventHandler() {
             @Override
             public void onFavPidsUpdate() {
                 model.setList(new LinkedList<Pid>(CookiesServices.retrievePidFavoritesFromCookies()));
-
                 model.refresh();
                 cellList.redraw();
             }
         });
-        try {
-            loadData();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        loadData();
     }
 
-    private void loadData() throws IOException {
+    /**
+     * This method loads all the PIDs for the of favorites from both Cookies and the server.
+     */
+    private void loadData(){
         String environmentName = ClientUtils.INSTANCE.getEnvironmentState().getEnvironmentName();
         if (environmentName!=null) {
             new RetrieveFavPidsCommand() {
@@ -95,6 +90,7 @@ public class PidFavoritesCellList extends Composite{
                 public void onComplete(List<Pid> pids) {
                     List<Pid> pidList=new LinkedList<Pid>();
                     pidList.addAll(pids);
+                    // load pids stored in cookies
                     pidList.addAll(CookiesServices.retrievePidFavoritesFromCookies());
                     model.setList(new LinkedList<Pid>(pidList));
                     model.refresh();
@@ -112,6 +108,9 @@ public class PidFavoritesCellList extends Composite{
         return selectionModel.getSelectedObject();
     }
 
+    /**
+     * This clear the list widget of all selection.
+     */
     public void clearSelection() {
         selectionModel.clear();
         model.refresh();
@@ -122,9 +121,6 @@ public class PidFavoritesCellList extends Composite{
      * The Cell used to render a {@link Pid}.
      */
     static class PidCell extends AbstractCell<Pid> {
-
-        public PidCell() {
-        }
 
         @Override
         public void render(Context context, Pid pid, SafeHtmlBuilder safeHtmlBuilder) {

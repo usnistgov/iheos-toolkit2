@@ -187,7 +187,7 @@ class TestSelectionManager {
                 sections.clear();
                 selectSectionList.clear();
                 if (result == null) {
-                    // no index.idx - so sections
+                    // no index.idx - so SECTIONS
                     selectSectionViewButton.setEnabled(false);
                 } else {
                     sections.addAll(result);

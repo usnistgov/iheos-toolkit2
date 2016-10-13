@@ -9,10 +9,7 @@ import java.util.List;
 /**
  *
  */
-abstract public class GetTestSessionNamesCommand extends GenericCommand<CommandContext, List<String>> {
-    public GetTestSessionNamesCommand() {
-        super();
-    }
+public abstract class GetTestSessionNamesCommand extends GenericCommand<CommandContext, List<String>> {
 
     @Override
     public void run(CommandContext var1) {

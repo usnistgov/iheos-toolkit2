@@ -8,7 +8,7 @@ public class MesaTestTest {
 //	String sessionId = "MySession";
 //	Session session = new Session(new File("/Users/bmajur/workspace/toolkit/xdstools2/war"), SiteServiceManager.getSiteServiceManager(), sessionId);
 //	EnvSetting es = new EnvSetting(sessionId, "NA2012");
-//	List<String> sections = new ArrayList<String>();
+//	List<String> SECTIONS = new ArrayList<String>();
 //	Map<String, String> params = new HashMap<String, String>();
 //
 //	SiteSpec siteSpec() {
@@ -33,7 +33,7 @@ public class MesaTestTest {
 //				mesaTestSession,
 //				siteSpec,
 //				testId,
-//				sections,
+//				SECTIONS,
 //				params,
 //				params2,
 //				stopOnFirstFailure);
@@ -44,7 +44,7 @@ public class MesaTestTest {
 //		String testId = "11901";
 //		siteSpec.isTls = false;
 //		params.put("$patientid$", "25d5fe7674a443d^^^&1.3.6.1.4.1.21367.2009.1.2.300&ISO");
-//		new XdsTestServiceManager(session).run(mesaTestSession, siteSpec, testId, sections, params, params2, stopOnFirstFailure);
+//		new XdsTestServiceManager(session).run(mesaTestSession, siteSpec, testId, SECTIONS, params, params2, stopOnFirstFailure);
 //	}
 //
 //	//	@Test
@@ -56,7 +56,7 @@ public class MesaTestTest {
 //				mesaTestSession,
 //				siteSpec(),
 //				testId,
-//				sections,
+//				SECTIONS,
 //				pbuilder.getSParms(),
 //				pbuilder.getOParms(),
 //				stopOnFirstFailure);
@@ -135,7 +135,7 @@ public class MesaTestTest {
 //					mesaTestSession,
 //					siteSpec(),
 //					testId,
-//					sections,
+//					SECTIONS,
 //					pbuilder.getSParms(),
 //					pbuilder.getOParms(),
 //					stopOnFirstFailure);
@@ -180,7 +180,7 @@ public class MesaTestTest {
 //				mesaTestSession,
 //				siteSpec(),
 //				testId,
-//				sections,
+//				SECTIONS,
 //				pbuilder.getSParms(),
 //				pbuilder.getOParms(),
 //				stopOnFirstFailure);

@@ -18,7 +18,8 @@ public class BuildCollections extends HttpServlet {
     File testkitIn;
     File testkitOut;
 
-    public static String sections[] = { "testdata", "tests", "examples", "selftest" };
+    // FIXME should we add the new sections? (testdata-registry, ...)
+    public static final String[] SECTIONS = { "testdata", "tests", "examples", "selftest" };
     Map<String, List<String>> collections = new HashMap<String, List<String>>();
     boolean error;
 
@@ -124,8 +125,8 @@ public class BuildCollections extends HttpServlet {
 
     void scan() {
         error = false;
-        for (int i=0; i<sections.length; i++) {
-            String section = sections[i];
+        for (int i = 0; i< SECTIONS.length; i++) {
+            String section = SECTIONS[i];
 
             File sectionFile = new File(testkitIn + File.separator + section);
             File testDirs[] = sectionFile.listFiles();

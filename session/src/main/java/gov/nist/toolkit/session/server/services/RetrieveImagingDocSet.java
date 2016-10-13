@@ -56,7 +56,7 @@ public class RetrieveImagingDocSet extends CommonService {
 				params.put("$full_imaging_request$", studyRequest);
 			} 
 //			else if (session.siteSpec.isIG()) {
-//				sections.add("IG");
+//				SECTIONS.add("IG");
 //				params.put("$home$", site.homeId);
 //			} 
 			else {

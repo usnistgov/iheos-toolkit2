@@ -119,7 +119,7 @@ class RetrieveSpec extends ToolkitSpecification {
         String siteName = 'sunil__rr'
         TestInstance testId = new TestInstance("15816")
         List<String> sections = ["Retrieve_Doc", 'Retrieve_Bad_Doc_Uid', 'Retrieve_Partial_Uid']
-//        List<String> sections = ['Retrieve_Partial_Uid']
+//        List<String> SECTIONS = ['Retrieve_Partial_Uid']
         Map<String, String> params = new HashMap<>()
         params.put('$patientid$', patientId)
         params.put('$repuid$', repUid)

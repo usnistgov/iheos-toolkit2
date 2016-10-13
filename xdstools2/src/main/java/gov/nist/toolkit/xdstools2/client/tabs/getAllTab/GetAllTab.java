@@ -24,7 +24,7 @@ import java.util.Map;
  *      basically everything below the horizontal line in the display of the tab
  * GetAllTab - specifics for this query tab
  *
- * A tab implementation has two main sections:
+ * A tab implementation has two main SECTIONS:
  *    OnTabLoad method that builds the tab contents
  *    Inner Class called Runner that has a onClick handler that responds to the Run button.
  * All other methods are in a supporting role to these two.

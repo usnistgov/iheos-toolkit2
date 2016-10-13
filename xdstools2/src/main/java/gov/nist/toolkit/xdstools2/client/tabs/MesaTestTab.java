@@ -246,7 +246,7 @@ public class MesaTestTab extends GenericQueryTab {
 			public void onSuccess(List<String> result) {
 				sections.clear();
 				if (result == null) {
-					// no index.idx - so sections
+					// no index.idx - so SECTIONS
 					selectSectionPanel.setVisible(false);
 				} else {
 					sections.addAll(result);

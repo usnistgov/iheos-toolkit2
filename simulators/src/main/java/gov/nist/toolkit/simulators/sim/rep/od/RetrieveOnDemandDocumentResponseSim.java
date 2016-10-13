@@ -184,7 +184,7 @@ public class RetrieveOnDemandDocumentResponseSim extends TransactionSimulator im
 
 
 	/*
-	private Result Transaction(String siteName, String sessionName, TestInstance testId, Map<String, String> params, boolean stopOnFirstError, Session myTestSession, XdsTestServiceManager xdsTestServiceManager, List<String> sections) {
+	private Result Transaction(String siteName, String sessionName, TestInstance testId, Map<String, String> params, boolean stopOnFirstError, Session myTestSession, XdsTestServiceManager xdsTestServiceManager, List<String> SECTIONS) {
 		UtilityRunner utilityRunner = new UtilityRunner(xdsTestServiceManager, TestRunType.TEST);
 		if (myTestSession.getMesaSessionName() == null) myTestSession.setMesaSessionName(sessionName);
 
@@ -194,7 +194,7 @@ public class RetrieveOnDemandDocumentResponseSim extends TransactionSimulator im
 		siteSpec.setName(siteName);
 		myTestSession.setSiteSpec(siteSpec);
 
-		Result result = utilityRunner.run(myTestSession, params, null, sections, testId, null, stopOnFirstError);
+		Result result = utilityRunner.run(myTestSession, params, null, SECTIONS, testId, null, stopOnFirstError);
 
 		// Save results to external_cache.
 		// Supports getTestResults tookit api call

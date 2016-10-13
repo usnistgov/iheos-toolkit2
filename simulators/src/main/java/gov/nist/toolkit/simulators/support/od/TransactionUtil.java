@@ -55,7 +55,7 @@ public class TransactionUtil {
         }
 
 
-//        Result result = utilityRunner.run(myTestSession, params, null, sections, testId, null, stopOnFirstError);
+//        Result result = utilityRunner.run(myTestSession, params, null, SECTIONS, testId, null, stopOnFirstError);
 
         // Save results to external_cache.
         // Supports getTestResults tookit api call

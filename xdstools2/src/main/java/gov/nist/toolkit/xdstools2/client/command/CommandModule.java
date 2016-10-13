@@ -6,16 +6,20 @@ import gov.nist.toolkit.xdstools2.client.widgets.PopupMessage;
 /**
  *
  */
-abstract public class CommandModule<C> implements AsyncCallback<C> {
-
-    abstract public void onComplete(C var1);
-
+public abstract class CommandModule<C> implements AsyncCallback<C> {
     public CommandModule() {
     }
 
+    /**
+     * This is the method that implement the actions to be executed
+     * onSucces of the AsyncCallback.
+     * @param result result of the AsyncCallback.
+     */
+    public abstract void onComplete(C result);
+
     // This may be further overridden by Command Class (class that extends GenericCommand)
     @Override
-     public void onFailure(Throwable throwable) {
+    public void onFailure(Throwable throwable) {
         String msg = throwable.getMessage();
         if (msg == null)
             msg = this.getClass().getName();

@@ -25,7 +25,7 @@ import gov.nist.toolkit.testkitutilities.client.TestCollectionDefinitionDAO;
 import gov.nist.toolkit.xdstools2.client.widgets.PopupMessage;
 import gov.nist.toolkit.xdstools2.client.ToolWindow;
 import gov.nist.toolkit.xdstools2.client.Xdstools2;
-import gov.nist.toolkit.xdstools2.client.event.TestSessionChangedEvent;
+import gov.nist.toolkit.xdstools2.client.event.testSession.TestSessionChangedEvent;
 import gov.nist.toolkit.xdstools2.client.event.testSession.TestSessionChangedEventHandler;
 import gov.nist.toolkit.xdstools2.client.tabs.GatewayTestsTabs.BuildIGTestOrchestrationButton;
 import gov.nist.toolkit.xdstools2.client.widgets.LaunchInspectorClickHandler;
@@ -145,7 +145,7 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner, TestsH
 		Xdstools2.getEventBus().addHandler(TestSessionChangedEvent.TYPE, new TestSessionChangedEventHandler() {
 			@Override
 			public void onTestSessionChanged(TestSessionChangedEvent event) {
-				if (event.changeType == TestSessionChangedEvent.ChangeType.SELECT) {
+				if (event.getChangeType() == TestSessionChangedEvent.ChangeType.SELECT) {
 					loadTestCollections();
 				}
 			}

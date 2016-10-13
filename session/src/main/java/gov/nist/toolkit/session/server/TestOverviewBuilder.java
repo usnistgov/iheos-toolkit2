@@ -120,7 +120,7 @@ public class TestOverviewBuilder {
                 }
                 return;
             } catch (Exception e) {
-                // no sections defined - maybe single un-named section
+                // no SECTIONS defined - maybe single un-named section
                 if (testLogDetails.getTestPlanLogs().get("log.xml") != null) {
                     LogFileContentDTO logFileContentDTO = testLogDetails.getTestPlanLogs().get("log.xml");
                     SectionOverviewDTO sectionOverview = addSection("", logFileContentDTO);

@@ -10,9 +10,6 @@ import java.util.Collection;
  *
  */
 public abstract class GetAllSitesCommand extends GenericCommand<CommandContext, Collection<Site>> {
-    public GetAllSitesCommand() {
-        super();
-    }
 
     @Override
     public void run(CommandContext var1) {

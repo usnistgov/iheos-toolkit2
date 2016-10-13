@@ -133,13 +133,13 @@ class OdConsumerPersistenceSpec extends ToolkitSpecification {
         when:
         String siteName = 'sunil2__odds3'
         TestInstance testId = new TestInstance("15806")
-        List<String> sections = ["Retrieve"]
+        List<String> SECTIONS = ["Retrieve"]
         Map<String, String> params = new HashMap<>()
         params.put('$patientid$', patientId)
         boolean stopOnFirstError = true
 
         and: 'Run'
-        List<Result> results = api.runTest(testSession, siteName, testId, sections, params, stopOnFirstError)
+        List<Result> results = api.runTest(testSession, siteName, testId, SECTIONS, params, stopOnFirstError)
 
         then:
         true

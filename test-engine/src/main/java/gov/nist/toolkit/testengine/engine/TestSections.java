@@ -7,7 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Collection of specific test sections
+ * Collection of specific test SECTIONS
  */
 public class TestSections {
 

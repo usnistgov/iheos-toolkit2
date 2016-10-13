@@ -57,31 +57,31 @@ public interface ToolkitService extends RemoteService  {
 
 
 	/* Test management */
-	public Map<String, Result> getTestResults(List<TestInstance> testInstances, String testSession) throws NoServletSessionException ;
-	public LogFileContentDTO getTestLogDetails(String sessionName, TestInstance testInstance) throws Exception;
-	public Map<String, String> getCollectionNames(String collectionSetName) throws Exception;
-	public List<String> getCollectionMembers(String collectionSetName, String collectionName) throws Exception;
+	 Map<String, Result> getTestResults(List<TestInstance> testInstances, String testSession) throws NoServletSessionException ;
+	 LogFileContentDTO getTestLogDetails(String sessionName, TestInstance testInstance) throws Exception;
+	 Map<String, String> getCollectionNames(String collectionSetName) throws Exception;
+	 List<String> getCollectionMembers(String collectionSetName, String collectionName) throws Exception;
 	List<TestCollectionDefinitionDAO> getTestCollections(String collectionSetName) throws Exception;
-	public Map<String, String> getCollection(String collectionSetName, String collectionName) throws Exception;
-	public String getTestReadme(String test) throws Exception;
-	public List<String> getTestIndex(String test) throws Exception;
-	public List<Result> runMesaTest(String mesaTestSession, SiteSpec siteSpec, TestInstance testInstance, List<String> sections, Map<String, String> params, boolean stopOnFirstFailure) throws Exception ;
-	public TestOverviewDTO runTest(String environment, String mesaTestSession, SiteSpec siteSpec, TestInstance testInstance, Map<String, String> params, boolean stopOnFirstFailure) throws NoServletSessionException, Exception;
-	public boolean isPrivateMesaTesting() throws NoServletSessionException ;
-	public List<String> getMesaTestSessionNames(CommandContext request) throws Exception;
-	public boolean addMesaTestSession(String name) throws Exception;
-	public boolean delMesaTestSession(String name) throws Exception;
+	 Map<String, String> getCollection(String collectionSetName, String collectionName) throws Exception;
+	 String getTestReadme(String test) throws Exception;
+	 List<String> getTestIndex(String test) throws Exception;
+	 List<Result> runMesaTest(String mesaTestSession, SiteSpec siteSpec, TestInstance testInstance, List<String> sections, Map<String, String> params, boolean stopOnFirstFailure) throws Exception ;
+	 TestOverviewDTO runTest(String environment, String mesaTestSession, SiteSpec siteSpec, TestInstance testInstance, Map<String, String> params, boolean stopOnFirstFailure) throws Exception;
+	 boolean isPrivateMesaTesting() throws NoServletSessionException ;
+	 List<String> getMesaTestSessionNames(CommandContext request) throws Exception;
+	 boolean addMesaTestSession(String name) throws Exception;
+	 boolean delMesaTestSession(String name) throws Exception;
 
 	/* Simulator Management */
-	public List<String> getActorTypeNames() throws NoServletSessionException ;
-	public Simulator getNewSimulator(String actorTypeName, SimId simId) throws Exception;
-	public List<SimulatorConfig> getSimConfigs(List<SimId> ids) throws Exception;
+	 List<String> getActorTypeNames() throws NoServletSessionException ;
+	 Simulator getNewSimulator(String actorTypeName, SimId simId) throws Exception;
+	 List<SimulatorConfig> getSimConfigs(List<SimId> ids) throws Exception;
 	List<SimulatorConfig> getAllSimConfigs(GetAllSimConfigsRequest user) throws Exception;
-	public String putSimConfig(SimulatorConfig config) throws Exception;
-	public String deleteConfig(SimulatorConfig config) throws Exception;
-	public Map<String, SimId> getActorSimulatorNameMap() throws NoServletSessionException;
-	//	public List<String> getSimulatorTransactionNames(String simid) throws Exception;
-	public int removeOldSimulators() throws NoServletSessionException;
+	 String putSimConfig(SimulatorConfig config) throws Exception;
+	 String deleteConfig(SimulatorConfig config) throws Exception;
+	 Map<String, SimId> getActorSimulatorNameMap() throws NoServletSessionException;
+	//	 List<String> getSimulatorTransactionNames(String simid) throws Exception;
+	 int removeOldSimulators() throws NoServletSessionException;
 	List<SimulatorStats> getSimulatorStats(List<SimId> simid) throws Exception;
 	List<Pid> getPatientIds(SimId simId) throws Exception;
 	String addPatientIds(SimId simId, List<Pid> pids) throws Exception;
@@ -97,7 +97,6 @@ public interface ToolkitService extends RemoteService  {
 	String getTransactionResponse(SimId simName, String actor, String trans, String event)  throws NoServletSessionException;
 	String getTransactionLog(SimId simName, String actor, String trans, String event)  throws NoServletSessionException;
 	List<String> getTransactionsForSimulator(SimId simName) throws Exception;
-	//	List<String> getActorNames();
 	MessageValidationResults executeSimMessage(String simFileSpec) throws NoServletSessionException;
 
 	void renameSimFile(String simFileSpec, String newSimFileSpec) throws Exception;
@@ -114,8 +113,7 @@ public interface ToolkitService extends RemoteService  {
 	String getLastFilename();
 	String getTimeAndDate();
 
-	MessageValidationResults validateMessage(ValidationContext vc) throws NoServletSessionException, EnvironmentNotSelectedClientException;
-//	MessageValidationResults validateMessage(ValidationContext vc, String simFileName) throws NoServletSessionException, EnvironmentNotSelectedClientException;
+	MessageValidationResults validateMessage(ValidationContext vc) throws Exception;
 
 	List<String> getSiteNames(boolean reload, boolean simAlso) throws NoServletSessionException ;
 	List<String> getRegistryNames() throws Exception;
@@ -138,6 +136,7 @@ public interface ToolkitService extends RemoteService  {
 	List<Result> findDocuments(SiteSpec site, String pid, boolean onDemand) throws NoServletSessionException ;
 	List<Result> findDocumentsByRefId(SiteSpec site, String pid, List<String> refIds) throws NoServletSessionException ;
 	List<Result> findFolders(SiteSpec site, String pid) throws NoServletSessionException ;
+	// FIXME this method has far too many parameters we need to change that by one object.
 	List<Result> findPatient(SiteSpec site, String firstName,
 							 String secondName, String lastName, String suffix, String gender,
 							 String dob, String ssn, String pid, String homeAddress1,
@@ -145,7 +144,7 @@ public interface ToolkitService extends RemoteService  {
 							 String homeZip, String homeCountry, String mothersFirstName, String mothersSecondName,
 							 String mothersLastName, String mothersSuffix, String homePhone,
 							 String workPhone, String principleCareProvider, String pob,
-							 String pobAddress1, String pobAddress2, String pobCity, String Country,
+							 String pobAddress1, String pobAddress2, String pobCity, String country,
 							 String pobState, String pobZip);
 	List<Result> getDocuments(SiteSpec site, AnyIds ids) throws NoServletSessionException ;
 	List<Result> getFolders(SiteSpec site, AnyIds aids) throws NoServletSessionException ;
@@ -165,7 +164,6 @@ public interface ToolkitService extends RemoteService  {
 	List<Result> lifecycleValidation(SiteSpec site, String pid) throws NoServletSessionException ;
 	List<Result> folderValidation(SiteSpec site, String pid) throws NoServletSessionException ;
 
-	//	List<Result> mpqFindDocuments(SiteSpec site, String pid, List<String> classCodes, List<String> hcftCodes, List<String> eventCodes) throws NoServletSessionException;
 	List<Result> mpqFindDocuments(SiteSpec site, String pid, Map<String, List<String>> selectedCodes) throws NoServletSessionException;
 	List<Result> getAll(SiteSpec site, String pid, Map<String, List<String>> codesSpec) throws NoServletSessionException;
 	List<Result> findDocuments2(SiteSpec site, String pid, Map<String, List<String>> codesSpec) throws NoServletSessionException;
@@ -241,11 +239,11 @@ public interface ToolkitService extends RemoteService  {
 	// Tests Overview Tab
 	//------------------------------------------------------------------------
 	//------------------------------------------------------------------------
-	public List<Test> reloadAllTestResults(String sessionName) throws Exception;
-	public List<Test> runAllTests(Site site) throws NoServletSessionException;
-	public List<Test> deleteAllTestResults(Site site) throws NoServletSessionException;
-	public Test runSingleTest(Site site, int testId) throws NoServletSessionException;
-	public TestOverviewDTO deleteSingleTestResult(String testSession, TestInstance testInstance) throws Exception;
+	 List<Test> reloadAllTestResults(String sessionName) throws Exception;
+	 List<Test> runAllTests(Site site) throws NoServletSessionException;
+	 List<Test> deleteAllTestResults(Site site) throws NoServletSessionException;
+	 Test runSingleTest(Site site, int testId) throws NoServletSessionException;
+	 TestOverviewDTO deleteSingleTestResult(String testSession, TestInstance testInstance) throws Exception;
 
 	String setMesaTestSession(String sessionName) throws NoServletSessionException ;
 	String getNewPatientId(String assigningAuthority) throws NoServletSessionException ;
@@ -258,16 +256,16 @@ public interface ToolkitService extends RemoteService  {
 	// Background test plan running methods related to On-Demand Documents
 	//------------------------------------------------------------------------
 	//------------------------------------------------------------------------
-	public Result register(String username, TestInstance testInstance, SiteSpec registry, Map<String, String> params) throws Exception;
-	public Map<String, String> registerWithLocalizedTrackingInODDS(String username, TestInstance testInstance, SiteSpec registry, SimId oddsSimId, Map<String, String> params) throws Exception;
-	public List<DocumentEntryDetail> getOnDemandDocumentEntryDetails(SimId oddsSimId);
+	 Result register(String username, TestInstance testInstance, SiteSpec registry, Map<String, String> params) throws Exception;
+	 Map<String, String> registerWithLocalizedTrackingInODDS(String username, TestInstance testInstance, SiteSpec registry, SimId oddsSimId, Map<String, String> params) throws Exception;
+	 List<DocumentEntryDetail> getOnDemandDocumentEntryDetails(SimId oddsSimId);
 
 	//------------------------------------------------------------------------
 	//------------------------------------------------------------------------
 	// Interaction methods
 	//------------------------------------------------------------------------
 	//------------------------------------------------------------------------
-	public InteractingEntity getInteractionFromModel(InteractingEntity model) throws Exception;
+	 InteractingEntity getInteractionFromModel(InteractingEntity model) throws Exception;
 
 	String clearTestSession(String testSession) throws Exception;
 

@@ -195,7 +195,7 @@ public class ImagingDocSetRetrieveTransaction extends BasicTransaction {
 
 
 			} else {
-				// The above 'compile' steps may have updated critical sections of the metadata.  repositoryUniqueId is critical here.
+				// The above 'compile' steps may have updated critical SECTIONS of the metadata.  repositoryUniqueId is critical here.
 				if (repositoryUniqueId == null || repositoryUniqueId.equals("")) {
 					String xpath = "//*[local-name()='RetrieveImagingDocumentSetRequest']" +
 					"/*[local-name()='StudyRequest']" +

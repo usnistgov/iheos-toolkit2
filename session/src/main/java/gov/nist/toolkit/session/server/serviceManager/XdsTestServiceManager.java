@@ -131,10 +131,10 @@ public class XdsTestServiceManager extends CommonService {
 	 * @param stopOnFirstFailure
 	 * @return
 	 */
-//	public Result runUtilityTest(Map<String, String> params, Map<String, Object> params2, List<String> sections,
+//	public Result runUtilityTest(Map<String, String> params, Map<String, Object> params2, List<String> SECTIONS,
 //								 String testId, String[] areas, boolean stopOnFirstFailure) {
 //
-//		return utilityRunner.run(session, params, params2, sections, testId, areas, stopOnFirstFailure);
+//		return utilityRunner.run(session, params, params2, SECTIONS, testId, areas, stopOnFirstFailure);
 //	}
 	public List<Result> runMesaTest(String environmentName,String mesaTestSessionName, SiteSpec siteSpec, TestInstance testInstance, List<String> sections,
 									Map<String, String> params, Map<String, Object> params2, boolean stopOnFirstFailure) throws Exception {
@@ -480,7 +480,7 @@ public class XdsTestServiceManager extends CommonService {
 
 	/**
 	 * Return the contents of all the log.xml files found under external_cache/TestLogCache/&lt;sessionName&gt;.  If there
-	 * are multiple sections to the test then load them all. Each element of the
+	 * are multiple SECTIONS to the test then load them all. Each element of the
 	 * returned list (Result model) represents the output of all steps in a single section of the test.
 	 * @param sessionName - not the servlet session but instead the dir name
 	 * under external_cache/TestLogCache identifying the user of the service
@@ -1073,7 +1073,7 @@ public class XdsTestServiceManager extends CommonService {
 //				res = entry.getValue();
 //				sectionList = res.getStepResults();
 //
-//				// Check whether the test has sections
+//				// Check whether the test has SECTIONS
 //				if (sectionList == null || (sectionList.size() == 0)) { hasSections = true; }
 //
 //				// TODO not sure what the test status is

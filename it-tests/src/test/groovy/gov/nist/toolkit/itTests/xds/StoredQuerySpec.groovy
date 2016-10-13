@@ -74,14 +74,14 @@ class StoredQuerySpec extends ToolkitSpecification {
 //        when:
 //        String siteName = 'bill__reg'
 //        TestInstance testId = new TestInstance("15804")
-//        List<String> sections = new ArrayList<>()
-//        sections.add("section")
+//        List<String> SECTIONS = new ArrayList<>()
+//        SECTIONS.add("section")
 //        Map<String, String> params = new HashMap<>()
 //        params.put('$patientid$', patientId)
 //        boolean stopOnFirstError = true
 //
 //        and: 'Run pid transaction test'
-//        List<Result> results = api.runTest(testSession, siteName, testId, sections, params, stopOnFirstError)
+//        List<Result> results = api.runTest(testSession, siteName, testId, SECTIONS, params, stopOnFirstError)
 //
 //        then:
 //        true
@@ -142,13 +142,13 @@ class StoredQuerySpec extends ToolkitSpecification {
 //    def 'Run 11897/approved tests'() {
 //        when:
 //        TestInstance testId = new TestInstance("11897")
-//        List<String> sections = ['approved']
+//        List<String> SECTIONS = ['approved']
 //        Map<String, String> params = new HashMap<>()
 //        params.put('$patientid$', patientId2)   // not used
 //        boolean stopOnFirstError = true
 //
 //        and: 'Run'
-//        List<Result> results = api.runTest(testSession, siteName, testId, sections, params, stopOnFirstError)
+//        List<Result> results = api.runTest(testSession, siteName, testId, SECTIONS, params, stopOnFirstError)
 //
 //        then:
 //        results.size() == 1

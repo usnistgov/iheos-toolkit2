@@ -14,11 +14,7 @@ import java.util.List;
  * in the base class.  To give user chance to capture callback, delete that auto-generated onComplete()
  * from this class.
  */
-abstract public class GetAssigningAuthoritiesCommand extends GenericCommand<CommandContext, List<String>> {
-    public GetAssigningAuthoritiesCommand() {
-        super();
-    }
-
+public abstract class GetAssigningAuthoritiesCommand extends GenericCommand<CommandContext, List<String>> {
     @Override
     public void run(CommandContext var1) {
         ClientUtils.INSTANCE.getToolkitServices().getAssigningAuthorities(var1, this); // this because primary callback is offered by base class
