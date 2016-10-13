@@ -38,7 +38,7 @@ import java.util.logging.Logger;
  * Created by oherrmann on 1/11/16.
  */
 public class CodesUpdater {
-    private static final String[] SECTIONS = { "tests", "testdata", "testdata-registry","testdata-repository","testdata-xdr","utilities", "examples","xcpd", "selftest"};
+    private static final String[] SECTIONS = { "tests", "testdata-registry","testdata-repository","testdata-xdr","utilities", "examples","xcpd", "selftest"};
     private static final Logger LOGGER = Logger.getLogger(CodesUpdater.class.getName());
 
     private File testkit;
@@ -72,7 +72,7 @@ public class CodesUpdater {
                 exploreTests(sectionFile);
             } catch (Exception e) {
                 error=true;
-                out+="FAILURE.\n"+e.getMessage();
+                out+="FAILURE.\n"+e.getMessage()+"\n";
                 LOGGER.severe(e.getMessage());
             }
         }
@@ -82,15 +82,13 @@ public class CodesUpdater {
      * This method explores a test repository structure.
      *
      * @param testFile path to the testkit folder which contains the test section to explore.
-     * @throws IOException
+     * @throws XdsInternalException
      */
-    void exploreTests(File testFile) throws IOException,XdsInternalException {
+    void exploreTests(File testFile) throws XdsInternalException {
         File[] dirs = testFile.listFiles();
         if (dirs == null) {
             LOGGER.warning("No tests defined in " + testFile.toString());
-            error = true;
             out+="No tests defined in " + testFile.toString() +"\n";
-            throw new IOException("No tests defined in " +testFile.toString());
         }else {
             for (int i = 0; i < dirs.length; i++) {
                 File testDir = dirs[i];
@@ -101,14 +99,20 @@ public class CodesUpdater {
                 } else {
                     if ("testplan.xml".equals(testDir.getName())) {
                         // read testplan.xml
-                        String testplanContent = Io.stringFromFile(testDir);
-                        OMElement testplanNode = Util.parse_xml(testplanContent);
-                        // retrieve the TestStep nodes
-                        Iterator<OMElement> steps = testplanNode.getChildrenWithName(new QName("TestStep"));
-                        while (steps.hasNext()) {
-                            // find transaction nodes among the nodes under exploration (Under a TestStep)
-                            Iterator<OMElement> children = steps.next().getChildElements();
-                            exploreChildren(children, testFile);
+                        String testplanContent = null;
+                        try {
+                            testplanContent = Io.stringFromFile(testDir);
+                            OMElement testplanNode = Util.parse_xml(testplanContent);
+                            // retrieve the TestStep nodes
+                            Iterator<OMElement> steps = testplanNode.getChildrenWithName(new QName("TestStep"));
+                            while (steps.hasNext()) {
+                                // find transaction nodes among the nodes under exploration (Under a TestStep)
+                                Iterator<OMElement> children = steps.next().getChildElements();
+                                exploreChildren(children, testFile);
+                            }
+                        } catch (IOException e) {
+                            LOGGER.warning("File not found : " + testFile.toString() +"\n"+e.getMessage());
+                            out+="WARNING: No file found for " + testFile.toString() +"\n";
                         }
                     }
                 }

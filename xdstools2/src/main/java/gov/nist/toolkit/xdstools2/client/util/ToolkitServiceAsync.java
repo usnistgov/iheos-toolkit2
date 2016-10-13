@@ -203,7 +203,7 @@ public interface ToolkitServiceAsync {
 	void loadTestPartContent(TestPartFileDTO testPartFileDTO, AsyncCallback<TestPartFileDTO> callback);
 	void getHtmlizedString(String xml, AsyncCallback<String> callback);
 
-	void configureTestkit(String selectedEnvironment,AsyncCallback<String> callback);
+	void configureTestkit(String environmentName, AsyncCallback<String> callback);
 
 	void doesTestkitExist(String selectedEnvironment, AsyncCallback<Boolean> asyncCallback);
 

@@ -23,8 +23,8 @@ abstract public class CommandModule<C> implements AsyncCallback<C> {
     }
 
     @Override
-    public void onSuccess(C var1) {
-        onComplete(var1);
+    public void onSuccess(C result) {
+        onComplete(result);
     }
 
 }

@@ -466,7 +466,7 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements
     @Override
     public boolean doesTestkitExist(String selectedEnvironment) {
         File environmentFile = Installation.instance().environmentFile(selectedEnvironment);
-        File testkit=new File(environmentFile,"testkit");
+        File testkit=new File(environmentFile,"testkits");
         return testkit.exists();
     }
 
@@ -884,6 +884,7 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements
     @Override
     public boolean indexTestKits() {
         new BuildCollections().run();
+        // FIXME why does this have to return true? should we change for a void method?
         return true;
     }
 
