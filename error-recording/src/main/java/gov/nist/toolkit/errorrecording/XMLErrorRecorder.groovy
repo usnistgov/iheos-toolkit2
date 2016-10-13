@@ -375,7 +375,8 @@ public class XMLErrorRecorder implements ErrorRecorder {
             def printer = new XmlNodePrinter(new PrintWriter(sw))
             printer.preserveWhitespace = true
             printer.print(xml)
-            return sw.toString()
+            String output = sw.toString()
+            return output.replaceAll("&amp;", "&");
         } catch (e) {
             println("Error in output pretty print in XMLErrorRecorder. The XML could not be validated or formatted :" + e)
         }
