@@ -1,10 +1,9 @@
 package gov.nist.toolkit.xdstools2.client.event.testSession;
 
 import com.google.gwt.user.client.Cookies;
-import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import gov.nist.toolkit.xdstools2.client.CookieManager;
-import gov.nist.toolkit.xdstools2.client.PopupMessage;
+import gov.nist.toolkit.xdstools2.client.widgets.PopupMessage;
 import gov.nist.toolkit.xdstools2.client.Xdstools2;
 import gov.nist.toolkit.xdstools2.client.command.command.GetTestSessionNamesCommand;
 import gov.nist.toolkit.xdstools2.client.event.TestSessionChangedEvent;

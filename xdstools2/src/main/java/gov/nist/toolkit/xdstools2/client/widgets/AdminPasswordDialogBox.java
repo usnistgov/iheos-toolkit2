@@ -1,10 +1,11 @@
-package gov.nist.toolkit.xdstools2.client;
+package gov.nist.toolkit.xdstools2.client.widgets;
 
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.KeyPressEvent;
 import com.google.gwt.event.dom.client.KeyPressHandler;
 import com.google.gwt.user.client.ui.*;
+import gov.nist.toolkit.xdstools2.client.PasswordManagement;
 
 public class AdminPasswordDialogBox extends DialogBox {
 	PasswordTextBox passBox;

@@ -11,7 +11,7 @@ import gov.nist.toolkit.results.client.StepResult;
 import gov.nist.toolkit.results.client.TestLog;
 import gov.nist.toolkit.results.client.TestLogs;
 import gov.nist.toolkit.sitemanagement.client.SiteSpec;
-import gov.nist.toolkit.xdstools2.client.PopupMessage;
+import gov.nist.toolkit.xdstools2.client.widgets.PopupMessage;
 import gov.nist.toolkit.xdstools2.client.ToolWindow;
 
 import java.util.List;

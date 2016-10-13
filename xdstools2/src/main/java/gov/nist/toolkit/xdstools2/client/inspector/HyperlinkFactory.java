@@ -7,7 +7,7 @@ import com.google.gwt.user.client.ui.Hyperlink;
 import gov.nist.toolkit.registrymetadata.client.*;
 import gov.nist.toolkit.results.client.AssertionResults;
 import gov.nist.toolkit.results.client.StepResult;
-import gov.nist.toolkit.xdstools2.client.PopupMessage;
+import gov.nist.toolkit.xdstools2.client.widgets.PopupMessage;
 import gov.nist.toolkit.xdstools2.client.TestDocumentation;
 import gov.nist.toolkit.xdstools2.client.tabs.GetRelatedTab;
 

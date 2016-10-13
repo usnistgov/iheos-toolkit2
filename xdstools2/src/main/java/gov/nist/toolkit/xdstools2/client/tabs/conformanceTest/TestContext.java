@@ -3,7 +3,7 @@ package gov.nist.toolkit.xdstools2.client.tabs.conformanceTest;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import gov.nist.toolkit.sitemanagement.client.Site;
 import gov.nist.toolkit.sitemanagement.client.SiteSpec;
-import gov.nist.toolkit.xdstools2.client.PopupMessage;
+import gov.nist.toolkit.xdstools2.client.widgets.PopupMessage;
 import gov.nist.toolkit.xdstools2.client.ToolWindow;
 import gov.nist.toolkit.xdstools2.client.util.ClientUtils;
 

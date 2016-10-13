@@ -9,6 +9,8 @@ import com.google.gwt.user.client.ui.*;
 import gov.nist.toolkit.xdstools2.client.*;
 import gov.nist.toolkit.xdstools2.client.command.command.GetTestSessionNamesCommand;
 import gov.nist.toolkit.xdstools2.client.util.ClientUtils;
+import gov.nist.toolkit.xdstools2.client.widgets.HorizontalFlowPanel;
+import gov.nist.toolkit.xdstools2.client.widgets.PopupMessage;
 
 import java.util.ArrayList;
 import java.util.Collection;

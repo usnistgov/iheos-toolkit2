@@ -9,7 +9,7 @@ import gov.nist.toolkit.configDatatypes.client.PatientError;
 import gov.nist.toolkit.configDatatypes.client.Pid;
 import gov.nist.toolkit.configDatatypes.client.PidBuilder;
 import gov.nist.toolkit.configDatatypes.client.TransactionType;
-import gov.nist.toolkit.xdstools2.client.PopupMessage;
+import gov.nist.toolkit.xdstools2.client.widgets.PopupMessage;
 import gov.nist.toolkit.xdstools2.client.util.ClientUtils;
 
 import java.util.List;

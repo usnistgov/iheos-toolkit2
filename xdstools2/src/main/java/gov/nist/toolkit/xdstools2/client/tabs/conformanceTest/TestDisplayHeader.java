@@ -1,6 +1,6 @@
 package gov.nist.toolkit.xdstools2.client.tabs.conformanceTest;
 
-import gov.nist.toolkit.xdstools2.client.HorizontalFlowPanel;
+import gov.nist.toolkit.xdstools2.client.widgets.HorizontalFlowPanel;
 
 /**
  *

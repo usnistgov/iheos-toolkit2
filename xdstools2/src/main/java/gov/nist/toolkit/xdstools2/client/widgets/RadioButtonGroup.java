@@ -1,7 +1,8 @@
-package gov.nist.toolkit.xdstools2.client;
+package gov.nist.toolkit.xdstools2.client.widgets;
 
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.user.client.ui.RadioButton;
+import gov.nist.toolkit.xdstools2.client.Panel1;
 
 import java.util.ArrayList;
 import java.util.HashMap;

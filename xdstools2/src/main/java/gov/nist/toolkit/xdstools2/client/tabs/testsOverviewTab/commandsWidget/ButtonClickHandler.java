@@ -6,7 +6,7 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Button;
 import gov.nist.toolkit.results.shared.Test;
 import gov.nist.toolkit.sitemanagement.client.Site;
-import gov.nist.toolkit.xdstools2.client.ToolkitServiceAsync;
+import gov.nist.toolkit.xdstools2.client.util.ToolkitServiceAsync;
 import gov.nist.toolkit.xdstools2.client.tabs.testsOverviewTab.ReloadAllTestResultsCallback;
 import gov.nist.toolkit.xdstools2.client.tabs.testsOverviewTab.Updater;
 import gov.nist.toolkit.xdstools2.client.util.ClientUtils;

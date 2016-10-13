@@ -16,6 +16,7 @@ import gov.nist.toolkit.sitemanagement.client.TransactionOfferings;
 import gov.nist.toolkit.tk.client.TkProps;
 import gov.nist.toolkit.xdstools2.client.command.command.GetTransactionOfferingsCommand;
 import gov.nist.toolkit.xdstools2.client.command.command.InitializationCommand;
+import gov.nist.toolkit.xdstools2.client.widgets.PopupMessage;
 import gov.nist.toolkit.xdstools2.shared.command.InitializationResponse;
 import gov.nist.toolkit.xdstools2.client.event.testSession.TestSessionManager2;
 import gov.nist.toolkit.xdstools2.client.selectors.EnvironmentManager;

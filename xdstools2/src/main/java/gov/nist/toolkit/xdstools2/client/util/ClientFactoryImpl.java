@@ -3,8 +3,6 @@ package gov.nist.toolkit.xdstools2.client.util;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.place.shared.PlaceController;
 import com.google.web.bindery.event.shared.EventBus;
-import gov.nist.toolkit.xdstools2.client.ToolkitService;
-import gov.nist.toolkit.xdstools2.client.ToolkitServiceAsync;
 import gov.nist.toolkit.xdstools2.client.event.Xdstools2EventBus;
 import gov.nist.toolkit.xdstools2.client.util.activitiesAndPlaces.ConfActorActivity;
 import gov.nist.toolkit.xdstools2.client.util.activitiesAndPlaces.TestInstanceActivity;

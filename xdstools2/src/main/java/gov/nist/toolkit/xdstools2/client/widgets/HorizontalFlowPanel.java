@@ -1,4 +1,4 @@
-package gov.nist.toolkit.xdstools2.client;
+package gov.nist.toolkit.xdstools2.client.widgets;
 
 import com.google.gwt.dom.client.Style;
 import com.google.gwt.user.client.ui.FlowPanel;

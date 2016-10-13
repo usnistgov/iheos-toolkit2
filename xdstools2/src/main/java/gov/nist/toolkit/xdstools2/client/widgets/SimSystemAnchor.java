@@ -5,8 +5,6 @@ import com.google.gwt.user.client.ui.HTML;
 import gov.nist.toolkit.actorfactory.client.SimId;
 import gov.nist.toolkit.actorfactory.client.SimulatorConfig;
 import gov.nist.toolkit.sitemanagement.client.SiteSpec;
-import gov.nist.toolkit.xdstools2.client.HorizontalFlowPanel;
-import gov.nist.toolkit.xdstools2.client.PopupMessage;
 import gov.nist.toolkit.xdstools2.client.util.ClientUtils;
 
 import java.util.ArrayList;

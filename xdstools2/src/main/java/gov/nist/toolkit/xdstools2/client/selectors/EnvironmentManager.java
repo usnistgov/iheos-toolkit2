@@ -1,6 +1,5 @@
 package gov.nist.toolkit.xdstools2.client.selectors;
 
-import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.user.client.Cookies;
@@ -13,8 +12,8 @@ import gov.nist.toolkit.xdstools2.client.*;
 import gov.nist.toolkit.xdstools2.client.command.command.GetEnvironmentNamesCommand;
 import gov.nist.toolkit.xdstools2.client.event.Xdstools2EventBus;
 import gov.nist.toolkit.xdstools2.client.tabs.EnvironmentState;
-import gov.nist.toolkit.xdstools2.client.util.ClientFactory;
 import gov.nist.toolkit.xdstools2.client.util.ClientUtils;
+import gov.nist.toolkit.xdstools2.client.widgets.PopupMessage;
 
 import java.util.List;
 

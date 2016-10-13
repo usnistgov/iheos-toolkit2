@@ -1,7 +1,7 @@
 package gov.nist.toolkit.xdstools2.client.command;
 
 import com.google.gwt.user.client.rpc.AsyncCallback;
-import gov.nist.toolkit.xdstools2.client.PopupMessage;
+import gov.nist.toolkit.xdstools2.client.widgets.PopupMessage;
 
 /**
  *

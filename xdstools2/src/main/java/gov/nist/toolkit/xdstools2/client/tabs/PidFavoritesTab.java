@@ -16,7 +16,7 @@ import gov.nist.toolkit.configDatatypes.client.PidBuilder;
 import gov.nist.toolkit.configDatatypes.client.TransactionType;
 import gov.nist.toolkit.results.client.Result;
 import gov.nist.toolkit.xdstools2.client.CoupledTransactions;
-import gov.nist.toolkit.xdstools2.client.PopupMessage;
+import gov.nist.toolkit.xdstools2.client.widgets.PopupMessage;
 import gov.nist.toolkit.xdstools2.client.command.command.GeneratePidCommand;
 import gov.nist.toolkit.xdstools2.client.command.command.GetAssigningAuthoritiesCommand;
 import gov.nist.toolkit.xdstools2.client.command.command.RetrieveFavPidsCommand;

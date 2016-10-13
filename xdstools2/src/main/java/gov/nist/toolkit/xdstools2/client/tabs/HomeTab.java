@@ -7,6 +7,8 @@ import gov.nist.toolkit.xdstools2.client.inspector.HyperlinkFactory;
 import gov.nist.toolkit.xdstools2.client.siteActorManagers.FindDocumentsSiteActorManager;
 import gov.nist.toolkit.xdstools2.client.tabs.genericQueryTab.GenericQueryTab;
 import gov.nist.toolkit.xdstools2.client.toolLauncher.ToolLauncher;
+import gov.nist.toolkit.xdstools2.client.widgets.HorizontalFlowPanel;
+import gov.nist.toolkit.xdstools2.client.widgets.PopupMessage;
 
 public class HomeTab extends GenericQueryTab {
 	private String aboutMessage = null;

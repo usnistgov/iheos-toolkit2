@@ -16,8 +16,8 @@ import gov.nist.toolkit.http.client.HtmlMarkup;
 import gov.nist.toolkit.results.client.Result;
 import gov.nist.toolkit.sitemanagement.client.SiteSpec;
 import gov.nist.toolkit.xdstools2.client.Panel1;
-import gov.nist.toolkit.xdstools2.client.PopupMessage;
-import gov.nist.toolkit.xdstools2.client.RadioButtonGroup;
+import gov.nist.toolkit.xdstools2.client.widgets.PopupMessage;
+import gov.nist.toolkit.xdstools2.client.widgets.RadioButtonGroup;
 import gov.nist.toolkit.xdstools2.client.ToolWindow;
 import gov.nist.toolkit.xdstools2.client.inspector.MetadataInspectorTab;
 

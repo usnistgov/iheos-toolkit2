@@ -55,7 +55,7 @@ import gov.nist.toolkit.xdsexception.client.EnvironmentNotSelectedException;
 import gov.nist.toolkit.xdstools2.shared.NoServletSessionException;
 import gov.nist.toolkit.xdstools2.shared.RegistryStatus;
 import gov.nist.toolkit.xdstools2.shared.RepositoryStatus;
-import gov.nist.toolkit.xdstools2.client.ToolkitService;
+import gov.nist.toolkit.xdstools2.client.util.ToolkitService;
 import gov.nist.toolkit.xdstools2.shared.command.CommandContext;
 import gov.nist.toolkit.xdstools2.shared.command.GeneratePidRequest;
 import gov.nist.toolkit.xdstools2.shared.command.GetAllSimConfigsRequest;

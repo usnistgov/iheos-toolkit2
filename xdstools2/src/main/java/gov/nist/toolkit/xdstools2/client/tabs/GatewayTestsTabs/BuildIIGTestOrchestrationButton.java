@@ -14,7 +14,7 @@ import gov.nist.toolkit.services.client.IigOrchestrationRequest;
 import gov.nist.toolkit.services.client.IigOrchestrationResponse;
 import gov.nist.toolkit.services.client.RawResponse;
 import gov.nist.toolkit.simcommon.client.config.SimulatorConfigElement;
-import gov.nist.toolkit.xdstools2.client.PopupMessage;
+import gov.nist.toolkit.xdstools2.client.widgets.PopupMessage;
 import gov.nist.toolkit.xdstools2.client.tabs.genericQueryTab.GenericQueryTab;
 import gov.nist.toolkit.xdstools2.client.util.ClientUtils;
 import gov.nist.toolkit.xdstools2.client.widgets.buttons.AbstractOrchestrationButton;
