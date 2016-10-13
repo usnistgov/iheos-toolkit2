@@ -203,15 +203,17 @@ public class ValidatorCommon implements ErrorRecorder {
 		String part2 = parts[1];
 		part2 = part2.replaceAll("&amp;", "&");
 		String[] partsa = part2.split("&");
-		if (partsa.length != 3)
+		if 		((partsa.length != 3) ||
+				(partsa[0].length() != 0) ||
+				(!partsa[2].equals("ISO"))) {
 			return "Expected &OID&ISO after ^^^ in CX data type";
-		if (partsa[0].length() != 0)
-			return "Expected &OID&ISO after ^^^ in CX data type";
-		if ( !partsa[2].equals("ISO"))
-			return "Expected &OID&ISO after ^^^ in CX data type";
+		}
 		if ( !is_oid(partsa[1], false))
 			return "Expected &OID&ISO after ^^^ in CX data type: OID part does not parse as an OID";
 		return null;
+		// int ta = 001;
+		//er.err(XDSErrrorCode, getErrorMessage(001), getLocation(001), slot.getName(), identifyingstring?)
+		// check what slot.getname returns, and indentifyingstring
 	}
 
 	public void sectionHeading(String msg) {
