@@ -157,7 +157,7 @@ public class IigOrchestrationBuilder {
                   SimulatorProperties.idsRepositoryUniqueId,
                   SimulatorProperties.idsrEndpoint,
                   //SimulatorProperties.idsrTlsEndpoint,
-                  //SimulatorProperties.idsImageCache,
+                  SimulatorProperties.idsImageCache,
                };
             case INITIATING_IMAGING_GATEWAY:
                return new String[] {

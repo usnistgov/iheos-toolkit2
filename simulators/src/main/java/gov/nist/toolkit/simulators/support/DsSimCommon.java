@@ -218,6 +218,7 @@ public class DsSimCommon {
 
             for (ValidationStepResult vsr : results) {
                 for (ValidatorErrorItem vei : vsr.er) {
+                   if (vei.soaped) continue; vei.soaped = true;
                     if (vei.level == ValidatorErrorItem.ReportingLevel.ERROR) {
                         String msg = vei.msg;
                         if (vei.resource != null && !vei.resource.equals(""))

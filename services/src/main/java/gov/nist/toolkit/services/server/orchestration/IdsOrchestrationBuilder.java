@@ -123,6 +123,7 @@ class IdsOrchestrationBuilder {
                     return new String[] {
                        SimulatorProperties.idsRepositoryUniqueId,
                        SimulatorProperties.idsrEndpoint,
+                       SimulatorProperties.idsImageCache,
                     };
                  case REPOSITORY_REGISTRY:
                     return new String[] {

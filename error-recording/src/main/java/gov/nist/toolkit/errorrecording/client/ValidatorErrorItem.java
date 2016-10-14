@@ -24,6 +24,7 @@ public class ValidatorErrorItem implements IsSerializable {
 	public String expected = "";
 	public String rfc = "";
 	public String status = "";
+	public boolean soaped = false;  // has this error been added to SOAP Reg error list?
 	XdsErrorCode.Code code = XdsErrorCode.Code.NoCode;
 	String codeString = null;
 	public ReportingCompletionType completion = ReportingCompletionType.OK;

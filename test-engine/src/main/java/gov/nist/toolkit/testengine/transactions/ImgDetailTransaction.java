@@ -54,7 +54,8 @@ public class ImgDetailTransaction extends BasicTransaction {
 
    /*
     * These are the DICOM tags currently supported for evaluation tasks. New
-    * ones can be added to this map if needed.
+    * ones can be added to this map if needed. Any tag can be referenced using
+    * Group-Element Syntax
     */
    private static Map <String, Integer> tagMap;
 
@@ -146,6 +147,9 @@ public class ImgDetailTransaction extends BasicTransaction {
             break;
          case "sameRetImgs":
             prsSameRetImgs(engine, a, assertion_output);
+            break;
+         case "sameRegErrors":
+            prsSameRegErrors(engine, a, assertion_output);
             break;
          case "sameDcmImgs":
             prsSameDcmImgs(engine, a, assertion_output);
@@ -359,6 +363,112 @@ public class ImgDetailTransaction extends BasicTransaction {
          throw new XdsInternalException("sameRetImgs error: " + e.getMessage());
       }
    }
+   
+   private void prsSameRegErrors(AssertionEngine engine, Assertion a, OMElement assertion_output)
+      throws XdsInternalException {
+      // key is errorCode:severity
+      Map <String, RegErr> map = new HashMap <>();
+      
+      try {
+         // process and collect data on errors in std message
+         OMElement stnd = getStdElement("ResponseBody");
+         String t = stnd.getLocalName();
+         if (t.endsWith("RetrieveDocumentSetResponse") == false)
+            throw new XdsInternalException("sameRegErrors assertion only applies to RetrieveDocumentSetResponse");
+         for (OMElement err : XmlUtil.decendentsWithLocalName(stnd, "RegistryError")) {
+            try {
+               post(err, true, map);
+            } catch (Exception se) {
+               // Errors in the std message are abort bait
+               throw new XdsInternalException("sameRegErrors std msg error: " + se.getMessage());
+            }
+         }
+         // process errors in test message
+         OMElement test = getTestTrans(a, "response");
+         String q = test.getLocalName();
+         if (q.endsWith("RetrieveDocumentSetResponse") == false)
+            throw new XdsInternalException("sameRegErrors assertion only applies to RetrieveDocumentSetResponse");
+         for (OMElement err : XmlUtil.decendentsWithLocalName(test, "RegistryError")) {
+            try {
+               post(err, false, map);
+            } catch (Exception te) {
+              // errors in the test message are logged
+              store(engine, CAT.ERROR, te.getMessage() + " - msg ignored");
+            }
+         }
+         RegErr[] errors = map.values().toArray(new RegErr[0]);
+         Arrays.sort(errors);
+         for (RegErr error : errors) {
+            String msg = error.errorCode + ":" + error.severity + " - " +
+               "Expected " + error.expected + ", found " + error.found + "\n" +
+               error.codeContext + " " + error.location;
+            CAT cat = CAT.SUCCESS;
+            if (error.expected == 0) cat = CAT.WARNING;
+            if (error.expected > error.found) cat = CAT.ERROR;
+            store(engine, cat, msg);
+         }
+
+      } catch (Exception e) {
+         throw new XdsInternalException("sameRetImgs error: " + e.getMessage());
+      }
+   } // EO prsSameRegErrors method
+
+   class RegErr implements Comparable<RegErr> {
+      String errorCode;
+      String codeContext;
+      String location;
+      String severity;
+      int expected = 0;
+      int found = 0;
+      
+      RegErr(String ec, String cc, String l, String s) {
+         errorCode = ec;
+         codeContext = cc;
+         location = l;
+         severity = s;
+      }
+      /*
+       * This sorts errors which were not expected to the bottom, and within 
+       * that, by error code and severity
+       */
+      @Override
+      public int compareTo(RegErr o) {
+         if (expected == 0 && o.expected != 0) return 1;
+         if (expected != 0 && o.expected == 0) return -1;
+         int ecc = errorCode.compareTo(o.errorCode);
+         if (ecc != 0) return ecc;
+         return (severity.compareTo(o.severity));
+      }
+   }
+      
+      private void post(OMElement registryErrorElement, boolean std, Map<String, RegErr> map) 
+         throws Exception {
+         String n = registryErrorElement.getLocalName();
+         if ("RegistryError".equals(n) == false) 
+            throw new Exception("RegErr called with invalid [" + n + "] element");
+         String ec = registryErrorElement.getAttributeValue(new QName("errorCode"));
+         if (StringUtils.isBlank(ec))
+            throw new Exception("Missing/Empty Error Code");
+         String cc = registryErrorElement.getAttributeValue(new QName("codeContext"));
+         String l = registryErrorElement.getAttributeValue(new QName("location"));
+         String s = registryErrorElement.getAttributeValue(new QName("severity"));
+         if (StringUtils.isBlank(s))
+            throw new Exception("Missing/Empty severity");
+         String key = key(ec, s);
+         RegErr regErr = map.get(key);
+         if (regErr == null) {
+            regErr = new RegErr(ec, cc, l, s);
+            map.put(key, regErr);
+         }
+         if (std) regErr.expected++; else regErr.found++;
+      }
+      
+      private String key(String errorCd, String sev) throws Exception {
+         String s = StringUtils.substringAfterLast(sev, ":");
+         if (s.matches("Error|Warning") == false) 
+            throw new Exception("Invalid Severity: " + sev);
+         return errorCd + ":" + s;
+      }
 
 
    /**

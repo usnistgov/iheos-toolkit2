@@ -183,7 +183,7 @@ public class BuildIIGTestOrchestrationButton extends OrchestrationButton {
                   SimulatorProperties.idsRepositoryUniqueId,
                   SimulatorProperties.idsrEndpoint,
                   //SimulatorProperties.idsrTlsEndpoint,
-                  //SimulatorProperties.idsImageCache,
+                  SimulatorProperties.idsImageCache,
                };
             case INITIATING_IMAGING_GATEWAY:
                return new String[] {
