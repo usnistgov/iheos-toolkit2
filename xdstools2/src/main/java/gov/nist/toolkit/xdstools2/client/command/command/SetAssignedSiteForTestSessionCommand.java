@@ -6,9 +6,14 @@ import gov.nist.toolkit.xdstools2.shared.command.request.SetAssignedSiteForTestS
 /**
  * Created by onh2 on 10/14/16.
  */
-public abstract class SetAssignedSiteForTestSessionCommand extends GenericCommand<SetAssignedSiteForTestSessionRequest,Void>{
+public class SetAssignedSiteForTestSessionCommand extends GenericCommand<SetAssignedSiteForTestSessionRequest,Void>{
     @Override
     public void run(SetAssignedSiteForTestSessionRequest var1) {
         ClientUtils.INSTANCE.getToolkitServices().setAssignedSiteForTestSession(var1.getSelecetedTestSession(),var1.getSelectedSite(),this);
+    }
+
+    @Override
+    public void onComplete(Void result) {
+        // nothing to do with the Void result.
     }
 }

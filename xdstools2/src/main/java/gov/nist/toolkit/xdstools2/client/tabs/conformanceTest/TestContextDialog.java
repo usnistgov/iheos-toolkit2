@@ -160,20 +160,7 @@ class TestContextDialog extends DialogBox {
             siteManager.setSiteName(selectedSite);
             toolWindow.setCurrentTestSession(getSelectedTestSession());
             siteManager.update();
-            new SetAssignedSiteForTestSessionCommand(){
-
-            }.run(new SetAssignedSiteForTestSessionRequest(getSelectedTestSession(),selectedSite));
-            ClientUtils.INSTANCE.getToolkitServices().setAssignedSiteForTestSession(getSelectedTestSession(), selectedSite, new AsyncCallback<Void>() {
-                @Override
-                public void onFailure(Throwable throwable) {
-                    new PopupMessage("SetAssignedSiteForTestSession failed: " + throwable.getMessage());
-                }
-
-                @Override
-                public void onSuccess(Void aVoid) {
-
-                }
-            });
+            new SetAssignedSiteForTestSessionCommand().run(new SetAssignedSiteForTestSessionRequest(getSelectedTestSession(),selectedSite));
         }
     }
 
