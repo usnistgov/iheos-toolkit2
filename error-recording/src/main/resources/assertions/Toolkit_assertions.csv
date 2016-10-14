@@ -1,2 +1,5 @@
-Toolkit Assertion,Toolkit Error Message,Gazelle Scheme ID,Gazelle Assertion ID
-TA01,error msg,IHEXDS,IHEXDS-94
+Toolkit Assertion,Toolkit Error Message,Location of Toolkit Assertion (until reconciled with Gazelle),Gazelle Scheme ID,Gazelle Assertion ID
+TA001,One or more required slots are missing in Minimal XDR,ITI TF-3: Table 4.1-6,,
+TA002,One or more required slots are missing in XDR,ITI TF-3: Table 4.1-6,,
+TA003,SubmissionSet slot name is not legal,ITI TF-3: Table 4.1-6,,
+TA004,CX_datatype is not valid (includes: No Patient ID found; Incorrect Patient ID format; Expected &OID&ISO after ^^^ in CX data type; Expected &OID&ISO after ^^^ in CX data type: OID part does not parse as an OID),ITI TF-3: Table 4.1.7,,

@@ -1,6 +1,6 @@
 package gov.nist.toolkit.errorrecording.assertions
 
-import gov.nist.toolkit.errorrecording.client.assertions.AssertionLoader
+import gov.nist.toolkit.errorrecording.client.assertions.AssertionLibrary
 import spock.lang.Specification
 
 /**
@@ -11,13 +11,13 @@ class AssertionsLoaderTest extends Specification {
         def 'Load assertions'() {
             setup:
             String testFile = "/assertions/Toolkit_assertions_TEST.csv"
-            AssertionLoader loader = new AssertionLoader()
+            AssertionLibrary ASSERTIONLIBRARY = AssertionLibrary.getInstance();
 
-            when: 'Load assertions from file into Map'
-            Map<String, List<String>> assertionsMap = loader.loadAssertions(testFile)
+            when: 'Load assertions from file into Assertion Library'
+            ASSERTIONLIBRARY.loadAssertions(testFile)
 
-            then: ''
-            assertionsMap.size() == 1
-            // TODO this test needs more detail to test the contents of the map, once the final map object is implemented
+            then: 'Check size of Assertion Library, check contents'
+            ASSERTIONLIBRARY.size() == 1
+            // TODO this test needs more detail to test the contents of the list
         }
 }

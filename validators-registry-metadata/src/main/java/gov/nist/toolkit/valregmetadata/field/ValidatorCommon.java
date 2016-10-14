@@ -211,9 +211,6 @@ public class ValidatorCommon implements ErrorRecorder {
 		if ( !is_oid(partsa[1], false))
 			return "Expected &OID&ISO after ^^^ in CX data type: OID part does not parse as an OID";
 		return null;
-		// int ta = 001;
-		//er.err(XDSErrrorCode, getErrorMessage(001), getLocation(001), slot.getName(), identifyingstring?)
-		// check what slot.getname returns, and indentifyingstring
 	}
 
 	public void sectionHeading(String msg) {

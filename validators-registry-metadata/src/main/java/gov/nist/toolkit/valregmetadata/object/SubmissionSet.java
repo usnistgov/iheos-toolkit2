@@ -280,7 +280,6 @@ public class SubmissionSet extends AbstractRegistryObject implements TopLevelObj
 		for (Slot slot : getSlots()) {
 			if ( ! legal_slot_name(slot.getName()))
 				er.err(XdsErrorCode.Code.XDSRegistryMetadataError, identifyingString() + ": " + slot.getName() + " is not a legal slot name for a SubmissionSet",  this,  table416);
-
 		}
 	}
 

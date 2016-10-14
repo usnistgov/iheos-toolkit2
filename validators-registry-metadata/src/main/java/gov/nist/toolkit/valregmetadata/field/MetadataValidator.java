@@ -38,6 +38,7 @@ public class MetadataValidator {
 		try {
 			cv.setValidationContext(vc);
 		} catch (XdsInternalException e) {
+
 			er.err(XdsErrorCode.Code.XDSRegistryError, e);
 			return;
 		}
