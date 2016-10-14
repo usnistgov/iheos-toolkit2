@@ -7,10 +7,12 @@ import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.*;
 import gov.nist.toolkit.xdstools2.client.*;
-import gov.nist.toolkit.xdstools2.client.command.command.GetTestSessionNamesCommand;
+import gov.nist.toolkit.xdstools2.client.command.command.*;
 import gov.nist.toolkit.xdstools2.client.util.ClientUtils;
 import gov.nist.toolkit.xdstools2.client.widgets.HorizontalFlowPanel;
 import gov.nist.toolkit.xdstools2.client.widgets.PopupMessage;
+import gov.nist.toolkit.xdstools2.shared.command.request.GetSiteNamesRequest;
+import gov.nist.toolkit.xdstools2.shared.command.request.SetAssignedSiteForTestSessionRequest;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -113,45 +115,38 @@ class TestContextDialog extends DialogBox {
             sitesForTestSessionPanel.clear();
             return;
         }
-        ClientUtils.INSTANCE.getToolkitServices().getSitesForTestSession(testSession, new AsyncCallback<Collection<String>>() {
-            @Override
-            public void onFailure(Throwable throwable) {
-                new PopupMessage("getSitesForTestSession failed: " + throwable.getMessage());
-            }
+        new GetSitesForTestSessionCommand(){
 
             @Override
-            public void onSuccess(Collection<String> strings) {
+            public void onComplete(Collection<String> result) {
                 sitesForTestSessionPanel.clear();
                 sitesForTestSessionPanel.add(clearTestSessionButton);
                 sitesForTestSessionPanel.add(new HTML("Contains results for sites:"));
-                for (String s : strings) {
+                for (String s : result) {
                     sitesForTestSessionPanel.add(new HTML(s));
                 }
-                if (strings.size() == 0) {
+                if (result.size() == 0) {
                     sitesForTestSessionPanel.add(new HTML("None"));
                 }
             }
-        });
+        }.run(testSession);
     }
+
 
     private class ClearTestSessionButtonClickHandler implements ClickHandler {
 
         @Override
         public void onClick(ClickEvent clickEvent) {
-            ClientUtils.INSTANCE.getToolkitServices().clearTestSession(getSelectedTestSession(), new AsyncCallback<String>() {
-                @Override
-                public void onFailure(Throwable throwable) {
-                    new PopupMessage("Clear Test Session failed: " + throwable.getMessage());
-                }
+            new ClearTestSessionCommand(){
 
                 @Override
-                public void onSuccess(String s) {
+                public void onComplete(String result) {
                     loadTestSessions(toolWindow.getCurrentTestSession());
                     loadSitesForTestSession(toolWindow.getCurrentTestSession());
                     loadSites();
                     siteManager.setSiteName(NONE);
                 }
-            });
+            }.run(getSelectedTestSession());
         }
     }
 
@@ -165,7 +160,9 @@ class TestContextDialog extends DialogBox {
             siteManager.setSiteName(selectedSite);
             toolWindow.setCurrentTestSession(getSelectedTestSession());
             siteManager.update();
-//                       hide();
+            new SetAssignedSiteForTestSessionCommand(){
+
+            }.run(new SetAssignedSiteForTestSessionRequest(getSelectedTestSession(),selectedSite));
             ClientUtils.INSTANCE.getToolkitServices().setAssignedSiteForTestSession(getSelectedTestSession(), selectedSite, new AsyncCallback<Void>() {
                 @Override
                 public void onFailure(Throwable throwable) {
@@ -191,18 +188,14 @@ class TestContextDialog extends DialogBox {
 
             loadSitesForTestSession(newTestSession);
 
-            ClientUtils.INSTANCE.getToolkitServices().getAssignedSiteForTestSession(newTestSession, new AsyncCallback<String>() {
-                @Override
-                public void onFailure(Throwable throwable) {
-                    new PopupMessage("getAssignedSiteForTestSession failed: " + throwable.getMessage());
-                }
+            new GetAssignedSiteForTestSessionCommand(){
 
                 @Override
-                public void onSuccess(String s) {
-                    siteManager.setSiteName(s);
-                    selectSite(s);
+                public void onComplete(String result) {
+                    siteManager.setSiteName(result);
+                    selectSite(result);
                 }
-            });
+            }.run(newTestSession);
         }
     }
 
@@ -268,22 +261,16 @@ class TestContextDialog extends DialogBox {
         @Override
         public void onClick(ClickEvent clickEvent) {
             final String newItem = textBox.getText();
-            if (newItem == null || newItem.equals("")) return;
-
-            ClientUtils.INSTANCE.getToolkitServices().addMesaTestSession(newItem, new AsyncCallback<Boolean>() {
-                @Override
-                public void onFailure(Throwable throwable) {
-                    new PopupMessage("Cannot display test session - " + throwable.getMessage());
-                }
+            if (newItem == null || "".equals(newItem)) return;
+            new AddMesaTestSessionCommand(){
 
                 @Override
-                public void onSuccess(Boolean aBoolean) {
+                public void onComplete(Boolean result) {
                     testSessionListBox.addItem(newItem);
                     testSessionListBox.setSelectedIndex(testSessionListBox.getItemCount() - 1);
                     toolWindow.setCurrentTestSession(newItem);
                 }
-            });
-
+            }.run(newItem);
         }
     }
     private void loadTestSessions(final String initialSelection) {
@@ -307,17 +294,12 @@ class TestContextDialog extends DialogBox {
     static final private String NONE = "--none--";
 
     private void loadSites() {
-        ClientUtils.INSTANCE.getToolkitServices().getSiteNames(true, true, new AsyncCallback<List<String>>() {
+        new GetSiteNamesCommand(){
             @Override
-            public void onFailure(Throwable throwable) {
-                new PopupMessage("Cannot load sites.");
-            }
-
-            @Override
-            public void onSuccess(List<String> strings) {
-                List<String> contents = new ArrayList<String>();
+            public void onComplete(List<String> result) {
+                List<String> contents = new ArrayList<>();
                 contents.add(NONE);
-                contents.addAll(strings);
+                contents.addAll(result);
                 siteListBox.clear();
                 for (String site : contents) {
                     siteListBox.addItem(site);
@@ -330,7 +312,7 @@ class TestContextDialog extends DialogBox {
                     siteListBox.setSelectedIndex(0);
                 }
             }
-        });
+        }.run(new GetSiteNamesRequest(true,true));
     }
 
     private void selectSite(String site) {

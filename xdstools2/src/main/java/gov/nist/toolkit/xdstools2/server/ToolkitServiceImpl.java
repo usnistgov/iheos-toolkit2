@@ -59,6 +59,9 @@ import gov.nist.toolkit.xdstools2.shared.NoServletSessionException;
 import gov.nist.toolkit.xdstools2.shared.RegistryStatus;
 import gov.nist.toolkit.xdstools2.shared.RepositoryStatus;
 import gov.nist.toolkit.xdstools2.shared.command.*;
+import gov.nist.toolkit.xdstools2.shared.command.request.GeneratePidRequest;
+import gov.nist.toolkit.xdstools2.shared.command.request.GetAllSimConfigsRequest;
+import gov.nist.toolkit.xdstools2.shared.command.request.SendPidToRegistryRequest;
 import org.apache.log4j.Logger;
 
 import javax.servlet.ServletContext;

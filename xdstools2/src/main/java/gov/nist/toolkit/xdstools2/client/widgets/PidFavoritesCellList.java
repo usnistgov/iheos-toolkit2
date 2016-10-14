@@ -11,14 +11,13 @@ import com.google.gwt.view.client.ProvidesKey;
 import com.google.gwt.view.client.SelectionChangeEvent;
 import com.google.gwt.view.client.SingleSelectionModel;
 import gov.nist.toolkit.configDatatypes.client.Pid;
-import gov.nist.toolkit.xdstools2.shared.command.CommandContext;
 import gov.nist.toolkit.xdstools2.client.command.command.RetrieveFavPidsCommand;
 import gov.nist.toolkit.xdstools2.client.event.FavoritePidsUpdatedEvent;
 import gov.nist.toolkit.xdstools2.client.event.Xdstools2EventBus;
 import gov.nist.toolkit.xdstools2.client.util.ClientUtils;
 import gov.nist.toolkit.xdstools2.client.util.CookiesServices;
+import gov.nist.toolkit.xdstools2.shared.command.CommandContext;
 
-import java.io.IOException;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -30,9 +29,9 @@ public class PidFavoritesCellList extends Composite{
     // List widget.
     private CellList<Pid> cellList;
     // list data model.
-    private ListDataProvider<Pid> model = new ListDataProvider<Pid>();
+    private ListDataProvider<Pid> model = new ListDataProvider<>();
     // Selection model.
-    private SingleSelectionModel<Pid> selectionModel = new SingleSelectionModel<Pid>();
+    private SingleSelectionModel<Pid> selectionModel = new SingleSelectionModel<>();
 
     // Key provider to id each Pid in the list.
     private static final ProvidesKey<Pid> KEY_PROVIDER = new ProvidesKey<Pid>() {
@@ -42,13 +41,16 @@ public class PidFavoritesCellList extends Composite{
         }
     };
 
+    /**
+     * Default constructor
+     */
     public PidFavoritesCellList(){
         // Create a Cell renderer.
         PidCell pidCell = new PidCell();
 
         // Set a key provider that provides a unique key for each pid. If key is
         // used to identify pid.
-        cellList = new CellList<Pid>(pidCell,KEY_PROVIDER);
+        cellList = new CellList<>(pidCell,KEY_PROVIDER);
 
         // this links the data model with the actual table widget
         model.addDataDisplay(cellList);
@@ -88,11 +90,11 @@ public class PidFavoritesCellList extends Composite{
             new RetrieveFavPidsCommand() {
                 @Override
                 public void onComplete(List<Pid> pids) {
-                    List<Pid> pidList=new LinkedList<Pid>();
+                    List<Pid> pidList=new LinkedList<>();
                     pidList.addAll(pids);
                     // load pids stored in cookies
                     pidList.addAll(CookiesServices.retrievePidFavoritesFromCookies());
-                    model.setList(new LinkedList<Pid>(pidList));
+                    model.setList(new LinkedList<>(pidList));
                     model.refresh();
                     cellList.redraw();
                 }
@@ -135,7 +137,7 @@ public class PidFavoritesCellList extends Composite{
             safeHtmlBuilder.appendEscaped(pid.toString());
             safeHtmlBuilder.appendHtmlConstant("</span>");
             // Add the name.
-            if (!pid.getExtra().equals("")) {
+            if ( !("".equals(pid.getExtra())) ) {
                 safeHtmlBuilder.appendHtmlConstant(" - ");
                 safeHtmlBuilder.appendHtmlConstant("<span style='font-weight: bold;'>");
                 safeHtmlBuilder.appendEscaped(pid.getExtra());

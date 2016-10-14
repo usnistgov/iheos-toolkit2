@@ -21,7 +21,7 @@ import gov.nist.toolkit.xdstools2.client.widgets.PopupMessage;
 import gov.nist.toolkit.xdstools2.client.Xdstools2;
 import gov.nist.toolkit.xdstools2.client.command.command.GetAllSimConfigsCommand;
 import gov.nist.toolkit.xdstools2.client.command.command.GetAllSitesCommand;
-import gov.nist.toolkit.xdstools2.shared.command.GetAllSimConfigsRequest;
+import gov.nist.toolkit.xdstools2.shared.command.request.GetAllSimConfigsRequest;
 import gov.nist.toolkit.xdstools2.client.event.testSession.TestSessionChangedEvent;
 import gov.nist.toolkit.xdstools2.client.event.Xdstools2EventBus;
 import gov.nist.toolkit.xdstools2.client.event.testSession.TestSessionChangedEventHandler;

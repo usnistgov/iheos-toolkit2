@@ -1,7 +1,7 @@
 package gov.nist.toolkit.xdstools2.client.command.command;
 
 import gov.nist.toolkit.actorfactory.client.SimulatorConfig;
-import gov.nist.toolkit.xdstools2.shared.command.GetAllSimConfigsRequest;
+import gov.nist.toolkit.xdstools2.shared.command.request.GetAllSimConfigsRequest;
 import gov.nist.toolkit.xdstools2.client.util.ClientUtils;
 
 import java.util.List;
