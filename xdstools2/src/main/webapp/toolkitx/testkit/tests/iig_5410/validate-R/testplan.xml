@@ -30,7 +30,10 @@
 			<Assertions>
 				<Assert id="Returned doc(s)" process="sameRetImgs">
 					<TestResponse testDir="../retrieve" step="retrieve" />
-				</Assert>
+					</Assert>
+            <Assert id="Registry Errors" process="sameRegErrors">
+               <TestResponse testDir="../retrieve" step="retrieve" />
+               </Assert>
 			</Assertions>
 		</XmlDetailTransaction>
 	</TestStep>

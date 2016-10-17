@@ -399,7 +399,8 @@ public class ImgDetailTransaction extends BasicTransaction {
          RegErr[] errors = map.values().toArray(new RegErr[0]);
          Arrays.sort(errors);
          for (RegErr error : errors) {
-            String msg = error.errorCode + ":" + error.severity + " - " +
+            String severity = StringUtils.substringAfterLast(error.severity, ":");
+            String msg = error.errorCode + ":" + severity + " - " +
                "Expected " + error.expected + ", found " + error.found + "\n" +
                error.codeContext + " " + error.location;
             CAT cat = CAT.SUCCESS;

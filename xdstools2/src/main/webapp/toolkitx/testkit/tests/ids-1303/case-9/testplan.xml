@@ -1,10 +1,37 @@
 <TestPlan>
-    <Test>ids-1303/Case 9: Unknown Transfer Syntax</Test>
-    <TestStep id="request">
-        <Goal>Imaging Document Set Retrieve exception: Unknown Transfer Syntax</Goal>
-        <ExpectedStatus>Failure</ExpectedStatus>
-        <ImagingDocSetRetrieveTransaction>
-            <MetadataFile>RAD-69Request.xml</MetadataFile>
-        </ImagingDocSetRetrieveTransaction>
-    </TestStep>
+	<Test>ids-1303/Case 9: Unknown Transfer Syntax</Test>
+	<TestStep id="retrieve">
+		<Goal>Imaging Document Set Retrieve exception: Unknown Transfer Syntax
+		</Goal>
+		<ExpectedStatus>Failure</ExpectedStatus>
+		<ImagingDocSetRetrieveTransaction>
+			<MetadataFile>RAD-69Request.xml</MetadataFile>
+		</ImagingDocSetRetrieveTransaction>
+	</TestStep>
+	<TestStep id="errors">
+		<Goal>Empty Empty Transfer Syntax UID error validation</Goal>
+		<Standard>
+			<ResponseBody>
+				<xdsb:RetrieveDocumentSetResponse
+				xmlns:xdsb="urn:ihe:iti:xds-b:2007">
+				<rs:RegistryResponse xmlns:rs="urn:oasis:names:tc:ebxml-regrep:xsd:rs:3.0"
+					status="urn:oasis:names:tc:ebxml-regrep:ResponseStatusType:Failure">
+					<rs:RegistryErrorList>
+						<rs:RegistryError
+							codeContext="IDS cannot encode the pixel data using any of the requested transfer syntaxes"
+							errorCode="XDSRepositoryError" location="1.3.6.1.4.1.21367.201599.3.201606010958044.25"
+							severity="urn:oasis:names:tc:ebxml-regrep:ErrorSeverityType:Error" />
+					</rs:RegistryErrorList>
+				</rs:RegistryResponse>
+			</xdsb:RetrieveDocumentSetResponse>
+			</ResponseBody>
+		</Standard>
+		<XmlDetailTransaction>
+			<Assertions>
+				<Assert id="Registry Errors" process="sameRegErrors">
+					<TestResponse testDir="THIS" step="retrieve" />
+				</Assert>
+			</Assertions>
+		</XmlDetailTransaction>
+	</TestStep>
 </TestPlan>
