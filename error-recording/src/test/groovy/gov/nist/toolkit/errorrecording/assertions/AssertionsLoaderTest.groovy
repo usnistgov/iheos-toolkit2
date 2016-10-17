@@ -1,5 +1,6 @@
 package gov.nist.toolkit.errorrecording.assertions
 
+import gov.nist.toolkit.errorrecording.client.assertions.Assertion
 import gov.nist.toolkit.errorrecording.client.assertions.AssertionLibrary
 import spock.lang.Specification
 
@@ -14,10 +15,16 @@ class AssertionsLoaderTest extends Specification {
             AssertionLibrary ASSERTIONLIBRARY = AssertionLibrary.getInstance();
 
             when: 'Load assertions from file into Assertion Library'
+            System.out.println("\n" + "Reset Assertions Library and load test assertions file...")
             ASSERTIONLIBRARY.loadAssertions(testFile)
+            System.out.println(ASSERTIONLIBRARY.toString());
 
             then: 'Check size of Assertion Library, check contents'
             ASSERTIONLIBRARY.size() == 1
-            // TODO this test needs more detail to test the contents of the list
+            Assertion testAssertion = ASSERTIONLIBRARY.getAssertion("TA001");
+            testAssertion.errorMessage == "One or more required slots are missing in Minimal XDR"
+            testAssertion.location == "ITI TF-3: Table 4.1-6"
+            testAssertion.gazelleScheme == "gazelle scheme"
+            testAssertion.gazelleAssertionID == "gazelle Assertion ID"
         }
 }

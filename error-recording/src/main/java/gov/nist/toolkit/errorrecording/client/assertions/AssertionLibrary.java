@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -15,7 +16,6 @@ import java.util.List;
 public class AssertionLibrary extends ArrayList<Assertion> {
     private ResourceLoader RESOURCELOADER = ResourceLoader.getResourceLoader();
     private static AssertionLibrary instance = null;
-    private ArrayList<Assertion> library;
 
     /**
      * Create an AssertionLibrary from a List of Assertions
@@ -71,10 +71,6 @@ public class AssertionLibrary extends ArrayList<Assertion> {
                 // Split with a limit of 5 cells, which allows to keep trailing empty cells
                 String[] ta = line.split(cvsSplitBy, 5);
 
-                System.out.println("Toolkit Assertion [TA= " + ta[0] + " , Toolkit Error Message=" + ta[1] +
-                        " , Location=" + ta[2] + " , Gazelle Scheme ID=" + ta[3] +
-                        " , Gazelle Assertion ID=" + ta[4] + "]");
-
                 temp = new Assertion(ta[0], ta[1], ta[2], ta[3], ta[4]);
                 this.add(temp);
             }
@@ -89,8 +85,30 @@ public class AssertionLibrary extends ArrayList<Assertion> {
      * @return
      */
     public Assertion getAssertion(String assertionID){
-        int index = library.indexOf(assertionID);
-        return library.get(index);
+        for (Assertion a : this){
+            if (a.getAssertionID().equals(assertionID)){
+                return a;
+            }
+        }
+        return null;
+    }
+
+
+    /**
+     * Returns a pretty printed String of the Assertion Library contents
+     * @return formatted Assertion Library contents
+     */
+    @Override
+    public String toString(){
+        String prettyPrint = "";
+        for (Assertion a : this) {
+            prettyPrint = prettyPrint +
+                    "Toolkit Assertion [TA= " + a.getAssertionID() +
+                    " , Toolkit Error Message=" + a.getErrorMessage() +
+                    " , Location=" + a.getLocation() + " , Gazelle Scheme ID=" + a.getGazelleScheme() +
+                    " , Gazelle Assertion ID=" + a.getGazelleAssertionID() + "]\n";
+        }
+        return prettyPrint;
     }
 
 }
