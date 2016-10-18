@@ -127,6 +127,7 @@ public abstract class AbstractActorFactory {
 		ele.setValue(sc.getId().toString());
 		addFixed(sc, ele);
 
+		addEditableConfig(sc, SimulatorProperties.requiresStsSaml, ParamType.BOOLEAN, false);
         addEditableConfig(sc, SimulatorProperties.FORCE_FAULT, ParamType.BOOLEAN, false);
 		addFixedConfig(sc, SimulatorProperties.environment, ParamType.TEXT, "null");
 

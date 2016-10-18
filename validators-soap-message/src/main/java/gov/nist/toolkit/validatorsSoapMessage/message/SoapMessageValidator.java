@@ -110,6 +110,8 @@ public class SoapMessageValidator extends AbstractMessageValidator {
             }
         }
 
+
+
         //ADD SAML VALIDATION IF NEEDED. -@Antoine
         // - check if this is the best place to do so.
 //        OMElement security = XmlUtil.firstChildWithLocalName(header, "Security");
@@ -124,6 +126,15 @@ public class SoapMessageValidator extends AbstractMessageValidator {
 //                er.err(XdsErrorCode.Code.NoCode, e);
 //            }
 //        }
+
+        /*
+            Gazelle STS SAML validation
+            Sunil.
+         */
+        if (header!=null && vc.requiresStsSaml && vc.isRequest) {
+            mvc.addMessageValidator("STS SAML Validator", new StsSamlValidator(vc,er,mvc, rvi, header), erBuilder.buildNewErrorRecorder());
+        }
+
         er.unRegisterValidator(this);
     }
 
@@ -436,7 +447,12 @@ public class SoapMessageValidator extends AbstractMessageValidator {
             } else
                 er.error("", "metadata-level value", metadataLevelTxt, "minimal or XDS", "");
         }
+
+
     }
+
+
+
 
     OMElement body() {
         er.test(body != null, "", "Body must be present", ((body == null) ? "Missing" : "Found"), "Found", "ITI TF-2x: V.3.2 and SOAP Version 1.2 Section 4");

@@ -365,13 +365,20 @@ public class StepContext extends BasicContext implements ErrorReportingInterface
                case "XmlDetailTransaction":
                   transaction = new ImgDetailTransaction(this, step, instruction, instruction_output);
                   break;
-				case "HttpTransaction":
+			   case "HttpTransaction":
 					HTTPTransaction hTransaction = new HTTPTransaction(this, instruction, instruction_output);
 					hTransaction.setNoMetadataProcessing(true);
 					hTransaction.setNoReportManagerPreRun(true);
-					hTransaction.setTransType(instruction.getAttributeValue(new QName("type")));
-					hTransaction.setStsQuery(instruction.getAttributeValue(new QName("stsQuery")));
+				    hTransaction.setTransType(instruction.getAttributeValue(new QName("type")));
 					transaction = hTransaction;
+					break;
+				case "StsTransaction":
+					HTTPTransaction stsTransaction = new HTTPTransaction(this, instruction, instruction_output);
+					stsTransaction.setNoMetadataProcessing(true);
+					stsTransaction.setNoReportManagerPreRun(true);
+					stsTransaction.setTransType(TransactionType.STS.getCode());
+					stsTransaction.setStsQuery(instruction.getAttributeValue(new QName("stsQuery")));
+					transaction = stsTransaction;
 					break;
                default:
                   dumpContextIntoOutput(test_step_output);

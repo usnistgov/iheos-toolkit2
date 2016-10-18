@@ -452,7 +452,8 @@
 		<dependency>
 			<groupId>org.apache.httpcomponents</groupId>
 			<artifactId>httpclient</artifactId>
-			<version>4.0-alpha4</version>
+			<!-- Use the standard version from tk-deps -->
+			<!-- httpclient runtime bug fix. Was 4.0-alpha4. -->
 		</dependency>
 		<dependency>
 			<groupId>gov.nist.toolkit</groupId>

@@ -92,12 +92,14 @@ public class HTTPTransaction extends BasicTransaction {
             }
             testLog.add_name_value(instruction_output, "OutHeader", headersToString());
 
+
             InputStream inputStream;
             if (Transactions.SecureTokenService.equals(transType)) {
                inputStream = prepareInputStream();
             } else {
                 inputStream = new FileInputStream(file);
             }
+
             InputStreamEntity reqEntity = new InputStreamEntity(inputStream, -1, ContentType.APPLICATION_OCTET_STREAM);
             reqEntity.setChunked(true);
             httpPost.setEntity(reqEntity);
@@ -146,52 +148,6 @@ public class HTTPTransaction extends BasicTransaction {
         }
     }
 
-    private InputStream prepareInputStream() throws XdsInternalException {
-        OMElement ele = Util.parse_xml(file);
-        reportManagerPreRun(ele);
-        String body = ele.toString();
-        body = ReportManager.getDecodedStr(body);
-        testLog.add_name_value(instruction_output, "InputMetadata", body);
-        return new ByteArrayInputStream(body.getBytes(StandardCharsets.UTF_8));
-    }
-
-    private boolean validateStsValidate(Header[] responseHeaders, String responseString) throws Exception {
-        OMElement envelopeEle = Util.parse_xml(responseString);
-
-        AXIOMXPath xpathExpression = new AXIOMXPath("//*[local-name()='Body']/*[local-name()='RequestSecurityTokenResponseCollection']/*[local-name()='RequestSecurityTokenResponse']/*[local-name()='Status']/*[local-name()='Code']");
-        String val = xpathExpression.stringValueOf(envelopeEle);
-
-        if (val==null || !"http://docs.oasis-open.org/ws-sx/ws-trust/200512/status/valid".equals(val)) {
-            s_ctx.set_error("SAML Assertion: Null Status Code or invalid value.");
-            failed();
-            return false;
-        }
-
-        return true;
-    }
-
-    private boolean validateStsIssue(Header[] responseHeaders, String responseString) throws Exception {
-        OMElement envelopeEle = Util.parse_xml(responseString);
-
-        AXIOMXPath xpathExpression = new AXIOMXPath ("//*[local-name()='Body']/*[local-name()='RequestSecurityTokenResponseCollection']/*[local-name()='RequestSecurityTokenResponse']/*[local-name()='RequestedSecurityToken']/*[local-name()='Assertion']");
-        List nodeList = xpathExpression.selectNodes(envelopeEle);
-        if (nodeList.size() != 1) {
-            s_ctx.set_error("Cannot extract SAML Assertion from SOAP Message");
-            failed();
-            return false;
-        }
-        OMElement responseEle = (OMElement) nodeList.get(0);
-        String assertionId = responseEle.getAttributeValue(new QName("ID")).toString();
-        String issueInstant = responseEle.getAttributeValue(new QName("IssueInstant"));
-
-        if (assertionId==null && issueInstant==null) {
-            s_ctx.set_error("SAML Assertion: Null ID or IssueInstant attribute value.");
-            failed();
-            return false;
-        }
-
-        return true;
-    }
 
     private boolean validatePnr(Header[] responseHeaders, String responseString) throws HttpParseException, XdsInternalException, JaxenException {
         Map<String, List<String>> rspHeaders = new HashMap<>();
@@ -284,6 +240,65 @@ public class HTTPTransaction extends BasicTransaction {
     @Override
     protected String getBasicTransactionName() {
         return transType;
+    }
+
+
+    private InputStream prepareInputStream() throws XdsInternalException {
+        OMElement ele = Util.parse_xml(file);
+
+        Map<String,String> linkage =  getExternalLinkage();
+        if (linkage!=null) {
+            String samlAssertion = linkage.get("$saml-assertion$");
+            if (samlAssertion!=null) {
+                applyLinkage(ele);
+                compileExtraLinkage(ele);
+            } else {
+                reportManagerPreRun(ele);
+            }
+        }
+
+        String body = ele.toString();
+        body = ReportManager.getDecodedStr(body);
+        testLog.add_name_value(instruction_output, "InputMetadata", body);
+        return new ByteArrayInputStream(body.getBytes(StandardCharsets.UTF_8));
+    }
+
+    private boolean validateStsValidate(Header[] responseHeaders, String responseString) throws Exception {
+        OMElement envelopeEle = Util.parse_xml(responseString);
+
+        AXIOMXPath xpathExpression = new AXIOMXPath("//*[local-name()='Body']/*[local-name()='RequestSecurityTokenResponseCollection']/*[local-name()='RequestSecurityTokenResponse']/*[local-name()='Status']/*[local-name()='Code']");
+        String val = xpathExpression.stringValueOf(envelopeEle);
+
+        if (val==null || !"http://docs.oasis-open.org/ws-sx/ws-trust/200512/status/valid".equals(val)) {
+            s_ctx.set_error("SAML Assertion: Null Status Code or invalid value.");
+            failed();
+            return false;
+        }
+
+        return true;
+    }
+
+    private boolean validateStsIssue(Header[] responseHeaders, String responseString) throws Exception {
+        OMElement envelopeEle = Util.parse_xml(responseString);
+
+        AXIOMXPath xpathExpression = new AXIOMXPath ("//*[local-name()='Body']/*[local-name()='RequestSecurityTokenResponseCollection']/*[local-name()='RequestSecurityTokenResponse']/*[local-name()='RequestedSecurityToken']/*[local-name()='Assertion']");
+        List nodeList = xpathExpression.selectNodes(envelopeEle);
+        if (nodeList.size() != 1) {
+            s_ctx.set_error("Cannot extract SAML Assertion from SOAP Message");
+            failed();
+            return false;
+        }
+        OMElement responseEle = (OMElement) nodeList.get(0);
+        String assertionId = responseEle.getAttributeValue(new QName("ID")).toString();
+        String issueInstant = responseEle.getAttributeValue(new QName("IssueInstant"));
+
+        if (assertionId==null && issueInstant==null) {
+            s_ctx.set_error("SAML Assertion: Null ID or IssueInstant attribute value.");
+            failed();
+            return false;
+        }
+
+        return true;
     }
 
     public String getStsQuery() {

@@ -87,6 +87,8 @@ public class XdsTestServiceManager extends CommonService {
 		return logger;
 	}
 
+
+
 	TestLogCache getTestLogCache() throws IOException {
 		return new TestLogCache(Installation.instance().propertyServiceManager().getTestLogCache());
 	}
@@ -151,6 +153,34 @@ public class XdsTestServiceManager extends CommonService {
 		session.xt = new Xdstest2(Installation.instance().toolkitxFile(), searchPath, session);
 		new TestRunner(this).run(session, mesaTestSession, siteSpec, testInstance, sections, params, params2, stopOnFirstFailure);
 		return getTestOverview(mesaTestSession, testInstance);
+	}
+
+	static public List<Result> runTestplan(String environment, String sessionName, SiteSpec siteSpec, TestInstance testId, List<String> sections, Map<String, String> params, boolean stopOnFirstError, Session myTestSession, XdsTestServiceManager xdsTestServiceManager) {
+
+		List<Result> results; // This wrapper does two important things of interest: 1) Set patient id if it is available in the Params map and 2) Eventually calls the UtilityRunner
+		try {
+			results = xdsTestServiceManager.runMesaTest(environment, sessionName, siteSpec, testId, sections, params, null, stopOnFirstError);
+		} catch (Exception e) {
+			results = new ArrayList<>();
+			Result result = new Result();
+			result.assertions.add(ExceptionUtil.exception_details(e), false);
+			results.add(result);
+			return results;
+		}
+
+		// Save results to external_cache.
+		// Supports getTestResults tookit api call
+		ResultPersistence rPer = new ResultPersistence();
+
+		for (Result result : results) {
+			try {
+				rPer.write(result, sessionName);
+			} catch (Exception e) {
+				result.assertions.add(ExceptionUtil.exception_details(e), false);
+			}
+		}
+
+		return results;
 	}
 
 	/**

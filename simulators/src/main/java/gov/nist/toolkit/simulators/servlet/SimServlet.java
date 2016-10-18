@@ -474,6 +474,10 @@ public class SimServlet  extends HttpServlet {
 			ValidationContext vc = DefaultValidationContextFactory.validationContext();
             vc.forceMtom = transactionType.isRequiresMtom();
 
+			SimulatorConfigElement stsSce = asc.get(SimulatorProperties.requiresStsSaml);
+			if (stsSce!=null && stsSce.isBoolean() && stsSce.asBoolean())
+				vc.requiresStsSaml = true;
+
 			SimulatorConfigElement asce = asc.get(SimulatorProperties.codesEnvironment);
 			if (asce != null)
 				vc.setCodesFilename(asce.asString());
@@ -558,6 +562,8 @@ public class SimServlet  extends HttpServlet {
 			closeOut(response);
 		}
 
+		// Is mvc.run really required here again since it is already called in the Finally block?
+		// Sunil.
 		mvc.run();
 
 
