@@ -12,7 +12,8 @@ public class SetAssignedSiteForTestSessionRequest extends CommandContext{
     public SetAssignedSiteForTestSessionRequest() {
     }
 
-    public SetAssignedSiteForTestSessionRequest(String selectedTestSession, String selectedSite) {
+    public SetAssignedSiteForTestSessionRequest(CommandContext context,String selectedTestSession, String selectedSite) {
+        copyFrom(context);
         this.selecetedTestSession=selectedTestSession;
         this.selectedSite=selectedSite;
     }

@@ -11,6 +11,6 @@ import java.util.List;
 public abstract class GetSiteNamesCommand extends GenericCommand<GetSiteNamesRequest,List<String>>{
     @Override
     public void run(GetSiteNamesRequest var1) {
-        ClientUtils.INSTANCE.getToolkitServices().getSiteNames(var1.getReload(),var1.getSimAlso(),this);
+        ClientUtils.INSTANCE.getToolkitServices().getSiteNames(var1,this);
     }
 }

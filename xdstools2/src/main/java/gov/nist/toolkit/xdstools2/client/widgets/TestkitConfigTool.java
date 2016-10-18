@@ -79,7 +79,6 @@ public class TestkitConfigTool extends Composite {
             new CheckTestkitExistenceCommand() {
                 @Override
                 public void onComplete(Boolean exists) {
-                    Window.alert(exists.toString());
                     if (exists) {
                         boolean confirmed = Window.confirm("There already is a existing testkit configured for this environment. " +
                                 "This will override it. \nDo you want to proceed?");

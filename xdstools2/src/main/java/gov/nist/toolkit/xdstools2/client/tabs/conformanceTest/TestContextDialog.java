@@ -4,13 +4,12 @@ import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.*;
-import gov.nist.toolkit.xdstools2.client.*;
+import gov.nist.toolkit.xdstools2.client.ErrorHandler;
+import gov.nist.toolkit.xdstools2.client.ToolWindow;
 import gov.nist.toolkit.xdstools2.client.command.command.*;
 import gov.nist.toolkit.xdstools2.client.util.ClientUtils;
 import gov.nist.toolkit.xdstools2.client.widgets.HorizontalFlowPanel;
-import gov.nist.toolkit.xdstools2.client.widgets.PopupMessage;
 import gov.nist.toolkit.xdstools2.shared.command.request.GetSiteNamesRequest;
 import gov.nist.toolkit.xdstools2.shared.command.request.SetAssignedSiteForTestSessionRequest;
 
@@ -129,7 +128,7 @@ class TestContextDialog extends DialogBox {
                     sitesForTestSessionPanel.add(new HTML("None"));
                 }
             }
-        }.run(testSession);
+        }.run(ClientUtils.INSTANCE.getCommandContext());
     }
 
 
@@ -146,7 +145,7 @@ class TestContextDialog extends DialogBox {
                     loadSites();
                     siteManager.setSiteName(NONE);
                 }
-            }.run(getSelectedTestSession());
+            }.run(ClientUtils.INSTANCE.getCommandContext());
         }
     }
 
@@ -160,7 +159,7 @@ class TestContextDialog extends DialogBox {
             siteManager.setSiteName(selectedSite);
             toolWindow.setCurrentTestSession(getSelectedTestSession());
             siteManager.update();
-            new SetAssignedSiteForTestSessionCommand().run(new SetAssignedSiteForTestSessionRequest(getSelectedTestSession(),selectedSite));
+            new SetAssignedSiteForTestSessionCommand().run(new SetAssignedSiteForTestSessionRequest(ClientUtils.INSTANCE.getCommandContext(),getSelectedTestSession(),selectedSite));
         }
     }
 
@@ -275,7 +274,7 @@ class TestContextDialog extends DialogBox {
                         testSessionListBox.setSelectedIndex(selectedIndex);
                 }
             }
-        }.run(Xdstools2.getHomeTab().getCommandContext());
+        }.run(ClientUtils.INSTANCE.getCommandContext());
     }
 
     static final private String NONE = "--none--";
@@ -299,7 +298,7 @@ class TestContextDialog extends DialogBox {
                     siteListBox.setSelectedIndex(0);
                 }
             }
-        }.run(new GetSiteNamesRequest(true,true));
+        }.run(new GetSiteNamesRequest(ClientUtils.INSTANCE.getCommandContext(),true,true));
     }
 
     private void selectSite(String site) {

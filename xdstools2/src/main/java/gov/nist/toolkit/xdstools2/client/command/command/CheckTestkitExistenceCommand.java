@@ -11,10 +11,10 @@ import gov.nist.toolkit.xdstools2.shared.command.CommandContext;
 public abstract class CheckTestkitExistenceCommand extends GenericCommand<CommandContext,Boolean>{
     /**
      * Run the Async server call
-     * {@link ToolkitServiceAsync#doesTestkitExist(String, AsyncCallback) doesTestkitExist}.
+     * {@link ToolkitServiceAsync#doesTestkitExist(CommandContext, AsyncCallback) doesTestkitExist}.
      * @param context
      */
     public void run(CommandContext context){
-        ClientUtils.INSTANCE.getToolkitServices().doesTestkitExist(context.getEnvironmentName(),this);
+        ClientUtils.INSTANCE.getToolkitServices().doesTestkitExist(context,this);
     }
 }

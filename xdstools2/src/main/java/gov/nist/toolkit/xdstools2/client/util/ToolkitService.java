@@ -32,9 +32,7 @@ import gov.nist.toolkit.valsupport.client.ValidationContext;
 import gov.nist.toolkit.xdsexception.client.EnvironmentNotSelectedException;
 import gov.nist.toolkit.xdstools2.shared.NoServletSessionException;
 import gov.nist.toolkit.xdstools2.shared.command.CommandContext;
-import gov.nist.toolkit.xdstools2.shared.command.request.GeneratePidRequest;
-import gov.nist.toolkit.xdstools2.shared.command.request.GetAllSimConfigsRequest;
-import gov.nist.toolkit.xdstools2.shared.command.request.SendPidToRegistryRequest;
+import gov.nist.toolkit.xdstools2.shared.command.request.*;
 import gov.nist.toolkit.xdstools2.shared.command.InitializationResponse;
 import gov.nist.toolkit.xdstools2.shared.RegistryStatus;
 import gov.nist.toolkit.xdstools2.shared.RepositoryStatus;
@@ -50,10 +48,10 @@ public interface ToolkitService extends RemoteService  {
 	TkProps getTkProps() throws NoServletSessionException;
 
 	ConformanceSessionValidationStatus validateConformanceSession(String testSession, String siteName) throws Exception;
-	Collection<String> getSitesForTestSession(String testSession) throws Exception;
+	Collection<String> getSitesForTestSession(CommandContext context) throws Exception;
 	InitializationResponse getInitialization() throws Exception;
 	String getAssignedSiteForTestSession(String testSession) throws Exception;
-	void setAssignedSiteForTestSession(String testSession, String siteName) throws Exception;
+	void setAssignedSiteForTestSession(SetAssignedSiteForTestSessionRequest request) throws Exception;
 
 
 	/* Test management */
@@ -115,7 +113,7 @@ public interface ToolkitService extends RemoteService  {
 
 	MessageValidationResults validateMessage(ValidationContext vc) throws Exception;
 
-	List<String> getSiteNames(boolean reload, boolean simAlso) throws NoServletSessionException ;
+	List<String> getSiteNames(GetSiteNamesRequest request) throws Exception;
 	List<String> getRegistryNames() throws Exception;
 	List<String> getRepositoryNames() throws Exception;
 	List<String> getRGNames() throws NoServletSessionException ;
@@ -128,7 +126,7 @@ public interface ToolkitService extends RemoteService  {
 	List<String> reloadExternalSites() throws Exception;
 	Site getSite(String siteName) throws Exception;
 	Collection<Site> getAllSites(CommandContext commandContext) throws Exception;
-	String saveSite(Site site) throws Exception;
+	String saveSite(SaveSiteRequest request) throws Exception;
 	String deleteSite(String siteName) throws Exception;
 
 	List<Result> getSSandContents(SiteSpec site, String ssuid,  Map<String, List<String>> codeSpec) throws NoServletSessionException ;
@@ -221,17 +219,17 @@ public interface ToolkitService extends RemoteService  {
 	/**
 	 * This method copy the default testkit to a selected environment and triggers a code update based on
 	 * the affinity domain configuration file (codes.xml) located in the selected environment.
-	 * @param environmentName Environment name of the target environment selected for the testkit.
+	 * @param context Environment name of the target environment selected for the testkit.
 	 * @return update output as a String
 	 */
-	String configureTestkit(String environmentName);
+	String configureTestkit(CommandContext context) throws Exception;
 
 	/**
 	 * This method tests if there already is a testkit configured in a selected environment.
-	 * @param selectedEnvironment name of the selected environment.
+	 * @param context name of the selected environment.
 	 * @return boolean
 	 */
-	boolean doesTestkitExist(String selectedEnvironment);
+	boolean doesTestkitExist(CommandContext context) throws Exception;
 
 
 	//------------------------------------------------------------------------
@@ -267,7 +265,7 @@ public interface ToolkitService extends RemoteService  {
 	//------------------------------------------------------------------------
 	 InteractingEntity getInteractionFromModel(InteractingEntity model) throws Exception;
 
-	String clearTestSession(String testSession) throws Exception;
+	String clearTestSession(CommandContext context) throws Exception;
 
 	boolean getAutoInitConformanceTesting();
 

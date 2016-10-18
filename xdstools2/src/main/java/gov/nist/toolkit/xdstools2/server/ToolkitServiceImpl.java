@@ -59,9 +59,7 @@ import gov.nist.toolkit.xdstools2.shared.NoServletSessionException;
 import gov.nist.toolkit.xdstools2.shared.RegistryStatus;
 import gov.nist.toolkit.xdstools2.shared.RepositoryStatus;
 import gov.nist.toolkit.xdstools2.shared.command.*;
-import gov.nist.toolkit.xdstools2.shared.command.request.GeneratePidRequest;
-import gov.nist.toolkit.xdstools2.shared.command.request.GetAllSimConfigsRequest;
-import gov.nist.toolkit.xdstools2.shared.command.request.SendPidToRegistryRequest;
+import gov.nist.toolkit.xdstools2.shared.command.request.*;
 import org.apache.log4j.Logger;
 
 import javax.servlet.ServletContext;
@@ -130,8 +128,9 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements
     }
 
     @Override
-    public void setAssignedSiteForTestSession(String testSession, String siteName) throws Exception {
-        session().xdsTestServiceManager().setAssignedSiteForTestSession(testSession, siteName);
+    public void setAssignedSiteForTestSession(SetAssignedSiteForTestSessionRequest request) throws Exception {
+        installCommandContext(request);
+        session().xdsTestServiceManager().setAssignedSiteForTestSession(request.getSelecetedTestSession(), request.getSelectedSite());
     }
 
 
@@ -140,14 +139,20 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements
     // Site Services
     //------------------------------------------------------------------------
     //------------------------------------------------------------------------
-    public List<String> getSiteNames(boolean reload, boolean simAlso)  throws NoServletSessionException { return siteServiceManager.getSiteNames(session().getId(), reload, simAlso); }
+    public List<String> getSiteNames(GetSiteNamesRequest request) throws Exception {
+        installCommandContext(request);
+        return siteServiceManager.getSiteNames(session().getId(), request.getReload(), request.getSimAlso());
+    }
     public Collection<Site> getAllSites(CommandContext commandContext) throws Exception {
         installCommandContext(commandContext);
         return siteServiceManager.getAllSites(session().getId());
     }
     public List<String> reloadSites(boolean simAlso) throws FactoryConfigurationError, Exception { return siteServiceManager.reloadSites(session().getId(), simAlso); }
     public Site getSite(String siteName) throws Exception { return siteServiceManager.getSite(session().getId(), siteName); }
-    public String saveSite(Site site) throws Exception { return siteServiceManager.saveSite(session().getId(), site); }
+    public String saveSite(SaveSiteRequest request) throws Exception {
+        installCommandContext(request);
+        return siteServiceManager.saveSite(session().getId(), request.getSite());
+    }
     public String deleteSite(String siteName) throws Exception { return siteServiceManager.deleteSite(session().getId(), siteName); }
     //	public String getHome() throws Exception { return session().getHome(); }
     public List<String> getUpdateNames()  throws NoServletSessionException { return siteServiceManager.getUpdateNames(session().getId()); }
@@ -445,12 +450,13 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements
     /**
      * This method copies the default testkit to a selected environment and triggers a code update based on
      * the affinity domain configuration file (codes.xml) located in the selected environment.
-     * @param selectedEnvironmentName target environment for the testkit.
+     * @param context
      * @return update output as a String
      */
     @Override
-    public String configureTestkit(String selectedEnvironmentName) {
-        File environmentFile = Installation.instance().environmentFile(selectedEnvironmentName);
+    public String configureTestkit(CommandContext context) throws Exception {
+        installCommandContext(context);
+        File environmentFile = Installation.instance().environmentFile(context.getEnvironmentName());
         File defaultTestkit = Installation.instance().internalTestkitFile();
         CodesUpdater updater = new CodesUpdater();
         updater.run(environmentFile.getAbsolutePath(),defaultTestkit.getAbsolutePath());
@@ -459,12 +465,13 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements
 
     /**
      * This method tests if there already is a testkit configured in a selected environment.
-     * @param selectedEnvironment name of the selected environment.
+     * @param context
      * @return boolean
      */
     @Override
-    public boolean doesTestkitExist(String selectedEnvironment) {
-        File environmentFile = Installation.instance().environmentFile(selectedEnvironment);
+    public boolean doesTestkitExist(CommandContext context) throws Exception {
+        installCommandContext(context);
+        File environmentFile = Installation.instance().environmentFile(context.getEnvironmentName());
         File testkit=new File(environmentFile,"testkits");
         return testkit.exists();
     }
@@ -533,10 +540,11 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements
     }
 
 	@Override
-	public Collection<String> getSitesForTestSession(String testSession) throws Exception {
-		if (testSession == null)
+	public Collection<String> getSitesForTestSession(CommandContext context) throws Exception {
+        installCommandContext(context);
+		if (context.getTestSessionName()== null)
 			return new ArrayList<>();
-		return session().xdsTestServiceManager().getSitesForTestSession(testSession);
+		return session().xdsTestServiceManager().getSitesForTestSession(context.getTestSessionName());
 	}
 
     public String getDefaultAssigningAuthority()  throws NoServletSessionException { return Installation.instance().propertyServiceManager().getDefaultAssigningAuthority(); }
@@ -871,8 +879,9 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements
 
 
     @Override
-    public String clearTestSession(String testSession) throws Exception {
-        return session().xdsTestServiceManager().clearTestSession(testSession);
+    public String clearTestSession(CommandContext context) throws Exception {
+        installCommandContext(context);
+        return session().xdsTestServiceManager().clearTestSession(context.getTestSessionName());
     }
 
     @Override

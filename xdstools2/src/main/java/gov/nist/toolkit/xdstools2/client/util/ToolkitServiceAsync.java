@@ -29,9 +29,7 @@ import gov.nist.toolkit.valsupport.client.MessageValidationResults;
 import gov.nist.toolkit.valsupport.client.ValidationContext;
 import gov.nist.toolkit.xdstools2.shared.NoServletSessionException;
 import gov.nist.toolkit.xdstools2.shared.command.CommandContext;
-import gov.nist.toolkit.xdstools2.shared.command.request.GeneratePidRequest;
-import gov.nist.toolkit.xdstools2.shared.command.request.GetAllSimConfigsRequest;
-import gov.nist.toolkit.xdstools2.shared.command.request.SendPidToRegistryRequest;
+import gov.nist.toolkit.xdstools2.shared.command.request.*;
 import gov.nist.toolkit.xdstools2.shared.command.InitializationResponse;
 import gov.nist.toolkit.xdstools2.shared.RegistryStatus;
 import gov.nist.toolkit.xdstools2.shared.RepositoryStatus;
@@ -44,9 +42,9 @@ public interface ToolkitServiceAsync {
 
 	void indexTestKits(AsyncCallback<Boolean> callback);
 	void getAutoInitConformanceTesting(AsyncCallback<Boolean> callback);
-	void clearTestSession(String testSession, AsyncCallback<String> callback);
+	void clearTestSession(CommandContext context, AsyncCallback<String> callback);
 	void validateConformanceSession(String testSession, String siteName, AsyncCallback<ConformanceSessionValidationStatus> callback);
-	void getSitesForTestSession(String testSession, AsyncCallback<Collection<String>> callback);
+	void getSitesForTestSession(CommandContext context, AsyncCallback<Collection<String>> callback);
 	void getInitialization(AsyncCallback<InitializationResponse> callback);
 	void getTkProps(AsyncCallback<TkProps> callback);
 	void getSessionProperties(AsyncCallback<Map<String, String>> callback);
@@ -105,7 +103,7 @@ public interface ToolkitServiceAsync {
 
 	void validateMessage(ValidationContext vc, AsyncCallback<MessageValidationResults> callback);
 
-	void getSiteNames(boolean reload, boolean simAlso, AsyncCallback<List<String>> callback);
+	void getSiteNames(GetSiteNamesRequest request, AsyncCallback<List<String>> callback) ;
 
 	void getTransactionOfferings(CommandContext commandContext, AsyncCallback<TransactionOfferings> callback);
 	void getRegistryNames(AsyncCallback<List<String>> callback);
@@ -117,7 +115,7 @@ public interface ToolkitServiceAsync {
 	void getCodesConfiguration(String getCodesConfiguration, AsyncCallback<CodesResult> callback);
 	void getSite(String siteName, AsyncCallback<Site> callback);
 	void getAllSites(CommandContext commandContext, AsyncCallback<Collection<Site>> callback);
-	void saveSite(Site site, AsyncCallback<String> callback);
+	void saveSite(SaveSiteRequest request, AsyncCallback<String> callback);
 	void reloadSites(boolean simAlso, AsyncCallback<List<String>> callback);
 	void reloadExternalSites(AsyncCallback<List<String>> callback);
 	void deleteSite(String siteName, AsyncCallback<String> callback);
@@ -203,9 +201,9 @@ public interface ToolkitServiceAsync {
 	void loadTestPartContent(TestPartFileDTO testPartFileDTO, AsyncCallback<TestPartFileDTO> callback);
 	void getHtmlizedString(String xml, AsyncCallback<String> callback);
 
-	void configureTestkit(String environmentName, AsyncCallback<String> callback);
+	void configureTestkit(CommandContext context, AsyncCallback<String> callback);
 
-	void doesTestkitExist(String selectedEnvironment, AsyncCallback<Boolean> asyncCallback);
+	void doesTestkitExist(CommandContext context, AsyncCallback<Boolean> asyncCallback) ;
 
 //	void getToolkitEnableNwHIN(AsyncCallback<String> notify);
 
@@ -245,5 +243,5 @@ public interface ToolkitServiceAsync {
 
 	void getAssignedSiteForTestSession(String testSession, AsyncCallback<String> async);
 
-	void setAssignedSiteForTestSession(String testSession, String siteName, AsyncCallback<Void> async);
+	void setAssignedSiteForTestSession(SetAssignedSiteForTestSessionRequest request, AsyncCallback<Void> async);
 }

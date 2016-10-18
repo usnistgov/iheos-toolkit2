@@ -9,6 +9,6 @@ import gov.nist.toolkit.xdstools2.shared.command.CommandContext;
 public abstract class ConfigureTestkitCommand extends GenericCommand<CommandContext,String> {
     @Override
     public void run(CommandContext context) {
-        ClientUtils.INSTANCE.getToolkitServices().configureTestkit(context.getEnvironmentName(),this);
+        ClientUtils.INSTANCE.getToolkitServices().configureTestkit(context,this);
     }
 }

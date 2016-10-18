@@ -134,7 +134,7 @@ public class EnvironmentManager extends Composite{
 					updateCookie();
 				}
 			}
-		}.run(Xdstools2.getHomeTab().getCommandContext());
+		}.run(ClientUtils.INSTANCE.getCommandContext());
 
 		ClientUtils.INSTANCE.getToolkitServices().setEnvironment(initialEnvironmentName, new AsyncCallback() {
 

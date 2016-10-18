@@ -4,6 +4,7 @@ import com.google.gwt.core.client.GWT;
 import com.google.web.bindery.event.shared.EventBus;
 import gov.nist.toolkit.xdstools2.client.event.testSession.TestSessionManager2;
 import gov.nist.toolkit.xdstools2.client.tabs.EnvironmentState;
+import gov.nist.toolkit.xdstools2.shared.command.CommandContext;
 
 /**
  * Client Utilities singleton.
@@ -28,6 +29,13 @@ public class ClientUtils {
         if (testSessionManager == null)
             testSessionManager = new TestSessionManager2();
         return testSessionManager;
+    }
+
+    public CommandContext getCommandContext(){
+        // this is a horrible hack until the initialization is cleaned up
+        String env = getEnvironmentState().getEnvironmentName();
+        if (env == null || env.equals("null")) env = "default";
+        return new CommandContext(env, getTestSessionManager().getCurrentTestSession());
     }
 
 }

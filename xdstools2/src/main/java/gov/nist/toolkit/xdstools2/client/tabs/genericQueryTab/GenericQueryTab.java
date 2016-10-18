@@ -176,12 +176,10 @@ public abstract class GenericQueryTab  extends ToolWindow {
                 }
             }
         } else {   // Select by transaction (used in GetDocuments tab)
-            Window.alert(selectedSites.toString());
             SiteSpec site=transactionSelectionManager.generateSiteSpec();
             if (site!=null) {
                 selectedSites.add(site.getName());
             }
-            Window.alert("tester");
         }
     }
 
@@ -420,7 +418,6 @@ public abstract class GenericQueryTab  extends ToolWindow {
      * Call on backend to reload transactions (simulators).
      */
 	public void reloadTransactionOfferings() {
-                Window.alert("reload");
 		new GetTransactionOfferingsCommand() {
 
 			@Override
@@ -428,7 +425,7 @@ public abstract class GenericQueryTab  extends ToolWindow {
 				GenericQueryTab.transactionOfferings = var1;
 				redisplay(false);
 			}
-		}.run(getCommandContext());
+		}.run(ClientUtils.INSTANCE.getCommandContext());
 	}
 
     static public HTML addHTML(String html) {

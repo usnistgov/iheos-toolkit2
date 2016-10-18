@@ -12,7 +12,8 @@ public class GetSiteNamesRequest extends CommandContext {
     public GetSiteNamesRequest() {
     }
 
-    public GetSiteNamesRequest(boolean reload,boolean simAlso){
+    public GetSiteNamesRequest(CommandContext context,boolean reload,boolean simAlso){
+        copyFrom(context);
         this.reload=reload;
         this.simAlso=simAlso;
     }

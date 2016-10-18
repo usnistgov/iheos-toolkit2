@@ -85,7 +85,7 @@ public class TestSessionManager2 {
                 Xdstools2.getEventBus().fireEvent(new TestSessionsUpdatedEvent(testSessions));
                 Xdstools2.getEventBus().fireEvent(new TestSessionChangedEvent(TestSessionChangedEvent.ChangeType.SELECT, currentTestSession));
             }
-        }.run(Xdstools2.getHomeTab().getCommandContext());
+        }.run(ClientUtils.INSTANCE.getCommandContext());
     }
 
     // save new sessionName to server and broadcast updates to all tabs
