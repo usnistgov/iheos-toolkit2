@@ -63,6 +63,7 @@ public class ImgDetailTransaction extends BasicTransaction {
       tagMap = new HashMap <>();
       tagMap.put("SOPClassUID", Tag.SOPClassUID);
       tagMap.put("SOPInstanceUID", Tag.SOPInstanceUID);
+      tagMap.put("PatientName", Tag.PatientName);
       tagMap.put("PatientID", Tag.PatientID);
       tagMap.put("PatientBirthDate", Tag.PatientBirthDate);
       tagMap.put("PatientSex", Tag.PatientSex);
@@ -70,7 +71,6 @@ public class ImgDetailTransaction extends BasicTransaction {
       tagMap.put("SeriesInstanceUID", Tag.SeriesInstanceUID);
       tagMap.put("AccessionNumber", Tag.AccessionNumber);
       tagMap.put("Modality", Tag.Modality);
-      tagMap.put("PatientName", Tag.PatientName);
       tagMap.put("ContentSequence", Tag.ContentSequence);
    }
 
@@ -479,42 +479,47 @@ public class ImgDetailTransaction extends BasicTransaction {
     * <pre>
     * {@code
     * <Assert id="Returned img(s)" process="sameDcmImgs" >
-         <TagList>
-            Elements in TagList are the dcm4che Tag names for the DICOM
-            tags which are to be compared. They must appear in tagMap
-            (above), or have the Element name "TAG" and an attribute "hex" with
-            a value which is a valid dicom tag group and element number 
-            separated by a comma (for example hex="0020,0020") There are 
-            two optional attributes for these elements:
-            1. type - which should have the type of assertion, taken from
-               the TYPE enum in DCMAssertion. The default value is "SAME",
-               which is most common.
-            2. value - which should have the string value which the DICOM
-               tag should match. Only used in CONSTANT type assertions.
-               The default value is the empty string.
-            <SOPClassUID />
-            <SOPInstanceUID />
-            <PatientID />
-            <PatientBirthDate />
-            <PatientSex />
-            <StudyInstanceUID />
-            <SeriesInstanceUID />
-         </TagList>
-         <DirList>
-            StdDir elements contain paths of directories which contain
-            std image files for testing. May have more than one. All files
-            in the directory are added to the list. Subdirectories are
-            ignored. Directories are relative to the Image Cache
-            <StdDir>path1</StdDir>
-            <StdDir>path2</StdDir>
-            <StdDir>path3</StdDir>
-            TestDir element contains the path where the test images from
-            the test are to be stored. Only one directory. May be 
-            absolute, or relative to the test step log directory. Default
-            is "testImages" in the test step log directory.
-            <TestDir>path</TestDir>
-         </DirList>
-      </Assert>}
+    *    <TagList>
+    *       Elements in TagList are the dcm4che Tag names for the DICOM
+    *       tags which are to be compared. They must appear in tagMap
+    *       (above), or have the Element name "TAG" and an attribute "hex" with
+    *       a value which is a valid dicom tag group and element number 
+    *       separated by a comma (for example hex="0020,0020") There are 
+    *       four optional attributes for these elements:
+    *       1. type - which should have the type of assertion, taken from
+    *          the TYPE enum in DCMAssertion. The default value is "SAME",
+    *          which is most common.
+    *       2. value - which should have the string value which the DICOM
+    *          tag should match. Only used in CONSTANT type assertions.
+    *          The default value is the empty string.
+    *       3. passCat - which should have the string CAT value to be used if 
+    *          the assertion succeeds. The default value is SUCCESS.
+    *       4. failCat - which should have the string CAT value to be used if 
+    *          the assertion fails. The default value is ERROR.
+    *       <SOPClassUID />
+    *       <SOPInstanceUID />
+    *       <PatientID />
+    *       <PatientBirthDate />
+    *       <PatientSex />
+    *       <StudyInstanceUID />
+    *       <SeriesInstanceUID />
+    *    </TagList>
+    *    <DirList>
+    *       StdDir elements contain paths of directories which contain
+    *       std image files for testing. May have more than one. All files
+    *       in the directory are added to the list. Subdirectories are
+    *       ignored. Directories are relative to the Image Cache
+    *       <StdDir>path1</StdDir>
+    *       <StdDir>path2</StdDir>
+    *       <StdDir>path3</StdDir>
+    *       TestDir element contains the path where the test images from
+    *       the test are to be stored. Only one directory. May be 
+    *       absolute, or relative to the test step log directory. Default
+    *       is "testImages" in the test step log directory.
+    *       <TestDir>path</TestDir>
+    *    </DirList>
+    * </Assert> 
+    * }
     * </pre>
     */
    private void prsSameDcmImgs(AssertionEngine engine, Assertion a, OMElement assertion_output)
@@ -600,7 +605,9 @@ public class ImgDetailTransaction extends BasicTransaction {
             String value = tag.getAttributeValue(new QName("value"));
             if (value == null) value = "";
             value = value.trim();
-            DCMAssertion dcmAssertion = new DCMAssertion(type, dcmTag, value);
+            CAT passCat = CAT.forThis(tag.getAttributeValue(new QName("passCat")));
+            CAT failCat = CAT.forThis(tag.getAttributeValue(new QName("failCat")));
+            DCMAssertion dcmAssertion = new DCMAssertion(type, dcmTag, value, passCat, failCat);
             dcmAssertion.setTagName(tagName);
             assertions.add(dcmAssertion);
          }
@@ -795,46 +802,46 @@ public class ImgDetailTransaction extends BasicTransaction {
       return null;
    }
 
-   /**
-    * Result categories. Used to group validation results for reporting.
-    */
-   public enum CAT {
-         /**
-          * Expected result was found.
-          */
-      SUCCESS, /**
-                * A result was found which is not being tested, but which may be
-                * in error or "not what you want". May also relate to something
-                * expected, but not found.
-                */
-      WARNING, /**
-                * Expected result was missing or incorrect.
-                */
-      ERROR, /**
-              * Message which was generated but is not (or cannot be) determined
-              * to be in SUCCESS, WARNING, or ERROR categories.
-              */
-      UNCAT, /**
-              * A message result or lack of result which was detected but will
-              * be ignored. This is for programmers only; the tester will not
-              * see these.
-              */
-      SILENT;
-
-      /**
-       * Get CAT which matches name, ignoring case, or null
-       * 
-       * @param name of CAT
-       * @return CAT for name
-       */
-      public static CAT forThis(String name) {
-         CAT[] cats = CAT.values();
-         for (CAT cat : cats) {
-            if (cat.name().equalsIgnoreCase(name)) return cat;
-         }
-         return null;
-      }
-   };
+//   /**
+//    * Result categories. Used to group validation results for reporting.
+//    */
+//   public enum CAT {
+//         /**
+//          * Expected result was found.
+//          */
+//      SUCCESS, /**
+//                * A result was found which is not being tested, but which may be
+//                * in error or "not what you want". May also relate to something
+//                * expected, but not found.
+//                */
+//      WARNING, /**
+//                * Expected result was missing or incorrect.
+//                */
+//      ERROR, /**
+//              * Message which was generated but is not (or cannot be) determined
+//              * to be in SUCCESS, WARNING, or ERROR categories.
+//              */
+//      UNCAT, /**
+//              * A message result or lack of result which was detected but will
+//              * be ignored. This is for programmers only; the tester will not
+//              * see these.
+//              */
+//      SILENT;
+//
+//      /**
+//       * Get CAT which matches name, ignoring case, or null
+//       * 
+//       * @param name of CAT
+//       * @return CAT for name
+//       */
+//      public static CAT forThis(String name) {
+//         CAT[] cats = CAT.values();
+//         for (CAT cat : cats) {
+//            if (cat.name().equalsIgnoreCase(name)) return cat;
+//         }
+//         return null;
+//      }
+//   };
 
    private void store(AssertionEngine e, CAT cat, String msg) {
       if (cat == CAT.SILENT) return;
