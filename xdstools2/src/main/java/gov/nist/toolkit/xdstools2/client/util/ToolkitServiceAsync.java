@@ -51,14 +51,14 @@ public interface ToolkitServiceAsync {
 	void setSessionProperties(Map<String, String> props, AsyncCallback callback);
 	void getNewPatientId(String assigningAuthority, AsyncCallback<String> callback);
 
-	void getDefaultAssigningAuthority(AsyncCallback<String> callback);
+	void getDefaultAssigningAuthority(CommandContext context, AsyncCallback<String> callback) ;
 	void getAttributeValue(String username, String attName, AsyncCallback<String> callback);
 	void setAttributeValue(String username, String attName, String attValue, AsyncCallback callback);
 
 
 	void getCurrentEnvironment(AsyncCallback<String> callback);
-	void getDefaultEnvironment(AsyncCallback<String> callback);
-	void setEnvironment(String name, AsyncCallback callback);
+	void getDefaultEnvironment(CommandContext context, AsyncCallback<String> callback);
+	void setEnvironment(CommandContext context, AsyncCallback<String> callback);
 	void getEnvironmentNames(CommandContext context, AsyncCallback<List<String>> callback);
 	void isGazelleConfigFeedEnabled(AsyncCallback<Boolean> callback);
 	void reloadSystemFromGazelle(String systemName, AsyncCallback<String> callback);

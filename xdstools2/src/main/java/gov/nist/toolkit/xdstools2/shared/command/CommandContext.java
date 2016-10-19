@@ -28,8 +28,9 @@ public class CommandContext implements Serializable, IsSerializable {
         return environmentName;
     }
 
-    public void setEnvironmentName(String environmentName) {
+    public CommandContext setEnvironmentName(String environmentName) {
         this.environmentName = environmentName;
+        return this;
     }
 
     public String getTestSessionName() {

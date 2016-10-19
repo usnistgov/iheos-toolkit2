@@ -109,6 +109,7 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements
 //		if (commandContext.getTestSessionName() == null) {
 //			throw new Exception("installCommandContext: test session name is null");
 //		}
+//        session().setEnvironment(commandContext.getEnvironmentName());
         setEnvironment(commandContext.getEnvironmentName());
         setMesaTestSession(commandContext.getTestSessionName());
     }
@@ -384,6 +385,11 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements
 		return testOverviewDTO;
 	}
 
+	// TODO remove this once command pattern is implemented for every single call
+    private void setEnvironment(String environmentName) throws NoServletSessionException {
+        session().setEnvironment(environmentName);
+    }
+
     public TestLogs getRawLogs(TestInstance logId)  throws NoServletSessionException { return session().xdsTestServiceManager().getRawLogs(logId); }
     public List<String> getTestdataSetListing(String environmentName, String testSessionName, String testdataSetName)  throws NoServletSessionException {
         return session().xdsTestServiceManager().getTestdataSetListing(environmentName,testSessionName,testdataSetName);
@@ -492,12 +498,14 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements
 //		installCommandContext(context);  // not needed - may not be initialized
         return session().getEnvironmentNames();
     }
-    public String setEnvironment(String name) throws NoServletSessionException, EnvironmentNotSelectedException {
-        logger.info("set environment - " + name);
-        session().setEnvironment(name); return name;
+    public String setEnvironment(CommandContext context) throws Exception {
+        logger.info("set environment - " + context.getEnvironmentName());
+        installCommandContext(context);
+        return context.getEnvironmentName();
     }
     public String getCurrentEnvironment() throws NoServletSessionException { return session().getCurrentEnvironment(); }
-    public String getDefaultEnvironment()  throws NoServletSessionException  {
+    public String getDefaultEnvironment(CommandContext context) throws Exception {
+        installCommandContext(context);
         String defaultEnvironment = Installation.instance().propertyServiceManager().getDefaultEnvironment();
         String name;
         if (Session.environmentExists(defaultEnvironment))
@@ -547,7 +555,10 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements
 		return session().xdsTestServiceManager().getSitesForTestSession(context.getTestSessionName());
 	}
 
-    public String getDefaultAssigningAuthority()  throws NoServletSessionException { return Installation.instance().propertyServiceManager().getDefaultAssigningAuthority(); }
+    public String getDefaultAssigningAuthority(CommandContext context) throws Exception {
+        installCommandContext(context);
+        return Installation.instance().propertyServiceManager().getDefaultAssigningAuthority();
+    }
     public String getImplementationVersion() throws NoServletSessionException  { return Installation.instance().propertyServiceManager().getImplementationVersion(); }
     public Map<String, String> getToolkitProperties()  throws NoServletSessionException { return Installation.instance().propertyServiceManager().getToolkitProperties(); }
     public boolean isGazelleConfigFeedEnabled() throws NoServletSessionException  { return SiteServiceManager.getSiteServiceManager().useGazelleConfigFeed(); }

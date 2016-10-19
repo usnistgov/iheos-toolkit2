@@ -9,6 +9,7 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.*;
 import gov.nist.toolkit.xdstools2.client.CookieManager;
 import gov.nist.toolkit.xdstools2.client.Panel1;
+import gov.nist.toolkit.xdstools2.client.command.command.GetDefaultAssigningAuthorityCommand;
 import gov.nist.toolkit.xdstools2.client.widgets.PopupMessage;
 import gov.nist.toolkit.xdstools2.client.util.ClientUtils;
 
@@ -20,7 +21,6 @@ public class PatientIdSelector {
 	HorizontalPanel patientIdPanel = new HorizontalPanel();
 	ListBox patientIdListBox = new ListBox();
 	TextBox patientIdTextBox = new TextBox();
-//	ToolkitServiceAsync toolkitService;
 	boolean isPrivateTesting = false;
 	Panel1 menuPanel;
 
@@ -30,23 +30,22 @@ public class PatientIdSelector {
 	static List<PatientIdSelector> instances = new ArrayList<PatientIdSelector>();
 	static String defaultAssigningAuthority = null;
 
-	public static PatientIdSelector getInstance(/*ToolkitServiceAsync toolkitService, */Panel1 menuPanel) {
+	public static PatientIdSelector getInstance(Panel1 menuPanel) {
 		for (PatientIdSelector sel : instances) {
 			if (sel.menuPanel == menuPanel) 
 				return sel;
 		}
 
 		if (instances.isEmpty()) {
-			ClientUtils.INSTANCE.getToolkitServices().getDefaultAssigningAuthority(new AsyncCallback<String>() {
-
-				public void onFailure(Throwable caught) { new PopupMessage("getDefaultAssigningAuthority(): " + caught.getMessage()); }
-
-				public void onSuccess(String result) { defaultAssigningAuthority = result; }
-				
-			});
+			new GetDefaultAssigningAuthorityCommand(){
+				@Override
+				public void onComplete(String result) {
+					defaultAssigningAuthority = result;
+				}
+			}.run(ClientUtils.INSTANCE.getCommandContext());
 		}
 		
-		PatientIdSelector sel = new PatientIdSelector(/*toolkitService,*/ menuPanel);
+		PatientIdSelector sel = new PatientIdSelector(menuPanel);
 		instances.add(sel);
 		
 		return sel;
@@ -67,8 +66,7 @@ public class PatientIdSelector {
 	
 	
 
-	PatientIdSelector(/*ToolkitServiceAsync toolkitService,*/ Panel1 menuPanel) {
-//		this.toolkitService = toolkitService;
+	PatientIdSelector(Panel1 menuPanel) {
 		this.menuPanel = menuPanel;
 		
 		menuPanel.add(patientIdPanel);

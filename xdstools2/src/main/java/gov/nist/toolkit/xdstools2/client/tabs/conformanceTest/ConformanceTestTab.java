@@ -22,6 +22,7 @@ import gov.nist.toolkit.session.client.TestOverviewDTO;
 import gov.nist.toolkit.session.client.sort.TestSorter;
 import gov.nist.toolkit.sitemanagement.client.SiteSpec;
 import gov.nist.toolkit.testkitutilities.client.TestCollectionDefinitionDAO;
+import gov.nist.toolkit.xdstools2.client.command.command.AutoInitConformanceTestingCommand;
 import gov.nist.toolkit.xdstools2.client.widgets.PopupMessage;
 import gov.nist.toolkit.xdstools2.client.ToolWindow;
 import gov.nist.toolkit.xdstools2.client.Xdstools2;
@@ -385,26 +386,19 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner, TestsH
                 testStatistics.setTestCount(testOverviews.size());
                 for (TestOverviewDTO testOverview : testOverviews) {
                     addTestOverview(testOverview);
-//                    displayTest(testsPanel, testDisplayGroup, testOverview);
 					TestDisplay testDisplay = testDisplayGroup.display(testOverview);
 					testDisplay.display(testOverview);
 					testsPanel.add(testDisplay);
                 }
                 updateTestsOverviewHeader();
+				new AutoInitConformanceTestingCommand(){
 
-                getToolkitServices().getAutoInitConformanceTesting(new AsyncCallback<Boolean>() {
-                    @Override
-                    public void onFailure(Throwable throwable) {
-
-                    }
-
-                    @Override
-                    public void onSuccess(Boolean aBoolean) {
-                        if (aBoolean)
-                            orchInit.handleClick(null);   // auto init orchestration
-                    }
-                });
-
+					@Override
+					public void onComplete(Boolean result) {
+						if (result)
+							orchInit.handleClick(null);   // auto init orchestration
+					}
+				}.run(getCommandContext());
             }
 
         });

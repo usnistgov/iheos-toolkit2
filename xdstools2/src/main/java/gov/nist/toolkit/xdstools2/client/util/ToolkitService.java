@@ -192,10 +192,10 @@ public interface ToolkitService extends RemoteService  {
 	String reloadSystemFromGazelle(String systemName) throws Exception;
 	boolean isGazelleConfigFeedEnabled() throws NoServletSessionException ;
 	List<String> getEnvironmentNames(CommandContext context) throws Exception;
-	String setEnvironment(String name) throws NoServletSessionException, EnvironmentNotSelectedException;
+	String setEnvironment(CommandContext context) throws Exception;
 	String getCurrentEnvironment() throws NoServletSessionException;
-	String getDefaultEnvironment() throws NoServletSessionException ;
-	String getDefaultAssigningAuthority() throws NoServletSessionException ;
+	String getDefaultEnvironment(CommandContext context) throws Exception;
+	String getDefaultAssigningAuthority(CommandContext context) throws Exception;
 	String getAttributeValue(String username, String attName) throws Exception;
 	void setAttributeValue(String username, String attName, String attValue) throws Exception;
 	RawResponse buildIgTestOrchestration(IgOrchestrationRequest request);
