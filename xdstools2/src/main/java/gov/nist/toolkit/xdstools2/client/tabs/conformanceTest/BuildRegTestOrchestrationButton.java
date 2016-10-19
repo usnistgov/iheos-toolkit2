@@ -35,8 +35,6 @@ public class BuildRegTestOrchestrationButton extends AbstractOrchestrationButton
         this.testContextView = testContextView;
 
         setParentPanel(initializationPanel);
-        setLabel(label);
-        setResetLabel("Reset");
 
         FlowPanel pidFeedPanel = new FlowPanel();
         pidFeedPanel.add(noFeed);

@@ -14,6 +14,7 @@ class TestsHeaderView {
     }
     private Controller controller;
     private FlowPanel testsHeader = new FlowPanel();
+    private HTML selfTestBanner = new HTML();
     private HTML testsHeaderTitle = new HTML();
     private TestDisplayHeader bar = new TestDisplayHeader();
     private HTML title = new HTML();
@@ -24,10 +25,15 @@ class TestsHeaderView {
     private FlexTable table = new FlexTable();
     private String headerText = "";
     private HTML testsHeaderRunningMessage = new HTML();
+    private boolean allowRun = true;
 
     TestsHeaderView(Controller controller) {
         this.controller = controller;
+
         testsHeader.add(bar);
+
+        selfTestBanner.addStyleName("warningBanner");
+        testsHeader.add(selfTestBanner);
 
         bar.add(testsHeaderTitle);
         bar.add(testsHeaderRunningMessage);
@@ -85,11 +91,13 @@ class TestsHeaderView {
         notRun.setHTML(String.valueOf(testStatistics.getNotRun()));
 
         // Add controls
-        Image play = new Image("icons2/play-32.png");
-        play.setTitle("Run All");
-        play.addClickHandler(controller.getRunAllClickHandler());
-        play.addStyleName("iconStyle");
-        bar.add(play);
+        if (allowRun) {
+            Image play = new Image("icons2/play-32.png");
+            play.setTitle("Run All");
+            play.addClickHandler(controller.getRunAllClickHandler());
+            play.addStyleName("iconStyle");
+            bar.add(play);
+        }
 
         Image refresh = new Image("icons2/refresh-32.png");
         refresh.setTitle("Reload");
@@ -138,4 +146,14 @@ class TestsHeaderView {
         return status;
     }
 
+    public void allowRun(boolean allowRun) {
+        this.allowRun = allowRun;
+    }
+
+    public void showSelfTestWarning(boolean show) {
+        if (show)
+            selfTestBanner.setText("SELF TEST");
+        else
+            selfTestBanner.setText("");
+    }
 }

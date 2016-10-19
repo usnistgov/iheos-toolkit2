@@ -44,8 +44,6 @@ public class BuildIGTestOrchestrationButton extends AbstractOrchestrationButton 
         this.actorOption = actorOption;
 
         setParentPanel(initializationPanel);
-        setLabel(label);
-        setResetLabel("Reset");
         this.includeIG = includeIG;
 
         FlowPanel customPanel = new FlowPanel();

@@ -12,19 +12,16 @@ import gov.nist.toolkit.xdstools2.client.ErrorHandler;
  *
  */
 abstract public class AbstractOrchestrationButton implements ClickHandler {
-    private final FlowPanel panel = new FlowPanel();  // top panel
+    private final FlowPanel panel = new FlowPanel();  // upper panel
     private final FlowPanel errorPanel = new FlowPanel();
     private Panel topPanel;
-    private String label = null;
-    private String resetLabel = null;
     private CheckBox resetCheckBox = null;
     private Panel customPanel = null;
     private boolean errorPanelAdded = false;
-    private CheckBox selftestCheckBox = new CheckBox("Self Test");
+    private CheckBox selftestCheckBox;
 
     public AbstractOrchestrationButton(Panel topPanel, String label) {
         this.topPanel = topPanel;
-        this.label = label;
         build();
     }
 
@@ -34,16 +31,8 @@ abstract public class AbstractOrchestrationButton implements ClickHandler {
         this.topPanel = parent;
     }
 
-    protected void setLabel(String label) {
-        this.label = label;
-    }
-
     protected void setCustomPanel(Panel panel) {
         this.customPanel = panel;
-    }
-
-    protected void setResetLabel(String resetLabel) {
-        this.resetLabel = resetLabel;
     }
 
     public Panel build() {
@@ -51,26 +40,34 @@ abstract public class AbstractOrchestrationButton implements ClickHandler {
             errorPanelAdded = true;
             panel.add(errorPanel);
         }
-        errorPanel.add(new HTML("<hr /><h2>Test Setup</h2><p>The test setup needs to be initialized before tests can be run."));
+        panel.add(new HTML("<hr /><h2>Testing Environment</h2>"));
 
         if (customPanel != null) {
             panel.add(customPanel);
         }
 
-        if (resetLabel != null) {
-            resetCheckBox = new CheckBox(resetLabel);
-            panel.add(resetCheckBox);
-        }
-        final Button button = new Button(label);
+        String resetLabel = "Reset - Initialize will delete all supporting simulators and Patient IDs and recreate them.";
+        resetCheckBox = new CheckBox(resetLabel);
+        panel.add(resetCheckBox);
+        panel.add(new HTML("<br />"));
+
+        selftestCheckBox = new CheckBox("Self Test - Enable self test mode.");
+        panel.add(selftestCheckBox);
+        panel.add(new HTML("<br />"));
+
+        final Button button = new Button("Initialize Testing Environment");
         panel.add(button);
 
-        panel.add(selftestCheckBox);
 
         panel.add(new HTML("<br /><hr />"));
 
         topPanel.add(panel);
         button.addClickHandler(this);
         return panel;
+    }
+
+    public void addSelfTestClickHandler(ClickHandler handler) {
+        selftestCheckBox.addClickHandler(handler);
     }
 
     public boolean isSelfTest() {

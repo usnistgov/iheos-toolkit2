@@ -20,7 +20,7 @@ public class TestDisplay extends FlowPanel {
     private TestInstance testInstance;
     private boolean allowDelete= true;
     private boolean allowRun = true;
-    private boolean startExternally = false;
+    private boolean showValidate = false;
 
     public TestDisplay(TestInstance testInstance, TestDisplayGroup testDisplayGroup, TestRunner testRunner, TestContext testContext, TestContextView testContextView) {
         this.testInstance = testInstance;
@@ -40,11 +40,6 @@ public class TestDisplay extends FlowPanel {
 
     public void allowRun(boolean allowRun) {
         this.allowRun = allowRun;
-    }
-
-    public void startExternally(boolean startExternally) {
-        this.startExternally = startExternally;
-        this.allowRun = !startExternally;
     }
 
     public void display(TestOverviewDTO testOverview) {
@@ -96,7 +91,7 @@ public class TestDisplay extends FlowPanel {
             header.add(inspect);
         }
 
-        if (startExternally) {
+        if (showValidate) {
             Anchor tag = new Anchor("Validate");
             tag.addClickHandler(new ValidateClickHandler());
             header.add(tag);
@@ -115,5 +110,9 @@ public class TestDisplay extends FlowPanel {
             TestSectionComponent sectionComponent = new TestSectionComponent(testContext.getTestSession(), testOverview.getTestInstance(), sectionOverview, testRunner, allowRun);
             body.add(sectionComponent.asWidget());
         }
+    }
+
+    public void showValidate(boolean showValidate) {
+        this.showValidate = showValidate;
     }
 }

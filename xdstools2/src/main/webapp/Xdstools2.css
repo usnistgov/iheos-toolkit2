@@ -149,6 +149,12 @@ h3 {
   background-color: LightCoral !important;
 }
 
+.warningBanner {
+  font-size: 16pt;
+  background-color: yellow !important;
+  text-align: center;
+}
+
 .testOverviewHeaderNotRun {
   background-color: white !important;
   border-radius: 10px;

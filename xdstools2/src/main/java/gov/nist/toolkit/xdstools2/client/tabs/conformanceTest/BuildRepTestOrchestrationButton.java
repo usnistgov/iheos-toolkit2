@@ -28,8 +28,6 @@ class BuildRepTestOrchestrationButton extends AbstractOrchestrationButton {
         this.testContextView = testContextView;
 
         setParentPanel(initializationPanel);
-        setLabel(label);
-        setResetLabel("Reset");
         build();
         panel().add(initializationResultsPanel);
     }

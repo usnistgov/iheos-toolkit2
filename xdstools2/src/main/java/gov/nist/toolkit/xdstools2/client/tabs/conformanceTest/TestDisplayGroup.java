@@ -16,7 +16,7 @@ public class TestDisplayGroup {
     private TestContext testContext;
     private TestContextView testContextView;
     private boolean allowRun = true;
-    private boolean startExternally = false;
+    private boolean showValidate = false;
     private boolean allowDelete = true;
 
     public TestDisplayGroup(TestContext testContext, TestContextView testContextView, TestRunner testRunner) {
@@ -31,7 +31,7 @@ public class TestDisplayGroup {
             testDisplay = new TestDisplay(testOverview.getTestInstance(), this, testRunner, testContext, testContextView);
             testDisplay.allowDelete(allowDelete);
             testDisplay.allowRun(allowRun);
-            testDisplay.startExternally(startExternally);
+            testDisplay.showValidate(showValidate);
             put(testOverview.getTestInstance(), testDisplay);
         }
         testDisplay.display(testOverview);
@@ -54,15 +54,13 @@ public class TestDisplayGroup {
 
     public void allowRun(boolean allowRun) {
         this.allowRun = allowRun;
-        this.startExternally = !allowRun;
-    }
-
-    public void startExternally(boolean startExternally) {
-        this.startExternally = startExternally;
-        this.allowRun = !startExternally;
     }
 
     public void allowDelete(boolean allowDelete) {
         this.allowDelete = allowDelete;
+    }
+
+    public void showValidate(boolean showValidate) {
+        this.showValidate = showValidate;
     }
 }

@@ -4,6 +4,8 @@ import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.logical.shared.SelectionEvent;
 import com.google.gwt.event.logical.shared.SelectionHandler;
+import com.google.gwt.event.logical.shared.ValueChangeEvent;
+import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.Panel;
@@ -69,6 +71,7 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner, TestsH
 	private Map<String, List<TestInstance>> testsPerActor = new HashMap<>();
 
 	private ConformanceTestMainView mainView;
+	private AbstractOrchestrationButton orchInit = null;
 
 
 	public ConformanceTestTab() {
@@ -119,10 +122,28 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner, TestsH
 		});
 	}
 
-	private boolean isExternalStart() {
+	private boolean allowRun() {
 		ActorAndOption aao = ActorOptionManager.actorDetails(currentActorOption);
-		if (aao == null) return false;
-		return aao.isExternalStart();
+		boolean selfTest = false;
+		if (orchInit != null) {
+			selfTest = orchInit.isSelfTest();
+		}
+		boolean externalStart = aao != null && aao.isExternalStart();
+		return !externalStart || selfTest;
+	}
+
+	private boolean showValidate() {
+		ActorAndOption aao = ActorOptionManager.actorDetails(currentActorOption);
+		boolean selfTest = isSelfTest();
+		boolean externalStart = aao != null && aao.isExternalStart();
+		return externalStart && !selfTest;
+	}
+
+	private boolean isSelfTest() {
+		if (orchInit != null) {
+			return orchInit.isSelfTest();
+		}
+		return false;
 	}
 
 	public void removeTestDetails(TestInstance testInstance) {
@@ -160,6 +181,7 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner, TestsH
 		}
 
 		// Display header with statistics
+		testsHeaderView.allowRun(allowRun());
 		testsHeaderView.update(testStatistics, currentActorTypeDescription + " - " + getCurrentOptionTitle());
 	}
 
@@ -225,15 +247,15 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner, TestsH
 			if (i < optionIds.size()) {
 				currentActorOption.setOptionId(optionIds.get(i));
 			}
-			changeDisplayedActorType(currentActorOption);
+			changeDisplayedActorAndOptionType(currentActorOption);
 		}
 	}
 
 	// for use by ConfActorActivity
-	public void changeDisplayedActorType(ActorOption actorOption) {
+	public void changeDisplayedActorAndOptionType(ActorOption actorOption) {
 		currentActorOption = actorOption;
 		currentActorTypeDescription = getDescriptionForTestCollection(currentActorOption.actorTypeId);
-		displayTestCollection(mainView.getInitializationPanel(), mainView.getTestsPanel());
+		displayTestingPanel(mainView.getTestsPanel());
 	}
 
 	private String getDescriptionForTestCollection(String collectionId) {
@@ -256,7 +278,7 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner, TestsH
 			@Override
 			public void onSuccess(List<TestCollectionDefinitionDAO> testCollectionDefinitionDAOs) {
 				me.testCollectionDefinitionDAOs = testCollectionDefinitionDAOs;
-				displayTestCollectionsTabBar(mainView.getActorTabBar());
+				displayActorsTabBar(mainView.getActorTabBar());
 				currentActorTypeDescription = getDescriptionForTestCollection(currentActorOption.actorTypeId);
 				updateTestsOverviewHeader();
 
@@ -272,26 +294,38 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner, TestsH
 
 	private HTML loadingMessage;
 
-	private class RefreshTestCollectionClickHandler implements ClickHandler {
+	private class RefreshTestCollectionHandler implements ClickHandler {
 
 		@Override
 		public void onClick(ClickEvent clickEvent) {
-			displayTestCollection(mainView.getInitializationPanel(), mainView.getTestsPanel());
+			initializeTestDisplay(mainView.getTestsPanel());
+			displayTestCollection(mainView.getTestsPanel());
 		}
 	}
 
-	// load test results for a single test collection (actor type) for a single site
-	private void displayTestCollection(Panel initializationPanel, final Panel testsPanel) {
+	// This includes Testing Environment and initialization sections
+	private void displayTestingPanel(final Panel testsPanel) {
+
+		mainView.getInitializationPanel().clear();
+		displayOrchestrationHeader(mainView.getInitializationPanel());
+
+		initializeTestDisplay(testsPanel);
+		displayTestCollection(testsPanel);
+	}
+
+	private void initializeTestDisplay(Panel testsPanel) {
 		testDisplayGroup.clear();  // so they reload
 		testsPanel.clear();
 
 		loadingMessage = new HTML("Initializing...");
 		loadingMessage.setStyleName("loadingMessage");
 		testsPanel.add(loadingMessage);
+		testsHeaderView.showSelfTestWarning(isSelfTest());
+	}
 
-		initializationPanel.clear();
+	// load test results for a single test collection (actor/option) for a single site
+	private void displayTestCollection(final Panel testsPanel) {
 
-		displayOrchestrationHeader(mainView.getInitializationPanel());
 
 		// what tests are in the collection
 		currentActorOption.loadTests(new AsyncCallback<List<String>>() {
@@ -306,19 +340,18 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner, TestsH
 				for (String testId : testIds) testInstances.add(new TestInstance(testId));
 				testStatistics.clear();
 				testStatistics.setTestCount(testIds.size());
-//				testsPerActor.put(currentActorTypeId, testInstances);
 				loadingMessage.setHTML("Loading...");
-				ActorAndOption aao = ActorOptionManager.actorDetails(currentActorOption);
-				if (aao == null) return;
-				displayTests(testsPanel, testInstances, aao.isExternalStart());
+				displayTests(testsPanel, testInstances, allowRun());
 			}
 		});
 	}
 
-	private void displayTests(final Panel testsPanel, List<TestInstance> testInstances, boolean externallyStarted) {
+
+	private void displayTests(final Panel testsPanel, List<TestInstance> testInstances, boolean allowRun) {
 		// results (including logs) for a collection of tests
 
-		testDisplayGroup.startExternally(externallyStarted);
+		testDisplayGroup.allowRun(allowRun);
+		testDisplayGroup.showValidate(showValidate());
 		getToolkitServices().getTestsOverview(getCurrentTestSession(), testInstances, new AsyncCallback<List<TestOverviewDTO>>() {
 
 			public void onFailure(Throwable caught) {
@@ -337,6 +370,7 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner, TestsH
 				testsPerActor.put(currentActorOption.actorTypeId, testInstances1);
 
 				testsPanel.clear();
+				testsHeaderView.allowRun(allowRun());
 				testsPanel.add(testsHeaderView.asWidget());
 				testStatistics.clear();
 				testStatistics.setTestCount(testOverviews.size());
@@ -367,24 +401,26 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner, TestsH
 		});
 	}
 
-	private AbstractOrchestrationButton orchInit = null;
-
 	private void displayOrchestrationHeader(Panel initializationPanel) {
 		String label = "Initialize Test Environment";
 		if (currentActorOption.isRep()) {
 			orchInit = new BuildRepTestOrchestrationButton(this, testContext, testContextView, initializationPanel, label);
+			orchInit.addSelfTestClickHandler(new RefreshTestCollectionHandler());
 			initializationPanel.add(orchInit.panel());
 		}
 		else if (currentActorOption.isReg()) {
 			orchInit = new BuildRegTestOrchestrationButton(this, testContext, testContextView, initializationPanel, label);
+			orchInit.addSelfTestClickHandler(new RefreshTestCollectionHandler());
 			initializationPanel.add(orchInit.panel());
 		}
 		else if (currentActorOption.isRg()) {
 			orchInit = new BuildRgTestOrchestrationButton(this, initializationPanel, label, testContext, testContextView, this);
+			orchInit.addSelfTestClickHandler(new RefreshTestCollectionHandler());
 			initializationPanel.add(orchInit.panel());
 		}
 		else if (currentActorOption.isIg()) {
 			orchInit = new BuildIGTestOrchestrationButton(this, initializationPanel, label, testContext, testContextView, this, false, currentActorOption);
+			orchInit.addSelfTestClickHandler(new RefreshTestCollectionHandler());
 			initializationPanel.add(orchInit.panel());
 		}
 		else {
@@ -395,7 +431,7 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner, TestsH
 	}
 
 
-	private void displayTestCollectionsTabBar(TabBar actorTabBar) {
+	private void displayActorsTabBar(TabBar actorTabBar) {
 		if (actorTabBar.getTabCount() == 0) {
 			for (TestCollectionDefinitionDAO def : testCollectionDefinitionDAOs) {
 				actorTabBar.addTab(def.getCollectionTitle());
@@ -446,7 +482,7 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner, TestsH
 
 	@Override
 	public ClickHandler getRefreshTestCollectionClickHandler() {
-		return new RefreshTestCollectionClickHandler();
+		return new RefreshTestCollectionHandler();
 	}
 
 	private class DeleteAllClickHandler implements ClickHandler {
@@ -524,6 +560,14 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner, TestsH
 			new PopupMessage(e.getMessage());
 		}
 
+	}
+
+	class SelfTestValueChangeHandler implements ValueChangeHandler<Boolean> {
+
+		@Override
+		public void onValueChange(ValueChangeEvent<Boolean> valueChangeEvent) {
+
+		}
 	}
 
 	public void setRepOrchestrationResponse(RepOrchestrationResponse repOrchestrationResponse) {

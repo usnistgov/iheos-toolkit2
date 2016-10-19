@@ -44,8 +44,6 @@ public class BuildRgTestOrchestrationButton extends AbstractOrchestrationButton 
         this.testRunner = testRunner;
 
         setParentPanel(initializationPanel);
-        setLabel(label);
-        setResetLabel("Reset");
 
         FlowPanel customPanel = new FlowPanel();
 

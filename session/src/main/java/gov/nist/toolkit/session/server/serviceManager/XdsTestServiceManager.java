@@ -277,6 +277,8 @@ public class XdsTestServiceManager extends CommonService {
 			logger.debug(session.id() + ": " + "getCollectionMembers " + collectionSetName + ":" + collectionName);
 		TestKitSearchPath searchPath = session.getTestkitSearchPath();
 		Collection<String> collec =  searchPath.getCollectionMembers(collectionSetName, collectionName);
+		if (session != null)
+			logger.debug("Return " + collec.size() + " tests");
 		return new ArrayList<String>(collec);
 	}
 
