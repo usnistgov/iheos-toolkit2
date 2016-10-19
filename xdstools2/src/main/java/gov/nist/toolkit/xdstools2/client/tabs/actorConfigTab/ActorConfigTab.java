@@ -13,6 +13,7 @@ import gov.nist.toolkit.sitemanagement.client.TransactionBean.RepositoryType;
 import gov.nist.toolkit.sitemanagement.client.TransactionCollection;
 import gov.nist.toolkit.xdstools2.client.PasswordManagement;
 import gov.nist.toolkit.xdstools2.client.command.command.GetSiteNamesCommand;
+import gov.nist.toolkit.xdstools2.client.command.command.IsGazelleConfigFeedEnabledCommand;
 import gov.nist.toolkit.xdstools2.client.command.command.SaveSiteCommand;
 import gov.nist.toolkit.xdstools2.client.widgets.PopupMessage;
 import gov.nist.toolkit.xdstools2.client.StringSort;
@@ -141,23 +142,14 @@ public class ActorConfigTab extends GenericQueryTab {
 	}
 
 	void loadGazelleFeedAvailableStatus() { 
-
-		final AsyncCallback<Boolean> gazelleConfigEnabledCallback = new AsyncCallback<Boolean> () {
-
-			public void onFailure(Throwable caught) {
-				new PopupMessage(caught.getMessage());
-			}
-
-			public void onSuccess(Boolean enabled) {
-				enableGazelleReload = enabled;
+		new IsGazelleConfigFeedEnabledCommand(){
+			@Override
+			public void onComplete(Boolean result) {
+				enableGazelleReload = result;
 				if (reloadFromGazelleButton != null)
-					reloadFromGazelleButton.setEnabled(enabled);
+					reloadFromGazelleButton.setEnabled(result);
 			}
-
-		};
-
-		getToolkitServices().isGazelleConfigFeedEnabled(gazelleConfigEnabledCallback);
-
+		}.run(getCommandContext());
 	}
 
 	void updateSignInStatus() {

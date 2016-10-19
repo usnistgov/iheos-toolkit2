@@ -5,6 +5,8 @@ import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.*;
 import gov.nist.toolkit.http.client.HtmlMarkup;
+import gov.nist.toolkit.xdstools2.client.command.command.GetDashboardRegistryDataCommand;
+import gov.nist.toolkit.xdstools2.client.command.command.GetDashboardRepositoryDataCommand;
 import gov.nist.toolkit.xdstools2.shared.RegistryStatus;
 import gov.nist.toolkit.xdstools2.shared.RepositoryStatus;
 import gov.nist.toolkit.xdstools2.client.siteActorManagers.GetDocumentsSiteActorManager;
@@ -161,39 +163,27 @@ public class DashboardTab  extends GenericQueryTab {
 
 		mainDataArea.clear();
 
-		getToolkitServices().getDashboardRegistryData(new AsyncCallback<List<RegistryStatus>>() {
-
-			public void onFailure(Throwable caught) {
-				mainDataArea.add(HtmlMarkup.html(caught.getMessage()));
-			}
-
-			public void onSuccess(List<RegistryStatus> result) {
+		new GetDashboardRegistryDataCommand(){
+			@Override
+			public void onComplete(List<RegistryStatus> result) {
 				regData = result;
 				regDone = true;
 
 				if (regDone && repDone)
 					draw();
 			}
+		}.run(getCommandContext());
 
-		});
-
-		getToolkitServices().getDashboardRepositoryData(new AsyncCallback<List<RepositoryStatus>>() {
-
-			public void onFailure(Throwable caught) {
-				mainDataArea.add(HtmlMarkup.html(caught.getMessage()));
-			}
-
-			public void onSuccess(List<RepositoryStatus> result) {
+		new GetDashboardRepositoryDataCommand(){
+			@Override
+			public void onComplete(List<RepositoryStatus> result) {
 				repData = result;
 				repDone = true;
 
 				if (regDone && repDone)
 					draw();
 			}
-
-		});
-
-
+		}.run(getCommandContext());
 	}
 
 

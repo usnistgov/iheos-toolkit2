@@ -23,6 +23,8 @@ import gov.nist.toolkit.session.client.sort.TestSorter;
 import gov.nist.toolkit.sitemanagement.client.SiteSpec;
 import gov.nist.toolkit.testkitutilities.client.TestCollectionDefinitionDAO;
 import gov.nist.toolkit.xdstools2.client.command.command.AutoInitConformanceTestingCommand;
+import gov.nist.toolkit.xdstools2.client.command.command.GetTestsOverviewCommand;
+import gov.nist.toolkit.xdstools2.client.util.ClientUtils;
 import gov.nist.toolkit.xdstools2.client.widgets.PopupMessage;
 import gov.nist.toolkit.xdstools2.client.ToolWindow;
 import gov.nist.toolkit.xdstools2.client.Xdstools2;
@@ -31,6 +33,7 @@ import gov.nist.toolkit.xdstools2.client.event.testSession.TestSessionChangedEve
 import gov.nist.toolkit.xdstools2.client.tabs.GatewayTestsTabs.BuildIGTestOrchestrationButton;
 import gov.nist.toolkit.xdstools2.client.widgets.LaunchInspectorClickHandler;
 import gov.nist.toolkit.xdstools2.client.widgets.buttons.AbstractOrchestrationButton;
+import gov.nist.toolkit.xdstools2.shared.command.request.GetTestsOverviewRequest;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -363,65 +366,53 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner, TestsH
 
     private void displayTests(List<TestInstance> testInstances) {
         // results (including logs) for a collection of tests
-        getToolkitServices().getTestsOverview(getCurrentTestSession(), testInstances, new AsyncCallback<List<TestOverviewDTO>>() {
+        new GetTestsOverviewCommand(){
+            @Override
+            public void onComplete(List<TestOverviewDTO> testOverviews) {
+                // sort tests by dependencies and alphabetically
+                // save in testsPerActor so they run in this order as well
+                List<TestInstance> testInstances1 = new ArrayList<>();
+                testOverviews = new TestSorter().sort(testOverviews);
+                for (TestOverviewDTO dto : testOverviews) {
+                    testInstances1.add(dto.getTestInstance());
+                }
+                testsPerActor.put(currentActorTypeId, testInstances1);
 
-            public void onFailure(Throwable caught) {
-                new PopupMessage("getTestOverview: " + caught.getMessage());
-            }
-
-            public void onSuccess(List<TestOverviewDTO> testOverviews) {
-
-				// sort tests by dependencies and alphabetically
-				// save in testsPerActor so they run in this order as well
-				List<TestInstance> testInstances1 = new ArrayList<>();
-				testOverviews = new TestSorter().sort(testOverviews);
-				for (TestOverviewDTO dto : testOverviews) {
-					testInstances1.add(dto.getTestInstance());
-				}
-				testsPerActor.put(currentActorTypeId, testInstances1);
-
-				testsPanel.clear();
+                testsPanel.clear();
                 testsPanel.add(testsHeaderView.asWidget());
-				testStatistics.clear();
+                testStatistics.clear();
                 testStatistics.setTestCount(testOverviews.size());
                 for (TestOverviewDTO testOverview : testOverviews) {
                     addTestOverview(testOverview);
-					TestDisplay testDisplay = testDisplayGroup.display(testOverview);
-					testDisplay.display(testOverview);
-					testsPanel.add(testDisplay);
+                    TestDisplay testDisplay = testDisplayGroup.display(testOverview);
+                    testDisplay.display(testOverview);
+                    testsPanel.add(testDisplay);
                 }
                 updateTestsOverviewHeader();
-				new AutoInitConformanceTestingCommand(){
+                new AutoInitConformanceTestingCommand(){
 
-					@Override
-					public void onComplete(Boolean result) {
-						if (result)
-							orchInit.handleClick(null);   // auto init orchestration
-					}
-				}.run(getCommandContext());
+                    @Override
+                    public void onComplete(Boolean result) {
+                        if (result)
+                            orchInit.handleClick(null);   // auto init orchestration
+                    }
+                }.run(getCommandContext());
             }
-
-        });
+        }.run(new GetTestsOverviewRequest(ClientUtils.INSTANCE.getCommandContext(),testInstances));
     }
 
     private void displayIsolatedTests(List<TestInstance> testInstances) {
         // results (including logs) for a collection of tests
-        getToolkitServices().getTestsOverview(getCurrentTestSession(), testInstances, new AsyncCallback<List<TestOverviewDTO>>() {
-
-            public void onFailure(Throwable caught) {
-                new PopupMessage("getTestOverview: " + caught.getMessage());
-            }
-
-            public void onSuccess(List<TestOverviewDTO> testOverviews) {
+        new GetTestsOverviewCommand(){
+            @Override
+            public void onComplete(List<TestOverviewDTO> testOverviews) {
                 testsPanel.add(testsHeaderView.asWidget());
                 for (TestOverviewDTO testOverview : testOverviews) {
                     addTestOverview(testOverview);
-//                    displayTest(testsPanel, testDisplayGroup, testOverview);
-					testDisplayGroup.display(testOverview);
+                    testDisplayGroup.display(testOverview);
                 }
             }
-
-        });
+        }.run(new GetTestsOverviewRequest(getCommandContext(),testInstances));
     }
 
     private AbstractOrchestrationButton orchInit = null;

@@ -51,7 +51,6 @@ import gov.nist.toolkit.valregmsg.validation.factories.CommonMessageValidatorFac
 import gov.nist.toolkit.valsupport.client.MessageValidationResults;
 import gov.nist.toolkit.valsupport.client.ValidationContext;
 import gov.nist.toolkit.xdsexception.ExceptionUtil;
-import gov.nist.toolkit.xdsexception.client.EnvironmentNotSelectedException;
 import gov.nist.toolkit.xdstools2.client.util.ToolkitService;
 import gov.nist.toolkit.xdstools2.server.serviceManager.DashboardServiceManager;
 import gov.nist.toolkit.xdstools2.server.serviceManager.GazelleServiceManager;
@@ -347,8 +346,9 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements
      */
     public Map<String, String> getCollectionNames(String collectionSetName) throws Exception { return session().xdsTestServiceManager().getCollectionNames(collectionSetName); }
     public List<String> getCollectionMembers(String collectionSetName, String collectionName) throws Exception { return session().xdsTestServiceManager().getCollectionMembers(collectionSetName, collectionName); }
-    public List<TestOverviewDTO> getTestsOverview(String sessionName, List<TestInstance> testInstances) throws Exception {
-        List<TestOverviewDTO> o = session().xdsTestServiceManager().getTestsOverview(sessionName, testInstances);
+    public List<TestOverviewDTO> getTestsOverview(GetTestsOverviewRequest request) throws Exception {
+        installCommandContext(request);
+        List<TestOverviewDTO> o = session().xdsTestServiceManager().getTestsOverview(request.getTestSessionName(), request.getTestInstances());
         return o;
     }
     public LogFileContentDTO getTestLogDetails(String sessionName, TestInstance testInstance) throws Exception {
@@ -487,7 +487,10 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements
     // Gazelle Service
     //------------------------------------------------------------------------
     //------------------------------------------------------------------------
-    public String reloadSystemFromGazelle(String systemName) throws Exception { return new GazelleServiceManager(session()).reloadSystemFromGazelle(systemName); }
+    public String reloadSystemFromGazelle(ReloadSystemFromGazelleRequest request) throws Exception {
+        installCommandContext(request);
+        return new GazelleServiceManager(session()).reloadSystemFromGazelle(request.getSystem());
+    }
 
     //------------------------------------------------------------------------
     //------------------------------------------------------------------------
@@ -561,7 +564,10 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements
     }
     public String getImplementationVersion() throws NoServletSessionException  { return Installation.instance().propertyServiceManager().getImplementationVersion(); }
     public Map<String, String> getToolkitProperties()  throws NoServletSessionException { return Installation.instance().propertyServiceManager().getToolkitProperties(); }
-    public boolean isGazelleConfigFeedEnabled() throws NoServletSessionException  { return SiteServiceManager.getSiteServiceManager().useGazelleConfigFeed(); }
+    public boolean isGazelleConfigFeedEnabled(CommandContext context) throws Exception {
+        installCommandContext(context);
+        return SiteServiceManager.getSiteServiceManager().useGazelleConfigFeed();
+    }
     //	public String getToolkitEnableNwHIN() { return propertyServiceManager.getToolkitEnableNwHIN(); }
     public String setToolkitProperties(Map<String, String> props) throws Exception { return setToolkitPropertiesImpl(props); }
     public String getAdminPassword() throws NoServletSessionException  { return Installation.instance().propertyServiceManager().getAdminPassword(); }
@@ -621,8 +627,14 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements
     // Dashboard Service
     //------------------------------------------------------------------------
     //------------------------------------------------------------------------
-    public List<RegistryStatus> getDashboardRegistryData() throws Exception { return new DashboardServiceManager(session()).getDashboardRegistryData(); }
-    public List<RepositoryStatus> getDashboardRepositoryData() throws Exception { return new DashboardServiceManager(session()).getDashboardRepositoryData(); }
+    public List<RegistryStatus> getDashboardRegistryData(CommandContext context) throws Exception {
+        installCommandContext(context);
+        return new DashboardServiceManager(session()).getDashboardRegistryData();
+    }
+    public List<RepositoryStatus> getDashboardRepositoryData(CommandContext context) throws Exception {
+        installCommandContext(context);
+        return new DashboardServiceManager(session()).getDashboardRepositoryData();
+    }
 
 
     // Other support calls
@@ -867,8 +879,9 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements
     // ODDE related methods
     //------------------------------------------------------------------------
     //------------------------------------------------------------------------
-    public List<String> getSiteNamesByTranType(String transactionType) throws Exception {
-        return siteServiceManager.getSiteNamesByTran(transactionType, session().getId());
+    public List<String> getSiteNamesByTranType(GetSiteNamesByTranTypeRequest request) throws Exception {
+        installCommandContext(request);
+        return siteServiceManager.getSiteNamesByTran(request.getTransactionTypeName(), session().getId());
     }
 
     public List<DocumentEntryDetail> getOnDemandDocumentEntryDetails(SimId oddsSimId) {

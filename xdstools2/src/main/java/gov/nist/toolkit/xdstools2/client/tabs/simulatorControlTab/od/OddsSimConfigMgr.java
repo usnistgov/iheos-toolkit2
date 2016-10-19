@@ -18,11 +18,13 @@ import gov.nist.toolkit.results.client.DocumentEntryDetail;
 import gov.nist.toolkit.results.client.TestInstance;
 import gov.nist.toolkit.simcommon.client.config.SimulatorConfigElement;
 import gov.nist.toolkit.sitemanagement.client.SiteSpec;
-import gov.nist.toolkit.xdstools2.client.widgets.PopupMessage;
 import gov.nist.toolkit.xdstools2.client.StringSort;
+import gov.nist.toolkit.xdstools2.client.command.command.GetSiteNamesByTranTypeCommand;
 import gov.nist.toolkit.xdstools2.client.tabs.simulatorControlTab.*;
 import gov.nist.toolkit.xdstools2.client.tabs.simulatorControlTab.intf.SimConfigMgrIntf;
 import gov.nist.toolkit.xdstools2.client.util.ClientUtils;
+import gov.nist.toolkit.xdstools2.client.widgets.PopupMessage;
+import gov.nist.toolkit.xdstools2.shared.command.request.GetSiteNamesByTranTypeRequest;
 
 import java.util.*;
 
@@ -85,8 +87,8 @@ public class OddsSimConfigMgr implements SimConfigMgrIntf {
         getPanel().add(new HTML("<h1>On-Demand Document Source (ODDS) Simulator Configuration</h1>"));
 
         getPanel().add(new HTML("" +
-                 "This simulator supports testing of Registration and Retrieval of On-Demand patient documents. First, initialize this simulator by registering an On-Demand Document Entry (ODDE) and then retrieve the On-Demand document." +
-                 "" +
+                "This simulator supports testing of Registration and Retrieval of On-Demand patient documents. First, initialize this simulator by registering an On-Demand Document Entry (ODDE) and then retrieve the On-Demand document." +
+                "" +
                 "<hr/>"
 
         ));
@@ -213,26 +215,21 @@ public class OddsSimConfigMgr implements SimConfigMgrIntf {
         final SimulatorConfigElement oddsReposSite = config.get(SimulatorProperties.oddsRepositorySite);
         if (oddsReposSite!=null) {
             // Selecting a Repository for the ODDS
-            ClientUtils.INSTANCE.getToolkitServices().getSiteNamesByTranType(TransactionType.PROVIDE_AND_REGISTER.getName(), new AsyncCallback<List<String>>() {
+            new GetSiteNamesByTranTypeCommand(){
+                @Override
+                public void onComplete(List<String> results) {
+                    reposSSP = new SiteSelectionPresenter("reposSites", results, oddsReposSite.asList(), reposSiteBoxes);
+                }
+            }.run(new GetSiteNamesByTranTypeRequest(ClientUtils.INSTANCE.getCommandContext(),TransactionType.PROVIDE_AND_REGISTER.getName()));
+            // ----
 
-                    public void onFailure(Throwable caught) {
-                        new PopupMessage("getSiteNamesByTranType PROVIDE_AND_REGISTER:" + caught.getMessage());
-                    }
+            newRow();
+            tbl.setWidget(getRow(), 0, lblReposSiteBoxes);
+            tbl.setWidget(getRow(), 1, reposSiteBoxes);
 
-                    public void onSuccess(List<String> results) {
-                        reposSSP = new SiteSelectionPresenter("reposSites", results, oddsReposSite.asList(), reposSiteBoxes);
-                    }
-                });
-
-                // ----
-
-                newRow();
-                tbl.setWidget(getRow(), 0, lblReposSiteBoxes);
-                tbl.setWidget(getRow(), 1, reposSiteBoxes);
-
-                boolean persistenceOpt = persistenceCb.getValue();
-                lblReposSiteBoxes.setVisible(persistenceOpt);
-                reposSiteBoxes.setVisible(persistenceOpt);
+            boolean persistenceOpt = persistenceCb.getValue();
+            lblReposSiteBoxes.setVisible(persistenceOpt);
+            reposSiteBoxes.setVisible(persistenceOpt);
 
 
         }
@@ -257,7 +254,7 @@ public class OddsSimConfigMgr implements SimConfigMgrIntf {
 
 
 
-           if (SimulatorProperties.retrieveEndpoint.equals(ele.name)) {
+            if (SimulatorProperties.retrieveEndpoint.equals(ele.name)) {
 
                 newRow();
                 new ConfigTextDisplayBox(config.get(ele.name), tbl, getRow());
@@ -477,38 +474,20 @@ public class OddsSimConfigMgr implements SimConfigMgrIntf {
             tbl.setWidget(getRow(),0, regActionMessage);
             tbl.getFlexCellFormatter().setColSpan(getRow(),0,2);
 
-
-            ClientUtils.INSTANCE.getToolkitServices().getSiteNamesByTranType(TransactionType.REGISTER_ODDE.getName(), new AsyncCallback<List<String>>() {
-
-                public void onFailure(Throwable caught) {
-                    new PopupMessage("getSiteNamesByTranType REGISTER_ODDE:" + caught.getMessage());
-                }
-
-                public void onSuccess(List<String> results) {
-
-
+            new GetSiteNamesByTranTypeCommand(){
+                @Override
+                public void onComplete(List<String> results) {
                     regSSP = new SiteSelectionPresenter("regSites", results, oddsRegistrySite.asList(), regSiteBoxes);
                     regOptsVPanel.add(regSiteBoxes);
-
                     List<String> siteNames = regSSP.getSiteNames();
                     String errMsg = "";
-
                     if (siteNames==null || (siteNames!=null && siteNames.size()==0)) {
-
                         errMsg += "<li style='color:red'>No registry sites supporting an ODDE transaction are found/configured.</li>"+
                                 "<li style='color:red'>Please display a Registry site using the Simulator Manager or configure a Site that supports an ODDE transaction.</li>";
-
                         regSiteBoxes.add(new HTML("<ul>" +  errMsg + "</ul>"));
-
                     } else {
                         regButton.getElement().getStyle().setPaddingLeft(6, Style.Unit.PX);
-//                            verticalPanel.getElement().getStyle().setMarginBottom(4, Style.Unit.PX);
-//                            regButton.getElement().getStyle().setMarginTop(4, Style.Unit.PX);
-
-
                         regActionVPanel.add(regButton);
-
-
                         regButton.addClickHandler(
                                 new ClickHandler() {
                                     @Override
@@ -521,7 +500,6 @@ public class OddsSimConfigMgr implements SimConfigMgrIntf {
                                     }
                                 }
                         );
-
                         refreshImg.addClickHandler(new ClickHandler() {
                             @Override
                             public void onClick(ClickEvent clickEvent) {
@@ -529,13 +507,8 @@ public class OddsSimConfigMgr implements SimConfigMgrIntf {
                             }
                         });
                     }
-
                 }
-            });
-
-//            newRow();
-//            tbl.getFlexCellFormatter().setColSpan(getRow(),0,2);
-
+            }.run(new GetSiteNamesByTranTypeRequest(ClientUtils.INSTANCE.getCommandContext(),TransactionType.REGISTER_ODDE.getName()));
         }
     }
 
@@ -646,7 +619,7 @@ public class OddsSimConfigMgr implements SimConfigMgrIntf {
         }*/
 
 
-            // If the persistence option is ON, then saving should activate the register OD transaction.
+        // If the persistence option is ON, then saving should activate the register OD transaction.
         if (persistenceCb.getValue()) {
             if (reposSSP !=null) {
                 List<String> selectedRepos = reposSSP.getSelected();

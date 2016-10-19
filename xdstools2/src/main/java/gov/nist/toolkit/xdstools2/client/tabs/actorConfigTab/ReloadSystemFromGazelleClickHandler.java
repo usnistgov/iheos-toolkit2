@@ -22,7 +22,7 @@ class ReloadSystemFromGazelleClickHandler implements ClickHandler {
 		String systemName = this.actorConfigTab.currentEditSite.getName();
 		if (systemName == null || systemName.equals(""))
 			return;
-		new LoadGazelleConfigs(/*actorConfigTab.toolkitService, */actorConfigTab.getTabContainer(), systemName).load();
+		new LoadGazelleConfigs(systemName).load();
 	}
 	
 }

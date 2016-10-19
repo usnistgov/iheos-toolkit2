@@ -71,7 +71,7 @@ public class ToolConfigTab extends GenericQueryTab {
 		container.add(subtitle2);
 
 		container.add(loadAllGazelleConfigsBtn);
-		loadAllGazelleConfigsBtn.addClickHandler(new LoadGazelleConfigsClickHandler(getTabContainer(), "ALL"));
+		loadAllGazelleConfigsBtn.addClickHandler(new LoadGazelleConfigsClickHandler("ALL"));
 
 		container.add(new HTML("<hr />"));
 		/* new code for testkit update */

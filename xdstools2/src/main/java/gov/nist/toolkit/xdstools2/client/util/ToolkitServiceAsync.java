@@ -60,15 +60,15 @@ public interface ToolkitServiceAsync {
 	void getDefaultEnvironment(CommandContext context, AsyncCallback<String> callback);
 	void setEnvironment(CommandContext context, AsyncCallback<String> callback);
 	void getEnvironmentNames(CommandContext context, AsyncCallback<List<String>> callback);
-	void isGazelleConfigFeedEnabled(AsyncCallback<Boolean> callback);
-	void reloadSystemFromGazelle(String systemName, AsyncCallback<String> callback);
+	void isGazelleConfigFeedEnabled(CommandContext context, AsyncCallback<Boolean> callback) ;
+	void reloadSystemFromGazelle(ReloadSystemFromGazelleRequest request, AsyncCallback<String> callback);
 	void getSiteNamesWithRG(AsyncCallback<List<String>> callback);
-	void getSiteNamesByTranType(String transactionType, AsyncCallback<List<String>> callback);
+	void getSiteNamesByTranType(GetSiteNamesByTranTypeRequest request, AsyncCallback<List<String>> callback);
 
-	void getDashboardRegistryData(AsyncCallback<List<RegistryStatus>> callback);
-	void getDashboardRepositoryData(AsyncCallback<List<RepositoryStatus>> callback);
+	void getDashboardRegistryData(CommandContext context, AsyncCallback<List<RegistryStatus>> callback);
+	void getDashboardRepositoryData(CommandContext context, AsyncCallback<List<RepositoryStatus>> callback);
 
-	void getTestsOverview(String sessionName, List<TestInstance> testInstances, AsyncCallback<List<TestOverviewDTO>> callback);
+	void getTestsOverview(GetTestsOverviewRequest request, AsyncCallback<List<TestOverviewDTO>> callback);
 	void getUpdateNames(AsyncCallback<List<String>> callback);
 
 	void getTransactionRequest(SimId simName, String actor, String trans, String event, AsyncCallback<String> callback);

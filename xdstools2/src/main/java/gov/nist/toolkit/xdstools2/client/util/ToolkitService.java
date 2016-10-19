@@ -29,13 +29,12 @@ import gov.nist.toolkit.testkitutilities.client.TestCollectionDefinitionDAO;
 import gov.nist.toolkit.tk.client.TkProps;
 import gov.nist.toolkit.valsupport.client.MessageValidationResults;
 import gov.nist.toolkit.valsupport.client.ValidationContext;
-import gov.nist.toolkit.xdsexception.client.EnvironmentNotSelectedException;
 import gov.nist.toolkit.xdstools2.shared.NoServletSessionException;
-import gov.nist.toolkit.xdstools2.shared.command.CommandContext;
-import gov.nist.toolkit.xdstools2.shared.command.request.*;
-import gov.nist.toolkit.xdstools2.shared.command.InitializationResponse;
 import gov.nist.toolkit.xdstools2.shared.RegistryStatus;
 import gov.nist.toolkit.xdstools2.shared.RepositoryStatus;
+import gov.nist.toolkit.xdstools2.shared.command.CommandContext;
+import gov.nist.toolkit.xdstools2.shared.command.InitializationResponse;
+import gov.nist.toolkit.xdstools2.shared.command.request.*;
 
 import java.util.Collection;
 import java.util.List;
@@ -55,31 +54,31 @@ public interface ToolkitService extends RemoteService  {
 
 
 	/* Test management */
-	 Map<String, Result> getTestResults(List<TestInstance> testInstances, String testSession) throws NoServletSessionException ;
-	 LogFileContentDTO getTestLogDetails(String sessionName, TestInstance testInstance) throws Exception;
-	 Map<String, String> getCollectionNames(String collectionSetName) throws Exception;
-	 List<String> getCollectionMembers(String collectionSetName, String collectionName) throws Exception;
+	Map<String, Result> getTestResults(List<TestInstance> testInstances, String testSession) throws NoServletSessionException ;
+	LogFileContentDTO getTestLogDetails(String sessionName, TestInstance testInstance) throws Exception;
+	Map<String, String> getCollectionNames(String collectionSetName) throws Exception;
+	List<String> getCollectionMembers(String collectionSetName, String collectionName) throws Exception;
 	List<TestCollectionDefinitionDAO> getTestCollections(String collectionSetName) throws Exception;
-	 Map<String, String> getCollection(String collectionSetName, String collectionName) throws Exception;
-	 String getTestReadme(String test) throws Exception;
-	 List<String> getTestIndex(String test) throws Exception;
-	 List<Result> runMesaTest(String mesaTestSession, SiteSpec siteSpec, TestInstance testInstance, List<String> sections, Map<String, String> params, boolean stopOnFirstFailure) throws Exception ;
-	 TestOverviewDTO runTest(String environment, String mesaTestSession, SiteSpec siteSpec, TestInstance testInstance, Map<String, String> params, boolean stopOnFirstFailure) throws Exception;
-	 boolean isPrivateMesaTesting() throws NoServletSessionException ;
-	 List<String> getMesaTestSessionNames(CommandContext request) throws Exception;
-	 boolean addMesaTestSession(String name) throws Exception;
-	 boolean delMesaTestSession(String name) throws Exception;
+	Map<String, String> getCollection(String collectionSetName, String collectionName) throws Exception;
+	String getTestReadme(String test) throws Exception;
+	List<String> getTestIndex(String test) throws Exception;
+	List<Result> runMesaTest(String mesaTestSession, SiteSpec siteSpec, TestInstance testInstance, List<String> sections, Map<String, String> params, boolean stopOnFirstFailure) throws Exception ;
+	TestOverviewDTO runTest(String environment, String mesaTestSession, SiteSpec siteSpec, TestInstance testInstance, Map<String, String> params, boolean stopOnFirstFailure) throws Exception;
+	boolean isPrivateMesaTesting() throws NoServletSessionException ;
+	List<String> getMesaTestSessionNames(CommandContext request) throws Exception;
+	boolean addMesaTestSession(String name) throws Exception;
+	boolean delMesaTestSession(String name) throws Exception;
 
 	/* Simulator Management */
-	 List<String> getActorTypeNames() throws NoServletSessionException ;
-	 Simulator getNewSimulator(String actorTypeName, SimId simId) throws Exception;
-	 List<SimulatorConfig> getSimConfigs(List<SimId> ids) throws Exception;
+	List<String> getActorTypeNames() throws NoServletSessionException ;
+	Simulator getNewSimulator(String actorTypeName, SimId simId) throws Exception;
+	List<SimulatorConfig> getSimConfigs(List<SimId> ids) throws Exception;
 	List<SimulatorConfig> getAllSimConfigs(GetAllSimConfigsRequest user) throws Exception;
-	 String putSimConfig(SimulatorConfig config) throws Exception;
-	 String deleteConfig(SimulatorConfig config) throws Exception;
-	 Map<String, SimId> getActorSimulatorNameMap() throws NoServletSessionException;
+	String putSimConfig(SimulatorConfig config) throws Exception;
+	String deleteConfig(SimulatorConfig config) throws Exception;
+	Map<String, SimId> getActorSimulatorNameMap() throws NoServletSessionException;
 	//	 List<String> getSimulatorTransactionNames(String simid) throws Exception;
-	 int removeOldSimulators() throws NoServletSessionException;
+	int removeOldSimulators() throws NoServletSessionException;
 	List<SimulatorStats> getSimulatorStats(List<SimId> simid) throws Exception;
 	List<Pid> getPatientIds(SimId simId) throws Exception;
 	String addPatientIds(SimId simId, List<Pid> pids) throws Exception;
@@ -179,18 +178,18 @@ public interface ToolkitService extends RemoteService  {
 
 	List<String> getUpdateNames() throws NoServletSessionException ;
 	List<TestInstance> getTestlogListing(String sessionName) throws Exception;
-	List<TestOverviewDTO> getTestsOverview(String sessionName, List<TestInstance> testInstances) throws Exception;
+	List<TestOverviewDTO> getTestsOverview(GetTestsOverviewRequest request) throws Exception;
 
-	List<RegistryStatus> getDashboardRegistryData() throws Exception;
-	List<RepositoryStatus> getDashboardRepositoryData() throws Exception;
+	List<RegistryStatus> getDashboardRegistryData(CommandContext context) throws Exception;
+	List<RepositoryStatus> getDashboardRepositoryData(CommandContext context) throws Exception;
 
 	List<String> getSiteNamesWithRG() throws Exception;
 	List<String> getSiteNamesWithRIG() throws Exception;
 	List<String> getSiteNamesWithIDS() throws Exception;
-	List<String> getSiteNamesByTranType(String transactionType) throws Exception;
+	List<String> getSiteNamesByTranType(GetSiteNamesByTranTypeRequest request) throws Exception;
 
-	String reloadSystemFromGazelle(String systemName) throws Exception;
-	boolean isGazelleConfigFeedEnabled() throws NoServletSessionException ;
+	String reloadSystemFromGazelle(ReloadSystemFromGazelleRequest request) throws Exception;
+	boolean isGazelleConfigFeedEnabled(CommandContext context) throws Exception;
 	List<String> getEnvironmentNames(CommandContext context) throws Exception;
 	String setEnvironment(CommandContext context) throws Exception;
 	String getCurrentEnvironment() throws NoServletSessionException;
@@ -237,11 +236,11 @@ public interface ToolkitService extends RemoteService  {
 	// Tests Overview Tab
 	//------------------------------------------------------------------------
 	//------------------------------------------------------------------------
-	 List<Test> reloadAllTestResults(String sessionName) throws Exception;
-	 List<Test> runAllTests(Site site) throws NoServletSessionException;
-	 List<Test> deleteAllTestResults(Site site) throws NoServletSessionException;
-	 Test runSingleTest(Site site, int testId) throws NoServletSessionException;
-	 TestOverviewDTO deleteSingleTestResult(String testSession, TestInstance testInstance) throws Exception;
+	List<Test> reloadAllTestResults(String sessionName) throws Exception;
+	List<Test> runAllTests(Site site) throws NoServletSessionException;
+	List<Test> deleteAllTestResults(Site site) throws NoServletSessionException;
+	Test runSingleTest(Site site, int testId) throws NoServletSessionException;
+	TestOverviewDTO deleteSingleTestResult(String testSession, TestInstance testInstance) throws Exception;
 
 	String setMesaTestSession(String sessionName) throws NoServletSessionException ;
 	String getNewPatientId(String assigningAuthority) throws NoServletSessionException ;
@@ -254,16 +253,16 @@ public interface ToolkitService extends RemoteService  {
 	// Background test plan running methods related to On-Demand Documents
 	//------------------------------------------------------------------------
 	//------------------------------------------------------------------------
-	 Result register(String username, TestInstance testInstance, SiteSpec registry, Map<String, String> params) throws Exception;
-	 Map<String, String> registerWithLocalizedTrackingInODDS(String username, TestInstance testInstance, SiteSpec registry, SimId oddsSimId, Map<String, String> params) throws Exception;
-	 List<DocumentEntryDetail> getOnDemandDocumentEntryDetails(SimId oddsSimId);
+	Result register(String username, TestInstance testInstance, SiteSpec registry, Map<String, String> params) throws Exception;
+	Map<String, String> registerWithLocalizedTrackingInODDS(String username, TestInstance testInstance, SiteSpec registry, SimId oddsSimId, Map<String, String> params) throws Exception;
+	List<DocumentEntryDetail> getOnDemandDocumentEntryDetails(SimId oddsSimId);
 
 	//------------------------------------------------------------------------
 	//------------------------------------------------------------------------
 	// Interaction methods
 	//------------------------------------------------------------------------
 	//------------------------------------------------------------------------
-	 InteractingEntity getInteractionFromModel(InteractingEntity model) throws Exception;
+	InteractingEntity getInteractionFromModel(InteractingEntity model) throws Exception;
 
 	String clearTestSession(CommandContext context) throws Exception;
 

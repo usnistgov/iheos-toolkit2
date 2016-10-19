@@ -1,12 +1,13 @@
 package gov.nist.toolkit.xdstools2.client.widgets;
 
-import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HTML;
 import gov.nist.toolkit.services.client.AbstractOrchestrationResponse;
 import gov.nist.toolkit.session.client.TestOverviewDTO;
+import gov.nist.toolkit.xdstools2.client.command.command.GetTestsOverviewCommand;
 import gov.nist.toolkit.xdstools2.client.tabs.conformanceTest.*;
 import gov.nist.toolkit.xdstools2.client.util.ClientUtils;
+import gov.nist.toolkit.xdstools2.shared.command.request.GetTestsOverviewRequest;
 
 import java.util.List;
 
@@ -15,15 +16,11 @@ import java.util.List;
  */
 public class OrchestrationSupportTestsDisplay extends FlowPanel {
 
-//    public OrchestrationSupportTestsDisplay(final AbstractOrchestrationResponse orchResponse, final String testSession, final SiteSpec siteSpec) {
+    //    public OrchestrationSupportTestsDisplay(final AbstractOrchestrationResponse orchResponse, final String testSession, final SiteSpec siteSpec) {
     public OrchestrationSupportTestsDisplay(final AbstractOrchestrationResponse orchResponse, final TestContext testContext, final TestContextDisplay testContextDisplay, final TestRunner testRunner) {
-        ClientUtils.INSTANCE.getToolkitServices().getTestsOverview(testContext.getTestSession(), orchResponse.getTestInstances(), new AsyncCallback<List<TestOverviewDTO>>() {
-
-            public void onFailure(Throwable caught) {
-                new PopupMessage("getTestOverview: " + caught.getMessage());
-            }
-
-            public void onSuccess(List<TestOverviewDTO> testOverviews) {
+        new GetTestsOverviewCommand(){
+            @Override
+            public void onComplete(List<TestOverviewDTO> testOverviews) {
                 add(new HTML("Utilities run to initialize environment"));
                 TestDisplayGroup orchGroup = new TestDisplayGroup(testContext, testContextDisplay, testRunner);
                 orchGroup.setAllowRun(false);
@@ -33,8 +30,6 @@ public class OrchestrationSupportTestsDisplay extends FlowPanel {
                     add(testDisplay);
                 }
             }
-
-        });
-
+        }.run(new GetTestsOverviewRequest(ClientUtils.INSTANCE.getCommandContext(),orchResponse.getTestInstances()));
     }
 }
