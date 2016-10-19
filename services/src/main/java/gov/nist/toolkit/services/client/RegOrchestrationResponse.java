@@ -45,4 +45,9 @@ public class RegOrchestrationResponse extends AbstractOrchestrationResponse {
     public void setMpq2Pid(Pid mpq2Pid) {
         this.mpq2Pid = mpq2Pid;
     }
+
+    @Override
+    public boolean isExternalStart() {
+        return false;
+    }
 }

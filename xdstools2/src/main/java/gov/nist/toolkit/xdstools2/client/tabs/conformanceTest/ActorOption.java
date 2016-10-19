@@ -55,6 +55,14 @@ public class ActorOption {
         this.optionId = optionId;
     }
 
+    public String getActorTypeId() {
+        return actorTypeId;
+    }
+
+    public String getOptionId() {
+        return optionId;
+    }
+
     @Override
     public String toString() {
         return "ActorOption: actorType=" + actorTypeId + " option=" + optionId;

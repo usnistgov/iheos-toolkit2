@@ -20,6 +20,7 @@ public class IgOrchestrationResponse extends AbstractOrchestrationResponse {
     private Pid noAdOptionPid;
     private Site supportRG1;
     private Site supportRG2;
+    private boolean externalStart;
 
     public IgOrchestrationResponse() {}
 
@@ -93,5 +94,14 @@ public class IgOrchestrationResponse extends AbstractOrchestrationResponse {
 
     public void setNoAdOptionPid(Pid noAdOptionPid) {
         this.noAdOptionPid = noAdOptionPid;
+    }
+
+    @Override
+    public boolean isExternalStart() {
+        return false;
+    }
+
+    public void setExternalStart(boolean externalStart) {
+        this.externalStart = externalStart;
     }
 }

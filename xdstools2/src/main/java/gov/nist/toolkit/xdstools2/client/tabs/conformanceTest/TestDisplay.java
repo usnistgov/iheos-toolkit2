@@ -1,9 +1,6 @@
 package gov.nist.toolkit.xdstools2.client.tabs.conformanceTest;
 
-import com.google.gwt.user.client.ui.DisclosurePanel;
-import com.google.gwt.user.client.ui.FlowPanel;
-import com.google.gwt.user.client.ui.HTML;
-import com.google.gwt.user.client.ui.Image;
+import com.google.gwt.user.client.ui.*;
 import gov.nist.toolkit.results.client.TestInstance;
 import gov.nist.toolkit.session.client.logtypes.SectionOverviewDTO;
 import gov.nist.toolkit.session.client.logtypes.TestOverviewDTO;
@@ -23,6 +20,7 @@ public class TestDisplay extends FlowPanel {
     private TestInstance testInstance;
     private boolean allowDelete= true;
     private boolean allowRun = true;
+    private boolean startExternally = false;
 
     public TestDisplay(TestInstance testInstance, TestDisplayGroup testDisplayGroup, TestRunner testRunner, TestContext testContext, TestContextView testContextView) {
         this.testInstance = testInstance;
@@ -36,12 +34,17 @@ public class TestDisplay extends FlowPanel {
         add(panel);
     }
 
-    public void setAllowDelete(boolean allowDelete) {
+    public void allowDelete(boolean allowDelete) {
         this.allowDelete = allowDelete;
     }
 
-    public void setAllowRun(boolean allowRun) {
+    public void allowRun(boolean allowRun) {
         this.allowRun = allowRun;
+    }
+
+    public void startExternally(boolean startExternally) {
+        this.startExternally = startExternally;
+        this.allowRun = !startExternally;
     }
 
     public void display(TestOverviewDTO testOverview) {
@@ -91,6 +94,12 @@ public class TestDisplay extends FlowPanel {
             inspect.addClickHandler(new LaunchInspectorClickHandler(testOverview.getTestInstance(), testContext.getTestSession(), testContext.getCurrentSiteSpec()));
             inspect.setTitle("Inspect results");
             header.add(inspect);
+        }
+
+        if (startExternally) {
+            Anchor tag = new Anchor("Validate");
+            tag.addClickHandler(new ValidateClickHandler());
+            header.add(tag);
         }
 
         body.add(new HTML(testOverview.getDescription()));

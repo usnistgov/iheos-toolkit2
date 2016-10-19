@@ -27,8 +27,8 @@ public class OrchestrationSupportTestsDisplay extends FlowPanel {
             public void onSuccess(List<TestOverviewDTO> testOverviews) {
                 add(new HTML("Utilities run to initialize environment"));
                 TestDisplayGroup orchGroup = new TestDisplayGroup(testContext, testContextView, testRunner);
-                orchGroup.setAllowRun(false);
-                orchGroup.setAllowDelete(false);
+                orchGroup.allowRun(false);
+                orchGroup.allowDelete(false);
                 for (TestOverviewDTO testOverview : testOverviews) {
                     TestDisplay testDisplay = orchGroup.display(testOverview);
                     add(testDisplay);

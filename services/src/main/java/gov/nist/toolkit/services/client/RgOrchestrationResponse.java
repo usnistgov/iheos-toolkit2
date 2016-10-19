@@ -84,11 +84,9 @@ public class RgOrchestrationResponse  extends AbstractOrchestrationResponse {
         this.simplePid = simplePid;
     }
 
-//    public Pid getT12306Pid() {
-//        return t12306Pid;
-//    }
-//
-//    public void setT12306Pid(Pid t12306Pid) {
-//        this.t12306Pid = t12306Pid;
-//    }
+    @Override
+    public boolean isExternalStart() {
+        return false;
+    }
+
 }

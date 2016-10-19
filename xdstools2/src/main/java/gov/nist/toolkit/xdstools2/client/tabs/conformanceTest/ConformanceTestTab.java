@@ -37,15 +37,6 @@ import java.util.Map;
  * All Conformance tests will be run out of here
  */
 public class ConformanceTestTab extends ToolWindow implements TestRunner, TestsHeaderView.Controller {
-	// ActorType => list of options
-	private static final Map<String, List<ActorAndOptions>> actorOptions;
-	static {
-		actorOptions = new HashMap<>();
-		actorOptions.put("ig",
-				java.util.Arrays.asList(
-						new ActorAndOptions("ig", "", "Required"),
-						new ActorAndOptions("ig", "ad", "Affinity Domain Option")));
-	};
 
 	private final ConformanceTestTab me;
 
@@ -55,7 +46,7 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner, TestsH
 	private TestDisplayGroup testDisplayGroup;
 	private TestContext testContext = new TestContext(this);
 
-	private AbstractOrchestrationResponse orchestrationResponse;  // can be any of the following - contains common elements
+	private AbstractOrchestrationResponse orchestrationResponse;
 	private RepOrchestrationResponse repOrchestrationResponse;
 
 	private final TestStatistics testStatistics = new TestStatistics();
@@ -80,10 +71,9 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner, TestsH
 	private ConformanceTestMainView mainView;
 
 
-
 	public ConformanceTestTab() {
 		me = this;
-		mainView = new ConformanceTestMainView(this, new OptionsTabBar(actorOptions));
+		mainView = new ConformanceTestMainView(this, new OptionsTabBar());
 		testContextView = new TestContextView(this, mainView.getTestSessionDescription(), testContext);
 		testContext.setTestContextView(testContextView);
 		testDisplayGroup = new TestDisplayGroup(testContext, testContextView, this);
@@ -129,6 +119,12 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner, TestsH
 		});
 	}
 
+	private boolean isExternalStart() {
+		ActorAndOption aao = ActorOptionManager.actorDetails(currentActorOption);
+		if (aao == null) return false;
+		return aao.isExternalStart();
+	}
+
 	public void removeTestDetails(TestInstance testInstance) {
 		testOverviewDTOs.remove(testInstance.getId());
 		updateTestsOverviewHeader();
@@ -168,12 +164,10 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner, TestsH
 	}
 
 	private String getCurrentOptionTitle() {
-		List<ActorAndOptions> aos =  actorOptions.get(currentActorOption.actorTypeId);
-		if (aos != null) {
-			for (ActorAndOptions ao : aos) {
-				if (ao.getOptionId().equals(currentActorOption.optionId))
-					return ao.getOptionTitle();
-			}
+		ActorAndOption aao =  ActorOptionManager.actorDetails(currentActorOption);
+		if (aao != null) {
+			if (aao.getOptionId().equals(currentActorOption.optionId))
+				return aao.getOptionTitle();
 		}
 		return "Required";
 	}
@@ -181,9 +175,9 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner, TestsH
 	@Override
 	public String getTitle() { return "Conformance Tests"; }
 
-    /**
-     *
-     */
+	/**
+	 *
+	 */
 	private void initializeTestingContext() {
 		if (initTestSession != null) {
 			setCurrentTestSession(initTestSession);
@@ -227,11 +221,11 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner, TestsH
 		@Override
 		public void onSelection(SelectionEvent<Integer> selectionEvent) {
 			int i = selectionEvent.getSelectedItem();
-			List<ActorAndOptions> options = actorOptions.get(currentActorOption.actorTypeId);
-			if (i < options.size()) {
-				currentActorOption.setOptionId(options.get(i).getOptionId());
+			List<String> optionIds = ActorOptionManager.optionIds(currentActorOption.actorTypeId);
+			if (i < optionIds.size()) {
+				currentActorOption.setOptionId(optionIds.get(i));
 			}
- 			changeDisplayedActorType(currentActorOption);
+			changeDisplayedActorType(currentActorOption);
 		}
 	}
 
@@ -314,20 +308,24 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner, TestsH
 				testStatistics.setTestCount(testIds.size());
 //				testsPerActor.put(currentActorTypeId, testInstances);
 				loadingMessage.setHTML("Loading...");
-				displayTests(testsPanel, testInstances);
+				ActorAndOption aao = ActorOptionManager.actorDetails(currentActorOption);
+				if (aao == null) return;
+				displayTests(testsPanel, testInstances, aao.isExternalStart());
 			}
 		});
 	}
 
-    private void displayTests(final Panel testsPanel, List<TestInstance> testInstances) {
-        // results (including logs) for a collection of tests
-        getToolkitServices().getTestsOverview(getCurrentTestSession(), testInstances, new AsyncCallback<List<TestOverviewDTO>>() {
+	private void displayTests(final Panel testsPanel, List<TestInstance> testInstances, boolean externallyStarted) {
+		// results (including logs) for a collection of tests
 
-            public void onFailure(Throwable caught) {
-                new PopupMessage("getTestOverview: " + caught.getMessage());
-            }
+		testDisplayGroup.startExternally(externallyStarted);
+		getToolkitServices().getTestsOverview(getCurrentTestSession(), testInstances, new AsyncCallback<List<TestOverviewDTO>>() {
 
-            public void onSuccess(List<TestOverviewDTO> testOverviews) {
+			public void onFailure(Throwable caught) {
+				new PopupMessage("getTestOverview: " + caught.getMessage());
+			}
+
+			public void onSuccess(List<TestOverviewDTO> testOverviews) {
 
 				// sort tests by dependencies and alphabetically
 				// save in testsPerActor so they run in this order as well
@@ -339,37 +337,37 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner, TestsH
 				testsPerActor.put(currentActorOption.actorTypeId, testInstances1);
 
 				testsPanel.clear();
-                testsPanel.add(testsHeaderView.asWidget());
+				testsPanel.add(testsHeaderView.asWidget());
 				testStatistics.clear();
-                testStatistics.setTestCount(testOverviews.size());
-                for (TestOverviewDTO testOverview : testOverviews) {
-                    addTestOverview(testOverview);
+				testStatistics.setTestCount(testOverviews.size());
+				for (TestOverviewDTO testOverview : testOverviews) {
+					addTestOverview(testOverview);
 //                    displayTest(testsPanel, testDisplayGroup, testOverview);
 					TestDisplay testDisplay = testDisplayGroup.display(testOverview);
 					testDisplay.display(testOverview);
 					testsPanel.add(testDisplay);
-                }
-                updateTestsOverviewHeader();
+				}
+				updateTestsOverviewHeader();
 
-                getToolkitServices().getAutoInitConformanceTesting(new AsyncCallback<Boolean>() {
-                    @Override
-                    public void onFailure(Throwable throwable) {
+				getToolkitServices().getAutoInitConformanceTesting(new AsyncCallback<Boolean>() {
+					@Override
+					public void onFailure(Throwable throwable) {
 
-                    }
+					}
 
-                    @Override
-                    public void onSuccess(Boolean aBoolean) {
-                        if (aBoolean)
-                            orchInit.handleClick(null);   // auto init orchestration
-                    }
-                });
+					@Override
+					public void onSuccess(Boolean aBoolean) {
+						if (aBoolean)
+							orchInit.handleClick(null);   // auto init orchestration
+					}
+				});
 
-            }
+			}
 
-        });
-    }
+		});
+	}
 
-    private AbstractOrchestrationButton orchInit = null;
+	private AbstractOrchestrationButton orchInit = null;
 
 	private void displayOrchestrationHeader(Panel initializationPanel) {
 		String label = "Initialize Test Environment";
@@ -377,21 +375,21 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner, TestsH
 			orchInit = new BuildRepTestOrchestrationButton(this, testContext, testContextView, initializationPanel, label);
 			initializationPanel.add(orchInit.panel());
 		}
-        else if (currentActorOption.isReg()) {
-            orchInit = new BuildRegTestOrchestrationButton(this, testContext, testContextView, initializationPanel, label);
-            initializationPanel.add(orchInit.panel());
-        }
-        else if (currentActorOption.isRg()) {
-            orchInit = new BuildRgTestOrchestrationButton(this, initializationPanel, label, testContext, testContextView, this);
-            initializationPanel.add(orchInit.panel());
-        }
-		else if (currentActorOption.isIg()) {
-			orchInit = new BuildIGTestOrchestrationButton(this, initializationPanel, label, testContext, testContextView, this, false);
+		else if (currentActorOption.isReg()) {
+			orchInit = new BuildRegTestOrchestrationButton(this, testContext, testContextView, initializationPanel, label);
 			initializationPanel.add(orchInit.panel());
 		}
-        else {
-            if (testContext.getSiteUnderTest() != null)
-			    siteToIssueTestAgainst = testContext.getSiteUnderTestAsSiteSpec();
+		else if (currentActorOption.isRg()) {
+			orchInit = new BuildRgTestOrchestrationButton(this, initializationPanel, label, testContext, testContextView, this);
+			initializationPanel.add(orchInit.panel());
+		}
+		else if (currentActorOption.isIg()) {
+			orchInit = new BuildIGTestOrchestrationButton(this, initializationPanel, label, testContext, testContextView, this, false, currentActorOption);
+			initializationPanel.add(orchInit.panel());
+		}
+		else {
+			if (testContext.getSiteUnderTest() != null)
+				siteToIssueTestAgainst = testContext.getSiteUnderTestAsSiteSpec();
 		}
 
 	}
@@ -495,14 +493,14 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner, TestsH
 			return;
 		}
 
-        if (ActorType.REPOSITORY.getShortName().equals(currentActorOption.actorTypeId)) {
-            parms.put("$patientid$", repOrchestrationResponse.getPid().asString());
-        }
+		if (ActorType.REPOSITORY.getShortName().equals(currentActorOption.actorTypeId)) {
+			parms.put("$patientid$", repOrchestrationResponse.getPid().asString());
+		}
 
-        if (getSiteToIssueTestAgainst() == null) {
-            new PopupMessage("Test Setup must be initialized");
-            return;
-        }
+		if (getSiteToIssueTestAgainst() == null) {
+			new PopupMessage("Test Setup must be initialized");
+			return;
+		}
 
 		try {
 			getToolkitServices().runTest(getEnvironmentSelection(), getCurrentTestSession(), getSiteToIssueTestAgainst(), testInstance, parms, true, new AsyncCallback<TestOverviewDTO>() {
@@ -534,10 +532,10 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner, TestsH
 	}
 
 	public void setOrchestrationResponse(AbstractOrchestrationResponse repOrchestrationResponse) {
-        this.orchestrationResponse = repOrchestrationResponse;
+		this.orchestrationResponse = repOrchestrationResponse;
 	}
 
-    public String getWindowShortName() {
+	public String getWindowShortName() {
 		return "testloglisting";
 	}
 

@@ -3,15 +3,17 @@ package gov.nist.toolkit.xdstools2.client.tabs.conformanceTest;
 /**
  *
  */
-public class ActorAndOptions {
+public class ActorAndOption {
     private String actorId;
     private String optionId;
     private String optionTitle;
+    private boolean externalStart;
 
-    public ActorAndOptions(String actorId, String optionId, String optionTitle) {
+    public ActorAndOption(String actorId, String optionId, String optionTitle, boolean externalStart) {
         this.actorId = actorId;
         this.optionId = optionId;
         this.optionTitle = optionTitle;
+        this.externalStart = externalStart;
     }
 
     public String getActorId() {
@@ -36,5 +38,9 @@ public class ActorAndOptions {
 
     public void setOptionTitle(String optionTitle) {
         this.optionTitle = optionTitle;
+    }
+
+    public boolean isExternalStart() {
+        return externalStart;
     }
 }
