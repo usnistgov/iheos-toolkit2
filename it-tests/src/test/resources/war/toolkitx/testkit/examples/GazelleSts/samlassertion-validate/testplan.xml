@@ -2,7 +2,7 @@
   <Test>GazelleSts/samlassertion-validate</Test>
   <TestStep id="validate">
     <ExpectedStatus>Success</ExpectedStatus>
-    <StsTransaction stsQuery="validate">
+    <GazelleStsTransaction stsQuery="validate">
       <Headers>
         Content-Type: application/soap+xml;charset=UTF-8
       </Headers>
@@ -11,6 +11,6 @@
       -->
       <BodyFile>body.txt</BodyFile>
       <UseReport reportName="saml-assertion" section="samlassertion-issue" step="issue" useAs="$saml-assertion$"/>
-    </StsTransaction>
+    </GazelleStsTransaction>
   </TestStep>
 </TestPlan>

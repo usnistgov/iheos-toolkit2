@@ -372,7 +372,7 @@ public class StepContext extends BasicContext implements ErrorReportingInterface
 				    hTransaction.setTransType(instruction.getAttributeValue(new QName("type")));
 					transaction = hTransaction;
 					break;
-				case "StsTransaction":
+				case "GazelleStsTransaction":
 					HTTPTransaction stsTransaction = new HTTPTransaction(this, instruction, instruction_output);
 					stsTransaction.setNoMetadataProcessing(true);
 					stsTransaction.setNoReportManagerPreRun(true);

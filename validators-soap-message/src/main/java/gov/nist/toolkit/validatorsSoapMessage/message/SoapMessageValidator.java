@@ -129,7 +129,7 @@ public class SoapMessageValidator extends AbstractMessageValidator {
 
         /*
             Gazelle STS SAML validation
-            Sunil.
+            - Sunil
          */
         if (header!=null && vc.requiresStsSaml && vc.isRequest) {
             mvc.addMessageValidator("STS SAML Validator", new StsSamlValidator(vc,er,mvc, rvi, header), erBuilder.buildNewErrorRecorder());

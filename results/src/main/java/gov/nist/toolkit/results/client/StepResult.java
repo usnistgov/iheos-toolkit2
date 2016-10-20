@@ -21,6 +21,7 @@ public class StepResult implements IsSerializable, Serializable {
 	public List<ObjectRef> toBeRetrieved;
 	TestLog testLog = null;  // loaded separately by client
 	boolean haveLogs = false;
+	private List<String> soapFaults = new ArrayList<>();
 
 	public StepResult() {
 		metadata = new MetadataCollection();
@@ -109,5 +110,13 @@ public class StepResult implements IsSerializable, Serializable {
 
 	public void setRegistryResponseStatus(String registryResponseStatus) {
 		this.registryResponseStatus = registryResponseStatus;
+	}
+
+	public List<String> getSoapFaults() {
+		return soapFaults;
+	}
+
+	public void setSoapFaults(List<String> soapFaults) {
+		this.soapFaults = soapFaults;
 	}
 }

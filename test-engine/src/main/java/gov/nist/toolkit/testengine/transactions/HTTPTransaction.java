@@ -4,6 +4,7 @@ import gov.nist.toolkit.configDatatypes.client.TransactionType;
 import gov.nist.toolkit.http.HttpParseException;
 import gov.nist.toolkit.http.HttpParserBa;
 import gov.nist.toolkit.registrymsg.registry.RegistryResponseParser;
+import gov.nist.toolkit.soap.http.SoapFault;
 import gov.nist.toolkit.testengine.engine.ReportManager;
 import gov.nist.toolkit.testengine.engine.StepContext;
 import gov.nist.toolkit.testengine.engine.Transactions;
@@ -127,7 +128,9 @@ public class HTTPTransaction extends BasicTransaction {
                                 if (validateStsValidate(responseHeaders, responseString)) return;
                             }
                         } else {
-                            s_ctx.set_error("HTTP error code: " + statusLine.getStatusCode()  + " Reason: " + statusLine.getReasonPhrase());
+                            String message = "HTTP error code: " + statusLine.getStatusCode()  + " Reason: " + statusLine.getReasonPhrase();
+                            s_ctx.set_error(message);
+                            s_ctx.set_fault(SoapFault.FaultCodes.Receiver.toString(), message);
                             failed();
                             return;
                         }
@@ -138,10 +141,13 @@ public class HTTPTransaction extends BasicTransaction {
                     failed();
                 } finally {
                     //response.close();
+                    inputStream.close();
                 }
 
-        } catch (Throwable e) {
-            s_ctx.set_error(e.toString() + ":\n" + ExceptionUtil.exception_details(e));
+        } catch (Exception e) {
+            String message = e.toString() + ":\n" + ExceptionUtil.exception_details(e);
+            s_ctx.set_error(message);
+            s_ctx.set_fault(SoapFault.FaultCodes.Receiver.toString(), message);
             failed();
         } finally {
             //httpclient.close();
@@ -270,7 +276,8 @@ public class HTTPTransaction extends BasicTransaction {
         String val = xpathExpression.stringValueOf(envelopeEle);
 
         if (val==null || !"http://docs.oasis-open.org/ws-sx/ws-trust/200512/status/valid".equals(val)) {
-            s_ctx.set_error("SAML Assertion: Null Status Code or invalid value.");
+            String message = "HTTPTransaction: STS validation service returned unexpected SAML assertion status: " + val;
+            s_ctx.set_fault(SoapFault.FaultCodes.Sender.toString(), message);
             failed();
             return false;
         }
@@ -284,7 +291,7 @@ public class HTTPTransaction extends BasicTransaction {
         AXIOMXPath xpathExpression = new AXIOMXPath ("//*[local-name()='Body']/*[local-name()='RequestSecurityTokenResponseCollection']/*[local-name()='RequestSecurityTokenResponse']/*[local-name()='RequestedSecurityToken']/*[local-name()='Assertion']");
         List nodeList = xpathExpression.selectNodes(envelopeEle);
         if (nodeList.size() != 1) {
-            s_ctx.set_error("Cannot extract SAML Assertion from SOAP Message");
+            s_ctx.set_error("Cannot extract STS SAML Assertion from SOAP Message");
             failed();
             return false;
         }

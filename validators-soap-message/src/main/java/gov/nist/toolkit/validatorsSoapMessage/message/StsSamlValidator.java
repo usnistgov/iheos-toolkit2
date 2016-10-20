@@ -104,9 +104,10 @@ public class StsSamlValidator extends AbstractMessageValidator {
 
                         if (results.size() == 1) {
                             if (!results.get(0).passed()) {
-                                er.err(XdsErrorCode.Code.SoapFault, new ToolkitRuntimeException("STS SAML validation failed: Step failed."));
-                                // TODO: soapFault
-//                                SoapFault soapFault = new SoapFault(SoapFault.FaultCodes.DataEncodingUnknown)
+                                List<String> soapFaults = results.get(0).getStepResults().get(0).getSoapFaults();
+                                if (soapFaults!=null && soapFaults.size()>0) {
+                                    er.err(XdsErrorCode.Code.SoapFault, new ToolkitRuntimeException("STS SAML validation failed: Step failed: " + soapFaults.get(0).toString()));
+                                }
                             }
                         } else {
                             er.err(XdsErrorCode.Code.SoapFault, new ToolkitRuntimeException("STS SAML validation failed: No result."));
@@ -134,7 +135,7 @@ public class StsSamlValidator extends AbstractMessageValidator {
          System.getProperty("javax.net.ssl.trustStore");
 
         if (tsSysProp==null) {
-            String tsFileName = "/gazelle_sts_cert_truststore";
+            String tsFileName = "/gazelle/gazelle_sts_cert_truststore.jks";
             URL tsURL = getClass().getResource(tsFileName); // Should this be a toolkit system property variable?
             if (tsURL!=null) {
                 File tsFile = new File(tsURL.getFile());

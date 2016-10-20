@@ -13,8 +13,8 @@ import gov.nist.toolkit.sitemanagement.client.Site
 import gov.nist.toolkit.testengine.scripts.BuildCollections
 import gov.nist.toolkit.toolkitApi.SimulatorBuilder
 import gov.nist.toolkit.toolkitServicesCommon.SimConfig
-import spock.lang.Ignore
 import spock.lang.Shared
+import spock.lang.Ignore
 /**
  * Test the STS as provided by Gazelle using Toolkit's HttpTransaction step instruction
  * References:
@@ -33,6 +33,8 @@ class StsSamlAssertionSpec extends ToolkitSpecification {
     @Shared Site gazelleStsSite
     @Shared Session tkSession
     @Shared SimConfig rrConfig = null
+
+    @Shared String gazelleSiteName = "GazelleSts" // Two choices: Use "GazelleSts" or "GazelleSts-bad"
 
     def setupSpec() {   // one time setup done when class launched
         startGrizzly('8889')
@@ -61,7 +63,7 @@ class StsSamlAssertionSpec extends ToolkitSpecification {
         boolean isSecure = true;
         boolean isAsync = false;
 
-        gazelleStsSite = new Site("GazelleSts")
+        gazelleStsSite = new Site(gazelleSiteName)
         gazelleStsSite.addTransaction(transName, endpoint, isSecure, isAsync);
 
         new SimCache().getSimManagerForSession("sunil",true)
@@ -80,12 +82,12 @@ class StsSamlAssertionSpec extends ToolkitSpecification {
         Collection<Site> sites = new SimCache().getAllSites()
 
         for (Site site : sites) {
-            if ("GazelleSts".equals(site.getName())) {
+            if (gazelleSiteName.equals(site.getName())) {
                 gazelleStsSite = site;
                 System.out.println("Found site: <" + site.getName() +"> endpoint: " + site.getEndpoint(TransactionType.STS, true, false))
             }
         }
-        System.out.println("----" + gazelleStsSite.getEndpoint(TransactionType.STS, true, false))
+        System.out.println("Endpoint is ----" + gazelleStsSite.getEndpoint(TransactionType.STS, true, false))
 
         then:
         gazelleStsSite!=null
@@ -93,7 +95,7 @@ class StsSamlAssertionSpec extends ToolkitSpecification {
 
     def 'set Truststore'() {
         when:
-        URL trustStoreURL = getClass().getResource("/war/toolkitx/environment/default/gazelle_sts_cert_truststore")
+        URL trustStoreURL = getClass().getResource("/war/toolkitx/environment/default/gazelle_sts_cert_truststore.jks")
         File trustStoreFile = new File(trustStoreURL.getFile())
 
         System.out.println(trustStoreFile)
@@ -149,6 +151,7 @@ class StsSamlAssertionSpec extends ToolkitSpecification {
     /* --------------------------------------------------------------------- */
     /* headless */
     /* --------------------------------------------------------------------- */
+
     @Ignore
     def 'headless0 - Create sim'() {
         when:
@@ -158,7 +161,6 @@ class StsSamlAssertionSpec extends ToolkitSpecification {
                 testSession,
                 SimulatorActorType.REPOSITORY_REGISTRY,
                 'default')
-
 
         then:
         true
@@ -242,6 +244,8 @@ class StsSamlAssertionSpec extends ToolkitSpecification {
 
     }
 
-
+    @Ignore
+    def 'noOp'() {
+    }
 
 }
