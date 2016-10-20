@@ -640,6 +640,12 @@
 			<resource>
 				<directory>src/main/resources</directory>
 				<filtering>true</filtering>
+				<includes>
+					<include>toolkit.properties</include>
+				</includes>
+			</resource>
+			<resource>
+				<directory>src/main/resources</directory>
 			</resource>
 			<resource>
 				<directory>src/test/resources</directory>
