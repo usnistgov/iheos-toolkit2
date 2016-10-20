@@ -101,10 +101,11 @@ public class TestKit {
 		Set<String> names = new HashSet<>();
 
 		String[] parts;
+		File file = getCollectionFileByName(collectionSetName, collectionName);
 		try {
-			parts = Io.stringFromFile(getCollectionFileByName(collectionSetName, collectionName)).split("\n");
+			parts = Io.stringFromFile(file).split("\n");
 		} catch (Exception e) {
-			return new ArrayList<>();
+			throw new Exception("Cannot open test collection " + collectionSetName + ": " + file);
 		}
 
 		for (int i=0; i<parts.length; i++) {

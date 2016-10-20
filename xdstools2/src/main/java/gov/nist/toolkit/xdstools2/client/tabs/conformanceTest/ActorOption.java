@@ -29,7 +29,7 @@ public class ActorOption {
      */
     void loadTests(AsyncCallback<List<String>> callback) {
         if (optionId == null || optionId.equals("")) {
-            ClientUtils.INSTANCE.getToolkitServices().getCollectionMembers("actorCollections", actorTypeId, callback);
+            ClientUtils.INSTANCE.getToolkitServices().getCollectionMembers("actorcollections", actorTypeId, callback);
         } else {
             ClientUtils.INSTANCE.getToolkitServices().getCollectionMembers("collections", actorTypeId + "_" + optionId, callback);
         }
