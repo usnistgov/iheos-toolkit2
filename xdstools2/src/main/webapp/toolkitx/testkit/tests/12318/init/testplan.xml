@@ -1,0 +1,16 @@
+
+<TestPlan>
+  <Test>12318/init</Test>
+  <TestStep id="init">
+  <ExpectedStatus>Success</ExpectedStatus>
+  <ProvideAndRegisterTransaction>
+    <XDSb/>
+    <UseReport reportName="$patientid$" test="15828" section="pif" step="step" useAs="$patientid"/>
+    <AssignUuids/>
+    <MetadataFile>two_doc.xml</MetadataFile>
+    <Document id="Document01">my_document.txt</Document>
+    <Document id="Document02">summary.xml</Document>
+  </ProvideAndRegisterTransaction>
+</TestStep>
+
+</TestPlan>
