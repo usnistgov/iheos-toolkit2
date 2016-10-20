@@ -6,7 +6,7 @@
 Document Set Request (RAD-69 Request) to the Imaging Document Source System
 Under Test (IDS SUT).
 <li/>The IDS SUT is expected to process the test and generate a response
-containing the requested image.
+containing the requested images.
 <li/>The IDC sim will process the RAD-69 response and store the received
-image.
+images.
 </ol>

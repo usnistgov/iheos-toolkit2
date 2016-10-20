@@ -1,7 +1,11 @@
 KOS Validation, single image
 <h2>Validate Key Object Selection Document, Single image study</h2>
 
-<p/>Prior to running this test:
+Tests the ability of the Image Document Source actor (SUT) to send a Provide and
+Register Imaging Document Set (RAD-68) transaction to a Repository/Registry
+actor (Simulator), for a single DICOM image file.
+
+<h3>Prior to running this test:</h3>
 <ol>
 <li/>Create/select a test session.
 <li/>Click the "Initialize Test Environment" button to create a test environment
@@ -13,13 +17,3 @@ using whatever method is appropriate for your system.
 <li/>Send a Provide and Register Imaging Document Set (RAD-68) transaction from
 your IDS SUT to the Repository/Registry for this test image.
 </ol>
-
-<p/>When the test is run:
-<p/>The test kit will retrieve information regarding the RAD-68 transaction
-from the Repository/Registry Simulator, evaluate it, and report the results.
-
-<p>The following validations are performed:
-<ol>
-<li/>Correct DICOM tag values in the KON.
-</ol>
-</p>

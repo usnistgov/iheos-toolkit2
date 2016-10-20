@@ -19,10 +19,10 @@ warning if the two values do not match.
 original image.
 <li/>The Current Requested Procedure Evidence Seq (0040,A730) is examined:<ol>
 <li/>For matching Study Instance UID (0020,000D) values.
-<li/>For appropriate subordinate Referenced Series Seq (0008,1115) entry with:<ol>
+<li/>For appropriate subordinate Referenced Series Seq (0008,1115) entries with:<ol>
 <li/>The Series Instance UID (0020,000E) values are the same.
 <li/>The Retrieve AE Title (0008,0054) is present and not empty.
 <li/>The Retrieve Location UID (0040,E011) values are the same.
-<li/>For appropriate Referenced SOP Seq (0008,1199) entry with:<ol>
+<li/>For appropriate Referenced SOP Seq (0008,1199) entries with:<ol>
 <li/>The Referenced SOP Class UID (0008,1150) values are the same.
 <li/>The Referenced SOP Instance UID (0008,1155) values are the same.</ol></ol></ol>
