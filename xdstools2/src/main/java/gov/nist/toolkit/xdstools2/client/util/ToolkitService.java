@@ -76,7 +76,7 @@ public interface ToolkitService extends RemoteService  {
 	List<SimulatorConfig> getAllSimConfigs(GetAllSimConfigsRequest user) throws Exception;
 	String putSimConfig(SimulatorConfig config) throws Exception;
 	String deleteConfig(SimulatorConfig config) throws Exception;
-	Map<String, SimId> getActorSimulatorNameMap() throws NoServletSessionException;
+	Map<String, SimId> getActorSimulatorNameMap(CommandContext context) throws Exception;
 	//	 List<String> getSimulatorTransactionNames(String simid) throws Exception;
 	int removeOldSimulators() throws NoServletSessionException;
 	List<SimulatorStats> getSimulatorStats(List<SimId> simid) throws Exception;
@@ -90,11 +90,11 @@ public interface ToolkitService extends RemoteService  {
 	Map<String, String> getToolkitProperties() throws NoServletSessionException ;
 	boolean reloadPropertyFile() throws NoServletSessionException ;
 
-	String getTransactionRequest(SimId simName, String actor, String trans, String event)  throws NoServletSessionException;
-	String getTransactionResponse(SimId simName, String actor, String trans, String event)  throws NoServletSessionException;
-	String getTransactionLog(SimId simName, String actor, String trans, String event)  throws NoServletSessionException;
-	List<String> getTransactionsForSimulator(SimId simName) throws Exception;
-	MessageValidationResults executeSimMessage(String simFileSpec) throws NoServletSessionException;
+	String getTransactionRequest(GetTransactionRequest request) throws Exception;
+	String getTransactionResponse(GetTransactionRequest request) throws Exception;
+	String getTransactionLog(GetTransactionRequest request)  throws Exception;
+	List<String> getTransactionsForSimulator(GetTransactionRequest request) throws Exception;
+	MessageValidationResults executeSimMessage(ExecuteSimMessageRequest request) throws Exception;
 
 	void renameSimFile(String simFileSpec, String newSimFileSpec) throws Exception;
 	void deleteSimFile(String simFileSpec) throws Exception;
@@ -110,7 +110,7 @@ public interface ToolkitService extends RemoteService  {
 	String getLastFilename();
 	String getTimeAndDate();
 
-	MessageValidationResults validateMessage(ValidationContext vc) throws Exception;
+	MessageValidationResults validateMessage(ValidateMessageRequest request) throws Exception;
 
 	List<String> getSiteNames(GetSiteNamesRequest request) throws Exception;
 	List<String> getRegistryNames() throws Exception;

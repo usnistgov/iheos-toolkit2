@@ -71,15 +71,15 @@ public interface ToolkitServiceAsync {
 	void getTestsOverview(GetTestsOverviewRequest request, AsyncCallback<List<TestOverviewDTO>> callback);
 	void getUpdateNames(AsyncCallback<List<String>> callback);
 
-	void getTransactionRequest(SimId simName, String actor, String trans, String event, AsyncCallback<String> callback);
-	void getTransactionResponse(SimId simName, String actor, String trans, String event, AsyncCallback<String> callback);
-	void getTransactionLog(SimId simName, String actor, String trans, String event, AsyncCallback<String> callback);
+	void getTransactionRequest(GetTransactionRequest request, AsyncCallback<String> callback);
+	void getTransactionResponse(GetTransactionRequest request, AsyncCallback<String> callback);
+	void getTransactionLog(GetTransactionRequest request, AsyncCallback<String> callback);
 
-	void getTransactionsForSimulator(SimId simid, AsyncCallback<List<String>> callback);
+	void getTransactionsForSimulator(GetTransactionRequest request, AsyncCallback<List<String>> callback);
 
 //	void getActorNames(AsyncCallback<List<String>> notify);
 
-	void executeSimMessage(String simFileSpec, AsyncCallback<MessageValidationResults> callback);
+	void executeSimMessage(ExecuteSimMessageRequest request, AsyncCallback<MessageValidationResults> callback);
 
 
 	void renameSimFile(String simFileSpec, String newSimFileSpec, AsyncCallback callback);
@@ -101,7 +101,7 @@ public interface ToolkitServiceAsync {
 	void getLastFilename(AsyncCallback<String> callback);
 	void getTimeAndDate(AsyncCallback<String> callback);
 
-	void validateMessage(ValidationContext vc, AsyncCallback<MessageValidationResults> callback);
+	void validateMessage(ValidateMessageRequest vrequest, AsyncCallback<MessageValidationResults> callback);
 
 	void getSiteNames(GetSiteNamesRequest request, AsyncCallback<List<String>> callback) ;
 
@@ -169,7 +169,7 @@ public interface ToolkitServiceAsync {
 	void getAllSimConfigs(GetAllSimConfigsRequest user, AsyncCallback<List<SimulatorConfig>> callback);
 	void putSimConfig(SimulatorConfig config, AsyncCallback<String> callback);
 	void deleteConfig(SimulatorConfig config, AsyncCallback<String> callback);
-	void getActorSimulatorNameMap(AsyncCallback<Map<String, SimId>> callback);
+	void getActorSimulatorNameMap(CommandContext context,AsyncCallback<Map<String, SimId>> callback);
 	//	void getSimulatorTransactionNames(String simid, AsyncCallback<List<String>> notify);
 	void removeOldSimulators(AsyncCallback<Integer> callback);
 	void getSimulatorStats(List<SimId> simid, AsyncCallback<List<SimulatorStats>> callback) throws Exception;

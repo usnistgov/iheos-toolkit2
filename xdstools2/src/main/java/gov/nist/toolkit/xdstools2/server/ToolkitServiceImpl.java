@@ -586,15 +586,30 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements
     public String deleteConfig(SimulatorConfig config) throws Exception { return new SimulatorServiceManager(session()).deleteConfig(config); }
     public void renameSimFile(String simFileSpec, String newSimFileSpec) throws Exception { new SimulatorServiceManager(session()).renameSimFile(simFileSpec, newSimFileSpec); }
     public String getSimulatorEndpoint() throws NoServletSessionException { return new SimulatorServiceManager(session()).getSimulatorEndpoint(); }
-    public MessageValidationResults executeSimMessage(String simFileSpec) throws NoServletSessionException { return new SimulatorServiceManager(session()).executeSimMessage(simFileSpec); }
+    public MessageValidationResults executeSimMessage(ExecuteSimMessageRequest request) throws Exception {
+        installCommandContext(request);
+        return new SimulatorServiceManager(session()).executeSimMessage(request.getFileName());
+    }
     public List<TransactionInstance> getTransInstances(SimId simid, String xactor, String trans) throws Exception { return new SimulatorServiceManager(session()).getTransInstances(simid, xactor, trans); }
-    public String getTransactionRequest(SimId simid, String actor, String trans, String event) throws NoServletSessionException { return new SimulatorServiceManager(session()).getTransactionRequest(simid, actor, trans, event); }
-    public String getTransactionResponse(SimId simid, String actor, String trans, String event) throws NoServletSessionException { return new SimulatorServiceManager(session()).getTransactionResponse(simid, actor, trans, event); }
+    public String getTransactionRequest(GetTransactionRequest request) throws Exception {
+        installCommandContext(request);
+        return new SimulatorServiceManager(session()).getTransactionRequest(request.getSimid(), request.getActor(), request.getTrans(), request.getMessageId());
+    }
+    public String getTransactionResponse(GetTransactionRequest request) throws Exception {
+        installCommandContext(request);
+        return new SimulatorServiceManager(session()).getTransactionResponse(request.getSimid(), request.getActor(), request.getTrans(), request.getMessageId());
+    }
     public int removeOldSimulators() throws NoServletSessionException { return new SimulatorServiceManager(session()).removeOldSimulators(); }
     public List<Result> getSelectedMessage(String simFileSpec) throws NoServletSessionException { return new SimulatorServiceManager(session()).getSelectedMessage(simFileSpec); }
     public List<Result> getSelectedMessageResponse(String simFileSpec) throws NoServletSessionException { return new SimulatorServiceManager(session()).getSelectedMessageResponse(simFileSpec); }
-    public Map<String, SimId> getActorSimulatorNameMap() throws NoServletSessionException { return new SimulatorServiceManager(session()).getSimulatorNameMap(); }
-    public MessageValidationResults validateMessage(ValidationContext vc) throws NoServletSessionException, EnvironmentNotSelectedClientException { return new SimulatorServiceManager(session()).validateMessage(vc); }
+    public Map<String, SimId> getActorSimulatorNameMap(CommandContext context) throws Exception {
+        installCommandContext(context);
+        return new SimulatorServiceManager(session()).getSimulatorNameMap();
+    }
+    public MessageValidationResults validateMessage(ValidateMessageRequest request) throws Exception {
+        installCommandContext(request);
+        return new SimulatorServiceManager(session()).validateMessage(request.getValidationContext());
+    }
     public List<SimulatorConfig> getSimConfigs(List<SimId> ids) throws Exception { return new SimulatorServiceManager(session()).getSimConfigs(ids); }
     public List<SimulatorConfig> getAllSimConfigs(GetAllSimConfigsRequest request) throws Exception {
         installCommandContext(request);
@@ -602,9 +617,15 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements
     }
     public Simulator getNewSimulator(String actorTypeName, SimId simId) throws Exception { return new SimulatorServiceManager(session()).getNewSimulator(actorTypeName, simId); }
     public void deleteSimFile(String simFileSpec) throws Exception { new SimulatorServiceManager(session()).deleteSimFile(simFileSpec); }
-    public List<String> getTransactionsForSimulator(SimId simid) throws Exception { return new SimulatorServiceManager(session()).getTransactionsForSimulator(simid); }
+    public List<String> getTransactionsForSimulator(GetTransactionRequest request) throws Exception {
+        installCommandContext(request);
+        return new SimulatorServiceManager(session()).getTransactionsForSimulator(request.getSimid());
+    }
     public List<SimulatorStats> getSimulatorStats(List<SimId> simids) throws Exception { return new SimulatorServiceManager(session()).getSimulatorStats(simids); }
-    public String getTransactionLog(SimId simid, String actor, String trans, String event) throws NoServletSessionException { return new SimulatorServiceManager(session()).getTransactionLog(simid, actor, trans, event); }
+    public String getTransactionLog(GetTransactionRequest request) throws Exception {
+        installCommandContext(request);
+        return new SimulatorServiceManager(session()).getTransactionLog(request.getSimid(), request.getActor(), request.getTrans(), request.getMessageId());
+    }
 
     public List<Pid> getPatientIds(SimId simId) throws Exception { return new SimulatorServiceManager(session()).getPatientIds(simId); }
     public String addPatientIds(SimId simId, List<Pid> pids) throws Exception { return new SimulatorServiceManager(session()).addPatientIds(simId, pids); }
