@@ -86,6 +86,7 @@ public class TestOverviewBuilder {
 
                     try {
                         SectionDefinitionDAO sectionDef = testDefinition.getSection(section);
+                        sectionOverview.setSutInitiated(sectionDef.isSutInitiated());
                         testDependencies.addAll(sectionDef.getSectionDependencies());
                         for (String stepName : sectionDef.getStepNames()) {
                             StepOverviewDTO stepOverview = sectionOverview.getStep(stepName);

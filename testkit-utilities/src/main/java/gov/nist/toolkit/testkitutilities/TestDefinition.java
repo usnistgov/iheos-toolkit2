@@ -97,6 +97,10 @@ public class TestDefinition {
 
 	private SectionDefinitionDAO parseTestPlan(OMElement sectionEle) {
 		SectionDefinitionDAO section = new SectionDefinitionDAO();
+
+		OMElement sutInitiatedEle = XmlUtil.firstDecendentWithLocalName(sectionEle, "SUTInitated");
+		if (sutInitiatedEle != null) section.sutInitiated();
+
 		for (OMElement stepEle : XmlUtil.decendentsWithLocalName(sectionEle, "TestStep")) {
 			StepDefinitionDAO step = new StepDefinitionDAO();
 			step.setId(stepEle.getAttributeValue(new QName("id")));

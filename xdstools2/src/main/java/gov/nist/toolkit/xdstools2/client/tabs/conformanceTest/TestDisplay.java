@@ -7,9 +7,10 @@ import gov.nist.toolkit.session.client.logtypes.TestOverviewDTO;
 import gov.nist.toolkit.xdstools2.client.widgets.LaunchInspectorClickHandler;
 
 /**
- * Display of a single test
+ * Display of a single test including its sections.
+ * This is the View and Presentation.
  */
-public class TestDisplay extends FlowPanel {
+public class TestDisplay extends FlowPanel implements TestDisplayView.TestDisplayViewLinkage {
     private TestDisplayHeader header = new TestDisplayHeader();
     private FlowPanel body = new FlowPanel();
     private DisclosurePanel panel = new DisclosurePanel(header);
@@ -21,6 +22,7 @@ public class TestDisplay extends FlowPanel {
     private boolean allowDelete= true;
     private boolean allowRun = true;
     private boolean showValidate = false;
+    private TestDisplayView view = new TestDisplayView();
 
     public TestDisplay(TestInstance testInstance, TestDisplayGroup testDisplayGroup, TestRunner testRunner, TestContext testContext, TestContextView testContextView) {
         this.testInstance = testInstance;
@@ -115,4 +117,6 @@ public class TestDisplay extends FlowPanel {
     public void showValidate(boolean showValidate) {
         this.showValidate = showValidate;
     }
+
+    public Widget asWidget() { return view; }
 }

@@ -78,13 +78,17 @@ public class TestSectionComponent implements IsWidget {
         }
         panel.add(body);
 
-        if (allowRun) {
+        if (allowRun && !sectionOverview.isSutInitiated()) {
             Image play = getImg("icons2/play-16.png", "Run", "Play button");
             play.addClickHandler(new RunSection(fullTestInstance));
             header.add(play);
         }
 
-
+        if (sectionOverview.isSutInitiated()) {
+            Anchor doneAnchor = new Anchor("Done");
+            doneAnchor.addClickHandler();
+            header.add(doneAnchor);
+        }
 
         body.add(sectionDescription);
         sectionDescription.add(new HTML(sectionOverview.getDescription()));

@@ -9,6 +9,7 @@ public class SectionDefinitionDAO {
     private Map<String, StepDefinitionDAO> steps = new HashMap<>();
     private List<String> names = new ArrayList<String>();
     private Set<String> sectionDependencies = new HashSet<String>();
+    private boolean sutInitiated = false;
 
     public SectionDefinitionDAO() {
     }
@@ -33,4 +34,8 @@ public class SectionDefinitionDAO {
     public void addTestDependency(String testId) {
         sectionDependencies.add(testId);
     }
+
+    public void sutInitiated() { sutInitiated = true; }
+
+    public boolean isSutInitiated() { return sutInitiated; }
 }

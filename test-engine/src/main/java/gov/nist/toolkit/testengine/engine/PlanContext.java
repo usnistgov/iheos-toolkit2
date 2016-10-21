@@ -28,13 +28,14 @@ import java.util.Map;
 public class PlanContext extends BasicContext {
 	OMElement results_document = null;
 	String defaultRegistryEndpoint = null;
-	Map<String, String> externalLinkage = null;
-	Map<String, Object> externalLinkage2 = null;  // for binary stuff like certificates
-	SectionLogMapDTO previousSectionLogs;
-	LogFileContentDTO currentSectionLog;
-	String currentSection;
+	private Map<String, String> externalLinkage = null;
+	private Map<String, Object> externalLinkage2 = null;  // for binary stuff like certificates
+	private SectionLogMapDTO previousSectionLogs;
+	private LogFileContentDTO currentSectionLog;
+	private String currentSection;
 	TestConfig testConfig;
-	TransactionSettings transactionSettings = null;
+	private TransactionSettings transactionSettings = null;
+	private boolean sutInitiates = false;
 
 	public void setTransactionSettings(TransactionSettings ts) {
 		this.transactionSettings = ts;
@@ -236,10 +237,15 @@ public class PlanContext extends BasicContext {
 					testLog.add_name_value(results_document, part);
 					test_num = part.getText();
 				} 
-				else if (part_name.equals("Rule")) 
+				else if (part_name.equals("Rule"))
 				{
-				} 
-				else if (part_name.equals("TestStep")) 
+				}
+				else if (part_name.equals("SUTInitiates"))
+				{
+					// system under test initiates first transaction in this section
+					sutInitiates = true;
+				}
+				else if (part_name.equals("TestStep"))
 				{
 					StepContext step_context = new StepContext(this);
 					step_context.setTestConfig(testConfig);
@@ -323,5 +329,7 @@ public class PlanContext extends BasicContext {
 	public OMElement getLog() {
 		return results_document;
 	}
+
+	public boolean getSutInitiates() { return sutInitiates; }
 
 }

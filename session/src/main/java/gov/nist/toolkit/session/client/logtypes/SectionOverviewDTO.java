@@ -20,6 +20,7 @@ public class SectionOverviewDTO implements BasicSectionOverview, Serializable, I
     private boolean run = true;
     private List<String> stepNames = new ArrayList<>();
     private Map<String, StepOverviewDTO> steps = new HashMap<>();
+    private boolean sutInitiated = false;
 
     public SectionOverviewDTO() {}
 
@@ -117,5 +118,13 @@ public class SectionOverviewDTO implements BasicSectionOverview, Serializable, I
         } catch (Exception e) {
             return "__";
         }
+    }
+
+    public boolean isSutInitiated() {
+        return sutInitiated;
+    }
+
+    public void setSutInitiated(boolean sutInitiated) {
+        this.sutInitiated = sutInitiated;
     }
 }

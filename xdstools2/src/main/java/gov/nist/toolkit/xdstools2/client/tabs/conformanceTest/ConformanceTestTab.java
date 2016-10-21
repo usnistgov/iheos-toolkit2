@@ -376,7 +376,6 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner, TestsH
 				testStatistics.setTestCount(testOverviews.size());
 				for (TestOverviewDTO testOverview : testOverviews) {
 					addTestOverview(testOverview);
-//                    displayTest(testsPanel, testDisplayGroup, testOverview);
 					TestDisplay testDisplay = testDisplayGroup.display(testOverview);
 					testDisplay.display(testOverview);
 					testsPanel.add(testDisplay);
