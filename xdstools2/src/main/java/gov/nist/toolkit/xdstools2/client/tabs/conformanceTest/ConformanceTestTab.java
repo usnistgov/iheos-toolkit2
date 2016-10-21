@@ -1,5 +1,7 @@
 package gov.nist.toolkit.xdstools2.client.tabs.conformanceTest;
 
+import java.util.*;
+
 import com.google.gwt.dom.client.Style;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
@@ -29,11 +31,6 @@ import gov.nist.toolkit.xdstools2.client.event.TestSessionChangedEvent;
 import gov.nist.toolkit.xdstools2.client.event.testSession.TestSessionChangedEventHandler;
 import gov.nist.toolkit.xdstools2.client.inspector.MetadataInspectorTab;
 import gov.nist.toolkit.xdstools2.client.widgets.buttons.OrchestrationButton;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 /**
  * All Conformance tests will be run out of here
@@ -472,6 +469,7 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner, SiteMa
                testsPanel.clear();
                testsPanel.add(testsHeaderView.asWidget());
                testStatistics.setTestCount(testOverviews.size());
+               Collections.sort(testOverviews);
                for (TestOverviewDTO testOverview : testOverviews) {
                   addTestOverview(testOverview);
                   displayTest(testOverview);

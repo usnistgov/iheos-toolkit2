@@ -13,7 +13,7 @@ import java.util.Map;
 /**
  * Should be renamed TestResultsDTO!!!!
  */
-public class TestOverviewDTO implements Serializable, IsSerializable {
+public class TestOverviewDTO implements Serializable, IsSerializable, Comparable {
     private String name;
     private String title;
     private String description;
@@ -126,4 +126,12 @@ public class TestOverviewDTO implements Serializable, IsSerializable {
         if (section  == null) return "";
         return section.getDisplayableTime();
     }
+
+   /* (non-Javadoc)
+    * @see java.lang.Comparable#compareTo(java.lang.Object)
+    */
+   @Override
+   public int compareTo(Object o) {
+      return name.compareTo(((TestOverviewDTO)o).name);
+   }
 }
