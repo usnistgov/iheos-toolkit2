@@ -276,6 +276,7 @@ public class XdsTestServiceManager extends CommonService {
 	 * @throws Exception
 	 */
 	public List<TestInstance> getCollectionMembers(String collectionSetName, String collectionName) throws Exception {
+	   try {
 		if (session != null)
 			logger.debug(session.id() + ": " + "getCollectionMembers " + collectionSetName + ":" + collectionName);
 		TestKitSearchPath searchPath = session.getTestkitSearchPath();
@@ -298,8 +299,11 @@ public class XdsTestServiceManager extends CommonService {
 			}
 			ti.setSutInitiated(sutInitiated);
 		}
-
 		return tis;
+      } catch (Exception e) {
+         logger.debug("getCollectionsMembers error: " + e.getMessage());
+         throw e;
+      }
 	}
 
 	public List<SectionDefinitionDAO> getTestSectionsDAOs(TestInstance testInstance) throws Exception {

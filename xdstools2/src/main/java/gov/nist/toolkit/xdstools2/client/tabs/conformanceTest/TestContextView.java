@@ -7,7 +7,7 @@ import com.google.gwt.user.client.ui.HTML;
 import gov.nist.toolkit.xdstools2.client.ToolWindow;
 
 /**
- *
+ * Test Context window shown at right of Conformance Test window.
  */
 public class TestContextView implements ClickHandler {
     private TestContext testContext;
