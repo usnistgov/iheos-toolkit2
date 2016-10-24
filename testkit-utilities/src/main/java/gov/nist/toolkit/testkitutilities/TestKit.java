@@ -105,7 +105,7 @@ public class TestKit {
 		try {
 			parts = Io.stringFromFile(file).split("\n");
 		} catch (Exception e) {
-			throw new Exception("Cannot open test collection " + collectionSetName + ": " + file);
+			return new ArrayList<String>();
 		}
 
 		for (int i=0; i<parts.length; i++) {

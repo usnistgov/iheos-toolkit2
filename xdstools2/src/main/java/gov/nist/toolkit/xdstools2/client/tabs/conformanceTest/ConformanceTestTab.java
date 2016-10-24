@@ -20,6 +20,7 @@ import gov.nist.toolkit.services.client.RepOrchestrationResponse;
 import gov.nist.toolkit.session.client.logtypes.TestOverviewDTO;
 import gov.nist.toolkit.session.client.sort.TestSorter;
 import gov.nist.toolkit.sitemanagement.client.SiteSpec;
+import gov.nist.toolkit.testkitutilities.client.SectionDefinitionDAO;
 import gov.nist.toolkit.testkitutilities.client.TestCollectionDefinitionDAO;
 import gov.nist.toolkit.xdstools2.client.PopupMessage;
 import gov.nist.toolkit.xdstools2.client.ToolWindow;
@@ -328,18 +329,16 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner, TestsH
 
 
 		// what tests are in the collection
-		currentActorOption.loadTests(new AsyncCallback<List<String>>() {
+		currentActorOption.loadTests(new AsyncCallback<List<TestInstance>>() {
 			@Override
 			public void onFailure(Throwable throwable) {
 				new PopupMessage("getTestlogListing: " + throwable.getMessage());
 			}
 
 			@Override
-			public void onSuccess(List<String> testIds) {
-				List<TestInstance> testInstances = new ArrayList<>();
-				for (String testId : testIds) testInstances.add(new TestInstance(testId));
+			public void onSuccess(List<TestInstance> testInstances) {
 				testStatistics.clear();
-				testStatistics.setTestCount(testIds.size());
+				testStatistics.setTestCount(testInstances.size());
 				loadingMessage.setHTML("Loading...");
 				displayTests(testsPanel, testInstances, allowRun());
 			}
@@ -438,15 +437,15 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner, TestsH
 	}
 
 	@Override
-	public RunAllClickHandler getRunAllClickHandler() {
-		return new RunAllClickHandler(currentActorOption.actorTypeId);
+	public RunAllTestsClickHandler getRunAllClickHandler() {
+		return new RunAllTestsClickHandler(currentActorOption.actorTypeId);
 	}
 
-	private class RunAllClickHandler implements ClickHandler, TestDone {
+	private class RunAllTestsClickHandler implements ClickHandler, TestDone {
 		String actorTypeId;
 		List<TestInstance> tests = new ArrayList<TestInstance>();
 
-		RunAllClickHandler(String actorTypeId ) {
+		RunAllTestsClickHandler(String actorTypeId ) {
 			this.actorTypeId = actorTypeId;
 		}
 
@@ -470,6 +469,47 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner, TestsH
 			TestInstance next = tests.get(0);
 			tests.remove(0);
 			runTest(next, this);
+		}
+	}
+
+	private class RunAllSectionsClickHandler implements ClickHandler, TestDone {
+		TestInstance testInstance;
+		List<TestInstance> sections = new ArrayList<TestInstance>();  // One TestInstance per section
+
+		RunAllSectionsClickHandler(TestInstance testInstance) { this.testInstance = testInstance; }
+
+		@Override
+		public void onClick(ClickEvent clickEvent) {
+			clickEvent.preventDefault();
+			clickEvent.stopPropagation();
+
+			getToolkitServices().getTestSectionsDAOs(getCurrentTestSession(), testInstance, new AsyncCallback<List<SectionDefinitionDAO>>() {
+				@Override
+				public void onFailure(Throwable throwable) { new PopupMessage(throwable.getMessage()); }
+
+				@Override
+				public void onSuccess(List<SectionDefinitionDAO> sectionDefinitionDAOs) {
+					sections.clear();
+					for (SectionDefinitionDAO dao : sectionDefinitionDAOs) {
+						TestInstance ti = testInstance.copy();
+						ti.setSection(dao.getSectionName());
+						ti.setSutInitiated(dao.isSutInitiated());
+					}
+					onDone(null);
+				}
+			});
+		}
+
+		@Override
+		public void onDone(TestInstance unused) {
+			testsHeaderView.showRunningMessage(true);
+			if (sections.size() == 0) {
+				testsHeaderView.showRunningMessage(false);
+				return;
+			}
+			TestInstance next = sections.get(0);
+			sections.remove(0);
+			runSection(next, this);
 		}
 	}
 
@@ -518,23 +558,47 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner, TestsH
 		return new LaunchInspectorClickHandler(testInstance, getCurrentTestSession(), new SiteSpec(testContext.getSiteName()));
 	}
 
-	// if testInstance contains a sectionName then run that section, otherwise run entire test.
+	/**
+	 * if testInstance contains a sectionName then run that section, otherwise run entire test.
+	 * TestInstance.sutInitiated indicates whether one or more sections have to be initiated by the SUT
+	 * @param sectionInstance
+	 * @param sectionDone
+	 */
+	public void runSection(final TestInstance sectionInstance, final TestDone sectionDone) {
+		Map<String, String> parms = initializeTestParameters();
+
+		if (parms == null) return;
+
+		try {
+			getToolkitServices().runTest(getEnvironmentSelection(), getCurrentTestSession(), getSiteToIssueTestAgainst(), sectionInstance, parms, true, new AsyncCallback<TestOverviewDTO>() {
+				@Override
+				public void onFailure(Throwable throwable) {
+					new PopupMessage(throwable.getMessage());
+				}
+
+				@Override
+				public void onSuccess(TestOverviewDTO testOverviewDTO) {
+					// returned testStatus of entire test
+					testDisplayGroup.display(testOverviewDTO);
+					addTestOverview(testOverviewDTO);
+					updateTestsOverviewHeader();
+					// Schedule next section to be run
+					if (sectionDone != null)
+						sectionDone.onDone(sectionInstance);
+				}
+			});
+		} catch (Exception e) {
+			new PopupMessage(e.getMessage());
+		}
+	}
+
+
+
+
 	public void runTest(final TestInstance testInstance, final TestDone testDone) {
-		Map<String, String> parms = new HashMap<>();
+		Map<String, String> parms = initializeTestParameters();
 
-		if (orchestrationResponse == null) {
-			new PopupMessage("Initialize Test Environment before running tests.");
-			return;
-		}
-
-		if (ActorType.REPOSITORY.getShortName().equals(currentActorOption.actorTypeId)) {
-			parms.put("$patientid$", repOrchestrationResponse.getPid().asString());
-		}
-
-		if (getSiteToIssueTestAgainst() == null) {
-			new PopupMessage("Test Setup must be initialized");
-			return;
-		}
+		if (parms == null) return;
 
 		try {
 			getToolkitServices().runTest(getEnvironmentSelection(), getCurrentTestSession(), getSiteToIssueTestAgainst(), testInstance, parms, true, new AsyncCallback<TestOverviewDTO>() {
@@ -558,6 +622,25 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner, TestsH
 			new PopupMessage(e.getMessage());
 		}
 
+	}
+
+	private Map<String, String> initializeTestParameters() {
+		Map<String, String> parms = new HashMap<>();
+
+		if (orchestrationResponse == null) {
+			new PopupMessage("Initialize Test Environment before running tests.");
+			return null;
+		}
+
+		if (ActorType.REPOSITORY.getShortName().equals(currentActorOption.actorTypeId)) {
+			parms.put("$patientid$", repOrchestrationResponse.getPid().asString());
+		}
+
+		if (getSiteToIssueTestAgainst() == null) {
+			new PopupMessage("Test Setup must be initialized");
+			return null;
+		}
+		return parms;
 	}
 
 	class SelfTestValueChangeHandler implements ValueChangeHandler<Boolean> {

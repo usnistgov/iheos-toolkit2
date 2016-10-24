@@ -1,2 +1,1 @@
-update
-reg
+reg_mu

@@ -57,7 +57,8 @@ public class TestSectionView implements IsWidget {
         }
         void setDone(String label, String title, ClickHandler clickHandler) {
             done = getImg("icons2/ic_forward_black_24dp_1x.png", title, label);
-            done.addClickHandler(clickHandler);
+            if (clickHandler != null)
+                done.addClickHandler(clickHandler);
         }
         @Override
         public void labelSuccess() {

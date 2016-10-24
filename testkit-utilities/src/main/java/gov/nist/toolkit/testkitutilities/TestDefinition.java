@@ -86,19 +86,33 @@ public class TestDefinition {
 		return names;
 	}
 
+	/**
+	 * Get section definitions for all sections of this test
+	 * @return
+	 */
+	public List<SectionDefinitionDAO> getSections() throws XdsInternalException {
+		List<SectionDefinitionDAO> sections = new ArrayList<>();
+		List<String> sectionNames = getSectionIndex();
+		for (String sectionName : sectionNames) {
+			SectionDefinitionDAO dao = getSection(sectionName);
+			sections.add(dao);
+		}
+		return sections;
+	}
+
 	public SectionDefinitionDAO getSection(String sectionName) throws XdsInternalException {
 		if (sectionName == null) {
-			return parseTestPlan(Util.parse_xml(new File(testDir, "testplan.xml")));
+			return parseTestPlan(Util.parse_xml(new File(testDir, "testplan.xml")), sectionName);
 		}
-		return parseTestPlan(Util.parse_xml(new File(new File(testDir, sectionName), "testplan.xml")));
+		return parseTestPlan(Util.parse_xml(new File(new File(testDir, sectionName), "testplan.xml")), sectionName);
 	}
 
 	final static QName TEST_QNAME = new QName("test");
 
-	private SectionDefinitionDAO parseTestPlan(OMElement sectionEle) {
-		SectionDefinitionDAO section = new SectionDefinitionDAO();
+	private SectionDefinitionDAO parseTestPlan(OMElement sectionEle, String sectionName) {
+		SectionDefinitionDAO section = new SectionDefinitionDAO(sectionName);
 
-		OMElement sutInitiatedEle = XmlUtil.firstDecendentWithLocalName(sectionEle, "SUTInitated");
+		OMElement sutInitiatedEle = XmlUtil.firstDecendentWithLocalName(sectionEle, "SUTInitiates");
 		if (sutInitiatedEle != null) section.sutInitiated();
 
 		for (OMElement stepEle : XmlUtil.decendentsWithLocalName(sectionEle, "TestStep")) {

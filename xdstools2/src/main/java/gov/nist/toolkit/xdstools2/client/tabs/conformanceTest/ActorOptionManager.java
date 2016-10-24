@@ -17,6 +17,7 @@ public class ActorOptionManager {
     static {
         actorOptions = new HashMap<>();
         actorOptions.put("ig", BuildIGTestOrchestrationButton.ACTOR_OPTIONS);
+        actorOptions.put("reg", BuildRegTestOrchestrationButton.ACTOR_OPTIONS);
     };
 
     private ActorOptionManager() {}

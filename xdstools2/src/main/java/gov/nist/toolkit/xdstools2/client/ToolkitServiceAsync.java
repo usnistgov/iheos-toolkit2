@@ -23,18 +23,15 @@ import gov.nist.toolkit.sitemanagement.client.Site;
 import gov.nist.toolkit.sitemanagement.client.SiteSpec;
 import gov.nist.toolkit.sitemanagement.client.TransactionOfferings;
 import gov.nist.toolkit.testenginelogging.client.LogFileContentDTO;
+import gov.nist.toolkit.testkitutilities.client.SectionDefinitionDAO;
 import gov.nist.toolkit.testkitutilities.client.TestCollectionDefinitionDAO;
 import gov.nist.toolkit.tk.client.TkProps;
 import gov.nist.toolkit.valsupport.client.MessageValidationResults;
 import gov.nist.toolkit.valsupport.client.ValidationContext;
 import gov.nist.toolkit.xdstools2.shared.NoServletSessionException;
-import gov.nist.toolkit.xdstools2.shared.command.CommandContext;
-import gov.nist.toolkit.xdstools2.shared.command.GeneratePidRequest;
-import gov.nist.toolkit.xdstools2.shared.command.GetAllSimConfigsRequest;
-import gov.nist.toolkit.xdstools2.shared.command.SendPidToRegistryRequest;
-import gov.nist.toolkit.xdstools2.shared.command.InitializationResponse;
 import gov.nist.toolkit.xdstools2.shared.RegistryStatus;
 import gov.nist.toolkit.xdstools2.shared.RepositoryStatus;
+import gov.nist.toolkit.xdstools2.shared.command.*;
 
 import java.util.Collection;
 import java.util.List;
@@ -71,6 +68,7 @@ public interface ToolkitServiceAsync {
 	void getDashboardRepositoryData(AsyncCallback<List<RepositoryStatus>> callback);
 
 	void getTestsOverview(String sessionName, List<TestInstance> testInstances, AsyncCallback<List<TestOverviewDTO>> callback);
+	void getTestSectionsDAOs(String mesaTestSession, TestInstance testInstance, AsyncCallback<List<SectionDefinitionDAO>> callback);
 	void getUpdateNames(AsyncCallback<List<String>> callback);
 
 	void getTransactionRequest(SimId simName, String actor, String trans, String event, AsyncCallback<String> callback);
@@ -180,7 +178,7 @@ public interface ToolkitServiceAsync {
 	void deletePatientIds(SimId simId, List<Pid> pids, AsyncCallback<Boolean> callback) throws Exception;
 
 	void getCollectionNames(String collectionSetName, AsyncCallback<Map<String, String>> callback);
-	void getCollectionMembers(String collectionSetName, String collectionName, AsyncCallback<List<String>> callback);
+	void getCollectionMembers(String collectionSetName, String collectionName, AsyncCallback<List<TestInstance>> callback);
 	void getTestCollections(String collectionSetName, AsyncCallback<List<TestCollectionDefinitionDAO>> callback);
 	void getCollection(String collectionSetName, String collectionName, AsyncCallback<Map<String, String>> callback);
 	void getTestReadme(String test, AsyncCallback<String> callback);

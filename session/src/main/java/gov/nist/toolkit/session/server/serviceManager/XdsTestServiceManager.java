@@ -44,6 +44,7 @@ import gov.nist.toolkit.testenginelogging.logrepository.LogRepository;
 import gov.nist.toolkit.testkitutilities.TestDefinition;
 import gov.nist.toolkit.testkitutilities.TestKit;
 import gov.nist.toolkit.testkitutilities.TestKitSearchPath;
+import gov.nist.toolkit.testkitutilities.client.SectionDefinitionDAO;
 import gov.nist.toolkit.testkitutilities.client.TestCollectionDefinitionDAO;
 import gov.nist.toolkit.utilities.io.Io;
 import gov.nist.toolkit.utilities.xml.OMFormatter;
@@ -266,20 +267,44 @@ public class XdsTestServiceManager extends CommonService {
 	}
 
 	/**
-	 * For test collections like collections and actorcollections, return the test ids.
+	 * For test collections like collections and actorcollections, return the TestInstances.
+	 * TestInstances will be loaded with sutInitiates to indicate whether any sections
+	 * are to be initiated by the SUT
 	 * @param collectionSetName - collections or actorcollections
 	 * @param collectionName - name of specific collection
 	 * @return
 	 * @throws Exception
 	 */
-	public List<String> getCollectionMembers(String collectionSetName, String collectionName) throws Exception {
+	public List<TestInstance> getCollectionMembers(String collectionSetName, String collectionName) throws Exception {
 		if (session != null)
 			logger.debug(session.id() + ": " + "getCollectionMembers " + collectionSetName + ":" + collectionName);
 		TestKitSearchPath searchPath = session.getTestkitSearchPath();
 		Collection<String> collec =  searchPath.getCollectionMembers(collectionSetName, collectionName);
 		if (session != null)
 			logger.debug("Return " + collec.size() + " tests");
-		return new ArrayList<String>(collec);
+
+		List<TestInstance> tis = new ArrayList<>();
+		for (String testId : collec) {
+			TestInstance ti = new TestInstance(testId);
+			tis.add(ti);
+		}
+
+		for (TestInstance ti : tis) {
+			TestDefinition def = session.getTestkitSearchPath().getTestDefinition(ti.getId());
+			List<SectionDefinitionDAO> sectionDAOs = def.getSections();
+			boolean sutInitiated = false;
+			for (SectionDefinitionDAO dao : sectionDAOs) {
+				if (dao.isSutInitiated()) sutInitiated = true;
+			}
+			ti.setSutInitiated(sutInitiated);
+		}
+
+		return tis;
+	}
+
+	public List<SectionDefinitionDAO> getTestSectionsDAOs(TestInstance testInstance) throws Exception {
+		TestDefinition def = session.getTestkitSearchPath().getTestDefinition(testInstance.getId());
+		return def.getSections();
 	}
 
 	public String getTestReadme(String test) throws Exception {

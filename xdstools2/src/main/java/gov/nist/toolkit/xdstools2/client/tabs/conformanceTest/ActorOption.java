@@ -2,6 +2,7 @@ package gov.nist.toolkit.xdstools2.client.tabs.conformanceTest;
 
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import gov.nist.toolkit.actortransaction.client.ActorType;
+import gov.nist.toolkit.results.client.TestInstance;
 import gov.nist.toolkit.xdstools2.client.util.ClientUtils;
 
 import java.util.List;
@@ -27,7 +28,7 @@ public class ActorOption {
      * Tests for options are listed in collections as actorType_optionName
      * @param callback with list of testIds
      */
-    void loadTests(AsyncCallback<List<String>> callback) {
+    void loadTests(AsyncCallback<List<TestInstance>> callback) {
         if (optionId == null || optionId.equals("")) {
             ClientUtils.INSTANCE.getToolkitServices().getCollectionMembers("actorcollections", actorTypeId, callback);
         } else {

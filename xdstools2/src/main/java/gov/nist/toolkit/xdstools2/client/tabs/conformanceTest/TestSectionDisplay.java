@@ -19,17 +19,17 @@ import gov.nist.toolkit.xdstools2.client.util.ClientUtils;
 /**
  * Presentation and view for displaying test sections.
  */
-public class TestSectionDisplay implements IsWidget {
+class TestSectionDisplay implements IsWidget {
     private final String sessionName;
     private final TestInstance testInstance;
     private TestInstance fullTestInstance;
     private SectionOverviewDTO sectionOverview;
     private TestSectionView view = new TestSectionView();
-    TestRunner testRunner;
-    TestSectionDisplay me;
+    private TestRunner testRunner;
+    private TestSectionDisplay me;
 
 
-    public TestSectionDisplay(String sessionName, TestInstance testInstance, SectionOverviewDTO sectionOverview, TestRunner testRunner, boolean allowRun) {
+    TestSectionDisplay(String sessionName, TestInstance testInstance, SectionOverviewDTO sectionOverview, TestRunner testRunner, boolean allowRun) {
         me = this;
         this.sessionName = sessionName;
         this.testInstance = testInstance;

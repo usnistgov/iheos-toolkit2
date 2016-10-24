@@ -42,6 +42,7 @@ import gov.nist.toolkit.sitemanagement.client.TransactionOfferings;
 import gov.nist.toolkit.testengine.scripts.BuildCollections;
 import gov.nist.toolkit.testengine.scripts.CodesUpdater;
 import gov.nist.toolkit.testenginelogging.client.LogFileContentDTO;
+import gov.nist.toolkit.testkitutilities.client.SectionDefinitionDAO;
 import gov.nist.toolkit.testkitutilities.client.TestCollectionDefinitionDAO;
 import gov.nist.toolkit.tk.TkLoader;
 import gov.nist.toolkit.tk.client.TkProps;
@@ -52,17 +53,13 @@ import gov.nist.toolkit.valsupport.client.MessageValidationResults;
 import gov.nist.toolkit.valsupport.client.ValidationContext;
 import gov.nist.toolkit.xdsexception.ExceptionUtil;
 import gov.nist.toolkit.xdsexception.client.EnvironmentNotSelectedException;
+import gov.nist.toolkit.xdstools2.client.ToolkitService;
+import gov.nist.toolkit.xdstools2.server.serviceManager.DashboardServiceManager;
+import gov.nist.toolkit.xdstools2.server.serviceManager.GazelleServiceManager;
 import gov.nist.toolkit.xdstools2.shared.NoServletSessionException;
 import gov.nist.toolkit.xdstools2.shared.RegistryStatus;
 import gov.nist.toolkit.xdstools2.shared.RepositoryStatus;
-import gov.nist.toolkit.xdstools2.client.ToolkitService;
-import gov.nist.toolkit.xdstools2.shared.command.CommandContext;
-import gov.nist.toolkit.xdstools2.shared.command.GeneratePidRequest;
-import gov.nist.toolkit.xdstools2.shared.command.GetAllSimConfigsRequest;
-import gov.nist.toolkit.xdstools2.shared.command.SendPidToRegistryRequest;
-import gov.nist.toolkit.xdstools2.shared.command.InitializationResponse;
-import gov.nist.toolkit.xdstools2.server.serviceManager.DashboardServiceManager;
-import gov.nist.toolkit.xdstools2.server.serviceManager.GazelleServiceManager;
+import gov.nist.toolkit.xdstools2.shared.command.*;
 import org.apache.log4j.Logger;
 
 import javax.servlet.ServletContext;
@@ -341,10 +338,15 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements
      * @throws Exception is something goes wrong
      */
     public Map<String, String> getCollectionNames(String collectionSetName) throws Exception { return session().xdsTestServiceManager().getCollectionNames(collectionSetName); }
-    public List<String> getCollectionMembers(String collectionSetName, String collectionName) throws Exception { return session().xdsTestServiceManager().getCollectionMembers(collectionSetName, collectionName); }
+    public List<TestInstance> getCollectionMembers(String collectionSetName, String collectionName) throws Exception { return session().xdsTestServiceManager().getCollectionMembers(collectionSetName, collectionName); }
     public List<TestOverviewDTO> getTestsOverview(String sessionName, List<TestInstance> testInstances) throws Exception {
         List<TestOverviewDTO> o = session().xdsTestServiceManager().getTestsOverview(sessionName, testInstances);
         return o;
+    }
+    public List<SectionDefinitionDAO> getTestSectionsDAOs(String mesaTestSession, TestInstance testInstance) throws Exception {
+        Session session = session().xdsTestServiceManager().session;
+        session.setMesaSessionName(mesaTestSession);
+        return session().xdsTestServiceManager().getTestSectionsDAOs(testInstance);
     }
     public LogFileContentDTO getTestLogDetails(String sessionName, TestInstance testInstance) throws Exception {
         LogFileContentDTO o = session().xdsTestServiceManager().getTestLogDetails(sessionName, testInstance);

@@ -12,6 +12,7 @@ public class TestInstance implements IsSerializable, Serializable {
 	String section = null;  // this is optional
 	String event = null;
 	String eventDir;
+	boolean sutInitiated;  // part of this test must be initiated by the SUT
 
 	// params to re-create LogRepository
 	String location = null;
@@ -48,6 +49,7 @@ public class TestInstance implements IsSerializable, Serializable {
         x.user = user;
         x.format = format;
         x.idType = idType;
+		x.sutInitiated = sutInitiated;
         return x;
     }
 
@@ -167,4 +169,11 @@ public class TestInstance implements IsSerializable, Serializable {
 		return buf.toString();
 	}
 
+	public boolean getSutInitiated() {
+		return sutInitiated;
+	}
+
+	public void setSutInitiated(boolean sutInitiated) {
+		this.sutInitiated = sutInitiated;
+	}
 }

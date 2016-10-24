@@ -15,6 +15,9 @@ import gov.nist.toolkit.xdstools2.client.util.ClientUtils;
 import gov.nist.toolkit.xdstools2.client.widgets.OrchestrationSupportTestsDisplay;
 import gov.nist.toolkit.xdstools2.client.widgets.buttons.AbstractOrchestrationButton;
 
+import java.util.ArrayList;
+import java.util.List;
+
 
 /**
  *
@@ -27,6 +30,18 @@ public class BuildRegTestOrchestrationButton extends AbstractOrchestrationButton
     private FlowPanel initializationResultsPanel = new FlowPanel();
     private RadioButton noFeed = new RadioButton("pidFeedGroup", "No Patient Identity Feed");
     private RadioButton v2Feed = new RadioButton("pidFeedGroup", "V2 Patient Identitfy Feed");
+
+    static private final String MU_OPTION = "mu";
+    static private final String MPQ_OPTION = "mpq";
+    static private final String OD_OPTION = "mpq";
+    public static List<ActorAndOption> ACTOR_OPTIONS = new ArrayList<>();
+    static {
+        ACTOR_OPTIONS = java.util.Arrays.asList(
+                new ActorAndOption("reg", "", "Required", false),
+                new ActorAndOption("reg", MU_OPTION, "Metadata Update Option", true),
+                new ActorAndOption("reg", MPQ_OPTION, "MPQ Option", true),
+                new ActorAndOption("reg", OD_OPTION, "On Demand Option", true));
+    }
 
     BuildRegTestOrchestrationButton(ConformanceTestTab testTab, TestContext testContext, TestContextView testContextView, Panel initializationPanel, String label) {
         this.initializationPanel = initializationPanel;
