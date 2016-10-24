@@ -5,19 +5,21 @@ package gov.nist.toolkit.xdstools2.client.tabs.conformanceTest;
 
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.user.client.rpc.AsyncCallback;
-import com.google.gwt.user.client.ui.*;
-
+import com.google.gwt.user.client.ui.FlexTable;
+import com.google.gwt.user.client.ui.FlowPanel;
+import com.google.gwt.user.client.ui.HTML;
+import com.google.gwt.user.client.ui.Panel;
 import gov.nist.toolkit.actorfactory.client.SimulatorConfig;
 import gov.nist.toolkit.configDatatypes.SimulatorProperties;
 import gov.nist.toolkit.configDatatypes.client.TransactionType;
 import gov.nist.toolkit.services.client.IdsOrchestrationRequest;
+import gov.nist.toolkit.services.client.IdsOrchestrationResponse;
 import gov.nist.toolkit.services.client.RawResponse;
 import gov.nist.toolkit.sitemanagement.client.SiteSpec;
 import gov.nist.toolkit.sitemanagement.client.TransactionBean;
-import gov.nist.toolkit.services.client.IdsOrchestrationResponse;
 import gov.nist.toolkit.xdstools2.client.PopupMessage;
 import gov.nist.toolkit.xdstools2.client.util.ClientUtils;
-import gov.nist.toolkit.xdstools2.client.widgets.buttons.OrchestrationButton;
+import gov.nist.toolkit.xdstools2.client.widgets.buttons.AbstractOrchestrationButton;
 
 /**
  *
@@ -26,15 +28,19 @@ import gov.nist.toolkit.xdstools2.client.widgets.buttons.OrchestrationButton;
  * href="mailto:moultonr@mir.wustl.edu">moultonr@mir.wustl.edu</a>
  *
  */
-public class BuildIDSTestOrchestrationButton extends OrchestrationButton {
+public class BuildIDSTestOrchestrationButton extends AbstractOrchestrationButton {
 
    private ConformanceTestTab testTab;
    private Panel initializationPanel;
    private FlowPanel initializationResultsPanel = new FlowPanel();
+    private TestContext testContext;
+    private TestContextView testContextView;
 
-   BuildIDSTestOrchestrationButton(ConformanceTestTab testTab, Panel initializationPanel, String label) {
+   BuildIDSTestOrchestrationButton(ConformanceTestTab testTab, TestContext testContext, TestContextView testContextView, Panel initializationPanel, String label) {
        this.initializationPanel = initializationPanel;
        this.testTab = testTab;
+       this.testContext = testContext;
+       this.testContextView = testContextView;
 
        setParentPanel(initializationPanel);
        setLabel(label);
@@ -46,11 +52,11 @@ public class BuildIDSTestOrchestrationButton extends OrchestrationButton {
   
    @Override
    public void handleClick(ClickEvent clickEvent) {
-      String msg = testTab.verifyConformanceTestEnvironment();
-      if (msg != null) {
-          testTab.launchTestEnvironmentDialog(msg);
-          return;
-      }
+       String msg = testContext.verifyTestContext();
+       if (msg != null) {
+           testContextView.launchDialog(msg);
+           return;
+       }
 
       initializationResultsPanel.clear();
       
@@ -58,10 +64,10 @@ public class BuildIDSTestOrchestrationButton extends OrchestrationButton {
       request.setUserName(testTab.getCurrentTestSession());
       request.setEnvironmentName(testTab.getEnvironmentSelection());
       request.setUseExistingSimulator(!isResetRequested());
-      SiteSpec siteSpec = new SiteSpec(testTab.getSiteName());
+      SiteSpec siteSpec = new SiteSpec(testContext.getSiteName());
       request.setIdsSut(siteSpec);
 
-      testTab.setSitetoIssueTestAgainst(siteSpec);
+      testTab.setSiteToIssueTestAgainst(siteSpec);
       
       ClientUtils.INSTANCE.getToolkitServices().buildIdsTestOrchestration(request, new AsyncCallback<RawResponse>() {
          @Override
@@ -76,20 +82,20 @@ public class BuildIDSTestOrchestrationButton extends OrchestrationButton {
 
             initializationResultsPanel.add(new HTML("Initialization Complete"));
             
-            if (testTab.getSiteUnderTest() != null) {
+            if (testContext.getSiteUnderTest() != null) {
                initializationResultsPanel.add(new HTML("<h2>System Under Test Configuration</h2>"));
-               initializationResultsPanel.add(new HTML("Site: " + testTab.getSiteUnderTest().getName()));
+               initializationResultsPanel.add(new HTML("Site: " + testContext.getSiteUnderTest().getName()));
                FlexTable table = new FlexTable();
                int row = 0;
                table.setText(row, 0, "Retrieve Image Document Set");
                try {
-                   table.setText(row++, 1, testTab.getSiteUnderTest().getRawEndpoint(TransactionType.RET_IMG_DOC_SET, false, false));
+                   table.setText(row++, 1, testContext.getSiteUnderTest().getRawEndpoint(TransactionType.RET_IMG_DOC_SET, false, false));
                } catch (Exception e) {
                }
 
                table.setText(row, 0, "Repository Unique ID");
                try {
-                   String repUid = testTab.getSiteUnderTest().getRepositoryUniqueId(TransactionBean.RepositoryType.IDS);
+                   String repUid = testContext.getSiteUnderTest().getRepositoryUniqueId(TransactionBean.RepositoryType.IDS);
                    table.setText(row++, 1, repUid);
                } catch (Exception e) {
                   new PopupMessage("sut config: " + e.getMessage());

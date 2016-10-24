@@ -60,7 +60,6 @@ import gov.nist.toolkit.xdstools2.shared.NoServletSessionException;
 import gov.nist.toolkit.xdstools2.shared.RegistryStatus;
 import gov.nist.toolkit.xdstools2.shared.RepositoryStatus;
 import gov.nist.toolkit.xdstools2.shared.command.*;
-import org.apache.http.annotation.Obsolete;
 import org.apache.log4j.Logger;
 
 import javax.servlet.ServletContext;
@@ -424,17 +423,6 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements
         return session().xdsTestServiceManager().getTestSections(test);
     }
 
-    /**
-     * Get map of (collection name, collection description) pairs contained in testkit
-     * @param testSession test session name (mesa session name)
-     * @param collectionSetName the collection name
-     * @return the map
-     * @throws Exception is something goes wrong
-     */
-    public Map<String, String> getCollectionNames(String testSession, String collectionSetName) throws Exception {
-        session().setMesaSessionName(testSession);
-        return session().xdsTestServiceManager().getCollectionNames(collectionSetName);
-    }
     //	public List<Result> getLogContent(String sessionName, TestInstance testInstance) throws Exception { return session().xdsTestServiceManager().getLogContent(sessionName, testInstance); }
     public List<Result> runMesaTest(String environmentName,String mesaTestSession, SiteSpec siteSpec, TestInstance testInstance, List<String> sections, Map<String, String> params, boolean stopOnFirstFailure)  throws Exception {
         return session().xdsTestServiceManager().runMesaTest(environmentName, mesaTestSession, siteSpec, testInstance, sections, params, null, stopOnFirstFailure);
@@ -447,31 +435,17 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements
      */
 	@Override
    public List<String> getTestIndex(String test) throws Exception { return session().xdsTestServiceManager().getTestSections(test); }
-
     /**
      * Get map of (collection name, collection description) pairs contained in testkit
      * @param collectionSetName the collection name
      * @return the map
      * @throws Exception is something goes wrong
      */
-	@Override
-   public Map<String, String> getCollectionNames(String collectionSetName) throws Exception { return session().xdsTestServiceManager().getCollectionNames(collectionSetName); }
-	@Override
-   public List<String> getCollectionMembers(String collectionSetName, String collectionName) throws Exception { return session().xdsTestServiceManager().getCollectionMembers(collectionSetName, collectionName); }
-	@Override
-   public List<TestOverviewDTO> getTestsOverview(String sessionName, List<TestInstance> testInstances) throws Exception {
-		List<TestOverviewDTO> o = session().xdsTestServiceManager().getTestsOverview(sessionName, testInstances);
-		return o;
-	}
-	@Override
-   public LogFileContentDTO getTestLogDetails(String sessionName, TestInstance testInstance) throws Exception {
-		LogFileContentDTO o = session().xdsTestServiceManager().getTestLogDetails(sessionName, testInstance);
-		return o;
-	}
-	@Override
-   public List<TestCollectionDefinitionDAO> getTestCollections(String collectionSetName) throws Exception { return session().xdsTestServiceManager().getTestCollections(collectionSetName); }
+    @Override
     public Map<String, String> getCollectionNames(String collectionSetName) throws Exception { return session().xdsTestServiceManager().getCollectionNames(collectionSetName); }
+    @Override
     public List<TestInstance> getCollectionMembers(String collectionSetName, String collectionName) throws Exception { return session().xdsTestServiceManager().getCollectionMembers(collectionSetName, collectionName); }
+    @Override
     public List<TestOverviewDTO> getTestsOverview(String sessionName, List<TestInstance> testInstances) throws Exception {
         List<TestOverviewDTO> o = session().xdsTestServiceManager().getTestsOverview(sessionName, testInstances);
         return o;
@@ -481,10 +455,12 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements
         session.setMesaSessionName(mesaTestSession);
         return session().xdsTestServiceManager().getTestSectionsDAOs(testInstance);
     }
+    @Override
     public LogFileContentDTO getTestLogDetails(String sessionName, TestInstance testInstance) throws Exception {
         LogFileContentDTO o = session().xdsTestServiceManager().getTestLogDetails(sessionName, testInstance);
         return o;
     }
+    @Override
     public List<TestCollectionDefinitionDAO> getTestCollections(String collectionSetName) throws Exception { return session().xdsTestServiceManager().getTestCollections(collectionSetName); }
 
     @Override

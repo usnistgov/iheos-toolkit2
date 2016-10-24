@@ -31,6 +31,11 @@ import gov.nist.toolkit.xdstools2.client.tabs.GatewayTestsTabs.BuildIGTestOrches
 import gov.nist.toolkit.xdstools2.client.widgets.LaunchInspectorClickHandler;
 import gov.nist.toolkit.xdstools2.client.widgets.buttons.AbstractOrchestrationButton;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 /**
  * All Conformance tests will be run out of here
  */
@@ -282,27 +287,6 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner, TestsH
 			}
 		});
 	}
-
-
-
-   private boolean isInitiatingImagingGatewaySut() {
-      return currentActorTypeId != null
-         && ActorType.INITIATING_IMAGING_GATEWAY.getShortName().equals(currentActorTypeId);
-   }
-
-   private boolean isRespondingingImagingGatewaySut() {
-      return currentActorTypeId != null
-         && ActorType.RESPONDING_IMAGING_GATEWAY.getShortName().equals(currentActorTypeId);
-   }
-
-   private boolean isEdgeServerSut() {
-      return false;
-   }
-
-   private boolean isImagingDocSourceSut() {
-      return currentActorTypeId != null
-         && ActorType.IMAGING_DOC_SOURCE.getShortName().equals(currentActorTypeId);
-   }
 
    private HTML loadingMessage;
 
@@ -687,4 +671,8 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner, TestsH
    public void setInitTestSession(String initTestSession) {
       this.initTestSession = initTestSession;
    }
+
+    public TestContext getTestContext() {
+        return testContext;
+    }
 }

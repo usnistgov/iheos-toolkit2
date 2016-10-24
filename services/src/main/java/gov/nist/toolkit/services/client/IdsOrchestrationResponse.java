@@ -56,10 +56,14 @@ public class IdsOrchestrationResponse extends RawResponse {
    /**
     * @param regrepConfig the {@link #rrConfig} to set
     */
-   public void setRRConfig(SimulatorConfig regrepConfig) {
+   public void setRegrepConfig(SimulatorConfig regrepConfig) {
       this.rrConfig = regrepConfig;
    }
-    
-    
+
+   public SimulatorConfig getRegrepConfig() {
+      return rrConfig;
+   }
+
+
 
 }

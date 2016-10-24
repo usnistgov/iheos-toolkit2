@@ -2,8 +2,10 @@ package gov.nist.toolkit.xdstools2.client.tabs.conformanceTest;
 
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.user.client.rpc.AsyncCallback;
-import com.google.gwt.user.client.ui.*;
-
+import com.google.gwt.user.client.ui.FlexTable;
+import com.google.gwt.user.client.ui.FlowPanel;
+import com.google.gwt.user.client.ui.HTML;
+import com.google.gwt.user.client.ui.Panel;
 import gov.nist.toolkit.actorfactory.client.SimulatorConfig;
 import gov.nist.toolkit.actortransaction.client.ActorType;
 import gov.nist.toolkit.actortransaction.client.ParamType;
@@ -14,20 +16,24 @@ import gov.nist.toolkit.services.client.IigOrchestrationResponse;
 import gov.nist.toolkit.services.client.RawResponse;
 import gov.nist.toolkit.simcommon.client.config.SimulatorConfigElement;
 import gov.nist.toolkit.xdstools2.client.util.ClientUtils;
-import gov.nist.toolkit.xdstools2.client.widgets.buttons.OrchestrationButton;
+import gov.nist.toolkit.xdstools2.client.widgets.buttons.AbstractOrchestrationButton;
 
 /**
  * Created by smm on 10/9/16.
  */
 
-public class BuildIIGTestOrchestrationButton extends OrchestrationButton {
+public class BuildIIGTestOrchestrationButton extends AbstractOrchestrationButton {
    private ConformanceTestTab testTab;
    private Panel initializationPanel;
    private FlowPanel initializationResultsPanel = new FlowPanel();
+   private TestContext testContext;
+   private TestContextView testContextView;
 
-   BuildIIGTestOrchestrationButton(ConformanceTestTab testTab, Panel initializationPanel, String label) {
+   BuildIIGTestOrchestrationButton(ConformanceTestTab testTab, TestContext testContext, TestContextView testContextView, Panel initializationPanel, String label) {
       this.initializationPanel = initializationPanel;
       this.testTab = testTab;
+      this.testContext = testContext;
+      this.testContextView = testContextView;
 
       setParentPanel(initializationPanel);
       setLabel(label);
@@ -38,9 +44,9 @@ public class BuildIIGTestOrchestrationButton extends OrchestrationButton {
 
    @Override
    public void handleClick(ClickEvent clickEvent) {
-      String msg = testTab.verifyConformanceTestEnvironment();
+      String msg = testContext.verifyTestContext();
       if (msg != null) {
-         testTab.launchTestEnvironmentDialog(msg);
+         testContextView.launchDialog(msg);
          return;
       }
 
@@ -63,15 +69,15 @@ public class BuildIIGTestOrchestrationButton extends OrchestrationButton {
 
             initializationResultsPanel.add(new HTML("Initialization Complete"));
 
-            if (testTab.getSiteUnderTest() != null) {
+            if (testContext.getSiteUnderTest() != null) {
                initializationResultsPanel.add(new HTML("<h2>System Under Test Configuration</h2>"));
-               initializationResultsPanel.add(new HTML("Site: " + testTab.getSiteUnderTest().getName()));
+               initializationResultsPanel.add(new HTML("Site: " + testContext.getSiteUnderTest().getName()));
                FlexTable table = new FlexTable();
                int row = 0;
                table.setText(row, 0, "Retrieve Img Doc Set: ");
                try {
                   table.setText(row++ , 1,
-                     testTab.getSiteUnderTest().getRawEndpoint(TransactionType.RET_IMG_DOC_SET_GW, false, false));
+                          testContext.getSiteUnderTest().getRawEndpoint(TransactionType.RET_IMG_DOC_SET_GW, false, false));
                } catch (Exception e) {}
 
                initializationResultsPanel.add(table);

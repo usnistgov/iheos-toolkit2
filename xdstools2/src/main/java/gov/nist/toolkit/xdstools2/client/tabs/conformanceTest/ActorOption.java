@@ -52,6 +52,25 @@ public class ActorOption {
         return actorTypeId != null && ActorType.REGISTRY.getShortName().equals(actorTypeId);
     }
 
+    private boolean isInitiatingImagingGatewaySut() {
+        return actorTypeId != null
+                && ActorType.INITIATING_IMAGING_GATEWAY.getShortName().equals(actorTypeId);
+    }
+
+    private boolean isRespondingingImagingGatewaySut() {
+        return actorTypeId != null
+                && ActorType.RESPONDING_IMAGING_GATEWAY.getShortName().equals(actorTypeId);
+    }
+
+    private boolean isEdgeServerSut() {
+        return false;
+    }
+
+    private boolean isImagingDocSourceSut() {
+        return actorTypeId != null
+                && ActorType.IMAGING_DOC_SOURCE.getShortName().equals(actorTypeId);
+    }
+
     void setOptionId(String optionId) {
         this.optionId = optionId;
     }

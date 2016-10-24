@@ -19,6 +19,8 @@ abstract public class AbstractOrchestrationButton implements ClickHandler {
     private Panel customPanel = null;
     private boolean errorPanelAdded = false;
     private CheckBox selftestCheckBox;
+    private String label = null;
+    private String resetLabel = null;
 
     public AbstractOrchestrationButton(Panel topPanel, String label) {
         this.topPanel = topPanel;
@@ -33,6 +35,14 @@ abstract public class AbstractOrchestrationButton implements ClickHandler {
 
     protected void setCustomPanel(Panel panel) {
         this.customPanel = panel;
+    }
+
+    protected void setLabel(String label) {
+        this.label = label;
+    }
+
+    protected void setResetLabel(String resetLabel) {
+        this.resetLabel = resetLabel;
     }
 
     public Panel build() {
