@@ -415,6 +415,24 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner, TestsH
 			orchInit.addSelfTestClickHandler(new RefreshTestCollectionHandler());
 			initializationPanel.add(orchInit.panel());
 		}
+		else if (currentActorOption.isInitiatingImagingGatewaySut()) {
+		   orchInit = new BuildIIGTestOrchestrationButton(this, testContext, testContextView, initializationPanel, label);
+         orchInit.addSelfTestClickHandler(new RefreshTestCollectionHandler());
+         initializationPanel.add(orchInit.panel());
+		}
+		else if (currentActorOption.isRespondingingImagingGatewaySut()) {
+         orchInit = new BuildRIGTestOrchestrationButton(this, testContext, testContextView, initializationPanel, label);
+         orchInit.addSelfTestClickHandler(new RefreshTestCollectionHandler());
+         initializationPanel.add(orchInit.panel());
+		} 
+		else if (currentActorOption.isImagingDocSourceSut()) {
+         orchInit = new BuildIDSTestOrchestrationButton(this, testContext, testContextView, initializationPanel, label);
+         orchInit.addSelfTestClickHandler(new RefreshTestCollectionHandler());
+         initializationPanel.add(orchInit.panel());
+		}
+		else if (currentActorOption.isEdgeServerSut()) {
+		   // TODO not implemented yet.
+		}
 		else {
 			if (testContext.getSiteUnderTest() != null)
 				siteToIssueTestAgainst = testContext.getSiteUnderTestAsSiteSpec();
