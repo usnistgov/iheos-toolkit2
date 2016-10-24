@@ -16,7 +16,7 @@ class TestsHeaderView {
     private FlowPanel testsHeader = new FlowPanel();
     private HTML selfTestBanner = new HTML();
     private HTML testsHeaderTitle = new HTML();
-    private TestDisplayHeader bar = new TestDisplayHeader();
+    private TestOverviewDisplayPanel bar = new TestOverviewDisplayPanel();
     private HTML title = new HTML();
     private HTML testCount = new HTML();
     private HTML successes = new HTML();
@@ -38,7 +38,7 @@ class TestsHeaderView {
         bar.add(testsHeaderTitle);
         bar.add(testsHeaderRunningMessage);
 
-//        testsHeader.display(testsHeaderTitle);
+//        testsHeader.build(testsHeaderTitle);
 
         testCount.setWidth("12em");
 
@@ -117,19 +117,19 @@ class TestsHeaderView {
 
         if (testStatistics.isAllRun()) {
             if (testStatistics.hasErrors()) {
-                bar.setBackgroundColorFailure();
+                bar.labelFailure();
                 bar.add(getStatusIcon(false));
             } else {
-                bar.setBackgroundColorSuccess();
+                bar.labelSuccess();
                 bar.add(getStatusIcon(true));
             }
         }
         else if (testStatistics.hasErrors()) {
-            bar.setBackgroundColorFailure();
+            bar.labelFailure();
             bar.add(getStatusIcon(false));
         }
         else {
-            bar.setBackgroundColorNotRun();
+            bar.labelNotRun();
         }
 
     }

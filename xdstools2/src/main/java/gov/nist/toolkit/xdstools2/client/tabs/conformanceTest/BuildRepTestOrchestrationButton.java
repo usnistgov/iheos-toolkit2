@@ -72,8 +72,8 @@ class BuildRepTestOrchestrationButton extends AbstractOrchestrationButton {
                     initializationResultsPanel.add(new SiteDisplay("Supporting Environment Configuration", orchResponse.getSupportSite()));
                 }
 
-//                initializationResultsPanel.display(new HTML("<h3>Supporting Environment</h3>"));
-//                initializationResultsPanel.display(new SimSystemAnchor("System: " + orchResponse.getSupportSite().getName(), new SiteSpec(orchResponse.getSupportSite().getName())));
+//                initializationResultsPanel.build(new HTML("<h3>Supporting Environment</h3>"));
+//                initializationResultsPanel.build(new SimSystemAnchor("System: " + orchResponse.getSupportSite().getName(), new SiteSpec(orchResponse.getSupportSite().getName())));
 
 
 

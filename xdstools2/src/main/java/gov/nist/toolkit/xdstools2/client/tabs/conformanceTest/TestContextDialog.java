@@ -97,7 +97,7 @@ class TestContextDialog extends DialogBox {
         panel.add(validationMessage);
 //        validateButton.setVisible(false);
 //        validateButton.addClickHandler(new ValidateClickHandler());
-//        panel.display(validateButton);
+//        panel.build(validateButton);
         acceptButton.addClickHandler(new AcceptButtonClickHandler());
         panel.add(acceptButton);
 
@@ -233,12 +233,12 @@ class TestContextDialog extends DialogBox {
 //                }
 //
 //                @Override
-//                public void onSuccess(ConformanceSessionValidationStatus status) {
-//                    if (status.isPass()) {
+//                public void onSuccess(ConformanceSessionValidationStatus testStatus) {
+//                    if (testStatus.isPass()) {
 //                        new PopupMessage("Validates");
 //                    }
 //                    else {
-//                        new PopupMessage(status.getMessage());
+//                        new PopupMessage(testStatus.getMessage());
 //                    }
 //                }
 //            });
@@ -271,7 +271,7 @@ class TestContextDialog extends DialogBox {
             ClientUtils.INSTANCE.getToolkitServices().addMesaTestSession(newItem, new AsyncCallback<Boolean>() {
                 @Override
                 public void onFailure(Throwable throwable) {
-                    new PopupMessage("Cannot display test session - " + throwable.getMessage());
+                    new PopupMessage("Cannot build test session - " + throwable.getMessage());
                 }
 
                 @Override

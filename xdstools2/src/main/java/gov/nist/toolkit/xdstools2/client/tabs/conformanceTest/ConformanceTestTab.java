@@ -161,7 +161,7 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner, TestsH
 
 	/**
 	 * currentActorTypeDescription is initialized late so calling this when it is available
-	 * updates the display since it could not be constructed correctly at first.
+	 * updates the build since it could not be constructed correctly at first.
 	 * This must be called after testCollectionDefinitionDAOs is initialized.
 	 */
 	private void updateTestsOverviewHeader() {
@@ -180,7 +180,7 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner, TestsH
 			}
 		}
 
-		// Display header with statistics
+		// Display testStatus with statistics
 		testsHeaderView.allowRun(allowRun());
 		testsHeaderView.update(testStatistics, currentActorTypeDescription + " - " + getCurrentOptionTitle());
 	}
@@ -377,8 +377,7 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner, TestsH
 				for (TestOverviewDTO testOverview : testOverviews) {
 					addTestOverview(testOverview);
 					TestDisplay testDisplay = testDisplayGroup.display(testOverview);
-					testDisplay.display(testOverview);
-					testsPanel.add(testDisplay);
+					testsPanel.add(testDisplay.asWidget());
 				}
 				updateTestsOverviewHeader();
 
@@ -546,7 +545,7 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner, TestsH
 
 				@Override
 				public void onSuccess(TestOverviewDTO testOverviewDTO) {
-					// returned status of entire test
+					// returned testStatus of entire test
 					testDisplayGroup.display(testOverviewDTO);
 					addTestOverview(testOverviewDTO);
 					updateTestsOverviewHeader();

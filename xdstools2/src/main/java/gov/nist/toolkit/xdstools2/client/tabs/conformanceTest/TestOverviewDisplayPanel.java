@@ -5,24 +5,24 @@ import gov.nist.toolkit.xdstools2.client.HorizontalFlowPanel;
 /**
  *
  */
-public class TestDisplayHeader extends HorizontalFlowPanel {
+public class TestOverviewDisplayPanel extends HorizontalFlowPanel implements TestStatusDisplay {
     private void resetBackground() {
         removeStyleName("testOverviewHeaderSuccess");
         removeStyleName("testOverviewHeaderFail");
         removeStyleName("testOverviewHeaderNotRun");
     }
 
-    public void setBackgroundColorSuccess() {
+    public void labelSuccess() {
         resetBackground();
         addStyleName("testOverviewHeaderSuccess");
     }
 
-    public void setBackgroundColorFailure() {
+    public void labelFailure() {
         resetBackground();
         addStyleName("testOverviewHeaderFail");
     }
 
-    public void setBackgroundColorNotRun() {
+    public void labelNotRun() {
         resetBackground();
         addStyleName("testOverviewHeaderNotRun");
     }
