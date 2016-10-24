@@ -20,7 +20,7 @@ import java.util.List;
 
 
 /**
- *
+ * Build Registry tests orchestration
  */
 public class BuildRegTestOrchestrationButton extends AbstractOrchestrationButton {
     private ConformanceTestTab testTab;

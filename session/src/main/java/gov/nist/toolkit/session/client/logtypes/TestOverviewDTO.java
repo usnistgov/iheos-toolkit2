@@ -10,7 +10,7 @@ import java.util.*;
 /**
  * Should be renamed TestResultsDTO!!!!
  */
-public class TestOverviewDTO implements BasicTestOverview, Serializable, IsSerializable {
+public class TestOverviewDTO implements BasicTestOverview, Serializable, IsSerializable, Comparable {
     private String name;
     private TestInstance testInstance;
     private String title;
@@ -139,4 +139,12 @@ public class TestOverviewDTO implements BasicTestOverview, Serializable, IsSeria
     public void setDependencies(Collection<String> dependencies) {
         this.dependencies = dependencies;
     }
+
+   /* (non-Javadoc)
+    * @see java.lang.Comparable#compareTo(java.lang.Object)
+    */
+   @Override
+   public int compareTo(Object o) {
+      return name.compareTo(((TestOverviewDTO)o).name);
+   }
 }

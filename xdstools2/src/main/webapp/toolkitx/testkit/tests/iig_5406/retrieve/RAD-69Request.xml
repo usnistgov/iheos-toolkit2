@@ -1,5 +1,6 @@
 <xdsiB:RetrieveImagingDocumentSetRequest
 	xmlns:xdsiB="urn:ihe:rad:xdsi-b:2009">
+	<!-- Initiating Imaging Gateway iig_5400: Retrieve single image from Community A, Home Community ID unknown to IIG -->
 	<xdsiB:StudyRequest studyInstanceUID="1.3.6.1.4.1.21367.201599.1.201606010958036">
 		<xdsiB:SeriesRequest seriesInstanceUID="1.3.6.1.4.1.21367.201599.2.201606010958036">
 			<xdsb:DocumentRequest xmlns:xdsb="urn:ihe:iti:xds-b:2007">

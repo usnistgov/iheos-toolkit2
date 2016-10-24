@@ -15,10 +15,10 @@ public class StepRAD68KOSDocument extends Step {
 	@Override
    public void initializeStep (Object[] args) throws Exception {
 	   
-	   DetailDciodvfy kosval = new DetailDciodvfy();
-      kosval.initializeDetail((String) args[0], "KOS Document");
-      details.add(kosval);
-      
+//	   DetailDciodvfy kosval = new DetailDciodvfy();
+//      kosval.initializeDetail((String) args[0], "KOS Document");
+//      details.add(kosval);
+            
 		DetailDcmKOSContent detailKOSContent = new DetailDcmKOSContent();
 		detailKOSContent.initializeDetail((String) args[0], (String) args[1]);
 		details.add(detailKOSContent);

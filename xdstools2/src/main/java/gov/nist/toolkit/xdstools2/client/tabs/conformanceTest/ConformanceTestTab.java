@@ -31,11 +31,6 @@ import gov.nist.toolkit.xdstools2.client.tabs.GatewayTestsTabs.BuildIGTestOrches
 import gov.nist.toolkit.xdstools2.client.widgets.LaunchInspectorClickHandler;
 import gov.nist.toolkit.xdstools2.client.widgets.buttons.AbstractOrchestrationButton;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 /**
  * All Conformance tests will be run out of here
  */
@@ -58,8 +53,8 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner, TestsH
 	private String currentActorTypeDescription;
 	private SiteSpec siteToIssueTestAgainst = null;
 
-	// stuff that needs delayed setting when launched via activity
-	private String initTestSession = null;
+   // stuff that needs delayed setting when launched via activity
+   private String initTestSession = null;
 
 	// Descriptions of current test list
 	private List<TestCollectionDefinitionDAO> testCollectionDefinitionDAOs;
@@ -93,22 +88,21 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner, TestsH
 
 		tabTopPanel.add(mainView.getToolPanel());
 
-
-		// Reload if the test session changes
-		Xdstools2.getEventBus().addHandler(TestSessionChangedEvent.TYPE, new TestSessionChangedEventHandler() {
-			@Override
-			public void onTestSessionChanged(TestSessionChangedEvent event) {
-				if (event.changeType == TestSessionChangedEvent.ChangeType.SELECT) {
-					loadTestCollections();
-				}
-			}
-		});
+      // Reload if the test session changes
+      Xdstools2.getEventBus().addHandler(TestSessionChangedEvent.TYPE, new TestSessionChangedEventHandler() {
+         @Override
+         public void onTestSessionChanged(TestSessionChangedEvent event) {
+            if (event.changeType == TestSessionChangedEvent.ChangeType.SELECT) {
+               loadTestCollections();
+            }
+         }
+      });
 
 		mainView.getActorTabBar().addSelectionHandler(new ActorSelectionHandler());
 		mainView.getOptionsTabBar().addSelectionHandler(new OptionSelectionHandler());
 
-		// Initial load of tests in a test session
-		loadTestCollections();
+      // Initial load of tests in a test session
+      loadTestCollections();
 
 		// Register the Diagram clicked event handler
 		Xdstools2.getEventBus().addHandler(DiagramClickedEvent.TYPE, new DiagramPartClickedEventHandler() {
@@ -259,15 +253,13 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner, TestsH
 		displayTestingPanel(mainView.getTestsPanel());
 	}
 
-	private String getDescriptionForTestCollection(String collectionId) {
-		if (testCollectionDefinitionDAOs == null) return "not initialized";
-		for (TestCollectionDefinitionDAO dao : testCollectionDefinitionDAOs) {
-			if (dao.getCollectionID().equals(collectionId)) {
-				return dao.getCollectionTitle();
-			}
-		}
-		return "???";
-	}
+   private String getDescriptionForTestCollection(String collectionId) {
+      if (testCollectionDefinitionDAOs == null) return "not initialized";
+      for (TestCollectionDefinitionDAO dao : testCollectionDefinitionDAOs) {
+         if (dao.getCollectionID().equals(collectionId)) { return dao.getCollectionTitle(); }
+      }
+      return "???";
+   }
 
 	// load tab bar with actor types
 	private void loadTestCollections() {
@@ -293,7 +285,26 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner, TestsH
 
 
 
-	private HTML loadingMessage;
+   private boolean isInitiatingImagingGatewaySut() {
+      return currentActorTypeId != null
+         && ActorType.INITIATING_IMAGING_GATEWAY.getShortName().equals(currentActorTypeId);
+   }
+
+   private boolean isRespondingingImagingGatewaySut() {
+      return currentActorTypeId != null
+         && ActorType.RESPONDING_IMAGING_GATEWAY.getShortName().equals(currentActorTypeId);
+   }
+
+   private boolean isEdgeServerSut() {
+      return false;
+   }
+
+   private boolean isImagingDocSourceSut() {
+      return currentActorTypeId != null
+         && ActorType.IMAGING_DOC_SOURCE.getShortName().equals(currentActorTypeId);
+   }
+
+   private HTML loadingMessage;
 
 	private class RefreshTestCollectionHandler implements ClickHandler {
 
@@ -425,7 +436,7 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner, TestsH
 				siteToIssueTestAgainst = testContext.getSiteUnderTestAsSiteSpec();
 		}
 
-	}
+   }
 
 
 	private void displayActorsTabBar(TabBar actorTabBar) {
@@ -449,28 +460,28 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner, TestsH
 			this.actorTypeId = actorTypeId;
 		}
 
-		@Override
-		public void onClick(ClickEvent clickEvent) {
-			clickEvent.preventDefault();
-			clickEvent.stopPropagation();
+      @Override
+      public void onClick(ClickEvent clickEvent) {
+         clickEvent.preventDefault();
+         clickEvent.stopPropagation();
 
-			for (TestInstance testInstance : testsPerActor.get(actorTypeId))
-				tests.add(testInstance);
-			onDone(null);
-		}
+         for (TestInstance testInstance : testsPerActor.get(actorTypeId))
+            tests.add(testInstance);
+         onDone(null);
+      }
 
-		@Override
-		public void onDone(TestInstance unused) {
-			testsHeaderView.showRunningMessage(true);
-			if (tests.size() == 0) {
-				testsHeaderView.showRunningMessage(false);
-				return;
-			}
-			TestInstance next = tests.get(0);
-			tests.remove(0);
-			runTest(next, this);
-		}
-	}
+      @Override
+      public void onDone(TestInstance unused) {
+         testsHeaderView.showRunningMessage(true);
+         if (tests.size() == 0) {
+            testsHeaderView.showRunningMessage(false);
+            return;
+         }
+         TestInstance next = tests.get(0);
+         tests.remove(0);
+         runTest(next, this);
+      }
+   }
 
 	private class RunAllSectionsClickHandler implements ClickHandler, TestDone {
 		TestInstance testInstance;
@@ -523,24 +534,25 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner, TestsH
 		return new RefreshTestCollectionHandler();
 	}
 
-	private class DeleteAllClickHandler implements ClickHandler {
-		String actorTypeId;
+   private class DeleteAllClickHandler implements ClickHandler {
+      String actorTypeId;
 
-		DeleteAllClickHandler(String actorTypeId) {
-			this.actorTypeId = actorTypeId;
-		}
+      DeleteAllClickHandler(String actorTypeId) {
+         this.actorTypeId = actorTypeId;
+      }
 
-		@Override
-		public void onClick(ClickEvent clickEvent) {
-			clickEvent.preventDefault();
-			clickEvent.stopPropagation();
-			List<TestInstance> tests = testsPerActor.get(actorTypeId);
-			for (TestInstance testInstance : tests) {
-				getToolkitServices().deleteSingleTestResult(getCurrentTestSession(), testInstance, new AsyncCallback<TestOverviewDTO>() {
-					@Override
-					public void onFailure(Throwable throwable) {
-						new PopupMessage(throwable.getMessage());
-					}
+      @Override
+      public void onClick(ClickEvent clickEvent) {
+         clickEvent.preventDefault();
+         clickEvent.stopPropagation();
+         List <TestInstance> tests = testsPerActor.get(actorTypeId);
+         for (TestInstance testInstance : tests) {
+            getToolkitServices().deleteSingleTestResult(getCurrentTestSession(), testInstance,
+               new AsyncCallback <TestOverviewDTO>() {
+                  @Override
+                  public void onFailure(Throwable throwable) {
+                     new PopupMessage(throwable.getMessage());
+                  }
 
 					@Override
 					public void onSuccess(TestOverviewDTO testOverviewDTO) {
@@ -622,7 +634,7 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner, TestsH
 			new PopupMessage(e.getMessage());
 		}
 
-	}
+   }
 
 	private Map<String, String> initializeTestParameters() {
 		Map<String, String> parms = new HashMap<>();
@@ -672,7 +684,7 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner, TestsH
 		this.siteToIssueTestAgainst = siteToIssueTestAgainst;
 	}
 
-	public void setInitTestSession(String initTestSession) {
-		this.initTestSession = initTestSession;
-	}
+   public void setInitTestSession(String initTestSession) {
+      this.initTestSession = initTestSession;
+   }
 }

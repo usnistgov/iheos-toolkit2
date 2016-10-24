@@ -22,10 +22,10 @@ public class BuildCollections extends HttpServlet {
     private Map<String, List<String>> collections = new HashMap<String, List<String>>();
     private boolean error;
 
-    public void init(ServletConfig sConfig) throws ServletException {
-        logger.info("Indexing testkit");
-        run();
-    }
+   public void init(ServletConfig sConfig) throws ServletException {
+      logger.info("Indexing testkit");
+      run();
+   }
 
     private String listAsFileContents(Collection<String> list) {
         StringBuilder buf = new StringBuilder();
@@ -43,50 +43,57 @@ public class BuildCollections extends HttpServlet {
         // actorCollection since some collections are based on the actor and some on transactions
         Map<ActorType, Set<String>> actorTestMap = new HashMap<>();
 
-        collectionsDir.mkdirs();  // create if doesn't exist
-        actorCollectionsDir.mkdirs();
+      collectionsDir.mkdirs(); // create if doesn't exist
+      actorCollectionsDir.mkdirs();
 
-        logger.info("Collections found:\n" + collections.keySet());
+      logger.info("Collections found:\n" + collections.keySet());
 
-        for (Iterator<String> it = collections.keySet().iterator(); it.hasNext(); ) {
-            String collectionName = it.next();
-            ActorType actorType = findActorType(collectionName);
+      for (Iterator <String> it = collections.keySet().iterator(); it.hasNext();) {
+         String collectionName = it.next();
+         ActorType actorType = findActorType(collectionName);
 
-            List<String> contents = collections.get(collectionName);
-            if (actorType != null) {
-                if (actorTestMap.get(actorType) == null) {
-                    actorTestMap.put(actorType, new HashSet<String>());
-                }
-                actorTestMap.get(actorType).addAll(contents);
+         List <String> contents = collections.get(collectionName);
+         if (actorType != null) {
+            if (actorTestMap.get(actorType) == null) {
+               actorTestMap.put(actorType, new HashSet <String>());
             }
-            File collectionFile = new File(collectionsDir + File.separator + collectionName + ".tc");
-            logger.info(String.format("Writing %s", collectionFile));
-            Io.stringToFile(collectionFile, listAsFileContents(contents));
-        }
+            actorTestMap.get(actorType).addAll(contents);
+         }
+         File collectionFile = new File(collectionsDir + File.separator + collectionName + ".tc");
+         logger.info(String.format("Writing %s", collectionFile));
+         Io.stringToFile(collectionFile, listAsFileContents(contents));
+      }
 
-        for (ActorType actorType : actorTestMap.keySet()) {
-            String name = actorType.getShortName();
-            String descriptiveName = actorType.getName();
-            logger.info(String.format("Writing %s", new File(actorCollectionsDir + File.separator + name + ".tc")));
-            Io.stringToFile(new File(actorCollectionsDir + File.separator + name + ".tc"), listAsFileContents(actorTestMap.get(actorType)));
-            Io.stringToFile(new File(actorCollectionsDir, name + ".txt"), descriptiveName);
-        }
-    }
+      for (ActorType actorType : actorTestMap.keySet()) {
+         String name = actorType.getShortName();
+         String descriptiveName = actorType.getName();
+         logger.info(String.format("Writing %s", new File(actorCollectionsDir + File.separator + name + ".tc")));
+         Io.stringToFile(new File(actorCollectionsDir + File.separator + name + ".tc"),
+            listAsFileContents(actorTestMap.get(actorType)));
+         Io.stringToFile(new File(actorCollectionsDir, name + ".txt"), descriptiveName);
+      }
+   }
 
     private ActorType findActorType(String collectionName) {
         ActorType at;
 
-        collectionName = collectionName.toLowerCase();
+      collectionName = collectionName.toLowerCase();
 
-        at = ActorType.findActor(collectionName.toLowerCase());
-        if (at != null) return at;
+      at = ActorType.findActor(collectionName.toLowerCase());
+      if (at != null) return at;
 
-        TransactionType tt = TransactionType.find(collectionName);
-        if (tt == null) return null;
-        at = ActorType.getActorType(tt);
-        return at;
-    }
+      TransactionType tt = TransactionType.find(collectionName);
+      if (tt == null) return null;
+      at = ActorType.getActorType(tt);
+      return at;
+   }
 
+    /**
+     * Adds testnum to collection. Creates collection if needed
+     *
+     * @param collection name
+     * @param testnum name
+     */
     private void add(String collection, String testnum) {
         List<String> c = collections.get(collection);
         if (c == null) {
@@ -97,14 +104,26 @@ public class BuildCollections extends HttpServlet {
             c.add(testnum);
     }
 
-    private void tokenize(String tokenStr, String testnum) {
-        String[] tokens = tokenStr.split("\\n");
-        for (String token : tokens) {
-            token = token.trim();
-            add(token, testnum);
-        }
-    }
+   /**
+    * Add testnum to each collection in whitespace delimited tokenStr
+    *
+    * @param tokenStr string of collection tokens
+    * @param testnum name
+    */
+   private void tokenize(String tokenStr, String testnum) {
+      StringTokenizer st = new StringTokenizer(tokenStr);
+      while (st.hasMoreElements()) {
+         String tok = st.nextToken();
+         add(tok, testnum);
+      }
+   }
 
+    /**
+     * Looks in testDir for collections.txt file. Adds testnum (testDir name) to
+     * all collections in file.
+     *
+     * @param testDir test directory.
+     */
     private void tokenize(File testDir) {
         File collFile = new File(testDir + File.separator + "collections.txt");
         if ( !collFile.exists()) {
@@ -122,61 +141,67 @@ public class BuildCollections extends HttpServlet {
         }
     }
 
-    private void scan() {
-        error = false;
-        for (int i=0; i<sections.length; i++) {
-            String section = sections[i];
+   /**
+    * Processes all the {@link #sections}, looking for child test directories.
+    * Adds each of these tests to the collections specified in its
+    * collections.txt file.
+    */
+   private void scan() {
+      error = false;
+      for (int i = 0; i < sections.length; i++ ) {
+         String section = sections[i];
 
-            File sectionFile = new File(testkitIn + File.separator + section);
-            File testDirs[] = sectionFile.listFiles();
+         File sectionFile = new File(testkitIn + File.separator + section);
+         File testDirs[] = sectionFile.listFiles();
 
-            if (testDirs == null) {
-                System.out.println("No tests defined in " + section + " (" + sectionFile + ")");
-                error = true;
-                continue;
+         if (testDirs == null) {
+            System.out.println("No tests defined in " + section + " (" + sectionFile + ")");
+            error = true;
+            continue;
+         }
+
+         for (int t = 0; t < testDirs.length; t++ ) {
+            File testDir = testDirs[t];
+            if (!testDir.isDirectory()) continue;
+            if (testDir.getName().equals(".svn")) continue;
+            File tagsFile = new File(testDir + File.separator + "collections.txt");
+            if (!tagsFile.exists()) {
+               // System.out.println("Test dir " + testDir + " has no
+               // collections.txt file");
+               error = true;
+               continue;
             }
+            tokenize(testDir);
+         }
+      }
+      // System.out.println(collections);
+   }
 
-            for (int t=0; t<testDirs.length; t++) {
-                File testDir = testDirs[t];
-                if (!testDir.isDirectory())
-                    continue;
-                if (testDir.getName().equals(".svn"))
-                    continue;
-                File tagsFile = new File(testDir + File.separator + "collections.txt");
-                if ( !tagsFile.exists()) {
-//                    System.out.println("Test dir " + testDir + " has no collections.txt file");
-                    error = true;
-                    continue;
-                }
-                tokenize(testDir);
-            }
-        }
-        //System.out.println(collections);
-    }
+   /**
+    * deletes files and empty directories within collections subdirectory of
+    * current {@link #testkitOut} directory. Not currently used.
+    */
+   void delete() {
+      File collectionsDir = new File(testkitOut + File.separator + "collections");
+      String[] contents = collectionsDir.list();
+      if (contents == null) return;
+      for (int i = 0; i < contents.length; i++ ) {
+         String filename = contents[i];
+         File contentsFile = new File(collectionsDir + File.separator + filename);
+         contentsFile.delete();
+      }
+   }
 
-    void delete() {
-        File collectionsDir = new File(testkitOut + File.separator + "collections");
-        String[] contents = collectionsDir.list();
-        if (contents == null)
-            return;
-        for (int i=0; i<contents.length; i++) {
-            String filename = contents[i];
-            File contentsFile = new File(collectionsDir + File.separator + filename);
-            contentsFile.delete();
-        }
-    }
-
-    public void run() {
-        for (File testkit:Installation.instance().getAllTestkits()) {
-//        File testkit = Installation.instance().internalTestkitFile();
-            testkitIn = testkit;
-            testkitOut = testkit;
-            scan();
-            try {
-                write();
-            } catch (Exception e) {
-                logger.error(String.format("Cannot write built collections - %s", e.getMessage()));
-            }
-        }
-    }
+   public void run() {
+      for (File testkit : Installation.instance().getAllTestkits()) {
+         testkitIn = testkit;
+         testkitOut = testkit;
+         scan();
+         try {
+            write();
+         } catch (Exception e) {
+            logger.error(String.format("Cannot write built collections - %s", e.getMessage()));
+         }
+      }
+   }
 }

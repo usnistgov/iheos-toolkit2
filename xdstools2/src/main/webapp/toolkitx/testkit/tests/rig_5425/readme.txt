@@ -38,7 +38,7 @@ The test points are:
 </ol>
 </p>
 
-<h2>Validate SOAP Response and returned DICOM Image files</h2>
+<h2>Validate SOAP Response </h2>
 
 <p>
 The following validations are performed:

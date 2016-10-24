@@ -15,7 +15,9 @@ import javax.xml.xpath.XPathFactory;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang.StringUtils;
+import org.javatuples.Pair;
 import org.w3c.dom.Element;
+import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 import edu.wustl.mir.erl.ihe.xdsi.util.PfnType;
@@ -135,6 +137,9 @@ public abstract class DetailXmlContent extends Detail {
                case SAMERETIMGS:
                   sameRetImgs(assertion, testElement, stdElement);
                   break;
+               case SAMECLASSCODE:
+                  sameClassCode(assertion, testElement, stdElement);
+                  break;
                default:
                   throw new Exception("invalid test type");
             }
@@ -185,6 +190,56 @@ public abstract class DetailXmlContent extends Detail {
          case SILENT:
          default:
       }
+   }
+   
+   /*
+    * Process special assertion that CDA Classification elements representing
+    * codes represent the same code. The nodeRepresentation attribute of the
+    * Classification element, and the codingScheme Slot Value text are compared.
+    */
+   private void sameClassCode(XMLAssertion a, Element test, Element std) throws Exception {
+      try {
+         if (std.getTagName().endsWith("SubmitObjectsRequest") == false)
+            throw new Exception("sameClassCode applies only to SubmitObjectsRequest");
+         Pair <String, String> stdPair = getClassCode(a, std);
+         Pair <String, String> testPair = getClassCode(a, test);
+         String stdnr = stdPair.getValue0(); 
+         String stdcs = stdPair.getValue1();
+         String testnr = testPair.getValue0();
+         String testcs = testPair.getValue1();
+         if (stdnr.equals(testnr) && stdcs.equals(testcs)) {
+            String msg = "nodeRep='" + stdnr + "', codeSch='" + stdcs + "'";
+            store(a, CAT.SUCCESS, msg);
+            return;
+         }
+         if (stdnr.equals(testnr)) {
+            String msg = "nodeRep='" + stdnr + "'";
+            store(a, CAT.SUCCESS, msg);
+         } else {
+            String msg = "nodeRep expected='" + stdnr + "', found='" + testnr + "'";
+            store(a, CAT.ERROR, msg);
+         }
+         if (stdnr.equals(testcs)) {
+            String msg = "codeSch='" + stdcs + "'";
+            store(a, CAT.SUCCESS, msg);
+         } else {
+            String msg = "codeSch expected='" + stdcs + "', found='" + testcs + "'";
+            store(a, CAT.ERROR, msg);
+         }
+      } catch (Exception e) {
+         store(a, CAT.ERROR, e.getMessage());
+      }
+   }
+   
+   private Pair<String, String> getClassCode(XMLAssertion a, Element ele) 
+      throws Exception{
+      Element cat = (Element) a.expr.evaluate(ele, XPathConstants.NODE);
+      String nodeRepresentation = cat.getAttribute("nodeRepresentation");
+      Element slot = getChildElement(cat, "Slot", "name", "codingScheme");
+      Element valueList = getChildElement(slot, "ValueList");
+      Element value = getChildElement(valueList, "Value");
+      String codingScheme = value.getTextContent().trim();
+      return new Pair<String, String>(nodeRepresentation, codingScheme);
    }
    
    /*
@@ -439,7 +494,8 @@ public abstract class DetailXmlContent extends Detail {
          SAME("% values match", "% values do not match", true),
          SAMEIMGS("% values match", "% values do not match", false),
          SAMEXFER("% values match", "% values do not match", false),
-         SAMERETIMGS("% values match", "% values do not match", false);
+         SAMERETIMGS("% values match", "% values do not match", false),
+         SAMECLASSCODE("% code values match", "% values do not match", true);
 
       private TYPE(String pass, String fail, boolean xpath) {
          passDetail = pass;
@@ -465,10 +521,25 @@ public abstract class DetailXmlContent extends Detail {
       }
    };
    
+   private List<Element> getChildElements(Element ele, String name, String...  av) {
+      List<Element> elements = new ArrayList<>();
+      NodeList nl = ele.getChildNodes();
+      for (int i = 0; i < nl.getLength(); i++) {
+         Node n = nl.item(i);
+         if (n instanceof Element) {
+            Element e = (Element) n;
+            if (e.getTagName().endsWith(name)) {
+               if (av.length == 2 && e.getAttribute(av[0]).equals(av[1]) == false) continue;
+               elements.add(e);
+            }
+         }
+      }
+      return elements;
+   }
    
-   
-   
-   
-   
-   
+   private Element getChildElement(Element ele, String name, String...  av) {
+      List<Element> elements =  getChildElements(ele, name, av);
+      if (elements.isEmpty()) return null;
+      return elements.get(0);
+   }
 }

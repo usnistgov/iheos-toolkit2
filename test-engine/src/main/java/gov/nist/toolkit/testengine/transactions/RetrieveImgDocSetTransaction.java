@@ -144,7 +144,7 @@ public class RetrieveImgDocSetTransaction extends BasicTransaction {
          rad69.setReferenceMetadata(reference_metadata);
          logger.debug("ImagingDocSetRetrieveTransaction about to call ret_b.run()");
          OMElement result = rad69.run();
-        // abbreviate(result);
+      //   abbreviate(result);
          logger.debug("ImagingDocSetRetrieveTransaction after rad69.run()");
          // testLog.add_name_value(instruction_output, "Result", result);
          rad69.validate();

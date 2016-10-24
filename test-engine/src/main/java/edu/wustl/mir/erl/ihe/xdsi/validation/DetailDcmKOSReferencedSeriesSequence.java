@@ -25,7 +25,7 @@ public class DetailDcmKOSReferencedSeriesSequence extends DetailDcmSequenceConte
       // Retrieve AE Title (0008,0054)
       assertions.add(new DCMAssertion(TYPE.NOT_EMPTY, Tag.RetrieveAETitle));
       // Retrieve Location UID (0040,E011)
-      assertions.add(new DCMAssertion(TYPE.NOT_EMPTY, Tag.RetrieveLocationUID));
+      assertions.add(new DCMAssertion(TYPE.SAME, Tag.RetrieveLocationUID));
       
       addSubSeq(DetailDcmKOSReferencedSOPSequence.class);
    }

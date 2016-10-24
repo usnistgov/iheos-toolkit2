@@ -1,8 +1,6 @@
 package gov.nist.toolkit.simulators.sim.ids;
 
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
 
 import org.apache.axiom.om.OMAttribute;
 import org.apache.axiom.om.OMElement;
@@ -38,11 +36,13 @@ public class RetrieveImagingDocSetResponseSim extends TransactionSimulator imple
       List <String> transferSyntaxUids, SimCommon common, DsSimCommon dsSimCommon, String repositoryUniqueId) {
       super(common, null);
       this.dsSimCommon = dsSimCommon;
-      this.imagingDocumentUids = imagingDocumentUids;
-      this.transferSyntaxUids = transferSyntaxUids;
-      this.repositoryUniqueId = repositoryUniqueId;
+      this.imagingDocumentUids = new ArrayList<>();
+      for (String s : imagingDocumentUids) this.imagingDocumentUids.add(s.trim());
+      this.transferSyntaxUids = new ArrayList<>();
+      for (String s : transferSyntaxUids) this.transferSyntaxUids.add(s.trim());
+      this.repositoryUniqueId = repositoryUniqueId.trim();
       imagingUidMap = new HashMap <String, String>();
-      for (String compositeUid : imagingDocumentUids) {
+      for (String compositeUid : this.imagingDocumentUids) {
          String[] x = compositeUid.split(":");
          imagingUidMap.put(x[2], compositeUid);
       }
