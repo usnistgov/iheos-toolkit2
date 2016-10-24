@@ -107,16 +107,16 @@ public class BuildIDSTestOrchestrationButton extends OrchestrationButton {
 
             int row = 0;
             
-            SimulatorConfig rep_reg = orchResponse.getRegrepConfig();
+            SimulatorConfig rr = orchResponse.getRegrepConfig();
             
             table.setText(row, 0, "Name");
-            table.setText(row++,  1,  rep_reg.getId().toString());
+            table.setText(row++,  1,  rr.getId().toString());
             
             table.setText(row,  0, "Repository Unique ID");
-            table.setText(row++, 1, rep_reg.getConfigEle(SimulatorProperties.repositoryUniqueId).asString());
+            table.setText(row++, 1, rr.getConfigEle(SimulatorProperties.repositoryUniqueId).asString());
 
             table.setText(row, 0, "Provide and Register endpoint");
-            table.setText(row++, 1, rep_reg.getConfigEle(SimulatorProperties.pnrEndpoint).asString());
+            table.setText(row++, 1, rr.getConfigEle(SimulatorProperties.pnrEndpoint).asString());
 
             initializationResultsPanel.add(table);
            

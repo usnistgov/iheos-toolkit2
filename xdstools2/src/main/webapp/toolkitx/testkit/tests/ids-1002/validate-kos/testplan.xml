@@ -6,7 +6,7 @@
 		<ImgDetailTransaction>
 			<Assertions>
 				<Assert id="Submitted KOS Validation" process="sameKOSDcm">
-					<SimTransaction id="rep_reg" transaction="prb" />
+					<SimTransaction id="rr" transaction="prb" />
 					kos.dcm
 				</Assert>
 			</Assertions>

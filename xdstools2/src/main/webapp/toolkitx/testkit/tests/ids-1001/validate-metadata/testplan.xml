@@ -6,7 +6,7 @@
 		<ImgDetailTransaction>
 			<Assertions>
             <Assert id="Submitted Metadata Validation" process="sameKOSMetadata">
-            <SimTransaction id="rep_reg" transaction="prb"/>
+            <SimTransaction id="rr" transaction="prb"/>
             metadata.xml</Assert>
 			</Assertions>
 		</ImgDetailTransaction>

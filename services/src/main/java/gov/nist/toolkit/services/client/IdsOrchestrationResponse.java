@@ -14,7 +14,7 @@ public class IdsOrchestrationResponse extends RawResponse {
    
    private List<SimulatorConfig> simulatorConfigs = new ArrayList<>();
    private SimulatorConfig idsSimulatorConfig;
-   private SimulatorConfig regrepConfig;
+   private SimulatorConfig rrConfig;
 
     public IdsOrchestrationResponse() {}
 
@@ -47,17 +47,17 @@ public class IdsOrchestrationResponse extends RawResponse {
    }
 
    /**
-    * @return the {@link #regrepConfig} value.
+    * @return the {@link #rrConfig} value.
     */
-   public SimulatorConfig getRegrepConfig() {
-      return regrepConfig;
+   public SimulatorConfig getRRConfig() {
+      return rrConfig;
    }
 
    /**
-    * @param regrepConfig the {@link #regrepConfig} to set
+    * @param regrepConfig the {@link #rrConfig} to set
     */
-   public void setRegrepConfig(SimulatorConfig regrepConfig) {
-      this.regrepConfig = regrepConfig;
+   public void setRRConfig(SimulatorConfig regrepConfig) {
+      this.rrConfig = regrepConfig;
    }
     
     
