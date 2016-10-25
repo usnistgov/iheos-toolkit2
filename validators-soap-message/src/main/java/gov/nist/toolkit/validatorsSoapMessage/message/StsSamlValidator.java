@@ -61,7 +61,7 @@ public class StsSamlValidator extends AbstractMessageValidator {
                     List<OMElement> assertionEls = XmlUtil.decendentsWithLocalName(securityEl, "Assertion");
                     if (assertionEls!=null) {
                         if (assertionEls.size()!=1) {
-                            er.err(XdsErrorCode.Code.SoapFault, new Exception("SAML was expected. Assertion element count is "+assertionEls.size()+", should be one."));
+                            er.err(XdsErrorCode.Code.SoapFault, new Exception("SAML assertion was expected. Assertion element count is "+assertionEls.size()+", should be one."));
                         }
                         er.detail("Found one Assertion element.");
                         OMElement assertionEl = assertionEls.get(0);
