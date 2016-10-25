@@ -21,7 +21,7 @@ import gov.nist.toolkit.xdstools2.client.widgets.buttons.AbstractOrchestrationBu
 public class BuildRgTestOrchestrationButton extends AbstractOrchestrationButton {
     private ConformanceTestTab testTab;
     private TestContext testContext;
-    private TestContextDisplay testContextDisplay;
+    private TestContextView testContextView;
     private TestRunner testRunner;
     private Panel initializationPanel;
     private FlowPanel initializationResultsPanel = new FlowPanel();
@@ -36,16 +36,14 @@ public class BuildRgTestOrchestrationButton extends AbstractOrchestrationButton 
     private boolean usingExposedRR() { return exposed.getValue(); }
 
 
-    BuildRgTestOrchestrationButton(ConformanceTestTab testTab, Panel initializationPanel, String label, TestContext testContext, TestContextDisplay testContextDisplay, TestRunner testRunner) {
+    BuildRgTestOrchestrationButton(ConformanceTestTab testTab, Panel initializationPanel, String label, TestContext testContext, TestContextView testContextView, TestRunner testRunner) {
         this.initializationPanel = initializationPanel;
         this.testTab = testTab;
         this.testContext = testContext;
-        this.testContextDisplay = testContextDisplay;
+        this.testContextView = testContextView;
         this.testRunner = testRunner;
 
         setParentPanel(initializationPanel);
-        setLabel(label);
-        setResetLabel("Reset");
 
         FlowPanel customPanel = new FlowPanel();
 
@@ -125,7 +123,7 @@ public class BuildRgTestOrchestrationButton extends AbstractOrchestrationButton 
         SiteSpec siteSpec = new SiteSpec(testContext.getSiteName());
         request.setSiteUnderTest(siteSpec);
 
-        testTab.setSitetoIssueTestAgainst(siteSpec);
+        testTab.setSiteToIssueTestAgainst(siteSpec);
 
         initializationResultsPanel.clear();
 
@@ -155,7 +153,7 @@ public class BuildRgTestOrchestrationButton extends AbstractOrchestrationButton 
 
                 initializationResultsPanel.add(new HTML("<br />"));
 
-                initializationResultsPanel.add(new OrchestrationSupportTestsDisplay(orchResponse, testContext, testContextDisplay, testRunner ));
+                initializationResultsPanel.add(new OrchestrationSupportTestsDisplay(orchResponse, testContext, testContextView, testRunner ));
 
                 initializationResultsPanel.add(new HTML("<br />"));
 

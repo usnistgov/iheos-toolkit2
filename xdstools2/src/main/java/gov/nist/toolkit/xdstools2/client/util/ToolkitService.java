@@ -19,16 +19,16 @@ import gov.nist.toolkit.results.client.*;
 import gov.nist.toolkit.results.shared.Test;
 import gov.nist.toolkit.services.client.*;
 import gov.nist.toolkit.session.client.ConformanceSessionValidationStatus;
-import gov.nist.toolkit.session.client.TestOverviewDTO;
-import gov.nist.toolkit.session.client.TestPartFileDTO;
+import gov.nist.toolkit.session.client.logtypes.TestOverviewDTO;
+import gov.nist.toolkit.session.client.logtypes.TestPartFileDTO;
 import gov.nist.toolkit.sitemanagement.client.Site;
 import gov.nist.toolkit.sitemanagement.client.SiteSpec;
 import gov.nist.toolkit.sitemanagement.client.TransactionOfferings;
 import gov.nist.toolkit.testenginelogging.client.LogFileContentDTO;
+import gov.nist.toolkit.testkitutilities.client.SectionDefinitionDAO;
 import gov.nist.toolkit.testkitutilities.client.TestCollectionDefinitionDAO;
 import gov.nist.toolkit.tk.client.TkProps;
 import gov.nist.toolkit.valsupport.client.MessageValidationResults;
-import gov.nist.toolkit.valsupport.client.ValidationContext;
 import gov.nist.toolkit.xdstools2.shared.NoServletSessionException;
 import gov.nist.toolkit.xdstools2.shared.RegistryStatus;
 import gov.nist.toolkit.xdstools2.shared.RepositoryStatus;
@@ -57,7 +57,7 @@ public interface ToolkitService extends RemoteService  {
 	Map<String, Result> getTestResults(List<TestInstance> testInstances, String testSession) throws NoServletSessionException ;
 	LogFileContentDTO getTestLogDetails(String sessionName, TestInstance testInstance) throws Exception;
 	Map<String, String> getCollectionNames(String collectionSetName) throws Exception;
-	List<String> getCollectionMembers(String collectionSetName, String collectionName) throws Exception;
+	List<TestInstance> getCollectionMembers(String collectionSetName, String collectionName) throws Exception;
 	List<TestCollectionDefinitionDAO> getTestCollections(String collectionSetName) throws Exception;
 	Map<String, String> getCollection(String collectionSetName, String collectionName) throws Exception;
 	String getTestReadme(String test) throws Exception;
@@ -179,7 +179,7 @@ public interface ToolkitService extends RemoteService  {
 	List<String> getUpdateNames() throws NoServletSessionException ;
 	List<TestInstance> getTestlogListing(String sessionName) throws Exception;
 	List<TestOverviewDTO> getTestsOverview(GetTestsOverviewRequest request) throws Exception;
-
+	List<SectionDefinitionDAO> getTestSectionsDAOs(String mesaTestSession, TestInstance testInstance) throws Exception;
 	List<RegistryStatus> getDashboardRegistryData(CommandContext context) throws Exception;
 	List<RepositoryStatus> getDashboardRepositoryData(CommandContext context) throws Exception;
 

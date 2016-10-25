@@ -1,0 +1,14 @@
+<TestPlan>
+	<Test>ids-1001/validate-kos</Test>
+	<TestStep id="validate-kos">
+		<Goal>Validate KOS sent to Repository simulator</Goal>
+		<ExpectedStatus>Success</ExpectedStatus>
+		<ImgDetailTransaction>
+			<Assertions>
+				<Assert id="Submitted KOS Validation" process="sameKOSDcm">
+					<SimTransaction id="rr" transaction="prb" />kos.dcm
+				</Assert>
+			</Assertions>
+		</ImgDetailTransaction>
+	</TestStep>
+</TestPlan>

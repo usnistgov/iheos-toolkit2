@@ -1,4 +1,4 @@
-XCR Retrieve multiple document
+Retrieve multiple document
 
 Generate request for the retrieval of a single document from your
 Initiating Gateway based on metadata returned in test 12300.

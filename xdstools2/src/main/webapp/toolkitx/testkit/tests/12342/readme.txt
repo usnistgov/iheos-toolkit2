@@ -1,4 +1,4 @@
-IGQ in the presence of XCA
+in the presence of XCA
 
 This test relies on test 12344 to pre-load test data. 
 

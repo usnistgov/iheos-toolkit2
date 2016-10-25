@@ -19,10 +19,10 @@ public class DetailDcmKOSReferencedSOPSequence extends DetailDcmSequenceContent 
    @Override
    protected void initializeTest() {
       assertions = new ArrayList<>();
-      // Referenced SOP Instance UID (0008,1155)
-      assertions.add(new DCMAssertion(TYPE.SAME, Tag.ReferencedSOPInstanceUID));
       // Referenced SOP Class UID (0008,1150)
       assertions.add(new DCMAssertion(TYPE.SAME, Tag.ReferencedSOPClassUID));
+      // Referenced SOP Instance UID (0008,1155)
+      assertions.add(new DCMAssertion(TYPE.SAME, Tag.ReferencedSOPInstanceUID));
    }
 
    /**

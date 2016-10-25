@@ -115,7 +115,7 @@ public class SimId implements Serializable, IsSerializable {
     public boolean isValid() { return (!isEmpty(user)) && (!isEmpty(id)); }
     boolean isEmpty(String x) { return x == null || x.trim().equals(""); }
 
-    SiteSpec getSiteSpec() {
+    public SiteSpec getSiteSpec() {
         SiteSpec siteSpec = new SiteSpec();
         siteSpec.setName(toString());
         if (actorType != null)

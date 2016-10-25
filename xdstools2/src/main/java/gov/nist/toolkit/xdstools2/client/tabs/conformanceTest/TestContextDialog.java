@@ -100,7 +100,7 @@ class TestContextDialog extends DialogBox {
         panel.add(validationMessage);
 //        validateButton.setVisible(false);
 //        validateButton.addClickHandler(new ValidateClickHandler());
-//        panel.display(validateButton);
+//        panel.build(validateButton);
         acceptButton.addClickHandler(new AcceptButtonClickHandler());
         panel.add(acceptButton);
 
@@ -143,7 +143,7 @@ class TestContextDialog extends DialogBox {
                     loadTestSessions(toolWindow.getCurrentTestSession());
                     loadSitesForTestSession(toolWindow.getCurrentTestSession());
                     loadSites();
-                    siteManager.setSiteName(NONE);
+                    siteManager.setSiteName(TestContext.NONE);
                 }
             }.run(ClientUtils.INSTANCE.getCommandContext());
         }
@@ -154,7 +154,7 @@ class TestContextDialog extends DialogBox {
         @Override
         public void onClick(ClickEvent clickEvent) {
             String selectedSite = getSelectedSite();
-            if (NONE.equals(selectedSite))
+            if (TestContext.NONE.equals(selectedSite))
                 selectedSite = null;
             siteManager.setSiteName(selectedSite);
             toolWindow.setCurrentTestSession(getSelectedTestSession());
@@ -214,12 +214,12 @@ class TestContextDialog extends DialogBox {
 //                }
 //
 //                @Override
-//                public void onSuccess(ConformanceSessionValidationStatus status) {
-//                    if (status.isPass()) {
+//                public void onSuccess(ConformanceSessionValidationStatus testStatus) {
+//                    if (testStatus.isPass()) {
 //                        new PopupMessage("Validates");
 //                    }
 //                    else {
-//                        new PopupMessage(status.getMessage());
+//                        new PopupMessage(testStatus.getMessage());
 //                    }
 //                }
 //            });
@@ -277,14 +277,13 @@ class TestContextDialog extends DialogBox {
         }.run(ClientUtils.INSTANCE.getCommandContext());
     }
 
-    static final private String NONE = "--none--";
 
     private void loadSites() {
         new GetSiteNamesCommand(){
             @Override
             public void onComplete(List<String> result) {
                 List<String> contents = new ArrayList<>();
-                contents.add(NONE);
+                contents.add(TestContext.NONE);
                 contents.addAll(result);
                 siteListBox.clear();
                 for (String site : contents) {

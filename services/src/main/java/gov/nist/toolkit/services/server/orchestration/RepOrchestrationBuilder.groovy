@@ -46,10 +46,7 @@ class RepOrchestrationBuilder {
 
             boolean reuse = false  // updated as we progress
             supportSimId = new SimId(request.userName, supportIdName, ActorType.REGISTRY.name, request.environmentName)
-            boolean forceNewPatientIds = !request.isUseExistingState()
-
-            OrchestrationProperties orchProps = new OrchestrationProperties(session, request.userName, ActorType.REGISTRY, pidNameMap.keySet(), forceNewPatientIds)
-
+            OrchestrationProperties orchProps = new OrchestrationProperties(session, request.userName, ActorType.REPOSITORY, pidNameMap.keySet(), !request.useExistingState)
             Pid pid
 
             Site sutSite = SimCache.getSite(session.getId(), request.sutSite.name)

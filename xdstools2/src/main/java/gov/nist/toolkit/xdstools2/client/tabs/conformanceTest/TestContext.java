@@ -14,14 +14,15 @@ public class TestContext implements SiteManager {
     private ToolWindow toolWindow;
     private SiteSpec currentSiteSpec = new SiteSpec();
     private Site siteUnderTest = null;
-    private TestContextDisplay testContextDisplay;
+    private TestContextView testContextView;
+    static final protected String NONE = "--none--";
 
     public TestContext(ToolWindow toolWindow) {
         this.toolWindow = toolWindow;
     }
 
-    public void setTestContextDisplay(TestContextDisplay testContextDisplay) {
-        this.testContextDisplay = testContextDisplay;
+    public void setTestContextView(TestContextView testContextView) {
+        this.testContextView = testContextView;
     }
 
     public String verifyTestContext() {
@@ -63,13 +64,14 @@ public class TestContext implements SiteManager {
         currentSiteSpec.setName(site);
 //		getToolkitServices().getSite(site, new AsyncCallback<Site>() {
         if (site == null) return;
+        if (site.equals(NONE)) return;
         ClientUtils.INSTANCE.getToolkitServices().getSite(currentSiteSpec.getName(), new AsyncCallback<Site>() {
             @Override
             public void onFailure(Throwable throwable) {
                 new PopupMessage("System " + currentSiteSpec.getName() + " does not exist.");
                 currentSiteSpec.setName(null);
                 siteUnderTest = null;
-                testContextDisplay.updateTestingContextDisplay();
+                testContextView.updateTestingContextDisplay();
             }
 
             @Override
@@ -81,7 +83,7 @@ public class TestContext implements SiteManager {
 
     @Override
     public void update() {
-        testContextDisplay.updateTestingContextDisplay();
+        testContextView.updateTestingContextDisplay();
     }
 
 

@@ -54,7 +54,8 @@ public class ImgDetailTransaction extends BasicTransaction {
 
    /*
     * These are the DICOM tags currently supported for evaluation tasks. New
-    * ones can be added to this map if needed.
+    * ones can be added to this map if needed. Any tag can be referenced using
+    * Group-Element Syntax
     */
    private static Map <String, Integer> tagMap;
 
@@ -62,6 +63,7 @@ public class ImgDetailTransaction extends BasicTransaction {
       tagMap = new HashMap <>();
       tagMap.put("SOPClassUID", Tag.SOPClassUID);
       tagMap.put("SOPInstanceUID", Tag.SOPInstanceUID);
+      tagMap.put("PatientName", Tag.PatientName);
       tagMap.put("PatientID", Tag.PatientID);
       tagMap.put("PatientBirthDate", Tag.PatientBirthDate);
       tagMap.put("PatientSex", Tag.PatientSex);
@@ -69,7 +71,6 @@ public class ImgDetailTransaction extends BasicTransaction {
       tagMap.put("SeriesInstanceUID", Tag.SeriesInstanceUID);
       tagMap.put("AccessionNumber", Tag.AccessionNumber);
       tagMap.put("Modality", Tag.Modality);
-      tagMap.put("PatientName", Tag.PatientName);
       tagMap.put("ContentSequence", Tag.ContentSequence);
    }
 
@@ -147,14 +148,17 @@ public class ImgDetailTransaction extends BasicTransaction {
          case "sameRetImgs":
             prsSameRetImgs(engine, a, assertion_output);
             break;
+         case "sameRegErrors":
+            prsSameRegErrors(engine, a, assertion_output);
+            break;
          case "sameDcmImgs":
             prsSameDcmImgs(engine, a, assertion_output);
             break;
-         case "sameKONDcm":
-            prsSameKONDcm(engine, a, assertion_output);
+         case "sameKOSDcm":
+            prsSameKOSDcm(engine, a, assertion_output);
             break;
-         case "sameKONMetadata":
-            prsSameKONMetadata(engine, a, assertion_output);
+         case "sameKOSMetadata":
+            prsSameKOSMetadata(engine, a, assertion_output);
             break;
          default:
             throw new XdsInternalException("ImgDetailTransaction: Unknown assertion.process " + a.process);
@@ -268,7 +272,7 @@ public class ImgDetailTransaction extends BasicTransaction {
                reqImg.seriesUID = seriesUID;
                reqImg.homeCommunityUID = loadTxt(doc, "HomeCommunityId");
                reqImg.repositoryUID = loadTxt(doc, "RepositoryUniqueId");
-               imgs.put(studyUID, reqImg);
+               imgs.put(docUID, reqImg);
             }
          }
       }
@@ -359,6 +363,113 @@ public class ImgDetailTransaction extends BasicTransaction {
          throw new XdsInternalException("sameRetImgs error: " + e.getMessage());
       }
    }
+   
+   private void prsSameRegErrors(AssertionEngine engine, Assertion a, OMElement assertion_output)
+      throws XdsInternalException {
+      // key is errorCode:severity
+      Map <String, RegErr> map = new HashMap <>();
+      
+      try {
+         // process and collect data on errors in std message
+         OMElement stnd = getStdElement("ResponseBody");
+         String t = stnd.getLocalName();
+         if (t.endsWith("RetrieveDocumentSetResponse") == false)
+            throw new XdsInternalException("sameRegErrors assertion only applies to RetrieveDocumentSetResponse");
+         for (OMElement err : XmlUtil.decendentsWithLocalName(stnd, "RegistryError")) {
+            try {
+               post(err, true, map);
+            } catch (Exception se) {
+               // Errors in the std message are abort bait
+               throw new XdsInternalException("sameRegErrors std msg error: " + se.getMessage());
+            }
+         }
+         // process errors in test message
+         OMElement test = getTestTrans(a, "response");
+         String q = test.getLocalName();
+         if (q.endsWith("RetrieveDocumentSetResponse") == false)
+            throw new XdsInternalException("sameRegErrors assertion only applies to RetrieveDocumentSetResponse");
+         for (OMElement err : XmlUtil.decendentsWithLocalName(test, "RegistryError")) {
+            try {
+               post(err, false, map);
+            } catch (Exception te) {
+              // errors in the test message are logged
+              store(engine, CAT.ERROR, te.getMessage() + " - msg ignored");
+            }
+         }
+         RegErr[] errors = map.values().toArray(new RegErr[0]);
+         Arrays.sort(errors);
+         for (RegErr error : errors) {
+            String severity = StringUtils.substringAfterLast(error.severity, ":");
+            String msg = error.errorCode + ":" + severity + " - " +
+               "Expected " + error.expected + ", found " + error.found + "\n" +
+               error.codeContext + " " + error.location;
+            CAT cat = CAT.SUCCESS;
+            if (error.expected == 0) cat = CAT.WARNING;
+            if (error.expected > error.found) cat = CAT.ERROR;
+            store(engine, cat, msg);
+         }
+
+      } catch (Exception e) {
+         throw new XdsInternalException("sameRetImgs error: " + e.getMessage());
+      }
+   } // EO prsSameRegErrors method
+
+   class RegErr implements Comparable<RegErr> {
+      String errorCode;
+      String codeContext;
+      String location;
+      String severity;
+      int expected = 0;
+      int found = 0;
+      
+      RegErr(String ec, String cc, String l, String s) {
+         errorCode = ec;
+         codeContext = cc;
+         location = l;
+         severity = s;
+      }
+      /*
+       * This sorts errors which were not expected to the bottom, and within 
+       * that, by error code and severity
+       */
+      @Override
+      public int compareTo(RegErr o) {
+         if (expected == 0 && o.expected != 0) return 1;
+         if (expected != 0 && o.expected == 0) return -1;
+         int ecc = errorCode.compareTo(o.errorCode);
+         if (ecc != 0) return ecc;
+         return (severity.compareTo(o.severity));
+      }
+   }
+      
+      private void post(OMElement registryErrorElement, boolean std, Map<String, RegErr> map) 
+         throws Exception {
+         String n = registryErrorElement.getLocalName();
+         if ("RegistryError".equals(n) == false) 
+            throw new Exception("RegErr called with invalid [" + n + "] element");
+         String ec = registryErrorElement.getAttributeValue(new QName("errorCode"));
+         if (StringUtils.isBlank(ec))
+            throw new Exception("Missing/Empty Error Code");
+         String cc = registryErrorElement.getAttributeValue(new QName("codeContext"));
+         String l = registryErrorElement.getAttributeValue(new QName("location"));
+         String s = registryErrorElement.getAttributeValue(new QName("severity"));
+         if (StringUtils.isBlank(s))
+            throw new Exception("Missing/Empty severity");
+         String key = key(ec, s);
+         RegErr regErr = map.get(key);
+         if (regErr == null) {
+            regErr = new RegErr(ec, cc, l, s);
+            map.put(key, regErr);
+         }
+         if (std) regErr.expected++; else regErr.found++;
+      }
+      
+      private String key(String errorCd, String sev) throws Exception {
+         String s = StringUtils.substringAfterLast(sev, ":");
+         if (s.matches("Error|Warning") == false) 
+            throw new Exception("Invalid Severity: " + sev);
+         return errorCd + ":" + s;
+      }
 
 
    /**
@@ -368,43 +479,47 @@ public class ImgDetailTransaction extends BasicTransaction {
     * <pre>
     * {@code
     * <Assert id="Returned img(s)" process="sameDcmImgs" >
-         <TagList>
-            Elements in TagList are the dcm4che Tag names for the DICOM
-            tags which are to be compared. They must appear in tagMap
-            (above), or have the Element name "TAG" and an attribute "hex" with
-            a value which is a valid dicom tag group and element number 
-            separated by a comma (for example hex="0020,0020") There are 
-            two optional attributes for these elements:
-            1. type - which should have the type of assertion, taken from
-               the TYPE enum in DCMAssertion. The default value is "SAME",
-               which is most common.
-            2. value - which should have the string value which the DICOM
-               tag should match. Only used in CONSTANT type assertions.
-               The default value is the empty string.
-            <SOPClassUID />
-            <SOPInstanceUID />
-            <PatientID />
-            <PatientBirthDate />
-            <PatientSex />
-            <StudyInstanceUID />
-            <SeriesInstanceUID />
-         </TagList>
-         <DirList>
-            StdDir elements contain paths of directories which contain
-            std image files for testing. May have more than one. All files
-            in the directory are added to the list. Subdirectories are
-            ignored. Directories may be absolute, or relative to the
-            External Cache root.
-            <StdDir>path1</StdDir>
-            <StdDir>path2</StdDir>
-            <StdDir>path3</StdDir>
-            TestDir element contains the path where the test images from
-            the test are to be stored. Only one directory. May be 
-            absolute, or relative to the test step log directory. Default
-            is "testImages" in the test step log directory.
-            <TestDir>path</TestDir>
-         </DirList>
-      </Assert>}
+    *    <TagList>
+    *       Elements in TagList are the dcm4che Tag names for the DICOM
+    *       tags which are to be compared. They must appear in tagMap
+    *       (above), or have the Element name "TAG" and an attribute "hex" with
+    *       a value which is a valid dicom tag group and element number 
+    *       separated by a comma (for example hex="0020,0020") There are 
+    *       four optional attributes for these elements:
+    *       1. type - which should have the type of assertion, taken from
+    *          the TYPE enum in DCMAssertion. The default value is "SAME",
+    *          which is most common.
+    *       2. value - which should have the string value which the DICOM
+    *          tag should match. Only used in CONSTANT type assertions.
+    *          The default value is the empty string.
+    *       3. passCat - which should have the string CAT value to be used if 
+    *          the assertion succeeds. The default value is SUCCESS.
+    *       4. failCat - which should have the string CAT value to be used if 
+    *          the assertion fails. The default value is ERROR.
+    *       <SOPClassUID />
+    *       <SOPInstanceUID />
+    *       <PatientID />
+    *       <PatientBirthDate />
+    *       <PatientSex />
+    *       <StudyInstanceUID />
+    *       <SeriesInstanceUID />
+    *    </TagList>
+    *    <DirList>
+    *       StdDir elements contain paths of directories which contain
+    *       std image files for testing. May have more than one. All files
+    *       in the directory are added to the list. Subdirectories are
+    *       ignored. Directories are relative to the Image Cache
+    *       <StdDir>path1</StdDir>
+    *       <StdDir>path2</StdDir>
+    *       <StdDir>path3</StdDir>
+    *       TestDir element contains the path where the test images from
+    *       the test are to be stored. Only one directory. May be 
+    *       absolute, or relative to the test step log directory. Default
+    *       is "testImages" in the test step log directory.
+    *       <TestDir>path</TestDir>
+    *    </DirList>
+    * </Assert> 
+    * }
     * </pre>
     */
    private void prsSameDcmImgs(AssertionEngine engine, Assertion a, OMElement assertion_output)
@@ -437,12 +552,11 @@ public class ImgDetailTransaction extends BasicTransaction {
          }
 
          // Make list of std image pfns
-         Path extCache = Paths.get(pMgr.getExternalCache());
          List <String> stdPfns = new ArrayList <>();
          for (OMElement stdDirElement : OMEUtil.childrenWithLocalName(dirListElement, "StdDir")) {
-            Path stdDirPath = extCache.resolve(stdDirElement.getText());
-            Utility.isValidPfn("test std img dir", stdDirPath, PfnType.DIRECTORY, "r");
-            Collection <File> files = FileUtils.listFiles(stdDirPath.toFile(), FileFilterUtils.fileFileFilter(), null);
+            File stdDirFile = Installation.instance().imageCache(stdDirElement.getText());
+            Utility.isValidPfn("test std img dir", stdDirFile, PfnType.DIRECTORY, "r");
+            Collection <File> files = FileUtils.listFiles(stdDirFile, FileFilterUtils.fileFileFilter(), null);
             for (File file : files)
                stdPfns.add(file.getPath());
          }
@@ -491,7 +605,9 @@ public class ImgDetailTransaction extends BasicTransaction {
             String value = tag.getAttributeValue(new QName("value"));
             if (value == null) value = "";
             value = value.trim();
-            DCMAssertion dcmAssertion = new DCMAssertion(type, dcmTag, value);
+            CAT passCat = CAT.forThis(tag.getAttributeValue(new QName("passCat")));
+            CAT failCat = CAT.forThis(tag.getAttributeValue(new QName("failCat")));
+            DCMAssertion dcmAssertion = new DCMAssertion(type, dcmTag, value, passCat, failCat);
             dcmAssertion.setTagName(tagName);
             assertions.add(dcmAssertion);
          }
@@ -511,8 +627,8 @@ public class ImgDetailTransaction extends BasicTransaction {
       }
    }
 
-   // Matches values in KON to standard. Used on PnR transactions
-   private void prsSameKONDcm(AssertionEngine engine, Assertion a, OMElement assertion_output)
+   // Matches values in KOS to standard. Used on PnR transactions
+   private void prsSameKOSDcm(AssertionEngine engine, Assertion a, OMElement assertion_output)
       throws XdsInternalException {
       try {
          // pfn of std KON.dcm
@@ -529,11 +645,11 @@ public class ImgDetailTransaction extends BasicTransaction {
          if (results.getErrorCount() > 0) cat = CAT.ERROR;
          store(engine, cat, rep);
       } catch (Exception e) {
-         throw new XdsInternalException("ImgDetailTransaction - sameKONDcm: " + e.getMessage());
+         throw new XdsInternalException("ImgDetailTransaction - sameKOSDcm: " + e.getMessage());
       }
    }
 
-   private void prsSameKONMetadata(AssertionEngine engine, Assertion a, OMElement assertion_output)
+   private void prsSameKOSMetadata(AssertionEngine engine, Assertion a, OMElement assertion_output)
       throws XdsInternalException {
       try {
          // pfn of std metadata
@@ -551,17 +667,13 @@ public class ImgDetailTransaction extends BasicTransaction {
          if (results.getErrorCount() > 0) cat = CAT.ERROR;
          store(engine, cat, rep);
       } catch (Exception e) {
-         throw new XdsInternalException("ImgDetailTransaction - sameKONDcm: " + e.getMessage());
+         throw new XdsInternalException("ImgDetailTransaction - sameKOSDcm: " + e.getMessage());
       }
    }
 
    private Map <String, RetImg> loadRetImgs(AssertionEngine engine, Assertion a, OMElement msg) {
       Map <String, RetImg> imgs = new LinkedHashMap <>();
       List <OMElement> docs = XmlUtil.decendentsWithLocalName(msg, "DocumentResponse");
-      if (docs.isEmpty()) {
-         store(engine, CAT.ERROR, "No DocumentResponse element(s) found.");
-         return imgs;
-      }
       for (OMElement docReq : docs) {
          RetImg img = new RetImg();
          img.instance = loadTxt(docReq, "DocumentUniqueId");
@@ -685,51 +797,51 @@ public class ImgDetailTransaction extends BasicTransaction {
    private String loadTxt(OMElement e, String tagName) {
       try {
          OMElement child = XmlUtil.onlyChildWithLocalName(e, tagName);
-         return child.getText();
+         return child.getText().trim();
       } catch (Exception e1) {}
       return null;
    }
 
-   /**
-    * Result categories. Used to group validation results for reporting.
-    */
-   public enum CAT {
-         /**
-          * Expected result was found.
-          */
-      SUCCESS, /**
-                * A result was found which is not being tested, but which may be
-                * in error or "not what you want". May also relate to something
-                * expected, but not found.
-                */
-      WARNING, /**
-                * Expected result was missing or incorrect.
-                */
-      ERROR, /**
-              * Message which was generated but is not (or cannot be) determined
-              * to be in SUCCESS, WARNING, or ERROR categories.
-              */
-      UNCAT, /**
-              * A message result or lack of result which was detected but will
-              * be ignored. This is for programmers only; the tester will not
-              * see these.
-              */
-      SILENT;
-
-      /**
-       * Get CAT which matches name, ignoring case, or null
-       * 
-       * @param name of CAT
-       * @return CAT for name
-       */
-      public static CAT forThis(String name) {
-         CAT[] cats = CAT.values();
-         for (CAT cat : cats) {
-            if (cat.name().equalsIgnoreCase(name)) return cat;
-         }
-         return null;
-      }
-   };
+//   /**
+//    * Result categories. Used to group validation results for reporting.
+//    */
+//   public enum CAT {
+//         /**
+//          * Expected result was found.
+//          */
+//      SUCCESS, /**
+//                * A result was found which is not being tested, but which may be
+//                * in error or "not what you want". May also relate to something
+//                * expected, but not found.
+//                */
+//      WARNING, /**
+//                * Expected result was missing or incorrect.
+//                */
+//      ERROR, /**
+//              * Message which was generated but is not (or cannot be) determined
+//              * to be in SUCCESS, WARNING, or ERROR categories.
+//              */
+//      UNCAT, /**
+//              * A message result or lack of result which was detected but will
+//              * be ignored. This is for programmers only; the tester will not
+//              * see these.
+//              */
+//      SILENT;
+//
+//      /**
+//       * Get CAT which matches name, ignoring case, or null
+//       * 
+//       * @param name of CAT
+//       * @return CAT for name
+//       */
+//      public static CAT forThis(String name) {
+//         CAT[] cats = CAT.values();
+//         for (CAT cat : cats) {
+//            if (cat.name().equalsIgnoreCase(name)) return cat;
+//         }
+//         return null;
+//      }
+//   };
 
    private void store(AssertionEngine e, CAT cat, String msg) {
       if (cat == CAT.SILENT) return;

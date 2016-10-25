@@ -47,4 +47,9 @@ public class RepOrchestrationResponse extends AbstractOrchestrationResponse {
     public void setPid(Pid pid) {
         this.pid = pid;
     }
+
+    @Override
+    public boolean isExternalStart() {
+        return false;
+    }
 }

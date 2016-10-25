@@ -13,6 +13,12 @@ abstract public class AbstractOrchestrationResponse extends RawResponse {
 //    private List<TestInstance> orchestrationTests = new ArrayList<>();  // test definitions used to build the orchestration
     private List<MessageItem> messages = new ArrayList<>();
 
+    /**
+     * Does vendor initiate first message of test?
+     * @return
+     */
+    abstract public boolean isExternalStart();
+
     public MessageItem addMessage(TestInstance testInstance, boolean success, String message) {
         MessageItem item = new MessageItem(testInstance, success, message);
         messages.add(item);

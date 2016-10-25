@@ -17,8 +17,10 @@ public class IgOrchestrationResponse extends AbstractOrchestrationResponse {
     private Pid twoDocPid;
     private Pid twoRgPid;
     private Pid unknownPid;
+    private Pid noAdOptionPid;
     private Site supportRG1;
     private Site supportRG2;
+    private boolean externalStart;
 
     public IgOrchestrationResponse() {}
 
@@ -84,5 +86,22 @@ public class IgOrchestrationResponse extends AbstractOrchestrationResponse {
 
     public void setSupportRG2(Site supportRG2) {
         this.supportRG2 = supportRG2;
+    }
+
+    public Pid getNoAdOptionPid() {
+        return noAdOptionPid;
+    }
+
+    public void setNoAdOptionPid(Pid noAdOptionPid) {
+        this.noAdOptionPid = noAdOptionPid;
+    }
+
+    @Override
+    public boolean isExternalStart() {
+        return false;
+    }
+
+    public void setExternalStart(boolean externalStart) {
+        this.externalStart = externalStart;
     }
 }

@@ -17,6 +17,9 @@ import gov.nist.toolkit.xdstools2.client.util.ClientUtils;
 import gov.nist.toolkit.xdstools2.client.widgets.OrchestrationSupportTestsDisplay;
 import gov.nist.toolkit.xdstools2.client.widgets.buttons.AbstractOrchestrationButton;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * Build Orchestration for testing an Inititating Gateway.
  * This code id tied to the button that launches it.
@@ -25,21 +28,22 @@ public class BuildIGTestOrchestrationButton extends AbstractOrchestrationButton 
     private ConformanceTestTab testTab;
     private boolean includeIG;
     private TestContext testContext;
-    private TestContextDisplay testContextDisplay;
+    private TestContextView testContextView;
     private TestRunner testRunner;
+    private ActorOption actorOption;
     private Panel initializationPanel;
     private FlowPanel initializationResultsPanel = new FlowPanel();
 
-    public BuildIGTestOrchestrationButton(ConformanceTestTab testTab, Panel initializationPanel, String label, TestContext testContext, TestContextDisplay testContextDisplay, TestRunner testRunner, boolean includeIG) {
+    public BuildIGTestOrchestrationButton(ConformanceTestTab testTab, Panel initializationPanel, String label, TestContext testContext, TestContextView testContextView, TestRunner testRunner, boolean includeIG, ActorOption actorOption
+    ) {
         this.initializationPanel = initializationPanel;
         this.testTab = testTab;
         this.testContext = testContext;
-        this.testContextDisplay = testContextDisplay;
+        this.testContextView = testContextView;
         this.testRunner = testRunner;
+        this.actorOption = actorOption;
 
         setParentPanel(initializationPanel);
-        setLabel(label);
-        setResetLabel("Reset");
         this.includeIG = includeIG;
 
         FlowPanel customPanel = new FlowPanel();
@@ -50,6 +54,21 @@ public class BuildIGTestOrchestrationButton extends AbstractOrchestrationButton 
 
         build();
         panel().add(initializationResultsPanel);
+    }
+
+    static private final String AD_OPTION = "ad";
+    public static List<ActorAndOption> ACTOR_OPTIONS = new ArrayList<>();
+    static {
+        ACTOR_OPTIONS = java.util.Arrays.asList(
+                new ActorAndOption("ig", "", "Required", false),
+                new ActorAndOption("ig", AD_OPTION, "Affinity Domain Option", true));
+    }
+
+    private SiteSpec siteUnderTest(IgOrchestrationResponse orchResponse) {
+        if (AD_OPTION.equals(actorOption.getOptionId())) {
+            return orchResponse.getSupportRG1().siteSpec();
+        }
+        return testContext.getSiteUnderTest().siteSpec();
     }
 
     public void handleClick(ClickEvent event) {
@@ -75,7 +94,9 @@ public class BuildIGTestOrchestrationButton extends AbstractOrchestrationButton 
                 if (handleError(rawResponse, IgOrchestrationResponse.class)) return;
                 IgOrchestrationResponse orchResponse = (IgOrchestrationResponse) rawResponse;
                 testTab.setOrchestrationResponse(orchResponse);
-                testTab.setSitetoIssueTestAgainst(testContext.getSiteUnderTest().siteSpec());
+                testTab.setSiteToIssueTestAgainst(siteUnderTest(orchResponse));
+                if (AD_OPTION.equals(actorOption.getOptionId()))
+                    orchResponse.setExternalStart(true);
 
                 initializationResultsPanel.add(new HTML("Initialization Complete"));
 
@@ -94,14 +115,14 @@ public class BuildIGTestOrchestrationButton extends AbstractOrchestrationButton 
 
                 initializationResultsPanel.add(new HTML("<br />"));
 
-                initializationResultsPanel.add(new OrchestrationSupportTestsDisplay(orchResponse, testContext, testContextDisplay, testRunner ));
+                initializationResultsPanel.add(new OrchestrationSupportTestsDisplay(orchResponse, testContext, testContextView, testRunner ));
 
                 initializationResultsPanel.add(new HTML("<br />"));
 
 
-//                initializationResultsPanel.add(new HTML("<h2>Test Environment</h2>"));
                 FlexTable table = new FlexTable();
-                panel().add(table);
+//                panel().add(table);
+                initializationResultsPanel.add(table);
                 int row = 0;
 
                 Widget w;
@@ -109,21 +130,12 @@ public class BuildIGTestOrchestrationButton extends AbstractOrchestrationButton 
                 table.setWidget(row, 0, new HTML("<h3>Test data pattern</h3>"));
                 table.setWidget(row++, 1, new HTML("<h3>Patient ID</h3>"));
 
-//                table.setWidget(row++, 0, new HTML("Each Patient is configured with records to support a different test environment."));
-
                 // FindDocuments launcher need actor type
                 SiteSpec siteSpecRg1 = orchResponse.getSupportRG1().siteSpec();
                 siteSpecRg1.setActorType(ActorType.RESPONDING_GATEWAY);
                 SiteSpec siteSpecRg2 = orchResponse.getSupportRG2().siteSpec();
                 siteSpecRg2.setActorType(ActorType.RESPONDING_GATEWAY);
 
-//                Anchor a;
-//                a = new Anchor("Single document in Community 1");
-//                try {
-//                    a.addClickHandler(new FindDocumentsLauncher(orchResponse.getOneDocPid(), siteSpecRg1, false));
-//                } catch (Exception e) {
-//                    new PopupMessage(e.getMessage() + " for " + "Single document in Community 1");
-//                }
                 table.setWidget(row, 0, buildFindDocumentsLauncher(siteSpecRg1, orchResponse.getOneDocPid(), "Single document in Community 1"));
                 table.setWidget(row++, 1, new HTML(orchResponse.getOneDocPid().asString()));
 
@@ -141,6 +153,9 @@ public class BuildIGTestOrchestrationButton extends AbstractOrchestrationButton 
                 table.setWidget(row++, 1, new HTML(orchResponse.getUnknownPid().asString()));
                 table.setWidget(row++, 0, buildFindDocumentsLauncher(siteSpecRg1, orchResponse.getUnknownPid(), "Community 1 returns Registry Error"));
                 table.setWidget(row++, 0, buildFindDocumentsLauncher(siteSpecRg2, orchResponse.getUnknownPid(), "Community 2 returns single document"));
+
+                table.setWidget(row, 0, buildFindDocumentsLauncher(siteSpecRg1, orchResponse.getNoAdOptionPid(), "No XDS Affinity Domain Option"));
+                table.setWidget(row++, 1, new HTML(orchResponse.getNoAdOptionPid().asString()));
 
                 initializationResultsPanel.add(new HTML("<h3>Configure your Initiating Gateway to forward requests to both of the above Responding Gateways.</h3><hr />"));
 
