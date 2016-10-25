@@ -88,6 +88,7 @@ class TestSectionDisplay implements IsWidget {
                     TestPlanDisplay testPlanDisplay = new TestPlanDisplay(sectionTp.getHtlmizedContent().replace("<br/>", "\r\n"));
                     view.setTestPlanDisplay(testPlanDisplay);
 
+                    view.clearStepPanel();
                     boolean singleStep = sectionTp.getStepList().size() == 1;
                     for (final String stepName : sectionTp.getStepList()) {
                         HorizontalFlowPanel stepHeader = new HorizontalFlowPanel();
@@ -146,6 +147,7 @@ class TestSectionDisplay implements IsWidget {
                         public void onSuccess(final TestPartFileDTO sectionTp) {
                             TestPlanDisplay testPlanDisplay = new TestPlanDisplay(sectionTp.getHtlmizedContent().replace("<br/>", "\r\n"));
                             view.setTestPlanDisplay(testPlanDisplay);
+                            view.clearStepPanel();
 
                             if (log.hasFatalError()) view.setFatalError(log.getFatalError());
                             boolean singleStep = log.getSteps().size() == 1;

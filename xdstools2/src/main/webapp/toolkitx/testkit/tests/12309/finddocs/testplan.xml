@@ -23,10 +23,10 @@
                     count(//XCQTransaction[@step="finddocs"]/Result/*[local-name(.)='AdhocQueryResponse']/*[local-name(.)='RegistryObjectList']/*[local-name(.)='ObjectRef']) = 2
       </Assert>
       <Assert id="Object1HomeCommunityId"> 
-                    //XCQTransaction[@step="finddocs"]/Result/*[local-name(.)='AdhocQueryResponse']/*[local-name(.)='RegistryObjectList']/*[local-name(.)='ObjectRef'][1]/text() = '$home$'
+        //XCQTransaction[1]/Result[1]/*[namespace-uri()='urn:oasis:names:tc:ebxml-regrep:xsd:query:3.0' and local-name()='AdhocQueryResponse'][1]/*[namespace-uri()='urn:oasis:names:tc:ebxml-regrep:xsd:rim:3.0' and local-name()='RegistryObjectList'][1]/*[namespace-uri()='urn:oasis:names:tc:ebxml-regrep:xsd:rim:3.0' and local-name()='ObjectRef'][1]/@home = '$home$'
       </Assert>
       <Assert id="Object2HomeCommunityId"> 
-                    //XCQTransaction[@step="finddocs"]/Result/*[local-name(.)='AdhocQueryResponse']/*[local-name(.)='RegistryObjectList']/*[local-name(.)='ObjectRef'][2]/text() = '$home$'
+        //XCQTransaction[1]/Result[1]/*[namespace-uri()='urn:oasis:names:tc:ebxml-regrep:xsd:query:3.0' and local-name()='AdhocQueryResponse'][1]/*[namespace-uri()='urn:oasis:names:tc:ebxml-regrep:xsd:rim:3.0' and local-name()='RegistryObjectList'][1]/*[namespace-uri()='urn:oasis:names:tc:ebxml-regrep:xsd:rim:3.0' and local-name()='ObjectRef'][2]/@home = '$home$'
       </Assert>
     </Assertions>
   </XCQTransaction>

@@ -303,6 +303,7 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner, TestsH
 	private void displayTestingPanel(final Panel testsPanel) {
 
 		mainView.getInitializationPanel().clear();
+		testStatistics.clear();
 		displayOrchestrationHeader(mainView.getInitializationPanel());
 
 		initializeTestDisplay(testsPanel);

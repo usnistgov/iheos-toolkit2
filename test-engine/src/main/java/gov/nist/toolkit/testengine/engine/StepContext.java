@@ -123,6 +123,11 @@ public class StepContext extends BasicContext implements ErrorReportingInterface
 		error(test_step_output, msg);
 	}
 
+	public void fail(OMElement ele) throws XdsInternalException {
+		setStatus(false);
+		error(test_step_output, ele);
+	}
+
 	public  void set_error(List<String> msgs) throws XdsInternalException {
 		setStatus(false);
 		for (String msg : msgs)

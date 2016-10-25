@@ -31,6 +31,7 @@ public class TestStepLogContentBuilder {
     private String id;
 
     private static final QName nameQname = new QName("name");
+    private static final QName useAsQname = new QName("useAs");
     private static final QName reportNameQname = new QName("reportName");
     private static final QName valueQname = new QName("value");
     private static final QName testQname = new QName("test");
@@ -87,6 +88,7 @@ public class TestStepLogContentBuilder {
         parseTransaction(endpointEl);
         parseDetails();
         parseErrors();
+        parseFatalErrors();
         parseInHeader();
         parseOutHeader();
         parseResult();
@@ -139,6 +141,7 @@ public class TestStepLogContentBuilder {
         // section of the log.xml file format
         for (OMElement ele : XmlUtil.decendentsWithLocalName(root, "UseReport")) {
             UseReportDTO u = new UseReportDTO();
+            u.setUseAs(ele.getAttributeValue(useAsQname));
             u.setName(ele.getAttributeValue(reportNameQname));
             u.setValue(ele.getAttributeValue(valueQname));
             u.setTest(ele.getAttributeValue(testQname));
@@ -188,6 +191,18 @@ public class TestStepLogContentBuilder {
         try {
             c.setInHeader(xmlFormat(XmlUtil.firstDecendentWithLocalName(root, "InHeader").getFirstElement()));
         } catch (Exception e) {
+        }
+    }
+
+    private void parseFatalErrors() {
+        List<OMElement> eles = XmlUtil.decendentsWithLocalName(root, "Error");
+        for (OMElement ele : eles) {
+            String err = ele.getText();
+            int at = err.indexOf("at gov.nist");
+            if (at != -1) {
+                err = err.substring(0, at);
+            }
+            c.getErrors().add(err);
         }
     }
 
@@ -287,13 +302,18 @@ public class TestStepLogContentBuilder {
     }
 
     private void parseAssertionErrors() {
-        List<OMElement> errorEles = XmlUtil.decendentsWithLocalName(root, "Error");
+        List<OMElement> errorEles = XmlUtil.decendentsWithLocalName(root, "FailedAssertion");
         List<String> errors = new ArrayList<String>();
 
-        for (OMElement errorEle : errorEles ){
-            errors.add(errorEle.getText());
-        }
-        c.setAssertionErrors(errors);
+        try {
+            for (OMElement errorEle : errorEles) {
+                errors.add("FailedAssertion (" + errorEle.getAttributeValue(new QName("assertionId")) + ")");
+                errors.add("&nbsp;&nbsp;LeftSide Value: " + XmlUtil.firstChildWithLocalName(errorEle, "LeftSideValue").getText());
+                errors.add("&nbsp;&nbsp;Operator: "  + XmlUtil.firstChildWithLocalName(errorEle, "Operator").getText());
+                errors.add("&nbsp;&nbsp;RightSide Value: " + XmlUtil.firstChildWithLocalName(errorEle, "RightSideValue").getText());
+            }
+            c.setAssertionErrors(errors);
+        } catch (Exception e) {}
     }
 
     private String xmlFormat(OMElement ele) throws XdsInternalException, FactoryConfigurationError {
