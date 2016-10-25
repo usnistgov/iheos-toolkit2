@@ -11,11 +11,23 @@
   <XCQTransaction>
     <MetadataFile>query.xml</MetadataFile>
     <UseId testdir="../../12318/init" id="SubmissionSet01" symbol="$patient_id$" step="init" section="AssignedPatientId"/>
+    <UseReport 
+            test="12318" 
+            section="init" 
+            step="init"                
+            reportName="$testdata_home$" 
+            useAs="$home$"/> 
     <Assertions>
       <DataRef file="THIS" as="output"/>
       <Assert id="ObjectRefCount"> 
                     count(//XCQTransaction[@step="finddocs"]/Result/*[local-name(.)='AdhocQueryResponse']/*[local-name(.)='RegistryObjectList']/*[local-name(.)='ObjectRef']) = 2
-                </Assert>
+      </Assert>
+      <Assert id="Object1HomeCommunityId"> 
+                    //XCQTransaction[@step="finddocs"]/Result/*[local-name(.)='AdhocQueryResponse']/*[local-name(.)='RegistryObjectList']/*[local-name(.)='ObjectRef'][1]/text() = '$home$'
+      </Assert>
+      <Assert id="Object2HomeCommunityId"> 
+                    //XCQTransaction[@step="finddocs"]/Result/*[local-name(.)='AdhocQueryResponse']/*[local-name(.)='RegistryObjectList']/*[local-name(.)='ObjectRef'][2]/text() = '$home$'
+      </Assert>
     </Assertions>
   </XCQTransaction>
 </TestStep>

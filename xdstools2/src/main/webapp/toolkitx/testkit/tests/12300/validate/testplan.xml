@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<TestPlan>
+    <Test>12300/validate</Test>
+    <TestStep id="finddocs">
+        <ExpectedStatus>Success</ExpectedStatus>
+        <Rule>
+            <Transaction>XGQ</Transaction>
+            <SQ>Test FindDocuments XGC</SQ>
+            <Assertion>LeafClass return</Assertion>
+        </Rule>
+        <NullTransaction>
+        </NullTransaction>
+    </TestStep>
+</TestPlan>

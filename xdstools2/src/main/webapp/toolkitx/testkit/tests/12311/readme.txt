@@ -1,4 +1,4 @@
-XCQ GetDocuments Cross Community Query
+GetDocuments for LeafClass
 
 This test is dependent on test 12309 which does a FindDocuments query returning ObjectRefs.  
 This test takes those ObjectRefs and retrieves (really query) the full metadata from the 

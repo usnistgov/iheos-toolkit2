@@ -31,6 +31,7 @@ public class StepView implements IsWidget {
     private String testSession;
     private TestInstance testInstance;
     private String section;
+    private String stepName;
 
     StepView(TestPartFileDTO sectionTp, SectionOverviewDTO sectionOverview, TestStepLogContentDTO step, boolean open, String testSession, TestInstance testInstance, String section) {
         this.sectionTp = sectionTp;
@@ -39,6 +40,7 @@ public class StepView implements IsWidget {
         this.testSession = testSession;
         this.testInstance = testInstance;
         this.section = section;
+        this.stepName = step.getId();
         HTML stepHeaderTitle = new HTML("Step: " + step.getId());
         if (step.isSuccess()) stepHeaderTitle.addStyleName("testOverviewHeaderSuccess");
         else stepHeaderTitle.addStyleName("testOverviewHeaderFail");
@@ -49,7 +51,7 @@ public class StepView implements IsWidget {
     }
 
     private void build() {
-        MetadataDisplay metadataViewerPanel = new MetadataDisplay(sectionTp, testSession, testInstance, section);
+        MetadataDisplay metadataViewerPanel = new MetadataDisplay(sectionTp.getStepTpfMap().get(stepName), testSession, testInstance, section);
         stepBody.add(metadataViewerPanel.getLabel());
         stepBody.add(metadataViewerPanel);
 

@@ -1,13 +1,9 @@
-XCQ FindDocuments for ObjectRef
+FindDocuments for ObjectRef
 
-Depends on test 12318 (which targets a Document Repository) to initialize the test data.
+Test the FindDocuments for ObjectRef Stored Query against the Responding Gateway.
 
-Assertions test the following:
+Depends on test 12318 to initialize the test data.
 
-homeMatch1 - first ObjectRef has correct home attribute (value from xdstest2tool/mgmt/default.xml
 
-homeMatch2 - second ObjectRef has correct home attribute (value from xdstest2tool/mgmt/default.xml
-
-ObjectRefCount - Query returns 2 ObjectRefs
 
 

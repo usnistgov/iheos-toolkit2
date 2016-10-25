@@ -99,7 +99,7 @@ class TestSectionDisplay implements IsWidget {
                         DisclosurePanel stepPanel = new DisclosurePanel(stepHeader);
                         stepPanel.setOpen(singleStep);
 
-                        MetadataDisplay metadataViewerPanel = new MetadataDisplay(sectionTp, sessionName, testInstance, section);
+                        MetadataDisplay metadataViewerPanel = new MetadataDisplay(sectionTp.getStepTpfMap().get(stepName), sessionName, testInstance, section);
 
                         final FlowPanel stepResults = new FlowPanel();
                         stepResults.add(metadataViewerPanel.getLabel());
