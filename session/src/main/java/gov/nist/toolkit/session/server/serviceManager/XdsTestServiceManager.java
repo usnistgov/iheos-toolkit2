@@ -9,7 +9,9 @@ import gov.nist.toolkit.registrymetadata.Metadata;
 import gov.nist.toolkit.registrymetadata.MetadataParser;
 import gov.nist.toolkit.registrymetadata.UuidAllocator;
 import gov.nist.toolkit.registrymetadata.client.Document;
+import gov.nist.toolkit.registrymsg.repository.RetrieveResponseParser;
 import gov.nist.toolkit.registrymsg.repository.RetrievedDocumentModel;
+import gov.nist.toolkit.registrymsg.repository.RetrievedDocumentsModel;
 import gov.nist.toolkit.results.CommonService;
 import gov.nist.toolkit.results.MetadataToMetadataCollectionParser;
 import gov.nist.toolkit.results.ResultBuilder;
@@ -32,7 +34,6 @@ import gov.nist.toolkit.session.server.services.TestLogCache;
 import gov.nist.toolkit.sitemanagement.client.Site;
 import gov.nist.toolkit.sitemanagement.client.SiteSpec;
 import gov.nist.toolkit.testengine.engine.ResultPersistence;
-import gov.nist.toolkit.testengine.engine.RetrieveB;
 import gov.nist.toolkit.testengine.engine.TestLogsBuilder;
 import gov.nist.toolkit.testengine.engine.Xdstest2;
 import gov.nist.toolkit.testenginelogging.LogFileContentBuilder;
@@ -53,6 +54,7 @@ import gov.nist.toolkit.utilities.xml.XmlFormatter;
 import gov.nist.toolkit.utilities.xml.XmlUtil;
 import gov.nist.toolkit.xdsexception.ExceptionUtil;
 import gov.nist.toolkit.xdsexception.client.EnvironmentNotSelectedException;
+import gov.nist.toolkit.xdsexception.client.ToolkitRuntimeException;
 import gov.nist.toolkit.xdsexception.client.XdsInternalException;
 import org.apache.axiom.om.OMElement;
 import org.apache.log4j.Logger;
@@ -61,6 +63,7 @@ import javax.xml.namespace.QName;
 import javax.xml.parsers.FactoryConfigurationError;
 import java.io.File;
 import java.io.IOException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -155,7 +158,7 @@ public class XdsTestServiceManager extends CommonService {
 		return getTestOverview(mesaTestSession, testInstance);
 	}
 
-	static public List<Result> runTestplan(String environment, String sessionName, SiteSpec siteSpec, TestInstance testId, List<String> sections, Map<String, String> params, boolean stopOnFirstError, Session myTestSession, XdsTestServiceManager xdsTestServiceManager) {
+	static public List<Result> runTestplan(String environment, String sessionName, SiteSpec siteSpec, TestInstance testId, List<String> sections, Map<String, String> params, boolean stopOnFirstError, Session myTestSession, XdsTestServiceManager xdsTestServiceManager, boolean persistResult) {
 
 		List<Result> results; // This wrapper does two important things of interest: 1) Set patient id if it is available in the Params map and 2) Eventually calls the UtilityRunner
 		try {
@@ -170,15 +173,61 @@ public class XdsTestServiceManager extends CommonService {
 
 		// Save results to external_cache.
 		// Supports getTestResults tookit api call
-		ResultPersistence rPer = new ResultPersistence();
+		if (persistResult) {
+			ResultPersistence rPer = new ResultPersistence();
 
-		for (Result result : results) {
-			try {
-				rPer.write(result, sessionName);
-			} catch (Exception e) {
-				result.assertions.add(ExceptionUtil.exception_details(e), false);
+			for (Result result : results) {
+				try {
+					rPer.write(result, sessionName);
+				} catch (Exception e) {
+					result.assertions.add(ExceptionUtil.exception_details(e), false);
+				}
 			}
 		}
+
+		return results;
+	}
+
+	public void setGazelleTruststore() {
+		String tsSysProp =
+				System.getProperty("javax.net.ssl.trustStore");
+
+		if (tsSysProp == null) {
+			String tsFileName = "/gazelle/gazelle_sts_cert_truststore.jks";
+			URL tsURL = getClass().getResource(tsFileName); // Should this be a toolkit system property variable?
+			if (tsURL != null) {
+				File tsFile = new File(tsURL.getFile());
+				System.setProperty("javax.net.ssl.trustStore", tsFile.toString());
+				System.setProperty("javax.net.ssl.trustStorePassword", "changeit");
+				System.setProperty("javax.net.ssl.trustStoreType", "JKS");
+			} else {
+				throw new ToolkitRuntimeException("Cannot find truststore by URL: " + tsURL);
+			}
+
+		}
+	}
+
+	public List<Result> querySts(String siteName, String sessionName, String query, Map<String, String> params, boolean persistResult) {
+		setGazelleTruststore();
+
+		String environmentName = "default";
+		Session mySession = new Session(Installation.instance().warHome(), sessionName);
+		mySession.setEnvironment(environmentName);
+
+		// This must exist in the EC Dir. ex. GazelleSts
+		SiteSpec stsSpec =  new SiteSpec(siteName);
+		if (mySession.getMesaSessionName() == null)
+			mySession.setMesaSessionName(sessionName);
+		mySession.setSiteSpec(stsSpec);
+		mySession.setTls(true); // Required for Gazelle
+
+		TestInstance testInstance = new TestInstance("GazelleSts");
+
+		List<String> sections = new ArrayList<String>();
+		sections.add(query);
+
+		XdsTestServiceManager xtsm = new XdsTestServiceManager(mySession);
+		List<Result> results =  runTestplan(environmentName,sessionName,stsSpec,testInstance,sections,params,true,mySession,xtsm, persistResult);
 
 		return results;
 	}
@@ -865,9 +914,9 @@ public class XdsTestServiceManager extends CommonService {
 										logger.error(t.toString());
 									}
 
-									RetrieveB rb = new RetrieveB();
-									Map<String, RetrievedDocumentModel> resMap = rb
-											.parse_rep_response(rdsr).getMap();
+									RetrievedDocumentsModel rdm = new RetrieveResponseParser(rdsr).get();
+
+									Map<String, RetrievedDocumentModel> resMap = rdm.getMap();
 									for (String docUid : resMap.keySet()) {
 										RetrievedDocumentModel ri = resMap.get(docUid);
 										Document doc = new Document();

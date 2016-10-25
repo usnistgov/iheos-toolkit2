@@ -2,7 +2,7 @@
   <Test>GazelleSts/samlassertion-issue</Test>
   <TestStep id="issue">
     <ExpectedStatus>Success</ExpectedStatus>
-    <GazelleStsTransaction stsQuery="issue">
+    <StsTransaction stsQuery="issue">
       <Headers>
         Content-Type: application/soap+xml;charset=UTF-8
       </Headers>
@@ -13,6 +13,6 @@
       <Report name="saml-assertion" section="Result" escapedCharsInXml="true">
         //*[local-name()='Body']/*[local-name()='RequestSecurityTokenResponseCollection']/*[local-name()='RequestSecurityTokenResponse']/*[local-name()='RequestedSecurityToken']/*[local-name()='Assertion']
       </Report>
-    </GazelleStsTransaction>
+    </StsTransaction>
   </TestStep>
 </TestPlan>

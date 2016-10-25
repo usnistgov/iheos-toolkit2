@@ -269,6 +269,13 @@ public interface ToolkitService extends RemoteService  {
 	//------------------------------------------------------------------------
 	public InteractingEntity getInteractionFromModel(InteractingEntity model) throws Exception;
 
+	//------------------------------------------------------------------------
+	//------------------------------------------------------------------------
+	// STS SAML
+	//------------------------------------------------------------------------
+	//------------------------------------------------------------------------
+	public String getStsSamlAssertion(String username, TestInstance testInstance, SiteSpec stsSite, Map<String, String> params) throws Exception;
+
 	String clearTestSession(String testSession) throws Exception;
 
 	boolean getAutoInitConformanceTesting();

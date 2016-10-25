@@ -33,6 +33,8 @@ public class SiteSpec implements Serializable, IsSerializable {
 	public String homeName = "";
 	public boolean isTls = false;
 	public boolean isSaml = false;
+	String gazelleXuaUsername;
+	String stsAssertion;
 	public boolean isAsync = false;
 
     /**
@@ -135,5 +137,21 @@ public class SiteSpec implements Serializable, IsSerializable {
 
 	public void setOrchestrationSiteName(String orchestrationSiteName) {
 		this.orchestrationSiteName = orchestrationSiteName;
+	}
+
+	public String getGazelleXuaUsername() {
+		return gazelleXuaUsername;
+	}
+
+	public void setGazelleXuaUsername(String gazelleXuaUsername) {
+		this.gazelleXuaUsername = gazelleXuaUsername;
+	}
+
+	public String getStsAssertion() {
+		return stsAssertion;
+	}
+
+	public void setStsAssertion(String stsAssertion) {
+		this.stsAssertion = stsAssertion;
 	}
 }

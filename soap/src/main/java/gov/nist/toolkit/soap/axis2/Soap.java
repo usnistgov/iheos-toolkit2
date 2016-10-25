@@ -7,7 +7,9 @@ import gov.nist.toolkit.utilities.xml.OMFormatter;
 import gov.nist.toolkit.utilities.xml.Util;
 import gov.nist.toolkit.utilities.xml.XmlUtil;
 import gov.nist.toolkit.wsseTool.api.config.SecurityContext;
-import gov.nist.toolkit.xdsexception.*;
+import gov.nist.toolkit.xdsexception.ExceptionUtil;
+import gov.nist.toolkit.xdsexception.LoadKeystoreException;
+import gov.nist.toolkit.xdsexception.XdsFormatException;
 import gov.nist.toolkit.xdsexception.client.EnvironmentNotSelectedException;
 import gov.nist.toolkit.xdsexception.client.XdsInternalException;
 import org.apache.axiom.om.OMAbstractFactory;
@@ -41,7 +43,11 @@ import java.io.File;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Hashtable;
+import java.util.List;
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 
@@ -72,10 +78,14 @@ public class Soap implements SoapInterface {
 	boolean mtom = false;
 	boolean addressing = true;
 	boolean soap12 = true;
-	boolean useWSSEC = false;
-
 	List<OMElement> additionalHeaders = null;
+
+	// This doesn't seem to be no longer used for the original purpose of conveying a home brewed saml
+	boolean useWSSEC = false;
+	boolean useSaml;
+	String gazelleXuaUsername;
 	List<OMElement> secHeaders = null;
+
 	String endpoint;
 	String action;
 	OMElement body = null;
@@ -473,6 +483,7 @@ public class Soap implements SoapInterface {
 				}
 			}
 //			}
+
 
 		operationClient.addMessageContext(outMsgCtx);
 
@@ -1064,7 +1075,17 @@ public class Soap implements SoapInterface {
 	 */
 	@Override
    public void setUseSaml(boolean use) {
-		useWSSEC = use;
+//		useWSSEC = use;
+		useSaml = use;
+	}
+
+
+	public String getGazelleXuaUsername() {
+		return gazelleXuaUsername;
+	}
+
+	public void setGazelleXuaUsername(String gazelleXuaUsername) {
+		this.gazelleXuaUsername = gazelleXuaUsername;
 	}
 
 	public void setRepositoryLocation(String location) {

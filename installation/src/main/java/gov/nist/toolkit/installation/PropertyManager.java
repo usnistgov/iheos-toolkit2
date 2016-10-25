@@ -18,6 +18,7 @@ public class PropertyManager {
 	static private final String GAZELLE_CONFIG_URL  = "Gazelle_Config_URL";
 	static private final String EXTERNAL_CACHE      = "External_Cache";
 	static private final String USE_ACTORS_FILE     = "Use_Actors_File";
+	static public final String ENABLE_SAML			= "Enable_SAML";
 	static private final String TESTKIT             = "Testkit";
 	static private final String LISTENER_PORT_RANGE = "Listener_Port_Range";
 	static private final String AUTO_INIT_CONFORMANCE_TOOL = "Auto_init_conformance_tool";
@@ -121,6 +122,15 @@ public class PropertyManager {
 	public String getToolkitGazelleConfigURL() {
 		loadProperties();
 		return (String) toolkitProperties.get(GAZELLE_CONFIG_URL);
+	}
+
+	public boolean isEnableSaml() {
+		loadProperties();
+		String use = (String) toolkitProperties.get(ENABLE_SAML);
+		if (use == null)
+			return true;
+		use = use.trim().toLowerCase();
+		return "true".compareTo(use) == 0;
 	}
 	
 	public String getExternalCache() {

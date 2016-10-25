@@ -116,6 +116,7 @@ class StsSamlAssertionSpec extends ToolkitSpecification {
         List<String> sections = new ArrayList<>()
         sections.add("samlassertion-issue")
         Map<String, String> params = new HashMap<>()
+        params.put('$saml-username$',"Xuagood")
         boolean stopOnFirstError = true
 
         and: 'Run samlassertion-issue'

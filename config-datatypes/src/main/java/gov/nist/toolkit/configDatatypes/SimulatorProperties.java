@@ -305,5 +305,5 @@ public class SimulatorProperties {
      * Requires STS SAML.
      * SoapFault is thrown if SAML is required but missing in the request's soap header.
      */
-    public static final String      requiresStsSaml = "Secure Token Service (STS) SAML";
+    public static final String      requiresStsSaml = "Require SAML?";
 }

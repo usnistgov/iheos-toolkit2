@@ -638,7 +638,7 @@
 		<!-- Begin profile part 2/2 -->
 		<resources>
 			<resource>
-				<directory>src/main/resources</directory>
+				<directory>src/test/resources</directory>
 				<filtering>true</filtering>
 				<includes>
 					<include>toolkit.properties</include>
@@ -646,10 +646,16 @@
 			</resource>
 			<resource>
 				<directory>src/main/resources</directory>
+				<filtering>true</filtering>
+				<includes>
+					<include>toolkit.properties</include>
+				</includes>
 			</resource>
 			<resource>
 				<directory>src/test/resources</directory>
-				<filtering>true</filtering>
+			</resource>
+			<resource>
+				<directory>src/main/resources</directory>
 			</resource>
 		</resources>
 		<!-- End profile part 2/2 -->

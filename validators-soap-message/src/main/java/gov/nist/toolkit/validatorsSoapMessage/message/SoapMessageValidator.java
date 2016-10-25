@@ -4,6 +4,7 @@ import gov.nist.toolkit.commondatatypes.MetadataSupport;
 import gov.nist.toolkit.errorrecording.ErrorRecorder;
 import gov.nist.toolkit.errorrecording.client.XdsErrorCode;
 import gov.nist.toolkit.errorrecording.factories.ErrorRecorderBuilder;
+import gov.nist.toolkit.installation.Installation;
 import gov.nist.toolkit.utilities.xml.XmlUtil;
 import gov.nist.toolkit.valregmsg.validation.factories.ValidationContextValidationFactory;
 import gov.nist.toolkit.valsupport.client.ValidationContext;
@@ -132,7 +133,12 @@ public class SoapMessageValidator extends AbstractMessageValidator {
             - Sunil
          */
         if (header!=null && vc.requiresStsSaml && vc.isRequest) {
-            mvc.addMessageValidator("STS SAML Validator", new StsSamlValidator(vc,er,mvc, rvi, header), erBuilder.buildNewErrorRecorder());
+            boolean samlEnabled = Installation.instance().propertyServiceManager().getPropertyManager().isEnableSaml();
+            if (samlEnabled) {
+                mvc.addMessageValidator("STS SAML Validator", new StsSamlValidator(vc, er, mvc, rvi, header), erBuilder.buildNewErrorRecorder());
+            } else {
+               er.detail("SAML bypassed.");
+            }
         }
 
         er.unRegisterValidator(this);

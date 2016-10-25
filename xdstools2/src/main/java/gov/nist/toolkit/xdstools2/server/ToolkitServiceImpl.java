@@ -23,9 +23,22 @@ import gov.nist.toolkit.registrymetadata.client.AnyIds;
 import gov.nist.toolkit.registrymetadata.client.ObjectRef;
 import gov.nist.toolkit.registrymetadata.client.ObjectRefs;
 import gov.nist.toolkit.registrymetadata.client.Uids;
-import gov.nist.toolkit.results.client.*;
+import gov.nist.toolkit.results.client.CodesResult;
+import gov.nist.toolkit.results.client.DocumentEntryDetail;
+import gov.nist.toolkit.results.client.Result;
+import gov.nist.toolkit.results.client.TestInstance;
+import gov.nist.toolkit.results.client.TestLogs;
 import gov.nist.toolkit.results.shared.Test;
-import gov.nist.toolkit.services.client.*;
+import gov.nist.toolkit.services.client.EnvironmentNotSelectedClientException;
+import gov.nist.toolkit.services.client.IdsOrchestrationRequest;
+import gov.nist.toolkit.services.client.IgOrchestrationRequest;
+import gov.nist.toolkit.services.client.IigOrchestrationRequest;
+import gov.nist.toolkit.services.client.RSNAEdgeOrchestrationRequest;
+import gov.nist.toolkit.services.client.RawResponse;
+import gov.nist.toolkit.services.client.RegOrchestrationRequest;
+import gov.nist.toolkit.services.client.RepOrchestrationRequest;
+import gov.nist.toolkit.services.client.RgOrchestrationRequest;
+import gov.nist.toolkit.services.client.RigOrchestrationRequest;
 import gov.nist.toolkit.services.server.RawResponseBuilder;
 import gov.nist.toolkit.services.server.orchestration.OrchestrationManager;
 import gov.nist.toolkit.services.shared.SimulatorServiceManager;
@@ -42,6 +55,8 @@ import gov.nist.toolkit.sitemanagement.client.TransactionOfferings;
 import gov.nist.toolkit.testengine.scripts.BuildCollections;
 import gov.nist.toolkit.testengine.scripts.CodesUpdater;
 import gov.nist.toolkit.testenginelogging.client.LogFileContentDTO;
+import gov.nist.toolkit.testenginelogging.client.ReportDTO;
+import gov.nist.toolkit.testenginelogging.client.TestStepLogContentDTO;
 import gov.nist.toolkit.testkitutilities.client.TestCollectionDefinitionDAO;
 import gov.nist.toolkit.tk.TkLoader;
 import gov.nist.toolkit.tk.client.TkProps;
@@ -52,17 +67,18 @@ import gov.nist.toolkit.valsupport.client.MessageValidationResults;
 import gov.nist.toolkit.valsupport.client.ValidationContext;
 import gov.nist.toolkit.xdsexception.ExceptionUtil;
 import gov.nist.toolkit.xdsexception.client.EnvironmentNotSelectedException;
+import gov.nist.toolkit.xdsexception.client.ToolkitRuntimeException;
+import gov.nist.toolkit.xdstools2.client.ToolkitService;
+import gov.nist.toolkit.xdstools2.server.serviceManager.DashboardServiceManager;
+import gov.nist.toolkit.xdstools2.server.serviceManager.GazelleServiceManager;
 import gov.nist.toolkit.xdstools2.shared.NoServletSessionException;
 import gov.nist.toolkit.xdstools2.shared.RegistryStatus;
 import gov.nist.toolkit.xdstools2.shared.RepositoryStatus;
-import gov.nist.toolkit.xdstools2.client.ToolkitService;
 import gov.nist.toolkit.xdstools2.shared.command.CommandContext;
 import gov.nist.toolkit.xdstools2.shared.command.GeneratePidRequest;
 import gov.nist.toolkit.xdstools2.shared.command.GetAllSimConfigsRequest;
-import gov.nist.toolkit.xdstools2.shared.command.SendPidToRegistryRequest;
 import gov.nist.toolkit.xdstools2.shared.command.InitializationResponse;
-import gov.nist.toolkit.xdstools2.server.serviceManager.DashboardServiceManager;
-import gov.nist.toolkit.xdstools2.server.serviceManager.GazelleServiceManager;
+import gov.nist.toolkit.xdstools2.shared.command.SendPidToRegistryRequest;
 import org.apache.log4j.Logger;
 
 import javax.servlet.ServletContext;
@@ -73,7 +89,13 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Scanner;
 
 @SuppressWarnings("serial")
 public class ToolkitServiceImpl extends RemoteServiceServlet implements
@@ -868,8 +890,40 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements
     }
 
 
+    public String getStsSamlAssertion(String username, TestInstance testInstance, SiteSpec stsSite, Map<String, String> params) throws Exception {
 
+        XdsTestServiceManager xtsm = session().getXdsTestServiceManager();
+        String sessionName = session().getMesaSessionName();
+        String step = "issue";
+        String query = testInstance.getSection();
+		List<Result> results = xtsm.querySts("GazelleSts",sessionName,query,params, false);
 
+        if (results!=null) {
+            if (results.size() == 1) {
+                if (!results.get(0).passed()) {
+                    List<String> soapFaults = results.get(0).getStepResults().get(0).getSoapFaults();
+                    if (soapFaults != null && soapFaults.size() > 0) {
+                        throw new ToolkitRuntimeException("getStsSamlAssertion SOAP Fault: " + soapFaults.toString());
+                    }
+                } else {
+                    LogFileContentDTO logFileContentDTO = xtsm.getTestLogDetails(sessionName,testInstance);
+                    TestStepLogContentDTO testStepLogContentDTO = logFileContentDTO.getStep(step);
+                    List<ReportDTO> reportDTOs = testStepLogContentDTO.getReportDTOs();
+                    String assertionResultId = "saml-assertion";
+                    for (ReportDTO report : reportDTOs)  {
+                        if (assertionResultId.equals(report.getName())) {
+                           return report.getValue();
+                        }
+                    }
+                    throw new ToolkitRuntimeException(assertionResultId + " result key not found.");
+
+                }
+            }
+            throw new ToolkitRuntimeException("Result size: " + results.size());
+        } else {
+            throw new ToolkitRuntimeException("No result.");
+        }
+    }
 
     @Override
     public String clearTestSession(String testSession) throws Exception {
