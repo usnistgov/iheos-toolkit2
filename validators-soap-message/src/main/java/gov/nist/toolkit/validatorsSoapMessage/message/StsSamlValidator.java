@@ -55,13 +55,13 @@ public class StsSamlValidator extends AbstractMessageValidator {
                     securityEl = secEls.get(0);
                     validateNs(er, securityEl, "http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-secext-1.0.xsd");
                 } else {
-                    er.err(XdsErrorCode.Code.SoapFault, new Exception("Security element count is "+secEls.size()+". Was expecting one."));
+                    er.err(XdsErrorCode.Code.SoapFault, new Exception("Security element (SAML) was expected. Security element count is "+secEls.size()+", should be one."));
                 }
                 if (securityEl != null) {
                     List<OMElement> assertionEls = XmlUtil.decendentsWithLocalName(securityEl, "Assertion");
                     if (assertionEls!=null) {
                         if (assertionEls.size()!=1) {
-                            er.err(XdsErrorCode.Code.SoapFault, new Exception("Assertion element count is "+assertionEls.size()+". Was expecting one."));
+                            er.err(XdsErrorCode.Code.SoapFault, new Exception("SAML was expected. Assertion element count is "+assertionEls.size()+", should be one."));
                         }
                         er.detail("Found one Assertion element.");
                         OMElement assertionEl = assertionEls.get(0);
