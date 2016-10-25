@@ -84,15 +84,15 @@ public class StsSamlValidator extends AbstractMessageValidator {
                                     if ("validate".equals(stepResult.stepName)) {
                                         List<String> soapFaults = stepResult.getSoapFaults();
                                         if (soapFaults != null && soapFaults.size() > 0) {
-                                            er.err(XdsErrorCode.Code.SoapFault, new ToolkitRuntimeException("STS SAML validation failed: Step failed: " + soapFaults.get(0).toString()));
+                                            er.err(XdsErrorCode.Code.SoapFault, new ToolkitRuntimeException(soapFaults.get(0).toString()));
                                             return;
                                         }
                                     }
                                 }
-                                er.err(XdsErrorCode.Code.SoapFault, new ToolkitRuntimeException("STS SAML validation failed: 'validate' step result not found."));
+                                er.err(XdsErrorCode.Code.SoapFault, new ToolkitRuntimeException("STS: 'validate' step result not found."));
                             }
                         } else {
-                            er.err(XdsErrorCode.Code.SoapFault, new ToolkitRuntimeException("STS SAML validation failed: No result."));
+                            er.err(XdsErrorCode.Code.SoapFault, new ToolkitRuntimeException("STS: No result."));
                         }
                     }
                 }

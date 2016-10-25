@@ -273,10 +273,13 @@ public class HTTPTransaction extends BasicTransaction {
         OMElement envelopeEle = Util.parse_xml(responseString);
 
         AXIOMXPath xpathExpression = new AXIOMXPath("//*[local-name()='Body']/*[local-name()='RequestSecurityTokenResponseCollection']/*[local-name()='RequestSecurityTokenResponse']/*[local-name()='Status']/*[local-name()='Code']");
-        String val = xpathExpression.stringValueOf(envelopeEle);
+        String codeValue = xpathExpression.stringValueOf(envelopeEle);
 
-        if (val==null || !"http://docs.oasis-open.org/ws-sx/ws-trust/200512/status/valid".equals(val)) {
-            String message = "HTTPTransaction: STS validation service returned unexpected SAML assertion status: " + val;
+        if (codeValue==null || !"http://docs.oasis-open.org/ws-sx/ws-trust/200512/status/valid".equals(codeValue)) {
+            xpathExpression = new AXIOMXPath("//*[local-name()='Body']/*[local-name()='RequestSecurityTokenResponseCollection']/*[local-name()='RequestSecurityTokenResponse']/*[local-name()='Status']/*[local-name()='Reason']");
+            String reasonValue = xpathExpression.stringValueOf(envelopeEle);
+
+            String message = "Reason: " + reasonValue + ". Code: " + codeValue;
             s_ctx.set_fault(SoapFault.FaultCodes.Sender.toString(), message);
             failed();
             return false;
