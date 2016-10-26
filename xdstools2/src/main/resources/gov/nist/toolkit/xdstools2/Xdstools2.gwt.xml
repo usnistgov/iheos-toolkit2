@@ -34,6 +34,7 @@
     <inherits name="gov.nist.toolkit.http.http"/>
     <inherits name="gov.nist.toolkit.configDatatypes.datatypes"/>
     <inherits name="gov.nist.toolkit.session.session"/>
+    <inherits name="gov.nist.toolkit.testengine.testengine"/>
     <inherits name="gov.nist.toolkit.testkitutilities.testkitutilities"/>
     <inherits name="gov.nist.toolkit.testenginelogging.testenginelogging"/>
     <inherits name="gov.nist.toolkit.xdsexception.xdsexceptions"/>

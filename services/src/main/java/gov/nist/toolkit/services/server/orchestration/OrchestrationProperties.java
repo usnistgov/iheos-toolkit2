@@ -23,10 +23,12 @@ public class OrchestrationProperties {
     private boolean pidsAllocated = false;
     private Collection<String> pidPropNames;
     private Session session;
+    private boolean forceNewPatientIds;
 
-    public OrchestrationProperties(Session session, String userName, ActorType actorType, Collection<String> pidPropNames) throws Exception {
+    public OrchestrationProperties(Session session, String userName, ActorType actorType, Collection<String> pidPropNames, boolean forceNewPatientIds) throws Exception {
         this.session = session;
         this.pidPropNames = pidPropNames;
+        this.forceNewPatientIds = forceNewPatientIds;
         orchestrationPropFile = Installation.instance().orchestrationPropertiesFile(userName, actorType.getShortName());
         if (orchestrationPropFile.exists())
             orchProps.load(new FileInputStream(orchestrationPropFile));
@@ -36,7 +38,7 @@ public class OrchestrationProperties {
     private void allocatePids() throws Exception {
         for (String pidName : pidPropNames) {
             String value = orchProps.getProperty(pidName);
-            if (value == null || value.equals("") ) {
+            if (forceNewPatientIds || value == null || value.equals("") ) {
                 setProperty(pidName, session.allocateNewPid().asString());
                 updated = true;
                 pidsAllocated = true;

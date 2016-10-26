@@ -14,11 +14,15 @@ import gov.nist.toolkit.actorfactory.client.CcdaTypeSelection;
 import gov.nist.toolkit.http.client.HtmlMarkup;
 import gov.nist.toolkit.results.client.Result;
 import gov.nist.toolkit.valsupport.client.*;
-import gov.nist.toolkit.xdstools2.client.PopupMessage;
-import gov.nist.toolkit.xdstools2.client.RenameSimFileDialogBox;
+import gov.nist.toolkit.xdstools2.client.command.command.ExecuteSimMessageCommand;
+import gov.nist.toolkit.xdstools2.client.command.command.ValidateMessageCommand;
+import gov.nist.toolkit.xdstools2.client.widgets.PopupMessage;
+import gov.nist.toolkit.xdstools2.client.widgets.RenameSimFileDialogBox;
 import gov.nist.toolkit.xdstools2.client.ToolWindow;
 import gov.nist.toolkit.xdstools2.client.inspector.MetadataInspectorTab;
 import gov.nist.toolkit.xdstools2.client.tabs.TextViewerTab;
+import gov.nist.toolkit.xdstools2.shared.command.request.ExecuteSimMessageRequest;
+import gov.nist.toolkit.xdstools2.shared.command.request.ValidateMessageRequest;
 
 import java.util.*;
 
@@ -524,7 +528,12 @@ public class MessageValidatorTab extends ToolWindow {
 					return;
 				}
 				filename = simFilesListBox.getValue(sel);
-				getToolkitServices().executeSimMessage(filename, messageValidationCallback);
+				new ExecuteSimMessageCommand(){
+					@Override
+					public void onComplete(MessageValidationResults result) {
+						messageValidationCallbackSuccess(result);
+					}
+				}.run(new ExecuteSimMessageRequest(getCommandContext(),filename));
 			}
 		});
 
@@ -742,13 +751,26 @@ public class MessageValidatorTab extends ToolWindow {
 		});
 	}
 
+	private void messageValidationCallbackSuccess(MessageValidationResults results){
+		try {
+			displayResults(results);
+		} catch (Exception e) {
+			new PopupMessage(e.getMessage());
+		}
+	}
+
 	void requestValidation() {
 		ValidationContext vc = EmptyValidationContextFactory.validationContext();
 		loadValidationContext(vc);
 
 		System.out.println(vc);
-		
-		getToolkitServices().validateMessage(vc, messageValidationCallback);
+
+		new ValidateMessageCommand(){
+			@Override
+			public void onComplete(MessageValidationResults result) {
+				messageValidationCallbackSuccess(result);
+			}
+		}.run(new ValidateMessageRequest(getCommandContext(),vc));
 	}
 
 	final AsyncCallback<List<String>> getSimFileNamesCallback = new AsyncCallback<List<String>>() {
@@ -1004,24 +1026,6 @@ public class MessageValidatorTab extends ToolWindow {
 		v.setResult(results);
 		v.onTabLoad(true, "Text");
 	}
-
-	protected AsyncCallback<MessageValidationResults> messageValidationCallback = new AsyncCallback<MessageValidationResults> () {
-
-		public void onFailure(Throwable caught) {
-			new GwtValFormatter().addCell(caught.getMessage(), 0);
-			tabTopPanel.add(resultsTable);
-		}
-
-		public void onSuccess(MessageValidationResults result) {
-			try {
-				displayResults(result);
-			} catch (Exception e) {
-				new PopupMessage(e.getMessage());
-			}
-
-		}
-
-	};
 
 	class GwtValFormatter implements ValFormatter {
 

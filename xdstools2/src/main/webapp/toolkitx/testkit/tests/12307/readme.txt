@@ -1,4 +1,4 @@
-XCQ GetDocuments 
+GetDocuments 
 
 Initiate a GetDocuments Cross-Community Query (XCQ) from your
 Initiating Gateway to the Public

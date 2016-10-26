@@ -73,7 +73,7 @@ public class TestRunner {
             // This sets result.testId so it looks like a session-based utility usage
             // of the test engine.  Need to re-label it so the logs can later
             // be properly pulled from the external_cache.
-//            Result result = xdsTestServiceManager.xdstest(testId, sections, params, params2, null, stopOnFirstFailure);
+//            Result result = xdsTestServiceManager.xdstest(testId, SECTIONS, params, params2, null, stopOnFirstFailure);
             UtilityRunner utilityRunner = new UtilityRunner(xdsTestServiceManager, TestRunType.TEST);
             Result result = utilityRunner.run(session, params, params2, sections, testInstance, null, stopOnFirstFailure);
 //			ResultSummary summary = new ResultSummary(result);

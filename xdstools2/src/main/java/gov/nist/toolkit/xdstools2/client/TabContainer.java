@@ -88,7 +88,6 @@ public class TabContainer {
 			INNER_DECKPANEL.add(dockLp);
 		}else {
             String tabName=TABBAR.getTab(TABBAR.getSelectedTab()).toString().split("<div class=\"gwt-HTML\">")[1].split("</div>")[0];
-			((Xdstools2EventBus) ClientUtils.INSTANCE.getEventBus()).fireTabSelectedEvent(tabName);
 		}
 //		INNER_DECKPANEL.getElement().getStyle().setMargin(4, Style.Unit.PX);
 		INNER_DECKPANEL.showWidget(dockLp);

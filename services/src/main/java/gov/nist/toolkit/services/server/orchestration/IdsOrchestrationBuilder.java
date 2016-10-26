@@ -27,7 +27,7 @@ class IdsOrchestrationBuilder {
    static Logger log = Logger.getLogger(IdsOrchestrationBuilder.class);   
 
    static final String sutSimulatorName = "simulator_ids";
-   public static final String rrSimulatorName = "rep_reg";
+   public static final String rrSimulatorName = "rr";
    
     Session session;
     IdsOrchestrationRequest request;
@@ -91,10 +91,10 @@ class IdsOrchestrationBuilder {
         public enum Orchestra {
            
            simulator_ids ("Simulated IDS SUT", ActorType.IMAGING_DOC_SOURCE, new SimulatorConfigElement[] {
-              new SimulatorConfigElement(SimulatorProperties.idsRepositoryUniqueId, ParamType.TEXT, "1.3.6.1.4.1.21367.13.71.101"),
-              new SimulatorConfigElement(SimulatorProperties.idsImageCache, ParamType.TEXT, "ids-community-A")}),
+              new SimulatorConfigElement(SimulatorProperties.idsRepositoryUniqueId, ParamType.TEXT, "1.3.6.1.4.1.21367.13.80.110"),
+              new SimulatorConfigElement(SimulatorProperties.idsImageCache, ParamType.TEXT, "xca-dataset-a1")}),
            
-           rep_reg ("Repository Registry", ActorType.REPOSITORY_REGISTRY, new SimulatorConfigElement[] {
+           rr ("Repository Registry", ActorType.REPOSITORY_REGISTRY, new SimulatorConfigElement[] {
               new SimulatorConfigElement(SimulatorProperties.VALIDATE_AGAINST_PATIENT_IDENTITY_FEED, ParamType.BOOLEAN, false),
               new SimulatorConfigElement(SimulatorProperties.repositoryUniqueId, ParamType.TEXT, "1.3.6.1.4.1.21367.13.71.101.1")}),
            
@@ -123,6 +123,7 @@ class IdsOrchestrationBuilder {
                     return new String[] {
                        SimulatorProperties.idsRepositoryUniqueId,
                        SimulatorProperties.idsrEndpoint,
+                       SimulatorProperties.idsImageCache,
                     };
                  case REPOSITORY_REGISTRY:
                     return new String[] {

@@ -1,6 +1,5 @@
 package gov.nist.toolkit.xdstools2.client.selectors;
 
-import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.user.client.Cookies;
@@ -10,11 +9,13 @@ import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.ListBox;
 import gov.nist.toolkit.xdstools2.client.*;
+import gov.nist.toolkit.xdstools2.client.command.command.GetDefaultEnvironmentCommand;
 import gov.nist.toolkit.xdstools2.client.command.command.GetEnvironmentNamesCommand;
+import gov.nist.toolkit.xdstools2.client.command.command.SetEnvironmentCommand;
 import gov.nist.toolkit.xdstools2.client.event.Xdstools2EventBus;
 import gov.nist.toolkit.xdstools2.client.tabs.EnvironmentState;
-import gov.nist.toolkit.xdstools2.client.util.ClientFactory;
 import gov.nist.toolkit.xdstools2.client.util.ClientUtils;
+import gov.nist.toolkit.xdstools2.client.widgets.PopupMessage;
 
 import java.util.List;
 
@@ -135,69 +136,34 @@ public class EnvironmentManager extends Composite{
 					updateCookie();
 				}
 			}
-		}.run(Xdstools2.getHomeTab().getCommandContext());
+		}.run(ClientUtils.INSTANCE.getCommandContext());
 
-		ClientUtils.INSTANCE.getToolkitServices().setEnvironment(initialEnvironmentName, new AsyncCallback() {
-
-			@Override
-			public void onFailure(Throwable caught) {
-				new PopupMessage("setEnvironment(" + initialEnvironmentName + ") failed");
-			}
-
-			@Override
-			public void onSuccess(Object result) {
-
-			}
-			
-		});
+		new SetEnvironmentCommand().run(ClientUtils.INSTANCE.getCommandContext().setEnvironmentName(initialEnvironmentName));
 	}
 	
 	void getDefaultEnvironment() {
 		if (environmentState.getEnvironmentName() == null)
-			ClientUtils.INSTANCE.getToolkitServices().getDefaultEnvironment(getDefaultEnvironmentCallback);
+			new GetDefaultEnvironmentCommand(){
+
+				@Override
+				public void onComplete(String result) {
+					environmentState.setEnvironmentName(result);
+
+					updateEnvironmentListBox();
+					updateSelectionOnScreen();
+					updateCookie();
+					updateServer();
+				}
+			}.run(ClientUtils.INSTANCE.getCommandContext());
 	}
-	
-	AsyncCallback<String> getDefaultEnvironmentCallback = new AsyncCallback<String> () {
 
-		public void onFailure(Throwable caught) {
-			new PopupMessage("Call to retrieve default environment name failed: " + caught.getMessage());
-		}
-
-		public void onSuccess(String result) {
-			environmentState.setEnvironmentName(result);
-			
-			updateEnvironmentListBox();
-			updateSelectionOnScreen();
-			updateCookie();
-			updateServer();
-		}
-
-	};
-
-	
-	
 	void updateCookie() {
 			Cookies.removeCookie(CookieManager.ENVIRONMENTCOOKIENAME);
 	}
 	
 	void updateServer() {
-		String envName = environmentState.getEnvironmentName();
-		if (envName == null || envName.equals(""))
-			return;
-		ClientUtils.INSTANCE.getToolkitServices().setEnvironment(envName, setEnvironmentCallback);
+		new SetEnvironmentCommand().run(ClientUtils.INSTANCE.getCommandContext());
 	}
-
-
-	protected AsyncCallback<String> setEnvironmentCallback = new AsyncCallback<String> () {
-
-		public void onFailure(Throwable caught) {
-			new PopupMessage(caught.getMessage());
-		}
-
-		public void onSuccess(String x) {
-		}
-
-	};
 
 	class EnvironmentChangeHandler implements ChangeHandler {
 
@@ -208,7 +174,7 @@ public class EnvironmentManager extends Composite{
 			
 			environmentState.updated(environmentManager);
 			((Xdstools2EventBus) ClientUtils.INSTANCE.getEventBus()).fireEnvironmentChangedEvent(value);
-			ClientUtils.INSTANCE.getToolkitServices().setEnvironment(value, setEnvironmentCallback);
+			new SetEnvironmentCommand().run(ClientUtils.INSTANCE.getCommandContext().setEnvironmentName(value));
 		}
 
 	}

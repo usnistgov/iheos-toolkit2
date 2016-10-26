@@ -15,28 +15,41 @@ import gov.nist.toolkit.xdstools2.client.util.ClientUtils;
 import gov.nist.toolkit.xdstools2.client.widgets.OrchestrationSupportTestsDisplay;
 import gov.nist.toolkit.xdstools2.client.widgets.buttons.AbstractOrchestrationButton;
 
+import java.util.ArrayList;
+import java.util.List;
+
 
 /**
- *
+ * Build Registry tests orchestration
  */
 public class BuildRegTestOrchestrationButton extends AbstractOrchestrationButton {
     private ConformanceTestTab testTab;
     private Panel initializationPanel;
     private TestContext testContext;
-    private TestContextDisplay testContextDisplay;
+    private TestContextView testContextView;
     private FlowPanel initializationResultsPanel = new FlowPanel();
     private RadioButton noFeed = new RadioButton("pidFeedGroup", "No Patient Identity Feed");
     private RadioButton v2Feed = new RadioButton("pidFeedGroup", "V2 Patient Identitfy Feed");
 
-    BuildRegTestOrchestrationButton(ConformanceTestTab testTab, TestContext testContext, TestContextDisplay testContextDisplay, Panel initializationPanel, String label) {
+    static private final String MU_OPTION = "mu";
+    static private final String MPQ_OPTION = "mpq";
+    static private final String OD_OPTION = "mpq";
+    public static List<ActorAndOption> ACTOR_OPTIONS = new ArrayList<>();
+    static {
+        ACTOR_OPTIONS = java.util.Arrays.asList(
+                new ActorAndOption("reg", "", "Required", false),
+                new ActorAndOption("reg", MU_OPTION, "Metadata Update Option", true),
+                new ActorAndOption("reg", MPQ_OPTION, "MPQ Option", true),
+                new ActorAndOption("reg", OD_OPTION, "On Demand Option", true));
+    }
+
+    BuildRegTestOrchestrationButton(ConformanceTestTab testTab, TestContext testContext, TestContextView testContextView, Panel initializationPanel, String label) {
         this.initializationPanel = initializationPanel;
         this.testTab = testTab;
         this.testContext = testContext;
-        this.testContextDisplay = testContextDisplay;
+        this.testContextView = testContextView;
 
         setParentPanel(initializationPanel);
-        setLabel(label);
-        setResetLabel("Reset");
 
         FlowPanel pidFeedPanel = new FlowPanel();
         pidFeedPanel.add(noFeed);
@@ -51,9 +64,9 @@ public class BuildRegTestOrchestrationButton extends AbstractOrchestrationButton
 
     @Override
     public void handleClick(ClickEvent clickEvent) {
-        String msg = testTab.verifyTestContext();
+        String msg = testContext.verifyTestContext();
         if (msg != null) {
-            testContextDisplay.launchDialog(msg);
+            testContextView.launchDialog(msg);
             return;
         }
 
@@ -67,7 +80,7 @@ public class BuildRegTestOrchestrationButton extends AbstractOrchestrationButton
         SiteSpec sutSiteSpec = testContext.getSiteUnderTest().siteSpec();
         request.setRegistrySut(sutSiteSpec);
 
-        testTab.setSitetoIssueTestAgainst(sutSiteSpec);
+        testTab.setSiteToIssueTestAgainst(sutSiteSpec);
 
 
         ClientUtils.INSTANCE.getToolkitServices().buildRegTestOrchestration(request, new AsyncCallback<RawResponse>() {
@@ -93,7 +106,7 @@ public class BuildRegTestOrchestrationButton extends AbstractOrchestrationButton
                 handleMessages(initializationResultsPanel, orchResponse);
 
                 // Display tests run as part of orchestration - so links to their logs are available
-                initializationResultsPanel.add(new OrchestrationSupportTestsDisplay(orchResponse, testContext, testContextDisplay, testTab ));
+                initializationResultsPanel.add(new OrchestrationSupportTestsDisplay(orchResponse, testContext, testContextView, testTab ));
 
                 initializationResultsPanel.add(new HTML("<br />"));
 

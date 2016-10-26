@@ -18,27 +18,25 @@ class BuildRepTestOrchestrationButton extends AbstractOrchestrationButton {
     private ConformanceTestTab testTab;
     private Panel initializationPanel;
     private TestContext testContext;
-    private TestContextDisplay testContextDisplay;
+    private TestContextView testContextView;
     private FlowPanel initializationResultsPanel = new FlowPanel();
 
-    BuildRepTestOrchestrationButton(ConformanceTestTab testTab, TestContext testContext, TestContextDisplay testContextDisplay, Panel initializationPanel, String label) {
+    BuildRepTestOrchestrationButton(ConformanceTestTab testTab, TestContext testContext, TestContextView testContextView, Panel initializationPanel, String label) {
         this.initializationPanel = initializationPanel;
         this.testTab = testTab;
         this.testContext = testContext;
-        this.testContextDisplay = testContextDisplay;
+        this.testContextView = testContextView;
 
         setParentPanel(initializationPanel);
-        setLabel(label);
-        setResetLabel("Reset");
         build();
         panel().add(initializationResultsPanel);
     }
 
     @Override
     public void handleClick(ClickEvent clickEvent) {
-        String msg = testTab.verifyTestContext();
+        String msg = testContext.verifyTestContext();
         if (msg != null) {
-            testContextDisplay.launchDialog(msg);
+            testContextView.launchDialog(msg);
             return;
         }
 
@@ -74,8 +72,8 @@ class BuildRepTestOrchestrationButton extends AbstractOrchestrationButton {
                     initializationResultsPanel.add(new SiteDisplay("Supporting Environment Configuration", orchResponse.getSupportSite()));
                 }
 
-//                initializationResultsPanel.display(new HTML("<h3>Supporting Environment</h3>"));
-//                initializationResultsPanel.display(new SimSystemAnchor("System: " + orchResponse.getSupportSite().getName(), new SiteSpec(orchResponse.getSupportSite().getName())));
+//                initializationResultsPanel.build(new HTML("<h3>Supporting Environment</h3>"));
+//                initializationResultsPanel.build(new SimSystemAnchor("System: " + orchResponse.getSupportSite().getName(), new SiteSpec(orchResponse.getSupportSite().getName())));
 
 
 
@@ -87,7 +85,7 @@ class BuildRepTestOrchestrationButton extends AbstractOrchestrationButton {
 
 
                 // test will be run out of support site so pass it back to conformance test tab
-                testTab.setSitetoIssueTestAgainst(orchResponse.getSupportSite().siteSpec());
+                testTab.setSiteToIssueTestAgainst(orchResponse.getSupportSite().siteSpec());
             }
 
 

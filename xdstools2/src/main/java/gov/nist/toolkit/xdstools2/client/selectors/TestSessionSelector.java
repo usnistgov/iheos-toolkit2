@@ -3,7 +3,7 @@ package gov.nist.toolkit.xdstools2.client.selectors;
 import com.google.gwt.event.dom.client.*;
 import com.google.gwt.user.client.ui.*;
 import gov.nist.toolkit.xdstools2.client.Xdstools2;
-import gov.nist.toolkit.xdstools2.client.event.TestSessionChangedEvent;
+import gov.nist.toolkit.xdstools2.client.event.testSession.TestSessionChangedEvent;
 import gov.nist.toolkit.xdstools2.client.event.testSession.TestSessionChangedEventHandler;
 import gov.nist.toolkit.xdstools2.client.event.testSession.TestSessionsUpdatedEvent;
 import gov.nist.toolkit.xdstools2.client.event.testSession.TestSessionsUpdatedEventHandler;
@@ -44,8 +44,8 @@ public class TestSessionSelector {
         Xdstools2.getEventBus().addHandler(TestSessionChangedEvent.TYPE, new TestSessionChangedEventHandler() {
             @Override
             public void onTestSessionChanged(TestSessionChangedEvent event) {
-                if (event.changeType == TestSessionChangedEvent.ChangeType.SELECT) {
-                    listBox.setSelectedIndex(indexOfValue(event.value));
+                if (event.getChangeType() == TestSessionChangedEvent.ChangeType.SELECT) {
+                    listBox.setSelectedIndex(indexOfValue(event.getValue()));
                 }
             }
         });

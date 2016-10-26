@@ -3,18 +3,18 @@ package gov.nist.toolkit.xdstools2.client.widgets;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.Window;
-import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.VerticalPanel;
-import gov.nist.toolkit.xdstools2.client.PopupMessage;
 import gov.nist.toolkit.xdstools2.client.TabContainer;
-import gov.nist.toolkit.xdstools2.client.ToolkitServiceAsync;
+import gov.nist.toolkit.xdstools2.client.command.command.CheckTestkitExistenceCommand;
+import gov.nist.toolkit.xdstools2.client.command.command.ConfigureTestkitCommand;
+import gov.nist.toolkit.xdstools2.client.command.command.IndexTestkitsCommand;
 import gov.nist.toolkit.xdstools2.client.selectors.EnvironmentManager;
 import gov.nist.toolkit.xdstools2.client.util.ClientUtils;
-
-import java.util.logging.Logger;
+import gov.nist.toolkit.xdstools2.client.util.ToolkitServiceAsync;
+import gov.nist.toolkit.xdstools2.shared.command.CommandContext;
 
 
 /**
@@ -54,17 +54,17 @@ public class TestkitConfigTool extends Composite {
         @Override
         public void onClick(ClickEvent clickEvent) {
             indexStatus.setHTML("Running...");
-            toolkitService.indexTestKits(new AsyncCallback<Boolean>() {
+            new IndexTestkitsCommand() {
                 @Override
                 public void onFailure(Throwable throwable) {
-                    indexStatus.setHTML("Failed - " + throwable.getMessage());
+                    super.onFailure(throwable);
+                    indexStatus.setHTML("Failure!");
                 }
-
                 @Override
-                public void onSuccess(Boolean aBoolean) {
-                    indexStatus.setHTML("Success");
+                public void onComplete(Boolean var1) {
+                    indexStatus.setHTML("Success!");
                 }
-            });
+            }.run(new CommandContext());
         }
     }
 
@@ -76,43 +76,34 @@ public class TestkitConfigTool extends Composite {
         @Override
         public void onClick(ClickEvent clickEvent) {
             resultPanel.setHTML("Running (connection timeout is 30 sec) ...");
-            toolkitService.doesTestkitExist(environmentManager.getSelectedEnvironment(), new AsyncCallback<Boolean>() {
-
+            new CheckTestkitExistenceCommand() {
                 @Override
-                public void onFailure(Throwable throwable) {
-                    Logger.getLogger(this.getClass().getName()).info(throwable.getMessage());
-                    new PopupMessage("Error when trying to configure testkit.");
-                }
-
-                @Override
-                public void onSuccess(Boolean exists) {
+                public void onComplete(Boolean exists) {
                     if (exists) {
                         boolean confirmed = Window.confirm("There already is a existing testkit configured for this environment. " +
-                                "This will override it. Do you want to proceed?");
+                                "This will override it. \nDo you want to proceed?");
                         if (confirmed) runConfigTestkit();
                     } else {
                         runConfigTestkit();
                     }
                 }
-            });
+            }.run(new CommandContext(environmentManager.getSelectedEnvironment(),ClientUtils.INSTANCE.getTestSessionManager().getCurrentTestSession()));
         }
 
         /** Method that actually runs the configuration (code update) of the testkit. **/
         private void runConfigTestkit() {
-            toolkitService.configureTestkit(environmentManager.getSelectedEnvironment(), new AsyncCallback<String>() {
+            new ConfigureTestkitCommand(){
                 @Override
-                public void onFailure(Throwable throwable) {
-                    Logger.getLogger(this.getClass().getName()).info("not OK");
+                public void onFailure(Throwable throwable){
+                    super.onFailure(throwable);
                     resultPanel.setHTML(throwable.getMessage());
                 }
-
                 @Override
-                public void onSuccess(String s) {
-                    Logger.getLogger(this.getClass().getName()).info("OK");
-                    resultPanel.setHTML(s.replace("\n", "<br/>"));
+                public void onComplete(String result) {
+                    resultPanel.setHTML(result.replace("\n", "<br/>"));
                     container.add(resultPanel);
                 }
-            });
+            }.run(new CommandContext(environmentManager.getSelectedEnvironment(),ClientUtils.INSTANCE.getTestSessionManager().getCurrentTestSession()));
         }
     }
 }

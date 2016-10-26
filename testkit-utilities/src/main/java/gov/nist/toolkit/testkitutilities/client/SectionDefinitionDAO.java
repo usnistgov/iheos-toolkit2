@@ -1,9 +1,6 @@
 package gov.nist.toolkit.testkitutilities.client;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  *
@@ -11,8 +8,12 @@ import java.util.Map;
 public class SectionDefinitionDAO {
     private Map<String, StepDefinitionDAO> steps = new HashMap<>();
     private List<String> names = new ArrayList<String>();
+    private Set<String> sectionDependencies = new HashSet<String>();
+    private boolean sutInitiated = false;
+    private String sectionName;
 
-    public SectionDefinitionDAO() {
+    public SectionDefinitionDAO(String sectionName) {
+        this.sectionName = sectionName;
     }
 
     public StepDefinitionDAO getStep(String name) {
@@ -26,5 +27,21 @@ public class SectionDefinitionDAO {
 
     public List<String> getStepNames() {
         return names;
+    }
+
+    public Collection<String> getSectionDependencies() {
+        return sectionDependencies;
+    }
+
+    public void addTestDependency(String testId) {
+        sectionDependencies.add(testId);
+    }
+
+    public void sutInitiated() { sutInitiated = true; }
+
+    public boolean isSutInitiated() { return sutInitiated; }
+
+    public String getSectionName() {
+        return sectionName;
     }
 }

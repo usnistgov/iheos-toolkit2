@@ -26,6 +26,7 @@ import gov.nist.toolkit.xdstools2.client.siteActorManagers.BaseSiteActorManager;
 import gov.nist.toolkit.xdstools2.client.tabs.actorConfigTab.ActorConfigTab;
 import gov.nist.toolkit.xdstools2.client.util.ClientUtils;
 import gov.nist.toolkit.xdstools2.client.widgets.PidWidget;
+import gov.nist.toolkit.xdstools2.client.widgets.PopupMessage;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -108,6 +109,7 @@ public abstract class GenericQueryTab  extends ToolWindow {
     private Widget widget;
 
     private boolean displayTab = true;
+    private List<String> selectedSites=new ArrayList<String>();
 
     /**
      * This is the method that should build the specific content of a tab.
@@ -149,6 +151,7 @@ public abstract class GenericQueryTab  extends ToolWindow {
         ((Xdstools2EventBus) ClientUtils.INSTANCE.getEventBus()).addSimulatorsUpdatedEventHandler(new SimulatorUpdatedEvent.SimulatorUpdatedEventHandler() {
             @Override
             public void onSimulatorsUpdate(SimulatorUpdatedEvent simulatorUpdatedEvent) {
+                saveSelectedSites();
                 reloadTransactionOfferings();
             }
         });
@@ -157,6 +160,7 @@ public abstract class GenericQueryTab  extends ToolWindow {
             @Override
             public void onActorsConfigUpdate() {
                 if(!tabName.equals(ActorConfigTab.TAB_NAME)) {
+                    saveSelectedSites();
                     reloadTransactionOfferings();
                 }
             }
@@ -168,7 +172,23 @@ public abstract class GenericQueryTab  extends ToolWindow {
 		//		EnvironmentSelector.SETENVIRONMENT(toolkitService);
 	}
 
-	@Override
+    private void saveSelectedSites() {
+        selectedSites.clear();
+        if (selectByActor != null) {    // Used in Mesa test tab
+            for (RadioButton b : byActorButtons) {
+                if (b.getValue()) {
+                    selectedSites.add(b.getText());
+                }
+            }
+        } else {   // Select by transaction (used in GetDocuments tab)
+            SiteSpec site=transactionSelectionManager.generateSiteSpec();
+            if (site!=null) {
+                selectedSites.add(site.getName());
+            }
+        }
+    }
+
+    @Override
     public void onTabLoad(boolean select, String eventName) {
 	    if (displayTab)
             registerTab(true, eventName);
@@ -197,6 +217,11 @@ public abstract class GenericQueryTab  extends ToolWindow {
         while (mainGrid.getRowCount() > row_initial)
             mainGrid.removeRow(mainGrid.getRowCount() - 1);
         row = row_initial;
+    }
+
+    void resdisplay2(SiteSpec siteSpec) {
+        redisplay(false);
+        transactionSelectionManager.selectSite(siteSpec);
     }
 
     // TODO this is a big method, try to figure out what it is for
@@ -446,7 +471,7 @@ public abstract class GenericQueryTab  extends ToolWindow {
 				GenericQueryTab.transactionOfferings = var1;
 				redisplay(false);
 			}
-		}.run(getCommandContext());
+		}.run(ClientUtils.INSTANCE.getCommandContext());
 	}
 
     static public HTML addHTML(String html) {
@@ -706,6 +731,9 @@ public abstract class GenericQueryTab  extends ToolWindow {
         Grid grid = new Grid( sites.size()/cols + 1 , cols);
         for (RadioButton rb : transactionSelectionManager.getRadioButtons(tt)) {
             grid.setWidget(row, col, rb);
+            if (selectedSites.contains(rb.getText())){
+                rb.setValue(true);
+            }
             col++;
             if (col >= cols) {
                 col = 0;
@@ -893,13 +921,4 @@ public abstract class GenericQueryTab  extends ToolWindow {
         this.displayTab = displayTab;
     }
 
-    protected void addOnTabSelectionRedisplay(){
-        // this handle the refresh of the UI for FindDocumentsByRef tab everytime the tab is reselected
-        ((Xdstools2EventBus) ClientUtils.INSTANCE.getEventBus()).addTabSelectedEventHandler(new TabSelectedEvent.TabSelectedEventHandler() {
-            @Override
-            public void onTabSelection(TabSelectedEvent event) {
-                redisplay(true);
-            }
-        });
-    }
 }

@@ -11,13 +11,13 @@ public class RunClickHandler implements ClickHandler {
     private TestInstance testInstance;
     private TestRunner testRunner;
     private TestContext testContext;
-    private TestContextDisplay testContextDisplay;
+    private TestContextView testContextView;
 
-    RunClickHandler(TestRunner testRunner, TestInstance testInstance, TestContext testContext, TestContextDisplay testContextDisplay) {
+    RunClickHandler(TestRunner testRunner, TestInstance testInstance, TestContext testContext, TestContextView testContextView) {
         this.testRunner = testRunner;
         this.testInstance = testInstance;
         this.testContext = testContext;
-        this.testContextDisplay = testContextDisplay;
+        this.testContextView = testContextView;
     }
 
     @Override
@@ -29,7 +29,7 @@ public class RunClickHandler implements ClickHandler {
         if (msg == null)
             testRunner.runTest(testInstance, null);
         else
-            testContextDisplay.launchDialog(msg);
+            testContextView.launchDialog(msg);
 
     }
 }

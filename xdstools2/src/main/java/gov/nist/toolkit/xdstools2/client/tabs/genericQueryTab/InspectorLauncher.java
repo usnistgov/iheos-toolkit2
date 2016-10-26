@@ -5,7 +5,7 @@ import com.google.gwt.event.dom.client.ClickHandler;
 import gov.nist.toolkit.xdstools2.client.inspector.MetadataInspectorTab;
 
 class InspectorLauncher implements ClickHandler {
-	GenericQueryTab tab;
+	private GenericQueryTab tab;
 	
 	InspectorLauncher(GenericQueryTab tab) {
 		this.tab = tab;

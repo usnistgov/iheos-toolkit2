@@ -75,7 +75,7 @@ public class TestCollection {
 
             ids.add(tokens.remove(0));
 
-            // This parser supports specifying specific sections of a test.  TestInstance does not support
+            // This parser supports specifying specific SECTIONS of a test.  TestInstance does not support
             // this yet.
 
 //            TestLogDetails ts = new TestLogDetails(testkit, testInstance);

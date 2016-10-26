@@ -146,11 +146,11 @@ public class Xdstest2 {
 	}
 
 	/**
-	 * Select test to be run. All steps of all sections of this test will be
+	 * Select test to be run. All steps of all SECTIONS of this test will be
 	 * run. Overrides earlier calls to addTest* methods.
 	 * 
 	 * @param testInstance - corresponds to name of a directory of TESTKIT/area/testname
-	 * where area comes from a default list and does not need to be specified.  All sections
+	 * where area comes from a default list and does not need to be specified.  All SECTIONS
 	 * of the test are executed in the default order.
 	 * @throws Exception - Thrown if testname does not exist in the testkit
 	 */
@@ -166,7 +166,7 @@ public class Xdstest2 {
 	 * earlier calls to addTest* methods.
 	 * 
 	 * @param testInstance - corresponds to name of a directory of TESTKIT/area/testname
-	 * @param sections - list of sections of the test to execute. The ordering in this list
+	 * @param sections - list of SECTIONS of the test to execute. The ordering in this list
 	 * controls the order of execution.
 	 * @param areas - controls which areas of the testkit should be searched
 	 * @throws Exception - Thrown if testname does not exist in the testkit

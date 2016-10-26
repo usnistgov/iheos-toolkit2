@@ -12,12 +12,17 @@ import gov.nist.toolkit.sitemanagement.client.TransactionBean;
 import gov.nist.toolkit.sitemanagement.client.TransactionBean.RepositoryType;
 import gov.nist.toolkit.sitemanagement.client.TransactionCollection;
 import gov.nist.toolkit.xdstools2.client.PasswordManagement;
-import gov.nist.toolkit.xdstools2.client.PopupMessage;
+import gov.nist.toolkit.xdstools2.client.command.command.GetSiteNamesCommand;
+import gov.nist.toolkit.xdstools2.client.command.command.IsGazelleConfigFeedEnabledCommand;
+import gov.nist.toolkit.xdstools2.client.command.command.SaveSiteCommand;
+import gov.nist.toolkit.xdstools2.client.widgets.PopupMessage;
 import gov.nist.toolkit.xdstools2.client.StringSort;
 import gov.nist.toolkit.xdstools2.client.event.Xdstools2EventBus;
 import gov.nist.toolkit.xdstools2.client.siteActorManagers.NullSiteActorManager;
 import gov.nist.toolkit.xdstools2.client.tabs.genericQueryTab.GenericQueryTab;
 import gov.nist.toolkit.xdstools2.client.util.ClientUtils;
+import gov.nist.toolkit.xdstools2.shared.command.request.GetSiteNamesRequest;
+import gov.nist.toolkit.xdstools2.shared.command.request.SaveSiteRequest;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -137,23 +142,14 @@ public class ActorConfigTab extends GenericQueryTab {
 	}
 
 	void loadGazelleFeedAvailableStatus() { 
-
-		final AsyncCallback<Boolean> gazelleConfigEnabledCallback = new AsyncCallback<Boolean> () {
-
-			public void onFailure(Throwable caught) {
-				new PopupMessage(caught.getMessage());
-			}
-
-			public void onSuccess(Boolean enabled) {
-				enableGazelleReload = enabled;
+		new IsGazelleConfigFeedEnabledCommand(){
+			@Override
+			public void onComplete(Boolean result) {
+				enableGazelleReload = result;
 				if (reloadFromGazelleButton != null)
-					reloadFromGazelleButton.setEnabled(enabled);
+					reloadFromGazelleButton.setEnabled(result);
 			}
-
-		};
-
-		getToolkitServices().isGazelleConfigFeedEnabled(gazelleConfigEnabledCallback);
-
+		}.run(getCommandContext());
 	}
 
 	void updateSignInStatus() {
@@ -482,48 +478,37 @@ public class ActorConfigTab extends GenericQueryTab {
 			updateSignInStatus();
 			currentEditSite.cleanup();
 			newActorEditGrid();
-			saveSite(currentEditSite);
+			saveSite();
 		}
 
 	};
 
-	void saveSite(Site site) {
-		final AsyncCallback<String> saveSiteCallback = new AsyncCallback<String>() {
+	void saveSite() {
+		new SaveSiteCommand(){
 
-			public void onFailure(Throwable caught) {
-				new PopupMessage("Error saving site configuration: " + caught.getMessage());
-			}
-
-			public void onSuccess(String ignore) {
+			@Override
+			public void onComplete(String result) {
 				currentEditSite.changed = false;
-				getToolkitServices().getSiteNames(true, showSims.getValue(), new AsyncCallback<List<String>>() {
-					public void onFailure(Throwable caught) {
-						new PopupMessage(caught.getMessage());
-					}
+				new GetSiteNamesCommand(){
 
-					public void onSuccess(List<String> result) {
+					@Override
+					public void onComplete(List<String> result) {
 						loadSiteNames(result);
 					}
-				});
+				}.run(new GetSiteNamesRequest(getCommandContext(),true,showSims.getValue()));
 			}
-
-		};
-		getToolkitServices().saveSite(currentEditSite, saveSiteCallback);
+		}.run(new SaveSiteRequest(getCommandContext(),currentEditSite));
         ((Xdstools2EventBus) ClientUtils.INSTANCE.getEventBus()).fireActorsConfigUpdatedEvent();
 	}
 	
 	void loadExternalSites() {
+		new GetSiteNamesCommand(){
 
-		final AsyncCallback<List<String>> loadSiteNamesCallback = new AsyncCallback<List<String>>() {
-			public void onFailure(Throwable caught) {
-				new PopupMessage(caught.getMessage());
-			}
-
-			public void onSuccess(List<String> result) {
+			@Override
+			public void onComplete(List<String> result) {
 				loadSiteNames(result);
 			}
-		};
-		getToolkitServices().getSiteNames(true, showSims.getValue(), loadSiteNamesCallback);
+		}.run(new GetSiteNamesRequest(getCommandContext(),true,showSims.getValue()));
 	}
 
 	void loadSiteNames(List<String> result) {

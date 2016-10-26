@@ -46,19 +46,24 @@ class IgOrchestrationBuilder {
                     twoDocPid       : new TestInstanceManager(request, response, '15825'),
                     twoRgPid        : new TestInstanceManager(request, response, '15826'),
                     registryErrorPid: new TestInstanceManager(request, response, '15827'),
+                    noAdOptionPid     : new TestInstanceManager(request, response, '15828'),
             ]
 
-            orchProps = new OrchestrationProperties(session, request.userName, ActorType.INITIATING_GATEWAY, pidNameMap.keySet())
+            boolean forceNewPatientIds = !request.isUseExistingState()
+
+            orchProps = new OrchestrationProperties(session, request.userName, ActorType.INITIATING_GATEWAY, pidNameMap.keySet(), forceNewPatientIds)
 
             Pid oneDocPid = PidBuilder.createPid(orchProps.getProperty("oneDocPid"))
             Pid twoDocPid = PidBuilder.createPid(orchProps.getProperty("twoDocPid"))
             Pid twoRgPid = PidBuilder.createPid(orchProps.getProperty("twoRgPid"))
             Pid registryErrorPid = PidBuilder.createPid(orchProps.getProperty("registryErrorPid"))
+            Pid noAdOptionPid = PidBuilder.createPid(orchProps.getProperty("noAdOptionPid"))
 
             response.setOneDocPid(oneDocPid)
             response.setTwoDocPid(twoDocPid)
             response.setTwoRgPid(twoRgPid)
             response.setUnknownPid(registryErrorPid)
+            response.setNoAdOptionPid(noAdOptionPid)
 
             List<String> simIds = buildRGs(registryErrorPid)
 
@@ -68,19 +73,21 @@ class IgOrchestrationBuilder {
             String home0 = rgConfigs.get(0).get(SimulatorProperties.homeCommunityId).asString()
             String home1 = rgConfigs.get(1).get(SimulatorProperties.homeCommunityId).asString()
 
-            if (orchProps.updated()) {
+            if (!request.useExistingState) {
                 // send necessary Patient ID Feed messages
                 request.setPifType(PifType.V2)
                 new PifSender(api, request.getUserName(), rg1Site.siteSpec(), orchProps).send(PifType.V2, pidNameMap)
                 new PifSender(api, request.getUserName(), rg2Site.siteSpec(), orchProps).send(PifType.V2, pidNameMap)
 
-                TestInstance testInstance15807 = TestInstanceManager.initializeTestInstance(request, new TestInstance('15807'))
+                TestInstance testInstance15807 = TestInstanceManager.initializeTestInstance(request.getUserName(), new TestInstance('15807'))
                 MessageItem itemOneDoc1 = response.addMessage(testInstance15807, true, "")
                 MessageItem itemTwoDoc = response.addMessage(testInstance15807, true, "")
                 MessageItem itemOneDoc2 = response.addMessage(testInstance15807, true, "")
                 MessageItem itemOneDoc3 = response.addMessage(testInstance15807, true, "")
                 MessageItem itemRegistryError = response.addMessage(testInstance15807, true, "")
 
+                TestInstance testInstance12318 = TestInstanceManager.initializeTestInstance(request.getUserName(), new TestInstance('12318'))
+                MessageItem item12318 = response.addMessage(testInstance12318, true, "")
 
                 // Submit test data
                 try {
@@ -130,12 +137,22 @@ class IgOrchestrationBuilder {
                     itemRegistryError.setMessage("Initialization of " + rgConfigs.get(1).id + " (section registryError) failed:\n" + e.getMessage());
                     itemRegistryError.setSuccess(false)
                 }
+
+                params = [
+                        '$patientid$'     : noAdOptionPid.asString()]
+                try {
+                    util.submit(request.userName, SiteBuilder.siteSpecFromSimId(rgConfigs.get(0).id), new TestInstance("12318"), params)
+                } catch (Exception e) {
+                    item12318.setMessage("Initialization of " + rgConfigs.get(0).id + " failed:\n" + e.getMessage());
+                    item12318.setSuccess(false)
+                }
             }
 
             response.oneDocPid = oneDocPid
             response.twoDocPid = twoDocPid
             response.twoRgPid = twoRgPid
             response.unknownPid = registryErrorPid
+            response.noAdOptionPid = noAdOptionPid
             response.simulatorConfigs = rgConfigs
             response.igSimulatorConfig = igConfig
             response.supportRG1 = SimCache.getSite(session.getId(), simIds[0])
@@ -160,7 +177,6 @@ class IgOrchestrationBuilder {
         if (!request.isUseExistingState()) {
             api.deleteSimulator(rgSimId1);
             api.deleteSimulator(rgSimId2);
-            orchProps.clear()
         }
 
         if (api.simulatorExists(rgSimId1)) {

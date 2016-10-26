@@ -4,10 +4,10 @@ import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.*;
-import gov.nist.toolkit.xdstools2.client.AdminPasswordDialogBox;
+import gov.nist.toolkit.xdstools2.client.widgets.AdminPasswordDialogBox;
 import gov.nist.toolkit.xdstools2.client.LoadGazelleConfigsClickHandler;
 import gov.nist.toolkit.xdstools2.client.PasswordManagement;
-import gov.nist.toolkit.xdstools2.client.PopupMessage;
+import gov.nist.toolkit.xdstools2.client.widgets.PopupMessage;
 import gov.nist.toolkit.xdstools2.client.siteActorManagers.NullSiteActorManager;
 import gov.nist.toolkit.xdstools2.client.tabs.genericQueryTab.GenericQueryTab;
 import gov.nist.toolkit.xdstools2.client.widgets.TestkitConfigTool;
@@ -71,7 +71,7 @@ public class ToolConfigTab extends GenericQueryTab {
 		container.add(subtitle2);
 
 		container.add(loadAllGazelleConfigsBtn);
-		loadAllGazelleConfigsBtn.addClickHandler(new LoadGazelleConfigsClickHandler(getTabContainer(), "ALL"));
+		loadAllGazelleConfigsBtn.addClickHandler(new LoadGazelleConfigsClickHandler("ALL"));
 
 		container.add(new HTML("<hr />"));
 		/* new code for testkit update */

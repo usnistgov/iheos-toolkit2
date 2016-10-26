@@ -7,11 +7,7 @@ import gov.nist.toolkit.xdstools2.client.util.ClientUtils;
 /**
  *
  */
-abstract public class GetTransactionOfferingsCommand extends GenericCommand<CommandContext, TransactionOfferings> {
-    public GetTransactionOfferingsCommand() {
-        super();
-    }
-
+public abstract class GetTransactionOfferingsCommand extends GenericCommand<CommandContext, TransactionOfferings> {
     @Override
     public void run(CommandContext var1) {
         ClientUtils.INSTANCE.getToolkitServices().getTransactionOfferings(var1, this);

@@ -3,10 +3,10 @@
 	<!-- Data for this test is loaded by xxxx -->
 	<Test>rig_5420/SingleDocumentRetrieve</Test>
 	<TestStep id="retrieve">
-		<Goal>Imaging Document Set Retrieve of a single image</Goal>
-		<ExpectedStatus>Success</ExpectedStatus>
+		<Goal>Imaging Document Set Retrieve XferSyntax failure</Goal>
+		<ExpectedStatus>Failure</ExpectedStatus>
 		<ImagingDocSetRigRetrieveTransaction>
-			<MetadataFile>retrieve.xml</MetadataFile>
+			<MetadataFile>RAD-75Request.xml</MetadataFile>
 		</ImagingDocSetRigRetrieveTransaction>
 	</TestStep>
 	

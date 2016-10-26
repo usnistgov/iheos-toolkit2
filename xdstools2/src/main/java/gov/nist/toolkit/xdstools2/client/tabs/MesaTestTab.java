@@ -11,7 +11,7 @@ import gov.nist.toolkit.configDatatypes.client.TransactionType;
 import gov.nist.toolkit.results.client.TestInstance;
 import gov.nist.toolkit.session.client.Htmlize;
 import gov.nist.toolkit.xdstools2.client.CoupledTransactions;
-import gov.nist.toolkit.xdstools2.client.PopupMessage;
+import gov.nist.toolkit.xdstools2.client.widgets.PopupMessage;
 import gov.nist.toolkit.xdstools2.client.StringSort;
 import gov.nist.toolkit.xdstools2.client.TabContainer;
 import gov.nist.toolkit.xdstools2.client.siteActorManagers.GetDocumentsSiteActorManager;
@@ -246,7 +246,7 @@ public class MesaTestTab extends GenericQueryTab {
 			public void onSuccess(List<String> result) {
 				sections.clear();
 				if (result == null) {
-					// no index.idx - so sections
+					// no index.idx - so SECTIONS
 					selectSectionPanel.setVisible(false);
 				} else {
 					sections.addAll(result);

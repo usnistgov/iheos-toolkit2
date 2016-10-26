@@ -8,11 +8,7 @@ import java.util.List;
 /**
  *
  */
-abstract public class GetEnvironmentNamesCommand extends GenericCommand<CommandContext,List<String>>{
-    public GetEnvironmentNamesCommand() {
-        super();
-    }
-
+public abstract class GetEnvironmentNamesCommand extends GenericCommand<CommandContext,List<String>>{
     @Override
     public void run(CommandContext var1) {
         ClientUtils.INSTANCE.getToolkitServices()

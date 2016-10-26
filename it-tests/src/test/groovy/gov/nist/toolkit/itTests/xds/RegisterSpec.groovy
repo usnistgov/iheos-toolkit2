@@ -89,13 +89,13 @@ class RegisterSpec extends ToolkitSpecification {
 //        when:
 //        String siteName = 'bill__reg'
 //        TestInstance testId = new TestInstance("tc:R.b")
-//        List<String> sections = new ArrayList<>()
+//        List<String> SECTIONS = new ArrayList<>()
 //        Map<String, String> params = new HashMap<>()
 //        params.put('$patientid$', patientId)
 //        boolean stopOnFirstError = true
 //
 //        and: 'Run'
-//        List<Result> results = api.runTest(testSession, siteName, testId, sections, params, stopOnFirstError)
+//        List<Result> results = api.runTest(testSession, siteName, testId, SECTIONS, params, stopOnFirstError)
 //
 //        then:
 //        true

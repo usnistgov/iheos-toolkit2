@@ -19,6 +19,7 @@ public class Xdstools2EventBus extends SimpleEventBus {
 
     /**
      * Method that signals though the event bus to the application that the environment has changed.
+     * @param selectedEnvironment name of the newly selected environment.
      */
     public void fireEnvironmentChangedEvent(String selectedEnvironment) {
         fireEvent(new EnvironmentChangedEvent(selectedEnvironment));
@@ -59,25 +60,17 @@ public class Xdstools2EventBus extends SimpleEventBus {
     }
 
     /**
-     * Notify the event bus that a new tab has been selected.
+     * notify the other tabs through the event bus that there has been a change in the list of favorite PIDs.
      */
-    public void fireTabSelectedEvent(String tabName) {
-        fireEvent(new TabSelectedEvent(tabName));
-    }
-
-    /**
-     * Enable to know when the event bus is notified that an opened tab has been selected.
-     * @param handler
-     * @return
-     */
-    public HandlerRegistration addTabSelectedEventHandler(TabSelectedEvent.TabSelectedEventHandler handler){
-        return addHandler(TabSelectedEvent.TYPE,handler);
-    }
-
     public void fireFavoritePidsUpdateEvent() {
         fireEvent(new FavoritePidsUpdatedEvent());
     }
 
+    /**
+     * Add a new handler that will catch the notification about the list of favorite PIDs modification.
+     * @param handler
+     * @return
+     */
     public HandlerRegistration addFavoritePidsUpdateEventHandler(FavoritePidsUpdatedEvent.FavoritePidsUpdatedEventHandler handler){
         return addHandler(FavoritePidsUpdatedEvent.TYPE,handler);
     }

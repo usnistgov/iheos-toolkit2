@@ -311,6 +311,7 @@ public class RegistryErrorListGenerator implements ErrorLogger, ErrorRecorder{
 
 	public void addError(String context, String code, String location)  {
 		if (context == null) context = "";
+      if (context.startsWith("Soap Call")) return; // *** TODO Temp for debug ***
 		if (code == null) code = "";
 		if (location == null) location = "";
 		OMElement error = MetadataSupport.om_factory.createOMElement("RegistryError", ebRSns);

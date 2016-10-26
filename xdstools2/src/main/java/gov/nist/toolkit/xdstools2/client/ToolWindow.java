@@ -4,6 +4,7 @@ import com.google.gwt.dom.client.Style;
 import com.google.gwt.user.client.ui.*;
 import gov.nist.toolkit.sitemanagement.client.SiteSpec;
 import gov.nist.toolkit.tk.client.TkProps;
+import gov.nist.toolkit.xdstools2.client.util.ToolkitServiceAsync;
 import gov.nist.toolkit.xdstools2.shared.command.CommandContext;
 import gov.nist.toolkit.xdstools2.client.event.testSession.TestSessionManager2;
 import gov.nist.toolkit.xdstools2.client.selectors.EnvironmentManager;
@@ -74,11 +75,8 @@ public abstract class ToolWindow {
 		innerPanel.setWidget(windowRoot);
 	}
 
-	public CommandContext getCommandContext() {
-		// this is a horrible hack until the initialization is cleaned up
-		String env = getEnvironmentSelection();
-		if (env == null || env.equals("null")) env = "default";
-		return new CommandContext(env, getCurrentTestSession());
+	protected CommandContext getCommandContext() {
+		return ClientUtils.INSTANCE.getCommandContext();
 	}
 
 	/**

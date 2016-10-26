@@ -1,4 +1,4 @@
-XCQ FindDocuments for LeafClass
+FindDocuments for LeafClass
 
 Initiate a FindDocuments Cross-Community Query (XCQ) from
 your Initiating Gateway to the Public

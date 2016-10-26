@@ -2,6 +2,8 @@
 <module rename-to="xdstools2">
   <!-- Inherit the core Web Toolkit stuff.                        -->
   <inherits name='com.google.gwt.user.User'/>
+  <inherits name="com.google.gwt.place.Place"/>
+  <inherits name="com.google.gwt.activity.Activity"/>
 
   <!-- Inherit the default GWT style sheet.  You can change       -->
   <!-- the theme of your GWT application by uncommenting          -->
@@ -15,7 +17,7 @@
   <inherits name="gov.nist.toolkit.simcommon.simCommon"/>
   <!--<inherits name="gov.nist.toolkit.xdstestgui.xdstestGui"/>-->
   <inherits name="gov.nist.toolkit.testengine.testengine"/>
- 
+
   <inherits name="gov.nist.toolkit.sitemanagement.siteManagement"/>
   <inherits name="gov.nist.toolkit.valsupport.validatorsSupport"/>
   <inherits name="gov.nist.toolkit.registrymsg.registryMsgFormats"/>
@@ -23,12 +25,22 @@
   <inherits name="gov.nist.toolkit.registrymetadata.registryMetadata"/>
   <inherits name="gov.nist.toolkit.commondatatypes.commonDatatypes"/>
   <inherits name="gov.nist.toolkit.actortransaction.actorTransaction"/>
+  <inherits name="gov.nist.toolkit.session.session"/>
+  <inherits name="gov.nist.toolkit.testkitutilities.testkitutilities"/>
+  <inherits name="gov.nist.toolkit.interactiondiagram.interactionDiagram"/>
+  <inherits name="gov.nist.toolkit.testengine.testengine"/>
   <inherits name="gov.nist.toolkit.tk.tk"/>
   <inherits name="gov.nist.toolkit.results.results"/>
-    <inherits name="gov.nist.toolkit.services.services"/>
+  <inherits name="gov.nist.toolkit.services.services"/>
   <inherits name="gov.nist.toolkit.actorfactory.actorfactory"/>
   <inherits name="gov.nist.toolkit.http.http"/>
-    <inherits name="gov.nist.toolkit.configDatatypes.datatypes"/>
+  <inherits name="gov.nist.toolkit.configDatatypes.datatypes"/>
+  <inherits name="gov.nist.toolkit.session.session"/>
+  <inherits name="gov.nist.toolkit.testkitutilities.testkitutilities"/>
+  <inherits name="gov.nist.toolkit.testenginelogging.testenginelogging"/>
+  <inherits name="gov.nist.toolkit.xdsexception.xdsexceptions"/>
+  <inherits name="gov.nist.toolkit.interactionmodel.interactionModel"/>
+  <inherits name="gov.nist.toolkit.interactiondiagram.interactionDiagram"/>
 
 
   <!-- No EP -->

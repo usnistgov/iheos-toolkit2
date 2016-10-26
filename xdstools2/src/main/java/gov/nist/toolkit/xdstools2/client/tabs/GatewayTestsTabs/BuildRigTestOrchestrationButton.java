@@ -10,11 +10,11 @@ import gov.nist.toolkit.actorfactory.client.SimulatorConfig;
 import gov.nist.toolkit.actortransaction.client.ActorType;
 import gov.nist.toolkit.actortransaction.client.ParamType;
 import gov.nist.toolkit.configDatatypes.SimulatorProperties;
-import gov.nist.toolkit.services.client.IigOrchestrationResponse;
+import gov.nist.toolkit.services.client.RigOrchestrationResponse;
 import gov.nist.toolkit.services.client.RawResponse;
 import gov.nist.toolkit.services.client.RigOrchestrationRequest;
 import gov.nist.toolkit.simcommon.client.config.SimulatorConfigElement;
-import gov.nist.toolkit.xdstools2.client.PopupMessage;
+import gov.nist.toolkit.xdstools2.client.widgets.PopupMessage;
 import gov.nist.toolkit.xdstools2.client.tabs.genericQueryTab.GenericQueryTab;
 import gov.nist.toolkit.xdstools2.client.widgets.buttons.AbstractOrchestrationButton;
 
@@ -50,8 +50,8 @@ class BuildRIGTestOrchestrationButton extends AbstractOrchestrationButton {
 
          @Override
          public void onSuccess(RawResponse rawResponse) {
-            if (handleError(rawResponse, IigOrchestrationResponse.class)) return;
-            IigOrchestrationResponse orchResponse = (IigOrchestrationResponse) rawResponse;
+            if (handleError(rawResponse, RigOrchestrationResponse.class)) return;
+            RigOrchestrationResponse orchResponse = (RigOrchestrationResponse) rawResponse;
 
             testTab.rgConfigs = orchResponse.getSimulatorConfigs();
 

@@ -1,7 +1,9 @@
-XCQ FindDocuments for ObjectRef
+FindDocuments for ObjectRef
 
-Initiate a FindDocuments Cross-Community Query (XCQ) from your
-Initiating Gateway to the Public
+Initiate a FindDocuments Cross-Community Query from your
+Initiating Gateway to community1 (endpoints listed above) for the Patient ID identified
+
+the Public
 Registry server's Responding Gateway for a pre-determined Patient ID. Request ObjectRefs be returned.
 
 The metadata contained in the file testplan.xml is an example of the request.  The content of element 

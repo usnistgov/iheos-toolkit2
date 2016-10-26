@@ -32,6 +32,17 @@ public class TransactionSelectionManager {
 		this.couplings = couplings;
 		this.genericQueryTab = genericQueryTab;
 	}
+
+	public void selectSite(SiteSpec siteSpec) {
+		for (List<RbSite> rbSites : perTransRB.values()) {
+			for (RbSite rbSite : rbSites) {
+				if (rbSite.site.getName().equals(siteSpec.getName())) {
+					rbSite.rb.setValue(true);
+					return;
+				}
+			}
+		}
+	}
 	
 	public void addTransactionType(TransactionType tt, List<Site> sites) {
 		ClickHandler ch= new ActorClickHandlerByTransaction(this, tt);

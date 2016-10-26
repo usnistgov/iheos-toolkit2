@@ -1,2 +1,2 @@
 MPQFindDocs
-reg
+reg_mpq

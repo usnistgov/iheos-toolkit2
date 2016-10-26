@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?><TestPlan>
+  <Test>15807/twodoc</Test>
+  <Rule>Submit two documents to a XDS.b repository</Rule>
+  <TestStep id="submit">
+    <Rule>
+      <Transaction>PnR</Transaction>
+      <Assertion>Two documents submission</Assertion>
+    </Rule>
+    <ExpectedStatus>Success</ExpectedStatus>
+    <ProvideAndRegisterTransaction>
+      <XDSb/>
+      <AssignUuids/>
+      <MetadataFile>two_doc.xml</MetadataFile>
+      <Document id="Document01">my_document.txt</Document>
+      <Document id="Document02">my_document2.txt</Document>
+    </ProvideAndRegisterTransaction>
+  </TestStep>
+</TestPlan>

@@ -87,7 +87,6 @@ public class MPQFindDocumentsTab extends GenericQueryTab {
 
 	@Override
 	protected void bindUI() {
-		addOnTabSelectionRedisplay();
 	}
 
 	@Override

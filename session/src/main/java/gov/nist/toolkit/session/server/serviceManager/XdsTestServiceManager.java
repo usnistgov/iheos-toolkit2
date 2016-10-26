@@ -25,11 +25,11 @@ import gov.nist.toolkit.results.client.TestInstance;
 import gov.nist.toolkit.results.client.TestLogs;
 import gov.nist.toolkit.results.shared.Test;
 import gov.nist.toolkit.session.client.ConformanceSessionValidationStatus;
-import gov.nist.toolkit.session.client.TestOverviewDTO;
-import gov.nist.toolkit.session.client.TestPartFileDTO;
+import gov.nist.toolkit.session.client.logtypes.TestOverviewDTO;
+import gov.nist.toolkit.session.client.logtypes.TestPartFileDTO;
 import gov.nist.toolkit.session.server.CodesConfigurationBuilder;
 import gov.nist.toolkit.session.server.Session;
-import gov.nist.toolkit.session.server.TestOverviewBuilder;
+import gov.nist.toolkit.session.server.testlog.TestOverviewBuilder;
 import gov.nist.toolkit.session.server.services.TestLogCache;
 import gov.nist.toolkit.sitemanagement.client.Site;
 import gov.nist.toolkit.sitemanagement.client.SiteSpec;
@@ -45,6 +45,7 @@ import gov.nist.toolkit.testenginelogging.logrepository.LogRepository;
 import gov.nist.toolkit.testkitutilities.TestDefinition;
 import gov.nist.toolkit.testkitutilities.TestKit;
 import gov.nist.toolkit.testkitutilities.TestKitSearchPath;
+import gov.nist.toolkit.testkitutilities.client.SectionDefinitionDAO;
 import gov.nist.toolkit.testkitutilities.client.TestCollectionDefinitionDAO;
 import gov.nist.toolkit.utilities.io.Io;
 import gov.nist.toolkit.utilities.xml.OMFormatter;
@@ -136,10 +137,10 @@ public class XdsTestServiceManager extends CommonService {
 	 * @param stopOnFirstFailure
 	 * @return
 	 */
-//	public Result runUtilityTest(Map<String, String> params, Map<String, Object> params2, List<String> sections,
+//	public Result runUtilityTest(Map<String, String> params, Map<String, Object> params2, List<String> SECTIONS,
 //								 String testId, String[] areas, boolean stopOnFirstFailure) {
 //
-//		return utilityRunner.run(session, params, params2, sections, testId, areas, stopOnFirstFailure);
+//		return utilityRunner.run(session, params, params2, SECTIONS, testId, areas, stopOnFirstFailure);
 //	}
 	public List<Result> runMesaTest(String environmentName,String mesaTestSessionName, SiteSpec siteSpec, TestInstance testInstance, List<String> sections,
 									Map<String, String> params, Map<String, Object> params2, boolean stopOnFirstFailure) throws Exception {
@@ -345,18 +346,44 @@ public class XdsTestServiceManager extends CommonService {
 	}
 
 	/**
-	 * For test collections like collections and actorcollections, return the test ids.
+	 * For test collections like collections and actorcollections, return the TestInstances.
+	 * TestInstances will be loaded with sutInitiates to indicate whether any sections
+	 * are to be initiated by the SUT
 	 * @param collectionSetName - collections or actorcollections
 	 * @param collectionName - name of specific collection
 	 * @return
 	 * @throws Exception
 	 */
-	public List<String> getCollectionMembers(String collectionSetName, String collectionName) throws Exception {
+	public List<TestInstance> getCollectionMembers(String collectionSetName, String collectionName) throws Exception {
 		if (session != null)
 			logger.debug(session.id() + ": " + "getCollectionMembers " + collectionSetName + ":" + collectionName);
 		TestKitSearchPath searchPath = session.getTestkitSearchPath();
 		Collection<String> collec =  searchPath.getCollectionMembers(collectionSetName, collectionName);
-		return new ArrayList<String>(collec);
+		if (session != null)
+			logger.debug("Return " + collec.size() + " tests");
+
+		List<TestInstance> tis = new ArrayList<>();
+		for (String testId : collec) {
+			TestInstance ti = new TestInstance(testId);
+			tis.add(ti);
+		}
+
+		for (TestInstance ti : tis) {
+			TestDefinition def = session.getTestkitSearchPath().getTestDefinition(ti.getId());
+			List<SectionDefinitionDAO> sectionDAOs = def.getSections();
+			boolean sutInitiated = false;
+			for (SectionDefinitionDAO dao : sectionDAOs) {
+				if (dao.isSutInitiated()) sutInitiated = true;
+			}
+			ti.setSutInitiated(sutInitiated);
+		}
+
+		return tis;
+	}
+
+	public List<SectionDefinitionDAO> getTestSectionsDAOs(TestInstance testInstance) throws Exception {
+		TestDefinition def = session.getTestkitSearchPath().getTestDefinition(testInstance.getId());
+		return def.getSections();
 	}
 
 	public String getTestReadme(String test) throws Exception {
@@ -559,7 +586,7 @@ public class XdsTestServiceManager extends CommonService {
 
 	/**
 	 * Return the contents of all the log.xml files found under external_cache/TestLogCache/&lt;sessionName&gt;.  If there
-	 * are multiple sections to the test then load them all. Each element of the
+	 * are multiple SECTIONS to the test then load them all. Each element of the
 	 * returned list (Result model) represents the output of all steps in a single section of the test.
 	 * @param sessionName - not the servlet session but instead the dir name
 	 * under external_cache/TestLogCache identifying the user of the service
@@ -1153,7 +1180,7 @@ public class XdsTestServiceManager extends CommonService {
 //				res = entry.getValue();
 //				sectionList = res.getStepResults();
 //
-//				// Check whether the test has sections
+//				// Check whether the test has SECTIONS
 //				if (sectionList == null || (sectionList.size() == 0)) { hasSections = true; }
 //
 //				// TODO not sure what the test status is
