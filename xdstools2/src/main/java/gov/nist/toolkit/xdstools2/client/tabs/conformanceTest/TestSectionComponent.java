@@ -213,7 +213,7 @@ public class TestSectionComponent implements IsWidget {
                         final HTML metadataCtl = new HTML(metadataCtlLabel);
                         metadataCtl.addStyleName("iconStyle");
                         metadataCtl.addStyleName("inlineLink");
-                        if (sectionTp.getStepTpfMap().get(stepName)!=null) {
+                        if (sectionTp.getStepTpfMap()!=null && sectionTp.getStepTpfMap().get(stepName)!=null) {
                             metadataCtl.addClickHandler(new ViewMetadataClickHandler(metadataViewerPanel,metadataCtl,sectionTp.getStepTpfMap().get(stepName)));
                         }
 
@@ -232,7 +232,7 @@ public class TestSectionComponent implements IsWidget {
 
     protected String getMetadataCtlLabel(TestPartFileDTO sectionTp, String stepName) {
         String metadataCtlLabel;
-        if (sectionTp.getStepTpfMap().get(stepName)!=null) {
+        if (sectionTp.getStepTpfMap()!=null && sectionTp.getStepTpfMap().get(stepName)!=null) {
             metadataCtlLabel = viewMetadataLabel;
         } else {
             metadataCtlLabel = "No Metadata.";

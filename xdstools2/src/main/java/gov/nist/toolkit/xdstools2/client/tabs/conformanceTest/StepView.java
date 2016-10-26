@@ -51,13 +51,18 @@ public class StepView implements IsWidget {
     }
 
     private void build() {
-        MetadataDisplay metadataViewerPanel = new MetadataDisplay(sectionTp.getStepTpfMap().get(stepName), testSession, testInstance, section);
-        stepBody.add(metadataViewerPanel.getLabel());
-        stepBody.add(metadataViewerPanel);
+        if (sectionTp.getStepTpfMap()!=null && sectionTp.getStepTpfMap().get(stepName)!=null) {
+            MetadataDisplay metadataViewerPanel = new MetadataDisplay(sectionTp.getStepTpfMap().get(stepName), testSession, testInstance, section);
+            stepBody.add(metadataViewerPanel.getLabel());
+            stepBody.add(metadataViewerPanel);
+        } else {
+            final HTML noMetadataLabel = new HTML("No Metadata.");
+            stepBody.add(noMetadataLabel);
+        }
 
         StringBuilder buf = new StringBuilder();
         buf.append("Goals:<br />");
-        List<String> goals = sectionOverview.getStep(step.getId()).getGoals();
+        List<String> goals = sectionOverview.getStep(stepName).getGoals();
         for (String goal : goals)  buf.append("&nbsp;&nbsp;&nbsp;&nbsp;").append(goal).append("<br />");
 
 
