@@ -16,9 +16,9 @@ public class CxFormat extends FormatValidator {
 
 	public void validate(String input) {
 
-		String error = ValidatorCommon.validate_CX_datatype(input);
+		String output = ValidatorCommon.validate_CX_datatype(input);
 		String assertionID = "TA001";
-		if (error != null) {
+		if (output != null) {
 			// TODO remove comments after upgrade to Assertions model
 			// Original call
 			//er.err(XdsErrorCode.Code.XDSRegistryMetadataError, context + ": " + input + " : " + error, this, getResource(null));
@@ -26,7 +26,7 @@ public class CxFormat extends FormatValidator {
 			// New call
 			Assertion assertion = ASSERTIONLIBRARY.getAssertion(assertionID);
 			String location = context + ": " + input;
-			String detail = error; //TODO rename the variable once changes are stable
+			String detail = output;
 			er.err(XdsErrorCode.Code.XDSRegistryMetadataError, assertion, this, location, detail);
 		}
 	}
