@@ -99,11 +99,16 @@ class TestSectionDisplay implements IsWidget {
                         DisclosurePanel stepPanel = new DisclosurePanel(stepHeader);
                         stepPanel.setOpen(singleStep);
 
-                        MetadataDisplay metadataViewerPanel = new MetadataDisplay(sectionTp, sessionName, testInstance, section);
-
                         final FlowPanel stepResults = new FlowPanel();
-                        stepResults.add(metadataViewerPanel.getLabel());
-                        stepResults.add(metadataViewerPanel);
+                        if (sectionTp.getStepTpfMap()!=null && sectionTp.getStepTpfMap().get(stepName)!=null) {
+                            MetadataDisplay metadataViewerPanel = new MetadataDisplay(sectionTp.getStepTpfMap().get(stepName), sessionName, testInstance, section);
+                            stepResults.add(metadataViewerPanel.getLabel());
+                            stepResults.add(metadataViewerPanel);
+                        } else {
+                            final HTML noMetadataLabel = new HTML("No Metadata.");
+                            stepResults.add(noMetadataLabel);
+                        }
+
 
                         stepPanel.add(stepResults);
                         view.addStepPanel(stepPanel);
