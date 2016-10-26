@@ -330,6 +330,8 @@ public class Xdstest2 {
 					continue;
 				}
 				for (TestStepLogContentDTO stepLog : testLog.getStepLogs()) {
+					res.add("Status: " + ((stepLog.isSuccess()) ? "Pass" : "Fail"), stepLog.isSuccess());
+
 					res.add("Section: " + testLog.getTestAttribute() + " Step: " + stepLog.getId());
 					res.add("Endpoint: " + stepLog.getEndpoint());
 
@@ -354,8 +356,7 @@ public class Xdstest2 {
 						res.add(error, stepLog.isSuccess());
 					}
 
-					res.add("Status: " + ((stepLog.isSuccess()) ? "Pass" : "Fail"), stepLog.isSuccess());
-					
+
 //                    for (String report : stepLog.getUseReports()) {
 //                        res.add("UseReport: " + report);
 //                    }

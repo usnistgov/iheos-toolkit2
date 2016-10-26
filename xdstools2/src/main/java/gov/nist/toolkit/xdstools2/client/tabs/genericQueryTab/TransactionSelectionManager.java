@@ -114,6 +114,10 @@ public class TransactionSelectionManager {
 	
 	public SiteSpec generateSiteSpec() {
 		SiteSpec ss = new SiteSpec();
+
+		if (genericQueryTab.samlEnabled)
+			ss.setStsAssertion(genericQueryTab.samlAssertion);
+
 		List<RbSite> selections = selections2();
 		
 		if (selections.size() == 1) {

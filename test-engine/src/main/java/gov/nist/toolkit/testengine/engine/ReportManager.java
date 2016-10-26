@@ -135,7 +135,7 @@ public class ReportManager {
 	}
 
 	public static String getDecodedStr(String sectionStr) {
-		sectionStr = sectionStr.replace("&lt;","<").replace("&gt;",">");
+		sectionStr = sectionStr.replace("&lt;","<").replace("&gt;",">").replaceAll(">\\s*<", "><");
 		return sectionStr;
 	}
 

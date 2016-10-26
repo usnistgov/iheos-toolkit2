@@ -21,7 +21,6 @@ import org.apache.commons.io.FileUtils;
 import org.apache.log4j.Logger;
 
 import javax.xml.namespace.QName;
-import javax.xml.stream.XMLStreamException;
 
 import java.io.File;
 import java.util.HashMap;

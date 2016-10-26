@@ -29,6 +29,7 @@ import gov.nist.toolkit.validatorsSoapMessage.message.HttpMessageValidator;
 import gov.nist.toolkit.validatorsSoapMessage.message.MtomMessageValidator;
 import gov.nist.toolkit.validatorsSoapMessage.message.SimpleSoapHttpHeaderValidator;
 import gov.nist.toolkit.validatorsSoapMessage.message.SoapMessageValidator;
+import gov.nist.toolkit.validatorsSoapMessage.message.StsSamlValidator;
 import gov.nist.toolkit.valregmsg.message.StoredDocumentInt;
 import gov.nist.toolkit.valregmsg.service.SoapActionFactory;
 import gov.nist.toolkit.valsupport.client.ValidationContext;
@@ -702,6 +703,9 @@ public class DsSimCommon {
         sf = getFaultFromMessageValidator(MtomMessageValidator.class);
         if (sf != null) return sf;
 
+        sf = getFaultFromMessageValidator(StsSamlValidator.class);
+        if (sf != null) return sf;
+
         return null;
 
     }
@@ -736,10 +740,17 @@ public class DsSimCommon {
                 String resource = vei.resource;
                 if (!vei.isErrorOrContext())
                     continue;
+                String reportable = vei.getReportable();
+                if (mv instanceof StsSamlValidator) {
+                   // Extract the fault code
+                   if (reportable.contains(": Receiver: ")) {
+                    fault.setFaultCode(SoapFault.FaultCodes.Receiver);
+                   }
+                }
                 if (resource == null || "".equals(resource))
-                    fault.addDetail(vei.getReportable());
+                    fault.addDetail(reportable);
                 else
-                    fault.addDetail(vei.getReportable() + "(" + resource + ")");
+                    fault.addDetail(reportable + "(" + resource + ")");
             }
             return fault;
         }

@@ -52,6 +52,8 @@ public class TestConfig {
 	 public boolean secure = false;
 	 
 	 public boolean saml = false;
+
+	 public String gazelleXuaUsername;
 	
 	 public String version = "0.0";
 	

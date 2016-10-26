@@ -4,6 +4,7 @@ import com.google.gwt.dom.client.Style;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
+import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.*;
@@ -13,6 +14,7 @@ import gov.nist.toolkit.http.client.HtmlMarkup;
 import gov.nist.toolkit.registrymetadata.client.*;
 import gov.nist.toolkit.results.client.AssertionResult;
 import gov.nist.toolkit.results.client.Result;
+import gov.nist.toolkit.results.client.TestInstance;
 import gov.nist.toolkit.sitemanagement.client.Site;
 import gov.nist.toolkit.sitemanagement.client.SiteSpec;
 import gov.nist.toolkit.sitemanagement.client.TransactionOfferings;
@@ -27,8 +29,10 @@ import gov.nist.toolkit.xdstools2.client.widgets.PidWidget;
 import gov.nist.toolkit.xdstools2.client.widgets.PopupMessage;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 /**
@@ -50,7 +54,8 @@ public abstract class GenericQueryTab  extends ToolWindow {
 	public boolean tlsEnabled = true;
     public boolean tlsOptionEnabled = true;
 	public ActorType selectByActor = null;
-	public boolean samlEnabled = false;
+	public boolean samlEnabled = true;
+    public String samlAssertion;
 	List<TransactionType> transactionTypes;
 	public TransactionSelectionManager transactionSelectionManager = null;
 	public boolean enableInspectResults = true;
@@ -228,8 +233,8 @@ public abstract class GenericQueryTab  extends ToolWindow {
         mainConfigPanel.clear();
 
         // two columns - title and contents
-        final int titleColumn = 0;
-        final int contentsColumn = 1;
+        int titleColumn = 0;
+        int contentsColumn = 1;
         int commonGridRow = 0;
 
         if (genericQueryTitle != null) {
@@ -240,7 +245,7 @@ public abstract class GenericQueryTab  extends ToolWindow {
             mainConfigPanel.add(genericQueryInstructions);
         }
 
-        FlexTable commonParamGrid = new FlexTable();
+        final FlexTable commonParamGrid = new FlexTable();
         mainConfigPanel.add(commonParamGrid);
 
         if (hasPatientIdParam) {
@@ -259,18 +264,59 @@ public abstract class GenericQueryTab  extends ToolWindow {
 
         SiteSpec commonSiteSpec = null;
         commonSiteSpec = getCommonSiteSpec();
-        if (samlEnabled) {
-            commonParamGrid.setWidget(commonGridRow, titleColumn, new HTML("SAML"));
 
-            samlListBox = new ListBox();
-            samlListBox.addItem("SAML OFF", "0");
-            samlListBox.addItem("NHIN SAML", "1");
-            samlListBox.setVisibleItemCount(1);
-            samlListBox.addChangeHandler(new SamlSelector(this));
-            if (commonSiteSpec != null)
-                samlListBox.setSelectedIndex((commonSiteSpec.isSaml) ? 1 : 0);
-            commonParamGrid.setWidget(commonGridRow++, contentsColumn, samlListBox);
+        final FlowPanel fp = new FlowPanel();
+        final HTML samlLabel = new HTML("SAML");
+        commonParamGrid.setWidget(commonGridRow, titleColumn, samlLabel);
+
+        samlListBox = new ListBox();
+        samlListBox.addItem("SAML OFF", "NoSaml");
+        for (GazelleXuaUsername username : GazelleXuaUsername.values()) {
+            samlListBox.addItem("SAML - " + username.name(), username.name());
         }
+        samlListBox.setVisibleItemCount(1);
+        samlListBox.addChangeHandler(new SamlSelector(this));
+        if (commonSiteSpec != null)
+            samlListBox.setSelectedIndex((commonSiteSpec.isSaml) ? 1 : 0);
+
+        commonParamGrid.setWidget(commonGridRow++, contentsColumn, fp);
+
+        ClientUtils.INSTANCE.getToolkitServices().getToolkitProperties(new AsyncCallback<Map<String, String>>() {
+            @Override
+            public void onFailure(Throwable throwable) {
+                new PopupMessage("Error getting properties for SAML selector display: " + throwable.toString());
+                fp.setVisible(false);
+                samlLabel.setVisible(false);
+            }
+
+            @Override
+            public void onSuccess(final Map<String, String> tkPropMap) {
+                samlEnabled = Boolean.parseBoolean(tkPropMap.get("Enable_SAML"));
+
+                if (samlEnabled) {
+                    Anchor gazelleXuaTablePage = new Anchor("Assertions for Connectathon");
+                    gazelleXuaTablePage.addClickHandler(new ClickHandler() {
+                        @Override
+                        public void onClick(ClickEvent clickEvent) {
+                            // Check URL safety?
+                            Window.open(tkPropMap.get("Gazelle_Assertions_for_Connectathon_URL"), "_blank","");
+                        }
+                    });
+                    gazelleXuaTablePage.setTitle("Opens the Gazelle XUA Username table in a new browser tab.");
+                    gazelleXuaTablePage.getElement().getStyle().setMarginLeft(7, Style.Unit.PX);
+
+                    samlListBox.setSelectedIndex(0);
+                    fp.add(samlListBox);
+                    fp.add(gazelleXuaTablePage);
+                    fp.setVisible(true);
+                    samlLabel.setVisible(true);
+                } else {
+                    fp.setVisible(false);
+                    samlLabel.setVisible(false);
+                }
+            }
+        });
+
 
 
         if (tlsEnabled) {
@@ -499,8 +545,45 @@ public abstract class GenericQueryTab  extends ToolWindow {
 
 
         try {
-            if (!hasRunButton)
-                getGoButton().addClickHandler(runner);
+            if (!hasRunButton) {
+                getGoButton().addClickHandler(new ClickHandler() {
+                    @Override
+                    public void onClick(final ClickEvent clickEvent) {
+
+                        String selectedValue = samlListBox.getSelectedValue();
+                        if (samlEnabled && !"NoSaml".equals(selectedValue)) {
+                            TestInstance testInstance = new TestInstance("GazelleSts");
+                            testInstance.setSection("samlassertion-issue");
+                            SiteSpec stsSpec =  new SiteSpec("GazelleSts");
+                            Map<String, String> params = new HashMap<>();
+                            params.put("$saml-username$",selectedValue);
+                            try {
+                                ClientUtils.INSTANCE.getToolkitServices().getStsSamlAssertion(selectedValue, testInstance, stsSpec, params, new AsyncCallback<String>() {
+                                    @Override
+                                    public void onFailure(Throwable throwable) {
+                                        SafeHtmlBuilder shb = new SafeHtmlBuilder();
+                                        shb.appendHtmlConstant("Error");
+                                        new PopupMessage(shb.toSafeHtml(),new HTML(throwable.toString()));
+                                    }
+
+                                    @Override
+                                    public void onSuccess(String s) {
+                                        samlAssertion = s;
+                                        runner.onClick(clickEvent);
+                                    }
+                                });
+                            } catch (Exception ex) {
+                                new PopupMessage("Client call failed: getStsSamlAssertion: " + ex.toString());
+                            }
+                        } else {
+                            runner.onClick(clickEvent);
+//                            getGoButton().addClickHandler(runner);
+                        }
+
+
+                    }
+                });
+            }
         } catch (Exception e) {}
 
         if (enableInspectResults) {
@@ -705,7 +788,7 @@ public abstract class GenericQueryTab  extends ToolWindow {
 
     public boolean isSaml() {
         int selection = samlListBox.getSelectedIndex();
-        if (selection == 1)
+        if (selection > 0)
             return true;  // first selection must be no saml
         return false;
     }
@@ -745,6 +828,7 @@ public abstract class GenericQueryTab  extends ToolWindow {
     class DetailsTree {
         TreeItem root;
         Tree tree;
+        boolean hasNodes;
 
         DetailsTree() {
             tree = new Tree();
@@ -752,7 +836,7 @@ public abstract class GenericQueryTab  extends ToolWindow {
             root.setText("Details...");
             tree.addItem(root);
         }
-        void add(String x) { root.addTextItem(x); }
+        void add(String x) { root.addTextItem(x); hasNodes=true;}
         Tree getWidget() { return tree; }
     }
 
@@ -791,11 +875,13 @@ public abstract class GenericQueryTab  extends ToolWindow {
                         partialSuccess = true;
                     }
                 }
+                detailsTree = new DetailsTree();
                 for (AssertionResult ar : result.assertions.assertions) {
-
                     if (ar.assertion.startsWith("ReportBuilder") && detailsTree != null) {
                         detailsTree.add(ar.assertion);
                     } else if (ar.assertion.startsWith("UseReport") && detailsTree != null) {
+                        detailsTree.add(ar.assertion);
+                    } else if (ar.assertion.startsWith("SOAPFault") && detailsTree != null) {
                         detailsTree.add(ar.assertion);
                     } else {
                         String assertion = ar.assertion.replaceAll("\n", "<br />");
@@ -810,10 +896,12 @@ public abstract class GenericQueryTab  extends ToolWindow {
                         }
                     }
                     if (ar.assertion.startsWith("Status")) {
-                        detailsTree = new DetailsTree();
+//                        detailsTree = new DetailsTree();
                         resultPanel.add(detailsTree.getWidget());
                     }
                 }
+//                if (detailsTree.hasNodes)
+//                    resultPanel.add(detailsTree.getWidget());
             }
             if (status) {
                 if (partialSuccess)

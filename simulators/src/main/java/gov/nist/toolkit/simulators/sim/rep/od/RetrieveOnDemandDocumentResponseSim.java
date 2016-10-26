@@ -82,9 +82,7 @@ public class RetrieveOnDemandDocumentResponseSim extends TransactionSimulator im
 			getSimulatorConfig().getId().setEnvironmentName(Installation.instance().defaultEnvironmentName());
 			mySession.setEnvironment(getSimulatorConfig().getId().getEnvironmentName());
 
-
 			OMElement root = response.getRoot();
-
 
 			for (StoredDocument document : documents) {
 				if (document.getEntryDetail()==null) {
@@ -94,9 +92,7 @@ public class RetrieveOnDemandDocumentResponseSim extends TransactionSimulator im
 
 				DocumentEntryDetail ded = document.getEntryDetail();
 
-
 //				TestInstance testId = ded.getTestInstance(); //getSimulatorConfig().get(SimulatorProperties.TESTPLAN_TO_REGISTER_AND_SUPPLY_CONTENT).asString();
-
 
 				SiteSpec reposSite = ded.getReposSiteSpec();
 				boolean persistenceOptn = reposSite!=null;
@@ -119,13 +115,11 @@ public class RetrieveOnDemandDocumentResponseSim extends TransactionSimulator im
 					}
 				}
 
-
 				Map<String,String> rsMap = TransactionUtil.getOdContentFile(persistenceOptn, mySession, sessionName
 						, reposSite
 						, ded, getSimulatorConfig().getId(), params);
 				document.setPathToDocument(rsMap.get("file"));
 				document.setMimetype(rsMap.get("mimeType"));
-
 
 				OMElement docResponse = MetadataSupport.om_factory.createOMElement(MetadataSupport.document_response_qnamens);
 

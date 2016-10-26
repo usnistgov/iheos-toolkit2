@@ -452,7 +452,8 @@
 		<dependency>
 			<groupId>org.apache.httpcomponents</groupId>
 			<artifactId>httpclient</artifactId>
-			<version>4.0-alpha4</version>
+			<!-- Use the standard version from tk-deps -->
+			<!-- httpclient runtime bug fix. Was 4.0-alpha4. -->
 		</dependency>
 		<dependency>
 			<groupId>gov.nist.toolkit</groupId>
@@ -637,12 +638,24 @@
 		<!-- Begin profile part 2/2 -->
 		<resources>
 			<resource>
+				<directory>src/test/resources</directory>
+				<filtering>true</filtering>
+				<includes>
+					<include>toolkit.properties</include>
+				</includes>
+			</resource>
+			<resource>
 				<directory>src/main/resources</directory>
 				<filtering>true</filtering>
+				<includes>
+					<include>toolkit.properties</include>
+				</includes>
 			</resource>
 			<resource>
 				<directory>src/test/resources</directory>
-				<filtering>true</filtering>
+			</resource>
+			<resource>
+				<directory>src/main/resources</directory>
 			</resource>
 		</resources>
 		<!-- End profile part 2/2 -->

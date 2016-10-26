@@ -68,8 +68,6 @@
         <connection>scm:hg:https://bitbucket.org/iheos/toolkit</connection>
     </scm>
 
-
-
     <dependencyManagement>
         <dependencies>
             <dependency>

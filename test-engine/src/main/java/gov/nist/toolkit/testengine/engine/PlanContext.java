@@ -2,11 +2,10 @@ package gov.nist.toolkit.testengine.engine;
 
 import gov.nist.toolkit.common.datatypes.Hl7Date;
 import gov.nist.toolkit.commondatatypes.MetadataSupport;
-import gov.nist.toolkit.testengine.transactions.BasicTransaction;
 import gov.nist.toolkit.testenginelogging.LogFileContentBuilder;
 import gov.nist.toolkit.testenginelogging.NotALogFileException;
-import gov.nist.toolkit.testenginelogging.client.SectionLogMapDTO;
 import gov.nist.toolkit.testenginelogging.client.LogFileContentDTO;
+import gov.nist.toolkit.testenginelogging.client.SectionLogMapDTO;
 import gov.nist.toolkit.utilities.xml.OMFormatter;
 import gov.nist.toolkit.utilities.xml.Util;
 import gov.nist.toolkit.xdsexception.ExceptionUtil;
@@ -110,7 +109,6 @@ public class PlanContext extends BasicContext {
 	String alt_patient_id = null;
 	boolean status = true;
 	String test_num = "0";
-	short xds_version = BasicTransaction.xds_none;
 	ArrayList<OMElement> phone_home_log_files = null;
 	private final static Logger logger = Logger.getLogger(PlanContext.class);
 	boolean writeLogFiles = true;

@@ -300,4 +300,10 @@ public class SimulatorProperties {
      public static final String      idsrIigTlsEndpoint = "IDSR to IIG TLS endpoint";
 
     public static final String                        environment = "Environment";
+
+    /**
+     * Requires STS SAML.
+     * SoapFault is thrown if SAML is required but missing in the request's soap header.
+     */
+    public static final String      requiresStsSaml = "Require SAML?";
 }

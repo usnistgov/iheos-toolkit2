@@ -3,6 +3,7 @@ package gov.nist.toolkit.testengine.transactions;
 import gov.nist.toolkit.common.datatypes.Hl7Date;
 import gov.nist.toolkit.commondatatypes.MetadataSupport;
 import gov.nist.toolkit.configDatatypes.client.TransactionType;
+import gov.nist.toolkit.installation.Installation;
 import gov.nist.toolkit.registrymetadata.IdParser;
 import gov.nist.toolkit.registrymetadata.Metadata;
 import gov.nist.toolkit.registrymetadata.MetadataParser;
@@ -79,7 +80,7 @@ public abstract class BasicTransaction  {
 	protected ArrayList<OMElement> assertionEleList;
 
 	static public final short xds_none = 0;
-	static public final short xds_a = 1;
+	static public final short xds_a = 1 ;
 	static public final short xds_b = 2;
 	short xds_version = BasicTransaction.xds_none;
 	protected String endpoint = null;
@@ -1279,21 +1280,42 @@ public abstract class BasicTransaction  {
 		return SoapActionFactory.getResponseAction(getRequestAction());
 	}
 
-	protected void soapCall(OMElement requestBody) throws Exception {
+	OMElement getSecurityEl() throws XdsInternalException  {
+		String wsse = "<wsse:Security soapenv:mustUnderstand=\"true\" xmlns:soapenv=\"http://www.w3.org/2003/05/soap-envelope\" xmlns:wsse=\"http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-secext-1.0.xsd\">"
+		+ transactionSettings.siteSpec.getStsAssertion()
+		+ "</wsse:Security>";
 
+		return Util.parse_xml(wsse);
+	}
+
+	protected void soapCall(OMElement requestBody) throws Exception {
 		soap = new Soap();
 		testConfig.soap = soap;
-		if(transactionSettings.siteSpec != null && transactionSettings.siteSpec.isSaml){
+
+		boolean samlEnabled = Installation.instance().propertyServiceManager().getPropertyManager().isEnableSaml();
+		if(samlEnabled && transactionSettings.siteSpec != null && transactionSettings.siteSpec.isSaml){
+			logger.info("SAML is ON. Preparing SAML header...");
 			testConfig.saml = transactionSettings.siteSpec.isSaml;
+			testConfig.gazelleXuaUsername = transactionSettings.siteSpec.getGazelleXuaUsername();
+			soap.setGazelleXuaUsername(testConfig.gazelleXuaUsername);
+
+			if (transactionSettings.siteSpec.getStsAssertion()!=null) {
+				if (additionalHeaders==null)
+					additionalHeaders = new ArrayList<OMElement>();
+				additionalHeaders.add(getSecurityEl());
+			}
 		}
 //		soap = testConfig.soap;
 		soap.setAsync(async);
 		soap.setUseSaml(testConfig.saml);
+
+		/*
 		if (testConfig.saml) {
 			System.out.println("\tAxis2 client Repository: " + testConfig.testmgmt_dir + File.separator + "rampart" + File.separator + "client_repositories");
 			System.out.println("\tEnabling WSSEC ...");
 			soap.setRepositoryLocation(testConfig.testmgmt_dir + File.separator + "rampart" + File.separator + "client_repositories" );
 		}
+		*/
 
 		if (additionalHeaders != null) {
 			for (OMElement hdr : additionalHeaders)
@@ -1318,6 +1340,8 @@ public abstract class BasicTransaction  {
 				}
 		}
 		*/
+
+
 
 		try {
 			testLog.add_name_value(instruction_output, "InputMetadata", requestBody);

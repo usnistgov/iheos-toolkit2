@@ -13,12 +13,10 @@ import gov.nist.toolkit.simcommon.client.config.SimulatorConfigElement;
 import gov.nist.toolkit.simulators.sim.rep.RepIndex;
 import gov.nist.toolkit.simulators.support.StoredDocument;
 import gov.nist.toolkit.sitemanagement.client.SiteSpec;
-import gov.nist.toolkit.testengine.engine.ResultPersistence;
 import gov.nist.toolkit.testkitutilities.TestDefinition;
 import gov.nist.toolkit.testkitutilities.TestKitSearchPath;
 import gov.nist.toolkit.utilities.xml.Util;
 import gov.nist.toolkit.utilities.xml.XmlUtil;
-import gov.nist.toolkit.xdsexception.ExceptionUtil;
 import org.apache.axiom.om.OMElement;
 import org.apache.log4j.Logger;
 
@@ -34,43 +32,6 @@ import java.util.Map;
 public class TransactionUtil {
     public static final int ALL_OD_DOCS_SUPPLIED = -1;
     static Logger logger = Logger.getLogger(TransactionUtil.class);
-
-    static public List<Result> Transaction(SiteSpec siteSpec, String environment, String sessionName, TestInstance testId, Map<String, String> params, boolean stopOnFirstError, Session myTestSession, XdsTestServiceManager xdsTestServiceManager, List<String> sections) {
-
-//        UtilityRunner utilityRunner = new UtilityRunner(xdsTestServiceManager, TestRunType.TEST);
-
-
-//        logger.info("Transaction index 0 has:" + siteName); // This should always be the selected value
-//        myTestSession.transactionSettings.patientId
-
-        List<Result> results; // This wrapper does two important things of interest: 1) set patient id 2) eventually calls the UtilityRunner
-        try {
-            results = xdsTestServiceManager.runMesaTest(environment, sessionName, siteSpec, testId, sections, params, null, stopOnFirstError);
-        } catch (Exception e) {
-            results = new ArrayList<>();
-            Result result = new Result();
-            result.assertions.add(ExceptionUtil.exception_details(e), false);
-            results.add(result);
-            return results;
-        }
-
-
-//        Result result = utilityRunner.run(myTestSession, params, null, SECTIONS, testId, null, stopOnFirstError);
-
-        // Save results to external_cache.
-        // Supports getTestResults tookit api call
-        ResultPersistence rPer = new ResultPersistence();
-
-            for (Result result : results) {
-                try {
-                    rPer.write(result, sessionName);
-                } catch (Exception e) {
-                    result.assertions.add(ExceptionUtil.exception_details(e), false);
-                }
-            }
-
-        return results;
-    }
 
     /**
      * Must have a default Register section in this test.
@@ -95,7 +56,7 @@ public class TransactionUtil {
             if (session.getMesaSessionName() == null) session.setMesaSessionName(username);
             session.setSiteSpec(registry);
 
-            results = Transaction(registry, session.getCurrentEnvironment(), username, testInstance, params, stopOnFirstError, session, xdsTestServiceManager, sections);
+            results = XdsTestServiceManager.runTestplan(session.getCurrentEnvironment(), username, registry, testInstance, sections, params, stopOnFirstError, session, xdsTestServiceManager, true);
 
             printResult(results);
             return results.get(0);
@@ -355,7 +316,7 @@ public class TransactionUtil {
                 // Ret 2: ODD has 1, Snapshot has -1
                 // Ret 3: ODD has 1, Snapshot has -1 to indicate end of documents
                 if (ded.getSnapshot() == null /* first retrieve attempt */ || ALL_OD_DOCS_SUPPLIED != ded.getSnapshot().getSupplyStateIndex() /* subsequent attempt until the last */ ) {
-                    results = Transaction(repository, session.getCurrentEnvName(), username, testInstance, params, stopOnFirstError, session, xdsTestServiceManager, sections);
+                    results = XdsTestServiceManager.runTestplan(session.getCurrentEnvName(), username, repository, testInstance, sections, params, stopOnFirstError, session, xdsTestServiceManager, true);
 
                     printResult(results);
 

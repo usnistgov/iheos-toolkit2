@@ -29,8 +29,10 @@ public class LaunchInspectorClickHandler implements ClickHandler {
 
     @Override
     public void onClick(ClickEvent clickEvent) {
-        clickEvent.preventDefault();
-        clickEvent.stopPropagation();
+        if (clickEvent!=null) {
+            clickEvent.preventDefault();
+            clickEvent.stopPropagation();
+        }
 
         launchInspectorTab(testInstance, testSession);
     }

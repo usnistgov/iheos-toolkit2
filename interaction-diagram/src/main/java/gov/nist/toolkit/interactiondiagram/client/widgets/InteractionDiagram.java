@@ -45,6 +45,8 @@ import java.util.List;
 public class InteractionDiagram extends Composite {
 
     public static final int NUM_LINES = 3;
+    public static final String RGB_255_0_0 = "rgb(255,0,0)";
+    public static final String RGB_0_0_255 = "rgb(0,0,255)";
     int g_depth = 0;
     int g_x = 0;
     int g_y = 0;
@@ -53,14 +55,14 @@ public class InteractionDiagram extends Composite {
     static final int line_height = 13;
     static final int ll_boxWidth = 70;
     static final int ll_boxHeight = 25;
-    static final int LL_FEET = 10; // life line feet (extra) lines after the last transaction
 
-    int ll_margin = 108; // The with of transaction connector
-    int maxLabelLen = 0;
     int MAX_LABEL_DISPLAY_LEN = 27;
+    int LL_FEET = 10; // life line feet (extra) lines after the last transaction
+    int ll_margin = 108; // The width of a transaction connector
+    int maxLabelLen = 0;
+
     int connection_topmargin = (NUM_LINES * line_height) + (half_cross_height*2) + 2; // top margin of a transaction
     int error_box_offset = 30;
-
 
     int diagramHeight = 0;
     int diagramWidth = 0;
@@ -74,8 +76,9 @@ public class InteractionDiagram extends Composite {
     static final int max_tooltips = 5;
     static final int hide_tooltip_on_mouseout = -1;
     Tooltip tooltip = new Tooltip();
+    List<InteractingEntity.INTERACTIONSTATUS> legends = new ArrayList<InteractingEntity.INTERACTIONSTATUS>();
 
-    public static enum DiagramPart {
+    public enum DiagramPart {
        RequestConnector,
        ResponseConnector
     }
@@ -366,9 +369,11 @@ public class InteractionDiagram extends Composite {
                            destination.setErrors(new ArrayList<String>());
                         }
                         destination.getErrors().add(0,""+ section + "/"+  stepName +":<br/> Response message contains errors as expected.");
+                        addLegend(InteractingEntity.INTERACTIONSTATUS.ERROR_EXPECTED);
                     }
                 } else {
                     destination.setStatus(InteractingEntity.INTERACTIONSTATUS.ERROR);
+                    addLegend(InteractingEntity.INTERACTIONSTATUS.ERROR);
                 }
                 source.setInteractions(new ArrayList<InteractingEntity>());
                 source.getInteractions().add(destination);
@@ -379,7 +384,11 @@ public class InteractionDiagram extends Composite {
         return result;
     }
 
-
+    private void addLegend(InteractingEntity.INTERACTIONSTATUS legend) {
+        if (!legends.contains(legend)) {
+            legends.add(legend);
+        }
+    }
 
 
     private void setDiagramArea(int diagramHeight, int diagramWidth) {
@@ -407,8 +416,45 @@ public class InteractionDiagram extends Composite {
         }
         ll_stem();
         ll_activitybox();
+        legend();
 
         return svg.getElement();
+    }
+
+    void legend() {
+        if (legends.size()>0) {
+            int x = 0/* x of the diagram start area */ + half_cross_height * 2;
+            g_y+=line_height;
+            OMSVGGElement group = doc.createSVGGElement();
+            group.appendChild(getSimpleLabel(0,g_y,"Legend:"));
+            g_y+=line_height+half_cross_height*2;
+            for (InteractingEntity.INTERACTIONSTATUS legend : legends) {
+                if (InteractingEntity.INTERACTIONSTATUS.ERROR.equals(legend)) {
+                    group.appendChild(cross_mark(x, g_y, RGB_255_0_0));
+                    group.appendChild(getSimpleLabel(x+half_cross_height*2,g_y-half_cross_height,"Error"));
+                    g_y+=half_cross_height*2;
+                } else if (InteractingEntity.INTERACTIONSTATUS.ERROR_EXPECTED.equals(legend)) {
+                    svg.appendChild(cross_mark(x, g_y, RGB_0_0_255));
+                    group.appendChild(getSimpleLabel(x+half_cross_height*2,g_y-half_cross_height,"Anticipated error"));
+                    g_y+=half_cross_height*2;
+                }
+            }
+            svg.appendChild(group);
+
+        }
+    }
+
+    OMSVGTextElement getSimpleLabel(int x, int y, String caption) {
+        OMSVGTextElement text = doc.createSVGTextElement();
+        text.setAttribute("x",""+x);
+        text.setAttribute("y",""+y); // Shift text up the connecting line, 3 for top of the line
+        text.setAttribute("font-family","Verdana");
+        text.setAttribute("font-size","10");
+
+        OMSVGTSpanElement line1 = getOmsvgtSpanElement(x, "" + caption);
+        text.appendChild(line1);
+
+        return text;
     }
 
     void ll_activitybox() {
@@ -417,17 +463,24 @@ public class InteractionDiagram extends Composite {
                     int lastFrameIdx = ll.getActivityFrames().size()-1;
                     TouchPoint tpLast = ll.getActivityFrames().get(lastFrameIdx);
 //                    if (!ll.isRoot() && ll.getActivityRange().getY_max()>=tpLast.getY_max())
-//                        svg.appendChild(getAcitivyBoxEl(ll.getActivityRange().getX_min(), ll.getActivityRange().getY_min(), ll.getActivityRange().getY_max()));
+//                        svg.appendChild(getActivityBoxEl(ll.getActivityRange().getX_min(), ll.getActivityRange().getY_min(), ll.getActivityRange().getY_max()));
 //                    else
                        for (TouchPoint activityFrame : ll.getActivityFrames()) {
-                         svg.appendChild(getAcitivyBoxEl(activityFrame.getX_min(), activityFrame.getY_min(), activityFrame.getY_max()));
+                         svg.appendChild(getActivityBoxEl(activityFrame.getX_min(), activityFrame.getY_min(), activityFrame.getY_max()));
                        }
                 }
 
             }
     }
 
-    OMSVGElement getAcitivyBoxEl(int x, int y1, int y2) {
+    /**
+     * The box the shows activity in a life line for the transaction in question
+     * @param x
+     * @param y1
+     * @param y2
+     * @return
+     */
+    OMSVGElement getActivityBoxEl(int x, int y1, int y2) {
         OMSVGRectElement box = doc.createSVGRectElement();
         box.setAttribute("width", "" + activity_box_width);
         box.setAttribute("height", "" + (y2 - y1));
@@ -447,11 +500,12 @@ public class InteractionDiagram extends Composite {
             int y = ll_boxHeight;
             line.setAttribute("y1",""+y);
             line.setAttribute("x2",""+ll.getLl_stem_center());
-            line.setAttribute("y2",""+(g_y+10)); // +10
+            line.setAttribute("y2",""+(g_y+LL_FEET));
             line.setAttribute("style","stroke:rgb(0,0,0);stroke-dasharray:2,2");
 
             svg.appendChild(line);
         }
+        g_y+=LL_FEET;
     }
 
     void sequence(InteractingEntity parent_entity, LL parent ) {
@@ -551,14 +605,14 @@ public class InteractionDiagram extends Composite {
             // -----
             String x_mark_Rgb = null;
             if (InteractingEntity.INTERACTIONSTATUS.ERROR.equals(status)) {
-               x_mark_Rgb = "rgb(255,0,0)";
+               x_mark_Rgb = RGB_255_0_0;
             } else if (InteractingEntity.INTERACTIONSTATUS.ERROR_EXPECTED.equals(status)) {
-                x_mark_Rgb = "rgb(0,0,255)";
+                x_mark_Rgb = RGB_0_0_255;
             }
 
             if (x_mark_Rgb!=null) {
                 final List<String> errors = entity.getErrors();
-                group.appendChild(centered_cross_mark(centerTextX,y,x_mark_Rgb));
+                group.appendChild(cross_mark(centerTextX,y,x_mark_Rgb));
 //                textY -= (half_cross_height); // two lines of text
 
                 if (errors!=null) {
@@ -687,12 +741,12 @@ public class InteractionDiagram extends Composite {
     }
 
     /**
-     * x,y is the center the cross mark
+     * x,y is the center of the cross mark
      * @param x
      * @param y
      * @return
      */
-    OMSVGGElement centered_cross_mark(int x, int y, String strokeRgb) {
+    OMSVGGElement cross_mark(int x, int y, String strokeRgb) {
         OMSVGGElement x_group = doc.createSVGGElement();
         OMSVGPathElement l_part = doc.createSVGPathElement();
        l_part.setAttribute("d","M " + (x-half_cross_height) + " " + (y-half_cross_height) // constant is the half-height of the cross

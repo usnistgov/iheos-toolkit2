@@ -4,6 +4,7 @@ import gov.nist.toolkit.commondatatypes.MetadataSupport;
 import gov.nist.toolkit.errorrecording.ErrorRecorder;
 import gov.nist.toolkit.errorrecording.client.XdsErrorCode;
 import gov.nist.toolkit.errorrecording.factories.ErrorRecorderBuilder;
+import gov.nist.toolkit.installation.Installation;
 import gov.nist.toolkit.utilities.xml.XmlUtil;
 import gov.nist.toolkit.valregmsg.validation.factories.ValidationContextValidationFactory;
 import gov.nist.toolkit.valsupport.client.ValidationContext;
@@ -110,6 +111,8 @@ public class SoapMessageValidator extends AbstractMessageValidator {
             }
         }
 
+
+
         //ADD SAML VALIDATION IF NEEDED. -@Antoine
         // - check if this is the best place to do so.
 //        OMElement security = XmlUtil.firstChildWithLocalName(header, "Security");
@@ -124,6 +127,20 @@ public class SoapMessageValidator extends AbstractMessageValidator {
 //                er.err(XdsErrorCode.Code.NoCode, e);
 //            }
 //        }
+
+        /*
+            Gazelle STS SAML validation
+            - Sunil
+         */
+        if (header!=null && vc.requiresStsSaml && vc.isRequest) {
+            boolean samlEnabled = Installation.instance().propertyServiceManager().getPropertyManager().isEnableSaml();
+            if (samlEnabled) {
+                mvc.addMessageValidator("STS SAML Validator", new StsSamlValidator(vc, er, mvc, rvi, header), erBuilder.buildNewErrorRecorder());
+            } else {
+               er.detail("SAML bypassed.");
+            }
+        }
+
         er.unRegisterValidator(this);
     }
 
@@ -436,7 +453,12 @@ public class SoapMessageValidator extends AbstractMessageValidator {
             } else
                 er.error("", "metadata-level value", metadataLevelTxt, "minimal or XDS", "");
         }
+
+
     }
+
+
+
 
     OMElement body() {
         er.test(body != null, "", "Body must be present", ((body == null) ? "Missing" : "Found"), "Found", "ITI TF-2x: V.3.2 and SOAP Version 1.2 Section 4");

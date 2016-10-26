@@ -1,15 +1,14 @@
 package gov.nist.toolkit.valsupport.client;
 
 
-import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.List;
-
 import com.google.gwt.user.client.rpc.IsSerializable;
-
 import gov.nist.toolkit.commondatatypes.client.MetadataTypes;
 import gov.nist.toolkit.commondatatypes.client.SchematronMetadataTypes;
 import gov.nist.toolkit.errorrecording.client.XdsErrorCode;
+
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 
 
 
@@ -110,6 +109,7 @@ public class ValidationContext  implements Serializable, IsSerializable {
 	// in validation
 	public boolean hasSoap = false;
 	public boolean hasSaml = false ;
+	public boolean requiresStsSaml = false;
 	public boolean hasHttp = false;
 
 	// a bad place to keep this status
@@ -250,6 +250,7 @@ public class ValidationContext  implements Serializable, IsSerializable {
 	public void clone(ValidationContext v) {
 		hasSoap = v.hasSoap;
 		hasSaml = v.hasSaml;
+		requiresStsSaml = v.requiresStsSaml;
 		hasHttp = v.hasHttp;
 
 		xds_b = v.xds_b;
@@ -461,6 +462,7 @@ public class ValidationContext  implements Serializable, IsSerializable {
 		if (hasHttp) buf.append(";HTTP");
 		if (hasSoap) buf.append(";SOAP");
 		if (hasSaml) buf.append(";SAML");
+		if (requiresStsSaml) buf.append(";STSSAML");
 		if (xds_b) buf.append(";xds.b");
 		if (isDIRECT) buf.append(";DIRECT");
 		if (isCCDA) buf.append(";CCDA");
