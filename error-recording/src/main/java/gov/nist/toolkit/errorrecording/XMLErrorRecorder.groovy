@@ -1,6 +1,7 @@
 package gov.nist.toolkit.errorrecording
 
 import gov.nist.toolkit.errorrecording.client.XdsErrorCode.Code
+import gov.nist.toolkit.errorrecording.client.assertions.Assertion
 import gov.nist.toolkit.errorrecording.factories.ErrorRecorderBuilder
 import gov.nist.toolkit.xdsexception.ExceptionUtil
 import groovy.xml.MarkupBuilder
@@ -27,7 +28,6 @@ public class XMLErrorRecorder implements ErrorRecorder {
     }
 
 // Not used
-    @Override
     public void err(Code code, String msg, String location, String resource, Object log_message) {
         println("err")
         // Check if error message is not null
@@ -54,28 +54,31 @@ public class XMLErrorRecorder implements ErrorRecorder {
         */
     }
 
-    @Override
+    // Updated
     // TODO this is the only syntax that works. Propagate it to rest of document.
-    public void err(Code _code, String _msg, String _location, String _resource) {
+    public void err(Code _code, Assertion _assertion, String _validatorModule, String _location, String _detail) {
         println("err2")
-        if (_msg == null || _msg.trim().equals("")) { return; }
+        if (_location == null || _location.trim().equals("")) { return; }
 
         // Generate the new element
         def sw = new StringWriter()
         def builder = new MarkupBuilder(sw)
-        builder.Error(code:_code, location:_location, resource:_resource){
-            Message(_msg)
+        builder.Error(code:_code, validatorModule:_validatorModule){
+                    Assertion(text:_assertion.getErrorMessage(), resource:_assertion.getLocation(),
+                    gazelleScheme:_assertion.getGazelleScheme(), gazelleAssertionID:_assertion.getGazelleAssertionID()){
+                        Detail(_detail);
+                        Location(_location);
+                }
         }
-
         // Parse and add
         errXml = errXml.concat(sw.toString() + "\n")
     }
 
-    @Override
-    public void err(Code code, String msg, Object location, String resource) {
+    // Updated
+    public void err(Code _code, Assertion _assertion, Object _validatorModule, String _location, String _detail) {
         println("err3")
-        String loc = getSimpleName(location)
-        err(code, msg, loc, resource);
+        String valModuleName = getSimpleName(_validatorModule)
+        err(_code, _assertion, valModuleName, _location, _detail);
     }
 
     // Not used
@@ -115,7 +118,20 @@ public class XMLErrorRecorder implements ErrorRecorder {
         else {
             println("this should print an error")
             //err(_code, _msg, _location, _resource)
-        }    }
+        }
+    }
+
+    // Old prototype
+    @Override
+    void err(Code code, String msg, String location, String resource) {
+        println("err7 - old prototype, needs to be upgraded to use Assertions")
+    }
+
+    // Old prototype
+    @Override
+    void err(Code code, String msg, Object location, String resource) {
+        println("err8 - old prototype, needs to be upgraded to use Assertions")
+    }
 
     // Untested / not used
     @Override

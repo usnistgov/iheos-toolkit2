@@ -8,7 +8,7 @@ public class GwtErrorRecorderBuilder implements ErrorRecorderBuilder {
     @Override
 	public GwtErrorRecorder buildNewErrorRecorder() {
 		GwtErrorRecorder rec =  new GwtErrorRecorder();
-		rec.errorRecorderBuilder = this;
+		rec.ErrorRecorderBuilder = this;
 		return rec;
 	}
 

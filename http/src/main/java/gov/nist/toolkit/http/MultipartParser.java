@@ -2,11 +2,11 @@ package gov.nist.toolkit.http;
 
 import gov.nist.toolkit.errorrecording.ErrorRecorder;
 import gov.nist.toolkit.errorrecording.client.XdsErrorCode;
+import gov.nist.toolkit.errorrecording.client.assertions.Assertion;
 import gov.nist.toolkit.http.HttpHeader.HttpHeaderParseException;
+import org.apache.log4j.Logger;
 
 import java.util.List;
-
-import org.apache.log4j.Logger;
 
 public class MultipartParser {
 	HttpParser hp;
@@ -140,7 +140,7 @@ public class MultipartParser {
 			from = indexOf(body, pboundary, to);
 			if (from == -1) {
 				if (message.parts.size() == 0 && er != null)
-					er.err(XdsErrorCode.Code.NoCode, "Multipart boundary [" + pboundary + "] not found in message body", this, "http://www.w3.org/Protocols/rfc1341/7_2_Multipart.html");
+				er.err(XdsErrorCode.Code.NoCode, "Multipart boundary [" + pboundary + "] not found in message body", this, "http://www.w3.org/Protocols/rfc1341/7_2_Multipart.html");
 				break;
 			}
 			//System.out.println("***************\nfrom is:\n" + body.substring(from));

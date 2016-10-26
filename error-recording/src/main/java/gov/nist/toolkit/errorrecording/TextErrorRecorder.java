@@ -1,7 +1,9 @@
 package gov.nist.toolkit.errorrecording;
 
 import gov.nist.toolkit.errorrecording.client.GwtValidatorErrorItem;
+import gov.nist.toolkit.errorrecording.client.XdsErrorCode;
 import gov.nist.toolkit.errorrecording.client.XdsErrorCode.Code;
+import gov.nist.toolkit.errorrecording.client.assertions.Assertion;
 import gov.nist.toolkit.errorrecording.factories.ErrorRecorderBuilder;
 
 import java.io.ByteArrayOutputStream;
@@ -151,6 +153,16 @@ public class TextErrorRecorder implements ErrorRecorder {
 
 	public void err(Code code, Exception e) {
 		err(e);
+	}
+
+	@Override
+	public void err(Code code, Assertion assertion, String validatorModule, String location, String detail) {
+
+	}
+
+	@Override
+	public void err(Code code, Assertion assertion, Object validatorModule, String location, String detail) {
+
 	}
 
 	public void err(Code code, String msg, String location, String resource) {

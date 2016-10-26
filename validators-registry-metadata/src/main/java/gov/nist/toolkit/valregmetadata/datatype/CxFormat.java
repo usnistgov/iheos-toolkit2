@@ -23,14 +23,17 @@ public class CxFormat extends FormatValidator {
 			//er.err(XdsErrorCode.Code.XDSRegistryMetadataError, context + ": " + input + " : " + error, this, getResource(null));
 
 			// New call
-			Assertion a = ASSERTIONLIBRARY.getAssertion(assertionID);
-			er.err(XdsErrorCode.Code.XDSRegistryMetadataError, a.getErrorMessage() + ": " + error + " - " + context + ": " + input, this,
-					 a.getLocation());
+			Assertion assertion = ASSERTIONLIBRARY.getAssertion(assertionID);
 			/*er.err(XdsErrorCode.Code.XDSRegistryMetadataError, a.getErrorMessage() + ": " + error + " - " + context + ": " + input, this,
+					 a.getLocation());
+					 */
+			/*
+			er.err(XdsErrorCode.Code.XDSRegistryMetadataError, a.getErrorMessage() + ": " + error + " - " + context + ": " + input, this,
 					a.getLocation());
+					*/
 			String location = context + ": " + input;
 			String detail = error; //TODO rename the variable once changes are stable
-			er.err(XdsErrorCode.Code.XDSRegistryMetadataError, assertion, this, location, detail);*/
+			er.err(XdsErrorCode.Code.XDSRegistryMetadataError, assertion, this, location, detail);
 		}
 	}
 

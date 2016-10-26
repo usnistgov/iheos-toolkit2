@@ -3,7 +3,9 @@ package gov.nist.toolkit.errorrecording;
 import gov.nist.toolkit.errorrecording.client.GwtValidatorErrorItem;
 import gov.nist.toolkit.errorrecording.client.GwtValidatorErrorItem.ReportingCompletionType;
 import gov.nist.toolkit.errorrecording.client.GwtValidatorErrorItem.ReportingLevel;
+import gov.nist.toolkit.errorrecording.client.XdsErrorCode;
 import gov.nist.toolkit.errorrecording.client.XdsErrorCode.Code;
+import gov.nist.toolkit.errorrecording.client.assertions.Assertion;
 import gov.nist.toolkit.errorrecording.factories.ErrorRecorderBuilder;
 import gov.nist.toolkit.xdsexception.ExceptionUtil;
 import org.apache.log4j.Logger;
@@ -13,8 +15,8 @@ import java.util.List;
 
 
 public class GwtErrorRecorder implements ErrorRecorder  {
-	
-	ErrorRecorderBuilder errorRecorderBuilder;
+
+	GwtErrorRecorderBuilder ErrorRecorderBuilder;
 	List<ErrorRecorder> children = new ArrayList<>();
 	List<GwtValidatorErrorItem> summary = new ArrayList<>();
 	List<GwtValidatorErrorItem> errMsgs = new ArrayList<>();
@@ -25,7 +27,7 @@ public class GwtErrorRecorder implements ErrorRecorder  {
 	
 	public String toString() {
 		StringBuffer buf = new StringBuffer();
-		
+
 		for (GwtValidatorErrorItem info : errMsgs) {
 			buf.append(info).append("\n");
 		}
@@ -88,6 +90,16 @@ public class GwtErrorRecorder implements ErrorRecorder  {
 			if (vei.isErrorOrContext()) return true;
 		}
 		return false;
+	}
+
+	@Override
+	public void err(Code code, Assertion assertion, String validatorModule, String location, String detail) {
+
+	}
+
+	@Override
+	public void err(Code code, Assertion assertion, Object validatorModule, String location, String detail) {
+
 	}
 
 	public void err(Code code, String msg, String location, String resource) {
@@ -267,7 +279,7 @@ public class GwtErrorRecorder implements ErrorRecorder  {
 
 	@Override
 	public ErrorRecorder buildNewErrorRecorder() {
-		ErrorRecorder er =  errorRecorderBuilder.buildNewErrorRecorder();
+		ErrorRecorder er =  ErrorRecorderBuilder.buildNewErrorRecorder();
         children.add(er);
         return er;
 	}

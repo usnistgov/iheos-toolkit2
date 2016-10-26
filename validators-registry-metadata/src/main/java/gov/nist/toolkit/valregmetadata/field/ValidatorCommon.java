@@ -4,6 +4,7 @@ import gov.nist.toolkit.errorrecording.ErrorRecorder;
 import gov.nist.toolkit.errorrecording.client.GwtValidatorErrorItem;
 import gov.nist.toolkit.errorrecording.client.XdsErrorCode;
 import gov.nist.toolkit.errorrecording.client.XdsErrorCode.Code;
+import gov.nist.toolkit.errorrecording.client.assertions.Assertion;
 import gov.nist.toolkit.registrymetadata.Metadata;
 import gov.nist.toolkit.registrymsg.registry.RegistryErrorListGenerator;
 import gov.nist.toolkit.commondatatypes.MetadataSupport;
@@ -257,6 +258,16 @@ public class ValidatorCommon implements ErrorRecorder {
 	}
 
 	public void err(Code code, Exception e) {
+
+	}
+
+	@Override
+	public void err(Code code, Assertion assertion, String validatorModule, String location, String detail) {
+
+	}
+
+	@Override
+	public void err(Code code, Assertion assertion, Object validatorModule, String location, String detail) {
 
 	}
 

@@ -4,7 +4,9 @@ import gov.nist.toolkit.errorrecording.ErrorRecorder;
 import gov.nist.toolkit.errorrecording.GwtErrorRecorder;
 import gov.nist.toolkit.errorrecording.client.GwtValidatorErrorItem;
 import gov.nist.toolkit.errorrecording.client.GwtValidatorErrorItem.ReportingCompletionType;
+import gov.nist.toolkit.errorrecording.client.XdsErrorCode;
 import gov.nist.toolkit.errorrecording.client.XdsErrorCode.Code;
+import gov.nist.toolkit.errorrecording.client.assertions.Assertion;
 import gov.nist.toolkit.registrymetadata.Metadata;
 import gov.nist.toolkit.commondatatypes.MetadataSupport;
 import gov.nist.toolkit.registrysupport.logging.ErrorLogger;
@@ -437,6 +439,16 @@ public class RegistryErrorListGenerator implements ErrorLogger, ErrorRecorder{
 	public void err(Code code, Exception e) {
 		add_error(code, ExceptionUtil.exception_details(e), null, null, null);
 
+
+	}
+
+	@Override
+	public void err(Code code, Assertion assertion, String validatorModule, String location, String detail) {
+
+	}
+
+	@Override
+	public void err(Code code, Assertion assertion, Object validatorModule, String location, String detail) {
 
 	}
 
