@@ -31,6 +31,7 @@ public class StepView implements IsWidget {
     private String testSession;
     private TestInstance testInstance;
     private String section;
+    private String stepName;
 
     StepView(TestPartFileDTO sectionTp, SectionOverviewDTO sectionOverview, TestStepLogContentDTO step, boolean open, String testSession, TestInstance testInstance, String section) {
         this.sectionTp = sectionTp;
@@ -39,6 +40,7 @@ public class StepView implements IsWidget {
         this.testSession = testSession;
         this.testInstance = testInstance;
         this.section = section;
+        this.stepName = step.getId();
         HTML stepHeaderTitle = new HTML("Step: " + step.getId());
         if (step.isSuccess()) stepHeaderTitle.addStyleName("testOverviewHeaderSuccess");
         else stepHeaderTitle.addStyleName("testOverviewHeaderFail");
@@ -49,7 +51,7 @@ public class StepView implements IsWidget {
     }
 
     private void build() {
-        MetadataDisplay metadataViewerPanel = new MetadataDisplay(sectionTp, testSession, testInstance, section);
+        MetadataDisplay metadataViewerPanel = new MetadataDisplay(sectionTp.getStepTpfMap().get(stepName), testSession, testInstance, section);
         stepBody.add(metadataViewerPanel.getLabel());
         stepBody.add(metadataViewerPanel);
 
@@ -113,18 +115,20 @@ public class StepView implements IsWidget {
         useTable.setCellPadding(3);
         row = 0;
         useTable.setWidget(row, 0, new HTML("Name"));
-        useTable.setWidget(row, 1, new HTML("Value"));
-        useTable.setWidget(row, 2, new HTML("Test"));
-        useTable.setWidget(row, 3, new HTML("Section"));
-        useTable.setWidget(row, 4, new HTML("Step"));
+        useTable.setWidget(row, 1, new HTML("UseAs"));
+        useTable.setWidget(row, 2, new HTML("Value"));
+        useTable.setWidget(row, 3, new HTML("Test"));
+        useTable.setWidget(row, 4, new HTML("Section"));
+        useTable.setWidget(row, 5, new HTML("Step"));
         row++;
         List<UseReportDTO> useReports = step.getUseReports();
         for (UseReportDTO useReport : useReports) {
             useTable.setWidget(row, 0, new HTML(useReport.getName()));
-            useTable.setWidget(row, 1, new HTML(useReport.getValue()));
-            useTable.setWidget(row, 2, new HTML(useReport.getTest()));
-            useTable.setWidget(row, 3, new HTML(useReport.getSection()));
-            useTable.setWidget(row, 4, new HTML(useReport.getStep()));
+            useTable.setWidget(row, 1, new HTML(useReport.getUseAs()));
+            useTable.setWidget(row, 2, new HTML(useReport.getValue()));
+            useTable.setWidget(row, 3, new HTML(useReport.getTest()));
+            useTable.setWidget(row, 4, new HTML(useReport.getSection()));
+            useTable.setWidget(row, 5, new HTML(useReport.getStep()));
             row++;
         }
         stepBody.add(new HTML("Use Reports"));

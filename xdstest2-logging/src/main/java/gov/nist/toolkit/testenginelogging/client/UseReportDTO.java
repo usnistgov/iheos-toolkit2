@@ -13,6 +13,7 @@ public class UseReportDTO implements Serializable, IsSerializable {
     private String test;
     private String section;
     private String step;
+    private String useAs;
 
     public UseReportDTO() {}
 
@@ -54,5 +55,13 @@ public class UseReportDTO implements Serializable, IsSerializable {
 
     public void setStep(String step) {
         this.step = step;
+    }
+
+    public String getUseAs() {
+        return useAs;
+    }
+
+    public void setUseAs(String useAs) {
+        this.useAs = useAs;
     }
 }

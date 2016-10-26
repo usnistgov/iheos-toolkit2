@@ -1,33 +1,12 @@
-XCR Retrieve single document
+Retrieve single document
+
+Depends on test 12318 to initialize the test data.
 
 This test has two parts:
-
-==============================================
-correct - show correct operation
-
-Generate request for the retrieval of a single document based 
-on metadata returned in test 12311.
-
-Based on the XDSDocument.uniqueId, repositoryUniqueId, and homeCommunityId returned 
-in test 12311, issue a RetrieveDocumentSet transaction to retrieve a document.  
-
-When successful, perform the following validations:
-
-* Single document returned
-
-* RepositoryUniqueId matches request
-
-* DocumentUniqueId matches request
-
-* MimeType matches metadata from test 12311
-
-* Document hash, as calculated after the retrieve, matches value in metadata from test 12311
-
-* HomeCommunityId matches configuration
-
-
-==============================================
-missing_home - show proper error (XDSMissingHomeCommunityId) returned when 
+<ul>
+<li>correct - show correct operation
+<li>missing_home - show proper error (XDSMissingHomeCommunityId) returned when 
 homeCommunityId not in request
-
+</ul>
+ 
 

@@ -240,8 +240,12 @@ public class AssertionEngine {
             AXIOMXPath xpathExpression = new AXIOMXPath(assertion.xpath);
             String result = xpathExpression.stringValueOf(data);
             if (result == null || !result.toLowerCase().equals("true")) {
-               StringBuffer errs = new StringBuffer();
-               errs.append("Failed Assertion:  " + assertion.id + "\n" + "Details " + assertion.xpath);
+               OMElement failure = MetadataSupport.om_factory.createOMElement("FailedAssertion", null);
+               failure.addAttribute("assertionId", assertion.id, null);
+               failure.addAttribute("status", result, null);
+               OMElement details = MetadataSupport.om_factory.createOMElement("AssertionText", null);
+               failure.addChild(details);
+               details.setText(assertion.xpath);
                int equals_index = findNotEqualsNotInBrackets(assertion.xpath);
                if (equals_index == -1) equals_index = findEqualsNotInBrackets(assertion.xpath);
                if (equals_index > 0) {
@@ -252,18 +256,28 @@ public class AssertionEngine {
 
                   String left_side_value;
                   if (left_side_xpath.indexOf("//") == -1) left_side_value = left_side_xpath;
-                  else left_side_value = (new AXIOMXPath(left_side_xpath)).stringValueOf(data);
+                  else
+                     left_side_value = (new AXIOMXPath(left_side_xpath)).stringValueOf(data);
 
                   String right_side_value;
                   if (right_side_xpath.indexOf("//") == -1) right_side_value = right_side_xpath;
-                  else right_side_value = (new AXIOMXPath(right_side_xpath)).stringValueOf(data);
+                  else
+                     right_side_value = (new AXIOMXPath(right_side_xpath)).stringValueOf(data);
 
-                  errs.append("AssertionEngine: assertion " + assertion.id + " left side value is " + left_side_value
-                     + "\n" + "AssertionEngine: assertion " + assertion.id + " right side value is " + right_side_value
-                     + "\n" + "AssertionEngine: operator is " + tokenAt(assertion.xpath, equals_index));
+                  OMElement leftSide = MetadataSupport.om_factory.createOMElement("LeftSideValue", null);
+                  failure.addChild(leftSide);
+                  leftSide.setText(left_side_value);
+
+                  OMElement operator = MetadataSupport.om_factory.createOMElement("Operator", null);
+                  failure.addChild(operator);
+                  operator.setText(tokenAt(assertion.xpath, equals_index));
+
+                  OMElement rightSide = MetadataSupport.om_factory.createOMElement("RightSideValue", null);
+                  failure.addChild(rightSide);
+                  rightSide.setText(right_side_value);
                }
                testLogger.add_name_value_with_id(assertion_output, "AssertionStatus", assertion.id, "fail");
-               err.fail(errs.toString());
+               err.fail(failure);
             } else {
                testLogger.add_name_value_with_id(assertion_output, "AssertionStatus", assertion.id, "pass");
                err.setInContext("AssertionEngine: assertion " + assertion.id, "pass");

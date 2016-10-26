@@ -306,6 +306,7 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner, TestsH
 	private void displayTestingPanel(final Panel testsPanel) {
 
 		mainView.getInitializationPanel().clear();
+		testStatistics.clear();
 		displayOrchestrationHeader(mainView.getInitializationPanel());
 
 		initializeTestDisplay(testsPanel);
@@ -405,6 +406,24 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner, TestsH
 			orchInit = new BuildIGTestOrchestrationButton(this, initializationPanel, label, testContext, testContextView, this, false, currentActorOption);
 			orchInit.addSelfTestClickHandler(new RefreshTestCollectionHandler());
 			initializationPanel.add(orchInit.panel());
+		}
+		else if (currentActorOption.isInitiatingImagingGatewaySut()) {
+		   orchInit = new BuildIIGTestOrchestrationButton(this, testContext, testContextView, initializationPanel, label);
+         orchInit.addSelfTestClickHandler(new RefreshTestCollectionHandler());
+         initializationPanel.add(orchInit.panel());
+		}
+		else if (currentActorOption.isRespondingingImagingGatewaySut()) {
+         orchInit = new BuildRIGTestOrchestrationButton(this, testContext, testContextView, initializationPanel, label);
+         orchInit.addSelfTestClickHandler(new RefreshTestCollectionHandler());
+         initializationPanel.add(orchInit.panel());
+		} 
+		else if (currentActorOption.isImagingDocSourceSut()) {
+         orchInit = new BuildIDSTestOrchestrationButton(this, testContext, testContextView, initializationPanel, label);
+         orchInit.addSelfTestClickHandler(new RefreshTestCollectionHandler());
+         initializationPanel.add(orchInit.panel());
+		}
+		else if (currentActorOption.isEdgeServerSut()) {
+		   // TODO not implemented yet.
 		}
 		else {
 			if (testContext.getSiteUnderTest() != null)

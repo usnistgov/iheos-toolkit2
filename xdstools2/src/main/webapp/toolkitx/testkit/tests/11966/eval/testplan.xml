@@ -2,7 +2,8 @@
   <Test>11966/eval</Test>
   <TestStep id="eval">
     <Goal>
-      Query the Registry simulator to verify the metadata containing a single DocumentEntry was forwarded in a
+      Query the Registry simulator with a GetSubmissionSetandContents Stored Query
+      to verify the metadata containing a single DocumentEntry was forwarded in a
       Register transaction.
     </Goal>
     <ExpectedStatus>Success</ExpectedStatus>

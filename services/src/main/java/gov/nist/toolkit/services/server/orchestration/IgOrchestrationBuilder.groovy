@@ -86,8 +86,8 @@ class IgOrchestrationBuilder {
                 MessageItem itemOneDoc3 = response.addMessage(testInstance15807, true, "")
                 MessageItem itemRegistryError = response.addMessage(testInstance15807, true, "")
 
-                TestInstance testInstance12318 = TestInstanceManager.initializeTestInstance(request.getUserName(), new TestInstance('12318'))
-                MessageItem item12318 = response.addMessage(testInstance12318, true, "")
+//                TestInstance testInstance12318 = TestInstanceManager.initializeTestInstance(request.getUserName(), new TestInstance('12318'))
+//                MessageItem item12318 = response.addMessage(testInstance12318, true, "")
 
                 // Submit test data
                 try {
@@ -138,14 +138,14 @@ class IgOrchestrationBuilder {
                     itemRegistryError.setSuccess(false)
                 }
 
-                params = [
-                        '$patientid$'     : noAdOptionPid.asString()]
-                try {
-                    util.submit(request.userName, SiteBuilder.siteSpecFromSimId(rgConfigs.get(0).id), new TestInstance("12318"), params)
-                } catch (Exception e) {
-                    item12318.setMessage("Initialization of " + rgConfigs.get(0).id + " failed:\n" + e.getMessage());
-                    item12318.setSuccess(false)
-                }
+//                params = [
+//                        '$patientid$'     : noAdOptionPid.asString()]
+//                try {
+//                    util.submit(request.userName, SiteBuilder.siteSpecFromSimId(rgConfigs.get(0).id), new TestInstance("12318"), params)
+//                } catch (Exception e) {
+//                    item12318.setMessage("Initialization of " + rgConfigs.get(0).id + " failed:\n" + e.getMessage());
+//                    item12318.setSuccess(false)
+//                }
             }
 
             response.oneDocPid = oneDocPid

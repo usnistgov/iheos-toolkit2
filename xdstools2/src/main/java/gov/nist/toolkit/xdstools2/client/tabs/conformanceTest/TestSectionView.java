@@ -120,6 +120,10 @@ public class TestSectionView implements IsWidget {
         sectionResultsPanel.stepPanel.add(panel);
     }
 
+    void clearStepPanel() {
+        sectionResultsPanel.stepPanel.clear();
+    }
+
     private Image getImg(String iconFile, String tooltip, String altText) {
         Image imgIcon = new Image(iconFile);
         imgIcon.addStyleName("iconStyle");

@@ -1,1 +1,1 @@
-XCQ FindDocuments Cross Community Query
+FindDocuments Cross Community Query

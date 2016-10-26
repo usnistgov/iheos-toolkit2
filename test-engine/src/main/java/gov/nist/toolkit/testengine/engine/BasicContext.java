@@ -118,6 +118,10 @@ public class BasicContext  {
 		return out;
 	}
 
+	void error(OMElement test_step_output, OMElement content) throws XdsInternalException {
+		testLog.add_name_value(test_step_output, content);
+	}
+
 	void error(OMElement test_step_output, String msg) throws XdsInternalException {
 		testLog.add_name_value(test_step_output, "Error", msg + " (stepId=" + get("step_id") + ")");
 		error(msg);

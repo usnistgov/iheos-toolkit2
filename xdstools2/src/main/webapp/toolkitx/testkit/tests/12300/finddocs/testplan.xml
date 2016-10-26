@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <TestPlan>
     <Test>12300/finddocs</Test>
-    <SUTInitiates/>
+    <SUTInitiates/>   <!-- the SUT actually does this stuff -->
     <TestStep id="finddocs">
         <ExpectedStatus>Success</ExpectedStatus>
         <Rule>
