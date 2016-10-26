@@ -63,9 +63,9 @@ public class BuildIDSTestOrchestrationButton extends AbstractOrchestrationButton
       IdsOrchestrationRequest request = new IdsOrchestrationRequest();
       request.setUserName(testTab.getCurrentTestSession());
       request.setEnvironmentName(testTab.getEnvironmentSelection());
-      request.setUseExistingSimulator(!isResetRequested());
+      request.setUseExistingState(!isResetRequested());
       SiteSpec siteSpec = new SiteSpec(testContext.getSiteName());
-      request.setIdsSut(siteSpec);
+      request.setSiteUnderTest(siteSpec);
 
       testTab.setSiteToIssueTestAgainst(siteSpec);
       
@@ -79,6 +79,7 @@ public class BuildIDSTestOrchestrationButton extends AbstractOrchestrationButton
          public void onSuccess(RawResponse rawResponse) {
             if (handleError(rawResponse, IdsOrchestrationResponse.class)) return;
             IdsOrchestrationResponse orchResponse = (IdsOrchestrationResponse) rawResponse;
+            testTab.setOrchestrationResponse(orchResponse);
 
             initializationResultsPanel.add(new HTML("Initialization Complete"));
             
@@ -113,7 +114,7 @@ public class BuildIDSTestOrchestrationButton extends AbstractOrchestrationButton
 
             int row = 0;
             
-            SimulatorConfig rr = orchResponse.getRegrepConfig();
+            SimulatorConfig rr = orchResponse.getRRConfig();
             
             table.setText(row, 0, "Name");
             table.setText(row++,  1,  rr.getId().toString());

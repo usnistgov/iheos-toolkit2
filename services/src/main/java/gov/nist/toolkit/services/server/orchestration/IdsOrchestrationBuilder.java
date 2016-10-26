@@ -78,7 +78,7 @@ class IdsOrchestrationBuilder {
 
               IdsOrchestrationResponse response = new IdsOrchestrationResponse();
               response.setIdsSimulatorConfig(sutSimulatorConfig);
-              response.setRegrepConfig(rrSimulatorConfig);
+              response.setRRConfig(rrSimulatorConfig);
               response.setSimulatorConfigs(simConfigs);
               return response;
 

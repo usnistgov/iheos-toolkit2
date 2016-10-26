@@ -10,6 +10,7 @@ import org.apache.axiom.om.OMAbstractFactory;
 import org.apache.axiom.om.OMElement;
 import org.apache.axiom.om.OMFactory;
 import org.apache.axiom.om.OMNamespace;
+import org.apache.axiom.om.util.AXIOMUtil;
 import org.apache.commons.lang3.StringUtils;
 import org.w3c.dom.Document;
 import org.w3c.dom.NamedNodeMap;
@@ -17,10 +18,15 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 import javax.xml.namespace.QName;
+import javax.xml.stream.XMLStreamException;
+
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+/**
+ * static utility methods for working with XML using Axis
+ */
 public class XmlUtil {
 	static public OMFactory om_factory = OMAbstractFactory.getOMFactory();
 	static public OMNamespace xml_namespace =   om_factory.createOMNamespace("http://www.w3.org/XML/1998/namespace", "xml");
@@ -66,6 +72,12 @@ public class XmlUtil {
    }
 	
 
+	/**
+	 * Returns child elements with passed tag name.
+	 * @param ele parent OMElement
+	 * @param localName name to match
+	 * @return {@link List} or OMElements, may be empty, never null;
+	 */
 	public static List<OMElement> childrenWithLocalName(OMElement ele, String localName) {
 		List<OMElement> al = new ArrayList<OMElement>();
 		for (Iterator<?> it=ele.getChildElements(); it.hasNext(); ) {
@@ -75,7 +87,26 @@ public class XmlUtil {
 		}
 		return al;
 	}
+	
+	/**
+    * Returns child elements 
+    * @param ele parent OMElement
+    * @return {@link List} or OMElements, may be empty, never null;
+    */
+   public static List<OMElement> children(OMElement ele) {
+      List<OMElement> al = new ArrayList<OMElement>();
+      for (Iterator<?> it=ele.getChildElements(); it.hasNext(); ) {
+         OMElement child = (OMElement) it.next();
+            al.add(child);
+      }
+      return al;
+   }
 
+	/**
+	 * Returns a list of the local names of all child elements  of passed element
+	 * @param ele parent element
+	 * @return {@link List} of String names. May be empty, never null.
+	 */
 	public static List<String> childrenLocalNames(OMElement ele) {
 		List<String> al = new ArrayList<String>();
 		for (Iterator<?> it=ele.getChildElements(); it.hasNext(); ) {
@@ -235,5 +266,34 @@ public class XmlUtil {
 
 		return sb.toString();
 	}
+	
+	static public OMElement strToOM(String xml) throws XMLStreamException {
+	   return AXIOMUtil.stringToOM(xml);
+	}
+	
+	/**
+	 * Converts xml element to string.
+	 * @param element parent (document) element
+	 * @return String value, or null on error.
+	 */
+	static public String OMToStr(OMElement element) {
+	   try {
+         return element.toStringWithConsume();
+      } catch (XMLStreamException e) {
+         return null;
+      }
+	} 
+   
+	/**
+	 * Sets text for descendant Document elements to "...". Used to truncate
+	 * documents in retrieve document set response for display. 
+	 * @param element parent element
+	 */
+	public static void truncateDocuments(OMElement element) {
+      for (OMElement doc : decendentsWithLocalName(element, "Document")) {
+         doc.setText("...");
+      }
+      return;
+   }
 
 }

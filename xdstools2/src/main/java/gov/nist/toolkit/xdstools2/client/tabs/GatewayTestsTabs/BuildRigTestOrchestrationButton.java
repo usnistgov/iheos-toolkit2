@@ -40,7 +40,7 @@ class BuildRIGTestOrchestrationButton extends AbstractOrchestrationButton {
       }
       RigOrchestrationRequest request = new RigOrchestrationRequest();
       request.setUserName(testTab.getCurrentTestSession());
-      request.setIncludeLinkedRIG(includeRIG);
+     //  request.setIncludeLinkedRIG(includeRIG);
       testTab.getToolkitServices().buildRigTestOrchestration(request, new AsyncCallback <RawResponse>() {
 
          @Override

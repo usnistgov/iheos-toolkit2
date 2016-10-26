@@ -9,7 +9,7 @@ import java.util.List;
 import gov.nist.toolkit.actorfactory.client.SimulatorConfig;
 
 
-public class RigOrchestrationResponse extends RawResponse {
+public class RigOrchestrationResponse extends AbstractOrchestrationResponse {
    private static final long serialVersionUID = 1L;
    
    List<SimulatorConfig> simulatorConfigs = new ArrayList<>();
@@ -43,6 +43,15 @@ public class RigOrchestrationResponse extends RawResponse {
     */
    public void setRigSimulatorConfig(SimulatorConfig rigSimulatorConfig) {
       this.rigSimulatorConfig = rigSimulatorConfig;
+   }
+
+   /* (non-Javadoc)
+    * @see gov.nist.toolkit.services.client.AbstractOrchestrationResponse#isExternalStart()
+    */
+   @Override
+   public boolean isExternalStart() {
+      // TODO Auto-generated method stub
+      return false;
    };
    
    

@@ -41,7 +41,7 @@ class BuildIIGTestOrchestrationButton extends AbstractOrchestrationButton {
       }
       IigOrchestrationRequest request = new IigOrchestrationRequest();
       request.setUserName(testTab.getCurrentTestSession());
-      request.setIncludeLinkedIIG(includeIIG);
+      // request.setIncludeLinkedIIG(includeIIG);
       ClientUtils.INSTANCE.getToolkitServices().buildIigTestOrchestration(request, new AsyncCallback <RawResponse>() {
 
          @Override

@@ -1,3 +1,4 @@
+<xdsb:ProvidAndRegisterDocumentSetRequest xmlns:xdsb="urn:ihe:iti:xds-b:2007">
 <lcm:SubmitObjectsRequest xmlns:lcm="urn:oasis:names:tc:ebxml-regrep:xsd:lcm:3.0">
 	<rim:RegistryObjectList xmlns:rim="urn:oasis:names:tc:ebxml-regrep:xsd:rim:3.0">
 		<rim:ExtrinsicObject id="urn:uuid:4a3a8c11-9adb-4c50-b659-fa0ccee2a00f"
@@ -327,3 +328,4 @@
 		</rim:Association>
 	</rim:RegistryObjectList>
 </lcm:SubmitObjectsRequest>
+</xdsb:ProvidAndRegisterDocumentSetRequest>

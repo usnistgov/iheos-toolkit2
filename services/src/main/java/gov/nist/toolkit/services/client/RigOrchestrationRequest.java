@@ -5,44 +5,27 @@ package gov.nist.toolkit.services.client;
 
 import java.io.Serializable;
 
+import com.google.gwt.user.client.rpc.IsSerializable;
+
+import gov.nist.toolkit.sitemanagement.client.SiteSpec;
+
 /**
- *
  * 
  * @author Ralph Moulton / MIR WUSTL IHE Development Project <a
  * href="mailto:moultonr@mir.wustl.edu">moultonr@mir.wustl.edu</a>
  *
  */
-public class RigOrchestrationRequest implements Serializable {
+public class RigOrchestrationRequest extends AbstractOrchestrationRequest {
    private static final long serialVersionUID = 1L;
    
-   String userName;
-   String environmentName;
-   boolean includeLinkedRIG;
+   private SiteSpec siteUnderTest; 
 
-   public RigOrchestrationRequest() {}
 
-   public String getUserName() {
-       return userName;
+   public SiteSpec getSiteUnderTest() {
+       return siteUnderTest;
    }
 
-   public void setUserName(String userName) {
-       this.userName = userName;
+   public void setSiteUnderTest(SiteSpec siteUnderTest) {
+       this.siteUnderTest = siteUnderTest;
    }
-
-   public String getEnvironmentName() {
-       return environmentName;
-   }
-
-   public void setEnvironmentName(String environmentName) {
-       this.environmentName = environmentName;
-   }
-
-   public boolean isIncludeLinkedRIG() {
-       return includeLinkedRIG;
-   }
-
-   public void setIncludeLinkedRIG(boolean includeLinkedRIG) {
-       this.includeLinkedRIG = includeLinkedRIG;
-   }
-
 }

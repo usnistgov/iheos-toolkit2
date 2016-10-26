@@ -8,11 +8,13 @@ import gov.nist.toolkit.installation.Installation;
 import gov.nist.toolkit.installation.PropertyManager;
 import gov.nist.toolkit.installation.PropertyServiceManager;
 import gov.nist.toolkit.testengine.engine.SimulatorTransaction;
+import gov.nist.toolkit.utilities.xml.XmlUtil;
+
+import org.apache.axiom.om.OMElement;
 import org.apache.commons.codec.Charsets;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
-import org.w3c.dom.Element;
 
 import java.io.File;
 import java.io.FilenameFilter;
@@ -86,37 +88,36 @@ public class PrsSimLogs {
          trn.setUrl(url);
          soapRequest = getSOAPRequest(path);
          trn.setRequest(soapRequest);
-         trn.setMetadata(getSOAPMetaData(soapRequest));
          try {
-            Element reqElement = XmlUtil.strToElement(soapRequest);
+            OMElement reqElement = XmlUtil.strToOM(soapRequest);
             String env = reqElement.getLocalName();
             if (env.equalsIgnoreCase("Envelope") == false)
                throw new Exception("root element not 'Envelope': [" + env + "]");
             try {
-               Element[] hdrElement = XmlUtil.getFirstLevelChildElementsByName(reqElement, "Header"); 
-               if (hdrElement.length == 0)
+               List<OMElement> hdrElement = XmlUtil.childrenWithLocalName(reqElement, "Header"); 
+               if (hdrElement.isEmpty())
                   throw new Exception("'Header' element not found");
-               if (hdrElement.length > 1)
-                  throw new Exception(hdrElement.length + " 'Header' elements found");
-               String header = XmlUtil.elementToStr(hdrElement[0]);
+               if (hdrElement.size() > 1)
+                  throw new Exception(hdrElement.size() + " 'Header' elements found");
+               String header = XmlUtil.OMToStr(hdrElement.get(0));
                trn.setRequestHeader(header);
             } catch (Exception e)  {
                String em = "SOAP Request Header error: " + e.getMessage();
                log.warn(em);
             }
             try {
-               Element[] bodyElement = XmlUtil.getFirstLevelChildElementsByName(reqElement, "Body"); 
-               if (bodyElement.length == 0)
+               List<OMElement> bodyElement = XmlUtil.childrenWithLocalName(reqElement, "Body"); 
+               if (bodyElement.isEmpty())
                   throw new Exception("'Body' element not found");
-               if (bodyElement.length > 1)
-                  throw new Exception(bodyElement.length + " 'Body' elements found");
-               bodyElement = XmlUtil.getFirstLevelChildElements(bodyElement[0]);
-               if (bodyElement.length == 0)
+               if (bodyElement.size() > 1)
+                  throw new Exception(bodyElement.size() + " 'Body' elements found");
+               bodyElement = XmlUtil.children(bodyElement.get(0));
+               if (bodyElement.isEmpty())
                   throw new Exception("No child elements found in 'Body' element");
-               if (bodyElement.length > 1)
-                  throw new Exception(bodyElement.length + " child elements found in 'Body' element");
+               if (bodyElement.size() > 1)
+                  throw new Exception(bodyElement.size() + " child elements found in 'Body' element");
                   
-               String body = XmlUtil.elementToStr(bodyElement[0]);
+               String body = XmlUtil.OMToStr(bodyElement.get(0));
                trn.setRequestBody(body);
             } catch (Exception e)  {
                String em = "SOAP Request Body error: " + e.getMessage();
@@ -137,36 +138,36 @@ public class PrsSimLogs {
          soapResponse = getSOAPResponse(path);
          trn.setResponse(soapResponse);
          try {
-            Element respElement = XmlUtil.strToElement(soapResponse);
+            OMElement respElement = XmlUtil.strToOM(soapResponse);
             String env = respElement.getLocalName();
             if (env.equalsIgnoreCase("Envelope") == false)
                throw new Exception("root element not 'Envelope': [" + env + "]");
             try {
-               Element[] hdrElement = XmlUtil.getFirstLevelChildElementsByName(respElement, "Header"); 
-               if (hdrElement.length == 0)
+               List<OMElement> hdrElement = XmlUtil.childrenWithLocalName(respElement, "Header"); 
+               if (hdrElement.isEmpty())
                   throw new Exception("'Header' element not found");
-               if (hdrElement.length > 1)
-                  throw new Exception(hdrElement.length + " 'Header' elements found");
-               String header = XmlUtil.elementToStr(hdrElement[0]);
+               if (hdrElement.size() > 1)
+                  throw new Exception(hdrElement.size() + " 'Header' elements found");
+               String header = XmlUtil.OMToStr(hdrElement.get(0));
                trn.setResponseHeader(header);
             } catch (Exception e)  {
                String em = "SOAP Response Header error: " + e.getMessage();
                log.warn(em);
             }
             try {
-               Element[] bodyElement = XmlUtil.getFirstLevelChildElementsByName(respElement, "Body"); 
-               if (bodyElement.length == 0)
+               List<OMElement> bodyElement = XmlUtil.childrenWithLocalName(respElement, "Body"); 
+               if (bodyElement.isEmpty())
                   throw new Exception("'Body' element not found");
-               if (bodyElement.length > 1)
-                  throw new Exception(bodyElement.length + " 'Body' elements found");
-               bodyElement = XmlUtil.getFirstLevelChildElements(bodyElement[0]);
-               if (bodyElement.length == 0)
+               if (bodyElement.size() > 1)
+                  throw new Exception(bodyElement.size() + " 'Body' elements found");
+               bodyElement = XmlUtil.children(bodyElement.get(0));
+               if (bodyElement.isEmpty())
                   throw new Exception("No child elements found in 'Body' element");
-               if (bodyElement.length > 1)
-                  throw new Exception(bodyElement.length + " child elements found in 'Body' element");
-               Element respEle = bodyElement[0];
+               if (bodyElement.size() > 1)
+                  throw new Exception(bodyElement.size() + " child elements found in 'Body' element");
+               OMElement respEle = bodyElement.get(0);
                XmlUtil.truncateDocuments(respEle);
-               String body = XmlUtil.elementToStr(respEle);
+               String body = XmlUtil.OMToStr(respEle);
                trn.setResponseBody(body);
             } catch (Exception e)  {
                String em = "SOAP Response Body error: " + e.getMessage();
@@ -333,31 +334,7 @@ public class PrsSimLogs {
       return null;
    }
 
-   /**
-    * Get SubmitObjectsRequest element from SOAP Request string
-    * 
-    * @param str SOAP Request xml string
-    * @return xml SubmitObjectsRequest element and contents.
-    */
-   public static String getSOAPMetaData(String str) {
-      if (str == null) return null;
-      try {
-         String tag = "SubmitObjectsRequest";
-         int p = str.indexOf(tag);
-         if (p < 0) return null;
-         while (str.substring(p).startsWith("<") == false)
-            p-- ;
-         str = str.substring(p);
-         p = str.lastIndexOf(tag);
-         while (str.substring(p).startsWith(">") == false)
-            p++ ;
-         str = str.substring(0, p + 1);
-         return str;
-      } catch (Exception e) {
-         e.printStackTrace();
-      }
-      return null;
-   }
+  
 
    /**
     * Gets the Path of the log directory for a specific transaction.
