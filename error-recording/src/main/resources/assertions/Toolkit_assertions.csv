@@ -1,3 +1,4 @@
 Toolkit Assertion,Toolkit Error Message,Location of Toolkit Assertion (until reconciled with Gazelle),Gazelle Scheme ID,Gazelle Assertion ID
 TA001,CX_datatype is not valid,ITI TF-3: Table 4.1.7,,
 TA002,Multiple Patient IDs found in submission,ITI TF-3: 4.1.4.1,,
+TA003,Toolkit error: XDSRegistryMetadataError,No spec reference,,

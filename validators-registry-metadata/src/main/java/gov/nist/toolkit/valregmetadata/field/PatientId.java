@@ -45,7 +45,12 @@ public class PatientId {
 				er.err(XdsErrorCode.Code.XDSPatientIdDoesNotMatch, assertion, this, location, detail);
 			}
 		} catch (Exception e) {
-			er.err(XdsErrorCode.Code.XDSRegistryMetadataError, e.getMessage(), this, "");
+			// Define the Assertion
+			String assertionID = "TA003";
+			Assertion a = ASSERTIONLIBRARY.getAssertion(assertionID);
+			String detail = e.getMessage();
+			String location = "";
+			er.err(XdsErrorCode.Code.XDSRegistryMetadataError, a, this, location, detail);
 		}
 	}
 
