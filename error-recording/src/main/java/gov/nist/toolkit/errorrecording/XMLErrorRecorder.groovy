@@ -58,17 +58,18 @@ public class XMLErrorRecorder implements ErrorRecorder {
     // TODO this is the only syntax that works. Propagate it to rest of document.
     public void err(Code _code, Assertion _assertion, String _validatorModule, String _location, String _detail) {
         println("err2")
-        if (_location == null || _location.trim().equals("")) { return; }
+        // TODO there used to be a null check on the location that I deactivated. Monitor for possible issues.
+        //if (_location == null || _location.trim().equals("")) { return; }
 
         // Generate the new element
         def sw = new StringWriter()
         def builder = new MarkupBuilder(sw)
         builder.Error(code:_code, validatorModule:_validatorModule){
-                    Assertion(text:_assertion.getErrorMessage(), resource:_assertion.getLocation(),
+            Assertion(text:_assertion.getErrorMessage(), resource:_assertion.getLocation(),
                     gazelleScheme:_assertion.getGazelleScheme(), gazelleAssertionID:_assertion.getGazelleAssertionID()){
-                        Detail(_detail);
-                        Location(_location);
-                }
+                Detail(_detail);
+                Location(_location);
+            }
         }
         // Parse and add
         errXml = errXml.concat(sw.toString() + "\n")
@@ -125,12 +126,14 @@ public class XMLErrorRecorder implements ErrorRecorder {
     @Override
     void err(Code code, String msg, String location, String resource) {
         println("err7 - old prototype, needs to be upgraded to use Assertions")
+        println("code: " + code + "; msg: " + msg + "; location: " + location + "; resource: " + resource);
     }
 
     // Old prototype
     @Override
     void err(Code code, String msg, Object location, String resource) {
         println("err8 - old prototype, needs to be upgraded to use Assertions")
+        println("code: " + code + "; msg: " + msg + "; location: " + location + "; resource: " + resource);
     }
 
     // Untested / not used
@@ -174,9 +177,9 @@ public class XMLErrorRecorder implements ErrorRecorder {
             el = el + "<SectionHeading message=\"" + msg + "\">\n";
         } else {
             el = el + "<SectionHeading " +
-            "type=\"" + processedMsg.getXDS_DOCUMENT_TYPE() + "\" " +
-             "id=\"" + processedMsg.getId() + "\"" +
-            ">\n";
+                    "type=\"" + processedMsg.getXDS_DOCUMENT_TYPE() + "\" " +
+                    "id=\"" + processedMsg.getId() + "\"" +
+                    ">\n";
         }
         errXml = errXml.concat(el)
     }
@@ -386,7 +389,10 @@ public class XMLErrorRecorder implements ErrorRecorder {
             // parse existing XML string into a Node. This has the advantage of also validating the XML.
             def xml = new XmlParser().parseText(input)
 
-            // pretty print the Node
+            // Remove empty elements and attributes
+            //cleanNode(xml)
+
+            // Pretty print the XML
             StringWriter sw = new StringWriter();
             def printer = new XmlNodePrinter(new PrintWriter(sw))
             printer.preserveWhitespace = true
@@ -400,6 +406,26 @@ public class XMLErrorRecorder implements ErrorRecorder {
     }
 
     /**
+     * Removes empty elements and attributes from an XML Node
+     * @param node
+     * @return XML output cleaned of empty values
+     */
+    /*boolean cleanNode(Node node) {
+        node.attributes().with { a ->
+            a.findAll {
+                !it.value.each { a.remove(it.key) }
+            }
+        }
+        node.children().with { kids ->
+            kids.findAll { it instanceof Node ? !cleanNode(it) : false }
+                    .each { kids.remove(it) }
+        }
+        node.attributes() || node.children() || node.text()
+    }*/
+
+
+    /**
+     * TODO not sure what this is used for
      * Takes a message item from the XMLErrorRecorder output and processes it to extract separate pieces of information.
      * @see XMLErrorRecorderMessage for more information.
      * @param msg

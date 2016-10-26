@@ -2,6 +2,8 @@ package gov.nist.toolkit.valregmetadata.field;
 
 import gov.nist.toolkit.errorrecording.ErrorRecorder;
 import gov.nist.toolkit.errorrecording.client.XdsErrorCode;
+import gov.nist.toolkit.errorrecording.client.assertions.Assertion;
+import gov.nist.toolkit.errorrecording.client.assertions.AssertionLibrary;
 import gov.nist.toolkit.registrymetadata.Metadata;
 import gov.nist.toolkit.commondatatypes.MetadataSupport;
 import gov.nist.toolkit.xdsexception.MetadataException;
@@ -10,6 +12,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class PatientId {
+	private AssertionLibrary ASSERTIONLIBRARY = AssertionLibrary.getInstance();
 	List<String> patient_ids;
 	ErrorRecorder er;
 	Metadata m;
@@ -23,17 +26,28 @@ public class PatientId {
 
 	public void run()  {
 		try {
-		gather_patient_ids(m, m.getSubmissionSetIds(),   MetadataSupport.XDSSubmissionSet_patientid_uuid);
-		gather_patient_ids(m, m.getExtrinsicObjectIds(), MetadataSupport.XDSDocumentEntry_patientid_uuid);
-		gather_patient_ids(m, m.getFolderIds(),          MetadataSupport.XDSFolder_patientid_uuid);
+			gather_patient_ids(m, m.getSubmissionSetIds(),   MetadataSupport.XDSSubmissionSet_patientid_uuid);
+			gather_patient_ids(m, m.getExtrinsicObjectIds(), MetadataSupport.XDSDocumentEntry_patientid_uuid);
+			gather_patient_ids(m, m.getFolderIds(),          MetadataSupport.XDSFolder_patientid_uuid);
 
-		if (patient_ids.size() > 1)
-			er.err(XdsErrorCode.Code.XDSPatientIdDoesNotMatch, "Multiple Patient IDs found in submission: " + patient_ids, this, "ITI TF-3: 4.1.4.1");
+			// Define the Assertion
+			String assertionID = "TA002";
+			Assertion assertion = ASSERTIONLIBRARY.getAssertion(assertionID);
+
+			if (patient_ids.size() > 1) {
+				// TODO remove old call after switch to Assertions model is complete
+				// Original call
+				// er.err(XdsErrorCode.Code.XDSPatientIdDoesNotMatch, "Multiple Patient IDs found in submission: " + patient_ids, this, "ITI TF-3: 4.1.4.1");
+
+				// New call
+				String detail = String.join(", ", patient_ids);
+				String location = "";
+				er.err(XdsErrorCode.Code.XDSPatientIdDoesNotMatch, assertion, this, location, detail);
+			}
 		} catch (Exception e) {
 			er.err(XdsErrorCode.Code.XDSRegistryMetadataError, e.getMessage(), this, "");
 		}
-}
-
+	}
 
 	void gather_patient_ids(Metadata m, List<String> parts, String uuid) throws MetadataException {
 		String patient_id;
@@ -45,7 +59,4 @@ public class PatientId {
 		}
 	}
 
-//	void err(String msg) {
-//		rel.add_error(MetadataSupport.XDSRegistryMetadataError, msg, "PatientId.java", null);
-//	}
 }

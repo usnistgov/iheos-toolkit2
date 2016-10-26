@@ -34,7 +34,7 @@ class XMLErrorRecorderValidatorTest extends Specification {
         vc.codesFilename = getClass().getResource('/codes.xml').file
 
         // ErrorRecorder er = new GwtErrorRecorder()
-        //      ErrorRecorder er = new TextErrorRecorder()
+        // ErrorRecorder er = new TextErrorRecorder()
         ErrorRecorder er = new XMLErrorRecorder()
 
         MetadataValidator val = new MetadataValidator(m, vc, null)

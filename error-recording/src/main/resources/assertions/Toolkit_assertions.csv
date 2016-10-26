@@ -1,5 +1,3 @@
 Toolkit Assertion,Toolkit Error Message,Location of Toolkit Assertion (until reconciled with Gazelle),Gazelle Scheme ID,Gazelle Assertion ID
 TA001,CX_datatype is not valid,ITI TF-3: Table 4.1.7,,
-TA002,One or more required slots are missing in Minimal XDR,ITI TF-3: Table 4.1-6,,
-TA003,One or more required slots are missing in XDR,ITI TF-3: Table 4.1-6,,
-TA004,SubmissionSet slot name is not legal,ITI TF-3: Table 4.1-6,,
+TA002,Multiple Patient IDs found in submission,ITI TF-3: 4.1.4.1,,
