@@ -2,3 +2,7 @@ Toolkit Assertion,Toolkit Error Message,Location of Toolkit Assertion (until rec
 TA001,CX_datatype is not valid,ITI TF-3: Table 4.1.7,,
 TA002,Multiple Patient IDs found in submission,ITI TF-3: 4.1.4.1,,
 TA003,Toolkit error: XDSRegistryMetadataError,No spec reference,,
+TA004,Slot name missing,ITI TF-3: Table 4.2.3.2-1,,
+TA005,Slot name missing,ITI TF-3: Table 4.2.3.2-1,,
+TA006,Slot name missing,ITI TF-3: Table 4.2.3.2-1,,
+TA011,Not a legal slot name for a DocumentEntry,ITI TF-3: Table 4.2.3.2-1,,

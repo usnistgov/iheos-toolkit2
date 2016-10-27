@@ -3,6 +3,8 @@ package gov.nist.toolkit.valregmetadata.object;
 import gov.nist.toolkit.errorrecording.ErrorRecorder;
 import gov.nist.toolkit.errorrecording.client.XdsErrorCode;
 import gov.nist.toolkit.errorrecording.client.XdsErrorCode.Code;
+import gov.nist.toolkit.errorrecording.client.assertions.Assertion;
+import gov.nist.toolkit.errorrecording.client.assertions.AssertionLibrary;
 import gov.nist.toolkit.registrymetadata.Metadata;
 import gov.nist.toolkit.commondatatypes.MetadataSupport;
 import gov.nist.toolkit.valregmetadata.datatype.AnyFormat;
@@ -26,29 +28,31 @@ import java.util.List;
 import java.util.Set;
 
 public class DocumentEntry extends AbstractRegistryObject implements TopLevelObject {
+	private AssertionLibrary ASSERTIONLIBRARY = AssertionLibrary.getInstance();
+
 	static List<String> definedSlots =
-		Arrays.asList(
-				"creationTime",
-				"languageCode",
-				"sourcePatientId",
-				"sourcePatientInfo",
-				"legalAuthenticator",
-				"serviceStartTime",
-				"serviceStopTime",
-				"hash",
-				"size",
-				"URI",
-				"repositoryUniqueId",
-				"documentAvailability",
-                "urn:ihe:iti:xds:2013:referenceIdList"
-		);
+			Arrays.asList(
+					"creationTime",
+					"languageCode",
+					"sourcePatientId",
+					"sourcePatientInfo",
+					"legalAuthenticator",
+					"serviceStartTime",
+					"serviceStopTime",
+					"hash",
+					"size",
+					"URI",
+					"repositoryUniqueId",
+					"documentAvailability",
+					"urn:ihe:iti:xds:2013:referenceIdList"
+			);
 
 	static List<String> requiredSlots =
-		Arrays.asList(
-				"creationTime",
-				"languageCode",
-				"sourcePatientId"
-		);
+			Arrays.asList(
+					"creationTime",
+					"languageCode",
+					"sourcePatientId"
+			);
 
 	static List<String> roddeRequiredSlots =
 			Arrays.asList(
@@ -64,31 +68,31 @@ public class DocumentEntry extends AbstractRegistryObject implements TopLevelObj
 	static public ClassAndIdDescription classificationDescription = new ClassAndIdDescription();
 	static {
 		classificationDescription.definedSchemes =
-			Arrays.asList(
-					MetadataSupport.XDSDocumentEntry_classCode_uuid ,
-					MetadataSupport.XDSDocumentEntry_confCode_uuid ,
-					MetadataSupport.XDSDocumentEntry_eventCode_uuid ,
-					MetadataSupport.XDSDocumentEntry_formatCode_uuid ,
-					MetadataSupport.XDSDocumentEntry_hcftCode_uuid ,
-					MetadataSupport.XDSDocumentEntry_psCode_uuid ,
-					MetadataSupport.XDSDocumentEntry_typeCode_uuid,
-					MetadataSupport.XDSDocumentEntry_author_uuid
-			);
+				Arrays.asList(
+						MetadataSupport.XDSDocumentEntry_classCode_uuid ,
+						MetadataSupport.XDSDocumentEntry_confCode_uuid ,
+						MetadataSupport.XDSDocumentEntry_eventCode_uuid ,
+						MetadataSupport.XDSDocumentEntry_formatCode_uuid ,
+						MetadataSupport.XDSDocumentEntry_hcftCode_uuid ,
+						MetadataSupport.XDSDocumentEntry_psCode_uuid ,
+						MetadataSupport.XDSDocumentEntry_typeCode_uuid,
+						MetadataSupport.XDSDocumentEntry_author_uuid
+				);
 		classificationDescription.requiredSchemes =
-			Arrays.asList(
-					MetadataSupport.XDSDocumentEntry_classCode_uuid,
-					MetadataSupport.XDSDocumentEntry_confCode_uuid,
-					MetadataSupport.XDSDocumentEntry_formatCode_uuid,
-					MetadataSupport.XDSDocumentEntry_hcftCode_uuid,
-					MetadataSupport.XDSDocumentEntry_psCode_uuid,
-					MetadataSupport.XDSDocumentEntry_typeCode_uuid
-			);
+				Arrays.asList(
+						MetadataSupport.XDSDocumentEntry_classCode_uuid,
+						MetadataSupport.XDSDocumentEntry_confCode_uuid,
+						MetadataSupport.XDSDocumentEntry_formatCode_uuid,
+						MetadataSupport.XDSDocumentEntry_hcftCode_uuid,
+						MetadataSupport.XDSDocumentEntry_psCode_uuid,
+						MetadataSupport.XDSDocumentEntry_typeCode_uuid
+				);
 		classificationDescription.multipleSchemes =
-			Arrays.asList(
-					MetadataSupport.XDSDocumentEntry_author_uuid,
-					MetadataSupport.XDSDocumentEntry_confCode_uuid,
-					MetadataSupport.XDSDocumentEntry_eventCode_uuid
-			);
+				Arrays.asList(
+						MetadataSupport.XDSDocumentEntry_author_uuid,
+						MetadataSupport.XDSDocumentEntry_confCode_uuid,
+						MetadataSupport.XDSDocumentEntry_eventCode_uuid
+				);
 		classificationDescription.names = new HashMap<String, String>();
 		classificationDescription.names.put(MetadataSupport.XDSDocumentEntry_classCode_uuid, "Class Code");
 		classificationDescription.names.put(MetadataSupport.XDSDocumentEntry_confCode_uuid, "Confidentiality Code");
@@ -103,25 +107,25 @@ public class DocumentEntry extends AbstractRegistryObject implements TopLevelObj
 	static public ClassAndIdDescription directClassificationDescription = new ClassAndIdDescription();
 	static {
 		directClassificationDescription.definedSchemes =
-			Arrays.asList(
-					MetadataSupport.XDSDocumentEntry_classCode_uuid ,
-					MetadataSupport.XDSDocumentEntry_confCode_uuid ,
-					MetadataSupport.XDSDocumentEntry_eventCode_uuid ,
-					MetadataSupport.XDSDocumentEntry_formatCode_uuid ,
-					MetadataSupport.XDSDocumentEntry_hcftCode_uuid ,
-					MetadataSupport.XDSDocumentEntry_psCode_uuid ,
-					MetadataSupport.XDSDocumentEntry_typeCode_uuid,
-					MetadataSupport.XDSDocumentEntry_author_uuid
-			);
+				Arrays.asList(
+						MetadataSupport.XDSDocumentEntry_classCode_uuid ,
+						MetadataSupport.XDSDocumentEntry_confCode_uuid ,
+						MetadataSupport.XDSDocumentEntry_eventCode_uuid ,
+						MetadataSupport.XDSDocumentEntry_formatCode_uuid ,
+						MetadataSupport.XDSDocumentEntry_hcftCode_uuid ,
+						MetadataSupport.XDSDocumentEntry_psCode_uuid ,
+						MetadataSupport.XDSDocumentEntry_typeCode_uuid,
+						MetadataSupport.XDSDocumentEntry_author_uuid
+				);
 		directClassificationDescription.requiredSchemes =
-			Arrays.asList(
-			);
+				Arrays.asList(
+				);
 		directClassificationDescription.multipleSchemes =
-			Arrays.asList(
-					MetadataSupport.XDSDocumentEntry_author_uuid,
-					MetadataSupport.XDSDocumentEntry_confCode_uuid,
-					MetadataSupport.XDSDocumentEntry_eventCode_uuid
-			);
+				Arrays.asList(
+						MetadataSupport.XDSDocumentEntry_author_uuid,
+						MetadataSupport.XDSDocumentEntry_confCode_uuid,
+						MetadataSupport.XDSDocumentEntry_eventCode_uuid
+				);
 		directClassificationDescription.names = new HashMap<String, String>();
 		directClassificationDescription.names.put(MetadataSupport.XDSDocumentEntry_classCode_uuid, "Class Code");
 		directClassificationDescription.names.put(MetadataSupport.XDSDocumentEntry_confCode_uuid, "Confidentiality Code");
@@ -136,16 +140,16 @@ public class DocumentEntry extends AbstractRegistryObject implements TopLevelObj
 	static public ClassAndIdDescription externalIdentifierDescription = new ClassAndIdDescription();
 	static {
 		externalIdentifierDescription.definedSchemes =
-			Arrays.asList(
-					MetadataSupport.XDSDocumentEntry_patientid_uuid,
-					MetadataSupport.XDSDocumentEntry_uniqueid_uuid
-			);
+				Arrays.asList(
+						MetadataSupport.XDSDocumentEntry_patientid_uuid,
+						MetadataSupport.XDSDocumentEntry_uniqueid_uuid
+				);
 
 		externalIdentifierDescription.requiredSchemes =
-			Arrays.asList(
-					MetadataSupport.XDSDocumentEntry_patientid_uuid,
-					MetadataSupport.XDSDocumentEntry_uniqueid_uuid
-					);
+				Arrays.asList(
+						MetadataSupport.XDSDocumentEntry_patientid_uuid,
+						MetadataSupport.XDSDocumentEntry_uniqueid_uuid
+				);
 		externalIdentifierDescription.multipleSchemes = new ArrayList<String>();
 
 		externalIdentifierDescription.names = new HashMap<String, String>();
@@ -156,15 +160,15 @@ public class DocumentEntry extends AbstractRegistryObject implements TopLevelObj
 	static public ClassAndIdDescription XDMexternalIdentifierDescription = new ClassAndIdDescription();
 	static {
 		XDMexternalIdentifierDescription.definedSchemes =
-			Arrays.asList(
-					MetadataSupport.XDSDocumentEntry_patientid_uuid,
-					MetadataSupport.XDSDocumentEntry_uniqueid_uuid
-			);
+				Arrays.asList(
+						MetadataSupport.XDSDocumentEntry_patientid_uuid,
+						MetadataSupport.XDSDocumentEntry_uniqueid_uuid
+				);
 
 		XDMexternalIdentifierDescription.requiredSchemes =
-			Arrays.asList(
-					MetadataSupport.XDSDocumentEntry_uniqueid_uuid
-					);
+				Arrays.asList(
+						MetadataSupport.XDSDocumentEntry_uniqueid_uuid
+				);
 		XDMexternalIdentifierDescription.multipleSchemes = new ArrayList<String>();
 
 		XDMexternalIdentifierDescription.names = new HashMap<String, String>();
@@ -175,15 +179,15 @@ public class DocumentEntry extends AbstractRegistryObject implements TopLevelObj
 	static public ClassAndIdDescription directExternalIdentifierDescription = new ClassAndIdDescription();
 	static {
 		directExternalIdentifierDescription.definedSchemes =
-			Arrays.asList(
-					MetadataSupport.XDSDocumentEntry_patientid_uuid,
-					MetadataSupport.XDSDocumentEntry_uniqueid_uuid
-			);
+				Arrays.asList(
+						MetadataSupport.XDSDocumentEntry_patientid_uuid,
+						MetadataSupport.XDSDocumentEntry_uniqueid_uuid
+				);
 
 		directExternalIdentifierDescription.requiredSchemes =
-			Arrays.asList(
-					MetadataSupport.XDSDocumentEntry_uniqueid_uuid
-					);
+				Arrays.asList(
+						MetadataSupport.XDSDocumentEntry_uniqueid_uuid
+				);
 		directExternalIdentifierDescription.multipleSchemes = new ArrayList<String>();
 
 		directExternalIdentifierDescription.names = new HashMap<String, String>();
@@ -192,10 +196,10 @@ public class DocumentEntry extends AbstractRegistryObject implements TopLevelObj
 	}
 
 	static List<String> statusValues =
-		Arrays.asList(
-				MetadataSupport.status_type_namespace + "Approved",
-				MetadataSupport.status_type_namespace + "Deprecated"
-		);
+			Arrays.asList(
+					MetadataSupport.status_type_namespace + "Approved",
+					MetadataSupport.status_type_namespace + "Deprecated"
+			);
 
 	String mimeType = "";
 	String objectType = "";
@@ -287,9 +291,7 @@ public class DocumentEntry extends AbstractRegistryObject implements TopLevelObj
 		}
 	}
 
-	static public String table415 = "ITI TF-3: Table 4.2.3.2-1"; // Rev 12.1 Final Text
-	// TODO: Is it ok to leave off the TF-2b reference?
-	// Was "ITI TF-3: Table 4.1-5, TF-2b: Table 3.41.4.1.2-2"
+	static public String table415 = "ITI TF-3: Table 4.2.3.2-1";
 
 	// this takes in two circumstances:
 	//	Slots always required
@@ -299,37 +301,58 @@ public class DocumentEntry extends AbstractRegistryObject implements TopLevelObj
 
 		if (vc.isXDRMinimal) {
 			for (String slotName : directRequiredSlots) {
-				if (getSlot(slotName) == null)
-					er.err(XdsErrorCode.Code.XDSRegistryMetadataError, identifyingString() + ": Slot " + slotName + " missing", this, table415);
+				if (getSlot(slotName) == null) {
+					String assertionID = "TA004";
+					Assertion assertion = ASSERTIONLIBRARY.getAssertion(assertionID);
+					String location = identifyingString();
+					String detail = "Slot " + slotName + " missing";
+					er.err(XdsErrorCode.Code.XDSRegistryMetadataError, assertion, this, location, detail);
+				}
 			}
-		}
-		else if (vc.isStableOrODDE) {
+		} else if (vc.isStableOrODDE) {
 
 		} else if (vc.isRODDE) {
 			for (String slotName : roddeRequiredSlots) {
-				if (getSlot(slotName) == null)
-					er.err(XdsErrorCode.Code.XDSRegistryMetadataError, identifyingString() + ": Slot " + slotName + " missing", this, table415);
+				if (getSlot(slotName) == null) {
+					String assertionID = "TA005";
+					Assertion assertion = ASSERTIONLIBRARY.getAssertion(assertionID);
+					String location = identifyingString();
+					String detail = "Slot " + slotName + " missing";
+					er.err(XdsErrorCode.Code.XDSRegistryMetadataError, assertion, this, location, detail);
+				}
 			}
 		} else if (!(vc.isXDM || vc.isXDRLimited || vc.isXDRMinimal)) {
 			for (String slotName : requiredSlots) {
-				if (getSlot(slotName) == null)
-					er.err(XdsErrorCode.Code.XDSRegistryMetadataError, identifyingString() + ": Slot " + slotName + " missing", this, table415);
+				if (getSlot(slotName) == null) {
+					String assertionID = "TA006";
+					Assertion assertion = ASSERTIONLIBRARY.getAssertion(assertionID);
+					String location = identifyingString();
+					String detail = "Slot " + slotName + " missing";
+					er.err(XdsErrorCode.Code.XDSRegistryMetadataError, assertion, this, location, detail);
+				}
 			}
 		}
 
 		//  Optional Slots required by this transaction
-		if (vc.hashRequired() && getSlot("hash") == null)
+		if (vc.hashRequired() && getSlot("hash") == null) {
+			String assertionID = "TA007";
 			er.err(XdsErrorCode.Code.XDSRegistryMetadataError, identifyingString() + ": Slot hash required in this context", this, table415);
+		}
 
-		if (vc.sizeRequired() && getSlot("size") == null)
+		if (vc.sizeRequired() && getSlot("size") == null) {
+			String assertionID = "TA008";
 			er.err(XdsErrorCode.Code.XDSRegistryMetadataError, identifyingString() + ": Slot size required in this context", this, table415);
+		}
 
-		if (vc.repositoryUniqueIdRequired() && getSlot("repositoryUniqueId") == null /*|| (vc.isXDR || vc.isXDRMinimal || vc.isXDRLimited) */)
+		if (vc.repositoryUniqueIdRequired() && getSlot("repositoryUniqueId") == null) {
+			String assertionID = "TA009";
 			er.err(XdsErrorCode.Code.XDSRegistryMetadataError, identifyingString() + ": Slot repositoryUniqueId required in this context...\n" + vc.toString(), this, table415);
+		}
 
-		if (vc.uriRequired() && getSlot("URI") == null)
+		if (vc.uriRequired() && getSlot("URI") == null){
+			String assertionID = "TA010";
 			er.err(XdsErrorCode.Code.XDSRegistryMetadataError, identifyingString() + ": Slot URI required in this context", this, table415);
-
+		}
 	}
 
 	/**
@@ -339,9 +362,13 @@ public class DocumentEntry extends AbstractRegistryObject implements TopLevelObj
 	public void validateSlotsLegal(ErrorRecorder er)  {
 		verifySlotsUnique(er);
 		for (Slot slot : getSlots()) {
-			if ( ! legal_slot_name(slot.getName()))
-				er.err(XdsErrorCode.Code.XDSRegistryMetadataError, identifyingString() + ": " + slot.getName() + " is not a legal slot name for a DocumentEntry",   this, table415);
-
+			if ( ! legal_slot_name(slot.getName())) {
+				String assertionID = "TA011";
+				Assertion assertion = ASSERTIONLIBRARY.getAssertion(assertionID);
+				String location = identifyingString();
+				String detail = "Found: '" + slot.getName() + "'";
+				er.err(XdsErrorCode.Code.XDSRegistryMetadataError, assertion, this, location, detail);
+			}
 		}
 	}
 
