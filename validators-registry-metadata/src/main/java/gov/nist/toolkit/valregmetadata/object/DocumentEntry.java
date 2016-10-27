@@ -400,8 +400,10 @@ public class DocumentEntry extends AbstractRegistryObject implements TopLevelObj
 
 		Slot docAvail = getSlot("documentAvailability");
 		if (docAvail != null) {
-			if (docAvail.getValues().size() > 1)
-				er.err(XdsErrorCode.Code.XDSRegistryMetadataError, "Slot documentAvailability shall have a single value", this, table415);
+			if (docAvail.getValues().size() > 1) {
+				Assertion assertion = ASSERTIONLIBRARY.getAssertion("TA013");
+				er.err(XdsErrorCode.Code.XDSRegistryMetadataError, assertion, this, location, "");
+			}
 			String val;
 			try {
 				val = docAvail.getValue(0);
@@ -409,9 +411,10 @@ public class DocumentEntry extends AbstractRegistryObject implements TopLevelObj
 						MetadataSupport.documentAvailability_online.equals(val)) {
 
 				} else {
-					er.err(Code.XDSRegistryMetadataError, "Slot documentAvailability must have one of two values: " + MetadataSupport.documentAvailability_offline + " or " +
-							MetadataSupport.documentAvailability_online + ". Found instead " + val, this, table415
-					);
+					Assertion assertion = ASSERTIONLIBRARY.getAssertion("TA014");
+					String detail = "Slot documentAvailability must have one of two values: " + MetadataSupport.documentAvailability_offline + " or " +
+							MetadataSupport.documentAvailability_online + ". Found instead " + val;
+					er.err(XdsErrorCode.Code.XDSRegistryMetadataError, assertion, this, location, detail);
 				}
 			} catch (Exception e) {
 				er.err(Code.XDSRegistryMetadataError, e);
