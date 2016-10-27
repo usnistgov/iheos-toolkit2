@@ -335,23 +335,28 @@ public class DocumentEntry extends AbstractRegistryObject implements TopLevelObj
 
 		//  Optional Slots required by this transaction
 		if (vc.hashRequired() && getSlot("hash") == null) {
-			String assertionID = "TA007";
-			er.err(XdsErrorCode.Code.XDSRegistryMetadataError, identifyingString() + ": Slot hash required in this context", this, table415);
+			Assertion assertion = ASSERTIONLIBRARY.getAssertion("TA007");
+			String location = identifyingString();
+			er.err(XdsErrorCode.Code.XDSRegistryMetadataError, assertion, this, location, "");
 		}
 
 		if (vc.sizeRequired() && getSlot("size") == null) {
-			String assertionID = "TA008";
-			er.err(XdsErrorCode.Code.XDSRegistryMetadataError, identifyingString() + ": Slot size required in this context", this, table415);
+			Assertion assertion = ASSERTIONLIBRARY.getAssertion("TA008");
+			String location = identifyingString();
+			er.err(XdsErrorCode.Code.XDSRegistryMetadataError, assertion, this, location, "");
 		}
 
 		if (vc.repositoryUniqueIdRequired() && getSlot("repositoryUniqueId") == null) {
-			String assertionID = "TA009";
-			er.err(XdsErrorCode.Code.XDSRegistryMetadataError, identifyingString() + ": Slot repositoryUniqueId required in this context...\n" + vc.toString(), this, table415);
+			Assertion assertion = ASSERTIONLIBRARY.getAssertion("TA009");
+			String location = identifyingString();
+			String detail = vc.toString();
+			er.err(XdsErrorCode.Code.XDSRegistryMetadataError, assertion, this, location, detail);
 		}
 
 		if (vc.uriRequired() && getSlot("URI") == null){
-			String assertionID = "TA010";
-			er.err(XdsErrorCode.Code.XDSRegistryMetadataError, identifyingString() + ": Slot URI required in this context", this, table415);
+			Assertion assertion = ASSERTIONLIBRARY.getAssertion("TA010");
+			String location = identifyingString();
+			er.err(XdsErrorCode.Code.XDSRegistryMetadataError, assertion, this, location, "");
 		}
 	}
 
