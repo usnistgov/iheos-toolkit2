@@ -16,3 +16,4 @@ TA014,Slot documentAvailability is not an accepted value,ITI TF-3: Table 4.2.3.2
 TA015,On-Demand objectType is not valid,ITI TF-3: Table 4.2.3.2-1,,
 TA016,ObjectType is not valid,ITI TF-3: Table 4.2.3.2-1,,
 TA017,MimeType attribute missing or empty,ITI TF-3: Table 4.2.3.2-1,,
+TA018,Invalid HL7 V2 DateTime format,ITI TF-3: Table 4.1-3,,

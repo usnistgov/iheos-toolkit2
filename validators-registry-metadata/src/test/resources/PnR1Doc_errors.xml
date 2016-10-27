@@ -15,7 +15,7 @@
                 </rim:Slot>
                 <rim:Slot name="serviceStartTime">
                     <rim:ValueList>
-                        <rim:Value>200412230800</rim:Value>
+                        <rim:Value>200412230800p</rim:Value>
                     </rim:ValueList>
                 </rim:Slot>
                 <rim:Slot name="serviceStopTime">
@@ -75,7 +75,6 @@
                         id="id_2">
                     <rim:Slot name="authorPerson">
                         <rim:ValueList>
-                            <rim:Value>^Dopplemeyer^Sherry^^^</rim:Value>
                         </rim:ValueList>
                     </rim:Slot>
                     <rim:Slot name="authorInstitution">
