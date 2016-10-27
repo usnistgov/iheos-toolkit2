@@ -167,6 +167,7 @@ public class XdsTestServiceManager extends CommonService {
 		} catch (Exception e) {
 			results = new ArrayList<>();
 			Result result = new Result();
+			result.pass = false;
 			result.assertions.add(ExceptionUtil.exception_details(e), false);
 			results.add(result);
 			return results;

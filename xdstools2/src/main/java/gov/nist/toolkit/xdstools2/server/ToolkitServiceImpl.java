@@ -29,7 +29,6 @@ import gov.nist.toolkit.results.client.Result;
 import gov.nist.toolkit.results.client.TestInstance;
 import gov.nist.toolkit.results.client.TestLogs;
 import gov.nist.toolkit.results.shared.Test;
-import gov.nist.toolkit.services.client.EnvironmentNotSelectedClientException;
 import gov.nist.toolkit.services.client.IdsOrchestrationRequest;
 import gov.nist.toolkit.services.client.IgOrchestrationRequest;
 import gov.nist.toolkit.services.client.IigOrchestrationRequest;
@@ -66,7 +65,6 @@ import gov.nist.toolkit.valregmsg.message.SchemaValidation;
 import gov.nist.toolkit.valregmsg.validation.factories.CommonMessageValidatorFactory;
 import gov.nist.toolkit.valsupport.client.MessageValidationResults;
 import gov.nist.toolkit.xdsexception.ExceptionUtil;
-import gov.nist.toolkit.xdsexception.client.EnvironmentNotSelectedException;
 import gov.nist.toolkit.xdsexception.client.ToolkitRuntimeException;
 import gov.nist.toolkit.xdstools2.client.util.ToolkitService;
 import gov.nist.toolkit.xdstools2.server.serviceManager.DashboardServiceManager;
@@ -74,8 +72,20 @@ import gov.nist.toolkit.xdstools2.server.serviceManager.GazelleServiceManager;
 import gov.nist.toolkit.xdstools2.shared.NoServletSessionException;
 import gov.nist.toolkit.xdstools2.shared.RegistryStatus;
 import gov.nist.toolkit.xdstools2.shared.RepositoryStatus;
-import gov.nist.toolkit.xdstools2.shared.command.*;
-import gov.nist.toolkit.xdstools2.shared.command.request.*;
+import gov.nist.toolkit.xdstools2.shared.command.CommandContext;
+import gov.nist.toolkit.xdstools2.shared.command.InitializationResponse;
+import gov.nist.toolkit.xdstools2.shared.command.request.ExecuteSimMessageRequest;
+import gov.nist.toolkit.xdstools2.shared.command.request.GeneratePidRequest;
+import gov.nist.toolkit.xdstools2.shared.command.request.GetAllSimConfigsRequest;
+import gov.nist.toolkit.xdstools2.shared.command.request.GetSiteNamesByTranTypeRequest;
+import gov.nist.toolkit.xdstools2.shared.command.request.GetSiteNamesRequest;
+import gov.nist.toolkit.xdstools2.shared.command.request.GetTestsOverviewRequest;
+import gov.nist.toolkit.xdstools2.shared.command.request.GetTransactionRequest;
+import gov.nist.toolkit.xdstools2.shared.command.request.ReloadSystemFromGazelleRequest;
+import gov.nist.toolkit.xdstools2.shared.command.request.SaveSiteRequest;
+import gov.nist.toolkit.xdstools2.shared.command.request.SendPidToRegistryRequest;
+import gov.nist.toolkit.xdstools2.shared.command.request.SetAssignedSiteForTestSessionRequest;
+import gov.nist.toolkit.xdstools2.shared.command.request.ValidateMessageRequest;
 import org.apache.log4j.Logger;
 
 import javax.servlet.ServletContext;
@@ -1135,11 +1145,17 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements
 
         if (results!=null) {
             if (results.size() == 1) {
-                if (!results.get(0).passed()) {
-                    List<String> soapFaults = results.get(0).getStepResults().get(0).getSoapFaults();
-                    if (soapFaults != null && soapFaults.size() > 0) {
-                        throw new ToolkitRuntimeException("getStsSamlAssertion SOAP Fault: " + soapFaults.toString());
+                Result mainResult =  results.get(0);
+                if (!mainResult.passed()) {
+                    if (results.get(0).getStepResults()!=null && results.get(0).getStepResults().size()>0) {
+                        List<String> soapFaults = results.get(0).getStepResults().get(0).getSoapFaults();
+                        if (soapFaults != null && soapFaults.size() > 0) {
+                            throw new ToolkitRuntimeException("getStsSamlAssertion SOAP Fault: " + soapFaults.toString());
+                        }
+                    }  else {
+                        throw new ToolkitRuntimeException("getStsSamlAssertion: " + mainResult.toString());
                     }
+
                 } else {
                     LogFileContentDTO logFileContentDTO = xtsm.getTestLogDetails(sessionName,testInstance);
                     TestStepLogContentDTO testStepLogContentDTO = logFileContentDTO.getStep(step);
@@ -1151,7 +1167,6 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements
                         }
                     }
                     throw new ToolkitRuntimeException(assertionResultId + " result key not found.");
-
                 }
             }
             throw new ToolkitRuntimeException("Result size: " + results.size());
