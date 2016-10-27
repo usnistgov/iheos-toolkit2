@@ -29,6 +29,8 @@ import java.util.Set;
 
 public class DocumentEntry extends AbstractRegistryObject implements TopLevelObject {
 	private AssertionLibrary ASSERTIONLIBRARY = AssertionLibrary.getInstance();
+	static public String table415 = "ITI TF-3: Table 4.2.3.2-1";
+	private String location = identifyingString();
 
 	static List<String> definedSlots =
 			Arrays.asList(
@@ -291,7 +293,6 @@ public class DocumentEntry extends AbstractRegistryObject implements TopLevelObj
 		}
 	}
 
-	static public String table415 = "ITI TF-3: Table 4.2.3.2-1";
 
 	// this takes in two circumstances:
 	//	Slots always required
@@ -303,7 +304,6 @@ public class DocumentEntry extends AbstractRegistryObject implements TopLevelObj
 			for (String slotName : directRequiredSlots) {
 				if (getSlot(slotName) == null) {
 					Assertion assertion = ASSERTIONLIBRARY.getAssertion("TA004");
-					String location = identifyingString();
 					String detail = "Slot " + slotName + " missing";
 					er.err(XdsErrorCode.Code.XDSRegistryMetadataError, assertion, this, location, detail);
 				}
@@ -314,7 +314,6 @@ public class DocumentEntry extends AbstractRegistryObject implements TopLevelObj
 			for (String slotName : roddeRequiredSlots) {
 				if (getSlot(slotName) == null) {
 					Assertion assertion = ASSERTIONLIBRARY.getAssertion("TA005");
-					String location = identifyingString();
 					String detail = "Slot " + slotName + " missing";
 					er.err(XdsErrorCode.Code.XDSRegistryMetadataError, assertion, this, location, detail);
 				}
@@ -323,7 +322,6 @@ public class DocumentEntry extends AbstractRegistryObject implements TopLevelObj
 			for (String slotName : requiredSlots) {
 				if (getSlot(slotName) == null) {
 					Assertion assertion = ASSERTIONLIBRARY.getAssertion("TA006");
-					String location = identifyingString();
 					String detail = "Slot " + slotName + " missing";
 					er.err(XdsErrorCode.Code.XDSRegistryMetadataError, assertion, this, location, detail);
 				}
@@ -333,26 +331,22 @@ public class DocumentEntry extends AbstractRegistryObject implements TopLevelObj
 		//  Optional Slots required by this transaction
 		if (vc.hashRequired() && getSlot("hash") == null) {
 			Assertion assertion = ASSERTIONLIBRARY.getAssertion("TA007");
-			String location = identifyingString();
 			er.err(XdsErrorCode.Code.XDSRegistryMetadataError, assertion, this, location, "");
 		}
 
 		if (vc.sizeRequired() && getSlot("size") == null) {
 			Assertion assertion = ASSERTIONLIBRARY.getAssertion("TA008");
-			String location = identifyingString();
 			er.err(XdsErrorCode.Code.XDSRegistryMetadataError, assertion, this, location, "");
 		}
 
 		if (vc.repositoryUniqueIdRequired() && getSlot("repositoryUniqueId") == null) {
 			Assertion assertion = ASSERTIONLIBRARY.getAssertion("TA009");
-			String location = identifyingString();
 			String detail = vc.toString();
 			er.err(XdsErrorCode.Code.XDSRegistryMetadataError, assertion, this, location, detail);
 		}
 
 		if (vc.uriRequired() && getSlot("URI") == null){
 			Assertion assertion = ASSERTIONLIBRARY.getAssertion("TA010");
-			String location = identifyingString();
 			er.err(XdsErrorCode.Code.XDSRegistryMetadataError, assertion, this, location, "");
 		}
 	}
@@ -366,7 +360,6 @@ public class DocumentEntry extends AbstractRegistryObject implements TopLevelObj
 		for (Slot slot : getSlots()) {
 			if ( ! legal_slot_name(slot.getName())) {
 				Assertion assertion = ASSERTIONLIBRARY.getAssertion("TA011");
-				String location = identifyingString();
 				String detail = "Found: '" + slot.getName() + "'";
 				er.err(XdsErrorCode.Code.XDSRegistryMetadataError, assertion, this, location, detail);
 			}
@@ -399,7 +392,9 @@ public class DocumentEntry extends AbstractRegistryObject implements TopLevelObj
 			try {
 				m.getURIAttribute(ro, !vc.isXDM);
 			} catch (MetadataException e) {
-				er.err(XdsErrorCode.Code.XDSRegistryMetadataError, "Slot URI: " + e.getMessage(), this, table415);
+				Assertion assertion = ASSERTIONLIBRARY.getAssertion("TA012");
+				String detail = "Slot URI: " + e.getMessage();
+				er.err(XdsErrorCode.Code.XDSRegistryMetadataError, assertion, this, location, detail);
 			}
 		}
 
