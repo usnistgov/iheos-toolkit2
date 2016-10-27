@@ -281,6 +281,9 @@ public abstract class GenericQueryTab  extends ToolWindow {
 
         commonParamGrid.setWidget(commonGridRow++, contentsColumn, fp);
 
+
+
+
         ClientUtils.INSTANCE.getToolkitServices().getToolkitProperties(new AsyncCallback<Map<String, String>>() {
             @Override
             public void onFailure(Throwable throwable) {
@@ -308,6 +311,14 @@ public abstract class GenericQueryTab  extends ToolWindow {
                     samlListBox.setSelectedIndex(0);
                     fp.add(samlListBox);
                     fp.add(gazelleXuaTablePage);
+
+                    TransactionType stsTran = TransactionType.STS;
+                    List<Site> sites = siteLoader.findSites(stsTran, true);
+                    if (sites==null || (sites!=null && sites.size()==0)) {
+                        samlListBox.setSelectedIndex(0);
+                        samlListBox.setEnabled(false);
+                        fp.add(new HTML("<span class=\"serverResponseLabelError\">GazelleSts site is not configured. Please check External Cache Actor site configuration.</span>"));
+                    }
                     fp.setVisible(true);
                     samlLabel.setVisible(true);
                 } else {
