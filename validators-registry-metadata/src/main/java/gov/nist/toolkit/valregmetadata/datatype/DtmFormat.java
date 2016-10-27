@@ -19,11 +19,11 @@ public class DtmFormat extends FormatValidator {
 
 		int size = input.length();
 		if (!(size == 4 || size == 6 || size == 8 || size == 10 || size == 12 || size == 14)) {
-			String detail = "Input " + input + " has an invalid number of characters.";
+			String detail = "Input '" + input + "' has an invalid number of characters.";
 			er.err(XdsErrorCode.Code.XDSRegistryMetadataError, assertion, this, context, detail);
 		}
 		if (!ValidatorCommon.isInt(input)) {
-			String detail = "Input: " + input + ". All characters must be digits.";
+			String detail = "Input: '" + input + "'. All characters must be digits.";
 			er.err(XdsErrorCode.Code.XDSRegistryMetadataError, assertion, this, context, detail);
 		}
 	}

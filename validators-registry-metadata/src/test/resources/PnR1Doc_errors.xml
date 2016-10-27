@@ -8,9 +8,8 @@
                         <rim:Value>20051224</rim:Value>
                     </rim:ValueList>
                 </rim:Slot>
-                <rim:Slot name="languageCode">
+                <rim:Slot name="lang">
                     <rim:ValueList>
-                        <rim:Value>en-us</rim:Value>
                     </rim:ValueList>
                 </rim:Slot>
                 <rim:Slot name="serviceStartTime">
@@ -20,7 +19,7 @@
                 </rim:Slot>
                 <rim:Slot name="serviceStopTime">
                     <rim:ValueList>
-                        <rim:Value>200412230801</rim:Value>
+                        <rim:Value></rim:Value>
                     </rim:ValueList>
                 </rim:Slot>
                 <rim:Slot name="sourcePatientId">

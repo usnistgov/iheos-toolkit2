@@ -304,7 +304,7 @@ public class DocumentEntry extends AbstractRegistryObject implements TopLevelObj
 			for (String slotName : directRequiredSlots) {
 				if (getSlot(slotName) == null) {
 					Assertion assertion = ASSERTIONLIBRARY.getAssertion("TA004");
-					String detail = "Slot " + slotName + " missing";
+					String detail = "Slot '" + slotName + "' missing";
 					er.err(XdsErrorCode.Code.XDSRegistryMetadataError, assertion, this, location, detail);
 				}
 			}
@@ -314,7 +314,7 @@ public class DocumentEntry extends AbstractRegistryObject implements TopLevelObj
 			for (String slotName : roddeRequiredSlots) {
 				if (getSlot(slotName) == null) {
 					Assertion assertion = ASSERTIONLIBRARY.getAssertion("TA005");
-					String detail = "Slot " + slotName + " missing";
+					String detail = "Slot '" + slotName + "' missing";
 					er.err(XdsErrorCode.Code.XDSRegistryMetadataError, assertion, this, location, detail);
 				}
 			}
@@ -322,7 +322,7 @@ public class DocumentEntry extends AbstractRegistryObject implements TopLevelObj
 			for (String slotName : requiredSlots) {
 				if (getSlot(slotName) == null) {
 					Assertion assertion = ASSERTIONLIBRARY.getAssertion("TA006");
-					String detail = "Slot " + slotName + " missing";
+					String detail = "Slot '" + slotName + "' missing";
 					er.err(XdsErrorCode.Code.XDSRegistryMetadataError, assertion, this, location, detail);
 				}
 			}
@@ -413,7 +413,7 @@ public class DocumentEntry extends AbstractRegistryObject implements TopLevelObj
 				} else {
 					Assertion assertion = ASSERTIONLIBRARY.getAssertion("TA014");
 					String detail = "Slot documentAvailability must have one of two values: " + MetadataSupport.documentAvailability_offline + " or " +
-							MetadataSupport.documentAvailability_online + ". Found instead " + val;
+							MetadataSupport.documentAvailability_online + ". Found instead: '" + val + "'.";
 					er.err(XdsErrorCode.Code.XDSRegistryMetadataError, assertion, this, location, detail);
 				}
 			} catch (Exception e) {
