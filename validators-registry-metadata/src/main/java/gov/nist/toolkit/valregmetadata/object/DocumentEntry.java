@@ -302,8 +302,7 @@ public class DocumentEntry extends AbstractRegistryObject implements TopLevelObj
 		if (vc.isXDRMinimal) {
 			for (String slotName : directRequiredSlots) {
 				if (getSlot(slotName) == null) {
-					String assertionID = "TA004";
-					Assertion assertion = ASSERTIONLIBRARY.getAssertion(assertionID);
+					Assertion assertion = ASSERTIONLIBRARY.getAssertion("TA004");
 					String location = identifyingString();
 					String detail = "Slot " + slotName + " missing";
 					er.err(XdsErrorCode.Code.XDSRegistryMetadataError, assertion, this, location, detail);
@@ -314,8 +313,7 @@ public class DocumentEntry extends AbstractRegistryObject implements TopLevelObj
 		} else if (vc.isRODDE) {
 			for (String slotName : roddeRequiredSlots) {
 				if (getSlot(slotName) == null) {
-					String assertionID = "TA005";
-					Assertion assertion = ASSERTIONLIBRARY.getAssertion(assertionID);
+					Assertion assertion = ASSERTIONLIBRARY.getAssertion("TA005");
 					String location = identifyingString();
 					String detail = "Slot " + slotName + " missing";
 					er.err(XdsErrorCode.Code.XDSRegistryMetadataError, assertion, this, location, detail);
@@ -324,8 +322,7 @@ public class DocumentEntry extends AbstractRegistryObject implements TopLevelObj
 		} else if (!(vc.isXDM || vc.isXDRLimited || vc.isXDRMinimal)) {
 			for (String slotName : requiredSlots) {
 				if (getSlot(slotName) == null) {
-					String assertionID = "TA006";
-					Assertion assertion = ASSERTIONLIBRARY.getAssertion(assertionID);
+					Assertion assertion = ASSERTIONLIBRARY.getAssertion("TA006");
 					String location = identifyingString();
 					String detail = "Slot " + slotName + " missing";
 					er.err(XdsErrorCode.Code.XDSRegistryMetadataError, assertion, this, location, detail);
@@ -368,8 +365,7 @@ public class DocumentEntry extends AbstractRegistryObject implements TopLevelObj
 		verifySlotsUnique(er);
 		for (Slot slot : getSlots()) {
 			if ( ! legal_slot_name(slot.getName())) {
-				String assertionID = "TA011";
-				Assertion assertion = ASSERTIONLIBRARY.getAssertion(assertionID);
+				Assertion assertion = ASSERTIONLIBRARY.getAssertion("TA011");
 				String location = identifyingString();
 				String detail = "Found: '" + slot.getName() + "'";
 				er.err(XdsErrorCode.Code.XDSRegistryMetadataError, assertion, this, location, detail);
