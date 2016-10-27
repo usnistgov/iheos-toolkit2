@@ -424,14 +424,20 @@ public class DocumentEntry extends AbstractRegistryObject implements TopLevelObj
 
 	public void validateTopAtts(ErrorRecorder er, ValidationContext vc) {
 		if(vc.isRODDE) {
-			if (!MetadataSupport.XDSRODDEDocumentEntry_objectType_uuid.equals(objectType))
-				er.err(XdsErrorCode.Code.XDSRegistryMetadataError, identifyingString() + ": On-Demand objectType must be " + MetadataSupport.XDSRODDEDocumentEntry_objectType_uuid + " (found " + objectType + ")", this, table415);
-
-		} else if (!MetadataSupport.XDSDocumentEntry_objectType_uuid.equals(objectType))
-			er.err(XdsErrorCode.Code.XDSRegistryMetadataError, identifyingString() + ": objectType must be " + MetadataSupport.XDSDocumentEntry_objectType_uuid + " (found " + objectType + ")", this, table415);
-
-		if (mimeType == null || mimeType.equals(""))
-			er.err(XdsErrorCode.Code.XDSRegistryMetadataError, identifyingString() + ": mimeType attribute missing or empty", this, table415);
+			if (!MetadataSupport.XDSRODDEDocumentEntry_objectType_uuid.equals(objectType)) {
+				Assertion assertion = ASSERTIONLIBRARY.getAssertion("TA015");
+				String detail = "On-Demand objectType must be " + MetadataSupport.XDSRODDEDocumentEntry_objectType_uuid + ". Found: " + objectType + ".";
+				er.err(XdsErrorCode.Code.XDSRegistryMetadataError, assertion, this, location, detail);
+			}
+		} else if (!MetadataSupport.XDSDocumentEntry_objectType_uuid.equals(objectType)) {
+			Assertion assertion = ASSERTIONLIBRARY.getAssertion("TA016");
+			String detail = "ObjectType must be " + MetadataSupport.XDSDocumentEntry_objectType_uuid + ". Found: " + objectType + ".";
+			er.err(XdsErrorCode.Code.XDSRegistryMetadataError, assertion, this, location, detail);
+		}
+		if (mimeType == null || mimeType.equals("")) {
+			Assertion assertion = ASSERTIONLIBRARY.getAssertion("TA017");
+			er.err(XdsErrorCode.Code.XDSRegistryMetadataError, assertion, this, location, "");
+		}
 
 		validateTopAtts(er, vc, table415, statusValues);
 
