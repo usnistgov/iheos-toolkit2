@@ -574,7 +574,11 @@ public abstract class GenericQueryTab  extends ToolWindow {
                                     public void onFailure(Throwable throwable) {
                                         SafeHtmlBuilder shb = new SafeHtmlBuilder();
                                         shb.appendHtmlConstant("Error");
-                                        new PopupMessage(shb.toSafeHtml(),new HTML(throwable.toString()));
+//                                        new PopupMessage(shb.toSafeHtml(),new HTML(throwable.toString()));
+                                        resultPanel.clear();
+                                        addStatusBox("");
+                                        setStatus("Status: Failure",false);
+                                        resultPanel.add(new HTML(throwable.toString()));
                                     }
 
                                     @Override
