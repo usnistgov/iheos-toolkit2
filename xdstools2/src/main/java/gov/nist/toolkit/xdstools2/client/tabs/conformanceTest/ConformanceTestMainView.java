@@ -28,7 +28,9 @@ public class ConformanceTestMainView {
 
         FlowPanel sitesPanel = new FlowPanel();
         toolPanel.add(sitesPanel);
+        toolPanel.add(new HTML("Actor"));
         toolPanel.add(actorTabBar);
+        toolPanel.add(new HTML("Option"));
         toolPanel.add(optionsTabBar);
         toolPanel.add(initializationPanel);
         toolPanel.add(testsPanel);

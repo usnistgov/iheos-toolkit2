@@ -37,8 +37,8 @@ public class ToolLauncher implements ClickHandler {
 	final static public String getRelatedTabLabel = "GetRelated";
 	final static public String connectathonTabLabel = "Connectathon Tools";
 	final static public String messageValidatorTabLabel = "Message Validator";
-	final static public String simulatorMessageViewTabLabel = " View Simulator Logs";
-	final static public String simulatorControlTabLabel = "Manage Simulators";
+	final static public String simulatorMessageViewTabLabel = " Simulator Logs";
+	final static public String simulatorControlTabLabel = "Simulators";
 	final static public String srcStoresDocValTabLabel = "XDS.b_Doc_Source_Stores_Document";
 	final static public String documentRetrieveTabLabel = "RetrieveDocuments";
 	final static public String allocatePatientIdTabLabel = "Allocate Patient ID for the Public Registry";
@@ -49,7 +49,7 @@ public class ToolLauncher implements ClickHandler {
 	final static public String repositoryDoThisFirstTabLabel = "XDS.b_Repository_Do_This_First";
 	final static public String registryLifecycleTabLabel = "XDS.b_Lifecycle";
 	final static public String registryFolderHandlingTabLabel = "XDS.b_Registry_Folder_Handling";
-	final static public String sitesTabLabel = "Configure Systems";
+	final static public String sitesTabLabel = "System Configurations";
 	final static public String repositoryTabLabel = "Repository Listing";
 	final static public String mesaTabLabel = "Pre-Connectathon Tests";
 	final static public String testRunnerTabLabel = "Conformance Tests";
@@ -68,7 +68,7 @@ public class ToolLauncher implements ClickHandler {
 
 
 	final static public String conformanceTestsLabel = "Conformance Tests";
-	final static public String toolConfigTabLabel = " Configure Toolkit";
+	final static public String toolConfigTabLabel = "Toolkit configuration";
 
 	private static List<ToolDef> tools = new ArrayList<>();
 

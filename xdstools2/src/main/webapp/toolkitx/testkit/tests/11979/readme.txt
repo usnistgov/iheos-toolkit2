@@ -1,11 +1,6 @@
-PnR.b Accept two documents
+Accept two documents
 
-## Overview
+Submit two documents in a Provide and Register transaction and verify the transaction
+by querying the Registry for the metadata.
 
-Send a Provide and Register transaction to the Repository under test containing two documents.
-The Repository is expected to forward the metadata to a Registry simulator.
-
-Initialization instructions for the Repository under test are at the top of the window.
-The forwarding of the metadata will be validated by querying the Registry simulator.
-
-This test does not Retrieve the documents.  This tests the submission only.
+This test does not Retrieve the documents. It tests the submission only.

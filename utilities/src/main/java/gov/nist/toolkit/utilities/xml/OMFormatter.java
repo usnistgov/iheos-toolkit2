@@ -30,7 +30,7 @@ public class OMFormatter {
 	}
 
 	public OMFormatter(String xml) throws XdsInternalException, FactoryConfigurationError {
-		if (xml == null)
+		if (xml == null || xml.equals(""))
 			ele = null;
 		else
 			ele = Util.parse_xml(xml);

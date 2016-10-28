@@ -371,6 +371,8 @@ public class XdsTestServiceManager extends CommonService {
 
 		for (TestInstance ti : tis) {
 			TestDefinition def = session.getTestkitSearchPath().getTestDefinition(ti.getId());
+			if (def == null)
+				throw new XdsInternalException("Cannot find test definition for " + ti);
 			List<SectionDefinitionDAO> sectionDAOs = def.getSections();
 			boolean sutInitiated = false;
 			for (SectionDefinitionDAO dao : sectionDAOs) {
@@ -380,7 +382,7 @@ public class XdsTestServiceManager extends CommonService {
 		}
 		return tis;
       } catch (Exception e) {
-         logger.debug("getCollectionsMembers error: " + e.getMessage());
+		   logger.debug(ExceptionUtil.exception_details(e, "getCollectionsMembers error: "));
          throw e;
       }
 	}

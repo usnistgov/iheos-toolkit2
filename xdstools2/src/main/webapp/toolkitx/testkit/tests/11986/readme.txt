@@ -1,4 +1,4 @@
-PnR.b Return Errors from Registry
+Return Errors from Registry
 
 Send a Provide and Register.b transaction to Repository which then 
 forwards the metadata to the Public Registry.  The metadata contains
