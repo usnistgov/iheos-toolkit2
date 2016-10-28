@@ -153,7 +153,7 @@ public class SiteServiceManager {
 			Exception {
 		if (commonSites == null) {
 			if (!useActorsFile()) {
-				File dir = Installation.instance().getActorsDirName();
+				File dir = Installation.instance().actorsDir();
 				logger.debug("loading sites from " + dir);
 				commonSites = new SeparateSiteLoader().load(dir, commonSites);
 			} else {
@@ -283,7 +283,7 @@ public class SiteServiceManager {
 			// sites.saveToFile(configuredActorsFile(false));
 			if (!useActorsFile())
 				new SeparateSiteLoader().saveToFile(Installation.instance()
-						.getActorsDirName(), site);
+						.actorsDir(), site);
 			else {
 				CombinedSiteLoader loader = new CombinedSiteLoader();
 				loader.saveToFile(Installation.instance().propertyServiceManager()
@@ -306,7 +306,7 @@ public class SiteServiceManager {
 			// sites.saveToFile(configuredActorsFile(false));
 			if (!useActorsFile())
 				new SeparateSiteLoader().delete(Installation.instance()
-						.getActorsDirName(), siteName);
+						.actorsDir(), siteName);
 			else
 				new CombinedSiteLoader().saveToFile(Installation.instance().propertyServiceManager()
 						.configuredActorsFile(false), commonSites);
