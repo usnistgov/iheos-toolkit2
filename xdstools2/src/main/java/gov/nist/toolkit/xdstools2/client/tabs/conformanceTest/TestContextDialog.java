@@ -120,7 +120,7 @@ class TestContextDialog extends DialogBox {
             public void onComplete(Collection<String> result) {
                 sitesForTestSessionPanel.clear();
                 sitesForTestSessionPanel.add(clearTestSessionButton);
-                sitesForTestSessionPanel.add(new HTML("Contains results for sites:"));
+                sitesForTestSessionPanel.add(new HTML("Contains results for systems:"));
                 for (String s : result) {
                     sitesForTestSessionPanel.add(new HTML(s));
                 }

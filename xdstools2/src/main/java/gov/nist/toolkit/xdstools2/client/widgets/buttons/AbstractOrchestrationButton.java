@@ -21,6 +21,7 @@ abstract public class AbstractOrchestrationButton implements ClickHandler {
     private CheckBox selftestCheckBox;
     private String label = null;
     private String resetLabel = null;
+    private String systemDiagramUrl = null;
 
     public AbstractOrchestrationButton(Panel topPanel, String label) {
         this.topPanel = topPanel;
@@ -45,12 +46,22 @@ abstract public class AbstractOrchestrationButton implements ClickHandler {
         this.resetLabel = resetLabel;
     }
 
+    protected void setSystemDiagramUrl(String url) { this.systemDiagramUrl = url; }
+
     public Panel build() {
         if (!errorPanelAdded) {
             errorPanelAdded = true;
             panel.add(errorPanel);
         }
         panel.add(new HTML("<hr /><h2>Testing Environment</h2>"));
+
+        if (systemDiagramUrl != null) {
+            Image initiatingGatewayDiagram=new Image();
+            initiatingGatewayDiagram.setUrl(systemDiagramUrl);
+            initiatingGatewayDiagram.setHeight("300px");
+            panel.add(initiatingGatewayDiagram);
+            panel.add(new HTML("<br />"));
+        }
 
         if (customPanel != null) {
             panel.add(customPanel);
