@@ -202,6 +202,11 @@ h3 {
   text-align: left;
 }
 
+.bold-face {
+  font-weight: bold;
+  color: black;
+}
+
 .test-summary {
   font-size: 2em;
   font-weight: bold;
