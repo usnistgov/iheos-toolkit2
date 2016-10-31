@@ -33,7 +33,7 @@ public class BuildRegTestOrchestrationButton extends AbstractOrchestrationButton
 
     static private final String MU_OPTION = "mu";
     static private final String MPQ_OPTION = "mpq";
-    static private final String OD_OPTION = "mpq";
+    static private final String OD_OPTION = "od";
     public static List<ActorAndOption> ACTOR_OPTIONS = new ArrayList<>();
     static {
         ACTOR_OPTIONS = java.util.Arrays.asList(

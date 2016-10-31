@@ -65,8 +65,9 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner, TestsH
 	private List<TestCollectionDefinitionDAO> testCollectionDefinitionDAOs;
 
 	// Test results
-	// testname ==> results
-	private Map<String, TestOverviewDTO> testOverviewDTOs = new HashMap<>();
+	// test ==> results
+	// this contains all tests independent of whether they have been run.
+	private Map<TestInstance, TestOverviewDTO> testOverviewDTOs = new HashMap<>();
 
 	// for each actor type id, the list of tests for it
 	private Map<ActorOption, List<TestInstance>> testsPerActorOption = new HashMap<>();
@@ -159,17 +160,16 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner, TestsH
 	}
 
 	public void removeTestDetails(TestInstance testInstance) {
-		testOverviewDTOs.remove(testInstance.getId());
-		updateTestsOverviewHeader(testOverviewDTOs.values());
+		TestOverviewDTO dto = testOverviewDTOs.get(testInstance);
+		if (dto != null)
+			dto.setRun(false);
+//		testOverviewDTOs.remove(testInstance);
+		updateTestsOverviewHeader(currentActorOption);
 	}
 
-	private Collection<TestOverviewDTO> addTestOverview(TestOverviewDTO dto) {
-		testOverviewDTOs.put(dto.getName(), dto);
-		return testOverviewDTOs.values();
-	}
-
-	private Collection<TestOverviewDTO> removeTestOverview(TestOverviewDTO dto) {
-		testOverviewDTOs.remove(dto.getName());
+	// overwrites existing status
+	private Collection<TestOverviewDTO> updateTestOverview(TestOverviewDTO dto) {
+		testOverviewDTOs.put(dto.getTestInstance(), dto);
 		return testOverviewDTOs.values();
 	}
 
@@ -178,11 +178,8 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner, TestsH
 	 * updates the build since it could not be constructed correctly at first.
 	 * This must be called after testCollectionDefinitionDAOs is initialized.
 	 */
-	private void updateTestsOverviewHeader(Collection<TestOverviewDTO> items) {
-
-		// Build statistics
-		if (items != null) {
-//			Collection<TestOverviewDTO> items = testOverviewDTOs.values();
+	private void updateTestsOverviewHeader(ActorOption actorOption) {
+			Collection<TestOverviewDTO> items = testOverviews(actorOption);
 			resetStatistics(items.size());
 			for (TestOverviewDTO testOverview : items) {
 				if (testOverview.isRun()) {
@@ -193,7 +190,6 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner, TestsH
 					}
 				}
 			}
-		}
 
 		// Display testStatus with statistics
 		testsHeaderView.allowRun(allowRun());
@@ -384,11 +380,11 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner, TestsH
 //                testStatistics.clear();
 //                testStatistics.setTestCount(testOverviews.size());
                 for (TestOverviewDTO testOverview : testOverviews) {
-                    addTestOverview(testOverview);
+                    updateTestOverview(testOverview);
                     TestDisplay testDisplay = testDisplayGroup.display(testOverview);
                     testsPanel.add(testDisplay.asWidget());
                 }
-                updateTestsOverviewHeader(testOverviews);
+                updateTestsOverviewHeader(currentActorOption);
 
                 new AutoInitConformanceTestingCommand(){
                     @Override
@@ -566,11 +562,12 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner, TestsH
 
 					@Override
 					public void onSuccess(TestOverviewDTO testOverviewDTO) {
+						updateTestOverview(testOverviewDTO);
 						testDisplayGroup.display(testOverviewDTO);
 //						displayTest(testsPanel, testDisplayGroup, testOverviewDTO);
 //						Collection<TestOverviewDTO> overviews =
 //								removeTestOverview(testOverviewDTO);
-						updateTestsOverviewHeader(testOverviews(actorOption));
+						updateTestsOverviewHeader(actorOption);
 					}
 				});
 			}
@@ -603,8 +600,8 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner, TestsH
 				public void onSuccess(TestOverviewDTO testOverviewDTO) {
 					// returned testStatus of entire test
 					testDisplayGroup.display(testOverviewDTO);
-					Collection<TestOverviewDTO> overviews = addTestOverview(testOverviewDTO);
-					updateTestsOverviewHeader(overviews);
+					Collection<TestOverviewDTO> overviews = updateTestOverview(testOverviewDTO);
+					updateTestsOverviewHeader(currentActorOption);
 					// Schedule next section to be run
 					if (sectionDone != null)
 						sectionDone.onDone(sectionInstance);
@@ -634,9 +631,10 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner, TestsH
 				public void onSuccess(TestOverviewDTO testOverviewDTO) {
 					// returned testStatus of entire test
 					testDisplayGroup.display(testOverviewDTO);
-//					Collection<TestOverviewDTO> overviews = addTestOverview(testOverviewDTO);
+//					Collection<TestOverviewDTO> overviews = updateTestOverview(testOverviewDTO);
 //					updateTestsOverviewHeader(overviews);
-					updateTestsOverviewHeader(testOverviews(currentActorOption));
+					updateTestOverview(testOverviewDTO);
+					updateTestsOverviewHeader(currentActorOption);
 					// Schedule next test to be run
 					if (testDone != null)
 						testDone.onDone(testInstance);
