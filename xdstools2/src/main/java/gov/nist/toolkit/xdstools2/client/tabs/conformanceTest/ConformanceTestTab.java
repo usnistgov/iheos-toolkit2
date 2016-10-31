@@ -69,7 +69,7 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner, TestsH
 	private Map<String, TestOverviewDTO> testOverviewDTOs = new HashMap<>();
 
 	// for each actor type id, the list of tests for it
-	private Map<String, List<TestInstance>> testsPerActor = new HashMap<>();
+	private Map<ActorOption, List<TestInstance>> testsPerActorOption = new HashMap<>();
 
 	private ConformanceTestMainView mainView;
 	private AbstractOrchestrationButton orchInit = null;
@@ -120,6 +120,18 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner, TestsH
 				}
 			}
 		});
+	}
+
+	private List<TestOverviewDTO> testOverviews(ActorOption actorOption) {
+		List<TestInstance> testsForThisActorOption = testsPerActorOption.get(actorOption);
+		List<TestOverviewDTO> overviews = new ArrayList<>();
+		for (TestOverviewDTO dto : testOverviewDTOs.values()) {
+			if (testsForThisActorOption.contains(dto.getTestInstance())) {
+				overviews.add(dto);
+			}
+		}
+
+		return overviews;
 	}
 
 	private boolean allowRun() {
@@ -358,13 +370,13 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner, TestsH
             @Override
             public void onComplete(List<TestOverviewDTO> testOverviews) {
                 // sort tests by dependencies and alphabetically
-                // save in testsPerActor so they run in this order as well
+                // save in testsPerActorOption so they run in this order as well
                 List<TestInstance> testInstances1 = new ArrayList<>();
                 testOverviews = new TestSorter().sort(testOverviews);
                 for (TestOverviewDTO dto : testOverviews) {
                     testInstances1.add(dto.getTestInstance());
                 }
-                testsPerActor.put(currentActorOption.actorTypeId, testInstances1);
+                testsPerActorOption.put(currentActorOption, testInstances1);
 
                 testsPanel.clear();
                 testsHeaderView.allowRun(allowRun());
@@ -447,15 +459,15 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner, TestsH
 
 	@Override
 	public RunAllTestsClickHandler getRunAllClickHandler() {
-		return new RunAllTestsClickHandler(currentActorOption.actorTypeId);
+		return new RunAllTestsClickHandler(currentActorOption);
 	}
 
 	private class RunAllTestsClickHandler implements ClickHandler, TestDone {
-		String actorTypeId;
-		List<TestInstance> tests = new ArrayList<TestInstance>();
+		ActorOption actorOption;
+		List<TestInstance> tests = new ArrayList<>();
 
-		RunAllTestsClickHandler(String actorTypeId ) {
-			this.actorTypeId = actorTypeId;
+		RunAllTestsClickHandler(ActorOption actorOption ) {
+			this.actorOption = actorOption;
 		}
 
       @Override
@@ -463,7 +475,7 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner, TestsH
          clickEvent.preventDefault();
          clickEvent.stopPropagation();
 
-         for (TestInstance testInstance : testsPerActor.get(actorTypeId))
+         for (TestInstance testInstance : testsPerActorOption.get(actorOption))
             tests.add(testInstance);
          onDone(null);
       }
@@ -524,7 +536,7 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner, TestsH
 
 	@Override
 	public DeleteAllClickHandler getDeleteAllClickHandler() {
-		return new DeleteAllClickHandler(currentActorOption.actorTypeId);
+		return new DeleteAllClickHandler(currentActorOption);
 	}
 
 	@Override
@@ -533,17 +545,17 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner, TestsH
 	}
 
    private class DeleteAllClickHandler implements ClickHandler {
-      String actorTypeId;
+	   ActorOption actorOption;
 
-      DeleteAllClickHandler(String actorTypeId) {
-         this.actorTypeId = actorTypeId;
+      DeleteAllClickHandler(ActorOption actorOption) {
+         this.actorOption = actorOption;
       }
 
       @Override
       public void onClick(ClickEvent clickEvent) {
          clickEvent.preventDefault();
          clickEvent.stopPropagation();
-         List <TestInstance> tests = testsPerActor.get(actorTypeId);
+         List <TestInstance> tests = testsPerActorOption.get(actorOption);
          for (TestInstance testInstance : tests) {
             getToolkitServices().deleteSingleTestResult(getCurrentTestSession(), testInstance,
                new AsyncCallback <TestOverviewDTO>() {
@@ -556,8 +568,9 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner, TestsH
 					public void onSuccess(TestOverviewDTO testOverviewDTO) {
 						testDisplayGroup.display(testOverviewDTO);
 //						displayTest(testsPanel, testDisplayGroup, testOverviewDTO);
-						Collection<TestOverviewDTO> overviews = removeTestOverview(testOverviewDTO);
-						updateTestsOverviewHeader(overviews);
+//						Collection<TestOverviewDTO> overviews =
+//								removeTestOverview(testOverviewDTO);
+						updateTestsOverviewHeader(testOverviews(actorOption));
 					}
 				});
 			}
@@ -621,8 +634,9 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner, TestsH
 				public void onSuccess(TestOverviewDTO testOverviewDTO) {
 					// returned testStatus of entire test
 					testDisplayGroup.display(testOverviewDTO);
-					Collection<TestOverviewDTO> overviews = addTestOverview(testOverviewDTO);
-					updateTestsOverviewHeader(overviews);
+//					Collection<TestOverviewDTO> overviews = addTestOverview(testOverviewDTO);
+//					updateTestsOverviewHeader(overviews);
+					updateTestsOverviewHeader(testOverviews(currentActorOption));
 					// Schedule next test to be run
 					if (testDone != null)
 						testDone.onDone(testInstance);

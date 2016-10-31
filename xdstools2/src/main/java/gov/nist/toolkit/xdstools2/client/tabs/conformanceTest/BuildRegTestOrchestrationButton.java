@@ -38,9 +38,9 @@ public class BuildRegTestOrchestrationButton extends AbstractOrchestrationButton
     static {
         ACTOR_OPTIONS = java.util.Arrays.asList(
                 new ActorAndOption("reg", "", "Required", false),
-                new ActorAndOption("reg", MU_OPTION, "Metadata Update Option", true),
-                new ActorAndOption("reg", MPQ_OPTION, "MPQ Option", true),
-                new ActorAndOption("reg", OD_OPTION, "On Demand Option", true));
+                new ActorAndOption("reg", MU_OPTION, "Metadata Update Option", false),
+                new ActorAndOption("reg", MPQ_OPTION, "MPQ Option", false),
+                new ActorAndOption("reg", OD_OPTION, "On Demand Option", false));
     }
 
     BuildRegTestOrchestrationButton(ConformanceTestTab testTab, TestContext testContext, TestContextView testContextView, Panel initializationPanel, String label) {
@@ -76,7 +76,7 @@ public class BuildRegTestOrchestrationButton extends AbstractOrchestrationButton
         request.setPifType((v2Feed.isChecked()) ? PifType.V2 : PifType.NONE);
         request.setUserName(testTab.getCurrentTestSession());
         request.setEnvironmentName(testTab.getEnvironmentSelection());
-        request.setUseExistingSimulator(!isResetRequested());
+        request.setUseExistingState(!isResetRequested());
         SiteSpec sutSiteSpec = testContext.getSiteUnderTest().siteSpec();
         request.setRegistrySut(sutSiteSpec);
 

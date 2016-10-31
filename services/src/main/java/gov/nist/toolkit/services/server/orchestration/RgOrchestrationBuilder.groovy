@@ -128,6 +128,8 @@ class RgOrchestrationBuilder {
                 item12318.setSuccess(api.getTestLogs(testInstance12318).isSuccess());
             }
 
+            orchProps.save();
+
             return response;
         }
         catch (Exception e) {

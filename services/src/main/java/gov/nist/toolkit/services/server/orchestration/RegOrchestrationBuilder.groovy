@@ -68,7 +68,7 @@ class RegOrchestrationBuilder {
                 util.submit(request.userName, request.registrySut, testInstance12346, parms);
 
             } catch (Exception e) {
-                item12346.setMessage("Initialization of " + request.registrySut.name + " failed:\n" + e.getMessage());
+//                item12346.setMessage("Initialization of " + request.registrySut.name + " failed:\n" + e.getMessage());
                 item12346.setSuccess(false);
             }
 
@@ -76,13 +76,15 @@ class RegOrchestrationBuilder {
                 util.submit(request.userName, request.registrySut, testInstance12374, parms);
 
             } catch (Exception e) {
-                item12374.setMessage("Initialization of " + request.registrySut.name + " failed:\n" + e.getMessage());
+//                item12374.setMessage("Initialization of " + request.registrySut.name + " failed:\n" + e.getMessage());
                 item12374.setSuccess(false);
             }
         } else {
             item12346.setSuccess(api.getTestLogs(testInstance12346).isSuccess());
             item12374.setSuccess(api.getTestLogs(testInstance12374).isSuccess());
         }
+
+        orchProps.save();
 
         return response
     }
