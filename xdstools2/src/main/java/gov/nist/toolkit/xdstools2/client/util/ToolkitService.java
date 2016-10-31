@@ -276,4 +276,6 @@ public interface ToolkitService extends RemoteService  {
 	boolean getAutoInitConformanceTesting();
 
 	boolean indexTestKits();
+
+    RawResponse buildRecTestOrchestration(RecOrchestrationRequest request);
 }

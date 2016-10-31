@@ -111,6 +111,20 @@ class OrchestrationManager {
         }
     }
 
+    public RawResponse buildRecTestEnvironment(Session session, RecOrchestrationRequest request) {
+        try {
+            ToolkitApi api
+            if(Installation.instance().warHome()) {
+                api = ToolkitApi.forNormalUse(session)
+            } else {
+                api = ToolkitApi.forInternalUse()
+            }
+            return new RecOrchestrationBuilder(api, session, request).buildTestEnvironment()
+        } catch (Exception e) {
+            return RawResponseBuilder.build(e);
+        }
+    }
+
     public RawResponse buildRSNAEdgeTestEnvironment(Session session, RSNAEdgeOrchestrationRequest request) {
         try {
             ToolkitApi api

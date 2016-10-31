@@ -16,6 +16,7 @@ import gov.nist.toolkit.interactiondiagram.client.events.DiagramPartClickedEvent
 import gov.nist.toolkit.interactiondiagram.client.widgets.InteractionDiagram;
 import gov.nist.toolkit.results.client.TestInstance;
 import gov.nist.toolkit.services.client.AbstractOrchestrationResponse;
+import gov.nist.toolkit.services.client.RecOrchestrationResponse;
 import gov.nist.toolkit.services.client.RepOrchestrationResponse;
 import gov.nist.toolkit.session.client.logtypes.TestOverviewDTO;
 import gov.nist.toolkit.session.client.sort.TestSorter;
@@ -51,6 +52,7 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner, TestsH
 
 	private AbstractOrchestrationResponse orchestrationResponse;
 	private RepOrchestrationResponse repOrchestrationResponse;
+	private RecOrchestrationResponse recOrchestrationResponse;
 
 	private final TestStatistics testStatistics = new TestStatistics();
 
@@ -409,6 +411,11 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner, TestsH
 			orchInit.addSelfTestClickHandler(new RefreshTestCollectionHandler());
 			initializationPanel.add(orchInit.panel());
 		}
+		else if (currentActorOption.isRec()) {
+			orchInit = new BuildRecTestOrchestrationButton(this, testContext, testContextView, initializationPanel, label);
+			orchInit.addSelfTestClickHandler(new RefreshTestCollectionHandler());
+			initializationPanel.add(orchInit.panel());
+		}
 		else if (currentActorOption.isRg()) {
 			orchInit = new BuildRgTestOrchestrationButton(this, initializationPanel, label, testContext, testContextView, this);
 			orchInit.addSelfTestClickHandler(new RefreshTestCollectionHandler());
@@ -658,6 +665,10 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner, TestsH
 			parms.put("$patientid$", repOrchestrationResponse.getPid().asString());
 		}
 
+		if (ActorType.DOCUMENT_RECIPIENT.getShortName().equals(currentActorOption.actorTypeId)) {
+			parms.put("$patientid$", recOrchestrationResponse.getRegisterPid().asString());
+		}
+
 		if (getSiteToIssueTestAgainst() == null) {
 			new PopupMessage("Test Setup must be initialized");
 			return null;
@@ -676,6 +687,11 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner, TestsH
 	public void setRepOrchestrationResponse(RepOrchestrationResponse repOrchestrationResponse) {
 		this.repOrchestrationResponse = repOrchestrationResponse;
 		setOrchestrationResponse(repOrchestrationResponse);
+	}
+
+	public void setRecOrchestrationResponse(RecOrchestrationResponse recOrchestrationResponse) {
+		this.recOrchestrationResponse = recOrchestrationResponse;
+		setOrchestrationResponse(recOrchestrationResponse);
 	}
 
 	public void setOrchestrationResponse(AbstractOrchestrationResponse repOrchestrationResponse) {
