@@ -6,9 +6,11 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.*;
 import gov.nist.toolkit.configDatatypes.client.TransactionType;
 import gov.nist.toolkit.xdstools2.client.CoupledTransactions;
+import gov.nist.toolkit.xdstools2.client.command.command.GetTestdataSetListingCommand;
 import gov.nist.toolkit.xdstools2.client.widgets.PopupMessage;
 import gov.nist.toolkit.xdstools2.client.siteActorManagers.GetDocumentsSiteActorManager;
 import gov.nist.toolkit.xdstools2.client.tabs.genericQueryTab.GenericQueryTab;
+import gov.nist.toolkit.xdstools2.shared.command.request.GetTestdataSetListingRequest;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -56,30 +58,21 @@ public class XDRTestdataTab  extends GenericQueryTab {
 
 	@Override
 	protected void bindUI() {
-		getToolkitServices().getTestdataSetListing(getEnvironmentSelection(), getCurrentTestSession(), "testdata-xdr", loadRecipientTestListCallback);
+		new GetTestdataSetListingCommand(){
+			@Override
+			public void onComplete(List<String> result) {
+				testlistBox.addItem("");
+				for (String testName : result) {
+					testlistBox.addItem(testName);
+				}
+			}
+		}.run(new GetTestdataSetListingRequest(getCommandContext(),"testdata-xdr"));
 	}
 
 	@Override
 	protected void configureTabView() {
 		queryBoilerplate = addQueryBoilerplate(new Runner(), transactionTypes, couplings, true);
 	}
-
-	protected AsyncCallback<List<String>> loadRecipientTestListCallback = new AsyncCallback<List<String>>() {
-
-		public void onFailure(Throwable caught) {
-			showMessage(caught);
-		}
-
-		public void onSuccess(List<String> result) {
-			testlistBox.addItem("");
-			for (String testName : result) {
-				testlistBox.addItem(testName);
-			}
-		}
-
-	};
-
-
 
 	class Runner implements ClickHandler {
 

@@ -1,11 +1,14 @@
 package gov.nist.toolkit.testkitutilities.client;
 
+import com.google.gwt.user.client.rpc.IsSerializable;
+
+import java.io.Serializable;
 import java.util.*;
 
 /**
  *
  */
-public class SectionDefinitionDAO {
+public class SectionDefinitionDAO implements Serializable, IsSerializable {
     private Map<String, StepDefinitionDAO> steps = new HashMap<>();
     private List<String> names = new ArrayList<String>();
     private Set<String> sectionDependencies = new HashSet<String>();

@@ -69,7 +69,7 @@ public interface ToolkitServiceAsync {
 	void getDashboardRepositoryData(CommandContext context, AsyncCallback<List<RepositoryStatus>> callback);
 
 	void getTestsOverview(GetTestsOverviewRequest request, AsyncCallback<List<TestOverviewDTO>> callback);
-	void getTestSectionsDAOs(String mesaTestSession, TestInstance testInstance, AsyncCallback<List<SectionDefinitionDAO>> callback);
+	void getTestSectionsDAOs(GetTestSectionsDAOsRequest request, AsyncCallback<List<SectionDefinitionDAO>> callback);
 	void getUpdateNames(AsyncCallback<List<String>> callback);
 
 	void getTransactionRequest(GetTransactionRequest request, AsyncCallback<String> callback);
@@ -82,21 +82,20 @@ public interface ToolkitServiceAsync {
 
 	void executeSimMessage(ExecuteSimMessageRequest request, AsyncCallback<MessageValidationResults> callback);
 
-
 	void renameSimFile(String simFileSpec, String newSimFileSpec, AsyncCallback callback);
 
-	void deleteSimFile(String simFileSpec, AsyncCallback callback);
+	void deleteSimFile(DeleteSimFileRequest request, AsyncCallback callback);
 
 	void getSimulatorEndpoint(AsyncCallback<String> callback);
 
-	void getSelectedMessage(String simFilename, AsyncCallback<List<Result>> callback);
-	void getSelectedMessageResponse(String simFilename, AsyncCallback<List<Result>> callback);
+	void getSelectedMessage(GetSelectedMessageRequest request, AsyncCallback<List<Result>> callback);
+	void getSelectedMessageResponse(GetSelectedMessageRequest request, AsyncCallback<List<Result>> callback);
 	@Deprecated
 	void getClientIPAddress(AsyncCallback<String> callback);
 
 //	void  validateMessage(ValidationContext vc, String simFileName, AsyncCallback<MessageValidationResults> notify);
 
-	void  getTransInstances(SimId simid, String actor, String trans, AsyncCallback<List<TransactionInstance>> callback);
+	void  getTransInstances(GetTransactionRequest request, AsyncCallback<List<TransactionInstance>> callback);
 
 	void getLastMetadata(AsyncCallback<List<Result>> callback);
 	void getLastFilename(AsyncCallback<String> callback);
@@ -111,10 +110,10 @@ public interface ToolkitServiceAsync {
 	void getRepositoryNames(AsyncCallback<List<String>> callback);
 	void getRGNames(AsyncCallback<List<String>> callback);
 	void getIGNames(AsyncCallback<List<String>> callback);
-	void getRawLogs(TestInstance logId, AsyncCallback<TestLogs> callback);
-	void getTestdataSetListing(String environmentName, String sessionName, String testdataSetName, AsyncCallback<List<String>> callback);
-	void getCodesConfiguration(String getCodesConfiguration, AsyncCallback<CodesResult> callback);
-	void getSite(String siteName, AsyncCallback<Site> callback);
+	void getRawLogs(GetRawLogsRequest request, AsyncCallback<TestLogs> callback);
+	void getTestdataSetListing(GetTestdataSetListingRequest request, AsyncCallback<List<String>> callback);
+	void getCodesConfiguration(CommandContext context, AsyncCallback<CodesResult> callback);
+	void getSite(GetSiteRequest request, AsyncCallback<Site> callback);
 	void getAllSites(CommandContext commandContext, AsyncCallback<Collection<Site>> callback);
 	void saveSite(SaveSiteRequest request, AsyncCallback<String> callback);
 	void reloadSites(boolean simAlso, AsyncCallback<List<String>> callback);

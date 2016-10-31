@@ -23,6 +23,7 @@ import gov.nist.toolkit.sitemanagement.client.SiteSpec;
 import gov.nist.toolkit.testkitutilities.client.SectionDefinitionDAO;
 import gov.nist.toolkit.testkitutilities.client.TestCollectionDefinitionDAO;
 import gov.nist.toolkit.xdstools2.client.command.command.AutoInitConformanceTestingCommand;
+import gov.nist.toolkit.xdstools2.client.command.command.GetTestSectionsDAOsCommand;
 import gov.nist.toolkit.xdstools2.client.command.command.GetTestsOverviewCommand;
 import gov.nist.toolkit.xdstools2.client.widgets.PopupMessage;
 import gov.nist.toolkit.xdstools2.client.ToolWindow;
@@ -32,6 +33,7 @@ import gov.nist.toolkit.xdstools2.client.event.testSession.TestSessionChangedEve
 import gov.nist.toolkit.xdstools2.client.tabs.GatewayTestsTabs.BuildIGTestOrchestrationButton;
 import gov.nist.toolkit.xdstools2.client.widgets.LaunchInspectorClickHandler;
 import gov.nist.toolkit.xdstools2.client.widgets.buttons.AbstractOrchestrationButton;
+import gov.nist.toolkit.xdstools2.shared.command.request.GetTestSectionsDAOsRequest;
 import gov.nist.toolkit.xdstools2.shared.command.request.GetTestsOverviewRequest;
 
 import java.util.ArrayList;
@@ -469,21 +471,18 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner, TestsH
 			clickEvent.preventDefault();
 			clickEvent.stopPropagation();
 
-			getToolkitServices().getTestSectionsDAOs(getCurrentTestSession(), testInstance, new AsyncCallback<List<SectionDefinitionDAO>>() {
-				@Override
-				public void onFailure(Throwable throwable) { new PopupMessage(throwable.getMessage()); }
-
-				@Override
-				public void onSuccess(List<SectionDefinitionDAO> sectionDefinitionDAOs) {
-					sections.clear();
-					for (SectionDefinitionDAO dao : sectionDefinitionDAOs) {
-						TestInstance ti = testInstance.copy();
-						ti.setSection(dao.getSectionName());
-						ti.setSutInitiated(dao.isSutInitiated());
-					}
-					onDone(null);
-				}
-			});
+            new GetTestSectionsDAOsCommand(){
+                @Override
+                public void onComplete(List<SectionDefinitionDAO> sectionDefinitionDAOs) {
+                    sections.clear();
+                    for (SectionDefinitionDAO dao : sectionDefinitionDAOs) {
+                        TestInstance ti = testInstance.copy();
+                        ti.setSection(dao.getSectionName());
+                        ti.setSutInitiated(dao.isSutInitiated());
+                    }
+                    onDone(null);
+                }
+            }.run(new GetTestSectionsDAOsRequest(getCommandContext(),testInstance));
 		}
 
 		@Override

@@ -97,14 +97,14 @@ public interface ToolkitService extends RemoteService  {
 	MessageValidationResults executeSimMessage(ExecuteSimMessageRequest request) throws Exception;
 
 	void renameSimFile(String simFileSpec, String newSimFileSpec) throws Exception;
-	void deleteSimFile(String simFileSpec) throws Exception;
+	void deleteSimFile(DeleteSimFileRequest request) throws Exception;
 	String getSimulatorEndpoint() throws NoServletSessionException;
-	List<Result> getSelectedMessage(String simFilename) throws NoServletSessionException;
-	List<Result> getSelectedMessageResponse(String simFilename) throws NoServletSessionException;
+	List<Result> getSelectedMessage(GetSelectedMessageRequest request) throws Exception;
+	List<Result> getSelectedMessageResponse(GetSelectedMessageRequest request) throws Exception;
 	@Deprecated
 	String getClientIPAddress();
 
-	List<TransactionInstance> getTransInstances(SimId simid, String actor, String trans)  throws Exception;
+	List<TransactionInstance> getTransInstances(GetTransactionRequest request)  throws Exception;
 
 	List<Result> getLastMetadata();
 	String getLastFilename();
@@ -117,13 +117,13 @@ public interface ToolkitService extends RemoteService  {
 	List<String> getRepositoryNames() throws Exception;
 	List<String> getRGNames() throws NoServletSessionException ;
 	List<String> getIGNames() throws NoServletSessionException ;
-	List<String> getTestdataSetListing(String environmentName, String sessionName,String testdataSetName)  throws NoServletSessionException;
-	CodesResult getCodesConfiguration(String getCodesConfiguration) throws NoServletSessionException ;
+	List<String> getTestdataSetListing(GetTestdataSetListingRequest request)  throws Exception;
+	CodesResult getCodesConfiguration(CommandContext context) throws Exception ;
 	TransactionOfferings getTransactionOfferings(CommandContext commandContext) throws Exception;
 
 	List<String> reloadSites(boolean simAlso) throws Exception;
 	List<String> reloadExternalSites() throws Exception;
-	Site getSite(String siteName) throws Exception;
+	Site getSite(GetSiteRequest request) throws Exception;
 	Collection<Site> getAllSites(CommandContext commandContext) throws Exception;
 	String saveSite(SaveSiteRequest request) throws Exception;
 	String deleteSite(String siteName) throws Exception;
@@ -165,7 +165,7 @@ public interface ToolkitService extends RemoteService  {
 	List<Result> getAll(SiteSpec site, String pid, Map<String, List<String>> codesSpec) throws NoServletSessionException;
 	List<Result> findDocuments2(SiteSpec site, String pid, Map<String, List<String>> codesSpec) throws NoServletSessionException;
 
-	TestLogs getRawLogs(TestInstance logId) throws NoServletSessionException ;
+	TestLogs getRawLogs(GetRawLogsRequest request) throws Exception ;
 
 	String getAdminPassword() throws NoServletSessionException ;
 
@@ -179,7 +179,7 @@ public interface ToolkitService extends RemoteService  {
 	List<String> getUpdateNames() throws NoServletSessionException ;
 	List<TestInstance> getTestlogListing(String sessionName) throws Exception;
 	List<TestOverviewDTO> getTestsOverview(GetTestsOverviewRequest request) throws Exception;
-	List<SectionDefinitionDAO> getTestSectionsDAOs(String mesaTestSession, TestInstance testInstance) throws Exception;
+	List<SectionDefinitionDAO> getTestSectionsDAOs(GetTestSectionsDAOsRequest request) throws Exception;
 	List<RegistryStatus> getDashboardRegistryData(CommandContext context) throws Exception;
 	List<RepositoryStatus> getDashboardRepositoryData(CommandContext context) throws Exception;
 

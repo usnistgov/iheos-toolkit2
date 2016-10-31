@@ -76,7 +76,6 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements
         ToolkitService {
     static String schematronHome = null;
     ServletContext context = null;
-//	static File warHome = null;
 
     static Logger logger = Logger.getLogger(ToolkitServiceImpl.class);
 
@@ -154,7 +153,10 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements
 	@Override
    public List<String> reloadSites(boolean simAlso) throws FactoryConfigurationError, Exception { return siteServiceManager.reloadSites(session().getId(), simAlso); }
 	@Override
-   public Site getSite(String siteName) throws Exception { return siteServiceManager.getSite(session().getId(), siteName); }
+   public Site getSite(GetSiteRequest request) throws Exception {
+        installCommandContext(request);
+        return siteServiceManager.getSite(session().getId(), request.getSiteName());
+   }
 	@Override
    public String saveSite(SaveSiteRequest request) throws Exception {
         installCommandContext(request);
@@ -459,10 +461,11 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements
         List<TestOverviewDTO> o = session().xdsTestServiceManager().getTestsOverview(request.getTestSessionName(), request.getTestInstances());
         return o;
     }
-    public List<SectionDefinitionDAO> getTestSectionsDAOs(String mesaTestSession, TestInstance testInstance) throws Exception {
+    public List<SectionDefinitionDAO> getTestSectionsDAOs(GetTestSectionsDAOsRequest request) throws Exception {
+        installCommandContext(request);
         Session session = session().xdsTestServiceManager().session;
-        session.setMesaSessionName(mesaTestSession);
-        return session().xdsTestServiceManager().getTestSectionsDAOs(testInstance);
+        session.setMesaSessionName(request.getTestSessionName());
+        return session().xdsTestServiceManager().getTestSectionsDAOs(request.getTestInstance());
     }
     @Override
     public LogFileContentDTO getTestLogDetails(String sessionName, TestInstance testInstance) throws Exception {
@@ -506,10 +509,14 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements
         session().setEnvironment(environmentName);
     }
 	@Override
-   public TestLogs getRawLogs(TestInstance logId)  throws NoServletSessionException { return session().xdsTestServiceManager().getRawLogs(logId); }
+   public TestLogs getRawLogs(GetRawLogsRequest request)  throws Exception {
+        installCommandContext(request);
+        return session().xdsTestServiceManager().getRawLogs(request.getLogId());
+   }
 	@Override
-   public List<String> getTestdataSetListing(String environmentName, String testSessionName, String testdataSetName)  throws NoServletSessionException {
-        return session().xdsTestServiceManager().getTestdataSetListing(environmentName,testSessionName,testdataSetName);
+   public List<String> getTestdataSetListing(GetTestdataSetListingRequest request)  throws Exception {
+        installCommandContext(request);
+        return session().xdsTestServiceManager().getTestdataSetListing(request.getEnvironmentName(),request.getTestSessionName(),request.getTestdataSetName());
     }
 	@Override
    public String getTestplanAsText(String testSession,TestInstance testInstance, String section) throws Exception {
@@ -531,8 +538,9 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements
 				.replace("<br/>", "\r\n");
 	}
 	@Override
-   public CodesResult getCodesConfiguration(String environmentName)  throws NoServletSessionException {
-		setEnvironment(environmentName);
+   public CodesResult getCodesConfiguration(CommandContext context)  throws Exception {
+        installCommandContext(context);
+		setEnvironment(context.getEnvironmentName());
 		return session().xdsTestServiceManager().getCodesConfiguration();
 	}
 
@@ -732,7 +740,7 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements
 	@Override
    public String deleteConfig(SimulatorConfig config) throws Exception { return new SimulatorServiceManager(session()).deleteConfig(config); }
 	@Override
-   public void renameSimFile(String simFileSpec, String newSimFileSpec) throws Exception { new SimulatorServiceManager(session()).renameSimFile(simFileSpec, newSimFileSpec); }
+    public void renameSimFile(String simFileSpec, String newSimFileSpec) throws Exception { new SimulatorServiceManager(session()).renameSimFile(simFileSpec, newSimFileSpec); }
 	@Override
    public String getSimulatorEndpoint() throws NoServletSessionException { return new SimulatorServiceManager(session()).getSimulatorEndpoint(); }
 	@Override
@@ -741,7 +749,10 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements
         return new SimulatorServiceManager(session()).executeSimMessage(request.getFileName());
     }
 	@Override
-   public List<TransactionInstance> getTransInstances(SimId simid, String xactor, String trans) throws Exception { return new SimulatorServiceManager(session()).getTransInstances(simid, xactor, trans); }
+   public List<TransactionInstance> getTransInstances(GetTransactionRequest request) throws Exception {
+        installCommandContext(request);
+        return new SimulatorServiceManager(session()).getTransInstances(request.getSimid(), request.getActor(), request.getTrans());
+   }
 	@Override
    public String getTransactionRequest(GetTransactionRequest request) throws Exception {
         installCommandContext(request);
@@ -755,9 +766,15 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements
 	@Override
    public int removeOldSimulators() throws NoServletSessionException { return new SimulatorServiceManager(session()).removeOldSimulators(); }
 	@Override
-   public List<Result> getSelectedMessage(String simFileSpec) throws NoServletSessionException { return new SimulatorServiceManager(session()).getSelectedMessage(simFileSpec); }
+   public List<Result> getSelectedMessage(GetSelectedMessageRequest request) throws Exception {
+        installCommandContext(request);
+        return new SimulatorServiceManager(session()).getSelectedMessage(request.getFilename());
+   }
 	@Override
-   public List<Result> getSelectedMessageResponse(String simFileSpec) throws NoServletSessionException { return new SimulatorServiceManager(session()).getSelectedMessageResponse(simFileSpec); }
+   public List<Result> getSelectedMessageResponse(GetSelectedMessageRequest request) throws Exception {
+        installCommandContext(request);
+        return new SimulatorServiceManager(session()).getSelectedMessageResponse(request.getFilename());
+   }
 	@Override
    public Map<String, SimId> getActorSimulatorNameMap(CommandContext context) throws Exception {
         installCommandContext(context);
@@ -778,8 +795,11 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements
 	@Override
    public Simulator getNewSimulator(String actorTypeName, SimId simId) throws Exception { return new SimulatorServiceManager(session()).getNewSimulator(actorTypeName, simId); }
 	@Override
-   public void deleteSimFile(String simFileSpec) throws Exception { new SimulatorServiceManager(session()).deleteSimFile(simFileSpec); }
-	@Override
+   public void deleteSimFile(DeleteSimFileRequest request) throws Exception {
+        installCommandContext(request);
+        new SimulatorServiceManager(session()).deleteSimFile(request.getSimFileSpec());
+   }
+   @Override
    public List<String> getTransactionsForSimulator(GetTransactionRequest request) throws Exception {
         installCommandContext(request);
         return new SimulatorServiceManager(session()).getTransactionsForSimulator(request.getSimid());

@@ -14,20 +14,20 @@ import gov.nist.toolkit.actorfactory.client.CcdaTypeSelection;
 import gov.nist.toolkit.http.client.HtmlMarkup;
 import gov.nist.toolkit.results.client.Result;
 import gov.nist.toolkit.valsupport.client.*;
-import gov.nist.toolkit.xdstools2.client.command.command.ExecuteSimMessageCommand;
-import gov.nist.toolkit.xdstools2.client.command.command.ValidateMessageCommand;
+import gov.nist.toolkit.xdstools2.client.command.command.*;
 import gov.nist.toolkit.xdstools2.client.widgets.PopupMessage;
 import gov.nist.toolkit.xdstools2.client.widgets.RenameSimFileDialogBox;
 import gov.nist.toolkit.xdstools2.client.ToolWindow;
 import gov.nist.toolkit.xdstools2.client.inspector.MetadataInspectorTab;
 import gov.nist.toolkit.xdstools2.client.tabs.TextViewerTab;
+import gov.nist.toolkit.xdstools2.shared.command.request.DeleteSimFileRequest;
 import gov.nist.toolkit.xdstools2.shared.command.request.ExecuteSimMessageRequest;
+import gov.nist.toolkit.xdstools2.shared.command.request.GetSelectedMessageRequest;
 import gov.nist.toolkit.xdstools2.shared.command.request.ValidateMessageRequest;
 
 import java.util.*;
 
 public class MessageValidatorTab extends ToolWindow {
-	VerticalPanel resultsContainer = new VerticalPanel();
 	FlexTable resultsTable = new FlexTable();
 	HTML htmlReport = new HTML();
 	int row = 0;
@@ -41,19 +41,10 @@ public class MessageValidatorTab extends ToolWindow {
 	boolean enableCertificateUpload = false;
 	VerticalPanel fileUploadPanel = new VerticalPanel();
 
-//	List<RadioButton> inputTypeButtons = 
-//			Arrays.asList(
-//					fromFileRadioButton,
-//					fromEndpointRadioButton
-//					);
 	final VerticalPanel chooseFromEndpointArea = new VerticalPanel();
 	final FormPanel uploadForm = new FormPanel();
 	final ListBox simFilesListBox = new ListBox();
 	CcdaTypeSelection ccdaSel;
-
-
-//	final protected ToolkitServiceAsync toolkitService = GWT
-//			.create(ToolkitService.class);
 
 	static final String ValidationType_PnR_b = "ProvideAndRegister.b";
 	static final String ValidationTypeR_b = "Register.b";
@@ -489,13 +480,13 @@ public class MessageValidatorTab extends ToolWindow {
 		viewFromEndpointButton.addClickHandler(new ClickHandler() {
 
 			public void onClick(ClickEvent event) {
-				int sel = simFilesListBox.getSelectedIndex();
-				if (sel == -1) {
-					new PopupMessage("Select message first");
-					return;
-				}
-				filename = simFilesListBox.getValue(sel);
-				getToolkitServices().getSelectedMessage(filename, getTextCallback);
+				testMessageSelection();
+				new GetSelectedMessageCommand(){
+					@Override
+					public void onComplete(List<Result> result) {
+						viewResults(result);
+					}
+				}.run(new GetSelectedMessageRequest(getCommandContext(),filename));
 			}
 		});
 
@@ -506,13 +497,13 @@ public class MessageValidatorTab extends ToolWindow {
 		viewRespFromEndpointButton.addClickHandler(new ClickHandler() {
 
 			public void onClick(ClickEvent event) {
-				int sel = simFilesListBox.getSelectedIndex();
-				if (sel == -1) {
-					new PopupMessage("Select message first");
-					return;
-				}
-				filename = simFilesListBox.getValue(sel);
-				getToolkitServices().getSelectedMessageResponse(filename, getTextCallback);
+				testMessageSelection();
+				new GetSelectedMessageResponseCommand(){
+					@Override
+					public void onComplete(List<Result> result) {
+						viewResults(result);
+					}
+				}.run(new GetSelectedMessageRequest(getCommandContext(),filename));
 			}
 		});
 		endpointAreaButtonPanel.setWidget(1, 1, viewRespFromEndpointButton);
@@ -566,7 +557,12 @@ public class MessageValidatorTab extends ToolWindow {
 					return;
 				}
 				filename = simFilesListBox.getValue(sel);
-				getToolkitServices().deleteSimFile(filename, reloadSimMessages );
+				new DeleteSimFileCommand(){
+					@Override
+					public void onComplete(Void result) {
+						reloadSimFileList();
+					}
+				}.run(new DeleteSimFileRequest(getCommandContext(),filename));
 			}
 		});
 
@@ -598,6 +594,15 @@ public class MessageValidatorTab extends ToolWindow {
 
 		tabTopPanel.add(HtmlMarkup.html("<hr/>"));
 	} //end onTabLoad
+
+	private void testMessageSelection(){
+		int sel = simFilesListBox.getSelectedIndex();
+		if (sel == -1) {
+			new PopupMessage("Select message first");
+			return;
+		}
+		filename = simFilesListBox.getValue(sel);
+	}
 	
 	private void refreshFileUploadPanel() {
 
@@ -961,7 +966,7 @@ public class MessageValidatorTab extends ToolWindow {
 	protected AsyncCallback reloadSimMessages = new AsyncCallback () {
 
 		public void onFailure(Throwable caught) {
-			new PopupMessage(caught.getMessage());			
+			new PopupMessage(caught.getMessage());
 		}
 
 		public void onSuccess(Object result) {
@@ -995,24 +1000,13 @@ public class MessageValidatorTab extends ToolWindow {
 
 	};
 
-	protected AsyncCallback<List<Result>> getTextCallback = new AsyncCallback<List<Result>> () {
-
-		public void onFailure(Throwable caught) {
-			new GwtValFormatter().addCell(caught.getMessage(), 0);
-			tabTopPanel.add(resultsTable);
+	private void viewResults(List<Result> results){
+		try {
+			viewText(results);
+		} catch (Exception e) {
+			new PopupMessage(e.getMessage());
 		}
-
-		public void onSuccess(List<Result> result) {
-			try {
-				viewText(result);
-			} catch (Exception e) {
-				new PopupMessage(e.getMessage());
-			}
-
-		}
-
-	};
-
+	}
 	void inspect(List<Result> results) {
 		MetadataInspectorTab it = new MetadataInspectorTab();
 		it.setResults(results);
@@ -1166,80 +1160,6 @@ public class MessageValidatorTab extends ToolWindow {
 		mvd.setLessDetail(lessdetail.getValue());
 
 		mvd.displayResults(results);
-
-		//		// leave as summary row (plus a blank for separation)
-		//		summaryRow = row;
-		//		f.setDetail("   ");
-		//		row++;
-		//
-		//		f.setDetail("Time of validation: " + timeAndDate);
-		//		row++;
-		//
-		//		f.setDetail("Client IP Address: " + clientIP);
-		//		row++;
-		//
-		//		if (uploadFilename != null) {
-		//			f.setDetail("File validated: " + uploadFilename);
-		//			row++;
-		//		}
-		//		f.hr();
-		//
-		//		f.setDetail(f.h2("Detail"));
-		//		f.setReference(f.h2("Reference"));
-		//		f.setStatus(f.h2("Status"));
-		//		row++;
-		//
-		//		for (ValidationStepResult result : results.getResults()) {
-		//			f.hr();
-		//			f.addCell(h3(result.stepName), 0);
-		//			row++;
-		//
-		//			List<ValidatorErrorItem> ers = result.er;
-		//			for (ValidatorErrorItem er : ers)  {
-		//				boolean row_advance = true;
-		//				switch (er.level) {
-		//				case SECTIONHEADING:
-		//					f.setDetail(f.bold(er.msg));
-		//					break;
-		//
-		//				case CHALLENGE:
-		//					if (!lessdetail.getValue()) 
-		//						f.setDetail(er.msg);
-		//					else
-		//						row_advance = false;
-		//					break;
-		//
-		//				case EXTERNALCHALLENGE:
-		//					f.setDetail(er.msg);
-		//					break;
-		//
-		//				case DETAIL:
-		//					f.setDetail(er.msg);
-		//					break;
-		//
-		//				case ERROR:
-		//					f.setDetail(f.red(er.msg));
-		//					f.setReference(f.red(er.resource));
-		//					foundErrors = true;
-		//					f.setStatus(f.red("error"));
-		//				}
-		//
-		//				if (!lessdetail.getValue()) {
-		//					if (er.completion == ReportingCompletionType.OK)
-		//						f.setStatus("ok");
-		//					else if (ReportingLevel.CHALLENGE == er.level && er.completion == ReportingCompletionType.ERROR)
-		//						f.setStatus(f.red("error"));
-		//				}
-		//				if (row_advance)
-		//					row++;
-		//			}
-		//		}
-		//
-		//		if (foundErrors)
-		//			resultsTable.setWidget(summaryRow, 0, html(f.red("Summary: Errors were found")));
-		//		else
-		//			resultsTable.setWidget(summaryRow, 0, html("Summary: No error were found"));
-
 		
 		this.htmlReport.removeFromParent();
 		this.htmlReport = new HTML(results.getHtmlResults());
