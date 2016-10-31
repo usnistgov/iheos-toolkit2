@@ -2,6 +2,8 @@ package gov.nist.toolkit.valregmetadata.object;
 
 import gov.nist.toolkit.errorrecording.ErrorRecorder;
 import gov.nist.toolkit.errorrecording.client.XdsErrorCode;
+import gov.nist.toolkit.errorrecording.client.assertions.Assertion;
+import gov.nist.toolkit.errorrecording.client.assertions.AssertionLibrary;
 import gov.nist.toolkit.registrymetadata.Metadata;
 import gov.nist.toolkit.registrymetadata.MetadataParser;
 import gov.nist.toolkit.commondatatypes.MetadataSupport;
@@ -44,6 +46,10 @@ public abstract class AbstractRegistryObject {
 	String id = "";
 	String lid;
 	String version = "1.1";
+
+	// Assertions
+	private AssertionLibrary ASSERTIONLIBRARY = AssertionLibrary.getInstance();
+
 
 	public OMElement getElement() {
 		return ro;
@@ -369,7 +375,9 @@ public abstract class AbstractRegistryObject {
 		for (Slot slot : slots) {
 			if (names.contains(slot.getName()))
 				if (er != null) {
-					er.err(XdsErrorCode.Code.XDSRegistryMetadataError, identifyingString() + ": Slot " + slot.getName() + " is multiply defined", this, "ebRIM 3.0 section 2.8.2");
+					Assertion assertion = ASSERTIONLIBRARY.getAssertion("TA019");
+					String detail = "Slot " + slot.getName();
+					er.err(XdsErrorCode.Code.XDSRegistryMetadataError, assertion, this, identifyingString(), detail);
 					ok = false;
 				}
 				else
@@ -378,12 +386,16 @@ public abstract class AbstractRegistryObject {
 		return ok;
 	}
 
+	// TODO this function is used for several assertions in DocEntry (table 415), Folder (table 417), SubmissionSet (table 416)
+	// TODO Maybe switch based on class of origin
 	public void validateTopAtts(ErrorRecorder er, ValidationContext vc, String tableRef, List<String> statusValues) {
 		validateId(er, vc, "entryUUID", id, null);
 
 		if (vc.isSQ && vc.isResponse) {
-			if (status == null)
-				er.err(XdsErrorCode.Code.XDSRegistryMetadataError, identifyingString() + ": availabilityStatus attribute (status attribute in XML) must be present", this, tableRef);
+			if (status == null) {
+				//TODO figure out what tableref is and put in csv file.
+				er.err(XdsErrorCode.Code.XDSRegistryMetadataError, identifyingString() + ": AvailabilityStatus attribute (status attribute in XML) must be present" + statusValues + ", found " + status, this, "ITI TF-2a: 3.18.4.1.2.3.6");
+			}
 			else {
 				if (!statusValues.contains(status))
 					er.err(XdsErrorCode.Code.XDSRegistryMetadataError, identifyingString() + ": availabilityStatus attribute must take on one of these values: " + statusValues + ", found " + status, this, "ITI TF-2a: 3.18.4.1.2.3.6");
