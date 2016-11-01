@@ -200,27 +200,17 @@ public class SimulatorMessageViewTab extends ToolWindow {
 
 		if ("all".equalsIgnoreCase(transName))
 			transName = null;
-		getToolkitServices().getTransInstances(simid, "", transName, new AsyncCallback<List<TransactionInstance>>() {
-
-			public void onFailure(Throwable caught) {
-				if (caught.getMessage() != null)
-					new PopupMessage("Error: " + caught.getMessage());
-			}
-
-			public void onSuccess(List<TransactionInstance> result) {
+		new GetTransactionInstancesCommand(){
+			@Override
+			public void onComplete(List<TransactionInstance> result) {
 				transactionInstances = result;
 				transInstanceListBox.clear();
 
-//				for (int i=result.size()-1; i >= 0; i--)
-//					transInstanceListBox.addItem(result.getRetrievedDocumentsModel(i));
 				for (TransactionInstance x : result) {
 					transInstanceListBox.addItem(x.labelInterpretedAsDate + " " + x.nameInterpretedAsTransactionType, x.label);
 				}
-
 			}
-
-		});
-
+		}.run(new GetTransactionRequest(getCommandContext(),simid,"",transName));
 	}
 
 	ChangeHandler transactionInstanceChoiceChanged = new ChangeHandler() {

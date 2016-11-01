@@ -9,7 +9,9 @@ import gov.nist.toolkit.interactionmodel.client.InteractionIdentifierTerm;
 import gov.nist.toolkit.results.client.Result;
 import gov.nist.toolkit.sitemanagement.client.SiteSpec;
 import gov.nist.toolkit.xdstools2.client.CoupledTransactions;
+import gov.nist.toolkit.xdstools2.client.command.command.FindDocumentsCommand;
 import gov.nist.toolkit.xdstools2.client.tabs.genericQueryTab.AbstractTool;
+import gov.nist.toolkit.xdstools2.shared.command.request.FindDocumentsRequest;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -28,6 +30,9 @@ public class FindDocumentsTab extends AbstractTool {
 
     CheckBox selectOnDemand;
     InteractingEntity origin = new InteractingEntity(); //  new InteractingEntity(); // Destination
+    private Pid patientId;
+    private SiteSpec site;
+    private boolean onDemand;
 
     @Override
     public void initTool() {
@@ -65,47 +70,29 @@ public class FindDocumentsTab extends AbstractTool {
      * @param onDemand
      */
     public void run(Pid patientID, SiteSpec siteSpec, boolean onDemand) {
-        getToolkitServices().findDocuments(siteSpec, patientID.asString(), onDemand, new RunCallback(siteSpec));
+        this.patientId=patientID;
+        this.site=siteSpec;
+        this.onDemand=onDemand;
+        new FindDocumentsCommand() {
+            @Override
+            public void onComplete(List<Result> results) {
+                queryCallback.onSuccess(results);
+                transactionSelectionManager.selectSite(site);
+            }
+        }.run(new FindDocumentsRequest(getCommandContext(), siteSpec, patientID.asString(), onDemand));
     }
-
-    private class RunCallback implements AsyncCallback<List<Result>> {
-        private SiteSpec siteSpec;
-
-        RunCallback(SiteSpec siteSpec) {
-            this.siteSpec = siteSpec;
-        }
-
-
-        @Override
-        public void onFailure(Throwable throwable) {
-            queryCallback.onFailure(throwable);
-        }
-
-        @Override
-        public void onSuccess(List<Result> results) {
-            queryCallback.onSuccess(results);
-            transactionSelectionManager.selectSite(siteSpec);
-        }
-    }
-
 
     @Override
     public void run() {
         origin.setBegin(new Date());
-        getToolkitServices().findDocuments(queryBoilerplate.getSiteSelection(), pidTextBox.getValue().trim(), selectOnDemand.getValue(), fdCallback);
+        new FindDocumentsCommand(){
+            @Override
+            public void onComplete(List<Result> results) {
+                queryCallback.onSuccess(results);
+            }
+        }.run(new FindDocumentsRequest(getCommandContext(),queryBoilerplate.getSiteSelection(), pidTextBox.getValue().trim(), selectOnDemand.getValue()));
     }
 
-    private AsyncCallback<List<Result>> fdCallback = new AsyncCallback<List<Result>>() {
-        @Override
-        public void onFailure(Throwable throwable) {
-            queryCallback.onFailure(throwable);
-        }
-
-		@Override
-		public void onSuccess(List<Result> results) {
-			queryCallback.onSuccess(results);
-		}
-	};
 
     public InteractingEntity getInteractionModel() {
         // begin interaction model

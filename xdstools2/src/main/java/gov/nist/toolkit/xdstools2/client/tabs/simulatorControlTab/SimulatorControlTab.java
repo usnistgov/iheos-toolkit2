@@ -128,7 +128,7 @@ public class SimulatorControlTab extends GenericQueryTab {
 			}
 		}.run(getCommandContext());
 
-		Xdstools2.getEventBus().addHandler(TestSessionChangedEvent.TYPE, new TestSessionChangedEventHandler() {
+		ClientUtils.INSTANCE.getEventBus().addHandler(TestSessionChangedEvent.TYPE, new TestSessionChangedEventHandler() {
 			@Override
 			public void onTestSessionChanged(TestSessionChangedEvent event) {
 				loadSimStatus(event.getValue());
