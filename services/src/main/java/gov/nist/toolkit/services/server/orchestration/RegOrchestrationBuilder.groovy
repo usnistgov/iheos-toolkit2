@@ -1,5 +1,6 @@
 package gov.nist.toolkit.services.server.orchestration
 
+import gov.nist.toolkit.actorfactory.client.SimId
 import gov.nist.toolkit.actortransaction.client.ActorType
 import gov.nist.toolkit.configDatatypes.client.Pid
 import gov.nist.toolkit.configDatatypes.client.PidBuilder
@@ -7,6 +8,7 @@ import gov.nist.toolkit.results.client.TestInstance
 import gov.nist.toolkit.services.client.*
 import gov.nist.toolkit.services.server.ToolkitApi
 import gov.nist.toolkit.session.server.Session
+import gov.nist.toolkit.sitemanagement.client.SiteSpec
 import groovy.transform.TypeChecked
 /**
  *
@@ -34,9 +36,24 @@ class RegOrchestrationBuilder {
                 mpq2Pid:      new TestInstanceManager(request, response, '15820')
         ]
 
+        SimId selfTestRegId = null
+        if (request.selfTest()) {
+            selfTestRegId = new SimId(request.userName, 'reg_sut', ActorType.REGISTRY.name, request.environmentName)
+        }
+
         boolean forceNewPatientIds = !request.isUseExistingState()
 
         OrchestrationProperties orchProps = new OrchestrationProperties(session, request.userName, ActorType.REGISTRY, pidNameMap.keySet(), forceNewPatientIds)
+
+        SiteSpec registrySut
+        if (selfTestRegId) {
+            registrySut = selfTestRegId.siteSpec
+            api.deleteSimulatorIfItExists(selfTestRegId)
+            api.createSimulator(selfTestRegId)
+        } else {
+            registrySut = request.registrySut
+        }
+        response.setSut(registrySut)
 
         Pid registerPid = PidBuilder.createPid(orchProps.getProperty("registerPid"))
         Pid sqPid       = PidBuilder.createPid(orchProps.getProperty("sqPid"))
@@ -53,8 +70,6 @@ class RegOrchestrationBuilder {
 
         TestInstance testInstance12374 = TestInstanceManager.initializeTestInstance(request.getUserName(), new TestInstance("12374"))
         MessageItem item12374 = response.addMessage(testInstance12374, true, "");
-
-
 
         if (orchProps.updated()) {
             // send necessary Patient ID Feed messages

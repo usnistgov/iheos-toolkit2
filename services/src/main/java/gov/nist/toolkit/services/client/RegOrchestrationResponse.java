@@ -1,6 +1,7 @@
 package gov.nist.toolkit.services.client;
 
 import gov.nist.toolkit.configDatatypes.client.Pid;
+import gov.nist.toolkit.sitemanagement.client.SiteSpec;
 
 /**
  *
@@ -10,6 +11,7 @@ public class RegOrchestrationResponse extends AbstractOrchestrationResponse {
     private Pid sqPid;
     private Pid mpq1Pid;
     private Pid mpq2Pid;
+    private SiteSpec sut;
 
     public RegOrchestrationResponse() {
     }
@@ -44,6 +46,14 @@ public class RegOrchestrationResponse extends AbstractOrchestrationResponse {
 
     public void setMpq2Pid(Pid mpq2Pid) {
         this.mpq2Pid = mpq2Pid;
+    }
+
+    public SiteSpec getSut() {
+        return sut;
+    }
+
+    public void setSut(SiteSpec sut) {
+        this.sut = sut;
     }
 
     @Override
