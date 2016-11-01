@@ -457,9 +457,8 @@ public abstract class AbstractRegistryObject {
 
 		for (ExternalIdentifier ei : externalIdentifiers)
 			ei.verifyIdsUnique(er, knownIds);
-
-
 	}
+
 	public void validateHome(ErrorRecorder er, String resource) {
 		if (home == null)
 			er.err(XdsErrorCode.Code.XDSRegistryMetadataError, identifyingString() + ": homeCommunityId attribute must be present", this, resource);
@@ -473,6 +472,7 @@ public abstract class AbstractRegistryObject {
 			new OidFormat(er, identifyingString() + " homeCommunityId", resource).validate(parts[parts.length-1]);
 		}
 	}
+
 	protected int count(List<String> strings, String target) {
 		int i=0;
 
