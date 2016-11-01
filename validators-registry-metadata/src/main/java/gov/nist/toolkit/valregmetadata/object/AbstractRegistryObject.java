@@ -415,6 +415,7 @@ public abstract class AbstractRegistryObject {
 		}
 	}
 
+	// TODO this function is used for several assertions with resources that vary. Those need to be separated.
 	public void validateId(ErrorRecorder er, ValidationContext vc, String attName, String attValue, String resource) {
 		String defaultResource = "ITI TF-3: 4.1.12.3";
 		if (attValue == null || attValue.equals("")) {
@@ -440,9 +441,12 @@ public abstract class AbstractRegistryObject {
 
 	public void verifyIdsUnique(ErrorRecorder er, Set<String> knownIds) {
 		if (id != null) {
-			if (knownIds.contains(id))
-				er.err(XdsErrorCode.Code.XDSRegistryMetadataError, identifyingString() + ": entryUUID " + id + "  identifies multiple objects", this, "ITI TF-3: 4.1.12.3 and ebRS 5.1.2");
-			knownIds.add(id);
+			if (knownIds.contains(id)) {
+				Assertion assertion = ASSERTIONLIBRARY.getAssertion("TA020");
+				String detail = "EntryUUID found: " + id;
+				er.err(XdsErrorCode.Code.XDSRegistryMetadataError, assertion, this, identifyingString(), detail);
+			}
+				knownIds.add(id);
 		}
 
 		for (Classification c : classifications)
