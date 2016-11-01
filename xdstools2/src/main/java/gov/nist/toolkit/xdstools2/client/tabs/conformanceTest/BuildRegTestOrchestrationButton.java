@@ -96,7 +96,7 @@ public class BuildRegTestOrchestrationButton extends AbstractOrchestrationButton
             public void onSuccess(RawResponse rawResponse) {
                 if (handleError(rawResponse, RegOrchestrationResponse.class)) return;
                 final RegOrchestrationResponse orchResponse = (RegOrchestrationResponse) rawResponse;
-                testTab.setOrchestrationResponse(orchResponse);
+                testTab.setRegOrchestrationResponse(orchResponse);
 
                 initializationResultsPanel.add(new HTML("Initialization Complete"));
 

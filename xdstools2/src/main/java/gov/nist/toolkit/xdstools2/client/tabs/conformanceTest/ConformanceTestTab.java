@@ -17,6 +17,7 @@ import gov.nist.toolkit.interactiondiagram.client.widgets.InteractionDiagram;
 import gov.nist.toolkit.results.client.TestInstance;
 import gov.nist.toolkit.services.client.AbstractOrchestrationResponse;
 import gov.nist.toolkit.services.client.RecOrchestrationResponse;
+import gov.nist.toolkit.services.client.RegOrchestrationResponse;
 import gov.nist.toolkit.services.client.RepOrchestrationResponse;
 import gov.nist.toolkit.session.client.logtypes.TestOverviewDTO;
 import gov.nist.toolkit.session.client.sort.TestSorter;
@@ -53,6 +54,7 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner, TestsH
 	private AbstractOrchestrationResponse orchestrationResponse;
 	private RepOrchestrationResponse repOrchestrationResponse;
 	private RecOrchestrationResponse recOrchestrationResponse;
+	private RegOrchestrationResponse regOrchestrationResponse;
 
 	private final TestStatistics testStatistics = new TestStatistics();
 
@@ -669,6 +671,10 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner, TestsH
 			parms.put("$patientid$", recOrchestrationResponse.getRegisterPid().asString());
 		}
 
+		if (ActorType.REGISTRY.getShortName().equals(currentActorOption.actorTypeId)) {
+			parms.put("$patientid$", regOrchestrationResponse.getRegisterPid().asString());
+		}
+
 		if (getSiteToIssueTestAgainst() == null) {
 			new PopupMessage("Test Setup must be initialized");
 			return null;
@@ -684,14 +690,21 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner, TestsH
 		}
 	}
 
-	public void setRepOrchestrationResponse(RepOrchestrationResponse repOrchestrationResponse) {
+	void setRepOrchestrationResponse(RepOrchestrationResponse repOrchestrationResponse) {
 		this.repOrchestrationResponse = repOrchestrationResponse;
 		setOrchestrationResponse(repOrchestrationResponse);
 	}
 
-	public void setRecOrchestrationResponse(RecOrchestrationResponse recOrchestrationResponse) {
+
+
+	void setRecOrchestrationResponse(RecOrchestrationResponse recOrchestrationResponse) {
 		this.recOrchestrationResponse = recOrchestrationResponse;
 		setOrchestrationResponse(recOrchestrationResponse);
+	}
+
+	void setRegOrchestrationResponse(RegOrchestrationResponse regOrchestrationResponse) {
+		this.regOrchestrationResponse = regOrchestrationResponse;
+		setOrchestrationResponse(regOrchestrationResponse);
 	}
 
 	public void setOrchestrationResponse(AbstractOrchestrationResponse repOrchestrationResponse) {
