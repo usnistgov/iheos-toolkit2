@@ -446,7 +446,7 @@ public abstract class AbstractRegistryObject {
 				String detail = "EntryUUID found: " + id;
 				er.err(XdsErrorCode.Code.XDSRegistryMetadataError, assertion, this, identifyingString(), detail);
 			}
-				knownIds.add(id);
+			knownIds.add(id);
 		}
 
 		for (Classification c : classifications)
@@ -459,6 +459,7 @@ public abstract class AbstractRegistryObject {
 			ei.verifyIdsUnique(er, knownIds);
 	}
 
+	// TODO this function is used for several assertions with resources that vary. Those need to be separated.
 	public void validateHome(ErrorRecorder er, String resource) {
 		if (home == null)
 			er.err(XdsErrorCode.Code.XDSRegistryMetadataError, identifyingString() + ": homeCommunityId attribute must be present", this, resource);
@@ -475,14 +476,13 @@ public abstract class AbstractRegistryObject {
 
 	protected int count(List<String> strings, String target) {
 		int i=0;
-
 		for (String s : strings)
 			if (s.equals(target))
 				i++;
-
 		return i;
 	}
 
+	// TODO this function is used for several assertions with resources that vary. Those need to be separated.
 	public void validateClassificationsLegal(ErrorRecorder er, ClassAndIdDescription desc, String resource) {
 		List<String> cSchemes = new ArrayList<String>();
 
@@ -511,6 +511,7 @@ public abstract class AbstractRegistryObject {
 		return "ExternalIdentifier(" + eiScheme + ")(" + desc.names.get(eiScheme) + ")";
 	}
 
+	// TODO this function is used for several assertions with resources that vary. Those need to be separated.
 	public void validateRequiredClassificationsPresent(ErrorRecorder er, ValidationContext vc, ClassAndIdDescription desc, String resource) {
 		if (!(vc.isXDM || vc.isXDRLimited)) {
 			for (String cScheme : desc.requiredSchemes) {
@@ -527,6 +528,47 @@ public abstract class AbstractRegistryObject {
 
 		for (Author a : getAuthors())
 			a.validateStructure(er, vc);
+	}
+
+	// TODO this function is used for several assertions with resources that vary. Those need to be separated.
+	public void validateExternalIdentifiersCodedCorrectly(ErrorRecorder er, ValidationContext vc, ClassAndIdDescription desc, String resource) {
+		for (ExternalIdentifier ei : getExternalIdentifiers()) {
+			ei.validateStructure(er, vc);
+			if (MetadataSupport.XDSDocumentEntry_uniqueid_uuid.equals(ei.getIdentificationScheme())) {
+				String[] parts = ei.getValue().split("\\^");
+				new OidFormat(er, identifyingString() + ": " + ei.identifyingString(), externalIdentifierDescription(desc, ei.getIdentificationScheme()))
+						.validate(parts[0]);
+				if (parts[0].length() > 64)
+					er.err(XdsErrorCode.Code.XDSRegistryMetadataError, identifyingString() + ": " + ei.identifyingString() + " OID part of DocumentEntry uniqueID is limited to 64 digits", this, resource);
+				if (parts.length > 1 && parts[1].length() > 16) {
+					er.err(XdsErrorCode.Code.XDSRegistryMetadataError, identifyingString() + ": " + ei.identifyingString() + " extension part of DocumentEntry uniqueID is limited to 16 characters", this, resource);
+				}
+
+			} else if (MetadataSupport.XDSDocumentEntry_patientid_uuid.equals(ei.getIdentificationScheme())){
+				new CxFormat(er, identifyingString() + ": " + ei.identifyingString(), "ITI TF-3: Table 4.1.7")
+						.validate(ei.getValue());
+			}
+		}
+	}
+
+	// TODO this function is used for several assertions with resources that vary. Those need to be separated.
+	public void validateRequiredExternalIdentifiersPresent(ErrorRecorder er, ValidationContext vc, ClassAndIdDescription desc, String resource)  {
+		for (String idScheme : desc.requiredSchemes) {
+			List<ExternalIdentifier> eis = getExternalIdentifiers(idScheme);
+			if (eis.size() == 0)
+				er.err(XdsErrorCode.Code.XDSRegistryMetadataError, identifyingString() + ": " + externalIdentifierDescription(desc, idScheme) + " is required but missing", this, resource);
+			if (eis.size() > 1)
+				er.err(XdsErrorCode.Code.XDSRegistryMetadataError, identifyingString() + ": " + externalIdentifierDescription(desc, idScheme) + " is specified multiple times, only one allowed", this, resource);
+		}
+	}
+
+	// TODO this function is used for several assertions with resources that vary. Those need to be separated.
+	public void validateExternalIdentifiersLegal(ErrorRecorder er, ClassAndIdDescription desc, String resource) {
+		for (ExternalIdentifier ei : getExternalIdentifiers()) {
+			String idScheme = ei.getIdentificationScheme();
+			if (idScheme == null || idScheme.equals("") || !desc.definedSchemes.contains(idScheme))
+				er.err(XdsErrorCode.Code.XDSRegistryMetadataError, identifyingString() + ": " + ei.identifyingString() + " has an unknown identificationScheme attribute value: " + idScheme, this, resource);
+		}
 	}
 
 	public void validateClassifications(ErrorRecorder er, ValidationContext vc, ClassAndIdDescription desc, String resource)  {
@@ -547,47 +589,6 @@ public abstract class AbstractRegistryObject {
 		validateExternalIdentifiersCodedCorrectly(er, vc, desc, resource);
 	}
 
-	public void validateExternalIdentifiersCodedCorrectly(ErrorRecorder er, ValidationContext vc, ClassAndIdDescription desc, String resource) {
-		for (ExternalIdentifier ei : getExternalIdentifiers()) {
-			ei.validateStructure(er, vc);
-			if (MetadataSupport.XDSDocumentEntry_uniqueid_uuid.equals(ei.getIdentificationScheme())) {
-				String[] parts = ei.getValue().split("\\^");
-				new OidFormat(er, identifyingString() + ": " + ei.identifyingString(), externalIdentifierDescription(desc, ei.getIdentificationScheme()))
-				.validate(parts[0]);
-				if (parts[0].length() > 64)
-					er.err(XdsErrorCode.Code.XDSRegistryMetadataError, identifyingString() + ": " + ei.identifyingString() + " OID part of DocumentEntry uniqueID is limited to 64 digits", this, resource);
-				if (parts.length > 1 && parts[1].length() > 16) {
-					er.err(XdsErrorCode.Code.XDSRegistryMetadataError, identifyingString() + ": " + ei.identifyingString() + " extension part of DocumentEntry uniqueID is limited to 16 characters", this, resource);
-				}
-
-			} else if (MetadataSupport.XDSDocumentEntry_patientid_uuid.equals(ei.getIdentificationScheme())){
-				new CxFormat(er, identifyingString() + ": " + ei.identifyingString(), "ITI TF-3: Table 4.1.7")
-				.validate(ei.getValue());
-			}
-		}
-	}
-
-
-
-	public void validateRequiredExternalIdentifiersPresent(ErrorRecorder er, ValidationContext vc, ClassAndIdDescription desc, String resource)  {
-		for (String idScheme : desc.requiredSchemes) {
-			List<ExternalIdentifier> eis = getExternalIdentifiers(idScheme);
-			if (eis.size() == 0)
-				er.err(XdsErrorCode.Code.XDSRegistryMetadataError, identifyingString() + ": " + externalIdentifierDescription(desc, idScheme) + " is required but missing", this, resource);
-			if (eis.size() > 1)
-				er.err(XdsErrorCode.Code.XDSRegistryMetadataError, identifyingString() + ": " + externalIdentifierDescription(desc, idScheme) + " is specified multiple times, only one allowed", this, resource);
-		}
-	}
-
-
-	public void validateExternalIdentifiersLegal(ErrorRecorder er, ClassAndIdDescription desc, String resource) {
-		for (ExternalIdentifier ei : getExternalIdentifiers()) {
-			String idScheme = ei.getIdentificationScheme();
-			if (idScheme == null || idScheme.equals("") || !desc.definedSchemes.contains(idScheme))
-				er.err(XdsErrorCode.Code.XDSRegistryMetadataError, identifyingString() + ": " + ei.identifyingString() + " has an unknown identificationScheme attribute value: " + idScheme, this, resource);
-		}
-	}
-
 	public void validateSlots(ErrorRecorder er, ValidationContext vc) {
 		er.challenge("Validating that Slots present are legal");
 		validateSlotsLegal(er);
@@ -596,6 +597,5 @@ public abstract class AbstractRegistryObject {
 		er.challenge("Validating Slots are coded correctly");
 		validateSlotsCodedCorrectly(er, vc);
 	}
-
 
 }
