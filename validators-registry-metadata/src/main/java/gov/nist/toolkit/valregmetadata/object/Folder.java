@@ -169,7 +169,7 @@ public class Folder extends AbstractRegistryObject implements TopLevelObject {
 	public void validateSlotsCodedCorrectly(ErrorRecorder er, ValidationContext vc)  {
 
 		//                    name				   multi	format                                                  resource
-		validateSlot(er, 	"lastUpdateTime", 	   false, 	new DtmFormat(er, "Slot lastUpdateTime",            table417),  table417);
+		validateSlot(er, 	"lastUpdateTime", 	   false, 	new DtmFormat(er, this, "Slot lastUpdateTime",            table417),  table417);
 	}
 
 	public void validateRequiredSlotsPresent(ErrorRecorder er, ValidationContext vc) {
