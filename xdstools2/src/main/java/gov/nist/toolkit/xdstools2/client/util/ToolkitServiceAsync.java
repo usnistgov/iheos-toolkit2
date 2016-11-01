@@ -27,7 +27,6 @@ import gov.nist.toolkit.testkitutilities.client.SectionDefinitionDAO;
 import gov.nist.toolkit.testkitutilities.client.TestCollectionDefinitionDAO;
 import gov.nist.toolkit.tk.client.TkProps;
 import gov.nist.toolkit.valsupport.client.MessageValidationResults;
-import gov.nist.toolkit.valsupport.client.ValidationContext;
 import gov.nist.toolkit.xdstools2.shared.NoServletSessionException;
 import gov.nist.toolkit.xdstools2.shared.RegistryStatus;
 import gov.nist.toolkit.xdstools2.shared.RepositoryStatus;
@@ -118,20 +117,13 @@ public interface ToolkitServiceAsync {
 	void saveSite(SaveSiteRequest request, AsyncCallback<String> callback);
 	void reloadSites(boolean simAlso, AsyncCallback<List<String>> callback);
 	void reloadExternalSites(AsyncCallback<List<String>> callback);
-	void deleteSite(String siteName, AsyncCallback<String> callback);
+	void deleteSite(DeleteSiteRequest request, AsyncCallback<String> callback);
 
-	void getSSandContents(SiteSpec site, String ssuid, Map<String, List<String>> codeSpec, AsyncCallback<List<Result>> callback);
-	void srcStoresDocVal(SiteSpec site, String ssuid, AsyncCallback<List<Result>> callback);
-	void findDocuments(SiteSpec site, String pid, boolean onDemand, AsyncCallback<List<Result>> callback);
-	void findDocumentsByRefId(SiteSpec site, String pid, List<String> refIds, AsyncCallback<List<Result>> callback) ;
-	void findFolders(SiteSpec site, String pid, AsyncCallback<List<Result>> callback);
-	void findPatient(SiteSpec site, String firstName, String secondName, String lastName, String suffix,
-					 String gender, String dob, String ssn, String pid,
-					 String homeAddress1, String homeAddress2, String homeCity, String homeState, String homeZip, String homeCountry,
-					 String mothersFirstName, String mothersSecondName, String mothersLastName, String mothersSuffix,
-					 String homePhone, String workPhone, String principleCareProvider,
-					 String pob, String pobAddress1, String pobAddress2, String pobCity, String pobState, String pobZip, String pobCountry,
-					 AsyncCallback<List<Result>> callback);
+	void getSSandContents(GetSubmissionSetAndContentsRequest request, AsyncCallback<List<Result>> callback);
+	void srcStoresDocVal(GetSrcStoresDocValRequest request, AsyncCallback<List<Result>> callback);
+	void findDocuments(FindDocumentsRequest request, AsyncCallback<List<Result>> callback);
+	void findDocumentsByRefId(FindDocumentsRequest request, AsyncCallback<List<Result>> callback) ;
+	void findFolders(FindFoldersRequest request, AsyncCallback<List<Result>> callback);
 	void getDocuments(SiteSpec site, AnyIds ids, AsyncCallback<List<Result>> callback);
 	void getFolders(SiteSpec site, AnyIds aids, AsyncCallback<List<Result>> callback);
 	void getFoldersForDocument(SiteSpec site, AnyIds aids, AsyncCallback<List<Result>> callback);

@@ -126,23 +126,14 @@ public interface ToolkitService extends RemoteService  {
 	Site getSite(GetSiteRequest request) throws Exception;
 	Collection<Site> getAllSites(CommandContext commandContext) throws Exception;
 	String saveSite(SaveSiteRequest request) throws Exception;
-	String deleteSite(String siteName) throws Exception;
+	String deleteSite(DeleteSiteRequest request) throws Exception;
 
-	List<Result> getSSandContents(SiteSpec site, String ssuid,  Map<String, List<String>> codeSpec) throws NoServletSessionException ;
-	List<Result> srcStoresDocVal(SiteSpec site, String ssuid) throws NoServletSessionException ;
-	List<Result> findDocuments(SiteSpec site, String pid, boolean onDemand) throws NoServletSessionException ;
-	List<Result> findDocumentsByRefId(SiteSpec site, String pid, List<String> refIds) throws NoServletSessionException ;
-	List<Result> findFolders(SiteSpec site, String pid) throws NoServletSessionException ;
+	List<Result> getSSandContents(GetSubmissionSetAndContentsRequest request) throws Exception ;
+	List<Result> srcStoresDocVal(GetSrcStoresDocValRequest request) throws Exception ;
+	List<Result> findDocuments(FindDocumentsRequest request) throws Exception ;
+	List<Result> findDocumentsByRefId(FindDocumentsRequest request) throws Exception ;
+	List<Result> findFolders(FindFoldersRequest request) throws Exception ;
 	// FIXME this method has far too many parameters we need to change that by one object.
-	List<Result> findPatient(SiteSpec site, String firstName,
-							 String secondName, String lastName, String suffix, String gender,
-							 String dob, String ssn, String pid, String homeAddress1,
-							 String homeAddress2, String homeCity, String homeState,
-							 String homeZip, String homeCountry, String mothersFirstName, String mothersSecondName,
-							 String mothersLastName, String mothersSuffix, String homePhone,
-							 String workPhone, String principleCareProvider, String pob,
-							 String pobAddress1, String pobAddress2, String pobCity, String country,
-							 String pobState, String pobZip);
 	List<Result> getDocuments(SiteSpec site, AnyIds ids) throws NoServletSessionException ;
 	List<Result> getFolders(SiteSpec site, AnyIds aids) throws NoServletSessionException ;
 	List<Result> getFoldersForDocument(SiteSpec site, AnyIds aids) throws NoServletSessionException ;

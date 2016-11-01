@@ -4,11 +4,14 @@ import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.ui.*;
 import gov.nist.toolkit.configDatatypes.client.TransactionType;
+import gov.nist.toolkit.results.client.Result;
 import gov.nist.toolkit.sitemanagement.client.SiteSpec;
 import gov.nist.toolkit.xdstools2.client.CoupledTransactions;
+import gov.nist.toolkit.xdstools2.client.command.command.GetSrcStoresDocValCommand;
 import gov.nist.toolkit.xdstools2.client.widgets.PopupMessage;
 import gov.nist.toolkit.xdstools2.client.siteActorManagers.GetDocumentsSiteActorManager;
 import gov.nist.toolkit.xdstools2.client.tabs.genericQueryTab.GenericQueryTab;
+import gov.nist.toolkit.xdstools2.shared.command.request.GetSrcStoresDocValRequest;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -104,7 +107,12 @@ public class SourceStoredDocValTab extends GenericQueryTab {
 			getGoButton().setEnabled(false);
 			getInspectButton().setEnabled(false);
 
-			getToolkitServices().srcStoresDocVal(siteSpec, ssid.getValue().trim(), queryCallback);
+			new GetSrcStoresDocValCommand(){
+				@Override
+				public void onComplete(List<Result> result) {
+					displayResults(result);
+				}
+			}.run(new GetSrcStoresDocValRequest(getCommandContext(),siteSpec,ssid.getValue().trim()));
 		}
 		
 	}
