@@ -386,7 +386,8 @@ public abstract class AbstractRegistryObject {
 		return ok;
 	}
 
-	// TODO this function is used for several assertions in DocEntry (table 415), Folder (table 417), SubmissionSet (table 416)
+	// TODO this function is used for several assertions in DocEntry (table 415), Folder (table 417), SubmissionSet (table 416).
+	// TODO Check if they are separate assertions in specification.
 	// TODO Maybe switch based on class of origin
 	public void validateTopAtts(ErrorRecorder er, ValidationContext vc, String tableRef, List<String> statusValues) {
 		validateId(er, vc, "entryUUID", id, null);
