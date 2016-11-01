@@ -27,7 +27,6 @@ import gov.nist.toolkit.testkitutilities.client.SectionDefinitionDAO;
 import gov.nist.toolkit.testkitutilities.client.TestCollectionDefinitionDAO;
 import gov.nist.toolkit.tk.client.TkProps;
 import gov.nist.toolkit.valsupport.client.MessageValidationResults;
-import gov.nist.toolkit.valsupport.client.ValidationContext;
 import gov.nist.toolkit.xdstools2.shared.NoServletSessionException;
 import gov.nist.toolkit.xdstools2.shared.RegistryStatus;
 import gov.nist.toolkit.xdstools2.shared.RepositoryStatus;
@@ -69,7 +68,7 @@ public interface ToolkitServiceAsync {
 	void getDashboardRepositoryData(CommandContext context, AsyncCallback<List<RepositoryStatus>> callback);
 
 	void getTestsOverview(GetTestsOverviewRequest request, AsyncCallback<List<TestOverviewDTO>> callback);
-	void getTestSectionsDAOs(String mesaTestSession, TestInstance testInstance, AsyncCallback<List<SectionDefinitionDAO>> callback);
+	void getTestSectionsDAOs(GetTestSectionsDAOsRequest request, AsyncCallback<List<SectionDefinitionDAO>> callback);
 	void getUpdateNames(AsyncCallback<List<String>> callback);
 
 	void getTransactionRequest(GetTransactionRequest request, AsyncCallback<String> callback);
@@ -82,21 +81,20 @@ public interface ToolkitServiceAsync {
 
 	void executeSimMessage(ExecuteSimMessageRequest request, AsyncCallback<MessageValidationResults> callback);
 
-
 	void renameSimFile(String simFileSpec, String newSimFileSpec, AsyncCallback callback);
 
-	void deleteSimFile(String simFileSpec, AsyncCallback callback);
+	void deleteSimFile(DeleteSimFileRequest request, AsyncCallback callback);
 
 	void getSimulatorEndpoint(AsyncCallback<String> callback);
 
-	void getSelectedMessage(String simFilename, AsyncCallback<List<Result>> callback);
-	void getSelectedMessageResponse(String simFilename, AsyncCallback<List<Result>> callback);
+	void getSelectedMessage(GetSelectedMessageRequest request, AsyncCallback<List<Result>> callback);
+	void getSelectedMessageResponse(GetSelectedMessageRequest request, AsyncCallback<List<Result>> callback);
 	@Deprecated
 	void getClientIPAddress(AsyncCallback<String> callback);
 
 //	void  validateMessage(ValidationContext vc, String simFileName, AsyncCallback<MessageValidationResults> notify);
 
-	void  getTransInstances(SimId simid, String actor, String trans, AsyncCallback<List<TransactionInstance>> callback);
+	void  getTransInstances(GetTransactionRequest request, AsyncCallback<List<TransactionInstance>> callback);
 
 	void getLastMetadata(AsyncCallback<List<Result>> callback);
 	void getLastFilename(AsyncCallback<String> callback);
@@ -111,28 +109,21 @@ public interface ToolkitServiceAsync {
 	void getRepositoryNames(AsyncCallback<List<String>> callback);
 	void getRGNames(AsyncCallback<List<String>> callback);
 	void getIGNames(AsyncCallback<List<String>> callback);
-	void getRawLogs(TestInstance logId, AsyncCallback<TestLogs> callback);
-	void getTestdataSetListing(String environmentName, String sessionName, String testdataSetName, AsyncCallback<List<String>> callback);
-	void getCodesConfiguration(String getCodesConfiguration, AsyncCallback<CodesResult> callback);
-	void getSite(String siteName, AsyncCallback<Site> callback);
+	void getRawLogs(GetRawLogsRequest request, AsyncCallback<TestLogs> callback);
+	void getTestdataSetListing(GetTestdataSetListingRequest request, AsyncCallback<List<String>> callback);
+	void getCodesConfiguration(CommandContext context, AsyncCallback<CodesResult> callback);
+	void getSite(GetSiteRequest request, AsyncCallback<Site> callback);
 	void getAllSites(CommandContext commandContext, AsyncCallback<Collection<Site>> callback);
 	void saveSite(SaveSiteRequest request, AsyncCallback<String> callback);
 	void reloadSites(boolean simAlso, AsyncCallback<List<String>> callback);
 	void reloadExternalSites(AsyncCallback<List<String>> callback);
-	void deleteSite(String siteName, AsyncCallback<String> callback);
+	void deleteSite(DeleteSiteRequest request, AsyncCallback<String> callback);
 
-	void getSSandContents(SiteSpec site, String ssuid, Map<String, List<String>> codeSpec, AsyncCallback<List<Result>> callback);
-	void srcStoresDocVal(SiteSpec site, String ssuid, AsyncCallback<List<Result>> callback);
-	void findDocuments(SiteSpec site, String pid, boolean onDemand, AsyncCallback<List<Result>> callback);
-	void findDocumentsByRefId(SiteSpec site, String pid, List<String> refIds, AsyncCallback<List<Result>> callback) ;
-	void findFolders(SiteSpec site, String pid, AsyncCallback<List<Result>> callback);
-	void findPatient(SiteSpec site, String firstName, String secondName, String lastName, String suffix,
-					 String gender, String dob, String ssn, String pid,
-					 String homeAddress1, String homeAddress2, String homeCity, String homeState, String homeZip, String homeCountry,
-					 String mothersFirstName, String mothersSecondName, String mothersLastName, String mothersSuffix,
-					 String homePhone, String workPhone, String principleCareProvider,
-					 String pob, String pobAddress1, String pobAddress2, String pobCity, String pobState, String pobZip, String pobCountry,
-					 AsyncCallback<List<Result>> callback);
+	void getSSandContents(GetSubmissionSetAndContentsRequest request, AsyncCallback<List<Result>> callback);
+	void srcStoresDocVal(GetSrcStoresDocValRequest request, AsyncCallback<List<Result>> callback);
+	void findDocuments(FindDocumentsRequest request, AsyncCallback<List<Result>> callback);
+	void findDocumentsByRefId(FindDocumentsRequest request, AsyncCallback<List<Result>> callback) ;
+	void findFolders(FindFoldersRequest request, AsyncCallback<List<Result>> callback);
 	void getDocuments(SiteSpec site, AnyIds ids, AsyncCallback<List<Result>> callback);
 	void getFolders(SiteSpec site, AnyIds aids, AsyncCallback<List<Result>> callback);
 	void getFoldersForDocument(SiteSpec site, AnyIds aids, AsyncCallback<List<Result>> callback);

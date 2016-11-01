@@ -158,6 +158,8 @@ class IgOrchestrationBuilder {
             response.supportRG1 = SimCache.getSite(session.getId(), simIds[0])
             response.supportRG2 = SimCache.getSite(session.getId(), simIds[1])
 
+            orchProps.save();
+
             return response
         } catch (Exception e) {
             return RawResponseBuilder.build(e);

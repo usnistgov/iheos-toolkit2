@@ -44,6 +44,8 @@ class RepOrchestrationBuilder {
                     pid:  new TestInstanceManager(request, response, ''), // No testId needed since PIF won't be sent
             ]
 
+            boolean forceNewPatientIds = !request.isUseExistingState()
+
             boolean reuse = false  // updated as we progress
             supportSimId = new SimId(request.userName, supportIdName, ActorType.REGISTRY.name, request.environmentName)
             OrchestrationProperties orchProps = new OrchestrationProperties(session, request.userName, ActorType.REPOSITORY, pidNameMap.keySet(), !request.useExistingState)
@@ -61,7 +63,7 @@ class RepOrchestrationBuilder {
             } else {
                 supportSimConfig = api.createSimulator(supportSimId).getConfig(0)
             }
-            if (orchProps.getProperty("pid") != null) {
+            if (orchProps.getProperty("pid") != null && !forceNewPatientIds) {
                 pid = PidBuilder.createPid(orchProps.getProperty("pid"))
             } else {
                 pid  = session.allocateNewPid()

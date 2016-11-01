@@ -52,6 +52,8 @@ public class BuildIGTestOrchestrationButton extends AbstractOrchestrationButton 
 
         customPanel.add(instructions);
 
+        setSystemDiagramUrl("diagrams/IGdiagram.png");
+
         build();
         panel().add(initializationResultsPanel);
     }

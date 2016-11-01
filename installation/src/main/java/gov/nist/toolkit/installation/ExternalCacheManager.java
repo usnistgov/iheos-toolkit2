@@ -51,6 +51,24 @@ public class ExternalCacheManager {
         }
     }
 
+    private static void initializeDefaultSites() throws XdsException {
+        try {
+            File internalActorsDir = Installation.instance().internalActorsDir();
+            String[] list = internalActorsDir.list();
+            if (list == null) return;
+            File externalDir = Installation.instance().actorsDir();
+            for (String internalName : list) {
+                if (!internalName.endsWith("xml")) continue;
+                File internalFile = new File(internalActorsDir, internalName);
+                File externalFile = new File(externalDir, internalName);
+                if (!externalFile.exists())
+                    FileUtils.copyFile(internalFile, externalFile);
+            }
+        } catch (IOException e) {
+            throw new XdsException("IO Error installing default sites to external cache", "", e);
+        }
+    }
+
     public static void initializeFromMarkerFile(File markerFile) throws XdsException {
         reinitialize(markerFile.getParentFile());
     }
@@ -58,6 +76,7 @@ public class ExternalCacheManager {
     public static void initialize() throws XdsException {
         File location = new File(Installation.instance().propertyServiceManager().getPropertyManager().getExternalCache());
         initialize(location);
+        initializeDefaultSites();
     }
 
     public static String validate() {

@@ -864,27 +864,33 @@ public abstract class GenericQueryTab  extends ToolWindow {
         }
 
         public void onSuccess(List<Result> theresult) {
-            resultsShortDescription.setText("");
-            try {
-                if (theresult.size() == 1) {
-                    MetadataCollection mc = theresult.get(0).getStepResults().get(0).getMetadata();
-                    StringBuilder buf = new StringBuilder();
-                    buf.append("  ==> ");
-                    buf.append(mc.submissionSets.size()).append(" SubmissionSets ");
-                    buf.append(mc.docEntries.size()).append(" DocumentEntries ");
-                    buf.append(mc.folders.size()).append(" Folders ");
-                    buf.append(mc.objectRefs.size()).append(" ObjectRefs ");
-                    if (theresult.get(0).getStepResults().get(0).documents!=null) {
-                        buf.append(theresult.get(0).getStepResults().get(0).documents.size()).append(" Documents");
-                    }
-                    resultsShortDescription.setText(buf.toString());
+            displayResults(theresult);
+        }
+
+    };
+
+    protected void displayResults(List<Result> theresult) {
+        resultsShortDescription.setText("");
+        try {
+            if (theresult.size() == 1) {
+                MetadataCollection mc = theresult.get(0).getStepResults().get(0).getMetadata();
+                StringBuilder buf = new StringBuilder();
+                buf.append("  ==> ");
+                buf.append(mc.submissionSets.size()).append(" SubmissionSets ");
+                buf.append(mc.docEntries.size()).append(" DocumentEntries ");
+                buf.append(mc.folders.size()).append(" Folders ");
+                buf.append(mc.objectRefs.size()).append(" ObjectRefs ");
+                if (theresult.get(0).getStepResults().get(0).documents!=null) {
+                    buf.append(theresult.get(0).getStepResults().get(0).documents.size()).append(" Documents");
                 }
-            } catch (Exception e) {}
-            DetailsTree detailsTree = null;
-            boolean status = true;
-            boolean partialSuccess = false;
-            results = theresult;
-            for (Result result : results) {
+                resultsShortDescription.setText(buf.toString());
+            }
+        } catch (Exception e) {}
+        DetailsTree detailsTree = null;
+        boolean status = true;
+        boolean partialSuccess = false;
+        results = theresult;
+        for (Result result : results) {
                 if (result.getStepResults().size()>0) {
                     if ("urn:ihe:iti:2007:ResponseStatusType:PartialSuccess".equals((result.getStepResults().get(0).getRegistryResponseStatus()))) {
                         partialSuccess = true;
@@ -918,7 +924,7 @@ public abstract class GenericQueryTab  extends ToolWindow {
 //                if (detailsTree.hasNodes)
 //                    resultPanel.add(detailsTree.getWidget());
             }
-            if (status) {
+        if (status) {
                 if (partialSuccess)
                     setStatus("<span style=\"color:orange;font-weight:bold;\">Status:</span>&nbsp;<span style=\"color:orange;font-weight:bold;\">PartialSuccess</span>");
                 else
@@ -928,9 +934,7 @@ public abstract class GenericQueryTab  extends ToolWindow {
 
             getInspectButton().setEnabled(true);
             getGoButton().setEnabled(true);
-        }
-
-    };
+    }
 
     public void setDisplayTab(boolean displayTab) {
         this.displayTab = displayTab;

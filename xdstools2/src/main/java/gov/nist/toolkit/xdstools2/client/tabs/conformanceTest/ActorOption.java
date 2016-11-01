@@ -87,4 +87,23 @@ public class ActorOption {
     public String toString() {
         return "ActorOption: actorType=" + actorTypeId + " option=" + optionId;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        ActorOption that = (ActorOption) o;
+
+        if (actorTypeId != null ? !actorTypeId.equals(that.actorTypeId) : that.actorTypeId != null) return false;
+        return optionId != null ? optionId.equals(that.optionId) : that.optionId == null;
+
+    }
+
+    @Override
+    public int hashCode() {
+        int result = actorTypeId != null ? actorTypeId.hashCode() : 0;
+        result = 31 * result + (optionId != null ? optionId.hashCode() : 0);
+        return result;
+    }
 }

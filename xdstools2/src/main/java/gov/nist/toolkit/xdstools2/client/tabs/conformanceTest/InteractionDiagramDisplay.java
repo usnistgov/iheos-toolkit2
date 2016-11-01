@@ -5,6 +5,7 @@ import com.google.gwt.user.client.ui.HTML;
 import gov.nist.toolkit.interactiondiagram.client.widgets.InteractionDiagram;
 import gov.nist.toolkit.session.client.logtypes.TestOverviewDTO;
 import gov.nist.toolkit.xdstools2.client.Xdstools2;
+import gov.nist.toolkit.xdstools2.client.util.ClientUtils;
 
 /**
  *
@@ -12,7 +13,7 @@ import gov.nist.toolkit.xdstools2.client.Xdstools2;
 public class InteractionDiagramDisplay extends FlowPanel {
 
     public InteractionDiagramDisplay(TestOverviewDTO testResultDTO) {
-        InteractionDiagram diagram = new InteractionDiagram(Xdstools2.getEventBus(), testResultDTO);
+        InteractionDiagram diagram = new InteractionDiagram(ClientUtils.INSTANCE.getEventBus(), testResultDTO);
         if (diagram.hasMeaningfulDiagram()) {
             add(new HTML("<p><b>Interaction Sequence:</b></p>"));
             add(diagram);

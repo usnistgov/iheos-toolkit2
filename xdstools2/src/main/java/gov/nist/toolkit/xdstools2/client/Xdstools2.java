@@ -271,9 +271,9 @@ public class Xdstools2  implements AcceptsOneWidget, IsWidget {
 		}.run(getHomeTab().getCommandContext());
 	}
 
-	static public EventBus getEventBus() {
-		return clientFactory.getEventBus();
-	}
+//	static public EventBus getEventBus() {
+//		return clientFactory.getEventBus();
+//	}
 
 	// To force an error when I merge with Sunil. We need
 	// to reconcile the initialization.

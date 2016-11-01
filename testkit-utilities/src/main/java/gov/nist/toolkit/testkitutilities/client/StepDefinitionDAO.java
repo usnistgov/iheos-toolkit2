@@ -1,12 +1,15 @@
 package gov.nist.toolkit.testkitutilities.client;
 
+import com.google.gwt.user.client.rpc.IsSerializable;
+
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
 /**
  *
  */
-public class StepDefinitionDAO {
+public class StepDefinitionDAO implements Serializable, IsSerializable {
     private List<String> goals = new ArrayList<>();
     private String id;
 

@@ -3,11 +3,13 @@ package gov.nist.toolkit.xdstools2.client.tabs.actorConfigTab;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.rpc.AsyncCallback;
+import gov.nist.toolkit.xdstools2.client.command.command.DeleteSiteCommand;
 import gov.nist.toolkit.xdstools2.client.widgets.AdminPasswordDialogBox;
 import gov.nist.toolkit.xdstools2.client.PasswordManagement;
 import gov.nist.toolkit.xdstools2.client.widgets.PopupMessage;
 import gov.nist.toolkit.xdstools2.client.event.Xdstools2EventBus;
 import gov.nist.toolkit.xdstools2.client.util.ClientUtils;
+import gov.nist.toolkit.xdstools2.shared.command.request.DeleteSiteRequest;
 
 class DeleteSite implements ClickHandler {
 
@@ -49,7 +51,14 @@ class DeleteSite implements ClickHandler {
 		}
 
 		public void onSuccess(Boolean ignored) {
-			ClientUtils.INSTANCE.getToolkitServices().deleteSite(actorConfigTab.currentEditSite.getName(), deleteSiteCallback);
+			new DeleteSiteCommand(){
+				@Override
+				public void onComplete(String result) {
+					actorConfigTab.currentEditSite.changed = false;
+					actorConfigTab.newActorEditGrid();
+					actorConfigTab.loadExternalSites();
+				}
+			}.run(new DeleteSiteRequest(ClientUtils.INSTANCE.getCommandContext(),actorConfigTab.currentEditSite.getName()));
 			((Xdstools2EventBus) ClientUtils.INSTANCE.getEventBus()).fireActorsConfigUpdatedEvent();
 		}
 
@@ -67,21 +76,5 @@ class DeleteSite implements ClickHandler {
 		}
 
 	};
-
-	protected AsyncCallback<String> deleteSiteCallback = new AsyncCallback<String>() {
-
-		public void onFailure(Throwable caught) {
-			new PopupMessage(caught.getMessage());
-		}
-
-		public void onSuccess(String result) {
-			actorConfigTab.currentEditSite.changed = false;
-			actorConfigTab.newActorEditGrid();
-			actorConfigTab.loadExternalSites();
-		}
-
-	};
-
-
 
 }

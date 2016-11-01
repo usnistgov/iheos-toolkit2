@@ -1,0 +1,44 @@
+<query:AdhocQueryRequest xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:query="urn:oasis:names:tc:ebxml-regrep:xsd:query:3.0"
+    xmlns="urn:oasis:names:tc:ebxml-regrep:xsd:rim:3.0"
+    xmlns:rs="urn:oasis:names:tc:ebxml-regrep:xsd:rs:3.0">
+    <query:ResponseOption returnComposedObjects="true" returnType="LeafClass"/>
+    <AdhocQuery id="urn:uuid:10b545ea-725c-446d-9b95-8aeb444eddf3">
+
+        <Slot name="$patientId">
+            <ValueList>
+                <Value>'$patientid$'</Value>
+            </ValueList>
+        </Slot>
+
+
+        <Slot name="$XDSDocumentEntryStatus">
+            <ValueList>
+                <Value>('urn:oasis:names:tc:ebxml-regrep:StatusType:Approved')</Value>
+            </ValueList>
+        </Slot>
+
+        <Slot name="$XDSSubmissionSetStatus">
+            <ValueList>
+              <Value>('urn:oasis:names:tc:ebxml-regrep:StatusType:Approved')</Value>
+            </ValueList>
+        </Slot>
+
+
+        <Slot name="$XDSFolderStatus">
+            <ValueList>
+                <Value>('urn:oasis:names:tc:ebxml-regrep:StatusType:Approved')</Value>
+            </ValueList>
+        </Slot>
+
+        <!-- Begin Optional -->
+        <Slot name="$XDSDocumentEntryType">
+            <ValueList>
+                <Value>('urn:uuid:7edca82f-054d-47f2-a032-9b2a5b5186c1')</Value>
+            </ValueList>
+        </Slot>
+        <!-- End Optional -->
+
+
+    </AdhocQuery>
+</query:AdhocQueryRequest>

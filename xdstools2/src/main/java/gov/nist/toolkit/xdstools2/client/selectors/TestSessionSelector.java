@@ -31,7 +31,7 @@ public class TestSessionSelector {
     private void link() {
 
         // Test sessions reloaded
-        Xdstools2.getEventBus().addHandler(TestSessionsUpdatedEvent.TYPE, new TestSessionsUpdatedEventHandler() {
+        ClientUtils.INSTANCE.getEventBus().addHandler(TestSessionsUpdatedEvent.TYPE, new TestSessionsUpdatedEventHandler() {
             @Override
             public void onTestSessionsUpdated(TestSessionsUpdatedEvent event) {
                 listBox.clear();
@@ -41,7 +41,7 @@ public class TestSessionSelector {
 
 
         // SELECT
-        Xdstools2.getEventBus().addHandler(TestSessionChangedEvent.TYPE, new TestSessionChangedEventHandler() {
+        ClientUtils.INSTANCE.getEventBus().addHandler(TestSessionChangedEvent.TYPE, new TestSessionChangedEventHandler() {
             @Override
             public void onTestSessionChanged(TestSessionChangedEvent event) {
                 if (event.getChangeType() == TestSessionChangedEvent.ChangeType.SELECT) {
@@ -79,7 +79,7 @@ public class TestSessionSelector {
                 String newValue = listBox.getValue(listBox.getSelectedIndex());
                 if (NONSELECTION.equals(newValue)) return;
                 ClientUtils.INSTANCE.getTestSessionManager().setCurrentTestSession(newValue);
-                Xdstools2.getEventBus().fireEvent(new TestSessionChangedEvent(TestSessionChangedEvent.ChangeType.SELECT, newValue));
+                ClientUtils.INSTANCE.getEventBus().fireEvent(new TestSessionChangedEvent(TestSessionChangedEvent.ChangeType.SELECT, newValue));
             }
         });
 
@@ -108,7 +108,7 @@ public class TestSessionSelector {
                 String value = textBox.getValue().trim();
                 textBox.setValue("");
                 if ("".equals(value)) return;
-                Xdstools2.getEventBus().fireEvent(new TestSessionChangedEvent(TestSessionChangedEvent.ChangeType.ADD, value));
+                ClientUtils.INSTANCE.getEventBus().fireEvent(new TestSessionChangedEvent(TestSessionChangedEvent.ChangeType.ADD, value));
             }
         });
 
@@ -121,7 +121,7 @@ public class TestSessionSelector {
             @Override
             public void onClick(ClickEvent clickEvent) {
                 String value = listBox.getValue(listBox.getSelectedIndex());
-                Xdstools2.getEventBus().fireEvent(new TestSessionChangedEvent(TestSessionChangedEvent.ChangeType.DELETE, value));
+                ClientUtils.INSTANCE.getEventBus().fireEvent(new TestSessionChangedEvent(TestSessionChangedEvent.ChangeType.DELETE, value));
             }
         });
     }
@@ -131,7 +131,7 @@ public class TestSessionSelector {
         value = value.replaceAll(" ", "_");
         textBox.setValue("");
         if ("".equals(value)) return;
-        Xdstools2.getEventBus().fireEvent(new TestSessionChangedEvent(TestSessionChangedEvent.ChangeType.ADD, value));
+        ClientUtils.INSTANCE.getEventBus().fireEvent(new TestSessionChangedEvent(TestSessionChangedEvent.ChangeType.ADD, value));
     }
 
     public Widget asWidget() { return panel; }

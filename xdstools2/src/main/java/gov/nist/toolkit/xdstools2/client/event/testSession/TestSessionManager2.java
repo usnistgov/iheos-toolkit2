@@ -21,13 +21,13 @@ public class TestSessionManager2 {
     private String currentTestSession = "default";
 
     public TestSessionManager2() {
-        Xdstools2.getEventBus().addHandler(TestSessionsUpdatedEvent.TYPE, new TestSessionsUpdatedEventHandler() {
+        ClientUtils.INSTANCE.getEventBus().addHandler(TestSessionsUpdatedEvent.TYPE, new TestSessionsUpdatedEventHandler() {
             @Override
             public void onTestSessionsUpdated(TestSessionsUpdatedEvent event) {
                 testSessions = event.testSessionNames;
             }
         });
-        Xdstools2.getEventBus().addHandler(TestSessionChangedEvent.TYPE, new TestSessionChangedEventHandler() {
+        ClientUtils.INSTANCE.getEventBus().addHandler(TestSessionChangedEvent.TYPE, new TestSessionChangedEventHandler() {
             @Override
             public void onTestSessionChanged(TestSessionChangedEvent event) {
                 switch (event.getChangeType()) {
@@ -82,8 +82,8 @@ public class TestSessionManager2 {
                         deleteCookie();
                     }
                 }
-                Xdstools2.getEventBus().fireEvent(new TestSessionsUpdatedEvent(testSessions));
-                Xdstools2.getEventBus().fireEvent(new TestSessionChangedEvent(TestSessionChangedEvent.ChangeType.SELECT, currentTestSession));
+                ClientUtils.INSTANCE.getEventBus().fireEvent(new TestSessionsUpdatedEvent(testSessions));
+                ClientUtils.INSTANCE.getEventBus().fireEvent(new TestSessionChangedEvent(TestSessionChangedEvent.ChangeType.SELECT, currentTestSession));
             }
         }.run(ClientUtils.INSTANCE.getCommandContext());
     }

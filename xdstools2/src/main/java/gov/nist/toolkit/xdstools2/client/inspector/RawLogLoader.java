@@ -6,7 +6,9 @@ import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.TreeItem;
 import gov.nist.toolkit.results.client.*;
+import gov.nist.toolkit.xdstools2.client.command.command.GetRawLogsCommand;
 import gov.nist.toolkit.xdstools2.client.util.ClientUtils;
+import gov.nist.toolkit.xdstools2.shared.command.request.GetRawLogsRequest;
 
 import java.util.List;
 
@@ -36,13 +38,14 @@ class RawLogLoader implements ClickHandler {
 
 	public void loadTestLogs() {
 		/*this.metadataInspectorTab.data.*/
-		ClientUtils.INSTANCE.getToolkitServices().getRawLogs(logId, new AsyncCallback<TestLogs> () {
-
+		new GetRawLogsCommand(){
+			@Override
 			public void onFailure(Throwable caught) {
 				RawLogLoader.this.metadataInspectorTab.error(caught.getMessage());
 			}
 
-			public void onSuccess(TestLogs testLogs) {
+			@Override
+			public void onComplete(TestLogs testLogs) {
 				if (testLogs.assertionResult != null && testLogs.assertionResult.status == false) {
 					RawLogLoader.this.metadataInspectorTab.error(testLogs.assertionResult.assertion);
 				} else  {
@@ -62,8 +65,7 @@ class RawLogLoader implements ClickHandler {
 					}
 				}
 			}
-
-		});
+		}.run(new GetRawLogsRequest(ClientUtils.INSTANCE.getCommandContext(),logId));
 	}
 
 }

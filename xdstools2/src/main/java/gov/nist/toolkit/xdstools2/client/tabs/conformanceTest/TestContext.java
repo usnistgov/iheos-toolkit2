@@ -3,9 +3,11 @@ package gov.nist.toolkit.xdstools2.client.tabs.conformanceTest;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import gov.nist.toolkit.sitemanagement.client.Site;
 import gov.nist.toolkit.sitemanagement.client.SiteSpec;
+import gov.nist.toolkit.xdstools2.client.command.command.GetSiteCommand;
 import gov.nist.toolkit.xdstools2.client.widgets.PopupMessage;
 import gov.nist.toolkit.xdstools2.client.ToolWindow;
 import gov.nist.toolkit.xdstools2.client.util.ClientUtils;
+import gov.nist.toolkit.xdstools2.shared.command.request.GetSiteRequest;
 
 /**
  *
@@ -65,7 +67,7 @@ public class TestContext implements SiteManager {
 //		getToolkitServices().getSite(site, new AsyncCallback<Site>() {
         if (site == null) return;
         if (site.equals(NONE)) return;
-        ClientUtils.INSTANCE.getToolkitServices().getSite(currentSiteSpec.getName(), new AsyncCallback<Site>() {
+        new GetSiteCommand(){
             @Override
             public void onFailure(Throwable throwable) {
                 new PopupMessage("System " + currentSiteSpec.getName() + " does not exist.");
@@ -73,12 +75,11 @@ public class TestContext implements SiteManager {
                 siteUnderTest = null;
                 testContextView.updateTestingContextDisplay();
             }
-
             @Override
-            public void onSuccess(Site site) {
-                siteUnderTest = site;
+            public void onComplete(Site result) {
+                siteUnderTest = result;
             }
-        });
+        }.run(new GetSiteRequest(ClientUtils.INSTANCE.getCommandContext(),currentSiteSpec.getName()));
     }
 
     @Override
