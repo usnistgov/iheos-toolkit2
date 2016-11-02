@@ -32,6 +32,7 @@ class DeleteSite implements ClickHandler {
 		}
 		if (PasswordManagement.isSignedIn) {
 			deleteSignedInCallback.onSuccess(true);
+//			((Xdstools2EventBus) ClientUtils.INSTANCE.getEventBus()).fireActorsConfigUpdatedEvent();
 		}
 		else {
 			PasswordManagement.addSignInCallback(deleteSignedInCallback);
@@ -57,9 +58,9 @@ class DeleteSite implements ClickHandler {
 					actorConfigTab.currentEditSite.changed = false;
 					actorConfigTab.newActorEditGrid();
 					actorConfigTab.loadExternalSites();
+					((Xdstools2EventBus) ClientUtils.INSTANCE.getEventBus()).fireActorsConfigUpdatedEvent();
 				}
 			}.run(new DeleteSiteRequest(ClientUtils.INSTANCE.getCommandContext(),actorConfigTab.currentEditSite.getName()));
-			((Xdstools2EventBus) ClientUtils.INSTANCE.getEventBus()).fireActorsConfigUpdatedEvent();
 		}
 
 	};
