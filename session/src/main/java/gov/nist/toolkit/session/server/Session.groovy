@@ -395,7 +395,7 @@ public class Session implements SecurityParams {
 		File f = new File(getEnvironmentDir(), "keystore");
 		if (f.exists() && f.isDirectory())
 			return f;
-		throw new EnvironmentNotSelectedException("");
+		throw new EnvironmentNotSelectedException("Either environment not selected or chosen environment does not have a client TLS cert installed.");
 	}
 
 	@Override

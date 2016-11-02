@@ -135,7 +135,6 @@ public class FindDocuments2Tab extends GenericQueryTab {
                         public void onSuccess(InteractingEntity interactingEntity) {
                             String mapMsg = "mapping was successful!!";
                             System.out.println(mapMsg);
-                            new PopupMessage(mapMsg);
                         }
                     });
                 }
