@@ -52,6 +52,10 @@ public class ActorOption {
         return actorTypeId != null && ActorType.REGISTRY.getShortName().equals(actorTypeId);
     }
 
+    public boolean isRec() {
+        return actorTypeId != null && ActorType.DOCUMENT_RECIPIENT.getShortName().equals(actorTypeId);
+    }
+
     public boolean isInitiatingImagingGatewaySut() {
         return actorTypeId != null
                 && ActorType.INITIATING_IMAGING_GATEWAY.getShortName().equals(actorTypeId);

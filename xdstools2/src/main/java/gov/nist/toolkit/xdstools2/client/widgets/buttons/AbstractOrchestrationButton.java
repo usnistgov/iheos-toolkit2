@@ -29,9 +29,9 @@ abstract public class AbstractOrchestrationButton implements ClickHandler {
     private CheckBox resetCheckBox = null;
     private Panel customPanel = null;
     private boolean errorPanelAdded = false;
-    private CheckBox selftestCheckBox;
     private CheckBox samlCheckBox = new CheckBox("SAML");
     private CheckBox tlsCheckBox;
+    private CheckBox selftestCheckBox = new CheckBox("Self Test - Enable self test mode.");
     private String label = null;
     private String resetLabel = null;
     private String systemDiagramUrl = null;
@@ -85,9 +85,8 @@ abstract public class AbstractOrchestrationButton implements ClickHandler {
         panel.add(resetCheckBox);
         panel.add(new HTML("<br />"));
 
-        selftestCheckBox = new CheckBox("Self Test - Enable self test mode.");
-        panel.add(selftestCheckBox);
-        panel.add(new HTML("<br />"));
+//        panel.add(selftestCheckBox);
+//        panel.add(new HTML("<br />"));
 
         samlCheckBox.setTitle("Uses Gazelle STS Username 'Xuagood'");
         panel.add(samlCheckBox);

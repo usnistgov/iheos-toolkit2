@@ -18,21 +18,41 @@ public class XonXcnXtnFormat extends FormatValidator {
 
 	public void validate(String input) {
 		String[] parts = input.split("\\|");
-		
-		if (parts.length > 3)
-			err(input, "Format is XON|XCN|XTN  where XTN is required", xresource);
-		
-		if (parts.length != 3 || parts[2].equals("")) 
-			err(input, "Either Organization Name (XON format) or Extended Person Name (XCN) shall be present", xresource);
+		int barCount = count(input, '|');
 
-		if (parts.length > 0 && !parts[0].equals(""))
-			new XonFormat(er, context + ": intendedRecipient(Organization Name)", resource).validate(parts[0]);
-		
-		if (parts.length > 1 && !parts[1].equals(""))
-			new XcnFormat(er, context + ": intendedRecipient(Extended Person Name)", resource).validate(parts[1]);
+		if (barCount != 2)
+			err(input, "Format is XON|XCN|XTN and at least one of these values is required", xresource);
 
-		if (parts.length > 2 && !parts[2].equals(""))
-			new XtnFormat(er, context + ": intendedRecipient(Telecommunication)", resource).validate(parts[2]);
+		String xon = null;
+		String xcn = null;
+		String xtn = null;
+		try {
+			xon = parts[0];
+			xcn = parts[1];
+			xtn = parts[2];
+		} catch (Exception e){}
+		if (xon == null) xon = "";
+		if (xcn == null) xcn = "";
+		if (xtn == null) xtn = "";
+
+		if (xon.equals("") && xcn.equals("") && xtn.equals("")) {
+			err(input, "Format is XON|XCN|XTN and at least one of these values is required", xresource);
+		}
+
+		if (!xon.equals(""))
+			new XonFormat(er, context + ": intendedRecipient(Organization Name)", resource).validate(xon);
+		
+		if (!xcn.equals(""))
+			new XcnFormat(er, context + ": intendedRecipient(Extended Person Name)", resource).validate(xcn);
+
+		if (!xtn.equals(""))
+			new XtnFormat(er, context + ": intendedRecipient(Telecommunication)", resource).validate(xtn);
+	}
+
+	private int count(String input, char c) {
+		int count = 0;
+		for (int i=0; i<input.length(); i++ ) if (input.charAt(i) == c) count++;
+		return count;
 	}
 
 }

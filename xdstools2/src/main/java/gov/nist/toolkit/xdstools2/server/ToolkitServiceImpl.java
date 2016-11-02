@@ -23,21 +23,9 @@ import gov.nist.toolkit.registrymetadata.client.AnyIds;
 import gov.nist.toolkit.registrymetadata.client.ObjectRef;
 import gov.nist.toolkit.registrymetadata.client.ObjectRefs;
 import gov.nist.toolkit.registrymetadata.client.Uids;
-import gov.nist.toolkit.results.client.CodesResult;
-import gov.nist.toolkit.results.client.DocumentEntryDetail;
-import gov.nist.toolkit.results.client.Result;
-import gov.nist.toolkit.results.client.TestInstance;
-import gov.nist.toolkit.results.client.TestLogs;
+import gov.nist.toolkit.results.client.*;
 import gov.nist.toolkit.results.shared.Test;
-import gov.nist.toolkit.services.client.IdsOrchestrationRequest;
-import gov.nist.toolkit.services.client.IgOrchestrationRequest;
-import gov.nist.toolkit.services.client.IigOrchestrationRequest;
-import gov.nist.toolkit.services.client.RSNAEdgeOrchestrationRequest;
-import gov.nist.toolkit.services.client.RawResponse;
-import gov.nist.toolkit.services.client.RegOrchestrationRequest;
-import gov.nist.toolkit.services.client.RepOrchestrationRequest;
-import gov.nist.toolkit.services.client.RgOrchestrationRequest;
-import gov.nist.toolkit.services.client.RigOrchestrationRequest;
+import gov.nist.toolkit.services.client.*;
 import gov.nist.toolkit.services.server.RawResponseBuilder;
 import gov.nist.toolkit.services.server.orchestration.OrchestrationManager;
 import gov.nist.toolkit.services.shared.SimulatorServiceManager;
@@ -85,13 +73,7 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Scanner;
+import java.util.*;
 
 @SuppressWarnings("serial")
 public class ToolkitServiceImpl extends RemoteServiceServlet implements
@@ -354,6 +336,12 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements
         Session s = getSession();
         if (s == null) return RawResponseBuilder.build(new NoServletSessionException(""));
         return new OrchestrationManager().buildRegTestEnvironment(s, request);
+    }
+    @Override
+    public RawResponse buildRecTestOrchestration(RecOrchestrationRequest request) {
+        Session s = getSession();
+        if (s == null) return RawResponseBuilder.build(new NoServletSessionException(""));
+        return new OrchestrationManager().buildRecTestEnvironment(s, request);
     }
     @Override
     public RawResponse buildIgTestOrchestration(IgOrchestrationRequest request) {
