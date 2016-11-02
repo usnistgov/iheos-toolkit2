@@ -2,6 +2,8 @@ package gov.nist.toolkit.valregmetadata.object;
 
 import gov.nist.toolkit.errorrecording.ErrorRecorder;
 import gov.nist.toolkit.errorrecording.client.XdsErrorCode;
+import gov.nist.toolkit.errorrecording.client.assertions.Assertion;
+import gov.nist.toolkit.errorrecording.client.assertions.AssertionLibrary;
 import gov.nist.toolkit.registrymetadata.Metadata;
 import gov.nist.toolkit.commondatatypes.MetadataSupport;
 import gov.nist.toolkit.valsupport.client.ValidationContext;
@@ -15,6 +17,8 @@ public class Classification extends AbstractRegistryObject {
 	//String code_display_name = "";
 	//String coding_scheme = "";
 	String classification_node = "";
+	private AssertionLibrary ASSERTIONLIBRARY = AssertionLibrary.getInstance();
+
 
 	public Classification(String id, String classificationScheme, String code, String codingScheme, String displayName) {
 		super(id);
@@ -111,27 +115,38 @@ public class Classification extends AbstractRegistryObject {
 		validateId(er, vc, "entryUUID", id, "ITI TF-3: 4.1.12.2");
 		OMElement parentEle = (OMElement) ro.getParent();
 		String parentEleId =  ((parentEle == null) ? "null" :
-			parentEle.getAttributeValue(MetadataSupport.id_qname));
+				parentEle.getAttributeValue(MetadataSupport.id_qname));
 		String classifiedObjectId = ro.getAttributeValue(MetadataSupport.classified_object_qname);
 
-		if (parentEle != null && !parentEleId.equals(classifiedObjectId))
-			er.err(XdsErrorCode.Code.XDSRegistryMetadataError, identifyingString() + ": is a child of object " + parentEleId + " but the classifiedObject value is " +
-					classifiedObjectId + ", they must match", this, "ITI TF-3: 4.1.12.2");
+		if (parentEle != null && !parentEleId.equals(classifiedObjectId)) {
+			Assertion assertion = ASSERTIONLIBRARY.getAssertion("TA025");
+			String detail = "'" + identifyingString() + "' is a child of object '" + parentEleId + "' but the classifiedObject value is '" +
+					classifiedObjectId + "', they must match";
+			er.err(XdsErrorCode.Code.XDSRegistryMetadataError, assertion, this, identifyingString(), detail);
+		}
 
-		if (getClassificationScheme() == null || getClassificationScheme().equals(""))
-			er.err(XdsErrorCode.Code.XDSRegistryMetadataError, identifyingString() + ": does not have a value for the classificationScheme attribute", this, "ebRIM 3.0 section 4.3.1");
-		else if (!getClassificationScheme().startsWith("urn:uuid:"))
-			er.err(XdsErrorCode.Code.XDSRegistryMetadataError, identifyingString() + ": classificationScheme attribute value is not have urn:uuid: prefix", this, "ITI TF-3: 4.3.1");
+		if (getClassificationScheme() == null || getClassificationScheme().equals("")) {
+			Assertion assertion = ASSERTIONLIBRARY.getAssertion("TA026");
+			er.err(XdsErrorCode.Code.XDSRegistryMetadataError, assertion, this, identifyingString(), "");
+		}
+		else if (!getClassificationScheme().startsWith("urn:uuid:")) {
+			Assertion assertion = ASSERTIONLIBRARY.getAssertion("TA027");
+			er.err(XdsErrorCode.Code.XDSRegistryMetadataError, assertion, this, identifyingString(), "");
+		}
 
-		if (getCodeValue().equals(""))
-			er.err(XdsErrorCode.Code.XDSRegistryMetadataError, identifyingString() + ": nodeRepresentation attribute is missing or empty", this, "ebRIM 3.0 section 4.3.1");
+		if (getCodeValue().equals("")) {
+			Assertion assertion = ASSERTIONLIBRARY.getAssertion("TA028");
+			er.err(XdsErrorCode.Code.XDSRegistryMetadataError, assertion, this, identifyingString(), "");
+		}
 
-		if (getCodeDisplayName().equals(""))
-			er.err(XdsErrorCode.Code.XDSRegistryMetadataError, identifyingString() + ": no name attribute", this, "ITI TF-3: 4.1.12.2");
-
-		if (getCodeScheme().equals(""))
-			er.err(XdsErrorCode.Code.XDSRegistryMetadataError, identifyingString() + ": no codingScheme Slot", this, "ITI TF-3: 4.1.12.2");
-
+		if (getCodeDisplayName().equals("")) {
+			Assertion assertion = ASSERTIONLIBRARY.getAssertion("TA029");
+			er.err(XdsErrorCode.Code.XDSRegistryMetadataError, assertion, this, identifyingString(), "");
+		}
+		if (getCodeScheme().equals("")) {
+			Assertion assertion = ASSERTIONLIBRARY.getAssertion("TA030");
+			er.err(XdsErrorCode.Code.XDSRegistryMetadataError, assertion, this, identifyingString(), "");
+		}
 	}
 
 	public OMElement toXml() throws XdsInternalException  {
@@ -139,11 +154,11 @@ public class Classification extends AbstractRegistryObject {
 	}
 
 	public void validateRequiredSlotsPresent(ErrorRecorder er,
-			ValidationContext vc) {
+											 ValidationContext vc) {
 	}
 
 	public void validateSlotsCodedCorrectly(ErrorRecorder er,
-			ValidationContext vc) {
+											ValidationContext vc) {
 	}
 
 	public void validateSlotsLegal(ErrorRecorder er) {
