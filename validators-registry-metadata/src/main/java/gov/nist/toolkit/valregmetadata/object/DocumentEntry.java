@@ -377,7 +377,7 @@ public class DocumentEntry extends AbstractRegistryObject implements TopLevelObj
 		//                    name				   multi	format                                                  resource
 		validateSlot(er, 	"creationTime", 	   false, 	new DtmFormat(er, this, "Slot creationTime",      table415),  table415);
 		validateSlot(er, 	"languageCode",		   false, 	new Rfc3066Format(er, "Slot languageCode",      table415),  table415);
-		validateSlot(er, 	"legalAuthenticator",  false, 	new XcnFormat(er, "Slot legalAuthenticator",table415),  table415);
+		validateSlot(er, 	"legalAhuthenticator",  false, 	new XcnFormat(er, "Slot legalAuthenticator",table415),  table415);
 		validateSlot(er, 	"serviceStartTime",	   false, 	new DtmFormat(er, this, "Slot serviceStartTime",  table415),  table415);
 		validateSlot(er, 	"serviceStopTime",	   false, 	new DtmFormat(er, this, "Slot serviceStopTime",   table415),  table415);
 		validateSlot(er, 	"sourcePatientInfo",   true, 	new SourcePatientInfoFormat(er, "Slot sourcePatientInfo", table415),  table415);

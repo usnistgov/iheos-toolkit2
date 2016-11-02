@@ -2,6 +2,8 @@ package gov.nist.toolkit.valregmetadata.object;
 
 import gov.nist.toolkit.errorrecording.ErrorRecorder;
 import gov.nist.toolkit.errorrecording.client.XdsErrorCode;
+import gov.nist.toolkit.errorrecording.client.assertions.Assertion;
+import gov.nist.toolkit.errorrecording.client.assertions.AssertionLibrary;
 import gov.nist.toolkit.registrymetadata.Metadata;
 import gov.nist.toolkit.commondatatypes.MetadataSupport;
 import gov.nist.toolkit.valregmetadata.datatype.DtmFormat;
@@ -12,69 +14,71 @@ import org.apache.axiom.om.OMElement;
 import java.util.*;
 
 public class Folder extends AbstractRegistryObject implements TopLevelObject {
+	private AssertionLibrary ASSERTIONLIBRARY = AssertionLibrary.getInstance();
 
-	static List<String> statusValues = 
-		Arrays.asList(
-				MetadataSupport.status_type_namespace + "Approved"
-		);
 
-	static List<String> definedSlots = 
-		Arrays.asList(
-				"lastUpdateTime"
-		);
+	static List<String> statusValues =
+			Arrays.asList(
+					MetadataSupport.status_type_namespace + "Approved"
+			);
+
+	static List<String> definedSlots =
+			Arrays.asList(
+					"lastUpdateTime"
+			);
 
 	static List<String> requiredSlots = new ArrayList<String>();
 
 	static public ClassAndIdDescription classificationDescription = new ClassAndIdDescription();
 	static {
 		classificationDescription.definedSchemes =
-			Arrays.asList(
-					MetadataSupport.XDSFolder_codeList_uuid
-			);
-		classificationDescription.requiredSchemes = 
-			Arrays.asList(
-					MetadataSupport.XDSFolder_codeList_uuid
-			);
+				Arrays.asList(
+						MetadataSupport.XDSFolder_codeList_uuid
+				);
+		classificationDescription.requiredSchemes =
+				Arrays.asList(
+						MetadataSupport.XDSFolder_codeList_uuid
+				);
 		classificationDescription.multipleSchemes =
-			Arrays.asList(
-					MetadataSupport.XDSFolder_codeList_uuid
-			);
+				Arrays.asList(
+						MetadataSupport.XDSFolder_codeList_uuid
+				);
 		classificationDescription.names = new HashMap<String, String>();
 		classificationDescription.names.put(MetadataSupport.XDSFolder_codeList_uuid, "Code List");
-	} 
-	
+	}
+
 	static public ClassAndIdDescription XDMclassificationDescription = new ClassAndIdDescription();
 	static {
 		XDMclassificationDescription.definedSchemes =
-			Arrays.asList(
-					MetadataSupport.XDSFolder_codeList_uuid
-			);
-		XDMclassificationDescription.requiredSchemes = 
-			Arrays.asList(
-			);
+				Arrays.asList(
+						MetadataSupport.XDSFolder_codeList_uuid
+				);
+		XDMclassificationDescription.requiredSchemes =
+				Arrays.asList(
+				);
 		XDMclassificationDescription.multipleSchemes =
-			Arrays.asList(
-					MetadataSupport.XDSFolder_codeList_uuid
-			);
+				Arrays.asList(
+						MetadataSupport.XDSFolder_codeList_uuid
+				);
 		XDMclassificationDescription.names = new HashMap<String, String>();
 		XDMclassificationDescription.names.put(MetadataSupport.XDSFolder_codeList_uuid, "Code List");
-	} 
-	
+	}
+
 	static public ClassAndIdDescription externalIdentifierDescription = new ClassAndIdDescription();
 	static {
 		externalIdentifierDescription.definedSchemes =
-			Arrays.asList(
-					MetadataSupport.XDSFolder_patientid_uuid,
-					MetadataSupport.XDSFolder_uniqueid_uuid
-			);
-		
-		externalIdentifierDescription.requiredSchemes = 
-			Arrays.asList(
-					MetadataSupport.XDSFolder_patientid_uuid,
-					MetadataSupport.XDSFolder_uniqueid_uuid
-					);
-		externalIdentifierDescription.multipleSchemes = new ArrayList<String>(); 
-		
+				Arrays.asList(
+						MetadataSupport.XDSFolder_patientid_uuid,
+						MetadataSupport.XDSFolder_uniqueid_uuid
+				);
+
+		externalIdentifierDescription.requiredSchemes =
+				Arrays.asList(
+						MetadataSupport.XDSFolder_patientid_uuid,
+						MetadataSupport.XDSFolder_uniqueid_uuid
+				);
+		externalIdentifierDescription.multipleSchemes = new ArrayList<String>();
+
 		externalIdentifierDescription.names = new HashMap<String, String>();
 		externalIdentifierDescription.names.put(MetadataSupport.XDSFolder_patientid_uuid, "Patient ID");
 		externalIdentifierDescription.names.put(MetadataSupport.XDSFolder_uniqueid_uuid, "Unique ID");
@@ -83,17 +87,17 @@ public class Folder extends AbstractRegistryObject implements TopLevelObject {
 	static public ClassAndIdDescription XDMexternalIdentifierDescription = new ClassAndIdDescription();
 	static {
 		XDMexternalIdentifierDescription.definedSchemes =
-			Arrays.asList(
-					MetadataSupport.XDSFolder_patientid_uuid,
-					MetadataSupport.XDSFolder_uniqueid_uuid
-			);
-		
-		XDMexternalIdentifierDescription.requiredSchemes = 
-			Arrays.asList(
-					MetadataSupport.XDSFolder_uniqueid_uuid
-					);
-		XDMexternalIdentifierDescription.multipleSchemes = new ArrayList<String>(); 
-		
+				Arrays.asList(
+						MetadataSupport.XDSFolder_patientid_uuid,
+						MetadataSupport.XDSFolder_uniqueid_uuid
+				);
+
+		XDMexternalIdentifierDescription.requiredSchemes =
+				Arrays.asList(
+						MetadataSupport.XDSFolder_uniqueid_uuid
+				);
+		XDMexternalIdentifierDescription.multipleSchemes = new ArrayList<String>();
+
 		XDMexternalIdentifierDescription.names = new HashMap<String, String>();
 		XDMexternalIdentifierDescription.names.put(MetadataSupport.XDSFolder_patientid_uuid, "Patient ID");
 		XDMexternalIdentifierDescription.names.put(MetadataSupport.XDSFolder_uniqueid_uuid, "Unique ID");
@@ -103,7 +107,7 @@ public class Folder extends AbstractRegistryObject implements TopLevelObject {
 	public Folder(Metadata m, OMElement ro) throws XdsInternalException  {
 		super(m, ro);
 	}
-	
+
 	public Folder(String id) {
 		super(id);
 		internalClassifications.add(new InternalClassification("cl" + id, id, MetadataSupport.XDSFolder_classification_uuid));
@@ -116,7 +120,7 @@ public class Folder extends AbstractRegistryObject implements TopLevelObject {
 	static public String table417 = "ITI TF-3: Table 4.1-7";
 
 	public String identifyingString() {
-		return "Folder(" + getId() + ")";	
+		return "Folder(" + getId() + ")";
 	}
 
 	public OMElement toXml() throws XdsInternalException  {
@@ -138,14 +142,14 @@ public class Folder extends AbstractRegistryObject implements TopLevelObject {
 	}
 
 	public void validate(ErrorRecorder er, ValidationContext vc,
-			Set<String> knownIds) {
-		
+						 Set<String> knownIds) {
+
 		if (vc.skipInternalStructure)
 			return;
-		
+
 		if (vc.isXDR || vc.isPartOfRecipient)
 			vc.isXDRLimited = isMetadataLimited();
-		
+
 		if (vc.isXDRLimited)
 			er.sectionHeading("Limited Metadata");
 
@@ -175,17 +179,22 @@ public class Folder extends AbstractRegistryObject implements TopLevelObject {
 	public void validateRequiredSlotsPresent(ErrorRecorder er, ValidationContext vc) {
 		// Slots always required
 		for (String slotName : requiredSlots) {
-			if (getSlot(slotName) == null)
-				er.err(XdsErrorCode.Code.XDSRegistryMetadataError, identifyingString() + ": Slot " + slotName + " missing", this, table417);
+			if (getSlot(slotName) == null) {
+				Assertion assertion = ASSERTIONLIBRARY.getAssertion("TA023");
+				String detail = "Slot '" + slotName + "' missing";
+				er.err(XdsErrorCode.Code.XDSRegistryMetadataError, assertion, this, identifyingString(), detail);
+			}
 		}
 	}
 
 	public void validateSlotsLegal(ErrorRecorder er)  {
 		verifySlotsUnique(er);
 		for (Slot slot : getSlots()) {
-			if ( ! legal_slot_name(slot.getName()))
-				er.err(XdsErrorCode.Code.XDSRegistryMetadataError, identifyingString() + ": " + slot.getName() + " is not a legal slot name for a SubmissionSet",  this,  table417);
-
+			if ( ! legal_slot_name(slot.getName())) {
+				Assertion assertion = ASSERTIONLIBRARY.getAssertion("TA024");
+				String detail = "Slot '" + slot.getName() + "'";
+				er.err(XdsErrorCode.Code.XDSRegistryMetadataError, assertion, this, identifyingString(), detail);
+			}
 		}
 	}
 
@@ -200,7 +209,7 @@ public class Folder extends AbstractRegistryObject implements TopLevelObject {
 	}
 
 	public boolean equals(Folder f)  {
-		if (!id.equals(id)) 
+		if (!id.equals(id))
 			return false;
 		return	super.equals(f);
 	}
