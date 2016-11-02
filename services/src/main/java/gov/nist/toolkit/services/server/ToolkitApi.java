@@ -229,6 +229,16 @@ public class ToolkitApi {
         return xdsTestServiceManager().runMesaTest(environmentName,testSessionName, siteSpec, testInstance, sections, params, null, stopOnFirstFailure);
     }
 
+    public List<Result> runTest(String testSessionName, SiteSpec siteSpec, TestInstance testInstance, List<String> sections, Map<String, String> params, boolean stopOnFirstFailure) throws Exception {
+        if (testSessionName == null) {
+            testSessionName = "API";
+            xdsTestServiceManager().addMesaTestSession(testSessionName);
+        }
+        if (session.getMesaSessionName() == null) session.setMesaSessionName(testSessionName);
+        // TODO add environment name in following call?
+        return xdsTestServiceManager().runMesaTest(environmentName,testSessionName, siteSpec, testInstance, sections, params, null, stopOnFirstFailure);
+    }
+
     public TestLogs getTestLogs(TestInstance testInstance) {
         return xdsTestServiceManager().getRawLogs(testInstance);
     }
