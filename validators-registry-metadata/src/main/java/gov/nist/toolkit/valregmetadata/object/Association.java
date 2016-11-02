@@ -2,6 +2,8 @@ package gov.nist.toolkit.valregmetadata.object;
 
 import gov.nist.toolkit.errorrecording.ErrorRecorder;
 import gov.nist.toolkit.errorrecording.client.XdsErrorCode;
+import gov.nist.toolkit.errorrecording.client.assertions.Assertion;
+import gov.nist.toolkit.errorrecording.client.assertions.AssertionLibrary;
 import gov.nist.toolkit.registrymetadata.Metadata;
 import gov.nist.toolkit.commondatatypes.MetadataSupport;
 import gov.nist.toolkit.valsupport.client.ValidationContext;
@@ -20,23 +22,25 @@ public class Association extends AbstractRegistryObject implements TopLevelObjec
 	String target = "";
 	String type = "";
 	ValidationContext vc;
+	private AssertionLibrary ASSERTIONLIBRARY = AssertionLibrary.getInstance();
+
 
 	static List<String> assocTypes =
-		Arrays.asList(
-				MetadataSupport.assoctype_has_member,
-				MetadataSupport.assoctype_rplc,
-				MetadataSupport.assoctype_xfrm,
-				MetadataSupport.assoctype_apnd,
-				MetadataSupport.assoctype_xfrm_rplc,
-				MetadataSupport.assoctype_signs,
-				MetadataSupport.assoctype_isSnapshotOf
-		);
+			Arrays.asList(
+					MetadataSupport.assoctype_has_member,
+					MetadataSupport.assoctype_rplc,
+					MetadataSupport.assoctype_xfrm,
+					MetadataSupport.assoctype_apnd,
+					MetadataSupport.assoctype_xfrm_rplc,
+					MetadataSupport.assoctype_signs,
+					MetadataSupport.assoctype_isSnapshotOf
+			);
 
 	static List<String> assocTypesMU =
-		Arrays.asList(
-				MetadataSupport.assoctype_update_availabilityStatus,
-				MetadataSupport.assoctype_submitAssociation
-				);
+			Arrays.asList(
+					MetadataSupport.assoctype_update_availabilityStatus,
+					MetadataSupport.assoctype_submitAssociation
+			);
 
 	static public ClassAndIdDescription externalIdentifierDescription = new ClassAndIdDescription();
 	static {
@@ -111,7 +115,7 @@ public class Association extends AbstractRegistryObject implements TopLevelObjec
 	}
 
 	public void validate(ErrorRecorder er, ValidationContext vc,
-			Set<String> knownIds) {
+						 Set<String> knownIds) {
 		if (vc.skipInternalStructure)
 			return;
 
@@ -129,19 +133,23 @@ public class Association extends AbstractRegistryObject implements TopLevelObjec
 	}
 
 	void verifyNotReferenceSelf(ErrorRecorder er) {
-		if (source.equals(id))
-			er.err(XdsErrorCode.Code.XDSRegistryMetadataError, identifyingString() + " sourceObject attribute references self", this, "???");
-		if (target.equals(id))
-			er.err(XdsErrorCode.Code.XDSRegistryMetadataError, identifyingString() + " targetObject attribute references self", this, "???");
+		if (source.equals(id)) {
+			Assertion assertion = ASSERTIONLIBRARY.getAssertion("TA031");
+			er.err(XdsErrorCode.Code.XDSRegistryMetadataError, assertion, this, identifyingString(), "");
+		}
+		if (target.equals(id)) {
+			Assertion assertion = ASSERTIONLIBRARY.getAssertion("TA032");
+			er.err(XdsErrorCode.Code.XDSRegistryMetadataError, assertion, this, identifyingString(), "");
+		}
 	}
 
 	static List<String> assocs_with_documentation =
-		Arrays.asList(
-				MetadataSupport.assoctype_rplc,
-				MetadataSupport.assoctype_xfrm,
-				MetadataSupport.assoctype_apnd,
-				MetadataSupport.assoctype_xfrm_rplc
-		);
+			Arrays.asList(
+					MetadataSupport.assoctype_rplc,
+					MetadataSupport.assoctype_xfrm,
+					MetadataSupport.assoctype_apnd,
+					MetadataSupport.assoctype_xfrm_rplc
+			);
 
 	public void validateClassifications(ErrorRecorder er, ValidationContext vc) {
 
@@ -150,29 +158,30 @@ public class Association extends AbstractRegistryObject implements TopLevelObjec
 		List<Classification> c = getClassificationsByClassificationScheme(MetadataSupport.XDSAssociationDocumentation_uuid);
 		if (c.size() == 0)
 			;
-		else if (c.size() > 1)
-			er.err(XdsErrorCode.Code.XDSRegistryMetadataError, identifyingString() +
-					": may contain only a single documentation classification (classificationScheme=" +
-					MetadataSupport.XDSAssociationDocumentation_uuid + ")", this, "ITI TF-3 4.1.6.1");
+		else if (c.size() > 1) {
+			Assertion assertion = ASSERTIONLIBRARY.getAssertion("TA033");
+			String detail = "ClassificationScheme should be: '" + MetadataSupport.XDSAssociationDocumentation_uuid + "'";
+			er.err(XdsErrorCode.Code.XDSRegistryMetadataError, assertion, this, identifyingString(), detail);
+		}
 		else {
-			if (!assocs_with_documentation.contains(type))
-				er.err(XdsErrorCode.Code.XDSRegistryMetadataError, identifyingString() +
-						": documentation classification (classificationScheme=" +
-						MetadataSupport.XDSAssociationDocumentation_uuid +
-						") may only be present on the following association types: " +
-						assocs_with_documentation, this, "ITI TF-3 4.1.6.1");
+			if (!assocs_with_documentation.contains(type)) {
+				Assertion assertion = ASSERTIONLIBRARY.getAssertion("TA034");
+				String detail = "Documentation classification (classificationScheme=" + MetadataSupport.XDSAssociationDocumentation_uuid +
+						") may only be present on the following association types: " + assocs_with_documentation;
+				er.err(XdsErrorCode.Code.XDSRegistryMetadataError, assertion, this, identifyingString(), detail);
+			}
 		}
 		er.challenge("Required Classifications present");
 		er.challenge("Classifications coded correctly");
 	}
 
 	List<String> relationship_assocs =
-		Arrays.asList(
-				MetadataSupport.assoctype_rplc,
-				MetadataSupport.assoctype_apnd,
-				MetadataSupport.assoctype_xfrm,
-				MetadataSupport.assoctype_xfrm_rplc
-				);
+			Arrays.asList(
+					MetadataSupport.assoctype_rplc,
+					MetadataSupport.assoctype_apnd,
+					MetadataSupport.assoctype_xfrm,
+					MetadataSupport.assoctype_xfrm_rplc
+			);
 
 	public void validateTopAtts(ErrorRecorder er, ValidationContext vc) {
 		validateId(er, vc, "entryUUID", id, null);
@@ -184,25 +193,29 @@ public class Association extends AbstractRegistryObject implements TopLevelObjec
 		boolean muReq = vc.isMU && vc.isRequest;
 		boolean basicType = assocTypes.contains(type);
 		boolean muType = assocTypesMU.contains(type);
+		Assertion assertion = ASSERTIONLIBRARY.getAssertion("TA035");
 
 		if (muReq) {
-			if (basicType == false && muType == false)
-				er.err(XdsErrorCode.Code.XDSRegistryMetadataError, identifyingString() + ": associationType " + type + " unknown. Known assocationTypes are " + assocTypes + " and " + assocTypesMU, this, "ITI TF-3 Table 4.1-2.1");
+			if (basicType == false && muType == false) {
+				String detail = "AssociationType '" + type + "' unknown. Known associationTypes are " + assocTypes + " and " + assocTypesMU;
+				er.err(XdsErrorCode.Code.XDSRegistryMetadataError, assertion, this, identifyingString(), detail);
+			}
 		}
 
 		else if (vc.isResponse) {
-			if (!assocTypes.contains(type) && !assocTypesMU.contains(type))
-				er.err(XdsErrorCode.Code.XDSRegistryMetadataError, identifyingString() + ": associationType " + type + " unknown. Known assocationTypes are " + assocTypes + " and " + assocTypesMU, this, "ITI TF-3 Table 4.1-2.1");
+			if (!assocTypes.contains(type) && !assocTypesMU.contains(type)) {
+				String detail = "AssociationType " + type + " unknown. Known associationTypes are " + assocTypes + " and " + assocTypesMU;
+				er.err(XdsErrorCode.Code.XDSRegistryMetadataError, assertion, this, identifyingString(), detail);
+			}
 		}
 
-		else if (!assocTypes.contains(type))
-			er.err(XdsErrorCode.Code.XDSRegistryMetadataError, identifyingString() + ": associationType " + type + " unknown. Known assocationTypes are " + assocTypes, this, "ITI TF-3 Table 4.1-2.1");
-
-
+		else if (!assocTypes.contains(type)) {
+			String detail = "AssociationType " + type + " unknown. Known associationTypes are " + assocTypes;
+			er.err(XdsErrorCode.Code.XDSRegistryMetadataError, assertion, this, identifyingString(), detail);
+		}
 	}
 
-	public void validateRequiredSlotsPresent(ErrorRecorder er,
-			ValidationContext vc) {
+	public void validateRequiredSlotsPresent(ErrorRecorder er, ValidationContext vc) {
 //		Metadata m = getMetadata();
 //		if (type.equals(MetadataSupport.assoctype_has_member) &&
 //				m.isSubmissionSet(source) &&
@@ -215,19 +228,20 @@ public class Association extends AbstractRegistryObject implements TopLevelObjec
 
 	}
 
-	public void validateSlotsCodedCorrectly(ErrorRecorder er,
-			ValidationContext vc) {
+	public void validateSlotsCodedCorrectly(ErrorRecorder er, ValidationContext vc) {
 		Slot s = getSlot(MetadataSupport.assoc_slot_submission_set_status);
 		if (s == null)
 			return;
 		if (s.getValues().size() == 1) {
 			String value = s.getValues().get(0);
-			if ("Original".equals(value) || "Reference".equals(value))
-				;
-			else
-				er.err(XdsErrorCode.Code.XDSRegistryMetadataError, identifyingString() + ": SubmissionSetStatus Slot can only take value Original or Reference", this, "ITI TF-3: 4.1.4.1");
+			if ("Original".equals(value) || "Reference".equals(value));
+			else {
+				Assertion assertion = ASSERTIONLIBRARY.getAssertion("TA036");
+				er.err(XdsErrorCode.Code.XDSRegistryMetadataError, assertion, this, identifyingString(), "");
+			}
 		} else {
-			er.err(XdsErrorCode.Code.XDSRegistryMetadataError, identifyingString() + ": SubmissionSetStatus Slot must have only single value", this, "ITI TF-3: 4.1.4.1");
+			Assertion assertion = ASSERTIONLIBRARY.getAssertion("TA037");
+			er.err(XdsErrorCode.Code.XDSRegistryMetadataError, assertion, this, identifyingString(), "");
 		}
 	}
 
