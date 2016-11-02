@@ -11,6 +11,6 @@ import gov.nist.toolkit.xdstools2.client.util.ClientUtils;
 public abstract class InitializationCommand extends GenericCommand<CommandContext, InitializationResponse> {
     @Override
     public void run(CommandContext var1) {
-        ClientUtils.INSTANCE.getToolkitServices().getInitialization(this);
+        ClientUtils.INSTANCE.getToolkitServices().getInitialization(var1,this);
     }
 }

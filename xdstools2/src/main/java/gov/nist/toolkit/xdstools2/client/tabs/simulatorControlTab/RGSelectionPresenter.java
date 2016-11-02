@@ -2,6 +2,7 @@ package gov.nist.toolkit.xdstools2.client.tabs.simulatorControlTab;
 
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Panel;
+import gov.nist.toolkit.xdstools2.client.command.command.GetSiteNamesWithRGCommand;
 import gov.nist.toolkit.xdstools2.client.widgets.PopupMessage;
 import gov.nist.toolkit.xdstools2.client.util.ClientUtils;
 
@@ -17,14 +18,10 @@ public class RGSelectionPresenter {
     MultiSelectionView view;
     List<String> sites;
 
-    public RGSelectionPresenter(/*ToolkitServiceAsync toolkitService, */final List<String> selected, final Panel panel) {
-        ClientUtils.INSTANCE.getToolkitServices().getSiteNamesWithRG(new AsyncCallback<List<String>>() {
-
-            public void onFailure(Throwable caught) {
-                new PopupMessage("getSiteNamesWithRG:" + caught.getMessage());
-            }
-
-            public void onSuccess(List<String> siteNames) {
+    public RGSelectionPresenter(final List<String> selected, final Panel panel) {
+        new GetSiteNamesWithRGCommand(){
+            @Override
+            public void onComplete(List<String> siteNames) {
                 sites = siteNames;
                 view = new MultiSelectionView();
                 view.setData(siteNames);
@@ -39,7 +36,7 @@ public class RGSelectionPresenter {
                 bind();
                 panel.add(view.asWidget());
             }
-        });
+        }.run(ClientUtils.INSTANCE.getCommandContext());
     }
 
     void bind() {}

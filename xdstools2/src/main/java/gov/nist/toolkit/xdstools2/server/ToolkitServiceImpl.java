@@ -23,21 +23,9 @@ import gov.nist.toolkit.registrymetadata.client.AnyIds;
 import gov.nist.toolkit.registrymetadata.client.ObjectRef;
 import gov.nist.toolkit.registrymetadata.client.ObjectRefs;
 import gov.nist.toolkit.registrymetadata.client.Uids;
-import gov.nist.toolkit.results.client.CodesResult;
-import gov.nist.toolkit.results.client.DocumentEntryDetail;
-import gov.nist.toolkit.results.client.Result;
-import gov.nist.toolkit.results.client.TestInstance;
-import gov.nist.toolkit.results.client.TestLogs;
+import gov.nist.toolkit.results.client.*;
 import gov.nist.toolkit.results.shared.Test;
-import gov.nist.toolkit.services.client.IdsOrchestrationRequest;
-import gov.nist.toolkit.services.client.IgOrchestrationRequest;
-import gov.nist.toolkit.services.client.IigOrchestrationRequest;
-import gov.nist.toolkit.services.client.RSNAEdgeOrchestrationRequest;
-import gov.nist.toolkit.services.client.RawResponse;
-import gov.nist.toolkit.services.client.RegOrchestrationRequest;
-import gov.nist.toolkit.services.client.RepOrchestrationRequest;
-import gov.nist.toolkit.services.client.RgOrchestrationRequest;
-import gov.nist.toolkit.services.client.RigOrchestrationRequest;
+import gov.nist.toolkit.services.client.*;
 import gov.nist.toolkit.services.server.RawResponseBuilder;
 import gov.nist.toolkit.services.server.orchestration.OrchestrationManager;
 import gov.nist.toolkit.services.shared.SimulatorServiceManager;
@@ -85,13 +73,7 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Scanner;
+import java.util.*;
 
 @SuppressWarnings("serial")
 public class ToolkitServiceImpl extends RemoteServiceServlet implements
@@ -135,7 +117,8 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements
     }
 
     @Override
-    public InitializationResponse getInitialization() throws Exception {
+    public InitializationResponse getInitialization(CommandContext context) throws Exception {
+        installCommandContext(context);
         InitializationResponse response = new InitializationResponse();
         response.setDefaultEnvironment(Installation.DEFAULT_ENVIRONMENT_NAME);
         response.setEnvironments(Session.getEnvironmentNames());
@@ -210,7 +193,10 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements
     @Override
     public List<String> getActorTypeNames()  throws NoServletSessionException { return siteServiceManager.getActorTypeNames(session().getId()); }
     @Override
-    public List<String> getSiteNamesWithRG() throws Exception { return siteServiceManager.getSiteNamesWithRG(session().getId()); }
+    public List<String> getSiteNamesWithRG(CommandContext context) throws Exception {
+        installCommandContext(context);
+        return siteServiceManager.getSiteNamesWithRG(session().getId());
+    }
     @Override
     public List<String> getSiteNamesWithRIG() throws Exception { return siteServiceManager.getSiteNamesWithRIG(session().getId()); }
     @Override
@@ -760,9 +746,15 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements
     @Override
     public String deleteConfig(SimulatorConfig config) throws Exception { return new SimulatorServiceManager(session()).deleteConfig(config); }
     @Override
-    public void renameSimFile(String simFileSpec, String newSimFileSpec) throws Exception { new SimulatorServiceManager(session()).renameSimFile(simFileSpec, newSimFileSpec); }
+    public void renameSimFile(RenameSimFileRequest request) throws Exception {
+        installCommandContext(request);
+        new SimulatorServiceManager(session()).renameSimFile(request.getOldSimFileName(), request.getNewSimFileName());
+    }
     @Override
-    public String getSimulatorEndpoint() throws NoServletSessionException { return new SimulatorServiceManager(session()).getSimulatorEndpoint(); }
+    public String getSimulatorEndpoint(CommandContext context) throws Exception {
+        installCommandContext(context);
+        return new SimulatorServiceManager(session()).getSimulatorEndpoint();
+    }
     @Override
     public MessageValidationResults executeSimMessage(ExecuteSimMessageRequest request) throws Exception {
         installCommandContext(request);
@@ -1148,7 +1140,7 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements
         String sessionName = session().getMesaSessionName();
         String step = "issue";
         String query = testInstance.getSection();
-		List<Result> results = xtsm.querySts("GazelleSts",sessionName,query,params, false);
+        List<Result> results = xtsm.querySts("GazelleSts",sessionName,query,params, false);
 
         if (results!=null) {
             if (results.size() == 1) {
@@ -1170,7 +1162,7 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements
                     String assertionResultId = "saml-assertion";
                     for (ReportDTO report : reportDTOs)  {
                         if (assertionResultId.equals(report.getName())) {
-                           return report.getValue();
+                            return report.getValue();
                         }
                     }
                     throw new ToolkitRuntimeException(assertionResultId + " result key not found.");
@@ -1189,12 +1181,12 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements
     }
 
     @Override
-    public boolean getAutoInitConformanceTesting() {
+    public boolean getAutoInitConformanceTesting(CommandContext context) {
         return Installation.instance().propertyServiceManager().getAutoInitializeConformanceTool();
     }
 
     @Override
-    public boolean indexTestKits() {
+    public boolean indexTestKits(CommandContext context) {
         new BuildCollections().run();
         // FIXME why does this have to return true? should we change for a void method?
         return true;

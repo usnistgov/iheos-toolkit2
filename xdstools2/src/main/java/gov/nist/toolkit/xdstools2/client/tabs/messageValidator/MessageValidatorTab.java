@@ -671,21 +671,16 @@ public class MessageValidatorTab extends ToolWindow {
 
 	HTML simEndpointMessage;
 	void requestSimEndpoint() {
-		getToolkitServices().getSimulatorEndpoint(new AsyncCallback<String>() {
-
-			public void onFailure(Throwable caught) {
-				new PopupMessage(caught.getMessage());
-			}
-
-			public void onSuccess(String result) {
+		new GetSimulatorEndpointCommand(){
+			@Override
+			public void onComplete(String result) {
 				try {
 					simEndpointMessage.setText("Simulator endpoint is " + result);
 				} catch (Exception e) {
 					new PopupMessage(e.getMessage());
 				}
 			}
-
-		});
+		}.run(getCommandContext());
 	}
 
 	String uploadFilename;

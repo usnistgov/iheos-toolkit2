@@ -10,7 +10,7 @@ public abstract class IndexTestkitsCommand extends GenericCommand<CommandContext
 
     @Override
     public void run(CommandContext commandContext) {
-        ClientUtils.INSTANCE.getToolkitServices().indexTestKits(this);
+        ClientUtils.INSTANCE.getToolkitServices().indexTestKits(commandContext,this);
     }
 
 }

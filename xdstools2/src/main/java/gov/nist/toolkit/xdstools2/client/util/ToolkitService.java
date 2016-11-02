@@ -48,7 +48,7 @@ public interface ToolkitService extends RemoteService  {
 
 	ConformanceSessionValidationStatus validateConformanceSession(String testSession, String siteName) throws Exception;
 	Collection<String> getSitesForTestSession(CommandContext context) throws Exception;
-	InitializationResponse getInitialization() throws Exception;
+	InitializationResponse getInitialization(CommandContext context) throws Exception;
 	String getAssignedSiteForTestSession(String testSession) throws Exception;
 	void setAssignedSiteForTestSession(SetAssignedSiteForTestSessionRequest request) throws Exception;
 
@@ -96,9 +96,9 @@ public interface ToolkitService extends RemoteService  {
 	List<String> getTransactionsForSimulator(GetTransactionRequest request) throws Exception;
 	MessageValidationResults executeSimMessage(ExecuteSimMessageRequest request) throws Exception;
 
-	void renameSimFile(String simFileSpec, String newSimFileSpec) throws Exception;
+	void renameSimFile(RenameSimFileRequest request) throws Exception;
 	void deleteSimFile(DeleteSimFileRequest request) throws Exception;
-	String getSimulatorEndpoint() throws NoServletSessionException;
+	String getSimulatorEndpoint(CommandContext context) throws Exception;
 	List<Result> getSelectedMessage(GetSelectedMessageRequest request) throws Exception;
 	List<Result> getSelectedMessageResponse(GetSelectedMessageRequest request) throws Exception;
 	@Deprecated
@@ -174,7 +174,7 @@ public interface ToolkitService extends RemoteService  {
 	List<RegistryStatus> getDashboardRegistryData(CommandContext context) throws Exception;
 	List<RepositoryStatus> getDashboardRepositoryData(CommandContext context) throws Exception;
 
-	List<String> getSiteNamesWithRG() throws Exception;
+	List<String> getSiteNamesWithRG(CommandContext context) throws Exception;
 	List<String> getSiteNamesWithRIG() throws Exception;
 	List<String> getSiteNamesWithIDS() throws Exception;
 	List<String> getSiteNamesByTranType(GetSiteNamesByTranTypeRequest request) throws Exception;
@@ -264,7 +264,7 @@ public interface ToolkitService extends RemoteService  {
 
 	String clearTestSession(CommandContext context) throws Exception;
 
-	boolean getAutoInitConformanceTesting();
+	boolean getAutoInitConformanceTesting(CommandContext context);
 
-	boolean indexTestKits();
+	boolean indexTestKits(CommandContext context);
 }

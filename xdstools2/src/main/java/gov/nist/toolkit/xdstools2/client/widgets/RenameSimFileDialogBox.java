@@ -6,7 +6,9 @@ import com.google.gwt.event.dom.client.KeyPressEvent;
 import com.google.gwt.event.dom.client.KeyPressHandler;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.*;
+import gov.nist.toolkit.xdstools2.client.command.command.RenameSimFileCommand;
 import gov.nist.toolkit.xdstools2.client.util.ClientUtils;
+import gov.nist.toolkit.xdstools2.shared.command.request.RenameSimFileRequest;
 
 
 public class RenameSimFileDialogBox extends DialogBox {
@@ -58,7 +60,12 @@ public class RenameSimFileDialogBox extends DialogBox {
 			String newname = newNameBox.getText();
 			RenameSimFileDialogBox.this.hide();
 
-			ClientUtils.INSTANCE.getToolkitServices().renameSimFile(oldSimFileSpec, newname, afterRename);
+			new RenameSimFileCommand(){
+				@Override
+				public void onComplete(Void result) {
+					afterRename.onSuccess(result);
+				}
+			}.run(new RenameSimFileRequest(ClientUtils.INSTANCE.getCommandContext(),oldSimFileSpec,newname));
 		}
 		
 	}

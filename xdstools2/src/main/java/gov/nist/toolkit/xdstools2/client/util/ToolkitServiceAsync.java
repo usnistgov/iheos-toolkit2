@@ -30,7 +30,8 @@ import gov.nist.toolkit.valsupport.client.MessageValidationResults;
 import gov.nist.toolkit.xdstools2.shared.NoServletSessionException;
 import gov.nist.toolkit.xdstools2.shared.RegistryStatus;
 import gov.nist.toolkit.xdstools2.shared.RepositoryStatus;
-import gov.nist.toolkit.xdstools2.shared.command.*;
+import gov.nist.toolkit.xdstools2.shared.command.CommandContext;
+import gov.nist.toolkit.xdstools2.shared.command.InitializationResponse;
 import gov.nist.toolkit.xdstools2.shared.command.request.*;
 
 import java.util.Collection;
@@ -39,12 +40,12 @@ import java.util.Map;
 
 public interface ToolkitServiceAsync {
 
-	void indexTestKits(AsyncCallback<Boolean> callback);
-	void getAutoInitConformanceTesting(AsyncCallback<Boolean> callback);
+	void indexTestKits(CommandContext context,AsyncCallback<Boolean> callback);
+	void getAutoInitConformanceTesting(CommandContext context,AsyncCallback<Boolean> callback);
 	void clearTestSession(CommandContext context, AsyncCallback<String> callback);
 	void validateConformanceSession(String testSession, String siteName, AsyncCallback<ConformanceSessionValidationStatus> callback);
 	void getSitesForTestSession(CommandContext context, AsyncCallback<Collection<String>> callback);
-	void getInitialization(AsyncCallback<InitializationResponse> callback);
+	void getInitialization(CommandContext context,AsyncCallback<InitializationResponse> callback);
 	void getTkProps(AsyncCallback<TkProps> callback);
 	void getSessionProperties(AsyncCallback<Map<String, String>> callback);
 	void setSessionProperties(Map<String, String> props, AsyncCallback callback);
@@ -61,7 +62,7 @@ public interface ToolkitServiceAsync {
 	void getEnvironmentNames(CommandContext context, AsyncCallback<List<String>> callback);
 	void isGazelleConfigFeedEnabled(CommandContext context, AsyncCallback<Boolean> callback) ;
 	void reloadSystemFromGazelle(ReloadSystemFromGazelleRequest request, AsyncCallback<String> callback);
-	void getSiteNamesWithRG(AsyncCallback<List<String>> callback);
+	void getSiteNamesWithRG(CommandContext context,AsyncCallback<List<String>> callback);
 	void getSiteNamesByTranType(GetSiteNamesByTranTypeRequest request, AsyncCallback<List<String>> callback);
 
 	void getDashboardRegistryData(CommandContext context, AsyncCallback<List<RegistryStatus>> callback);
@@ -81,11 +82,11 @@ public interface ToolkitServiceAsync {
 
 	void executeSimMessage(ExecuteSimMessageRequest request, AsyncCallback<MessageValidationResults> callback);
 
-	void renameSimFile(String simFileSpec, String newSimFileSpec, AsyncCallback callback);
+	void renameSimFile(RenameSimFileRequest request, AsyncCallback callback);
 
 	void deleteSimFile(DeleteSimFileRequest request, AsyncCallback callback);
 
-	void getSimulatorEndpoint(AsyncCallback<String> callback);
+	void getSimulatorEndpoint(CommandContext context, AsyncCallback<String> callback);
 
 	void getSelectedMessage(GetSelectedMessageRequest request, AsyncCallback<List<Result>> callback);
 	void getSelectedMessageResponse(GetSelectedMessageRequest request, AsyncCallback<List<Result>> callback);
