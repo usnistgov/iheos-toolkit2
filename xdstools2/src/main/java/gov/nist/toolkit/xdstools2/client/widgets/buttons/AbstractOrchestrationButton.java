@@ -1,12 +1,24 @@
 package gov.nist.toolkit.xdstools2.client.widgets.buttons;
 
+import com.google.gwt.dom.client.Style;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.user.client.ui.*;
+import com.google.gwt.event.logical.shared.ValueChangeHandler;
+import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.google.gwt.user.client.ui.Button;
+import com.google.gwt.user.client.ui.CheckBox;
+import com.google.gwt.user.client.ui.FlowPanel;
+import com.google.gwt.user.client.ui.HTML;
+import com.google.gwt.user.client.ui.Image;
+import com.google.gwt.user.client.ui.Panel;
 import gov.nist.toolkit.services.client.AbstractOrchestrationResponse;
 import gov.nist.toolkit.services.client.MessageItem;
 import gov.nist.toolkit.services.client.RawResponse;
 import gov.nist.toolkit.xdstools2.client.ErrorHandler;
+import gov.nist.toolkit.xdstools2.client.util.ClientUtils;
+import gov.nist.toolkit.xdstools2.client.widgets.PopupMessage;
+
+import java.util.Map;
 
 /**
  *
@@ -19,6 +31,7 @@ abstract public class AbstractOrchestrationButton implements ClickHandler {
     private Panel customPanel = null;
     private boolean errorPanelAdded = false;
     private CheckBox selftestCheckBox;
+    private CheckBox samlCheckBox = new CheckBox("SAML");
     private String label = null;
     private String resetLabel = null;
     private String systemDiagramUrl = null;
@@ -76,15 +89,38 @@ abstract public class AbstractOrchestrationButton implements ClickHandler {
         panel.add(selftestCheckBox);
         panel.add(new HTML("<br />"));
 
+        samlCheckBox.setTitle("Uses an assertion obtained by the Gazelle STS username 'Xuagood'.");
+        panel.add(samlCheckBox);
+        enableSaml();
+
         final Button button = new Button("Initialize Testing Environment");
         panel.add(button);
-
 
         panel.add(new HTML("<br /><hr />"));
 
         topPanel.add(panel);
         button.addClickHandler(this);
         return panel;
+    }
+
+    private void enableSaml() {
+        samlCheckBox.setVisible(false);
+        ClientUtils.INSTANCE.getToolkitServices().getToolkitProperties(new AsyncCallback<Map<String, String>>() {
+            @Override
+            public void onFailure(Throwable throwable) {
+                new PopupMessage("AOB: Error getting properties for SAML selector display: " + throwable.toString());
+            }
+
+            @Override
+            public void onSuccess(final Map<String, String> tkPropMap) {
+                if (Boolean.parseBoolean(tkPropMap.get("Enable_SAML"))) { // Master flag
+                    samlCheckBox.setVisible(true);
+                    samlCheckBox.getElement().getStyle().setMarginBottom(7, Style.Unit.PX);
+                    samlCheckBox.getElement().getStyle().setDisplay(Style.Display.BLOCK);
+                }
+            }
+        });
+
     }
 
     public void addSelfTestClickHandler(ClickHandler handler) {
@@ -142,4 +178,11 @@ abstract public class AbstractOrchestrationButton implements ClickHandler {
 
     }
 
+    public boolean isSaml() {
+        return (samlCheckBox!=null && samlCheckBox.getValue());
+    }
+
+    public void addSamlValueChangeHanlder(ValueChangeHandler valueChangeHandler) {
+        samlCheckBox.addValueChangeHandler(valueChangeHandler);
+    }
 }

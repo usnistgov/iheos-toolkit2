@@ -54,8 +54,6 @@ public abstract class GenericQueryTab  extends ToolWindow {
 	public boolean tlsEnabled = true;
     public boolean tlsOptionEnabled = true;
 	public ActorType selectByActor = null;
-	public boolean samlEnabled = true;
-    public String samlAssertion;
 	List<TransactionType> transactionTypes;
 	public TransactionSelectionManager transactionSelectionManager = null;
 	public boolean enableInspectResults = true;
@@ -110,6 +108,10 @@ public abstract class GenericQueryTab  extends ToolWindow {
 
     private boolean displayTab = true;
     private List<String> selectedSites=new ArrayList<String>();
+
+    // Keep SAML fields off the base class to isolate other tools' preference
+    public boolean samlEnabled = true;
+    public String samlAssertion;
 
     /**
      * This is the method that should build the specific content of a tab.
@@ -280,8 +282,6 @@ public abstract class GenericQueryTab  extends ToolWindow {
             samlListBox.setSelectedIndex((commonSiteSpec.isSaml) ? 1 : 0);
 
         commonParamGrid.setWidget(commonGridRow++, contentsColumn, fp);
-
-
 
 
         ClientUtils.INSTANCE.getToolkitServices().getToolkitProperties(new AsyncCallback<Map<String, String>>() {
