@@ -133,6 +133,15 @@ public class ActorConfigTab extends GenericQueryTab {
 		});
 		
 		sitesPanel.add(showSims);
+		Button reloadSitesBtn=new Button("Reload sites");
+		reloadSitesBtn.addClickHandler(new ClickHandler() {
+			@Override
+			public void onClick(ClickEvent clickEvent) {
+				reloadExternalSites();
+				((Xdstools2EventBus) ClientUtils.INSTANCE.getEventBus()).fireActorsConfigUpdatedEvent();
+			}
+		});
+		sitesPanel.add(reloadSitesBtn);
 		
 		mainGrid.setWidget(row, 0, sitesPanel);
 
