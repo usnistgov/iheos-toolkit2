@@ -1,0 +1,12 @@
+<TestPlan>
+	<Test>ids_4805/retrieve</Test>
+	<TestStep id="retrieve">
+		<Goal>WADO Retrieve of a single image</Goal>
+		<ExpectedStatus>Success</ExpectedStatus>
+		<HttpTransaction type="pr.b">
+			<Headers>
+			</Headers>
+			<BodyFile>body.txt</BodyFile>
+		</HttpTransaction>
+	</TestStep>
+</TestPlan>

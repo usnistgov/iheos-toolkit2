@@ -553,7 +553,7 @@ public class ImgDetailTransaction extends BasicTransaction {
          // Make list of std image pfns
          List <String> stdPfns = new ArrayList <>();
          for (OMElement stdDirElement : XmlUtil.childrenWithLocalName(dirListElement, "StdDir")) {
-            File stdDirFile = Installation.instance().imageCache(stdDirElement.getText());
+            File stdDirFile = Installation.instance().imageCache("std" + File.separator + stdDirElement.getText());
             Utility.isValidPfn("test std img dir", stdDirFile, PfnType.DIRECTORY, "r");
             Collection <File> files = FileUtils.listFiles(stdDirFile, FileFilterUtils.fileFileFilter(), null);
             for (File file : files)

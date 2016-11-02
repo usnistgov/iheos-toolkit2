@@ -771,7 +771,7 @@ public class DsSimCommon {
         String simCache = simulatorConfig.get(SimulatorProperties.idsImageCache).asString();
         //Path idsRepositoryPath = imageCacheRoot.resolve(simCache);
         //File idsRepositoryDir = idsRepositoryPath.toFile();
-        File idsRepositoryDir = Installation.instance().imageCache(simCache);
+        File idsRepositoryDir = Installation.instance().imageCache("sim" + File.separator + simCache);
         Path idsRepositoryPath = idsRepositoryDir.toPath();
         if (!idsRepositoryDir.exists() || !idsRepositoryDir.isDirectory()) {
             logger.warn("Could not file image cache directory " + idsRepositoryDir);

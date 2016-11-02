@@ -37,7 +37,32 @@ import java.util.List;
 import java.util.Map;
 
 /**
- *
+ * Manage HTTP only transactions, for example: 
+ * <pre>{@code
+ * <TestStep id="submit">
+    <ExpectedStatus>Success</ExpectedStatus>
+    <HttpTransaction type="pr.b">
+      <Headers>
+        Content-Type: multipart/related; boundary="MIMEBoundary_95b57d7287e4fa4b528a8f050c41f8ad829c20332f23b48d"; type="application/xop+xml"; start-info="application/soap+xml"; action="urn:ihe:iti:2007:ProvideAndRegisterDocumentSet-b"
+      </Headers>
+      <BodyFile>body.txt</BodyFile>
+    </HttpTransaction>
+  </TestStep>
+ * }
+ * </pre>
+ * <p/>Notes:<ol>
+ * <li/>The type attribute is mandatory, and must match to a value of the {@link
+ * gov.nist.toolkit.configDatatypes.client.TransactionType TransactionType} 
+ * enum. The endpoint to which the http request is sent is determined by this
+ * transaction.
+ * <li/>Text content of Headers element forms headers for the HTTP Request. Each
+ * header must appear on a separate line and be of the form:<br/>
+ * Header-name : header-body
+ * <li/>BodyFile element is required. Its text content must be a path relative
+ * to the test directory which gives the file which will be the body of the 
+ * HTTP Request.
+ * <li/>Report and UseReport elements may also be present, and if so, are 
+ * processed in the usual way.</ol>
  */
 public class HTTPTransaction extends BasicTransaction {
     Map<String, List<String>> headers = new HashMap<>();
