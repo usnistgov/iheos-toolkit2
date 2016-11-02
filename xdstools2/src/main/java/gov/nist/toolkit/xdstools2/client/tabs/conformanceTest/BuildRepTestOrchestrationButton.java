@@ -8,6 +8,7 @@ import com.google.gwt.user.client.ui.Panel;
 import gov.nist.toolkit.services.client.RawResponse;
 import gov.nist.toolkit.services.client.RepOrchestrationRequest;
 import gov.nist.toolkit.services.client.RepOrchestrationResponse;
+import gov.nist.toolkit.sitemanagement.client.SiteSpec;
 import gov.nist.toolkit.xdstools2.client.util.ClientUtils;
 import gov.nist.toolkit.xdstools2.client.widgets.buttons.AbstractOrchestrationButton;
 
@@ -43,7 +44,11 @@ class BuildRepTestOrchestrationButton extends AbstractOrchestrationButton {
         initializationResultsPanel.clear();
 
         RepOrchestrationRequest request = new RepOrchestrationRequest();
-        request.setSutSite(testContext.getSiteUnderTest().siteSpec());
+        SiteSpec sutSiteSpec = testContext.getSiteUnderTest().siteSpec();
+        if (isSaml()) {
+            setSamlAssertion(sutSiteSpec);
+        }
+        request.setSutSite(sutSiteSpec);
         request.setUserName(testTab.getCurrentTestSession());
         request.setEnvironmentName(testTab.getEnvironmentSelection());
         request.setUseExistingSimulator(!isResetRequested());

@@ -4,13 +4,14 @@ import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import gov.nist.toolkit.actorfactory.client.SimulatorConfig;
-import gov.nist.toolkit.xdstools2.client.widgets.PopupMessage;
+import gov.nist.toolkit.xdstools2.client.event.Xdstools2EventBus;
 import gov.nist.toolkit.xdstools2.client.util.ClientUtils;
+import gov.nist.toolkit.xdstools2.client.widgets.PopupMessage;
 
 class DeleteButtonClickHandler implements ClickHandler {
 	SimulatorConfig config;
 	SimulatorControlTab simulatorControlTab;
-	
+
 	DeleteButtonClickHandler(SimulatorControlTab simulatorControlTab, SimulatorConfig config) {
 		this.config = config;
 		this.simulatorControlTab = simulatorControlTab;
@@ -28,7 +29,7 @@ class DeleteButtonClickHandler implements ClickHandler {
 			public void onSuccess(String result) {
 				simulatorControlTab.loadSimStatus();
 			}
-			
+
 		});
 	}
 
@@ -41,9 +42,10 @@ class DeleteButtonClickHandler implements ClickHandler {
 
 			public void onSuccess(String result) {
 				simulatorControlTab.loadSimStatus();
+				((Xdstools2EventBus) ClientUtils.INSTANCE.getEventBus()).fireSimulatorsUpdatedEvent();
 			}
 
 		});
 	}
-	
+
 }
