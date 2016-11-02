@@ -474,6 +474,8 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner, TestsH
          clickEvent.preventDefault();
          clickEvent.stopPropagation();
 
+		  getSiteToIssueTestAgainst().setTls(orchInit.isTls());
+
 		  if (orchInit.isSaml()) {
 			  // Get STS SAML Assertion
 			  TestInstance testInstance = new TestInstance("GazelleSts");
@@ -486,7 +488,7 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner, TestsH
 				  ClientUtils.INSTANCE.getToolkitServices().getStsSamlAssertion(xuaUsername, testInstance, stsSpec, params, new AsyncCallback<String>() {
 					  @Override
 					  public void onFailure(Throwable throwable) {
-						  new PopupMessage("CTT: getStsSamlAssertion call failed: " + throwable.toString());
+						  new PopupMessage("runAll: getStsSamlAssertion call failed: " + throwable.toString());
 					  }
 					  @Override
 					  public void onSuccess(String s) {
@@ -499,7 +501,7 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner, TestsH
 					  }
 				  });
 			  } catch (Exception ex) {
-				  new PopupMessage("CTT: Client call failed: getStsSamlAssertion: " + ex.toString());
+				  new PopupMessage("runAll: Client call failed: getStsSamlAssertion: " + ex.toString());
 			  }
 		  } else {
 			  // No SAML
@@ -647,9 +649,12 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner, TestsH
 
 
 	public void runTest(final TestInstance testInstance, final TestDone testDone) {
+		getSiteToIssueTestAgainst().setTls(orchInit.isTls());
+
 		if (orchInit.isSaml()) {
 			// STS SAML assertion
 			// This has to be here because we need to retrieve the assertion just in time before the test executes. Any other way will be confusing to debug and more importantly the assertion will not be fresh.
+			// Interface can be refactored to support mulitple run methods such as runTest[WithSamlOption] and runTest.
 			TestInstance stsTestInstance = new TestInstance("GazelleSts");
 			stsTestInstance.setSection("samlassertion-issue");
 			SiteSpec stsSpec =  new SiteSpec("GazelleSts");
@@ -660,7 +665,7 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner, TestsH
 				ClientUtils.INSTANCE.getToolkitServices().getStsSamlAssertion(xuaUsername, stsTestInstance, stsSpec, params, new AsyncCallback<String>() {
 					@Override
 					public void onFailure(Throwable throwable) {
-						new PopupMessage("RT: getStsSamlAssertion call failed: " + throwable.toString());
+						new PopupMessage("runTestInstance: getStsSamlAssertion call failed: " + throwable.toString());
 					}
 					@Override
 					public void onSuccess(String s) {
@@ -671,7 +676,7 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner, TestsH
 					}
 				});
 			} catch (Exception ex) {
-				new PopupMessage("RT: Client call failed: getStsSamlAssertion: " + ex.toString());
+				new PopupMessage("runTestInstance: Client call failed: getStsSamlAssertion: " + ex.toString());
 			}
 
 		} else {

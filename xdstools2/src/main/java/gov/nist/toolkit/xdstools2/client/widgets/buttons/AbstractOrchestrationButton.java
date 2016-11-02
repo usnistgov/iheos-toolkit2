@@ -1,6 +1,5 @@
 package gov.nist.toolkit.xdstools2.client.widgets.buttons;
 
-import com.google.gwt.dom.client.Style;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
@@ -32,6 +31,7 @@ abstract public class AbstractOrchestrationButton implements ClickHandler {
     private boolean errorPanelAdded = false;
     private CheckBox selftestCheckBox;
     private CheckBox samlCheckBox = new CheckBox("SAML");
+    private CheckBox tlsCheckBox;
     private String label = null;
     private String resetLabel = null;
     private String systemDiagramUrl = null;
@@ -89,9 +89,13 @@ abstract public class AbstractOrchestrationButton implements ClickHandler {
         panel.add(selftestCheckBox);
         panel.add(new HTML("<br />"));
 
-        samlCheckBox.setTitle("Uses an assertion obtained by the Gazelle STS username 'Xuagood'.");
+        samlCheckBox.setTitle("Uses Gazelle STS Username 'Xuagood'");
         panel.add(samlCheckBox);
         enableSaml();
+
+        tlsCheckBox = new CheckBox("TLS");
+        tlsCheckBox.setStyleName("orchestrationOption");
+        panel.add(tlsCheckBox);
 
         final Button button = new Button("Initialize Testing Environment");
         panel.add(button);
@@ -115,8 +119,7 @@ abstract public class AbstractOrchestrationButton implements ClickHandler {
             public void onSuccess(final Map<String, String> tkPropMap) {
                 if (Boolean.parseBoolean(tkPropMap.get("Enable_SAML"))) { // Master flag
                     samlCheckBox.setVisible(true);
-                    samlCheckBox.getElement().getStyle().setMarginBottom(7, Style.Unit.PX);
-                    samlCheckBox.getElement().getStyle().setDisplay(Style.Display.BLOCK);
+                    samlCheckBox.setStyleName("orchestrationOption");
                 }
             }
         });
@@ -180,6 +183,10 @@ abstract public class AbstractOrchestrationButton implements ClickHandler {
 
     public boolean isSaml() {
         return (samlCheckBox!=null && samlCheckBox.getValue());
+    }
+
+    public boolean isTls() {
+        return (tlsCheckBox!=null && tlsCheckBox.getValue());
     }
 
     public void addSamlValueChangeHanlder(ValueChangeHandler valueChangeHandler) {
