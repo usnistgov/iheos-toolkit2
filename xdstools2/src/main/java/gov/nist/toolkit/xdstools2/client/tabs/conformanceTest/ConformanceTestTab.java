@@ -514,6 +514,7 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner, TestsH
 			  }
 		  } else {
 			  // No SAML
+              getSiteToIssueTestAgainst().setSaml(false);
 			  for (TestInstance testInstance : testsPerActorOption.get(actorOption))
 				  tests.add(testInstance);
 			  onDone(null);
@@ -658,6 +659,7 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner, TestsH
 
 
 	public void runTest(final TestInstance testInstance, final TestDone testDone) {
+
 		getSiteToIssueTestAgainst().setTls(orchInit.isTls());
 
 		if (orchInit.isSaml()) {
@@ -689,6 +691,7 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner, TestsH
 			}
 
 		} else {
+            getSiteToIssueTestAgainst().setSaml(false);
 			runTestInstance(testInstance,testDone);
 		}
    }
