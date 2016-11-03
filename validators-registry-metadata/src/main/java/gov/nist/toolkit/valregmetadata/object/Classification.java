@@ -153,12 +153,10 @@ public class Classification extends AbstractRegistryObject {
 		return toXml(null);
 	}
 
-	public void validateRequiredSlotsPresent(ErrorRecorder er,
-											 ValidationContext vc) {
+	public void validateRequiredSlotsPresent(ErrorRecorder er, ValidationContext vc) {
 	}
 
-	public void validateSlotsCodedCorrectly(ErrorRecorder er,
-											ValidationContext vc) {
+	public void validateSlotsCodedCorrectly(ErrorRecorder er, ValidationContext vc) {
 	}
 
 	public void validateSlotsLegal(ErrorRecorder er) {
