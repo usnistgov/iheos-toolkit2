@@ -2,6 +2,8 @@ package gov.nist.toolkit.valregmetadata.object;
 
 import gov.nist.toolkit.errorrecording.ErrorRecorder;
 import gov.nist.toolkit.errorrecording.client.XdsErrorCode;
+import gov.nist.toolkit.errorrecording.client.assertions.Assertion;
+import gov.nist.toolkit.errorrecording.client.assertions.AssertionLibrary;
 import gov.nist.toolkit.registrymetadata.Metadata;
 import gov.nist.toolkit.commondatatypes.MetadataSupport;
 import gov.nist.toolkit.valregmetadata.datatype.DtmFormat;
@@ -13,27 +15,29 @@ import org.apache.axiom.om.OMElement;
 import java.util.*;
 
 public class SubmissionSet extends AbstractRegistryObject implements TopLevelObject {
+	private AssertionLibrary ASSERTIONLIBRARY = AssertionLibrary.getInstance();
+
 
 	static List<String> statusValues =
 			Arrays.asList(
 					MetadataSupport.status_type_namespace + "Approved"
-					);
+			);
 
 	static List<String> definedSlots =
 			Arrays.asList(
 					"intendedRecipient",
 					"submissionTime"
-					);
+			);
 
 	static List<String> requiredSlots =
 			Arrays.asList(
 					"submissionTime"
-					);
+			);
 
 	static List<String> requiredSlotsMinimal =
 			Arrays.asList(
 					"intendedRecipient"
-					);
+			);
 
 	static public ClassAndIdDescription classificationDescription = new ClassAndIdDescription();
 	static {
@@ -41,15 +45,15 @@ public class SubmissionSet extends AbstractRegistryObject implements TopLevelObj
 				Arrays.asList(
 						MetadataSupport.XDSSubmissionSet_contentTypeCode_uuid ,
 						MetadataSupport.XDSSubmissionSet_author_uuid
-						);
+				);
 		classificationDescription.requiredSchemes =
 				Arrays.asList(
 						MetadataSupport.XDSSubmissionSet_contentTypeCode_uuid
-						);
+				);
 		classificationDescription.multipleSchemes =
 				Arrays.asList(
 						MetadataSupport.XDSSubmissionSet_author_uuid
-						);
+				);
 		classificationDescription.names = new HashMap<String, String>();
 		classificationDescription.names.put(MetadataSupport.XDSSubmissionSet_contentTypeCode_uuid, "Content Type Code");
 		classificationDescription.names.put(MetadataSupport.XDSSubmissionSet_author_uuid, "Author");
@@ -61,14 +65,14 @@ public class SubmissionSet extends AbstractRegistryObject implements TopLevelObj
 				Arrays.asList(
 						MetadataSupport.XDSSubmissionSet_contentTypeCode_uuid ,
 						MetadataSupport.XDSSubmissionSet_author_uuid
-						);
+				);
 		XDMclassificationDescription.requiredSchemes =
 				Arrays.asList(
-						);
+				);
 		XDMclassificationDescription.multipleSchemes =
 				Arrays.asList(
 						MetadataSupport.XDSSubmissionSet_author_uuid
-						);
+				);
 		XDMclassificationDescription.names = new HashMap<String, String>();
 		XDMclassificationDescription.names.put(MetadataSupport.XDSSubmissionSet_contentTypeCode_uuid, "Content Type Code");
 		XDMclassificationDescription.names.put(MetadataSupport.XDSSubmissionSet_author_uuid, "Author");
@@ -80,14 +84,14 @@ public class SubmissionSet extends AbstractRegistryObject implements TopLevelObj
 				Arrays.asList(
 						MetadataSupport.XDSSubmissionSet_contentTypeCode_uuid ,
 						MetadataSupport.XDSSubmissionSet_author_uuid
-						);
+				);
 		MinimalclassificationDescription.requiredSchemes =
 				Arrays.asList(
-						);
+				);
 		MinimalclassificationDescription.multipleSchemes =
 				Arrays.asList(
 						MetadataSupport.XDSSubmissionSet_author_uuid
-						);
+				);
 		MinimalclassificationDescription.names = new HashMap<String, String>();
 		//MinimalclassificationDescription.names.put(MetadataSupport.XDSSubmissionSet_contentTypeCode_uuid, "Content Type Code");
 		MinimalclassificationDescription.names.put(MetadataSupport.XDSSubmissionSet_author_uuid, "Author");
@@ -100,14 +104,14 @@ public class SubmissionSet extends AbstractRegistryObject implements TopLevelObj
 						MetadataSupport.XDSSubmissionSet_patientid_uuid,
 						MetadataSupport.XDSSubmissionSet_uniqueid_uuid,
 						MetadataSupport.XDSSubmissionSet_sourceid_uuid
-						);
+				);
 
 		externalIdentifierDescription.requiredSchemes =
 				Arrays.asList(
 						MetadataSupport.XDSSubmissionSet_patientid_uuid,
 						MetadataSupport.XDSSubmissionSet_uniqueid_uuid,
 						MetadataSupport.XDSSubmissionSet_sourceid_uuid
-						);
+				);
 		externalIdentifierDescription.multipleSchemes = new ArrayList<String>();
 
 		externalIdentifierDescription.names = new HashMap<String, String>();
@@ -123,13 +127,13 @@ public class SubmissionSet extends AbstractRegistryObject implements TopLevelObj
 						MetadataSupport.XDSSubmissionSet_patientid_uuid,
 						MetadataSupport.XDSSubmissionSet_uniqueid_uuid,
 						MetadataSupport.XDSSubmissionSet_sourceid_uuid
-						);
+				);
 
 		XDMexternalIdentifierDescription.requiredSchemes =
 				Arrays.asList(
 						MetadataSupport.XDSSubmissionSet_uniqueid_uuid,
 						MetadataSupport.XDSSubmissionSet_sourceid_uuid
-						);
+				);
 		XDMexternalIdentifierDescription.multipleSchemes = new ArrayList<String>();
 
 		XDMexternalIdentifierDescription.names = new HashMap<String, String>();
@@ -145,13 +149,13 @@ public class SubmissionSet extends AbstractRegistryObject implements TopLevelObj
 						MetadataSupport.XDSSubmissionSet_patientid_uuid,
 						MetadataSupport.XDSSubmissionSet_uniqueid_uuid,
 						MetadataSupport.XDSSubmissionSet_sourceid_uuid
-						);
+				);
 
 		MinimalexternalIdentifierDescription.requiredSchemes =
 				Arrays.asList(
 						MetadataSupport.XDSSubmissionSet_uniqueid_uuid,
 						MetadataSupport.XDSSubmissionSet_sourceid_uuid
-						);
+				);
 		MinimalexternalIdentifierDescription.multipleSchemes = new ArrayList<String>();
 
 		MinimalexternalIdentifierDescription.names = new HashMap<String, String>();
@@ -208,7 +212,7 @@ public class SubmissionSet extends AbstractRegistryObject implements TopLevelObj
 
 
 	public void validate(ErrorRecorder er, ValidationContext vc,
-			Set<String> knownIds) {
+						 Set<String> knownIds) {
 
 		if (vc.skipInternalStructure)
 			return;
@@ -264,13 +268,19 @@ public class SubmissionSet extends AbstractRegistryObject implements TopLevelObj
 		// Slots always required
 		if (vc.isXDRMinimal) {
 			for (String slotName : requiredSlotsMinimal) {
-				if (getSlot(slotName) == null)
-					er.err(XdsErrorCode.Code.XDSRegistryMetadataError, identifyingString() + ": Slot " + slotName + " missing", this, table416);
+				if (getSlot(slotName) == null) {
+					Assertion assertion = ASSERTIONLIBRARY.getAssertion("TA044");
+					String detail = "Slot(s) '" + slotName + "' missing";
+					er.err(XdsErrorCode.Code.XDSRegistryMetadataError, assertion, this, identifyingString(), detail);
+				}
 			}
 		} else {
 			for (String slotName : requiredSlots) {
-				if (getSlot(slotName) == null)
-					er.err(XdsErrorCode.Code.XDSRegistryMetadataError, identifyingString() + ": Slot " + slotName + " missing", this, table416);
+				if (getSlot(slotName) == null) {
+					Assertion assertion = ASSERTIONLIBRARY.getAssertion("TA045");
+					String detail = "Slot(s) '" + slotName + "' missing";
+					er.err(XdsErrorCode.Code.XDSRegistryMetadataError, assertion, this, identifyingString(), detail);
+				}
 			}
 		}
 	}
@@ -278,8 +288,11 @@ public class SubmissionSet extends AbstractRegistryObject implements TopLevelObj
 	public void validateSlotsLegal(ErrorRecorder er)  {
 		verifySlotsUnique(er);
 		for (Slot slot : getSlots()) {
-			if ( ! legal_slot_name(slot.getName()))
-				er.err(XdsErrorCode.Code.XDSRegistryMetadataError, identifyingString() + ": " + slot.getName() + " is not a legal slot name for a SubmissionSet",  this,  table416);
+			if ( ! legal_slot_name(slot.getName())) {
+				Assertion assertion = ASSERTIONLIBRARY.getAssertion("TA046");
+				String detail = "'" + slot.getName() + "' is not a legal slot name for a SubmissionSet.";
+				er.err(XdsErrorCode.Code.XDSRegistryMetadataError, assertion, this, identifyingString(), detail);
+			}
 		}
 	}
 

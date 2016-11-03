@@ -41,3 +41,6 @@ TA040,The classificationScheme attribute value must be formatted as: 'urn:uuid: 
 TA041,The parent element ID and registryObject value do not match,ITI TF-3: 4.1.12.5,,
 TA042,Value attribute missing or empty,ebRIM 3.0 section 2.11.1,,
 TA043,Display name ('name' element) missing or empty,ITI TF-3: 4.1.12.5,,
+TA044,Missing required slot(s) in minimal metadata,ITI TF-3: Table 4.1-6,,
+TA045,Missing required slot(s),ITI TF-3: Table 4.1-6,,
+TA046,Invalid slot name in SubmissionSet,ITI TF-3: Table 4.1-6,,
