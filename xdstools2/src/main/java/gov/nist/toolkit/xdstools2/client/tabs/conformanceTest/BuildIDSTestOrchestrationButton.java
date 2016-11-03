@@ -68,7 +68,6 @@ public class BuildIDSTestOrchestrationButton extends AbstractOrchestrationButton
        if (isSaml()) {
            setSamlAssertion(siteSpec);
        }
-      request.setIdsSut(siteSpec);
        request.setSiteUnderTest(siteSpec);
 
       testTab.setSiteToIssueTestAgainst(siteSpec);
