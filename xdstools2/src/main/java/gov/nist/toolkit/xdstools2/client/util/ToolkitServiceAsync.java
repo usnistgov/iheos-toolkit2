@@ -97,9 +97,9 @@ public interface ToolkitServiceAsync {
 
 	void  getTransInstances(GetTransactionRequest request, AsyncCallback<List<TransactionInstance>> callback);
 
-	void getLastMetadata(AsyncCallback<List<Result>> callback);
-	void getLastFilename(AsyncCallback<String> callback);
-	void getTimeAndDate(AsyncCallback<String> callback);
+	void getLastMetadata(CommandContext context,AsyncCallback<List<Result>> callback);
+	void getLastFilename(CommandContext context,AsyncCallback<String> callback);
+	void getTimeAndDate(CommandContext context,AsyncCallback<String> callback);
 
 	void validateMessage(ValidateMessageRequest vrequest, AsyncCallback<MessageValidationResults> callback);
 

@@ -106,9 +106,9 @@ public interface ToolkitService extends RemoteService  {
 
 	List<TransactionInstance> getTransInstances(GetTransactionRequest request)  throws Exception;
 
-	List<Result> getLastMetadata();
-	String getLastFilename();
-	String getTimeAndDate();
+	List<Result> getLastMetadata(CommandContext context) throws Exception;
+	String getLastFilename(CommandContext context) throws Exception;
+	String getTimeAndDate(CommandContext context) throws Exception;
 
 	MessageValidationResults validateMessage(ValidateMessageRequest request) throws Exception;
 

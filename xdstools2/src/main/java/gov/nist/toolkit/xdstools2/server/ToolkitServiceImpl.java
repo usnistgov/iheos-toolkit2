@@ -285,7 +285,9 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements
     }
 
     @Override
-    public List<Result> getLastMetadata() { return queryServiceManager.getLastMetadata(); }
+    public List<Result> getLastMetadata(CommandContext context) throws Exception {
+        installCommandContext(context);
+        return queryServiceManager.getLastMetadata(); }
 
     //------------------------------------------------------------------------
     //------------------------------------------------------------------------
@@ -1065,12 +1067,14 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements
     }
 
     @Override
-    public String getLastFilename() {
+    public String getLastFilename(CommandContext context) throws Exception {
+        installCommandContext(context);
         return getSession().getlastUploadFilename();
     }
 
     @Override
-    public String getTimeAndDate() {
+    public String getTimeAndDate(CommandContext context) throws Exception {
+        installCommandContext(context);
         return new Date().toString();
     }
 
