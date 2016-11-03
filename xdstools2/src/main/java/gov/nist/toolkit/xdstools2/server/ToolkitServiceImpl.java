@@ -181,7 +181,10 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements
         return siteServiceManager.getTransactionOfferings(session().getId());
     }
     @Override
-    public List<String> reloadExternalSites() throws FactoryConfigurationError, Exception { return siteServiceManager.reloadCommonSites(); }
+    public List<String> reloadExternalSites(CommandContext context) throws FactoryConfigurationError, Exception {
+        installCommandContext(context);
+        return siteServiceManager.reloadCommonSites();
+    }
     @Override
     public List<String> getRegistryNames()  throws NoServletSessionException { return siteServiceManager.getRegistryNames(session().getId()); }
     @Override
@@ -230,19 +233,33 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements
     @Override
     public List<Result> findDocumentsByRefId(FindDocumentsRequest request) throws Exception  { return session().queryServiceManager().findDocumentsByRefId(request.getSiteSpec(), request.getPid(), request.getRefIds()); }
     @Override
-    public List<Result> getDocuments(SiteSpec site, AnyIds aids) throws NoServletSessionException  { return session().queryServiceManager().getDocuments(site, aids); }
+    public List<Result> getDocuments(GetDocumentsRequest request) throws Exception  {
+        installCommandContext(request);
+        return session().queryServiceManager().getDocuments(request.getSite(), request.getIds());
+    }
     @Override
     public List<Result> findFolders(FindFoldersRequest request) throws Exception  {
         installCommandContext(request);
         return session().queryServiceManager().findFolders(request.getSite(), request.getPid()); }
     @Override
-    public List<Result> getFolders(SiteSpec site, AnyIds aids) throws NoServletSessionException  { return session().queryServiceManager().getFolders(site, aids); }
+    public List<Result> getFolders(GetFoldersRequest request) throws Exception  {
+        installCommandContext(request);
+        return session().queryServiceManager().getFolders(request.getSite(), request.getAnyIds());
+    }
     @Override
-    public List<Result> getFoldersForDocument(SiteSpec site, AnyIds aids) throws NoServletSessionException  { return session().queryServiceManager().getFoldersForDocument(site, aids); }
+    public List<Result> getFoldersForDocument(GetFoldersRequest request) throws Exception  {
+        installCommandContext(request);
+        return session().queryServiceManager().getFoldersForDocument(request.getSite(), request.getAnyIds());
+    }
     @Override
-    public List<Result> getFolderAndContents(SiteSpec site, AnyIds aids) throws NoServletSessionException  { return session().queryServiceManager().getFolderAndContents(site, aids); }
+    public List<Result> getFolderAndContents(GetFoldersRequest request) throws Exception  {
+        installCommandContext(request);
+        return session().queryServiceManager().getFolderAndContents(request.getSite(), request.getAnyIds()); }
     @Override
-    public List<Result> getAssociations(SiteSpec site, ObjectRefs ids) throws NoServletSessionException  { return session().queryServiceManager().getAssociations(site, ids); }
+    public List<Result> getAssociations(GetAssociationsRequest request) throws Exception  {
+        installCommandContext(request);
+        return session().queryServiceManager().getAssociations(request.getSite(), request.getIds());
+    }
     @Override
     public List<Result> getObjects(SiteSpec site, ObjectRefs ids) throws NoServletSessionException  { return session().queryServiceManager().getObjects(site, ids); }
     @Override

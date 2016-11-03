@@ -855,7 +855,6 @@ public abstract class GenericQueryTab  extends ToolWindow {
     protected AsyncCallback<List<Result>> queryCallback = new AsyncCallback<List<Result>> () {
 
         public void onFailure(Throwable caught) {
-//			resultPanel.clear();
             resultPanel.add(addHTML("<font color=\"#FF0000\">" + "Error running validation: " + caught.getMessage() + "</font>"));
             resultsShortDescription.setText("");
         }

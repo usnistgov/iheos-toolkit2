@@ -14,6 +14,7 @@ import gov.nist.toolkit.sitemanagement.client.TransactionCollection;
 import gov.nist.toolkit.xdstools2.client.PasswordManagement;
 import gov.nist.toolkit.xdstools2.client.command.command.GetSiteNamesCommand;
 import gov.nist.toolkit.xdstools2.client.command.command.IsGazelleConfigFeedEnabledCommand;
+import gov.nist.toolkit.xdstools2.client.command.command.ReloadExternalSitesCommand;
 import gov.nist.toolkit.xdstools2.client.command.command.SaveSiteCommand;
 import gov.nist.toolkit.xdstools2.client.widgets.PopupMessage;
 import gov.nist.toolkit.xdstools2.client.StringSort;
@@ -179,22 +180,15 @@ public class ActorConfigTab extends GenericQueryTab {
 	List<String> currentSiteNames = null;
 	
 	void reloadExternalSites() {
-
-		final AsyncCallback<List<String>> loadSiteNamesCallback = new AsyncCallback<List<String>>() {
-			public void onFailure(Throwable caught) {
-				new PopupMessage("Error loading external sites: " + caught.getMessage());
-			}
-
-			public void onSuccess(List<String> result) {
-				loadSiteNames(result);
-			}
-		};
-		getToolkitServices().reloadExternalSites(loadSiteNamesCallback);
+		new ReloadExternalSitesCommand(){
+            @Override
+            public void onComplete(List<String> result) {
+                loadSiteNames(result);
+            }
+        }.run(getCommandContext());
 	}
 
-
 	String newSiteName = "NewSite";
-
 
 	void displaySite(Site site) {
 		site.changed = false;

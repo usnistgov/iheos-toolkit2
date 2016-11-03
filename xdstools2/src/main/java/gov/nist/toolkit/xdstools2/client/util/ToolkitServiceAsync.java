@@ -117,7 +117,7 @@ public interface ToolkitServiceAsync {
 	void getAllSites(CommandContext commandContext, AsyncCallback<Collection<Site>> callback);
 	void saveSite(SaveSiteRequest request, AsyncCallback<String> callback);
 	void reloadSites(boolean simAlso, AsyncCallback<List<String>> callback);
-	void reloadExternalSites(AsyncCallback<List<String>> callback);
+	void reloadExternalSites(CommandContext context,AsyncCallback<List<String>> callback);
 	void deleteSite(DeleteSiteRequest request, AsyncCallback<String> callback);
 
 	void getSSandContents(GetSubmissionSetAndContentsRequest request, AsyncCallback<List<Result>> callback);
@@ -125,12 +125,12 @@ public interface ToolkitServiceAsync {
 	void findDocuments(FindDocumentsRequest request, AsyncCallback<List<Result>> callback);
 	void findDocumentsByRefId(FindDocumentsRequest request, AsyncCallback<List<Result>> callback) ;
 	void findFolders(FindFoldersRequest request, AsyncCallback<List<Result>> callback);
-	void getDocuments(SiteSpec site, AnyIds ids, AsyncCallback<List<Result>> callback);
-	void getFolders(SiteSpec site, AnyIds aids, AsyncCallback<List<Result>> callback);
-	void getFoldersForDocument(SiteSpec site, AnyIds aids, AsyncCallback<List<Result>> callback);
-	void getFolderAndContents(SiteSpec site, AnyIds aids, AsyncCallback<List<Result>> callback);
+	void getDocuments(GetDocumentsRequest request, AsyncCallback<List<Result>> callback);
+	void getFolders(GetFoldersRequest request, AsyncCallback<List<Result>> callback);
+	void getFoldersForDocument(GetFoldersRequest request, AsyncCallback<List<Result>> callback);
+	void getFolderAndContents(GetFoldersRequest request, AsyncCallback<List<Result>> callback);
+	void getAssociations(GetAssociationsRequest request, AsyncCallback<List<Result>> callback);
 	void getObjects(SiteSpec site, ObjectRefs ids, AsyncCallback<List<Result>> callback);
-	void getAssociations(SiteSpec site, ObjectRefs ids, AsyncCallback<List<Result>> callback);
 	void getSubmissionSets(SiteSpec site, AnyIds ids, AsyncCallback<List<Result>> callback);
 	void registerAndQuery(SiteSpec site, String pid, AsyncCallback<List<Result>> callback);
 	void getRelated(SiteSpec site, ObjectRef or, List<String> assocs, AsyncCallback<List<Result>> callback);

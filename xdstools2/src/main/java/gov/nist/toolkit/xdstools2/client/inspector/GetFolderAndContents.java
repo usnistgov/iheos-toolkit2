@@ -8,7 +8,9 @@ import gov.nist.toolkit.registrymetadata.client.ObjectRef;
 import gov.nist.toolkit.registrymetadata.client.ObjectRefs;
 import gov.nist.toolkit.results.client.Result;
 import gov.nist.toolkit.results.client.TestInstance;
+import gov.nist.toolkit.xdstools2.client.command.command.GetFolderAndContentsCommand;
 import gov.nist.toolkit.xdstools2.client.util.ClientUtils;
+import gov.nist.toolkit.xdstools2.shared.command.request.GetFoldersRequest;
 
 import java.util.List;
 
@@ -19,25 +21,23 @@ public class GetFolderAndContents implements ClickHandler {
 	
 	void run() {
 		/*it.data.*/
-		ClientUtils.INSTANCE.getToolkitServices().getFolderAndContents(null, new AnyIds(ids), queryCallback);
-	}
-	
-	AsyncCallback<List<Result>> queryCallback = new AsyncCallback<List<Result>> () {
-
-		public void onFailure(Throwable caught) {
-			Result result = Result.RESULT(new TestInstance("GetFolderAndContents"));
-			result.assertions.add(caught.getMessage());
-			result.testInstance = new TestInstance("GetFolderAndContents");
-			it.addToHistory(result);
-		}
-
-		public void onSuccess(List<Result> results) {
-			for (Result result : results) {
+		new GetFolderAndContentsCommand(){
+			@Override
+			public void onFailure(Throwable caught) {
+				Result result = Result.RESULT(new TestInstance("GetFolderAndContents"));
+				result.assertions.add(caught.getMessage());
+				result.testInstance = new TestInstance("GetFolderAndContents");
 				it.addToHistory(result);
 			}
-		}
-
-	};
+			@Override
+			public void onComplete(List<Result> results) {
+				for (Result result : results) {
+					it.addToHistory(result);
+				}
+			}
+		}.run(new GetFoldersRequest(ClientUtils.INSTANCE.getCommandContext(),null, new AnyIds(ids)));
+	}
+	
 
 	public GetFolderAndContents(MetadataInspectorTab it, ObjectRefs ids) {
 		this.it = it;

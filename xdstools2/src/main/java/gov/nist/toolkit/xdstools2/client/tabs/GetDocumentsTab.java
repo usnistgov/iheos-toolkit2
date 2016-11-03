@@ -4,10 +4,13 @@ import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.ui.*;
 import gov.nist.toolkit.configDatatypes.client.TransactionType;
+import gov.nist.toolkit.results.client.Result;
 import gov.nist.toolkit.xdstools2.client.CoupledTransactions;
+import gov.nist.toolkit.xdstools2.client.command.command.GetDocumentsCommand;
 import gov.nist.toolkit.xdstools2.client.widgets.PopupMessage;
 import gov.nist.toolkit.xdstools2.client.siteActorManagers.GetDocumentsSiteActorManager;
 import gov.nist.toolkit.xdstools2.client.tabs.genericQueryTab.GenericQueryTab;
+import gov.nist.toolkit.xdstools2.shared.command.request.GetDocumentsRequest;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -90,7 +93,17 @@ public class GetDocumentsTab  extends GenericQueryTab {
             }
 
             rigForRunning();
-            getToolkitServices().getDocuments(getSiteSelection(), getAnyIds(values), queryCallback);
+            new GetDocumentsCommand(){
+                @Override
+                public void onFailure(Throwable caught){
+                    queryCallback.onFailure(caught);
+                }
+
+                @Override
+                public void onComplete(List<Result> result) {
+                    queryCallback.onSuccess(result);
+                }
+            }.run(new GetDocumentsRequest(getCommandContext(),getSiteSelection(),getAnyIds(values)));
         }
 
     }

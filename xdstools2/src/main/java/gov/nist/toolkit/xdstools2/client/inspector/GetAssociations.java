@@ -7,7 +7,9 @@ import gov.nist.toolkit.registrymetadata.client.ObjectRef;
 import gov.nist.toolkit.registrymetadata.client.ObjectRefs;
 import gov.nist.toolkit.results.client.Result;
 import gov.nist.toolkit.results.client.TestInstance;
+import gov.nist.toolkit.xdstools2.client.command.command.GetAssociationsCommand;
 import gov.nist.toolkit.xdstools2.client.util.ClientUtils;
+import gov.nist.toolkit.xdstools2.shared.command.request.GetAssociationsRequest;
 
 import java.util.List;
 
@@ -18,25 +20,22 @@ public class GetAssociations implements ClickHandler {
 	
 	void run() {
 		/*it.data.*/
-		ClientUtils.INSTANCE.getToolkitServices().getAssociations(null, ids, queryCallback);
-	}
-	
-	AsyncCallback<List<Result>> queryCallback = new AsyncCallback<List<Result>> () {
-
-		public void onFailure(Throwable caught) {
-			Result result = Result.RESULT(new TestInstance("GetAssociations"));
-			result.assertions.add(caught.getMessage());
-			it.addToHistory(result);
-		}
-
-		public void onSuccess(List<Result> results) {
-			for (Result result : results) {
+		new GetAssociationsCommand(){
+			@Override
+			public void onFailure(Throwable caught) {
+				Result result = Result.RESULT(new TestInstance("GetAssociations"));
+				result.assertions.add(caught.getMessage());
 				it.addToHistory(result);
 			}
-		}
-
-	};
-
+			@Override
+			public void onComplete(List<Result> results) {
+				for (Result result : results) {
+					it.addToHistory(result);
+				}
+			}
+		}.run(new GetAssociationsRequest(ClientUtils.INSTANCE.getCommandContext(),null,ids));
+	}
+	
 	public GetAssociations(MetadataInspectorTab it, ObjectRefs ids) {
 		this.it = it;
 		this.ids = ids;

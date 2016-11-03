@@ -122,7 +122,7 @@ public interface ToolkitService extends RemoteService  {
 	TransactionOfferings getTransactionOfferings(CommandContext commandContext) throws Exception;
 
 	List<String> reloadSites(boolean simAlso) throws Exception;
-	List<String> reloadExternalSites() throws Exception;
+	List<String> reloadExternalSites(CommandContext context) throws Exception;
 	Site getSite(GetSiteRequest request) throws Exception;
 	Collection<Site> getAllSites(CommandContext commandContext) throws Exception;
 	String saveSite(SaveSiteRequest request) throws Exception;
@@ -134,12 +134,12 @@ public interface ToolkitService extends RemoteService  {
 	List<Result> findDocumentsByRefId(FindDocumentsRequest request) throws Exception ;
 	List<Result> findFolders(FindFoldersRequest request) throws Exception ;
 	// FIXME this method has far too many parameters we need to change that by one object.
-	List<Result> getDocuments(SiteSpec site, AnyIds ids) throws NoServletSessionException ;
-	List<Result> getFolders(SiteSpec site, AnyIds aids) throws NoServletSessionException ;
-	List<Result> getFoldersForDocument(SiteSpec site, AnyIds aids) throws NoServletSessionException ;
-	List<Result> getFolderAndContents(SiteSpec site, AnyIds aids) throws NoServletSessionException ;
+	List<Result> getDocuments(GetDocumentsRequest request) throws Exception ;
+	List<Result> getFolders(GetFoldersRequest request) throws Exception ;
+	List<Result> getFoldersForDocument(GetFoldersRequest request) throws Exception ;
+	List<Result> getFolderAndContents(GetFoldersRequest request) throws Exception ;
 	List<Result> getObjects(SiteSpec site, ObjectRefs ids) throws NoServletSessionException ;
-	List<Result> getAssociations(SiteSpec site, ObjectRefs ids) throws NoServletSessionException ;
+	List<Result> getAssociations(GetAssociationsRequest request) throws Exception ;
 	List<Result> getSubmissionSets(SiteSpec site, AnyIds ids) throws NoServletSessionException ;
 	List<Result> registerAndQuery(SiteSpec site, String pid) throws NoServletSessionException ;
 	List<Result> getRelated(SiteSpec site, ObjectRef or, List<String> assocs) throws NoServletSessionException ;
