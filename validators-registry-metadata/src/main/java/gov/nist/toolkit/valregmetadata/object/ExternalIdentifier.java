@@ -2,6 +2,8 @@ package gov.nist.toolkit.valregmetadata.object;
 
 import gov.nist.toolkit.errorrecording.ErrorRecorder;
 import gov.nist.toolkit.errorrecording.client.XdsErrorCode;
+import gov.nist.toolkit.errorrecording.client.assertions.Assertion;
+import gov.nist.toolkit.errorrecording.client.assertions.AssertionLibrary;
 import gov.nist.toolkit.registrymetadata.Metadata;
 import gov.nist.toolkit.commondatatypes.MetadataSupport;
 import gov.nist.toolkit.valsupport.client.ValidationContext;
@@ -13,6 +15,8 @@ public class ExternalIdentifier extends AbstractRegistryObject {
 	String identificationScheme = "";
 	String value = "";
 	OMElement owner;
+	private AssertionLibrary ASSERTIONLIBRARY = AssertionLibrary.getInstance();
+
 
 	public boolean equals(ExternalIdentifier e) {
 		if (!e.identificationScheme.equals(identificationScheme))
@@ -67,18 +71,23 @@ public class ExternalIdentifier extends AbstractRegistryObject {
 		validateId(er, vc, "entryUUID", id, null);
 		OMElement parentEle = (OMElement) ro.getParent();
 		String parentEleId = ((parentEle == null) ? "null" :
-			parentEle.getAttributeValue(MetadataSupport.id_qname));
+				parentEle.getAttributeValue(MetadataSupport.id_qname));
 		String registryObject = ro.getAttributeValue(MetadataSupport.registry_object_qname);
 
-		if (parentEle != null && !parentEleId.equals(registryObject))
-			er.err(XdsErrorCode.Code.XDSRegistryMetadataError, identifyingString() + ": is a child of object " + parentEleId + " but the registryObject value is " +
-					registryObject + ", they must match", this, "ITI TF-3: 4.1.12.5");
-
-		if (value == null || value.equals(""))
-			er.err(XdsErrorCode.Code.XDSRegistryMetadataError, identifyingString() + ": value attribute missing or empty", this, "ebRIM 3.0 section 2.11.1");
-
-		if (getName() == null || getName().equals(""))
-			er.err(XdsErrorCode.Code.XDSRegistryMetadataError, identifyingString() + ": display name (Name element) missing or empty", this, "ITI TF-3: 4.1.12.5");
+		if (parentEle != null && !parentEleId.equals(registryObject)) {
+			Assertion assertion = ASSERTIONLIBRARY.getAssertion("TA041");
+			String detail = "'" + identifyingString() + "' is a child of object " + parentEleId + " but the registryObject value is " +
+					registryObject + ", they must match";
+			er.err(XdsErrorCode.Code.XDSRegistryMetadataError, assertion, this, identifyingString(), detail);
+		}
+		if (value == null || value.equals("")) {
+			Assertion assertion = ASSERTIONLIBRARY.getAssertion("TA042");
+			er.err(XdsErrorCode.Code.XDSRegistryMetadataError, assertion, this, identifyingString(), "");
+		}
+		if (getName() == null || getName().equals("")) {
+			Assertion assertion = ASSERTIONLIBRARY.getAssertion("TA043");
+			er.err(XdsErrorCode.Code.XDSRegistryMetadataError, assertion, this, identifyingString(), "");
+		}
 	}
 
 	public OMElement toXml() throws XdsInternalException  {
@@ -86,11 +95,11 @@ public class ExternalIdentifier extends AbstractRegistryObject {
 	}
 
 	public void validateRequiredSlotsPresent(ErrorRecorder er,
-			ValidationContext vc) {
+											 ValidationContext vc) {
 	}
 
 	public void validateSlotsCodedCorrectly(ErrorRecorder er,
-			ValidationContext vc) {
+											ValidationContext vc) {
 	}
 
 	public void validateSlotsLegal(ErrorRecorder er) {
