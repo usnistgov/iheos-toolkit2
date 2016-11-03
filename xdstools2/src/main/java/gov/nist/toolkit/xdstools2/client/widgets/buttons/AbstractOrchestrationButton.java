@@ -135,17 +135,13 @@ abstract public class AbstractOrchestrationButton implements ClickHandler {
                     try {
                         ClientUtils.INSTANCE.getToolkitServices().getStsSamlAssertion(xuaUsername, testInstance, stsSpec, params, new AsyncCallback<String>() {
                             @Override
-                            public void onFailure(Throwable throwable) {
-                                new PopupMessage("AOB: getStsSamlAssertion call failed: " + throwable.toString());
-                            }
+                            public void onFailure(Throwable throwable) {}
                             @Override
                             public void onSuccess(String s) {
                                 setSamlAssertion(s);
                             }
                         });
-                    } catch (Exception ex) {
-                        new PopupMessage("AOB: Client call failed: getStsSamlAssertion: " + ex.toString());
-                    }
+                    } catch (Throwable t) {}
                 }
             }
         });
@@ -228,7 +224,7 @@ abstract public class AbstractOrchestrationButton implements ClickHandler {
     }
 
     public void setSamlAssertion(SiteSpec siteSpec) {
-       siteSpec.setSaml(true);
+       siteSpec.setSaml((isSaml()) && getSamlAssertion()!=null); // Does the SAML assertion really exist?
        siteSpec.setStsAssertion(getSamlAssertion());
     }
 }
