@@ -35,3 +35,6 @@ TA034,Documentation classification may only be present on select Association typ
 TA035,AssociationType unknown,ITI TF-3 Table 4.1-2.1,,
 TA036,SubmissionSetStatus Slot can only take value Original or Reference,ITI TF-3: 4.1.4.1,,
 TA037,SubmissionSetStatus Slot must have only single value,ITI TF-3: 4.1.4.1,,
+TA038,The parent element ID and classifiedObject value do not match,ITI TF-3: 4.1.12.2,,
+TA039,The classificationScheme attribute must have a value,ebRIM 3.0 section 4.3.1,,
+TA040,The classificationScheme attribute value must be formatted as: 'urn:uuid: prefix',ITI TF-3: 4.3.1,,
