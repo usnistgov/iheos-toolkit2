@@ -486,7 +486,7 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner, TestsH
 		  getSiteToIssueTestAgainst().setTls(orchInit.isTls());
 
 		  if (orchInit.isSaml()) {
-			  // Get STS SAML Assertion
+			  // Get STS SAML Assertion once for the entire test collection
 			  TestInstance testInstance = new TestInstance("GazelleSts");
 			  testInstance.setSection("samlassertion-issue");
 			  SiteSpec stsSpec =  new SiteSpec("GazelleSts");
@@ -663,34 +663,40 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner, TestsH
 		getSiteToIssueTestAgainst().setTls(orchInit.isTls());
 
 		if (orchInit.isSaml()) {
-			// STS SAML assertion
-			// This has to be here because we need to retrieve the assertion just in time before the test executes. Any other way will be confusing to debug and more importantly the assertion will not be fresh.
-			// Interface can be refactored to support mulitple run methods such as runTest[WithSamlOption] and runTest.
-			TestInstance stsTestInstance = new TestInstance("GazelleSts");
-			stsTestInstance.setSection("samlassertion-issue");
-			SiteSpec stsSpec =  new SiteSpec("GazelleSts");
-			Map<String, String> params = new HashMap<>();
-			String xuaUsername = "Xuagood";
-			params.put("$saml-username$",xuaUsername);
-			try {
-				ClientUtils.INSTANCE.getToolkitServices().getStsSamlAssertion(xuaUsername, stsTestInstance, stsSpec, params, new AsyncCallback<String>() {
-					@Override
-					public void onFailure(Throwable throwable) {
-						new PopupMessage("runTestInstance: getStsSamlAssertion call failed: " + throwable.toString());
-					}
-					@Override
-					public void onSuccess(String s) {
-						getSiteToIssueTestAgainst().setSaml(true);
-						getSiteToIssueTestAgainst().setStsAssertion(s);
+			if (testDone == null /* Signifies individual test runner */) {
+				// STS SAML assertion
+				// This has to be here because we need to retrieve the assertion just in time before the test executes. Any other way will be confusing to debug and more importantly the assertion will not be fresh.
+				// Interface can be refactored to support mulitple run methods such as runTest[WithSamlOption] and runTest.
+				TestInstance stsTestInstance = new TestInstance("GazelleSts");
+				stsTestInstance.setSection("samlassertion-issue");
+				SiteSpec stsSpec =  new SiteSpec("GazelleSts");
+				Map<String, String> params = new HashMap<>();
+				String xuaUsername = "Xuagood";
+				params.put("$saml-username$",xuaUsername);
+				try {
+					ClientUtils.INSTANCE.getToolkitServices().getStsSamlAssertion(xuaUsername, stsTestInstance, stsSpec, params, new AsyncCallback<String>() {
+						@Override
+						public void onFailure(Throwable throwable) {
+							new PopupMessage("runTestInstance: getStsSamlAssertion call failed: " + throwable.toString());
+						}
+						@Override
+						public void onSuccess(String s) {
+							getSiteToIssueTestAgainst().setSaml(true);
+							getSiteToIssueTestAgainst().setStsAssertion(s);
 
-						runTestInstance(testInstance,testDone);
-					}
-				});
-			} catch (Exception ex) {
-				new PopupMessage("runTestInstance: Client call failed: getStsSamlAssertion: " + ex.toString());
+							runTestInstance(testInstance,testDone);
+						}
+					});
+				} catch (Exception ex) {
+					new PopupMessage("runTestInstance: Client call failed: getStsSamlAssertion: " + ex.toString());
+				}
+			} else {
+				// Reuse SAML when running the entire Actor test collection
+				runTestInstance(testInstance,testDone);
 			}
 
 		} else {
+			// No SAML
             getSiteToIssueTestAgainst().setSaml(false);
 			runTestInstance(testInstance,testDone);
 		}
