@@ -32,9 +32,9 @@ public class DCMAssertion {
       this.tag = tag;
       this.tagName = Keyword.valueOf(tag);
       this.value = value;
-      if (cat.length > 0) this.passCat = cat[0];
+      if (cat.length > 0 && cat[0] != null) this.passCat = cat[0];
       this.passDetail = gpd(type.passDetail);
-      if (cat.length > 1) this.failCat = cat[1];
+      if (cat.length > 1 && cat[1] != null) this.failCat = cat[1];
       this.failDetail = gpd(type.failDetail);
    }
    

@@ -271,6 +271,11 @@ h3 {
   width: 20px; height: 20px;
 }
 
+.orchestrationOption {
+  margin-bottom: 7px;
+  display: block;
+}
+
 .inlineLink {
  color: #0000ad;
 }

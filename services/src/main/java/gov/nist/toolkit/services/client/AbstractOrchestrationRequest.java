@@ -14,7 +14,7 @@ abstract public class AbstractOrchestrationRequest implements Serializable, IsSe
     private PifType pifType;
     private SiteSpec registrySut;
     private boolean useExistingState = true;   // useExistingState == !reset
-
+    private boolean selfTest = false;
 
     public String getUserName() {
         return userName;
@@ -56,4 +56,7 @@ abstract public class AbstractOrchestrationRequest implements Serializable, IsSe
         this.useExistingState = useExistingState;
     }
 
+    public void selfTest(boolean value) { this.selfTest = value; }
+
+    public boolean selfTest() { return this.selfTest; }
 }

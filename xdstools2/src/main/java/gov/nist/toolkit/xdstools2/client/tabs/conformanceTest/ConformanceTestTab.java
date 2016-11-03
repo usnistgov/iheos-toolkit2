@@ -16,6 +16,8 @@ import gov.nist.toolkit.interactiondiagram.client.events.DiagramPartClickedEvent
 import gov.nist.toolkit.interactiondiagram.client.widgets.InteractionDiagram;
 import gov.nist.toolkit.results.client.TestInstance;
 import gov.nist.toolkit.services.client.AbstractOrchestrationResponse;
+import gov.nist.toolkit.services.client.RecOrchestrationResponse;
+import gov.nist.toolkit.services.client.RegOrchestrationResponse;
 import gov.nist.toolkit.services.client.RepOrchestrationResponse;
 import gov.nist.toolkit.session.client.logtypes.TestOverviewDTO;
 import gov.nist.toolkit.session.client.sort.TestSorter;
@@ -36,7 +38,11 @@ import gov.nist.toolkit.xdstools2.client.widgets.buttons.AbstractOrchestrationBu
 import gov.nist.toolkit.xdstools2.shared.command.request.GetTestSectionsDAOsRequest;
 import gov.nist.toolkit.xdstools2.shared.command.request.GetTestsOverviewRequest;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * All Conformance tests will be run out of here
@@ -53,6 +59,8 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner, TestsH
 
 	private AbstractOrchestrationResponse orchestrationResponse;
 	private RepOrchestrationResponse repOrchestrationResponse;
+	private RecOrchestrationResponse recOrchestrationResponse;
+	private RegOrchestrationResponse regOrchestrationResponse;
 
 	private final TestStatistics testStatistics = new TestStatistics();
 
@@ -77,7 +85,6 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner, TestsH
 	private ConformanceTestMainView mainView;
 	private AbstractOrchestrationButton orchInit = null;
 
-
 	public ConformanceTestTab() {
 		me = this;
 		mainView = new ConformanceTestMainView(this, new OptionsTabBar());
@@ -87,7 +94,7 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner, TestsH
 	}
 
 	@Override
-	public void onTabLoad(boolean select, String eventName) {
+	public void onTabLoad(final boolean select, String eventName) {
 		testContextView.updateTestingContextDisplay();
 		mainView.getTestSessionDescription().addClickHandler(testContextView);
 
@@ -123,6 +130,7 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner, TestsH
 				}
 			}
 		});
+
 	}
 
 	private List<TestOverviewDTO> testOverviews(ActorOption actorOption) {
@@ -362,6 +370,7 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner, TestsH
 
         testDisplayGroup.allowRun(allowRun);
         testDisplayGroup.showValidate(showValidate());
+
         new GetTestsOverviewCommand() {
             @Override
             public void onComplete(List<TestOverviewDTO> testOverviews) {
@@ -409,6 +418,11 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner, TestsH
 			orchInit.addSelfTestClickHandler(new RefreshTestCollectionHandler());
 			initializationPanel.add(orchInit.panel());
 		}
+		else if (currentActorOption.isRec()) {
+			orchInit = new BuildRecTestOrchestrationButton(this, testContext, testContextView, initializationPanel, label);
+			orchInit.addSelfTestClickHandler(new RefreshTestCollectionHandler());
+			initializationPanel.add(orchInit.panel());
+		}
 		else if (currentActorOption.isRg()) {
 			orchInit = new BuildRgTestOrchestrationButton(this, initializationPanel, label, testContext, testContextView, this);
 			orchInit.addSelfTestClickHandler(new RefreshTestCollectionHandler());
@@ -441,9 +455,7 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner, TestsH
 			if (testContext.getSiteUnderTest() != null)
 				siteToIssueTestAgainst = testContext.getSiteUnderTestAsSiteSpec();
 		}
-
    }
-
 
 	private void displayActorsTabBar(TabBar actorTabBar) {
 		if (actorTabBar.getTabCount() == 0) {
@@ -471,9 +483,43 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner, TestsH
          clickEvent.preventDefault();
          clickEvent.stopPropagation();
 
-         for (TestInstance testInstance : testsPerActorOption.get(actorOption))
-            tests.add(testInstance);
-         onDone(null);
+		  getSiteToIssueTestAgainst().setTls(orchInit.isTls());
+
+		  if (orchInit.isSaml()) {
+			  // Get STS SAML Assertion
+			  TestInstance testInstance = new TestInstance("GazelleSts");
+			  testInstance.setSection("samlassertion-issue");
+			  SiteSpec stsSpec =  new SiteSpec("GazelleSts");
+			  Map<String, String> params = new HashMap<>();
+			  String xuaUsername = "Xuagood";
+			  params.put("$saml-username$",xuaUsername);
+			  try {
+				  ClientUtils.INSTANCE.getToolkitServices().getStsSamlAssertion(xuaUsername, testInstance, stsSpec, params, new AsyncCallback<String>() {
+					  @Override
+					  public void onFailure(Throwable throwable) {
+						  new PopupMessage("runAll: getStsSamlAssertion call failed: " + throwable.toString());
+					  }
+					  @Override
+					  public void onSuccess(String s) {
+						  getSiteToIssueTestAgainst().setSaml(true);
+						  getSiteToIssueTestAgainst().setStsAssertion(s);
+
+						  for (TestInstance testInstance : testsPerActorOption.get(actorOption))
+							  tests.add(testInstance);
+						  onDone(null);
+					  }
+				  });
+			  } catch (Exception ex) {
+				  new PopupMessage("runAll: Client call failed: getStsSamlAssertion: " + ex.toString());
+			  }
+		  } else {
+			  // No SAML
+              getSiteToIssueTestAgainst().setSaml(false);
+			  for (TestInstance testInstance : testsPerActorOption.get(actorOption))
+				  tests.add(testInstance);
+			  onDone(null);
+		  }
+
       }
 
       @Override
@@ -613,10 +659,46 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner, TestsH
 
 
 	public void runTest(final TestInstance testInstance, final TestDone testDone) {
+
+		getSiteToIssueTestAgainst().setTls(orchInit.isTls());
+
+		if (orchInit.isSaml()) {
+			// STS SAML assertion
+			// This has to be here because we need to retrieve the assertion just in time before the test executes. Any other way will be confusing to debug and more importantly the assertion will not be fresh.
+			// Interface can be refactored to support mulitple run methods such as runTest[WithSamlOption] and runTest.
+			TestInstance stsTestInstance = new TestInstance("GazelleSts");
+			stsTestInstance.setSection("samlassertion-issue");
+			SiteSpec stsSpec =  new SiteSpec("GazelleSts");
+			Map<String, String> params = new HashMap<>();
+			String xuaUsername = "Xuagood";
+			params.put("$saml-username$",xuaUsername);
+			try {
+				ClientUtils.INSTANCE.getToolkitServices().getStsSamlAssertion(xuaUsername, stsTestInstance, stsSpec, params, new AsyncCallback<String>() {
+					@Override
+					public void onFailure(Throwable throwable) {
+						new PopupMessage("runTestInstance: getStsSamlAssertion call failed: " + throwable.toString());
+					}
+					@Override
+					public void onSuccess(String s) {
+						getSiteToIssueTestAgainst().setSaml(true);
+						getSiteToIssueTestAgainst().setStsAssertion(s);
+
+						runTestInstance(testInstance,testDone);
+					}
+				});
+			} catch (Exception ex) {
+				new PopupMessage("runTestInstance: Client call failed: getStsSamlAssertion: " + ex.toString());
+			}
+
+		} else {
+            getSiteToIssueTestAgainst().setSaml(false);
+			runTestInstance(testInstance,testDone);
+		}
+   }
+
+	private void runTestInstance(final TestInstance testInstance, final TestDone testDone) {
 		Map<String, String> parms = initializeTestParameters();
-
 		if (parms == null) return;
-
 		try {
 			getToolkitServices().runTest(getEnvironmentSelection(), getCurrentTestSession(), getSiteToIssueTestAgainst(), testInstance, parms, true, new AsyncCallback<TestOverviewDTO>() {
 				@Override
@@ -641,7 +723,7 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner, TestsH
 			new PopupMessage(e.getMessage());
 		}
 
-   }
+	}
 
 	private Map<String, String> initializeTestParameters() {
 		Map<String, String> parms = new HashMap<>();
@@ -653,6 +735,14 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner, TestsH
 
 		if (ActorType.REPOSITORY.getShortName().equals(currentActorOption.actorTypeId)) {
 			parms.put("$patientid$", repOrchestrationResponse.getPid().asString());
+		}
+
+		if (ActorType.DOCUMENT_RECIPIENT.getShortName().equals(currentActorOption.actorTypeId)) {
+			parms.put("$patientid$", recOrchestrationResponse.getRegisterPid().asString());
+		}
+
+		if (ActorType.REGISTRY.getShortName().equals(currentActorOption.actorTypeId)) {
+			parms.put("$patientid$", regOrchestrationResponse.getRegisterPid().asString());
 		}
 
 		if (getSiteToIssueTestAgainst() == null) {
@@ -670,9 +760,21 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner, TestsH
 		}
 	}
 
-	public void setRepOrchestrationResponse(RepOrchestrationResponse repOrchestrationResponse) {
+	void setRepOrchestrationResponse(RepOrchestrationResponse repOrchestrationResponse) {
 		this.repOrchestrationResponse = repOrchestrationResponse;
 		setOrchestrationResponse(repOrchestrationResponse);
+	}
+
+
+
+	void setRecOrchestrationResponse(RecOrchestrationResponse recOrchestrationResponse) {
+		this.recOrchestrationResponse = recOrchestrationResponse;
+		setOrchestrationResponse(recOrchestrationResponse);
+	}
+
+	void setRegOrchestrationResponse(RegOrchestrationResponse regOrchestrationResponse) {
+		this.regOrchestrationResponse = regOrchestrationResponse;
+		setOrchestrationResponse(regOrchestrationResponse);
 	}
 
 	public void setOrchestrationResponse(AbstractOrchestrationResponse repOrchestrationResponse) {

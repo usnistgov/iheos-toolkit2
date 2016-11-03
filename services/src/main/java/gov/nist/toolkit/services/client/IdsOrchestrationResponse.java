@@ -8,15 +8,13 @@ import java.util.List;
 /**
  *
  */
-public class IdsOrchestrationResponse extends RawResponse {
+public class IdsOrchestrationResponse extends AbstractOrchestrationResponse {
    
    private static final long serialVersionUID = 1L;
    
    private List<SimulatorConfig> simulatorConfigs = new ArrayList<>();
    private SimulatorConfig idsSimulatorConfig;
    private SimulatorConfig rrConfig;
-
-    public IdsOrchestrationResponse() {}
 
    /**
     * @return the {@link #simulatorConfigs} value.
@@ -52,16 +50,21 @@ public class IdsOrchestrationResponse extends RawResponse {
    public SimulatorConfig getRRConfig() {
       return rrConfig;
    }
-
+   
    /**
-    * @param regrepConfig the {@link #rrConfig} to set
+    * @param rrConfig the {@link #rrConfig} to set
     */
-   public void setRegrepConfig(SimulatorConfig regrepConfig) {
-      this.rrConfig = regrepConfig;
+   public void setRRConfig(SimulatorConfig rrConfig) {
+      this.rrConfig = rrConfig;
    }
 
-   public SimulatorConfig getRegrepConfig() {
-      return rrConfig;
+   /* (non-Javadoc)
+    * @see gov.nist.toolkit.services.client.AbstractOrchestrationResponse#isExternalStart()
+    */
+   @Override
+   public boolean isExternalStart() {
+      // TODO Auto-generated method stub
+      return false;
    }
 
 

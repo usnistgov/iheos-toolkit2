@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?><TestPlan>
+  <Test>PnrXop/encodedURL</Test>
+  <TestStep id="submit">
+    <ExpectedStatus>Success</ExpectedStatus>
+    <HttpTransaction type="pr.b">
+      <Headers>
+        Content-Type: multipart/related; boundary="MIMEBoundary_95b57d7287e4fa4b528a8f050c41f8ad829c20332f23b48d"; type="application/xop+xml"; start-info="application/soap+xml"; action="urn:ihe:iti:2007:ProvideAndRegisterDocumentSet-b"
+      </Headers>
+      <BodyFile>body.txt</BodyFile>
+    </HttpTransaction>
+  </TestStep>
+</TestPlan>

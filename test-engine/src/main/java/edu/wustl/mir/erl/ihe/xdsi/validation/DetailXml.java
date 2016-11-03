@@ -3,16 +3,15 @@
  */
 package edu.wustl.mir.erl.ihe.xdsi.validation;
 
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
 import javax.xml.namespace.QName;
 
-import org.apache.commons.io.IOUtils;
-import org.w3c.dom.Element;
+import org.apache.axiom.om.OMElement;
 
-import edu.wustl.mir.erl.ihe.xdsi.util.XmlUtil;
+import gov.nist.toolkit.utilities.xml.XmlUtil;
+
 
 /**
  * XML Content evaluation based on XML configuration file. File structure:
@@ -97,13 +96,13 @@ import edu.wustl.mir.erl.ihe.xdsi.util.XmlUtil;
 public class DetailXml extends DetailXmlContent {
    
    /** {@code <Test>} element, which is the root element of the xml file. */
-   private Element testElmnt;
+   private OMElement testElmnt;
    /** {@code <Namespace>} elements. May be empty, but not null */
-   private Element[] namespaceElmnts;
+   private List<OMElement> namespaceElmnts;
    /** {@code <Assertion>} elements for transaction and component ids passed
     * in constructor. Will not be null or empty.
     */
-   private Element[] assertionElmnts;
+   private List<OMElement> assertionElmnts;
    /** transaction id for transaction to test. passed in constructor */
    private String transactionId;
    /** transaction name for transaction to test, from attribute */
@@ -118,7 +117,7 @@ public class DetailXml extends DetailXmlContent {
     * @param component component of transaction in file to load.
     * @throws Exception on error, including IO, xml parsing, invalid xml.
     */
-   public DetailXml(Element ele, String transaction, String component) throws Exception {
+   public DetailXml(OMElement ele, String transaction, String component) throws Exception {
       String msg = "DetailXMl: transaction id=" + transaction + " component id=" + component;
       log.info("Loading " + msg);
       try {
@@ -127,45 +126,45 @@ public class DetailXml extends DetailXmlContent {
       componentId = component;
       
       // load <Namespace> elements
-      Element[] e = XmlUtil.getFirstLevelChildElementsByName(testElmnt, "Namespaces");
-      if (e.length == 0) throw new Exception("<Namespaces> element missing");
-      if (e.length > 1) throw new Exception("Only one <Namespaces> element permitted, " + e.length + " found.");
-      namespaceElmnts = XmlUtil.getFirstLevelChildElementsByName(e[0], "Namespace");
+      List<OMElement> e = XmlUtil.childrenWithLocalName(testElmnt, "Namespaces");
+      if (e.isEmpty()) throw new Exception("<Namespaces> element missing");
+      if (e.size() > 1) throw new Exception("Only one <Namespaces> element permitted, " + e.size() + " found.");
+      namespaceElmnts = XmlUtil.childrenWithLocalName(e.get(0), "Namespace");
       
       // get <Transaction> elements
-      e = XmlUtil.getFirstLevelChildElementsByName(testElmnt, "Transactions");
-      if (e.length == 0) throw new Exception("<Transactions> element missing");
-      if (e.length > 1) throw new Exception("Only one <Transactions> element permitted, " + e.length + " found.");
-      e = XmlUtil.getFirstLevelChildElementsByName(e[0], "Transaction");
+      e = XmlUtil.childrenWithLocalName(testElmnt, "Transactions");
+      if (e.isEmpty()) throw new Exception("<Transactions> element missing");
+      if (e.size() > 1) throw new Exception("Only one <Transactions> element permitted, " + e.size() + " found.");
+      e = XmlUtil.childrenWithLocalName(e.get(0), "Transaction");
       
       // look for transactionId we are testing
       boolean componentFound = false;
-transactionLoop: for (Element t : e) {
-         if (t.getAttribute("id").equalsIgnoreCase(transactionId) == false) continue;
+transactionLoop: for (OMElement t : e) {
+         if (t.getAttributeValue(new QName("*","id")).equalsIgnoreCase(transactionId) == false) continue;
          // found transaction with id
-         transactionName = t.getAttribute("name");
-         Element[] cs = XmlUtil.getFirstLevelChildElementsByName(t, "Component");
-         for (Element c : cs) {
-            if (c.getAttribute("id").equalsIgnoreCase(componentId) == false) continue;
+         transactionName = t.getAttributeValue(new QName("name"));
+         List<OMElement> cs = XmlUtil.childrenWithLocalName(t, "Component");
+         for (OMElement c : cs) {
+            if (c.getAttributeValue(new QName("*","id")).equalsIgnoreCase(componentId) == false) continue;
             // found component with id
             componentFound = true;
             // look for <Assertions> element
-            Element[] as = XmlUtil.getFirstLevelChildElementsByName(c, "Assertions");
-            if (as.length == 0) throw new Exception("<Assertions> element missing");
-            if (as.length > 1) throw new Exception("Only one <Assertions> element permitted, " + as.length + " found.");
+            List<OMElement> as = XmlUtil.childrenWithLocalName(c, "Assertions");
+            if (as.isEmpty()) throw new Exception("<Assertions> element missing");
+            if (as.size() > 1) throw new Exception("Only one <Assertions> element permitted, " + as.size() + " found.");
             // load <Assertion> elements
-            assertionElmnts = XmlUtil.getFirstLevelChildElementsByName(as[0], "Assertion");
-            if (assertionElmnts.length == 0) throw new Exception("No <Assertion> elements found.");
+            assertionElmnts = XmlUtil.childrenWithLocalName(as.get(0), "Assertion");
+            if (assertionElmnts.isEmpty()) throw new Exception("No <Assertion> elements found.");
             // validate <Assertion> element attributes
             boolean assertionError = false;
-            for (Element a : assertionElmnts) {
-               String name = a.getAttribute("name");
-               String type = a.getAttribute("type");
-               String xpth = a.getAttribute("xpath");
-               String value = a.getAttribute("value");
-               String success = a.getAttribute("success");
+            for (OMElement a : assertionElmnts) {
+               String name = a.getAttributeValue(new QName("name"));
+               String type = a.getAttributeValue(new QName("type"));
+               String xpth = a.getAttributeValue(new QName("xpath"));
+               String value = a.getAttributeValue(new QName("value"));
+               String success = a.getAttributeValue(new QName("success"));
                if (success.isEmpty()) success = "SUCCESS";
-               String failure = a.getAttribute("failure");
+               String failure = a.getAttributeValue(new QName("failure"));
                if (failure.isEmpty()) failure = "ERROR";
                if (name.isEmpty()) {
                   assertionError = true;
@@ -221,21 +220,21 @@ transactionLoop: for (Element t : e) {
       
       // Load namespace QNames
       List<QName> qns = new ArrayList<>();
-      for (Element ns : namespaceElmnts) {
-         qns.add(new QName(ns.getAttribute("uri"), "dummy", ns.getAttribute("prefix")));
+      for (OMElement ns : namespaceElmnts) {
+         qns.add(new QName(ns.getAttributeValue(new QName("uri")), "dummy", ns.getAttributeValue(new QName("prefix"))));
       }
       qnames = qns.toArray(new QName[0]);
       
       // Load assertions
-      for (Element a : assertionElmnts) {
-         String name = a.getAttribute("name");
-         TYPE type = TYPE.forThis(a.getAttribute("type"));
-         String xpth = a.getAttribute("xpath");
-         String value = a.getAttribute("value");
-         String success = a.getAttribute("success");
+      for (OMElement a : assertionElmnts) {
+         String name = a.getAttributeValue(new QName("name"));
+         TYPE type = TYPE.forThis(a.getAttributeValue(new QName("type")));
+         String xpth = a.getAttributeValue(new QName("xpath"));
+         String value = a.getAttributeValue(new QName("value"));
+         String success = a.getAttributeValue(new QName("success"));
          if (success.isEmpty()) success = "SUCCESS";
          CAT successCat = CAT.forThis(success);
-         String failure = a.getAttribute("failure");
+         String failure = a.getAttributeValue(new QName("failure"));
          if (failure.isEmpty()) failure = "ERROR";
          CAT failureCat = CAT.forThis(failure);
          this.assertions.add(new XMLAssertion(name, type, xpth, value, successCat, failureCat));

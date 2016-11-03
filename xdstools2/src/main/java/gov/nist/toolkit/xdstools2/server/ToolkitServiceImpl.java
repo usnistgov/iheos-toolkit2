@@ -344,6 +344,12 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements
         return new OrchestrationManager().buildRegTestEnvironment(s, request);
     }
     @Override
+    public RawResponse buildRecTestOrchestration(RecOrchestrationRequest request) {
+        Session s = getSession();
+        if (s == null) return RawResponseBuilder.build(new NoServletSessionException(""));
+        return new OrchestrationManager().buildRecTestEnvironment(s, request);
+    }
+    @Override
     public RawResponse buildIgTestOrchestration(IgOrchestrationRequest request) {
         Session s = getSession();
         if (s == null) return RawResponseBuilder.build(new NoServletSessionException(""));

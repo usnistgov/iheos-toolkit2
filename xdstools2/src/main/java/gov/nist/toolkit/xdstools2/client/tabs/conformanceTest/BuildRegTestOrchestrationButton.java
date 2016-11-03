@@ -34,13 +34,15 @@ public class BuildRegTestOrchestrationButton extends AbstractOrchestrationButton
     static private final String MU_OPTION = "mu";
     static private final String MPQ_OPTION = "mpq";
     static private final String OD_OPTION = "od";
+    static private final String ISR_OPTION = "isr";
     public static List<ActorAndOption> ACTOR_OPTIONS = new ArrayList<>();
     static {
         ACTOR_OPTIONS = java.util.Arrays.asList(
                 new ActorAndOption("reg", "", "Required", false),
                 new ActorAndOption("reg", MU_OPTION, "Metadata Update Option", false),
                 new ActorAndOption("reg", MPQ_OPTION, "MPQ Option", false),
-                new ActorAndOption("reg", OD_OPTION, "On Demand Option", false));
+                new ActorAndOption("reg", OD_OPTION, "On Demand Option", false),
+                new ActorAndOption("reg", ISR_OPTION, "Integrated Source Repository", true));
     }
 
     BuildRegTestOrchestrationButton(ConformanceTestTab testTab, TestContext testContext, TestContextView testContextView, Panel initializationPanel, String label) {
@@ -73,11 +75,15 @@ public class BuildRegTestOrchestrationButton extends AbstractOrchestrationButton
         initializationResultsPanel.clear();
 
         RegOrchestrationRequest request = new RegOrchestrationRequest();
+        request.selfTest(isSelfTest());
         request.setPifType((v2Feed.isChecked()) ? PifType.V2 : PifType.NONE);
         request.setUserName(testTab.getCurrentTestSession());
         request.setEnvironmentName(testTab.getEnvironmentSelection());
         request.setUseExistingState(!isResetRequested());
         SiteSpec sutSiteSpec = testContext.getSiteUnderTest().siteSpec();
+        if (isSaml()) {
+            setSamlAssertion(sutSiteSpec);
+        }
         request.setRegistrySut(sutSiteSpec);
 
         testTab.setSiteToIssueTestAgainst(sutSiteSpec);
@@ -93,7 +99,7 @@ public class BuildRegTestOrchestrationButton extends AbstractOrchestrationButton
             public void onSuccess(RawResponse rawResponse) {
                 if (handleError(rawResponse, RegOrchestrationResponse.class)) return;
                 final RegOrchestrationResponse orchResponse = (RegOrchestrationResponse) rawResponse;
-                testTab.setOrchestrationResponse(orchResponse);
+                testTab.setRegOrchestrationResponse(orchResponse);
 
                 initializationResultsPanel.add(new HTML("Initialization Complete"));
 

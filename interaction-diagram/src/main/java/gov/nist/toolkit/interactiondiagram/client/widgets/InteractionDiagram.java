@@ -572,8 +572,8 @@ public class InteractionDiagram extends Composite {
                 group.appendChild(arrow_request_left(x2, y));
 
             final List<String> messages = new ArrayList<String>();
-            messages.add("Click to inspect results");
-            addTooltip(group,messages,5000);
+            messages.add("(Click to inspect results)");
+            addTooltip(group,messages,hide_tooltip_on_mouseout);
 
             String description = entity.getDescription();
             String transaction = entity.getSourceInteractionLabel();
@@ -893,14 +893,18 @@ public class InteractionDiagram extends Composite {
         text.setAttribute("font-size","10");
         text.setAttribute("text-anchor","middle");
 
+        OMSVGGElement group = doc.createSVGGElement();
         String shortName = name;
-        if (name.length()>12)
-            shortName = name.substring(0,12);
+        if (name.length()>12) {
+            shortName = name.substring(0, 12);
+            List<String> actorName = new ArrayList<String>();
+            actorName.add(name);
+            addTooltip(group,actorName,hide_tooltip_on_mouseout);
+        }
 
         OMText textValue = doc.createTextNode(shortName);
         text.appendChild(textValue);
 
-        OMSVGGElement group = doc.createSVGGElement();
         group.appendChild(rect);
         group.appendChild(text);
 

@@ -20,7 +20,10 @@ import gov.nist.toolkit.sitemanagement.client.SiteSpec;
 import gov.nist.toolkit.sitemanagement.client.TransactionOfferings;
 import gov.nist.toolkit.xdstools2.client.*;
 import gov.nist.toolkit.xdstools2.client.command.command.GetTransactionOfferingsCommand;
-import gov.nist.toolkit.xdstools2.client.event.*;
+import gov.nist.toolkit.xdstools2.client.event.ActorConfigUpdatedEvent;
+import gov.nist.toolkit.xdstools2.client.event.EnvironmentChangedEvent;
+import gov.nist.toolkit.xdstools2.client.event.SimulatorUpdatedEvent;
+import gov.nist.toolkit.xdstools2.client.event.Xdstools2EventBus;
 import gov.nist.toolkit.xdstools2.client.event.testSession.TestSessionManager2;
 import gov.nist.toolkit.xdstools2.client.siteActorManagers.BaseSiteActorManager;
 import gov.nist.toolkit.xdstools2.client.tabs.actorConfigTab.ActorConfigTab;
@@ -28,12 +31,7 @@ import gov.nist.toolkit.xdstools2.client.util.ClientUtils;
 import gov.nist.toolkit.xdstools2.client.widgets.PidWidget;
 import gov.nist.toolkit.xdstools2.client.widgets.PopupMessage;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 /**
  * Infrastructure for any tab that will allow a site to be chosen,
@@ -42,60 +40,58 @@ import java.util.Set;
  * @author bill
  */
 public abstract class GenericQueryTab  extends ToolWindow {
-	GenericQueryTab me;
-	private final SiteLoader siteLoader = new SiteLoader(this);
+    GenericQueryTab me;
+    private final SiteLoader siteLoader = new SiteLoader(this);
     static public TransactionOfferings transactionOfferings = null;  // Loaded from server
 
-	protected FlexTable mainGrid;
-	public TabContainer myContainer;
-	public int row_initial;
-	int row;
+    protected FlexTable mainGrid;
+    public TabContainer myContainer;
+    public int row_initial;
+    int row;
 
-	public boolean tlsEnabled = true;
+    public boolean tlsEnabled = true;
     public boolean tlsOptionEnabled = true;
-	public ActorType selectByActor = null;
-	public boolean samlEnabled = true;
-    public String samlAssertion;
-	List<TransactionType> transactionTypes;
-	public TransactionSelectionManager transactionSelectionManager = null;
-	public boolean enableInspectResults = true;
-	CoupledTransactions couplings;
+    public ActorType selectByActor = null;
+    List<TransactionType> transactionTypes;
+    public TransactionSelectionManager transactionSelectionManager = null;
+    public boolean enableInspectResults = true;
+    CoupledTransactions couplings;
 
     public boolean runEnabled = true;
-	ClickHandler runner;
-	String runButtonText = "Run";
+    ClickHandler runner;
+    String runButtonText = "Run";
     HorizontalPanel runnerPanel = new HorizontalPanel();
 
-	public VerticalPanel resultPanel = new VerticalPanel();
-	// if false then tool takes responsibliity for placing it
-	public boolean addResultsPanel = true;
+    public VerticalPanel resultPanel = new VerticalPanel();
+    // if false then tool takes responsibliity for placing it
+    public boolean addResultsPanel = true;
 
     CheckBox doTls = new CheckBox("TLS?");
-	ListBox samlListBox = new ListBox();
-	List<RadioButton> byActorButtons = null;
-	//	public Map<TransactionType, List<RadioButton>> perTransTypeRadioButtons;
+    ListBox samlListBox = new ListBox();
+    List<RadioButton> byActorButtons = null;
+    //	public Map<TransactionType, List<RadioButton>> perTransTypeRadioButtons;
 
-	private Button inspectButton;
-	private Button goButton;
+    private Button inspectButton;
+    private Button goButton;
 
-	boolean showInspectButton = true;
-	boolean asyncEnabled = false;
-	public boolean doASYNC = false;
-	boolean hasPatientIdParam = false;
+    boolean showInspectButton = true;
+    boolean asyncEnabled = false;
+    public boolean doASYNC = false;
+    boolean hasPatientIdParam = false;
 
-	BaseSiteActorManager siteActorManager;// = new SiteActorManager(this);
+    BaseSiteActorManager siteActorManager;// = new SiteActorManager(this);
     HTML resultsShortDescription = new HTML();
     public boolean autoAddRunnerButtons = true;
     public String genericQueryTitle = null;
     public Widget genericQueryInstructions = null;
 
     public String selectedTest;
-	List<Result> results;
+    List<Result> results;
 
-	protected QueryBoilerplate queryBoilerplate = null;
+    protected QueryBoilerplate queryBoilerplate = null;
 
-	HTML statusBox = new HTML();
-	public PidWidget pidTextBox = new PidWidget();
+    HTML statusBox = new HTML();
+    public PidWidget pidTextBox = new PidWidget();
 
     HorizontalPanel logLaunchButtonPanel = new HorizontalPanel();
     Button runButton = new Button(runButtonText);
@@ -110,6 +106,10 @@ public abstract class GenericQueryTab  extends ToolWindow {
 
     private boolean displayTab = true;
     private List<String> selectedSites=new ArrayList<String>();
+
+    // Keep SAML fields off the base class to isolate other tools' preference
+    public boolean samlEnabled = true;
+    public String samlAssertion;
 
     /**
      * This is the method that should build the specific content of a tab.
@@ -135,18 +135,18 @@ public abstract class GenericQueryTab  extends ToolWindow {
      * Super constructor.
      * @param siteActorManager
      */
-	public GenericQueryTab(final BaseSiteActorManager siteActorManager) {
-		me = this;
-		this.siteActorManager = siteActorManager;
-		if (siteActorManager != null)
-			siteActorManager.setGenericQueryTab(this);
+    public GenericQueryTab(BaseSiteActorManager siteActorManager) {
+        me = this;
+        this.siteActorManager = siteActorManager;
+        if (siteActorManager != null)
+            siteActorManager.setGenericQueryTab(this);
 
-		((Xdstools2EventBus) ClientUtils.INSTANCE.getEventBus()).addEnvironmentChangedEventHandler(new EnvironmentChangedEvent.EnvironmentChangedEventHandler() {
-			@Override
-			public void onEnvironmentChange(EnvironmentChangedEvent event) {
+        ((Xdstools2EventBus) ClientUtils.INSTANCE.getEventBus()).addEnvironmentChangedEventHandler(new EnvironmentChangedEvent.EnvironmentChangedEventHandler() {
+            @Override
+            public void onEnvironmentChange(EnvironmentChangedEvent event) {
                 refreshData();
-			}
-		});
+            }
+        });
 
         ((Xdstools2EventBus) ClientUtils.INSTANCE.getEventBus()).addSimulatorsUpdatedEventHandler(new SimulatorUpdatedEvent.SimulatorUpdatedEventHandler() {
             @Override
@@ -166,11 +166,10 @@ public abstract class GenericQueryTab  extends ToolWindow {
             }
         });
 
-
-		// when called as HomeTab is built, the wrong session services this call, this
-		// makes sure the job gets done
-		//		EnvironmentSelector.SETENVIRONMENT(toolkitService);
-	}
+        // when called as HomeTab is built, the wrong session services this call, this
+        // makes sure the job gets done
+        //		EnvironmentSelector.SETENVIRONMENT(toolkitService);
+    }
 
     private void saveSelectedSites() {
         selectedSites.clear();
@@ -190,7 +189,7 @@ public abstract class GenericQueryTab  extends ToolWindow {
 
     @Override
     public void onTabLoad(boolean select, String eventName) {
-	    if (displayTab)
+        if (displayTab)
             registerTab(true, eventName);
         buildView();  // the view is still built because of old code in HomeTab -
     }
@@ -280,8 +279,6 @@ public abstract class GenericQueryTab  extends ToolWindow {
             samlListBox.setSelectedIndex((commonSiteSpec.isSaml) ? 1 : 0);
 
         commonParamGrid.setWidget(commonGridRow++, contentsColumn, fp);
-
-
 
 
         ClientUtils.INSTANCE.getToolkitServices().getToolkitProperties(new AsyncCallback<Map<String, String>>() {
@@ -394,96 +391,96 @@ public abstract class GenericQueryTab  extends ToolWindow {
     }
 
     public void tabIsSelected() {
-		System.out.println("tab selected: " + getCommonSiteSpec());
+        System.out.println("tab selected: " + getCommonSiteSpec());
 
-		doTls.setValue(getCommonSiteSpec().isTls());
-		samlListBox.setSelectedIndex((getCommonSiteSpec().isSaml) ? 1 : 0);
-		if (pidTextBox != null)
-			pidTextBox.setText(getCommonPatientId());
-	}
+        doTls.setValue(getCommonSiteSpec().isTls());
+        samlListBox.setSelectedIndex((getCommonSiteSpec().isSaml) ? 1 : 0);
+        if (pidTextBox != null)
+            pidTextBox.setText(getCommonPatientId());
+    }
 
-	// These three versions of addQueryBoilerplate should be made into static methods
-	//  probably hung off a QueryBoilerplateFactory class
-	protected QueryBoilerplate addQueryBoilerplate(ClickHandler runner, List<TransactionType> transactionTypes, CoupledTransactions couplings, ActorType selectByActor) {
-		if (queryBoilerplate != null) {
-			queryBoilerplate.remove();
-			queryBoilerplate = null;
-		}
-		queryBoilerplate = new QueryBoilerplate(
-				this, runner, transactionTypes,
-				couplings, selectByActor
-				);
-		return queryBoilerplate;
-	}
+    // These three versions of addQueryBoilerplate should be made into static methods
+    //  probably hung off a QueryBoilerplateFactory class
+    protected QueryBoilerplate addQueryBoilerplate(ClickHandler runner, List<TransactionType> transactionTypes, CoupledTransactions couplings, ActorType selectByActor) {
+        if (queryBoilerplate != null) {
+            queryBoilerplate.remove();
+            queryBoilerplate = null;
+        }
+        queryBoilerplate = new QueryBoilerplate(
+                this, runner, transactionTypes,
+                couplings, selectByActor
+        );
+        return queryBoilerplate;
+    }
 
-	protected QueryBoilerplate addQueryBoilerplate(ClickHandler runner, List<TransactionType> transactionTypes, CoupledTransactions couplings) {
+    protected QueryBoilerplate addQueryBoilerplate(ClickHandler runner, List<TransactionType> transactionTypes, CoupledTransactions couplings) {
         return addQueryBoilerplate(runner, transactionTypes, couplings, true);
-	}
+    }
 
-	public QueryBoilerplate addQueryBoilerplate(ClickHandler runner, List<TransactionType> transactionTypes,
-			CoupledTransactions couplings, boolean hasPatientIdParam) {
-		if (queryBoilerplate != null) {
-			queryBoilerplate.remove();
-			queryBoilerplate = null;
-		}
-		this.hasPatientIdParam = hasPatientIdParam;
+    public QueryBoilerplate addQueryBoilerplate(ClickHandler runner, List<TransactionType> transactionTypes,
+                                                CoupledTransactions couplings, boolean hasPatientIdParam) {
+        if (queryBoilerplate != null) {
+            queryBoilerplate.remove();
+            queryBoilerplate = null;
+        }
+        this.hasPatientIdParam = hasPatientIdParam;
 
-		if (mainConfigPanelDivider == null) {
-			mainConfigPanelDivider = new HTML("<hr />");
-			tabTopPanel.add(mainConfigPanelDivider);
-			mainConfigPanel = new VerticalPanel();
-			tabTopPanel.add(mainConfigPanel);
-			tabTopPanel.add(new HTML("<hr />"));
-		}
+        if (mainConfigPanelDivider == null) {
+            mainConfigPanelDivider = new HTML("<hr />");
+            tabTopPanel.add(mainConfigPanelDivider);
+            mainConfigPanel = new VerticalPanel();
+            tabTopPanel.add(mainConfigPanel);
+            tabTopPanel.add(new HTML("<hr />"));
+        }
         if (addResultsPanel)
-		    tabTopPanel.add(resultPanel);
-		queryBoilerplate = new QueryBoilerplate(
-				this, runner, transactionTypes,
-				couplings
-				);
-		return queryBoilerplate;
-	}
+            tabTopPanel.add(resultPanel);
+        queryBoilerplate = new QueryBoilerplate(
+                this, runner, transactionTypes,
+                couplings
+        );
+        return queryBoilerplate;
+    }
 
-	public void addActorReloader() {
-		if (reload == null) {
-			reload = new Anchor();
-			reload.setTitle("Reload actors configuration");
-			reload.setText("[reload]");
-			me.addToMenu(reload);
+    public void addActorReloader() {
+        if (reload == null) {
+            reload = new Anchor();
+            reload.setTitle("Reload actors configuration");
+            reload.setText("[reload]");
+            me.addToMenu(reload);
 
-			reload.addClickHandler(new ClickHandler() {
+            reload.addClickHandler(new ClickHandler() {
 
-				public void onClick(ClickEvent event) {
-					reloadTransactionOfferings();
-				}
+                public void onClick(ClickEvent event) {
+                    reloadTransactionOfferings();
+                }
 
-			});
-			reload.addClickHandler(new ClickHandler() {
+            });
+            reload.addClickHandler(new ClickHandler() {
 
-				public void onClick(ClickEvent event) {
-					onReload();
-				}
+                public void onClick(ClickEvent event) {
+                    onReload();
+                }
 
-			});
-		}
-	}
+            });
+        }
+    }
 
-	// so it can be overloaded
-	public void onReload() {}
+    // so it can be overloaded
+    public void onReload() {}
 
     /**
      * Call on backend to reload transactions (simulators).
      */
-	public void reloadTransactionOfferings() {
-		new GetTransactionOfferingsCommand() {
+    public void reloadTransactionOfferings() {
+        new GetTransactionOfferingsCommand() {
 
-			@Override
-			public void onComplete(TransactionOfferings var1) {
-				GenericQueryTab.transactionOfferings = var1;
-				redisplay(false);
-			}
-		}.run(ClientUtils.INSTANCE.getCommandContext());
-	}
+            @Override
+            public void onComplete(TransactionOfferings var1) {
+                GenericQueryTab.transactionOfferings = var1;
+                redisplay(false);
+            }
+        }.run(ClientUtils.INSTANCE.getCommandContext());
+    }
 
     static public HTML addHTML(String html) {
         HTML msgBox = new HTML();
@@ -574,7 +571,11 @@ public abstract class GenericQueryTab  extends ToolWindow {
                                     public void onFailure(Throwable throwable) {
                                         SafeHtmlBuilder shb = new SafeHtmlBuilder();
                                         shb.appendHtmlConstant("Error");
-                                        new PopupMessage(shb.toSafeHtml(),new HTML(throwable.toString()));
+//                                        new PopupMessage(shb.toSafeHtml(),new HTML(throwable.toString()));
+                                        resultPanel.clear();
+                                        addStatusBox("");
+                                        setStatus("Status: Failure",false);
+                                        resultPanel.add(new HTML(throwable.toString()));
                                     }
 
                                     @Override
@@ -604,7 +605,7 @@ public abstract class GenericQueryTab  extends ToolWindow {
         }
 
         if (getInspectButton() != null && inspectButtonHandler == null)
-			inspectButtonHandler = getInspectButton().addClickHandler(new InspectorLauncher(me));
+            inspectButtonHandler = getInspectButton().addClickHandler(new InspectorLauncher(me));
 
 
         runnerPanel.add(logLaunchButtonPanel);
@@ -614,14 +615,14 @@ public abstract class GenericQueryTab  extends ToolWindow {
     }
 
 
-	// since to has come over from server and tt was generated here, they
-	// don't align hashvalues.  Search must be done the old fashion way
-	List<Site> findSites(TransactionType tt, boolean tls) {
+    // since to has come over from server and tt was generated here, they
+    // don't align hashvalues.  Search must be done the old fashion way
+    List<Site> findSites(TransactionType tt, boolean tls) {
 
-		// aka testSession
+        // aka testSession
 
-		return siteLoader.findSites(tt, tls);
-	}
+        return siteLoader.findSites(tt, tls);
+    }
 
     protected List<String> formatIds(String value) {
         List<String> values = new ArrayList<String>();
@@ -652,31 +653,31 @@ public abstract class GenericQueryTab  extends ToolWindow {
         return true;
     }
 
-	protected boolean verifyPidProvided() {
-		if (pidTextBox.getValue() == null || pidTextBox.getValue().equals("")) {
-			new PopupMessage("You must enter a Patient ID first");
-			return false;
-		}
-		return true;
-	}
+    protected boolean verifyPidProvided() {
+        if (pidTextBox.getValue() == null || pidTextBox.getValue().equals("")) {
+            new PopupMessage("You must enter a Patient ID first");
+            return false;
+        }
+        return true;
+    }
 
-	public boolean verifySiteProvided() {
-		SiteSpec siteSpec = getSiteSelection();
-		if (siteSpec == null) {
-			new PopupMessage("You must select a site first");
-			return false;
-		}
-		return true;
-	}
+    public boolean verifySiteProvided() {
+        SiteSpec siteSpec = getSiteSelection();
+        if (siteSpec == null) {
+            new PopupMessage("You must select a site first");
+            return false;
+        }
+        return true;
+    }
 
-	protected HorizontalPanel rigForRunning() {
-		resultPanel.clear();
-		// Where the bottom-of-screen listing from server goes
-		addStatusBox();
-		getGoButton().setEnabled(false);
-		getInspectButton().setEnabled(false);
+    protected HorizontalPanel rigForRunning() {
+        resultPanel.clear();
+        // Where the bottom-of-screen listing from server goes
+        addStatusBox();
+        getGoButton().setEnabled(false);
+        getInspectButton().setEnabled(false);
         return logLaunchButtonPanel;
-	}
+    }
 
     public static boolean empty(String x) {
         if (x == null) return true;
@@ -887,49 +888,49 @@ public abstract class GenericQueryTab  extends ToolWindow {
         boolean partialSuccess = false;
         results = theresult;
         for (Result result : results) {
-                if (result.getStepResults().size()>0) {
-                    if ("urn:ihe:iti:2007:ResponseStatusType:PartialSuccess".equals((result.getStepResults().get(0).getRegistryResponseStatus()))) {
-                        partialSuccess = true;
-                    }
+            if (result.getStepResults().size()>0) {
+                if ("urn:ihe:iti:2007:ResponseStatusType:PartialSuccess".equals((result.getStepResults().get(0).getRegistryResponseStatus()))) {
+                    partialSuccess = true;
                 }
-                detailsTree = new DetailsTree();
-                for (AssertionResult ar : result.assertions.assertions) {
-                    if (ar.assertion.startsWith("ReportBuilder") && detailsTree != null) {
-                        detailsTree.add(ar.assertion);
-                    } else if (ar.assertion.startsWith("UseReport") && detailsTree != null) {
-                        detailsTree.add(ar.assertion);
-                    } else if (ar.assertion.startsWith("SOAPFault") && detailsTree != null) {
-                        detailsTree.add(ar.assertion);
+            }
+            detailsTree = new DetailsTree();
+            for (AssertionResult ar : result.assertions.assertions) {
+                if (ar.assertion.startsWith("ReportBuilder") && detailsTree != null) {
+                    detailsTree.add(ar.assertion);
+                } else if (ar.assertion.startsWith("UseReport") && detailsTree != null) {
+                    detailsTree.add(ar.assertion);
+                } else if (ar.assertion.startsWith("SOAPFault") && detailsTree != null) {
+                    detailsTree.add(ar.assertion);
+                } else {
+                    String assertion = ar.assertion.replaceAll("\n", "<br />");
+                    if (ar.status) {
+                        resultPanel.add(addHTML(assertion));
                     } else {
-                        String assertion = ar.assertion.replaceAll("\n", "<br />");
-                        if (ar.status) {
-                            resultPanel.add(addHTML(assertion));
-                        } else {
-                            if (assertion.contains("EnvironmentNotSelectedException"))
-                                resultPanel.add(addHTML("<font color=\"#FF0000\">" + "Environment Not Selected" + "</font>"));
-                            else
-                                resultPanel.add(addHTML("<font color=\"#FF0000\">" + assertion + "</font>"));
-                            status = false;
-                        }
-                    }
-                    if (ar.assertion.startsWith("Status")) {
-//                        detailsTree = new DetailsTree();
-                        resultPanel.add(detailsTree.getWidget());
+                        if (assertion.contains("EnvironmentNotSelectedException"))
+                            resultPanel.add(addHTML("<font color=\"#FF0000\">" + "Environment Not Selected" + "</font>"));
+                        else
+                            resultPanel.add(addHTML("<font color=\"#FF0000\">" + assertion + "</font>"));
+                        status = false;
                     }
                 }
+                if (ar.assertion.startsWith("Status")) {
+//                        detailsTree = new DetailsTree();
+                    resultPanel.add(detailsTree.getWidget());
+                }
+            }
 //                if (detailsTree.hasNodes)
 //                    resultPanel.add(detailsTree.getWidget());
-            }
+        }
         if (status) {
-                if (partialSuccess)
-                    setStatus("<span style=\"color:orange;font-weight:bold;\">Status:</span>&nbsp;<span style=\"color:orange;font-weight:bold;\">PartialSuccess</span>");
-                else
-                    setStatus("Status: Success", true);
-            } else
-                setStatus("Status: Failure", false);
+            if (partialSuccess)
+                setStatus("<span style=\"color:orange;font-weight:bold;\">Status:</span>&nbsp;<span style=\"color:orange;font-weight:bold;\">PartialSuccess</span>");
+            else
+                setStatus("Status: Success", true);
+        } else
+            setStatus("Status: Failure", false);
 
-            getInspectButton().setEnabled(true);
-            getGoButton().setEnabled(true);
+        getInspectButton().setEnabled(true);
+        getGoButton().setEnabled(true);
     }
 
     public void setDisplayTab(boolean displayTab) {

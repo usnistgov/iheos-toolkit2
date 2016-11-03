@@ -17,13 +17,10 @@ import gov.nist.toolkit.http.client.HtmlMarkup;
 import gov.nist.toolkit.simcommon.client.config.SimulatorConfigElement;
 import gov.nist.toolkit.sitemanagement.client.Site;
 import gov.nist.toolkit.xdstools2.client.ClickHandlerData;
-import gov.nist.toolkit.xdstools2.client.widgets.PopupMessage;
-import gov.nist.toolkit.xdstools2.client.Xdstools2;
 import gov.nist.toolkit.xdstools2.client.command.command.GetAllSimConfigsCommand;
 import gov.nist.toolkit.xdstools2.client.command.command.GetAllSitesCommand;
-import gov.nist.toolkit.xdstools2.shared.command.request.GetAllSimConfigsRequest;
-import gov.nist.toolkit.xdstools2.client.event.testSession.TestSessionChangedEvent;
 import gov.nist.toolkit.xdstools2.client.event.Xdstools2EventBus;
+import gov.nist.toolkit.xdstools2.client.event.testSession.TestSessionChangedEvent;
 import gov.nist.toolkit.xdstools2.client.event.testSession.TestSessionChangedEventHandler;
 import gov.nist.toolkit.xdstools2.client.siteActorManagers.BaseSiteActorManager;
 import gov.nist.toolkit.xdstools2.client.siteActorManagers.FindDocumentsSiteActorManager;
@@ -31,6 +28,8 @@ import gov.nist.toolkit.xdstools2.client.tabs.SimulatorMessageViewTab;
 import gov.nist.toolkit.xdstools2.client.tabs.genericQueryTab.GenericQueryTab;
 import gov.nist.toolkit.xdstools2.client.tabs.simulatorControlTab.od.OddsEditTab;
 import gov.nist.toolkit.xdstools2.client.util.ClientUtils;
+import gov.nist.toolkit.xdstools2.client.widgets.PopupMessage;
+import gov.nist.toolkit.xdstools2.shared.command.request.GetAllSimConfigsRequest;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -369,7 +368,6 @@ public class SimulatorControlTab extends GenericQueryTab {
 				SimulatorConfig config = getData();
 				DeleteButtonClickHandler handler = new DeleteButtonClickHandler(self, config);
 				handler.delete();
-                ((Xdstools2EventBus) ClientUtils.INSTANCE.getEventBus()).fireSimulatorsUpdatedEvent();
 			}
 		};
 
@@ -380,12 +378,12 @@ public class SimulatorControlTab extends GenericQueryTab {
 				body.add(new HTML("<p>Delete " + config.getId().toString() + "?</p>"));
 				Button actionButton = new Button("Yes");
 				actionButton.addClickHandler(
-					clickHandlerData
+						clickHandlerData
 				);
 				SafeHtmlBuilder safeHtmlBuilder = new SafeHtmlBuilder();
 				safeHtmlBuilder.appendHtmlConstant("<img src=\"icons2/garbage.png\" height=\"16\" width=\"16\"/>");
 				safeHtmlBuilder.appendHtmlConstant("Confirm Delete Simulator");
-                new PopupMessage(safeHtmlBuilder.toSafeHtml() , body, actionButton);
+				new PopupMessage(safeHtmlBuilder.toSafeHtml() , body, actionButton);
 			}
 		});
 
