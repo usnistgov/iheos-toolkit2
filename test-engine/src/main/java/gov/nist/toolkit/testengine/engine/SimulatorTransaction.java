@@ -42,7 +42,6 @@ public class SimulatorTransaction {
    private String responseHeader;
    private String requestBody;
    private String responseBody;
-   private String metadata;
    private List<String> pfns = new ArrayList<>();
    private String stdPfn;
    private String url;
@@ -229,23 +228,6 @@ public class SimulatorTransaction {
       this.responseBody = responseBody;
    }
    
-
-   /**
-    * @return the {@link #metadata} value.
-    */
-   public String getMetadata() {
-      return metadata;
-   }
-
-
-   /**
-    * @param metadata the {@link #metadata} to set
-    */
-   public void setMetadata(String metadata) {
-      this.metadata = metadata;
-   }
-
-
    /**
     * @return the {@link #pfns} value.
     */

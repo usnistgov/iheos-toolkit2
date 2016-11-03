@@ -78,7 +78,7 @@ class IdsOrchestrationBuilder {
 
               IdsOrchestrationResponse response = new IdsOrchestrationResponse();
               response.setIdsSimulatorConfig(sutSimulatorConfig);
-              response.setRegrepConfig(rrSimulatorConfig);
+              response.setRRConfig(rrSimulatorConfig);
               response.setSimulatorConfigs(simConfigs);
               return response;
 
@@ -92,7 +92,7 @@ class IdsOrchestrationBuilder {
            
            simulator_ids ("Simulated IDS SUT", ActorType.IMAGING_DOC_SOURCE, new SimulatorConfigElement[] {
               new SimulatorConfigElement(SimulatorProperties.idsRepositoryUniqueId, ParamType.TEXT, "1.3.6.1.4.1.21367.13.80.110"),
-              new SimulatorConfigElement(SimulatorProperties.idsImageCache, ParamType.TEXT, "xca-dataset-a1")}),
+              new SimulatorConfigElement(SimulatorProperties.idsImageCache, ParamType.TEXT, "ids-repository")}),
            
            rr ("Repository Registry", ActorType.REPOSITORY_REGISTRY, new SimulatorConfigElement[] {
               new SimulatorConfigElement(SimulatorProperties.VALIDATE_AGAINST_PATIENT_IDENTITY_FEED, ParamType.BOOLEAN, false),

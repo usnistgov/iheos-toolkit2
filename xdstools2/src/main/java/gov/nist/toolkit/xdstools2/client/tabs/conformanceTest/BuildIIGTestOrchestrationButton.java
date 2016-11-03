@@ -15,6 +15,7 @@ import gov.nist.toolkit.services.client.IigOrchestrationRequest;
 import gov.nist.toolkit.services.client.IigOrchestrationResponse;
 import gov.nist.toolkit.services.client.RawResponse;
 import gov.nist.toolkit.simcommon.client.config.SimulatorConfigElement;
+import gov.nist.toolkit.sitemanagement.client.SiteSpec;
 import gov.nist.toolkit.xdstools2.client.util.ClientUtils;
 import gov.nist.toolkit.xdstools2.client.widgets.buttons.AbstractOrchestrationButton;
 
@@ -55,6 +56,11 @@ public class BuildIIGTestOrchestrationButton extends AbstractOrchestrationButton
       IigOrchestrationRequest request = new IigOrchestrationRequest();
       request.setUserName(testTab.getCurrentTestSession());
       request.setEnvironmentName(testTab.getEnvironmentSelection());
+      request.setUseExistingState(!isResetRequested());
+      SiteSpec siteSpec = new SiteSpec(testContext.getSiteName());
+      request.setSiteUnderTest(siteSpec);
+
+      testTab.setSiteToIssueTestAgainst(siteSpec);
 
       ClientUtils.INSTANCE.getToolkitServices().buildIigTestOrchestration(request, new AsyncCallback <RawResponse>() {
          @Override
@@ -66,6 +72,7 @@ public class BuildIIGTestOrchestrationButton extends AbstractOrchestrationButton
          public void onSuccess(RawResponse rawResponse) {
             if (handleError(rawResponse, IigOrchestrationResponse.class)) return;
             IigOrchestrationResponse orchResponse = (IigOrchestrationResponse) rawResponse;
+            testTab.setOrchestrationResponse(orchResponse);
 
             initializationResultsPanel.add(new HTML("Initialization Complete"));
 

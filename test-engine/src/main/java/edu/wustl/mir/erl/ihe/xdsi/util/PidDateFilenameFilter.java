@@ -7,13 +7,16 @@ import java.io.File;
 import java.io.FilenameFilter;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.List;
 
 import javax.xml.namespace.QName;
 import javax.xml.xpath.XPathExpression;
 
+import org.apache.axiom.om.OMElement;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
-import org.w3c.dom.Element;
+
+import gov.nist.toolkit.utilities.xml.XmlUtil;
 
 /**
  *
@@ -45,13 +48,6 @@ public class PidDateFilenameFilter implements FilenameFilter {
 	  log = Utility.getLog();
       this.pid = pid;
       this.date = date;
-      
-//      if (StringUtils.isNotBlank(pid)) {
-//         XPathFactory xpathFactory = XPathFactory.newInstance();
-//         XPath xPath = xpathFactory.newXPath();
-//         xPath.setNamespaceContext(new UtilNamespaceContext(metaDataQnames));
-//         expr = xPath.compile("//rim:ExtrinsicObject/rim:Slot[@name='sourcePatientId']/rim:ValueList/rim:Value/text()");
-//      }
    }
    @Override
    public boolean accept(File dir, String name) {
@@ -68,16 +64,16 @@ public class PidDateFilenameFilter implements FilenameFilter {
         	 return true;
          }
          String mds = PrsSimLogs.getSOAPMetaData(dir.toPath().resolve(name));
-         Element md = XmlUtil.strToElement(mds);
+         OMElement md = XmlUtil.strToOM(mds);
          
-         Element[] elements = XmlUtil.getFirstLevelChildElementsByName(md, "RegistryObjectList");
-         if (elements.length != 1) return false;
-         md = elements[0];
+         List<OMElement> elements = XmlUtil.childrenWithLocalName(md, "RegistryObjectList");
+         if (elements.size() != 1) return false;
+         md = elements.get(0);
          
-         elements = XmlUtil.getFirstLevelChildElementsByName(md, "ExtrinsicObject");
+         elements = XmlUtil.childrenWithLocalName(md, "ExtrinsicObject");
          md = null;
-         for (Element element : elements) {
-            if(element.getAttribute("objectType").equals("urn:uuid:7edca82f-054d-47f2-a032-9b2a5b5186c1")) {
+         for (OMElement element : elements) {
+            if(element.getAttributeValue(new QName("objectType")).equals("urn:uuid:7edca82f-054d-47f2-a032-9b2a5b5186c1")) {
                md = element;
                break;
             }
@@ -86,16 +82,16 @@ public class PidDateFilenameFilter implements FilenameFilter {
         	 log.debug("No metadata element found with objectType urn:uuid:7edca82f-054d-47f2-a032-9b2a5b5186c1");
         	 return false;
          }
-         elements = XmlUtil.getFirstLevelChildElementsByName(md, "ExternalIdentifier");
+         elements = XmlUtil.childrenWithLocalName(md, "ExternalIdentifier");
          if (elements == null) {
         	 log.debug("Found objectType urn:uuid:7edca82f-054d-47f2-a032-9b2a5b5186c1, no elements named ExternalIdentifier");
          }
          md = null;
          String rawPid = null;
-         for (Element element : elements) {
-        	 String identificationScheme = element.getAttribute("identificationScheme");
+         for (OMElement element : elements) {
+        	 String identificationScheme = element.getAttributeValue(new QName("identificationScheme"));
         	 if (identificationScheme.equals("urn:uuid:58a6f841-87b3-4a3e-92fd-a8ffeff98427")) {
-        		 rawPid = element.getAttribute("value");
+        		 rawPid = element.getAttributeValue(new QName("value"));
         		 log.debug("Found ExternalIdentifier with identification scheme urn:uuid:58a6f841-87b3-4a3e-92fd-a8ffeff98427 " + rawPid);
         	 } else {
         		 log.debug("External identifier ignored, identificationScheme is NOT urn:uuid:58a6f841-87b3-4a3e-92fd-a8ffeff98427, identificationScheme from metadata is " + identificationScheme);

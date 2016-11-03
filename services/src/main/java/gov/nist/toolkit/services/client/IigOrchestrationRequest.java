@@ -3,7 +3,7 @@
  */
 package gov.nist.toolkit.services.client;
 
-import java.io.Serializable;
+import gov.nist.toolkit.sitemanagement.client.SiteSpec;
 
 /**
  * 
@@ -11,37 +11,23 @@ import java.io.Serializable;
  * href="mailto:moultonr@mir.wustl.edu">moultonr@mir.wustl.edu</a>
  *
  */
-public class IigOrchestrationRequest implements Serializable {
+public class IigOrchestrationRequest extends AbstractOrchestrationRequest {
    private static final long serialVersionUID = 1L;
    
-   String userName;
-   String environmentName;
-   boolean includeLinkedIIG;
+   SiteSpec siteUnderTest;
 
-   public IigOrchestrationRequest() {}
-
-   public String getUserName() {
-       return userName;
+   /**
+    * @return the {@link #siteUnderTest} value.
+    */
+   public SiteSpec getSiteUnderTest() {
+      return siteUnderTest;
    }
 
-   public void setUserName(String userName) {
-       this.userName = userName;
-   }
-
-   public String getEnvironmentName() {
-       return environmentName;
-   }
-
-   public void setEnvironmentName(String environmentName) {
-       this.environmentName = environmentName;
-   }
-
-   public boolean isIncludeLinkedIIG() {
-       return includeLinkedIIG;
-   }
-
-   public void setIncludeLinkedIIG(boolean includeLinkedIIG) {
-       this.includeLinkedIIG = includeLinkedIIG;
+   /**
+    * @param siteUnderTest the {@link #siteUnderTest} to set
+    */
+   public void setSiteUnderTest(SiteSpec siteUnderTest) {
+      this.siteUnderTest = siteUnderTest;
    }
 
 }

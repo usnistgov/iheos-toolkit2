@@ -15,7 +15,7 @@ import gov.nist.toolkit.actorfactory.client.SimulatorConfig;
  * href="mailto:moultonr@mir.wustl.edu">moultonr@mir.wustl.edu</a>
  *
  */
-public class IigOrchestrationResponse extends RawResponse {
+public class IigOrchestrationResponse extends AbstractOrchestrationResponse {
    private static final long serialVersionUID = 1L;
    
    List<SimulatorConfig> simulatorConfigs = new ArrayList<>();
@@ -49,6 +49,15 @@ public class IigOrchestrationResponse extends RawResponse {
     */
    public void setIigSimulatorConfig(SimulatorConfig iigSimulatorConfig) {
       this.iigSimulatorConfig = iigSimulatorConfig;
+   }
+
+   /* (non-Javadoc)
+    * @see gov.nist.toolkit.services.client.AbstractOrchestrationResponse#isExternalStart()
+    */
+   @Override
+   public boolean isExternalStart() {
+      // TODO Auto-generated method stub
+      return false;
    };
    
    

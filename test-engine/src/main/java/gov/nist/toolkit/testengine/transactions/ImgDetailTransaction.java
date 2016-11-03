@@ -34,7 +34,6 @@ import gov.nist.toolkit.utilities.xml.XmlUtil;
 import gov.nist.toolkit.xdsexception.client.MetadataException;
 import gov.nist.toolkit.xdsexception.client.XdsInternalException;
 
-import edu.wustl.mir.erl.ihe.xdsi.util.OMEUtil;
 import edu.wustl.mir.erl.ihe.xdsi.util.PfnType;
 import edu.wustl.mir.erl.ihe.xdsi.util.Utility;
 import edu.wustl.mir.erl.ihe.xdsi.validation.*;
@@ -527,14 +526,14 @@ public class ImgDetailTransaction extends BasicTransaction {
       try {
          OMElement assertElement = a.assertElement;
          // Pull TagList and DirList child elements
-         OMElement dirListElement = OMEUtil.firstChildWithLocalName(assertElement, "DirList");
-         OMElement tagListElement = OMEUtil.firstChildWithLocalName(assertElement, "TagList");
+         OMElement dirListElement = XmlUtil.firstChildWithLocalName(assertElement, "DirList");
+         OMElement tagListElement = XmlUtil.firstChildWithLocalName(assertElement, "TagList");
 
          // Store images to testImgPath directory.
          Path testImgPath = Paths.get(linkage.getLogFileDir());
          String subDir = "testImages";
          if (dirListElement != null) {
-            OMElement testDirElement = OMEUtil.firstChildWithLocalName(dirListElement, "TestDir");
+            OMElement testDirElement = XmlUtil.firstChildWithLocalName(dirListElement, "TestDir");
             if (testDirElement != null) {
                subDir = testDirElement.getText();
             }
@@ -553,8 +552,8 @@ public class ImgDetailTransaction extends BasicTransaction {
 
          // Make list of std image pfns
          List <String> stdPfns = new ArrayList <>();
-         for (OMElement stdDirElement : OMEUtil.childrenWithLocalName(dirListElement, "StdDir")) {
-            File stdDirFile = Installation.instance().imageCache(stdDirElement.getText());
+         for (OMElement stdDirElement : XmlUtil.childrenWithLocalName(dirListElement, "StdDir")) {
+            File stdDirFile = Installation.instance().imageCache("std" + File.separator + stdDirElement.getText());
             Utility.isValidPfn("test std img dir", stdDirFile, PfnType.DIRECTORY, "r");
             Collection <File> files = FileUtils.listFiles(stdDirFile, FileFilterUtils.fileFileFilter(), null);
             for (File file : files)

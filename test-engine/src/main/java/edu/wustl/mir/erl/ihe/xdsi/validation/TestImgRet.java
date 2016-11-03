@@ -4,14 +4,19 @@
 package edu.wustl.mir.erl.ihe.xdsi.validation;
 
 import java.net.URL;
+import java.util.List;
 
+import javax.xml.namespace.QName;
+
+import org.apache.axiom.om.OMElement;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
 import org.w3c.dom.Element;
 
+import gov.nist.toolkit.utilities.xml.XmlUtil;
+
 import edu.wustl.mir.erl.ihe.xdsi.util.Utility;
-import edu.wustl.mir.erl.ihe.xdsi.util.XmlUtil;
 
 /**
  * Validate results of Image Document Set Retrieve transaction.
@@ -24,7 +29,7 @@ public class TestImgRet extends TestDcmSoap {
    private static Logger log = Utility.getLog();
    
    private URL testUrl;
-   private Element testElmnt;
+   private OMElement testElmnt;
    
    /**
     * Instantiate test. Example of call:<pre>{@code
@@ -55,28 +60,28 @@ public class TestImgRet extends TestDcmSoap {
       
       // Load sut-####.xml file
       testUrl = new URL(args[0]);
-      testElmnt = XmlUtil.strToElement(IOUtils.toString(testUrl, "UTF-8")); 
+      testElmnt = XmlUtil.strToOM(IOUtils.toString(testUrl, "UTF-8")); 
       
       // get <Transaction> elements
-      Element[] e = XmlUtil.getFirstLevelChildElementsByName(testElmnt, "Transactions");
-      if (e.length == 0) throw new Exception("<Transactions> element missing");
-      if (e.length > 1) throw new Exception("Only one <Transactions> element permitted, " + e.length + " found.");
-      e = XmlUtil.getFirstLevelChildElementsByName(e[0], "Transaction");
+      List <OMElement> e = XmlUtil.childrenWithLocalName(testElmnt, "Transactions");
+      if (e.isEmpty()) throw new Exception("<Transactions> element missing");
+      if (e.size() > 1) throw new Exception("Only one <Transactions> element permitted, " + e.size() + " found.");
+      e = XmlUtil.childrenWithLocalName(e.get(0), "Transaction");
       
       // Step through transaction elements
-      for (Element transaction : e) {
-         String transactionId = transaction.getAttribute("id");
+      for (OMElement transaction : e) {
+         String transactionId = transaction.getAttributeValue(new QName("id"));
          if (transactionId.equals(args[1]) == false) continue;
-         String title = transaction.getAttribute("name");
+         String title = transaction.getAttributeValue(new QName("name"));
          if (StringUtils.isBlank(title)) title = transactionId; 
          // Step through component elements
-        for (Element component : XmlUtil.getFirstLevelChildElementsByName(transaction, "Component")) {
-           String componentId = component.getAttribute("id");
+        for (OMElement component : XmlUtil.childrenWithLocalName(transaction, "Component")) {
+           String componentId = component.getAttributeValue(new QName("id"));
            StepXml step = new StepXml();
            step.initializeStep(new Object[] {testElmnt, transactionId, componentId,
               args[2], args[3]});
            step.setTitle(title);
-           String subTitle = component.getAttribute("subTitle");
+           String subTitle = component.getAttributeValue(new QName("subTitle"));
            if (StringUtils.isBlank(subTitle)) subTitle = componentId;
            step.setSubtitle(subTitle);
            steps.add(step);

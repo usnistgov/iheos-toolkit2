@@ -3,10 +3,7 @@
  */
 package edu.wustl.mir.erl.ihe.xdsi.validation;
 
-import java.net.URL;
-
-import org.w3c.dom.Element;
-
+import org.apache.axiom.om.OMElement;
 import edu.wustl.mir.erl.ihe.xdsi.util.Utility;
 
 /**
@@ -24,7 +21,7 @@ public class StepXml extends Step {
     */
    @Override
    public void initializeStep(Object[] args) throws Exception {
-      DetailXml d = new DetailXml((Element)args[0], (String) args[1], (String) args[2]); 
+      DetailXml d = new DetailXml((OMElement)args[0], (String) args[1], (String) args[2]); 
       String testPfn = (String) args[3] + Utility.fs + "response" + Utility.fs + (String) args[2] + ".xml";
       String stdPfn  = (String) args[4] + Utility.fs + "response" + Utility.fs + (String) args[2] + ".xml";
       d.initializeDetail(testPfn, stdPfn);

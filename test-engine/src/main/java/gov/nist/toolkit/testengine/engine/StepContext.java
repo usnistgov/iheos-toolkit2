@@ -208,7 +208,7 @@ public class StepContext extends BasicContext implements ErrorReportingInterface
 
 			}
 			/*
-			Save this code for later when an intrustuction with mulitple values is needed.
+			Save this code for later when an instruction with multiple values is needed.
 
 			else if (instruction_name.equals("AcceptableStatus"))
 			{
