@@ -99,6 +99,7 @@ public class Slot {
 		return getOwnerType() + "(" + getOwnerId() + ")";
 	}
 
+	// TODO to convert to Assertions; has multiple Resource values possible
 	public void validate(ErrorRecorder er, boolean multivalue, FormatValidator validator, String resource) {
 		if (!multivalue && values.size() > 1)
 			er.err(XdsErrorCode.Code.XDSRegistryMetadataError, getOwnerType() + "(" + getOwnerId() + ") has Slot " + name + " which is required to have a single value, " + values.size() + "  values found", this, resource);
