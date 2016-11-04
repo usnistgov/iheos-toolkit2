@@ -2,6 +2,8 @@ package gov.nist.toolkit.valregmetadata.field;
 
 import gov.nist.toolkit.errorrecording.ErrorRecorder;
 import gov.nist.toolkit.errorrecording.client.XdsErrorCode;
+import gov.nist.toolkit.errorrecording.client.assertions.Assertion;
+import gov.nist.toolkit.errorrecording.client.assertions.AssertionLibrary;
 import gov.nist.toolkit.registrymetadata.Metadata;
 import gov.nist.toolkit.commondatatypes.MetadataSupport;
 import gov.nist.toolkit.utilities.io.Io;
@@ -31,6 +33,7 @@ public class CodeValidationBase {
 
 	static String ADConfigError = "ITI TF-3: 4.1.10";
 	static Logger logger = Logger.getLogger(CodeValidationBase.class);
+	private AssertionLibrary ASSERTIONLIBRARY = AssertionLibrary.getInstance();
 
 
 	CodeValidationBase() {}
@@ -92,7 +95,7 @@ public class CodeValidationBase {
 		QName ext_att_qname = new QName("ext");
 		OMElement mime_type_section = null;
 		for(@SuppressWarnings("unchecked")
-		Iterator<OMElement> it=codes.getChildrenWithName(new QName("CodeType")); it.hasNext();  ) {
+			Iterator<OMElement> it=codes.getChildrenWithName(new QName("CodeType")); it.hasNext();  ) {
 			OMElement ct = it.next();
 			if (ct.getAttributeValue(name_att_qname).equals("mimeType")) {
 				mime_type_section = ct;
@@ -105,7 +108,7 @@ public class CodeValidationBase {
 		ext_map = new HashMap<String, String>();
 
 		for(@SuppressWarnings("unchecked")
-		Iterator<OMElement> it=mime_type_section.getChildElements(); it.hasNext();  ) {
+			Iterator<OMElement> it=mime_type_section.getChildElements(); it.hasNext();  ) {
 			OMElement code_ele = it.next();
 			String mime_type = code_ele.getAttributeValue(code_att_qname);
 			String ext = code_ele.getAttributeValue(ext_att_qname);
@@ -197,7 +200,8 @@ public class CodeValidationBase {
 	}
 
 	void cannotValidate(ErrorRecorder er, Classification c) {
-		er.err(XdsErrorCode.Code.XDSRegistryMetadataError, c.identifyingString() + ": cannot validate code - error parsing Classification", this, "ebRIM section 4.3");
+		Assertion assertion = ASSERTIONLIBRARY.getAssertion("TA047");
+		er.err(XdsErrorCode.Code.XDSRegistryMetadataError, assertion, this, c.identifyingString(), "");
 	}
 
 	public void run(ErrorRecorder er) {
@@ -242,8 +246,11 @@ public class CodeValidationBase {
 			if ( !isValidMimeType(mime_type)) {
 				if (vc.isXDM || vc.isXDR || vc.isPartOfRecipient)
 					er.detail("Mime type, " + mime_type + ", is not available in this Affinity Domain");
-				else
-					er.err(XdsErrorCode.Code.XDSRegistryMetadataError, "Mime type, " + mime_type + ", is not available in this Affinity Domain", this, ADConfigError);
+				else {
+					Assertion assertion = ASSERTIONLIBRARY.getAssertion("TA048");
+					String detail = "Mime type '" + mime_type + "' is not available in this Affinity Domain.";
+					er.err(XdsErrorCode.Code.XDSRegistryMetadataError, assertion, this, "", detail);
+				}
 			}
 		}
 	}
@@ -263,7 +270,10 @@ public class CodeValidationBase {
 			return;
 
 		if ( !classified_object_type.equals("Association")) {
-			er.err(XdsErrorCode.Code.XDSRegistryMetadataError, objectDescription(cl.getOwnerId()) + ": associationDocumentation Classification (" + MetadataSupport.XDSAssociationDocumentation_uuid + ") can only be used on Associations", this, "ITI TF-3: 4.1.6.1");
+			Assertion assertion = ASSERTIONLIBRARY.getAssertion("TA049");
+			String detail = objectDescription(cl.getOwnerId()) + ": associationDocumentation Classification " +
+					"(" + MetadataSupport.XDSAssociationDocumentation_uuid + ") can only be used on Associations";
+			er.err(XdsErrorCode.Code.XDSRegistryMetadataError, assertion, this, "", detail);
 			return;
 		}
 
@@ -277,7 +287,9 @@ public class CodeValidationBase {
 			if (a.equals(assoc_type))
 				return;
 		}
-		er.err(XdsErrorCode.Code.XDSRegistryMetadataError, objectDescription(assoc_ele) + ": Association Type " + assoc_type + " cannot have an associationDocumentation classification", this, "ITI TF-3: 4.1.6.1");
+		Assertion assertion = ASSERTIONLIBRARY.getAssertion("TA050");
+		String detail = objectDescription(assoc_ele) + ": Association Type " + assoc_type + " cannot have an associationDocumentation classification";
+		er.err(XdsErrorCode.Code.XDSRegistryMetadataError, assertion, this, "", detail);
 	}
 
 	void validate(ErrorRecorder er, Classification cl) {
@@ -287,7 +299,7 @@ public class CodeValidationBase {
 			String classification_node = cl.getClassificationNode();
 			if (classification_node == null || classification_node.equals("")) {
 				cannotValidate(er, cl);
-				return ;
+				return;
 			} else
 				return;
 		}
@@ -300,7 +312,7 @@ public class CodeValidationBase {
 
 		if (code == null) {
 			cannotValidate(er, cl);
-			return ;
+			return;
 		}
 		if (coding_scheme == null) {
 			cannotValidate(er, cl);
@@ -316,9 +328,9 @@ public class CodeValidationBase {
 			for (OMElement code_ele : XmlUtil.childrenWithLocalName(code_type, "Code")) {
 				String code_name = code_ele.getAttributeValue(MetadataSupport.code_qname);
 				String code_scheme = code_ele.getAttributeValue(MetadataSupport.codingscheme_qname);
-				if ( 	code_name.equals(code) &&
-						(code_scheme == null || code_scheme.equals(coding_scheme) )
-				) {
+				if (code_name.equals(code) &&
+						(code_scheme == null || code_scheme.equals(coding_scheme))
+						) {
 					return;
 				}
 			}
@@ -333,12 +345,14 @@ public class CodeValidationBase {
 		if (vc.isValidateCodes) {
 			if (vc.isXDM || vc.isXDR || vc.isPartOfRecipient)
 				er.detail(objectDescription(owner) + ": the code " + coding_scheme + "(" + code + ") is not found in the Affinity Domain configuration");
-			else
-				er.err(XdsErrorCode.Code.XDSRegistryMetadataError, objectDescription(owner) + ": the code " + coding_scheme + "(" + code + ") is not found in the Affinity Domain configuration", this, "ITI TF-3: 4.1.10");
+			else {
+				Assertion assertion = ASSERTIONLIBRARY.getAssertion("TA051");
+				String detail = objectDescription(owner) + ": the code " + coding_scheme + "(" + code +
+						") is not found in the Affinity Domain configuration";
+				er.err(XdsErrorCode.Code.XDSRegistryMetadataError, assertion, this, "", detail);
+			}
 		}
 	}
-
-
 
 
 }
