@@ -17,8 +17,10 @@ import gov.nist.toolkit.http.client.HtmlMarkup;
 import gov.nist.toolkit.simcommon.client.config.SimulatorConfigElement;
 import gov.nist.toolkit.sitemanagement.client.Site;
 import gov.nist.toolkit.xdstools2.client.ClickHandlerData;
+import gov.nist.toolkit.xdstools2.client.command.command.GetActorTypeNamesCommand;
 import gov.nist.toolkit.xdstools2.client.command.command.GetAllSimConfigsCommand;
 import gov.nist.toolkit.xdstools2.client.command.command.GetAllSitesCommand;
+import gov.nist.toolkit.xdstools2.client.command.command.GetNewSimulatorCommand;
 import gov.nist.toolkit.xdstools2.client.event.Xdstools2EventBus;
 import gov.nist.toolkit.xdstools2.client.event.testSession.TestSessionChangedEvent;
 import gov.nist.toolkit.xdstools2.client.event.testSession.TestSessionChangedEventHandler;
@@ -30,6 +32,7 @@ import gov.nist.toolkit.xdstools2.client.tabs.simulatorControlTab.od.OddsEditTab
 import gov.nist.toolkit.xdstools2.client.util.ClientUtils;
 import gov.nist.toolkit.xdstools2.client.widgets.PopupMessage;
 import gov.nist.toolkit.xdstools2.shared.command.request.GetAllSimConfigsRequest;
+import gov.nist.toolkit.xdstools2.shared.command.request.GetNewSimulatorRequest;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -148,32 +151,24 @@ public class SimulatorControlTab extends GenericQueryTab {
 			new PopupMessage("SimId " + simId + " is not valid");
 			return;
 		}
-		getToolkitServices().getNewSimulator(actorTypeName, simId, new AsyncCallback<Simulator>() {
-
-			public void onFailure(Throwable caught) {
-				new PopupMessage("Error creating new simulator: " + caught.getMessage());
-			}
-
-			public void onSuccess(Simulator sconfigs) {
+		new GetNewSimulatorCommand(){
+			@Override
+			public void onComplete(Simulator sconfigs) {
 				for (SimulatorConfig config : sconfigs.getConfigs())
 					simConfigSuper.add(config);
 				simConfigSuper.reloadSimulators();
 				loadSimStatus(getCurrentTestSession());
 				((Xdstools2EventBus) ClientUtils.INSTANCE.getEventBus()).fireSimulatorsUpdatedEvent();
 			}
-		});
+		}.run(new GetNewSimulatorRequest(getCommandContext(),actorTypeName,simId));
 	} // createNewSimulator
 
 
 
 	void loadActorSelectListBox() {
-		getToolkitServices().getActorTypeNames(new AsyncCallback<List<String>>() {
-
-			public void onFailure(Throwable caught) {
-				new PopupMessage("getActorTypeNames:" + caught.getMessage());
-			}
-
-			public void onSuccess(List<String> result) {
+		new GetActorTypeNamesCommand(){
+			@Override
+			public void onComplete(List<String> result) {
 				actorSelectListBox.clear();
 				if (result == null)
 					return;
@@ -181,7 +176,7 @@ public class SimulatorControlTab extends GenericQueryTab {
 				for (String name : result)
 					actorSelectListBox.addItem(name);
 			}
-		});
+		}.run(getCommandContext());
 	}
 
 	// columns

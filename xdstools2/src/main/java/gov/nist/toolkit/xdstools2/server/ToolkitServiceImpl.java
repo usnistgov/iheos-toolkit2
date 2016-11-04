@@ -19,8 +19,6 @@ import gov.nist.toolkit.installation.Installation;
 import gov.nist.toolkit.installation.PropertyServiceManager;
 import gov.nist.toolkit.interactionmapper.InteractionMapper;
 import gov.nist.toolkit.interactionmodel.client.InteractingEntity;
-import gov.nist.toolkit.registrymetadata.client.ObjectRef;
-import gov.nist.toolkit.registrymetadata.client.Uids;
 import gov.nist.toolkit.results.client.*;
 import gov.nist.toolkit.results.shared.Test;
 import gov.nist.toolkit.services.client.*;
@@ -192,7 +190,10 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements
     @Override
     public List<String> getIGNames()  throws NoServletSessionException { return siteServiceManager.getIGNames(session().getId()); }
     @Override
-    public List<String> getActorTypeNames()  throws NoServletSessionException { return siteServiceManager.getActorTypeNames(session().getId()); }
+    public List<String> getActorTypeNames(CommandContext context)  throws Exception {
+        installCommandContext(context);
+        return siteServiceManager.getActorTypeNames(session().getId());
+    }
     @Override
     public List<String> getSiteNamesWithRG(CommandContext context) throws Exception {
         installCommandContext(context);
@@ -219,11 +220,20 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements
     @Override
     public List<Result> folderValidation(SiteSpec site, String pid) throws NoServletSessionException  { return session().queryServiceManager().folderValidation(site, pid); }
     @Override
-    public List<Result> submitRegistryTestdata(String testSessionName,SiteSpec site, String datasetName, String pid) throws NoServletSessionException  { return session().queryServiceManager().submitRegistryTestdata(testSessionName,site, datasetName, pid); }
+    public List<Result> submitRegistryTestdata(SubmitTestdataRequest request) throws Exception  {
+        installCommandContext(request);
+        return session().queryServiceManager().submitRegistryTestdata(request.getTestSessionName(),request.getSite(), request.getDataSetName(), request.getPid());
+    }
     @Override
-    public List<Result> submitRepositoryTestdata(String testSessionName,SiteSpec site, String datasetName, String pid) throws NoServletSessionException  { return session().queryServiceManager().submitRepositoryTestdata(testSessionName,site, datasetName, pid); }
+    public List<Result> submitRepositoryTestdata(SubmitTestdataRequest request) throws Exception  {
+        installCommandContext(request);
+        return session().queryServiceManager().submitRepositoryTestdata(request.getTestSessionName(),request.getSite(), request.getDataSetName(), request.getPid());
+    }
     @Override
-    public List<Result> submitXDRTestdata(String testSessionName,SiteSpec site, String datasetName, String pid) throws NoServletSessionException  { return session().queryServiceManager().submitXDRTestdata(testSessionName,site, datasetName, pid); }
+    public List<Result> submitXDRTestdata(SubmitTestdataRequest request) throws Exception  {
+        installCommandContext(request);
+        return session().queryServiceManager().submitXDRTestdata(request.getTestSessionName(),request.getSite(),request.getDataSetName(), request.getPid());
+    }
     @Override
     public List<Result> provideAndRetrieve(SiteSpec site, String pid) throws NoServletSessionException  { return session().queryServiceManager().provideAndRetrieve(site, pid); }
     @Override
@@ -282,9 +292,15 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements
         return session().queryServiceManager().srcStoresDocVal(request.getSiteSpec(), request.getSsid());
     }
     @Override
-    public List<Result> retrieveDocument(SiteSpec site, Uids uids) throws Exception { return session().queryServiceManager().retrieveDocument(site, uids); }
+    public List<Result> retrieveDocument(RetrieveDocumentRequest request) throws Exception {
+        installCommandContext(request);
+        return session().queryServiceManager().retrieveDocument(request.getSite(), request.getUids());
+    }
     @Override
-    public List<Result> retrieveImagingDocSet(SiteSpec site, Uids uids, String studyRequest, String transferSyntax) throws Exception { return session().queryServiceManager().retrieveImagingDocSet(site, uids, studyRequest, transferSyntax); }
+    public List<Result> retrieveImagingDocSet(RetrieveImagingDocSetRequest request) throws Exception {
+        installCommandContext(request);
+        return session().queryServiceManager().retrieveImagingDocSet(request.getSite(), request.getUids(), request.getStudyRequest(), request.getTransferSyntax());
+    }
 
     @Override
     public List<Result> getRelated(GetRelatedRequest request) throws Exception  {
@@ -749,9 +765,15 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements
         return Installation.instance().propertyServiceManager().getDefaultAssigningAuthority();
     }
     @Override
-    public String getImplementationVersion() throws NoServletSessionException  { return Installation.instance().propertyServiceManager().getImplementationVersion(); }
+    public String getImplementationVersion(CommandContext context) throws Exception  {
+        installCommandContext(context);
+        return Installation.instance().propertyServiceManager().getImplementationVersion();
+    }
     @Override
-    public Map<String, String> getToolkitProperties()  throws NoServletSessionException { return Installation.instance().propertyServiceManager().getToolkitProperties(); }
+    public Map<String, String> getToolkitProperties(CommandContext context)  throws Exception {
+        installCommandContext(context);
+        return Installation.instance().propertyServiceManager().getToolkitProperties();
+    }
     @Override
     public boolean isGazelleConfigFeedEnabled(CommandContext context) throws Exception {
         installCommandContext(context);
@@ -759,9 +781,15 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements
     }
     //	public String getToolkitEnableNwHIN() { return propertyServiceManager.getToolkitEnableNwHIN(); }
     @Override
-    public String setToolkitProperties(Map<String, String> props) throws Exception { return setToolkitPropertiesImpl(props); }
+    public String setToolkitProperties(SetToolkitPropertiesRequest request) throws Exception {
+        installCommandContext(request);
+        return setToolkitPropertiesImpl(request.getProperties());
+    }
     @Override
-    public String getAdminPassword() throws NoServletSessionException  { return Installation.instance().propertyServiceManager().getAdminPassword(); }
+    public String getAdminPassword(CommandContext context) throws Exception  {
+        installCommandContext(context);
+        return Installation.instance().propertyServiceManager().getAdminPassword();
+    }
     @Override
     public boolean reloadPropertyFile() throws NoServletSessionException  { return Installation.instance().propertyServiceManager().reloadPropertyFile(); }
     @Override
@@ -840,7 +868,10 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements
         return new SimulatorServiceManager(session()).getAllSimConfigs(request.getUser());
     }
     @Override
-    public Simulator getNewSimulator(String actorTypeName, SimId simId) throws Exception { return new SimulatorServiceManager(session()).getNewSimulator(actorTypeName, simId); }
+    public Simulator getNewSimulator(GetNewSimulatorRequest request) throws Exception {
+        installCommandContext(request);
+        return new SimulatorServiceManager(session()).getNewSimulator(request.getActorTypeName(), request.getSimId());
+    }
     @Override
     public void deleteSimFile(DeleteSimFileRequest request) throws Exception {
         installCommandContext(request);

@@ -19,6 +19,7 @@ import gov.nist.toolkit.sitemanagement.client.Site;
 import gov.nist.toolkit.sitemanagement.client.SiteSpec;
 import gov.nist.toolkit.sitemanagement.client.TransactionOfferings;
 import gov.nist.toolkit.xdstools2.client.*;
+import gov.nist.toolkit.xdstools2.client.command.command.GetToolkitPropertiesCommand;
 import gov.nist.toolkit.xdstools2.client.command.command.GetTransactionOfferingsCommand;
 import gov.nist.toolkit.xdstools2.client.event.ActorConfigUpdatedEvent;
 import gov.nist.toolkit.xdstools2.client.event.EnvironmentChangedEvent;
@@ -280,17 +281,15 @@ public abstract class GenericQueryTab  extends ToolWindow {
 
         commonParamGrid.setWidget(commonGridRow++, contentsColumn, fp);
 
-
-        ClientUtils.INSTANCE.getToolkitServices().getToolkitProperties(new AsyncCallback<Map<String, String>>() {
+        new GetToolkitPropertiesCommand(){
             @Override
             public void onFailure(Throwable throwable) {
                 new PopupMessage("Error getting properties for SAML selector display: " + throwable.toString());
                 fp.setVisible(false);
                 samlLabel.setVisible(false);
             }
-
             @Override
-            public void onSuccess(final Map<String, String> tkPropMap) {
+            public void onComplete(final Map<String, String> tkPropMap) {
                 samlEnabled = Boolean.parseBoolean(tkPropMap.get("Enable_SAML"));
 
                 if (samlEnabled) {
@@ -323,7 +322,7 @@ public abstract class GenericQueryTab  extends ToolWindow {
                     samlLabel.setVisible(false);
                 }
             }
-        });
+        }.run(getCommandContext());
 
 
 

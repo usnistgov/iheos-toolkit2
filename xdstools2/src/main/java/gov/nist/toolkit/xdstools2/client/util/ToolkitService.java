@@ -68,8 +68,8 @@ public interface ToolkitService extends RemoteService  {
 	boolean delMesaTestSession(String name) throws Exception;
 
 	/* Simulator Management */
-	List<String> getActorTypeNames() throws NoServletSessionException ;
-	Simulator getNewSimulator(String actorTypeName, SimId simId) throws Exception;
+	List<String> getActorTypeNames(CommandContext context) throws Exception ;
+	Simulator getNewSimulator(GetNewSimulatorRequest request) throws Exception;
 	List<SimulatorConfig> getSimConfigs(List<SimId> ids) throws Exception;
 	List<SimulatorConfig> getAllSimConfigs(GetAllSimConfigsRequest user) throws Exception;
 	String putSimConfig(SimulatorConfig config) throws Exception;
@@ -84,8 +84,8 @@ public interface ToolkitService extends RemoteService  {
 	Result getSimulatorEventRequest(TransactionInstance ti) throws Exception;
 	Result getSimulatorEventResponse(TransactionInstance ti) throws Exception;
 
-	String setToolkitProperties(Map<String, String> props) throws Exception;
-	Map<String, String> getToolkitProperties() throws NoServletSessionException ;
+	String setToolkitProperties(SetToolkitPropertiesRequest request) throws Exception;
+	Map<String, String> getToolkitProperties(CommandContext context) throws Exception ;
 	boolean reloadPropertyFile() throws NoServletSessionException ;
 
 	String getTransactionRequest(GetTransactionRequest request) throws Exception;
@@ -141,11 +141,11 @@ public interface ToolkitService extends RemoteService  {
 	List<Result> getSubmissionSets(GetSubmissionSetsRequest request) throws Exception ;
 	List<Result> registerAndQuery(RegisterAndQueryRequest request) throws Exception ;
 	List<Result> getRelated(GetRelatedRequest request) throws Exception ;
-	List<Result> retrieveDocument(SiteSpec site, Uids uids) throws Exception;
-	List<Result> retrieveImagingDocSet(SiteSpec site, Uids uids, String studyRequest, String transferSyntax) throws Exception;
-	List<Result> submitRegistryTestdata(String testSessionName,SiteSpec site, String datasetName, String pid) throws NoServletSessionException ;
-	List<Result> submitRepositoryTestdata(String testSessionName,SiteSpec site, String datasetName, String pid) throws NoServletSessionException ;
-	List<Result> submitXDRTestdata(String testSessionName,SiteSpec site, String datasetName, String pid) throws NoServletSessionException ;
+	List<Result> retrieveDocument(RetrieveDocumentRequest request) throws Exception;
+	List<Result> retrieveImagingDocSet(RetrieveImagingDocSetRequest request) throws Exception;
+	List<Result> submitRegistryTestdata(SubmitTestdataRequest request) throws Exception ;
+	List<Result> submitRepositoryTestdata(SubmitTestdataRequest request) throws Exception ;
+	List<Result> submitXDRTestdata(SubmitTestdataRequest request) throws Exception ;
 	List<Result> provideAndRetrieve(SiteSpec site, String pid) throws NoServletSessionException ;
 	List<Result> lifecycleValidation(SiteSpec site, String pid) throws NoServletSessionException ;
 	List<Result> folderValidation(SiteSpec site, String pid) throws NoServletSessionException ;
@@ -156,14 +156,14 @@ public interface ToolkitService extends RemoteService  {
 
 	TestLogs getRawLogs(GetRawLogsRequest request) throws Exception ;
 
-	String getAdminPassword() throws NoServletSessionException ;
+	String getAdminPassword(CommandContext context) throws Exception ;
 
 	String getTestplanAsText(String testSession,TestInstance testInstance, String section) throws Exception;
 	TestPartFileDTO getSectionTestPartFile(String testSession, TestInstance testInstance, String section) throws Exception;
 	TestPartFileDTO loadTestPartContent(TestPartFileDTO testPartFileDTO) throws Exception;
 	String getHtmlizedString(String xml) throws Exception;
 
-	String getImplementationVersion() throws NoServletSessionException ;
+	String getImplementationVersion(CommandContext context) throws Exception ;
 
 	List<String> getUpdateNames() throws NoServletSessionException ;
 	List<TestInstance> getTestlogListing(String sessionName) throws Exception;

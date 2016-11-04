@@ -2,15 +2,17 @@ package gov.nist.toolkit.xdstools2.client.tabs;
 
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.*;
 import gov.nist.toolkit.configDatatypes.client.TransactionType;
+import gov.nist.toolkit.results.client.Result;
 import gov.nist.toolkit.xdstools2.client.CoupledTransactions;
 import gov.nist.toolkit.xdstools2.client.command.command.GetTestdataSetListingCommand;
-import gov.nist.toolkit.xdstools2.client.widgets.PopupMessage;
+import gov.nist.toolkit.xdstools2.client.command.command.SubmitXDRTestdataCommand;
 import gov.nist.toolkit.xdstools2.client.siteActorManagers.GetDocumentsSiteActorManager;
 import gov.nist.toolkit.xdstools2.client.tabs.genericQueryTab.GenericQueryTab;
+import gov.nist.toolkit.xdstools2.client.widgets.PopupMessage;
 import gov.nist.toolkit.xdstools2.shared.command.request.GetTestdataSetListingRequest;
+import gov.nist.toolkit.xdstools2.shared.command.request.SubmitTestdataRequest;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -92,7 +94,12 @@ public class XDRTestdataTab  extends GenericQueryTab {
 			String testdataSetName = testlistBox.getItemText(selected);
 
 			rigForRunning();
-			getToolkitServices().submitXDRTestdata(getCurrentTestSession(),getSiteSelection(), testdataSetName, pidTextBox.getValue().trim(), queryCallback);
+			new SubmitXDRTestdataCommand(){
+				@Override
+				public void onComplete(List<Result> result) {
+					queryCallback.onSuccess(result);
+				}
+			}.run(new SubmitTestdataRequest(getCommandContext(),getSiteSelection(),testdataSetName,pidTextBox.getValue().trim()));
 		}
 
 	}

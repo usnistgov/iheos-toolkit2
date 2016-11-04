@@ -6,11 +6,14 @@ import com.google.gwt.user.client.ui.*;
 import gov.nist.toolkit.configDatatypes.client.TransactionType;
 import gov.nist.toolkit.registrymetadata.client.Uid;
 import gov.nist.toolkit.registrymetadata.client.Uids;
+import gov.nist.toolkit.results.client.Result;
 import gov.nist.toolkit.sitemanagement.client.SiteSpec;
 import gov.nist.toolkit.xdstools2.client.CoupledTransactions;
+import gov.nist.toolkit.xdstools2.client.command.command.RetrieveDocumentCommand;
 import gov.nist.toolkit.xdstools2.client.widgets.PopupMessage;
 import gov.nist.toolkit.xdstools2.client.siteActorManagers.RetrieveSiteActorManager;
 import gov.nist.toolkit.xdstools2.client.tabs.genericQueryTab.GenericQueryTab;
+import gov.nist.toolkit.xdstools2.shared.command.request.RetrieveDocumentRequest;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -98,7 +101,12 @@ public class DocRetrieveTab extends GenericQueryTab {
 			getGoButton().setEnabled(false);
 			getInspectButton().setEnabled(false);
 
-			getToolkitServices().retrieveDocument(siteSpec, uids, queryCallback);
+			new RetrieveDocumentCommand(){
+				@Override
+				public void onComplete(List<Result> result) {
+					queryCallback.onSuccess(result);
+				}
+			}.run(new RetrieveDocumentRequest(getCommandContext(),siteSpec,uids));
 		}
 		
 	}

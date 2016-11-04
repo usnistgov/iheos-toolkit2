@@ -6,11 +6,14 @@ import com.google.gwt.user.client.ui.*;
 import gov.nist.toolkit.configDatatypes.client.TransactionType;
 import gov.nist.toolkit.registrymetadata.client.Uid;
 import gov.nist.toolkit.registrymetadata.client.Uids;
+import gov.nist.toolkit.results.client.Result;
 import gov.nist.toolkit.sitemanagement.client.SiteSpec;
 import gov.nist.toolkit.xdstools2.client.CoupledTransactions;
+import gov.nist.toolkit.xdstools2.client.command.command.RetrieveImagingDocSetCommand;
 import gov.nist.toolkit.xdstools2.client.widgets.PopupMessage;
 import gov.nist.toolkit.xdstools2.client.siteActorManagers.RetrieveSiteActorManager;
 import gov.nist.toolkit.xdstools2.client.tabs.genericQueryTab.GenericQueryTab;
+import gov.nist.toolkit.xdstools2.shared.command.request.RetrieveImagingDocSetRequest;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -87,9 +90,12 @@ public class ImagingDocSetRetrieveTab extends GenericQueryTab {
 			getGoButton().setEnabled(false);
 			getInspectButton().setEnabled(false);
 
-
-			getToolkitServices().retrieveImagingDocSet(siteSpec, uids, fullRequest, "", queryCallback);
-
+			new RetrieveImagingDocSetCommand(){
+				@Override
+				public void onComplete(List<Result> result) {
+					queryCallback.onSuccess(result);
+				}
+			}.run(new RetrieveImagingDocSetRequest(getCommandContext(),siteSpec,uids,fullRequest,""));
 		}
 		private Uids extractDocumentUids(String s) {
 			Uids uids = new Uids();

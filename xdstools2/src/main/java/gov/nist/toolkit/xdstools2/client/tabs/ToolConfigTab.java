@@ -4,6 +4,8 @@ import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.*;
+import gov.nist.toolkit.xdstools2.client.command.command.GetToolkitPropertiesCommand;
+import gov.nist.toolkit.xdstools2.client.command.command.SetToolkitPropertiesCommand;
 import gov.nist.toolkit.xdstools2.client.widgets.AdminPasswordDialogBox;
 import gov.nist.toolkit.xdstools2.client.LoadGazelleConfigsClickHandler;
 import gov.nist.toolkit.xdstools2.client.PasswordManagement;
@@ -11,6 +13,7 @@ import gov.nist.toolkit.xdstools2.client.widgets.PopupMessage;
 import gov.nist.toolkit.xdstools2.client.siteActorManagers.NullSiteActorManager;
 import gov.nist.toolkit.xdstools2.client.tabs.genericQueryTab.GenericQueryTab;
 import gov.nist.toolkit.xdstools2.client.widgets.TestkitConfigTool;
+import gov.nist.toolkit.xdstools2.shared.command.request.SetToolkitPropertiesRequest;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -128,11 +131,22 @@ public class ToolConfigTab extends GenericQueryTab {
     }
 
     void loadPropertyFile() {
-        getToolkitServices().getToolkitProperties(getToolkitPropertiesCallback);
+        new GetToolkitPropertiesCommand(){
+            @Override
+            public void onComplete(Map<String, String> result) {
+                props = result;
+                loadPropertyGrid();
+            }
+        }.run(getCommandContext());
     }
 
     void savePropertyFile() {
-        getToolkitServices().setToolkitProperties(props, savePropertiesCallback);
+        new SetToolkitPropertiesCommand(){
+            @Override
+            public void onComplete(String result) {
+                new PopupMessage("Properties saved");
+            }
+        }.run(new SetToolkitPropertiesRequest(getCommandContext(),props));
     }
 
 	int getIndex(ListBox lb, String value) {
@@ -159,32 +173,6 @@ public class ToolConfigTab extends GenericQueryTab {
 
         public void onSuccess(Boolean ignored) {
             buildView();
-        }
-
-    };
-
-
-    AsyncCallback<String> savePropertiesCallback = new AsyncCallback<String> () {
-
-        public void onFailure(Throwable caught) {
-            new PopupMessage("setToolkitProperties() call failed: " + caught.getMessage());
-        }
-
-        public void onSuccess(String result) {
-            new PopupMessage("Properties saved");
-        }
-
-    };
-
-    AsyncCallback<Map<String, String>> getToolkitPropertiesCallback = new AsyncCallback<Map<String, String>> () {
-
-        public void onFailure(Throwable caught) {
-            new PopupMessage("getPropertyFile() call failed: " + caught.getMessage());
-        }
-
-        public void onSuccess(Map<String, String> result) {
-            props = result;
-            loadPropertyGrid();
         }
 
     };

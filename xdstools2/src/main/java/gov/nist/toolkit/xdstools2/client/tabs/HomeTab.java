@@ -3,6 +3,8 @@ package gov.nist.toolkit.xdstools2.client.tabs;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.*;
 import gov.nist.toolkit.xdstools2.client.*;
+import gov.nist.toolkit.xdstools2.client.command.command.GetAdminPasswordCommand;
+import gov.nist.toolkit.xdstools2.client.command.command.GetImplementationVersionCommand;
 import gov.nist.toolkit.xdstools2.client.inspector.HyperlinkFactory;
 import gov.nist.toolkit.xdstools2.client.siteActorManagers.FindDocumentsSiteActorManager;
 import gov.nist.toolkit.xdstools2.client.tabs.genericQueryTab.GenericQueryTab;
@@ -47,7 +49,12 @@ public class HomeTab extends GenericQueryTab {
 		mainGrid.setCellSpacing(20);
 
 		loadIHEGrid(0);
-		getToolkitServices().getAdminPassword(getPasswordCallback);
+		new GetAdminPasswordCommand(){
+			@Override
+			public void onComplete(String result) {
+				PasswordManagement.adminPassword = result;
+			}
+		}.run(getCommandContext());
 		loadVersion();
 	}
 
@@ -196,18 +203,6 @@ public class HomeTab extends GenericQueryTab {
 		return -1;
 	}
 
-	private AsyncCallback<String> getPasswordCallback = new AsyncCallback<String> () {
-
-		public void onFailure(Throwable caught) {
-			new PopupMessage("Call to retrieve admin password failed: " + caught.getMessage());
-		}
-
-		public void onSuccess(String result) {
-			PasswordManagement.adminPassword = result;
-		}
-
-	};
-
 	public void onTabLoad(TabContainer container, boolean select) {
 	}
 
@@ -218,20 +213,12 @@ public class HomeTab extends GenericQueryTab {
 
 	void loadVersion() {
 
-		getToolkitServices().getImplementationVersion(new AsyncCallback<String>() {
-
-			public void onFailure(Throwable caught) {
-				aboutMessage =  caught.getMessage();
-				new PopupMessage("Cannot load the implementation version - " +
-						" This is usually cased by an error in building the WAR file. " +
-						aboutMessage);
-			}
-
-			public void onSuccess(String result) {
+		new GetImplementationVersionCommand(){
+			@Override
+			public void onComplete(String result) {
 				aboutMessage =  "XDS Toolkit\n" + result;
 			}
-
-		});
+		}.run(getCommandContext());
 	}
 
 

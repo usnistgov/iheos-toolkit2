@@ -5,12 +5,15 @@ import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.*;
 import gov.nist.toolkit.configDatatypes.client.TransactionType;
+import gov.nist.toolkit.results.client.Result;
 import gov.nist.toolkit.xdstools2.client.CoupledTransactions;
 import gov.nist.toolkit.xdstools2.client.command.command.GetTestdataSetListingCommand;
+import gov.nist.toolkit.xdstools2.client.command.command.SubmitRepositoryTestdataCommand;
 import gov.nist.toolkit.xdstools2.client.widgets.PopupMessage;
 import gov.nist.toolkit.xdstools2.client.siteActorManagers.GetDocumentsSiteActorManager;
 import gov.nist.toolkit.xdstools2.client.tabs.genericQueryTab.GenericQueryTab;
 import gov.nist.toolkit.xdstools2.shared.command.request.GetTestdataSetListingRequest;
+import gov.nist.toolkit.xdstools2.shared.command.request.SubmitTestdataRequest;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -99,7 +102,12 @@ public class RepositoryTestdataTab  extends GenericQueryTab {
 			// Initiate the transaction
 			// queryCallback comes out of GenericQueryTab, the super class of the main class of this tab.
 			rigForRunning();
-			getToolkitServices().submitRepositoryTestdata(getCurrentTestSession(),getSiteSelection(), testdataSetName, pidTextBox.getValue().trim(), queryCallback);
+			new SubmitRepositoryTestdataCommand(){
+				@Override
+				public void onComplete(List<Result> result) {
+					queryCallback.onSuccess(result);
+				}
+			}.run(new SubmitTestdataRequest(getCommandContext(),getSiteSelection(),testdataSetName,pidTextBox.getValue().trim()));
 		}
 		
 	}
