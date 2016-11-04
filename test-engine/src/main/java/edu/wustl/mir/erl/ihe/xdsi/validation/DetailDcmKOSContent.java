@@ -5,11 +5,14 @@ import java.util.ArrayList;
 import org.dcm4che3.data.Tag;
 import org.dcm4che3.data.UID;
 
+import gov.nist.toolkit.testengine.engine.SimulatorTransaction;
+
 import edu.wustl.mir.erl.ihe.xdsi.validation.DCMAssertion.TYPE;
 
 @SuppressWarnings("javadoc")
 public class DetailDcmKOSContent extends DetailDcmContent {
 
+   
    @Override
    protected void initializeTests() {
       desc = "KOS Document";

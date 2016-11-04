@@ -44,7 +44,7 @@ public class TestRAD68 extends Test {
    
    private void initializeKOSMetadata(SimulatorTransaction trn) throws Exception {
 
-      StepRAD68KOSMetadata stepRAD68KOSMetadata = new StepRAD68KOSMetadata();
+      StepRAD68KOSMetadata stepRAD68KOSMetadata = new StepRAD68KOSMetadata(trn);
       stepRAD68KOSMetadata.initializeStep(new Object[] { trn.getRequestBody(),
             trn.getStdPfn() });
       addStep(stepRAD68KOSMetadata);

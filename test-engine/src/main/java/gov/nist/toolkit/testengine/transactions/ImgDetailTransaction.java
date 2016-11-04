@@ -17,7 +17,9 @@ import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.filefilter.FileFilterUtils;
 import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.dcm4che3.data.Attributes;
 import org.dcm4che3.data.Tag;
+import org.dcm4che3.io.DicomInputStream;
 import org.dcm4che3.util.TagUtils;
 
 import gov.nist.toolkit.actorfactory.client.SimId;
@@ -30,6 +32,7 @@ import gov.nist.toolkit.results.client.TestInstance;
 import gov.nist.toolkit.testengine.assertionEngine.Assertion;
 import gov.nist.toolkit.testengine.assertionEngine.AssertionEngine;
 import gov.nist.toolkit.testengine.engine.*;
+import gov.nist.toolkit.testenginelogging.client.ReportDTO;
 import gov.nist.toolkit.utilities.xml.XmlUtil;
 import gov.nist.toolkit.xdsexception.client.MetadataException;
 import gov.nist.toolkit.xdsexception.client.XdsInternalException;
@@ -635,6 +638,14 @@ public class ImgDetailTransaction extends BasicTransaction {
          String stdDcmPfn = Paths.get(testConfig.testplanDir.getAbsolutePath(), pfn).toString();
          SimulatorTransaction simulatorTransaction = getSimulatorTransaction(a);
          simulatorTransaction.setStdPfn(stdDcmPfn);
+         // load sop instance uid from test kos for later comparison
+         String tstKOSPfn = simulatorTransaction.getPfns().get(0);
+         DicomInputStream din = new DicomInputStream(new File(tstKOSPfn));
+         Attributes at = din.readDataset(-1, Tag.PixelData);
+         String siu = at.getString(Tag.SOPInstanceUID);
+         reportManager.addReport(new ReportDTO("SOPInstanceUID", siu));
+         din.close();
+         
          TestRAD68 testInstance = new TestRAD68();
          testInstance.initializeTest(a.process, simulatorTransaction);
          testInstance.runTest();
@@ -643,9 +654,11 @@ public class ImgDetailTransaction extends BasicTransaction {
          CAT cat = CAT.SUCCESS;
          if (results.getErrorCount() > 0) cat = CAT.ERROR;
          store(engine, cat, rep);
+         reportManagerPostRun();
       } catch (Exception e) {
          throw new XdsInternalException("ImgDetailTransaction - sameKOSDcm: " + e.getMessage());
       }
+      
    }
 
    private void prsSameKOSMetadata(AssertionEngine engine, Assertion a, OMElement assertion_output)
@@ -657,6 +670,7 @@ public class ImgDetailTransaction extends BasicTransaction {
 
          SimulatorTransaction simulatorTransaction = getSimulatorTransaction(a);
          simulatorTransaction.setStdPfn(stdMetadataPfn);
+         simulatorTransaction.setUseReportManager(useReportManager);
          TestRAD68 testInstance = new TestRAD68();
          testInstance.initializeTest(a.process, simulatorTransaction);
          testInstance.runTest();

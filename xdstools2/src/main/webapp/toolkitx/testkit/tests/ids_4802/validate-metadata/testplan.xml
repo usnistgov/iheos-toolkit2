@@ -4,6 +4,8 @@
 		<Goal>Validate KOS metadata sent to Repository simulator, Multi-image study</Goal>
 		<ExpectedStatus>Success</ExpectedStatus>
 		<ImgDetailTransaction>
+         <UseReport section="validate-kos" step="validate-kos"
+            reportName="SOPInstanceUID" useAs="siuid" />
 			<Assertions>
             <Assert id="Submitted Metadata Validation" process="sameKOSMetadata">
             <SimTransaction id="rr" transaction="prb"
