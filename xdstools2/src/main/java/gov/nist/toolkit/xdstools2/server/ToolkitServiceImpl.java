@@ -19,9 +19,7 @@ import gov.nist.toolkit.installation.Installation;
 import gov.nist.toolkit.installation.PropertyServiceManager;
 import gov.nist.toolkit.interactionmapper.InteractionMapper;
 import gov.nist.toolkit.interactionmodel.client.InteractingEntity;
-import gov.nist.toolkit.registrymetadata.client.AnyIds;
 import gov.nist.toolkit.registrymetadata.client.ObjectRef;
-import gov.nist.toolkit.registrymetadata.client.ObjectRefs;
 import gov.nist.toolkit.registrymetadata.client.Uids;
 import gov.nist.toolkit.results.client.*;
 import gov.nist.toolkit.results.shared.Test;
@@ -212,7 +210,10 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements
     //------------------------------------------------------------------------
     //------------------------------------------------------------------------
     @Override
-    public List<Result> registerAndQuery(SiteSpec site, String pid) throws NoServletSessionException  { return session().queryServiceManager().registerAndQuery(site, pid); }
+    public List<Result> registerAndQuery(RegisterAndQueryRequest request) throws Exception  {
+        installCommandContext(request);
+        return session().queryServiceManager().registerAndQuery(request.getSite(),request.getPid());
+    }
     @Override
     public List<Result> lifecycleValidation(SiteSpec site, String pid) throws NoServletSessionException  { return session().queryServiceManager().lifecycleValidation(site, pid); }
     @Override
@@ -261,9 +262,15 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements
         return session().queryServiceManager().getAssociations(request.getSite(), request.getIds());
     }
     @Override
-    public List<Result> getObjects(SiteSpec site, ObjectRefs ids) throws NoServletSessionException  { return session().queryServiceManager().getObjects(site, ids); }
+    public List<Result> getObjects(GetObjectsRequest request) throws Exception  {
+        installCommandContext(request);
+        return session().queryServiceManager().getObjects(request.getSite(), request.getIds());
+    }
     @Override
-    public List<Result> getSubmissionSets(SiteSpec site, AnyIds aids) throws NoServletSessionException  { return session().queryServiceManager().getSubmissionSets(site, aids); }
+    public List<Result> getSubmissionSets(GetSubmissionSetsRequest request) throws Exception  {
+        installCommandContext(request);
+        return session().queryServiceManager().getSubmissionSets(request.getSite(), request.getIds());
+    }
     @Override
     public List<Result> getSSandContents(GetSubmissionSetAndContentsRequest request) throws Exception  {
         installCommandContext(request);
@@ -280,7 +287,10 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements
     public List<Result> retrieveImagingDocSet(SiteSpec site, Uids uids, String studyRequest, String transferSyntax) throws Exception { return session().queryServiceManager().retrieveImagingDocSet(site, uids, studyRequest, transferSyntax); }
 
     @Override
-    public List<Result> getRelated(SiteSpec site, ObjectRef or,	List<String> assocs) throws NoServletSessionException  { return session().queryServiceManager().getRelated(site, or, assocs); }
+    public List<Result> getRelated(GetRelatedRequest request) throws Exception  {
+        installCommandContext(request);
+        return session().queryServiceManager().getRelated(request.getSite(),request.getObjectRef(), request.getAssocs());
+    }
     @Override
     public List<Result> getAll(SiteSpec site, String pid, Map<String, List<String>> codesSpec) throws NoServletSessionException  { return session().queryServiceManager().getAll(site, pid, codesSpec); }
     @Override

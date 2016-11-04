@@ -6,10 +6,13 @@ import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.ui.*;
 import gov.nist.toolkit.configDatatypes.client.TransactionType;
 import gov.nist.toolkit.registrymetadata.client.ObjectRef;
+import gov.nist.toolkit.results.client.Result;
 import gov.nist.toolkit.xdstools2.client.CoupledTransactions;
-import gov.nist.toolkit.xdstools2.client.widgets.PopupMessage;
+import gov.nist.toolkit.xdstools2.client.command.command.GetRelatedCommand;
 import gov.nist.toolkit.xdstools2.client.siteActorManagers.GetDocumentsSiteActorManager;
 import gov.nist.toolkit.xdstools2.client.tabs.genericQueryTab.GenericQueryTab;
+import gov.nist.toolkit.xdstools2.client.widgets.PopupMessage;
+import gov.nist.toolkit.xdstools2.shared.command.request.GetRelatedRequest;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -122,7 +125,12 @@ public class GetRelatedTab  extends GenericQueryTab {
 			}
 
 			rigForRunning();
-			getToolkitServices().getRelated(getSiteSelection(), new ObjectRef(uuid.getValue().trim()), assocs, queryCallback);
+			new GetRelatedCommand(){
+				@Override
+				public void onComplete(List<Result> result) {
+					queryCallback.onSuccess(result);
+				}
+			}.run(new GetRelatedRequest(getCommandContext(),getSiteSelection(),new ObjectRef(uuid.getValue().trim()),assocs));
 		}
 
 	}

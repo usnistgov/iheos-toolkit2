@@ -8,7 +8,9 @@ import gov.nist.toolkit.registrymetadata.client.ObjectRef;
 import gov.nist.toolkit.registrymetadata.client.ObjectRefs;
 import gov.nist.toolkit.results.client.Result;
 import gov.nist.toolkit.results.client.TestInstance;
+import gov.nist.toolkit.xdstools2.client.command.command.GetSubmissionSetsCommand;
 import gov.nist.toolkit.xdstools2.client.util.ClientUtils;
+import gov.nist.toolkit.xdstools2.shared.command.request.GetSubmissionSetsRequest;
 
 import java.util.List;
 
@@ -20,22 +22,19 @@ public class GetSubmissionSets implements ClickHandler {
 
 	void run() {
 		/*it.data.*/
-		ClientUtils.INSTANCE.getToolkitServices().getSubmissionSets(null, new AnyIds(ids), queryCallback);
+		new GetSubmissionSetsCommand(){
+			@Override
+			public void onFailure(Throwable caught) {
+				Result result = Result.RESULT(new TestInstance("GetSubmissionSets"));
+				result.assertions.add(caught.getMessage());
+				it.addToHistory(result);
+			}
+			@Override
+			public void onComplete(List<Result> result) {
+				it.addToHistory(result);
+			}
+		}.run(new GetSubmissionSetsRequest(ClientUtils.INSTANCE.getCommandContext(),null,new AnyIds(ids)));
 	}
-
-	AsyncCallback<List<Result>> queryCallback = new AsyncCallback<List<Result>> () {
-
-		public void onFailure(Throwable caught) {
-			Result result = Result.RESULT(new TestInstance("GetSubmissionSets"));
-			result.assertions.add(caught.getMessage());
-			it.addToHistory(result);
-		}
-
-		public void onSuccess(List<Result> result) {
-			it.addToHistory(result);
-		}
-
-	};
 
 	public GetSubmissionSets(MetadataInspectorTab it, ObjectRefs ids) {
 		this.it = it;
