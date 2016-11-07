@@ -86,8 +86,8 @@ public interface ToolkitService extends RemoteService  {
 	List<Pid> getPatientIds(PatientIdsRequest request) throws Exception;
 	String addPatientIds(PatientIdsRequest request) throws Exception;
 	boolean deletePatientIds(PatientIdsRequest request) throws Exception;
-	Result getSimulatorEventRequest(TransactionInstance ti) throws Exception;
-	Result getSimulatorEventResponse(TransactionInstance ti) throws Exception;
+	Result getSimulatorEventRequest(GetSimulatorEventRequest request) throws Exception;
+	Result getSimulatorEventResponse(GetSimulatorEventRequest request) throws Exception;
 
 	String setToolkitProperties(SetToolkitPropertiesRequest request) throws Exception;
 	Map<String, String> getToolkitProperties(CommandContext context) throws Exception ;

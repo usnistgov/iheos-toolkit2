@@ -935,12 +935,14 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements
         return new SimulatorServiceManager(session()).deletePatientIds(request.getSimId(), request.getPids());
     }
     @Override
-    public Result getSimulatorEventRequest(TransactionInstance ti) throws Exception {
-        return new SimulatorServiceManager(session()).getSimulatorEventRequestAsResult(ti);
+    public Result getSimulatorEventRequest(GetSimulatorEventRequest request) throws Exception {
+        installCommandContext(request);
+        return new SimulatorServiceManager(session()).getSimulatorEventRequestAsResult(request.getTransactionInstance());
     }
     @Override
-    public Result getSimulatorEventResponse(TransactionInstance ti) throws Exception {
-        return new SimulatorServiceManager(session()).getSimulatorEventResponseAsResult(ti);
+    public Result getSimulatorEventResponse(GetSimulatorEventRequest request) throws Exception {
+        installCommandContext(request);
+        return new SimulatorServiceManager(session()).getSimulatorEventResponseAsResult(request.getTransactionInstance());
     }
     @Override
     public List<String> getTransactionErrorCodeRefs(String transactionName, Severity severity) throws Exception {

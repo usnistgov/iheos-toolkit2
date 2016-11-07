@@ -186,14 +186,17 @@ public interface ToolkitServiceAsync {
     void runMesaTest(RunTestRequest request, AsyncCallback<List<Result>> callback);
     void runTest(RunTestRequest request, AsyncCallback<TestOverviewDTO> callback);
     void isPrivateMesaTesting(AsyncCallback<Boolean> callback);
+    ////////////////////////////////////////////////
+    // FIXME is name the name of the test session
+    ////////////////////////////////////////////////
     void addMesaTestSession(String name, AsyncCallback<Boolean> callback);
     void delMesaTestSession(String name, AsyncCallback<Boolean> callback);
     void createPid(GeneratePidRequest generatePidRequest, AsyncCallback<Pid> callback);
     void getAssigningAuthority(CommandContext commandContext, AsyncCallback<String> callback);
     void getAssigningAuthorities(CommandContext commandContext, AsyncCallback<List<String>> callback);
     void sendPidToRegistry(SendPidToRegistryRequest request, AsyncCallback<List<Result>> callback);
-    void getSimulatorEventRequest(TransactionInstance ti, AsyncCallback<Result> callback) throws Exception;
-    void getSimulatorEventResponse(TransactionInstance ti, AsyncCallback<Result> callback) throws Exception;
+    void getSimulatorEventRequest(GetSimulatorEventRequest request, AsyncCallback<Result> callback) ;
+    void getSimulatorEventResponse(GetSimulatorEventRequest request, AsyncCallback<Result> callback) ;
     void getTestLogDetails(String sessionName, TestInstance testInstance, AsyncCallback<LogFileContentDTO> callback);
 
     void getTestplanAsText(String testSession, TestInstance testInstance, String section, AsyncCallback<String> callback);

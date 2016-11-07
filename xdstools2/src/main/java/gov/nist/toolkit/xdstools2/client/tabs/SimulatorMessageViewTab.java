@@ -8,7 +8,6 @@ import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.http.client.*;
-import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.*;
 import gov.nist.toolkit.actorfactory.client.SimId;
 import gov.nist.toolkit.actortransaction.client.TransactionInstance;
@@ -21,10 +20,10 @@ import gov.nist.toolkit.xdstools2.client.command.command.*;
 import gov.nist.toolkit.xdstools2.client.inspector.MetadataInspectorTab;
 import gov.nist.toolkit.xdstools2.client.widgets.PopupMessage;
 import gov.nist.toolkit.xdstools2.client.widgets.RadioButtonGroup;
+import gov.nist.toolkit.xdstools2.shared.command.request.GetSimulatorEventRequest;
 import gov.nist.toolkit.xdstools2.shared.command.request.GetTransactionRequest;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -308,55 +307,34 @@ public class SimulatorMessageViewTab extends ToolWindow {
 	ClickHandler inspectRequestClickHandler = new ClickHandler() {
 		@Override
 		public void onClick(ClickEvent clickEvent) {
-			try {
-				getToolkitServices().getSimulatorEventRequest(currentTransactionInstance, new AsyncCallback<Result>() {
-					@Override
-					public void onFailure(Throwable throwable) {
-						new PopupMessage(throwable.getMessage());
-					}
-
-					@Override
-					public void onSuccess(Result result) {
-						List<Result> results = new ArrayList<Result>();
-						results.add(result);
-						MetadataInspectorTab tab = new MetadataInspectorTab();
-						tab.setResults(results);
-						SiteSpec siteSpec = new SiteSpec(getSimid().toString(), currentTransactionInstance.actorType, null);
-						tab.setSiteSpec(siteSpec);
-						tab.onTabLoad(true, "Insp");
-					}
-				});
-			} catch (Exception e) {
-				new PopupMessage(e.getMessage());
-			}
+			new GetSimulatorEventRequestCommand(){
+				@Override
+				public void onComplete(Result result) {
+					displayResult(result);
+				}
+			}.run(new GetSimulatorEventRequest(getCommandContext(),currentTransactionInstance));
 		}
 	};
+
+	private void displayResult(Result result) {
+		List<Result> results = new ArrayList<Result>();
+		results.add(result);
+		MetadataInspectorTab tab = new MetadataInspectorTab();
+		tab.setResults(results);
+		SiteSpec siteSpec = new SiteSpec(getSimid().toString(), currentTransactionInstance.actorType, null);
+		tab.setSiteSpec(siteSpec);
+		tab.onTabLoad(true, "Insp");
+	}
 
 	ClickHandler inspectResponseClickHandler = new ClickHandler() {
 		@Override
 		public void onClick(ClickEvent clickEvent) {
-			try {
-				getToolkitServices().getSimulatorEventResponse(currentTransactionInstance, new AsyncCallback<Result>() {
-					@Override
-					public void onFailure(Throwable throwable) {
-						new PopupMessage(throwable.getMessage());
-					}
-
-					@Override
-					public void onSuccess(Result result) {
-						List<Result> results = new ArrayList<Result>();
-						results.add(result);
-						MetadataInspectorTab tab = new MetadataInspectorTab();
-						tab.setResults(results);
-						SiteSpec siteSpec = new SiteSpec(getSimid().toString(), currentTransactionInstance.actorType, null);
-						tab.setSiteSpec(siteSpec);
-//						tab.setToolkitService(toolkitService);
-						tab.onTabLoad(true, "Insp");
-					}
-				});
-			} catch (Exception e) {
-				new PopupMessage(e.getMessage());
-			}
+			new GetSimulatorEventResponseCommand(){
+				@Override
+				public void onComplete(Result result) {
+					displayResult(result);
+				}
+			}.run(new GetSimulatorEventRequest(getCommandContext(),currentTransactionInstance));
 		}
 	};
 
