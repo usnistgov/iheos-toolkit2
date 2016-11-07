@@ -402,9 +402,10 @@ public class SubmissionStructure {
 		} else if (is_fol_to_de_hasmember(assoc)) {
 			er.detail(assocDescription(assoc) + ": is a Folder to DocumentEntry HasMember association");
 		} else {
-			er.err(XdsErrorCode.Code.XDSRegistryMetadataError, assocDescription(assoc) + ": do not understand this HasMember association. " +
-					"sourceObject is " + objectDescription(source) +
-					" and targetObject is " + objectDescription(target), this, assocsRef);
+			Assertion assertion = ASSERTIONLIBRARY.getAssertion("TA056");
+			String detail = "Do not understand this HasMember association: '" + assocDescription(assoc) + "'. SourceObject is '"
+					+ objectDescription(source) + "' and targetObject is '" + objectDescription(target) +"'.";
+			er.err(XdsErrorCode.Code.XDSRegistryMetadataError, assertion, this, "", detail);
 			hasmember_error = true;
 		}
 	}
@@ -417,15 +418,25 @@ public class SubmissionStructure {
 		if (source == null || target == null || type == null)
 			return;
 
-		if (!isDocumentEntry(source) && !vc.isMU)
-			er.err(XdsErrorCode.Code.XDSRegistryMetadataError, objectDescription(assoc) + ": with type " + simpleAssocType(type) + " must reference a DocumentEntry in submission with its sourceObject attribute, it references " + objectDescription(source), this, "ITI TF-3: 4.1.6.1");
-
-		if (containsObject(target)) { // This only checks for a circular reference but not the registry collection
-			er.err(XdsErrorCode.Code.XDSRegistryMetadataError, objectDescription(assoc) + ": with type " + simpleAssocType(type) + " must reference a DocumentEntry in the registry with its targetObject attribute, it references " + objectDescription(target) + " which is in the submission", this, "ITI TF-3: 4.1.6.1");
+		if (!isDocumentEntry(source) && !vc.isMU) {
+			Assertion assertion = ASSERTIONLIBRARY.getAssertion("TA057");
+			String detail = objectDescription(assoc) + ": with type '" + simpleAssocType(type) + "' must reference a DocumentEntry in " +
+					"submission with its sourceObject attribute, it references '" + objectDescription(source) + "'";
+			er.err(XdsErrorCode.Code.XDSRegistryMetadataError, assertion, this, "", detail);
 		}
-
+		if (containsObject(target)) {
+			// This only checks for a circular reference but not the registry collection
+			Assertion assertion = ASSERTIONLIBRARY.getAssertion("TA058");
+			String detail = objectDescription(assoc) + ": with type '" + simpleAssocType(type) + "' must reference a DocumentEntry in the registry " +
+					"with its targetObject attribute, it references '" + objectDescription(target) + "' which is in the submission";
+			er.err(XdsErrorCode.Code.XDSRegistryMetadataError, assertion, this, "", detail);
+		}
 		if (!isUUID(target)) {
-			er.err(XdsErrorCode.Code.XDSRegistryMetadataError, objectDescription(assoc) + ": with type " + simpleAssocType(type) + " must reference a DocumentEntry in the registry with its targetObject attribute, it references " + objectDescription(target) + " which is a symbolic ID that cannot reference an object in the registry", this, "ITI TF-3: 4.1.6.1");
+			Assertion assertion = ASSERTIONLIBRARY.getAssertion("TA059");
+			String detail = objectDescription(assoc) + ": with type '" + simpleAssocType(type) +
+					"' must reference a DocumentEntry in the registry with its targetObject attribute, it references '"
+					+ objectDescription(target) + "' which is a symbolic ID that cannot reference an object in the registry";
+			er.err(XdsErrorCode.Code.XDSRegistryMetadataError, assertion, this, "", detail);
 		}
 	}
 

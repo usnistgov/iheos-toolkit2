@@ -53,3 +53,7 @@ TA052,RegistryPackage ID is not classified as SubmissionSet or Folder,ITI TF-3: 
 TA053,The Association source is not a Folder in submission and cannot already be in registry,ITI TF-3: 4.1,,
 TA054,The Association source is not a DocumentEntry in submission and cannot already be in registry,ITI TF-3: 4.1,,
 TA055,Only Folder to DocumentEntry associations can be members of SubmissionSet (linked to SubmissionSet object via HasMember association),ITI TF-3: 4.1,,
+TA056,Invalid HasMember association,ITI TF-3: 4.1,,
+TA057,Incorrect sourceObject value in Association,ITI TF-3: 4.1.6.1,,
+TA058,Incorrect targetObject value in Association, creates a circular reference,ITI TF-3: 4.1.6.1,,
+TA059,Incorrect targetObject value in Association, targetObject is not a UUID,ITI TF-3: 4.1.6.1,,
