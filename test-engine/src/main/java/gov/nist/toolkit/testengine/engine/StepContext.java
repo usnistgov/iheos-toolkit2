@@ -370,6 +370,9 @@ public class StepContext extends BasicContext implements ErrorReportingInterface
                case "XmlDetailTransaction":
                   transaction = new ImgDetailTransaction(this, step, instruction, instruction_output);
                   break;
+               case "WADOTransaction":
+                  transaction = new WADOTransaction(this, instruction, instruction_output);
+                  break;
 			   case "HttpTransaction":
 					HTTPTransaction hTransaction = new HTTPTransaction(this, instruction, instruction_output);
 					hTransaction.setNoMetadataProcessing(true);

@@ -162,6 +162,9 @@ public class ImgDetailTransaction extends BasicTransaction {
          case "sameKOSMetadata":
             prsSameKOSMetadata(engine, a, assertion_output);
             break;
+         case "sameWADOResp":
+            prsSameWADOResp(engine, a, assertion_output);
+            break;
          default:
             throw new XdsInternalException("ImgDetailTransaction: Unknown assertion.process " + a.process);
       }
@@ -175,6 +178,15 @@ public class ImgDetailTransaction extends BasicTransaction {
          s_ctx.fail(em.toString());
       }
    } // EO processAssertion method
+   
+   private void prsSameWADOResp(AssertionEngine engine, Assertion a, OMElement assertion_output)
+            throws XdsInternalException {
+            try {
+               // TODO not completed
+            } catch (Exception e) {
+               throw new XdsInternalException("sameWADOResp error: " + e.getMessage());
+            }
+   }
    
    private void prsSameReqImgs(AssertionEngine engine, Assertion a, OMElement assertion_output)
       throws XdsInternalException {

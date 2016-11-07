@@ -1,0 +1,25 @@
+
+<TestPlan>
+	<Test>ids_4805/validate-R</Test>
+	<TestStep id="validate-R">
+		<Goal>Correct Http Response values</Goal>
+		<Standard>
+			<HttpResponse>
+				<Status>					
+					<Code>404</Code>
+				</Status>
+				<Headers>
+					<Content-Type>text/html;charset=utf-8</Content-Type>
+					<Content-Length>1192</Content-Length>
+				</Headers>
+			</HttpResponse>
+		</Standard>
+		<XmlDetailTransaction>
+			<Assertions>
+				<Assert id="Http Response" process="sameWADOResp">
+					<TestResponse testDir="../retrieve" step="retrieve" />
+				</Assert>
+			</Assertions>
+		</XmlDetailTransaction>
+	</TestStep>
+</TestPlan>
