@@ -343,6 +343,7 @@ public class SimulatorControlTab extends GenericQueryTab {
 		editImg.addClickHandler(new ClickHandlerData<SimulatorConfig>(config) {
 			@Override
 			public void onClick(ClickEvent clickEvent) {
+                loadSimStatus();
 				SimulatorConfig config = getData();
 
 //							GenericQueryTab editTab;
