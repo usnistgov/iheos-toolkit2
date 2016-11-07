@@ -5,6 +5,7 @@ import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.*;
 import gov.nist.toolkit.xdstools2.client.command.command.GetToolkitPropertiesCommand;
+import gov.nist.toolkit.xdstools2.client.command.command.RemoveOldSimulatorsCommand;
 import gov.nist.toolkit.xdstools2.client.command.command.SetToolkitPropertiesCommand;
 import gov.nist.toolkit.xdstools2.client.widgets.AdminPasswordDialogBox;
 import gov.nist.toolkit.xdstools2.client.LoadGazelleConfigsClickHandler;
@@ -203,17 +204,12 @@ public class ToolConfigTab extends GenericQueryTab {
 	class RmOldSimsClickHandler implements ClickHandler {
 
 		public void onClick(ClickEvent event) {
-			getToolkitServices().removeOldSimulators(new AsyncCallback<Integer> () {
-
-				public void onFailure(Throwable caught) {
-					new PopupMessage("removeOldSimulators() call failed: " + caught.getMessage());
-				}
-
-				public void onSuccess(Integer result) {
-					new PopupMessage(result + " simulators removed");
-				}
-
-			});
+            new RemoveOldSimulatorsCommand(){
+                @Override
+                public void onComplete(Integer result) {
+                    new PopupMessage(result + " simulators removed");
+                }
+            }.run(getCommandContext());
 		}
 
 	}

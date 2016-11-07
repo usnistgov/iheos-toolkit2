@@ -1,11 +1,11 @@
 package gov.nist.toolkit.xdstools2.client.tabs.simulatorControlTab;
 
-import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.FlowPanel;
 import gov.nist.toolkit.actorfactory.client.SimId;
 import gov.nist.toolkit.actorfactory.client.SimulatorConfig;
-import gov.nist.toolkit.xdstools2.client.widgets.PopupMessage;
+import gov.nist.toolkit.xdstools2.client.command.command.GetSimConfigsCommand;
 import gov.nist.toolkit.xdstools2.client.util.ClientUtils;
+import gov.nist.toolkit.xdstools2.shared.command.request.GetSimConfigsRequest;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -27,7 +27,7 @@ class SimConfigSuper {
 		this.panel = panel;
 		this.testSession = testSession;
 	}
-	
+
 	List<SimId> getIds() {
 		List<SimId> ids = new ArrayList<>();
 		for (SimConfigMgr mgr : mgrs) {
@@ -35,14 +35,14 @@ class SimConfigSuper {
 		}
 		return ids;
 	}
-	
+
 	void add(SimulatorConfig config) {
 		delete(config);
 		SimConfigMgr mgr = new SimConfigMgr(simulatorControlTab, panel, config, testSession);
 		mgr.displayBasicSimulatorConfig();
 		mgr.displayInPanel();
 		mgrs.add(mgr);
-		
+
 		String txt = simulatorControlTab.simIdsTextArea.getText();
 		if (txt == null || txt.equals("")) {
 			simulatorControlTab.simIdsTextArea.setText(mgr.config.getId().toString());
@@ -51,7 +51,7 @@ class SimConfigSuper {
 			simulatorControlTab.simIdsTextArea.setText(txt);
 		}
 	}
-	
+
 	/*
 	 * Delete existing instance of this simulator
 	 */
@@ -67,14 +67,14 @@ class SimConfigSuper {
 		}
 		if (toDelete != null)
 			mgrs.remove(toDelete);
-		
+
 	}
-	
+
 	void clear() {
 		mgrs.clear();
 		panel.clear();
 	}
-	
+
 	void refresh() {
 		panel.clear();
 
@@ -84,33 +84,28 @@ class SimConfigSuper {
 				txt = mgr.config.getId().toString();
 			else
 				txt = txt + ", " + mgr.config.getId();
-			
+
 			mgr.removeFromPanel();
 			mgr.displayBasicSimulatorConfig();
 			mgr.displayInPanel();
 		}
 		simulatorControlTab.simIdsTextArea.setText(txt);
-		
+
 //		simulatorControlTab.updateSimulatorCookies(txt);
 	}
-	
+
 	void reloadSimulators() {
-		ClientUtils.INSTANCE.getToolkitServices().getSimConfigs(getIds(), new AsyncCallback<List<SimulatorConfig>>() {
-
-			public void onFailure(Throwable caught) {
-				new PopupMessage("getSimConfigs:" + caught.getMessage());
-			}
-
-			public void onSuccess(List<SimulatorConfig> configs) {
+		new GetSimConfigsCommand(){
+			@Override
+			public void onComplete(List<SimulatorConfig> configs) {
 				simulatorControlTab.simIdsTextArea.setText("");
 				clear();
 				for (SimulatorConfig config : configs)
 					add(config);
-				
+
 				refresh();
 			}
-
-		});
+		}.run(new GetSimConfigsRequest(ClientUtils.INSTANCE.getCommandContext(),getIds()));
 	}
 
 }

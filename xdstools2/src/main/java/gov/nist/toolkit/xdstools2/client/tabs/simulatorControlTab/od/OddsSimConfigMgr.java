@@ -20,11 +20,13 @@ import gov.nist.toolkit.simcommon.client.config.SimulatorConfigElement;
 import gov.nist.toolkit.sitemanagement.client.SiteSpec;
 import gov.nist.toolkit.xdstools2.client.StringSort;
 import gov.nist.toolkit.xdstools2.client.command.command.GetSiteNamesByTranTypeCommand;
+import gov.nist.toolkit.xdstools2.client.command.command.PutSimConfigCommand;
 import gov.nist.toolkit.xdstools2.client.tabs.simulatorControlTab.*;
 import gov.nist.toolkit.xdstools2.client.tabs.simulatorControlTab.intf.SimConfigMgrIntf;
 import gov.nist.toolkit.xdstools2.client.util.ClientUtils;
 import gov.nist.toolkit.xdstools2.client.widgets.PopupMessage;
 import gov.nist.toolkit.xdstools2.shared.command.request.GetSiteNamesByTranTypeRequest;
+import gov.nist.toolkit.xdstools2.shared.command.request.SimConfigRequest;
 
 import java.util.*;
 
@@ -655,17 +657,13 @@ public class OddsSimConfigMgr implements SimConfigMgrIntf {
         getConfig().get(SimulatorProperties.oddsRepositorySite).setValue(reposSSP.getSelected());
         getConfig().get(SimulatorProperties.oddsRegistrySite).setValue(regSSP.getSelected());
 
-        ClientUtils.INSTANCE.getToolkitServices().putSimConfig(config, new AsyncCallback<String>() {
-
-            public void onFailure(Throwable caught) {
-                new PopupMessage("saveSimConfig:" + caught.getMessage());
-            }
-
-            public void onSuccess(String result) {
+        new PutSimConfigCommand(){
+            @Override
+            public void onComplete(String result) {
                 // reload simulators to getRetrievedDocumentsModel updates
                 new LoadSimulatorsClickHandler(simulatorControlTab, testSession).onClick(null);
             }
-        });
+        }.run(new SimConfigRequest(ClientUtils.INSTANCE.getCommandContext(),config));
     }
 
     public int getRow() {

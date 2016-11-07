@@ -159,14 +159,14 @@ public interface ToolkitServiceAsync {
 
     void getActorTypeNames(CommandContext context,AsyncCallback<List<String>> callback);
     void getNewSimulator(GetNewSimulatorRequest request, AsyncCallback<Simulator> callback);
-    void getSimConfigs(List<SimId> ids, AsyncCallback<List<SimulatorConfig>> callback);
+    void getSimConfigs(GetSimConfigsRequest request,AsyncCallback<List<SimulatorConfig>> callback);
     void getAllSimConfigs(GetAllSimConfigsRequest user, AsyncCallback<List<SimulatorConfig>> callback);
-    void putSimConfig(SimulatorConfig config, AsyncCallback<String> callback);
-    void deleteConfig(SimulatorConfig config, AsyncCallback<String> callback);
+    void putSimConfig(SimConfigRequest request, AsyncCallback<String> callback);
+    void deleteConfig(SimConfigRequest request, AsyncCallback<String> callback);
     void getActorSimulatorNameMap(CommandContext context,AsyncCallback<Map<String, SimId>> callback);
     //	void getSimulatorTransactionNames(String simid, AsyncCallback<List<String>> notify);
-    void removeOldSimulators(AsyncCallback<Integer> callback);
-    void getSimulatorStats(List<SimId> simid, AsyncCallback<List<SimulatorStats>> callback) throws Exception;
+    void removeOldSimulators(CommandContext context,AsyncCallback<Integer> callback);
+    void getSimulatorStats(GetSimulatorStatsRequest request, AsyncCallback<List<SimulatorStats>> callback);
     void getPatientIds(SimId simId, AsyncCallback<List<Pid>> callback) throws Exception;
     void addPatientIds(SimId simId, List<Pid> pids, AsyncCallback<String> callback) throws Exception;
     void deletePatientIds(SimId simId, List<Pid> pids, AsyncCallback<Boolean> callback) throws Exception;

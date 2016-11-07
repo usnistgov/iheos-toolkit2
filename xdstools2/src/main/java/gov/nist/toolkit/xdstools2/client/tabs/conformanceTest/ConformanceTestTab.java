@@ -38,11 +38,7 @@ import gov.nist.toolkit.xdstools2.client.widgets.buttons.AbstractOrchestrationBu
 import gov.nist.toolkit.xdstools2.shared.command.request.GetTestSectionsDAOsRequest;
 import gov.nist.toolkit.xdstools2.shared.command.request.GetTestsOverviewRequest;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * All Conformance tests will be run out of here
@@ -68,8 +64,8 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner, TestsH
 	private String currentActorTypeDescription;
 	private SiteSpec siteToIssueTestAgainst = null;
 
-   // stuff that needs delayed setting when launched via activity
-   private String initTestSession = null;
+	// stuff that needs delayed setting when launched via activity
+	private String initTestSession = null;
 
 	// Descriptions of current test list
 	private List<TestCollectionDefinitionDAO> testCollectionDefinitionDAOs;
@@ -103,21 +99,21 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner, TestsH
 
 		tabTopPanel.add(mainView.getToolPanel());
 
-      // Reload if the test session changes
-      ClientUtils.INSTANCE.getEventBus().addHandler(TestSessionChangedEvent.TYPE, new TestSessionChangedEventHandler() {
-         @Override
-         public void onTestSessionChanged(TestSessionChangedEvent event) {
-            if (event.getChangeType() == TestSessionChangedEvent.ChangeType.SELECT) {
-               loadTestCollections();
-            }
-         }
-      });
+		// Reload if the test session changes
+		ClientUtils.INSTANCE.getEventBus().addHandler(TestSessionChangedEvent.TYPE, new TestSessionChangedEventHandler() {
+			@Override
+			public void onTestSessionChanged(TestSessionChangedEvent event) {
+				if (event.getChangeType() == TestSessionChangedEvent.ChangeType.SELECT) {
+					loadTestCollections();
+				}
+			}
+		});
 
 		mainView.getActorTabBar().addSelectionHandler(new ActorSelectionHandler());
 		mainView.getOptionsTabBar().addSelectionHandler(new OptionSelectionHandler());
 
-      // Initial load of tests in a test session
-      loadTestCollections();
+		// Initial load of tests in a test session
+		loadTestCollections();
 
 		// Register the Diagram clicked event handler
 		ClientUtils.INSTANCE.getEventBus().addHandler(DiagramClickedEvent.TYPE, new DiagramPartClickedEventHandler() {
@@ -189,17 +185,17 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner, TestsH
 	 * This must be called after testCollectionDefinitionDAOs is initialized.
 	 */
 	private void updateTestsOverviewHeader(ActorOption actorOption) {
-			Collection<TestOverviewDTO> items = testOverviews(actorOption);
-			resetStatistics(items.size());
-			for (TestOverviewDTO testOverview : items) {
-				if (testOverview.isRun()) {
-					if (testOverview.isPass()) {
-						testStatistics.addSuccessful();
-					} else {
-						testStatistics.addWithError();
-					}
+		Collection<TestOverviewDTO> items = testOverviews(actorOption);
+		resetStatistics(items.size());
+		for (TestOverviewDTO testOverview : items) {
+			if (testOverview.isRun()) {
+				if (testOverview.isPass()) {
+					testStatistics.addSuccessful();
+				} else {
+					testStatistics.addWithError();
 				}
 			}
+		}
 
 		// Display testStatus with statistics
 		testsHeaderView.allowRun(allowRun());
@@ -284,13 +280,13 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner, TestsH
 		displayTestingPanel(mainView.getTestsPanel());
 	}
 
-   private String getDescriptionForTestCollection(String collectionId) {
-      if (testCollectionDefinitionDAOs == null) return "not initialized";
-      for (TestCollectionDefinitionDAO dao : testCollectionDefinitionDAOs) {
-         if (dao.getCollectionID().equals(collectionId)) { return dao.getCollectionTitle(); }
-      }
-      return "???";
-   }
+	private String getDescriptionForTestCollection(String collectionId) {
+		if (testCollectionDefinitionDAOs == null) return "not initialized";
+		for (TestCollectionDefinitionDAO dao : testCollectionDefinitionDAOs) {
+			if (dao.getCollectionID().equals(collectionId)) { return dao.getCollectionTitle(); }
+		}
+		return "???";
+	}
 
 	// load tab bar with actor types
 	private void loadTestCollections() {
@@ -314,7 +310,7 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner, TestsH
 		});
 	}
 
-   private HTML loadingMessage;
+	private HTML loadingMessage;
 
 	private class RefreshTestCollectionHandler implements ClickHandler {
 
@@ -366,45 +362,45 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner, TestsH
 
 
 	private void displayTests(final Panel testsPanel, List<TestInstance> testInstances, boolean allowRun) {
-        // results (including logs) for a collection of tests
+		// results (including logs) for a collection of tests
 
-        testDisplayGroup.allowRun(allowRun);
-        testDisplayGroup.showValidate(showValidate());
+		testDisplayGroup.allowRun(allowRun);
+		testDisplayGroup.showValidate(showValidate());
 
-        new GetTestsOverviewCommand() {
-            @Override
-            public void onComplete(List<TestOverviewDTO> testOverviews) {
-                // sort tests by dependencies and alphabetically
-                // save in testsPerActorOption so they run in this order as well
-                List<TestInstance> testInstances1 = new ArrayList<>();
-                testOverviews = new TestSorter().sort(testOverviews);
-                for (TestOverviewDTO dto : testOverviews) {
-                    testInstances1.add(dto.getTestInstance());
-                }
-                testsPerActorOption.put(currentActorOption, testInstances1);
+		new GetTestsOverviewCommand() {
+			@Override
+			public void onComplete(List<TestOverviewDTO> testOverviews) {
+				// sort tests by dependencies and alphabetically
+				// save in testsPerActorOption so they run in this order as well
+				List<TestInstance> testInstances1 = new ArrayList<>();
+				testOverviews = new TestSorter().sort(testOverviews);
+				for (TestOverviewDTO dto : testOverviews) {
+					testInstances1.add(dto.getTestInstance());
+				}
+				testsPerActorOption.put(currentActorOption, testInstances1);
 
-                testsPanel.clear();
-                testsHeaderView.allowRun(allowRun());
-                testsPanel.add(testsHeaderView.asWidget());
+				testsPanel.clear();
+				testsHeaderView.allowRun(allowRun());
+				testsPanel.add(testsHeaderView.asWidget());
 //                testStatistics.clear();
 //                testStatistics.setTestCount(testOverviews.size());
-                for (TestOverviewDTO testOverview : testOverviews) {
-                    updateTestOverview(testOverview);
-                    TestDisplay testDisplay = testDisplayGroup.display(testOverview);
-                    testsPanel.add(testDisplay.asWidget());
-                }
-                updateTestsOverviewHeader(currentActorOption);
+				for (TestOverviewDTO testOverview : testOverviews) {
+					updateTestOverview(testOverview);
+					TestDisplay testDisplay = testDisplayGroup.display(testOverview);
+					testsPanel.add(testDisplay.asWidget());
+				}
+				updateTestsOverviewHeader(currentActorOption);
 
-                new AutoInitConformanceTestingCommand(){
-                    @Override
-                    public void onComplete(Boolean result) {
-                        if (result)
-                            orchInit.handleClick(null);   // auto init orchestration
-                    }
-                }.run(getCommandContext());
-            }
-        }.run(new GetTestsOverviewRequest(getCommandContext(), testInstances));
-    }
+				new AutoInitConformanceTestingCommand(){
+					@Override
+					public void onComplete(Boolean result) {
+						if (result)
+							orchInit.handleClick(null);   // auto init orchestration
+					}
+				}.run(getCommandContext());
+			}
+		}.run(new GetTestsOverviewRequest(getCommandContext(), testInstances));
+	}
 
 	private void displayOrchestrationHeader(Panel initializationPanel) {
 		String label = "Initialize Test Environment";
@@ -434,28 +430,28 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner, TestsH
 			initializationPanel.add(orchInit.panel());
 		}
 		else if (currentActorOption.isInitiatingImagingGatewaySut()) {
-		   orchInit = new BuildIIGTestOrchestrationButton(this, testContext, testContextView, initializationPanel, label);
-         orchInit.addSelfTestClickHandler(new RefreshTestCollectionHandler());
-         initializationPanel.add(orchInit.panel());
+			orchInit = new BuildIIGTestOrchestrationButton(this, testContext, testContextView, initializationPanel, label);
+			orchInit.addSelfTestClickHandler(new RefreshTestCollectionHandler());
+			initializationPanel.add(orchInit.panel());
 		}
 		else if (currentActorOption.isRespondingingImagingGatewaySut()) {
-         orchInit = new BuildRIGTestOrchestrationButton(this, testContext, testContextView, initializationPanel, label);
-         orchInit.addSelfTestClickHandler(new RefreshTestCollectionHandler());
-         initializationPanel.add(orchInit.panel());
-		} 
+			orchInit = new BuildRIGTestOrchestrationButton(this, testContext, testContextView, initializationPanel, label);
+			orchInit.addSelfTestClickHandler(new RefreshTestCollectionHandler());
+			initializationPanel.add(orchInit.panel());
+		}
 		else if (currentActorOption.isImagingDocSourceSut()) {
-         orchInit = new BuildIDSTestOrchestrationButton(this, testContext, testContextView, initializationPanel, label);
-         orchInit.addSelfTestClickHandler(new RefreshTestCollectionHandler());
-         initializationPanel.add(orchInit.panel());
+			orchInit = new BuildIDSTestOrchestrationButton(this, testContext, testContextView, initializationPanel, label);
+			orchInit.addSelfTestClickHandler(new RefreshTestCollectionHandler());
+			initializationPanel.add(orchInit.panel());
 		}
 		else if (currentActorOption.isEdgeServerSut()) {
-		   // TODO not implemented yet.
+			// TODO not implemented yet.
 		}
 		else {
 			if (testContext.getSiteUnderTest() != null)
 				siteToIssueTestAgainst = testContext.getSiteUnderTestAsSiteSpec();
 		}
-   }
+	}
 
 	private void displayActorsTabBar(TabBar actorTabBar) {
 		if (actorTabBar.getTabCount() == 0) {
@@ -478,62 +474,62 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner, TestsH
 			this.actorOption = actorOption;
 		}
 
-      @Override
-      public void onClick(ClickEvent clickEvent) {
-         clickEvent.preventDefault();
-         clickEvent.stopPropagation();
+		@Override
+		public void onClick(ClickEvent clickEvent) {
+			clickEvent.preventDefault();
+			clickEvent.stopPropagation();
 
-		  getSiteToIssueTestAgainst().setTls(orchInit.isTls());
+			getSiteToIssueTestAgainst().setTls(orchInit.isTls());
 
-		  if (orchInit.isSaml()) {
-			  // Get STS SAML Assertion
-			  TestInstance testInstance = new TestInstance("GazelleSts");
-			  testInstance.setSection("samlassertion-issue");
-			  SiteSpec stsSpec =  new SiteSpec("GazelleSts");
-			  Map<String, String> params = new HashMap<>();
-			  String xuaUsername = "Xuagood";
-			  params.put("$saml-username$",xuaUsername);
-			  try {
-				  ClientUtils.INSTANCE.getToolkitServices().getStsSamlAssertion(xuaUsername, testInstance, stsSpec, params, new AsyncCallback<String>() {
-					  @Override
-					  public void onFailure(Throwable throwable) {
-						  new PopupMessage("runAll: getStsSamlAssertion call failed: " + throwable.toString());
-					  }
-					  @Override
-					  public void onSuccess(String s) {
-						  getSiteToIssueTestAgainst().setSaml(true);
-						  getSiteToIssueTestAgainst().setStsAssertion(s);
+			if (orchInit.isSaml()) {
+				// Get STS SAML Assertion once for the entire test collection
+				TestInstance testInstance = new TestInstance("GazelleSts");
+				testInstance.setSection("samlassertion-issue");
+				SiteSpec stsSpec =  new SiteSpec("GazelleSts");
+				Map<String, String> params = new HashMap<>();
+				String xuaUsername = "Xuagood";
+				params.put("$saml-username$",xuaUsername);
+				try {
+					ClientUtils.INSTANCE.getToolkitServices().getStsSamlAssertion(xuaUsername, testInstance, stsSpec, params, new AsyncCallback<String>() {
+						@Override
+						public void onFailure(Throwable throwable) {
+							new PopupMessage("runAll: getStsSamlAssertion call failed: " + throwable.toString());
+						}
+						@Override
+						public void onSuccess(String s) {
+							getSiteToIssueTestAgainst().setSaml(true);
+							getSiteToIssueTestAgainst().setStsAssertion(s);
 
-						  for (TestInstance testInstance : testsPerActorOption.get(actorOption))
-							  tests.add(testInstance);
-						  onDone(null);
-					  }
-				  });
-			  } catch (Exception ex) {
-				  new PopupMessage("runAll: Client call failed: getStsSamlAssertion: " + ex.toString());
-			  }
-		  } else {
-			  // No SAML
-              getSiteToIssueTestAgainst().setSaml(false);
-			  for (TestInstance testInstance : testsPerActorOption.get(actorOption))
-				  tests.add(testInstance);
-			  onDone(null);
-		  }
+							for (TestInstance testInstance : testsPerActorOption.get(actorOption))
+								tests.add(testInstance);
+							onDone(null);
+						}
+					});
+				} catch (Exception ex) {
+					new PopupMessage("runAll: Client call failed: getStsSamlAssertion: " + ex.toString());
+				}
+			} else {
+				// No SAML
+				getSiteToIssueTestAgainst().setSaml(false);
+				for (TestInstance testInstance : testsPerActorOption.get(actorOption))
+					tests.add(testInstance);
+				onDone(null);
+			}
 
-      }
+		}
 
-      @Override
-      public void onDone(TestInstance unused) {
-         testsHeaderView.showRunningMessage(true);
-         if (tests.size() == 0) {
-            testsHeaderView.showRunningMessage(false);
-            return;
-         }
-         TestInstance next = tests.get(0);
-         tests.remove(0);
-         runTest(next, this);
-      }
-   }
+		@Override
+		public void onDone(TestInstance unused) {
+			testsHeaderView.showRunningMessage(true);
+			if (tests.size() == 0) {
+				testsHeaderView.showRunningMessage(false);
+				return;
+			}
+			TestInstance next = tests.get(0);
+			tests.remove(0);
+			runTest(next, this);
+		}
+	}
 
 	private class RunAllSectionsClickHandler implements ClickHandler, TestDone {
 		TestInstance testInstance;
@@ -546,18 +542,18 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner, TestsH
 			clickEvent.preventDefault();
 			clickEvent.stopPropagation();
 
-            new GetTestSectionsDAOsCommand(){
-                @Override
-                public void onComplete(List<SectionDefinitionDAO> sectionDefinitionDAOs) {
-                    sections.clear();
-                    for (SectionDefinitionDAO dao : sectionDefinitionDAOs) {
-                        TestInstance ti = testInstance.copy();
-                        ti.setSection(dao.getSectionName());
-                        ti.setSutInitiated(dao.isSutInitiated());
-                    }
-                    onDone(null);
-                }
-            }.run(new GetTestSectionsDAOsRequest(getCommandContext(),testInstance));
+			new GetTestSectionsDAOsCommand(){
+				@Override
+				public void onComplete(List<SectionDefinitionDAO> sectionDefinitionDAOs) {
+					sections.clear();
+					for (SectionDefinitionDAO dao : sectionDefinitionDAOs) {
+						TestInstance ti = testInstance.copy();
+						ti.setSection(dao.getSectionName());
+						ti.setSutInitiated(dao.isSutInitiated());
+					}
+					onDone(null);
+				}
+			}.run(new GetTestSectionsDAOsRequest(getCommandContext(),testInstance));
 		}
 
 		@Override
@@ -583,36 +579,36 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner, TestsH
 		return new RefreshTestCollectionHandler();
 	}
 
-   private class DeleteAllClickHandler implements ClickHandler {
-	   ActorOption actorOption;
+	private class DeleteAllClickHandler implements ClickHandler {
+		ActorOption actorOption;
 
-      DeleteAllClickHandler(ActorOption actorOption) {
-         this.actorOption = actorOption;
-      }
+		DeleteAllClickHandler(ActorOption actorOption) {
+			this.actorOption = actorOption;
+		}
 
-      @Override
-      public void onClick(ClickEvent clickEvent) {
-         clickEvent.preventDefault();
-         clickEvent.stopPropagation();
-         List <TestInstance> tests = testsPerActorOption.get(actorOption);
-         for (TestInstance testInstance : tests) {
-            getToolkitServices().deleteSingleTestResult(getCurrentTestSession(), testInstance,
-               new AsyncCallback <TestOverviewDTO>() {
-                  @Override
-                  public void onFailure(Throwable throwable) {
-                     new PopupMessage(throwable.getMessage());
-                  }
+		@Override
+		public void onClick(ClickEvent clickEvent) {
+			clickEvent.preventDefault();
+			clickEvent.stopPropagation();
+			List <TestInstance> tests = testsPerActorOption.get(actorOption);
+			for (TestInstance testInstance : tests) {
+				getToolkitServices().deleteSingleTestResult(getCurrentTestSession(), testInstance,
+						new AsyncCallback <TestOverviewDTO>() {
+							@Override
+							public void onFailure(Throwable throwable) {
+								new PopupMessage(throwable.getMessage());
+							}
 
-					@Override
-					public void onSuccess(TestOverviewDTO testOverviewDTO) {
-						updateTestOverview(testOverviewDTO);
-						testDisplayGroup.display(testOverviewDTO);
+							@Override
+							public void onSuccess(TestOverviewDTO testOverviewDTO) {
+								updateTestOverview(testOverviewDTO);
+								testDisplayGroup.display(testOverviewDTO);
 //						displayTest(testsPanel, testDisplayGroup, testOverviewDTO);
 //						Collection<TestOverviewDTO> overviews =
 //								removeTestOverview(testOverviewDTO);
-						updateTestsOverviewHeader(actorOption);
-					}
-				});
+								updateTestsOverviewHeader(actorOption);
+							}
+						});
 			}
 		}
 	}
@@ -663,38 +659,44 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner, TestsH
 		getSiteToIssueTestAgainst().setTls(orchInit.isTls());
 
 		if (orchInit.isSaml()) {
-			// STS SAML assertion
-			// This has to be here because we need to retrieve the assertion just in time before the test executes. Any other way will be confusing to debug and more importantly the assertion will not be fresh.
-			// Interface can be refactored to support mulitple run methods such as runTest[WithSamlOption] and runTest.
-			TestInstance stsTestInstance = new TestInstance("GazelleSts");
-			stsTestInstance.setSection("samlassertion-issue");
-			SiteSpec stsSpec =  new SiteSpec("GazelleSts");
-			Map<String, String> params = new HashMap<>();
-			String xuaUsername = "Xuagood";
-			params.put("$saml-username$",xuaUsername);
-			try {
-				ClientUtils.INSTANCE.getToolkitServices().getStsSamlAssertion(xuaUsername, stsTestInstance, stsSpec, params, new AsyncCallback<String>() {
-					@Override
-					public void onFailure(Throwable throwable) {
-						new PopupMessage("runTestInstance: getStsSamlAssertion call failed: " + throwable.toString());
-					}
-					@Override
-					public void onSuccess(String s) {
-						getSiteToIssueTestAgainst().setSaml(true);
-						getSiteToIssueTestAgainst().setStsAssertion(s);
+			if (testDone == null /* Signifies individual test runner */) {
+				// STS SAML assertion
+				// This has to be here because we need to retrieve the assertion just in time before the test executes. Any other way will be confusing to debug and more importantly the assertion will not be fresh.
+				// Interface can be refactored to support mulitple run methods such as runTest[WithSamlOption] and runTest.
+				TestInstance stsTestInstance = new TestInstance("GazelleSts");
+				stsTestInstance.setSection("samlassertion-issue");
+				SiteSpec stsSpec =  new SiteSpec("GazelleSts");
+				Map<String, String> params = new HashMap<>();
+				String xuaUsername = "Xuagood";
+				params.put("$saml-username$",xuaUsername);
+				try {
+					ClientUtils.INSTANCE.getToolkitServices().getStsSamlAssertion(xuaUsername, stsTestInstance, stsSpec, params, new AsyncCallback<String>() {
+						@Override
+						public void onFailure(Throwable throwable) {
+							new PopupMessage("runTestInstance: getStsSamlAssertion call failed: " + throwable.toString());
+						}
+						@Override
+						public void onSuccess(String s) {
+							getSiteToIssueTestAgainst().setSaml(true);
+							getSiteToIssueTestAgainst().setStsAssertion(s);
 
-						runTestInstance(testInstance,testDone);
-					}
-				});
-			} catch (Exception ex) {
-				new PopupMessage("runTestInstance: Client call failed: getStsSamlAssertion: " + ex.toString());
+							runTestInstance(testInstance,testDone);
+						}
+					});
+				} catch (Exception ex) {
+					new PopupMessage("runTestInstance: Client call failed: getStsSamlAssertion: " + ex.toString());
+				}
+			} else {
+				// Reuse SAML when running the entire Actor test collection
+				runTestInstance(testInstance,testDone);
 			}
 
 		} else {
-            getSiteToIssueTestAgainst().setSaml(false);
+			// No SAML
+			getSiteToIssueTestAgainst().setSaml(false);
 			runTestInstance(testInstance,testDone);
 		}
-   }
+	}
 
 	private void runTestInstance(final TestInstance testInstance, final TestDone testDone) {
 		Map<String, String> parms = initializeTestParameters();
@@ -793,11 +795,11 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner, TestsH
 		this.siteToIssueTestAgainst = siteToIssueTestAgainst;
 	}
 
-   public void setInitTestSession(String initTestSession) {
-      this.initTestSession = initTestSession;
-   }
+	public void setInitTestSession(String initTestSession) {
+		this.initTestSession = initTestSession;
+	}
 
-    public TestContext getTestContext() {
-        return testContext;
-    }
+	public TestContext getTestContext() {
+		return testContext;
+	}
 }

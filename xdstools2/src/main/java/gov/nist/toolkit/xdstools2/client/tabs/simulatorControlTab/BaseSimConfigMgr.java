@@ -2,7 +2,6 @@ package gov.nist.toolkit.xdstools2.client.tabs.simulatorControlTab;
 
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.FlexTable;
 import com.google.gwt.user.client.ui.FlowPanel;
@@ -14,9 +13,10 @@ import gov.nist.toolkit.configDatatypes.client.PatientErrorMap;
 import gov.nist.toolkit.configDatatypes.client.TransactionType;
 import gov.nist.toolkit.http.client.HtmlMarkup;
 import gov.nist.toolkit.simcommon.client.config.SimulatorConfigElement;
-import gov.nist.toolkit.xdstools2.client.widgets.PopupMessage;
+import gov.nist.toolkit.xdstools2.client.command.command.PutSimConfigCommand;
 import gov.nist.toolkit.xdstools2.client.tabs.simulatorControlTab.intf.SimConfigMgrIntf;
 import gov.nist.toolkit.xdstools2.client.util.ClientUtils;
+import gov.nist.toolkit.xdstools2.shared.command.request.SimConfigRequest;
 
 /**
  * Manages the content of a single Simulator on the screen
@@ -218,18 +218,14 @@ public abstract class BaseSimConfigMgr implements SimConfigMgrIntf {
     }
 
     public void saveSimConfig() {
-        ClientUtils.INSTANCE.getToolkitServices().putSimConfig(config, new AsyncCallback<String>() {
-
-            public void onFailure(Throwable caught) {
-                new PopupMessage("saveSimConfig:" + caught.getMessage());
-            }
-
-            public void onSuccess(String result) {
+        new PutSimConfigCommand(){
+            @Override
+            public void onComplete(String result) {
                 // reload simulators to getRetrievedDocumentsModel updates
                 if (simulatorControlTab != null)
                     new LoadSimulatorsClickHandler(simulatorControlTab, testSession).onClick(null);
             }
-        });
+        }.run(new SimConfigRequest(ClientUtils.INSTANCE.getCommandContext(),config));
     }
 
     public int getRow() {

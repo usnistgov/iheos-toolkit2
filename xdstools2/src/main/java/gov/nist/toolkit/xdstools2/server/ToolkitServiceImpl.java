@@ -804,10 +804,16 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements
     //------------------------------------------------------------------------
     //------------------------------------------------------------------------
     @Override
-    public String putSimConfig(SimulatorConfig config) throws Exception { return new SimulatorServiceManager(session()).saveSimConfig(config); }
+    public String putSimConfig(SimConfigRequest request) throws Exception {
+        installCommandContext(request);
+        return new SimulatorServiceManager(session()).saveSimConfig(request.getConfig());
+    }
     // this deletes a simulator
     @Override
-    public String deleteConfig(SimulatorConfig config) throws Exception { return new SimulatorServiceManager(session()).deleteConfig(config); }
+    public String deleteConfig(SimConfigRequest config) throws Exception {
+        installCommandContext(config);
+        return new SimulatorServiceManager(session()).deleteConfig(config.getConfig());
+    }
     @Override
     public void renameSimFile(RenameSimFileRequest request) throws Exception {
         installCommandContext(request);
@@ -839,7 +845,10 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements
         return new SimulatorServiceManager(session()).getTransactionResponse(request.getSimid(), request.getActor(), request.getTrans(), request.getMessageId());
     }
     @Override
-    public int removeOldSimulators() throws NoServletSessionException { return new SimulatorServiceManager(session()).removeOldSimulators(); }
+    public int removeOldSimulators(CommandContext context) throws Exception {
+        installCommandContext(context);
+        return new SimulatorServiceManager(session()).removeOldSimulators();
+    }
     @Override
     public List<Result> getSelectedMessage(GetSelectedMessageRequest request) throws Exception {
         installCommandContext(request);
@@ -861,7 +870,10 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements
         return new SimulatorServiceManager(session()).validateMessage(request.getValidationContext());
     }
     @Override
-    public List<SimulatorConfig> getSimConfigs(List<SimId> ids) throws Exception { return new SimulatorServiceManager(session()).getSimConfigs(ids); }
+    public List<SimulatorConfig> getSimConfigs(GetSimConfigsRequest request) throws Exception {
+        installCommandContext(request);
+        return new SimulatorServiceManager(session()).getSimConfigs(request.getIds());
+    }
     @Override
     public List<SimulatorConfig> getAllSimConfigs(GetAllSimConfigsRequest request) throws Exception {
         installCommandContext(request);
@@ -883,7 +895,10 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements
         return new SimulatorServiceManager(session()).getTransactionsForSimulator(request.getSimid());
     }
     @Override
-    public List<SimulatorStats> getSimulatorStats(List<SimId> simids) throws Exception { return new SimulatorServiceManager(session()).getSimulatorStats(simids); }
+    public List<SimulatorStats> getSimulatorStats(GetSimulatorStatsRequest request) throws Exception {
+        installCommandContext(request);
+        return new SimulatorServiceManager(session()).getSimulatorStats(request.getSimid());
+    }
     @Override
     public String getTransactionLog(GetTransactionRequest request) throws Exception {
         installCommandContext(request);

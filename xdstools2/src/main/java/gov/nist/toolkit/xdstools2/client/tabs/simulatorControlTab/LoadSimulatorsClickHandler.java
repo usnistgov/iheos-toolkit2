@@ -2,11 +2,12 @@ package gov.nist.toolkit.xdstools2.client.tabs.simulatorControlTab;
 
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.user.client.rpc.AsyncCallback;
 import gov.nist.toolkit.actorfactory.client.SimId;
 import gov.nist.toolkit.actorfactory.client.SimulatorConfig;
-import gov.nist.toolkit.xdstools2.client.widgets.PopupMessage;
+import gov.nist.toolkit.xdstools2.client.command.command.GetSimConfigsCommand;
 import gov.nist.toolkit.xdstools2.client.util.ClientUtils;
+import gov.nist.toolkit.xdstools2.client.widgets.PopupMessage;
+import gov.nist.toolkit.xdstools2.shared.command.request.GetSimConfigsRequest;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -35,24 +36,20 @@ public class LoadSimulatorsClickHandler implements ClickHandler {
 		for (int i=0; i<parts.length; i++) {
 			String x = parts[i].trim();
 			if (!x.equals("")) {
-                SimId si;
-                try {
-                    si = new SimId(currentTestSession, x);
-                } catch (Exception e) {
-                    new PopupMessage(e.getMessage());
-                    return;
-                }
-                ids.add(si);
-            }
+				SimId si;
+				try {
+					si = new SimId(currentTestSession, x);
+				} catch (Exception e) {
+					new PopupMessage(e.getMessage());
+					return;
+				}
+				ids.add(si);
+			}
 		}
 
-		ClientUtils.INSTANCE.getToolkitServices().getSimConfigs(ids, new AsyncCallback<List<SimulatorConfig>>() {
-
-			public void onFailure(Throwable caught) {
-				new PopupMessage("getSimConfigs:" + caught.getMessage());
-			}
-
-			public void onSuccess(List<SimulatorConfig> configs) {
+		new GetSimConfigsCommand(){
+			@Override
+			public void onComplete(List<SimulatorConfig> configs) {
 				SimConfigSuper s = simulatorControlTab.simConfigSuper;
 				simulatorControlTab.simIdsTextArea.setText("");
 				s.clear();
@@ -65,8 +62,7 @@ public class LoadSimulatorsClickHandler implements ClickHandler {
 					}
 				}
 			}
-
-		});
+		}.run(new GetSimConfigsRequest(ClientUtils.INSTANCE.getCommandContext(),ids));
 	}
 
 }

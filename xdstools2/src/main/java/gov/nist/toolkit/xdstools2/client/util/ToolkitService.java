@@ -11,8 +11,6 @@ import gov.nist.toolkit.actortransaction.client.Severity;
 import gov.nist.toolkit.actortransaction.client.TransactionInstance;
 import gov.nist.toolkit.configDatatypes.client.Pid;
 import gov.nist.toolkit.interactionmodel.client.InteractingEntity;
-import gov.nist.toolkit.registrymetadata.client.ObjectRef;
-import gov.nist.toolkit.registrymetadata.client.Uids;
 import gov.nist.toolkit.results.client.*;
 import gov.nist.toolkit.results.shared.Test;
 import gov.nist.toolkit.services.client.*;
@@ -70,14 +68,14 @@ public interface ToolkitService extends RemoteService  {
 	/* Simulator Management */
 	List<String> getActorTypeNames(CommandContext context) throws Exception ;
 	Simulator getNewSimulator(GetNewSimulatorRequest request) throws Exception;
-	List<SimulatorConfig> getSimConfigs(List<SimId> ids) throws Exception;
+	List<SimulatorConfig> getSimConfigs(GetSimConfigsRequest request) throws Exception;
 	List<SimulatorConfig> getAllSimConfigs(GetAllSimConfigsRequest user) throws Exception;
-	String putSimConfig(SimulatorConfig config) throws Exception;
-	String deleteConfig(SimulatorConfig config) throws Exception;
+	String putSimConfig(SimConfigRequest request) throws Exception;
+	String deleteConfig(SimConfigRequest request) throws Exception;
 	Map<String, SimId> getActorSimulatorNameMap(CommandContext context) throws Exception;
 	//	 List<String> getSimulatorTransactionNames(String simid) throws Exception;
-	int removeOldSimulators() throws NoServletSessionException;
-	List<SimulatorStats> getSimulatorStats(List<SimId> simid) throws Exception;
+	int removeOldSimulators(CommandContext context) throws Exception;
+	List<SimulatorStats> getSimulatorStats(GetSimulatorStatsRequest request) throws Exception;
 	List<Pid> getPatientIds(SimId simId) throws Exception;
 	String addPatientIds(SimId simId, List<Pid> pids) throws Exception;
 	boolean deletePatientIds(SimId simId, List<Pid> pids) throws Exception;
