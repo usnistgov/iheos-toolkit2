@@ -9,8 +9,10 @@ import gov.nist.toolkit.configDatatypes.client.PatientError;
 import gov.nist.toolkit.configDatatypes.client.Pid;
 import gov.nist.toolkit.configDatatypes.client.PidBuilder;
 import gov.nist.toolkit.configDatatypes.client.TransactionType;
+import gov.nist.toolkit.xdstools2.client.command.command.GetTransactionErrorCodeRefsCommand;
 import gov.nist.toolkit.xdstools2.client.widgets.PopupMessage;
 import gov.nist.toolkit.xdstools2.client.util.ClientUtils;
+import gov.nist.toolkit.xdstools2.shared.command.request.GetTransactionErrorCodeRefsRequest;
 
 import java.util.List;
 
@@ -47,13 +49,9 @@ public class PatientErrorNewEntryPresentation  {
             setWidget(surroundPanel);
 
 
-            ClientUtils.INSTANCE.getToolkitServices().getTransactionErrorCodeRefs(transactionType.getName(), Severity.Error, new AsyncCallback<List<String>>() {
-
-                public void onFailure(Throwable caught) {
-                    new PopupMessage("getTransactionErrorCodeRefs:" + caught.getMessage());
-                }
-
-                public void onSuccess(List<String> results) {
+            new GetTransactionErrorCodeRefsCommand(){
+                @Override
+                public void onComplete(List<String> results) {
                     for (String err : results) errorListBox.addItem(err);
                     errorListBox.setVisibleItemCount(results.size());
 
@@ -94,7 +92,7 @@ public class PatientErrorNewEntryPresentation  {
                     });
 
                 }
-            });
+            }.run(new GetTransactionErrorCodeRefsRequest(ClientUtils.INSTANCE.getCommandContext(),transactionType.getName(),Severity.Error));
         }
     }
 

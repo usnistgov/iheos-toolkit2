@@ -165,7 +165,7 @@ public interface ToolkitService extends RemoteService  {
 
 	String getTestplanAsText(String testSession,TestInstance testInstance, String section) throws Exception;
 	TestPartFileDTO getSectionTestPartFile(String testSession, TestInstance testInstance, String section) throws Exception;
-	TestPartFileDTO loadTestPartContent(TestPartFileDTO testPartFileDTO) throws Exception;
+	TestPartFileDTO loadTestPartContent(LoadTestPartContentRequest request) throws Exception;
 	String getHtmlizedString(String xml) throws Exception;
 
 	String getImplementationVersion(CommandContext context) throws Exception ;
@@ -238,7 +238,7 @@ public interface ToolkitService extends RemoteService  {
 
 	String setMesaTestSession(String sessionName) throws NoServletSessionException ;
 	String getNewPatientId(String assigningAuthority) throws NoServletSessionException ;
-	List<String> getTransactionErrorCodeRefs(String transactionName, Severity severity) throws Exception;
+	List<String> getTransactionErrorCodeRefs(GetTransactionErrorCodeRefsRequest refsRequest) throws Exception;
 
 	String getServletContextName();
 

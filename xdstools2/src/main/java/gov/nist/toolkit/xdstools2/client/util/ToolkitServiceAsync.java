@@ -201,7 +201,7 @@ public interface ToolkitServiceAsync {
 
     void getTestplanAsText(String testSession, TestInstance testInstance, String section, AsyncCallback<String> callback);
     void getSectionTestPartFile(String testSession, TestInstance testInstance, String section, AsyncCallback<TestPartFileDTO> callback);
-    void loadTestPartContent(TestPartFileDTO testPartFileDTO, AsyncCallback<TestPartFileDTO> callback);
+    void loadTestPartContent(LoadTestPartContentRequest request, AsyncCallback<TestPartFileDTO> callback);
     void getHtmlizedString(String xml, AsyncCallback<String> callback);
 
     void configureTestkit(CommandContext context, AsyncCallback<String> callback);
@@ -224,7 +224,7 @@ public interface ToolkitServiceAsync {
     void deleteSingleTestResult(String testSession, TestInstance testInstance, AsyncCallback<TestOverviewDTO> callback);
     void runAllTests(Site site, AsyncCallback<List<Test>> callback);
     void runSingleTest(Site site, int testId, AsyncCallback<Test> callback);
-    void getTransactionErrorCodeRefs(String transactionName, Severity severity, AsyncCallback<List<String>> callback);
+    void getTransactionErrorCodeRefs(GetTransactionErrorCodeRefsRequest request, AsyncCallback<List<String>> callback);
     void buildIgTestOrchestration(IgOrchestrationRequest request, AsyncCallback<RawResponse> callback);
     void buildRgTestOrchestration(RgOrchestrationRequest request, AsyncCallback<RawResponse> callback);
     void buildIigTestOrchestration(IigOrchestrationRequest request, AsyncCallback<RawResponse> callback);

@@ -609,8 +609,9 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements
         return session().xdsTestServiceManager().getSectionTestPartFile(testInstance, section);
     }
     @Override
-    public TestPartFileDTO loadTestPartContent(TestPartFileDTO testPartFileDTO) throws Exception {
-        return XdsTestServiceManager.loadTestPartContent(testPartFileDTO);
+    public TestPartFileDTO loadTestPartContent(LoadTestPartContentRequest request) throws Exception {
+        installCommandContext(request);
+        return XdsTestServiceManager.loadTestPartContent(request.getTestPartFileDTO());
     }
     @Override
     public String getHtmlizedString(String xml) { // This is different than the Htmlize class in the client code works (see its isHtml method)
@@ -954,9 +955,10 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements
         return new SimulatorServiceManager(session()).getSimulatorEventResponseAsResult(request.getTransactionInstance());
     }
     @Override
-    public List<String> getTransactionErrorCodeRefs(String transactionName, Severity severity) throws Exception {
-        List<String> refs = TransactionErrorCodeDbLoader.LOAD().getRefsByTransaction(TransactionType.find(transactionName), severity);
-        logger.info(": getTransactionErrorCodeRefs(" + transactionName + ") => " + refs.size() + " codes");
+    public List<String> getTransactionErrorCodeRefs(GetTransactionErrorCodeRefsRequest request) throws Exception {
+        installCommandContext(request);
+        List<String> refs = TransactionErrorCodeDbLoader.LOAD().getRefsByTransaction(TransactionType.find(request.getTransactionName()), request.getSeverity());
+        logger.info(": getTransactionErrorCodeRefs(" + request.getTransactionName() + ") => " + refs.size() + " codes");
         return refs;
     }
 

@@ -13,11 +13,13 @@ import gov.nist.toolkit.testenginelogging.client.LogFileContentDTO;
 import gov.nist.toolkit.testenginelogging.client.ReportDTO;
 import gov.nist.toolkit.testenginelogging.client.TestStepLogContentDTO;
 import gov.nist.toolkit.testenginelogging.client.UseReportDTO;
+import gov.nist.toolkit.xdstools2.client.command.command.LoadTestPartContentCommand;
 import gov.nist.toolkit.xdstools2.client.sh.BrushFactory;
 import gov.nist.toolkit.xdstools2.client.sh.SyntaxHighlighter;
 import gov.nist.toolkit.xdstools2.client.util.ClientUtils;
 import gov.nist.toolkit.xdstools2.client.widgets.HorizontalFlowPanel;
 import gov.nist.toolkit.xdstools2.client.widgets.PopupMessage;
+import gov.nist.toolkit.xdstools2.shared.command.request.LoadTestPartContentRequest;
 
 import java.util.HashSet;
 import java.util.List;
@@ -105,28 +107,28 @@ public class TestSectionComponent implements IsWidget {
 
 
     private class ViewTestplanClickHandler implements ClickHandler {
-     private ScrollPanel viewerPanel;
-     private HTML ctl;
-     private String htmlizedStr;
+        private ScrollPanel viewerPanel;
+        private HTML ctl;
+        private String htmlizedStr;
 
-    public ViewTestplanClickHandler(ScrollPanel testplanViewerPanel, HTML testplanCtl, String secTestplanStr) {
-        this.viewerPanel = testplanViewerPanel;
-        this.ctl = testplanCtl;
-        this.htmlizedStr = secTestplanStr;
-    }
+        public ViewTestplanClickHandler(ScrollPanel testplanViewerPanel, HTML testplanCtl, String secTestplanStr) {
+            this.viewerPanel = testplanViewerPanel;
+            this.ctl = testplanCtl;
+            this.htmlizedStr = secTestplanStr;
+        }
 
-    @Override
-      public void onClick(ClickEvent clickEvent) {
-        viewerPanel.setVisible(!viewerPanel.isVisible());
-        if (!viewerPanel.isVisible()) {
-            ctl.setHTML(viewTestplanLabel);
-        } else {
-            ctl.setHTML(hideTestplanLabel);
+        @Override
+        public void onClick(ClickEvent clickEvent) {
+            viewerPanel.setVisible(!viewerPanel.isVisible());
+            if (!viewerPanel.isVisible()) {
+                ctl.setHTML(viewTestplanLabel);
+            } else {
+                ctl.setHTML(hideTestplanLabel);
+            }
+            if (viewerPanel.getWidget()==null) {
+                viewerPanel.add(getShHtml(htmlizedStr));
+            }
         }
-        if (viewerPanel.getWidget()==null) {
-           viewerPanel.add(getShHtml(htmlizedStr));
-        }
-     }
     }
 
     private class ViewMetadataClickHandler implements ClickHandler {
@@ -148,19 +150,13 @@ public class TestSectionComponent implements IsWidget {
                 ctl.setHTML(hideMetadataLabel);
             }
             if (viewerPanel.getWidget()==null) {
-                ClientUtils.INSTANCE.getToolkitServices().loadTestPartContent(metadataDTO, new AsyncCallback<TestPartFileDTO>() { //
+                new LoadTestPartContentCommand(){
                     @Override
-                    public void onFailure(Throwable throwable) {
-                        new PopupMessage(throwable.toString());
-                    }
-
-                    @Override
-                    public void onSuccess(TestPartFileDTO testPartFileDTO) {
-                        String metadataStr = testPartFileDTO.getHtlmizedContent().replace("<br/>", "\r\n");
+                    public void onComplete(TestPartFileDTO result) {
+                        String metadataStr = result.getHtlmizedContent().replace("<br/>", "\r\n");
                         viewerPanel.add(getShHtml(metadataStr));
                     }
-                });
-
+                }.run(new LoadTestPartContentRequest(ClientUtils.INSTANCE.getCommandContext(),metadataDTO));
             }
         }
     }

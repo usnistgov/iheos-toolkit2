@@ -8,8 +8,10 @@ import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.ScrollPanel;
 import gov.nist.toolkit.results.client.TestInstance;
 import gov.nist.toolkit.session.client.logtypes.TestPartFileDTO;
+import gov.nist.toolkit.xdstools2.client.command.command.LoadTestPartContentCommand;
 import gov.nist.toolkit.xdstools2.client.widgets.PopupMessage;
 import gov.nist.toolkit.xdstools2.client.util.ClientUtils;
+import gov.nist.toolkit.xdstools2.shared.command.request.LoadTestPartContentRequest;
 
 import static gov.nist.toolkit.xdstools2.client.tabs.conformanceTest.TestPlanDisplay.getShHtml;
 
@@ -51,19 +53,13 @@ class MetadataDisplay extends FlowPanel {
                 metadataCtl.setHTML(hideMetadataLabel);
             }
             if (metadataViewerPanel.getWidget()==null) {
-                ClientUtils.INSTANCE.getToolkitServices().loadTestPartContent(testPartFileDTO, new AsyncCallback<TestPartFileDTO>() { //
+                new LoadTestPartContentCommand(){
                     @Override
-                    public void onFailure(Throwable throwable) {
-                        new PopupMessage(throwable.toString());
-                    }
-
-                    @Override
-                    public void onSuccess(TestPartFileDTO testPartFileDTO) {
+                    public void onComplete(TestPartFileDTO testPartFileDTO) {
                         String metadataStr = testPartFileDTO.getHtlmizedContent().replace("<br/>", "\r\n");
                         metadataViewerPanel.add(getShHtml(metadataStr));
                     }
-                });
-
+                }.run(new LoadTestPartContentRequest(ClientUtils.INSTANCE.getCommandContext(),testPartFileDTO));
             }
         }
     }
