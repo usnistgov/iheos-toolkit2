@@ -13,15 +13,17 @@ public class TestContextView implements ClickHandler {
     private TestContext testContext;
     private ToolWindow toolWindow;
     private HTML testSessionDescription;
+    private SiteSelectionValidator siteSelectionValidator;
 
-    public TestContextView(ToolWindow toolWindow, HTML testSessionDescription, TestContext testContext) {
+    public TestContextView(ToolWindow toolWindow, HTML testSessionDescription, TestContext testContext, SiteSelectionValidator siteSelectionValidator) {
         this.toolWindow = toolWindow;
         this.testSessionDescription = testSessionDescription;
         this.testContext = testContext;
+        this.siteSelectionValidator = siteSelectionValidator;
     }
 
     public void launchDialog(String msg) {
-        TestContextDialog dialog = new TestContextDialog(toolWindow, testContext, msg);
+        TestContextDialog dialog = new TestContextDialog(toolWindow, testContext, siteSelectionValidator, msg);
         int left = Window.getClientWidth()/ 3;
         int top = Window.getClientHeight()/ 20;
         dialog.setPopupPosition(left, top);

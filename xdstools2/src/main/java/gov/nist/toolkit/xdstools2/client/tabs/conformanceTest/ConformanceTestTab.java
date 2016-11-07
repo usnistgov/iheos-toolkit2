@@ -21,6 +21,7 @@ import gov.nist.toolkit.services.client.RegOrchestrationResponse;
 import gov.nist.toolkit.services.client.RepOrchestrationResponse;
 import gov.nist.toolkit.session.client.logtypes.TestOverviewDTO;
 import gov.nist.toolkit.session.client.sort.TestSorter;
+import gov.nist.toolkit.sitemanagement.client.Site;
 import gov.nist.toolkit.sitemanagement.client.SiteSpec;
 import gov.nist.toolkit.testkitutilities.client.SectionDefinitionDAO;
 import gov.nist.toolkit.testkitutilities.client.TestCollectionDefinitionDAO;
@@ -35,6 +36,7 @@ import gov.nist.toolkit.xdstools2.client.util.ClientUtils;
 import gov.nist.toolkit.xdstools2.client.widgets.LaunchInspectorClickHandler;
 import gov.nist.toolkit.xdstools2.client.widgets.PopupMessage;
 import gov.nist.toolkit.xdstools2.client.widgets.buttons.AbstractOrchestrationButton;
+import gov.nist.toolkit.xdstools2.shared.command.request.GetSiteRequest;
 import gov.nist.toolkit.xdstools2.shared.command.request.GetTestSectionsDAOsRequest;
 import gov.nist.toolkit.xdstools2.shared.command.request.GetTestsOverviewRequest;
 
@@ -55,7 +57,7 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner, TestsH
 	private TestContextView testContextView;
 
 	private TestDisplayGroup testDisplayGroup;
-	private TestContext testContext = new TestContext(this);
+	private TestContext testContext = new TestContext(this, new SiteSelectionValidatorImpl());
 
 	private AbstractOrchestrationResponse orchestrationResponse;
 	private RepOrchestrationResponse repOrchestrationResponse;
@@ -68,8 +70,8 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner, TestsH
 	private String currentActorTypeDescription;
 	private SiteSpec siteToIssueTestAgainst = null;
 
-   // stuff that needs delayed setting when launched via activity
-   private String initTestSession = null;
+    // stuff that needs delayed setting when launched via activity
+    private String initTestSession = null;
 
 	// Descriptions of current test list
 	private List<TestCollectionDefinitionDAO> testCollectionDefinitionDAOs;
@@ -88,7 +90,7 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner, TestsH
 	public ConformanceTestTab() {
 		me = this;
 		mainView = new ConformanceTestMainView(this, new OptionsTabBar());
-		testContextView = new TestContextView(this, mainView.getTestSessionDescription(), testContext);
+		testContextView = new TestContextView(this, mainView.getTestSessionDescription(), testContext, new SiteSelectionValidatorImpl());
 		testContext.setTestContextView(testContextView);
 		testDisplayGroup = new TestDisplayGroup(testContext, testContextView, this);
 	}
@@ -806,4 +808,32 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner, TestsH
     public TestContext getTestContext() {
         return testContext;
     }
+
+    class SiteSelectionValidatorImpl implements  SiteSelectionValidator {
+
+		@Override
+		public void validate(SiteSpec siteSpec) {
+			final String actorTypeId = currentActorOption.actorTypeId;
+			final ActorType actorType = ActorType.findActor(actorTypeId);
+			if (actorType == null) {
+				new PopupMessage("Don't understand actor type " + actorTypeId);
+				return;
+			}
+
+			getToolkitServices().getSite(new GetSiteRequest(getCommandContext(), siteSpec.getName()), new AsyncCallback<Site>() {
+				@Override
+				public void onFailure(Throwable throwable) {
+					new PopupMessage(throwable.getMessage());
+				}
+
+				@Override
+				public void onSuccess(Site site) {
+					if (!site.hasActor(actorType))
+						new PopupMessage("System under test does not implement a " + actorType.getName());
+				}
+			});
+
+
+		}
+	}
 }
