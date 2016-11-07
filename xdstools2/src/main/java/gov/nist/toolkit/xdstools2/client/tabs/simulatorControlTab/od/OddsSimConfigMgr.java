@@ -19,12 +19,14 @@ import gov.nist.toolkit.results.client.TestInstance;
 import gov.nist.toolkit.simcommon.client.config.SimulatorConfigElement;
 import gov.nist.toolkit.sitemanagement.client.SiteSpec;
 import gov.nist.toolkit.xdstools2.client.StringSort;
+import gov.nist.toolkit.xdstools2.client.command.command.GetCollectionCommand;
 import gov.nist.toolkit.xdstools2.client.command.command.GetSiteNamesByTranTypeCommand;
 import gov.nist.toolkit.xdstools2.client.command.command.PutSimConfigCommand;
 import gov.nist.toolkit.xdstools2.client.tabs.simulatorControlTab.*;
 import gov.nist.toolkit.xdstools2.client.tabs.simulatorControlTab.intf.SimConfigMgrIntf;
 import gov.nist.toolkit.xdstools2.client.util.ClientUtils;
 import gov.nist.toolkit.xdstools2.client.widgets.PopupMessage;
+import gov.nist.toolkit.xdstools2.shared.command.request.GetCollectionRequest;
 import gov.nist.toolkit.xdstools2.shared.command.request.GetSiteNamesByTranTypeRequest;
 import gov.nist.toolkit.xdstools2.shared.command.request.SimConfigRequest;
 
@@ -516,14 +518,9 @@ public class OddsSimConfigMgr implements SimConfigMgrIntf {
 
 
     void loadTestsFromCollection(final ListBox lbx, final String testCollectionName) {
-        ClientUtils.INSTANCE.getToolkitServices().getCollection("collections", testCollectionName, new AsyncCallback<Map<String, String>>() {
-
-            public void onFailure(Throwable caught) {
-                new PopupMessage("getCollection(" + testCollectionName + "): " +  " -----  " + caught.getMessage());
-            }
-
-            public void onSuccess(Map<String, String> result) {
-
+        new GetCollectionCommand() {
+            @Override
+            public void onComplete(Map<String, String> result) {
                 Set<String> testNumsSet = result.keySet();
                 List<String> testNums = new ArrayList<String>();
                 testNums.addAll(testNumsSet);
@@ -538,7 +535,7 @@ public class OddsSimConfigMgr implements SimConfigMgrIntf {
                     lbx.setSelectedIndex(0);
                 }
             }
-        });
+        }.run(new GetCollectionRequest(ClientUtils.INSTANCE.getCommandContext(), "collections", testCollectionName));
     }
 
     private void registerODDE() {

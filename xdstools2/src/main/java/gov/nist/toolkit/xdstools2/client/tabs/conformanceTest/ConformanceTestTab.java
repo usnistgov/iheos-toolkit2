@@ -25,9 +25,7 @@ import gov.nist.toolkit.sitemanagement.client.SiteSpec;
 import gov.nist.toolkit.testkitutilities.client.SectionDefinitionDAO;
 import gov.nist.toolkit.testkitutilities.client.TestCollectionDefinitionDAO;
 import gov.nist.toolkit.xdstools2.client.ToolWindow;
-import gov.nist.toolkit.xdstools2.client.command.command.AutoInitConformanceTestingCommand;
-import gov.nist.toolkit.xdstools2.client.command.command.GetTestSectionsDAOsCommand;
-import gov.nist.toolkit.xdstools2.client.command.command.GetTestsOverviewCommand;
+import gov.nist.toolkit.xdstools2.client.command.command.*;
 import gov.nist.toolkit.xdstools2.client.event.testSession.TestSessionChangedEvent;
 import gov.nist.toolkit.xdstools2.client.event.testSession.TestSessionChangedEventHandler;
 import gov.nist.toolkit.xdstools2.client.tabs.GatewayTestsTabs.BuildIGTestOrchestrationButton;
@@ -35,8 +33,10 @@ import gov.nist.toolkit.xdstools2.client.util.ClientUtils;
 import gov.nist.toolkit.xdstools2.client.widgets.LaunchInspectorClickHandler;
 import gov.nist.toolkit.xdstools2.client.widgets.PopupMessage;
 import gov.nist.toolkit.xdstools2.client.widgets.buttons.AbstractOrchestrationButton;
+import gov.nist.toolkit.xdstools2.shared.command.request.GetCollectionRequest;
 import gov.nist.toolkit.xdstools2.shared.command.request.GetTestSectionsDAOsRequest;
 import gov.nist.toolkit.xdstools2.shared.command.request.GetTestsOverviewRequest;
+import gov.nist.toolkit.xdstools2.shared.command.request.RunTestRequest;
 
 import java.util.*;
 
@@ -291,12 +291,9 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner, TestsH
 	// load tab bar with actor types
 	private void loadTestCollections() {
 		// TabBar listing actor types
-		getToolkitServices().getTestCollections("actorcollections", new AsyncCallback<List<TestCollectionDefinitionDAO>>() {
+		new GetTestCollectionsCommand() {
 			@Override
-			public void onFailure(Throwable throwable) { new PopupMessage("getTestCollections: " + throwable.getMessage()); }
-
-			@Override
-			public void onSuccess(List<TestCollectionDefinitionDAO> testCollectionDefinitionDAOs) {
+			public void onComplete(List<TestCollectionDefinitionDAO> testCollectionDefinitionDAOs) {
 				me.testCollectionDefinitionDAOs = testCollectionDefinitionDAOs;
 				displayActorsTabBar(mainView.getActorTabBar());
 				currentActorTypeDescription = getDescriptionForTestCollection(currentActorOption.actorTypeId);
@@ -307,7 +304,7 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner, TestsH
 				// initTestSession is set from ConfActorActivity
 				initializeTestingContext();
 			}
-		});
+		}.run(new GetCollectionRequest(getCommandContext(), "actorcollections"));
 	}
 
 	private HTML loadingMessage;
@@ -629,14 +626,9 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner, TestsH
 		if (parms == null) return;
 
 		try {
-			getToolkitServices().runTest(getEnvironmentSelection(), getCurrentTestSession(), getSiteToIssueTestAgainst(), sectionInstance, parms, true, new AsyncCallback<TestOverviewDTO>() {
+			new RunTestCommand(){
 				@Override
-				public void onFailure(Throwable throwable) {
-					new PopupMessage(throwable.getMessage());
-				}
-
-				@Override
-				public void onSuccess(TestOverviewDTO testOverviewDTO) {
+				public void onComplete(TestOverviewDTO testOverviewDTO) {
 					// returned testStatus of entire test
 					testDisplayGroup.display(testOverviewDTO);
 					Collection<TestOverviewDTO> overviews = updateTestOverview(testOverviewDTO);
@@ -645,7 +637,7 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner, TestsH
 					if (sectionDone != null)
 						sectionDone.onDone(sectionInstance);
 				}
-			});
+			}.run(new RunTestRequest(getCommandContext(),getSiteToIssueTestAgainst(),sectionInstance,parms,true));
 		} catch (Exception e) {
 			new PopupMessage(e.getMessage());
 		}
@@ -702,14 +694,9 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner, TestsH
 		Map<String, String> parms = initializeTestParameters();
 		if (parms == null) return;
 		try {
-			getToolkitServices().runTest(getEnvironmentSelection(), getCurrentTestSession(), getSiteToIssueTestAgainst(), testInstance, parms, true, new AsyncCallback<TestOverviewDTO>() {
+			new RunTestCommand(){
 				@Override
-				public void onFailure(Throwable throwable) {
-					new PopupMessage(throwable.getMessage());
-				}
-
-				@Override
-				public void onSuccess(TestOverviewDTO testOverviewDTO) {
+				public void onComplete(TestOverviewDTO testOverviewDTO) {
 					// returned testStatus of entire test
 					testDisplayGroup.display(testOverviewDTO);
 //					Collection<TestOverviewDTO> overviews = updateTestOverview(testOverviewDTO);
@@ -720,7 +707,7 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner, TestsH
 					if (testDone != null)
 						testDone.onDone(testInstance);
 				}
-			});
+			}.run(new RunTestRequest(getCommandContext(),getSiteToIssueTestAgainst(),testInstance,parms,true));
 		} catch (Exception e) {
 			new PopupMessage(e.getMessage());
 		}

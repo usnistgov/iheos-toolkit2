@@ -14,11 +14,13 @@ import gov.nist.toolkit.services.client.RgOrchestrationResponse;
 import gov.nist.toolkit.sitemanagement.client.SiteSpec;
 import gov.nist.toolkit.sitemanagement.client.TransactionOfferings;
 import gov.nist.toolkit.xdstools2.client.CoupledTransactions;
+import gov.nist.toolkit.xdstools2.client.command.command.RunMesaTestCommand;
 import gov.nist.toolkit.xdstools2.client.widgets.PopupMessage;
 import gov.nist.toolkit.xdstools2.client.TabContainer;
 import gov.nist.toolkit.xdstools2.client.inspector.MetadataInspectorTab;
 import gov.nist.toolkit.xdstools2.client.siteActorManagers.GetDocumentsSiteActorManager;
 import gov.nist.toolkit.xdstools2.client.tabs.genericQueryTab.GenericQueryTab;
+import gov.nist.toolkit.xdstools2.shared.command.request.RunTestRequest;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -307,7 +309,12 @@ public class RGTestTab extends GenericQueryTab implements GatewayTool {
 
             TestInstance testInstance = new TestInstance(testToRun);
             testInstance.setUser(getCurrentTestSession());
-            getToolkitServices().runMesaTest(getCurrentTestSession(), getSiteSelection(), new TestInstance(testToRun), selectedSections, parms, true, queryCallback);
+            new RunMesaTestCommand(){
+                @Override
+                public void onComplete(List<Result> result) {
+                    queryCallback.onSuccess(result);
+                }
+            }.run(new RunTestRequest(getCommandContext(),getSiteSelection(),new TestInstance(testToRun),parms,true,selectedSections));
         }
 
     }

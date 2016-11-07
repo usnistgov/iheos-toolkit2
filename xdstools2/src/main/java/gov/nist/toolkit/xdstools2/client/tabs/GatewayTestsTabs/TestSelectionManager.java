@@ -10,12 +10,17 @@ import gov.nist.toolkit.actorfactory.client.SimulatorConfig;
 import gov.nist.toolkit.results.client.Result;
 import gov.nist.toolkit.results.client.TestInstance;
 import gov.nist.toolkit.sitemanagement.client.SiteSpec;
-import gov.nist.toolkit.xdstools2.client.widgets.PopupMessage;
 import gov.nist.toolkit.xdstools2.client.StringSort;
+import gov.nist.toolkit.xdstools2.client.command.command.GetCollectionCommand;
+import gov.nist.toolkit.xdstools2.client.command.command.GetTestIndexCommand;
+import gov.nist.toolkit.xdstools2.client.command.command.GetTestReadmeCommand;
 import gov.nist.toolkit.xdstools2.client.inspector.MetadataInspectorTab;
 import gov.nist.toolkit.xdstools2.client.tabs.SimulatorMessageViewTab;
 import gov.nist.toolkit.xdstools2.client.tabs.TextViewerTab;
 import gov.nist.toolkit.xdstools2.client.util.ClientUtils;
+import gov.nist.toolkit.xdstools2.client.widgets.PopupMessage;
+import gov.nist.toolkit.xdstools2.shared.command.request.GetCollectionRequest;
+import gov.nist.toolkit.xdstools2.shared.command.request.GetTestDetailsRequest;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -36,29 +41,19 @@ class TestSelectionManager {
     final static public String ALL = "All";
     final static public String ALL_SELECTION = "-- All --";
     List<String> sections = new ArrayList<String>();
-//    String selectedSection = TestSelectionManager.ALL_SELECTION;
-//    ToolkitServiceAsync toolkitService;
     Map<String, String> testCollectionMap;  // name => description for selected actor
-//    List<String> assigningAuthorities = null;
     TestSelectionManager me;
 
     TestSelectionManager(GatewayTool tool) {
         me = this;
         this.tool = tool;
-//        toolkitService = tool.getToolkitService();
-//        loadAssigningAuthorities();
-
         selectSectionList.addChangeHandler(new SectionSelectionChangeHandler());
     }
 
     void loadTestsFromCollection(final String testCollectionName) {
-        ClientUtils.INSTANCE.getToolkitServices().getCollection("collections", testCollectionName, new AsyncCallback<Map<String, String>>() {
-
-            public void onFailure(Throwable caught) {
-                new PopupMessage("getCollection(" + testCollectionName + "): " +  " -----  " + caught.getMessage());
-            }
-
-            public void onSuccess(Map<String, String> result) {
+        new GetCollectionCommand() {
+            @Override
+            public void onComplete(Map<String, String> result) {
                 testCollectionMap = result;
 
                 Set<String> testNumsSet = testCollectionMap.keySet();
@@ -70,33 +65,14 @@ class TestSelectionManager {
                     String description = testCollectionMap.get(name);
                     selectTestList.addItem(name + " - " + description, name);
                 }
-//                testSelectionContext.selectTestList.addItem(ALL);  does not work yet
                 selectTestList.setVisibleItemCount(selectTestList.getItemCount());
                 if (selectTestList.getItemCount() > 0) {
                     selectTestList.setSelectedIndex(0);
                     new TestSelectionChangeHandler(me).onChange(null);
                 }
             }
-        });
+        }.run(new GetCollectionRequest(ClientUtils.INSTANCE.getCommandContext(), "collections", testCollectionName));
     }
-
-//    void loadAssigningAuthorities() {
-//        try {
-//            toolkitService.getAssigningAuthorities(new AsyncCallback<List<String>>() {
-//                @Override
-//                public void onFailure(Throwable e) {
-//                    new PopupMessage("Error loading Assigning Authorities - usually caused by session timeout - " + e.getMessage());
-//                }
-//
-//                @Override
-//                public void onSuccess(List<String> s) {
-//                    assigningAuthorities = s;
-//                }
-//            });
-//        } catch (Exception e) {
-//            new PopupMessage(e.getMessage());
-//        }
-//    }
 
     Widget buildSectionSelector() {
         HorizontalPanel selectSectionPanel = new HorizontalPanel();
@@ -177,13 +153,9 @@ class TestSelectionManager {
     }
 
     void loadSectionNames() {
-        ClientUtils.INSTANCE.getToolkitServices().getTestIndex(tool.getSelectedTest(), new AsyncCallback<List<String>>() {
-
-            public void onFailure(Throwable caught) {
-                new PopupMessage("getTestSectionsReferencedInUseReports: " + caught.getMessage());
-            }
-
-            public void onSuccess(List<String> result) {
+        new GetTestIndexCommand() {
+            @Override
+            public void onComplete(List<String> result) {
                 sections.clear();
                 selectSectionList.clear();
                 if (result == null) {
@@ -199,7 +171,7 @@ class TestSelectionManager {
                 }
                 selectedSections.clear();
             }
-        });
+        }.run(new GetTestDetailsRequest(ClientUtils.INSTANCE.getCommandContext(), tool.getSelectedTest()));
     }
 
     public List<String> getSelectedSections() {
@@ -263,17 +235,12 @@ class TestSelectionManager {
     }
 
     void loadTestReadme(final HTML documentation) {
-        ClientUtils.INSTANCE.getToolkitServices().getTestReadme(tool.getSelectedTest(), new AsyncCallback<String>() {
-
-            public void onFailure(Throwable caught) {
-                new PopupMessage("getTestReadme: " + caught.getMessage());
-            }
-
-            public void onSuccess(String result) {
+        new GetTestReadmeCommand() {
+            @Override
+            public void onComplete(String result) {
                 documentation.setHTML(Util.htmlize(result));
             }
-
-        });
+        }.run(new GetTestDetailsRequest(ClientUtils.INSTANCE.getCommandContext(), tool.getSelectedTest()));
     }
 
     Button buildLogLauncher(final String simId, String label) {

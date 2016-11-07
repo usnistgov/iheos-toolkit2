@@ -52,14 +52,21 @@ public interface ToolkitService extends RemoteService  {
 	/* Test management */
 	Map<String, Result> getTestResults(List<TestInstance> testInstances, String testSession) throws NoServletSessionException ;
 	LogFileContentDTO getTestLogDetails(String sessionName, TestInstance testInstance) throws Exception;
-	Map<String, String> getCollectionNames(String collectionSetName) throws Exception;
-	List<TestInstance> getCollectionMembers(String collectionSetName, String collectionName) throws Exception;
-	List<TestCollectionDefinitionDAO> getTestCollections(String collectionSetName) throws Exception;
-	Map<String, String> getCollection(String collectionSetName, String collectionName) throws Exception;
-	String getTestReadme(String test) throws Exception;
-	List<String> getTestIndex(String test) throws Exception;
-	List<Result> runMesaTest(String mesaTestSession, SiteSpec siteSpec, TestInstance testInstance, List<String> sections, Map<String, String> params, boolean stopOnFirstFailure) throws Exception ;
-	TestOverviewDTO runTest(String environment, String mesaTestSession, SiteSpec siteSpec, TestInstance testInstance, Map<String, String> params, boolean stopOnFirstFailure) throws Exception;
+
+    Map<String, String> getCollectionNames(GetCollectionRequest request) throws Exception;
+
+    List<TestInstance> getCollectionMembers(GetCollectionRequest request) throws Exception;
+
+    List<TestCollectionDefinitionDAO> getTestCollections(GetCollectionRequest request) throws Exception;
+
+    Map<String, String> getCollection(GetCollectionRequest request) throws Exception;
+
+    String getTestReadme(GetTestDetailsRequest request) throws Exception;
+
+    List<String> getTestIndex(GetTestDetailsRequest request) throws Exception;
+
+    List<Result> runMesaTest(RunTestRequest request) throws Exception ;
+	TestOverviewDTO runTest(RunTestRequest request) throws Exception;
 	boolean isPrivateMesaTesting() throws NoServletSessionException ;
 	List<String> getMesaTestSessionNames(CommandContext request) throws Exception;
 	boolean addMesaTestSession(String name) throws Exception;
@@ -76,9 +83,9 @@ public interface ToolkitService extends RemoteService  {
 	//	 List<String> getSimulatorTransactionNames(String simid) throws Exception;
 	int removeOldSimulators(CommandContext context) throws Exception;
 	List<SimulatorStats> getSimulatorStats(GetSimulatorStatsRequest request) throws Exception;
-	List<Pid> getPatientIds(SimId simId) throws Exception;
-	String addPatientIds(SimId simId, List<Pid> pids) throws Exception;
-	boolean deletePatientIds(SimId simId, List<Pid> pids) throws Exception;
+	List<Pid> getPatientIds(PatientIdsRequest request) throws Exception;
+	String addPatientIds(PatientIdsRequest request) throws Exception;
+	boolean deletePatientIds(PatientIdsRequest request) throws Exception;
 	Result getSimulatorEventRequest(TransactionInstance ti) throws Exception;
 	Result getSimulatorEventResponse(TransactionInstance ti) throws Exception;
 

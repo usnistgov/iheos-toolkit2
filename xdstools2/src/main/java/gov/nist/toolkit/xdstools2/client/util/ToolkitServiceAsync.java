@@ -28,6 +28,7 @@ import gov.nist.toolkit.xdstools2.shared.RegistryStatus;
 import gov.nist.toolkit.xdstools2.shared.RepositoryStatus;
 import gov.nist.toolkit.xdstools2.shared.command.CommandContext;
 import gov.nist.toolkit.xdstools2.shared.command.InitializationResponse;
+import gov.nist.toolkit.xdstools2.shared.command.request.RunTestRequest;
 import gov.nist.toolkit.xdstools2.shared.command.request.*;
 
 import java.util.Collection;
@@ -167,18 +168,23 @@ public interface ToolkitServiceAsync {
     //	void getSimulatorTransactionNames(String simid, AsyncCallback<List<String>> notify);
     void removeOldSimulators(CommandContext context,AsyncCallback<Integer> callback);
     void getSimulatorStats(GetSimulatorStatsRequest request, AsyncCallback<List<SimulatorStats>> callback);
-    void getPatientIds(SimId simId, AsyncCallback<List<Pid>> callback) throws Exception;
-    void addPatientIds(SimId simId, List<Pid> pids, AsyncCallback<String> callback) throws Exception;
-    void deletePatientIds(SimId simId, List<Pid> pids, AsyncCallback<Boolean> callback) throws Exception;
+    void getPatientIds(PatientIdsRequest request, AsyncCallback<List<Pid>> callback);
+    void addPatientIds(PatientIdsRequest request, AsyncCallback<String> callback);
+    void deletePatientIds(PatientIdsRequest request, AsyncCallback<Boolean> callback);
 
-    void getCollectionNames(String collectionSetName, AsyncCallback<Map<String, String>> callback);
-    void getCollectionMembers(String collectionSetName, String collectionName, AsyncCallback<List<TestInstance>> callback);
-    void getTestCollections(String collectionSetName, AsyncCallback<List<TestCollectionDefinitionDAO>> callback);
-    void getCollection(String collectionSetName, String collectionName, AsyncCallback<Map<String, String>> callback);
-    void getTestReadme(String test, AsyncCallback<String> callback);
-    void getTestIndex(String test, AsyncCallback<List<String>> callback);
-    void runMesaTest(String mesaTestSession, SiteSpec siteSpec, TestInstance testInstance, List<String> sections, Map<String, String> params, boolean stopOnFirstFailure, AsyncCallback<List<Result>> callback);
-    void runTest(String environment, String mesaTestSession, SiteSpec siteSpec, TestInstance testInstance, Map<String, String> params, boolean stopOnFirstFailure, AsyncCallback<TestOverviewDTO> callback) throws NoServletSessionException;
+    void getCollectionNames(GetCollectionRequest request, AsyncCallback<Map<String, String>> callback);
+
+    void getCollectionMembers(GetCollectionRequest request, AsyncCallback<List<TestInstance>> callback);
+
+    void getTestCollections(GetCollectionRequest request, AsyncCallback<List<TestCollectionDefinitionDAO>> callback);
+
+    void getCollection(GetCollectionRequest request, AsyncCallback<Map<String, String>> callback);
+
+    void getTestReadme(GetTestDetailsRequest request, AsyncCallback<String> callback);
+
+    void getTestIndex(GetTestDetailsRequest request, AsyncCallback<List<String>> callback);
+    void runMesaTest(RunTestRequest request, AsyncCallback<List<Result>> callback);
+    void runTest(RunTestRequest request, AsyncCallback<TestOverviewDTO> callback);
     void isPrivateMesaTesting(AsyncCallback<Boolean> callback);
     void addMesaTestSession(String name, AsyncCallback<Boolean> callback);
     void delMesaTestSession(String name, AsyncCallback<Boolean> callback);

@@ -4,18 +4,18 @@ import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import gov.nist.toolkit.actortransaction.client.ActorType;
 import gov.nist.toolkit.configDatatypes.client.TransactionType;
 import gov.nist.toolkit.sitemanagement.client.SiteSpec;
-import gov.nist.toolkit.xdstools2.client.widgets.PopupMessage;
+import gov.nist.toolkit.xdstools2.client.command.command.GetCollectionNamesCommand;
 import gov.nist.toolkit.xdstools2.client.tabs.genericQueryTab.GenericQueryTab;
 import gov.nist.toolkit.xdstools2.client.tabs.genericQueryTab.QueryBoilerplate;
 import gov.nist.toolkit.xdstools2.client.tabs.testsOverviewTab.TestsOverviewTab;
 import gov.nist.toolkit.xdstools2.client.util.ClientUtils;
+import gov.nist.toolkit.xdstools2.shared.command.request.GetCollectionRequest;
 
 import java.util.List;
 import java.util.Map;
@@ -51,13 +51,9 @@ public class SiteSelectionWidget extends HorizontalPanel {
 	 * Loads the list of actor types from the back-end and populates the display on the UI
 	 */
 	private void loadActorNames() {
-		ClientUtils.INSTANCE.getToolkitServices().getCollectionNames("actorcollections", new AsyncCallback<Map<String, String>>() {
-
-			public void onFailure(Throwable caught) {
-				new PopupMessage("getCollectionNames: " + caught.getMessage());
-			}
-
-			public void onSuccess(Map<String, String> result) {
+		new GetCollectionNamesCommand() {
+			@Override
+			public void onComplete(Map<String, String> result) {
 				actorCollectionMap = result;
 				selectActorList.clear();
 				selectActorList.addItem(chooseSelection, "");
@@ -67,7 +63,7 @@ public class SiteSelectionWidget extends HorizontalPanel {
 					selectActorList.addItem(description, name);
 				}
 			}
-		});
+		}.run(new GetCollectionRequest(ClientUtils.INSTANCE.getCommandContext(), "actorcollections"));
 	}
 
     /**

@@ -2,15 +2,18 @@ package gov.nist.toolkit.xdstools2.client.tabs.simulatorControlTab;
 
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.*;
 import gov.nist.toolkit.actorfactory.client.SimId;
 import gov.nist.toolkit.actorfactory.client.SimulatorConfig;
 import gov.nist.toolkit.configDatatypes.client.Pid;
 import gov.nist.toolkit.configDatatypes.client.PidBuilder;
-import gov.nist.toolkit.xdstools2.client.widgets.PopupMessage;
+import gov.nist.toolkit.xdstools2.client.command.command.AddPatientIdsCommand;
+import gov.nist.toolkit.xdstools2.client.command.command.DeletePatientIdsCommand;
+import gov.nist.toolkit.xdstools2.client.command.command.GetPatientIdsCommand;
 import gov.nist.toolkit.xdstools2.client.siteActorManagers.FindDocumentsSiteActorManager;
 import gov.nist.toolkit.xdstools2.client.tabs.genericQueryTab.GenericQueryTab;
+import gov.nist.toolkit.xdstools2.client.widgets.PopupMessage;
+import gov.nist.toolkit.xdstools2.shared.command.request.PatientIdsRequest;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -78,21 +81,12 @@ public class PidEditTab extends GenericQueryTab {
                         Pid p = PidBuilder.createPid(pidString);
                         if (p != null) pidsToDelete.add(p);
                     }
-                    try {
-                        getToolkitServices().deletePatientIds(simId, pidsToDelete, new AsyncCallback<Boolean>() {
-                            @Override
-                            public void onFailure(Throwable throwable) {
-                                new PopupMessage("Error deleting Patient IDs - " + throwable.getMessage());
-                            }
-
-                            @Override
-                            public void onSuccess(Boolean aBoolean) {
-                                loadPids();
-                            }
-                        });
-                    } catch (Exception e) {
-                        new PopupMessage("Error deleting Patient IDs - " + e.getMessage());
-                    }
+                    new DeletePatientIdsCommand(){
+                        @Override
+                        public void onComplete(Boolean result) {
+                            loadPids();
+                        }
+                    }.run(new PatientIdsRequest(getCommandContext(),simId,pidsToDelete));
                 }
             }
         });
@@ -128,32 +122,23 @@ public class PidEditTab extends GenericQueryTab {
                     clear();
                     return;
                 }
-                try {
-                    getToolkitServices().addPatientIds(simId, pids, new AsyncCallback<String>() {
-                        @Override
-                        public void onFailure(Throwable throwable) {
-                            new PopupMessage("Error saving Patient ID - " + throwable.getMessage());
+                new AddPatientIdsCommand(){
+                    @Override
+                    public void onComplete(String o) {
+                        int dups = 0;
+                        int added = 0;
+                        for (Pid pid : pids) {
+                            String s = pid.asString();
+                            if (contains(s)) { dups++; continue; }
+                            added++;
+                            pidList.insertItem(s, 0);
                         }
-
-                        @Override
-                        public void onSuccess(String o) {
-                            int dups = 0;
-                            int added = 0;
-                            for (Pid pid : pids) {
-                                String s = pid.asString();
-                                if (contains(s)) { dups++; continue; }
-                                added++;
-                                pidList.insertItem(s, 0);
-                            }
-                            clear();
-                            if (dups == 0) new PopupMessage(added + " Patient IDs added");
-                            else if (dups == 1) new PopupMessage("1 Patient ID added, others were duplicates");
-                            else new PopupMessage(added + " Patient IDs added, " + dups + "  were duplicates");
-                        }
-                    });
-                } catch (Exception e) {
-                    new PopupMessage("Error saving Patient ID - " + e.getMessage());
-                }
+                        clear();
+                        if (dups == 0) new PopupMessage(added + " Patient IDs added");
+                        else if (dups == 1) new PopupMessage("1 Patient ID added, others were duplicates");
+                        else new PopupMessage(added + " Patient IDs added, " + dups + "  were duplicates");
+                    }
+                }.run(new PatientIdsRequest(getCommandContext(),simId,pids));
             }
 
             boolean contains(String pidString) {
@@ -170,22 +155,13 @@ public class PidEditTab extends GenericQueryTab {
     }
 
     private void loadPids() {
-        try {
-            getToolkitServices().getPatientIds(simId, new AsyncCallback<List<Pid>>() {
-                @Override
-                public void onFailure(Throwable throwable) {
-                    new PopupMessage("Error retrieving Patient IDs - " + throwable.getMessage());
-                }
-
-                @Override
-                public void onSuccess(List<Pid> pids) {
-                    pidList.clear();
-                    for (Pid pid : pids) pidList.addItem(pid.asString());
-                }
-            });
-        } catch (Exception e) {
-            new PopupMessage("Error retrieving Patient IDs - " + e.getMessage());
-        }
+        new GetPatientIdsCommand(){
+            @Override
+            public void onComplete(List<Pid> pids) {
+                pidList.clear();
+                for (Pid pid : pids) pidList.addItem(pid.asString());
+            }
+        }.run(new PatientIdsRequest(getCommandContext(),simId));
     }
 
     public String getWindowShortName() {

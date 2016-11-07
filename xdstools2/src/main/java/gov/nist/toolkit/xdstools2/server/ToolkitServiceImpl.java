@@ -496,22 +496,29 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements
     }
     /**
      * Get list of section names defined for the test in the order they should be executed
-     * @param test test name
      * @return list of sections
      * @throws Exception if something goes wrong
      */
     @Override
-    public List<String> getTestIndex(String test) throws Exception { return session().xdsTestServiceManager().getTestSections(test); }
+    public List<String> getTestIndex(GetTestDetailsRequest request) throws Exception {
+        installCommandContext(request);
+        return session().xdsTestServiceManager().getTestSections(request.getTest());
+    }
     /**
      * Get map of (collection name, collection description) pairs contained in testkit
-     * @param collectionSetName the collection name
      * @return the map
      * @throws Exception is something goes wrong
      */
     @Override
-    public Map<String, String> getCollectionNames(String collectionSetName) throws Exception { return session().xdsTestServiceManager().getCollectionNames(collectionSetName); }
+    public Map<String, String> getCollectionNames(GetCollectionRequest request) throws Exception {
+        installCommandContext(request);
+        return session().xdsTestServiceManager().getCollectionNames(request.getCollectionSetName());
+    }
     @Override
-    public List<TestInstance> getCollectionMembers(String collectionSetName, String collectionName) throws Exception { return session().xdsTestServiceManager().getCollectionMembers(collectionSetName, collectionName); }
+    public List<TestInstance> getCollectionMembers(GetCollectionRequest request) throws Exception {
+        installCommandContext(request);
+        return session().xdsTestServiceManager().getCollectionMembers(request.getCollectionSetName(), request.getCollectionName());
+    }
     @Override
     public List<TestOverviewDTO> getTestsOverview(GetTestsOverviewRequest request) throws Exception {
         installCommandContext(request);
@@ -530,35 +537,42 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements
         return o;
     }
     @Override
-    public List<TestCollectionDefinitionDAO> getTestCollections(String collectionSetName) throws Exception { return session().xdsTestServiceManager().getTestCollections(collectionSetName); }
-
-    @Override
-    public Map<String, String> getCollection(String collectionSetName, String collectionName) throws Exception {
-        return session().xdsTestServiceManager().getCollection(collectionSetName, collectionName);
+    public List<TestCollectionDefinitionDAO> getTestCollections(GetCollectionRequest request) throws Exception {
+        installCommandContext(request);
+        return session().xdsTestServiceManager().getTestCollections(request.getCollectionSetName());
     }
 
     @Override
-    public String getTestReadme(String test) throws Exception {
-        return session().xdsTestServiceManager().getTestReadme(test);
+    public Map<String, String> getCollection(GetCollectionRequest request) throws Exception {
+        installCommandContext(request);
+        return session().xdsTestServiceManager().getCollection(request.getCollectionSetName(), request.getCollectionName());
     }
 
     @Override
-    public List<Result> runMesaTest(String mesaTestSession, SiteSpec siteSpec, TestInstance testInstance, List<String> sections, Map<String, String> params, boolean stopOnFirstFailure)  throws Exception {
-        return session().xdsTestServiceManager().runMesaTest(getCurrentEnvironment(), mesaTestSession, siteSpec, testInstance, sections, params, null, stopOnFirstFailure);
+    public String getTestReadme(GetTestDetailsRequest request) throws Exception {
+        installCommandContext(request);
+        return session().xdsTestServiceManager().getTestReadme(request.getTest());
+    }
+
+    @Override
+    public List<Result> runMesaTest(RunTestRequest request)  throws Exception {
+        installCommandContext(request);
+        return session().xdsTestServiceManager().runMesaTest(request.getEnvironmentName(), request.getTestSessionName(), request.getSiteSpec(), request.getTestInstance(), request.getSections(), request.getParams(), null, request.isStopOnFirstFailure());
     }
     @Override
-    public TestOverviewDTO runTest(String environmentName, String mesaTestSession, SiteSpec siteSpec, TestInstance testInstance, Map<String, String> params, boolean stopOnFirstFailure) throws Exception {
+    public TestOverviewDTO runTest(RunTestRequest request) throws Exception {
+        installCommandContext(request);
         List<String> sections = new ArrayList<>();
-        if (testInstance.getSection() != null) sections.add(testInstance.getSection());
-        setEnvironment(environmentName);
+        if (request.getTestInstance().getSection() != null) sections.add(request.getTestInstance().getSection());
+        setEnvironment(request.getEnvironmentName());
         Session session = session().xdsTestServiceManager().session;
-        session.setCurrentEnvName(environmentName);
-        session.setMesaSessionName(mesaTestSession);
-        if (siteSpec == null)
+        session.setCurrentEnvName(request.getEnvironmentName());
+        session.setMesaSessionName(request.getTestSessionName());
+        if (request.getSiteSpec() == null)
             throw new Exception("No site selected");
-        if (!new SimManager(mesaTestSession).exists(siteSpec.name))
-            throw new Exception("Site " + siteSpec.name + " does not exist");
-        TestOverviewDTO testOverviewDTO = session().xdsTestServiceManager().runTest(environmentName, mesaTestSession, siteSpec, testInstance, sections, params, null, stopOnFirstFailure);
+        if (!new SimManager(request.getTestSessionName()).exists(request.getSiteSpec().name))
+            throw new Exception("Site " + request.getSiteSpec().name + " does not exist");
+        TestOverviewDTO testOverviewDTO = session().xdsTestServiceManager().runTest(request.getEnvironmentName(), request.getTestSessionName(), request.getSiteSpec(), request.getTestInstance(), sections, request.getParams(), null, request.isStopOnFirstFailure());
         return testOverviewDTO;
     }
     // TODO remove this once command pattern is implemented for every single call
@@ -906,12 +920,20 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements
     }
 
     @Override
-    public List<Pid> getPatientIds(SimId simId) throws Exception { return new SimulatorServiceManager(session()).getPatientIds(simId); }
+    public List<Pid> getPatientIds(PatientIdsRequest request) throws Exception {
+        installCommandContext(request);
+        return new SimulatorServiceManager(session()).getPatientIds(request.getSimId());
+    }
     @Override
-    public String addPatientIds(SimId simId, List<Pid> pids) throws Exception { return new SimulatorServiceManager(session()).addPatientIds(simId, pids); }
+    public String addPatientIds(PatientIdsRequest request) throws Exception {
+        installCommandContext(request);
+        return new SimulatorServiceManager(session()).addPatientIds(request.getSimId(), request.getPids());
+    }
     @Override
-    public boolean deletePatientIds(SimId simId, List<Pid> pids) throws Exception { return new SimulatorServiceManager(session()).deletePatientIds(simId, pids); }
-
+    public boolean deletePatientIds(PatientIdsRequest request) throws Exception {
+        installCommandContext(request);
+        return new SimulatorServiceManager(session()).deletePatientIds(request.getSimId(), request.getPids());
+    }
     @Override
     public Result getSimulatorEventRequest(TransactionInstance ti) throws Exception {
         return new SimulatorServiceManager(session()).getSimulatorEventRequestAsResult(ti);

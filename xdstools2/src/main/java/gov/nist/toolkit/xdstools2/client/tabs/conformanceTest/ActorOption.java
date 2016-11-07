@@ -3,7 +3,9 @@ package gov.nist.toolkit.xdstools2.client.tabs.conformanceTest;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import gov.nist.toolkit.actortransaction.client.ActorType;
 import gov.nist.toolkit.results.client.TestInstance;
+import gov.nist.toolkit.xdstools2.client.command.command.GetCollectionMembersCommand;
 import gov.nist.toolkit.xdstools2.client.util.ClientUtils;
+import gov.nist.toolkit.xdstools2.shared.command.request.GetCollectionRequest;
 
 import java.util.List;
 
@@ -28,12 +30,19 @@ public class ActorOption {
      * Tests for options are listed in collections as actorType_optionName
      * @param callback with list of testIds
      */
-    void loadTests(AsyncCallback<List<TestInstance>> callback) {
+    void loadTests(final AsyncCallback<List<TestInstance>> callback) {
+        GetCollectionRequest request;
         if (optionId == null || optionId.equals("")) {
-            ClientUtils.INSTANCE.getToolkitServices().getCollectionMembers("actorcollections", actorTypeId, callback);
+            request = new GetCollectionRequest(ClientUtils.INSTANCE.getCommandContext(), "actorcollections", actorTypeId);
         } else {
-            ClientUtils.INSTANCE.getToolkitServices().getCollectionMembers("collections", actorTypeId + "_" + optionId, callback);
+            request = new GetCollectionRequest(ClientUtils.INSTANCE.getCommandContext(), "collections", actorTypeId + "_" + optionId);
         }
+        new GetCollectionMembersCommand() {
+            @Override
+            public void onComplete(List<TestInstance> result) {
+                callback.onSuccess(result);
+            }
+        }.run(request);
     }
 
     public boolean isRep() {
