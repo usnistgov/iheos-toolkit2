@@ -2,6 +2,8 @@ package gov.nist.toolkit.valregmetadata.field;
 
 import gov.nist.toolkit.errorrecording.ErrorRecorder;
 import gov.nist.toolkit.errorrecording.client.XdsErrorCode;
+import gov.nist.toolkit.errorrecording.client.assertions.Assertion;
+import gov.nist.toolkit.errorrecording.client.assertions.AssertionLibrary;
 import gov.nist.toolkit.registrymetadata.Metadata;
 import gov.nist.toolkit.commondatatypes.MetadataSupport;
 import gov.nist.toolkit.valsupport.client.ValidationContext;
@@ -16,6 +18,8 @@ public class SubmissionStructure {
 	Metadata m;
 	RegistryValidationInterface rvi;
 	boolean hasmember_error = false;
+	private AssertionLibrary ASSERTIONLIBRARY = AssertionLibrary.getInstance();
+
 
 
 	public SubmissionStructure(Metadata m, RegistryValidationInterface rvi)  {
@@ -128,7 +132,9 @@ public class SubmissionStructure {
 				er.externalChallenge(source + " must be shown to be a Folder already in the registry");
 			} else {
 				// is not folder
-				er.err(XdsErrorCode.Code.XDSRegistryMetadataError, source + " is not a Folder in submission and cannot already be in registry", this, assocsRef);
+				Assertion assertion = ASSERTIONLIBRARY.getAssertion("TA053");
+				String detail = "Association source found: '" + source + "'";
+				er.err(XdsErrorCode.Code.XDSRegistryMetadataError, assertion, this, "", detail);
 				hasmember_error = true;
 			}
 			// try to verify that target is a DocumentEntry
@@ -139,11 +145,15 @@ public class SubmissionStructure {
 				er.externalChallenge(source + " must be shown to be a DocumentEntry already in the registry");
 			} else {
 				// is not DocumentEntry
-				er.err(XdsErrorCode.Code.XDSRegistryMetadataError, source + " is not a DocumentEntry in submission and cannot already be in registry", this, assocsRef);
+				Assertion assertion = ASSERTIONLIBRARY.getAssertion("TA054");
+				String detail = "Association source found: '" + source + "'";
+				er.err(XdsErrorCode.Code.XDSRegistryMetadataError, assertion, this, "", detail);
 				hasmember_error = true;
 			}
 		} else {
-			er.err(XdsErrorCode.Code.XDSRegistryMetadataError, assocDescription(assocId) + ": only Folder to DocumentEntry associations can be members of SubmissionSet (linked to SubmissionSet object via HasMember association", this, assocsRef);
+			Assertion assertion = ASSERTIONLIBRARY.getAssertion("TA055");
+			String detail = "Association found: '" + assocDescription(assocId) + "'";
+			er.err(XdsErrorCode.Code.XDSRegistryMetadataError, assertion, this, "", detail);
 			hasmember_error = true;
 		}
 	}
@@ -422,15 +432,15 @@ public class SubmissionStructure {
 
 
 	static List<String> relationships =
-		Arrays.asList(
-				"HasMember",
-				"RPLC",
-				"XFRM",
-				"XFRM_RPLC",
-				"APND",
-				"IsSnapshotOf",
-				"signs"
-		);
+			Arrays.asList(
+					"HasMember",
+					"RPLC",
+					"XFRM",
+					"XFRM_RPLC",
+					"APND",
+					"IsSnapshotOf",
+					"signs"
+			);
 
 	static List<String> mu_relationships =
 			Arrays.asList(
@@ -505,7 +515,7 @@ public class SubmissionStructure {
 			if (!isUUID(target) && !submissionContains(target))
 				er.err(XdsErrorCode.Code.XDSRegistryMetadataError, objectDescription(assoc) + ": targetObject has value " + target +
 						" which is not in the submission but cannot be in registry since it is not in UUID format", this, "ITI TF-3: 4.1.12.3");
-}
+		}
 	}
 
 
@@ -572,7 +582,7 @@ public class SubmissionStructure {
 			String id = doc.getAttributeValue(MetadataSupport.id_qname);
 			if (	id == null ||
 					id.equals("")
-			) {
+					) {
 				er.err(XdsErrorCode.Code.XDSRegistryMetadataError, "All RegistryPackage and ExtrinsicObject objects must have id attributes", this, "ebRIM 2.4.1");
 				return;
 			}
@@ -582,7 +592,7 @@ public class SubmissionStructure {
 			String id = rp.getAttributeValue(MetadataSupport.id_qname);
 			if (	id == null ||
 					id.equals("")
-			) {
+					) {
 				er.err(XdsErrorCode.Code.XDSRegistryMetadataError, "All RegistryPackage and ExtrinsicObject objects must have id attributes", this, "ebRIM 2.4.1");
 				return;
 			}
@@ -750,20 +760,20 @@ public class SubmissionStructure {
 
 			if ( assoc == null) {
 				er.err(XdsErrorCode.Code.XDSRegistryMetadataError, "DocumentEntry(" +
-						doc.getAttributeValue(MetadataSupport.id_qname) +
-						") is not linked to the SubmissionSet with a " + assoc_type("HasMember") + " Association",
+								doc.getAttributeValue(MetadataSupport.id_qname) +
+								") is not linked to the SubmissionSet with a " + assoc_type("HasMember") + " Association",
 						this, "ITI TF-3: 4.1.4.1");
 			} else {
 				if (!has_sss_slot(assoc)) {
 					er.err(XdsErrorCode.Code.XDSRegistryMetadataError, assocDescription(assoc) +
-							": links a DocumentEntry to the SubmissionSet but does not have a " +
-							"SubmissionSetStatus Slot with value Original",
+									": links a DocumentEntry to the SubmissionSet but does not have a " +
+									"SubmissionSetStatus Slot with value Original",
 							this, "ITI TF-3: 4.1.4.1");
 					hasmember_error = true;
 				} else if (!is_sss_original(assoc)) {
 					er.err(XdsErrorCode.Code.XDSRegistryMetadataError, assocDescription(assoc) +
-							": links a DocumentEntry to the SubmissionSet but does not have a " +
-							"SubmissionSetStatus Slot with value Original",
+									": links a DocumentEntry to the SubmissionSet but does not have a " +
+									"SubmissionSetStatus Slot with value Original",
 							this, "ITI TF-3: 4.1.4.1");
 					hasmember_error = true;
 				}
