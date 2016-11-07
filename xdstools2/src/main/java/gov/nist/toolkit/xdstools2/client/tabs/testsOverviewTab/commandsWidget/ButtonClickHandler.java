@@ -6,6 +6,7 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Button;
 import gov.nist.toolkit.results.shared.Test;
 import gov.nist.toolkit.sitemanagement.client.Site;
+import gov.nist.toolkit.xdstools2.client.command.command.ReloadAllTestResultsCommand;
 import gov.nist.toolkit.xdstools2.client.util.ToolkitServiceAsync;
 import gov.nist.toolkit.xdstools2.client.tabs.testsOverviewTab.ReloadAllTestResultsCallback;
 import gov.nist.toolkit.xdstools2.client.tabs.testsOverviewTab.Updater;
@@ -47,12 +48,13 @@ public class ButtonClickHandler implements ClickHandler {
         }
         else if (source == commandsWidget.getRefreshAllButton()){
             //TODO replace bogus site with actual site selected by user
-            ReloadAllTestResultsCallback reloadAllTestResultsCallback = new ReloadAllTestResultsCallback(updater);
-            try {
-                toolkitService.reloadAllTestResults(updater.getCurrentTestSession(), reloadAllTestResultsCallback);
-            } catch (Exception e) {
-                LOGGER.warning(e.getMessage());
-            }
+            final ReloadAllTestResultsCallback reloadAllTestResultsCallback = new ReloadAllTestResultsCallback(updater);
+                new ReloadAllTestResultsCommand(){
+                    @Override
+                    public void onComplete(List<Test> result) {
+                        reloadAllTestResultsCallback.onSuccess(result);
+                    }
+                }.run(ClientUtils.INSTANCE.getCommandContext());
         }
         else {
             // do nothing

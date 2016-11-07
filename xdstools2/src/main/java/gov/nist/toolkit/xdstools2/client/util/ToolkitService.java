@@ -45,7 +45,7 @@ public interface ToolkitService extends RemoteService  {
 	ConformanceSessionValidationStatus validateConformanceSession(String testSession, String siteName) throws Exception;
 	Collection<String> getSitesForTestSession(CommandContext context) throws Exception;
 	InitializationResponse getInitialization(CommandContext context) throws Exception;
-	String getAssignedSiteForTestSession(String testSession) throws Exception;
+	String getAssignedSiteForTestSession(CommandContext context) throws Exception;
 	void setAssignedSiteForTestSession(SetAssignedSiteForTestSessionRequest request) throws Exception;
 
 
@@ -178,8 +178,8 @@ public interface ToolkitService extends RemoteService  {
 	List<RepositoryStatus> getDashboardRepositoryData(CommandContext context) throws Exception;
 
 	List<String> getSiteNamesWithRG(CommandContext context) throws Exception;
-	List<String> getSiteNamesWithRIG() throws Exception;
-	List<String> getSiteNamesWithIDS() throws Exception;
+	List<String> getSiteNamesWithRIG(CommandContext context) throws Exception;
+	List<String> getSiteNamesWithIDS(CommandContext context) throws Exception;
 	List<String> getSiteNamesByTranType(GetSiteNamesByTranTypeRequest request) throws Exception;
 
 	String reloadSystemFromGazelle(ReloadSystemFromGazelleRequest request) throws Exception;
@@ -230,7 +230,7 @@ public interface ToolkitService extends RemoteService  {
 	// Tests Overview Tab
 	//------------------------------------------------------------------------
 	//------------------------------------------------------------------------
-	List<Test> reloadAllTestResults(String sessionName) throws Exception;
+	List<Test> reloadAllTestResults(CommandContext context) throws Exception;
 	List<Test> runAllTests(Site site) throws NoServletSessionException;
 	List<Test> deleteAllTestResults(Site site) throws NoServletSessionException;
 	Test runSingleTest(Site site, int testId) throws NoServletSessionException;

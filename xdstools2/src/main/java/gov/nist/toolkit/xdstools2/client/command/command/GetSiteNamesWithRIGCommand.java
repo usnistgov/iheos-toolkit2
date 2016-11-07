@@ -3,12 +3,14 @@ package gov.nist.toolkit.xdstools2.client.command.command;
 import gov.nist.toolkit.xdstools2.client.util.ClientUtils;
 import gov.nist.toolkit.xdstools2.shared.command.CommandContext;
 
+import java.util.List;
+
 /**
- * Created by onh2 on 10/14/16.
+ * Created by onh2 on 11/7/16.
  */
-public abstract class GetAssignedSiteForTestSessionCommand extends GenericCommand<CommandContext,String>{
+public abstract class GetSiteNamesWithRIGCommand extends GenericCommand<CommandContext,List<String>>{
     @Override
     public void run(CommandContext var1) {
-        ClientUtils.INSTANCE.getToolkitServices().getAssignedSiteForTestSession(var1,this);
+        ClientUtils.INSTANCE.getToolkitServices().getSiteNamesWithRIG(var1,this);
     }
 }

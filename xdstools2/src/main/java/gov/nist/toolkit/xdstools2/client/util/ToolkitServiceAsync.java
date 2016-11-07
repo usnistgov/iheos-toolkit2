@@ -215,7 +215,7 @@ public interface ToolkitServiceAsync {
     // Test Services
     //------------------------------------------------------------------------
     //------------------------------------------------------------------------
-    void reloadAllTestResults(String sessionName, AsyncCallback<List<Test>> callback) throws Exception;
+    void reloadAllTestResults(CommandContext context, AsyncCallback<List<Test>> callback);
     void getTestlogListing(String sessionName, AsyncCallback<List<TestInstance>> callback);
     void getTestResults(List<TestInstance> testIds, String testSession, AsyncCallback<Map<String, Result>> callback);
     void setMesaTestSession(String sessionName, AsyncCallback callback);
@@ -234,8 +234,8 @@ public interface ToolkitServiceAsync {
     void buildRegTestOrchestration(RegOrchestrationRequest request, AsyncCallback<RawResponse> callback);
     void buildRecTestOrchestration(RecOrchestrationRequest request, AsyncCallback<RawResponse> callback);
     void buildRSNAEdgeTestOrchestration(RSNAEdgeOrchestrationRequest request, AsyncCallback<RawResponse> callback);
-    void getSiteNamesWithRIG(AsyncCallback<List<String>> callback) throws Exception;
-    void getSiteNamesWithIDS(AsyncCallback<List<String>> callback) throws Exception;
+    void getSiteNamesWithRIG(CommandContext context, AsyncCallback<List<String>> callback) ;
+    void getSiteNamesWithIDS(CommandContext context, AsyncCallback<List<String>> callback) ;
     void register(String username, TestInstance testInstance, SiteSpec registry, Map<String, String> params, AsyncCallback<Result> callback) throws Exception;
     void registerWithLocalizedTrackingInODDS(String username, TestInstance testInstance, SiteSpec registry, SimId oddsSimId, Map<String, String> params, AsyncCallback<Map<String, String>> callback);
     void getOnDemandDocumentEntryDetails(SimId oddsSimId, AsyncCallback<List<DocumentEntryDetail>> callback);
@@ -246,7 +246,7 @@ public interface ToolkitServiceAsync {
     void getServletContextName(AsyncCallback<String> callback);
     void retrieveConfiguredFavoritesPid(CommandContext commandContext, AsyncCallback<List<Pid>> callback);
 
-    void getAssignedSiteForTestSession(String testSession, AsyncCallback<String> async);
+    void getAssignedSiteForTestSession(CommandContext context, AsyncCallback<String> async);
 
     void setAssignedSiteForTestSession(SetAssignedSiteForTestSessionRequest request, AsyncCallback<Void> async);
 }

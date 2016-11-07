@@ -9,6 +9,7 @@ import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import gov.nist.toolkit.results.shared.Test;
 import gov.nist.toolkit.sitemanagement.client.Site;
+import gov.nist.toolkit.xdstools2.client.command.command.ReloadAllTestResultsCommand;
 import gov.nist.toolkit.xdstools2.client.resources.TableResources;
 import gov.nist.toolkit.xdstools2.client.tabs.testsOverviewTab.commandsWidget.CommandsCell;
 import gov.nist.toolkit.xdstools2.client.tabs.testsOverviewTab.commandsWidget.CommandsColumn;
@@ -129,9 +130,14 @@ public class TestsOverviewWidget extends CellTable<Test> {
      * Load the full list of tests for a given Site and the current Session, as well as their parameters from the server
      * @param testsListCallback
      */
-    private void loadTestsData(AsyncCallback<List<Test>> testsListCallback) {
+    private void loadTestsData(final AsyncCallback<List<Test>> testsListCallback) {
         try {
-            ClientUtils.INSTANCE.getToolkitServices().reloadAllTestResults(updater.getCurrentTestSession(), testsListCallback);
+            new ReloadAllTestResultsCommand(){
+                @Override
+                public void onComplete(List<Test> result) {
+                    testsListCallback.onSuccess(result);
+                }
+            }.run(ClientUtils.INSTANCE.getCommandContext());
         } catch (Exception e) {
             LOGGER.warning("Failed to retrieve test results.");
         }

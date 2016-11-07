@@ -226,18 +226,13 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner, TestsH
 			testContextView.updateTestingContextDisplay();
 			return;
 		}
-		getToolkitServices().getAssignedSiteForTestSession(getCurrentTestSession(), new AsyncCallback<String>() {
+		new GetAssignedSiteForTestSessionCommand(){
 			@Override
-			public void onFailure(Throwable throwable) {
-				new PopupMessage("getAssignedSiteForTestSession failed: " + throwable.getMessage());
-			}
-
-			@Override
-			public void onSuccess(String s) {
-				testContext.setSiteName(s);
+			public void onComplete(String result) {
+				testContext.setSiteName(result);
 				testContextView.updateTestingContextDisplay();
 			}
-		});
+		}.run(getCommandContext());
 	}
 
 	private void resetStatistics(int testcount) {

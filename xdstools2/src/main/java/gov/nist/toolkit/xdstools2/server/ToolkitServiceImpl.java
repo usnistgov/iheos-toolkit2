@@ -124,8 +124,9 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements
     }
 
     @Override
-    public String getAssignedSiteForTestSession(String testSession) throws Exception {
-        return session().xdsTestServiceManager().getAssignedSiteForTestSession(testSession);
+    public String getAssignedSiteForTestSession(CommandContext context) throws Exception {
+        installCommandContext(context);
+        return session().xdsTestServiceManager().getAssignedSiteForTestSession(context.getTestSessionName());
     }
 
     @Override
@@ -200,10 +201,15 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements
         return siteServiceManager.getSiteNamesWithRG(session().getId());
     }
     @Override
-    public List<String> getSiteNamesWithRIG() throws Exception { return siteServiceManager.getSiteNamesWithRIG(session().getId()); }
+    public List<String> getSiteNamesWithRIG(CommandContext context) throws Exception {
+        installCommandContext(context);
+        return siteServiceManager.getSiteNamesWithRIG(session().getId());
+    }
     @Override
-    public List<String> getSiteNamesWithIDS() throws Exception { return siteServiceManager.getSiteNamesWithIDS(session().getId()); }
-
+    public List<String> getSiteNamesWithIDS(CommandContext context) throws Exception {
+        installCommandContext(context);
+        return siteServiceManager.getSiteNamesWithIDS(session().getId());
+    }
 
     //------------------------------------------------------------------------
     //------------------------------------------------------------------------
@@ -339,7 +345,10 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements
     //------------------------------------------------------------------------
     // New - Loads or reloads test data
     @Override
-    public List<Test> reloadAllTestResults(String sessionName) throws Exception { return session().xdsTestServiceManager().reloadAllTestResults(sessionName); }
+    public List<Test> reloadAllTestResults(CommandContext context) throws Exception {
+        installCommandContext(context);
+        return session().xdsTestServiceManager().reloadAllTestResults(context.getTestSessionName());
+    }
     @Override
     public List<TestInstance> getTestlogListing(String sessionName) throws Exception { return session().xdsTestServiceManager().getTestlogListing(sessionName); }
     @Override

@@ -1,11 +1,10 @@
 /**
- * 
+ *
  */
 package gov.nist.toolkit.xdstools2.client.tabs.simulatorControlTab;
 
-import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Panel;
-import gov.nist.toolkit.xdstools2.client.widgets.PopupMessage;
+import gov.nist.toolkit.xdstools2.client.command.command.GetSiteNamesWithRIGCommand;
 import gov.nist.toolkit.xdstools2.client.util.ClientUtils;
 
 import java.util.ArrayList;
@@ -14,52 +13,44 @@ import java.util.List;
 
 /**
  * Load RIG actors for selection by IIG actor
- * 
+ *
  * @author Ralph Moulton / MIR WUSTL IHE Development Project <a
  * href="mailto:moultonr@mir.wustl.edu">moultonr@mir.wustl.edu</a>
  *
  */
 public class RigSelectionPresenter {
 
-   MultiSelectionView view;
-   List<String> sites;
+    MultiSelectionView view;
+    List<String> sites;
 
-   public RigSelectionPresenter(/*ToolkitServiceAsync toolkitService, */final List<String> selected, final Panel panel) {
-       try {
-           ClientUtils.INSTANCE.getToolkitServices().getSiteNamesWithRIG(new AsyncCallback<List<String>>() {
+    public RigSelectionPresenter(final List<String> selected, final Panel panel) {
+        new GetSiteNamesWithRIGCommand(){
+            @Override
+            public void onComplete(List<String> siteNames) {
+                sites = siteNames;
+                view = new MultiSelectionView();
+                view.setData(siteNames);
 
-               public void onFailure(Throwable caught) {
-                   new PopupMessage("getSiteNamesWithRIG:" + caught.getMessage());
-               }
+                List<Integer> selectedRows = new ArrayList<>();
+                for (String sel : selected) {
+                    if (sites.contains(sel))
+                        selectedRows.add(sites.indexOf(sel));
+                }
+                view.setSelectedRows(selectedRows);
 
-               public void onSuccess(List<String> siteNames) {
-                   sites = siteNames;
-                   view = new MultiSelectionView();
-                   view.setData(siteNames);
+                bind();
+                panel.add(view.asWidget());
+            }
+        }.run(ClientUtils.INSTANCE.getCommandContext());
+    }
 
-                   List<Integer> selectedRows = new ArrayList<>();
-                   for (String sel : selected) {
-                       if (sites.contains(sel))
-                           selectedRows.add(sites.indexOf(sel));
-                   }
-                   view.setSelectedRows(selectedRows);
+    void bind() {}
 
-                   bind();
-                   panel.add(view.asWidget());
-               }
-           });
-       } catch (Exception e) {
-           new PopupMessage("getSiteNamesWithRIG:" + e.getMessage());
-       }
-   }
-
-   void bind() {}
-
-   public List<String> getSelected() {
-       List<String> selected = new ArrayList<>();
-       for (int row : view.getSelectedRows()) {
-           selected.add(sites.get(row));
-       }
-       return selected;
-   }
+    public List<String> getSelected() {
+        List<String> selected = new ArrayList<>();
+        for (int row : view.getSelectedRows()) {
+            selected.add(sites.get(row));
+        }
+        return selected;
+    }
 }

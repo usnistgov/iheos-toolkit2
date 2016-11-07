@@ -181,7 +181,7 @@ class TestContextDialog extends DialogBox {
                     siteManager.setSiteName(result);
                     selectSite(result);
                 }
-            }.run(newTestSession);
+            }.run(ClientUtils.INSTANCE.getCommandContext());
         }
     }
 
