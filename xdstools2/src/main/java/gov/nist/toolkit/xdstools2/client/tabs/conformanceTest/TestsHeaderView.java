@@ -24,7 +24,7 @@ class TestsHeaderView {
     private HTML notRun = new HTML();
     private FlexTable table = new FlexTable();
     private String headerText = "";
-    private HTML testsHeaderRunningMessage = new HTML();
+    private final HTML testsHeaderRunningMessage = new HTML();
     private boolean allowRun = true;
 
     TestsHeaderView(Controller controller) {
@@ -36,7 +36,8 @@ class TestsHeaderView {
         testsHeader.add(selfTestBanner);
 
         bar.add(testsHeaderTitle);
-        bar.add(testsHeaderRunningMessage);
+        testsHeaderRunningMessage.addStyleName("warningBanner");
+        testsHeader.add(testsHeaderRunningMessage);
 
 //        testsHeader.build(testsHeaderTitle);
 
@@ -67,9 +68,9 @@ class TestsHeaderView {
 
     void showRunningMessage(boolean running) {
         if (running)
-            testsHeaderRunningMessage.setHTML("Running...");
+            testsHeaderRunningMessage.setText("Running...");
         else
-            testsHeaderRunningMessage.setHTML("");
+            testsHeaderRunningMessage.setText("");
     }
 
     Widget asWidget() {
