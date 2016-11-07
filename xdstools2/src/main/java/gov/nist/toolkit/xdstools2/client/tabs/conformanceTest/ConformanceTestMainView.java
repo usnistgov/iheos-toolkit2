@@ -34,6 +34,7 @@ public class ConformanceTestMainView {
         toolPanel.add(optionsTabBar);
         toolPanel.add(initializationPanel);
         toolPanel.add(testsPanel);
+        toolPanel.add(new HTML("<br /><br />"));
 
         testSessionDescriptionPanel.setStyleName("with-rounded-border");
         testSessionDescriptionPanel.add(testSessionDescription);
