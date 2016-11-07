@@ -19,6 +19,7 @@ import gov.nist.toolkit.sitemanagement.client.Site;
 import gov.nist.toolkit.xdstools2.client.ClickHandlerData;
 import gov.nist.toolkit.xdstools2.client.command.command.GetAllSimConfigsCommand;
 import gov.nist.toolkit.xdstools2.client.command.command.GetAllSitesCommand;
+import gov.nist.toolkit.xdstools2.client.event.TabSelectedEvent;
 import gov.nist.toolkit.xdstools2.client.event.Xdstools2EventBus;
 import gov.nist.toolkit.xdstools2.client.event.testSession.TestSessionChangedEvent;
 import gov.nist.toolkit.xdstools2.client.event.testSession.TestSessionChangedEventHandler;
@@ -58,26 +59,10 @@ public class SimulatorControlTab extends GenericQueryTab {
 
 	@Override
 	protected Widget buildUI() {
-		return null;
-	}
-
-	@Override
-	protected void bindUI() {
-
-	}
-
-	@Override
-	protected void configureTabView() {
-
-	}
-
-	@Override
-	public void onTabLoad(boolean select, String eventName) {
+		FlowPanel simCtrlContainer=new FlowPanel();
 		self = this;
 
 		simConfigSuper = new SimConfigSuper(this, simConfigPanel, getCurrentTestSession());
-
-		registerTab(select, eventName);
 
 		addActorReloader();
 
@@ -86,9 +71,9 @@ public class SimulatorControlTab extends GenericQueryTab {
 		tlsEnabled = false;
 		enableInspectResults = false;
 
-		tabTopPanel.add(new HTML("<h2>Simulator Manager</h2>"));
+		simCtrlContainer.add(new HTML("<h2>Simulator Manager</h2>"));
 
-		tabTopPanel.add(new HTML("<h3>Add new simulator to this test session</h3>"));
+		simCtrlContainer.add(new HTML("<h3>Add new simulator to this test session</h3>"));
 
 		HorizontalPanel actorSelectPanel = new HorizontalPanel();
 		actorSelectPanel.add(HtmlMarkup.html("Select actor type"));
@@ -101,9 +86,9 @@ public class SimulatorControlTab extends GenericQueryTab {
 		actorSelectPanel.add(createActorSimulatorButton);
 		createActorSimulatorButton.addClickHandler(new CreateButtonClickHandler(this, testSessionManager));
 
-		tabTopPanel.add(actorSelectPanel);
+		simCtrlContainer.add(actorSelectPanel);
 
-		tabTopPanel.add(HtmlMarkup.html("<br />"));
+		simCtrlContainer.add(HtmlMarkup.html("<br />"));
 
 		VerticalPanel tableWrapper = new VerticalPanel();
 //		table.setBorderWidth(1);
@@ -112,11 +97,17 @@ public class SimulatorControlTab extends GenericQueryTab {
 		tableWrapper.add(tableTitle);
 		tableWrapper.add(table);
 
-		tabTopPanel.add(tableWrapper);
+		simCtrlContainer.add(tableWrapper);
 
 
 		simConfigWrapperPanel.add(simConfigPanel);
 
+
+		return simCtrlContainer;
+	}
+
+	@Override
+	protected void bindUI() {
 		// force loading of sites in the back end
 		// funny errors occur without this
 		new GetAllSitesCommand() {
@@ -134,7 +125,21 @@ public class SimulatorControlTab extends GenericQueryTab {
 			}
 		});
 
+		((Xdstools2EventBus) ClientUtils.INSTANCE.getEventBus()).addTabSelectedEventHandler(new TabSelectedEvent.TabSelectedEventHandler() {
+			@Override
+			public void onTabSelection(TabSelectedEvent event) {
+				if (event.getTabName().equals(tabName)){
+					loadSimStatus();
+				}
+			}
+		});
+
 		loadSimStatus();
+	}
+
+	@Override
+	protected void configureTabView() {
+
 	}
 
 	@Override
