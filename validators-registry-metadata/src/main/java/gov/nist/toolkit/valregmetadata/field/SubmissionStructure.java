@@ -532,13 +532,14 @@ public class SubmissionStructure {
 			}
 
 			if (!isUUID(target) && !submissionContains(target)) {
-				er.err(XdsErrorCode.Code.XDSRegistryMetadataError, objectDescription(assoc) + ": targetObject has value " + target +
-						" which is not in the submission but cannot be in registry since it is not in UUID format", this, "ITI TF-3: 4.1.12.3");
+				Assertion assertion = ASSERTIONLIBRARY.getAssertion("TA065");
+				String detail = objectDescription(assoc) + ": targetObject has value " + target +
+						" which is not in the submission but cannot be in registry since it is not in UUID format";
+				er.err(XdsErrorCode.Code.XDSRegistryMetadataError, assertion, this, "", detail);
 			}
 		}
 
 	}
-
 
 
 	void sss_relates_to_ss(ErrorRecorder er, ValidationContext vc) {
@@ -568,15 +569,19 @@ public class SubmissionStructure {
 			if (a_source.equals(ss_id)) {
 				String hm = assoc_type("HasMember");
 				if ( !a_type.equals(hm)) {
-					er.err(XdsErrorCode.Code.XDSRegistryMetadataError, "Association referencing SubmissionSet has type " + a_type + " but only type " + assoc_type("HasMember") + " is allowed", this, "ITI TF-3: 4.1.4");
+					Assertion assertion = ASSERTIONLIBRARY.getAssertion("TA066");
+					String detail = "Association referencing SubmissionSet has type " + a_type + " but only type "
+							+ assoc_type("HasMember") + " is allowed";
+					er.err(XdsErrorCode.Code.XDSRegistryMetadataError, assertion, this, "", detail);
 					hasmember_error = true;
 				}
 				if (target_is_included_is_doc) {
 					if ( ! m.hasSlot(assoc, "SubmissionSetStatus")) {
-						er.err(XdsErrorCode.Code.XDSRegistryMetadataError, "Association(" +
-								assoc.getAttributeValue(MetadataSupport.id_qname) +
-								") has sourceObject pointing to SubmissionSet and targetObject pointing to a DocumentEntry but contains no SubmissionSetStatus Slot", this, "ITI TF-3: 4.1.4.1"
-						);
+						Assertion assertion = ASSERTIONLIBRARY.getAssertion("TA067");
+						String detail = "Association(" + assoc.getAttributeValue(MetadataSupport.id_qname) +
+								") has sourceObject pointing to SubmissionSet and targetObject pointing " +
+								"to a DocumentEntry but contains no SubmissionSetStatus Slot";
+						er.err(XdsErrorCode.Code.XDSRegistryMetadataError, assertion, this, "", detail);
 					}
 				} else if (m.getFolderIds().contains(a_target)) {
 
@@ -585,11 +590,12 @@ public class SubmissionStructure {
 				}
 			}
 			else {
-				if ( m.hasSlot(assoc, "SubmissionSetStatus") && !"Reference".equals(m.getSlotValue(assoc, "SubmissionSetStatus", 0)))
-					er.err(XdsErrorCode.Code.XDSRegistryMetadataError, "Association " +
-							assoc.getAttributeValue(MetadataSupport.id_qname) +
-							" does not have sourceObject pointing to SubmissionSet but contains SubmissionSetStatus Slot with value Original", this, "ITI TF-3: 4.1.4.1"
-					);
+				if ( m.hasSlot(assoc, "SubmissionSetStatus") && !"Reference".equals(m.getSlotValue(assoc, "SubmissionSetStatus", 0))) {
+					Assertion assertion = ASSERTIONLIBRARY.getAssertion("TA068");
+					String detail = "Association " + assoc.getAttributeValue(MetadataSupport.id_qname) +
+							" does not have sourceObject pointing to SubmissionSet but contains SubmissionSetStatus Slot with value Original";
+					er.err(XdsErrorCode.Code.XDSRegistryMetadataError, assertion, this, "", detail);
+				}
 			}
 		}
 	}
