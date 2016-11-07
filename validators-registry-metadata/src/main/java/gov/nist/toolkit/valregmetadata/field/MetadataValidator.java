@@ -2,6 +2,8 @@ package gov.nist.toolkit.valregmetadata.field;
 
 import gov.nist.toolkit.errorrecording.ErrorRecorder;
 import gov.nist.toolkit.errorrecording.client.XdsErrorCode;
+import gov.nist.toolkit.errorrecording.client.assertions.Assertion;
+import gov.nist.toolkit.errorrecording.client.assertions.AssertionLibrary;
 import gov.nist.toolkit.registrymetadata.Metadata;
 import gov.nist.toolkit.commondatatypes.MetadataSupport;
 import gov.nist.toolkit.valregmetadata.object.Association;
@@ -20,6 +22,8 @@ public class MetadataValidator {
 	Metadata m;
 	ValidationContext vc;
 	RegistryValidationInterface rvi;
+	private AssertionLibrary ASSERTIONLIBRARY = AssertionLibrary.getInstance();
+
 
 	public MetadataValidator(Metadata m, ValidationContext vc, RegistryValidationInterface rvi) {
 		this.m = m;
@@ -109,8 +113,11 @@ public class MetadataValidator {
 				;
 			else if (m.getFolderIds().contains(id))
 				;
-			else
-				er.err(XdsErrorCode.Code.XDSRegistryMetadataError, "RegistryPackage(" + id + ") : is not classified as SubmissionSet or Folder", this, "ITI TF-3: 4.1.9.1");
+			else {
+				Assertion assertion = ASSERTIONLIBRARY.getAssertion("TA052");
+				String detail = "RegistryPackage ID found: '" + id + "'";
+				er.err(XdsErrorCode.Code.XDSRegistryMetadataError, assertion, this, "", detail);
+			}
 		}
 	}
 
