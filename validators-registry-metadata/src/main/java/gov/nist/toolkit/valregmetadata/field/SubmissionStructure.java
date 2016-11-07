@@ -471,7 +471,9 @@ public class SubmissionStructure {
 			} else if(relationships.contains(type) || (vc.isMU && mu_relationships.contains(type))) {
 				evalRelationship(er, assoc, vc);
 			} else {
-				er.err(XdsErrorCode.Code.XDSRegistryMetadataError, "Don't understand association type: " + type, this, "ITI TF-3: Table 4.2.2-1"); // Rev 12.1
+				Assertion assertion = ASSERTIONLIBRARY.getAssertion("TA060");
+				String detail = "Association type found: '" + type + "'";
+				er.err(XdsErrorCode.Code.XDSRegistryMetadataError, assertion, this, "", detail);
 			}
 		}
 	}
@@ -490,19 +492,22 @@ public class SubmissionStructure {
 	}
 
 	void cannotValidate(ErrorRecorder er, String context) {
-		er.err(XdsErrorCode.Code.XDSRegistryMetadataError, context + ": cannot validate - error parsing", this, "ebRIM");
+		Assertion assertion = ASSERTIONLIBRARY.getAssertion("TA061");
+		er.err(XdsErrorCode.Code.XDSRegistryMetadataError, assertion, this, context, "");
 	}
 
 	void has_single_ss(ErrorRecorder er, ValidationContext vc) {
 		List<OMElement> ssEles = m.getSubmissionSets();
 		if (ssEles.size() == 0) {
-			er.err(XdsErrorCode.Code.XDSRegistryMetadataError, "Submission does not contain a SubmissionSet", this, "ITI TF-3: 4.1.4");
+			Assertion assertion = ASSERTIONLIBRARY.getAssertion("TA062");
+			er.err(XdsErrorCode.Code.XDSRegistryMetadataError, assertion, this, "", "");
 		} else if (ssEles.size() > 1) {
 			List<String> doc = new ArrayList<String>();
 			for (String ssid : m.getSubmissionSetIds())
 				doc.add(objectDescription(ssid));
-
-			er.err(XdsErrorCode.Code.XDSRegistryMetadataError, "Submission contains multiple SubmissionSets: " + doc , this, "ITI TF-3: 4.1.4");
+			Assertion assertion = ASSERTIONLIBRARY.getAssertion("TA063");
+			String detail = "SubmissionSets found: " + doc;
+			er.err(XdsErrorCode.Code.XDSRegistryMetadataError, assertion, this, "", detail);
 		} else
 			er.detail(ssDescription(ssEles.get(0)) + ": SubmissionSet found");
 	}
@@ -519,14 +524,19 @@ public class SubmissionStructure {
 			if (target == null || source == null || type == null)
 				continue;
 
-			if (!isUUID(source) && !submissionContains(source))
-				er.err(XdsErrorCode.Code.XDSRegistryMetadataError, objectDescription(assoc) + ": sourceObject has value " + source +
-						" which is not in the submission but cannot be in registry since it is not in UUID format", this, "ITI TF-3: 4.1.12.3");
+			if (!isUUID(source) && !submissionContains(source)) {
+				Assertion assertion = ASSERTIONLIBRARY.getAssertion("TA064");
+				String detail = objectDescription(assoc) + ": sourceObject has value " + source +
+						" which is not in the submission but cannot be in registry since it is not in UUID format";
+				er.err(XdsErrorCode.Code.XDSRegistryMetadataError, assertion, this, "", detail);
+			}
 
-			if (!isUUID(target) && !submissionContains(target))
+			if (!isUUID(target) && !submissionContains(target)) {
 				er.err(XdsErrorCode.Code.XDSRegistryMetadataError, objectDescription(assoc) + ": targetObject has value " + target +
 						" which is not in the submission but cannot be in registry since it is not in UUID format", this, "ITI TF-3: 4.1.12.3");
+			}
 		}
+
 	}
 
 
