@@ -30,27 +30,18 @@ public class PatientId {
 			gather_patient_ids(m, m.getExtrinsicObjectIds(), MetadataSupport.XDSDocumentEntry_patientid_uuid);
 			gather_patient_ids(m, m.getFolderIds(),          MetadataSupport.XDSFolder_patientid_uuid);
 
-			// Define the Assertion
 			String assertionID = "TA002";
 			Assertion assertion = ASSERTIONLIBRARY.getAssertion(assertionID);
 
 			if (patient_ids.size() > 1) {
-				// TODO remove old call after switch to Assertions model is complete
-				// Original call
-				// er.err(XdsErrorCode.Code.XDSPatientIdDoesNotMatch, "Multiple Patient IDs found in submission: " + patient_ids, this, "ITI TF-3: 4.1.4.1");
-
-				// New call
 				String detail = String.join(", ", patient_ids);
-				String location = "";
-				er.err(XdsErrorCode.Code.XDSPatientIdDoesNotMatch, assertion, this, location, detail);
+				er.err(XdsErrorCode.Code.XDSPatientIdDoesNotMatch, assertion, this, "", detail);
 			}
 		} catch (Exception e) {
-			// Define the Assertion
 			String assertionID = "TA003";
 			Assertion a = ASSERTIONLIBRARY.getAssertion(assertionID);
 			String detail = e.getMessage();
-			String location = "";
-			er.err(XdsErrorCode.Code.XDSRegistryMetadataError, a, this, location, detail);
+			er.err(XdsErrorCode.Code.XDSRegistryMetadataError, a, this, "", detail);
 		}
 	}
 
