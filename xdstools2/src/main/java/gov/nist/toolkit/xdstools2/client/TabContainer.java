@@ -23,18 +23,12 @@ import java.util.List;
 public class TabContainer {
 	private static TabContainer me = new TabContainer();
 
-	//	private static TabLayoutPanel tabPanel = new TabLayoutPanel(1.5, Style.Unit.EM);
-//	private static TabPanel TABPANEL = new TabPanel();
-
 	// holds TabBar and currently selected panel from deck
 	// TabBar in North section.  Center holds SimpleLayoutPanel. SimpleLayoutPanel
 	// holds one element from the deck.
 	private static DockLayoutPanel OUTERPANEL = new DockLayoutPanel(Style.Unit.EM);
 
 	private static TabBar TABBAR = new TabBar();
-
-//	// this hosts one element from deck at a time -- PROBLEM: the scroll position is lost since SimpleLayoutPanel can only hold one widget and it is reset everytime a new tab is selected.
-//	private static SimpleLayoutPanel INNERPANEL = new SimpleLayoutPanel();
 
 	private static DeckLayoutPanel INNER_DECKPANEL = new DeckLayoutPanel();
 
@@ -43,9 +37,7 @@ public class TabContainer {
 
 	static {
 		OUTERPANEL.addNorth(TABBAR, 3.0);
-//		OUTERPANEL.addNorth(new HTML("<hr style=\"background:#6495ED; border:0; height:5px\" />"), 1.0);
 		OUTERPANEL.add(INNER_DECKPANEL);
-//		OUTERPANEL.addTest(INNERPANEL);
 
 		TABBAR.addSelectionHandler(new SelectionHandler<Integer>() {
 			@Override
@@ -88,6 +80,7 @@ public class TabContainer {
 			INNER_DECKPANEL.add(dockLp);
 		}else {
             String tabName=TABBAR.getTab(TABBAR.getSelectedTab()).toString().split("<div class=\"gwt-HTML\">")[1].split("</div>")[0];
+			((Xdstools2EventBus) ClientUtils.INSTANCE.getEventBus()).fireTabSelectedEvent(tabName);
 		}
 //		INNER_DECKPANEL.getElement().getStyle().setMargin(4, Style.Unit.PX);
 		INNER_DECKPANEL.showWidget(dockLp);
