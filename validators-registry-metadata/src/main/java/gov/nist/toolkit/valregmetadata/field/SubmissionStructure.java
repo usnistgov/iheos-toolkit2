@@ -803,22 +803,20 @@ public class SubmissionStructure {
 			OMElement assoc = find_assoc(m.getSubmissionSetId(), assoc_type("HasMember"), doc.getAttributeValue(MetadataSupport.id_qname));
 
 			if ( assoc == null) {
-				er.err(XdsErrorCode.Code.XDSRegistryMetadataError, "DocumentEntry(" +
-								doc.getAttributeValue(MetadataSupport.id_qname) +
-								") is not linked to the SubmissionSet with a " + assoc_type("HasMember") + " Association",
-						this, "ITI TF-3: 4.1.4.1");
+				Assertion assertion = ASSERTIONLIBRARY.getAssertion("TA080");
+				String detail = "DocumentEntry(" + doc.getAttributeValue(MetadataSupport.id_qname) +
+						") is not linked to the SubmissionSet with a " + assoc_type("HasMember") + " Association";
+				er.err(XdsErrorCode.Code.XDSRegistryMetadataError, assertion, this, "", detail);
 			} else {
 				if (!has_sss_slot(assoc)) {
-					er.err(XdsErrorCode.Code.XDSRegistryMetadataError, assocDescription(assoc) +
-									": links a DocumentEntry to the SubmissionSet but does not have a " +
-									"SubmissionSetStatus Slot with value Original",
-							this, "ITI TF-3: 4.1.4.1");
+					Assertion assertion = ASSERTIONLIBRARY.getAssertion("TA081");
+					String detail = "Association found: " + assocDescription(assoc);
+					er.err(XdsErrorCode.Code.XDSRegistryMetadataError, assertion, this, "", detail);
 					hasmember_error = true;
 				} else if (!is_sss_original(assoc)) {
-					er.err(XdsErrorCode.Code.XDSRegistryMetadataError, assocDescription(assoc) +
-									": links a DocumentEntry to the SubmissionSet but does not have a " +
-									"SubmissionSetStatus Slot with value Original",
-							this, "ITI TF-3: 4.1.4.1");
+					Assertion assertion = ASSERTIONLIBRARY.getAssertion("TA082");
+					String detail = "Association found: " + assocDescription(assoc);
+					er.err(XdsErrorCode.Code.XDSRegistryMetadataError, assertion, this, "", detail);
 					hasmember_error = true;
 				}
 			}

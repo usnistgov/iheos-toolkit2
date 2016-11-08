@@ -77,3 +77,6 @@ TA076,SubmissionSetStatus Slot on SubmissionSet association has more than one va
 TA077,SubmissionSet may not the be target of an Association,ITI TF-3: 4.1.4,,
 TA078,Multiple HasMember Associations link SubmissionSet and Association,ITI TF-3: 4.1.4,,
 TA079,A HasMember Association is required to link SubmissionSet and Folder/DocumentEntry Association,ITI TF-3: 4.1.4.2,,
+TA080,DocumentEntry is not linked to the SubmissionSet with a HasMember Association,ITI TF-3: 4.1.4.1,,
+TA081,Association links a DocumentEntry to the SubmissionSet but does not have a SubmissionSetStatus Slot,ITI TF-3: 4.1.4.1,,
+TA082,Association links a DocumentEntry to the SubmissionSet but the SubmissionSetStatus Slot value is not Original,ITI TF-3: 4.1.4.1,,
