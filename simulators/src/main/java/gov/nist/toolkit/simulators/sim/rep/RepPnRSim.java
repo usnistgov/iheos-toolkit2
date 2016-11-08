@@ -198,7 +198,12 @@ public class RepPnRSim extends TransactionSimulator implements MetadataGeneratin
 				// issue soap call to registry
 				String endpoint = null;
 				try {
-					endpoint = simulatorConfig.get(SimulatorProperties.registerEndpoint).asString();
+					if (common.isTls()) {
+						// prefer TLS for Register transaction
+						endpoint = simulatorConfig.get(SimulatorProperties.registerTlsEndpoint).asString();
+					}
+					if (endpoint == null)
+						endpoint = simulatorConfig.get(SimulatorProperties.registerEndpoint).asString();
 				} catch (Exception e) {
 				}
 				if (endpoint == null) {
