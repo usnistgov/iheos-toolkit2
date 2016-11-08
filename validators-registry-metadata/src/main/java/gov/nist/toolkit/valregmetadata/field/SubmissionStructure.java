@@ -669,12 +669,15 @@ public class SubmissionStructure {
 						er.err(XdsErrorCode.Code.XDSRegistryMetadataError, assertion, this, "", detail);
 					}
 				} else {
-					er.err(XdsErrorCode.Code.XDSRegistryMetadataError, "SubmissionSetStatus Slot on Submission Set association has unrecognized value: " + ss_status, this, "ITI TF-3: 4.1.4.1");
+					Assertion assertion = ASSERTIONLIBRARY.getAssertion("TA074");
+					String detail = "SubmissionSetStatus value found: '" + ss_status + "'";
+					er.err(XdsErrorCode.Code.XDSRegistryMetadataError, assertion, this, "", detail);
 				}
 			} else {
-				if (ss_status != null && !ss_status.equals("Reference"))
-					er.err(XdsErrorCode.Code.XDSRegistryMetadataError, "A SubmissionSet Assocation has the SubmissionSetStatus Slot but the target ExtrinsicObject is not part of the Submission", this, "ITI TF-3: 4.1.4.1");
-
+				if (ss_status != null && !ss_status.equals("Reference")) {
+					Assertion assertion = ASSERTIONLIBRARY.getAssertion("TA075");
+					er.err(XdsErrorCode.Code.XDSRegistryMetadataError, assertion, this, "", "");
+				}
 			}
 		}
 	}
