@@ -66,3 +66,8 @@ TA065,TargetObject value found neither in submission nor in Registry,ITI TF-3: 4
 TA066,Invalid Association type,ITI TF-3: 4.1.4,,
 TA067,SubmissionSetStatus slot missing,ITI TF-3: 4.1.4.1,,
 TA068,No sourceObject reference to SubmissionSet in Association,ITI TF-3: 4.1.4.1,,
+TA069,All RegistryPackage and ExtrinsicObject objects must have ID attributes,ebRIM 2.4.1,,
+TA070,All RegistryPackage and ExtrinsicObject objects must have ID attributes,ebRIM 2.4.1,,
+TA071,SubmissionSetStatus slot on Submission Set association has no value,ITI TF-3: 4.1.4.1,,
+TA072,SubmissionSetStatus Slot on SubmissionSet association has value 'Original' but the targetObject references an object not in the submission,ITI TF-3: 4.1.4.1,,
+TA073,SubmissionSetStatus Slot on SubmissionSet association has value 'Reference' but the targetObject references an object in the submission,ITI TF-3: 4.1.4.1,,

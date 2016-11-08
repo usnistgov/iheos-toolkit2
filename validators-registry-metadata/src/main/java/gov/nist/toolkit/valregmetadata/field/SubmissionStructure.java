@@ -610,7 +610,8 @@ public class SubmissionStructure {
 			if (	id == null ||
 					id.equals("")
 					) {
-				er.err(XdsErrorCode.Code.XDSRegistryMetadataError, "All RegistryPackage and ExtrinsicObject objects must have id attributes", this, "ebRIM 2.4.1");
+				Assertion assertion = ASSERTIONLIBRARY.getAssertion("TA069");
+				er.err(XdsErrorCode.Code.XDSRegistryMetadataError, assertion, this, "", "");
 				return;
 			}
 		}
@@ -620,7 +621,8 @@ public class SubmissionStructure {
 			if (	id == null ||
 					id.equals("")
 					) {
-				er.err(XdsErrorCode.Code.XDSRegistryMetadataError, "All RegistryPackage and ExtrinsicObject objects must have id attributes", this, "ebRIM 2.4.1");
+				Assertion assertion = ASSERTIONLIBRARY.getAssertion("TA070");
+				er.err(XdsErrorCode.Code.XDSRegistryMetadataError, assertion, this, "", "");
 				return;
 			}
 		}
@@ -652,15 +654,20 @@ public class SubmissionStructure {
 			if ( target_is_included_doc ) {
 
 				if (ss_status == null || ss_status.equals("")) {
-					er.err(XdsErrorCode.Code.XDSRegistryMetadataError, "SubmissionSetStatus Slot on Submission Set association has no value", this, "ITI TF-3: 4.1.4.1");
+					Assertion assertion = ASSERTIONLIBRARY.getAssertion("TA071");
+					er.err(XdsErrorCode.Code.XDSRegistryMetadataError, assertion, this, "", "");
 				} else if (	ss_status.equals("Original")) {
-					if ( !containsObject(target))
-						er.err(XdsErrorCode.Code.XDSRegistryMetadataError, "SubmissionSetStatus Slot on SubmissionSet association has value 'Original' but the targetObject " + target + " references an object not in the submission",
-								this, "ITI TF-3: 4.1.4.1");
+					if ( !containsObject(target)) {
+						Assertion assertion = ASSERTIONLIBRARY.getAssertion("TA072");
+						String detail = "TargetObject found: '" + target + "'";
+						er.err(XdsErrorCode.Code.XDSRegistryMetadataError, assertion, this, "", detail);
+					}
 				} else if (	ss_status.equals("Reference")) {
-					if (containsObject(target))
-						er.err(XdsErrorCode.Code.XDSRegistryMetadataError, "SubmissionSetStatus Slot on SubmissionSet association has value 'Reference' but the targetObject " + target + " references an object in the submission",
-								this, "ITI TF-3: 4.1.4.1");
+					if (containsObject(target)) {
+						Assertion assertion = ASSERTIONLIBRARY.getAssertion("TA073");
+						String detail = "TargetObject found: '" + target + "'";
+						er.err(XdsErrorCode.Code.XDSRegistryMetadataError, assertion, this, "", detail);
+					}
 				} else {
 					er.err(XdsErrorCode.Code.XDSRegistryMetadataError, "SubmissionSetStatus Slot on Submission Set association has unrecognized value: " + ss_status, this, "ITI TF-3: 4.1.4.1");
 				}
