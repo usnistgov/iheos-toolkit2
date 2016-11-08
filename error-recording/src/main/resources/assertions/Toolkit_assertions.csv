@@ -73,3 +73,7 @@ TA072,SubmissionSetStatus Slot on SubmissionSet association has value 'Original'
 TA073,SubmissionSetStatus Slot on SubmissionSet association has value 'Reference' but the targetObject references an object in the submission,ITI TF-3: 4.1.4.1,,
 TA074,SubmissionSetStatus Slot on Submission Set association has unrecognized value,ITI TF-3: 4.1.4.1,,
 TA075,A SubmissionSet Association has the SubmissionSetStatus Slot but the target ExtrinsicObject is not part of the Submission,ITI TF-3: 4.1.4.1,,
+TA076,SubmissionSetStatus Slot on SubmissionSet association has more than one value,ITI TF-3: 4.1.4.1,,
+TA077,SubmissionSet may not the be target of an Association,ITI TF-3: 4.1.4,,
+TA078,Multiple HasMember Associations link SubmissionSet and Association,ITI TF-3: 4.1.4,,
+TA079,A HasMember Association is required to link SubmissionSet and Folder/DocumentEntry Association,ITI TF-3: 4.1.4.2,,

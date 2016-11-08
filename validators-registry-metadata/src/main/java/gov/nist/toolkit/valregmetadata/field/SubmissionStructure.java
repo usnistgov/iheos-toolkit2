@@ -710,8 +710,10 @@ public class SubmissionStructure {
 				continue;
 
 			String ss_status = m.getSlotValue(assoc, "SubmissionSetStatus", 1);
-			if (ss_status != null)
-				er.err(XdsErrorCode.Code.XDSRegistryMetadataError, "SubmissionSetStatus Slot on SubmissionSet association has more than one value", this, "ITI TF-3: 4.1.4.1");
+			if (ss_status != null) {
+				Assertion assertion = ASSERTIONLIBRARY.getAssertion("TA076");
+				er.err(XdsErrorCode.Code.XDSRegistryMetadataError, assertion, this, "", "");
+			}
 		}
 	}
 
@@ -740,8 +742,10 @@ public class SubmissionStructure {
 		List<OMElement> non_ss_assocs = null;
 		for (OMElement a : m.getAssociations()) {
 			String sourceId = m.getAssocSource(a);
-			if (m.getAssocTarget(a) == ssId)
-				er.err(XdsErrorCode.Code.XDSRegistryMetadataError, "SubmissionSet may not the be target of an Association", this, "ITI TF-3: 4.1.4");
+			if (m.getAssocTarget(a) == ssId) {
+				Assertion assertion = ASSERTIONLIBRARY.getAssertion("TA077");
+				er.err(XdsErrorCode.Code.XDSRegistryMetadataError, assertion, this, "", "");
+			}
 			// if sourceId points to a SubmissionSet in this metadata then no further work is needed
 			// if sourceId points to a Folder (in or out of this metadata) then secondary Assoc required
 			if (sourceId.equals(ssId))
@@ -764,17 +768,20 @@ public class SubmissionStructure {
 						m.getAssocTarget(a2).equals(aId) &&
 						getSimpleAssocType(a2).equals("HasMember")) {
 					if (good) {
-						er.err(XdsErrorCode.Code.XDSRegistryMetadataError, "Multiple HasMember Associations link SubmissionSet " + ssId +
-								" and Association\n" + a, this, "ITI TF-3: 4.1.4");
+						Assertion assertion = ASSERTIONLIBRARY.getAssertion("TA078");
+						String detail = "SubmissionSet ID: '" + ssId + "'; Association ID: '" + aId + "'";
+						er.err(XdsErrorCode.Code.XDSRegistryMetadataError, assertion, this, "", detail);
 					} else {
 						good = true;
 					}
 
 				}
 			}
-			if (good == false)
-				er.err(XdsErrorCode.Code.XDSRegistryMetadataError, "A HasMember Association is required to link SubmissionSet " + ssId +
-						" and Folder/DocumentEntry Association\n" + a, this, "ITI TF-3: 4.1.4.2");
+			if (good == false) {
+				Assertion assertion = ASSERTIONLIBRARY.getAssertion("TA079");
+				String detail = "SubmissionSet ID: '" + ssId + "'; Association: '" + a + "'";
+				er.err(XdsErrorCode.Code.XDSRegistryMetadataError, assertion, this, "", detail);
+			}
 		}
 
 	}
