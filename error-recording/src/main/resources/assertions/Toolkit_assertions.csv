@@ -80,3 +80,5 @@ TA079,A HasMember Association is required to link SubmissionSet and Folder/Docum
 TA080,DocumentEntry is not linked to the SubmissionSet with a HasMember Association,ITI TF-3: 4.1.4.1,,
 TA081,Association links a DocumentEntry to the SubmissionSet but does not have a SubmissionSetStatus Slot,ITI TF-3: 4.1.4.1,,
 TA082,Association links a DocumentEntry to the SubmissionSet but the SubmissionSetStatus Slot value is not Original,ITI TF-3: 4.1.4.1,,
+TA083,Folder is not linked to the SubmissionSet with a HasMember Association,ITI TF-3: 4.1.4.2,,
+TA084,DocumentEntry referenced by a relationship style association cannot be contained in submission,ITI TF-3: 4.1.4.1,,

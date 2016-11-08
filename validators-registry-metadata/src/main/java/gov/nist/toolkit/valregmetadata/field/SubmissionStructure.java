@@ -831,8 +831,10 @@ public class SubmissionStructure {
 			OMElement fol = (OMElement) fols.get(i);
 
 			if ( !has_assoc(m.getSubmissionSetId(), assoc_type("HasMember"), m.getId(fol))) {
-				er.err(XdsErrorCode.Code.XDSRegistryMetadataError, "Folder " + m.getId(fol) + " is not linked to the SubmissionSet with a " + assoc_type("HasMember") + " Association",
-						this, "ITI TF-3: 4.1.4.2");
+				Assertion assertion = ASSERTIONLIBRARY.getAssertion("TA083");
+				String detail = "Folder(" + fol.getAttributeValue(MetadataSupport.id_qname) +
+						") is not linked to the SubmissionSet with a " + assoc_type("HasMember") + " Association";
+				er.err(XdsErrorCode.Code.XDSRegistryMetadataError, assertion, this, "", detail);
 				hasmember_error = true;
 			}
 
@@ -874,10 +876,11 @@ public class SubmissionStructure {
 			OMElement assoc = (OMElement) assocs.get(i);
 			String id = assoc.getAttributeValue(MetadataSupport.target_object_qname);
 			String type = assoc.getAttributeValue(MetadataSupport.association_type_qname);
-			if (MetadataSupport.relationship_associations.contains(type) && ! isReferencedObject(id))
-				er.err(XdsErrorCode.Code.XDSRegistryMetadataError, "DocumentEntry referenced by a relationship style assocation " + MetadataSupport.relationship_associations +
-						" cannot be contained in submission\nThe following objects were found in the submission:"
-						+ getIdsOfReferencedObjects().toString(), this, "ITI TF-3: 4.1.6.1");
+			if (MetadataSupport.relationship_associations.contains(type) && ! isReferencedObject(id)) {
+				Assertion assertion = ASSERTIONLIBRARY.getAssertion("TA084");
+				String detail = "The following objects were found in the submission:\n" +  getIdsOfReferencedObjects().toString() + "\nAuthorized Associations of relationship style: " + MetadataSupport.relationship_associations;
+				er.err(XdsErrorCode.Code.XDSRegistryMetadataError, assertion, this, "", detail);
+			}
 		}
 	}
 
