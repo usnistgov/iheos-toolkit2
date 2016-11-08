@@ -1,0 +1,58 @@
+<TestPlan>
+	<Test>iig_5408/validate-B</Test>
+	<TestStep id="validate-rad75-request-b">
+		<Goal>Validate RAD-75 sent from SUT to rig_b</Goal>
+		<Standard>
+			<RequestBody-B>
+				<xdsiB:RetrieveImagingDocumentSetRequest
+					xmlns:xdsiB="urn:ihe:rad:xdsi-b:2009">
+					<xdsiB:StudyRequest studyInstanceUID="1.3.6.1.4.1.21367.201599.1.201606010958044">
+						<xdsiB:SeriesRequest seriesInstanceUID="1.3.6.1.4.1.21367.201599.2.201606010958044">
+							<xdsb:DocumentRequest xmlns:xdsb="urn:ihe:iti:xds-b:2007">
+								<xdsb:HomeCommunityId>urn:oid:1.3.6.1.4.1.21367.13.70.102</xdsb:HomeCommunityId>
+								<xdsb:RepositoryUniqueId>1.3.6.1.4.1.21367.13.71.102</xdsb:RepositoryUniqueId>
+								<xdsb:DocumentUniqueId>1.3.6.1.4.1.21367.201599.3.201606010958044.1</xdsb:DocumentUniqueId>
+							</xdsb:DocumentRequest>
+							<xdsb:DocumentRequest xmlns:xdsb="urn:ihe:iti:xds-b:2007">
+								<xdsb:HomeCommunityId>urn:oid:1.3.6.1.4.1.21367.13.70.102</xdsb:HomeCommunityId>
+								<xdsb:RepositoryUniqueId>1.3.6.1.4.1.21367.13.71.102</xdsb:RepositoryUniqueId>
+								<xdsb:DocumentUniqueId>1.3.6.1.4.1.21367.201599.3.201606010958044.2</xdsb:DocumentUniqueId>
+							</xdsb:DocumentRequest>
+							<xdsb:DocumentRequest xmlns:xdsb="urn:ihe:iti:xds-b:2007">
+								<xdsb:HomeCommunityId>urn:oid:1.3.6.1.4.1.21367.13.70.102</xdsb:HomeCommunityId>
+								<xdsb:RepositoryUniqueId>1.3.6.1.4.1.21367.13.71.102</xdsb:RepositoryUniqueId>
+								<xdsb:DocumentUniqueId>1.3.6.1.4.1.21367.201599.3.201606010958044.3</xdsb:DocumentUniqueId>
+							</xdsb:DocumentRequest>
+							<xdsb:DocumentRequest xmlns:xdsb="urn:ihe:iti:xds-b:2007">
+								<xdsb:HomeCommunityId>urn:oid:1.3.6.1.4.1.21367.13.70.102</xdsb:HomeCommunityId>
+								<xdsb:RepositoryUniqueId>1.3.6.1.4.1.21367.13.71.102</xdsb:RepositoryUniqueId>
+								<xdsb:DocumentUniqueId>1.3.6.1.4.1.21367.201599.3.201606010958044.4</xdsb:DocumentUniqueId>
+							</xdsb:DocumentRequest>
+							<xdsb:DocumentRequest xmlns:xdsb="urn:ihe:iti:xds-b:2007">
+								<xdsb:HomeCommunityId>urn:oid:1.3.6.1.4.1.21367.13.70.102</xdsb:HomeCommunityId>
+								<xdsb:RepositoryUniqueId>1.3.6.1.4.1.21367.13.71.102</xdsb:RepositoryUniqueId>
+								<xdsb:DocumentUniqueId>1.3.6.1.4.1.21367.201599.3.201606010958044.5</xdsb:DocumentUniqueId>
+							</xdsb:DocumentRequest>
+							<xdsb:DocumentRequest xmlns:xdsb="urn:ihe:iti:xds-b:2007">
+								<xdsb:HomeCommunityId>urn:oid:1.3.6.1.4.1.21367.13.70.102</xdsb:HomeCommunityId>
+								<xdsb:RepositoryUniqueId>1.3.6.1.4.1.21367.13.71.102</xdsb:RepositoryUniqueId>
+								<xdsb:DocumentUniqueId>1.3.6.1.4.1.21367.201599.3.201606010958044.6</xdsb:DocumentUniqueId>
+							</xdsb:DocumentRequest>
+						</xdsiB:SeriesRequest>
+					</xdsiB:StudyRequest>
+					<xdsiB:TransferSyntaxUIDList>
+						<xdsiB:TransferSyntaxUID>1.2.840.10008.1.2.1</xdsiB:TransferSyntaxUID>
+					</xdsiB:TransferSyntaxUIDList>
+				</xdsiB:RetrieveImagingDocumentSetRequest>
+			</RequestBody-B>
+		</Standard>
+		<XmlDetailTransaction>
+			<Assertions>
+				<Assert id="Request to RIG B" process="sameReqImgs" std="RequestBody-B">
+					<SimTransaction id="rig_b" transaction="xcr.ids" />
+				</Assert>
+			</Assertions>
+		</XmlDetailTransaction>
+	</TestStep>
+
+</TestPlan>
