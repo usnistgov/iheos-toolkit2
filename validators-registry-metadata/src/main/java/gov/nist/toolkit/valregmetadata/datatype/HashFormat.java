@@ -2,8 +2,11 @@ package gov.nist.toolkit.valregmetadata.datatype;
 
 import gov.nist.toolkit.errorrecording.ErrorRecorder;
 import gov.nist.toolkit.errorrecording.client.XdsErrorCode;
+import gov.nist.toolkit.errorrecording.client.assertions.Assertion;
+import gov.nist.toolkit.errorrecording.client.assertions.AssertionLibrary;
 
 public class HashFormat extends FormatValidator {
+	private AssertionLibrary ASSERTIONLIBRARY = AssertionLibrary.getInstance();
 
 	public HashFormat(ErrorRecorder er, String context, String resource) {
 		super(er, context, resource);
@@ -11,7 +14,9 @@ public class HashFormat extends FormatValidator {
 
 	public void validate(String input) {
 		if (!UuidFormat.isHexString(input)) {
-			er.err(XdsErrorCode.Code.XDSRegistryMetadataError, context + ": " + input + " is not in hex format", this, getResource("ITI TF-3: Table 4.1-3 (SHA1)"));
+			Assertion assertion = ASSERTIONLIBRARY.getAssertion("TA085");
+			String location = context + ": " + input;
+			er.err(XdsErrorCode.Code.XDSRegistryMetadataError, assertion, this, location, "");
 		}
 	}
 
