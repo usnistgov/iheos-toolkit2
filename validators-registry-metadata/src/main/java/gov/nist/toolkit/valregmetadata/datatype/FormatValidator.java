@@ -33,7 +33,8 @@ public abstract class FormatValidator {
 			return resource + " and " + specialResource;
 
 	}
-	
+
+	// TODO upgrade err to Assertions after figuring out the Resources involved
 	protected void err(String input, String error, String additionalResource) {
 		er.err(XdsErrorCode.Code.XDSRegistryMetadataError, context + ": " + input + " : " + error, this, getResource(additionalResource));
 	}
