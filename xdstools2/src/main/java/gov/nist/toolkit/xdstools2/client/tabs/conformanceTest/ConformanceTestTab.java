@@ -816,7 +816,7 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner, TestsH
 			final String actorTypeId = currentActorOption.actorTypeId;
 			final ActorType actorType = ActorType.findActor(actorTypeId);
 			if (actorType == null) {
-				new PopupMessage("Don't understand actor type " + actorTypeId);
+				// no actor type has been selected yet - no problem
 				return;
 			}
 

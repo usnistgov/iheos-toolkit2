@@ -51,6 +51,11 @@ public class BuildRegTestOrchestrationButton extends AbstractOrchestrationButton
         this.testContext = testContext;
         this.testContextView = testContextView;
 
+        //
+        // Disable selections that are not yet supported
+        //
+        noFeed.setEnabled(false);
+
         setParentPanel(initializationPanel);
 
         FlowPanel pidFeedPanel = new FlowPanel();

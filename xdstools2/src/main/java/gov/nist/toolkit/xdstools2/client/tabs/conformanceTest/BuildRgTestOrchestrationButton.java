@@ -43,6 +43,12 @@ public class BuildRgTestOrchestrationButton extends AbstractOrchestrationButton 
         this.testContextView = testContextView;
         this.testRunner = testRunner;
 
+        //
+        // Disable selections that are not yet supported
+        //
+        external.setEnabled(false);
+        noFeed.setEnabled(false);
+
         setParentPanel(initializationPanel);
 
         FlowPanel customPanel = new FlowPanel();
@@ -67,8 +73,7 @@ public class BuildRgTestOrchestrationButton extends AbstractOrchestrationButton 
                         "<p>When the test is run a Cross Gateway Query or Retrieve transaction will be sent to the " +
                         "Responding Gateway " +
                         "selected in the Test Context (located to the right). This will start the test. Before running a test, make sure your " +
-                        "Responding Gateway is configured to forward requests to the Document Repository and Document Registry above.  This " +
-                        "test only uses non-TLS endpoints (for now). TLS selection is disabled.</p>"
+                        "Responding Gateway is configured to forward requests to the Document Repository and Document Registry above.</p>"
         );
         customPanel.add(instructions);
 
