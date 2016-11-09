@@ -86,7 +86,8 @@ class BuildRepTestOrchestrationButton extends AbstractOrchestrationButton {
                 initializationResultsPanel.add(new HTML("Patient ID: " + orchResponse.getPid().toString()));
                 initializationResultsPanel.add(new HTML("<br />"));
 
-                initializationResultsPanel.add(new HTML("<h3>Configure your Repository to forward Register transactions to the above Register endpoint.</h3><hr />"));
+                initializationResultsPanel.add(new HTML("<h3>Configure your Repository to forward Register transactions to the above Register endpoint." +
+                        "Then Reset Testing Environment (above) with Reset to properly initialize the supporing Registry simulator (needs the Patient Identity Feed)</h3><hr />"));
 
 
                 // test will be run out of support site so pass it back to conformance test tab

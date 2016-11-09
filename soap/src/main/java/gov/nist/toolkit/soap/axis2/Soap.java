@@ -2,7 +2,9 @@ package gov.nist.toolkit.soap.axis2;
 
 import gov.nist.toolkit.docref.WsDocRef;
 import gov.nist.toolkit.dsig.XMLDSigProcessor;
+import gov.nist.toolkit.installation.Installation;
 import gov.nist.toolkit.securityCommon.SecurityParams;
+import gov.nist.toolkit.securityCommon.SecurityParamsImpl;
 import gov.nist.toolkit.utilities.xml.OMFormatter;
 import gov.nist.toolkit.utilities.xml.Util;
 import gov.nist.toolkit.utilities.xml.XmlUtil;
@@ -104,6 +106,12 @@ public class Soap implements SoapInterface {
 
 	public void setSecurityParams(SecurityParams securityParams) {
 		this.securityParams = securityParams;
+	}
+
+	private void installDefaultSecurityParamsIfNeeded() {
+		if (securityParams != null)
+			return;
+		this.securityParams = new SecurityParamsImpl(Installation.instance().defaultEnvironmentName());
 	}
 
 	public boolean isTLS() {
@@ -355,6 +363,7 @@ public class Soap implements SoapInterface {
    public void soapCallWithWSSEC() throws XdsInternalException, AxisFault,
             EnvironmentNotSelectedException, LoadKeystoreException {
 		System.out.println("soapCallWithWSSEC() ----- useWSSEC :" + useWSSEC);
+		installDefaultSecurityParamsIfNeeded();
 		ConfigurationContext cc = null;
 		if (useWSSEC)
 			cc = buildConfigurationContext();
@@ -594,6 +603,10 @@ public class Soap implements SoapInterface {
 		String trustStorePass = keyStorePass;
 		int tlsPort = 9443;
 
+		if (securityParams == null)
+			throw new EnvironmentNotSelectedException("Trying to initiate a TLS connection - securityParams are null");
+		if (securityParams.getKeystore() == null || securityParams.getKeystore().equals(""))
+			throw new EnvironmentNotSelectedException("Trying to initialize a TLS connection - keystore location not recorded in securityParams");
 		keyStoreFile = "file:" + securityParams.getKeystore().toString();
 		keyStorePass = securityParams.getKeystorePassword();
 		trustStoreFile = keyStoreFile;
@@ -845,6 +858,7 @@ public class Soap implements SoapInterface {
 			String expected_return_action) throws XdsInternalException,
 			AxisFault, XdsFormatException, EnvironmentNotSelectedException,
 			LoadKeystoreException {
+		installDefaultSecurityParamsIfNeeded();
 		return soapCall(body, endpoint, mtom, addressing, soap12,
 				action, expected_return_action, null);
 	}
@@ -855,6 +869,7 @@ public class Soap implements SoapInterface {
 			throws XdsInternalException, AxisFault, XdsFormatException,
 			EnvironmentNotSelectedException, LoadKeystoreException {
 
+		installDefaultSecurityParamsIfNeeded();
 		this.expectedReturnAction = expected_return_action;
 		this.mtom = mtom;
 		this.addressing = addressing;
