@@ -1,4 +1,6 @@
 Patient ID allocation
 
-Patient Identity Feed is not sent to Document Recipient.  This just allocates
-the Patient ID for use in Document Recipient testing.
+This allocates
+the Patient ID for use in Document Recipient testing. The Patient
+Identity Feed is not sent (so this is never displayed as run (green color
+in UI).
