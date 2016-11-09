@@ -10,9 +10,12 @@ public class OidFormat extends FormatValidator {
 		super(er, context, resource);
 	}
 
+
+	//TODO integrate Assertions model after figuring out the value of Resource
 	public void validate(String input) {
-		if (!ValidatorCommon.is_oid(input, true))
+		if (!ValidatorCommon.is_oid(input, true)) {
 			er.err(XdsErrorCode.Code.XDSRegistryMetadataError, context + ": " + input + " is not in OID format", this, getResource(null));
+		}
 	}
 
 }
