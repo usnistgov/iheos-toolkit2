@@ -180,9 +180,11 @@ public abstract class GenericQueryTab  extends ToolWindow {
                 }
             }
         } else {   // Select by transaction (used in GetDocuments tab)
-            SiteSpec site=transactionSelectionManager.generateSiteSpec();
-            if (site!=null) {
-                selectedSites.add(site.getName());
+            if (transactionSelectionManager != null) {
+                SiteSpec site = transactionSelectionManager.generateSiteSpec();
+                if (site != null) {
+                    selectedSites.add(site.getName());
+                }
             }
         }
     }
@@ -228,6 +230,9 @@ public abstract class GenericQueryTab  extends ToolWindow {
         if (resultPanel != null && clearResults)
             resultPanel.clear();
         initMainGrid();
+
+        if (mainConfigPanel == null)
+            return;
 
         mainConfigPanel.clear();
 
