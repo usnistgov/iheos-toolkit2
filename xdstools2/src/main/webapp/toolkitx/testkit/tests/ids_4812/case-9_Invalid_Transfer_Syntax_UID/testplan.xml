@@ -1,6 +1,6 @@
 <TestPlan>
 	<Test>ids_4812/Case 9: Unknown Transfer Syntax</Test>
-	<TestStep id="retrieve">
+	<TestStep id="retrieve-9">
 		<Goal>Imaging Document Set Retrieve exception: Unknown Transfer Syntax
 		</Goal>
 		<ExpectedStatus>Failure</ExpectedStatus>

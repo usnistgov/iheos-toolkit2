@@ -1,6 +1,6 @@
 <TestPlan>
 	<Test>ids_4812/Case 5: Empty Study Instance UID</Test>
-	<TestStep id="retrieve">
+	<TestStep id="retrieve-5">
 		<Goal>Imaging Document Set Retrieve exception: Empty Study Instance
 			UID</Goal>
 		<ExpectedStatus>Failure</ExpectedStatus>

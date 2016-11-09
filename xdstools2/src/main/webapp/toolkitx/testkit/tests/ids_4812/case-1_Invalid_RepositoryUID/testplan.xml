@@ -1,7 +1,7 @@
 <TestPlan>
 	<Test>ids_4812/Case 1: Unknown Repository UID</Test>
 	>
-	<TestStep id="retrieve">
+	<TestStep id="retrieve-1">
 		<Goal>Imaging Document Set Retrieve exception: Unknown Repository UID
 		</Goal>
 		<ExpectedStatus>Failure</ExpectedStatus>

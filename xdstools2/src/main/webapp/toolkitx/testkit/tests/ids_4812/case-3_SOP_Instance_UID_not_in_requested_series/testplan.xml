@@ -1,6 +1,6 @@
 <TestPlan>
 	<Test>ids_4812/Case 3: Instance UID not in requested series</Test>
-	<TestStep id="retrieve">
+	<TestStep id="retrieve-3">
 		<Goal>Imaging Document Set Retrieve exception: Instance UID not in
 			requested series</Goal>
 		<ExpectedStatus>Failure</ExpectedStatus>

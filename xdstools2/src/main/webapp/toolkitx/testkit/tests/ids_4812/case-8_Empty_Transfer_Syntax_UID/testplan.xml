@@ -1,6 +1,6 @@
 <TestPlan>
 	<Test>ids_4812/Case 8: Empty Transfer Syntax UID</Test>
-	<TestStep id="retrieve">
+	<TestStep id="retrieve-8">
 		<Goal>Imaging Document Set Retrieve exception: Empty Transfer Syntax
 			UID</Goal>
 		<ExpectedStatus>Failure</ExpectedStatus>

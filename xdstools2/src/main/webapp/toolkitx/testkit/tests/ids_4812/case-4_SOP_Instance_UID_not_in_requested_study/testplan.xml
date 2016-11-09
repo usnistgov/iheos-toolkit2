@@ -1,6 +1,6 @@
 <TestPlan>
 	<Test>ids_4812/Case 4: Instance UID not in requested study</Test>
-	<TestStep id="retrieve">
+	<TestStep id="retrieve-4">
 		<Goal>Imaging Document Set Retrieve exception: Instance UID fnot in
 			requested study</Goal>
 		<ExpectedStatus>Failure</ExpectedStatus>
