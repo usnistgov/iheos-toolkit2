@@ -195,6 +195,7 @@ public class ValidatorCommon implements ErrorRecorder {
 	}
 
 	static public String validate_CX_datatype(String pid) {
+	   pid = pid.trim();
 		if (pid == null)
 			return "No Patient ID found";
 		String[] parts = pid.split("\\^\\^\\^");

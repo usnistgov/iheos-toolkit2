@@ -142,10 +142,13 @@ public class WADOTransaction extends BasicTransaction {
    } // EO run method
    
    private Integer transCount = 0;
+   private OMElement resultElement;
    private void prsRequest() throws Exception {
       if (httpClient == null) {
          httpClient = HttpClients.createDefault();
          transCount = 0;
+         resultElement = testLog.add_simple_element(instruction_output, "Result");
+         resultElement = testLog.add_simple_element(resultElement, "Transactions");
       }
       transCount++;  
       
@@ -161,7 +164,7 @@ public class WADOTransaction extends BasicTransaction {
       log.debug(httpGet.toString());
       
       // Log Http Request
-      OMElement transE = testLog.add_simple_element_with_id(instruction_output, 
+      OMElement transE = testLog.add_simple_element_with_id(resultElement, 
          "Transaction", transCount.toString());
       OMElement requestE = testLog.add_simple_element(transE, "HttpRequest");
       testLog.add_name_value(requestE, "Request", httpGet.toString());

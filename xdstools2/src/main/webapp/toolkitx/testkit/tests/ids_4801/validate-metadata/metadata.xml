@@ -430,8 +430,4 @@
 			</rim:Association>
 		</rim:RegistryObjectList>
 	</lcm:SubmitObjectsRequest>
-	<xdsb:Document id="urn:uuid:94f30df9-d945-485e-9dbe-e61a63270c30">
-		<xop:Include xmlns:xop="http://www.w3.org/2004/08/xop/include"
-			href="cid:1.fe0ce9e483a0edcd6355fd54e0fec9673fbcd590a401621a@apache.org" />
-	</xdsb:Document>
 </xdsb:ProvideAndRegisterDocumentSetRequest>

@@ -39,6 +39,28 @@ public class XmlUtil {
 		}
 		return null;
 	}
+	
+	/**
+	 * Return element which is first child repetitively. For example:<br/>
+	 * firstChildChain(top, "Section", "Step", SubStep") would start with top,
+	 * look for a first child "Section" under it, then a first child "Step" under
+	 * that, and finally a first child "SubStep" under that. The "SubStep"
+	 * element would be returned. If at any point the first child is not found,
+	 * null is returned.
+	 * @param ele parent element to start with
+	 * @param localNames one or more local names of the child elements at each
+	 * level.
+	 * @return the last child, or null if at any point the next child could not
+	 * be found.
+	 */
+	public static OMElement firstChildChain(OMElement ele, String... localNames) {
+	   OMElement chld = ele;
+	   for (String name : localNames) {
+	      chld = XmlUtil.firstChildWithLocalName(chld, name);
+	      if (chld == null) break;
+	   }
+	   return chld;
+	}
 
 	public static OMElement firstChildWithLocalNameEndingWith(OMElement ele, String localNameSuffix) {
 		for (Iterator<?> it=ele.getChildElements(); it.hasNext(); ) {
