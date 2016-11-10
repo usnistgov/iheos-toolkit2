@@ -8,6 +8,8 @@ import gov.nist.toolkit.configDatatypes.client.TransactionType;
 import gov.nist.toolkit.errorrecording.ErrorRecorder;
 import gov.nist.toolkit.errorrecording.client.XdsErrorCode;
 import gov.nist.toolkit.errorrecording.client.XdsErrorCode.Code;
+import gov.nist.toolkit.errorrecording.client.assertions.Assertion;
+import gov.nist.toolkit.errorrecording.client.assertions.AssertionLibrary;
 import gov.nist.toolkit.registrymetadata.Metadata;
 import gov.nist.toolkit.registrymetadata.MetadataParser;
 import gov.nist.toolkit.registrymsg.registry.*;
@@ -45,6 +47,8 @@ public class XcQuerySim extends AbstractMessageValidator implements MetadataGene
 	AdhocQueryRequest request;
 	SimulatorConfig asc;
 	XcQueryMockSoap mockSoap = null;  // for unit testing only
+	private AssertionLibrary ASSERTIONLIBRARY = AssertionLibrary.getInstance();
+
 
 	public XcQuerySim(SimCommon common, DsSimCommon dsSimCommon, SimulatorConfig asc) {
 		super(common.vc);
@@ -103,7 +107,8 @@ public class XcQuerySim extends AbstractMessageValidator implements MetadataGene
 				// a find type query
 				// should not have home attribute
 				if (request.getHomeAtt() != null) {
-					er.err(Code.XDSRegistryError, "Request is Query by Patient ID, homeCommunityId attribute is not allowed", this, "ITI TF-2b: 3.18.4.1.3 (XCA Supplement)");
+					Assertion assertion = ASSERTIONLIBRARY.getAssertion("TA097");
+					er.err(XdsErrorCode.Code.XDSRegistryError, assertion, this, "", "");
 					return;
 				}
 
@@ -244,10 +249,9 @@ public class XcQuerySim extends AbstractMessageValidator implements MetadataGene
 		for (OMElement ele : all) {
 			String home = m.getHome(ele);
 			if (home == null || home.equals("") || !home.startsWith("urn:oid:")) {
-				er.err(XdsErrorCode.Code.XDSMissingHomeCommunityId,
-						ele.getLocalName() + " " + m.getId(ele) + " from RG " + home +
-						" is missing the homeCommunityId (or is incorrectly formatted)",
-						this,  "ITI TF-2b: 3.38.4.1.3 (XCA Supplement)");
+				Assertion assertion = ASSERTIONLIBRARY.getAssertion("TA098");
+				String detail = "In element: " + ele.getLocalName() + " " + m.getId(ele) + " from RG " + home;
+				er.err(XdsErrorCode.Code.XDSMissingHomeCommunityId, assertion, this, "", detail);
 				ok = false;
 			}
 		}
