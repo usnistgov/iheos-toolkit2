@@ -89,3 +89,8 @@ TA088,Does not conform to RFC 3066 format. Primary-subtag is not all alpha chara
 TA089,Does not conform to RFC 3066 format. Subtag limited to 8 characters,RFC 3066,,
 TA090,Does not conform to RFC 3066 format. Subtag is not all alpha or digit characters,RFC 3066,,
 TA091,Does not conform to RFC 3066 format. Input is not in UUID format,ITI TF-3: Table 4.1-3 and section 4.1.12.3,,
+TA092,RegistryError: codeContext attribute is required,ebRS 3.0 Section 2.1.6,,
+TA093,RegistryError: errorCode attribute is required,ebRS 3.0 Section 2.1.6,,
+TA094,RegistryError: severity attribute value must have prefix 'urn:oasis:names:tc:ebxml-regrep:ErrorSeverityType:',ebRS 3.0 Section 2.1.6,,
+TA095,RegistryError: The location attribute must be set to the homeCommunityId of Responding Gateway,ITI TF-2b: 3.39.4.1.3,,
+TA096,RegistryError: The location attribute contains an invalid homeCommunityId, it must have the prefix 'urn:oid:',ITI TF-2b: 3.38.4.1.2.1,,

@@ -3,6 +3,8 @@ package gov.nist.toolkit.registrymsg.registry;
 import gov.nist.toolkit.errorrecording.ErrorRecorder;
 import gov.nist.toolkit.errorrecording.client.XdsErrorCode;
 import gov.nist.toolkit.commondatatypes.MetadataSupport;
+import gov.nist.toolkit.errorrecording.client.assertions.Assertion;
+import gov.nist.toolkit.errorrecording.client.assertions.AssertionLibrary;
 import gov.nist.toolkit.valsupport.client.ValidationContext;
 
 import org.apache.axiom.om.OMElement;
@@ -13,6 +15,8 @@ public class RegistryError {
 	public String severity = null;
 	public String location = null;
 	public boolean isWarning;
+	private AssertionLibrary ASSERTIONLIBRARY = AssertionLibrary.getInstance();
+
 
 	@Override
 	public String toString() {
@@ -37,18 +41,28 @@ public class RegistryError {
 	}
 
 	public void validate(ErrorRecorder er, ValidationContext vc) {
-		if (codeContext == null)
-			er.err(XdsErrorCode.Code.XDSRegistryMetadataError, "RegistryError: codeContext attribute is required", this, "ebRS 3.0 Section 2.1.6");
-		if (errorCode == null)
-			er.err(XdsErrorCode.Code.XDSRegistryMetadataError, "RegistryError: errorCode attribute is required", this, "ebRS 3.0 Section 2.1.6");
-		if (!severity.startsWith("urn:oasis:names:tc:ebxml-regrep:ErrorSeverityType:"))
-			er.err(XdsErrorCode.Code.XDSRegistryMetadataError, "RegistryError: severity attribute value must have prefix urn:oasis:names:tc:ebxml-regrep:ErrorSeverityType:", this, "ebRS 3.0 Section 2.1.6");
-
+		if (codeContext == null) {
+			Assertion assertion = ASSERTIONLIBRARY.getAssertion("TA092");
+			er.err(XdsErrorCode.Code.XDSRegistryMetadataError, assertion, this, "", "");
+		}
+		if (errorCode == null) {
+			Assertion assertion = ASSERTIONLIBRARY.getAssertion("TA093");
+			er.err(XdsErrorCode.Code.XDSRegistryMetadataError, assertion, this, "", "");
+		}
+		if (!severity.startsWith("urn:oasis:names:tc:ebxml-regrep:ErrorSeverityType:")) {
+			Assertion assertion = ASSERTIONLIBRARY.getAssertion("TA094");
+			er.err(XdsErrorCode.Code.XDSRegistryMetadataError, assertion, this, "", "");
+		}
 		if (vc.isXC && (vc.isRet || vc.isSQ) && vc.isResponse) {
-			if (location == null)
-				er.err(XdsErrorCode.Code.XDSRegistryMetadataError, "RegistryError: The location attribute must be set to the homeCommunityId of Responding Gateway", this, "ITI TF-2b: 3.39.4.1.3");
-			else if (!location.startsWith("urn:oid:"))
-				er.err(XdsErrorCode.Code.XDSRegistryMetadataError, "RegistryError: The location attribute contains an invalid homeCommunityId, it must have the prefix urn:oid:, value found was " + location, this, "ITI TF-2b: 3.38.4.1.2.1");
+			if (location == null) {
+				Assertion assertion = ASSERTIONLIBRARY.getAssertion("TA095");
+				er.err(XdsErrorCode.Code.XDSRegistryMetadataError, assertion, this, "", "");
+			}
+			else if (!location.startsWith("urn:oid:")) {
+				Assertion assertion = ASSERTIONLIBRARY.getAssertion("TA096");
+				String detail = "Value found: '" + location + "'";
+				er.err(XdsErrorCode.Code.XDSRegistryMetadataError, assertion, this, "", detail);
+			}
 		}
 	}
 
