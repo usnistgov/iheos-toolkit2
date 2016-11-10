@@ -2,11 +2,13 @@ package gov.nist.toolkit.valregmetadata.datatype;
 
 import gov.nist.toolkit.errorrecording.ErrorRecorder;
 import gov.nist.toolkit.errorrecording.client.XdsErrorCode;
+import gov.nist.toolkit.errorrecording.client.assertions.Assertion;
+import gov.nist.toolkit.errorrecording.client.assertions.AssertionLibrary;
 
 /**
  * RFC 3066
  * @author bill
- * 
+ *
  * The syntax of this tag in ABNF [RFC 2234] is:
  *
  *   Language-Tag = Primary-subtag *( "-" Subtag )
@@ -14,42 +16,52 @@ import gov.nist.toolkit.errorrecording.client.XdsErrorCode;
  *   Primary-subtag = 1*8ALPHA
  *
  *   Subtag = 1*8(ALPHA / DIGIT)
- *   
+ *
  */
 public class Rfc3066Format extends FormatValidator {
 
 	public Rfc3066Format(ErrorRecorder er, String context, String resource) {
 		super(er, context, resource);
 	}
-	
+	private AssertionLibrary ASSERTIONLIBRARY = AssertionLibrary.getInstance();
+
 	String errMsg = " - does not conform to RFC 3066 format";
 	String xresource = "RFC 3066";
-	
+
 	static String digits = "1234567890";
 	static String alphas = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
 
 	public void validate(String input) {
 		if (input == null || input.equals("")) {
-			er.err(XdsErrorCode.Code.XDSRegistryMetadataError, errMsg, this, getResource(xresource + " - input is empty"));
+			Assertion assertion = ASSERTIONLIBRARY.getAssertion("TA086");
+			er.err(XdsErrorCode.Code.XDSRegistryMetadataError, assertion, this, context, "");
 			return;
 		}
 		String[] parts = input.split("-");
 		if (parts[0].length() > 8) {
-			er.err(XdsErrorCode.Code.XDSRegistryMetadataError, input + errMsg, this, getResource(xresource + " - Primary-subtag limited to 8 characters"));
+			Assertion assertion = ASSERTIONLIBRARY.getAssertion("TA087");
+			String detail = "Input: '" + input + "'";
+			er.err(XdsErrorCode.Code.XDSRegistryMetadataError, assertion, this, context, "");
 		}
 		if (!allAlphas(parts[0])) {
-			er.err(XdsErrorCode.Code.XDSRegistryMetadataError, input + errMsg, this, getResource(xresource + " - Primary-subtag is not all alpha characters"));
+			Assertion assertion = ASSERTIONLIBRARY.getAssertion("TA088");
+			String detail = "Input: '" + input + "'";
+			er.err(XdsErrorCode.Code.XDSRegistryMetadataError, assertion, this, context, "");
 		}
 		if (parts.length == 1)
 			return;
-		
+
 		if (parts[1].length() > 8) {
-			er.err(XdsErrorCode.Code.XDSRegistryMetadataError, input + errMsg, this, getResource(xresource + " - Subtag limited to 8 characters"));
+			Assertion assertion = ASSERTIONLIBRARY.getAssertion("TA089");
+			String detail = "Input: '" + input + "'";
+			er.err(XdsErrorCode.Code.XDSRegistryMetadataError, assertion, this, context, "");
 		}
 		if (!allAlphasAndDigits(parts[1])) {
-			er.err(XdsErrorCode.Code.XDSRegistryMetadataError, input + errMsg, this, getResource(xresource + " - Subtag is not all alpha or digit characters"));
+			Assertion assertion = ASSERTIONLIBRARY.getAssertion("TA090");
+			String detail = "Input: '" + input + "'";
+			er.err(XdsErrorCode.Code.XDSRegistryMetadataError, assertion, this, context, "");
 		}
-		
+
 	}
 
 	boolean allAlphas(String in) {
