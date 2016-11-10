@@ -583,7 +583,11 @@ public class XdsTestServiceManager extends CommonService {
 		List<TestOverviewDTO> results = new ArrayList<>();
 		try {
 			for (TestInstance testInstance : testInstances) {
-				results.add(getTestOverview(sessionName, testInstance));
+				try {
+					results.add(getTestOverview(sessionName, testInstance));
+				} catch (Exception e) {
+					logger.error("Test " + testInstance + " does not exist");
+				}
 			}
 		} catch (Exception e) {
 			throw e;
@@ -615,6 +619,8 @@ public class XdsTestServiceManager extends CommonService {
 				lm = buildLogMap(testDir, testInstance);
 
 			TestLogDetails testLogDetails = new TestLogDetails(session.getTestkitSearchPath().getTestDefinition(testInstance.getId()), testInstance);
+			if (testLogDetails == null)
+				throw new XdsInternalException(testInstance + " no longer exists");
 			List<TestLogDetails> testLogDetailsList = new ArrayList<TestLogDetails>();
 			testLogDetailsList.add(testLogDetails);
 

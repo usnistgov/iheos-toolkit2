@@ -31,6 +31,7 @@ class RegOrchestrationBuilder {
         RegOrchestrationResponse response = new RegOrchestrationResponse()
         Map<String, TestInstanceManager> pidNameMap = [
                 registerPid:  new TestInstanceManager(request, response, '15817'),
+                registerAltPid:  new TestInstanceManager(request, response, '15817b'),
                 sqPid:        new TestInstanceManager(request, response, '15818'),
                 mpq1Pid:      new TestInstanceManager(request, response, '15819'),
                 mpq2Pid:      new TestInstanceManager(request, response, '15820')
@@ -56,11 +57,13 @@ class RegOrchestrationBuilder {
         response.setSut(registrySut)
 
         Pid registerPid = PidBuilder.createPid(orchProps.getProperty("registerPid"))
+        Pid registerAltPid = PidBuilder.createPid(orchProps.getProperty("registerAltPid"))
         Pid sqPid       = PidBuilder.createPid(orchProps.getProperty("sqPid"))
         Pid mpq1Pid     = PidBuilder.createPid(orchProps.getProperty("mpq1Pid"))
         Pid mpq2Pid     = PidBuilder.createPid(orchProps.getProperty("mpq2Pid"))
 
         response.setRegisterPid(registerPid)
+        response.setRegisterAltPid(registerAltPid)
         response.setSqPid(sqPid)
         response.setMpq1Pid(mpq1Pid)
         response.setMpq2Pid(mpq2Pid)
