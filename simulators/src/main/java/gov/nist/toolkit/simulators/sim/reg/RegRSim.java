@@ -8,6 +8,8 @@ import gov.nist.toolkit.common.datatypes.UuidValidator;
 import gov.nist.toolkit.errorrecording.ErrorRecorder;
 import gov.nist.toolkit.errorrecording.client.XdsErrorCode;
 import gov.nist.toolkit.errorrecording.client.XdsErrorCode.Code;
+import gov.nist.toolkit.errorrecording.client.assertions.Assertion;
+import gov.nist.toolkit.errorrecording.client.assertions.AssertionLibrary;
 import gov.nist.toolkit.registrymetadata.IdParser;
 import gov.nist.toolkit.registrymetadata.Metadata;
 import gov.nist.toolkit.commondatatypes.MetadataSupport;
@@ -35,6 +37,8 @@ public class RegRSim extends TransactionSimulator   {
 	public MetadataCollection delta;
 	protected MessageValidatorEngine mvc;
     protected DsSimCommon dsSimCommon;
+	private AssertionLibrary ASSERTIONLIBRARY = AssertionLibrary.getInstance();
+
 
 	static Logger log = Logger.getLogger(RegRSim.class);
 
@@ -263,12 +267,16 @@ public class RegRSim extends TransactionSimulator   {
 					if (slotName.equals("urn:ihe:iti:xds:2013:referenceIdList"))    // used by referenceIdList
 						continue;
 					if (slotName.startsWith("urn:ihe:")) {
-						er.err(XdsErrorCode.Code.XDSRegistryError, "Illegal Slot name - " + slotName, "RegRSim.java", MetadataSupport.error_severity, "ITI-TF3:4.1.14");
+						Assertion assertion = ASSERTIONLIBRARY.getAssertion("TA099");
+						String detail = MetadataSupport.error_severity + ". Slot name found: " + slotName;
+						er.err(XdsErrorCode.Code.XDSRegistryError, assertion, this, "RegRSim.java", detail);
 						continue;
 					}
 					if (!isExtraMetadataSupported) {
 						// register the warning to be returned
-						er.err(XdsErrorCode.Code.XDSExtraMetadataNotSaved, "Extra Metadata Slot - " + slotName + " present. Extra metadata not supported by this registry", "RegRSim.java", MetadataSupport.warning_severity, "ITI-TF3:4.1.14");
+						Assertion assertion = ASSERTIONLIBRARY.getAssertion("TA100");
+						String detail = MetadataSupport.warning_severity + ". Extra Metadata Slot '" + slotName + "' present.";
+						er.err(XdsErrorCode.Code.XDSExtraMetadataNotSaved, assertion, this, "RegRSim.java", detail);
 						// remove the slot
 						m.rmObject(slotEle);
 					}
