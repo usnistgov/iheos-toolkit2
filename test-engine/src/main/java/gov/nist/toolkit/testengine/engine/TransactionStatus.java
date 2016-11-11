@@ -52,6 +52,10 @@ public class TransactionStatus {
 		return value.toString();
 	}
 
+	public boolean isFault() {
+		return value == StatusValue.FAULT;
+	}
+
 	public boolean isFailure() {
 		return value == StatusValue.Failure;
 	}

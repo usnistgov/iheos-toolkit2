@@ -230,7 +230,7 @@ public interface ToolkitServiceAsync {
 	void getOnDemandDocumentEntryDetails(SimId oddsSimId, AsyncCallback<List<DocumentEntryDetail>> callback);
 	void getInteractionFromModel(InteractingEntity model, AsyncCallback<InteractingEntity> callback);
 	void getStsSamlAssertion(String username, TestInstance testInstance, SiteSpec stsSite, Map<String, String> params, AsyncCallback<String> callback) throws Exception;
-
+	void getStsSamlAssertionsMap(TestInstance testInstance, SiteSpec stsSite, Map<String, String> params, AsyncCallback<Map<String,String>> callback) throws Exception;
 
 	void getServletContextName(AsyncCallback<String> callback);
 	void retrieveConfiguredFavoritesPid(CommandContext commandContext, AsyncCallback<List<Pid>> callback);

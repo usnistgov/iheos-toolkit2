@@ -106,7 +106,7 @@ public class StepContext extends BasicContext implements ErrorReportingInterface
 		test_step_output.addAttribute("status", (status) ? "Pass" : "Fail", null);
 	}
 
-	void resetStatus() {
+	public void resetStatus() {
 		status = true;
 	}
 
