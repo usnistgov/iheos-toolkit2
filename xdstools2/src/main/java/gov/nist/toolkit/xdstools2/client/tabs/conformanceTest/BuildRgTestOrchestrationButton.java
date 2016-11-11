@@ -104,8 +104,7 @@ public class BuildRgTestOrchestrationButton extends AbstractOrchestrationButton 
 
     }
 
-    @Override
-    public void handleClick(ClickEvent clickEvent) {
+    public void orchestrate() {
         if (!isExposed() && !isExternal()) {
             new PopupMessage("Must select Exposed or External Registry/Repository");
             return;

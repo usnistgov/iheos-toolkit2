@@ -1,6 +1,5 @@
 package gov.nist.toolkit.xdstools2.client.tabs.conformanceTest;
 
-import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.FlexTable;
 import com.google.gwt.user.client.ui.FlowPanel;
@@ -43,8 +42,7 @@ public class BuildIIGTestOrchestrationButton extends AbstractOrchestrationButton
       panel().add(initializationResultsPanel);
    }
 
-   @Override
-   public void handleClick(ClickEvent clickEvent) {
+   public void orchestrate() {
       String msg = testContext.verifyTestContext();
       if (msg != null) {
          testContextView.launchDialog(msg);

@@ -32,13 +32,23 @@ abstract public class AbstractOrchestrationButton implements ClickHandler {
     private CheckBox resetCheckBox = null;
     private Panel customPanel = null;
     private boolean errorPanelAdded = false;
-    private CheckBox samlCheckBox = new CheckBox("SAML");
-    private String samlAssertion;
+    private Map<String,String> samlAssertionsMap;
     private CheckBox tlsCheckBox;
     private CheckBox selftestCheckBox = new CheckBox("Self Test - Enable self test mode.");
     private String label = null;
     private String resetLabel = null;
     private String systemDiagramUrl = null;
+
+    private CheckBox samlCheckBox = new CheckBox("SAML");
+    private boolean xuaOption;
+    private String samlAssertion;
+    private static final TestInstance stsTestInstance = new TestInstance("GazelleSts");
+    static {
+        stsTestInstance.setSection("samlassertion-issue");
+    }
+    private static final SiteSpec stsSpec =  new SiteSpec("GazelleSts");
+    private static final Map<String, String> samlParams = new HashMap<>();
+    static public final String XUA_OPTION = "xua";
 
     public AbstractOrchestrationButton(Panel topPanel, String label) {
         this.topPanel = topPanel;
@@ -92,7 +102,12 @@ abstract public class AbstractOrchestrationButton implements ClickHandler {
 //        panel.add(selftestCheckBox);
 //        panel.add(new HTML("<br />"));
 
-        samlCheckBox.setTitle("Uses Gazelle STS Username 'Xuagood'");
+        if (isXuaOption()) { // Xua Option has SAML ON by default
+            samlCheckBox.setValue(true);
+            samlCheckBox.setEnabled(false);
+        } else {
+            samlCheckBox.setTitle("Uses Gazelle STS Username 'Xuagood'");
+        }
         panel.add(samlCheckBox);
         enableSaml();
 
@@ -124,24 +139,6 @@ abstract public class AbstractOrchestrationButton implements ClickHandler {
                 if (Boolean.parseBoolean(tkPropMap.get("Enable_SAML"))) { // Master flag
                     samlCheckBox.setVisible(true);
                     samlCheckBox.setStyleName("orchestrationOption");
-
-                    // Get STS SAML Assertion
-                    TestInstance testInstance = new TestInstance("GazelleSts");
-                    testInstance.setSection("samlassertion-issue");
-                    SiteSpec stsSpec =  new SiteSpec("GazelleSts");
-                    Map<String, String> params = new HashMap<>();
-                    String xuaUsername = "Xuagood";
-                    params.put("$saml-username$",xuaUsername);
-                    try {
-                        ClientUtils.INSTANCE.getToolkitServices().getStsSamlAssertion(xuaUsername, testInstance, stsSpec, params, new AsyncCallback<String>() {
-                            @Override
-                            public void onFailure(Throwable throwable) {}
-                            @Override
-                            public void onSuccess(String s) {
-                                setSamlAssertion(s);
-                            }
-                        });
-                    } catch (Throwable t) {}
                 }
             }
         });
@@ -156,7 +153,28 @@ abstract public class AbstractOrchestrationButton implements ClickHandler {
         return selftestCheckBox.getValue();
     }
 
-    public abstract void handleClick(ClickEvent clickEvent);
+    public abstract void orchestrate();
+
+    public void handleClick(ClickEvent event) {
+        if (isSaml() || isXuaOption()) {
+            // Get STS SAML Assertion
+            String xuaUsername = "Xuagood";
+            getSamlParams().put("$saml-username$",xuaUsername);
+            try {
+                ClientUtils.INSTANCE.getToolkitServices().getStsSamlAssertion(xuaUsername,  getStsTestInstance(), getStsSpec(), getSamlParams(), new AsyncCallback<String>() {
+                    @Override
+                    public void onFailure(Throwable throwable) {}
+                    @Override
+                    public void onSuccess(String s) {
+                        setSamlAssertion(s);
+                        orchestrate();
+                    }
+                });
+            } catch (Throwable t) {}
+        } else {
+            orchestrate();
+        }
+    }
 
     @Override
     public void onClick(ClickEvent clickEvent) {
@@ -226,5 +244,41 @@ abstract public class AbstractOrchestrationButton implements ClickHandler {
     public void setSamlAssertion(SiteSpec siteSpec) {
        siteSpec.setSaml((isSaml()) && getSamlAssertion()!=null); // Does the SAML assertion really exist?
        siteSpec.setStsAssertion(getSamlAssertion());
+    }
+
+    public boolean isXuaOption() {
+        return xuaOption;
+    }
+
+    public void setXuaOption(boolean xuaOption) {
+        this.xuaOption = xuaOption;
+        if (xuaOption) {
+            samlCheckBox.setValue(true);
+            samlCheckBox.setEnabled(false);
+            samlCheckBox.setTitle("");
+        } else {
+            samlCheckBox.setValue(false);
+            samlCheckBox.setEnabled(true);
+        }
+    }
+
+    public Map<String, String> getSamlAssertionsMap() {
+        return samlAssertionsMap;
+    }
+
+    public void setSamlAssertionsMap(Map<String, String> samlAssertionsMap) {
+        this.samlAssertionsMap = samlAssertionsMap;
+    }
+
+    public static Map<String, String> getSamlParams() {
+        return samlParams;
+    }
+
+    public static SiteSpec getStsSpec() {
+        return stsSpec;
+    }
+
+    public static TestInstance getStsTestInstance() {
+        return stsTestInstance;
     }
 }
