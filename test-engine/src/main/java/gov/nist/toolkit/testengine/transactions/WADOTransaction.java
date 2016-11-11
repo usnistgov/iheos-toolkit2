@@ -11,6 +11,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.apache.axiom.om.OMElement;
@@ -26,6 +27,7 @@ import org.apache.log4j.Logger;
 import gov.nist.toolkit.configDatatypes.client.TransactionType;
 import gov.nist.toolkit.soap.http.SoapFault;
 import gov.nist.toolkit.testengine.engine.StepContext;
+import gov.nist.toolkit.testengine.engine.TransactionStatus;
 import gov.nist.toolkit.xdsexception.client.MetadataException;
 import gov.nist.toolkit.xdsexception.client.XdsInternalException;
 
@@ -187,13 +189,23 @@ public class WADOTransaction extends BasicTransaction {
          testLog.add_name_value(statusE, "Line", statusLine.toString());
          testLog.add_name_value(statusE, "Code", Integer.toString(statusLine.getStatusCode()));
          testLog.add_name_value(statusE, "Reason", statusLine.getReasonPhrase());
-         if (statusLine.getStatusCode() == 200) {
+         Integer statusCode = statusLine.getStatusCode();
+         String statusCodeString = statusCode.toString();
+         List<TransactionStatus> tss = s_ctx.getExpectedStatus();
+         boolean fs = false;
+         for (TransactionStatus ts : tss) {
+            if (ts.isFailure()) fs = true;
+         }
+         boolean ok = fs == (statusCode != 200);
+         String eec = s_ctx.getExpectedErrorCode();
+         if (StringUtils.isNotBlank(eec) && !eec.equals(statusCodeString)) ok = false;
+         String m = "HTTP Response: " + statusLine.toString();
+         if (ok) {
             s_ctx.addDetail("HTTP Response: ", statusLine.toString());
          } else {
-            String message = "HTTP error code: " + statusLine.getStatusCode()  + 
-            " Reason: " + statusLine.getReasonPhrase();
-            s_ctx.set_error(message);
+            s_ctx.set_error("HTTP Response: " + statusLine.toString());
             failed();
+            return;
          }
       }
       String content = "application/dicom";
@@ -207,13 +219,14 @@ public class WADOTransaction extends BasicTransaction {
       }
       // appropriate file name suffix
       if (responseEntity != null) {
-      String suffix = "dcm";
-      switch (content) {
+         String c = StringUtils.substringBefore(content, ";");
+      String suffix = "txt";
+      switch (c) {
          case "application/jpeg":
             suffix = "jpeg";
             break;
-         case "application/text":
-            suffix = "txt";
+         case "application/dicom":
+            suffix = "dcm";
             break;
          case "application/html":
             suffix = "html";
