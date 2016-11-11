@@ -144,7 +144,9 @@ public class ImgDetailTransaction extends BasicTransaction {
    @Override
    public void processAssertion(AssertionEngine engine, Assertion a, OMElement assertion_output)
       throws XdsInternalException {
+      XdsInternalException xdsInternalException = null;
       errs = new ArrayList <>();
+      try {
       switch (a.process) {
          case "sameReqImgs":
             prsSameReqImgs(engine, a, assertion_output);
@@ -170,6 +172,10 @@ public class ImgDetailTransaction extends BasicTransaction {
          default:
             throw new XdsInternalException("ImgDetailTransaction: Unknown assertion.process " + a.process);
       }
+      } catch (XdsInternalException ie) {
+         xdsInternalException = ie;
+         errs.add(ie.getMessage());
+      }
       if (errs.isEmpty() == false) {
          StringBuilder em = new StringBuilder();
          for (String err : errs) {
@@ -179,6 +185,7 @@ public class ImgDetailTransaction extends BasicTransaction {
          testLogger.add_name_value_with_id(assertion_output, "AssertionStatus", a.id, "fail");
          s_ctx.fail(em.toString());
       }
+      if (xdsInternalException != null) throw xdsInternalException;
    } // EO processAssertion method
 
    /*
@@ -858,6 +865,7 @@ public class ImgDetailTransaction extends BasicTransaction {
    }
 
    private SimulatorTransaction getSimulatorTransaction(Assertion a) throws XdsInternalException {
+      try {
       OMElement simTransactionElement = XmlUtil.firstChildWithLocalName(a.assertElement, "SimTransaction");
       if (simTransactionElement == null)
          throw new XdsInternalException(a.toString() + " has no SimTransaction element");
@@ -870,6 +878,10 @@ public class ImgDetailTransaction extends BasicTransaction {
       TestInstance ti = testConfig.testInstance;
       SimId simId = new SimId(ti.getUser(), id, aType.getShortName());
       return SimulatorTransaction.get(simId, tType, pid, null);
+      } catch (XdsInternalException ie) {
+         errs.add("Error loading simulator transaction" + ie.getMessage());
+         throw ie;
+      }
    }
 
    /*
