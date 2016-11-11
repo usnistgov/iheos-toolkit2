@@ -241,6 +241,7 @@ public class RetrieveTransaction extends BasicTransaction {
 			catch (Exception e) {
 				if (e.getCause()!=null && (e.getCause() instanceof AxisFault) && ((AxisFault)e.getCause()).getFaultCodeElement()!=null
 						&& (this.s_ctx.getExpectedStatus().size()>0) && this.s_ctx.getExpectedStatus().get(0).isFault()) {
+					s_ctx.set_error(((AxisFault)(e.getCause())).getMessage());
 					s_ctx.resetStatus();
 					step_failure = false;
 					add_step_status_to_output();
