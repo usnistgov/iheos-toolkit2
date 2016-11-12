@@ -38,7 +38,7 @@ public class BuildRIGTestOrchestrationButton extends AbstractOrchestrationButton
 
         HTML instructions = new HTML(
                 "<p>" +
-                        "The System Under Test (SUT) is a Responding Imaging Gateway ." +
+                        "The System Under Test (SUT) is a Responding Imaging Gateway. " +
                         "The diagram below shows the test environment with the SUT in orange. " +
                         "The test software creates and configures the simulators in the diagram. " +
                 "</p>" +

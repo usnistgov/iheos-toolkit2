@@ -14,7 +14,7 @@ to the Repository/Registry simulator in the test environment.
 
 <li>Configure your Imaging Document Source System under Test (IDS SUT)
 Repository Unique ID to 1.3.6.1.4.1.21367.13.80.110. That means that the
-value of 0040&nbsp;E011&nbsp;Retrieve&nbsp;Location&nbsp;UID
+value of (0040&nbsp;E011&nbsp;)Retrieve&nbsp;Location&nbsp;UID
 (inside Referenced Series Sequence) will contain the value
 1.3.6.1.4.1.21367.13.80.110. This is part of the test validation.</li>
 
