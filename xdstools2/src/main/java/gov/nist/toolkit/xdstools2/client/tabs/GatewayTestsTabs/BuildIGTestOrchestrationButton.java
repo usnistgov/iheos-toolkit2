@@ -108,7 +108,11 @@ public class BuildIGTestOrchestrationButton extends AbstractOrchestrationButton 
                 if (handleError(rawResponse, IgOrchestrationResponse.class)) return;
                 IgOrchestrationResponse orchResponse = (IgOrchestrationResponse) rawResponse;
                 testTab.setOrchestrationResponse(orchResponse);
-                testTab.setSiteToIssueTestAgainst(siteUnderTest(orchResponse));
+                SiteSpec siteUnderTest = siteUnderTest(orchResponse);
+                if (isSaml()) {
+                    setSamlAssertion(siteUnderTest);
+                }
+                testTab.setSiteToIssueTestAgainst(siteUnderTest);
                 if (AD_OPTION.equals(actorOption.getOptionId()))
                     orchResponse.setExternalStart(true);
 
