@@ -15,6 +15,7 @@ import gov.nist.toolkit.configDatatypes.client.TransactionType;
 import gov.nist.toolkit.services.client.IdsOrchestrationRequest;
 import gov.nist.toolkit.services.client.IdsOrchestrationResponse;
 import gov.nist.toolkit.services.client.RawResponse;
+import gov.nist.toolkit.sitemanagement.client.Site;
 import gov.nist.toolkit.sitemanagement.client.SiteSpec;
 import gov.nist.toolkit.sitemanagement.client.TransactionBean;
 import gov.nist.toolkit.xdstools2.client.widgets.PopupMessage;
@@ -43,7 +44,7 @@ public class BuildIDSTestOrchestrationButton extends AbstractOrchestrationButton
        this.testContextView = testContextView;
        HTML instructions = new HTML(
                "<p>" +
-                       "The System Under Test (SUT) is an Imaging Document Source." +
+                       "The System Under Test (SUT) is an Imaging Document Source. " +
                        "The diagram below shows the test environment with the SUT in orange. " +
                        "The test software creates and configures the simulators in the diagram. " +
                "</p>" +
@@ -162,12 +163,21 @@ public class BuildIDSTestOrchestrationButton extends AbstractOrchestrationButton
                }
 
                table.setText(row, 0, "Repository Unique ID");
+                String repositoryUid = "UNKNOWN";
+                try {
+                    repositoryUid = testContext.getSiteUnderTest().getRepositoryUniqueId(TransactionBean.RepositoryType.REPOSITORY);
+                } catch (Exception e) {
+                    repositoryUid = "UNKNOWN";
+                }
                try {
-                   String repUid = testContext.getSiteUnderTest().getRepositoryUniqueId(TransactionBean.RepositoryType.IDS);
-                   table.setText(row++, 1, repUid);
+                   if (repositoryUid.equals("UNKNOWN")) {
+                       repositoryUid = testContext.getSiteUnderTest().getRepositoryUniqueId(TransactionBean.RepositoryType.IDS);
+                   }
                } catch (Exception e) {
                   new PopupMessage("sut config: " + e.getMessage());
+                   repositoryUid = "UNKNOWN";
                }
+                table.setText(row++, 1, repositoryUid);
 
                initializationResultsPanel.add(table);
            }
