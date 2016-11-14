@@ -3,10 +3,13 @@ package gov.nist.toolkit.xdstools2.client.event.testSession;
 import com.google.gwt.user.client.Cookies;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import gov.nist.toolkit.xdstools2.client.CookieManager;
+import gov.nist.toolkit.xdstools2.client.command.command.AddMesaTestSessionCommand;
+import gov.nist.toolkit.xdstools2.client.command.command.DeleteMesaTestSessionCommand;
 import gov.nist.toolkit.xdstools2.client.widgets.PopupMessage;
 import gov.nist.toolkit.xdstools2.client.Xdstools2;
 import gov.nist.toolkit.xdstools2.client.command.command.GetTestSessionNamesCommand;
 import gov.nist.toolkit.xdstools2.client.util.ClientUtils;
+import gov.nist.toolkit.xdstools2.shared.command.CommandContext;
 
 import java.util.List;
 
@@ -90,33 +93,23 @@ public class TestSessionManager2 {
 
     // save new sessionName to server and broadcast updates to all tabs
     public void add(final String sessionName) {
-        ClientUtils.INSTANCE.getToolkitServices().addMesaTestSession(sessionName, new AsyncCallback<Boolean>() {
+        new AddMesaTestSessionCommand(){
             @Override
-            public void onFailure(Throwable throwable) {
-                new PopupMessage("Cannot display test session - " + throwable.getMessage());
-            }
-
-            @Override
-            public void onSuccess(Boolean aBoolean) {
+            public void onComplete(Boolean result) {
                 load(sessionName);  // getRetrievedDocumentsModel full list and update all tabs
             }
-        });
+        }.run(new CommandContext(ClientUtils.INSTANCE.getEnvironmentState().getEnvironmentName(),sessionName));
     }
 
     // delete new sessionName from server and broadcast updates to all tabs
     public void delete(String sessionName) {
-        ClientUtils.INSTANCE.getToolkitServices().delMesaTestSession(sessionName, new AsyncCallback<Boolean>() {
+        new DeleteMesaTestSessionCommand(){
             @Override
-            public void onFailure(Throwable throwable) {
-                new PopupMessage("Cannot delete test session - " + throwable.getMessage());
-            }
-
-            @Override
-            public void onSuccess(Boolean aBoolean) {
+            public void onComplete(Boolean result) {
                 currentTestSession=testSessions.get(0);
                 load(currentTestSession);  // getRetrievedDocumentsModel full list and update all tabs
             }
-        });
+        }.run(new CommandContext(ClientUtils.INSTANCE.getEnvironmentState().getEnvironmentName(),sessionName));
     }
 
     private boolean isEmpty(String x) { return x == null || x.trim().equals(""); }

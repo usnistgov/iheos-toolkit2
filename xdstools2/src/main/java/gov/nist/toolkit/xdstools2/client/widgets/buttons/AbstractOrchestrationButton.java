@@ -11,8 +11,10 @@ import gov.nist.toolkit.services.client.MessageItem;
 import gov.nist.toolkit.services.client.RawResponse;
 import gov.nist.toolkit.sitemanagement.client.SiteSpec;
 import gov.nist.toolkit.xdstools2.client.ErrorHandler;
+import gov.nist.toolkit.xdstools2.client.command.command.GetStsSamlAssertionCommand;
 import gov.nist.toolkit.xdstools2.client.command.command.GetToolkitPropertiesCommand;
 import gov.nist.toolkit.xdstools2.client.util.ClientUtils;
+import gov.nist.toolkit.xdstools2.shared.command.request.GetStsSamlAssertionRequest;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -120,14 +122,12 @@ abstract public class AbstractOrchestrationButton implements ClickHandler {
                     String xuaUsername = "Xuagood";
                     params.put("$saml-username$",xuaUsername);
                     try {
-                        ClientUtils.INSTANCE.getToolkitServices().getStsSamlAssertion(xuaUsername, testInstance, stsSpec, params, new AsyncCallback<String>() {
+                        new GetStsSamlAssertionCommand(){
                             @Override
-                            public void onFailure(Throwable throwable) {}
-                            @Override
-                            public void onSuccess(String s) {
-                                setSamlAssertion(s);
+                            public void onComplete(String result) {
+                                setSamlAssertion(result);
                             }
-                        });
+                        }.run(new GetStsSamlAssertionRequest(ClientUtils.INSTANCE.getCommandContext(),xuaUsername,testInstance,stsSpec,params));
                     } catch (Throwable t) {}
                 }
             }

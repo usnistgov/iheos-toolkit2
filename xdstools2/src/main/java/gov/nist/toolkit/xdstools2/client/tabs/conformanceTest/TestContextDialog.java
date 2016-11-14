@@ -10,6 +10,7 @@ import gov.nist.toolkit.xdstools2.client.ToolWindow;
 import gov.nist.toolkit.xdstools2.client.command.command.*;
 import gov.nist.toolkit.xdstools2.client.util.ClientUtils;
 import gov.nist.toolkit.xdstools2.client.widgets.HorizontalFlowPanel;
+import gov.nist.toolkit.xdstools2.shared.command.CommandContext;
 import gov.nist.toolkit.xdstools2.shared.command.request.GetSiteNamesRequest;
 import gov.nist.toolkit.xdstools2.shared.command.request.SetAssignedSiteForTestSessionRequest;
 
@@ -256,7 +257,7 @@ class TestContextDialog extends DialogBox {
                     testSessionListBox.setSelectedIndex(testSessionListBox.getItemCount() - 1);
                     toolWindow.setCurrentTestSession(newItem);
                 }
-            }.run(newItem);
+            }.run(new CommandContext(ClientUtils.INSTANCE.getEnvironmentState().getEnvironmentName(),newItem));
         }
     }
     private void loadTestSessions(final String initialSelection) {

@@ -2,7 +2,6 @@ package gov.nist.toolkit.xdstools2.client.tabs.GatewayTestsTabs;
 
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.*;
 import gov.nist.toolkit.actorfactory.client.SimulatorConfig;
 import gov.nist.toolkit.actortransaction.client.ActorType;
@@ -12,12 +11,14 @@ import gov.nist.toolkit.results.client.Result;
 import gov.nist.toolkit.results.client.TestInstance;
 import gov.nist.toolkit.sitemanagement.client.SiteSpec;
 import gov.nist.toolkit.xdstools2.client.CoupledTransactions;
-import gov.nist.toolkit.xdstools2.client.command.command.RunMesaTestCommand;
-import gov.nist.toolkit.xdstools2.client.widgets.PopupMessage;
 import gov.nist.toolkit.xdstools2.client.TabContainer;
+import gov.nist.toolkit.xdstools2.client.command.command.GetTestResultsCommand;
+import gov.nist.toolkit.xdstools2.client.command.command.RunMesaTestCommand;
 import gov.nist.toolkit.xdstools2.client.inspector.MetadataInspectorTab;
 import gov.nist.toolkit.xdstools2.client.siteActorManagers.GetDocumentsSiteActorManager;
 import gov.nist.toolkit.xdstools2.client.tabs.genericQueryTab.GenericQueryTab;
+import gov.nist.toolkit.xdstools2.client.widgets.PopupMessage;
+import gov.nist.toolkit.xdstools2.shared.command.request.GetTestResultsRequest;
 import gov.nist.toolkit.xdstools2.shared.command.request.RunTestRequest;
 
 import java.util.ArrayList;
@@ -45,7 +46,7 @@ Negative tests
     more coming...
  */
 public class IGTestTab extends GenericQueryTab implements GatewayTool {
-//    final protected ToolkitServiceAsync toolkitService = GWT
+    //    final protected ToolkitServiceAsync toolkitService = GWT
 //            .create(ToolkitService.class);
     String selectedActor = ActorType.INITIATING_GATEWAY.getShortName();
     List<SimulatorConfig> rgConfigs;
@@ -141,9 +142,9 @@ public class IGTestTab extends GenericQueryTab implements GatewayTool {
         ////////////////////////////////////////////////////////////////////////////////////////////////
         tabTopPanel.add(new HTML(
                 "<hr />" +
-                "<h2>Build Test Environment</h2>" +
-                "<p>" +
-                "The Build Test Environment button will create the necessary simulators to test your Initiating Gateway:  " +
+                        "<h2>Build Test Environment</h2>" +
+                        "<p>" +
+                        "The Build Test Environment button will create the necessary simulators to test your Initiating Gateway:  " +
                         "a Document Consumer to drive the test and two Responding Gateways to service requests from " +
                         "your Initiating Gateway. " +
 
@@ -205,16 +206,16 @@ public class IGTestTab extends GenericQueryTab implements GatewayTool {
         public void onClick(ClickEvent event) {
             resultPanel.clear();
 
-			if (getCurrentTestSession().isEmpty()) {
-				new PopupMessage("Test Session must be selected");
-				return;
-			}
+            if (getCurrentTestSession().isEmpty()) {
+                new PopupMessage("Test Session must be selected");
+                return;
+            }
 
             if (!verifySiteProvided()) return;
 
-			addStatusBox();
-			getGoButton().setEnabled(false);
-			getInspectButton().setEnabled(false);
+            addStatusBox();
+            getGoButton().setEnabled(false);
+            getInspectButton().setEnabled(false);
 
             Map<String, String> parms = new HashMap<>();
             parms.put("$testdata_home$", rgConfigs.get(0).get(SimulatorProperties.homeCommunityId).asString());
@@ -250,14 +251,9 @@ public class IGTestTab extends GenericQueryTab implements GatewayTool {
             public void onClick(ClickEvent clickEvent) {
                 List<TestInstance> tests = new ArrayList<TestInstance>();
                 tests.add(new TestInstance("15807"));
-                getToolkitServices().getTestResults(tests, getCurrentTestSession(), new AsyncCallback<Map<String, Result>>() {
+                new GetTestResultsCommand(){
                     @Override
-                    public void onFailure(Throwable throwable) {
-                        new PopupMessage(throwable.getMessage());
-                    }
-
-                    @Override
-                    public void onSuccess(Map<String, Result> stringResultMap) {
+                    public void onComplete(Map<String, Result> stringResultMap) {
                         Result result = stringResultMap.get("15807");
                         if (result == null) {
                             new PopupMessage("Results not available");
@@ -273,7 +269,7 @@ public class IGTestTab extends GenericQueryTab implements GatewayTool {
 //                        itab.setToolkitService(toolkitService);
                         itab.onTabLoad(true, "Insp");
                     }
-                });
+                }.run(new GetTestResultsRequest(getCommandContext(),tests));
             }
         });
         return button;

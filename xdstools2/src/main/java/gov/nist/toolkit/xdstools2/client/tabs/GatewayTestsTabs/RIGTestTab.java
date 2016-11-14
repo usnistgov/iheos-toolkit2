@@ -15,11 +15,13 @@ import gov.nist.toolkit.results.client.TestInstance;
 import gov.nist.toolkit.sitemanagement.client.SiteSpec;
 import gov.nist.toolkit.xdstools2.client.CoupledTransactions;
 import gov.nist.toolkit.xdstools2.client.TabContainer;
+import gov.nist.toolkit.xdstools2.client.command.command.GetTestResultsCommand;
 import gov.nist.toolkit.xdstools2.client.command.command.RunMesaTestCommand;
 import gov.nist.toolkit.xdstools2.client.inspector.MetadataInspectorTab;
 import gov.nist.toolkit.xdstools2.client.siteActorManagers.GetImagingDocumentsSiteActorManager;
 import gov.nist.toolkit.xdstools2.client.tabs.genericQueryTab.GenericQueryTab;
 import gov.nist.toolkit.xdstools2.client.widgets.PopupMessage;
+import gov.nist.toolkit.xdstools2.shared.command.request.GetTestResultsRequest;
 import gov.nist.toolkit.xdstools2.shared.command.request.RunTestRequest;
 
 import java.util.ArrayList;
@@ -248,14 +250,9 @@ public class RIGTestTab extends GenericQueryTab implements GatewayTool {
             public void onClick(ClickEvent clickEvent) {
                 List<TestInstance> tests = new ArrayList<TestInstance>();
                 tests.add(new TestInstance("15807"));
-                getToolkitServices().getTestResults(tests, getCurrentTestSession(), new AsyncCallback<Map<String, Result>>() {
+                new GetTestResultsCommand(){
                     @Override
-                    public void onFailure(Throwable throwable) {
-                        new PopupMessage(throwable.getMessage());
-                    }
-
-                    @Override
-                    public void onSuccess(Map<String, Result> stringResultMap) {
+                    public void onComplete(Map<String, Result> stringResultMap) {
                         Result result = stringResultMap.get("15807");
                         if (result == null) {
                             new PopupMessage("Results not available");
@@ -268,10 +265,9 @@ public class RIGTestTab extends GenericQueryTab implements GatewayTool {
                         results.add(result);
                         itab.setResults(results);
                         itab.setSiteSpec(siteSpec);
-//                        itab.setToolkitService(toolkitService);
                         itab.onTabLoad(true, "Insp");
                     }
-                });
+                }.run(new GetTestResultsRequest(getCommandContext(),tests));
             }
         });
         return button;

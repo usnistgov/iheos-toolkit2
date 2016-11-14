@@ -186,21 +186,18 @@ public interface ToolkitServiceAsync {
     void runMesaTest(RunTestRequest request, AsyncCallback<List<Result>> callback);
     void runTest(RunTestRequest request, AsyncCallback<TestOverviewDTO> callback);
     void isPrivateMesaTesting(AsyncCallback<Boolean> callback);
-    ////////////////////////////////////////////////
-    // FIXME is name the name of the test session
-    ////////////////////////////////////////////////
-    void addMesaTestSession(String name, AsyncCallback<Boolean> callback);
-    void delMesaTestSession(String name, AsyncCallback<Boolean> callback);
+    void addMesaTestSession(CommandContext context, AsyncCallback<Boolean> callback);
+    void delMesaTestSession(CommandContext context, AsyncCallback<Boolean> callback);
     void createPid(GeneratePidRequest generatePidRequest, AsyncCallback<Pid> callback);
     void getAssigningAuthority(CommandContext commandContext, AsyncCallback<String> callback);
     void getAssigningAuthorities(CommandContext commandContext, AsyncCallback<List<String>> callback);
     void sendPidToRegistry(SendPidToRegistryRequest request, AsyncCallback<List<Result>> callback);
     void getSimulatorEventRequest(GetSimulatorEventRequest request, AsyncCallback<Result> callback) ;
     void getSimulatorEventResponse(GetSimulatorEventRequest request, AsyncCallback<Result> callback) ;
-    void getTestLogDetails(String sessionName, TestInstance testInstance, AsyncCallback<LogFileContentDTO> callback);
+    void getTestLogDetails(GetTestLogDetailsRequest request, AsyncCallback<LogFileContentDTO> callback);
 
-    void getTestplanAsText(String testSession, TestInstance testInstance, String section, AsyncCallback<String> callback);
-    void getSectionTestPartFile(String testSession, TestInstance testInstance, String section, AsyncCallback<TestPartFileDTO> callback);
+    void getTestplanAsText(GetTestplanAsTextRequest request, AsyncCallback<String> callback);
+    void getSectionTestPartFile(GetSectionTestPartFileRequest request, AsyncCallback<TestPartFileDTO> callback);
     void loadTestPartContent(LoadTestPartContentRequest request, AsyncCallback<TestPartFileDTO> callback);
     void getHtmlizedString(String xml, AsyncCallback<String> callback);
 
@@ -217,13 +214,13 @@ public interface ToolkitServiceAsync {
     //------------------------------------------------------------------------
     void reloadAllTestResults(CommandContext context, AsyncCallback<List<Test>> callback);
     void getTestlogListing(String sessionName, AsyncCallback<List<TestInstance>> callback);
-    void getTestResults(List<TestInstance> testIds, String testSession, AsyncCallback<Map<String, Result>> callback);
     void setMesaTestSession(String sessionName, AsyncCallback callback);
     void getMesaTestSessionNames(CommandContext request, AsyncCallback<List<String>> callback);
-    void deleteAllTestResults(Site site, AsyncCallback<List<Test>> callback);
-    void deleteSingleTestResult(String testSession, TestInstance testInstance, AsyncCallback<TestOverviewDTO> callback);
-    void runAllTests(Site site, AsyncCallback<List<Test>> callback);
-    void runSingleTest(Site site, int testId, AsyncCallback<Test> callback);
+    void getTestResults(GetTestResultsRequest request, AsyncCallback<Map<String, Result>> callback);
+    void deleteAllTestResults(AllTestRequest request, AsyncCallback<List<Test>> callback);
+    void deleteSingleTestResult(DeleteSingleTestRequest request, AsyncCallback<TestOverviewDTO> callback);
+    void runAllTests(AllTestRequest request, AsyncCallback<List<Test>> callback);
+    void runSingleTest(RunSingleTestRequest request, AsyncCallback<Test> callback);
     void getTransactionErrorCodeRefs(GetTransactionErrorCodeRefsRequest request, AsyncCallback<List<String>> callback);
     void buildIgTestOrchestration(IgOrchestrationRequest request, AsyncCallback<RawResponse> callback);
     void buildRgTestOrchestration(RgOrchestrationRequest request, AsyncCallback<RawResponse> callback);
@@ -236,12 +233,13 @@ public interface ToolkitServiceAsync {
     void buildRSNAEdgeTestOrchestration(RSNAEdgeOrchestrationRequest request, AsyncCallback<RawResponse> callback);
     void getSiteNamesWithRIG(CommandContext context, AsyncCallback<List<String>> callback) ;
     void getSiteNamesWithIDS(CommandContext context, AsyncCallback<List<String>> callback) ;
-    void register(String username, TestInstance testInstance, SiteSpec registry, Map<String, String> params, AsyncCallback<Result> callback) throws Exception;
-    void registerWithLocalizedTrackingInODDS(String username, TestInstance testInstance, SiteSpec registry, SimId oddsSimId, Map<String, String> params, AsyncCallback<Map<String, String>> callback);
+    /////////////
+    void register(RegisterRequest request, AsyncCallback<Result> callback) throws Exception;
+    void registerWithLocalizedTrackingInODDS(RegisterRequest registerRequest, AsyncCallback<Map<String, String>> callback);
     void getOnDemandDocumentEntryDetails(SimId oddsSimId, AsyncCallback<List<DocumentEntryDetail>> callback);
     void getInteractionFromModel(InteractingEntity model, AsyncCallback<InteractingEntity> callback);
-    void getStsSamlAssertion(String username, TestInstance testInstance, SiteSpec stsSite, Map<String, String> params, AsyncCallback<String> callback) throws Exception;
-
+    void getStsSamlAssertion(GetStsSamlAssertionRequest request, AsyncCallback<String> callback);
+////////////////
 
     void getServletContextName(AsyncCallback<String> callback);
     void retrieveConfiguredFavoritesPid(CommandContext commandContext, AsyncCallback<List<Pid>> callback);

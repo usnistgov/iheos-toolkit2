@@ -11,9 +11,7 @@ import gov.nist.toolkit.results.client.Result;
 import gov.nist.toolkit.results.client.TestInstance;
 import gov.nist.toolkit.sitemanagement.client.SiteSpec;
 import gov.nist.toolkit.xdstools2.client.StringSort;
-import gov.nist.toolkit.xdstools2.client.command.command.GetCollectionCommand;
-import gov.nist.toolkit.xdstools2.client.command.command.GetTestIndexCommand;
-import gov.nist.toolkit.xdstools2.client.command.command.GetTestReadmeCommand;
+import gov.nist.toolkit.xdstools2.client.command.command.*;
 import gov.nist.toolkit.xdstools2.client.inspector.MetadataInspectorTab;
 import gov.nist.toolkit.xdstools2.client.tabs.SimulatorMessageViewTab;
 import gov.nist.toolkit.xdstools2.client.tabs.TextViewerTab;
@@ -21,6 +19,8 @@ import gov.nist.toolkit.xdstools2.client.util.ClientUtils;
 import gov.nist.toolkit.xdstools2.client.widgets.PopupMessage;
 import gov.nist.toolkit.xdstools2.shared.command.request.GetCollectionRequest;
 import gov.nist.toolkit.xdstools2.shared.command.request.GetTestDetailsRequest;
+import gov.nist.toolkit.xdstools2.shared.command.request.GetTestResultsRequest;
+import gov.nist.toolkit.xdstools2.shared.command.request.GetTestplanAsTextRequest;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -121,14 +121,9 @@ class TestSelectionManager {
             public void onClick(ClickEvent clickEvent) {
                 List<TestInstance> tests = new ArrayList<TestInstance>();
                 tests.add(new TestInstance(tool.getSelectedTest()));
-                ClientUtils.INSTANCE.getToolkitServices().getTestResults(tests, tool.getCurrentTestSession(), new AsyncCallback<Map<String, Result>>() {
+                new GetTestResultsCommand(){
                     @Override
-                    public void onFailure(Throwable throwable) {
-                        new PopupMessage(throwable.getMessage());
-                    }
-
-                    @Override
-                    public void onSuccess(Map<String, Result> stringResultMap) {
+                    public void onComplete(Map<String, Result> stringResultMap) {
                         Result result = stringResultMap.get(tool.getSelectedTest());
                         if (result == null) {
                             new PopupMessage("Results not available");
@@ -143,10 +138,9 @@ class TestSelectionManager {
                         results.add(result);
                         itab.setResults(results);
                         itab.setSiteSpec(siteSpec);
-//                        itab.setToolkitService(toolkitService);
                         itab.onTabLoad(true, "Insp");
                     }
-                });
+                }.run(new GetTestResultsRequest(ClientUtils.INSTANCE.getCommandContext(),tests));
             }
         });
         return button;
@@ -188,17 +182,12 @@ class TestSelectionManager {
     class SelectSectionViewButtonClickHandler implements ClickHandler {
 
         public void onClick(ClickEvent event) {
-            ClientUtils.INSTANCE.getToolkitServices().getTestplanAsText(tool.getCurrentTestSession(),new TestInstance(tool.getSelectedTest()), selectSectionList.getSelectedItemText(), new AsyncCallback<String>() {
-
-                public void onFailure(Throwable caught) {
-                    new PopupMessage("getTestplanAsText: " + caught.getMessage());
-                }
-
-                public void onSuccess(String result) {
+            new GetTestplanAsTextCommand(){
+                @Override
+                public void onComplete(String result) {
                     new TextViewerTab().onTabLoad(true, result, tool.getSelectedTest() + "#" + selectSectionList.getSelectedItemText());
                 }
-
-            });
+            }.run(new GetTestplanAsTextRequest(ClientUtils.INSTANCE.getCommandContext(),new TestInstance(tool.getSelectedTest()),selectSectionList.getSelectedItemText()));
         }
     }
 

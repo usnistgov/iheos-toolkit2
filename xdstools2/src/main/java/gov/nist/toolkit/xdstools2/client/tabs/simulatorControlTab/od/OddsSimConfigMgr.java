@@ -22,12 +22,14 @@ import gov.nist.toolkit.xdstools2.client.StringSort;
 import gov.nist.toolkit.xdstools2.client.command.command.GetCollectionCommand;
 import gov.nist.toolkit.xdstools2.client.command.command.GetSiteNamesByTranTypeCommand;
 import gov.nist.toolkit.xdstools2.client.command.command.PutSimConfigCommand;
+import gov.nist.toolkit.xdstools2.client.command.command.RegisterWithLocalizedTrackingInODDSCommand;
 import gov.nist.toolkit.xdstools2.client.tabs.simulatorControlTab.*;
 import gov.nist.toolkit.xdstools2.client.tabs.simulatorControlTab.intf.SimConfigMgrIntf;
 import gov.nist.toolkit.xdstools2.client.util.ClientUtils;
 import gov.nist.toolkit.xdstools2.client.widgets.PopupMessage;
 import gov.nist.toolkit.xdstools2.shared.command.request.GetCollectionRequest;
 import gov.nist.toolkit.xdstools2.shared.command.request.GetSiteNamesByTranTypeRequest;
+import gov.nist.toolkit.xdstools2.shared.command.request.RegisterRequest;
 import gov.nist.toolkit.xdstools2.shared.command.request.SimConfigRequest;
 
 import java.util.*;
@@ -552,47 +554,38 @@ public class OddsSimConfigMgr implements SimConfigMgrIntf {
         params.put("$patientid$", oddePatientIdCEBox.getTb().getValue());
         params.put("$repuid$", getConfig().get(SimulatorProperties.repositoryUniqueId).asString()); // oddsReposTDBox.toString() getTb().getValue());
 
-        ClientUtils.INSTANCE.getToolkitServices().registerWithLocalizedTrackingInODDS(getConfig().getId().getUser(), new TestInstance(contentBundleLbx.getSelectedValue())
-                , new SiteSpec(regSSP.getSelected().get(0), ActorType.REGISTRY, null), getConfig().getId() , params
-                , new AsyncCallback<Map<String, String>>() {
-                    @Override
-                    public void onFailure(Throwable throwable) {
-                        regActionMessage.getElement().getStyle().setColor("red");
-                        regActionMessage.setText("Error: " + throwable.getMessage());
+        new RegisterWithLocalizedTrackingInODDSCommand(){
+            @Override
+            public void onFailure(Throwable throwable) {
+                regActionMessage.getElement().getStyle().setColor("red");
+                regActionMessage.setText("Error: " + throwable.getMessage());
 
-                        setRegButton("Initialize", true);
+                setRegButton("Initialize", true);
+            }
+            @Override
+            public void onComplete(Map<String, String> responseMap) {
+                setRegButton("Initialize", true);
+                if (responseMap.containsKey("error")) {
+                    regActionMessage.getElement().getStyle().setColor("red");
+
+                    StringBuffer sb = new StringBuffer();
+                    sb.append(responseMap.get("error"));
+                    sb.append("<br/>");
+
+                    for (int cx=0; cx < responseMap.size()-1; cx++) {
+                        sb.append(responseMap.get("assertion"+cx));
+                        sb.append("<br/>");
                     }
-
-                    @Override
-                    public void onSuccess(Map<String, String> responseMap) {
-
-                        setRegButton("Initialize", true);
-                        if (responseMap.containsKey("error")) {
-//                            new PopupMessage("Sorry, registration of an On-Demand Document Entry failed: ");
-                            regActionMessage.getElement().getStyle().setColor("red");
-
-                            StringBuffer sb = new StringBuffer();
-                            sb.append(responseMap.get("error"));
-                            sb.append("<br/>");
-
-                            for (int cx=0; cx < responseMap.size()-1; cx++) {
-                                sb.append(responseMap.get("assertion"+cx));
-                                sb.append("<br/>");
-                            }
-                            regActionMessage.setHTML(sb.toString());
-                        } else {
-                            regActionMessage.getElement().getStyle().setColor("black");
-                            regActionMessage.setHTML("<br/>Registration was successful. ODDE Id is " + responseMap.get("key"));
-                            getOdDocumentEntries(getSimulatorControlTab());
-                        }
-
-
-                    }
-                });
-
-
-
-
+                    regActionMessage.setHTML(sb.toString());
+                } else {
+                    regActionMessage.getElement().getStyle().setColor("black");
+                    regActionMessage.setHTML("<br/>Registration was successful. ODDE Id is " + responseMap.get("key"));
+                    getOdDocumentEntries(getSimulatorControlTab());
+                }
+            }
+        }.run(new RegisterRequest(ClientUtils.INSTANCE.getCommandContext(),
+                getConfig().getId().getUser(),new TestInstance(contentBundleLbx.getSelectedValue()),
+                new SiteSpec(regSSP.getSelected().get(0), ActorType.REGISTRY, null),params, getConfig().getId()));
     }
 
     private void setRegButton(String initialize, boolean enabled) {

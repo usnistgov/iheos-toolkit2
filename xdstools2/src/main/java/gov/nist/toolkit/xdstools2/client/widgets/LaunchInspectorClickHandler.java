@@ -6,8 +6,10 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 import gov.nist.toolkit.results.client.Result;
 import gov.nist.toolkit.results.client.TestInstance;
 import gov.nist.toolkit.sitemanagement.client.SiteSpec;
+import gov.nist.toolkit.xdstools2.client.command.command.GetTestResultsCommand;
 import gov.nist.toolkit.xdstools2.client.inspector.MetadataInspectorTab;
 import gov.nist.toolkit.xdstools2.client.util.ClientUtils;
+import gov.nist.toolkit.xdstools2.shared.command.request.GetTestResultsRequest;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -40,20 +42,15 @@ public class LaunchInspectorClickHandler implements ClickHandler {
     private void launchInspectorTab(final TestInstance testInstance, String testSession) {
         List<TestInstance> testInstances = new ArrayList<>();
         testInstances.add(testInstance);
-        ClientUtils.INSTANCE.getToolkitServices().getTestResults(testInstances, testSession, new AsyncCallback<Map<String, Result>>() {
+        new GetTestResultsCommand(){
             @Override
-            public void onFailure(Throwable throwable) {
-                new PopupMessage(throwable.getMessage());
-            }
-
-            @Override
-            public void onSuccess(Map<String, Result> resultMap) {
+            public void onComplete(Map<String, Result> resultMap) {
                 MetadataInspectorTab itab = new MetadataInspectorTab();
                 itab.setResults(resultMap.values());
                 itab.setSiteSpec(siteSpec);
                 itab.onTabLoad(true, "Test:" + testInstance.getId() );
             }
-        });
+        }.run(new GetTestResultsRequest(ClientUtils.INSTANCE.getCommandContext(),testInstances));
     }
 
 }

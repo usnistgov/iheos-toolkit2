@@ -11,9 +11,13 @@ import gov.nist.toolkit.session.client.logtypes.SectionOverviewDTO;
 import gov.nist.toolkit.session.client.logtypes.TestPartFileDTO;
 import gov.nist.toolkit.testenginelogging.client.LogFileContentDTO;
 import gov.nist.toolkit.testenginelogging.client.TestStepLogContentDTO;
+import gov.nist.toolkit.xdstools2.client.command.command.GetSectionTestPartFileCommand;
+import gov.nist.toolkit.xdstools2.client.command.command.GetTestLogDetailsCommand;
 import gov.nist.toolkit.xdstools2.client.widgets.HorizontalFlowPanel;
 import gov.nist.toolkit.xdstools2.client.widgets.PopupMessage;
 import gov.nist.toolkit.xdstools2.client.util.ClientUtils;
+import gov.nist.toolkit.xdstools2.shared.command.request.GetSectionTestPartFileRequest;
+import gov.nist.toolkit.xdstools2.shared.command.request.GetTestLogDetailsRequest;
 
 
 /**
@@ -76,15 +80,9 @@ class TestSectionDisplay implements IsWidget {
 
         @Override
         public void onOpen(OpenEvent<DisclosurePanel> openEvent) {
-            ClientUtils.INSTANCE.getToolkitServices().getSectionTestPartFile(sessionName, testInstance, section, new AsyncCallback<TestPartFileDTO>() {
+            new GetSectionTestPartFileCommand(){
                 @Override
-                public void onFailure(Throwable throwable) {
-                    new PopupMessage("TestSectionDisplay: SectionNotRun: getTestplanAsFile error: " + throwable.toString());
-                }
-
-                @Override
-                public void onSuccess(final TestPartFileDTO sectionTp) {
-
+                public void onComplete(TestPartFileDTO sectionTp) {
                     TestPlanDisplay testPlanDisplay = new TestPlanDisplay(sectionTp.getHtlmizedContent().replace("<br/>", "\r\n"));
                     view.setTestPlanDisplay(testPlanDisplay);
 
@@ -116,7 +114,7 @@ class TestSectionDisplay implements IsWidget {
                     }
 
                 }
-            });
+            }.run(new GetSectionTestPartFileRequest(ClientUtils.INSTANCE.getCommandContext(),testInstance,section));
         }
     }
 
@@ -133,23 +131,14 @@ class TestSectionDisplay implements IsWidget {
 
         @Override
         public void onOpen(OpenEvent<DisclosurePanel> openEvent) {
-            ClientUtils.INSTANCE.getToolkitServices().getTestLogDetails(sessionName, testInstance, new AsyncCallback<LogFileContentDTO>() {
+            new GetTestLogDetailsCommand(){
                 @Override
-                public void onFailure(Throwable throwable) {
-                    new PopupMessage("getTestLogDetails failed " + throwable.getMessage());
-                }
-
-                @Override
-                public void onSuccess(final LogFileContentDTO log) {
+                public void onComplete(final LogFileContentDTO log) {
                     if (log == null) new PopupMessage("section is " + testInstance.getSection());
 
-                    ClientUtils.INSTANCE.getToolkitServices().getSectionTestPartFile(sessionName, testInstance, testInstance.getSection(), new AsyncCallback<TestPartFileDTO>() {
+                    new GetSectionTestPartFileCommand(){
                         @Override
-                        public void onFailure(Throwable throwable) {
-                            new PopupMessage("TestSectionDisplay: getTestplanAsFile error: " + throwable.toString());
-                        }
-                        @Override
-                        public void onSuccess(final TestPartFileDTO sectionTp) {
+                        public void onComplete(TestPartFileDTO sectionTp) {
                             TestPlanDisplay testPlanDisplay = new TestPlanDisplay(sectionTp.getHtlmizedContent().replace("<br/>", "\r\n"));
                             view.setTestPlanDisplay(testPlanDisplay);
                             view.clearStepPanel();
@@ -163,12 +152,9 @@ class TestSectionDisplay implements IsWidget {
 
                             }
                         }
-                    });
-
-
+                    }.run(new GetSectionTestPartFileRequest(ClientUtils.INSTANCE.getCommandContext(),testInstance,testInstance.getSection()));
                 }
-            });
-
+            }.run(new GetTestLogDetailsRequest(ClientUtils.INSTANCE.getCommandContext(),testInstance));
         }
     }
 

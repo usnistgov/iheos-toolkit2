@@ -352,7 +352,10 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements
     @Override
     public List<TestInstance> getTestlogListing(String sessionName) throws Exception { return session().xdsTestServiceManager().getTestlogListing(sessionName); }
     @Override
-    public Map<String, Result> getTestResults(List<TestInstance> testIds, String testSession)  throws NoServletSessionException { return session().xdsTestServiceManager().getTestResults(testIds, testSession); }
+    public Map<String, Result> getTestResults(GetTestResultsRequest request)  throws Exception {
+        installCommandContext(request);
+        return session().xdsTestServiceManager().getTestResults(request.getTestIds(), request.getTestSessionName());
+    }
     @Override
     public String setMesaTestSession(String sessionName)  throws NoServletSessionException { session().xdsTestServiceManager().setMesaTestSession(sessionName); return sessionName;}
     @Override
@@ -361,23 +364,32 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements
         return session().xdsTestServiceManager().getMesaTestSessionNames();
     }
     @Override
-    public boolean addMesaTestSession(String name) throws Exception { return session().xdsTestServiceManager().addMesaTestSession(name); }
+    public boolean addMesaTestSession(CommandContext context) throws Exception { return session().xdsTestServiceManager().addMesaTestSession(context.getTestSessionName()); }
     @Override
-    public boolean delMesaTestSession(String name) throws Exception { return session().xdsTestServiceManager().delMesaTestSession(name); }
+    public boolean delMesaTestSession(CommandContext context) throws Exception { return session().xdsTestServiceManager().delMesaTestSession(context.getTestSessionName()); }
     @Override
     public String getNewPatientId(String assigningAuthority)  throws NoServletSessionException { return session().xdsTestServiceManager().getNewPatientId(assigningAuthority); }
     public String delTestResults(List<TestInstance> testInstances, String testSession )  throws NoServletSessionException { session().xdsTestServiceManager().delTestResults(testInstances, testSession); return ""; }
     @Override
-    public List<Test> deleteAllTestResults(Site site) throws NoServletSessionException { return session().xdsTestServiceManager().deleteAllTestResults(getSession().getMesaSessionName(), site); }
-    @Override
-    public TestOverviewDTO deleteSingleTestResult(String testSession, TestInstance testInstance) throws Exception {
-        testInstance.setUser(testSession);
-        return session().xdsTestServiceManager().deleteSingleTestResult(testInstance);
+    public List<Test> deleteAllTestResults(AllTestRequest request) throws Exception {
+        installCommandContext(request);
+        return session().xdsTestServiceManager().deleteAllTestResults(request.getTestSessionName(), request.getSite());
     }
     @Override
-    public List<Test> runAllTests(Site site) throws NoServletSessionException { return session().xdsTestServiceManager().runAllTests(getSession().getMesaSessionName(), site); }
+    public TestOverviewDTO deleteSingleTestResult(DeleteSingleTestRequest request) throws Exception {
+        installCommandContext(request);
+        request.getTestInstance().setUser(request.getTestSessionName());
+        return session().xdsTestServiceManager().deleteSingleTestResult(request.getTestInstance());
+    }
     @Override
-    public Test runSingleTest(Site site, int testId) throws NoServletSessionException { return session().xdsTestServiceManager().runSingleTest(getSession().getMesaSessionName(), site, testId); }
+    public List<Test> runAllTests(AllTestRequest request) throws Exception {
+        installCommandContext(request);
+        return session().xdsTestServiceManager().runAllTests(request.getTestSessionName(), request.getSite()); }
+    @Override
+    public Test runSingleTest(RunSingleTestRequest request) throws Exception {
+        installCommandContext(request);
+        return session().xdsTestServiceManager().runSingleTest(request.getTestSessionName(), request.getSite(), request.getTestId());
+    }
 
     public String getTestReadme(String testSession,String test) throws Exception {
         session().setMesaSessionName(testSession);
@@ -541,8 +553,9 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements
         return session().xdsTestServiceManager().getTestSectionsDAOs(request.getTestInstance());
     }
     @Override
-    public LogFileContentDTO getTestLogDetails(String sessionName, TestInstance testInstance) throws Exception {
-        LogFileContentDTO o = session().xdsTestServiceManager().getTestLogDetails(sessionName, testInstance);
+    public LogFileContentDTO getTestLogDetails(GetTestLogDetailsRequest request) throws Exception {
+        installCommandContext(request);
+        LogFileContentDTO o = session().xdsTestServiceManager().getTestLogDetails(request.getTestSessionName(), request.getTestInstance());
         return o;
     }
     @Override
@@ -599,14 +612,16 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements
         return session().xdsTestServiceManager().getTestdataSetListing(request.getEnvironmentName(),request.getTestSessionName(),request.getTestdataSetName());
     }
     @Override
-    public String getTestplanAsText(String testSession,TestInstance testInstance, String section) throws Exception {
-        session().setMesaSessionName(testSession);
-        return session().xdsTestServiceManager().getTestplanAsText(testInstance, section);
+    public String getTestplanAsText(GetTestplanAsTextRequest request) throws Exception {
+        installCommandContext(request);
+        session().setMesaSessionName(request.getTestSessionName());
+        return session().xdsTestServiceManager().getTestplanAsText(request.getTestInstance(), request.getSection());
     }
     @Override
-    public TestPartFileDTO getSectionTestPartFile(String testSession, TestInstance testInstance, String section) throws Exception {
-        session().setMesaSessionName(testSession);
-        return session().xdsTestServiceManager().getSectionTestPartFile(testInstance, section);
+    public TestPartFileDTO getSectionTestPartFile(GetSectionTestPartFileRequest request) throws Exception {
+        installCommandContext(request);
+        session().setMesaSessionName(request.getTestSessionName());
+        return session().xdsTestServiceManager().getSectionTestPartFile(request.getTestInstance(), request.getSection());
     }
     @Override
     public TestPartFileDTO loadTestPartContent(LoadTestPartContentRequest request) throws Exception {
@@ -1209,13 +1224,17 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements
     //------------------------------------------------------------------------
     //------------------------------------------------------------------------
     @Override
-    public Result register(String username, TestInstance testInstance, SiteSpec registry, Map<String, String> params) {
-        return TransactionUtil.register(getSession(),username,testInstance,registry,params, new ArrayList<String>());
+    public Result register(RegisterRequest request) throws Exception{
+        installCommandContext(request);
+        return TransactionUtil.register(getSession(),request.getUsername(),request.getTestInstance(),
+                request.getRegistry(),request.getParams(), new ArrayList<String>());
     }
     @Override
-    public Map<String, String> registerWithLocalizedTrackingInODDS(String username, TestInstance testInstance, SiteSpec registry, SimId odds, Map<String, String> params) {
+    public Map<String, String> registerWithLocalizedTrackingInODDS(RegisterRequest request) throws Exception{
+        installCommandContext(request);
         try {
-            return TransactionUtil.registerWithLocalizedTrackingInODDS(getSession(),username,testInstance,registry,odds, params);
+            return TransactionUtil.registerWithLocalizedTrackingInODDS(getSession(),request.getUsername(),
+                    request.getTestInstance(),request.getRegistry(),request.getOddsSimId(), request.getParams());
         } catch (Exception ex) {
             Map<String, String> errorMap = new HashMap<>();
             errorMap.put("error",ex.toString());
@@ -1252,13 +1271,13 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements
     }
 
 
-    public String getStsSamlAssertion(String username, TestInstance testInstance, SiteSpec stsSite, Map<String, String> params) throws Exception {
-
+    public String getStsSamlAssertion(GetStsSamlAssertionRequest request) throws Exception {
+        installCommandContext(request);
         XdsTestServiceManager xtsm = session().getXdsTestServiceManager();
-        String sessionName = session().getMesaSessionName();
+        String sessionName = request.getTestSessionName();
         String step = "issue";
-        String query = testInstance.getSection();
-        List<Result> results = xtsm.querySts("GazelleSts",sessionName,query,params, false);
+        String query = request.getTestInstance().getSection();
+        List<Result> results = xtsm.querySts("GazelleSts",sessionName,query,request.getParams(), false);
 
         if (results!=null) {
             if (results.size() == 1) {
@@ -1274,7 +1293,7 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements
                     }
 
                 } else {
-                    LogFileContentDTO logFileContentDTO = xtsm.getTestLogDetails(sessionName,testInstance);
+                    LogFileContentDTO logFileContentDTO = xtsm.getTestLogDetails(sessionName,request.getTestInstance());
                     TestStepLogContentDTO testStepLogContentDTO = logFileContentDTO.getStep(step);
                     List<ReportDTO> reportDTOs = testStepLogContentDTO.getReportDTOs();
                     String assertionResultId = "saml-assertion";

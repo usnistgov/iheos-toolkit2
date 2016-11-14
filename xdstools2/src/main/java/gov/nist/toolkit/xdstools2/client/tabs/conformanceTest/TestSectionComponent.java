@@ -13,12 +13,16 @@ import gov.nist.toolkit.testenginelogging.client.LogFileContentDTO;
 import gov.nist.toolkit.testenginelogging.client.ReportDTO;
 import gov.nist.toolkit.testenginelogging.client.TestStepLogContentDTO;
 import gov.nist.toolkit.testenginelogging.client.UseReportDTO;
+import gov.nist.toolkit.xdstools2.client.command.command.GetSectionTestPartFileCommand;
+import gov.nist.toolkit.xdstools2.client.command.command.GetTestLogDetailsCommand;
 import gov.nist.toolkit.xdstools2.client.command.command.LoadTestPartContentCommand;
 import gov.nist.toolkit.xdstools2.client.sh.BrushFactory;
 import gov.nist.toolkit.xdstools2.client.sh.SyntaxHighlighter;
 import gov.nist.toolkit.xdstools2.client.util.ClientUtils;
 import gov.nist.toolkit.xdstools2.client.widgets.HorizontalFlowPanel;
 import gov.nist.toolkit.xdstools2.client.widgets.PopupMessage;
+import gov.nist.toolkit.xdstools2.shared.command.request.GetSectionTestPartFileRequest;
+import gov.nist.toolkit.xdstools2.shared.command.request.GetTestLogDetailsRequest;
 import gov.nist.toolkit.xdstools2.shared.command.request.LoadTestPartContentRequest;
 
 import java.util.HashSet;
@@ -174,14 +178,9 @@ public class TestSectionComponent implements IsWidget {
 
         @Override
         public void onOpen(OpenEvent<DisclosurePanel> openEvent) {
-            ClientUtils.INSTANCE.getToolkitServices().getSectionTestPartFile(sessionName, testInstance, section, new AsyncCallback<TestPartFileDTO>() {
+            new GetSectionTestPartFileCommand(){
                 @Override
-                public void onFailure(Throwable throwable) {
-                    new PopupMessage("TestSectionComponent: SectionNotRun: getTestplanAsFile error: " + throwable.toString());
-                }
-
-                @Override
-                public void onSuccess(final TestPartFileDTO sectionTp) {
+                public void onComplete(TestPartFileDTO sectionTp) {
                     sectionResults.clear();
                     final ScrollPanel testplanViewerPanel = new ScrollPanel();
                     testplanViewerPanel.setVisible(false);
@@ -209,8 +208,8 @@ public class TestSectionComponent implements IsWidget {
                         final HTML metadataCtl = new HTML(metadataCtlLabel);
                         metadataCtl.addStyleName("iconStyle");
                         metadataCtl.addStyleName("inlineLink");
-                        if (sectionTp.getStepTpfMap()!=null && sectionTp.getStepTpfMap().get(stepName)!=null) {
-                            metadataCtl.addClickHandler(new ViewMetadataClickHandler(metadataViewerPanel,metadataCtl,sectionTp.getStepTpfMap().get(stepName)));
+                        if (sectionTp.getStepTpfMap() != null && sectionTp.getStepTpfMap().get(stepName) != null) {
+                            metadataCtl.addClickHandler(new ViewMetadataClickHandler(metadataViewerPanel, metadataCtl, sectionTp.getStepTpfMap().get(stepName)));
                         }
 
                         final FlowPanel stepResults = new FlowPanel();
@@ -220,9 +219,8 @@ public class TestSectionComponent implements IsWidget {
                         stepPanel.add(stepResults);
                         sectionResults.add(stepPanel);
                     }
-
                 }
-            });
+            }.run(new GetSectionTestPartFileRequest(ClientUtils.INSTANCE.getCommandContext(),testInstance,section));
         }
     }
 
@@ -264,14 +262,9 @@ public class TestSectionComponent implements IsWidget {
 
         @Override
         public void onOpen(OpenEvent<DisclosurePanel> openEvent) {
-            ClientUtils.INSTANCE.getToolkitServices().getTestLogDetails(sessionName, testInstance, new AsyncCallback<LogFileContentDTO>() {
+            new GetTestLogDetailsCommand(){
                 @Override
-                public void onFailure(Throwable throwable) {
-                    new PopupMessage("getTestLogDetails failed " + throwable.getMessage());
-                }
-
-                @Override
-                public void onSuccess(final LogFileContentDTO log) {
+                public void onComplete(final LogFileContentDTO log) {
                     if (log == null) new PopupMessage("section is " + testInstance.getSection());
                     sectionResults.clear();
 
@@ -282,13 +275,9 @@ public class TestSectionComponent implements IsWidget {
                     testplanCtl.addStyleName("inlineLink");
                     sectionResults.add(testplanCtl);
                     sectionResults.add(testplanViewerPanel);
-                    ClientUtils.INSTANCE.getToolkitServices().getSectionTestPartFile(sessionName, testInstance, testInstance.getSection(), new AsyncCallback<TestPartFileDTO>() {
+                    new GetSectionTestPartFileCommand(){
                         @Override
-                        public void onFailure(Throwable throwable) {
-                            new PopupMessage("TestSectionComponent: getTestplanAsFile error: " + throwable.toString());
-                        }
-                        @Override
-                        public void onSuccess(final TestPartFileDTO sectionTp) {
+                        public void onComplete(TestPartFileDTO sectionTp) {
                             testplanCtl.addClickHandler(new ViewTestplanClickHandler(testplanViewerPanel,testplanCtl,sectionTp.getHtlmizedContent().replace("<br/>", "\r\n")));
 
                             int row;
@@ -420,11 +409,9 @@ public class TestSectionComponent implements IsWidget {
                                 sectionResults.add(stepPanel);
                             }
                         }
-                    });
-
-
+                    }.run(new GetSectionTestPartFileRequest(ClientUtils.INSTANCE.getCommandContext(),testInstance,testInstance.getSection()));
                 }
-            });
+            }.run(new GetTestLogDetailsRequest(ClientUtils.INSTANCE.getCommandContext(),testInstance));
 
         }
     }

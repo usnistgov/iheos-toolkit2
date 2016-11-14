@@ -15,6 +15,9 @@ public class ClientUtils {
     private EnvironmentState environmentState = new EnvironmentState();
     private TestSessionManager2 testSessionManager;
 
+    // Private constructor whose sole is to hide the implicit public one and really have a Singleton.
+    private ClientUtils(){}
+
     public ToolkitServiceAsync getToolkitServices(){
         return clientFactory.getToolkitServices();
     }

@@ -10,11 +10,13 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 import gov.nist.toolkit.results.shared.Test;
 import gov.nist.toolkit.sitemanagement.client.Site;
 import gov.nist.toolkit.xdstools2.client.command.command.ReloadAllTestResultsCommand;
+import gov.nist.toolkit.xdstools2.client.command.command.RunSingleTestCommand;
 import gov.nist.toolkit.xdstools2.client.resources.TableResources;
 import gov.nist.toolkit.xdstools2.client.tabs.testsOverviewTab.commandsWidget.CommandsCell;
 import gov.nist.toolkit.xdstools2.client.tabs.testsOverviewTab.commandsWidget.CommandsColumn;
 import gov.nist.toolkit.xdstools2.client.tabs.testsOverviewTab.statusCell.StatusColumn;
 import gov.nist.toolkit.xdstools2.client.util.ClientUtils;
+import gov.nist.toolkit.xdstools2.shared.command.request.RunSingleTestRequest;
 
 import java.util.List;
 import java.util.logging.Logger;
@@ -143,29 +145,15 @@ public class TestsOverviewWidget extends CellTable<Test> {
         }
     }
 
-
-    // --------------------------------------------------------------
-    // ------- Run a single test, retrieve and display results ------
-    // --------------------------------------------------------------
-
-    AsyncCallback<Test> runSingleTestCallback = new AsyncCallback<Test>()
-    {
-        @Override
-        public void onFailure(Throwable caught)
-        { LOGGER.severe("Failed to run a test for current site and session, in the Tests Overview tab.");
-        }
-
-        @Override
-        public void onSuccess(Test result)
-        { dataModel.updateSingleTestResult(result);
-            refreshUIData();
-        }
-    };
-
     //TODO replace the hardcoded site name with the one retrieved from the UI
     private void runSingleTest(int testId, int index){
-        ClientUtils.INSTANCE.getToolkitServices()
-                .runSingleTest(new Site("testEHR"), testId, runSingleTestCallback);
+        new RunSingleTestCommand(){
+            @Override
+            public void onComplete(Test result) {
+                dataModel.updateSingleTestResult(result);
+                refreshUIData();
+            }
+        }.run(new RunSingleTestRequest(ClientUtils.INSTANCE.getCommandContext(),new Site("testEHR"),testId));
     }
 
 

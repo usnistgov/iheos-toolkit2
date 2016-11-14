@@ -6,11 +6,14 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Button;
 import gov.nist.toolkit.results.shared.Test;
 import gov.nist.toolkit.sitemanagement.client.Site;
+import gov.nist.toolkit.xdstools2.client.command.command.DeleteAllTestResultsCommand;
 import gov.nist.toolkit.xdstools2.client.command.command.ReloadAllTestResultsCommand;
+import gov.nist.toolkit.xdstools2.client.command.command.RunAllTestsCommand;
 import gov.nist.toolkit.xdstools2.client.util.ToolkitServiceAsync;
 import gov.nist.toolkit.xdstools2.client.tabs.testsOverviewTab.ReloadAllTestResultsCallback;
 import gov.nist.toolkit.xdstools2.client.tabs.testsOverviewTab.Updater;
 import gov.nist.toolkit.xdstools2.client.util.ClientUtils;
+import gov.nist.toolkit.xdstools2.shared.command.request.AllTestRequest;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -40,11 +43,21 @@ public class ButtonClickHandler implements ClickHandler {
 
         if (source == commandsWidget.getPlayAllButton()){
             //TODO replace bogus site with actual site selected by user
-            toolkitService.runAllTests(new Site("testEHR"), runAllTestsCallback);
+            new RunAllTestsCommand(){
+                @Override
+                public void onComplete(List<Test> result) {
+                    updater.updateAll(result);
+                }
+            }.run(new AllTestRequest(ClientUtils.INSTANCE.getCommandContext(),new Site("testEHR")));
         }
         else if (source == commandsWidget.getRemoveAllButton()){
             //TODO replace bogus site with actual site selected by user
-            toolkitService.deleteAllTestResults(new Site("testEHR"), deleteAllLogsCallback);
+            new DeleteAllTestResultsCommand(){
+                @Override
+                public void onComplete(List<Test> result) {
+                    updater.updateAll(result);
+                }
+            }.run(new AllTestRequest(ClientUtils.INSTANCE.getCommandContext(),new Site("testEHR")));
         }
         else if (source == commandsWidget.getRefreshAllButton()){
             //TODO replace bogus site with actual site selected by user
@@ -60,51 +73,6 @@ public class ButtonClickHandler implements ClickHandler {
             // do nothing
         }
     }
-
-
-    // --------------------------------------------------------------
-    // -------------- Run all tests and update display --------------
-    // --------------------------------------------------------------
-
-        AsyncCallback<List<Test>> runAllTestsCallback = new AsyncCallback<List<Test>>()
-        {
-            @Override
-            public void onFailure(Throwable caught)
-            { LOGGER.warning("Failed to run all tests.");
-            }
-
-            @Override
-            public void onSuccess(List<Test> result)
-            {
-                ArrayList<Test> array = new ArrayList<Test>();
-                array.addAll(result);
-                updater.updateTestData(array);
-                updater.updateTestView();
-            }
-        };
-
-
-    // --------------------------------------------------------------
-    // ------------- Delete all logs and update display -------------
-    // --------------------------------------------------------------
-
-    AsyncCallback<List<Test>> deleteAllLogsCallback = new AsyncCallback<List<Test>>()
-    {
-        @Override
-        public void onFailure(Throwable caught)
-        { LOGGER.warning("Failed to delete all logs.");
-        }
-
-        @Override
-        public void onSuccess(List<Test> result)
-        {
-            ArrayList<Test> array = new ArrayList<Test>();
-            array.addAll(result);
-            updater.updateTestData(array);
-            updater.updateTestView();
-        }
-    };
-
 
     public void setViewUpdater(Updater _updater) {
         updater = _updater;

@@ -3,6 +3,7 @@ package gov.nist.toolkit.xdstools2.client.tabs.testsOverviewTab;
 import gov.nist.toolkit.results.shared.Test;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by Diane Azais local on 10/21/2015.
@@ -15,6 +16,13 @@ public class Updater {
 
     public Updater(TestsOverviewTab _testsTab) {
         testsTab = _testsTab;
+    }
+
+    public void updateAll(List<Test> result){
+        ArrayList<Test> array = new ArrayList<Test>();
+        array.addAll(result);
+        this.updateTestData(array);
+        this.updateTestView();
     }
 
     public void updateTestView() {

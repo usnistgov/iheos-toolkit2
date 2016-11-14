@@ -17,9 +17,11 @@ import gov.nist.toolkit.xdstools2.client.TabContainer;
 import gov.nist.toolkit.xdstools2.client.command.command.*;
 import gov.nist.toolkit.xdstools2.client.siteActorManagers.GetDocumentsSiteActorManager;
 import gov.nist.toolkit.xdstools2.client.tabs.genericQueryTab.GenericQueryTab;
+import gov.nist.toolkit.xdstools2.client.util.ClientUtils;
 import gov.nist.toolkit.xdstools2.client.widgets.PopupMessage;
 import gov.nist.toolkit.xdstools2.shared.command.request.GetCollectionRequest;
 import gov.nist.toolkit.xdstools2.shared.command.request.GetTestDetailsRequest;
+import gov.nist.toolkit.xdstools2.shared.command.request.GetTestplanAsTextRequest;
 import gov.nist.toolkit.xdstools2.shared.command.request.RunTestRequest;
 
 import java.util.*;
@@ -314,17 +316,12 @@ public class MesaTestTab extends GenericQueryTab {
     class SelectSectionViewButtonClickHandler implements ClickHandler {
 
         public void onClick(ClickEvent event) {
-            getToolkitServices().getTestplanAsText(getCurrentTestSession(), new TestInstance(selectedTest), selectedSection, new AsyncCallback<String>() {
-
-                public void onFailure(Throwable caught) {
-                    new PopupMessage("getTestplanAsText: " + caught.getMessage());
-                }
-
-                public void onSuccess(String result) {
+            new GetTestplanAsTextCommand(){
+                @Override
+                public void onComplete(String result) {
                     new TextViewerTab().onTabLoad(true, result, selectedTest + "#" + selectedSection);
                 }
-
-            });
+            }.run(new GetTestplanAsTextRequest(getCommandContext(),new TestInstance(selectedTest),selectedSection));
         }
 
     }

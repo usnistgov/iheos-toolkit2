@@ -50,8 +50,8 @@ public interface ToolkitService extends RemoteService  {
 
 
 	/* Test management */
-	Map<String, Result> getTestResults(List<TestInstance> testInstances, String testSession) throws NoServletSessionException ;
-	LogFileContentDTO getTestLogDetails(String sessionName, TestInstance testInstance) throws Exception;
+	Map<String, Result> getTestResults(GetTestResultsRequest resultsRequest) throws Exception ;
+	LogFileContentDTO getTestLogDetails(GetTestLogDetailsRequest request) throws Exception;
 
     Map<String, String> getCollectionNames(GetCollectionRequest request) throws Exception;
 
@@ -69,8 +69,8 @@ public interface ToolkitService extends RemoteService  {
 	TestOverviewDTO runTest(RunTestRequest request) throws Exception;
 	boolean isPrivateMesaTesting() throws NoServletSessionException ;
 	List<String> getMesaTestSessionNames(CommandContext request) throws Exception;
-	boolean addMesaTestSession(String name) throws Exception;
-	boolean delMesaTestSession(String name) throws Exception;
+	boolean addMesaTestSession(CommandContext context) throws Exception;
+	boolean delMesaTestSession(CommandContext context) throws Exception;
 
 	/* Simulator Management */
 	List<String> getActorTypeNames(CommandContext context) throws Exception ;
@@ -163,8 +163,8 @@ public interface ToolkitService extends RemoteService  {
 
 	String getAdminPassword(CommandContext context) throws Exception ;
 
-	String getTestplanAsText(String testSession,TestInstance testInstance, String section) throws Exception;
-	TestPartFileDTO getSectionTestPartFile(String testSession, TestInstance testInstance, String section) throws Exception;
+	String getTestplanAsText(GetTestplanAsTextRequest request) throws Exception;
+	TestPartFileDTO getSectionTestPartFile(GetSectionTestPartFileRequest request) throws Exception;
 	TestPartFileDTO loadTestPartContent(LoadTestPartContentRequest request) throws Exception;
 	String getHtmlizedString(String xml) throws Exception;
 
@@ -231,10 +231,10 @@ public interface ToolkitService extends RemoteService  {
 	//------------------------------------------------------------------------
 	//------------------------------------------------------------------------
 	List<Test> reloadAllTestResults(CommandContext context) throws Exception;
-	List<Test> runAllTests(Site site) throws NoServletSessionException;
-	List<Test> deleteAllTestResults(Site site) throws NoServletSessionException;
-	Test runSingleTest(Site site, int testId) throws NoServletSessionException;
-	TestOverviewDTO deleteSingleTestResult(String testSession, TestInstance testInstance) throws Exception;
+	List<Test> runAllTests(AllTestRequest request) throws Exception;
+	List<Test> deleteAllTestResults(AllTestRequest request) throws Exception;
+	Test runSingleTest(RunSingleTestRequest request) throws Exception;
+	TestOverviewDTO deleteSingleTestResult(DeleteSingleTestRequest request) throws Exception;
 
 	String setMesaTestSession(String sessionName) throws NoServletSessionException ;
 	String getNewPatientId(String assigningAuthority) throws NoServletSessionException ;
@@ -247,8 +247,8 @@ public interface ToolkitService extends RemoteService  {
 	// Background test plan running methods related to On-Demand Documents
 	//------------------------------------------------------------------------
 	//------------------------------------------------------------------------
-	Result register(String username, TestInstance testInstance, SiteSpec registry, Map<String, String> params) throws Exception;
-	Map<String, String> registerWithLocalizedTrackingInODDS(String username, TestInstance testInstance, SiteSpec registry, SimId oddsSimId, Map<String, String> params) throws Exception;
+	Result register(RegisterRequest registerRequest) throws Exception;
+	Map<String, String> registerWithLocalizedTrackingInODDS(RegisterRequest registerRequest) throws Exception;
 	List<DocumentEntryDetail> getOnDemandDocumentEntryDetails(SimId oddsSimId);
 
 	//------------------------------------------------------------------------
@@ -263,7 +263,7 @@ public interface ToolkitService extends RemoteService  {
 	// STS SAML
 	//------------------------------------------------------------------------
 	//------------------------------------------------------------------------
-	public String getStsSamlAssertion(String username, TestInstance testInstance, SiteSpec stsSite, Map<String, String> params) throws Exception;
+	public String getStsSamlAssertion(GetStsSamlAssertionRequest request) throws Exception;
 
 	String clearTestSession(CommandContext context) throws Exception;
 

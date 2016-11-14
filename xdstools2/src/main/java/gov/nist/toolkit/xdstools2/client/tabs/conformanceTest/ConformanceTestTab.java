@@ -33,10 +33,7 @@ import gov.nist.toolkit.xdstools2.client.util.ClientUtils;
 import gov.nist.toolkit.xdstools2.client.widgets.LaunchInspectorClickHandler;
 import gov.nist.toolkit.xdstools2.client.widgets.PopupMessage;
 import gov.nist.toolkit.xdstools2.client.widgets.buttons.AbstractOrchestrationButton;
-import gov.nist.toolkit.xdstools2.shared.command.request.GetCollectionRequest;
-import gov.nist.toolkit.xdstools2.shared.command.request.GetTestSectionsDAOsRequest;
-import gov.nist.toolkit.xdstools2.shared.command.request.GetTestsOverviewRequest;
-import gov.nist.toolkit.xdstools2.shared.command.request.RunTestRequest;
+import gov.nist.toolkit.xdstools2.shared.command.request.*;
 
 import java.util.*;
 
@@ -482,21 +479,17 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner, TestsH
 				String xuaUsername = "Xuagood";
 				params.put("$saml-username$",xuaUsername);
 				try {
-					ClientUtils.INSTANCE.getToolkitServices().getStsSamlAssertion(xuaUsername, testInstance, stsSpec, params, new AsyncCallback<String>() {
+					new GetStsSamlAssertionCommand(){
 						@Override
-						public void onFailure(Throwable throwable) {
-							new PopupMessage("runAll: getStsSamlAssertion call failed: " + throwable.toString());
-						}
-						@Override
-						public void onSuccess(String s) {
+						public void onComplete(String result) {
 							getSiteToIssueTestAgainst().setSaml(true);
-							getSiteToIssueTestAgainst().setStsAssertion(s);
+							getSiteToIssueTestAgainst().setStsAssertion(result);
 
 							for (TestInstance testInstance : testsPerActorOption.get(actorOption))
 								tests.add(testInstance);
 							onDone(null);
 						}
-					});
+					}.run(new GetStsSamlAssertionRequest(getCommandContext(),xuaUsername,testInstance,stsSpec,params));
 				} catch (Exception ex) {
 					new PopupMessage("runAll: Client call failed: getStsSamlAssertion: " + ex.toString());
 				}
@@ -584,23 +577,14 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner, TestsH
 			clickEvent.stopPropagation();
 			List <TestInstance> tests = testsPerActorOption.get(actorOption);
 			for (TestInstance testInstance : tests) {
-				getToolkitServices().deleteSingleTestResult(getCurrentTestSession(), testInstance,
-						new AsyncCallback <TestOverviewDTO>() {
-							@Override
-							public void onFailure(Throwable throwable) {
-								new PopupMessage(throwable.getMessage());
-							}
-
-							@Override
-							public void onSuccess(TestOverviewDTO testOverviewDTO) {
-								updateTestOverview(testOverviewDTO);
-								testDisplayGroup.display(testOverviewDTO);
-//						displayTest(testsPanel, testDisplayGroup, testOverviewDTO);
-//						Collection<TestOverviewDTO> overviews =
-//								removeTestOverview(testOverviewDTO);
-								updateTestsOverviewHeader(actorOption);
-							}
-						});
+				new DeleteSingleTestCommand(){
+					@Override
+					public void onComplete(TestOverviewDTO testOverviewDTO) {
+						updateTestOverview(testOverviewDTO);
+						testDisplayGroup.display(testOverviewDTO);
+						updateTestsOverviewHeader(actorOption);
+					}
+				}.run(new DeleteSingleTestRequest(getCommandContext(),testInstance));
 			}
 		}
 	}
@@ -657,19 +641,15 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner, TestsH
 				String xuaUsername = "Xuagood";
 				params.put("$saml-username$",xuaUsername);
 				try {
-					ClientUtils.INSTANCE.getToolkitServices().getStsSamlAssertion(xuaUsername, stsTestInstance, stsSpec, params, new AsyncCallback<String>() {
+					new GetStsSamlAssertionCommand(){
 						@Override
-						public void onFailure(Throwable throwable) {
-							new PopupMessage("runTestInstance: getStsSamlAssertion call failed: " + throwable.toString());
-						}
-						@Override
-						public void onSuccess(String s) {
+						public void onComplete(String result) {
 							getSiteToIssueTestAgainst().setSaml(true);
-							getSiteToIssueTestAgainst().setStsAssertion(s);
+							getSiteToIssueTestAgainst().setStsAssertion(result);
 
 							runTestInstance(testInstance,testDone);
 						}
-					});
+					}.run(new GetStsSamlAssertionRequest(getCommandContext(),xuaUsername,stsTestInstance,stsSpec,params));
 				} catch (Exception ex) {
 					new PopupMessage("runTestInstance: Client call failed: getStsSamlAssertion: " + ex.toString());
 				}
