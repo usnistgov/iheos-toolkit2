@@ -9,10 +9,12 @@ import gov.nist.toolkit.services.client.RawResponse;
 import gov.nist.toolkit.services.client.RgOrchestrationRequest;
 import gov.nist.toolkit.services.client.RgOrchestrationResponse;
 import gov.nist.toolkit.sitemanagement.client.SiteSpec;
+import gov.nist.toolkit.xdstools2.client.command.command.BuildRGTestOrchestrationCommand;
 import gov.nist.toolkit.xdstools2.client.widgets.PopupMessage;
 import gov.nist.toolkit.xdstools2.client.util.ClientUtils;
 import gov.nist.toolkit.xdstools2.client.widgets.OrchestrationSupportTestsDisplay;
 import gov.nist.toolkit.xdstools2.client.widgets.buttons.AbstractOrchestrationButton;
+import gov.nist.toolkit.xdstools2.shared.command.request.BuildRgTestOrchestrationRequest;
 
 /**
  * Build orchestration for testing a Responding Gateway
@@ -130,14 +132,9 @@ public class BuildRgTestOrchestrationButton extends AbstractOrchestrationButton 
 
         initializationResultsPanel.clear();
 
-        ClientUtils.INSTANCE.getToolkitServices().buildRgTestOrchestration(request, new AsyncCallback<RawResponse>() {
+        new BuildRGTestOrchestrationCommand(){
             @Override
-            public void onFailure(Throwable throwable) {
-                handleError(throwable);
-            }
-
-            @Override
-            public void onSuccess(RawResponse rawResponse) {
+            public void onComplete(RawResponse rawResponse) {
                 if (handleError(rawResponse, RgOrchestrationResponse.class)) return;
                 RgOrchestrationResponse orchResponse = (RgOrchestrationResponse) rawResponse;
                 testTab.setOrchestrationResponse(orchResponse);
@@ -165,18 +162,13 @@ public class BuildRgTestOrchestrationButton extends AbstractOrchestrationButton 
                 displayPIDs(table, orchResponse, 0);
                 initializationResultsPanel.add(table);
             }
-        });
+        }.run(new BuildRgTestOrchestrationRequest(ClientUtils.INSTANCE.getCommandContext(),request));
     }
 
     private int displayPIDs(FlexTable table, RgOrchestrationResponse response, int row) {
         table.setHTML(row++, 0, "<h3>Patient IDs</h3>");
         table.setText(row, 0, "Patient ID");
         table.setText(row++, 1, response.getSimplePid().asString());
-//        table.setText(row, 0, "Two document Patient ID");
-//        table.setText(row++, 1, response.getTwoDocPid().asString());
-//        table.setText(row, 0, "T12306 Patient ID");
-//        table.setText(row++, 1, response.getT12306Pid().asString());
-
         return row;
     }
 

@@ -5,7 +5,6 @@ import gov.nist.toolkit.actorfactory.client.SimId;
 import gov.nist.toolkit.actorfactory.client.Simulator;
 import gov.nist.toolkit.actorfactory.client.SimulatorConfig;
 import gov.nist.toolkit.actorfactory.client.SimulatorStats;
-import gov.nist.toolkit.actortransaction.client.Severity;
 import gov.nist.toolkit.actortransaction.client.TransactionInstance;
 import gov.nist.toolkit.configDatatypes.client.Pid;
 import gov.nist.toolkit.interactionmodel.client.InteractingEntity;
@@ -23,7 +22,6 @@ import gov.nist.toolkit.testkitutilities.client.SectionDefinitionDAO;
 import gov.nist.toolkit.testkitutilities.client.TestCollectionDefinitionDAO;
 import gov.nist.toolkit.tk.client.TkProps;
 import gov.nist.toolkit.valsupport.client.MessageValidationResults;
-import gov.nist.toolkit.xdstools2.shared.NoServletSessionException;
 import gov.nist.toolkit.xdstools2.shared.RegistryStatus;
 import gov.nist.toolkit.xdstools2.shared.RepositoryStatus;
 import gov.nist.toolkit.xdstools2.shared.command.CommandContext;
@@ -121,7 +119,7 @@ public interface ToolkitServiceAsync {
     void srcStoresDocVal(GetSrcStoresDocValRequest request, AsyncCallback<List<Result>> callback);
     void findDocuments(FindDocumentsRequest request, AsyncCallback<List<Result>> callback);
     void findDocumentsByRefId(FindDocumentsRequest request, AsyncCallback<List<Result>> callback) ;
-    void findFolders(FindFoldersRequest request, AsyncCallback<List<Result>> callback);
+    void findFolders(FoldersRequest request, AsyncCallback<List<Result>> callback);
     void getDocuments(GetDocumentsRequest request, AsyncCallback<List<Result>> callback);
     void getFolders(GetFoldersRequest request, AsyncCallback<List<Result>> callback);
     void getFoldersForDocument(GetFoldersRequest request, AsyncCallback<List<Result>> callback);
@@ -138,17 +136,17 @@ public interface ToolkitServiceAsync {
     void submitXDRTestdata(SubmitTestdataRequest request, AsyncCallback<List<Result>> callback);
     /////////////////////////////////////////////////////
     /////////////////////////////////////////////////////
-    // FindFoldersRequest has the right constructor??? //
+    // FoldersRequest has the right constructor??? //
     /////////////////////////////////////////////////////
     /////////////////////////////////////////////////////
-    void provideAndRetrieve(SiteSpec site, String pid, AsyncCallback<List<Result>> callback);
-    void lifecycleValidation(SiteSpec site, String pid, AsyncCallback<List<Result>> callback);
-    void folderValidation(SiteSpec site, String pid, AsyncCallback<List<Result>> callback);
+    void provideAndRetrieve(ProvideAndRetrieveRequest request, AsyncCallback<List<Result>> callback);
+    void lifecycleValidation(LifecycleValidationRequest request, AsyncCallback<List<Result>> callback);
+    void folderValidation(FoldersRequest request, AsyncCallback<List<Result>> callback);
 
     //	void mpqFindDocuments(SiteSpec site, String pid, List<String> classCodes, List<String> hcftCodes, List<String> eventCodes, AsyncCallback<List<Result>> notify);
-    void mpqFindDocuments(SiteSpec site, String pid, Map<String, List<String>> selectedCodes, AsyncCallback<List<Result>> callback);
-    void getAll(SiteSpec site, String pid, Map<String, List<String>> codesSpec, AsyncCallback<List<Result>> callback);
-    void findDocuments2(SiteSpec site, String pid, Map<String, List<String>> codesSpec, AsyncCallback<List<Result>> callback);
+    void mpqFindDocuments(MpqFindDocumentsRequest request, AsyncCallback<List<Result>> callback);
+    void getAll(GetAllRequest request, AsyncCallback<List<Result>> callback);
+    void findDocuments2(FindDocuments2Request request, AsyncCallback<List<Result>> callback);
 
     void getAdminPassword(CommandContext context,AsyncCallback<String> callback);
 
@@ -222,24 +220,22 @@ public interface ToolkitServiceAsync {
     void runAllTests(AllTestRequest request, AsyncCallback<List<Test>> callback);
     void runSingleTest(RunSingleTestRequest request, AsyncCallback<Test> callback);
     void getTransactionErrorCodeRefs(GetTransactionErrorCodeRefsRequest request, AsyncCallback<List<String>> callback);
-    void buildIgTestOrchestration(IgOrchestrationRequest request, AsyncCallback<RawResponse> callback);
-    void buildRgTestOrchestration(RgOrchestrationRequest request, AsyncCallback<RawResponse> callback);
-    void buildIigTestOrchestration(IigOrchestrationRequest request, AsyncCallback<RawResponse> callback);
-    void buildRigTestOrchestration(RigOrchestrationRequest request, AsyncCallback<RawResponse> callback);
-    void buildIdsTestOrchestration(IdsOrchestrationRequest request, AsyncCallback<RawResponse> callback);
-    void buildRepTestOrchestration(RepOrchestrationRequest request, AsyncCallback<RawResponse> callback);
-    void buildRegTestOrchestration(RegOrchestrationRequest request, AsyncCallback<RawResponse> callback);
-    void buildRecTestOrchestration(RecOrchestrationRequest request, AsyncCallback<RawResponse> callback);
-    void buildRSNAEdgeTestOrchestration(RSNAEdgeOrchestrationRequest request, AsyncCallback<RawResponse> callback);
+    void buildIgTestOrchestration(BuildIgTestOrchestrationRequest request, AsyncCallback<RawResponse> callback);
+    void buildRgTestOrchestration(BuildRgTestOrchestrationRequest request, AsyncCallback<RawResponse> callback);
+    void buildIigTestOrchestration(BuildIigTestOrchestrationRequest request, AsyncCallback<RawResponse> callback);
+    void buildRigTestOrchestration(BuildRigTestOrchestrationRequest request, AsyncCallback<RawResponse> callback);
+    void buildIdsTestOrchestration(BuildIdsTestOrchestrationRequest request, AsyncCallback<RawResponse> callback);
+    void buildRepTestOrchestration(BuildRepTestOrchestrationRequest request, AsyncCallback<RawResponse> callback);
+    void buildRegTestOrchestration(BuildRegTestOrchestrationRequest request, AsyncCallback<RawResponse> callback);
+    void buildRecTestOrchestration(BuildRecTestOrchestrationRequest request, AsyncCallback<RawResponse> callback);
+    void buildRSNAEdgeTestOrchestration(BuildRSNAEdgeTestOrchestrationRequest request, AsyncCallback<RawResponse> callback);
     void getSiteNamesWithRIG(CommandContext context, AsyncCallback<List<String>> callback) ;
     void getSiteNamesWithIDS(CommandContext context, AsyncCallback<List<String>> callback) ;
-    /////////////
     void register(RegisterRequest request, AsyncCallback<Result> callback) throws Exception;
     void registerWithLocalizedTrackingInODDS(RegisterRequest registerRequest, AsyncCallback<Map<String, String>> callback);
-    void getOnDemandDocumentEntryDetails(SimId oddsSimId, AsyncCallback<List<DocumentEntryDetail>> callback);
-    void getInteractionFromModel(InteractingEntity model, AsyncCallback<InteractingEntity> callback);
+    void getOnDemandDocumentEntryDetails(GetOnDemandDocumentEntryDetailsRequest request, AsyncCallback<List<DocumentEntryDetail>> callback);
+    void getInteractionFromModel(GetInteractionFromModelRequest request, AsyncCallback<InteractingEntity> callback);
     void getStsSamlAssertion(GetStsSamlAssertionRequest request, AsyncCallback<String> callback);
-////////////////
 
     void getServletContextName(AsyncCallback<String> callback);
     void retrieveConfiguredFavoritesPid(CommandContext commandContext, AsyncCallback<List<Pid>> callback);

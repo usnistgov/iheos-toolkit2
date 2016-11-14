@@ -64,7 +64,6 @@ public class TestContext implements SiteManager {
     @Override
     public void setSiteName(String site) {
         currentSiteSpec.setName(site);
-//		getToolkitServices().getSite(site, new AsyncCallback<Site>() {
         if (site == null) return;
         if (site.equals(NONE)) return;
         new GetSiteCommand(){

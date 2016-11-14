@@ -4,14 +4,14 @@ import gov.nist.toolkit.sitemanagement.client.SiteSpec;
 import gov.nist.toolkit.xdstools2.shared.command.CommandContext;
 
 /**
- * Created by onh2 on 10/31/16.
+ * Created by onh2 on 11/14/16.
  */
-public class FindFoldersRequest extends CommandContext{
+public class ProvideAndRetrieveRequest extends CommandContext{
     private String pid;
     private SiteSpec site;
 
-    public FindFoldersRequest(){}
-    public FindFoldersRequest(CommandContext context, SiteSpec site, String pid){
+    public ProvideAndRetrieveRequest(){}
+    public ProvideAndRetrieveRequest(CommandContext context, SiteSpec site, String pid){
         copyFrom(context);
         this.site=site;
         this.pid=pid;

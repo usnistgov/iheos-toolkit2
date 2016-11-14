@@ -22,7 +22,6 @@ import gov.nist.toolkit.xdstools2.shared.command.CommandContext;
  * Created by oherrmann on 3/3/16.
  */
 public class TestkitConfigTool extends Composite {
-    private ToolkitServiceAsync toolkitService= ClientUtils.INSTANCE.getToolkitServices();
 
     private VerticalPanel container = new VerticalPanel();
     private final HTML resultPanel=new HTML();

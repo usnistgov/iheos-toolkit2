@@ -7,11 +7,14 @@ import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.Widget;
 import gov.nist.toolkit.configDatatypes.client.TransactionType;
+import gov.nist.toolkit.results.client.Result;
 import gov.nist.toolkit.sitemanagement.client.SiteSpec;
 import gov.nist.toolkit.xdstools2.client.CoupledTransactions;
+import gov.nist.toolkit.xdstools2.client.command.command.FolderValidationCommand;
 import gov.nist.toolkit.xdstools2.client.widgets.PopupMessage;
 import gov.nist.toolkit.xdstools2.client.siteActorManagers.GetDocumentsSiteActorManager;
 import gov.nist.toolkit.xdstools2.client.tabs.genericQueryTab.GenericQueryTab;
+import gov.nist.toolkit.xdstools2.shared.command.request.FoldersRequest;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -78,7 +81,12 @@ public class FolderTab extends GenericQueryTab {
             getGoButton().setEnabled(false);
             getInspectButton().setEnabled(false);
 
-			getToolkitServices().folderValidation(siteSpec, pidTextBox.getValue().trim(), queryCallback);
+			new FolderValidationCommand(){
+				@Override
+				public void onComplete(List<Result> result) {
+					queryCallback.onSuccess(result);
+				}
+			}.run(new FoldersRequest(getCommandContext(),siteSpec,pidTextBox.getValue().trim()));
 		}
 		
 	}

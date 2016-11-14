@@ -16,8 +16,10 @@ import gov.nist.toolkit.services.client.IigOrchestrationResponse;
 import gov.nist.toolkit.services.client.RawResponse;
 import gov.nist.toolkit.simcommon.client.config.SimulatorConfigElement;
 import gov.nist.toolkit.sitemanagement.client.SiteSpec;
+import gov.nist.toolkit.xdstools2.client.command.command.BuildIIGTestOrchestrationCommand;
 import gov.nist.toolkit.xdstools2.client.util.ClientUtils;
 import gov.nist.toolkit.xdstools2.client.widgets.buttons.AbstractOrchestrationButton;
+import gov.nist.toolkit.xdstools2.shared.command.request.BuildIigTestOrchestrationRequest;
 
 /**
  * Created by smm on 10/9/16.
@@ -62,14 +64,9 @@ public class BuildIIGTestOrchestrationButton extends AbstractOrchestrationButton
 
       testTab.setSiteToIssueTestAgainst(siteSpec);
 
-      ClientUtils.INSTANCE.getToolkitServices().buildIigTestOrchestration(request, new AsyncCallback <RawResponse>() {
+      new BuildIIGTestOrchestrationCommand(){
          @Override
-         public void onFailure(Throwable throwable) {
-            handleError(throwable);
-         }
-
-         @Override
-         public void onSuccess(RawResponse rawResponse) {
+         public void onComplete(RawResponse rawResponse) {
             if (handleError(rawResponse, IigOrchestrationResponse.class)) return;
             IigOrchestrationResponse orchResponse = (IigOrchestrationResponse) rawResponse;
             testTab.setOrchestrationResponse(orchResponse);
@@ -107,29 +104,29 @@ public class BuildIIGTestOrchestrationButton extends AbstractOrchestrationButton
                if (sim == null) continue;
 
                try {
-               // First row: title, sim id, test data and log buttons
-               table.setWidget(row, 0, new HTML("<h3>" + o.title + "</h3>"));
-               table.setText(row++ , 1, sim.getId().toString());
+                  // First row: title, sim id, test data and log buttons
+                  table.setWidget(row, 0, new HTML("<h3>" + o.title + "</h3>"));
+                  table.setText(row++ , 1, sim.getId().toString());
 
-               // Property rows, based on ActorType and Orchestration enum
-               for (String property : o.getDisplayProps()) {
-                  table.setWidget(row, 1, new HTML(property));
-                  SimulatorConfigElement prop = sim.get(property);
-                  String value = prop.asString();
-                  if (prop.isList()) value = prop.asList().toString();
-                  table.setWidget(row++ , 2, new HTML(value));
-               }
+                  // Property rows, based on ActorType and Orchestration enum
+                  for (String property : o.getDisplayProps()) {
+                     table.setWidget(row, 1, new HTML(property));
+                     SimulatorConfigElement prop = sim.get(property);
+                     String value = prop.asString();
+                     if (prop.isList()) value = prop.asList().toString();
+                     table.setWidget(row++ , 2, new HTML(value));
+                  }
                } catch (Exception e) {
                   initializationResultsPanel.add(new HTML("<h3>exception " + o.name() + " " + e.getMessage() + "/h3>"));
                }
             }
             initializationResultsPanel.add(table);
 
-             initializationResultsPanel.add(new HTML("<p>Configure your " +
-             "Initiating Imaging Gateway SUT to forward Retrieve Imaging " +
-             "Document Set Requests to these Responding Imaging Gateways<hr/>"));
+            initializationResultsPanel.add(new HTML("<p>Configure your " +
+                    "Initiating Imaging Gateway SUT to forward Retrieve Imaging " +
+                    "Document Set Requests to these Responding Imaging Gateways<hr/>"));
          }
-      });
+      }.run(new BuildIigTestOrchestrationRequest(ClientUtils.INSTANCE.getCommandContext(),request));
    } @SuppressWarnings("javadoc")
    public enum Orchestra {
       

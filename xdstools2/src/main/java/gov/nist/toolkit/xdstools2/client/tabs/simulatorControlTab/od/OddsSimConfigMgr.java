@@ -19,18 +19,12 @@ import gov.nist.toolkit.results.client.TestInstance;
 import gov.nist.toolkit.simcommon.client.config.SimulatorConfigElement;
 import gov.nist.toolkit.sitemanagement.client.SiteSpec;
 import gov.nist.toolkit.xdstools2.client.StringSort;
-import gov.nist.toolkit.xdstools2.client.command.command.GetCollectionCommand;
-import gov.nist.toolkit.xdstools2.client.command.command.GetSiteNamesByTranTypeCommand;
-import gov.nist.toolkit.xdstools2.client.command.command.PutSimConfigCommand;
-import gov.nist.toolkit.xdstools2.client.command.command.RegisterWithLocalizedTrackingInODDSCommand;
+import gov.nist.toolkit.xdstools2.client.command.command.*;
 import gov.nist.toolkit.xdstools2.client.tabs.simulatorControlTab.*;
 import gov.nist.toolkit.xdstools2.client.tabs.simulatorControlTab.intf.SimConfigMgrIntf;
 import gov.nist.toolkit.xdstools2.client.util.ClientUtils;
 import gov.nist.toolkit.xdstools2.client.widgets.PopupMessage;
-import gov.nist.toolkit.xdstools2.shared.command.request.GetCollectionRequest;
-import gov.nist.toolkit.xdstools2.shared.command.request.GetSiteNamesByTranTypeRequest;
-import gov.nist.toolkit.xdstools2.shared.command.request.RegisterRequest;
-import gov.nist.toolkit.xdstools2.shared.command.request.SimConfigRequest;
+import gov.nist.toolkit.xdstools2.shared.command.request.*;
 
 import java.util.*;
 
@@ -314,26 +308,11 @@ public class OddsSimConfigMgr implements SimConfigMgrIntf {
 
 
     private void getOdDocumentEntries(SimulatorControlTab simulatorControlTab) {
-        ClientUtils.INSTANCE.getToolkitServices().getOnDemandDocumentEntryDetails(getConfig().getId(), new AsyncCallback<List<DocumentEntryDetail>>() {
+        new GetOnDemandDocumentEntryDetailsCommand(){
             @Override
-            public void onFailure(Throwable throwable) {
-                regActionMessage.getElement().getStyle().setColor("red");
-                regActionMessage.setText("getOnDemandDocumentEntryDetails Error:" + throwable.toString());
-            }
-
-            @Override
-            public void onSuccess(List<DocumentEntryDetail> documentEntryDetails) {
+            public void onComplete(List<DocumentEntryDetail> documentEntryDetails) {
                 oddeEntriesTbl.clear();
                 int oddeRow = 0;
-
-
-//                new PopupMessage(GWT.getModuleBaseForStaticFiles());
-//                refreshSupplyState.getElement().getStyle().setMarginLeft(80, Style.Unit.PCT);
-
-//                oddeEntriesTbl.setWidget(oddeRow, 0,refreshSupplyState);
-//                oddeEntriesTbl.getFlexCellFormatter().setColSpan(oddeRow,0,6);
-//                oddeEntriesTbl.getFlexCellFormatter().setHorizontalAlignment(oddeRow,0, HasHorizontalAlignment.ALIGN_RIGHT);
-//                oddeRow++;
 
                 oddeEntriesTbl.setWidget(oddeRow, 0, new HTML("<b>Created On</b>"));
                 oddeEntriesTbl.setWidget(oddeRow, 1, new HTML("<b>On-Demand Document Unique ID</b>"));
@@ -345,14 +324,10 @@ public class OddsSimConfigMgr implements SimConfigMgrIntf {
                 ssHp.setVerticalAlignment(HasVerticalAlignment.ALIGN_MIDDLE);
                 ssHp.add(new HTML("<b>Supply State</b>"));
                 ssHp.setVerticalAlignment(HasVerticalAlignment.ALIGN_MIDDLE);
-//                refreshSupplyState.getElement().addClassName("roundedButton1");
-//                ssHp.display(refreshSupplyState);
                 refreshImg.setAltText("Refresh");
                 refreshImg.setTitle("Refresh");
                 refreshImg.getElement().getStyle().setCursor(Style.Cursor.POINTER);
                 refreshImg.getElement().getStyle().setVerticalAlign(Style.VerticalAlign.MIDDLE);
-
-
 
                 ssHp.add(refreshImg);
 
@@ -361,7 +336,6 @@ public class OddsSimConfigMgr implements SimConfigMgrIntf {
 
                 if (documentEntryDetails!=null) {
                     // Sort descending (List is originally in ascending order)
-//                  Collections.reverse(documentEntryDetails);   -- This seems to need an additional inherits module:
                     int oDdocCount = documentEntryDetails.size()-1 /* Z-B Idx*/;
                     for (int cx=oDdocCount; cx>-1; cx--) {
                         DocumentEntryDetail ded = documentEntryDetails.get(cx);
@@ -387,7 +361,7 @@ public class OddsSimConfigMgr implements SimConfigMgrIntf {
                     }
                 }
             }
-        });
+        }.run(new GetOnDemandDocumentEntryDetailsRequest(ClientUtils.INSTANCE.getCommandContext(),getConfig().getId()));
     }
 
     private void displayRegisterOptions() {

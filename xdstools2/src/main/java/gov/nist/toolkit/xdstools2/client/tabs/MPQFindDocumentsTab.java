@@ -5,12 +5,15 @@ import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.ui.*;
 import gov.nist.toolkit.configDatatypes.client.TransactionType;
 import gov.nist.toolkit.results.client.CodesConfiguration;
+import gov.nist.toolkit.results.client.Result;
 import gov.nist.toolkit.sitemanagement.client.SiteSpec;
 import gov.nist.toolkit.xdstools2.client.CoupledTransactions;
+import gov.nist.toolkit.xdstools2.client.command.command.MpqFindDocumentsCommand;
 import gov.nist.toolkit.xdstools2.client.siteActorManagers.GetDocumentsSiteActorManager;
 import gov.nist.toolkit.xdstools2.client.tabs.genericQueryTab.GenericQueryTab;
 import gov.nist.toolkit.xdstools2.client.tabs.genericQueryTab.QueryBoilerplate;
 import gov.nist.toolkit.xdstools2.client.widgets.queryFilter.CodeFilterBank;
+import gov.nist.toolkit.xdstools2.shared.command.request.MpqFindDocumentsRequest;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -109,10 +112,12 @@ public class MPQFindDocumentsTab extends GenericQueryTab {
 			getGoButton().setEnabled(false);
 			getInspectButton().setEnabled(false);
 
-			getToolkitServices().mpqFindDocuments(siteSpec,
-					pid.trim(), 
-					codesSpec(),
-					queryCallback);
+			new MpqFindDocumentsCommand(){
+				@Override
+				public void onComplete(List<Result> result) {
+					queryCallback.onSuccess(result);
+				}
+			}.run(new MpqFindDocumentsRequest(getCommandContext(),siteSpec,pid.trim(),codesSpec()));
 		}
 
 	}

@@ -7,9 +7,12 @@ import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.Widget;
 import gov.nist.toolkit.configDatatypes.client.TransactionType;
+import gov.nist.toolkit.results.client.Result;
 import gov.nist.toolkit.xdstools2.client.CoupledTransactions;
+import gov.nist.toolkit.xdstools2.client.command.command.GetAllCommand;
 import gov.nist.toolkit.xdstools2.client.siteActorManagers.FindDocumentsSiteActorManager;
 import gov.nist.toolkit.xdstools2.client.tabs.genericQueryTab.GenericQueryTab;
+import gov.nist.toolkit.xdstools2.shared.command.request.GetAllRequest;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -112,7 +115,12 @@ public class GetAllTab extends GenericQueryTab {
 			// tell the server to run the query. The display is handled by GenericQueryTab which
 			// is linked in via the queryCallback parameter
 			rigForRunning();
-			getToolkitServices().getAll(getSiteSelection(), pidTextBox.getValue().trim(), codeSpec, queryCallback);
+			new GetAllCommand(){
+				@Override
+				public void onComplete(List<Result> result) {
+					queryCallback.onSuccess(result);
+				}
+			}.run(new GetAllRequest(getCommandContext(),getSiteSelection(),pidTextBox.getValue().trim(),codeSpec));
 		}
 	}
 

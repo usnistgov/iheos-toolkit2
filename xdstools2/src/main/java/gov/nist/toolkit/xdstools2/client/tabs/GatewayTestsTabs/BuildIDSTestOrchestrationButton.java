@@ -11,9 +11,12 @@ import gov.nist.toolkit.configDatatypes.SimulatorProperties;
 import gov.nist.toolkit.services.client.IdsOrchestrationRequest;
 import gov.nist.toolkit.services.client.IdsOrchestrationResponse;
 import gov.nist.toolkit.services.client.RawResponse;
+import gov.nist.toolkit.xdstools2.client.command.command.BuildIdsTestOrchestrationCommand;
+import gov.nist.toolkit.xdstools2.client.util.ClientUtils;
 import gov.nist.toolkit.xdstools2.client.widgets.PopupMessage;
 import gov.nist.toolkit.xdstools2.client.tabs.genericQueryTab.GenericQueryTab;
 import gov.nist.toolkit.xdstools2.client.widgets.buttons.AbstractOrchestrationButton;
+import gov.nist.toolkit.xdstools2.shared.command.request.BuildIdsTestOrchestrationRequest;
 
 
 /**
@@ -36,14 +39,9 @@ class BuildIDSTestOrchestrationButton extends AbstractOrchestrationButton {
         }
         IdsOrchestrationRequest request = new IdsOrchestrationRequest();
         request.setUserName(testTab.getCurrentTestSession());
-        testTab.toolkitService.buildIdsTestOrchestration(request, new AsyncCallback<RawResponse>() {
+        new BuildIdsTestOrchestrationCommand(){
             @Override
-            public void onFailure(Throwable throwable) {
-                handleError(throwable);
-            }
-
-            @Override
-            public void onSuccess(RawResponse rawResponse) {
+            public void onComplete(RawResponse rawResponse) {
                 if (handleError(rawResponse, IdsOrchestrationResponse.class)) return;
                 IdsOrchestrationResponse orchResponse = (IdsOrchestrationResponse) rawResponse;
 
@@ -76,15 +74,9 @@ class BuildIDSTestOrchestrationButton extends AbstractOrchestrationButton {
                 table.setWidget(row, 1, new HTML("Provide and Register TLS"));
                 table.setWidget(row++, 2, new HTML(config.getConfigEle(SimulatorProperties.pnrTlsEndpoint).asString()));
 
-
-//                    panel().display(testTab.addTestEnvironmentInspectorButton(config.getId().toString()));
-
-                // generate log launcher buttons
-//                panel().display(testTab.testSelectionManager.buildLogLauncher(testTab.rgConfigs));
-
                 testTab.genericQueryTab.reloadTransactionOfferings();
             }
-        });
+        }.run(new BuildIdsTestOrchestrationRequest(ClientUtils.INSTANCE.getCommandContext(),request));
     }
 
     Widget light(Widget w) {

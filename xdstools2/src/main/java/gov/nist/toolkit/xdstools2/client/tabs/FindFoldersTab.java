@@ -14,7 +14,7 @@ import gov.nist.toolkit.xdstools2.client.command.command.FindFoldersCommand;
 import gov.nist.toolkit.xdstools2.client.widgets.PopupMessage;
 import gov.nist.toolkit.xdstools2.client.siteActorManagers.FindDocumentsSiteActorManager;
 import gov.nist.toolkit.xdstools2.client.tabs.genericQueryTab.GenericQueryTab;
-import gov.nist.toolkit.xdstools2.shared.command.request.FindFoldersRequest;
+import gov.nist.toolkit.xdstools2.shared.command.request.FoldersRequest;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -83,7 +83,7 @@ public class FindFoldersTab extends GenericQueryTab {
 				public void onComplete(List<Result> result) {
 					queryCallback.onSuccess(result);
 				}
-			}.run(new FindFoldersRequest(getCommandContext(),siteSpec, pid.trim()));
+			}.run(new FoldersRequest(getCommandContext(),siteSpec, pid.trim()));
 		}
 		
 	}

@@ -11,9 +11,11 @@ import gov.nist.toolkit.services.client.RawResponse;
 import gov.nist.toolkit.services.client.RegOrchestrationRequest;
 import gov.nist.toolkit.services.client.RegOrchestrationResponse;
 import gov.nist.toolkit.sitemanagement.client.SiteSpec;
+import gov.nist.toolkit.xdstools2.client.command.command.BuildRegTestOrchestrationCommand;
 import gov.nist.toolkit.xdstools2.client.util.ClientUtils;
 import gov.nist.toolkit.xdstools2.client.widgets.OrchestrationSupportTestsDisplay;
 import gov.nist.toolkit.xdstools2.client.widgets.buttons.AbstractOrchestrationButton;
+import gov.nist.toolkit.xdstools2.shared.command.request.BuildRegTestOrchestrationRequest;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -88,15 +90,9 @@ public class BuildRegTestOrchestrationButton extends AbstractOrchestrationButton
 
         testTab.setSiteToIssueTestAgainst(sutSiteSpec);
 
-
-        ClientUtils.INSTANCE.getToolkitServices().buildRegTestOrchestration(request, new AsyncCallback<RawResponse>() {
+        new BuildRegTestOrchestrationCommand(){
             @Override
-            public void onFailure(Throwable throwable) {
-                handleError(throwable);
-            }
-
-            @Override
-            public void onSuccess(RawResponse rawResponse) {
+            public void onComplete(RawResponse rawResponse) {
                 if (handleError(rawResponse, RegOrchestrationResponse.class)) return;
                 final RegOrchestrationResponse orchResponse = (RegOrchestrationResponse) rawResponse;
                 testTab.setRegOrchestrationResponse(orchResponse);
@@ -123,7 +119,6 @@ public class BuildRegTestOrchestrationButton extends AbstractOrchestrationButton
                 initializationResultsPanel.add(new HTML("<br />"));
 
             }
-        });
-
+        }.run(new BuildRegTestOrchestrationRequest(ClientUtils.INSTANCE.getCommandContext(),request));
     }
 }

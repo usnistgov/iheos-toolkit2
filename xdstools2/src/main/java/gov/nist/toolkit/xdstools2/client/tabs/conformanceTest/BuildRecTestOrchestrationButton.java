@@ -7,9 +7,11 @@ import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.Panel;
 import gov.nist.toolkit.services.client.*;
 import gov.nist.toolkit.sitemanagement.client.SiteSpec;
+import gov.nist.toolkit.xdstools2.client.command.command.BuildRecTestOrchestrationCommand;
 import gov.nist.toolkit.xdstools2.client.util.ClientUtils;
 import gov.nist.toolkit.xdstools2.client.widgets.OrchestrationSupportTestsDisplay;
 import gov.nist.toolkit.xdstools2.client.widgets.buttons.AbstractOrchestrationButton;
+import gov.nist.toolkit.xdstools2.shared.command.request.BuildRecTestOrchestrationRequest;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -61,15 +63,9 @@ public class BuildRecTestOrchestrationButton extends AbstractOrchestrationButton
 
         testTab.setSiteToIssueTestAgainst(sutSiteSpec);
 
-
-        ClientUtils.INSTANCE.getToolkitServices().buildRecTestOrchestration(request, new AsyncCallback<RawResponse>() {
+        new BuildRecTestOrchestrationCommand(){
             @Override
-            public void onFailure(Throwable throwable) {
-                handleError(throwable);
-            }
-
-            @Override
-            public void onSuccess(RawResponse rawResponse) {
+            public void onComplete(RawResponse rawResponse) {
                 if (handleError(rawResponse, RecOrchestrationResponse.class)) return;
                 final RecOrchestrationResponse orchResponse = (RecOrchestrationResponse) rawResponse;
                 testTab.setOrchestrationResponse(orchResponse);
@@ -92,10 +88,7 @@ public class BuildRecTestOrchestrationButton extends AbstractOrchestrationButton
 
                 initializationResultsPanel.add(new HTML("Patient ID for all tests: " + orchResponse.getRegisterPid().toString()));
                 initializationResultsPanel.add(new HTML("<br />"));
-
             }
-        });
-
-
+        }.run(new BuildRecTestOrchestrationRequest(ClientUtils.INSTANCE.getCommandContext(),request));
     }
 }

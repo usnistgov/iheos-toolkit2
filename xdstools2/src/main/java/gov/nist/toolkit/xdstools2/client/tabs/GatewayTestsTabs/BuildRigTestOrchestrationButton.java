@@ -14,9 +14,12 @@ import gov.nist.toolkit.services.client.RigOrchestrationResponse;
 import gov.nist.toolkit.services.client.RawResponse;
 import gov.nist.toolkit.services.client.RigOrchestrationRequest;
 import gov.nist.toolkit.simcommon.client.config.SimulatorConfigElement;
+import gov.nist.toolkit.xdstools2.client.command.command.BuildRigTestOrchestrationCommand;
+import gov.nist.toolkit.xdstools2.client.util.ClientUtils;
 import gov.nist.toolkit.xdstools2.client.widgets.PopupMessage;
 import gov.nist.toolkit.xdstools2.client.tabs.genericQueryTab.GenericQueryTab;
 import gov.nist.toolkit.xdstools2.client.widgets.buttons.AbstractOrchestrationButton;
+import gov.nist.toolkit.xdstools2.shared.command.request.BuildRigTestOrchestrationRequest;
 
 /**
  * Handles "Build Test Environment" Button for RIG Test Orchestration
@@ -41,15 +44,9 @@ class BuildRIGTestOrchestrationButton extends AbstractOrchestrationButton {
       RigOrchestrationRequest request = new RigOrchestrationRequest();
       request.setUserName(testTab.getCurrentTestSession());
      //  request.setIncludeLinkedRIG(includeRIG);
-      testTab.getToolkitServices().buildRigTestOrchestration(request, new AsyncCallback <RawResponse>() {
-
+      new BuildRigTestOrchestrationCommand(){
          @Override
-         public void onFailure(Throwable throwable) {
-            handleError(throwable);
-         }
-
-         @Override
-         public void onSuccess(RawResponse rawResponse) {
+         public void onComplete(RawResponse rawResponse) {
             if (handleError(rawResponse, RigOrchestrationResponse.class)) return;
             RigOrchestrationResponse orchResponse = (RigOrchestrationResponse) rawResponse;
 
@@ -97,10 +94,8 @@ class BuildRIGTestOrchestrationButton extends AbstractOrchestrationButton {
                testTab.genericQueryTab.reloadTransactionOfferings();
 
             } // pass Orchestration
-
-         } // EO on Success method
-
-      }); // Build IIG Orchestration
+         }
+      }.run(new BuildRigTestOrchestrationRequest(ClientUtils.INSTANCE.getCommandContext(),request));
 
    }
    @SuppressWarnings("javadoc")

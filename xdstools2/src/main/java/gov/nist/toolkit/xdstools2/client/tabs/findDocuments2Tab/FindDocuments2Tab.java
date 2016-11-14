@@ -11,9 +11,13 @@ import gov.nist.toolkit.configDatatypes.client.TransactionType;
 import gov.nist.toolkit.interactionmodel.client.InteractingEntity;
 import gov.nist.toolkit.results.client.Result;
 import gov.nist.toolkit.xdstools2.client.CoupledTransactions;
+import gov.nist.toolkit.xdstools2.client.command.command.FindDocuments2Command;
+import gov.nist.toolkit.xdstools2.client.command.command.GetInteractionFromModelCommand;
 import gov.nist.toolkit.xdstools2.client.widgets.PopupMessage;
 import gov.nist.toolkit.xdstools2.client.siteActorManagers.FindDocumentsSiteActorManager;
 import gov.nist.toolkit.xdstools2.client.tabs.genericQueryTab.GenericQueryTab;
+import gov.nist.toolkit.xdstools2.shared.command.request.FindDocuments2Request;
+import gov.nist.toolkit.xdstools2.shared.command.request.GetInteractionFromModelRequest;
 
 import java.util.*;
 
@@ -100,8 +104,12 @@ public class FindDocuments2Tab extends GenericQueryTab {
 
             origin.setBegin(new Date());
 
-            getToolkitServices().findDocuments2(getSiteSelection(), pidTextBox.getValue().trim(), codeSpec, fd2Callback);
-
+            new FindDocuments2Command(){
+                @Override
+                public void onComplete(List<Result> result) {
+                    fd2Callback.onSuccess(result);
+                }
+            }.run(new FindDocuments2Request(getCommandContext(),getSiteSelection(),pidTextBox.getValue().trim(),codeSpec));
         }
     }
 
@@ -123,20 +131,13 @@ public class FindDocuments2Tab extends GenericQueryTab {
                 if (getInteractionModel()!=null) {
                     getInteractionModel().setEnd(new Date());
 
-                    getToolkitServices().getInteractionFromModel(getInteractionModel(), new AsyncCallback<InteractingEntity>() {
+                    new GetInteractionFromModelCommand(){
                         @Override
-                        public void onFailure(Throwable throwable) {
-                            String mapMsg = "mapping failed!";
-                            System.out.println(mapMsg);
-                            new PopupMessage(mapMsg);
-                        }
-
-                        @Override
-                        public void onSuccess(InteractingEntity interactingEntity) {
+                        public void onComplete(InteractingEntity interactingEntity) {
                             String mapMsg = "mapping was successful!!";
                             System.out.println(mapMsg);
                         }
-                    });
+                    }.run(new GetInteractionFromModelRequest(getCommandContext(),getInteractionModel()));
                 }
                 else {
                     new PopupMessage("Null origin");

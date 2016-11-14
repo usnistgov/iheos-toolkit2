@@ -24,11 +24,8 @@ import java.util.logging.Logger;
  * Created by Diane Azais local on 10/20/2015.
  */
 public class ButtonClickHandler implements ClickHandler {
-//    ToolkitServiceAsync service = (ToolkitServiceAsync) GWT.create(ToolkitService.class);
-    Logger LOGGER = Logger.getLogger("ButtonClickHandler");
     Updater updater;
     CommandsWidget commandsWidget;
-    private ToolkitServiceAsync toolkitService= ClientUtils.INSTANCE.getToolkitServices();
 
 
     public ButtonClickHandler(CommandsWidget _commandsWidget){

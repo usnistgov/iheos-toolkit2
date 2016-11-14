@@ -14,10 +14,12 @@ import gov.nist.toolkit.services.client.IigOrchestrationRequest;
 import gov.nist.toolkit.services.client.IigOrchestrationResponse;
 import gov.nist.toolkit.services.client.RawResponse;
 import gov.nist.toolkit.simcommon.client.config.SimulatorConfigElement;
+import gov.nist.toolkit.xdstools2.client.command.command.BuildIIGTestOrchestrationCommand;
 import gov.nist.toolkit.xdstools2.client.widgets.PopupMessage;
 import gov.nist.toolkit.xdstools2.client.tabs.genericQueryTab.GenericQueryTab;
 import gov.nist.toolkit.xdstools2.client.util.ClientUtils;
 import gov.nist.toolkit.xdstools2.client.widgets.buttons.AbstractOrchestrationButton;
+import gov.nist.toolkit.xdstools2.shared.command.request.BuildIigTestOrchestrationRequest;
 
 /**
  * Handles "Build Test Environment" Button for IIG Test Orchestration
@@ -42,15 +44,9 @@ class BuildIIGTestOrchestrationButton extends AbstractOrchestrationButton {
       IigOrchestrationRequest request = new IigOrchestrationRequest();
       request.setUserName(testTab.getCurrentTestSession());
       // request.setIncludeLinkedIIG(includeIIG);
-      ClientUtils.INSTANCE.getToolkitServices().buildIigTestOrchestration(request, new AsyncCallback <RawResponse>() {
-
+      new BuildIIGTestOrchestrationCommand(){
          @Override
-         public void onFailure(Throwable throwable) {
-            handleError(throwable);
-         }
-
-         @Override
-         public void onSuccess(RawResponse rawResponse) {
+         public void onComplete(RawResponse rawResponse) {
             if (handleError(rawResponse, IigOrchestrationResponse.class)) return;
             IigOrchestrationResponse orchResponse = (IigOrchestrationResponse) rawResponse;
 
@@ -98,11 +94,8 @@ class BuildIIGTestOrchestrationButton extends AbstractOrchestrationButton {
                testTab.genericQueryTab.reloadTransactionOfferings();
 
             } // pass Orchestration
-
-         } // EO on Success method
-
-      }); // Build IIG Orchestration
-
+         }
+      }.run(new BuildIigTestOrchestrationRequest(ClientUtils.INSTANCE.getCommandContext(),request));
    }
    @SuppressWarnings("javadoc")
    public enum Orchestra {

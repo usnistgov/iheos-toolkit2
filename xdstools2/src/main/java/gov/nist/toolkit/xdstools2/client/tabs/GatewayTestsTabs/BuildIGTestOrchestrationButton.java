@@ -9,6 +9,7 @@ import gov.nist.toolkit.services.client.IgOrchestrationRequest;
 import gov.nist.toolkit.services.client.IgOrchestrationResponse;
 import gov.nist.toolkit.services.client.RawResponse;
 import gov.nist.toolkit.sitemanagement.client.SiteSpec;
+import gov.nist.toolkit.xdstools2.client.command.command.BuildIGTestOrchestrationCommand;
 import gov.nist.toolkit.xdstools2.client.widgets.PopupMessage;
 import gov.nist.toolkit.xdstools2.client.tabs.FindDocumentsLauncher;
 import gov.nist.toolkit.xdstools2.client.tabs.conformanceTest.*;
@@ -16,6 +17,7 @@ import gov.nist.toolkit.xdstools2.client.tabs.genericQueryTab.GenericQueryTab;
 import gov.nist.toolkit.xdstools2.client.util.ClientUtils;
 import gov.nist.toolkit.xdstools2.client.widgets.OrchestrationSupportTestsDisplay;
 import gov.nist.toolkit.xdstools2.client.widgets.buttons.AbstractOrchestrationButton;
+import gov.nist.toolkit.xdstools2.shared.command.request.BuildIgTestOrchestrationRequest;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -85,14 +87,9 @@ public class BuildIGTestOrchestrationButton extends AbstractOrchestrationButton 
 
         initializationResultsPanel.clear();
 
-        ClientUtils.INSTANCE.getToolkitServices().buildIgTestOrchestration(request, new AsyncCallback<RawResponse>() {
+        new BuildIGTestOrchestrationCommand(){
             @Override
-            public void onFailure(Throwable throwable) {
-                handleError(throwable);
-            }
-
-            @Override
-            public void onSuccess(RawResponse rawResponse) {
+            public void onComplete(RawResponse rawResponse) {
                 if (handleError(rawResponse, IgOrchestrationResponse.class)) return;
                 IgOrchestrationResponse orchResponse = (IgOrchestrationResponse) rawResponse;
                 testTab.setOrchestrationResponse(orchResponse);
@@ -162,7 +159,7 @@ public class BuildIGTestOrchestrationButton extends AbstractOrchestrationButton 
                 initializationResultsPanel.add(new HTML("<h3>Configure your Initiating Gateway to forward requests to both of the above Responding Gateways (listed under Supporting Environment Configuration).</h3><hr />"));
 
             }
-        });
+        }.run(new BuildIgTestOrchestrationRequest(ClientUtils.INSTANCE.getCommandContext(),request));
     }
 
     Anchor buildFindDocumentsLauncher(SiteSpec siteSpec, Pid pid, String title) {

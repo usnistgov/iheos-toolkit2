@@ -10,10 +10,12 @@ import gov.nist.toolkit.services.client.RawResponse;
 import gov.nist.toolkit.services.client.RgOrchestrationRequest;
 import gov.nist.toolkit.services.client.RgOrchestrationResponse;
 import gov.nist.toolkit.sitemanagement.client.SiteSpec;
+import gov.nist.toolkit.xdstools2.client.command.command.BuildRGTestOrchestrationCommand;
 import gov.nist.toolkit.xdstools2.client.widgets.PopupMessage;
 import gov.nist.toolkit.xdstools2.client.tabs.genericQueryTab.GenericQueryTab;
 import gov.nist.toolkit.xdstools2.client.util.ClientUtils;
 import gov.nist.toolkit.xdstools2.client.widgets.buttons.AbstractOrchestrationButton;
+import gov.nist.toolkit.xdstools2.shared.command.request.BuildRgTestOrchestrationRequest;
 
 /**
  *
@@ -66,14 +68,9 @@ class BuildRGTestOrchestrationButton extends AbstractOrchestrationButton {
         request.setUseExposedRR(useExposedRR);
         request.setUseSimAsSUT(useSimAsSUT);
 
-        ClientUtils.INSTANCE.getToolkitServices().buildRgTestOrchestration(request, new AsyncCallback<RawResponse>() {
+        new BuildRGTestOrchestrationCommand(){
             @Override
-            public void onFailure(Throwable throwable) {
-                handleError(throwable);
-            }
-
-            @Override
-            public void onSuccess(RawResponse rawResponse) {
+            public void onComplete(RawResponse rawResponse) {
                 if (handleError(rawResponse, RgOrchestrationResponse.class)) return;
                 RgOrchestrationResponse orchResponse = (RgOrchestrationResponse) rawResponse;
                 testTab.orch = orchResponse;
@@ -94,7 +91,7 @@ class BuildRGTestOrchestrationButton extends AbstractOrchestrationButton {
                     }
                 }
             }
-        });
+        }.run(new BuildRgTestOrchestrationRequest(ClientUtils.INSTANCE.getCommandContext(),request));
     }
 
     int displayPIDs(FlexTable table, RgOrchestrationResponse response, int row) {

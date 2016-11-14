@@ -9,7 +9,6 @@ import gov.nist.toolkit.actorfactory.client.Simulator;
 import gov.nist.toolkit.actorfactory.client.SimulatorConfig;
 import gov.nist.toolkit.actorfactory.client.SimulatorStats;
 import gov.nist.toolkit.actortransaction.TransactionErrorCodeDbLoader;
-import gov.nist.toolkit.actortransaction.client.Severity;
 import gov.nist.toolkit.actortransaction.client.TransactionInstance;
 import gov.nist.toolkit.configDatatypes.client.Pid;
 import gov.nist.toolkit.configDatatypes.client.PidSet;
@@ -222,9 +221,15 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements
         return session().queryServiceManager().registerAndQuery(request.getSite(),request.getPid());
     }
     @Override
-    public List<Result> lifecycleValidation(SiteSpec site, String pid) throws NoServletSessionException  { return session().queryServiceManager().lifecycleValidation(site, pid); }
+    public List<Result> lifecycleValidation(LifecycleValidationRequest request) throws Exception  {
+        installCommandContext(request);
+        return session().queryServiceManager().lifecycleValidation(request.getSite(), request.getPid());
+    }
     @Override
-    public List<Result> folderValidation(SiteSpec site, String pid) throws NoServletSessionException  { return session().queryServiceManager().folderValidation(site, pid); }
+    public List<Result> folderValidation(FoldersRequest request) throws Exception  {
+        installCommandContext(request);
+        return session().queryServiceManager().folderValidation(request.getSite(), request.getPid());
+    }
     @Override
     public List<Result> submitRegistryTestdata(SubmitTestdataRequest request) throws Exception  {
         installCommandContext(request);
@@ -241,7 +246,10 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements
         return session().queryServiceManager().submitXDRTestdata(request.getTestSessionName(),request.getSite(),request.getDataSetName(), request.getPid());
     }
     @Override
-    public List<Result> provideAndRetrieve(SiteSpec site, String pid) throws NoServletSessionException  { return session().queryServiceManager().provideAndRetrieve(site, pid); }
+    public List<Result> provideAndRetrieve(ProvideAndRetrieveRequest request) throws Exception  {
+        installCommandContext(request);
+        return session().queryServiceManager().provideAndRetrieve(request.getSite(), request.getPid());
+    }
     @Override
     public List<Result> findDocuments(FindDocumentsRequest request) throws Exception  {
         installCommandContext(request);
@@ -255,7 +263,7 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements
         return session().queryServiceManager().getDocuments(request.getSite(), request.getIds());
     }
     @Override
-    public List<Result> findFolders(FindFoldersRequest request) throws Exception  {
+    public List<Result> findFolders(FoldersRequest request) throws Exception  {
         installCommandContext(request);
         return session().queryServiceManager().findFolders(request.getSite(), request.getPid()); }
     @Override
@@ -314,11 +322,16 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements
         return session().queryServiceManager().getRelated(request.getSite(),request.getObjectRef(), request.getAssocs());
     }
     @Override
-    public List<Result> getAll(SiteSpec site, String pid, Map<String, List<String>> codesSpec) throws NoServletSessionException  { return session().queryServiceManager().getAll(site, pid, codesSpec); }
+    public List<Result> getAll(GetAllRequest request) throws Exception  {
+        installCommandContext(request);
+        return session().queryServiceManager().getAll(request.getSite(), request.getPid(), request.getCodesSpec());
+    }
     @Override
-    public List<Result> findDocuments2(SiteSpec site, String pid, Map<String, List<String>> codesSpec) throws NoServletSessionException  {
+    public List<Result> findDocuments2(FindDocuments2Request request) throws Exception  {
+        installCommandContext(request);
         System.out.println("Running findDocuments2 service");
-        return session().queryServiceManager().findDocuments2(site, pid, codesSpec); }
+        return session().queryServiceManager().findDocuments2(request.getSite(), request.getPid(), request.getCodesSpec());
+    }
 
 
     public List<Result> mpqFindDocuments(SiteSpec site, String pid,
@@ -396,58 +409,67 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements
         return session().xdsTestServiceManager().getTestReadme(test);
     }
     @Override
-    public RawResponse buildRepTestOrchestration(RepOrchestrationRequest request) {
+    public RawResponse buildRepTestOrchestration(BuildRepTestOrchestrationRequest request) throws Exception{
+        installCommandContext(request);
         Session s = getSession();
         if (s == null) return RawResponseBuilder.build(new NoServletSessionException(""));
-        return new OrchestrationManager().buildRepTestEnvironment(s, request);
+        return new OrchestrationManager().buildRepTestEnvironment(s, request.getRepOrchestrationRequest());
     }
     @Override
-    public RawResponse buildRegTestOrchestration(RegOrchestrationRequest request) {
+    public RawResponse buildRegTestOrchestration(BuildRegTestOrchestrationRequest request) throws Exception{
+        installCommandContext(request);
         Session s = getSession();
         if (s == null) return RawResponseBuilder.build(new NoServletSessionException(""));
-        return new OrchestrationManager().buildRegTestEnvironment(s, request);
+        return new OrchestrationManager().buildRegTestEnvironment(s, request.getRegOrchestrationRequest());
     }
     @Override
-    public RawResponse buildRecTestOrchestration(RecOrchestrationRequest request) {
+    public RawResponse buildRecTestOrchestration(BuildRecTestOrchestrationRequest request) throws Exception{
+        installCommandContext(request);
         Session s = getSession();
         if (s == null) return RawResponseBuilder.build(new NoServletSessionException(""));
-        return new OrchestrationManager().buildRecTestEnvironment(s, request);
+        return new OrchestrationManager().buildRecTestEnvironment(s, request.getRecOrchestrationRequest());
     }
     @Override
-    public RawResponse buildIgTestOrchestration(IgOrchestrationRequest request) {
+    public RawResponse buildIgTestOrchestration(BuildIgTestOrchestrationRequest request) throws Exception{
+        installCommandContext(request);
         Session s = getSession();
         if (s == null) return RawResponseBuilder.build(new NoServletSessionException(""));
-        return new OrchestrationManager().buildIgTestEnvironment(s, request);
+        return new OrchestrationManager().buildIgTestEnvironment(s, request.getIgOrchestrationRequest());
     }
     @Override
-    public RawResponse buildIigTestOrchestration(IigOrchestrationRequest request) {
+    public RawResponse buildIigTestOrchestration(BuildIigTestOrchestrationRequest request) throws Exception{
+        installCommandContext(request);
         Session s = getSession();
         if (s == null) return RawResponseBuilder.build(new NoServletSessionException(""));
-        return new OrchestrationManager().buildIigTestEnvironment(s, request);
+        return new OrchestrationManager().buildIigTestEnvironment(s, request.getIigOrchestrationRequest());
     }
     @Override
-    public RawResponse buildRgTestOrchestration(RgOrchestrationRequest request) {
+    public RawResponse buildRgTestOrchestration(BuildRgTestOrchestrationRequest request) throws Exception{
+        installCommandContext(request);
         Session s = getSession();
         if (s == null) return RawResponseBuilder.build(new NoServletSessionException(""));
-        return new OrchestrationManager().buildRgTestEnvironment(s, request);
+        return new OrchestrationManager().buildRgTestEnvironment(s, request.getRgOrchestrationRequest());
     }
     @Override
-    public RawResponse buildRigTestOrchestration(RigOrchestrationRequest request) {
+    public RawResponse buildRigTestOrchestration(BuildRigTestOrchestrationRequest request) throws Exception{
+        installCommandContext(request);
         Session s = getSession();
         if (s == null) return RawResponseBuilder.build(new NoServletSessionException(""));
-        return new OrchestrationManager().buildRigTestEnvironment(s, request);
+        return new OrchestrationManager().buildRigTestEnvironment(s, request.getRigOrchestrationRequest());
     }
     @Override
-    public RawResponse buildIdsTestOrchestration(IdsOrchestrationRequest request) {
+    public RawResponse buildIdsTestOrchestration(BuildIdsTestOrchestrationRequest request) throws Exception{
+        installCommandContext(request);
         Session s = getSession();
         if (s == null) return RawResponseBuilder.build(new NoServletSessionException(""));
-        return new OrchestrationManager().buildIdsTestEnvironment(s, request);
+        return new OrchestrationManager().buildIdsTestEnvironment(s, request.getIdsOrchestrationRequest());
     }
     @Override
-    public RawResponse buildRSNAEdgeTestOrchestration(RSNAEdgeOrchestrationRequest request) {
+    public RawResponse buildRSNAEdgeTestOrchestration(BuildRSNAEdgeTestOrchestrationRequest request) throws Exception{
+        installCommandContext(request);
         Session s = getSession();
         if (s == null) return RawResponseBuilder.build(new NoServletSessionException(""));
-        return new OrchestrationManager().buildRSNAEdgeTestEnvironment(s, request);
+        return new OrchestrationManager().buildRSNAEdgeTestEnvironment(s, request.getRsnaEdgeOrchestrationRequest());
     }
     /*
 	@Override
@@ -1255,8 +1277,9 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements
     }
 
     @Override
-    public List<DocumentEntryDetail> getOnDemandDocumentEntryDetails(SimId oddsSimId) {
-        return TransactionUtil.getOnDemandDocumentEntryDetails(oddsSimId);
+    public List<DocumentEntryDetail> getOnDemandDocumentEntryDetails(GetOnDemandDocumentEntryDetailsRequest request) throws Exception{
+        installCommandContext(request);
+        return TransactionUtil.getOnDemandDocumentEntryDetails(request.getSimId());
     }
 
     //------------------------------------------------------------------------
@@ -1266,8 +1289,9 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements
     //------------------------------------------------------------------------
     //------------------------------------------------------------------------
     @Override
-    public InteractingEntity getInteractionFromModel(InteractingEntity model) throws Exception {
-        return new InteractionMapper().map(model);
+    public InteractingEntity getInteractionFromModel(GetInteractionFromModelRequest request) throws Exception {
+        installCommandContext(request);
+        return new InteractionMapper().map(request.getModel());
     }
 
 

@@ -31,7 +31,6 @@ import java.util.Map;
  * toolkit test tab for IDS SUT testing *
  */
 public class IDSTestTab extends GenericQueryTab implements GatewayTool {
-    protected final ToolkitServiceAsync toolkitService = ClientUtils.INSTANCE.getToolkitServices();
     String selectedActor = ActorType.IMAGING_DOC_SOURCE.getShortName();
     SimulatorConfig rrConfig;
     GenericQueryTab genericQueryTab;

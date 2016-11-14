@@ -21,11 +21,10 @@ import java.util.List;
  */
 public class IDSSelectionPresenter {
 
-    private final ToolkitServiceAsync toolkitService= ClientUtils.INSTANCE.getToolkitServices();
     MultiSelectionView view;
     List<String> sites;
 
-    public IDSSelectionPresenter(/*ToolkitServiceAsync toolkitService, */final List<String> selected, final Panel panel) {
+    public IDSSelectionPresenter(final List<String> selected, final Panel panel) {
         new GetSiteNamesWithIDSCommand(){
             @Override
             public void onComplete(List<String> siteNames) {

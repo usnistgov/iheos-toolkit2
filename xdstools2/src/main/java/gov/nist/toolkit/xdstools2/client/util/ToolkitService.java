@@ -7,7 +7,6 @@ import gov.nist.toolkit.actorfactory.client.SimId;
 import gov.nist.toolkit.actorfactory.client.Simulator;
 import gov.nist.toolkit.actorfactory.client.SimulatorConfig;
 import gov.nist.toolkit.actorfactory.client.SimulatorStats;
-import gov.nist.toolkit.actortransaction.client.Severity;
 import gov.nist.toolkit.actortransaction.client.TransactionInstance;
 import gov.nist.toolkit.configDatatypes.client.Pid;
 import gov.nist.toolkit.interactionmodel.client.InteractingEntity;
@@ -135,7 +134,7 @@ public interface ToolkitService extends RemoteService  {
 	List<Result> srcStoresDocVal(GetSrcStoresDocValRequest request) throws Exception ;
 	List<Result> findDocuments(FindDocumentsRequest request) throws Exception ;
 	List<Result> findDocumentsByRefId(FindDocumentsRequest request) throws Exception ;
-	List<Result> findFolders(FindFoldersRequest request) throws Exception ;
+	List<Result> findFolders(FoldersRequest request) throws Exception ;
 	// FIXME this method has far too many parameters we need to change that by one object.
 	List<Result> getDocuments(GetDocumentsRequest request) throws Exception ;
 	List<Result> getFolders(GetFoldersRequest request) throws Exception ;
@@ -151,13 +150,13 @@ public interface ToolkitService extends RemoteService  {
 	List<Result> submitRegistryTestdata(SubmitTestdataRequest request) throws Exception ;
 	List<Result> submitRepositoryTestdata(SubmitTestdataRequest request) throws Exception ;
 	List<Result> submitXDRTestdata(SubmitTestdataRequest request) throws Exception ;
-	List<Result> provideAndRetrieve(SiteSpec site, String pid) throws NoServletSessionException ;
-	List<Result> lifecycleValidation(SiteSpec site, String pid) throws NoServletSessionException ;
-	List<Result> folderValidation(SiteSpec site, String pid) throws NoServletSessionException ;
+	List<Result> provideAndRetrieve(ProvideAndRetrieveRequest request) throws Exception ;
+	List<Result> lifecycleValidation(LifecycleValidationRequest request) throws Exception ;
+	List<Result> folderValidation(FoldersRequest request) throws Exception ;
 
 	List<Result> mpqFindDocuments(SiteSpec site, String pid, Map<String, List<String>> selectedCodes) throws NoServletSessionException;
-	List<Result> getAll(SiteSpec site, String pid, Map<String, List<String>> codesSpec) throws NoServletSessionException;
-	List<Result> findDocuments2(SiteSpec site, String pid, Map<String, List<String>> codesSpec) throws NoServletSessionException;
+	List<Result> getAll(GetAllRequest request) throws Exception;
+	List<Result> findDocuments2(FindDocuments2Request request) throws Exception;
 
 	TestLogs getRawLogs(GetRawLogsRequest request) throws Exception ;
 
@@ -191,14 +190,14 @@ public interface ToolkitService extends RemoteService  {
 	String getDefaultAssigningAuthority(CommandContext context) throws Exception;
 	String getAttributeValue(String username, String attName) throws Exception;
 	void setAttributeValue(String username, String attName, String attValue) throws Exception;
-	RawResponse buildIgTestOrchestration(IgOrchestrationRequest request);
-	RawResponse buildIigTestOrchestration(IigOrchestrationRequest request);
-	RawResponse buildRigTestOrchestration(RigOrchestrationRequest request);
-	RawResponse buildRgTestOrchestration(RgOrchestrationRequest request);
-	RawResponse buildIdsTestOrchestration(IdsOrchestrationRequest request);
-	RawResponse buildRepTestOrchestration(RepOrchestrationRequest request);
-	RawResponse buildRegTestOrchestration(RegOrchestrationRequest request);
-	RawResponse buildRSNAEdgeTestOrchestration(RSNAEdgeOrchestrationRequest request);
+	RawResponse buildIgTestOrchestration(BuildIgTestOrchestrationRequest request) throws Exception;
+	RawResponse buildIigTestOrchestration(BuildIigTestOrchestrationRequest request)throws Exception;
+	RawResponse buildRigTestOrchestration(BuildRigTestOrchestrationRequest request) throws Exception;
+	RawResponse buildRgTestOrchestration(BuildRgTestOrchestrationRequest request) throws Exception;
+	RawResponse buildIdsTestOrchestration(BuildIdsTestOrchestrationRequest request) throws Exception;
+	RawResponse buildRepTestOrchestration(BuildRepTestOrchestrationRequest request) throws Exception;
+	RawResponse buildRegTestOrchestration(BuildRegTestOrchestrationRequest request) throws Exception;
+	RawResponse buildRSNAEdgeTestOrchestration(BuildRSNAEdgeTestOrchestrationRequest request) throws Exception;
 
 	Map<String, String> getSessionProperties() throws NoServletSessionException;
 	void setSessionProperties(Map<String, String> props) throws NoServletSessionException;
@@ -249,14 +248,14 @@ public interface ToolkitService extends RemoteService  {
 	//------------------------------------------------------------------------
 	Result register(RegisterRequest registerRequest) throws Exception;
 	Map<String, String> registerWithLocalizedTrackingInODDS(RegisterRequest registerRequest) throws Exception;
-	List<DocumentEntryDetail> getOnDemandDocumentEntryDetails(SimId oddsSimId);
+	List<DocumentEntryDetail> getOnDemandDocumentEntryDetails(GetOnDemandDocumentEntryDetailsRequest request) throws Exception;
 
 	//------------------------------------------------------------------------
 	//------------------------------------------------------------------------
 	// Interaction methods
 	//------------------------------------------------------------------------
 	//------------------------------------------------------------------------
-	InteractingEntity getInteractionFromModel(InteractingEntity model) throws Exception;
+	InteractingEntity getInteractionFromModel(GetInteractionFromModelRequest request) throws Exception;
 
 	//------------------------------------------------------------------------
 	//------------------------------------------------------------------------
@@ -271,5 +270,5 @@ public interface ToolkitService extends RemoteService  {
 
 	boolean indexTestKits(CommandContext context);
 
-    RawResponse buildRecTestOrchestration(RecOrchestrationRequest request);
+    RawResponse buildRecTestOrchestration(BuildRecTestOrchestrationRequest request) throws Exception;
 }
