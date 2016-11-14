@@ -56,6 +56,9 @@ public class BuildIIGTestOrchestrationButton extends AbstractOrchestrationButton
       request.setEnvironmentName(testTab.getEnvironmentSelection());
       request.setUseExistingState(!isResetRequested());
       SiteSpec siteSpec = new SiteSpec(testContext.getSiteName());
+      if (isSaml()) {
+         setSamlAssertion(siteSpec);
+      }
       request.setSiteUnderTest(siteSpec);
 
       testTab.setSiteToIssueTestAgainst(siteSpec);
