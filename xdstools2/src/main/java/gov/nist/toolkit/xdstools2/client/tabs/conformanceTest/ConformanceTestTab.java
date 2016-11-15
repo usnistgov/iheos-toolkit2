@@ -618,6 +618,7 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner, TestsH
 	}
 
 	ClickHandler getInspectClickHandler(TestInstance testInstance) {
+	   new PopupMessage("ti=" + testInstance.toString() + " ts=" + getCurrentTestSession() + " sn=" + testContext.getSiteName());
 		return new LaunchInspectorClickHandler(testInstance, getCurrentTestSession(), new SiteSpec(testContext.getSiteName()));
 	}
 

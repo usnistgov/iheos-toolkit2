@@ -177,13 +177,10 @@ public class ImgDetailTransaction extends BasicTransaction {
          errs.add(ie.getMessage());
       }
       if (errs.isEmpty() == false) {
-         StringBuilder em = new StringBuilder();
-         for (String err : errs) {
-            em.append(StringEscapeUtils.escapeHtml(err)).append("\n");
-         }
          ILogger testLogger = new TestLogFactory().getLogger();
          testLogger.add_name_value_with_id(assertion_output, "AssertionStatus", a.id, "fail");
-         s_ctx.fail(em.toString());
+         for (String err : errs) 
+            s_ctx.fail(err);
       }
       if (xdsInternalException != null) throw xdsInternalException;
    } // EO processAssertion method
@@ -896,51 +893,12 @@ public class ImgDetailTransaction extends BasicTransaction {
       return null;
    }
 
-   // /**
-   // * Result categories. Used to group validation results for reporting.
-   // */
-   // public enum CAT {
-   // /**
-   // * Expected result was found.
-   // */
-   // SUCCESS, /**
-   // * A result was found which is not being tested, but which may be
-   // * in error or "not what you want". May also relate to something
-   // * expected, but not found.
-   // */
-   // WARNING, /**
-   // * Expected result was missing or incorrect.
-   // */
-   // ERROR, /**
-   // * Message which was generated but is not (or cannot be) determined
-   // * to be in SUCCESS, WARNING, or ERROR categories.
-   // */
-   // UNCAT, /**
-   // * A message result or lack of result which was detected but will
-   // * be ignored. This is for programmers only; the tester will not
-   // * see these.
-   // */
-   // SILENT;
-   //
-   // /**
-   // * Get CAT which matches name, ignoring case, or null
-   // *
-   // * @param name of CAT
-   // * @return CAT for name
-   // */
-   // public static CAT forThis(String name) {
-   // CAT[] cats = CAT.values();
-   // for (CAT cat : cats) {
-   // if (cat.name().equalsIgnoreCase(name)) return cat;
-   // }
-   // return null;
-   // }
-   // };
-
    private void store(AssertionEngine e, CAT cat, String msg) {
       if (cat == CAT.SILENT) return;
-      e.addDetail(cat.name() + " " + msg);
-      if (cat == CAT.ERROR) errs.add(cat.name() + " " + msg);
+      for (String line : StringUtils.split(msg, Utility.nl)) {
+         if (cat == CAT.ERROR) errs.add(line);
+         else e.addDetail(line);
+      }
    }
 
    /*

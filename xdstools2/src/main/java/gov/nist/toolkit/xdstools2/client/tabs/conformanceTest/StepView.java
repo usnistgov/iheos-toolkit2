@@ -1,6 +1,9 @@
 package gov.nist.toolkit.xdstools2.client.tabs.conformanceTest;
 
 import com.google.gwt.user.client.ui.*;
+
+import org.apache.commons.lang.StringUtils;
+
 import gov.nist.toolkit.results.client.TestInstance;
 import gov.nist.toolkit.session.client.logtypes.SectionOverviewDTO;
 import gov.nist.toolkit.session.client.logtypes.TestPartFileDTO;
@@ -75,13 +78,44 @@ public class StepView implements IsWidget {
         for (String fault : step.getSoapFaults()) {
             buf.append("Fault: " + fault).append("<br />");
         }
-        for (String error : step.getErrors()) {
-            buf.append("Error: " + error).append("<br />");
-        }
-        for (String assertion : step.getAssertionErrors()) {
-            buf.append("Error: " + assertion).append("<br />");
-        }
         stepBody.add(new HTML(buf.toString()));
+        
+        List<String> dtls = step.getDetails();
+        if (dtls != null && dtls.isEmpty() == false) {
+           FlexTable errTbl = new FlexTable();
+           errTbl.setStyleName("with-border");
+           for (int row = 0; row < dtls.size(); row++) {
+              errTbl.setWidget(row, 0, new HTML(dtls.get(row)));
+           }
+           stepBody.add(new HTML("Detail:"));
+           stepBody.add(errTbl);
+        }
+        
+        List<String> errors = step.getErrors();
+        if (errors != null && errors.isEmpty() == false) {
+           FlexTable errTbl = new FlexTable();
+           errTbl.setStyleName("with-border");
+           int row = 0;
+           errTbl.setWidget(row, 0, new HTML("Message"));
+           errTbl.setWidget(row, 1, new HTML("Step"));
+           row++;
+           String last = "";
+           for (String error : errors) {
+              String msg = substringBeforeLast(error, "(stepId=");
+              String stp = substringAfterLast(error, "(stepId=");
+              stp = substringBeforeLast(stp, ")");
+              if (stp.equals(last)) stp = "";
+              else last = stp;
+              errTbl.setWidget(row, 0, new HTML(msg));
+              errTbl.setWidget(row, 1, new HTML(stp));
+              row++;
+           }
+           stepBody.add(new HTML("Error:"));
+           stepBody.add(errTbl);
+        }
+//        for (String error : step.getErrors()) {
+//            buf.append("Error: " + error).append("<br />");
+//        }
 
         // ******************************************************
         // IDs
@@ -163,5 +197,17 @@ public class StepView implements IsWidget {
     @Override
     public Widget asWidget() {
         return stepPanel;
+    }
+    
+    private String substringBeforeLast(String str, String sep) {
+       int i = str.lastIndexOf(sep);
+       if (i < 0) return str;
+       return str.substring(0, i);
+    }
+    private String substringAfterLast(String str, String sep) {
+       int i = str.lastIndexOf(sep);
+       if (i < 0) return str;
+       i += sep.length();
+       return str.substring(i);
     }
 }
