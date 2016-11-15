@@ -3,6 +3,8 @@ package gov.nist.toolkit.simulators.sim.reg.mu;
 import gov.nist.toolkit.errorrecording.ErrorRecorder;
 import gov.nist.toolkit.errorrecording.client.XdsErrorCode;
 import gov.nist.toolkit.errorrecording.client.XdsErrorCode.Code;
+import gov.nist.toolkit.errorrecording.client.assertions.Assertion;
+import gov.nist.toolkit.errorrecording.client.assertions.AssertionLibrary;
 import gov.nist.toolkit.registrymetadata.Metadata;
 import gov.nist.toolkit.simulators.sim.reg.store.DocEntry;
 import gov.nist.toolkit.simulators.sim.reg.store.RegIndex.StatusValue;
@@ -14,7 +16,9 @@ import org.apache.axiom.om.OMElement;
 
 public class DocumentEntryUpdate  {
 	ErrorRecorder er;
-	
+	private AssertionLibrary ASSERTIONLIBRARY = AssertionLibrary.getInstance();
+
+
 	public DocumentEntryUpdate(SimCommon common, ErrorRecorder er) {
 //		super(common);
 //		this.er = er;
@@ -30,16 +34,18 @@ public class DocumentEntryUpdate  {
 		
 		DocEntry latest = muSim.delta.docEntryCollection.getLatestVersion(lid);
 		
-		if (latest == null) { 
-			er.err(Code.XDSMetadataUpdateError, prefix + "existing DocumentEntry not present in Registry", this, "ITI TF-2b:3.57.4.1.3.3.1.3");
+		if (latest == null) {
+			Assertion assertion = ASSERTIONLIBRARY.getAssertion("TA103");
+			String detail = "DocumentEntry found: '" + prefix + "'";
+			er.err(XdsErrorCode.Code.XDSMetadataUpdateError, assertion, this, "", detail);
 			return;
 		}
 		
-		if (latest.getAvailabilityStatus() != StatusValue.APPROVED) 
-			er.err(Code.XDSMetadataUpdateError, 
-					prefix + "previous version does not have availabilityStatus of Approved, " + latest.getAvailabilityStatus() + " found instead", 
-					this, "ITI TF-2b:3.57.4.1.3.3.1.3");
-		
+		if (latest.getAvailabilityStatus() != StatusValue.APPROVED) {
+			Assertion assertion = ASSERTIONLIBRARY.getAssertion("TA104");
+			String detail = "DocumentEntry found: '" + prefix + "'; availabilityStatus found (should be \'Approved\'): '" + latest.getAvailabilityStatus() + "'";
+			er.err(XdsErrorCode.Code.XDSMetadataUpdateError, assertion, this, "", detail);
+		}
 		String submittedUid = "";
 		try {
 			submittedUid = m.getUniqueIdValue(docEle);

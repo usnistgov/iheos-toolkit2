@@ -1,6 +1,5 @@
 package gov.nist.toolkit.errorrecording;
 
-import gov.nist.toolkit.errorrecording.client.GwtValidatorErrorItem;
 import gov.nist.toolkit.errorrecording.client.XdsErrorCode;
 import gov.nist.toolkit.errorrecording.client.assertions.Assertion;
 import gov.nist.toolkit.errorrecording.factories.ErrorRecorderBuilder;
