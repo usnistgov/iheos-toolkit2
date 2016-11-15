@@ -1,6 +1,9 @@
 package gov.nist.toolkit.simulators.sim.reg.sq;
 
+import gov.nist.toolkit.errorrecording.client.XdsErrorCode;
 import gov.nist.toolkit.errorrecording.client.XdsErrorCode.Code;
+import gov.nist.toolkit.errorrecording.client.assertions.Assertion;
+import gov.nist.toolkit.errorrecording.client.assertions.AssertionLibrary;
 import gov.nist.toolkit.registrymetadata.Metadata;
 import gov.nist.toolkit.registrysupport.logging.LoggerException;
 import gov.nist.toolkit.simulators.sim.reg.store.DocEntry;
@@ -17,6 +20,8 @@ import java.util.List;
 
 public class GetDocumentsSim extends GetDocuments {
 	RegIndex ri;
+	private AssertionLibrary ASSERTIONLIBRARY = AssertionLibrary.getInstance();
+
 
 	public void setRegIndex(RegIndex ri) {
 		this.ri = ri;
@@ -28,17 +33,19 @@ public class GetDocumentsSim extends GetDocuments {
 	}
 
 	protected Metadata runImplementation() throws MetadataException,
-	XdsException, LoggerException {
+			XdsException, LoggerException {
 
 		MetadataCollection mc = ri.getMetadataCollection();
 
 		Metadata m = new Metadata();
 		m.setVersion3();
-		
+
 		if (mc.vc.updateEnabled && !(metadataLevel == null || metadataLevel.equals("1") || metadataLevel.equals("2"))) {
-			sqs.er.err(Code.XDSRegistryError, "Do not understand $MetadataLevel = " + metadataLevel, this, "ITI TF-2b: 3.18.4.1.2.3.5.1");
+			Assertion assertion = ASSERTIONLIBRARY.getAssertion("TA121");
+			String detail = "MetadataLevel found: '" + metadataLevel + "'";
+			sqs.er.err(XdsErrorCode.Code.XDSRegistryError, assertion, this, "", detail);
 			return new Metadata();
-		} 
+		}
 
 		if (uuids != null) {
 			if (sqs.returnType == QueryReturnType.LEAFCLASS || sqs.returnType == QueryReturnType.LEAFCLASSWITHDOCUMENT) {
@@ -51,7 +58,7 @@ public class GetDocumentsSim extends GetDocuments {
 			for (String uid : uids) {
 				des.addAll(mc.docEntryCollection.getByUid(uid));
 			}
-			
+
 			List<String> uuidList = new ArrayList<String>();
 			for (DocEntry de : des) {
 				uuidList.add(de.getId());
@@ -63,14 +70,16 @@ public class GetDocumentsSim extends GetDocuments {
 			}
 		} else if (lids != null) {
 			if (!mc.vc.updateEnabled) {
-				sqs.er.err(Code.XDSRegistryError, "Do not understand parameter $XDSDocumentEntryLogicalID", this, "ITI TF-2b: 3.18.4.1.2.3.7.5");
+				Assertion assertion = ASSERTIONLIBRARY.getAssertion("TA122");
+				sqs.er.err(XdsErrorCode.Code.XDSRegistryError, assertion, this, "", "");
 				return new Metadata();
 			}
 			if (metadataLevel == null || metadataLevel.equals("1")) {
-				sqs.er.err(Code.XDSRegistryError, "$XDSDocumentEntryLogicalID cannot be specified with $MetadataLevel = 1", this, "ITI TF-2b: 3.18.4.1.2.3.7.5");
+				Assertion assertion = ASSERTIONLIBRARY.getAssertion("TA123");
+				sqs.er.err(XdsErrorCode.Code.XDSRegistryError, assertion, this, "", "");
 				return new Metadata();
 			}
-			
+
 			List<DocEntry> des = new ArrayList<DocEntry> ();
 			for (String lid : lids) {
 				des.addAll(mc.docEntryCollection.getByLid(lid));
@@ -84,7 +93,7 @@ public class GetDocumentsSim extends GetDocuments {
 			} else {
 				m.mkObjectRefs(uuidList);
 			}
-			
+
 		}
 
 		return m;
