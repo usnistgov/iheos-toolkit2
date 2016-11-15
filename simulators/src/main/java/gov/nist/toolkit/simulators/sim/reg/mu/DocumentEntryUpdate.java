@@ -31,16 +31,16 @@ public class DocumentEntryUpdate  {
 		String prefix = "Update (trigger=" + muSim.UUIDToSymbolic.get(id) +") - ";
 
 		muSim.getCommon().vc.addMetadataPattern(MetadataPattern.UpdateDocumentEntry);
-		
+
 		DocEntry latest = muSim.delta.docEntryCollection.getLatestVersion(lid);
-		
+
 		if (latest == null) {
 			Assertion assertion = ASSERTIONLIBRARY.getAssertion("TA103");
 			String detail = "DocumentEntry found: '" + prefix + "'";
 			er.err(XdsErrorCode.Code.XDSMetadataUpdateError, assertion, this, "", detail);
 			return;
 		}
-		
+
 		if (latest.getAvailabilityStatus() != StatusValue.APPROVED) {
 			Assertion assertion = ASSERTIONLIBRARY.getAssertion("TA104");
 			String detail = "DocumentEntry found: '" + prefix + "'; availabilityStatus found (should be \'Approved\'): '" + latest.getAvailabilityStatus() + "'";
@@ -50,53 +50,51 @@ public class DocumentEntryUpdate  {
 		try {
 			submittedUid = m.getUniqueIdValue(docEle);
 		} catch (MetadataException e) {
-			er.err(Code.XDSMetadataUpdateError, 
-					prefix + "cannot extract uniqueId from submitted metadata", 
-					this, "ITI TF-2b:3.57.4.1.3.3.1.3");
+			Assertion assertion = ASSERTIONLIBRARY.getAssertion("TA105");
+			String detail = "DocumentEntry found: '" + prefix + "'";
+			er.err(XdsErrorCode.Code.XDSMetadataUpdateError, assertion, this, "", detail);
 		}
-		
-		if (!latest.getUid().equals(submittedUid)) 
-			er.err(Code.XDSMetadataUpdateError, 
-					prefix + "previous version does not have same value for uniqueId: " + 
-					" previous version has " + latest.getUid() + 
-					" update has " + submittedUid, 
-					this, "ITI TF-2b:3.57.4.1.3.3.1.3");
-		
+		if (!latest.getUid().equals(submittedUid)) {
+			Assertion assertion = ASSERTIONLIBRARY.getAssertion("TA106");
+			String detail = "DocumentEntry found: '" + prefix + "'; the previous version of the DocumentEntry has a uniqueID value of: '" +
+					latest.getUid() + "'; the update has: '" + submittedUid + "'";
+			er.err(XdsErrorCode.Code.XDSMetadataUpdateError, assertion, this, "", detail);
+		}
 		String objectType = "";
 		try {
 			objectType = m.getObjectTypeById(id);
 		} catch (MetadataException e) {
-			er.err(Code.XDSMetadataUpdateError, 
-					prefix + "cannot extract objectType from submitted metadata", 
+			er.err(Code.XDSMetadataUpdateError,
+					prefix + "cannot extract objectType from submitted metadata",
 					this, "ITI TF-2b:3.57.4.1.3.3.1.3");
 		}
-		
+
 		if (!latest.objecttype.equals(objectType))
-			er.err(Code.XDSMetadataUpdateError, 
-					prefix + "previous version does not have same value for objectType: " + 
-					" previous version has " + latest.objecttype + 
-					" update has " + objectType, 
+			er.err(Code.XDSMetadataUpdateError,
+					prefix + "previous version does not have same value for objectType: " +
+							" previous version has " + latest.objecttype +
+							" update has " + objectType,
 					this, "ITI TF-2b:3.57.4.1.3.3.1.3");
-		
+
 		String latestVerStr = String.valueOf(latest.version);
 		if (!latestVerStr.equals(prevVer))
-			er.err(Code.XDSMetadataVersionError, 
-					prefix + "PreviousVersion from submission and latest Registry version do not match - " + 
-					" PreviousVersion is " + prevVer + 
-					" and latest version in Registry is " + latestVerStr, 
+			er.err(Code.XDSMetadataVersionError,
+					prefix + "PreviousVersion from submission and latest Registry version do not match - " +
+							" PreviousVersion is " + prevVer +
+							" and latest version in Registry is " + latestVerStr,
 					this, "ITI TF-2b:3.57.4.1.3.3.1.3");
-		
+
 		m.setVersion(docEle, String.valueOf(latest.version + 1));
-		
+
 		// install default version in Association, Classification, ExternalIdentifier
 		try {
 			m.setDefaultVersionOfUnversionedElements();
 		} catch (MetadataException e) {
 			er.err(XdsErrorCode.Code.XDSRegistryMetadataError, e);
 		}
-		
+
 		Metadata operation = new Metadata();
-		
+
 		operation.addExtrinsicObject(docEle);
 		operation.add_association(ssAssoc);
 
@@ -114,6 +112,6 @@ public class DocumentEntryUpdate  {
 		}
 
 	}
-	
-	
+
+
 }
