@@ -64,17 +64,17 @@ public class DocumentEntryUpdate  {
 		try {
 			objectType = m.getObjectTypeById(id);
 		} catch (MetadataException e) {
-			er.err(Code.XDSMetadataUpdateError,
-					prefix + "cannot extract objectType from submitted metadata",
-					this, "ITI TF-2b:3.57.4.1.3.3.1.3");
+			Assertion assertion = ASSERTIONLIBRARY.getAssertion("TA107");
+			String detail = "DocumentEntry found: '" + prefix + "'";
+			er.err(XdsErrorCode.Code.XDSMetadataUpdateError, assertion, this, "", detail);
 		}
 
-		if (!latest.objecttype.equals(objectType))
-			er.err(Code.XDSMetadataUpdateError,
-					prefix + "previous version does not have same value for objectType: " +
-							" previous version has " + latest.objecttype +
-							" update has " + objectType,
-					this, "ITI TF-2b:3.57.4.1.3.3.1.3");
+		if (!latest.objecttype.equals(objectType)) {
+			Assertion assertion = ASSERTIONLIBRARY.getAssertion("TA108");
+			String detail = "DocumentEntry found: '" + prefix + "'; the previous version of the DocumentEntry has an objectType value of: '" +
+					latest.objecttype + "'; the update has: '" + objectType + "'";
+			er.err(XdsErrorCode.Code.XDSMetadataUpdateError, assertion, this, "", detail);
+		}
 
 		String latestVerStr = String.valueOf(latest.version);
 		if (!latestVerStr.equals(prevVer))
@@ -82,7 +82,7 @@ public class DocumentEntryUpdate  {
 					prefix + "PreviousVersion from submission and latest Registry version do not match - " +
 							" PreviousVersion is " + prevVer +
 							" and latest version in Registry is " + latestVerStr,
-					this, "ITI TF-2b:3.57.4.1.3.3.1.3");
+					this, "");
 
 		m.setVersion(docEle, String.valueOf(latest.version + 1));
 
