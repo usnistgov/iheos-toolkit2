@@ -4,6 +4,8 @@ import gov.nist.toolkit.actorfactory.client.SimulatorConfig;
 import gov.nist.toolkit.errorrecording.ErrorRecorder;
 import gov.nist.toolkit.errorrecording.client.XdsErrorCode;
 import gov.nist.toolkit.errorrecording.client.XdsErrorCode.Code;
+import gov.nist.toolkit.errorrecording.client.assertions.Assertion;
+import gov.nist.toolkit.errorrecording.client.assertions.AssertionLibrary;
 import gov.nist.toolkit.registrymetadata.Metadata;
 import gov.nist.toolkit.simulators.sim.reg.RegRSim;
 import gov.nist.toolkit.simulators.sim.reg.store.ProcessMetadataForRegister;
@@ -23,6 +25,8 @@ import org.apache.log4j.Logger;
 public class MuSim extends RegRSim {
 	static Logger log = Logger.getLogger(MuSim.class);
 	String ssId;
+	private AssertionLibrary ASSERTIONLIBRARY = AssertionLibrary.getInstance();
+
 
 	public MuSim(SimCommon common, DsSimCommon dsSimCommon, SimulatorConfig asc) {
 		super(common, dsSimCommon, asc);
@@ -40,19 +44,15 @@ public class MuSim extends RegRSim {
 		// these two check should never fail, but just in case
 		OMElement ssEle = m.getSubmissionSet();
 		if (ssEle == null) {
-			er.err(Code.XDSMetadataUpdateError, 
-					"Update does not contain a SubmissionSet object", 
-					this, 
-			"ITI TF-2b:3.57.4.1.3.1");
+			Assertion assertion = ASSERTIONLIBRARY.getAssertion("TA110");
+			er.err(XdsErrorCode.Code.XDSMetadataUpdateError, assertion, this, "", "");
 			return;
 		}
 
 		ssId = m.getId(ssEle);
 		if (ssId == null || ssId.equals("")) {
-			er.err(Code.XDSMetadataUpdateError, 
-					"Update's SubmissionSet object has no id", 
-					this, 
-			"ITI TF-2b:3.57.4.1.3.1");
+			Assertion assertion = ASSERTIONLIBRARY.getAssertion("TA111");
+			er.err(XdsErrorCode.Code.XDSMetadataUpdateError, assertion, this, "", "");
 			return;
 		}
 
@@ -80,11 +80,11 @@ public class MuSim extends RegRSim {
 
 		Metadata operation = new Metadata();
 		operation.addSubmissionSet(ssClone);
-		
+
 		allocateUUIDs(operation);
-		
+
 		ProcessMetadataInterface pmi = new ProcessMetadataForRegister(er, mc, delta);
-		
+
 		pmi.checkUidUniqueness(operation);
 
 		// set logicalId to id 
@@ -114,9 +114,9 @@ public class MuSim extends RegRSim {
 
 	void docEntryUpdateStatusTrigger(Metadata m) {
 		List<OMElement> updateDocStatusAssocs = new ArrayList<OMElement>();
-		
+
 		List<OMElement> assocs = m.getAssociations();
-		
+
 		// find all updateDocStatus Associations
 		for (OMElement assoc : assocs) {
 
@@ -125,9 +125,9 @@ public class MuSim extends RegRSim {
 					continue;
 			}
 			catch (MetadataException e) {
-				er.err(Code.XDSMetadataUpdateError, 
-						"Error processing Association(" + UUIDToSymbolic.get(m.getId(assoc)) + "): " + e.getMessage(), 
-						this, 
+				er.err(Code.XDSMetadataUpdateError,
+						"Error processing Association(" + UUIDToSymbolic.get(m.getId(assoc)) + "): " + e.getMessage(),
+						this,
 						null);
 				assocs.remove(assoc);  // already recorded error - don't process again
 				continue;
@@ -140,13 +140,13 @@ public class MuSim extends RegRSim {
 				// not a DocEntry
 				continue;
 			}
-			
+
 			updateDocStatusAssocs.add(assoc);
 		}
-		
+
 		// remove updateDocStatus Associations from main metadata
 		assocs.removeAll(updateDocStatusAssocs);
-		
+
 		// process updateDocStatus associations
 		for (OMElement assoc : updateDocStatusAssocs) {
 			String sourceId = m.getAssocSource(assoc);
@@ -156,34 +156,34 @@ public class MuSim extends RegRSim {
 			String prefix = "Update (trigger=Assoc(" + UUIDToSymbolic.get(id) +")) - cannot process - ";
 			String updateDocEntryAvailStatusRef = "ITI TF-2b:3.57.4.1.3.3.2.2";
 
-			
+
 			// Association sourceObject must be the SubmissionSet
 			if (!ssId.equals(sourceId)) {
-				er.err(Code.XDSMetadataUpdateError, 
-						prefix + "Association("  + getIdSubmittedValue(id) + "): sourceId does not reference the SubmissionSet", 
-						this, 
+				er.err(Code.XDSMetadataUpdateError,
+						prefix + "Association("  + getIdSubmittedValue(id) + "): sourceId does not reference the SubmissionSet",
+						this,
 						updateDocEntryAvailStatusRef);
 			}
 
 			// Association contains OriginalStatus Slot
-			
+
 			String originalStatus = verifySlotSingleValue(m, assoc,  "OriginalStatus",  prefix,  updateDocEntryAvailStatusRef);
 
 			// Association contains NewStatus Slot
 			String newStatus = verifySlotSingleValue(m, assoc,  "NewStatus",  prefix,  updateDocEntryAvailStatusRef);
-			
+
 			// newStatus is legal for DocumentEntry
 			if (!RegIndex.docEntryLegalStatusValues.contains(RegIndex.getStatusValue(newStatus))) {
-				er.err(Code.XDSMetadataUpdateError, 
-						prefix + "New availabilityStatus for DocumentEntry, " + newStatus + " is not a legal status for a DocumentEntry: Association("  + getIdSubmittedValue(id) + ")", 
-						this, 
+				er.err(Code.XDSMetadataUpdateError,
+						prefix + "New availabilityStatus for DocumentEntry, " + newStatus + " is not a legal status for a DocumentEntry: Association("  + getIdSubmittedValue(id) + ")",
+						this,
 						updateDocEntryAvailStatusRef);
 			}
-			
+
 			Metadata operation = new Metadata();
 			operation.add_association(assoc);
-			
-			
+
+
 			new DocumentEntryStatusUpdate(common, dsSimCommon, er, simulatorConfig).run(this, operation, assoc, delta.docEntryCollection.getById(targetId), originalStatus, newStatus);
 
 		}
@@ -235,7 +235,7 @@ public class MuSim extends RegRSim {
 			}
 
 
-			if (process) 
+			if (process)
 				new DocumentEntryUpdate(common, er).run(this, m, docEle, ssAssoc, prevVer);
 
 			// so we don't process these again
@@ -249,20 +249,20 @@ public class MuSim extends RegRSim {
 	String verifySlotSingleValue(Metadata m, OMElement ele, String slotName, String prefix, String docRef) {
 		OMElement slotEle = m.getSlot(ele, slotName);
 		if (slotEle == null) {
-			er.err(Code.XDSMetadataUpdateError, 
-					prefix + "Association("  + getIdSubmittedValue(m.getId(ele)) + "): " + slotName + " Slot not present", 
-					this, 
+			er.err(Code.XDSMetadataUpdateError,
+					prefix + "Association("  + getIdSubmittedValue(m.getId(ele)) + "): " + slotName + " Slot not present",
+					this,
 					docRef);
 			return null;
-		} 
+		}
 		// must contain single value
 		List<String> values = m.getSlotValues(ele, slotName);
 		if (values.size() != 1) {
-			er.err(Code.XDSMetadataUpdateError, 
-					prefix + "Association("  + getIdSubmittedValue(m.getId(ele)) + "): " + slotName + " Slot must have one value", 
-					this, 
+			er.err(Code.XDSMetadataUpdateError,
+					prefix + "Association("  + getIdSubmittedValue(m.getId(ele)) + "): " + slotName + " Slot must have one value",
+					this,
 					docRef);
-		} 
+		}
 		if (values.size() > 0)
 			return values.get(0);
 		return null;
