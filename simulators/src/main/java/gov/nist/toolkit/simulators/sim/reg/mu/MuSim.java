@@ -223,12 +223,16 @@ public class MuSim extends RegRSim {
 			}
 
 			if (id.equals(lid)) {
-				er.err(Code.XDSMetadataUpdateError, prefix + "logicalId is same as id, this cannot be an update (id=" + id + " lid=" + lid + ")", this, updateDocEntryRef);
+				Assertion assertion = ASSERTIONLIBRARY.getAssertion("TA116");
+				String detail = "SubmissionSet ID found: '" + prefix + "'; id='" + id + "'; lid='" + lid + "'";
+				er.err(XdsErrorCode.Code.XDSMetadataUpdateError, assertion, this, "", detail);
 				process = false;
 			}
 
 			if (lid != null && !m.isUuid(lid)) {
-				er.err(Code.XDSMetadataUpdateError, prefix + "logicalId is symbolic (not a UUID)  (id=" + id + " lid=" + lid + ")", this, updateDocEntryRef);
+				Assertion assertion = ASSERTIONLIBRARY.getAssertion("TA117");
+				String detail = "SubmissionSet ID found: '" + prefix + "'; id='" + id + "'; lid='" + lid + "'";
+				er.err(XdsErrorCode.Code.XDSMetadataUpdateError, assertion, this, "", detail);
 				process = false;
 			}
 
