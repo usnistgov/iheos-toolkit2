@@ -77,13 +77,12 @@ public class DocumentEntryUpdate  {
 		}
 
 		String latestVerStr = String.valueOf(latest.version);
-		if (!latestVerStr.equals(prevVer))
-			er.err(Code.XDSMetadataVersionError,
-					prefix + "PreviousVersion from submission and latest Registry version do not match - " +
-							" PreviousVersion is " + prevVer +
-							" and latest version in Registry is " + latestVerStr,
-					this, "");
-
+		if (!latestVerStr.equals(prevVer)) {
+			Assertion assertion = ASSERTIONLIBRARY.getAssertion("TA109");
+			String detail = "DocumentEntry found: '" + prefix + "'; the previousVersion value for this DocumentEntry is: '" +
+					prevVer + "'; the latest version in the Registry is: '" + latestVerStr + "'";
+			er.err(XdsErrorCode.Code.XDSMetadataVersionError, assertion, this, "", detail);
+		}
 		m.setVersion(docEle, String.valueOf(latest.version + 1));
 
 		// install default version in Association, Classification, ExternalIdentifier
