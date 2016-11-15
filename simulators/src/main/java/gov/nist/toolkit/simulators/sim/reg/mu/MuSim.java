@@ -159,10 +159,9 @@ public class MuSim extends RegRSim {
 
 			// Association sourceObject must be the SubmissionSet
 			if (!ssId.equals(sourceId)) {
-				er.err(Code.XDSMetadataUpdateError,
-						prefix + "Association("  + getIdSubmittedValue(id) + "): sourceId does not reference the SubmissionSet",
-						this,
-						updateDocEntryAvailStatusRef);
+				Assertion assertion = ASSERTIONLIBRARY.getAssertion("TA112");
+				String detail = "SubmissionSet ID found: '" + prefix + "'; Association sourceId found: '" + getIdSubmittedValue(id) + "'";
+				er.err(XdsErrorCode.Code.XDSMetadataUpdateError, assertion, this, "", detail);
 			}
 
 			// Association contains OriginalStatus Slot
@@ -174,10 +173,10 @@ public class MuSim extends RegRSim {
 
 			// newStatus is legal for DocumentEntry
 			if (!RegIndex.docEntryLegalStatusValues.contains(RegIndex.getStatusValue(newStatus))) {
-				er.err(Code.XDSMetadataUpdateError,
-						prefix + "New availabilityStatus for DocumentEntry, " + newStatus + " is not a legal status for a DocumentEntry: Association("  + getIdSubmittedValue(id) + ")",
-						this,
-						updateDocEntryAvailStatusRef);
+				Assertion assertion = ASSERTIONLIBRARY.getAssertion("TA113");
+				String detail = "SubmissionSet ID found: '" + prefix + "'; Association ID found: '" + getIdSubmittedValue(id) +
+						"'; New availabilityStatus found: '" + newStatus + "'";
+				er.err(XdsErrorCode.Code.XDSMetadataUpdateError, assertion, this, "", detail);
 			}
 
 			Metadata operation = new Metadata();
