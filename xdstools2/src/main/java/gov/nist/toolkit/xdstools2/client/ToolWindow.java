@@ -45,7 +45,6 @@ public abstract class ToolWindow {
 
 	EnvironmentManager environmentManager = null;
 	protected TestSessionManager2 testSessionManager = ClientUtils.INSTANCE.getTestSessionManager();
-	private ToolkitServiceAsync toolkitService=getToolkitServices();
 	protected String tabName=new String();
 
 //	protected abstract Widget buildUI();
@@ -217,9 +216,4 @@ public abstract class ToolWindow {
 		return tabTopPanel;
 	}
 
-	public ToolkitServiceAsync getToolkitServices() {
-		if (toolkitService==null)
-			toolkitService=ClientUtils.INSTANCE.getToolkitServices();
-		return toolkitService;
-	}
 }

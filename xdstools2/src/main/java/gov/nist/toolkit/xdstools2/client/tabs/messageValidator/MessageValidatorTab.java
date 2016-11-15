@@ -18,6 +18,7 @@ import gov.nist.toolkit.xdstools2.client.ToolWindow;
 import gov.nist.toolkit.xdstools2.client.command.command.*;
 import gov.nist.toolkit.xdstools2.client.inspector.MetadataInspectorTab;
 import gov.nist.toolkit.xdstools2.client.tabs.TextViewerTab;
+import gov.nist.toolkit.xdstools2.client.util.ClientUtils;
 import gov.nist.toolkit.xdstools2.client.widgets.PopupMessage;
 import gov.nist.toolkit.xdstools2.client.widgets.RenameSimFileDialogBox;
 import gov.nist.toolkit.xdstools2.shared.command.request.DeleteSimFileRequest;
@@ -737,7 +738,7 @@ public class MessageValidatorTab extends ToolWindow {
     String clientIP = null;
     @SuppressWarnings("deprecation")
     void requestClientIP() {
-        getToolkitServices().getClientIPAddress(new AsyncCallback<String>() {
+        ClientUtils.INSTANCE.getToolkitServices().getClientIPAddress(new AsyncCallback<String>() {
 
             public void onFailure(Throwable caught) {
                 new PopupMessage(caught.getMessage());
