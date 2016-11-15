@@ -154,7 +154,6 @@ public class MuSim extends RegRSim {
 
 			String id = m.getId(assoc);
 			String prefix = "Update (trigger=Assoc(" + UUIDToSymbolic.get(id) +")) - cannot process - ";
-			String updateDocEntryAvailStatusRef = "ITI TF-2b:3.57.4.1.3.3.2.2";
 
 
 			// Association sourceObject must be the SubmissionSet
@@ -166,10 +165,10 @@ public class MuSim extends RegRSim {
 
 			// Association contains OriginalStatus Slot
 
-			String originalStatus = verifySlotSingleValue(m, assoc,  "OriginalStatus",  prefix,  updateDocEntryAvailStatusRef);
+			String originalStatus = verifySlotSingleValue(m, assoc,  "OriginalStatus",  prefix);
 
 			// Association contains NewStatus Slot
-			String newStatus = verifySlotSingleValue(m, assoc,  "NewStatus",  prefix,  updateDocEntryAvailStatusRef);
+			String newStatus = verifySlotSingleValue(m, assoc,  "NewStatus",  prefix);
 
 			// newStatus is legal for DocumentEntry
 			if (!RegIndex.docEntryLegalStatusValues.contains(RegIndex.getStatusValue(newStatus))) {
@@ -237,7 +236,9 @@ public class MuSim extends RegRSim {
 			}
 
 			if (prevVer == null) {
-				er.err(Code.XDSMetadataUpdateError, prefix + "PreviousVersion Slot not found on SubmissionSet to DocumentEntry HasMember Association", this, updateDocEntryRef);
+				Assertion assertion = ASSERTIONLIBRARY.getAssertion("TA118");
+				String detail = "SubmissionSet ID found: '" + prefix + "'";
+				er.err(XdsErrorCode.Code.XDSMetadataUpdateError, assertion, this, "", detail);
 				process = false;
 			}
 
@@ -253,22 +254,22 @@ public class MuSim extends RegRSim {
 		}
 	}
 
-	String verifySlotSingleValue(Metadata m, OMElement ele, String slotName, String prefix, String docRef) {
+	String verifySlotSingleValue(Metadata m, OMElement ele, String slotName, String prefix) {
 		OMElement slotEle = m.getSlot(ele, slotName);
 		if (slotEle == null) {
-			er.err(Code.XDSMetadataUpdateError,
-					prefix + "Association("  + getIdSubmittedValue(m.getId(ele)) + "): " + slotName + " Slot not present",
-					this,
-					docRef);
+			Assertion assertion = ASSERTIONLIBRARY.getAssertion("TA119");
+			String detail = "SubmissionSet ID found: '" + prefix + "'; " + "Association: '"  + getIdSubmittedValue(m.getId(ele)) +
+					"'; Missing slot: '" + slotName + "'";
+			er.err(XdsErrorCode.Code.XDSMetadataUpdateError, assertion, this, "", detail);
 			return null;
 		}
 		// must contain single value
 		List<String> values = m.getSlotValues(ele, slotName);
 		if (values.size() != 1) {
-			er.err(Code.XDSMetadataUpdateError,
-					prefix + "Association("  + getIdSubmittedValue(m.getId(ele)) + "): " + slotName + " Slot must have one value",
-					this,
-					docRef);
+			Assertion assertion = ASSERTIONLIBRARY.getAssertion("TA120");
+			String detail = "SubmissionSet ID found: '" + prefix + "'; " + "Association: '"  + getIdSubmittedValue(m.getId(ele)) +
+					"'; Slot: '" + slotName + "'";
+			er.err(XdsErrorCode.Code.XDSMetadataUpdateError, assertion, this, "", detail);
 		}
 		if (values.size() > 0)
 			return values.get(0);
