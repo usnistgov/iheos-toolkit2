@@ -68,11 +68,16 @@ public class AssertionLibrary extends ArrayList<Assertion> {
             Assertion temp;
             while ((line = br.readLine()) != null) {
 
-                // Split with a limit of 5 cells, which allows to keep trailing empty cells
-                String[] ta = line.split(cvsSplitBy, 5);
+                // Remove leading and trailing whitespaces, then skip blank lines
+                line = line.trim();
+                if (!line.equals("")) {
 
-                temp = new Assertion(ta[0], ta[1], ta[2], ta[3], ta[4]);
-                this.add(temp);
+                    // Split with a limit of 5 cells, which allows to keep trailing empty cells
+                    String[] ta = line.split(cvsSplitBy, 5);
+
+                    temp = new Assertion(ta[0], ta[1], ta[2], ta[3], ta[4]);
+                    this.add(temp);
+                }
             }
         } catch (IOException e) {
             e.printStackTrace();
