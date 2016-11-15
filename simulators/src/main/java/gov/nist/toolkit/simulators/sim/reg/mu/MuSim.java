@@ -208,13 +208,17 @@ public class MuSim extends RegRSim {
 			boolean process = true;
 
 			if (ssAssoc == null) {
-				er.err(Code.XDSMetadataUpdateError, prefix + "no SubmissionSet HasMember Association found", this, updateDocEntryRef);
+				Assertion assertion = ASSERTIONLIBRARY.getAssertion("TA114");
+				String detail = "SubmissionSet ID found: '" + prefix + "'";
+				er.err(XdsErrorCode.Code.XDSMetadataUpdateError, assertion, this, "", detail);
 				process = false;
 			}
 
 
 			if (lid == null) {
-				er.err(Code.XDSMetadataUpdateError, prefix + "logicalId not found, this cannot be an update (id=" + id + " lid=" + lid + ")", this, updateDocEntryRef);
+				Assertion assertion = ASSERTIONLIBRARY.getAssertion("TA115");
+				String detail = "SubmissionSet ID found: '" + prefix + "'; id='" + id + "'; lid='" + lid + "'";
+				er.err(XdsErrorCode.Code.XDSMetadataUpdateError, assertion, this, "", detail);
 				process = false;
 			}
 
