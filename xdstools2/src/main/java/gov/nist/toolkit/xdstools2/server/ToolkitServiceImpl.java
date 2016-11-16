@@ -294,7 +294,9 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements
     @Override
     public List<TestInstance> getTestlogListing(String sessionName) throws Exception { return session().xdsTestServiceManager().getTestlogListing(sessionName); }
     @Override
-    public Map<String, Result> getTestResults(List<TestInstance> testIds, String testSession)  throws NoServletSessionException { return session().xdsTestServiceManager().getTestResults(testIds, testSession); }
+    public Map<String, Result> getTestResults(List<TestInstance> testIds, String testSession)  throws NoServletSessionException {
+        return session().xdsTestServiceManager().getTestResults(testIds, getCurrentEnvironment(), testSession);
+    }
     @Override
     public String setMesaTestSession(String sessionName)  throws NoServletSessionException { session().xdsTestServiceManager().setMesaTestSession(sessionName); return sessionName;}
     @Override
@@ -308,7 +310,9 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements
     public boolean delMesaTestSession(String name) throws Exception { return session().xdsTestServiceManager().delMesaTestSession(name); }
     @Override
     public String getNewPatientId(String assigningAuthority)  throws NoServletSessionException { return session().xdsTestServiceManager().getNewPatientId(assigningAuthority); }
-    public String delTestResults(List<TestInstance> testInstances, String testSession )  throws NoServletSessionException { session().xdsTestServiceManager().delTestResults(testInstances, testSession); return ""; }
+    public String delTestResults(List<TestInstance> testInstances, String testSession )  throws NoServletSessionException {
+        session().xdsTestServiceManager().delTestResults(testInstances, getCurrentEnvironment(), testSession); return "";
+    }
     @Override
     public List<Test> deleteAllTestResults(Site site) throws NoServletSessionException { return session().xdsTestServiceManager().deleteAllTestResults(getSession().getMesaSessionName(), site); }
     @Override

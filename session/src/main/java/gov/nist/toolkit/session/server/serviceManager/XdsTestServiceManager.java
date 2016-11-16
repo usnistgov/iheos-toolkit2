@@ -241,7 +241,7 @@ public class XdsTestServiceManager extends CommonService {
 	 * @param testSession
 	 * @return
 	 */
-	public Map<String, Result> getTestResults(List<TestInstance> testInstances, String testSession) {
+	public Map<String, Result> getTestResults(List<TestInstance> testInstances, String environmentName, String testSession) {
 		if (session != null)
 			logger.debug(session.id() + ": " + "getTestResults() ids=" + testInstances + " testSession=" + testSession);
 
@@ -249,9 +249,13 @@ public class XdsTestServiceManager extends CommonService {
 
 		ResultPersistence rp = new ResultPersistence();
 
+		TestKitSearchPath testKitSearchPath = new TestKitSearchPath(environmentName, testSession);
 		for (TestInstance testInstance : testInstances) {
 			try {
-				Result result = rp.read(testInstance, testSession);
+				TestDefinition testDefinition = testKitSearchPath.getTestDefinition(testInstance.getId());
+				List<String> sectionNames = testDefinition.getSectionIndex();
+
+				Result result = rp.read(testInstance, sectionNames, testSession);
 				map.put(testInstance.getId(), result);
 			}
 			catch (Exception e) {}
@@ -259,13 +263,16 @@ public class XdsTestServiceManager extends CommonService {
 		return map;
 	}
 
-	public void delTestResults(List<TestInstance> testInstances, String testSession) {
+	public void delTestResults(List<TestInstance> testInstances, String environmentName, String testSession) {
 		if (session != null)
 			logger.debug(session.id() + ": " + "delTestResults() ids=" + testInstances + " testSession=" + testSession);
+		TestKitSearchPath testKitSearchPath = new TestKitSearchPath(environmentName, testSession);
 		ResultPersistence rp = new ResultPersistence();
 		for (TestInstance testInstance : testInstances) {
 			try {
-				rp.delete(testInstance, testSession);
+				TestDefinition testDefinition = testKitSearchPath.getTestDefinition(testInstance.getId());
+				List<String> sectionNames = testDefinition.getSectionIndex();
+				rp.delete(testInstance, testSession, sectionNames);
 			}
 			catch (Exception e) {}
 		}
