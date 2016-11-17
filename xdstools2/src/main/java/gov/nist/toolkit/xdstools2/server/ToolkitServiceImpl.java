@@ -1159,7 +1159,7 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements
                     String assertionResultId = "saml-assertion";
                     for (ReportDTO report : reportDTOs)  {
                         if (assertionResultId.equals(report.getName())) {
-                           return report.getValue();
+                           return report.getValue().replace("&","&amp;");
                         }
                     }
                     throw new ToolkitRuntimeException(assertionResultId + " result key not found.");
