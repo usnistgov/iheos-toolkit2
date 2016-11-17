@@ -2,7 +2,8 @@
 <TestPlan>
   <Test>12312_Xuaauthzconsent/correct</Test>
   <TestStep id="retrieve_small">
-    <ExpectedStatus>Fault</ExpectedStatus>
+    <ExpectedStatus>Failure</ExpectedStatus>
+<!-- SAML is not yet propagated through multiple hosts such as PnR and so on -->
     <XCRTransaction>
     <UseReport test="12318" section="init" step="init" reportName="Document01_uid" useAs="$docuid$"/>
     <UseReport test="12318" section="init" step="init" reportName="$testdata_home$" useAs="$home$"/>
@@ -27,7 +28,7 @@
     </XCRTransaction>
   </TestStep>
   <TestStep id="retrieve_big">
-    <ExpectedStatus>Fault</ExpectedStatus>
+    <ExpectedStatus>Failure</ExpectedStatus>
     <XCRTransaction>
     <UseReport test="12318" section="init" step="init" reportName="Document02_uid" useAs="$docuid$"/>
     <UseReport test="12318" section="init" step="init" reportName="$testdata_home$" useAs="$home$"/>

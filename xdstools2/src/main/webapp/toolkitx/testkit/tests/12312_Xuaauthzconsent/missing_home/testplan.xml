@@ -1,8 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?><TestPlan>
   <Test>12312_Xuaauthzconsent/missing_home</Test>
   <TestStep id="retrieve">
-    <ExpectedStatus>Fault</ExpectedStatus>
-    <ExpectedErrorCode>XDSMissingHomeCommunityId</ExpectedErrorCode>
+    <ExpectedStatus>Failure</ExpectedStatus>
     <XCRTransaction>
       <UseReport test="12318" section="init" reportName="Document01_uid" step="init" useAs="$docuid$"/>
       <UseReport test="12318" section="query" step="query" reportName="repuid" useAs="$repositoryuid$"/>
