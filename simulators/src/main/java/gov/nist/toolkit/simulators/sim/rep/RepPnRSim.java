@@ -6,6 +6,8 @@ import gov.nist.toolkit.docref.Mtom;
 import gov.nist.toolkit.errorrecording.ErrorRecorder;
 import gov.nist.toolkit.errorrecording.client.XdsErrorCode;
 import gov.nist.toolkit.errorrecording.client.XdsErrorCode.Code;
+import gov.nist.toolkit.errorrecording.client.assertions.Assertion;
+import gov.nist.toolkit.errorrecording.client.assertions.AssertionLibrary;
 import gov.nist.toolkit.registrymetadata.Metadata;
 import gov.nist.toolkit.simcommon.client.config.SimulatorConfigElement;
 import gov.nist.toolkit.simulators.support.*;
@@ -30,13 +32,15 @@ import java.util.Set;
 public class RepPnRSim extends TransactionSimulator implements MetadataGeneratingSim {
 	DsSimCommon dsSimCommon;
 	Metadata m = null;
-//	SimulatorConfig simulatorConfig;
+	//	SimulatorConfig simulatorConfig;
 	static Logger logger = Logger.getLogger(RepPnRSim.class);
 	private boolean forward = true;
+	private AssertionLibrary ASSERTIONLIBRARY = AssertionLibrary.getInstance();
+
 
 	public RepPnRSim(SimCommon common, DsSimCommon dsSimCommon, SimulatorConfig simulatorConfig) {
 		super(common, simulatorConfig);
-        this.dsSimCommon = dsSimCommon;
+		this.dsSimCommon = dsSimCommon;
 	}
 
 	public Metadata getMetadata() {
@@ -72,11 +76,14 @@ public class RepPnRSim extends TransactionSimulator implements MetadataGeneratin
 						break;
 					}
 				}
-				if (!foundit) 
-					er.err(XdsErrorCode.Code.XDSMissingDocumentMetadata, "Document with id " + id + " not represented by DocumentEntry in metadata",null, Mtom.XOP_example2);
+				if (!foundit) {
+					Assertion assertion = ASSERTIONLIBRARY.getAssertion("TA124");
+					String detail = "Document ID found: '" + id + "'";
+					er.err(XdsErrorCode.Code.XDSMissingDocumentMetadata, assertion, this, "", "");
+				}
 			}
-			
-			
+
+
 			for (OMElement eo : m.getExtrinsicObjects()) {
 				String eoId = m.getId(eo);
 				String uid = m.getUniqueIdValue(eo);
@@ -126,7 +133,7 @@ public class RepPnRSim extends TransactionSimulator implements MetadataGeneratin
 				String existingSize = m.getSlotValue(eo, "size", 0);
 				boolean hasSize = existingSize != null && !existingSize.equals("");
 				String existingHash = m.getSlotValue(eo, "hash", 0);
-				boolean hasHash = existingHash != null && !existingHash.equals(""); 
+				boolean hasHash = existingHash != null && !existingHash.equals("");
 
 				if (hasSize && !existingSize.equals(sizeStr)) {
 					er.err(XdsErrorCode.Code.XDSRepositoryMetadataError, "DocumentEntry(" + m.getId(eo) + ") has size slot with value " + existingSize + " which disagrees with computed value of " + sizeStr, this, "");
@@ -142,7 +149,7 @@ public class RepPnRSim extends TransactionSimulator implements MetadataGeneratin
 				storedDocument.setMimetype(mimeType);
 
 				// add size and hash to metadata, overwrite if necessary
-				if (hasSize) 
+				if (hasSize)
 					m.setSlotValue(eo, "size", 0, sizeStr);
 				else {
 					OMElement slot = m.mkSlot("size", sizeStr);
