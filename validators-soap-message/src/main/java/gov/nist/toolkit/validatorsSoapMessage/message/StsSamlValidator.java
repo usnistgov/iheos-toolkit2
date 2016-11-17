@@ -71,7 +71,7 @@ public class StsSamlValidator extends AbstractMessageValidator {
                         samlAssertion = samlAssertion.replaceAll(">\\s*<", "><");
 
                         Map<String, String> params = new HashMap<>();
-                        params.put("$saml-assertion$", samlAssertion);
+                        params.put("$saml-assertion$", samlAssertion.replace("&amp;","&")); // Params replacement will take care of this by restoring it to proper format
 
                         String query = "samlassertion-validate";
 
