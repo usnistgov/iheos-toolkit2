@@ -5,7 +5,7 @@
   <parent>
     <groupId>gov.nist.toolkit</groupId>
     <artifactId>toolkit2</artifactId>
-    <version>4.0.0</version>
+    <version>4.1.0-SNAPSHOT</version>
   </parent>
   <groupId>gov.nist.toolkit.simple</groupId>
   <artifactId>simple-service</artifactId>
@@ -53,12 +53,12 @@
       <dependency>
           <groupId>gov.nist.toolkit</groupId>
           <artifactId>toolkit-services-test</artifactId>
-          <version>4.0.0</version>
+        <version>4.1.0-SNAPSHOT</version>
       </dependency>
       <dependency>
           <groupId>gov.nist.toolkit</groupId>
           <artifactId>toolkit-api</artifactId>
-          <version>4.0.0</version>
+        <version>4.1.0-SNAPSHOT</version>
       </dependency>
       <dependency>
           <groupId>org.glassfish.jersey.containers</groupId>

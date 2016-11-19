@@ -17,7 +17,7 @@
     <parent>
         <groupId>gov.nist.toolkit</groupId>
         <artifactId>tk-deps</artifactId>
-        <version>4.0.0</version>
+        <version>4.1.0-SNAPSHOT</version>
         <relativePath>/tk-deps/pom.xml</relativePath>
     </parent>
 
@@ -147,11 +147,11 @@
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-release-plugin</artifactId>
                 <version>${maven-release-plugin.version}</version>
-                <configuration>
-                    <tagBase>https://svn.mycompany.com/repos/myapplication/releases</tagBase>
-                    <tagNameFormat>v@{project.version}</tagNameFormat>
-                    <releaseProfiles>releases</releaseProfiles>
-                </configuration>
+                <!--<configuration>-->
+                    <!--<tagBase>https://svn.mycompany.com/repos/myapplication/releases</tagBase>-->
+                    <!--<tagNameFormat>v@{project.version}</tagNameFormat>-->
+                    <!--<releaseProfiles>releases</releaseProfiles>-->
+                <!--</configuration>-->
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -248,7 +248,6 @@
 
 
     <scm>
-        <developerConnection>scm:hg:https://bitbucket.org/iheos/toolkit/branch/release/ihe</developerConnection>
-        <tag>v3.0.2a</tag>
+        <developerConnection>scm:git:git://github.com/usnistgov/iheos-toolkit2</developerConnection>
     </scm>
 </project>
