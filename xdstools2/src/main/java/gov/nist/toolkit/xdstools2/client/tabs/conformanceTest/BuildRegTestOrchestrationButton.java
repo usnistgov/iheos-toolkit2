@@ -54,7 +54,7 @@ public class BuildRegTestOrchestrationButton extends AbstractOrchestrationButton
         //
         // Disable selections that are not yet supported
         //
-        noFeed.setEnabled(false);
+//        noFeed.setEnabled(false);
 
         setParentPanel(initializationPanel);
 
