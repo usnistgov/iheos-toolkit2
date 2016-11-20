@@ -519,7 +519,26 @@
 				<groupId>org.codehaus.mojo</groupId>
 				<artifactId>gwt-maven-plugin</artifactId>
 				<version>${gwtVersion}</version>
+				<dependencies>
+					<dependency>
+						<groupId>com.google.gwt</groupId>
+						<artifactId>gwt-user</artifactId>
+						<version>${gwtVersion}</version>
+					</dependency>
+					<dependency>
+						<groupId>com.google.gwt</groupId>
+						<artifactId>gwt-dev</artifactId>
+						<version>${gwtVersion}</version>
+					</dependency>
+				</dependencies>
 				<executions>
+					<execution>
+						<phase>prepare-package</phase>
+						<goals>
+							<goal>compile</goal>
+							<goal>resources</goal>
+						</goals>
+					</execution>
 					<execution>
 						<id>compilation_profile</id>
 						<goals>
@@ -530,7 +549,6 @@
 							<optimizationLevel>0</optimizationLevel>
 						</configuration>
 					</execution>
-
 				</executions>
 				<configuration>
 					<compileSourcesArtifacts>
@@ -560,47 +578,47 @@
 					</modules>
 				</configuration>
 			</plugin>
-			<plugin>
-				<groupId>org.codehaus.mojo</groupId>
-				<artifactId>gwt-maven-plugin</artifactId>
-				<version>${gwtVersion}</version>
-				<dependencies>
-					<dependency>
-						<groupId>com.google.gwt</groupId>
-						<artifactId>gwt-user</artifactId>
-						<version>${gwtVersion}</version>
-					</dependency>
-					<dependency>
-						<groupId>com.google.gwt</groupId>
-						<artifactId>gwt-dev</artifactId>
-						<version>${gwtVersion}</version>
-					</dependency>
-				</dependencies>
-				<!-- JS is only needed in the package phase, this speeds up testing -->
-				<executions>
-					<execution>
-						<phase>prepare-package</phase>
-						<goals>
-							<goal>compile</goal>
-							<goal>resources</goal>
-						</goals>
-					</execution>
-				</executions>
+			<!--<plugin>-->
+				<!--<groupId>org.codehaus.mojo</groupId>-->
+				<!--<artifactId>gwt-maven-plugin</artifactId>-->
+				<!--<version>${gwtVersion}</version>-->
+				<!--<dependencies>-->
+					<!--<dependency>-->
+						<!--<groupId>com.google.gwt</groupId>-->
+						<!--<artifactId>gwt-user</artifactId>-->
+						<!--<version>${gwtVersion}</version>-->
+					<!--</dependency>-->
+					<!--<dependency>-->
+						<!--<groupId>com.google.gwt</groupId>-->
+						<!--<artifactId>gwt-dev</artifactId>-->
+						<!--<version>${gwtVersion}</version>-->
+					<!--</dependency>-->
+				<!--</dependencies>-->
+				<!--&lt;!&ndash; JS is only needed in the package phase, this speeds up testing &ndash;&gt;-->
+				<!--<executions>-->
+					<!--<execution>-->
+						<!--<phase>prepare-package</phase>-->
+						<!--<goals>-->
+							<!--<goal>compile</goal>-->
+							<!--<goal>resources</goal>-->
+						<!--</goals>-->
+					<!--</execution>-->
+				<!--</executions>-->
 
-				<!-- Plugin configuration. There are many available options, see gwt-maven-plugin 
-					documentation at codehaus.org -->
-				<configuration>
-					<!-- URL that should be automatically opened in the GWT shell (gwt:run). -->
-					<runTarget>Xdstools2.html</runTarget>
-					<!-- Ask GWT to create the Story of Your Compile (SOYC) (gwt:compile) -->
-					<compileReport>true</compileReport>
-					<module>gov.nist.toolkit.xdstools2.Xdstools2</module>
-					<!--<logLevel>INFO</logLevel> -->
-					<!--<style>${gwt.style}</style> -->
-					<copyWebapp>true</copyWebapp>
-					<!-- <genParam>true</genParam> -->
-				</configuration>
-			</plugin>
+				<!--&lt;!&ndash; Plugin configuration. There are many available options, see gwt-maven-plugin -->
+					<!--documentation at codehaus.org &ndash;&gt;-->
+				<!--<configuration>-->
+					<!--&lt;!&ndash; URL that should be automatically opened in the GWT shell (gwt:run). &ndash;&gt;-->
+					<!--<runTarget>Xdstools2.html</runTarget>-->
+					<!--&lt;!&ndash; Ask GWT to create the Story of Your Compile (SOYC) (gwt:compile) &ndash;&gt;-->
+					<!--<compileReport>true</compileReport>-->
+					<!--<module>gov.nist.toolkit.xdstools2.Xdstools2</module>-->
+					<!--&lt;!&ndash;<logLevel>INFO</logLevel> &ndash;&gt;-->
+					<!--&lt;!&ndash;<style>${gwt.style}</style> &ndash;&gt;-->
+					<!--<copyWebapp>true</copyWebapp>-->
+					<!--&lt;!&ndash; <genParam>true</genParam> &ndash;&gt;-->
+				<!--</configuration>-->
+			<!--</plugin>-->
 
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
