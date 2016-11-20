@@ -179,71 +179,71 @@
 
 
 
-        <pluginManagement>
-            <plugins>
-                <!--This plugin's configuration is used to store Eclipse m2e settings only. It has no influence on the Maven build itself.-->
-                <plugin>
-                    <groupId>org.eclipse.m2e</groupId>
-                    <artifactId>lifecycle-mapping</artifactId>
-                    <version>1.0.0</version>
-                    <configuration>
-                        <lifecycleMappingMetadata>
-                            <pluginExecutions>
-                                <pluginExecution>
-                                    <pluginExecutionFilter>
-                                        <groupId>
-                                            org.apache.maven.plugins
-                                        </groupId>
-                                        <artifactId>
-                                            maven-compiler-plugin
-                                        </artifactId>
-                                        <versionRange> [2.0,) </versionRange>
-                                        <goals>
-                                            <goal>testCompile</goal>
-                                            <goal>compile</goal>
-                                        </goals>
-                                    </pluginExecutionFilter>
-                                    <action>
-                                        <ignore/>
-                                    </action>
-                                </pluginExecution>
-                            </pluginExecutions>
-                        </lifecycleMappingMetadata>
-                    </configuration>
-                </plugin>
-            </plugins>
-        </pluginManagement>
+        <!--<pluginManagement>-->
+            <!--<plugins>-->
+                <!--&lt;!&ndash;This plugin's configuration is used to store Eclipse m2e settings only. It has no influence on the Maven build itself.&ndash;&gt;-->
+                <!--<plugin>-->
+                    <!--<groupId>org.eclipse.m2e</groupId>-->
+                    <!--<artifactId>lifecycle-mapping</artifactId>-->
+                    <!--<version>1.0.0</version>-->
+                    <!--<configuration>-->
+                        <!--<lifecycleMappingMetadata>-->
+                            <!--<pluginExecutions>-->
+                                <!--<pluginExecution>-->
+                                    <!--<pluginExecutionFilter>-->
+                                        <!--<groupId>-->
+                                            <!--org.apache.maven.plugins-->
+                                        <!--</groupId>-->
+                                        <!--<artifactId>-->
+                                            <!--maven-compiler-plugin-->
+                                        <!--</artifactId>-->
+                                        <!--<versionRange> [2.0,) </versionRange>-->
+                                        <!--<goals>-->
+                                            <!--<goal>testCompile</goal>-->
+                                            <!--<goal>compile</goal>-->
+                                        <!--</goals>-->
+                                    <!--</pluginExecutionFilter>-->
+                                    <!--<action>-->
+                                        <!--<ignore/>-->
+                                    <!--</action>-->
+                                <!--</pluginExecution>-->
+                            <!--</pluginExecutions>-->
+                        <!--</lifecycleMappingMetadata>-->
+                    <!--</configuration>-->
+                <!--</plugin>-->
+            <!--</plugins>-->
+        <!--</pluginManagement>-->
     </build>
 
 
-    <profiles>
-        <profile>
-            <id>releases</id>
-            <build>
-                <plugins>
-                    <plugin>
-                        <groupId>org.sonatype.plugins</groupId>
-                        <artifactId>nexus-staging-maven-plugin</artifactId>
-                        <version>${nexus-staging-maven-plugin.version}</version>
-                        <executions>
-                            <execution>
-                                <id>default-deploy</id>
-                                <phase>deploy</phase>
-                                <goals>
-                                    <goal>deploy</goal>
-                                </goals>
-                            </execution>
-                        </executions>
-                        <configuration>
-                            <serverId>internal-nist-repo-releases</serverId>
-                            <nexusUrl>http://vm-070.nist.gov:8081/nexus</nexusUrl>
-                            <skipStaging>true</skipStaging>
-                        </configuration>
-                    </plugin>
-                </plugins>
-            </build>
-        </profile>
-    </profiles>
+    <!--<profiles>-->
+        <!--<profile>-->
+            <!--<id>releases</id>-->
+            <!--<build>-->
+                <!--<plugins>-->
+                    <!--<plugin>-->
+                        <!--<groupId>org.sonatype.plugins</groupId>-->
+                        <!--<artifactId>nexus-staging-maven-plugin</artifactId>-->
+                        <!--<version>${nexus-staging-maven-plugin.version}</version>-->
+                        <!--<executions>-->
+                            <!--<execution>-->
+                                <!--<id>default-deploy</id>-->
+                                <!--<phase>deploy</phase>-->
+                                <!--<goals>-->
+                                    <!--<goal>deploy</goal>-->
+                                <!--</goals>-->
+                            <!--</execution>-->
+                        <!--</executions>-->
+                        <!--<configuration>-->
+                            <!--<serverId>internal-nist-repo-releases</serverId>-->
+                            <!--<nexusUrl>http://vm-070.nist.gov:8081/nexus</nexusUrl>-->
+                            <!--<skipStaging>true</skipStaging>-->
+                        <!--</configuration>-->
+                    <!--</plugin>-->
+                <!--</plugins>-->
+            <!--</build>-->
+        <!--</profile>-->
+    <!--</profiles>-->
 
 
 
