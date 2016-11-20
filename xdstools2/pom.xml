@@ -368,10 +368,6 @@
 		</dependency>
 		<dependency>
 			<groupId>gov.nist.toolkit</groupId>
-			<artifactId>xdstest2-logging</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>gov.nist.toolkit</groupId>
 			<artifactId>xds-exceptions</artifactId>
 		</dependency>
 		<dependency>
