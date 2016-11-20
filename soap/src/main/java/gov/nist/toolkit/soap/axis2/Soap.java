@@ -8,7 +8,6 @@ import gov.nist.toolkit.securityCommon.SecurityParamsImpl;
 import gov.nist.toolkit.utilities.xml.OMFormatter;
 import gov.nist.toolkit.utilities.xml.Util;
 import gov.nist.toolkit.utilities.xml.XmlUtil;
-import gov.nist.toolkit.wsseTool.api.config.SecurityContext;
 import gov.nist.toolkit.xdsexception.ExceptionUtil;
 import gov.nist.toolkit.xdsexception.LoadKeystoreException;
 import gov.nist.toolkit.xdsexception.XdsFormatException;
@@ -45,11 +44,7 @@ import java.io.File;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Hashtable;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.TimeUnit;
 
 
@@ -285,29 +280,29 @@ public class Soap implements SoapInterface {
 		return envelope;
 	}
 
-	private void parsePid(String pid, SecurityContext context) {
-
-			try {
-				if(pid == null || pid.equals("")){
-					throw new Exception("cannot retrieve params from the planContext in the soap layer");
-				}
-
-				String hid = pid.split("&")[1];
-
-				if(hid == null || pid.equals("")){
-					throw new Exception("cannot parse patient_id to retrieve home_community_id");
-				}
-
-				log.info("param patientId" + pid + " passed to the saml header generator");
-				log.info("homeCommunityId" + hid + " passed to the saml header generator");
-				context.getParams().put("patientId", pid);
-				context.getParams().put("homeCommunityId", "urn:oid:"+ hid);
-
-			} catch (Exception e) {
-				log.error(e.getMessage());
-			}
-
-	}
+//	private void parsePid(String pid, SecurityContext context) {
+//
+//			try {
+//				if(pid == null || pid.equals("")){
+//					throw new Exception("cannot retrieve params from the planContext in the soap layer");
+//				}
+//
+//				String hid = pid.split("&")[1];
+//
+//				if(hid == null || pid.equals("")){
+//					throw new Exception("cannot parse patient_id to retrieve home_community_id");
+//				}
+//
+//				log.info("param patientId" + pid + " passed to the saml header generator");
+//				log.info("homeCommunityId" + hid + " passed to the saml header generator");
+//				context.getParams().put("patientId", pid);
+//				context.getParams().put("homeCommunityId", "urn:oid:"+ hid);
+//
+//			} catch (Exception e) {
+//				log.error(e.getMessage());
+//			}
+//
+//	}
 
 	// if (additionalHeaders != null && additionalHeaders.size() > 0) {
 	// RampartMessageData rmd;
