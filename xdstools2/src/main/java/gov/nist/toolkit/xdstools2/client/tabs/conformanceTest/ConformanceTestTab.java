@@ -276,6 +276,7 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner, TestsH
 				currentActorOption.setOptionId(optionIds.get(i));
 			}
 			changeDisplayedActorAndOptionType(currentActorOption);
+            orchInit.setXuaOption(orchInit.XUA_OPTION.equals(currentActorOption.getOptionId()));
 		}
 	}
 
@@ -488,32 +489,55 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner, TestsH
 		  getSiteToIssueTestAgainst().setTls(orchInit.isTls());
 
 		  if (orchInit.isSaml()) {
-			  // Get STS SAML Assertion once for the entire test collection
-			  TestInstance testInstance = new TestInstance("GazelleSts");
-			  testInstance.setSection("samlassertion-issue");
-			  SiteSpec stsSpec =  new SiteSpec("GazelleSts");
-			  Map<String, String> params = new HashMap<>();
-			  String xuaUsername = "Xuagood";
-			  params.put("$saml-username$",xuaUsername);
-			  try {
-				  ClientUtils.INSTANCE.getToolkitServices().getStsSamlAssertion(xuaUsername, testInstance, stsSpec, params, new AsyncCallback<String>() {
-					  @Override
-					  public void onFailure(Throwable throwable) {
-						  new PopupMessage("runAll: getStsSamlAssertion call failed: " + throwable.toString());
-					  }
-					  @Override
-					  public void onSuccess(String s) {
-						  getSiteToIssueTestAgainst().setSaml(true);
-						  getSiteToIssueTestAgainst().setStsAssertion(s);
+			  if (orchInit.isXuaOption()) {
+				  getSiteToIssueTestAgainst().setSaml(true);
 
-						  for (TestInstance testInstance : testsPerActorOption.get(actorOption))
-							  tests.add(testInstance);
-						  onDone(null);
-					  }
-				  });
-			  } catch (Exception ex) {
-				  new PopupMessage("runAll: Client call failed: getStsSamlAssertion: " + ex.toString());
+				  try {
+					  ClientUtils.INSTANCE.getToolkitServices().getStsSamlAssertionsMap(orchInit.getStsTestInstance(), orchInit.getStsSpec() , orchInit.getSamlParams(), new AsyncCallback<Map<String,String>>() {
+						  @Override
+						  public void onFailure(Throwable throwable) {}
+						  @Override
+						  public void onSuccess(Map<String,String> map) {
+							  orchInit.setSamlAssertionsMap(map);
+
+							  for (TestInstance testInstance : testsPerActorOption.get(actorOption))
+								  tests.add(testInstance);
+							  onDone(null);
+						  }
+					  });
+				  } catch (Exception ex) {
+					  testsHeaderView.showRunningMessage(false);
+				  }
+			  } else {
+				  // Get STS SAML Assertion once for the entire test collection
+				  TestInstance testInstance = new TestInstance("GazelleSts");
+				  testInstance.setSection("samlassertion-issue");
+				  SiteSpec stsSpec =  new SiteSpec("GazelleSts");
+				  Map<String, String> params = new HashMap<>();
+				  String xuaUsername = "Xuagood";
+				  params.put("$saml-username$",xuaUsername);
+				  try {
+					  ClientUtils.INSTANCE.getToolkitServices().getStsSamlAssertion(xuaUsername, testInstance, stsSpec, params, new AsyncCallback<String>() {
+						  @Override
+						  public void onFailure(Throwable throwable) {
+							  new PopupMessage("runAll: getStsSamlAssertion call failed: " + throwable.toString());
+						  }
+						  @Override
+						  public void onSuccess(String s) {
+							  getSiteToIssueTestAgainst().setSaml(true);
+							  getSiteToIssueTestAgainst().setStsAssertion(s);
+
+							  for (TestInstance testInstance : testsPerActorOption.get(actorOption))
+								  tests.add(testInstance);
+							  onDone(null);
+						  }
+					  });
+				  } catch (Exception ex) {
+					  testsHeaderView.showRunningMessage(false);
+					  new PopupMessage("runAll: Client call failed: getStsSamlAssertion: " + ex.toString());
+				  }
 			  }
+
 		  } else {
 			  // No SAML
               getSiteToIssueTestAgainst().setSaml(false);
@@ -533,9 +557,31 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner, TestsH
          }
          TestInstance next = tests.get(0);
          tests.remove(0);
+
+		  if (orchInit.isXuaOption() && orchInit.getSamlAssertionsMap()!=null) {
+			  setXuaOptionSamlAssertion(next);
+		  }
          runTest(next, this);
       }
    }
+
+	private void setXuaOptionSamlAssertion(TestInstance testInstance) {
+
+		String samlAssertion = orchInit.getSamlAssertionsMap().get(getXuaUsernameFromTestplan(testInstance));
+		getSiteToIssueTestAgainst().setSaml(true);
+		getSiteToIssueTestAgainst().setStsAssertion(samlAssertion);
+	}
+
+	String getXuaUsernameFromTestplan(TestInstance testInstance) {
+		String testId = testInstance.getId();
+		String[] parts = testId.split("_");
+		if (parts.length>1) {
+			return parts[parts.length-1];
+		} else {
+			new PopupMessage("Test Id needs to be in this format: actor_option_Xuausername.");
+			return null;
+		}
+	}
 
 	private class RunAllSectionsClickHandler implements ClickHandler, TestDone {
 		TestInstance testInstance;
@@ -674,6 +720,9 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner, TestsH
 				SiteSpec stsSpec =  new SiteSpec("GazelleSts");
 				Map<String, String> params = new HashMap<>();
 				String xuaUsername = "Xuagood";
+				if (orchInit.isXuaOption()) {
+					xuaUsername = getXuaUsernameFromTestplan(testInstance);
+				}
 				params.put("$saml-username$",xuaUsername);
 				try {
 					ClientUtils.INSTANCE.getToolkitServices().getStsSamlAssertion(xuaUsername, stsTestInstance, stsSpec, params, new AsyncCallback<String>() {
@@ -693,7 +742,7 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner, TestsH
 					new PopupMessage("runTestInstance: Client call failed: getStsSamlAssertion: " + ex.toString());
 				}
 			} else {
-				// Reuse SAML when running the entire Actor test collection
+				// Reuse SAML when running the entire Actor test collection OR as set by the Xua option
 				runTestInstance(testInstance,testDone);
 			}
 

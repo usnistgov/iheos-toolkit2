@@ -109,8 +109,7 @@ public class BuildRgTestOrchestrationButton extends AbstractOrchestrationButton 
 
     }
 
-    @Override
-    public void handleClick(ClickEvent clickEvent) {
+    public void orchestrate() {
         if (!isExposed() && !isExternal()) {
             new PopupMessage("Must select Exposed or External Registry/Repository");
             return;
@@ -126,9 +125,11 @@ public class BuildRgTestOrchestrationButton extends AbstractOrchestrationButton 
         request.setEnvironmentName(testTab.getEnvironmentSelection());
         request.setUseExistingState(!isResetRequested());
         SiteSpec siteSpec = new SiteSpec(testContext.getSiteName());
+        /*
         if (isSaml()) {
             setSamlAssertion(siteSpec);
         }
+        */
         request.setSiteUnderTest(siteSpec);
 
         testTab.setSiteToIssueTestAgainst(siteSpec);

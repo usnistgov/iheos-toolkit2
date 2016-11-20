@@ -223,7 +223,8 @@ public abstract class BasicTransaction  {
 
 			run(request_element);
 
-			reportManagerPostRun();
+			if (s_ctx.getExpectedStatus().size()>0 && !s_ctx.getExpectedStatus().get(0).isFault())
+				reportManagerPostRun();
 		} catch (Exception e) {
 			s_ctx.set_error("Internal Error: " + ExceptionUtil.exception_details(e));
 			step_failure = true;
@@ -512,6 +513,15 @@ public abstract class BasicTransaction  {
 				step_failure = true;
 			}
 		} else {
+
+			if (currentStatus.isFault() && (expectedStatus.size()>0) && expectedStatus.get(0).isFault()) {
+				// Originally set to true in the BasicTransaction
+				// 			s_ctx.set_error("Internal Error: " + ExceptionUtil.exception_details(e));
+				// Since Fault is Expected Status, it is not a step failure.
+				s_ctx.resetStatus();
+				step_failure = false;
+				return;
+			}
 
 			StringBuffer expectedStatusSb = new StringBuffer();
 			int counter=1;
@@ -1280,9 +1290,9 @@ public abstract class BasicTransaction  {
 		return SoapActionFactory.getResponseAction(getRequestAction());
 	}
 
-	OMElement getSecurityEl() throws XdsInternalException  {
+	public OMElement getSecurityEl(String assertionStr) throws XdsInternalException  {
 		String wsse = "<wsse:Security soapenv:mustUnderstand=\"true\" xmlns:soapenv=\"http://www.w3.org/2003/05/soap-envelope\" xmlns:wsse=\"http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-secext-1.0.xsd\">"
-		+ transactionSettings.siteSpec.getStsAssertion()
+		+ assertionStr
 		+ "</wsse:Security>";
 
 		return Util.parse_xml(wsse);
@@ -1302,7 +1312,7 @@ public abstract class BasicTransaction  {
 			if (transactionSettings.siteSpec.getStsAssertion()!=null) {
 				if (additionalHeaders==null)
 					additionalHeaders = new ArrayList<OMElement>();
-				additionalHeaders.add(getSecurityEl());
+				additionalHeaders.add(getSecurityEl(transactionSettings.siteSpec.getStsAssertion()));
 			}
 		}
 //		soap = testConfig.soap;

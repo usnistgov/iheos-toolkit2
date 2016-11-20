@@ -1,6 +1,7 @@
 package gov.nist.toolkit.xdstools2.client.tabs.conformanceTest;
 
 import gov.nist.toolkit.xdstools2.client.tabs.GatewayTestsTabs.BuildIGTestOrchestrationButton;
+import gov.nist.toolkit.xdstools2.client.tabs.GatewayTestsTabs.BuildRGTestOrchestrationButton;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -17,6 +18,7 @@ public class ActorOptionManager {
     static {
         actorOptions = new HashMap<>();
         actorOptions.put("ig", BuildIGTestOrchestrationButton.ACTOR_OPTIONS);
+        actorOptions.put("rg", BuildRGTestOrchestrationButton.ACTOR_OPTIONS);
         actorOptions.put("reg", BuildRegTestOrchestrationButton.ACTOR_OPTIONS);
         actorOptions.put("rec", BuildRecTestOrchestrationButton.ACTOR_OPTIONS);
     };

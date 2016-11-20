@@ -54,6 +54,7 @@ import gov.nist.toolkit.valregmsg.validation.factories.CommonMessageValidatorFac
 import gov.nist.toolkit.valsupport.client.MessageValidationResults;
 import gov.nist.toolkit.xdsexception.ExceptionUtil;
 import gov.nist.toolkit.xdsexception.client.ToolkitRuntimeException;
+import gov.nist.toolkit.xdstools2.client.GazelleXuaUsername;
 import gov.nist.toolkit.xdstools2.client.util.ToolkitService;
 import gov.nist.toolkit.xdstools2.server.serviceManager.DashboardServiceManager;
 import gov.nist.toolkit.xdstools2.server.serviceManager.GazelleServiceManager;
@@ -1162,7 +1163,7 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements
                     String assertionResultId = "saml-assertion";
                     for (ReportDTO report : reportDTOs)  {
                         if (assertionResultId.equals(report.getName())) {
-                           return report.getValue();
+                           return report.getValue().replace("&","&amp;");
                         }
                     }
                     throw new ToolkitRuntimeException(assertionResultId + " result key not found.");
@@ -1172,6 +1173,30 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements
         } else {
             throw new ToolkitRuntimeException("No result.");
         }
+    }
+
+
+    public Map<String,String> getStsSamlAssertionsMap(TestInstance testInstance, SiteSpec stsSite, Map<String,String> params) throws Exception {
+
+        Map<String,String> assertionMap = null;
+        for (GazelleXuaUsername username : GazelleXuaUsername.values()) {
+            String usernameStr = username.name();
+            params.clear();
+            params.put("$saml-username$",usernameStr);
+            try {
+                String samlAssertion = getStsSamlAssertion(usernameStr, testInstance, stsSite, params);
+                if (samlAssertion!=null) {
+                    if (assertionMap == null) {
+                        assertionMap = new HashMap<String,String>();
+                    }
+                    assertionMap.put(usernameStr, samlAssertion);
+                }
+            } catch (Exception ex) {
+                // ignore
+            }
+        }
+
+        return assertionMap;
     }
 
     @Override

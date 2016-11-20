@@ -260,7 +260,8 @@ public interface ToolkitService extends RemoteService  {
 	// STS SAML
 	//------------------------------------------------------------------------
 	//------------------------------------------------------------------------
-	public String getStsSamlAssertion(String username, TestInstance testInstance, SiteSpec stsSite, Map<String, String> params) throws Exception;
+	String getStsSamlAssertion(String username, TestInstance testInstance, SiteSpec stsSite, Map<String, String> params) throws Exception;
+	Map<String,String> getStsSamlAssertionsMap(TestInstance testInstance, SiteSpec stsSite, Map<String, String> params) throws Exception;
 
 	String clearTestSession(CommandContext context) throws Exception;
 

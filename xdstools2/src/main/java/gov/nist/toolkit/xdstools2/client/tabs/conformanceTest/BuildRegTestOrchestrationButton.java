@@ -1,6 +1,5 @@
 package gov.nist.toolkit.xdstools2.client.tabs.conformanceTest;
 
-import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HTML;
@@ -42,7 +41,8 @@ public class BuildRegTestOrchestrationButton extends AbstractOrchestrationButton
                 new ActorAndOption("reg", MU_OPTION, "Metadata Update Option", false),
                 new ActorAndOption("reg", MPQ_OPTION, "MPQ Option", false),
                 new ActorAndOption("reg", OD_OPTION, "On Demand Option", false),
-                new ActorAndOption("reg", ISR_OPTION, "Integrated Source Repository", true));
+                new ActorAndOption("reg", ISR_OPTION, "Integrated Source Repository", true),
+                new ActorAndOption("reg", XUA_OPTION, "XUA Option", false));
     }
 
     BuildRegTestOrchestrationButton(ConformanceTestTab testTab, TestContext testContext, TestContextView testContextView, Panel initializationPanel, String label) {
@@ -69,8 +69,7 @@ public class BuildRegTestOrchestrationButton extends AbstractOrchestrationButton
 
     }
 
-    @Override
-    public void handleClick(ClickEvent clickEvent) {
+    public void orchestrate() {
         String msg = testContext.verifyTestContext();
         if (msg != null) {
             testContextView.launchDialog(msg);
@@ -92,7 +91,6 @@ public class BuildRegTestOrchestrationButton extends AbstractOrchestrationButton
         request.setRegistrySut(sutSiteSpec);
 
         testTab.setSiteToIssueTestAgainst(sutSiteSpec);
-
 
         ClientUtils.INSTANCE.getToolkitServices().buildRegTestOrchestration(request, new AsyncCallback<RawResponse>() {
             @Override
@@ -132,4 +130,6 @@ public class BuildRegTestOrchestrationButton extends AbstractOrchestrationButton
         });
 
     }
+
+
 }

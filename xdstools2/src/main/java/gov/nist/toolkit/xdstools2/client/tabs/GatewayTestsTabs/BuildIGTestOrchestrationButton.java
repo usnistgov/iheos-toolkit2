@@ -1,20 +1,30 @@
 package gov.nist.toolkit.xdstools2.client.tabs.GatewayTestsTabs;
 
-import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.user.client.rpc.AsyncCallback;
-import com.google.gwt.user.client.ui.*;
+import com.google.gwt.user.client.ui.Anchor;
+import com.google.gwt.user.client.ui.FlexTable;
+import com.google.gwt.user.client.ui.FlowPanel;
+import com.google.gwt.user.client.ui.HTML;
+import com.google.gwt.user.client.ui.Panel;
+import com.google.gwt.user.client.ui.Widget;
 import gov.nist.toolkit.actortransaction.client.ActorType;
 import gov.nist.toolkit.configDatatypes.client.Pid;
 import gov.nist.toolkit.services.client.IgOrchestrationRequest;
 import gov.nist.toolkit.services.client.IgOrchestrationResponse;
 import gov.nist.toolkit.services.client.RawResponse;
 import gov.nist.toolkit.sitemanagement.client.SiteSpec;
-import gov.nist.toolkit.xdstools2.client.widgets.PopupMessage;
 import gov.nist.toolkit.xdstools2.client.tabs.FindDocumentsLauncher;
-import gov.nist.toolkit.xdstools2.client.tabs.conformanceTest.*;
+import gov.nist.toolkit.xdstools2.client.tabs.conformanceTest.ActorAndOption;
+import gov.nist.toolkit.xdstools2.client.tabs.conformanceTest.ActorOption;
+import gov.nist.toolkit.xdstools2.client.tabs.conformanceTest.ConformanceTestTab;
+import gov.nist.toolkit.xdstools2.client.tabs.conformanceTest.SiteDisplay;
+import gov.nist.toolkit.xdstools2.client.tabs.conformanceTest.TestContext;
+import gov.nist.toolkit.xdstools2.client.tabs.conformanceTest.TestContextView;
+import gov.nist.toolkit.xdstools2.client.tabs.conformanceTest.TestRunner;
 import gov.nist.toolkit.xdstools2.client.tabs.genericQueryTab.GenericQueryTab;
 import gov.nist.toolkit.xdstools2.client.util.ClientUtils;
 import gov.nist.toolkit.xdstools2.client.widgets.OrchestrationSupportTestsDisplay;
+import gov.nist.toolkit.xdstools2.client.widgets.PopupMessage;
 import gov.nist.toolkit.xdstools2.client.widgets.buttons.AbstractOrchestrationButton;
 
 import java.util.ArrayList;
@@ -63,7 +73,9 @@ public class BuildIGTestOrchestrationButton extends AbstractOrchestrationButton 
     static {
         ACTOR_OPTIONS = java.util.Arrays.asList(
                 new ActorAndOption("ig", "", "Required", false),
-                new ActorAndOption("ig", AD_OPTION, "Affinity Domain Option", true));
+                new ActorAndOption("ig", AD_OPTION, "Affinity Domain Option", true),
+                new ActorAndOption("ig", XUA_OPTION, "XUA Option", false));
+
     }
 
     private SiteSpec siteUnderTest(IgOrchestrationResponse orchResponse) {
@@ -73,7 +85,7 @@ public class BuildIGTestOrchestrationButton extends AbstractOrchestrationButton 
         return testContext.getSiteUnderTest().siteSpec();
     }
 
-    public void handleClick(ClickEvent event) {
+    public void orchestrate() {
         if (GenericQueryTab.empty(testTab.getCurrentTestSession())) {
             new PopupMessage("Must select test session first");
             return;
@@ -96,7 +108,8 @@ public class BuildIGTestOrchestrationButton extends AbstractOrchestrationButton 
                 if (handleError(rawResponse, IgOrchestrationResponse.class)) return;
                 IgOrchestrationResponse orchResponse = (IgOrchestrationResponse) rawResponse;
                 testTab.setOrchestrationResponse(orchResponse);
-                testTab.setSiteToIssueTestAgainst(siteUnderTest(orchResponse));
+                SiteSpec siteUnderTest = siteUnderTest(orchResponse);
+                testTab.setSiteToIssueTestAgainst(siteUnderTest);
                 if (AD_OPTION.equals(actorOption.getOptionId()))
                     orchResponse.setExternalStart(true);
 
@@ -164,6 +177,8 @@ public class BuildIGTestOrchestrationButton extends AbstractOrchestrationButton 
             }
         });
     }
+
+
 
     Anchor buildFindDocumentsLauncher(SiteSpec siteSpec, Pid pid, String title) {
         Anchor a = new Anchor(title);

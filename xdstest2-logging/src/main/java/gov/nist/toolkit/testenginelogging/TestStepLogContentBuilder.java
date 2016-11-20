@@ -69,7 +69,10 @@ public class TestStepLogContentBuilder {
                 if ("Success".equals(status)) {
                     c.setExpectedSuccess(true);
                     c.setExpectedWarning(false);
-                } else if ("Failure".equals(status)) {
+                } else if ("Fault".equals(status)) {
+                    c.setExpectedSuccess(false);
+                    c.setExpectedWarning(false);
+                }  else if ("Failure".equals(status)) {
                     c.setExpectedSuccess(false);
                     c.setExpectedWarning(false);
                 } else if ("Warning".equals(status)) {

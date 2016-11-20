@@ -432,11 +432,13 @@ public class InteractionDiagram extends Composite {
                 if (InteractingEntity.INTERACTIONSTATUS.ERROR.equals(legend)) {
                     group.appendChild(cross_mark(x, g_y, RGB_255_0_0));
                     group.appendChild(getSimpleLabel(x+half_cross_height*2,g_y-half_cross_height,"Error"));
-                    g_y+=half_cross_height*2;
+                    g_y+=(half_cross_height*2);
+                    g_y+=4;
                 } else if (InteractingEntity.INTERACTIONSTATUS.ERROR_EXPECTED.equals(legend)) {
                     svg.appendChild(cross_mark(x, g_y, RGB_0_0_255));
                     group.appendChild(getSimpleLabel(x+half_cross_height*2,g_y-half_cross_height,"Anticipated error"));
                     g_y+=half_cross_height*2;
+                    g_y+=4;
                 }
             }
             svg.appendChild(group);
@@ -560,10 +562,31 @@ public class InteractionDiagram extends Composite {
         OMSVGGElement group = doc.createSVGGElement();
         group.appendChild(line);
 
-        int centerTextX = (x2+x1)/2;
+        /*
+
+        []    []
+        |     |
+        x1--->x2 (Request)
+        x2<---x1 (Response)
+
+         */
+
+
+
         int textY = y;
 
         if (!response) {
+            int rightCenterTextX = x1;
+            if (lls.size()>2)
+                for (LL ll : lls) {
+                    if (ll.getLl_stem_center()>x1) {
+                        rightCenterTextX = ll.getLl_stem_center();
+                        break;
+                    }
+                }
+
+            int centerTextX = (rightCenterTextX+x2)/2;
+
             group.setAttribute("style","cursor:pointer");
 
             if (x2>x1)
@@ -595,6 +618,19 @@ public class InteractionDiagram extends Composite {
             } );
 
         } else {
+            /*
+             * Response
+             */
+            int rightCenterTextX = x2;
+            if (lls.size()>2)
+                for (int cx=lls.size()-2; cx>0; cx--) {
+                    LL ll = lls.get(cx);
+                    rightCenterTextX = ll.getLl_stem_center();
+                    break;
+                }
+
+            int centerTextX = (rightCenterTextX+x1)/2;
+
             group.setAttribute("style","cursor:pointer");
 
             if (x2<x1)
