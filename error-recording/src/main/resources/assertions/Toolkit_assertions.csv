@@ -124,3 +124,5 @@ TA123,XDSDocumentEntryLogicalID cannot be specified with MetadataLevel = 1,ITI T
 TA124,Document with ID not represented by DocumentEntry in metadata,MTOM XOP Example 2 http://www.w3.org/TR/2005/REC-xop10-20050125/,,
 TA125,Document contents not available in message,MTOM XOP Example 2 http://www.w3.org/TR/2005/REC-xop10-20050125/,,
 TA126,Non-PatientID query and home is not specified,ITI TF-2b: 3.38.4.1,,
+TA127,No href attribute on XOP Include,MTOM XOP Include http://www.w3.org/TR/2005/REC-xop10-20050125/#xop_include,,
+TA128,XOP Include href attribute must have prefix 'cid:',MTOM XOP Include http://www.w3.org/TR/2005/REC-xop10-20050125/#xop_include,,

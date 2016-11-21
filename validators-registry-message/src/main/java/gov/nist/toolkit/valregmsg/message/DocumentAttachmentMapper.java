@@ -4,6 +4,8 @@ import gov.nist.toolkit.common.coder.Base64Coder;
 import gov.nist.toolkit.docref.Mtom;
 import gov.nist.toolkit.errorrecording.ErrorRecorder;
 import gov.nist.toolkit.errorrecording.client.XdsErrorCode;
+import gov.nist.toolkit.errorrecording.client.assertions.Assertion;
+import gov.nist.toolkit.errorrecording.client.assertions.AssertionLibrary;
 import gov.nist.toolkit.http.HttpHeader;
 import gov.nist.toolkit.commondatatypes.MetadataSupport;
 import gov.nist.toolkit.utilities.xml.XmlUtil;
@@ -48,8 +50,9 @@ public class DocumentAttachmentMapper  extends AbstractMessageValidator {
 	// OR
 	//    its id will show up in docContents because it was an XOP un-optimized content
 	//    and docContents has the content
-
 	OMElement xml;
+	private AssertionLibrary ASSERTIONLIBRARY = AssertionLibrary.getInstance();
+
 
 	public StoredDocumentInt getStoredDocumentForDocumentId(String docId) throws Exception {
 		if (storedDocuments.containsKey(docId))
@@ -109,9 +112,11 @@ public class DocumentAttachmentMapper  extends AbstractMessageValidator {
 					OMElement include = includes.get(0);
 					String cid = include.getAttributeValue(MetadataSupport.href_qname);
 					if (cid == null || cid.equals("")) {
-						er.err(XdsErrorCode.Code.XDSRepositoryError, "No href attribute on XOP Include", this, Mtom.XOP_include);
+						Assertion assertion = ASSERTIONLIBRARY.getAssertion("TA127");
+						er.err(XdsErrorCode.Code.XDSRepositoryError, assertion, this, "", "");
 					} else if (!cid.startsWith("cid:")) {
-						er.err(XdsErrorCode.Code.XDSRepositoryError, "XOP Include href attribute must have prefix cid:", this, Mtom.XOP_include);
+						Assertion assertion = ASSERTIONLIBRARY.getAssertion("TA128");
+						er.err(XdsErrorCode.Code.XDSRepositoryError, assertion, this, "", "");
 					} else {
 						String aid = cid;
 						if (aid.startsWith("cid:"))
