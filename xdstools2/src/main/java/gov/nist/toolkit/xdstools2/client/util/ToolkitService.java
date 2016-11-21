@@ -154,7 +154,7 @@ public interface ToolkitService extends RemoteService  {
 	List<Result> lifecycleValidation(LifecycleValidationRequest request) throws Exception ;
 	List<Result> folderValidation(FoldersRequest request) throws Exception ;
 
-	List<Result> mpqFindDocuments(SiteSpec site, String pid, Map<String, List<String>> selectedCodes) throws NoServletSessionException;
+	List<Result> mpqFindDocuments(MpqFindDocumentsRequest request) throws Exception;
 	List<Result> getAll(GetAllRequest request) throws Exception;
 	List<Result> findDocuments2(FindDocuments2Request request) throws Exception;
 

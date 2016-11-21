@@ -341,9 +341,9 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements
                 eventCodes);
     }
     @Override
-    public List<Result> mpqFindDocuments(SiteSpec site, String pid,
-                                         Map<String, List<String>> codesSpec) throws NoServletSessionException {
-        return session().queryServiceManager().mpqFindDocuments(site, pid, codesSpec);
+    public List<Result> mpqFindDocuments(MpqFindDocumentsRequest request) throws Exception {
+        installCommandContext(request);
+        return session().queryServiceManager().mpqFindDocuments(request.getSite(), request.getPid(), request.getSelectedCodes());
     }
 
     @Override
