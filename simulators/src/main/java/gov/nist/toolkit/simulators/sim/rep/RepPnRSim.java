@@ -79,7 +79,7 @@ public class RepPnRSim extends TransactionSimulator implements MetadataGeneratin
 				if (!foundit) {
 					Assertion assertion = ASSERTIONLIBRARY.getAssertion("TA124");
 					String detail = "Document ID found: '" + id + "'";
-					er.err(XdsErrorCode.Code.XDSMissingDocumentMetadata, assertion, this, "", "");
+					er.err(XdsErrorCode.Code.XDSMissingDocumentMetadata, assertion, this, "", detail);
 				}
 			}
 
@@ -121,7 +121,9 @@ public class RepPnRSim extends TransactionSimulator implements MetadataGeneratin
 						logger.info("Size (at Repository) is " + size);
 						logger.info("Hash (at Repository) is " + hash);
 					} else {
-						er.err(XdsErrorCode.Code.XDSMissingDocument, "Document contents for document " + eoId + " not available in message",null, Mtom.XOP_example2);
+						Assertion assertion = ASSERTIONLIBRARY.getAssertion("TA125");
+						String detail = "Document found: '" + eoId + "'";
+						er.err(XdsErrorCode.Code.XDSMissingDocument, assertion, this, "", detail);
 						throw new XDSMissingDocumentException("Document contents for document " + eoId + " not available in message", Mtom.XOP_example2);
 					}
 				}
