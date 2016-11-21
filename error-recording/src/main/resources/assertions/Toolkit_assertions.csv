@@ -126,3 +126,7 @@ TA125,Document contents not available in message,MTOM XOP Example 2 http://www.w
 TA126,Non-PatientID query and home is not specified,ITI TF-2b: 3.38.4.1,,
 TA127,No href attribute on XOP Include,MTOM XOP Include http://www.w3.org/TR/2005/REC-xop10-20050125/#xop_include,,
 TA128,XOP Include href attribute must have prefix 'cid:',MTOM XOP Include http://www.w3.org/TR/2005/REC-xop10-20050125/#xop_include,,
+TA129,Wrong XML namespace on Include element,MTOM XOP Include http://www.w3.org/TR/2005/REC-xop10-20050125/#xop_include,,
+TA130,Document contents not a XOP Include pointing to a separate Part and not inline Base64,MTOM XOP Include http://www.w3.org/TR/2005/REC-xop10-20050125/#xop_include,,
+TA131,Multiple Include elements found under Document element,MTOM XOP Include http://www.w3.org/TR/2005/REC-xop10-20050125/#xop_include,,
+

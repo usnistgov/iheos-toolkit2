@@ -32,10 +32,10 @@ public class DocumentAttachmentMapper  extends AbstractMessageValidator {
 	// The Document.cid is used without the cid: prefix
 	//
 	// this information comes out of the following structure in the XOP format XML
-    //	<xdsb:Document id="urn:uuid:0f8dc31c-2e0d-41f8-bd0e-d68d43bdf4a2">
-    //      <xop:Include href="cid:1.urn:uuid:1049A8083359E423AE1282249523329@apache.org"
-    //          xmlns:xop="http://www.w3.org/2004/08/xop/include" />
-    //  </xdsb:Document>
+	//	<xdsb:Document id="urn:uuid:0f8dc31c-2e0d-41f8-bd0e-d68d43bdf4a2">
+	//      <xop:Include href="cid:1.urn:uuid:1049A8083359E423AE1282249523329@apache.org"
+	//          xmlns:xop="http://www.w3.org/2004/08/xop/include" />
+	//  </xdsb:Document>
 	Map<String, String> docIds= new HashMap<String, String>();
 
 	// maps DocumentEntry.id to Document contents
@@ -126,9 +126,11 @@ public class DocumentAttachmentMapper  extends AbstractMessageValidator {
 					}
 
 					String includeNSURI = include.getNamespace().getNamespaceURI();
-					if (!"http://www.w3.org/2004/08/xop/include".equals(includeNSURI))
-						er.err(XdsErrorCode.Code.XDSRepositoryError, "Wrong XML namespace on Include element.  Found " + includeNSURI + " but it should have been http://www.w3.org/2004/08/xop/include", this, Mtom.XOP_include);
-
+					if (!"http://www.w3.org/2004/08/xop/include".equals(includeNSURI)) {
+						Assertion assertion = ASSERTIONLIBRARY.getAssertion("TA129");
+						String detail = "Found '" + includeNSURI + "' but it should have been 'http://www.w3.org/2004/08/xop/include'";
+						er.err(XdsErrorCode.Code.XDSRepositoryError, assertion, this, "", detail);
+					}
 					include.detach();   // later, Schema will not expect the XOP format Include so detach from XML tree
 
 				} else if (includes.size() == 0) {
@@ -146,7 +148,8 @@ public class DocumentAttachmentMapper  extends AbstractMessageValidator {
 					//er.detail("Un-optimized MTOM/XOP encoding found");
 					String base64Contents = docEle.getText();
 					if (base64Contents == null || base64Contents.equals("")) {
-						er.err(XdsErrorCode.Code.XDSRepositoryError, "Document contents not a XOP Include pointing to a separate Part and not inline Base64", this, Mtom.XOP_include);
+						Assertion assertion = ASSERTIONLIBRARY.getAssertion("TA130");
+						er.err(XdsErrorCode.Code.XDSRepositoryError, assertion, this, "", "");
 					} else {
 						byte[] contents = Base64Coder.decode(base64Contents);
 						StoredDocumentInt sd = new StoredDocumentInt();
@@ -158,7 +161,8 @@ public class DocumentAttachmentMapper  extends AbstractMessageValidator {
 					}
 				} else {
 					// multiple Include????
-					er.err(XdsErrorCode.Code.XDSRepositoryError, "Multiple Include elements found under Document element", this, Mtom.XOP_include);
+					Assertion assertion = ASSERTIONLIBRARY.getAssertion("TA131");
+					er.err(XdsErrorCode.Code.XDSRepositoryError, assertion, this, "", "");
 				}
 			}
 		} catch (Exception e) {
