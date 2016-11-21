@@ -4,85 +4,10 @@
     <TestStep id="retrieve">
         <ExpectedStatus>Fault</ExpectedStatus>
         <IGRTransaction>
-<!--
-            <UseReport test="15808"  section="SingleDocumentFindDocuments" step="finddocs" reportName="$doc_uid_1$" useAs="$docuid$"/>
-            <UseReport test="15808"  section="SingleDocumentFindDocuments" step="finddocs" reportName="$home$" useAs="$home$"/>
-            <UseReport test="15808"  section="SingleDocumentFindDocuments" step="finddocs" reportName="$repositoryUniqueId$" useAs="$repositoryuid$"/>
--->
-            <ExpectedMimeType>text/plain</ExpectedMimeType>
-            <ReferenceDocument uid="$docuid$">../../15807/onedoc1/my_document.txt</ReferenceDocument>
+
             <MetadataFile>retrieve.xml</MetadataFile>
-            <Report name="$home_request$" section="InputMetadata">
-                //*[local-name()='HomeCommunityId']
-            </Report>
-            <Report name="$home_response$" section="Result">
-                //*[local-name()='HomeCommunityId']
-            </Report>
-            <Report name="$repid_request$" section="InputMetadata">
-                //*[local-name()='RepositoryUniqueId']
-            </Report>
-            <Report name="$repid_response$" section="Result">
-                //*[local-name()='RepositoryUniqueId']
-            </Report>
-            <Report name="$docuid_request$" section="InputMetadata">
-                //*[local-name()='DocumentUniqueId']
-            </Report>
-            <Report name="$docuid_response$" section="Result">
-                //*[local-name()='DocumentUniqueId']
-            </Report>
-            <Report name="$mimetype_response$" section="Result">
-                //*[local-name()='mimeType']
-            </Report>
+
         </IGRTransaction>
     </TestStep>
-<!--
-    <TestStep id="Verify homeCommunityId">
-        <Goal>Validate homeCommunityId in Retrieve response against Retrieve request</Goal>
-        <NullTransaction>
-            <UseReport reportName="$home_request$"  section="THIS" step="retrieve" useAs="requested"/>
-            <UseReport reportName="$home_response$" section="THIS" step="retrieve" useAs="returned"/>
-            <Assertions>
-                <Assert>
-                    'requested' = 'returned'
-                </Assert>
-            </Assertions>
-        </NullTransaction>
-    </TestStep>
-    <TestStep id="Verify repositoryUniqueId">
-        <Goal>Validate repositoryUniqueId in Retrieve response against Retrieve request</Goal>
-        <NullTransaction>
-            <UseReport reportName="$repid_request$"  section="THIS" step="retrieve" useAs="requested"/>
-            <UseReport reportName="$repid_response$" section="THIS" step="retrieve" useAs="returned"/>
-            <Assertions>
-                <Assert>
-                    'requested' = 'returned'
-                </Assert>
-            </Assertions>
-        </NullTransaction>
-    </TestStep>
-    <TestStep id="Verify documentUniqueId">
-        <Goal>Validate documentUniqueId in Retrieve response against Retrieve request</Goal>
-        <NullTransaction>
-            <UseReport reportName="$docuid_request$"  section="THIS" step="retrieve" useAs="requested"/>
-            <UseReport reportName="$docuid_response$" section="THIS" step="retrieve" useAs="returned"/>
-            <Assertions>
-                <Assert>
-                    'requested' = 'returned'
-                </Assert>
-            </Assertions>
-        </NullTransaction>
-    </TestStep>
-    <TestStep id="Verify mimeType">
-        <Goal>Validate mimeType in Retrieve response against FindDocuments response</Goal>
-        <NullTransaction>
-            <UseReport test="15808"  section="SingleDocumentFindDocuments" step="finddocs" reportName="$mimeType$" useAs="queryValue"/>
-            <UseReport reportName="$mimetype_response$" section="THIS" step="retrieve" useAs="retrievedValue"/>
-            <Assertions>
-                <Assert>
-                    'queryValue' = 'retrievedValue'
-                </Assert>
-            </Assertions>
-        </NullTransaction>
-    </TestStep>
--->
+
 </TestPlan>
