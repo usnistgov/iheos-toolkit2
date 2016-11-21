@@ -4,9 +4,11 @@
     <TestStep id="retrieve">
         <ExpectedStatus>Fault</ExpectedStatus>
         <IGRTransaction>
+<!--
             <UseReport test="15808"  section="SingleDocumentFindDocuments" step="finddocs" reportName="$doc_uid_1$" useAs="$docuid$"/>
             <UseReport test="15808"  section="SingleDocumentFindDocuments" step="finddocs" reportName="$home$" useAs="$home$"/>
             <UseReport test="15808"  section="SingleDocumentFindDocuments" step="finddocs" reportName="$repositoryUniqueId$" useAs="$repositoryuid$"/>
+-->
             <ExpectedMimeType>text/plain</ExpectedMimeType>
             <ReferenceDocument uid="$docuid$">../../15807/onedoc1/my_document.txt</ReferenceDocument>
             <MetadataFile>retrieve.xml</MetadataFile>

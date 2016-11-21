@@ -1,14 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <TestPlan>
-    <Test>15809/TwoDocRetrieve</Test>
+    <Test>15809_Xuabad/TwoDocRetrieve</Test>
     <TestStep id="retrieve">
         <ExpectedStatus>Fault</ExpectedStatus>
         <IGRTransaction>
+<!--
             <UseReport test="15808"  section="TwoDocumentsFindDocuments" step="finddocs" reportName="$doc_uid_1$" useAs="$docuid1$"/>
             <UseReport test="15808"  section="TwoDocumentsFindDocuments" step="finddocs" reportName="$doc_uid_2$" useAs="$docuid2$"/>
             <UseReport test="15808"  section="TwoDocumentsFindDocuments" step="finddocs" reportName="$home1$" useAs="$home$"/>
             <UseReport test="15808"  section="TwoDocumentsFindDocuments" step="finddocs" reportName="$repositoryUniqueId$" useAs="$repositoryuid$"/>
-            
+-->
             
             <ExpectedMimeType>text/plain</ExpectedMimeType>
             <ReferenceDocument uid="$docuid1$">../../15807/twodoc/my_document.txt</ReferenceDocument>
