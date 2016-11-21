@@ -3,6 +3,8 @@ package gov.nist.toolkit.valregmsg.message;
 import gov.nist.toolkit.docref.Mtom;
 import gov.nist.toolkit.errorrecording.ErrorRecorder;
 import gov.nist.toolkit.errorrecording.client.XdsErrorCode;
+import gov.nist.toolkit.errorrecording.client.assertions.Assertion;
+import gov.nist.toolkit.errorrecording.client.assertions.AssertionLibrary;
 import gov.nist.toolkit.errorrecording.factories.ErrorRecorderBuilder;
 import gov.nist.toolkit.http.HttpParseException;
 import gov.nist.toolkit.http.HttpParserBa;
@@ -24,6 +26,8 @@ public class MtomMessageValidator extends AbstractMessageValidator {
 	MessageValidatorEngine mvc;
 	RegistryValidationInterface rvi;
 	byte[] bodyBytes;
+	private AssertionLibrary ASSERTIONLIBRARY = AssertionLibrary.getInstance();
+
 
 	public MtomMessageValidator(ValidationContext vc, HttpParserBa headers, byte[] body, ErrorRecorderBuilder erBuilder, MessageValidatorEngine mvc, RegistryValidationInterface rvi) {
 		super(vc);
@@ -40,15 +44,15 @@ public class MtomMessageValidator extends AbstractMessageValidator {
 		er.registerValidator(this);
 		headers.setErrorRecorder(er);
 		try {
-			
+
 
 			HttpParserBa hp = headers;
-			
+
 			String body = new String(bodyBytes, hp.getCharset());
 			hp.setBody(bodyBytes);
 			hp.tryMultipart();
 			MultipartParserBa mp = hp.getMultipartParser();
-			
+
 
 			er.detail("Multipart contains " + mp.getPartCount() + " parts");
 			if (mp.getPartCount() == 0) {
@@ -56,32 +60,34 @@ public class MtomMessageValidator extends AbstractMessageValidator {
 				er.unRegisterValidator(this);
 				return;
 			}
-			
+
 			List<String> partIds = new ArrayList<String>();
 			for (int i=0; i<mp.getPartCount(); i++) {
 				PartBa p = mp.getPart(i);
 				partIds.add(p.getContentId());
 			}
 			er.detail("Part Content-IDs are " + partIds);
-			
-			
+
+
 			PartBa startPart = mp.getStartPart();
-			
+
 			if (startPart != null)
 				er.detail("Found start part - " + startPart.getContentId());
 			else {
-				er.err(XdsErrorCode.Code.NoCode, "Start part [" + mp.getStartPartId() + "] not found", this, Mtom.XOP_example2);
+				Assertion assertion = ASSERTIONLIBRARY.getAssertion("TA132");
+				String detail = "Start part ID expected: '" + mp.getStartPartId() + "'";
+				er.err(XdsErrorCode.Code.NoCode, assertion, this, "", detail);
 				er.unRegisterValidator(this);
 				return;
 			}
-				
+
 			vc.isSimpleSoap = false;
 
 			// no actual validation, just saves Part list on validation stack so it can
 			// be found by later steps that need it
 			mvc.addMessageValidator("MultipartContainer", new MultipartContainer(vc, mp), erBuilder.buildNewErrorRecorder());
 
-			
+
 			er.detail("Scheduling validation of SOAP wrapper");
 			MessageValidatorFactory.getValidatorContext(erBuilder, startPart.getBody(), mvc, "Validate SOAP", vc, rvi);
 
@@ -90,9 +96,9 @@ public class MtomMessageValidator extends AbstractMessageValidator {
 		} catch (HttpParseException e) {
 			er.err(XdsErrorCode.Code.NoCode, e);
 		}
-        finally {
-            er.unRegisterValidator(this);
-        }
+		finally {
+			er.unRegisterValidator(this);
+		}
 
 	}
 
