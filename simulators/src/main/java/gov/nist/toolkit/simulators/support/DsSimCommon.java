@@ -564,6 +564,7 @@ public class DsSimCommon {
     }
     }
 
+    // TODO Assertions
     public ErrorRecorder registryResponseAsErrorRecorder(OMElement regResp) {
         ErrorRecorder er = simCommon.getUnconnectedErrorRecorder();
 
