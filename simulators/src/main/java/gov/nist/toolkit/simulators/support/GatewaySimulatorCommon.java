@@ -1,7 +1,10 @@
 package gov.nist.toolkit.simulators.support;
 
 import gov.nist.toolkit.errorrecording.ErrorRecorder;
+import gov.nist.toolkit.errorrecording.client.XdsErrorCode;
 import gov.nist.toolkit.errorrecording.client.XdsErrorCode.Code;
+import gov.nist.toolkit.errorrecording.client.assertions.Assertion;
+import gov.nist.toolkit.errorrecording.client.assertions.AssertionLibrary;
 import gov.nist.toolkit.registrymsg.registry.Response;
 import gov.nist.toolkit.simulators.sim.reg.sq.SQFactory;
 import gov.nist.toolkit.valregmsg.registry.AdhocQueryResponse;
@@ -12,18 +15,19 @@ import gov.nist.toolkit.valregmsg.registry.storedquery.support.StoredQuerySuppor
 import org.apache.axiom.om.OMElement;
 
 abstract public class GatewaySimulatorCommon extends BaseDsActorSimulator {
-	
+	private AssertionLibrary ASSERTIONLIBRARY = AssertionLibrary.getInstance();
+
 	public GatewaySimulatorCommon(SimCommon common, DsSimCommon dsSimCommon) {
 		super(common, dsSimCommon);
 	}
 
-    public GatewaySimulatorCommon() {}
+	public GatewaySimulatorCommon() {}
 
 	public  boolean validateHomeCommunityId(ErrorRecorder er, OMElement query, boolean isRG) {
 		// verify that if Patient ID param not present then homeCommunityId is in header
 		// and homeCommunityId is in proper format
-		
-		
+
+
 		StoredQueryFactory fact = null;
 		boolean hasHome;
 		try {
@@ -34,8 +38,8 @@ abstract public class GatewaySimulatorCommon extends BaseDsActorSimulator {
 			dsSimCommon.sendErrorsInRegistryResponse(er);
 			return false;
 		}
-		
-		
+
+
 		StoredQuery sq = fact.getImpl();
 		if (sq == null)
 			try {
@@ -46,20 +50,19 @@ abstract public class GatewaySimulatorCommon extends BaseDsActorSimulator {
 				return false;
 			}
 		StoredQuerySupport sqs = sq.getStoredQuerySupport();
-		
+
 		boolean hasPatientIdParm = sqs.hasPatientIdParameter();
-		
+
 		if (!hasPatientIdParm && !hasHome) {
-			er.err(Code.XDSMissingHomeCommunityId, "Non-PatientID query and home is not specified. " +
-                    "Params found were " + sqs.getParams().getNames(),
-					(isRG) ? "RGActorSimulator" : "IGActorSimulator", 
-					"ITI TF-2b: 3.38.4.1");
-			dsSimCommon.sendErrorsInRegistryResponse(er);
+			Assertion assertion = ASSERTIONLIBRARY.getAssertion("TA126");
+			String location = (isRG) ? "RGActorSimulator" : "IGActorSimulator";
+			String detail = "Parameters found: " + sqs.getParams().getNames();
+			er.err(XdsErrorCode.Code.XDSMissingHomeCommunityId, assertion, this, location, detail);
 			return false;
 		}
-		
+
 		return true;
 	}
-	
+
 
 }
