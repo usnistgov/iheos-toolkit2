@@ -4,51 +4,21 @@
   <TestStep id="retrieve_small">
     <ExpectedStatus>Fault</ExpectedStatus>
     <XCRTransaction>
-    <UseReport test="12318" section="init" step="init" reportName="Document01_uid" useAs="$docuid$"/>
-    <UseReport test="12318" section="init" step="init" reportName="$testdata_home$" useAs="$home$"/>
-    <UseReport test="12318" section="query" step="query" reportName="repuid" useAs="$repositoryuid$"/>
+
       <ExpectedMimeType>text/plain</ExpectedMimeType>
       <ReferenceDocument uid="$docuid$">../../12318/init/my_document.txt</ReferenceDocument>
       <MetadataFile>query1.xml</MetadataFile>
-<!--
-      <Assertions>
-        <DataRef file="THIS" as="output"/>
-        <Assert id="OneDocument">
-              		count(//XCRTransaction[@step="retrieve_small"]/Result[1]/*[local-name()='RetrieveDocumentSetResponse']/*[local-name()='DocumentResponse']) = "1"
-         		</Assert>
-        <Assert id="HomeCommunityId"> 
-          //Result[1]/*[namespace-uri()='urn:ihe:iti:xds-b:2007' and local-name()='RetrieveDocumentSetResponse'][1]/*[namespace-uri()='urn:ihe:iti:xds-b:2007' and local-name()='DocumentResponse'][1]/*[namespace-uri()='urn:ihe:iti:xds-b:2007' and local-name()='HomeCommunityId'][1] = '$home$'
-        </Assert>
-        <Assert id="RepositoryUniqueId"> 
-          //Result[1]/*[namespace-uri()='urn:ihe:iti:xds-b:2007' and local-name()='RetrieveDocumentSetResponse'][1]/*[namespace-uri()='urn:ihe:iti:xds-b:2007' and local-name()='DocumentResponse'][1]/*[namespace-uri()='urn:ihe:iti:xds-b:2007' and local-name()='RepositoryUniqueId'][1] = '$repositoryuid$'
-        </Assert>
-      </Assertions>
--->
+
     </XCRTransaction>
   </TestStep>
   <TestStep id="retrieve_big">
     <ExpectedStatus>Fault</ExpectedStatus>
     <XCRTransaction>
-    <UseReport test="12318" section="init" step="init" reportName="Document02_uid" useAs="$docuid$"/>
-    <UseReport test="12318" section="init" step="init" reportName="$testdata_home$" useAs="$home$"/>
-    <UseReport test="12318" section="query" step="query" reportName="repuid" useAs="$repositoryuid$"/>
+
       <ExpectedMimeType>text/xml</ExpectedMimeType>
       <ReferenceDocument uid="$docuid$">../../12318/init/summary.xml</ReferenceDocument>
       <MetadataFile>query2.xml</MetadataFile>
-<!--
-      <Assertions>
-        <DataRef file="THIS" as="output"/>
-        <Assert id="OneDocuments">
-              		count(//XCRTransaction[@step="retrieve_big"]/Result[1]/*[local-name()='RetrieveDocumentSetResponse']/*[local-name()='DocumentResponse']) = "1"
-         		</Assert>
-        <Assert id="HomeCommunityId"> 
-          //Result[1]/*[namespace-uri()='urn:ihe:iti:xds-b:2007' and local-name()='RetrieveDocumentSetResponse'][1]/*[namespace-uri()='urn:ihe:iti:xds-b:2007' and local-name()='DocumentResponse'][1]/*[namespace-uri()='urn:ihe:iti:xds-b:2007' and local-name()='HomeCommunityId'][1] = '$home$'
-        </Assert>
-        <Assert id="RepositoryUniqueId"> 
-          //Result[1]/*[namespace-uri()='urn:ihe:iti:xds-b:2007' and local-name()='RetrieveDocumentSetResponse'][1]/*[namespace-uri()='urn:ihe:iti:xds-b:2007' and local-name()='DocumentResponse'][1]/*[namespace-uri()='urn:ihe:iti:xds-b:2007' and local-name()='RepositoryUniqueId'][1] = '$repositoryuid$'
-        </Assert>
-      </Assertions>
--->
+
     </XCRTransaction>
   </TestStep>
 </TestPlan>
