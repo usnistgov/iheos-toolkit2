@@ -1,10 +1,9 @@
 Retrieve single document
 
-Depends on test 12318 to initialize the test data.
+<p>Uses SAML assertion username as encoded in the test plan name.</p>
 
-This test has two parts:
+This test has one part:
 <ul>
-<li>correct - show correct operation
 <li>missing_home - show proper error (XDSMissingHomeCommunityId) returned when 
 homeCommunityId not in request
 </ul>
