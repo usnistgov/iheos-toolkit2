@@ -93,6 +93,7 @@ public class QueryRequestMessageValidator extends AbstractMessageValidator {
 				er.detail(sp.name + " ==> " + sp.rawValues);
 				er.detail(".    .    . yields values " + sp.values);
 				for (String error : sp.errs) {
+					//TODO Upgrade to Assertions
 					er.err(XdsErrorCode.Code.XDSRegistryError, error, this, SqDocRef.Request_parms);
 				}
 				sps.add(sp);
@@ -105,12 +106,15 @@ public class QueryRequestMessageValidator extends AbstractMessageValidator {
 				StoredQuery sq = vsqf.getImpl();
 
 				if (sq == null) {
-					er.err(XdsErrorCode.Code.XDSRegistryError, "Do not understand query [" + queryId + "]", this, SqDocRef.QueryID);
+					Assertion assertion = ASSERTIONLIBRARY.getAssertion("TA138");
+					String detail = "Query ID found: '" + queryId + "'";
+					er.err(XdsErrorCode.Code.XDSRegistryError, assertion, this, "", detail);
 					er.unRegisterValidator(this);
 					return;
 				}
 
 				sq.validateParameters();
+				// TODO Upgrade to Assertions
 			} catch (MetadataValidationException e) {
 				er.err(XdsErrorCode.Code.XDSRegistryError, e.getMessage(), this, SqDocRef.Request_parms);
 			} catch (LoggerException e) {
