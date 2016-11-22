@@ -114,7 +114,7 @@ public class PropertyServiceManager {
 			return;
 
 		// Create a File from the properties file in order to pass it to v3
-		assert Installation.instance().warHome()
+//		assert Installation.instance().warHome()
 		File propPath = null;
 		try {
 			logger.debug("*** getting toolkit.properties file:" + getClass().getResource("/toolkit.properties"));
