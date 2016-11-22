@@ -913,7 +913,7 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements
         if (context == null) {
             logger.info("Context is null");
         }
-        logger.info("Context Name is " + context.getServletContextName());
+//        logger.info("Context Name is " + context.getServletContextName());
         logger.info("Context Path is " + context.getContextPath());
         Installation.instance().setServletContextName(context.getContextPath());
     }
