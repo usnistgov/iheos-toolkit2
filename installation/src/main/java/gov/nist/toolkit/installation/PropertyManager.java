@@ -136,7 +136,7 @@ public class PropertyManager {
 	public String getExternalCache() {
 		loadProperties();
 		String cache = (String) toolkitProperties.get(EXTERNAL_CACHE);
-		System.setProperty("External_Cache", cache);
+//		System.setProperty("External_Cache", cache);
 		return cache;
 	}
 	
