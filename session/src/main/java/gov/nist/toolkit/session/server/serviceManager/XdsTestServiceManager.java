@@ -198,7 +198,7 @@ public class XdsTestServiceManager extends CommonService {
 			String tsFileName = "/gazelle/gazelle_sts_cert_truststore.jks";
 			URL tsURL = getClass().getResource(tsFileName); // Should this be a toolkit system property variable?
 			if (tsURL != null) {
-				File tsFile = new File(tsURL.getFile());
+				File tsFile = new File(tsURL.getFile().replaceAll("%20"," "));
 				System.setProperty("javax.net.ssl.trustStore", tsFile.toString());
 				System.setProperty("javax.net.ssl.trustStorePassword", "changeit");
 				System.setProperty("javax.net.ssl.trustStoreType", "JKS");
