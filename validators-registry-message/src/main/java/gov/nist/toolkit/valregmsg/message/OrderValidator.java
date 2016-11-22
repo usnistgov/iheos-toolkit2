@@ -46,14 +46,15 @@ public abstract class OrderValidator extends AbstractMessageValidator {
 			xml = cont.getBody();
 		}
 
+		// TODO Assertions
 		if (xml == null) {
 			er.err(XdsErrorCode.Code.XDSRegistryError, "No content present", this, "");
-            er.unRegisterValidator(this);
+			er.unRegisterValidator(this);
 			return;
 		}
 
 		checkElementOrder(xml);
-        er.unRegisterValidator(this);
+		er.unRegisterValidator(this);
 	}
 
 	public void setBody(OMElement xml) {
@@ -66,6 +67,7 @@ public abstract class OrderValidator extends AbstractMessageValidator {
 	}
 
 	@SuppressWarnings("unchecked")
+		// TODO Assertions
 	void checkElementOrder(OMElement ele) {
 		if (ele == null)
 			return;
@@ -76,11 +78,11 @@ public abstract class OrderValidator extends AbstractMessageValidator {
 			if (ele2 != null) {
 				String ele2Name = ele2.getLocalName();
 				if (!canFollow(ele1Name, ele2Name))
-					er.err(XdsErrorCode.Code.XDSRegistryError, 
+					er.err(XdsErrorCode.Code.XDSRegistryError,
 							"Child elements of " + ele.getLocalName() + "(id=" + new Metadata().getId(ele) + ")" +
-							" are out of Schema required order:   " +
-							" element " + ele2.getLocalName() + " cannot follow element " + ele1.getLocalName() + 
-							". Elements must be in this order " + elementOrder
+									" are out of Schema required order:   " +
+									" element " + ele2.getLocalName() + " cannot follow element " + ele1.getLocalName() +
+									". Elements must be in this order " + elementOrder
 							, this, reference);
 			}
 			checkElementOrder(ele1);
@@ -91,7 +93,7 @@ public abstract class OrderValidator extends AbstractMessageValidator {
 		OMNode n = null;
 		for (n = ele.getNextOMSibling(); n != null && !(n instanceof OMElement); n = n.getNextOMSibling())
 			;
-		return (OMElement) n; 
+		return (OMElement) n;
 	}
 
 	boolean canFollow(String element, String nextElement) {
