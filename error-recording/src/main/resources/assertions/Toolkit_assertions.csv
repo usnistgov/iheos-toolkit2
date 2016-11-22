@@ -130,4 +130,9 @@ TA129,Wrong XML namespace on Include element,MTOM XOP Include http://www.w3.org/
 TA130,Document contents not a XOP Include pointing to a separate Part and not inline Base64,MTOM XOP Include http://www.w3.org/TR/2005/REC-xop10-20050125/#xop_include,,
 TA131,Multiple Include elements found under Document element,MTOM XOP Include http://www.w3.org/TR/2005/REC-xop10-20050125/#xop_include,,
 TA132,Start part not found,MTOM XOP Example 2 http://www.w3.org/TR/2005/REC-xop10-20050125/,,
+TA133,Top level element must be AdhocQueryRequest,ebRS section 6.1,,
+TA134,AdhocQueryRequest: ResponseOption element missing,ebRS section 6.1,,
+TA135,AdhocQueryRequest: AdhocQuery element missing,ebRS section 6.1,,
+TA136,AdhocQuery: returnType attribute missing or empty,ebRS section 6.1,,
+TA137,AdhocQuery: returnType must be LeafClass or ObjectRef,ITI TF-2a: 3.18.4.1.2.7.1.1, 3.18.4.1.2.3.1 and ebRS Section 6.1.4.2,,
 

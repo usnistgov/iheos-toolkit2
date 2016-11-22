@@ -3,6 +3,8 @@ package gov.nist.toolkit.valregmsg.message;
 import gov.nist.toolkit.docref.SqDocRef;
 import gov.nist.toolkit.errorrecording.ErrorRecorder;
 import gov.nist.toolkit.errorrecording.client.XdsErrorCode;
+import gov.nist.toolkit.errorrecording.client.assertions.Assertion;
+import gov.nist.toolkit.errorrecording.client.assertions.AssertionLibrary;
 import gov.nist.toolkit.registrymetadata.Metadata;
 import gov.nist.toolkit.commondatatypes.MetadataSupport;
 import gov.nist.toolkit.registrysupport.logging.LoggerException;
@@ -30,6 +32,8 @@ import java.util.List;
  */
 public class QueryRequestMessageValidator extends AbstractMessageValidator {
 	OMElement ahqr;
+	private AssertionLibrary ASSERTIONLIBRARY = AssertionLibrary.getInstance();
+
 
 	public void run(ErrorRecorder er, MessageValidatorEngine mvc) {
 		this.er = er;
@@ -37,31 +41,38 @@ public class QueryRequestMessageValidator extends AbstractMessageValidator {
 
 		if (ahqr == null) {
 			er.err(XdsErrorCode.Code.XDSRegistryError, "AdhocQueryRequest: top element null", this, "");
-            er.unRegisterValidator(this);
+			er.unRegisterValidator(this);
 			return;
 		}
 
 		OMElement respOpt = XmlUtil.firstChildWithLocalName(ahqr, "ResponseOption");
 		OMElement ahq = XmlUtil.firstChildWithLocalName(ahqr, "AdhocQuery");
 
-		if (!"AdhocQueryRequest".equals(ahqr.getLocalName()))
-			er.err(XdsErrorCode.Code.XDSRegistryError, "Top level element must be AdhocQueryRequest - found instead " + ahqr.getLocalName(), this, "ebRS section 6.1");
-
-		if (respOpt == null)
-			er.err(XdsErrorCode.Code.XDSRegistryError, "AdhocQueryRequest: ResponseOption element missing", this, "ebRS section 6.1");
-
-		if (ahq == null)
-			er.err(XdsErrorCode.Code.XDSRegistryError, "AdhocQueryRequest: AdhocQuery element missing", this, "ebRS section 6.1");
-
+		if (!"AdhocQueryRequest".equals(ahqr.getLocalName())) {
+			Assertion assertion = ASSERTIONLIBRARY.getAssertion("TA133");
+			String detail = "Found instead: '" + ahqr.getLocalName() + "'";
+			er.err(XdsErrorCode.Code.XDSRepositoryError, assertion, this, "", detail);
+		}
+		if (respOpt == null) {
+			Assertion assertion = ASSERTIONLIBRARY.getAssertion("TA134");
+			er.err(XdsErrorCode.Code.XDSRegistryError, assertion, this, "", "");
+		}
+		if (ahq == null) {
+			Assertion assertion = ASSERTIONLIBRARY.getAssertion("TA135");
+			er.err(XdsErrorCode.Code.XDSRegistryError, assertion, this, "", "");
+		}
 		String returnType = "";
 		if (respOpt != null) {
 			returnType = respOpt.getAttributeValue(MetadataSupport.return_type_qname);
 			if (returnType == null || returnType.equals("")) {
-				er.err(XdsErrorCode.Code.XDSRegistryError, "AdhocQuery: returnType attribute missing or empty", this, "ebRS section 6.1");
+				Assertion assertion = ASSERTIONLIBRARY.getAssertion("TA136");
+				er.err(XdsErrorCode.Code.XDSRegistryError, assertion, this, "", "");
 			} else {
 				if (! (returnType.equals("LeafClass") || returnType.equals("ObjectRef"))) {
-					if (!(vc.leafClassWithDocumentOk && returnType.equals("LeafClassWithRepositoryItem")))
-						er.err(XdsErrorCode.Code.XDSRegistryError, "AdhocQuery: returnType must be LeafClass or ObjectRef", this, SqDocRef.Return_type);
+					if (!(vc.leafClassWithDocumentOk && returnType.equals("LeafClassWithRepositoryItem"))) {
+						Assertion assertion = ASSERTIONLIBRARY.getAssertion("TA137");
+						er.err(XdsErrorCode.Code.XDSRegistryError, assertion, this, "", "");
+					}
 				}
 			}
 		}
@@ -95,7 +106,7 @@ public class QueryRequestMessageValidator extends AbstractMessageValidator {
 
 				if (sq == null) {
 					er.err(XdsErrorCode.Code.XDSRegistryError, "Do not understand query [" + queryId + "]", this, SqDocRef.QueryID);
-                    er.unRegisterValidator(this);
+					er.unRegisterValidator(this);
 					return;
 				}
 
@@ -107,9 +118,9 @@ public class QueryRequestMessageValidator extends AbstractMessageValidator {
 			} catch (XdsException e) {
 				er.err(XdsErrorCode.Code.XDSRegistryError, e.getMessage(), this, SqDocRef.Request_parms);
 			}
-            finally {
-                er.unRegisterValidator(this);
-            }
+			finally {
+				er.unRegisterValidator(this);
+			}
 		}
 
 		try {
