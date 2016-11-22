@@ -37,6 +37,17 @@ public class SimCache {
         return sitesSet;
     }
 
+    static Collection<String> getAllRepositoryUniqueIds() throws Exception {
+        Collection<Site> sites = getAllSites();
+        Set<String> ids = new HashSet<>();
+        for (Site site : sites) {
+            Set<String> siteIds = site.repositoryUniqueIds();
+            ids.addAll(siteIds);
+        }
+
+        return ids;
+    }
+
     static public String describe() {
         StringBuilder buf = new StringBuilder();
         try {
