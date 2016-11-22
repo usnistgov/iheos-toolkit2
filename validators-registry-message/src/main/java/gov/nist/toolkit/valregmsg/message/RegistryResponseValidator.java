@@ -2,6 +2,8 @@ package gov.nist.toolkit.valregmsg.message;
 
 import gov.nist.toolkit.errorrecording.ErrorRecorder;
 import gov.nist.toolkit.errorrecording.client.XdsErrorCode;
+import gov.nist.toolkit.errorrecording.client.assertions.Assertion;
+import gov.nist.toolkit.errorrecording.client.assertions.AssertionLibrary;
 import gov.nist.toolkit.registrymsg.registry.RegistryErrorList;
 import gov.nist.toolkit.commondatatypes.MetadataSupport;
 import gov.nist.toolkit.utilities.xml.XmlUtil;
@@ -20,13 +22,14 @@ import java.util.List;
  */
 public class RegistryResponseValidator extends AbstractMessageValidator {
 	OMElement xml;
+	private AssertionLibrary ASSERTIONLIBRARY = AssertionLibrary.getInstance();
 
 	static List<String> statusValues =
-		Arrays.asList(
-				MetadataSupport.response_status_type_namespace + "Success",
-				MetadataSupport.ihe_response_status_type_namespace + "PartialSuccess",
-				MetadataSupport.response_status_type_namespace + "Failure"
-		);
+			Arrays.asList(
+					MetadataSupport.response_status_type_namespace + "Success",
+					MetadataSupport.ihe_response_status_type_namespace + "PartialSuccess",
+					MetadataSupport.response_status_type_namespace + "Failure"
+			);
 
 	public RegistryResponseValidator(ValidationContext vc, OMElement xml) {
 		super(vc);
@@ -38,23 +41,25 @@ public class RegistryResponseValidator extends AbstractMessageValidator {
 		er.registerValidator(this);
 
 		if (xml == null) {
-			er.err(XdsErrorCode.Code.XDSRegistryError, "RegistryResponseValidator: no RegistryResponse found", this, "");
-            er.unRegisterValidator(this);
+			Assertion assertion = ASSERTIONLIBRARY.getAssertion("TA139");
+			er.err(XdsErrorCode.Code.XDSRegistryError, assertion, this, "", "");
+			er.unRegisterValidator(this);
 			return;
 		}
 
 		String longStatus = xml.getAttributeValue(MetadataSupport.status_qname);
 		if (longStatus == null) {
-			er.err(XdsErrorCode.Code.XDSRegistryError, "RegistryResponseValidator: required attribute status is missing", this, "ebRS 3.0 Schema");
-            er.unRegisterValidator(this);
+			Assertion assertion = ASSERTIONLIBRARY.getAssertion("TA140");
+			er.err(XdsErrorCode.Code.XDSRegistryError, assertion, this, "", "");
+			er.unRegisterValidator(this);
 			return;
 		}
 
-		if (!statusValues.contains(longStatus))
-			er.err(XdsErrorCode.Code.XDSRegistryError, "RegistryResponseValidator: status attribute must be one of these values: "
-					+ statusValues + " found instead " + longStatus,
-					this, "ITI TF-3: 4.1.13");
-
+		if (!statusValues.contains(longStatus)) {
+			Assertion assertion = ASSERTIONLIBRARY.getAssertion("TA141");
+			String detail = "Status attribute must be one of these values: '" + statusValues + "'; found instead: '" + longStatus + "'";
+			er.err(XdsErrorCode.Code.XDSRegistryError, assertion, this, "", detail);
+		}
 		boolean isPartialSuccess = longStatus.endsWith(":PartialSuccess");
 		boolean isSuccess = longStatus.endsWith(":Success");
 
@@ -63,22 +68,26 @@ public class RegistryResponseValidator extends AbstractMessageValidator {
 
 		boolean hasErrors = rel.hasError();
 
-		if (isPartialSuccess && !isPartialSuccessPermitted())
-			er.err(XdsErrorCode.Code.XDSRegistryError, "Status is PartialSuccess but this status not allowed on this transaction", this, "ITI TF-3: 4.1.13");
+		if (isPartialSuccess && !isPartialSuccessPermitted()) {
+			Assertion assertion = ASSERTIONLIBRARY.getAssertion("TA142");
+			er.err(XdsErrorCode.Code.XDSRegistryError, assertion, this, "", "");
+		}
 
-
-		if (hasErrors && isSuccess)
-			er.err(XdsErrorCode.Code.XDSRegistryError, "RegistryResponse contains errors but status is Success", this, "ebRS 3.0 Section 2.1.6.2");
-
-		if (!isSuccess && !hasErrors)
-			er.err(XdsErrorCode.Code.XDSRegistryError, "Status attribute is " + longStatus + " but no errors are present", this, "ebRS 3.0 Section 2.1.3.2");
-
-        er.unRegisterValidator(this);
+		if (hasErrors && isSuccess) {
+			Assertion assertion = ASSERTIONLIBRARY.getAssertion("TA143");
+			er.err(XdsErrorCode.Code.XDSRegistryError, assertion, this, "", "");
+		}
+		if (!isSuccess && !hasErrors) {
+			Assertion assertion = ASSERTIONLIBRARY.getAssertion("TA144");
+			String detail = "Status found: '" + longStatus + "'";
+			er.err(XdsErrorCode.Code.XDSRegistryError, assertion, this, "", detail);
+		}
+		er.unRegisterValidator(this);
 	}
 
 	boolean isPartialSuccessPermitted() {
 		return (vc.isSQ && vc.isResponse) ||
-		(vc.isRet && vc.isResponse);
+				(vc.isRet && vc.isResponse);
 	}
 
 }

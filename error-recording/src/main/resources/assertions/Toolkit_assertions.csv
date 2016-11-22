@@ -136,5 +136,11 @@ TA135,AdhocQueryRequest: AdhocQuery element missing,ebRS section 6.1,,
 TA136,AdhocQuery: returnType attribute missing or empty,ebRS section 6.1,,
 TA137,AdhocQuery: returnType must be LeafClass or ObjectRef,ITI TF-2a: 3.18.4.1.2.7.1.1, 3.18.4.1.2.3.1 and ebRS Section 6.1.4.2,,
 TA138,Do not understand query,ebRIM 3.0 Section 2.8 and ITI TF-2a: 3.18.4.1.2.4,,
-TA139,Do not understand query,ebRIM 3.0 Section 2.8 and ITI TF-2a: 3.18.4.1.2.4,,
+TA139,RegistryResponseValidator: no RegistryResponse found,,,
+TA140,RegistryResponseValidator: required attribute status is missing,ebRS 3.0 Schema,,
+TA141,RegistryResponseValidator: value of Status attribute is incorrect,ITI TF-3: 4.1.13,,
+TA142,Status is PartialSuccess but this status is not allowed on this transaction,ITI TF-3: 4.1.13,,
+TA143,RegistryResponse contains errors but status is Success,ITI TF-3: 4.1.13,,
+TA144,RegistryResponse does not contain errors yet Status attribute is not Success,ebRS 3.0 Section 2.1.3.2,,
+
 
