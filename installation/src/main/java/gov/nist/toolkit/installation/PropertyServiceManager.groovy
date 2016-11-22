@@ -119,7 +119,7 @@ public class PropertyServiceManager {
 		String location;
 		try {
 			location  = getClass().getResource("/toolkit.properties").toString();
-			location.replaceAll("%20", " ");
+			location = location.replaceAll("%20", " ");
 			logger.debug("*** getting toolkit.properties file:" + location);
 
 			setPropertiesFile(location);
