@@ -2,6 +2,8 @@ package gov.nist.toolkit.valregmsg.message;
 
 import gov.nist.toolkit.errorrecording.ErrorRecorder;
 import gov.nist.toolkit.errorrecording.client.XdsErrorCode;
+import gov.nist.toolkit.errorrecording.client.assertions.Assertion;
+import gov.nist.toolkit.errorrecording.client.assertions.AssertionLibrary;
 import gov.nist.toolkit.errorrecording.factories.ErrorRecorderBuilder;
 import gov.nist.toolkit.utilities.xml.XmlUtil;
 import gov.nist.toolkit.valsupport.client.ValidationContext;
@@ -21,6 +23,7 @@ public class RetrieveImagingDocumentSetRequestValidator  extends AbstractMessage
 	OMElement xml;
 	ErrorRecorderBuilder erBuilder;
 	MessageValidatorEngine mvc;
+	private AssertionLibrary ASSERTIONLIBRARY = AssertionLibrary.getInstance();
 
 	public RetrieveImagingDocumentSetRequestValidator(ValidationContext vc, ErrorRecorderBuilder erBuilder, MessageValidatorEngine mvc) {
 		super(vc);
@@ -36,8 +39,9 @@ public class RetrieveImagingDocumentSetRequestValidator  extends AbstractMessage
 		xml = cont.getBody();
 
 		if (xml == null) {
-			er.err(XdsErrorCode.Code.XDSRepositoryError, "RetrieveImagingDocumentSetDocumentSetRequest: top element null", this, "");
-            er.unRegisterValidator(this);
+			Assertion assertion = ASSERTIONLIBRARY.getAssertion("TA145");
+			er.err(XdsErrorCode.Code.XDSRepositoryError, assertion, this, "", "");
+			er.unRegisterValidator(this);
 			return;
 		}
 
@@ -50,16 +54,18 @@ public class RetrieveImagingDocumentSetRequestValidator  extends AbstractMessage
 			if (vc.isXC) {
 				OMElement homeElement = XmlUtil.firstChildWithLocalName(dr, "HomeCommunityId");
 				if (homeElement == null) {
-					er.err(XdsErrorCode.Code.XDSMissingHomeCommunityId, "Cross-Community Retrieve request must include homeCommunityId", this, "ITI TF-2b: 3.39.1");
-				}
-				else  {
+					Assertion assertion = ASSERTIONLIBRARY.getAssertion("TA146");
+					er.err(XdsErrorCode.Code.XDSMissingHomeCommunityId, assertion, this, "", "");
+				} else {
 					String homeValue = homeElement.getText();
-					if (!homeValue.startsWith("urn:oid:"))
-						er.err(XdsErrorCode.Code.XDSRepositoryError, "HomeCommunityId must have urn:oid: prefix", this, "ITI TF-2b: 3.38.4.1.2.1");
+					if (!homeValue.startsWith("urn:oid:")) {
+						Assertion assertion = ASSERTIONLIBRARY.getAssertion("TA147");
+						er.err(XdsErrorCode.Code.XDSRepositoryError, assertion, this, "", "");
+					}
 				}
 			}
+			er.unRegisterValidator(this);
 		}
-        er.unRegisterValidator(this);
-	}
 
+	}
 }

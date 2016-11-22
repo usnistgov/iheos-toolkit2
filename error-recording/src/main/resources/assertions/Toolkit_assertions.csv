@@ -142,5 +142,8 @@ TA141,RegistryResponseValidator: value of Status attribute is incorrect,ITI TF-3
 TA142,Status is PartialSuccess but this status is not allowed on this transaction,ITI TF-3: 4.1.13,,
 TA143,RegistryResponse contains errors but status is Success,ITI TF-3: 4.1.13,,
 TA144,RegistryResponse does not contain errors yet Status attribute is not Success,ebRS 3.0 Section 2.1.3.2,,
+TA145,RetrieveImagingDocumentSetDocumentSetRequest: top element null,,,
+TA146,Cross-Community Retrieve request must include homeCommunityId,ITI TF-2b: 3.39.1,,
+TA147,HomeCommunityId must have 'urn:oid: prefix',ITI TF-2b: 3.38.4.1.2.1,,
 
 
