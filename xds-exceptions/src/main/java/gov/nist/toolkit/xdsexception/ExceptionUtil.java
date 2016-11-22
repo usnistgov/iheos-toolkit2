@@ -20,6 +20,7 @@ public class ExceptionUtil {
 
 		String stackTrace = new String(baos.toByteArray());
 		StringBuilder buf = new StringBuilder();
+		buf.append("\nException ").append(e.getClass().getSimpleName());
 		Scanner scanner = new Scanner(stackTrace);
 //		if (scanner.hasNextLine()) scanner.nextLine();  // heading
 //		if (scanner.hasNextLine()) scanner.nextLine();  // here()
