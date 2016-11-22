@@ -118,13 +118,12 @@ public class PropertyServiceManager {
 		File propPath = null;
 		String location;
 		try {
-			location  = getClass().getResource("/toolkit.properties").toString();
+			URL url = getClass().getResource("/toolkit.properties");
+			location = url.getFile();
 			location = location.replaceAll("%20", " ");
 			logger.debug("*** getting toolkit.properties file:" + location);
 
 			setPropertiesFile(location);
-
-//			logger.debug("*** got toolkit.properties file:" + propPath.toString());
 
 		} catch (Throwable t) {
 			t.printStackTrace();
