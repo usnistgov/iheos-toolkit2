@@ -85,6 +85,9 @@ public class Installation {
         propertyServiceMgr = null;
         propertyServiceManager();  // initialize
         String ec = propertyServiceManager().getPropertyManager().getExternalCache();
+        // may have %20 instead of space characters on Windows.  Clean them up
+        ec = ec.replaceAll("%20", " ");
+
         logger.info("External Cache as reported by toolkit.properties");
 		if (externalCache == null) { // this can be different in a unit test situation
             externalCache = new File(ec);
