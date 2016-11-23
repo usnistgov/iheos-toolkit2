@@ -288,6 +288,12 @@ public class SimulatorProperties {
      */
     public static final String                     idsImageCache = "IDS Image Cache";
 
+    /*
+     * These two are for RAD-55's sent to Imaging Document Sources
+     */
+     public static final String      wadoEndpoint = "WADO_endpoint";
+     public static final String      wadoTlsEndpoint = "WADO_TLS_endpoint";
+
    /*
     * These two are for RAD-69's sent to Imaging Document Sources
     */

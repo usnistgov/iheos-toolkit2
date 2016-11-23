@@ -127,7 +127,11 @@ public class Installation {
         return f;
     }
 
-    public File simDbFile() {
+    /**
+    * @return a {@link File} object representing the simdb directory, that is,
+    * the directory in which information for simulators is maintained on disc.
+    */
+   public File simDbFile() {
         return new File(externalCache(), "simdb");
     }
 

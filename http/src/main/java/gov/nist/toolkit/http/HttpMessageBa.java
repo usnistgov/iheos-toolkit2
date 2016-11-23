@@ -167,11 +167,15 @@ public class HttpMessageBa {
 	}
 
 	public void addHeader(String header) throws HttpParseException {
+	   addHeader(header, new String[] {"POST"});
+	}
+	public void addHeader(String header, String[] httpMethods) throws HttpParseException {
 		String[] parts = header.split(":",2);
+		// 1st line (method, uri, etc) has no ":", so only one part
 		if (parts.length != 2) {
-			if (!header.startsWith("POST"))
-				throw new HttpParseException("Header [" + header + "] does not parse");
-			return;
+		   for (String m : httpMethods)
+			if (header.startsWith(m)) return;
+		   throw new HttpParseException("Header [" + header + "] does not parse");
 		}
 		Header h = new Header(parts[0].trim(), parts[1].trim());
 		headers.add(h);

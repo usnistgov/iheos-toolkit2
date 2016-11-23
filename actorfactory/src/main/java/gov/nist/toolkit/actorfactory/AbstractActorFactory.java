@@ -250,7 +250,7 @@ public abstract class AbstractActorFactory {
 		+ ((isTLS) ? Installation.instance().propertyServiceManager().getToolkitTlsPort() : Installation.instance().propertyServiceManager().getToolkitPort())
 //		+ "/"  context name includes preceding /
 		+ contextName  
-		+ "/sim/" 
+		+ (ele.transType.isHttpOnly() ? "/httpsim/" : "/sim/" )
 		+ asc.getId() 
 		+ "/" +
 		actor           //asc.getActorType().toLowerCase()

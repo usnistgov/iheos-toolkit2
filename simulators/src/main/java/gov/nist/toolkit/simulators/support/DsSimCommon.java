@@ -11,6 +11,7 @@ import gov.nist.toolkit.errorrecording.client.ValidationStepResult;
 import gov.nist.toolkit.errorrecording.client.ValidatorErrorItem;
 import gov.nist.toolkit.errorrecording.client.XdsErrorCode;
 import gov.nist.toolkit.errorrecording.factories.ErrorRecorderBuilder;
+import gov.nist.toolkit.http.HttpParserBa;
 import gov.nist.toolkit.installation.Installation;
 import gov.nist.toolkit.registrymetadata.Metadata;
 import gov.nist.toolkit.registrymsg.registry.RegistryResponse;
@@ -126,17 +127,28 @@ public class DsSimCommon {
     }
 
     /**
-     * Starts the validation/simulator process by pulling the HTTP wrapper from the db, creating a validation engine if necessary,
-     * and starting an HTTP validator. It returns the validation engine. Remember that the basic abstract
-     * Simulator class inherits directly from the abstract MessageValidator class.
+     * Starts the validation/simulator process by pulling the HTTP wrapper from 
+     * the db, creating a validation engine if necessary, and starting an HTTP 
+     * validator. It returns the validation engine. Remember that the basic 
+     * abstract Simulator class inherits directly from the abstract 
+     * MessageValidator class.
      * @param vc
      * @param db
      * @param mvc
      * @return
      * @throws IOException
      */
-    public MessageValidatorEngine runValidation(ValidationContext vc, SimDb db, MessageValidatorEngine mvc, ErrorRecorderBuilder gerb) throws IOException {
-        return new ValidateMessageService(regIndex).runValidation(vc, db.getRequestMessageHeader(), db.getRequestMessageBody(), mvc, gerb);
+    public MessageValidatorEngine runValidation(ValidationContext vc, SimDb db, 
+       MessageValidatorEngine mvc, ErrorRecorderBuilder gerb) throws IOException {
+       ValidateMessageService vms = new ValidateMessageService(regIndex);
+       MessageValidatorEngine mve = vms.runValidation(vc, 
+           db.getRequestMessageHeader(), db.getRequestMessageBody(), mvc, gerb);
+       hparser = vms.getHttpMessageValidator().getHttpParserBa();
+       return mve;
+    }
+    private HttpParserBa hparser;
+    public HttpParserBa getHttpParserBa() {
+       return hparser;
     }
 
 

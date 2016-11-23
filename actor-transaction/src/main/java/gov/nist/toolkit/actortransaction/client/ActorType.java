@@ -186,7 +186,9 @@ public enum ActorType implements IsSerializable, Serializable {
             "gov.nist.toolkit.simulators.sim.ids.IdsActorSimulator",
             Arrays.asList(TransactionType.RET_IMG_DOC_SET),
             true,
-            null
+            null,
+            "gov.nist.toolkit.simulators.sim.ids.IdsHttpActorSimulator",
+            Arrays.asList(TransactionType.WADO_RETRIEVE)            
         ),
     IMAGING_DOC_CONSUMER(
             "Imaging Document Consumer",
@@ -207,6 +209,8 @@ public enum ActorType implements IsSerializable, Serializable {
     boolean showInConfig;
     String actorsFileLabel;
     String simulatorClassName;
+    List<TransactionType> httpTransactionTypes;
+    String httpSimulatorClassName;
 
     ActorType() {
     } // for GWT
@@ -219,7 +223,17 @@ public enum ActorType implements IsSerializable, Serializable {
         this.transactionTypes = tt;   // This actor receives
         this.showInConfig = showInConfig;
         this.actorsFileLabel = actorsFileLabel;
+        this.httpTransactionTypes = new ArrayList<>();
+        this.httpSimulatorClassName = null;
     }
+    
+    ActorType(String name, List<String> altNames, String shortName, 
+       String simulatorClassName, List<TransactionType> tt, boolean showInConfig, 
+       String actorsFileLabel, String httpSimulatorClassName, List<TransactionType> httpTt) {
+       this(name, altNames, shortName, simulatorClassName, tt, showInConfig, actorsFileLabel);
+       this.httpTransactionTypes = httpTt;
+       this.httpSimulatorClassName = httpSimulatorClassName;
+   }
 
     public boolean showInConfig() {
         return showInConfig;
@@ -258,6 +272,8 @@ public enum ActorType implements IsSerializable, Serializable {
     }
 
     public String getSimulatorClassName() { return simulatorClassName; }
+    
+    public String getHttpSimulatorClassName() { return httpSimulatorClassName; }
 
     public String getActorsFileLabel() {
         return actorsFileLabel;
@@ -321,12 +337,23 @@ public enum ActorType implements IsSerializable, Serializable {
         return a.getTransaction(transString);
     }
 
-    public TransactionType getTransaction(String name) {
+    /**
+     * Return TransactionType for passed transaction name.
+    * @param name of transaction, matched to TransactionType short name, name,
+    * or id. Both SOAP and Http transactions are searched
+    * @return TransactionType for this name, or null if no match found.
+    */
+   public TransactionType getTransaction(String name) {
         for (TransactionType tt : transactionTypes) {
             if (tt.getShortName().equals(name)) return tt;
             if (tt.getName().equals(name)) return tt;
             if (tt.getId().equals(name)) return tt;
         }
+        for (TransactionType tt : httpTransactionTypes) {
+           if (tt.getShortName().equals(name)) return tt;
+           if (tt.getName().equals(name)) return tt;
+           if (tt.getId().equals(name)) return tt;
+       }
         return null;
     }
 
@@ -337,6 +364,8 @@ public enum ActorType implements IsSerializable, Serializable {
         buf.append(name).append(" [");
         for (TransactionType tt : transactionTypes)
             buf.append(tt).append(",");
+        for (TransactionType tt : httpTransactionTypes)
+           buf.append(tt).append(",");
         buf.append("]");
 
         return buf.toString();
@@ -354,13 +383,15 @@ public enum ActorType implements IsSerializable, Serializable {
         return transactionTypes;
     }
 
-    public boolean hasTransaction(TransactionType transType) {
-        for (TransactionType transType2 : transactionTypes) {
-            if (transType2.equals(transType))
-                return true;
-        }
-        return false;
-    }
+   public boolean hasTransaction(TransactionType transType) {
+      for (TransactionType transType2 : transactionTypes) {
+         if (transType2.equals(transType)) return true;
+      }
+         for (TransactionType transType2 : httpTransactionTypes) {
+            if (transType2.equals(transType)) return true;
+         }
+      return false;
+   }
 
 
     public boolean equals(ActorType at) {

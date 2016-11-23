@@ -11,5 +11,4 @@ public class DefaultValidationContextFactory {
     static public ValidationContext validationContext() {
         return new ValidationContext(EnvSetting.getEnvSetting(EnvSetting.DEFAULTSESSIONID).getCodesFile().toString());
     }
-
 }

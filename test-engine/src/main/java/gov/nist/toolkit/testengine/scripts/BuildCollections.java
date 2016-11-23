@@ -74,18 +74,18 @@ public class BuildCollections extends HttpServlet {
       }
    }
 
-    private ActorType findActorType(String collectionName) {
-        ActorType at;
+   private ActorType findActorType(String collectionName) {
+         ActorType at;
 
-      collectionName = collectionName.toLowerCase();
+         collectionName = collectionName.toLowerCase();
 
-      at = ActorType.findActor(collectionName.toLowerCase());
-      if (at != null) return at;
+         at = ActorType.findActor(collectionName);
+         if (at != null) return at;
 
-      TransactionType tt = TransactionType.find(collectionName);
-      if (tt == null) return null;
-      at = ActorType.getActorType(tt);
-      return at;
+         TransactionType tt = TransactionType.find(collectionName);
+         if (tt == null) return null;
+         at = ActorType.getActorType(tt);
+         return at;
    }
 
     /**

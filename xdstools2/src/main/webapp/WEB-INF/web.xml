@@ -100,6 +100,12 @@
 	</servlet>
 	
 	<servlet>
+      <servlet-name>httpSimulatorServlet</servlet-name>
+      <servlet-class>gov.nist.toolkit.simulators.servlet.HttpSimServlet</servlet-class>
+      <load-on-startup>1</load-on-startup>
+   </servlet>
+	
+	<servlet>
 		<servlet-name>Reconfigure Simulators</servlet-name>
 		<servlet-class>gov.nist.toolkit.simulators.servlet.ReconfigureSimulators</servlet-class>
 		<load-on-startup>2</load-on-startup>
@@ -174,6 +180,16 @@
 		<servlet-name>simulatorServlet</servlet-name>
 		<url-pattern>/xdstools2/sim/*</url-pattern>
 	</servlet-mapping>
+
+   <servlet-mapping>
+      <servlet-name>httpSimulatorServlet</servlet-name>
+      <url-pattern>/httpsim/*</url-pattern>
+   </servlet-mapping>
+
+   <servlet-mapping>
+      <servlet-name>httpSimulatorServlet</servlet-name>
+      <url-pattern>/xdstools2/httpsim/*</url-pattern>
+   </servlet-mapping>
     
     <servlet-mapping>
         <servlet-name>buildCollectionsServlet</servlet-name>

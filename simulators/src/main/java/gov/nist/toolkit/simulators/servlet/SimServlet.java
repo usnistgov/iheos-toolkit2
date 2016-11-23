@@ -633,7 +633,7 @@ public class SimServlet  extends HttpServlet {
 			List<SimId> simIds = db.getAllSimIds();
 			for (SimId simId : simIds) {
 				BaseDsActorSimulator sim = (BaseDsActorSimulator) RuntimeManager.getSimulatorRuntime(simId);
-
+            if (sim == null) continue;
 				DsSimCommon dsSimCommon = null;
 				SimulatorConfig asc = GenericSimulatorFactory.getSimConfig(db.getRoot(), simId);
 				sim.init(dsSimCommon, asc);
@@ -650,7 +650,7 @@ public class SimServlet  extends HttpServlet {
 			List<SimId> simIds = db.getAllSimIds();
 			for (SimId simId : simIds) {
 				BaseDsActorSimulator sim = (BaseDsActorSimulator) RuntimeManager.getSimulatorRuntime(simId);
-
+            if (sim == null) continue;
 				DsSimCommon dsSimCommon = null;
 				SimulatorConfig asc = GenericSimulatorFactory.getSimConfig(db.getRoot(), simId);
 				sim.init(dsSimCommon, asc);

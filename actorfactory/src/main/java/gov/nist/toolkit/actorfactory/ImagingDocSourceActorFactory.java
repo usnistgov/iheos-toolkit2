@@ -22,7 +22,8 @@ public class ImagingDocSourceActorFactory extends AbstractActorFactory {
 
 	static final List<TransactionType> incomingTransactions = 
 		Arrays.asList(
-				TransactionType.RET_IMG_DOC_SET 
+				TransactionType.RET_IMG_DOC_SET,
+				TransactionType.WADO_RETRIEVE
 				);
 
 	protected Simulator buildNew(SimManager simm, SimId newID, boolean configureBase) {
@@ -39,6 +40,8 @@ public class ImagingDocSourceActorFactory extends AbstractActorFactory {
 		addEditableConfig(sc, SimulatorProperties.idsImageCache, ParamType.TEXT, newID.getId());
 		addEditableEndpoint(sc, SimulatorProperties.idsrEndpoint, actorType, TransactionType.RET_IMG_DOC_SET, false);
 		addEditableEndpoint(sc, SimulatorProperties.idsrTlsEndpoint, actorType, TransactionType.RET_IMG_DOC_SET, true);
+      addEditableEndpoint(sc, SimulatorProperties.wadoEndpoint, actorType, TransactionType.WADO_RETRIEVE, false);
+      addEditableEndpoint(sc, SimulatorProperties.wadoTlsEndpoint, actorType, TransactionType.WADO_RETRIEVE, true);
 
 		return new Simulator(sc);
 	}
@@ -75,6 +78,19 @@ public class ImagingDocSourceActorFactory extends AbstractActorFactory {
 				sc.get(SimulatorProperties.idsrTlsEndpoint).asString(),
 				true, 
 				isAsync));
+      
+      site.addTransaction(new TransactionBean(
+            TransactionType.WADO_RETRIEVE.getCode(),
+            RepositoryType.NONE,
+            sc.get(SimulatorProperties.wadoEndpoint).asString(),
+            false, 
+            isAsync));
+      site.addTransaction(new TransactionBean(
+            TransactionType.WADO_RETRIEVE.getCode(),
+            RepositoryType.NONE,
+            sc.get(SimulatorProperties.wadoTlsEndpoint).asString(),
+            true, 
+            isAsync));
 
 		site.addRepository(new TransactionBean(
 				sc.get(SimulatorProperties.idsRepositoryUniqueId).asString(),

@@ -74,17 +74,26 @@ public class SimDb {
 		db.setSimulatorType(actor);
 		return db;
 	}
+
+   /**
+    * Checks for existence of simdb directory for passed id.
+    * @param simId id of simulator to check
+    * @return boolean true if a simulator directory for this id exists in the
+    * simdb directory, false otherwise.
+    */
+   public boolean exists(SimId simId) {
+      return new File(Installation.instance().simDbFile(), simId.toString()).exists();
+   }
 	
+	/**
+	 * Base constructor Loads the simulator db directory 
+	 */
 	public SimDb() {
 		dbRoot = Installation.instance().simDbFile();
 	}
 	
 	public SimDb(SimId simulatorId) throws IOException, NoSimException {
 		this(Installation.instance().simDbFile(), simulatorId, null, null);
-	}
-
-	public boolean exists(SimId simId) {
-		return new File(Installation.instance().simDbFile(), simId.toString()).exists();
 	}
 
 	public SimDb(File dbRoot, SimId simId) throws IOException, NoSimException {

@@ -52,7 +52,8 @@ public class ValidationContext  implements Serializable, IsSerializable {
 	 * case, {@link #isXC} is also set.
 	 */
 	public boolean isRad69	 = false;
-    //NHIN xcpd
+	public boolean isRad55 = false;
+   //NHIN xcpd
     public boolean isXcpd = false;
     public boolean isNwHINxcpd = false;
     public boolean isC32 = false;
@@ -504,7 +505,7 @@ public class ValidationContext  implements Serializable, IsSerializable {
 	}
 
 	public boolean isTransactionKnown() {
-		return isR || isRODDE || isMU || isPnR || isRet || isXDR || isXDM || isSQ || isRad69;
+		return isR || isRODDE || isMU || isPnR || isRet || isXDR || isXDM || isSQ || isRad69 || isRad55;
 	}
 
 	public boolean isMessageTypeKnown() {

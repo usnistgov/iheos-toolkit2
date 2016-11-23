@@ -103,13 +103,13 @@ public class WADOTransaction extends BasicTransaction {
    protected void run(OMElement request) throws Exception {
       
       try {
-      endpoint = "http://10.242.100.130:8080/wado";
-      if (StringUtils.isBlank(endpoint)) {
-         parseEndpoint(TransactionType.WADO_RETRIEVE);
-         if (StringUtils.isBlank(endpoint)) {
-            throw new XdsInternalException("No valid endpoint");
-         }
-      }
+      // fixed endpoint for early testing   
+      // endpoint = "http://10.242.100.130:8080/wado";
+      if (StringUtils.isBlank(endpoint)) 
+         endpoint = testConfig.site.getEndpoint(TransactionType.WADO_RETRIEVE, testConfig.secure, async);
+      if (StringUtils.isBlank(endpoint)) 
+         throw new XdsInternalException("No valid endpoint");
+      
       if (!valid(headers, "Accept")) 
          throw new XdsInternalException("No valid 'Accept' header value");
       if (!valid(parameters, "requestType"))
