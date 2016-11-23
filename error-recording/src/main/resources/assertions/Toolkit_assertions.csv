@@ -145,5 +145,7 @@ TA144,RegistryResponse does not contain errors yet Status attribute is not Succe
 TA145,RetrieveImagingDocumentSetDocumentSetRequest: top element null,,,
 TA146,Cross-Community Retrieve request must include homeCommunityId,ITI TF-2b: 3.39.1,,
 TA147,HomeCommunityId must have 'urn:oid: prefix',ITI TF-2b: 3.38.4.1.2.1,,
-
+TA148,RetrieveDocumentSetRequest: top element null,,,
+TA149,Cross-Community Retrieve request must include homeCommunityId,ITI TF-2b: 3.39.1,,
+TA150,HomeCommunityId must have 'urn:oid: prefix',ITI TF-2b: 3.38.4.1.2.1,,
 
