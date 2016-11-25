@@ -1,6 +1,6 @@
 <TestPlan>
 	<Test>ids_4812/Case 5: Empty Study Instance UID</Test>
-	<TestStep id="retrieve">
+	<TestStep id="retrieve-5">
 		<Goal>Imaging Document Set Retrieve exception: Empty Study Instance
 			UID</Goal>
 		<ExpectedStatus>Failure</ExpectedStatus>
@@ -30,7 +30,7 @@
 		<XmlDetailTransaction>
 			<Assertions>
 				<Assert id="Returned doc(s)" process="sameRegErrors">
-					<TestResponse testDir="THIS" step="retrieve" />
+					<TestResponse testDir="THIS" step="retrieve-5" />
 				</Assert>
 			</Assertions>
 		</XmlDetailTransaction>

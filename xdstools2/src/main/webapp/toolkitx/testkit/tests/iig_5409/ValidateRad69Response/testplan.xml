@@ -1,0 +1,74 @@
+<TestPlan>
+  <Test>iig_5409/validate-R</Test>
+  <TestStep id="validate-rad69-response">
+    <Goal>Validate RAD-69 Response from SUT</Goal>
+    <Standard>
+      <ResponseBody>
+        <xdsb:RetrieveDocumentSetResponse
+            xmlns:xdsb="urn:ihe:iti:xds-b:2007">
+          <rs:RegistryResponse xmlns:rs="urn:oasis:names:tc:ebxml-regrep:xsd:rs:3.0"
+                               status="urn:oasis:names:tc:ebxml-regrep:ResponseStatusType:Success"/>
+          <!-- This is the single image from Community A -->
+          <xdsb:DocumentResponse>
+            <xdsb:HomeCommunityId>urn:oid:1.3.6.1.4.1.21367.13.70.101</xdsb:HomeCommunityId>
+            <xdsb:RepositoryUniqueId>1.3.6.1.4.1.21367.13.71.101</xdsb:RepositoryUniqueId>
+            <xdsb:DocumentUniqueId>1.3.6.1.4.1.21367.201599.3.201606010958048.1</xdsb:DocumentUniqueId>
+            <xdsb:mimeType>application/dicom</xdsb:mimeType>
+            <xdsb:Document>...</xdsb:Document>
+          </xdsb:DocumentResponse>
+
+          <!-- Six images from Community B -->
+          <xdsb:DocumentResponse>
+            <xdsb:HomeCommunityId>urn:oid:1.3.6.1.4.1.21367.13.70.102</xdsb:HomeCommunityId>
+            <xdsb:RepositoryUniqueId>1.3.6.1.4.1.21367.13.71.102</xdsb:RepositoryUniqueId>
+            <xdsb:DocumentUniqueId>1.3.6.1.4.1.21367.201599.3.201606010958053.1</xdsb:DocumentUniqueId>
+            <xdsb:mimeType>application/dicom</xdsb:mimeType>
+            <xdsb:Document>...</xdsb:Document>
+          </xdsb:DocumentResponse>
+          <xdsb:DocumentResponse>
+            <xdsb:HomeCommunityId>urn:oid:1.3.6.1.4.1.21367.13.70.102</xdsb:HomeCommunityId>
+            <xdsb:RepositoryUniqueId>1.3.6.1.4.1.21367.13.71.102</xdsb:RepositoryUniqueId>
+            <xdsb:DocumentUniqueId>1.3.6.1.4.1.21367.201599.3.201606010958053.2</xdsb:DocumentUniqueId>
+            <xdsb:mimeType>application/dicom</xdsb:mimeType>
+            <xdsb:Document>...</xdsb:Document>
+          </xdsb:DocumentResponse>
+          <xdsb:DocumentResponse>
+            <xdsb:HomeCommunityId>urn:oid:1.3.6.1.4.1.21367.13.70.102</xdsb:HomeCommunityId>
+            <xdsb:RepositoryUniqueId>1.3.6.1.4.1.21367.13.71.102</xdsb:RepositoryUniqueId>
+            <xdsb:DocumentUniqueId>1.3.6.1.4.1.21367.201599.3.201606010958053.3</xdsb:DocumentUniqueId>
+            <xdsb:mimeType>application/dicom</xdsb:mimeType>
+            <xdsb:Document>...</xdsb:Document>
+          </xdsb:DocumentResponse>
+          <xdsb:DocumentResponse>
+            <xdsb:HomeCommunityId>urn:oid:1.3.6.1.4.1.21367.13.70.102</xdsb:HomeCommunityId>
+            <xdsb:RepositoryUniqueId>1.3.6.1.4.1.21367.13.71.102</xdsb:RepositoryUniqueId>
+            <xdsb:DocumentUniqueId>1.3.6.1.4.1.21367.201599.3.201606010958053.4</xdsb:DocumentUniqueId>
+            <xdsb:mimeType>application/dicom</xdsb:mimeType>
+            <xdsb:Document>...</xdsb:Document>
+          </xdsb:DocumentResponse>
+          <xdsb:DocumentResponse>
+            <xdsb:HomeCommunityId>urn:oid:1.3.6.1.4.1.21367.13.70.102</xdsb:HomeCommunityId>
+            <xdsb:RepositoryUniqueId>1.3.6.1.4.1.21367.13.71.102</xdsb:RepositoryUniqueId>
+            <xdsb:DocumentUniqueId>1.3.6.1.4.1.21367.201599.3.201606010958053.5</xdsb:DocumentUniqueId>
+            <xdsb:mimeType>application/dicom</xdsb:mimeType>
+            <xdsb:Document>...</xdsb:Document>
+          </xdsb:DocumentResponse>
+          <xdsb:DocumentResponse>
+            <xdsb:HomeCommunityId>urn:oid:1.3.6.1.4.1.21367.13.70.102</xdsb:HomeCommunityId>
+            <xdsb:RepositoryUniqueId>1.3.6.1.4.1.21367.13.71.102</xdsb:RepositoryUniqueId>
+            <xdsb:DocumentUniqueId>1.3.6.1.4.1.21367.201599.3.201606010958053.6</xdsb:DocumentUniqueId>
+            <xdsb:mimeType>application/dicom</xdsb:mimeType>
+            <xdsb:Document>...</xdsb:Document>
+          </xdsb:DocumentResponse>
+        </xdsb:RetrieveDocumentSetResponse>
+      </ResponseBody>
+    </Standard>
+    <XmlDetailTransaction>
+      <Assertions>
+        <Assert id="Returned doc(s)" process="sameRetImgs">
+          <TestResponse testDir="../Rad69RetrieveRequest" step="retrieve"/>
+        </Assert>
+      </Assertions>
+    </XmlDetailTransaction>
+  </TestStep>
+</TestPlan>

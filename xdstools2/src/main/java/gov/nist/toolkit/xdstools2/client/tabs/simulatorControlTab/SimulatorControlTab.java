@@ -56,39 +56,23 @@ public class SimulatorControlTab extends GenericQueryTab {
     public SimulatorControlTab() {
         super(new FindDocumentsSiteActorManager());	}
 
-    @Override
-    protected Widget buildUI() {
-        return null;
-    }
-
-    @Override
-    protected void bindUI() {
-
-    }
-
-    @Override
-    protected void configureTabView() {
-
-    }
-
-    @Override
-    public void onTabLoad(boolean select, String eventName) {
-        self = this;
+	@Override
+	protected Widget buildUI() {
+		FlowPanel simCtrlContainer=new FlowPanel();
+		self = this;
 
         simConfigSuper = new SimConfigSuper(this, simConfigPanel, getCurrentTestSession());
 
-        registerTab(select, eventName);
-
-        addActorReloader();
+		addActorReloader();
 
         runEnabled = false;
         samlEnabled = false;
         tlsEnabled = false;
         enableInspectResults = false;
 
-        tabTopPanel.add(new HTML("<h2>Simulator Manager</h2>"));
+		simCtrlContainer.add(new HTML("<h2>Simulator Manager</h2>"));
 
-        tabTopPanel.add(new HTML("<h3>Add new simulator to this test session</h3>"));
+		simCtrlContainer.add(new HTML("<h3>Add new simulator to this test session</h3>"));
 
         HorizontalPanel actorSelectPanel = new HorizontalPanel();
         actorSelectPanel.add(HtmlMarkup.html("Select actor type"));
@@ -101,9 +85,9 @@ public class SimulatorControlTab extends GenericQueryTab {
         actorSelectPanel.add(createActorSimulatorButton);
         createActorSimulatorButton.addClickHandler(new CreateButtonClickHandler(this, testSessionManager));
 
-        tabTopPanel.add(actorSelectPanel);
+		simCtrlContainer.add(actorSelectPanel);
 
-        tabTopPanel.add(HtmlMarkup.html("<br />"));
+		simCtrlContainer.add(HtmlMarkup.html("<br />"));
 
         VerticalPanel tableWrapper = new VerticalPanel();
 //		table.setBorderWidth(1);
@@ -112,14 +96,20 @@ public class SimulatorControlTab extends GenericQueryTab {
         tableWrapper.add(tableTitle);
         tableWrapper.add(table);
 
-        tabTopPanel.add(tableWrapper);
+		simCtrlContainer.add(tableWrapper);
 
 
         simConfigWrapperPanel.add(simConfigPanel);
 
-        // force loading of sites in the back end
-        // funny errors occur without this
-        new GetAllSitesCommand() {
+
+		return simCtrlContainer;
+	}
+
+	@Override
+	protected void bindUI() {
+		// force loading of sites in the back end
+		// funny errors occur without this
+		new GetAllSitesCommand() {
 
             @Override
             public void onComplete(Collection<Site> var1) {
@@ -134,13 +124,27 @@ public class SimulatorControlTab extends GenericQueryTab {
             }
         });
 
-        loadSimStatus();
-    }
+		((Xdstools2EventBus) ClientUtils.INSTANCE.getEventBus()).addTabSelectedEventHandler(new TabSelectedEvent.TabSelectedEventHandler() {
+			@Override
+			public void onTabSelection(TabSelectedEvent event) {
+				if (event.getTabName().equals(tabName)){
+					loadSimStatus();
+				}
+			}
+		});
 
-    @Override
-    public void onReload() {
-        loadSimStatus();
-    }
+		loadSimStatus();
+	}
+
+	@Override
+	protected void configureTabView() {
+
+	}
+
+	@Override
+	public void onReload() {
+		loadSimStatus();
+	}
 
 
     void createNewSimulator(String actorTypeName, SimId simId) {
@@ -316,14 +320,15 @@ public class SimulatorControlTab extends GenericQueryTab {
         });
         buttonPanel.add(pidImg);
 
-        Image editImg = new Image("icons2/edit.png");
-        editImg.setTitle("Edit Simulator Configuration");
-        editImg.setAltText("A pencil writing.");
-        applyImgIconStyle(editImg);
-        editImg.addClickHandler(new ClickHandlerData<SimulatorConfig>(config) {
-            @Override
-            public void onClick(ClickEvent clickEvent) {
-                SimulatorConfig config = getData();
+		Image editImg = new Image("icons2/edit.png");
+		editImg.setTitle("Edit Simulator Configuration");
+		editImg.setAltText("A pencil writing.");
+		applyImgIconStyle(editImg);
+		editImg.addClickHandler(new ClickHandlerData<SimulatorConfig>(config) {
+			@Override
+			public void onClick(ClickEvent clickEvent) {
+                loadSimStatus();
+				SimulatorConfig config = getData();
 
 //							GenericQueryTab editTab;
                 if (ActorType.ONDEMAND_DOCUMENT_SOURCE.getShortName().equals(config.getActorType())) {

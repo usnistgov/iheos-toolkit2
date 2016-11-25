@@ -32,10 +32,6 @@ your environment.
 <a href="http://192.168.33.10:8080/xdstools2#Tool:Folder">XDS.b_Registry_Folder_Handling</a><br />
 <a href="http://192.168.33.10:8080/xdstools2#Tool:FindDocs">Site/Actor Configuration</a><br />
 <a href="http://192.168.33.10:8080/xdstools2#Tool:Repositories">Repository Listing</a><br />
-<a href="http://192.168.33.10:8080/xdstools2#Tool:PreCAT">Pre-Connectathon Tests</a><br />
+<a href="http://192.168.33.10:8080/xdstools2#Tool:ConfTests">Conformance Tests</a><br />
 <a href="http://192.168.33.10:8080/xdstools2#Tool:PIDFav">Manage Patient IDs</a><br />
-<a href="http://192.168.33.10:8080/xdstools2#Tool:TestsOver">Tests Overview</a><br />
-<a href="http://192.168.33.10:8080/xdstools2#Tool:IGTests">Initiating Gateway Tests</a><br />
-<a href="http://192.168.33.10:8080/xdstools2#Tool:RGTests">Responding Gateway Tests</a><br />
 <a href="http://192.168.33.10:8080/xdstools2#Tool:RetIDS">RetrieveImagingDocumentSet</a><br />
-<a href="http://192.168.33.10:8080/xdstools2#Tool:TestLog">Test Log Listing</a><br />

@@ -49,6 +49,7 @@ import gov.nist.toolkit.valregmsg.validation.factories.CommonMessageValidatorFac
 import gov.nist.toolkit.valsupport.client.MessageValidationResults;
 import gov.nist.toolkit.xdsexception.ExceptionUtil;
 import gov.nist.toolkit.xdsexception.client.ToolkitRuntimeException;
+import gov.nist.toolkit.xdstools2.client.GazelleXuaUsername;
 import gov.nist.toolkit.xdstools2.client.util.ToolkitService;
 import gov.nist.toolkit.xdstools2.server.serviceManager.DashboardServiceManager;
 import gov.nist.toolkit.xdstools2.server.serviceManager.GazelleServiceManager;
@@ -382,7 +383,9 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements
     public boolean delMesaTestSession(CommandContext context) throws Exception { return session().xdsTestServiceManager().delMesaTestSession(context.getTestSessionName()); }
     @Override
     public String getNewPatientId(String assigningAuthority)  throws NoServletSessionException { return session().xdsTestServiceManager().getNewPatientId(assigningAuthority); }
-    public String delTestResults(List<TestInstance> testInstances, String testSession )  throws NoServletSessionException { session().xdsTestServiceManager().delTestResults(testInstances, testSession); return ""; }
+    public String delTestResults(List<TestInstance> testInstances, String testSession )  throws NoServletSessionException {
+        session().xdsTestServiceManager().delTestResults(testInstances, getCurrentEnvironment(), testSession); return "";
+    }
     @Override
     public List<Test> deleteAllTestResults(AllTestRequest request) throws Exception {
         installCommandContext(request);
@@ -1065,7 +1068,7 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements
         if (context == null) {
             logger.info("Context is null");
         }
-        logger.info("Context Name is " + context.getServletContextName());
+//        logger.info("Context Name is " + context.getServletContextName());
         logger.info("Context Path is " + context.getContextPath());
         Installation.instance().setServletContextName(context.getContextPath());
     }
@@ -1323,7 +1326,7 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements
                     String assertionResultId = "saml-assertion";
                     for (ReportDTO report : reportDTOs)  {
                         if (assertionResultId.equals(report.getName())) {
-                            return report.getValue();
+                            return report.getValue().replace("&","&amp;");
                         }
                     }
                     throw new ToolkitRuntimeException(assertionResultId + " result key not found.");
@@ -1333,6 +1336,30 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements
         } else {
             throw new ToolkitRuntimeException("No result.");
         }
+    }
+
+
+    public Map<String,String> getStsSamlAssertionsMap(TestInstance testInstance, SiteSpec stsSite, Map<String,String> params) throws Exception {
+
+        Map<String,String> assertionMap = null;
+        for (GazelleXuaUsername username : GazelleXuaUsername.values()) {
+            String usernameStr = username.name();
+            params.clear();
+            params.put("$saml-username$",usernameStr);
+            try {
+                String samlAssertion = getStsSamlAssertion(usernameStr, testInstance, stsSite, params);
+                if (samlAssertion!=null) {
+                    if (assertionMap == null) {
+                        assertionMap = new HashMap<String,String>();
+                    }
+                    assertionMap.put(usernameStr, samlAssertion);
+                }
+            } catch (Exception ex) {
+                // ignore
+            }
+        }
+
+        return assertionMap;
     }
 
     @Override

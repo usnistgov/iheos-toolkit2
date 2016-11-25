@@ -21,6 +21,7 @@ import gov.nist.toolkit.services.client.RegOrchestrationResponse;
 import gov.nist.toolkit.services.client.RepOrchestrationResponse;
 import gov.nist.toolkit.session.client.logtypes.TestOverviewDTO;
 import gov.nist.toolkit.session.client.sort.TestSorter;
+import gov.nist.toolkit.sitemanagement.client.Site;
 import gov.nist.toolkit.sitemanagement.client.SiteSpec;
 import gov.nist.toolkit.testkitutilities.client.SectionDefinitionDAO;
 import gov.nist.toolkit.testkitutilities.client.TestCollectionDefinitionDAO;
@@ -48,7 +49,7 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner, TestsH
 	private TestContextView testContextView;
 
 	private TestDisplayGroup testDisplayGroup;
-	private TestContext testContext = new TestContext(this);
+	private TestContext testContext = new TestContext(this, new SiteSelectionValidatorImpl());
 
 	private AbstractOrchestrationResponse orchestrationResponse;
 	private RepOrchestrationResponse repOrchestrationResponse;
@@ -61,8 +62,8 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner, TestsH
 	private String currentActorTypeDescription;
 	private SiteSpec siteToIssueTestAgainst = null;
 
-	// stuff that needs delayed setting when launched via activity
-	private String initTestSession = null;
+   // stuff that needs delayed setting when launched via activity
+   private String initTestSession = null;
 
 	// Descriptions of current test list
 	private List<TestCollectionDefinitionDAO> testCollectionDefinitionDAOs;
@@ -81,7 +82,7 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner, TestsH
 	public ConformanceTestTab() {
 		me = this;
 		mainView = new ConformanceTestMainView(this, new OptionsTabBar());
-		testContextView = new TestContextView(this, mainView.getTestSessionDescription(), testContext);
+		testContextView = new TestContextView(this, mainView.getTestSessionDescription(), testContext, new SiteSelectionValidatorImpl());
 		testContext.setTestContextView(testContextView);
 		testDisplayGroup = new TestDisplayGroup(testContext, testContextView, this);
 	}
@@ -262,6 +263,7 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner, TestsH
 				currentActorOption.setOptionId(optionIds.get(i));
 			}
 			changeDisplayedActorAndOptionType(currentActorOption);
+            orchInit.setXuaOption(orchInit.XUA_OPTION.equals(currentActorOption.getOptionId()));
 		}
 	}
 
@@ -470,49 +472,73 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner, TestsH
 
 			getSiteToIssueTestAgainst().setTls(orchInit.isTls());
 
-			if (orchInit.isSaml()) {
-				// Get STS SAML Assertion once for the entire test collection
-				TestInstance testInstance = new TestInstance("GazelleSts");
-				testInstance.setSection("samlassertion-issue");
-				SiteSpec stsSpec =  new SiteSpec("GazelleSts");
-				Map<String, String> params = new HashMap<>();
-				String xuaUsername = "Xuagood";
-				params.put("$saml-username$",xuaUsername);
-				try {
-					new GetStsSamlAssertionCommand(){
-						@Override
-						public void onComplete(String result) {
-							getSiteToIssueTestAgainst().setSaml(true);
-							getSiteToIssueTestAgainst().setStsAssertion(result);
+		  if (orchInit.isSaml()) {
+			  // Get STS SAML Assertion once for the entire test collection
+			  TestInstance testInstance = new TestInstance("GazelleSts");
+			  testInstance.setSection("samlassertion-issue");
+			  SiteSpec stsSpec =  new SiteSpec("GazelleSts");
+			  Map<String, String> params = new HashMap<>();
+			  String xuaUsername = "Xuagood";
+			  params.put("$saml-username$",xuaUsername);
+			  try {
+                  new GetStsSamlAssertionCommand(){
+                      @Override
+                      public void onComplete(String result) {
+                          getSiteToIssueTestAgainst().setSaml(true);
+                          getSiteToIssueTestAgainst().setStsAssertion(result);
 
-							for (TestInstance testInstance : testsPerActorOption.get(actorOption))
-								tests.add(testInstance);
-							onDone(null);
-						}
-					}.run(new GetStsSamlAssertionRequest(getCommandContext(),xuaUsername,testInstance,stsSpec,params));
-				} catch (Exception ex) {
-					new PopupMessage("runAll: Client call failed: getStsSamlAssertion: " + ex.toString());
-				}
-			} else {
-				// No SAML
-				getSiteToIssueTestAgainst().setSaml(false);
-				for (TestInstance testInstance : testsPerActorOption.get(actorOption))
-					tests.add(testInstance);
-				onDone(null);
-			}
+                          for (TestInstance testInstance : testsPerActorOption.get(actorOption))
+                              tests.add(testInstance);
+                          onDone(null);
+                      }
+                  }.run(new GetStsSamlAssertionRequest(getCommandContext(), xuaUsername, testInstance, stsSpec, params));
+              } catch (Exception ex) {
+                  testsHeaderView.showRunningMessage(false);
+				  new PopupMessage("runAll: Client call failed: getStsSamlAssertion: " + ex.toString());
+			  }
+		  } else {
+			  // No SAML
+              getSiteToIssueTestAgainst().setSaml(false);
+			  for (TestInstance testInstance : testsPerActorOption.get(actorOption))
+				  tests.add(testInstance);
+			  onDone(null);
+		  }
 
 		}
 
-		@Override
-		public void onDone(TestInstance unused) {
-			testsHeaderView.showRunningMessage(true);
-			if (tests.size() == 0) {
-				testsHeaderView.showRunningMessage(false);
-				return;
-			}
-			TestInstance next = tests.get(0);
-			tests.remove(0);
-			runTest(next, this);
+      @Override
+      public void onDone(TestInstance unused) {
+         testsHeaderView.showRunningMessage(true);
+         if (tests.size() == 0) {
+            testsHeaderView.showRunningMessage(false);
+            return;
+         }
+         TestInstance next = tests.get(0);
+         tests.remove(0);
+
+          if (orchInit.isXuaOption() && orchInit.getSamlAssertionsMap()!=null) {
+              setXuaOptionSamlAssertion(next);
+          }
+
+         runTest(next, this);
+      }
+   }
+
+	private void setXuaOptionSamlAssertion(TestInstance testInstance) {
+
+		String samlAssertion = orchInit.getSamlAssertionsMap().get(getXuaUsernameFromTestplan(testInstance));
+		getSiteToIssueTestAgainst().setSaml(true);
+		getSiteToIssueTestAgainst().setStsAssertion(samlAssertion);
+	}
+
+	String getXuaUsernameFromTestplan(TestInstance testInstance) {
+		String testId = testInstance.getId();
+		String[] parts = testId.split("_");
+		if (parts.length>1) {
+			return parts[parts.length-1];
+		} else {
+			new PopupMessage("Test Id needs to be in this format: actor_option_Xuausername.");
+			return null;
 		}
 	}
 
@@ -639,6 +665,9 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner, TestsH
 				SiteSpec stsSpec =  new SiteSpec("GazelleSts");
 				Map<String, String> params = new HashMap<>();
 				String xuaUsername = "Xuagood";
+				if (orchInit.isXuaOption()) {
+					xuaUsername = getXuaUsernameFromTestplan(testInstance);
+				}
 				params.put("$saml-username$",xuaUsername);
 				try {
 					new GetStsSamlAssertionCommand(){
@@ -654,7 +683,7 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner, TestsH
 					new PopupMessage("runTestInstance: Client call failed: getStsSamlAssertion: " + ex.toString());
 				}
 			} else {
-				// Reuse SAML when running the entire Actor test collection
+				// Reuse SAML when running the entire Actor test collection OR as set by the Xua option
 				runTestInstance(testInstance,testDone);
 			}
 
@@ -761,7 +790,35 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner, TestsH
 		this.initTestSession = initTestSession;
 	}
 
-	public TestContext getTestContext() {
-		return testContext;
+    public TestContext getTestContext() {
+        return testContext;
+    }
+
+    class SiteSelectionValidatorImpl implements  SiteSelectionValidator {
+
+		@Override
+		public void validate(SiteSpec siteSpec) {
+			final String actorTypeId = currentActorOption.actorTypeId;
+			final ActorType actorType = ActorType.findActor(actorTypeId);
+			if (actorType == null) {
+				// no actor type has been selected yet - no problem
+				return;
+			}
+
+			getToolkitServices().getSite(new GetSiteRequest(getCommandContext(), siteSpec.getName()), new AsyncCallback<Site>() {
+				@Override
+				public void onFailure(Throwable throwable) {
+					new PopupMessage(throwable.getMessage());
+				}
+
+				@Override
+				public void onSuccess(Site site) {
+					if (!site.hasActor(actorType))
+						new PopupMessage("System under test does not implement a " + actorType.getName());
+				}
+			});
+
+
+		}
 	}
 }

@@ -1,6 +1,5 @@
 package gov.nist.toolkit.xdstools2.client.tabs.conformanceTest;
 
-import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.FlexTable;
 import com.google.gwt.user.client.ui.FlowPanel;
@@ -38,6 +37,60 @@ public class BuildRIGTestOrchestrationButton extends AbstractOrchestrationButton
         this.testContext = testContext;
         this.testContextView = testContextView;
 
+        HTML instructions = new HTML(
+                "<p>" +
+                        "The System Under Test (SUT) is a Responding Imaging Gateway. " +
+                        "The diagram below shows the test environment with the SUT in orange. " +
+                        "The test software creates and configures the simulators in the diagram. " +
+                "</p>" +
+                "<p>"  +
+                        "You need to configure your Responding Imaging Gateway to communicate with " +
+                        "the Imaging Document Source simulators shown in the diagram. " +
+                        "The tables immediately below describe the environment at a high level with " +
+                        "values for homeCommunityID's and repositoryUniqueID's. " +
+                        "We use fixed values for homeCommunityID’s. " +
+                "</p>" +
+                        "<table border=\"1\">" +
+                        "<tr><th>Community / System</th><th>homeCommunityID</th></tr>" +
+                        "<tr bgcolor=\"#FFA500\"><td>Under Test: Responding Imaging Gateway</td><td>urn:oid:1.3.6.1.4.1.21367.13.70.201</td></tr>" +
+                        "<tr bgcolor=\"#FFFFFF\"><td>Initiating Imaging Gateway (Simulator)</td><td>urn:oid:1.3.6.1.4.1.21367.13.70.202</td></tr>" +
+                        "</table>" +
+                "<br/>" +
+                        "<table border=\"1\">" +
+                        "<tr><th>Imaging Document Source (Simulator)</th><th>Repository Unique ID</th></tr>" +
+                        "<tr><td>E</td><td>1.3.6.1.4.1.21367.13.71.201.1</td></tr>" +
+                        "<tr><td>F</td><td>1.3.6.1.4.1.21367.13.71.201.2</td></tr>" +
+                        "<tr><td>G</td><td>1.3.6.1.4.1.21367.13.71.201.3</td></tr>" +
+                        "<tr><td>Unknown (do not configure in your Responding Imaging Gateway; <br/>used to test error conditions)</td>" +
+                        "<td>1.3.6.1.4.1.21367.13.71.201.2.999</td></tr>" +
+                        "</table>" +
+
+                        "<p>" +
+                        "After you have initialized the test environment, you should see the full set of configuration " +
+                        "parameters needed to configure and test your system. " +
+                        "</p>" +
+                        "<p>"  +
+                        "Note that your Initiating Imaging Gateway only communicates with the Responding Imaging Gateway simulators. " +
+                        "Your system will not connect directly to any of the Imaging Document Source simulators." +
+                        "</p>" +
+                "<p>"  +
+                        "Tests are run using three DICOM transfer syntaxes. The UIDs for these are:" +
+                        "<ul><li>1.2.840.10008.1.2.1</li>" +
+                        "<li>1.2.840.10008.1.2.4.50</li>" +
+                        "<li>1.2.840.10008.1.2.4.70</li></ul>" +
+                "</p>" +
+                "<p>"  +
+                        "In some cases, the Imaging Document Source simulator will respond to RAD-69 retrieve requests " +
+                        "with images that are encoded with a requested transfer syntax. " +
+                        "In other cases, the Imaging Document Source simulator will have the image " +
+                        "but will not be able to supply it in the requested transfer syntax." +
+                "</p>"
+        );
+
+        initializationPanel.add(instructions);
+
+        setSystemDiagramUrl("diagrams/RIGdiagram.png");
+
         setParentPanel(initializationPanel);
         setLabel(label);
         setResetLabel("Reset");
@@ -45,8 +98,7 @@ public class BuildRIGTestOrchestrationButton extends AbstractOrchestrationButton
         panel().add(initializationResultsPanel);
     }
     
-    @Override
-    public void handleClick(ClickEvent clickEvent) {
+    public void orchestrate() {
         String msg = testContext.verifyTestContext();
         if (msg != null) {
             testContextView.launchDialog(msg);
@@ -60,6 +112,11 @@ public class BuildRIGTestOrchestrationButton extends AbstractOrchestrationButton
         request.setEnvironmentName(testTab.getEnvironmentSelection());
         request.setUseExistingState(!isResetRequested());
         SiteSpec siteSpec = new SiteSpec(testContext.getSiteName());
+        /*
+        if (isSaml()) {
+            setSamlAssertion(siteSpec);
+        }
+        */
         request.setSiteUnderTest(siteSpec);
 
         testTab.setSiteToIssueTestAgainst(siteSpec);

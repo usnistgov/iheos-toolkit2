@@ -1,6 +1,5 @@
 package gov.nist.toolkit.xdstools2.client.tabs.GatewayTestsTabs;
 
-import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.FlexTable;
 import com.google.gwt.user.client.ui.HTML;
@@ -15,6 +14,7 @@ import gov.nist.toolkit.xdstools2.client.command.command.BuildIdsTestOrchestrati
 import gov.nist.toolkit.xdstools2.client.util.ClientUtils;
 import gov.nist.toolkit.xdstools2.client.widgets.PopupMessage;
 import gov.nist.toolkit.xdstools2.client.tabs.genericQueryTab.GenericQueryTab;
+import gov.nist.toolkit.xdstools2.client.widgets.PopupMessage;
 import gov.nist.toolkit.xdstools2.client.widgets.buttons.AbstractOrchestrationButton;
 import gov.nist.toolkit.xdstools2.shared.command.request.BuildIdsTestOrchestrationRequest;
 
@@ -32,7 +32,7 @@ class BuildIDSTestOrchestrationButton extends AbstractOrchestrationButton {
         this.includeIG = includeIG;
     }
 
-    public void handleClick(ClickEvent event) {
+    public void orchestrate() {
         if (GenericQueryTab.empty(testTab.getCurrentTestSession())) {
             new PopupMessage("Must select test session first");
             return;

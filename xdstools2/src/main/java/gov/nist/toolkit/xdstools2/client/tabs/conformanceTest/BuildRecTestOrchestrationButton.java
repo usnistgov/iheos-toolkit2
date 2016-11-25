@@ -1,11 +1,12 @@
 package gov.nist.toolkit.xdstools2.client.tabs.conformanceTest;
 
-import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.Panel;
-import gov.nist.toolkit.services.client.*;
+import gov.nist.toolkit.services.client.RawResponse;
+import gov.nist.toolkit.services.client.RecOrchestrationRequest;
+import gov.nist.toolkit.services.client.RecOrchestrationResponse;
 import gov.nist.toolkit.sitemanagement.client.SiteSpec;
 import gov.nist.toolkit.xdstools2.client.command.command.BuildRecTestOrchestrationCommand;
 import gov.nist.toolkit.xdstools2.client.util.ClientUtils;
@@ -44,8 +45,7 @@ public class BuildRecTestOrchestrationButton extends AbstractOrchestrationButton
         panel().add(initializationResultsPanel);
     }
 
-    @Override
-    public void handleClick(ClickEvent clickEvent) {
+    public void orchestrate() {
         String msg = testContext.verifyTestContext();
         if (msg != null) {
             testContextView.launchDialog(msg);
@@ -59,6 +59,9 @@ public class BuildRecTestOrchestrationButton extends AbstractOrchestrationButton
         request.setEnvironmentName(testTab.getEnvironmentSelection());
         request.setUseExistingState(!isResetRequested());
         SiteSpec sutSiteSpec = testContext.getSiteUnderTest().siteSpec();
+        if (isSaml()) {
+            setSamlAssertion(sutSiteSpec);
+        }
         request.setRegistrySut(sutSiteSpec);
 
         testTab.setSiteToIssueTestAgainst(sutSiteSpec);

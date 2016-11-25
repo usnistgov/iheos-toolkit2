@@ -6,6 +6,7 @@ import gov.nist.toolkit.results.client.TestInstance;
 import gov.nist.toolkit.xdsexception.client.XdsException;
 
 import java.io.*;
+import java.util.List;
 
 public class ResultPersistence {
 
@@ -14,29 +15,60 @@ public class ResultPersistence {
 		if (result.testInstance == null || result.testInstance.isEmpty())
 			throw new XdsException("No test name specified in Result - cannot persist", null);
 
-		String outFile = getFilePath(result.testInstance, testSession, true);
+		File outFile = getFilePath(result.testInstance, testSession, null, true);
 		FileOutputStream fos = null;
 		ObjectOutputStream out = null;
-		fos = new FileOutputStream(outFile.toString());
+		fos = new FileOutputStream(outFile);
 		out = new ObjectOutputStream(fos);
 		out.writeObject(result);
 		out.close();
 
 	}
 
-    public void delete(TestInstance testInstance, String testSession) throws IOException, XdsException {
-        File file = new File(getFilePath(testInstance, testSession, true));
+    public void delete(TestInstance testInstance, String testSession, List<String> sectionNames) throws IOException, XdsException {
+        File file = getFilePath(testInstance, testSession, null, true); // if test run as single entity
         if (file.exists()) file.delete();
+		// if test run as individual sections
+		for (String sectionName : sectionNames) {
+			file = getFilePath(testInstance, testSession, sectionName, true); // if test run as single entity
+			if (file.exists()) file.delete();
+		}
     }
 
-	public Result read(TestInstance testInstance, String testSession) throws XdsException  {
+	public Result read(TestInstance testInstance, List<String> sectionNames, String testSession) throws XdsException  {
 		try {
-			FileInputStream fis = new FileInputStream(getFilePath(testInstance, testSession, false));
-			ObjectInputStream in = new ObjectInputStream(fis);
-			Result result = (Result) in.readObject();
-			in.close();
-			return result;
-		} 
+			File resultFile = getFilePath(testInstance, testSession, null, false);
+			if (resultFile.exists()) {
+				// This form will only exist if test was run as a whole.  If sections were run individually
+				// then there will be a file per section.
+				FileInputStream fis = new FileInputStream(resultFile);
+				ObjectInputStream in = new ObjectInputStream(fis);
+				Result result = (Result) in.readObject();
+				in.close();
+				return result;
+			} else {
+				// Sections run individually.  Pick them up from their individual file names
+				Result result = null;
+				for (String sectionName : sectionNames) {
+					resultFile = getFilePath(testInstance, testSession, sectionName, false);
+					if (resultFile.exists()) {
+						if (result == null) {
+							FileInputStream fis = new FileInputStream(resultFile);
+							ObjectInputStream in = new ObjectInputStream(fis);
+							result = (Result) in.readObject();
+							in.close();
+						} else {
+							FileInputStream fis = new FileInputStream(resultFile);
+							ObjectInputStream in = new ObjectInputStream(fis);
+							Result sectionResult = (Result) in.readObject();
+							in.close();
+							result.append(sectionResult);
+						}
+					}
+				}
+				return result;
+			}
+		}
 		catch (IOException e) {
 			throw new XdsException(e.getMessage(), null, e);
 		} catch (ClassNotFoundException e) {
@@ -44,7 +76,7 @@ public class ResultPersistence {
 		}
 	}
 
-	String getFilePath(TestInstance testInstance,String testSession, boolean write) throws IOException {
+	private File getFilePath(TestInstance testInstance,String testSession, String sectionName, boolean write) throws IOException {
 		File dir = new File(
 				Installation.instance().propertyServiceManager().getTestLogCache().toString() + File.separator +
 				testSession + File.separator + 
@@ -52,7 +84,9 @@ public class ResultPersistence {
 		if (write)
 			dir.mkdirs();
 
-		return dir.toString() + File.separator + testInstance.toString().replace(":","") + ".ser";
+		if (sectionName == null)
+			return new File(dir.toString() + File.separator + testInstance.toString().replace(":","") + ".ser");
+		return new File(dir.toString() + File.separator + testInstance.toString().replace(":","") + sectionName + ".ser");
 
 	}
 }

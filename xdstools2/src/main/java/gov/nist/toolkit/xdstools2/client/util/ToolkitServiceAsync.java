@@ -205,37 +205,38 @@ public interface ToolkitServiceAsync {
 
 //	void getToolkitEnableNwHIN(AsyncCallback<String> notify);
 
-    //------------------------------------------------------------------------
-    //------------------------------------------------------------------------
-    // Test Services
-    //------------------------------------------------------------------------
-    //------------------------------------------------------------------------
-    void reloadAllTestResults(CommandContext context, AsyncCallback<List<Test>> callback);
-    void getTestlogListing(String sessionName, AsyncCallback<List<TestInstance>> callback);
-    void setMesaTestSession(String sessionName, AsyncCallback callback);
-    void getMesaTestSessionNames(CommandContext request, AsyncCallback<List<String>> callback);
-    void getTestResults(GetTestResultsRequest request, AsyncCallback<Map<String, Result>> callback);
-    void deleteAllTestResults(AllTestRequest request, AsyncCallback<List<Test>> callback);
-    void deleteSingleTestResult(DeleteSingleTestRequest request, AsyncCallback<TestOverviewDTO> callback);
-    void runAllTests(AllTestRequest request, AsyncCallback<List<Test>> callback);
-    void runSingleTest(RunSingleTestRequest request, AsyncCallback<Test> callback);
-    void getTransactionErrorCodeRefs(GetTransactionErrorCodeRefsRequest request, AsyncCallback<List<String>> callback);
-    void buildIgTestOrchestration(BuildIgTestOrchestrationRequest request, AsyncCallback<RawResponse> callback);
-    void buildRgTestOrchestration(BuildRgTestOrchestrationRequest request, AsyncCallback<RawResponse> callback);
-    void buildIigTestOrchestration(BuildIigTestOrchestrationRequest request, AsyncCallback<RawResponse> callback);
-    void buildRigTestOrchestration(BuildRigTestOrchestrationRequest request, AsyncCallback<RawResponse> callback);
-    void buildIdsTestOrchestration(BuildIdsTestOrchestrationRequest request, AsyncCallback<RawResponse> callback);
-    void buildRepTestOrchestration(BuildRepTestOrchestrationRequest request, AsyncCallback<RawResponse> callback);
-    void buildRegTestOrchestration(BuildRegTestOrchestrationRequest request, AsyncCallback<RawResponse> callback);
-    void buildRecTestOrchestration(BuildRecTestOrchestrationRequest request, AsyncCallback<RawResponse> callback);
-    void buildRSNAEdgeTestOrchestration(BuildRSNAEdgeTestOrchestrationRequest request, AsyncCallback<RawResponse> callback);
-    void getSiteNamesWithRIG(CommandContext context, AsyncCallback<List<String>> callback) ;
-    void getSiteNamesWithIDS(CommandContext context, AsyncCallback<List<String>> callback) ;
-    void register(RegisterRequest request, AsyncCallback<Result> callback) throws Exception;
-    void registerWithLocalizedTrackingInODDS(RegisterRequest registerRequest, AsyncCallback<Map<String, String>> callback);
-    void getOnDemandDocumentEntryDetails(GetOnDemandDocumentEntryDetailsRequest request, AsyncCallback<List<DocumentEntryDetail>> callback);
-    void getInteractionFromModel(GetInteractionFromModelRequest request, AsyncCallback<InteractingEntity> callback);
-    void getStsSamlAssertion(GetStsSamlAssertionRequest request, AsyncCallback<String> callback);
+	//------------------------------------------------------------------------
+	//------------------------------------------------------------------------
+	// Test Services
+	//------------------------------------------------------------------------
+	//------------------------------------------------------------------------
+	void reloadAllTestResults(CommandContext context, AsyncCallback<List<Test>> callback) ;
+	void getTestlogListing(String sessionName, AsyncCallback<List<TestInstance>> callback);
+	void getTestResults(GetTestResultsRequest request, AsyncCallback<Map<String, Result>> callback);
+	void setMesaTestSession(String sessionName, AsyncCallback callback);
+	void getMesaTestSessionNames(CommandContext request, AsyncCallback<List<String>> callback);
+	void deleteAllTestResults(AllTestRequest request, AsyncCallback<List<Test>> callback);
+	void deleteSingleTestResult(DeleteSingleTestRequest request, AsyncCallback<TestOverviewDTO> callback);
+	void runAllTests(AllTestRequest request, AsyncCallback<List<Test>> callback);
+	void runSingleTest(RunSingleTestRequest request, AsyncCallback<Test> callback);
+	void getTransactionErrorCodeRefs(GetTransactionErrorCodeRefsRequest request, AsyncCallback<List<String>> callback);
+	void buildIgTestOrchestration(BuildIgTestOrchestrationRequest request, AsyncCallback<RawResponse> callback);
+	void buildRgTestOrchestration(BuildRgTestOrchestrationRequest request, AsyncCallback<RawResponse> callback);
+	void buildIigTestOrchestration(BuildIigTestOrchestrationRequest request, AsyncCallback<RawResponse> callback);
+	void buildRigTestOrchestration(BuildRigTestOrchestrationRequest request, AsyncCallback<RawResponse> callback);
+	void buildIdsTestOrchestration(BuildIdsTestOrchestrationRequest request, AsyncCallback<RawResponse> callback);
+	void buildRepTestOrchestration(BuildRepTestOrchestrationRequest request, AsyncCallback<RawResponse> callback);
+	void buildRegTestOrchestration(BuildRegTestOrchestrationRequest request, AsyncCallback<RawResponse> callback);
+	void buildRecTestOrchestration(BuildRecTestOrchestrationRequest request, AsyncCallback<RawResponse> callback);
+	void buildRSNAEdgeTestOrchestration(BuildRSNAEdgeTestOrchestrationRequest request, AsyncCallback<RawResponse> callback);
+	void getSiteNamesWithRIG(CommandContext context, AsyncCallback<List<String>> callback);
+	void getSiteNamesWithIDS(CommandContext context, AsyncCallback<List<String>> callback);
+	void register(RegisterRequest request, AsyncCallback<Result> callback) throws Exception;
+	void registerWithLocalizedTrackingInODDS(RegisterRequest registerRequest, AsyncCallback<Map<String, String>> callback);
+	void getOnDemandDocumentEntryDetails(GetOnDemandDocumentEntryDetailsRequest request, AsyncCallback<List<DocumentEntryDetail>> callback);
+	void getInteractionFromModel(GetInteractionFromModelRequest request, AsyncCallback<InteractingEntity> callback);
+	void getStsSamlAssertion(GetStsSamlAssertionRequest request, AsyncCallback<String> callback) throws Exception;
+
 
     void getServletContextName(AsyncCallback<String> callback);
     void retrieveConfiguredFavoritesPid(CommandContext commandContext, AsyncCallback<List<Pid>> callback);

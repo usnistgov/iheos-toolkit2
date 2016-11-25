@@ -182,13 +182,13 @@ public class HomeTab extends GenericQueryTab {
 //
 //		Xdstools2.addtoMainMenu(HyperlinkFactory.launchTool(ToolLauncher.rgTestsTabLabel, new ToolLauncher(ToolLauncher.rgTestsTabLabel)));
 
-		Xdstools2.addtoMainMenu(HyperlinkFactory.launchTool(ToolLauncher.iigTestsTabLabel, new ToolLauncher(ToolLauncher.iigTestsTabLabel)));
+//		Xdstools2.addtoMainMenu(HyperlinkFactory.launchTool(ToolLauncher.iigTestsTabLabel, new ToolLauncher(ToolLauncher.iigTestsTabLabel)));
 
-      Xdstools2.addtoMainMenu(HyperlinkFactory.launchTool(ToolLauncher.rigTestsTabLabel, new ToolLauncher(ToolLauncher.rigTestsTabLabel)));
+//      Xdstools2.addtoMainMenu(HyperlinkFactory.launchTool(ToolLauncher.rigTestsTabLabel, new ToolLauncher(ToolLauncher.rigTestsTabLabel)));
 
-		Xdstools2.addtoMainMenu(HyperlinkFactory.launchTool(ToolLauncher.idsTestsTabLabel, new ToolLauncher(ToolLauncher.idsTestsTabLabel)));
+//		Xdstools2.addtoMainMenu(HyperlinkFactory.launchTool(ToolLauncher.idsTestsTabLabel, new ToolLauncher(ToolLauncher.idsTestsTabLabel)));
 
-		Xdstools2.addtoMainMenu(HyperlinkFactory.launchTool(ToolLauncher.rsnaedgeTestsTabLabel, new ToolLauncher(ToolLauncher.rsnaedgeTestsTabLabel)));
+//		Xdstools2.addtoMainMenu(HyperlinkFactory.launchTool(ToolLauncher.rsnaedgeTestsTabLabel, new ToolLauncher(ToolLauncher.rsnaedgeTestsTabLabel)));
 
 
 

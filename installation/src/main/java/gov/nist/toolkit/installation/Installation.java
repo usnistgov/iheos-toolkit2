@@ -84,8 +84,12 @@ public class Installation {
         this.warHome = warHome;
         propertyServiceMgr = null;
         propertyServiceManager();  // initialize
-		if (externalCache == null) // this can be different in a unit test situation
-			externalCache = new File(propertyServiceManager().getPropertyManager().getExternalCache());
+        String ec = propertyServiceManager().getPropertyManager().getExternalCache();
+
+        logger.info("External Cache as reported by toolkit.properties");
+		if (externalCache == null) { // this can be different in a unit test situation
+            externalCache = new File(ec);
+        }
 		logger.info("Installation: External Cache set to " + externalCache);
         logger.info("Toolkit running at " + propertyServiceManager().getToolkitHost() + ":" + propertyServiceManager().getToolkitPort());
     }

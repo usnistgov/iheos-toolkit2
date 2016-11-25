@@ -1,6 +1,5 @@
 package gov.nist.toolkit.xdstools2.client.tabs.conformanceTest;
 
-import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HTML;
@@ -35,8 +34,7 @@ class BuildRepTestOrchestrationButton extends AbstractOrchestrationButton {
         panel().add(initializationResultsPanel);
     }
 
-    @Override
-    public void handleClick(ClickEvent clickEvent) {
+    public void orchestrate() {
         String msg = testContext.verifyTestContext();
         if (msg != null) {
             testContextView.launchDialog(msg);
@@ -78,7 +76,8 @@ class BuildRepTestOrchestrationButton extends AbstractOrchestrationButton {
                 initializationResultsPanel.add(new HTML("Patient ID: " + orchResponse.getPid().toString()));
                 initializationResultsPanel.add(new HTML("<br />"));
 
-                initializationResultsPanel.add(new HTML("<h3>Configure your Repository to forward Register transactions to the above Register endpoint.</h3><hr />"));
+                initializationResultsPanel.add(new HTML("<h3>Configure your Repository to forward Register transactions to the above Register endpoint." +
+                        "Then Reset Testing Environment (above) with Reset to properly initialize the testing environment (Patient ID is needed).</h3><hr />"));
 
                 // test will be run out of support site so pass it back to conformance test tab
                 testTab.setSiteToIssueTestAgainst(orchResponse.getSupportSite().siteSpec());

@@ -8,6 +8,7 @@ import gov.nist.toolkit.sitemanagement.client.SiteSpec;
  */
 public class RegOrchestrationResponse extends AbstractOrchestrationResponse {
     private Pid registerPid;
+    private Pid registerAltPid;
     private Pid sqPid;
     private Pid mpq1Pid;
     private Pid mpq2Pid;
@@ -59,5 +60,13 @@ public class RegOrchestrationResponse extends AbstractOrchestrationResponse {
     @Override
     public boolean isExternalStart() {
         return false;
+    }
+
+    public Pid getRegisterAltPid() {
+        return registerAltPid;
+    }
+
+    public void setRegisterAltPid(Pid registerAltPid) {
+        this.registerAltPid = registerAltPid;
     }
 }

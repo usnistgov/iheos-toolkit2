@@ -1,0 +1,347 @@
+
+<TestPlan>
+	<Test>ids_4811/validate-R</Test>
+	<TestStep id="validate-rad69-response">
+		<Goal>Correct RetrieveDocumentSetResponse values</Goal>
+		<Standard>
+			<ResponseBody>
+				<xdsb:RetrieveDocumentSetResponse
+					xmlns:xdsb="urn:ihe:iti:xds-b:2007">
+					<rs:RegistryResponse xmlns:rs="urn:oasis:names:tc:ebxml-regrep:xsd:rs:3.0"
+						status="urn:oasis:names:tc:ebxml-regrep:ResponseStatusType:Success" />
+					<xdsb:DocumentResponse>
+						<xdsb:RepositoryUniqueId></xdsb:RepositoryUniqueId>
+						<xdsb:DocumentUniqueId>1.3.6.1.4.1.21367.201599.3.201604020954059.6</xdsb:DocumentUniqueId>
+						<xdsb:mimeType>application/dicom</xdsb:mimeType>
+						<xdsb:Document>
+							<xop:Include xmlns:xop="http://www.w3.org/2004/08/xop/include"
+								href="cid:doc17@ihexds.nist.gov" />
+						</xdsb:Document>
+					</xdsb:DocumentResponse>
+					<xdsb:DocumentResponse>
+						<xdsb:RepositoryUniqueId></xdsb:RepositoryUniqueId>
+						<xdsb:DocumentUniqueId>1.3.6.1.4.1.21367.201599.3.201604020954059.11</xdsb:DocumentUniqueId>
+						<xdsb:mimeType>application/dicom</xdsb:mimeType>
+						<xdsb:Document>
+							<xop:Include xmlns:xop="http://www.w3.org/2004/08/xop/include"
+								href="cid:doc3@ihexds.nist.gov" />
+						</xdsb:Document>
+					</xdsb:DocumentResponse>
+					<xdsb:DocumentResponse>
+						<xdsb:RepositoryUniqueId></xdsb:RepositoryUniqueId>
+						<xdsb:DocumentUniqueId>1.3.6.1.4.1.21367.201599.3.201604020954059.34</xdsb:DocumentUniqueId>
+						<xdsb:mimeType>application/dicom</xdsb:mimeType>
+						<xdsb:Document>
+							<xop:Include xmlns:xop="http://www.w3.org/2004/08/xop/include"
+								href="cid:doc33@ihexds.nist.gov" />
+						</xdsb:Document>
+					</xdsb:DocumentResponse>
+					<xdsb:DocumentResponse>
+						<xdsb:RepositoryUniqueId></xdsb:RepositoryUniqueId>
+						<xdsb:DocumentUniqueId>1.3.6.1.4.1.21367.201599.3.201604020954059.14</xdsb:DocumentUniqueId>
+						<xdsb:mimeType>application/dicom</xdsb:mimeType>
+						<xdsb:Document>
+							<xop:Include xmlns:xop="http://www.w3.org/2004/08/xop/include"
+								href="cid:doc6@ihexds.nist.gov" />
+						</xdsb:Document>
+					</xdsb:DocumentResponse>
+					<xdsb:DocumentResponse>
+						<xdsb:RepositoryUniqueId></xdsb:RepositoryUniqueId>
+						<xdsb:DocumentUniqueId>1.3.6.1.4.1.21367.201599.3.201604020954059.30</xdsb:DocumentUniqueId>
+						<xdsb:mimeType>application/dicom</xdsb:mimeType>
+						<xdsb:Document>
+							<xop:Include xmlns:xop="http://www.w3.org/2004/08/xop/include"
+								href="cid:doc29@ihexds.nist.gov" />
+						</xdsb:Document>
+					</xdsb:DocumentResponse>
+					<xdsb:DocumentResponse>
+						<xdsb:RepositoryUniqueId></xdsb:RepositoryUniqueId>
+						<xdsb:DocumentUniqueId>1.3.6.1.4.1.21367.201599.3.201604020954059.37</xdsb:DocumentUniqueId>
+						<xdsb:mimeType>application/dicom</xdsb:mimeType>
+						<xdsb:Document>
+							<xop:Include xmlns:xop="http://www.w3.org/2004/08/xop/include"
+								href="cid:doc36@ihexds.nist.gov" />
+						</xdsb:Document>
+					</xdsb:DocumentResponse>
+					<xdsb:DocumentResponse>
+						<xdsb:RepositoryUniqueId></xdsb:RepositoryUniqueId>
+						<xdsb:DocumentUniqueId>1.3.6.1.4.1.21367.201599.3.201604020954059.27</xdsb:DocumentUniqueId>
+						<xdsb:mimeType>application/dicom</xdsb:mimeType>
+						<xdsb:Document>
+							<xop:Include xmlns:xop="http://www.w3.org/2004/08/xop/include"
+								href="cid:doc26@ihexds.nist.gov" />
+						</xdsb:Document>
+					</xdsb:DocumentResponse>
+					<xdsb:DocumentResponse>
+						<xdsb:RepositoryUniqueId></xdsb:RepositoryUniqueId>
+						<xdsb:DocumentUniqueId>1.3.6.1.4.1.21367.201599.3.201604020954059.17</xdsb:DocumentUniqueId>
+						<xdsb:mimeType>application/dicom</xdsb:mimeType>
+						<xdsb:Document>
+							<xop:Include xmlns:xop="http://www.w3.org/2004/08/xop/include"
+								href="cid:doc9@ihexds.nist.gov" />
+						</xdsb:Document>
+					</xdsb:DocumentResponse>
+					<xdsb:DocumentResponse>
+						<xdsb:RepositoryUniqueId></xdsb:RepositoryUniqueId>
+						<xdsb:DocumentUniqueId>1.3.6.1.4.1.21367.201599.3.201604020954059.19</xdsb:DocumentUniqueId>
+						<xdsb:mimeType>application/dicom</xdsb:mimeType>
+						<xdsb:Document>
+							<xop:Include xmlns:xop="http://www.w3.org/2004/08/xop/include"
+								href="cid:doc11@ihexds.nist.gov" />
+						</xdsb:Document>
+					</xdsb:DocumentResponse>
+					<xdsb:DocumentResponse>
+						<xdsb:RepositoryUniqueId></xdsb:RepositoryUniqueId>
+						<xdsb:DocumentUniqueId>1.3.6.1.4.1.21367.201599.3.201604020954059.3</xdsb:DocumentUniqueId>
+						<xdsb:mimeType>application/dicom</xdsb:mimeType>
+						<xdsb:Document>
+							<xop:Include xmlns:xop="http://www.w3.org/2004/08/xop/include"
+								href="cid:doc14@ihexds.nist.gov" />
+						</xdsb:Document>
+					</xdsb:DocumentResponse>
+					<xdsb:DocumentResponse>
+						<xdsb:RepositoryUniqueId></xdsb:RepositoryUniqueId>
+						<xdsb:DocumentUniqueId>1.3.6.1.4.1.21367.201599.3.201604020954059.32</xdsb:DocumentUniqueId>
+						<xdsb:mimeType>application/dicom</xdsb:mimeType>
+						<xdsb:Document>
+							<xop:Include xmlns:xop="http://www.w3.org/2004/08/xop/include"
+								href="cid:doc31@ihexds.nist.gov" />
+						</xdsb:Document>
+					</xdsb:DocumentResponse>
+					<xdsb:DocumentResponse>
+						<xdsb:RepositoryUniqueId></xdsb:RepositoryUniqueId>
+						<xdsb:DocumentUniqueId>1.3.6.1.4.1.21367.201599.3.201604020954059.8</xdsb:DocumentUniqueId>
+						<xdsb:mimeType>application/dicom</xdsb:mimeType>
+						<xdsb:Document>
+							<xop:Include xmlns:xop="http://www.w3.org/2004/08/xop/include"
+								href="cid:doc19@ihexds.nist.gov" />
+						</xdsb:Document>
+					</xdsb:DocumentResponse>
+					<xdsb:DocumentResponse>
+						<xdsb:RepositoryUniqueId></xdsb:RepositoryUniqueId>
+						<xdsb:DocumentUniqueId>1.3.6.1.4.1.21367.201599.3.201604020954059.24</xdsb:DocumentUniqueId>
+						<xdsb:mimeType>application/dicom</xdsb:mimeType>
+						<xdsb:Document>
+							<xop:Include xmlns:xop="http://www.w3.org/2004/08/xop/include"
+								href="cid:doc23@ihexds.nist.gov" />
+						</xdsb:Document>
+					</xdsb:DocumentResponse>
+					<xdsb:DocumentResponse>
+						<xdsb:RepositoryUniqueId></xdsb:RepositoryUniqueId>
+						<xdsb:DocumentUniqueId>1.3.6.1.4.1.21367.201599.3.201604020954059.36</xdsb:DocumentUniqueId>
+						<xdsb:mimeType>application/dicom</xdsb:mimeType>
+						<xdsb:Document>
+							<xop:Include xmlns:xop="http://www.w3.org/2004/08/xop/include"
+								href="cid:doc35@ihexds.nist.gov" />
+						</xdsb:Document>
+					</xdsb:DocumentResponse>
+					<xdsb:DocumentResponse>
+						<xdsb:RepositoryUniqueId></xdsb:RepositoryUniqueId>
+						<xdsb:DocumentUniqueId>1.3.6.1.4.1.21367.201599.3.201604020954059.33</xdsb:DocumentUniqueId>
+						<xdsb:mimeType>application/dicom</xdsb:mimeType>
+						<xdsb:Document>
+							<xop:Include xmlns:xop="http://www.w3.org/2004/08/xop/include"
+								href="cid:doc32@ihexds.nist.gov" />
+						</xdsb:Document>
+					</xdsb:DocumentResponse>
+					<xdsb:DocumentResponse>
+						<xdsb:RepositoryUniqueId></xdsb:RepositoryUniqueId>
+						<xdsb:DocumentUniqueId>1.3.6.1.4.1.21367.201599.3.201604020954059.5</xdsb:DocumentUniqueId>
+						<xdsb:mimeType>application/dicom</xdsb:mimeType>
+						<xdsb:Document>
+							<xop:Include xmlns:xop="http://www.w3.org/2004/08/xop/include"
+								href="cid:doc16@ihexds.nist.gov" />
+						</xdsb:Document>
+					</xdsb:DocumentResponse>
+					<xdsb:DocumentResponse>
+						<xdsb:RepositoryUniqueId></xdsb:RepositoryUniqueId>
+						<xdsb:DocumentUniqueId>1.3.6.1.4.1.21367.201599.3.201604020954059.13</xdsb:DocumentUniqueId>
+						<xdsb:mimeType>application/dicom</xdsb:mimeType>
+						<xdsb:Document>
+							<xop:Include xmlns:xop="http://www.w3.org/2004/08/xop/include"
+								href="cid:doc5@ihexds.nist.gov" />
+						</xdsb:Document>
+					</xdsb:DocumentResponse>
+					<xdsb:DocumentResponse>
+						<xdsb:RepositoryUniqueId></xdsb:RepositoryUniqueId>
+						<xdsb:DocumentUniqueId>1.3.6.1.4.1.21367.201599.3.201604020954059.20</xdsb:DocumentUniqueId>
+						<xdsb:mimeType>application/dicom</xdsb:mimeType>
+						<xdsb:Document>
+							<xop:Include xmlns:xop="http://www.w3.org/2004/08/xop/include"
+								href="cid:doc13@ihexds.nist.gov" />
+						</xdsb:Document>
+					</xdsb:DocumentResponse>
+					<xdsb:DocumentResponse>
+						<xdsb:RepositoryUniqueId></xdsb:RepositoryUniqueId>
+						<xdsb:DocumentUniqueId>1.3.6.1.4.1.21367.201599.3.201604020954059.16</xdsb:DocumentUniqueId>
+						<xdsb:mimeType>application/dicom</xdsb:mimeType>
+						<xdsb:Document>
+							<xop:Include xmlns:xop="http://www.w3.org/2004/08/xop/include"
+								href="cid:doc8@ihexds.nist.gov" />
+						</xdsb:Document>
+					</xdsb:DocumentResponse>
+					<xdsb:DocumentResponse>
+						<xdsb:RepositoryUniqueId></xdsb:RepositoryUniqueId>
+						<xdsb:DocumentUniqueId>1.3.6.1.4.1.21367.201599.3.201604020954059.10</xdsb:DocumentUniqueId>
+						<xdsb:mimeType>application/dicom</xdsb:mimeType>
+						<xdsb:Document>
+							<xop:Include xmlns:xop="http://www.w3.org/2004/08/xop/include"
+								href="cid:doc2@ihexds.nist.gov" />
+						</xdsb:Document>
+					</xdsb:DocumentResponse>
+					<xdsb:DocumentResponse>
+						<xdsb:RepositoryUniqueId></xdsb:RepositoryUniqueId>
+						<xdsb:DocumentUniqueId>1.3.6.1.4.1.21367.201599.3.201604020954059.26</xdsb:DocumentUniqueId>
+						<xdsb:mimeType>application/dicom</xdsb:mimeType>
+						<xdsb:Document>
+							<xop:Include xmlns:xop="http://www.w3.org/2004/08/xop/include"
+								href="cid:doc25@ihexds.nist.gov" />
+						</xdsb:Document>
+					</xdsb:DocumentResponse>
+					<xdsb:DocumentResponse>
+						<xdsb:RepositoryUniqueId></xdsb:RepositoryUniqueId>
+						<xdsb:DocumentUniqueId>1.3.6.1.4.1.21367.201599.3.201604020954059.18</xdsb:DocumentUniqueId>
+						<xdsb:mimeType>application/dicom</xdsb:mimeType>
+						<xdsb:Document>
+							<xop:Include xmlns:xop="http://www.w3.org/2004/08/xop/include"
+								href="cid:doc10@ihexds.nist.gov" />
+						</xdsb:Document>
+					</xdsb:DocumentResponse>
+					<xdsb:DocumentResponse>
+						<xdsb:RepositoryUniqueId></xdsb:RepositoryUniqueId>
+						<xdsb:DocumentUniqueId>1.3.6.1.4.1.21367.201599.3.201604020954059.29</xdsb:DocumentUniqueId>
+						<xdsb:mimeType>application/dicom</xdsb:mimeType>
+						<xdsb:Document>
+							<xop:Include xmlns:xop="http://www.w3.org/2004/08/xop/include"
+								href="cid:doc28@ihexds.nist.gov" />
+						</xdsb:Document>
+					</xdsb:DocumentResponse>
+					<xdsb:DocumentResponse>
+						<xdsb:RepositoryUniqueId></xdsb:RepositoryUniqueId>
+						<xdsb:DocumentUniqueId>1.3.6.1.4.1.21367.201599.3.201604020954059.15</xdsb:DocumentUniqueId>
+						<xdsb:mimeType>application/dicom</xdsb:mimeType>
+						<xdsb:Document>
+							<xop:Include xmlns:xop="http://www.w3.org/2004/08/xop/include"
+								href="cid:doc7@ihexds.nist.gov" />
+						</xdsb:Document>
+					</xdsb:DocumentResponse>
+					<xdsb:DocumentResponse>
+						<xdsb:RepositoryUniqueId></xdsb:RepositoryUniqueId>
+						<xdsb:DocumentUniqueId>1.3.6.1.4.1.21367.201599.3.201604020954059.23</xdsb:DocumentUniqueId>
+						<xdsb:mimeType>application/dicom</xdsb:mimeType>
+						<xdsb:Document>
+							<xop:Include xmlns:xop="http://www.w3.org/2004/08/xop/include"
+								href="cid:doc22@ihexds.nist.gov" />
+						</xdsb:Document>
+					</xdsb:DocumentResponse>
+					<xdsb:DocumentResponse>
+						<xdsb:RepositoryUniqueId></xdsb:RepositoryUniqueId>
+						<xdsb:DocumentUniqueId>1.3.6.1.4.1.21367.201599.3.201604020954059.9</xdsb:DocumentUniqueId>
+						<xdsb:mimeType>application/dicom</xdsb:mimeType>
+						<xdsb:Document>
+							<xop:Include xmlns:xop="http://www.w3.org/2004/08/xop/include"
+								href="cid:doc20@ihexds.nist.gov" />
+						</xdsb:Document>
+					</xdsb:DocumentResponse>
+					<xdsb:DocumentResponse>
+						<xdsb:RepositoryUniqueId></xdsb:RepositoryUniqueId>
+						<xdsb:DocumentUniqueId>1.3.6.1.4.1.21367.201599.3.201604020954059.35</xdsb:DocumentUniqueId>
+						<xdsb:mimeType>application/dicom</xdsb:mimeType>
+						<xdsb:Document>
+							<xop:Include xmlns:xop="http://www.w3.org/2004/08/xop/include"
+								href="cid:doc34@ihexds.nist.gov" />
+						</xdsb:Document>
+					</xdsb:DocumentResponse>
+					<xdsb:DocumentResponse>
+						<xdsb:RepositoryUniqueId></xdsb:RepositoryUniqueId>
+						<xdsb:DocumentUniqueId>1.3.6.1.4.1.21367.201599.3.201604020954059.1</xdsb:DocumentUniqueId>
+						<xdsb:mimeType>application/dicom</xdsb:mimeType>
+						<xdsb:Document>
+							<xop:Include xmlns:xop="http://www.w3.org/2004/08/xop/include"
+								href="cid:doc1@ihexds.nist.gov" />
+						</xdsb:Document>
+					</xdsb:DocumentResponse>
+					<xdsb:DocumentResponse>
+						<xdsb:RepositoryUniqueId></xdsb:RepositoryUniqueId>
+						<xdsb:DocumentUniqueId>1.3.6.1.4.1.21367.201599.3.201604020954059.12</xdsb:DocumentUniqueId>
+						<xdsb:mimeType>application/dicom</xdsb:mimeType>
+						<xdsb:Document>
+							<xop:Include xmlns:xop="http://www.w3.org/2004/08/xop/include"
+								href="cid:doc4@ihexds.nist.gov" />
+						</xdsb:Document>
+					</xdsb:DocumentResponse>
+					<xdsb:DocumentResponse>
+						<xdsb:RepositoryUniqueId></xdsb:RepositoryUniqueId>
+						<xdsb:DocumentUniqueId>1.3.6.1.4.1.21367.201599.3.201604020954059.4</xdsb:DocumentUniqueId>
+						<xdsb:mimeType>application/dicom</xdsb:mimeType>
+						<xdsb:Document>
+							<xop:Include xmlns:xop="http://www.w3.org/2004/08/xop/include"
+								href="cid:doc15@ihexds.nist.gov" />
+						</xdsb:Document>
+					</xdsb:DocumentResponse>
+					<xdsb:DocumentResponse>
+						<xdsb:RepositoryUniqueId></xdsb:RepositoryUniqueId>
+						<xdsb:DocumentUniqueId>1.3.6.1.4.1.21367.201599.3.201604020954059.2</xdsb:DocumentUniqueId>
+						<xdsb:mimeType>application/dicom</xdsb:mimeType>
+						<xdsb:Document>
+							<xop:Include xmlns:xop="http://www.w3.org/2004/08/xop/include"
+								href="cid:doc12@ihexds.nist.gov" />
+						</xdsb:Document>
+					</xdsb:DocumentResponse>
+					<xdsb:DocumentResponse>
+						<xdsb:RepositoryUniqueId></xdsb:RepositoryUniqueId>
+						<xdsb:DocumentUniqueId>1.3.6.1.4.1.21367.201599.3.201604020954059.25</xdsb:DocumentUniqueId>
+						<xdsb:mimeType>application/dicom</xdsb:mimeType>
+						<xdsb:Document>
+							<xop:Include xmlns:xop="http://www.w3.org/2004/08/xop/include"
+								href="cid:doc24@ihexds.nist.gov" />
+						</xdsb:Document>
+					</xdsb:DocumentResponse>
+					<xdsb:DocumentResponse>
+						<xdsb:RepositoryUniqueId></xdsb:RepositoryUniqueId>
+						<xdsb:DocumentUniqueId>1.3.6.1.4.1.21367.201599.3.201604020954059.7</xdsb:DocumentUniqueId>
+						<xdsb:mimeType>application/dicom</xdsb:mimeType>
+						<xdsb:Document>
+							<xop:Include xmlns:xop="http://www.w3.org/2004/08/xop/include"
+								href="cid:doc18@ihexds.nist.gov" />
+						</xdsb:Document>
+					</xdsb:DocumentResponse>
+					<xdsb:DocumentResponse>
+						<xdsb:RepositoryUniqueId></xdsb:RepositoryUniqueId>
+						<xdsb:DocumentUniqueId>1.3.6.1.4.1.21367.201599.3.201604020954059.31</xdsb:DocumentUniqueId>
+						<xdsb:mimeType>application/dicom</xdsb:mimeType>
+						<xdsb:Document>
+							<xop:Include xmlns:xop="http://www.w3.org/2004/08/xop/include"
+								href="cid:doc30@ihexds.nist.gov" />
+						</xdsb:Document>
+					</xdsb:DocumentResponse>
+					<xdsb:DocumentResponse>
+						<xdsb:RepositoryUniqueId></xdsb:RepositoryUniqueId>
+						<xdsb:DocumentUniqueId>1.3.6.1.4.1.21367.201599.3.201604020954059.22</xdsb:DocumentUniqueId>
+						<xdsb:mimeType>application/dicom</xdsb:mimeType>
+						<xdsb:Document>
+							<xop:Include xmlns:xop="http://www.w3.org/2004/08/xop/include"
+								href="cid:doc21@ihexds.nist.gov" />
+						</xdsb:Document>
+					</xdsb:DocumentResponse>
+					<xdsb:DocumentResponse>
+						<xdsb:RepositoryUniqueId></xdsb:RepositoryUniqueId>
+						<xdsb:DocumentUniqueId>1.3.6.1.4.1.21367.201599.3.201604020954059.28</xdsb:DocumentUniqueId>
+						<xdsb:mimeType>application/dicom</xdsb:mimeType>
+						<xdsb:Document>
+							<xop:Include xmlns:xop="http://www.w3.org/2004/08/xop/include"
+								href="cid:doc27@ihexds.nist.gov" />
+						</xdsb:Document>
+					</xdsb:DocumentResponse>
+				</xdsb:RetrieveDocumentSetResponse>
+			</ResponseBody>
+		</Standard>
+		<XmlDetailTransaction>
+			<Assertions>
+				<Assert id="Returned doc(s)" process="sameRetImgs">
+					<TestResponse testDir="../Rad69RetrieveRequest" step="retrieve" />
+				</Assert>
+			</Assertions>
+		</XmlDetailTransaction>
+	</TestStep>
+</TestPlan>

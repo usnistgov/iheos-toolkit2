@@ -12,7 +12,6 @@
 
 <a href="howto/pif.html" target="_blank">Send a V2 Patient Identity Feed message</a>
 
-<a href="tools/gatewaytesting.html" target="_blank">XCA Gateway testing tools</a>
 
 <hr />
 

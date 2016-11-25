@@ -30,20 +30,20 @@ class BuildRSNAEdgeTestOrchestrationButton extends AbstractOrchestrationButton {
         this.includeEdge = includeEdge;
     }
 
-    @SuppressWarnings("unused")
-    @Override
-    public void handleClick(ClickEvent event) {
-        if (GenericQueryTab.empty(testTab.getCurrentTestSession())) {
-            new PopupMessage("Must select test session first");
-            return;
-        }
-        RSNAEdgeOrchestrationRequest request = new RSNAEdgeOrchestrationRequest();
-        request.setUserName(testTab.getCurrentTestSession());
-        new BuildRSNAEdgeTestOrchestrationCommand(){
-            @Override
-            public void onComplete(RawResponse rawResponse) {
-                if (handleError(rawResponse, RSNAEdgeOrchestrationResponse.class)) return;
-                RSNAEdgeOrchestrationResponse orchResponse = (RSNAEdgeOrchestrationResponse) rawResponse;
+   @SuppressWarnings("unused")
+   @Override
+   public void orchestrate() {
+       if (GenericQueryTab.empty(testTab.getCurrentTestSession())) {
+           new PopupMessage("Must select test session first");
+           return;
+       }
+       RSNAEdgeOrchestrationRequest request = new RSNAEdgeOrchestrationRequest();
+       request.setUserName(testTab.getCurrentTestSession());
+       new BuildRSNAEdgeTestOrchestrationCommand(){
+           @Override
+           public void onComplete(RawResponse rawResponse) {
+               if (handleError(rawResponse, RSNAEdgeOrchestrationResponse.class)) return;
+               RSNAEdgeOrchestrationResponse orchResponse = (RSNAEdgeOrchestrationResponse) rawResponse;
 
                 testTab.config = orchResponse.getSimulatorConfig();
 

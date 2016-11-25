@@ -97,9 +97,11 @@ public class QueryBoilerplate {
 				}
 			}
 		} else {   // Select by transaction (used in GetDocuments tab)
-			SiteSpec siteSpec = genericQueryTab.transactionSelectionManager.generateSiteSpec();
-			genericQueryTab.setCommonSiteSpec(siteSpec);
-			return siteSpec;
+			if (genericQueryTab.transactionSelectionManager != null) {
+				SiteSpec siteSpec = genericQueryTab.transactionSelectionManager.generateSiteSpec();
+				genericQueryTab.setCommonSiteSpec(siteSpec);
+				return siteSpec;
+			}
 		}
 
 		return null;

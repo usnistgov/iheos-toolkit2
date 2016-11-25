@@ -2,6 +2,7 @@ package gov.nist.toolkit.results.client;
 
 import com.google.gwt.user.client.rpc.IsSerializable;
 import gov.nist.toolkit.registrymetadata.client.MetadataCollection;
+import gov.nist.toolkit.xdsexception.client.XdsInternalException;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -13,7 +14,7 @@ public class Result  implements IsSerializable, Serializable {
 	public AssertionResults assertions = null;
 	public String timestamp;
 	public TestInstance logId;
-	public List<StepResult> stepResults;
+	public List<StepResult> stepResults = new ArrayList<>();
 	String text = null;
 	public boolean pass = true;
 	transient public boolean includesMetadata = false;
@@ -34,6 +35,16 @@ public class Result  implements IsSerializable, Serializable {
 		r.pass = pass;
 		r.includesMetadata = includesMetadata;
 		return r;
+	}
+
+	public void append(Result result) throws XdsInternalException {
+		if (!testInstance.getId().equals(result.testInstance.getId()))
+			throw new XdsInternalException("Cannot append Result objects from different tests.");
+		for (StepResult stepResult : result.getStepResults()) {
+			stepResults.add(stepResult);
+			if (!stepResult.status)
+				pass = false;
+		}
 	}
 	
 	public Result simpleError(String err) {

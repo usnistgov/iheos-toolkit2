@@ -11,7 +11,9 @@ import gov.nist.toolkit.sitemanagement.client.Site;
 import gov.nist.toolkit.sitemanagement.client.TransactionBean;
 import gov.nist.toolkit.sitemanagement.client.TransactionBean.RepositoryType;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
 
 public class RepositoryActorFactory extends AbstractActorFactory {
@@ -56,7 +58,21 @@ public class RepositoryActorFactory extends AbstractActorFactory {
 		return new Simulator(sc);
 	}
 	
-	static String getNewRepositoryUniqueId() {
+	static synchronized String getNewRepositoryUniqueId() {
+		Collection<String> existingIds;
+		try {
+			existingIds = SimCache.getAllRepositoryUniqueIds();
+		} catch (Throwable t) {
+			existingIds = new ArrayList<>();
+		}
+		String value = newValue();
+		while (existingIds.contains(value)) {
+			value = newValue();
+		}
+		return value;
+	}
+
+	private static String newValue() {
 		return repositoryUniqueIdBase + repositoryUniqueIdIncr++;
 	}
 

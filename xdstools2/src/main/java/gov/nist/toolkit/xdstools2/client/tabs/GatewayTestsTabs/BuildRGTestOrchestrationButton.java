@@ -1,6 +1,5 @@
 package gov.nist.toolkit.xdstools2.client.tabs.GatewayTestsTabs;
 
-import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.FlexTable;
 import com.google.gwt.user.client.ui.HTML;
@@ -12,15 +11,20 @@ import gov.nist.toolkit.services.client.RgOrchestrationResponse;
 import gov.nist.toolkit.sitemanagement.client.SiteSpec;
 import gov.nist.toolkit.xdstools2.client.command.command.BuildRGTestOrchestrationCommand;
 import gov.nist.toolkit.xdstools2.client.widgets.PopupMessage;
+import gov.nist.toolkit.xdstools2.client.tabs.conformanceTest.ActorAndOption;
 import gov.nist.toolkit.xdstools2.client.tabs.genericQueryTab.GenericQueryTab;
 import gov.nist.toolkit.xdstools2.client.util.ClientUtils;
+import gov.nist.toolkit.xdstools2.client.widgets.PopupMessage;
 import gov.nist.toolkit.xdstools2.client.widgets.buttons.AbstractOrchestrationButton;
 import gov.nist.toolkit.xdstools2.shared.command.request.BuildRgTestOrchestrationRequest;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  *
  */
-class BuildRGTestOrchestrationButton extends AbstractOrchestrationButton {
+public class BuildRGTestOrchestrationButton extends AbstractOrchestrationButton {
     private RGTestTab testTab;
     private SiteSpec siteUnderTest;
     private boolean useExposedRR;
@@ -33,11 +37,18 @@ class BuildRGTestOrchestrationButton extends AbstractOrchestrationButton {
         this.useSimAsSUT = useSimAsSUT;
     }
 
+    public static List<ActorAndOption> ACTOR_OPTIONS = new ArrayList<>();
+    static {
+        ACTOR_OPTIONS = java.util.Arrays.asList(
+                new ActorAndOption("rg", "", "Required", false),
+                new ActorAndOption("rg", XUA_OPTION, "XUA Option", false));
+    }
+
 //    public void addLinkedOrchestrationButton(AbstractOrchestrationButton orchestrationButton) {
 //        linkedOrchestrationButtons.display(orchestrationButton);
 //    }
 
-    public void handleClick(ClickEvent event) {
+    public void orchestrate() {
         if (GenericQueryTab.empty(testTab.getCurrentTestSession())) {
             new PopupMessage("Must select test session first");
             return;
@@ -64,6 +75,9 @@ class BuildRGTestOrchestrationButton extends AbstractOrchestrationButton {
         RgOrchestrationRequest request = new RgOrchestrationRequest();
         request.setUserName(testTab.getCurrentTestSession());
 //        request.setEnvironmentName(??????);
+        if (isSaml()) {
+            setSamlAssertion(siteUnderTest);
+        }
         request.setSiteUnderTest(siteUnderTest);
         request.setUseExposedRR(useExposedRR);
         request.setUseSimAsSUT(useSimAsSUT);

@@ -71,8 +71,8 @@ public class KeyStoreAccessObject {
 			Properties props = new Properties();
 
 			//String root = System.getProperty("warHome");
-			String cache_root = System.getProperty("External_Cache");
-			String environmentName = System.getProperty("Environment_Name");
+//			String cache_root = System.getProperty("External_Cache");
+//			String environmentName = System.getProperty("Environment_Name");
 			
 			File keystoreDir = null;
 			try {

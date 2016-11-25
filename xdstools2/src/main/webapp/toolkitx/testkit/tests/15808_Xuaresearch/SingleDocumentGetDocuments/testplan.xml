@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<TestPlan>
+    <Test>15808_Xuaresearch/OneDocGetDocuments</Test>
+    <!-- Data for this test is loaded by 15807-->
+    <TestStep id="getdocs">
+        <Goal>GetDocuments returns same DocumentEntry</Goal>
+        <ExpectedStatus>Fault</ExpectedStatus>
+        <Rule>
+            <Transaction>XCQ</Transaction>
+            <SQ>Test GetDocuments Cross-Community</SQ>
+<!--
+            <Assertion>LeafClass return</Assertion>
+-->
+        </Rule>
+        <IGQTransaction>
+            <MetadataFile>query.xml</MetadataFile>
+            <UseId testdir="../../15807/onedoc1" id="Document01" step="submit_single_doc"
+                   section="AssignedUuids" symbol="$doc_uuid_1$"/>
+            <UseReport reportName="$testdata_home$" test="15807" section="onedoc1" step="submit_single_doc" useAs="$home$"/>
+            <Report name="$home$" section="Result">
+                //*[local-name()='ExtrinsicObject']/@home
+            </Report>
+<!--
+            <Assertions>
+                <DataRef file="THIS" as="output"/>
+                <Assert id="ExtrinsicObjectCount">
+                    count(//IGQTransaction[@step="getdocs"]/Result/*[local-name(.)='AdhocQueryResponse']/*[local-name(.)='RegistryObjectList']/*[local-name(.)='ExtrinsicObject']) = 1
+                </Assert>
+            </Assertions>
+-->
+        </IGQTransaction>
+    </TestStep>
+<!--
+    <TestStep id="homeCommunitIdValidation">
+        <Goal>Returned Home Community Id matches test configuration.</Goal>
+        <NullTransaction>
+            <UseReport reportName="$testdata_home$" test="15807" section="onedoc1" step="submit_single_doc" useAs="submittedValue"/>
+            <UseReport reportName="$home$"          section="THIS" step="getdocs" useAs="returnedValue"/>
+            <Assertions>
+                <Assert id="homeCommunityId returned must match RG simulator configuration">
+                    'submittedValue' = 'returnedValue'
+                </Assert>
+            </Assertions>
+        </NullTransaction>
+    </TestStep>
+-->
+</TestPlan>

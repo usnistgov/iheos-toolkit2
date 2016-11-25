@@ -198,7 +198,7 @@ public class XdsTestServiceManager extends CommonService {
 			String tsFileName = "/gazelle/gazelle_sts_cert_truststore.jks";
 			URL tsURL = getClass().getResource(tsFileName); // Should this be a toolkit system property variable?
 			if (tsURL != null) {
-				File tsFile = new File(tsURL.getFile());
+				File tsFile = new File(tsURL.getFile().replaceAll("%20"," "));
 				System.setProperty("javax.net.ssl.trustStore", tsFile.toString());
 				System.setProperty("javax.net.ssl.trustStorePassword", "changeit");
 				System.setProperty("javax.net.ssl.trustStoreType", "JKS");
@@ -241,7 +241,7 @@ public class XdsTestServiceManager extends CommonService {
 	 * @param testSession
 	 * @return
 	 */
-	public Map<String, Result> getTestResults(List<TestInstance> testInstances, String testSession) {
+	public Map<String, Result> getTestResults(List<TestInstance> testInstances, String environmentName, String testSession) {
 		if (session != null)
 			logger.debug(session.id() + ": " + "getTestResults() ids=" + testInstances + " testSession=" + testSession);
 
@@ -249,9 +249,13 @@ public class XdsTestServiceManager extends CommonService {
 
 		ResultPersistence rp = new ResultPersistence();
 
+		TestKitSearchPath testKitSearchPath = new TestKitSearchPath(environmentName, testSession);
 		for (TestInstance testInstance : testInstances) {
 			try {
-				Result result = rp.read(testInstance, testSession);
+				TestDefinition testDefinition = testKitSearchPath.getTestDefinition(testInstance.getId());
+				List<String> sectionNames = testDefinition.getSectionIndex();
+
+				Result result = rp.read(testInstance, sectionNames, testSession);
 				map.put(testInstance.getId(), result);
 			}
 			catch (Exception e) {}
@@ -259,13 +263,16 @@ public class XdsTestServiceManager extends CommonService {
 		return map;
 	}
 
-	public void delTestResults(List<TestInstance> testInstances, String testSession) {
+	public void delTestResults(List<TestInstance> testInstances, String environmentName, String testSession) {
 		if (session != null)
 			logger.debug(session.id() + ": " + "delTestResults() ids=" + testInstances + " testSession=" + testSession);
+		TestKitSearchPath testKitSearchPath = new TestKitSearchPath(environmentName, testSession);
 		ResultPersistence rp = new ResultPersistence();
 		for (TestInstance testInstance : testInstances) {
 			try {
-				rp.delete(testInstance, testSession);
+				TestDefinition testDefinition = testKitSearchPath.getTestDefinition(testInstance.getId());
+				List<String> sectionNames = testDefinition.getSectionIndex();
+				rp.delete(testInstance, testSession, sectionNames);
 			}
 			catch (Exception e) {}
 		}
@@ -583,7 +590,11 @@ public class XdsTestServiceManager extends CommonService {
 		List<TestOverviewDTO> results = new ArrayList<>();
 		try {
 			for (TestInstance testInstance : testInstances) {
-				results.add(getTestOverview(sessionName, testInstance));
+				try {
+					results.add(getTestOverview(sessionName, testInstance));
+				} catch (Exception e) {
+					logger.error("Test " + testInstance + " does not exist");
+				}
 			}
 		} catch (Exception e) {
 			throw e;
@@ -615,6 +626,8 @@ public class XdsTestServiceManager extends CommonService {
 				lm = buildLogMap(testDir, testInstance);
 
 			TestLogDetails testLogDetails = new TestLogDetails(session.getTestkitSearchPath().getTestDefinition(testInstance.getId()), testInstance);
+			if (testLogDetails == null)
+				throw new XdsInternalException(testInstance + " no longer exists");
 			List<TestLogDetails> testLogDetailsList = new ArrayList<TestLogDetails>();
 			testLogDetailsList.add(testLogDetails);
 

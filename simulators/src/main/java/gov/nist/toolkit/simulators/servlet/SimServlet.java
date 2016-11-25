@@ -482,7 +482,7 @@ public class SimServlet  extends HttpServlet {
 			if (asce != null)
 				vc.setCodesFilename(asce.asString());
 
-			SimCommon common= new SimCommon(db, uri.startsWith("https"), vc, mvc, response);
+			SimCommon common= new SimCommon(db, request.isSecure(), vc, mvc, response);
 			DsSimCommon dsSimCommon = new DsSimCommon(common, regIndex, repIndex);
 
 			ErrorRecorder er = new GwtErrorRecorderBuilder().buildNewErrorRecorder();

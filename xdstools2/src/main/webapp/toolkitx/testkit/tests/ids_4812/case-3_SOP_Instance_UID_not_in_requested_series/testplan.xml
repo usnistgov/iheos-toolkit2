@@ -1,6 +1,6 @@
 <TestPlan>
 	<Test>ids_4812/Case 3: Instance UID not in requested series</Test>
-	<TestStep id="retrieve">
+	<TestStep id="retrieve-3">
 		<Goal>Imaging Document Set Retrieve exception: Instance UID not in
 			requested series</Goal>
 		<ExpectedStatus>Failure</ExpectedStatus>
@@ -29,7 +29,7 @@
 		<XmlDetailTransaction>
 			<Assertions>
 				<Assert id="Returned doc(s)" process="sameRegErrors">
-					<TestResponse testDir="THIS" step="retrieve" />
+					<TestResponse testDir="THIS" step="retrieve-3" />
 				</Assert>
 			</Assertions>
 		</XmlDetailTransaction>

@@ -273,7 +273,7 @@ public class TestLogDetails {
 			String dir = lof.next().trim();
 			if (dir.length() ==0)
 				continue;
-			File path = new File(logdir + File.separator + area + File.separator + testInstance + File.separatorChar + dir + File.separatorChar + "log.xml");
+//			File path = new File(logdir + File.separator + area + File.separator + testInstance + File.separatorChar + dir + File.separatorChar + "log.xml");
 			sections.add(dir);
 		}
 		

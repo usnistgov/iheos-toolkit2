@@ -2,11 +2,12 @@ Xfer Syntax Failure, Single Gateway
 
 <h2>Transfer Syntax Failure, Single Gateway</h2>
 
-<p/>Tests the ability of the Initiating Imaging Gateway actor (SUT) to respond
+<p>Tests the ability of the Initiating Imaging Gateway actor (SUT) to respond
 correctly to Retrieve Image Document Set (RAD-69) Request from an Image Document 
 Consumer actor (Simulator), for a single DICOM image file using the JPEG 
 Baseline (Process 1) (1.2.840.10008.1.2.4.50) Transfer Syntax, in the case where
 the Image Document Source is not able to return the image file in that Syntax.
+</p>
 
 <h3>Prior to running this test:</h3>
 <ol>

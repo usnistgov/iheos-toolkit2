@@ -1,6 +1,5 @@
 package gov.nist.toolkit.xdstools2.client.tabs.conformanceTest;
 
-import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.FlexTable;
 import com.google.gwt.user.client.ui.FlowPanel;
@@ -38,6 +37,56 @@ public class BuildIIGTestOrchestrationButton extends AbstractOrchestrationButton
       this.testContext = testContext;
       this.testContextView = testContextView;
 
+
+      HTML instructions = new HTML(
+              "<p>" +
+                      "The System Under Test (SUT) is an Initiating Imaging Gateway ." +
+                      "The diagram below shows the test environment with the SUT in orange. " +
+                      "The test software creates and configures the simulators in the diagram. " +
+              "</p>" +
+              "<p>"  +
+                      "You need to configure your Initiating Imaging Gateway to communicate with " +
+                      "the Responding Imaging Gateways shown in the diagram. " +
+                      "The table immediately below describes the environment at a high level with " +
+                      "values for homeCommunityID's and repositoryUniqueID's. " +
+
+              "</p>" +
+                      "<table border=\"1\">" +
+              "<tr><th>homeCommunityID</th><th>Imaging Doc Source Repository Unique ID</th></tr>" +
+      "<tr bgcolor=\"#FFA500\"><td colspan=\"2\"><center>Under Test:Initiating Imaging Gateway</center></td></tr>" +
+      "<tr bgcolor=\"#FFA500\"><td>urn:oid:1.3.6.1.4.1.21367.13.70.1</td><td>&nbsp;</td></tr>" +
+
+      "<tr bgcolor=\"#FFFFFF\"><td colspan=\"2\"><center>Community A: Responding Imaging Gateway</center></td></tr>" +
+      "<tr bgcolor=\"#FFFFFF\"><td>urn:oid:1.3.6.1.4.1.21367.13.70.101</td>" +
+      "<td>1.3.6.1.4.1.21367.13.71.101 <br/>1.3.6.1.4.1.21367.13.71.101.1</td></tr>" +
+
+      "<tr bgcolor=\"#A0A0A0\"><td colspan=\"2\"><center>Community B: Responding Imaging Gateway</center></td></tr>" +
+      "<tr bgcolor=\"#A0A0A0\"><td>urn:oid:1.3.6.1.4.1.21367.13.70.102</td><td>1.3.6.1.4.1.21367.13.71.102</td></tr>" +
+
+      "<tr bgcolor=\"#FFFFFF\"><td colspan=\"2\"><center>Community C: Responding Imaging Gateway</center></td></tr>" +
+      "<tr bgcolor=\"#FFFFFF\"><td>urn:oid:1.3.6.1.4.1.21367.13.70.103</td><td>1.3.6.1.4.1.21367.13.71.103</td></tr>" +
+
+      "<tr bgcolor=\"#A0A0A0\"><td colspan=\"2\">" +
+      "<center>Unregistered Community Represents Error Conditions<br/>Do not configure these in your Initiating Imaging Gateway</center>" +
+      "</td></tr>" +
+      "<tr bgcolor=\"#A0A0A0\"><td>urn:oid:1.3.6.1.4.1.21367.13.70.102.999</td><td>1.3.6.1.4.1.21367.13.71.102.999</td></tr>" +
+      "</table>" +
+
+            "<p>" +
+                      "After you have initialized the test environment, you should see the full set of configuration " +
+                      "parameters needed to configure and test your system. " +
+            "</p>" +
+            "<p>"  +
+                      "Note that your Initiating Imaging Gateway only communicates with the Responding Imaging Gateway simulators. " +
+                      "Your system will not connect directly to any of the Imaging Document Source simulators." +
+            "</p>"
+
+      );
+
+      initializationPanel.add(instructions);
+
+      setSystemDiagramUrl("diagrams/IIGdiagram.png");
+
       setParentPanel(initializationPanel);
       setLabel(label);
       setResetLabel("Reset");
@@ -45,8 +94,7 @@ public class BuildIIGTestOrchestrationButton extends AbstractOrchestrationButton
       panel().add(initializationResultsPanel);
    }
 
-   @Override
-   public void handleClick(ClickEvent clickEvent) {
+   public void orchestrate() {
       String msg = testContext.verifyTestContext();
       if (msg != null) {
          testContextView.launchDialog(msg);
@@ -60,6 +108,9 @@ public class BuildIIGTestOrchestrationButton extends AbstractOrchestrationButton
       request.setEnvironmentName(testTab.getEnvironmentSelection());
       request.setUseExistingState(!isResetRequested());
       SiteSpec siteSpec = new SiteSpec(testContext.getSiteName());
+      if (isSaml()) {
+         setSamlAssertion(siteSpec);
+      }
       request.setSiteUnderTest(siteSpec);
 
       testTab.setSiteToIssueTestAgainst(siteSpec);

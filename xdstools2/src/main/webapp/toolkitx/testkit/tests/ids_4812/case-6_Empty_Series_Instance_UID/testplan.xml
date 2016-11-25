@@ -1,6 +1,6 @@
 <TestPlan>
 	<Test>ids_4812/Case 6: Empty Series Instance UID</Test>
-	<TestStep id="retrieve">
+	<TestStep id="retrieve-6">
 		<Goal>Imaging Document Set Retrieve exception: Empty Series Instance
 			UID</Goal>
 		<ExpectedStatus>Failure</ExpectedStatus>
@@ -29,7 +29,7 @@
 		<XmlDetailTransaction>
 			<Assertions>
 				<Assert id="Returned doc(s)" process="sameRegErrors">
-					<TestResponse testDir="THIS" step="retrieve" />
+					<TestResponse testDir="THIS" step="retrieve-6" />
 				</Assert>
 			</Assertions>
 		</XmlDetailTransaction>

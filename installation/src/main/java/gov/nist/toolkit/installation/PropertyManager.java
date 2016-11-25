@@ -136,7 +136,10 @@ public class PropertyManager {
 	public String getExternalCache() {
 		loadProperties();
 		String cache = (String) toolkitProperties.get(EXTERNAL_CACHE);
-		System.setProperty("External_Cache", cache);
+		// may have %20 instead of space characters on Windows.  Clean them up
+		if (cache != null)
+			cache = cache.replaceAll("%20", " ");
+//		System.setProperty("External_Cache", cache);
 		return cache;
 	}
 	

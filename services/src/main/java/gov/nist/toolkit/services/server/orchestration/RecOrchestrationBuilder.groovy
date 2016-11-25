@@ -28,7 +28,12 @@ class RecOrchestrationBuilder {
 
     RawResponse buildTestEnvironment() {
         RecOrchestrationResponse response = new RecOrchestrationResponse()
-        Map<String, TestInstanceManager> pidNameMap = new HashMap<>();
+        Map<String, TestInstanceManager> pidNameMap = [
+                // RecPIF does not really exist as a test.  It will never be sent.  Just a
+                // name for the TestInstanceManager to use in storing the property
+                // in Orch Props
+                RecPIF:  new TestInstanceManager(request, response, 'RecPIF')
+        ]
 
         boolean forceNewPatientIds = !request.isUseExistingState()
 
@@ -37,9 +42,9 @@ class RecOrchestrationBuilder {
         Pid registerPid
         if (forceNewPatientIds) {
             registerPid = session.allocateNewPid()
-            orchProps.setProperty("registerPid", registerPid.asString())
+            orchProps.setProperty("RecPIF", registerPid.asString())
         } else {
-            registerPid = PidBuilder.createPid(orchProps.getProperty("registerPid"))
+            registerPid = PidBuilder.createPid(orchProps.getProperty("RecPIF"))
         }
 
         response.setRegisterPid(registerPid)
