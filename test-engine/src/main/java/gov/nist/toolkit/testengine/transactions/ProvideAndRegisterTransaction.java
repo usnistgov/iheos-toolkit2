@@ -114,6 +114,7 @@ public class ProvideAndRegisterTransaction extends RegisterTransaction {
 
 					validate_registry_response(
 							result,
+							"RegistryResponse",
 							(xds_version == xds_a) ? MetadataTypes.METADATA_TYPE_R : MetadataTypes.METADATA_TYPE_SQ);
 				}
 
@@ -179,7 +180,7 @@ public class ProvideAndRegisterTransaction extends RegisterTransaction {
 							s_ctx.set_error("Result has no RegistryResponse");
 						} else {
 //							testLog.add_name_value(instruction_output, "Result", Util.parse_xml(rr.toString()));
-							validate_registry_response(rr, MetadataTypes.METADATA_TYPE_PR);
+							validate_registry_response(rr, "RegistryResponse", MetadataTypes.METADATA_TYPE_PR);
 						}
 					}
 				}
@@ -276,7 +277,7 @@ public class ProvideAndRegisterTransaction extends RegisterTransaction {
 						s_ctx.set_error("Result has no RegistryResponse");
 					} else {
 //						testLog.add_name_value(instruction_output, "Result", Util.parse_xml(rr.toString()));
-						validate_registry_response(rr, MetadataTypes.METADATA_TYPE_PR);
+						validate_registry_response(rr, "RegistryResponse", MetadataTypes.METADATA_TYPE_PR);
 					}
 				}
 			}

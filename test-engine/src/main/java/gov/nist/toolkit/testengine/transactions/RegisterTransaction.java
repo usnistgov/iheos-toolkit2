@@ -72,7 +72,8 @@ public class RegisterTransaction extends BasicTransaction {
 	
 	protected void validate_response(OMElement result) throws XdsException {
 		validate_registry_response(
-				result, 
+				result,
+				"RegistryResponse",
 				(xds_version == xds_a) ? MetadataTypes.METADATA_TYPE_R : MetadataTypes.METADATA_TYPE_SQ);
 	}
 
