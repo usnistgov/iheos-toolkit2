@@ -83,7 +83,7 @@ public class EchoV3Transaction extends BasicTransaction {
 
 //			testLog.add_name_value(instruction_output, "Result", result);
 
-			validate_registry_response(result, MetadataTypes.METADATA_TYPE_SQ);
+			validate_registry_response(result, "", MetadataTypes.METADATA_TYPE_SQ);
 
 		} catch (AxisFault e) {
 			throw new XdsInternalException(ExceptionUtil.exception_details(e));

@@ -4,6 +4,7 @@ import gov.nist.toolkit.actorfactory.SimManager;
 import gov.nist.toolkit.actorfactory.client.SimulatorConfig;
 import gov.nist.toolkit.actortransaction.client.ActorType;
 import gov.nist.toolkit.commondatatypes.MetadataSupport;
+import gov.nist.toolkit.commondatatypes.client.MetadataTypes;
 import gov.nist.toolkit.configDatatypes.SimulatorProperties;
 import gov.nist.toolkit.configDatatypes.client.TransactionType;
 import gov.nist.toolkit.errorrecording.ErrorRecorder;
@@ -23,6 +24,7 @@ import gov.nist.toolkit.simulators.support.SimCommon;
 import gov.nist.toolkit.sitemanagement.Sites;
 import gov.nist.toolkit.sitemanagement.client.Site;
 import gov.nist.toolkit.soap.axis2.Soap;
+import gov.nist.toolkit.testengine.engine.RegistryUtility;
 import gov.nist.toolkit.utilities.xml.OMFormatter;
 import gov.nist.toolkit.validatorsSoapMessage.message.SoapMessageValidator;
 import gov.nist.toolkit.valregmsg.registry.AdhocQueryResponse;
@@ -289,6 +291,8 @@ public class XcQuerySim extends AbstractMessageValidator implements MetadataGene
 		} else {
 			result = mockSoap.call(endpoint, request);
 		}
+
+		RegistryUtility.schema_validate_local(result, MetadataTypes.METADATA_TYPE_SQ);
 
 		gov.nist.toolkit.registrymsg.registry.AdhocQueryResponse response = new AdhocQueryResponseParser(result).getResponse();
 

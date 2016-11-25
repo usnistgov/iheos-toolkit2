@@ -386,7 +386,7 @@ public abstract class BasicTransaction  {
 		step_failure = true;
 	}
 
-	void validate_registry_response_in_soap(OMElement env, int metadata_type) throws XdsInternalException, MetadataValidationException, MetadataException {
+	void validate_registry_response_in_soap(OMElement env, String topElementName, int metadata_type) throws XdsInternalException, MetadataValidationException, MetadataException {
 		if (!env.getLocalName().equals("Envelope"))
 			throw new XdsInternalException("Expected 'Envelope' but found " + env.getLocalName() + " instead");
 		OMElement hdr = env.getFirstElement();
@@ -402,22 +402,30 @@ public abstract class BasicTransaction  {
 			throw new XdsInternalException("Expected 'Body' but found nothing instead");
 		if (!body.getLocalName().equals("Body"))
 			throw new XdsInternalException("Expected 'Body' but found " + body.getLocalName() + " instead");
-		validate_registry_response(body.getFirstElement(), metadata_type);
+		validate_registry_response(body.getFirstElement(), topElementName, metadata_type);
 
 	}
 
-	void validate_registry_response(OMElement result, int metadata_type) throws XdsInternalException, MetadataValidationException, MetadataException {
+	void validate_registry_response(OMElement result, String topElementName, int metadata_type) throws XdsInternalException, MetadataValidationException, MetadataException {
 		// metadata type was MetadataTypes.METADATA_TYPE_PR
-		validate_registry_response_no_set_status(result, metadata_type);
+		validate_registry_response_no_set_status(result, topElementName, metadata_type);
 
 		add_step_status_to_output();
 	}
 
-	void validate_registry_response_no_set_status(OMElement registry_result, int metadata_type) throws XdsInternalException, MetadataValidationException, MetadataException {
+	void validate_registry_response_no_set_status(OMElement registry_result, String topElementName, int metadata_type) throws XdsInternalException, MetadataValidationException, MetadataException {
 		if (registry_result == null) {
 			s_ctx.set_error("No Result message");
 			step_failure = true;
 			return;
+		}
+
+		if (topElementName != null && registry_result != null) {
+			if (!topElementName.equals(registry_result.getLocalName())) {
+				s_ctx.set_error("Message top level element must be " + topElementName + " found " + registry_result.getLocalName() + " instead");
+				step_failure = true;
+				return;
+			}
 		}
 
 		RegistryResponseParser registry_response = new RegistryResponseParser(registry_result);

@@ -68,6 +68,7 @@ public class RegisterODDETransaction extends BasicTransaction {
 	protected void validate_response(OMElement result) throws XdsException {
 		validate_registry_response(
 				result,
+				"RegistryResponse",
 				MetadataTypes.METADATA_TYPE_SQ);
 	}
 

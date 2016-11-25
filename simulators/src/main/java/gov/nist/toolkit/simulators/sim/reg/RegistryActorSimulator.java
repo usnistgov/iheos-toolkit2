@@ -206,10 +206,10 @@ public class RegistryActorSimulator extends BaseDsActorSimulator {
 			if (!dsSimCommon.runInitialValidationsAndFaultIfNecessary())
 				return false;
 			
-			if (mvc.hasErrors()) {
-				dsSimCommon.sendErrorsInRegistryResponse(er);
-				return false;
-			}
+//			if (mvc.hasErrors()) {
+//				dsSimCommon.sendErrorsInRegistryResponse(er);
+//				return false;
+//			}
 
 
 			SqSim sqsim = new SqSim(common, dsSimCommon);
@@ -228,7 +228,7 @@ public class RegistryActorSimulator extends BaseDsActorSimulator {
 			// this will only run the new validators
 			mvc.run();
 			
-			return true; // no updates anyway
+			return !mvc.hasErrors(); // no updates anyway
 
 		}
 		else if (transactionType.equals(TransactionType.UPDATE)) {

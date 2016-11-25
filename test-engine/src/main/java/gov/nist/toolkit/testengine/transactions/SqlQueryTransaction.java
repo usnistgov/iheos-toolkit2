@@ -114,7 +114,7 @@ public class SqlQueryTransaction extends QueryTransaction {
 
 			testLog.add_name_value(instruction_output, "Result", result);
 
-			validate_registry_response_no_set_status(result, metadata_type);
+			validate_registry_response_no_set_status(result, "", metadata_type);
 
 			if (expected_contents != null ) {
 				String errors = validate_assertions(result, metadata_type, expected_contents);

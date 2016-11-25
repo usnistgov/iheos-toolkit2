@@ -92,7 +92,7 @@ public class StoredQueryTransaction extends QueryTransaction {
 		catch (Exception e) {
 			fail(ExceptionUtil.exception_details(e));
 		}
-		validate_registry_response_no_set_status(result, metadata_type);
+		validate_registry_response_no_set_status(result, "AdhocQueryResponse", metadata_type);
 
 		if (expected_contents != null ) {
 			String errors = validate_assertions(result, metadata_type, expected_contents);

@@ -85,7 +85,7 @@ public class EchoV2Transaction  extends BasicTransaction {
 			if (result != null) {
 //				testLog.add_name_value(instruction_output, "Result", result);
 
-				validate_registry_response(result, MetadataTypes.METADATA_TYPE_R);
+				validate_registry_response(result, "", MetadataTypes.METADATA_TYPE_R);
 			}
 
 		} catch (AxisFault e) {
