@@ -3,7 +3,6 @@ package gov.nist.toolkit.xdstools2.client.widgets.buttons;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
-import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.*;
 import gov.nist.toolkit.results.client.TestInstance;
 import gov.nist.toolkit.services.client.AbstractOrchestrationResponse;
@@ -133,7 +132,7 @@ abstract public class AbstractOrchestrationButton implements ClickHandler {
                     samlCheckBox.setStyleName("orchestrationOption");
                 }
             }
-        });
+        };
 
     }
 

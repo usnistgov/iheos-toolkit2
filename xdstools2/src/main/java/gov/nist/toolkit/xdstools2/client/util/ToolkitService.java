@@ -12,12 +12,11 @@ import gov.nist.toolkit.configDatatypes.client.Pid;
 import gov.nist.toolkit.interactionmodel.client.InteractingEntity;
 import gov.nist.toolkit.results.client.*;
 import gov.nist.toolkit.results.shared.Test;
-import gov.nist.toolkit.services.client.*;
+import gov.nist.toolkit.services.client.RawResponse;
 import gov.nist.toolkit.session.client.ConformanceSessionValidationStatus;
 import gov.nist.toolkit.session.client.logtypes.TestOverviewDTO;
 import gov.nist.toolkit.session.client.logtypes.TestPartFileDTO;
 import gov.nist.toolkit.sitemanagement.client.Site;
-import gov.nist.toolkit.sitemanagement.client.SiteSpec;
 import gov.nist.toolkit.sitemanagement.client.TransactionOfferings;
 import gov.nist.toolkit.testenginelogging.client.LogFileContentDTO;
 import gov.nist.toolkit.testkitutilities.client.SectionDefinitionDAO;
@@ -262,8 +261,8 @@ public interface ToolkitService extends RemoteService  {
 	// STS SAML
 	//------------------------------------------------------------------------
 	//------------------------------------------------------------------------
-	public String getStsSamlAssertion(String username, TestInstance testInstance, SiteSpec stsSite, Map<String, String> params) throws Exception;
-    Map<String,String> getStsSamlAssertionsMap(TestInstance testInstance, SiteSpec stsSite, Map<String, String> params) throws Exception;
+	public String getStsSamlAssertion(GetStsSamlAssertionRequest request) throws Exception;
+//    Map<String,String> getStsSamlAssertionsMap(TestInstance testInstance, SiteSpec stsSite, Map<String, String> params) throws Exception;
 
 	String clearTestSession(CommandContext context) throws Exception;
 

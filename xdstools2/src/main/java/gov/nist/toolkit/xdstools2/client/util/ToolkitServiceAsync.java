@@ -235,7 +235,8 @@ public interface ToolkitServiceAsync {
 	void registerWithLocalizedTrackingInODDS(RegisterRequest registerRequest, AsyncCallback<Map<String, String>> callback);
 	void getOnDemandDocumentEntryDetails(GetOnDemandDocumentEntryDetailsRequest request, AsyncCallback<List<DocumentEntryDetail>> callback);
 	void getInteractionFromModel(GetInteractionFromModelRequest request, AsyncCallback<InteractingEntity> callback);
-	void getStsSamlAssertion(GetStsSamlAssertionRequest request, AsyncCallback<String> callback) throws Exception;
+	void getStsSamlAssertion(GetStsSamlAssertionRequest request, AsyncCallback<String> callback);
+//    void getStsSamlAssertionsMap(TestInstance testInstance, SiteSpec stsSite, Map<String, String> params, AsyncCallback<Map<String,String>> callback);
 
 
     void getServletContextName(AsyncCallback<String> callback);

@@ -368,7 +368,7 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements
     @Override
     public Map<String, Result> getTestResults(GetTestResultsRequest request)  throws Exception {
         installCommandContext(request);
-        return session().xdsTestServiceManager().getTestResults(request.getTestIds(), request.getTestSessionName());
+        return session().xdsTestServiceManager().getTestResults(request.getTestIds(), request.getEnvironmentName(), request.getTestSessionName());
     }
     @Override
     public String setMesaTestSession(String sessionName)  throws NoServletSessionException { session().xdsTestServiceManager().setMesaTestSession(sessionName); return sessionName;}
@@ -1339,28 +1339,28 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements
     }
 
 
-    public Map<String,String> getStsSamlAssertionsMap(TestInstance testInstance, SiteSpec stsSite, Map<String,String> params) throws Exception {
-
-        Map<String,String> assertionMap = null;
-        for (GazelleXuaUsername username : GazelleXuaUsername.values()) {
-            String usernameStr = username.name();
-            params.clear();
-            params.put("$saml-username$",usernameStr);
-            try {
-                String samlAssertion = getStsSamlAssertion(usernameStr, testInstance, stsSite, params);
-                if (samlAssertion!=null) {
-                    if (assertionMap == null) {
-                        assertionMap = new HashMap<String,String>();
-                    }
-                    assertionMap.put(usernameStr, samlAssertion);
-                }
-            } catch (Exception ex) {
-                // ignore
-            }
-        }
-
-        return assertionMap;
-    }
+//    public Map<String,String> getStsSamlAssertionsMap(TestInstance testInstance, SiteSpec stsSite, Map<String,String> params) throws Exception {
+//
+//        Map<String,String> assertionMap = null;
+//        for (GazelleXuaUsername username : GazelleXuaUsername.values()) {
+//            String usernameStr = username.name();
+//            params.clear();
+//            params.put("$saml-username$",usernameStr);
+//            try {
+//                String samlAssertion = getStsSamlAssertion(usernameStr, testInstance, stsSite, params);
+//                if (samlAssertion!=null) {
+//                    if (assertionMap == null) {
+//                        assertionMap = new HashMap<String,String>();
+//                    }
+//                    assertionMap.put(usernameStr, samlAssertion);
+//                }
+//            } catch (Exception ex) {
+//                // ignore
+//            }
+//        }
+//
+//        return assertionMap;
+//    }
 
     @Override
     public String clearTestSession(CommandContext context) throws Exception {

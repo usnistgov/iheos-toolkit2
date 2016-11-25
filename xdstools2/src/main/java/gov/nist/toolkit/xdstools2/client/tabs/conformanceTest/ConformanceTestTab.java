@@ -805,20 +805,13 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner, TestsH
 				return;
 			}
 
-			getToolkitServices().getSite(new GetSiteRequest(getCommandContext(), siteSpec.getName()), new AsyncCallback<Site>() {
+			new GetSiteCommand() {
 				@Override
-				public void onFailure(Throwable throwable) {
-					new PopupMessage(throwable.getMessage());
-				}
-
-				@Override
-				public void onSuccess(Site site) {
+				public void onComplete(Site site) {
 					if (!site.hasActor(actorType))
 						new PopupMessage("System under test does not implement a " + actorType.getName());
 				}
-			});
-
-
+			};
 		}
 	}
 }

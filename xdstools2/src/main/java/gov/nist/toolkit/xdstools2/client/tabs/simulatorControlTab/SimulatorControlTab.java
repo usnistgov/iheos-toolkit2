@@ -17,6 +17,7 @@ import gov.nist.toolkit.simcommon.client.config.SimulatorConfigElement;
 import gov.nist.toolkit.sitemanagement.client.Site;
 import gov.nist.toolkit.xdstools2.client.ClickHandlerData;
 import gov.nist.toolkit.xdstools2.client.command.command.*;
+import gov.nist.toolkit.xdstools2.client.event.TabSelectedEvent;
 import gov.nist.toolkit.xdstools2.client.event.Xdstools2EventBus;
 import gov.nist.toolkit.xdstools2.client.event.testSession.TestSessionChangedEvent;
 import gov.nist.toolkit.xdstools2.client.event.testSession.TestSessionChangedEventHandler;
@@ -38,16 +39,16 @@ import java.util.List;
 public class SimulatorControlTab extends GenericQueryTab {
 
     ListBox         actorSelectListBox = new ListBox();
-    HorizontalPanel simConfigWrapperPanel = new HorizontalPanel();
-    FlowPanel   simConfigPanel = new FlowPanel();
+    private HorizontalPanel simConfigWrapperPanel = new HorizontalPanel();
+    private FlowPanel   simConfigPanel = new FlowPanel();
     TextArea        simIdsTextArea = new TextArea();
     TextBox         newSimIdTextBox = new TextBox();
-    Button          createActorSimulatorButton = new Button("Create Actor Simulator");
+    private Button          createActorSimulatorButton = new Button("Create Actor Simulator");
     Button          loadSimulatorsButton = new Button("Load Simulators");
     FlexTable       table = new FlexTable();
 
     SimConfigSuper simConfigSuper;
-    SimulatorControlTab self;
+    private SimulatorControlTab self;
 
     public SimulatorControlTab(BaseSiteActorManager siteActorManager) {
         super(siteActorManager);
