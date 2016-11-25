@@ -53,7 +53,7 @@ public class AdtSender {
         StringBuilder buf = new StringBuilder();
 
         for (int i=0; i<message.length; i++) {
-            buf.append(message[i].trim()).append("\r\n");
+            buf.append(message[i].trim()).append("\r");
         }
 
         out.print(buf.toString().replace("$pid$", pid));
