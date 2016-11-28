@@ -2,6 +2,8 @@ package gov.nist.toolkit.valregmsg.registry.storedquery.support;
 
 import gov.nist.toolkit.errorrecording.ErrorRecorder;
 import gov.nist.toolkit.errorrecording.client.XdsErrorCode;
+import gov.nist.toolkit.errorrecording.client.assertions.Assertion;
+import gov.nist.toolkit.errorrecording.client.assertions.AssertionLibrary;
 import gov.nist.toolkit.registrysupport.logging.LogMessage;
 import gov.nist.toolkit.valregmsg.registry.SQCodeAnd;
 import gov.nist.toolkit.valregmsg.registry.SQCodedTerm;
@@ -20,7 +22,9 @@ public class StoredQuerySupport {
 	public boolean has_alternate_validation_errors = false;
 	public boolean is_secure;
 	public boolean runEndProcessing = true;
-	
+	private AssertionLibrary ASSERTIONLIBRARY = AssertionLibrary.getInstance();
+
+
 	public void noEndProcessing() {
 		runEndProcessing = false;
 	}
@@ -120,7 +124,9 @@ public class StoredQuerySupport {
 
 		if (value == null && alternatives == null) {
 			if (required ) {
-				er.err(XdsErrorCode.Code.XDSRegistryError, "Parameter " + name + " is required but not present in query", "StoredQuery.java", "ITI TF-2a: 3.18.4.1.2.3.7", log_message);
+				Assertion assertion = ASSERTIONLIBRARY.getAssertion("TA155");
+				String detail = "Missing parameter: '" + name + "'; Log message: '" + log_message + "'";
+				er.err(XdsErrorCode.Code.XDSRegistryError, assertion, this, "StoredQuery.java", detail);
 				this.has_validation_errors = true;
 				return;
 			} 
@@ -131,7 +137,8 @@ public class StoredQuerySupport {
 			System.out.println("looking for alternatives");
 			if (! isAlternativePresent(alternatives)) {
 				if ( ! has_alternate_validation_errors) {
-					er.err(XdsErrorCode.Code.XDSRegistryError, "One of these parameters must be present in the query: " + valuesAsString(name, alternatives), "StoredQuery.java", "ITI TF-2a: 3.18.4.1.2.3.7", log_message);
+					er.err(XdsErrorCode.Code.XDSRegistryError, "One of these parameters must be present in the query: "
+							+ valuesAsString(name, alternatives), "StoredQuery.java", "ITI TF-2a: 3.18.4.1.2.3.7", log_message);
 					has_alternate_validation_errors = true;  // keeps from generating multiples of this message
 				}
 				has_validation_errors = true;

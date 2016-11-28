@@ -152,6 +152,6 @@ TA151,RetrieveDocumentSetResponse: top element null,,,
 TA152,RegistryResponse missing,Schema,,
 TA153,Cannot find /AdhocQueryRequest/ResponseOption element,ebRS 3.0 Section 6.1.1.1,,
 TA154,/AdhocQueryRequest/ResponseOption/@returnType must be LeafClass or ObjectRef or for some special queries LeafClassWithRepositoryItem,ebRS 3.0 Section 6.1.4.2 and ITI TF-2a: 3.18.4.1.2.3.1,,
-
+TA155,Required parameter missing in query,ITI TF-2a: 3.18.4.1.2.3.7,,
 
 
