@@ -2,6 +2,8 @@ package gov.nist.toolkit.valregmsg.message;
 
 import gov.nist.toolkit.errorrecording.ErrorRecorder;
 import gov.nist.toolkit.errorrecording.client.XdsErrorCode;
+import gov.nist.toolkit.errorrecording.client.assertions.Assertion;
+import gov.nist.toolkit.errorrecording.client.assertions.AssertionLibrary;
 import gov.nist.toolkit.errorrecording.factories.ErrorRecorderBuilder;
 import gov.nist.toolkit.http.HttpHeader;
 import gov.nist.toolkit.http.HttpParserBa;
@@ -28,6 +30,7 @@ public class SimpleSoapHttpHeaderValidator extends AbstractMessageValidator {
 	String charset = null;
 	RegistryValidationInterface rvi;
 
+
 	public SimpleSoapHttpHeaderValidator(ValidationContext vc, HttpParserBa hparser, byte[] body, ErrorRecorderBuilder erBuilder, MessageValidatorEngine mvc, RegistryValidationInterface rvi) {
 		super(vc);
 		this.hparser = hparser;
@@ -48,9 +51,10 @@ public class SimpleSoapHttpHeaderValidator extends AbstractMessageValidator {
 			HttpHeader contentTypeHeader = new HttpHeader(contentTypeString);
 			String contentTypeValue = contentTypeHeader.getValue();
 			if (contentTypeValue == null) contentTypeValue = "";
-			if (!"application/soap+xml".equals(contentTypeValue.toLowerCase()))
-                er.error("??", "Content-Type header", contentTypeValue, "application/soap+xml","http://www.w3.org/TR/soap12-part0 - Section 4.1.2");
-            else
+			if (!"application/soap+xml".equals(contentTypeValue.toLowerCase())) {
+				er.error("??", "Content-Type header", contentTypeValue, "application/soap+xml", "http://www.w3.org/TR/soap12-part0 - Section 4.1.2");
+			}
+                else
                 er.success("??", "Content-Type header", contentTypeValue, "application/soap+xml", "http://www.w3.org/TR/soap12-part0 - Section 4.1.2");
             //err("Content-Type header must have value application/soap+xml - found instead " + contentTypeValue,"http://www.w3.org/TR/soap12-part0 - Section 4.1.2");
 

@@ -4,6 +4,8 @@ import gov.nist.toolkit.docref.EbRS;
 import gov.nist.toolkit.docref.SqDocRef;
 import gov.nist.toolkit.errorrecording.ErrorRecorder;
 import gov.nist.toolkit.errorrecording.client.XdsErrorCode;
+import gov.nist.toolkit.errorrecording.client.assertions.Assertion;
+import gov.nist.toolkit.errorrecording.client.assertions.AssertionLibrary;
 import gov.nist.toolkit.registrymetadata.Metadata;
 import gov.nist.toolkit.registrymsg.registry.Response;
 import gov.nist.toolkit.commondatatypes.MetadataSupport;
@@ -45,7 +47,7 @@ abstract public class StoredQueryFactory {
 
 	OMElement ahqr;
 
-    ;
+	;
 
 
 	QueryReturnType returnType = QueryReturnType.OBJECTREF;
@@ -58,6 +60,7 @@ abstract public class StoredQueryFactory {
 	protected Response response = null;
 	protected ErrorRecorder er = null;
 	String homeCommunityId = null;
+	private AssertionLibrary ASSERTIONLIBRARY = AssertionLibrary.getInstance();
 
 	public void setIsSecure(boolean is) { is_secure = is; }
 	public void setServiceName(String serviceName) { serviceName = service_name; }
@@ -120,9 +123,10 @@ abstract public class StoredQueryFactory {
 			er = response.getErrorRecorder();
 
 		OMElement response_option = XmlUtil.firstChildWithLocalName(ahqr, "ResponseOption") ;
-		if (response_option == null)
-			er.err(XdsErrorCode.Code.XDSRegistryError, "Cannot find /AdhocQueryRequest/ResponseOption element", this, "ebRS 3.0 Section 6.1.1.1");
-
+		if (response_option == null) {
+			Assertion assertion = ASSERTIONLIBRARY.getAssertion("TA153");
+			er.err(XdsErrorCode.Code.XDSRegistryError, assertion, this, "", "");
+		}
 		String return_type = response_option.getAttributeValue(MetadataSupport.return_type_qname);
 
 		if (return_type == null) throw new XdsException("Attribute returnType not found on query request", SqDocRef.Return_type);
@@ -133,10 +137,11 @@ abstract public class StoredQueryFactory {
 		else if (return_type.equals("LeafClassWithRepositoryItem"))
 			returnType = QueryReturnType.LEAFCLASSWITHDOCUMENT;
 
-		else
-			er.err(XdsErrorCode.Code.XDSRegistryError, "/AdhocQueryRequest/ResponseOption/@returnType must be LeafClass or ObjectRef or for some special queries LeafClassWithRepositoryItem. Found value "
-					+ return_type, this, EbRS.ReturnTypes);
-
+		else {
+			Assertion assertion = ASSERTIONLIBRARY.getAssertion("TA154");
+			String detail = "Found type: '" + return_type + "'";
+			er.err(XdsErrorCode.Code.XDSRegistryError, assertion, this, "", detail);
+		}
 		OMElement adhoc_query = XmlUtil.firstChildWithLocalName(ahqr, "AdhocQuery") ;
 		if (adhoc_query == null) {
 			throw new XdsInternalException("Cannot find /AdhocQueryRequest/AdhocQuery element");
