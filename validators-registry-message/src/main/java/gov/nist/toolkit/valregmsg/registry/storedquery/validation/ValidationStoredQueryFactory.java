@@ -3,6 +3,8 @@ package gov.nist.toolkit.valregmsg.registry.storedquery.validation;
 import gov.nist.toolkit.docref.SqDocRef;
 import gov.nist.toolkit.errorrecording.ErrorRecorder;
 import gov.nist.toolkit.errorrecording.client.XdsErrorCode;
+import gov.nist.toolkit.errorrecording.client.assertions.Assertion;
+import gov.nist.toolkit.errorrecording.client.assertions.AssertionLibrary;
 import gov.nist.toolkit.registrymetadata.Metadata;
 import gov.nist.toolkit.registrymsg.registry.Response;
 import gov.nist.toolkit.commondatatypes.MetadataSupport;
@@ -16,96 +18,98 @@ import gov.nist.toolkit.xdsexception.XdsException;
 import org.apache.axiom.om.OMElement;
 
 public class ValidationStoredQueryFactory extends StoredQueryFactory {
+	private AssertionLibrary ASSERTIONLIBRARY = AssertionLibrary.getInstance();
+
 
 	public ValidationStoredQueryFactory(OMElement ahqr) throws XdsException,
-	LoggerException {
+			LoggerException {
 		super(ahqr);
 	}
 
 	public ValidationStoredQueryFactory(OMElement ahqr, Response response) throws XdsException,
-	LoggerException {
+			LoggerException {
 		super(ahqr, response, null);
 	}
 
 	public ValidationStoredQueryFactory(OMElement ahqr, ErrorRecorder er) throws XdsException,
-	LoggerException {
+			LoggerException {
 		super(ahqr, er);
 	}
 
 	@Override
 	public Metadata FindDocuments(StoredQuerySupport sqs) throws XdsException,
-	LoggerException, XDSRegistryOutOfResourcesException {
+			LoggerException, XDSRegistryOutOfResourcesException {
 		return null;
 	}
 
 	@Override
 	public Metadata FindFolders(StoredQuerySupport sqs) throws XdsException,
-	LoggerException {
+			LoggerException {
 		return null;
 	}
 
 	@Override
 	public Metadata FindSubmissionSets(StoredQuerySupport sqs)
-	throws XdsException, LoggerException {
+			throws XdsException, LoggerException {
 		return null;
 	}
 
 	@Override
 	public Metadata GetAssociations(StoredQuerySupport sqs)
-	throws XdsException, LoggerException {
+			throws XdsException, LoggerException {
 		return null;
 	}
 
 	@Override
 	public Metadata GetDocuments(StoredQuerySupport sqs) throws XdsException,
-	LoggerException {
+			LoggerException {
 		return null;
 	}
 
 	@Override
 	public Metadata GetDocumentsAndAssociations(StoredQuerySupport sqs)
-	throws XdsException, LoggerException {
+			throws XdsException, LoggerException {
 		return null;
 	}
 
 	@Override
 	public Metadata GetFolderAndContents(StoredQuerySupport sqs)
-	throws XdsException, LoggerException {
+			throws XdsException, LoggerException {
 		return null;
 	}
 
 	@Override
 	public Metadata GetFolders(StoredQuerySupport sqs) throws XdsException,
-	LoggerException {
+			LoggerException {
 		return null;
 	}
 
 	@Override
 	public Metadata GetFoldersForDocument(StoredQuerySupport sqs)
-	throws XdsException, LoggerException {
+			throws XdsException, LoggerException {
 		return null;
 	}
 
 	@Override
 	public Metadata GetRelatedDocuments(StoredQuerySupport sqs)
-	throws XdsException, LoggerException {
+			throws XdsException, LoggerException {
 		return null;
 	}
 
 	@Override
 	public Metadata GetSubmissionSetAndContents(StoredQuerySupport sqs)
-	throws XdsException, LoggerException {
+			throws XdsException, LoggerException {
 		return null;
 	}
 
 	@Override
 	public Metadata GetSubmissionSets(StoredQuerySupport sqs)
-	throws XdsException, LoggerException {
+			throws XdsException, LoggerException {
 		return null;
 	}
 
 	public StoredQueryFactory buildStoredQueryHandler(StoredQuerySupport sqs)
-	throws MetadataValidationException, LoggerException {
+			throws MetadataValidationException, LoggerException {
 		if (query_id == null) {
 			throw new MetadataValidationException("Null Query ID", SqDocRef.QueryID);
 		}
@@ -163,17 +167,18 @@ public class ValidationStoredQueryFactory extends StoredQueryFactory {
 			storedQueryImpl = new ValidationGetRelatedDocuments(sqs);
 		}
 		else if (query_id.equals(MetadataSupport.SQ_FindDocumentsForMultiplePatients)) {
-			setTestMessage("FindDocumentsForMulitplePatients");
+			setTestMessage("FindDocumentsForMultiplePatients");
 			storedQueryImpl = new ValidationFindDocumentsForMultiplePatients(sqs);
 		}
 		else if (query_id.equals(MetadataSupport.SQ_FindFoldersForMultiplePatients)) {
-			setTestMessage("FindFoldersForMulitplePatients");
+			setTestMessage("FindFoldersForMultiplePatients");
 			storedQueryImpl = new ValidationFindFoldersForMultiplePatients(sqs);
 		}
 		else {
 			setTestMessage(query_id);
-			er.err(XdsErrorCode.Code.XDSRegistryError, "Unknown Stored Query query id = " + query_id, "AdhocQueryRequest.java",
-					"ITI TF-2a: 3.18.4.1.2.4 and ITI TF-2b: 3.51.4.1.2.2", log_message);
+			Assertion assertion = ASSERTIONLIBRARY.getAssertion("TA156");
+			String detail = "Query ID: '" + query_id + "'; Log message: " + log_message;
+			er.err(XdsErrorCode.Code.XDSRegistryError, assertion, this, "AdhocQueryRequest.java", detail);
 		}
 
 		if (log_message != null) {
