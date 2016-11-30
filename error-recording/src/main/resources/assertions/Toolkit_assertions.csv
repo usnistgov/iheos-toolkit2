@@ -155,4 +155,6 @@ TA154,/AdhocQueryRequest/ResponseOption/@returnType must be LeafClass or ObjectR
 TA155,Required parameter missing in query,ITI TF-2a: 3.18.4.1.2.3.7,,
 TA156,Unknown Stored Query ID,ITI TF-2a: 3.18.4.1.2.4 and ITI TF-2b: 3.51.4.1.2.2,,
 TA157,HomeCommunityId is required inside the DocumentResponse element in this context,,,
-
+TA158,Internal Error: Invalid message format,,,
+TA159,Found unexpected Message Format,ITI TF Volumes 2a and 2b,,
+TA160,Found unexpected Message Format,ITI TF Volumes 2a and 2b,,

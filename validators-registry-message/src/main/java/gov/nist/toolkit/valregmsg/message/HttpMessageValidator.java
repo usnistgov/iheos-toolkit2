@@ -1,6 +1,9 @@
 package gov.nist.toolkit.valregmsg.message;
 
 import gov.nist.toolkit.errorrecording.ErrorRecorder;
+import gov.nist.toolkit.errorrecording.client.XdsErrorCode;
+import gov.nist.toolkit.errorrecording.client.assertions.Assertion;
+import gov.nist.toolkit.errorrecording.client.assertions.AssertionLibrary;
 import gov.nist.toolkit.errorrecording.factories.ErrorRecorderBuilder;
 import gov.nist.toolkit.http.HttpParseException;
 import gov.nist.toolkit.http.HttpParserBa;
@@ -23,6 +26,8 @@ public class HttpMessageValidator extends AbstractMessageValidator {
 	ErrorRecorderBuilder erBuilder;
 	MessageValidatorEngine mvc;
 	RegistryValidationInterface rvi;
+	private AssertionLibrary ASSERTIONLIBRARY = AssertionLibrary.getInstance();
+
 
 	public HttpMessageValidator(ValidationContext vc, String header, byte[] body, ErrorRecorderBuilder erBuilder, MessageValidatorEngine mvc, RegistryValidationInterface rvi) {
 		super(vc);
@@ -51,7 +56,8 @@ public class HttpMessageValidator extends AbstractMessageValidator {
 
 			er.sectionHeading("HTTP message format validation");
             if (!vc.isValid()) {
-                er.err(vc.getBasicErrorCode(), "Internal Error: Invalid message format: " + vc, this, "");
+				Assertion assertion = ASSERTIONLIBRARY.getAssertion("TA158");
+				er.err(vc.getBasicErrorCode(), assertion, this, "", "");
                 er.unRegisterValidator(this);
                 return;
             }
@@ -64,7 +70,9 @@ public class HttpMessageValidator extends AbstractMessageValidator {
 			hparser.setErrorRecorder(er);
 			if (hparser.isMultipart()) {
 				if (vc.requiresSimpleSoap()) {
-                    er.error("", "Message Format", "Multipart", "SIMPLE Format", "ITI TF Volumes 2a and 2b");
+					Assertion assertion = ASSERTIONLIBRARY.getAssertion("TA159");
+					String detail = "Found 'Multipart', expected 'Simple Format'";
+					er.err(XdsErrorCode.Code.NoCode, assertion, this, "", detail);
 				} else {
                     er.success("", "Message format", "Multipart", "Multipart", "ITI TF Volumes 2a and 2b");
 				}
@@ -72,7 +80,9 @@ public class HttpMessageValidator extends AbstractMessageValidator {
 			} else {
 				boolean mt = vc.requiresMtom();
                 if (mt) {
-                    er.error("", "Message Format", "SIMPLE Format", "Multipart", "ITI TF Volumes 2a and 2b");
+					Assertion assertion = ASSERTIONLIBRARY.getAssertion("TA160");
+					String detail = "Found 'Simple Format', expected 'Multipart'";
+					er.err(XdsErrorCode.Code.NoCode, assertion, this, "", detail);
                 } else {
                     er.success("", "Message format", "SIMPLE Format", "SIMPLE Format", "ITI TF Volumes 2a and 2b");
                 }
