@@ -7,6 +7,7 @@ import gov.nist.toolkit.xdsexception.ExceptionUtil
 import groovy.xml.MarkupBuilder
 import org.apache.log4j.Logger
 
+
 /**
  * Created by diane on 2/19/2016.
  */
@@ -75,6 +76,24 @@ public class XMLErrorRecorder implements ErrorRecorder {
         errXml = errXml.concat(sw.toString() + "\n")
     }
 
+    public void err(Code _code, Assertion _assertion, String _validatorModule, String _location, String _detail, String _logMessage) {
+        println("err2-2")
+
+        // Generate the new element
+        def sw = new StringWriter()
+        def builder = new MarkupBuilder(sw)
+        builder.Error(code:_code, validatorModule:_validatorModule){
+            Assertion(text:_assertion.getErrorMessage(), resource:_assertion.getLocation(),
+                    gazelleScheme:_assertion.getGazelleScheme(), gazelleAssertionID:_assertion.getGazelleAssertionID()){
+                Detail(_detail);
+                Location(_location);
+                LogMessage(_logMessage);
+            }
+        }
+        // Parse and add
+        errXml = errXml.concat(sw.toString() + "\n")
+    }
+
     // Updated
     public void err(Code _code, Assertion _assertion, Object _validatorModule, String _location, String _detail) {
         println("err3")
@@ -82,7 +101,14 @@ public class XMLErrorRecorder implements ErrorRecorder {
         err(_code, _assertion, valModuleName, _location, _detail);
     }
 
-    // Not used
+    public void err(Code _code, Assertion _assertion, Object _validatorModule, String _location, String _detail, Object _logMessage) {
+        println("err3-2")
+        String valModuleName = getSimpleName(_validatorModule)
+        String logMessage = _logMessage.toString()
+        err(_code, _assertion, valModuleName, _location, _detail, logMessage);
+    }
+
+        // Not used
     @Override
     public void err(Code code, Exception e) {
         println("err4")

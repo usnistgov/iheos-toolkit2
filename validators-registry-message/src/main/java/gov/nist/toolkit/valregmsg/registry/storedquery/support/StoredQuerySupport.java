@@ -125,8 +125,8 @@ public class StoredQuerySupport {
 		if (value == null && alternatives == null) {
 			if (required ) {
 				Assertion assertion = ASSERTIONLIBRARY.getAssertion("TA155");
-				String detail = "Missing parameter: '" + name + "'; Log message: '" + log_message + "'";
-				er.err(XdsErrorCode.Code.XDSRegistryError, assertion, this, "StoredQuery.java", detail);
+				String detail = "Missing parameter: '" + name + "'";
+				er.err(XdsErrorCode.Code.XDSRegistryError, assertion, this, "StoredQuery.java", detail, log_message);
 				this.has_validation_errors = true;
 				return;
 			} 
@@ -137,6 +137,8 @@ public class StoredQuerySupport {
 			System.out.println("looking for alternatives");
 			if (! isAlternativePresent(alternatives)) {
 				if ( ! has_alternate_validation_errors) {
+
+					//todo add log message optional param to XMLErrRecorder prototypes
 					er.err(XdsErrorCode.Code.XDSRegistryError, "One of these parameters must be present in the query: "
 							+ valuesAsString(name, alternatives), "StoredQuery.java", "ITI TF-2a: 3.18.4.1.2.3.7", log_message);
 					has_alternate_validation_errors = true;  // keeps from generating multiples of this message

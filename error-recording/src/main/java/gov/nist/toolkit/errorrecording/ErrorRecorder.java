@@ -14,6 +14,8 @@ import java.util.List;
 public interface ErrorRecorder extends ErrorRecorderBuilder {
 	void err(XdsErrorCode.Code code, Assertion assertion, String validatorModule, String location, String detail); // updated
 	void err(XdsErrorCode.Code code, Assertion assertion, Object validatorModule, String location, String detail); // updated
+	void err(XdsErrorCode.Code _code, Assertion _assertion, String _validatorModule, String _location, String _detail, String _logMessage); // updated
+	void err(XdsErrorCode.Code _code, Assertion _assertion, Object _validatorModule, String _location, String _detail, Object _logMessage); // updated
 	void err(XdsErrorCode.Code code, String msg, String location, String resource); // old prototype
 	void err(XdsErrorCode.Code code, String msg, Object location, String resource); // old prototype
 	void err(XdsErrorCode.Code code, String msg, String location, String resource, Object /* LogMessage */ log_message);
