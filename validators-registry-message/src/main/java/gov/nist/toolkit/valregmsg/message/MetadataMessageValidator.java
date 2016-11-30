@@ -2,6 +2,8 @@ package gov.nist.toolkit.valregmsg.message;
 
 import gov.nist.toolkit.errorrecording.ErrorRecorder;
 import gov.nist.toolkit.errorrecording.client.XdsErrorCode;
+import gov.nist.toolkit.errorrecording.client.assertions.Assertion;
+import gov.nist.toolkit.errorrecording.client.assertions.AssertionLibrary;
 import gov.nist.toolkit.errorrecording.factories.ErrorRecorderBuilder;
 import gov.nist.toolkit.registrymetadata.Metadata;
 import gov.nist.toolkit.registrymetadata.MetadataParser;
@@ -13,12 +15,14 @@ import gov.nist.toolkit.valsupport.message.AbstractMessageValidator;
 import gov.nist.toolkit.valsupport.registry.RegistryValidationInterface;
 
 public class MetadataMessageValidator extends AbstractMessageValidator {
-//	OMElement xml;
+	//	OMElement xml;
 	Metadata m = null;
 	ErrorRecorderBuilder erBuilder;
 	MessageValidatorEngine mvc;
 	RegistryValidationInterface rvi;
 	MessageBody messageBody;
+	private AssertionLibrary ASSERTIONLIBRARY = AssertionLibrary.getInstance();
+
 
 	public Metadata getMetadata() { return m; }
 
@@ -26,7 +30,7 @@ public class MetadataMessageValidator extends AbstractMessageValidator {
 //		super(vc);
 //		this.xml = xml;
 //	}
-	
+
 	public MetadataMessageValidator(ValidationContext vc, MessageBody messageBody, ErrorRecorderBuilder erBuilder, MessageValidatorEngine mvc, RegistryValidationInterface rvi) {
 		super(vc);
 		this.erBuilder = erBuilder;
@@ -34,45 +38,46 @@ public class MetadataMessageValidator extends AbstractMessageValidator {
 		this.messageBody = messageBody;
 		this.rvi = rvi;
 	}
-	
+
 	public void run(ErrorRecorder er, MessageValidatorEngine mvc) {
 		this.er = er;
 		er.registerValidator(this);
-		
+
 		if (messageBody == null) {
-			er.err(XdsErrorCode.Code.XDSRegistryError, "MetadataMessageValidator: top element null", this, "");
-            er.unRegisterValidator(this);
+			Assertion assertion = ASSERTIONLIBRARY.getAssertion("TA161");
+			er.err(XdsErrorCode.Code.XDSRegistryError, assertion, this, "", "");
+			er.unRegisterValidator(this);
 			return;
 		}
-		
-		
+
+
 
 		try {
 			m = MetadataParser.parseNonSubmission(messageBody.getBody());
-			
+
 			// save on validation stack so others can find it if they need it
 			mvc.addMessageValidator("MetadataContainer", new MetadataContainer(vc, m), erBuilder.buildNewErrorRecorder());
 
-			
+
 			contentSummary(er, m);
-			
+
 			MetadataValidator mv = new MetadataValidator(m, vc, rvi);
 			mv.runObjectStructureValidation(er);
 			mv.runCodeValidation(er);
 			mv.runSubmissionStructureValidation(er);
-			
+
 
 		} catch (Exception e) {
 			er.err(XdsErrorCode.Code.XDSRegistryError, e);
 		}
-        finally {
-            er.unRegisterValidator(this);
-        }
+		finally {
+			er.unRegisterValidator(this);
+		}
 
 		er.finish();
 
 	}
-	
+
 	static public void contentSummary(ErrorRecorder er, Metadata m) {
 		er.sectionHeading("Content Summary");
 		er.detail(m.getSubmissionSetIds().size() + " SubmissionSets");
