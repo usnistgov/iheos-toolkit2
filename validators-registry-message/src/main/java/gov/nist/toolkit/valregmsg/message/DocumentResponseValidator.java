@@ -2,6 +2,8 @@ package gov.nist.toolkit.valregmsg.message;
 
 import gov.nist.toolkit.errorrecording.ErrorRecorder;
 import gov.nist.toolkit.errorrecording.client.XdsErrorCode;
+import gov.nist.toolkit.errorrecording.client.assertions.Assertion;
+import gov.nist.toolkit.errorrecording.client.assertions.AssertionLibrary;
 import gov.nist.toolkit.utilities.xml.XmlUtil;
 import gov.nist.toolkit.valsupport.client.ValidationContext;
 import gov.nist.toolkit.valsupport.engine.MessageValidatorEngine;
@@ -10,6 +12,8 @@ import org.apache.axiom.om.OMElement;
 
 public class DocumentResponseValidator extends AbstractMessageValidator {
 	OMElement xml;
+	private AssertionLibrary ASSERTIONLIBRARY = AssertionLibrary.getInstance();
+
 
 	public DocumentResponseValidator(ValidationContext vc, OMElement xml) {
 		super(vc);
@@ -23,9 +27,11 @@ public class DocumentResponseValidator extends AbstractMessageValidator {
 		OMElement home = XmlUtil.firstChildWithLocalName(xml, "HomeCommunityId");
 
 		if (vc.isRet && vc.isResponse && vc.isXC)
-			if (home == null)
-				er.err(XdsErrorCode.Code.XDSRegistryError, "HomeCommunityId is required inside the DocumentResponse element in this context", this, "???");
-		er.unRegisterValidator(this);
+			if (home == null) {
+				Assertion assertion = ASSERTIONLIBRARY.getAssertion("TA157");
+				er.err(XdsErrorCode.Code.XDSRegistryError, assertion, this, "", "");
+			}
+				er.unRegisterValidator(this);
 	}
 
 }
