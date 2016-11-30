@@ -84,6 +84,7 @@ public class DsSimCommon {
     // only used to issue Soap Faults
     public DsSimCommon(SimCommon simCommon) {
         this.simCommon = simCommon;
+        this.er = this.simCommon.getCommonErrorRecorder();
     }
 
     public void setSimulatorConfig(SimulatorConfig config) {

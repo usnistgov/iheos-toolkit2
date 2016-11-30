@@ -4,7 +4,11 @@
 	<TestStep id="validate-R">
 		<Goal>Correct Http Response Code</Goal>
 		<Standard>
-			<HttpResponseCodes/>
+			<HttpResponseCodes>
+			<Transactions 
+               id="*" 
+               code="200"/> 
+			</HttpResponseCodes>
 		</Standard>
 		<XmlDetailTransaction>
 			<Assertions>

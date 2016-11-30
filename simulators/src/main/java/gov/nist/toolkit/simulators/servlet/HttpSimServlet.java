@@ -14,6 +14,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
 
 import gov.nist.toolkit.actorfactory.GenericSimulatorFactory;
@@ -45,6 +46,13 @@ import edu.wustl.mir.erl.ihe.xdsi.util.Utility;
 
 /**
  * Servlet for http (only) based transaction simulations
+ * 
+ * @author Ralph Moulton / MIR WUSTL IHE Development Project <a
+ * href="mailto:moultonr@mir.wustl.edu">moultonr@mir.wustl.edu</a>
+ *
+ */
+/**
+ *
  * 
  * @author Ralph Moulton / MIR WUSTL IHE Development Project <a
  * href="mailto:moultonr@mir.wustl.edu">moultonr@mir.wustl.edu</a>
@@ -233,11 +241,20 @@ public class HttpSimServlet extends HttpServlet {
       }
    }
    
+   /*
+    * Stores HTTP Request header and body in simulator transaction directory.
+    * This version includes parameters.
+    */
    void logRequest(HttpServletRequest request, SimDb db, String actor, String transaction)
             throws FileNotFoundException, IOException, HttpHeaderParseException, ParseException {
          StringBuffer buf = new StringBuffer();
 
-         buf.append(request.getMethod() + " " + request.getRequestURI() + " " + request.getProtocol() + nl);
+         buf.append(request.getMethod() + " " + request.getRequestURI());
+         // Append query String if present.
+         String queryString = request.getQueryString();
+         if (StringUtils.isNotBlank(queryString))
+            buf.append("?").append(queryString);
+         buf.append(" ").append(request.getProtocol()).append(nl);
          for (Enumeration<String> en=request.getHeaderNames(); en.hasMoreElements(); ) {
             String name = en.nextElement();
             String value = request.getHeader(name);

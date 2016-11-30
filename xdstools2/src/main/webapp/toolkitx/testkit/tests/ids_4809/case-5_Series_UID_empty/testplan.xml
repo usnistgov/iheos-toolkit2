@@ -6,9 +6,9 @@
       <ExpectedErrorCode>404</ExpectedErrorCode>
 		<WADOTransaction>
 			<Parameters>
-			studyUID=1.3.6.1.4.1.21367.201599.1.201604021948008
+			studyUID=1.3.6.1.4.1.21367.201599.1.201604020954048
 			seriesUID=
-			objectUID=1.3.6.1.4.1.21367.201599.3.201604021948008.1
+			objectUID=1.3.6.1.4.1.21367.201599.3.201604020954048.1
 			</Parameters>
 		</WADOTransaction>
 	</TestStep>

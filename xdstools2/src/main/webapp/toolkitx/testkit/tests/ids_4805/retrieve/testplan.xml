@@ -5,9 +5,9 @@
 		<ExpectedStatus>Success</ExpectedStatus>
 		<WADOTransaction>
 			<Parameters>
-			studyUID=1.3.6.1.4.1.21367.201599.1.201604021948008
-			seriesUID=1.3.6.1.4.1.21367.201599.2.201604021948008
-			objectUID=1.3.6.1.4.1.21367.201599.3.201604021948008.1
+			studyUID=1.3.6.1.4.1.21367.201599.1.201604020954048
+			seriesUID=1.3.6.1.4.1.21367.201599.2.201604020954048
+			objectUID=1.3.6.1.4.1.21367.201599.3.201604020954048.1
 			</Parameters>
 		</WADOTransaction>
 	</TestStep>
