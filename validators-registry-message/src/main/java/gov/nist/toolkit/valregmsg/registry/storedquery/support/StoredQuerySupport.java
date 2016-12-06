@@ -228,7 +228,9 @@ public class StoredQuerySupport {
 
 		if (value == null && alternatives == null) {
 			if (required ) {
-				er.err(XdsErrorCode.Code.XDSRegistryError, "Parameter " + name + " is required but not present in query", "StoredQuery.java", "ITI TF-2a: 3.18.4.1.2.3.7", log_message);
+				Assertion assertion = ASSERTIONLIBRARY.getAssertion("TA170");
+				String detail = "Parameter found: '" + name + "'";
+				er.err(XdsErrorCode.Code.XDSRegistryError, assertion, this, "StoredQuery.java", detail, log_message);
 				this.has_validation_errors = true;
 				return;
 			}
@@ -239,7 +241,9 @@ public class StoredQuerySupport {
 			System.out.println("looking for alternatives");
 			if (! isAlternativePresent(alternatives)) {
 				if ( ! has_alternate_validation_errors) {
-					er.err(XdsErrorCode.Code.XDSRegistryError, "One of these parameters must be present in the query: " + valuesAsString(name, alternatives), "StoredQuery.java", "ITI TF-2a: 3.18.4.1.2.3.7", log_message);
+					Assertion assertion = ASSERTIONLIBRARY.getAssertion("TA171");
+					String detail = "One of these parameters must be present in the query: " + valuesAsString(name, alternatives);
+					er.err(XdsErrorCode.Code.XDSRegistryError, assertion, this, "StoredQuery.java", detail, log_message);
 					has_alternate_validation_errors = true;  // keeps from generating multiples of this message
 				}
 				has_validation_errors = true;
