@@ -17,9 +17,8 @@ public class CxFormat extends FormatValidator {
 	public void validate(String input) {
 
 		String output = ValidatorCommon.validate_CX_datatype(input);
-		String assertionID = "TA001";
 		if (output != null) {
-			Assertion assertion = ASSERTIONLIBRARY.getAssertion(assertionID);
+			Assertion assertion = ASSERTIONLIBRARY.getAssertion("TA001");
 			String location = context + ": " + input;
 			String detail = output;
 			er.err(XdsErrorCode.Code.XDSRegistryMetadataError, assertion, this, location, detail);
