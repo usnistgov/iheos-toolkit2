@@ -406,13 +406,14 @@ public abstract class AbstractRegistryObject {
 
 			List<OMElement> versionInfos = XmlUtil.childrenWithLocalName(ro, "VersionInfo");
 			if (versionInfos.size() == 0) {
-				er.err(XdsErrorCode.Code.XDSRegistryMetadataError, identifyingString() + ": VersionInfo attribute missing", this, "ebRIM Section 2.5.1");
+				Assertion assertion = ASSERTIONLIBRARY.getAssertion("TA180");
+				String detail = identifyingString();
+				er.err(XdsErrorCode.Code.XDSRegistryMetadataError, assertion, this, "", detail);
 			}
 		}
 
 		if (vc.isSQ && vc.isXC && vc.isResponse) {
 			validateHome(er, tableRef);
-
 		}
 	}
 
