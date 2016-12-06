@@ -152,15 +152,17 @@ public class StoredQuerySupport {
 
 		if (is_code) {
 			if ( !(value instanceof SQCodedTerm)) {
-				er.err(XdsErrorCode.Code.XDSRegistryError, "Parameter, " + name +
-						", must be a coded term", "StoredQuery.java", "ITI TF-2a: 3.18.4.1.2.3.7", log_message);
+				Assertion assertion = ASSERTIONLIBRARY.getAssertion("TA163");
+				String detail = "Parameter found: '" + name + "'";
+				er.err(XdsErrorCode.Code.XDSRegistryError, assertion, this, "StoredQuery.java", detail, log_message);
 				this.has_validation_errors = true;
 				return;
 			}
 
 			if ( (value instanceof SQCodeAnd) && !and_or_ok) {
-				er.err(XdsErrorCode.Code.XDSRegistryError, "Parameter, " + name +
-						", is coded with AND/OR semantics which are not allowed on this parameter", "StoredQuery.java", "ITI TF-2a: 3.18.4.1.2.3.7", log_message);
+				Assertion assertion = ASSERTIONLIBRARY.getAssertion("TA164");
+				String detail = "Parameter found: '" + name + "'";
+				er.err(XdsErrorCode.Code.XDSRegistryError, assertion, this, "StoredQuery.java", detail, log_message);
 				this.has_validation_errors = true;
 				return;
 			}
