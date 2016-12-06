@@ -170,17 +170,23 @@ public class StoredQuerySupport {
 		} else {
 
 			if (multiple && !(value instanceof ArrayList)) {
-				er.err(XdsErrorCode.Code.XDSRegistryError, "Parameter, " + name + ", accepts multiple values but (  ) syntax is missing", "StoredQuery.java", "ITI TF-2a: 3.18.4.1.2.3.7", log_message);
+				Assertion assertion = ASSERTIONLIBRARY.getAssertion("TA165");
+				String detail = "Parameter found: '" + name + "'";
+				er.err(XdsErrorCode.Code.XDSRegistryError, assertion, this, "StoredQuery.java", detail, log_message);
 				this.has_validation_errors = true;
 				return;
 			}
 			if (!multiple && (value instanceof ArrayList)) {
-				er.err(XdsErrorCode.Code.XDSRegistryError, "Parameter, " + name + ", accepts single value value only but (  )  syntax is present", "StoredQuery.java", "ITI TF-2a: 3.18.4.1.2.3.7", log_message);
+				Assertion assertion = ASSERTIONLIBRARY.getAssertion("TA166");
+				String detail = "Parameter found: '" + name + "'";
+				er.err(XdsErrorCode.Code.XDSRegistryError, assertion, this, "StoredQuery.java", detail, log_message);
 				this.has_validation_errors = true;
 				return;
 			}
 			if (multiple && (value instanceof ArrayList) && ((ArrayList) value).size() == 0) {
-				er.err(XdsErrorCode.Code.XDSRegistryError, "Parameter, " + name + ", (  )  syntax is present but list is empty", "StoredQuery.java", "ITI TF-2a: 3.18.4.1.2.3.7", log_message);
+				Assertion assertion = ASSERTIONLIBRARY.getAssertion("TA167");
+				String detail = "Parameter found: '" + name + "'";
+				er.err(XdsErrorCode.Code.XDSRegistryError, assertion, this, "StoredQuery.java", detail, log_message);
 				this.has_validation_errors = true;
 				return;
 			}

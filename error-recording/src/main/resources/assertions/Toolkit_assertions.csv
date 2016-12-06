@@ -162,3 +162,7 @@ TA161,MetadataMessageValidator: top element null,,,
 TA162,Missing required parameters in the query,ITI TF-2a: 3.18.4.1.2.3.7,,
 TA163,Parameter must be a coded term,ITI TF-2a: 3.18.4.1.2.3.7,,
 TA164,Parameter is coded with AND/OR semantics which are not allowed on this parameter,ITI TF-2a: 3.18.4.1.2.3.7,,
+TA165,Parameter accepts multiple values but (  ) syntax is missing,ITI TF-2a: 3.18.4.1.2.3.7,,
+TA166,Parameter accepts single value only but (  ) syntax is present,ITI TF-2a: 3.18.4.1.2.3.7,,
+TA167,The syntax (  ) is present but the parameter list is empty,ITI TF-2a: 3.18.4.1.2.3.7,,
+
