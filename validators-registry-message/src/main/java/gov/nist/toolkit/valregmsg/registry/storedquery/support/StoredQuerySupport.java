@@ -269,7 +269,9 @@ public class StoredQuerySupport {
 			return;
 		}
 		if (multiple && (value instanceof ArrayList) && ((ArrayList) value).size() == 0) {
-			er.err(XdsErrorCode.Code.XDSRegistryError, "Parameter, " + name + ", (  )  syntax is present but list is empty", "StoredQuery.java", "ITI TF-2a: 3.18.4.1.2.3.7", log_message);
+			Assertion assertion = ASSERTIONLIBRARY.getAssertion("TA174");
+			String detail = "Parameter found: '" + name + "'";
+			er.err(XdsErrorCode.Code.XDSRegistryError, assertion, this, "StoredQuery.java", detail, log_message);
 			this.has_validation_errors = true;
 			return;
 		}
@@ -288,11 +290,15 @@ public class StoredQuerySupport {
 							( ((ArrayList)a_o).get(0) instanceof String)
 					)
 					) {
-				er.err(XdsErrorCode.Code.XDSRegistryError, "Parameter, " + name + ", is not coded as a string (is type " + a_o.getClass().getName() + ") (single quotes missing?)", "StoredQuery.java", "ITI TF-2a: 3.18.4.1.2.3.7", log_message);
+				Assertion assertion = ASSERTIONLIBRARY.getAssertion("TA175");
+				String detail = "Parameter '" + name + "' is type (" + a_o.getClass().getName() + ") (single quotes missing?)";
+				er.err(XdsErrorCode.Code.XDSRegistryError, assertion, this, "StoredQuery.java", detail, log_message);
 				this.has_validation_errors = true;
 			}
-			if (!is_string && !(a_o instanceof Integer)) {
-				er.err(XdsErrorCode.Code.XDSRegistryError, "Parameter, " + name + " is not coded as a number (is type " + a_o.getClass().getName() + ") (single quotes present)", "StoredQuery.java", "ITI TF-2a: 3.18.4.1.2.3.7", log_message);
+			if (!is_string && !(a_o instanceof Integer)){
+				Assertion assertion = ASSERTIONLIBRARY.getAssertion("TA176");
+				String detail = "Parameter '" + name + "' is type (" + a_o.getClass().getName() + ") (single quotes present)";
+				er.err(XdsErrorCode.Code.XDSRegistryError, assertion, this, "StoredQuery.java", detail, log_message);
 				this.has_validation_errors = true;
 			}
 		}
@@ -302,20 +308,26 @@ public class StoredQuerySupport {
 
 		Object same_as_value = params.getParm(same_size_as);
 		if ( !(same_as_value instanceof ArrayList)) {
-			er.err(XdsErrorCode.Code.XDSRegistryError, "Parameter, " + same_size_as + " must have same number of values as parameter " + name, "StoredQuery.java", "ITI TF-2a: 3.18.4.1.2.3.7", log_message);
+			Assertion assertion = ASSERTIONLIBRARY.getAssertion("TA177");
+			String detail = "Parameter, " + same_size_as + " must have same number of values as parameter " + name;
+			er.err(XdsErrorCode.Code.XDSRegistryError, assertion, this, "StoredQuery.java", detail, log_message);
 			this.has_validation_errors = true;
 			return;
 		}
 		ArrayList same_as_values = (ArrayList) same_as_value;
 
 		if ( !(value instanceof ArrayList)) {
-			er.err(XdsErrorCode.Code.XDSRegistryError, "Parameter, " + same_size_as + " must have same number of values as parameter " + name, "StoredQuery.java", "ITI TF-2a: 3.18.4.1.2.3.7", log_message);
+			Assertion assertion = ASSERTIONLIBRARY.getAssertion("TA178");
+			String detail = "Parameter, " + same_size_as + " must have same number of values as parameter " + name;
+			er.err(XdsErrorCode.Code.XDSRegistryError, assertion, this, "StoredQuery.java", detail, log_message);
 			this.has_validation_errors = true;
 			return;
 		}
 
 		if (same_as_values.size() != values.size()) {
-			er.err(XdsErrorCode.Code.XDSRegistryError, "Parameter, " + same_size_as + " must have same number of values as parameter " + name, "StoredQuery.java", "ITI TF-2a: 3.18.4.1.2.3.7", log_message);
+			Assertion assertion = ASSERTIONLIBRARY.getAssertion("TA179");
+			String detail = "Parameter, " + same_size_as + " must have same number of values as parameter " + name;
+			er.err(XdsErrorCode.Code.XDSRegistryError, assertion, this, "StoredQuery.java", detail, log_message);
 			this.has_validation_errors = true;
 			return;
 		}
