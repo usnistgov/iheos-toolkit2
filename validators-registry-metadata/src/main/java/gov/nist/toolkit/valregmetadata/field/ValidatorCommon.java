@@ -271,6 +271,16 @@ public class ValidatorCommon implements ErrorRecorder {
 
 	}
 
+	@Override
+	public void err(Code _code, Assertion _assertion, String _validatorModule, String _location, String _detail, String _logMessage) {
+
+	}
+
+	@Override
+	public void err(Code _code, Assertion _assertion, Object _validatorModule, String _location, String _detail, Object _logMessage) {
+
+	}
+
 	public void err(Code code, String msg, String location, String resource) {
 
 	}

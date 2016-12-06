@@ -56,19 +56,19 @@ public class StoredQuerySupport {
 		this.returnType = return_objects;
 		init();
 	}
-	
+
 	public boolean isLeafClass() {
 		return returnType == QueryReturnType.LEAFCLASS;
 	}
-	
+
 	public boolean isLeafClassWithDocument() {
 		return returnType == QueryReturnType.LEAFCLASSWITHDOCUMENT;
 	}
-	
+
 	public boolean isObjectRef() {
 		return returnType == QueryReturnType.OBJECTREF;
 	}
-	
+
 	void init() {
 		query = new StringBuffer();
 		has_validation_errors = false;
@@ -129,7 +129,7 @@ public class StoredQuerySupport {
 				er.err(XdsErrorCode.Code.XDSRegistryError, assertion, this, "StoredQuery.java", detail, log_message);
 				this.has_validation_errors = true;
 				return;
-			} 
+			}
 			return;
 		}
 
@@ -137,10 +137,9 @@ public class StoredQuerySupport {
 			System.out.println("looking for alternatives");
 			if (! isAlternativePresent(alternatives)) {
 				if ( ! has_alternate_validation_errors) {
-
-					//todo add log message optional param to XMLErrRecorder prototypes
-					er.err(XdsErrorCode.Code.XDSRegistryError, "One of these parameters must be present in the query: "
-							+ valuesAsString(name, alternatives), "StoredQuery.java", "ITI TF-2a: 3.18.4.1.2.3.7", log_message);
+					Assertion assertion = ASSERTIONLIBRARY.getAssertion("TA162");
+					String detail = "One of these parameters must be present in the query: '" + valuesAsString(name, alternatives) + "'";
+					er.err(XdsErrorCode.Code.XDSRegistryError, assertion, this, "StoredQuery.java", detail, log_message);
 					has_alternate_validation_errors = true;  // keeps from generating multiples of this message
 				}
 				has_validation_errors = true;
@@ -152,20 +151,20 @@ public class StoredQuerySupport {
 			return;
 
 		if (is_code) {
- 			if ( !(value instanceof SQCodedTerm)) {
-				er.err(XdsErrorCode.Code.XDSRegistryError, "Parameter, " + name + 
+			if ( !(value instanceof SQCodedTerm)) {
+				er.err(XdsErrorCode.Code.XDSRegistryError, "Parameter, " + name +
 						", must be a coded term", "StoredQuery.java", "ITI TF-2a: 3.18.4.1.2.3.7", log_message);
 				this.has_validation_errors = true;
 				return;
- 			}
- 			
- 			if ( (value instanceof SQCodeAnd) && !and_or_ok) {
-				er.err(XdsErrorCode.Code.XDSRegistryError, "Parameter, " + name + 
+			}
+
+			if ( (value instanceof SQCodeAnd) && !and_or_ok) {
+				er.err(XdsErrorCode.Code.XDSRegistryError, "Parameter, " + name +
 						", is coded with AND/OR semantics which are not allowed on this parameter", "StoredQuery.java", "ITI TF-2a: 3.18.4.1.2.3.7", log_message);
 				this.has_validation_errors = true;
 				return;
- 			}
-				
+			}
+
 		} else {
 
 			if (multiple && !(value instanceof ArrayList)) {
@@ -191,13 +190,13 @@ public class StoredQuerySupport {
 
 			for (int i=0; i<values.size(); i++) {
 				Object a_o = values.get(i);
-				if (	is_string && 
-						!(a_o instanceof String) && 
-						!(     (a_o instanceof ArrayList)   &&   
-								((ArrayList)a_o).size() > 0    &&   
-								( ((ArrayList)a_o).get(0) instanceof String) 
+				if (	is_string &&
+						!(a_o instanceof String) &&
+						!(     (a_o instanceof ArrayList)   &&
+								((ArrayList)a_o).size() > 0    &&
+								( ((ArrayList)a_o).get(0) instanceof String)
 						)
-				) {
+						) {
 					er.err(XdsErrorCode.Code.XDSRegistryError, "Parameter, " + name + ", is not coded as a string (is type " + a_o.getClass().getName() + ") (single quotes missing?)", "StoredQuery.java", "ITI TF-2a: 3.18.4.1.2.3.7", log_message);
 					this.has_validation_errors = true;
 				}
@@ -220,7 +219,7 @@ public class StoredQuerySupport {
 				er.err(XdsErrorCode.Code.XDSRegistryError, "Parameter " + name + " is required but not present in query", "StoredQuery.java", "ITI TF-2a: 3.18.4.1.2.3.7", log_message);
 				this.has_validation_errors = true;
 				return;
-			} 
+			}
 			return;
 		}
 
@@ -262,13 +261,13 @@ public class StoredQuerySupport {
 
 		for (int i=0; i<values.size(); i++) {
 			Object a_o = values.get(i);
-			if (	is_string && 
-					!(a_o instanceof String) && 
-					!(     (a_o instanceof ArrayList)   &&   
-							((ArrayList)a_o).size() > 0    &&   
-							( ((ArrayList)a_o).get(0) instanceof String) 
+			if (	is_string &&
+					!(a_o instanceof String) &&
+					!(     (a_o instanceof ArrayList)   &&
+							((ArrayList)a_o).size() > 0    &&
+							( ((ArrayList)a_o).get(0) instanceof String)
 					)
-			) {
+					) {
 				er.err(XdsErrorCode.Code.XDSRegistryError, "Parameter, " + name + ", is not coded as a string (is type " + a_o.getClass().getName() + ") (single quotes missing?)", "StoredQuery.java", "ITI TF-2a: 3.18.4.1.2.3.7", log_message);
 				this.has_validation_errors = true;
 			}
@@ -310,14 +309,14 @@ public class StoredQuerySupport {
 	public void setParams(SqParams params) {
 		this.params = params;
 	}
-	
+
 	static final String[] patientIdParms = {
-		"$XDSDocumentEntryPatientId",
-		"$XDSSubmissionSetPatientId",
-		"$XDSFolderPatientId",
-            "$patientId"
+			"$XDSDocumentEntryPatientId",
+			"$XDSSubmissionSetPatientId",
+			"$XDSFolderPatientId",
+			"$patientId"
 	};
-	
+
 	public boolean hasPatientIdParameter() {
 		for (String parm : patientIdParms) {
 			if (params.hasParm(parm))
