@@ -169,4 +169,5 @@ TA168,Parameter is not coded as a string,ITI TF-2a: 3.18.4.1.2.3.7,,
 TA169,Parameter is not coded as a number,ITI TF-2a: 3.18.4.1.2.3.7,,
 TA170,Parameter is required but not present in query,ITI TF-2a: 3.18.4.1.2.3.7,,
 TA171,Missing required parameter in the query,ITI TF-2a: 3.18.4.1.2.3.7,,
-
+TA172,Accepts multiple values but (  ) syntax is missing,ITI TF-2a: 3.18.4.1.2.3.7,,
+TA173,Accepts single value only but (  ) syntax is present,ITI TF-2a: 3.18.4.1.2.3.7,,
