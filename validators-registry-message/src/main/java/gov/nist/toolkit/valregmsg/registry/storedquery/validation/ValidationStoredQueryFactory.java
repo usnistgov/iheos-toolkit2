@@ -177,8 +177,8 @@ public class ValidationStoredQueryFactory extends StoredQueryFactory {
 		else {
 			setTestMessage(query_id);
 			Assertion assertion = ASSERTIONLIBRARY.getAssertion("TA156");
-			String detail = "Query ID: '" + query_id + "'; Log message: " + log_message;
-			er.err(XdsErrorCode.Code.XDSRegistryError, assertion, this, "AdhocQueryRequest.java", detail);
+			String detail = "Query ID: '" + query_id + "'";
+			er.err(XdsErrorCode.Code.XDSRegistryError, assertion, this, "AdhocQueryRequest.java", detail, log_message);
 		}
 
 		if (log_message != null) {
