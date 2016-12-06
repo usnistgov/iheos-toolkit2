@@ -130,7 +130,7 @@ public class OMFormatter {
 		indentation++;
 		indentElement();
 		String name = ele.getLocalName();
-		if (prefix != null)
+		if (prefix != null && !"".equals(prefix))
 			name = prefix + ":" + name;
 		buf.append(lt).append(name);
 		attributes(ele);
@@ -143,7 +143,8 @@ public class OMFormatter {
 
 		if (addMyNamespace && !"xml".equals(myNamespace.getPrefix())) {
 			addIndentation();
-			buf.append(space).append("xmlns:").append(myNamespace.getPrefix())
+			String prefixNs = (myNamespace.getPrefix() ==null || "".equals(myNamespace.getPrefix())?"":":"+myNamespace.getPrefix());
+			buf.append(space).append("xmlns").append(prefixNs)
 			.append("=\"").append(myNamespace.getNamespaceURI()).append("\"");
 		}
 
