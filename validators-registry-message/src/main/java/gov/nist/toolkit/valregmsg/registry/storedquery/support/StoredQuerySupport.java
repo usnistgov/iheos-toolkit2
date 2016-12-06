@@ -205,11 +205,15 @@ public class StoredQuerySupport {
 								( ((ArrayList)a_o).get(0) instanceof String)
 						)
 						) {
-					er.err(XdsErrorCode.Code.XDSRegistryError, "Parameter, " + name + ", is not coded as a string (is type " + a_o.getClass().getName() + ") (single quotes missing?)", "StoredQuery.java", "ITI TF-2a: 3.18.4.1.2.3.7", log_message);
+					Assertion assertion = ASSERTIONLIBRARY.getAssertion("TA168");
+					String detail = "Parameter '" + name + "' is type (" + a_o.getClass().getName() + ") (single quotes missing?)";
+					er.err(XdsErrorCode.Code.XDSRegistryError, assertion, this, "StoredQuery.java", detail, log_message);
 					this.has_validation_errors = true;
 				}
 				if (!is_string && !(a_o instanceof Integer)) {
-					er.err(XdsErrorCode.Code.XDSRegistryError, "Parameter, " + name + " is not coded as a number (is type " + a_o.getClass().getName() + ") (single quotes present)", "StoredQuery.java", "ITI TF-2a: 3.18.4.1.2.3.7", log_message);
+					Assertion assertion = ASSERTIONLIBRARY.getAssertion("TA169");
+					String detail = "Parameter '" + name + "' is type (" + a_o.getClass().getName() + ") (single quotes present)";
+					er.err(XdsErrorCode.Code.XDSRegistryError, assertion, this, "StoredQuery.java", detail, log_message);
 					this.has_validation_errors = true;
 				}
 			}
