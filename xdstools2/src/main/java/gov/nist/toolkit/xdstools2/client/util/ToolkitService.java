@@ -214,13 +214,18 @@ public interface ToolkitService extends RemoteService  {
 	 * @return update output as a String
 	 */
 	String configureTestkit(CommandContext context) throws Exception;
-
 	/**
 	 * This method tests if there already is a testkit configured in a selected environment.
 	 * @param context name of the selected environment.
 	 * @return boolean
 	 */
 	boolean doesTestkitExist(CommandContext context) throws Exception;
+
+	/**
+	 * This method creates the testkits folder structure in the EC for all available environments.
+	 * @param context
+	 */
+	void generateTestkitStructure(CommandContext context) /*throws Exception*/;
 
 
 	//------------------------------------------------------------------------
