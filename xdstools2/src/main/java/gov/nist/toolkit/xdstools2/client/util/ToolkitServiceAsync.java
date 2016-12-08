@@ -22,6 +22,7 @@ import gov.nist.toolkit.testkitutilities.client.SectionDefinitionDAO;
 import gov.nist.toolkit.testkitutilities.client.TestCollectionDefinitionDAO;
 import gov.nist.toolkit.tk.client.TkProps;
 import gov.nist.toolkit.valsupport.client.MessageValidationResults;
+import gov.nist.toolkit.xdstools2.client.command.command.GenerateTestkitStructureCommand;
 import gov.nist.toolkit.xdstools2.shared.RegistryStatus;
 import gov.nist.toolkit.xdstools2.shared.RepositoryStatus;
 import gov.nist.toolkit.xdstools2.shared.command.CommandContext;
@@ -35,7 +36,6 @@ import java.util.Map;
 
 public interface ToolkitServiceAsync {
 
-    void indexTestKits(CommandContext context,AsyncCallback<Boolean> callback);
     void getAutoInitConformanceTesting(CommandContext context,AsyncCallback<Boolean> callback);
     void clearTestSession(CommandContext context, AsyncCallback<String> callback);
     void validateConformanceSession(String testSession, String siteName, AsyncCallback<ConformanceSessionValidationStatus> callback);
@@ -200,8 +200,9 @@ public interface ToolkitServiceAsync {
     void getHtmlizedString(String xml, AsyncCallback<String> callback);
 
     void configureTestkit(CommandContext context, AsyncCallback<String> callback);
-
     void doesTestkitExist(CommandContext context, AsyncCallback<Boolean> asyncCallback) ;
+    void generateTestkitStructure(CommandContext request, AsyncCallback<Void> asyncCallback);
+    void indexTestKits(CommandContext context,AsyncCallback<Boolean> callback);
 
 //	void getToolkitEnableNwHIN(AsyncCallback<String> notify);
 

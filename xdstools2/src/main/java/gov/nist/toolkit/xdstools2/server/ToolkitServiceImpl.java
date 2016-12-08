@@ -432,6 +432,7 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements
         if (s == null) return RawResponseBuilder.build(new NoServletSessionException(""));
         return new OrchestrationManager().buildRecTestEnvironment(s, request.getRecOrchestrationRequest());
     }
+
     @Override
     public RawResponse buildIgTestOrchestration(BuildIgTestOrchestrationRequest request) throws Exception{
         installCommandContext(request);
@@ -731,8 +732,28 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements
     public boolean doesTestkitExist(CommandContext context) throws Exception {
         installCommandContext(context);
         File environmentFile = Installation.instance().environmentFile(context.getEnvironmentName());
+        return doesTestkitExist(environmentFile);
+    }
+
+    private boolean doesTestkitExist(File environmentFile){
         File testkit=new File(environmentFile,"testkits");
         return testkit.exists();
+    }
+
+    /**
+     * This method generate the folder structure for the testkit in all the environments available.
+     * @param request
+     */
+    @Override
+    public void generateTestkitStructure(CommandContext request) /*throws Exception*/{
+//        installCommandContext(request);
+        File environmentFile = Installation.instance().environmentFile();
+        for (File environment:environmentFile.listFiles()){
+            if (!doesTestkitExist(environment)){
+                File testkitsFile=new File(environment,"testkits");
+                new File(testkitsFile,"default").mkdirs();
+            }
+        }
     }
 
     //------------------------------------------------------------------------
@@ -1376,7 +1397,7 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements
     @Override
     public boolean indexTestKits(CommandContext context) {
         new BuildCollections().run();
-        // FIXME why does this have to return true? should we change for a void method?
+        // FIXME why does this have to always return true? should we change for a void method?
         return true;
     }
 
