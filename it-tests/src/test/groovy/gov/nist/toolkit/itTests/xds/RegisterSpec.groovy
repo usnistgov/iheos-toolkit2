@@ -122,4 +122,22 @@ class RegisterSpec extends ToolkitSpecification {
         results.get(0).passed()
     }
 
+    def 'Run a submit with namespace tests'() {
+        when:
+        String siteName = 'bill__reg'
+        TestInstance testId = new TestInstance("regsubmit")
+        List<String> sections = new ArrayList<>()
+        Map<String, String> params = new HashMap<>()
+        params.put('$patientid$', patientId)
+        boolean stopOnFirstError = true
+
+        and: 'Run'
+        List<Result> results = api.runTest(testSession, siteName, testId, sections, params, stopOnFirstError)
+
+        then:
+        true
+        results.size() == 1
+        results.get(0).passed()
+    }
+
 }
