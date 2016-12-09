@@ -70,17 +70,21 @@ class RgOrchestrationBuilder {
             if (request.useExposedRR) {
                 // RG and RR in same site - verify site contents
 
-                sutSimId =  new SimId(request.siteUnderTest.name) // new SimId(request.userName, request.siteUnderTest.name, ActorType.RESPONDING_GATEWAY.name, request.environmentName)
-                sutSimConfig = api.getConfig(sutSimId)
-                stsSce = sutSimConfig.get(SimulatorProperties.requiresStsSaml)
+                // Momentarily turn off SAML if the SUT is a simulator. Need manual intervening for real systems.
+                sutSimId =  new SimId(request.siteUnderTest.name)
+                if (Installation.instance().propertyServiceManager().getPropertyManager().isEnableSaml()) {
 
-                if (stsSce != null && stsSce.isBoolean() && stsSce.asBoolean()) {
-                  sutSaml = true
-                    stsSce.setValue(false) // Turn off SAML for orchestration
-                    api.saveSimulator(sutSimConfig)
+                    sutSimConfig = api.getConfig(sutSimId)
+                    if (sutSimConfig!=null) {
+                        stsSce = sutSimConfig.get(SimulatorProperties.requiresStsSaml)
+
+                        if (stsSce != null && stsSce.isBoolean() && stsSce.asBoolean()) {
+                            sutSaml = true
+                            stsSce.setValue(false) // Turn off SAML for orchestration
+                            api.saveSimulator(sutSimConfig)
+                        }
+                    }
                 }
-
-
 
                 Site site = SiteBuilder.siteFromSiteSpec(request.siteUnderTest, session.id)
                 if (site == null) return RawResponseBuilder.build(String.format("RG under Test (%s) does not exist in site configurations."))
