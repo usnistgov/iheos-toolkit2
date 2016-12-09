@@ -4,7 +4,7 @@
     <Goal>Submit DocumentEntry</Goal>
     <ExpectedStatus>Success</ExpectedStatus>
 
-  <HttpTransaction type="r.b">
+  <HttpTransaction type="r.b" hasLinkage="true">
       <Headers>
         Content-Type: application/soap+xml;charset=UTF-8
       </Headers>

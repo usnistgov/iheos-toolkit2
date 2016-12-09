@@ -171,7 +171,7 @@
 							<LocalizedString value="XTHM-WD TYPECODE"/>
 						</Name>
 					</Classification>
-					<ExternalIdentifier id="id_9" objectType="urn:oasis:names:tc:ebxml-regrep:ObjectType:RegistryObject:ExternalIdentifier" registryObject="urn:uuid:bdcf80c9-a34e-47dc-ae42-766f894077ec" identificationScheme="urn:uuid:58a6f841-87b3-4a3e-92fd-a8ffeff98427" value="BR14^^^&amp;1.2.360&amp;ISO">
+					<ExternalIdentifier id="id_9" objectType="urn:oasis:names:tc:ebxml-regrep:ObjectType:RegistryObject:ExternalIdentifier" registryObject="urn:uuid:bdcf80c9-a34e-47dc-ae42-766f894077ec" identificationScheme="urn:uuid:58a6f841-87b3-4a3e-92fd-a8ffeff98427" value="$patientid$">
 						<Name>
 							<LocalizedString value="XDSDocumentEntry.patientId"/>
 						</Name>
@@ -227,7 +227,7 @@
 							<LocalizedString value="Summary of Episode Note"/>
 						</Name>
 					</Classification>
-					<ExternalIdentifier id="id_13" objectType="urn:oasis:names:tc:ebxml-regrep:ObjectType:RegistryObject:ExternalIdentifier" registryObject="SubmissionSet01" identificationScheme="urn:uuid:96fdda7c-d067-4183-912e-bf5ee74998a8" value="1.42.20161129094708.61">
+					<ExternalIdentifier id="id_13" objectType="urn:oasis:names:tc:ebxml-regrep:ObjectType:RegistryObject:ExternalIdentifier" registryObject="SubmissionSet01" identificationScheme="urn:uuid:96fdda7c-d067-4183-912e-bf5ee74998a8" value="$ssid$">
 						<Name>
 							<LocalizedString value="XDSSubmissionSet.uniqueId"/>
 						</Name>
@@ -237,7 +237,7 @@
 							<LocalizedString value="XDSSubmissionSet.sourceId"/>
 						</Name>
 					</ExternalIdentifier>
-					<ExternalIdentifier id="id_15" objectType="urn:oasis:names:tc:ebxml-regrep:ObjectType:RegistryObject:ExternalIdentifier" registryObject="SubmissionSet01" identificationScheme="urn:uuid:6b5aea1a-874d-4603-a4bc-96a0a7b38446" value="BR14^^^&amp;1.2.360&amp;ISO">
+					<ExternalIdentifier id="id_15" objectType="urn:oasis:names:tc:ebxml-regrep:ObjectType:RegistryObject:ExternalIdentifier" registryObject="SubmissionSet01" identificationScheme="urn:uuid:6b5aea1a-874d-4603-a4bc-96a0a7b38446" value="$patientid$">
 						<Name>
 							<LocalizedString value="XDSSubmissionSet.patientId"/>
 						</Name>

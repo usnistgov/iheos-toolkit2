@@ -129,6 +129,7 @@ class RegisterSpec extends ToolkitSpecification {
         List<String> sections = new ArrayList<>()
         Map<String, String> params = new HashMap<>()
         params.put('$patientid$', patientId)
+        params.put('$ssid$',"1.42.20161129094708.61")
         boolean stopOnFirstError = true
 
         and: 'Run'

@@ -112,7 +112,10 @@
                 <version>2.19.1</version>
                 <configuration>
                     <includes>
+                        <!-- Always include tests in pairs: Groovy and Java -->
                         <!-- begin include individual test -->
+                        <!--<include>**/RegisterSpec.groovy</include>-->
+                        <!--<include>**/RegisterSpec.java</include>-->
                         <!--<include>**/OdConsumerSpec.groovy</include>-->
                         <!--<include>**/OdConsumerSpec.java</include>-->
                         <!--<include>**/StsSamlAssertionSpec.groovy</include>-->
