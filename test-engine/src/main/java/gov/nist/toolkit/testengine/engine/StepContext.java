@@ -375,6 +375,10 @@ public class StepContext extends BasicContext implements ErrorReportingInterface
 					hTransaction.setNoMetadataProcessing(true);
 					hTransaction.setNoReportManagerPreRun(true);
 				    hTransaction.setTransType(instruction.getAttributeValue(new QName("type")));
+				    String hasLinkageValueStr = instruction.getAttributeValue(new QName("hasLinkage"));  // The body must be XML parsable, not just any HTTP data.
+				    if (hasLinkageValueStr!=null && !"".equals(hasLinkageValueStr)) {
+					   hTransaction.setHasLinkage(Boolean.parseBoolean(hasLinkageValueStr));
+			   		}
 					transaction = hTransaction;
 					break;
 				case "StsTransaction":

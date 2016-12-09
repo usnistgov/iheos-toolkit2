@@ -7,6 +7,7 @@ import gov.nist.toolkit.registrymsg.registry.RegistryResponseParser;
 import gov.nist.toolkit.soap.http.SoapFault;
 import gov.nist.toolkit.testengine.engine.ReportManager;
 import gov.nist.toolkit.testengine.engine.StepContext;
+import gov.nist.toolkit.testengine.engine.TestSupportTransactions;
 import gov.nist.toolkit.testengine.engine.Transactions;
 import gov.nist.toolkit.utilities.xml.Util;
 import gov.nist.toolkit.xdsexception.ExceptionUtil;
@@ -30,6 +31,7 @@ import javax.xml.namespace.QName;
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
@@ -70,6 +72,7 @@ public class HTTPTransaction extends BasicTransaction {
     File file;
     String transType;
     String stsQuery;
+    boolean hasLinkage;
 
     public HTTPTransaction(StepContext s_ctx, OMElement instruction, OMElement instruction_output) {
         super(s_ctx, instruction, instruction_output);
@@ -120,11 +123,7 @@ public class HTTPTransaction extends BasicTransaction {
 
 
             InputStream inputStream;
-            if (Transactions.SecureTokenService.equals(transType)) {
-               inputStream = prepareInputStream();
-            } else {
-                inputStream = new FileInputStream(file);
-            }
+            inputStream = prepareInputStream(file);
 
             InputStreamEntity reqEntity = new InputStreamEntity(inputStream, -1, ContentType.APPLICATION_OCTET_STREAM);
             reqEntity.setChunked(true);
@@ -145,7 +144,7 @@ public class HTTPTransaction extends BasicTransaction {
 
                     if (Transactions.ProvideAndRegister_b.equals(transType)) {
                         if (validatePnr(responseHeaders, responseString)) return;
-                    } else if (Transactions.SecureTokenService.equals(transType)) { // Gazelle's Picketlink STS
+                    } else if (TestSupportTransactions.SecureTokenService.equals(transType)) {
                         if (200 == statusLine.getStatusCode()) {
                             if ("issue".equals(stsQuery)) {
                                 if (validateStsIssue(responseHeaders, responseString)) return;
@@ -274,24 +273,26 @@ public class HTTPTransaction extends BasicTransaction {
     }
 
 
-    private InputStream prepareInputStream() throws XdsInternalException {
-        OMElement ele = Util.parse_xml(file);
-
-        Map<String,String> linkage =  getExternalLinkage();
-        if (linkage!=null) {
-            String samlAssertion = linkage.get("$saml-assertion$");
-            if (samlAssertion!=null) {
+    private InputStream prepareInputStream(File file) throws XdsInternalException, FileNotFoundException {
+        boolean isSts = TestSupportTransactions.SecureTokenService.equals(transType);
+        boolean basicLinkage = (!isSts && isHasLinkage());
+        if (isSts || basicLinkage) {
+            OMElement ele = Util.parse_xml(file);
+            Map<String,String> linkage =  getExternalLinkage();
+            if (linkage!=null && linkage.size()>0) {
                 applyLinkage(ele);
                 compileExtraLinkage(ele);
-            } else {
+            } else
                 reportManagerPreRun(ele);
-            }
-        }
 
-        String body = ele.toString();
-        body = ReportManager.getDecodedStr(body);
-        testLog.add_name_value(instruction_output, "InputMetadata", body);
-        return new ByteArrayInputStream(body.getBytes(StandardCharsets.UTF_8));
+                String body = ele.toString();
+                body = ReportManager.getDecodedStr(body);
+                testLog.add_name_value(instruction_output, "InputMetadata", body);
+                return new ByteArrayInputStream(body.getBytes(StandardCharsets.UTF_8));
+
+        } else {
+                return new FileInputStream(file);
+        }
     }
 
     private boolean validateStsValidate(Header[] responseHeaders, String responseString) throws Exception {
@@ -342,5 +343,13 @@ public class HTTPTransaction extends BasicTransaction {
 
     public void setStsQuery(String stsQuery) {
         this.stsQuery = stsQuery;
+    }
+
+    public boolean isHasLinkage() {
+        return hasLinkage;
+    }
+
+    public void setHasLinkage(boolean hasLinkage) {
+        this.hasLinkage = hasLinkage;
     }
 }

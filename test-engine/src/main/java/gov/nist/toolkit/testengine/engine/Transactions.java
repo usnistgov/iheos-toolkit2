@@ -16,8 +16,9 @@ public class Transactions {
 	public static final String CrossCommunityQuery_async = "xcq.as";
 	public static final String CrossCommunityRetrieve = "xcr";
 	public static final String CrossCommunityRetrieve_async = "xcr.as";
-	public static final String SecureTokenService = "sts";
-	
+	// -- Non strictly an XDS but XDS testing related transaction
+	public static final String TestSupport_SecureTokenService = "sts";
+
 	public static boolean isAsync(String transaction) {
 		return transaction.endsWith("_async");
 	}
