@@ -21,63 +21,63 @@ public class GwtErrorRecorder implements ErrorRecorder  {
 	List<GwtValidatorErrorItem> summary = new ArrayList<>();
 	List<GwtValidatorErrorItem> errMsgs = new ArrayList<>();
 	int lastErrCount = 0;
-	
+
 	static Logger logger = Logger.getLogger(GwtErrorRecorder.class);
 
-	
+
 	public String toString() {
 		StringBuffer buf = new StringBuffer();
 
 		for (GwtValidatorErrorItem info : errMsgs) {
 			buf.append(info).append("\n");
 		}
-		
+
 		return buf.toString();
 	}
-	
+
 	public String errToString() {
 		StringBuffer buf = new StringBuffer();
-		
+
 		for (GwtValidatorErrorItem info : errMsgs) {
 			if (info.level == GwtValidatorErrorItem.ReportingLevel.ERROR)
 				buf.append(info.getCodeString() + ": " + info.msg).append("\n");
 		}
-		
+
 		return buf.toString();
 	}
-	
+
 	public List<String> getErrorMessages() {
 		List<String> msgs = new ArrayList<String>();
-		
+
 		for (GwtValidatorErrorItem info : errMsgs) {
 			if (info.level != ReportingLevel.ERROR)
 				continue;
 			msgs.add(info.msg);
 		}
-		
+
 		return msgs;
 	}
-	
+
 	public List<String> getErrorCodes() {
 		List<String> codes = new ArrayList<String>();
-		
+
 		for (GwtValidatorErrorItem info : errMsgs) {
 			if (info.level != ReportingLevel.ERROR)
 				continue;
 			codes.add(info.getCodeString());
 		}
-		
+
 		return codes;
 	}
-		
+
 	public List<GwtValidatorErrorItem> getValidatorErrorItems() {
 		return errMsgs;
 	}
-	
+
 	public List<GwtValidatorErrorItem> getSummaryErrorInfo() {
 		return summary;
 	}
-	
+
 	public boolean hasErrors() {
 		for (GwtValidatorErrorItem vei : errMsgs) {
 			if (vei.isError()) return true;
@@ -160,7 +160,7 @@ public class GwtErrorRecorder implements ErrorRecorder  {
 		}
 		return cnt - lastErrCount;
 	}
-	
+
 	void tagLastInfo2() {
 		if (errMsgs.size() == 0)
 			return;
@@ -168,9 +168,9 @@ public class GwtErrorRecorder implements ErrorRecorder  {
 			lastErrCount = 0;
 			return;
 		}
-		
+
 	}
-	
+
 	public void sectionHeading(String msg) {
 		tagLastInfo2();
 		GwtValidatorErrorItem ei = new GwtValidatorErrorItem();
@@ -178,7 +178,7 @@ public class GwtErrorRecorder implements ErrorRecorder  {
 		ei.msg = msg;
 		errMsgs.add(ei);
 	}
-	
+
 	public void sectionHeadingError(String msg) {
 		tagLastInfo2();
 		GwtValidatorErrorItem ei = new GwtValidatorErrorItem();
@@ -216,8 +216,8 @@ public class GwtErrorRecorder implements ErrorRecorder  {
 		errMsgs.add(ei);
 	}
 
-	// because of conflict in types, 5th parm is Object and down a few lines is 
-	// another method with 5th param of String, the compiler will generate a 
+	// because of conflict in types, 5th parm is Object and down a few lines is
+	// another method with 5th param of String, the compiler will generate a
 	// call here.  This, the err1 stuff to disambiguate.
 	public void err(Code code, String msg, String location, String resource,
 			Object log_message) {
@@ -242,7 +242,7 @@ public class GwtErrorRecorder implements ErrorRecorder  {
 //			String resource) {
 //		err1(code, msg, location, severity, resource);
 //	}
-	
+
 	void err1(String code, String msg, String location, String severity,
 			String resource) {
 		if (msg == null || msg.trim().equals(""))
@@ -268,7 +268,7 @@ public class GwtErrorRecorder implements ErrorRecorder  {
 				ei.completion = ctype;
 			}
 		}
-		
+
 	}
 
 	public void err(Code code, String msg, String location, String severity,
@@ -312,7 +312,7 @@ public class GwtErrorRecorder implements ErrorRecorder  {
 	public void concat(GwtErrorRecorder er) {
 		this.errMsgs.addAll(er.getErrMsgs());
 	}
-	
+
 	public List<GwtValidatorErrorItem> getErrMsgs() {
 		return this.errMsgs;
 	}
@@ -375,9 +375,9 @@ public class GwtErrorRecorder implements ErrorRecorder  {
 				ei.completion = GwtValidatorErrorItem.ReportingCompletionType.WARNING;
 			}
 		}
-		
+
 	}
-	
+
 	@Override
 	public void info(String dts, String name, String found, String expected, String RFC) {
 		tagLastInfo2();
@@ -406,7 +406,7 @@ public class GwtErrorRecorder implements ErrorRecorder  {
 		ei.msg = msg;
 		summary.add(ei);
 	}
-	
+
 	public void addValidatorItem(GwtValidatorErrorItem e) {
 		errMsgs.add(e);
 	}
