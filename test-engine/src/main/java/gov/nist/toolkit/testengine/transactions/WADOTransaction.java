@@ -9,10 +9,11 @@ import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+
+import javax.xml.namespace.QName;
 
 import org.apache.axiom.om.OMElement;
 import org.apache.commons.io.FileUtils;
@@ -24,8 +25,11 @@ import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.log4j.Logger;
 
+import gov.nist.toolkit.actorfactory.SimDb;
+import gov.nist.toolkit.actorfactory.client.SimId;
+import gov.nist.toolkit.actorfactory.client.SimulatorConfig;
+import gov.nist.toolkit.configDatatypes.SimulatorProperties;
 import gov.nist.toolkit.configDatatypes.client.TransactionType;
-import gov.nist.toolkit.soap.http.SoapFault;
 import gov.nist.toolkit.testengine.engine.StepContext;
 import gov.nist.toolkit.testengine.engine.TransactionStatus;
 import gov.nist.toolkit.xdsexception.client.MetadataException;
@@ -103,8 +107,7 @@ public class WADOTransaction extends BasicTransaction {
    protected void run(OMElement request) throws Exception {
       
       try {
-      // fixed endpoint for early testing   
-      // endpoint = "http://10.242.100.130:8080/wado";
+         if (StringUtils.isNotBlank(target)) endpoint = target;
       if (StringUtils.isBlank(endpoint)) 
          endpoint = testConfig.site.getEndpoint(TransactionType.WADO_RETRIEVE, testConfig.secure, async);
       if (StringUtils.isBlank(endpoint)) 
@@ -290,8 +293,24 @@ public class WADOTransaction extends BasicTransaction {
          case "UseReport":
             parseUseReportInstruction(part);
             break;
+         case "Target":
+            parseTargetInstruction(part);
+            break;
          default:
             log.warn("Unrecognized testplan child " + part.getLocalName() + " ignored.");
+      }
+   }
+   
+   private String target = null;
+   protected void parseTargetInstruction(OMElement part) {
+      try {
+      String sim = part.getAttributeValue(new QName("sim"));
+      String user = testConfig.testInstance.getUser();
+      SimDb db = new SimDb();
+      SimulatorConfig simConfig = db.getSimulator(new SimId(user, sim));
+      target = simConfig.getConfigEle(SimulatorProperties.wadoEndpoint).asString();
+      } catch (Exception e) {
+         
       }
    }
 

@@ -219,6 +219,7 @@ public interface ToolkitServiceAsync {
 	void buildIigTestOrchestration(IigOrchestrationRequest request, AsyncCallback<RawResponse> callback);
 	void buildRigTestOrchestration(RigOrchestrationRequest request, AsyncCallback<RawResponse> callback);
 	void buildIdsTestOrchestration(IdsOrchestrationRequest request, AsyncCallback<RawResponse> callback);
+   void buildIdcTestOrchestration(IdcOrchestrationRequest request, AsyncCallback<RawResponse> callback);
 	void buildRepTestOrchestration(RepOrchestrationRequest request, AsyncCallback<RawResponse> callback);
 	void buildRegTestOrchestration(RegOrchestrationRequest request, AsyncCallback<RawResponse> callback);
 	void buildRecTestOrchestration(RecOrchestrationRequest request, AsyncCallback<RawResponse> callback);

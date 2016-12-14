@@ -169,6 +169,12 @@ public class ImgDetailTransaction extends BasicTransaction {
          case "sameWADOResp":
             prsSameWADOResp(engine, a, assertion_output);
             break;
+         case "sameQuery":
+            this.prsSameQuery(engine, a, assertion_output);
+            break;
+         case "sameRetrieve":
+            this.prsSameRetrieve(engine, a, assertion_output);
+            break;
          default:
             throw new XdsInternalException("ImgDetailTransaction: Unknown assertion.process " + a.process);
       }
@@ -758,6 +764,34 @@ public class ImgDetailTransaction extends BasicTransaction {
       } catch (Exception e) {
          throw new XdsInternalException("ImgDetailTransaction - sameKOSDcm: " + e.getMessage());
       }
+   }
+   
+   private void prsSameQuery(AssertionEngine engine, Assertion a, OMElement assertion_output)
+      throws XdsInternalException {
+      try {
+      String pfn = a.xpath.trim();
+      String stdPfn = Paths.get(testConfig.testplanDir.getAbsolutePath(), pfn).toString();
+      SimulatorTransaction simTran = getSimulatorTransaction(a);
+      simTran.setStdPfn(stdPfn);
+      TestITI18 testInstance = new TestITI18();
+      testInstance.initializeTest(a.process, simTran);
+      testInstance.runTest();
+      Results results = testInstance.getResults(a.process);
+      String rep = results.toString();
+      CAT cat = CAT.SUCCESS;
+      if (results.getErrorCount() > 0) cat = CAT.ERROR;
+      store(engine, cat, rep);
+      } catch (Exception e) {
+         throw new XdsInternalException("ImgDetailTransaction - sameQuery: " + e.getMessage());
+      }
+   }
+   
+   private void prsSameRetrieve(AssertionEngine engine, Assertion a, OMElement assertion_output)
+      throws XdsInternalException {
+      String pfn = a.xpath.trim();
+      String stdPfn = Paths.get(testConfig.testplanDir.getAbsolutePath(), pfn).toString();
+      SimulatorTransaction simTran = getSimulatorTransaction(a);
+      simTran.setStdPfn(stdPfn);
    }
 
    private Map <String, RetImg> loadRetImgs(AssertionEngine engine, Assertion a, OMElement msg) {

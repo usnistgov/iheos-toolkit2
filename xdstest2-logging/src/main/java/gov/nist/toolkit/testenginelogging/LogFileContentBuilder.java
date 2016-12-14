@@ -116,7 +116,6 @@ public class LogFileContentBuilder {
         }
     }
 
-
     private void parseTest() {
         try {
             c.setTestAttribute(XmlUtil.firstChildWithLocalName(log, "Test").getText());

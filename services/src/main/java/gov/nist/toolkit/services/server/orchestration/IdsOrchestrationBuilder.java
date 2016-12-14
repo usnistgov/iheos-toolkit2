@@ -17,10 +17,8 @@ import gov.nist.toolkit.services.server.ToolkitApi;
 import gov.nist.toolkit.session.server.Session;
 import gov.nist.toolkit.simcommon.client.config.SimulatorConfigElement;
 
-
 /**
 * Build environment for testing Imaging Document Source SUT.
-*
 */
 
 class IdsOrchestrationBuilder {

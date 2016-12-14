@@ -940,7 +940,7 @@ public class XdsTestServiceManager extends CommonService {
 													"RetrieveDocumentSetResponse");
 								if (rdsr != null) {
 
-									// Issue 103: We need to propogate the response status since the interpretation of a StepResult of "Pass" to "Success" is not detailed enough with the additional status of PartialSuccess. This fixes the issue of RetrieveDocs tool, displaying a "Success" when it is actually a PartialSuccess.
+									// Issue 103: We need to propagate the response status since the interpretation of a StepResult of "Pass" to "Success" is not detailed enough with the additional status of PartialSuccess. This fixes the issue of RetrieveDocs tool, displaying a "Success" when it is actually a PartialSuccess.
 									try {
 										String rrStatusValue = XmlUtil.firstDecendentWithLocalName(rdsr, "RegistryResponse").getAttributeValue(new QName("status"));
 										stepResult.setRegistryResponseStatus(rrStatusValue);

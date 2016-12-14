@@ -7,7 +7,9 @@ import java.util.Collection;
 import java.util.List;
 
 /**
- *
+ * Base class for Toolkit service responses for orchestration building.
+ * Encapsulates MessageItems, tests which are run to initialize a SUT or sim
+ * for conformance testing.
  */
 abstract public class AbstractOrchestrationResponse extends RawResponse {
 //    private List<TestInstance> orchestrationTests = new ArrayList<>();  // test definitions used to build the orchestration
@@ -15,7 +17,7 @@ abstract public class AbstractOrchestrationResponse extends RawResponse {
 
     /**
      * Does vendor initiate first message of test?
-     * @return
+     * @return true if they do.
      */
     abstract public boolean isExternalStart();
 

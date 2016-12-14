@@ -9,7 +9,9 @@ import gov.nist.toolkit.registrymetadata.client.ObjectRefs;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
-
+/**
+ * Result data for a test step
+ */
 public class StepResult implements IsSerializable, Serializable {
 	private static final long serialVersionUID = 1L;
 	public boolean status;

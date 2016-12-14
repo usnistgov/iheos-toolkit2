@@ -3,7 +3,7 @@ package gov.nist.toolkit.services.client;
 import gov.nist.toolkit.sitemanagement.client.SiteSpec;
 
 /**
- *
+ *  Orchestration request for Image Document Source SUT
  */
 public class IdsOrchestrationRequest extends AbstractOrchestrationRequest {
    private static final long serialVersionUID = 1L;

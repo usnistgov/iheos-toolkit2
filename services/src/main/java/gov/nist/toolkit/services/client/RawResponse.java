@@ -5,7 +5,7 @@ import com.google.gwt.user.client.rpc.IsSerializable;
 import java.io.Serializable;
 
 /**
- *
+ * Base class for Toolkit service responses. Encapsulates data for error returns
  */
 public class RawResponse implements Serializable, IsSerializable {
     boolean error = false;

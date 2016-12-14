@@ -6,7 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- *
+ * Orchestration Response for Image Document Source SUT
  */
 public class IdsOrchestrationResponse extends AbstractOrchestrationResponse {
    

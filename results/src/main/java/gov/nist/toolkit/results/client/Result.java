@@ -6,7 +6,9 @@ import gov.nist.toolkit.registrymetadata.client.MetadataCollection;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
-
+/**
+ *  Result data for a test instance.
+ */
 public class Result  implements IsSerializable, Serializable {
 	private static final long serialVersionUID = 1L;
 	public TestInstance testInstance;   // test can be a single test or a test collection

@@ -6,7 +6,8 @@ import gov.nist.toolkit.results.client.TestInstance;
 import java.io.Serializable;
 
 /**
- *
+ * Encapsulates a test instance which will be run to initialize a SUT or a
+ * simulator that is part of orchestration for conformance testing.
  */
 public class MessageItem implements Serializable, IsSerializable {
     private TestInstance testInstance;

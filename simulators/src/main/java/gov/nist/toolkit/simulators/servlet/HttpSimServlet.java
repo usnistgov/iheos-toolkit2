@@ -46,17 +46,6 @@ import edu.wustl.mir.erl.ihe.xdsi.util.Utility;
 
 /**
  * Servlet for http (only) based transaction simulations
- * 
- * @author Ralph Moulton / MIR WUSTL IHE Development Project <a
- * href="mailto:moultonr@mir.wustl.edu">moultonr@mir.wustl.edu</a>
- *
- */
-/**
- *
- * 
- * @author Ralph Moulton / MIR WUSTL IHE Development Project <a
- * href="mailto:moultonr@mir.wustl.edu">moultonr@mir.wustl.edu</a>
- *
  */
 public class HttpSimServlet extends HttpServlet {
    private static final long serialVersionUID = 1L;
@@ -140,6 +129,7 @@ public class HttpSimServlet extends HttpServlet {
       try {
          
          SimDb db = new SimDb(simDbFile, simid, actor, transaction);
+         // These are passed to the filter for logging
          request.setAttribute("SimDb", db);
          logRequest(request, db, actor, transaction);
          request.setAttribute("SimulatorConfig", simConfig);
@@ -164,7 +154,8 @@ public class HttpSimServlet extends HttpServlet {
          sim.onTransactionBegin(simConfig);
          sim.run(transactionType, mvc);
          sim.onTransactionEnd(simConfig);
-         
+         String str = response.toString();
+         logger.info("Response...\n" + str);
          return;
          
       } catch  (Exception e){
@@ -229,7 +220,7 @@ public class HttpSimServlet extends HttpServlet {
          SimDb db = new SimDb();
          List<SimId> simIds = db.getAllSimIds();
          for (SimId simId : simIds) {
-            BaseHttpActorSimulator sim = (BaseHttpActorSimulator) RuntimeManager.getSimulatorRuntime(simId);
+            BaseHttpActorSimulator sim = (BaseHttpActorSimulator) RuntimeManager.getHttpSimulatorRuntime(simId);
             if (sim == null) continue;
 
             SimulatorConfig asc = GenericSimulatorFactory.getSimConfig(db.getRoot(), simId);
