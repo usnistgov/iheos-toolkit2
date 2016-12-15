@@ -132,7 +132,7 @@ public class HttpSimServlet extends HttpServlet {
          // These are passed to the filter for logging
          request.setAttribute("SimDb", db);
          logRequest(request, db, actor, transaction);
-         request.setAttribute("SimulatorConfig", simConfig);
+         request.setAttribute("mvc", mvc);
          
          ValidationContext vc = DefaultValidationContextFactory.validationContext();
          SimulatorConfigElement asce = simConfig.get(SimulatorProperties.codesEnvironment);
@@ -154,8 +154,6 @@ public class HttpSimServlet extends HttpServlet {
          sim.onTransactionBegin(simConfig);
          sim.run(transactionType, mvc);
          sim.onTransactionEnd(simConfig);
-         String str = response.toString();
-         logger.info("Response...\n" + str);
          return;
          
       } catch  (Exception e){
