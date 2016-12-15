@@ -153,7 +153,7 @@ public class IdsActorSimulator extends GatewaySimulatorCommon {
                transferSyntaxUids.add(xferSyntaxUid);
             }
             if (transferSyntaxUids.isEmpty()) {
-               er.err(Code.XDSIRequestError, "No valid Xfer Syntax",
+               er.err(Code.XDSRepositoryError, "No valid Xfer Syntax",
                      "IdsActorSimulator", "");
                returnRetrieveError(mvc);
                return false;
