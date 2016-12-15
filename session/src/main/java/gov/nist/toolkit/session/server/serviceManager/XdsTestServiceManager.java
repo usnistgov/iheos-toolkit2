@@ -1143,9 +1143,13 @@ public class XdsTestServiceManager extends CommonService {
 		return collectionNames;
 	}
 
-	public List<Result> sendPidToRegistry(SiteSpec site, Pid pid) {
+	public List<Result> sendPidToRegistry(SiteSpec site, Pid pid, String environmentName, String mesaTestSessionName) throws Exception {
 		if (session != null)
 			logger.debug(session.id() + ": " + "sendPidToRegistry(" + pid + ")");
+		if (session.xt == null) {
+			TestKitSearchPath searchPath = new TestKitSearchPath(environmentName, mesaTestSessionName);
+			session.xt = new Xdstest2(Installation.instance().toolkitxFile(), searchPath, session);
+		}
 		session.setSiteSpec(site);
 		Map<String, String> params = new HashMap<>();
 		params.put("$pid$", pid.asString());

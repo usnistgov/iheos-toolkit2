@@ -574,7 +574,7 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements
     @Override
     public List<Result> sendPidToRegistry(SendPidToRegistryRequest request) throws Exception {
         installCommandContext(request);
-        return session().xdsTestServiceManager().sendPidToRegistry(request.getSiteSpec(), request.getPid());
+        return session().xdsTestServiceManager().sendPidToRegistry(request.getSiteSpec(), request.getPid(), request.getEnvironmentName(), request.getTestSessionName());
     }
 
     @Override
