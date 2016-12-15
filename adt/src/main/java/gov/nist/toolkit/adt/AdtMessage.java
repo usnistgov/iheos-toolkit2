@@ -1,13 +1,15 @@
 package gov.nist.toolkit.adt;
 
 
+import org.apache.log4j.Logger;
+
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
 public class AdtMessage {
     String input;
-//	String[] lines;
+    static Logger logger = Logger.getLogger(AdtSocketListener.class);
 
     static public byte[] end = { 0x1c, 0x0d };
 
@@ -15,12 +17,6 @@ public class AdtMessage {
 
     public AdtMessage(String input) {
         this.input = input;
-//		lines = input.split("\n");
-//		for (int i=0; i<lines.length; i++) {
-//			if (lines[i] == null)
-//				continue;
-//			lines[i] = trimLeft(lines[i]);
-//		}
     }
 
     boolean isWhite(char c) {

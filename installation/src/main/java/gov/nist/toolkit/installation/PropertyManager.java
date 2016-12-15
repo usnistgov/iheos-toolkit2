@@ -22,6 +22,10 @@ public class PropertyManager {
 	static private final String TESTKIT             = "Testkit";
 	static private final String LISTENER_PORT_RANGE = "Listener_Port_Range";
 	static private final String AUTO_INIT_CONFORMANCE_TOOL = "Auto_init_conformance_tool";
+	static private final String MSH_3 = "MSH_3";
+	static private final String MSH_4 = "MSH_4";
+	static private final String MSH_5 = "MSH_5";
+	static private final String MSH_6 = "MSH_6";
 
 	private String propFile;
 	private Properties toolkitProperties = null;
@@ -72,6 +76,34 @@ public class PropertyManager {
 			if (!f.exists())
 				throw new Exception("Cannot create Message_database_directory " + value);
 		}
+	}
+
+	public String getMSH3() {
+		loadProperties();
+		String value = (String) toolkitProperties.get(MSH_3);
+		if (value == null || value.equals("")) value = "SRCADT";
+		return value;
+	}
+
+	public String getMSH4() {
+		loadProperties();
+		String value = (String) toolkitProperties.get(MSH_4);
+		if (value == null || value.equals("")) value = "DH";
+		return value;
+	}
+
+	public String getMSH5() {
+		loadProperties();
+		String value = (String) toolkitProperties.get(MSH_5);
+		if (value == null || value.equals("")) value = "LABADT";
+		return value;
+	}
+
+	public String getMSH6() {
+		loadProperties();
+		String value = (String) toolkitProperties.get(MSH_6);
+		if (value == null || value.equals("")) value = "DH";
+		return value;
 	}
 
 	public String getCacheDisabled() {

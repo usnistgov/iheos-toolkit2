@@ -37,6 +37,26 @@ public class PropertyServiceManager {
 		return null;
 	}
 
+	public String getMSH3() {
+		logger.debug(": " + "getMSH3");
+		return getPropertyManager().getMSH3();
+	}
+
+	public String getMSH4() {
+		logger.debug(": " + "getMSH4");
+		return getPropertyManager().getMSH4();
+	}
+
+	public String getMSH5() {
+		logger.debug(": " + "getMSH5");
+		return getPropertyManager().getMSH5();
+	}
+
+	public String getMSH6() {
+		logger.debug(": " + "getMSH6");
+		return getPropertyManager().getMSH6();
+	}
+
 	public boolean getCacheDisabled() {
 		logger.debug(": " + "getCacheDisabled");
 		return "true".equals(getPropertyManager().getCacheDisabled());
