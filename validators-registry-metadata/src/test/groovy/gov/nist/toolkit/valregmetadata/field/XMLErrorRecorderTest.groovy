@@ -17,7 +17,7 @@ import gov.nist.toolkit.errorrecordingold.TextErrorRecorder
 import gov.nist.toolkit.errorrecording.XMLErrorRecorder
 
 
-class XMLErrorRecorderValidatorTest extends Specification {
+class XMLErrorRecorderTest extends Specification {
 
     def 'Run'() {
         setup:

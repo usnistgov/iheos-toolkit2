@@ -1,7 +1,7 @@
 package gov.nist.toolkit.valsupport.client;
 
+import gov.nist.toolkit.errorrecording.client.GWTValidationStepResult;
 import gov.nist.toolkit.errorrecording.client.GwtValidatorErrorItem;
-import gov.nist.toolkit.errorrecording.client.ValidationStepResult;
 import gov.nist.toolkit.errorrecording.client.GwtValidatorErrorItem.ReportingLevel;
 import gov.nist.toolkit.errorrecording.client.XdsErrorCode.Code;
 
@@ -17,8 +17,8 @@ import com.google.gwt.user.client.rpc.IsSerializable;
  */
 public class MessageValidationResults implements IsSerializable {
 	
-	List<ValidationStepResult> results = new ArrayList<ValidationStepResult>();
-	List<ValidationStepResult> summary = new ArrayList<ValidationStepResult>();
+	List<GWTValidationStepResult> results = new ArrayList<GWTValidationStepResult>();
+	List<GWTValidationStepResult> summary = new ArrayList<GWTValidationStepResult>();
 	String htmlResults = "";
 	
 	public MessageValidationResults() {} // For GWT
@@ -29,14 +29,14 @@ public class MessageValidationResults implements IsSerializable {
 	 * @param er the results
 	 */
 	public void addResult(String stepName, List<GwtValidatorErrorItem> er) {
-		ValidationStepResult result = new ValidationStepResult();
+		GWTValidationStepResult result = new GWTValidationStepResult();
 		result.stepName = stepName;
 		result.er = er;
 		results.add(result);
 	}
 	
 	public void addSummary(String stepName, List<GwtValidatorErrorItem> er) {
-		ValidationStepResult result = new ValidationStepResult();
+		GWTValidationStepResult result = new GWTValidationStepResult();
 		result.stepName = stepName;
 		result.er = er;
 		summary.add(result);
@@ -50,18 +50,18 @@ public class MessageValidationResults implements IsSerializable {
 		return this.htmlResults;
 	}
 	
-	public List<ValidationStepResult> getResults() {
+	public List<GWTValidationStepResult> getResults() {
 		return results;
 	}
 	
-	public List<ValidationStepResult> getSummaryResults() {
+	public List<GWTValidationStepResult> getSummaryResults() {
 		return summary;
 	}
 	
 	public String toString() {
 		StringBuffer buf = new StringBuffer();
 		
-		for (ValidationStepResult result : results)
+		for (GWTValidationStepResult result : results)
 			buf.append(result);
 		
 		return buf.toString();
@@ -72,7 +72,7 @@ public class MessageValidationResults implements IsSerializable {
 	 * @return
 	 */
 	public boolean hasErrors() {
-		for (ValidationStepResult result : results) {
+		for (GWTValidationStepResult result : results) {
 			for (GwtValidatorErrorItem info : result.er) {
 				if (info.level == ReportingLevel.ERROR)
 					return true;
@@ -88,7 +88,7 @@ public class MessageValidationResults implements IsSerializable {
 	 * @param msg
 	 */
 	public void addError(Code code, String stepName, String msg) {
-		ValidationStepResult result = new ValidationStepResult();
+		GWTValidationStepResult result = new GWTValidationStepResult();
 		result.stepName = stepName;
 		GwtValidatorErrorItem v = new GwtValidatorErrorItem();
 		v.level = GwtValidatorErrorItem.ReportingLevel.ERROR;

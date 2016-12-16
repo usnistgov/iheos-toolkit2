@@ -1,5 +1,6 @@
 package gov.nist.toolkit.errorrecordingold;
 
+import gov.nist.toolkit.errorrecordingold.client.GwtValidatorErrorItem;
 import gov.nist.toolkit.errorrecordingold.client.ValidatorErrorItem;
 import gov.nist.toolkit.errorrecordingold.client.XdsErrorCode;
 import gov.nist.toolkit.errorrecordingold.factories.ErrorRecorderBuilder;
@@ -35,9 +36,7 @@ public interface ErrorRecorder extends ErrorRecorderBuilder {
 	void showErrorInfo();
 	boolean hasErrors();
 	int getNbErrors();
-	void concat(ErrorRecorder er);
-	List<ValidatorErrorItem> getErrMsgs();
-	
+
 	List<ErrorRecorder> getChildren();
     int depth();
     // register should be called at start of a validator run(ErrorRecorder er, MessageValidatorEngine mvc) method

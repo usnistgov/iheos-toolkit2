@@ -6,7 +6,7 @@ import gov.nist.toolkit.actorfactory.client.SimId;
 import gov.nist.toolkit.errorrecording.ErrorRecorder;
 import gov.nist.toolkit.errorrecording.GwtErrorRecorder;
 import gov.nist.toolkit.errorrecording.GwtErrorRecorderBuilder;
-import gov.nist.toolkit.errorrecording.client.ValidationStepResult;
+import gov.nist.toolkit.errorrecording.client.GWTValidationStepResult;
 import gov.nist.toolkit.installation.Installation;
 import gov.nist.toolkit.utilities.io.Io;
 import gov.nist.toolkit.valregmsg.validation.engine.ValidateMessageService;
@@ -143,7 +143,7 @@ public class SimCommon {
 	 * Return the collection of results/status/errors
 	 * @return
 	 */
-	public List<ValidationStepResult> getErrors() {
+	public List<GWTValidationStepResult> getErrors() {
 		buildMVR();
 		return mvr.getResults();
 	}

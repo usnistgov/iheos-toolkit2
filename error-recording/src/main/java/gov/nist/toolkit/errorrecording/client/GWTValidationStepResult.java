@@ -12,11 +12,11 @@ import com.google.gwt.user.client.rpc.IsSerializable;
  * @author bill
  *
  */
-public class ValidationStepResult implements IsSerializable {
+public class GWTValidationStepResult implements IsSerializable {
 	public String stepName;
 	public List<GwtValidatorErrorItem> er;
 	
-	public ValidationStepResult() {} // For GWT
+	public GWTValidationStepResult() {} // For GWT
 	
 	public String toString() {
 		StringBuffer buf = new StringBuffer();

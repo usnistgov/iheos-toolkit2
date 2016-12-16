@@ -1,0 +1,302 @@
+<?xml version="1.0"?><wsdl:definitions xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:ns1="http://org.apache.axis2/xsd" xmlns:ns="http://serviceclasses.ws.registry.nist.gov" xmlns:ax28="http://registry.common2.registry.nist.gov/xsd" xmlns:wsaw="http://www.w3.org/2006/05/addressing/wsdl" xmlns:ax25="http://exception.common2.registry.nist.gov/xsd" xmlns:http="http://schemas.xmlsoap.org/wsdl/http/" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:mime="http://schemas.xmlsoap.org/wsdl/mime/" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:soap12="http://schemas.xmlsoap.org/wsdl/soap12/" targetNamespace="http://serviceclasses.ws.registry.nist.gov">
+    <wsdl:documentation>xdsregistryb</wsdl:documentation>
+    <wsdl:types>
+        <xs:schema targetNamespace="http://registry.common2.registry.nist.gov/xsd" attributeFormDefault="qualified" elementFormDefault="qualified">
+            <xs:complexType name="Metadata">
+                <xs:sequence>
+                    <xs:element nillable="true" name="allDefinedIds" type="xs:anyType" minOccurs="0"></xs:element>
+                    <xs:element nillable="true" name="allLeafClasses" type="xs:anyType" minOccurs="0"></xs:element>
+                    <xs:element nillable="true" name="allObjects" type="xs:anyType" minOccurs="0"></xs:element>
+                    <xs:element nillable="true" name="allUids" type="xs:anyType" minOccurs="0"></xs:element>
+                    <xs:element nillable="true" name="assocReferences" type="xs:anyType" minOccurs="0"></xs:element>
+                    <xs:element nillable="true" name="associationIds" type="xs:anyType" minOccurs="0"></xs:element>
+                    <xs:element nillable="true" name="associations" type="xs:anyType" minOccurs="0"></xs:element>
+                    <xs:element nillable="true" name="classifications" type="xs:anyType" minOccurs="0"></xs:element>
+                    <xs:element nillable="true" name="documentUidMap" type="xs:anyType" minOccurs="0"></xs:element>
+                    <xs:element nillable="true" name="extrinsicObjectIds" type="xs:anyType" minOccurs="0"></xs:element>
+                    <xs:element nillable="true" name="extrinsicObjects" type="xs:anyType" minOccurs="0"></xs:element>
+                    <xs:element nillable="true" name="folderIds" type="xs:anyType" minOccurs="0"></xs:element>
+                    <xs:element nillable="true" name="folders" type="xs:anyType" minOccurs="0"></xs:element>
+                    <xs:element name="grokMetadata" type="xs:boolean" minOccurs="0"></xs:element>
+                    <xs:element nillable="true" name="idsOfReferencedObjects" type="xs:anyType" minOccurs="0"></xs:element>
+                    <xs:element nillable="true" name="leafClassObjects" type="xs:anyType" minOccurs="0"></xs:element>
+                    <xs:element nillable="true" name="majorObjects" type="xs:anyType" minOccurs="0"></xs:element>
+                    <xs:element nillable="true" name="metadata" type="xs:anyType" minOccurs="0"></xs:element>
+                    <xs:element nillable="true" name="metadataAsObjectRefs" type="ax28:Metadata" minOccurs="0"></xs:element>
+                    <xs:element nillable="true" name="metadataDescription" type="xs:string" minOccurs="0"></xs:element>
+                    <xs:element nillable="true" name="nonObjectRefs" type="xs:anyType" minOccurs="0"></xs:element>
+                    <xs:element nillable="true" name="objectIdsToDeprecate" type="xs:anyType" minOccurs="0"></xs:element>
+                    <xs:element nillable="true" name="objectRefIds" type="xs:anyType" minOccurs="0"></xs:element>
+                    <xs:element nillable="true" name="objectRefs" type="xs:anyType" minOccurs="0"></xs:element>
+                    <xs:element name="objectRefsOnly" type="xs:boolean" minOccurs="0"></xs:element>
+                    <xs:element nillable="true" name="original" type="xs:anyType" minOccurs="0"></xs:element>
+                    <xs:element name="patientIdConsistent" type="xs:boolean" minOccurs="0"></xs:element>
+                    <xs:element nillable="true" name="patientIds" type="xs:anyType" minOccurs="0"></xs:element>
+                    <xs:element nillable="true" name="referencedObjectsThatMustHaveSamePatientId" type="xs:anyType" minOccurs="0"></xs:element>
+                    <xs:element name="registryPackageClassificationBroken" type="xs:boolean" minOccurs="0"></xs:element>
+                    <xs:element nillable="true" name="registryPackageIds" type="xs:anyType" minOccurs="0"></xs:element>
+                    <xs:element nillable="true" name="registryPackages" type="xs:anyType" minOccurs="0"></xs:element>
+                    <xs:element nillable="true" name="root" type="xs:anyType" minOccurs="0"></xs:element>
+                    <xs:element nillable="true" name="submissionSet" type="xs:anyType" minOccurs="0"></xs:element>
+                    <xs:element nillable="true" name="submissionSetId" type="xs:string" minOccurs="0"></xs:element>
+                    <xs:element nillable="true" name="submissionSetIds" type="xs:anyType" minOccurs="0"></xs:element>
+                    <xs:element nillable="true" name="submissionSetPatientId" type="xs:string" minOccurs="0"></xs:element>
+                    <xs:element nillable="true" name="submissionSetUniqueId" type="xs:string" minOccurs="0"></xs:element>
+                    <xs:element nillable="true" name="submissionSets" type="xs:anyType" minOccurs="0"></xs:element>
+                    <xs:element nillable="true" name="uidHashMap" type="xs:anyType" minOccurs="0"></xs:element>
+                    <xs:element nillable="true" name="uidMap" type="xs:anyType" minOccurs="0"></xs:element>
+                    <xs:element name="uriChunkSize" type="xs:int" minOccurs="0"></xs:element>
+                    <xs:element nillable="true" name="v2" type="xs:anyType" minOccurs="0"></xs:element>
+                    <xs:element nillable="true" name="v2SubmitObjectsRequest" type="xs:anyType" minOccurs="0"></xs:element>
+                    <xs:element nillable="true" name="v3" type="xs:anyType" minOccurs="0"></xs:element>
+                    <xs:element nillable="true" name="v3SubmitObjectsRequest" type="xs:anyType" minOccurs="0"></xs:element>
+                    <xs:element name="version2" type="xs:boolean" minOccurs="0"></xs:element>
+                    <xs:element nillable="true" name="wrapper" type="xs:anyType" minOccurs="0"></xs:element>
+                    <xs:element nillable="true" name="_metadata_containers" type="xs:anyType" minOccurs="0"></xs:element>
+                </xs:sequence>
+            </xs:complexType>
+            <xs:complexType name="Response">
+                <xs:sequence>
+                    <xs:element nillable="true" name="errorsAndWarnings" type="xs:string" minOccurs="0"></xs:element>
+                    <xs:element nillable="true" name="response" type="xs:anyType" minOccurs="0"></xs:element>
+                    <xs:element nillable="true" name="root" type="xs:anyType" minOccurs="0"></xs:element>
+                    <xs:element nillable="true" name="registryErrorList" type="ax28:RegistryErrorList" minOccurs="0"></xs:element>
+                </xs:sequence>
+            </xs:complexType>
+            <xs:complexType name="RegistryErrorList">
+                <xs:sequence>
+                    <xs:element nillable="true" name="errorsAndWarnings" type="xs:string" minOccurs="0"></xs:element>
+                    <xs:element nillable="true" name="registryErrorList" type="xs:anyType" minOccurs="0"></xs:element>
+                    <xs:element nillable="true" name="status" type="xs:string" minOccurs="0"></xs:element>
+                    <xs:element name="verbose" type="xs:boolean" minOccurs="0"></xs:element>
+                    <xs:element name="version" type="xs:short" minOccurs="0"></xs:element>
+                </xs:sequence>
+            </xs:complexType>
+        </xs:schema>
+        <xs:schema xmlns:ax26="http://serviceclasses.ws.registry.nist.gov" targetNamespace="http://exception.common2.registry.nist.gov/xsd" attributeFormDefault="qualified" elementFormDefault="qualified">
+            <xs:import namespace="http://serviceclasses.ws.registry.nist.gov"></xs:import>
+            <xs:complexType name="XdsException">
+                <xs:complexContent>
+                    <xs:extension base="ax26:Exception">
+                        <xs:sequence></xs:sequence>
+                    </xs:extension>
+                </xs:complexContent>
+            </xs:complexType>
+            <xs:complexType name="MetadataException">
+                <xs:complexContent>
+                    <xs:extension base="ax25:XdsException">
+                        <xs:sequence></xs:sequence>
+                    </xs:extension>
+                </xs:complexContent>
+            </xs:complexType>
+        </xs:schema>
+        <xs:schema xmlns:ax29="http://registry.common2.registry.nist.gov/xsd" xmlns:ax27="http://exception.common2.registry.nist.gov/xsd" targetNamespace="http://serviceclasses.ws.registry.nist.gov" attributeFormDefault="qualified" elementFormDefault="qualified">
+            <xs:import namespace="http://exception.common2.registry.nist.gov/xsd"></xs:import>
+            <xs:import namespace="http://registry.common2.registry.nist.gov/xsd"></xs:import>
+            <xs:complexType name="Exception">
+                <xs:sequence>
+                    <xs:element nillable="true" name="Exception" type="xs:anyType" minOccurs="0"></xs:element>
+                </xs:sequence>
+            </xs:complexType>
+            <xs:element name="MetadataException">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element nillable="true" name="MetadataException" type="ax25:MetadataException" minOccurs="0"></xs:element>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="runContentValidationService">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element nillable="true" name="m" type="ax28:Metadata" minOccurs="0"></xs:element>
+                        <xs:element nillable="true" name="response" type="ax28:Response" minOccurs="0"></xs:element>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="runContentValidationServiceResponse">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element name="return" type="xs:boolean" minOccurs="0"></xs:element>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="getServiceNameResponse">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element nillable="true" name="return" type="xs:string" minOccurs="0"></xs:element>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+        </xs:schema>
+    </wsdl:types>
+    <wsdl:message name="runContentValidationServiceRequest">
+        <wsdl:part element="ns:runContentValidationService" name="parameters"></wsdl:part>
+    </wsdl:message>
+    <wsdl:message name="runContentValidationServiceResponse">
+        <wsdl:part element="ns:runContentValidationServiceResponse" name="parameters"></wsdl:part>
+    </wsdl:message>
+    <wsdl:message name="MetadataException">
+        <wsdl:part element="ns:MetadataException" name="parameters"></wsdl:part>
+    </wsdl:message>
+    <wsdl:message name="getServiceNameRequest"></wsdl:message>
+    <wsdl:message name="getServiceNameResponse">
+        <wsdl:part element="ns:getServiceNameResponse" name="parameters"></wsdl:part>
+    </wsdl:message>
+    <wsdl:message name="SubmitObjectsRequestRequest"></wsdl:message>
+    <wsdl:message name="SubmitObjectsRequestResponse"></wsdl:message>
+    <wsdl:message name="AdhocQueryRequestRequest"></wsdl:message>
+    <wsdl:message name="AdhocQueryRequestResponse"></wsdl:message>
+    <wsdl:portType name="xdsregistrybPortType">
+        <wsdl:operation name="runContentValidationService">
+            <wsdl:input message="ns:runContentValidationServiceRequest" wsaw:Action="urn:runContentValidationService"></wsdl:input>
+            <wsdl:output message="ns:runContentValidationServiceResponse" wsaw:Action="urn:runContentValidationServiceResponse"></wsdl:output>
+            <wsdl:fault message="ns:MetadataException" name="MetadataException" wsaw:Action="urn:runContentValidationServiceMetadataException"></wsdl:fault>
+        </wsdl:operation>
+        <wsdl:operation name="getServiceName">
+            <wsdl:input message="ns:getServiceNameRequest" wsaw:Action="urn:getServiceName"></wsdl:input>
+            <wsdl:output message="ns:getServiceNameResponse" wsaw:Action="urn:getServiceNameResponse"></wsdl:output>
+        </wsdl:operation>
+        <wsdl:operation name="SubmitObjectsRequest">
+            <wsdl:input message="ns:SubmitObjectsRequestRequest" wsaw:Action="urn:ihe:iti:2007:RegisterDocumentSet-b"></wsdl:input>
+            <wsdl:output message="ns:SubmitObjectsRequestResponse" wsaw:Action="urn:SubmitObjectsRequestResponse"></wsdl:output>
+        </wsdl:operation>
+        <wsdl:operation name="AdhocQueryRequest">
+            <wsdl:input message="ns:AdhocQueryRequestRequest" wsaw:Action="urn:ihe:iti:2007:RegistryStoredQuery"></wsdl:input>
+            <wsdl:output message="ns:AdhocQueryRequestResponse" wsaw:Action="urn:AdhocQueryRequestResponse"></wsdl:output>
+        </wsdl:operation>
+    </wsdl:portType>
+    <wsdl:binding name="xdsregistrybSoap11Binding" type="ns:xdsregistrybPortType">
+        <soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"></soap:binding>
+        <wsdl:operation name="runContentValidationService">
+            <soap:operation style="document" soapAction="urn:runContentValidationService"></soap:operation>
+            <wsdl:input>
+                <soap:body use="literal"></soap:body>
+            </wsdl:input>
+            <wsdl:output>
+                <soap:body use="literal"></soap:body>
+            </wsdl:output>
+            <wsdl:fault name="MetadataException">
+                <soap:fault name="MetadataException" use="literal"></soap:fault>
+            </wsdl:fault>
+        </wsdl:operation>
+        <wsdl:operation name="SubmitObjectsRequest">
+            <soap:operation style="document" soapAction=""></soap:operation>
+            <wsdl:input>
+                <soap:body use="literal"></soap:body>
+            </wsdl:input>
+            <wsdl:output>
+                <soap:body use="literal"></soap:body>
+            </wsdl:output>
+        </wsdl:operation>
+        <wsdl:operation name="getServiceName">
+            <soap:operation style="document" soapAction="urn:getServiceName"></soap:operation>
+            <wsdl:input>
+                <soap:body use="literal"></soap:body>
+            </wsdl:input>
+            <wsdl:output>
+                <soap:body use="literal"></soap:body>
+            </wsdl:output>
+        </wsdl:operation>
+        <wsdl:operation name="AdhocQueryRequest">
+            <soap:operation style="document" soapAction=""></soap:operation>
+            <wsdl:input>
+                <soap:body use="literal"></soap:body>
+            </wsdl:input>
+            <wsdl:output>
+                <soap:body use="literal"></soap:body>
+            </wsdl:output>
+        </wsdl:operation>
+    </wsdl:binding>
+    <wsdl:binding name="xdsregistrybSoap12Binding" type="ns:xdsregistrybPortType">
+        <soap12:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"></soap12:binding>
+        <wsdl:operation name="runContentValidationService">
+            <soap12:operation style="document" soapAction="urn:runContentValidationService"></soap12:operation>
+            <wsdl:input>
+                <soap12:body use="literal"></soap12:body>
+            </wsdl:input>
+            <wsdl:output>
+                <soap12:body use="literal"></soap12:body>
+            </wsdl:output>
+            <wsdl:fault name="MetadataException">
+                <soap12:fault name="MetadataException" use="literal"></soap12:fault>
+            </wsdl:fault>
+        </wsdl:operation>
+        <wsdl:operation name="SubmitObjectsRequest">
+            <soap12:operation style="document" soapAction=""></soap12:operation>
+            <wsdl:input>
+                <soap12:body use="literal"></soap12:body>
+            </wsdl:input>
+            <wsdl:output>
+                <soap12:body use="literal"></soap12:body>
+            </wsdl:output>
+        </wsdl:operation>
+        <wsdl:operation name="getServiceName">
+            <soap12:operation style="document" soapAction="urn:getServiceName"></soap12:operation>
+            <wsdl:input>
+                <soap12:body use="literal"></soap12:body>
+            </wsdl:input>
+            <wsdl:output>
+                <soap12:body use="literal"></soap12:body>
+            </wsdl:output>
+        </wsdl:operation>
+        <wsdl:operation name="AdhocQueryRequest">
+            <soap12:operation style="document" soapAction=""></soap12:operation>
+            <wsdl:input>
+                <soap12:body use="literal"></soap12:body>
+            </wsdl:input>
+            <wsdl:output>
+                <soap12:body use="literal"></soap12:body>
+            </wsdl:output>
+        </wsdl:operation>
+    </wsdl:binding>
+    <wsdl:binding name="xdsregistrybHttpBinding" type="ns:xdsregistrybPortType">
+        <http:binding verb="POST"></http:binding>
+        <wsdl:operation name="runContentValidationService">
+            <http:operation location="xdsregistryb/runContentValidationService"></http:operation>
+            <wsdl:input>
+                <mime:content part="runContentValidationService" type="text/xml"></mime:content>
+            </wsdl:input>
+            <wsdl:output>
+                <mime:content part="runContentValidationService" type="text/xml"></mime:content>
+            </wsdl:output>
+        </wsdl:operation>
+        <wsdl:operation name="SubmitObjectsRequest">
+            <http:operation location="xdsregistryb/SubmitObjectsRequest"></http:operation>
+            <wsdl:input>
+                <mime:content part="SubmitObjectsRequest" type="text/xml"></mime:content>
+            </wsdl:input>
+            <wsdl:output>
+                <mime:content part="SubmitObjectsRequest" type="text/xml"></mime:content>
+            </wsdl:output>
+        </wsdl:operation>
+        <wsdl:operation name="getServiceName">
+            <http:operation location="xdsregistryb/getServiceName"></http:operation>
+            <wsdl:input>
+                <mime:content part="getServiceName" type="text/xml"></mime:content>
+            </wsdl:input>
+            <wsdl:output>
+                <mime:content part="getServiceName" type="text/xml"></mime:content>
+            </wsdl:output>
+        </wsdl:operation>
+        <wsdl:operation name="AdhocQueryRequest">
+            <http:operation location="xdsregistryb/AdhocQueryRequest"></http:operation>
+            <wsdl:input>
+                <mime:content part="AdhocQueryRequest" type="text/xml"></mime:content>
+            </wsdl:input>
+            <wsdl:output>
+                <mime:content part="AdhocQueryRequest" type="text/xml"></mime:content>
+            </wsdl:output>
+        </wsdl:operation>
+    </wsdl:binding>
+    <wsdl:service name="xdsregistryb">
+        <wsdl:port name="xdsregistrybHttpSoap11Endpoint" binding="ns:xdsregistrybSoap11Binding">
+            <soap:address location="http://172.16.0.150:10000/tf6/services/xdsregistryb.xdsregistrybHttpSoap11Endpoint/"></soap:address>
+        </wsdl:port>
+        <wsdl:port name="xdsregistrybHttpSoap12Endpoint" binding="ns:xdsregistrybSoap12Binding">
+            <soap12:address location="http://172.16.0.150:10000/tf6/services/xdsregistryb.xdsregistrybHttpSoap12Endpoint/"></soap12:address>
+        </wsdl:port>
+        <wsdl:port name="xdsregistrybHttpEndpoint" binding="ns:xdsregistrybHttpBinding">
+            <http:address location="http://172.16.0.150:10000/tf6/services/xdsregistryb.xdsregistrybHttpEndpoint/"></http:address>
+        </wsdl:port>
+    </wsdl:service>
+</wsdl:definitions>
