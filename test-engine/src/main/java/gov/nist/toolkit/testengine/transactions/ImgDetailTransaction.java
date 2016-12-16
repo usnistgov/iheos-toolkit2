@@ -762,7 +762,7 @@ public class ImgDetailTransaction extends BasicTransaction {
          if (results.getErrorCount() > 0) cat = CAT.ERROR;
          store(engine, cat, rep);
       } catch (Exception e) {
-         throw new XdsInternalException("ImgDetailTransaction - sameKOSDcm: " + e.getMessage());
+         throw new XdsInternalException("ImgDetailTransaction - sameKOSMetadata: " + e.getMessage());
       }
    }
    

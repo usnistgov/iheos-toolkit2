@@ -18,7 +18,7 @@ import gov.nist.toolkit.sitemanagement.client.Site
 import groovy.transform.TypeChecked
 /**
  * Build orchestration for testing a Repository.
- * A Registry sim is built and configured to not validate Register transactions agains PIF.
+ * A Registry sim is built and configured to not validate Register transactions against PIF.
  */
 @TypeChecked
 class RepOrchestrationBuilder {
