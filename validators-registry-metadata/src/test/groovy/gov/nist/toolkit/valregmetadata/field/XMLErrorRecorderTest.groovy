@@ -9,11 +9,11 @@ import spock.lang.Specification
 
 // Imports for both ErrorRecorder versions, new and old. Comment out as needed.
 // 1/ Old imports for GwtErrorRecorder, TextErrorRecorder
-import gov.nist.toolkit.errorrecordingold.ErrorRecorder
-import gov.nist.toolkit.errorrecordingold.GwtErrorRecorder
-import gov.nist.toolkit.errorrecordingold.TextErrorRecorder
+// import gov.nist.toolkit.errorrecordingold.ErrorRecorder
+// import gov.nist.toolkit.errorrecordingold.GwtErrorRecorder
+// import gov.nist.toolkit.errorrecording.TextErrorRecorder
 // 2/ New imports for XMLErrorRecorder
-//import gov.nist.toolkit.errorrecording.ErrorRecorder
+import gov.nist.toolkit.errorrecording.ErrorRecorder
 import gov.nist.toolkit.errorrecording.XMLErrorRecorder
 
 
@@ -39,9 +39,9 @@ class XMLErrorRecorderTest extends Specification {
         vc.isPnR = true
         vc.codesFilename = getClass().getResource('/codes.xml').file
 
-         ErrorRecorder er = new GwtErrorRecorder()
+        // ErrorRecorder er = new GwtErrorRecorder()
         // ErrorRecorder er = new TextErrorRecorder()
-        // ErrorRecorder er = new XMLErrorRecorder()
+        ErrorRecorder er = new XMLErrorRecorder()
 
         MetadataValidator val = new MetadataValidator(m, vc, null)
         val.run(er)

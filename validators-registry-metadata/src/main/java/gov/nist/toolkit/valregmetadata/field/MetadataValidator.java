@@ -1,4 +1,4 @@
-package gov.nist.toolkit.valregmetadataold.field;
+package gov.nist.toolkit.valregmetadata.field;
 
 import gov.nist.toolkit.errorrecording.ErrorRecorder;
 import gov.nist.toolkit.errorrecording.client.XdsErrorCode;
