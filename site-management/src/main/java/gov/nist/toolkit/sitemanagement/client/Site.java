@@ -149,8 +149,8 @@ public class Site  implements IsSerializable, Serializable {
 		// All Repository transactions must be for the same repositoryUniqueId
 		Set<String> repUids = repositoryUniqueIds();
 		if (repUids.size() > 1) {
-			buf.append("Site ").append(name).append(" contains more than one repositoryUniqueId. ")
-			.append("A site can define a single Document Repository.");
+			buf.append("Site ").append(name).append(" contains more than one repositoryUniqueId: " + repUids)
+			.append("  A site can define a single Document Repository.");
 		}		
 	}
 	
