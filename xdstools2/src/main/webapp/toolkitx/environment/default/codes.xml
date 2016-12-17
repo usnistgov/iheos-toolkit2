@@ -4,11 +4,17 @@
         November 17, 2016
 
         Additions were made to support RSNA Image Share
+        
+        formatCode extended with two values suggested by HL7 for C-CDA documents
+        healthcareFacilityTypeCode extended to support the IHE USA Data Access Framework (DAF) Supplement
+        practiceSettingCode extended to support the IHE USA Data Access Framework (DAF) Supplement
+        typeCodeRepresentation extended to support C-CDA documents
+        classCode extended to support DAF Supplement
 
 	November 1, 2014
 	
 	This is the Affinity Domain coding specification for the 2015 North American and European 
-	Connectathons. Questions and issues should be directed to Bill Majurski (bill@nist.gov).
+	Connectathons. Questions and issues should be directed to Bill Majurski (bmajur@gmail.com).
 	
 	This list was curated by Steve Moore 
 -->
@@ -30,6 +36,10 @@
 
 	</CodeType>
 	<CodeType name="healthcareFacilityTypeCode" classScheme="urn:uuid:f33fb8ac-18af-42cc-ae0e-ed0b0bdb91e1">
+		<!-- SMM 2016.12.07 C-CDA / DAF -->
+		<Code code="39350007" display="Private physicians' group office"
+			codingScheme="2.16.840.1.113883.3.88.12.80.67" />
+
 		<!-- SMM 2016.09.21 RSNA ISN -->
 		<Code code="GENERAL HOSPITAL" display="GENERAL HOSPITAL"
 			codingScheme="RSNA-ISN" />
@@ -315,6 +325,10 @@
 		
 	</CodeType>
 	<CodeType name="practiceSettingCode" classScheme="urn:uuid:cccf5598-8b07-4b77-a05e-ae952c785ead">
+		<!-- SMM 2016.12.07 C-CDA / DAF -->
+		<Code code="419192003" display="Internal Medicine"
+			codingScheme="2.16.840.1.113883.6.96" />
+		
 		<!-- SMM 2016.09.21 RSNA ISN -->
 		<Code code="Radiology" display="Radiology"
 			codingScheme="RSNA-ISN" />
@@ -1092,6 +1106,16 @@
 
 
 	<CodeType name="typeCode" classScheme="urn:uuid:f0306f51-975f-434e-a61c-c59651d33983">
+		<!-- SMM 2016.12.14 C-CDA -->
+		<Code code="52521-2" codingScheme="2.16.840.1.113883.6.1" 
+			display = "Overall Plan of Care/Advance Care Directives" />
+		<!-- SMM 2016.12.14 C-CDA -->
+		<Code code="57133-1" codingScheme="2.16.840.1.113883.6.1" 
+			display = "Referral Note" />
+		<!-- SMM 2016.12.14 C-CDA -->
+		<Code code="18761-7" codingScheme="2.16.840.1.113883.6.1" 
+			display = "Provider-unspecified Transfer summary" />
+
 		<!-- SMM 2016.09.20 RSNA Image Share -->
 		<Code code="18748-4" codingScheme="LOINC" 
 			display = "Diagnostic Imaging Report" />
@@ -1210,6 +1234,10 @@
 
 
 	<CodeType name="contentTypeCode" classScheme="urn:uuid:aa543740-bdda-424e-8c96-df4873be8500">
+		<!-- SMM 2016.12.07 C-CDA / DAF -->
+		<Code code="39350007" display="Private physicians' group office"
+			codingScheme="2.16.840.1.113883.3.88.12.80.67" />
+
 		<!-- SMM 2016.09.21 RSNA ISN -->
 		<Code code="Imaging Exam" codingScheme="RSNA-ISN"
 			display = "Imaging Exam" />
@@ -1328,6 +1356,34 @@
 
 
 	<CodeType name="classCode" classScheme="urn:uuid:41a5887f-8865-4c09-adf7-e362475b143a">
+		<!-- SMM 2016.12.07 DAF -->
+		<Code code="REPORTS" codingScheme="1.3.6.1.4.1.19376.1.2.6.1"
+			display = "Reports" />
+		<!-- SMM 2016.12.07 DAF -->
+		<Code code="SUMMARIES" codingScheme="1.3.6.1.4.1.19376.1.2.6.1"
+			display = "Summaries" />
+		<!-- SMM 2016.12.07 DAF -->
+		<Code code="IMAGES" codingScheme="1.3.6.1.4.1.19376.1.2.6.1"
+			display = "Images" />
+		<!-- SMM 2016.12.07 DAF -->
+		<Code code="PRESCRIPTIONS" codingScheme="1.3.6.1.4.1.19376.1.2.6.1"
+			display = "Prescribed Treatments and Diagnoses" />
+		<!-- SMM 2016.12.07 DAF -->
+		<Code code="DISPENSATIONS" codingScheme="1.3.6.1.4.1.19376.1.2.6.1"
+			display = "Dispensations" />
+		<!-- SMM 2016.12.07 DAF -->
+		<Code code="PLANS" codingScheme="1.3.6.1.4.1.19376.1.2.6.1"
+			display = "Treatment Plan or Protocol" />
+		<!-- SMM 2016.12.07 DAF -->
+		<Code code="HEALTH" codingScheme="1.3.6.1.4.1.19376.1.2.6.1"
+			display = "Health Certificates and Notifications" />
+		<!-- SMM 2016.12.07 DAF -->
+		<Code code="PATIENT" codingScheme="1.3.6.1.4.1.19376.1.2.6.1"
+			display = "Patient Expression and Preferences" />
+		<!-- SMM 2016.12.07 DAF -->
+		<Code code="WORKFLOWS" codingScheme="1.3.6.1.4.1.19376.1.2.6.1"
+			display = "Workflow Management" />
+
 		<!-- SMM 2016.09.21 RSNA ISN -->
 		<Code code="Imaging Exam" codingScheme="RSNA ISN"
 			display = "Imaging Exam" />
@@ -1380,6 +1436,14 @@
 
 
 	<CodeType name="formatCode" classScheme="urn:uuid:a09d5840-386c-46f2-b5ad-9c3699a4309d">
+		<!-- SMM 2016.12.07 C-CDA / DAF -->
+		<Code code="urn:hl7-org:sdwg:ccda-structuredBody:2.1"
+			codingScheme="1.3.6.1.4.1.19376.1.2.3" 
+			display = "urn:hl7-org:sdwg:ccda-structuredBody:2.1" />
+		<Code code="urn:hl7-org:sdwg:ccda-nonXMLBody:2.1"
+			codingScheme="1.3.6.1.4.1.19376.1.2.3" 
+			display = "urn:hl7-org:sdwg:ccda-nonXMLBody:2.1" />
+
 		<!-- SMM 2016.09.21 RSNA ISN -->
 		<Code code="TEXT" codingScheme="RSNA-ISN" 
 			display = "TEXT" />
