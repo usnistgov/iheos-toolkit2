@@ -1,0 +1,47 @@
+package gov.nist.toolkit.xdstools2.server.gazelle.actorConfig
+
+/**
+ *
+ */
+class GazelleGet {
+    GazellePull gazellePull
+    File cache
+
+    GazelleGet(GazellePull _gazellePull, File _cache) {
+        gazellePull = _gazellePull
+        cache = _cache
+
+        if (!cache.exists())
+            throw new Exception('GazelleGet: Cache directory ' + cache + ' does not exist.')
+        if (!cache.isDirectory())
+            throw new Exception('GazelleGet: Cache directory ' + cache + ' is not a directory.')
+        if (!cache.canWrite())
+            throw new Exception('GazelleGet: Cache directory ' + cache + ' is not writable.')
+    }
+
+    String getAllOids() {
+        File oidsFile = oidsFile()
+        if (oidsFile.exists())
+            return oidsFile.text
+        String oids = gazellePull.getOIDs()
+        oidsFile.write(oids)
+        return oids
+    }
+
+    String getAllConfigs() {
+        File configsFile = configFile()
+        if (configsFile.exists())
+            return configsFile.text
+        String configs = gazellePull.getConfigs()
+        configsFile.write(configs)
+        return configs
+    }
+
+    File configFile() {
+        new File(cache, "Configs.csv")
+    }
+
+    File oidsFile() {
+        new File(cache, "AllOids.csv")
+    }
+}
