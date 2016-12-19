@@ -37,11 +37,24 @@ class GazelleGet {
         return configs
     }
 
+    String getSingleConfig(String systemName) {
+        File configFile = singleConfigFile(systemName)
+        if (configFile.exists())
+            return configFile.text
+        String config = gazellePull.getSingleConfig(systemName)
+        configFile.write(config)
+        return config
+    }
+
     File configFile() {
         new File(cache, "Configs.csv")
     }
 
     File oidsFile() {
         new File(cache, "AllOids.csv")
+    }
+
+    File singleConfigFile(String systemName) {
+        new File(cache, systemName + '.csv')
     }
 }

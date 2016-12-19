@@ -29,8 +29,8 @@ class ConfigParser {
                              system     : record.System,
                              host     : record.Host,
                              actor  : record.Actor,
-                             secured   : record.'is secured' as Boolean,
-                             approved : record.'is approved' as Boolean,
+                             secured   : asBoolean(record.'is secured'),
+                             approved : asBoolean(record.'is approved'),
                              comment : record.comment,
                              url : record.url,
                              assigningAuthority : record.assigningAuthority,
@@ -41,5 +41,9 @@ class ConfigParser {
                         ])
             }
         }
+    }
+
+    def asBoolean(String x) {
+        x.toLowerCase() == 'true'
     }
 }

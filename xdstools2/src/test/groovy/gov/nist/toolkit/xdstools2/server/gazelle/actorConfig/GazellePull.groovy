@@ -21,6 +21,12 @@ class GazellePull {
         return (gazelleBaseUrl + '&configurationType=WebServiceConfiguration').toURL().text
     }
 
+    String getSingleConfig(String systemName) {
+        println "Pulling configs from " + gazelleBaseUrl + '&configurationType=WebServiceConfiguration' + '&systemKeyword=' + systemName
+        return (gazelleBaseUrl + '&configurationType=WebServiceConfiguration' + '&systemKeyword=' + systemName).toURL().text
+
+    }
+
     String getOIDs() {
         println "Pulling OIDs from " + gazelleBaseUrl + '&configurationType=WebServiceConfiguration'
         return (gazelleBaseUrl + '&oid=true').toURL().text

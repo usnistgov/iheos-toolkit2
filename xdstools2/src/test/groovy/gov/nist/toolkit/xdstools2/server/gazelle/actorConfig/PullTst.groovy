@@ -9,6 +9,7 @@ class PullTst extends Specification {
     def testingSession = '35'
     def gazelleBaseUrl = 'https://gazelle.ihe.net/EU-CAT/systemConfigurations.seam?testingSessionId=' + testingSession
     GazellePull gazellePull = new GazellePull(gazelleBaseUrl)
+    def singleConfigName = 'EHR_A-thon_9'
 
     def 'Pull Configs test'() {
         when:
@@ -35,15 +36,109 @@ class PullTst extends Specification {
     def 'Parse test'() {
         setup:
         GazelleGet getter = new GazelleGet(gazellePull, cache)
-        String configs = getter.getAllConfigs()
 
         when:
         ConfigParser parser = new ConfigParser()
         parser.parse(getter.configFile().toString())
-        (0..20).each { println parser.get(it).system + "  " + parser.get(it).url + "  " + parser.get(it).secured}
+//        (0..20).each { println parser.get(it).system + "  " + parser.get(it).url + "  " + parser.get(it).secured}
 
         then:
         parser.all.size() > 1
+
+//        when:  'display all ws-types'
+//        Set types = new HashSet()
+//        parser.all.each { types.add(it.wsType) }
+//
+//        then:
+//        types.each { println it}
+    }
+
+    def 'pull a config test'() {
+        when:
+        String config = new GazelleGet(gazellePull, cache).getSingleConfig(singleConfigName)
+        int lines = 0
+        config.eachLine { lines++ }
+        println 'Found ' + lines + ' configs'
+
+        then:
+        lines > 0
+    }
+
+
+    def 'verify http boolean'() {
+        when:
+        initCParserWithTestData()
+        ConfigDef config = pickFirstHttpEntry()
+        println config
+
+        then:
+        !config.secured
+    }
+
+    def 'verify https boolean'() {
+        when:
+        initCParserWithTestData()
+        ConfigDef config = pickFirstHttpsEntry()
+
+        then:
+        config.secured
+    }
+
+    def 'verify home id'() {
+        when:
+        initOParserWithTestData()
+        OidDef odef = pickOidDef('OTHER_TPLUS_2016_EU', OidDef.HomeIdOid)
+
+        then:
+        odef.oid == 'urn:oid:1.3.6.1.4.1.21367.2011.2.6.144'
+    }
+
+    def 'verify oid has def'() {
+        setup:
+        initOParserWithTestData()
+
+        when:
+        def odef = oparser.hasDef('foo', 'bar')
+
+        then:
+        !odef
+
+        when:
+        def odef1 = oparser.hasDef('OTHER_TPLUS_2016_EU', OidDef.HomeIdOid)
+
+        then:
+        odef1
+    }
+
+    OidDef pickOidDef(String system, String type) {
+        oparser.all.find { ele -> ele.system == system && ele.type == type}
+    }
+
+    ConfigParser cparser = new ConfigParser()
+    OidsParser oparser = new OidsParser()
+
+    ConfigDef pickFirstHttpEntry() {
+        cparser.all.find { config -> config.url.startsWith('http:') }
+    }
+
+    ConfigDef pickFirstHttpsEntry() {
+        cparser.all.find { config -> config.url.startsWith('https:') }
+    }
+
+    /**
+     * Resulting data accessed through
+     * int parser.size()
+     * ConfigDef parser.get(int)
+     * @return
+     */
+    def initCParserWithTestData() {
+        GazelleGet getter = new GazelleGet(gazellePull, cache)
+        cparser.parse(getter.configFile().toString())
+    }
+
+    def initOParserWithTestData() {
+        GazelleGet getter = new GazelleGet(gazellePull, cache)
+        oparser.parse(getter.oidsFile().toString())
     }
 
 }
