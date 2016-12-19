@@ -845,13 +845,4 @@ public class DsSimCommon {
         }
         return sd;
     }
-
-/*
-    private String getImageCache() {
-        String c = Installation.instance().propertyServiceManager().getPropertyManager().getImageCache();
-        logger.debug("Image Cache: " + c);
-        return c;
-    }
-*/
-
 }
