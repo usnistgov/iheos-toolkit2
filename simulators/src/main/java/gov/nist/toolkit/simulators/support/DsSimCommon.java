@@ -5,7 +5,7 @@ import gov.nist.toolkit.errorrecording.ErrorRecorder;
 import gov.nist.toolkit.errorrecording.GwtErrorRecorder;
 import gov.nist.toolkit.errorrecording.GwtErrorRecorderBuilder;
 import gov.nist.toolkit.errorrecording.client.GwtValidatorErrorItem;
-import gov.nist.toolkit.errorrecording.client.ValidationStepResult;
+import gov.nist.toolkit.errorrecording.client.GWTValidationStepResult;
 import gov.nist.toolkit.errorrecording.client.XdsErrorCode;
 import gov.nist.toolkit.registrymetadata.Metadata;
 import gov.nist.toolkit.registrymsg.registry.RegistryErrorListGenerator;
@@ -173,7 +173,7 @@ public class DsSimCommon {
         registryErrorListGenerator = relg;
     }
 
-    public RegistryErrorListGenerator getRegistryErrorList(List<ValidationStepResult> results) throws XdsInternalException {
+    public RegistryErrorListGenerator getRegistryErrorList(List<GWTValidationStepResult> results) throws XdsInternalException {
         try {
             RegistryErrorListGenerator rel = registryErrorListGenerator;
             if (rel == null)
@@ -181,7 +181,7 @@ public class DsSimCommon {
 
             rel.setPartialSuccess(simCommon.mvc.isPartialSuccess());
 
-            for (ValidationStepResult vsr : results) {
+            for (GWTValidationStepResult vsr : results) {
                 for (GwtValidatorErrorItem vei : vsr.er) {
                     if (vei.level == GwtValidatorErrorItem.ReportingLevel.ERROR) {
                         String msg = vei.msg;
@@ -204,7 +204,7 @@ public class DsSimCommon {
         }
     }
 
-    public RegistryResponse getRegistryResponse(List<ValidationStepResult> results) throws XdsInternalException {
+    public RegistryResponse getRegistryResponse(List<GWTValidationStepResult> results) throws XdsInternalException {
         RegistryErrorListGenerator rel = getRegistryErrorList(results);
         RegistryResponse rr = new RegistryResponse(Response.version_3, rel);
         return rr;

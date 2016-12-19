@@ -1183,7 +1183,7 @@ public class MessageValidatorTab extends TabbedWindow {
 		//		f.setStatus(f.h2("Status"));
 		//		row++;
 		//
-		//		for (ValidationStepResult result : results.getResults()) {
+		//		for (GWTValidationStepResult result : results.getResults()) {
 		//			f.hr();
 		//			f.addCell(h3(result.stepName), 0);
 		//			row++;

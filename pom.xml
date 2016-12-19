@@ -39,6 +39,7 @@
         <module>actorfactory</module>
         <module>validators-registry-message</module>
         <module>validators-registry-metadata</module>
+        <module>validators-registry-metadata-old</module>
         <module>soap</module>
         <module>xdstest2-logging</module>
         <module>dsig</module>
@@ -50,6 +51,7 @@
         <module>sim-common</module>
         <module>installation</module>
         <module>registry-msg-formats</module>
+        <module>registry-msg-formats-old</module>
         <module>site-management</module>
         <module>results</module>
         <module>registry-support</module>
@@ -65,6 +67,7 @@
         <module>utilities</module>
         <module>common</module>
         <module>error-recording</module>
+        <module>error-recording-old</module>
         <module>adt</module>
         <module>rest-tools</module>
     <!--<module>simple-service</module>-->

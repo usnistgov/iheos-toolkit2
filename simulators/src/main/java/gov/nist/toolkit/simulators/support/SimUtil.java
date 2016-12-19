@@ -4,7 +4,7 @@ package gov.nist.toolkit.simulators.support;
 public class SimUtil {
 	
 //	static public RetrieveDocumentSetResponse getRetrieveDocumentSetResponse() throws XdsInternalException {
-//		RegistryResponse rr = SimUtil.getRegistryResponse(new ArrayList<ValidationStepResult>());
+//		RegistryResponse rr = SimUtil.getRegistryResponse(new ArrayList<GWTValidationStepResult>());
 //		RetrieveDocumentSetResponse rdsr = new RetrieveDocumentSetResponse(rr);
 //		return rdsr;
 //	}

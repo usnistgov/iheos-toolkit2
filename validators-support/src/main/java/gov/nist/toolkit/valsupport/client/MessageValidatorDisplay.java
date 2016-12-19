@@ -1,7 +1,7 @@
 package gov.nist.toolkit.valsupport.client;
 
+import gov.nist.toolkit.errorrecording.client.GWTValidationStepResult;
 import gov.nist.toolkit.errorrecording.client.GwtValidatorErrorItem;
-import gov.nist.toolkit.errorrecording.client.ValidationStepResult;
 import gov.nist.toolkit.errorrecording.client.GwtValidatorErrorItem.ReportingCompletionType;
 import gov.nist.toolkit.errorrecording.client.GwtValidatorErrorItem.ReportingLevel;
 
@@ -73,7 +73,7 @@ public class MessageValidatorDisplay {
 			f.incRow();
 		}
 
-		for (ValidationStepResult result : results.getResults()) {
+		for (GWTValidationStepResult result : results.getResults()) {
 			f.hr();
 			f.addCell(f.h3(result.stepName), 0);
 			f.incRow();
@@ -210,7 +210,7 @@ public class MessageValidatorDisplay {
 	}
 
 	public boolean isDirectReport(MessageValidationResults results) {
-		for (ValidationStepResult result : results.getResults()) {
+		for (GWTValidationStepResult result : results.getResults()) {
 
 			List<GwtValidatorErrorItem> ers = result.er;
 			for (GwtValidatorErrorItem er : ers)  {

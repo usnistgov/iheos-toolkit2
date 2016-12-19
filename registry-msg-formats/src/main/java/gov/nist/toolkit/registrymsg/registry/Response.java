@@ -2,7 +2,7 @@ package gov.nist.toolkit.registrymsg.registry;
 
 import gov.nist.toolkit.errorrecording.ErrorRecorder;
 import gov.nist.toolkit.errorrecording.client.GwtValidatorErrorItem;
-import gov.nist.toolkit.errorrecording.client.ValidationStepResult;
+import gov.nist.toolkit.errorrecording.client.GWTValidationStepResult;
 import gov.nist.toolkit.commondatatypes.MetadataSupport;
 import gov.nist.toolkit.registrysupport.logging.ErrorLogger;
 import gov.nist.toolkit.registrysupport.logging.LogMessage;
@@ -85,9 +85,9 @@ public abstract class Response implements ErrorLogger {
 		init(version_3, rel);
 	}
 
-	public void addErrors(List<ValidationStepResult> results) throws XdsInternalException {
+	public void addErrors(List<GWTValidationStepResult> results) throws XdsInternalException {
 
-		for (ValidationStepResult vsr : results) {
+		for (GWTValidationStepResult vsr : results) {
 			for (GwtValidatorErrorItem vei : vsr.er) {
 				if (vei.level == GwtValidatorErrorItem.ReportingLevel.ERROR) {
 					String msg = vei.msg;

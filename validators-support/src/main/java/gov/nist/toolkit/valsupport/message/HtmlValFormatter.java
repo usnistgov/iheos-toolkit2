@@ -3,8 +3,8 @@ package gov.nist.toolkit.valsupport.message;
 import java.util.ArrayList;
 
 import gov.nist.toolkit.errorrecording.client.ErrorRecorderAdapter;
+import gov.nist.toolkit.errorrecording.client.GWTValidationStepResult;
 import gov.nist.toolkit.errorrecording.client.GwtValidatorErrorItem;
-import gov.nist.toolkit.errorrecording.client.ValidationStepResult;
 import gov.nist.toolkit.valsupport.client.MessageValidationResults;
 import gov.nist.toolkit.valsupport.client.ValFormatter;
 
@@ -25,7 +25,7 @@ public class HtmlValFormatter implements ValFormatter {
 	public String toHtmlTemplate(MessageValidationResults results) {
 		ArrayList<GwtValidatorErrorItem> er = new ArrayList<GwtValidatorErrorItem>();
 		
-		for(ValidationStepResult res : results.getResults()) {
+		for(GWTValidationStepResult res : results.getResults()) {
 			for(GwtValidatorErrorItem erIt : res.er) {
 				er.add(erIt);
 			}

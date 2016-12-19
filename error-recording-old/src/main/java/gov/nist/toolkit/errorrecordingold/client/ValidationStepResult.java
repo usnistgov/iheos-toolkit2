@@ -1,10 +1,8 @@
-package gov.nist.toolkit.errorrecording.client;
-
-
+package gov.nist.toolkit.errorrecordingold.client;
 
 import java.util.List;
-
 import com.google.gwt.user.client.rpc.IsSerializable;
+
 
 /**
  * Collects together a step name and a collection of ValidatorErrorItems so that
@@ -15,15 +13,16 @@ import com.google.gwt.user.client.rpc.IsSerializable;
 public class ValidationStepResult implements IsSerializable {
 	public String stepName;
 	public List<GwtValidatorErrorItem> er;
-	
-	public ValidationStepResult() {} // For GWT
-	
+
+	public ValidationStepResult() {}
+
 	public String toString() {
 		StringBuffer buf = new StringBuffer();
-		
+
 		for (GwtValidatorErrorItem item : er)
 			buf.append(item).append("\n");
 		return buf.toString();
 	}
-	
+
 }
+
