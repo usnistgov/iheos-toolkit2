@@ -60,14 +60,21 @@ class ConfigDef {
         return ''
     }
 
-    /* wsTypes from Bochum event
-RAD-75:Cross GW Retrieve Img Doc Set
+    String getToolkitTransactionCode() {
+        def parts = wsType.split(':')
+        if (parts.size() > 2)
+            return parts[2]
+        return ''
+    }
+
+    /* wsTypes from Bochum event    Imaging:  68, 69, 75, 55   Cleveland: ???
+RAD-75:Cross GW Retrieve Img Doc Set  Y
 ITI-39:Cross Gateway Retrieve:xcr
 ITI-58:Provider Info Query
 ITI-43:Initiating Gateway Retrieve:igr
 ITI-18:Async Initiating Gateway Stored Query:igq:as
 RAD-75:Async Cross GW Retrieve Img Doc Set
-RAD-69:Async Retrieve Imaging Doc Set
+RAD-69:Async Retrieve Imaging Doc Set  Y
 ITI-54:Doc Metadata Publish
 ITI-63:Cross Gateway Fetch:xcf
 ITI-60:Retrieve Multiple Value Sets
@@ -100,7 +107,7 @@ Retrieve eCR Document:Retrieve a Document from eCR
 ITI-51:Async Multi-Patient Query:MPQ.as
 ITI-63:Async Cross Gateway Fetch:xcf.as
 ITI-18:Async Stored Query:sq.as
-RAD-55:WADO Retrieve
+RAD-55:WADO Retrieve  Y
 ITI-42:Async Register.b:r.as
 ITI-62:Delete Doc Set:del.b
 ITI-43:Async Retrieve:ret.as
@@ -111,7 +118,7 @@ ITI-78:Query Patient Resource
 ITI-41:Async Provide and Register.b:pr.as
 ITI-80:Cross-Gateway Doc Provide
 ITI-59:Provider Info Feed
-RAD-68:P&R Imaging Doc Set MTOM/XOP
+RAD-68:P&R Imaging Doc Set MTOM/XOP   Y
 ITI-81:Retrieve ATNA Audit Event
 RAD-69:Retrieve Imaging Doc Set
 RAD-107:WADO-RS Retrieve

@@ -13,8 +13,10 @@ class GenerateSingleSystem {
     File cache
     ConfigParser cparser = new ConfigParser()
     OidsParser oparser = new OidsParser()
+    V2ResponderParser vparser = new V2ResponderParser()
     def nl = '\n'
     def tab = '  '
+    def tab2 = tab + tab
 
     GenerateSingleSystem(GazellePull _gazellePull, File _cache) {
         gazellePull = _gazellePull
@@ -30,19 +32,21 @@ class GenerateSingleSystem {
 
     GeneratedSystems generate(String systemName) {
         StringBuilder log = new StringBuilder();
+        getter.getSingleConfig(systemName)  // load into cache
         log.append("System: ${systemName}").append(nl)
 
         cparser.parse(getter.singleConfigFile(systemName).toString())
         oparser.parse(getter.oidsFile().toString())
+        vparser.parse(getter.v2ResponderFile().toString())
 
-        List<ConfigDef> elements = cparser.all.findAll { filter(it) }
+        List<ConfigDef> elements = cparser.values.findAll { filter(it) }
         if (!elements) return null
 
         //*************************************************************
         // Recipient
         //*************************************************************
         Site recipientSite = null
-        elements.findAll { it.isRecipient()}.each { ConfigDef config ->
+        elements.findAll { it.isRecipient() && it.approved }.each { ConfigDef config ->
             String system = config.system
             if (recipientSite == null)
                 recipientSite = new Site("${system} - REC")
@@ -50,11 +54,13 @@ class GenerateSingleSystem {
             String transactionId = config.getTransaction()
             if (!transactionId) return
             TransactionType transactionType = TransactionType.find(transactionId)
-            log.append(tab).append('TransactionType: ').append(transactionType)
 
             String endpoint = config.url
             boolean isSecure = config.secured
             boolean isAsync = false
+
+            logit(log, transactionType, null, endpoint, isSecure)
+
             recipientSite.addTransaction(transactionId, endpoint, isSecure, isAsync)
         }
 
@@ -63,26 +69,25 @@ class GenerateSingleSystem {
         //*************************************************************
         Site oddsSite = null
         String oddsOid = null
-        elements.findAll { it.isODDS() }.each { ConfigDef config ->
+        elements.findAll { it.isODDS() && it.approved }.each { ConfigDef config ->
             String system = config.system
+            String tkSystem = "${system} - ODDS" // in toolkit
             if (oddsSite == null) {
+                log.append(tab).append('Toolkit system: ').append(tkSystem).append(nl)
                 oddsOid = oparser.getOid(system, OidDef.ODDSRepUidOid)
-                log.append(tab).append("ODDS OID = ${oddsOid}")
+//                log.append(tab).append("ODDS OID = ${oddsOid}").append(nl)
                 if (oddsOid == null) return
-                oddsSite = new Site("${system} - ODDS")
+                oddsSite = new Site(tkSystem)
             }
             String transactionId = config.getTransaction()
             if (!transactionId) return
             TransactionType transactionType = TransactionType.find(transactionId)
-            log.append(tab).append('TransactionType: ').append(transactionType)
 
             String endpoint = config.url
             boolean isSecure = config.secured
             boolean isAsync = false
 
-            log.append(tab).append('Endpoint')
-            if (isSecure) log.append(' (secure) ')
-            log.append(endpoint).append(nl)
+            logit(log, transactionType, oddsOid, endpoint, isSecure)
 
             oddsSite.addRepository(oddsOid, TransactionBean.RepositoryType.ODDS, endpoint, isSecure, isAsync)
         }
@@ -90,39 +95,49 @@ class GenerateSingleSystem {
         //*************************************************************
         // OTHER
         //*************************************************************
-        // Once the above is singled out, the rest can go into one system config
+        // Once the above are singled out, the rest can go into one system config
         Site otherSite = null
         String otherOid = null
         String homeOid = null
-        elements.findAll { !it.isODDS() && !it.isRecipient() }.each { ConfigDef config ->
+        elements.findAll { !it.isODDS() && !it.isRecipient() && it.approved }.each { ConfigDef config ->
             String transactionId = config.getTransaction()
             if (!transactionId) return
             if (!ConfigDef.TRANSACTIONS_TO_PROCESS.contains(transactionId)) return
 
             String system = config.system
+            String tkSystem = system // in toolkit
             if (otherSite == null) {
-                otherOid = oparser.getOid(system, OidDef.ODDSRepUidOid)
-                log.append(tab).append("Repository OID = ${otherOid}")
+                log.append(tab).append('Toolkit system: ').append(tkSystem).append(nl)
+                otherOid = oparser.getOid(system, OidDef.RepUidOid)
                 if (otherOid == null) return
-                otherSite = new Site("${system}")
+                otherSite = new Site(tkSystem)
                 homeOid = oparser.getOid(system, OidDef.HomeIdOid)
                 otherSite.setHome(homeOid)
             }
 
-            TransactionType transactionType = TransactionType.find(transactionId)
-            log.append(tab).append('TransactionType: ').append(transactionType)
+
+            TransactionType transactionType = null
+            if (transactionId == 'ITI-18') {
+                if (config.actor == 'INIT_GATEWAY' || config.getToolkitTransactionCode() == 'igq') {
+                    transactionType = TransactionType.IG_QUERY
+                    transactionId = TransactionType.IG_QUERY
+                }
+            }
+            if (!transactionType)
+                transactionType = TransactionType.find(transactionId)
+
 
             String endpoint = config.url
             boolean isSecure = config.secured
             boolean isAsync = false
 
-            log.append(tab).append('Endpoint')
-            if (isSecure) log.append(' (secure) ')
-            log.append(endpoint).append(nl)
-
             if (config.isRetrieve()) {
-                otherSite.addRepository(oddsOid, TransactionBean.RepositoryType.ODDS, endpoint, isSecure, isAsync)
+                logit(log, transactionType, otherOid, endpoint, isSecure)
+
+                otherSite.addRepository(oddsOid, TransactionBean.RepositoryType.REPOSITORY, endpoint, isSecure, isAsync)
             } else {
+                logit(log, transactionType, null, endpoint, isSecure)
+
                 otherSite.addTransaction(transactionId, endpoint, isSecure, isAsync)
             }
         }
@@ -139,6 +154,15 @@ class GenerateSingleSystem {
         return systems
     }
 
+    def logit(StringBuilder log, def transactionType, def oid, def endpoint, def secure) {
+        log.append(tab2).append('TransactionType ').append(transactionType)
+        if (oid)
+            log.append(" OID ${oid}")
+        log.append(tab2).append('Endpoint ')
+        if (secure) log.append('(secure) ')
+        log.append(endpoint).append(nl)
+
+    }
 
     /**
      *

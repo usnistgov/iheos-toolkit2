@@ -1,7 +1,8 @@
 package gov.nist.toolkit.xdstools2.server.gazelle.actorConfig
 
+import gov.nist.toolkit.sitemanagement.SeparateSiteLoader
+import gov.nist.toolkit.sitemanagement.client.Site
 import spock.lang.Specification
-
 /**
  *
  */
@@ -18,6 +19,10 @@ class GenerateSingleSystemTest extends Specification {
         GenerateSingleSystem gen = new GenerateSingleSystem(gazellePull, cache)
         GeneratedSystems systems = gen.generate(singleConfigName)
         println systems.log.toString()
+
+        systems.systems.each { Site site ->
+            new SeparateSiteLoader().saveToFile(cache, site)
+        }
 
         then:
         true

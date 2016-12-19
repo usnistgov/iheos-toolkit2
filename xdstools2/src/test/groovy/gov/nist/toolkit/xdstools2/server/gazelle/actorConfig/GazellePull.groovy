@@ -24,7 +24,11 @@ class GazellePull {
     String getSingleConfig(String systemName) {
         println "Pulling configs from " + gazelleBaseUrl + '&configurationType=WebServiceConfiguration' + '&systemKeyword=' + systemName
         return (gazelleBaseUrl + '&configurationType=WebServiceConfiguration' + '&systemKeyword=' + systemName).toURL().text
+    }
 
+    String getV2Responder() {
+        println "Pulling configs from " + gazelleBaseUrl + '&configurationType=HL7V2ResponderConfiguration'
+        return (gazelleBaseUrl + '&configurationType=HL7V2ResponderConfiguration').toURL().text
     }
 
     String getOIDs() {

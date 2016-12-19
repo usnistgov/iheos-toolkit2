@@ -46,6 +46,15 @@ class GazelleGet {
         return config
     }
 
+    String getV2Responder() {
+        File configFile = v2ResponderFile()
+        if (configFile.exists())
+            return configFile.text
+        String config = gazellePull.getV2Responder()
+        configFile.write(config)
+        return config
+    }
+
     File configFile() {
         new File(cache, "Configs.csv")
     }
@@ -56,5 +65,9 @@ class GazelleGet {
 
     File singleConfigFile(String systemName) {
         new File(cache, systemName + '.csv')
+    }
+
+    File v2ResponderFile() {
+        new File(cache, 'V2Resp.csv')
     }
 }

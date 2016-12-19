@@ -5,26 +5,27 @@ import org.apache.commons.csv.CSVParser
 import java.nio.file.Paths
 
 import static org.apache.commons.csv.CSVFormat.DEFAULT
+
 /**
  *
  */
 class ConfigParser {
 
-    def all=[]
+    Collection<ConfigDef> values = []
 
     int size() {
-        return all.size()
+        return values.size()
     }
 
     ConfigDef get(int i) {
-        return all[i]
+        return values[i]
     }
 
     def parse(String input) {
         Paths.get(input).withReader { reader ->
             CSVParser csv = new CSVParser(reader, DEFAULT.withHeader())
             csv.iterator().each { record ->
-                all <<     ([configType         : record.'Configuration Type',
+                def item =     ([configType         : record.'Configuration Type',
                              company        : record.Company,
                              system     : record.System,
                              host     : record.Host,
@@ -39,6 +40,7 @@ class ConfigParser {
                              proxyPort : record.'port proxy',
                              portSecured : record.'port secured'
                         ])
+                values.add(new ConfigDef(item))
             }
         }
     }

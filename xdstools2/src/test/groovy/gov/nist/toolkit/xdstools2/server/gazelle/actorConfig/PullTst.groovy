@@ -40,17 +40,10 @@ class PullTst extends Specification {
         when:
         ConfigParser parser = new ConfigParser()
         parser.parse(getter.configFile().toString())
-//        (0..20).each { println parser.get(it).system + "  " + parser.get(it).url + "  " + parser.get(it).secured}
+        (0..20).each { println parser.get(it).system + "  " + parser.get(it).url + "  " + parser.get(it).secured}
 
         then:
-        parser.all.size() > 1
-
-//        when:  'display all ws-types'
-//        Set types = new HashSet()
-//        parser.all.each { types.add(it.wsType) }
-//
-//        then:
-//        types.each { println it}
+        parser.values.size() > 1
     }
 
     def 'pull a config test'() {
@@ -118,11 +111,11 @@ class PullTst extends Specification {
     OidsParser oparser = new OidsParser()
 
     ConfigDef pickFirstHttpEntry() {
-        cparser.all.find { config -> config.url.startsWith('http:') }
+        cparser.values.find { config -> config.url.startsWith('http:') }
     }
 
     ConfigDef pickFirstHttpsEntry() {
-        cparser.all.find { config -> config.url.startsWith('https:') }
+        cparser.values.find { config -> config.url.startsWith('https:') }
     }
 
     /**
