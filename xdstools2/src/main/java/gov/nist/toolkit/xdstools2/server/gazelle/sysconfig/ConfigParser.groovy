@@ -1,4 +1,4 @@
-package gov.nist.toolkit.xdstools2.server.gazelle.actorConfig
+package gov.nist.toolkit.xdstools2.server.gazelle.sysconfig
 
 import org.apache.commons.csv.CSVParser
 

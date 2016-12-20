@@ -1,4 +1,4 @@
-package gov.nist.toolkit.xdstools2.server.gazelle.actorConfig
+package gov.nist.toolkit.xdstools2.server.gazelle.sysconfig
 
 import static org.apache.commons.csv.CSVFormat.DEFAULT
 

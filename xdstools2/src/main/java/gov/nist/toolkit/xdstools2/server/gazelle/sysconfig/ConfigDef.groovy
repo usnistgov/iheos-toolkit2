@@ -1,4 +1,4 @@
-package gov.nist.toolkit.xdstools2.server.gazelle.actorConfig
+package gov.nist.toolkit.xdstools2.server.gazelle.sysconfig
 
 import groovy.transform.ToString
 
@@ -30,6 +30,7 @@ class ConfigDef {
     boolean isIgq() { wsType.contains(':igq') }
     boolean isIgr() { wsType.contains(':igr') }
     boolean isROD() { wsType.contains(':rod.b') }   // register on demand
+    boolean isIDS() { actor == 'IMG_DOC_SOURCE' }    // Image Document source
     boolean isODDS() { actor == 'ON_DEMAND_DOC_SOURCE' }
     boolean isEMBED_REPOS() { actor == 'EMBED_REPOS' }
     boolean isRepository() { actor == 'DOC_REPOSITORY' }

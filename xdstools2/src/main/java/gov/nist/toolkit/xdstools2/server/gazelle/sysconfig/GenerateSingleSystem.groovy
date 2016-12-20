@@ -1,4 +1,4 @@
-package gov.nist.toolkit.xdstools2.server.gazelle.actorConfig
+package gov.nist.toolkit.xdstools2.server.gazelle.sysconfig
 
 import gov.nist.toolkit.configDatatypes.client.TransactionType
 import gov.nist.toolkit.sitemanagement.client.Site
@@ -91,6 +91,30 @@ class GenerateSingleSystem {
             rodSite.addTransaction(transactionId, endpoint, isSecure, isAsync)
         }
 
+        //*************************************************************
+        // Image document source
+        //*************************************************************
+        Site idsSite = null
+        elements.findAll { it.isIDS() && it.approved }.each { ConfigDef config ->
+            String system = config.system
+            String tkSystem = "${system} - IDS"
+            if (idsSite == null) {
+                log.append(tab).append('Toolkit system: ').append(tkSystem).append(nl)
+                idsSite = new Site(tkSystem)
+            }
+            String transactionId = config.getTransaction()
+            if (!transactionId) return
+            TransactionType transactionType = TransactionType.find(transactionId)
+
+            String endpoint = config.url
+            boolean isSecure = config.secured
+            boolean isAsync = false
+
+            logit(log, transactionType, null, endpoint, isSecure)
+
+            idsSite.addTransaction(transactionId, endpoint, isSecure, isAsync)
+        }
+
 
         //*************************************************************
         // EMBED_REPOS
@@ -153,7 +177,7 @@ class GenerateSingleSystem {
         Site otherSite = null
         String otherOid = null
         String homeOid = null
-        elements.findAll { !it.isODDS() && !it.isRecipient() && !it.isEMBED_REPOS() && !it.isROD() && it.approved }.each { ConfigDef config ->
+        elements.findAll { !it.isODDS() && !it.isRecipient() && !it.isEMBED_REPOS() && !it.isROD() && !it.isIDS() && it.approved }.each { ConfigDef config ->
             boolean forceNotRetrieve = false
             String transactionId = config.getTransaction()
             if (!transactionId) return
@@ -219,6 +243,8 @@ class GenerateSingleSystem {
             systems.systems.add(recipientSite)
         if (rodSite)
             systems.systems.add(rodSite)
+        if (idsSite)
+            systems.systems.add(idsSite)
         if (embedSite)
             systems.systems.add(embedSite)
         if (oddsSite)

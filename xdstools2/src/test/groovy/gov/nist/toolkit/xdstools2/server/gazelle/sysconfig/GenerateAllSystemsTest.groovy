@@ -1,5 +1,7 @@
-package gov.nist.toolkit.xdstools2.server.gazelle.actorConfig
+package gov.nist.toolkit.xdstools2.server.gazelle.sysconfig
 
+import gov.nist.toolkit.xdstools2.server.gazelle.sysconfig.GazellePull
+import gov.nist.toolkit.xdstools2.server.gazelle.sysconfig.GenerateSystemShell
 import spock.lang.Specification
 /**
  *

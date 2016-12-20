@@ -1,5 +1,11 @@
-package gov.nist.toolkit.xdstools2.server.gazelle.actorConfig
+package gov.nist.toolkit.xdstools2.server.gazelle.sysconfig
 
+import gov.nist.toolkit.xdstools2.server.gazelle.sysconfig.ConfigDef
+import gov.nist.toolkit.xdstools2.server.gazelle.sysconfig.ConfigParser
+import gov.nist.toolkit.xdstools2.server.gazelle.sysconfig.GazelleGet
+import gov.nist.toolkit.xdstools2.server.gazelle.sysconfig.GazellePull
+import gov.nist.toolkit.xdstools2.server.gazelle.sysconfig.OidDef
+import gov.nist.toolkit.xdstools2.server.gazelle.sysconfig.OidsParser
 import spock.lang.Specification
 /**
  * The name is *Tst instead of Test because I don't want this run automatically.
