@@ -17,6 +17,7 @@ class GenerateSingleSystem {
     def nl = '\n'
     def tab = '  '
     def tab2 = tab + tab
+    boolean hasErrors = false
 
     GenerateSingleSystem(GazellePull _gazellePull, File _cache) {
         gazellePull = _gazellePull
@@ -48,9 +49,11 @@ class GenerateSingleSystem {
         Site recipientSite = null
         elements.findAll { it.isRecipient() && it.approved }.each { ConfigDef config ->
             String system = config.system
-            if (recipientSite == null)
-                recipientSite = new Site("${system} - REC")
-
+            String tkSystem = "${system} - REC"
+            if (recipientSite == null) {
+                log.append(tab).append('Toolkit system: ').append(tkSystem).append(nl)
+                recipientSite = new Site(tkSystem)
+            }
             String transactionId = config.getTransaction()
             if (!transactionId) return
             TransactionType transactionType = TransactionType.find(transactionId)
@@ -65,6 +68,58 @@ class GenerateSingleSystem {
         }
 
         //*************************************************************
+        // Register On Demand
+        //*************************************************************
+        Site rodSite = null
+        elements.findAll { it.isROD() && it.approved }.each { ConfigDef config ->
+            String system = config.system
+            String tkSystem = "${system} - ROD"
+            if (rodSite == null) {
+                log.append(tab).append('Toolkit system: ').append(tkSystem).append(nl)
+                rodSite = new Site(tkSystem)
+            }
+            String transactionId = config.getTransaction()
+            if (!transactionId) return
+            TransactionType transactionType = TransactionType.find(transactionId)
+
+            String endpoint = config.url
+            boolean isSecure = config.secured
+            boolean isAsync = false
+
+            logit(log, transactionType, null, endpoint, isSecure)
+
+            rodSite.addTransaction(transactionId, endpoint, isSecure, isAsync)
+        }
+
+
+        //*************************************************************
+        // EMBED_REPOS
+        //*************************************************************
+        Site embedSite = null
+        String embedOid = null
+        elements.findAll { it.isEMBED_REPOS() && it.approved }.each { ConfigDef config ->
+            String system = config.system
+            String tkSystem = "${system} - EMBED" // in toolkit
+            if (embedSite == null) {
+                log.append(tab).append('Toolkit system: ').append(tkSystem).append(nl)
+                embedOid = oparser.getOid(system, OidDef.IntSrcRepoUidOid)
+                if (embedOid == null) return
+                embedSite = new Site(tkSystem)
+            }
+            String transactionId = config.getTransaction()
+            if (!transactionId) return
+            TransactionType transactionType = TransactionType.find(transactionId)
+
+            String endpoint = config.url
+            boolean isSecure = config.secured
+            boolean isAsync = false
+
+            logit(log, transactionType, embedOid, endpoint, isSecure)
+
+            embedSite.addRepository(embedOid, TransactionBean.RepositoryType.REPOSITORY, endpoint, isSecure, isAsync)
+        }
+
+        //*************************************************************
         // ODDS
         //*************************************************************
         Site oddsSite = null
@@ -75,7 +130,6 @@ class GenerateSingleSystem {
             if (oddsSite == null) {
                 log.append(tab).append('Toolkit system: ').append(tkSystem).append(nl)
                 oddsOid = oparser.getOid(system, OidDef.ODDSRepUidOid)
-//                log.append(tab).append("ODDS OID = ${oddsOid}").append(nl)
                 if (oddsOid == null) return
                 oddsSite = new Site(tkSystem)
             }
@@ -99,7 +153,7 @@ class GenerateSingleSystem {
         Site otherSite = null
         String otherOid = null
         String homeOid = null
-        elements.findAll { !it.isODDS() && !it.isRecipient() && it.approved }.each { ConfigDef config ->
+        elements.findAll { !it.isODDS() && !it.isRecipient() && !it.isEMBED_REPOS() && !it.isROD() && it.approved }.each { ConfigDef config ->
             boolean forceNotRetrieve = false
             String transactionId = config.getTransaction()
             if (!transactionId) return
@@ -116,8 +170,15 @@ class GenerateSingleSystem {
                 otherSite.setHome(homeOid)
             }
 
+            if (!ActorTransactionValidation.accepts(transactionId, config.actor)) {
+                log.append(ActorTransactionValidation.errorMessage(transactionId, config.actor)).append(nl)
+                hasErrors = true
+                return
+            }
 
+            //*************************************************************
             // Handle overloading of transaction labels
+            //*************************************************************
             TransactionType transactionType = null
             if (transactionId == 'ITI-18') {
                 if (config.actor == 'INIT_GATEWAY' || config.getToolkitTransactionCode() == 'igq') {
@@ -126,7 +187,7 @@ class GenerateSingleSystem {
                 }
             }
             if (transactionId == 'ITI-43') {
-                if (config.actor == 'INIT_GATEWAY' || config.getToolkitTransactionCode() == 'ret.b') {
+                if (config.actor == 'INIT_GATEWAY') {
                     transactionType = TransactionType.IG_RETRIEVE
                     transactionId = TransactionType.IG_RETRIEVE
                     forceNotRetrieve = true
@@ -134,6 +195,7 @@ class GenerateSingleSystem {
             }
             if (!transactionType)
                 transactionType = TransactionType.find(transactionId)
+            //*************************************************************
 
 
             String endpoint = config.url
@@ -152,8 +214,13 @@ class GenerateSingleSystem {
         }
 
         GeneratedSystems systems = new GeneratedSystems()
+        systems.hasErrors = hasErrors
         if (recipientSite)
             systems.systems.add(recipientSite)
+        if (rodSite)
+            systems.systems.add(rodSite)
+        if (embedSite)
+            systems.systems.add(embedSite)
         if (oddsSite)
             systems.systems.add(oddsSite)
         if (otherSite)

@@ -21,7 +21,8 @@ class GazellePull {
         return (gazelleBaseUrl + '&configurationType=WebServiceConfiguration').toURL().text
     }
 
-    String getSingleConfig(String systemName) {
+    String getSingleConfig(String _systemName) {
+        String systemName = java.net.URLEncoder.encode(_systemName, "UTF-8")
         println "Pulling configs from " + gazelleBaseUrl + '&configurationType=WebServiceConfiguration' + '&systemKeyword=' + systemName
         return (gazelleBaseUrl + '&configurationType=WebServiceConfiguration' + '&systemKeyword=' + systemName).toURL().text
     }

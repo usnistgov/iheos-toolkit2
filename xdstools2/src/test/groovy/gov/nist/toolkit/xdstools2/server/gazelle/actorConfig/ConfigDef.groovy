@@ -29,7 +29,9 @@ class ConfigDef {
 
     boolean isIgq() { wsType.contains(':igq') }
     boolean isIgr() { wsType.contains(':igr') }
+    boolean isROD() { wsType.contains(':rod.b') }   // register on demand
     boolean isODDS() { actor == 'ON_DEMAND_DOC_SOURCE' }
+    boolean isEMBED_REPOS() { actor == 'EMBED_REPOS' }
     boolean isRepository() { actor == 'DOC_REPOSITORY' }
     boolean isRegistry() { actor == 'DOC_REGISTRY' }
     boolean isRecipient() { actor == 'DOC_RECIPIENT' }
@@ -139,6 +141,7 @@ ITI-69:Create/Destroy Pull Point
     */
     // Transactions to process
     static final TRANSACTIONS_TO_PROCESS = [
-            'ITI-39', 'ITI-43', 'ITI-18', 'ITI-68', 'ITI-57', 'ITI-38', 'ITI-41', 'ITI-51', 'ITI-42', 'ITI-61'
+            'ITI-39', 'ITI-43', 'ITI-18', 'ITI-57', 'ITI-38', 'ITI-41', 'ITI-51', 'ITI-42', 'ITI-61',
+            'RAD-68', 'RAD-69', 'RAD-75', 'RAD-55'   // imaging
     ]
 }

@@ -1,14 +1,16 @@
 package gov.nist.toolkit.xdstools2.server.gazelle.actorConfig
 
+import org.apache.http.annotation.Obsolete
+
 /**
  *
  */
-class GenerateSystems {
+class GenerateSystemNames {
     GazellePull gazellePull
     GazelleGet getter
     File cache
 
-    GenerateSystems(GazellePull _gazellePull, File _cache) {
+    GenerateSystemNames(GazellePull _gazellePull, File _cache) {
         gazellePull = _gazellePull
         cache = _cache
         getter = new GazelleGet(gazellePull, cache) // pull from Gazelle or cache
@@ -18,6 +20,19 @@ class GenerateSystems {
         getter.getV2Responder()
     }
 
+    Set<String> getSystemNames() {
+        ConfigParser parser = new ConfigParser()
+        parser.parse(getter.configFile().toString())
+
+        Set<String> systemNames = new HashSet<String>()
+
+        parser.values.each { ConfigDef config ->
+            systemNames.add(config.system)
+        }
+        return systemNames
+    }
+
+    @Obsolete
     GeneratedSystems generateAllSystems() {
         StringBuilder log = new StringBuilder()
 
@@ -47,6 +62,7 @@ class GenerateSystems {
         return output
     }
 
+    @Obsolete
     GeneratedSystems generateSingleSystem(String systemName) {
         new GenerateSingleSystem(gazellePull, cache).generate(systemName)
     }
