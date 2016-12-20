@@ -846,17 +846,17 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements
 
     @Override
     public String getDefaultAssigningAuthority(CommandContext context) throws Exception {
-        installCommandContext(context);
+//        installCommandContext(context);
         return Installation.instance().propertyServiceManager().getDefaultAssigningAuthority();
     }
     @Override
     public String getImplementationVersion(CommandContext context) throws Exception  {
-        installCommandContext(context);
+//        installCommandContext(context);
         return Installation.instance().propertyServiceManager().getImplementationVersion();
     }
     @Override
     public Map<String, String> getToolkitProperties(CommandContext context)  throws Exception {
-        installCommandContext(context);
+//        installCommandContext(context);
         return Installation.instance().propertyServiceManager().getToolkitProperties();
     }
     @Override
@@ -867,12 +867,12 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements
     //	public String getToolkitEnableNwHIN() { return propertyServiceManager.getToolkitEnableNwHIN(); }
     @Override
     public String setToolkitProperties(SetToolkitPropertiesRequest request) throws Exception {
-        installCommandContext(request);
+//        installCommandContext(request);
         return setToolkitPropertiesImpl(request.getProperties());
     }
     @Override
     public String getAdminPassword(CommandContext context) throws Exception  {
-        installCommandContext(context);
+//        installCommandContext(context);
         return Installation.instance().propertyServiceManager().getAdminPassword();
     }
     @Override
