@@ -100,6 +100,7 @@ class GenerateSingleSystem {
         String otherOid = null
         String homeOid = null
         elements.findAll { !it.isODDS() && !it.isRecipient() && it.approved }.each { ConfigDef config ->
+            boolean forceNotRetrieve = false
             String transactionId = config.getTransaction()
             if (!transactionId) return
             if (!ConfigDef.TRANSACTIONS_TO_PROCESS.contains(transactionId)) return
@@ -116,11 +117,19 @@ class GenerateSingleSystem {
             }
 
 
+            // Handle overloading of transaction labels
             TransactionType transactionType = null
             if (transactionId == 'ITI-18') {
                 if (config.actor == 'INIT_GATEWAY' || config.getToolkitTransactionCode() == 'igq') {
                     transactionType = TransactionType.IG_QUERY
                     transactionId = TransactionType.IG_QUERY
+                }
+            }
+            if (transactionId == 'ITI-43') {
+                if (config.actor == 'INIT_GATEWAY' || config.getToolkitTransactionCode() == 'ret.b') {
+                    transactionType = TransactionType.IG_RETRIEVE
+                    transactionId = TransactionType.IG_RETRIEVE
+                    forceNotRetrieve = true
                 }
             }
             if (!transactionType)
@@ -131,7 +140,7 @@ class GenerateSingleSystem {
             boolean isSecure = config.secured
             boolean isAsync = false
 
-            if (config.isRetrieve()) {
+            if (config.isRetrieve() && !forceNotRetrieve) {
                 logit(log, transactionType, otherOid, endpoint, isSecure)
 
                 otherSite.addRepository(oddsOid, TransactionBean.RepositoryType.REPOSITORY, endpoint, isSecure, isAsync)

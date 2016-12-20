@@ -16,7 +16,7 @@ class GenerateAllSystemsTest extends Specification {
     def 'run a single'() {
         when:
         GenerateSystems generator = new GenerateSystems(gazellePull, cache)
-        GeneratedSystems generatedSystems = generator.generateSingleSystem('EHR_Marand__')
+        GeneratedSystems generatedSystems = generator.generateSingleSystem('OTHER_TPLUS_2016_EU')
         println generatedSystems.log.toString()
 
         generatedSystems.systems.each { Site site ->
@@ -36,7 +36,12 @@ class GenerateAllSystemsTest extends Specification {
 
         generatedSystems.systems.each { Site site ->
             println "Saving site ${site.name}"
-            new SeparateSiteLoader().saveToFile(cache, site)
+            try {
+                new SeparateSiteLoader().saveToFile(cache, site)
+            } catch (Exception e) {
+                println "Site ${site.name} cannot be saved - conflicts:"
+                println e.getMessage()
+            }
         }
 
         then:

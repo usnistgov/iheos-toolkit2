@@ -34,12 +34,13 @@ class GenerateSystems {
 
         GeneratedSystems output = new GeneratedSystems()
         systemNames.each { String systemName ->
-            println systemName
+            if (systemName == 'PACS_synedra_2016')
+                println systemName
             GenerateSingleSystem singleSystemGenerator = new GenerateSingleSystem(gazellePull, cache)
             GeneratedSystems gen = singleSystemGenerator.generate(systemName)
             if (!gen) return
-            log.append(gen.log)
             gen.systems.each { output.systems.add(it) }
+            log.append(gen.log)
         }
         output.log = log
 
