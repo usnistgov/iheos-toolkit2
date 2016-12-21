@@ -223,10 +223,10 @@
 		</session-config>
 	-->
 
-    <!--&lt;!&ndash; Default page to serve &ndash;&gt;-->
-    <!--<welcome-file-list>-->
-        <!--<welcome-file>Xdstools2.html</welcome-file>-->
-    <!--</welcome-file-list>-->
+    <!-- Default page to serve -->
+    <welcome-file-list>
+        <welcome-file>Xdstools2.html</welcome-file>
+    </welcome-file-list>
 
     <!-- Require HTTPS for everything except /img (favicon) and /css. -->
     <!--<security-constraint>-->

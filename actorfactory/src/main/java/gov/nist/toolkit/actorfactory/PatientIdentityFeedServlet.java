@@ -95,6 +95,7 @@ public class PatientIdentityFeedServlet extends HttpServlet {
         String portString = portFromSimulatorConfig(simulatorConfig);
         if (portString == null) return 0;
         int port = Integer.parseInt(portString);
+        logger.info("Create V2 PIF listener for " + simId + " on port " + port);
         ListenerFactory.generateListener(simId.toString(), port, new PifHandler());
         return port;
     }
