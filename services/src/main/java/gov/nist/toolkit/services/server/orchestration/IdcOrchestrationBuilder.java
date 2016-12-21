@@ -53,10 +53,12 @@ public class IdcOrchestrationBuilder {
 
       try {
          for (Orchestra sim : Orchestra.values()) {
+            SimulatorConfig simConfig = null;
             SimId simId = new SimId(user, sim.name(), sim.actorType.getName(), env);
+            if (!request.isUseExistingSimulator() || !api.simulatorExists(simId)) {
             api.deleteSimulatorIfItExists(simId);
             log.debug("Creating " + simId.toString());
-            SimulatorConfig simConfig = api.createSimulator(simId).getConfig(0);
+            simConfig = api.createSimulator(simId).getConfig(0);
             // plug our special parameter values
             for (SimulatorConfigElement chg : sim.elements) {
                chg.setEditable(true);
@@ -73,6 +75,9 @@ public class IdcOrchestrationBuilder {
                simConfig.replace(chg);
             }
             api.saveSimulator(simConfig);
+            } else {
+               simConfig = api.getConfig(simId);
+            }
             if (sim.name().equals(rrSimulatorName)) rrSimulatorConfig = simConfig;
             simConfigs.add(simConfig);
          }

@@ -495,7 +495,8 @@ public abstract class DetailXmlContent extends Detail {
 
       PRESENT("% present", "% missing", true),
          ABSENT("% not present as expected", "% found when it should be absent", true),
-         CONSTANT("correct % value", "incorrect % value", true), SAME("% values match", "% values do not match", true),
+         CONSTANT("correct % value", "incorrect % value", true), 
+         SAME("% values match", "% values do not match", true),
          SAMEIMGS("% values match", "% values do not match", false),
          SAMEXFER("% values match", "% values do not match", false),
          SAMERETIMGS("% values match", "% values do not match", false),

@@ -11,7 +11,6 @@ public class IdsOrchestrationRequest extends AbstractOrchestrationRequest {
 
    SiteSpec siteUnderTest;
 
-
    public boolean isUseExistingSimulator() {
        return useExistingSimulator;
    }

@@ -25,10 +25,6 @@ import gov.nist.toolkit.simcommon.client.config.SimulatorConfigElement;
 
 /**
  * Build environment for Testing Initiating Imaging Gateway SUT.
- * 
- * @author Ralph Moulton / MIR WUSTL IHE Development Project <a
- * href="mailto:moultonr@mir.wustl.edu">moultonr@mir.wustl.edu</a>
- *
  */
 public class IigOrchestrationBuilder {
    static Logger log = Logger.getLogger(IigOrchestrationBuilder.class);   
@@ -56,10 +52,12 @@ public class IigOrchestrationBuilder {
       
       try {
          for (Orchestra sim : Orchestra.values()) {
+            SimulatorConfig simConfig = null;
             SimId simId = new SimId(user, sim.name(), sim.actorType.getName(), env);
+            if (!request.isUseExistingSimulator() || !api.simulatorExists(simId)) {
             api.deleteSimulatorIfItExists(simId);
             log.debug("Creating " + simId.toString());
-            SimulatorConfig simConfig = api.createSimulator(simId).getConfig(0);
+            simConfig = api.createSimulator(simId).getConfig(0);
             // plug our special parameter values
             for (SimulatorConfigElement chg : sim.elements) {
                chg.setEditable(true);
@@ -76,6 +74,9 @@ public class IigOrchestrationBuilder {
                simConfig.replace(chg);
             }
             api.saveSimulator(simConfig);
+            } else {
+               simConfig = api.getConfig(simId);
+            }
             if (sim.name().equals(sutSimulatorName)) sutSimulatorConfig = simConfig;
             simConfigs.add(simConfig);
          }

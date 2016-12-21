@@ -17,8 +17,17 @@ import gov.nist.toolkit.sitemanagement.client.SiteSpec;
  */
 public class RigOrchestrationRequest extends AbstractOrchestrationRequest {
    private static final long serialVersionUID = 1L;
+   private boolean useExistingSimulator = true;
    
    private SiteSpec siteUnderTest; 
+
+   public boolean isUseExistingSimulator() {
+       return useExistingSimulator;
+   }
+
+   public void setUseExistingSimulator(boolean useExistingSimulator) {
+       this.useExistingSimulator = useExistingSimulator;
+   }
 
 
    public SiteSpec getSiteUnderTest() {
