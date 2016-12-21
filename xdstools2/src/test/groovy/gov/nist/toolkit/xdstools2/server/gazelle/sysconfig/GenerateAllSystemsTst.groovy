@@ -6,7 +6,7 @@ import spock.lang.Specification
 /**
  *
  */
-class GenerateAllSystemsTest extends Specification {
+class GenerateAllSystemsTst extends Specification {
     File cache = new File('/Users/bill/tmp/actors')
     def testingSession = '35'
     def gazelleBaseUrl = 'https://gazelle.ihe.net/EU-CAT/systemConfigurations.seam?testingSessionId=' + testingSession

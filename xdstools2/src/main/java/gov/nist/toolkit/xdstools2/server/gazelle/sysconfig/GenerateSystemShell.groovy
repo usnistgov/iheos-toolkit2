@@ -18,6 +18,10 @@ class GenerateSystemShell {
         this.gazellePull = new GazellePull(gazelleBaseUrl)
     }
 
+    String getLogContents(String systemName) {
+        return new File(cache, "${systemName}.log.txt").text
+    }
+
     boolean run(String systemName) {
         GeneratedSystems generatedSystems = new GenerateSingleSystem(gazellePull, cache).generate(systemName)
         if (!generatedSystems)

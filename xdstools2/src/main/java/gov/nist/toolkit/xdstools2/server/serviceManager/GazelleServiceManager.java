@@ -1,17 +1,18 @@
 package gov.nist.toolkit.xdstools2.server.serviceManager;
 
-import gov.nist.toolkit.results.CommonService;
 import gov.nist.toolkit.actorfactory.SiteServiceManager;
 import gov.nist.toolkit.installation.Installation;
+import gov.nist.toolkit.results.CommonService;
 import gov.nist.toolkit.session.server.Session;
 import gov.nist.toolkit.utilities.io.Io;
 import gov.nist.toolkit.xdsexception.client.XdsException;
-import gov.nist.toolkit.xdstools2.server.gazelle.actorConfig.*;
+import gov.nist.toolkit.xdstools2.server.gazelle.actorConfig.CSVParser;
+import gov.nist.toolkit.xdstools2.server.gazelle.actorConfig.GazelleConfigs;
+import gov.nist.toolkit.xdstools2.server.gazelle.actorConfig.GazelleEntryFactory;
+import gov.nist.toolkit.xdstools2.server.gazelle.sysconfig.GenerateSystemShell;
 import org.apache.log4j.Logger;
 
 import java.io.File;
-import java.io.FileWriter;
-import java.util.Properties;
 
 public class GazelleServiceManager extends CommonService {
 
@@ -55,62 +56,83 @@ public class GazelleServiceManager extends CommonService {
 
         if (!initDone) {
             initDone = true;
-            init();
+            init();   // loads gazelleUrl and actorsDir
         }
 
-//		try {
         if (gazelleUrl == null || gazelleUrl.equals(""))
             throw new Exception("Linkage to Gazelle not configured");
 
-
-        GazelleConfigs gConfigs = null;
-        OidConfigs oConfigs = null;
-
-        oConfigs = new OidConfigs();
-        new CSVParser(new OidEntryFactory()).parse(oConfigs, Io.stringFromFile(new File(actorsDir + File.separator + "ListOID.csv")));
-
-
-        if (systemName.equals("ALL")) {
-            new ConfigPull(gazelleUrl, actorsDir).pull();
-
-            gConfigs = new GazelleConfigs();
-            new CSVParser(new GazelleEntryFactory()).parse(gConfigs, Io.stringFromFile(new File(actorsDir + File.separator + "all.csv")));
-
-            conflicts = new ConfigToXml(gConfigs, oConfigs, actorsDir).process();
-        }
-        else {
-            new ConfigPull(gazelleUrl, actorsDir).pull(systemName);
-
-            gConfigs = new GazelleConfigs();
-            new CSVParser(new GazelleEntryFactory()).parse(gConfigs, Io.stringFromFile(new File(actorsDir + File.separator + systemName + ".csv")));
-
-            conflicts = new ConfigToXml(gConfigs, oConfigs, actorsDir).process();
-        }
-
-        System.err.println("Conflicts:\n" + conflicts);
-
-        // build Gazelle proxy configurations
-        gConfigs = loadAllGConfigs();
-        System.out.println("Load all - found " + gConfigs.size() + " configurations");
-//        String proxyCsv = ProxyConfigToCSV.run(gConfigs);
-        Properties props = ProxyConfigToCSV.buildProperties(gConfigs);
-        File outfile = new File(externalCacheFile, "proxy-ports.properties");
-        System.out.println("Saving " + outfile);
-        props.store(new FileWriter(outfile), "");
+        GenerateSystemShell gazelleShell = new GenerateSystemShell(actorsDir, gazelleUrl);
+        gazelleShell.run(systemName);
+        String log = gazelleShell.getLogContents(systemName);
 
         // force reload of all actor definitions
         if (!unitTest) {
             SiteServiceManager.getSiteServiceManager().reloadCommonSites();
         }
-//		} catch (Exception e) {
-//			logger.error(ExceptionUtil.exception_details(e));
-//			throw new Exception("Call failed: " + e.getMessage());
-//		}
         if (unitTest)
             return null;
-        return "<pre>\n" + conflicts + "\n</pre>";
+        return "<pre>\n" + log + "\n</pre>";
 
     }
+
+//    public String reloadSystemFromGazelle(String systemName) throws Exception {
+//        String id = (session == null) ? "42" : session.id();
+//        logger.debug(id + ": " + "reloadSystemFromGazelle(" + systemName + ")");
+//        String conflicts;
+//
+//        if (!initDone) {
+//            initDone = true;
+//            init();
+//        }
+//
+//        if (gazelleUrl == null || gazelleUrl.equals(""))
+//            throw new Exception("Linkage to Gazelle not configured");
+//
+//
+//        GazelleConfigs gConfigs = null;
+//        OidConfigs oConfigs = null;
+//
+//        oConfigs = new OidConfigs();
+//        new CSVParser(new OidEntryFactory()).parse(oConfigs, Io.stringFromFile(new File(actorsDir + File.separator + "ListOID.csv")));
+//
+//
+//        if (systemName.equals("ALL")) {
+//            new ConfigPull(gazelleUrl, actorsDir).pull();
+//
+//            gConfigs = new GazelleConfigs();
+//            new CSVParser(new GazelleEntryFactory()).parse(gConfigs, Io.stringFromFile(new File(actorsDir + File.separator + "all.csv")));
+//
+//            conflicts = new ConfigToXml(gConfigs, oConfigs, actorsDir).process();
+//        }
+//        else {
+//            new ConfigPull(gazelleUrl, actorsDir).pull(systemName);
+//
+//            gConfigs = new GazelleConfigs();
+//            new CSVParser(new GazelleEntryFactory()).parse(gConfigs, Io.stringFromFile(new File(actorsDir + File.separator + systemName + ".csv")));
+//
+//            conflicts = new ConfigToXml(gConfigs, oConfigs, actorsDir).process();
+//        }
+//
+//        System.err.println("Conflicts:\n" + conflicts);
+//
+//        // build Gazelle proxy configurations
+//        gConfigs = loadAllGConfigs();
+//        System.out.println("Load all - found " + gConfigs.size() + " configurations");
+//        Properties props = ProxyConfigToCSV.buildProperties(gConfigs);
+//        File outfile = new File(externalCacheFile, "proxy-ports.properties");
+//        System.out.println("Saving " + outfile);
+//        props.store(new FileWriter(outfile), "");
+//
+//        // force reload of all actor definitions
+//        if (!unitTest) {
+//            SiteServiceManager.getSiteServiceManager().reloadCommonSites();
+//        }
+//        if (unitTest)
+//            return null;
+//        return "<pre>\n" + conflicts + "\n</pre>";
+//
+//    }
 
     // load csv into gConfigs
     void parseGConfigs(String csv, GazelleConfigs gConfigs) {
