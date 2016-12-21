@@ -13,6 +13,7 @@ public class GetSimulatorStatsRequest extends CommandContext{
 
     public GetSimulatorStatsRequest(){}
     public GetSimulatorStatsRequest(CommandContext context,List<SimId> simid){
+        copyFrom(context);
         this.simid=simid;
     }
 

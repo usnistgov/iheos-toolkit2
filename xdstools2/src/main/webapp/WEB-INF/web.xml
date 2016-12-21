@@ -228,7 +228,7 @@
         <!--<welcome-file>Xdstools2.html</welcome-file>-->
     <!--</welcome-file-list>-->
 
-    <!--&lt;!&ndash; Require HTTPS for everything except /img (favicon) and /css. &ndash;&gt;-->
+    <!-- Require HTTPS for everything except /img (favicon) and /css. -->
     <!--<security-constraint>-->
         <!--<web-resource-collection>-->
             <!--<web-resource-name>HTTPSOnly</web-resource-name>-->
