@@ -790,12 +790,13 @@ public class ImgDetailTransaction extends BasicTransaction {
    }
    
    private void prsLoadSOAPSimTransaction(AssertionEngine engine, Assertion a, OMElement assertion_output) {
-      try {
-         SimulatorTransaction simTran = getSimulatorTransaction(a);
-         store(engine, CAT.SUCCESS, "load successful");
-      } catch (XdsInternalException e) {
-         store(engine, CAT.ERROR, "");
-      }
+      store(engine, CAT.SUCCESS, "currently a no op");
+//      try {
+//         SimulatorTransaction simTran = getSimulatorTransaction(a);
+//         store(engine, CAT.SUCCESS, "load successful");
+//      } catch (XdsInternalException e) {
+//         store(engine, CAT.ERROR, "");
+//      }
    }
    
    private void prsSameRetrieve(AssertionEngine engine, Assertion a, OMElement assertion_output)
