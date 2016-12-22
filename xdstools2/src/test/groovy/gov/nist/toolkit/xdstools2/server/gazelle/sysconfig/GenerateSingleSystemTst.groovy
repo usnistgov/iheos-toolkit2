@@ -2,9 +2,6 @@ package gov.nist.toolkit.xdstools2.server.gazelle.sysconfig
 
 import gov.nist.toolkit.sitemanagement.SeparateSiteLoader
 import gov.nist.toolkit.sitemanagement.client.Site
-import gov.nist.toolkit.xdstools2.server.gazelle.sysconfig.GazellePull
-import gov.nist.toolkit.xdstools2.server.gazelle.sysconfig.GenerateSingleSystem
-import gov.nist.toolkit.xdstools2.server.gazelle.sysconfig.GeneratedSystems
 import spock.lang.Specification
 /**
  *
@@ -30,5 +27,13 @@ class GenerateSingleSystemTst extends Specification {
         then:
         true
 
+    }
+
+    def 'remove extension'() {
+        when:
+        def name = GenerateSingleSystem.withoutExtension('foo bar - IDS')
+
+        then:
+        name == 'foo bar'
     }
 }

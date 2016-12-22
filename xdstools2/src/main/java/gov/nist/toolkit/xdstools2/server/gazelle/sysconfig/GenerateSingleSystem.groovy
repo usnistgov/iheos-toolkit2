@@ -19,6 +19,20 @@ class GenerateSingleSystem {
     def tab2 = tab + tab
     boolean hasErrors = false
 
+    // When a systeName is requested, it may have one of these extensions on it.  They are added by
+    // this tool and should be stripped off to get Gazelle name.
+    static nameExtensions = [
+            ' - ROD',
+            ' - IDS',
+            ' - EMBED',
+            ' - ODDS'
+    ]
+    static String withoutExtension(String name) {
+        String extension = nameExtensions.find { name.endsWith(it) }
+        if (!extension) return name
+        return name.minus(extension)
+    }
+
     GenerateSingleSystem(GazellePull _gazellePull, File _cache) {
         gazellePull = _gazellePull
         cache = _cache
@@ -229,7 +243,7 @@ class GenerateSingleSystem {
             if (config.isRetrieve() && !forceNotRetrieve) {
                 logit(log, transactionType, otherOid, endpoint, isSecure)
 
-                otherSite.addRepository(oddsOid, TransactionBean.RepositoryType.REPOSITORY, endpoint, isSecure, isAsync)
+                otherSite.addRepository(otherOid, TransactionBean.RepositoryType.REPOSITORY, endpoint, isSecure, isAsync)
             } else {
                 logit(log, transactionType, null, endpoint, isSecure)
 

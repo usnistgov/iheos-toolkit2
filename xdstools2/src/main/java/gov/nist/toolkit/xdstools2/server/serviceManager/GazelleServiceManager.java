@@ -9,6 +9,7 @@ import gov.nist.toolkit.xdsexception.client.XdsException;
 import gov.nist.toolkit.xdstools2.server.gazelle.actorConfig.CSVParser;
 import gov.nist.toolkit.xdstools2.server.gazelle.actorConfig.GazelleConfigs;
 import gov.nist.toolkit.xdstools2.server.gazelle.actorConfig.GazelleEntryFactory;
+import gov.nist.toolkit.xdstools2.server.gazelle.sysconfig.GenerateSingleSystem;
 import gov.nist.toolkit.xdstools2.server.gazelle.sysconfig.GenerateSystemShell;
 import org.apache.log4j.Logger;
 
@@ -49,30 +50,47 @@ public class GazelleServiceManager extends CommonService {
         System.out.println("Pull config from " + gazelleUrl);
     }
 
+    /**
+     *
+     * @param systemName system name possibly with - xxx extension
+     * @return
+     * @throws Exception
+     */
     public String reloadSystemFromGazelle(String systemName) throws Exception {
-        String id = (session == null) ? "42" : session.id();
-        logger.debug(id + ": " + "reloadSystemFromGazelle(" + systemName + ")");
-        String conflicts;
+        try {
+            String id = (session == null) ? "42" : session.id();
+            logger.debug(id + ": " + "reloadSystemFromGazelle(" + systemName + ")");
+            String conflicts;
 
-        if (!initDone) {
-            initDone = true;
-            init();   // loads gazelleUrl and actorsDir
+            if (!initDone) {
+                initDone = true;
+                init();   // loads gazelleUrl and actorsDir
+            }
+
+            if (gazelleUrl == null || gazelleUrl.equals(""))
+                throw new Exception("Linkage to Gazelle not configured");
+
+            GenerateSystemShell gazelleShell = new GenerateSystemShell(actorsDir, gazelleUrl);
+            String log = "";
+            if (systemName.equals("ALL"))
+                gazelleShell.run();
+            else {
+                String realSystemName = GenerateSingleSystem.withoutExtension(systemName);
+                gazelleShell.run(realSystemName);
+                log = gazelleShell.getLogContents(realSystemName);
+            }
+
+            // force reload of all actor definitions
+            if (!unitTest) {
+                SiteServiceManager.getSiteServiceManager().reloadCommonSites();
+            }
+            if (unitTest)
+                return null;
+            return "<pre>\n" + log + "\n</pre>";
+        } catch (Exception e) {
+            logger.error(e.getMessage());
+            throw new Exception("Load failed.", e);
         }
-
-        if (gazelleUrl == null || gazelleUrl.equals(""))
-            throw new Exception("Linkage to Gazelle not configured");
-
-        GenerateSystemShell gazelleShell = new GenerateSystemShell(actorsDir, gazelleUrl);
-        gazelleShell.run(systemName);
-        String log = gazelleShell.getLogContents(systemName);
-
-        // force reload of all actor definitions
-        if (!unitTest) {
-            SiteServiceManager.getSiteServiceManager().reloadCommonSites();
-        }
-        if (unitTest)
-            return null;
-        return "<pre>\n" + log + "\n</pre>";
 
     }
 
