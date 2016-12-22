@@ -34,7 +34,7 @@ It should contain the following attributes:<table>
 <tr><td>(0008,0050) SH [IDC011-a]</td><td># AccessionNumber</td></tr>
 <tr><td>(0010,0010) PN [Single^Wado^a]</td><td># PatientName</td></tr>
 <tr><td>(0010,0020) LO [IDCDEPT011-a]</td><td># PatientID</td></tr></table>
-<li/>Test Manager: Locate the RAD-55 request message in the proxy.<ol>
+<li/>Test Manager: Locate the RAD-55 request message in the proxy.<ol type="a">
 <li/>Browse to http://gazelle-proxy-host:8380/proxy
 <li/>Click "Messages list" in top menu bar
 <li/>Select Message type HTTP in the Dynamic message type search.
@@ -45,14 +45,14 @@ labeled with the white arrow in the green circle.
 <li/>Test Manager: Take a snapshot of the evidence.
 <li/>Test Manager: Verify by hand that the request is of the format listed in 
 the example below. Verify that these attributes are present in the request with 
-appropriate values:<ol>
+appropriate values:<ol type="a">
 <li/>requestType (shall be WADO)
 <li/>studyUID    1.3.6.1.4.1.21367.201599.1.201604021948013
 <li/>seriesUID   1.3.6.1.4.1.21367.201599.2.201604021948013
 <li/>objectUID   1.3.6.1.4.1.21367.201599.3.201604021948014
 <li/>contentType (shall be application/dicom or image/jpeg)</ol><br/>
 GET /wado?requestType=WADO&studyUID=1.3.6.1.4.1.21367.201599.1.201604021948013&seriesUID=1.3.6.1.4.1.21367.201599.2.201604021948013&objectUID=1.3.6.1.4.1.21367.201599.3.201604021948014&contentType=application/dicom&overlays=false HTTP/1.1
-<li/>Test Manager: Verify that the HTTP Accept field contains one of the following values:<ol>
+<li/>Test Manager: Verify that the HTTP Accept field contains one of the following values:<ol type="a">
 <li/>application/dicom
 <li/>image/jpeg
 <li/>If other values are included, you will need to make a judgment call on whether 
