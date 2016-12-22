@@ -129,6 +129,7 @@ public enum TransactionType implements Serializable, IsSerializable {
             if (s.equals(t.shortName)) return t;
             if (s.equals(t.code)) return t;
             if (s.equals(t.asyncCode)) return t;
+            if (s.equals(t.getId())) return t;
         }
         return null;
     }

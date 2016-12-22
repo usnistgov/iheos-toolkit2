@@ -4,11 +4,10 @@ import com.google.gwt.dom.client.Style;
 import com.google.gwt.user.client.ui.*;
 import gov.nist.toolkit.sitemanagement.client.SiteSpec;
 import gov.nist.toolkit.tk.client.TkProps;
-import gov.nist.toolkit.xdstools2.client.util.ToolkitServiceAsync;
-import gov.nist.toolkit.xdstools2.shared.command.CommandContext;
 import gov.nist.toolkit.xdstools2.client.event.testSession.TestSessionManager2;
 import gov.nist.toolkit.xdstools2.client.selectors.EnvironmentManager;
 import gov.nist.toolkit.xdstools2.client.util.ClientUtils;
+import gov.nist.toolkit.xdstools2.shared.command.CommandContext;
 
 import java.util.logging.Logger;
 
@@ -58,13 +57,26 @@ public abstract class ToolWindow {
 		// .addNorth MUST come before .display - a condition of DockLayoutPanel
 		if (title != null)
 			tabTopRawPanel.addNorth(new HTML("<h1>" + title + "</h1>"), 4.0);
-		tabTopRawPanel.addEast(eastPanel, 10.0);
-		tabTopRawPanel.addWest(westPanel, 0);
+		tabTopRawPanel.addEast(eastPanel, 0.0);
+		tabTopRawPanel.addWest(westPanel, 0.0);
 		tabTopRawPanel.add(innerPanel);
 		innerPanel.setWidget(tabTopPanel);
 	}
 
-	public void addEast(Widget w) { eastPanel.add(w); }
+	public ToolWindow(double east, double west) {
+		String title = getTitle();
+		// .addNorth MUST come before .display - a condition of DockLayoutPanel
+		if (title != null)
+			tabTopRawPanel.addNorth(new HTML("<h1>" + title + "</h1>"), 4.0);
+		tabTopRawPanel.addEast(eastPanel, east);
+		tabTopRawPanel.addWest(westPanel, west);
+		tabTopRawPanel.add(innerPanel);
+		innerPanel.setWidget(tabTopPanel);
+	}
+
+	protected void addEast(Widget w) { eastPanel.add(w); }
+
+	protected void addWest(Widget w) { westPanel.add(w); }
 
 	public TabContainer getTabContainer() { return tabContainer; }
 

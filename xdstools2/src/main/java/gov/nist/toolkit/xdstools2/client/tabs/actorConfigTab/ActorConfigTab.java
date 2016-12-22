@@ -12,12 +12,11 @@ import gov.nist.toolkit.sitemanagement.client.TransactionBean;
 import gov.nist.toolkit.sitemanagement.client.TransactionBean.RepositoryType;
 import gov.nist.toolkit.sitemanagement.client.TransactionCollection;
 import gov.nist.toolkit.xdstools2.client.PasswordManagement;
+import gov.nist.toolkit.xdstools2.client.StringSort;
 import gov.nist.toolkit.xdstools2.client.command.command.GetSiteNamesCommand;
 import gov.nist.toolkit.xdstools2.client.command.command.IsGazelleConfigFeedEnabledCommand;
 import gov.nist.toolkit.xdstools2.client.command.command.ReloadExternalSitesCommand;
 import gov.nist.toolkit.xdstools2.client.command.command.SaveSiteCommand;
-import gov.nist.toolkit.xdstools2.client.widgets.PopupMessage;
-import gov.nist.toolkit.xdstools2.client.StringSort;
 import gov.nist.toolkit.xdstools2.client.event.Xdstools2EventBus;
 import gov.nist.toolkit.xdstools2.client.siteActorManagers.NullSiteActorManager;
 import gov.nist.toolkit.xdstools2.client.tabs.genericQueryTab.GenericQueryTab;
@@ -31,19 +30,19 @@ import java.util.List;
 public class ActorConfigTab extends GenericQueryTab {
     public static final String TAB_NAME = "SystemConfig";
     ListBox siteSelector;
-	FlexTable actorEditGrid;
-	int actorEditRow = -1;
-	HTML signInStatus;
-	Hyperlink signIn = new Hyperlink();
-	boolean enableGazelleReload = false;
-	Button reloadFromGazelleButton;
-	CheckBox showSims = new CheckBox();
+	private FlexTable actorEditGrid;
+	private int actorEditRow = -1;
+	private HTML signInStatus;
+	private Hyperlink signIn = new Hyperlink();
+	private boolean enableGazelleReload = false;
+	private Button reloadFromGazelleButton;
+	private CheckBox showSims = new CheckBox();
 	
 	Site currentEditSite = null;
 
 
 	public ActorConfigTab() {
-		super(new NullSiteActorManager());
+		super(new NullSiteActorManager(), 0.0, 20.0);
 	}
 
 	@Override
@@ -83,7 +82,7 @@ public class ActorConfigTab extends GenericQueryTab {
 
 		reloadExternalSites();
 
-		VerticalPanel sitesPanel = new VerticalPanel();
+		FlowPanel sitesPanel = new FlowPanel();
 
 		siteSelector = new ListBox();
 		siteSelector.setVisibleItemCount(15);
@@ -134,7 +133,25 @@ public class ActorConfigTab extends GenericQueryTab {
 		});
 		
 		sitesPanel.add(showSims);
-		Button reloadSitesBtn=new Button("Reload sites");
+
+//		mainGrid.setWidget(row, 0, sitesPanel);
+		addWest(sitesPanel);
+
+		actorEditRow = row;
+		newActorEditGrid();
+
+		sitesPanel.add(new HTML("<br />"));
+		Button saveButton = new Button("Save Changes");
+		saveButton.addClickHandler(new SaveButtonClickHandler(this));
+		sitesPanel.add(saveButton);
+
+		sitesPanel.add(new HTML("<br />"));
+		Button forgetButton = new Button("Forget Changes");
+		forgetButton.addClickHandler(new ForgetButtonClickHandler(this));
+		sitesPanel.add(forgetButton);
+
+		sitesPanel.add(new HTML("<br />"));
+		Button reloadSitesBtn=new Button("Reload from server");
 		reloadSitesBtn.addClickHandler(new ClickHandler() {
 			@Override
 			public void onClick(ClickEvent clickEvent) {
@@ -143,15 +160,17 @@ public class ActorConfigTab extends GenericQueryTab {
 			}
 		});
 		sitesPanel.add(reloadSitesBtn);
-		
-		mainGrid.setWidget(row, 0, sitesPanel);
 
-		actorEditRow = row;
-		newActorEditGrid();
-		
+		sitesPanel.add(new HTML("<br />"));
+		reloadFromGazelleButton = new Button("Reload from Gazelle");
+		reloadFromGazelleButton.addClickHandler(new ReloadSystemFromGazelleClickHandler(this));
+		sitesPanel.add(reloadFromGazelleButton);
+		reloadFromGazelleButton.setEnabled(enableGazelleReload);
+
+
 	}
 
-	void loadGazelleFeedAvailableStatus() { 
+	private void loadGazelleFeedAvailableStatus() {
 		new IsGazelleConfigFeedEnabledCommand(){
 			@Override
 			public void onComplete(Boolean result) {
@@ -179,7 +198,7 @@ public class ActorConfigTab extends GenericQueryTab {
 
 	List<String> currentSiteNames = null;
 	
-	void reloadExternalSites() {
+	private void reloadExternalSites() {
 		new ReloadExternalSitesCommand(){
             @Override
             public void onComplete(List<String> result) {
@@ -291,18 +310,18 @@ public class ActorConfigTab extends GenericQueryTab {
 
 		}
 
-		Button saveButton = new Button("Save Changes");
-		saveButton.addClickHandler(new SaveButtonClickHandler(this));
-		actorEditGrid.setWidget(row, 0, saveButton);
-
-		Button forgetButton = new Button("Forget Changes");
-		forgetButton.addClickHandler(new ForgetButtonClickHandler(this));
-		actorEditGrid.setWidget(row, 1, forgetButton);
-		
-		reloadFromGazelleButton = new Button("Reload from Gazelle");
-		reloadFromGazelleButton.addClickHandler(new ReloadSystemFromGazelleClickHandler(this));
-		actorEditGrid.setWidget(row, 2, reloadFromGazelleButton);
-		reloadFromGazelleButton.setEnabled(enableGazelleReload);
+//		Button saveButton = new Button("Save Changes");
+//		saveButton.addClickHandler(new SaveButtonClickHandler(this));
+//		actorEditGrid.setWidget(row, 0, saveButton);
+//
+//		Button forgetButton = new Button("Forget Changes");
+//		forgetButton.addClickHandler(new ForgetButtonClickHandler(this));
+//		actorEditGrid.setWidget(row, 1, forgetButton);
+//
+//		reloadFromGazelleButton = new Button("Reload from Gazelle");
+//		reloadFromGazelleButton.addClickHandler(new ReloadSystemFromGazelleClickHandler(this));
+//		actorEditGrid.setWidget(row, 2, reloadFromGazelleButton);
+//		reloadFromGazelleButton.setEnabled(enableGazelleReload);
 
 	}
 

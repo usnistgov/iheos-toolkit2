@@ -80,6 +80,7 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner, TestsH
 	private AbstractOrchestrationButton orchInit = null;
 
 	public ConformanceTestTab() {
+		super(10.0, 0.0);
 		me = this;
 		mainView = new ConformanceTestMainView(this, new OptionsTabBar());
 		testContextView = new TestContextView(this, mainView.getTestSessionDescription(), testContext, new SiteSelectionValidatorImpl());

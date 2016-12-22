@@ -139,6 +139,11 @@ public abstract class GenericQueryTab  extends ToolWindow {
      * @param siteActorManager
      */
     public GenericQueryTab(BaseSiteActorManager siteActorManager) {
+        this(siteActorManager, 0.0, 0.0);
+    }
+
+    public GenericQueryTab(BaseSiteActorManager siteActorManager, double east, double west) {
+        super(east, west);
         me = this;
         this.siteActorManager = siteActorManager;
         if (siteActorManager != null)
@@ -168,10 +173,6 @@ public abstract class GenericQueryTab  extends ToolWindow {
                 }
             }
         });
-
-        // when called as HomeTab is built, the wrong session services this call, this
-        // makes sure the job gets done
-        //		EnvironmentSelector.SETENVIRONMENT(toolkitService);
     }
 
     private void saveSelectedSites() {

@@ -33,6 +33,7 @@ public class SiteLoader {
 
 //        Xdstools2.DEBUG("findSites for " + user);
         for (TransactionType t : map.keySet()) {
+            if (t == null) continue; //Window.alert("TransactionType keys " + map.keySet().size());
             if (t.getName().equals(tt.getName())) {
                 List<Site> sitesForTransaction = map.get(t);
 //                Xdstools2.DEBUG("tmap(" + t  + ") is " + sitesForTransaction);

@@ -25,7 +25,6 @@ import javax.net.ssl.X509TrustManager;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.InetAddress;
 import java.net.MalformedURLException;
 import java.net.Socket;
 import java.net.UnknownHostException;
