@@ -1,11 +1,11 @@
 <TestPlan>
 	<Test>validate-iti-18</Test>
-	<TestStep id="validateQuery">
+	<TestStep id="validate-iti-18">
 		<Goal>Validate Registry Stored Query (ITI-18) sent from IDC SUT to Repository simulator</Goal>
 		<ExpectedStatus>Success</ExpectedStatus>
 		<ImgDetailTransaction>
 			<Assertions>
-				<Assert id="Submitted Metadata Validation" process="sameQuery">
+				<Assert id="Registry Stored Query Validation" process="sameQuery">
 					<SimTransaction id="rr" transaction="sq" />
 					query.xml
 				</Assert>

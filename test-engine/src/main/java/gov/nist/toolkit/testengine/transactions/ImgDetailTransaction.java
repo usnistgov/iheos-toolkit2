@@ -175,6 +175,9 @@ public class ImgDetailTransaction extends BasicTransaction {
          case "sameRetrieve":
             this.prsSameRetrieve(engine, a, assertion_output);
             break;
+         case "loadSOAPSimTransaction":
+         this.prsLoadSOAPSimTransaction(engine, a, assertion_output);
+         break;
          default:
             throw new XdsInternalException("ImgDetailTransaction: Unknown assertion.process " + a.process);
       }
@@ -783,6 +786,15 @@ public class ImgDetailTransaction extends BasicTransaction {
       store(engine, cat, rep);
       } catch (Exception e) {
          throw new XdsInternalException("ImgDetailTransaction - sameQuery: " + e.getMessage());
+      }
+   }
+   
+   private void prsLoadSOAPSimTransaction(AssertionEngine engine, Assertion a, OMElement assertion_output) {
+      try {
+         SimulatorTransaction simTran = getSimulatorTransaction(a);
+         store(engine, CAT.SUCCESS, "load successful");
+      } catch (XdsInternalException e) {
+         store(engine, CAT.ERROR, "");
       }
    }
    
