@@ -1,6 +1,6 @@
 <TestPlan>
 	<Test>validate-iti-43</Test>
-	<TestStep id="validateRetrieve">
+	<TestStep id="validate-iti-43">
 		<Goal>Validate KOS Retrieve</Goal>
 		<ExpectedStatus>Success</ExpectedStatus>
 		<Standard>

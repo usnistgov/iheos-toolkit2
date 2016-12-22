@@ -1,4 +1,4 @@
-Retrieve KOS Single
+Retrieve KOS: Single Image Study
 <h2>Imaging Document Consumer Retrieve KOS: Single Image Study</h2>
 
 Tests the ability of the Image Document Consumer actor (SUT) to retrieve data
