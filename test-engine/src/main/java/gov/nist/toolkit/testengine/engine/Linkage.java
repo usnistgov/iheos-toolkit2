@@ -243,6 +243,15 @@ public class Linkage extends BasicLinkage {
    public String getLogFileDir() {
       return testConfig.logFile.getParent();
    }
+   /**
+    * Get log file directory name for another test step.
+    * @param test_dir String path of test step we want log from, relative to
+    * this test step. For example, "../12029/submit".
+    * @return String path to desired log.xml directory.
+    */
+   public String getLogFileDir(String test_dir) {
+      return testConfig.logFile.getParent() + File.separator + test_dir;
+   }
 
    public void replace_string_in_text_and_attributes(OMElement root, String old_text, String new_text)
       throws XdsInternalException {

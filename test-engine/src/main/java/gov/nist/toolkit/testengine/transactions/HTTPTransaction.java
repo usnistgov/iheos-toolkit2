@@ -57,7 +57,8 @@ import java.util.Map;
  * <li/>The type attribute is mandatory, and must match to a value of the {@link
  * gov.nist.toolkit.configDatatypes.client.TransactionType TransactionType} 
  * enum. The endpoint to which the http request is sent is determined by this
- * transaction.
+ * transaction. If an Endpoint element is present, its contents will be the
+ * transaction endpoint, overriding this mechanism.
  * <li/>Text content of Headers element forms headers for the HTTP Request. Each
  * header must appear on a separate line and be of the form:<br/>
  * Header-name : header-body
@@ -96,6 +97,12 @@ public class HTTPTransaction extends BasicTransaction {
 
     @Override
     protected void run(OMElement request) throws Exception {
+       /*
+        * If an endpoint is not already defines (via an Endpoint element in the
+        * testplan) the transType (the HttpTransaction element id attribute
+        * value) must match one of the transaction type names of a 
+        * TransactionType value.
+        */
         if (endpoint == null || endpoint.equals("")) {
             if (transType == null)
                 throw new XdsInternalException("HttpTransaction - type is null");

@@ -141,7 +141,7 @@ public abstract class DetailXmlContent extends Detail {
                case SAMERETIMGS:
                   sameRetImgs(assertion, testElement, stdElement);
                   break;
-               case SAMECLASSCODE:
+               case SAMECLASSIFICATIONCODE:
                   sameClassCode(assertion, testElement, stdElement);
                   break;
                default:
@@ -495,11 +495,12 @@ public abstract class DetailXmlContent extends Detail {
 
       PRESENT("% present", "% missing", true),
          ABSENT("% not present as expected", "% found when it should be absent", true),
-         CONSTANT("correct % value", "incorrect % value", true), SAME("% values match", "% values do not match", true),
+         CONSTANT("correct % value", "incorrect % value", true), 
+         SAME("% values match", "% values do not match", true),
          SAMEIMGS("% values match", "% values do not match", false),
          SAMEXFER("% values match", "% values do not match", false),
          SAMERETIMGS("% values match", "% values do not match", false),
-         SAMECLASSCODE("% code values match", "% values do not match", true);
+         SAMECLASSIFICATIONCODE("% code values match", "% values do not match", true);
 
       private TYPE(String pass, String fail, boolean xpath) {
          passDetail = pass;

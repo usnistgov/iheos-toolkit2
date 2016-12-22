@@ -469,6 +469,12 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements
         return new OrchestrationManager().buildIdsTestEnvironment(s, request.getIdsOrchestrationRequest());
     }
     @Override
+    public RawResponse buildIdcTestOrchestration(IdcOrchestrationRequest request) {
+        Session s = getSession();
+        if (s == null) return RawResponseBuilder.build(new NoServletSessionException(""));
+        return new OrchestrationManager().buildIdcTestEnvironment(s, request);
+    }
+    @Override
     public RawResponse buildRSNAEdgeTestOrchestration(BuildRSNAEdgeTestOrchestrationRequest request) throws Exception{
         installCommandContext(request);
         Session s = getSession();

@@ -10,11 +10,15 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
+/**
+ * Data for test results. used in ListingDispley and MetadataInspector.
+ */
 public class DataModel {
 	// loaded content organized two ways:
 	//    results - organized as a list - shows history of queries
 	//    combinedMetadata - raw contents loaded in inspector
+   
+   // One Result for each Test
 	List<Result> results = null;
 	MetadataCollection combinedMetadata = null;
 

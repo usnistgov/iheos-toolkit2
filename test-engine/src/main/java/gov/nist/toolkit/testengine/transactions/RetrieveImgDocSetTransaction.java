@@ -1,5 +1,9 @@
 package gov.nist.toolkit.testengine.transactions;
 
+import gov.nist.toolkit.actorfactory.SimDb;
+import gov.nist.toolkit.actorfactory.client.SimId;
+import gov.nist.toolkit.actorfactory.client.SimulatorConfig;
+import gov.nist.toolkit.configDatatypes.SimulatorProperties;
 import gov.nist.toolkit.configDatatypes.client.TransactionType;
 import gov.nist.toolkit.registrymetadata.Metadata;
 import gov.nist.toolkit.registrymsg.repository.RetrievedDocumentModel;
@@ -18,6 +22,7 @@ import gov.nist.toolkit.xdsexception.client.XdsInternalException;
 import org.apache.axiom.om.OMElement;
 import org.apache.axiom.om.xpath.AXIOMXPath;
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
 
 import javax.xml.namespace.QName;
@@ -118,6 +123,7 @@ public class RetrieveImgDocSetTransaction extends BasicTransaction {
       if (s_ctx.getPlan().getExtraLinkage() != null)
          testLog.add_name_value(instruction_output, "TemplateParams", s_ctx.getPlan().getExtraLinkage());
 
+      if (StringUtils.isNotBlank(target)) endpoint = target;
       parseIDSEndpoint(repositoryUniqueId, transactionType, testConfig.secure);
 
       RetContext r_ctx = null;
@@ -275,10 +281,25 @@ public class RetrieveImgDocSetTransaction extends BasicTransaction {
          uri = part.getText();
       } else if (part_name.equals("URIRef")) {
          uri_ref = part;
+      } else if (part_name.equals("Target")) {
+         parseTargetInstruction(part);
       } else {
          // throw new XdsException("Don't understand instruction " + part_name +
          // " inside step " + s_ctx.getId());
          parseBasicInstruction(part);
+      }
+   }
+   
+   private String target = null;
+   protected void parseTargetInstruction(OMElement part) {
+      try {
+      String sim = part.getAttributeValue(new QName("sim"));
+      String user = testConfig.testInstance.getUser();
+      SimDb db = new SimDb();
+      SimulatorConfig simConfig = db.getSimulator(new SimId(user, sim));
+      target = simConfig.getConfigEle(SimulatorProperties.idsrEndpoint).asString();
+      } catch (Exception e) {
+         
       }
    }
 

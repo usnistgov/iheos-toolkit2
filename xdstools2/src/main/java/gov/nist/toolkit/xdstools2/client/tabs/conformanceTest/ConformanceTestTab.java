@@ -435,6 +435,11 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner, TestsH
 			orchInit.addSelfTestClickHandler(new RefreshTestCollectionHandler());
 			initializationPanel.add(orchInit.panel());
 		}
+      else if (currentActorOption.isIDC()) {
+         orchInit = new BuildIDCTestOrchestrationButton(this, testContext, testContextView, this, initializationPanel, label);
+         orchInit.addSelfTestClickHandler(new RefreshTestCollectionHandler());
+         initializationPanel.add(orchInit.panel());
+      }
 		else if (currentActorOption.isEdgeServerSut()) {
 			// TODO not implemented yet.
 		}
@@ -616,6 +621,7 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner, TestsH
 	}
 
 	ClickHandler getInspectClickHandler(TestInstance testInstance) {
+	   new PopupMessage("ti=" + testInstance.toString() + " ts=" + getCurrentTestSession() + " sn=" + testContext.getSiteName());
 		return new LaunchInspectorClickHandler(testInstance, getCurrentTestSession(), new SiteSpec(testContext.getSiteName()));
 	}
 
@@ -763,7 +769,7 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner, TestsH
 	void setRecOrchestrationResponse(RecOrchestrationResponse recOrchestrationResponse) {
 		this.recOrchestrationResponse = recOrchestrationResponse;
 		setOrchestrationResponse(recOrchestrationResponse);
-	}
+	} 
 
 	void setRegOrchestrationResponse(RegOrchestrationResponse regOrchestrationResponse) {
 		this.regOrchestrationResponse = regOrchestrationResponse;

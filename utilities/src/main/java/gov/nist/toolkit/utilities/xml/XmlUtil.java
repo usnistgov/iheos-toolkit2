@@ -31,6 +31,12 @@ public class XmlUtil {
 	static public OMFactory om_factory = OMAbstractFactory.getOMFactory();
 	static public OMNamespace xml_namespace =   om_factory.createOMNamespace("http://www.w3.org/XML/1998/namespace", "xml");
 
+	/**
+    * Return first child element with passed local name.
+    * @param ele parent element to evaluate
+    * @param localName local name of child element to match
+	 * @return first OMElement meeting criteria, or null if none do.
+	 */
 	public static OMElement firstChildWithLocalName(OMElement ele, String localName) {
 		for (Iterator<?> it=ele.getChildElements(); it.hasNext(); ) {
 			OMElement child = (OMElement) it.next();
@@ -38,6 +44,46 @@ public class XmlUtil {
 				return child;
 		}
 		return null;
+	}
+   
+   /**
+    * Return first child element with passed local name and attribute with 
+    * passed name and value.
+    * @param ele parent element to evaluate
+    * @param localName local name of child element to consider
+    * @param attr name of attribute to look for in child element
+    * @param value value that attribute should have
+    * @return first OMElement meeting criteria, or null if none do.
+    */
+   public static OMElement firstChildWithLocalNameAndAttribute(OMElement ele, 
+      String localName, String attr, String value) {
+      for(OMElement chil :  childrenWithLocalName(ele, localName)) {
+         String v = getAttributeValue(chil, attr);
+         if (v != null && v.equals(value)) return chil;
+      }
+      return null;
+   }
+	
+	/**
+	 * Return element which is first child repetitively. For example:<br/>
+	 * firstChildChain(top, "Section", "Step", SubStep") would start with top,
+	 * look for a first child "Section" under it, then a first child "Step" under
+	 * that, and finally a first child "SubStep" under that. The "SubStep"
+	 * element would be returned. If at any point the first child is not found,
+	 * null is returned.
+	 * @param ele parent element to start with
+	 * @param localNames one or more local names of the child elements at each
+	 * level.
+	 * @return the last child, or null if at any point the next child could not
+	 * be found.
+	 */
+	public static OMElement firstChildChain(OMElement ele, String... localNames) {
+	   OMElement chld = ele;
+	   for (String name : localNames) {
+	      chld = XmlUtil.firstChildWithLocalName(chld, name);
+	      if (chld == null) break;
+	   }
+	   return chld;
 	}
 
 	public static OMElement firstChildWithLocalNameEndingWith(OMElement ele, String localNameSuffix) {

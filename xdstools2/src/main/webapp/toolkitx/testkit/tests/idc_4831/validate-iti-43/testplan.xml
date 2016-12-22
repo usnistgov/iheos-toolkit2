@@ -1,0 +1,26 @@
+<TestPlan>
+	<Test>validate-iti-43</Test>
+	<TestStep id="validateRetrieve">
+		<Goal>Validate KOS Retrieve</Goal>
+		<ExpectedStatus>Success</ExpectedStatus>
+		<Standard>
+		<Retrieve>
+		   <RetrieveDocumentSetRequest 
+		      xmlns="urn:ihe:iti:xds-b:2007" 
+		      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+         <DocumentRequest>
+            <RepositoryUniqueId>1.3.6.1.4.1.21367.13.71.101.1</RepositoryUniqueId>
+            <DocumentUniqueId>1.42.20161212124001.2</DocumentUniqueId>
+         </DocumentRequest>
+      </RetrieveDocumentSetRequest>
+		</Retrieve>
+		</Standard>
+		<ImgDetailTransaction>
+			<Assertions>
+				<Assert id="Submitted KOS Retrieve validation" process="sameRetrieve">
+					<SimTransaction id="rr" transaction="ret"/>retrieve.xml
+				</Assert>
+			</Assertions>
+		</ImgDetailTransaction>
+	</TestStep>
+</TestPlan>

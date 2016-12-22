@@ -25,6 +25,11 @@ import java.util.List;
 
 public class ValidateMessageService {
 	RegistryValidationInterface rvi;
+	private HttpMessageValidator val = null;
+	
+	public HttpMessageValidator getHttpMessageValidator() {
+	   return val;
+	}
 
 	public ValidateMessageService(RegistryValidationInterface rvi) {
 	this.rvi = rvi;
@@ -35,7 +40,7 @@ public class ValidateMessageService {
 
 		if (mvc == null)
 			mvc = new MessageValidatorEngine();
-		HttpMessageValidator val = new HttpMessageValidator(vc, httpMsgHdr, httpMsgBody, gerb, mvc, rvi);
+		val = new HttpMessageValidator(vc, httpMsgHdr, httpMsgBody, gerb, mvc, rvi);
 		mvc.addMessageValidator("Parse HTTP Message", val, gerb.buildNewErrorRecorder());
 		mvc.run();
 

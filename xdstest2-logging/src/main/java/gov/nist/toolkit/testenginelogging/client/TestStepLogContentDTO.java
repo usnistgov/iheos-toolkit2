@@ -13,7 +13,7 @@ public class TestStepLogContentDTO implements Serializable, IsSerializable {
 	 *
 	 */
 	private static final long serialVersionUID = 2676088682465214583L;
-	private String id;
+	private String id;  
 	private boolean success;
 	private boolean expectedSuccess;
 	private boolean expectedWarning;
@@ -34,6 +34,8 @@ public class TestStepLogContentDTO implements Serializable, IsSerializable {
 	private String inHeader = null;
 	private String outHeader = null;
 	private String rootString;
+	
+	public TestStepLogContentDTO() {	}
 
 
 	public StepGoalsDTO getStepGoalsDTO() {

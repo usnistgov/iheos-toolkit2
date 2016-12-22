@@ -46,6 +46,8 @@ public class SimulatorTransaction {
    private String stdPfn;
    private String url;
    
+   private UseReportManager useReportManager = null;
+   
    private SimulatorTransaction(SimId simId, TransactionType transactionType, String pid, Date timeStamp) {
       this.simId = simId;
       this.transactionType = transactionType;
@@ -262,6 +264,33 @@ public class SimulatorTransaction {
 
    public void setUrl(String url) {
       this.url = url;
+   }
+   
+   /**
+    * Returns value for name from useReportMananger
+    * @param name use as name
+    * @return value, or "unavailable" if not found.
+    */
+   public String resolve(String name) {
+      for (UseReport ur : useReportManager.useReports) {
+         if (name.equalsIgnoreCase(ur.useAs)) return ur.value;
+      }
+      return "unavailable";
+   }
+   
+
+   /**
+    * @return the {@link #useReportManager} value.
+    */
+   public UseReportManager getUseReportManager() {
+      return useReportManager;
+   }
+
+   /**
+    * @param useReportManager the {@link #useReportManager} to set
+    */
+   public void setUseReportManager(UseReportManager useReportManager) {
+      this.useReportManager = useReportManager;
    }
 
    /**

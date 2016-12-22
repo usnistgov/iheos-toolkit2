@@ -27,7 +27,7 @@ public enum TransactionType implements Serializable, IsSerializable {
     XC_PATIENT_DISCOVERY("ITI-55", "Cross Community Patient Discovery", "xcpd", "xcpd", "xcpd.as", false, "urn:hl7-org:v3:PRPA_IN201305UV02:CrossGatewayPatientDiscovery", "urn:hl7-org:v3:PRPA_IN201306UV02:CrossGatewayPatientDiscovery", false),
     DIRECT("ONC-DIRECT", "ONC-DIRECT", "direct", "direct", "direct.as", false, "", "", false),
     PIF("PIF", "Patient Identity Feed", "pif", "pif", "pif", false, "", "", false),
-    WADO_RETRIEVE("RAD-55", "WADO Retrieve", "WADO", "wado", "wado", false, "", "", false),
+    WADO_RETRIEVE("RAD-55", "WADO Retrieve", "wado.ret.ids", "wado.ret.ids", "wado", false, false, true),
     RET_IMG_DOC_SET("RAD-69", "Retrieve Imaging Document Set", "ret.ids", "ret.ids.b", "ret.ids.as", true, "urn:ihe:rad:2009:RetrieveImagingDocumentSet", "urn:ihe:iti:2007:RetrieveDocumentSetResponse", true),
     RET_IMG_DOC_SET_GW("RAD-69", "Retrieve Img Doc Set Gateway", "ret.iig", "ret.iig.b", "ret.iig.as", true, "urn:ihe:rad:2009:RetrieveImagingDocumentSet", "urn:ihe:iti:2007:RetrieveDocumentSetResponse", true),
     XC_RET_IMG_DOC_SET("RAD-75", "Cross-Community Ret Img Doc Set", "xcr.ids", "xcr.ids.b", "xcr.ids.as", true, "urn:ihe:rad:2011:CrossGatewayRetrieveImagingDocumentSet", "urn:ihe:rad:2011:CrossGatewayRetrieveImagingDocumentSetResponse", true),
@@ -36,13 +36,14 @@ public enum TransactionType implements Serializable, IsSerializable {
 	private static final long serialVersionUID = 1L;
     String id = "";
     String name = "";
-	String shortName = "";
+	 String shortName = "";
     String code = "";   // like pr.b - used in actors table
     String asyncCode = "";
     boolean needsRepUid = false;  // I think maybe not used? RM
     String requestAction = "";
     String responseAction = "";
     boolean requiresMtom = false;
+    boolean http = false; // Is this Http only (non-SOAP) transaction
 
 	TransactionType() {
 	}  // For GWT
@@ -58,6 +59,16 @@ public enum TransactionType implements Serializable, IsSerializable {
         this.responseAction = responseAction;
         this.requiresMtom = requiresMtom;
     }
+    TransactionType(String id, String name, String shortName, String code, String asyncCode, boolean needsRepUid, boolean requiresMtom, boolean httpOnly) {
+       this.id = id;
+       this.name = name;
+       this.shortName = shortName;
+       this.code = code;
+       this.asyncCode = asyncCode;
+       this.needsRepUid = needsRepUid;
+       this.requiresMtom = requiresMtom;
+       this.http = httpOnly;
+   }
 
     public boolean isRequiresMtom() {
         return requiresMtom;
@@ -100,6 +111,10 @@ public enum TransactionType implements Serializable, IsSerializable {
     */
    public String getResponseAction() {
       return responseAction;
+   }
+   
+   public boolean isHttpOnly() {
+      return http;
    }
 
    public boolean equals(TransactionType tt) {

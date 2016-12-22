@@ -18,7 +18,7 @@
 						status="urn:oasis:names:tc:ebxml-regrep:ResponseStatusType:Failure">
 						<rs:RegistryErrorList>
 							<rs:RegistryError codeContext="No valid Xfer Syntax"
-								errorCode="XDSIRequestError" location="IdsActorSimulator"
+								errorCode="XDSRepositoryError" location="IdsActorSimulator"
 								severity="urn:oasis:names:tc:ebxml-regrep:ErrorSeverityType:Error" />
 						</rs:RegistryErrorList>
 					</rs:RegistryResponse>

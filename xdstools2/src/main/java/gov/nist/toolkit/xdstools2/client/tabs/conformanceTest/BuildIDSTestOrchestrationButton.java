@@ -123,17 +123,17 @@ public class BuildIDSTestOrchestrationButton extends AbstractOrchestrationButton
            return;
        }
 
-        initializationResultsPanel.clear();
-
-        IdsOrchestrationRequest request = new IdsOrchestrationRequest();
-        request.setUserName(testTab.getCurrentTestSession());
-        request.setEnvironmentName(testTab.getEnvironmentSelection());
-        request.setUseExistingState(!isResetRequested());
-        SiteSpec siteSpec = new SiteSpec(testContext.getSiteName());
-        if (isSaml()) {
-            setSamlAssertion(siteSpec);
-        }
-        request.setSiteUnderTest(siteSpec);
+      initializationResultsPanel.clear();
+      
+      IdsOrchestrationRequest request = new IdsOrchestrationRequest();
+      request.setUserName(testTab.getCurrentTestSession());
+      request.setEnvironmentName(testTab.getEnvironmentSelection());
+      request.setUseExistingSimulator(!isResetRequested());
+      SiteSpec siteSpec = new SiteSpec(testContext.getSiteName());
+       if (isSaml()) {
+           setSamlAssertion(siteSpec);
+       }
+       request.setSiteUnderTest(siteSpec);
 
         testTab.setSiteToIssueTestAgainst(siteSpec);
 

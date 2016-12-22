@@ -1,0 +1,154 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<TestPlan>
+    <Test>XDSIDocumentLoad</Test>
+    <TestStep id="submit_doc">
+        <ExpectedStatus>Success</ExpectedStatus>
+        <ProvideAndRegisterTransaction>
+            <XDSb/>
+            <AssignUuids/>
+            <NoPatientId/>
+            <MetadataFile>metadata-IDCDEPT001-a.xml</MetadataFile>
+            <Document id="Document01">kos-IDCDEPT001-a.dcm</Document>
+        </ProvideAndRegisterTransaction>
+    </TestStep>
+    <TestStep id="submit_doc">
+        <ExpectedStatus>Success</ExpectedStatus>
+        <ProvideAndRegisterTransaction>
+            <XDSb/>
+            <AssignUuids/>
+            <NoPatientId/>
+            <MetadataFile>metadata-IDCDEPT011-a.xml</MetadataFile>
+            <Document id="Document01">kos-IDCDEPT011-a.dcm</Document>
+        </ProvideAndRegisterTransaction>
+    </TestStep>
+    <TestStep id="submit_doc">
+        <ExpectedStatus>Success</ExpectedStatus>
+        <ProvideAndRegisterTransaction>
+            <XDSb/>
+            <AssignUuids/>
+            <NoPatientId/>
+            <MetadataFile>metadata-IDCDEPT012-a.xml</MetadataFile>
+            <Document id="Document01">kos-IDCDEPT012-a.dcm</Document>
+        </ProvideAndRegisterTransaction>
+    </TestStep>
+    <TestStep id="submit_doc">
+        <ExpectedStatus>Success</ExpectedStatus>
+        <ProvideAndRegisterTransaction>
+            <XDSb/>
+            <AssignUuids/>
+            <NoPatientId/>
+            <MetadataFile>metadata-IDCDEPT013-a.xml</MetadataFile>
+            <Document id="Document01">kos-IDCDEPT013-a.dcm</Document>
+        </ProvideAndRegisterTransaction>
+    </TestStep>
+    <TestStep id="submit_doc">
+        <ExpectedStatus>Success</ExpectedStatus>
+        <ProvideAndRegisterTransaction>
+            <XDSb/>
+            <AssignUuids/>
+            <NoPatientId/>
+            <MetadataFile>metadata-IDCDEPT021-a.xml</MetadataFile>
+            <Document id="Document01">kos-IDCDEPT021-a.dcm</Document>
+        </ProvideAndRegisterTransaction>
+    </TestStep>
+    <TestStep id="submit_doc">
+        <ExpectedStatus>Success</ExpectedStatus>
+        <ProvideAndRegisterTransaction>
+            <XDSb/>
+            <AssignUuids/>
+            <NoPatientId/>
+            <MetadataFile>metadata-IDCDEPT022-a.xml</MetadataFile>
+            <Document id="Document01">kos-IDCDEPT022-a.dcm</Document>
+        </ProvideAndRegisterTransaction>
+    </TestStep>
+    <TestStep id="submit_doc">
+        <ExpectedStatus>Success</ExpectedStatus>
+        <ProvideAndRegisterTransaction>
+            <XDSb/>
+            <AssignUuids/>
+            <NoPatientId/>
+            <MetadataFile>metadata-IDCDEPT023-a.xml</MetadataFile>
+            <Document id="Document01">kos-IDCDEPT023-a.dcm</Document>
+        </ProvideAndRegisterTransaction>
+    </TestStep>
+    <TestStep id="submit_doc">
+        <ExpectedStatus>Success</ExpectedStatus>
+        <ProvideAndRegisterTransaction>
+            <XDSb/>
+            <AssignUuids/>
+            <NoPatientId/>
+            <MetadataFile>metadata-IDCDEPT031-a.xml</MetadataFile>
+            <Document id="Document01">kos-IDCDEPT031-a.dcm</Document>
+        </ProvideAndRegisterTransaction>
+    </TestStep>
+    <TestStep id="submit_doc">
+        <ExpectedStatus>Success</ExpectedStatus>
+        <ProvideAndRegisterTransaction>
+            <XDSb/>
+            <AssignUuids/>
+            <NoPatientId/>
+            <MetadataFile>metadata-IDCDEPT032-a.xml</MetadataFile>
+            <Document id="Document01">kos-IDCDEPT032-a.dcm</Document>
+        </ProvideAndRegisterTransaction>
+    </TestStep>
+    <TestStep id="submit_doc">
+        <ExpectedStatus>Success</ExpectedStatus>
+        <ProvideAndRegisterTransaction>
+            <XDSb/>
+            <AssignUuids/>
+            <NoPatientId/>
+            <MetadataFile>metadata-IDCDEPT033-a.xml</MetadataFile>
+            <Document id="Document01">kos-IDCDEPT033-a.dcm</Document>
+        </ProvideAndRegisterTransaction>
+    </TestStep>
+    <TestStep id="submit_doc">
+        <ExpectedStatus>Success</ExpectedStatus>
+        <ProvideAndRegisterTransaction>
+            <XDSb/>
+            <AssignUuids/>
+            <NoPatientId/>
+            <MetadataFile>metadata-IDCDEPT034-a.xml</MetadataFile>
+            <Document id="Document01">kos-IDCDEPT034-a.dcm</Document>
+        </ProvideAndRegisterTransaction>
+    </TestStep>
+    <TestStep id="submit_doc">
+        <ExpectedStatus>Success</ExpectedStatus>
+        <ProvideAndRegisterTransaction>
+            <XDSb/>
+            <AssignUuids/>
+            <NoPatientId/>
+            <MetadataFile>metadata-IDCDEPT035-a.xml</MetadataFile>
+            <Document id="Document01">kos-IDCDEPT035-a.dcm</Document>
+        </ProvideAndRegisterTransaction>
+    </TestStep>
+    <TestStep id="submit_doc">
+        <ExpectedStatus>Success</ExpectedStatus>
+        <ProvideAndRegisterTransaction>
+            <XDSb/>
+            <AssignUuids/>
+            <NoPatientId/>
+            <MetadataFile>metadata-IDCDEPT036-a.xml</MetadataFile>
+            <Document id="Document01">kos-IDCDEPT036-a.dcm</Document>
+        </ProvideAndRegisterTransaction>
+    </TestStep>
+    <TestStep id="submit_doc">
+        <ExpectedStatus>Success</ExpectedStatus>
+        <ProvideAndRegisterTransaction>
+            <XDSb/>
+            <AssignUuids/>
+            <NoPatientId/>
+            <MetadataFile>metadata-IDCDEPT041-a.xml</MetadataFile>
+            <Document id="Document01">kos-IDCDEPT041-a.dcm</Document>
+        </ProvideAndRegisterTransaction>
+    </TestStep>
+    <TestStep id="submit_doc">
+        <ExpectedStatus>Success</ExpectedStatus>
+        <ProvideAndRegisterTransaction>
+            <XDSb/>
+            <AssignUuids/>
+            <NoPatientId/>
+            <MetadataFile>metadata-IDCDEPT042-a.xml</MetadataFile>
+            <Document id="Document01">kos-IDCDEPT042-a.dcm</Document>
+        </ProvideAndRegisterTransaction>
+    </TestStep>
+</TestPlan>

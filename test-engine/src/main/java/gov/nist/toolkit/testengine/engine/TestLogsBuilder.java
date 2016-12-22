@@ -18,7 +18,7 @@ public class TestLogsBuilder {
 		for (LogMapItemDTO item : logMapDTO.getItems()) {
 			LogFileContentDTO logFile = item.getLog();
 			for (TestStepLogContentDTO stepLog : logFile.getStepLogs()) {
-				TestLog testLog = new TestLog();
+            TestLog testLog = new TestLog();
 				String stepName = stepLog.getId();
 				logs.logs.add(testLog);
 
@@ -29,8 +29,8 @@ public class TestLogsBuilder {
 				testLog.outHeader = new OMFormatter(stepLog.getOutHeader()).toHtml();
 				testLog.result = new OMFormatter(stepLog.getResult()).toHtml();
 				testLog.status = stepLog.getStatus();
-                testLog.assignedIds  = stepLog.getAssignedIds();
-                testLog.assignedUids = stepLog.getAssignedUids();
+            testLog.assignedIds  = stepLog.getAssignedIds();
+            testLog.assignedUids = stepLog.getAssignedUids();
 				testLog.errors = listAsString(stepLog.getErrors());
 
 				testLog.log = new OMFormatter(stepLog.getRoot()).toHtml();

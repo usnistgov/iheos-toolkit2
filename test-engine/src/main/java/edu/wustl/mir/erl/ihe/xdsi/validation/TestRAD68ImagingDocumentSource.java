@@ -9,6 +9,8 @@ import java.nio.file.Paths;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
 
+import gov.nist.toolkit.testengine.engine.SimulatorTransaction;
+
 import edu.wustl.mir.erl.ihe.xdsi.util.PfnType;
 import edu.wustl.mir.erl.ihe.xdsi.util.PrsSimLogs;
 import edu.wustl.mir.erl.ihe.xdsi.util.Utility;
@@ -21,6 +23,7 @@ public class TestRAD68ImagingDocumentSource extends Test {
    private static Logger log = null;
    private static Path root = Paths.get(Utility.getXDSIRoot());
    private String testCmd = null;
+   SimulatorTransaction trn = null;
 
    /**
     * <b>Parameters:</b>
@@ -73,7 +76,7 @@ public class TestRAD68ImagingDocumentSource extends Test {
 				stdDcmPfn });
 		addStep(stepRAD68KOSDocument);
 
-		StepRAD68KOSMetadata stepRAD68KOSMetadata = new StepRAD68KOSMetadata();
+		StepRAD68KOSMetadata stepRAD68KOSMetadata = new StepRAD68KOSMetadata(trn);
 		stepRAD68KOSMetadata.initializeStep(new Object[] { testXmlPfn,
 				stdXmlPfn });
 		addStep(stepRAD68KOSMetadata);

@@ -23,8 +23,14 @@ public class HttpMessageValidator extends AbstractMessageValidator {
 	ErrorRecorderBuilder erBuilder;
 	MessageValidatorEngine mvc;
 	RegistryValidationInterface rvi;
+	
+	public HttpParserBa getHttpParserBa() {
+	   return hparser;
+	}
 
-	public HttpMessageValidator(ValidationContext vc, String header, byte[] body, ErrorRecorderBuilder erBuilder, MessageValidatorEngine mvc, RegistryValidationInterface rvi) {
+	public HttpMessageValidator(ValidationContext vc, String header, byte[] body, 
+	   ErrorRecorderBuilder erBuilder, MessageValidatorEngine mvc, 
+	   RegistryValidationInterface rvi) {
 		super(vc);
 		this.header = header;
 		this.body = body;
@@ -33,7 +39,9 @@ public class HttpMessageValidator extends AbstractMessageValidator {
 		this.rvi = rvi;
 	}
 
-	public HttpMessageValidator(ValidationContext vc, HttpParserBa hparser, ErrorRecorderBuilder erBuilder, MessageValidatorEngine mvc, RegistryValidationInterface rvi) {
+	public HttpMessageValidator(ValidationContext vc, HttpParserBa hparser, 
+	   ErrorRecorderBuilder erBuilder, MessageValidatorEngine mvc, 
+	   RegistryValidationInterface rvi) {
 		super(vc);
 		this.hparser = hparser;
 		this.erBuilder = erBuilder;
@@ -57,9 +65,10 @@ public class HttpMessageValidator extends AbstractMessageValidator {
             }
 
 			if (header != null)
-				hparser = new HttpParserBa(header.getBytes()); // since this is an exploratory parse, don't pass er
+            if (vc.isRad55) hparser = new HttpParserBa(header.getBytes(), new String[] {"GET"});
+            else hparser = new HttpParserBa(header.getBytes()); // since this is an exploratory parse, don't pass er
 			else
-				body = hparser.getBody();
+				body = hparser.getBody(); 
 
 			hparser.setErrorRecorder(er);
 			if (hparser.isMultipart()) {
@@ -76,6 +85,7 @@ public class HttpMessageValidator extends AbstractMessageValidator {
                 } else {
                     er.success("", "Message format", "SIMPLE Format", "SIMPLE Format", "ITI TF Volumes 2a and 2b");
                 }
+                if (!vc.isRad55)
 				mvc.addMessageValidator("Parse SIMPLE SOAP message", new SimpleSoapHttpHeaderValidator(vc, hparser, body, erBuilder, mvc, rvi), erBuilder.buildNewErrorRecorder());
 			}
 		} catch (HttpParseException e) {

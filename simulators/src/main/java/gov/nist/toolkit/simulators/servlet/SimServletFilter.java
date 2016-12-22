@@ -19,11 +19,13 @@ import java.util.Map;
 public class SimServletFilter implements Filter {
 	static Logger logger = Logger.getLogger(SimServletFilter.class);
 
-	public void destroy() {
+	@Override
+   public void destroy() {
 
 	}
 
-	public void doFilter(ServletRequest request, ServletResponse response,
+	@Override
+   public void doFilter(ServletRequest request, ServletResponse response,
 			FilterChain chain) throws IOException, ServletException {
 		SimServletResponseWrapper wrapper = new SimServletResponseWrapper((HttpServletResponse) response);
 		chain.doFilter(request,wrapper);
@@ -82,7 +84,8 @@ public class SimServletFilter implements Filter {
         logger.info("...callback successful");
     }
 
-	public void init(FilterConfig arg0) throws ServletException {
+	@Override
+   public void init(FilterConfig arg0) throws ServletException {
 
 	}
 

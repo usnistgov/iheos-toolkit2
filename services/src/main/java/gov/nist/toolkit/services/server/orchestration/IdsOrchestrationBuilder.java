@@ -17,10 +17,8 @@ import gov.nist.toolkit.services.server.ToolkitApi;
 import gov.nist.toolkit.session.server.Session;
 import gov.nist.toolkit.simcommon.client.config.SimulatorConfigElement;
 
-
 /**
 * Build environment for testing Imaging Document Source SUT.
-*
 */
 
 class IdsOrchestrationBuilder {
@@ -51,10 +49,12 @@ class IdsOrchestrationBuilder {
            
            try {
               for (Orchestra sim : Orchestra.values()) {
+                 SimulatorConfig simConfig = null;
                  SimId simId = new SimId(user, sim.name(), sim.actorType.getName(), env);
+                 if (!request.isUseExistingSimulator() || !api.simulatorExists(simId)) {
                  api.deleteSimulatorIfItExists(simId);
                  log.debug("Creating " + simId.toString());
-                 SimulatorConfig simConfig = api.createSimulator(simId).getConfig(0);
+                 simConfig = api.createSimulator(simId).getConfig(0);
                  // plug our special parameter values
                  for (SimulatorConfigElement chg : sim.elements) {
                     chg.setEditable(true);
@@ -71,11 +71,10 @@ class IdsOrchestrationBuilder {
                     simConfig.replace(chg);
                  }
                  api.saveSimulator(simConfig);
-                 if (sim.name().equals(sutSimulatorName)) sutSimulatorConfig = simConfig;
-                 if (sim.name().equals(rrSimulatorName)) rrSimulatorConfig = simConfig;
-                 simConfigs.add(simConfig);
+                 } else {
+                    simConfig = api.getConfig(simId);
+                 }
               }
-
               IdsOrchestrationResponse response = new IdsOrchestrationResponse();
               response.setIdsSimulatorConfig(sutSimulatorConfig);
               response.setRRConfig(rrSimulatorConfig);

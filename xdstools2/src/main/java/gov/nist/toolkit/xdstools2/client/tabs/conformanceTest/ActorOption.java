@@ -83,6 +83,11 @@ public class ActorOption {
         return actorTypeId != null
                 && ActorType.IMAGING_DOC_SOURCE.getShortName().equals(actorTypeId);
     }
+    
+    public boolean isIDC() {
+       return actorTypeId != null 
+                && ActorType.IMAGING_DOC_CONSUMER.getShortName().equals(actorTypeId);
+    }
 
     void setOptionId(String optionId) {
         this.optionId = optionId;

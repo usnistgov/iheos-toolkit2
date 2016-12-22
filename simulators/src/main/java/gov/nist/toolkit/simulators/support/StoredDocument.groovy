@@ -11,7 +11,7 @@ public class StoredDocument implements Serializable {
 	
 	private static final long serialVersionUID = 1L;
 
-    String pathToDocument;
+   String pathToDocument;
 	String uid;
 	String mimeType;
 	String charset;
@@ -79,7 +79,6 @@ public class StoredDocument implements Serializable {
 	public void setHash(String hash) {
 		this.hash = hash;
 	}
-	
 	public void setSize(String size) {
 		this.size = size;
 	}

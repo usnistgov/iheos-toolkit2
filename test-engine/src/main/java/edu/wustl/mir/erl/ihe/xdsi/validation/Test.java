@@ -4,6 +4,10 @@ import edu.wustl.mir.erl.ihe.xdsi.util.Utility;
 
 import java.util.ArrayList;
 import java.util.Calendar;
+
+import gov.nist.toolkit.testengine.engine.ReportManager;
+import gov.nist.toolkit.testengine.engine.UseReportManager;
+
 import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.File;
@@ -19,7 +23,6 @@ public abstract class Test  {
    
 	protected ArrayList<Step> steps = new ArrayList<Step>();
 	protected String reportFolder = null;
-	
 	
 	public String getReportFolder() {
 		return reportFolder;

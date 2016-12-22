@@ -1,0 +1,17 @@
+<TestPlan>
+	<Test>ids_4808/retrieve</Test>
+	<TestStep id="retrieve">
+		<Goal>WADO Retrieve of enhanced images</Goal>
+		<ExpectedStatus>Success</ExpectedStatus>
+		<WADOTransaction>
+			<Headers>
+				<contentType>application/jpeg</contentType>
+			</Headers>
+			<Parameters>
+         studyUID=1.3.6.1.4.1.5962.1.2.5017.1166546115.14677
+         seriesUID=1.3.6.1.4.1.5962.1.3.5017.1.1166546115.14677
+         objectUID=1.3.6.1.4.1.5962.1.9.5017.1.1166546115.14677
+			</Parameters>
+		</WADOTransaction>
+	</TestStep>
+</TestPlan>

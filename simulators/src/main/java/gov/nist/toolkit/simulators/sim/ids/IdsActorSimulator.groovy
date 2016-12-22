@@ -14,6 +14,7 @@ import gov.nist.toolkit.simulators.support.DsSimCommon
 import gov.nist.toolkit.simulators.support.GatewaySimulatorCommon
 import gov.nist.toolkit.simulators.support.SimCommon
 import gov.nist.toolkit.utilities.xml.XmlUtil
+import gov.nist.toolkit.validatorsSoapMessage.message.HttpMessageValidator
 import gov.nist.toolkit.validatorsSoapMessage.message.SoapMessageValidator
 import gov.nist.toolkit.valsupport.engine.MessageValidatorEngine
 import groovy.transform.TypeChecked
@@ -37,6 +38,7 @@ public class IdsActorSimulator extends GatewaySimulatorCommon {
       transactions.add(TransactionType.RET_IMG_DOC_SET);
       transactions.add(TransactionType.IG_QUERY);
       transactions.add(TransactionType.IG_RETRIEVE);
+      transactions.add(TransactionType.WADO_RETRIEVE);
    }
    public boolean supports(TransactionType transactionType) {
       return transactions.contains(transactionType);
@@ -151,7 +153,7 @@ public class IdsActorSimulator extends GatewaySimulatorCommon {
                transferSyntaxUids.add(xferSyntaxUid);
             }
             if (transferSyntaxUids.isEmpty()) {
-               er.err(Code.XDSIRequestError, "No valid Xfer Syntax",
+               er.err(Code.XDSRepositoryError, "No valid Xfer Syntax",
                      "IdsActorSimulator", "");
                returnRetrieveError(mvc);
                return false;
@@ -264,12 +266,42 @@ public class IdsActorSimulator extends GatewaySimulatorCommon {
           */
 
             return false;
+            
+      case TransactionType.WADO_RETRIEVE:
+         logger.debug("Transaction Type: WADO_RETRIEVE");
+         common.vc.hasHttp = true;
+         
+         logger.debug("dsSimCommon.runInitialValidationsAndFaultIfNecessary()");
+         if (!dsSimCommon.runInitialValidationsAndFaultIfNecessary()) {
+            returnRetrieveError(mvc);
+            return false;
+         }
+         
+         logger.debug("mvc.hasErrors()");
+         if (mvc.hasErrors()) {
+            returnRetrieveError(mvc);
+            return false;
+         }
+         logger.debug("Extract query from validator chain");
+         HttpMessageValidator smv = (HttpMessageValidator) common.getMessageValidatorIfAvailable(HttpMessageValidator.class);
+         if (smv == null || !(smv instanceof HttpMessageValidator)) {
+            er.err(Code.XDSRegistryError, "IDS Internal Error - cannot find HttpMessageValidator instance",
+                  "IdsActorSimulator", "");
+            returnRetrieveError(mvc);
+            return false;
+         }
+         logger.debug("Got AbstractMessageValidator");
+         
+         logger.debug("This is as far as we've gotten.");
+         
+         return true;
+
 
          default:
             er.err(Code.XDSRegistryError, "Don't understand transaction " + transactionType, "ImagingDocSourceActorSimulator", "");
             dsSimCommon.sendFault("Don't understand transaction " + transactionType, null);
             return true;
-      }
+      } // EO switch(transactionType)
    }
 
 

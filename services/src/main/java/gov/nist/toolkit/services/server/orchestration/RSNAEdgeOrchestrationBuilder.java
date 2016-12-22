@@ -72,13 +72,5 @@ public class RSNAEdgeOrchestrationBuilder {
          return RawResponseBuilder.build(e);
       }
    } // EO build test environment
-   
-   
-
-   private String getImageCache() {
-      String c = Installation.instance().propertyServiceManager().getPropertyManager().getImageCache();
-      log.debug("Image Cache: " + c);
-      return c;
-   }
 
 } // EO IigOrchestration builder

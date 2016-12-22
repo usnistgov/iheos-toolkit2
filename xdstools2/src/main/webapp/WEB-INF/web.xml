@@ -64,6 +64,26 @@
         <url-pattern>/xdstools2/sim/*</url-pattern>
     </filter-mapping>
 
+    <filter>
+        <filter-name>http-response-header-log</filter-name>
+        <filter-class>gov.nist.toolkit.simulators.servlet.HttpSimServletFilter</filter-class>
+    </filter>
+
+    <filter>
+        <filter-name>http-response-header-log2</filter-name>
+        <filter-class>gov.nist.toolkit.simulators.servlet.HttpSimServletFilter</filter-class>
+    </filter>
+
+    <filter-mapping>
+        <filter-name>http-response-header-log</filter-name>
+        <url-pattern>/httpsim/*</url-pattern>
+    </filter-mapping>
+
+    <filter-mapping>
+        <filter-name>http-response-header-log2</filter-name>
+        <url-pattern>/xdstools2/httpsim/*</url-pattern>
+    </filter-mapping>
+
     <listener>
         <listener-class>gov.nist.toolkit.xdstools2.server.SessionListener</listener-class>
     </listener>
@@ -93,27 +113,33 @@
         <servlet-class>gov.nist.toolkit.xdstools2.server.upload.UploadServlet</servlet-class>
     </servlet>
 
+	<servlet>
+		<servlet-name>simulatorServlet</servlet-name>
+		<servlet-class>gov.nist.toolkit.simulators.servlet.SimServlet</servlet-class>
+		<load-on-startup>1</load-on-startup>
+	</servlet>
+
     <servlet>
-        <servlet-name>simulatorServlet</servlet-name>
-        <servlet-class>gov.nist.toolkit.simulators.servlet.SimServlet</servlet-class>
+        <servlet-name>httpSimulatorServlet</servlet-name>
+        <servlet-class>gov.nist.toolkit.simulators.servlet.HttpSimServlet</servlet-class>
         <load-on-startup>1</load-on-startup>
     </servlet>
 
     <servlet>
-        <servlet-name>Reconfigure Simulators</servlet-name>
-        <servlet-class>gov.nist.toolkit.simulators.servlet.ReconfigureSimulators</servlet-class>
-        <load-on-startup>2</load-on-startup>
-    </servlet>
-
-    <!--<servlet>-->
-    <!--<servlet-name>simulatorServlet2</servlet-name>-->
-    <!--<servlet-class>gov.nist.toolkit.simulators.servlet.SimServlet</servlet-class>-->
-    <!--</servlet>-->
-
-    <servlet>
-        <servlet-name>messageServlet</servlet-name>
-        <servlet-class>gov.nist.toolkit.simulators.servlet.SimServlet</servlet-class>
-    </servlet>
+		<servlet-name>Reconfigure Simulators</servlet-name>
+		<servlet-class>gov.nist.toolkit.simulators.servlet.ReconfigureSimulators</servlet-class>
+		<load-on-startup>2</load-on-startup>
+	</servlet>
+	
+	<!--<servlet>-->
+		<!--<servlet-name>simulatorServlet2</servlet-name>-->
+		<!--<servlet-class>gov.nist.toolkit.simulators.servlet.SimServlet</servlet-class>-->
+	<!--</servlet>-->
+	
+	<servlet>
+		<servlet-name>messageServlet</servlet-name>
+		<servlet-class>gov.nist.toolkit.simulators.servlet.SimServlet</servlet-class>
+	</servlet>
 
     <servlet>
         <servlet-name>siteServlet</servlet-name>
@@ -192,9 +218,19 @@
         <url-pattern>/sim/*</url-pattern>
     </servlet-mapping>
 
+	<servlet-mapping>
+		<servlet-name>simulatorServlet</servlet-name>
+		<url-pattern>/xdstools2/sim/*</url-pattern>
+	</servlet-mapping>
+
     <servlet-mapping>
-        <servlet-name>simulatorServlet</servlet-name>
-        <url-pattern>/xdstools2/sim/*</url-pattern>
+        <servlet-name>httpSimulatorServlet</servlet-name>
+        <url-pattern>/httpsim/*</url-pattern>
+    </servlet-mapping>
+
+    <servlet-mapping>
+        <servlet-name>httpSimulatorServlet</servlet-name>
+        <url-pattern>/xdstools2/httpsim/*</url-pattern>
     </servlet-mapping>
 
     <servlet-mapping>

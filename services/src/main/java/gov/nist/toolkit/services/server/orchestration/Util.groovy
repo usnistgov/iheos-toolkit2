@@ -67,4 +67,11 @@ class Util {
         if (!results.get(0).passed())
             throw new Exception(results.get(0).toString())
     }
+
+    public void submit(String userName, SiteSpec site, TestInstance testId) {
+       Map<String, String> parameters = new HashMap<>();
+        List<Result> results = api.runTest(userName, site, testId, null, parameters, true)
+        if (!results.get(0).passed())
+            throw new Exception(results.get(0).toString())
+    }
 }

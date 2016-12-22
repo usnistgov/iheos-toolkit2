@@ -6,8 +6,11 @@ import gov.nist.toolkit.registrymetadata.client.*;
 
 
 public class ListingDisplay {
+   /** Parent tab for this display */
 	MetadataInspectorTab tab;
+	/** DataModel for this display, could be test or step */
 	DataModel data;
+	/** Tree element serving as root for this display */
 	TreeThing root;
 
 	public ListingDisplay(MetadataInspectorTab tab, DataModel data, TreeThing root) {
@@ -15,7 +18,9 @@ public class ListingDisplay {
 		this.data = data;
 		this.root = root;
 	}
-	
+	/**
+	 * Build tree display for a DataModel
+	 */
 	void listing() {
 		for (SubmissionSet ss : data.combinedMetadata.submissionSets) {
 			TreeItem item = new TreeItem(HyperlinkFactory.link(tab, ss));
@@ -83,7 +88,9 @@ public class ListingDisplay {
 				ti.addItem(item);
 			}
 		}
-
+      /*
+       * Display links to each document
+       */
 		if (data.allDocs != null && !data.allDocs.isEmpty()) {
 			for (Document doc : data.allDocs) {
 				String title = "";

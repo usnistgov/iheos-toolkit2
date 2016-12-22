@@ -3,6 +3,7 @@ package gov.nist.toolkit.simulators.support;
 import gov.nist.toolkit.actorfactory.SimDb;
 import gov.nist.toolkit.actorfactory.client.NoSimException;
 import gov.nist.toolkit.actorfactory.client.SimId;
+import gov.nist.toolkit.actorfactory.client.SimulatorConfig;
 import gov.nist.toolkit.errorrecording.ErrorRecorder;
 import gov.nist.toolkit.errorrecording.GwtErrorRecorder;
 import gov.nist.toolkit.errorrecording.GwtErrorRecorderBuilder;
@@ -19,6 +20,7 @@ import gov.nist.toolkit.valsupport.message.ServiceRequestContainer;
 import gov.nist.toolkit.xdsexception.client.XdsException;
 import org.apache.log4j.Logger;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.File;
 import java.io.IOException;
@@ -41,9 +43,11 @@ public class SimCommon {
 	MessageValidationResults mvr = null;
 	public MessageValidatorEngine mvc = null;
 	public ValidationContext vc = null;
+	public SimulatorConfig simConfig = null;
+	public HttpServletRequest request = null;
 	public HttpServletResponse response = null;
 	OutputStream os = null;
-	ValidateMessageService vms = null;
+	ValidateMessageService vms = new ValidateMessageService(null);
 	boolean faultReturned = false;
 	boolean responseSent = false;
 	static Logger logger = Logger.getLogger(SimCommon.class);
@@ -52,6 +56,12 @@ public class SimCommon {
 		return faultReturned || responseSent;
 	}
 
+   public SimCommon(SimDb db, SimulatorConfig simConfig, boolean tls, ValidationContext vc, MessageValidatorEngine mvc, 
+      HttpServletRequest request, HttpServletResponse response) throws IOException, XdsException {
+      this(db, tls, vc, mvc, response);
+      this.simConfig = simConfig;
+      this.request = request;
+   }
 
 
 	/**
@@ -208,6 +218,22 @@ public class SimCommon {
 		} catch (NoSimException e) {
 			// doesn't exist - ok
 		}
+	}
+	
+	public void setLogger(Logger log) {
+	   logger = log;
+	}
+	
+	public void sendHttpFault(String em) {
+	   sendHttpFault(400, em);
+	}
+	public void sendHttpFault(int status, String em) {
+	   logger.info("HTTP Error response: " + status + " " + em);
+	   try {
+         response.sendError(status, em);
+      } catch (IOException e) {
+         logger.warn("IO error sending http response");
+      }
 	}
 
 

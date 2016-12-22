@@ -1,8 +1,11 @@
 package edu.wustl.mir.erl.ihe.xdsi.validation;
 
+import gov.nist.toolkit.testengine.engine.SimulatorTransaction;
+
 @SuppressWarnings("javadoc")
 public class StepRAD68KOSDocument extends Step {
 	
+  
    /**
     * <b>Parameters:</b>
     * <ol>

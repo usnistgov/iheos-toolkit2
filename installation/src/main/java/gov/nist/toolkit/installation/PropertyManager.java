@@ -18,7 +18,7 @@ public class PropertyManager {
 	static private final String GAZELLE_CONFIG_URL  = "Gazelle_Config_URL";
 	static private final String EXTERNAL_CACHE      = "External_Cache";
 	static private final String USE_ACTORS_FILE     = "Use_Actors_File";
-	static public final String ENABLE_SAML			= "Enable_SAML";
+	static public  final String ENABLE_SAML			= "Enable_SAML";
 	static private final String TESTKIT             = "Testkit";
 	static private final String LISTENER_PORT_RANGE = "Listener_Port_Range";
 	static private final String AUTO_INIT_CONFORMANCE_TOOL = "Auto_init_conformance_tool";
@@ -173,13 +173,6 @@ public class PropertyManager {
 			cache = cache.replaceAll("%20", " ");
 //		System.setProperty("External_Cache", cache);
 		return cache;
-	}
-	
-	public String getImageCache() {
-	   loadProperties();
-	   String cache = (String) toolkitProperties.getProperty("Image_Cache");
-	   System.setProperty("Image_Cache", cache);
-	   return cache;
 	}
 	
 	public boolean isUseActorsFile() {

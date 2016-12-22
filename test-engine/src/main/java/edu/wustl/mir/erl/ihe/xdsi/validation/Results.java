@@ -6,6 +6,9 @@ package edu.wustl.mir.erl.ihe.xdsi.validation;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.lang.StringEscapeUtils;
+import org.apache.commons.lang3.StringUtils;
+
 /**
  * Collect test results
  */
@@ -130,7 +133,7 @@ public Results() { }
       for(String l : uncategorizedDetails) sb.append("uncateg ").append(l).append(nl);
       return sb.toString();
    }
-
+   
    protected void roll(List<String> up, String prefix, List<String> dns) {
       for (String dn : dns) up.add(prefix + ": " + dn);
    }

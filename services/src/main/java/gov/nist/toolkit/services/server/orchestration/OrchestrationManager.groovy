@@ -83,6 +83,20 @@ class OrchestrationManager {
         }
     }
 
+    public RawResponse buildIdcTestEnvironment(Session session, IdcOrchestrationRequest request) {
+        try {
+            ToolkitApi api
+            if(Installation.instance().warHome()) {
+                api = ToolkitApi.forNormalUse(session)
+            } else {
+                api = ToolkitApi.forInternalUse()
+            }
+            return new IdcOrchestrationBuilder(api, session, request).buildTestEnvironment()
+        } catch (Exception e) {
+            return RawResponseBuilder.build(e);
+        }
+    }
+
     public RawResponse buildRepTestEnvironment(Session session, RepOrchestrationRequest request) {
         try {
             ToolkitApi api
