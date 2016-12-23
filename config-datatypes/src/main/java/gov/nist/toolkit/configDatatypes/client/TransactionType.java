@@ -44,6 +44,7 @@ public enum TransactionType implements Serializable, IsSerializable {
     String responseAction = "";
     boolean requiresMtom = false;
     boolean http = false; // Is this Http only (non-SOAP) transaction
+//    Map<String, TransactionType> basicTypeMap = new HashMap<>();
 
 	TransactionType() {
 	}  // For GWT
@@ -130,6 +131,11 @@ public enum TransactionType implements Serializable, IsSerializable {
             if (s.equals(t.code)) return t;
             if (s.equals(t.asyncCode)) return t;
             if (s.equals(t.getId())) return t;
+            try {
+                if (t == TransactionType.valueOf(s)) return t;
+            } catch (IllegalArgumentException e) {
+                // continue;
+            }
         }
         return null;
     }

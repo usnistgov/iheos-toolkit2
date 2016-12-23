@@ -242,11 +242,9 @@ class GenerateSingleSystem {
 
             if (config.isRetrieve() && !forceNotRetrieve) {
                 logit(log, transactionType, otherOid, endpoint, isSecure)
-
                 otherSite.addRepository(otherOid, TransactionBean.RepositoryType.REPOSITORY, endpoint, isSecure, isAsync)
             } else {
                 logit(log, transactionType, null, endpoint, isSecure)
-
                 otherSite.addTransaction(transactionId, endpoint, isSecure, isAsync)
             }
         }
