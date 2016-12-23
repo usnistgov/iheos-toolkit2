@@ -22,15 +22,9 @@ import gov.nist.toolkit.xdsexception.client.ToolkitRuntimeException;
 import org.apache.log4j.Logger;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
-import java.io.ObjectInputStream;
 import java.lang.reflect.InvocationTargetException;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Factory class for simulators.  Technically ActorFactry is no longer accurate
@@ -263,7 +257,8 @@ public abstract class AbstractActorFactory {
 
 		SimDb simdb = SimDb.mkSim(Installation.instance().simDbFile(), config.getId(), config.getActorType());
 		File simCntlFile = simdb.getSimulatorControlFile();
-		new SimulatorConfigIo().save(config, simCntlFile.toString());   //config.save(simCntlFile.toString());
+		SimulatorConfigIoFactory.impl().save(config, simCntlFile.toString());
+//		SimulatorConfigIoJava.save(config, simCntlFile.toString());
 	}
 
 	static public void delete(SimulatorConfig config) throws IOException {
@@ -369,14 +364,6 @@ public abstract class AbstractActorFactory {
 		return configs;
 	}
 
-//    public SimulatorConfig loadSimulator(SimId simId) throws IOException, ClassNotFoundException {
-//        List<SimId> ids = new ArrayList<>();
-//        ids.add(simId);
-//        List<SimulatorConfig> configs = loadAvailableSimulators(ids);
-//        if (configs.size() == 0) return null;
-//        return configs.get(0);
-//    }
-
 	/**
 	 * Load simulators - ignore sims not found (length(simlist) &lt; length(idlist))
 	 * @param ids
@@ -401,19 +388,21 @@ public abstract class AbstractActorFactory {
 		return configs;
 	}
 
-	static SimulatorConfig restoreSimulator(String filename) throws IOException, ClassNotFoundException {
-		FileInputStream fis = null;
-		ObjectInputStream in = null;
-		SimulatorConfig config;
-		fis = new FileInputStream(filename);
-		in = new ObjectInputStream(fis);
-		config = (SimulatorConfig)in.readObject();
-		in.close();
-
-		return config;
+	private static SimulatorConfig restoreSimulator(String filename) throws IOException, ClassNotFoundException {
+		return SimulatorConfigIoFactory.impl().restoreSimulator(filename);
+//		return SimulatorConfigIoJava.restoreSimulator(filename);
+//		FileInputStream fis = null;
+//		ObjectInputStream in = null;
+//		SimulatorConfig config;
+//		fis = new FileInputStream(filename);
+//		in = new ObjectInputStream(fis);
+//		config = (SimulatorConfig)in.readObject();
+//		in.close();
+//
+//		return config;
 	}
 
-	static public SimulatorConfig loadSimulator(SimId simid, boolean okifNotExist) throws IOException, ClassNotFoundException, NoSimException {
+	static SimulatorConfig loadSimulator(SimId simid, boolean okifNotExist) throws IOException, ClassNotFoundException, NoSimException {
 		SimDb simdb;
 		try {
 			simdb = new SimDb(simid);
@@ -429,8 +418,7 @@ public abstract class AbstractActorFactory {
 	static public SimulatorConfig getSimConfig(File simDbFile, SimId simulatorId) throws IOException, ClassNotFoundException, NoSimException {
 		SimDb simdb = new SimDb(simDbFile, simulatorId, null, null);
 		File simCntlFile = simdb.getSimulatorControlFile();
-		SimulatorConfig config = restoreSimulator(simCntlFile.toString());
-		return config;
+		return restoreSimulator(simCntlFile.toString());
 	}
 
 	protected boolean isEndpointSecure(String endpoint) {
@@ -443,12 +431,12 @@ public abstract class AbstractActorFactory {
 		return ascs;
 	}
 
-	protected void addFixed(SimulatorConfig sc, SimulatorConfigElement ele) {
+	void addFixed(SimulatorConfig sc, SimulatorConfigElement ele) {
 		ele.setEditable(false);
 		sc.elements().add(ele);
 	}
 
-	void addUser(SimulatorConfig sc, SimulatorConfigElement ele) {
+	private void addUser(SimulatorConfig sc, SimulatorConfigElement ele) {
 		ele.setEditable(true);
 		sc.elements().add(ele);
 	}
@@ -469,11 +457,11 @@ public abstract class AbstractActorFactory {
         addUser(sc, new SimulatorConfigElement(name, type, value));
     }
 
-    public void addFixedConfig(SimulatorConfig sc, String name, ParamType type, Boolean value) {
+	void addFixedConfig(SimulatorConfig sc, String name, ParamType type, Boolean value) {
 		addFixed(sc, new SimulatorConfigElement(name, type, value));
 	}
 
-	public void addFixedConfig(SimulatorConfig sc, String name, ParamType type, String value) {
+	void addFixedConfig(SimulatorConfig sc, String name, ParamType type, String value) {
 		addFixed(sc, new SimulatorConfigElement(name, type, value));
 	}
 
