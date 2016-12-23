@@ -184,11 +184,9 @@ public enum ActorType implements IsSerializable, Serializable {
             Arrays.asList("IMAGING_DOC_SOURCE"),
             "ids",
             "gov.nist.toolkit.simulators.sim.ids.IdsActorSimulator",
-            Arrays.asList(TransactionType.RET_IMG_DOC_SET),
+            Arrays.asList(TransactionType.RET_IMG_DOC_SET, TransactionType.WADO_RETRIEVE),
             true,
-            null,
-            "gov.nist.toolkit.simulators.sim.ids.IdsHttpActorSimulator",
-            Arrays.asList(TransactionType.WADO_RETRIEVE)            
+            null
         ),
     IMAGING_DOC_CONSUMER(
             "Imaging Document Consumer",
