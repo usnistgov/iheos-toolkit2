@@ -1,10 +1,10 @@
 <TestPlan>
 	<Test>ids_4801/validate-metadata</Test>
-	<TestStep id="validate-metadata">
+	<TestStep id="ValidateMetadata">
 		<Goal>Validate KOS metadata sent to Repository simulator</Goal>
 		<ExpectedStatus>Success</ExpectedStatus>
 		<ImgDetailTransaction>
-			<UseReport section="validate-kos" step="validate-kos"
+			<UseReport section="ValidateKOS" step="ValidateKOS"
 				reportName="SOPInstanceUID" useAs="siuid" />
 			<Assertions>
 				<Assert id="Submitted Metadata Validation" process="sameKOSMetadata">

@@ -1,6 +1,6 @@
 <TestPlan>
-	<Test>ids_4802/validate-kos</Test>
-	<TestStep id="validate-kos">
+	<Test>ids_4802/ValidateKOS</Test>
+	<TestStep id="ValidateKOS">
 		<Goal>Validate KOS sent to Repository simulator, Multi-Image study</Goal>
 		<ExpectedStatus>Success</ExpectedStatus>
 		<ImgDetailTransaction>
