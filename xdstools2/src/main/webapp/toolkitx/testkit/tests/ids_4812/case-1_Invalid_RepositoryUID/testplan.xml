@@ -9,7 +9,7 @@
 			<MetadataFile>RAD-69Request.xml</MetadataFile>
 		</ImagingDocSetRetrieveTransaction>
 	</TestStep>
-	<TestStep id="errors">
+	<TestStep id="errors-1">
 		<Goal>Unknown Repository UID error validation</Goal>
 		<Standard>
 			<ResponseBody>
