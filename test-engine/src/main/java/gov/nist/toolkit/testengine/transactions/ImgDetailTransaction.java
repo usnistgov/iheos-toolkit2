@@ -157,6 +157,9 @@ public class ImgDetailTransaction extends BasicTransaction {
          case "sameRegErrors":
             prsSameRegErrors(engine, a, assertion_output);
             break;
+         case "registryErrorListNotEmpty":
+            prsRegistryErrorListNotEmpty(engine, a, assertion_output);
+            break;
          case "sameDcmImgs":
             prsSameDcmImgs(engine, a, assertion_output);
             break;
@@ -499,6 +502,74 @@ public class ImgDetailTransaction extends BasicTransaction {
          throw new XdsInternalException("sameRetImgs error: " + e.getMessage());
       }
    } // EO prsSameRegErrors method
+
+   private void prsRegistryErrorListNotEmpty(AssertionEngine engine, Assertion a, OMElement assertion_output)
+           throws XdsInternalException {
+      store(engine, CAT.INFO, "Assertion: RegistryErrorList element SHALL contain one or more RegistryError elements");
+
+      // key is errorCode:severity
+      Map <String, RegErr> map = new HashMap <>();
+
+      try {
+         // process and collect data on errors in std message
+         OMElement stnd = getStdElement("ResponseBody");
+         String t = stnd.getLocalName();
+         if (t.endsWith("RetrieveDocumentSetResponse") == false)
+            throw new XdsInternalException("sameRegErrors assertion only applies to RetrieveDocumentSetResponse");
+         for (OMElement err : XmlUtil.decendentsWithLocalName(stnd, "RegistryError")) {
+            try {
+               post(err, true, map);
+            } catch (Exception se) {
+               // Errors in the std message are abort bait
+               throw new XdsInternalException("sameRegErrors std msg error: " + se.getMessage());
+            }
+         }
+         // process errors in test message
+         OMElement test = getTestTrans(a, "response");
+         String q = test.getLocalName();
+         if (q.endsWith("RetrieveDocumentSetResponse") == false)
+            throw new XdsInternalException("sameRegErrors assertion only applies to RetrieveDocumentSetResponse");
+         for (OMElement err : XmlUtil.decendentsWithLocalName(test, "RegistryError")) {
+            try {
+               post(err, false, map);
+            } catch (Exception te) {
+               // errors in the test message are logged
+               store(engine, CAT.ERROR, te.getMessage() + " - msg ignored");
+            }
+         }
+         RegErr[] errors = map.values().toArray(new RegErr[0]);
+         Arrays.sort(errors);
+         for (RegErr error : errors) {
+            String severity = StringUtils.substringAfterLast(error.severity, ":");
+            String msg = "RegistryError element from system under test: " + this.formatRegistryErrorForLogging(error);
+            CAT cat = CAT.INFO;
+            store(engine, cat, msg);
+         }
+         if (errors.length > 0) {
+            store(engine, CAT.SUCCESS, String.format("Found at least one RegistryError element in RegistryErrorList: count=%d", errors.length));
+         } else {
+            store(engine, CAT.ERROR, "Found no RegistryError elements in RegistryErrorList. At least one error element required");
+         }
+
+      } catch (Exception e) {
+         throw new XdsInternalException("sameRetImgs error: " + e.getMessage());
+      }
+   } // EO prsRegistryErrorListNotEmpty method
+
+   private String formatRegistryErrorForLogging(RegErr error) {
+      String rtn = "";
+      rtn = "errorCode=" + error.errorCode +
+              " severity=" + error.severity +
+              " codeContext=" + error.codeContext +
+              " location=";
+      if (error.location != null)
+         rtn += error.location;
+      return rtn;
+   }
+
+
+
+
 
    class RegErr implements Comparable <RegErr> {
       String errorCode;

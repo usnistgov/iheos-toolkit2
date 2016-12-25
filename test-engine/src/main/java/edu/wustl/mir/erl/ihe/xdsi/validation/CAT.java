@@ -30,7 +30,11 @@ public enum CAT {
     * A message result or lack of result which was detected but will be ignored.
     * This is for programmers only; the tester will not see these.
     */
-   SILENT;
+   SILENT,
+   /**
+    * Informational messages give detailed logging information but are not errors or warnings
+    */
+   INFO;
    
    /**
     * Get CAT which matches name, ignoring case, or null
