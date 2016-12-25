@@ -1,6 +1,6 @@
 <TestPlan>
 	<Test>ids_4806/validate-Imgs</Test>
-	<TestStep id="validate-Imgs">
+	<TestStep id="ValidateReturnedImages">
 		<Goal>Correct RetrieveDocumentSetResponse image</Goal>
 		<XmlDetailTransaction>
 			<Assertions>
@@ -16,7 +16,7 @@
 					</TagList>
 					<DirList>
 						<StdDir>IDS-DEPT002-a/images</StdDir>
-                  <TestDir testDir="../retrieve">files</TestDir>
+                  <TestDir testDir="../Rad55RetrieveRequest">files</TestDir>
 					</DirList>
 				</Assert>
 			</Assertions>
