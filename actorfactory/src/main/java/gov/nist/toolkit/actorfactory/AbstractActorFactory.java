@@ -112,13 +112,13 @@ public abstract class AbstractActorFactory {
 		ele = new SimulatorConfigElement();
 		ele.name = SimulatorProperties.creationTime;
 		ele.type = ParamType.TIME;
-		ele.setValue(new Date().toString());
+		ele.setStringValue(new Date().toString());
 		addFixed(sc, ele);
 
 		ele = new SimulatorConfigElement();
 		ele.name = name;
 		ele.type = ParamType.TEXT;
-		ele.setValue(sc.getId().toString());
+		ele.setStringValue(sc.getId().toString());
 		addFixed(sc, ele);
 
 		addEditableConfig(sc, SimulatorProperties.requiresStsSaml, ParamType.BOOLEAN, false);
@@ -261,11 +261,11 @@ public abstract class AbstractActorFactory {
 //		SimulatorConfigIoJava.save(config, simCntlFile.toString());
 	}
 
-	static public void delete(SimulatorConfig config) throws IOException {
+	static public void delete(SimulatorConfig config) throws Exception {
         delete(config.getId());
     }
 
-    static public void delete(SimId simId) throws IOException {
+    static public void delete(SimId simId) throws Exception {
         logger.info("delete simulator" + simId);
 		SimDb simdb;
 		try {
@@ -351,7 +351,7 @@ public abstract class AbstractActorFactory {
 	 * @throws ClassNotFoundException
 	 * @throws NoSimException 
 	 */
-	static public List<SimulatorConfig> loadSimulators(List<SimId> ids) throws IOException, ClassNotFoundException, NoSimException {
+	static public List<SimulatorConfig> loadSimulators(List<SimId> ids) throws Exception {
 		List<SimulatorConfig> configs = new ArrayList<SimulatorConfig>();
 
 		for (SimId id : ids) {
@@ -371,7 +371,7 @@ public abstract class AbstractActorFactory {
 	 * @throws IOException
 	 * @throws ClassNotFoundException
 	 */
-	public List<SimulatorConfig> loadAvailableSimulators(List<SimId> ids) throws IOException, ClassNotFoundException {
+	public List<SimulatorConfig> loadAvailableSimulators(List<SimId> ids) throws Exception {
 		List<SimulatorConfig> configs = new ArrayList<SimulatorConfig>();
 
 		for (SimId id : ids) {
@@ -388,7 +388,7 @@ public abstract class AbstractActorFactory {
 		return configs;
 	}
 
-	private static SimulatorConfig restoreSimulator(String filename) throws IOException, ClassNotFoundException {
+	private static SimulatorConfig restoreSimulator(String filename) throws Exception {
 		return SimulatorConfigIoFactory.impl().restoreSimulator(filename);
 //		return SimulatorConfigIoJava.restoreSimulator(filename);
 //		FileInputStream fis = null;
@@ -402,7 +402,7 @@ public abstract class AbstractActorFactory {
 //		return config;
 	}
 
-	static SimulatorConfig loadSimulator(SimId simid, boolean okifNotExist) throws IOException, ClassNotFoundException, NoSimException {
+	static SimulatorConfig loadSimulator(SimId simid, boolean okifNotExist) throws Exception {
 		SimDb simdb;
 		try {
 			simdb = new SimDb(simid);
@@ -415,7 +415,7 @@ public abstract class AbstractActorFactory {
 		return config;
 	}	
 
-	static public SimulatorConfig getSimConfig(File simDbFile, SimId simulatorId) throws IOException, ClassNotFoundException, NoSimException {
+	static public SimulatorConfig getSimConfig(File simDbFile, SimId simulatorId) throws Exception {
 		SimDb simdb = new SimDb(simDbFile, simulatorId, null, null);
 		File simCntlFile = simdb.getSimulatorControlFile();
 		return restoreSimulator(simCntlFile.toString());
@@ -468,13 +468,13 @@ public abstract class AbstractActorFactory {
 	public void setConfig(SimulatorConfig sc, String name, String value) {
 		SimulatorConfigElement ele = sc.getUserByName(name);
 		if (ele == null) throw new ToolkitRuntimeException("Simulator " + sc.getId() + " does not have a parameter named " + name + " or cannot set its value");
-		ele.setValue(value);
+		ele.setStringValue(value);
 	}
 
 	public void setConfig(SimulatorConfig sc, String name, Boolean value) {
 		SimulatorConfigElement ele = sc.getUserByName(name);
 		if (ele == null) throw new ToolkitRuntimeException("Simulator " + sc.getId() + " does not have a parameter named " + name + " or cannot set its value");
-		ele.setValue(value);
+		ele.setBooleanValue(value);
 	}
 
 	public void addEditableEndpoint(SimulatorConfig sc, String endpointName, ActorType actorType, TransactionType transactionType, boolean tls) {
@@ -482,7 +482,7 @@ public abstract class AbstractActorFactory {
 		ele.name = endpointName;
 		ele.type = ParamType.ENDPOINT;
 		ele.transType = transactionType;
-		ele.setValue(mkEndpoint(sc, ele, actorType.getShortName(), tls));
+		ele.setStringValue(mkEndpoint(sc, ele, actorType.getShortName(), tls));
 		addUser(sc, ele);
 	}
 
@@ -491,7 +491,7 @@ public abstract class AbstractActorFactory {
 		ele.name = endpointName;
 		ele.type = ParamType.ENDPOINT;
 		ele.transType = transactionType;
-		ele.setValue("");
+		ele.setStringValue("");
 		addUser(sc, ele);
 	}
 
@@ -500,7 +500,7 @@ public abstract class AbstractActorFactory {
 		ele.name = endpointName;
 		ele.type = ParamType.ENDPOINT;
 		ele.transType = transactionType;
-		ele.setValue(mkEndpoint(sc, ele, actorType.getShortName(), tls));
+		ele.setStringValue(mkEndpoint(sc, ele, actorType.getShortName(), tls));
 		addFixed(sc, ele);
 	}
 

@@ -1,20 +1,23 @@
 package gov.nist.toolkit.configDatatypes.client;
 
+import com.fasterxml.jackson.annotation.JsonAutoDetect;
+import com.google.gwt.user.client.rpc.IsSerializable;
+
 import java.io.Serializable;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
-import com.google.gwt.user.client.rpc.IsSerializable;
-
 /**
  * Maps between TransactionType name and list of PatientErrors
  */
+@JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.ANY, getterVisibility = JsonAutoDetect.Visibility.NONE, setterVisibility = JsonAutoDetect.Visibility.NONE)
 public class PatientErrorMap implements Serializable, IsSerializable, Map<String, PatientErrorList> {
     Map<String, PatientErrorList> config = new HashMap<>();
 
     public PatientErrorMap() {}
+    public PatientErrorMap(Map<String, PatientErrorList> map) { config = map; }
 
     @Override
     public int size() {
@@ -74,5 +77,21 @@ public class PatientErrorMap implements Serializable, IsSerializable, Map<String
     @Override
     public Set<Entry<String, PatientErrorList>> entrySet() {
         return config.entrySet();
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        PatientErrorMap that = (PatientErrorMap) o;
+
+        return config.equals(that.config);
+
+    }
+
+    @Override
+    public int hashCode() {
+        return config.hashCode();
     }
 }

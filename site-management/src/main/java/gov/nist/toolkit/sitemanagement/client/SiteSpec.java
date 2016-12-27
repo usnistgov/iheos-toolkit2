@@ -96,6 +96,7 @@ public class SiteSpec implements Serializable, IsSerializable {
 	}
 	
 	public String getTypeName() {
+		if (actorType == null) return null;
 		return actorType.getShortName();
 	}
 

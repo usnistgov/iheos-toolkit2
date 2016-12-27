@@ -78,9 +78,9 @@ class RgOrchestrationBuilder {
                     if (sutSimConfig!=null) {
                         stsSce = sutSimConfig.get(SimulatorProperties.requiresStsSaml)
 
-                        if (stsSce != null && stsSce.isBoolean() && stsSce.asBoolean()) {
+                        if (stsSce != null && stsSce.hasBoolean() && stsSce.asBoolean()) {
                             sutSaml = true
-                            stsSce.setValue(false) // Turn off SAML for orchestration
+                            stsSce.setBooleanValue(false) // Turn off SAML for orchestration
                             api.saveSimulator(sutSimConfig)
                         }
                     }
@@ -116,7 +116,7 @@ class RgOrchestrationBuilder {
                 // disable checking of Patient Identity Feed
                 if (!reuse) {
                     SimulatorConfigElement idsEle = supportSimConfig.getConfigEle(SimulatorProperties.VALIDATE_AGAINST_PATIENT_IDENTITY_FEED)
-                    idsEle.setValue(false)
+                    idsEle.setBooleanValue(false)
 
                     api.saveSimulator(supportSimConfig)
                 }
@@ -161,7 +161,7 @@ class RgOrchestrationBuilder {
             return RawResponseBuilder.build(e);
         } finally {
             if (sutSaml) {
-                stsSce.setValue(true)
+                stsSce.setBooleanValue(true)
                 api.saveSimulator(sutSimConfig)
             }
         }

@@ -17,6 +17,7 @@
         <jdk.version>1.7</jdk.version>
         <junit.version>4.11</junit.version>
         <jersey.version>2.22.1</jersey.version>
+        <jackson.version>2.6.3</jackson.version>
         <!--<groovyVersion>2.1.1</groovyVersion>-->
         <groovyVersion>2.4.5</groovyVersion>
         <gwtVersion>2.7.0</gwtVersion>
@@ -442,7 +443,22 @@
             <dependency>
                 <groupId>com.fasterxml.jackson.core</groupId>
                 <artifactId>jackson-core</artifactId>
-                <version>2.6.3</version>
+                <version>${jackson.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.fasterxml.jackson.core</groupId>
+                <artifactId>jackson-databind</artifactId>
+                <version>${jackson.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.fasterxml.jackson.core</groupId>
+                <artifactId>jackson-annotations</artifactId>
+                <version>${jackson.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.fasterxml</groupId>
+                <artifactId>jackson-xml-databind</artifactId>
+                <version>${jackson.version}</version>   // 0.6.2
             </dependency>
             <dependency>
                 <groupId>org.codehaus.jackson</groupId>
@@ -562,11 +578,6 @@
                 <artifactId>backport-util-concurrent</artifactId>
                 <version>3.1</version>
             </dependency>
-            <dependency>
-                <groupId>com.fasterxml.jackson.core</groupId>
-                <artifactId>jackson-databind</artifactId>
-                <version>2.5.1</version>
-            </dependency>
             <!-- for now wsseTool limits this version -->
             <dependency>
                 <groupId>org.codehaus.groovy</groupId>
@@ -582,11 +593,6 @@
                 <groupId>com.smartgwt</groupId>
                 <artifactId>smartgwt-skins</artifactId>
                 <version>4.1p</version>
-            </dependency>
-            <dependency>
-                <groupId>com.fasterxml</groupId>
-                <artifactId>jackson-xml-databind</artifactId>
-                <version>0.6.2</version>
             </dependency>
             <dependency>
                 <groupId>net.jcip</groupId>

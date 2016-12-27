@@ -108,14 +108,14 @@ public class RegistryActorFactory extends AbstractActorFactory {
 			updateEndpointEle.name = SimulatorProperties.updateEndpoint;
 			updateEndpointEle.type = ParamType.ENDPOINT;
 			updateEndpointEle.transType = TransactionType.UPDATE; 
-			updateEndpointEle.setValue(mkEndpoint(config, updateEndpointEle, ActorType.REGISTRY.getShortName(), false)); 
+			updateEndpointEle.setStringValue(mkEndpoint(config, updateEndpointEle, ActorType.REGISTRY.getShortName(), false));
 			addFixed(config, updateEndpointEle);
 			 
 			updateEndpointEle = new SimulatorConfigElement();
 			updateEndpointEle.name = SimulatorProperties.updateTlsEndpoint;
 			updateEndpointEle.type = ParamType.ENDPOINT;
 			updateEndpointEle.transType = TransactionType.UPDATE; 
-			updateEndpointEle.setValue(mkEndpoint(config, updateEndpointEle, ActorType.REGISTRY.getShortName(), true)); 
+			updateEndpointEle.setStringValue(mkEndpoint(config, updateEndpointEle, ActorType.REGISTRY.getShortName(), true));
 			addFixed(config, updateEndpointEle);
 			 
 			

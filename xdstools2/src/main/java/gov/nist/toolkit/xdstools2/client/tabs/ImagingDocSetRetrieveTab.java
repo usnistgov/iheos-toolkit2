@@ -109,13 +109,13 @@ public class ImagingDocSetRetrieveTab extends GenericQueryTab {
 //
 //		public void onClick(ClickEvent event) {
 //			for (RadioButton rb : rgButtons) {
-//				rb.setValue(false);
+//				rb.setBooleanValue(false);
 //			}
 //			for (RadioButton rb : repositoryButtons) {
-//				rb.setValue(false);
+//				rb.setBooleanValue(false);
 //			}
 //			for (RadioButton rb : igButtons) {
-//				rb.setValue(false);
+//				rb.setBooleanValue(false);
 //			}
 //		}
 //
@@ -125,13 +125,13 @@ public class ImagingDocSetRetrieveTab extends GenericQueryTab {
 //
 //		public void onClick(ClickEvent event) {
 //			for (RadioButton rb : registryButtons) {
-//				rb.setValue(false);
+//				rb.setBooleanValue(false);
 //			}
 //			for (RadioButton rb : rgButtons) {
-//				rb.setValue(false);
+//				rb.setBooleanValue(false);
 //			}
 //			for (RadioButton rb : igButtons) {
-//				rb.setValue(false);
+//				rb.setBooleanValue(false);
 //			}
 //		}
 //
@@ -141,10 +141,10 @@ public class ImagingDocSetRetrieveTab extends GenericQueryTab {
 //
 //		public void onClick(ClickEvent event) {
 //			for (RadioButton rb : registryButtons) {
-//				rb.setValue(false);
+//				rb.setBooleanValue(false);
 //			}
 //			for (RadioButton rb : repositoryButtons) {
-//				rb.setValue(false);
+//				rb.setBooleanValue(false);
 //			}
 //		}
 //
@@ -154,10 +154,10 @@ public class ImagingDocSetRetrieveTab extends GenericQueryTab {
 //
 //		public void onClick(ClickEvent event) {
 //			for (RadioButton rb : registryButtons) {
-//				rb.setValue(false);
+//				rb.setBooleanValue(false);
 //			}
 //			for (RadioButton rb : repositoryButtons) {
-//				rb.setValue(false);
+//				rb.setBooleanValue(false);
 //			}
 //		}
 //

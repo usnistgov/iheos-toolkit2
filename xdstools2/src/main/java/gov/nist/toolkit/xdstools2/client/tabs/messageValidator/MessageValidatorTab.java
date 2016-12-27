@@ -238,7 +238,7 @@ public class MessageValidatorTab extends ToolWindow {
 
         requestMessage.setEnabled(enable);
         responseMessage.setEnabled(enable);
-        //		requestMessage.setValue(true);
+        //		requestMessage.setBooleanValue(true);
         panel.add(requestMessage);
         panel.add(responseMessage);
     }

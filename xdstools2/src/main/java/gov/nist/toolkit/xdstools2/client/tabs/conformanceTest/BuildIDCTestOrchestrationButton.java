@@ -113,7 +113,7 @@ public class BuildIDCTestOrchestrationButton extends AbstractOrchestrationButton
                   table.setWidget(row, 1, new HTML(property));
                   SimulatorConfigElement prop = sim.get(property);
                   String value = prop.asString();
-                  if (prop.isList()) value = prop.asList().toString();
+                  if (prop.hasList()) value = prop.asList().toString();
                   table.setWidget(row++ , 2, new HTML(value));
                }
                } catch (Exception e) {

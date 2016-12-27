@@ -153,7 +153,7 @@ public class SimCache {
         return null;
     }
 
-    static public void deleteSimConfig(SimId simId) throws IOException {
+    static public void deleteSimConfig(SimId simId) throws Exception {
         // remove from cache
         for (SimManager sman : mgrs.values()) {
             sman.removeSimulatorConfig(simId);

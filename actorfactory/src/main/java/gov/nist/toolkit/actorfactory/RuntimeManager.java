@@ -19,7 +19,7 @@ import java.lang.reflect.InvocationTargetException;
 public class RuntimeManager {
     static Logger logger = Logger.getLogger(RuntimeManager.class);
 
-    public static BaseActorSimulator getSimulatorRuntime(SimId simId) throws NoSimException, IOException, ClassNotFoundException, IllegalAccessException, InvocationTargetException, InstantiationException {
+    public static BaseActorSimulator getSimulatorRuntime(SimId simId) throws Exception, IOException, ClassNotFoundException, IllegalAccessException, InvocationTargetException, InstantiationException {
         SimDb db = new SimDb();
         SimulatorConfig config = GenericSimulatorFactory.getSimConfig(db.getRoot(), simId);
         String actorTypeName = config.getActorType();
@@ -61,7 +61,7 @@ public class RuntimeManager {
     * @throws InvocationTargetException on error creating the http server instance
     * @throws InstantiationException if not able to create the http server instance
     */
-   public static BaseActorSimulator getHttpSimulatorRuntime(SimId simId) throws NoSimException, IOException, ClassNotFoundException, IllegalAccessException, InvocationTargetException, InstantiationException {
+   public static BaseActorSimulator getHttpSimulatorRuntime(SimId simId) throws NoSimException, Exception, ClassNotFoundException, IllegalAccessException, InvocationTargetException, InstantiationException {
        SimDb db = new SimDb();
        SimulatorConfig config = GenericSimulatorFactory.getSimConfig(db.getRoot(), simId);
        String actorTypeName = config.getActorType();

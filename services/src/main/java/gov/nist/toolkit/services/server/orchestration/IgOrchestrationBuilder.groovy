@@ -205,11 +205,11 @@ class IgOrchestrationBuilder {
         if (!reuse) {
             // disable checking of Patient Identity Feed
 //            rgEle = rgSimConfig1.getConfigEle(SimulatorProperties.VALIDATE_AGAINST_PATIENT_IDENTITY_FEED)
-//            rgEle.setValue(false)
+//            rgEle.setBooleanValue(false)
 
             // set fixed homeCommunityId
             rgEle = rgSimConfig1.getConfigEle(SimulatorProperties.homeCommunityId)
-            rgEle.setValue('urn:oid:1.2.34.567.8.1')
+            rgEle.setStringValue('urn:oid:1.2.34.567.8.1')
 
             // config rg1 to return XDSRegistryError for registryErrorPid query requests
             rgEle = rgSimConfig1.getConfigEle(SimulatorProperties.errorForPatient)
@@ -220,16 +220,16 @@ class IgOrchestrationBuilder {
             pe.setErrorCode('XDSRegistryError')
             pel.add(pe)
             pem.put(TransactionType.XC_QUERY.name, pel)
-            rgEle.setValue(pem)
+            rgEle.setPatientErrorMapValue(pem)
 
             api.saveSimulator(rgSimConfig1)
 
             // disable checking of Patient Identity Feed
 //            rgEle = rgSimConfig2.getConfigEle(SimulatorProperties.VALIDATE_AGAINST_PATIENT_IDENTITY_FEED)
-//            rgEle.setValue(false)
+//            rgEle.setBooleanValue(false)
             // set fixed homeCommunityId
             rgEle = rgSimConfig2.getConfigEle(SimulatorProperties.homeCommunityId)
-            rgEle.setValue('urn:oid:1.2.34.567.8.2')
+            rgEle.setStringValue('urn:oid:1.2.34.567.8.2')
             api.saveSimulator(rgSimConfig2)
         }
 
@@ -245,7 +245,7 @@ class IgOrchestrationBuilder {
             // link all responding gateways to initiating gateway
             List<String> rgConfigIds = rgConfigs.collect() { SimulatorConfig rg -> rg.id.toString() }
             SimulatorConfigElement rgs = igConfig.getConfigEle(SimulatorProperties.respondingGateways)
-            rgs.setValue(rgConfigIds)
+            rgs.setStringListValue(rgConfigIds)
             api.saveSimulator(igConfig)
         }
 

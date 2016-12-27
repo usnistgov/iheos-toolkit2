@@ -59,14 +59,14 @@ class IdsOrchestrationBuilder {
                  for (SimulatorConfigElement chg : sim.elements) {
                     chg.setEditable(true);
                     // lists of simulators may need specific user plugged in
-                    if (chg.isList()) {
+                    if (chg.hasList()) {
                           List <String> list = chg.asList();
                           for (int i = 0; i < list.size(); i++ ) {
                              String s = list.get(i);
                              s = StringUtils.replace(s, "${user}", user);
                              list.set(i, s);
                           }
-                          chg.setValue(list);
+                          chg.setStringListValue(list);
                     }
                     simConfig.replace(chg);
                  }

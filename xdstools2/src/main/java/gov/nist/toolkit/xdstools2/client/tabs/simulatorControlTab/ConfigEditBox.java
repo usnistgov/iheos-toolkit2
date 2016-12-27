@@ -49,7 +49,7 @@ public class ConfigEditBox {
 
 		@Override
 		public void onChange(ChangeEvent event) {
-			ele.setValue(tb.getText());
+			ele.setStringValue(tb.getText());
 		}
 	}
 

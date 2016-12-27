@@ -14,7 +14,6 @@ import gov.nist.toolkit.actorfactory.client.SimulatorConfig;
 import gov.nist.toolkit.actortransaction.client.ActorType;
 import gov.nist.toolkit.actortransaction.client.ParamType;
 import gov.nist.toolkit.configDatatypes.SimulatorProperties;
-import gov.nist.toolkit.installation.Installation;
 import gov.nist.toolkit.services.client.IigOrchestrationRequest;
 import gov.nist.toolkit.services.client.IigOrchestrationResponse;
 import gov.nist.toolkit.services.client.RawResponse;
@@ -62,14 +61,14 @@ public class IigOrchestrationBuilder {
             for (SimulatorConfigElement chg : sim.elements) {
                chg.setEditable(true);
                // lists of simulators may need specific user plugged in
-               if (chg.isList()) {
+               if (chg.hasList()) {
                      List <String> list = chg.asList();
                      for (int i = 0; i < list.size(); i++ ) {
                         String s = list.get(i);
                         s = StringUtils.replace(s, "${user}", user);
                         list.set(i, s);
                      }
-                     chg.setValue(list);
+                     chg.setStringListValue(list);
                }
                simConfig.replace(chg);
             }

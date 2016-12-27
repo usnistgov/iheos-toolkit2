@@ -268,7 +268,7 @@ public class SimDb {
 	 * @throws IOException
 	 * @throws ClassNotFoundException
 	 */
-	public SimulatorConfig getSimulator(SimId simId) throws IOException, ClassNotFoundException {
+	public SimulatorConfig getSimulator(SimId simId) throws Exception {
 		SimulatorConfig config = null;
 		try {
 			config = GenericSimulatorFactory.loadSimulator(simId, true);

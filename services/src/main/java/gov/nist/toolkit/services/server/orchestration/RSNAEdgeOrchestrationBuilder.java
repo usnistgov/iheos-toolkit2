@@ -7,7 +7,6 @@ import gov.nist.toolkit.actorfactory.client.SimId;
 import gov.nist.toolkit.actorfactory.client.SimulatorConfig;
 import gov.nist.toolkit.actortransaction.client.ActorType;
 import gov.nist.toolkit.configDatatypes.SimulatorProperties;
-import gov.nist.toolkit.installation.Installation;
 import gov.nist.toolkit.services.client.*;
 import gov.nist.toolkit.services.server.RawResponseBuilder;
 import gov.nist.toolkit.services.server.ToolkitApi;
@@ -58,9 +57,9 @@ public class RSNAEdgeOrchestrationBuilder {
 
          SimulatorConfigElement idsEle;
          idsEle = supportSimConfig.getConfigEle(SimulatorProperties.VALIDATE_AGAINST_PATIENT_IDENTITY_FEED);
-         idsEle.setValue(false);
+         idsEle.setBooleanValue(false);
          idsEle = supportSimConfig.getConfigEle(SimulatorProperties.repositoryUniqueId);
-         idsEle.setValue("urn:oid:1.3.6.1.4.1.21367.13.70.101");
+         idsEle.setStringValue("urn:oid:1.3.6.1.4.1.21367.13.70.101");
 
          api.saveSimulator(supportSimConfig);
 

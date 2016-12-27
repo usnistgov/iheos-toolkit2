@@ -59,7 +59,7 @@ public abstract class BaseSimConfigMgr implements SimConfigMgrIntf {
         tbl.clear();
 
         tbl.setWidget(row, 0, HtmlMarkup.html("Simulator Type"));
-        tbl.setWidget(row, 1, HtmlMarkup.html(config.getActorTypeFullName()));
+        tbl.setWidget(row, 1, HtmlMarkup.html(config.actorTypeFullName()));
 
         row++;
 
@@ -74,7 +74,7 @@ public abstract class BaseSimConfigMgr implements SimConfigMgrIntf {
         for (SimulatorConfigElement ele : config.getElements()) {
 
             // String
-            if (ele.isString()) {
+            if (ele.hasString()) {
                 if (ele.isEditable()) {
                     new ConfigEditBox(ele, tbl, row);
                 } else {
@@ -84,7 +84,7 @@ public abstract class BaseSimConfigMgr implements SimConfigMgrIntf {
             }
 
             // Boolean
-            else if (ele.isBoolean()) {
+            else if (ele.hasBoolean()) {
                 new ConfigBooleanBox(ele, tbl, row);
                 row++;
             }
@@ -100,7 +100,7 @@ public abstract class BaseSimConfigMgr implements SimConfigMgrIntf {
                         new ClickHandler() {
                             @Override
                             public void onClick(ClickEvent clickEvent) {
-                                configEle.setValue(rgSelectionPresenter.getSelected());
+                                configEle.setStringListValue(rgSelectionPresenter.getSelected());
 //                                config.updateDocTypeSelection();
 //                                saveSimConfig();
                             }
@@ -120,7 +120,7 @@ public abstract class BaseSimConfigMgr implements SimConfigMgrIntf {
                        new ClickHandler() {
                            @Override
                            public void onClick(ClickEvent clickEvent) {
-                               configEle.setValue(rigSelectionPresenter.getSelected());
+                               configEle.setStringListValue(rigSelectionPresenter.getSelected());
                            }
                        }
                );
@@ -138,7 +138,7 @@ public abstract class BaseSimConfigMgr implements SimConfigMgrIntf {
                   new ClickHandler() {
                       @Override
                       public void onClick(ClickEvent clickEvent) {
-                          configEle.setValue(idsSelectionPresenter.getSelected());
+                          configEle.setStringListValue(idsSelectionPresenter.getSelected());
                       }
                   }
                );
@@ -156,7 +156,7 @@ public abstract class BaseSimConfigMgr implements SimConfigMgrIntf {
                         new ClickHandler() {
                             @Override
                             public void onClick(ClickEvent clickEvent) {
-                                configEle.setValue(erSelectionPresenter.getSelected());
+                                configEle.setStringListValue(erSelectionPresenter.getSelected());
                                 //                              saveSimConfig();
                             }
                         }
@@ -177,7 +177,7 @@ public abstract class BaseSimConfigMgr implements SimConfigMgrIntf {
                         new ClickHandler() {
                             @Override
                             public void onClick(ClickEvent clickEvent) {
-                                configEle.setValue(map);
+                                configEle.setPatientErrorMapValue(map);
 //                                saveSimConfig();
                             }
                         }

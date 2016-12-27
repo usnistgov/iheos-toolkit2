@@ -7,7 +7,6 @@ import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.resources.client.ClientBundle;
 import com.google.gwt.resources.client.ImageResource;
 import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
-import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.*;
 import gov.nist.toolkit.actorfactory.client.SimulatorConfig;
 import gov.nist.toolkit.actortransaction.client.ActorType;
@@ -120,7 +119,7 @@ public class OddsSimConfigMgr implements SimConfigMgrIntf {
 
         newRow();
         tbl.setWidget(getRow(), 0, HtmlMarkup.html("Simulator Type"));
-        tbl.setWidget(getRow(), 1, HtmlMarkup.html(config.getActorTypeFullName()));
+        tbl.setWidget(getRow(), 1, HtmlMarkup.html(config.actorTypeFullName()));
 
         newRow();
         tbl.setWidget(getRow(), 0, HtmlMarkup.html("Simulator ID"));
@@ -198,7 +197,7 @@ public class OddsSimConfigMgr implements SimConfigMgrIntf {
                     new ClickHandler() {
                         @Override
                         public void onClick(ClickEvent event) {
-                            persistenceOption.setValue(persistenceCb.getValue());
+                            persistenceOption.setBooleanValue(persistenceCb.getValue());
 
                             boolean persistenceOpt = persistenceCb.getValue();
                             lblReposSiteBoxes.setVisible(persistenceOpt);
@@ -616,10 +615,10 @@ public class OddsSimConfigMgr implements SimConfigMgrIntf {
 
 
     public void saveSimConfig() {
-        getConfig().get(SimulatorProperties.PERSISTENCE_OF_RETRIEVED_DOCS).setValue(persistenceCb.getValue());
-        getConfig().get(SimulatorProperties.TESTPLAN_TO_REGISTER_AND_SUPPLY_CONTENT).setValue(contentBundleLbx.getSelectedValue());
-        getConfig().get(SimulatorProperties.oddsRepositorySite).setValue(reposSSP.getSelected());
-        getConfig().get(SimulatorProperties.oddsRegistrySite).setValue(regSSP.getSelected());
+        getConfig().get(SimulatorProperties.PERSISTENCE_OF_RETRIEVED_DOCS).setBooleanValue(persistenceCb.getValue());
+        getConfig().get(SimulatorProperties.TESTPLAN_TO_REGISTER_AND_SUPPLY_CONTENT).setStringValue(contentBundleLbx.getSelectedValue());
+        getConfig().get(SimulatorProperties.oddsRepositorySite).setStringListValue(reposSSP.getSelected());
+        getConfig().get(SimulatorProperties.oddsRegistrySite).setStringListValue(regSSP.getSelected());
 
         new PutSimConfigCommand(){
             @Override

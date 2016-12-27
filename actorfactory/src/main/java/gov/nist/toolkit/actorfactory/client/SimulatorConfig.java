@@ -1,6 +1,7 @@
 package gov.nist.toolkit.actorfactory.client;
 
 
+import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.google.gwt.user.client.rpc.IsSerializable;
 import gov.nist.toolkit.actortransaction.client.ActorType;
 import gov.nist.toolkit.actortransaction.client.ParamType;
@@ -15,6 +16,7 @@ import java.util.*;
  * @author bill
  *
  */
+@JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.ANY, getterVisibility = JsonAutoDetect.Visibility.NONE, setterVisibility = JsonAutoDetect.Visibility.NONE)
 public class SimulatorConfig implements Serializable, IsSerializable {
 	/**
 	 * 
@@ -25,27 +27,27 @@ public class SimulatorConfig implements Serializable, IsSerializable {
 	 * Globally unique id for this simulator
 	 */
 	SimId id;
-	String actorType;
-	Date expires;
-	boolean isExpired = false;
-	List<SimulatorConfigElement> elements  = new ArrayList<SimulatorConfigElement>();
+	private String actorType;
+	private Date expires;
+	private boolean expired = false;
+	private List<SimulatorConfigElement> elements  = new ArrayList<SimulatorConfigElement>();
 
 	// This is only used to record validation requirements for included document(s)
 	// vc != null triggers UI to display selections from tk_props and accept
 	// selection.
-	ValidationContext vc = null;
-	transient CcdaTypeSelection docTypeSelector;
+	private ValidationContext vc = null;
+	private transient CcdaTypeSelection docTypeSelector;
 
-    public boolean isExpired() { return isExpired; }
-	public void isExpired(boolean is) { isExpired = is; }
+    public boolean isExpired() { return expired; }
+	public void isExpired(boolean is) { expired = is; }
 
 	public boolean checkExpiration() {
 		Date now = new Date();
 		if (now.after(expires))
-			isExpired = true;
+			expired = true;
 		else
-			isExpired = false;
-		return isExpired;
+			expired = false;
+		return expired;
 	}
 	
 	// not sure what to do with the other attributes, leave alone for now
@@ -231,7 +233,7 @@ public class SimulatorConfig implements Serializable, IsSerializable {
 	}
     public void setActorType(String type) { actorType = type; }
 
-    public String getActorTypeFullName() {
+    public String actorTypeFullName() {
         String actorTypeName = getActorType();
         ActorType type = ActorType.findActor(actorTypeName);
         if (type == null) return actorTypeName;

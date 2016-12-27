@@ -221,9 +221,9 @@ public class SimulatorsController {
 
     enum PropType {STRING, BOOLEAN, LIST};
     PropType propType(SimulatorConfigElement config) {
-        if (config.isList()) return PropType.LIST;
-        if (config.isBoolean()) return PropType.BOOLEAN;
-        if (config.isString()) return PropType.STRING;
+        if (config.hasList()) return PropType.LIST;
+        if (config.hasBoolean()) return PropType.BOOLEAN;
+        if (config.hasString()) return PropType.STRING;
         return null;
     }
 
@@ -276,7 +276,7 @@ public class SimulatorsController {
                         logger.info(String.format("...property %s", propName));
                     makeUpdate = true;
                     logger.info(String.format("......%s ==> %s", ele.asBoolean(), config.asBoolean(propName)));
-                    ele.setValue(config.asBoolean(propName));
+                    ele.setBooleanValue(config.asBoolean(propName));
                 }
                 else if (propType(ele) == PropType.STRING) {
                     if (ele.asString().equals(config.asString(propName))) continue;  // no change
@@ -284,7 +284,7 @@ public class SimulatorsController {
                         logger.info(String.format("...property %s", propName));
                     makeUpdate = true;
                     logger.info(String.format("%s ==> %s", ele.asString(), config.asString(propName)));
-                    ele.setValue(config.asString(propName));
+                    ele.setStringValue(config.asString(propName));
                 }
                 else if (propType(ele) == PropType.LIST) {
                     if (listCompare(ele.asList(), config.asList(propName))) continue; // no change
@@ -292,13 +292,13 @@ public class SimulatorsController {
                         logger.info(String.format("...property %s", propName));
                     makeUpdate = true;
                     logger.info(String.format("%s ==> %s", ele.asString(), config.asString(propName)));
-                    ele.setValue(config.asList(propName));
+                    ele.setStringListValue(config.asList(propName));
                 }
             }
 //            if (config.getPatientErrorMap() != null) {
 //                SimulatorConfigElement ele = currentConfig.get(SimulatorProperties.errorForPatient);
 //                if (ele != null) {
-//                    ele.setValue(config.getPatientErrorMap());
+//                    ele.setBooleanValue(config.getPatientErrorMap());
 //                }
 //            }
             if (makeUpdate) {

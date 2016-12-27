@@ -34,7 +34,7 @@ public class ConfigBooleanBox {
 
 		@Override
 		public void onClick(ClickEvent event) {
-			ele.setValue(tb.getValue());
+			ele.setBooleanValue(tb.getValue());
 		}
 	}
 

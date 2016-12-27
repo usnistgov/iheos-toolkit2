@@ -111,7 +111,7 @@ public class ToolkitApi {
     public Simulator createSimulator(ActorType actorType, SimId simId) throws Exception {
         simId.setActorType(actorType.getName());
         Simulator sim = simulatorServiceManager().getNewSimulator(actorType.getName(), simId);
-        sim.getConfig(0).getConfigEle(SimulatorProperties.environment).setValue(simId.getEnvironmentName());
+        sim.getConfig(0).getConfigEle(SimulatorProperties.environment).setStringValue(simId.getEnvironmentName());
         return sim;
     }
 
@@ -144,7 +144,7 @@ public class ToolkitApi {
      * @throws IOException - probably a bad configuration for toolkit
      * @throws NoSimException - simulator doesn't exist
      */
-    public void deleteSimulator(SimId simId) throws IOException, NoSimException {
+    public void deleteSimulator(SimId simId) throws Exception, NoSimException {
         simulatorServiceManager().deleteConfig(simId);
     }
 
@@ -153,7 +153,7 @@ public class ToolkitApi {
      * @param simId - id of simulator
      * @throws IOException - probably a bad configuration for toolkit - impossible to tell if delete happened
      */
-    public void deleteSimulatorIfItExists(SimId simId) throws IOException {
+    public void deleteSimulatorIfItExists(SimId simId) throws Exception {
         try {
             deleteSimulator(simId);
         }

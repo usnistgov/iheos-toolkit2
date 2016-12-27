@@ -72,13 +72,13 @@ public class ReconfigureSimulators extends HttpServlet {
             if (isTls) {
                 if (!host.equals(getConfiguredHost()) || !port.equals(getConfiguredTlsPort())) {
                     ep.updateHostAndPort(getConfiguredHost(), getConfiguredTlsPort());
-                    ele.setValue(ep.getEndpoint());
+                    ele.setStringValue(ep.getEndpoint());
                     updated = true;
                 }
             } else {
                 if (!host.equals(getConfiguredHost()) || !port.equals(getConfiguredPort())) {
                     ep.updateHostAndPort(getConfiguredHost(), getConfiguredPort());
-                    ele.setValue(ep.getEndpoint());
+                    ele.setStringValue(ep.getEndpoint());
                     updated = true;
                 }
             }

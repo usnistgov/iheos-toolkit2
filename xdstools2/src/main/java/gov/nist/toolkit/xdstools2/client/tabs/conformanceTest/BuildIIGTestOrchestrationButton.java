@@ -1,6 +1,5 @@
 package gov.nist.toolkit.xdstools2.client.tabs.conformanceTest;
 
-import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.FlexTable;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HTML;
@@ -164,7 +163,7 @@ public class BuildIIGTestOrchestrationButton extends AbstractOrchestrationButton
                      table.setWidget(row, 1, new HTML(property));
                      SimulatorConfigElement prop = sim.get(property);
                      String value = prop.asString();
-                     if (prop.isList()) value = prop.asList().toString();
+                     if (prop.hasList()) value = prop.asList().toString();
                      table.setWidget(row++ , 2, new HTML(value));
                   }
                } catch (Exception e) {

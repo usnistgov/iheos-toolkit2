@@ -289,7 +289,7 @@ public class SimulatorServiceManager extends CommonService {
 		return configs;
 	}
 
-	public void updateAllSimulatorsHostAndPort(String host, String port) throws NoSimException, IOException, ClassNotFoundException {
+	public void updateAllSimulatorsHostAndPort(String host, String port) throws Exception, IOException, ClassNotFoundException {
 		GenericSimulatorFactory simFact = new GenericSimulatorFactory(SimCache.getSimManagerForSession(session.id()));
 
 		SimDb db = new SimDb();
@@ -321,7 +321,7 @@ public class SimulatorServiceManager extends CommonService {
 		return "";
 	}
 
-    public String deleteConfig(SimId simId) throws IOException {
+    public String deleteConfig(SimId simId) throws Exception {
         SimulatorConfig config = SimCache.getSimulatorConfig(simId);
         if (config != null)
             return deleteConfig(config);
@@ -335,7 +335,7 @@ public class SimulatorServiceManager extends CommonService {
         return "";
     }
 
-	public String deleteConfig(SimulatorConfig config) throws IOException  {
+	public String deleteConfig(SimulatorConfig config) throws Exception  {
 		logger.debug(session.id() + ": " + "deleteConfig " + config.getId());
         GenericSimulatorFactory.delete(config.getId());
         new SimulatorApi(session).delete(config.getId());

@@ -76,7 +76,7 @@ class RepOrchestrationBuilder {
                 SimulatorConfigElement idsEle = supportSimConfig.getConfigEle(SimulatorProperties.VALIDATE_AGAINST_PATIENT_IDENTITY_FEED)
 
                 // disable checking of Patient Identity Feed
-                idsEle.setValue(false)
+                idsEle.setBooleanValue(false)
 
                 api.saveSimulator(supportSimConfig)
             }

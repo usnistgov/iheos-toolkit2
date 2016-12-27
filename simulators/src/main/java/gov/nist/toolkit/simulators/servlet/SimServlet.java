@@ -475,7 +475,7 @@ public class SimServlet  extends HttpServlet {
             vc.forceMtom = transactionType.isRequiresMtom();
 
 			SimulatorConfigElement stsSce = asc.get(SimulatorProperties.requiresStsSaml);
-			if (stsSce!=null && stsSce.isBoolean() && stsSce.asBoolean())
+			if (stsSce!=null && stsSce.hasBoolean() && stsSce.asBoolean())
 				vc.requiresStsSaml = true;
 
 			SimulatorConfigElement asce = asc.get(SimulatorProperties.codesEnvironment);
@@ -553,6 +553,11 @@ public class SimServlet  extends HttpServlet {
 			logger.error(ExceptionUtil.exception_details(e));
 			responseSent = true;
 		} catch (ParseException e) {
+			sendSoapFault(response, ExceptionUtil.exception_details(e));
+			logger.error(ExceptionUtil.exception_details(e));
+			responseSent = true;
+		}
+		catch (Exception e) {
 			sendSoapFault(response, ExceptionUtil.exception_details(e));
 			logger.error(ExceptionUtil.exception_details(e));
 			responseSent = true;
