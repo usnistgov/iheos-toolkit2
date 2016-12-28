@@ -537,7 +537,7 @@ public class ActorConfigTab extends GenericQueryTab {
 		newActorEditGrid();
 
 		siteSelector.clear();
-		for (String site : new StringSort().sort(result)) {
+		for (String site : StringSort.sort(result)) {
 			if (site.equals("allRepositories"))
 				continue;
 			siteSelector.addItem(site);

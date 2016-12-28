@@ -36,7 +36,7 @@ public class SiteSelectionComponent extends Composite implements IsWidget, HasVa
         List<String> siteNames = new ArrayList<String>();
         for (Site site : sites)
             siteNames.add(site.getName());
-        siteNames = new StringSort().sort(siteNames);
+        siteNames = StringSort.sort(siteNames);
 
         if (actorType == null) {
             // any actor type

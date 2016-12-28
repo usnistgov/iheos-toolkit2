@@ -4,7 +4,6 @@ import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.*;
 import gov.nist.toolkit.actorfactory.client.SimulatorConfig;
 import gov.nist.toolkit.results.client.Result;
@@ -59,7 +58,7 @@ class TestSelectionManager {
                 Set<String> testNumsSet = testCollectionMap.keySet();
                 List<String> testNums = new ArrayList<String>();
                 testNums.addAll(testNumsSet);
-                testNums = new StringSort().sort(testNums);
+                testNums = StringSort.sort(testNums);
 
                 for (String name : testNums) {
                     String description = testCollectionMap.get(name);

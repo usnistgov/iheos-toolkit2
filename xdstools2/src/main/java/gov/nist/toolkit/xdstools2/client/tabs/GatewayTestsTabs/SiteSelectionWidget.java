@@ -106,7 +106,7 @@ public class SiteSelectionWidget {
         List<String> siteNames = new ArrayList<String>();
         for (Site site : sites)
             siteNames.add(site.getName());
-        siteNames = new StringSort().sort(siteNames);
+        siteNames = StringSort.sort(siteNames);
 
         List<Site> orderedSites = new ArrayList<Site>();
         for (String siteName : siteNames) {
