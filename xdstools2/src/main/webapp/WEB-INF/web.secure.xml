@@ -1,13 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- //////////////////////////////////////////////////////////// -->
 <!-- //////////////////////////////////////////////////////////// -->
+<!--                                                              -->
 <!--        ALWAYS UPDATE BOTH web.xml AND web.secure.xml         -->
+<!--                                                              -->
 <!-- //////////////////////////////////////////////////////////// -->
 <!-- //////////////////////////////////////////////////////////// -->
 <!DOCTYPE web-app
         PUBLIC "-//Sun Microsystems, Inc.//DTD Web Application 2.3//EN"
         "http://java.sun.com/dtd/web-app_2_3.dtd">
-
 <web-app>
 
     <!--  The filter is necessary so the simulator response headers can be captured for the message log -->
@@ -29,26 +30,6 @@
     <filter-mapping>
         <filter-name>response-header-log2</filter-name>
         <url-pattern>/xdstools2/sim/*</url-pattern>
-    </filter-mapping>
-
-    <filter>
-        <filter-name>http-response-header-log</filter-name>
-        <filter-class>gov.nist.toolkit.simulators.servlet.HttpSimServletFilter</filter-class>
-    </filter>
-
-    <filter>
-        <filter-name>http-response-header-log2</filter-name>
-        <filter-class>gov.nist.toolkit.simulators.servlet.HttpSimServletFilter</filter-class>
-    </filter>
-
-    <filter-mapping>
-        <filter-name>http-response-header-log</filter-name>
-        <url-pattern>/httpsim/*</url-pattern>
-    </filter-mapping>
-
-    <filter-mapping>
-        <filter-name>http-response-header-log2</filter-name>
-        <url-pattern>/xdstools2/httpsim/*</url-pattern>
     </filter-mapping>
 
     <listener>
@@ -80,33 +61,27 @@
         <servlet-class>gov.nist.toolkit.xdstools2.server.upload.UploadServlet</servlet-class>
     </servlet>
 
-	<servlet>
-		<servlet-name>simulatorServlet</servlet-name>
-		<servlet-class>gov.nist.toolkit.simulators.servlet.SimServlet</servlet-class>
-		<load-on-startup>1</load-on-startup>
-	</servlet>
-
     <servlet>
-        <servlet-name>httpSimulatorServlet</servlet-name>
-        <servlet-class>gov.nist.toolkit.simulators.servlet.HttpSimServlet</servlet-class>
+        <servlet-name>simulatorServlet</servlet-name>
+        <servlet-class>gov.nist.toolkit.simulators.servlet.SimServlet</servlet-class>
         <load-on-startup>1</load-on-startup>
     </servlet>
 
     <servlet>
-		<servlet-name>Reconfigure Simulators</servlet-name>
-		<servlet-class>gov.nist.toolkit.simulators.servlet.ReconfigureSimulators</servlet-class>
-		<load-on-startup>2</load-on-startup>
-	</servlet>
-	
-	<!--<servlet>-->
-		<!--<servlet-name>simulatorServlet2</servlet-name>-->
-		<!--<servlet-class>gov.nist.toolkit.simulators.servlet.SimServlet</servlet-class>-->
-	<!--</servlet>-->
-	
-	<servlet>
-		<servlet-name>messageServlet</servlet-name>
-		<servlet-class>gov.nist.toolkit.simulators.servlet.SimServlet</servlet-class>
-	</servlet>
+        <servlet-name>Reconfigure Simulators</servlet-name>
+        <servlet-class>gov.nist.toolkit.simulators.servlet.ReconfigureSimulators</servlet-class>
+        <load-on-startup>2</load-on-startup>
+    </servlet>
+
+    <!--<servlet>-->
+    <!--<servlet-name>simulatorServlet2</servlet-name>-->
+    <!--<servlet-class>gov.nist.toolkit.simulators.servlet.SimServlet</servlet-class>-->
+    <!--</servlet>-->
+
+    <servlet>
+        <servlet-name>messageServlet</servlet-name>
+        <servlet-class>gov.nist.toolkit.simulators.servlet.SimServlet</servlet-class>
+    </servlet>
 
     <servlet>
         <servlet-name>siteServlet</servlet-name>
@@ -185,19 +160,9 @@
         <url-pattern>/sim/*</url-pattern>
     </servlet-mapping>
 
-	<servlet-mapping>
-		<servlet-name>simulatorServlet</servlet-name>
-		<url-pattern>/xdstools2/sim/*</url-pattern>
-	</servlet-mapping>
-
     <servlet-mapping>
-        <servlet-name>httpSimulatorServlet</servlet-name>
-        <url-pattern>/httpsim/*</url-pattern>
-    </servlet-mapping>
-
-    <servlet-mapping>
-        <servlet-name>httpSimulatorServlet</servlet-name>
-        <url-pattern>/xdstools2/httpsim/*</url-pattern>
+        <servlet-name>simulatorServlet</servlet-name>
+        <url-pattern>/xdstools2/sim/*</url-pattern>
     </servlet-mapping>
 
     <servlet-mapping>
@@ -226,11 +191,32 @@
 		</session-config>
 	-->
 
-    <!-- Default page to serve -->
+    <!--&lt;!&ndash; Default page to serve &ndash;&gt;-->
     <welcome-file-list>
         <welcome-file>Xdstools2.html</welcome-file>
     </welcome-file-list>
 
-    <!-- See web.secure.xml for security-constraints that forces the https redirect and add exceptions for simulators -->
+    <!-- Require HTTPS for everything except /img (favicon) and /css. -->
+    <security-constraint>
+        <web-resource-collection>
+            <web-resource-name>HTTPSOnly</web-resource-name>
+            <url-pattern>/*</url-pattern>
+        </web-resource-collection>
+        <user-data-constraint>
+            <transport-guarantee>CONFIDENTIAL</transport-guarantee>
+        </user-data-constraint>
+    </security-constraint>
+    <security-constraint>
+        <web-resource-collection>
+            <web-resource-name>HTTPSOrHTTP</web-resource-name>
+            <url-pattern>*.ico</url-pattern>
+            <url-pattern>/img/*</url-pattern>
+            <url-pattern>/css/*</url-pattern>
+            <url-pattern>/sim/*</url-pattern>
+        </web-resource-collection>
+        <user-data-constraint>
+            <transport-guarantee>NONE</transport-guarantee>
+        </user-data-constraint>
+    </security-constraint>
 
 </web-app>
