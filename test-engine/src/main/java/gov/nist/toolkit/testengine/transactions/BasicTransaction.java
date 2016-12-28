@@ -830,6 +830,7 @@ public abstract class BasicTransaction  {
     }
 
 	public String getFail() {
+		if (failMsgs == null) return null;
 		return asString(failMsgs);
 	}
 

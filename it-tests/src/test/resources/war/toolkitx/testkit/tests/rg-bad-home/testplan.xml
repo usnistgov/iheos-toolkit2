@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?><TestPlan>
+  <Test>12310</Test>
+  <TestStep id="getdocs">
+    <ExpectedStatus>Failure</ExpectedStatus>
+    <ExpectedErrorCode>XDSMissingHomeCommunityId</ExpectedErrorCode>
+    <Rule>
+      <Transaction>XGQ</Transaction>
+      <SQ>Test GetDocuments XGC</SQ>
+      <Assertion>LeafClass return</Assertion>
+    </Rule>
+    <XCQTransaction>
+      <MetadataFile>query.xml</MetadataFile>
+    </XCQTransaction>
+  </TestStep>
+</TestPlan>
