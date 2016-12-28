@@ -23,6 +23,7 @@ public class StringSort {
 //		return data1;
 //	}
 
+
 	static public List<String> sort(Collection<String> data) {
 		StringSort ss = new StringSort();
 		ss.data1 = new ArrayList<String>();

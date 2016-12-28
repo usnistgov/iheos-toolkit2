@@ -7,11 +7,9 @@ import gov.nist.toolkit.configDatatypes.client.TransactionType;
 import gov.nist.toolkit.sitemanagement.client.Site;
 import gov.nist.toolkit.sitemanagement.client.SiteSpec;
 import gov.nist.toolkit.xdstools2.client.CoupledTransactions;
+import gov.nist.toolkit.xdstools2.client.ObjectSort;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class TransactionSelectionManager {
 	CoupledTransactions couplings;
@@ -64,6 +62,11 @@ public class TransactionSelectionManager {
 	public List<RadioButton> getRadioButtons(TransactionType tt) {
 		ArrayList<RadioButton> buttons = new ArrayList<RadioButton>();
 		List<RbSite> rbSites = perTransRB.get(tt);
+		new ObjectSort().sort(rbSites, new Comparator<RbSite>() {
+			public int compare(RbSite ra, RbSite rb) {
+				return ra.site.getName().compareTo(rb.site.getName());
+			}
+		});
 		if (rbSites == null)
 			return buttons;
 		for (RbSite rbs : rbSites) {
