@@ -16,6 +16,7 @@ import gov.nist.toolkit.http.client.HtmlMarkup;
 import gov.nist.toolkit.simcommon.client.config.SimulatorConfigElement;
 import gov.nist.toolkit.sitemanagement.client.Site;
 import gov.nist.toolkit.xdstools2.client.ClickHandlerData;
+import gov.nist.toolkit.xdstools2.client.StringSort;
 import gov.nist.toolkit.xdstools2.client.command.command.*;
 import gov.nist.toolkit.xdstools2.client.event.TabSelectedEvent;
 import gov.nist.toolkit.xdstools2.client.event.Xdstools2EventBus;
@@ -175,7 +176,7 @@ public class SimulatorControlTab extends GenericQueryTab {
                 if (result == null)
                     return;
                 actorSelectListBox.addItem("");
-                for (String name : result)
+                for (String name : StringSort.sort(result))
                     actorSelectListBox.addItem(name);
             }
         }.run(getCommandContext());
