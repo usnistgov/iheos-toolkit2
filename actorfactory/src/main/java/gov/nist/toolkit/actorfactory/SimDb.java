@@ -278,7 +278,7 @@ public class SimDb {
 	}
 
 	public File getSimulatorControlFile() {
-		return new File(simDir.toString() + File.separatorChar + "simctl.ser");
+		return new File(simDir.toString() + File.separatorChar + "simctl.json");
 	}
 	
 	public static String getTransactionDirName(TransactionType tt)  {
