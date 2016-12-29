@@ -499,7 +499,7 @@ public class OddsSimConfigMgr implements SimConfigMgrIntf {
                 Set<String> testNumsSet = result.keySet();
                 List<String> testNums = new ArrayList<String>();
                 testNums.addAll(testNumsSet);
-                testNums = new StringSort().sort(testNums);
+                testNums = StringSort.sort(testNums);
 
                 for (String name : testNums) {
                     String description = result.get(name);

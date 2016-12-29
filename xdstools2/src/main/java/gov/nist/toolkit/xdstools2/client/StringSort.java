@@ -8,7 +8,7 @@ public class StringSort {
 
 	List<String> data1;
 	
-	public StringSort() {
+	private StringSort() {
 		
 	}
 
@@ -23,18 +23,20 @@ public class StringSort {
 //		return data1;
 //	}
 
-	public List<String> sort(Collection<String> data) {
-		data1 = new ArrayList<String>();
-		data1.addAll(data);
+
+	static public List<String> sort(Collection<String> data) {
+		StringSort ss = new StringSort();
+		ss.data1 = new ArrayList<String>();
+		ss.data1.addAll(data);
 		
 		boolean changed = true;
 		while (changed)
-			changed = sort1();
+			changed = ss.sort1();
 		
-		return data1;
+		return ss.data1;
 	}
 
-	boolean sort1() {
+	private boolean sort1() {
 		boolean changed = false;
 		for (int i=0; i<data1.size(); i++) {
 			int j = i + 1;

@@ -105,7 +105,7 @@ public class SiteSelectionWidget extends Composite   {
 		List<String> siteNames = new ArrayList<String>();
 		for (Site site : sites)
 			siteNames.add(site.getName());
-		siteNames = new StringSort().sort(siteNames);
+		siteNames = StringSort.sort(siteNames);
 
 		for (TransactionType tt : at.getTransactions()) {
 			sites.addAll(findSites(tt, true  /* tls */));
@@ -162,7 +162,7 @@ public class SiteSelectionWidget extends Composite   {
 			List<String> siteNames = new ArrayList<String>();
 			for (Site site : sites)
 				siteNames.add(site.getName());
-			siteNames = new StringSort().sort(siteNames);
+			siteNames = StringSort.sort(siteNames);
 
 			int cols = 5;
 			int row=0;

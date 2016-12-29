@@ -7,6 +7,7 @@ import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.ui.*;
 import gov.nist.toolkit.sitemanagement.client.SiteSpec;
 import gov.nist.toolkit.xdstools2.client.ErrorHandler;
+import gov.nist.toolkit.xdstools2.client.StringSort;
 import gov.nist.toolkit.xdstools2.client.ToolWindow;
 import gov.nist.toolkit.xdstools2.client.command.command.*;
 import gov.nist.toolkit.xdstools2.client.util.ClientUtils;
@@ -125,7 +126,8 @@ class TestContextDialog extends DialogBox {
                 sitesForTestSessionPanel.clear();
                 sitesForTestSessionPanel.add(clearTestSessionButton);
                 sitesForTestSessionPanel.add(new HTML("Contains results for systems:"));
-                for (String s : result) {
+                List<String> sortedResult = StringSort.sort(result);
+                for (String s : sortedResult) {
                     sitesForTestSessionPanel.add(new HTML(s));
                 }
                 if (result.size() == 0) {
@@ -270,6 +272,7 @@ class TestContextDialog extends DialogBox {
 
             @Override
             public void onComplete(List<String> var1) {
+                var1 = StringSort.sort(var1);
                 testSessionListBox.clear();
                 for (String ts : var1) {
                     testSessionListBox.addItem(ts);
@@ -290,7 +293,7 @@ class TestContextDialog extends DialogBox {
             public void onComplete(List<String> result) {
                 List<String> contents = new ArrayList<>();
                 contents.add(TestContext.NONE);
-                contents.addAll(result);
+                contents.addAll(StringSort.sort(result));
                 siteListBox.clear();
                 for (String site : contents) {
                     siteListBox.addItem(site);

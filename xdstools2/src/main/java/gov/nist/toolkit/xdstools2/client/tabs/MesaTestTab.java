@@ -4,7 +4,6 @@ import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.*;
 import gov.nist.toolkit.actortransaction.client.ActorType;
 import gov.nist.toolkit.configDatatypes.client.TransactionType;
@@ -17,7 +16,6 @@ import gov.nist.toolkit.xdstools2.client.TabContainer;
 import gov.nist.toolkit.xdstools2.client.command.command.*;
 import gov.nist.toolkit.xdstools2.client.siteActorManagers.GetDocumentsSiteActorManager;
 import gov.nist.toolkit.xdstools2.client.tabs.genericQueryTab.GenericQueryTab;
-import gov.nist.toolkit.xdstools2.client.util.ClientUtils;
 import gov.nist.toolkit.xdstools2.client.widgets.PopupMessage;
 import gov.nist.toolkit.xdstools2.shared.command.request.GetCollectionRequest;
 import gov.nist.toolkit.xdstools2.shared.command.request.GetTestDetailsRequest;
@@ -223,7 +221,7 @@ public class MesaTestTab extends GenericQueryTab {
                 Set<String> testNumsSet = testCollectionMap.keySet();
                 List<String> testNums = new ArrayList<String>();
                 testNums.addAll(testNumsSet);
-                testNums = new StringSort().sort(testNums);
+                testNums = StringSort.sort(testNums);
 
                 for (String name : testNums) {
                     String description = testCollectionMap.get(name);
