@@ -20,7 +20,8 @@ import gov.nist.toolkit.interactionmapper.InteractionMapper;
 import gov.nist.toolkit.interactionmodel.client.InteractingEntity;
 import gov.nist.toolkit.results.client.*;
 import gov.nist.toolkit.results.shared.Test;
-import gov.nist.toolkit.services.client.*;
+import gov.nist.toolkit.services.client.IdcOrchestrationRequest;
+import gov.nist.toolkit.services.client.RawResponse;
 import gov.nist.toolkit.services.server.RawResponseBuilder;
 import gov.nist.toolkit.services.server.orchestration.OrchestrationManager;
 import gov.nist.toolkit.services.shared.SimulatorServiceManager;
@@ -49,7 +50,6 @@ import gov.nist.toolkit.valregmsg.validation.factories.CommonMessageValidatorFac
 import gov.nist.toolkit.valsupport.client.MessageValidationResults;
 import gov.nist.toolkit.xdsexception.ExceptionUtil;
 import gov.nist.toolkit.xdsexception.client.ToolkitRuntimeException;
-import gov.nist.toolkit.xdstools2.client.GazelleXuaUsername;
 import gov.nist.toolkit.xdstools2.client.util.ToolkitService;
 import gov.nist.toolkit.xdstools2.server.serviceManager.DashboardServiceManager;
 import gov.nist.toolkit.xdstools2.server.serviceManager.GazelleServiceManager;
@@ -1154,7 +1154,7 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements
         Session s = getSession();
         if (s == null)
             throw new NoServletSessionException("");
-        logHere("On Session " + s.getId());
+//        logHere("On Session " + s.getId());
 //		String msg = ExceptionUtil.here("On Session " + s.getId());
 //		Scanner scanner = new Scanner(msg);
 //		while(scanner.hasNextLine()) {
