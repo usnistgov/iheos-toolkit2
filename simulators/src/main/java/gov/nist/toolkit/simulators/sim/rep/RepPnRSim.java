@@ -155,7 +155,7 @@ public class RepPnRSim extends TransactionSimulator implements MetadataGeneratin
 					m.insertSlot(eo, slot);
 				}
 				if (hasHash)
-					m.setSlotValue(eo, "hash", 0, hash);
+					m.setSlotValue(eo, "hash", 0, existingHash);
 				else {
 					OMElement slot = m.mkSlot("hash", hash);
 					m.insertSlot(eo, slot);
