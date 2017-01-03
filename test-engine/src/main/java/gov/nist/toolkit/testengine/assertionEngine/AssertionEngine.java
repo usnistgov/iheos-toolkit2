@@ -237,8 +237,27 @@ public class AssertionEngine {
                caller.processAssertion(this, assertion, assertion_output);
                continue;
             }
+
+            String xpath = assertion.xpath;
+            if (xpath.contains("equalsIgnoreCase")) {
+               // XPath 1.0 does not offer case insensitive comparison OR translate so a special
+               // instruction is needed
+               String equalsToken = null;
+               String leftSide = null;
+               String rightSide = null;
+               String[] parts = xpath.split("equalsIgnoreCase");
+               if (parts.length == 2) {
+                  leftSide = parts[0].toLowerCase();
+                  rightSide = parts[1].toLowerCase();
+                  equalsToken = "=";
+                  assertion.xpath = leftSide + " " + equalsToken + " " + rightSide;
+               }
+            }
+
             AXIOMXPath xpathExpression = new AXIOMXPath(assertion.xpath);
             String result = xpathExpression.stringValueOf(data);
+
+
             if (result == null || !result.toLowerCase().equals("true")) {
                OMElement failure = MetadataSupport.om_factory.createOMElement("FailedAssertion", null);
                failure.addAttribute("assertionId", assertion.id, null);
