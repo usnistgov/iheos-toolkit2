@@ -911,12 +911,9 @@ public abstract class GenericQueryTab  extends ToolWindow {
                     }
                 }
                 if (ar.assertion.startsWith("Status")) {
-//                        detailsTree = new DetailsTree();
                     resultPanel.add(detailsTree.getWidget());
                 }
             }
-//                if (detailsTree.hasNodes)
-//                    resultPanel.add(detailsTree.getWidget());
         }
         if (status) {
             if (partialSuccess)
@@ -928,6 +925,10 @@ public abstract class GenericQueryTab  extends ToolWindow {
 
         getInspectButton().setEnabled(true);
         getGoButton().setEnabled(true);
+    }
+
+    String displayable(String in) {
+        return in.replaceAll("\n", "<br />");
     }
 
     public void setDisplayTab(boolean displayTab) {

@@ -13,7 +13,7 @@ import java.util.List;
 public class Result  implements IsSerializable, Serializable {
 	private static final long serialVersionUID = 1L;
 	public TestInstance testInstance;   // test can be a single test or a test collection
-	public AssertionResults assertions = null;
+	public AssertionResults assertions = new AssertionResults();
 	public String timestamp;
 	public TestInstance logId;
 	public List<StepResult> stepResults = new ArrayList<>();

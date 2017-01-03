@@ -24,6 +24,7 @@ public class StepResult implements IsSerializable, Serializable {
 	TestLog testLog = null;  // loaded separately by client
 	boolean haveLogs = false;
 	private List<String> soapFaults = new ArrayList<>();
+	private List<String> errors = new ArrayList<>();
 
 	public StepResult() {
 		metadata = new MetadataCollection();
@@ -45,6 +46,12 @@ public class StepResult implements IsSerializable, Serializable {
 		r.haveLogs = haveLogs;
 		return r;
 	}
+
+	public void addError(String err) {
+		errors.add(err);
+	}
+
+	public List<String> getErrors() { return errors; }
 
     public String toString() {
         return

@@ -356,6 +356,9 @@ public class Xdstest2 {
 						res.add(error, stepLog.isSuccess());
 					}
 
+					for (String error : stepLog.getAssertionErrors())
+						res.add(error, false);
+
 
 //                    for (String report : stepLog.getUseReports()) {
 //                        res.add("UseReport: " + report);

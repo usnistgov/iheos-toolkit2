@@ -308,15 +308,19 @@ public class TestStepLogContentBuilder {
         List<OMElement> errorEles = XmlUtil.decendentsWithLocalName(root, "FailedAssertion");
         List<String> errors = new ArrayList<String>();
 
-        try {
-            for (OMElement errorEle : errorEles) {
-                errors.add("FailedAssertion (" + errorEle.getAttributeValue(new QName("assertionId")) + ")");
+        for (OMElement errorEle : errorEles) {
+            errors.add("FailedAssertion (" + errorEle.getAttributeValue(new QName("assertionId")) + ")");
+            try {
                 errors.add("&nbsp;&nbsp;LeftSide Value: " + XmlUtil.firstChildWithLocalName(errorEle, "LeftSideValue").getText());
+            } catch (NullPointerException e) {}
+            try {
                 errors.add("&nbsp;&nbsp;Operator: "  + XmlUtil.firstChildWithLocalName(errorEle, "Operator").getText());
+            } catch (NullPointerException e) {}
+            try {
                 errors.add("&nbsp;&nbsp;RightSide Value: " + XmlUtil.firstChildWithLocalName(errorEle, "RightSideValue").getText());
-            }
-            c.setAssertionErrors(errors);
-        } catch (Exception e) {}
+            } catch (NullPointerException e) {}
+        }
+        c.setAssertionErrors(errors);
     }
 
     private String xmlFormat(OMElement ele) throws XdsInternalException, FactoryConfigurationError {
