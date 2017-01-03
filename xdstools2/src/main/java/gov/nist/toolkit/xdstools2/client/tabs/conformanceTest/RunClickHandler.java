@@ -2,6 +2,7 @@ package gov.nist.toolkit.xdstools2.client.tabs.conformanceTest;
 
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.user.client.Window;
 import gov.nist.toolkit.results.client.TestInstance;
 
 /**
@@ -20,6 +21,13 @@ public class RunClickHandler implements ClickHandler {
         this.testContextView = testContextView;
     }
 
+    RunClickHandler(TestRunner testRunner, TestInstance testInstance, TestContext testContext) {
+        this.testRunner = testRunner;
+        this.testInstance = testInstance;
+        this.testContext = testContext;
+        this.testContextView = null;
+    }
+
     @Override
     public void onClick(ClickEvent clickEvent) {
         clickEvent.preventDefault();
@@ -28,8 +36,11 @@ public class RunClickHandler implements ClickHandler {
         String msg = testContext.verifyTestContext();
         if (msg == null)
             testRunner.runTest(testInstance, null);
-        else
-            testContextView.launchDialog(msg);
-
+        else {
+            if (testContextView != null)
+                testContextView.launchDialog(msg);
+            else
+                Window.alert(msg);
+        }
     }
 }

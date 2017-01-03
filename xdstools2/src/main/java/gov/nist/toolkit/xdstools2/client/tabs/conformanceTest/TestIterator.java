@@ -5,6 +5,6 @@ import gov.nist.toolkit.results.client.TestInstance;
 /**
  *
  */
-public interface TestDone {
+public interface TestIterator {
     void onDone(TestInstance testInstance);
 }

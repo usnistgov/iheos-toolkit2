@@ -86,7 +86,7 @@ public abstract class ToolWindow {
 		innerPanel.setWidget(windowRoot);
 	}
 
-	protected CommandContext getCommandContext() {
+	public CommandContext getCommandContext() {
 		return ClientUtils.INSTANCE.getCommandContext();
 	}
 
