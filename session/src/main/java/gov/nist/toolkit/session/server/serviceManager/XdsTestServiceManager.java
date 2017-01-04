@@ -337,20 +337,26 @@ public class XdsTestServiceManager extends CommonService {
 		try {
             System.out.println("ENVIRONMENT: "+session.getCurrentEnvName()+", SESSION: "+session.getMesaSessionName());
             Map<String,String> collection=new HashMap<String,String>();
-            for (File testkitFile:Installation.instance().testkitFiles(session.getCurrentEnvName(),session.getMesaSessionName())){
-                TestKit tk=new TestKit(testkitFile);
-                Map<String,String> c=tk.getCollection(collectionSetName,collectionName);
-                for (String key:c.keySet()) {
-                    if (!collection.containsKey(key)) {
-                        collection.put(key,c.get(key));
-                    }
-                }
+            for (File testkitFile:Installation.instance().testkitFiles(session.getCurrentEnvName(),session.getMesaSessionName())) {
+				try {
+					TestKit tk = new TestKit(testkitFile);
+					Map<String, String> c = tk.getCollection(collectionSetName, collectionName);
+					for (String key : c.keySet()) {
+						if (!collection.containsKey(key)) {
+							collection.put(key, c.get(key));
+						}
+					}
+					return collection;
+				} catch (Exception e) {
+					// not a problem until the list is exhausted
+				}
             }
-            return collection;
 		} catch (Exception e) {
 			logger.error("getCollection", e);
 			throw new Exception(e.getMessage());
 		}
+		// collection was not found -- oops
+		throw new Exception("Collection " + collectionSetName + "/" + collectionName + "  was not found");
 	}
 
 	/**
