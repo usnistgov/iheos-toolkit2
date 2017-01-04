@@ -458,7 +458,7 @@
             <dependency>
                 <groupId>com.fasterxml</groupId>
                 <artifactId>jackson-xml-databind</artifactId>
-                <version>${jackson.version}</version>   // 0.6.2
+                <version>${jackson.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.codehaus.jackson</groupId>
