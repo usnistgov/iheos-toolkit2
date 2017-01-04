@@ -580,6 +580,10 @@ public class SimDb {
 		return new File(getDBFilePrefix(filenamebase) + File.separator + "request_body.bin");
 	}
 
+	public File getAlternateRequestMsgBodyFile(String filenamebase) {
+		return new File(getDBFilePrefix(filenamebase) + File.separator + "request_body.txt");
+	}
+
 	public File getResponseMsgHdrFile(String filenamebase) {
 		return new File(getDBFilePrefix(filenamebase) + File.separator + "response_hdr.txt");
 	}
@@ -751,6 +755,10 @@ public class SimDb {
 		return getRequestMsgBodyFile(event);
 	}
 
+	public File getAlternateRequestBodyFile() {
+		return getAlternateRequestMsgBodyFile(event);
+	}
+
 	public String nowAsFilenameBase() {
 		return asFilenameBase(new Date());
 	}
@@ -820,6 +828,11 @@ public class SimDb {
 		OutputStream out = new FileOutputStream(getRequestBodyFile());
 		try {
 			out.write(bytes);
+		} finally {
+			out.close();
+		}
+		try {
+			Io.stringToFile(getAlternateRequestBodyFile(), new String(bytes));
 		} finally {
 			out.close();
 		}
