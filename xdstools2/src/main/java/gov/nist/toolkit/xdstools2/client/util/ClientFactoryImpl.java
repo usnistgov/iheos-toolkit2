@@ -5,6 +5,7 @@ import com.google.gwt.place.shared.PlaceController;
 import com.google.web.bindery.event.shared.EventBus;
 import gov.nist.toolkit.xdstools2.client.event.Xdstools2EventBus;
 import gov.nist.toolkit.xdstools2.client.util.activitiesAndPlaces.ConfActorActivity;
+import gov.nist.toolkit.xdstools2.client.util.activitiesAndPlaces.SimLogActivity;
 import gov.nist.toolkit.xdstools2.client.util.activitiesAndPlaces.TestInstanceActivity;
 import gov.nist.toolkit.xdstools2.client.util.activitiesAndPlaces.ToolActivity;
 
@@ -18,6 +19,7 @@ public class ClientFactoryImpl implements ClientFactory {
     private static final TestInstanceActivity TEST_INSTANCE_ACTIVITY = new TestInstanceActivity();
     private static final ToolActivity TOOL_ACTIVITY = new ToolActivity();
     private static final ConfActorActivity CONF_ACTOR_ACTIVITY = new ConfActorActivity();
+    private static final SimLogActivity SIM_LOG_ACTIVITY = new SimLogActivity();
     private static final ToolkitServiceAsync TOOLKIT_SERVICES = GWT.create(ToolkitService.class);
 
     @Override
@@ -48,5 +50,10 @@ public class ClientFactoryImpl implements ClientFactory {
     @Override
     public ToolkitServiceAsync getToolkitServices(){
         return TOOLKIT_SERVICES;
+    }
+
+    @Override
+    public SimLogActivity getSimLogActivity() {
+        return SIM_LOG_ACTIVITY;
     }
 }

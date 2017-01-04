@@ -3,6 +3,7 @@ package gov.nist.toolkit.xdstools2.client.util.activitiesAndPlaces;
 import com.google.gwt.activity.shared.Activity;
 import com.google.gwt.activity.shared.ActivityMapper;
 import com.google.gwt.place.shared.Place;
+import com.google.gwt.user.client.Window;
 import gov.nist.toolkit.xdstools2.client.util.ClientFactory;
 
 /**
@@ -24,14 +25,14 @@ public class Xdstools2ActivityMapper implements ActivityMapper {
 
     /**
      * This method is supposed to return the right Activity for a given Place to load.
-     * It sets the id of the tab to load in TestInstanceActivity and return the Activity.
-     * The Activity will use this id to know which tab to open when it starts.
+     *
      *
      * @param place Place to load
      * @return the right Activity for a given place to load.
      */
     @Override
     public Activity getActivity(Place place) {
+        Window.alert("getActivity - " + place.getClass().getName());
         if (place instanceof TestInstance) {
             TestInstanceActivity testInstanceActivity = clientFactory.getTestInstanceActivity();
             testInstanceActivity.setTabId(((TestInstance) place).getTabId());
@@ -51,6 +52,14 @@ public class Xdstools2ActivityMapper implements ActivityMapper {
             ConfActorActivity confActorActivity = clientFactory.getConfActorActivity();
             confActorActivity.setConfActor(confActor);
             return confActorActivity;
+        }
+
+        if (place instanceof SimLog) {
+            Window.alert("SimLog activity");
+            SimLog simLog = (SimLog) place;
+            SimLogActivity simLogActivity = clientFactory.getSimLogActivity();
+            simLogActivity.setSimLog(simLog);
+            return simLogActivity;
         }
         return null;
     }

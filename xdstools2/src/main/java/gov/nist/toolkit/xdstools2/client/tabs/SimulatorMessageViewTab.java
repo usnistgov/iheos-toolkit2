@@ -27,37 +27,38 @@ import java.util.List;
 import java.util.Map;
 
 public class SimulatorMessageViewTab extends ToolWindow {
-	HorizontalPanel simDisplayPanel = new HorizontalPanel();
-	VerticalPanel simControlPanel = new VerticalPanel();
-	VerticalPanel detailPanel = new VerticalPanel();
-	HorizontalPanel inOutPanel = new HorizontalPanel();
-	VerticalPanel transInPanel = new VerticalPanel();
-	VerticalPanel transOutPanel = new VerticalPanel();
-	VerticalPanel logPanel = new VerticalPanel();
-	ScrollPanel scrollInPanel = new ScrollPanel();
-	ScrollPanel scrollOutPanel = new ScrollPanel();
-	ScrollPanel scrollLogPanel = new ScrollPanel();
+	private HorizontalPanel simDisplayPanel = new HorizontalPanel();
+	private VerticalPanel simControlPanel = new VerticalPanel();
+	private VerticalPanel detailPanel = new VerticalPanel();
+	private HorizontalPanel inOutPanel = new HorizontalPanel();
+	private VerticalPanel transInPanel = new VerticalPanel();
+	private VerticalPanel transOutPanel = new VerticalPanel();
+	private VerticalPanel logPanel = new VerticalPanel();
+	private ScrollPanel scrollInPanel = new ScrollPanel();
+	private ScrollPanel scrollOutPanel = new ScrollPanel();
+	private ScrollPanel scrollLogPanel = new ScrollPanel();
 
-	SimId simid = null;//new SimId("");
-	String currentActor;
-	String currentTransaction;
-	String currentEvent;
+	private SimId simid = null;//new SimId("");
+	private String currentActor;
+	private String currentTransaction;
+	private String currentEvent;
 
-	List<TransactionInstance> transactionInstances = null;
-	TransactionInstance currentTransactionInstance = null;
 
-	VerticalPanel transactionDisplayPanel = new VerticalPanel();
-	VerticalPanel transactionNamesPanel = new VerticalPanel();
-	ListBox transInstanceListBox = new ListBox();
+	private List<TransactionInstance> transactionInstances = null;
+	private TransactionInstance currentTransactionInstance = null;
+
+	private VerticalPanel transactionDisplayPanel = new VerticalPanel();
+	private VerticalPanel transactionNamesPanel = new VerticalPanel();
+	private ListBox transInstanceListBox = new ListBox();
 	//	HTML ipAddressHTML = new HTML();
-	ListBox simulatorNamesListBox = new ListBox();
+	private ListBox simulatorNamesListBox = new ListBox();
 
-	Button refreshButton = new Button("Refresh");
-	Button inspectRequestButton = new Button("Inspect Request");
-	Button inspectResponseButton = new Button("Inspect Response");
-	Button deleteButton = new Button("Delete");
+	private Button refreshButton = new Button("Refresh");
+	private Button inspectRequestButton = new Button("Inspect Request");
+	private Button inspectResponseButton = new Button("Inspect Response");
+	private Button deleteButton = new Button("Delete");
 
-	HTML download = new HTML();
+	private HTML download = new HTML();
 
 	public SimId getSimid() { return simid; }
 
@@ -128,6 +129,9 @@ public class SimulatorMessageViewTab extends ToolWindow {
 
 		transInstanceListBox.addChangeHandler(transactionInstanceChoiceChanged);
 
+		Label eventUrlLabel = new Label("Event Link: ");
+		transactionDisplayPanel.add(eventUrlLabel);
+
 		refreshButton.addClickHandler(refreshClickHandler);
 		transactionDisplayPanel.add(refreshButton);
 
@@ -173,7 +177,7 @@ public class SimulatorMessageViewTab extends ToolWindow {
 		}.run(getCommandContext());
 	}
 
-	void loadTransactionNames(SimId simid) {
+	public void loadTransactionNames(SimId simid) {
 		simidFinal = simid;
 		transInstanceListBox.clear();
 		//getSimulatorTransactionNames
@@ -195,7 +199,7 @@ public class SimulatorMessageViewTab extends ToolWindow {
 		return null;
 	}
 
-	void transactionChosen(SimId simid, String transName) {
+	public void transactionChosen(SimId simid, String transName) {
 		currentTransaction = transName;
 		clear();
 		transInstanceListBox.clear();
@@ -454,10 +458,20 @@ public class SimulatorMessageViewTab extends ToolWindow {
 
 	}
 
+	public void setActor(String actor) {
+		currentActor = actor;
+	}
+
+	public void setTransaction(String transaction) {
+		currentTransaction = transaction;
+	}
+
+	public void setSimId(SimId simId) {
+		this.simid = simid;
+	}
+
 	public String getWindowShortName() {
 		return "simmsgview";
 	}
-
-
 
 }
