@@ -4,7 +4,9 @@ import java.util.*;
 
 import org.apache.axiom.om.OMAttribute;
 import org.apache.axiom.om.OMElement;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
+import org.javatuples.Pair;
 
 import gov.nist.toolkit.errorrecording.ErrorRecorder;
 import gov.nist.toolkit.errorrecording.client.XdsErrorCode.Code;
@@ -23,7 +25,8 @@ public class RetrieveImagingDocSetResponseSim extends TransactionSimulator imple
    static Logger logger = Logger.getLogger(RetrieveImagingDocSetResponseSim.class);
    DsSimCommon dsSimCommon;
    // List<String> documentUids;
-   List <String> imagingDocumentUids;
+   List <Pair<String, String>> imagingDocumentUids;
+   List <String> compositeUids = new ArrayList<>();
    List <String> transferSyntaxUids;
    // This is a map from an image instance UID to the composite UID
    // (study:series:instace)
@@ -32,17 +35,19 @@ public class RetrieveImagingDocSetResponseSim extends TransactionSimulator imple
    // RepIndex repIndex;
    String repositoryUniqueId;
 
-   public RetrieveImagingDocSetResponseSim(ValidationContext vc, List <String> imagingDocumentUids,
+   public RetrieveImagingDocSetResponseSim(ValidationContext vc, List <Pair<String, String>> imagingDocumentUids,
       List <String> transferSyntaxUids, SimCommon common, DsSimCommon dsSimCommon, String repositoryUniqueId) {
       super(common, null);
       this.dsSimCommon = dsSimCommon;
       this.imagingDocumentUids = new ArrayList<>();
-      for (String s : imagingDocumentUids) this.imagingDocumentUids.add(s.trim());
+      for (Pair<String, String> p : imagingDocumentUids) this.imagingDocumentUids.add(p);
       this.transferSyntaxUids = new ArrayList<>();
       for (String s : transferSyntaxUids) this.transferSyntaxUids.add(s.trim());
       this.repositoryUniqueId = repositoryUniqueId.trim();
       imagingUidMap = new HashMap <String, String>();
-      for (String compositeUid : this.imagingDocumentUids) {
+      for (Pair<String, String> p : this.imagingDocumentUids) {
+         String compositeUid = p.getValue0();
+         compositeUids.add(compositeUid);
          String[] x = compositeUid.split(":");
          imagingUidMap.put(x[2], compositeUid);
       }
@@ -53,7 +58,7 @@ public class RetrieveImagingDocSetResponseSim extends TransactionSimulator imple
       try {
          response = new RetrieveMultipleResponse();
 
-         dsSimCommon.addImagingDocumentAttachments(imagingDocumentUids, transferSyntaxUids, er);
+         dsSimCommon.addImagingDocumentAttachments(compositeUids, transferSyntaxUids, er);
 
          Collection <StoredDocument> documents = dsSimCommon.getAttachments();
          OMElement root = response.getRoot();
@@ -78,10 +83,23 @@ public class RetrieveImagingDocSetResponseSim extends TransactionSimulator imple
             logger.debug("Repository Unique ID: " + repositoryUniqueId);
 
             String compositeUid = imagingUidMap.get(uid);
+            String hci = null;
+            for (Pair<String, String> p : imagingDocumentUids) {
+               if (compositeUid.equals(p.getValue0())) {
+                  hci = p.getValue1();
+                  break;
+               }
+            }
             StoredDocument sd = dsSimCommon.getStoredImagingDocument(compositeUid, transferSyntaxUids);
 
             OMElement docResponse =
                MetadataSupport.om_factory.createOMElement(MetadataSupport.document_response_qnamens);
+            
+            if (StringUtils.isNotBlank(hci)) {
+               OMElement hciEle = MetadataSupport.om_factory.createOMElement(MetadataSupport.home_community_id_qname);
+               hciEle.setText(hci);
+               docResponse.addChild(hciEle);
+            }
 
             OMElement repId = MetadataSupport.om_factory.createOMElement(MetadataSupport.repository_unique_id_qnamens);
             repId.setText(repositoryUniqueId);
