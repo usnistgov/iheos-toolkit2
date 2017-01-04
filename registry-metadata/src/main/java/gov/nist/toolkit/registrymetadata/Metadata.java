@@ -1496,6 +1496,12 @@ public class Metadata {
 		ro.addAttribute("home", home, null);
 	}
 
+	public void unsetHome(OMElement ro) {
+		OMAttribute att = ro.getAttribute(MetadataSupport.home_qname);
+		if (att != null)
+			ro.removeAttribute(att);
+	}
+
 	public List<OMElement> getAssociations() {
 		return associations;
 	}

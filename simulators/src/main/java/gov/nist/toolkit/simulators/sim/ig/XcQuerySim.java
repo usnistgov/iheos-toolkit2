@@ -17,6 +17,7 @@ import gov.nist.toolkit.registrymsg.registry.AdhocQueryRequestParser;
 import gov.nist.toolkit.registrymsg.registry.AdhocQueryResponseParser;
 import gov.nist.toolkit.registrymsg.registry.Response;
 import gov.nist.toolkit.registrysupport.RegistryErrorListGenerator;
+import gov.nist.toolkit.simcommon.client.config.SimulatorConfigElement;
 import gov.nist.toolkit.simulators.sim.reg.AdhocQueryResponseGeneratingSim;
 import gov.nist.toolkit.simulators.support.DsSimCommon;
 import gov.nist.toolkit.simulators.support.MetadataGeneratingSim;
@@ -68,10 +69,6 @@ public class XcQuerySim extends AbstractMessageValidator implements MetadataGene
 			System.out.println(ExceptionUtil.exception_details(e));
 			startUpException = e;
 		}
-	}
-
-	public void setMockSoap(XcQueryMockSoap mockSoap) {
-		this.mockSoap = mockSoap;
 	}
 
 	public void run(ErrorRecorder er, MessageValidatorEngine mvc) {
@@ -151,6 +148,14 @@ public class XcQuerySim extends AbstractMessageValidator implements MetadataGene
 
 			List<OMElement> results = m.getAllObjects(); // everything but ObjectRefs
 			results.addAll(m.getObjectRefs());
+
+			// forceably remove home attribute from RG response if requested by configuration.
+			SimulatorConfigElement forceNoHomeEle = asc.getConfigEle(SimulatorProperties.returnNoHome);
+			if (forceNoHomeEle.asBoolean()) {
+				for (OMElement ele : results)
+					m.unsetHome(ele);
+			}
+
 			response.addQueryResults(results, false);
 
 			// set status

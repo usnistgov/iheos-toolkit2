@@ -303,7 +303,7 @@ public class SimulatorControlTab extends GenericQueryTab {
             public void onClick(ClickEvent clickEvent) {
                 SimulatorConfig config = getData();
                 SimulatorMessageViewTab viewTab = new SimulatorMessageViewTab();
-                viewTab.onTabLoad(true, config.getId().toString());
+                viewTab.onTabLoad(config.getId());
             }
         });
         buttonPanel.add(logImg);

@@ -13,6 +13,7 @@ public class TransactionInstance implements IsSerializable {
     public String name = null;    // transaction type code
     public TransactionType nameInterpretedAsTransactionType = null;
     public ActorType actorType = null;
+    public String ipAddress;
 
     public String toString() {
         return

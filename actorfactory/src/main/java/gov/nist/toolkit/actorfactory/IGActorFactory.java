@@ -1,9 +1,5 @@
 package gov.nist.toolkit.actorfactory;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-
 import gov.nist.toolkit.actorfactory.client.SimId;
 import gov.nist.toolkit.actorfactory.client.Simulator;
 import gov.nist.toolkit.actorfactory.client.SimulatorConfig;
@@ -14,6 +10,10 @@ import gov.nist.toolkit.configDatatypes.client.TransactionType;
 import gov.nist.toolkit.sitemanagement.client.Site;
 import gov.nist.toolkit.sitemanagement.client.TransactionBean;
 import gov.nist.toolkit.sitemanagement.client.TransactionBean.RepositoryType;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 public class IGActorFactory extends AbstractActorFactory {
    SimId newID = null;
@@ -40,6 +40,8 @@ public class IGActorFactory extends AbstractActorFactory {
          TransactionType.IG_RETRIEVE, true);
       addEditableConfig(sc, SimulatorProperties.respondingGateways,
          ParamType.SELECTION, new ArrayList <String>(), true);
+      addEditableConfig(sc, SimulatorProperties.returnNoHome,
+              ParamType.BOOLEAN, false);
 
       return new Simulator(sc);
    }

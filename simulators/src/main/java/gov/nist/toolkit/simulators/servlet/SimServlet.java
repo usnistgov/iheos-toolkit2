@@ -386,6 +386,12 @@ public class SimServlet  extends HttpServlet {
 
 		Date now = new Date();
 
+		//is client behind something?
+		String ipAddress = request.getHeader("X-FORWARDED-FOR");
+		if (ipAddress == null) {
+			ipAddress = request.getRemoteAddr();
+		}
+
 		String[] uriParts = uri.split("\\/");
 		String toolkitServletName = (uriParts.length < 2) ? "" : uriParts[1];
 
@@ -462,6 +468,7 @@ public class SimServlet  extends HttpServlet {
 			// DB space for this simulator
 			SimDb db = new SimDb(Installation.instance().simDbFile(), simid, actor, transaction);
 			request.setAttribute("SimDb", db);
+			db.setClientIpAddess(ipAddress);
 
 			logRequest(request, db, actor, transaction);
 

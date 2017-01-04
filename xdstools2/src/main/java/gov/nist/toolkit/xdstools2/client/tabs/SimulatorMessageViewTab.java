@@ -18,7 +18,6 @@ import gov.nist.toolkit.xdstools2.client.Panel1;
 import gov.nist.toolkit.xdstools2.client.ToolWindow;
 import gov.nist.toolkit.xdstools2.client.command.command.*;
 import gov.nist.toolkit.xdstools2.client.inspector.MetadataInspectorTab;
-import gov.nist.toolkit.xdstools2.client.widgets.PopupMessage;
 import gov.nist.toolkit.xdstools2.client.widgets.RadioButtonGroup;
 import gov.nist.toolkit.xdstools2.shared.command.request.GetSimulatorEventRequest;
 import gov.nist.toolkit.xdstools2.shared.command.request.GetTransactionRequest;
@@ -62,20 +61,25 @@ public class SimulatorMessageViewTab extends ToolWindow {
 
 	public SimId getSimid() { return simid; }
 
+	public void onTabLoad(SimId simid) {
+		this.simid = simid;
+		onTabLoad(true, simid.toString());
+	}
+
 	// If eventName is null then display list of simulators.  If non-null then it is
 	// the simulator id. In this case do not allow simulator selection.
 	@Override
-	public void onTabLoad(boolean select, String simIdString) {
-		if (simIdString != null) {
-			try {
-				simid = new SimId(simIdString);
-			} catch (Exception e) {
-				new PopupMessage(e.getMessage());
-				return;
-			}
-		}
+	public void onTabLoad(boolean select, String eventName) {
+//		if (simIdString != null) {
+//			try {
+//				simid = new SimId(simIdString);
+//			} catch (Exception e) {
+//				new PopupMessage(e.getMessage());
+//				return;
+//			}
+//		}
 
-		registerTab(select, simIdString);
+		registerTab(select, eventName);
 
 		tabTopPanel.add(simDisplayPanel);
 		simDisplayPanel.add(simControlPanel);
@@ -206,7 +210,7 @@ public class SimulatorMessageViewTab extends ToolWindow {
 				transInstanceListBox.clear();
 
 				for (TransactionInstance x : result) {
-					transInstanceListBox.addItem(x.labelInterpretedAsDate + " " + x.nameInterpretedAsTransactionType, x.label);
+					transInstanceListBox.addItem(x.labelInterpretedAsDate + " " + x.nameInterpretedAsTransactionType + " " + x.ipAddress, x.label);
 				}
 			}
 		}.run(new GetTransactionRequest(getCommandContext(),simid,"",transName));

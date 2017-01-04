@@ -160,10 +160,19 @@ public class SimDb {
 
 		event = asFilenameBase(date);
 
-		File eventDir = new File(transactionDir, event);
+		File eventDir = getEventDir();
 		eventDir.mkdirs();
 		Serialize.out(new File(eventDir, "date.ser"), date);
+	}
 
+	private File getEventDir() {
+		return new File(transactionDir, event);
+	}
+
+	public void setClientIpAddess(String clientIpAddress) throws IOException {
+		if (clientIpAddress != null) {
+			Io.stringToFile(new File(getEventDir(), "ip.txt"), clientIpAddress);
+		}
 	}
 
 	public SimDb(TransactionInstance ti) throws IOException, NoSimException, BadSimIdException {
@@ -521,6 +530,16 @@ public class SimDb {
 					if (date == null) continue;  // only interested in transactions that have dates
 					t.labelInterpretedAsDate = (date == null) ? "oops" : date.toString();
 					t.nameInterpretedAsTransactionType = TransactionType.find(t.name);
+
+					String ipAddr = null;
+					File ipAddrFile = new File(inst, "ip.txt");
+					try {
+						ipAddr = Io.stringFromFile(ipAddrFile);
+						if (ipAddr != null && !ipAddr.equals("")) {
+							t.ipAddress = ipAddr;
+						}
+					} catch (IOException e) {}
+
 					logger.debug("Found " + t);
 					transList.add(t);
 				}

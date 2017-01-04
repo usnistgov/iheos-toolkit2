@@ -312,4 +312,10 @@ public class SimulatorProperties {
      * SoapFault is thrown if SAML is required but missing in the request's soap header.
      */
     public static final String      requiresStsSaml = "Require SAML?";
+
+    /*
+     * On the IG simulator - remove homeCommunityId from all objects before returned in query
+     * Simulates faulty IG
+     */
+    public static final String    returnNoHome = "Force no homeCommunityId attribute";
 }
