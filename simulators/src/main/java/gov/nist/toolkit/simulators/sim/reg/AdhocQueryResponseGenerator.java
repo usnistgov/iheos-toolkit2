@@ -16,17 +16,31 @@ public class AdhocQueryResponseGenerator extends TransactionSimulator implements
 	AdhocQueryResponseGeneratingSim querySim;
 	AdhocQueryResponse ahqr;
 	DsSimCommon dsSimCommon;
-	
+
 	public AdhocQueryResponseGenerator(SimCommon common, DsSimCommon dsSimCommon, AdhocQueryResponseGeneratingSim querySim) {
 		super(common, null);
 		this.dsSimCommon = dsSimCommon;
 		this.querySim = querySim;
 	}
 
+	public AdhocQueryResponseGenerator(SimCommon common, DsSimCommon dsSimCommon) {
+		super(common, null);
+		this.dsSimCommon = dsSimCommon;
+		this.querySim = null;
+	}
+
 	public void run(ErrorRecorder er, MessageValidatorEngine mvc) {
-		ahqr = querySim.getAdhocQueryResponse();
+		if (querySim == null) {
+			try {
+				ahqr = new AdhocQueryResponse();
+			} catch (XdsInternalException e) {
+				e.printStackTrace();
+			}
+		} else {
+			ahqr = querySim.getAdhocQueryResponse();
+		}
 		try {
-            RegistryErrorListGenerator errGen = dsSimCommon.getRegistryErrorList();
+			RegistryErrorListGenerator errGen = dsSimCommon.getRegistryErrorList();
 			ahqr.add(errGen, null);
 		} catch (XdsInternalException e) {
 			e.printStackTrace();

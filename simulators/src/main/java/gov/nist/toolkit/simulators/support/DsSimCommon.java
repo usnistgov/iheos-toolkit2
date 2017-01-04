@@ -17,7 +17,9 @@ import gov.nist.toolkit.registrymetadata.Metadata;
 import gov.nist.toolkit.registrymsg.registry.RegistryResponse;
 import gov.nist.toolkit.registrymsg.registry.Response;
 import gov.nist.toolkit.registrysupport.RegistryErrorListGenerator;
+import gov.nist.toolkit.simulators.sim.reg.AdhocQueryResponseGenerator;
 import gov.nist.toolkit.simulators.sim.reg.RegistryResponseSendingSim;
+import gov.nist.toolkit.simulators.sim.reg.SoapWrapperRegistryResponseSim;
 import gov.nist.toolkit.simulators.sim.reg.store.RegIndex;
 import gov.nist.toolkit.simulators.sim.rep.RepIndex;
 import gov.nist.toolkit.soap.http.SoapFault;
@@ -26,11 +28,7 @@ import gov.nist.toolkit.utilities.io.Io;
 import gov.nist.toolkit.utilities.xml.OMFormatter;
 import gov.nist.toolkit.utilities.xml.XmlUtil;
 import gov.nist.toolkit.validatorsSoapMessage.engine.ValidateMessageService;
-import gov.nist.toolkit.validatorsSoapMessage.message.HttpMessageValidator;
-import gov.nist.toolkit.validatorsSoapMessage.message.MtomMessageValidator;
-import gov.nist.toolkit.validatorsSoapMessage.message.SimpleSoapHttpHeaderValidator;
-import gov.nist.toolkit.validatorsSoapMessage.message.SoapMessageValidator;
-import gov.nist.toolkit.validatorsSoapMessage.message.StsSamlValidator;
+import gov.nist.toolkit.validatorsSoapMessage.message.*;
 import gov.nist.toolkit.valregmsg.message.StoredDocumentInt;
 import gov.nist.toolkit.valregmsg.service.SoapActionFactory;
 import gov.nist.toolkit.valsupport.client.ValidationContext;
@@ -164,6 +162,21 @@ public class DsSimCommon {
 
         simCommon.mvc.run();
     }
+
+    public void sendErrorsInAdhocQueryResponse(ErrorRecorder er) {
+        if (er == null)
+            er = new GwtErrorRecorderBuilder().buildNewErrorRecorder();
+
+        // this works when RegistryResponse is the return message
+        // need other options for other messaging environments
+        AdhocQueryResponseGenerator queryResponseGenerator = new AdhocQueryResponseGenerator(simCommon, this);
+        simCommon.mvc.addMessageValidator("Send AdhocQueryResponse with errors", queryResponseGenerator, er);
+//        simCommon.mvc.addMessageValidator("Send AdhocQueryResponse with errors", new RegistryResponseSendingSim(simCommon, this), er);
+        simCommon.mvc.addMessageValidator("ResponseInSoapWrapper", new SoapWrapperRegistryResponseSim(simCommon, this, queryResponseGenerator), er);
+
+        simCommon.mvc.run();
+    }
+
 
 
     /**
