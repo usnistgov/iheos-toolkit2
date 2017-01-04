@@ -40,7 +40,7 @@ public class AdtSocketListener implements Runnable{
             }
             listenSocket();
         } catch (Exception e) {
-            logger.error("Listen on socket " + threadPoolItem.port + " failed - " + e.getMessage());
+            logger.error("*********************************************\n\nListen on socket " + threadPoolItem.port + " failed - " + e.getMessage() + "\n\n********************************************");
         } finally {
             try {
                 server.close();

@@ -11,15 +11,14 @@ import java.util.List;
  * Created by bill on 9/1/15.
  */
 public class ListenerFactory {
-    static Logger logger = Logger.getLogger(ListenerFactory.class);
+    private static Logger logger = Logger.getLogger(ListenerFactory.class);
 
 
-    static int firstPort = 0;
-    static int lastPort = 0;
-    static int nextPort = 0;
-    static List<ThreadPoolItem> threadPool = new ArrayList<>();
-    static boolean inited = false;
-    static int timeoutinMilli = 5*1000;
+    private static int firstPort = 0;
+    private static int lastPort = 0;
+    private static int nextPort = 0;
+    private static List<ThreadPoolItem> threadPool = new ArrayList<>();
+    private static int timeoutinMilli = 5*1000;
 
     static public void init(int _firstPort, int _lastPort) {
         firstPort = _firstPort;

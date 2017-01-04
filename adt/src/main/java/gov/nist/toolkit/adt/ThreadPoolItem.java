@@ -19,6 +19,7 @@ public class ThreadPoolItem {
 
     public ThreadPoolItem(int port) {
         this.port = port;
+        logger.info("Allocate thread pool item for " + port);
     }
 
     public int getPort() { return port; }
