@@ -18,6 +18,7 @@ import gov.nist.toolkit.xdstools2.client.Panel1;
 import gov.nist.toolkit.xdstools2.client.ToolWindow;
 import gov.nist.toolkit.xdstools2.client.command.command.*;
 import gov.nist.toolkit.xdstools2.client.inspector.MetadataInspectorTab;
+import gov.nist.toolkit.xdstools2.client.widgets.HorizontalFlowPanel;
 import gov.nist.toolkit.xdstools2.client.widgets.RadioButtonGroup;
 import gov.nist.toolkit.xdstools2.shared.command.request.GetSimulatorEventRequest;
 import gov.nist.toolkit.xdstools2.shared.command.request.GetTransactionRequest;
@@ -37,6 +38,8 @@ public class SimulatorMessageViewTab extends ToolWindow {
 	private ScrollPanel scrollInPanel = new ScrollPanel();
 	private ScrollPanel scrollOutPanel = new ScrollPanel();
 	private ScrollPanel scrollLogPanel = new ScrollPanel();
+	private HorizontalFlowPanel simSelectionDisplayPanel = new HorizontalFlowPanel();
+	private FlowPanel simSelectionPanel = new FlowPanel();
 
 	private SimId simid = null;//new SimId("");
 	private String currentActor;
@@ -50,8 +53,12 @@ public class SimulatorMessageViewTab extends ToolWindow {
 	private VerticalPanel transactionDisplayPanel = new VerticalPanel();
 	private VerticalPanel transactionNamesPanel = new VerticalPanel();
 	private ListBox transInstanceListBox = new ListBox();
-	//	HTML ipAddressHTML = new HTML();
+
+	//	Only one of these will be displayed depending on whether simId is set
 	private ListBox simulatorNamesListBox = new ListBox();
+	private Label simulatorNameLabel = new Label();
+
+	private FlowPanel simNameOrNamesPanel = new FlowPanel();
 
 	private Button refreshButton = new Button("Refresh");
 	private Button inspectRequestButton = new Button("Inspect Request");
@@ -60,7 +67,20 @@ public class SimulatorMessageViewTab extends ToolWindow {
 
 	private HTML download = new HTML();
 
+	public SimulatorMessageViewTab() {
+		simSelectionDisplayPanel.add(HtmlMarkup.html(HtmlMarkup.h2("Simulator:")));
+		simSelectionDisplayPanel.add(simNameOrNamesPanel);
+		simNameOrNamesPanel.add(simulatorNamesListBox);  // will be removed later is simId is set
+	}
+
 	public SimId getSimid() { return simid; }
+	public void setSimId(SimId simid) {
+		this.simid = simid;
+		simulatorNameLabel.setText(simid.toString());
+		simNameOrNamesPanel.clear();
+		simNameOrNamesPanel.add(simulatorNameLabel);
+		refreshButton.setEnabled(false);
+	}
 
 	public void onTabLoad(SimId simid) {
 		this.simid = simid;
@@ -71,14 +91,6 @@ public class SimulatorMessageViewTab extends ToolWindow {
 	// the simulator id. In this case do not allow simulator selection.
 	@Override
 	public void onTabLoad(boolean select, String eventName) {
-//		if (simIdString != null) {
-//			try {
-//				simid = new SimId(simIdString);
-//			} catch (Exception e) {
-//				new PopupMessage(e.getMessage());
-//				return;
-//			}
-//		}
 
 		registerTab(select, eventName);
 
@@ -108,12 +120,9 @@ public class SimulatorMessageViewTab extends ToolWindow {
 		inOutPanel.add(transOutPanel);
 
 		simControlPanel.add(HtmlMarkup.html(HtmlMarkup.h2("Transaction Log")));
-		simControlPanel.add(HtmlMarkup.html(HtmlMarkup.h2("Simulator:")));
+		simControlPanel.add(simSelectionDisplayPanel);
 
-		if (simid == null) {
-			simControlPanel.add(simulatorNamesListBox);
-		} else {
-			simControlPanel.add(new HTML("<h3>" + simid.toString() + "</h3>"));
+		if (simid != null) {
 			loadTransactionNames(simid);
 		}
 		loadSimulatorNamesListBox();
@@ -143,6 +152,7 @@ public class SimulatorMessageViewTab extends ToolWindow {
 
 		transactionDisplayPanel.add(download);
 	}
+
 
 	class SimulatorNameChangeHandler implements ChangeHandler {
 
@@ -213,8 +223,16 @@ public class SimulatorMessageViewTab extends ToolWindow {
 				transactionInstances = result;
 				transInstanceListBox.clear();
 
+				int i = 0;
 				for (TransactionInstance x : result) {
-					transInstanceListBox.addItem(x.labelInterpretedAsDate + " " + x.nameInterpretedAsTransactionType + " " + x.ipAddress, x.label);
+					if (selectedMessageId == null)
+						transInstanceListBox.addItem(x.toString(), x.label);
+					if (selectedMessageId != null && selectedMessageId.equals(x.label)) {
+						transInstanceListBox.addItem(x.toString(), x.label);
+						currentTransactionInstance = x;
+						break;
+					}
+					i++;
 				}
 			}
 		}.run(new GetTransactionRequest(getCommandContext(),simid,"",transName));
@@ -270,7 +288,23 @@ public class SimulatorMessageViewTab extends ToolWindow {
 		return label;
 	}
 
-	void loadTransactionInstanceDetails(TransactionInstance ti) {
+	private String selectedMessageId = null;
+
+	public void selectByMessageId(String messageId) {
+		List<String> values = new ArrayList<>();
+		values.add(messageId);
+		for (int i=0; i<transInstanceListBox.getItemCount(); i++) {
+			String id = transInstanceListBox.getValue(i);
+			values.add(id);
+			if (messageId.equals(id)) {
+				transInstanceListBox.setSelectedIndex(i);
+				return;
+			}
+		}
+		selectedMessageId = messageId;  // not loaded yet - check this after loaded
+	}
+
+	public void loadTransactionInstanceDetails(TransactionInstance ti) {
 		SimId simid = this.simidFinal;
 		if (ti.actorType == null) return;
 		String actor = ti.actorType.getShortName();
@@ -464,10 +498,6 @@ public class SimulatorMessageViewTab extends ToolWindow {
 
 	public void setTransaction(String transaction) {
 		currentTransaction = transaction;
-	}
-
-	public void setSimId(SimId simId) {
-		this.simid = simid;
 	}
 
 	public String getWindowShortName() {

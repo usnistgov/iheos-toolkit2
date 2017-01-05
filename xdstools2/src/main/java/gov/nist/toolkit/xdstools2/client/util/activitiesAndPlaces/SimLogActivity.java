@@ -2,9 +2,10 @@ package gov.nist.toolkit.xdstools2.client.util.activitiesAndPlaces;
 
 import com.google.gwt.activity.shared.AbstractActivity;
 import com.google.gwt.event.shared.EventBus;
-import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.AcceptsOneWidget;
 import gov.nist.toolkit.actorfactory.client.SimId;
+import gov.nist.toolkit.actortransaction.client.ActorType;
+import gov.nist.toolkit.actortransaction.client.TransactionInstance;
 import gov.nist.toolkit.xdstools2.client.ToolWindow;
 import gov.nist.toolkit.xdstools2.client.Xdstools2;
 import gov.nist.toolkit.xdstools2.client.tabs.SimulatorMessageViewTab;
@@ -19,7 +20,6 @@ public class SimLogActivity  extends AbstractActivity {
 
     @Override
     public void start(AcceptsOneWidget acceptsOneWidget, EventBus eventBus) {
-        Window.alert("Start SimLogActivity");
         if (simLog != null && simLog.isValid()) {
             Xdstools2.getInstance().doNotDisplayHomeTab();
 
@@ -32,7 +32,14 @@ public class SimLogActivity  extends AbstractActivity {
             simulatorMessageViewTab.setTransaction(simLog.getTrans());
             simulatorMessageViewTab.loadTransactionNames(simId);
             simulatorMessageViewTab.transactionChosen(simId, simLog.getTrans());
+            TransactionInstance transactionInstance = new TransactionInstance();
+            transactionInstance.actorType = ActorType.findActor(simLog.getActor());
+            transactionInstance.simId = simId.toString();
+            transactionInstance.name = simLog.getTrans();
+            transactionInstance.label = simLog.getMessageId();
+            simulatorMessageViewTab.loadTransactionInstanceDetails(transactionInstance);
             xdstools2view.resizeToolkit();
+            simulatorMessageViewTab.selectByMessageId(simLog.getMessageId());
         }
     }
 

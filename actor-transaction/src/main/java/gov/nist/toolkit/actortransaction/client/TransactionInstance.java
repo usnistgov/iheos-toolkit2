@@ -16,15 +16,7 @@ public class TransactionInstance implements IsSerializable {
     public String ipAddress;
 
     public String toString() {
-        return
-                simId
-                        + " " +
-                actorType
-                        + " " +
-                        ((nameInterpretedAsTransactionType == null) ? name : nameInterpretedAsTransactionType)
-                        + " " +
-                ((labelInterpretedAsDate == null) ? label : labelInterpretedAsDate)
-                ;
+        return labelInterpretedAsDate + " " + nameInterpretedAsTransactionType + " " + ipAddress;
 
     }
 }

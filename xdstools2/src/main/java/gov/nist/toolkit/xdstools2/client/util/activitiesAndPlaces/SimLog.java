@@ -2,7 +2,6 @@ package gov.nist.toolkit.xdstools2.client.util.activitiesAndPlaces;
 
 import com.google.gwt.place.shared.Place;
 import com.google.gwt.place.shared.PlaceTokenizer;
-import com.google.gwt.user.client.Window;
 
 
 /**
@@ -29,8 +28,7 @@ class SimLog extends Place {
     private String messageId;
     private boolean valid = false;
 
-    SimLog(String s) {
-        Window.alert("SimLog: " + s);
+    private SimLog(String s) {
         String[] parts = s.split("/");
         if (parts.length == 4) {
             simIdString = parts[0].trim();
@@ -41,7 +39,7 @@ class SimLog extends Place {
         }
     }
 
-    public String getSimIdString() {
+    String getSimIdString() {
         return simIdString;
     }
 

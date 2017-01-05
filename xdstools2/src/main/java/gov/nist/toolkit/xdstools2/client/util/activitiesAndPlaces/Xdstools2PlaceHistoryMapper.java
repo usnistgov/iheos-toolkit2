@@ -9,6 +9,6 @@ import com.google.gwt.place.shared.WithTokenizers;
  *
  * Created by onh2 on 12/10/2015.
  */
-@WithTokenizers({/*TestInstance.Tokenizer.class,*/ Tool.Tokenizer.class, ConfActor.Tokenizer.class, SimLog.Tokenizer.class})
+@WithTokenizers({TestInstance.Tokenizer.class, Tool.Tokenizer.class, ConfActor.Tokenizer.class, SimLog.Tokenizer.class})
 public interface Xdstools2PlaceHistoryMapper extends PlaceHistoryMapper{
 }
