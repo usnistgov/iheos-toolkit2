@@ -2,14 +2,15 @@ package gov.nist.toolkit.xdstools2.client.util.activitiesAndPlaces;
 
 import com.google.gwt.place.shared.Place;
 import com.google.gwt.place.shared.PlaceTokenizer;
+import gov.nist.toolkit.actortransaction.client.TransactionInstance;
 
 
 /**
  *
  */
-class SimLog extends Place {
+public class SimLog extends Place {
 
-    static class Tokenizer implements PlaceTokenizer<SimLog> {
+    public static class Tokenizer implements PlaceTokenizer<SimLog> {
 
         @Override
         public SimLog getPlace(String s) {
@@ -27,6 +28,13 @@ class SimLog extends Place {
     private String trans;
     private String messageId;
     private boolean valid = false;
+
+    public SimLog(TransactionInstance ti) {
+        simIdString = ti.simId;
+        actor = ti.actorType.getShortName();
+        trans = ti.name;
+        messageId = ti.label;
+    }
 
     private SimLog(String s) {
         String[] parts = s.split("/");

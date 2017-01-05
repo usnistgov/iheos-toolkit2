@@ -71,8 +71,8 @@ public class Session implements SecurityParams {
 	
 	Metadata lastMetadata = null;
 	public String ipAddr = null;  // also used as default sim db id
-	String serverIP = null;
-	String serverPort = null;
+	static String serverIP = null;
+	static String serverPort = null;
 	SimCache simCache = new SimCache();
 	String sessionId = Installation.instance().defaultSessionName();
 	

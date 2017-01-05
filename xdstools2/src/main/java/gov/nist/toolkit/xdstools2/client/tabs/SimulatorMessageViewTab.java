@@ -16,8 +16,10 @@ import gov.nist.toolkit.results.client.Result;
 import gov.nist.toolkit.sitemanagement.client.SiteSpec;
 import gov.nist.toolkit.xdstools2.client.Panel1;
 import gov.nist.toolkit.xdstools2.client.ToolWindow;
+import gov.nist.toolkit.xdstools2.client.Xdstools2;
 import gov.nist.toolkit.xdstools2.client.command.command.*;
 import gov.nist.toolkit.xdstools2.client.inspector.MetadataInspectorTab;
+import gov.nist.toolkit.xdstools2.client.util.activitiesAndPlaces.SimLog;
 import gov.nist.toolkit.xdstools2.client.widgets.HorizontalFlowPanel;
 import gov.nist.toolkit.xdstools2.client.widgets.RadioButtonGroup;
 import gov.nist.toolkit.xdstools2.shared.command.request.GetSimulatorEventRequest;
@@ -40,6 +42,7 @@ public class SimulatorMessageViewTab extends ToolWindow {
 	private ScrollPanel scrollLogPanel = new ScrollPanel();
 	private HorizontalFlowPanel simSelectionDisplayPanel = new HorizontalFlowPanel();
 	private FlowPanel simSelectionPanel = new FlowPanel();
+	private HorizontalFlowPanel eventLinkPanel = new HorizontalFlowPanel();
 
 	private SimId simid = null;//new SimId("");
 	private String currentActor;
@@ -87,12 +90,16 @@ public class SimulatorMessageViewTab extends ToolWindow {
 		onTabLoad(true, simid.toString());
 	}
 
+	HorizontalFlowPanel linkPanel = new HorizontalFlowPanel();
+
 	// If eventName is null then display list of simulators.  If non-null then it is
 	// the simulator id. In this case do not allow simulator selection.
 	@Override
 	public void onTabLoad(boolean select, String eventName) {
 
 		registerTab(select, eventName);
+
+		tabTopPanel.add(linkPanel);
 
 		tabTopPanel.add(simDisplayPanel);
 		simDisplayPanel.add(simControlPanel);
@@ -138,8 +145,7 @@ public class SimulatorMessageViewTab extends ToolWindow {
 
 		transInstanceListBox.addChangeHandler(transactionInstanceChoiceChanged);
 
-		Label eventUrlLabel = new Label("Event Link: ");
-		transactionDisplayPanel.add(eventUrlLabel);
+		transactionDisplayPanel.add(eventLinkPanel);
 
 		refreshButton.addClickHandler(refreshClickHandler);
 		transactionDisplayPanel.add(refreshButton);
@@ -230,12 +236,29 @@ public class SimulatorMessageViewTab extends ToolWindow {
 					if (selectedMessageId != null && selectedMessageId.equals(x.label)) {
 						transInstanceListBox.addItem(x.toString(), x.label);
 						currentTransactionInstance = x;
+						updateEventLink(x);
+//						SimLog simLog = new SimLog(currentTransactionInstance);
+//						Label eventLink = new Label(Xdstools2.toolkitBaseUrl + "#SimLog:" + (new SimLog.Tokenizer()).getToken(simLog));
+//						linkPanel.clear();
+//						linkPanel.add(new Label("Event Link: "));
+//						linkPanel.add(eventLink);
+//						eventLinkPanel.clear();
+//						eventLinkPanel.add(eventLink);
+
 						break;
 					}
 					i++;
 				}
 			}
 		}.run(new GetTransactionRequest(getCommandContext(),simid,"",transName));
+	}
+
+	private void updateEventLink(TransactionInstance ti) {
+		SimLog simLog = new SimLog(currentTransactionInstance);
+		Label eventLink = new Label(Xdstools2.toolkitBaseUrl + "#SimLog:" + (new SimLog.Tokenizer()).getToken(simLog));
+		linkPanel.clear();
+		linkPanel.add(new Label("Event Link: "));
+		linkPanel.add(eventLink);
 	}
 
 	ChangeHandler transactionInstanceChoiceChanged = new ChangeHandler() {
@@ -246,6 +269,7 @@ public class SimulatorMessageViewTab extends ToolWindow {
 			TransactionInstance ti = findTransactionInstance(value);
 			if (ti == null) return;
 			currentTransactionInstance = ti;
+			updateEventLink(ti);
 			loadTransactionInstanceDetails(ti);
 
 			String messageId = getMessageIdFromLabel(value);

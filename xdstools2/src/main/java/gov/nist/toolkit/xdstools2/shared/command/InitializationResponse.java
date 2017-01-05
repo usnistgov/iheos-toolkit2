@@ -13,6 +13,7 @@ public class InitializationResponse implements Serializable, IsSerializable {
     private List<String> environments;
     private List<String> testSessions;
     private String servletContextName;
+    private String toolkitBaseUrl;
 
     public InitializationResponse() {
     }
@@ -47,5 +48,13 @@ public class InitializationResponse implements Serializable, IsSerializable {
 
     public void setServletContextName(String servletContextName) {
         this.servletContextName = servletContextName;
+    }
+
+    public String getToolkitBaseUrl() {
+        return toolkitBaseUrl;
+    }
+
+    public void setToolkitBaseUrl(String toolkitBaseUrl) {
+        this.toolkitBaseUrl = toolkitBaseUrl;
     }
 }

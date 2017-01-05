@@ -120,6 +120,9 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements
         response.setEnvironments(Session.getEnvironmentNames());
         response.setTestSessions(session().xdsTestServiceManager().getMesaTestSessionNames());
         response.setServletContextName(getServletContextName());
+        PropertyServiceManager props = Installation.instance().propertyServiceManager();
+        response.setToolkitBaseUrl("http://" + props.getToolkitHost()
+        + ":" + props.getToolkitPort()  + servletContext().getServletContextName() +"Xdstools2.html");
         return response;
     }
 
