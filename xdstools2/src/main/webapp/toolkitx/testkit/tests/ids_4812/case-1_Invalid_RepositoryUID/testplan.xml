@@ -29,7 +29,7 @@
 		</Standard>
 		<XmlDetailTransaction>
 			<Assertions>
-				<Assert id="Returned doc(s)" process="sameRegErrors">
+				<Assert id="Returned doc(s)" process="registryErrorListNotEmpty">
 					<TestResponse testDir="THIS" step="retrieve-1" />
 				</Assert>
 			</Assertions>
