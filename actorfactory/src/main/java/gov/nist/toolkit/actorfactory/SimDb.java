@@ -179,7 +179,7 @@ public class SimDb {
 		this(Installation.instance().simDbFile(), new SimId(ti.simId));
 
 		this.actor = ti.actorType.getShortName();
-		this.transaction = ti.name;
+		this.transaction = ti.trans;
 
 		if (actor != null && transaction != null) {
 			String transdir = simDir + File.separator + actor + File.separator + transaction;
@@ -188,7 +188,7 @@ public class SimDb {
 			if (!transactionDir.isDirectory())
 				throw new IOException("Cannot create content in Simulator database, creation of " + transactionDir + " failed");
 		}
-		event = ti.label;
+		event = ti.messageId;
 	}
 
 	// actor, transaction, and event must be filled in
@@ -515,12 +515,12 @@ public class SimDb {
 					TransactionInstance t = new TransactionInstance();
 					t.simId = simId.toString();
 					t.actorType = ActorType.findActor(actor.getName());
-					t.label = inst.getName();
-					t.name = name;
+					t.messageId = inst.getName();
+					t.trans = name;
 
 					transactionDir = new File(actor, name);
 					logger.debug("transaction dir is " + transactionDir);
-					event = t.label;
+					event = t.messageId;
 					Date date = null;
 					try {
 						date = getEventDate();
@@ -529,7 +529,7 @@ public class SimDb {
 					}
 					if (date == null) continue;  // only interested in transactions that have dates
 					t.labelInterpretedAsDate = (date == null) ? "oops" : date.toString();
-					t.nameInterpretedAsTransactionType = TransactionType.find(t.name);
+					t.nameInterpretedAsTransactionType = TransactionType.find(t.trans);
 
 					String ipAddr = null;
 					File ipAddrFile = new File(inst, "ip.txt");
@@ -558,7 +558,7 @@ public class SimDb {
 	class ReverseTransactionInstanceComparator implements Comparator<TransactionInstance> {
 		@Override
 		public int compare(TransactionInstance s1, TransactionInstance s2) {
-			return -s1.label.compareTo(s2.label);
+			return -s1.messageId.compareTo(s2.messageId);
 		}
 	}
 	

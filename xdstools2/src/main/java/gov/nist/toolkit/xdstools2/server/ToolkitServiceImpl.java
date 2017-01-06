@@ -24,6 +24,7 @@ import gov.nist.toolkit.services.client.IdcOrchestrationRequest;
 import gov.nist.toolkit.services.client.RawResponse;
 import gov.nist.toolkit.services.server.RawResponseBuilder;
 import gov.nist.toolkit.services.server.orchestration.OrchestrationManager;
+import gov.nist.toolkit.services.shared.Message;
 import gov.nist.toolkit.services.shared.SimulatorServiceManager;
 import gov.nist.toolkit.session.client.ConformanceSessionValidationStatus;
 import gov.nist.toolkit.session.client.logtypes.TestOverviewDTO;
@@ -929,12 +930,12 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements
         return new SimulatorServiceManager(session()).getTransInstances(request.getSimid(), request.getActor(), request.getTrans());
     }
     @Override
-    public String getTransactionRequest(GetTransactionRequest request) throws Exception {
+    public Message getTransactionRequest(GetTransactionRequest request) throws Exception {
         installCommandContext(request);
         return new SimulatorServiceManager(session()).getTransactionRequest(request.getSimid(), request.getActor(), request.getTrans(), request.getMessageId());
     }
     @Override
-    public String getTransactionResponse(GetTransactionRequest request) throws Exception {
+    public Message getTransactionResponse(GetTransactionRequest request) throws Exception {
         installCommandContext(request);
         return new SimulatorServiceManager(session()).getTransactionResponse(request.getSimid(), request.getActor(), request.getTrans(), request.getMessageId());
     }

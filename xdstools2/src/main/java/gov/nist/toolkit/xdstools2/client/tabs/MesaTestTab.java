@@ -256,7 +256,7 @@ public class MesaTestTab extends GenericQueryTab {
         public void onClick(ClickEvent event) {
             resultPanel.clear();
 
-//			if (!getCurrentTestSession().isEmpty()) {
+//			if (!getCurrentTestSession().empty()) {
 //				new PopupMessage("Test Session must be selected");
 //				return;
 //			}

@@ -8,9 +8,9 @@ import gov.nist.toolkit.configDatatypes.client.TransactionType;
  */
 public class TransactionInstance implements IsSerializable {
     public String simId = null;
-    public String label = null;   // message id
+    public String messageId = null;   // message id
     public String labelInterpretedAsDate = null;
-    public String name = null;    // transaction type code
+    public String trans = null;    // transaction type code
     public TransactionType nameInterpretedAsTransactionType = null;
     public ActorType actorType = null;
     public String ipAddress;

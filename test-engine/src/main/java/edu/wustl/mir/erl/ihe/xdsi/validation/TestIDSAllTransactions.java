@@ -45,7 +45,7 @@ public class TestIDSAllTransactions extends Test {
 		// args[0] is the command that brought us to this method
 		String testDcmPfn = args[1];
 		String stdDcmPfn  = args[2];
-		String label     = (String)args[3];
+		String messageId     = (String)args[3];
 //		String extension = (String)args[4];
 		String testName  = (String)args[5];
 		String subLabel  = (String)args[6];
@@ -56,7 +56,7 @@ public class TestIDSAllTransactions extends Test {
 		
 
 		Path report = root.resolve("results" + Utility.fs 
-				+ label + Utility.fs 
+				+ messageId + Utility.fs
 				+ testName + Utility.fs 
 				+ "validation" + Utility.fs
 				+ subLabel);
@@ -71,7 +71,7 @@ public class TestIDSAllTransactions extends Test {
 		// args[0] is the command that brought us to this method
 		String testDcmPfn = args[1];
 		String stdDcmPfn  = args[2];
-		String label     = (String)args[3];
+		String messageId     = (String)args[3];
 //		String extension = (String)args[4];
 		String testName  = (String)args[5];
 //		String subLabel  = (String)args[6];
@@ -82,7 +82,7 @@ public class TestIDSAllTransactions extends Test {
 		
 
 		Path report = root.resolve("results" + Utility.fs 
-				+ label + Utility.fs 
+				+ messageId + Utility.fs
 				+ testName + Utility.fs 
 				+ "validation");
 		Files.createDirectories(report);

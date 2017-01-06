@@ -242,7 +242,7 @@ public class RGActorSimulator extends GatewaySimulatorCommon implements Metadata
          // Handle forced error
             PatientErrorMap patientErrorMap = getSimulatorConfig().getConfigEle(SimulatorProperties.errorForPatient).asPatientErrorMap();
             PatientErrorList patientErrorList = patientErrorMap.get(transactionType.name);
-            if (patientErrorList != null && !patientErrorList.isEmpty()) {
+            if (patientErrorList != null && !patientErrorList.empty()) {
                String patientId = queryRequest.patientId;
                if (patientId != null) {
                   Pid pid = PidBuilder.createPid(patientId);

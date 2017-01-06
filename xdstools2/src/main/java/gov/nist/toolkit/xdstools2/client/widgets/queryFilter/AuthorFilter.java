@@ -20,7 +20,7 @@ public class AuthorFilter extends Widget implements QueryFilter {
     HTML label = new HTML();
 
 
-    // label is required non-empty but is never displayed
+    // messageId is required non-empty but is never displayed
     public AuthorFilter(FlexTable mainGrid, int row, int startingCol, String labelText, String codeName) {
         mainGrid.setWidget(row, startingCol, label);
 

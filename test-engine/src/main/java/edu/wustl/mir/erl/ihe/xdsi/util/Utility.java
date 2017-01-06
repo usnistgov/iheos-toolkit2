@@ -466,7 +466,7 @@ public class Utility {
    /**
     * Gets path to base results directory. Creates directory if needed.
     * @param testId - sut and test number. For example "iig-1001".
-    * @param label unique label for tester. For example, "acme".
+    * @param label unique messageId for tester. For example, "acme".
     * @return Path to an existing directory. For example: /opt/xdsi/results/acme/iig/1000
     * @throws Exception on error, usually invalid parameter value. 
     */
@@ -479,7 +479,7 @@ public class Utility {
       String test = StringUtils.stripToEmpty(testId);
       Matcher matcher = pattern.matcher(label);
       if (matcher.matches() == false)
-         throw new Exception ("[" + label + "] is not a valid user label");
+         throw new Exception ("[" + label + "] is not a valid user messageId");
       Path testPath = getXDSIRootPath().resolve("results").resolve(label).resolve(test);
       log.info("Test directory: " + testPath.toString());
       Files.createDirectories(testPath);

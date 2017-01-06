@@ -35,8 +35,8 @@ public class SimLogActivity  extends AbstractActivity {
             TransactionInstance transactionInstance = new TransactionInstance();
             transactionInstance.actorType = ActorType.findActor(simLog.getActor());
             transactionInstance.simId = simId.toString();
-            transactionInstance.name = simLog.getTrans();
-            transactionInstance.label = simLog.getMessageId();
+            transactionInstance.trans = simLog.getTrans();
+            transactionInstance.messageId = simLog.getMessageId();
             simulatorMessageViewTab.loadTransactionInstanceDetails(transactionInstance);
             xdstools2view.resizeToolkit();
             simulatorMessageViewTab.selectByMessageId(simLog.getMessageId());

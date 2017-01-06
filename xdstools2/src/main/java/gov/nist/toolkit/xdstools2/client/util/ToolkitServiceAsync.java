@@ -12,6 +12,7 @@ import gov.nist.toolkit.results.client.*;
 import gov.nist.toolkit.results.shared.Test;
 import gov.nist.toolkit.services.client.IdcOrchestrationRequest;
 import gov.nist.toolkit.services.client.RawResponse;
+import gov.nist.toolkit.services.shared.Message;
 import gov.nist.toolkit.session.client.ConformanceSessionValidationStatus;
 import gov.nist.toolkit.session.client.logtypes.TestOverviewDTO;
 import gov.nist.toolkit.session.client.logtypes.TestPartFileDTO;
@@ -65,8 +66,8 @@ public interface ToolkitServiceAsync {
     void getTestSectionsDAOs(GetTestSectionsDAOsRequest request, AsyncCallback<List<SectionDefinitionDAO>> callback);
     void getUpdateNames(AsyncCallback<List<String>> callback);
 
-    void getTransactionRequest(GetTransactionRequest request, AsyncCallback<String> callback);
-    void getTransactionResponse(GetTransactionRequest request, AsyncCallback<String> callback);
+    void getTransactionRequest(GetTransactionRequest request, AsyncCallback<Message> callback);
+    void getTransactionResponse(GetTransactionRequest request, AsyncCallback<Message> callback);
     void getTransactionLog(GetTransactionRequest request, AsyncCallback<String> callback);
 
     void getTransactionsForSimulator(GetTransactionRequest request, AsyncCallback<List<String>> callback);

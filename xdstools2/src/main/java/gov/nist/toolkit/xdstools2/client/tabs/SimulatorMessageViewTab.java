@@ -13,6 +13,7 @@ import gov.nist.toolkit.actorfactory.client.SimId;
 import gov.nist.toolkit.actortransaction.client.TransactionInstance;
 import gov.nist.toolkit.http.client.HtmlMarkup;
 import gov.nist.toolkit.results.client.Result;
+import gov.nist.toolkit.services.shared.Message;
 import gov.nist.toolkit.sitemanagement.client.SiteSpec;
 import gov.nist.toolkit.xdstools2.client.Panel1;
 import gov.nist.toolkit.xdstools2.client.ToolWindow;
@@ -209,7 +210,7 @@ public class SimulatorMessageViewTab extends ToolWindow {
 	TransactionInstance findTransactionInstance(String label) {
 		if (label == null) return null;
 		for (TransactionInstance ti : transactionInstances) {
-			if (label.equals(ti.label)) return ti;
+			if (label.equals(ti.messageId)) return ti;
 			if (label.equals(ti.labelInterpretedAsDate)) return ti;
 		}
 		return null;
@@ -232,19 +233,11 @@ public class SimulatorMessageViewTab extends ToolWindow {
 				int i = 0;
 				for (TransactionInstance x : result) {
 					if (selectedMessageId == null)
-						transInstanceListBox.addItem(x.toString(), x.label);
-					if (selectedMessageId != null && selectedMessageId.equals(x.label)) {
-						transInstanceListBox.addItem(x.toString(), x.label);
+						transInstanceListBox.addItem(x.toString(), x.messageId);
+					if (selectedMessageId != null && selectedMessageId.equals(x.messageId)) {
+						transInstanceListBox.addItem(x.toString(), x.messageId);
 						currentTransactionInstance = x;
 						updateEventLink(x);
-//						SimLog simLog = new SimLog(currentTransactionInstance);
-//						Label eventLink = new Label(Xdstools2.toolkitBaseUrl + "#SimLog:" + (new SimLog.Tokenizer()).getToken(simLog));
-//						linkPanel.clear();
-//						linkPanel.add(new Label("Event Link: "));
-//						linkPanel.add(eventLink);
-//						eventLinkPanel.clear();
-//						eventLinkPanel.add(eventLink);
-
 						break;
 					}
 					i++;
@@ -287,7 +280,7 @@ public class SimulatorMessageViewTab extends ToolWindow {
 
 	HTML htmlize(String header, String in) {
 		HTML h = new HTML(
-				"<b>" + header + "</b><br /><br />" +
+				(header == null) ? "" : "<b>" + header + "</b><br /><br />" +
 
 						in.replaceAll("<", "&lt;")
 								.replaceAll("\n\n", "\n")
@@ -332,8 +325,8 @@ public class SimulatorMessageViewTab extends ToolWindow {
 		SimId simid = this.simidFinal;
 		if (ti.actorType == null) return;
 		String actor = ti.actorType.getShortName();
-		String trans = ti.name;
-		String messageId = ti.label;
+		String trans = ti.trans;
+		String messageId = ti.messageId;
 
 		scrollInPanel.clear();
 		scrollOutPanel.clear();
@@ -341,16 +334,22 @@ public class SimulatorMessageViewTab extends ToolWindow {
 
 		new GetTransactionRequestCommand(){
 			@Override
-			public void onComplete(String result) {
-				scrollInPanel.add(htmlize("Request Message", result));
+			public void onComplete(Message message) {
+				FlowPanel panel = new FlowPanel();
+				panel.add(htmlize("Request Message<br />", message.getParts().get(0)));
+				scrollInPanel.add(panel);
 			}
 		}.run(new GetTransactionRequest(getCommandContext(),simid,actor,trans,messageId));
+
 		new GetTransactionResponseCommand(){
 			@Override
-			public void onComplete(String result) {
-				scrollOutPanel.add(htmlize("Response Message", result));
+			public void onComplete(Message message) {
+				FlowPanel panel = new FlowPanel();
+				panel.add(htmlize("Request Message<br />", message.getParts().get(0)));
+				scrollOutPanel.add(panel);
 			}
 		}.run(new GetTransactionRequest(getCommandContext(),simid,actor,trans,messageId));
+
 		new GetTransactionLogCommand(){
 			@Override
 			public void onComplete(String result) {

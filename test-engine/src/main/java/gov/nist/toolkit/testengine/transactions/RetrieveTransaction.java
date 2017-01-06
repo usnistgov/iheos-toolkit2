@@ -489,7 +489,7 @@ public class RetrieveTransaction extends BasicTransaction {
 //
 //			}
 //
-//			if ( !referenced_documents.isEmpty()) {
+//			if ( !referenced_documents.empty()) {
 //				String key = referenced_documents.keySet().iterator().next();
 //				String filename = referenced_documents.getRetrievedDocumentsModel(key);
 //

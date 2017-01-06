@@ -276,7 +276,7 @@ public class ToolkitApi {
     public List<String> getSimulatorEventIds(SimId simId, String transaction) throws Exception {
         List<String> ids = new ArrayList<>();
         for (TransactionInstance ti : new SimulatorServiceManager(session).getTransInstances(simId, "", transaction)) {
-            ids.add(ti.label);
+            ids.add(ti.messageId);
         }
         return ids;
     }

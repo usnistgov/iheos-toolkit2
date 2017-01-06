@@ -33,8 +33,8 @@ import gov.nist.toolkit.utilities.io.Io;
 import gov.nist.toolkit.validatorsSoapMessage.engine.ValidateMessageService;
 import gov.nist.toolkit.valsupport.client.MessageValidationResults;
 import gov.nist.toolkit.valsupport.client.ValidationContext;
-import gov.nist.toolkit.xdsexception.client.EnvironmentNotSelectedException;
 import gov.nist.toolkit.xdsexception.ExceptionUtil;
+import gov.nist.toolkit.xdsexception.client.EnvironmentNotSelectedException;
 import org.apache.log4j.Logger;
 
 import java.io.File;
@@ -180,7 +180,7 @@ public class SimulatorServiceManager extends CommonService {
 		return simdb.getTransactionsForSimulator();
 	}
 
-	public String getTransactionRequest(SimId simid, String actor,
+	public Message getTransactionRequest(SimId simid, String actor,
 			String trans, String event) {
 		logger.debug(session.id() + ": " + "getTransactionRequest - " + simid + " - " + actor + " - " + trans + " - " + event);
 		try {
@@ -193,15 +193,15 @@ public class SimulatorServiceManager extends CommonService {
 					event);
 			File bodyFile = db.getRequestBodyFile(simid, actor, trans, event);
 
-			return Io.stringFromFile(headerFile)
-					// + "\r\n"
-					+ new String(Io.bytesFromFile(bodyFile));
+			String body = new String(Io.bytesFromFile(bodyFile));
+
+			return new Message(Io.stringFromFile(headerFile) + body);
 		} catch (Exception e) {
-			return "Data not available";
+			return null;
 		}
 	}
 
-	public String getTransactionResponse(SimId simid, String actor,
+	public Message getTransactionResponse(SimId simid, String actor,
 			String trans, String event) {
 		logger.debug(session.id() + ": " + "getTransactionResponse - " + simid + " - " + actor + " - " + trans + " - " + event);
 		try {
@@ -215,11 +215,11 @@ public class SimulatorServiceManager extends CommonService {
 			File bodyFile = db
 					.getResponseBodyFile(simid, actor, trans, event);
 
-			return Io.stringFromFile(headerFile)
-					// + "\r\n"
-					+ Io.stringFromFile(bodyFile);
+			String body = new String(Io.bytesFromFile(bodyFile));
+
+			return new Message(Io.stringFromFile(headerFile) + body);
 		} catch (Exception e) {
-			return "Data not available";
+			return null;
 		}
 	}
 

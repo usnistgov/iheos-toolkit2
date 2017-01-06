@@ -14,6 +14,7 @@ import gov.nist.toolkit.results.client.*;
 import gov.nist.toolkit.results.shared.Test;
 import gov.nist.toolkit.services.client.IdcOrchestrationRequest;
 import gov.nist.toolkit.services.client.RawResponse;
+import gov.nist.toolkit.services.shared.Message;
 import gov.nist.toolkit.session.client.ConformanceSessionValidationStatus;
 import gov.nist.toolkit.session.client.logtypes.TestOverviewDTO;
 import gov.nist.toolkit.session.client.logtypes.TestPartFileDTO;
@@ -92,8 +93,8 @@ public interface ToolkitService extends RemoteService  {
 	Map<String, String> getToolkitProperties(CommandContext context) throws Exception ;
 	boolean reloadPropertyFile() throws NoServletSessionException ;
 
-	String getTransactionRequest(GetTransactionRequest request) throws Exception;
-	String getTransactionResponse(GetTransactionRequest request) throws Exception;
+	Message getTransactionRequest(GetTransactionRequest request) throws Exception;
+	Message getTransactionResponse(GetTransactionRequest request) throws Exception;
 	String getTransactionLog(GetTransactionRequest request)  throws Exception;
 	List<String> getTransactionsForSimulator(GetTransactionRequest request) throws Exception;
 	MessageValidationResults executeSimMessage(ExecuteSimMessageRequest request) throws Exception;

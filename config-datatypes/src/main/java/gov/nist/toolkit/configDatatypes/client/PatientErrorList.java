@@ -1,6 +1,7 @@
 package gov.nist.toolkit.configDatatypes.client;
 
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
+import com.google.gwt.user.client.rpc.IsSerializable;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -10,7 +11,7 @@ import java.util.List;
  *
  */
 @JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.ANY, getterVisibility = JsonAutoDetect.Visibility.NONE, setterVisibility = JsonAutoDetect.Visibility.NONE)
-public class PatientErrorList implements Serializable {
+public class PatientErrorList implements Serializable, IsSerializable {
     List<PatientError> list = new ArrayList<>();
 
     public PatientErrorList() {}
@@ -38,7 +39,7 @@ public class PatientErrorList implements Serializable {
         return null;
     }
 
-    public boolean isEmpty() { return list.isEmpty(); }
+    public boolean empty() { return list.isEmpty(); }
 
     @Override
     public String toString() {

@@ -32,8 +32,8 @@ public class SimLog extends Place {
     public SimLog(TransactionInstance ti) {
         simIdString = ti.simId;
         actor = ti.actorType.getShortName();
-        trans = ti.name;
-        messageId = ti.label;
+        trans = ti.trans;
+        messageId = ti.messageId;
     }
 
     private SimLog(String s) {

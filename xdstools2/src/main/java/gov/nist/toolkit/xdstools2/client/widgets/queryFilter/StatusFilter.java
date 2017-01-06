@@ -18,7 +18,7 @@ public class StatusFilter extends Widget implements QueryFilter {
     final static String deprecatedString = "Deprecated";
     static final String bothString = "Both";
 
-    // label is required non-empty but is never displayed
+    // messageId is required non-empty but is never displayed
     public StatusFilter(String label) {
         hp.add(new RadioButton(label, approvedString));
         hp.add(new RadioButton(label, deprecatedString));

@@ -18,7 +18,7 @@ public class SitesTest {
 //		String conf = "<sites/>";
 //		compile(conf);
 //
-//		assert sites.getSiteNames().isEmpty();
+//		assert sites.getSiteNames().empty();
 //		try {
 //			sites.getDefaultSite();
 //		} catch (Exception e) {
