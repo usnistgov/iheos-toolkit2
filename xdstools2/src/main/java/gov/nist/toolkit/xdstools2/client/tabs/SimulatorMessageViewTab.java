@@ -1,10 +1,7 @@
 package gov.nist.toolkit.xdstools2.client.tabs;
 
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.event.dom.client.ChangeEvent;
-import com.google.gwt.event.dom.client.ChangeHandler;
-import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.event.dom.client.*;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.http.client.*;
@@ -44,6 +41,8 @@ public class SimulatorMessageViewTab extends ToolWindow {
 	private HorizontalFlowPanel simSelectionDisplayPanel = new HorizontalFlowPanel();
 	private FlowPanel simSelectionPanel = new FlowPanel();
 	private HorizontalFlowPanel eventLinkPanel = new HorizontalFlowPanel();
+	private HorizontalFlowPanel filterPanel = new HorizontalFlowPanel();
+	private TextBox filterField = new TextBox();
 
 	private SimId simid = null;//new SimId("");
 	private String currentActor;
@@ -51,7 +50,7 @@ public class SimulatorMessageViewTab extends ToolWindow {
 	private String currentEvent;
 
 
-	private List<TransactionInstance> transactionInstances = null;
+	private List<TransactionInstance> transactionInstances = new ArrayList<>();
 	private TransactionInstance currentTransactionInstance = null;
 
 	private VerticalPanel transactionDisplayPanel = new VerticalPanel();
@@ -70,8 +69,11 @@ public class SimulatorMessageViewTab extends ToolWindow {
 	private Button deleteButton = new Button("Delete");
 
 	private HTML download = new HTML();
+	private SimulatorMessageViewTab instance;
+
 
 	public SimulatorMessageViewTab() {
+		instance = this;
 		simSelectionDisplayPanel.add(HtmlMarkup.html(HtmlMarkup.h2("Simulator:")));
 		simSelectionDisplayPanel.add(simNameOrNamesPanel);
 		simNameOrNamesPanel.add(simulatorNamesListBox);  // will be removed later is simId is set
@@ -140,6 +142,13 @@ public class SimulatorMessageViewTab extends ToolWindow {
 
 		transactionDisplayPanel.add(transactionNamesPanel);
 
+		filterPanel.add(filterField);
+		Button filterButton = new Button("Filter");
+		filterButton.addClickHandler(new FilterClickHandler());
+		filterField.addKeyDownHandler(new FilterKeyDownHandler());
+		filterPanel.add(filterButton);
+		transactionDisplayPanel.add(filterPanel);
+
 		transactionDisplayPanel.add(HtmlMarkup.html(HtmlMarkup.bold("Messages")));
 		transInstanceListBox.setVisibleItemCount(20);
 		transactionDisplayPanel.add(transInstanceListBox);
@@ -158,6 +167,24 @@ public class SimulatorMessageViewTab extends ToolWindow {
 		transactionDisplayPanel.add(inspectResponseButton);
 
 		transactionDisplayPanel.add(download);
+	}
+
+	class FilterClickHandler implements ClickHandler {
+
+		@Override
+		public void onClick(ClickEvent clickEvent) {
+			updateTransactionsDisplay();
+		}
+	}
+
+	class FilterKeyDownHandler implements KeyDownHandler {
+
+		@Override
+		public void onKeyDown(KeyDownEvent event) {
+			if (event.getNativeKeyCode() == KeyCodes.KEY_ENTER) {
+				updateTransactionsDisplay();
+			}
+		}
 	}
 
 
@@ -216,6 +243,7 @@ public class SimulatorMessageViewTab extends ToolWindow {
 		return null;
 	}
 
+
 	public void transactionChosen(SimId simid, String transName) {
 		currentTransaction = transName;
 		clear();
@@ -228,30 +256,70 @@ public class SimulatorMessageViewTab extends ToolWindow {
 			@Override
 			public void onComplete(List<TransactionInstance> result) {
 				transactionInstances = result;
-				transInstanceListBox.clear();
-
-				int i = 0;
-				for (TransactionInstance x : result) {
-					if (selectedMessageId == null)
-						transInstanceListBox.addItem(x.toString(), x.messageId);
-					if (selectedMessageId != null && selectedMessageId.equals(x.messageId)) {
-						transInstanceListBox.addItem(x.toString(), x.messageId);
-						currentTransactionInstance = x;
-						updateEventLink(x);
-						break;
-					}
-					i++;
-				}
+				updateTransactionsDisplay();
+//				transInstanceListBox.clear();
+//
+//				int i = 0;
+//				for (TransactionInstance x : result) {
+//					if (selectedMessageId == null)
+//						transInstanceListBox.addItem(x.toString(), x.messageId);
+//					if (selectedMessageId != null && selectedMessageId.equals(x.messageId)) {
+//						transInstanceListBox.addItem(x.toString(), x.messageId);
+//						currentTransactionInstance = x;
+//						updateEventLink(x);
+//						break;
+//					}
+//					i++;
+//				}
 			}
 		}.run(new GetTransactionRequest(getCommandContext(),simid,"",transName));
 	}
 
-	private void updateEventLink(TransactionInstance ti) {
-		SimLog simLog = new SimLog(currentTransactionInstance);
-		Label eventLink = new Label(Xdstools2.toolkitBaseUrl + "#SimLog:" + (new SimLog.Tokenizer()).getToken(simLog));
+	private void updateTransactionsDisplay() {
+		String filterText = filterField.getText().trim().toLowerCase();
+		transInstanceListBox.clear();
+		currentTransactionInstance = null;
+		updateEventLink();
+
+		for (TransactionInstance ti : transactionInstances) {
+			String displayText = ti.toString();
+			String displayTextForComparison = displayText.toLowerCase();
+			if (selectedMessageId == null) { // no message selected
+				if (filterText.isEmpty() || displayTextForComparison.contains(filterText)) {
+					transInstanceListBox.addItem(displayText, ti.messageId);
+					currentTransactionInstance = ti;
+				}
+//				else {  // this is not the selected message
+//					transInstanceListBox.addItem(displayText, ti.messageId);
+//					currentTransactionInstance = ti;
+//				}
+			}
+			else {
+				if (selectedMessageId.equals(ti.messageId)) { // this is the selected message
+					if (filterText.isEmpty() || displayTextForComparison.contains(filterText)) {
+						transInstanceListBox.addItem(displayText, ti.messageId);
+						currentTransactionInstance = ti;
+						updateEventLink();
+					}
+// else {  // this is not the selected message
+//						transInstanceListBox.addItem(displayText, ti.messageId);
+//						currentTransactionInstance = ti;
+//						updateEventLink();
+//					}
+				}
+			}
+		}
+	}
+
+	static private Label eventLinkLabel = new Label("Event Link: ");
+	private void updateEventLink() {
 		linkPanel.clear();
-		linkPanel.add(new Label("Event Link: "));
-		linkPanel.add(eventLink);
+		linkPanel.add(eventLinkLabel);
+		if (currentTransactionInstance != null) {
+			SimLog simLog = new SimLog(currentTransactionInstance);
+			Label eventLink = new Label(Xdstools2.toolkitBaseUrl + "#SimLog:" + (new SimLog.Tokenizer()).getToken(simLog));
+			linkPanel.add(eventLink);
+		}
 	}
 
 	ChangeHandler transactionInstanceChoiceChanged = new ChangeHandler() {
@@ -262,7 +330,7 @@ public class SimulatorMessageViewTab extends ToolWindow {
 			TransactionInstance ti = findTransactionInstance(value);
 			if (ti == null) return;
 			currentTransactionInstance = ti;
-			updateEventLink(ti);
+			updateEventLink();
 			loadTransactionInstanceDetails(ti);
 
 			String messageId = getMessageIdFromLabel(value);
