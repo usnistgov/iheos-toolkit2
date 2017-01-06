@@ -1,8 +1,13 @@
 package gov.nist.toolkit.xdstools2.client.tabs;
 
-import com.google.gwt.user.client.rpc.AsyncCallback;
-import com.google.gwt.user.client.ui.*;
-import gov.nist.toolkit.xdstools2.client.*;
+import com.google.gwt.user.client.ui.FlexTable;
+import com.google.gwt.user.client.ui.FlowPanel;
+import com.google.gwt.user.client.ui.Frame;
+import com.google.gwt.user.client.ui.ListBox;
+import com.google.gwt.user.client.ui.Widget;
+import gov.nist.toolkit.xdstools2.client.PasswordManagement;
+import gov.nist.toolkit.xdstools2.client.TabContainer;
+import gov.nist.toolkit.xdstools2.client.Xdstools2;
 import gov.nist.toolkit.xdstools2.client.command.command.GetAdminPasswordCommand;
 import gov.nist.toolkit.xdstools2.client.command.command.GetImplementationVersionCommand;
 import gov.nist.toolkit.xdstools2.client.inspector.HyperlinkFactory;
@@ -10,7 +15,6 @@ import gov.nist.toolkit.xdstools2.client.siteActorManagers.FindDocumentsSiteActo
 import gov.nist.toolkit.xdstools2.client.tabs.genericQueryTab.GenericQueryTab;
 import gov.nist.toolkit.xdstools2.client.toolLauncher.ToolLauncher;
 import gov.nist.toolkit.xdstools2.client.widgets.HorizontalFlowPanel;
-import gov.nist.toolkit.xdstools2.client.widgets.PopupMessage;
 
 public class HomeTab extends GenericQueryTab {
 	private String aboutMessage = null;
@@ -167,7 +171,7 @@ public class HomeTab extends GenericQueryTab {
 
 		Xdstools2.addtoMainMenu(HyperlinkFactory.launchTool(ToolLauncher.connectathonTabLabel, new ToolLauncher(ToolLauncher.connectathonTabLabel)));
 
-		Xdstools2.addtoMainMenu(HyperlinkFactory.launchTool(ToolLauncher.messageValidatorTabLabel, new ToolLauncher(ToolLauncher.messageValidatorTabLabel)));
+//		Xdstools2.addtoMainMenu(HyperlinkFactory.launchTool(ToolLauncher.messageValidatorTabLabel, new ToolLauncher(ToolLauncher.messageValidatorTabLabel)));
 
 		// ***************************************************************************
 		// Tests
