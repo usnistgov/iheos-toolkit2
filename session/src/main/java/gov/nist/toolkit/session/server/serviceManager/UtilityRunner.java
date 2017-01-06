@@ -186,6 +186,10 @@ public class UtilityRunner {
                 // s.assertionResults.add("Log Cache: " + s.getLogCount() + " entries");
                 session.transactionSettings.securityParams = session;
 
+                if (session.transactionSettings.environmentName==null)
+                    session.transactionSettings.environmentName=session.getCurrentEnvName();
+                if (session.transactionSettings.testSession==null)
+                    session.transactionSettings.testSession=session.getMesaSessionName();
                 session.xt.run(params, params2, stopOnFirstFailure, session.transactionSettings);
 
                 assertionResults.add(session.transactionSettings.res);
