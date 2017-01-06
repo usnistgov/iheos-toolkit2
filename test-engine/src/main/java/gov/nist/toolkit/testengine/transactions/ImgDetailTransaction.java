@@ -251,7 +251,7 @@ public class ImgDetailTransaction extends BasicTransaction {
             Integer expectedCode = codes.get(id);
             if (expectedCode == null) expectedCode = defaultCode;
             String msg = "WADO trans " + idS + " status: expected [" + expectedCode.toString() + "] ";
-            OMElement codeElement = XmlUtil.firstChildChain(transactionElement, "HttpResponse", "Status", "Code");
+            OMElement codeElement = XmlUtil.firstChildChain(transactionElement, "Status", "Code");
             if (codeElement == null) {
                store(engine, CAT.ERROR, msg + "found null");
                continue;
