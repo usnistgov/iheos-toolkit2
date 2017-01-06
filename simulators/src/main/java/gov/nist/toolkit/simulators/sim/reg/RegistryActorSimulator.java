@@ -107,6 +107,9 @@ public class RegistryActorSimulator extends BaseDsActorSimulator {
             //
             // *********************************************
 
+			if (!dsSimCommon.verifySubmissionAllowed())
+				return false;
+
 			if (!dsSimCommon.runInitialValidationsAndFaultIfNecessary())
 				return false;  // returns if SOAP Fault was generated
 			
@@ -161,6 +164,9 @@ public class RegistryActorSimulator extends BaseDsActorSimulator {
 			//  eventually.
 			//
 			// *********************************************
+
+			if (!dsSimCommon.verifySubmissionAllowed())
+				return false;
 
 			if (!dsSimCommon.runInitialValidationsAndFaultIfNecessary())
 				return false;  // returns if SOAP Fault was generated
@@ -238,6 +244,9 @@ public class RegistryActorSimulator extends BaseDsActorSimulator {
 			}
 			common.vc.isMU = true;
 			common.vc.isRequest = true;
+
+			if (!dsSimCommon.verifySubmissionAllowed())
+				return false;
 
 			if (!dsSimCommon.runInitialValidationsAndFaultIfNecessary())
 				return false;

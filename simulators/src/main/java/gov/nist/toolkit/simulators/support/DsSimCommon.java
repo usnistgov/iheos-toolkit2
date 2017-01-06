@@ -667,6 +667,18 @@ public class DsSimCommon {
         return false;
     }
 
+    public boolean verifySubmissionAllowed() {
+        if (simulatorConfig.get(SimulatorProperties.locked).asBoolean()) {
+            SoapFault fault = new SoapFault(SoapFault.FaultCodes.Receiver, "This actor simulator is locked and will not accept submissions");
+            sendFault(fault);
+            simCommon.faultReturned = true;
+            return false;
+        }
+        return true;
+    }
+
+
+
     public boolean isFaultNeeded() {
         SoapFault fault = getSoapErrors();
         return fault != null;
@@ -716,6 +728,7 @@ public class DsSimCommon {
     SoapFault getSoapErrors() {
 
         SoapFault sf;
+
 
         sf = getFaultFromMessageValidator(HttpMessageValidator.class);
         if (sf != null) return sf;

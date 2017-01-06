@@ -318,4 +318,9 @@ public class SimulatorProperties {
      * Simulates faulty IG
      */
     public static final String    returnNoHome = "Force no homeCommunityId attribute";
+
+    /*
+     * Requires admin to edit config.  While locked no updating transactions are permitted
+     */
+    public static final String locked = "Locked";
 }

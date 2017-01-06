@@ -2,6 +2,7 @@ package gov.nist.toolkit.xdstools2.client.tabs.simulatorControlTab;
 
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.FlexTable;
 import com.google.gwt.user.client.ui.FlowPanel;
@@ -13,9 +14,11 @@ import gov.nist.toolkit.configDatatypes.client.PatientErrorMap;
 import gov.nist.toolkit.configDatatypes.client.TransactionType;
 import gov.nist.toolkit.http.client.HtmlMarkup;
 import gov.nist.toolkit.simcommon.client.config.SimulatorConfigElement;
+import gov.nist.toolkit.xdstools2.client.PasswordManagement;
 import gov.nist.toolkit.xdstools2.client.command.command.PutSimConfigCommand;
 import gov.nist.toolkit.xdstools2.client.tabs.simulatorControlTab.intf.SimConfigMgrIntf;
 import gov.nist.toolkit.xdstools2.client.util.ClientUtils;
+import gov.nist.toolkit.xdstools2.client.widgets.AdminPasswordDialogBox;
 import gov.nist.toolkit.xdstools2.shared.command.request.SimConfigRequest;
 
 /**
@@ -31,6 +34,7 @@ public abstract class BaseSimConfigMgr implements SimConfigMgrIntf {
     FlowPanel panel;
     HorizontalPanel hpanel;
     SimulatorConfig config;
+    boolean wasLocked = false;
     String testSession;
     FlexTable tbl = new FlexTable();
     Button saveButton = new Button("Save");
@@ -42,6 +46,8 @@ public abstract class BaseSimConfigMgr implements SimConfigMgrIntf {
         this.panel = panel;
         this.config = config;
         this.testSession = testSession;
+        if (config.get(SimulatorProperties.locked).asBoolean())
+            wasLocked = true;
     }
 
     public void removeFromPanel() {
@@ -218,6 +224,22 @@ public abstract class BaseSimConfigMgr implements SimConfigMgrIntf {
     }
 
     public void saveSimConfig() {
+        boolean locked = wasLocked || config.getConfigEle(SimulatorProperties.locked).asBoolean();
+        if (locked) {
+            if (PasswordManagement.isSignedIn) {
+            }
+            else {
+                PasswordManagement.addSignInCallback(signedInCallback);
+
+                new AdminPasswordDialogBox(panel);
+
+                return;
+            }
+        }
+        saveSimConfigPreAuthorized();
+    }
+
+    public void saveSimConfigPreAuthorized() {
         new PutSimConfigCommand(){
             @Override
             public void onComplete(String result) {
@@ -227,6 +249,19 @@ public abstract class BaseSimConfigMgr implements SimConfigMgrIntf {
             }
         }.run(new SimConfigRequest(ClientUtils.INSTANCE.getCommandContext(),config));
     }
+
+    // Boolean data type ignored
+    AsyncCallback<Boolean> signedInCallback = new AsyncCallback<Boolean> () {
+
+        public void onFailure(Throwable ignored) {
+        }
+
+        public void onSuccess(Boolean ignored) {
+            saveSimConfigPreAuthorized();
+        }
+
+    };
+
 
     public int getRow() {
         return row;

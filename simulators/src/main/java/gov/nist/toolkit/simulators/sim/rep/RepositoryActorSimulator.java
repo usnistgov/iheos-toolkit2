@@ -94,6 +94,9 @@ public class RepositoryActorSimulator extends BaseDsActorSimulator {
 				common.vc.isXDR = true;
 			}
 
+			if (!dsSimCommon.verifySubmissionAllowed())
+				return false;
+
 			if (!dsSimCommon.runInitialValidationsAndFaultIfNecessary())
 				return false;
 
