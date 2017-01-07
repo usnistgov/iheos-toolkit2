@@ -1,25 +1,26 @@
 package gov.nist.toolkit.toolkitApi;
 
-import java.io.IOException;
+import gov.nist.toolkit.configDatatypes.client.PatientErrorMap;
+import gov.nist.toolkit.toolkitServicesCommon.RefList;
+import gov.nist.toolkit.toolkitServicesCommon.resource.RefListResource;
 
 import javax.ws.rs.core.Response;
-
-import gov.nist.toolkit.configDatatypes.client.PatientErrorMap;
-import gov.nist.toolkit.toolkitServicesCommon.LeafClassList;
-import gov.nist.toolkit.toolkitServicesCommon.resource.LeafClassListResource;
+import java.io.IOException;
 
 /**
  *
  */
 public class XcaInitiatingGateway  extends AbstractActor implements InitiatingGateway {
     @Override
-    public LeafClassList FindDocuments(String patientID) throws ToolkitServiceException {
+    public RefList FindDocuments(String patientID) throws ToolkitServiceException {
         Response response = engine.getTarget()
                 .path(String.format("simulators/%s/xds/GetAllDocs/%s", getConfig().getFullId(), patientID))
                 .request().get();
         if (response.getStatus() != 200)
             throw new ToolkitServiceException(response);
-        return response.readEntity(LeafClassListResource.class);
+        RefList rl = response.readEntity(RefListResource.class);
+        return rl;
+//        return response.readEntity(LeafClassListResource.class);
     }
 
    /* (non-Javadoc)

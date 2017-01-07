@@ -197,7 +197,7 @@ public class SimulatorServiceManager extends CommonService {
 
 			return new Message(Io.stringFromFile(headerFile) + body);
 		} catch (Exception e) {
-			return null;
+			return new Message("Error: " + e.getMessage());
 		}
 	}
 
@@ -219,7 +219,7 @@ public class SimulatorServiceManager extends CommonService {
 
 			return new Message(Io.stringFromFile(headerFile) + body);
 		} catch (Exception e) {
-			return null;
+			return new Message("Error: " + e.getMessage());
 		}
 	}
 

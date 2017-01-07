@@ -257,20 +257,6 @@ public class SimulatorMessageViewTab extends ToolWindow {
 			public void onComplete(List<TransactionInstance> result) {
 				transactionInstances = result;
 				updateTransactionsDisplay();
-//				transInstanceListBox.clear();
-//
-//				int i = 0;
-//				for (TransactionInstance x : result) {
-//					if (selectedMessageId == null)
-//						transInstanceListBox.addItem(x.toString(), x.messageId);
-//					if (selectedMessageId != null && selectedMessageId.equals(x.messageId)) {
-//						transInstanceListBox.addItem(x.toString(), x.messageId);
-//						currentTransactionInstance = x;
-//						updateEventLink(x);
-//						break;
-//					}
-//					i++;
-//				}
 			}
 		}.run(new GetTransactionRequest(getCommandContext(),simid,"",transName));
 	}
@@ -284,15 +270,11 @@ public class SimulatorMessageViewTab extends ToolWindow {
 		for (TransactionInstance ti : transactionInstances) {
 			String displayText = ti.toString();
 			String displayTextForComparison = displayText.toLowerCase();
-			if (selectedMessageId == null) { // no message selected
+			if (selectedMessageId == null || selectedMessageId.equals("all")) { // no message selected
 				if (filterText.isEmpty() || displayTextForComparison.contains(filterText)) {
 					transInstanceListBox.addItem(displayText, ti.messageId);
 					currentTransactionInstance = ti;
 				}
-//				else {  // this is not the selected message
-//					transInstanceListBox.addItem(displayText, ti.messageId);
-//					currentTransactionInstance = ti;
-//				}
 			}
 			else {
 				if (selectedMessageId.equals(ti.messageId)) { // this is the selected message
@@ -301,11 +283,6 @@ public class SimulatorMessageViewTab extends ToolWindow {
 						currentTransactionInstance = ti;
 						updateEventLink();
 					}
-// else {  // this is not the selected message
-//						transInstanceListBox.addItem(displayText, ti.messageId);
-//						currentTransactionInstance = ti;
-//						updateEventLink();
-//					}
 				}
 			}
 		}
@@ -413,7 +390,7 @@ public class SimulatorMessageViewTab extends ToolWindow {
 			@Override
 			public void onComplete(Message message) {
 				FlowPanel panel = new FlowPanel();
-				panel.add(htmlize("Request Message<br />", message.getParts().get(0)));
+				panel.add(htmlize("Response Message<br />", message.getParts().get(0)));
 				scrollOutPanel.add(panel);
 			}
 		}.run(new GetTransactionRequest(getCommandContext(),simid,actor,trans,messageId));

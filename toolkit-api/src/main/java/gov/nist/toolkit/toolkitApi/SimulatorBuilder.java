@@ -181,6 +181,13 @@ public class SimulatorBuilder {
         return act;
     }
 
+    public InitiatingGateway asInitiatingGateway(SimConfig config) {
+        XcaInitiatingGateway act = new XcaInitiatingGateway();
+        act.engine = engine;
+        act.config = config;
+        return act;
+    }
+
     /**
      * Update the configuration of a Simulator. Any properties that are passed in SimConfig that are
      * not recognized will be silently ignored. Parameters passed with wrong type (String vs. boolean) will cause

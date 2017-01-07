@@ -95,7 +95,7 @@ public class Installation {
     }
 
 	public File externalCache() { return externalCache; }
-	protected void externalCache(File externalCache) {
+	public void externalCache(File externalCache) {
 			this.externalCache = externalCache;
         logger.info("Installation: External Cache set to " + externalCache);
 		try {
