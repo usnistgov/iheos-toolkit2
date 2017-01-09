@@ -14,6 +14,7 @@ import gov.nist.toolkit.xdstools2.server.gazelle.sysconfig.GenerateSystemShell;
 import org.apache.log4j.Logger;
 
 import java.io.File;
+import java.util.Collection;
 
 public class GazelleServiceManager extends CommonService {
 
@@ -72,8 +73,18 @@ public class GazelleServiceManager extends CommonService {
 
             GenerateSystemShell gazelleShell = new GenerateSystemShell(actorsDir, gazelleUrl);
             String log = "";
-            if (systemName.equals("ALL"))
-                gazelleShell.run();
+            if (systemName.equals("ALL")) {
+                Collection<String> systemNames = gazelleShell.run();
+                StringBuilder buf = new StringBuilder();
+                for (String sname : systemNames) {
+                    try {
+                        buf.append(gazelleShell.getLogContents(sname));
+                    } catch (Exception e) {
+                        buf.append("No log for system " + sname + "\n");
+                    }
+                }
+                log = buf.toString();
+            }
             else {
                 String realSystemName = GenerateSingleSystem.withoutExtension(systemName);
                 gazelleShell.run(realSystemName);

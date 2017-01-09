@@ -21,7 +21,7 @@ public class LoadGazelleConfigs  {
 			}
 			@Override
 			public void onComplete(String result) {
-				launchTextViewer("Gazelle", result, false);
+				launchTextViewer("Gazelle Log", result, false);
 			}
 		}.run(new ReloadSystemFromGazelleRequest(ClientUtils.INSTANCE.getCommandContext(),type));
 	}
