@@ -1,5 +1,6 @@
 package gov.nist.toolkit.valregmsg.registry.storedquery.generic;
 
+import gov.nist.toolkit.commondatatypes.MetadataSupport;
 import gov.nist.toolkit.docref.SqDocRef;
 import gov.nist.toolkit.registrymetadata.Metadata;
 import gov.nist.toolkit.registrysupport.logging.LoggerException;
@@ -10,6 +11,7 @@ import gov.nist.toolkit.xdsexception.client.MetadataValidationException;
 import gov.nist.toolkit.xdsexception.client.XdsException;
 import gov.nist.toolkit.xdsexception.client.XdsInternalException;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -67,6 +69,12 @@ abstract public class GetSubmissionSetAndContents extends StoredQuery {
 		format_code = sqs.params.getCodedParm("$XDSDocumentEntryFormatCode");
 		conf_code = sqs.params.getCodedParm("$XDSDocumentEntryConfidentialityCode");
 		entry_type = sqs.params.getListParm("$XDSDocumentEntryType");
+
+		if (entry_type==null) {
+			// Rev. 13 Vol 2a 3.18.4.1.2.3.6.2 Valid DocumentEntryType Parameter Values
+			entry_type = new ArrayList<>();
+			entry_type.add(MetadataSupport.XDSDocumentEntry_objectType_uuid);
+		}
 	}
 
 
