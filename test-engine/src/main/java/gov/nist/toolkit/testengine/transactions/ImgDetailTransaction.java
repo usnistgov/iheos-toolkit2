@@ -179,8 +179,11 @@ public class ImgDetailTransaction extends BasicTransaction {
             this.prsSameRetrieve(engine, a, assertion_output);
             break;
          case "loadSOAPSimTransaction":
-         this.prsLoadSOAPSimTransaction(engine, a, assertion_output);
-         break;
+            this.prsLoadSOAPSimTransaction(engine, a, assertion_output);
+            break;
+         case "matchHomeCommunityIds":
+            this.prsMatchHomeCommunityIds(engine, a, assertion_output);
+            break;
          default:
             throw new XdsInternalException("ImgDetailTransaction: Unknown assertion.process " + a.process);
       }
@@ -908,6 +911,55 @@ public class ImgDetailTransaction extends BasicTransaction {
       } catch (Exception e) {}
       return status;
    }
+   
+   /**
+    * Matches documents and homecommunity id values in a 
+    * {@code <RetrieveDocumentSetResponse>}
+    * against a "gold standard" response which is in the {@code <ResponseBody>}
+    * child element of the testplan.xml {@code <Standard>} element.
+    * 
+    * @param engine AssertionEngine instance
+    * @param a Assert being processed
+    * @param assertion_output log.xml output element for that assert
+    * @throws XdsInternalException on error
+    */
+   private void prsMatchHomeCommunityIds(AssertionEngine engine, Assertion a, OMElement assertion_output)
+            throws XdsInternalException {
+      try {
+         OMElement std = getStdElement("ResponseBody");
+         OMElement test = getTestTrans(a, "response");
+         String t = std.getLocalName();
+         if (t.endsWith("RetrieveDocumentSetResponse") == false)
+            throw new XdsInternalException("matchHomeCommunityIds assertion only applies to RetrieveDocumentSetResponse");
+        
+         Map <String, RetImg> testImgs = loadRetImgs(engine, a, test);
+         Map <String, RetImg> stdImgs = loadRetImgs(engine, a, std);
+         Set <String> testKeys = testImgs.keySet();
+         for (String testKey : testKeys) {
+            if (stdImgs.containsKey(testKey) == false) {
+               store(engine, CAT.ERROR, "test doc UID " + testKey + ", not found in standard.");
+               continue;
+            }
+            RetImg testImg = testImgs.get(testKey);
+            RetImg stdImg = stdImgs.get(testKey);
+            stdImgs.remove(testKey);
+            store(engine, CAT.SUCCESS, "test doc UID " + testKey + ", found in std.");
+            if (compMandatory(stdImg.home, testImg.home)) {
+               store(engine, CAT.SUCCESS, "for doc with UID: " + testKey +
+               " homeCommunityID match (std/test): (" + stdImg.home + "/" + testImg.home + ")");
+            } else {
+               store(engine, CAT.ERROR, "for doc with UID: " + testKey +
+               " homeCommunityID mismatch (std/test): (" + stdImg.home + "/" + testImg.home + ")");
+            }
+         }
+         if (stdImgs.isEmpty()) return;
+         Set <String> stdKeys = stdImgs.keySet();
+         for (String key : stdKeys)
+            store(engine, CAT.ERROR, "std doc UID: " + key + " not found in test msg.");
+      } catch (Exception e) {
+         throw new XdsInternalException("sameRetImgs error: " + e.getMessage());
+      }
+   }
 
    /**
     * Expects the current testplan.xml {@code <TestStep>} element to contain:
@@ -1027,6 +1079,16 @@ public class ImgDetailTransaction extends BasicTransaction {
    private boolean comp(String std, String test) {
       if (std == null || std.length() == 0) return true;
       if (test == null || test.length() == 0) return false;
+      return std.equals(test);
+   }
+   
+   /*
+    * helper method for string compares between std and test where an empty or
+    * null std value is considered to match an empty or null test value. Used 
+    * for home and repository UIDs.
+    */
+   private boolean compMandatory(String std, String test) {
+      if (StringUtils.isBlank(std) && StringUtils.isBlank(test)) return true;
       return std.equals(test);
    }
 
