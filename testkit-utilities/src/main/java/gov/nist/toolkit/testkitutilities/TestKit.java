@@ -41,7 +41,7 @@ public class TestKit {
 	}
 
 	
-	private String[] testkitSections = { "tests", "testdata", "xcpd", "examples", "utilities", "testdata-repository", "testdata-registry" };
+	private String[] testkitSections = { "tests", "testdata", "examples", "utilities", "testdata-repository", "testdata-registry", "testdata-xdr" };
 	
 	/**
 	 * Get File representing directory containing test definition
@@ -55,8 +55,9 @@ public class TestKit {
 
 		for (String section : testkitSections) {
 			testdir = new File(testKit.toString() + File.separator + section + File.separator + testname);
-			if (testdir.exists() && testdir.isDirectory())
-				return new TestDefinition(testdir);
+			if (testdir.exists())
+				if (testdir.isDirectory())
+					return new TestDefinition(testdir);
 		}
 				
 		throw new Exception("test " + testdir + " does not exist");
