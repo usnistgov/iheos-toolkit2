@@ -39,10 +39,10 @@ public class ConnectathonTab extends GenericQueryTab {
 		row++;
 		mainGrid.setWidget(row, col, HyperlinkFactory.link(ToolLauncher.registryDoThisFirstTabLabel, new ToolLauncher(ToolLauncher.registryDoThisFirstTabLabel)));
 		row++;
-		mainGrid.setWidget(row, col, HyperlinkFactory.link(ToolLauncher.registryLifecycleTabLabel, new ToolLauncher(ToolLauncher.registryLifecycleTabLabel)));
-		row++;
-		mainGrid.setWidget(row, col, HyperlinkFactory.link(ToolLauncher.registryFolderHandlingTabLabel, new ToolLauncher(ToolLauncher.registryFolderHandlingTabLabel)));
-		row++;
+//		mainGrid.setWidget(row, col, HyperlinkFactory.link(ToolLauncher.registryLifecycleTabLabel, new ToolLauncher(ToolLauncher.registryLifecycleTabLabel)));
+//		row++;
+//		mainGrid.setWidget(row, col, HyperlinkFactory.link(ToolLauncher.registryFolderHandlingTabLabel, new ToolLauncher(ToolLauncher.registryFolderHandlingTabLabel)));
+//		row++;
 
 		row = 0;
 		col++;
