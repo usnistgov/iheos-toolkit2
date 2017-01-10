@@ -827,7 +827,7 @@ public class DsSimCommon {
             logger.warn("Could not file image cache directory " + idsRepositoryDir);
             er.err(XdsErrorCode.Code.XDSRepositoryError,
                     "Could not find image cache [" + idsRepositoryPath + "] ",
-                    "IdsActorSimulator EL-1", MetadataSupport.error_severity, "Internal error");
+                    uids[2], MetadataSupport.error_severity, "Internal error");
             return null;
         }
         Path folderPath = idsRepositoryPath.resolve(uids[0]).resolve(uids[1]).resolve(uids[2]);
@@ -837,7 +837,7 @@ public class DsSimCommon {
             logger.debug("Could not find file folder for composite UID: " + compositeUid);
             er.err(XdsErrorCode.Code.XDSDocumentUniqueIdError,
                     "No document matching composite UID [" + compositeUid + "] ",
-                    "IdsActorSimulator EL-2", MetadataSupport.error_severity, "ITI TF-3 Table 4.2.4.1-2");
+                    uids[2], MetadataSupport.error_severity, "ITI TF-3 Table 4.2.4.1-2");
             return null;
         }
         boolean found = false;

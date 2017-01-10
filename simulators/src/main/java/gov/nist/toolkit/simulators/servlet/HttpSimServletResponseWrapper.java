@@ -140,12 +140,17 @@ public class HttpSimServletResponseWrapper extends HttpServletResponseWrapper {
     * body length in bytes.
     */
    public String getResponseBody() {
+      try {
       StringBuilder str = new StringBuilder();
       if (StringUtils.isNotBlank(contentType) && contentType.startsWith("text/"))
          str.append(new String(body,Utility.utf8));
       else if (contentLength != null || contentLength > 0)
          str.append("contents " + contentLength + " bytes");
       return str.toString();
-   }
+      } catch (Exception e) {
+         logger.warn("getResponseBody error: " + e.getMessage());
+      }
+      return "";
+    }
 
 }

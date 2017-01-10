@@ -35,6 +35,8 @@ import gov.nist.toolkit.testengine.engine.TransactionStatus;
 import gov.nist.toolkit.xdsexception.client.MetadataException;
 import gov.nist.toolkit.xdsexception.client.XdsInternalException;
 
+import edu.wustl.mir.erl.ihe.xdsi.util.Utility;
+
 /**
  * Manage WADO Retrieve (RAD-55) transactions, for example: 
  * <pre>{@code
@@ -113,6 +115,9 @@ public class WADOTransaction extends BasicTransaction {
       if (StringUtils.isBlank(endpoint)) 
          throw new XdsInternalException("No valid endpoint");
       
+      // Log Endpoint
+      testLog.add_name_value(instruction_output, "Endpoint", endpoint);
+      
       if (!valid(headers, "Accept")) 
          throw new XdsInternalException("No valid 'Accept' header value");
       if (!valid(parameters, "requestType"))
@@ -148,14 +153,29 @@ public class WADOTransaction extends BasicTransaction {
    
    private Integer transCount = 0;
    private OMElement resultElement;
+   private OMElement requestElement;
+   private OMElement outHdrElement;
+   private OMElement inHdrElement;
+   
    private void prsRequest() throws Exception {
       if (httpClient == null) {
          httpClient = HttpClients.createDefault();
          transCount = 0;
          resultElement = testLog.add_simple_element(instruction_output, "Result");
          resultElement = testLog.add_simple_element(resultElement, "Transactions");
+         requestElement = testLog.add_simple_element(instruction_output, "InputMetadata");
+         requestElement = testLog.add_simple_element(requestElement, "Transactions");
+         outHdrElement = testLog.add_simple_element(instruction_output, "InHeader");
+         outHdrElement = testLog.add_simple_element(outHdrElement, "Transactions");
+         inHdrElement = testLog.add_simple_element(instruction_output, "OutHeader");
+         inHdrElement = testLog.add_simple_element(inHdrElement, "Transactions");
       }
       transCount++;  
+      OMElement requestE = testLog.add_simple_element_with_id(requestElement, 
+         "Transaction", transCount.toString());
+      OMElement resultE = testLog.add_simple_element_with_id(resultElement, 
+         "Transaction", transCount.toString());
+      
       
       // Build Http Request
       URIBuilder builder = new URIBuilder(endpoint);
@@ -168,10 +188,15 @@ public class WADOTransaction extends BasicTransaction {
       }
       log.debug(httpGet.toString());
       
+      // Log Request Header
+      StringBuilder h = new StringBuilder(httpGet.toString());
+      for (Map.Entry<String, String> header :headers.entrySet()) 
+         h.append(Utility.nl).append(header.getKey()).append(" ")
+          .append(header.getValue());
+      testLog.add_simple_element_with_id(inHdrElement, "Transaction", 
+         transCount.toString(), h.toString());      
+      
       // Log Http Request
-      OMElement transE = testLog.add_simple_element_with_id(resultElement, 
-         "Transaction", transCount.toString());
-      OMElement requestE = testLog.add_simple_element(transE, "HttpRequest");
       testLog.add_name_value(requestE, "Request", httpGet.toString());
       OMElement headerE = testLog.add_simple_element(requestE, "Headers");
       for (Map.Entry<String, String> header :headers.entrySet()) 
@@ -185,9 +210,15 @@ public class WADOTransaction extends BasicTransaction {
       StatusLine statusLine = response.getStatusLine();
       Header[] responseHeaders = response.getAllHeaders();
       HttpEntity responseEntity = response.getEntity();
+      
+      // Log Response header
+      h = new StringBuilder(statusLine.toString());
+      for (Header hdr : responseHeaders)
+         h.append(Utility.nl).append(hdr.toString());
+      testLog.add_simple_element_with_id(outHdrElement, "Transaction", 
+         transCount.toString(), h.toString());
 
-      OMElement responseE = testLog.add_simple_element(transE, "HttpResponse");
-      OMElement statusE = testLog.add_simple_element(responseE, "Status");
+      OMElement statusE = testLog.add_simple_element(resultE, "Status");
       if (statusLine != null) {
          testLog.add_name_value(statusE, "Line", statusLine.toString());
          testLog.add_name_value(statusE, "Code", Integer.toString(statusLine.getStatusCode()));
@@ -212,7 +243,7 @@ public class WADOTransaction extends BasicTransaction {
          }
       }
       String content = "application/dicom";
-      OMElement hdrE = testLog.add_simple_element(responseE, "Headers");
+      OMElement hdrE = testLog.add_simple_element(resultE, "Headers");
       if (responseHeaders != null) {
          for (Header hdr : responseHeaders) {
             testLog.add_name_value(hdrE, hdr.getName(), hdr.getValue());
@@ -244,7 +275,7 @@ public class WADOTransaction extends BasicTransaction {
          FileUtils.cleanDirectory(f);
       }
       String fileName = String.format("%06d.%s", transCount, suffix);
-      testLog.add_name_value(responseE, "File", fileName);
+      testLog.add_name_value(resultE, "File", fileName);
       // write entity to file.
       InputStream is = responseEntity.getContent();
       FileOutputStream fos = new FileOutputStream(filesPath.resolve(fileName).toFile());

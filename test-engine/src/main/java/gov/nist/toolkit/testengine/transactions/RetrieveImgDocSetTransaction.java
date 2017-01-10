@@ -14,6 +14,7 @@ import gov.nist.toolkit.testengine.engine.RetContext;
 import gov.nist.toolkit.testengine.engine.StepContext;
 import gov.nist.toolkit.utilities.io.Sha1Bean;
 import gov.nist.toolkit.utilities.xml.OMFormatter;
+import gov.nist.toolkit.utilities.xml.Util;
 import gov.nist.toolkit.utilities.xml.XmlUtil;
 import gov.nist.toolkit.xdsexception.XdsPreparsedException;
 import gov.nist.toolkit.xdsexception.client.MetadataException;
@@ -125,6 +126,11 @@ public class RetrieveImgDocSetTransaction extends BasicTransaction {
 
       if (StringUtils.isNotBlank(target)) endpoint = target;
       parseIDSEndpoint(repositoryUniqueId, transactionType, testConfig.secure);
+
+      testLog.add_name_value(instruction_output, "InputMetadata", Util.deep_copy(request_ele));
+
+      testLog.add_name_value(instruction_output, "Linkage", this.local_linkage_data.toString());
+
 
       RetContext r_ctx = null;
       try {

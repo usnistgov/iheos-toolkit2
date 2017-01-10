@@ -24,6 +24,7 @@ import javax.xml.namespace.QName
 import org.apache.axiom.om.OMElement
 import org.apache.commons.lang3.StringUtils
 import org.apache.log4j.Logger
+import org.javatuples.Pair;
 
 // XCAI_TODO Add handling for error cases, image not found.
 
@@ -112,7 +113,7 @@ public class IdsActorSimulator extends GatewaySimulatorCommon {
 
             String repUid = getSimulatorConfig().getConfigEle(SimulatorProperties.idsRepositoryUniqueId).asString();
 
-            List<String> imagingUids = new ArrayList<String>();
+            List<Pair<String, String>> imagingUids = new ArrayList<>();
          prsImgs:
             for (OMElement studyEle : XmlUtil.decendentsWithLocalName(retrieveRequest, "StudyRequest")) {
                String studyUid = studyEle.getAttributeValue(new QName("studyInstanceUID"));
@@ -128,8 +129,13 @@ public class IdsActorSimulator extends GatewaySimulatorCommon {
                      OMElement docUidEle = XmlUtil.decendentWithLocalName(docEle, "DocumentUniqueId");
                      String uid = docUidEle.getText().trim();
                      String fullUid=studyUid + ":" + seriesUid + ":" + uid;
-                     imagingUids.add(fullUid);
                      logger.debug(fullUid);
+                     String hci = null;
+                     OMElement hciEle = XmlUtil.onlyChildWithLocalNameNE(docEle, "HomeCommunityId");
+                     if (hciEle != null) hci = hciEle.getText();
+                     if (hci != null) hci = hci.trim();
+                     imagingUids.add(new Pair<String, String>(fullUid.trim(), hci));
+                     
 
                      OMElement ruidEle = XmlUtil.decendentWithLocalName(docEle, "RepositoryUniqueId");
                      String ruid = ruidEle.getText().trim();

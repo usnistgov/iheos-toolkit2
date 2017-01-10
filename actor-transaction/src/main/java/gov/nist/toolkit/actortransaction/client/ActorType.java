@@ -188,7 +188,7 @@ public enum ActorType implements IsSerializable, Serializable {
             true,
             null,
             "gov.nist.toolkit.simulators.sim.ids.IdsHttpActorSimulator",
-            Arrays.asList(TransactionType.WADO_RETRIEVE)            
+            Arrays.asList(TransactionType.WADO_RETRIEVE)  
         ),
     IMAGING_DOC_CONSUMER(
             "Imaging Document Consumer",

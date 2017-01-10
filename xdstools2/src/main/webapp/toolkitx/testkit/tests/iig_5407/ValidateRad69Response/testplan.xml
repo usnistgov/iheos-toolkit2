@@ -31,7 +31,7 @@
 				<Assert id="Returned doc(s)" process="sameRetImgs">
 					<TestResponse testDir="../Rad69RetrieveRequest" step="retrieve" />
 				</Assert>
-				<Assert id="Returned doc(s)" process="sameRegErrors">
+				<Assert id="Returned doc(s)" process="registryErrorListNotEmpty">
 					<TestResponse testDir="../Rad69RetrieveRequest" step="retrieve" />
 				</Assert>
 			</Assertions>

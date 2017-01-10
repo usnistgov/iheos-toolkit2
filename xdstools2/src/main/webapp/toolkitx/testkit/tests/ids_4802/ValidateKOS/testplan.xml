@@ -1,6 +1,7 @@
 <TestPlan>
-	<Test>ids_4802/validate-kos</Test>
-	<TestStep id="validate-kos">
+	<Test>ids_4802/ValidateKOS</Test>
+	<TestStep id="ValidateKOS">
+		<Goal>Locate KOS in Repository simulator with Patient ID: IDS-AD001-a^^^&amp;1.3.6.1.4.1.21367.2005.13.20.1000&amp;ISO</Goal>
 		<Goal>Validate KOS sent to Repository simulator, Multi-Image study</Goal>
 		<ExpectedStatus>Success</ExpectedStatus>
 		<ImgDetailTransaction>

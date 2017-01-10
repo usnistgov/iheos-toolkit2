@@ -32,3 +32,32 @@ IDCAD001-a^^^&1.3.6.1.4.1.21367.2005.13.20.1000&ISO
 object. If the Imaging Document Consumer performs a further RAD-16, RAD-55 or 
 RAD-69 transaction, those transactions will be ignored.
 </ol>
+
+
+<h3>Verification</h3>
+<ol>
+ <li>Test Manager: Locate the stored query sent by the Imaging Document Consumer
+  <ul><li>Select the proper Environment and Test Session (depends on Imaging Document Consumer)</li>
+      <li>In the left flap, select Simulator Manager</li>
+      <li>In the Simulator Manager panel, select “Transaction Log” for the Document Repository/Registry created for this Imaging Document Consumer.</li>
+      <li>The inspector will show transactions processed by the simulator. Select the STORED_QUERY transaction for review. You will need to correlate the time stamp in the inspector with information from the person testing.</li>
+  </ul></li>
+ <li>Test Manager: Examine the Log window
+  <ul><li>Verify that all test assertions pass.</li>
+      <li>Verify that the $XDSDocumentEntryPatientId contains the value: IDCAD001-a^^^&1.3.6.1.4.1.21367.2005.13.20.1000&ISO</li>
+  </ul></li>
+ <li>Test Manager: Locate the retrieve request to retrieve the KOS object.
+  <ul><li>Using the same inspector for the same Document Repository/Registry, you should see a RETRIEVE request captured after one or more STORED_QUERY messages. Select the RETRIEVE request for review.</li>
+  </ul></li>
+ <li>Test Manager: Examine the Log window.
+  <ul><li>Verify that all test assertions pass.</li>
+  </ul></li>
+ <li>Test Manager: Observe in person or use Internet screen sharing to verify that the Imaging Document Consumer has indeed retrieved the KOS object. Take a screen capture of the evidence.
+  <ul><li>Verify that the Patient Identifier inside the KOS object is IDC001-a</li>
+      <li>Note that the Imaging Document Consumer might not have software that renders the KOS object. That system under test might take that KOS object and perform another set of retrieve functions. You will have to use some judgment in determining what is acceptable evidence for this step.</li>
+  </ul></li>
+ <li>Test Manager: Extra scrutiny tests
+  <ul><li>Review the Repository/Registry responses to the initial STORED_QUERY requests. Note the values for DocumentUniqueId and RepositoryUniqueId.</li>
+      <li>Examine the Request Message (window) for the RETRIEVE request. Compare the DocumentUniqueId and RepositoryUniqueId to the values observed in the stored query responses.</li>
+  </ul></li>
+</ol>

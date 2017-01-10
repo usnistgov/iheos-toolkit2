@@ -45,6 +45,22 @@ public class XmlUtil {
 		}
 		return null;
 	}
+	/**
+    * Return only child element with passed local name.
+    * @param ele parent element to evaluate
+    * @param localName local name of child element to match
+    * @return only OMElement meeting criteria, or null if none or more than 1 do.
+    */
+	public static OMElement onlyChildWithLocalNameNE(OMElement ele, String localName) {
+	   List<OMElement> matches = new ArrayList<>();
+      for (Iterator<?> it=ele.getChildElements(); it.hasNext(); ) {
+         OMElement child = (OMElement) it.next();
+         if (child.getLocalName().equals(localName))
+            matches.add(child);
+      }
+      if (matches.size() == 1) return matches.get(0);
+      return null;
+   }
    
    /**
     * Return first child element with passed local name and attribute with 

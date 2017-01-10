@@ -157,6 +157,9 @@ public class ImgDetailTransaction extends BasicTransaction {
          case "sameRegErrors":
             prsSameRegErrors(engine, a, assertion_output);
             break;
+         case "registryErrorListNotEmpty":
+            prsRegistryErrorListNotEmpty(engine, a, assertion_output);
+            break;
          case "sameDcmImgs":
             prsSameDcmImgs(engine, a, assertion_output);
             break;
@@ -176,8 +179,11 @@ public class ImgDetailTransaction extends BasicTransaction {
             this.prsSameRetrieve(engine, a, assertion_output);
             break;
          case "loadSOAPSimTransaction":
-         this.prsLoadSOAPSimTransaction(engine, a, assertion_output);
-         break;
+            this.prsLoadSOAPSimTransaction(engine, a, assertion_output);
+            break;
+         case "matchHomeCommunityIds":
+            this.prsMatchHomeCommunityIds(engine, a, assertion_output);
+            break;
          default:
             throw new XdsInternalException("ImgDetailTransaction: Unknown assertion.process " + a.process);
       }
@@ -248,7 +254,7 @@ public class ImgDetailTransaction extends BasicTransaction {
             Integer expectedCode = codes.get(id);
             if (expectedCode == null) expectedCode = defaultCode;
             String msg = "WADO trans " + idS + " status: expected [" + expectedCode.toString() + "] ";
-            OMElement codeElement = XmlUtil.firstChildChain(transactionElement, "HttpResponse", "Status", "Code");
+            OMElement codeElement = XmlUtil.firstChildChain(transactionElement, "Status", "Code");
             if (codeElement == null) {
                store(engine, CAT.ERROR, msg + "found null");
                continue;
@@ -499,6 +505,74 @@ public class ImgDetailTransaction extends BasicTransaction {
          throw new XdsInternalException("sameRetImgs error: " + e.getMessage());
       }
    } // EO prsSameRegErrors method
+
+   private void prsRegistryErrorListNotEmpty(AssertionEngine engine, Assertion a, OMElement assertion_output)
+           throws XdsInternalException {
+      store(engine, CAT.INFO, "Assertion: RegistryErrorList element SHALL contain one or more RegistryError elements");
+
+      // key is errorCode:severity
+      Map <String, RegErr> map = new HashMap <>();
+
+      try {
+         // process and collect data on errors in std message
+         OMElement stnd = getStdElement("ResponseBody");
+         String t = stnd.getLocalName();
+         if (t.endsWith("RetrieveDocumentSetResponse") == false)
+            throw new XdsInternalException("sameRegErrors assertion only applies to RetrieveDocumentSetResponse");
+         for (OMElement err : XmlUtil.decendentsWithLocalName(stnd, "RegistryError")) {
+            try {
+               post(err, true, map);
+            } catch (Exception se) {
+               // Errors in the std message are abort bait
+               throw new XdsInternalException("sameRegErrors std msg error: " + se.getMessage());
+            }
+         }
+         // process errors in test message
+         OMElement test = getTestTrans(a, "response");
+         String q = test.getLocalName();
+         if (q.endsWith("RetrieveDocumentSetResponse") == false)
+            throw new XdsInternalException("sameRegErrors assertion only applies to RetrieveDocumentSetResponse");
+         for (OMElement err : XmlUtil.decendentsWithLocalName(test, "RegistryError")) {
+            try {
+               post(err, false, map);
+            } catch (Exception te) {
+               // errors in the test message are logged
+               store(engine, CAT.ERROR, te.getMessage() + " - msg ignored");
+            }
+         }
+         RegErr[] errors = map.values().toArray(new RegErr[0]);
+         Arrays.sort(errors);
+         for (RegErr error : errors) {
+            String severity = StringUtils.substringAfterLast(error.severity, ":");
+            String msg = "RegistryError element from system under test: " + this.formatRegistryErrorForLogging(error);
+            CAT cat = CAT.INFO;
+            store(engine, cat, msg);
+         }
+         if (errors.length > 0) {
+            store(engine, CAT.SUCCESS, String.format("Found at least one RegistryError element in RegistryErrorList: count=%d", errors.length));
+         } else {
+            store(engine, CAT.ERROR, "Found no RegistryError elements in RegistryErrorList. At least one error element required");
+         }
+
+      } catch (Exception e) {
+         throw new XdsInternalException("sameRetImgs error: " + e.getMessage());
+      }
+   } // EO prsRegistryErrorListNotEmpty method
+
+   private String formatRegistryErrorForLogging(RegErr error) {
+      String rtn = "";
+      rtn = "errorCode=" + error.errorCode +
+              " severity=" + error.severity +
+              " codeContext=" + error.codeContext +
+              " location=";
+      if (error.location != null)
+         rtn += error.location;
+      return rtn;
+   }
+
+
+
+
 
    class RegErr implements Comparable <RegErr> {
       String errorCode;
@@ -790,12 +864,13 @@ public class ImgDetailTransaction extends BasicTransaction {
    }
    
    private void prsLoadSOAPSimTransaction(AssertionEngine engine, Assertion a, OMElement assertion_output) {
-      try {
-         SimulatorTransaction simTran = getSimulatorTransaction(a);
-         store(engine, CAT.SUCCESS, "load successful");
-      } catch (XdsInternalException e) {
-         store(engine, CAT.ERROR, "");
-      }
+      store(engine, CAT.SUCCESS, "currently a no op");
+//      try {
+//         SimulatorTransaction simTran = getSimulatorTransaction(a);
+//         store(engine, CAT.SUCCESS, "load successful");
+//      } catch (XdsInternalException e) {
+//         store(engine, CAT.ERROR, "");
+//      }
    }
    
    private void prsSameRetrieve(AssertionEngine engine, Assertion a, OMElement assertion_output)
@@ -835,6 +910,55 @@ public class ImgDetailTransaction extends BasicTransaction {
          if (status == null) status = "No status attribute";
       } catch (Exception e) {}
       return status;
+   }
+   
+   /**
+    * Matches documents and homecommunity id values in a 
+    * {@code <RetrieveDocumentSetResponse>}
+    * against a "gold standard" response which is in the {@code <ResponseBody>}
+    * child element of the testplan.xml {@code <Standard>} element.
+    * 
+    * @param engine AssertionEngine instance
+    * @param a Assert being processed
+    * @param assertion_output log.xml output element for that assert
+    * @throws XdsInternalException on error
+    */
+   private void prsMatchHomeCommunityIds(AssertionEngine engine, Assertion a, OMElement assertion_output)
+            throws XdsInternalException {
+      try {
+         OMElement std = getStdElement("ResponseBody");
+         OMElement test = getTestTrans(a, "response");
+         String t = std.getLocalName();
+         if (t.endsWith("RetrieveDocumentSetResponse") == false)
+            throw new XdsInternalException("matchHomeCommunityIds assertion only applies to RetrieveDocumentSetResponse");
+        
+         Map <String, RetImg> testImgs = loadRetImgs(engine, a, test);
+         Map <String, RetImg> stdImgs = loadRetImgs(engine, a, std);
+         Set <String> testKeys = testImgs.keySet();
+         for (String testKey : testKeys) {
+            if (stdImgs.containsKey(testKey) == false) {
+               store(engine, CAT.ERROR, "test doc UID " + testKey + ", not found in standard.");
+               continue;
+            }
+            RetImg testImg = testImgs.get(testKey);
+            RetImg stdImg = stdImgs.get(testKey);
+            stdImgs.remove(testKey);
+            store(engine, CAT.SUCCESS, "test doc UID " + testKey + ", found in std.");
+            if (compMandatory(stdImg.home, testImg.home)) {
+               store(engine, CAT.SUCCESS, "for doc with UID: " + testKey +
+               " homeCommunityID match (std/test): (" + stdImg.home + "/" + testImg.home + ")");
+            } else {
+               store(engine, CAT.ERROR, "for doc with UID: " + testKey +
+               " homeCommunityID mismatch (std/test): (" + stdImg.home + "/" + testImg.home + ")");
+            }
+         }
+         if (stdImgs.isEmpty()) return;
+         Set <String> stdKeys = stdImgs.keySet();
+         for (String key : stdKeys)
+            store(engine, CAT.ERROR, "std doc UID: " + key + " not found in test msg.");
+      } catch (Exception e) {
+         throw new XdsInternalException("sameRetImgs error: " + e.getMessage());
+      }
    }
 
    /**
@@ -955,6 +1079,16 @@ public class ImgDetailTransaction extends BasicTransaction {
    private boolean comp(String std, String test) {
       if (std == null || std.length() == 0) return true;
       if (test == null || test.length() == 0) return false;
+      return std.equals(test);
+   }
+   
+   /*
+    * helper method for string compares between std and test where an empty or
+    * null std value is considered to match an empty or null test value. Used 
+    * for home and repository UIDs.
+    */
+   private boolean compMandatory(String std, String test) {
+      if (StringUtils.isBlank(std) && StringUtils.isBlank(test)) return true;
       return std.equals(test);
    }
 
