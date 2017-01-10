@@ -9,9 +9,8 @@ import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+import java.util.Base64.Encoder;
 
 import javax.xml.namespace.QName;
 
@@ -23,6 +22,7 @@ import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.utils.URIBuilder;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
+import org.apache.http.util.EntityUtils;
 import org.apache.log4j.Logger;
 
 import gov.nist.toolkit.actorfactory.SimDb;
@@ -83,6 +83,22 @@ import edu.wustl.mir.erl.ihe.xdsi.util.Utility;
 public class WADOTransaction extends BasicTransaction {
    
    static Logger log = Logger.getLogger(WADOTransaction.class);
+   
+   static private QName RetrieveDocumentSetResponse =
+      new QName("urn:ihe:iti:xds-b:2007", "RetrieveDocumentSetResponse", "xdsb");
+   static private QName DocumentResponse =
+      new QName("urn:ihe:iti:xds-b:2007", "DocumentResponse", "xdsb");
+   static private QName RepositoryUniqueId =
+      new QName("urn:ihe:iti:xds-b:2007", "RepositoryUniqueId", "xdsb");
+   static private QName DocumentUniqueId =
+      new QName("urn:ihe:iti:xds-b:2007", "DocumentUniqueId", "xdsb");
+   static private QName mimeType =
+      new QName("urn:ihe:iti:xds-b:2007", "mimeType", "xdsb");
+   static private QName Document =
+      new QName("urn:ihe:iti:xds-b:2007", "Document", "xdsb");
+   static private QName RegistryResponse =
+      new QName("urn:oasis:names:tc:ebxml-regrep:xsd:rs:3.0", "RegistryResponse", "rs");
+   static private final String statusSuccess = "urn:oasis:names:tc:ebxml-regrep:ResponseStatusType:Success";
    
    private Map<String, String> headers;
    private Map<String, String> parameters;
@@ -156,12 +172,14 @@ public class WADOTransaction extends BasicTransaction {
    private OMElement requestElement;
    private OMElement outHdrElement;
    private OMElement inHdrElement;
+   private OMElement rsltElement;
+   private OMElement retrieveDocumentSetResponseElement = null;
    
    private void prsRequest() throws Exception {
       if (httpClient == null) {
          httpClient = HttpClients.createDefault();
          transCount = 0;
-         resultElement = testLog.add_simple_element(instruction_output, "Result");
+         rsltElement = resultElement = testLog.add_simple_element(instruction_output, "Result");
          resultElement = testLog.add_simple_element(resultElement, "Transactions");
          requestElement = testLog.add_simple_element(instruction_output, "InputMetadata");
          requestElement = testLog.add_simple_element(requestElement, "Transactions");
@@ -242,6 +260,7 @@ public class WADOTransaction extends BasicTransaction {
             return;
          }
       }
+      // Determine content type of response body
       String content = "application/dicom";
       OMElement hdrE = testLog.add_simple_element(resultE, "Headers");
       if (responseHeaders != null) {
@@ -251,21 +270,38 @@ public class WADOTransaction extends BasicTransaction {
                content = hdr.getValue();
          }
       }
-      // appropriate file name suffix
-      if (responseEntity != null) {
-         String c = StringUtils.substringBefore(content, ";");
+      if (retrieveDocumentSetResponseElement == null) {
+         retrieveDocumentSetResponseElement =
+            testLog.add_simple_element(resultElement, RetrieveDocumentSetResponse);
+      }
+      OMElement documentReponseElement = 
+         testLog.add_simple_element(retrieveDocumentSetResponseElement, DocumentResponse);
+      testLog.add_simple_element(documentReponseElement, RepositoryUniqueId);
+      OMElement documentUniqueId = 
+         testLog.add_simple_element(documentReponseElement, DocumentUniqueId);
+      documentUniqueId.setText(parameters.get("objectUID"));
+      OMElement mimeTypeElement = 
+         testLog.add_simple_element(documentReponseElement, mimeType);
+      mimeTypeElement.setText(content);
+      OMElement documentElement = 
+         testLog.add_simple_element(documentReponseElement, Document);
+      
+      byte[] entityBytes = EntityUtils.toByteArray(responseEntity);
       String suffix = "txt";
-      switch (c) {
+      switch (content) {
          case "application/jpeg":
             suffix = "jpeg";
+            documentElement.setText(Base64.getEncoder().encodeToString(entityBytes));
             break;
          case "application/dicom":
             suffix = "dcm";
+            documentElement.setText(Base64.getEncoder().encodeToString(entityBytes));
             break;
          case "application/html":
             suffix = "html";
-            break;
-            default:
+            //$FALL-THROUGH$
+         default:
+               documentElement.setText(new String(entityBytes, Utility.utf8));
       }
       // directory for files and this file name
       Path filesPath = Paths.get(linkage.getLogFileDir()).resolve("files");
@@ -275,18 +311,8 @@ public class WADOTransaction extends BasicTransaction {
          FileUtils.cleanDirectory(f);
       }
       String fileName = String.format("%06d.%s", transCount, suffix);
-      testLog.add_name_value(resultE, "File", fileName);
       // write entity to file.
-      InputStream is = responseEntity.getContent();
-      FileOutputStream fos = new FileOutputStream(filesPath.resolve(fileName).toFile());
-      int bite;
-      while ((bite = is.read()) != -1) fos.write(bite);
-      is.close();
-      fos.close();
-
-      }
-      
-      // TODO What are we going to do with all of this?
+      FileUtils.writeByteArrayToFile(filesPath.resolve(fileName).toFile(), entityBytes);
    }
    
    private boolean valid(Map<String, String> map, String... keys) {
