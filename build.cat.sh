@@ -8,10 +8,6 @@
 # This script is generic. If it is named build.vm.sh it will use
 # build.vm.stuff as the update content directory
 
-# This version has two differences:
-#    output war is toolkit.war
-#    installs toolkit.cat.properties
-
 BASEDIR=$(dirname $0)
 if [ $BASEDIR='.' ];
 then
@@ -21,14 +17,14 @@ fi
 SCRIPTNAME=$(basename $0 .sh)
 
 cd ~/tk
- mvn -o clean package -DskipTests -Dmaven.test.skip=true
+mvn -o clean package -DskipTests -Dmaven.test.skip=true
 
 cd xdstools2/target
 WARNAME=$(basename *.war .war)
 
 cd ~/tk
 mkdir xdstools2/target/$WARNAME/javadoc
- bash $BASEDIR/genapidoc.sh xdstools2/target/$WARNAME/javadoc
+bash $BASEDIR/genapidoc.sh xdstools2/target/$WARNAME/javadoc
 
 cd xdstools2
 mvn -o site
@@ -37,12 +33,12 @@ cd target
 rm -r $WARNAME/site
 mv site $WARNAME
 
-echo "Renaming WAR to toolkit.war"
-cd ~/tk/xdstools2/target
 cd $WARNAME
-jar cf ../toolkit.war *
+jar cf ../xdstools4.war *
 
-echo "Installing updated WEB-INF in WAR"
 cd ${BASEDIR}/${SCRIPTNAME}.stuff
-jar uf ~/tk/xdstools2/target/toolkit.war WEB-INF
+jar uf ~/tk/xdstools2/target/xdstools4.war WEB-INF
+
+cd ~/tk/xdstools2/target
+mv xdstools4.war toolkit.war
 
