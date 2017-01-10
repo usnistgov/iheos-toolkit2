@@ -1,6 +1,5 @@
 package gov.nist.toolkit.xdstools2.client.tabs.conformanceTest;
 
-import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.Panel;
@@ -32,10 +31,12 @@ public class BuildRegTestOrchestrationButton extends AbstractOrchestrationButton
     private RadioButton noFeed = new RadioButton("pidFeedGroup", "No Patient Identity Feed");
     private RadioButton v2Feed = new RadioButton("pidFeedGroup", "V2 Patient Identitfy Feed");
 
-    static private final String MU_OPTION = "mu";
+    static private final String MU_OPTION = "mu";  // corresponds to collection reg_mu in testkit collections.txt file
     static private final String MPQ_OPTION = "mpq";
     static private final String OD_OPTION = "od";
     static private final String ISR_OPTION = "isr";
+    static private final String CAT_FOLDER_OPTION = "catfolder";   // run as part of Connectathon
+    static private final String CAT_LIFECYCLE_OPTION = "catlifecycle";   // run as part of Connectathon
     public static List<ActorAndOption> ACTOR_OPTIONS = new ArrayList<>();
     static {
         ACTOR_OPTIONS = java.util.Arrays.asList(
@@ -44,7 +45,10 @@ public class BuildRegTestOrchestrationButton extends AbstractOrchestrationButton
                 new ActorAndOption("reg", MPQ_OPTION, "MPQ Option", false),
                 new ActorAndOption("reg", OD_OPTION, "On Demand Option", false),
                 new ActorAndOption("reg", ISR_OPTION, "Integrated Source Repository", true),
-                new ActorAndOption("reg", XUA_OPTION, "XUA Option", false));
+                new ActorAndOption("reg", XUA_OPTION, "XUA Option", false),
+                new ActorAndOption("reg", CAT_FOLDER_OPTION, "CAT Folder", false),
+                new ActorAndOption("reg", CAT_LIFECYCLE_OPTION, "CAT Lifecycle", false)
+        );
     }
 
     BuildRegTestOrchestrationButton(ConformanceTestTab testTab, TestContext testContext, TestContextView testContextView, Panel initializationPanel, String label) {
