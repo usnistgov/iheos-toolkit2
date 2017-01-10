@@ -9,10 +9,9 @@ import gov.nist.toolkit.results.client.Result;
 import gov.nist.toolkit.sitemanagement.client.SiteSpec;
 import gov.nist.toolkit.xdstools2.client.CoupledTransactions;
 import gov.nist.toolkit.xdstools2.client.command.command.GetSubmissionSetAndContentsCommand;
-import gov.nist.toolkit.xdstools2.client.util.ClientUtils;
-import gov.nist.toolkit.xdstools2.client.widgets.PopupMessage;
 import gov.nist.toolkit.xdstools2.client.siteActorManagers.GetDocumentsSiteActorManager;
 import gov.nist.toolkit.xdstools2.client.tabs.genericQueryTab.GenericQueryTab;
+import gov.nist.toolkit.xdstools2.client.widgets.PopupMessage;
 import gov.nist.toolkit.xdstools2.client.widgets.queryFilter.OnDemandFilter;
 import gov.nist.toolkit.xdstools2.shared.command.request.GetSubmissionSetAndContentsRequest;
 
@@ -117,7 +116,7 @@ public class GetSubmissionSetAndContentsTab extends GenericQueryTab {
 				public void onComplete(List<Result> result) {
 					displayResults(result);
 				}
-			}.run(new GetSubmissionSetAndContentsRequest(getCommandContext(),siteSpec,ssid.getValue(),codeSpec));
+			}.run(new GetSubmissionSetAndContentsRequest(getCommandContext(),siteSpec,ssid.getValue().trim(),codeSpec));
 		}
 
 	}
