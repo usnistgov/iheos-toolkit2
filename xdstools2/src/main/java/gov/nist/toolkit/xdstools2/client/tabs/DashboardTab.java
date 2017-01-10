@@ -2,15 +2,14 @@ package gov.nist.toolkit.xdstools2.client.tabs;
 
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.*;
 import gov.nist.toolkit.http.client.HtmlMarkup;
 import gov.nist.toolkit.xdstools2.client.command.command.GetDashboardRegistryDataCommand;
 import gov.nist.toolkit.xdstools2.client.command.command.GetDashboardRepositoryDataCommand;
-import gov.nist.toolkit.xdstools2.shared.RegistryStatus;
-import gov.nist.toolkit.xdstools2.shared.RepositoryStatus;
 import gov.nist.toolkit.xdstools2.client.siteActorManagers.GetDocumentsSiteActorManager;
 import gov.nist.toolkit.xdstools2.client.tabs.genericQueryTab.GenericQueryTab;
+import gov.nist.toolkit.xdstools2.shared.RegistryStatus;
+import gov.nist.toolkit.xdstools2.shared.RepositoryStatus;
 
 import java.util.List;
 
@@ -68,6 +67,15 @@ public class DashboardTab  extends GenericQueryTab {
 	}
 
 	void draw() {
+
+		Button reloadButton = new Button("Reload");
+		reloadButton.addClickHandler(new ClickHandler() {
+			@Override
+			public void onClick(ClickEvent clickEvent) {
+				load();
+			}
+		});
+		mainDataArea.add(reloadButton);
 
 		try {
 			mainDataArea.add(HtmlMarkup.html(repData.get(0).date));

@@ -50,7 +50,7 @@ public class TestLogDetails {
 		this.testInstance = testInstance;
 		this.areas = areas;
 		if (!testDefinition.isTest())
-			throw new Exception("Test " + testDefinition.getId() + " does not exist");
+			throw new Exception("Test " + testDefinition.getId() + " does not exist - expected to find it at " + testDefinition.getTestDir().toString());
 		sectionLogMapDTO = new SectionLogMapDTO(testInstance);
 		testPlanFileMap = testDefinition.getTestPlans();
 	}

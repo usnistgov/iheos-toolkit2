@@ -70,7 +70,7 @@ public class DashboardDaemon {
 		output = outputDirStr;
 	}
 
-	public void run(String pid) throws FactoryConfigurationError, Exception, IOException {
+	public void run(String pid, boolean secure) throws FactoryConfigurationError, Exception, IOException {
 		this.pid = pid;
 		new File(output).mkdirs();
 //		SiteServiceManager siteServiceManager = new SiteServiceManager(null);
@@ -81,12 +81,12 @@ public class DashboardDaemon {
 //		sites = siteServiceManager.getSites();
 		// experimental
 //		s = toolkit.getSession();
-		s.setTls(false);    // ignores this and still uses TLS
-		scanRepositories();
-		scanRegistries();
+		s.setTls(secure);    // ignores this and still uses TLS
+		scanRepositories(secure);
+		scanRegistries(secure);
 	}
 
-	void scanRegistries()  {
+	void scanRegistries(boolean secure)  {
 		File dir = new File(output + "/Registry");
 		dir.mkdirs();
 
@@ -111,9 +111,8 @@ public class DashboardDaemon {
 				registrySave(regStatus, new File(dir, regSiteName + ".ser"))
 				continue;
 			}
-			boolean isSecure = true;
 			try {
-				regStatus.endpoint = site.getEndpoint(TransactionType.STORED_QUERY, isSecure, false);
+				regStatus.endpoint = site.getEndpoint(TransactionType.STORED_QUERY, secure, false);
 			} catch (Exception e1) {
 				regStatus.status = false;
 				regStatus.fatalError = ExceptionUtil.exception_details(e1, exceptionReportingDepth);
@@ -133,7 +132,7 @@ public class DashboardDaemon {
 			}
 			xdstest.setSites(sites);
 			xdstest.setSite(site);
-			xdstest.setSecure(true);
+			xdstest.setSecure(secure);
             TestInstance testInstance = new TestInstance("GetDocuments")
 			List<String> areas = ['utilities'];
 			List<String> sections = new ArrayList<String>();
@@ -234,7 +233,7 @@ public class DashboardDaemon {
 		}
 	}
 
-	void scanRepositories()  {
+	void scanRepositories(boolean secure)  {
 		List<String> repositorySiteNames;
 		try {
 			repositorySiteNames = sites.getSiteNamesWithRepository();
@@ -258,9 +257,8 @@ public class DashboardDaemon {
 				repositorySave(rstatus);
 				continue;
 			}
-			boolean isSecure = true;
 			try {
-				rstatus.endpoint = site.getEndpoint(TransactionType.PROVIDE_AND_REGISTER, isSecure, false);
+				rstatus.endpoint = site.getEndpoint(TransactionType.PROVIDE_AND_REGISTER, secure, false);
 			} catch (Exception e) {
 				rstatus.status = false;
 				rstatus.fatalError = ExceptionUtil.exception_details(e, exceptionReportingDepth)
@@ -282,8 +280,8 @@ public class DashboardDaemon {
 			}
 			xdstest.setSites(sites);
 			xdstest.setSite(site);
-			xdstest.setSecure(true);
-            TestInstance testInstance = new TestInstance("SingleDocument")
+			xdstest.setSecure(secure);
+            TestInstance testInstance = new TestInstance("SingleDocument-Repository")
             LogRepository logRepository = LogRepositoryFactory.
                     getRepository(
                             Installation.instance().sessionCache(),
@@ -411,8 +409,8 @@ public class DashboardDaemon {
 
 	static public void main(String[] args) {
 
-		if (args.length != 5) {
-			System.out.println("Usage: DashboardDaemon <Patient ID> <warHome> <output directory> <environment_name> <external_cache>");
+		if (args.length != 6) {
+			System.out.println("Usage: DashboardDaemon <Patient ID> <warHome> <output directory> <environment_name> <external_cache> <TLS? (true|false)>");
 			System.exit(-1);
 		}
 
@@ -421,10 +419,11 @@ public class DashboardDaemon {
 		String outdir = args[2];
 		String env = args[3];
 		String externalCache = args[4];
+		boolean secure = 'true' == args[5]
 
 		try {
 			DashboardDaemon dd = new DashboardDaemon(warhom, outdir, env, externalCache);
-			dd.run(pid);
+			dd.run(pid, secure);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
