@@ -5,6 +5,7 @@ import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
 import com.google.gwt.user.client.Window;
+import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.*;
 import gov.nist.toolkit.actorfactory.client.SimId;
 import gov.nist.toolkit.actorfactory.client.Simulator;
@@ -16,6 +17,7 @@ import gov.nist.toolkit.http.client.HtmlMarkup;
 import gov.nist.toolkit.simcommon.client.config.SimulatorConfigElement;
 import gov.nist.toolkit.sitemanagement.client.Site;
 import gov.nist.toolkit.xdstools2.client.ClickHandlerData;
+import gov.nist.toolkit.xdstools2.client.PasswordManagement;
 import gov.nist.toolkit.xdstools2.client.StringSort;
 import gov.nist.toolkit.xdstools2.client.command.command.*;
 import gov.nist.toolkit.xdstools2.client.event.TabSelectedEvent;
@@ -28,6 +30,7 @@ import gov.nist.toolkit.xdstools2.client.tabs.SimulatorMessageViewTab;
 import gov.nist.toolkit.xdstools2.client.tabs.genericQueryTab.GenericQueryTab;
 import gov.nist.toolkit.xdstools2.client.tabs.simulatorControlTab.od.OddsEditTab;
 import gov.nist.toolkit.xdstools2.client.util.ClientUtils;
+import gov.nist.toolkit.xdstools2.client.widgets.AdminPasswordDialogBox;
 import gov.nist.toolkit.xdstools2.client.widgets.PopupMessage;
 import gov.nist.toolkit.xdstools2.shared.command.request.GetAllSimConfigsRequest;
 import gov.nist.toolkit.xdstools2.shared.command.request.GetNewSimulatorRequest;
@@ -46,7 +49,8 @@ public class SimulatorControlTab extends GenericQueryTab {
     TextBox         newSimIdTextBox = new TextBox();
     private Button          createActorSimulatorButton = new Button("Create Actor Simulator");
     Button          loadSimulatorsButton = new Button("Load Simulators");
-    FlexTable       table = new FlexTable();
+    private FlexTable       table = new FlexTable();
+    private FlowPanel simCtrlContainer;
 
     SimConfigSuper simConfigSuper;
     private SimulatorControlTab self;
@@ -60,8 +64,8 @@ public class SimulatorControlTab extends GenericQueryTab {
 
 	@Override
 	protected Widget buildUI() {
-		FlowPanel simCtrlContainer=new FlowPanel();
-		self = this;
+        simCtrlContainer = new FlowPanel();
+        self = this;
 
         simConfigSuper = new SimConfigSuper(this, simConfigPanel, getCurrentTestSession());
 
@@ -366,6 +370,37 @@ public class SimulatorControlTab extends GenericQueryTab {
         deleteImg.addClickHandler(new ClickHandler() {
             @Override
             public void onClick(ClickEvent clickEvent) {
+                SimulatorConfigElement ele = config.getConfigEle(SimulatorProperties.locked);
+                boolean locked = (ele == null) ? false : ele.asBoolean();
+                if (locked) {
+                    if (PasswordManagement.isSignedIn) {
+                        doDelete();
+                    }
+                    else {
+                        PasswordManagement.addSignInCallback(signedInCallback);
+
+                        new AdminPasswordDialogBox(simCtrlContainer);
+
+                        return;
+                    }
+                } else {
+                    doDelete();
+                }
+
+            }
+
+            AsyncCallback<Boolean> signedInCallback = new AsyncCallback<Boolean> () {
+
+                public void onFailure(Throwable ignored) {
+                }
+
+                public void onSuccess(Boolean ignored) {
+                    doDelete();
+                }
+
+            };
+
+            private void doDelete() {
                 VerticalPanel body = new VerticalPanel();
                 body.add(new HTML("<p>Delete " + config.getId().toString() + "?</p>"));
                 Button actionButton = new Button("Yes");
