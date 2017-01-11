@@ -792,7 +792,7 @@ public class XdsTest {
 		this.toolkit = toolkit;
 		mgmt = toolkit + File.separator + "xdstest";
 //		logRepository =
-//		new LogRepositoryFactory().getRepository(Installation.instance().testLogCache(), null, LogRepositoryFactory.IO_format.JAVA_SERIALIZATION, LogRepositoryFactory.Id_type.TIME_ID, null);
+//		new LogRepositoryFactory().getLogRepository(Installation.instance().testLogCache(), null, LogRepositoryFactory.IO_format.JAVA_SERIALIZATION, LogRepositoryFactory.Id_type.TIME_ID, null);
 		testConfig.testmgmt_dir = mgmt;
 	}
 

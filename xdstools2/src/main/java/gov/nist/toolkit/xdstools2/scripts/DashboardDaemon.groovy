@@ -164,7 +164,7 @@ public class DashboardDaemon {
 			ts.securityParams = s;
             ts.logRepository =
             LogRepositoryFactory.
-                    getRepository(
+                    getLogRepository(
                             Installation.instance().sessionCache(),
                             session.getId(),
                             LogIdIOFormat.JAVA_SERIALIZATION,
@@ -283,7 +283,7 @@ public class DashboardDaemon {
 			xdstest.setSecure(secure);
             TestInstance testInstance = new TestInstance("SingleDocument-Repository")
             LogRepository logRepository = LogRepositoryFactory.
-                    getRepository(
+                    getLogRepository(
                             Installation.instance().sessionCache(),
                             session.getId(),
                             LogIdIOFormat.JAVA_SERIALIZATION,

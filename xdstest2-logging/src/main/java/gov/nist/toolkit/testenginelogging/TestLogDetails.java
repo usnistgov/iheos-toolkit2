@@ -42,7 +42,7 @@ public class TestLogDetails {
 //			throw new Exception("Test " + testDefinition.getId() + " does not exist");
 		sectionLogMapDTO = new SectionLogMapDTO(testInstance);
 		testPlanFileMap = testDefinition.getTestPlans();
-//		logRepository = LogRepositoryFactory.getRepository(Installation.instance().testLogCache(), testInstance.getUser(), LogIdIOFormat.JAVA_SERIALIZATION, LogIdType.SPECIFIC_ID, testInstance);
+//		logRepository = LogRepositoryFactory.getLogRepository(Installation.instance().testLogCache(), testInstance.getUser(), LogIdIOFormat.JAVA_SERIALIZATION, LogIdType.SPECIFIC_ID, testInstance);
 	}
 
 	public TestLogDetails(TestDefinition testDefinition, TestInstance testInstance, String[] areas) throws Exception {
@@ -231,7 +231,7 @@ public class TestLogDetails {
 	 * @return list of Files representing log files
 	 * @throws Exception
 	 */
-	List<File> getTestLogsForThisTest(File index, String upToSection) throws Exception {
+	private List<File> getTestLogsForThisTest(File index, String upToSection) throws Exception {
 		logger.info("GGetTestLogsForThisTest(" + index + ", " + upToSection + ")");
 		List<File> logs = new ArrayList<File>();
 		if (logRepository == null)
@@ -251,34 +251,9 @@ public class TestLogDetails {
 			File path = new File(logdir + File.separator + dir + File.separatorChar + "log.xml");
 			logger.info("  section " + dir  + " path = " + path);
 			if ( ! path.exists() ) continue;
-//				throw new Exception("TestSpec " + toString() + " references the section " + dir +
-//						" - no log file exists ( file " + path.toString() + " does not exist");
 			logs.add(path);
 		}
 		return logs;
-	}
-	
-	public List<String> getSectionsFromTestDef(File testdir) throws IOException {
-		List<String> sections = new ArrayList<String>();
-		if (logRepository == null)
-			return sections;
-		File logdir = logRepository.logDir();
-
-		File index = new File(testdir + File.separator + "index.idx");
-		
-		if (!index.exists())
-			return sections;
-
-		for (LinesOfFile lof = new LinesOfFile(index); lof.hasNext(); ) {
-			String dir = lof.next().trim();
-			if (dir.length() ==0)
-				continue;
-//			File path = new File(logdir + File.separator + area + File.separator + testInstance + File.separatorChar + dir + File.separatorChar + "log.xml");
-			sections.add(dir);
-		}
-		
-		
-		return sections;
 	}
 	
 	public File getTestLog(TestInstance testInstance, String section) {
