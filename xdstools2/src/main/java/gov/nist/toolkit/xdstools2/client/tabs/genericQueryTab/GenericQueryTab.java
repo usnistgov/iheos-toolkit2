@@ -26,6 +26,8 @@ import gov.nist.toolkit.xdstools2.client.event.ActorConfigUpdatedEvent;
 import gov.nist.toolkit.xdstools2.client.event.EnvironmentChangedEvent;
 import gov.nist.toolkit.xdstools2.client.event.SimulatorUpdatedEvent;
 import gov.nist.toolkit.xdstools2.client.event.Xdstools2EventBus;
+import gov.nist.toolkit.xdstools2.client.event.testSession.TestSessionChangedEvent;
+import gov.nist.toolkit.xdstools2.client.event.testSession.TestSessionChangedEventHandler;
 import gov.nist.toolkit.xdstools2.client.event.testSession.TestSessionManager2;
 import gov.nist.toolkit.xdstools2.client.siteActorManagers.BaseSiteActorManager;
 import gov.nist.toolkit.xdstools2.client.tabs.actorConfigTab.ActorConfigTab;
@@ -148,10 +150,21 @@ public abstract class GenericQueryTab  extends ToolWindow {
         this.siteActorManager = siteActorManager;
         if (siteActorManager != null)
             siteActorManager.setGenericQueryTab(this);
+        bind();
+    }
 
+    private void bind(){
+        ClientUtils.INSTANCE.getEventBus().addHandler(TestSessionChangedEvent.TYPE, new TestSessionChangedEventHandler() {
+            @Override
+            public void onTestSessionChanged(TestSessionChangedEvent event) {
+                reloadTransactionOfferings();
+                refreshData();
+            }
+        });
         ((Xdstools2EventBus) ClientUtils.INSTANCE.getEventBus()).addEnvironmentChangedEventHandler(new EnvironmentChangedEvent.EnvironmentChangedEventHandler() {
             @Override
             public void onEnvironmentChange(EnvironmentChangedEvent event) {
+                reloadTransactionOfferings();
                 refreshData();
             }
         });
