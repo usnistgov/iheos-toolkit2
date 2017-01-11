@@ -6,6 +6,9 @@ import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.*;
+import elemental.client.Browser;
+import elemental.html.Selection;
+import elemental.ranges.Range;
 import gov.nist.toolkit.actorfactory.client.SimId;
 import gov.nist.toolkit.actorfactory.client.SimulatorConfig;
 import gov.nist.toolkit.configDatatypes.client.Pid;
@@ -19,7 +22,6 @@ import gov.nist.toolkit.xdstools2.client.widgets.PopupMessage;
 import gov.nist.toolkit.xdstools2.shared.command.request.PatientIdsRequest;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 
 /**
@@ -31,7 +33,9 @@ public class PidEditTab extends GenericQueryTab {
     ListBox pidList = new ListBox();
     TextArea pidBox = new TextArea();
     Anchor reload = null;
-    private HTML selectedPid = new HTML();
+    Button copyPidBtn=new Button("Copy Patient ID(s)");
+    private VerticalPanel selectedPid = new VerticalPanel();
+    Label pidLbl=new Label();
 
     public PidEditTab(SimulatorConfig config) {
         super(new FindDocumentsSiteActorManager());
@@ -104,6 +108,7 @@ public class PidEditTab extends GenericQueryTab {
                 updatePidsSelected(pidList.getSelectedItemText());
             }
         });
+
     }
 
     @Override
@@ -217,10 +222,33 @@ public class PidEditTab extends GenericQueryTab {
     }
 
     void updatePidsSelected(String pid) {
+        selectedPid.clear();
         StringBuilder buf = new StringBuilder();
 
         buf.append("<b>Selected Patient IDs</b><br />");
-        buf.append(pid).append("<br />");
-        selectedPid.setHTML(buf.toString());
+        HTML html=new HTML(buf.toString());
+        pidLbl.setText(pid);
+        pidLbl.getElement().setAttribute("pid","pidelement");
+        pidLbl.getElement().setId("myid");
+        HorizontalPanel horizontalPanel=new HorizontalPanel();
+        horizontalPanel.add(pidLbl);
+        horizontalPanel.add(copyPidBtn);
+        selectedPid.add(html);
+        selectedPid.add(horizontalPanel);
+        copyPidBtn.addClickHandler(new ClickHandler() {
+            @Override
+            public void onClick(ClickEvent clickEvent) {
+                final Selection selection = Browser.getWindow().getSelection();
+                final Range range = Browser.getDocument().createRange();
+                range.selectNodeContents(Browser.getDocument().getElementById("myid"));
+                selection.removeAllRanges();
+                selection.addRange(range);
+                if (!Browser.getWindow().getDocument().execCommand("copy", false, "")){
+                    Window.alert("Copy does not work your browser. Try to update it to its latest version, or use another browser.\n" +
+                            "Copy is compatible with: Chrome (v.43 or later), Firefox (v.41 or later), IE9, Opera (v.29 or later) and Safari (v.10 or later).");
+                }
+                selection.removeAllRanges();
+            }
+        });
     }
 }
