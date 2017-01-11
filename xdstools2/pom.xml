@@ -460,6 +460,12 @@
 			<artifactId>interaction-diagram</artifactId>
 		</dependency>
 
+		<!-- https://mvnrepository.com/artifact/com.google.gwt/gwt-elemental -->
+		<dependency>
+			<groupId>com.google.gwt</groupId>
+			<artifactId>gwt-elemental</artifactId>
+			<version>${gwtVersion}</version>
+		</dependency>
 		<!--<dependency> -->
 		<!--<groupId>com.sun.jersey</groupId> -->
 		<!--<artifactId>jersey-server</artifactId> -->
