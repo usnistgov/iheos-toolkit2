@@ -74,7 +74,7 @@ public class LogRepository  {
             return null;
         }
         try {
-            LogRepository repo = LogRepositoryFactory.getRepository(new File(testInstance.getLocation()),
+            LogRepository repo = LogRepositoryFactory.getLogRepository(new File(testInstance.getLocation()),
                     testInstance.getUser(),
                     testInstance.getFormat(),
                     testInstance.getIdType(),
@@ -88,21 +88,15 @@ public class LogRepository  {
         }
     }
 
-//    public LogMapDTO logIn(File logDir) throws Exception {
-//        return logger.logIn(id, logDir);
-//    }
-
     public File logDir() {
-        File dir = getLogDir(/*location, user, idType,*/ id);
+        File dir = getLogDir(id);
         if (dir.toString().contains("tc:")) throw new ToolkitRuntimeException("Bad LogDir - " + dir);
-//        log.debug(ExceptionUtil.here("LogRepository at " + dir));
         return dir;
     }
 
     public File logDir(TestInstance id) {
-        File dir = getLogDir(/*location, user, idType,*/ id);
+        File dir = getLogDir(id);
         if (dir.toString().contains("tc:")) throw new ToolkitRuntimeException("Bad LogDir - " + dir);
-//        log.debug(ExceptionUtil.here("LogRepository at " + dir));
         return dir;
     }
 
@@ -123,14 +117,7 @@ public class LogRepository  {
         testInstance.setIdType(idType);
     }
 
-    // same event - new test id
-    static public TestInstance cloneTestInstance(TestInstance testInstance, String newId) {
-        TestInstance ti = testInstance.copy();
-        ti.setId(newId);
-        return ti;
-    }
-
-    File getLogDir(/*File location, String user, LogIdType idType,*/ TestInstance id) {
+    private File getLogDir(/*File location, String user, LogIdType idType,*/ TestInstance id) {
         if (location == null) throw new ToolkitRuntimeException("Internal Error: location is null");
         if (user == null) throw new ToolkitRuntimeException("Internal Error: user is null");
         assignEvent(id);
