@@ -1,7 +1,10 @@
 package gov.nist.toolkit.xdstools2.client.tabs.simulatorControlTab;
 
+import com.google.gwt.event.dom.client.ChangeEvent;
+import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.*;
 import gov.nist.toolkit.actorfactory.client.SimId;
 import gov.nist.toolkit.actorfactory.client.SimulatorConfig;
@@ -16,6 +19,7 @@ import gov.nist.toolkit.xdstools2.client.widgets.PopupMessage;
 import gov.nist.toolkit.xdstools2.shared.command.request.PatientIdsRequest;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 /**
@@ -27,6 +31,7 @@ public class PidEditTab extends GenericQueryTab {
     ListBox pidList = new ListBox();
     TextArea pidBox = new TextArea();
     Anchor reload = null;
+    private HTML selectedPid = new HTML();
 
     public PidEditTab(SimulatorConfig config) {
         super(new FindDocumentsSiteActorManager());
@@ -58,8 +63,9 @@ public class PidEditTab extends GenericQueryTab {
         listPanel.add(new HTML("Registered Patient IDs"));
 
         pidList.setVisibleItemCount(25);
-        pidList.setMultipleSelect(true);
+        pidList.setMultipleSelect(false);
         listPanel.add(pidList);
+
 
         Button deleteButton = new Button("Delete", new ClickHandler() {
             @Override
@@ -67,10 +73,12 @@ public class PidEditTab extends GenericQueryTab {
                 deletePid();
             }
         });
-        listPanel.add(deleteButton);
 
         VerticalPanel pidPanel = new VerticalPanel();
+        pidPanel.addStyleName("paddedHorizontalPanel");
         panel.add(pidPanel);
+        pidPanel.add(selectedPid);
+        pidPanel.add(new HTML("<h4>Add Patient ID(s)</h4>"));
         pidPanel.add(new HTML("Patient ID(s) to Add..."));
         pidBox.setCharacterWidth(50);
         pidBox.setVisibleLines(20);
@@ -90,6 +98,12 @@ public class PidEditTab extends GenericQueryTab {
     @Override
     protected void bindUI() {
         loadPids();
+        pidList.addChangeHandler(new ChangeHandler() {
+            @Override
+            public void onChange(ChangeEvent changeEvent) {
+                updatePidsSelected(pidList.getSelectedItemText());
+            }
+        });
     }
 
     @Override
@@ -202,4 +216,11 @@ public class PidEditTab extends GenericQueryTab {
         }
     }
 
+    void updatePidsSelected(String pid) {
+        StringBuilder buf = new StringBuilder();
+
+        buf.append("<b>Selected Patient IDs</b><br />");
+        buf.append(pid).append("<br />");
+        selectedPid.setHTML(buf.toString());
+    }
 }
