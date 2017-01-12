@@ -24,12 +24,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 /**
  * Each simulator has an on-disk presence that keeps track of its long
@@ -158,7 +153,7 @@ public class SimDb {
 
 		Date date = new Date();
 
-		event = asFilenameBase(date);
+		event = Installation.asFilenameBase(date);
 
 		File eventDir = getEventDir();
 		eventDir.mkdirs();
@@ -778,60 +773,6 @@ public class SimDb {
 		return getAlternateRequestMsgBodyFile(event);
 	}
 
-	public String nowAsFilenameBase() {
-		return asFilenameBase(new Date());
-	}
-
-	public String asFilenameBase(Date date) {
-		Calendar c  = Calendar.getInstance();
-		c.setTime(date);
-		
-		String year = Integer.toString(c.get(Calendar.YEAR));
-		String month = Integer.toString(c.get(Calendar.MONTH) + 1);
-		if (month.length() == 1)
-			month = "0" + month;
-		String day = Integer.toString(c.get(Calendar.DAY_OF_MONTH));
-		if (day.length() == 1 )
-			day = "0" + day;
-		String hour = Integer.toString(c.get(Calendar.HOUR_OF_DAY));
-			if (hour.length() == 1)
-				hour = "0" + hour;
-		String minute = Integer.toString(c.get(Calendar.MINUTE));
-		if (minute.length() == 1)
-			minute = "0" + minute;
-		String second = Integer.toString(c.get(Calendar.SECOND));
-		if (second.length() == 1)
-			second = "0" + second;
-		String mili = Integer.toString(c.get(Calendar.MILLISECOND));
-		if (mili.length() == 2)
-			mili = "0" + mili;
-		else if (mili.length() == 1)
-			mili = "00" + mili;
-		
-		String dot = "_";
-		
-		String val =
-			year +
-			dot +
-			month +
-			dot +
-			day + 
-			dot +
-			hour +
-			dot +
-			minute +
-			dot +
-			second +
-			dot +
-			mili
-			;
-		return val;
-
-//		String value = date.toString();
-//
-//		return value.replaceAll(" ", "_").replaceAll(":", "_");
-
-	}
 
 	public void putRequestHeaderFile(byte[] bytes) throws IOException {
 		File f = getRequestHeaderFile();

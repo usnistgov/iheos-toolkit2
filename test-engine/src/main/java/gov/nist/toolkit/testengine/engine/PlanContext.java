@@ -297,21 +297,24 @@ public class PlanContext extends BasicContext {
 			try {
 				logFile = testConfig.logFile;
                 logger.info("Writing log file " + logFile);
-				FileOutputStream os = new FileOutputStream(logFile);
-				//System.out.println(results_document.toString());
-				//String results_string = results_document.toString();
 				results_document.build();
 				String results_string = new OMFormatter(results_document).toString();
 				byte[] bytes = results_string.getBytes();
 				String x = new String(bytes);
+
+				FileOutputStream os;
+
+				os = new FileOutputStream(logFile);
 				os.write(x.getBytes());
 				os.flush();
 				os.close();
 
-//				if (phone_home_log_files == null) {
-//					phone_home_log_files = new ArrayList<OMElement>();
-//				}
-//				phone_home_log_files.add(results_document);
+				if (testConfig.archiveLogFile != null) {
+					os = new FileOutputStream(testConfig.archiveLogFile);
+					os.write(x.getBytes());
+					os.flush();
+					os.close();
+				}
 
 			} catch (FileNotFoundException e) {
 				logger.fatal("Cannot create file log.xml (" + logFile + ")");

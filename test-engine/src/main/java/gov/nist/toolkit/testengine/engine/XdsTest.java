@@ -38,7 +38,7 @@ public class XdsTest {
 	TestInstance testInstance;
 	String testPart;
 	List<TestLogDetails> testSpecs;
-	List<File> logFiles;
+	List<File> logFiles;  // written but never used
 	String testDir; 
 	String tokens;
 	boolean verbose = false;
@@ -516,6 +516,7 @@ public class XdsTest {
 
 				testConfig.testplanDir = testPlanFile.getParentFile();
 				testConfig.logFile = null;
+				testConfig.archiveLogFile = null;
 
 				TestInstance testLogId = testSpec.getTestInstance();
 				testSpec.setTestInstance(testLogId);
@@ -526,6 +527,10 @@ public class XdsTest {
 				// This is the log.xml file
 
 				testConfig.logFile = new TestKitLog(logDirectory, testKitFile).getLogFile(testPlanFile);
+				if (Installation.instance().propertyServiceManager().getArchiveLogs()) {
+					File now = Installation.instance().newArchiveDir();
+					testConfig.archiveLogFile = new File(now, "log.xml");
+				}
 				writeLogFiles = true;
 				if (writeLogFiles) {
 					logFiles.add(testConfig.logFile);

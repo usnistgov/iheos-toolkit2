@@ -1,6 +1,6 @@
 package gov.nist.toolkit.testenginelogging.logrepository;
 
-import gov.nist.toolkit.actorfactory.SimDb;
+import gov.nist.toolkit.installation.Installation;
 import gov.nist.toolkit.results.client.LogIdIOFormat;
 import gov.nist.toolkit.results.client.LogIdType;
 import gov.nist.toolkit.results.client.TestInstance;
@@ -16,7 +16,6 @@ public class LogRepository  {
     static Logger log = Logger.getLogger(LogRepository.class);
 
     // Both of these are initialized by LogRepositoryFactory
-//	File logDir;
     ILoggerIO logger;
     File location;
     String user;
@@ -57,16 +56,8 @@ public class LogRepository  {
     }
 
     public void logOutIfLinkedToUser(TestInstance id, LogMapDTO logMapDTO) throws XdsException {
-//        if (idType == LogIdType.SPECIFIC_ID)
             logOut(id, logMapDTO);
-//        else {
-//            log.debug(String.format("Not saving log for %s - not tied to user", id));
-//        }
     }
-
-//	public LogMapDTO logIn(TestId id) throws Exception {
-//		return logger.logIn(id, logDir());
-//	}
 
     static public LogMapDTO logIn(TestInstance testInstance) throws Exception {
         if (testInstance == null) {
@@ -101,10 +92,10 @@ public class LogRepository  {
     }
 
     // assign event including filenames - do not touch file system in case the event is never used
-    public void assignEvent(TestInstance testInstance) {
+    private void assignEvent(TestInstance testInstance) {
         if (idType != LogIdType.TIME_ID) return;  // doesn't use event structure
         if (testInstance.linkedToLogRepository()) return;
-        String event = new SimDb().nowAsFilenameBase();
+        String event = Installation.nowAsFilenameBase();
         testInstance.setInternalEvent(event);
         File dir = new File(
                 location + File.separator + user +

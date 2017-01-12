@@ -14,8 +14,8 @@ public class LogMapDTO implements Serializable, IsSerializable {
 	 * Each LogFileContentDTO represents the log for one section of the test
 	 */
 	private static final long serialVersionUID = 6977145786942237537L;
-	List<LogMapItemDTO> items = new ArrayList<LogMapItemDTO>();
-	transient Map<String, LogFileContentDTO> logFileContent = new HashMap<String, LogFileContentDTO>();
+	private List<LogMapItemDTO> items = new ArrayList<LogMapItemDTO>();
+	private transient Map<String, LogFileContentDTO> logFileContent = new HashMap<String, LogFileContentDTO>();
 	
 	public LogMapDTO() {
 	}
@@ -38,19 +38,5 @@ public class LogMapDTO implements Serializable, IsSerializable {
 		
 		return keys;
 	}
-	
-//	public String toString() {
-//		StringBuffer buf = new StringBuffer();
-//
-//		buf.append("[LogMapDTO: ");
-//
-//		for (LogMapItemDTO i : items) {
-//			buf.append(i.toString());
-//		}
-//
-//		buf.append("]");
-//
-//		return buf.toString();
-//	}
-	
+
 }
