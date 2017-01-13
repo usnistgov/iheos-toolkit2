@@ -275,7 +275,7 @@ public abstract class GenericQueryTab  extends ToolWindow {
             formatter.setHorizontalAlignment(0, 0, HasHorizontalAlignment.ALIGN_LEFT);
             formatter.setVerticalAlignment(0, 0, HasVerticalAlignment.ALIGN_TOP);
 
-            pidTextBox.setWidth("400px");
+            pidTextBox.setWidth("500px");
 //            pidTextBox.setText(getCommonPatientId());
             pidTextBox.addChangeHandler(new PidChangeHandler(this));
             commonParamGrid.setWidget(commonGridRow++, contentsColumn, pidTextBox);
