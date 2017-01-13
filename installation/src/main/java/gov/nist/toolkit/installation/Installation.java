@@ -142,6 +142,8 @@ public class Installation {
         return asFilenameBase(new Date());
     }
 
+    public File archive() { return new File(externalCache(), LOG_ARCHIVE_DIRECTORY); }
+
     public File newArchiveDir() {
         File archive = new File(externalCache(), LOG_ARCHIVE_DIRECTORY);
         File now = new File(archive, nowAsFilenameBase());
