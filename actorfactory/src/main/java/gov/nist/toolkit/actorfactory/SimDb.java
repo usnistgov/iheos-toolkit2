@@ -38,12 +38,12 @@ import java.util.*;
 public class SimDb {
 	private final PidDb pidDb = new PidDb(this);
 	SimId simId = null;    // ip is the simulator id
-	File dbRoot = null;  // base of the simulator db
-	String event = null;
-	File simDir = null;   // directory within simdb that represents this event
-	String actor = null;
-	String transaction = null;
-	File transactionDir = null;  
+	private File dbRoot = null;  // base of the simulator db
+	private String event = null;
+	private File simDir = null;   // directory within simdb that represents this event
+	private String actor = null;
+	private String transaction = null;
+	private File transactionDir = null;
 	static Logger logger = Logger.getLogger(SimDb.class);
 
 
@@ -161,7 +161,9 @@ public class SimDb {
 		Serialize.out(new File(eventDir, "date.ser"), date);
 	}
 
-	private File getEventDir() {
+	public String getEvent() { return event; }
+
+	public File getEventDir() {
 		return new File(transactionDir, event);
 	}
 
@@ -188,7 +190,7 @@ public class SimDb {
 	}
 
 	// actor, transaction, and event must be filled in
-	public Date getEventDate() throws IOException, ClassNotFoundException {
+	private Date getEventDate() throws IOException, ClassNotFoundException {
 		if (transactionDir == null || event == null) return null;
 		File eventDir = new File(transactionDir, event);
 		return (Date) Serialize.in(new File(eventDir, "date.ser"));
