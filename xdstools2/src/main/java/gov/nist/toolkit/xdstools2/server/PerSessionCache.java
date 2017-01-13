@@ -4,8 +4,6 @@ import gov.nist.toolkit.installation.Installation;
 
 import java.io.File;
 
-import javax.servlet.ServletContext;
-
 public class PerSessionCache {
 
 	
@@ -14,8 +12,8 @@ public class PerSessionCache {
 		return Installation.instance().sessionLogFile(sessionId);
 	}
 
-	static public File getSessionCaches(ServletContext servletContext) {
-		return Installation.instance(servletContext).sessionCache();
-	}
+//	static public File getSessionCaches(ServletContext servletContext) {
+//		return Installation.instance(servletContext).sessionCache();
+//	}
 
 }

@@ -3,21 +3,18 @@
  */
 package gov.nist.toolkit.simulators.servlet;
 
-import java.io.IOException;
-import java.util.Enumeration;
-
-import javax.servlet.*;
-import javax.servlet.http.HttpServletResponse;
-
-import org.apache.log4j.Logger;
-
 import gov.nist.toolkit.actorfactory.SimDb;
-import gov.nist.toolkit.actorfactory.client.SimulatorConfig;
 import gov.nist.toolkit.errorrecording.ErrorRecorder;
 import gov.nist.toolkit.errorrecording.GwtErrorRecorder;
 import gov.nist.toolkit.utilities.io.Io;
 import gov.nist.toolkit.valsupport.engine.MessageValidatorEngine;
 import gov.nist.toolkit.valsupport.engine.ValidationStep;
+import org.apache.log4j.Logger;
+
+import javax.servlet.*;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.util.Enumeration;
 
 /**
  * Filter for HttpSimServlet logging
@@ -46,7 +43,8 @@ public class HttpSimServletFilter implements Filter {
       }
 
       Io.stringToFile(db.getResponseHdrFile(), wrapper.getResponseHeader());
-      Io.stringToFile(db.getResponseBodyFile(), wrapper.getResponseBody());
+      db.putResponseBody(wrapper.getResponseBody());
+//      Io.stringToFile(db.getResponseBodyFile(), wrapper.getResponseBody());
 
       StringBuilder buf = new StringBuilder();
 

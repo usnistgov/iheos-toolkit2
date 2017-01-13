@@ -24,6 +24,7 @@ public class TestConfig {
 	// Output directory for log.xml files (organized in same dir structure as testkit)
 	// public String log_dir = null;
 	 public File logFile = null;
+	public File archiveLogFile = null;   // for archived logs - null if archiving turned off
 	
 	// Full path to xdstoolkit/xdstest directory
 	 public String testmgmt_dir = null;

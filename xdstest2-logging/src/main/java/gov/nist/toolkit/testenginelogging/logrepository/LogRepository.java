@@ -1,6 +1,6 @@
 package gov.nist.toolkit.testenginelogging.logrepository;
 
-import gov.nist.toolkit.actorfactory.SimDb;
+import gov.nist.toolkit.installation.Installation;
 import gov.nist.toolkit.results.client.LogIdIOFormat;
 import gov.nist.toolkit.results.client.LogIdType;
 import gov.nist.toolkit.results.client.TestInstance;
@@ -16,7 +16,6 @@ public class LogRepository  {
     static Logger log = Logger.getLogger(LogRepository.class);
 
     // Both of these are initialized by LogRepositoryFactory
-//	File logDir;
     ILoggerIO logger;
     File location;
     String user;
@@ -57,16 +56,8 @@ public class LogRepository  {
     }
 
     public void logOutIfLinkedToUser(TestInstance id, LogMapDTO logMapDTO) throws XdsException {
-//        if (idType == LogIdType.SPECIFIC_ID)
             logOut(id, logMapDTO);
-//        else {
-//            log.debug(String.format("Not saving log for %s - not tied to user", id));
-//        }
     }
-
-//	public LogMapDTO logIn(TestId id) throws Exception {
-//		return logger.logIn(id, logDir());
-//	}
 
     static public LogMapDTO logIn(TestInstance testInstance) throws Exception {
         if (testInstance == null) {
@@ -74,7 +65,7 @@ public class LogRepository  {
             return null;
         }
         try {
-            LogRepository repo = LogRepositoryFactory.getRepository(new File(testInstance.getLocation()),
+            LogRepository repo = LogRepositoryFactory.getLogRepository(new File(testInstance.getLocation()),
                     testInstance.getUser(),
                     testInstance.getFormat(),
                     testInstance.getIdType(),
@@ -88,29 +79,23 @@ public class LogRepository  {
         }
     }
 
-//    public LogMapDTO logIn(File logDir) throws Exception {
-//        return logger.logIn(id, logDir);
-//    }
-
     public File logDir() {
-        File dir = getLogDir(/*location, user, idType,*/ id);
+        File dir = getLogDir(id);
         if (dir.toString().contains("tc:")) throw new ToolkitRuntimeException("Bad LogDir - " + dir);
-//        log.debug(ExceptionUtil.here("LogRepository at " + dir));
         return dir;
     }
 
     public File logDir(TestInstance id) {
-        File dir = getLogDir(/*location, user, idType,*/ id);
+        File dir = getLogDir(id);
         if (dir.toString().contains("tc:")) throw new ToolkitRuntimeException("Bad LogDir - " + dir);
-//        log.debug(ExceptionUtil.here("LogRepository at " + dir));
         return dir;
     }
 
     // assign event including filenames - do not touch file system in case the event is never used
-    public void assignEvent(TestInstance testInstance) {
+    private void assignEvent(TestInstance testInstance) {
         if (idType != LogIdType.TIME_ID) return;  // doesn't use event structure
         if (testInstance.linkedToLogRepository()) return;
-        String event = new SimDb().nowAsFilenameBase();
+        String event = Installation.nowAsFilenameBase();
         testInstance.setInternalEvent(event);
         File dir = new File(
                 location + File.separator + user +
@@ -123,14 +108,7 @@ public class LogRepository  {
         testInstance.setIdType(idType);
     }
 
-    // same event - new test id
-    static public TestInstance cloneTestInstance(TestInstance testInstance, String newId) {
-        TestInstance ti = testInstance.copy();
-        ti.setId(newId);
-        return ti;
-    }
-
-    File getLogDir(/*File location, String user, LogIdType idType,*/ TestInstance id) {
+    private File getLogDir(/*File location, String user, LogIdType idType,*/ TestInstance id) {
         if (location == null) throw new ToolkitRuntimeException("Internal Error: location is null");
         if (user == null) throw new ToolkitRuntimeException("Internal Error: user is null");
         assignEvent(id);
