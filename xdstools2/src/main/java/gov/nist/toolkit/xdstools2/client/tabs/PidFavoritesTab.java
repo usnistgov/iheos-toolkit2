@@ -1,7 +1,8 @@
 package gov.nist.toolkit.xdstools2.client.tabs;
 
-import com.google.gwt.cell.client.EditTextCell;
-import com.google.gwt.cell.client.FieldUpdater;
+import com.google.gwt.cell.client.*;
+import com.google.gwt.dom.client.Element;
+import com.google.gwt.dom.client.NativeEvent;
 import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
@@ -21,6 +22,7 @@ import gov.nist.toolkit.xdstools2.client.command.command.GeneratePidCommand;
 import gov.nist.toolkit.xdstools2.client.command.command.GetAssigningAuthoritiesCommand;
 import gov.nist.toolkit.xdstools2.client.command.command.RetrieveFavPidsCommand;
 import gov.nist.toolkit.xdstools2.client.command.command.SendPidToRegistryCommand;
+import gov.nist.toolkit.xdstools2.client.widgets.ScrollingPager;
 import gov.nist.toolkit.xdstools2.shared.command.request.GeneratePidRequest;
 import gov.nist.toolkit.xdstools2.shared.command.request.SendPidToRegistryRequest;
 import gov.nist.toolkit.xdstools2.client.event.Xdstools2EventBus;
@@ -55,6 +57,8 @@ public class PidFavoritesTab extends GenericQueryTab {
     private List<String> assigningAuthorities = null;
     private Set<Pid> configuredPids=new HashSet<Pid>();
 
+    private Button deleteButton;
+
     public PidFavoritesTab(String tabName) {
         super(new GetDocumentsSiteActorManager());
     }
@@ -78,7 +82,7 @@ public class PidFavoritesTab extends GenericQueryTab {
         model.addDataDisplay(favoritesListBox);
 
         // this is the definition of the table "Patient ID" column (EditTextCell makes edition possible)
-        Column<Pid, String> id = new Column<Pid, String>(new EditTextCell()) {
+        Column<Pid, String> id = new Column<Pid, String>(new PidEditTextCell()) {
             @Override
             public String getValue(Pid pid) {
                 return pid.toString();
@@ -93,11 +97,11 @@ public class PidFavoritesTab extends GenericQueryTab {
                 toCookie();
             }
         });
-        favoritesListBox.setColumnWidth(id, 75.0, Unit.PCT);
+        favoritesListBox.setColumnWidth(id, 65.0, Unit.PCT);
         favoritesListBox.addColumn(id, "Patient ID");
 
         // this is the definition of the table "name" column (EditTextCell makes edition possible)
-        Column<Pid, String> name = new Column<Pid, String>(new EditTextCell()) {
+        Column<Pid, String> name = new Column<Pid, String>(new PidEditTextCell()) {
             @Override
             public String getValue(Pid pid) {
                 if (pid.getExtra() == null || pid.getExtra().isEmpty()) {
@@ -114,7 +118,7 @@ public class PidFavoritesTab extends GenericQueryTab {
                 toCookie();
             }
         });
-        favoritesListBox.setColumnWidth(name, 25.0, Unit.PCT);
+        favoritesListBox.setColumnWidth(name, 35.0, Unit.PCT);
         favoritesListBox.addColumn(name, "Name");
 
         favoritesListBox.setRowCount(10);
@@ -122,16 +126,13 @@ public class PidFavoritesTab extends GenericQueryTab {
 
         // this handle selection change in the grid (MultiSelectionModel<Pid>)
         favoritesListBox.setSelectionModel(selectionModel);
-        selectionModel.addSelectionChangeHandler(new SelectionChangeEvent.Handler() {
-            @Override
-            public void onSelectionChange(SelectionChangeEvent selectionChangeEvent) {
-                updatePidsSelected(selectionModel.getSelectedSet());
-            }
-        });
+
         favoritesListPanel.add(new HTML("Favorite Patient IDs"));
-        ScrollPanel p = new ScrollPanel(favoritesListBox);
-        p.setHeight("350px");
+        ScrollingPager p = new ScrollingPager();
+        p.setSize("600px","400px");
+        p.setDisplay(favoritesListBox);
         favoritesListPanel.add(p);
+        favoritesListPanel.setWidth("600px");
 
         VerticalPanel pidPanel = new VerticalPanel();
         panel.add(pidPanel);
@@ -158,7 +159,7 @@ public class PidFavoritesTab extends GenericQueryTab {
 
         favoritiesButtonPanel.add(new HTML("Select Patient ID(s) then: "));
 
-        final Button deleteButton = new Button("Delete from Favorites", new ClickHandler() {
+        deleteButton = new Button("Delete from Favorites", new ClickHandler() {
             @Override
             public void onClick(ClickEvent clickEvent) {
                 deleteFromFavorites(getSelectedPids());
@@ -179,12 +180,29 @@ public class PidFavoritesTab extends GenericQueryTab {
 
     @Override
     protected void bindUI() {
+        selectionModel.addSelectionChangeHandler(new SelectionChangeEvent.Handler() {
+            @Override
+            public void onSelectionChange(SelectionChangeEvent selectionChangeEvent) {
+                updatePidsSelected(selectionModel.getSelectedSet());
+                refreshDeleteButton(selectionModel.getSelectedSet());
+            }
+        });
         try {
             retrieveAndInitFavPids();
         } catch (IOException e) {
             e.printStackTrace();
         }
         loadAssigningAuthorities();
+    }
+
+    private void refreshDeleteButton(Set<Pid> selectedPids) {
+        deleteButton.setEnabled(true);
+        for(Pid pid:selectedPids){
+            if (configuredPids.contains(pid)){
+                deleteButton.setEnabled(false);
+                break;
+            }
+        }
     }
 
     @Override
@@ -223,7 +241,14 @@ public class PidFavoritesTab extends GenericQueryTab {
                 pidsList.addAll(result);
                 configuredPids.addAll(pidsList);
                 pidsList.addAll(CookiesServices.retrievePidFavoritesFromCookies());
-                model.setList(new LinkedList<Pid>(pidsList));
+                List<Pid> pids =new LinkedList<Pid>(pidsList);
+                Collections.sort(pids, new Comparator<Pid>() {
+                    @Override
+                    public int compare(Pid o1, Pid o2) {
+                        return o1.getExtra().compareTo(o2.getExtra());
+                    }
+                });
+                model.setList(pids);
             }
         }.run(getCommandContext());
     }
@@ -353,5 +378,13 @@ public class PidFavoritesTab extends GenericQueryTab {
 
     }
 
-
+    class PidEditTextCell extends EditTextCell{
+        @Override
+        public void onBrowserEvent(Context context, Element parent, String value, NativeEvent event, ValueUpdater<String> valueUpdater) {
+            Pid pid=((Pid) context.getKey());
+            if(!PidFavoritesTab.this.configuredPids.contains(pid)){
+                super.onBrowserEvent(context, parent, value,event,valueUpdater);
+            }
+        }
+    }
 }

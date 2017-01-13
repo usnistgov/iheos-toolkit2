@@ -37,10 +37,14 @@ public class PidSet implements Serializable {
         if (s.charAt(0) != '[') return;
         if (s.charAt(s.length()-1) != ']') return;
         s = s.substring(1, s.length()-1);
-        String[] pidStr = s.split(",");
+        String[] pidStr = s.split("\n");
         for (int i=0; i<pidStr.length; i++) {
-            Pid pid = PidBuilder.createPid(pidStr[i]);
-            if (pid != null) pids.add(pid);
+            String values[]=pidStr[i].split(",");
+            String name=values[values.length-1];
+            for (int j=0;j<(values.length-1);j++){
+                Pid pid = PidBuilder.createPid(values[j]+","+name);
+                if (pid != null) pids.add(pid);
+            }
         }
     }
 
