@@ -24,7 +24,6 @@ import gov.nist.toolkit.simulators.sim.reg.store.RegIndex;
 import gov.nist.toolkit.simulators.sim.rep.RepIndex;
 import gov.nist.toolkit.soap.http.SoapFault;
 import gov.nist.toolkit.soap.http.SoapUtil;
-import gov.nist.toolkit.utilities.io.Io;
 import gov.nist.toolkit.utilities.xml.OMFormatter;
 import gov.nist.toolkit.utilities.xml.XmlUtil;
 import gov.nist.toolkit.validatorsSoapMessage.engine.ValidateMessageService;
@@ -574,7 +573,8 @@ public class DsSimCommon {
         }
         try {
             if (simCommon.db != null)
-                Io.stringToFile(simCommon.db.getResponseBodyFile(), respStr);
+                simCommon.db.putResponseBody(respStr);
+//                Io.stringToFile(simCommon.db.getResponseBodyFile(), respStr);
             simCommon.os.write(respStr.getBytes());
             if (simCommon.vc.requiresMtom()) {
                 this.writeAttachments(simCommon.os, er);

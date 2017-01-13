@@ -18,6 +18,7 @@ import gov.nist.toolkit.simcommon.server.ExtendedPropertyManager;
 import gov.nist.toolkit.utilities.io.Io;
 import gov.nist.toolkit.utilities.io.ZipDir;
 import gov.nist.toolkit.xdsexception.client.ToolkitRuntimeException;
+import org.apache.http.annotation.Obsolete;
 import org.apache.log4j.Logger;
 
 import java.io.File;
@@ -578,8 +579,21 @@ public class SimDb {
 		return f;
 	}
 
-	public File getResponseBodyFile() {
+	@Obsolete
+	private File getResponseBodyFile() {
 		return new File(getDBFilePrefix(event) + File.separator + "response_body.txt");
+	}
+
+	public void putResponseBody(String content) throws IOException {
+		Io.stringToFile(getResponseBodyFile(), content);
+	}
+
+	public String getResponseBody() throws IOException {
+		return Io.stringFromFile(getResponseBodyFile());
+	}
+
+	public boolean responseBodyExists() {
+		return getResponseBodyFile().exists();
 	}
 
 	public File getResponseHdrFile() {
@@ -602,6 +616,7 @@ public class SimDb {
 		return new File(getDBFilePrefix(filenamebase) + File.separator + "response_hdr.txt");
 	}
 
+	@Obsolete
 	public File getResponseMsgBodyFile(String filenamebase) {
 		return new File(getDBFilePrefix(filenamebase) + File.separator + "response_body.txt");
 	}
@@ -728,6 +743,7 @@ public class SimDb {
 		return new File(dir + File.separator + "request_body.bin");
 	}
 
+	@Obsolete
 	public File getResponseBodyFile(SimId simid, String actor, String trans, String event) {
 		File dir = findEventDir(trans, event);
 		if (dir == null)
