@@ -1,6 +1,5 @@
 package gov.nist.toolkit.xdstools2.client.tabs.conformanceTest;
 
-import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.Panel;
@@ -13,6 +12,9 @@ import gov.nist.toolkit.xdstools2.client.util.ClientUtils;
 import gov.nist.toolkit.xdstools2.client.widgets.buttons.AbstractOrchestrationButton;
 import gov.nist.toolkit.xdstools2.shared.command.request.BuildRepTestOrchestrationRequest;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  *
  */
@@ -22,6 +24,13 @@ class BuildRepTestOrchestrationButton extends AbstractOrchestrationButton {
     private TestContext testContext;
     private TestContextView testContextView;
     private FlowPanel initializationResultsPanel = new FlowPanel();
+    public static List<ActorAndOption> ACTOR_OPTIONS = new ArrayList<>();
+    static {
+        ACTOR_OPTIONS = java.util.Arrays.asList(
+                new ActorAndOption("rep", "", "Required", false),
+                new ActorAndOption("rep", XUA_OPTION, "XUA Option", false)
+        );
+    }
 
     BuildRepTestOrchestrationButton(ConformanceTestTab testTab, TestContext testContext, TestContextView testContextView, Panel initializationPanel, String label) {
         this.initializationPanel = initializationPanel;
