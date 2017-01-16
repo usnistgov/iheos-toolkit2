@@ -20,6 +20,7 @@ public class ActorOptionManager {
         actorOptions.put("ig", BuildIGTestOrchestrationButton.ACTOR_OPTIONS);
         actorOptions.put("rg", BuildRGTestOrchestrationButton.ACTOR_OPTIONS);
         actorOptions.put("reg", BuildRegTestOrchestrationButton.ACTOR_OPTIONS);
+        actorOptions.put("rep", BuildRepTestOrchestrationButton.ACTOR_OPTIONS);
         actorOptions.put("rec", BuildRecTestOrchestrationButton.ACTOR_OPTIONS);
     };
 
