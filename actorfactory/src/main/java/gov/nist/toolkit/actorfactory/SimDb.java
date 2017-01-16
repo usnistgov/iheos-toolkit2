@@ -18,18 +18,14 @@ import gov.nist.toolkit.simcommon.server.ExtendedPropertyManager;
 import gov.nist.toolkit.utilities.io.Io;
 import gov.nist.toolkit.utilities.io.ZipDir;
 import gov.nist.toolkit.xdsexception.client.ToolkitRuntimeException;
+import org.apache.http.annotation.Obsolete;
 import org.apache.log4j.Logger;
 
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 /**
  * Each simulator has an on-disk presence that keeps track of its long
@@ -42,12 +38,12 @@ import java.util.List;
 public class SimDb {
 	private final PidDb pidDb = new PidDb(this);
 	SimId simId = null;    // ip is the simulator id
-	File dbRoot = null;  // base of the simulator db
-	String event = null;
-	File simDir = null;   // directory within simdb that represents this event
-	String actor = null;
-	String transaction = null;
-	File transactionDir = null;  
+	private File dbRoot = null;  // base of the simulator db
+	private String event = null;
+	private File simDir = null;   // directory within simdb that represents this event
+	private String actor = null;
+	private String transaction = null;
+	private File transactionDir = null;
 	static Logger logger = Logger.getLogger(SimDb.class);
 
 
@@ -158,14 +154,16 @@ public class SimDb {
 
 		Date date = new Date();
 
-		event = asFilenameBase(date);
+		event = Installation.asFilenameBase(date);
 
 		File eventDir = getEventDir();
 		eventDir.mkdirs();
 		Serialize.out(new File(eventDir, "date.ser"), date);
 	}
 
-	private File getEventDir() {
+	public String getEvent() { return event; }
+
+	public File getEventDir() {
 		return new File(transactionDir, event);
 	}
 
@@ -192,7 +190,7 @@ public class SimDb {
 	}
 
 	// actor, transaction, and event must be filled in
-	public Date getEventDate() throws IOException, ClassNotFoundException {
+	private Date getEventDate() throws IOException, ClassNotFoundException {
 		if (transactionDir == null || event == null) return null;
 		File eventDir = new File(transactionDir, event);
 		return (Date) Serialize.in(new File(eventDir, "date.ser"));
@@ -583,8 +581,21 @@ public class SimDb {
 		return f;
 	}
 
-	public File getResponseBodyFile() {
+	@Obsolete
+	private File getResponseBodyFile() {
 		return new File(getDBFilePrefix(event) + File.separator + "response_body.txt");
+	}
+
+	public void putResponseBody(String content) throws IOException {
+		Io.stringToFile(getResponseBodyFile(), content);
+	}
+
+	public String getResponseBody() throws IOException {
+		return Io.stringFromFile(getResponseBodyFile());
+	}
+
+	public boolean responseBodyExists() {
+		return getResponseBodyFile().exists();
 	}
 
 	public File getResponseHdrFile() {
@@ -607,6 +618,7 @@ public class SimDb {
 		return new File(getDBFilePrefix(filenamebase) + File.separator + "response_hdr.txt");
 	}
 
+	@Obsolete
 	public File getResponseMsgBodyFile(String filenamebase) {
 		return new File(getDBFilePrefix(filenamebase) + File.separator + "response_body.txt");
 	}
@@ -733,6 +745,7 @@ public class SimDb {
 		return new File(dir + File.separator + "request_body.bin");
 	}
 
+	@Obsolete
 	public File getResponseBodyFile(SimId simid, String actor, String trans, String event) {
 		File dir = findEventDir(trans, event);
 		if (dir == null)
@@ -778,60 +791,6 @@ public class SimDb {
 		return getAlternateRequestMsgBodyFile(event);
 	}
 
-	public String nowAsFilenameBase() {
-		return asFilenameBase(new Date());
-	}
-
-	public String asFilenameBase(Date date) {
-		Calendar c  = Calendar.getInstance();
-		c.setTime(date);
-		
-		String year = Integer.toString(c.get(Calendar.YEAR));
-		String month = Integer.toString(c.get(Calendar.MONTH) + 1);
-		if (month.length() == 1)
-			month = "0" + month;
-		String day = Integer.toString(c.get(Calendar.DAY_OF_MONTH));
-		if (day.length() == 1 )
-			day = "0" + day;
-		String hour = Integer.toString(c.get(Calendar.HOUR_OF_DAY));
-			if (hour.length() == 1)
-				hour = "0" + hour;
-		String minute = Integer.toString(c.get(Calendar.MINUTE));
-		if (minute.length() == 1)
-			minute = "0" + minute;
-		String second = Integer.toString(c.get(Calendar.SECOND));
-		if (second.length() == 1)
-			second = "0" + second;
-		String mili = Integer.toString(c.get(Calendar.MILLISECOND));
-		if (mili.length() == 2)
-			mili = "0" + mili;
-		else if (mili.length() == 1)
-			mili = "00" + mili;
-		
-		String dot = "_";
-		
-		String val =
-			year +
-			dot +
-			month +
-			dot +
-			day + 
-			dot +
-			hour +
-			dot +
-			minute +
-			dot +
-			second +
-			dot +
-			mili
-			;
-		return val;
-
-//		String value = date.toString();
-//
-//		return value.replaceAll(" ", "_").replaceAll(":", "_");
-
-	}
 
 	public void putRequestHeaderFile(byte[] bytes) throws IOException {
 		File f = getRequestHeaderFile();

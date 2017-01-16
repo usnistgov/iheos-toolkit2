@@ -1,13 +1,11 @@
 package gov.nist.toolkit.xdstools2.server;
 
 import gov.nist.toolkit.utilities.io.Io;
-
-import java.io.File;
+import org.apache.log4j.Logger;
 
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
-
-import org.apache.log4j.Logger;
+import java.io.File;
 
 public class MyServletContextListener implements ServletContextListener {
 	static Logger logger = Logger.getLogger(MyServletContextListener.class);
@@ -26,7 +24,7 @@ public class MyServletContextListener implements ServletContextListener {
 		if (sessionCache.listFiles() == null)
 			return;
 
-		logger.info("Clearing SessionCache");
+		logger.info("Clearing Internal SessionCache");
 		for (File f : sessionCache.listFiles()) {
 			Io.delete(f);
 		}
