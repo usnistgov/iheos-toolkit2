@@ -6,12 +6,15 @@ import gov.nist.toolkit.docAdmin.objectType.MObject
 /**
  *
  */
-class CompareAll implements Comparison {
+class MCompare implements Comparison {
     @Override
     Delta compare(MObject from, MObject to) {
-        Delta delta = new Delta()
+        Delta d = new Delta()
+        d.from = from
+        d.to = to
 
 
-        return delta
+
+        return d
     }
 }

@@ -5,7 +5,7 @@ import gov.nist.toolkit.docAdmin.attType.Attribute
 /**
  *
  */
-abstract class MObject {
+class MObject {
     List<Attribute> atts = []
 
     String toString() {

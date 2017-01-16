@@ -1,14 +1,16 @@
 package gov.nist.toolkit.docAdmin.objectType
 
+import gov.nist.toolkit.docAdmin.attType.Code
 import gov.nist.toolkit.docAdmin.attType.Identifier
 import gov.nist.toolkit.docAdmin.attType.Slot
+import gov.nist.toolkit.docAdmin.operator.MCompare
 import gov.nist.toolkit.docAdmin.util.ListUtil
 import spock.lang.Specification
 
 /**
  *
  */
-class Comparison extends Specification {
+class ComparisonTest extends Specification {
 
     def 'identifier equals'() {
         when:
@@ -76,14 +78,62 @@ class Comparison extends Specification {
         s2 < s3
     }
 
-    def 'MObject.contains'() {
+    def 'code equals'() {
         when:
-        MObject o = new RObject()
-        o
-                .add(new Identifier([name:'id', value:'Document1']))
-                .add(new Slot([name:'size', value:42]))
+        def c1 = new Code([name:'bill', codeName:'a', codeValue:'7', codeSystem:'mine'])
+        def c2 = new Code([name:'bill', codeName:'a', codeValue:'7', codeSystem:'mine'])
+        def c3 = new Code([name:'bill', codeName:'b', codeValue:'7', codeSystem:'mine'])
 
         then:
-        true
+        c1 == c2
+        c1 != c3
+    }
+
+    def 'code sorts'() {
+        when:
+        def c1 = new Code([name:'bill', codeName:'a', codeValue:'7', codeSystem:'mine'])
+        def c2 = new Code([name:'cill', codeName:'a', codeValue:'7', codeSystem:'mine'])
+        def c3 = new Code([name:'bill', codeName:'b', codeValue:'7', codeSystem:'mine'])
+
+        then:
+        c1 < c2
+        c1 < c3
+    }
+
+    def 'MObject.contains'() {
+        when:
+        MObject o = new MObject()
+        o.add(new Identifier([name:'id', value:'Document1']))
+                o.add(new Slot([name:'size', values:[42]]))
+
+        then:
+        o.contains('id')
+        o.contains('size')
+        !o.contains('foo')
+    }
+
+    def 'delta'() {
+        when:
+        MObject m1 = new MObject()
+                .add(new Identifier([name:'id', value:'urn:uuid:1']))
+                .add(new Slot([name:'size', values:[42]]))
+        MObject m2 = new MObject()
+                .add(new Identifier([name:'id', value:'urn:uuid:1']))
+                .add(new Slot([name:'size', values:[42]]))
+        Delta d1 = new MCompare().compare(m1, m2)
+
+        MObject m3 = new MObject()
+                .add(new Identifier([name:'id', value:'urn:uuid:1']))
+                .add(new Slot([name:'size', values:[43]]))
+        Delta d2 = new MCompare().compare(m1, m3)
+
+        then:
+        d1.removed == []
+        d1.added == []
+        d1.changed == []
+
+        d2.removed == []
+        d2.added == []
+        d2.changed ==
     }
 }

@@ -13,7 +13,7 @@ class Identifier extends Attribute {
     int compareTo(o) {
         if (!(o instanceof Identifier)) return -1
         Identifier id = (Identifier) o
-        def i = name.compareTo(id)
+        def i = name.compareTo(id.name)
         if (i != 0) return i
         return value.compareTo(id.value)
     }

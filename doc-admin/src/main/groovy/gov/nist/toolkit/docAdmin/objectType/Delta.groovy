@@ -8,7 +8,7 @@ import gov.nist.toolkit.docAdmin.attType.Attribute
 class Delta {
     MObject from
     MObject to
-    List<Attribute> removed
-    List<Attribute> added
-    List<Attribute> changed
+    List<Attribute> removed = []
+    List<Attribute> added = []
+    List<List<Attribute>> changed = []  // two elements - from and to
 }
