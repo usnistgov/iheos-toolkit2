@@ -464,7 +464,6 @@
 		<dependency>
 			<groupId>com.google.gwt</groupId>
 			<artifactId>gwt-elemental</artifactId>
-			<version>${gwtVersion}</version>
 		</dependency>
 		<!--<dependency> -->
 		<!--<groupId>com.sun.jersey</groupId> -->
