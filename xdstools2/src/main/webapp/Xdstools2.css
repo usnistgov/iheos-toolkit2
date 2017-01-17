@@ -299,3 +299,7 @@ h3 {
 .copyBtn:hover{
   cursor: pointer;
 }
+
+.loading {
+  cursor: wait;
+}
