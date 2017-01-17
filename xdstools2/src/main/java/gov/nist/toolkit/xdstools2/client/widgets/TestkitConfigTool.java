@@ -3,10 +3,7 @@ package gov.nist.toolkit.xdstools2.client.widgets;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.Window;
-import com.google.gwt.user.client.ui.Button;
-import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.HTML;
-import com.google.gwt.user.client.ui.VerticalPanel;
+import com.google.gwt.user.client.ui.*;
 import gov.nist.toolkit.xdstools2.client.TabContainer;
 import gov.nist.toolkit.xdstools2.client.command.command.CheckTestkitExistenceCommand;
 import gov.nist.toolkit.xdstools2.client.command.command.ConfigureTestkitCommand;
@@ -42,9 +39,12 @@ public class TestkitConfigTool extends Composite {
         environmentManager = new EnvironmentManager(myTabContainer);
         container.add(environmentManager);
         Button runUpdater=new Button("Run",new RunTestkitConfigHandler());
-        container.add(runUpdater);
-        container.add(new Button("Reindex Test Kits", new IndexTestKitsHandler()));
-        container.add(new Button("Create EC testkit structure",new TestkitConfigTool.CreateTestkitStructureHandler()));
+        HorizontalPanel buttonsContainer = new HorizontalPanel();
+        buttonsContainer.setStyleName("HP");
+        buttonsContainer.add(runUpdater);
+        buttonsContainer.add(new Button("Reindex Test Kits", new IndexTestKitsHandler()));
+        buttonsContainer.add(new Button("Create EC testkit structure",new TestkitConfigTool.CreateTestkitStructureHandler()));
+        container.add(buttonsContainer);
         container.add(indexStatus);
 
         initWidget(container);
@@ -53,14 +53,14 @@ public class TestkitConfigTool extends Composite {
     private class CreateTestkitStructureHandler implements ClickHandler {
         @Override
         public void onClick(ClickEvent clickEvent) {
-            container.remove(indexStatus);
+            clearFeedbackBoard();
             resultPanel.setHTML("Running...");
             container.add(resultPanel);
             container.addStyleName("loading");
             new GenerateTestkitStructureCommand() {
                 @Override
                 public void onComplete(Void result) {
-                    resultPanel.setHTML("-------------------------------------------<br/>  Success. <br/>-------------------------------------------");
+                    resultPanel.setHTML("-- Success! ");
                     container.add(resultPanel);
                     container.removeStyleName("loading");
                 }
@@ -72,8 +72,9 @@ public class TestkitConfigTool extends Composite {
 
         @Override
         public void onClick(ClickEvent clickEvent) {
-            container.remove(resultPanel);
+            clearFeedbackBoard();
             indexStatus.setHTML("Running...");
+            container.add(indexStatus);
             new IndexTestkitsCommand() {
                 @Override
                 public void onFailure(Throwable throwable) {
@@ -95,7 +96,7 @@ public class TestkitConfigTool extends Composite {
 
         @Override
         public void onClick(ClickEvent clickEvent) {
-            container.remove(indexStatus);
+            clearFeedbackBoard();
             container.addStyleName("loading");
             resultPanel.setHTML("Running (connection timeout is 30 sec) ...");
             container.add(resultPanel);
@@ -106,6 +107,7 @@ public class TestkitConfigTool extends Composite {
                         boolean confirmed = Window.confirm("There already is a existing testkit configured for this environment. " +
                                 "This will override it. \nDo you want to proceed?");
                         if (confirmed) runConfigTestkit();
+                        else clearFeedbackBoard();
                     } else {
                         runConfigTestkit();
                     }
@@ -129,5 +131,10 @@ public class TestkitConfigTool extends Composite {
                 }
             }.run(new CommandContext(environmentManager.getSelectedEnvironment(),ClientUtils.INSTANCE.getTestSessionManager().getCurrentTestSession()));
         }
+    }
+
+    private void clearFeedbackBoard() {
+        container.remove(resultPanel);
+        container.remove(indexStatus);
     }
 }
