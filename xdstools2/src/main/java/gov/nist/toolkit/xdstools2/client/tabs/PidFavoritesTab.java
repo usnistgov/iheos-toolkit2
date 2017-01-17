@@ -27,6 +27,7 @@ import gov.nist.toolkit.xdstools2.client.command.command.GetAssigningAuthorities
 import gov.nist.toolkit.xdstools2.client.command.command.RetrieveFavPidsCommand;
 import gov.nist.toolkit.xdstools2.client.command.command.SendPidToRegistryCommand;
 import gov.nist.toolkit.xdstools2.client.widgets.ScrollingPager;
+import gov.nist.toolkit.xdstools2.client.widgets.buttons.CopyButton;
 import gov.nist.toolkit.xdstools2.shared.command.request.GeneratePidRequest;
 import gov.nist.toolkit.xdstools2.shared.command.request.SendPidToRegistryRequest;
 import gov.nist.toolkit.xdstools2.client.event.Xdstools2EventBus;
@@ -282,23 +283,22 @@ public class PidFavoritesTab extends GenericQueryTab {
             Label newLabel=new Label(pid.asString());
             newLabel.getElement().setAttribute("pid"+i,"pidelement"+i);
             newLabel.getElement().setId("myid"+i);
-            Button copyBtn=new Button("Copy PID");
-            final int finalI = i;
-            copyBtn.addClickHandler(new ClickHandler() {
-                @Override
-                public void onClick(ClickEvent clickEvent) {
-                    final Selection selection = Browser.getWindow().getSelection();
-                    final Range range = Browser.getDocument().createRange();
-                    range.selectNodeContents(Browser.getDocument().getElementById("myid"+ finalI));
-                    selection.removeAllRanges();
-                    selection.addRange(range);
-                    if (!Browser.getWindow().getDocument().execCommand("copy", false, "")){
-                        Window.alert("Copy does not work your browser. Try to update it to its latest version, or use another browser.\n" +
-                                "Copy is compatible with: Chrome (v.43 or later), Firefox (v.41 or later), IE9, Opera (v.29 or later) and Safari (v.10 or later).");
-                    }
-                    selection.removeAllRanges();
-                }
-            });
+            CopyButton copyBtn=new CopyButton("myid"+i);
+//            copyBtn.addClickHandler(new ClickHandler() {
+//                @Override
+//                public void onClick(ClickEvent clickEvent) {
+//                    final Selection selection = Browser.getWindow().getSelection();
+//                    final Range range = Browser.getDocument().createRange();
+//                    range.selectNodeContents(Browser.getDocument().getElementById("myid"+ finalI));
+//                    selection.removeAllRanges();
+//                    selection.addRange(range);
+//                    if (!Browser.getWindow().getDocument().execCommand("copy", false, "")){
+//                        Window.alert("Copy does not work with your browser. Try to update it to its latest version, or use another browser.\n" +
+//                                "Copy is compatible with: Chrome (v.43 or later), Firefox (v.41 or later), IE9, Opera (v.29 or later) and Safari (v.10 or later).");
+//                    }
+//                    selection.removeAllRanges();
+//                }
+//            });
             HorizontalPanel horizontalPanel=new HorizontalPanel();
             horizontalPanel.add(newLabel);
             horizontalPanel.add(copyBtn);
