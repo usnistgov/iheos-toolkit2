@@ -1,2 +1,2 @@
 
-Verify the metadata was not submitted to the Registry.
+Verify the metadata was accepted by the Registry.
