@@ -171,6 +171,7 @@ public class PidFavoritesTab extends GenericQueryTab {
                 deleteFromFavorites(getSelectedPids());
             }
         });
+        deleteButton.setEnabled(false);
         favoritiesButtonPanel.add(deleteButton);
 
         Button addToFavoritesButton = new Button("Add to Favorites", new ClickHandler() {
@@ -284,21 +285,6 @@ public class PidFavoritesTab extends GenericQueryTab {
             newLabel.getElement().setAttribute("pid"+i,"pidelement"+i);
             newLabel.getElement().setId("myid"+i);
             CopyButton copyBtn=new CopyButton("myid"+i);
-//            copyBtn.addClickHandler(new ClickHandler() {
-//                @Override
-//                public void onClick(ClickEvent clickEvent) {
-//                    final Selection selection = Browser.getWindow().getSelection();
-//                    final Range range = Browser.getDocument().createRange();
-//                    range.selectNodeContents(Browser.getDocument().getElementById("myid"+ finalI));
-//                    selection.removeAllRanges();
-//                    selection.addRange(range);
-//                    if (!Browser.getWindow().getDocument().execCommand("copy", false, "")){
-//                        Window.alert("Copy does not work with your browser. Try to update it to its latest version, or use another browser.\n" +
-//                                "Copy is compatible with: Chrome (v.43 or later), Firefox (v.41 or later), IE9, Opera (v.29 or later) and Safari (v.10 or later).");
-//                    }
-//                    selection.removeAllRanges();
-//                }
-//            });
             HorizontalPanel horizontalPanel=new HorizontalPanel();
             horizontalPanel.add(newLabel);
             horizontalPanel.add(copyBtn);
