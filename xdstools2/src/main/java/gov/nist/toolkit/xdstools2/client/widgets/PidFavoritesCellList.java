@@ -5,19 +5,22 @@ import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
 import com.google.gwt.user.cellview.client.CellList;
 import com.google.gwt.user.cellview.client.HasKeyboardSelectionPolicy;
 import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.SimplePanel;
+import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.view.client.ListDataProvider;
 import com.google.gwt.view.client.ProvidesKey;
 import com.google.gwt.view.client.SelectionChangeEvent;
 import com.google.gwt.view.client.SingleSelectionModel;
 import gov.nist.toolkit.configDatatypes.client.Pid;
 import gov.nist.toolkit.xdstools2.client.command.command.RetrieveFavPidsCommand;
+import gov.nist.toolkit.xdstools2.client.event.EnvironmentChangedEvent;
 import gov.nist.toolkit.xdstools2.client.event.FavoritePidsUpdatedEvent;
 import gov.nist.toolkit.xdstools2.client.event.Xdstools2EventBus;
 import gov.nist.toolkit.xdstools2.client.util.ClientUtils;
 import gov.nist.toolkit.xdstools2.client.util.CookiesServices;
 import gov.nist.toolkit.xdstools2.shared.command.CommandContext;
 
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -25,7 +28,7 @@ import java.util.List;
  * Created by onh2 on 7/11/16.
  */
 public class PidFavoritesCellList extends Composite{
-    private SimplePanel container = new SimplePanel();
+    private FlowPanel container = new FlowPanel();
     // List widget.
     private CellList<Pid> cellList;
     // list data model.
@@ -40,6 +43,7 @@ public class PidFavoritesCellList extends Composite{
             return pid.toString();
         }
     };
+    private final ScrollingPager pager;
 
     /**
      * Default constructor
@@ -55,11 +59,13 @@ public class PidFavoritesCellList extends Composite{
         // this links the data model with the actual table widget
         model.addDataDisplay(cellList);
         cellList.setKeyboardSelectionPolicy(HasKeyboardSelectionPolicy.KeyboardSelectionPolicy.BOUND_TO_SELECTION);
-
+        pager = new ScrollingPager();
+        pager.setWidth("500px");
+        pager.setDisplay(cellList);
         // Add a selection model so we can select cells.
         cellList.setSelectionModel(selectionModel);
 
-        container.add(cellList);
+        container.add(pager);
 
         container.addStyleName("list-border");
 
@@ -78,6 +84,12 @@ public class PidFavoritesCellList extends Composite{
                 cellList.redraw();
             }
         });
+        ((Xdstools2EventBus) ClientUtils.INSTANCE.getEventBus()).addEnvironmentChangedEventHandler(new EnvironmentChangedEvent.EnvironmentChangedEventHandler() {
+            @Override
+            public void onEnvironmentChange(EnvironmentChangedEvent event) {
+                loadData();
+            }
+        });
         loadData();
     }
 
@@ -94,8 +106,19 @@ public class PidFavoritesCellList extends Composite{
                     pidList.addAll(pids);
                     // load pids stored in cookies
                     pidList.addAll(CookiesServices.retrievePidFavoritesFromCookies());
-                    model.setList(new LinkedList<>(pidList));
+                    List<Pid> list=new LinkedList<>(pidList);
+                    Collections.sort(list, new Comparator<Pid>() {
+                        @Override
+                        public int compare(Pid o1, Pid o2) {
+                            return o1.getExtra().compareTo(o2.getExtra());
+                        }
+                    });
+                    model.setList(list);
                     model.refresh();
+                    int height=25*pidList.size();
+                    if (height>300)
+                        height=300;
+                    pager.setHeight(height+"px");
                     cellList.redraw();
                 }
             }.run(new CommandContext(environmentName, ClientUtils.INSTANCE.getTestSessionManager().getCurrentTestSession()));

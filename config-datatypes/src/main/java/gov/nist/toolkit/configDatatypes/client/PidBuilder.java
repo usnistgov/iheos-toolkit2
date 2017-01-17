@@ -4,7 +4,7 @@ package gov.nist.toolkit.configDatatypes.client;
  *
  */
 public class PidBuilder {
-    static final String SEPARATOR = ":";
+    static final String SEPARATOR = ",";
 
     // uses - char to separate pid from name
     // this is only important in UI displays
