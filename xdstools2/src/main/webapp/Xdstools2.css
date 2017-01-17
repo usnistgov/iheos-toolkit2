@@ -291,3 +291,11 @@ h3 {
   margin-left:2px;
   margin-bottom: 10px;
 }
+
+.copyBtn {
+  background: white;
+  margin-left:5px;
+}
+.copyBtn:hover{
+  cursor: pointer;
+}
