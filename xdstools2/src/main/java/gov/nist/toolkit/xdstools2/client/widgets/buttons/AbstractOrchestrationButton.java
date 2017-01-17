@@ -132,7 +132,7 @@ abstract public class AbstractOrchestrationButton implements ClickHandler {
                     samlCheckBox.setStyleName("orchestrationOption");
                 }
             }
-        };
+        }.run(ClientUtils.INSTANCE.getCommandContext());
 
     }
 
