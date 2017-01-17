@@ -40,6 +40,7 @@
     <inherits name="gov.nist.toolkit.xdsexception.xdsexceptions"/>
     <inherits name="gov.nist.toolkit.interactionmodel.interactionModel"/>
     <inherits name="gov.nist.toolkit.interactiondiagram.interactionDiagram"/>
+
     <inherits name="elemental.Elemental"/>
 
     <!-- Specify the app entry point class.                         -->

@@ -31,6 +31,8 @@ public class CopyButton extends PushButton {
 
         @Override
         public void onClick(ClickEvent event) {
+            // Copy functionality for a label located a manually IDed on the page. Thanks to the import of gwt-elemental.
+
             final Selection selection = Browser.getWindow().getSelection();
             final Range range = Browser.getDocument().createRange();
             range.selectNodeContents(Browser.getDocument().getElementById(elementId));
