@@ -98,9 +98,6 @@ public class TestkitConfigTool extends Composite {
         @Override
         public void onClick(ClickEvent clickEvent) {
             clearFeedbackBoard();
-            container.addStyleName("loading");
-            resultPanel.setHTML("Running (connection timeout is 30 sec) ...");
-            container.add(resultPanel);
             new CheckTestkitExistenceCommand() {
                 @Override
                 public void onComplete(Boolean exists) {
@@ -118,6 +115,9 @@ public class TestkitConfigTool extends Composite {
 
         /** Method that actually runs the configuration (code update) of the testkit. **/
         private void runConfigTestkit() {
+            container.addStyleName("loading");
+            resultPanel.setHTML("Running (connection timeout is 30 sec) ...");
+            container.add(resultPanel);
             new ConfigureTestkitCommand(){
                 @Override
                 public void onFailure(Throwable throwable){
