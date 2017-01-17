@@ -10,7 +10,7 @@
 
       Evaluation - Transaction is successful
     </Goal>
-    <ExpectedStatus>Fault</ExpectedStatus>
+    <ExpectedStatus>Success</ExpectedStatus>
     <ProvideAndRegisterTransaction>
       <XDSb/>
       <MetadataFile>single_doc.xml</MetadataFile>
