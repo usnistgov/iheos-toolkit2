@@ -19,6 +19,7 @@ import gov.nist.toolkit.xdstools2.client.command.command.GetPatientIdsCommand;
 import gov.nist.toolkit.xdstools2.client.siteActorManagers.FindDocumentsSiteActorManager;
 import gov.nist.toolkit.xdstools2.client.tabs.genericQueryTab.GenericQueryTab;
 import gov.nist.toolkit.xdstools2.client.widgets.PopupMessage;
+import gov.nist.toolkit.xdstools2.client.widgets.buttons.CopyButton;
 import gov.nist.toolkit.xdstools2.shared.command.request.PatientIdsRequest;
 
 import java.util.ArrayList;
@@ -33,7 +34,6 @@ public class PidEditTab extends GenericQueryTab {
     ListBox pidList = new ListBox();
     TextArea pidBox = new TextArea();
     Anchor reload = null;
-    Button copyPidBtn=new Button("Copy Patient ID(s)");
     private VerticalPanel selectedPid = new VerticalPanel();
     Label pidLbl=new Label();
 
@@ -229,27 +229,14 @@ public class PidEditTab extends GenericQueryTab {
         HTML html=new HTML(buf.toString());
 
         pidLbl.setText(pid);
+        String pidLabelId="mypid";
         pidLbl.getElement().setAttribute("pid","pidelement");
-        pidLbl.getElement().setId("myid");
+        pidLbl.getElement().setId(pidLabelId);
+
         HorizontalPanel horizontalPanel=new HorizontalPanel();
         horizontalPanel.add(pidLbl);
-        horizontalPanel.add(copyPidBtn);
+        horizontalPanel.add(new CopyButton(pidLabelId));
         selectedPid.add(html);
         selectedPid.add(horizontalPanel);
-        copyPidBtn.addClickHandler(new ClickHandler() {
-            @Override
-            public void onClick(ClickEvent clickEvent) {
-                final Selection selection = Browser.getWindow().getSelection();
-                final Range range = Browser.getDocument().createRange();
-                range.selectNodeContents(Browser.getDocument().getElementById("myid"));
-                selection.removeAllRanges();
-                selection.addRange(range);
-                if (!Browser.getWindow().getDocument().execCommand("copy", false, "")){
-                    Window.alert("Copy does not work your browser. Try to update it to its latest version, or use another browser.\n" +
-                            "Copy is compatible with: Chrome (v.43 or later), Firefox (v.41 or later), IE9, Opera (v.29 or later) and Safari (v.10 or later).");
-                }
-                selection.removeAllRanges();
-            }
-        });
     }
 }
