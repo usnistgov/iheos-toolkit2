@@ -53,7 +53,18 @@ public class TestkitConfigTool extends Composite {
     private class CreateTestkitStructureHandler implements ClickHandler {
         @Override
         public void onClick(ClickEvent clickEvent) {
-            new GenerateTestkitStructureCommand().run(ClientUtils.INSTANCE.getCommandContext());
+            container.remove(indexStatus);
+            resultPanel.setHTML("Running...");
+            container.add(resultPanel);
+            container.addStyleName("loading");
+            new GenerateTestkitStructureCommand() {
+                @Override
+                public void onComplete(Void result) {
+                    resultPanel.setHTML("-------------------------------------------<br/>  Success. <br/>-------------------------------------------");
+                    container.add(resultPanel);
+                    container.removeStyleName("loading");
+                }
+            }.run(ClientUtils.INSTANCE.getCommandContext());
         }
     }
 
@@ -61,6 +72,7 @@ public class TestkitConfigTool extends Composite {
 
         @Override
         public void onClick(ClickEvent clickEvent) {
+            container.remove(resultPanel);
             indexStatus.setHTML("Running...");
             new IndexTestkitsCommand() {
                 @Override
@@ -83,7 +95,10 @@ public class TestkitConfigTool extends Composite {
 
         @Override
         public void onClick(ClickEvent clickEvent) {
+            container.remove(indexStatus);
+            container.addStyleName("loading");
             resultPanel.setHTML("Running (connection timeout is 30 sec) ...");
+            container.add(resultPanel);
             new CheckTestkitExistenceCommand() {
                 @Override
                 public void onComplete(Boolean exists) {
@@ -110,6 +125,7 @@ public class TestkitConfigTool extends Composite {
                 public void onComplete(String result) {
                     resultPanel.setHTML(result.replace("\n", "<br/>"));
                     container.add(resultPanel);
+                    container.removeStyleName("loading");
                 }
             }.run(new CommandContext(environmentManager.getSelectedEnvironment(),ClientUtils.INSTANCE.getTestSessionManager().getCurrentTestSession()));
         }
