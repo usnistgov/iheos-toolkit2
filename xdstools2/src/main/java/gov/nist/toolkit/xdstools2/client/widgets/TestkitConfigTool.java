@@ -38,7 +38,8 @@ public class TestkitConfigTool extends Composite {
                 "the environment selected.<br/><br/>"));
         environmentManager = new EnvironmentManager(myTabContainer);
         container.add(environmentManager);
-        Button runUpdater=new Button("Run",new RunTestkitConfigHandler());
+        Button runUpdater=new Button("Create local testkit",new RunTestkitConfigHandler());
+        runUpdater.setTitle("Run the generation of a local (codes updated) copy of the testkit in the selected environment.");
         HorizontalPanel buttonsContainer = new HorizontalPanel();
         buttonsContainer.setStyleName("HP");
         buttonsContainer.add(runUpdater);
