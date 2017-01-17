@@ -18,7 +18,11 @@ import gov.nist.toolkit.installation.Installation;
 import gov.nist.toolkit.installation.PropertyServiceManager;
 import gov.nist.toolkit.interactionmapper.InteractionMapper;
 import gov.nist.toolkit.interactionmodel.client.InteractingEntity;
-import gov.nist.toolkit.results.client.*;
+import gov.nist.toolkit.results.client.CodesResult;
+import gov.nist.toolkit.results.client.DocumentEntryDetail;
+import gov.nist.toolkit.results.client.Result;
+import gov.nist.toolkit.results.client.TestInstance;
+import gov.nist.toolkit.results.client.TestLogs;
 import gov.nist.toolkit.results.shared.Test;
 import gov.nist.toolkit.services.client.IdcOrchestrationRequest;
 import gov.nist.toolkit.services.client.RawResponse;
@@ -51,6 +55,7 @@ import gov.nist.toolkit.valregmsg.validation.factories.CommonMessageValidatorFac
 import gov.nist.toolkit.valsupport.client.MessageValidationResults;
 import gov.nist.toolkit.xdsexception.ExceptionUtil;
 import gov.nist.toolkit.xdsexception.client.ToolkitRuntimeException;
+import gov.nist.toolkit.xdstools2.client.GazelleXuaUsername;
 import gov.nist.toolkit.xdstools2.client.util.ToolkitService;
 import gov.nist.toolkit.xdstools2.server.serviceManager.DashboardServiceManager;
 import gov.nist.toolkit.xdstools2.server.serviceManager.GazelleServiceManager;
@@ -59,7 +64,78 @@ import gov.nist.toolkit.xdstools2.shared.RegistryStatus;
 import gov.nist.toolkit.xdstools2.shared.RepositoryStatus;
 import gov.nist.toolkit.xdstools2.shared.command.CommandContext;
 import gov.nist.toolkit.xdstools2.shared.command.InitializationResponse;
-import gov.nist.toolkit.xdstools2.shared.command.request.*;
+import gov.nist.toolkit.xdstools2.shared.command.request.AllTestRequest;
+import gov.nist.toolkit.xdstools2.shared.command.request.BuildIdsTestOrchestrationRequest;
+import gov.nist.toolkit.xdstools2.shared.command.request.BuildIgTestOrchestrationRequest;
+import gov.nist.toolkit.xdstools2.shared.command.request.BuildIigTestOrchestrationRequest;
+import gov.nist.toolkit.xdstools2.shared.command.request.BuildRSNAEdgeTestOrchestrationRequest;
+import gov.nist.toolkit.xdstools2.shared.command.request.BuildRecTestOrchestrationRequest;
+import gov.nist.toolkit.xdstools2.shared.command.request.BuildRegTestOrchestrationRequest;
+import gov.nist.toolkit.xdstools2.shared.command.request.BuildRepTestOrchestrationRequest;
+import gov.nist.toolkit.xdstools2.shared.command.request.BuildRgTestOrchestrationRequest;
+import gov.nist.toolkit.xdstools2.shared.command.request.BuildRigTestOrchestrationRequest;
+import gov.nist.toolkit.xdstools2.shared.command.request.DeleteSimFileRequest;
+import gov.nist.toolkit.xdstools2.shared.command.request.DeleteSingleTestRequest;
+import gov.nist.toolkit.xdstools2.shared.command.request.DeleteSiteRequest;
+import gov.nist.toolkit.xdstools2.shared.command.request.ExecuteSimMessageRequest;
+import gov.nist.toolkit.xdstools2.shared.command.request.FindDocuments2Request;
+import gov.nist.toolkit.xdstools2.shared.command.request.FindDocumentsRequest;
+import gov.nist.toolkit.xdstools2.shared.command.request.FoldersRequest;
+import gov.nist.toolkit.xdstools2.shared.command.request.GeneratePidRequest;
+import gov.nist.toolkit.xdstools2.shared.command.request.GetAllRequest;
+import gov.nist.toolkit.xdstools2.shared.command.request.GetAllSimConfigsRequest;
+import gov.nist.toolkit.xdstools2.shared.command.request.GetAssociationsRequest;
+import gov.nist.toolkit.xdstools2.shared.command.request.GetCollectionRequest;
+import gov.nist.toolkit.xdstools2.shared.command.request.GetDocumentsRequest;
+import gov.nist.toolkit.xdstools2.shared.command.request.GetFoldersRequest;
+import gov.nist.toolkit.xdstools2.shared.command.request.GetInteractionFromModelRequest;
+import gov.nist.toolkit.xdstools2.shared.command.request.GetNewSimulatorRequest;
+import gov.nist.toolkit.xdstools2.shared.command.request.GetObjectsRequest;
+import gov.nist.toolkit.xdstools2.shared.command.request.GetOnDemandDocumentEntryDetailsRequest;
+import gov.nist.toolkit.xdstools2.shared.command.request.GetRawLogsRequest;
+import gov.nist.toolkit.xdstools2.shared.command.request.GetRelatedRequest;
+import gov.nist.toolkit.xdstools2.shared.command.request.GetSectionTestPartFileRequest;
+import gov.nist.toolkit.xdstools2.shared.command.request.GetSelectedMessageRequest;
+import gov.nist.toolkit.xdstools2.shared.command.request.GetSimConfigsRequest;
+import gov.nist.toolkit.xdstools2.shared.command.request.GetSimulatorEventRequest;
+import gov.nist.toolkit.xdstools2.shared.command.request.GetSimulatorStatsRequest;
+import gov.nist.toolkit.xdstools2.shared.command.request.GetSiteNamesByTranTypeRequest;
+import gov.nist.toolkit.xdstools2.shared.command.request.GetSiteNamesRequest;
+import gov.nist.toolkit.xdstools2.shared.command.request.GetSiteRequest;
+import gov.nist.toolkit.xdstools2.shared.command.request.GetSrcStoresDocValRequest;
+import gov.nist.toolkit.xdstools2.shared.command.request.GetStsSamlAssertionMapRequest;
+import gov.nist.toolkit.xdstools2.shared.command.request.GetStsSamlAssertionRequest;
+import gov.nist.toolkit.xdstools2.shared.command.request.GetSubmissionSetAndContentsRequest;
+import gov.nist.toolkit.xdstools2.shared.command.request.GetSubmissionSetsRequest;
+import gov.nist.toolkit.xdstools2.shared.command.request.GetTestDetailsRequest;
+import gov.nist.toolkit.xdstools2.shared.command.request.GetTestLogDetailsRequest;
+import gov.nist.toolkit.xdstools2.shared.command.request.GetTestResultsRequest;
+import gov.nist.toolkit.xdstools2.shared.command.request.GetTestSectionsDAOsRequest;
+import gov.nist.toolkit.xdstools2.shared.command.request.GetTestdataSetListingRequest;
+import gov.nist.toolkit.xdstools2.shared.command.request.GetTestplanAsTextRequest;
+import gov.nist.toolkit.xdstools2.shared.command.request.GetTestsOverviewRequest;
+import gov.nist.toolkit.xdstools2.shared.command.request.GetTransactionErrorCodeRefsRequest;
+import gov.nist.toolkit.xdstools2.shared.command.request.GetTransactionRequest;
+import gov.nist.toolkit.xdstools2.shared.command.request.LifecycleValidationRequest;
+import gov.nist.toolkit.xdstools2.shared.command.request.LoadTestPartContentRequest;
+import gov.nist.toolkit.xdstools2.shared.command.request.MpqFindDocumentsRequest;
+import gov.nist.toolkit.xdstools2.shared.command.request.PatientIdsRequest;
+import gov.nist.toolkit.xdstools2.shared.command.request.ProvideAndRetrieveRequest;
+import gov.nist.toolkit.xdstools2.shared.command.request.RegisterAndQueryRequest;
+import gov.nist.toolkit.xdstools2.shared.command.request.RegisterRequest;
+import gov.nist.toolkit.xdstools2.shared.command.request.ReloadSystemFromGazelleRequest;
+import gov.nist.toolkit.xdstools2.shared.command.request.RenameSimFileRequest;
+import gov.nist.toolkit.xdstools2.shared.command.request.RetrieveDocumentRequest;
+import gov.nist.toolkit.xdstools2.shared.command.request.RetrieveImagingDocSetRequest;
+import gov.nist.toolkit.xdstools2.shared.command.request.RunSingleTestRequest;
+import gov.nist.toolkit.xdstools2.shared.command.request.RunTestRequest;
+import gov.nist.toolkit.xdstools2.shared.command.request.SaveSiteRequest;
+import gov.nist.toolkit.xdstools2.shared.command.request.SendPidToRegistryRequest;
+import gov.nist.toolkit.xdstools2.shared.command.request.SetAssignedSiteForTestSessionRequest;
+import gov.nist.toolkit.xdstools2.shared.command.request.SetToolkitPropertiesRequest;
+import gov.nist.toolkit.xdstools2.shared.command.request.SimConfigRequest;
+import gov.nist.toolkit.xdstools2.shared.command.request.SubmitTestdataRequest;
+import gov.nist.toolkit.xdstools2.shared.command.request.ValidateMessageRequest;
 import org.apache.log4j.Logger;
 
 import javax.servlet.ServletContext;
@@ -70,7 +146,13 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Scanner;
 
 @SuppressWarnings("serial")
 public class ToolkitServiceImpl extends RemoteServiceServlet implements
@@ -1370,28 +1452,30 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements
     }
 
 
-//    public Map<String,String> getStsSamlAssertionsMap(TestInstance testInstance, SiteSpec stsSite, Map<String,String> params) throws Exception {
-//
-//        Map<String,String> assertionMap = null;
-//        for (GazelleXuaUsername username : GazelleXuaUsername.values()) {
-//            String usernameStr = username.name();
-//            params.clear();
-//            params.put("$saml-username$",usernameStr);
-//            try {
-//                String samlAssertion = getStsSamlAssertion(usernameStr, testInstance, stsSite, params);
-//                if (samlAssertion!=null) {
-//                    if (assertionMap == null) {
-//                        assertionMap = new HashMap<String,String>();
-//                    }
-//                    assertionMap.put(usernameStr, samlAssertion);
-//                }
-//            } catch (Exception ex) {
-//                // ignore
-//            }
-//        }
-//
-//        return assertionMap;
-//    }
+    public Map<String,String> getStsSamlAssertionsMap(GetStsSamlAssertionMapRequest request) throws Exception {
+        Map<String,String> assertionMap = null;
+        for (GazelleXuaUsername username : GazelleXuaUsername.values()) {
+            String usernameStr = username.name();
+            if (request.getParams()!=null) {
+                request.getParams().clear();
+                request.getParams().put("$saml-username$", usernameStr);
+            }
+            try {
+                GetStsSamlAssertionRequest getStsSamlAssertionRequest = new GetStsSamlAssertionRequest(request,usernameStr,request.getTestInstance(),request.getSiteSpec(),request.getParams());
+                String samlAssertion = getStsSamlAssertion(getStsSamlAssertionRequest);
+                if (samlAssertion!=null) {
+                    if (assertionMap == null) {
+                        assertionMap = new HashMap<String,String>();
+                    }
+                    assertionMap.put(usernameStr, samlAssertion);
+                }
+            } catch (Exception ex) {
+                // ignore
+            }
+        }
+
+        return assertionMap;
+    }
 
     @Override
     public String clearTestSession(CommandContext context) throws Exception {
