@@ -1,6 +1,7 @@
 package gov.nist.toolkit.testengine.scripts;
 
 import gov.nist.toolkit.commondatatypes.MetadataSupport;
+import gov.nist.toolkit.testengine.Sections;
 import gov.nist.toolkit.utilities.io.Io;
 import gov.nist.toolkit.utilities.xml.OMFormatter;
 import gov.nist.toolkit.utilities.xml.Util;
@@ -38,7 +39,9 @@ import java.util.logging.Logger;
  * Created by oherrmann on 1/11/16.
  */
 public class CodesUpdater {
-    private static final String[] SECTIONS = { "tests", "testdata-registry","testdata-repository","testdata-xdr","utilities", "examples","xcpd", "selftest"};
+    // just to keep track of the testkit structure more easily
+    private static Sections MAIN_SECTIONS;
+    private static final String[] SECTIONS = { "utilities", "examples","xcpd", "selftest"};
     private static final Logger LOGGER = Logger.getLogger(CodesUpdater.class.getName());
 
     private File testkit;
@@ -63,18 +66,24 @@ public class CodesUpdater {
      */
     void execute() {
         error = false;
+        for (Sections section:MAIN_SECTIONS.values()){
+            executeSection(section.getSection());
+        }
         for (int i = 0; i< SECTIONS.length; i++) {
             String section = SECTIONS[i];
+            executeSection(section);
+        }
+    }
 
-            File sectionFile = new File(testkit + File.separator + section);
+    void executeSection(String section){
+        File sectionFile = new File(testkit + File.separator + section);
 
-            try {
-                exploreTests(sectionFile);
-            } catch (Exception e) {
-                error=true;
-                out+="FAILURE.\n"+e.getMessage()+"\n";
-                LOGGER.severe(e.getMessage());
-            }
+        try {
+            exploreTests(sectionFile);
+        } catch (Exception e) {
+            error=true;
+            out+="FAILURE.\n"+e.getMessage()+"\n";
+            LOGGER.severe(e.getMessage());
         }
     }
 
