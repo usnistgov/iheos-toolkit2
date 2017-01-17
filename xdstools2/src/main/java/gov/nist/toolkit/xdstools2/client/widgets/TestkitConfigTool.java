@@ -51,6 +51,7 @@ public class TestkitConfigTool extends Composite {
         initWidget(container);
     }
 
+    /** ClickHandler class for the button trigger the creation of the testkits structure in all environment of the EC. **/
     private class CreateTestkitStructureHandler implements ClickHandler {
         @Override
         public void onClick(ClickEvent clickEvent) {
@@ -69,6 +70,7 @@ public class TestkitConfigTool extends Composite {
         }
     }
 
+    /** Click Handler for the button that trigger the indexation of all existing testkits. **/
     private class IndexTestKitsHandler implements ClickHandler {
 
         @Override
