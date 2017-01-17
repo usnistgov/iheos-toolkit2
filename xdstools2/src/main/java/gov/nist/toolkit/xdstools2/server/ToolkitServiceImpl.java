@@ -36,6 +36,7 @@ import gov.nist.toolkit.simulators.support.od.TransactionUtil;
 import gov.nist.toolkit.sitemanagement.client.Site;
 import gov.nist.toolkit.sitemanagement.client.SiteSpec;
 import gov.nist.toolkit.sitemanagement.client.TransactionOfferings;
+import gov.nist.toolkit.testengine.Sections;
 import gov.nist.toolkit.testengine.scripts.BuildCollections;
 import gov.nist.toolkit.testengine.scripts.CodesUpdater;
 import gov.nist.toolkit.testenginelogging.client.LogFileContentDTO;
@@ -123,7 +124,7 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements
         response.setServletContextName(getServletContextName());
         PropertyServiceManager props = Installation.instance().propertyServiceManager();
         response.setToolkitBaseUrl("http://" + props.getToolkitHost()
-        + ":" + props.getToolkitPort()  + servletContext().getServletContextName() +"Xdstools2.html");
+                + ":" + props.getToolkitPort()  + servletContext().getServletContextName() +"Xdstools2.html");
         return response;
     }
 
@@ -755,13 +756,19 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements
      * @param request
      */
     @Override
-    public void generateTestkitStructure(CommandContext request) /*throws Exception*/{
+    public void generateTestkitStructure(CommandContext request) /*throws Exception*/ {
 //        installCommandContext(request);
         File environmentFile = Installation.instance().environmentFile();
-        for (File environment:environmentFile.listFiles()){
-            if (!doesTestkitExist(environment)){
-                File testkitsFile=new File(environment,"testkits");
-                new File(testkitsFile,"default").mkdirs();
+        for (File environment : environmentFile.listFiles()) {
+            File testkitsFile = new File(environment, "testkits");
+            if (!testkitsFile.exists()) {
+                new File(testkitsFile, "default").mkdirs();
+            }
+            for (Sections section : Sections.values()) {
+                File sectionFile = new File(testkitsFile, section.getSection());
+                if (!sectionFile.exists()){
+                    sectionFile.mkdir();
+                }
             }
         }
     }
