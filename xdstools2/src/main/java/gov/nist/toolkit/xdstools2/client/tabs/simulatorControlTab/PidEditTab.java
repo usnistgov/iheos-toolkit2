@@ -227,6 +227,7 @@ public class PidEditTab extends GenericQueryTab {
 
         buf.append("<b>Selected Patient IDs</b><br />");
         HTML html=new HTML(buf.toString());
+
         pidLbl.setText(pid);
         pidLbl.getElement().setAttribute("pid","pidelement");
         pidLbl.getElement().setId("myid");

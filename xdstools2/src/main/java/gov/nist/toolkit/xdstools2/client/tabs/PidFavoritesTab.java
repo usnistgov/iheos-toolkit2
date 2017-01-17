@@ -8,10 +8,14 @@ import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.cellview.client.CellTable;
 import com.google.gwt.user.cellview.client.Column;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.*;
 import com.google.gwt.view.client.ListDataProvider;
 import com.google.gwt.view.client.MultiSelectionModel;
 import com.google.gwt.view.client.SelectionChangeEvent;
+import elemental.client.Browser;
+import elemental.html.Selection;
+import elemental.ranges.Range;
 import gov.nist.toolkit.configDatatypes.client.Pid;
 import gov.nist.toolkit.configDatatypes.client.PidBuilder;
 import gov.nist.toolkit.configDatatypes.client.TransactionType;
@@ -50,13 +54,14 @@ public class PidFavoritesTab extends GenericQueryTab {
     ListDataProvider<Pid> model = new ListDataProvider<Pid>();
 
     private TextArea pidBox = new TextArea();
-    private HTML selectedPids = new HTML();
+    private VerticalPanel selectedPids = new VerticalPanel();
     private VerticalPanel assigningAuthorityPanel = new VerticalPanel();
     Map<Button, String> authorityButtons = new HashMap<>();
 
     private List<String> assigningAuthorities = null;
     private Set<Pid> configuredPids=new HashSet<Pid>();
 
+    private Button copyBtn;
     private Button deleteButton;
 
     public PidFavoritesTab(String tabName) {
@@ -264,13 +269,41 @@ public class PidFavoritesTab extends GenericQueryTab {
     }
 
     void updatePidsSelected(Collection<Pid> pids) {
+        selectedPids.clear();
         StringBuilder buf = new StringBuilder();
 
         buf.append("<b>Selected Patient IDs</b><br />");
-        for (Pid pid : pids) {
-            buf.append(pid.asString()).append("<br />");
+        HTML html=new HTML(buf.toString());
+        selectedPids.add(html);
+
+        int i=0;
+        for (final Pid pid : pids) {
+            i++;
+            Label newLabel=new Label(pid.asString());
+            newLabel.getElement().setAttribute("pid"+i,"pidelement"+i);
+            newLabel.getElement().setId("myid"+i);
+            Button copyBtn=new Button("Copy PID");
+            final int finalI = i;
+            copyBtn.addClickHandler(new ClickHandler() {
+                @Override
+                public void onClick(ClickEvent clickEvent) {
+                    final Selection selection = Browser.getWindow().getSelection();
+                    final Range range = Browser.getDocument().createRange();
+                    range.selectNodeContents(Browser.getDocument().getElementById("myid"+ finalI));
+                    selection.removeAllRanges();
+                    selection.addRange(range);
+                    if (!Browser.getWindow().getDocument().execCommand("copy", false, "")){
+                        Window.alert("Copy does not work your browser. Try to update it to its latest version, or use another browser.\n" +
+                                "Copy is compatible with: Chrome (v.43 or later), Firefox (v.41 or later), IE9, Opera (v.29 or later) and Safari (v.10 or later).");
+                    }
+                    selection.removeAllRanges();
+                }
+            });
+            HorizontalPanel horizontalPanel=new HorizontalPanel();
+            horizontalPanel.add(newLabel);
+            horizontalPanel.add(copyBtn);
+            selectedPids.add(horizontalPanel);
         }
-        selectedPids.setHTML(buf.toString());
     }
 
     void updateFavoritesFromModel() {
@@ -313,7 +346,7 @@ public class PidFavoritesTab extends GenericQueryTab {
         for (Pid pid : pids) {
             model.getList().remove(pid);
         }
-        selectedPids.setHTML("");
+        selectedPids.clear();
         selectionModel.clear();
         updateFavoritesFromModel();
     }

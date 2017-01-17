@@ -21,7 +21,7 @@ public class PidSet implements Serializable {
         boolean empty = true;
 
         for (Pid pid : pids) {
-            if (!empty) buf.append(',');
+            if (!empty) buf.append('\n');
             empty = false;
             buf.append(pid.asParsableString());
         }
