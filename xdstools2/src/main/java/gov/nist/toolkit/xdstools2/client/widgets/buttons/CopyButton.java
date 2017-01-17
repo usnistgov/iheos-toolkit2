@@ -31,21 +31,16 @@ public class CopyButton extends PushButton {
 
         @Override
         public void onClick(ClickEvent event) {
-            new ClickHandler() {
-                @Override
-                public void onClick(ClickEvent clickEvent) {
-                    final Selection selection = Browser.getWindow().getSelection();
-                    final Range range = Browser.getDocument().createRange();
-                    range.selectNodeContents(Browser.getDocument().getElementById(elementId));
-                    selection.removeAllRanges();
-                    selection.addRange(range);
-                    if (!Browser.getWindow().getDocument().execCommand("copy", false, "")){
-                        Window.alert("Copy does not work with your browser. Try to update it to its latest version, or use another browser.\n" +
-                                "Copy is compatible with: Chrome (v.43 or later), Firefox (v.41 or later), IE9, Opera (v.29 or later) and Safari (v.10 or later).");
-                    }
-                    selection.removeAllRanges();
-                }
-            };
+            final Selection selection = Browser.getWindow().getSelection();
+            final Range range = Browser.getDocument().createRange();
+            range.selectNodeContents(Browser.getDocument().getElementById(elementId));
+            selection.removeAllRanges();
+            selection.addRange(range);
+            if (!Browser.getWindow().getDocument().execCommand("copy", false, "")){
+                Window.alert("Copy does not work with your browser. Try to update it to its latest version, or use another browser.\n" +
+                        "Copy is compatible with: Chrome (v.43 or later), Firefox (v.41 or later), IE9, Opera (v.29 or later) and Safari (v.10 or later).");
+            }
+            selection.removeAllRanges();
         }
     }
 }
