@@ -92,9 +92,10 @@ public class GetSubmissionSetAndContentsSim extends GetSubmissionSetAndContents 
 				docEntries = mc.docEntryCollection.filterByConfCode(conf_code, docEntries);
 			if (entry_type != null) {
 				docEntries = mc.docEntryCollection.filterByObjectType(entry_type, docEntries);
-				if (docEntries==null || (docEntries!=null && docEntries.isEmpty())) {
-					return new Metadata();
-				}
+				// could be other things
+//				if (docEntries==null || (docEntries!=null && docEntries.isEmpty())) {
+//					return new Metadata();
+//				}
 			}
 
 		} catch (Exception e) {
