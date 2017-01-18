@@ -177,8 +177,16 @@ class IgOrchestrationBuilder {
         boolean reuse = false  // updated as we progress
 
         if (!request.isUseExistingState()) {
-            api.deleteSimulator(rgSimId1);
-            api.deleteSimulator(rgSimId2);
+            try {
+                api.deleteSimulator(rgSimId1);
+            } catch (Exception e) {
+                // ignore
+            }
+            try {
+                api.deleteSimulator(rgSimId2);
+            } catch (Exception e) {
+                // ignore
+            }
         }
 
         if (api.simulatorExists(rgSimId1)) {
