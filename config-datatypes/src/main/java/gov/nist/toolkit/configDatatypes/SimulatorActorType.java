@@ -47,6 +47,10 @@ public enum SimulatorActorType {
      */
     RESPONDING_GATEWAY("rg"),
     /**
+     * Responding Gateway - with ODDS and registry
+     */
+    ON_DEMAND_RESPONDING_GATEWAY("odrg"),
+    /**
      * Responding Imaging Gateway
      */
     RESPONDING_IMAGING_GATEWAY("rig"),

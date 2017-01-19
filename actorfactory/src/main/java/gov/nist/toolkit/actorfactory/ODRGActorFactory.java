@@ -12,26 +12,22 @@ import gov.nist.toolkit.envSetting.EnvSetting;
 import gov.nist.toolkit.sitemanagement.client.Site;
 import gov.nist.toolkit.sitemanagement.client.TransactionBean;
 import gov.nist.toolkit.sitemanagement.client.TransactionBean.RepositoryType;
-import gov.nist.toolkit.xdsexception.ExceptionUtil;
 import gov.nist.toolkit.xdsexception.NoSessionException;
 import gov.nist.toolkit.xdsexception.NoSimulatorException;
 import gov.nist.toolkit.xdsexception.client.EnvironmentNotSelectedException;
-import org.apache.log4j.Logger;
 
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-public class RGActorFactory extends AbstractActorFactory {
-   static private final Logger logger = Logger.getLogger(RGActorFactory.class);
-
+public class ODRGActorFactory extends AbstractActorFactory {
    SimId newID = null;
 
-   static private final String homeCommunityIdBase = "urn:oid:1.1.4567334.1.";
-   static private int homeCommunityIdIncr = 1;
+   static final String homeCommunityIdBase = "urn:oid:1.1.4567334.2.";
+   static int homeCommunityIdIncr = 1;
 
-   static private String getNewHomeCommunityId() {
+   static String getNewHomeCommunityId() {
       return homeCommunityIdBase + homeCommunityIdIncr++ ;
    }
 
@@ -43,7 +39,7 @@ public class RGActorFactory extends AbstractActorFactory {
       boolean configureBase)
          throws EnvironmentNotSelectedException, NoSessionException {
       this.newID = newID;
-      ActorType actorType = ActorType.RESPONDING_GATEWAY;
+      ActorType actorType = ActorType.OD_RESPONDING_GATEWAY;
       SimulatorConfig sc;
       if (configureBase) sc = configureBaseElements(actorType, newID);
       else sc = new SimulatorConfig();
@@ -74,16 +70,16 @@ public class RGActorFactory extends AbstractActorFactory {
          new RegistryActorFactory().buildNew(simm, simId, true).getConfig(0); // was
                                                                               // false
 
-      // This needs to be grouped with a Document Repository also
-      SimulatorConfig repositoryConfig =
-         new RepositoryActorFactory().buildNew(simm, simId, true).getConfig(0); // was
+//      // This needs to be grouped with an ODDS also
+      SimulatorConfig oddsConfig =
+         new OnDemandDocumentSourceActorFactory().buildNew(simm, simId, true).getConfig(0); // was
                                                                                 // false
       sc.add(registryConfig); // this adds the individual
                               // SimulatorConfigElements to the RG
                               // SimulatorConfig
-      // their identity as belonging to the Registry or Repository is lost
+      // their identity as belonging to the Registry or RG or ODDS is lost
       // which means the SimServlet cannot find them when a message comes in
-      sc.add(repositoryConfig);
+      sc.add(oddsConfig);
       
       return new Simulator(sc);
    }
@@ -129,12 +125,11 @@ public class RGActorFactory extends AbstractActorFactory {
          site.setHome(sc.get(SimulatorProperties.homeCommunityId).asString());
 
          new RegistryActorFactory().getActorSite(sc, site);
-         new RepositoryActorFactory().getActorSite(sc, site);
+         new OnDemandDocumentSourceActorFactory().getActorSite(sc, site);
 
          return site;
       } catch (Throwable t) {
          sc.isExpired(true);
-         logger.error(ExceptionUtil.exception_details(t));
          throw new NoSimulatorException("Not Defined", t);
       }
    }
@@ -144,7 +139,7 @@ public class RGActorFactory extends AbstractActorFactory {
       List <TransactionType> tt = new ArrayList <TransactionType>();
       tt.addAll(incomingTransactions);
       tt.addAll(new RegistryActorFactory().getIncomingTransactions());
-      tt.addAll(new RepositoryActorFactory().getIncomingTransactions());
+      tt.addAll(new OnDemandDocumentSourceActorFactory().getIncomingTransactions());
       return tt;
    }
 

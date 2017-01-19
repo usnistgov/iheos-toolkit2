@@ -337,12 +337,14 @@ public class SimulatorControlTab extends GenericQueryTab {
 				SimulatorConfig config = getData();
 
 //							GenericQueryTab editTab;
-                if (ActorType.ONDEMAND_DOCUMENT_SOURCE.getShortName().equals(config.getActorType())) {
+                if (ActorType.ONDEMAND_DOCUMENT_SOURCE.getShortName().equals(config.getActorType()) ||
+                        ActorType.OD_RESPONDING_GATEWAY.getShortName().equals(config.getActorType())  ) {
                     // This simulator requires content state initialization
                     OddsEditTab editTab;
                     editTab = new OddsEditTab(self, config);
                     editTab.onTabLoad(true, "ODDS");
-                } else {
+                }
+                else {
                     // Generic state-less type simulators
                     GenericQueryTab editTab = new EditTab(self, config);
                     editTab.onTabLoad(true, "SimConfig");

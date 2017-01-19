@@ -43,7 +43,7 @@ public abstract class AbstractActorFactory {
 	public abstract List<TransactionType> getIncomingTransactions();
 	//	protected abstract void addConfigElements(SimulatorConfig asc);
 
-	static final Map<String /* ActorType.name */, AbstractActorFactory> factories = new HashMap<String, AbstractActorFactory>();
+	static private final Map<String /* ActorType.name */, AbstractActorFactory> factories = new HashMap<String, AbstractActorFactory>();
 	static {
 		factories.put(ActorType.REGISTRY.getName(),           		new RegistryActorFactory());
 		factories.put(ActorType.REPOSITORY.getName(),         		new RepositoryActorFactory());
@@ -54,6 +54,7 @@ public abstract class AbstractActorFactory {
 		factories.put(ActorType.INITIATING_IMAGING_GATEWAY.getName(), new IigActorFactory());
 		factories.put(ActorType.RESPONDING_IMAGING_GATEWAY.getName(), new RigActorFactory());
 		factories.put(ActorType.RESPONDING_GATEWAY.getName(),  		new RGActorFactory());
+		factories.put(ActorType.OD_RESPONDING_GATEWAY.getName(),  		new ODRGActorFactory());
       factories.put(ActorType.XDR_DOC_SRC.getName(), 				   new XdrDocSrcActorFactory());
       factories.put(ActorType.DOC_CONSUMER.getName(), 			   new ConsumerActorFactory());
       factories.put(ActorType.IMAGING_DOC_CONSUMER.getName(),         new ImgConsumerActorFactory());
