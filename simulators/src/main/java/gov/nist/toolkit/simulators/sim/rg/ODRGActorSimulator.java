@@ -1,38 +1,40 @@
 package gov.nist.toolkit.simulators.sim.rg;
 
-import java.io.IOException;
-
-import org.apache.log4j.Logger;
-
-import gov.nist.toolkit.actorfactory.client.*;
+import gov.nist.toolkit.actorfactory.client.NoSimException;
+import gov.nist.toolkit.actorfactory.client.SimId;
+import gov.nist.toolkit.actorfactory.client.SimulatorConfig;
+import gov.nist.toolkit.actorfactory.client.SimulatorStats;
 import gov.nist.toolkit.configDatatypes.client.TransactionType;
 import gov.nist.toolkit.simulators.servlet.SimServlet;
 import gov.nist.toolkit.simulators.sim.reg.RegistryActorSimulator;
 import gov.nist.toolkit.simulators.sim.reg.store.RegIndex;
-import gov.nist.toolkit.simulators.sim.rep.RepositoryActorSimulator;
+import gov.nist.toolkit.simulators.sim.rep.od.OddsActorSimulator;
 import gov.nist.toolkit.simulators.support.BaseDsActorSimulator;
 import gov.nist.toolkit.simulators.support.DsSimCommon;
 import gov.nist.toolkit.valsupport.engine.MessageValidatorEngine;
+import org.apache.log4j.Logger;
+
+import java.io.IOException;
 
 /**
  *
  */
-public class RGADActorSimulator extends BaseDsActorSimulator {
-    static final Logger logger = Logger.getLogger(RGADActorSimulator.class);
+public class ODRGActorSimulator extends BaseDsActorSimulator {
+    static final Logger logger = Logger.getLogger(ODRGActorSimulator.class);
     RegistryActorSimulator reg;
-    RepositoryActorSimulator rep;
+    OddsActorSimulator odds;
     RGActorSimulator rg;
 
-    public RGADActorSimulator() {
-        rep = new RepositoryActorSimulator();
+    public ODRGActorSimulator() {
+        odds = new OddsActorSimulator();
         reg = new RegistryActorSimulator();
         rg = new RGActorSimulator();
     }
 
     @Override
     public boolean run(TransactionType transactionType, MessageValidatorEngine mvc, String validation) throws IOException {
-        if (rep.supports(transactionType) || transactionType.isIdentifiedBy("xdrpr"))
-            return rep.run(transactionType, mvc, validation);
+        if (odds.supports(transactionType))
+            return odds.run(transactionType, mvc, validation);
         if (reg.supports(transactionType))
             return reg.run(transactionType, mvc, validation);
         return rg.run(transactionType, mvc, validation);
@@ -40,14 +42,14 @@ public class RGADActorSimulator extends BaseDsActorSimulator {
 
     @Override
     public void init() {
-        rep.init();
+        odds.init();
         reg.init();
         rg.init();
     }
 
     @Override
    public void init(DsSimCommon c, SimulatorConfig config) {
-        rep.init(c, config);
+        odds.init(c, config);
         reg.init(c, config);
         rg.init(c, config);
     }
@@ -60,28 +62,28 @@ public class RGADActorSimulator extends BaseDsActorSimulator {
 
     @Override
     public void onCreate(SimulatorConfig config) {
-        rep.onCreate(config);
+        odds.onCreate(config);
         reg.onCreate(config);
         rg.onCreate(config);
     }
 
     @Override
     public void onDelete(SimulatorConfig config) {
-        rep.onDelete(config);
+        odds.onDelete(config);
         reg.onDelete(config);
         rg.onDelete(config);
     }
 
     @Override
     public void onServiceStart(SimulatorConfig config) {
-        rep.onServiceStart(config);
+        odds.onServiceStart(config);
         reg.onServiceStart(config);
         rg.onServiceStart(config);
     }
 
     @Override
     public void onServiceStop(SimulatorConfig config) {
-        rep.onServiceStop(config);
+        odds.onServiceStop(config);
         reg.onServiceStop(config);
         rg.onServiceStop(config);
     }
