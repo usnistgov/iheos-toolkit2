@@ -291,3 +291,21 @@ h3 {
   margin-left:2px;
   margin-bottom: 10px;
 }
+
+.copyBtn {
+  background: white;
+  margin-left:5px;
+}
+.copyBtn:hover{
+  cursor: pointer;
+}
+
+.loading {
+  cursor: wait;
+}
+.HP{
+  margin-top:10px;
+}
+.HP .gwt-Button {
+  margin-right: 10px;
+}

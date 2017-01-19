@@ -18,7 +18,7 @@ public class SimulatorConfigIoJackson implements SimulatorConfigIo{
                 ObjectMapper mapper = new ObjectMapper();
                 mapper.writeValue(new File(filename), sc);
             } catch (Exception e) {
-                throw new Exception("Simulator save failed\n", e);
+                throw new Exception("Simulator save failed - file name is " + filename + "\n", e);
             }
         }
 
@@ -27,7 +27,7 @@ public class SimulatorConfigIoJackson implements SimulatorConfigIo{
                 ObjectMapper mapper = new ObjectMapper();
                 return mapper.readValue(new File(filename), SimulatorConfig.class);
             } catch (Exception e) {
-                throw new Exception("Simulator load failed\n", e);
+                throw new Exception("Simulator load failed - file name is " + filename + "\n", e);
             }
         }
 

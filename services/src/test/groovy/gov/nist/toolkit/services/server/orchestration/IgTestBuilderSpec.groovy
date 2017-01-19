@@ -44,5 +44,12 @@ class IgTestBuilderSpec extends Specification {
 
         then:
         rawResponse instanceof IgOrchestrationResponse
+
+        when:
+        IgOrchestrationResponse resp = (IgOrchestrationResponse) rawResponse
+        println resp.simulatorConfigs.get(0)
+
+        then:
+        true
     }
 }

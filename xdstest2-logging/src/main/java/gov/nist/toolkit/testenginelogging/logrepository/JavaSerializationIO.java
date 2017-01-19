@@ -10,7 +10,7 @@ import org.apache.log4j.Logger;
 import java.io.*;
 
 public class JavaSerializationIO implements ILoggerIO  {
-	Logger logger = Logger.getLogger(JavaSerializationIO.class);
+	private Logger logger = Logger.getLogger(JavaSerializationIO.class);
 
 	/* (non-Javadoc)
 	 * @see gov.nist.toolkit.testenginelogging.logrepository.ILoggerIO#logOut(gov.nist.toolkit.results.client.XdstestLogId, gov.nist.toolkit.testengine.LogMapDTO, java.io.File)

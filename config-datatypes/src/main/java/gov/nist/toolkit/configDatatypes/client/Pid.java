@@ -56,11 +56,11 @@ public class Pid implements Serializable {
     }
 
     public boolean validate() {
-        if (!isAdProperOid()) return false;
-        return isIdProper();
+        if (!adProperOid()) return false;
+        return idProper();
     }
 
-    public boolean isAdProperOid() {
+    private boolean adProperOid() {
         if (ad == null) return false;
         for (int i=0; i<ad.length(); i++) {
             char c = ad.charAt(i);
@@ -71,7 +71,7 @@ public class Pid implements Serializable {
         return true;
     }
 
-    boolean isIdProper() {
+    private boolean idProper() {
         if (id == null) return false;
         for (int i=0; i<id.length(); i++) {
             char c = id.charAt(i);

@@ -321,7 +321,7 @@ public class SimulatorControlTab extends GenericQueryTab {
             public void onClick(ClickEvent clickEvent) {
                 SimulatorConfig config = getData();
                 PidEditTab editTab = new PidEditTab(config);
-                editTab.onTabLoad(true, "PID-Edit");
+                editTab.onTabLoad(true, "PIDEdit");
             }
         });
         buttonPanel.add(pidImg);

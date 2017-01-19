@@ -7,7 +7,7 @@ public class DirectRepository {
 	LogRepository log;
 	
 //	public DirectRepository(String user) throws IOException {
-//		log = new LogRepositoryFactory().getRepository(Installation.instance().directSendLogs(), user, LogRepositoryFactory.IO_format.JAVA_SERIALIZATION, LogRepositoryFactory.Id_type.TIME_ID, null);
+//		log = new LogRepositoryFactory().getLogRepository(Installation.instance().directSendLogs(), user, LogRepositoryFactory.IO_format.JAVA_SERIALIZATION, LogRepositoryFactory.Id_type.TIME_ID, null);
 //	}
 
 	public LogRepository getLogRepository() {

@@ -71,7 +71,7 @@ public class ToolConfigTab extends GenericQueryTab {
 		container.add(separator);
 
 		HTML subtitle2 = new HTML();
-		subtitle2.setHTML("<br/><br/>");
+		subtitle2.setHTML("<br/>");
 		container.add(subtitle2);
 
 		container.add(loadAllGazelleConfigsBtn);
