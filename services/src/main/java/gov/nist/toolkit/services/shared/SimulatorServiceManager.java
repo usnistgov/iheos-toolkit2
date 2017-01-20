@@ -217,7 +217,9 @@ public class SimulatorServiceManager extends CommonService {
 
 			String body = new String(Io.bytesFromFile(bodyFile));
 
-			return new Message(Io.stringFromFile(headerFile) + body);
+			return new Message(
+					((headerFile.exists()) ? Io.stringFromFile(headerFile) : "")
+							+ body);
 		} catch (Exception e) {
 			return new Message("Error: " + e.getMessage());
 		}
