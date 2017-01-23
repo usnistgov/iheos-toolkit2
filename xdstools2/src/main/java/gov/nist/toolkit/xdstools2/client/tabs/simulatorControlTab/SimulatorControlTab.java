@@ -330,7 +330,7 @@ public class SimulatorControlTab extends GenericQueryTab {
             Image editRgImg = new Image("icons2/edit-rg.png");
             editRgImg.setTitle("Edit RG Simulator Configuration");
             editRgImg.setAltText("A pencil writing.");
-            applyImgIconStyle(editRgImg,12);
+            applyImgIconStyle(editRgImg);
             editRgImg.addClickHandler(new ClickHandlerData<SimulatorConfig>(config) {
                 @Override
                 public void onClick(ClickEvent clickEvent) {
@@ -345,7 +345,7 @@ public class SimulatorControlTab extends GenericQueryTab {
             Image editOdImg = new Image("icons2/edit-od.png");
             editOdImg.setTitle("Edit ODDS Simulator Configuration");
             editOdImg.setAltText("A pencil writing.");
-            applyImgIconStyle(editOdImg,12);
+            applyImgIconStyle(editOdImg);
             editOdImg.addClickHandler(new ClickHandlerData<SimulatorConfig>(config) {
                 @Override
                 public void onClick(ClickEvent clickEvent) {
