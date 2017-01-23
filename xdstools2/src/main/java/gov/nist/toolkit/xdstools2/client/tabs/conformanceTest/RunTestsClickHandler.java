@@ -5,8 +5,10 @@ import com.google.gwt.event.dom.client.ClickHandler;
 import gov.nist.toolkit.results.client.TestInstance;
 import gov.nist.toolkit.sitemanagement.client.SiteSpec;
 import gov.nist.toolkit.xdstools2.client.command.command.GetStsSamlAssertionCommand;
+import gov.nist.toolkit.xdstools2.client.command.command.GetStsSamlAssertionMapCommand;
 import gov.nist.toolkit.xdstools2.client.widgets.PopupMessage;
 import gov.nist.toolkit.xdstools2.client.widgets.buttons.AbstractOrchestrationButton;
+import gov.nist.toolkit.xdstools2.shared.command.request.GetStsSamlAssertionMapRequest;
 import gov.nist.toolkit.xdstools2.shared.command.request.GetStsSamlAssertionRequest;
 
 import java.util.ArrayList;
@@ -40,26 +42,44 @@ class RunTestsClickHandler implements ClickHandler, TestIterator {
         testTarget.getSiteToIssueTestAgainst().setTls(orchInit.isTls());
 
         if (orchInit.isSaml()) {
-            // Get STS SAML Assertion once for the entire test collection
+            SiteSpec stsSpec = new SiteSpec("GazelleSts");
             TestInstance testInstance = new TestInstance("GazelleSts");
             testInstance.setSection("samlassertion-issue");
-            SiteSpec stsSpec = new SiteSpec("GazelleSts");
             Map<String, String> params = new HashMap<>();
-            String xuaUsername = "Xuagood";
-            params.put("$saml-username$", xuaUsername);
-            try {
-                new GetStsSamlAssertionCommand() {
-                    @Override
-                    public void onComplete(String result) {
-                        testTarget.getSiteToIssueTestAgainst().setSaml(true);
-                        testTarget.getSiteToIssueTestAgainst().setStsAssertion(result);
 
-                        onDone(null);
-                    }
-                }.run(new GetStsSamlAssertionRequest(conformanceTestTab.getCommandContext(), xuaUsername, testInstance, stsSpec, params));
-            } catch (Exception ex) {
-                testsHeaderView.showRunningMessage(false);
-                new PopupMessage("runAll: Client call failed: getStsSamlAssertion: " + ex.toString());
+            if (orchInit.isXuaOption()) {
+                testTarget.getSiteToIssueTestAgainst().setSaml(true);
+
+                try {
+                    new GetStsSamlAssertionMapCommand() {
+                        @Override
+                        public void onComplete(Map<String, String> result) {
+                            orchInit.setSamlAssertionsMap(result);
+                            onDone(null);
+                        }
+                    }.run(new GetStsSamlAssertionMapRequest(conformanceTestTab.getCommandContext(),testInstance,stsSpec,params));
+
+                } catch (Exception ex) {
+                    testsHeaderView.showRunningMessage(false);
+                }
+            } else {
+                // Get STS SAML Assertion once for the entire test collection
+                String xuaUsername = "Xuagood";
+                params.put("$saml-username$", xuaUsername);
+                try {
+                    new GetStsSamlAssertionCommand() {
+                        @Override
+                        public void onComplete(String result) {
+                            testTarget.getSiteToIssueTestAgainst().setSaml(true);
+                            testTarget.getSiteToIssueTestAgainst().setStsAssertion(result);
+
+                            onDone(null);
+                        }
+                    }.run(new GetStsSamlAssertionRequest(conformanceTestTab.getCommandContext(), xuaUsername, testInstance, stsSpec, params));
+                } catch (Exception ex) {
+                    testsHeaderView.showRunningMessage(false);
+                    new PopupMessage("runAll: Client call failed: getStsSamlAssertion: " + ex.toString());
+                }
             }
         } else {
             // No SAML

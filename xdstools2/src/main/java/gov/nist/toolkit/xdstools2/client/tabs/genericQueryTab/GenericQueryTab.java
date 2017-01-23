@@ -375,6 +375,17 @@ public abstract class GenericQueryTab  extends ToolWindow {
             siteSelectionPanel.getFlexCellFormatter().setVerticalAlignment(0,0,HasVerticalAlignment.ALIGN_TOP);
             siteSelectionPanel.setWidget(0, 0, new HTML("<div style='margin-top:2px;font-size:1.1em;'>Send to</div>"));
 
+            Image infoImage = new Image("icons/info.png");
+            infoImage.setTitle("Help with system selection");
+            infoImage.addClickHandler(new ClickHandler() {
+                @Override
+                public void onClick(ClickEvent clickEvent) {
+                    Window.open("https://github.com/usnistgov/iheos-toolkit2/wiki/System-selection-issues", "_blank","");
+                }
+            });
+
+            siteSelectionPanel.setWidget(0, 1, infoImage);
+
             FlexTable siteGrid = new FlexTable();
             siteSelectionPanel.getFlexCellFormatter().setVerticalAlignment(0,1,HasVerticalAlignment.ALIGN_TOP);
             siteSelectionPanel.setWidget(1, 1, siteGrid);
