@@ -421,7 +421,8 @@ public abstract class BasicTransaction  {
 		}
 
 		if (topElementName != null && registry_result != null) {
-			if (!topElementName.equals(registry_result.getLocalName())) {
+			String topElementLocalName = registry_result.getLocalName();
+			if (!"Fault".equals(topElementLocalName) && !topElementName.equals(topElementLocalName)) {
 				s_ctx.set_error("Message top level element must be " + topElementName + " found " + registry_result.getLocalName() + " instead");
 				step_failure = true;
 				return;
