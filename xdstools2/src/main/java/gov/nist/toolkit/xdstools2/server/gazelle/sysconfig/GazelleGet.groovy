@@ -39,8 +39,8 @@ class GazelleGet {
 
     String getSingleConfig(String systemName) {
         File configFile = singleConfigFile(systemName)
-        if (configFile.exists())
-            return configFile.text
+//        if (configFile.exists())
+//            return configFile.text
         String config = gazellePull.getSingleConfig(systemName)
         configFile.write(config)
         return config
