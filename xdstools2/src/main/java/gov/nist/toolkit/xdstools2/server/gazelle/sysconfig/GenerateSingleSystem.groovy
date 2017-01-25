@@ -52,6 +52,9 @@ class GenerateSingleSystem {
         getter.getSingleConfig(systemName)  // load into cache
         log.append("Gazelle System: ${systemName}").append(nl)
 
+        getter.getAllOids()
+        getter.getV2Responder()
+
         cparser.parse(getter.singleConfigFile(systemName).toString())
         oparser.parse(getter.oidsFile().toString())
         vparser.parse(getter.v2ResponderFile().toString())
@@ -240,8 +243,10 @@ class GenerateSingleSystem {
             if (!transactionType)
                 transactionType = TransactionType.find(transactionId)
 
-            if (!transactionType)
+            if (!transactionType) {
                 log.append('Error: do not understand transaction id ').append(transactionId).append(nl)
+                return  // groovy for continue inside iteration
+            }
             //*************************************************************
 
 
