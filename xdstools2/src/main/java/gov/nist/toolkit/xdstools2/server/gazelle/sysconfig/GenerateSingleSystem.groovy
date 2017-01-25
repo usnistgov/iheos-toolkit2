@@ -220,7 +220,7 @@ class GenerateSingleSystem {
             if (!ActorTransactionValidation.accepts(transactionId, config.actor)) {
                 log.append(ActorTransactionValidation.errorMessage(transactionId, config.actor)).append(nl)
                 hasErrors = true
-               // return
+                return
             }
 
             //*************************************************************
