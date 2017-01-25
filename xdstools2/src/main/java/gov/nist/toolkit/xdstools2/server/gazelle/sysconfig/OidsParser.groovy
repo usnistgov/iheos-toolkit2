@@ -35,7 +35,7 @@ class OidsParser {
     }
 
     String getOid(String system, String type) {
-        OidDef odef = values.find { OidDef ele -> ele.system.compareToIgnoreCase(system) && ele.type.compareToIgnoreCase(type) }
+        OidDef odef = values.find { OidDef ele -> ele.system == system && ele.type == type }
         if (odef == null) return null;
         return odef.oid
     }
