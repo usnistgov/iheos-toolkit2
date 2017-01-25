@@ -263,7 +263,7 @@ class GenerateSingleSystem {
             }
 
             V2ResponderDef responderDef = vparser.get(system)
-            if (responderDef && !responderDef.secured) {
+            if (responderDef) {
                 pifHost = responderDef.host
                 pifPort = responderDef.port
             }

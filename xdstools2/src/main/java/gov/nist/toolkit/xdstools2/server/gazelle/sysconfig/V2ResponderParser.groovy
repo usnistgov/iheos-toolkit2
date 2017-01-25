@@ -19,7 +19,7 @@ class V2ResponderParser {
     V2ResponderDef get(String system) {
         if (system == null) return null;
         for (V2ResponderDef value : values) {
-            if (system == value.system) {
+            if (system == value.system && !value.secured) {
                 return value
             }
         }
