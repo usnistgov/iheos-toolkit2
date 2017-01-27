@@ -1,9 +1,9 @@
 package gov.nist.toolkit.simulators.support.od;
 
 import gov.nist.toolkit.actorfactory.SimDb;
-import gov.nist.toolkit.actorfactory.client.SimId;
-import gov.nist.toolkit.actorfactory.client.SimulatorConfig;
-import gov.nist.toolkit.actortransaction.client.ActorType;
+import gov.nist.toolkit.actortransaction.shared.SimId;
+import gov.nist.toolkit.simcommon.shared.config.SimulatorConfig;
+import gov.nist.toolkit.actortransaction.shared.ActorType;
 import gov.nist.toolkit.commondatatypes.MetadataSupport;
 import gov.nist.toolkit.configDatatypes.SimulatorProperties;
 import gov.nist.toolkit.results.client.*;
@@ -12,7 +12,7 @@ import gov.nist.toolkit.session.server.serviceManager.XdsTestServiceManager;
 import gov.nist.toolkit.simcommon.shared.config.SimulatorConfigElement;
 import gov.nist.toolkit.simulators.sim.rep.RepIndex;
 import gov.nist.toolkit.simulators.support.StoredDocument;
-import gov.nist.toolkit.sitemanagement.client.SiteSpec;
+import gov.nist.toolkit.actortransaction.shared.SiteSpec;
 import gov.nist.toolkit.testkitutilities.TestDefinition;
 import gov.nist.toolkit.testkitutilities.TestKitSearchPath;
 import gov.nist.toolkit.utilities.xml.Util;

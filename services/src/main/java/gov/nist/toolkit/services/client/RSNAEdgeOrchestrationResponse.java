@@ -3,10 +3,7 @@
  */
 package gov.nist.toolkit.services.client;
 
-import gov.nist.toolkit.actorfactory.client.SimulatorConfig;
-
-import java.util.ArrayList;
-import java.util.List;
+import gov.nist.toolkit.simcommon.shared.config.SimulatorConfig;
 
 /**
  *

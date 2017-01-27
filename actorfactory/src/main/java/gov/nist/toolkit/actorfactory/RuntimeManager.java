@@ -1,9 +1,9 @@
 package gov.nist.toolkit.actorfactory;
 
 import gov.nist.toolkit.actorfactory.client.NoSimException;
-import gov.nist.toolkit.actorfactory.client.SimId;
-import gov.nist.toolkit.actorfactory.client.SimulatorConfig;
-import gov.nist.toolkit.actortransaction.client.ActorType;
+import gov.nist.toolkit.actortransaction.shared.SimId;
+import gov.nist.toolkit.simcommon.shared.config.SimulatorConfig;
+import gov.nist.toolkit.actortransaction.shared.ActorType;
 import gov.nist.toolkit.xdsexception.client.ToolkitRuntimeException;
 
 import org.apache.commons.lang3.StringUtils;

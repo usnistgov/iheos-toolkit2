@@ -1,4 +1,4 @@
-import gov.nist.toolkit.actorfactory.client.SimId
+import gov.nist.toolkit.actortransaction.client.SimId
 import gov.nist.toolkit.simpleService.Main
 import SimIdBean
 import org.glassfish.grizzly.http.server.HttpServer

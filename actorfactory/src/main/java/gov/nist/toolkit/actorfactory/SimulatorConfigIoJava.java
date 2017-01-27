@@ -1,6 +1,6 @@
 package gov.nist.toolkit.actorfactory;
 
-import gov.nist.toolkit.actorfactory.client.SimulatorConfig;
+import gov.nist.toolkit.simcommon.shared.config.SimulatorConfig;
 import org.apache.log4j.Logger;
 
 import java.io.*;

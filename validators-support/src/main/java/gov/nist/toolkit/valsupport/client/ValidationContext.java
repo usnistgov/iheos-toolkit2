@@ -127,25 +127,6 @@ public class ValidationContext  implements Serializable, IsSerializable {
 	public List<MetadataPattern> metadataPatterns = new ArrayList<MetadataPattern>();
     public String wsAction;
 
-
-	// Since content can be nested (CCDA inside XDM inside ...) the context(s) for validation
-	// must also be nested.
-	// In the current code, a CCDA nested inside a Direct message is coded as isCCDA = true and ccdaType = ???
-	// In time this should be converted to:
-	//  VC(Direct)
-	//    VC(CCDA, ccdaType = ???)
-	// This will allow:
-	//   VC(Direct)
-	//     VC(XDM)
-	//       VC(CCDA, ccdaType = ???)
-	// which parsed as a CCDA of type ??? nested in an XDM included as a part of a Direct message.
-	// This is a list instead of a single element since we may have the need to validate a Direct
-	// message (or XDM) a plain text attachment AND a CCDA attachment.
-	// For now the only containers (formats that contain other formats) are Direct messages
-	// and XDM.  Provide & Register (XDS or XDR) could be considered a container as well. So
-	// far there is no requirement to deal with content validation in those areas.
-	List<ValidationContext> innerContexts = new ArrayList<ValidationContext>();
-
     // Never never call this directly
     // Should only be used by GWT compiler
     public ValidationContext() {}
@@ -164,20 +145,6 @@ public class ValidationContext  implements Serializable, IsSerializable {
         }
     }
 
-	public void addInnerContext(ValidationContext ivc) {
-		innerContexts.add(ivc);
-	}
-	
-	public int getInnerContextCount() { 
-		return innerContexts.size();
-	}
-	
-	public ValidationContext getInnerContext(int i) {
-		if (i < innerContexts.size())
-			return innerContexts.get(i);
-		return null;
-	}
-	
 	//
 	// End state maintained by various validators
 	//
@@ -481,23 +448,11 @@ public class ValidationContext  implements Serializable, IsSerializable {
 		if (isXDRLimited) buf.append(";XDRLimited");
 		if (isXDRMinimal) buf.append(";XDRMinimal");
         if (isPartOfRecipient) buf.append(";partOfRecipient");
-//		if (updateable)
-//			buf.append(";Updateable");
-//		else
-//			buf.append(";NotUpdateable");
-		if (!metadataPatterns.isEmpty()) 
+		if (!metadataPatterns.isEmpty())
 			buf.append(";MetadataPatterns:").append(metadataPatterns);
 		if (ccdaType != null)
 			buf.append(";CCDA type is " + ccdaType);
 		
-		if (innerContexts != null) {
-			for (ValidationContext v : innerContexts) {
-				buf.append("[").append(v.toString()).append("]");
-			}
-		}
-//		if (codesFilename != null)
-//			buf.append(";HasCodes");
-
         if (forceMtom) buf.append(";forceMtom");
 
         buf.append("]");

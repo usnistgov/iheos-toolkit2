@@ -1,7 +1,7 @@
 package gov.nist.toolkit.xdstools2.client.tabs.conformanceTest;
 
 import com.google.gwt.user.client.rpc.AsyncCallback;
-import gov.nist.toolkit.actortransaction.client.ActorType;
+import gov.nist.toolkit.actortransaction.shared.ActorType;
 import gov.nist.toolkit.results.client.TestInstance;
 import gov.nist.toolkit.xdstools2.client.command.command.GetCollectionMembersCommand;
 import gov.nist.toolkit.xdstools2.client.util.ClientUtils;

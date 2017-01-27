@@ -1,6 +1,6 @@
 package gov.nist.toolkit.simulators.sim.rep.od;
 
-import gov.nist.toolkit.actorfactory.client.SimulatorConfig;
+import gov.nist.toolkit.simcommon.shared.config.SimulatorConfig;
 import gov.nist.toolkit.commondatatypes.MetadataSupport;
 import gov.nist.toolkit.configDatatypes.SimulatorProperties;
 import gov.nist.toolkit.errorrecording.ErrorRecorder;
@@ -16,7 +16,7 @@ import gov.nist.toolkit.simulators.support.SimCommon;
 import gov.nist.toolkit.simulators.support.StoredDocument;
 import gov.nist.toolkit.simulators.support.TransactionSimulator;
 import gov.nist.toolkit.simulators.support.od.TransactionUtil;
-import gov.nist.toolkit.sitemanagement.client.SiteSpec;
+import gov.nist.toolkit.actortransaction.shared.SiteSpec;
 import gov.nist.toolkit.valregmsg.registry.RetrieveMultipleResponse;
 import gov.nist.toolkit.valsupport.client.ValidationContext;
 import gov.nist.toolkit.valsupport.engine.MessageValidatorEngine;

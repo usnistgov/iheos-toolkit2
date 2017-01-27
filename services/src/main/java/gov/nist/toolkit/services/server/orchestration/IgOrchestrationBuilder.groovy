@@ -1,9 +1,9 @@
 package gov.nist.toolkit.services.server.orchestration
 
 import gov.nist.toolkit.actorfactory.SimCache
-import gov.nist.toolkit.actorfactory.client.SimId
-import gov.nist.toolkit.actorfactory.client.SimulatorConfig
-import gov.nist.toolkit.actortransaction.client.ActorType
+import gov.nist.toolkit.actortransaction.shared.SimId
+import gov.nist.toolkit.simcommon.shared.config.SimulatorConfig
+import gov.nist.toolkit.actortransaction.shared.ActorType
 import gov.nist.toolkit.configDatatypes.SimulatorProperties
 import gov.nist.toolkit.configDatatypes.client.*
 import gov.nist.toolkit.installation.Installation

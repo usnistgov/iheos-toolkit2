@@ -1,7 +1,7 @@
 package gov.nist.toolkit.xdstools2.shared.command.request;
 
 import gov.nist.toolkit.registrymetadata.client.Uids;
-import gov.nist.toolkit.sitemanagement.client.SiteSpec;
+import gov.nist.toolkit.actortransaction.shared.SiteSpec;
 import gov.nist.toolkit.xdstools2.shared.command.CommandContext;
 
 /**

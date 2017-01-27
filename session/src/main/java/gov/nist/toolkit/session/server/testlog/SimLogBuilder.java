@@ -1,6 +1,6 @@
 package gov.nist.toolkit.session.server.testlog;
 
-import gov.nist.toolkit.actorfactory.client.SimId;
+import gov.nist.toolkit.actortransaction.shared.SimId;
 import gov.nist.toolkit.common.datatypes.Hl7Date;
 import gov.nist.toolkit.configDatatypes.client.Pid;
 import gov.nist.toolkit.configDatatypes.client.TransactionType;

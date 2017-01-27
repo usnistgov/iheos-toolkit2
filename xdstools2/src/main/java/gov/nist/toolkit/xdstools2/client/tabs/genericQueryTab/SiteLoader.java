@@ -2,10 +2,10 @@ package gov.nist.toolkit.xdstools2.client.tabs.genericQueryTab;
 
 import com.google.gwt.user.client.ui.Grid;
 import com.google.gwt.user.client.ui.RadioButton;
-import gov.nist.toolkit.actortransaction.client.ActorType;
+import gov.nist.toolkit.actortransaction.shared.ActorType;
 import gov.nist.toolkit.configDatatypes.client.TransactionType;
 import gov.nist.toolkit.sitemanagement.client.Site;
-import gov.nist.toolkit.sitemanagement.client.SiteSpec;
+import gov.nist.toolkit.actortransaction.shared.SiteSpec;
 import gov.nist.toolkit.xdstools2.client.StringSort;
 
 import java.util.*;

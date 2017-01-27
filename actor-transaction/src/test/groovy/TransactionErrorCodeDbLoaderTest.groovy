@@ -1,5 +1,5 @@
 import gov.nist.toolkit.actortransaction.TransactionErrorCodeDbLoader
-import gov.nist.toolkit.actortransaction.client.TransactionErrorCodesDb
+import gov.nist.toolkit.actortransaction.shared.TransactionErrorCodesDb
 import spock.lang.Specification
 /**
  * Created by bill on 12/16/15.

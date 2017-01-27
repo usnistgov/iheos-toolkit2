@@ -1,7 +1,7 @@
 package gov.nist.toolkit.results.client;
 
 import com.google.gwt.user.client.rpc.IsSerializable;
-import gov.nist.toolkit.sitemanagement.client.SiteSpec;
+import gov.nist.toolkit.actortransaction.shared.SiteSpec;
 
 import java.io.Serializable;
 import java.util.List;

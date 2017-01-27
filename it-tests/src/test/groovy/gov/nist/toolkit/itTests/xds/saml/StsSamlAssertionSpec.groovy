@@ -1,7 +1,7 @@
 package gov.nist.toolkit.itTests.xds.saml
 
 import gov.nist.toolkit.actorfactory.SimCache
-import gov.nist.toolkit.actorfactory.client.SimId
+import gov.nist.toolkit.actortransaction.shared.SimId
 import gov.nist.toolkit.configDatatypes.SimulatorActorType
 import gov.nist.toolkit.configDatatypes.SimulatorProperties
 import gov.nist.toolkit.configDatatypes.client.TransactionType

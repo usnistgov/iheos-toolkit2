@@ -1,10 +1,10 @@
 package gov.nist.toolkit.results.shared;
 
 import gov.nist.toolkit.actorfactory.SiteServiceManager;
-import gov.nist.toolkit.actorfactory.client.SimId;
-import gov.nist.toolkit.actortransaction.client.ActorType;
+import gov.nist.toolkit.actortransaction.shared.SimId;
+import gov.nist.toolkit.actortransaction.shared.ActorType;
 import gov.nist.toolkit.sitemanagement.client.Site;
-import gov.nist.toolkit.sitemanagement.client.SiteSpec;
+import gov.nist.toolkit.actortransaction.shared.SiteSpec;
 
 /**
  *

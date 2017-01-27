@@ -1,4 +1,4 @@
-package gov.nist.toolkit.actortransaction.client;
+package gov.nist.toolkit.actortransaction.shared;
 
 
 import java.io.Serializable;

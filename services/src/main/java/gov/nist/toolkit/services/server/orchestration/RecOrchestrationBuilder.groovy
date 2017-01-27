@@ -1,6 +1,6 @@
 package gov.nist.toolkit.services.server.orchestration
 
-import gov.nist.toolkit.actortransaction.client.ActorType
+import gov.nist.toolkit.actortransaction.shared.ActorType
 import gov.nist.toolkit.configDatatypes.client.Pid
 import gov.nist.toolkit.configDatatypes.client.PidBuilder
 import gov.nist.toolkit.services.client.RawResponse

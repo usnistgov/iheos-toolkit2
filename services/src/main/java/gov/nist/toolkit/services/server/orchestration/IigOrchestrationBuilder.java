@@ -9,10 +9,10 @@ import java.util.List;
 import org.apache.log4j.Logger;
 import org.codehaus.plexus.util.StringUtils;
 
-import gov.nist.toolkit.actorfactory.client.SimId;
-import gov.nist.toolkit.actorfactory.client.SimulatorConfig;
-import gov.nist.toolkit.actortransaction.client.ActorType;
-import gov.nist.toolkit.actortransaction.client.ParamType;
+import gov.nist.toolkit.actortransaction.shared.SimId;
+import gov.nist.toolkit.simcommon.shared.config.SimulatorConfig;
+import gov.nist.toolkit.actortransaction.shared.ActorType;
+import gov.nist.toolkit.actortransaction.shared.ParamType;
 import gov.nist.toolkit.configDatatypes.SimulatorProperties;
 import gov.nist.toolkit.services.client.IigOrchestrationRequest;
 import gov.nist.toolkit.services.client.IigOrchestrationResponse;

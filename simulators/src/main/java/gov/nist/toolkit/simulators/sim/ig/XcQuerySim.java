@@ -1,8 +1,8 @@
 package gov.nist.toolkit.simulators.sim.ig;
 
 import gov.nist.toolkit.actorfactory.SimManager;
-import gov.nist.toolkit.actorfactory.client.SimulatorConfig;
-import gov.nist.toolkit.actortransaction.client.ActorType;
+import gov.nist.toolkit.simcommon.shared.config.SimulatorConfig;
+import gov.nist.toolkit.actortransaction.shared.ActorType;
 import gov.nist.toolkit.commondatatypes.MetadataSupport;
 import gov.nist.toolkit.commondatatypes.client.MetadataTypes;
 import gov.nist.toolkit.configDatatypes.SimulatorProperties;

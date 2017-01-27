@@ -6,7 +6,7 @@ package gov.nist.toolkit.services.client;
 import java.util.ArrayList;
 import java.util.List;
 
-import gov.nist.toolkit.actorfactory.client.SimulatorConfig;
+import gov.nist.toolkit.simcommon.shared.config.SimulatorConfig;
 
 
 public class RigOrchestrationResponse extends AbstractOrchestrationResponse {

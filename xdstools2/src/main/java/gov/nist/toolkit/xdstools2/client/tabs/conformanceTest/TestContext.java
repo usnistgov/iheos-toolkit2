@@ -1,7 +1,7 @@
 package gov.nist.toolkit.xdstools2.client.tabs.conformanceTest;
 
 import gov.nist.toolkit.sitemanagement.client.Site;
-import gov.nist.toolkit.sitemanagement.client.SiteSpec;
+import gov.nist.toolkit.actortransaction.shared.SiteSpec;
 import gov.nist.toolkit.xdstools2.client.ToolWindow;
 import gov.nist.toolkit.xdstools2.client.command.command.GetSiteCommand;
 import gov.nist.toolkit.xdstools2.client.util.ClientUtils;

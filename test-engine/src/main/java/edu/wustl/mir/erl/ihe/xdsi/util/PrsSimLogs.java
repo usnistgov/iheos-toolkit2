@@ -3,7 +3,7 @@
  */
 package edu.wustl.mir.erl.ihe.xdsi.util;
 
-import gov.nist.toolkit.actorfactory.client.SimId;
+import gov.nist.toolkit.actortransaction.shared.SimId;
 import gov.nist.toolkit.installation.Installation;
 import gov.nist.toolkit.installation.PropertyManager;
 import gov.nist.toolkit.installation.PropertyServiceManager;

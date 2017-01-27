@@ -1,6 +1,6 @@
 package gov.nist.toolkit.services.client;
 
-import gov.nist.toolkit.sitemanagement.client.SiteSpec;
+import gov.nist.toolkit.actortransaction.shared.SiteSpec;
 
 /**
  *

@@ -1,8 +1,8 @@
 package gov.nist.toolkit.sitemanagement.client;
 
 import com.google.gwt.user.client.rpc.IsSerializable;
-import gov.nist.toolkit.actortransaction.client.ATFactory;
-import gov.nist.toolkit.actortransaction.client.ActorType;
+import gov.nist.toolkit.actortransaction.shared.ATFactory;
+import gov.nist.toolkit.actortransaction.shared.ActorType;
 import gov.nist.toolkit.configDatatypes.client.TransactionType;
 import gov.nist.toolkit.sitemanagement.client.TransactionBean.RepositoryType;
 

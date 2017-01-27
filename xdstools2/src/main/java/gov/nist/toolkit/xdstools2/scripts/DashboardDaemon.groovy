@@ -1,6 +1,6 @@
 package gov.nist.toolkit.xdstools2.scripts
 
-import gov.nist.toolkit.actortransaction.client.ActorType
+import gov.nist.toolkit.actortransaction.shared.ActorType
 import gov.nist.toolkit.configDatatypes.client.TransactionType
 import gov.nist.toolkit.installation.Installation
 import gov.nist.toolkit.registrymetadata.Metadata
@@ -12,7 +12,7 @@ import gov.nist.toolkit.session.server.Session
 import gov.nist.toolkit.sitemanagement.SeparateSiteLoader
 import gov.nist.toolkit.sitemanagement.Sites
 import gov.nist.toolkit.sitemanagement.client.Site
-import gov.nist.toolkit.sitemanagement.client.SiteSpec
+import gov.nist.toolkit.actortransaction.shared.SiteSpec
 import gov.nist.toolkit.testengine.engine.TransactionSettings
 import gov.nist.toolkit.testengine.engine.Xdstest2
 import gov.nist.toolkit.testenginelogging.client.LogFileContentDTO

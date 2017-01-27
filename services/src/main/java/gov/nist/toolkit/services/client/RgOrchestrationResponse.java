@@ -1,8 +1,8 @@
 package gov.nist.toolkit.services.client;
 
 import gov.nist.toolkit.configDatatypes.client.Pid;
-import gov.nist.toolkit.actorfactory.client.SimulatorConfig;
-import gov.nist.toolkit.sitemanagement.client.SiteSpec;
+import gov.nist.toolkit.simcommon.shared.config.SimulatorConfig;
+import gov.nist.toolkit.actortransaction.shared.SiteSpec;
 
 /**
  *

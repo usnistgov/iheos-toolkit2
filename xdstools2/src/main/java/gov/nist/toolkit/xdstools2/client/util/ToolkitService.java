@@ -3,11 +3,11 @@ package gov.nist.toolkit.xdstools2.client.util;
 
 import com.google.gwt.user.client.rpc.RemoteService;
 import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
-import gov.nist.toolkit.actorfactory.client.SimId;
+import gov.nist.toolkit.actortransaction.shared.SimId;
 import gov.nist.toolkit.actorfactory.client.Simulator;
-import gov.nist.toolkit.actorfactory.client.SimulatorConfig;
+import gov.nist.toolkit.simcommon.shared.config.SimulatorConfig;
 import gov.nist.toolkit.actorfactory.client.SimulatorStats;
-import gov.nist.toolkit.actortransaction.client.TransactionInstance;
+import gov.nist.toolkit.actortransaction.shared.TransactionInstance;
 import gov.nist.toolkit.configDatatypes.client.Pid;
 import gov.nist.toolkit.interactionmodel.client.InteractingEntity;
 import gov.nist.toolkit.results.client.*;

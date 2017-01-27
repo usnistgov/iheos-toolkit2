@@ -1,14 +1,14 @@
 package gov.nist.toolkit.services.server.orchestration
 
-import gov.nist.toolkit.actorfactory.client.SimId
-import gov.nist.toolkit.actortransaction.client.ActorType
+import gov.nist.toolkit.actortransaction.shared.SimId
+import gov.nist.toolkit.actortransaction.shared.ActorType
 import gov.nist.toolkit.configDatatypes.client.Pid
 import gov.nist.toolkit.configDatatypes.client.PidBuilder
 import gov.nist.toolkit.results.client.TestInstance
 import gov.nist.toolkit.services.client.*
 import gov.nist.toolkit.services.server.ToolkitApi
 import gov.nist.toolkit.session.server.Session
-import gov.nist.toolkit.sitemanagement.client.SiteSpec
+import gov.nist.toolkit.actortransaction.shared.SiteSpec
 import groovy.transform.TypeChecked
 /**
  *

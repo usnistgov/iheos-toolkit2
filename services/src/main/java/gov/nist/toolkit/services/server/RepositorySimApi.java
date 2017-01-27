@@ -1,7 +1,7 @@
 package gov.nist.toolkit.services.server;
 
 import gov.nist.toolkit.actorfactory.client.NoSimException;
-import gov.nist.toolkit.actorfactory.client.SimId;
+import gov.nist.toolkit.actortransaction.shared.SimId;
 import gov.nist.toolkit.simulators.servlet.SimServlet;
 import gov.nist.toolkit.simulators.sim.rep.RepIndex;
 import gov.nist.toolkit.simulators.support.StoredDocument;

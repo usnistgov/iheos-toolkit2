@@ -1,6 +1,6 @@
 package gov.nist.toolkit.xdstools2.client.command.command;
 
-import gov.nist.toolkit.actortransaction.client.TransactionInstance;
+import gov.nist.toolkit.actortransaction.shared.TransactionInstance;
 import gov.nist.toolkit.xdstools2.client.util.ClientUtils;
 import gov.nist.toolkit.xdstools2.shared.command.request.GetTransactionRequest;
 

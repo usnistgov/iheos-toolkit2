@@ -1,7 +1,7 @@
 package gov.nist.toolkit.itTests.xc
 
 import gov.nist.toolkit.actorfactory.SimCache
-import gov.nist.toolkit.actorfactory.client.SimulatorConfig
+import gov.nist.toolkit.simcommon.shared.config.SimulatorConfig
 import gov.nist.toolkit.configDatatypes.SimulatorActorType
 import gov.nist.toolkit.installation.Installation
 import gov.nist.toolkit.itTests.support.ToolkitSpecification

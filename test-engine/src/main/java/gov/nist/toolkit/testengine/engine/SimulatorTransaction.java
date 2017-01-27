@@ -6,7 +6,7 @@ package gov.nist.toolkit.testengine.engine;
 import edu.wustl.mir.erl.ihe.xdsi.util.PfnType;
 import edu.wustl.mir.erl.ihe.xdsi.util.PrsSimLogs;
 import edu.wustl.mir.erl.ihe.xdsi.util.Utility;
-import gov.nist.toolkit.actorfactory.client.SimId;
+import gov.nist.toolkit.actortransaction.shared.SimId;
 import gov.nist.toolkit.configDatatypes.client.TransactionType;
 import gov.nist.toolkit.installation.Installation;
 import gov.nist.toolkit.installation.PropertyManager;

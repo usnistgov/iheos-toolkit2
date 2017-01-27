@@ -2,7 +2,7 @@ package gov.nist.toolkit.simcommon.shared.config;
 
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.google.gwt.user.client.rpc.IsSerializable;
-import gov.nist.toolkit.actortransaction.client.ParamType;
+import gov.nist.toolkit.actortransaction.shared.ParamType;
 import gov.nist.toolkit.configDatatypes.client.TransactionType;
 import gov.nist.toolkit.configDatatypes.client.PatientErrorMap;
 

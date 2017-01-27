@@ -32,7 +32,7 @@ import gov.nist.toolkit.session.server.Session;
 import gov.nist.toolkit.session.server.testlog.TestOverviewBuilder;
 import gov.nist.toolkit.session.server.services.TestLogCache;
 import gov.nist.toolkit.sitemanagement.client.Site;
-import gov.nist.toolkit.sitemanagement.client.SiteSpec;
+import gov.nist.toolkit.actortransaction.shared.SiteSpec;
 import gov.nist.toolkit.testengine.engine.ResultPersistence;
 import gov.nist.toolkit.testengine.engine.TestLogsBuilder;
 import gov.nist.toolkit.testengine.engine.Xdstest2;

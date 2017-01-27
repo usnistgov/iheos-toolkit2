@@ -1,8 +1,8 @@
 package gov.nist.toolkit.itTests.xc
 
 import gov.nist.toolkit.actorfactory.SimCache
-import gov.nist.toolkit.actorfactory.client.SimulatorConfig
-import gov.nist.toolkit.actortransaction.client.ActorType
+import gov.nist.toolkit.simcommon.shared.config.SimulatorConfig
+import gov.nist.toolkit.actortransaction.shared.ActorType
 import gov.nist.toolkit.commondatatypes.MetadataSupport
 import gov.nist.toolkit.configDatatypes.SimulatorActorType
 import gov.nist.toolkit.configDatatypes.SimulatorProperties
@@ -16,7 +16,7 @@ import gov.nist.toolkit.registrymsg.repository.RetrievedDocumentModel
 import gov.nist.toolkit.registrymsg.repository.RetrievedDocumentsModel
 import gov.nist.toolkit.results.client.CodesConfiguration
 import gov.nist.toolkit.results.client.Result
-import gov.nist.toolkit.sitemanagement.client.SiteSpec
+import gov.nist.toolkit.actortransaction.shared.SiteSpec
 import gov.nist.toolkit.results.client.TestInstance
 import gov.nist.toolkit.toolkitApi.BasicSimParameters
 import gov.nist.toolkit.toolkitApi.SimulatorBuilder

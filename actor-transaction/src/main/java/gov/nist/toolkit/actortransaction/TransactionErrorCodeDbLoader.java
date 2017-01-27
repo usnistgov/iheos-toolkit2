@@ -1,8 +1,8 @@
 package gov.nist.toolkit.actortransaction;
 
-import gov.nist.toolkit.actortransaction.client.ErrorCode;
-import gov.nist.toolkit.actortransaction.client.Severity;
-import gov.nist.toolkit.actortransaction.client.TransactionErrorCodesDb;
+import gov.nist.toolkit.actortransaction.shared.ErrorCode;
+import gov.nist.toolkit.actortransaction.shared.Severity;
+import gov.nist.toolkit.actortransaction.shared.TransactionErrorCodesDb;
 import gov.nist.toolkit.configDatatypes.client.TransactionType;
 import gov.nist.toolkit.installation.Installation;
 import org.apache.commons.csv.CSVFormat;

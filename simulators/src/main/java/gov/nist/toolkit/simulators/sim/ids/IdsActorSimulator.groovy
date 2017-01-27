@@ -1,6 +1,6 @@
 package gov.nist.toolkit.simulators.sim.ids
 import gov.nist.toolkit.actorfactory.SimDb
-import gov.nist.toolkit.actorfactory.client.SimulatorConfig
+import gov.nist.toolkit.simcommon.shared.config.SimulatorConfig
 import gov.nist.toolkit.configDatatypes.SimulatorProperties;
 import gov.nist.toolkit.configDatatypes.client.TransactionType
 import gov.nist.toolkit.errorrecording.GwtErrorRecorderBuilder

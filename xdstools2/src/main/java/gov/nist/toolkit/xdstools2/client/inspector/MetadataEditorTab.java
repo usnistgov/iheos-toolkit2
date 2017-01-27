@@ -10,7 +10,7 @@ import gov.nist.toolkit.results.client.Result;
 import gov.nist.toolkit.results.client.StepResult;
 import gov.nist.toolkit.results.client.TestLog;
 import gov.nist.toolkit.results.client.TestLogs;
-import gov.nist.toolkit.sitemanagement.client.SiteSpec;
+import gov.nist.toolkit.actortransaction.shared.SiteSpec;
 import gov.nist.toolkit.xdstools2.client.widgets.PopupMessage;
 import gov.nist.toolkit.xdstools2.client.ToolWindow;
 

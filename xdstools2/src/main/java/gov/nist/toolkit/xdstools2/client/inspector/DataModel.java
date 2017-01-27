@@ -4,7 +4,7 @@ import gov.nist.toolkit.registrymetadata.client.Document;
 import gov.nist.toolkit.registrymetadata.client.MetadataCollection;
 import gov.nist.toolkit.results.client.Result;
 import gov.nist.toolkit.results.client.StepResult;
-import gov.nist.toolkit.sitemanagement.client.SiteSpec;
+import gov.nist.toolkit.actortransaction.shared.SiteSpec;
 
 import java.util.ArrayList;
 import java.util.HashMap;

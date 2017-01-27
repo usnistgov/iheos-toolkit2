@@ -1,6 +1,6 @@
 package gov.nist.toolkit.xdstools2.shared.command.request;
 
-import gov.nist.toolkit.actorfactory.client.SimulatorConfig;
+import gov.nist.toolkit.simcommon.shared.config.SimulatorConfig;
 import gov.nist.toolkit.xdstools2.shared.command.CommandContext;
 
 /**

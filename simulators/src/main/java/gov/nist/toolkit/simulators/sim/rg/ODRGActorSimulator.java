@@ -1,8 +1,8 @@
 package gov.nist.toolkit.simulators.sim.rg;
 
 import gov.nist.toolkit.actorfactory.client.NoSimException;
-import gov.nist.toolkit.actorfactory.client.SimId;
-import gov.nist.toolkit.actorfactory.client.SimulatorConfig;
+import gov.nist.toolkit.actortransaction.shared.SimId;
+import gov.nist.toolkit.simcommon.shared.config.SimulatorConfig;
 import gov.nist.toolkit.actorfactory.client.SimulatorStats;
 import gov.nist.toolkit.configDatatypes.client.TransactionType;
 import gov.nist.toolkit.simulators.servlet.SimServlet;

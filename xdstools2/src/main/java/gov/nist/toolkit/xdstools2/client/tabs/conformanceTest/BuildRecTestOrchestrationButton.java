@@ -6,7 +6,7 @@ import com.google.gwt.user.client.ui.Panel;
 import gov.nist.toolkit.services.client.RawResponse;
 import gov.nist.toolkit.services.client.RecOrchestrationRequest;
 import gov.nist.toolkit.services.client.RecOrchestrationResponse;
-import gov.nist.toolkit.sitemanagement.client.SiteSpec;
+import gov.nist.toolkit.actortransaction.shared.SiteSpec;
 import gov.nist.toolkit.xdstools2.client.command.command.BuildRecTestOrchestrationCommand;
 import gov.nist.toolkit.xdstools2.client.util.ClientUtils;
 import gov.nist.toolkit.xdstools2.client.widgets.OrchestrationSupportTestsDisplay;

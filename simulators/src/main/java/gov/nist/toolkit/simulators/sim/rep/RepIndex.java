@@ -1,9 +1,9 @@
 package gov.nist.toolkit.simulators.sim.rep;
 
 import gov.nist.toolkit.actorfactory.client.NoSimException;
-import gov.nist.toolkit.actorfactory.client.SimId;
+import gov.nist.toolkit.actortransaction.shared.SimId;
 import gov.nist.toolkit.actorfactory.client.SimulatorStats;
-import gov.nist.toolkit.actortransaction.client.ActorType;
+import gov.nist.toolkit.actortransaction.shared.ActorType;
 import org.apache.log4j.Logger;
 
 import java.io.*;

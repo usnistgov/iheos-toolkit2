@@ -2,6 +2,8 @@ package gov.nist.toolkit.simulators.sim.rg;
 
 import java.io.IOException;
 
+import gov.nist.toolkit.actortransaction.shared.SimId;
+import gov.nist.toolkit.simcommon.shared.config.SimulatorConfig;
 import org.apache.log4j.Logger;
 
 import gov.nist.toolkit.actorfactory.client.*;

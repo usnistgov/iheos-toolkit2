@@ -3,7 +3,7 @@ package gov.nist.toolkit.xdstools2.client.widgets;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.ui.Anchor;
-import gov.nist.toolkit.actorfactory.client.SimId;
+import gov.nist.toolkit.actortransaction.shared.SimId;
 import gov.nist.toolkit.xdstools2.client.tabs.SimulatorMessageViewTab;
 
 /**

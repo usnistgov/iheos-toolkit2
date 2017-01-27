@@ -1,6 +1,8 @@
 package gov.nist.toolkit.actorfactory.client;
 
 import com.google.gwt.user.client.rpc.IsSerializable;
+import gov.nist.toolkit.actortransaction.shared.SimId;
+import gov.nist.toolkit.simcommon.shared.config.SimulatorConfig;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -37,7 +39,7 @@ public class Simulator  implements Serializable, IsSerializable  {
 	public List<SimId> getIds() {
 		List<SimId> ids = new ArrayList<SimId>();
 		for (SimulatorConfig c : configs)
-			ids.add(c.id);
+			ids.add(c.getId());
 		return ids;
 	}
 

@@ -2,7 +2,7 @@ package gov.nist.toolkit.simulators.servlet;
 
 import gov.nist.toolkit.actorfactory.SimDb;
 import gov.nist.toolkit.configDatatypes.SimulatorProperties;
-import gov.nist.toolkit.actorfactory.client.SimulatorConfig;
+import gov.nist.toolkit.simcommon.shared.config.SimulatorConfig;
 import gov.nist.toolkit.http.HttpMessage;
 import gov.nist.toolkit.http.HttpParseException;
 import gov.nist.toolkit.simcommon.shared.config.SimulatorConfigElement;

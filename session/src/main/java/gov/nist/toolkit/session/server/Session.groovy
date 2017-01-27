@@ -1,7 +1,7 @@
 package gov.nist.toolkit.session.server
 
 import gov.nist.toolkit.actorfactory.SimCache
-import gov.nist.toolkit.actorfactory.client.SimId
+import gov.nist.toolkit.actortransaction.shared.SimId
 import gov.nist.toolkit.configDatatypes.client.Pid
 import gov.nist.toolkit.envSetting.EnvSetting
 import gov.nist.toolkit.installation.ExternalCacheManager
@@ -15,7 +15,7 @@ import gov.nist.toolkit.session.server.serviceManager.QueryServiceManager
 import gov.nist.toolkit.session.server.serviceManager.XdsTestServiceManager
 import gov.nist.toolkit.sitemanagement.Sites
 import gov.nist.toolkit.sitemanagement.client.Site
-import gov.nist.toolkit.sitemanagement.client.SiteSpec
+import gov.nist.toolkit.actortransaction.shared.SiteSpec
 import gov.nist.toolkit.sitemanagement.client.TransactionBean
 import gov.nist.toolkit.testengine.engine.PatientIdAllocator
 import gov.nist.toolkit.testengine.engine.TransactionSettings

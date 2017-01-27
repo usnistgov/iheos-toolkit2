@@ -1,7 +1,7 @@
 package gov.nist.toolkit.actorfactory
 
 import com.fasterxml.jackson.databind.ObjectMapper
-import gov.nist.toolkit.actorfactory.client.SimulatorConfig
+import gov.nist.toolkit.simcommon.shared.config.SimulatorConfig
 import gov.nist.toolkit.configDatatypes.client.PatientErrorMap
 import gov.nist.toolkit.simcommon.shared.config.SimulatorConfigElement
 import spock.lang.Specification

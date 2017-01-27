@@ -4,7 +4,7 @@ import gov.nist.toolkit.configDatatypes.client.Pid
 import gov.nist.toolkit.configDatatypes.client.PidBuilder
 import gov.nist.toolkit.services.client.PifType
 import gov.nist.toolkit.services.server.ToolkitApi
-import gov.nist.toolkit.sitemanagement.client.SiteSpec
+import gov.nist.toolkit.actortransaction.shared.SiteSpec
 /**
  * Send a Patient Identify Feed.  This relies heavily on OrchestrationProperties. The feed is only sent if
  * orchProps.updated() is true.
