@@ -18,7 +18,7 @@ import gov.nist.toolkit.registrymsg.repository.RetrieveDocumentResponseGenerator
 import gov.nist.toolkit.registrymsg.repository.RetrievedDocumentModel
 import gov.nist.toolkit.registrymsg.repository.RetrievedDocumentsModel
 import gov.nist.toolkit.commondatatypes.MetadataSupport
-import gov.nist.toolkit.simcommon.client.config.SimulatorConfigElement
+import gov.nist.toolkit.simcommon.shared.config.SimulatorConfigElement
 import gov.nist.toolkit.simulators.sim.reg.AdhocQueryResponseGenerator
 import gov.nist.toolkit.simulators.sim.reg.RegistryActorSimulator
 import gov.nist.toolkit.simulators.sim.reg.SoapWrapperRegistryResponseSim

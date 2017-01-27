@@ -11,7 +11,7 @@ import gov.nist.toolkit.configDatatypes.SimulatorProperties;
 import gov.nist.toolkit.services.client.RawResponse;
 import gov.nist.toolkit.services.client.RigOrchestrationRequest;
 import gov.nist.toolkit.services.client.RigOrchestrationResponse;
-import gov.nist.toolkit.simcommon.client.config.SimulatorConfigElement;
+import gov.nist.toolkit.simcommon.shared.config.SimulatorConfigElement;
 import gov.nist.toolkit.xdstools2.client.command.command.BuildRigTestOrchestrationCommand;
 import gov.nist.toolkit.xdstools2.client.util.ClientUtils;
 import gov.nist.toolkit.xdstools2.client.widgets.PopupMessage;

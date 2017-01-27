@@ -81,7 +81,6 @@ public interface ToolkitService extends RemoteService  {
 	String deleteConfig(SimConfigRequest request) throws Exception;
 	Map<String, SimId> getActorSimulatorNameMap(CommandContext context) throws Exception;
 	//	 List<String> getSimulatorTransactionNames(String simid) throws Exception;
-	int removeOldSimulators(CommandContext context) throws Exception;
 	List<SimulatorStats> getSimulatorStats(GetSimulatorStatsRequest request) throws Exception;
 	List<Pid> getPatientIds(PatientIdsRequest request) throws Exception;
 	String addPatientIds(PatientIdsRequest request) throws Exception;

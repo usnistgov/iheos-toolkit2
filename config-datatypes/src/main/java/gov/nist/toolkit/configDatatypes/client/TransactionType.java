@@ -166,18 +166,6 @@ public enum TransactionType implements Serializable, IsSerializable {
 		return null;
 	}
 
-//	static public TransactionType find(ActorType a, String transString) {
-//        if (a == null) return null;
-//
-//		for (TransactionType t : a.getTransactions()) {
-//            if (t.isIdentifiedBy(transString))
-//				return t;
-//        }
-//
-//		return null;
-//    }
-//
-
 	static public List<TransactionType> asList() {
         List<TransactionType> l = new ArrayList<TransactionType>();
         for (TransactionType t : values())

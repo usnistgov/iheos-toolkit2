@@ -238,7 +238,6 @@ public interface ToolkitServiceAsync {
     void deleteConfig(SimConfigRequest request, AsyncCallback<String> callback);
     void getActorSimulatorNameMap(CommandContext context,AsyncCallback<Map<String, SimId>> callback);
     //	void getSimulatorTransactionNames(String simid, AsyncCallback<List<String>> notify);
-    void removeOldSimulators(CommandContext context,AsyncCallback<Integer> callback);
     void getSimulatorStats(GetSimulatorStatsRequest request, AsyncCallback<List<SimulatorStats>> callback);
     void getPatientIds(PatientIdsRequest request, AsyncCallback<List<Pid>> callback);
     void addPatientIds(PatientIdsRequest request, AsyncCallback<String> callback);

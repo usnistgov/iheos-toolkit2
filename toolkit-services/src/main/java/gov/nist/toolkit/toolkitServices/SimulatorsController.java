@@ -57,7 +57,7 @@ import gov.nist.toolkit.commondatatypes.MetadataSupport;
 import gov.nist.toolkit.services.server.RegistrySimApi;
 import gov.nist.toolkit.services.server.RepositorySimApi;
 import gov.nist.toolkit.services.server.ToolkitApi;
-import gov.nist.toolkit.simcommon.client.config.SimulatorConfigElement;
+import gov.nist.toolkit.simcommon.shared.config.SimulatorConfigElement;
 import gov.nist.toolkit.simulators.sim.cons.DocConsActorSimulator;
 import gov.nist.toolkit.simulators.sim.idc.ImgDocConsActorSimulator;
 import gov.nist.toolkit.simulators.sim.src.XdrDocSrcActorSimulator;

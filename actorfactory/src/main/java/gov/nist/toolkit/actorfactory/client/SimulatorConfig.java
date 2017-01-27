@@ -5,7 +5,7 @@ import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.google.gwt.user.client.rpc.IsSerializable;
 import gov.nist.toolkit.actortransaction.client.ActorType;
 import gov.nist.toolkit.actortransaction.client.ParamType;
-import gov.nist.toolkit.simcommon.client.config.SimulatorConfigElement;
+import gov.nist.toolkit.simcommon.shared.config.SimulatorConfigElement;
 import gov.nist.toolkit.valsupport.client.ValidationContext;
 
 import java.io.Serializable;
@@ -28,7 +28,6 @@ public class SimulatorConfig implements Serializable, IsSerializable {
 	 */
 	SimId id;
 	private String actorType;
-	private Date expires;
 	private boolean expired = false;
 	private List<SimulatorConfigElement> elements  = new ArrayList<SimulatorConfigElement>();
 
@@ -41,15 +40,6 @@ public class SimulatorConfig implements Serializable, IsSerializable {
     public boolean isExpired() { return expired; }
 	public void isExpired(boolean is) { expired = is; }
 
-	public boolean checkExpiration() {
-		Date now = new Date();
-		if (now.after(expires))
-			expired = true;
-		else
-			expired = false;
-		return expired;
-	}
-	
 	// not sure what to do with the other attributes, leave alone for now
 	public void add(SimulatorConfig asc) {
 		for (SimulatorConfigElement ele : asc.elements) {
@@ -98,10 +88,9 @@ public class SimulatorConfig implements Serializable, IsSerializable {
 		
 	}
 	
-	public SimulatorConfig(SimId id, String actorType, Date expiration) {
+	public SimulatorConfig(SimId id, String actorType) {
 		this.id = id;
 		this.actorType = actorType;
-		expires = expiration;
 	}
 	
 	public List<SimulatorConfigElement> elements() {
@@ -113,10 +102,6 @@ public class SimulatorConfig implements Serializable, IsSerializable {
 	}
     public void add(SimulatorConfigElement ele) { elements.add(ele); }
 
-	public Date getExpiration() {
-		return expires;
-	}
-	
 	public List<SimulatorConfigElement> getFixed() {
 		List<SimulatorConfigElement> fixed = new ArrayList<SimulatorConfigElement>();
 		for (SimulatorConfigElement ele : elements) {

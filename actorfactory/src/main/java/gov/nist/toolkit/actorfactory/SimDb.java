@@ -14,7 +14,6 @@ import gov.nist.toolkit.http.HttpParseException;
 import gov.nist.toolkit.http.HttpParser;
 import gov.nist.toolkit.http.ParseException;
 import gov.nist.toolkit.installation.Installation;
-import gov.nist.toolkit.simcommon.server.ExtendedPropertyManager;
 import gov.nist.toolkit.utilities.io.Io;
 import gov.nist.toolkit.utilities.io.ZipDir;
 import gov.nist.toolkit.xdsexception.client.ToolkitRuntimeException;
@@ -211,21 +210,6 @@ public class SimDb {
 				actors.add(file.getName());
 		}
 		return actors;
-	}
-	
-	static public Date getNewExpiration(@SuppressWarnings("rawtypes") Class controllingClass)   {
-		// establish expiration for newly touched cache elements
-		Date now = new Date();
-		Calendar newExpiration = Calendar.getInstance();
-		newExpiration.setTime(now);
-		
-		String dayOffset = ExtendedPropertyManager.getProperty(controllingClass, "expiration");
-		if (dayOffset == null) {
-//			logger.error("Extended Property expiration of class " + controllingClass + " is not defined");
-			dayOffset = "1";
-		}
-		newExpiration.add(Calendar.DAY_OF_MONTH, Integer.parseInt(dayOffset));
-		return newExpiration.getTime();
 	}
 
 	static public void deleteAllSims() throws IOException, NoSimException {

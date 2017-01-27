@@ -15,7 +15,7 @@ import gov.nist.toolkit.services.client.*;
 import gov.nist.toolkit.services.server.RawResponseBuilder;
 import gov.nist.toolkit.services.server.ToolkitApi;
 import gov.nist.toolkit.session.server.Session;
-import gov.nist.toolkit.simcommon.client.config.SimulatorConfigElement;
+import gov.nist.toolkit.simcommon.shared.config.SimulatorConfigElement;
 
 /**
 * Build environment for testing Imaging Document Source SUT.

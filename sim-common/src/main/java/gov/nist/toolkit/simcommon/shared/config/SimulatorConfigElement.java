@@ -1,4 +1,4 @@
-package gov.nist.toolkit.simcommon.client.config;
+package gov.nist.toolkit.simcommon.shared.config;
 
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.google.gwt.user.client.rpc.IsSerializable;

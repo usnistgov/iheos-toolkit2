@@ -6,5 +6,5 @@
 <module>
     <inherits name='com.google.gwt.user.User' />
     <inherits name="gov.nist.toolkit.configDatatypes.datatypes"/>
-    <source path="client" />
+    <source path="shared" />
 </module>

@@ -1029,11 +1029,6 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements
         return new SimulatorServiceManager(session()).getTransactionResponse(request.getSimid(), request.getActor(), request.getTrans(), request.getMessageId());
     }
     @Override
-    public int removeOldSimulators(CommandContext context) throws Exception {
-        installCommandContext(context);
-        return new SimulatorServiceManager(session()).removeOldSimulators();
-    }
-    @Override
     public List<Result> getSelectedMessage(GetSelectedMessageRequest request) throws Exception {
         installCommandContext(request);
         return new SimulatorServiceManager(session()).getSelectedMessage(request.getFilename());

@@ -14,7 +14,7 @@ import gov.nist.toolkit.envSetting.EnvSetting;
 import gov.nist.toolkit.installation.Installation;
 import gov.nist.toolkit.installation.PropertyServiceManager;
 import gov.nist.toolkit.registrymetadata.UuidAllocator;
-import gov.nist.toolkit.simcommon.client.config.SimulatorConfigElement;
+import gov.nist.toolkit.simcommon.shared.config.SimulatorConfigElement;
 import gov.nist.toolkit.sitemanagement.client.Site;
 import gov.nist.toolkit.xdsexception.ExceptionUtil;
 import gov.nist.toolkit.xdsexception.NoSimulatorException;
@@ -91,7 +91,7 @@ public abstract class AbstractActorFactory {
 	protected SimulatorConfig configureBaseElements(ActorType simType, SimId newId) {
 		if (newId == null)
 			newId = getNewId();
-		SimulatorConfig sc = new SimulatorConfig(newId, simType.getShortName(), SimDb.getNewExpiration(SimulatorConfig.class));
+		SimulatorConfig sc = new SimulatorConfig(newId, simType.getShortName());
 
 		return configureBaseElements(sc);
 	}
@@ -201,18 +201,6 @@ public abstract class AbstractActorFactory {
 		AbstractActorFactory actorFactory = factories.get(actorTypeName);
 		return actorFactory;
 	}
-
-	public List<SimulatorConfig> checkExpiration(List<SimulatorConfig> configs) {
-		List<SimulatorConfig> remove = new ArrayList<SimulatorConfig>();
-
-		for (SimulatorConfig sc : configs) {
-			if (sc.checkExpiration())
-				remove.add(sc);
-		}
-		configs.removeAll(remove);
-		return configs;
-	}
-
 
 	public SimId getNewId() {
 		String id = UuidAllocator.allocate();

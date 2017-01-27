@@ -13,7 +13,6 @@ import gov.nist.toolkit.results.client.CodesConfiguration
 import gov.nist.toolkit.securityCommon.SecurityParams
 import gov.nist.toolkit.session.server.serviceManager.QueryServiceManager
 import gov.nist.toolkit.session.server.serviceManager.XdsTestServiceManager
-import gov.nist.toolkit.simcommon.server.ExtendedPropertyManager
 import gov.nist.toolkit.sitemanagement.Sites
 import gov.nist.toolkit.sitemanagement.client.Site
 import gov.nist.toolkit.sitemanagement.client.SiteSpec
@@ -182,7 +181,6 @@ public class Session implements SecurityParams {
 	
 	public Session(File warHome) {
 		Installation.instance().warHome(warHome);
-		ExtendedPropertyManager.load(warHome);
 		System.out.print("warHome[Session]: " + warHome + "\n");
 
         ExternalCacheManager.initialize();
@@ -196,7 +194,6 @@ public class Session implements SecurityParams {
 
 	public Session(File warHome, File externalCache) {
 		Installation.instance().warHome(warHome);
-		ExtendedPropertyManager.load(warHome);
 		System.out.print("warHome[Session]: " + warHome + "\n");
 
 //		System.out.println("External Cache set to " + externalCache.toString());
