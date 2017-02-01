@@ -17,6 +17,7 @@ class GenerateSingleSystem {
     def nl = '\n'
     def tab = '  '
     def tab2 = tab + tab
+    def tab3 = tab + tab + tab
     boolean hasErrors = false
 
     // When a systeName is requested, it may have one of these extensions on it.  They are added by
@@ -25,7 +26,8 @@ class GenerateSingleSystem {
             ' - ROD',
             ' - IDS',
             ' - EMBED',
-            ' - ODDS'
+            ' - ODDS',
+            ' - REC'
     ]
     static String withoutExtension(String name) {
         String extension = nameExtensions.find { name.endsWith(it) }
@@ -48,7 +50,10 @@ class GenerateSingleSystem {
     GeneratedSystems generate(String systemName) {
         StringBuilder log = new StringBuilder();
         getter.getSingleConfig(systemName)  // load into cache
-        log.append("System: ${systemName}").append(nl)
+        log.append("Gazelle System: ${systemName}").append(nl)
+
+        getter.getAllOids()
+        getter.getV2Responder()
 
         cparser.parse(getter.singleConfigFile(systemName).toString())
         oparser.parse(getter.oidsFile().toString())
@@ -65,7 +70,7 @@ class GenerateSingleSystem {
             String system = config.system
             String tkSystem = "${system} - REC"
             if (recipientSite == null) {
-                log.append(tab).append('Toolkit system: ').append(tkSystem).append(nl)
+                log.append(tab).append('Toolkit system: ').append(tkSystem).append(' (Document Recipient)').append(nl)
                 recipientSite = new Site(tkSystem)
             }
             String transactionId = config.getTransaction()
@@ -89,7 +94,7 @@ class GenerateSingleSystem {
             String system = config.system
             String tkSystem = "${system} - ROD"
             if (rodSite == null) {
-                log.append(tab).append('Toolkit system: ').append(tkSystem).append(nl)
+                log.append(tab).append('Toolkit system: ').append(tkSystem).append(' (Register On Demand)').append(nl)
                 rodSite = new Site(tkSystem)
             }
             String transactionId = config.getTransaction()
@@ -113,7 +118,7 @@ class GenerateSingleSystem {
             String system = config.system
             String tkSystem = "${system} - IDS"
             if (idsSite == null) {
-                log.append(tab).append('Toolkit system: ').append(tkSystem).append(nl)
+                log.append(tab).append('Toolkit system: ').append(tkSystem).append(' (Imaging Document Source)').append(nl)
                 idsSite = new Site(tkSystem)
             }
             String transactionId = config.getTransaction()
@@ -139,7 +144,7 @@ class GenerateSingleSystem {
             String system = config.system
             String tkSystem = "${system} - EMBED" // in toolkit
             if (embedSite == null) {
-                log.append(tab).append('Toolkit system: ').append(tkSystem).append(nl)
+                log.append(tab).append('Toolkit system: ').append(tkSystem).append(' (Embedded Repository)').append(nl)
                 embedOid = oparser.getOid(system, OidDef.IntSrcRepoUidOid)
                 if (embedOid == null) return
                 embedSite = new Site(tkSystem)
@@ -166,7 +171,7 @@ class GenerateSingleSystem {
             String system = config.system
             String tkSystem = "${system} - ODDS" // in toolkit
             if (oddsSite == null) {
-                log.append(tab).append('Toolkit system: ').append(tkSystem).append(nl)
+                log.append(tab).append('Toolkit system: ').append(tkSystem).append(' (On Demand Document Source)').append(nl)
                 oddsOid = oparser.getOid(system, OidDef.ODDSRepUidOid)
                 if (oddsOid == null) return
                 oddsSite = new Site(tkSystem)
@@ -191,6 +196,8 @@ class GenerateSingleSystem {
         Site otherSite = null
         String otherOid = null
         String homeOid = null
+        String pifHost = null
+        String pifPort = null
         elements.findAll { !it.isODDS() && !it.isRecipient() && !it.isEMBED_REPOS() && !it.isROD() && !it.isIDS() && it.approved }.each { ConfigDef config ->
             boolean forceNotRetrieve = false
             String transactionId = config.getTransaction()
@@ -202,16 +209,18 @@ class GenerateSingleSystem {
             if (otherSite == null) {
                 log.append(tab).append('Toolkit system: ').append(tkSystem).append(nl)
                 otherOid = oparser.getOid(system, OidDef.RepUidOid)
-                if (otherOid == null) return
+//                if (otherOid == null) return
                 otherSite = new Site(tkSystem)
                 homeOid = oparser.getOid(system, OidDef.HomeIdOid)
+                log.append(tab2).append('homeCommunityId ').append(homeOid).append(nl)
                 otherSite.setHome(homeOid)
             }
+
 
             if (!ActorTransactionValidation.accepts(transactionId, config.actor)) {
                 log.append(ActorTransactionValidation.errorMessage(transactionId, config.actor)).append(nl)
                 hasErrors = true
-               // return
+                return
             }
 
             //*************************************************************
@@ -233,6 +242,11 @@ class GenerateSingleSystem {
             }
             if (!transactionType)
                 transactionType = TransactionType.find(transactionId)
+
+            if (!transactionType) {
+                log.append('Error: do not understand transaction id ').append(transactionId).append(nl)
+                return  // groovy for continue inside iteration
+            }
             //*************************************************************
 
 
@@ -247,6 +261,27 @@ class GenerateSingleSystem {
                 logit(log, transactionType, null, endpoint, isSecure)
                 otherSite.addTransaction(transactionId, endpoint, isSecure, isAsync)
             }
+
+            V2ResponderDef responderDef = vparser.get(system)
+            if (responderDef) {
+                pifHost = responderDef.host
+                pifPort = responderDef.port
+            }
+
+        }
+
+        if (pifHost && pifPort) {
+            if (otherSite) {
+                otherSite.pifHost = pifHost
+                otherSite.pifPort = pifPort
+            }
+            if (rodSite) {
+                rodSite.pifHost = pifHost
+                rodSite.pifPort = pifPort
+            }
+            log.append(nl).append(tab2).append('Unsecured V2 Patieht Identity Feed\n')
+            log.append(tab3).append('host = ' + pifHost + '\n')
+            log.append(tab3).append('port = ' + pifPort + '\n')
         }
 
         GeneratedSystems systems = new GeneratedSystems()

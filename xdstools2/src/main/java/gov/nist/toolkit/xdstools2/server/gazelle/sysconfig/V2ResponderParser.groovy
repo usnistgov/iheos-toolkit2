@@ -16,6 +16,16 @@ class V2ResponderParser {
         return values[i]
     }
 
+    V2ResponderDef get(String system) {
+        if (system == null) return null;
+        for (V2ResponderDef value : values) {
+            if (system == value.system && !value.secured) {
+                return value
+            }
+        }
+        return null
+    }
+
     def parse(String input) {
         java.nio.file.Paths.get(input).withReader { reader ->
             org.apache.commons.csv.CSVParser csv = new org.apache.commons.csv.CSVParser(reader, DEFAULT.withHeader())
