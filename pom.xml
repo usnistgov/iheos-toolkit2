@@ -84,6 +84,7 @@
         <module>interaction-diagram</module>
         <module>testclient</module>
         <module>gwtcommon</module>
+        <module>gwtsupport</module>
     </modules>
 
 
