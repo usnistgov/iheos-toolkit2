@@ -82,6 +82,8 @@
         <module>interaction-model</module>
         <module>interaction-mapper</module>
         <module>interaction-diagram</module>
+        <module>testclient</module>
+        <module>gwtcommon</module>
     </modules>
 
 

@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>gov.nist.toolkit</groupId>
+        <artifactId>tk-deps</artifactId>
+        <version>4.2.0-SNAPSHOT</version>
+        <relativePath>../tk-deps/pom.xml</relativePath>
+    </parent>
+
+    <artifactId>test-client</artifactId>
+    <packaging>war</packaging>
+
+    <dependencies>
+        <dependency>
+            <groupId>gov.nist.toolkit</groupId>
+            <artifactId>test-engine</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>com.google.gwt</groupId>
+            <artifactId>gwt-user</artifactId>
+        </dependency>
+
+    </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <!-- 2.8.0-01 and later require maven-compiler-plugin 3.1 or higher -->
+                <version>3.1</version>
+                <configuration>
+                    <compilerId>groovy-eclipse-compiler</compilerId>
+                    <!-- set verbose to be true if you want lots of uninteresting messages -->
+                    <!-- <verbose>true</verbose> -->
+                </configuration>
+                <dependencies>
+                    <dependency>
+                        <groupId>org.codehaus.groovy</groupId>
+                        <artifactId>groovy-eclipse-compiler</artifactId>
+                        <version>2.8.0-01</version>
+                    </dependency>
+                    <!-- for 2.8.0-01 and later you must have an explicit dependency on
+                        groovy-eclipse-batch -->
+                    <dependency>
+                        <groupId>org.codehaus.groovy</groupId>
+                        <artifactId>groovy-eclipse-batch</artifactId>
+                        <version>2.1.8-01</version>
+                        <!-- or choose a different compiler version -->
+                        <!-- <version>1.8.6-01</version> -->
+                        <!-- <version>1.7.10-06</version> -->
+                    </dependency>
+                </dependencies>
+            </plugin>
+
+
+            <!-- There are two copies of this plugin - I have no idea which one is
+                running. I only know it works for the moment! -->
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>gwt-maven-plugin</artifactId>
+                <version>${gwtVersion}</version>
+                <dependencies>
+                    <dependency>
+                        <groupId>com.google.gwt</groupId>
+                        <artifactId>gwt-user</artifactId>
+                        <version>${gwtVersion}</version>
+                    </dependency>
+                    <dependency>
+                        <groupId>com.google.gwt</groupId>
+                        <artifactId>gwt-dev</artifactId>
+                        <version>${gwtVersion}</version>
+                    </dependency>
+                </dependencies>
+                <executions>
+                    <execution>
+                        <phase>prepare-package</phase>
+                        <goals>
+                            <goal>compile</goal>
+                            <goal>resources</goal>
+                        </goals>
+                    </execution>
+                    <execution>
+                        <id>compilation_profile</id>
+                        <goals>
+                            <goal>compile</goal>
+                            <goal>resources</goal>
+                        </goals>
+                        <configuration>
+                            <optimizationLevel>0</optimizationLevel>
+                        </configuration>
+                    </execution>
+                </executions>
+                <configuration>
+                    <compileSourcesArtifacts>
+                        <compileSourcesArtifact>${project.groupId}:tk</compileSourcesArtifact>
+                        <compileSourcesArtifact>${project.groupId}:results</compileSourcesArtifact>
+                        <compileSourcesArtifact>${project.groupId}:services</compileSourcesArtifact>
+                        <compileSourcesArtifact>${project.groupId}:actor-transaction</compileSourcesArtifact>
+                        <compileSourcesArtifact>${project.groupId}:site-management</compileSourcesArtifact>
+                        <compileSourcesArtifact>${project.groupId}:registry-metadata</compileSourcesArtifact>
+                        <compileSourcesArtifact>${project.groupId}:http</compileSourcesArtifact>
+                        <compileSourcesArtifact>${project.groupId}:validators-support</compileSourcesArtifact>
+                        <compileSourcesArtifact>${project.groupId}:actorfactory</compileSourcesArtifact>
+                        <compileSourcesArtifact>${project.groupId}:sim-common</compileSourcesArtifact>
+                        <compileSourcesArtifact>${project.groupId}:error-recording</compileSourcesArtifact>
+                        <compileSourcesArtifact>${project.groupId}:common-datatypes</compileSourcesArtifact>
+                        <compileSourcesArtifact>${project.groupId}:config-datatypes</compileSourcesArtifact>
+                        <compileSourcesArtifact>${project.groupId}:session</compileSourcesArtifact>
+                        <compileSourcesArtifact>${project.groupId}:testkit-utilities</compileSourcesArtifact>
+                        <compileSourcesArtifact>${project.groupId}:xdstest2-logging</compileSourcesArtifact>
+                        <compileSourcesArtifact>${project.groupId}:xds-exceptions</compileSourcesArtifact>
+                        <compileSourcesArtifact>${project.groupId}:interaction-model</compileSourcesArtifact>
+                        <compileSourcesArtifact>${project.groupId}:interaction-diagram</compileSourcesArtifact>
+                    </compileSourcesArtifacts>
+                    <runTarget>Xdstools2.html</runTarget>
+                    <modules>
+                        <module>${project.groupId}.xdstools2.Xdstools2</module>
+                    </modules>
+                </configuration>
+            </plugin>
+
+        </plugins>
+    </build>
+</project>
