@@ -1339,13 +1339,14 @@ public abstract class BasicTransaction  {
 
 		if (additionalHeaders != null) {
 			for (OMElement hdr : additionalHeaders)
-				try {
-					soap.addHeader(Util.deep_copy(hdr));
-				} catch (XdsInternalException e) {
-					s_ctx.set_error(e.getMessage());
-					failed();
-					logSoapRequest(soap);
-				}
+//				try {
+//					soap.addHeader(Util.deep_copy(hdr));
+					soap.addHeader(hdr);
+//				} catch (XdsInternalException e) {
+//					s_ctx.set_error(e.getMessage());
+//					failed();
+//					logSoapRequest(soap);
+//				}
 		}
 
 		/*
