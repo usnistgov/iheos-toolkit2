@@ -32,6 +32,7 @@ import gov.nist.toolkit.xdstools2.client.event.testSession.TestSessionManager2;
 import gov.nist.toolkit.xdstools2.client.siteActorManagers.BaseSiteActorManager;
 import gov.nist.toolkit.xdstools2.client.tabs.actorConfigTab.ActorConfigTab;
 import gov.nist.toolkit.xdstools2.client.util.ClientUtils;
+import gov.nist.toolkit.xdstools2.client.util.InformationLink;
 import gov.nist.toolkit.xdstools2.client.widgets.PidWidget;
 import gov.nist.toolkit.xdstools2.client.widgets.PopupMessage;
 import gov.nist.toolkit.xdstools2.shared.command.request.GetStsSamlAssertionRequest;
@@ -375,16 +376,18 @@ public abstract class GenericQueryTab  extends ToolWindow {
             siteSelectionPanel.getFlexCellFormatter().setVerticalAlignment(0,0,HasVerticalAlignment.ALIGN_TOP);
             siteSelectionPanel.setWidget(0, 0, new HTML("<div style='margin-top:2px;font-size:1.1em;'>Send to</div>"));
 
-            Image infoImage = new Image("icons/info.png");
-            infoImage.setTitle("Help with system selection");
-            infoImage.addClickHandler(new ClickHandler() {
-                @Override
-                public void onClick(ClickEvent clickEvent) {
-                    Window.open(Xdstools2.wikiBaseUrl + "/System-selection-issues", "_blank","");
-                }
-            });
+//            Image infoImage = new Image("icons/info.png");
+//            infoImage.setTitle("Help with system selection");
+//            infoImage.addClickHandler(new ClickHandler() {
+//                @Override
+//                public void onClick(ClickEvent clickEvent) {
+//                    Window.open(Xdstools2.wikiBaseUrl + "/System-selection-issues", "_blank","");
+//                }
+//            });
+//
+//            siteSelectionPanel.setWidget(0, 1, infoImage);
 
-            siteSelectionPanel.setWidget(0, 1, infoImage);
+            siteSelectionPanel.setWidget(0, 1, new InformationLink("Help with system selection", "System-selection-issues").asWidget());
 
             FlexTable siteGrid = new FlexTable();
             siteSelectionPanel.getFlexCellFormatter().setVerticalAlignment(0,1,HasVerticalAlignment.ALIGN_TOP);
