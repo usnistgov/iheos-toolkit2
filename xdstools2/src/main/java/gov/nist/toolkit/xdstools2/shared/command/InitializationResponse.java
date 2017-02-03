@@ -14,8 +14,18 @@ public class InitializationResponse implements Serializable, IsSerializable {
     private List<String> testSessions;
     private String servletContextName;
     private String toolkitBaseUrl;
+    private String wikiBaseUrl;
+
+    public String getWikiBaseUrl() {
+        return wikiBaseUrl;
+    }
+
+    public void setWikiBaseUrl(String wikiBaseUrl) {
+        this.wikiBaseUrl = wikiBaseUrl;
+    }
 
     public InitializationResponse() {
+
     }
 
     public String getDefaultEnvironment() {
