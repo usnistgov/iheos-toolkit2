@@ -9,7 +9,7 @@ import com.google.gwt.user.client.ui.Widget;
 import gov.nist.toolkit.xdstools2.client.Xdstools2;
 
 /**
- *
+ * Build info link to project wiki
  */
 public class InformationLink implements IsWidget {
     private Image infoImage = new Image("icons/about-16.png");

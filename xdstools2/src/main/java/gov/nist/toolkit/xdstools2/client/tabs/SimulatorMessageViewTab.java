@@ -14,9 +14,9 @@ import gov.nist.toolkit.services.shared.Message;
 import gov.nist.toolkit.sitemanagement.client.SiteSpec;
 import gov.nist.toolkit.xdstools2.client.Panel1;
 import gov.nist.toolkit.xdstools2.client.ToolWindow;
-import gov.nist.toolkit.xdstools2.client.Xdstools2;
 import gov.nist.toolkit.xdstools2.client.command.command.*;
 import gov.nist.toolkit.xdstools2.client.inspector.MetadataInspectorTab;
+import gov.nist.toolkit.xdstools2.client.util.ToolkitLink;
 import gov.nist.toolkit.xdstools2.client.util.activitiesAndPlaces.SimLog;
 import gov.nist.toolkit.xdstools2.client.widgets.HorizontalFlowPanel;
 import gov.nist.toolkit.xdstools2.client.widgets.RadioButtonGroup;
@@ -288,14 +288,20 @@ public class SimulatorMessageViewTab extends ToolWindow {
 		}
 	}
 
-	static private Label eventLinkLabel = new Label("Event Link: ");
+//	static private Label eventLinkLabel = new Label("Event Link: ");
 	private void updateEventLink() {
+//		linkPanel.clear();
+//		linkPanel.add(eventLinkLabel);
+//		if (currentTransactionInstance != null) {
+//			SimLog simLog = new SimLog(currentTransactionInstance);
+//			Label eventLink = new Label(Xdstools2.toolkitBaseUrl + "#SimLog:" + (new SimLog.Tokenizer()).getToken(simLog));
+//			linkPanel.add(eventLink);
+//		}
+
 		linkPanel.clear();
-		linkPanel.add(eventLinkLabel);
 		if (currentTransactionInstance != null) {
 			SimLog simLog = new SimLog(currentTransactionInstance);
-			Label eventLink = new Label(Xdstools2.toolkitBaseUrl + "#SimLog:" + (new SimLog.Tokenizer()).getToken(simLog));
-			linkPanel.add(eventLink);
+			linkPanel.add(new ToolkitLink("Event Link: ", "#SimLog:" + (new SimLog.Tokenizer()).getToken(simLog)));
 		}
 	}
 
