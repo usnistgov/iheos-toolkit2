@@ -17,9 +17,10 @@ public class InformationLink implements IsWidget {
     /**
      *
      * @param title - hover over displayed string
-     * @param wikiPageName - wiki file name - includes hyphens in name and not spaces
+     * @param wikiPageName - wiki file name - all spaces in name will be converted to hyphens
      */
     public InformationLink(String title, String wikiPageName) {
+        wikiPageName = wikiPageName.replaceAll(" ", "-");
         final String pageName = (wikiPageName.startsWith("/")) ? wikiPageName : "/" + wikiPageName;
         infoImage.setTitle(title);
         infoImage.addClickHandler(new ClickHandler() {
