@@ -1,13 +1,18 @@
 package gov.nist.toolkit.xdstools2.client.event.testSession;
 
-import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.Cookies;
 import com.google.gwt.user.client.rpc.AsyncCallback;
-import gov.nist.toolkit.actorfactory.client.SimulatorConfig;
-import gov.nist.toolkit.sitemanagement.client.TransactionOfferings;
-import gov.nist.toolkit.xdstools2.client.*;
+import gov.nist.toolkit.xdstools2.client.CookieManager;
+import gov.nist.toolkit.xdstools2.client.command.command.AddMesaTestSessionCommand;
+import gov.nist.toolkit.xdstools2.client.command.command.DeleteMesaTestSessionCommand;
+import gov.nist.toolkit.xdstools2.client.widgets.PopupMessage;
+import gov.nist.toolkit.xdstools2.client.Xdstools2;
+import gov.nist.toolkit.xdstools2.client.command.command.GetTestSessionNamesCommand;
+import gov.nist.toolkit.xdstools2.client.util.ClientUtils;
+import gov.nist.toolkit.xdstools2.shared.command.CommandContext;
 
 import java.util.List;
+
 
 /**
  * When this finally replaced TestSessionManager it will loose the 2.
@@ -15,33 +20,29 @@ import java.util.List;
  * is where the current list is maintained so that new tabs can be initialized.
  */
 public class TestSessionManager2 {
-    final public ToolkitServiceAsync toolkitService = GWT
-            .create(ToolkitService.class);
-
-    List<String> testSessions;  // this is maintained to initialize new tabs with
-    String currentTestSession;
+    private List<String> testSessions;  // this is maintained to initialize new tabs with
+    private String currentTestSession = "default";
 
     public TestSessionManager2() {
-        Xdstools2.getEventBus().addHandler(TestSessionsUpdatedEvent.TYPE, new TestSessionsUpdatedEventHandler() {
+        ClientUtils.INSTANCE.getEventBus().addHandler(TestSessionsUpdatedEvent.TYPE, new TestSessionsUpdatedEventHandler() {
             @Override
             public void onTestSessionsUpdated(TestSessionsUpdatedEvent event) {
                 testSessions = event.testSessionNames;
             }
         });
-        Xdstools2.getEventBus().addHandler(TestSessionChangedEvent.TYPE, new TestSessionChangedEventHandler() {
+        ClientUtils.INSTANCE.getEventBus().addHandler(TestSessionChangedEvent.TYPE, new TestSessionChangedEventHandler() {
             @Override
             public void onTestSessionChanged(TestSessionChangedEvent event) {
-                switch (event.changeType) {
+                switch (event.getChangeType()) {
                     case ADD:
-                        add(event.value);
+                        add(event.getValue());
                         break;
                     case DELETE:
-                        delete(event.value);
+                        delete(event.getValue());
                         break;
                     case SELECT:
-                        currentTestSession = event.value;
-                        toCookie(event.value);
-                        Xdstools2.DEBUG("testSession is " + currentTestSession);
+                        setCurrentTestSession(event.getValue());
+                        toCookie(event.getValue());
                 }
             }
         });
@@ -57,115 +58,64 @@ public class TestSessionManager2 {
     }
     public boolean isTestSessionValid() { return !isEmpty(currentTestSession); }
 
-    String fromCookie() {
+    public String fromCookie() {
         String x = Cookies.getCookie(CookieManager.TESTSESSIONCOOKIENAME);
         if (x == null) return "";
         return x;
     }
-    void toCookie(String value) { Cookies.setCookie(CookieManager.TESTSESSIONCOOKIENAME, value);}
-    void deleteCookie() { Cookies.removeCookie(CookieManager.TESTSESSIONCOOKIENAME);}
+    private void toCookie(String value) { Cookies.setCookie(CookieManager.TESTSESSIONCOOKIENAME, value);}
+    private void deleteCookie() { Cookies.removeCookie(CookieManager.TESTSESSIONCOOKIENAME);}
 
-    // getRetrievedDocumentsModel sessionNames from server and broadcast to all tabs
+    // get sessionNames from server and broadcast to all tabs
     public void load() { load(fromCookie()); }
     public void load(final String initialSelection) {
-//        Xdstools2.DEBUG("initialSelection is " + initialSelection + ".  currentTestSession is " + currentTestSession);
-
-        toolkitService.getMesaTestSessionNames(new AsyncCallback<List<String>>() {
-            @Override
-            public void onFailure(Throwable throwable) {
-                new PopupMessage("Cannot load test session names - " + throwable.getMessage());
-            }
+        new GetTestSessionNamesCommand() {
 
             @Override
-            public void onSuccess(List<String> newTestSessions) {
-//                Xdstools2.DEBUG("newTestSessions = " + newTestSessions);
-                testSessions = newTestSessions;
-
+            public void onComplete(List<String> var1) {
+                testSessions = var1;
                 if (isLegalTestSession(initialSelection)) {
-//                    Xdstools2.DEBUG("initialSeletion is legal");
-                    currentTestSession = initialSelection;
+                    setCurrentTestSession(initialSelection);
                     toCookie(currentTestSession);
-//                    Xdstools2.DEBUG("set cookie to " + currentTestSession);
                 } else {
                     if (isLegalTestSession(currentTestSession)) {
-//                        Xdstools2.DEBUG("currentTestSelection, " + currentTestSession + ", is legal");
                         toCookie(currentTestSession);
-//                        Xdstools2.DEBUG("set cookie to " + currentTestSession);
                     } else {
-                        currentTestSession = "";
-//                        Xdstools2.DEBUG("delete cookie");
+                        setCurrentTestSession("");
                         deleteCookie();
                     }
                 }
-//                Xdstools2.DEBUG("currentTestSelection is " + currentTestSession);
-//                Xdstools2.DEBUG("cookie is " + fromCookie());
-                Xdstools2.getEventBus().fireEvent(new TestSessionsUpdatedEvent(testSessions));
-                Xdstools2.getEventBus().fireEvent(new TestSessionChangedEvent(TestSessionChangedEvent.ChangeType.SELECT, currentTestSession));
-
-                try {
-                    toolkitService.getAllSimConfigs(currentTestSession, new AsyncCallback<List<SimulatorConfig>>() {
-                        @Override
-                        public void onFailure(Throwable throwable) {
-                            new PopupMessage("Cannot load sim configs - " + throwable.getMessage());
-                        }
-
-                        @Override
-                        public void onSuccess(List<SimulatorConfig> simulatorConfigs) {
-                            try {
-                                toolkitService.getTransactionOfferings(new AsyncCallback<TransactionOfferings>() {
-                                    @Override
-                                    public void onFailure(Throwable throwable) {
-
-                                    }
-
-                                    @Override
-                                    public void onSuccess(TransactionOfferings transactionOfferings) {
-
-                                    }
-                                });
-                            } catch (Exception e) {
-                                new PopupMessage("getTransactionOfferings failed - " + e.getMessage());
-                            }
-                        }
-                    });
-                } catch (Exception e) {
-                    new PopupMessage("Cannot load sim configs - " + e.getMessage());
-
-                }
+                ClientUtils.INSTANCE.getEventBus().fireEvent(new TestSessionsUpdatedEvent(testSessions));
+                ClientUtils.INSTANCE.getEventBus().fireEvent(new TestSessionChangedEvent(TestSessionChangedEvent.ChangeType.SELECT, currentTestSession));
             }
-        });
+        }.run(ClientUtils.INSTANCE.getCommandContext());
     }
 
     // save new sessionName to server and broadcast updates to all tabs
     public void add(final String sessionName) {
-        toolkitService.addMesaTestSession(sessionName, new AsyncCallback<Boolean>() {
+        new AddMesaTestSessionCommand(){
             @Override
-            public void onFailure(Throwable throwable) {
-                new PopupMessage("Cannot add test session - " + throwable.getMessage());
-            }
-
-            @Override
-            public void onSuccess(Boolean aBoolean) {
+            public void onComplete(Boolean result) {
                 load(sessionName);  // getRetrievedDocumentsModel full list and update all tabs
             }
-        });
+        }.run(new CommandContext(ClientUtils.INSTANCE.getEnvironmentState().getEnvironmentName(),sessionName));
     }
 
     // delete new sessionName from server and broadcast updates to all tabs
     public void delete(String sessionName) {
-        toolkitService.delMesaTestSession(sessionName, new AsyncCallback<Boolean>() {
+        new DeleteMesaTestSessionCommand(){
             @Override
-            public void onFailure(Throwable throwable) {
-                new PopupMessage("Cannot delete test session - " + throwable.getMessage());
+            public void onComplete(Boolean result) {
+                currentTestSession=testSessions.get(0);
+                load(currentTestSession);  // getRetrievedDocumentsModel full list and update all tabs
             }
-
-            @Override
-            public void onSuccess(Boolean aBoolean) {
-                load();  // getRetrievedDocumentsModel full list and update all tabs
-            }
-        });
+        }.run(new CommandContext(ClientUtils.INSTANCE.getEnvironmentState().getEnvironmentName(),sessionName));
     }
 
-    boolean isEmpty(String x) { return x == null || x.trim().equals(""); }
-    boolean isLegalTestSession(String name) { return !isEmpty(name) && testSessions.contains(name); }
+    private boolean isEmpty(String x) { return x == null || x.trim().equals(""); }
+    public boolean isLegalTestSession(String name) { return !isEmpty(name) && testSessions.contains(name); }
+
+    public void setTestSessions(List<String> testSessions) {
+        this.testSessions = testSessions;
+    }
 }

@@ -3,11 +3,16 @@ package gov.nist.toolkit.http;
 import gov.nist.toolkit.http.HttpMessage.Header;
 import gov.nist.toolkit.http.HttpMessage.HeaderNamesEnumeration;
 
+import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+
+import org.apache.commons.lang3.StringUtils;
+import org.apache.http.NameValuePair;
+import org.apache.http.client.utils.URLEncodedUtils;
 
 public class HttpMessageBa {
 
@@ -28,11 +33,25 @@ public class HttpMessageBa {
 		}
 		
 	}
-	
 
 	List<Header> headers = new ArrayList<Header>();
 	byte[] body;
 	MultipartMessageBa multipart;
+	
+	List<NameValuePair> queryParameters = new ArrayList<>();
+	public List<NameValuePair> getQueryParameters() {
+	   return queryParameters;
+	}
+	public String getQueryParameterValue(String queryParameterName) {
+	   if (StringUtils.isBlank(queryParameterName)) return null;
+	   queryParameterName = queryParameterName.trim();
+	   for (NameValuePair queryParameter : queryParameters) {
+	      if (queryParameterName.equalsIgnoreCase(queryParameter.getName()))
+	         return queryParameter.getValue();
+	   }
+	   return null;
+	}
+	
 
 	public HttpMessageBa() {}
 
@@ -167,11 +186,18 @@ public class HttpMessageBa {
 	}
 
 	public void addHeader(String header) throws HttpParseException {
+	   addHeader(header, new String[] {"POST"});
+	}
+	public void addHeader(String header, String[] httpMethods) throws HttpParseException {
 		String[] parts = header.split(":",2);
+		// 1st line (method, uri, etc) has no ":", so only one part
 		if (parts.length != 2) {
-			if (!header.startsWith("POST"))
-				throw new HttpParseException("Header [" + header + "] does not parse");
-			return;
+		   if (StringUtils.startsWithAny(header, httpMethods) == false)
+		      throw new HttpParseException("Header [" + header + "] does not parse");
+		   String pars = StringUtils.substringBetween(header, "?", " ");
+		   if (StringUtils.isNotBlank(pars)) 
+		      queryParameters = URLEncodedUtils.parse(pars, Charset.forName("utf-8"));
+		   return;
 		}
 		Header h = new Header(parts[0].trim(), parts[1].trim());
 		headers.add(h);

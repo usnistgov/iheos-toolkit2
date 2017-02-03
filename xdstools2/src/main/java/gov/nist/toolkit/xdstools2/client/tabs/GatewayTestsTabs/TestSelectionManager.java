@@ -4,23 +4,28 @@ import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.*;
 import gov.nist.toolkit.actorfactory.client.SimulatorConfig;
 import gov.nist.toolkit.results.client.Result;
-import gov.nist.toolkit.results.client.SiteSpec;
 import gov.nist.toolkit.results.client.TestInstance;
-import gov.nist.toolkit.xdstools2.client.PopupMessage;
+import gov.nist.toolkit.sitemanagement.client.SiteSpec;
 import gov.nist.toolkit.xdstools2.client.StringSort;
-import gov.nist.toolkit.xdstools2.client.ToolkitServiceAsync;
+import gov.nist.toolkit.xdstools2.client.command.command.*;
 import gov.nist.toolkit.xdstools2.client.inspector.MetadataInspectorTab;
 import gov.nist.toolkit.xdstools2.client.tabs.SimulatorMessageViewTab;
 import gov.nist.toolkit.xdstools2.client.tabs.TextViewerTab;
+import gov.nist.toolkit.xdstools2.client.util.ClientUtils;
+import gov.nist.toolkit.xdstools2.client.widgets.PopupMessage;
+import gov.nist.toolkit.xdstools2.shared.command.request.GetCollectionRequest;
+import gov.nist.toolkit.xdstools2.shared.command.request.GetTestDetailsRequest;
+import gov.nist.toolkit.xdstools2.shared.command.request.GetTestResultsRequest;
+import gov.nist.toolkit.xdstools2.shared.command.request.GetTestplanAsTextRequest;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+
 
 /**
  *
@@ -35,66 +40,37 @@ class TestSelectionManager {
     final static public String ALL = "All";
     final static public String ALL_SELECTION = "-- All --";
     List<String> sections = new ArrayList<String>();
-//    String selectedSection = TestSelectionManager.ALL_SELECTION;
-    ToolkitServiceAsync toolkitService;
     Map<String, String> testCollectionMap;  // name => description for selected actor
-    List<String> assigningAuthorities = null;
     TestSelectionManager me;
 
     TestSelectionManager(GatewayTool tool) {
         me = this;
         this.tool = tool;
-        toolkitService = tool.getToolkitService();
-        loadAssigningAuthorities();
-
         selectSectionList.addChangeHandler(new SectionSelectionChangeHandler());
     }
 
     void loadTestsFromCollection(final String testCollectionName) {
-        toolkitService.getCollection("collections", testCollectionName, new AsyncCallback<Map<String, String>>() {
-
-            public void onFailure(Throwable caught) {
-                new PopupMessage("getCollection(" + testCollectionName + "): " +  " -----  " + caught.getMessage());
-            }
-
-            public void onSuccess(Map<String, String> result) {
+        new GetCollectionCommand() {
+            @Override
+            public void onComplete(Map<String, String> result) {
                 testCollectionMap = result;
 
                 Set<String> testNumsSet = testCollectionMap.keySet();
                 List<String> testNums = new ArrayList<String>();
                 testNums.addAll(testNumsSet);
-                testNums = new StringSort().sort(testNums);
+                testNums = StringSort.sort(testNums);
 
                 for (String name : testNums) {
                     String description = testCollectionMap.get(name);
                     selectTestList.addItem(name + " - " + description, name);
                 }
-//                testSelectionContext.selectTestList.addItem(ALL);  does not work yet
                 selectTestList.setVisibleItemCount(selectTestList.getItemCount());
                 if (selectTestList.getItemCount() > 0) {
                     selectTestList.setSelectedIndex(0);
                     new TestSelectionChangeHandler(me).onChange(null);
                 }
             }
-        });
-    }
-
-    void loadAssigningAuthorities() {
-        try {
-            toolkitService.getAssigningAuthorities(new AsyncCallback<List<String>>() {
-                @Override
-                public void onFailure(Throwable e) {
-                    new PopupMessage("Error loading Assigning Authorities - usually caused by session timeout - " + e.getMessage());
-                }
-
-                @Override
-                public void onSuccess(List<String> s) {
-                    assigningAuthorities = s;
-                }
-            });
-        } catch (Exception e) {
-            new PopupMessage(e.getMessage());
-        }
+        }.run(new GetCollectionRequest(ClientUtils.INSTANCE.getCommandContext(), "collections", testCollectionName));
     }
 
     Widget buildSectionSelector() {
@@ -144,14 +120,9 @@ class TestSelectionManager {
             public void onClick(ClickEvent clickEvent) {
                 List<TestInstance> tests = new ArrayList<TestInstance>();
                 tests.add(new TestInstance(tool.getSelectedTest()));
-                toolkitService.getTestResults(tests, tool.getCurrentTestSession(), new AsyncCallback<Map<String, Result>>() {
+                new GetTestResultsCommand(){
                     @Override
-                    public void onFailure(Throwable throwable) {
-                        new PopupMessage(throwable.getMessage());
-                    }
-
-                    @Override
-                    public void onSuccess(Map<String, Result> stringResultMap) {
+                    public void onComplete(Map<String, Result> stringResultMap) {
                         Result result = stringResultMap.get(tool.getSelectedTest());
                         if (result == null) {
                             new PopupMessage("Results not available");
@@ -166,27 +137,22 @@ class TestSelectionManager {
                         results.add(result);
                         itab.setResults(results);
                         itab.setSiteSpec(siteSpec);
-                        itab.setToolkitService(toolkitService);
-                        itab.onTabLoad(tool.getToolContainer(), true, null);
+                        itab.onTabLoad(true, "Insp");
                     }
-                });
+                }.run(new GetTestResultsRequest(ClientUtils.INSTANCE.getCommandContext(),tests));
             }
         });
         return button;
     }
 
     void loadSectionNames() {
-        toolkitService.getTestIndex(tool.getSelectedTest(), new AsyncCallback<List<String>>() {
-
-            public void onFailure(Throwable caught) {
-                new PopupMessage("getTestIndex: " + caught.getMessage());
-            }
-
-            public void onSuccess(List<String> result) {
+        new GetTestIndexCommand() {
+            @Override
+            public void onComplete(List<String> result) {
                 sections.clear();
                 selectSectionList.clear();
                 if (result == null) {
-                    // no index.idx - so sections
+                    // no index.idx - so SECTIONS
                     selectSectionViewButton.setEnabled(false);
                 } else {
                     sections.addAll(result);
@@ -198,7 +164,7 @@ class TestSelectionManager {
                 }
                 selectedSections.clear();
             }
-        });
+        }.run(new GetTestDetailsRequest(ClientUtils.INSTANCE.getCommandContext(), tool.getSelectedTest()));
     }
 
     public List<String> getSelectedSections() {
@@ -215,17 +181,12 @@ class TestSelectionManager {
     class SelectSectionViewButtonClickHandler implements ClickHandler {
 
         public void onClick(ClickEvent event) {
-            toolkitService.getTestplanAsText(new TestInstance(tool.getSelectedTest()), selectSectionList.getSelectedItemText(), new AsyncCallback<String>() {
-
-                public void onFailure(Throwable caught) {
-                    new PopupMessage("getTestplanAsText: " + caught.getMessage());
+            new GetTestplanAsTextCommand(){
+                @Override
+                public void onComplete(String result) {
+                    new TextViewerTab().onTabLoad(true, result, tool.getSelectedTest() + "#" + selectSectionList.getSelectedItemText());
                 }
-
-                public void onSuccess(String result) {
-                    new TextViewerTab().onTabLoad(tool.getToolContainer(), true, result, tool.getSelectedTest() + "#" + selectSectionList.getSelectedItemText());
-                }
-
-            });
+            }.run(new GetTestplanAsTextRequest(ClientUtils.INSTANCE.getCommandContext(),new TestInstance(tool.getSelectedTest()),selectSectionList.getSelectedItemText()));
         }
     }
 
@@ -262,17 +223,12 @@ class TestSelectionManager {
     }
 
     void loadTestReadme(final HTML documentation) {
-        toolkitService.getTestReadme(tool.getSelectedTest(), new AsyncCallback<String>() {
-
-            public void onFailure(Throwable caught) {
-                new PopupMessage("getTestReadme: " + caught.getMessage());
-            }
-
-            public void onSuccess(String result) {
+        new GetTestReadmeCommand() {
+            @Override
+            public void onComplete(String result) {
                 documentation.setHTML(Util.htmlize(result));
             }
-
-        });
+        }.run(new GetTestDetailsRequest(ClientUtils.INSTANCE.getCommandContext(), tool.getSelectedTest()));
     }
 
     Button buildLogLauncher(final String simId, String label) {
@@ -281,7 +237,7 @@ class TestSelectionManager {
             @Override
             public void onClick(ClickEvent clickEvent) {
                 SimulatorMessageViewTab viewTab = new SimulatorMessageViewTab();
-                viewTab.onTabLoad(tool.getToolContainer(), true, simId);
+                viewTab.onTabLoad(true, simId);
             }
         });
 

@@ -1,6 +1,5 @@
 package gov.nist.toolkit.xdstools2.client.siteActorManagers;
 
-import gov.nist.toolkit.results.client.SiteSpec;
 import gov.nist.toolkit.xdstools2.client.tabs.genericQueryTab.GenericQueryTab;
 
 public abstract class BaseSiteActorManager {
@@ -19,6 +18,6 @@ public abstract class BaseSiteActorManager {
 	public abstract String getEndpointSelectionHelp();
 	
 
-	abstract public SiteSpec verifySiteSelection();
+//	abstract public SiteSpec verifySiteSelection();
 
 }

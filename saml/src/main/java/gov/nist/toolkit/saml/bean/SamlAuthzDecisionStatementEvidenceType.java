@@ -8,7 +8,7 @@ public class SamlAuthzDecisionStatementEvidenceType {
      * Gets the value of the assertion property.
      * 
      * @return
-     *     possible object is
+     *     possible model is
      *     {@link SamlAuthzDecisionStatementEvidenceAssertionType }
      *     
      */
@@ -20,7 +20,7 @@ public class SamlAuthzDecisionStatementEvidenceType {
      * Sets the value of the assertion property.
      * 
      * @param value
-     *     allowed object is
+     *     allowed model is
      *     {@link SamlAuthzDecisionStatementEvidenceAssertionType }
      *     
      */

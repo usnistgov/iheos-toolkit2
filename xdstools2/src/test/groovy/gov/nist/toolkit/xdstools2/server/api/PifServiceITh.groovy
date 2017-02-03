@@ -4,7 +4,7 @@ import gov.nist.toolkit.configDatatypes.client.Pid
 import gov.nist.toolkit.configDatatypes.client.PidBuilder
 import gov.nist.toolkit.actorfactory.client.SimId
 import gov.nist.toolkit.installation.Installation
-import gov.nist.toolkit.results.client.SiteSpec
+import gov.nist.toolkit.sitemanagement.client.SiteSpec
 import gov.nist.toolkit.services.server.ToolkitApi
 import gov.nist.toolkit.session.server.Session
 import gov.nist.toolkit.session.server.serviceManager.XdsTestServiceManager
@@ -22,7 +22,7 @@ class PifServiceITh extends Specification {
         api = new ToolkitApi()
         session = api.session
         api.deleteSimulatorIfItExists(new SimId(siteName))
-        println "EC is ${Installation.installation().externalCache().toString()}"
+        println "EC is ${Installation.instance().externalCache().toString()}"
         println "${api.getSiteNames(true)}"
     }
 

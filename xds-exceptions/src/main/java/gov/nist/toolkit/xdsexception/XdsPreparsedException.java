@@ -1,5 +1,7 @@
 package gov.nist.toolkit.xdsexception;
 
+import gov.nist.toolkit.xdsexception.client.XdsInternalException;
+
 public class XdsPreparsedException extends XdsInternalException {
 	/**
 	 * 

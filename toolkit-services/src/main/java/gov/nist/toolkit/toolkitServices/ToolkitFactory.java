@@ -37,11 +37,11 @@ public class ToolkitFactory {
         bean.setActorType(config.getActorType());
 
         for (SimulatorConfigElement ele : config.getElements()) {
-            if (ele.isBoolean()) {
+            if (ele.hasBoolean()) {
                 bean.setProperty(ele.name, ele.asBoolean());
-            } else if (ele.isString()) {
+            } else if (ele.hasString()) {
                 bean.setProperty(ele.name, ele.asString());
-            } else if (ele.isList()) {
+            } else if (ele.hasList()) {
                 bean.setProperty(ele.name, ele.asList());
             }
         }

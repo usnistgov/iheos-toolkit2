@@ -25,6 +25,23 @@ public class RetrievedDocumentsModel {
    public void setAbbreviatedMessage(String abbreviatedMessage) {
       this.abbreviatedMessage = abbreviatedMessage;
    }
+   
+   /** value of RegistryResponse status attribute, or null */
+   String status;
+
+   /**
+    * @return the {@link #status} value.
+    */
+   public String getStatus() {
+      return status;
+   }
+
+   /**
+    * @param status the {@link #status} to set
+    */
+   public void setStatus(String status) {
+      this.status = status;
+   }
 
    // uid ==> model
     Map<String, RetrievedDocumentModel> map = new HashMap<>();

@@ -1,51 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
+	<classpathentry kind="src" path=""/>
 	<classpathentry kind="con" path="org.apache.ivyde.eclipse.cpcontainer.IVYDE_CONTAINER/?project=toolkit&amp;ivyXmlPath=ivy.xml&amp;confs=*"/>
-	<classpathentry kind="src" path="actorfactory/src"/>
-	<classpathentry kind="src" path="resources"/>
-	<classpathentry kind="src" path="security-common/src"/>
-	<classpathentry kind="src" path="soap/test/resources"/>
-	<classpathentry kind="src" path="soap/test/java"/>
-	<classpathentry kind="src" path="saml/test/java"/>
-	<classpathentry kind="src" path="saml/test/resources"/>
-	<classpathentry kind="src" path="message-validator-factory2/src"/>
-	<classpathentry kind="src" path="actor-transaction/src"/>
-	<classpathentry kind="src" path="common/src"/>
-	<classpathentry kind="src" path="common-datatypes/src"/>
-	<classpathentry kind="src" path="docref/src"/>
-	<classpathentry kind="src" path="dsig/src"/>
-	<classpathentry kind="src" path="email/src"/>
-	<classpathentry kind="src" path="envSettings/src"/>
-	<classpathentry kind="src" path="error-recording/src"/>
-	<classpathentry kind="src" path="http/src"/>
-	<classpathentry kind="src" path="installation/src"/>
-	<classpathentry kind="src" path="registry-metadata/src"/>
-	<classpathentry kind="src" path="registry-msg-formats/src"/>
-	<classpathentry kind="src" path="registry-support/src"/>
-	<classpathentry kind="src" path="saml/src"/>
-	<classpathentry kind="src" path="sim-common/src"/>
-	<classpathentry kind="src" path="simulators/src"/>
-	<classpathentry kind="src" path="site-management/src"/>
-	<classpathentry kind="src" path="session/src"/>
-	<classpathentry kind="src" path="soap/src"/>
-	<classpathentry kind="src" path="testkit-utilities/src"/>
-	<classpathentry kind="src" path="tk/src"/>
-	<classpathentry kind="src" path="utilities/src"/>
-	<classpathentry kind="src" path="validators-ccda/src"/>
-	<classpathentry kind="src" path="validators-registry-message/src"/>
-	<classpathentry kind="src" path="validators-registry-metadata/src"/>
-	<classpathentry kind="src" path="validators-support/src"/>
-	<classpathentry kind="src" path="xds-exceptions/src"/>
-	<classpathentry kind="src" path="xdstest2/src"/>
-	<classpathentry kind="src" path="xdstest-gui/src"/>
-	<classpathentry kind="src" path="xdstest2-logging/src"/>
-	<classpathentry kind="src" path="xdstools2/src"/>
-	<classpathentry kind="src" path="results/src"/>
-	<classpathentry kind="src" path="message-dispatch/src"/>
-	<classpathentry kind="src" path="timer/src"/>
-	<classpathentry kind="src" path="rest/src"/>
-	<classpathentry kind="src" path="dns/src"/>
-	<classpathentry kind="src" path="dst/src"/>
 	<classpathentry kind="lib" path="lib/activation-1.1.jar"/>
 	<classpathentry kind="lib" path="lib/addressing-1.5.4.mar"/>
 	<classpathentry kind="lib" path="lib/apache-mailet-base-1.1.jar"/>
@@ -172,5 +128,50 @@
 	<classpathentry kind="lib" path="lib/org.openhealthtools.mdht.uml.hl7.rim_1.2.0.201309181641.jar"/>
 	<classpathentry kind="lib" path="lib/org.openhealthtools.mdht.uml.hl7.vocab_1.2.0.201309181641.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/actor-transaction"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/actorfactory"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/adt"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/common"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/common-datatypes"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/config-datatypes"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/config-datatypes-io"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/docref"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/dsig"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/envSettings"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/error-recording"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/grizzly-support"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/http"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/installation"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/it-tests"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/message-validator-factory2"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/registry-metadata"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/registry-msg-formats"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/registry-support"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/rest-tools"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/results"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/saml"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/security-common"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/services"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/session"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/sim-common"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/sim-test-servlet"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/simDb"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/simulators"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/site-management"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/soap"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/test-engine"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/testkit-utilities"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/tk"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/toolkit-api"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/toolkit-services"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/toolkit-services-common"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/transaction-notification-service"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/utilities"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/validators-registry-message"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/validators-registry-metadata"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/validators-support"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/xds-exceptions"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/xdstest2-logging"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/xdstools2"/>
 	<classpathentry kind="output" path="xdstools2/war/WEB-INF/classes"/>
 </classpath>

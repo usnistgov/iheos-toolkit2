@@ -80,7 +80,7 @@ public class Validator {
 //	}
 //
 //
-//	// internal classifications must point to object that contains them
+//	// internal classifications must point to model that contains them
 //
 //	void validate_internal_classifications(OMElement e) throws MetadataValidationException, MetadataException {
 //		String e_id = e.getAttributeValue(MetadataSupport.id_qname);
@@ -94,7 +94,7 @@ public class Validator {
 //				if ( !e_id.equals(value)) {
 //					throw new MetadataValidationException("Classification " + m.getIdentifyingString(child) + 
 //							"\n   is nested inside " + m.getIdentifyingString(e) +
-//							"\n   but classifies object " + m.getIdentifyingString(value));
+//							"\n   but classifies model " + m.getIdentifyingString(value));
 //				}
 //			}
 //		}

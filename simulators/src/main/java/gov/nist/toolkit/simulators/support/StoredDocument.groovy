@@ -1,4 +1,6 @@
 package gov.nist.toolkit.simulators.support
+
+import gov.nist.toolkit.results.client.DocumentEntryDetail
 import gov.nist.toolkit.utilities.io.Io
 import gov.nist.toolkit.valregmsg.message.StoredDocumentInt
 import groovy.transform.TypeChecked
@@ -9,11 +11,19 @@ public class StoredDocument implements Serializable {
 	
 	private static final long serialVersionUID = 1L;
 
-    String pathToDocument;
+   String pathToDocument;
 	String uid;
 	String mimeType;
 	String charset;
 	String hash;
+	/**
+	 * Document Entry Details
+	 */
+	DocumentEntryDetail entryDetail;
+	/**
+	 * Local StoredDocument list item identifier.
+	 */
+	int id;
 
     public String size;
 	
@@ -69,7 +79,6 @@ public class StoredDocument implements Serializable {
 	public void setHash(String hash) {
 		this.hash = hash;
 	}
-	
 	public void setSize(String size) {
 		this.size = size;
 	}
@@ -94,4 +103,19 @@ public class StoredDocument implements Serializable {
         this.content = content;
     }
 
+	DocumentEntryDetail getEntryDetail() {
+		return entryDetail
+	}
+
+	void setEntryDetail(DocumentEntryDetail entryDetail) {
+		this.entryDetail = entryDetail
+	}
+
+	int getId() {
+		return id
+	}
+
+	void setId(int id) {
+		this.id = id
+	}
 }

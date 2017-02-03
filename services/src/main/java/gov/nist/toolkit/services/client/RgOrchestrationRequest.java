@@ -1,36 +1,16 @@
 package gov.nist.toolkit.services.client;
 
-import gov.nist.toolkit.results.client.SiteSpec;
-
-import java.io.Serializable;
+import gov.nist.toolkit.sitemanagement.client.SiteSpec;
 
 /**
  *
  */
-public class RgOrchestrationRequest implements Serializable {
-    String userName;
-    String environmentName;
-    SiteSpec siteUnderTest;
-    boolean useExposedRR;
-    boolean useSimAsSUT;
+public class RgOrchestrationRequest extends AbstractOrchestrationRequest {
+    private SiteSpec siteUnderTest;
+    private boolean useExposedRR;  // alternative is External RR (Registry/Repository)
+    private boolean useSimAsSUT;   // no longer used
 
     public RgOrchestrationRequest() {}
-
-    public String getUserName() {
-        return userName;
-    }
-
-    public void setUserName(String userName) {
-        this.userName = userName;
-    }
-
-    public String getEnvironmentName() {
-        return environmentName;
-    }
-
-    public void setEnvironmentName(String environmentName) {
-        this.environmentName = environmentName;
-    }
 
     public SiteSpec getSiteUnderTest() {
         return siteUnderTest;
@@ -55,4 +35,5 @@ public class RgOrchestrationRequest implements Serializable {
     public void setUseSimAsSUT(boolean useSimAsSUT) {
         this.useSimAsSUT = useSimAsSUT;
     }
+
 }

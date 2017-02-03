@@ -21,7 +21,7 @@
 			<UseReport section="query" step="query" reportName="repuid" useAs="$repuid$"/>
 			
 			<Assertions>
-			<Assert id="hashMatches">'$hash$' = '$hash_doc1$'</Assert>
+			<Assert id="hashMatches">'$hash$' equalsIgnoreCase '$hash_doc1$'</Assert>
 			<Assert id="repositoryUniqueIdMatches">'$repuid$' = '$repuid_doc1$'</Assert>
 			<Assert id="mimetypeMatches">
 			translate('$mimetype$','ABCDEFGHIJKLMNOPQRSTUVWXYZ','abcdefghijklmnopqrstuvwxyz')

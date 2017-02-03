@@ -5,6 +5,10 @@ import gov.nist.toolkit.registrymetadata.Metadata;
 import gov.nist.toolkit.testengine.engine.StepContext;
 import gov.nist.toolkit.utilities.xml.Util;
 import gov.nist.toolkit.xdsexception.*;
+import gov.nist.toolkit.xdsexception.client.MetadataException;
+import gov.nist.toolkit.xdsexception.client.MetadataValidationException;
+import gov.nist.toolkit.xdsexception.client.XdsException;
+import gov.nist.toolkit.xdsexception.client.XdsInternalException;
 import org.apache.axiom.om.OMElement;
 import org.apache.axis2.AxisFault;
 import org.apache.axis2.addressing.EndpointReference;
@@ -79,7 +83,7 @@ public class EchoV3Transaction extends BasicTransaction {
 
 //			testLog.add_name_value(instruction_output, "Result", result);
 
-			validate_registry_response(result, MetadataTypes.METADATA_TYPE_SQ);
+			validate_registry_response(result, "", MetadataTypes.METADATA_TYPE_SQ);
 
 		} catch (AxisFault e) {
 			throw new XdsInternalException(ExceptionUtil.exception_details(e));

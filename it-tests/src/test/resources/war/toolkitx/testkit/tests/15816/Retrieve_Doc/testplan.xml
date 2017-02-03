@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?><TestPlan>
+  <Test>15816/Retrieve_Doc</Test>
+  <TestStep id="retrieve_doc">
+    <ExpectedStatus>Success</ExpectedStatus>
+    <RetrieveTransaction>
+
+      <!-- <UseReport reportName="$repuid$" section="PnR" step="SubmitStableDocumentEntry" useAs="$repuid$"/> -->
+	  <UseReport reportName="Document01_uid" section="PnR" step="SubmitStableDocumentEntry" useAs="$doc_uid$"/>
+      <MetadataFile>normal_query.xml</MetadataFile>
+      <ExpectedContents/>
+
+      <ReferenceDocument uid="$doc_uid$">PnR/my_document.txt</ReferenceDocument>
+
+      <XDSb/>
+    </RetrieveTransaction>
+  </TestStep>
+</TestPlan>

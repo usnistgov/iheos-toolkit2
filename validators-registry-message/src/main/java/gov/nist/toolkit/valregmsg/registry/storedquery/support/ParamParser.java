@@ -8,8 +8,8 @@ import gov.nist.toolkit.valregmsg.registry.SQCodeAnd;
 import gov.nist.toolkit.valregmsg.registry.SQCodeOr;
 import gov.nist.toolkit.valregmsg.registry.SQCodedTerm;
 import gov.nist.toolkit.valregmsg.registry.storedquery.paramtypes.ParameterExamples;
-import gov.nist.toolkit.xdsexception.MetadataValidationException;
-import gov.nist.toolkit.xdsexception.XdsInternalException;
+import gov.nist.toolkit.xdsexception.client.MetadataValidationException;
+import gov.nist.toolkit.xdsexception.client.XdsInternalException;
 
 import java.math.BigInteger;
 import java.util.ArrayList;
@@ -140,11 +140,20 @@ public class ParamParser {
 	}
 
 	public void addToParmMap(SlotParse sp, Map<String, Object> parms) throws MetadataValidationException, XdsInternalException {
-		if (SQCodedTerm.isCodeParameter(sp.name)) {
+		if (SQCodedTerm.isCodeParameter(sp.name) && isCodeValueParsable(sp.values)) {
 			parse_code_param(sp.name, sp, parms);
 		} else {
 			parse_noncode_param(sp.name, sp, parms);
 		}
+	}
+
+	private boolean isCodeValueParsable(List<Object> values){
+		for (Object value:values){
+			if (value.toString().startsWith("$")&&value.toString().endsWith("$")){
+				return false;
+			}
+		}
+		return true;
 	}
 
 	void parse_code_param(String name, SlotParse sp, Map<String, Object> parms) throws MetadataValidationException, XdsInternalException {

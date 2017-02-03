@@ -17,7 +17,7 @@ class RegistrySimITh extends Specification {
     def setup() {
         api = new ToolkitApi()
         api.deleteSimulatorIfItExists(testSim)
-        println "EC is ${Installation.installation().externalCache().toString()}"
+        println "EC is ${Installation.instance().externalCache().toString()}"
 //        println "${api.getSiteNames(true)}"
     }
 

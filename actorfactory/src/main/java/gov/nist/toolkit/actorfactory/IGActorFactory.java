@@ -1,9 +1,5 @@
 package gov.nist.toolkit.actorfactory;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-
 import gov.nist.toolkit.actorfactory.client.SimId;
 import gov.nist.toolkit.actorfactory.client.Simulator;
 import gov.nist.toolkit.actorfactory.client.SimulatorConfig;
@@ -15,13 +11,17 @@ import gov.nist.toolkit.sitemanagement.client.Site;
 import gov.nist.toolkit.sitemanagement.client.TransactionBean;
 import gov.nist.toolkit.sitemanagement.client.TransactionBean.RepositoryType;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
 public class IGActorFactory extends AbstractActorFactory {
    SimId newID = null;
 
    static final List <TransactionType> incomingTransactions =
       Arrays.asList(TransactionType.STORED_QUERY, TransactionType.RETRIEVE);
 
-   protected Simulator buildNew(SimManager simm, SimId newID,
+   public Simulator buildNew(SimManager simm, SimId newID,
       boolean configureBase) {
       this.newID = newID;
 
@@ -38,12 +38,10 @@ public class IGActorFactory extends AbstractActorFactory {
          TransactionType.IG_RETRIEVE, false);
       addFixedEndpoint(sc, SimulatorProperties.igrTlsEndpoint, actorType,
          TransactionType.IG_RETRIEVE, true);
-      addFixedEndpoint(sc, SimulatorProperties.idsrEndpoint, actorType,
-         TransactionType.RET_IMG_DOC_SET, false);
-      addFixedEndpoint(sc, SimulatorProperties.idsrTlsEndpoint, actorType,
-         TransactionType.RET_IMG_DOC_SET, true);
       addEditableConfig(sc, SimulatorProperties.respondingGateways,
          ParamType.SELECTION, new ArrayList <String>(), true);
+      addEditableConfig(sc, SimulatorProperties.returnNoHome,
+              ParamType.BOOLEAN, false);
 
       return new Simulator(sc);
    }

@@ -16,7 +16,7 @@ import javax.ws.rs.core.Response
 class CreateSimSpec extends ToolkitSpecification {
     @Shared SimulatorBuilder spi
 
-    BasicSimParameters params = new BasicSimParameters();
+    @Shared BasicSimParameters params = new BasicSimParameters();
 
 
     def setupSpec() {   // one time setup done when class launched
@@ -125,4 +125,8 @@ class CreateSimSpec extends ToolkitSpecification {
         !updatedConfig.asBoolean(parmName)
     }
 
+    def cleanupSpec() {
+        if (params!=null)
+            spi.delete(params)
+    }
 }

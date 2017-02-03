@@ -13,7 +13,7 @@ class NewLogicalPathTest extends Specification {
 
     def 'Extract relative path'() {
         when:
-        def relPath = TestDetails.getLogicalPath(new File(testpath), new File(testKit))
+        def relPath = TestLogDetails.getLogicalPath(new File(testpath), new File(testKit))
 
         then:
         relPath == 'tests/11991/submit'
@@ -21,7 +21,7 @@ class NewLogicalPathTest extends Specification {
 
     def 'New stuff'() {
         when:
-        Path relPath = TestDetails.getLogicalPath(new File(testpath).toPath(), new File(testKit).toPath())
+        Path relPath = TestLogDetails.getLogicalPath(new File(testpath).toPath(), new File(testKit).toPath())
 
         then:
         relPath == new File('tests/11991/submit').toPath()

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <TestPlan>
-    <Test>15814/UnknownCommunity</Test>
+    <Test>15815/UnknownCommunity</Test>
     <TestStep id="getdocs">
         <ExpectedStatus>Failure</ExpectedStatus>
         <ExpectedErrorCode>XDSUnknownCommunity</ExpectedErrorCode>

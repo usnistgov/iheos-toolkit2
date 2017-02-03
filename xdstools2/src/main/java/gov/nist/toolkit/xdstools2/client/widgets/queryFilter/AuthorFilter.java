@@ -2,10 +2,9 @@ package gov.nist.toolkit.xdstools2.client.widgets.queryFilter;
 
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.*;
-import gov.nist.toolkit.xdstools2.client.AuthorPicker;
-import gov.nist.toolkit.xdstools2.client.PopupMessage;
+import gov.nist.toolkit.xdstools2.client.widgets.AuthorPicker;
+import gov.nist.toolkit.xdstools2.client.widgets.PopupMessage;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -21,7 +20,7 @@ public class AuthorFilter extends Widget implements QueryFilter {
     HTML label = new HTML();
 
 
-    // label is required non-empty but is never displayed
+    // messageId is required non-empty but is never displayed
     public AuthorFilter(FlexTable mainGrid, int row, int startingCol, String labelText, String codeName) {
         mainGrid.setWidget(row, startingCol, label);
 

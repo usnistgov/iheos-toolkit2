@@ -1,7 +1,7 @@
 package gov.nist.toolkit.installation;
 
 import gov.nist.toolkit.utilities.io.Io;
-import gov.nist.toolkit.xdsexception.ToolkitRuntimeException;
+import gov.nist.toolkit.xdsexception.client.ToolkitRuntimeException;
 import org.apache.log4j.Logger;
 
 import java.io.*;
@@ -9,20 +9,27 @@ import java.util.*;
 
 public class PropertyManager {
 
-	static Logger logger = Logger.getLogger(PropertyManager.class);
+	static private Logger logger = Logger.getLogger(PropertyManager.class);
 
-	static public final String ADMIN_PASSWORD      = "Admin_password";
-	static public final String TOOLKIT_HOST        = "Toolkit_Host";
-	static public final String TOOLKIT_PORT        = "Toolkit_Port";
-	static public final String TOOLKIT_TLS_PORT    = "Toolkit_TLS_Port";
-	static public final String GAZELLE_CONFIG_URL  = "Gazelle_Config_URL";
-	static public final String EXTERNAL_CACHE      = "External_Cache";
-	static public final String USE_ACTORS_FILE     = "Use_Actors_File";
-	static public final String TESTKIT             = "Testkit";
-	static public final String LISTENER_PORT_RANGE = "Listener_Port_Range";
+	static private final String ADMIN_PASSWORD      = "Admin_password";
+	static private final String TOOLKIT_HOST        = "Toolkit_Host";
+	static private final String TOOLKIT_PORT        = "Toolkit_Port";
+	static private final String TOOLKIT_TLS_PORT    = "Toolkit_TLS_Port";
+	static private final String GAZELLE_CONFIG_URL  = "Gazelle_Config_URL";
+	static private final String EXTERNAL_CACHE      = "External_Cache";
+	static private final String USE_ACTORS_FILE     = "Use_Actors_File";
+	static public  final String ENABLE_SAML			= "Enable_SAML";
+	static private final String TESTKIT             = "Testkit";
+	static private final String LISTENER_PORT_RANGE = "Listener_Port_Range";
+	static private final String AUTO_INIT_CONFORMANCE_TOOL = "Auto_init_conformance_tool";
+	static private final String MSH_3 = "MSH_3";
+	static private final String MSH_4 = "MSH_4";
+	static private final String MSH_5 = "MSH_5";
+	static private final String MSH_6 = "MSH_6";
+	static private final String ARCHIVE_LOGS = "Archive_Logs";
 
-	String propFile;
-	Properties toolkitProperties = null;
+	private String propFile;
+	private Properties toolkitProperties = null;
 	
 	public PropertyManager(String propFile) {
         this.propFile = propFile;
@@ -38,8 +45,8 @@ public class PropertyManager {
 			save(props);
 		}
 	}
-	
-	void validateProperty(String name, String value) throws Exception {
+
+	private void validateProperty(String name, String value) throws Exception {
 		if (name == null)
 			throw new Exception("Property with name null not allowed");
 		if (name.equals(ADMIN_PASSWORD)) {
@@ -70,6 +77,41 @@ public class PropertyManager {
 			if (!f.exists())
 				throw new Exception("Cannot create Message_database_directory " + value);
 		}
+	}
+
+	public boolean archiveLogs() {
+		loadProperties();
+		String value = (String) toolkitProperties.get(ARCHIVE_LOGS);
+		if (value == null) return false;
+		return value.toLowerCase().equals("true");
+	}
+
+	public String getMSH3() {
+		loadProperties();
+		String value = (String) toolkitProperties.get(MSH_3);
+		if (value == null || value.equals("")) value = "SRCADT";
+		return value;
+	}
+
+	public String getMSH4() {
+		loadProperties();
+		String value = (String) toolkitProperties.get(MSH_4);
+		if (value == null || value.equals("")) value = "DH";
+		return value;
+	}
+
+	public String getMSH5() {
+		loadProperties();
+		String value = (String) toolkitProperties.get(MSH_5);
+		if (value == null || value.equals("")) value = "LABADT";
+		return value;
+	}
+
+	public String getMSH6() {
+		loadProperties();
+		String value = (String) toolkitProperties.get(MSH_6);
+		if (value == null || value.equals("")) value = "DH";
+		return value;
 	}
 
 	public String getCacheDisabled() {
@@ -109,15 +151,35 @@ public class PropertyManager {
 		return range;
 	}
 
+	public boolean getAutoInitializeConformanceTool() {
+		loadProperties();
+		String value = (String) toolkitProperties.get(AUTO_INIT_CONFORMANCE_TOOL);
+		if (value == null) return false;
+		if (value.trim().equalsIgnoreCase("true")) return true;
+		return false;
+	}
+
 	public String getToolkitGazelleConfigURL() {
 		loadProperties();
 		return (String) toolkitProperties.get(GAZELLE_CONFIG_URL);
+	}
+
+	public boolean isEnableSaml() {
+		loadProperties();
+		String use = (String) toolkitProperties.get(ENABLE_SAML);
+		if (use == null)
+			return true;
+		use = use.trim().toLowerCase();
+		return "true".compareTo(use) == 0;
 	}
 	
 	public String getExternalCache() {
 		loadProperties();
 		String cache = (String) toolkitProperties.get(EXTERNAL_CACHE);
-		System.setProperty("External_Cache", cache);
+		// may have %20 instead of space characters on Windows.  Clean them up
+		if (cache != null)
+			cache = cache.replaceAll("%20", " ");
+//		System.setProperty("External_Cache", cache);
 		return cache;
 	}
 	

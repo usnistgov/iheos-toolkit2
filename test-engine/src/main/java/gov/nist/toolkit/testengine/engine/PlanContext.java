@@ -1,15 +1,17 @@
 package gov.nist.toolkit.testengine.engine;
 
-import gov.nist.toolkit.testengine.transactions.BasicTransaction;
-import gov.nist.toolkit.testenginelogging.LogFileContent;
+import gov.nist.toolkit.common.datatypes.Hl7Date;
+import gov.nist.toolkit.commondatatypes.MetadataSupport;
+import gov.nist.toolkit.testenginelogging.LogFileContentBuilder;
 import gov.nist.toolkit.testenginelogging.NotALogFileException;
-import gov.nist.toolkit.testenginelogging.SectionLogMap;
+import gov.nist.toolkit.testenginelogging.client.LogFileContentDTO;
+import gov.nist.toolkit.testenginelogging.client.SectionLogMapDTO;
 import gov.nist.toolkit.utilities.xml.OMFormatter;
 import gov.nist.toolkit.utilities.xml.Util;
 import gov.nist.toolkit.xdsexception.ExceptionUtil;
-import gov.nist.toolkit.xdsexception.MetadataValidationException;
-import gov.nist.toolkit.xdsexception.XdsException;
-import gov.nist.toolkit.xdsexception.XdsInternalException;
+import gov.nist.toolkit.xdsexception.client.MetadataValidationException;
+import gov.nist.toolkit.xdsexception.client.XdsException;
+import gov.nist.toolkit.xdsexception.client.XdsInternalException;
 import org.apache.axiom.om.OMElement;
 import org.apache.log4j.Logger;
 
@@ -25,13 +27,14 @@ import java.util.Map;
 public class PlanContext extends BasicContext {
 	OMElement results_document = null;
 	String defaultRegistryEndpoint = null;
-	Map<String, String> externalLinkage = null;
-	Map<String, Object> externalLinkage2 = null;  // for binary stuff like certificates
-	SectionLogMap previousSectionLogs;
-	LogFileContent currentSectionLog;
-	String currentSection;
+	private Map<String, String> externalLinkage = null;
+	private Map<String, Object> externalLinkage2 = null;  // for binary stuff like certificates
+	private SectionLogMapDTO previousSectionLogs;
+	private LogFileContentDTO currentSectionLog;
+	private String currentSection;
 	TestConfig testConfig;
-	TransactionSettings transactionSettings = null;
+	private TransactionSettings transactionSettings = null;
+	private boolean sutInitiates = false;
 
 	public void setTransactionSettings(TransactionSettings ts) {
 		this.transactionSettings = ts;
@@ -48,14 +51,14 @@ public class PlanContext extends BasicContext {
 	}
     public String getCurrentSection() { return currentSection; }
 	
-	public void setPreviousSectionLogs(SectionLogMap previousLogs) {
+	public void setPreviousSectionLogs(SectionLogMapDTO previousLogs) {
 		previousSectionLogs = previousLogs;
         logger.debug(previousLogs.describe());
 	}
 	
-	public SectionLogMap getPreviousSectionLogs() {
+	public SectionLogMapDTO getPreviousSectionLogs() {
 		if (previousSectionLogs == null)
-			previousSectionLogs = new SectionLogMap();
+			previousSectionLogs = new SectionLogMapDTO(testConfig.testInstance);
 //		else
 //			System.out.println("\tHave logs for " + previousSectionLogs.sectionNames);
 
@@ -85,10 +88,10 @@ public class PlanContext extends BasicContext {
 	}
 	
 	public void setCurrentSectionLog(OMElement ele) throws NotALogFileException, Exception {
-		currentSectionLog = new LogFileContent(ele);
+		currentSectionLog = new LogFileContentBuilder().build(ele);
 	}
 	
-	public LogFileContent getCurrentSectionLog() {
+	public LogFileContentDTO getCurrentSectionLog() {
 		return currentSectionLog;
 	}
 	
@@ -106,7 +109,6 @@ public class PlanContext extends BasicContext {
 	String alt_patient_id = null;
 	boolean status = true;
 	String test_num = "0";
-	short xds_version = BasicTransaction.xds_none;
 	ArrayList<OMElement> phone_home_log_files = null;
 	private final static Logger logger = Logger.getLogger(PlanContext.class);
 	boolean writeLogFiles = true;
@@ -180,7 +182,15 @@ public class PlanContext extends BasicContext {
 		if (testConfig.verbose)
 			System.out.println("Run section " + testplanFile);
 		try {
-			results_document = build_results_document();	
+			results_document = build_results_document();
+
+			OMElement timeEle = MetadataSupport.om_factory.createOMElement("Time", null);
+			timeEle.setText(new Hl7Date().now());
+			results_document.addChild(timeEle);
+
+			OMElement siteEle = MetadataSupport.om_factory.createOMElement("Site", null);
+			siteEle.setText(testConfig.site.getName());
+			results_document.addChild(siteEle);
 
 			testLog.add_name_value(results_document, "Xdstest2_version", testConfig.testkitVersion);
 			testLog.add_name_value(results_document, "Xdstest2_args", testConfig.args);
@@ -225,10 +235,15 @@ public class PlanContext extends BasicContext {
 					testLog.add_name_value(results_document, part);
 					test_num = part.getText();
 				} 
-				else if (part_name.equals("Rule")) 
+				else if (part_name.equals("Rule"))
 				{
-				} 
-				else if (part_name.equals("TestStep")) 
+				}
+				else if (part_name.equals("SUTInitiates"))
+				{
+					// system under test initiates first transaction in this section
+					sutInitiates = true;
+				}
+				else if (part_name.equals("TestStep"))
 				{
 					StepContext step_context = new StepContext(this);
 					step_context.setTestConfig(testConfig);
@@ -274,7 +289,7 @@ public class PlanContext extends BasicContext {
 			status = false;
 			set_status_in_output();
 			transactionSettings.res.add(e.getMessage(), "", false);
-			 throw e;  // error handler above reports error in UI
+			 throw e;  // error handler above reportDTOs error in UI
 		}
 
 		if (writeLogFiles) {
@@ -282,19 +297,24 @@ public class PlanContext extends BasicContext {
 			try {
 				logFile = testConfig.logFile;
                 logger.info("Writing log file " + logFile);
-				FileOutputStream os = new FileOutputStream(logFile);
-				//System.out.println(results_document.toString());
-				//String results_string = results_document.toString();
 				results_document.build();
 				String results_string = new OMFormatter(results_document).toString();
-				os.write(results_string.getBytes());
+				byte[] bytes = results_string.getBytes();
+				String x = new String(bytes);
+
+				FileOutputStream os;
+
+				os = new FileOutputStream(logFile);
+				os.write(x.getBytes());
 				os.flush();
 				os.close();
 
-//				if (phone_home_log_files == null) {
-//					phone_home_log_files = new ArrayList<OMElement>();
-//				}
-//				phone_home_log_files.add(results_document);
+				if (testConfig.archiveLogFile != null) {
+					os = new FileOutputStream(testConfig.archiveLogFile);
+					os.write(x.getBytes());
+					os.flush();
+					os.close();
+				}
 
 			} catch (FileNotFoundException e) {
 				logger.fatal("Cannot create file log.xml (" + logFile + ")");
@@ -310,5 +330,7 @@ public class PlanContext extends BasicContext {
 	public OMElement getLog() {
 		return results_document;
 	}
+
+	public boolean getSutInitiates() { return sutInitiates; }
 
 }

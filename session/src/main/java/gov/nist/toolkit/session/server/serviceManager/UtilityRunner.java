@@ -10,10 +10,11 @@ import gov.nist.toolkit.sitemanagement.Sites;
 import gov.nist.toolkit.sitemanagement.client.Site;
 import gov.nist.toolkit.testengine.engine.TestCollection;
 import gov.nist.toolkit.testengine.engine.TransactionSettings;
-import gov.nist.toolkit.testenginelogging.logrepository.LogRepository;
 import gov.nist.toolkit.testenginelogging.logrepository.LogRepositoryFactory;
-import gov.nist.toolkit.xdsexception.EnvironmentNotSelectedException;
+import gov.nist.toolkit.testkitutilities.TestKit;
+import gov.nist.toolkit.testkitutilities.TestKitSearchPath;
 import gov.nist.toolkit.xdsexception.ExceptionUtil;
+import gov.nist.toolkit.xdsexception.client.EnvironmentNotSelectedException;
 import org.apache.log4j.Logger;
 
 import java.util.Collection;
@@ -60,7 +61,7 @@ public class UtilityRunner {
             session.transactionSettings.patientIdAssigningAuthorityOid = session.currentCodesConfiguration().getAssigningAuthorityOid();
 
             if (session.xt == null)
-                session.xt = xdsTestServiceManager.getNewXt();
+                throw new Exception("UtilityRunner#run: session.xt not initialized");
 
 //            if (assertionResults == null)
 //                assertionResults = new AssertionResults();
@@ -73,8 +74,8 @@ public class UtilityRunner {
                     logger.info("*** logRepository user: " + session.getId());
                     session.transactionSettings.logRepository =
                             LogRepositoryFactory.
-                                    getRepository(
-                                            Installation.installation().sessionCache(),
+                                    getLogRepository(
+                                            Installation.instance().sessionCache(),
                                             session.getId(),
                                             LogIdIOFormat.JAVA_SERIALIZATION,
                                             LogIdType.TIME_ID,
@@ -83,8 +84,8 @@ public class UtilityRunner {
                     logger.info("*** logRepository user (sessionName): " + session.getMesaSessionName());
                     session.transactionSettings.logRepository =
                             LogRepositoryFactory.
-                                    getRepository(
-                                            Installation.installation().testLogCache(),
+                                    getLogRepository(
+                                            Installation.instance().testLogCache(),
                                             session.getMesaSessionName(),
                                             LogIdIOFormat.JAVA_SERIALIZATION,
                                             LogIdType.SPECIFIC_ID,
@@ -103,19 +104,24 @@ public class UtilityRunner {
                     // collection.  We replace it with a list of linked TestInstances, one for each
                     // contained test.
 
-                    TestCollection testCollection = new TestCollection(Installation.installation().testkitFile(), collectionName);
+                    TestCollection testCollection = new TestCollection(Installation.instance().internalTestkitFile(), collectionName);
                     List<String> testIds = testCollection.getTestIds();
-                    TestInstance ti = null;
                     for (String id : testIds) {
-                        if (ti == null) {
-                            ti = new TestInstance(id);
-                            session.xt.addTest(ti);
-                            continue;
-                        }
-                        session.xt.addTest(LogRepository.cloneTestInstance(ti, id)); // this cloning links them
+                        TestInstance ti = new TestInstance(id);
+                        TestKitSearchPath searchPath = session.getTestkitSearchPath();
+                        TestKit testKit = searchPath.getTestKitForTest(id);
+                        if (testKit == null)
+                            throw new Exception("Test " + ti + " not found");
+                        session.xt.addTest(testKit, ti);
                     }
+//                        session.xt.addTest(LogRepository.cloneTestInstance(ti, id)); // this cloning links them
                 } else {
-                    session.xt.addTest(testInstance, sections, areas);
+                    TestKitSearchPath searchPath = session.getTestkitSearchPath();
+                    logger.info(searchPath.toString());
+                    TestKit testKit = searchPath.getTestKitForTest(testInstance.getId());
+                    if (testKit == null)
+                        throw new Exception("Test " + testInstance + " not found");
+                    session.xt.addTest(testKit, testInstance, sections, areas);
                 }
 
                 // force loading of site definitions
@@ -127,7 +133,10 @@ public class UtilityRunner {
                 Sites theSites = new Sites(siteCollection);
                 // Only for SOAP messages will siteSpec.name be filled in.  For Direct it is not expected
                 if (session.siteSpec != null && session.siteSpec.name != null && !session.siteSpec.name.equals("")) {
-                    Site site = theSites.getSite(session.siteSpec.name);
+                    // See Site.java for details on this lookup
+//                    Site site = theSites.getSite(session.siteSpec.name);
+                    Site site = theSites.getOrchestrationLinkedSites(session.siteSpec);
+
                     if (site == null)
                         throw new Exception("Cannot find site " + session.siteSpec.name);
                     logger.info("Using site: " + site.describe());
@@ -177,6 +186,10 @@ public class UtilityRunner {
                 // s.assertionResults.add("Log Cache: " + s.getLogCount() + " entries");
                 session.transactionSettings.securityParams = session;
 
+                if (session.transactionSettings.environmentName==null)
+                    session.transactionSettings.environmentName=session.getCurrentEnvName();
+                if (session.transactionSettings.testSession==null)
+                    session.transactionSettings.testSession=session.getMesaSessionName();
                 session.xt.run(params, params2, stopOnFirstFailure, session.transactionSettings);
 
                 assertionResults.add(session.transactionSettings.res);

@@ -1,8 +1,8 @@
 package gov.nist.toolkit.testengine.engine;
 
 import gov.nist.toolkit.commondatatypes.MetadataSupport;
-import gov.nist.toolkit.xdsexception.MetadataValidationException;
-import gov.nist.toolkit.xdsexception.XdsInternalException;
+import gov.nist.toolkit.xdsexception.client.MetadataValidationException;
+import gov.nist.toolkit.xdsexception.client.XdsInternalException;
 import org.apache.axiom.om.OMElement;
 import org.apache.log4j.Logger;
 
@@ -116,6 +116,10 @@ public class BasicContext  {
 		String out = "Error: stepId=" + get("step_id") + " : " + msg;
 		System.out.println(out);
 		return out;
+	}
+
+	void error(OMElement test_step_output, OMElement content) throws XdsInternalException {
+		testLog.add_name_value(test_step_output, content);
 	}
 
 	void error(OMElement test_step_output, String msg) throws XdsInternalException {

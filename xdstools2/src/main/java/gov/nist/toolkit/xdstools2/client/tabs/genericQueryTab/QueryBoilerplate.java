@@ -6,7 +6,7 @@ import com.google.gwt.user.client.ui.RadioButton;
 import gov.nist.toolkit.actortransaction.client.ATFactory;
 import gov.nist.toolkit.actortransaction.client.ActorType;
 import gov.nist.toolkit.configDatatypes.client.TransactionType;
-import gov.nist.toolkit.results.client.SiteSpec;
+import gov.nist.toolkit.sitemanagement.client.SiteSpec;
 import gov.nist.toolkit.xdstools2.client.CoupledTransactions;
 
 import java.util.List;
@@ -39,7 +39,7 @@ public class QueryBoilerplate {
 		genericQueryTab.couplings = couplings;
 
 //		genericQueryTab.resultPanel = new VerticalPanel();
-//		genericQueryTab.topPanel.add(genericQueryTab.resultPanel);
+//		genericQueryTab.tabTopPanel.add(genericQueryTab.resultPanel);
 
 
 		genericQueryTab.addActorReloader();
@@ -74,7 +74,7 @@ public class QueryBoilerplate {
 		if (genericQueryTab == null)
 			return;
 		if (genericQueryTab.resultPanel != null)
-			genericQueryTab.topPanel.remove(genericQueryTab.resultPanel);
+			genericQueryTab.tabTopPanel.remove(genericQueryTab.resultPanel);
 		if (reload != null)
 			genericQueryTab.menuPanel.remove(reload);
 		genericQueryTab.initMainGrid();
@@ -97,18 +97,11 @@ public class QueryBoilerplate {
 				}
 			}
 		} else {   // Select by transaction (used in GetDocuments tab)
-			SiteSpec siteSpec = genericQueryTab.transactionSelectionManager.generateSiteSpec();
-			genericQueryTab.setCommonSiteSpec(siteSpec);
-			return siteSpec;
-			//				for (TransactionType tt : genericQueryTab.perTransTypeRadioButtons.keySet()) {
-			//					for (RadioButton rb : genericQueryTab.perTransTypeRadioButtons.getRetrievedDocumentsModel(tt)) {
-			//						if (rb.getValue()) {
-			//							genericQueryTab.getCommonSiteSpec().setName(rb.getText());
-			//							genericQueryTab.getCommonSiteSpec().setActorType(ActorType.getActorType(tt));
-			//							return genericQueryTab.getCommonSiteSpec();
-			//						}
-			//					}
-			//				}
+			if (genericQueryTab.transactionSelectionManager != null) {
+				SiteSpec siteSpec = genericQueryTab.transactionSelectionManager.generateSiteSpec();
+				genericQueryTab.setCommonSiteSpec(siteSpec);
+				return siteSpec;
+			}
 		}
 
 		return null;

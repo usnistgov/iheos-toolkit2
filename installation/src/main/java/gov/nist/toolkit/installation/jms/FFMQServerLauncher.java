@@ -62,7 +62,7 @@ class MessageProducerThread implements Runnable
         
         
 			SOAPFactory soapFactory = OMAbstractFactory.getSOAP11Factory();
-			  // lets create the namespace object of the Article element
+			  // lets create the namespace model of the Article element
     	    OMNamespace ns = soapFactory.createOMNamespace("http://ihexds.nist.gov/test/1.0/testnamespace", "article");
     	    // now create the Article element with the above namespace
     	    OMElement articleElement = soapFactory.createOMElement("Article", ns);

@@ -16,18 +16,25 @@ import java.util.List;
 public class SingleSelectionView implements SelectionDisplay {
     FlowPanel namesPanel = new FlowPanel();
     List<RadioButton> selections = new ArrayList<>();
+    String group = "MyGroup";
 
     public SingleSelectionView() {
     }
 
     @Override
     public void setData(List<String> data) {
-        String group = "MyGroup";
+
         for (String value : data) {
-            RadioButton cb = new RadioButton(group, value);
+            RadioButton cb = new RadioButton(getGroup(), value);
             selections.add(cb);
             namesPanel.add(cb);
         }
+    }
+
+    @Override
+    public void setData(String group, List<String> data) {
+        setGroup(group);
+        setData(data);
     }
 
     @Override
@@ -77,4 +84,11 @@ public class SingleSelectionView implements SelectionDisplay {
 
     }
 
+    public String getGroup() {
+        return group;
+    }
+
+    public void setGroup(String group) {
+        this.group = group;
+    }
 }

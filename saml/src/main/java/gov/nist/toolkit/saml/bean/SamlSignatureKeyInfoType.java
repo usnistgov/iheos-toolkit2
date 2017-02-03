@@ -9,7 +9,7 @@ public class SamlSignatureKeyInfoType {
      * Gets the value of the rsaKeyValueModulus property.
      * 
      * @return
-     *     possible object is
+     *     possible model is
      *     byte[]
      */
     public byte[] getRsaKeyValueModulus() {
@@ -20,7 +20,7 @@ public class SamlSignatureKeyInfoType {
      * Sets the value of the rsaKeyValueModulus property.
      * 
      * @param value
-     *     allowed object is
+     *     allowed model is
      *     byte[]
      */
     public void setRsaKeyValueModulus(byte[] value) {
@@ -31,7 +31,7 @@ public class SamlSignatureKeyInfoType {
      * Gets the value of the rsaKeyValueExponent property.
      * 
      * @return
-     *     possible object is
+     *     possible model is
      *     byte[]
      */
     public byte[] getRsaKeyValueExponent() {
@@ -42,7 +42,7 @@ public class SamlSignatureKeyInfoType {
      * Sets the value of the rsaKeyValueExponent property.
      * 
      * @param value
-     *     allowed object is
+     *     allowed model is
      *     byte[]
      */
     public void setRsaKeyValueExponent(byte[] value) {

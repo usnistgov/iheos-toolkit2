@@ -2,7 +2,9 @@ package gov.nist.toolkit.xdstools2.client.tabs.testsOverviewTab;
 
 import gov.nist.toolkit.results.shared.Test;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 import java.util.logging.Logger;
 
 /**

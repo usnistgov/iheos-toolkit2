@@ -20,7 +20,7 @@ public class TransactionErrorCodeDbLoader {
     static Logger logger = Logger.getLogger(TransactionErrorCodeDbLoader.class);
 
     static public TransactionErrorCodesDb LOAD() throws Exception {
-        File file = new File(Installation.installation().toolkitxFile(), "TransactionDefinedErrorCodes.txt");
+        File file = new File(Installation.instance().toolkitxFile(), "TransactionDefinedErrorCodes.txt");
         return LOAD(file);
     }
 

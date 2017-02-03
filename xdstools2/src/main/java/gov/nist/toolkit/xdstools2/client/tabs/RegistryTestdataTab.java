@@ -2,114 +2,110 @@ package gov.nist.toolkit.xdstools2.client.tabs;
 
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.user.client.rpc.AsyncCallback;
-import com.google.gwt.user.client.ui.FlexTable;
-import com.google.gwt.user.client.ui.HTML;
-import com.google.gwt.user.client.ui.ListBox;
-import com.google.gwt.user.client.ui.VerticalPanel;
+import com.google.gwt.user.client.ui.*;
 import gov.nist.toolkit.configDatatypes.client.TransactionType;
+import gov.nist.toolkit.results.client.Result;
 import gov.nist.toolkit.xdstools2.client.CoupledTransactions;
-import gov.nist.toolkit.xdstools2.client.PopupMessage;
-import gov.nist.toolkit.xdstools2.client.TabContainer;
+import gov.nist.toolkit.xdstools2.client.command.command.GetTestdataSetListingCommand;
+import gov.nist.toolkit.xdstools2.client.command.command.SubmitRegistryTestdataCommand;
 import gov.nist.toolkit.xdstools2.client.siteActorManagers.GetDocumentsSiteActorManager;
 import gov.nist.toolkit.xdstools2.client.tabs.genericQueryTab.GenericQueryTab;
+import gov.nist.toolkit.xdstools2.client.widgets.PopupMessage;
+import gov.nist.toolkit.xdstools2.shared.command.request.GetTestdataSetListingRequest;
+import gov.nist.toolkit.xdstools2.shared.command.request.SubmitTestdataRequest;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class RegistryTestdataTab  extends GenericQueryTab {
 
-	static List<TransactionType> transactionTypes = new ArrayList<TransactionType>();
-	static {
-		transactionTypes.add(TransactionType.REGISTER);
-	}
-	
-	static CoupledTransactions couplings = new CoupledTransactions();
+    static List<TransactionType> transactionTypes = new ArrayList<TransactionType>();
+    static {
+        transactionTypes.add(TransactionType.REGISTER);
+    }
 
-//	TextBox pid;
-	ListBox testlistBox;
-	
-	String help = "Submit selected test data set to the selected Registry " +
-	"in a Register transaction"; 
-	
-	public RegistryTestdataTab() {
-		super(new GetDocumentsSiteActorManager());
-	}
-	
-	public void onTabLoad(TabContainer container, boolean select, String eventName) {
-		myContainer = container;
-		topPanel = new VerticalPanel();
-		
-		
-		container.addTab(topPanel, "XDS Register", select);
-		addCloseButton(container, topPanel, help);
+    static CoupledTransactions couplings = new CoupledTransactions();
 
-		topPanel.add(new HTML("<h2>Send XDS Register transaction</h2>"));
+    ListBox testlistBox;
 
-		mainGrid = new FlexTable();
-		int row = 0;
-		
-		topPanel.add(mainGrid);
+    String help = "Submit selected test data set to the selected Registry " +
+            "in a Register transaction";
 
-//		mainGrid.setWidget(row,0, new HTML("Patient ID"));
+    public RegistryTestdataTab() {
+        super(new GetDocumentsSiteActorManager());
+    }
 
-		HTML dataLabel = new HTML();
-		dataLabel.setText("Select Test Data Set");
-		mainGrid.setWidget(row,0, dataLabel);
+    @Override
+    protected Widget buildUI() {
+        FlowPanel flowPanel=new FlowPanel();
+        flowPanel.add(new HTML("<h2>Send XDS Register transaction</h2>"));
 
-		testlistBox = new ListBox();
-		mainGrid.setWidget(row, 1, testlistBox);
-		row++;
+        mainGrid = new FlexTable();
+        int row = 0;
 
-		testlistBox.setVisibleItemCount(1);
-		toolkitService.getTestdataSetListing("testdata-registry", loadRegistryTestListCallback);
+        flowPanel.add(mainGrid);
 
-		queryBoilerplate = addQueryBoilerplate(new Runner(), transactionTypes, couplings, true);
-	}
-	
-	protected AsyncCallback<List<String>> loadRegistryTestListCallback = new AsyncCallback<List<String>>() {
+        HTML dataLabel = new HTML();
+        dataLabel.setText("Select Test Data Set");
+        mainGrid.setWidget(row,0, dataLabel);
 
-		public void onFailure(Throwable caught) {
-			showMessage(caught);
-		}
+        testlistBox = new ListBox();
+        mainGrid.setWidget(row, 1, testlistBox);
+        row++;
 
-		public void onSuccess(List<String> result) {
-			testlistBox.addItem("");
-			for (String testName : result) {
-				testlistBox.addItem(testName);
-			}
-		}
+        testlistBox.setVisibleItemCount(1);
+        return flowPanel;
+    }
 
-	};
+    @Override
+    protected void bindUI() {
+        new GetTestdataSetListingCommand(){
+            @Override
+            public void onComplete(List<String> result) {
+                testlistBox.addItem("");
+                for (String testName : result) {
+                    testlistBox.addItem(testName);
+                }
+            }
+        }.run(new GetTestdataSetListingRequest(getCommandContext(),"testdata-registry"));
+    }
 
+    @Override
+    protected void configureTabView() {
+        queryBoilerplate = addQueryBoilerplate(new Runner(), transactionTypes, couplings, true);
+    }
 
-	
-	class Runner implements ClickHandler {
+    class Runner implements ClickHandler {
 
-		public void onClick(ClickEvent event) {
-			resultPanel.clear();
+        public void onClick(ClickEvent event) {
+            resultPanel.clear();
 
-			if (!verifySiteProvided()) return;
-			if (!verifyPidProvided()) return;
+            if (!verifySiteProvided()) return;
+            if (!verifyPidProvided()) return;
 
-			int selected = testlistBox.getSelectedIndex();
-			if (selected < 1 || selected >= testlistBox.getItemCount()) {
-				new PopupMessage("You must select Test Data Set first");
-				return;
-			}
-			
-			String testdataSetName = testlistBox.getItemText(selected);	
+            int selected = testlistBox.getSelectedIndex();
+            if (selected < 1 || selected >= testlistBox.getItemCount()) {
+                new PopupMessage("You must select Test Data Set first");
+                return;
+            }
 
-			rigForRunning();
-			toolkitService.submitRegistryTestdata(getSiteSelection(), testdataSetName, pidTextBox.getValue().trim(), queryCallback);
-		}
-		
-	}
+            String testdataSetName = testlistBox.getItemText(selected);
+
+            rigForRunning();
+            new SubmitRegistryTestdataCommand(){
+                @Override
+                public void onComplete(List<Result> result) {
+                    queryCallback.onSuccess(result);
+                }
+            }.run(new SubmitTestdataRequest(getCommandContext(),getSiteSelection(),testdataSetName,pidTextBox.getValue().trim()));
+        }
+
+    }
 
 
 
-	public String getWindowShortName() {
-		return "regtestdata";
-	}
+    public String getWindowShortName() {
+        return "regtestdata";
+    }
 
 }

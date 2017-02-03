@@ -4,12 +4,14 @@ import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.ui.*;
 import gov.nist.toolkit.configDatatypes.client.TransactionType;
-import gov.nist.toolkit.results.client.SiteSpec;
+import gov.nist.toolkit.results.client.Result;
+import gov.nist.toolkit.sitemanagement.client.SiteSpec;
 import gov.nist.toolkit.xdstools2.client.CoupledTransactions;
-import gov.nist.toolkit.xdstools2.client.PopupMessage;
-import gov.nist.toolkit.xdstools2.client.TabContainer;
+import gov.nist.toolkit.xdstools2.client.command.command.FindDocumentsByRefIdCommand;
+import gov.nist.toolkit.xdstools2.client.widgets.PopupMessage;
 import gov.nist.toolkit.xdstools2.client.siteActorManagers.FindDocumentsSiteActorManager;
 import gov.nist.toolkit.xdstools2.client.tabs.genericQueryTab.GenericQueryTab;
+import gov.nist.toolkit.xdstools2.shared.command.request.FindDocumentsRequest;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -25,7 +27,7 @@ public class FindDocumentsByRefIdTab extends GenericQueryTab {
 
 	static CoupledTransactions couplings = new CoupledTransactions();
 
-//	CheckBox selectOnDemand;
+    //	CheckBox selectOnDemand;
 	TextBox refIdTextBox1 = new TextBox();
 	TextBox refIdTextBox2 = new TextBox();
 	TextBox refIdTextBox3 = new TextBox();
@@ -35,29 +37,18 @@ public class FindDocumentsByRefIdTab extends GenericQueryTab {
 		super(new FindDocumentsSiteActorManager());
 	}
 
-
-	public void onTabLoad(TabContainer container, boolean select, String eventName) {
-		myContainer = container;
-		topPanel = new VerticalPanel();
-
-
-		container.addTab(topPanel, "FindDocumentsByRefId", select);
-		addCloseButton(container,topPanel, null);
-
+	@Override
+	protected Widget buildUI() {
+		FlowPanel flowPanel=new FlowPanel();
 		HTML title = new HTML();
 		title.setHTML("<h2>Find Documents by Reference ID Stored Query</h2>");
-		topPanel.add(title);
+		flowPanel.add(title);
 
 		mainGrid = new FlexTable();
 		int row = 0;
 
-//		selectOnDemand = new CheckBox();
-//		selectOnDemand.setText("Include On-Demand DocumentEntries");
-//		mainGrid.setWidget(row, 0, selectOnDemand);
-//		row++;
-		
 		mainGrid.setWidget(row, 0, new HTML("Reference IDs"));
-		
+
 		HorizontalPanel horizPanel = new HorizontalPanel();
 		refIdTextBox1.setWidth("25em");
 		refIdTextBox2.setWidth("25em");
@@ -68,12 +59,20 @@ public class FindDocumentsByRefIdTab extends GenericQueryTab {
 		mainGrid.setWidget(row, 1, horizPanel);
 		row++;
 
-		topPanel.add(mainGrid);
+		flowPanel.add(mainGrid);
+		return flowPanel;
+	}
 
+	@Override
+	protected void bindUI() {
+	}
+
+	@Override
+	protected void configureTabView() {
 		addQueryBoilerplate(new Runner(), transactionTypes, couplings, true);
 	}
 
-	class Runner implements ClickHandler {
+    class Runner implements ClickHandler {
 
 		public void onClick(ClickEvent event) {
 			resultPanel.clear();
@@ -106,7 +105,12 @@ public class FindDocumentsByRefIdTab extends GenericQueryTab {
 			getGoButton().setEnabled(false);
 			getInspectButton().setEnabled(false);
 
-			toolkitService.findDocumentsByRefId(siteSpec, pidTextBox.getValue().trim(), refIds, queryCallback);
+			new FindDocumentsByRefIdCommand(){
+				@Override
+				public void onComplete(List<Result> result) {
+					queryCallback.onSuccess(result);
+				}
+			}.run(new FindDocumentsRequest(getCommandContext(),siteSpec, pidTextBox.getValue().trim(), refIds));
 		}
 
 	}

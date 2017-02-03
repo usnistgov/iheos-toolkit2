@@ -38,36 +38,36 @@ public class ActionBean {
     }
 
     /**
-     * Method getActionNamespace returns the actionNamespace of this SamlAction object.
+     * Method getActionNamespace returns the actionNamespace of this SamlAction model.
      *
-     * @return the actionNamespace (type String) of this SamlAction object.
+     * @return the actionNamespace (type String) of this SamlAction model.
      */
     public String getActionNamespace() {
         return actionNamespace;
     }
 
     /**
-     * Method setActionNamespace sets the actionNamespace of this SamlAction object.
+     * Method setActionNamespace sets the actionNamespace of this SamlAction model.
      *
-     * @param actionNamespace the actionNamespace of this SamlAction object.
+     * @param actionNamespace the actionNamespace of this SamlAction model.
      */
     public void setActionNamespace(String actionNamespace) {
         this.actionNamespace = actionNamespace;
     }
 
     /**
-     * Method getContents returns the contents of this SamlAction object.
+     * Method getContents returns the contents of this SamlAction model.
      *
-     * @return the contents (type String) of this SamlAction object.
+     * @return the contents (type String) of this SamlAction model.
      */
     public String getContents() {
         return contents;
     }
 
     /**
-     * Method setContents sets the contents of this SamlAction object.
+     * Method setContents sets the contents of this SamlAction model.
      *
-     * @param contents the contents of this SamlAction object.
+     * @param contents the contents of this SamlAction model.
      */
     public void setContents(String contents) {
         this.contents = contents;

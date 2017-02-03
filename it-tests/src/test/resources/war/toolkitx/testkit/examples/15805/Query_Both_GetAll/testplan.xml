@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?><TestPlan>
+  <Test>15805/Query_Both_GetAll</Test>
+  <Rule>Verify the Registry under test returns both the On-Demand and the Stable DocumentEntries.</Rule>
+  <TestStep id="GetAll">
+    <ExpectedStatus>Success</ExpectedStatus>
+    <StoredQueryTransaction>
+      <XDSb/>
+
+      <MetadataFile>getall_query.xml</MetadataFile>
+
+      <ExpectedContents>
+	   <DocumentEntries>
+	   <Include>
+		<DocumentEntry>
+		 <UseId testdir="../Register_OD" id="Document01" symbol="$docid$" step="Register" section="AssignedUuids"/> 
+		 <DocumentEntryType>urn:uuid:34268e47-fdf5-41a6-ba33-82133c465248</DocumentEntryType>
+		</DocumentEntry>
+		<DocumentEntry>
+	  	 <UseId testdir="../Register_Snapshot" id="Document01" symbol="$docid$" step="Register" section="AssignedUuids"/> 
+		 <DocumentEntryType>urn:uuid:7edca82f-054d-47f2-a032-9b2a5b5186c1</DocumentEntryType>
+		</DocumentEntry>
+	   </Include>
+	   </DocumentEntries>
+      </ExpectedContents>
+    </StoredQueryTransaction>
+  </TestStep>
+</TestPlan>

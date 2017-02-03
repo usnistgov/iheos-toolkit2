@@ -6,7 +6,7 @@
 
     <groupId>gov.nist.toolkit</groupId>
     <artifactId>tk-deps</artifactId>
-    <version>2.202.9.3</version>
+    <version>4.2.1</version>
     <packaging>pom</packaging>
 
     <name>tk-deps</name>
@@ -17,6 +17,7 @@
         <jdk.version>1.7</jdk.version>
         <junit.version>4.11</junit.version>
         <jersey.version>2.22.1</jersey.version>
+        <jackson.version>2.6.3</jackson.version>
         <!--<groovyVersion>2.1.1</groovyVersion>-->
         <groovyVersion>2.4.5</groovyVersion>
         <gwtVersion>2.7.0</gwtVersion>
@@ -34,6 +35,11 @@
 
 
     <repositories>
+        <repository>
+            <id>dcm4che</id>
+            <name>dcm4che</name>
+            <url>http://www.dcm4che.org/maven2</url>
+        </repository>
         <repository>
             <id>gazelle-3rd-party</id>
             <name>gazelle nexus</name>
@@ -63,139 +69,142 @@
         <connection>scm:hg:https://bitbucket.org/iheos/toolkit</connection>
     </scm>
 
-
-
     <dependencyManagement>
         <dependencies>
             <dependency>
                 <groupId>gov.nist.toolkit</groupId>
                 <artifactId>config-datatypes</artifactId>
-                <version>2.202.9.3</version>
+                <version>4.2.1</version>
             </dependency>
             <dependency>
                 <groupId>gov.nist.toolkit</groupId>
                 <artifactId>transaction-notification-service</artifactId>
-                <version>2.202.9.1</version>
+                <version>4.2.1</version>
             </dependency>
             <dependency>
                 <groupId>gov.nist.toolkit</groupId>
                 <artifactId>toolkit-services-common</artifactId>
-                <version>2.202.9.1</version>
+                <version>4.2.1</version>
             </dependency>
             <dependency>
                 <groupId>gov.nist.toolkit</groupId>
                 <artifactId>toolkit-api</artifactId>
-                <version>2.202.9.1</version>
+                <version>4.2.1</version>
             </dependency>
             <dependency>
                 <groupId>gov.nist.toolkit</groupId>
                 <artifactId>services</artifactId>
-                <version>2.202.9.1</version>
+                <version>4.2.1</version>
             </dependency>
             <dependency>
                 <groupId>gov.nist.toolkit</groupId>
                 <artifactId>toolkit-services</artifactId>
-                <version>2.202.9.1</version>
+                <version>4.2.1</version>
             </dependency>
             <dependency>
                 <groupId>gov.nist.toolkit</groupId>
                 <artifactId>rest-tools</artifactId>
-                <version>2.202.9.1</version>
+                <version>4.2.1</version>
+            </dependency>
+            <dependency>
+                <groupId>gov.nist.toolkit</groupId>
+                <artifactId>validators-soap-message</artifactId>
+                <version>4.2.1</version>
             </dependency>
             <dependency>
                 <groupId>gov.nist.toolkit</groupId>
                 <artifactId>simulators</artifactId>
-                <version>2.202.9.1</version>
+                <version>4.2.1</version>
             </dependency>
             <dependency>
                 <groupId>gov.nist.toolkit</groupId>
                 <artifactId>adt</artifactId>
-                <version>2.202.9.1</version>
+                <version>4.2.1</version>
             </dependency>
             <dependency>
                 <groupId>gov.nist.toolkit</groupId>
                 <artifactId>envSettings</artifactId>
-                <version>2.202.9.1</version>
+                <version>4.2.1</version>
             </dependency>
             <dependency>
                 <groupId>gov.nist.toolkit</groupId>
                 <artifactId>sim-common</artifactId>
-                <version>2.202.9.1</version>
+                <version>4.2.1</version>
             </dependency>
             <dependency>
                 <groupId>gov.nist.toolkit</groupId>
                 <artifactId>session</artifactId>
-                <version>2.202.9.1</version>
+                <version>4.2.1</version>
             </dependency>
             <dependency>
                 <groupId>gov.nist.toolkit</groupId>
                 <artifactId>actorfactory</artifactId>
-                <version>2.202.9.1</version>
+                <version>4.2.1</version>
             </dependency>
             <dependency>
                 <groupId>gov.nist.toolkit</groupId>
                 <artifactId>test-engine</artifactId>
-                <version>2.202.9.1</version>
+                <version>4.2.1</version>
             </dependency>
             <dependency>
                 <groupId>gov.nist.toolkit</groupId>
                 <artifactId>saml</artifactId>
-                <version>2.202.0-SNAPSHOT</version>
+                <version>4.2.1</version>
             </dependency>
             <dependency>
                 <groupId>gov.nist.toolkit</groupId>
                 <artifactId>message-validator-factory2</artifactId>
-                <version>2.202.9.1</version>
+                <version>4.2.1</version>
             </dependency>
             <dependency>
                 <groupId>gov.nist.toolkit</groupId>
                 <artifactId>testkit-utilities</artifactId>
-                <version>2.202.9.1</version>
+                <version>4.2.1</version>
             </dependency>
             <dependency>
                 <groupId>gov.nist.toolkit</groupId>
                 <artifactId>soap</artifactId>
-                <version>2.202.9.1</version>
+                <version>4.2.1</version>
             </dependency>
             <dependency>
                 <groupId>gov.nist.toolkit</groupId>
                 <artifactId>validators-registry-metadata</artifactId>
-                <version>2.202.9.1</version>
+                <version>4.2.1</version>
             </dependency>
             <dependency>
                 <groupId>gov.nist.toolkit</groupId>
                 <artifactId>validators-registry-message</artifactId>
-                <version>2.202.9.2</version>
+                <version>4.2.1</version>
             </dependency>
             <dependency>
                 <groupId>gov.nist.toolkit</groupId>
                 <artifactId>xdstest2-logging</artifactId>
-                <version>2.202.9.1</version>
+                <version>4.2.1</version>
             </dependency>
             <dependency>
                 <groupId>gov.nist.toolkit</groupId>
                 <artifactId>installation</artifactId>
-                <version>2.202.9.1</version>
+                <version>4.2.1</version>
             </dependency>
             <dependency>
                 <groupId>gov.nist.toolkit</groupId>
                 <artifactId>common</artifactId>
-                <version>2.202.9.1</version>
+                <version>4.2.1</version>
             </dependency>
             <dependency>
                 <groupId>gov.nist.toolkit</groupId>
                 <artifactId>registry-msg-formats</artifactId>
-                <version>2.202.9.1</version>
+                <version>4.2.1</version>
             </dependency>
             <dependency>
                 <groupId>gov.nist.toolkit</groupId>
                 <artifactId>site-management</artifactId>
-                <version>2.202.9.1</version>
+                <version>4.2.1</version>
             </dependency>
             <dependency>
                 <groupId>gov.nist.toolkit</groupId>
                 <artifactId>http</artifactId>
-                <version>2.202.9.1</version>
+                <version>4.2.1</version>
             </dependency>
             <dependency>
                 <groupId>xml-security</groupId>
@@ -205,72 +214,72 @@
             <dependency>
                 <groupId>gov.nist.toolkit</groupId>
                 <artifactId>results</artifactId>
-                <version>2.202.9.1</version>
+                <version>4.2.1</version>
             </dependency>
             <dependency>
                 <groupId>gov.nist.toolkit</groupId>
                 <artifactId>docref</artifactId>
-                <version>2.202.9.1</version>
+                <version>4.2.1</version>
             </dependency>
             <dependency>
                 <groupId>gov.nist.toolkit</groupId>
                 <artifactId>dsig</artifactId>
-                <version>2.202.9.1</version>
+                <version>4.2.1</version>
             </dependency>
             <dependency>
                 <groupId>gov.nist.toolkit</groupId>
                 <artifactId>security-common</artifactId>
-                <version>2.202.9.1</version>
+                <version>4.2.1</version>
             </dependency>
             <dependency>
                 <groupId>gov.nist.toolkit</groupId>
                 <artifactId>tk</artifactId>
-                <version>2.202.9.1</version>
+                <version>4.2.1</version>
             </dependency>
             <dependency>
                 <groupId>gov.nist.toolkit</groupId>
                 <artifactId>validators-support</artifactId>
-                <version>2.202.9.1</version>
+                <version>4.2.1</version>
             </dependency>
             <dependency>
                 <groupId>gov.nist.toolkit</groupId>
                 <artifactId>xds-exceptions</artifactId>
-                <version>2.202.9.1</version>
+                <version>4.2.1</version>
             </dependency>
             <dependency>
                 <groupId>gov.nist.toolkit</groupId>
                 <artifactId>error-recording</artifactId>
-                <version>2.202.9.1</version>
+                <version>4.2.1</version>
             </dependency>
             <dependency>
                 <groupId>gov.nist.toolkit</groupId>
                 <artifactId>utilities</artifactId>
-                <version>2.202.9.1</version>
+                <version>4.2.1</version>
             </dependency>
             <dependency>
                 <groupId>gov.nist.toolkit</groupId>
                 <artifactId>registry-metadata</artifactId>
-                <version>2.202.9.1</version>
+                <version>4.2.1</version>
             </dependency>
             <dependency>
                 <groupId>gov.nist.toolkit</groupId>
                 <artifactId>registry-support</artifactId>
-                <version>2.202.9.1</version>
+                <version>4.2.1</version>
             </dependency>
             <dependency>
                 <groupId>gov.nist.toolkit</groupId>
                 <artifactId>common-datatypes</artifactId>
-                <version>2.202.9.1</version>
+                <version>4.2.1</version>
             </dependency>
             <dependency>
                 <groupId>gov.nist.toolkit</groupId>
                 <artifactId>grizzly-support</artifactId>
-                <version>2.202.9.1</version>
+                <version>4.2.1</version>
             </dependency>
             <dependency>
                 <groupId>gov.nist.toolkit</groupId>
                 <artifactId>actor-transaction</artifactId>
-                <version>2.202.9.1</version>
+                <version>4.2.1</version>
             </dependency>
             <dependency>
                 <groupId>gov.nist.toolkit</groupId>
@@ -434,7 +443,22 @@
             <dependency>
                 <groupId>com.fasterxml.jackson.core</groupId>
                 <artifactId>jackson-core</artifactId>
-                <version>2.6.3</version>
+                <version>${jackson.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.fasterxml.jackson.core</groupId>
+                <artifactId>jackson-databind</artifactId>
+                <version>${jackson.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.fasterxml.jackson.core</groupId>
+                <artifactId>jackson-annotations</artifactId>
+                <version>${jackson.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.fasterxml</groupId>
+                <artifactId>jackson-xml-databind</artifactId>
+                <version>${jackson.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.codehaus.jackson</groupId>
@@ -525,9 +549,9 @@
                 <scope>provided</scope>
             </dependency>
             <!--<dependency>-->
-                <!--<groupId>xmlunit</groupId>-->
-                <!--<artifactId>xmlunit</artifactId>-->
-                <!--<version>1.4</version>-->
+            <!--<groupId>xmlunit</groupId>-->
+            <!--<artifactId>xmlunit</artifactId>-->
+            <!--<version>1.4</version>-->
             <!--</dependency>-->
             <dependency>
                 <groupId>xerces</groupId>
@@ -554,11 +578,6 @@
                 <artifactId>backport-util-concurrent</artifactId>
                 <version>3.1</version>
             </dependency>
-            <dependency>
-                <groupId>com.fasterxml.jackson.core</groupId>
-                <artifactId>jackson-databind</artifactId>
-                <version>2.5.1</version>
-            </dependency>
             <!-- for now wsseTool limits this version -->
             <dependency>
                 <groupId>org.codehaus.groovy</groupId>
@@ -574,11 +593,6 @@
                 <groupId>com.smartgwt</groupId>
                 <artifactId>smartgwt-skins</artifactId>
                 <version>4.1p</version>
-            </dependency>
-            <dependency>
-                <groupId>com.fasterxml</groupId>
-                <artifactId>jackson-xml-databind</artifactId>
-                <version>0.6.2</version>
             </dependency>
             <dependency>
                 <groupId>net.jcip</groupId>
@@ -631,9 +645,9 @@
                 <version>2.3.22</version>
             </dependency>
             <!--<dependency>-->
-                <!--<groupId>com.sun.grizzly</groupId>-->
-                <!--<artifactId>grizzly-webserver</artifactId>-->
-                <!--<version>1.9.64</version>-->
+            <!--<groupId>com.sun.grizzly</groupId>-->
+            <!--<artifactId>grizzly-webserver</artifactId>-->
+            <!--<version>1.9.64</version>-->
             <!--</dependency>-->
             <dependency>
                 <groupId>org.apache.axis2</groupId>
@@ -648,12 +662,37 @@
             <dependency>
                 <groupId>org.apache.httpcomponents</groupId>
                 <artifactId>httpcore</artifactId>
-                <version>4.4</version>
+                <version>4.4.4</version>      <!-- updated from 4.4 - required for httpclient 4.5.2 -->
             </dependency>
             <dependency>
                 <groupId>org.apache.commons</groupId>
                 <artifactId>commons-collections4</artifactId>
                 <version>4.0</version>
+            </dependency>
+            <dependency>
+                <groupId>gov.nist.toolkit</groupId>
+                <artifactId>interaction-model</artifactId>
+                <version>4.2.1</version>
+            </dependency>
+            <dependency>
+                <groupId>gov.nist.toolkit</groupId>
+                <artifactId>interaction-mapper</artifactId>
+                <version>4.2.1</version>
+            </dependency>
+            <dependency>
+                <groupId>gov.nist.toolkit</groupId>
+                <artifactId>interaction-diagram</artifactId>
+                <version>4.2.1</version>
+            </dependency>
+            <dependency>
+                <groupId>org.vectomatic</groupId>
+                <artifactId>lib-gwt-svg</artifactId>
+                <version>0.5.11</version>
+            </dependency>
+            <dependency>
+                <groupId>com.google.gwt</groupId>
+                <artifactId>gwt-elemental</artifactId>
+                <version>${gwtVersion}</version>
             </dependency>
         </dependencies>
 

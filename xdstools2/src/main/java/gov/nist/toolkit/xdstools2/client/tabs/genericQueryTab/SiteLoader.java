@@ -4,8 +4,8 @@ import com.google.gwt.user.client.ui.Grid;
 import com.google.gwt.user.client.ui.RadioButton;
 import gov.nist.toolkit.actortransaction.client.ActorType;
 import gov.nist.toolkit.configDatatypes.client.TransactionType;
-import gov.nist.toolkit.results.client.SiteSpec;
 import gov.nist.toolkit.sitemanagement.client.Site;
+import gov.nist.toolkit.sitemanagement.client.SiteSpec;
 import gov.nist.toolkit.xdstools2.client.StringSort;
 
 import java.util.*;
@@ -33,6 +33,7 @@ public class SiteLoader {
 
 //        Xdstools2.DEBUG("findSites for " + user);
         for (TransactionType t : map.keySet()) {
+            if (t == null) continue; //Window.alert("TransactionType keys " + map.keySet().size());
             if (t.getName().equals(tt.getName())) {
                 List<Site> sitesForTransaction = map.get(t);
 //                Xdstools2.DEBUG("tmap(" + t  + ") is " + sitesForTransaction);
@@ -62,7 +63,7 @@ public class SiteLoader {
         List<String> siteNames = new ArrayList<String>();
         for (Site site : sites)
             siteNames.add(site.getName());
-        siteNames = new StringSort().sort(siteNames);
+        siteNames = StringSort.sort(siteNames);
 
         for (TransactionType tt : actorType.getTransactions()) {
             sites.addAll(findSites(tt, true  /* tls */));

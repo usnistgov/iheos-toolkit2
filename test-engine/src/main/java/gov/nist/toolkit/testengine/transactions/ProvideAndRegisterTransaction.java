@@ -12,8 +12,8 @@ import gov.nist.toolkit.utilities.xml.XmlUtil;
 import gov.nist.toolkit.valregmsg.service.SoapActionFactory;
 import gov.nist.toolkit.xdsexception.ExceptionUtil;
 import gov.nist.toolkit.xdsexception.HttpCodeException;
-import gov.nist.toolkit.xdsexception.XdsException;
-import gov.nist.toolkit.xdsexception.XdsInternalException;
+import gov.nist.toolkit.xdsexception.client.XdsException;
+import gov.nist.toolkit.xdsexception.client.XdsInternalException;
 import org.apache.axiom.om.OMAbstractFactory;
 import org.apache.axiom.om.OMElement;
 import org.apache.axiom.om.OMText;
@@ -114,6 +114,7 @@ public class ProvideAndRegisterTransaction extends RegisterTransaction {
 
 					validate_registry_response(
 							result,
+							"RegistryResponse",
 							(xds_version == xds_a) ? MetadataTypes.METADATA_TYPE_R : MetadataTypes.METADATA_TYPE_SQ);
 				}
 
@@ -179,7 +180,7 @@ public class ProvideAndRegisterTransaction extends RegisterTransaction {
 							s_ctx.set_error("Result has no RegistryResponse");
 						} else {
 //							testLog.add_name_value(instruction_output, "Result", Util.parse_xml(rr.toString()));
-							validate_registry_response(rr, MetadataTypes.METADATA_TYPE_PR);
+							validate_registry_response(rr, "RegistryResponse", MetadataTypes.METADATA_TYPE_PR);
 						}
 					}
 				}
@@ -276,7 +277,7 @@ public class ProvideAndRegisterTransaction extends RegisterTransaction {
 						s_ctx.set_error("Result has no RegistryResponse");
 					} else {
 //						testLog.add_name_value(instruction_output, "Result", Util.parse_xml(rr.toString()));
-						validate_registry_response(rr, MetadataTypes.METADATA_TYPE_PR);
+						validate_registry_response(rr, "RegistryResponse", MetadataTypes.METADATA_TYPE_PR);
 					}
 				}
 			}

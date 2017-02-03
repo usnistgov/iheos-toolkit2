@@ -6,36 +6,54 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.*;
 import gov.nist.toolkit.registrymetadata.client.ObjectRefs;
 import gov.nist.toolkit.results.client.*;
-import gov.nist.toolkit.xdstools2.client.PopupMessage;
-import gov.nist.toolkit.xdstools2.client.TabContainer;
-import gov.nist.toolkit.xdstools2.client.TabbedWindow;
-import gov.nist.toolkit.xdstools2.client.ToolkitServiceAsync;
+import gov.nist.toolkit.sitemanagement.client.SiteSpec;
+import gov.nist.toolkit.xdstools2.client.widgets.PopupMessage;
+import gov.nist.toolkit.xdstools2.client.ToolWindow;
 
 import java.util.ArrayList;
-import java.util.List;
+import java.util.Collection;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-public class MetadataInspectorTab extends TabbedWindow {
-
-	TabContainer container;
+/**
+ * Supports the test results inspector tab 
+ */
+public class MetadataInspectorTab extends ToolWindow {
+   
+   /* 
+    * Main panels below tab title display.
+    * History/Contents/Difference control panel
+    * Detail display relative to control panel
+    */
 	VerticalPanel historyPanel;
 	VerticalPanel detailPanel;
 	VerticalPanel structPanel;
 	boolean freezeStructDisplay = false;
 
+	/*
+	 * Radio Buttons in history panel to select display.
+	 */
 	RadioButton selectHistory = null;
 	RadioButton selectContents = null;
 	RadioButton selectDiff = null;
 	
+	// Data for test being displayed.
 	DataModel data;
 	Logger logger = Logger.getLogger("");
 
-	public void addToHistory(List<Result> results) {
+   /**
+    * Add test results to DataModel and redisplay history
+    * @param results to add
+    */
+   public void addToHistory(Collection<Result> results) {
 		for (Result result : results)
 			addToHistory(result);
 	}
 
+	/**
+	 * Add test result to DataModel and redisplay history
+	 * @param result to add
+	 */
 	public void addToHistory(Result result) {
 		if (result != null) {
 			if (data.results == null)
@@ -45,19 +63,17 @@ public class MetadataInspectorTab extends TabbedWindow {
 		data.buildCombined();
 		showHistoryOrContents();
 	}
-	
+	// main panel
 	HorizontalPanel hpanel;
 	
-	ToolkitServiceAsync toolkitService;
-	List<Result> results;
+	Collection<Result> results;
 	SiteSpec siteSpec;
 	
-	public void setToolkitService(ToolkitServiceAsync tsa) { toolkitService = tsa; }
-	public void setResults(List<Result> results) { this.results = results; }
+	public void setResults(Collection<Result> results) { this.results = results; }
 	public void setSiteSpec(SiteSpec ss) { siteSpec = ss; }
 
-	public void onTabLoad(TabContainer container, boolean select, String eventName) {
-		this.container = container;
+	@Override
+	public void onTabLoad(boolean select, String eventName) {
 
 		logger.log(Level.INFO, "Inspector started");
 
@@ -68,19 +84,17 @@ public class MetadataInspectorTab extends TabbedWindow {
 		if (siteSpec == null)
 			data.enableActions = false;
 
-		data.toolkitService = toolkitService;
-		topPanel = new VerticalPanel();
-		container.addTab(topPanel, "Inspector", select);
-		topPanel.setWidth("100%");
-		addCloseButton(container,topPanel, null, siteSpec);
+//		data.toolkitService = toolkitService;
+		registerTab(select, "Inspector");
+		tabTopPanel.setWidth("100%");
 
 		HTML title = new HTML();
 		title.setHTML("<h2>Inspector</h2>");
-		topPanel.add(title);
+		tabTopPanel.add(title);
 
 		hpanel = new HorizontalPanel();
-		topPanel.add(hpanel);
-		topPanel.setCellWidth(hpanel, "100%");
+		tabTopPanel.add(hpanel);
+//		tabTopPanel.setCellWidth(hpanel, "100%");
 		hpanel.setBorderWidth(1);
 
 		historyPanel = new VerticalPanel();
@@ -96,7 +110,6 @@ public class MetadataInspectorTab extends TabbedWindow {
 		hpanel.add(structPanel);
 
 
-
 		addToHistory(results);
 
 		if (!data.enableActions) {
@@ -105,13 +118,17 @@ public class MetadataInspectorTab extends TabbedWindow {
 			if (selectDiff != null) selectDiff.setEnabled(false);
 			
 			if (results.size() == 1 && !hasContents(results))
-				showAssertions(results.get(0));
+				showAssertions(results.iterator().next());
 			else 
 				showHistory();
 		}
 	}
-	
-	boolean hasContents(List<Result> results) {
+	/**
+	 * Is there any metadata content in Result steps
+	 * @param results
+	 * @return true if any metadata exists anywhere, false otherwise.
+	 */
+	boolean hasContents(Collection<Result> results) {
 		for (Result result : results) {
 			if (result.hasContent()) return true;
 		}
@@ -184,7 +201,7 @@ public class MetadataInspectorTab extends TabbedWindow {
 
 			Tree contentTree = new Tree();
 
-			new ListingDisplay(this, data, new TreeThing(contentTree)).listing(container);
+			new ListingDisplay(this, data, new TreeThing(contentTree)).listing();
 
 			historyPanel.add(contentTree);
 		}
@@ -204,6 +221,10 @@ public class MetadataInspectorTab extends TabbedWindow {
 		return selectDiff.getValue();
 	}
 
+	/**
+	 * Add radio button group "History, Contents, Diff" to passed panel
+	 * @param panel to add to
+	 */
 	void addHistoryContentsSelector(VerticalPanel panel) {
 		FlexTable ft = new FlexTable();
 
@@ -229,17 +250,33 @@ public class MetadataInspectorTab extends TabbedWindow {
 		}
 
 	}
-
+   /**
+    * Return passed text as HTML in red font
+    * @param in text
+    * @return HTML, with color="#FF0000"
+    */
 	HTML redAsHTML(String in) {
 		HTML h = new HTML();
 		h.setHTML("<font color=\"#FF0000\">" + in + "</font>");
 		return h;
 	}
 
+	/**
+	 * Return passed text as text in red font
+	 * @param in text to process
+	 * @return String {@code <font color="#FF0000">in</font>}
+	 */
 	String redAsText(String in) {
 		return "<font color=\"#FF0000\">" + in + "</font>";
 	}
-
+	/**
+    * Return passed text as HTML in red font, if condition not met (that is,
+    * passed condition is false)
+    * @param in text text to process
+    * @param condition test
+    * @return HTML with color="#FF0000" if condition is false otherwise with
+    * no color attribute.
+    */
 	HTML redAsHTML(String in, boolean condition) {
 		if (!condition)
 			return redAsHTML(in);
@@ -254,37 +291,45 @@ public class MetadataInspectorTab extends TabbedWindow {
 		return in;
 	}
 
-
+   /**
+    * Show the history display in the history/contents/difference panel
+    */
 	void showHistory() {
 		historyPanel.clear();
+		// History panel title
 		HTML title = new HTML();
 		title.setHTML("<h3>History</h3>");
 		historyPanel.add(title);
-
+      // Radio button group
 		addHistoryContentsSelector(historyPanel);
-
+      // set history button on, others off
 		selectHistory.setValue(true);
 		selectContents.setValue(false);
 		selectDiff.setValue(false);
 
 		if (data.results == null)
 			return;
-
+      // Pass tests, displaying history results for each test.
 		for (Result res : data.results) {
 			AssertionResults ares = res.assertions;
+			// Tree widget created for each test
 			Tree historyTree = new Tree();
-			TreeItem historyElement = new TreeItem(redAsHTML(res.testInstance.getId() + "   (" + res.timestamp + ")", !ares.isFailed()));
+			// tree element for test with test id & time stamp, red if test failed
+			TreeItem historyElement = 
+			   new TreeItem(redAsHTML(res.testInstance.getId() + "   (" + res.timestamp + ")", !ares.isFailed()));
 			historyTree.addItem(historyElement);
-			
-//			if (data.results.size() == 1) 
-//				historyElement.setState(true);
-
 
 			int stepCount = res.stepResults.size();
-
+			
+         // Pass steps for test
 			for (StepResult stepResult : res.stepResults) {
 
 				TreeItem stepTreeItem;
+				/* If there is more than one step in the test, each step has a
+				 * step element in the tree, listing the step and section names,
+				 * in red if the step failed. If only one step, the test element
+				 * is used as the step element.
+				 */
 				if (stepCount > 1) {
 					stepTreeItem = new TreeItem(redAsHTML("Step: " + stepResult.section + "/" + stepResult.stepName, stepResult.status));
 					historyElement.addItem(stepTreeItem);
@@ -292,11 +337,14 @@ public class MetadataInspectorTab extends TabbedWindow {
 					stepTreeItem = historyElement;
 				}
 
+				/* New datamodel copied from test one, but using metadata and
+				 * documents from this step
+				 */
 				DataModel dm = new DataModel(data);
 				dm.combinedMetadata = stepResult.getMetadata(); 
 				dm.allDocs = stepResult.documents;
 				
-				new ListingDisplay(this, dm, new TreeThing(stepTreeItem)).listing(container);
+				new ListingDisplay(this, dm, new TreeThing(stepTreeItem)).listing();
 				
 //				listing(stepResult.getMetadata(), stepResult.documents, new TreeThing(stepTreeItem));
 
@@ -310,13 +358,14 @@ public class MetadataInspectorTab extends TabbedWindow {
 				if (stepResult.getTestLog() != null) {
 					buildLogMenu(stepResult, stepTreeItem);
 				}
-			}
+			} // EO loop through test steps
 
 			if (res.stepResults.size() > 0) {
 				StepResult firstStepResult = res.stepResults.get(0);
 				if (firstStepResult.getTestLog() == null) {
 
 					RawLogLoader ll = new RawLogLoader(this, res.logId, res.stepResults);
+//					ll.loadTestLogs();
 					TreeItem loadLogs = new TreeItem(HyperlinkFactory.link("load logs", ll));
 					ll.setLoadLogsTreeItem(loadLogs);
 
@@ -338,8 +387,9 @@ public class MetadataInspectorTab extends TabbedWindow {
 				historyElement.setState(true);
 			}
 
-		}
-	}
+		} // EO loop  through tests
+	} // EO showHistory method
+	
 
 	void buildLogMenu(StepResult stepResult, TreeItem stepTreeItem) {
 		TreeItem ti;

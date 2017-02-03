@@ -1,0 +1,41 @@
+<TestPlan>
+    <Test>ids_rad69_detail_cases/case-2: Without HomeCommunityId</Test>
+    <TestStep id="retrieve-2">
+        <Goal>Imaging Document Set Retrieve case: With HomeCommunityId</Goal>
+        <ExpectedStatus>Success</ExpectedStatus>
+        <ImagingDocSetRetrieveTransaction>
+            <MetadataFile>RAD-69Request.xml</MetadataFile>
+        </ImagingDocSetRetrieveTransaction>
+    </TestStep>
+    <TestStep id="valiate-2">
+        <Goal>Imaging Document Set Retrieve case: With HomeCommunityId Validation</Goal>
+        <Goal>Document Response shall contain HomeCommunityId element and value</Goal>
+        <Standard>
+        <ResponseBody> 
+            <xdsb:RetrieveDocumentSetResponse 
+               xmlns:xdsb="urn:ihe:iti:xds-b:2007"> 
+               <rs:RegistryResponse 
+                  status="urn:oasis:names:tc:ebxml-regrep:ResponseStatusType:Success"                      
+                  xmlns:rs="urn:oasis:names:tc:ebxml-regrep:xsd:rs:3.0"/> 
+               <xdsb:DocumentResponse> 
+                  <xdsb:RepositoryUniqueId/> 
+                  <xdsb:DocumentUniqueId>1.3.6.1.4.1.21367.201599.3.201604020954048.1</xdsb:DocumentUniqueId> 
+                  <xdsb:mimeType>application/dicom</xdsb:mimeType> 
+                  <xdsb:Document>...</xdsb:Document> 
+               </xdsb:DocumentResponse> 
+            </xdsb:RetrieveDocumentSetResponse> 
+         </ResponseBody> 
+        </Standard>
+    <XmlDetailTransaction> 
+         <Assertions> 
+            <Assert 
+               id="hci-absent" 
+               process="matchHomeCommunityIds"> 
+               <TestResponse 
+                  testDir="THIS" 
+                  step="retrieve-2"/> 
+            </Assert> 
+         </Assertions> 
+      </XmlDetailTransaction> 
+    </TestStep>
+</TestPlan>

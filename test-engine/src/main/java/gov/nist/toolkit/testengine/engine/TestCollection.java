@@ -1,7 +1,5 @@
 package gov.nist.toolkit.testengine.engine;
 
-import gov.nist.toolkit.results.client.TestInstance;
-import gov.nist.toolkit.testenginelogging.TestDetails;
 import gov.nist.toolkit.utilities.io.LinesOfFile;
 
 import java.io.File;
@@ -10,9 +8,9 @@ import java.util.List;
 import java.util.StringTokenizer;
 
 public class TestCollection {
-	File testkit;
-	File colDir;
-	File collection;
+	private File testkit;
+	private File colDir;
+	private File collection;
 	
 	// intentionally labeled for internal use only 
 	private TestCollection(File testkit) throws Exception {
@@ -60,30 +58,6 @@ public class TestCollection {
 			System.out.println(name);
 		}
 	}
-	
-	public List<TestDetails> getTestSpecs() throws Exception {
-		List<TestDetails> specs = new ArrayList<TestDetails>();
-		
-		for (LinesOfFile lof=new LinesOfFile(collection); lof.hasNext(); ) {
-			String line = lof.next();
-			int commentStarts = line.indexOf('#');
-			if (commentStarts != -1)
-				line = line.substring(0, commentStarts);
-			if (line.length() == 0)
-				continue;
-			List<String> tokens = tokenize(line);
-			if (tokens.size() == 0)
-				continue;
-			TestInstance testInstance = new TestInstance(tokens.remove(0));
-			
-			TestDetails ts = new TestDetails(testkit, testInstance);
-			if (tokens.size() > 0) 
-				ts.selectSections(tokens);
-			specs.add(ts);
-		}
-		
-		return specs;
-	}
 
     public List<String> getTestIds() throws Exception {
         List<String> ids = new ArrayList<>();
@@ -101,10 +75,10 @@ public class TestCollection {
 
             ids.add(tokens.remove(0));
 
-            // This parser supports specifying specific sections of a test.  TestInstance does not support
+            // This parser supports specifying specific SECTIONS of a test.  TestInstance does not support
             // this yet.
 
-//            TestDetails ts = new TestDetails(testkit, testInstance);
+//            TestLogDetails ts = new TestLogDetails(testkit, testInstance);
 //            if (tokens.size() > 0)
 //                ts.selectSections(tokens);
 //            specs.add(ts);

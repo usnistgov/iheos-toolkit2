@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?><TestPlan>
+  <Test>12312_Xuainternetprotocol/missing_home</Test>
+  <TestStep id="retrieve">
+    <ExpectedStatus>Fault</ExpectedStatus>
+    <ExpectedErrorCode>XDSMissingHomeCommunityId</ExpectedErrorCode>
+    <XCRTransaction>
+
+      <MetadataFile>query.xml</MetadataFile>
+
+    </XCRTransaction>
+  </TestStep>
+</TestPlan>

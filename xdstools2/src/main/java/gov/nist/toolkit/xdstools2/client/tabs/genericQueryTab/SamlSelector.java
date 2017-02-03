@@ -10,14 +10,18 @@ public class SamlSelector implements ChangeHandler {
 	public SamlSelector(GenericQueryTab tab) {
 		this.tab = tab;
 	}
-	public void onChange(ChangeEvent event) {
-		int selectedIndex= ((ListBox)event.getSource()).getSelectedIndex();
-		if( selectedIndex == 0) {
-			tab.getCommonSiteSpec().setSaml(false);
-		}
-		else if(selectedIndex == 1) {
-			tab.getCommonSiteSpec().setSaml(true);
-		}
 
+	public void onChange(ChangeEvent event) {
+		String selectedValue = ((ListBox)event.getSource()).getSelectedValue();
+
+		if ("NoSaml".equals(selectedValue)) {
+			tab.getSiteSelection().setSaml(false);
+			tab.getCommonSiteSpec().setSaml(false);
+			tab.getCommonSiteSpec().setGazelleXuaUsername(null);
+		} else {
+			tab.getSiteSelection().setSaml(true);
+			tab.getCommonSiteSpec().setSaml(true);
+			tab.getCommonSiteSpec().setGazelleXuaUsername(selectedValue);
+		}
 	}
 }

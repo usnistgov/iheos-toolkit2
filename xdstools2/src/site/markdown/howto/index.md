@@ -1,6 +1,6 @@
 # How to ... #
 
-[Send a Patient Identity Feed to a Document Registry](index.html)
+[Send a Patient Identity Feed to a Document Registry](pif.html)
 
 [Send a Provide and Register transaction to a Simulator](pnrtosim.html)
 

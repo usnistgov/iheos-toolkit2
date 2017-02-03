@@ -1,13 +1,16 @@
 package gov.nist.toolkit.xdstools2.client.tabs.actorConfigTab;
 
-import gov.nist.toolkit.sitemanagement.client.Site;
-import gov.nist.toolkit.xdstools2.client.PopupMessage;
-
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.rpc.AsyncCallback;
+import gov.nist.toolkit.sitemanagement.client.Site;
+import gov.nist.toolkit.sitemanagement.client.SiteSpec;
+import gov.nist.toolkit.xdstools2.client.command.command.GetSiteCommand;
+import gov.nist.toolkit.xdstools2.client.widgets.PopupMessage;
+import gov.nist.toolkit.xdstools2.client.util.ClientUtils;
+import gov.nist.toolkit.xdstools2.shared.command.request.GetSiteRequest;
 
-class SiteChoose implements ClickHandler {
+public class SiteChoose implements ClickHandler {
 	/**
 	 * 
 	 */
@@ -16,7 +19,7 @@ class SiteChoose implements ClickHandler {
 	/**
 	 * @param actorConfigTab
 	 */
-	SiteChoose(ActorConfigTab actorConfigTab) {
+	public SiteChoose(ActorConfigTab actorConfigTab) {
 		this.actorConfigTab = actorConfigTab;
 	}
 
@@ -29,23 +32,21 @@ class SiteChoose implements ClickHandler {
 			return;
 		}
 		actorConfigTab.newActorEditGrid();
-		actorConfigTab.toolkitService.getSite(
-				actorConfigTab.getSelectedValueFromListBox(actorConfigTab.siteSelector), 
-				loadSiteCallback);
+		String siteName=actorConfigTab.getSelectedValueFromListBox(actorConfigTab.siteSelector);
+		getSite(siteName);
 		currentSelection = actorConfigTab.siteSelector.getSelectedIndex();
 	}
-	
-	protected AsyncCallback<Site> loadSiteCallback = new AsyncCallback<Site>() {
 
-		public void onFailure(Throwable caught) {
-			new PopupMessage(caught.getMessage());
-		}
+	public void editSite(SiteSpec siteSpec) {
+		getSite(siteSpec.getName());
+	}
 
-		public void onSuccess(Site result) {
-			actorConfigTab.displaySite(result);
-		}
-
-	};
-
-
+	public void getSite(String siteName){
+		new GetSiteCommand(){
+			@Override
+			public void onComplete(Site result) {
+				actorConfigTab.displaySite(result);
+			}
+		}.run(new GetSiteRequest(ClientUtils.INSTANCE.getCommandContext(),siteName));
+	}
 }

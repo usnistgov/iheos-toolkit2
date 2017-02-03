@@ -105,16 +105,21 @@ public class MultipartParserBa {
 		}
 		
 		byte[] trim(byte[] in) {
-			int i=in.length - 1;
-			for (  ; i>=0; i--) {
-				if (!isWhite(in[i]))
-					break;
-			}
-			if (i == in.length - 1)
+			if (in.length < 2)
 				return in;
-			if (i == -1)
-				return new byte[0];
-			return subarray(in, 0, i+1);
+			if (in[in.length-1] == '\n' && in[in.length-2] == '\r')
+				return subarray(in, 0, in.length-2);
+			return in;
+//			int i=in.length - 1;
+//			for (  ; i>=0; i--) {
+//				if (!isWhite(in[i]))
+//					break;
+//			}
+//			if (i == in.length - 1)
+//				return in;
+//			if (i == -1)
+//				return new byte[0];
+//			return subarray(in, 0, i+1);
 		}
 
 		public void parse() throws ParseException, HttpHeaderParseException, HttpParseException {

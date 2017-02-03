@@ -107,6 +107,9 @@ public class RegistryActorSimulator extends BaseDsActorSimulator {
             //
             // *********************************************
 
+			if (!dsSimCommon.verifySubmissionAllowed())
+				return false;
+
 			if (!dsSimCommon.runInitialValidationsAndFaultIfNecessary())
 				return false;  // returns if SOAP Fault was generated
 			
@@ -162,6 +165,9 @@ public class RegistryActorSimulator extends BaseDsActorSimulator {
 			//
 			// *********************************************
 
+			if (!dsSimCommon.verifySubmissionAllowed())
+				return false;
+
 			if (!dsSimCommon.runInitialValidationsAndFaultIfNecessary())
 				return false;  // returns if SOAP Fault was generated
 
@@ -206,10 +212,10 @@ public class RegistryActorSimulator extends BaseDsActorSimulator {
 			if (!dsSimCommon.runInitialValidationsAndFaultIfNecessary())
 				return false;
 			
-			if (mvc.hasErrors()) {
-				dsSimCommon.sendErrorsInRegistryResponse(er);
-				return false;
-			}
+//			if (mvc.hasErrors()) {
+//				dsSimCommon.sendErrorsInRegistryResponse(er);
+//				return false;
+//			}
 
 
 			SqSim sqsim = new SqSim(common, dsSimCommon);
@@ -228,7 +234,7 @@ public class RegistryActorSimulator extends BaseDsActorSimulator {
 			// this will only run the new validators
 			mvc.run();
 			
-			return true; // no updates anyway
+			return !mvc.hasErrors(); // no updates anyway
 
 		}
 		else if (transactionType.equals(TransactionType.UPDATE)) {
@@ -238,6 +244,9 @@ public class RegistryActorSimulator extends BaseDsActorSimulator {
 			}
 			common.vc.isMU = true;
 			common.vc.isRequest = true;
+
+			if (!dsSimCommon.verifySubmissionAllowed())
+				return false;
 
 			if (!dsSimCommon.runInitialValidationsAndFaultIfNecessary())
 				return false;

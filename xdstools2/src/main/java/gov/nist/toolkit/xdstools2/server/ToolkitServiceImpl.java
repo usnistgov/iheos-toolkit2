@@ -2,50 +2,141 @@ package gov.nist.toolkit.xdstools2.server;
 
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 import gov.nist.toolkit.MessageValidatorFactory2.MessageValidatorFactoryFactory;
+import gov.nist.toolkit.actorfactory.SimManager;
 import gov.nist.toolkit.actorfactory.SiteServiceManager;
 import gov.nist.toolkit.actorfactory.client.SimId;
 import gov.nist.toolkit.actorfactory.client.Simulator;
 import gov.nist.toolkit.actorfactory.client.SimulatorConfig;
 import gov.nist.toolkit.actorfactory.client.SimulatorStats;
 import gov.nist.toolkit.actortransaction.TransactionErrorCodeDbLoader;
-import gov.nist.toolkit.actortransaction.client.Severity;
 import gov.nist.toolkit.actortransaction.client.TransactionInstance;
 import gov.nist.toolkit.configDatatypes.client.Pid;
+import gov.nist.toolkit.configDatatypes.client.PidSet;
 import gov.nist.toolkit.configDatatypes.client.TransactionType;
 import gov.nist.toolkit.installation.ExternalCacheManager;
 import gov.nist.toolkit.installation.Installation;
 import gov.nist.toolkit.installation.PropertyServiceManager;
-import gov.nist.toolkit.registrymetadata.client.AnyIds;
-import gov.nist.toolkit.registrymetadata.client.ObjectRef;
-import gov.nist.toolkit.registrymetadata.client.ObjectRefs;
-import gov.nist.toolkit.registrymetadata.client.Uids;
-import gov.nist.toolkit.results.client.*;
+import gov.nist.toolkit.interactionmapper.InteractionMapper;
+import gov.nist.toolkit.interactionmodel.client.InteractingEntity;
+import gov.nist.toolkit.results.client.CodesResult;
+import gov.nist.toolkit.results.client.DocumentEntryDetail;
+import gov.nist.toolkit.results.client.Result;
+import gov.nist.toolkit.results.client.TestInstance;
+import gov.nist.toolkit.results.client.TestLogs;
 import gov.nist.toolkit.results.shared.Test;
-import gov.nist.toolkit.services.client.EnvironmentNotSelectedClientException;
-import gov.nist.toolkit.services.client.IgOrchestrationRequest;
+import gov.nist.toolkit.services.client.IdcOrchestrationRequest;
 import gov.nist.toolkit.services.client.RawResponse;
-import gov.nist.toolkit.services.client.RgOrchestrationRequest;
 import gov.nist.toolkit.services.server.RawResponseBuilder;
 import gov.nist.toolkit.services.server.orchestration.OrchestrationManager;
+import gov.nist.toolkit.services.shared.Message;
 import gov.nist.toolkit.services.shared.SimulatorServiceManager;
+import gov.nist.toolkit.session.client.ConformanceSessionValidationStatus;
+import gov.nist.toolkit.session.client.logtypes.TestOverviewDTO;
+import gov.nist.toolkit.session.client.logtypes.TestPartFileDTO;
 import gov.nist.toolkit.session.server.Session;
 import gov.nist.toolkit.session.server.serviceManager.QueryServiceManager;
+import gov.nist.toolkit.session.server.serviceManager.XdsTestServiceManager;
+import gov.nist.toolkit.simulators.support.od.TransactionUtil;
 import gov.nist.toolkit.sitemanagement.client.Site;
+import gov.nist.toolkit.sitemanagement.client.SiteSpec;
 import gov.nist.toolkit.sitemanagement.client.TransactionOfferings;
+import gov.nist.toolkit.testengine.Sections;
+import gov.nist.toolkit.testengine.scripts.BuildCollections;
 import gov.nist.toolkit.testengine.scripts.CodesUpdater;
+import gov.nist.toolkit.testenginelogging.client.LogFileContentDTO;
+import gov.nist.toolkit.testenginelogging.client.ReportDTO;
+import gov.nist.toolkit.testenginelogging.client.TestStepLogContentDTO;
+import gov.nist.toolkit.testkitutilities.client.SectionDefinitionDAO;
+import gov.nist.toolkit.testkitutilities.client.TestCollectionDefinitionDAO;
 import gov.nist.toolkit.tk.TkLoader;
 import gov.nist.toolkit.tk.client.TkProps;
+import gov.nist.toolkit.utilities.xml.XmlFormatter;
 import gov.nist.toolkit.valregmsg.message.SchemaValidation;
-import gov.nist.toolkit.valregmsg.validation.factories.MessageValidatorFactory;
+import gov.nist.toolkit.valregmsg.validation.factories.CommonMessageValidatorFactory;
 import gov.nist.toolkit.valsupport.client.MessageValidationResults;
-import gov.nist.toolkit.valsupport.client.ValidationContext;
 import gov.nist.toolkit.xdsexception.ExceptionUtil;
-import gov.nist.toolkit.xdstools2.client.NoServletSessionException;
-import gov.nist.toolkit.xdstools2.client.RegistryStatus;
-import gov.nist.toolkit.xdstools2.client.RepositoryStatus;
-import gov.nist.toolkit.xdstools2.client.ToolkitService;
+import gov.nist.toolkit.xdsexception.client.ToolkitRuntimeException;
+import gov.nist.toolkit.xdstools2.client.GazelleXuaUsername;
+import gov.nist.toolkit.xdstools2.client.util.ToolkitService;
 import gov.nist.toolkit.xdstools2.server.serviceManager.DashboardServiceManager;
 import gov.nist.toolkit.xdstools2.server.serviceManager.GazelleServiceManager;
+import gov.nist.toolkit.xdstools2.shared.NoServletSessionException;
+import gov.nist.toolkit.xdstools2.shared.RegistryStatus;
+import gov.nist.toolkit.xdstools2.shared.RepositoryStatus;
+import gov.nist.toolkit.xdstools2.shared.command.CommandContext;
+import gov.nist.toolkit.xdstools2.shared.command.InitializationResponse;
+import gov.nist.toolkit.xdstools2.shared.command.request.AllTestRequest;
+import gov.nist.toolkit.xdstools2.shared.command.request.BuildIdsTestOrchestrationRequest;
+import gov.nist.toolkit.xdstools2.shared.command.request.BuildIgTestOrchestrationRequest;
+import gov.nist.toolkit.xdstools2.shared.command.request.BuildIigTestOrchestrationRequest;
+import gov.nist.toolkit.xdstools2.shared.command.request.BuildRSNAEdgeTestOrchestrationRequest;
+import gov.nist.toolkit.xdstools2.shared.command.request.BuildRecTestOrchestrationRequest;
+import gov.nist.toolkit.xdstools2.shared.command.request.BuildRegTestOrchestrationRequest;
+import gov.nist.toolkit.xdstools2.shared.command.request.BuildRepTestOrchestrationRequest;
+import gov.nist.toolkit.xdstools2.shared.command.request.BuildRgTestOrchestrationRequest;
+import gov.nist.toolkit.xdstools2.shared.command.request.BuildRigTestOrchestrationRequest;
+import gov.nist.toolkit.xdstools2.shared.command.request.DeleteSimFileRequest;
+import gov.nist.toolkit.xdstools2.shared.command.request.DeleteSingleTestRequest;
+import gov.nist.toolkit.xdstools2.shared.command.request.DeleteSiteRequest;
+import gov.nist.toolkit.xdstools2.shared.command.request.ExecuteSimMessageRequest;
+import gov.nist.toolkit.xdstools2.shared.command.request.FindDocuments2Request;
+import gov.nist.toolkit.xdstools2.shared.command.request.FindDocumentsRequest;
+import gov.nist.toolkit.xdstools2.shared.command.request.FoldersRequest;
+import gov.nist.toolkit.xdstools2.shared.command.request.GeneratePidRequest;
+import gov.nist.toolkit.xdstools2.shared.command.request.GetAllRequest;
+import gov.nist.toolkit.xdstools2.shared.command.request.GetAllSimConfigsRequest;
+import gov.nist.toolkit.xdstools2.shared.command.request.GetAssociationsRequest;
+import gov.nist.toolkit.xdstools2.shared.command.request.GetCollectionRequest;
+import gov.nist.toolkit.xdstools2.shared.command.request.GetDocumentsRequest;
+import gov.nist.toolkit.xdstools2.shared.command.request.GetFoldersRequest;
+import gov.nist.toolkit.xdstools2.shared.command.request.GetInteractionFromModelRequest;
+import gov.nist.toolkit.xdstools2.shared.command.request.GetNewSimulatorRequest;
+import gov.nist.toolkit.xdstools2.shared.command.request.GetObjectsRequest;
+import gov.nist.toolkit.xdstools2.shared.command.request.GetOnDemandDocumentEntryDetailsRequest;
+import gov.nist.toolkit.xdstools2.shared.command.request.GetRawLogsRequest;
+import gov.nist.toolkit.xdstools2.shared.command.request.GetRelatedRequest;
+import gov.nist.toolkit.xdstools2.shared.command.request.GetSectionTestPartFileRequest;
+import gov.nist.toolkit.xdstools2.shared.command.request.GetSelectedMessageRequest;
+import gov.nist.toolkit.xdstools2.shared.command.request.GetSimConfigsRequest;
+import gov.nist.toolkit.xdstools2.shared.command.request.GetSimulatorEventRequest;
+import gov.nist.toolkit.xdstools2.shared.command.request.GetSimulatorStatsRequest;
+import gov.nist.toolkit.xdstools2.shared.command.request.GetSiteNamesByTranTypeRequest;
+import gov.nist.toolkit.xdstools2.shared.command.request.GetSiteNamesRequest;
+import gov.nist.toolkit.xdstools2.shared.command.request.GetSiteRequest;
+import gov.nist.toolkit.xdstools2.shared.command.request.GetSrcStoresDocValRequest;
+import gov.nist.toolkit.xdstools2.shared.command.request.GetStsSamlAssertionMapRequest;
+import gov.nist.toolkit.xdstools2.shared.command.request.GetStsSamlAssertionRequest;
+import gov.nist.toolkit.xdstools2.shared.command.request.GetSubmissionSetAndContentsRequest;
+import gov.nist.toolkit.xdstools2.shared.command.request.GetSubmissionSetsRequest;
+import gov.nist.toolkit.xdstools2.shared.command.request.GetTestDetailsRequest;
+import gov.nist.toolkit.xdstools2.shared.command.request.GetTestLogDetailsRequest;
+import gov.nist.toolkit.xdstools2.shared.command.request.GetTestResultsRequest;
+import gov.nist.toolkit.xdstools2.shared.command.request.GetTestSectionsDAOsRequest;
+import gov.nist.toolkit.xdstools2.shared.command.request.GetTestdataSetListingRequest;
+import gov.nist.toolkit.xdstools2.shared.command.request.GetTestplanAsTextRequest;
+import gov.nist.toolkit.xdstools2.shared.command.request.GetTestsOverviewRequest;
+import gov.nist.toolkit.xdstools2.shared.command.request.GetTransactionErrorCodeRefsRequest;
+import gov.nist.toolkit.xdstools2.shared.command.request.GetTransactionRequest;
+import gov.nist.toolkit.xdstools2.shared.command.request.LifecycleValidationRequest;
+import gov.nist.toolkit.xdstools2.shared.command.request.LoadTestPartContentRequest;
+import gov.nist.toolkit.xdstools2.shared.command.request.MpqFindDocumentsRequest;
+import gov.nist.toolkit.xdstools2.shared.command.request.PatientIdsRequest;
+import gov.nist.toolkit.xdstools2.shared.command.request.ProvideAndRetrieveRequest;
+import gov.nist.toolkit.xdstools2.shared.command.request.RegisterAndQueryRequest;
+import gov.nist.toolkit.xdstools2.shared.command.request.RegisterRequest;
+import gov.nist.toolkit.xdstools2.shared.command.request.ReloadSystemFromGazelleRequest;
+import gov.nist.toolkit.xdstools2.shared.command.request.RenameSimFileRequest;
+import gov.nist.toolkit.xdstools2.shared.command.request.RetrieveDocumentRequest;
+import gov.nist.toolkit.xdstools2.shared.command.request.RetrieveImagingDocSetRequest;
+import gov.nist.toolkit.xdstools2.shared.command.request.RunSingleTestRequest;
+import gov.nist.toolkit.xdstools2.shared.command.request.RunTestRequest;
+import gov.nist.toolkit.xdstools2.shared.command.request.SaveSiteRequest;
+import gov.nist.toolkit.xdstools2.shared.command.request.SendPidToRegistryRequest;
+import gov.nist.toolkit.xdstools2.shared.command.request.SetAssignedSiteForTestSessionRequest;
+import gov.nist.toolkit.xdstools2.shared.command.request.SetToolkitPropertiesRequest;
+import gov.nist.toolkit.xdstools2.shared.command.request.SimConfigRequest;
+import gov.nist.toolkit.xdstools2.shared.command.request.SubmitTestdataRequest;
+import gov.nist.toolkit.xdstools2.shared.command.request.ValidateMessageRequest;
 import org.apache.log4j.Logger;
 
 import javax.servlet.ServletContext;
@@ -54,515 +145,1361 @@ import javax.servlet.http.HttpSession;
 import javax.xml.parsers.FactoryConfigurationError;
 import java.io.File;
 import java.io.IOException;
+import java.nio.charset.Charset;
+import java.nio.file.Files;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Scanner;
 
 @SuppressWarnings("serial")
 public class ToolkitServiceImpl extends RemoteServiceServlet implements
-		ToolkitService {
-	static String schematronHome = null;
-	ServletContext context = null;
-//	static File warHome = null;
+        ToolkitService {
+    static String schematronHome = null;
+    ServletContext context = null;
 
-	static Logger logger = Logger.getLogger(ToolkitServiceImpl.class);
+    static Logger logger = Logger.getLogger(ToolkitServiceImpl.class);
 
-	// Individual service requests from browser are delegated to one of these
+    // Individual service requests from browser are delegated to one of these
 
-	// ServiceManagers for execution
-	public QueryServiceManager queryServiceManager;
-	public SiteServiceManager siteServiceManager;
-	public DashboardServiceManager dashboardServiceManager;
-	public GazelleServiceManager gazelleServiceManager;
+    // ServiceManagers for execution
+    public QueryServiceManager queryServiceManager;
+    public SiteServiceManager siteServiceManager;
+    public DashboardServiceManager dashboardServiceManager;
+    public GazelleServiceManager gazelleServiceManager;
 
-	// Next two constructors exist to initialize MessageValidatorFactoryFactory which olds
-	// a reference to an instance of this class. This is necessary to getRetrievedDocumentsModel around a circular
-	// reference in the build tree
+    // Next two constructors exist to initialize MessageValidatorFactoryFactory which olds
+    // a reference to an instance of this class. This is necessary to getRetrievedDocumentsModel around a circular
+    // reference in the build tree
 
-	public ToolkitServiceImpl() {
-		siteServiceManager = SiteServiceManager.getSiteServiceManager();   // One copy shared between sessions
-		System.out.println("MessageValidatorFactory()");
-		if (MessageValidatorFactoryFactory.messageValidatorFactory2I == null) {
-			MessageValidatorFactoryFactory.messageValidatorFactory2I = new MessageValidatorFactory("a");
-		}
-	}
+    public ToolkitServiceImpl() {
+        siteServiceManager = SiteServiceManager.getSiteServiceManager();   // One copy shared between sessions
+        System.out.println("MessageValidatorFactory()");
+        if (MessageValidatorFactoryFactory.messageValidatorFactory2I == null) {
+            MessageValidatorFactoryFactory.messageValidatorFactory2I = new CommonMessageValidatorFactory("a");
+        }
+    }
 
-	//------------------------------------------------------------------------
-	//------------------------------------------------------------------------
-	// Site Services
-	//------------------------------------------------------------------------
-	//------------------------------------------------------------------------
-	public List<String> getSiteNames(boolean reload, boolean simAlso)  throws NoServletSessionException { return siteServiceManager.getSiteNames(session().getId(), reload, simAlso); }
-	public Collection<Site> getAllSites() throws Exception { return siteServiceManager.getAllSites(session().getId()); }
-	public List<String> reloadSites(boolean simAlso) throws FactoryConfigurationError, Exception { return siteServiceManager.reloadSites(session().getId(), simAlso); }
-	public Site getSite(String siteName) throws Exception { return siteServiceManager.getSite(session().getId(), siteName); }
-	public String saveSite(Site site) throws Exception { return siteServiceManager.saveSite(session().getId(), site); }
-	public String deleteSite(String siteName) throws Exception { return siteServiceManager.deleteSite(session().getId(), siteName); }
-	//	public String getHome() throws Exception { return session().getHome(); }
-	public List<String> getUpdateNames()  throws NoServletSessionException { return siteServiceManager.getUpdateNames(session().getId()); }
-	public TransactionOfferings getTransactionOfferings() throws Exception { return siteServiceManager.getTransactionOfferings(session().getId()); }
-	public List<String> reloadExternalSites() throws FactoryConfigurationError, Exception { return siteServiceManager.reloadCommonSites(); }
-	public List<String> getRegistryNames()  throws NoServletSessionException { return siteServiceManager.getRegistryNames(session().getId()); }
-	public List<String> getRepositoryNames()  throws NoServletSessionException { return siteServiceManager.getRepositoryNames(session().getId()); }
-	public List<String> getRGNames()  throws NoServletSessionException { return siteServiceManager.getRGNames(session().getId()); }
-	public List<String> getIGNames()  throws NoServletSessionException { return siteServiceManager.getIGNames(session().getId()); }
-	public List<String> getActorTypeNames()  throws NoServletSessionException { return siteServiceManager.getActorTypeNames(session().getId()); }
-	public List<String> getSiteNamesWithRG() throws Exception { return siteServiceManager.getSiteNamesWithRG(session().getId()); }
+    private void installCommandContext(CommandContext commandContext) throws Exception {
+        if (commandContext.getEnvironmentName() == null) {
+            logger.error(ExceptionUtil.here("session: " + getSessionId() + " installCommandContext: environment name is null"));
+            throw new Exception("installCommandContext: environment name is null");
+        }
+//		if (commandContext.getTestSessionName() == null) {
+//			throw new Exception("installCommandContext: test session name is null");
+//		}
+//        session().setEnvironment(commandContext.getEnvironmentName());
+        setEnvironment(commandContext.getEnvironmentName());
+        setMesaTestSession(commandContext.getTestSessionName());
+    }
 
+    @Override
+    public InitializationResponse getInitialization(CommandContext context) throws Exception {
+        installCommandContext(context);
+        InitializationResponse response = new InitializationResponse();
+        response.setDefaultEnvironment(Installation.DEFAULT_ENVIRONMENT_NAME);
+        response.setEnvironments(Session.getEnvironmentNames());
+        response.setTestSessions(session().xdsTestServiceManager().getMesaTestSessionNames());
+        response.setServletContextName(getServletContextName());
+        PropertyServiceManager props = Installation.instance().propertyServiceManager();
+        response.setToolkitBaseUrl("http://" + props.getToolkitHost()
+                + ":" + props.getToolkitPort()  + servletContext().getServletContextName() +"Xdstools2.html");
+        return response;
+    }
+
+    @Override
+    public String getAssignedSiteForTestSession(CommandContext context) throws Exception {
+        installCommandContext(context);
+        return session().xdsTestServiceManager().getAssignedSiteForTestSession(context.getTestSessionName());
+    }
+
+    @Override
+    public void setAssignedSiteForTestSession(SetAssignedSiteForTestSessionRequest request) throws Exception {
+        installCommandContext(request);
+        session().xdsTestServiceManager().setAssignedSiteForTestSession(request.getSelecetedTestSession(), request.getSelectedSite());
+    }
+
+
+    //------------------------------------------------------------------------
+    //------------------------------------------------------------------------
+    // Site Services
+    //------------------------------------------------------------------------
+    //------------------------------------------------------------------------
+    @Override
+    public List<String> getSiteNames(GetSiteNamesRequest request) throws Exception {
+        installCommandContext(request);
+        return siteServiceManager.getSiteNames(session().getId(), request.getReload(), request.getSimAlso());
+    }
+    @Override
+    public Collection<Site> getAllSites(CommandContext commandContext) throws Exception {
+        installCommandContext(commandContext);
+        return siteServiceManager.getAllSites(session().getId());
+    }
+
+    @Override
+    public List<String> reloadSites(boolean simAlso) throws FactoryConfigurationError, Exception { return siteServiceManager.reloadSites(session().getId(), simAlso); }
+    @Override
+    public Site getSite(GetSiteRequest request) throws Exception {
+        installCommandContext(request);
+        return siteServiceManager.getSite(session().getId(), request.getSiteName());
+    }
+    @Override
+    public String saveSite(SaveSiteRequest request) throws Exception {
+        installCommandContext(request);
+        return siteServiceManager.saveSite(session().getId(), request.getSite());
+    }
+    @Override
+    public String deleteSite(DeleteSiteRequest request) throws Exception {
+        installCommandContext(request);
+        return siteServiceManager.deleteSite(session().getId(), request.getSiteName());
+    }
+    //	public String getHome() throws Exception { return session().getHome(); }
+    @Override
+    public List<String> getUpdateNames()  throws NoServletSessionException { return siteServiceManager.getUpdateNames(session().getId()); }
+    @Override
+    public TransactionOfferings getTransactionOfferings(CommandContext commandContext) throws Exception {
+        installCommandContext(commandContext);
+        return siteServiceManager.getTransactionOfferings(session().getId());
+    }
+    @Override
+    public List<String> reloadExternalSites(CommandContext context) throws FactoryConfigurationError, Exception {
+        installCommandContext(context);
+        return siteServiceManager.reloadCommonSites();
+    }
+    @Override
+    public List<String> getRegistryNames()  throws NoServletSessionException { return siteServiceManager.getRegistryNames(session().getId()); }
+    @Override
+    public List<String> getRepositoryNames()  throws NoServletSessionException { return siteServiceManager.getRepositoryNames(session().getId()); }
+    @Override
+    public List<String> getRGNames()  throws NoServletSessionException { return siteServiceManager.getRGNames(session().getId()); }
+    @Override
+    public List<String> getIGNames()  throws NoServletSessionException { return siteServiceManager.getIGNames(session().getId()); }
+    @Override
+    public List<String> getActorTypeNames(CommandContext context)  throws Exception {
+        installCommandContext(context);
+        return siteServiceManager.getActorTypeNames(session().getId());
+    }
+    @Override
+    public List<String> getSiteNamesWithRG(CommandContext context) throws Exception {
+        installCommandContext(context);
+        return siteServiceManager.getSiteNamesWithRG(session().getId());
+    }
+    @Override
+    public List<String> getSiteNamesWithRIG(CommandContext context) throws Exception {
+        installCommandContext(context);
+        return siteServiceManager.getSiteNamesWithRIG(session().getId());
+    }
+    @Override
+    public List<String> getSiteNamesWithIDS(CommandContext context) throws Exception {
+        installCommandContext(context);
+        return siteServiceManager.getSiteNamesWithIDS(session().getId());
+    }
+
+    //------------------------------------------------------------------------
+    //------------------------------------------------------------------------
+    // Query Services
+    //------------------------------------------------------------------------
+    //------------------------------------------------------------------------
+    @Override
+    public List<Result> registerAndQuery(RegisterAndQueryRequest request) throws Exception  {
+        installCommandContext(request);
+        return session().queryServiceManager().registerAndQuery(request.getSite(),request.getPid());
+    }
+    @Override
+    public List<Result> lifecycleValidation(LifecycleValidationRequest request) throws Exception  {
+        installCommandContext(request);
+        return session().queryServiceManager().lifecycleValidation(request.getSite(), request.getPid());
+    }
+    @Override
+    public List<Result> folderValidation(FoldersRequest request) throws Exception  {
+        installCommandContext(request);
+        return session().queryServiceManager().folderValidation(request.getSite(), request.getPid());
+    }
+    @Override
+    public List<Result> submitRegistryTestdata(SubmitTestdataRequest request) throws Exception  {
+        installCommandContext(request);
+        return session().queryServiceManager().submitRegistryTestdata(request.getTestSessionName(),request.getSite(), request.getDataSetName(), request.getPid());
+    }
+    @Override
+    public List<Result> submitRepositoryTestdata(SubmitTestdataRequest request) throws Exception  {
+        installCommandContext(request);
+        return session().queryServiceManager().submitRepositoryTestdata(request.getTestSessionName(),request.getSite(), request.getDataSetName(), request.getPid());
+    }
+    @Override
+    public List<Result> submitXDRTestdata(SubmitTestdataRequest request) throws Exception  {
+        installCommandContext(request);
+        return session().queryServiceManager().submitXDRTestdata(request.getTestSessionName(),request.getSite(),request.getDataSetName(), request.getPid());
+    }
+    @Override
+    public List<Result> provideAndRetrieve(ProvideAndRetrieveRequest request) throws Exception  {
+        installCommandContext(request);
+        return session().queryServiceManager().provideAndRetrieve(request.getSite(), request.getPid());
+    }
+    @Override
+    public List<Result> findDocuments(FindDocumentsRequest request) throws Exception  {
+        installCommandContext(request);
+        return session().queryServiceManager().findDocuments(request.getSiteSpec(), request.getPid(), request.isOnDemand());
+    }
+    @Override
+    public List<Result> findDocumentsByRefId(FindDocumentsRequest request) throws Exception  { return session().queryServiceManager().findDocumentsByRefId(request.getSiteSpec(), request.getPid(), request.getRefIds()); }
+    @Override
+    public List<Result> getDocuments(GetDocumentsRequest request) throws Exception  {
+        installCommandContext(request);
+        return session().queryServiceManager().getDocuments(request.getSite(), request.getIds());
+    }
+    @Override
+    public List<Result> findFolders(FoldersRequest request) throws Exception  {
+        installCommandContext(request);
+        return session().queryServiceManager().findFolders(request.getSite(), request.getPid()); }
+    @Override
+    public List<Result> getFolders(GetFoldersRequest request) throws Exception  {
+        installCommandContext(request);
+        return session().queryServiceManager().getFolders(request.getSite(), request.getAnyIds());
+    }
+    @Override
+    public List<Result> getFoldersForDocument(GetFoldersRequest request) throws Exception  {
+        installCommandContext(request);
+        return session().queryServiceManager().getFoldersForDocument(request.getSite(), request.getAnyIds());
+    }
+    @Override
+    public List<Result> getFolderAndContents(GetFoldersRequest request) throws Exception  {
+        installCommandContext(request);
+        return session().queryServiceManager().getFolderAndContents(request.getSite(), request.getAnyIds()); }
+    @Override
+    public List<Result> getAssociations(GetAssociationsRequest request) throws Exception  {
+        installCommandContext(request);
+        return session().queryServiceManager().getAssociations(request.getSite(), request.getIds());
+    }
+    @Override
+    public List<Result> getObjects(GetObjectsRequest request) throws Exception  {
+        installCommandContext(request);
+        return session().queryServiceManager().getObjects(request.getSite(), request.getIds());
+    }
+    @Override
+    public List<Result> getSubmissionSets(GetSubmissionSetsRequest request) throws Exception  {
+        installCommandContext(request);
+        return session().queryServiceManager().getSubmissionSets(request.getSite(), request.getIds());
+    }
+    @Override
+    public List<Result> getSSandContents(GetSubmissionSetAndContentsRequest request) throws Exception  {
+        installCommandContext(request);
+        return session().queryServiceManager().getSSandContents(request.getSiteSpec(), request.getSsid(), request.getCodeSpec());
+    }
+    @Override
+    public List<Result> srcStoresDocVal(GetSrcStoresDocValRequest request) throws Exception  {
+        installCommandContext(request);
+        return session().queryServiceManager().srcStoresDocVal(request.getSiteSpec(), request.getSsid());
+    }
+    @Override
+    public List<Result> retrieveDocument(RetrieveDocumentRequest request) throws Exception {
+        installCommandContext(request);
+        return session().queryServiceManager().retrieveDocument(request.getSite(), request.getUids());
+    }
+    @Override
+    public List<Result> retrieveImagingDocSet(RetrieveImagingDocSetRequest request) throws Exception {
+        installCommandContext(request);
+        return session().queryServiceManager().retrieveImagingDocSet(request.getSite(), request.getUids(), request.getStudyRequest(), request.getTransferSyntax());
+    }
+
+    @Override
+    public List<Result> getRelated(GetRelatedRequest request) throws Exception  {
+        installCommandContext(request);
+        return session().queryServiceManager().getRelated(request.getSite(),request.getObjectRef(), request.getAssocs());
+    }
+    @Override
+    public List<Result> getAll(GetAllRequest request) throws Exception  {
+        installCommandContext(request);
+        return session().queryServiceManager().getAll(request.getSite(), request.getPid(), request.getCodesSpec());
+    }
+    @Override
+    public List<Result> findDocuments2(FindDocuments2Request request) throws Exception  {
+        installCommandContext(request);
+        System.out.println("Running findDocuments2 service");
+        return session().queryServiceManager().findDocuments2(request.getSite(), request.getPid(), request.getCodesSpec());
+    }
+
+
+    public List<Result> mpqFindDocuments(SiteSpec site, String pid,
+                                         List<String> classCodes, List<String> hcftCodes,
+                                         List<String> eventCodes) throws NoServletSessionException {
+        return session().queryServiceManager().mpqFindDocuments(site, pid, classCodes, hcftCodes,
+                eventCodes);
+    }
+    @Override
+    public List<Result> mpqFindDocuments(MpqFindDocumentsRequest request) throws Exception {
+        installCommandContext(request);
+        return session().queryServiceManager().mpqFindDocuments(request.getSite(), request.getPid(), request.getSelectedCodes());
+    }
+
+    @Override
+    public List<Result> getLastMetadata(CommandContext context) throws Exception {
+        installCommandContext(context);
+        return queryServiceManager.getLastMetadata(); }
+
+    //------------------------------------------------------------------------
+    //------------------------------------------------------------------------
+    // Test Service
+    //------------------------------------------------------------------------
+    //------------------------------------------------------------------------
+    // New - Loads or reloads test data
+    @Override
+    public List<Test> reloadAllTestResults(CommandContext context) throws Exception {
+        installCommandContext(context);
+        return session().xdsTestServiceManager().reloadAllTestResults(context.getTestSessionName());
+    }
+    @Override
+    public List<TestInstance> getTestlogListing(String sessionName) throws Exception { return session().xdsTestServiceManager().getTestlogListing(sessionName); }
+    @Override
+    public Map<String, Result> getTestResults(GetTestResultsRequest request)  throws Exception {
+        installCommandContext(request);
+        return session().xdsTestServiceManager().getTestResults(request.getTestIds(), request.getEnvironmentName(), request.getTestSessionName());
+    }
+    @Override
+    public String setMesaTestSession(String sessionName)  throws NoServletSessionException { session().xdsTestServiceManager().setMesaTestSession(sessionName); return sessionName;}
+    @Override
+    public List<String> getMesaTestSessionNames(CommandContext request) throws Exception {
+        installCommandContext(request);
+        return session().xdsTestServiceManager().getMesaTestSessionNames();
+    }
+    @Override
+    public boolean addMesaTestSession(CommandContext context) throws Exception { return session().xdsTestServiceManager().addMesaTestSession(context.getTestSessionName()); }
+    @Override
+    public boolean delMesaTestSession(CommandContext context) throws Exception { return session().xdsTestServiceManager().delMesaTestSession(context.getTestSessionName()); }
+    @Override
+    public String getNewPatientId(String assigningAuthority)  throws NoServletSessionException { return session().xdsTestServiceManager().getNewPatientId(assigningAuthority); }
+    public String delTestResults(List<TestInstance> testInstances, String testSession )  throws NoServletSessionException {
+        session().xdsTestServiceManager().delTestResults(testInstances, getCurrentEnvironment(), testSession); return "";
+    }
+    @Override
+    public List<Test> deleteAllTestResults(AllTestRequest request) throws Exception {
+        installCommandContext(request);
+        return session().xdsTestServiceManager().deleteAllTestResults(request.getTestSessionName(), request.getSite());
+    }
+    @Override
+    public TestOverviewDTO deleteSingleTestResult(DeleteSingleTestRequest request) throws Exception {
+        installCommandContext(request);
+        request.getTestInstance().setUser(request.getTestSessionName());
+        return session().xdsTestServiceManager().deleteSingleTestResult(request.getTestInstance());
+    }
+    @Override
+    public List<Test> runAllTests(AllTestRequest request) throws Exception {
+        installCommandContext(request);
+        return session().xdsTestServiceManager().runAllTests(request.getTestSessionName(), request.getSite()); }
+    @Override
+    public Test runSingleTest(RunSingleTestRequest request) throws Exception {
+        installCommandContext(request);
+        return session().xdsTestServiceManager().runSingleTest(request.getTestSessionName(), request.getSite(), request.getTestId());
+    }
+
+    public String getTestReadme(String testSession,String test) throws Exception {
+        session().setMesaSessionName(testSession);
+        return session().xdsTestServiceManager().getTestReadme(test);
+    }
+    @Override
+    public RawResponse buildRepTestOrchestration(BuildRepTestOrchestrationRequest request) throws Exception{
+        installCommandContext(request);
+        Session s = getSession();
+        if (s == null) return RawResponseBuilder.build(new NoServletSessionException(""));
+        return new OrchestrationManager().buildRepTestEnvironment(s, request.getRepOrchestrationRequest());
+    }
+    @Override
+    public RawResponse buildRegTestOrchestration(BuildRegTestOrchestrationRequest request) throws Exception{
+        installCommandContext(request);
+        Session s = getSession();
+        if (s == null) return RawResponseBuilder.build(new NoServletSessionException(""));
+        return new OrchestrationManager().buildRegTestEnvironment(s, request.getRegOrchestrationRequest());
+    }
+    @Override
+    public RawResponse buildRecTestOrchestration(BuildRecTestOrchestrationRequest request) throws Exception{
+        installCommandContext(request);
+        Session s = getSession();
+        if (s == null) return RawResponseBuilder.build(new NoServletSessionException(""));
+        return new OrchestrationManager().buildRecTestEnvironment(s, request.getRecOrchestrationRequest());
+    }
+
+    @Override
+    public RawResponse buildIgTestOrchestration(BuildIgTestOrchestrationRequest request) throws Exception{
+        installCommandContext(request);
+        Session s = getSession();
+        if (s == null) return RawResponseBuilder.build(new NoServletSessionException(""));
+        return new OrchestrationManager().buildIgTestEnvironment(s, request.getIgOrchestrationRequest());
+    }
+    @Override
+    public RawResponse buildIigTestOrchestration(BuildIigTestOrchestrationRequest request) throws Exception{
+        installCommandContext(request);
+        Session s = getSession();
+        if (s == null) return RawResponseBuilder.build(new NoServletSessionException(""));
+        return new OrchestrationManager().buildIigTestEnvironment(s, request.getIigOrchestrationRequest());
+    }
+    @Override
+    public RawResponse buildRgTestOrchestration(BuildRgTestOrchestrationRequest request) throws Exception{
+        installCommandContext(request);
+        Session s = getSession();
+        if (s == null) return RawResponseBuilder.build(new NoServletSessionException(""));
+        return new OrchestrationManager().buildRgTestEnvironment(s, request.getRgOrchestrationRequest());
+    }
+    @Override
+    public RawResponse buildRigTestOrchestration(BuildRigTestOrchestrationRequest request) throws Exception{
+        installCommandContext(request);
+        Session s = getSession();
+        if (s == null) return RawResponseBuilder.build(new NoServletSessionException(""));
+        return new OrchestrationManager().buildRigTestEnvironment(s, request.getRigOrchestrationRequest());
+    }
+    @Override
+    public RawResponse buildIdsTestOrchestration(BuildIdsTestOrchestrationRequest request) throws Exception{
+        installCommandContext(request);
+        Session s = getSession();
+        if (s == null) return RawResponseBuilder.build(new NoServletSessionException(""));
+        return new OrchestrationManager().buildIdsTestEnvironment(s, request.getIdsOrchestrationRequest());
+    }
+    @Override
+    public RawResponse buildIdcTestOrchestration(IdcOrchestrationRequest request) {
+        Session s = getSession();
+        if (s == null) return RawResponseBuilder.build(new NoServletSessionException(""));
+        return new OrchestrationManager().buildIdcTestEnvironment(s, request);
+    }
+    @Override
+    public RawResponse buildRSNAEdgeTestOrchestration(BuildRSNAEdgeTestOrchestrationRequest request) throws Exception{
+        installCommandContext(request);
+        Session s = getSession();
+        if (s == null) return RawResponseBuilder.build(new NoServletSessionException(""));
+        return new OrchestrationManager().buildRSNAEdgeTestEnvironment(s, request.getRsnaEdgeOrchestrationRequest());
+    }
+    /*
 	@Override
-	public List<String> getSiteNamesByTranType(String transactionType) throws Exception {
-		return null;
+   public RawResponse buildRepTestOrchestration(RepOrchestrationRequest request) {
+		Session s = getSession();
+		if (s == null) return RawResponseBuilder.build(new NoServletSessionException(""));
+		return new OrchestrationManager().buildRepTestEnvironment(s, request);
 	}
-
-
-	//------------------------------------------------------------------------
-	//------------------------------------------------------------------------
-	// Query Services
-	//------------------------------------------------------------------------
-	//------------------------------------------------------------------------
-	public List<Result> registerAndQuery(SiteSpec site, String pid) throws NoServletSessionException  { return session().queryServiceManager().registerAndQuery(site, pid); }
-	public List<Result> lifecycleValidation(SiteSpec site, String pid) throws NoServletSessionException  { return session().queryServiceManager().lifecycleValidation(site, pid); }
-	public List<Result> folderValidation(SiteSpec site, String pid) throws NoServletSessionException  { return session().queryServiceManager().folderValidation(site, pid); }
-	public List<Result> submitRegistryTestdata(SiteSpec site, String datasetName, String pid) throws NoServletSessionException  { return session().queryServiceManager().submitRegistryTestdata(site, datasetName, pid); }
-	public List<Result> submitRepositoryTestdata(SiteSpec site, String datasetName, String pid) throws NoServletSessionException  { return session().queryServiceManager().submitRepositoryTestdata(site, datasetName, pid); }
-	public List<Result> submitXDRTestdata(SiteSpec site, String datasetName, String pid) throws NoServletSessionException  { return session().queryServiceManager().submitXDRTestdata(site, datasetName, pid); }
-	public List<Result> provideAndRetrieve(SiteSpec site, String pid) throws NoServletSessionException  { return session().queryServiceManager().provideAndRetrieve(site, pid); }
-	public List<Result> findDocuments(SiteSpec site, String pid, boolean onDemand) throws NoServletSessionException  { return session().queryServiceManager().findDocuments(site, pid, onDemand); }
-	public List<Result> findDocumentsByRefId(SiteSpec site, String pid, List<String> refIds) throws NoServletSessionException  { return session().queryServiceManager().findDocumentsByRefId(site, pid, refIds); }
-	public List<Result> getDocuments(SiteSpec site, AnyIds aids) throws NoServletSessionException  { return session().queryServiceManager().getDocuments(site, aids); }
-	public List<Result> findFolders(SiteSpec site, String pid) throws NoServletSessionException  { return session().queryServiceManager().findFolders(site, pid); }
-	public List<Result> getFolders(SiteSpec site, AnyIds aids) throws NoServletSessionException  { return session().queryServiceManager().getFolders(site, aids); }
-	public List<Result> getFoldersForDocument(SiteSpec site, AnyIds aids) throws NoServletSessionException  { return session().queryServiceManager().getFoldersForDocument(site, aids); }
-	public List<Result> getFolderAndContents(SiteSpec site, AnyIds aids) throws NoServletSessionException  { return session().queryServiceManager().getFolderAndContents(site, aids); }
-	public List<Result> getAssociations(SiteSpec site, ObjectRefs ids) throws NoServletSessionException  { return session().queryServiceManager().getAssociations(site, ids); }
-	public List<Result> getObjects(SiteSpec site, ObjectRefs ids) throws NoServletSessionException  { return session().queryServiceManager().getObjects(site, ids); }
-	public List<Result> getSubmissionSets(SiteSpec site, AnyIds aids) throws NoServletSessionException  { return session().queryServiceManager().getSubmissionSets(site, aids); }
-	public List<Result> getSSandContents(SiteSpec site, String ssid) throws NoServletSessionException  { return session().queryServiceManager().getSSandContents(site, ssid); }
-	public List<Result> srcStoresDocVal(SiteSpec site, String ssid) throws NoServletSessionException  { return session().queryServiceManager().srcStoresDocVal(site, ssid); }
-	public List<Result> retrieveDocument(SiteSpec site, Uids uids) throws Exception { return session().queryServiceManager().retrieveDocument(site, uids); }
-	public List<Result> retrieveImagingDocSet(SiteSpec site, Uids uids, String studyRequest, String transferSyntax) throws Exception { return session().queryServiceManager().retrieveImagingDocSet(site, uids, studyRequest, transferSyntax); }
-
-	public List<Result> getRelated(SiteSpec site, ObjectRef or,	List<String> assocs) throws NoServletSessionException  { return session().queryServiceManager().getRelated(site, or, assocs); }
-	public List<Result> getAll(SiteSpec site, String pid, Map<String, List<String>> codesSpec) throws NoServletSessionException  { return session().queryServiceManager().getAll(site, pid, codesSpec); }
-	public List<Result> findDocuments2(SiteSpec site, String pid, Map<String, List<String>> codesSpec) throws NoServletSessionException  {
-		System.out.println("Running findDocuments2 service");
-		return session().queryServiceManager().findDocuments2(site, pid, codesSpec); }
-
-
-	public List<Result> findPatient(SiteSpec site, String firstName,
-									String secondName, String lastName, String suffix, String gender,
-									String dob, String ssn, String pid, String homeAddress1,
-									String homeAddress2, String homeCity, String homeState,
-									String homeZip, String homeCountry, String mothersFirstName, String mothersSecondName,
-									String mothersLastName, String mothersSuffix, String homePhone,
-									String workPhone, String principleCareProvider, String pob,
-									String pobAddress1, String pobAddress2, String pobCity,
-									String pobState, String pobZip, String pobCountry) {
-		return queryServiceManager.findPatient(site, firstName, secondName, lastName, suffix, gender, dob, ssn, pid,
-				homeAddress1, homeAddress2, homeCity, homeState, homeZip, homeCountry,
-				mothersFirstName, mothersSecondName, mothersLastName, mothersSuffix,
-				homePhone, workPhone, principleCareProvider,
-				pob, pobAddress1, pobAddress2, pobCity, pobState, pobZip, pobCountry);
+	@Override
+   public RawResponse buildRegTestOrchestration(RegOrchestrationRequest request) {
+		Session s = getSession();
+		if (s == null) return RawResponseBuilder.build(new NoServletSessionException(""));
+		return new OrchestrationManager().buildRegTestEnvironment(s, request);
 	}
-	public List<Result> mpqFindDocuments(SiteSpec site, String pid,
-										 List<String> classCodes, List<String> hcftCodes,
-										 List<String> eventCodes) throws NoServletSessionException {
-		return session().queryServiceManager().mpqFindDocuments(site, pid, classCodes, hcftCodes,
-				eventCodes);
-	}
-	public List<Result> mpqFindDocuments(SiteSpec site, String pid,
-										 Map<String, List<String>> codesSpec) throws NoServletSessionException {
-		return session().queryServiceManager().mpqFindDocuments(site, pid, codesSpec);
-	}
-
-	public List<Result> getLastMetadata() { return queryServiceManager.getLastMetadata(); }
-
-	//------------------------------------------------------------------------
-	//------------------------------------------------------------------------
-	// Test Service
-	//------------------------------------------------------------------------
-	//------------------------------------------------------------------------
-	// New - Loads or reloads test data
-	public List<Test> reloadAllTestResults(String sessionName) throws Exception { return session().xdsTestServiceManager().reloadAllTestResults(sessionName); }
-	public List<TestInstance> getTestlogListing(String sessionName) throws Exception { return session().xdsTestServiceManager().getTestlogListing(sessionName); }
-	public Map<String, Result> getTestResults(List<TestInstance> testIds, String testSession)  throws NoServletSessionException { return session().xdsTestServiceManager().getTestResults(testIds, testSession); }
-	public String setMesaTestSession(String sessionName)  throws NoServletSessionException { session().xdsTestServiceManager().setMesaTestSession(sessionName); return sessionName;}
-	public List<String> getMesaTestSessionNames() throws Exception { return session().xdsTestServiceManager().getMesaTestSessionNames(); }
-	public boolean addMesaTestSession(String name) throws Exception { return session().xdsTestServiceManager().addMesaTestSession(name); }
-	public boolean delMesaTestSession(String name) throws Exception { return session().xdsTestServiceManager().delMesaTestSession(name); }
-	public String getNewPatientId(String assigningAuthority)  throws NoServletSessionException { return session().xdsTestServiceManager().getNewPatientId(assigningAuthority); }
-	public String delTestResults(List<TestInstance> testInstances, String testSession )  throws NoServletSessionException { session().xdsTestServiceManager().delTestResults(testInstances, testSession); return ""; }
-	public List<Test> deleteAllTestResults(Site site) throws NoServletSessionException { return session().xdsTestServiceManager().deleteAllTestResults(getSession().getMesaSessionName(), site); }
-	public Test deleteSingleTestResult(Site site, int testId) throws NoServletSessionException { return session().xdsTestServiceManager().deleteSingleTestResult(getSession().getMesaSessionName(), site, testId); }
-	public List<Test> runAllTests(Site site) throws NoServletSessionException { return session().xdsTestServiceManager().runAllTests(getSession().getMesaSessionName(), site); }
-	public Test runSingleTest(Site site, int testId) throws NoServletSessionException { return session().xdsTestServiceManager().runSingleTest(getSession().getMesaSessionName(), site, testId); }
-
-	public String getTestReadme(String test) throws Exception { return session().xdsTestServiceManager().getTestReadme(test); }
-	public RawResponse buildIgTestOrchestration(IgOrchestrationRequest request) {
+	@Override
+   public RawResponse buildIgTestOrchestration(IgOrchestrationRequest request) {
 		Session s = getSession();
 		if (s == null) return RawResponseBuilder.build(new NoServletSessionException(""));
 		return new OrchestrationManager().buildIgTestEnvironment(s, request);
 	}
-	public RawResponse buildRgTestOrchestration(RgOrchestrationRequest request) {
+   @Override
+   public RawResponse buildIigTestOrchestration(IigOrchestrationRequest request) {
+      Session s = getSession();
+      if (s == null) return RawResponseBuilder.build(new NoServletSessionException(""));
+      return new OrchestrationManager().buildIigTestEnvironment(s, request);
+   }
+	@Override
+   public RawResponse buildRgTestOrchestration(RgOrchestrationRequest request) {
 		Session s = getSession();
 		if (s == null) return RawResponseBuilder.build(new NoServletSessionException(""));
 		return new OrchestrationManager().buildRgTestEnvironment(s, request);
 	}
-
-	/**
-	 * Get list of section names defined for the test in the order they should be executed
-	 * @param test test name
-	 * @return list of sections
-	 * @throws Exception if something goes wrong
-	 */
-	public List<String> getTestIndex(String test) throws Exception { return session().xdsTestServiceManager().getTestIndex(test); }
-
-	/**
-	 * Get map of (collection name, collection description) pairs contained in testkit
-	 * @param collectionSetName the collection name
-	 * @return the map
-	 * @throws Exception is something goes wrong
-	 */
-	public Map<String, String> getCollectionNames(String collectionSetName) throws Exception { return session().xdsTestServiceManager().getCollectionNames(collectionSetName); }
-	public List<Result> getLogContent(String sessionName, TestInstance testInstance) throws Exception { return session().xdsTestServiceManager().getLogContent(sessionName, testInstance); }
-	public List<Result> runMesaTest(String mesaTestSession, SiteSpec siteSpec, TestInstance testInstance, List<String> sections, Map<String, String> params, boolean stopOnFirstFailure)  throws NoServletSessionException {
-		return session().xdsTestServiceManager().runMesaTest(mesaTestSession, siteSpec, testInstance, sections, params, null, stopOnFirstFailure);
-	}
-	public TestLogs getRawLogs(TestInstance logId)  throws NoServletSessionException { return session().xdsTestServiceManager().getRawLogs(logId); }
-	public List<String> getTestdataSetListing(String testdataSetName)  throws NoServletSessionException { return session().xdsTestServiceManager().getTestdataSetListing(testdataSetName); }
-	public String getTestplanAsText(TestInstance testInstance, String section) throws Exception { return session().xdsTestServiceManager().getTestplanAsText(testInstance, section); }
-	public CodesResult getCodesConfiguration()  throws NoServletSessionException { return session().xdsTestServiceManager().getCodesConfiguration(); }
-
-	/**
-	 * Get test names and descriptions from a named test collection
-	 * @param collectionSetName name of directory holding tc files (collection definitions)
-	 * @param collectionName collection name within the directory
-	 * @return testname ==> description mapping
-	 * @throws Exception if something goes wrong
-	 */
-	public Map<String, String> getCollection(String collectionSetName, String collectionName) throws Exception { return session().xdsTestServiceManager().getCollection(collectionSetName, collectionName); }
-	public boolean isPrivateMesaTesting()  throws NoServletSessionException { return session().xdsTestServiceManager().isPrivateMesaTesting(); }
-	public List<Result> sendPidToRegistry(SiteSpec site, Pid pid) throws NoServletSessionException { return session().xdsTestServiceManager().sendPidToRegistry(site, pid); }
-
+   @Override
+   public RawResponse buildRigTestOrchestration(RigOrchestrationRequest request) {
+      Session s = getSession();
+      if (s == null) return RawResponseBuilder.build(new NoServletSessionException(""));
+      return new OrchestrationManager().buildRigTestEnvironment(s, request);
+   }
 	@Override
-	public String configureTestkit(String selectedEnvironmentName) {
-		File environmentFile = Installation.installation().environmentFile(selectedEnvironmentName);
-		File defaultTestkit = Installation.installation().testkitFile();
-		CodesUpdater updater = new CodesUpdater();
-		updater.run(environmentFile.getAbsolutePath(),defaultTestkit.getAbsolutePath());
-		return updater.getOutput();
-	}
-
-	@Override
-	public boolean doesTestkitExist(String selectedEnvironment) {
-		File environmentFile = Installation.installation().environmentFile(selectedEnvironment);
-		File testkit=new File(environmentFile,"testkit");
-		return testkit.exists();
-	}
-
-	//------------------------------------------------------------------------
-	//------------------------------------------------------------------------
-	// Gazelle Service
-	//------------------------------------------------------------------------
-	//------------------------------------------------------------------------
-	public String reloadSystemFromGazelle(String systemName) throws Exception { return new GazelleServiceManager(session()).reloadSystemFromGazelle(systemName); }
-
-	//------------------------------------------------------------------------
-	//------------------------------------------------------------------------
-	// Environment management
-	//------------------------------------------------------------------------
-	//------------------------------------------------------------------------
-	public List<String> getEnvironmentNames() throws NoServletSessionException { return session().getEnvironmentNames(); }
-	public String setEnvironment(String name) throws NoServletSessionException { session().setEnvironment(name); return name; }
-	public String getCurrentEnvironment() throws NoServletSessionException { return session().getCurrentEnvironment(); }
-	public String getDefaultEnvironment()  throws NoServletSessionException  {
-		String defaultEnvironment = Installation.installation().propertyServiceManager().getDefaultEnvironment();
-		if (Session.environmentExists(defaultEnvironment))
-			return defaultEnvironment;
-		return Installation.DEFAULT_ENVIRONMENT_NAME;
-	}
-
-	//------------------------------------------------------------------------
-	//------------------------------------------------------------------------
-	// Session
-	//------------------------------------------------------------------------
-	//------------------------------------------------------------------------
-	public Map<String, String> getSessionProperties() throws NoServletSessionException { return session().getSessionPropertiesAsMap(); }
-	public void setSessionProperties(Map<String, String> props) throws NoServletSessionException { session().setSessionProperties(props); }
-	public Pid createPid(String assigningAuthority) throws NoServletSessionException { return session().allocateNewPid(assigningAuthority); }
-	public String getAssigningAuthority() throws Exception { return session().getAssigningAuthority(); }
-	public List<String> getAssigningAuthorities() throws Exception { return session().getAssigningAuthorities(); }
-
-	//------------------------------------------------------------------------
-	//------------------------------------------------------------------------
-	// Property Service
-	//------------------------------------------------------------------------
-	//------------------------------------------------------------------------
-	public TkProps getTkProps() throws NoServletSessionException { return session().tkProps(); }
-	public String getDefaultAssigningAuthority()  throws NoServletSessionException { return Installation.installation().propertyServiceManager().getDefaultAssigningAuthority(); }
-	public String getImplementationVersion() throws NoServletSessionException  { return Installation.installation().propertyServiceManager().getImplementationVersion(); }
-	public Map<String, String> getToolkitProperties()  throws NoServletSessionException { return Installation.installation().propertyServiceManager().getToolkitProperties(); }
-	public boolean isGazelleConfigFeedEnabled() throws NoServletSessionException  { return SiteServiceManager.getSiteServiceManager().useGazelleConfigFeed(); }
-	//	public String getToolkitEnableNwHIN() { return propertyServiceManager.getToolkitEnableNwHIN(); }
-	public String setToolkitProperties(Map<String, String> props) throws Exception { return setToolkitPropertiesImpl(props); }
-	public String getAdminPassword() throws NoServletSessionException  { return Installation.installation().propertyServiceManager().getAdminPassword(); }
-	public boolean reloadPropertyFile() throws NoServletSessionException  { return Installation.installation().propertyServiceManager().reloadPropertyFile(); }
-	public String getAttributeValue(String username, String attName) throws Exception { return Installation.installation().propertyServiceManager().getAttributeValue(username, attName); }
-	public void setAttributeValue(String username, String attName, String attValue) throws Exception { Installation.installation().propertyServiceManager().setAttributeValue(username, attName, attValue); }
-
-
-	//------------------------------------------------------------------------
-	//------------------------------------------------------------------------
-	// Simulator Service
-	//------------------------------------------------------------------------
-	//------------------------------------------------------------------------
-	public String putSimConfig(SimulatorConfig config) throws Exception { return new SimulatorServiceManager(session()).saveSimConfig(config); }
-	// this deletes a simulator
-	public String deleteConfig(SimulatorConfig config) throws Exception { return new SimulatorServiceManager(session()).deleteConfig(config); }
-	public void renameSimFile(String simFileSpec, String newSimFileSpec) throws Exception { new SimulatorServiceManager(session()).renameSimFile(simFileSpec, newSimFileSpec); }
-	public String getSimulatorEndpoint() throws NoServletSessionException { return new SimulatorServiceManager(session()).getSimulatorEndpoint(); }
-	public MessageValidationResults executeSimMessage(String simFileSpec) throws NoServletSessionException { return new SimulatorServiceManager(session()).executeSimMessage(simFileSpec); }
-	public List<TransactionInstance> getTransInstances(SimId simid, String xactor, String trans) throws Exception { return new SimulatorServiceManager(session()).getTransInstances(simid, xactor, trans); }
-	public String getTransactionRequest(SimId simid, String actor, String trans, String event) throws NoServletSessionException { return new SimulatorServiceManager(session()).getTransactionRequest(simid, actor, trans, event); }
-	public String getTransactionResponse(SimId simid, String actor, String trans, String event) throws NoServletSessionException { return new SimulatorServiceManager(session()).getTransactionResponse(simid, actor, trans, event); }
-	public int removeOldSimulators() throws NoServletSessionException { return new SimulatorServiceManager(session()).removeOldSimulators(); }
-	public List<Result> getSelectedMessage(String simFileSpec) throws NoServletSessionException { return new SimulatorServiceManager(session()).getSelectedMessage(simFileSpec); }
-	public List<Result> getSelectedMessageResponse(String simFileSpec) throws NoServletSessionException { return new SimulatorServiceManager(session()).getSelectedMessageResponse(simFileSpec); }
-	public Map<String, SimId> getActorSimulatorNameMap() throws NoServletSessionException { return new SimulatorServiceManager(session()).getSimulatorNameMap(); }
-	public MessageValidationResults validateMessage(ValidationContext vc) throws NoServletSessionException, EnvironmentNotSelectedClientException { return new SimulatorServiceManager(session()).validateMessage(vc); }
-	public List<SimulatorConfig> getSimConfigs(List<SimId> ids) throws Exception { return new SimulatorServiceManager(session()).getSimConfigs(ids); }
-	public List<SimulatorConfig> getAllSimConfigs(String user) throws Exception { return new SimulatorServiceManager(session()).getAllSimConfigs(user); }
-	public Simulator getNewSimulator(String actorTypeName, SimId simId) throws Exception { return new SimulatorServiceManager(session()).getNewSimulator(actorTypeName, simId); }
-	public void deleteSimFile(String simFileSpec) throws Exception { new SimulatorServiceManager(session()).deleteSimFile(simFileSpec); }
-	public List<String> getTransactionsForSimulator(SimId simid) throws Exception { return new SimulatorServiceManager(session()).getTransactionsForSimulator(simid); }
-	public List<SimulatorStats> getSimulatorStats(List<SimId> simids) throws Exception { return new SimulatorServiceManager(session()).getSimulatorStats(simids); }
-	public String getTransactionLog(SimId simid, String actor, String trans, String event) throws NoServletSessionException { return new SimulatorServiceManager(session()).getTransactionLog(simid, actor, trans, event); }
-
-	public List<Pid> getPatientIds(SimId simId) throws Exception { return new SimulatorServiceManager(session()).getPatientIds(simId); }
-	public String addPatientIds(SimId simId, List<Pid> pids) throws Exception { return new SimulatorServiceManager(session()).addPatientIds(simId, pids); }
-	public boolean deletePatientIds(SimId simId, List<Pid> pids) throws Exception { return new SimulatorServiceManager(session()).deletePatientIds(simId, pids); }
-
-	public Result getSimulatorEventRequest(TransactionInstance ti) throws Exception {
-		return new SimulatorServiceManager(session()).getSimulatorEventRequestAsResult(ti);
-	}
-	public Result getSimulatorEventResponse(TransactionInstance ti) throws Exception {
-		return new SimulatorServiceManager(session()).getSimulatorEventResponseAsResult(ti);
-	}
-	public List<String> getTransactionErrorCodeRefs(String transactionName, Severity severity) throws Exception {
-		List<String> refs = TransactionErrorCodeDbLoader.LOAD().getRefsByTransaction(TransactionType.find(transactionName), severity);
-		logger.info(": getTransactionErrorCodeRefs(" + transactionName + ") => " + refs.size() + " codes");
-		return refs;
-	}
-
-	//------------------------------------------------------------------------
-	//------------------------------------------------------------------------
-	// Dashboard Service
-	//------------------------------------------------------------------------
-	//------------------------------------------------------------------------
-	public List<RegistryStatus> getDashboardRegistryData() throws Exception { return new DashboardServiceManager(session()).getDashboardRegistryData(); }
-	public List<RepositoryStatus> getDashboardRepositoryData() throws Exception { return new DashboardServiceManager(session()).getDashboardRepositoryData(); }
-
-
-	// Other support calls
-
-	public String setToolkitPropertiesImpl(Map<String, String> props)
-			throws Exception {
-		logger.debug(": " + "setToolkitProperties");
-		logger.debug(describeProperties(props));
-		try {
-			// verify External_Cache points to a writable directory
-			String eCache = props.get("External_Cache");
-			File eCacheFile = new File(eCache);
-			if (!eCacheFile.exists() || !eCacheFile.isDirectory())
-				throw new IOException("Cannot save toolkit properties: property External_Cache does not point to an existing directory");
-			if (!eCacheFile.canWrite())
-				throw new IOException("Cannot save toolkit properties: property External_Cache points to a directory that is not writable");
-
-//            File warhome = Installation.installation().warHome();
-			new PropertyServiceManager().getPropertyManager().update(props);
-			reloadPropertyFile();
-//		Installation.installation().externalCache(eCacheFile);
-			ExternalCacheManager.reinitialize(eCacheFile);
-			try {
-				TkLoader.tkProps(Installation.installation().getTkPropsFile());
-			} catch (Throwable t) {
-
-			}
-		} catch (Exception e) {
-			throw new Exception(ExceptionUtil.exception_details(e));
-		}
-		return "";
-	}
-
-	String describeProperties(Map<String, String> props) {
-		StringBuilder buf = new StringBuilder();
-
-		for (String key : props.keySet()) buf.append(key).append(" = ").append(props.get(key)).append("\n");
-
-		return buf.toString();
-	}
-
-
-	public void discoverServletContextName() {
-		try {
-			if (context == null)
-				context = getServletContext();
-		} catch (Exception e) {
-		}
-		if (context == null) {
-			logger.info("Context is null");
-		}
-		logger.info("Context Name is " + context.getServletContextName());
-		logger.info("Context Path is " + context.getContextPath());
-		Installation.installation().setServletContextName(context.getContextPath());
-	}
-
-	public ServletContext servletContext() {
-		discoverServletContextName();
-		// this gets called from the initialization section of SimServlet
-		// for access to properties.  This code is not expected to work correct.
-		// Just don't throw exceptions that are not helpful
-		try {
-			if (context == null)
-				context = getServletContext();
-		} catch (Exception e) {
-
-		}
-		if (context != null && Installation.installation().warHome() == null) {
-
-			File warHome = new File(context.getRealPath("/"));
-			System.setProperty("warHome", warHome.toString());
-			logger.info("warHome [ToolkitServiceImpl]: " + warHome);
-			Installation.installation().warHome(warHome);
-		}
-		return context;
-	}
-
-	// Used only for non-servlet use (Dashboard is good example)
-	static public final String sessionVarName = "MySession";
-	String sessionID = null;
-
-	public String getSessionId() {
-		if (sessionID != null)
-			return sessionID;
-		HttpServletRequest request = this.getThreadLocalRequest();
-		HttpSession hsession = request.getSession();
-		return hsession.getId();
-	}
-
-	public String getSessionIdIfAvailable() {
-		try {
-			return getSessionId();
-		} catch (Exception e) {
-			return "";
-		}
-	}
-
-
-	Session standAloneSession = null;  // needed for standalone use not part of servlet
-
-	public void setStandAloneSession(Session s) {
-		standAloneSession = s;
-	}
-
-	// This exception is passable to the GUI.  The server side exception
-	// is NoSessionException
-	public Session session() throws NoServletSessionException {
+   public RawResponse buildIdsTestOrchestration(IdsOrchestrationRequest request) {
 		Session s = getSession();
-		if (s == null)
-			throw new NoServletSessionException("");
-		return s;
+		if (s == null) return RawResponseBuilder.build(new NoServletSessionException(""));
+		return new OrchestrationManager().buildIdsTestEnvironment(s, request);
 	}
-
-
-	public Session getSession() {
-		HttpServletRequest request = this.getThreadLocalRequest();
-		return getSession(request);
+	@Override
+   public RawResponse buildRSNAEdgeTestOrchestration(RSNAEdgeOrchestrationRequest request) {
+		Session s = getSession();
+		if (s == null) return RawResponseBuilder.build(new NoServletSessionException(""));
+		return new OrchestrationManager().buildRSNAEdgeTestEnvironment(s, request);
 	}
+*/
+    /**
+     * Get list of section names defined for the test in the order they should be executed
+     * @param testSession test session name (mesa session name)
+     * @param test test name
+     * @return list of sections
+     * @throws Exception if something goes wrong
+     */
+    public List<String> getTestIndex(String testSession,String test) throws Exception {
+        session().setMesaSessionName(testSession);
+        return session().xdsTestServiceManager().getTestSections(test);
+    }
 
-	public Session getSession(HttpServletRequest request) {
-		if (request == null && standAloneSession != null) {
-			// not running interactively - maybe part of Dashboard
-			return standAloneSession;
-		}
+    //	public List<Result> getLogContent(String sessionName, TestInstance testInstance) throws Exception { return session().xdsTestServiceManager().getLogContent(sessionName, testInstance); }
+    public List<Result> runMesaTest(String environmentName,String mesaTestSession, SiteSpec siteSpec, TestInstance testInstance, List<String> sections, Map<String, String> params, boolean stopOnFirstFailure)  throws Exception {
+        return session().xdsTestServiceManager().runMesaTest(environmentName, mesaTestSession, siteSpec, testInstance, sections, params, null, stopOnFirstFailure);
+    }
+    /**
+     * Get list of section names defined for the test in the order they should be executed
+     * @return list of sections
+     * @throws Exception if something goes wrong
+     */
+    @Override
+    public List<String> getTestIndex(GetTestDetailsRequest request) throws Exception {
+        installCommandContext(request);
+        return session().xdsTestServiceManager().getTestSections(request.getTest());
+    }
+    /**
+     * Get map of (collection name, collection description) pairs contained in testkit
+     * @return the map
+     * @throws Exception is something goes wrong
+     */
+    @Override
+    public Map<String, String> getCollectionNames(GetCollectionRequest request) throws Exception {
+        installCommandContext(request);
+        return session().xdsTestServiceManager().getCollectionNames(request.getCollectionSetName());
+    }
+    @Override
+    public List<TestInstance> getCollectionMembers(GetCollectionRequest request) throws Exception {
+        installCommandContext(request);
+        return session().xdsTestServiceManager().getCollectionMembers(request.getCollectionSetName(), request.getCollectionName());
+    }
+    @Override
+    public List<TestOverviewDTO> getTestsOverview(GetTestsOverviewRequest request) throws Exception {
+        installCommandContext(request);
+        List<TestOverviewDTO> o = session().xdsTestServiceManager().getTestsOverview(request.getTestSessionName(), request.getTestInstances());
+        return o;
+    }
+    public List<SectionDefinitionDAO> getTestSectionsDAOs(GetTestSectionsDAOsRequest request) throws Exception {
+        installCommandContext(request);
+        Session session = session().xdsTestServiceManager().session;
+        session.setMesaSessionName(request.getTestSessionName());
+        return session().xdsTestServiceManager().getTestSectionsDAOs(request.getTestInstance());
+    }
+    @Override
+    public LogFileContentDTO getTestLogDetails(GetTestLogDetailsRequest request) throws Exception {
+        installCommandContext(request);
+        LogFileContentDTO o = session().xdsTestServiceManager().getTestLogDetails(request.getTestSessionName(), request.getTestInstance());
+        return o;
+    }
+    @Override
+    public List<TestCollectionDefinitionDAO> getTestCollections(GetCollectionRequest request) throws Exception {
+        installCommandContext(request);
+        return session().xdsTestServiceManager().getTestCollections(request.getCollectionSetName());
+    }
 
-		Session s = null;
-		HttpSession hsession = null;
-		if (request != null) {
-			hsession = request.getSession();
-			s = (Session) hsession.getAttribute(sessionVarName);
-			if (s != null)
-				return s;
-			servletContext();
-		}
+    @Override
+    public Map<String, String> getCollection(GetCollectionRequest request) throws Exception {
+        installCommandContext(request);
+        return session().xdsTestServiceManager().getCollection(request.getCollectionSetName(), request.getCollectionName());
+    }
 
-		// Force short session timeout for testing
+    @Override
+    public String getTestReadme(GetTestDetailsRequest request) throws Exception {
+        installCommandContext(request);
+        return session().xdsTestServiceManager().getTestReadme(request.getTest());
+    }
+
+    @Override
+    public List<Result> runMesaTest(RunTestRequest request)  throws Exception {
+        installCommandContext(request);
+        return session().xdsTestServiceManager().runMesaTest(request.getEnvironmentName(), request.getTestSessionName(), request.getSiteSpec(), request.getTestInstance(), request.getSections(), request.getParams(), null, request.isStopOnFirstFailure());
+    }
+    @Override
+    public TestOverviewDTO runTest(RunTestRequest request) throws Exception {
+        installCommandContext(request);
+        List<String> sections = new ArrayList<>();
+        if (request.getTestInstance().getSection() != null) sections.add(request.getTestInstance().getSection());
+        setEnvironment(request.getEnvironmentName());
+        Session session = session().xdsTestServiceManager().session;
+        session.setCurrentEnvName(request.getEnvironmentName());
+        session.setMesaSessionName(request.getTestSessionName());
+        if (request.getSiteSpec() == null)
+            throw new Exception("No site selected");
+        if (!new SimManager(request.getTestSessionName()).exists(request.getSiteSpec().name))
+            throw new Exception("Site " + request.getSiteSpec().name + " does not exist");
+        TestOverviewDTO testOverviewDTO = session().xdsTestServiceManager().runTest(request.getEnvironmentName(), request.getTestSessionName(), request.getSiteSpec(), request.getTestInstance(), sections, request.getParams(), null, request.isStopOnFirstFailure());
+        return testOverviewDTO;
+    }
+    // TODO remove this once command pattern is implemented for every single call
+    private void setEnvironment(String environmentName) throws NoServletSessionException {
+        session().setEnvironment(environmentName);
+    }
+    @Override
+    public TestLogs getRawLogs(GetRawLogsRequest request)  throws Exception {
+        installCommandContext(request);
+        return session().xdsTestServiceManager().getRawLogs(request.getLogId());
+    }
+    @Override
+    public List<String> getTestdataSetListing(GetTestdataSetListingRequest request)  throws Exception {
+        installCommandContext(request);
+        return session().xdsTestServiceManager().getTestdataSetListing(request.getEnvironmentName(),request.getTestSessionName(),request.getTestdataSetName());
+    }
+    @Override
+    public String getTestplanAsText(GetTestplanAsTextRequest request) throws Exception {
+        installCommandContext(request);
+        session().setMesaSessionName(request.getTestSessionName());
+        return session().xdsTestServiceManager().getTestplanAsText(request.getTestInstance(), request.getSection());
+    }
+    @Override
+    public TestPartFileDTO getSectionTestPartFile(GetSectionTestPartFileRequest request) throws Exception {
+        installCommandContext(request);
+        session().setMesaSessionName(request.getTestSessionName());
+        return session().xdsTestServiceManager().getSectionTestPartFile(request.getTestInstance(), request.getSection());
+    }
+    @Override
+    public TestPartFileDTO loadTestPartContent(LoadTestPartContentRequest request) throws Exception {
+        installCommandContext(request);
+        return XdsTestServiceManager.loadTestPartContent(request.getTestPartFileDTO());
+    }
+    @Override
+    public String getHtmlizedString(String xml) { // This is different than the Htmlize class in the client code works (see its isHtml method)
+        return XmlFormatter.htmlize(xml)
+                .replace("<br/>", "\r\n");
+    }
+    @Override
+    public CodesResult getCodesConfiguration(CommandContext context)  throws Exception {
+        installCommandContext(context);
+        setEnvironment(context.getEnvironmentName());
+        return session().xdsTestServiceManager().getCodesConfiguration();
+    }
+
+    /**
+     * Get test names and descriptions from a named test collection
+     * @param testsessionName test session name (mesa session name)
+     * @param collectionSetName name of directory holding tc files (collection definitions)
+     * @param collectionName collection name within the directory
+     * @return testname ==> description mapping
+     * @throws Exception if something goes wrong
+     */
+    public Map<String, String> getCollection(String testsessionName,String collectionSetName, String collectionName) throws Exception {
+        session().setMesaSessionName(testsessionName);
+        return session().xdsTestServiceManager().getCollection(collectionSetName, collectionName);
+    }
+    @Override
+    public boolean isPrivateMesaTesting()  throws NoServletSessionException { return session().xdsTestServiceManager().isPrivateMesaTesting(); }
+    @Override
+    public List<Result> sendPidToRegistry(SendPidToRegistryRequest request) throws Exception {
+        installCommandContext(request);
+        return session().xdsTestServiceManager().sendPidToRegistry(request.getSiteSpec(), request.getPid(), request.getEnvironmentName(), request.getTestSessionName());
+    }
+
+    @Override
+    public List<Pid> retrieveConfiguredFavoritesPid(CommandContext commandContext) throws Exception {
+        installCommandContext(commandContext);
+        List<Pid> pids = new ArrayList<Pid>();
+        String environmentName=commandContext.getEnvironmentName();
+        File environmentFile;
+        if (environmentName!=null) {
+            environmentFile=Installation.instance().environmentFile(environmentName);
+        }else{
+            environmentFile=Installation.instance().environmentFile(Installation.DEFAULT_ENVIRONMENT_NAME);
+        }
+        File favPidsFile = new File(environmentFile,"pids.txt");
+        if (favPidsFile.exists()) {
+            byte[] pidBytes = Files.readAllBytes(favPidsFile.toPath());
+            String str = new String(pidBytes, Charset.defaultCharset());
+            PidSet pidSet = new PidSet(str.replace("\\n",""));
+            pids.addAll(pidSet.get());
+        }
+        return pids;
+    }
+
+    /**
+     * This method copies the default testkit to a selected environment and triggers a code update based on
+     * the affinity domain configuration file (codes.xml) located in the selected environment.
+     * @param context
+     * @return update output as a String
+     */
+    @Override
+    public String configureTestkit(CommandContext context) throws Exception {
+        installCommandContext(context);
+        File environmentFile = Installation.instance().environmentFile(context.getEnvironmentName());
+        File defaultTestkit = Installation.instance().internalTestkitFile();
+        CodesUpdater updater = new CodesUpdater();
+        updater.run(environmentFile.getAbsolutePath(),defaultTestkit.getAbsolutePath());
+        return updater.getOutput();
+    }
+
+    /**
+     * This method tests if there already is a testkit configured in a selected environment.
+     * @param context
+     * @return boolean
+     */
+    @Override
+    public boolean doesTestkitExist(CommandContext context) throws Exception {
+        installCommandContext(context);
+        File environmentFile = Installation.instance().environmentFile(context.getEnvironmentName());
+        return doesTestkitExist(environmentFile);
+    }
+
+    private boolean doesTestkitExist(File environmentFile){
+        File testkit=new File(environmentFile,"testkits");
+        return testkit.exists();
+    }
+
+    /**
+     * This method generate the folder structure for the testkit in all the environments available.
+     * @param request
+     */
+    @Override
+    public void generateTestkitStructure(CommandContext request) /*throws Exception*/ {
+//        installCommandContext(request);
+        File environmentFile = Installation.instance().environmentFile();
+        for (File environment : environmentFile.listFiles()) {
+            File testkitsFile = new File(environment, "testkits");
+            if (!testkitsFile.exists()) {
+                new File(testkitsFile, "default").mkdirs();
+            }
+            for (Sections section : Sections.values()) {
+                File sectionFile = new File(new File(testkitsFile,"default"), section.getSection());
+                if (!sectionFile.exists()){
+                    sectionFile.mkdir();
+                }
+            }
+        }
+    }
+
+    //------------------------------------------------------------------------
+    //------------------------------------------------------------------------
+    // Gazelle Service
+    //------------------------------------------------------------------------
+    //------------------------------------------------------------------------
+    @Override
+    public String reloadSystemFromGazelle(ReloadSystemFromGazelleRequest request) throws Exception {
+        installCommandContext(request);
+        return new GazelleServiceManager(session()).reloadSystemFromGazelle(request.getSystem());
+    }
+
+
+    //------------------------------------------------------------------------
+    //------------------------------------------------------------------------
+    // Environment management
+    //------------------------------------------------------------------------
+    //------------------------------------------------------------------------
+    @Override
+    public List<String> getEnvironmentNames(CommandContext context) throws Exception {
+//		installCommandContext(context);  // not needed - may not be initialized
+        return session().getEnvironmentNames();
+    }
+    @Override
+    public String setEnvironment(CommandContext context) throws Exception {
+        logger.info("set environment - " + context.getEnvironmentName());
+        installCommandContext(context);
+        return context.getEnvironmentName();
+    }
+    @Override
+    public String getCurrentEnvironment() throws NoServletSessionException { return session().getCurrentEnvironment(); }
+    @Override
+    public String getDefaultEnvironment(CommandContext context) throws Exception {
+        installCommandContext(context);
+        String defaultEnvironment = Installation.instance().propertyServiceManager().getDefaultEnvironment();
+        String name;
+        if (Session.environmentExists(defaultEnvironment))
+            name = defaultEnvironment;
+        name = Installation.DEFAULT_ENVIRONMENT_NAME;
+        logger.info("getDefaultEnvironment - " + name);
+        return name;
+    }
+
+    //------------------------------------------------------------------------
+    //------------------------------------------------------------------------
+    // Session
+    //------------------------------------------------------------------------
+    //------------------------------------------------------------------------
+    @Override
+    public Map<String, String> getSessionProperties() throws NoServletSessionException { return session().getSessionPropertiesAsMap(); }
+    @Override
+    public void setSessionProperties(Map<String, String> props) throws NoServletSessionException { session().setSessionProperties(props); }
+    @Override
+    public Pid createPid(GeneratePidRequest generatePidRequest) throws Exception {
+        installCommandContext(generatePidRequest);
+        return session().allocateNewPid(generatePidRequest.getAssigningAuthority());
+    }
+    @Override
+    public String getAssigningAuthority(CommandContext commandContext) throws Exception {
+        installCommandContext(commandContext);
+        return session().getAssigningAuthority();
+    }
+    @Override
+    public List<String> getAssigningAuthorities(CommandContext commandContext) throws Exception {
+        installCommandContext(commandContext);
+        return session().getAssigningAuthorities();
+    }
+
+    //------------------------------------------------------------------------
+    //------------------------------------------------------------------------
+    // Property Service
+    //------------------------------------------------------------------------
+    //------------------------------------------------------------------------
+    @Override
+    public TkProps getTkProps() throws NoServletSessionException { return session().tkProps(); }
+
+    @Override
+    public ConformanceSessionValidationStatus validateConformanceSession(String testSession, String siteName) throws Exception {
+        return session().xdsTestServiceManager().validateConformanceSession(testSession, siteName);
+    }
+
+    @Override
+    public Collection<String> getSitesForTestSession(CommandContext context) throws Exception {
+        installCommandContext(context);
+        if (context.getTestSessionName()== null)
+            return new ArrayList<>();
+        return session().xdsTestServiceManager().getSitesForTestSession(context.getTestSessionName());
+    }
+
+    @Override
+    public String getDefaultAssigningAuthority(CommandContext context) throws Exception {
+//        installCommandContext(context);
+        return Installation.instance().propertyServiceManager().getDefaultAssigningAuthority();
+    }
+    @Override
+    public String getImplementationVersion(CommandContext context) throws Exception  {
+//        installCommandContext(context);
+        return Installation.instance().propertyServiceManager().getImplementationVersion();
+    }
+    @Override
+    public Map<String, String> getToolkitProperties(CommandContext context)  throws Exception {
+//        installCommandContext(context);
+        return Installation.instance().propertyServiceManager().getToolkitProperties();
+    }
+    @Override
+    public boolean isGazelleConfigFeedEnabled(CommandContext context) throws Exception {
+        installCommandContext(context);
+        return SiteServiceManager.getSiteServiceManager().useGazelleConfigFeed();
+    }
+    //	public String getToolkitEnableNwHIN() { return propertyServiceManager.getToolkitEnableNwHIN(); }
+    @Override
+    public String setToolkitProperties(SetToolkitPropertiesRequest request) throws Exception {
+//        installCommandContext(request);
+        return setToolkitPropertiesImpl(request.getProperties());
+    }
+    @Override
+    public String getAdminPassword(CommandContext context) throws Exception  {
+//        installCommandContext(context);
+        return Installation.instance().propertyServiceManager().getAdminPassword();
+    }
+    @Override
+    public boolean reloadPropertyFile() throws NoServletSessionException  { return Installation.instance().propertyServiceManager().reloadPropertyFile(); }
+    @Override
+    public String getAttributeValue(String username, String attName) throws Exception { return Installation.instance().propertyServiceManager().getAttributeValue(username, attName); }
+    @Override
+    public void setAttributeValue(String username, String attName, String attValue) throws Exception { Installation.instance().propertyServiceManager().setAttributeValue(username, attName, attValue); }
+
+
+    //------------------------------------------------------------------------
+    //------------------------------------------------------------------------
+    // Simulator Service
+    //------------------------------------------------------------------------
+    //------------------------------------------------------------------------
+    @Override
+    public String putSimConfig(SimConfigRequest request) throws Exception {
+        installCommandContext(request);
+        return new SimulatorServiceManager(session()).saveSimConfig(request.getConfig());
+    }
+    // this deletes a simulator
+    @Override
+    public String deleteConfig(SimConfigRequest config) throws Exception {
+        installCommandContext(config);
+        return new SimulatorServiceManager(session()).deleteConfig(config.getConfig());
+    }
+    @Override
+    public void renameSimFile(RenameSimFileRequest request) throws Exception {
+        installCommandContext(request);
+        new SimulatorServiceManager(session()).renameSimFile(request.getOldSimFileName(), request.getNewSimFileName());
+    }
+    @Override
+    public String getSimulatorEndpoint(CommandContext context) throws Exception {
+        installCommandContext(context);
+        return new SimulatorServiceManager(session()).getSimulatorEndpoint();
+    }
+    @Override
+    public MessageValidationResults executeSimMessage(ExecuteSimMessageRequest request) throws Exception {
+        installCommandContext(request);
+        return new SimulatorServiceManager(session()).executeSimMessage(request.getFileName());
+    }
+    @Override
+    public List<TransactionInstance> getTransInstances(GetTransactionRequest request) throws Exception {
+        installCommandContext(request);
+        return new SimulatorServiceManager(session()).getTransInstances(request.getSimid(), request.getActor(), request.getTrans());
+    }
+    @Override
+    public Message getTransactionRequest(GetTransactionRequest request) throws Exception {
+        installCommandContext(request);
+        return new SimulatorServiceManager(session()).getTransactionRequest(request.getSimid(), request.getActor(), request.getTrans(), request.getMessageId());
+    }
+    @Override
+    public Message getTransactionResponse(GetTransactionRequest request) throws Exception {
+        installCommandContext(request);
+        return new SimulatorServiceManager(session()).getTransactionResponse(request.getSimid(), request.getActor(), request.getTrans(), request.getMessageId());
+    }
+    @Override
+    public int removeOldSimulators(CommandContext context) throws Exception {
+        installCommandContext(context);
+        return new SimulatorServiceManager(session()).removeOldSimulators();
+    }
+    @Override
+    public List<Result> getSelectedMessage(GetSelectedMessageRequest request) throws Exception {
+        installCommandContext(request);
+        return new SimulatorServiceManager(session()).getSelectedMessage(request.getFilename());
+    }
+    @Override
+    public List<Result> getSelectedMessageResponse(GetSelectedMessageRequest request) throws Exception {
+        installCommandContext(request);
+        return new SimulatorServiceManager(session()).getSelectedMessageResponse(request.getFilename());
+    }
+    @Override
+    public Map<String, SimId> getActorSimulatorNameMap(CommandContext context) throws Exception {
+        installCommandContext(context);
+        return new SimulatorServiceManager(session()).getSimulatorNameMap();
+    }
+    @Override
+    public MessageValidationResults validateMessage(ValidateMessageRequest request) throws Exception {
+        installCommandContext(request);
+        return new SimulatorServiceManager(session()).validateMessage(request.getValidationContext());
+    }
+    @Override
+    public List<SimulatorConfig> getSimConfigs(GetSimConfigsRequest request) throws Exception {
+        installCommandContext(request);
+        return new SimulatorServiceManager(session()).getSimConfigs(request.getIds());
+    }
+    @Override
+    public List<SimulatorConfig> getAllSimConfigs(GetAllSimConfigsRequest request) throws Exception {
+        installCommandContext(request);
+        return new SimulatorServiceManager(session()).getAllSimConfigs(request.getUser());
+    }
+    @Override
+    public Simulator getNewSimulator(GetNewSimulatorRequest request) throws Exception {
+        installCommandContext(request);
+        return new SimulatorServiceManager(session()).getNewSimulator(request.getActorTypeName(), request.getSimId());
+    }
+    @Override
+    public void deleteSimFile(DeleteSimFileRequest request) throws Exception {
+        installCommandContext(request);
+        new SimulatorServiceManager(session()).deleteSimFile(request.getSimFileSpec());
+    }
+    @Override
+    public List<String> getTransactionsForSimulator(GetTransactionRequest request) throws Exception {
+        installCommandContext(request);
+        return new SimulatorServiceManager(session()).getTransactionsForSimulator(request.getSimid());
+    }
+    @Override
+    public List<SimulatorStats> getSimulatorStats(GetSimulatorStatsRequest request) throws Exception {
+        installCommandContext(request);
+        return new SimulatorServiceManager(session()).getSimulatorStats(request.getSimid());
+    }
+    @Override
+    public String getTransactionLog(GetTransactionRequest request) throws Exception {
+        installCommandContext(request);
+        return new SimulatorServiceManager(session()).getTransactionLog(request.getSimid(), request.getActor(), request.getTrans(), request.getMessageId());
+    }
+
+    @Override
+    public List<Pid> getPatientIds(PatientIdsRequest request) throws Exception {
+        installCommandContext(request);
+        return new SimulatorServiceManager(session()).getPatientIds(request.getSimId());
+    }
+    @Override
+    public String addPatientIds(PatientIdsRequest request) throws Exception {
+        installCommandContext(request);
+        return new SimulatorServiceManager(session()).addPatientIds(request.getSimId(), request.getPids());
+    }
+    @Override
+    public boolean deletePatientIds(PatientIdsRequest request) throws Exception {
+        installCommandContext(request);
+        return new SimulatorServiceManager(session()).deletePatientIds(request.getSimId(), request.getPids());
+    }
+    @Override
+    public Result getSimulatorEventRequest(GetSimulatorEventRequest request) throws Exception {
+        installCommandContext(request);
+        return new SimulatorServiceManager(session()).getSimulatorEventRequestAsResult(request.getTransactionInstance());
+    }
+    @Override
+    public Result getSimulatorEventResponse(GetSimulatorEventRequest request) throws Exception {
+        installCommandContext(request);
+        return new SimulatorServiceManager(session()).getSimulatorEventResponseAsResult(request.getTransactionInstance());
+    }
+    @Override
+    public List<String> getTransactionErrorCodeRefs(GetTransactionErrorCodeRefsRequest request) throws Exception {
+        installCommandContext(request);
+        List<String> refs = TransactionErrorCodeDbLoader.LOAD().getRefsByTransaction(TransactionType.find(request.getTransactionName()), request.getSeverity());
+        logger.info(": getTransactionErrorCodeRefs(" + request.getTransactionName() + ") => " + refs.size() + " codes");
+        return refs;
+    }
+
+    //------------------------------------------------------------------------
+    //------------------------------------------------------------------------
+    // Dashboard Service
+    //------------------------------------------------------------------------
+    //------------------------------------------------------------------------
+    @Override
+    public List<RegistryStatus> getDashboardRegistryData(CommandContext context) throws Exception {
+        installCommandContext(context);
+        return new DashboardServiceManager(session()).getDashboardRegistryData();
+    }
+    @Override
+    public List<RepositoryStatus> getDashboardRepositoryData(CommandContext context) throws Exception {
+        installCommandContext(context);
+        return new DashboardServiceManager(session()).getDashboardRepositoryData();
+    }
+
+
+    // Other support calls
+
+    public String setToolkitPropertiesImpl(Map<String, String> props)
+            throws Exception {
+        logger.debug(": " + "setToolkitProperties");
+        logger.debug(describeProperties(props));
+        try {
+            // verify External_Cache points to a writable directory
+            String eCache = props.get("External_Cache");
+            File eCacheFile = new File(eCache);
+            if (!eCacheFile.exists() || !eCacheFile.isDirectory())
+                throw new IOException("Cannot save toolkit properties: property External_Cache does not point to an existing directory");
+            if (!eCacheFile.canWrite())
+                throw new IOException("Cannot save toolkit properties: property External_Cache points to a directory that is not writable");
+
+//            File warhome = Installation.instance().warHome();
+            new PropertyServiceManager().getPropertyManager().update(props);
+            reloadPropertyFile();
+//		Installation.instance().externalCache(eCacheFile);
+            ExternalCacheManager.reinitialize(eCacheFile);
+            try {
+                TkLoader.tkProps(Installation.instance().getTkPropsFile());
+            } catch (Throwable t) {
+
+            }
+        } catch (Exception e) {
+            throw new Exception(ExceptionUtil.exception_details(e));
+        }
+        return "";
+    }
+
+    String describeProperties(Map<String, String> props) {
+        StringBuilder buf = new StringBuilder();
+
+        for (String key : props.keySet()) buf.append(key).append(" = ").append(props.get(key)).append("\n");
+
+        return buf.toString();
+    }
+
+
+    public void discoverServletContextName() {
+        try {
+            if (context == null)
+                context = getServletContext();
+        } catch (Exception e) {
+        }
+        if (context == null) {
+            logger.info("Context is null");
+        }
+//        logger.info("Context Name is " + context.getServletContextName());
+        logger.info("Context Path is " + context.getContextPath());
+        Installation.instance().setServletContextName(context.getContextPath());
+    }
+
+    public ServletContext servletContext() {
+        discoverServletContextName();
+        // this gets called from the initialization section of SimServlet
+        // for access to properties.  This code is not expected to work correct.
+        // Just don't throw exceptions that are not helpful
+        try {
+            if (context == null)
+                context = getServletContext();
+        } catch (Exception e) {
+
+        }
+        if (context != null && Installation.instance().warHome() == null) {
+
+            File warHome = new File(context.getRealPath("/"));
+            System.setProperty("warHome", warHome.toString());
+            logger.info("warHome [ToolkitServiceImpl]: " + warHome);
+            Installation.instance().warHome(warHome);
+        }
+        return context;
+    }
+
+    // Used only for non-servlet use (Dashboard is good example)
+    static public final String sessionVarName = "MySession";
+    String sessionID = null;
+
+    public String getSessionId() {
+        if (sessionID != null)
+            return sessionID;
+        HttpServletRequest request = this.getThreadLocalRequest();
+        HttpSession hsession = request.getSession();
+        return hsession.getId();
+    }
+
+    public String getSessionIdIfAvailable() {
+        try {
+            return getSessionId();
+        } catch (Exception e) {
+            return "";
+        }
+    }
+
+
+    Session standAloneSession = null;  // needed for standalone use not part of servlet
+
+    public void setStandAloneSession(Session s) {
+        standAloneSession = s;
+    }
+
+    // This exception is passable to the GUI.  The server side exception
+    // is NoSessionException
+    public Session session() throws NoServletSessionException {
+        Session s = getSession();
+        if (s == null)
+            throw new NoServletSessionException("");
+//        logHere("On Session " + s.getId());
+//		String msg = ExceptionUtil.here("On Session " + s.getId());
+//		Scanner scanner = new Scanner(msg);
+//		while(scanner.hasNextLine()) {
+//			String line = scanner.nextLine();
+//			logger.info(line);
+//		}
+//		logger.info(msg);
+        return s;
+    }
+
+    private void logHere(String themsg) {
+        String msg = ExceptionUtil.here(themsg);
+        Scanner scanner = new Scanner(msg);
+        while(scanner.hasNextLine()) {
+            String line = scanner.nextLine();
+            logger.info(line);
+        }
+    }
+
+    public Session getSession() {
+        HttpServletRequest request = this.getThreadLocalRequest();
+        return getSession(request);
+    }
+
+    public Session getSession(HttpServletRequest request) {
+        if (request == null && standAloneSession != null) {
+            // not running interactively - maybe part of Dashboard
+            return standAloneSession;
+        }
+
+        Session s = null;
+        HttpSession hsession = null;
+        if (request != null) {
+            hsession = request.getSession();
+            s = (Session) hsession.getAttribute(sessionVarName);
+            if (s != null)
+                return s;
+            servletContext();
+        }
+
+        // Force short session timeout for testing
 //		hsession.setMaxInactiveInterval(60/4);    // one quarter minute
 
-		//******************************************
-		//
-		// New session object to be created
-		//
-		//******************************************
-		File warHome = null;
-		if (s == null) {
-			ServletContext sc = servletContext();
-			warHome = Installation.installation().warHome();
-			if (sc != null && warHome == null) {
-				warHome = new File(sc.getRealPath("/"));
-				Installation.installation().warHome(warHome);
-				System.setProperty("warHome", warHome.toString());
-				System.out.print("warHome [ToolkitServiceImp]: " + warHome);
-				Installation.installation().warHome(warHome);
-			}
-			if (warHome != null)
-				System.setProperty("warHome", warHome.toString());
+        //******************************************
+        //
+        // New session object to be created
+        //
+        //******************************************
+        File warHome = null;
+        if (s == null) {
+            ServletContext sc = servletContext();
+            warHome = Installation.instance().warHome();
+            if (sc != null && warHome == null) {
+                warHome = new File(sc.getRealPath("/"));
+                Installation.instance().warHome(warHome);
+                System.setProperty("warHome", warHome.toString());
+                System.out.print("warHome [ToolkitServiceImp]: " + warHome);
+                Installation.instance().warHome(warHome);
+            }
+            if (warHome != null)
+                System.setProperty("warHome", warHome.toString());
 
-			if (warHome != null) {
-				s = new Session(warHome, getSessionId());
-				if (hsession != null) {
-					s.setSessionId(hsession.getId());
-					s.addSession();
-					hsession.setAttribute(sessionVarName, s);
-				} else
-					s.setSessionId("mysession");
-			}
-		}
+            if (warHome != null) {
+                s = new Session(warHome, getSessionId());
+                if (hsession != null) {
+                    s.setSessionId(hsession.getId());
+//					logger.info("New Session ID " + hsession.getId());
+                    s.addSession();
+                    hsession.setAttribute(sessionVarName, s);
+                } else
+                    s.setSessionId("mysession");
+            }
+        }
 
-		if (request != null) {
-			if (s.getIpAddr() == null) {
-				s.setIpAddr(request.getRemoteHost());
-			}
+        if (request != null) {
+            if (s.getIpAddr() == null) {
+                s.setIpAddr(request.getRemoteHost());
+            }
 
-			s.setServerSpec(request.getLocalName(),
-					String.valueOf(request.getLocalPort()));
-		}
+            s.setServerSpec(request.getLocalName(),
+                    String.valueOf(request.getLocalPort()));
+        }
 
-		if (warHome != null) {
-			if (SchemaValidation.toolkitSchemaLocation == null) {
-				SchemaValidation.toolkitSchemaLocation = warHome + File.separator + "toolkitx" + File.separator + "schema";
-			}
-		}
+        if (warHome != null) {
+            if (SchemaValidation.toolkitSchemaLocation == null) {
+                SchemaValidation.toolkitSchemaLocation = warHome + File.separator + "toolkitx" + File.separator + "schema";
+            }
+        }
 
-		return s;
-	}
+        return s;
+    }
 
-	public String getLastFilename() {
-		return getSession().getlastUploadFilename();
-	}
+    @Override
+    public String getLastFilename(CommandContext context) throws Exception {
+        installCommandContext(context);
+        return getSession().getlastUploadFilename();
+    }
 
-	public String getTimeAndDate() {
-		return new Date().toString();
-	}
+    @Override
+    public String getTimeAndDate(CommandContext context) throws Exception {
+        installCommandContext(context);
+        return new Date().toString();
+    }
 
-	@Deprecated
-	public String getClientIPAddress() {
-		return getSession().ipAddr;
-	}
+    @Override
+    @Deprecated
+    public String getClientIPAddress() {
+        return getSession().ipAddr;
+    }
 
-	public String getServletContextName() {
-		return Installation.installation().getServletContextName();
-	}
+    @Override
+    public String getServletContextName() {
+        return Installation.instance().getServletContextName();
+    }
+
+    //------------------------------------------------------------------------
+    //------------------------------------------------------------------------
+    // Background test plan running methods
+    //------------------------------------------------------------------------
+    //------------------------------------------------------------------------
+    @Override
+    public Result register(RegisterRequest request) throws Exception{
+        installCommandContext(request);
+        return TransactionUtil.register(getSession(),request.getUsername(),request.getTestInstance(),
+                request.getRegistry(),request.getParams(), new ArrayList<String>());
+    }
+    @Override
+    public Map<String, String> registerWithLocalizedTrackingInODDS(RegisterRequest request) throws Exception{
+        installCommandContext(request);
+        try {
+            return TransactionUtil.registerWithLocalizedTrackingInODDS(getSession(),request.getUsername(),
+                    request.getTestInstance(),request.getRegistry(),request.getOddsSimId(), request.getParams());
+        } catch (Exception ex) {
+            Map<String, String> errorMap = new HashMap<>();
+            errorMap.put("error",ex.toString());
+            return errorMap;
+        }
+
+    }
+
+    //------------------------------------------------------------------------
+    //------------------------------------------------------------------------
+    // ODDE related methods
+    //------------------------------------------------------------------------
+    //------------------------------------------------------------------------
+    @Override
+    public List<String> getSiteNamesByTranType(GetSiteNamesByTranTypeRequest request) throws Exception {
+        installCommandContext(request);
+        return siteServiceManager.getSiteNamesByTran(request.getTransactionTypeName(), session().getId());
+    }
+
+    @Override
+    public List<DocumentEntryDetail> getOnDemandDocumentEntryDetails(GetOnDemandDocumentEntryDetailsRequest request) throws Exception{
+        installCommandContext(request);
+        return TransactionUtil.getOnDemandDocumentEntryDetails(request.getSimId());
+    }
+
+    //------------------------------------------------------------------------
+    //------------------------------------------------------------------------
+    // Interaction methods
+    // TODO: this mapping method is to be replaced by the test log map method.
+    //------------------------------------------------------------------------
+    //------------------------------------------------------------------------
+    @Override
+    public InteractingEntity getInteractionFromModel(GetInteractionFromModelRequest request) throws Exception {
+        installCommandContext(request);
+        return new InteractionMapper().map(request.getModel());
+    }
+
+
+    public String getStsSamlAssertion(GetStsSamlAssertionRequest request) throws Exception {
+        installCommandContext(request);
+        XdsTestServiceManager xtsm = session().getXdsTestServiceManager();
+        String sessionName = request.getTestSessionName();
+        String step = "issue";
+        String query = request.getTestInstance().getSection();
+        List<Result> results = xtsm.querySts("GazelleSts",sessionName,query,request.getParams(), false);
+
+        if (results!=null) {
+            if (results.size() == 1) {
+                Result mainResult =  results.get(0);
+                if (!mainResult.passed()) {
+                    if (results.get(0).getStepResults()!=null && results.get(0).getStepResults().size()>0) {
+                        List<String> soapFaults = results.get(0).getStepResults().get(0).getSoapFaults();
+                        if (soapFaults != null && soapFaults.size() > 0) {
+                            throw new ToolkitRuntimeException("getStsSamlAssertion SOAP Fault: " + soapFaults.toString());
+                        }
+                    }  else {
+                        throw new ToolkitRuntimeException("getStsSamlAssertion: " + mainResult.toString());
+                    }
+
+                } else {
+                    LogFileContentDTO logFileContentDTO = xtsm.getTestLogDetails(sessionName,request.getTestInstance());
+                    TestStepLogContentDTO testStepLogContentDTO = logFileContentDTO.getStep(step);
+                    List<ReportDTO> reportDTOs = testStepLogContentDTO.getReportDTOs();
+                    String assertionResultId = "saml-assertion";
+                    for (ReportDTO report : reportDTOs)  {
+                        if (assertionResultId.equals(report.getName())) {
+                            return report.getValue().replace("&","&amp;");
+                        }
+                    }
+                    throw new ToolkitRuntimeException(assertionResultId + " result key not found.");
+                }
+            }
+            throw new ToolkitRuntimeException("Result size: " + results.size());
+        } else {
+            throw new ToolkitRuntimeException("No result.");
+        }
+    }
+
+
+    public Map<String,String> getStsSamlAssertionsMap(GetStsSamlAssertionMapRequest request) throws Exception {
+        Map<String,String> assertionMap = null;
+        for (GazelleXuaUsername username : GazelleXuaUsername.values()) {
+            String usernameStr = username.name();
+            if (request.getParams()!=null) {
+                request.getParams().clear();
+                request.getParams().put("$saml-username$", usernameStr);
+            }
+            try {
+                GetStsSamlAssertionRequest getStsSamlAssertionRequest = new GetStsSamlAssertionRequest(request,usernameStr,request.getTestInstance(),request.getSiteSpec(),request.getParams());
+                String samlAssertion = getStsSamlAssertion(getStsSamlAssertionRequest);
+                if (samlAssertion!=null) {
+                    if (assertionMap == null) {
+                        assertionMap = new HashMap<String,String>();
+                    }
+                    assertionMap.put(usernameStr, samlAssertion);
+                }
+            } catch (Exception ex) {
+                // ignore
+            }
+        }
+
+        return assertionMap;
+    }
+
+    @Override
+    public String clearTestSession(CommandContext context) throws Exception {
+        installCommandContext(context);
+        return session().xdsTestServiceManager().clearTestSession(context.getTestSessionName());
+    }
+
+    @Override
+    public boolean getAutoInitConformanceTesting(CommandContext context) {
+        return Installation.instance().propertyServiceManager().getAutoInitializeConformanceTool();
+    }
+
+    @Override
+    public boolean indexTestKits(CommandContext context) {
+        new BuildCollections().run();
+        // FIXME why does this have to always return true? should we change for a void method?
+        return true;
+    }
 
 }

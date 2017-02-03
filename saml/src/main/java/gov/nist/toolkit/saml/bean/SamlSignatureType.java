@@ -9,7 +9,7 @@ public class SamlSignatureType {
      * Gets the value of the keyInfo property.
      * 
      * @return
-     *     possible object is
+     *     possible model is
      *     {@link SamlSignatureKeyInfoType }
      *     
      */
@@ -21,7 +21,7 @@ public class SamlSignatureType {
      * Sets the value of the keyInfo property.
      * 
      * @param value
-     *     allowed object is
+     *     allowed model is
      *     {@link SamlSignatureKeyInfoType }
      *     
      */
@@ -33,7 +33,7 @@ public class SamlSignatureType {
      * Gets the value of the signatureValue property.
      * 
      * @return
-     *     possible object is
+     *     possible model is
      *     byte[]
      */
     public byte[] getSignatureValue() {
@@ -44,7 +44,7 @@ public class SamlSignatureType {
      * Sets the value of the signatureValue property.
      * 
      * @param value
-     *     allowed object is
+     *     allowed model is
      *     byte[]
      */
     public void setSignatureValue(byte[] value) {

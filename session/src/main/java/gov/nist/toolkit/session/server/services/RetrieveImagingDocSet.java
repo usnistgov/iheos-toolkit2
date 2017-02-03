@@ -5,10 +5,10 @@ import gov.nist.toolkit.registrymetadata.client.Uid;
 import gov.nist.toolkit.registrymetadata.client.Uids;
 import gov.nist.toolkit.results.CommonService;
 import gov.nist.toolkit.results.client.Result;
-import gov.nist.toolkit.results.client.SiteSpec;
+import gov.nist.toolkit.sitemanagement.client.SiteSpec;
 import gov.nist.toolkit.results.client.TestInstance;
 import gov.nist.toolkit.session.server.Session;
-import gov.nist.toolkit.xdsexception.XdsException;
+import gov.nist.toolkit.xdsexception.client.XdsException;
 import org.apache.log4j.Logger;
 
 import java.util.ArrayList;
@@ -56,7 +56,7 @@ public class RetrieveImagingDocSet extends CommonService {
 				params.put("$full_imaging_request$", studyRequest);
 			} 
 //			else if (session.siteSpec.isIG()) {
-//				sections.add("IG");
+//				SECTIONS.add("IG");
 //				params.put("$home$", site.homeId);
 //			} 
 			else {

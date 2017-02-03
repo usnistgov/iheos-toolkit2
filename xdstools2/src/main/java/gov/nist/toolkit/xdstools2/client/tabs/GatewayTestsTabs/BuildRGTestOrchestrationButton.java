@@ -1,18 +1,22 @@
 package gov.nist.toolkit.xdstools2.client.tabs.GatewayTestsTabs;
 
-import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.FlexTable;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.Panel;
 import gov.nist.toolkit.configDatatypes.SimulatorProperties;
-import gov.nist.toolkit.results.client.SiteSpec;
 import gov.nist.toolkit.services.client.RawResponse;
 import gov.nist.toolkit.services.client.RgOrchestrationRequest;
 import gov.nist.toolkit.services.client.RgOrchestrationResponse;
-import gov.nist.toolkit.xdstools2.client.PopupMessage;
+import gov.nist.toolkit.sitemanagement.client.SiteSpec;
+import gov.nist.toolkit.xdstools2.client.command.command.BuildRGTestOrchestrationCommand;
+import gov.nist.toolkit.xdstools2.client.widgets.PopupMessage;
+import gov.nist.toolkit.xdstools2.client.tabs.conformanceTest.ActorAndOption;
 import gov.nist.toolkit.xdstools2.client.tabs.genericQueryTab.GenericQueryTab;
-import gov.nist.toolkit.xdstools2.client.widgets.buttons.ReportableButton;
+import gov.nist.toolkit.xdstools2.client.util.ClientUtils;
+import gov.nist.toolkit.xdstools2.client.widgets.PopupMessage;
+import gov.nist.toolkit.xdstools2.client.widgets.buttons.AbstractOrchestrationButton;
+import gov.nist.toolkit.xdstools2.shared.command.request.BuildRgTestOrchestrationRequest;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -20,12 +24,12 @@ import java.util.List;
 /**
  *
  */
-class BuildRGTestOrchestrationButton extends ReportableButton {
+public class BuildRGTestOrchestrationButton extends AbstractOrchestrationButton {
     private RGTestTab testTab;
-    SiteSpec siteUnderTest;
-    boolean useExposedRR;
-    boolean useSimAsSUT;
-    List<ReportableButton> linkedOrchestrationButtons = new ArrayList<>();
+    private SiteSpec siteUnderTest;
+    private boolean useExposedRR;
+    private boolean useSimAsSUT;
+//    private List<AbstractOrchestrationButton> linkedOrchestrationButtons = new ArrayList<>();
 
     BuildRGTestOrchestrationButton(RGTestTab testTab, Panel topPanel, String label, boolean useSimAsSUT) {
         super(topPanel, label);
@@ -33,11 +37,18 @@ class BuildRGTestOrchestrationButton extends ReportableButton {
         this.useSimAsSUT = useSimAsSUT;
     }
 
-    public void addLinkedOrchestrationButton(ReportableButton orchestrationButton) {
-        linkedOrchestrationButtons.add(orchestrationButton);
+    public static List<ActorAndOption> ACTOR_OPTIONS = new ArrayList<>();
+    static {
+        ACTOR_OPTIONS = java.util.Arrays.asList(
+                new ActorAndOption("rg", "", "Required", false),
+                new ActorAndOption("rg", XUA_OPTION, "XUA Option", false));
     }
 
-    public void handleClick(ClickEvent event) {
+//    public void addLinkedOrchestrationButton(AbstractOrchestrationButton orchestrationButton) {
+//        linkedOrchestrationButtons.display(orchestrationButton);
+//    }
+
+    public void orchestrate() {
         if (GenericQueryTab.empty(testTab.getCurrentTestSession())) {
             new PopupMessage("Must select test session first");
             return;
@@ -57,33 +68,29 @@ class BuildRGTestOrchestrationButton extends ReportableButton {
         }
 
         // get rid of past reports
-        for (ReportableButton b : linkedOrchestrationButtons) {
-            b.clean();
-        }
+//        for (AbstractOrchestrationButton b : linkedOrchestrationButtons) {
+//            b.clean();
+//        }
 
         RgOrchestrationRequest request = new RgOrchestrationRequest();
         request.setUserName(testTab.getCurrentTestSession());
 //        request.setEnvironmentName(??????);
+        if (isSaml()) {
+            setSamlAssertion(siteUnderTest);
+        }
         request.setSiteUnderTest(siteUnderTest);
         request.setUseExposedRR(useExposedRR);
         request.setUseSimAsSUT(useSimAsSUT);
 
-        testTab.toolkitService.buildRgTestOrchestration(request, new AsyncCallback<RawResponse>() {
+        new BuildRGTestOrchestrationCommand(){
             @Override
-            public void onFailure(Throwable throwable) {
-                handleError(throwable);
-            }
-
-            @Override
-            public void onSuccess(RawResponse rawResponse) {
+            public void onComplete(RawResponse rawResponse) {
                 if (handleError(rawResponse, RgOrchestrationResponse.class)) return;
                 RgOrchestrationResponse orchResponse = (RgOrchestrationResponse) rawResponse;
                 testTab.orch = orchResponse;
                 panel().add(new HTML("<h2>Generated Environment</h2>"));
 
-                if (orchResponse.getMessage().length() > 0) {
-                    panel().add(new HTML("<h3>" + orchResponse.getMessage().replaceAll("\n", "<br />")  + "</h3>"));
-                }
+                handleMessages(null, orchResponse);
 
                 FlexTable table = new FlexTable();
                 panel().add(table);
@@ -98,15 +105,15 @@ class BuildRGTestOrchestrationButton extends ReportableButton {
                     }
                 }
             }
-        });
+        }.run(new BuildRgTestOrchestrationRequest(ClientUtils.INSTANCE.getCommandContext(),request));
     }
 
     int displayPIDs(FlexTable table, RgOrchestrationResponse response, int row) {
         table.setHTML(row++, 0, "<h3>Patient IDs</h3>");
         table.setText(row, 0, "Single document Patient ID");
-        table.setText(row++, 1, response.getOneDocPid().asString());
-        table.setText(row, 0, "Two document Patient ID");
-        table.setText(row++, 1, response.getTwoDocPid().asString());
+//        table.setText(row++, 1, response.getOneDocPid().asString());
+//        table.setText(row, 0, "Two document Patient ID");
+//        table.setText(row++, 1, response.getTwoDocPid().asString());
 
         return row;
     }

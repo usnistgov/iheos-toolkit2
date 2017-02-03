@@ -6,8 +6,8 @@ import gov.nist.toolkit.registrymetadata.MetadataParser;
 import gov.nist.toolkit.testengine.engine.StepContext;
 import gov.nist.toolkit.utilities.xml.Util;
 import gov.nist.toolkit.xdsexception.ExceptionUtil;
-import gov.nist.toolkit.xdsexception.XdsException;
-import gov.nist.toolkit.xdsexception.XdsInternalException;
+import gov.nist.toolkit.xdsexception.client.XdsException;
+import gov.nist.toolkit.xdsexception.client.XdsInternalException;
 import org.apache.axiom.om.OMElement;
 import org.apache.axiom.om.OMNamespace;
 import org.apache.axis2.AxisFault;
@@ -114,7 +114,7 @@ public class SqlQueryTransaction extends QueryTransaction {
 
 			testLog.add_name_value(instruction_output, "Result", result);
 
-			validate_registry_response_no_set_status(result, metadata_type);
+			validate_registry_response_no_set_status(result, "", metadata_type);
 
 			if (expected_contents != null ) {
 				String errors = validate_assertions(result, metadata_type, expected_contents);

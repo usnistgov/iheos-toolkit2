@@ -37,6 +37,31 @@ public class PropertyServiceManager {
 		return null;
 	}
 
+	public boolean getArchiveLogs() {
+		logger.debug(": getArchiveLogs");
+		return getPropertyManager().archiveLogs();
+	}
+
+	public String getMSH3() {
+		logger.debug(": " + "getMSH3");
+		return getPropertyManager().getMSH3();
+	}
+
+	public String getMSH4() {
+		logger.debug(": " + "getMSH4");
+		return getPropertyManager().getMSH4();
+	}
+
+	public String getMSH5() {
+		logger.debug(": " + "getMSH5");
+		return getPropertyManager().getMSH5();
+	}
+
+	public String getMSH6() {
+		logger.debug(": " + "getMSH6");
+		return getPropertyManager().getMSH6();
+	}
+
 	public boolean getCacheDisabled() {
 		logger.debug(": " + "getCacheDisabled");
 		return "true".equals(getPropertyManager().getCacheDisabled());
@@ -71,6 +96,10 @@ public class PropertyServiceManager {
 		return getPropertyManager().getListenerPortRange();
 	}
 
+	public boolean getAutoInitializeConformanceTool() {
+		return getPropertyManager().getAutoInitializeConformanceTool();
+	}
+
 	public String getToolkitEnableAllCiphers() {
 		logger.debug(": " + "getToolkitEnableAllCiphers");
 		return getPropertyManager().getToolkitEnableAllCiphers();
@@ -78,7 +107,7 @@ public class PropertyServiceManager {
 
 	public File getActorsFileName() {
 		logger.debug(": " + "getActorsFileName");
-		return new File(Installation.installation().externalCache(), "actors.xml");
+		return new File(Installation.instance().externalCache(), "actors.xml");
 	}
 
     public File getTestkit() {
@@ -110,40 +139,39 @@ public class PropertyServiceManager {
 			return;
 
 		// Create a File from the properties file in order to pass it to v3
-		assert Installation.installation().warHome()
+//		assert Installation.instance().warHome()
 		File propPath = null;
+		String location;
 		try {
-			logger.debug("*** getting toolkit.properties file:" + getClass().getResource("/toolkit.properties"));
+			URL url = getClass().getResource("/toolkit.properties");
+			location = url.getFile();
+			location = location.replaceAll("%20", " ");
+			logger.debug("*** getting toolkit.properties file:" + location);
 
-			URL propURL = getClass().getResource("/toolkit.properties");
-			propPath = new File(propURL.getFile());
-
-			setPropertiesFile(propPath.toString());
-
-//			logger.debug("*** got toolkit.properties file:" + propPath.toString());
+			setPropertiesFile(location);
 
 		} catch (Throwable t) {
 			t.printStackTrace();
 		}
 
-		propertyManager = new PropertyManager(propPath.toString());
+		propertyManager = new PropertyManager(location);
 
 		// This removes the dependency that
 		// gov.nist.registry.common2.xml.SchemaValidation
 		// has on port 9080
 		// Schema references will be made directly through the file system and not
 		// via "system" references (via a URI)
-		System.setProperty("XDSSchemaDir", new File(new File(Installation.installation().warHome(), "toolkitx"), "schema").toString());
+//		System.setProperty("XDSSchemaDir", new File(new File(Installation.instance().warHome(), "toolkitx"), "schema").toString());
 	}
 
 	public File internalActorsFile() {
-        assert Installation.installation().warHome()
-		return new File(new File(new File(Installation.installation().warHome(), "toolkitx"),  "xdstest"), "actors.xml");
+        assert Installation.instance().warHome()
+		return new File(new File(new File(Installation.instance().warHome(), "toolkitx"),  "xdstest"), "actors.xml");
 	}
 
 
 	public File getTestLogCache() throws IOException {
-		File testLogCache = Installation.installation().testLogCache();
+		File testLogCache = Installation.instance().testLogCache();
 		File f;
 		
 		f = testLogCache;
@@ -184,7 +212,7 @@ public class PropertyServiceManager {
 	}
 	
 	File getAttributeCache(String username) throws Exception {
-		String attributeCache = new File(new File(Installation.installation().externalCache(), "Attributes"), username);
+		String attributeCache = new File(new File(Installation.instance().externalCache(), "Attributes"), username);
 		File f = new File(attributeCache);
 
 		if (!( f.exists() && f.isDirectory() && f.canWrite()  )) {
@@ -214,8 +242,8 @@ public class PropertyServiceManager {
 
 	public String getImplementationVersion() {
 		logger.debug(": " + "getImplementationVersion");
-        assert Installation.installation().warHome()
-		File f = new File(Installation.installation().warHome(), "build.num");
+        assert Installation.instance().warHome()
+		File f = new File(Installation.instance().warHome(), "build.num");
 		String ver = null;
 		try {
 			ver = Io.stringFromFile(f);

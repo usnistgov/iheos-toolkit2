@@ -7,6 +7,7 @@ import gov.nist.toolkit.actortransaction.EndpointParser
 import gov.nist.toolkit.actortransaction.client.ActorType
 import gov.nist.toolkit.configDatatypes.SimulatorProperties
 import gov.nist.toolkit.services.server.ToolkitApi
+import gov.nist.toolkit.services.server.UnitTestEnvironmentManager
 import gov.nist.toolkit.simulators.servlet.ReconfigureSimulators
 import spock.lang.Shared
 import spock.lang.Specification
@@ -14,7 +15,7 @@ import spock.lang.Specification
  * Test updating a simulator with new host:port
  */
 class ReconfigureSpec extends Specification {
-    @Shared ToolkitApi api = ToolkitApi.forInternalUse()
+    @Shared ToolkitApi api = new ToolkitApi(UnitTestEnvironmentManager.setupLocalToolkit())
     @Shared String retrieveEndpoint
     SimId simId
     SimulatorConfig config
@@ -25,6 +26,10 @@ class ReconfigureSpec extends Specification {
         Simulator sim = api.createSimulator(simId)
         config = sim.getConfig(0)
         retrieveEndpoint = config.getConfigEle(SimulatorProperties.retrieveEndpoint).asString()
+    }
+
+    def cleanup() {
+        api.deleteSimulatorIfItExists(simId)
     }
 
     def 'confirm original config'() {

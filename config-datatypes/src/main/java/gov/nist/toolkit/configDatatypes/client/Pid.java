@@ -8,7 +8,7 @@ import java.io.Serializable;
 public class Pid implements Serializable {
     String ad = null;
     String id = null;
-    String extra = null;
+    String extra = "";
 
     public Pid(String ad, String id) {
         if (ad == null) this.ad = ad;
@@ -31,6 +31,7 @@ public class Pid implements Serializable {
 
     public String getAd() { return ad; }
     public String getId() { return id; }
+    public void setId(String id){this.id=id;}
 
     @Override
     public boolean equals(Object o) {
@@ -55,11 +56,11 @@ public class Pid implements Serializable {
     }
 
     public boolean validate() {
-        if (!isAdProperOid()) return false;
-        return isIdProper();
+        if (!adProperOid()) return false;
+        return idProper();
     }
 
-    public boolean isAdProperOid() {
+    private boolean adProperOid() {
         if (ad == null) return false;
         for (int i=0; i<ad.length(); i++) {
             char c = ad.charAt(i);
@@ -70,7 +71,7 @@ public class Pid implements Serializable {
         return true;
     }
 
-    boolean isIdProper() {
+    private boolean idProper() {
         if (id == null) return false;
         for (int i=0; i<id.length(); i++) {
             char c = id.charAt(i);
@@ -90,10 +91,13 @@ public class Pid implements Serializable {
     public String asParsableString() {
         if (extra == null)
             return toString();
-        return toString() + " - " + extra;
+        return toString() + " "+PidBuilder.SEPARATOR+" " + extra;
     }
 
     // String representation - as required in protocols
     public String asString() { return toString(); }
 
+    public String getExtra() {
+        return extra;
+    }
 }

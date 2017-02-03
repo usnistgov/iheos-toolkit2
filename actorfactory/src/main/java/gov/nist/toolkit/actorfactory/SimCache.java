@@ -37,6 +37,17 @@ public class SimCache {
         return sitesSet;
     }
 
+    static Collection<String> getAllRepositoryUniqueIds() throws Exception {
+        Collection<Site> sites = getAllSites();
+        Set<String> ids = new HashSet<>();
+        for (Site site : sites) {
+            Set<String> siteIds = site.repositoryUniqueIds();
+            ids.addAll(siteIds);
+        }
+
+        return ids;
+    }
+
     static public String describe() {
         StringBuilder buf = new StringBuilder();
         try {
@@ -79,6 +90,14 @@ public class SimCache {
 
     static public SimManager getSimManagerForSession(String sessionId) {
         return getSimManagerForSession(sessionId, false);
+    }
+
+    static public Site getSite(String sessionId, String siteName) {
+        try {
+            return getSimManagerForSession(sessionId).getAllSites().getSite(siteName);
+        } catch (Exception e) {
+            return null;
+        }
     }
 
     static public SimManager getSimManagerForSession(String sessionId, boolean create) {
@@ -134,7 +153,7 @@ public class SimCache {
         return null;
     }
 
-    static public void deleteSimConfig(SimId simId) throws IOException {
+    static public void deleteSimConfig(SimId simId) throws Exception {
         // remove from cache
         for (SimManager sman : mgrs.values()) {
             sman.removeSimulatorConfig(simId);

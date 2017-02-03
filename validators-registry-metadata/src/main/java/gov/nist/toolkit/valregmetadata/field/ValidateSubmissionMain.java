@@ -5,6 +5,9 @@ import gov.nist.toolkit.errorrecording.TextErrorRecorder;
 import gov.nist.toolkit.errorrecording.client.XdsErrorCode;
 import gov.nist.toolkit.registrymetadata.Metadata;
 import gov.nist.toolkit.registrymetadata.MetadataParser;
+import gov.nist.toolkit.valregmetadata.top.MetadataValidator;
+import gov.nist.toolkit.valregmetadata.top.ObjectStructureValidator;
+import gov.nist.toolkit.valregmetadata.top.SubmissionStructure;
 import gov.nist.toolkit.valsupport.client.ValidationContext;
 import gov.nist.toolkit.valsupport.engine.DefaultValidationContextFactory;
 
@@ -25,10 +28,9 @@ public class ValidateSubmissionMain  {
 			vc.isR = true;
 			vc.skipInternalStructure = true;
 			MetadataValidator mv = new MetadataValidator(m, vc, null);
-			mv.runObjectStructureValidation(er);
+			new ObjectStructureValidator(m, vc, null).run(er);
 			mv.runCodeValidation(er);
-			mv.runSubmissionStructureValidation(er);
-			
+			new SubmissionStructure(m, null).run(er, vc);
 			er.finish();
 
 		} catch (Exception e) {

@@ -5,7 +5,7 @@ import gov.nist.toolkit.actortransaction.client.ActorType
 import gov.nist.toolkit.installation.ExternalCacheManager
 import gov.nist.toolkit.installation.Installation
 import gov.nist.toolkit.utilities.io.Io
-import gov.nist.toolkit.xdsexception.ToolkitRuntimeException
+import gov.nist.toolkit.xdsexception.client.ToolkitRuntimeException
 import spock.lang.Specification
 
 /**
@@ -52,7 +52,7 @@ class SimDbTest extends Specification {
         SimDb.mkSim(new SimId('bill', 'foo'), ActorType.REPOSITORY.name)
 
         and:
-        File sdb = Installation.installation().simDbFile()
+        File sdb = Installation.instance().simDbFile()
         File file = new File(sdb, 'foo')
         file.mkdir()
 
@@ -67,7 +67,7 @@ class SimDbTest extends Specification {
         SimDb.mkSim(new SimId('bill', 'foo'), ActorType.REPOSITORY.name)
 
         and:
-        File sdb = Installation.installation().simDbFile()
+        File sdb = Installation.instance().simDbFile()
         File file = new File(sdb, 'a_file.txt')
         Io.stringToFile(file, "hello")
         println file.toString()

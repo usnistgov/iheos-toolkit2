@@ -1,26 +1,19 @@
 package gov.nist.toolkit.xdstools2.client.tabs;
 
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.user.client.ui.*;
 import gov.nist.toolkit.http.client.HtmlMarkup;
-import gov.nist.toolkit.xdstools2.client.RegistryStatus;
-import gov.nist.toolkit.xdstools2.client.RepositoryStatus;
-import gov.nist.toolkit.xdstools2.client.TabContainer;
+import gov.nist.toolkit.xdstools2.client.command.command.GetDashboardRegistryDataCommand;
+import gov.nist.toolkit.xdstools2.client.command.command.GetDashboardRepositoryDataCommand;
 import gov.nist.toolkit.xdstools2.client.siteActorManagers.GetDocumentsSiteActorManager;
 import gov.nist.toolkit.xdstools2.client.tabs.genericQueryTab.GenericQueryTab;
+import gov.nist.toolkit.xdstools2.shared.RegistryStatus;
+import gov.nist.toolkit.xdstools2.shared.RepositoryStatus;
 
 import java.util.List;
 
-import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.user.client.rpc.AsyncCallback;
-import com.google.gwt.user.client.ui.Anchor;
-import com.google.gwt.user.client.ui.FlexTable;
-import com.google.gwt.user.client.ui.HTML;
-import com.google.gwt.user.client.ui.VerticalPanel;
-
 public class DashboardTab  extends GenericQueryTab {
-	//	final protected ToolkitServiceAsync toolkitService = GWT
-	//	.create(ToolkitService.class);
-
 	List<RegistryStatus> regData;
 	List<RepositoryStatus> repData;
 
@@ -32,19 +25,30 @@ public class DashboardTab  extends GenericQueryTab {
 		super(new GetDocumentsSiteActorManager());
 	}
 
-	public void onTabLoad(TabContainer container, boolean select, String eventName) {
-		myContainer = container;
-		topPanel = new VerticalPanel();
+	@Override
+	protected Widget buildUI() {
+		return null;
+	}
 
+	@Override
+	protected void bindUI() {
 
-		container.addTab(topPanel, "Dashboard", select);
-		addCloseButton(container,topPanel, null);
+	}
+
+	@Override
+	protected void configureTabView() {
+
+	}
+
+	@Override
+	public void onTabLoad(boolean select, String eventName) {
+		registerTab(select, "Dashboard");
 
 		HTML title = new HTML();
 		title.setHTML("<h2>XDS Dashboard</h2>");
-		topPanel.add(title);
+		tabTopPanel.add(title);
 
-		topPanel.add(mainDataArea);
+		tabTopPanel.add(mainDataArea);
 
 		reload = new Anchor();
 		reload.setTitle("Reload actors configuration");
@@ -63,6 +67,15 @@ public class DashboardTab  extends GenericQueryTab {
 	}
 
 	void draw() {
+
+		Button reloadButton = new Button("Reload");
+		reloadButton.addClickHandler(new ClickHandler() {
+			@Override
+			public void onClick(ClickEvent clickEvent) {
+				load();
+			}
+		});
+		mainDataArea.add(reloadButton);
 
 		try {
 			mainDataArea.add(HtmlMarkup.html(repData.get(0).date));
@@ -158,39 +171,27 @@ public class DashboardTab  extends GenericQueryTab {
 
 		mainDataArea.clear();
 
-		toolkitService.getDashboardRegistryData(new AsyncCallback<List<RegistryStatus>>() {
-
-			public void onFailure(Throwable caught) {
-				mainDataArea.add(HtmlMarkup.html(caught.getMessage()));
-			}
-
-			public void onSuccess(List<RegistryStatus> result) {
+		new GetDashboardRegistryDataCommand(){
+			@Override
+			public void onComplete(List<RegistryStatus> result) {
 				regData = result;
 				regDone = true;
 
 				if (regDone && repDone)
 					draw();
 			}
+		}.run(getCommandContext());
 
-		});
-
-		toolkitService.getDashboardRepositoryData(new AsyncCallback<List<RepositoryStatus>>() {
-
-			public void onFailure(Throwable caught) {
-				mainDataArea.add(HtmlMarkup.html(caught.getMessage()));
-			}
-
-			public void onSuccess(List<RepositoryStatus> result) {
+		new GetDashboardRepositoryDataCommand(){
+			@Override
+			public void onComplete(List<RepositoryStatus> result) {
 				repData = result;
 				repDone = true;
 
 				if (regDone && repDone)
 					draw();
 			}
-
-		});
-
-
+		}.run(getCommandContext());
 	}
 
 

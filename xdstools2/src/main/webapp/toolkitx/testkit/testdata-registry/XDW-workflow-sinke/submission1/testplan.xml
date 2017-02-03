@@ -1,0 +1,12 @@
+
+<TestPlan>
+  <Test>ReferenceId-testdata/submission1</Test>
+  <TestStep id="submission1">
+  <ExpectedStatus>Success</ExpectedStatus>
+  <RegisterTransaction>
+    <XDSb/>
+    <MetadataFile>metadata.xml</MetadataFile>
+  </RegisterTransaction>
+</TestStep>
+
+</TestPlan>

@@ -175,13 +175,20 @@ public class RegIndex implements RegistryValidationInterface, Serializable {
 
 	// This must be called from a synchronize block
 	static MetadataCollection restoreRegistry(String filename) throws IOException, ClassNotFoundException {
-		FileInputStream fis;
-		ObjectInputStream in;
+		FileInputStream fis = null;
+		ObjectInputStream in = null;
 		MetadataCollection mc;
-		fis = new FileInputStream(filename);
-		in = new ObjectInputStream(fis);
-		mc = (MetadataCollection)in.readObject();
-		in.close();
+		try {
+			fis = new FileInputStream(filename);
+			in = new ObjectInputStream(fis);
+			mc = (MetadataCollection)in.readObject();
+		} finally {
+			in.close();
+			if (fis!=null)
+				fis.close();
+		}
+
+
 		return mc;
 	}
 

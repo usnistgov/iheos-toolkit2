@@ -5,7 +5,7 @@ import com.google.gwt.event.shared.GwtEvent;
 import java.util.List;
 
 /**
- * Created by bill on 9/16/15.
+ *
  */
 public class TestSessionsUpdatedEvent extends GwtEvent<TestSessionsUpdatedEventHandler> {
     public static final Type<TestSessionsUpdatedEventHandler> TYPE = new Type<>();

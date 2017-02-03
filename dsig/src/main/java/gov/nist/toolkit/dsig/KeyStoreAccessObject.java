@@ -1,7 +1,7 @@
 package gov.nist.toolkit.dsig;
 
 import gov.nist.toolkit.securityCommon.SecurityParams;
-import gov.nist.toolkit.xdsexception.EnvironmentNotSelectedException;
+import gov.nist.toolkit.xdsexception.client.EnvironmentNotSelectedException;
 import gov.nist.toolkit.xdsexception.LoadKeystoreException;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -71,8 +71,8 @@ public class KeyStoreAccessObject {
 			Properties props = new Properties();
 
 			//String root = System.getProperty("warHome");
-			String cache_root = System.getProperty("External_Cache");
-			String environmentName = System.getProperty("Environment_Name");
+//			String cache_root = System.getProperty("External_Cache");
+//			String environmentName = System.getProperty("Environment_Name");
 			
 			File keystoreDir = null;
 			try {

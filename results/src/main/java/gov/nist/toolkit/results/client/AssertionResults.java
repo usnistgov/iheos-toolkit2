@@ -94,5 +94,12 @@ public class AssertionResults implements IsSerializable, Serializable {
 		}
 		return false;
 	}
-	
+
+	public AssertionResult getAssertionThatContains(String text) {
+		for (AssertionResult res : assertions) {
+			if (res.assertion.contains(text))
+				return res;
+		}
+		return null;
+	}
 }

@@ -7,24 +7,27 @@ import gov.nist.toolkit.registrymetadata.Metadata
 import gov.nist.toolkit.registrymetadata.MetadataParser
 import gov.nist.toolkit.results.client.LogIdIOFormat
 import gov.nist.toolkit.results.client.LogIdType
-import gov.nist.toolkit.results.client.SiteSpec
 import gov.nist.toolkit.results.client.TestInstance
 import gov.nist.toolkit.session.server.Session
 import gov.nist.toolkit.sitemanagement.SeparateSiteLoader
 import gov.nist.toolkit.sitemanagement.Sites
 import gov.nist.toolkit.sitemanagement.client.Site
+import gov.nist.toolkit.sitemanagement.client.SiteSpec
 import gov.nist.toolkit.testengine.engine.TransactionSettings
 import gov.nist.toolkit.testengine.engine.Xdstest2
-import gov.nist.toolkit.testenginelogging.LogFileContent
-import gov.nist.toolkit.testenginelogging.LogMap
-import gov.nist.toolkit.testenginelogging.LogMapItem
-import gov.nist.toolkit.testenginelogging.TestStepLogContent
+import gov.nist.toolkit.testenginelogging.client.LogFileContentDTO
+import gov.nist.toolkit.testenginelogging.client.LogMapDTO
+import gov.nist.toolkit.testenginelogging.client.LogMapItemDTO
+import gov.nist.toolkit.testenginelogging.client.TestStepLogContentDTO
 import gov.nist.toolkit.testenginelogging.logrepository.LogRepository
 import gov.nist.toolkit.testenginelogging.logrepository.LogRepositoryFactory
+import gov.nist.toolkit.testkitutilities.TestKit
+import gov.nist.toolkit.testkitutilities.TestKitSearchPath
+import gov.nist.toolkit.utilities.xml.Util
 import gov.nist.toolkit.utilities.xml.XmlUtil
 import gov.nist.toolkit.xdsexception.ExceptionUtil
-import gov.nist.toolkit.xdstools2.client.RegistryStatus
-import gov.nist.toolkit.xdstools2.client.RepositoryStatus
+import gov.nist.toolkit.xdstools2.shared.RegistryStatus
+import gov.nist.toolkit.xdstools2.shared.RepositoryStatus
 import groovy.transform.TypeChecked
 import org.apache.axiom.om.OMElement
 
@@ -67,7 +70,7 @@ public class DashboardDaemon {
 		output = outputDirStr;
 	}
 
-	public void run(String pid) throws FactoryConfigurationError, Exception, IOException {
+	public void run(String pid, boolean secure) throws FactoryConfigurationError, Exception, IOException {
 		this.pid = pid;
 		new File(output).mkdirs();
 //		SiteServiceManager siteServiceManager = new SiteServiceManager(null);
@@ -78,12 +81,12 @@ public class DashboardDaemon {
 //		sites = siteServiceManager.getSites();
 		// experimental
 //		s = toolkit.getSession();
-		s.setTls(false);    // ignores this and still uses TLS
-		scanRepositories();
-		scanRegistries();
+		s.setTls(secure);    // ignores this and still uses TLS
+		scanRepositories(secure);
+		scanRegistries(secure);
 	}
 
-	void scanRegistries()  {
+	void scanRegistries(boolean secure)  {
 		File dir = new File(output + "/Registry");
 		dir.mkdirs();
 
@@ -108,9 +111,8 @@ public class DashboardDaemon {
 				registrySave(regStatus, new File(dir, regSiteName + ".ser"))
 				continue;
 			}
-			boolean isSecure = true;
 			try {
-				regStatus.endpoint = site.getEndpoint(TransactionType.STORED_QUERY, isSecure, false);
+				regStatus.endpoint = site.getEndpoint(TransactionType.STORED_QUERY, secure, false);
 			} catch (Exception e1) {
 				regStatus.status = false;
 				regStatus.fatalError = ExceptionUtil.exception_details(e1, exceptionReportingDepth);
@@ -118,9 +120,10 @@ public class DashboardDaemon {
 				continue;
 			}
 
+			TestKitSearchPath searchPath = new TestKitSearchPath(environmentName, "default");
 			Xdstest2 xdstest;
 			try {
-				xdstest = new Xdstest2(new File(warHome + File.separator + "toolkitx"), null);
+				xdstest = new Xdstest2(new File(warHome + File.separator + "toolkitx"), searchPath, null);
 			} catch (Exception e) {
 				regStatus.status = false;
 				regStatus.fatalError = ExceptionUtil.exception_details(e, exceptionReportingDepth);
@@ -129,13 +132,16 @@ public class DashboardDaemon {
 			}
 			xdstest.setSites(sites);
 			xdstest.setSite(site);
-			xdstest.setSecure(true);
+			xdstest.setSecure(secure);
             TestInstance testInstance = new TestInstance("GetDocuments")
 			List<String> areas = ['utilities'];
 			List<String> sections = new ArrayList<String>();
 			sections.add("XDS");
 			try {
-				xdstest.addTest(testInstance, sections, (String[]) areas.toArray());
+				TestKit testKit = searchPath.getTestKitForTest(testInstance.getId());
+				if (testKit == null)
+					throw new Exception("Test " + testInstance + " not found");
+				xdstest.addTest(testKit, testInstance, sections, (String[]) areas.toArray());
 			} catch (Exception e1) {
 				regStatus.status = false;
 				regStatus.fatalError = ExceptionUtil.exception_details(e1, exceptionReportingDepth);
@@ -158,8 +164,8 @@ public class DashboardDaemon {
 			ts.securityParams = s;
             ts.logRepository =
             LogRepositoryFactory.
-                    getRepository(
-                            Installation.installation().sessionCache(),
+                    getLogRepository(
+                            Installation.instance().sessionCache(),
                             session.getId(),
                             LogIdIOFormat.JAVA_SERIALIZATION,
                             LogIdType.TIME_ID,
@@ -173,7 +179,7 @@ public class DashboardDaemon {
 				registrySave(regStatus, new File(dir, regSiteName + ".ser"))
 				continue;
 			}
-			LogMap logMap;
+			LogMapDTO logMap;
 			try {
 				logMap = xdstest.getLogMap();
 			} catch (Exception e1) {
@@ -182,9 +188,9 @@ public class DashboardDaemon {
 				registrySave(regStatus, new File(dir, regSiteName + ".ser"))
 				continue;
 			}
-			LogMapItem item = logMap.getItems().get(0);
-			LogFileContent logFile = item.log;
-			List<TestStepLogContent> testStepLogs;
+			LogMapItemDTO item = logMap.getItems().get(0);
+			LogFileContentDTO logFile = item.log;
+			List<TestStepLogContentDTO> testStepLogs;
 			try {
 				testStepLogs = logFile.getStepLogs();
 			} catch (Exception e1) {
@@ -193,10 +199,10 @@ public class DashboardDaemon {
 				registrySave(regStatus, new File(dir, regSiteName + ".ser"))
 				continue;
 			}
-			TestStepLogContent tsl = testStepLogs.get(0);
+			TestStepLogContentDTO testStepLogContentDTO = testStepLogs.get(0);
 
 			try {
-				OMElement ele = tsl.getRawResult();
+				OMElement ele = Util.parse_xml(testStepLogContentDTO.getResult());
 				List<OMElement> objrefs = XmlUtil.decendentsWithLocalName(ele, "ObjectRef");
 				Metadata m = new Metadata();
 				for (OMElement objref : objrefs) {
@@ -217,7 +223,7 @@ public class DashboardDaemon {
 			regStatus.fatalError = logFile.getFatalError();
 
 			try {
-				regStatus.errors = tsl.getErrors();
+				regStatus.errors = testStepLogContentDTO.getErrors();
 			} catch (Exception e) {
 			}
 
@@ -227,7 +233,7 @@ public class DashboardDaemon {
 		}
 	}
 
-	void scanRepositories()  {
+	void scanRepositories(boolean secure)  {
 		List<String> repositorySiteNames;
 		try {
 			repositorySiteNames = sites.getSiteNamesWithRepository();
@@ -251,9 +257,8 @@ public class DashboardDaemon {
 				repositorySave(rstatus);
 				continue;
 			}
-			boolean isSecure = true;
 			try {
-				rstatus.endpoint = site.getEndpoint(TransactionType.PROVIDE_AND_REGISTER, isSecure, false);
+				rstatus.endpoint = site.getEndpoint(TransactionType.PROVIDE_AND_REGISTER, secure, false);
 			} catch (Exception e) {
 				rstatus.status = false;
 				rstatus.fatalError = ExceptionUtil.exception_details(e, exceptionReportingDepth)
@@ -265,7 +270,8 @@ public class DashboardDaemon {
 
 			Xdstest2 xdstest;
 			try {
-				xdstest = new Xdstest2(new File(warHome + File.separator + "toolkitx"), null);
+				TestKitSearchPath searchPath = new TestKitSearchPath(environmentName, "default");
+				xdstest = new Xdstest2(new File(warHome + File.separator + "toolkitx"), searchPath, null);
 			} catch (Exception e) {
 				rstatus.status = false;
 				rstatus.fatalError = ExceptionUtil.exception_details(e, exceptionReportingDepth)
@@ -274,11 +280,11 @@ public class DashboardDaemon {
 			}
 			xdstest.setSites(sites);
 			xdstest.setSite(site);
-			xdstest.setSecure(true);
-            TestInstance testInstance = new TestInstance("SingleDocument")
+			xdstest.setSecure(secure);
+            TestInstance testInstance = new TestInstance("SingleDocument-Repository")
             LogRepository logRepository = LogRepositoryFactory.
-                    getRepository(
-                            Installation.installation().sessionCache(),
+                    getLogRepository(
+                            Installation.instance().sessionCache(),
                             session.getId(),
                             LogIdIOFormat.JAVA_SERIALIZATION,
                             LogIdType.TIME_ID,
@@ -287,7 +293,11 @@ public class DashboardDaemon {
             println logRepository
             List<String> areas = ['testdata-repository']
 			try {
-				xdstest.addTest(testInstance, null, (String[]) areas.toArray());
+				TestKitSearchPath searchPath = new TestKitSearchPath(environmentName, "default");
+				TestKit testKit = searchPath.getTestKitForTest(testInstance.getId());
+				if (testKit == null)
+					throw new Exception("Test " + testInstance + " not found");
+				xdstest.addTest(testKit, testInstance, null, (String[]) areas.toArray());
 			} catch (Exception e1) {
 				rstatus.status = false;
 				rstatus.fatalError = ExceptionUtil.exception_details(e1, exceptionReportingDepth)
@@ -310,7 +320,7 @@ public class DashboardDaemon {
 				repositorySave(rstatus);
 				continue;
 			}
-			LogMap logMap;
+			LogMapDTO logMap;
 			try {
 				logMap = xdstest.getLogMap();
 			} catch (Exception e1) {
@@ -319,9 +329,9 @@ public class DashboardDaemon {
 				repositorySave(rstatus);
 				continue;
 			}
-			LogMapItem item = logMap.getItems().get(0);
-			LogFileContent logFile = item.log;
-			List<TestStepLogContent> testStepLogs;
+			LogMapItemDTO item = logMap.getItems().get(0);
+			LogFileContentDTO logFile = item.log;
+			List<TestStepLogContentDTO> testStepLogs;
 			try {
 				testStepLogs = logFile.getStepLogs();
 			} catch (Exception e1) {
@@ -330,10 +340,10 @@ public class DashboardDaemon {
 				repositorySave(rstatus);
 				continue;
 			}
-			TestStepLogContent tsl = testStepLogs.get(0);
+			TestStepLogContentDTO stepLogContentDTO = testStepLogs.get(0);
 
 			try {
-				OMElement ele = tsl.getRawInputMetadata();
+				OMElement ele = Util.parse_xml(stepLogContentDTO.getInputMetadata());
 				Metadata m = MetadataParser.parseNonSubmission(ele);
 				OMElement de = m.getExtrinsicObject(0);
 				String docUUID = m.getId(de);
@@ -348,7 +358,7 @@ public class DashboardDaemon {
 			System.out.println("Fatal error is " + rstatus.fatalError);
 
 			try {
-				rstatus.errors = tsl.getErrors();
+				rstatus.errors = stepLogContentDTO.getErrors();
 			} catch (Exception e) {
 			}
 
@@ -399,8 +409,8 @@ public class DashboardDaemon {
 
 	static public void main(String[] args) {
 
-		if (args.length != 5) {
-			System.out.println("Usage: DashboardDaemon <Patient ID> <warHome> <output directory> <environment_name> <external_cache>");
+		if (args.length != 6) {
+			System.out.println("Usage: DashboardDaemon <Patient ID> <warHome> <output directory> <environment_name> <external_cache> <TLS? (true|false)>");
 			System.exit(-1);
 		}
 
@@ -409,10 +419,11 @@ public class DashboardDaemon {
 		String outdir = args[2];
 		String env = args[3];
 		String externalCache = args[4];
+		boolean secure = 'true' == args[5]
 
 		try {
 			DashboardDaemon dd = new DashboardDaemon(warhom, outdir, env, externalCache);
-			dd.run(pid);
+			dd.run(pid, secure);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

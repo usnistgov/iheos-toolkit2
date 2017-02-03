@@ -20,10 +20,10 @@ class RegisterSpec extends ToolkitSpecification {
 
 
     @Shared String urlRoot = String.format("http://localhost:%s/xdstools2", remoteToolkitPort)
-    String patientId = 'BR14^^^&1.2.360&ISO'
-    String patientId2 = 'BR15^^^&1.2.360&ISO'
-    String reg = 'bill__reg'
-    SimId simId = new SimId(reg)
+    @Shared String patientId = 'BR14^^^&1.2.360&ISO'
+    @Shared String patientId2 = 'BR15^^^&1.2.360&ISO'
+    @Shared String reg = 'bill__reg'
+    @Shared SimId simId = new SimId(reg)
     @Shared String testSession = 'bill';
 
     def setupSpec() {   // one time setup done when class launched
@@ -47,12 +47,16 @@ class RegisterSpec extends ToolkitSpecification {
     }
 
     def cleanupSpec() {  // one time shutdown when everything is done
+//        System.gc()
+        spi.delete('reg', testSession)
+        spi.delete('reg', 'test')
+        api.deleteSimulatorIfItExists(simId)
         server.stop()
         ListenerFactory.terminateAll()
     }
 
     def setup() {
-        println "EC is ${Installation.installation().externalCache().toString()}"
+        println "EC is ${Installation.instance().externalCache().toString()}"
         println "${api.getSiteNames(true)}"
         api.createTestSession(testSession)
         if (!api.simulatorExists(simId)) {
@@ -85,13 +89,13 @@ class RegisterSpec extends ToolkitSpecification {
 //        when:
 //        String siteName = 'bill__reg'
 //        TestInstance testId = new TestInstance("tc:R.b")
-//        List<String> sections = new ArrayList<>()
+//        List<String> SECTIONS = new ArrayList<>()
 //        Map<String, String> params = new HashMap<>()
 //        params.put('$patientid$', patientId)
 //        boolean stopOnFirstError = true
 //
 //        and: 'Run'
-//        List<Result> results = api.runTest(testSession, siteName, testId, sections, params, stopOnFirstError)
+//        List<Result> results = api.runTest(testSession, siteName, testId, SECTIONS, params, stopOnFirstError)
 //
 //        then:
 //        true
@@ -107,6 +111,25 @@ class RegisterSpec extends ToolkitSpecification {
         List<String> sections = new ArrayList<>()
         Map<String, String> params = new HashMap<>()
         params.put('$patientid$', patientId)
+        boolean stopOnFirstError = true
+
+        and: 'Run'
+        List<Result> results = api.runTest(testSession, siteName, testId, sections, params, stopOnFirstError)
+
+        then:
+        true
+        results.size() == 1
+        results.get(0).passed()
+    }
+
+    def 'Run a submit with namespace tests'() {
+        when:
+        String siteName = 'bill__reg'
+        TestInstance testId = new TestInstance("regsubmit")
+        List<String> sections = new ArrayList<>()
+        Map<String, String> params = new HashMap<>()
+        params.put('$patientid$', patientId)
+        params.put('$ssid$',"1.42.20161129094708.61")
         boolean stopOnFirstError = true
 
         and: 'Run'

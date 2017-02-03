@@ -14,7 +14,7 @@ import gov.nist.toolkit.simcommon.client.config.SimulatorConfigElement;
 import gov.nist.toolkit.sitemanagement.client.Site;
 import gov.nist.toolkit.sitemanagement.client.TransactionBean;
 import gov.nist.toolkit.sitemanagement.client.TransactionBean.RepositoryType;
-import gov.nist.toolkit.xdsexception.EnvironmentNotSelectedException;
+import gov.nist.toolkit.xdsexception.client.EnvironmentNotSelectedException;
 import gov.nist.toolkit.xdsexception.NoSessionException;
 
 import java.io.File;
@@ -108,14 +108,14 @@ public class RegistryActorFactory extends AbstractActorFactory {
 			updateEndpointEle.name = SimulatorProperties.updateEndpoint;
 			updateEndpointEle.type = ParamType.ENDPOINT;
 			updateEndpointEle.transType = TransactionType.UPDATE; 
-			updateEndpointEle.setValue(mkEndpoint(config, updateEndpointEle, ActorType.REGISTRY.getShortName(), false)); 
+			updateEndpointEle.setStringValue(mkEndpoint(config, updateEndpointEle, ActorType.REGISTRY.getShortName(), false));
 			addFixed(config, updateEndpointEle);
 			 
 			updateEndpointEle = new SimulatorConfigElement();
 			updateEndpointEle.name = SimulatorProperties.updateTlsEndpoint;
 			updateEndpointEle.type = ParamType.ENDPOINT;
 			updateEndpointEle.transType = TransactionType.UPDATE; 
-			updateEndpointEle.setValue(mkEndpoint(config, updateEndpointEle, ActorType.REGISTRY.getShortName(), true)); 
+			updateEndpointEle.setStringValue(mkEndpoint(config, updateEndpointEle, ActorType.REGISTRY.getShortName(), true));
 			addFixed(config, updateEndpointEle);
 			 
 			
@@ -196,7 +196,7 @@ public class RegistryActorFactory extends AbstractActorFactory {
 //		}
 		SimulatorConfigElement pifPortElement = asc.get(SimulatorProperties.PIF_PORT);
 		site.pifPort = pifPortElement.asString();
-		site.pifHost = Installation.installation().propertyServiceManager().getToolkitHost();
+		site.pifHost = Installation.instance().propertyServiceManager().getToolkitHost();
 
 		return site;
 	}

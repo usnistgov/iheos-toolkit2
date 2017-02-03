@@ -2,9 +2,9 @@ package gov.nist.toolkit.registrymetadata;
 
 import gov.nist.toolkit.utilities.io.Io;
 import gov.nist.toolkit.utilities.xml.Util;
-import gov.nist.toolkit.xdsexception.MetadataException;
-import gov.nist.toolkit.xdsexception.MetadataValidationException;
-import gov.nist.toolkit.xdsexception.XdsInternalException;
+import gov.nist.toolkit.xdsexception.client.MetadataException;
+import gov.nist.toolkit.xdsexception.client.MetadataValidationException;
+import gov.nist.toolkit.xdsexception.client.XdsInternalException;
 import org.apache.axiom.om.OMElement;
 import org.apache.log4j.Logger;
 
@@ -59,9 +59,12 @@ public class MetadataParser {
 
 	// may be hidden in a multi-part or worse - make best effort
 	static public Metadata parseContent(File metadata_file) throws IOException, XdsInternalException, MetadataException {
-		int index = 0;
-
 		String data = Io.stringFromFile(metadata_file);
+		return parseContent(null, data);
+	}
+
+	static public Metadata parseContent(File metadata_file, String data) throws XdsInternalException, MetadataException {
+		int index = 0;
 		OMElement ele = null;
 		for (int i=0; i<10; i++) { // try to skip past header junk to find real xml
 			try {
@@ -72,7 +75,7 @@ public class MetadataParser {
 				logger.debug("Parse Failed");
 				index = data.indexOf('<', index+1);
 				if (index == -1)
-					throw new XdsInternalException("Cannot XML parse file " + metadata_file);
+					throw new XdsInternalException("Cannot XML parse metadata " + ((metadata_file == null) ? "" : metadata_file));
 				continue;
 			}
 			logger.debug("Parse succeeded");

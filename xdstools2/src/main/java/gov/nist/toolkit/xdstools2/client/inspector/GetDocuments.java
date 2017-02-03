@@ -9,8 +9,12 @@ import gov.nist.toolkit.registrymetadata.client.ObjectRefs;
 import gov.nist.toolkit.results.client.Result;
 import gov.nist.toolkit.results.client.StepResult;
 import gov.nist.toolkit.results.client.TestInstance;
+import gov.nist.toolkit.xdstools2.client.command.command.GetDocumentsCommand;
+import gov.nist.toolkit.xdstools2.client.util.ClientUtils;
+import gov.nist.toolkit.xdstools2.shared.command.request.GetDocumentsRequest;
 
 import java.util.List;
+
 
 public class GetDocuments implements ClickHandler {
 	MetadataInspectorTab it;
@@ -23,26 +27,24 @@ public class GetDocuments implements ClickHandler {
 		if (isLid)
 			aids.labelAsLids();
 		
-		it.data.toolkitService.getDocuments(null, aids, queryCallback);
+		/*it.data.*/
+		new GetDocumentsCommand(){
+			@Override
+			public void onFailure(Throwable caught) {
+				Result result = Result.RESULT(new TestInstance("GetDocuments"));
+				result.assertions.add(caught.getMessage());
+				it.addToHistory(result);
+			}
+			@Override
+			public void onComplete(List<Result> results) {
+				for (Result result : results) {
+					it.addToHistory(result);
+				}
+			}
+		}.run(new GetDocumentsRequest(ClientUtils.INSTANCE.getCommandContext(),null,aids));
 		if (originatingResult != null)
 			originatingResult.rmFromToBeRetrieved(ids);
 	}
-
-	AsyncCallback<List<Result>> queryCallback = new AsyncCallback<List<Result>> () {
-
-		public void onFailure(Throwable caught) {
-			Result result = Result.RESULT(new TestInstance("GetDocuments"));
-			result.assertions.add(caught.getMessage());
-			it.addToHistory(result);
-		}
-
-		public void onSuccess(List<Result> results) {
-			for (Result result : results) {
-				it.addToHistory(result);
-			}
-		}
-
-	};
 
 	public GetDocuments(MetadataInspectorTab it, StepResult originatingResult, ObjectRefs ids, boolean isLid) {
 		this.it = it;

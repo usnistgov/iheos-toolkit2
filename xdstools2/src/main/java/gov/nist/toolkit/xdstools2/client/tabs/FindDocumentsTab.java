@@ -1,90 +1,204 @@
 package gov.nist.toolkit.xdstools2.client.tabs;
 
-import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.CheckBox;
-import com.google.gwt.user.client.ui.FlexTable;
-import com.google.gwt.user.client.ui.HTML;
-import com.google.gwt.user.client.ui.VerticalPanel;
+import gov.nist.toolkit.configDatatypes.client.Pid;
 import gov.nist.toolkit.configDatatypes.client.TransactionType;
-import gov.nist.toolkit.results.client.SiteSpec;
+import gov.nist.toolkit.interactionmodel.client.InteractingEntity;
+import gov.nist.toolkit.interactionmodel.client.InteractionIdentifierTerm;
+import gov.nist.toolkit.results.client.Result;
+import gov.nist.toolkit.sitemanagement.client.SiteSpec;
 import gov.nist.toolkit.xdstools2.client.CoupledTransactions;
-import gov.nist.toolkit.xdstools2.client.PopupMessage;
-import gov.nist.toolkit.xdstools2.client.TabContainer;
-import gov.nist.toolkit.xdstools2.client.siteActorManagers.FindDocumentsSiteActorManager;
-import gov.nist.toolkit.xdstools2.client.tabs.genericQueryTab.GenericQueryTab;
+import gov.nist.toolkit.xdstools2.client.command.command.FindDocumentsCommand;
+import gov.nist.toolkit.xdstools2.client.tabs.genericQueryTab.AbstractTool;
+import gov.nist.toolkit.xdstools2.shared.command.request.FindDocumentsRequest;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
-public class FindDocumentsTab extends GenericQueryTab {
+public class FindDocumentsTab extends AbstractTool {
 
-	static List<TransactionType> transactionTypes = new ArrayList<TransactionType>();
-	static {
-		transactionTypes.add(TransactionType.STORED_QUERY);
-		transactionTypes.add(TransactionType.IG_QUERY);
-		transactionTypes.add(TransactionType.XC_QUERY);
-	}
+    static List<TransactionType> transactionTypes = new ArrayList<TransactionType>();
+    static {
+        transactionTypes.add(TransactionType.STORED_QUERY);
+        transactionTypes.add(TransactionType.IG_QUERY);
+        transactionTypes.add(TransactionType.XC_QUERY);
+    }
 
-	static CoupledTransactions couplings = new CoupledTransactions();
+    static CoupledTransactions couplings = new CoupledTransactions();
 
-	CheckBox selectOnDemand;
+    CheckBox selectOnDemand;
+    InteractingEntity origin = new InteractingEntity(); //  new InteractingEntity(); // Destination
+    private Pid patientId;
+    private SiteSpec site;
+    private boolean onDemand;
 
-	public FindDocumentsTab() {
-		super(new FindDocumentsSiteActorManager());
-	}
+    @Override
+    public void initTool() {
+        int row = 0;
 
-	public void onTabLoad(TabContainer container, boolean select, String eventName) {
-		myContainer = container;
-		topPanel = new VerticalPanel();
+        selectOnDemand = new CheckBox();
+        selectOnDemand.setText("Include On-Demand DocumentEntries");
+        mainGrid.setWidget(row, 0, selectOnDemand);
+        row++;
 
-		container.addTab(topPanel, "FindDocuments", select);
-		addCloseButton(container,topPanel, null);
+        requirePatientId();
+        declareTransactionTypes(transactionTypes);
+    }
 
-		HTML title = new HTML();
-		title.setHTML("<h2>Find Documents Stored Query</h2>");
-		topPanel.add(title);
+    @Override
+    protected void bindUI() {
+//        addOnTabSelectionRedisplay();
+    }
 
-		mainGrid = new FlexTable();
-		int row = 0;
+    @Override
+    public String getWindowShortName() {
+        return "finddocuments";
+    }
 
-		selectOnDemand = new CheckBox();
-		selectOnDemand.setText("Include On-Demand DocumentEntries");
-		mainGrid.setWidget(row, 0, selectOnDemand);
-		row++;
+    @Override
+    public String getTabTitle() { return "FindDocs"; }
 
-		topPanel.add(mainGrid);
+    @Override
+    public String getToolTitle() { return "Find Documents Stored Query"; }
 
-		addQueryBoilerplate(new Runner(), transactionTypes, couplings, true);
-	}
+    /**
+     * run as a utility from another tool
+     * @param patientID
+     * @param siteSpec
+     * @param onDemand
+     */
+    public void run(Pid patientID, SiteSpec siteSpec, boolean onDemand) {
+        this.patientId=patientID;
+        this.site=siteSpec;
+        this.onDemand=onDemand;
+        new FindDocumentsCommand() {
+            @Override
+            public void onComplete(List<Result> results) {
+                queryCallback.onSuccess(results);
+                transactionSelectionManager.selectSite(site);
+            }
+        }.run(new FindDocumentsRequest(getCommandContext(), siteSpec, patientID.asString(), onDemand));
+    }
 
-	class Runner implements ClickHandler {
+    @Override
+    public void run() {
+        origin.setBegin(new Date());
+        new FindDocumentsCommand(){
+            @Override
+            public void onComplete(List<Result> results) {
+                queryCallback.onSuccess(results);
+            }
+        }.run(new FindDocumentsRequest(getCommandContext(),queryBoilerplate.getSiteSelection(), pidTextBox.getValue().trim(), selectOnDemand.getValue()));
+    }
 
-		public void onClick(ClickEvent event) {
-			resultPanel.clear();
 
-			SiteSpec siteSpec = queryBoilerplate.getSiteSelection();
-			if (siteSpec == null) {
-				new PopupMessage("You must select a site first");
-				return;
-			}
+    public InteractingEntity getInteractionModel() {
+        // begin interaction model
+        InteractingEntity registryEntity = new InteractingEntity(); // Destination
 
-			if (pidTextBox.getValue() == null || pidTextBox.getValue().equals("")) {
-				new PopupMessage("You must enter a Patient ID first");
-				return;
-			}
-			addStatusBox();
-			getGoButton().setEnabled(false);
-			getInspectButton().setEnabled(false);
+        origin.setName(null); // Matches with the transactionSettings origin. null=TestClient
+        origin.setDescription("Document Consumer - Toolkit");
 
-			toolkitService.findDocuments(siteSpec, pidTextBox.getValue().trim(), selectOnDemand.getValue(), queryCallback);
-		}
+        registryEntity.setName(getSiteSelection().getName());
+        registryEntity.setDescription("Registry - SUT");
+        registryEntity.setSourceInteractionLabel("Stored Query (ITI-18)");
 
-	}
+        List<InteractionIdentifierTerm> identifierTerms = new ArrayList<>();
+        InteractionIdentifierTerm identifierTerm
+                = new InteractionIdentifierTerm("$patient_id$", InteractionIdentifierTerm.Operator.EQUALTO, pidTextBox.getValue().trim());
+        identifierTerms.add(identifierTerm);
+        registryEntity.setInteractionIdentifierTerms(identifierTerms);
 
-	public String getWindowShortName() {
-		return "finddocuments";
-	}
+        origin.setInteractions(new ArrayList<InteractingEntity>());
+        origin.getInteractions().add(registryEntity);
 
+        // end
+        return origin;
+    }
+
+
+    public InteractingEntity testIG() {
+        InteractingEntity initiator = new InteractingEntity();
+        initiator.setName("Toolkit");
+
+        InteractingEntity ig = new InteractingEntity();
+        ig.setName("IG");
+
+        InteractingEntity rg1 = new InteractingEntity("rg1");
+        InteractingEntity reg1 = new InteractingEntity("reg1");
+        InteractingEntity rep1 = new InteractingEntity("rep1");
+
+        rg1.setInteractions(new ArrayList<InteractingEntity>());
+        rg1.getInteractions().add(reg1);
+        rg1.getInteractions().add(rep1);
+
+        ig.setInteractions(new ArrayList<InteractingEntity>());
+        ig.getInteractions().add(rg1);
+
+        InteractingEntity rg2 = new InteractingEntity("rg2");
+        InteractingEntity reg2 = new InteractingEntity("reg2");
+        InteractingEntity rep2 = new InteractingEntity("rep2");
+
+        rg2.setInteractions(new ArrayList<InteractingEntity>());
+        rg2.getInteractions().add(reg2);
+        rg2.getInteractions().add(rep2);
+
+        ig.getInteractions().add(rg2);
+
+        initiator.setInteractions(new ArrayList<InteractingEntity>());
+        initiator.getInteractions().add(ig);
+
+        return initiator;
+    }
+
+    public InteractingEntity testReuseLL() {
+        InteractingEntity initiator = new InteractingEntity();
+        initiator.setName("Toolkit");
+
+        InteractingEntity ig = new InteractingEntity();
+        ig.setName("IG");
+
+        InteractingEntity rg1 = new InteractingEntity("rg1");
+        InteractingEntity reg1 = new InteractingEntity("reg1");
+        InteractingEntity rep1 = new InteractingEntity("rep1");
+
+        rg1.setInteractions(new ArrayList<InteractingEntity>());
+        rg1.getInteractions().add(reg1);
+        rg1.getInteractions().add(rep1);
+
+        ig.setInteractions(new ArrayList<InteractingEntity>());
+        ig.getInteractions().add(rg1);
+
+        ig.getInteractions().add(rep1);
+
+        return ig;
+    }
+
+    public List<InteractingEntity> testTwoActors() {
+
+        List<InteractingEntity> interactingEntityList = new ArrayList<InteractingEntity>();
+
+        InteractingEntity initiator = new InteractingEntity();
+        initiator.setName("Tc/Rep");
+
+
+        InteractingEntity reg = new InteractingEntity("reg");
+
+        initiator.setInteractions(new ArrayList<InteractingEntity>());
+        initiator.getInteractions().add(reg);
+
+        InteractingEntity initiator2 = new InteractingEntity();
+        initiator2.setName("Tc/DocCons");
+        initiator2.setInteractions(new ArrayList<InteractingEntity>());
+        initiator2.getInteractions().add(reg);
+
+        interactingEntityList.add(initiator);
+        interactingEntityList.add(initiator2);
+
+        return interactingEntityList;
+
+    }
 
 }

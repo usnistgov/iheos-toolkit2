@@ -1,21 +1,16 @@
 package gov.nist.toolkit.xdstools2.client.inspector;
 
-import gov.nist.toolkit.registrymetadata.client.Association;
-import gov.nist.toolkit.registrymetadata.client.Document;
-import gov.nist.toolkit.registrymetadata.client.DocumentEntry;
-import gov.nist.toolkit.registrymetadata.client.Folder;
-import gov.nist.toolkit.registrymetadata.client.ObjectRef;
-import gov.nist.toolkit.registrymetadata.client.ObjectRefs;
-import gov.nist.toolkit.registrymetadata.client.SubmissionSet;
-import gov.nist.toolkit.xdstools2.client.TabContainer;
-
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.TreeItem;
+import gov.nist.toolkit.registrymetadata.client.*;
 
 
 public class ListingDisplay {
+   /** Parent tab for this display */
 	MetadataInspectorTab tab;
+	/** DataModel for this display, could be test or step */
 	DataModel data;
+	/** Tree element serving as root for this display */
 	TreeThing root;
 
 	public ListingDisplay(MetadataInspectorTab tab, DataModel data, TreeThing root) {
@@ -23,8 +18,10 @@ public class ListingDisplay {
 		this.data = data;
 		this.root = root;
 	}
-	
-	void listing(TabContainer container) {
+	/**
+	 * Build tree display for a DataModel
+	 */
+	void listing() {
 		for (SubmissionSet ss : data.combinedMetadata.submissionSets) {
 			TreeItem item = new TreeItem(HyperlinkFactory.link(tab, ss));
 			root.addItem(item);
@@ -91,7 +88,9 @@ public class ListingDisplay {
 				ti.addItem(item);
 			}
 		}
-
+      /*
+       * Display links to each document
+       */
 		if (data.allDocs != null && !data.allDocs.isEmpty()) {
 			for (Document doc : data.allDocs) {
 				String title = "";

@@ -1,37 +1,25 @@
 package gov.nist.toolkit.xdstools2.client.tabs.GatewayTestsTabs;
 
-import com.google.gwt.user.client.rpc.AsyncCallback;
 import gov.nist.toolkit.sitemanagement.client.TransactionOfferings;
-import gov.nist.toolkit.xdstools2.client.PopupMessage;
-import gov.nist.toolkit.xdstools2.client.ToolkitServiceAsync;
+import gov.nist.toolkit.xdstools2.client.command.command.GetTransactionOfferingsCommand;
+import gov.nist.toolkit.xdstools2.client.util.ClientUtils;
 
 /**
  *
  */
 public class TransactionOfferingsLoader {
-    ToolkitServiceAsync toolkitService;
 
-    public TransactionOfferingsLoader(ToolkitServiceAsync toolkitService) {
-        this.toolkitService = toolkitService;
+    public TransactionOfferingsLoader() {
     }
 
     public void run(final ServiceCallCompletionHandler<TransactionOfferings> transOff) {
 
-        try {
-            toolkitService.getTransactionOfferings(new AsyncCallback<TransactionOfferings>() {
-
-                public void onFailure(Throwable caught) {
-                    new PopupMessage("Error: " + caught.getMessage());
-                }
-
-                public void onSuccess(TransactionOfferings to) {
-                    transOff.onCompletion(to);
-                }
-
-            });
-        } catch (Exception e) {
-            new PopupMessage("Error: " + e.getMessage());
-        }
+        new GetTransactionOfferingsCommand() {
+            @Override
+            public void onComplete(TransactionOfferings var1) {
+                transOff.onCompletion(var1);
+            }
+        }.run(ClientUtils.INSTANCE.getCommandContext());
     }
 
 }

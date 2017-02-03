@@ -2,22 +2,22 @@ package gov.nist.toolkit.xdstools2.client.inspector;
 
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.user.client.ui.HTML;
-import com.google.gwt.user.client.ui.HorizontalPanel;
-import com.google.gwt.user.client.ui.TreeItem;
-import com.google.gwt.user.client.ui.VerticalPanel;
+import com.google.gwt.user.client.ui.*;
 import gov.nist.toolkit.registrymetadata.client.Document;
 import gov.nist.toolkit.registrymetadata.client.MetadataCollection;
 import gov.nist.toolkit.registrymetadata.client.RegistryObject;
-import gov.nist.toolkit.results.client.*;
-import gov.nist.toolkit.xdstools2.client.PopupMessage;
-import gov.nist.toolkit.xdstools2.client.TabContainer;
-import gov.nist.toolkit.xdstools2.client.TabbedWindow;
+import gov.nist.toolkit.results.client.Result;
+import gov.nist.toolkit.results.client.StepResult;
+import gov.nist.toolkit.results.client.TestLog;
+import gov.nist.toolkit.results.client.TestLogs;
+import gov.nist.toolkit.sitemanagement.client.SiteSpec;
+import gov.nist.toolkit.xdstools2.client.widgets.PopupMessage;
+import gov.nist.toolkit.xdstools2.client.ToolWindow;
 
 import java.util.List;
 import java.util.Map;
 
-public class MetadataEditorTab extends TabbedWindow {
+public class MetadataEditorTab extends ToolWindow {
 
 	// loaded content organized two ways:
 	//    results - organized as a list - shows history of queries
@@ -41,33 +41,30 @@ public class MetadataEditorTab extends TabbedWindow {
 	public void setSiteSpec(SiteSpec ss) { siteSpec = ss; }
 	public void setRegistryObject(RegistryObject ro) { this.ro = ro; }
 
-	
 	@Override
-	public void onTabLoad(TabContainer container, boolean select, String eventName) {
-		topPanel = new VerticalPanel();
-		container.addTab(topPanel, "Editor", select);
-		topPanel.setWidth("100%");
-		addCloseButton(container,topPanel, null, siteSpec);
+	public void onTabLoad(boolean select, String eventName) {
+		registerTab(select, "Editor");
+		tabTopPanel.setWidth("100%");
 
 		HTML title = new HTML();
 		title.setHTML("<h2>Metadata Editor</h2>");
-		topPanel.add(title);
+		tabTopPanel.add(title);
 
 		HorizontalPanel hpanel = new HorizontalPanel();
-		topPanel.add(hpanel);
-		topPanel.setCellWidth(hpanel, "100%");
+		tabTopPanel.add(hpanel);
+//		tabTopPanel.setCellWidth(hpanel, "100%");
 		hpanel.setBorderWidth(1);
 
 //		historyPanel = new VerticalPanel();
-//		hpanel.add(historyPanel);
+//		hpanel.addTest(historyPanel);
 //		hpanel.setCellWidth(historyPanel, "30%");
 
 		detailPanel = new VerticalPanel();
-//		detailPanel.add(HyperlinkFactory.addHTML("<h3>Detail</h3>"));
+//		detailPanel.addTest(HyperlinkFactory.addHTML("<h3>Detail</h3>"));
 		hpanel.add(detailPanel);
 
 		structPanel = new VerticalPanel();
-//		structPanel.add(HyperlinkFactory.addHTML("<h3>Structure</h3>"));
+//		structPanel.addTest(HyperlinkFactory.addHTML("<h3>Structure</h3>"));
 		hpanel.add(structPanel);
 
 		if (siteSpec == null)

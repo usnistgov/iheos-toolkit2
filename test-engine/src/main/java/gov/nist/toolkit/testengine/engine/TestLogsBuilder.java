@@ -2,37 +2,38 @@ package gov.nist.toolkit.testengine.engine;
 
 import gov.nist.toolkit.results.client.TestLog;
 import gov.nist.toolkit.results.client.TestLogs;
-import gov.nist.toolkit.testenginelogging.LogFileContent;
-import gov.nist.toolkit.testenginelogging.LogMap;
-import gov.nist.toolkit.testenginelogging.LogMapItem;
-import gov.nist.toolkit.testenginelogging.TestStepLogContent;
+import gov.nist.toolkit.testenginelogging.client.LogFileContentDTO;
+import gov.nist.toolkit.testenginelogging.client.LogMapDTO;
+import gov.nist.toolkit.testenginelogging.client.LogMapItemDTO;
+import gov.nist.toolkit.testenginelogging.client.TestStepLogContentDTO;
+import gov.nist.toolkit.utilities.xml.OMFormatter;
 
 import java.util.List;
 
 public class TestLogsBuilder {
 
-	static public TestLogs build(LogMap logMap) throws Exception {
+	static public TestLogs build(LogMapDTO logMapDTO) throws Exception {
 		TestLogs logs = new TestLogs();
 		
-		for (LogMapItem item : logMap.getItems()) {
-			LogFileContent logFile = item.log;
-			for (TestStepLogContent stepLog : logFile.getStepLogs()) {
-				TestLog testLog = new TestLog();
-				String stepName = stepLog.getName();
+		for (LogMapItemDTO item : logMapDTO.getItems()) {
+			LogFileContentDTO logFile = item.getLog();
+			for (TestStepLogContentDTO stepLog : logFile.getStepLogs()) {
+            TestLog testLog = new TestLog();
+				String stepName = stepLog.getId();
 				logs.logs.add(testLog);
 
 				testLog.stepName = stepName;
 				testLog.endpoint = stepLog.getEndpoint();
-				testLog.inHeader = stepLog.getInHeader();
-				testLog.inputMetadata = stepLog.getInputMetadata();
-				testLog.outHeader = stepLog.getOutHeader();
-				testLog.result = stepLog.getResult();
+				testLog.inHeader = new OMFormatter(stepLog.getInHeader()).toHtml();
+				testLog.inputMetadata = new OMFormatter(stepLog.getInputMetadata()).toHtml();
+				testLog.outHeader = new OMFormatter(stepLog.getOutHeader()).toHtml();
+				testLog.result = new OMFormatter(stepLog.getResult()).toHtml();
 				testLog.status = stepLog.getStatus();
-                testLog.assignedIds  = stepLog.getAssignedIds();
-                testLog.assignedUids = stepLog.getAssignedUids();
+            testLog.assignedIds  = stepLog.getAssignedIds();
+            testLog.assignedUids = stepLog.getAssignedUids();
 				testLog.errors = listAsString(stepLog.getErrors());
 
-				testLog.log = stepLog.getRoot();
+				testLog.log = new OMFormatter(stepLog.getRoot()).toHtml();
 			}
 		}
 

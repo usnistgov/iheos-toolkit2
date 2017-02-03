@@ -10,7 +10,7 @@ import gov.nist.toolkit.http.axis2soap.MultipartMap;
 import gov.nist.toolkit.utilities.io.Io;
 import gov.nist.toolkit.utilities.xml.XmlUtil;
 import gov.nist.toolkit.xdsexception.HttpCodeException;
-import gov.nist.toolkit.xdsexception.XdsInternalException;
+import gov.nist.toolkit.xdsexception.client.XdsInternalException;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -295,7 +295,7 @@ public class HttpClient implements HostnameVerifier {
 		else if (o instanceof String)
 			setAttachment((String) o, type);
 		else
-			throw new Exception("SOAPLite.setAttachment() cannot handle object type " + o.getClass().getName());
+			throw new Exception("SOAPLite.setAttachment() cannot handle model type " + o.getClass().getName());
 	}
 
 	public String username_password() {

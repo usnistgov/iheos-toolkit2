@@ -7,7 +7,7 @@ public class SessionRepository  {
 	Logger logger = Logger.getLogger(SessionRepository.class);
 
 //	public SessionRepository(String user) throws IOException {
-//		log = new LogRepositoryFactory().getRepository(Installation.installation().sessionCache(), user, LogRepositoryFactory.IO_format.JAVA_SERIALIZATION, LogRepositoryFactory.Id_type.TIME_ID, null);
+//		log = new LogRepositoryFactory().getLogRepository(Installation.instance().sessionCache(), user, LogRepositoryFactory.IO_format.JAVA_SERIALIZATION, LogRepositoryFactory.Id_type.TIME_ID, null);
 //	}
 
 	public LogRepository getLogRepository() {

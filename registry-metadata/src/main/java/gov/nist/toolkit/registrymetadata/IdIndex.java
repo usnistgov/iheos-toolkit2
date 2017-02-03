@@ -3,7 +3,7 @@ package gov.nist.toolkit.registrymetadata;
 import gov.nist.toolkit.commondatatypes.MetadataSupport;
 import gov.nist.toolkit.registrysupport.logging.LogMessage;
 import gov.nist.toolkit.utilities.xml.XmlUtil;
-import gov.nist.toolkit.xdsexception.MetadataException;
+import gov.nist.toolkit.xdsexception.client.MetadataException;
 import org.apache.axiom.om.OMAttribute;
 import org.apache.axiom.om.OMElement;
 import org.apache.axiom.om.OMNode;
@@ -184,13 +184,13 @@ public class IdIndex {
 	public String getIdentifyingString(String id) {
 		Object obj = object_by_id().get(id);
 		if (obj == null)
-			return "<Unknown object " + id + ">";
+			return "<Unknown model " + id + ">";
 
 		OMElement ele;
 		if (obj instanceof OMElement)
 			ele = (OMElement) obj;
 		else
-			return "Unknown object type for id " + id + ">";
+			return "Unknown model type for id " + id + ">";
 
 		return m.getIdentifyingString(ele);
 	}
@@ -250,9 +250,9 @@ public class IdIndex {
 		}
 
 		if (log_message != null)
-			try {log_message.addOtherParam("ii object to parse", obj.getLocalName() + " " + "id=" + id + " " + count_iterator(obj.getChildElements()) + " minor elements"); } catch (Exception e) {}
+			try {log_message.addOtherParam("ii model to parse", obj.getLocalName() + " " + "id=" + id + " " + count_iterator(obj.getChildElements()) + " minor elements"); } catch (Exception e) {}
 
-		// ebxmlrr gens ObjectRefs even when real object is returned
+		// ebxmlrr gens ObjectRefs even when real model is returned
 		OMElement existing = (OMElement) object_by_id().get(id);
 		if (existing != null) {
 			String existing_type = existing.getLocalName();

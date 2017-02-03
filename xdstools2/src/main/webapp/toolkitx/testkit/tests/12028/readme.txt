@@ -1,11 +1,4 @@
-Ret.b Accept retrieve document set - single document with TLS
+Submit and Retrieve document over TLS
 
-submit - Issue a Provide and Registry.b transaction to load your
-repository with a document.  Your repository must forward the metadata
-to the Public Registry.
-
-query - Query the Public Registry to get the metadata as submitted
-by the Repository.
-
-retrieve - Issue a Retrieve Document Set transaction to your repository
-to get the document.  This must be done over TLS.
+You must manually engage TLS using the check box at the top of this tool. Your Repository
+must use TLS when forwarding the metadata to the Registry in a Register transaction.

@@ -21,7 +21,7 @@ public class LinesOfFile  {
 			// Open the file that is the first 
 			// command line parameter
 			fstream = new FileInputStream(file);
-			// Get the object of DataInputStream
+			// Get the model of DataInputStream
 			in = new DataInputStream(fstream);
 			br = new BufferedReader(new InputStreamReader(in));
 		} catch (Exception e) {

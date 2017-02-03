@@ -6,6 +6,18 @@
     <RegisterTransaction>
       <XDSb/>
       <NoPatientId/>
+      <UseReport 
+        reportName="$patientid$"
+        test="15817"
+        section="pif"
+        step="step"
+        useAs="$patientid$"/>
+      <UseReport 
+        reportName="$patientid$"
+        test="15817b"
+        section="pif"
+        step="step"
+        useAs="$altpatientid$"/>
       <MetadataFile>single_doc.xml</MetadataFile>
     </RegisterTransaction>
   </TestStep>

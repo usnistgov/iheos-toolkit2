@@ -1,15 +1,12 @@
 package gov.nist.toolkit.dsig;
 
 
-import gov.nist.toolkit.utilities.io.Io;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.apache.xml.security.utils.IdResolver;
 import org.w3c.dom.*;
 
 import javax.xml.crypto.dsig.*;
 import javax.xml.crypto.dsig.dom.DOMSignContext;
-import javax.xml.crypto.dsig.dom.DOMValidateContext;
 import javax.xml.crypto.dsig.keyinfo.KeyInfo;
 import javax.xml.crypto.dsig.keyinfo.KeyInfoFactory;
 import javax.xml.crypto.dsig.keyinfo.KeyValue;
@@ -20,13 +17,13 @@ import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
-import java.io.*;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.security.PrivateKey;
 import java.security.Provider;
 import java.security.PublicKey;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Iterator;
 
 
 
@@ -185,85 +182,85 @@ public class XMLDSigProcessor {
 	 * Signs the xml document where "document" is the name of a file containing the XML document
 	 * to be signed
 	 */
-	public byte[] signTimestampDetached(byte[] xmldocument) throws Exception {
-
-		// Create a DOM XMLSignatureFactory that will be used to generate the 
-		// detached signature
-		String providerName = System.getProperty
-		("jsr105Provider", "org.jcp.xml.dsig.internal.dom.XMLDSigRI");
-		XMLSignatureFactory fac = XMLSignatureFactory.getInstance("DOM",
-				(Provider) Class.forName(providerName).newInstance());
-
-		// Instantiate the document to be signed
-		DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
-		dbf.setNamespaceAware(true);
-		Document doc1 = 
-			dbf.newDocumentBuilder().parse(new ByteArrayInputStream(xmldocument));
-
-		// Create a Reference to the enveloped document and
-		// also specify the SHA1 digest algorithm and the ENVELOPED Transform.
-		String referenceURI = "";
-		
-		NodeList nl0 = doc1.getElementsByTagNameNS("http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-secext-1.0.xsd", "Security");
-		Element rootElement = (Element)nl0.item(0);
-		
-		NodeList nl = doc1.getElementsByTagNameNS("http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-utility-1.0.xsd", "Timestamp");
-		Element tsElem = (Element)nl.item(0);
-		if (tsElem!=null) {
-			referenceURI = "#" + tsElem.getAttributeNS("http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-utility-1.0.xsd", "Id");
-			System.out.println("Reference URI = " + referenceURI);
-			Attr id = tsElem.getAttributeNodeNS("http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-utility-1.0.xsd", "Id");
-			IdResolver.registerElementById(tsElem, id);
-		}
-		  
-		Reference ref = fac.newReference
-		(referenceURI, fac.newDigestMethod(DigestMethod.SHA1, null),
-				Collections.singletonList(fac.newTransform
-						(CanonicalizationMethod.EXCLUSIVE, (C14NMethodParameterSpec) null)),null,null);
-
-
-		// Create the SignedInfo
-		SignedInfo si = fac.newSignedInfo
-		(fac.newCanonicalizationMethod
-				(CanonicalizationMethod.EXCLUSIVE, 
-						(C14NMethodParameterSpec) null), 
-						fac.newSignatureMethod(SignatureMethod.RSA_SHA1, null),
-						Collections.singletonList(ref));
-
-		// Get a KeyPair
-		KeyStoreAccessObject ksao = KeyStoreAccessObject.getInstance(null);
-		PublicKey pubK = ksao.getPublicKey();
-		PrivateKey pvtK = ksao.getPrivateKey(); 
-
-		// Create a KeyValue containing the RSA PublicKey that was generated
-		KeyInfoFactory kif = fac.getKeyInfoFactory();
-		KeyValue kv = kif.newKeyValue(pubK);
-
-		// Create a KeyInfo and add the KeyValue to it
-		KeyInfo ki = kif.newKeyInfo(Collections.singletonList(kv));
-
-		// Create a DOMSignContext and specify the RSA PrivateKey and
-		// location of the resulting XMLSignature's parent element
-		DOMSignContext dsc = new DOMSignContext
-		(pvtK, rootElement);
-
-		// Create the XMLSignature (but don't sign it yet)
-		XMLSignature signature = fac.newXMLSignature(si, ki);
-
-		// Marshal, generate (and sign) the detached signature
-		signature.sign(dsc);
-
-		// output the resulting document
-		OutputStream os =System.out;
-		ByteArrayOutputStream out = new ByteArrayOutputStream();
-
-		TransformerFactory tf = TransformerFactory.newInstance();
-		Transformer trans = tf.newTransformer();
-		trans.transform(new DOMSource(doc1), new StreamResult(os));
-		trans.transform(new DOMSource(doc1), new StreamResult(out));
-		return out.toByteArray();
-
-	}
+//	public byte[] signTimestampDetached(byte[] xmldocument) throws Exception {
+//
+//		// Create a DOM XMLSignatureFactory that will be used to generate the
+//		// detached signature
+//		String providerName = System.getProperty
+//		("jsr105Provider", "org.jcp.xml.dsig.internal.dom.XMLDSigRI");
+//		XMLSignatureFactory fac = XMLSignatureFactory.getInstance("DOM",
+//				(Provider) Class.forName(providerName).newInstance());
+//
+//		// Instantiate the document to be signed
+//		DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
+//		dbf.setNamespaceAware(true);
+//		Document doc1 =
+//			dbf.newDocumentBuilder().parse(new ByteArrayInputStream(xmldocument));
+//
+//		// Create a Reference to the enveloped document and
+//		// also specify the SHA1 digest algorithm and the ENVELOPED Transform.
+//		String referenceURI = "";
+//
+//		NodeList nl0 = doc1.getElementsByTagNameNS("http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-secext-1.0.xsd", "Security");
+//		Element rootElement = (Element)nl0.item(0);
+//
+//		NodeList nl = doc1.getElementsByTagNameNS("http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-utility-1.0.xsd", "Timestamp");
+//		Element tsElem = (Element)nl.item(0);
+//		if (tsElem!=null) {
+//			referenceURI = "#" + tsElem.getAttributeNS("http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-utility-1.0.xsd", "Id");
+//			System.out.println("Reference URI = " + referenceURI);
+//			Attr id = tsElem.getAttributeNodeNS("http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-utility-1.0.xsd", "Id");
+//			IdResolver.registerElementById(tsElem, id);
+//		}
+//
+//		Reference ref = fac.newReference
+//		(referenceURI, fac.newDigestMethod(DigestMethod.SHA1, null),
+//				Collections.singletonList(fac.newTransform
+//						(CanonicalizationMethod.EXCLUSIVE, (C14NMethodParameterSpec) null)),null,null);
+//
+//
+//		// Create the SignedInfo
+//		SignedInfo si = fac.newSignedInfo
+//		(fac.newCanonicalizationMethod
+//				(CanonicalizationMethod.EXCLUSIVE,
+//						(C14NMethodParameterSpec) null),
+//						fac.newSignatureMethod(SignatureMethod.RSA_SHA1, null),
+//						Collections.singletonList(ref));
+//
+//		// Get a KeyPair
+//		KeyStoreAccessObject ksao = KeyStoreAccessObject.getInstance(null);
+//		PublicKey pubK = ksao.getPublicKey();
+//		PrivateKey pvtK = ksao.getPrivateKey();
+//
+//		// Create a KeyValue containing the RSA PublicKey that was generated
+//		KeyInfoFactory kif = fac.getKeyInfoFactory();
+//		KeyValue kv = kif.newKeyValue(pubK);
+//
+//		// Create a KeyInfo and add the KeyValue to it
+//		KeyInfo ki = kif.newKeyInfo(Collections.singletonList(kv));
+//
+//		// Create a DOMSignContext and specify the RSA PrivateKey and
+//		// location of the resulting XMLSignature's parent element
+//		DOMSignContext dsc = new DOMSignContext
+//		(pvtK, rootElement);
+//
+//		// Create the XMLSignature (but don't sign it yet)
+//		XMLSignature signature = fac.newXMLSignature(si, ki);
+//
+//		// Marshal, generate (and sign) the detached signature
+//		signature.sign(dsc);
+//
+//		// output the resulting document
+//		OutputStream os =System.out;
+//		ByteArrayOutputStream out = new ByteArrayOutputStream();
+//
+//		TransformerFactory tf = TransformerFactory.newInstance();
+//		Transformer trans = tf.newTransformer();
+//		trans.transform(new DOMSource(doc1), new StreamResult(os));
+//		trans.transform(new DOMSource(doc1), new StreamResult(out));
+//		return out.toByteArray();
+//
+//	}
 
 	//
 	// Synopsis: java Validate [document]
@@ -271,99 +268,99 @@ public class XMLDSigProcessor {
 	//	  where "document" is the name of a file containing the XML document
 	//	  to be validated.
 	//
-	public boolean validate(byte[] xmldocument) throws Exception {
-
-		// Instantiate the document to be validated
-		DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
-		dbf.setNamespaceAware(true);
-		Document doc =
-			dbf.newDocumentBuilder().parse(new ByteArrayInputStream(xmldocument));
-
-		// Find Signature element
-		NodeList nl = 
-			doc.getElementsByTagNameNS(XMLSignature.XMLNS, "Signature");
-		if (nl.getLength() == 0) {
-			throw new Exception("Cannot find Signature element");
-		}
-
-		// Create a DOM XMLSignatureFactory that will be used to unmarshal the 
-		// document containing the XMLSignature 
-		String providerName = System.getProperty
-		("jsr105Provider", "org.jcp.xml.dsig.internal.dom.XMLDSigRI");
-		XMLSignatureFactory fac = XMLSignatureFactory.getInstance("DOM",
-				(Provider) Class.forName(providerName).newInstance());
-
-		// Create a DOMValidateContext and specify a KeyValue KeySelector
-		// and document context
-		DOMValidateContext valContext = new DOMValidateContext
-		(new KeyValueKeySelector(), nl.item(0));
-
-		// unmarshal the XMLSignature
-		XMLSignature signature = fac.unmarshalXMLSignature(valContext);
-		
-		NodeList nl2 = doc.getElementsByTagNameNS("http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-utility-1.0.xsd", "Timestamp");
-		Element tsElem = (Element)nl2.item(0);
-		if (tsElem!=null) {
-			Attr id = tsElem.getAttributeNodeNS("http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-utility-1.0.xsd", "Id");
-			IdResolver.registerElementById(tsElem, id);
-		}
-		
-		// Validate the XMLSignature (generated above)
-		boolean coreValidity = signature.validate(valContext); 
-
-		// Check core validation status
-		if (coreValidity == false) {
-			System.err.println("Signature failed core validation"); 
-			boolean sv = signature.getSignatureValue().validate(valContext);
-			System.out.println("signature validation status: " + sv);
-			// check the validation status of each Reference
-			Iterator i = signature.getSignedInfo().getReferences().iterator();
-			for (int j=0; i.hasNext(); j++) {
-				boolean refValid = 
-					((Reference) i.next()).validate(valContext);
-				System.out.println("ref["+j+"] validity status: " + refValid);
-			}
-			return false;
-		} else {
-			
-			System.out.println("Signature passed core validation");
-			return true;
-		}
-	}
+//	public boolean validate(byte[] xmldocument) throws Exception {
+//
+//		// Instantiate the document to be validated
+//		DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
+//		dbf.setNamespaceAware(true);
+//		Document doc =
+//			dbf.newDocumentBuilder().parse(new ByteArrayInputStream(xmldocument));
+//
+//		// Find Signature element
+//		NodeList nl =
+//			doc.getElementsByTagNameNS(XMLSignature.XMLNS, "Signature");
+//		if (nl.getLength() == 0) {
+//			throw new Exception("Cannot find Signature element");
+//		}
+//
+//		// Create a DOM XMLSignatureFactory that will be used to unmarshal the
+//		// document containing the XMLSignature
+//		String providerName = System.getProperty
+//		("jsr105Provider", "org.jcp.xml.dsig.internal.dom.XMLDSigRI");
+//		XMLSignatureFactory fac = XMLSignatureFactory.getInstance("DOM",
+//				(Provider) Class.forName(providerName).newInstance());
+//
+//		// Create a DOMValidateContext and specify a KeyValue KeySelector
+//		// and document context
+//		DOMValidateContext valContext = new DOMValidateContext
+//		(new KeyValueKeySelector(), nl.item(0));
+//
+//		// unmarshal the XMLSignature
+//		XMLSignature signature = fac.unmarshalXMLSignature(valContext);
+//
+//		NodeList nl2 = doc.getElementsByTagNameNS("http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-utility-1.0.xsd", "Timestamp");
+//		Element tsElem = (Element)nl2.item(0);
+//		if (tsElem!=null) {
+//			Attr id = tsElem.getAttributeNodeNS("http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-utility-1.0.xsd", "Id");
+//			IdResolver.registerElementById(tsElem, id);
+//		}
+//
+//		// Validate the XMLSignature (generated above)
+//		boolean coreValidity = signature.validate(valContext);
+//
+//		// Check core validation status
+//		if (coreValidity == false) {
+//			System.err.println("Signature failed core validation");
+//			boolean sv = signature.getSignatureValue().validate(valContext);
+//			System.out.println("signature validation status: " + sv);
+//			// check the validation status of each Reference
+//			Iterator i = signature.getSignedInfo().getReferences().iterator();
+//			for (int j=0; i.hasNext(); j++) {
+//				boolean refValid =
+//					((Reference) i.next()).validate(valContext);
+//				System.out.println("ref["+j+"] validity status: " + refValid);
+//			}
+//			return false;
+//		} else {
+//
+//			System.out.println("Signature passed core validation");
+//			return true;
+//		}
+//	}
 	
-	public static void main(String[] args) {
-		String assertion_file = "/Users/bill/Downloads/nhin/assertion.xml";
-		
-		byte[] assertion_bytes = null;
-		try {
-			assertion_bytes = Io.getBytesFromInputStream(new FileInputStream(assertion_file));
-		} catch (FileNotFoundException e) {
-			e.printStackTrace();
-			System.exit(-1);
-		} catch (IOException e) {
-			e.printStackTrace();
-			System.exit(-1);
-		}
-		
-		XMLDSigProcessor xsp = new XMLDSigProcessor();
-		byte[] signedAssertion = null;
-		try {
-			signedAssertion = xsp.signSAMLAssertionsEnveloped(assertion_bytes);
-		} catch (Exception e) {
-			e.printStackTrace();
-			System.exit(-1);
-		}
-		
-		try {
-			boolean status = xsp.validate(signedAssertion);
-			if (status)
-				System.out.println("Congratulations");
-		} catch (Exception e) {
-			e.printStackTrace();
-			System.exit(-1);
-		}
-		
-	}
+//	public static void main(String[] args) {
+//		String assertion_file = "/Users/bill/Downloads/nhin/assertion.xml";
+//
+//		byte[] assertion_bytes = null;
+//		try {
+//			assertion_bytes = Io.getBytesFromInputStream(new FileInputStream(assertion_file));
+//		} catch (FileNotFoundException e) {
+//			e.printStackTrace();
+//			System.exit(-1);
+//		} catch (IOException e) {
+//			e.printStackTrace();
+//			System.exit(-1);
+//		}
+//
+//		XMLDSigProcessor xsp = new XMLDSigProcessor();
+//		byte[] signedAssertion = null;
+//		try {
+//			signedAssertion = xsp.signSAMLAssertionsEnveloped(assertion_bytes);
+//		} catch (Exception e) {
+//			e.printStackTrace();
+//			System.exit(-1);
+//		}
+//
+//		try {
+//			boolean status = xsp.validate(signedAssertion);
+//			if (status)
+//				System.out.println("Congratulations");
+//		} catch (Exception e) {
+//			e.printStackTrace();
+//			System.exit(-1);
+//		}
+//
+//	}
     
 
 	

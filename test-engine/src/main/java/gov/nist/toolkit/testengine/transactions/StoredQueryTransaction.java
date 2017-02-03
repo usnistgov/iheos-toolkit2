@@ -4,8 +4,8 @@ import gov.nist.toolkit.commondatatypes.client.MetadataTypes;
 import gov.nist.toolkit.testengine.engine.StepContext;
 import gov.nist.toolkit.utilities.xml.XmlUtil;
 import gov.nist.toolkit.xdsexception.ExceptionUtil;
-import gov.nist.toolkit.xdsexception.XdsException;
-import gov.nist.toolkit.xdsexception.XdsInternalException;
+import gov.nist.toolkit.xdsexception.client.XdsException;
+import gov.nist.toolkit.xdsexception.client.XdsInternalException;
 import org.apache.axiom.om.OMAttribute;
 import org.apache.axiom.om.OMElement;
 import org.apache.axiom.om.OMNamespace;
@@ -68,7 +68,7 @@ public class StoredQueryTransaction extends QueryTransaction {
 		String ns_uri = (ns != null) ? ns.getNamespaceURI() : null;
 		int metadata_type = getMetadataType();
 
-		isStableOrODDE = true; // A registry response can include both object types
+		isStableOrODDE = true; // A registry response can include both model types
 
 		// verify input is correct top-level request
 		if (parse_metadata) {
@@ -92,7 +92,7 @@ public class StoredQueryTransaction extends QueryTransaction {
 		catch (Exception e) {
 			fail(ExceptionUtil.exception_details(e));
 		}
-		validate_registry_response_no_set_status(result, metadata_type);
+		validate_registry_response_no_set_status(result, "AdhocQueryResponse", metadata_type);
 
 		if (expected_contents != null ) {
 			String errors = validate_assertions(result, metadata_type, expected_contents);

@@ -1,0 +1,57 @@
+package gov.nist.toolkit.xdstools2.client.tabs;
+
+import com.google.gwt.user.client.ui.CheckBox;
+import com.google.gwt.user.client.ui.FlexTable;
+import com.google.gwt.user.client.ui.HTML;
+import com.google.gwt.user.client.ui.VerticalPanel;
+import gov.nist.toolkit.configDatatypes.client.TransactionType;
+import gov.nist.toolkit.xdstools2.client.CoupledTransactions;
+import gov.nist.toolkit.xdstools2.client.tabs.genericQueryTab.AbstractTool;
+
+import java.util.ArrayList;
+import java.util.List;
+
+public class FindDocumentsTab extends AbstractTool {
+
+	static List<TransactionType> transactionTypes = new ArrayList<TransactionType>();
+	static {
+		transactionTypes.add(TransactionType.STORED_QUERY);
+		transactionTypes.add(TransactionType.IG_QUERY);
+		transactionTypes.add(TransactionType.XC_QUERY);
+	}
+
+	static CoupledTransactions couplings = new CoupledTransactions();
+
+	CheckBox selectOnDemand;
+
+	@Override
+	public String getTabTitle() { return "FindDocs"; }
+
+	@Override
+	public String getToolTitle() { return "Find Documents Stored Query"; }
+
+	@Override
+	public void initTool() {
+		int row = 0;
+
+		selectOnDemand = new CheckBox();
+		selectOnDemand.setText("Include On-Demand DocumentEntries");
+		mainGrid.setWidget(row, 0, selectOnDemand);
+		row++;
+
+		requirePatientId();
+		declareTransactionTypes(transactionTypes);
+	}
+
+	@Override
+	public void run() {
+		toolkitService.findDocuments(queryBoilerplate.getSiteSelection(), pidTextBox.getValue().trim(), selectOnDemand.getValue(), queryCallback);
+	}
+
+	@Override
+	public String getWindowShortName() {
+		return "finddocuments";
+	}
+
+
+}

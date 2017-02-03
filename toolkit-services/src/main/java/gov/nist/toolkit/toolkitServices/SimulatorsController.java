@@ -108,11 +108,14 @@ public class SimulatorsController {
     
     @POST
     @Produces("application/json")
-    @Path("/{id}/xdsi/retrieve")
-    public Response retrieveImagingDocSet(final RetImgDocSetReqResource request) {
-        logger.info(String.format("POST simulators/%s/xdsi/retrieve ", 
-           (request.isDirect() ? request.getEndpoint() : request.getFullId())));
+    @Path("/{id}/xdsi/retrieve/{type}")
+    public Response retrieveImagingDocSet(final RetImgDocSetReqResource request, @PathParam("type") String transaction) {
+        logger.info(String.format("POST simulators/%s/xdsi/retrieve/%s", 
+           (request.isDirect() ? request.getEndpoint() : request.getFullId()), transaction));
         String dest = "";
+        TransactionType type = TransactionType.RET_IMG_DOC_SET;
+        if (transaction.equals("rad69Iig")) type = TransactionType.RET_IMG_DOC_SET_GW;
+        if (transaction.equals("rad75")) type = TransactionType.XC_RET_IMG_DOC_SET;
         try {
             
             // Transfer from request resource to request model
@@ -142,15 +145,17 @@ public class SimulatorsController {
             // Trigger simulator to do the retrieve
 
             ImgDocConsActorSimulator sim = new ImgDocConsActorSimulator();
+            sim.setTransactionType(type);
             sim.setTls(request.isTls());
+            sim.setMessageDir(request.getMessageDir());
             sim.setDirect(request.isDirect());
             if (request.isDirect()) {
                dest = "direct";
                sim.setEndpoint(request.getEndpoint());
             }
             else {
-               sim.setSite(api.getActorConfig(request.getId()));
-               dest = request.getFullId();
+               sim.setSite(api.getActorConfig(request.getFullId()));
+               dest = request.getId();
             }
             RetrievedDocumentsModel sModel = sim.retrieve(rModel);
             
@@ -216,9 +221,9 @@ public class SimulatorsController {
 
     enum PropType {STRING, BOOLEAN, LIST};
     PropType propType(SimulatorConfigElement config) {
-        if (config.isList()) return PropType.LIST;
-        if (config.isBoolean()) return PropType.BOOLEAN;
-        if (config.isString()) return PropType.STRING;
+        if (config.hasList()) return PropType.LIST;
+        if (config.hasBoolean()) return PropType.BOOLEAN;
+        if (config.hasString()) return PropType.STRING;
         return null;
     }
 
@@ -271,7 +276,7 @@ public class SimulatorsController {
                         logger.info(String.format("...property %s", propName));
                     makeUpdate = true;
                     logger.info(String.format("......%s ==> %s", ele.asBoolean(), config.asBoolean(propName)));
-                    ele.setValue(config.asBoolean(propName));
+                    ele.setBooleanValue(config.asBoolean(propName));
                 }
                 else if (propType(ele) == PropType.STRING) {
                     if (ele.asString().equals(config.asString(propName))) continue;  // no change
@@ -279,7 +284,7 @@ public class SimulatorsController {
                         logger.info(String.format("...property %s", propName));
                     makeUpdate = true;
                     logger.info(String.format("%s ==> %s", ele.asString(), config.asString(propName)));
-                    ele.setValue(config.asString(propName));
+                    ele.setStringValue(config.asString(propName));
                 }
                 else if (propType(ele) == PropType.LIST) {
                     if (listCompare(ele.asList(), config.asList(propName))) continue; // no change
@@ -287,13 +292,13 @@ public class SimulatorsController {
                         logger.info(String.format("...property %s", propName));
                     makeUpdate = true;
                     logger.info(String.format("%s ==> %s", ele.asString(), config.asString(propName)));
-                    ele.setValue(config.asList(propName));
+                    ele.setStringListValue(config.asList(propName));
                 }
             }
 //            if (config.getPatientErrorMap() != null) {
 //                SimulatorConfigElement ele = currentConfig.get(SimulatorProperties.errorForPatient);
 //                if (ele != null) {
-//                    ele.setValue(config.getPatientErrorMap());
+//                    ele.setBooleanValue(config.getPatientErrorMap());
 //                }
 //            }
             if (makeUpdate) {

@@ -5,13 +5,11 @@
         <dependency>
             <groupId>gov.nist.toolkit</groupId>
             <artifactId>actorfactory</artifactId>
-            <version>2.202.9.1</version>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>gov.nist.toolkit</groupId>
             <artifactId>toolkit-api</artifactId>
-            <version>2.202.9.1</version>
             <scope>test</scope>
         </dependency>
     </dependencies>
@@ -19,7 +17,7 @@
     <parent>
         <groupId>gov.nist.toolkit</groupId>
         <artifactId>tk-deps</artifactId>
-        <version>2.202.9.3</version>
+        <version>4.2.1</version>
         <relativePath>/tk-deps/pom.xml</relativePath>
     </parent>
 
@@ -33,6 +31,7 @@
         <module>xds-exceptions</module>
         <module>actor-transaction</module>
         <module>docref</module>
+        <!-- headless -->
         <module>xdstools2</module>
         <module>session</module>
         <module>simulators</module>
@@ -78,6 +77,11 @@
         <module>config-datatypes</module>
         <module>config-datatypes-io</module>
         <module>it-tests</module>
+        <module>validators-soap-message</module>
+        <module>new-validation-system</module>
+        <module>interaction-model</module>
+        <module>interaction-mapper</module>
+        <module>interaction-diagram</module>
     </modules>
 
 
@@ -143,11 +147,11 @@
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-release-plugin</artifactId>
                 <version>${maven-release-plugin.version}</version>
-                <configuration>
-                    <tagBase>https://svn.mycompany.com/repos/myapplication/releases</tagBase>
-                    <tagNameFormat>v@{project.version}</tagNameFormat>
-                    <releaseProfiles>releases</releaseProfiles>
-                </configuration>
+                <!--<configuration>-->
+                    <!--<tagBase>https://svn.mycompany.com/repos/myapplication/releases</tagBase>-->
+                    <!--<tagNameFormat>v@{project.version}</tagNameFormat>-->
+                    <!--<releaseProfiles>releases</releaseProfiles>-->
+                <!--</configuration>-->
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -175,76 +179,75 @@
 
 
 
-        <pluginManagement>
-            <plugins>
-                <!--This plugin's configuration is used to store Eclipse m2e settings only. It has no influence on the Maven build itself.-->
-                <plugin>
-                    <groupId>org.eclipse.m2e</groupId>
-                    <artifactId>lifecycle-mapping</artifactId>
-                    <version>1.0.0</version>
-                    <configuration>
-                        <lifecycleMappingMetadata>
-                            <pluginExecutions>
-                                <pluginExecution>
-                                    <pluginExecutionFilter>
-                                        <groupId>
-                                            org.apache.maven.plugins
-                                        </groupId>
-                                        <artifactId>
-                                            maven-compiler-plugin
-                                        </artifactId>
-                                        <versionRange> [2.0,) </versionRange>
-                                        <goals>
-                                            <goal>testCompile</goal>
-                                            <goal>compile</goal>
-                                        </goals>
-                                    </pluginExecutionFilter>
-                                    <action>
-                                        <ignore/>
-                                    </action>
-                                </pluginExecution>
-                            </pluginExecutions>
-                        </lifecycleMappingMetadata>
-                    </configuration>
-                </plugin>
-            </plugins>
-        </pluginManagement>
+        <!--<pluginManagement>-->
+            <!--<plugins>-->
+                <!--&lt;!&ndash;This plugin's configuration is used to store Eclipse m2e settings only. It has no influence on the Maven build itself.&ndash;&gt;-->
+                <!--<plugin>-->
+                    <!--<groupId>org.eclipse.m2e</groupId>-->
+                    <!--<artifactId>lifecycle-mapping</artifactId>-->
+                    <!--<version>1.0.0</version>-->
+                    <!--<configuration>-->
+                        <!--<lifecycleMappingMetadata>-->
+                            <!--<pluginExecutions>-->
+                                <!--<pluginExecution>-->
+                                    <!--<pluginExecutionFilter>-->
+                                        <!--<groupId>-->
+                                            <!--org.apache.maven.plugins-->
+                                        <!--</groupId>-->
+                                        <!--<artifactId>-->
+                                            <!--maven-compiler-plugin-->
+                                        <!--</artifactId>-->
+                                        <!--<versionRange> [2.0,) </versionRange>-->
+                                        <!--<goals>-->
+                                            <!--<goal>testCompile</goal>-->
+                                            <!--<goal>compile</goal>-->
+                                        <!--</goals>-->
+                                    <!--</pluginExecutionFilter>-->
+                                    <!--<action>-->
+                                        <!--<ignore/>-->
+                                    <!--</action>-->
+                                <!--</pluginExecution>-->
+                            <!--</pluginExecutions>-->
+                        <!--</lifecycleMappingMetadata>-->
+                    <!--</configuration>-->
+                <!--</plugin>-->
+            <!--</plugins>-->
+        <!--</pluginManagement>-->
     </build>
 
 
-    <profiles>
-        <profile>
-            <id>releases</id>
-            <build>
-                <plugins>
-                    <plugin>
-                        <groupId>org.sonatype.plugins</groupId>
-                        <artifactId>nexus-staging-maven-plugin</artifactId>
-                        <version>${nexus-staging-maven-plugin.version}</version>
-                        <executions>
-                            <execution>
-                                <id>default-deploy</id>
-                                <phase>deploy</phase>
-                                <goals>
-                                    <goal>deploy</goal>
-                                </goals>
-                            </execution>
-                        </executions>
-                        <configuration>
-                            <serverId>internal-nist-repo-releases</serverId>
-                            <nexusUrl>http://vm-070.nist.gov:8081/nexus</nexusUrl>
-                            <skipStaging>true</skipStaging>
-                        </configuration>
-                    </plugin>
-                </plugins>
-            </build>
-        </profile>
-    </profiles>
+    <!--<profiles>-->
+        <!--<profile>-->
+            <!--<id>releases</id>-->
+            <!--<build>-->
+                <!--<plugins>-->
+                    <!--<plugin>-->
+                        <!--<groupId>org.sonatype.plugins</groupId>-->
+                        <!--<artifactId>nexus-staging-maven-plugin</artifactId>-->
+                        <!--<version>${nexus-staging-maven-plugin.version}</version>-->
+                        <!--<executions>-->
+                            <!--<execution>-->
+                                <!--<id>default-deploy</id>-->
+                                <!--<phase>deploy</phase>-->
+                                <!--<goals>-->
+                                    <!--<goal>deploy</goal>-->
+                                <!--</goals>-->
+                            <!--</execution>-->
+                        <!--</executions>-->
+                        <!--<configuration>-->
+                            <!--<serverId>internal-nist-repo-releases</serverId>-->
+                            <!--<nexusUrl>http://vm-070.nist.gov:8081/nexus</nexusUrl>-->
+                            <!--<skipStaging>true</skipStaging>-->
+                        <!--</configuration>-->
+                    <!--</plugin>-->
+                <!--</plugins>-->
+            <!--</build>-->
+        <!--</profile>-->
+    <!--</profiles>-->
 
 
 
     <scm>
-        <developerConnection>scm:hg:https://bitbucket.org/iheos/toolkit/branch/release/ihe</developerConnection>
-        <tag>v3.0.2a</tag>
+        <developerConnection>scm:git:git://github.com/usnistgov/iheos-toolkit2</developerConnection>
     </scm>
 </project>

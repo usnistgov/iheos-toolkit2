@@ -5,6 +5,9 @@ import gov.nist.toolkit.http.HttpHeader.HttpHeaderParseException;
 import gov.nist.toolkit.utilities.io.Io;
 
 import javax.servlet.http.HttpServletRequest;
+
+import com.google.gwt.validation.client.impl.Validation;
+
 import java.io.IOException;
 import java.util.Enumeration;
 import java.util.List;
@@ -21,7 +24,8 @@ public class HttpParserBa {
 	HttpMessageBa message = new HttpMessageBa();
 	MultipartParserBa multiparser;
 	boolean appendixV = true;
-
+	String [] httpMethods = {"POST"};
+	
 	public MultipartParserBa getMultipartParser() {
 		return multiparser;
 	}
@@ -107,6 +111,12 @@ public class HttpParserBa {
 
 		tryMultipart();
 	}
+	
+	public HttpParserBa(byte[] msg, String[] methods) throws HttpParseException, ParseException  {
+	   er = null;
+	   httpMethods = methods;
+	   init(msg, null);
+	}
 
 	public HttpParserBa(byte[] msg) throws HttpParseException, ParseException  {
 		er = null;
@@ -185,7 +195,7 @@ public class HttpParserBa {
 
 		String header = new String(input, from, to-from).trim();
 		if (header.length() > 0) {
-			message.addHeader(header);
+			message.addHeader(header, httpMethods);
 			to = findStartOfNextHeader();
 		} else {
 			to = findStartOfNextHeader();

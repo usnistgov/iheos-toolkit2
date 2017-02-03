@@ -2,51 +2,49 @@ package gov.nist.toolkit.xdstools2.client.tabs;
 
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.*;
 import gov.nist.toolkit.configDatatypes.client.TransactionType;
+import gov.nist.toolkit.results.client.Result;
 import gov.nist.toolkit.xdstools2.client.CoupledTransactions;
-import gov.nist.toolkit.xdstools2.client.PopupMessage;
-import gov.nist.toolkit.xdstools2.client.TabContainer;
+import gov.nist.toolkit.xdstools2.client.command.command.GetTestdataSetListingCommand;
+import gov.nist.toolkit.xdstools2.client.command.command.SubmitXDRTestdataCommand;
 import gov.nist.toolkit.xdstools2.client.siteActorManagers.GetDocumentsSiteActorManager;
 import gov.nist.toolkit.xdstools2.client.tabs.genericQueryTab.GenericQueryTab;
+import gov.nist.toolkit.xdstools2.client.widgets.PopupMessage;
+import gov.nist.toolkit.xdstools2.shared.command.request.GetTestdataSetListingRequest;
+import gov.nist.toolkit.xdstools2.shared.command.request.SubmitTestdataRequest;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class XDRTestdataTab  extends GenericQueryTab {
-	
+
 	static List<TransactionType> transactionTypes = new ArrayList<TransactionType>();
 	static {
 		transactionTypes.add(TransactionType.XDR_PROVIDE_AND_REGISTER);
 	}
-	
+
 	static CoupledTransactions couplings = new CoupledTransactions();
 
 
 	ListBox testlistBox;
-	
+
 	String help = "Submit selected test data set to the selected Document Recipient " +
-	"in a Provide and Register transaction"; 
-	
+			"in a Provide and Register transaction";
+
 	public XDRTestdataTab() {
 		super(new GetDocumentsSiteActorManager());
 	}
-	
-	public void onTabLoad(TabContainer container, boolean select, String eventName) {
-		myContainer = container;
-		topPanel = new VerticalPanel();
-		
-		
-		container.addTab(topPanel, "XDR Send", select);
-		addCloseButton(container,topPanel, help);
 
-		topPanel.add(new HTML("<h2>Send XDR Provide & Register transaction</h2>"));
+	@Override
+	protected Widget buildUI() {
+		FlowPanel container = new FlowPanel();
+		container.add(new HTML("<h2>Send XDR Provide & Register transaction</h2>"));
 
 		mainGrid = new FlexTable();
 		int row = 0;
-		
-		topPanel.add(mainGrid);
+
+		container.add(mainGrid);
 
 		HTML dataLabel = new HTML();
 		dataLabel.setText("Select Test Data Set");
@@ -57,28 +55,27 @@ public class XDRTestdataTab  extends GenericQueryTab {
 		row++;
 
 		testlistBox.setVisibleItemCount(1);
-		toolkitService.getTestdataSetListing("testdata-xdr", loadRecipientTestListCallback);
+		return container;
+	}
 
+	@Override
+	protected void bindUI() {
+		new GetTestdataSetListingCommand(){
+			@Override
+			public void onComplete(List<String> result) {
+				testlistBox.addItem("");
+				for (String testName : result) {
+					testlistBox.addItem(testName);
+				}
+			}
+		}.run(new GetTestdataSetListingRequest(getCommandContext(),"testdata-xdr"));
+	}
+
+	@Override
+	protected void configureTabView() {
 		queryBoilerplate = addQueryBoilerplate(new Runner(), transactionTypes, couplings, true);
 	}
-	
-	protected AsyncCallback<List<String>> loadRecipientTestListCallback = new AsyncCallback<List<String>>() {
 
-		public void onFailure(Throwable caught) {
-			showMessage(caught);
-		}
-
-		public void onSuccess(List<String> result) {
-			testlistBox.addItem("");
-			for (String testName : result) {
-				testlistBox.addItem(testName);
-			}
-		}
-
-	};
-
-
-	
 	class Runner implements ClickHandler {
 
 		public void onClick(ClickEvent event) {
@@ -86,20 +83,25 @@ public class XDRTestdataTab  extends GenericQueryTab {
 
 			if (!verifySiteProvided()) return;
 			if (!verifyPidProvided()) return;
-			
+
 			int selected = testlistBox.getSelectedIndex();
 			if (selected < 1 || selected >= testlistBox.getItemCount()) {
 				new PopupMessage("You must select Test Data Set first");
 				return;
-				
+
 			}
-			
-			String testdataSetName = testlistBox.getItemText(selected);	
+
+			String testdataSetName = testlistBox.getItemText(selected);
 
 			rigForRunning();
-			toolkitService.submitXDRTestdata(getSiteSelection(), testdataSetName, pidTextBox.getValue().trim(), queryCallback);
+			new SubmitXDRTestdataCommand(){
+				@Override
+				public void onComplete(List<Result> result) {
+					queryCallback.onSuccess(result);
+				}
+			}.run(new SubmitTestdataRequest(getCommandContext(),getSiteSelection(),testdataSetName,pidTextBox.getValue().trim()));
 		}
-		
+
 	}
 
 

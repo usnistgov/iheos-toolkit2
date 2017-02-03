@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?><TestPlan>
-  <Test>15812/ContentBundle/Content2</Test>
+  <Test>15812/Register_OD/ContentBundle/Content2</Test>
   <Rule>desc todo</Rule>
   <TestStep id="SubmitStableIsSnapshotOfDocumentEntry">
     <ExpectedStatus>Success</ExpectedStatus>

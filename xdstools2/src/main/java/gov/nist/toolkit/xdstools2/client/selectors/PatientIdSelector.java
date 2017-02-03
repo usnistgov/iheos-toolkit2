@@ -1,32 +1,28 @@
 package gov.nist.toolkit.xdstools2.client.selectors;
 
-import gov.nist.toolkit.xdstools2.client.CookieManager;
-import gov.nist.toolkit.xdstools2.client.Panel;
-import gov.nist.toolkit.xdstools2.client.PopupMessage;
-import gov.nist.toolkit.xdstools2.client.ToolkitServiceAsync;
-
-import java.util.ArrayList;
-import java.util.List;
-
 import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.Cookies;
 import com.google.gwt.user.client.rpc.AsyncCallback;
-import com.google.gwt.user.client.ui.Button;
-import com.google.gwt.user.client.ui.HTML;
-import com.google.gwt.user.client.ui.HorizontalPanel;
-import com.google.gwt.user.client.ui.ListBox;
-import com.google.gwt.user.client.ui.TextBox;
+import com.google.gwt.user.client.ui.*;
+import gov.nist.toolkit.xdstools2.client.CookieManager;
+import gov.nist.toolkit.xdstools2.client.Panel1;
+import gov.nist.toolkit.xdstools2.client.command.command.GetDefaultAssigningAuthorityCommand;
+import gov.nist.toolkit.xdstools2.client.widgets.PopupMessage;
+import gov.nist.toolkit.xdstools2.client.util.ClientUtils;
+
+import java.util.ArrayList;
+import java.util.List;
+
 
 public class PatientIdSelector {
 	HorizontalPanel patientIdPanel = new HorizontalPanel();
 	ListBox patientIdListBox = new ListBox();
 	TextBox patientIdTextBox = new TextBox();
-	ToolkitServiceAsync toolkitService;
 	boolean isPrivateTesting = false;
-	Panel menuPanel;
+	Panel1 menuPanel;
 
 	static String choose = "-- Choose --";
 	static List<String> patientIdList = new ArrayList<String>();
@@ -34,23 +30,22 @@ public class PatientIdSelector {
 	static List<PatientIdSelector> instances = new ArrayList<PatientIdSelector>();
 	static String defaultAssigningAuthority = null;
 
-	public static PatientIdSelector getInstance(ToolkitServiceAsync toolkitService, Panel menuPanel) {
+	public static PatientIdSelector getInstance(Panel1 menuPanel) {
 		for (PatientIdSelector sel : instances) {
 			if (sel.menuPanel == menuPanel) 
 				return sel;
 		}
 
 		if (instances.isEmpty()) {
-			toolkitService.getDefaultAssigningAuthority(new AsyncCallback<String>() {
-
-				public void onFailure(Throwable caught) { new PopupMessage("getDefaultAssigningAuthority(): " + caught.getMessage()); }
-
-				public void onSuccess(String result) { defaultAssigningAuthority = result; }
-				
-			});
+			new GetDefaultAssigningAuthorityCommand(){
+				@Override
+				public void onComplete(String result) {
+					defaultAssigningAuthority = result;
+				}
+			}.run(ClientUtils.INSTANCE.getCommandContext());
 		}
 		
-		PatientIdSelector sel = new PatientIdSelector(toolkitService, menuPanel);
+		PatientIdSelector sel = new PatientIdSelector(menuPanel);
 		instances.add(sel);
 		
 		return sel;
@@ -71,8 +66,7 @@ public class PatientIdSelector {
 	
 	
 
-	PatientIdSelector(ToolkitServiceAsync toolkitService, Panel menuPanel) {
-		this.toolkitService = toolkitService;
+	PatientIdSelector(Panel1 menuPanel) {
 		this.menuPanel = menuPanel;
 		
 		menuPanel.add(patientIdPanel);

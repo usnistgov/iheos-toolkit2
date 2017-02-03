@@ -1,0 +1,13 @@
+
+<TestPlan>
+  <Test>XPID-IHEGREEN-1946-Doc2/submit</Test>
+  <TestStep id="submit">
+  <ExpectedStatus>Success</ExpectedStatus>
+  <RegisterTransaction>
+    <NoPatientId/>
+    <XDSb/>
+    <MetadataFile>metadata.xml</MetadataFile>
+  </RegisterTransaction>
+</TestStep>
+
+</TestPlan>

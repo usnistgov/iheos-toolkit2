@@ -111,7 +111,7 @@ public class SamlResponseValidator {
      * default constructor
      * 
      * @param sEntityID The Entity ID of the OA server. 
-     * @param organization The object containing organization information.
+     * @param organization The model containing organization information.
      * @param requireSignature Indicates if a signature is mandatory
      */
     public SamlResponseValidator(String sEntityID, Organization organization, boolean requireSignature){
@@ -224,10 +224,10 @@ public class SamlResponseValidator {
     }
     
     /**
-     * Validates a SAML object.
+     * Validates a SAML model.
      * 
      * @param context Message context.
-     * @param obj The SAML object
+     * @param obj The SAML model
      * @return true if not signed or if signature is correct.
      * @throws OAException If security error occurs
      */
@@ -413,7 +413,7 @@ public class SamlResponseValidator {
      * @param subject subject to validate
      * @param request request
      * @param context context
-     * @throws SAMLException error validating the object
+     * @throws SAMLException error validating the model
      */
     protected void verifySubject(Subject subject, AuthnRequest request, BasicSAMLMessageContext context) throws SAMLException {
         boolean confirmed = false;

@@ -49,10 +49,17 @@ public class RepIndex implements Serializable {
 		FileInputStream fis = null;
 		ObjectInputStream in = null;
 		DocumentCollection dc;
-		fis = new FileInputStream(filename);
-		in = new ObjectInputStream(fis);
-		dc = (DocumentCollection)in.readObject();
-		in.close();
+		try {
+			fis = new FileInputStream(filename);
+			in = new ObjectInputStream(fis);
+			dc = (DocumentCollection)in.readObject();
+
+		} finally {
+			in.close();
+			if (fis!=null)
+				fis.close();
+		}
+
 		return dc;
 	}
 
@@ -77,11 +84,16 @@ public class RepIndex implements Serializable {
 	}
 
 	public SimulatorStats getSimulatorStats() throws IOException, NoSimException {
+		return getSimulatorStats(ActorType.REPOSITORY);
+	}
+
+	public SimulatorStats getSimulatorStats(ActorType actorType) throws IOException, NoSimException {
 		SimulatorStats stats = new SimulatorStats();
-		stats.actorType = ActorType.REPOSITORY;
+		stats.actorType = actorType; // Should repository type be used here instead?
 		stats.simId = simId;
 
-		stats.put(SimulatorStats.DOCUMENT_COUNT, dc.size());
+		if (ActorType.REPOSITORY.equals(actorType))
+			stats.put(SimulatorStats.DOCUMENT_COUNT, dc.size());
 		return stats;
 	}
 

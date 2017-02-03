@@ -5,8 +5,8 @@ import gov.nist.toolkit.registrymetadata.Metadata;
 import gov.nist.toolkit.registrymetadata.MetadataParser;
 import gov.nist.toolkit.testengine.engine.StepContext;
 import gov.nist.toolkit.xdsexception.ExceptionUtil;
-import gov.nist.toolkit.xdsexception.XdsException;
-import gov.nist.toolkit.xdsexception.XdsInternalException;
+import gov.nist.toolkit.xdsexception.client.XdsException;
+import gov.nist.toolkit.xdsexception.client.XdsInternalException;
 import org.apache.axiom.om.OMElement;
 
 public class RegisterODDETransaction extends BasicTransaction {
@@ -68,6 +68,7 @@ public class RegisterODDETransaction extends BasicTransaction {
 	protected void validate_response(OMElement result) throws XdsException {
 		validate_registry_response(
 				result,
+				"RegistryResponse",
 				MetadataTypes.METADATA_TYPE_SQ);
 	}
 

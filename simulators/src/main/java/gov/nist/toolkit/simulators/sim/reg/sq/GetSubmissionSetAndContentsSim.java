@@ -13,8 +13,8 @@ import gov.nist.toolkit.simulators.sim.reg.store.SubSet;
 import gov.nist.toolkit.valregmsg.registry.storedquery.generic.GetSubmissionSetAndContents;
 import gov.nist.toolkit.valregmsg.registry.storedquery.generic.QueryReturnType;
 import gov.nist.toolkit.valregmsg.registry.storedquery.support.StoredQuerySupport;
-import gov.nist.toolkit.xdsexception.MetadataException;
-import gov.nist.toolkit.xdsexception.XdsException;
+import gov.nist.toolkit.xdsexception.client.MetadataException;
+import gov.nist.toolkit.xdsexception.client.XdsException;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -90,8 +90,16 @@ public class GetSubmissionSetAndContentsSim extends GetSubmissionSetAndContents 
 				docEntries = mc.docEntryCollection.filterByFormatCode(format_code, docEntries);
 			if (conf_code != null)
 				docEntries = mc.docEntryCollection.filterByConfCode(conf_code, docEntries);
+			if (entry_type != null) {
+				docEntries = mc.docEntryCollection.filterByObjectType(entry_type, docEntries);
+				// could be other things
+//				if (docEntries==null || (docEntries!=null && docEntries.isEmpty())) {
+//					return new Metadata();
+//				}
+			}
+
 		} catch (Exception e) {
-			getStoredQuerySupport().er.err(Code.XDSRegistryError, "Error filtering DocumentEntries by formatCode or confidentialityCode: " + e.getMessage(), this, null);
+			getStoredQuerySupport().er.err(Code.XDSRegistryError, "Error filtering DocumentEntries by formatCode, confidentialityCode, or documentEntryType: " + e.getMessage(), this, null);
 			return new Metadata();
 		}
 

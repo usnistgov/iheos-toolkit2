@@ -1,0 +1,30 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>gov.nist.toolkit</groupId>
+        <artifactId>tk-deps</artifactId>
+        <version>4.2.1</version>
+        <relativePath>../tk-deps/pom.xml</relativePath>
+    </parent>
+
+    <artifactId>interaction-mapper</artifactId>
+
+    <dependencies>
+        <dependency>
+            <groupId>com.google.gwt</groupId>
+            <artifactId>gwt-user</artifactId>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>gov.nist.toolkit</groupId>
+            <artifactId>interaction-model</artifactId>
+            <scope>compile</scope>
+        </dependency>
+    </dependencies>
+
+
+  <scm>
+    <tag>v3.0.2a</tag>
+  </scm>
+</project>

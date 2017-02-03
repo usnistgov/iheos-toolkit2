@@ -9,7 +9,7 @@ import gov.nist.toolkit.installation.Installation;
 import gov.nist.toolkit.sitemanagement.Sites;
 import gov.nist.toolkit.sitemanagement.client.Site;
 import gov.nist.toolkit.xdsexception.ExceptionUtil;
-import gov.nist.toolkit.xdsexception.ToolkitRuntimeException;
+import gov.nist.toolkit.xdsexception.client.ToolkitRuntimeException;
 import org.apache.log4j.Logger;
 
 import java.io.IOException;
@@ -30,7 +30,7 @@ public class SimManager {
 
 	public SimManager(String sessionId) {
 		this.sessionId = sessionId;
-		if (Installation.installation().propertyServiceManager().getCacheDisabled()) {
+		if (Installation.instance().propertyServiceManager().getCacheDisabled()) {
 			List<SimId> simIds = loadAllSims();
 			logger.debug("Cache disabled - loaded " + simIds.size() + "  sims");
 		}
@@ -146,6 +146,14 @@ public class SimManager {
 		return getAllSites(SiteServiceManager.getSiteServiceManager().getCommonSites());
 	}
 
+	public boolean exists(String siteName) {
+		try {
+			return getAllSites().exists(siteName);
+		} catch (Exception e) {
+			return false;
+		}
+	}
+
     public List<Site> getSites(List<String> siteNames) throws Exception {
         List<Site> siteList = new ArrayList<>();
 
@@ -198,7 +206,7 @@ public class SimManager {
 	}
 
 	/**
-	 * Remove simulator config.  Managed as a list for convienence
+	 * Remove simulator config.  Managed as a list for convenience
 	 * not because there can be multiple (there can't)
 	 * @param simId
 	 */

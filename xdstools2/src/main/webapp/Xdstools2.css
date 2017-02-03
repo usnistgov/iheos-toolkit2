@@ -8,18 +8,20 @@
 h1 {
   font-size: 2em;
   font-weight: bold;
-  color: #777777;
-  margin: 40px 0px 70px;
+  color: black;
+  margin: 10px 0px 10px;
   text-align: center;
 }
 
+/*
 h3 {
   font-size: 1.1em;
   font-weight: bold;
   color: #777777;
-  margin: 10px 20px 0;
+  margin: 20px 10px 0;
   text-align: left;
 }
+*/
 
 .sendButton, #closeButton, .iconbutton {
   cursor: pointer;
@@ -50,7 +52,7 @@ h3 {
   margin: 0;
   padding: 1px 3px;
   text-decoration: none;
-  color:steel;
+  color:blue;
   cursor: pointer;
   cursor: hand;
   font-weight:normal;font-size:smaller;
@@ -101,6 +103,16 @@ h3 {
     border-width: 0;
 }
 
+.with-border{
+  border: 2px solid black;
+}
+
+.with-rounded-border{
+  background-color: PaleTurquoise !important;
+  border-radius: 10px;
+  border: 2px solid #90A4AE;
+}
+
 .test-row-white {
   background-color: #90A4AE !important;
 }
@@ -117,9 +129,40 @@ h3 {
   background-color: #E57373 !important;
 }
 
-.testOverviewHeader {
+.testOverviewHeaderSuccess {
+  background-color: PaleTurquoise !important;
   border-radius: 10px;
   border: 2px solid #90A4AE;
+}
+
+.testSuccess {
+  background-color: PaleTurquoise !important;
+}
+
+.testOverviewHeaderFail {
+  background-color: LightCoral !important;
+  border-radius: 10px;
+  border: 2px solid #90A4AE;
+}
+
+.testFail {
+  background-color: LightCoral !important;
+}
+
+.warningBanner {
+  font-size: 16pt;
+  background-color: yellow !important;
+  text-align: center;
+}
+
+.testOverviewHeaderNotRun {
+  background-color: white !important;
+  border-radius: 10px;
+  border: 2px solid #90A4AE;
+}
+
+.testNotRun {
+  background-color: white !important;
 }
 
 .menuCollapse {
@@ -129,4 +172,140 @@ h3 {
 
 .menuCollapse:hover {
   background-color: lavender;
+}
+
+.paddedHorizontalPanel {
+  margin-left:20px;
+}
+
+.borderedTable {
+  border:2px solid darkslategray;
+}
+
+.list-border {
+  border: 1px solid rgba(169, 169, 169, 0.67);
+}
+.section-title {
+  font-size: 14pt;
+  text-align: left;
+}
+
+.loadingMessage {
+  border:2px solid darkslategray;
+  font-size: 16pt;
+  background-color: yellow !important;
+  text-align: center;
+}
+
+.test-title {
+  font-size: 16pt;
+  text-align: left;
+}
+
+.bold-face {
+  font-weight: bold;
+  color: black;
+}
+
+.test-summary {
+  font-size: 2em;
+  font-weight: bold;
+  color: black;
+  margin: 10px 0 20px 0;
+  /*font-size: 16pt;*/
+  text-align: left;
+}
+
+.right {
+  float: right;
+  /*position: absolute;*/
+  /*right: 0px;*/
+}
+
+.gwt-TabBarItem { /* folder-type rounded tab edges */
+  border-top-left-radius: .7em;
+  border-top-right-radius: .7em;
+}
+
+.roundedButton2 {
+  border-radius:32px;
+  border:1px solid #bbb;
+  text-decoration:none;
+  text-align:center;
+  font-family:Arial;
+  font-size:small;
+  background:#f5f5f5;
+  padding:1px 3px;
+  color:#4B00FF;
+}
+
+.gwt-TabBar {
+  margin-top:6.5px;
+  border-bottom: 4px solid #92C1F0;
+}
+
+.gwt-TabBarItem-selected {
+  border-top-left-radius: .75em;
+  border-top-right-radius: .75em;
+  outline:none !important;
+}
+
+
+/*
+#simConfigTable td  {
+   border: 1px solid black;
+}
+
+#simConfigTable {
+    border-collapse: collapse;
+}*/
+
+#simConfigTable tr:nth-child(even) {background-color: #f2f2f2}
+
+.lavenderTh {font-size:16px; background-color: lavender;}
+
+.iconStyle {
+  vertical-align: bottom; cursor: pointer; margin: 6px; display:inline-block;
+}
+
+.iconStyle_20x20 {
+  width: 20px; height: 20px;
+}
+
+.orchestrationOption {
+  margin-bottom: 7px;
+  display: block;
+}
+
+.inlineLink {
+ color: #0000ad;
+}
+
+.queryBoilerPlate {
+  color: #4a4e51;
+  background-color: #f9f9f9;
+  border: 1px solid #d4d4d4;
+  box-shadow: 1px 2px 3px #f2f2f2;
+  padding: 4px 6px 5px;
+  margin-top:2px;
+  margin-left:2px;
+  margin-bottom: 10px;
+}
+
+.copyBtn {
+  background: white;
+  margin-left:5px;
+}
+.copyBtn:hover{
+  cursor: pointer;
+}
+
+.loading {
+  cursor: wait;
+}
+.HP{
+  margin-top:10px;
+}
+.HP .gwt-Button {
+  margin-right: 10px;
 }

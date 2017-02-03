@@ -26,6 +26,7 @@ class ValidateXdmSpec extends ToolkitSpecification {
     }
 
     def cleanupSpec() {  // one time shutdown when everything is done
+//        System.gc()
         server.stop()
         ListenerFactory.terminateAll()
     }
@@ -45,6 +46,8 @@ class ValidateXdmSpec extends ToolkitSpecification {
         }
 
         then:
-        report.pass
+        !report.pass
+        report.report.contains('Filename is limited to 8 characters')
     }
+
 }

@@ -1,7 +1,7 @@
 package gov.nist.toolkit.simulators.sim.rep;
 
-import gov.nist.toolkit.configDatatypes.SimulatorProperties;
 import gov.nist.toolkit.actorfactory.client.SimulatorConfig;
+import gov.nist.toolkit.configDatatypes.SimulatorProperties;
 import gov.nist.toolkit.docref.Mtom;
 import gov.nist.toolkit.errorrecording.ErrorRecorder;
 import gov.nist.toolkit.errorrecording.client.XdsErrorCode;
@@ -103,6 +103,10 @@ public class RepPnRSim extends TransactionSimulator implements MetadataGeneratin
 
 				} else {  // Optimized
 					String cid = dam.getOptimizedDocumentCid(eoId);
+					if (cid == null) {
+						er.err(XdsErrorCode.Code.XDSMissingDocument, "Document contents for document " + eoId + " not available in message",null, Mtom.XOP_example2);
+						throw new XDSMissingDocumentException("Document contents for document " + eoId + " not available in message", Mtom.XOP_example2);
+					}
 					sdi = multipartContainer.getContent(cid);
 					if (sdi != null) {
 						storedDocument = new StoredDocument(sdi);
@@ -151,7 +155,7 @@ public class RepPnRSim extends TransactionSimulator implements MetadataGeneratin
 					m.insertSlot(eo, slot);
 				}
 				if (hasHash)
-					m.setSlotValue(eo, "hash", 0, hash);
+					m.setSlotValue(eo, "hash", 0, existingHash);
 				else {
 					OMElement slot = m.mkSlot("hash", hash);
 					m.insertSlot(eo, slot);
@@ -192,7 +196,21 @@ public class RepPnRSim extends TransactionSimulator implements MetadataGeneratin
 
 			if (isForward()) {
 				// issue soap call to registry
-				String endpoint = simulatorConfig.get(SimulatorProperties.registerEndpoint).asString();
+				String endpoint = null;
+				try {
+					if (common.isTls()) {
+						// prefer TLS for Register transaction
+						endpoint = simulatorConfig.get(SimulatorProperties.registerTlsEndpoint).asString();
+					}
+					if (endpoint == null)
+						endpoint = simulatorConfig.get(SimulatorProperties.registerEndpoint).asString();
+				} catch (Exception e) {
+				}
+				if (endpoint == null) {
+					logger.error("No register endpoint configured");
+					er.err(Code.XDSRepositoryError, "No register endpoint configured", this, "");
+					return;
+				}
 
 				Soap soap = new Soap();
 				try {

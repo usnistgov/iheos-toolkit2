@@ -25,12 +25,32 @@ public class RetImgDocSetReqResource extends SimIdResource
     * referred to as a "direct" query.
     */
    String endpoint = null;
+   /**
+    * Message directory. If present, indicates the message directory for the
+    * transaction. The SOAP request and response headers and the SOAP Request
+    * Body are put in this directory.
+    */
+   String messageDir = null;
 
    List <RetImgDocSetReqStudyResource> studyRequests = new ArrayList <>();
    List <String> transferSyntaxUIDs = new ArrayList <>();
    RequestFlavorResource flavor = new RequestFlavorResource();
 
    
+   /**
+    * @return the {@link #messageDir} value.
+    */
+   public String getMessageDir() {
+      return messageDir;
+   }
+
+   /**
+    * @param messageDir the {@link #messageDir} to set
+    */
+   public void setMessageDir(String messageDir) {
+      this.messageDir = messageDir;
+   }
+
    /**
     * @return the {@link #endpoint} value.
     */

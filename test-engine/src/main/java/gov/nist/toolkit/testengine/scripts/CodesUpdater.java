@@ -1,6 +1,7 @@
 package gov.nist.toolkit.testengine.scripts;
 
 import gov.nist.toolkit.commondatatypes.MetadataSupport;
+import gov.nist.toolkit.testengine.Sections;
 import gov.nist.toolkit.utilities.io.Io;
 import gov.nist.toolkit.utilities.xml.OMFormatter;
 import gov.nist.toolkit.utilities.xml.Util;
@@ -14,7 +15,7 @@ import gov.nist.toolkit.valregmsg.registry.SQCodedTerm;
 import gov.nist.toolkit.valregmsg.registry.storedquery.support.ParamParser;
 import gov.nist.toolkit.valregmsg.registry.storedquery.support.SqParams;
 import gov.nist.toolkit.valregmsg.registry.storedquery.support.StoredQueryGenerator;
-import gov.nist.toolkit.xdsexception.XdsInternalException;
+import gov.nist.toolkit.xdsexception.client.XdsInternalException;
 import org.apache.axiom.om.OMAttribute;
 import org.apache.axiom.om.OMElement;
 import org.apache.commons.io.FileUtils;
@@ -25,12 +26,23 @@ import java.io.File;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.*;
+import java.util.logging.Logger;
 
 /**
+ * This class performs an update on the default testkit for it to match the configuration file
+ * (affinity domain) of a given environment.
+ *
+ * @see #run(String, String)
+ * @see #getOutput()
+ * @see #hasErrors()
+ *
  * Created by oherrmann on 1/11/16.
  */
 public class CodesUpdater {
-    private final static String sections[] = { "tests", "testdata",  "examples"/*, "selftest"*/ };
+    // just to keep track of the testkit structure more easily
+    private static Sections MAIN_SECTIONS;
+    private static final String[] SECTIONS = { "utilities", "examples","xcpd", "selftest"};
+    private static final Logger LOGGER = Logger.getLogger(CodesUpdater.class.getName());
 
     private File testkit;
     private AllCodes allCodes=null;
@@ -54,17 +66,24 @@ public class CodesUpdater {
      */
     void execute() {
         error = false;
-        for (int i=0; i<sections.length; i++) {
-            String section = sections[i];
+        for (Sections section:MAIN_SECTIONS.values()){
+            executeSection(section.getSection());
+        }
+        for (int i = 0; i< SECTIONS.length; i++) {
+            String section = SECTIONS[i];
+            executeSection(section);
+        }
+    }
 
-            File sectionFile = new File(testkit + File.separator + section);
+    void executeSection(String section){
+        File sectionFile = new File(testkit + File.separator + section);
 
-            try {
-                exploreTests(sectionFile);
-            } catch (IOException e) {
-                out+=e.getMessage();
-                e.printStackTrace();
-            }
+        try {
+            exploreTests(sectionFile);
+        } catch (Exception e) {
+            error=true;
+            out+="FAILURE.\n"+e.getMessage()+"\n";
+            LOGGER.severe(e.getMessage());
         }
     }
 
@@ -72,27 +91,26 @@ public class CodesUpdater {
      * This method explores a test repository structure.
      *
      * @param testFile path to the testkit folder which contains the test section to explore.
-     * @throws IOException
+     * @throws XdsInternalException
      */
-    void exploreTests(File testFile) throws IOException {
-        try {
-            File[] dirs = testFile.listFiles();
-            if (dirs == null) {
-                System.out.println("No tests defined in " + testFile.toString());
-                // TODO throw an exception?!
-                out+="No tests defined in " + testFile.toString() +"\n";
-                error = true;
-            }else {
-                for (int i = 0; i < dirs.length; i++) {
-                    File testDir = dirs[i];
-                    if (testDir.getName().equals(".svn"))
-                        continue;
-                    if (testDir.isDirectory()) {
-                        exploreTests(testDir);
-                    } else {
-                        if ("testplan.xml".equals(testDir.getName())) {
-                            // read testplan.xml
-                            String testplanContent = Io.stringFromFile(testDir);
+    void exploreTests(File testFile) throws XdsInternalException {
+        File[] dirs = testFile.listFiles();
+        if (dirs == null) {
+            LOGGER.warning("No tests defined in " + testFile.toString());
+            out+="No tests defined in " + testFile.toString() +"\n";
+        }else {
+            for (int i = 0; i < dirs.length; i++) {
+                File testDir = dirs[i];
+                if (".svn".equals(testDir.getName()))
+                    continue;
+                if (testDir.isDirectory()) {
+                    exploreTests(testDir);
+                } else {
+                    if ("testplan.xml".equals(testDir.getName())) {
+                        // read testplan.xml
+                        String testplanContent = null;
+                        try {
+                            testplanContent = Io.stringFromFile(testDir);
                             OMElement testplanNode = Util.parse_xml(testplanContent);
                             // retrieve the TestStep nodes
                             Iterator<OMElement> steps = testplanNode.getChildrenWithName(new QName("TestStep"));
@@ -101,14 +119,13 @@ public class CodesUpdater {
                                 Iterator<OMElement> children = steps.next().getChildElements();
                                 exploreChildren(children, testFile);
                             }
+                        } catch (IOException e) {
+                            LOGGER.warning("File not found : " + testFile.toString() +"\n"+e.getMessage());
+                            out+="WARNING: No file found for " + testFile.toString() +"\n";
                         }
                     }
                 }
             }
-        }catch (Exception e){
-            out+=e.getMessage();
-            error=true;
-            throw new RuntimeException(e.getMessage());
         }
     }
 
@@ -172,7 +189,7 @@ public class CodesUpdater {
                         SqParams params = parser.parse(queryElement, false);
                         List<SQCodeOr.CodeLet> badCodes = findNonConformingCodes(params);
                         if (!badCodes.isEmpty()) {
-                            System.out.println(badCodes.size() + " bad codes to update in query file: " + filePath);
+                            LOGGER.info(badCodes.size() + " bad codes to update in query file: " + filePath);
                             out += badCodes.size() + " bad codes to update in query file: " + filePath + "\n";
                             File backupFile = new File(file.toString() + ".bak");
                             if (!backupFile.exists()) {
@@ -180,20 +197,22 @@ public class CodesUpdater {
                                 FileUtils.copyFile(file, backupFile);
                             }
                             // update bad codes
-                            updateCode(badCodes, filePath);
+                            updateCode(badCodes);
                             // update the file itself
                             String returnType = queryElement.getFirstElement().getAttributeValue(new QName("returnType"));
                             Io.stringToFile(file, new OMFormatter(StoredQueryGenerator.generateQueryFile(returnType, params)).toString());
                         }
                     }
                 } else {
-                    System.err.println("WARNING: " + filePath + " file does not exist in Testkit where it should be.");
+                    String warning="WARNING: " + filePath + " file does not exist in Testkit where it should be.";
+                    LOGGER.warning(warning);
+                    out+=warning;
                 }
             }
         }catch(Exception e){
             error=true;
             if (e.getMessage().contains("Could not decode the value")) {
-                System.err.println("Error parsing the following file: " + file);
+                LOGGER.severe("Error parsing the following file: " + file);
                 out+="Error parsing the following file: " + file+"\n";
             }
             out+=e.getMessage();
@@ -216,12 +235,11 @@ public class CodesUpdater {
                 filesTreated.add(filePath);
                 file = new File(filePath);
                 if (file.exists()) {
-                    // TODO something is probably missing here (else?)
                     // read the file
                     OMElement metadataElement = Util.parse_xml(file);
                     List<OMElement> badCodes = findNonConformingCodes(metadataElement);
                     if (!badCodes.isEmpty()) {
-                        System.out.println(badCodes.size() + " bad codes to update in " + filePath);
+                        LOGGER.info(badCodes.size() + " bad codes to update in " + filePath);
                         out += badCodes.size() + " bad codes to update in query file: " + filePath + '\n';
                         File backupFile = new File(file.toString() + ".bak");
                         if (!backupFile.exists()) {
@@ -229,19 +247,19 @@ public class CodesUpdater {
                             FileUtils.copyFile(file, backupFile);
                         }
                         // update bad codes
-                        updateCodes(badCodes, filePath);
+                        updateCodes(badCodes);
                         // update the file itself
                         Io.stringToFile(file, new OMFormatter(metadataElement).toString());
                     }
                 } else {
-                    System.err.println("WARNING: " + filePath + " file does not exist in Testkit where it should be.");
+                    LOGGER.warning("WARNING: " + filePath + " file does not exist in Testkit where it should be.");
                     out+="WARNING: " + filePath + " file does not exist in Testkit where it should be.\n";
                 }
             }
         } catch (Exception e) {
             error=true;
             if (e.getMessage().contains("Could not decode the value")){
-                System.err.println("Error parsing the following file: "+file);
+                LOGGER.severe("Error parsing the following file: "+file);
                 out+="Error parsing the following file: "+file+"\n";
             }
             out+=e.getMessage();
@@ -257,16 +275,16 @@ public class CodesUpdater {
      */
     private List<SQCodeOr.CodeLet> findNonConformingCodes(SqParams params){
         List<SQCodeOr.CodeLet> badCodes = new ArrayList<SQCodeOr.CodeLet>();
-        Map<String,SQCodedTerm> codes=params.getCodedParms();
-        for (String key:codes.keySet()){
-            if (codes.get(key) instanceof SQCodeOr){
-                List<SQCodeOr.CodeLet> codesList=((SQCodeOr) codes.get(key)).getCodeValues();
+        Map<String,Object> codes=params.getCodedParms();
+        for (Map.Entry<String,Object> code:codes.entrySet()){
+            if (code.getValue() instanceof SQCodeOr){
+                List<SQCodeOr.CodeLet> codesList=((SQCodeOr) code.getValue()).getCodeValues();
                 for (SQCodeOr.CodeLet c:codesList){
                     Code tmpCode=new Code(c.code,c.scheme,"");
-                    Uuid classificationUuid=new Uuid(SQCodedTerm.codeUUID(key));
+                    Uuid classificationUuid=new Uuid(SQCodedTerm.codeUUID(code.getKey()));
                     if (!allCodes.isKnownClassification(classificationUuid)) {
                         error=true;
-                        System.err.println("Error: Unknown classification");
+                        LOGGER.warning("Error: Unknown classification");
                         out+="Error: Unknown classification.\n";
                         // TODO throw an exception?
                         continue;
@@ -275,17 +293,18 @@ public class CodesUpdater {
                         c.setClassificationUUID(classificationUuid);
                         badCodes.add(c);
                     }
+
                 }
-            }else if(codes.get(key) instanceof SQCodeAnd){
-                for (SQCodeOr sqCodeOr:((SQCodeAnd) codes.get(key)).codeOrs){
+            }else if(code.getValue() instanceof SQCodeAnd){
+                for (SQCodeOr sqCodeOr:((SQCodeAnd) code.getValue()).codeOrs){
                     List<SQCodeOr.CodeLet> codesList=sqCodeOr.getCodeValues();
                     for (SQCodeOr.CodeLet c:codesList){
                         Code tmpCode=new Code(c.code,c.scheme,"");
-                        Uuid classificationUuid=new Uuid(SQCodedTerm.codeUUID(key));
+                        Uuid classificationUuid=new Uuid(SQCodedTerm.codeUUID(code.getKey()));
                         if (!allCodes.isKnownClassification(classificationUuid)) {
                             // TODO Throw an exception?
                             error=true;
-                            System.err.println("Error: Unknown classification");
+                            LOGGER.warning("Error: Unknown classification");
                             out+="Error: Unknown classification\n";
                             continue;
                         }
@@ -303,15 +322,14 @@ public class CodesUpdater {
     /**
      * This method change a bad codes inside a query file.
      * @param badCodes list of non conforming codes
-     * @param filePath path to the query file containing these non conforming codes.
      */
-    void updateCode(List<SQCodeOr.CodeLet> badCodes,String filePath){
+    void updateCode(List<SQCodeOr.CodeLet> badCodes){
         for (SQCodeOr.CodeLet sqCodedTerm:badCodes){
-            changeCodeOR(sqCodedTerm,filePath);
+            changeCodeOR(sqCodedTerm);
         }
     }
 
-    private void changeCodeOR(SQCodeOr.CodeLet code,String filePath) {
+    private void changeCodeOR(SQCodeOr.CodeLet code) {
         Code tmpCode=new Code(code.code,code.scheme,"");
         Code newCode;
         if (replacementMap.containsKey(tmpCode.toString())){
@@ -320,7 +338,6 @@ public class CodesUpdater {
             newCode=allCodes.pick(code.getClassificationUUID());
             replacementMap.put(tmpCode.toString(),newCode);
         }
-//        out+=tmpCode.toString() + " REPLACED BY "+newCode.toString()+" in " + filePath + "\n";
         code.code=newCode.getCode();
         code.scheme=newCode.getScheme();
     }
@@ -328,11 +345,10 @@ public class CodesUpdater {
     /**
      * This method takes care of updating the non-conforming codes inside a metadata file.
      * @param badCodes list of non-conforming codes to update.
-     * @param filePath path to the metadata file containing these non conforming codes
      * @throws XdsInternalException
      * @throws FactoryConfigurationError
      */
-    void updateCodes(List<OMElement> badCodes,String filePath) throws XdsInternalException, FactoryConfigurationError {
+    void updateCodes(List<OMElement> badCodes) throws XdsInternalException, FactoryConfigurationError {
         for (OMElement classification : badCodes) {
             // create variables of the code to be replaced
             OMAttribute codeToReplace=classification.getAttribute(MetadataSupport.noderepresentation_qname)/*.setAttributeValue(code.getCode())*/;
@@ -364,7 +380,6 @@ public class CodesUpdater {
             codeToReplace.setAttributeValue(replacementCode.getCode());
             nameToReplace.setAttributeValue(replacementCode.getDisplay());
             valueToReplace.setText(replacementCode.getScheme());
-//            out+=oldCode.toString() + " REPLACE BY "+replacementCode.toString()+" in "+filePath+"\n";
         }
     }
 
@@ -380,17 +395,17 @@ public class CodesUpdater {
         for (OMElement classification : classifications) {
             // Determine the type of code (classification uuid).
             String classificationScheme = classification.getAttributeValue(MetadataSupport.classificationscheme_qname);
-            if (classificationScheme == null || classificationScheme.equals(""))
+            if (classificationScheme == null || "".equals(classificationScheme))
                 continue;
             Uuid classificationUuid = new Uuid(classificationScheme);
             // Check if the type of code exists.
-            if (!allCodes.isKnownClassification(classificationUuid))
-                continue;
-            Code code = getCode(classification);
-            // check if the code exists in the environment codes.xml file
-            if (!allCodes.exists(classificationUuid, code)) {
-                // if it does not add the code to the list of bad codes.
-                badCodes.add(classification);
+            if (allCodes.isKnownClassification(classificationUuid)) {
+                Code code = getCode(classification);
+                // check if the code exists in the environment codes.xml file
+                if (!allCodes.exists(classificationUuid, code)) {
+                    // if it does not add the code to the list of bad codes.
+                    badCodes.add(classification);
+                }
             }
         }
         return badCodes;
@@ -399,17 +414,19 @@ public class CodesUpdater {
     /**
      * This method returns a Code out of a classification element.
      * @param classificationElement classification element to extract
-     * @return code object
+     * @return code model
      */
     private Code getCode(OMElement classificationElement){
         // getRetrievedDocumentsModel coding scheme
         String value = classificationElement.getAttributeValue(MetadataSupport.noderepresentation_qname);
         // getRetrievedDocumentsModel display name
-        String displayName = null;
+        String displayName;
         OMElement nameElement = MetadataSupport.firstChildWithLocalName(classificationElement, "Name");
         OMElement localizedStringElement = MetadataSupport.firstChildWithLocalName(nameElement, "LocalizedString");
-        if (nameElement == null || localizedStringElement == null) displayName="";
-        displayName=localizedStringElement.getAttributeValue(MetadataSupport.value_qname);
+        if (nameElement == null || localizedStringElement == null)
+            displayName="";
+        else
+            displayName=localizedStringElement.getAttributeValue(MetadataSupport.value_qname);
         // getRetrievedDocumentsModel code
         String codeSystem = "";
         OMElement codeSystemElement;
@@ -422,7 +439,7 @@ public class CodesUpdater {
             codeSystemElement= v;
         }
 
-        // return the code object
+        // return the code model
         if (codeSystemElement == null) return new Code(value, codeSystem, displayName);
         codeSystem = codeSystemElement.getText();
         return new Code(value, codeSystem, displayName);
@@ -438,36 +455,41 @@ public class CodesUpdater {
         // init environment dir
         File environment = new File(pathToEnvironment);
         // init testkit dir
-        testkit = new File(environment.getPath()+File.separator+"testkit");
+        testkit = new File(environment.getPath()+File.separator+"testkits"+File.separator+"default");
         // init codes
         allCodes = new CodesFactory().load(new File(environment.getPath()+File.separator+"codes.xml"));
         try {
-            System.out.println("Copying testkit to "+testkit+"...");
+            LOGGER.info("Copying testkit to "+testkit+"...");
             FileUtils.copyDirectory(new File(pathToTestkit), testkit);
-            System.out.println("... testkit copied.");
+            LOGGER.info("... testkit copied.");
             out+="Testkit of referenced copied successfully to "+testkit;
         } catch (IOException e) {
-            e.printStackTrace();
+            error=true;
+            out+="FAILURE. Could not copy testkit into environment.";
+            LOGGER.severe(e.getMessage());
+            return;
         }
         execute();
+        if (error) return;
         reset();
         execute();
-        String outputSeparator=new String("----------------------------------------------------");
-        out=outputSeparator+outputSeparator+"\n"+"   SUCCESS on generating testkit in environment in " +
-                pathToEnvironment.split("/")[pathToEnvironment.split("/").length-1] + "\n" +
-                outputSeparator+outputSeparator +"\n\n"+out;
+        if (error) return;
+        String outputSeparator = new String("----------------------------------------------------");
+        out = outputSeparator + outputSeparator + "\n" + "   SUCCESS on generating testkit in environment in " +
+                pathToEnvironment.split("/")[pathToEnvironment.split("/").length - 1] + "\n" +
+                outputSeparator + outputSeparator + "\n\n" + out;
         try {
-            SimpleDateFormat dateFormatter=new SimpleDateFormat("yyyyMMddHHmmss");
-            File logDirectory=new File(pathToEnvironment,"Testkit update logs");
-            if (!logDirectory.exists()){
+            SimpleDateFormat dateFormatter = new SimpleDateFormat("yyyyMMddHHmmss");
+            File logDirectory = new File(pathToEnvironment, "Testkit update logs");
+            if (!logDirectory.exists()) {
                 logDirectory.mkdir();
             }
-            File f = new File(logDirectory,dateFormatter.format(new Date())+".out");
-            System.out.println("Creating output log file in "+f.getPath()+"...");
+            File f = new File(logDirectory, dateFormatter.format(new Date()) + ".out");
+            LOGGER.info("Creating output log file in " + f.getPath() + "...");
             Io.stringToFile(f, out);
-            System.out.println("... file created.");
+            LOGGER.info("... file created.");
         } catch (IOException e) {
-            e.printStackTrace();
+            LOGGER.severe(e.getMessage());
         }
     }
 

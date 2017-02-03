@@ -2,9 +2,7 @@ package gov.nist.toolkit.xdstools2.client.event.tabContainer;
 
 
 import com.google.gwt.event.shared.GwtEvent;
-import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.user.client.ui.VerticalPanel;
-import com.google.web.bindery.event.shared.EventBus;
 
 /**
  * V2TabOpenedEvent should be raised where V2 is running in a hosted environment mode with another top level tab container such as in Xdstools3 (V3).

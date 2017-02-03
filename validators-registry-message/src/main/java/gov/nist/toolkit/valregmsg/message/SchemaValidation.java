@@ -7,7 +7,7 @@ package gov.nist.toolkit.valregmsg.message;
 import gov.nist.toolkit.commondatatypes.client.MetadataTypes;
 import gov.nist.toolkit.installation.Installation;
 import gov.nist.toolkit.utilities.xml.MyErrorHandler;
-import gov.nist.toolkit.xdsexception.XdsInternalException;
+import gov.nist.toolkit.xdsexception.client.XdsInternalException;
 import org.apache.axiom.om.OMElement;
 import org.apache.log4j.Logger;
 import org.apache.xerces.parsers.DOMParser;
@@ -29,7 +29,7 @@ public class SchemaValidation extends MetadataTypes {
 
 	// empty string as result means no errors
 	static private String validate(String metadata, int metadataType) throws XdsInternalException {
-        String localSchema = Installation.installation().schemaFile().toString();
+        String localSchema = Installation.instance().schemaFile().toString();
 		localSchema = localSchema.replaceAll(" ", "%20");
 		MyErrorHandler errors = null;
 		DOMParser p = null;

@@ -33,18 +33,18 @@ public class AttributeStatementBean {
     }
 
     /**
-     * Method getSamlAttributes returns the samlAttributes of this SamlAttributeStatement object.
+     * Method getSamlAttributes returns the samlAttributes of this SamlAttributeStatement model.
      *
-     * @return the samlAttributes (type List<SamlAttribute>) of this SamlAttributeStatement object.
+     * @return the samlAttributes (type List<SamlAttribute>) of this SamlAttributeStatement model.
      */
     public List<AttributeBean> getSamlAttributes() {
         return attributeBeans;
     }
 
     /**
-     * Method setSamlAttributes sets the samlAttributes of this SamlAttributeStatement object.
+     * Method setSamlAttributes sets the samlAttributes of this SamlAttributeStatement model.
      *
-     * @param attributeBeans the samlAttributes of this SamlAttributeStatement object.
+     * @param attributeBeans the samlAttributes of this SamlAttributeStatement model.
      *
      */
     public void setSamlAttributes(List<AttributeBean> attributeBeans) {

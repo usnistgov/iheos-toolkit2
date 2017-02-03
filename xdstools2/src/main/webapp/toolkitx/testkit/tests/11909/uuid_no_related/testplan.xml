@@ -1,0 +1,22 @@
+
+<TestPlan>
+  <Test>11909/uuid_no_related</Test>
+  <TestStep id="uuid_no_related">
+  <Rule>
+    <Transaction>SQ</Transaction>
+    <SQ>GetRelatedDocuments</SQ>
+    <Assertion>Operation with single UUID as input but no related documents</Assertion>
+  </Rule>
+  <ExpectedStatus>Success</ExpectedStatus>
+  <StoredQueryTransaction>
+    <XDSb/>
+    <MetadataFile>query3.xml</MetadataFile>
+    <UseId testdir="../../12346/single_doc" id="Document01" symbol="$uuid$" step="submit_doc" section="AssignedUuids"/>
+    <ExpectedContents>
+      <Associations count="0"/>
+      <Documents count="0"/>
+    </ExpectedContents>
+  </StoredQueryTransaction>
+</TestStep>
+
+</TestPlan>

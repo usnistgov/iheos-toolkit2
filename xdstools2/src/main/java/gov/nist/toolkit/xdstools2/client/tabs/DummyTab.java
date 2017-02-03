@@ -1,18 +1,34 @@
 package gov.nist.toolkit.xdstools2.client.tabs;
 
-import gov.nist.toolkit.xdstools2.client.TabContainer;
+import com.google.gwt.user.client.ui.Widget;
 import gov.nist.toolkit.xdstools2.client.siteActorManagers.FindDocumentsSiteActorManager;
 import gov.nist.toolkit.xdstools2.client.tabs.genericQueryTab.GenericQueryTab;
 
 /**
- * Created by bill on 9/16/15.
+ *
  */
 public class DummyTab extends GenericQueryTab {
     public DummyTab() {
         super(new FindDocumentsSiteActorManager());	}
 
-    public void onTabLoad(TabContainer container, boolean select, String eventName) {
-        myContainer = container;
+    @Override
+    protected Widget buildUI() {
+        return null;
+    }
+
+    @Override
+    protected void bindUI() {
+
+    }
+
+    @Override
+    protected void configureTabView() {
+
+    }
+
+    @Override
+    public void onTabLoad(boolean select, String eventName) {
+
     }
 
     @Override

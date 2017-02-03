@@ -46,13 +46,13 @@ class UpdateSimNegativeSpec extends ToolkitSpecification {
         e.extendedCode == 40401
     }
 
-    def 'Update property undefined property'() {
+    def 'Set undefined property - should be ignored'() {
         when:
         config.setProperty("MyParam", false)
         SimConfig returnedConfig = spi.update(config)
 
         then: 'No update made'
-        !returnedConfig
+        !returnedConfig.propertyNames.contains("MyParam")
     }
 
     def 'Update property with wrong type'() {

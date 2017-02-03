@@ -13,7 +13,7 @@
             objectType="urn:uuid:7edca82f-054d-47f2-a032-9b2a5b5186c1">
 
             <!-- this classification labels this DocumentEntry as Limited Metadata
-                 note that each object (DocumentEntry, SubmissionSet, Folder (if this example had one)
+                 note that each model (DocumentEntry, SubmissionSet, Folder (if this example had one)
                  are independently labeled.  No requirement that all or none are tagged as
                  Limited Metadata -->
             <rim:Classification classifiedObject="Document01"
@@ -43,7 +43,7 @@
             </rim:Slot>
 
             <!-- this classification labels this SubmissionSet as Limited Metadata
-                 note that each object (DocumentEntry, SubmissionSet, Folder (if this example had one)
+                 note that each model (DocumentEntry, SubmissionSet, Folder (if this example had one)
                  are independently labeled.  No requirement that all or none are tagged as
                  Limited Metadata -->
             <rim:Classification classifiedObject="SubmissionSet01"

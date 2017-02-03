@@ -5,27 +5,30 @@ import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.*;
 import gov.nist.toolkit.actortransaction.client.Severity;
-import gov.nist.toolkit.configDatatypes.client.TransactionType;
 import gov.nist.toolkit.configDatatypes.client.PatientError;
 import gov.nist.toolkit.configDatatypes.client.Pid;
 import gov.nist.toolkit.configDatatypes.client.PidBuilder;
-import gov.nist.toolkit.xdstools2.client.PopupMessage;
-import gov.nist.toolkit.xdstools2.client.ToolkitServiceAsync;
+import gov.nist.toolkit.configDatatypes.client.TransactionType;
+import gov.nist.toolkit.xdstools2.client.command.command.GetTransactionErrorCodeRefsCommand;
+import gov.nist.toolkit.xdstools2.client.widgets.PopupMessage;
+import gov.nist.toolkit.xdstools2.client.util.ClientUtils;
+import gov.nist.toolkit.xdstools2.shared.command.request.GetTransactionErrorCodeRefsRequest;
 
 import java.util.List;
+
 
 /**
  *
  */
 public class PatientErrorNewEntryPresentation  {
 
-    public PatientErrorNewEntryPresentation(ToolkitServiceAsync toolkitService, TransactionType transactionType, SaveHandler<PatientError> saveHandler) {
-        new Dialog(toolkitService, transactionType, saveHandler).show();
+    public PatientErrorNewEntryPresentation(/*ToolkitServiceAsync toolkitService, */TransactionType transactionType, SaveHandler<PatientError> saveHandler) {
+        new Dialog(/*toolkitService, */transactionType, saveHandler).show();
     }
 
     private static class Dialog extends DialogBox {
 
-        Dialog(ToolkitServiceAsync toolkitService, TransactionType transactionType, final SaveHandler<PatientError> saveHandler) {
+        Dialog(/*ToolkitServiceAsync toolkitService, */TransactionType transactionType, final SaveHandler<PatientError> saveHandler) {
             Panel surroundPanel = new VerticalPanel();
             Panel panel = new HorizontalPanel();
             final TextBox patientIdTextBox = new TextBox();
@@ -46,13 +49,9 @@ public class PatientErrorNewEntryPresentation  {
             setWidget(surroundPanel);
 
 
-            toolkitService.getTransactionErrorCodeRefs(transactionType.getName(), Severity.Error, new AsyncCallback<List<String>>() {
-
-                public void onFailure(Throwable caught) {
-                    new PopupMessage("getTransactionErrorCodeRefs:" + caught.getMessage());
-                }
-
-                public void onSuccess(List<String> results) {
+            new GetTransactionErrorCodeRefsCommand(){
+                @Override
+                public void onComplete(List<String> results) {
                     for (String err : results) errorListBox.addItem(err);
                     errorListBox.setVisibleItemCount(results.size());
 
@@ -93,7 +92,7 @@ public class PatientErrorNewEntryPresentation  {
                     });
 
                 }
-            });
+            }.run(new GetTransactionErrorCodeRefsRequest(ClientUtils.INSTANCE.getCommandContext(),transactionType.getName(),Severity.Error));
         }
     }
 

@@ -1,0 +1,12 @@
+<TestPlan>
+	<Test>ids_4806/retrieve</Test>
+	<TestStep id="Rad55RetrieveRequest">
+		<Goal>WADO Retrieve of a multi image study</Goal>
+		<ExpectedStatus>Success</ExpectedStatus>
+		<WADOTransaction>
+			<Parameters>
+			</Parameters>
+         <UIDFile>images.txt</UIDFile>
+		</WADOTransaction>
+	</TestStep>
+</TestPlan>

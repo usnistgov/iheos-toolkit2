@@ -1,0 +1,11 @@
+<TestPlan>
+    <Test>idc_4837</Test>
+    <TestStep id="selftest-rad-69">
+        <Goal>Imaging Document Set Retrieve of a single image</Goal>
+        <ExpectedStatus>Success</ExpectedStatus>
+        <ImagingDocSetRetrieveTransaction>
+            <Target sim="ids"/>
+            <MetadataFile>RAD-69Request.xml</MetadataFile>
+        </ImagingDocSetRetrieveTransaction>
+    </TestStep>
+</TestPlan>

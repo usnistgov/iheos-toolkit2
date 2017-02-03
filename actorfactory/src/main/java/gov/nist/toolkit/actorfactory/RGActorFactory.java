@@ -17,7 +17,7 @@ import gov.nist.toolkit.envSetting.EnvSetting;
 import gov.nist.toolkit.sitemanagement.client.Site;
 import gov.nist.toolkit.sitemanagement.client.TransactionBean;
 import gov.nist.toolkit.sitemanagement.client.TransactionBean.RepositoryType;
-import gov.nist.toolkit.xdsexception.EnvironmentNotSelectedException;
+import gov.nist.toolkit.xdsexception.client.EnvironmentNotSelectedException;
 import gov.nist.toolkit.xdsexception.NoSessionException;
 import gov.nist.toolkit.xdsexception.NoSimulatorException;
 
@@ -35,7 +35,7 @@ public class RGActorFactory extends AbstractActorFactory {
       Arrays.asList(TransactionType.XC_QUERY, TransactionType.XC_RETRIEVE);
 
    @Override
-   protected Simulator buildNew(SimManager simm, SimId newID,
+   protected Simulator buildNew(SimManager simm, @SuppressWarnings("hiding") SimId newID,
       boolean configureBase)
          throws EnvironmentNotSelectedException, NoSessionException {
       this.newID = newID;
@@ -60,10 +60,6 @@ public class RGActorFactory extends AbstractActorFactory {
          TransactionType.XC_RETRIEVE, false);
       addFixedEndpoint(sc, SimulatorProperties.xcrTlsEndpoint, actorType,
          TransactionType.XC_RETRIEVE, true);
-      addFixedEndpoint(sc, SimulatorProperties.xcirEndpoint, actorType,
-         TransactionType.XC_RET_IMG_DOC_SET, false);
-      addFixedEndpoint(sc, SimulatorProperties.xcirTlsEndpoint, actorType,
-         TransactionType.XC_RET_IMG_DOC_SET, true);
       addEditableConfig(sc, SimulatorProperties.errors, ParamType.SELECTION,
          new ArrayList <String>(), false);
       addEditableConfig(sc, SimulatorProperties.errorForPatient,
@@ -78,10 +74,6 @@ public class RGActorFactory extends AbstractActorFactory {
       SimulatorConfig repositoryConfig =
          new RepositoryActorFactory().buildNew(simm, simId, true).getConfig(0); // was
                                                                                 // false
-      
-      SimulatorConfig idsConfig = 
-         new ImagingDocSourceActorFactory().buildNew(simm, simId, true).getConfig(0);
-
       sc.add(registryConfig); // this adds the individual
                               // SimulatorConfigElements to the RG
                               // SimulatorConfig
@@ -89,8 +81,6 @@ public class RGActorFactory extends AbstractActorFactory {
       // which means the SimServlet cannot find them when a message comes in
       sc.add(repositoryConfig);
       
-      sc.add(idsConfig);
-
       return new Simulator(sc);
    }
 

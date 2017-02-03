@@ -1,0 +1,24 @@
+
+<TestPlan>
+  <Test>12327/verify_folder_contents</Test>
+  <TestStep id="verify_folder_contents">
+  <Rule>
+    <Transaction>SQ</Transaction>
+    <SQ>GetFolderAndContents</SQ>
+    <Assertion>Evaluate association between folder and document</Assertion>
+  </Rule>
+  <ExpectedStatus>Success</ExpectedStatus>
+  <StoredQueryTransaction>
+    <XDSb/>
+    <MetadataFile>query2.xml</MetadataFile>
+    <UseId testdir="../submit_doc_w_fol" id="Folder" symbol="$uniqueid$" step="submit_doc_w_fol" section="AssignedUids"/>
+    <ExpectedContents>
+      <SubmissionSets count="0"/>
+      <Associations count="2"/>
+      <Documents count="2"/>
+      <Folders count="1"/>
+    </ExpectedContents>
+  </StoredQueryTransaction>
+</TestStep>
+
+</TestPlan>

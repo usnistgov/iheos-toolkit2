@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?><TestPlan>
+  <Test>15806/Register_OD</Test>
+  <Rule>Submits a single On-Demand Document Entry using ITI-61.</Rule>
+  <TestStep id="SubmitOnDemandDocumentEntry">
+  <ExpectedStatus>Success</ExpectedStatus>
+    <RegisterODDETransaction>
+	  <AssignUuids/>
+      <MetadataFile>single_ondemand_doc.xml</MetadataFile>
+	        <Report name="oddocid" section="InputMetadata">
+			 //*[local-name()='ExtrinsicObject']/@id
+			</Report>
+  			<Report name="repuid" section="Result">
+             //*[local-name()='ExtrinsicObject']/*[local-name()='Slot'][@name='repositoryUniqueId']/*[local-name()='ValueList']/*[local-name()='Value']
+            </Report>
+    </RegisterODDETransaction>
+  </TestStep>
+</TestPlan>

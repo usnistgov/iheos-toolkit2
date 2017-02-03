@@ -1,16 +1,14 @@
 package gov.nist.toolkit.utilities.xml;
 
 import gov.nist.toolkit.xdsexception.ExceptionUtil;
-import gov.nist.toolkit.xdsexception.XdsInternalException;
-
-import java.io.File;
-import java.util.Iterator;
-
-import javax.xml.parsers.FactoryConfigurationError;
-
+import gov.nist.toolkit.xdsexception.client.XdsInternalException;
 import org.apache.axiom.om.OMAttribute;
 import org.apache.axiom.om.OMElement;
 import org.apache.axiom.om.OMNamespace;
+
+import javax.xml.parsers.FactoryConfigurationError;
+import java.io.File;
+import java.util.Iterator;
 
 public class OMFormatter {
 	OMElement ele;
@@ -32,7 +30,10 @@ public class OMFormatter {
 	}
 
 	public OMFormatter(String xml) throws XdsInternalException, FactoryConfigurationError {
-		ele = Util.parse_xml(xml);
+		if (xml == null || xml.equals(""))
+			ele = null;
+		else
+			ele = Util.parse_xml(xml);
 	}
 
 	public OMFormatter(File file) throws XdsInternalException, FactoryConfigurationError {
@@ -129,7 +130,7 @@ public class OMFormatter {
 		indentation++;
 		indentElement();
 		String name = ele.getLocalName();
-		if (prefix != null)
+		if (prefix != null && !"".equals(prefix))
 			name = prefix + ":" + name;
 		buf.append(lt).append(name);
 		attributes(ele);
@@ -142,7 +143,8 @@ public class OMFormatter {
 
 		if (addMyNamespace && !"xml".equals(myNamespace.getPrefix())) {
 			addIndentation();
-			buf.append(space).append("xmlns:").append(myNamespace.getPrefix())
+			String prefixNs = (myNamespace.getPrefix() ==null || "".equals(myNamespace.getPrefix())?"":":"+myNamespace.getPrefix());
+			buf.append(space).append("xmlns").append(prefixNs)
 			.append("=\"").append(myNamespace.getNamespaceURI()).append("\"");
 		}
 

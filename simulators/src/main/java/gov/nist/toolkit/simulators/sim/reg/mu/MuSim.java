@@ -12,7 +12,7 @@ import gov.nist.toolkit.simulators.sim.reg.store.RegIndex;
 import gov.nist.toolkit.simulators.support.DsSimCommon;
 import gov.nist.toolkit.simulators.support.SimCommon;
 import gov.nist.toolkit.valsupport.engine.MessageValidatorEngine;
-import gov.nist.toolkit.xdsexception.MetadataException;
+import gov.nist.toolkit.xdsexception.client.MetadataException;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -41,7 +41,7 @@ public class MuSim extends RegRSim {
 		OMElement ssEle = m.getSubmissionSet();
 		if (ssEle == null) {
 			er.err(Code.XDSMetadataUpdateError, 
-					"Update does not contain a SubmissionSet object", 
+					"Update does not contain a SubmissionSet model",
 					this, 
 			"ITI TF-2b:3.57.4.1.3.1");
 			return;
@@ -50,7 +50,7 @@ public class MuSim extends RegRSim {
 		ssId = m.getId(ssEle);
 		if (ssId == null || ssId.equals("")) {
 			er.err(Code.XDSMetadataUpdateError, 
-					"Update's SubmissionSet object has no id", 
+					"Update's SubmissionSet model has no id",
 					this, 
 			"ITI TF-2b:3.57.4.1.3.1");
 			return;
@@ -59,14 +59,14 @@ public class MuSim extends RegRSim {
 
 		// Clone metadata so we can take it apart.
 		// Each little update is handled as a separate operation
-		// For each operation, a separate metadata object (operation) will
+		// For each operation, a separate metadata model (operation) will
 		// be created containing only the metadata relevant to that operation.
 		// That way, if extra, unprocessable metadata is present, we will know
 		// it in the end
 		// Of course nothing gets committed unless ALL operations are
 		// successful
 
-		// This clones the Metadata object, not the individual chunks of XML
+		// This clones the Metadata model, not the individual chunks of XML
 		// (shallow copy)
 		Metadata clone;
 		try {

@@ -34,9 +34,9 @@ public class ReconfigureSimulators extends HttpServlet {
     private static Logger logger = Logger.getLogger(ReconfigureSimulators.class);
 
     public void init(ServletConfig sConfig) {
-        configuredHost = Installation.installation().propertyServiceManager().getToolkitHost();
-        configuredPort = Installation.installation().propertyServiceManager().getToolkitPort();
-        configuredTlsPort = Installation.installation().propertyServiceManager().getToolkitTlsPort();
+        configuredHost = Installation.instance().propertyServiceManager().getToolkitHost();
+        configuredPort = Installation.instance().propertyServiceManager().getToolkitPort();
+        configuredTlsPort = Installation.instance().propertyServiceManager().getToolkitTlsPort();
 
         db = new SimDb();
         for (SimId simId : db.getAllSimIds()) {
@@ -72,13 +72,13 @@ public class ReconfigureSimulators extends HttpServlet {
             if (isTls) {
                 if (!host.equals(getConfiguredHost()) || !port.equals(getConfiguredTlsPort())) {
                     ep.updateHostAndPort(getConfiguredHost(), getConfiguredTlsPort());
-                    ele.setValue(ep.getEndpoint());
+                    ele.setStringValue(ep.getEndpoint());
                     updated = true;
                 }
             } else {
                 if (!host.equals(getConfiguredHost()) || !port.equals(getConfiguredPort())) {
                     ep.updateHostAndPort(getConfiguredHost(), getConfiguredPort());
-                    ele.setValue(ep.getEndpoint());
+                    ele.setStringValue(ep.getEndpoint());
                     updated = true;
                 }
             }

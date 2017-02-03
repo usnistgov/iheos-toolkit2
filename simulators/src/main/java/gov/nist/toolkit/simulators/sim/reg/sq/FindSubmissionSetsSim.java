@@ -10,9 +10,9 @@ import gov.nist.toolkit.valregmsg.registry.SQCodeOr;
 import gov.nist.toolkit.valregmsg.registry.storedquery.generic.FindSubmissionSets;
 import gov.nist.toolkit.valregmsg.registry.storedquery.generic.QueryReturnType;
 import gov.nist.toolkit.valregmsg.registry.storedquery.support.StoredQuerySupport;
-import gov.nist.toolkit.xdsexception.MetadataException;
-import gov.nist.toolkit.xdsexception.MetadataValidationException;
-import gov.nist.toolkit.xdsexception.XdsException;
+import gov.nist.toolkit.xdsexception.client.MetadataException;
+import gov.nist.toolkit.xdsexception.client.MetadataValidationException;
+import gov.nist.toolkit.xdsexception.client.XdsException;
 
 import java.util.List;
 
@@ -57,7 +57,7 @@ public class FindSubmissionSetsSim extends FindSubmissionSets {
 			if (content_type instanceof SQCodeOr) {
 				results = mc.subSetCollection.filterByContentTypeCode((SQCodeOr)content_type, results);
 			} else {
-				throw new XdsException("FindSubmissionSetsSim: cannot cast object of type " + content_type.getClass().getName() + " (from contentTypeCodes) into an instance of class SQCodeOr", null);
+				throw new XdsException("FindSubmissionSetsSim: cannot cast model of type " + content_type.getClass().getName() + " (from contentTypeCodes) into an instance of class SQCodeOr", null);
 			}
 		}
 

@@ -1,55 +1,141 @@
 package gov.nist.toolkit.xdstools2.client.tabs.GatewayTestsTabs;
 
-import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.user.client.rpc.AsyncCallback;
-import com.google.gwt.user.client.ui.*;
-import gov.nist.toolkit.configDatatypes.SimulatorProperties;
-import gov.nist.toolkit.actorfactory.client.SimulatorConfig;
+import com.google.gwt.user.client.ui.Anchor;
+import com.google.gwt.user.client.ui.FlexTable;
+import com.google.gwt.user.client.ui.FlowPanel;
+import com.google.gwt.user.client.ui.HTML;
+import com.google.gwt.user.client.ui.Panel;
+import com.google.gwt.user.client.ui.Widget;
+import gov.nist.toolkit.actortransaction.client.ActorType;
+import gov.nist.toolkit.configDatatypes.client.Pid;
 import gov.nist.toolkit.services.client.IgOrchestrationRequest;
 import gov.nist.toolkit.services.client.IgOrchestrationResponse;
 import gov.nist.toolkit.services.client.RawResponse;
-import gov.nist.toolkit.xdstools2.client.PopupMessage;
+import gov.nist.toolkit.sitemanagement.client.SiteSpec;
+import gov.nist.toolkit.xdstools2.client.command.command.BuildIGTestOrchestrationCommand;
+import gov.nist.toolkit.xdstools2.client.widgets.PopupMessage;
+import gov.nist.toolkit.xdstools2.client.tabs.FindDocumentsLauncher;
+import gov.nist.toolkit.xdstools2.client.tabs.conformanceTest.ActorAndOption;
+import gov.nist.toolkit.xdstools2.client.tabs.conformanceTest.ActorOption;
+import gov.nist.toolkit.xdstools2.client.tabs.conformanceTest.ConformanceTestTab;
+import gov.nist.toolkit.xdstools2.client.tabs.conformanceTest.SiteDisplay;
+import gov.nist.toolkit.xdstools2.client.tabs.conformanceTest.TestContext;
+import gov.nist.toolkit.xdstools2.client.tabs.conformanceTest.TestContextView;
+import gov.nist.toolkit.xdstools2.client.tabs.conformanceTest.TestRunner;
 import gov.nist.toolkit.xdstools2.client.tabs.genericQueryTab.GenericQueryTab;
-import gov.nist.toolkit.xdstools2.client.widgets.buttons.ReportableButton;
+import gov.nist.toolkit.xdstools2.client.util.ClientUtils;
+import gov.nist.toolkit.xdstools2.client.widgets.OrchestrationSupportTestsDisplay;
+import gov.nist.toolkit.xdstools2.client.widgets.PopupMessage;
+import gov.nist.toolkit.xdstools2.client.widgets.buttons.AbstractOrchestrationButton;
+import gov.nist.toolkit.xdstools2.shared.command.request.BuildIgTestOrchestrationRequest;
 
+import java.util.ArrayList;
+import java.util.List;
 
 /**
- *
+ * Build Orchestration for testing an Inititating Gateway.
+ * This code id tied to the button that launches it.
  */
-class BuildIGTestOrchestrationButton extends ReportableButton {
-    private IGTestTab testTab;
-    boolean includeIG;
+public class BuildIGTestOrchestrationButton extends AbstractOrchestrationButton {
+    private ConformanceTestTab testTab;
+    private boolean includeIG;
+    private TestContext testContext;
+    private TestContextView testContextView;
+    private TestRunner testRunner;
+    private ActorOption actorOption;
+    private Panel initializationPanel;
+    private FlowPanel initializationResultsPanel = new FlowPanel();
 
-    BuildIGTestOrchestrationButton(IGTestTab testTab, Panel topPanel, String label, boolean includeIG) {
-        super(topPanel, label);
+    public BuildIGTestOrchestrationButton(ConformanceTestTab testTab, Panel initializationPanel, String label, TestContext testContext, TestContextView testContextView, TestRunner testRunner, boolean includeIG, ActorOption actorOption
+    ) {
+        this.initializationPanel = initializationPanel;
         this.testTab = testTab;
+        this.testContext = testContext;
+        this.testContextView = testContextView;
+        this.testRunner = testRunner;
+        this.actorOption = actorOption;
+
+        setParentPanel(initializationPanel);
         this.includeIG = includeIG;
+
+        FlowPanel customPanel = new FlowPanel();
+
+        HTML instructions = new HTML();
+
+        customPanel.add(instructions);
+
+        setSystemDiagramUrl("diagrams/IGdiagram.png");
+
+        build();
+        panel().add(initializationResultsPanel);
     }
 
-    public void handleClick(ClickEvent event) {
+    static private final String AD_OPTION = "ad";
+    public static List<ActorAndOption> ACTOR_OPTIONS = new ArrayList<>();
+    static {
+        ACTOR_OPTIONS = java.util.Arrays.asList(
+                new ActorAndOption("ig", "", "Required", false),
+                new ActorAndOption("ig", AD_OPTION, "Affinity Domain Option", true),
+                new ActorAndOption("ig", XUA_OPTION, "XUA Option", false));
+
+    }
+
+    private SiteSpec siteUnderTest(IgOrchestrationResponse orchResponse) {
+        if (AD_OPTION.equals(actorOption.getOptionId())) {
+            return orchResponse.getSupportRG1().siteSpec();
+        }
+        return testContext.getSiteUnderTest().siteSpec();
+    }
+
+    public void orchestrate() {
         if (GenericQueryTab.empty(testTab.getCurrentTestSession())) {
             new PopupMessage("Must select test session first");
             return;
         }
         IgOrchestrationRequest request = new IgOrchestrationRequest();
+        request.setUseExistingState(!isResetRequested());
         request.setUserName(testTab.getCurrentTestSession());
         request.setIncludeLinkedIG(includeIG);
-        testTab.toolkitService.buildIgTestOrchestration(request, new AsyncCallback<RawResponse>() {
-            @Override
-            public void onFailure(Throwable throwable) {
-                handleError(throwable);
-            }
 
+        initializationResultsPanel.clear();
+
+        new BuildIGTestOrchestrationCommand(){
             @Override
-            public void onSuccess(RawResponse rawResponse) {
+            public void onComplete(RawResponse rawResponse) {
                 if (handleError(rawResponse, IgOrchestrationResponse.class)) return;
                 IgOrchestrationResponse orchResponse = (IgOrchestrationResponse) rawResponse;
+                testTab.setOrchestrationResponse(orchResponse);
+                SiteSpec siteUnderTest = siteUnderTest(orchResponse);
+                testTab.setSiteToIssueTestAgainst(siteUnderTest);
+                if (AD_OPTION.equals(actorOption.getOptionId()))
+                    orchResponse.setExternalStart(true);
 
-                testTab.rgConfigs = orchResponse.getSimulatorConfigs();
+                initializationResultsPanel.add(new HTML("Initialization Complete"));
 
-                panel().add(new HTML("<h2>Test Environment</h2>"));
+                if (testContext.getSiteUnderTest() != null) {
+                    initializationResultsPanel.add(new SiteDisplay("System Under Test Configuration", testContext.getSiteUnderTest()));
+                }
+
+                if (orchResponse.getSupportRG1() != null) {
+                    initializationResultsPanel.add(new SiteDisplay("Supporting Environment Configuration", orchResponse.getSupportRG1()));
+                }
+                if (orchResponse.getSupportRG2() != null) {
+                    initializationResultsPanel.add(new SiteDisplay("", orchResponse.getSupportRG2()));
+                }
+
+                handleMessages(initializationResultsPanel, orchResponse);
+
+                initializationResultsPanel.add(new HTML("<br />"));
+
+                initializationResultsPanel.add(new OrchestrationSupportTestsDisplay(orchResponse, testContext, testContextView, testRunner ));
+
+                initializationResultsPanel.add(new HTML("<br />"));
+
+
                 FlexTable table = new FlexTable();
-                panel().add(table);
+//                panel().add(table);
+                initializationResultsPanel.add(table);
                 int row = 0;
 
                 Widget w;
@@ -57,71 +143,49 @@ class BuildIGTestOrchestrationButton extends ReportableButton {
                 table.setWidget(row, 0, new HTML("<h3>Test data pattern</h3>"));
                 table.setWidget(row++, 1, new HTML("<h3>Patient ID</h3>"));
 
-//                table.setWidget(row++, 0, new HTML("Each Patient is configured with records to support a different test environment."));
+                // FindDocuments launcher need actor type
+                SiteSpec siteSpecRg1 = orchResponse.getSupportRG1().siteSpec();
+                siteSpecRg1.setActorType(ActorType.RESPONDING_GATEWAY);
+                SiteSpec siteSpecRg2 = orchResponse.getSupportRG2().siteSpec();
+                siteSpecRg2.setActorType(ActorType.RESPONDING_GATEWAY);
 
-                table.setWidget(row, 0, new HTML("Single document in Community 1"));
+                table.setWidget(row, 0, buildFindDocumentsLauncher(siteSpecRg1, orchResponse.getOneDocPid(), "Single document in Community 1"));
                 table.setWidget(row++, 1, new HTML(orchResponse.getOneDocPid().asString()));
 
-                table.setWidget(row, 0, new HTML("Two documents in Community 1"));
+                table.setWidget(row, 0, buildFindDocumentsLauncher(siteSpecRg1, orchResponse.getTwoDocPid(), "Two documents in Community 1"));
                 table.setWidget(row++, 1, new HTML(orchResponse.getTwoDocPid().asString()));
 
-                table.setWidget(row, 0, new HTML("Both Communities have documents"));
+
+
+                table.setWidget(row, 0, new HTML("Both Communities have single document"));
                 table.setWidget(row++, 1, new HTML(orchResponse.getTwoRgPid().asString()));
+                table.setWidget(row++, 0, buildFindDocumentsLauncher(siteSpecRg1, orchResponse.getTwoRgPid(), "Community 1"));
+                table.setWidget(row++, 0, buildFindDocumentsLauncher(siteSpecRg2, orchResponse.getTwoRgPid(), "Community 2"));
 
-                table.setWidget(row, 0, new HTML("Community 1 returns XDSRegistryError, Community 2 a single DocumentEntry"));
+                table.setWidget(row, 0, new HTML("Error management Patient ID"));
                 table.setWidget(row++, 1, new HTML(orchResponse.getUnknownPid().asString()));
+                table.setWidget(row++, 0, buildFindDocumentsLauncher(siteSpecRg1, orchResponse.getUnknownPid(), "Community 1 returns Registry Error"));
+                table.setWidget(row++, 0, buildFindDocumentsLauncher(siteSpecRg2, orchResponse.getUnknownPid(), "Community 2 returns single document"));
 
-                table.setWidget(row++, 0, new HTML("<h3>Simulators</h3>"));
+                table.setWidget(row, 0, buildFindDocumentsLauncher(siteSpecRg1, orchResponse.getNoAdOptionPid(), "No XDS Affinity Domain Option"));
+                table.setWidget(row++, 1, new HTML(orchResponse.getNoAdOptionPid().asString()));
 
-                int i=1;
-                for (SimulatorConfig config : testTab.rgConfigs) {
-                    table.setWidget(row, 0, new HTML("<h3>Community " + i++ + "</h3>"));
-                    HorizontalPanel community = new HorizontalPanel();
-                    community.add(new HTML(config.getId().toString()));
-                    community.add(testTab.addTestEnvironmentInspectorButton(config.getId().toString(), "Test Data"));
-                    community.add(testTab.testSelectionManager.buildLogLauncher(config.getId().toString(), "Simulator Log"));
-                    table.setWidget(row++, 1, community);
+                initializationResultsPanel.add(new HTML("<h3>Configure your Initiating Gateway to forward requests to both of the above Responding Gateways (listed under Supporting Environment Configuration).</h3><hr />"));
 
-                    table.setWidget(row, 0, new HTML("homeCommunityId"));
-                    table.setWidget(row++, 1, new HTML(config.get(SimulatorProperties.homeCommunityId).asString()));
-
-                    table.setWidget(row, 0, new HTML("repositoryUniqueId"));
-                    table.setWidget(row++, 1, new HTML(config.get(SimulatorProperties.repositoryUniqueId).asString()));
-
-
-                    table.setWidget(row++, 0, new HTML("Endpoints"));
-
-                    table.setWidget(row, 0, new HTML("Responding Gateway"));
-                    table.setWidget(row, 1, new HTML("Query"));
-                    table.setWidget(row++, 2, new HTML(config.getConfigEle(SimulatorProperties.xcqEndpoint).asString()));
-
-                    table.setWidget(row, 1, new HTML("Retrieve"));
-                    table.setWidget(row++, 2, new HTML(config.getConfigEle(SimulatorProperties.xcrEndpoint).asString()));
-
-                    table.setWidget(row, 0, new HTML("Repository"));
-
-                    table.setWidget(row, 1, new HTML("Provide and Register"));
-                    table.setWidget(row++, 2, new HTML(config.getConfigEle(SimulatorProperties.pnrEndpoint).asString()));
-
-                    table.setWidget(row, 1, new HTML("Retrieve"));
-                    table.setWidget(row++, 2, new HTML(config.getConfigEle(SimulatorProperties.retrieveEndpoint).asString()));
-
-                    table.setWidget(row, 0, new HTML("Registry"));
-                    table.setWidget(row, 1, new HTML("Register"));
-                    table.setWidget(row++, 2, new HTML(config.getConfigEle(SimulatorProperties.registerEndpoint).asString()));
-
-                    table.setWidget(row, 1, new HTML("Query"));
-                    table.setWidget(row++, 2, new HTML(config.getConfigEle(SimulatorProperties.storedQueryEndpoint).asString()));
-
-//                    panel().add(testTab.addTestEnvironmentInspectorButton(config.getId().toString()));
-                }
-
-                // generate log launcher buttons
-//                panel().add(testTab.testSelectionManager.buildLogLauncher(testTab.rgConfigs));
-
-                testTab.genericQueryTab.reloadTransactionOfferings();
             }
-        });
+        }.run(new BuildIgTestOrchestrationRequest(ClientUtils.INSTANCE.getCommandContext(),request));
+    }
+
+
+
+    Anchor buildFindDocumentsLauncher(SiteSpec siteSpec, Pid pid, String title) {
+        Anchor a = new Anchor(title);
+        try {
+            a.addClickHandler(new FindDocumentsLauncher(pid, siteSpec, false));
+        } catch (Exception e) {
+            new PopupMessage(e.getMessage() + " for " + title);
+        }
+        return a;
     }
 
     Widget light(Widget w) {

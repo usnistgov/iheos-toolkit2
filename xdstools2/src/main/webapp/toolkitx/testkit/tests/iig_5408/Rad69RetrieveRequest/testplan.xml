@@ -1,0 +1,11 @@
+
+<TestPlan>
+	<Test>iig_5408/retrieve</Test>
+	<TestStep id="retrieve">
+		<Goal>Imaging Document Set Retrieve of a multi image</Goal>
+		<ExpectedStatus>Success</ExpectedStatus>
+		<ImagingDocSetIigRetrieveTransaction>
+			<MetadataFile>RAD-69Request.xml</MetadataFile>
+		</ImagingDocSetIigRetrieveTransaction>
+	</TestStep>
+</TestPlan>

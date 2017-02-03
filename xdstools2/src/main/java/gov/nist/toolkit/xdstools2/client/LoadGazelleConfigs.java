@@ -1,37 +1,34 @@
 package gov.nist.toolkit.xdstools2.client;
 
+import gov.nist.toolkit.xdstools2.client.command.command.ReloadSystemFromGazelleCommand;
 import gov.nist.toolkit.xdstools2.client.tabs.TextViewerTab;
+import gov.nist.toolkit.xdstools2.client.util.ClientUtils;
+import gov.nist.toolkit.xdstools2.shared.command.request.ReloadSystemFromGazelleRequest;
 
-import com.google.gwt.user.client.rpc.AsyncCallback;
 
 public class LoadGazelleConfigs  {
-	TabContainer container;
-	ToolkitServiceAsync toolkitService;
 	String type;
 	
-	public LoadGazelleConfigs(ToolkitServiceAsync toolkitService, TabContainer container, String type) {
-		this.toolkitService = toolkitService;
-		this.container = container;
+	public LoadGazelleConfigs(String type) {
 		this.type = type;  // System name or ALL
 	}
 
 	public void load() {
-		toolkitService.reloadSystemFromGazelle(type, new AsyncCallback<String> () {
-
-			public void onFailure(Throwable caught) {
-				launchTextViewer(container, "Gazelle", "reloadSystemFromGazelle(\""+ type + "\") call failed: " + caught.getMessage(), true);
+		new ReloadSystemFromGazelleCommand(){
+			@Override
+			public void onFailure(Throwable throwable){
+				launchTextViewer("Gazelle", "reloadSystemFromGazelle(\""+ type + "\") call failed: " + throwable.getMessage(), true);
 			}
-
-			public void onSuccess(String messages) {
-				launchTextViewer(container, "Gazelle", messages, false);
+			@Override
+			public void onComplete(String result) {
+				launchTextViewer("Gazelle Log", result, false);
 			}
-			
-		});
+		}.run(new ReloadSystemFromGazelleRequest(ClientUtils.INSTANCE.getCommandContext(),type));
 	}
 	
-	void launchTextViewer(TabContainer myContainer, String tabName, String contents, boolean escapeHTML) {
+	void launchTextViewer(String tabName, String contents, boolean escapeHTML) {
 		TextViewerTab ttab = new TextViewerTab(escapeHTML);
-		ttab.onTabLoad(myContainer, true, contents, tabName);
+		ttab.onTabLoad(true, contents, tabName);
 	}
 	
 

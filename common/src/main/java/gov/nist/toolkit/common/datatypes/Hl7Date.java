@@ -1,14 +1,29 @@
 package gov.nist.toolkit.common.datatypes;
 
-import java.util.Calendar;
-import java.util.Formatter;
-import java.util.GregorianCalendar;
-import java.util.Locale;
+import java.util.*;
 
 public class Hl7Date {
+
+	public String from(Date date) {
+		StringBuilder sb = new StringBuilder();
+		// Send all output to the Appendable model sb
+		Formatter formatter = new Formatter(sb, Locale.US);
+		Calendar c = Calendar.getInstance();
+		c.setTime(date);
+		formatter.format("%s%02d%02d%02d%02d%02d",
+				c.get(Calendar.YEAR),
+				c.get(Calendar.MONTH)+1,
+				c.get(Calendar.DAY_OF_MONTH),
+				c.get(Calendar.HOUR_OF_DAY),
+				c.get(Calendar.MINUTE),
+				c.get(Calendar.SECOND));
+		return sb.toString();
+	}
+
+
 	public String now() {
 		StringBuilder sb = new StringBuilder();
-		// Send all output to the Appendable object sb
+		// Send all output to the Appendable model sb
 		Formatter formatter = new Formatter(sb, Locale.US);
 		Calendar c = new GregorianCalendar();
 		formatter.format("%s%02d%02d%02d%02d%02d", 
@@ -41,7 +56,7 @@ public class Hl7Date {
 
 	public String plusMinutes(int minutes) {
 		StringBuilder sb = new StringBuilder();
-		// Send all output to the Appendable object sb
+		// Send all output to the Appendable model sb
 		Formatter formatter = new Formatter(sb, Locale.US);
 		Calendar c = new GregorianCalendar();
 		int year = c.get(Calendar.YEAR);
@@ -79,7 +94,7 @@ public class Hl7Date {
 	// useful for testing
 	public String lastyear() {
 		StringBuilder sb = new StringBuilder();
-		// Send all output to the Appendable object sb
+		// Send all output to the Appendable model sb
 		Formatter formatter = new Formatter(sb, Locale.US);
 		Calendar c = new GregorianCalendar();
 		formatter.format("%s%02d%02d%02d%02d%02d", 

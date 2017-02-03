@@ -1,0 +1,18 @@
+
+<TestPlan>
+  <Test>SingleDocument/submit_doc</Test>
+  <TestStep id="submit_doc">
+  <ExpectedStatus>Success</ExpectedStatus>
+  <XDRProvideAndRegisterTransaction>
+    <XDSb/>
+    <AssignUuids/>
+    <NoPatientId/>
+    <MetadataFile>single_doc.xml</MetadataFile>
+    <Document id="Document01">CCR_Sample1.xml</Document>
+    <SOAPHeader>
+      <direct:metadata-level xmlns:direct="urn:direct:addressing">minimal</direct:metadata-level>
+    </SOAPHeader>
+  </XDRProvideAndRegisterTransaction>
+</TestStep>
+
+</TestPlan>

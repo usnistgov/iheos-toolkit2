@@ -36,7 +36,7 @@ class DicomSpec extends ToolkitSpecification {
 
         new BuildCollections().init(null)
 
-        println "EC is ${Installation.installation().externalCache().toString()}"
+        println "EC is ${Installation.instance().externalCache().toString()}"
         println "${api.getSiteNames(true)}"
         api.createTestSession(testSession)
 
@@ -54,6 +54,7 @@ class DicomSpec extends ToolkitSpecification {
     def cleanupSpec() {  // one time shutdown when everything is done
         server.stop()
         ListenerFactory.terminateAll()
+//        api.deleteSimulatorIfItExists(simId)
     }
 
     TestInstance testId = new TestInstance("PnrXop")

@@ -27,13 +27,14 @@ import gov.nist.toolkit.simulators.servlet.ServletSimulator;
 import gov.nist.toolkit.simulators.servlet.SimServlet;
 import gov.nist.toolkit.simulators.sim.reg.RegistryActorSimulator;
 import gov.nist.toolkit.simulators.sim.rep.RepositoryActorSimulator;
+import gov.nist.toolkit.simulators.sim.rep.od.OddsActorSimulator;
 import gov.nist.toolkit.simulators.support.SimInstanceTerminator;
 import gov.nist.toolkit.utilities.io.Io;
-import gov.nist.toolkit.valregmsg.validation.engine.ValidateMessageService;
+import gov.nist.toolkit.validatorsSoapMessage.engine.ValidateMessageService;
 import gov.nist.toolkit.valsupport.client.MessageValidationResults;
 import gov.nist.toolkit.valsupport.client.ValidationContext;
-import gov.nist.toolkit.xdsexception.EnvironmentNotSelectedException;
 import gov.nist.toolkit.xdsexception.ExceptionUtil;
+import gov.nist.toolkit.xdsexception.client.EnvironmentNotSelectedException;
 import org.apache.log4j.Logger;
 
 import java.io.File;
@@ -45,7 +46,7 @@ import java.util.Map;
 /**
  * Each new request should go to a new instance.  All persistence
  * between calls is done by storing on disk or in the session
- * object.
+ * model.
  * @author bill
  *
  */
@@ -179,7 +180,7 @@ public class SimulatorServiceManager extends CommonService {
 		return simdb.getTransactionsForSimulator();
 	}
 
-	public String getTransactionRequest(SimId simid, String actor,
+	public Message getTransactionRequest(SimId simid, String actor,
 			String trans, String event) {
 		logger.debug(session.id() + ": " + "getTransactionRequest - " + simid + " - " + actor + " - " + trans + " - " + event);
 		try {
@@ -192,15 +193,15 @@ public class SimulatorServiceManager extends CommonService {
 					event);
 			File bodyFile = db.getRequestBodyFile(simid, actor, trans, event);
 
-			return Io.stringFromFile(headerFile)
-					// + "\r\n"
-					+ new String(Io.bytesFromFile(bodyFile));
+			String body = new String(Io.bytesFromFile(bodyFile));
+
+			return new Message(Io.stringFromFile(headerFile) + body);
 		} catch (Exception e) {
-			return "Data not available";
+			return new Message("Error: " + e.getMessage());
 		}
 	}
 
-	public String getTransactionResponse(SimId simid, String actor,
+	public Message getTransactionResponse(SimId simid, String actor,
 			String trans, String event) {
 		logger.debug(session.id() + ": " + "getTransactionResponse - " + simid + " - " + actor + " - " + trans + " - " + event);
 		try {
@@ -214,11 +215,13 @@ public class SimulatorServiceManager extends CommonService {
 			File bodyFile = db
 					.getResponseBodyFile(simid, actor, trans, event);
 
-			return Io.stringFromFile(headerFile)
-					// + "\r\n"
-					+ Io.stringFromFile(bodyFile);
+			String body = new String(Io.bytesFromFile(bodyFile));
+
+			return new Message(
+					((headerFile.exists()) ? Io.stringFromFile(headerFile) : "")
+							+ body);
 		} catch (Exception e) {
-			return "Data not available";
+			return new Message("Error: " + e.getMessage());
 		}
 	}
 
@@ -288,7 +291,7 @@ public class SimulatorServiceManager extends CommonService {
 		return configs;
 	}
 
-	public void updateAllSimulatorsHostAndPort(String host, String port) throws NoSimException, IOException, ClassNotFoundException {
+	public void updateAllSimulatorsHostAndPort(String host, String port) throws Exception, IOException, ClassNotFoundException {
 		GenericSimulatorFactory simFact = new GenericSimulatorFactory(SimCache.getSimManagerForSession(session.id()));
 
 		SimDb db = new SimDb();
@@ -320,7 +323,7 @@ public class SimulatorServiceManager extends CommonService {
 		return "";
 	}
 
-    public String deleteConfig(SimId simId) throws IOException {
+    public String deleteConfig(SimId simId) throws Exception {
         SimulatorConfig config = SimCache.getSimulatorConfig(simId);
         if (config != null)
             return deleteConfig(config);
@@ -334,7 +337,7 @@ public class SimulatorServiceManager extends CommonService {
         return "";
     }
 
-	public String deleteConfig(SimulatorConfig config) throws IOException  {
+	public String deleteConfig(SimulatorConfig config) throws Exception  {
 		logger.debug(session.id() + ": " + "deleteConfig " + config.getId());
         GenericSimulatorFactory.delete(config.getId());
         new SimulatorApi(session).delete(config.getId());
@@ -409,10 +412,11 @@ public class SimulatorServiceManager extends CommonService {
             SimDb db = new SimDb(simId);
             if (db.getSimulatorActorType() == ActorType.REGISTRY) {
                stats.add(RegistryActorSimulator.getSimulatorStats(simId));
-            } else if (db.getSimulatorActorType() == ActorType.REPOSITORY
-               || db.getSimulatorActorType() == ActorType.ONDEMAND_DOCUMENT_SOURCE) {
+            } else if (db.getSimulatorActorType() == ActorType.REPOSITORY) {
                stats.add(RepositoryActorSimulator.getSimulatorStats(simId));
-            } else if (db.getSimulatorActorType() == ActorType.REPOSITORY_REGISTRY) {
+            } else if  (db.getSimulatorActorType() == ActorType.ONDEMAND_DOCUMENT_SOURCE) {
+				stats.add(OddsActorSimulator.getSimulatorStats(simId));
+			} else if (db.getSimulatorActorType() == ActorType.REPOSITORY_REGISTRY) {
                SimulatorStats rep = RepositoryActorSimulator.getSimulatorStats(simId);
                SimulatorStats reg = RegistryActorSimulator.getSimulatorStats(simId);
                rep.add(reg);
@@ -423,6 +427,11 @@ public class SimulatorServiceManager extends CommonService {
                rep.add(reg);
                stats.add(rep);
             } else if (db.getSimulatorActorType() == ActorType.RESPONDING_GATEWAY) {
+               SimulatorStats rep = RepositoryActorSimulator.getSimulatorStats(simId);
+               SimulatorStats reg = RegistryActorSimulator.getSimulatorStats(simId);
+               rep.add(reg);
+               stats.add(rep);
+            } else if (db.getSimulatorActorType() == ActorType.COMBINED_RESPONDING_GATEWAY) {
                SimulatorStats rep = RepositoryActorSimulator.getSimulatorStats(simId);
                SimulatorStats reg = RegistryActorSimulator.getSimulatorStats(simId);
                rep.add(reg);
@@ -480,11 +489,11 @@ public class SimulatorServiceManager extends CommonService {
 		} catch (Exception e) {
 			throw new Exception("Cannot load simulator event - " + e.getMessage(), e);
 		}
-		File reqeustFile = db.getResponseBodyFile();
-		if (reqeustFile == null) return null;
+		if (!db.responseBodyExists()) return null;
+		String response = db.getResponseBody();
 		Metadata m = null;
 		try {
-			m = MetadataParser.parseContent(reqeustFile);
+			m = MetadataParser.parseContent(null, response);
 		} catch (Exception e) {
 			throw new Exception("Cannot load simulator event - " + e.getMessage(), e);
 		}

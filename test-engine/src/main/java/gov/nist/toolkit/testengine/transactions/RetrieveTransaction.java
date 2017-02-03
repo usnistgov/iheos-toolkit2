@@ -13,12 +13,13 @@ import gov.nist.toolkit.utilities.xml.OMFormatter;
 import gov.nist.toolkit.utilities.xml.Util;
 import gov.nist.toolkit.utilities.xml.XmlUtil;
 import gov.nist.toolkit.xdsexception.ExceptionUtil;
-import gov.nist.toolkit.xdsexception.MetadataException;
-import gov.nist.toolkit.xdsexception.XdsException;
-import gov.nist.toolkit.xdsexception.XdsInternalException;
 import gov.nist.toolkit.xdsexception.XdsPreparsedException;
+import gov.nist.toolkit.xdsexception.client.MetadataException;
+import gov.nist.toolkit.xdsexception.client.XdsException;
+import gov.nist.toolkit.xdsexception.client.XdsInternalException;
 import org.apache.axiom.om.OMElement;
 import org.apache.axiom.om.xpath.AXIOMXPath;
+import org.apache.axis2.AxisFault;
 import org.apache.log4j.Logger;
 import org.jaxen.JaxenException;
 
@@ -181,7 +182,7 @@ public class RetrieveTransaction extends BasicTransaction {
 
 
 			} else {
-				// The above 'compile' steps may have updated critical sections of the metadata.  repositoryUniqueId is critical here.
+				// The above 'compile' steps may have updated critical SECTIONS of the metadata.  repositoryUniqueId is critical here.
 				if (repositoryUniqueId == null || repositoryUniqueId.equals("")) {
 					String xpath = "//*[local-name()='RetrieveDocumentSetRequest']/*[local-name()='DocumentRequest']/*[local-name()='RepositoryUniqueId']/text()";
 					try {
@@ -238,7 +239,15 @@ public class RetrieveTransaction extends BasicTransaction {
 				throw new XdsInternalException("Retrieve Error: endpoint was: " + endpoint + " " + e.getMessage(), e);
 			}
 			catch (Exception e) {
-				throw new XdsInternalException("Retrieve Error: endpoint was: " + endpoint + " " + e.getMessage(), e);
+				if (e.getCause()!=null && (e.getCause() instanceof AxisFault) && ((AxisFault)e.getCause()).getFaultCodeElement()!=null
+						&& (this.s_ctx.getExpectedStatus().size()>0) && this.s_ctx.getExpectedStatus().get(0).isFault()) {
+					s_ctx.set_error(((AxisFault)(e.getCause())).getMessage());
+					s_ctx.resetStatus();
+					step_failure = false;
+					add_step_status_to_output();
+					return;
+				} else
+					throw new XdsInternalException("Retrieve Error: endpoint was: " + endpoint + " " + e.getMessage(), e);
 			}
 
 			add_step_status_to_output();
@@ -365,11 +374,19 @@ public class RetrieveTransaction extends BasicTransaction {
 			if (referenced_documents.containsKey(doc_uid)) {
 				String filename = referenced_documents.get(doc_uid);
 
+				FileInputStream fis = null;
 				try {
-					FileInputStream fis = new FileInputStream(new File(filename));
+					fis = new FileInputStream(new File(filename));
 					rqst.setContents(Io.getBytesFromInputStream(fis));
 				} catch (Exception e) {
 					throw new XdsInternalException("Cannot read ReferenceDocument: " + filename);
+				} finally {
+					try {
+						if (fis != null)
+							fis.close();
+					} catch (Exception e){
+
+					}
 				}
 			}
 			//			else {
@@ -472,7 +489,7 @@ public class RetrieveTransaction extends BasicTransaction {
 //
 //			}
 //
-//			if ( !referenced_documents.isEmpty()) {
+//			if ( !referenced_documents.empty()) {
 //				String key = referenced_documents.keySet().iterator().next();
 //				String filename = referenced_documents.getRetrievedDocumentsModel(key);
 //

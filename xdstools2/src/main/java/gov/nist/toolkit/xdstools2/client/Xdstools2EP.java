@@ -8,7 +8,9 @@ import com.google.gwt.place.shared.PlaceController;
 import com.google.gwt.place.shared.PlaceHistoryHandler;
 import com.google.gwt.user.client.ui.RootLayoutPanel;
 import gov.nist.toolkit.xdstools2.client.util.ClientFactory;
+import gov.nist.toolkit.xdstools2.client.util.ClientUtils;
 import gov.nist.toolkit.xdstools2.client.util.activitiesAndPlaces.TestInstance;
+import gov.nist.toolkit.xdstools2.client.util.activitiesAndPlaces.TestInstanceActivity;
 import gov.nist.toolkit.xdstools2.client.util.activitiesAndPlaces.Xdstools2ActivityMapper;
 import gov.nist.toolkit.xdstools2.client.util.activitiesAndPlaces.Xdstools2PlaceHistoryMapper;
 
@@ -17,14 +19,14 @@ import gov.nist.toolkit.xdstools2.client.util.activitiesAndPlaces.Xdstools2Place
  *
  */
 public class Xdstools2EP implements EntryPoint{
-    private static final ClientFactory CLIENT_FACTORY=GWT.create(ClientFactory.class);
+    private  ClientFactory CLIENT_FACTORY= GWT.create(ClientFactory.class);
     //    private static final EventBus EVENT_BUS= .getEventBus();
-    private Xdstools2Activity xdstools2Activity =CLIENT_FACTORY.getXdstools2Activity();
+    private TestInstanceActivity testInstanceActivity =CLIENT_FACTORY.getTestInstanceActivity();
 
     @Override
     public void onModuleLoad() {
         // start the application
-        xdstools2Activity.getView().run();
+        testInstanceActivity.getView().run();
 
         PlaceController placeController = CLIENT_FACTORY.getPlaceController();
 
@@ -33,7 +35,7 @@ public class Xdstools2EP implements EntryPoint{
         ActivityMapper activityMapper = new Xdstools2ActivityMapper(CLIENT_FACTORY);
         ActivityManager activityManager = new ActivityManager(activityMapper, CLIENT_FACTORY.getEventBus());
         // set the main widget container of the application (AcceptsOneWidget)
-        activityManager.setDisplay(xdstools2Activity.getView());
+        activityManager.setDisplay(testInstanceActivity.getView());
 
         // Start PlaceHistoryHandler with our PlaceHistoryMapper
         Xdstools2PlaceHistoryMapper historyMapper = GWT.create(Xdstools2PlaceHistoryMapper.class);
@@ -41,9 +43,10 @@ public class Xdstools2EP implements EntryPoint{
 
         historyHandler.register(placeController, CLIENT_FACTORY.getEventBus(), new TestInstance("HOME"));
 
-        RootLayoutPanel.get().add(xdstools2Activity.getView());
+        RootLayoutPanel.get().add(testInstanceActivity.getView());
 
         // Goes to place represented on URL or default place
         historyHandler.handleCurrentHistory();
     }
+
 }

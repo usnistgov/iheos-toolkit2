@@ -4,20 +4,20 @@ import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.ui.RadioButton;
 import gov.nist.toolkit.actortransaction.client.ActorType;
 import gov.nist.toolkit.configDatatypes.client.TransactionType;
-import gov.nist.toolkit.results.client.SiteSpec;
 import gov.nist.toolkit.sitemanagement.client.Site;
+import gov.nist.toolkit.sitemanagement.client.SiteSpec;
 import gov.nist.toolkit.xdstools2.client.CoupledTransactions;
+import gov.nist.toolkit.xdstools2.client.ObjectSort;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class TransactionSelectionManager {
 	CoupledTransactions couplings;
 //	boolean tls;
 	GenericQueryTab genericQueryTab;
-//	Map<TransactionType, List<RadioButton>> perTransTypeRadioButtons; 
+//	Map<TransactionType, List<RadioButton>> perTransTypeRadioButtons;
+//	static ArrayList<String>
+	final int idHashCode = System.identityHashCode(this);
 	
 	class RbSite {
 		TransactionType tt; // Unique (fits into perTransRB Map below
@@ -30,6 +30,17 @@ public class TransactionSelectionManager {
 		this.couplings = couplings;
 		this.genericQueryTab = genericQueryTab;
 	}
+
+	public void selectSite(SiteSpec siteSpec) {
+		for (List<RbSite> rbSites : perTransRB.values()) {
+			for (RbSite rbSite : rbSites) {
+				if (rbSite.site.getName().equals(siteSpec.getName())) {
+					rbSite.rb.setValue(true);
+					return;
+				}
+			}
+		}
+	}
 	
 	public void addTransactionType(TransactionType tt, List<Site> sites) {
 		ClickHandler ch= new ActorClickHandlerByTransaction(this, tt);
@@ -37,7 +48,7 @@ public class TransactionSelectionManager {
 		List<RbSite> rbSites = new ArrayList<RbSite>();
 		for (Site site : sites) {
 			String siteName = site.getName();
-			RadioButton rb = new RadioButton(tt.getName(), siteName);
+			RadioButton rb = new RadioButton("rbGroup_" + genericQueryTab.getWindowShortName() + "_" + tt.getName() + "_" + idHashCode, siteName);
 			rb.addClickHandler(ch);
 			RbSite rbs = new RbSite();
 			rbs.tt = tt;
@@ -51,6 +62,11 @@ public class TransactionSelectionManager {
 	public List<RadioButton> getRadioButtons(TransactionType tt) {
 		ArrayList<RadioButton> buttons = new ArrayList<RadioButton>();
 		List<RbSite> rbSites = perTransRB.get(tt);
+		new ObjectSort().sort(rbSites, new Comparator<RbSite>() {
+			public int compare(RbSite ra, RbSite rb) {
+				return ra.site.getName().compareTo(rb.site.getName());
+			}
+		});
 		if (rbSites == null)
 			return buttons;
 		for (RbSite rbs : rbSites) {
@@ -91,7 +107,7 @@ public class TransactionSelectionManager {
 //		for (TransactionType t : perTransTypeRadioButtons.keySet()) {
 //			for (RadioButton rb : perTransTypeRadioButtons.getRetrievedDocumentsModel(t)) {
 //				if (rb.getValue()) {
-//					selections.add(t);
+//					selections.addTest(t);
 //					break;
 //				}
 //			}
@@ -101,6 +117,10 @@ public class TransactionSelectionManager {
 	
 	public SiteSpec generateSiteSpec() {
 		SiteSpec ss = new SiteSpec();
+
+		if (genericQueryTab.samlEnabled)
+			ss.setStsAssertion(genericQueryTab.samlAssertion);
+
 		List<RbSite> selections = selections2();
 		
 		if (selections.size() == 1) {

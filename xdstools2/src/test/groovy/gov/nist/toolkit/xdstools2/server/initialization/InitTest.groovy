@@ -37,7 +37,7 @@ class InitTest extends Specification {
         when:
         ec.mkdir()
         String excuse = ExternalCacheManager.initialize(ec)
-        Installation.installation().warHome(warDir)
+        Installation.instance().warHome(warDir)
 
         then:
         !excuse

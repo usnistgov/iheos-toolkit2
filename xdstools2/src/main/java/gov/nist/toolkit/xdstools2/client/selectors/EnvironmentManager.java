@@ -9,15 +9,22 @@ import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.ListBox;
 import gov.nist.toolkit.xdstools2.client.*;
+import gov.nist.toolkit.xdstools2.client.command.command.GetDefaultEnvironmentCommand;
+import gov.nist.toolkit.xdstools2.client.command.command.GetEnvironmentNamesCommand;
+import gov.nist.toolkit.xdstools2.client.command.command.SetEnvironmentCommand;
+import gov.nist.toolkit.xdstools2.client.event.Xdstools2EventBus;
 import gov.nist.toolkit.xdstools2.client.tabs.EnvironmentState;
+import gov.nist.toolkit.xdstools2.client.util.ClientUtils;
+import gov.nist.toolkit.xdstools2.client.widgets.PopupMessage;
 
 import java.util.List;
 
+
 public class EnvironmentManager extends Composite{
 	TabContainer tabContainer;
-	ToolkitServiceAsync toolkitService;
+//	ToolkitServiceAsync toolkitService;
 	EnvironmentState environmentState;
-	Panel menuPanel;
+	Panel1 menuPanel;
 	HorizontalPanel environmentPanel = new HorizontalPanel();
 	ListBox environmentListBox = new ListBox();
 	static String choose = "-- Choose --";
@@ -26,11 +33,9 @@ public class EnvironmentManager extends Composite{
 
 
 	
-	public EnvironmentManager(TabContainer tabContainer, ToolkitServiceAsync toolkitService/*, Panel menuPanel*/) {
+	public EnvironmentManager(TabContainer tabContainer) {
 		this.tabContainer = tabContainer;
-		this.toolkitService = toolkitService;
-		this.environmentState = tabContainer.getEnvironmentState();
-//		this.menuPanel = menuPanel;
+		this.environmentState = ClientUtils.INSTANCE.getEnvironmentState();
 		environmentManager = this;
 		
 		environmentState.addManager(this);
@@ -44,8 +49,7 @@ public class EnvironmentManager extends Composite{
 	}
 	
 	void init() {
-		menuPanel=new Panel(environmentPanel);
-//		menuPanel.add(environmentPanel);
+		menuPanel=new Panel1(environmentPanel);
 
 		HTML environmentLabel = new HTML();
 		environmentLabel.setText("Environment: ");
@@ -54,15 +58,16 @@ public class EnvironmentManager extends Composite{
 		environmentPanel.add(environmentListBox);
 		environmentListBox.addChangeHandler(new EnvironmentChangeHandler());
 
-		updateEnvironmentListBox();
+//		updateEnvironmentListBox();
 		
-		loadEnvironmentNames(null);
-		getDefaultEnvironment();
+//		loadEnvironmentNames(null);
+//		getDefaultEnvironment();
+
+		updateEnvironmentListBox();
+		updateSelectionOnScreen();
+		updateCookie();
 
 		initWidget(environmentPanel);
-
-//		loadEnvironmentNames(Cookies.getCookie(CookieManager.ENVIRONMENTCOOKIENAME));
-		
 	}
 	
 	
@@ -80,7 +85,7 @@ public class EnvironmentManager extends Composite{
 		updateSelectionOnScreen();
 	}
 		
-	boolean updateSelectionOnScreen() {
+	private boolean updateSelectionOnScreen() {
 		String sel = null;
 		if (environmentState.isValid())
 			sel = environmentState.getEnvironmentName();
@@ -97,7 +102,7 @@ public class EnvironmentManager extends Composite{
 	}
 
 	
-	void updateEnvironmentListBox() {
+	private void updateEnvironmentListBox() {
 		environmentListBox.clear();
 		environmentListBox.addItem(choose, "");
 		for (String val : environmentState.getEnvironmentNameChoices())
@@ -113,14 +118,12 @@ public class EnvironmentManager extends Composite{
 
 	
 	@SuppressWarnings("rawtypes")
-	void loadEnvironmentNames(final String initialEnvironmentName) {
-		toolkitService.getEnvironmentNames(new AsyncCallback<List<String>>() {
+	private void loadEnvironmentNames(final String initialEnvironmentName) {
 
-			public void onFailure(Throwable caught) {
-				new PopupMessage("getEnvironmentNames: " + caught.getMessage());
-			}
+		new GetEnvironmentNamesCommand() {
 
-			public void onSuccess(List<String> result) {
+			@Override
+			public void onComplete(List<String> result) {
 				environmentState.setEnvironmentNameChoices(result);
 				if (environmentState.getEnvironmentName() == null)
 					environmentState.setEnvironmentName(initialEnvironmentName);
@@ -133,73 +136,34 @@ public class EnvironmentManager extends Composite{
 					updateCookie();
 				}
 			}
+		}.run(ClientUtils.INSTANCE.getCommandContext());
 
-		});
-		
-		toolkitService.setEnvironment(initialEnvironmentName, new AsyncCallback() {
-
-			@Override
-			public void onFailure(Throwable caught) {
-				new PopupMessage("setEnvironment(" + initialEnvironmentName + ") failed");
-			}
-
-			@Override
-			public void onSuccess(Object result) {
-
-			}
-			
-		});
+		new SetEnvironmentCommand().run(ClientUtils.INSTANCE.getCommandContext().setEnvironmentName(initialEnvironmentName));
 	}
 	
 	void getDefaultEnvironment() {
 		if (environmentState.getEnvironmentName() == null)
-			toolkitService.getDefaultEnvironment(getDefaultEnvironmentCallback);
+			new GetDefaultEnvironmentCommand(){
+
+				@Override
+				public void onComplete(String result) {
+					environmentState.setEnvironmentName(result);
+
+					updateEnvironmentListBox();
+					updateSelectionOnScreen();
+					updateCookie();
+					updateServer();
+				}
+			}.run(ClientUtils.INSTANCE.getCommandContext());
 	}
-	
-	AsyncCallback<String> getDefaultEnvironmentCallback = new AsyncCallback<String> () {
 
-		public void onFailure(Throwable caught) {
-			new PopupMessage("Call to retrieve default environment name failed: " + caught.getMessage());
-		}
-
-		public void onSuccess(String result) {
-			environmentState.setEnvironmentName(result);
-			
-			updateEnvironmentListBox();
-			updateSelectionOnScreen();
-			updateCookie();
-			updateServer();
-		}
-
-	};
-
-	
-	
 	void updateCookie() {
-//		if (environmentState.isValid())
-//			Cookies.setCookie(CookieManager.ENVIRONMENTCOOKIENAME, environmentState.getEnvironmentName());
-//		else
-			Cookies.removeCookie(CookieManager.ENVIRONMENTCOOKIENAME);		
+			Cookies.removeCookie(CookieManager.ENVIRONMENTCOOKIENAME);
 	}
 	
 	void updateServer() {
-		String envName = environmentState.getEnvironmentName();
-		if (envName == null || envName.equals(""))
-			return;
-		toolkitService.setEnvironment(envName, setEnvironmentCallback);
+		new SetEnvironmentCommand().run(ClientUtils.INSTANCE.getCommandContext());
 	}
-
-
-	protected AsyncCallback<String> setEnvironmentCallback = new AsyncCallback<String> () {
-
-		public void onFailure(Throwable caught) {
-			new PopupMessage(caught.getMessage());
-		}
-
-		public void onSuccess(String x) {
-		}
-
-	};
 
 	class EnvironmentChangeHandler implements ChangeHandler {
 
@@ -209,8 +173,8 @@ public class EnvironmentManager extends Composite{
 			change(value);
 			
 			environmentState.updated(environmentManager);
-
-			toolkitService.setEnvironment(value, setEnvironmentCallback);
+			((Xdstools2EventBus) ClientUtils.INSTANCE.getEventBus()).fireEnvironmentChangedEvent(value);
+			new SetEnvironmentCommand().run(ClientUtils.INSTANCE.getCommandContext().setEnvironmentName(value));
 		}
 
 	}

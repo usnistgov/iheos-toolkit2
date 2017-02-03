@@ -1,0 +1,21 @@
+
+<site name="OTHER_NIST_RED_2017">
+   <home>urn:oid:1.3.6.1.4.1.21367.13.70.180</home>
+   <transaction name="igr" secure="0">http://nist1:9080/tf6/services/ig</transaction>
+   <transaction name="pr.b" secure="1">https://nist1:9085/tf6/services/xdsrepositoryb</transaction>
+   <transaction name="r.b" secure="1">https://nist1:9085/tf6/services/xdsregistryb</transaction>
+   <transaction name="sq.b" secure="0">http://nist1:9080/tf6/services/xdsregistryb</transaction>
+   <transaction name="pr.b" secure="0">http://nist1:9080/tf6/services/xdsrepositoryb</transaction>
+   <transaction name="xcq" secure="0">http://nist1:9080/tf6/services/rg</transaction>
+   <transaction name="igr" secure="1">https://nist1:9085/tf6/services/ig</transaction>
+   <transaction name="xcq" secure="1">https://nist1:9085/tf6/services/rg</transaction>
+   <transaction name="igq" secure="0">http://nist1:9080/tf6/services/ig</transaction>
+   <transaction name="sq.b" secure="1">https://nist1:9085/tf6/services/xdsregistryb</transaction>
+   <transaction name="igq" secure="1">https://nist1:9085/tf6/services/ig</transaction>
+   <transaction name="xcr" secure="1">https://nist1:9085/tf6/services/rg</transaction>
+   <transaction name="xcr" secure="0">http://nist1:9080/tf6/services/rg</transaction>
+   <transaction name="r.b" secure="0">http://nist1:9080/tf6/services/xdsregistryb</transaction>
+   <repository uid="1.3.6.1.4.1.21367.13.40.248" secure="1">https://nist1:9085/tf6/services/xdsrepositoryb</repository>
+   <repository uid="1.3.6.1.4.1.21367.13.40.248" secure="0">http://nist1:9080/tf6/services/xdsrepositoryb</repository>
+   <patientIdFeed host="null" port="null"/>
+</site>

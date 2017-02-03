@@ -1,7 +1,7 @@
 package gov.nist.toolkit.envSetting;
 
 import gov.nist.toolkit.installation.Installation;
-import gov.nist.toolkit.xdsexception.EnvironmentNotSelectedException;
+import gov.nist.toolkit.xdsexception.client.EnvironmentNotSelectedException;
 import org.apache.log4j.Logger;
 
 import java.io.File;
@@ -45,7 +45,7 @@ public class EnvSetting {
     }
 
     public static void installDefaultEnvironment() {
-        File envFile = Installation.installation().internalEnvironmentFile(DEFAULTENVIRONMENTNAME);
+        File envFile = Installation.instance().internalEnvironmentFile(DEFAULTENVIRONMENTNAME);
         if (envFile == null || !envFile.exists()) throw new EnvironmentNotSelectedException("Default Environment not configured - file " + envFile + " not found.");
         new EnvSetting(DEFAULTSESSIONID, DEFAULTENVIRONMENTNAME, envFile);
 //        new EnvSetting(Installation.defaultSessionName(), DEFAULTENVIRONMENTNAME, envFile);
@@ -53,7 +53,7 @@ public class EnvSetting {
     }
 
     public static void installServiceEnvironment() {
-        File envFile = Installation.installation().internalEnvironmentFile(DEFAULTENVIRONMENTNAME);
+        File envFile = Installation.instance().internalEnvironmentFile(DEFAULTENVIRONMENTNAME);
         if (envFile == null || !envFile.exists()) throw new EnvironmentNotSelectedException("Default Environment not configured - file " + envFile + " not found.");
         new EnvSetting(Installation.defaultServiceSessionName(), DEFAULTENVIRONMENTNAME, envFile);
     }
@@ -64,14 +64,14 @@ public class EnvSetting {
 	}
 	
 	public EnvSetting(String sessionId, String name) {
-		File dir = Installation.installation().environmentFile(name);
+		File dir = Installation.instance().environmentFile(name);
 		logger.info("Session " + sessionId + " environment " + name + " ==> " + dir);
         settings.put(sessionId, new EnvSetting(name, dir));
 	}
 
     public EnvSetting(String envName) {
         this.envName = envName;
-        this.envDir = Installation.installation().environmentFile(envName);
+        this.envDir = Installation.instance().environmentFile(envName);
         validateEnvironment();
     }
 	
@@ -92,7 +92,7 @@ public class EnvSetting {
 	public File getCodesFile() throws EnvironmentNotSelectedException {
 		if (envDir == null) 
 			throw new EnvironmentNotSelectedException(String.format("Environment %s does not exist", envName));
-//			return new File(Installation.installation().warHome() + File.separator + "toolkitx" + File.separator + "codes" + File.separator + "codes.xml");
+//			return new File(Installation.instance().warHome() + File.separator + "toolkitx" + File.separator + "codes" + File.separator + "codes.xml");
 		File f = new File(envDir + File.separator + "codes.xml");
 		if (f.exists())
 			return f;

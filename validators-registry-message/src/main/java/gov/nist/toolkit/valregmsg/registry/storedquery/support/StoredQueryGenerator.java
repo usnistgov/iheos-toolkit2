@@ -95,8 +95,8 @@ public class StoredQueryGenerator {
                 stringValue += ")";
             } else {
                 if (object instanceof String) {
-//                    if (((String) object).startsWith("$") && ((String) object).endsWith("$")) {
-//                        stringValue = (String) object;
+//                    if (((String) model).startsWith("$") && ((String) model).endsWith("$")) {
+//                        stringValue = (String) model;
 //                    } else {
                         stringValue = "'" + object + "'";
 //                    }

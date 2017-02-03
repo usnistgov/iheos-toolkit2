@@ -9,6 +9,13 @@
                 <Value>'$patient_id$'</Value>
             </ValueList>
         </Slot>
+
+        <Slot name="$XDSDocumentEntryType">
+            <ValueList>
+                <Value>$object_types$</Value>
+            </ValueList>
+        </Slot>
+
         <Slot name="$XDSDocumentEntryStatus">
             <ValueList>
                 <Value>('urn:oasis:names:tc:ebxml-regrep:StatusType:Approved', 'urn:oasis:names:tc:ebxml-regrep:StatusType:Deprecated')</Value>

@@ -6,11 +6,13 @@ import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.ui.*;
 import gov.nist.toolkit.configDatatypes.client.TransactionType;
 import gov.nist.toolkit.registrymetadata.client.ObjectRef;
+import gov.nist.toolkit.results.client.Result;
 import gov.nist.toolkit.xdstools2.client.CoupledTransactions;
-import gov.nist.toolkit.xdstools2.client.PopupMessage;
-import gov.nist.toolkit.xdstools2.client.TabContainer;
+import gov.nist.toolkit.xdstools2.client.command.command.GetRelatedCommand;
 import gov.nist.toolkit.xdstools2.client.siteActorManagers.GetDocumentsSiteActorManager;
 import gov.nist.toolkit.xdstools2.client.tabs.genericQueryTab.GenericQueryTab;
+import gov.nist.toolkit.xdstools2.client.widgets.PopupMessage;
+import gov.nist.toolkit.xdstools2.shared.command.request.GetRelatedRequest;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -23,7 +25,7 @@ public class GetRelatedTab  extends GenericQueryTab {
 		transactionTypes.add(TransactionType.IG_QUERY);
 		transactionTypes.add(TransactionType.XC_QUERY);
 	}
-	
+
 	static CoupledTransactions couplings = new CoupledTransactions();
 	static {
 		// If an Initiating Gateway is selected (IG_QUERY) then 
@@ -39,36 +41,33 @@ public class GetRelatedTab  extends GenericQueryTab {
 	};
 
 	List<CheckBox> assocCheckBoxes;
-	
+
 	public GetRelatedTab() {
 		super(new GetDocumentsSiteActorManager());
 	}
-	
+
 
 	static public List<String> getAllAssocTypes() {
 		List<String> as = new ArrayList<String>();
-		
+
 		for (int i=0; i<assocTypes.length; i++) {
 			as.add(assocTypes[i]);
 		}
-		
+
 		return as;
 	}
 
-	public void onTabLoad(TabContainer container, boolean select, String eventName) {
-		myContainer = container;
-		topPanel = new VerticalPanel();
-		container.addTab(topPanel, "GetRelated", select);
-		addCloseButton(container,topPanel, null);
-
+	@Override
+	protected Widget buildUI() {
+		FlowPanel flowPanel=new FlowPanel();
 		HTML title = new HTML();
 		title.setHTML("<h2>Get Related Documents</h2>");
-		topPanel.add(title);
+		flowPanel.add(title);
 
 		mainGrid = new FlexTable();
 		int row = 0;
 
-		topPanel.add(mainGrid);
+		flowPanel.add(mainGrid);
 
 
 		HTML pidLabel = new HTML();
@@ -83,7 +82,7 @@ public class GetRelatedTab  extends GenericQueryTab {
 		HTML assocsLabel = new HTML();
 		assocsLabel.setText("Association Types");
 		mainGrid.setWidget(row, 0, assocsLabel);
-		
+
 		assocCheckBoxes = new ArrayList<CheckBox>();
 		for (int i=0; i<assocTypes.length; i++) {
 			CheckBox cb = new CheckBox(assocTypes[i]);
@@ -91,9 +90,17 @@ public class GetRelatedTab  extends GenericQueryTab {
 			mainGrid.setWidget(row, 1, cb);
 			row++;
 		}
-		queryBoilerplate = addQueryBoilerplate(new Runner(), transactionTypes, couplings, false);
+		return flowPanel;
 	}
 
+	@Override
+	protected void bindUI() {
+	}
+
+	@Override
+	protected void configureTabView() {
+		queryBoilerplate = addQueryBoilerplate(new Runner(), transactionTypes, couplings, false);
+	}
 
 	class Runner implements ClickHandler {
 
@@ -106,7 +113,7 @@ public class GetRelatedTab  extends GenericQueryTab {
 				new PopupMessage("You must enter a UUID first");
 				return;
 			}
-			
+
 			List<String> assocs = new ArrayList<String>();
 			for (CheckBox cb : assocCheckBoxes) {
 				if (cb.getValue())
@@ -118,7 +125,12 @@ public class GetRelatedTab  extends GenericQueryTab {
 			}
 
 			rigForRunning();
-			toolkitService.getRelated(getSiteSelection(), new ObjectRef(uuid.getValue().trim()), assocs, queryCallback);
+			new GetRelatedCommand(){
+				@Override
+				public void onComplete(List<Result> result) {
+					queryCallback.onSuccess(result);
+				}
+			}.run(new GetRelatedRequest(getCommandContext(),getSiteSelection(),new ObjectRef(uuid.getValue().trim()),assocs));
 		}
 
 	}

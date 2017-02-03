@@ -11,7 +11,10 @@ public class RetrievedDocumentModel {
 
 	protected String doc_uid;
 	protected String rep_uid;
-	
+
+	protected String newRep_uid;
+	protected String newDoc_uid;
+
 	private byte[] contents;
 	protected String content_type;
 	protected String hash;
@@ -21,7 +24,7 @@ public class RetrievedDocumentModel {
 	
 	protected StringBuffer errors;
 
-	public RetrievedDocumentModel() { doc_uid = ""; rep_uid = ""; content_type = ""; hash = null; size=-1; contents = null; errors = new StringBuffer();}
+	public RetrievedDocumentModel() { doc_uid = ""; rep_uid = ""; newRep_uid=""; newDoc_uid="";  content_type = ""; hash = null; size=-1; contents = null; errors = new StringBuffer();}
 
 	public String toString() {
 		return "RetInfo:\ndoc_uid=" + doc_uid + 
@@ -142,4 +145,20 @@ public class RetrievedDocumentModel {
         result = 31 * result + size;
         return result;
     }
+
+	public String getNewRep_uid() {
+		return newRep_uid;
+	}
+
+	public void setNewRep_uid(String newRep_uid) {
+		this.newRep_uid = newRep_uid;
+	}
+
+	public String getNewDoc_uid() {
+		return newDoc_uid;
+	}
+
+	public void setNewDoc_uid(String newDoc_uid) {
+		this.newDoc_uid = newDoc_uid;
+	}
 }

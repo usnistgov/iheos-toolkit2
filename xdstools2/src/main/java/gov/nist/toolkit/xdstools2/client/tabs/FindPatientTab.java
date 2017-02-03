@@ -6,12 +6,11 @@ import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.ui.FlexTable;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.TextBox;
-import com.google.gwt.user.client.ui.VerticalPanel;
+import com.google.gwt.user.client.ui.Widget;
 import gov.nist.toolkit.configDatatypes.client.TransactionType;
-import gov.nist.toolkit.results.client.SiteSpec;
+import gov.nist.toolkit.sitemanagement.client.SiteSpec;
 import gov.nist.toolkit.xdstools2.client.CoupledTransactions;
-import gov.nist.toolkit.xdstools2.client.PopupMessage;
-import gov.nist.toolkit.xdstools2.client.TabContainer;
+import gov.nist.toolkit.xdstools2.client.widgets.PopupMessage;
 import gov.nist.toolkit.xdstools2.client.siteActorManagers.FindDocumentsSiteActorManager;
 import gov.nist.toolkit.xdstools2.client.tabs.genericQueryTab.GenericQueryTab;
 
@@ -69,23 +68,36 @@ public class FindPatientTab extends GenericQueryTab {
 	public FindPatientTab() {
 		super(new FindDocumentsSiteActorManager());
 	}
-	public void onTabLoad(TabContainer container, boolean select, String eventName) {
-		myContainer = container;
-		topPanel = new VerticalPanel();
-			
-		container.addTab(topPanel, "FindPatient", select);
-		addCloseButton(container,topPanel, null);
+
+	@Override
+	protected Widget buildUI() {
+		return null;
+	}
+
+	@Override
+	protected void bindUI() {
+
+	}
+
+	@Override
+	protected void configureTabView() {
+
+	}
+
+	@Override
+	public void onTabLoad(boolean select, String eventName) {
+		registerTab(select, "FindPatient");
 
 		HTML title = new HTML();
 		title.setHTML("<h2>Find Patient</h2>");
-		topPanel.add(title);
+		tabTopPanel.add(title);
 
 		FlexTable mainGrid2;
 		mainGrid2 = new FlexTable();
 		
 		//mainGrid2.setBorderWidth(1);
 		
-		topPanel.add(mainGrid2);
+		tabTopPanel.add(mainGrid2);
 		/****************************************************************************/
 	    /* Top Row will be Required Fields 
 	     * 
@@ -399,7 +411,7 @@ public class FindPatientTab extends GenericQueryTab {
 
 		row = 0;
 		mainGrid = new FlexTable();
-		topPanel.add(mainGrid);
+		tabTopPanel.add(mainGrid);
 		queryBoilerplate = addQueryBoilerplate(new Runner(), transactionTypes, couplings);
 	}
 	
@@ -423,13 +435,6 @@ public class FindPatientTab extends GenericQueryTab {
 			addStatusBox();
 			getGoButton().setEnabled(false);
 			getInspectButton().setEnabled(false);
-			toolkitService.findPatient(siteSpec, firstName.getValue().trim(), secondName.getValue().trim(), lastName.getValue().trim(), suffix.getValue().trim(), 
-					                   gender.getValue().trim(), dob.getValue().trim(), ssn.getValue().trim(), pid.getValue().trim(),
-					                   homeAddress1.getValue().trim(), homeAddress2.getValue().trim(), homeCity.getValue().trim(), homeState.getValue().trim(), homeZip.getValue().trim(), homeCountry.getValue().trim(),
-					                   mothersFirstName.getValue().trim(), mothersSecondName.getValue().trim(), mothersLastName.getValue().trim(), mothersSuffix.getValue().trim(), 
-					                   homePhone.getValue().trim(), workPhone.getValue().trim(), principleCareProvider.getValue().trim(), 
-					                   pob.getValue().trim(), pobAddress1.getValue().trim(), pobAddress2.getValue().trim(), pobCity.getValue().trim(), pobState.getValue().trim(), pobZip.getValue().trim(), pobCountry.getValue().trim(),
-					                   queryCallback);
 		}
 		
 	}	

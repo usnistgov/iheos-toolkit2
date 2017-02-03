@@ -4,11 +4,10 @@ import com.google.gwt.user.client.ui.Panel;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 import gov.nist.toolkit.actortransaction.client.ActorType;
-import gov.nist.toolkit.configDatatypes.client.TransactionType;
 import gov.nist.toolkit.configDatatypes.client.PatientErrorList;
 import gov.nist.toolkit.configDatatypes.client.PatientErrorMap;
-import gov.nist.toolkit.xdstools2.client.PopupMessage;
-import gov.nist.toolkit.xdstools2.client.ToolkitServiceAsync;
+import gov.nist.toolkit.configDatatypes.client.TransactionType;
+import gov.nist.toolkit.xdstools2.client.widgets.PopupMessage;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -21,7 +20,7 @@ public class PatientErrorMapPresenter {
     PatientErrorMap map;
     List<PatientErrorSelectionPresenter> presenters = new ArrayList<>();
 
-    PatientErrorMapPresenter(PatientErrorMap map, ActorType actorType, ToolkitServiceAsync toolkitService) {
+    PatientErrorMapPresenter(PatientErrorMap map, ActorType actorType/*, ToolkitServiceAsync toolkitService*/) {
         this.map = map;
         if (map.isEmpty()) {
             // initialize map with all transactionTypes for this actorType
@@ -37,11 +36,11 @@ public class PatientErrorMapPresenter {
                 return;
             }
             PatientErrorList patientErrorList = map.get(transactionTypeName);
-//            panel.add(new HTML("<h3>" + transactionTypeName + "</h3>"));
+//            panel.addTest(new HTML("<h3>" + transactionTypeName + "</h3>"));
             PatientErrorSelectionPresenter patientErrorSelectionPresenter =
                     new PatientErrorSelectionPresenter(
                             patientErrorList,
-                            toolkitService,
+//                            toolkitService,
                             transactionType,
                             new PatientErrorListSaveHandler(transactionTypeName));
             panel.add(patientErrorSelectionPresenter.asWidget());

@@ -1,0 +1,10 @@
+<TestPlan>
+    <Test>ids_4812/Case 0: Comparison Transaction</Test>
+    <TestStep id="request-0">
+        <Goal>Imaging Document Set Retrieve exception: No errors</Goal>
+        <ExpectedStatus>Success</ExpectedStatus>
+        <ImagingDocSetRetrieveTransaction>
+            <MetadataFile>RAD-69Request.xml</MetadataFile>
+        </ImagingDocSetRetrieveTransaction>
+    </TestStep>
+</TestPlan>

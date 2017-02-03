@@ -2,7 +2,9 @@ package gov.nist.toolkit.actorfactory.client;
 
 import com.google.gwt.user.client.rpc.IsSerializable;
 
-public class BadSimIdException extends RuntimeException implements IsSerializable {
+import java.io.Serializable;
+
+public class BadSimIdException extends RuntimeException implements Serializable, IsSerializable {
 
 	public BadSimIdException(String string) {
 		super(string);

@@ -1,0 +1,21 @@
+ids_4802/validate-metadata
+
+kos.dcm is IDS-DEPT001-a/kos/metadata.xml with:
+
+  <xdsb:ProvideAndRegisterDocumentSetRequest> element added
+  
+  this was needed because some vendors may specify namespaces at that level.
+  
+  These other changes were needed because the client metadata for 4801 matched the
+  XPaths in DetailXmlKOSMetadataContent, but the provided metadata.xml did not.
+  
+  <LeafRegistryObjectList> element changed to <RegistryObjectList>
+  <rs:SubmitObjectsRequest> element changed to <lcm:SubmitObjestRequest> (see also lcm namespace)
+  
+  changed:
+  
+  xmlns="urn:oasis:names:tc:ebxml-regrep:rim:xds:3.0"
+  
+  to:
+  
+  xmlns="urn:oasis:names:tc:ebxml-regrep:xsd:rim:3.0"

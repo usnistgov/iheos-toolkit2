@@ -9,10 +9,13 @@ import gov.nist.toolkit.registrymetadata.client.ObjectRefs;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
-
+/**
+ * Result data for a test step
+ */
 public class StepResult implements IsSerializable, Serializable {
 	private static final long serialVersionUID = 1L;
 	public boolean status;
+	String registryResponseStatus;
 	public String section;
 	public String stepName;
 	MetadataCollection metadata;
@@ -20,6 +23,8 @@ public class StepResult implements IsSerializable, Serializable {
 	public List<ObjectRef> toBeRetrieved;
 	TestLog testLog = null;  // loaded separately by client
 	boolean haveLogs = false;
+	private List<String> soapFaults = new ArrayList<>();
+	private List<String> errors = new ArrayList<>();
 
 	public StepResult() {
 		metadata = new MetadataCollection();
@@ -41,6 +46,12 @@ public class StepResult implements IsSerializable, Serializable {
 		r.haveLogs = haveLogs;
 		return r;
 	}
+
+	public void addError(String err) {
+		errors.add(err);
+	}
+
+	public List<String> getErrors() { return errors; }
 
     public String toString() {
         return
@@ -101,5 +112,20 @@ public class StepResult implements IsSerializable, Serializable {
 	public TestLog getTestLog() { return testLog; }
 	
 	public void setTestLog(TestLog tl) { testLog = tl; haveLogs = true;}
-	
+
+	public String getRegistryResponseStatus() {
+		return registryResponseStatus;
+	}
+
+	public void setRegistryResponseStatus(String registryResponseStatus) {
+		this.registryResponseStatus = registryResponseStatus;
+	}
+
+	public List<String> getSoapFaults() {
+		return soapFaults;
+	}
+
+	public void setSoapFaults(List<String> soapFaults) {
+		this.soapFaults = soapFaults;
+	}
 }

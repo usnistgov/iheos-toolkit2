@@ -5,11 +5,15 @@ import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.*;
 import gov.nist.toolkit.configDatatypes.client.TransactionType;
+import gov.nist.toolkit.results.client.Result;
 import gov.nist.toolkit.xdstools2.client.CoupledTransactions;
-import gov.nist.toolkit.xdstools2.client.PopupMessage;
-import gov.nist.toolkit.xdstools2.client.TabContainer;
+import gov.nist.toolkit.xdstools2.client.command.command.GetTestdataSetListingCommand;
+import gov.nist.toolkit.xdstools2.client.command.command.SubmitRepositoryTestdataCommand;
+import gov.nist.toolkit.xdstools2.client.widgets.PopupMessage;
 import gov.nist.toolkit.xdstools2.client.siteActorManagers.GetDocumentsSiteActorManager;
 import gov.nist.toolkit.xdstools2.client.tabs.genericQueryTab.GenericQueryTab;
+import gov.nist.toolkit.xdstools2.shared.command.request.GetTestdataSetListingRequest;
+import gov.nist.toolkit.xdstools2.shared.command.request.SubmitTestdataRequest;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -35,25 +39,17 @@ public class RepositoryTestdataTab  extends GenericQueryTab {
 	public RepositoryTestdataTab() {
 		super(new GetDocumentsSiteActorManager());
 	}
-	
-	public void onTabLoad(TabContainer container, boolean select, String eventName) {
-		
-		// Create top level VerticalPanel that defines this tab and link it into the
-		// tab system.  Also add Close button.
-		myContainer = container;
-		topPanel = new VerticalPanel();
-		
-		
-		container.addTab(topPanel, "XDS PnR", select);
-		addCloseButton(container, topPanel, help);
 
+	@Override
+	protected Widget buildUI() {
+		FlowPanel container=new FlowPanel();
 		// Build UI content of tab
-		topPanel.add(new HTML("<h2>Send XDS Provide & Register transaction</h2>"));
+		container.add(new HTML("<h2>Send XDS Provide & Register transaction</h2>"));
 
 		mainGrid = new FlexTable();
 		int row = 0;
-		
-		topPanel.add(mainGrid);
+
+		container.add(mainGrid);
 
 		mainGrid.setWidget(row,0, new HTML("Select Test Data Set"));
 
@@ -61,30 +57,28 @@ public class RepositoryTestdataTab  extends GenericQueryTab {
 		mainGrid.setWidget(row, 1, testlistBox);
 		row++;
 
-		// build drop down box for selecting data set to send. Initiate call to 
-		// back end to load this list.
-		testlistBox.setVisibleItemCount(1); 
-		toolkitService.getTestdataSetListing("testdata-repository", loadRepositoryTestListCallback);
-
-		queryBoilerplate = addQueryBoilerplate(new Runner(), transactionTypes, couplings, true);
+		// build drop down box for selecting data set to send.
+		testlistBox.setVisibleItemCount(1);
+		return container;
 	}
-	
-	// Callback for data set listing.  Add it to the screen.
-	protected AsyncCallback<List<String>> loadRepositoryTestListCallback = new AsyncCallback<List<String>>() {
 
-		public void onFailure(Throwable caught) {
-			showMessage(caught);
-		}
-
-		public void onSuccess(List<String> result) {
-			testlistBox.addItem("");
-			for (String testName : result) {
-				testlistBox.addItem(testName);
+	@Override
+	protected void bindUI() {
+		new GetTestdataSetListingCommand(){
+			@Override
+			public void onComplete(List<String> result) {
+				testlistBox.addItem("");
+				for (String testName : result) {
+					testlistBox.addItem(testName);
+				}
 			}
-		}
+		}.run(new GetTestdataSetListingRequest(getCommandContext(),"testdata-repository"));
+	}
 
-	};
-
+    @Override
+    protected void configureTabView() {
+		queryBoilerplate = addQueryBoilerplate(new Runner(), transactionTypes, couplings, true);
+    }
 
 	// Run button triggers the onClick method of this class
 	class Runner implements ClickHandler {
@@ -108,7 +102,12 @@ public class RepositoryTestdataTab  extends GenericQueryTab {
 			// Initiate the transaction
 			// queryCallback comes out of GenericQueryTab, the super class of the main class of this tab.
 			rigForRunning();
-			toolkitService.submitRepositoryTestdata(getSiteSelection(), testdataSetName, pidTextBox.getValue().trim(), queryCallback);
+			new SubmitRepositoryTestdataCommand(){
+				@Override
+				public void onComplete(List<Result> result) {
+					queryCallback.onSuccess(result);
+				}
+			}.run(new SubmitTestdataRequest(getCommandContext(),getSiteSelection(),testdataSetName,pidTextBox.getValue().trim()));
 		}
 		
 	}

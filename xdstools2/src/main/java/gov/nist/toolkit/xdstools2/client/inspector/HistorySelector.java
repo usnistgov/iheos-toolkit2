@@ -1,10 +1,9 @@
 package gov.nist.toolkit.xdstools2.client.inspector;
 
-import gov.nist.toolkit.registrymetadata.client.MetadataDiff;
-import gov.nist.toolkit.registrymetadata.client.MetadataObject;
-
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import gov.nist.toolkit.registrymetadata.client.MetadataDiff;
+import gov.nist.toolkit.registrymetadata.client.MetadataObject;
 
 class HistorySelector implements ClickHandler {
 	MetadataObject mo;

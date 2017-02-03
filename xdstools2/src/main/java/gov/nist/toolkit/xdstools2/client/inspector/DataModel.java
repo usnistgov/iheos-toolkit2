@@ -3,25 +3,28 @@ package gov.nist.toolkit.xdstools2.client.inspector;
 import gov.nist.toolkit.registrymetadata.client.Document;
 import gov.nist.toolkit.registrymetadata.client.MetadataCollection;
 import gov.nist.toolkit.results.client.Result;
-import gov.nist.toolkit.results.client.SiteSpec;
 import gov.nist.toolkit.results.client.StepResult;
-import gov.nist.toolkit.xdstools2.client.ToolkitServiceAsync;
+import gov.nist.toolkit.sitemanagement.client.SiteSpec;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
+/**
+ * Data for test results. used in ListingDispley and MetadataInspector.
+ */
 public class DataModel {
 	// loaded content organized two ways:
 	//    results - organized as a list - shows history of queries
 	//    combinedMetadata - raw contents loaded in inspector
+   
+   // One Result for each Test
 	List<Result> results = null;
 	MetadataCollection combinedMetadata = null;
 
 	SiteSpec siteSpec = null;
 	
-	ToolkitServiceAsync toolkitService = null;
+//	ToolkitServiceAsync toolkitService = null;
 
 	List<Document> allDocs = null;
 	Map<String, Document> docMap = null;  //key is uid
@@ -34,7 +37,7 @@ public class DataModel {
 		results = data.results;
 		combinedMetadata = data.combinedMetadata;
 		siteSpec = data.siteSpec;
-		toolkitService = data.toolkitService;
+//		toolkitService = data.toolkitService;
 		allDocs = data.allDocs;
 		docMap = data.docMap;
 		enableActions = data.enableActions;

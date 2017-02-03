@@ -1,28 +1,34 @@
 package gov.nist.toolkit.testengine.engine;
 
-import gov.nist.toolkit.commondatatypes.client.MetadataTypes;
-import gov.nist.toolkit.registrymetadata.Metadata;
-import gov.nist.toolkit.registrymsg.registry.RegistryResponseParser;
-import gov.nist.toolkit.registrymsg.repository.RetrieveResponseParser;
-import gov.nist.toolkit.registrymsg.repository.RetrievedDocumentModel;
-import gov.nist.toolkit.registrymsg.repository.RetrievedDocumentsModel;
-import gov.nist.toolkit.commondatatypes.MetadataSupport;
-import gov.nist.toolkit.soap.axis2.Soap;
-import gov.nist.toolkit.testengine.transactions.BasicTransaction;
-import gov.nist.toolkit.utilities.xml.XmlUtil;
-import gov.nist.toolkit.valregmsg.service.SoapActionFactory;
-import gov.nist.toolkit.xdsexception.*;
+import java.io.IOException;
+import java.util.HashMap;
+
+import javax.xml.namespace.QName;
+import javax.xml.parsers.FactoryConfigurationError;
+
 import org.apache.axiom.om.OMElement;
 import org.apache.axis2.AxisFault;
 import org.apache.axis2.addressing.EndpointReference;
 import org.apache.axis2.client.Options;
 import org.apache.axis2.client.ServiceClient;
 
-import javax.xml.namespace.QName;
-import javax.xml.parsers.FactoryConfigurationError;
-import java.io.IOException;
-import java.util.HashMap;
+import gov.nist.toolkit.commondatatypes.MetadataSupport;
+import gov.nist.toolkit.commondatatypes.client.MetadataTypes;
+import gov.nist.toolkit.configDatatypes.client.TransactionType;
+import gov.nist.toolkit.registrymetadata.Metadata;
+import gov.nist.toolkit.registrymsg.registry.RegistryResponseParser;
+import gov.nist.toolkit.registrymsg.repository.RetrieveResponseParser;
+import gov.nist.toolkit.registrymsg.repository.RetrievedDocumentModel;
+import gov.nist.toolkit.registrymsg.repository.RetrievedDocumentsModel;
+import gov.nist.toolkit.soap.axis2.Soap;
+import gov.nist.toolkit.testengine.transactions.BasicTransaction;
+import gov.nist.toolkit.utilities.xml.XmlUtil;
+import gov.nist.toolkit.xdsexception.*;
+import gov.nist.toolkit.xdsexception.client.*;
 
+/**
+ * Handles RAD-69 and RAD-76 transactions *
+ */
 public class Rad69 {
 	String endpoint = null;
 	protected RetContext r_ctx = null;
@@ -35,6 +41,7 @@ public class Rad69 {
 	boolean async = false;
 	UseReportManager useReportManager = null;
 	BasicTransaction basicTransaction;
+	TransactionType transactionType = null;
 	OmLogger testLog = new TestLogFactory().getLogger();
 
 	public void setIsXca(boolean isXca) { is_xca = isXca; }
@@ -47,17 +54,12 @@ public class Rad69 {
 		this.useIG = useIG;
 	}
 
-	public Rad69(BasicTransaction basic) {
-		basicTransaction = basic;
-	}
-
-	public Rad69() {
-	}
-
-	public Rad69(BasicTransaction basic, RetContext r_ctx, String endpoint) {
+	public Rad69(BasicTransaction basic, RetContext r_ctx, String endpoint,
+	   TransactionType tType) {
 		basicTransaction = basic;
 		this.r_ctx = r_ctx;
 		this.endpoint = endpoint;
+		transactionType = tType;
 	}
 
 	public void setUseReportManager(UseReportManager m ) {
@@ -106,7 +108,7 @@ public class Rad69 {
 
 	public OMElement run()
 	throws XdsInternalException, FactoryConfigurationError,
-	XdsException, XdsIOException, MetadataException,
+			XdsException, XdsIOException, MetadataException,
 	XdsConfigurationException, MetadataValidationException, XdsWSException, AxisFault, EnvironmentNotSelectedException {
 
 		OMElement result = null;
@@ -182,39 +184,13 @@ public class Rad69 {
 					true,    // mtom
 					true,     // addressing
 					soap12,     // soap12
-					getRequestAction(),
-					getResponseAction());
+					transactionType.getRequestAction(),
+					transactionType.getResponseAction());
 			result = soap.getResult();
 
 			basicTransaction.logSoapRequest(soap);
-
-
 			return result;
 	}
-
-	protected String getResponseAction() {
-		return SoapActionFactory.getResponseAction(getRequestAction());
-	}
-
-	protected String getRequestAction() {
-		return "urn:ihe:rad:2009:RetrieveImagingDocumentSet";
-/*
-		if (async) {
-			if (is_xca && !useIG) {
-				return "urn:ihe:iti:2007:CrossGatewayRetrieve";
-			} else {
-				return "urn:ihe:iti:2007:RetrieveDocumentSet";
-			}
-		} else {
-			if (is_xca && !useIG) {
-				return "urn:ihe:iti:2007:CrossGatewayRetrieve";
-			} else {
-				return "urn:ihe:iti:2007:RetrieveDocumentSet";
-			}
-		}
-*/
-	}
-
 
 	// map key is docUid
 	public RetrievedDocumentsModel parse_rep_response(OMElement response) throws IOException, MetadataException, Exception {
@@ -226,52 +202,6 @@ public class Rad69 {
             }
         }
         return map;
-
-
-//		int docIndex = 1;
-//		for (OMElement doc_response : XmlUtil.childrenWithLocalName(response, "DocumentResponse")) {
-//			RetInfo rr = new RetInfo();
-//
-//			OMElement doc_uid_ele = XmlUtil.firstChildWithLocalName(doc_response, "DocumentUniqueId") ;
-//			rr.setDocUid((doc_uid_ele != null) ? doc_uid_ele.getText() : null);
-//
-//			OMElement rep_uid_ele = XmlUtil.firstChildWithLocalName(doc_response, "RepositoryUniqueId") ;
-//			rr.setRepUid((rep_uid_ele != null) ? rep_uid_ele.getText() : null);
-//
-//			OMElement mime_type_ele = XmlUtil.firstChildWithLocalName(doc_response, "mimeType") ;
-//			rr.setContent_type((mime_type_ele != null) ? mime_type_ele.getText() : null);
-//
-//			OMElement document_content_ele = XmlUtil.firstChildWithLocalName(doc_response, "Document") ;
-//
-//			Mtom mtom = new Mtom();
-//			mtom.decode(document_content_ele);
-////			if ( !mtom.isOptimized()) {
-////				throw new XdsFormatException("Response to RetrieveDocumentSet is not in MTOM format");
-////			}
-//
-//			String mtom_mime = mtom.getContent_type();
-//			boolean isOptimized = mtom.isOptimized();
-//			if (this.log_parent != null)
-//				testLog.add_simple_element_with_id(log_parent, "IsOptimized", (isOptimized) ? "true" : "false");
-//
-//			// MTOM encoding does not require correct/accurate content type.  If MTOM package punted
-//			// and used application/octet-stream then take mime type from retrieve response metadata
-//			if (mtom_mime != null && mtom_mime.equals("application/octet-stream") && isOptimized)
-//				mtom_mime = rr.getContent_type();
-//			else if (mtom_mime != null && rr.getContent_type() != null && !rr.getContent_type().equals(mtom_mime))
-//				rr.addError("Mime Type attribute (" + rr.getContent_type() + ") does not match Content-Type (" + mtom_mime + ")");
-//			rr.setContents(mtom.getContents());
-//
-//			if (rr.getDocUid() == null)
-//				throw new MetadataException("parse_rep_result(): Document uniqueId not found in response", null);
-//
-//			map.put(rr.getDocUid(), rr);
-//
-//			if (useReportManager != null) {
-//				useReportManager.setRetInfo(rr, docIndex);
-//			}
-//		}
-//
 	}
 
 	protected String validate_retrieve() throws MetadataException {
@@ -318,8 +248,6 @@ public class Rad69 {
 				">\n");
 				continue;
 			}
-			//			errors.append("Request:\n" + req.toString() + "\n");
-			//			errors.append("Response:\n" + rsp.toString() + "\n");
 
 			if (req.getRepUid() == null) {
 				errors.append("Request repositoryUniqueId is null\n");
@@ -331,10 +259,6 @@ public class Rad69 {
 
 			if (rsp.getContents() == null || req.getContents() == null) {
 				boolean err = false;
-//				if (req.getContents() == null) {
-//					errors.append("Reference document not accessible\n");
-//					err = true;
-//				}
 				if (rsp.getContents() == null) {
 					errors.append("No document data\n");
 					err = true;
@@ -402,10 +326,8 @@ public class Rad69 {
 
 		}
 
-		if (errors.length() == 0)
-			return "";
-		else
-			return "\nRetrieve Validation Errors:\n" + errors.toString();
+		if (errors.length() == 0) return "";
+		return "\nRetrieve Validation Errors:\n" + errors.toString();
 
 	}
 

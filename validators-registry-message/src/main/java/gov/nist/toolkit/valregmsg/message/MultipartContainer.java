@@ -50,7 +50,7 @@ public class MultipartContainer extends AbstractMessageValidator {
 				er.detail(contentId + " ==> " + body.length + " characters");
 //				if (i > 0 && vc.getInnerContextCount() > 0) {
 //					er.detail("Scheduling validation of CCDA in part " + (i + 1));
-//					MessageValidatorFactory.getValidatorForCCDA(er.getErrorRecorderBuilder(), body, mvc, vc.getInnerContext(0));
+//					CommonMessageValidatorFactory.getValidatorForCCDA(er.getErrorRecorderBuilder(), body, mvc, vc.getInnerContext(0));
 //				}
 			}
 		}

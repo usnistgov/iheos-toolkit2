@@ -4,7 +4,6 @@ import com.google.gwt.user.client.ui.FlexTable;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Widget;
 import gov.nist.toolkit.results.client.CodesConfiguration;
-import gov.nist.toolkit.xdstools2.client.ToolkitServiceAsync;
 import gov.nist.toolkit.xdstools2.client.tabs.genericQueryTab.GenericQueryTab;
 import gov.nist.toolkit.xdstools2.client.widgets.queryFilter.*;
 
@@ -36,9 +35,9 @@ public class FindDocuments2Params {
     ReturnTypeFilter returnFilter;
     Label errorLabel;
 
-    public FindDocuments2Params(ToolkitServiceAsync toolkitService, GenericQueryTab genericQueryTab){
+    public FindDocuments2Params(/*ToolkitServiceAsync toolkitService, */GenericQueryTab genericQueryTab){
         // The collective filter bank being assembled
-        codeFilterBank = new CodeFilterBank(toolkitService, genericQueryTab);
+        codeFilterBank = new CodeFilterBank(/*toolkitService, */genericQueryTab);
 
         errorLabel = new Label();
 

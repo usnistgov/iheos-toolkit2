@@ -3,13 +3,16 @@ package gov.nist.toolkit.xdstools2.client.tabs.getAllTab;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.ui.FlexTable;
+import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HTML;
-import com.google.gwt.user.client.ui.VerticalPanel;
+import com.google.gwt.user.client.ui.Widget;
 import gov.nist.toolkit.configDatatypes.client.TransactionType;
+import gov.nist.toolkit.results.client.Result;
 import gov.nist.toolkit.xdstools2.client.CoupledTransactions;
-import gov.nist.toolkit.xdstools2.client.TabContainer;
+import gov.nist.toolkit.xdstools2.client.command.command.GetAllCommand;
 import gov.nist.toolkit.xdstools2.client.siteActorManagers.FindDocumentsSiteActorManager;
 import gov.nist.toolkit.xdstools2.client.tabs.genericQueryTab.GenericQueryTab;
+import gov.nist.toolkit.xdstools2.shared.command.request.GetAllRequest;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -19,12 +22,12 @@ import java.util.Map;
 /**
  * The inheritance tree is:
  *
- * TabbedWindow - operation of the tab and interaction with the tab container
+ * ToolWindow - operation of the tab and interaction with the tab container
  * GenericQueryTab - organization and display of the sites, patientID, run button, inspect results button
  *      basically everything below the horizontal line in the display of the tab
  * GetAllTab - specifics for this query tab
  *
- * A tab implementation has two main sections:
+ * A tab implementation has two main SECTIONS:
  *    OnTabLoad method that builds the tab contents
  *    Inner Class called Runner that has a onClick handler that responds to the Run button.
  * All other methods are in a supporting role to these two.
@@ -49,7 +52,7 @@ public class GetAllTab extends GenericQueryTab {
 	// in general, if you focus on a GET* style transaction (no Patient ID parameter)
 	// an example of couplings is that if you choose an Intitiating Gateway then you must choose
 	// the Responding Gateway that it routes to.
-	//  - add proper transaction couplings
+	//  - addTest proper transaction couplings
 	static CoupledTransactions couplings = new CoupledTransactions();
 
 	GenericQueryTab genericQueryTab;
@@ -60,32 +63,35 @@ public class GetAllTab extends GenericQueryTab {
 		super(new FindDocumentsSiteActorManager());
 	}
 
-	// Tab initialization
-	public void onTabLoad(TabContainer container, boolean select, String eventName) {
-		myContainer = container;
-		// Panel to build inside of
-		topPanel = new VerticalPanel();
-
+	@Override
+	protected Widget buildUI() {
+		// Panel1 to build inside of
 		genericQueryTab = this;   // share with other methods
 
-
-		container.addTab(topPanel, "GetAll", select);  // link into container/tab management
-		addCloseButton(container,topPanel, null);   // add the close button
+		FlowPanel container=new FlowPanel();
 
 		// Tab contents starts here
 		HTML title = new HTML();
 		title.setHTML("<h2>GetAll Stored Query</h2>");
-		topPanel.add(title);
+		container.add(title);
 
 		// Generate the composite widget that allows selection of all the GetAll query parameters. Below is the call
 		// sqParams.asWidget() which gets the actual Widget.
-		sqParams = new GetAllParams(toolkitService, genericQueryTab);
+		sqParams = new GetAllParams(/*toolkitService, */genericQueryTab);
 
 		mainGrid = new FlexTable();  // this is important in some tabs, not this one.  This init should be moved to definition
-		topPanel.add(sqParams.asWidget());
+		container.add(sqParams.asWidget());
 
-		topPanel.add(mainGrid);
+		container.add(mainGrid);
+		return container;
+	}
 
+	@Override
+	protected void bindUI() {
+	}
+
+	@Override
+	protected void configureTabView() {
 		// add below-the-line-stuff (PatientId, site selection etc.)
 		// Also link in the Runner class (shown below) which is called when the user clicks on the Run button.
 		// Since this call organizes the site selection grid, it needs the transactionTypes and couplings config
@@ -109,7 +115,12 @@ public class GetAllTab extends GenericQueryTab {
 			// tell the server to run the query. The display is handled by GenericQueryTab which
 			// is linked in via the queryCallback parameter
 			rigForRunning();
-			toolkitService.getAll(getSiteSelection(), pidTextBox.getValue().trim(), codeSpec, queryCallback);
+			new GetAllCommand(){
+				@Override
+				public void onComplete(List<Result> result) {
+					queryCallback.onSuccess(result);
+				}
+			}.run(new GetAllRequest(getCommandContext(),getSiteSelection(),pidTextBox.getValue().trim(),codeSpec));
 		}
 	}
 

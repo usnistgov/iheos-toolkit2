@@ -1,9 +1,10 @@
 package gov.nist.toolkit.simulators.sim.rg;
 
-import gov.nist.toolkit.actorfactory.client.NoSimException;
-import gov.nist.toolkit.actorfactory.client.SimId;
-import gov.nist.toolkit.actorfactory.client.SimulatorConfig;
-import gov.nist.toolkit.actorfactory.client.SimulatorStats;
+import java.io.IOException;
+
+import org.apache.log4j.Logger;
+
+import gov.nist.toolkit.actorfactory.client.*;
 import gov.nist.toolkit.configDatatypes.client.TransactionType;
 import gov.nist.toolkit.simulators.servlet.SimServlet;
 import gov.nist.toolkit.simulators.sim.reg.RegistryActorSimulator;
@@ -12,12 +13,9 @@ import gov.nist.toolkit.simulators.sim.rep.RepositoryActorSimulator;
 import gov.nist.toolkit.simulators.support.BaseDsActorSimulator;
 import gov.nist.toolkit.simulators.support.DsSimCommon;
 import gov.nist.toolkit.valsupport.engine.MessageValidatorEngine;
-import org.apache.log4j.Logger;
-
-import java.io.IOException;
 
 /**
- * Created by bill on 11/16/15.
+ *
  */
 public class RGADActorSimulator extends BaseDsActorSimulator {
     static final Logger logger = Logger.getLogger(RGADActorSimulator.class);
@@ -47,7 +45,8 @@ public class RGADActorSimulator extends BaseDsActorSimulator {
         rg.init();
     }
 
-    public void init(DsSimCommon c, SimulatorConfig config) {
+    @Override
+   public void init(DsSimCommon c, SimulatorConfig config) {
         rep.init(c, config);
         reg.init(c, config);
         rg.init(c, config);

@@ -61,7 +61,7 @@ public class SiteBuilderTest {
 		assertTrue(site.size() == 1);
 		assertTrue(site.hasRepositoryB());
 		try {
-			assertTrue(uid.equals(site.getRepositoryUniqueId()));
+			assertTrue(uid.equals(site.getRepositoryUniqueId(RepositoryType.REPOSITORY)));
 			assertTrue(endpoint.equals(site.getRetrieveEndpoint(uid, isSecure, isAsync)));
 		} catch (Exception e) { fail(); }
 		assertTrue(site.validate());
@@ -81,7 +81,7 @@ public class SiteBuilderTest {
 		assertTrue(site.hasRepositoryB());
 		assertTrue(site.repositoryUniqueIds().size() == 1);
 		try {
-			assertTrue(uid.equals(site.getRepositoryUniqueId()));
+			assertTrue(uid.equals(site.getRepositoryUniqueId(RepositoryType.REPOSITORY)));
 			assertTrue(endpoint.equals(site.getRetrieveEndpoint(uid, isSecure, isAsync)));
 		} catch (Exception e) { fail(); }
 		assertTrue(site.validate());

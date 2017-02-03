@@ -2,17 +2,16 @@ package gov.nist.toolkit.xdstools2.client.tabs;
 
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.user.client.ui.FlexTable;
-import com.google.gwt.user.client.ui.HTML;
-import com.google.gwt.user.client.ui.TextBox;
-import com.google.gwt.user.client.ui.VerticalPanel;
+import com.google.gwt.user.client.ui.*;
 import gov.nist.toolkit.configDatatypes.client.TransactionType;
-import gov.nist.toolkit.results.client.SiteSpec;
+import gov.nist.toolkit.results.client.Result;
+import gov.nist.toolkit.sitemanagement.client.SiteSpec;
 import gov.nist.toolkit.xdstools2.client.CoupledTransactions;
-import gov.nist.toolkit.xdstools2.client.PopupMessage;
-import gov.nist.toolkit.xdstools2.client.TabContainer;
+import gov.nist.toolkit.xdstools2.client.command.command.GetFolderAndContentsCommand;
+import gov.nist.toolkit.xdstools2.client.widgets.PopupMessage;
 import gov.nist.toolkit.xdstools2.client.siteActorManagers.GetDocumentsSiteActorManager;
 import gov.nist.toolkit.xdstools2.client.tabs.genericQueryTab.GenericQueryTab;
+import gov.nist.toolkit.xdstools2.shared.command.request.GetFoldersRequest;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -43,37 +42,42 @@ public class GetFolderAndContentsTab extends GenericQueryTab {
 	public GetFolderAndContentsTab() {
 		super(new GetDocumentsSiteActorManager());
 	}
-	
 
-	public void onTabLoad(TabContainer container, boolean select, String eventName) {
+    @Override
+    protected Widget buildUI() {
 		tab = this;
-		myContainer = container;
-		topPanel = new VerticalPanel();
-		container.addTab(topPanel, "GetFolderAndContents", select);
-		addCloseButton(container,topPanel, help);
 
+		FlowPanel flowPanel=new FlowPanel();
 		HTML title = new HTML();
 		title.setHTML("<h2>Get FolderAndContents</h2>");
-		topPanel.add(title);
+		flowPanel.add(title);
 
 		mainGrid = new FlexTable();
 		int row = 0;
-		
-		topPanel.add(mainGrid);
-		
+
+		flowPanel.add(mainGrid);
+
 
 		HTML pidLabel = new HTML();
 		pidLabel.setText("Folder UUID or UID");
 		mainGrid.setWidget(row,0, pidLabel);
 
 		ta = new TextBox();
-	    ta.setWidth("400px");
+		ta.setWidth("400px");
 		mainGrid.setWidget(row, 1, ta);
 		row++;
+		return flowPanel;
+    }
 
+    @Override
+    protected void bindUI() {
+    }
+
+    @Override
+    protected void configureTabView() {
 		queryBoilerplate = addQueryBoilerplate(new Runner(), transactionTypes, couplings, false);
-	}
-	
+    }
+
 	class Runner implements ClickHandler {
 
 		public void onClick(ClickEvent event) {
@@ -96,9 +100,13 @@ public class GetFolderAndContentsTab extends GenericQueryTab {
 			getGoButton().setEnabled(false);
 			getInspectButton().setEnabled(false);
 
-			toolkitService.getFolderAndContents(siteSpec, getAnyIds(values), queryCallback);
+			new GetFolderAndContentsCommand(){
+				@Override
+				public void onComplete(List<Result> result) {
+					queryCallback.onSuccess(result);
+				}
+			}.run(new GetFoldersRequest(getCommandContext(),siteSpec,getAnyIds(values)));
 		}
-		
 	}
 
 	public String getWindowShortName() {

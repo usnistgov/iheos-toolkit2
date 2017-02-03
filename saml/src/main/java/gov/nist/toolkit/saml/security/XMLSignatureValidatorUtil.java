@@ -26,7 +26,7 @@ public class XMLSignatureValidatorUtil
 	private static Log log = LogFactory.getLog(XMLSignatureValidatorUtil.class);
 	
 	/**
-	 * This method is used to verify the Signature of the XML message - Document object
+	 * This method is used to verify the Signature of the XML message - Document model
 	 * @param doc
 	 * @return boolean
 	 * @throws Exception

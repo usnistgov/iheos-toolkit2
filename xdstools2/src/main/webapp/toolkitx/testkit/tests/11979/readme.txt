@@ -1,10 +1,6 @@
-PnR.b Accept two documents
+Accept two documents
 
-submit - Generate a Provide and Register.b transaction to the Repository
-under test which is already configured to forward Register.b
-transactions to the Public Registry.
+Submit two documents in a Provide and Register transaction and verify the transaction
+by querying the Registry for the metadata.
 
-eval - The Public Registry is queried to validate the metadata forwarded.
-When using xdstest to run this step, make sure it sends to the Public
-Registry.  This can be done using the -s pub command line option to
-xdstest.
+This test does not Retrieve the documents. It tests the submission only.

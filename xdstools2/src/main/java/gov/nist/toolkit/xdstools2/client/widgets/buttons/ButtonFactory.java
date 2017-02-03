@@ -1,8 +1,5 @@
 package gov.nist.toolkit.xdstools2.client.widgets.buttons;
 
-import com.google.gwt.user.client.Window;
-import com.google.gwt.user.client.ui.Image;
-
 /**
  * Created by Diane Azais local on 11/29/2015.
  */

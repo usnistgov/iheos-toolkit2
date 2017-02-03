@@ -1,33 +1,57 @@
 package gov.nist.toolkit.xdstools2.client.widgets.queryFilter;
 
-import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.FlexTable;
 import gov.nist.toolkit.results.client.AssertionResult;
 import gov.nist.toolkit.results.client.CodesConfiguration;
 import gov.nist.toolkit.results.client.CodesResult;
-import gov.nist.toolkit.xdstools2.client.ToolkitServiceAsync;
+import gov.nist.toolkit.xdstools2.client.command.command.GetCodesConfiguration;
 import gov.nist.toolkit.xdstools2.client.tabs.genericQueryTab.CodeEditButtonSelector;
 import gov.nist.toolkit.xdstools2.client.tabs.genericQueryTab.GenericQueryTab;
+import gov.nist.toolkit.xdstools2.client.util.ClientUtils;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+
 /**
- * Created by bill on 8/25/15.
+ *
  */
 public class CodeFilterBank  {
     List<CodeFilter> codeFilters = new ArrayList<>();
     public CodesConfiguration codesConfiguration = null;
     public int codeBoxSize = 2;
 
-    ToolkitServiceAsync toolkitService;
-    GenericQueryTab genericQueryTab;
+    GenericQueryTab queryTab;
 
-    public CodeFilterBank(ToolkitServiceAsync toolkitService, GenericQueryTab genericQueryTab) {
-        this.toolkitService = toolkitService;
-        this.genericQueryTab = genericQueryTab;
-        toolkitService.getCodesConfiguration(loadCodeConfigCallback);
+    public CodeFilterBank(GenericQueryTab genericQueryTab) {
+        this.queryTab = genericQueryTab;
+        bind();
+    }
+
+    private void bind(){
+        new GetCodesConfiguration(){
+            @Override
+            public void onComplete(CodesResult result) {
+                for (AssertionResult a : result.result.assertions.assertions) {
+                    if (!a.status) {
+                        queryTab.resultPanel.add(GenericQueryTab.addHTML("<font color=\"#FF0000\">" + a.assertion + "</font>"));
+                    }
+                }
+                codesConfiguration = result.codesConfiguration;
+                for (CodeFilter codeFilter : codeFilters) {
+                    codeFilter.editButton.addClickHandler(
+                            new CodeEditButtonSelector(
+                                    queryTab,
+                                    codesConfiguration.getCodeConfiguration(codeFilter.codeName),
+                                    codeFilter.selectedCodes
+                            )
+
+                    );
+                }
+                enableCodeEditButtons();
+            }
+        }.run(ClientUtils.INSTANCE.getCommandContext());
     }
 
     public void addFilter(FlexTable paramGrid, int prow, int col, String filterName) {
@@ -68,35 +92,6 @@ public class CodeFilterBank  {
             codeList.addAll(codeFilter.getSelected());
         }
     }
-
-    protected AsyncCallback<CodesResult> loadCodeConfigCallback = new AsyncCallback<CodesResult>() {
-
-        public void onFailure(Throwable caught) {
-            genericQueryTab.resultPanel.clear();
-            genericQueryTab.resultPanel.add(GenericQueryTab.addHTML("<font color=\"#FF0000\">" + "Error running validation: " + caught.getMessage() + "</font>"));
-        }
-
-        public void onSuccess(CodesResult result) {
-            for (AssertionResult a : result.result.assertions.assertions) {
-                if (!a.status) {
-                    genericQueryTab.resultPanel.add(GenericQueryTab.addHTML("<font color=\"#FF0000\">" + a.assertion + "</font>"));
-                }
-            }
-            codesConfiguration = result.codesConfiguration;
-            for (CodeFilter codeFilter : codeFilters) {
-                codeFilter.editButton.addClickHandler(
-                        new CodeEditButtonSelector(
-                                genericQueryTab,
-                                codesConfiguration.getCodeConfiguration(codeFilter.codeName),
-                                codeFilter.selectedCodes
-                        )
-
-                );
-            }
-            enableCodeEditButtons();
-        }
-
-    };
 
     void enableCodeEditButtons() {
         for (CodeFilter codeFilter : codeFilters) {

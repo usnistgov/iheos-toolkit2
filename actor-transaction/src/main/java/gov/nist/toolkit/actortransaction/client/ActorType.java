@@ -1,16 +1,14 @@
 package gov.nist.toolkit.actortransaction.client;
 
+import com.google.gwt.user.client.rpc.IsSerializable;
+import gov.nist.toolkit.configDatatypes.client.TransactionType;
+
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-
-import com.google.gwt.user.client.rpc.IsSerializable;
-import com.google.gwt.user.client.rpc.IsSerializable;
-
-import gov.nist.toolkit.configDatatypes.client.TransactionType;
 
 // This file must be kept up to date with SimulatorActorTypes.java
 
@@ -59,7 +57,8 @@ public enum ActorType implements IsSerializable, Serializable {
             "On-Demand Document Source",
             Arrays.asList("ODDS", "ON_DEMAND_DOC_SOURCE"),
             "odds",
-            "gov.nist.toolkit.simulators.sim.od.rep.RepositoryActorSimulator",
+            "gov.nist.toolkit.simulators.sim.rep.od.OddsActorSimulator",
+//            Arrays.asList(TransactionType.RETRIEVE),
             Arrays.asList(TransactionType.ODDS_RETRIEVE),
             true,
             "odds"
@@ -96,21 +95,64 @@ public enum ActorType implements IsSerializable, Serializable {
             Arrays.asList("RESP_GATEWAY"),
             "rg",
             "gov.nist.toolkit.simulators.sim.rg.RGADActorSimulator",
-            Arrays.asList(TransactionType.XC_QUERY, TransactionType.XC_RETRIEVE,
-               TransactionType.RET_IMG_DOC_SET),
+            Arrays.asList(TransactionType.XC_QUERY, TransactionType.XC_RETRIEVE),
             true,
             null
     ),
+    RESPONDING_IMAGING_GATEWAY(
+       "Responding Imaging Gateway",
+       Arrays.asList("RESP_IMG_GATEWAY"),
+       "rig",
+       "gov.nist.toolkit.simulators.sim.rig.RigActorSimulator",
+       Arrays.asList(TransactionType.XC_RET_IMG_DOC_SET),
+       true,
+       null
+),
+    COMBINED_RESPONDING_GATEWAY(
+       "Combined Responding Gateway",
+       Arrays.asList("COMB_RESP_GATEWAY"),
+       "crg",
+       "gov.nist.toolkit.simulators.sim.CrgActorSimulator",
+       Arrays.asList(TransactionType.XC_QUERY, TransactionType.XC_RETRIEVE, TransactionType.XC_RET_IMG_DOC_SET),
+       true,
+       null
+),
     INITIATING_GATEWAY(
             "Initiating Gateway",
             Arrays.asList("INIT_GATEWAY"),
             "ig",
             "gov.nist.toolkit.simulators.sim.ig.IgActorSimulator",
-            Arrays.asList(TransactionType.IG_QUERY, TransactionType.IG_RETRIEVE,
-               TransactionType.RET_IMG_DOC_SET),
+            Arrays.asList(TransactionType.IG_QUERY, TransactionType.IG_RETRIEVE),
             true,
             null
     ),
+    INITIATING_IMAGING_GATEWAY(
+       "Initiating Imaging Gateway",
+       Arrays.asList("INIT_IMG_GATEWAY"),
+       "iig",
+       "gov.nist.toolkit.simulators.sim.iig.IigActorSimulator",
+       Arrays.asList(TransactionType.RET_IMG_DOC_SET_GW),
+       true,
+       null
+    ),
+    RSNA_EDGE_DEVICE(
+            "RSNA Image Sharing Source",
+            Arrays.asList("RSNA_EDGE"),
+            "ris",
+            "gov.nist.toolkit.simulators.sim.ris.RisActorSimulator", //TODO: Change to correct domainß
+            Arrays.asList(TransactionType.RET_IMG_DOC_SET_GW), //TODO: Change to correct Transaction Type
+            true,
+            null
+    ),
+    COMBINED_INITIATING_GATEWAY(
+       "Combined Initiating Gateway",
+       Arrays.asList("COMB_INIT_GATEWAY"),
+       "cig",
+       "gov.nist.toolkit.simulators.sim.CigActorSimulator",
+       Arrays.asList(TransactionType.IG_QUERY, TransactionType.IG_RETRIEVE,TransactionType.RET_IMG_DOC_SET_GW),
+       true,
+       null
+       ),
     INITIALIZE_FOR_STORED_QUERY (  // this is an artificial type used by test indexer
             "Initialize for Stored Query",
             new ArrayList<String>(),
@@ -121,6 +163,7 @@ public enum ActorType implements IsSerializable, Serializable {
             null
     ),
 
+    // Issue 78 (ODDS Issue 98)
     // TODO - actorType lookup problem
     // This at the end of the list on purpose.  From the UI actor types are selected by the transactions they support.
     // A problem came up in TransactionSelectionManager#generateSiteSpec() where this gets chosen instead of
@@ -143,7 +186,9 @@ public enum ActorType implements IsSerializable, Serializable {
             "gov.nist.toolkit.simulators.sim.ids.IdsActorSimulator",
             Arrays.asList(TransactionType.RET_IMG_DOC_SET),
             true,
-            null
+            null,
+            "gov.nist.toolkit.simulators.sim.ids.IdsHttpActorSimulator",
+            Arrays.asList(TransactionType.WADO_RETRIEVE)  
         ),
     IMAGING_DOC_CONSUMER(
             "Imaging Document Consumer",
@@ -164,6 +209,8 @@ public enum ActorType implements IsSerializable, Serializable {
     boolean showInConfig;
     String actorsFileLabel;
     String simulatorClassName;
+    List<TransactionType> httpTransactionTypes;
+    String httpSimulatorClassName;
 
     ActorType() {
     } // for GWT
@@ -176,7 +223,17 @@ public enum ActorType implements IsSerializable, Serializable {
         this.transactionTypes = tt;   // This actor receives
         this.showInConfig = showInConfig;
         this.actorsFileLabel = actorsFileLabel;
+        this.httpTransactionTypes = new ArrayList<>();
+        this.httpSimulatorClassName = null;
     }
+    
+    ActorType(String name, List<String> altNames, String shortName, 
+       String simulatorClassName, List<TransactionType> tt, boolean showInConfig, 
+       String actorsFileLabel, String httpSimulatorClassName, List<TransactionType> httpTt) {
+       this(name, altNames, shortName, simulatorClassName, tt, showInConfig, actorsFileLabel);
+       this.httpTransactionTypes = httpTt;
+       this.httpSimulatorClassName = httpSimulatorClassName;
+   }
 
     public boolean showInConfig() {
         return showInConfig;
@@ -194,12 +251,20 @@ public enum ActorType implements IsSerializable, Serializable {
         return this.equals(RESPONDING_GATEWAY);
     }
 
+    public boolean isRigActor() {
+        return this.equals(RESPONDING_IMAGING_GATEWAY);
+    }
+
     public boolean isIGActor() {
         return this.equals(INITIATING_GATEWAY);
     }
 
+    public boolean isIigActor() {
+        return this.equals(INITIATING_IMAGING_GATEWAY);
+    }
+
     public boolean isGW() {
-        return isRGActor() || isIGActor();
+        return isRGActor() || isIGActor() || isIigActor() || isRigActor();
     }
 
     public boolean isImagingDocumentSourceActor() {
@@ -207,6 +272,8 @@ public enum ActorType implements IsSerializable, Serializable {
     }
 
     public String getSimulatorClassName() { return simulatorClassName; }
+    
+    public String getHttpSimulatorClassName() { return httpSimulatorClassName; }
 
     public String getActorsFileLabel() {
         return actorsFileLabel;
@@ -270,12 +337,23 @@ public enum ActorType implements IsSerializable, Serializable {
         return a.getTransaction(transString);
     }
 
-    public TransactionType getTransaction(String name) {
+    /**
+     * Return TransactionType for passed transaction name.
+    * @param name of transaction, matched to TransactionType short name, name,
+    * or id. Both SOAP and Http transactions are searched
+    * @return TransactionType for this name, or null if no match found.
+    */
+   public TransactionType getTransaction(String name) {
         for (TransactionType tt : transactionTypes) {
             if (tt.getShortName().equals(name)) return tt;
             if (tt.getName().equals(name)) return tt;
             if (tt.getId().equals(name)) return tt;
         }
+        for (TransactionType tt : httpTransactionTypes) {
+           if (tt.getShortName().equals(name)) return tt;
+           if (tt.getName().equals(name)) return tt;
+           if (tt.getId().equals(name)) return tt;
+       }
         return null;
     }
 
@@ -286,6 +364,8 @@ public enum ActorType implements IsSerializable, Serializable {
         buf.append(name).append(" [");
         for (TransactionType tt : transactionTypes)
             buf.append(tt).append(",");
+        for (TransactionType tt : httpTransactionTypes)
+           buf.append(tt).append(",");
         buf.append("]");
 
         return buf.toString();
@@ -303,13 +383,15 @@ public enum ActorType implements IsSerializable, Serializable {
         return transactionTypes;
     }
 
-    public boolean hasTransaction(TransactionType transType) {
-        for (TransactionType transType2 : transactionTypes) {
-            if (transType2.equals(transType))
-                return true;
-        }
-        return false;
-    }
+   public boolean hasTransaction(TransactionType transType) {
+      for (TransactionType transType2 : transactionTypes) {
+         if (transType2.equals(transType)) return true;
+      }
+         for (TransactionType transType2 : httpTransactionTypes) {
+            if (transType2.equals(transType)) return true;
+         }
+      return false;
+   }
 
 
     public boolean equals(ActorType at) {

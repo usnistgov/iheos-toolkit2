@@ -3,10 +3,9 @@ package gov.nist.toolkit.xdstools2.client.tabs.testsOverviewTab;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.ui.HTML;
-import com.google.gwt.user.client.ui.VerticalPanel;
+import com.google.gwt.user.client.ui.Widget;
 import gov.nist.toolkit.configDatatypes.client.TransactionType;
 import gov.nist.toolkit.xdstools2.client.CoupledTransactions;
-import gov.nist.toolkit.xdstools2.client.TabContainer;
 import gov.nist.toolkit.xdstools2.client.siteActorManagers.FindDocumentsSiteActorManager;
 import gov.nist.toolkit.xdstools2.client.tabs.genericQueryTab.GenericQueryTab;
 import gov.nist.toolkit.xdstools2.client.tabs.testsOverviewTab.commandsWidget.CommandsWidget;
@@ -32,7 +31,7 @@ public class TestsOverviewTab extends GenericQueryTab {
         transactionTypes.add(TransactionType.XC_QUERY);
     }
 
-    // TODO - add proper transaction couplings
+    // TODO - addTest proper transaction couplings
     public static CoupledTransactions couplings = new CoupledTransactions();
 
 
@@ -43,26 +42,36 @@ public class TestsOverviewTab extends GenericQueryTab {
 
 
     @Override
-    public void onTabLoad(TabContainer container, boolean select, String eventName) {
-        myContainer = container;
+    protected Widget buildUI() {
+        return null;
+    }
+
+    @Override
+    protected void bindUI() {
+
+    }
+
+    @Override
+    protected void configureTabView() {
+
+    }
+
+    @Override
+    public void onTabLoad(boolean select, String eventName) {
         genericQueryTab = this;
 
-        // Panel to build inside of
-        topPanel = new VerticalPanel();
-
-        container.addTab(topPanel, "Tests Overview", select);  // link into container/tab management
-        addCloseButton(container, topPanel, null);   // add the close button
+        registerTab(select, eventName);  // link into container/tab management
 
         HTML title = new HTML();
         title.setHTML("<h2>Tests Overview</h2>");
-        topPanel.add(title);
+        tabTopPanel.add(title);
 
 
         // -------------------------------------------
         // ---------- Site Selection Widget-----------
         // -------------------------------------------
         SiteSelectionWidget siteWidget = new SiteSelectionWidget(this);
-        topPanel.add(siteWidget);
+        tabTopPanel.add(siteWidget);
 
 
         // -------------------------------------------
@@ -82,8 +91,8 @@ public class TestsOverviewTab extends GenericQueryTab {
         // ----- Upper row of widgets -----
         CommandsWidget commands = new CommandsWidget(updater);
 
-        topPanel.add(commands.asWidget());
-        topPanel.add(testWidget.asWidget());
+        tabTopPanel.add(commands.asWidget());
+        tabTopPanel.add(testWidget.asWidget());
 
         setDefaults();
     }
@@ -101,8 +110,8 @@ public class TestsOverviewTab extends GenericQueryTab {
      * Default display parameters
      * */
     private void setDefaults() {
-        topPanel.setSpacing(10);
-        topPanel.setWidth("100%");
+//        tabTopPanel.setSpacing(10);
+        tabTopPanel.setWidth("100%");
     }
 
 

@@ -5,6 +5,10 @@ import gov.nist.toolkit.registrymetadata.Metadata;
 import gov.nist.toolkit.testengine.engine.StepContext;
 import gov.nist.toolkit.utilities.xml.Util;
 import gov.nist.toolkit.xdsexception.*;
+import gov.nist.toolkit.xdsexception.client.MetadataException;
+import gov.nist.toolkit.xdsexception.client.MetadataValidationException;
+import gov.nist.toolkit.xdsexception.client.XdsException;
+import gov.nist.toolkit.xdsexception.client.XdsInternalException;
 import org.apache.axiom.om.OMElement;
 import org.apache.axis2.AxisFault;
 import org.apache.axis2.addressing.EndpointReference;
@@ -81,7 +85,7 @@ public class EchoV2Transaction  extends BasicTransaction {
 			if (result != null) {
 //				testLog.add_name_value(instruction_output, "Result", result);
 
-				validate_registry_response(result, MetadataTypes.METADATA_TYPE_R);
+				validate_registry_response(result, "", MetadataTypes.METADATA_TYPE_R);
 			}
 
 		} catch (AxisFault e) {

@@ -11,9 +11,9 @@ import gov.nist.toolkit.valregmsg.registry.SQCodeOr;
 import gov.nist.toolkit.valregmsg.registry.storedquery.generic.FindDocuments;
 import gov.nist.toolkit.valregmsg.registry.storedquery.generic.QueryReturnType;
 import gov.nist.toolkit.valregmsg.registry.storedquery.support.StoredQuerySupport;
-import gov.nist.toolkit.xdsexception.MetadataException;
-import gov.nist.toolkit.xdsexception.MetadataValidationException;
-import gov.nist.toolkit.xdsexception.XdsException;
+import gov.nist.toolkit.xdsexception.client.MetadataException;
+import gov.nist.toolkit.xdsexception.client.MetadataValidationException;
+import gov.nist.toolkit.xdsexception.client.XdsException;
 
 import java.util.List;
 
@@ -63,7 +63,7 @@ public class FindDocumentsSim extends FindDocuments {
 			if (format_codes instanceof SQCodeOr) {
 				results = mc.docEntryCollection.filterByFormatCode((SQCodeOr)format_codes, results);
 			} else {
-				throw new XdsException("FindDocumentsSim: cannot cast object of type " + format_codes.getClass().getName() + " (from formatCodes) into an instance of class SQCodeOr", null);
+				throw new XdsException("FindDocumentsSim: cannot cast model of type " + format_codes.getClass().getName() + " (from formatCodes) into an instance of class SQCodeOr", null);
 			}
 		}
 		
@@ -72,7 +72,7 @@ public class FindDocumentsSim extends FindDocuments {
 			if (class_codes instanceof SQCodeOr) {
 				results = mc.docEntryCollection.filterByClassCode((SQCodeOr)class_codes, results);
 			} else {
-				throw new XdsException("FindDocumentsSim: cannot cast object of type " + class_codes.getClass().getName() + " (from classCodes) into an instance of class SQCodeOr", null);
+				throw new XdsException("FindDocumentsSim: cannot cast model of type " + class_codes.getClass().getName() + " (from classCodes) into an instance of class SQCodeOr", null);
 			}
 		}
 		
@@ -81,7 +81,7 @@ public class FindDocumentsSim extends FindDocuments {
 			if (type_codes instanceof SQCodeOr) {
 				results = mc.docEntryCollection.filterByTypeCode((SQCodeOr)type_codes, results);
 			} else {
-				throw new XdsException("FindDocumentsSim: cannot cast object of type " + type_codes.getClass().getName() + " (from typeCodes) into an instance of class SQCodeOr", null);
+				throw new XdsException("FindDocumentsSim: cannot cast model of type " + type_codes.getClass().getName() + " (from typeCodes) into an instance of class SQCodeOr", null);
 			}
 		}
 		
@@ -90,7 +90,7 @@ public class FindDocumentsSim extends FindDocuments {
 			if (practice_setting_codes instanceof SQCodeOr) {
 				results = mc.docEntryCollection.filterByPracticeSettingCode((SQCodeOr)practice_setting_codes, results);
 			} else {
-				throw new XdsException("FindDocumentsSim: cannot cast object of type " + practice_setting_codes.getClass().getName() + " (from practiceSettingCode) into an instance of class SQCodeOr", null);
+				throw new XdsException("FindDocumentsSim: cannot cast model of type " + practice_setting_codes.getClass().getName() + " (from practiceSettingCode) into an instance of class SQCodeOr", null);
 			}
 		}
 		
@@ -99,7 +99,7 @@ public class FindDocumentsSim extends FindDocuments {
 			if (hcft_codes instanceof SQCodeOr) {
 				results = mc.docEntryCollection.filterByHcftCode((SQCodeOr)hcft_codes, results);
 			} else {
-				throw new XdsException("FindDocumentsSim: cannot cast object of type " + hcft_codes.getClass().getName() + " (from hcftCode) into an instance of class SQCodeOr", null);
+				throw new XdsException("FindDocumentsSim: cannot cast model of type " + hcft_codes.getClass().getName() + " (from hcftCode) into an instance of class SQCodeOr", null);
 			}
 		}
 		
@@ -111,7 +111,7 @@ public class FindDocumentsSim extends FindDocuments {
 			else if (event_codes instanceof SQCodeAnd) {
 					results = mc.docEntryCollection.filterByEventCode((SQCodeAnd)event_codes, results);
 			} else {
-				throw new XdsException("FindDocumentsSim: cannot cast object of type " + event_codes.getClass().getName() + " (from eventCode) into an instance of class SQCodeOr or SQCodeAnd", null);
+				throw new XdsException("FindDocumentsSim: cannot cast model of type " + event_codes.getClass().getName() + " (from eventCode) into an instance of class SQCodeOr or SQCodeAnd", null);
 			}
 		}
 		
@@ -124,7 +124,7 @@ public class FindDocumentsSim extends FindDocuments {
 				results = mc.docEntryCollection.filterByConfCode((SQCodeAnd)conf_codes, results);
 			} 
 			else {
-				throw new XdsException("FindDocumentsSim: cannot cast object of type " + conf_codes.getClass().getName() + " (from confCode) into an instance of class SQCodeOr or SQCodeAnd", null);
+				throw new XdsException("FindDocumentsSim: cannot cast model of type " + conf_codes.getClass().getName() + " (from confCode) into an instance of class SQCodeOr or SQCodeAnd", null);
 			}
 		}
 		

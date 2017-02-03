@@ -7,7 +7,7 @@ import gov.nist.toolkit.commondatatypes.MetadataSupport;
 import gov.nist.toolkit.sitemanagement.client.Site;
 import gov.nist.toolkit.sitemanagement.client.TransactionBean;
 import gov.nist.toolkit.sitemanagement.client.TransactionCollection;
-import gov.nist.toolkit.xdsexception.XdsInternalException;
+import gov.nist.toolkit.xdsexception.client.XdsInternalException;
 import org.apache.axiom.om.OMAttribute;
 import org.apache.axiom.om.OMElement;
 
@@ -74,6 +74,7 @@ public abstract class SiteLoader {
 			if ("transaction".equals(ele_name)) {
 				s.transactions().add(name, value, isSecure, async);
 			} else if ("repository".equals(ele_name)) {
+				// Issue 98 TODO: set the repositoryType here
 				s.repositories().add(uid, value, isSecure, async);
 			} else if ("home".equals(ele_name)) {
 				s.home = value;

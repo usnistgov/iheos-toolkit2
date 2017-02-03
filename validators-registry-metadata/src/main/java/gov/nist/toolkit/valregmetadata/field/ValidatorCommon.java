@@ -1,12 +1,12 @@
 package gov.nist.toolkit.valregmetadata.field;
 
+import gov.nist.toolkit.commondatatypes.MetadataSupport;
 import gov.nist.toolkit.errorrecording.ErrorRecorder;
 import gov.nist.toolkit.errorrecording.client.ValidatorErrorItem;
 import gov.nist.toolkit.errorrecording.client.XdsErrorCode;
 import gov.nist.toolkit.errorrecording.client.XdsErrorCode.Code;
 import gov.nist.toolkit.registrymetadata.Metadata;
-import gov.nist.toolkit.registrymsg.registry.RegistryErrorListGenerator;
-import gov.nist.toolkit.commondatatypes.MetadataSupport;
+import gov.nist.toolkit.registrysupport.RegistryErrorListGenerator;
 import gov.nist.toolkit.utilities.xml.XmlUtil;
 import gov.nist.toolkit.valsupport.client.ValidationContext;
 import gov.nist.toolkit.valsupport.engine.DefaultValidationContextFactory;
@@ -197,6 +197,7 @@ public class ValidatorCommon implements ErrorRecorder {
 	static public String validate_CX_datatype(String pid) {
 		if (pid == null)
 			return "No Patient ID found";
+	   pid = pid.trim();
 		String[] parts = pid.split("\\^\\^\\^");
 		if (parts.length != 2)
 			return "Not Patient ID format: ^^^ not found:";
@@ -212,6 +213,24 @@ public class ValidatorCommon implements ErrorRecorder {
 		if ( !is_oid(partsa[1], false))
 			return "Expected &OID&ISO after ^^^ in CX data type: OID part does not parse as an OID";
 		return null;
+	}
+
+	static public String validate_CX_datatype_list(String content) {
+		String errs = null;
+		if (content == null )
+			return "No Patient ID found";
+		String[] parts = content.split("~");
+		for (int i=0; i<parts.length; i++) {
+			String pid = parts[i];
+			String err = validate_CX_datatype(pid);
+			if (err != null) {
+				if (errs == null)
+					errs = err;
+				else
+					errs = errs + "\n" + err;
+			}
+		}
+		return errs;
 	}
 
 	public void sectionHeading(String msg) {

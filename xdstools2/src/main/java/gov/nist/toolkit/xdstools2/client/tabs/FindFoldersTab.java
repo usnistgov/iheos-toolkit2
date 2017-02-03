@@ -3,15 +3,18 @@ package gov.nist.toolkit.xdstools2.client.tabs;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.ui.FlexTable;
+import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HTML;
-import com.google.gwt.user.client.ui.VerticalPanel;
+import com.google.gwt.user.client.ui.Widget;
 import gov.nist.toolkit.configDatatypes.client.TransactionType;
-import gov.nist.toolkit.results.client.SiteSpec;
+import gov.nist.toolkit.results.client.Result;
+import gov.nist.toolkit.sitemanagement.client.SiteSpec;
 import gov.nist.toolkit.xdstools2.client.CoupledTransactions;
-import gov.nist.toolkit.xdstools2.client.PopupMessage;
-import gov.nist.toolkit.xdstools2.client.TabContainer;
+import gov.nist.toolkit.xdstools2.client.command.command.FindFoldersCommand;
+import gov.nist.toolkit.xdstools2.client.widgets.PopupMessage;
 import gov.nist.toolkit.xdstools2.client.siteActorManagers.FindDocumentsSiteActorManager;
 import gov.nist.toolkit.xdstools2.client.tabs.genericQueryTab.GenericQueryTab;
+import gov.nist.toolkit.xdstools2.shared.command.request.FoldersRequest;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -30,27 +33,31 @@ public class FindFoldersTab extends GenericQueryTab {
 	public FindFoldersTab() {
 		super(new FindDocumentsSiteActorManager());
 	}
-	
 
-	public void onTabLoad(TabContainer container, boolean select, String eventName) {
-		myContainer = container;
-		topPanel = new VerticalPanel();
-		
-		
-		container.addTab(topPanel, "FindFolders", select);
-		addCloseButton(container,topPanel, null);
+	@Override
+	protected Widget buildUI() {
+		FlowPanel flowPanel=new FlowPanel();
 
 		HTML title = new HTML();
 		title.setHTML("<h2>Find Folders</h2>");
-		topPanel.add(title);
+		flowPanel.add(title);
 
 		mainGrid = new FlexTable();
-		
-		topPanel.add(mainGrid);
 
-		queryBoilerplate = addQueryBoilerplate(new Runner(), transactionTypes, couplings, true);
+		flowPanel.add(mainGrid);
+		return flowPanel;
 	}
-	
+
+	@Override
+	protected void bindUI() {
+	}
+
+	@Override
+	protected void configureTabView() {
+		queryBoilerplate = addQueryBoilerplate(new Runner(), transactionTypes, couplings, true);
+
+	}
+
 	class Runner implements ClickHandler {
 
 		public void onClick(ClickEvent event) {
@@ -71,7 +78,12 @@ public class FindFoldersTab extends GenericQueryTab {
 			getGoButton().setEnabled(false);
 			getInspectButton().setEnabled(false);
 
-			toolkitService.findFolders(siteSpec, pid.trim(), queryCallback);
+			new FindFoldersCommand(){
+				@Override
+				public void onComplete(List<Result> result) {
+					queryCallback.onSuccess(result);
+				}
+			}.run(new FoldersRequest(getCommandContext(),siteSpec, pid.trim()));
 		}
 		
 	}

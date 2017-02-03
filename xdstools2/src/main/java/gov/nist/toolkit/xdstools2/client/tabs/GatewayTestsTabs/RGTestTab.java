@@ -1,24 +1,28 @@
 package gov.nist.toolkit.xdstools2.client.tabs.GatewayTestsTabs;
 
-import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.*;
-import com.google.gwt.user.client.ui.Panel;
 import gov.nist.toolkit.actortransaction.client.ActorType;
 import gov.nist.toolkit.configDatatypes.client.TransactionType;
 import gov.nist.toolkit.results.client.Result;
-import gov.nist.toolkit.results.client.SiteSpec;
 import gov.nist.toolkit.results.client.TestInstance;
 import gov.nist.toolkit.services.client.RgOrchestrationResponse;
+import gov.nist.toolkit.sitemanagement.client.SiteSpec;
 import gov.nist.toolkit.sitemanagement.client.TransactionOfferings;
-import gov.nist.toolkit.xdstools2.client.*;
+import gov.nist.toolkit.xdstools2.client.CoupledTransactions;
+import gov.nist.toolkit.xdstools2.client.command.command.GetTestResultsCommand;
+import gov.nist.toolkit.xdstools2.client.command.command.RunMesaTestCommand;
+import gov.nist.toolkit.xdstools2.client.widgets.PopupMessage;
+import gov.nist.toolkit.xdstools2.client.TabContainer;
 import gov.nist.toolkit.xdstools2.client.inspector.MetadataInspectorTab;
 import gov.nist.toolkit.xdstools2.client.siteActorManagers.GetDocumentsSiteActorManager;
 import gov.nist.toolkit.xdstools2.client.tabs.genericQueryTab.GenericQueryTab;
+import gov.nist.toolkit.xdstools2.shared.command.request.GetTestResultsRequest;
+import gov.nist.toolkit.xdstools2.shared.command.request.RunTestRequest;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -26,21 +30,21 @@ import java.util.List;
 import java.util.Map;
 
 public class RGTestTab extends GenericQueryTab implements GatewayTool {
-    final protected ToolkitServiceAsync toolkitService = GWT
-            .create(ToolkitService.class);
+//    final protected ToolkitServiceAsync toolkitService = GWT
+//            .create(ToolkitService.class);
 
-    static CoupledTransactions couplings = new CoupledTransactions();
+    private static CoupledTransactions couplings = new CoupledTransactions();
 
     //    TextBox patientIdBox = new TextBox();
-    String selectedActor = ActorType.RESPONDING_GATEWAY.getShortName();
-    GenericQueryTab genericQueryTab;
-    static final String COLLECTION_NAME =  "rgtool";
-    final TestSelectionManager testSelectionManager;
-    Panel siteSelectionPanel = new VerticalPanel();
+    private String selectedActor = ActorType.RESPONDING_GATEWAY.getShortName();
+    private GenericQueryTab genericQueryTab;
+    private static final String COLLECTION_NAME =  "rgtool";
+    private final TestSelectionManager testSelectionManager;
+    private Panel siteSelectionPanel = new VerticalPanel();
 
-    String systemTypeGroup = "System Type Group";
-    RadioButton exposed = new RadioButton(systemTypeGroup, "Exposed Registry/Repository");
-    RadioButton external = new RadioButton(systemTypeGroup, "External Registry/Repository");
+    private String systemTypeGroup = "System Type Group";
+    private RadioButton exposed = new RadioButton(systemTypeGroup, "Exposed Registry/Repository");
+    private RadioButton external = new RadioButton(systemTypeGroup, "External Registry/Repository");
     boolean isExposed() { return exposed.getValue(); }
     boolean isExternal() { return external.getValue(); }
     boolean usingExposedRR() { return exposed.getValue(); }
@@ -51,59 +55,49 @@ public class RGTestTab extends GenericQueryTab implements GatewayTool {
         testSelectionManager = new TestSelectionManager(this);
     }
 
-    @Override
-    public ToolkitServiceAsync getToolkitService() { return toolkitService; }
+//    @Override
+//    public ToolkitServiceAsync getToolkitService() { return toolkitService; }
 
     @Override
-    public TabContainer getToolContainer() { return myContainer; }
+    public TabContainer getToolContainer() { return getTabContainer(); }
 
     public void onTabLoad(TabContainer container, boolean select) {
     }
 
-    public void onTabLoad(TabContainer container, boolean select, String eventName) {
-        myContainer = container;
-        topPanel = new VerticalPanel();
+    @Override
+    protected Widget buildUI() {
+        return null;
+    }
+
+    @Override
+    protected void bindUI() {
+
+    }
+
+    @Override
+    protected void configureTabView() {
+
+    }
+
+    @Override
+    public void onTabLoad(boolean select, String eventName) {
         genericQueryTab = this;
 
-        container.addTab(topPanel, eventName, select);
-        addCloseButton(container,topPanel, null);
+        registerTab(select, eventName);
         tlsOptionEnabled = false;
 
         // customization of GenericQueryTab
         autoAddRunnerButtons = false;  // want them in a different place
         genericQueryTitle = "Select System Under Test";
-        HTML instructions = new HTML(
-                "<p>" +
-                        "The system under test is a Responding Gateway. For the testing to be fully automated by this tool one of the following " +
-                        "configurations must be supported by your implementation. " +
-                        "<ul>" +
-                        "<li>Exposed Registry/Repository endpoints - your implementation includes Registry/Repository " +
-                        "functionality and you expose the required endpoints for these actors. " +
-                        "A single site (system configuration in toolkit) must contain the Responding Gateway " +
-                        "(system under test), and the related Registry and Repository configurations." +
-                        "<li>External Registry/Repository - your implementation can be configured to work with an " +
-                        "external Registry and Repository which will be selected below. This tool will provide " +
-                        "these actors." +
-                        "</ul>" +
-
-                        "<p>If your Responding Gateway does not meet the above requirement it must be initialized " +
-                        "manually.  See <a href=\"site/testkit/tests/RG/testdata.html\"  target=\"_blank\">here</a> for details.</p>"  +
-
-                "<p>When the test is run a Cross Gateway Query or Retrieve transaction will be sent to the " +
-                        "Responding Gateway " +
-                        "selected below. This will start the test. Before running a test, make sure your " +
-                        "Responding Gateway is configured to forward requests to the Document Repository and Document Registry above.  This " +
-                        "test only uses non-TLS endpoints (for now). TLS selection is disabled.</p>"
-        );
         addResultsPanel = false;  // manually done below
 
 
 
 
         ////////////////////////////////////////////////////////////////////////////////////////////////
-        topPanel.add(new HTML("<h1>Responding Gateway Test Tool</h1>"));
+        tabTopPanel.add(new HTML("<h1>Responding Gateway Test Tool</h1>"));
 
-        topPanel.add(new HTML(
+        tabTopPanel.add(new HTML(
                 "This tool tests a Responding Gateway that exposes endpoints for a Document Registry and " +
                         "Document Repository or can be configured to use an external Registry/Repository pair. " +
                         "All tests are initiated by a Toolkit supplied Initiating Gateway that sends " +
@@ -120,7 +114,7 @@ public class RGTestTab extends GenericQueryTab implements GatewayTool {
         ));
 
         ////////////////////////////////////////////////////////////////////////////////////////////////
-//        topPanel.add(new HTML(
+//        tabTopPanel.display(new HTML(
 //                "<hr /><h2>System under test</h2>" +
 //                "<p>" +
 //                "The system under test is a Responding Gateway. To be testable by this tool one of the following " +
@@ -150,23 +144,6 @@ public class RGTestTab extends GenericQueryTab implements GatewayTool {
             }
         });
 
-//        final Panel externalSystemSelectionPanel = new VerticalPanel();
-//        externalSystemSelectionPanel.setVisible(false);  // until needed
-//        topPanel.add(externalSystemSelectionPanel);
-//
-//        new TransactionOfferingsLoader(toolkitService).run(new ServiceCallCompletionHandler<TransactionOfferings>() {
-//            @Override
-//            public void onCompletion(TransactionOfferings to) {
-//                externalSystemSelectionPanel.add(new HTML("<h3>Registry/Repository Selection</h3>"));
-//                final List<TransactionType> transactionTypes = new ArrayList<TransactionType>();
-//                transactionTypes.add(TransactionType.PROVIDE_AND_REGISTER);
-//                transactionTypes.add(TransactionType.STORED_QUERY);
-//                transactionTypes.add(TransactionType.RETRIEVE);
-//                externalSystemSelectionPanel.add(new SiteSelectionWidget(to, transactionTypes, new CoupledTransactions(), getCurrentTestSession()).build(null, ""));
-//            }
-//        });
-
-
         // exposed means using reg/rep from same site as RG
         exposed.addValueChangeHandler(new ValueChangeHandler<Boolean>() {
             @Override
@@ -185,6 +162,30 @@ public class RGTestTab extends GenericQueryTab implements GatewayTool {
 
 
         Panel instructionsPanel = new VerticalPanel();
+        HTML instructions = new HTML(
+                "<p>" +
+                        "The system under test is a Responding Gateway. For the testing to be fully automated by this tool one of the following " +
+                        "configurations must be supported by your implementation. " +
+                        "<ul>" +
+                        "<li>Exposed Registry/Repository endpoints - your implementation includes Registry/Repository " +
+                        "functionality and you expose the required endpoints for these actors. " +
+                        "A single site (system configuration in toolkit) must contain the Responding Gateway " +
+                        "(system under test), and the related Registry and Repository configurations." +
+                        "<li>External Registry/Repository - your implementation can be configured to work with an " +
+                        "external Registry and Repository which will be selected below. This tool will provide " +
+                        "these actors." +
+                        "</ul>" +
+
+                        "<p>If your Responding Gateway does not meet the above requirement it must be initialized " +
+                        "manually.  See <a href=\"site/testkit/tests/RG/testdata.html\"  target=\"_blank\">here</a> for details.</p>"  +
+
+                        "<p>When the test is run a Cross Gateway Query or Retrieve transaction will be sent to the " +
+                        "Responding Gateway " +
+                        "selected below. This will start the test. Before running a test, make sure your " +
+                        "Responding Gateway is configured to forward requests to the Document Repository and Document Registry above.  This " +
+                        "test only uses non-TLS endpoints (for now). TLS selection is disabled.</p>"
+        );
+
         instructionsPanel.add(instructions);
         instructionsPanel.add(systemTypePanel);
         genericQueryInstructions = instructionsPanel;
@@ -204,19 +205,9 @@ public class RGTestTab extends GenericQueryTab implements GatewayTool {
                 new CoupledTransactions(),
                 false  /* display patient id param */);
 
-//        topPanel.add(systemTypePanel);
 
         ////////////////////////////////////////////////////////////////////////////////////////////////
-//        // Select SUT
-//
-//        topPanel.add(new HTML("<hr />"));
-//
-//        topPanel.add(siteSelectionPanel);
-//
-//        new SiteTransactionConfigLoader(toolkitService).load(new SiteDisplayer());
-
-        ////////////////////////////////////////////////////////////////////////////////////////////////
-        topPanel.add(new HTML(
+        tabTopPanel.add(new HTML(
                         "<h2>Build Test Environment</h2>" +
                         "<p>" +
                         "This will initialize the test environment in the Test Session seleted at the top. " +
@@ -227,29 +218,23 @@ public class RGTestTab extends GenericQueryTab implements GatewayTool {
         ));
 
         HorizontalPanel testEnvironmentsPanel = new HorizontalPanel();
-        topPanel.add(testEnvironmentsPanel);
+        tabTopPanel.add(testEnvironmentsPanel);
 
         BuildRGTestOrchestrationButton testEnvButton = new BuildRGTestOrchestrationButton(this, testEnvironmentsPanel, "Build Test Environment", false);
 
-        topPanel.add(new HTML("<hr />"));
+        tabTopPanel.add(new HTML("<hr />"));
 
-//        BuildRGTestOrchestrationButton demoEnvButton = new BuildRGTestOrchestrationButton(this, testEnvironmentsPanel, "Build Demonstration Environment", true);
-//
-//        // link the two buttons so clicking one clears text output of both
-//        testEnvButton.addLinkedOrchestrationButton(demoEnvButton);
-//        demoEnvButton.addLinkedOrchestrationButton(testEnvButton);
+        tabTopPanel.add(testSelectionManager.buildTestSelector());
 
-        topPanel.add(testSelectionManager.buildTestSelector());
+        tabTopPanel.add(testSelectionManager.buildSectionSelector());
 
-        topPanel.add(testSelectionManager.buildSectionSelector());
-
-        topPanel.add(mainGrid);
+        tabTopPanel.add(mainGrid);
 
         testSelectionManager.loadTestsFromCollection(COLLECTION_NAME);
 
 
         ////////////////////////////////////////////////////////////////////////////////////////////////
-        topPanel.add(new HTML(
+        tabTopPanel.add(new HTML(
                 "<hr />" +
                         "<h2>Run Test</h2>" +
                         "<p>" +
@@ -258,9 +243,9 @@ public class RGTestTab extends GenericQueryTab implements GatewayTool {
                         "</p>"
         ));
 
-        addRunnerButtons(topPanel);
+        addRunnerButtons(tabTopPanel);
 
-        topPanel.add(resultPanel);
+        tabTopPanel.add(resultPanel);
     }
 
 
@@ -326,7 +311,12 @@ public class RGTestTab extends GenericQueryTab implements GatewayTool {
 
             TestInstance testInstance = new TestInstance(testToRun);
             testInstance.setUser(getCurrentTestSession());
-            toolkitService.runMesaTest(getCurrentTestSession(), getSiteSelection(), new TestInstance(testToRun), selectedSections, parms, true, queryCallback);
+            new RunMesaTestCommand(){
+                @Override
+                public void onComplete(List<Result> result) {
+                    queryCallback.onSuccess(result);
+                }
+            }.run(new RunTestRequest(getCommandContext(),getSiteSelection(),new TestInstance(testToRun),parms,true,selectedSections));
         }
 
     }
@@ -338,15 +328,10 @@ public class RGTestTab extends GenericQueryTab implements GatewayTool {
             public void onClick(ClickEvent clickEvent) {
                 List<TestInstance> tests = new ArrayList<TestInstance>();
                 tests.add(new TestInstance("15807"));
-                toolkitService.getTestResults(tests, getCurrentTestSession(), new AsyncCallback<Map<String, Result>>() {
+                new GetTestResultsCommand(){
                     @Override
-                    public void onFailure(Throwable throwable) {
-                        new PopupMessage(throwable.getMessage());
-                    }
-
-                    @Override
-                    public void onSuccess(Map<String, Result> stringResultMap) {
-                        Result result = stringResultMap.get("15807");
+                    public void onComplete(Map<String, Result> resultMap) {
+                        Result result = resultMap.get("15807");
                         if (result == null) {
                             new PopupMessage("Results not available");
                             return;
@@ -358,10 +343,9 @@ public class RGTestTab extends GenericQueryTab implements GatewayTool {
                         results.add(result);
                         itab.setResults(results);
                         itab.setSiteSpec(siteSpec);
-                        itab.setToolkitService(toolkitService);
-                        itab.onTabLoad(myContainer, true, null);
+                        itab.onTabLoad(true, "Insp");
                     }
-                });
+                }.run(new GetTestResultsRequest(getCommandContext(),tests));
             }
         });
         return button;

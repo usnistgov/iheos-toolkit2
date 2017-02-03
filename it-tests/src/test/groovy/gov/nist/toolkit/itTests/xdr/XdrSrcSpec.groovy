@@ -1,12 +1,16 @@
 package gov.nist.toolkit.itTests.xdr
-import gov.nist.toolkit.configDatatypes.SimulatorProperties
-import gov.nist.toolkit.configDatatypes.SimulatorActorType
+
 import gov.nist.toolkit.adt.ListenerFactory
+import gov.nist.toolkit.configDatatypes.SimulatorActorType
+import gov.nist.toolkit.configDatatypes.SimulatorProperties
 import gov.nist.toolkit.itTests.support.ToolkitSpecification
 import gov.nist.toolkit.registrymsg.registry.RegistryError
 import gov.nist.toolkit.registrymsg.registry.RegistryErrorListParser
 import gov.nist.toolkit.toolkitApi.*
-import gov.nist.toolkit.toolkitServicesCommon.*
+import gov.nist.toolkit.toolkitServicesCommon.RawSendRequest
+import gov.nist.toolkit.toolkitServicesCommon.RawSendResponse
+import gov.nist.toolkit.toolkitServicesCommon.SimConfig
+import gov.nist.toolkit.toolkitServicesCommon.SimId
 import gov.nist.toolkit.toolkitServicesCommon.resource.DocumentResource
 import gov.nist.toolkit.transactionNotificationService.TransactionLog
 import gov.nist.toolkit.transactionNotificationService.TransactionNotification
@@ -22,8 +26,8 @@ class XdrSrcSpec extends ToolkitSpecification implements TransactionNotification
 
 
     @Shared String urlRoot = String.format("http://localhost:%s/xdstools2", remoteToolkitPort)
-    BasicSimParameters srcParams = new BasicSimParameters()
-    BasicSimParameters recParams = new BasicSimParameters()
+    @Shared BasicSimParameters srcParams = new BasicSimParameters()
+    @Shared BasicSimParameters recParams = new BasicSimParameters()
 
     def setupSpec() {   // one time setup done when class launched
         startGrizzly('8889')
@@ -34,6 +38,8 @@ class XdrSrcSpec extends ToolkitSpecification implements TransactionNotification
     }
 
     def cleanupSpec() {  // one time shutdown when everything is done
+        spi.delete(srcParams.id, srcParams.user)
+        spi.delete(recParams.id, recParams.user)
         server.stop()
         ListenerFactory.terminateAll()
     }

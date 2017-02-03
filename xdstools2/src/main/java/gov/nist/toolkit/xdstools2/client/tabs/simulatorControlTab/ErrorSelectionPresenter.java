@@ -3,11 +3,14 @@ package gov.nist.toolkit.xdstools2.client.tabs.simulatorControlTab;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Panel;
 import gov.nist.toolkit.actortransaction.client.Severity;
-import gov.nist.toolkit.xdstools2.client.PopupMessage;
-import gov.nist.toolkit.xdstools2.client.ToolkitServiceAsync;
+import gov.nist.toolkit.xdstools2.client.command.command.GetTransactionErrorCodeRefsCommand;
+import gov.nist.toolkit.xdstools2.client.widgets.PopupMessage;
+import gov.nist.toolkit.xdstools2.client.util.ClientUtils;
+import gov.nist.toolkit.xdstools2.shared.command.request.GetTransactionErrorCodeRefsRequest;
 
 import java.util.ArrayList;
 import java.util.List;
+
 
 /**
  * Uses SingleSelectionView to build specifics.
@@ -18,14 +21,10 @@ public class ErrorSelectionPresenter {
     List<String> errorCodes;
     final static String none = "None";
 
-    public ErrorSelectionPresenter(ToolkitServiceAsync toolkitService, String transactionName, final List<String> selected, final Panel panel) {
-        toolkitService.getTransactionErrorCodeRefs(transactionName, Severity.Error, new AsyncCallback<List<String>>() {
-
-            public void onFailure(Throwable caught) {
-                new PopupMessage("getTransactionErrorCodeRefs:" + caught.getMessage());
-            }
-
-            public void onSuccess(List<String> results) {
+    public ErrorSelectionPresenter(String transactionName, final List<String> selected, final Panel panel) {
+        new GetTransactionErrorCodeRefsCommand(){
+            @Override
+            public void onComplete(List<String> results) {
                 errorCodes = results;
                 errorCodes.add(0, none);
                 view = new SingleSelectionView();
@@ -38,13 +37,10 @@ public class ErrorSelectionPresenter {
                 }
                 view.setSelectedRows(selectedRows);
 
-                bind();
                 panel.add(view.asWidget());
             }
-        });
+        }.run(new GetTransactionErrorCodeRefsRequest(ClientUtils.INSTANCE.getCommandContext(),transactionName,Severity.Error));
     }
-
-    void bind() {}
 
     public List<String> getSelected() {
         List<String> selected = new ArrayList<>();

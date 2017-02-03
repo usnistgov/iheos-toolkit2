@@ -2,10 +2,9 @@ package gov.nist.toolkit.valregmsg.registry.storedquery.support;
 
 import gov.nist.toolkit.docref.SqDocRef;
 import gov.nist.toolkit.valregmsg.registry.And;
-import gov.nist.toolkit.valregmsg.registry.SQCodeOr;
 import gov.nist.toolkit.valregmsg.registry.SQCodedTerm;
-import gov.nist.toolkit.xdsexception.MetadataException;
-import gov.nist.toolkit.xdsexception.XdsInternalException;
+import gov.nist.toolkit.xdsexception.client.MetadataException;
+import gov.nist.toolkit.xdsexception.client.XdsInternalException;
 
 import java.math.BigInteger;
 import java.util.*;
@@ -162,13 +161,13 @@ public class SqParams {
 		return names;
 	}
 
-    // TODO can I replace Object by SQCodeOr (which if I am right is supposed to be the type of object)
-	public Map<String, SQCodedTerm> getCodedParms() {
-		Map<String,SQCodedTerm> codes=new HashMap<String,SQCodedTerm>();
-		for (String key:params.keySet()){
-			if (key.endsWith("Code")){
-                codes.put(key,((SQCodedTerm) params.get(key)));
-            }
+    // TODO can I replace Object by SQCodeOr (which if I am right is supposed to be the type of model)
+	public Map<String, Object> getCodedParms() {
+		Map<String, Object> codes = new HashMap<String, Object>();
+		for (String key : params.keySet()) {
+			if (key.endsWith("Code")) {
+				codes.put(key, params.get(key));
+			}
 		}
 		return codes;
 	}

@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?><TestPlan>
+  <Test>15816/Retrieve</Test>
+
+  <TestStep id="retrieve_partial_uid">
+    <ExpectedStatus>PartialSuccess</ExpectedStatus>
+    <RetrieveTransaction>
+
+      <!-- <UseReport reportName="$repuid$" section="PnR" step="SubmitStableDocumentEntry" useAs="$repuid$"/> -->
+	  <UseReport reportName="Document01_uid" section="PnR" step="SubmitStableDocumentEntry" useAs="$doc_uid$"/>
+
+      <MetadataFile>partial_query.xml</MetadataFile>
+      <ExpectedContents/>
+
+      <XDSb/>
+    </RetrieveTransaction>
+  </TestStep>
+
+
+</TestPlan>

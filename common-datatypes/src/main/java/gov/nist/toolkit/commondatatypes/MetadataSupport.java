@@ -1,16 +1,15 @@
 package gov.nist.toolkit.commondatatypes;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Iterator;
-import java.util.List;
-
-import javax.xml.namespace.QName;
-
 import org.apache.axiom.om.OMAbstractFactory;
 import org.apache.axiom.om.OMElement;
 import org.apache.axiom.om.OMFactory;
 import org.apache.axiom.om.OMNamespace;
+
+import javax.xml.namespace.QName;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Iterator;
+import java.util.List;
 
 /**
  *
@@ -173,6 +172,7 @@ public class MetadataSupport {
 	public static QName repository_unique_id_qnamens = new QName(xdsB.getNamespaceURI(), "RepositoryUniqueId", "xdsb");
 	public static QName document_unique_id_qnamens = new QName(xdsB.getNamespaceURI(), "DocumentUniqueId", "xdsb");
 	public static QName newDocumentUniqueId = new QName(xdsB.getNamespaceURI(), "NewDocumentUniqueId", "xdsb");
+	public static QName newRepositoryUniqueId = new QName(xdsB.getNamespaceURI(), "NewRepositoryUniqueId", "xdsb");
 	public static QName mimetype_qnamens = new QName(xdsB.getNamespaceURI(), "mimeType", "xdsb");
 	public static QName document_qnamens = new QName(xdsB.getNamespaceURI(), "Document", "xdsb");
 

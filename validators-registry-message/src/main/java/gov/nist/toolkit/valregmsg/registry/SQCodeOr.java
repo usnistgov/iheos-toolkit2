@@ -1,7 +1,7 @@
 package gov.nist.toolkit.valregmsg.registry;
 
 import gov.nist.toolkit.valregmetadata.coding.Uuid;
-import gov.nist.toolkit.xdsexception.XdsInternalException;
+import gov.nist.toolkit.xdsexception.client.XdsInternalException;
 
 import java.util.ArrayList;
 import java.util.List;

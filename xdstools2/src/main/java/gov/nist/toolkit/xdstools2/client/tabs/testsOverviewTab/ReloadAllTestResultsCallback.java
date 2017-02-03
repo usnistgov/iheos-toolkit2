@@ -19,8 +19,8 @@ public class ReloadAllTestResultsCallback implements AsyncCallback<List<Test>> {
 
 
     @Override
-    public void onFailure(Throwable caught)
-    { LOGGER.warning("Failed to load the test results for current site and session, in the Tests Overview tab.");
+    public void onFailure(Throwable caught){
+        LOGGER.warning("Failed to load the test results for current site and session, in the Tests Overview tab.");
     }
 
     @Override

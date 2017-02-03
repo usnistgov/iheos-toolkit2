@@ -1,7 +1,7 @@
 package gov.nist.toolkit.xdstools2.client.tabs;
 
 import com.google.gwt.user.client.Cookies;
-import gov.nist.toolkit.results.client.SiteSpec;
+import gov.nist.toolkit.sitemanagement.client.SiteSpec;
 import gov.nist.toolkit.xdstools2.client.CookieManager;
 
 public class QueryState {

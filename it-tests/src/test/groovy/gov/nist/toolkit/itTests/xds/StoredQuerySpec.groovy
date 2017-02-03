@@ -25,11 +25,11 @@ class StoredQuerySpec extends ToolkitSpecification {
 
 
     @Shared String urlRoot = String.format("http://localhost:%s/xdstools2", remoteToolkitPort)
-    String patientId2 = 'BR15^^^&1.2.360&ISO'
-    String reg = 'bill__reg'
-    SimId simId = new SimId(reg)
+    @Shared String patientId2 = 'BR15^^^&1.2.360&ISO'
+    @Shared String reg = 'bill__reg'
+    @Shared SimId simId = new SimId(reg)
     @Shared String testSession = 'bill';
-    String siteName = 'bill__reg'
+    @Shared String siteName = 'bill__reg'
 
     def setupSpec() {   // one time setup done when class launched
         startGrizzly('8889')
@@ -52,12 +52,15 @@ class StoredQuerySpec extends ToolkitSpecification {
     }
 
     def cleanupSpec() {  // one time shutdown when everything is done
+//        System.gc()
+        spi.delete('reg', testSession)
+        api.deleteSimulatorIfItExists(simId)
         server.stop()
         ListenerFactory.terminateAll()
     }
 
     def setup() {
-        println "EC is ${Installation.installation().externalCache().toString()}"
+        println "EC is ${Installation.instance().externalCache().toString()}"
         println "${api.getSiteNames(true)}"
         api.createTestSession(testSession)
         if (!api.simulatorExists(simId)) {
@@ -71,14 +74,14 @@ class StoredQuerySpec extends ToolkitSpecification {
 //        when:
 //        String siteName = 'bill__reg'
 //        TestInstance testId = new TestInstance("15804")
-//        List<String> sections = new ArrayList<>()
-//        sections.add("section")
+//        List<String> SECTIONS = new ArrayList<>()
+//        SECTIONS.add("section")
 //        Map<String, String> params = new HashMap<>()
 //        params.put('$patientid$', patientId)
 //        boolean stopOnFirstError = true
 //
 //        and: 'Run pid transaction test'
-//        List<Result> results = api.runTest(testSession, siteName, testId, sections, params, stopOnFirstError)
+//        List<Result> results = api.runTest(testSession, siteName, testId, SECTIONS, params, stopOnFirstError)
 //
 //        then:
 //        true
@@ -139,13 +142,13 @@ class StoredQuerySpec extends ToolkitSpecification {
 //    def 'Run 11897/approved tests'() {
 //        when:
 //        TestInstance testId = new TestInstance("11897")
-//        List<String> sections = ['approved']
+//        List<String> SECTIONS = ['approved']
 //        Map<String, String> params = new HashMap<>()
 //        params.put('$patientid$', patientId2)   // not used
 //        boolean stopOnFirstError = true
 //
 //        and: 'Run'
-//        List<Result> results = api.runTest(testSession, siteName, testId, sections, params, stopOnFirstError)
+//        List<Result> results = api.runTest(testSession, siteName, testId, SECTIONS, params, stopOnFirstError)
 //
 //        then:
 //        results.size() == 1

@@ -6,9 +6,12 @@ import gov.nist.toolkit.results.client.TestInstance;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Collection of specific test SECTIONS
+ */
 public class TestSections {
 
-	List<TestSection> testSections;
+	private List<TestSection> testSections;
 	
 	public TestSections() {
 		testSections = new ArrayList<TestSection>();

@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?><TestPlan>
+  <Test>GazelleSts/samlassertion-issue</Test>
+  <TestStep id="issue">
+    <ExpectedStatus>Success</ExpectedStatus>
+    <StsTransaction stsQuery="issue">
+      <Headers>
+        Content-Type: application/soap+xml;charset=UTF-8
+      </Headers>
+      <!-- IMPORTANT:
+      According to the Gazelle STS requirement, the payload must have all whitespace stripped off
+      -->
+      <BodyFile>body.txt</BodyFile>
+      <Report name="saml-assertion" section="Result" escapedCharsInXml="true">
+        //*[local-name()='Body']/*[local-name()='RequestSecurityTokenResponseCollection']/*[local-name()='RequestSecurityTokenResponse']/*[local-name()='RequestedSecurityToken']/*[local-name()='Assertion']
+      </Report>
+    </StsTransaction>
+  </TestStep>
+</TestPlan>

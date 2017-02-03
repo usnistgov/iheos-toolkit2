@@ -21,7 +21,7 @@ public class PidSet implements Serializable {
         boolean empty = true;
 
         for (Pid pid : pids) {
-            if (!empty) buf.append(',');
+            if (!empty) buf.append('\n');
             empty = false;
             buf.append(pid.asParsableString());
         }
@@ -36,11 +36,15 @@ public class PidSet implements Serializable {
         if (s.equals("")) return;
         if (s.charAt(0) != '[') return;
         if (s.charAt(s.length()-1) != ']') return;
-        s = s.substring(1, s.length());
-        String[] pidStr = s.split(",");
+        s = s.substring(1, s.length()-1);
+        String[] pidStr = s.split("\n");
         for (int i=0; i<pidStr.length; i++) {
-            Pid pid = PidBuilder.createPid(pidStr[i]);
-            if (pid != null) pids.add(pid);
+            String values[]=pidStr[i].split(",");
+            String name=values[values.length-1];
+            for (int j=0;j<(values.length-1);j++){
+                Pid pid = PidBuilder.createPid(values[j]+","+name);
+                if (pid != null) pids.add(pid);
+            }
         }
     }
 

@@ -1,14 +1,4 @@
-Ret.b Retrieve MimeType
+Repository handling of mimeType
 
-Configure Repository to forward Register.b transactions to the Public
-Registry
-
-submit - submit a single document to the Repository with a phony mime type
-
-query - query the Public Registry for metadata
-
-retrieve - retrieve document. The mime type must match the submission.
-
-
-NOTE: This test uses a nonsensical mime type of text/goofy.  Your repository 
-code must be able to respond to new mime types.
+Verify that the Repository accepts, stores, and returns the mimeType present
+in the Provide and Register transaction.

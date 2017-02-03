@@ -10,22 +10,25 @@ import org.apache.log4j.Logger;
 import javax.servlet.ServletContext;
 import java.io.File;
 import java.io.IOException;
-import java.util.List;
-import java.util.Properties;
+import java.io.InputStream;
+import java.util.*;
+
 
 public class Installation {
-	File warHome = null;
-	File externalCache = null;
-	String sep = File.separator;
-	public TkProps tkProps = new TkProps();
-	String servletContextName;
+    private File warHome = null;
+    private File externalCache = null;
+    private String sep = File.separator;
+    public TkProps tkProps = new TkProps();
+	private String servletContextName = "/xdstools2";
 
     public final static String DEFAULT_ENVIRONMENT_NAME = "default";
+    private final static String LOG_ARCHIVE_DIRECTORY = "archive";
+    private final static Logger LOGGER=Logger.getLogger(Installation.class.getName());
 
-	PropertyServiceManager propertyServiceMgr = null;
-	static Logger logger = Logger.getLogger(Installation.class);
+    private PropertyServiceManager propertyServiceMgr = null;
+    private static Logger logger = Logger.getLogger(Installation.class);
 
-	static Installation me = new Installation();
+    static Installation me = new Installation();
 
     public String toString() {
         return String.format("warHome=%s externalCache=%s", warHome, externalCache);
@@ -35,133 +38,231 @@ public class Installation {
         // This works for unit tests if warhome.txt is installed as part of a unit test environment
         String warhomeTxt = null;
         try {
-            warhomeTxt = installation().getClass().getResource("/warhome/warhome.txt").getFile();
+            warhomeTxt = instance().getClass().getResource("/warhome/warhome.txt").getFile();
         } catch (Throwable t) {}
         if (warhomeTxt != null) {
-            installation().warHome(new File(warhomeTxt).getParentFile());
+            instance().warHome(new File(warhomeTxt).getParentFile());
         }
-//        String warTxt = null;
-//        try {
-//            warTxt = installation().getClass().getResource("/war/war.txt").getFile();
-//        } catch (Throwable t) {}
-//        if (warTxt != null) {
-//            installation().warHome(new File(warTxt).getParentFile());
-//        }
     }
 
-	static public Installation installation() {
-		return me;
-	}
-	
-	static public Installation installation(ServletContext servletContext) {
-		if (me.warHome == null)
-			me.warHome(new File(servletContext.getRealPath("/")));
-		return me;
-	}
+    static public Installation instance() {
+        return me;
+    }
 
-	private Installation() {
+    static public Installation instance(ServletContext servletContext) {
+        if (me.warHome == null)
+            me.warHome(new File(servletContext.getRealPath("/")));
+        return me;
+    }
+
+    private Installation() {
         logger.info(String.format("Installation rooted at %s", toString()));
     }
-	
-	public File warHome() { 
-	    if (warHome == null) {
+
+    public File warHome() {
+        if (warHome == null) {
             String warTxt = null;
             try {
-                warTxt = installation().getClass().getResource("/war/war.txt").getFile();
+                warTxt = instance().getClass().getResource("/war/war.txt").getFile();
             } catch (Throwable t) {}
             if (warTxt != null) {
-                installation().warHome(new File(warTxt).getParentFile());
+                instance().warHome(new File(warTxt).getParentFile());
             }
         }
         return warHome;
     }
-	synchronized public void warHome(File warHome) {
-		if (this.warHome != null /* && warHome().equals(warHome) */) {
+    synchronized public void warHome(File warHome) {
+        if (this.warHome != null /* && warHome().equals(warHome) */) {
             logger.info("... oops - warHome already initialized to " + warHome);
             return; /* already set */
         }
-		logger.info("V2 - Installation - war home set to " + warHome);
+        logger.info("V2 - Installation - war home set to " + warHome);
         if (warHome == null)
             logger.error(ExceptionUtil.here("warhome is null"));
-		this.warHome = warHome;
-		propertyServiceMgr = null;
+        this.warHome = warHome;
+        propertyServiceMgr = null;
         propertyServiceManager();  // initialize
-		if (externalCache == null) // this can be different in a unit test situation
-			externalCache = new File(propertyServiceManager().getPropertyManager().getExternalCache());
+        String ec = propertyServiceManager().getPropertyManager().getExternalCache();
+
+        logger.info("External Cache as reported by toolkit.properties");
+		if (externalCache == null) { // this can be different in a unit test situation
+            externalCache = new File(ec);
+        }
+		logger.info("Installation: External Cache set to " + externalCache);
         logger.info("Toolkit running at " + propertyServiceManager().getToolkitHost() + ":" + propertyServiceManager().getToolkitPort());
-	}
+    }
+
+    public static String asFilenameBase(Date date) {
+        Calendar c  = Calendar.getInstance();
+        c.setTime(date);
+
+        String year = Integer.toString(c.get(Calendar.YEAR));
+        String month = Integer.toString(c.get(Calendar.MONTH) + 1);
+        if (month.length() == 1)
+            month = "0" + month;
+        String day = Integer.toString(c.get(Calendar.DAY_OF_MONTH));
+        if (day.length() == 1 )
+            day = "0" + day;
+        String hour = Integer.toString(c.get(Calendar.HOUR_OF_DAY));
+        if (hour.length() == 1)
+            hour = "0" + hour;
+        String minute = Integer.toString(c.get(Calendar.MINUTE));
+        if (minute.length() == 1)
+            minute = "0" + minute;
+        String second = Integer.toString(c.get(Calendar.SECOND));
+        if (second.length() == 1)
+            second = "0" + second;
+        String mili = Integer.toString(c.get(Calendar.MILLISECOND));
+        if (mili.length() == 2)
+            mili = "0" + mili;
+        else if (mili.length() == 1)
+            mili = "00" + mili;
+
+        String dot = "_";
+
+        String val =
+                year +
+                        dot +
+                        month +
+                        dot +
+                        day +
+                        dot +
+                        hour +
+                        dot +
+                        minute +
+                        dot +
+                        second +
+                        dot +
+                        mili
+                ;
+        return val;
+    }
+
+    public static String nowAsFilenameBase() {
+        return asFilenameBase(new Date());
+    }
+
+    public File archive() { return new File(externalCache(), LOG_ARCHIVE_DIRECTORY); }
+
+    public File newArchiveDir() {
+        File archive = new File(externalCache(), LOG_ARCHIVE_DIRECTORY);
+        File now = new File(archive, nowAsFilenameBase());
+        now.mkdirs();
+        return now;
+    }
 
 	public File externalCache() { return externalCache; }
-	protected void externalCache(File externalCache) {
+	public void externalCache(File externalCache) {
 			this.externalCache = externalCache;
-        logger.info("V2 Installation: External Cache set to " + externalCache);
+        logger.info("Installation: External Cache set to " + externalCache);
 		try {
-			tkProps = TkLoader.tkProps(installation().getTkPropsFile()); //TkLoader.tkProps(new File(Installation.installation().externalCache() + File.separator + "tk_props.txt"));
+			tkProps = TkLoader.tkProps(instance().getTkPropsFile()); //TkLoader.tkProps(new File(Installation.instance().externalCache() + File.separator + "tk_props.txt"));
 		} catch (Exception e) {
 //			logger.warn("Cannot load tk_props.txt file from External Cache");
-			tkProps = new TkProps();
-		}
+            tkProps = new TkProps();
+        }
 
-	}
+    }
 
     public void overrideToolkitPort(String port) {
         propertyServiceManager().setOverrideToolkitPort(port);
     }
 
-	public File getTkPropsFile() {
-		return new File(Installation.installation().externalCache() + File.separator + "tk_props.txt");
-	}
+    public File getTkPropsFile() {
+        return new File(Installation.instance().externalCache() + File.separator + "tk_props.txt");
+    }
 
 
-	
-	public boolean initialized() { return warHome != null && externalCache != null; }
-	
-	public PropertyServiceManager propertyServiceManager() {
-		if (propertyServiceMgr == null)
-			propertyServiceMgr = new PropertyServiceManager();
-		return propertyServiceMgr;
-	}
 
-	public File getActorsDirName() {
-		File f = new File(externalCache() + File.separator + "actors");
-		f.mkdirs();
-		return f;
-	}
+    public boolean initialized() { return warHome != null && externalCache != null; }
 
-	public File simDbFile() {
-		return new File(externalCache(), "simdb");
-	}
+    public PropertyServiceManager propertyServiceManager() {
+        if (propertyServiceMgr == null)
+            propertyServiceMgr = new PropertyServiceManager();
+        return propertyServiceMgr;
+    }
 
-	public List<String> getListenerPortRange() {
-		return propertyServiceManager().getListenerPortRange();
-	}
-	
-	public File toolkitxFile() {
-		return new File(warHome(), "toolkitx");
-	}
-	public File schemaFile() {
-		return new File(toolkitxFile(), "schema");
-	}
-	public File testkitFile() {
+    public File actorsDir() {
+        File f = new File(externalCache() + File.separator + "actors");
+        f.mkdirs();
+        return f;
+    }
+
+    /**
+    * @return a {@link File} object representing the simdb directory, that is,
+    * the directory in which information for simulators is maintained on disc.
+    */
+   public File simDbFile() {
+        return new File(externalCache(), "simdb");
+    }
+
+    public List<String> getListenerPortRange() {
+        return propertyServiceManager().getListenerPortRange();
+    }
+
+    public File toolkitxFile() {
+        return new File(warHome(), "toolkitx");
+    }
+    public File schemaFile() {
+        return new File(toolkitxFile(), "schema");
+    }
+    public File internalTestkitFile() {
         File testkit = propertyServiceManager().getTestkit();
         if (testkit != null) {
-            logger.info(String.format("Testkit source is %s", testkit));
             return testkit;
         }
         testkit = new File(toolkitxFile(), "testkit");
-        logger.info(String.format("Testkit source is %s", testkit));
         return testkit;
+    }
+    public File internalActorsDir() { return new File(toolkitxFile(), "actors"); }
+
+    /**
+     * This method return a list of testkit files sorted by priority level.
+     * The first in the list is the top priority testkit.
+     * It can contain a user testkit for an environment, an environment testkit (generated from code update)
+     * and the toolkit default testkit.
+     * It always contains at least the default testkit of the toolkit. The presence of the other
+     * two depends on the existence.
+     * @param environmentName name of the environment to look into for the environment specific testkits.
+     * @param mesaSessionName name of the test session for the user specific testkit.
+     * @return list of testkit files
+     */
+    public List<File> testkitFiles(String environmentName,String mesaSessionName) {
+        List<File> testkits=new ArrayList<File>();
+        if (environmentName!=null) {
+            // paths to the testkit repository in the environment directory
+            File environmentTestkitsFile = new File(environmentFile(environmentName), "testkits");
+            File usrTestkit=null;
+            if (mesaSessionName!=null) {
+                // path to the user's testkit (based on the name of the test session)
+                usrTestkit = new File(environmentTestkitsFile, mesaSessionName);
+            }else {
+                LOGGER.info("Mesa session name is null");
+            }
+            // path to the environment specific testkit (generated from Code Update)
+            File environmentDefaultTestkit = new File(environmentTestkitsFile, "default");
+            if (usrTestkit != null && usrTestkit.exists() && !mesaSessionName.equals("default"))
+                testkits.add(usrTestkit);
+            if (environmentDefaultTestkit.exists()) {
+                testkits.add(environmentDefaultTestkit);
+            }
+        }else{
+            LOGGER.info("Environment name is null");
+        }
+        // toolkit default testkit
+        testkits.add(internalTestkitFile());
+        return testkits;
     }
 
     public String defaultEnvironmentName() { return propertyServiceManager().getDefaultEnvironment(); }
-	
-	public File environmentFile(String envName) {
-		return new File(externalCache + sep + "environment" + sep + envName);
-	}
 
-	public File environmentFile() {
-		return new File(externalCache + sep + "environment");
-	}
+    public File environmentFile(String envName) {
+        return new File(externalCache + sep + "environment" + sep + envName);
+    }
+
+    public File environmentFile() {
+        return new File(externalCache + sep + "environment");
+    }
 
 	public File getKeystoreDir(String environmentName) {
 		return new File(environmentFile(environmentName), "keystore");
@@ -181,35 +282,86 @@ public class Installation {
 		if (!propertiesFile.exists() || propertiesFile.isDirectory())
 			return null;
 		Properties props = new Properties();
-		props.load(Io.getInputStreamFromFile(propertiesFile));
+		InputStream is = null;
+		try {
+			is = Io.getInputStreamFromFile(propertiesFile);
+			props.load(is);
+		} finally {
+			if (is!=null)
+				is.close();
+		}
 		return props.getProperty("keyStorePassword");
 	}
 
-	// Default codes.xml to use if no environments are configured
-	public File internalEnvironmentFile(String envName) {
-		return new File(new File(toolkitxFile(), "environment"), envName);
-	}
+    // Default codes.xml to use if no environments are configured
+    public File internalEnvironmentFile(String envName) {
+        return new File(new File(toolkitxFile(), "environment"), envName);
+    }
 
     public File internalEnvironmentsFile() {
         return new File(toolkitxFile(), "environment");
     }
 
-	public File sessionLogFile(String sessionId) {
-		return new File(warHome + sep + "SessionCache" + sep + sessionId);
-	}
+    public File sessionLogFile(String sessionId) {
+        return new File(warHome + sep + "SessionCache" + sep + sessionId);
+    }
 
-	public File sessionCache() {
-		return new File(warHome + sep + "SessionCache");
-	}
+    public File sessionCache() {
+        return new File(warHome + sep + "SessionCache");
+    }
 
-	public File testLogCache() {
-		return new File(externalCache + sep + "TestLogCache");
-	}
+    public File testLogCache() {
+        return new File(externalCache + sep + "TestLogCache");
+    }
 
-	public static String defaultSessionName() { return "STANDALONE"; }
+    public File testLogCache(String testSessionName) {
+        return new File(testLogCache(), testSessionName);
+    }
+
+    public File orchestrationCache(String testSessionName, String actorType) {
+        return new File(new File(testLogCache(testSessionName), "orchestration"), actorType);
+    }
+
+    public File orchestrationPropertiesFile(String testSessionName, String actorType) {
+        File orchestrationCacheDir = orchestrationCache(testSessionName, actorType);
+        File propFile = new File(orchestrationCacheDir, "orchestration.properties");
+        return propFile;
+    }
+
+    public File imageCache(String cacheName) {
+        return new File(externalCache + sep + "ImageCache" + sep + cacheName);
+    }
+
+    public static String defaultSessionName() { return "STANDALONE"; }
     public static String defaultServiceSessionName() { return "SERVICE"; }
 
-	public String getServletContextName() {
+    public static final String[] defaultAreas = new String [] { "tests", "testdata", "examples", "internal", "play",
+            "selftest", "development", "utilities", "collection", "static.collections"};
+
+    public static final String collectionsDirName = "collections";
+    public static final String actorCollectionsDirName = "actorcollections";
+
+    /**
+     * This method returns all the existing testkits.
+     * @return list of all existing testkits.
+     */
+    public List<File> getAllTestkits(){
+        List<File> testkits=new ArrayList<File>();
+        File environmentsRootFile=environmentFile();
+        File[] envList=environmentsRootFile.listFiles();
+        if (envList!=null) {
+            for (File environment : envList) {
+                File testkitsContainer = new File(environment, "testkits");
+                if (testkitsContainer.exists()) {
+                    testkits.addAll(Arrays.asList(testkitsContainer.listFiles()));
+                }
+            }
+        }
+        testkits.add(internalTestkitFile());
+        return testkits;
+    }
+
+    public String getServletContextName() {
 		return servletContextName;
 	}
 
@@ -217,4 +369,5 @@ public class Installation {
 		logger.info("ServletContext initialized to " + servletContextName);
 		this.servletContextName = servletContextName;
 	}
+
 }

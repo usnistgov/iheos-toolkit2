@@ -4,7 +4,7 @@ import gov.nist.toolkit.commondatatypes.client.MetadataTypes;
 import gov.nist.toolkit.registrymsg.registry.RegistryResponseParser;
 import gov.nist.toolkit.testengine.engine.StepContext;
 import gov.nist.toolkit.utilities.xml.Util;
-import gov.nist.toolkit.xdsexception.XdsInternalException;
+import gov.nist.toolkit.xdsexception.client.XdsInternalException;
 import org.apache.axiom.om.OMElement;
 
 import javax.xml.parsers.FactoryConfigurationError;
@@ -43,7 +43,8 @@ public class SimpleTransaction extends BasicTransaction {
 			soapCall(request);
 			OMElement result = getSoapResult();
 			validate_registry_response(
-					result, 
+					result,
+					"",
 					(xds_version == xds_a) ? MetadataTypes.METADATA_TYPE_R : MetadataTypes.METADATA_TYPE_SQ);
 
 

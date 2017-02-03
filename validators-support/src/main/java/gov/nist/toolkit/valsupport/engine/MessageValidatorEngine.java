@@ -3,7 +3,7 @@ package gov.nist.toolkit.valsupport.engine;
 import gov.nist.toolkit.errorrecording.ErrorRecorder;
 import gov.nist.toolkit.valsupport.message.AbstractMessageValidator;
 import gov.nist.toolkit.valsupport.message.ServiceRequestContainer;
-import gov.nist.toolkit.xdsexception.ToolkitRuntimeException;
+import gov.nist.toolkit.xdsexception.client.ToolkitRuntimeException;
 import org.apache.log4j.Logger;
 
 import java.util.ArrayList;
@@ -18,10 +18,10 @@ import java.util.List;
  *
  */
 public class MessageValidatorEngine {
-	static Logger logger = Logger.getLogger(MessageValidatorEngine.class);
+	static private Logger logger = Logger.getLogger(MessageValidatorEngine.class);
 
-	List<ValidationStep> validationSteps = new ArrayList<ValidationStep>();
-	boolean isPartialSuccess = false;
+	private List<ValidationStep> validationSteps = new ArrayList<ValidationStep>();
+	private boolean isPartialSuccess = false;
 
 	public MessageValidatorEngine() {}
 	

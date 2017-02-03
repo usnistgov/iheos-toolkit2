@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?><TestPlan>
+  <Test>12312_Xuasocialworker/missing_home</Test>
+  <TestStep id="retrieve">
+    <ExpectedStatus>Fault</ExpectedStatus>
+    <XCRTransaction>
+
+      <MetadataFile>query.xml</MetadataFile>
+
+    </XCRTransaction>
+  </TestStep>
+</TestPlan>

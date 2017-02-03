@@ -72,7 +72,7 @@ public class ZipDir {
 	{ 
 		try 
 		{ 
-			//create a new File object based on the directory we 
+			//create a new File model based on the directory we
 			// have to zip    
 			File zipDir = new File(dir2zip); 
 			//get a listing of the directory content 
@@ -85,19 +85,19 @@ public class ZipDir {
 				File f = new File(zipDir, dirList[i]); 
 				if(f.isDirectory()) 
 				{ 
-					//if the File object is a directory, call this 
+					//if the File model is a directory, call this
 					//function again to add its content recursively 
 					String filePath = f.getPath();
 					zipDir2(filePath, parentSize, zos); 
 					//loop again 
 					continue; 
 				} 
-				//if we reached here, the File object f was not a directory 
+				//if we reached here, the File model f was not a directory
 				//create a FileInputStream on top of f 
 				FileInputStream fis = new FileInputStream(f); 
 				// create a new zip entry 
 				ZipEntry anEntry = new ZipEntry(f.getPath().substring(parentSize)); 
-				//place the zip entry in the ZipOutputStream object 
+				//place the zip entry in the ZipOutputStream model
 				zos.putNextEntry(anEntry); 
 				//now write the content of the file to the ZipOutputStream 
 				while((bytesIn = fis.read(readBuffer)) != -1) 

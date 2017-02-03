@@ -3,7 +3,6 @@ package gov.nist.toolkit.xdstools2.client.tabs.getAllTab;
 import com.google.gwt.user.client.ui.FlexTable;
 import com.google.gwt.user.client.ui.Widget;
 import gov.nist.toolkit.results.client.CodesConfiguration;
-import gov.nist.toolkit.xdstools2.client.ToolkitServiceAsync;
 import gov.nist.toolkit.xdstools2.client.tabs.genericQueryTab.GenericQueryTab;
 import gov.nist.toolkit.xdstools2.client.widgets.queryFilter.CodeFilterBank;
 import gov.nist.toolkit.xdstools2.client.widgets.queryFilter.OnDemandFilter;
@@ -16,7 +15,7 @@ import java.util.Map;
 /**
  * Widget for capturing the parameters for the GetAll query. This does not include PatientID
  * since that is handled elsewhere.
- * Use codeFilterBank.addFilter(paramGrid, prow, 1, CodesConfiguration.***Code); to add XDS codes as widgets
+ * Use codeFilterBank.addFilter(paramGrid, prow, 1, CodesConfiguration.***Code); to addTest XDS codes as widgets
  */
 public class GetAllParams {
     // container for the composite widget being built
@@ -39,10 +38,11 @@ public class GetAllParams {
     ReturnTypeFilter returnFilter;
 
     CodeFilterBank codeFilterBank;
+    final int idHashCode = System.identityHashCode(this);
 
-    public GetAllParams(ToolkitServiceAsync toolkitService, GenericQueryTab genericQueryTab) {
+    public GetAllParams(/*ToolkitServiceAsync toolkitService, */GenericQueryTab genericQueryTab) {
         // The collective filter bank being assembled
-        codeFilterBank = new CodeFilterBank(toolkitService, genericQueryTab);
+        codeFilterBank = new CodeFilterBank(/*toolkitService, */genericQueryTab);
 
         // What to include
         paramGrid.setText(prow, 0, "Include:");
@@ -54,7 +54,7 @@ public class GetAllParams {
         prow++;
 
         paramGrid.setText(prow, 1, "");
-        onDemandFilter = new OnDemandFilter("Type");
+        onDemandFilter = new OnDemandFilter("GetAllParams_"+idHashCode);
         paramGrid.setWidget(prow, 2, onDemandFilter.asWidget());
         prow++;
 

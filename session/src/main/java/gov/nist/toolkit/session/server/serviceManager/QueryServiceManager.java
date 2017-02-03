@@ -6,13 +6,16 @@ import gov.nist.toolkit.actortransaction.client.ActorType;
 import gov.nist.toolkit.registrymetadata.Metadata;
 import gov.nist.toolkit.registrymetadata.client.*;
 import gov.nist.toolkit.results.CommonService;
+import gov.nist.toolkit.results.MetadataToMetadataCollectionParser;
 import gov.nist.toolkit.results.ResultBuilder;
 import gov.nist.toolkit.results.client.*;
 import gov.nist.toolkit.session.server.Session;
 import gov.nist.toolkit.session.server.services.*;
 import gov.nist.toolkit.sitemanagement.client.Site;
+import gov.nist.toolkit.sitemanagement.client.SiteSpec;
+import gov.nist.toolkit.sitemanagement.client.TransactionBean;
 import gov.nist.toolkit.xdsexception.ExceptionUtil;
-import gov.nist.toolkit.xdsexception.XdsException;
+import gov.nist.toolkit.xdsexception.client.XdsException;
 import org.apache.log4j.Logger;
 
 import java.util.ArrayList;
@@ -56,30 +59,33 @@ public class QueryServiceManager extends CommonService {
 		}
 	}
 
-	public List<Result> submitRegistryTestdata(SiteSpec site,
+	public List<Result> submitRegistryTestdata(String testSessionName,SiteSpec site,
 			String datasetName, String pid)  {
 		logger.debug(session.id() + ": " + "submitRegistryTestdata");
 		try {
+			session.setMesaSessionName(testSessionName);
 			return new SubmitRegistryTestdata(session).run(site, datasetName, pid);
 		} catch (XdsException e) {
 			return buildResultList(e);
 		}
 	}
 
-	public List<Result> submitRepositoryTestdata(SiteSpec site,
-			String datasetName, String pid)  {
+	public List<Result> submitRepositoryTestdata(String testSessionName, SiteSpec site,
+												 String datasetName, String pid)  {
 		logger.debug(session.id() + ": " + "submitRepositoryTestdata");
 		try {
+			session.setMesaSessionName(testSessionName);
 			return new SubmitRepositoryTestdata(session).run(site, datasetName, pid);
 		} catch (XdsException e) {
 			return buildResultList(e);
 		}
 	}
 
-	public List<Result> submitXDRTestdata(SiteSpec site,
+	public List<Result> submitXDRTestdata(String testSessionName,SiteSpec site,
 			String datasetName, String pid)  {
 		logger.debug(session.id() + ": " + "submitXDRTestdata");
 		try {
+			session.setMesaSessionName(testSessionName);
 			return new SubmitXDRTestdata(session).run(site, datasetName, pid);
 		} catch (XdsException e) {
 			return buildResultList(e);
@@ -204,10 +210,10 @@ public class QueryServiceManager extends CommonService {
 		}
 	}
 
-	public List<Result> getSSandContents(SiteSpec site, String ssid) {
+	public List<Result> getSSandContents(SiteSpec site, String ssid, Map<String, List<String>> codeSpec) {
 		logger.debug(session.id() + ": " + "getSSandContents");
 		try {
-			return new GetSSandContents(session).run(site, ssid);
+			return new GetSSandContents(session).run(site, ssid, codeSpec);
 		} catch (XdsException e) {
 			return buildResultList(e);
 		}
@@ -462,7 +468,7 @@ public class QueryServiceManager extends CommonService {
 				}
 				if (s2 != null && s2.hasRepositoryB()) {
 					try {
-						id.repositoryUniqueId = s2.getRepositoryUniqueId();
+						id.repositoryUniqueId = s2.getRepositoryUniqueId(TransactionBean.RepositoryType.REPOSITORY);
 					} catch (Exception e) {
 					}
 				}
@@ -501,7 +507,7 @@ public class QueryServiceManager extends CommonService {
 		Site s2 = SiteServiceManager.getSiteServiceManager().getCommonSites().getSite(s.siteSpec.name);
 		for (Uid uid : uids.uids) {
 			if (uid.repositoryUniqueId == null)
-				uid.repositoryUniqueId = s2.getRepositoryUniqueId();
+				uid.repositoryUniqueId = s2.getRepositoryUniqueId(TransactionBean.RepositoryType.REPOSITORY);
 			if (s.siteSpec.isGW()) {
 				if (s.siteSpec.homeId != null)
 					uid.home = s.siteSpec.homeId;

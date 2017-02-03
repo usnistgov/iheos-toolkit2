@@ -35,7 +35,7 @@ public class AssertionType {
      * Gets the value of the address property.
      * 
      * @return
-     *     possible object is
+     *     possible model is
      *     {@link AddressType }
      *     
      */
@@ -47,7 +47,7 @@ public class AssertionType {
      * Sets the value of the address property.
      * 
      * @param value
-     *     allowed object is
+     *     allowed model is
      *     {@link AddressType }
      *     
      */
@@ -59,7 +59,7 @@ public class AssertionType {
      * Gets the value of the dateOfBirth property.
      * 
      * @return
-     *     possible object is
+     *     possible model is
      *     {@link String }
      *     
      */
@@ -71,7 +71,7 @@ public class AssertionType {
      * Sets the value of the dateOfBirth property.
      * 
      * @param value
-     *     allowed object is
+     *     allowed model is
      *     {@link String }
      *     
      */
@@ -83,7 +83,7 @@ public class AssertionType {
      * Gets the value of the explanationNonClaimantSignature property.
      * 
      * @return
-     *     possible object is
+     *     possible model is
      *     {@link String }
      *     
      */
@@ -95,7 +95,7 @@ public class AssertionType {
      * Sets the value of the explanationNonClaimantSignature property.
      * 
      * @param value
-     *     allowed object is
+     *     allowed model is
      *     {@link String }
      *     
      */
@@ -155,7 +155,7 @@ public class AssertionType {
      * Gets the value of the homeCommunity property.
      * 
      * @return
-     *     possible object is
+     *     possible model is
      *     {@link HomeCommunityType }
      *     
      */
@@ -167,7 +167,7 @@ public class AssertionType {
      * Sets the value of the homeCommunity property.
      * 
      * @param value
-     *     allowed object is
+     *     allowed model is
      *     {@link HomeCommunityType }
      *     
      */
@@ -179,7 +179,7 @@ public class AssertionType {
      * Gets the value of the personName property.
      * 
      * @return
-     *     possible object is
+     *     possible model is
      *     {@link PersonNameType }
      *     
      */
@@ -191,7 +191,7 @@ public class AssertionType {
      * Sets the value of the personName property.
      * 
      * @param value
-     *     allowed object is
+     *     allowed model is
      *     {@link PersonNameType }
      *     
      */
@@ -203,7 +203,7 @@ public class AssertionType {
      * Gets the value of the phoneNumber property.
      * 
      * @return
-     *     possible object is
+     *     possible model is
      *     {@link PhoneType }
      *     
      */
@@ -215,7 +215,7 @@ public class AssertionType {
      * Sets the value of the phoneNumber property.
      * 
      * @param value
-     *     allowed object is
+     *     allowed model is
      *     {@link PhoneType }
      *     
      */
@@ -227,7 +227,7 @@ public class AssertionType {
      * Gets the value of the secondWitnessAddress property.
      * 
      * @return
-     *     possible object is
+     *     possible model is
      *     {@link AddressType }
      *     
      */
@@ -239,7 +239,7 @@ public class AssertionType {
      * Sets the value of the secondWitnessAddress property.
      * 
      * @param value
-     *     allowed object is
+     *     allowed model is
      *     {@link AddressType }
      *     
      */
@@ -251,7 +251,7 @@ public class AssertionType {
      * Gets the value of the secondWitnessName property.
      * 
      * @return
-     *     possible object is
+     *     possible model is
      *     {@link PersonNameType }
      *     
      */
@@ -263,7 +263,7 @@ public class AssertionType {
      * Sets the value of the secondWitnessName property.
      * 
      * @param value
-     *     allowed object is
+     *     allowed model is
      *     {@link PersonNameType }
      *     
      */
@@ -275,7 +275,7 @@ public class AssertionType {
      * Gets the value of the secondWitnessPhone property.
      * 
      * @return
-     *     possible object is
+     *     possible model is
      *     {@link PhoneType }
      *     
      */
@@ -287,7 +287,7 @@ public class AssertionType {
      * Sets the value of the secondWitnessPhone property.
      * 
      * @param value
-     *     allowed object is
+     *     allowed model is
      *     {@link PhoneType }
      *     
      */
@@ -299,7 +299,7 @@ public class AssertionType {
      * Gets the value of the ssn property.
      * 
      * @return
-     *     possible object is
+     *     possible model is
      *     {@link String }
      *     
      */
@@ -311,7 +311,7 @@ public class AssertionType {
      * Sets the value of the ssn property.
      * 
      * @param value
-     *     allowed object is
+     *     allowed model is
      *     {@link String }
      *     
      */
@@ -325,7 +325,7 @@ public class AssertionType {
      * <p>
      * This accessor method returns a reference to the live list,
      * not a snapshot. Therefore any modification you make to the
-     * returned list will be present inside the JAXB object.
+     * returned list will be present inside the JAXB model.
      * This is why there is not a <CODE>set</CODE> method for the uniquePatientId property.
      * 
      * <p>
@@ -352,7 +352,7 @@ public class AssertionType {
      * Gets the value of the witnessAddress property.
      * 
      * @return
-     *     possible object is
+     *     possible model is
      *     {@link AddressType }
      *     
      */
@@ -364,7 +364,7 @@ public class AssertionType {
      * Sets the value of the witnessAddress property.
      * 
      * @param value
-     *     allowed object is
+     *     allowed model is
      *     {@link AddressType }
      *     
      */
@@ -376,7 +376,7 @@ public class AssertionType {
      * Gets the value of the witnessName property.
      * 
      * @return
-     *     possible object is
+     *     possible model is
      *     {@link PersonNameType }
      *     
      */
@@ -388,7 +388,7 @@ public class AssertionType {
      * Sets the value of the witnessName property.
      * 
      * @param value
-     *     allowed object is
+     *     allowed model is
      *     {@link PersonNameType }
      *     
      */
@@ -400,7 +400,7 @@ public class AssertionType {
      * Gets the value of the witnessPhone property.
      * 
      * @return
-     *     possible object is
+     *     possible model is
      *     {@link PhoneType }
      *     
      */
@@ -412,7 +412,7 @@ public class AssertionType {
      * Sets the value of the witnessPhone property.
      * 
      * @param value
-     *     allowed object is
+     *     allowed model is
      *     {@link PhoneType }
      *     
      */
@@ -424,7 +424,7 @@ public class AssertionType {
      * Gets the value of the userInfo property.
      * 
      * @return
-     *     possible object is
+     *     possible model is
      *     {@link UserType }
      *     
      */
@@ -436,7 +436,7 @@ public class AssertionType {
      * Sets the value of the userInfo property.
      * 
      * @param value
-     *     allowed object is
+     *     allowed model is
      *     {@link UserType }
      *     
      */
@@ -464,7 +464,7 @@ public class AssertionType {
      * Gets the value of the purposeOfDisclosureCoded property.
      * 
      * @return
-     *     possible object is
+     *     possible model is
      *     {@link CeType }
      *     
      */
@@ -476,7 +476,7 @@ public class AssertionType {
      * Sets the value of the purposeOfDisclosureCoded property.
      * 
      * @param value
-     *     allowed object is
+     *     allowed model is
      *     {@link CeType }
      *     
      */
@@ -488,7 +488,7 @@ public class AssertionType {
      * Gets the value of the samlAuthnStatement property.
      * 
      * @return
-     *     possible object is
+     *     possible model is
      *     {@link SamlAuthnStatementType }
      *     
      */
@@ -500,7 +500,7 @@ public class AssertionType {
      * Sets the value of the samlAuthnStatement property.
      * 
      * @param value
-     *     allowed object is
+     *     allowed model is
      *     {@link SamlAuthnStatementType }
      *     
      */
@@ -512,7 +512,7 @@ public class AssertionType {
      * Gets the value of the samlAuthzDecisionStatement property.
      * 
      * @return
-     *     possible object is
+     *     possible model is
      *     {@link SamlAuthzDecisionStatementType }
      *     
      */
@@ -524,7 +524,7 @@ public class AssertionType {
      * Sets the value of the samlAuthzDecisionStatement property.
      * 
      * @param value
-     *     allowed object is
+     *     allowed model is
      *     {@link SamlAuthzDecisionStatementType }
      *     
      */
@@ -536,7 +536,7 @@ public class AssertionType {
      * Gets the value of the samlSignature property.
      * 
      * @return
-     *     possible object is
+     *     possible model is
      *     {@link SamlSignatureType }
      *     
      */
@@ -548,7 +548,7 @@ public class AssertionType {
      * Sets the value of the samlSignature property.
      * 
      * @param value
-     *     allowed object is
+     *     allowed model is
      *     {@link SamlSignatureType }
      *     
      */
@@ -560,7 +560,7 @@ public class AssertionType {
      * Gets the value of the messageId property.
      * 
      * @return
-     *     possible object is
+     *     possible model is
      *     {@link String }
      *     
      */
@@ -572,7 +572,7 @@ public class AssertionType {
      * Sets the value of the messageId property.
      * 
      * @param value
-     *     allowed object is
+     *     allowed model is
      *     {@link String }
      *     
      */
@@ -586,7 +586,7 @@ public class AssertionType {
      * <p>
      * This accessor method returns a reference to the live list,
      * not a snapshot. Therefore any modification you make to the
-     * returned list will be present inside the JAXB object.
+     * returned list will be present inside the JAXB model.
      * This is why there is not a <CODE>set</CODE> method for the relatesToList property.
      * 
      * <p>

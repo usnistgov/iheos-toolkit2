@@ -13,9 +13,9 @@ import java.util.List;
  *
  */
 public class EnvironmentState {
-	String environmentName = null;
-	List<String> environmentNameChoices = new ArrayList<String>();
-	List<EnvironmentManager> managers = new ArrayList<EnvironmentManager>();
+	private String environmentName = null;
+	private List<String> environmentNameChoices = new ArrayList<String>();
+	private List<EnvironmentManager> managers = new ArrayList<EnvironmentManager>();
 
 	public boolean isFirstManager() { return managers.size() == 1; }
 	
@@ -26,6 +26,14 @@ public class EnvironmentState {
 	public void setEnvironmentName(String environmentName) {
 		this.environmentName = environmentName;
 		validate();
+	}
+
+	/**
+	 * Set environment name without validation - needed to init from GWT Activity
+	 * @param environmentName
+	 */
+	public void initEnvironmentName(String environmentName) {
+		this.environmentName = environmentName;
 	}
 
 	public List<String> getEnvironmentNameChoices() {

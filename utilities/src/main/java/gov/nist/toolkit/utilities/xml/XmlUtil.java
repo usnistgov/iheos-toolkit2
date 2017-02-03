@@ -6,23 +6,37 @@
 
 package gov.nist.toolkit.utilities.xml;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-
 import org.apache.axiom.om.OMAbstractFactory;
 import org.apache.axiom.om.OMElement;
 import org.apache.axiom.om.OMFactory;
 import org.apache.axiom.om.OMNamespace;
+import org.apache.axiom.om.util.AXIOMUtil;
+import org.apache.commons.lang3.StringUtils;
 import org.w3c.dom.Document;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
+import javax.xml.namespace.QName;
+import javax.xml.stream.XMLStreamException;
+
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+
+/**
+ * static utility methods for working with XML using Axis
+ */
 public class XmlUtil {
 	static public OMFactory om_factory = OMAbstractFactory.getOMFactory();
 	static public OMNamespace xml_namespace =   om_factory.createOMNamespace("http://www.w3.org/XML/1998/namespace", "xml");
 
+	/**
+    * Return first child element with passed local name.
+    * @param ele parent element to evaluate
+    * @param localName local name of child element to match
+	 * @return first OMElement meeting criteria, or null if none do.
+	 */
 	public static OMElement firstChildWithLocalName(OMElement ele, String localName) {
 		for (Iterator<?> it=ele.getChildElements(); it.hasNext(); ) {
 			OMElement child = (OMElement) it.next();
@@ -30,6 +44,62 @@ public class XmlUtil {
 				return child;
 		}
 		return null;
+	}
+	/**
+    * Return only child element with passed local name.
+    * @param ele parent element to evaluate
+    * @param localName local name of child element to match
+    * @return only OMElement meeting criteria, or null if none or more than 1 do.
+    */
+	public static OMElement onlyChildWithLocalNameNE(OMElement ele, String localName) {
+	   List<OMElement> matches = new ArrayList<>();
+      for (Iterator<?> it=ele.getChildElements(); it.hasNext(); ) {
+         OMElement child = (OMElement) it.next();
+         if (child.getLocalName().equals(localName))
+            matches.add(child);
+      }
+      if (matches.size() == 1) return matches.get(0);
+      return null;
+   }
+   
+   /**
+    * Return first child element with passed local name and attribute with 
+    * passed name and value.
+    * @param ele parent element to evaluate
+    * @param localName local name of child element to consider
+    * @param attr name of attribute to look for in child element
+    * @param value value that attribute should have
+    * @return first OMElement meeting criteria, or null if none do.
+    */
+   public static OMElement firstChildWithLocalNameAndAttribute(OMElement ele, 
+      String localName, String attr, String value) {
+      for(OMElement chil :  childrenWithLocalName(ele, localName)) {
+         String v = getAttributeValue(chil, attr);
+         if (v != null && v.equals(value)) return chil;
+      }
+      return null;
+   }
+	
+	/**
+	 * Return element which is first child repetitively. For example:<br/>
+	 * firstChildChain(top, "Section", "Step", SubStep") would start with top,
+	 * look for a first child "Section" under it, then a first child "Step" under
+	 * that, and finally a first child "SubStep" under that. The "SubStep"
+	 * element would be returned. If at any point the first child is not found,
+	 * null is returned.
+	 * @param ele parent element to start with
+	 * @param localNames one or more local names of the child elements at each
+	 * level.
+	 * @return the last child, or null if at any point the next child could not
+	 * be found.
+	 */
+	public static OMElement firstChildChain(OMElement ele, String... localNames) {
+	   OMElement chld = ele;
+	   for (String name : localNames) {
+	      chld = XmlUtil.firstChildWithLocalName(chld, name);
+	      if (chld == null) break;
+	   }
+	   return chld;
 	}
 
 	public static OMElement firstChildWithLocalNameEndingWith(OMElement ele, String localNameSuffix) {
@@ -40,7 +110,36 @@ public class XmlUtil {
 		}
 		return null;
 	}
+   /**
+    * Get the one and only one child element of parent with given name.
+    * @param ele parent element
+    * @param localName of desired child. if blank, matches any name
+    * @return child element with local name, provided there is one and only one
+    * such child. 
+    * @throws Exception on error, or if child is not unique or doesn't exist.
+    */
+   public static OMElement onlyChildWithLocalName(OMElement ele, String localName) 
+      throws Exception {
+      List<OMElement> children = new ArrayList<>();
+      for (Iterator<?> it=ele.getChildElements(); it.hasNext(); ) {
+         OMElement child = (OMElement) it.next();
+         if (StringUtils.isBlank(localName) || child.getLocalName().equals(localName)) children.add(child);
+      }
+      if (children.size() == 1) return children.get(0);
+      StringBuilder em = new StringBuilder("error in XmlUtil#onlyChildWithLocalName: parent element ");
+      em.append(ele.getLocalName()).append(" has ").append(children.size())
+        .append(" children"); 
+      if (StringUtils.isNotBlank(localName)) em.append(" with local name ").append(localName);
+      throw new Exception(em.toString());
+   }
+	
 
+	/**
+	 * Returns child elements with passed tag name.
+	 * @param ele parent OMElement
+	 * @param localName name to match
+	 * @return {@link List} or OMElements, may be empty, never null;
+	 */
 	public static List<OMElement> childrenWithLocalName(OMElement ele, String localName) {
 		List<OMElement> al = new ArrayList<OMElement>();
 		for (Iterator<?> it=ele.getChildElements(); it.hasNext(); ) {
@@ -50,7 +149,26 @@ public class XmlUtil {
 		}
 		return al;
 	}
+	
+	/**
+    * Returns child elements 
+    * @param ele parent OMElement
+    * @return {@link List} or OMElements, may be empty, never null;
+    */
+   public static List<OMElement> children(OMElement ele) {
+      List<OMElement> al = new ArrayList<OMElement>();
+      for (Iterator<?> it=ele.getChildElements(); it.hasNext(); ) {
+         OMElement child = (OMElement) it.next();
+            al.add(child);
+      }
+      return al;
+   }
 
+	/**
+	 * Returns a list of the local names of all child elements  of passed element
+	 * @param ele parent element
+	 * @return {@link List} of String names. May be empty, never null.
+	 */
 	public static List<String> childrenLocalNames(OMElement ele) {
 		List<String> al = new ArrayList<String>();
 		for (Iterator<?> it=ele.getChildElements(); it.hasNext(); ) {
@@ -64,6 +182,17 @@ public class XmlUtil {
 		List<OMElement> decendents = decendentsWithLocalName(ele, localName);
 		if (decendents.size() == 0) return null;
 		return decendents.get(0);
+	}
+	
+	public static OMElement decendentWithLocalName(OMElement ele, String localName)
+	   throws Exception {
+	   List<OMElement> decendents = decendentsWithLocalName(ele, localName);
+	   if (decendents.size() != 1) {
+	      String em = ele.getLocalName() + " had " + decendents.size() +
+	         " children with name " + localName;
+	      throw new Exception(em);
+	   }
+	   return decendents.get(0);
 	}
 
 	public static List<OMElement> decendentsWithLocalName(OMElement ele, String localName) {
@@ -87,6 +216,29 @@ public class XmlUtil {
 				decendents.add(child);
 			decendentsWithLocalName1(decendents, child, localName, depth - 1);
 		}
+	}
+
+	public static List<OMElement> descendantsWithLocalNameEndsWith(OMElement ele, String localName) {
+		List<OMElement> al = new ArrayList<OMElement>();
+		if (ele == null || localName == null)
+			return al;
+		descendantsWithLocalNameEndsWith(al, ele, localName, -1);
+		return al;
+	}
+
+	private static void descendantsWithLocalNameEndsWith(List<OMElement> descendants, OMElement ele, String localName, int depth) {
+		if (depth == 0)
+			return;
+		for (Iterator<?> it=ele.getChildElements(); it.hasNext(); ) {
+			OMElement child = (OMElement) it.next();
+			if (child.getLocalName().toLowerCase().endsWith(localName.toLowerCase()))
+				descendants.add(child);
+			decendentsWithLocalName1(descendants, child, localName, depth - 1);
+		}
+	}
+	
+	public static String getAttributeValue(OMElement element, String attributeName) {
+	   return element.getAttributeValue(new QName(attributeName));
 	}
 
 	public static OMElement createElement(String localName, OMNamespace ns) {
@@ -176,5 +328,34 @@ public class XmlUtil {
 
 		return sb.toString();
 	}
+	
+	static public OMElement strToOM(String xml) throws XMLStreamException {
+	   return AXIOMUtil.stringToOM(xml);
+	}
+	
+	/**
+	 * Converts xml element to string.
+	 * @param element parent (document) element
+	 * @return String value, or null on error.
+	 */
+	static public String OMToStr(OMElement element) {
+	   try {
+         return element.toStringWithConsume();
+      } catch (XMLStreamException e) {
+         return null;
+      }
+	} 
+   
+	/**
+	 * Sets text for descendant Document elements to "...". Used to truncate
+	 * documents in retrieve document set response for display. 
+	 * @param element parent element
+	 */
+	public static void truncateDocuments(OMElement element) {
+      for (OMElement doc : decendentsWithLocalName(element, "Document")) {
+         doc.setText("...");
+      }
+      return;
+   }
 
 }

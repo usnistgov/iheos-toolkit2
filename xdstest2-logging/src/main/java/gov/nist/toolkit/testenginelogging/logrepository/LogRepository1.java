@@ -1,9 +1,9 @@
 package gov.nist.toolkit.testenginelogging.logrepository;
 
 import gov.nist.toolkit.results.client.TestInstance;
-import gov.nist.toolkit.testenginelogging.LogMap;
-import gov.nist.toolkit.xdsexception.XdsException;
-import gov.nist.toolkit.xdsexception.XdsInternalException;
+import gov.nist.toolkit.testenginelogging.client.LogMapDTO;
+import gov.nist.toolkit.xdsexception.client.XdsException;
+import gov.nist.toolkit.xdsexception.client.XdsInternalException;
 import org.apache.log4j.Logger;
 
 import java.io.*;
@@ -24,7 +24,7 @@ abstract public class LogRepository1 {
 	protected LogRepository1() {
 	}
 	
-	public void logOut(TestInstance id, LogMap log) throws XdsException {
+	public void logOut(TestInstance id, LogMapDTO log) throws XdsException {
 		getLogger().debug("Writing log " + log.getKeys() + " to " + logDir);
 		FileOutputStream fos = null;
 		ObjectOutputStream out = null;
@@ -43,19 +43,19 @@ abstract public class LogRepository1 {
 		}
 	}
 	
-	public LogMap logIn(TestInstance id) throws Exception {
+	public LogMapDTO logIn(TestInstance id) throws Exception {
 		FileInputStream fis = null;
 		ObjectInputStream in = null;
 		try {
 			fis = new FileInputStream(logFile(id));
 			in = new ObjectInputStream(fis);
-			LogMap map = (LogMap) in.readObject();
+			LogMapDTO map = (LogMapDTO) in.readObject();
 			getLogger().debug("restoring log " + map.getKeys() + " from " + logDir);
 			return map;
 		} 
 		catch (ClassNotFoundException e) {
 			getLogger().debug("attempting to restore log " + "from " + logDir);
-			throw new XdsInternalException("Cannot create object of type LogMap - class not found",e);
+			throw new XdsInternalException("Cannot create model of type LogMapDTO - class not found",e);
 		} finally {
 			in.close();
 		}

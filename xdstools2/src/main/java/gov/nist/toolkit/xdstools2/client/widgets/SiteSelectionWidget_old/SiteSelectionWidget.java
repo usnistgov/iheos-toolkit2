@@ -4,17 +4,16 @@ import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.*;
 import gov.nist.toolkit.actortransaction.client.ActorType;
 import gov.nist.toolkit.configDatatypes.client.TransactionType;
-import gov.nist.toolkit.results.client.SiteSpec;
 import gov.nist.toolkit.sitemanagement.client.Site;
+import gov.nist.toolkit.sitemanagement.client.SiteSpec;
 import gov.nist.toolkit.sitemanagement.client.TransactionOfferings;
 import gov.nist.toolkit.xdstools2.client.CoupledTransactions;
-import gov.nist.toolkit.xdstools2.client.PopupMessage;
 import gov.nist.toolkit.xdstools2.client.StringSort;
-import gov.nist.toolkit.xdstools2.client.ToolkitServiceAsync;
+import gov.nist.toolkit.xdstools2.client.command.command.GetTransactionOfferingsCommand;
+import gov.nist.toolkit.xdstools2.client.util.ClientUtils;
 
 import java.util.*;
 
@@ -27,39 +26,36 @@ public class SiteSelectionWidget extends Composite   {
 	CheckBox doTls;
 	Map<TransactionType, List<RadioButton>> rbMap = new HashMap<TransactionType, List<RadioButton>>();
 
-	List<TransactionType> transactionTypes;  
+	List<TransactionType> transactionTypes;
 	CoupledTransactions couplings;
 	ActorType actorType;
 	TransactionOfferings transactionOfferings;
-	ToolkitServiceAsync toolkitService;
-	
+
 	boolean samlSelected = false;
 	boolean tlsSelected = true;
-	
+
 	/**
-	 * 
-	 * @param transactionOfferings
+	 *
+	 * @param couplings
 	 * @param couplings - Coupled transactions. Pass null if none.
 	 * @param actorType
 	 */
-	public SiteSelectionWidget(CoupledTransactions couplings, ActorType actorType,
-			ToolkitServiceAsync toolkitService
-			) {
+	public SiteSelectionWidget(CoupledTransactions couplings, ActorType actorType
+	) {
 		this.couplings = couplings;
 		this.actorType = actorType;
-		this.toolkitService = toolkitService;
-		
+
 		transactionTypes = actorType.getTransactions();
 		if (this.couplings == null)
 			this.couplings = new CoupledTransactions();
-		
+
 		reloadTransactionOfferings();  // getRetrievedDocumentsModel transactionOfferings from server
-		
+
 		panel.add(selectGrid);
 		panel.add(siteContainer);
-		
+
 		int row = 0;
-				
+
 		samlListBox = new ListBox();
 		samlListBox.addItem("SAML OFF", "0");
 		samlListBox.addItem("NHIN SAML", "1");
@@ -70,36 +66,36 @@ public class SiteSelectionWidget extends Composite   {
 		doTls = new CheckBox("TLS?");
 		doTls.setValue(tlsSelected);
 		doTls.addClickHandler(new TlsSelector());
-		selectGrid.setWidget(row, 2, doTls);		
+		selectGrid.setWidget(row, 2, doTls);
 		row++;
-		
-		
+
+
 	}
-	
+
 	public VerticalPanel getTopPanel() { return panel; }
-	
-	
+
+
 	public void redisplay(TransactionOfferings transactionOfferings) {
 		this.transactionOfferings = transactionOfferings;
-		
+
 		redisplay();
 	}
-	
+
 	void redisplay() {
-		
+
 		siteContainer.clear();
-		
+
 		if (actorType != null) {
 			addSitesForActor(actorType, siteContainer);
 		} else {
 			addSitesForTransaction(transactionTypes, siteContainer);
 		}
 	}
-		
+
 	void addSitesForActor(ActorType at, VerticalPanel parent) {
 
 		Grid bigGrid = new Grid(1, 2);
-		
+
 		Set<Site> sites = new HashSet<Site>();
 
 		HTML label = new HTML();
@@ -107,9 +103,9 @@ public class SiteSelectionWidget extends Composite   {
 		bigGrid.setWidget(0, 0, label);
 
 		List<String> siteNames = new ArrayList<String>();
-		for (Site site : sites) 
+		for (Site site : sites)
 			siteNames.add(site.getName());
-		siteNames = new StringSort().sort(siteNames);
+		siteNames = StringSort.sort(siteNames);
 
 		for (TransactionType tt : at.getTransactions()) {
 			sites.addAll(findSites(tt, true  /* tls */));
@@ -119,7 +115,7 @@ public class SiteSelectionWidget extends Composite   {
 		int cols = 5;
 		int row=0;
 		int col=0;
-		
+
 		Grid sitesGrid = new Grid( sites.size()/cols + 1 , cols);
 		byActorButtons = new ArrayList<RadioButton>();
 		for (Site site : sites) {
@@ -133,13 +129,13 @@ public class SiteSelectionWidget extends Composite   {
 				row++;
 			}
 		}
-		
+
 		bigGrid.setWidget(0, 1, sitesGrid);
-		
+
 		parent.add(bigGrid);
 
 	}
-	
+
 	public String getSelectedSite() {
 		for (RadioButton rb : byActorButtons) {
 			if (rb.getValue())
@@ -147,7 +143,7 @@ public class SiteSelectionWidget extends Composite   {
 		}
 		return null;
 	}
-	
+
 	public SiteSpec getSelectedSiteSpec() {
 		String siteName = getSelectedSite();
 		if (siteName == null) return null;
@@ -164,9 +160,9 @@ public class SiteSelectionWidget extends Composite   {
 			List<Site> sites = findSites(tt, tlsSelected);
 
 			List<String> siteNames = new ArrayList<String>();
-			for (Site site : sites) 
+			for (Site site : sites)
 				siteNames.add(site.getName());
-			siteNames = new StringSort().sort(siteNames);
+			siteNames = StringSort.sort(siteNames);
 
 			int cols = 5;
 			int row=0;
@@ -190,7 +186,7 @@ public class SiteSelectionWidget extends Composite   {
 
 			parent.add(sitesGrid);
 		}
-		
+
 	}
 
 	// since to has come over from server and tt was generated here, they
@@ -211,7 +207,7 @@ public class SiteSelectionWidget extends Composite   {
 		return new ArrayList<Site>();
 	}
 
-	
+
 	class SamlSelector implements ChangeHandler {
 
 		public void onChange(ChangeEvent event) {
@@ -221,7 +217,7 @@ public class SiteSelectionWidget extends Composite   {
 
 		}
 	}
-	
+
 	class TlsSelector implements ClickHandler {
 
 		public void onClick(ClickEvent event) {
@@ -229,7 +225,7 @@ public class SiteSelectionWidget extends Composite   {
 		}
 
 	}
-	
+
 	public boolean isTlsSelected() { return tlsSelected; }
 
 	class ActorClickHandlerByTransaction implements ClickHandler {
@@ -256,28 +252,18 @@ public class SiteSelectionWidget extends Composite   {
 	}
 
 	void reloadTransactionOfferings() {
-		try {
-			toolkitService.getTransactionOfferings(new AsyncCallback<TransactionOfferings> () {
+		new GetTransactionOfferingsCommand() {
 
-				public void onFailure(Throwable caught) {
-					if (!isEmpty(caught))
-						new PopupMessage(caught.getMessage());
-				}
-
-				public void onSuccess(TransactionOfferings to) {
-					redisplay(to);
-				}
-
-			});
-		} catch (Exception e) {
-			if (!isEmpty(e))
-				new PopupMessage(e.getMessage());
-		}
+			@Override
+			public void onComplete(TransactionOfferings var1) {
+				redisplay(var1);
+			}
+		}.run(ClientUtils.INSTANCE.getCommandContext());
 	}
 
 	boolean samlSelected() { return samlSelected; }
 	boolean isEmpty(String x) { return x == null || x.equals(""); }
 	boolean isEmpty(Throwable t) { return isEmpty(t.getMessage()); }
-	
+
 
 }

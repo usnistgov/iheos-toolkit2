@@ -1,11 +1,13 @@
 package gov.nist.toolkit.services.client;
 
+import com.google.gwt.user.client.rpc.IsSerializable;
+
 import java.io.Serializable;
 
 /**
- *
+ * Base class for Toolkit service responses. Encapsulates data for error returns
  */
-public class RawResponse implements Serializable {
+public class RawResponse implements Serializable, IsSerializable {
     boolean error = false;
     String errorMessage = null;
     String stackTrace = null;

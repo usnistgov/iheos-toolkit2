@@ -43,6 +43,8 @@ public class SiteServiceManager {
 		return siteServiceManager;
 	}
 
+	static public SiteServiceManager getInstance() { return getSiteServiceManager(); }
+
 //	public void setCommonSites(Sites commonSites) {
 //		this.commonSites = commonSites;
 //	}
@@ -56,10 +58,15 @@ public class SiteServiceManager {
 		ArrayList<Site> sites = new ArrayList<>();   //getCommonSites().asCollection());
 		sites.addAll(new SimCache().getSimManagerForSession(sessionId).getAllSites().asCollection());
 		List<String> names = new ArrayList<>();
-		for (Site s : sites)
+
+		List<Site> sites2 = new ArrayList<>();
+		for (Site s : sites) {
+			if (s.getName().equals("allRepositories")) continue;
+			sites2.add(s);
 			names.add(s.getName());
+		}
 		logger.debug(names);
-		return sites;
+		return sites2;
 	}
 
 	public List<String> getSiteNamesWithRG(String sessionId) throws Exception {
@@ -71,6 +78,26 @@ public class SiteServiceManager {
 		}
 		return ss;
 	}
+
+   public List<String> getSiteNamesWithRIG(String sessionId) throws Exception {
+      logger.debug(sessionId + ": " + "getSiteNamesWithRIG");
+      List<String> ss = new ArrayList<>();
+      for (Site s : new SimCache().getSimManagerForSession(sessionId).getAllSites().asCollection()) {
+         if (s.hasActor(ActorType.RESPONDING_IMAGING_GATEWAY))
+            ss.add(s.getName());
+      }
+      return ss;
+   }
+
+   public List<String> getSiteNamesWithIDS(String sessionId) throws Exception {
+      logger.debug(sessionId + ": " + "getSiteNamesWithIDS");
+      List<String> ss = new ArrayList<>();
+      for (Site s : new SimCache().getSimManagerForSession(sessionId).getAllSites().asCollection()) {
+         if (s.hasActor(ActorType.IMAGING_DOC_SOURCE))
+            ss.add(s.getName());
+      }
+      return ss;
+   }
 
 	public List<String> getSiteNamesByTran(String tranTypeStr, String sessionId) throws Exception {
 		logger.debug(sessionId + ": " + "getSiteNamesWithRep");
@@ -126,13 +153,13 @@ public class SiteServiceManager {
 			Exception {
 		if (commonSites == null) {
 			if (!useActorsFile()) {
-				File dir = Installation.installation().getActorsDirName();
+				File dir = Installation.instance().actorsDir();
 				logger.debug("loading sites from " + dir);
 				commonSites = new SeparateSiteLoader().load(dir, commonSites);
 			} else {
-				File loc = Installation.installation().propertyServiceManager().configuredActorsFile(true);
+				File loc = Installation.instance().propertyServiceManager().configuredActorsFile(true);
 				if (loc == null)
-					loc = Installation.installation().propertyServiceManager().internalActorsFile();
+					loc = Installation.instance().propertyServiceManager().internalActorsFile();
 				logger.debug("loading sites from " + loc);
 				commonSites = new CombinedSiteLoader().load(loc, commonSites);
 			}
@@ -153,12 +180,12 @@ public class SiteServiceManager {
 	boolean useActorsFile() {
 		if (useGazelleConfigFeed())
 			return false;
-		return Installation.installation().propertyServiceManager().getPropertyManager()
+		return Installation.instance().propertyServiceManager().getPropertyManager()
 				.isUseActorsFile();
 	}
 
 	public boolean useGazelleConfigFeed() {
-		String c = Installation.installation().propertyServiceManager().getPropertyManager()
+		String c = Installation.instance().propertyServiceManager().getPropertyManager()
 				.getToolkitGazelleConfigURL();
 		return c.trim().length() > 0;
 	}
@@ -240,7 +267,8 @@ public class SiteServiceManager {
 		logger.debug(sessionId + ": " + "getSite");
 		try {
 			getAllSites(sessionId);
-			return SimCache.getSimManagerForSession(sessionId).getAllSites().getSite(siteName);
+			Site site = SimCache.getSimManagerForSession(sessionId).getAllSites().getSite(siteName);
+			return site;
 		} catch (Exception e) {
 			logger.error("getSite", e);
 			throw new Exception(e.getMessage());
@@ -254,11 +282,11 @@ public class SiteServiceManager {
             commonSites.putSite(site);
 			// sites.saveToFile(configuredActorsFile(false));
 			if (!useActorsFile())
-				new SeparateSiteLoader().saveToFile(Installation.installation()
-						.getActorsDirName(), site);
+				new SeparateSiteLoader().saveToFile(Installation.instance()
+						.actorsDir(), site);
 			else {
 				CombinedSiteLoader loader = new CombinedSiteLoader();
-				loader.saveToFile(Installation.installation().propertyServiceManager()
+				loader.saveToFile(Installation.instance().propertyServiceManager()
 						.configuredActorsFile(false), loader.toXML(commonSites));
 			}
 			addSimulatorSites(sessionId);
@@ -277,10 +305,10 @@ public class SiteServiceManager {
 		try {
 			// sites.saveToFile(configuredActorsFile(false));
 			if (!useActorsFile())
-				new SeparateSiteLoader().delete(Installation.installation()
-						.getActorsDirName(), siteName);
+				new SeparateSiteLoader().delete(Installation.instance()
+						.actorsDir(), siteName);
 			else
-				new CombinedSiteLoader().saveToFile(Installation.installation().propertyServiceManager()
+				new CombinedSiteLoader().saveToFile(Installation.instance().propertyServiceManager()
 						.configuredActorsFile(false), commonSites);
 			addSimulatorSites(sessionId);
 		} catch (Exception e) {

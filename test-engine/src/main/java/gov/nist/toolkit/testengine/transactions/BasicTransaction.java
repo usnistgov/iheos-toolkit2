@@ -1,16 +1,18 @@
 package gov.nist.toolkit.testengine.transactions;
 
 import gov.nist.toolkit.common.datatypes.Hl7Date;
+import gov.nist.toolkit.commondatatypes.MetadataSupport;
 import gov.nist.toolkit.configDatatypes.client.TransactionType;
+import gov.nist.toolkit.installation.Installation;
 import gov.nist.toolkit.registrymetadata.IdParser;
 import gov.nist.toolkit.registrymetadata.Metadata;
 import gov.nist.toolkit.registrymetadata.MetadataParser;
-import gov.nist.toolkit.registrymsg.registry.RegistryErrorListGenerator;
 import gov.nist.toolkit.registrymsg.registry.RegistryResponseParser;
-import gov.nist.toolkit.commondatatypes.MetadataSupport;
+import gov.nist.toolkit.registrysupport.RegistryErrorListGenerator;
 import gov.nist.toolkit.securityCommon.SecurityParams;
 import gov.nist.toolkit.soap.axis2.Soap;
-import gov.nist.toolkit.testengine.engine.AssertionEngine;
+import gov.nist.toolkit.testengine.assertionEngine.Assertion;
+import gov.nist.toolkit.testengine.assertionEngine.AssertionEngine;
 import gov.nist.toolkit.testengine.engine.ErrorReportingInterface;
 import gov.nist.toolkit.testengine.engine.Linkage;
 import gov.nist.toolkit.testengine.engine.OmLogger;
@@ -26,21 +28,21 @@ import gov.nist.toolkit.testengine.engine.TransactionSettings;
 import gov.nist.toolkit.testengine.engine.TransactionStatus;
 import gov.nist.toolkit.testengine.engine.UseReportManager;
 import gov.nist.toolkit.testengine.engine.Validator;
-import gov.nist.toolkit.testenginelogging.LogFileContent;
+import gov.nist.toolkit.testenginelogging.LogFileContentBuilder;
 import gov.nist.toolkit.testenginelogging.NotALogFileException;
-import gov.nist.toolkit.testenginelogging.Report;
-import gov.nist.toolkit.testenginelogging.SectionLogMap;
+import gov.nist.toolkit.testenginelogging.client.ReportDTO;
+import gov.nist.toolkit.testenginelogging.client.SectionLogMapDTO;
 import gov.nist.toolkit.utilities.xml.Util;
 import gov.nist.toolkit.utilities.xml.XmlUtil;
 import gov.nist.toolkit.valregmsg.service.SoapActionFactory;
 import gov.nist.toolkit.valsupport.client.ValidationContext;
 import gov.nist.toolkit.valsupport.engine.DefaultValidationContextFactory;
 import gov.nist.toolkit.xdsexception.ExceptionUtil;
-import gov.nist.toolkit.xdsexception.MetadataException;
-import gov.nist.toolkit.xdsexception.MetadataValidationException;
 import gov.nist.toolkit.xdsexception.NoMetadataException;
 import gov.nist.toolkit.xdsexception.SchemaValidationException;
-import gov.nist.toolkit.xdsexception.XdsInternalException;
+import gov.nist.toolkit.xdsexception.client.MetadataException;
+import gov.nist.toolkit.xdsexception.client.MetadataValidationException;
+import gov.nist.toolkit.xdsexception.client.XdsInternalException;
 import org.apache.axiom.om.OMAbstractFactory;
 import org.apache.axiom.om.OMElement;
 import org.apache.axiom.om.OMFactory;
@@ -75,10 +77,10 @@ public abstract class BasicTransaction  {
 	protected ArrayList<OMElement> use_repository_unique_id;
 	// assertion linkage
 	protected ArrayList<OMElement> data_refs;
-	protected ArrayList<OMElement> assertions;
+	protected ArrayList<OMElement> assertionEleList;
 
 	static public final short xds_none = 0;
-	static public final short xds_a = 1;
+	static public final short xds_a = 1 ;
 	static public final short xds_b = 2;
 	short xds_version = BasicTransaction.xds_none;
 	protected String endpoint = null;
@@ -93,10 +95,14 @@ public abstract class BasicTransaction  {
 	protected boolean soap_1_2 = true;
 	protected boolean async = false;
 	protected boolean isStableOrODDE = false;
+	/**
+	HttpTransaction uses a separate Body.txt file. In this case we need to tell not run reportManagerPreRun since the subclass will run the parameter replacement on its own.
+	 */
+	boolean noReportManagerPreRun = false;
+	boolean noMetadataProcessing = false;  // example Retrieve request - no metadata to process
 	boolean useMtom;
 	boolean useAddressing;
 	boolean isSQ;
-	boolean noMetadataProcessing = false;  // example Retrieve request - no metadata to process
 	boolean defaultEndpointProcessing = true;
 
 	protected String repositoryUniqueId = null;
@@ -172,55 +178,61 @@ public abstract class BasicTransaction  {
 
 	public void doRun() throws Exception {
 
-        Iterator<OMElement> elements = instruction.getChildElements();
-		while (elements.hasNext()) {
-			OMElement part = (OMElement) elements.next();
-			parseInstruction(part);
-		}
+		try {
+			Iterator<OMElement> elements = instruction.getChildElements();
+			while (elements.hasNext()) {
+				OMElement part = (OMElement) elements.next();
+				parseInstruction(part);
+			}
 
-		applyTransactionSettings();
+			applyTransactionSettings();
 
 
-		String trans = getBasicTransactionName();
-		if (trans == null)
-			fatal("Internal error: No transaction name declared");
+			String trans = getBasicTransactionName();
+			if (trans == null)
+				fatal("Internal error: No transaction name declared");
 
-		if (async)
-			xds_version = BasicTransaction.xds_b;
+			if (async)
+				xds_version = BasicTransaction.xds_b;
 
-		if (trans.equals("sq") || trans.equals("pr") || trans.equals("r")) {
-			//			if (async)
-			//				trans = trans + ".as";
-			//			else
-			if (isB())
-				trans = trans + ".b";
-			else
-				trans = trans + ".a";
-		}
-		//		else if (async)
-		//			trans = trans + ".as";
+			if (trans.equals("sq") || trans.equals("pr") || trans.equals("r")) {
+				//			if (async)
+				//				trans = trans + ".as";
+				//			else
+				if (isB())
+					trans = trans + ".b";
+				else
+					trans = trans + ".a";
+			}
+			//		else if (async)
+			//			trans = trans + ".as";
 
-		TransactionType ttype = TransactionType.find(trans);
+			TransactionType ttype = TransactionType.find(trans);
 
 //		if (ttype == null)
 //			fatal("Do not understand transaction type " + trans);
 
-		if (defaultEndpointProcessing && ttype != null)
-			parseEndpoint(ttype);
+			if (defaultEndpointProcessing && ttype != null)
+				parseEndpoint(ttype);
 
-		Metadata metadata = prepareMetadata();
-		if (metadata != null)
-			request_element = metadata.getRoot();
+			Metadata metadata = prepareMetadata();
+			if (metadata != null)
+				request_element = metadata.getRoot();
 
-		//		reportManagerPreRun(request_element);  // must run before prepareMetadata (assign uuids)
+			//		reportManagerPreRun(request_element);  // must run before prepareMetadata (assign uuids)
 
-		run(request_element);
+			run(request_element);
 
-		reportManagerPostRun();
+			if (s_ctx.getExpectedStatus().size()>0 && !s_ctx.getExpectedStatus().get(0).isFault())
+				reportManagerPostRun();
+		} catch (Exception e) {
+			s_ctx.set_error("Internal Error: " + ExceptionUtil.exception_details(e));
+			step_failure = true;
+		}
 	}
 
 	protected void reportManagerPostRun() throws XdsInternalException {
-		SectionLogMap sectionLogs = getPlan().getPreviousSectionLogs();
+		SectionLogMapDTO sectionLogs = getPlan().getPreviousSectionLogs();
 
 		try {
 			sectionLogs.remove("THIS");
@@ -251,20 +263,20 @@ public abstract class BasicTransaction  {
 
 		if (useReportManager != null) {
 
-			SectionLogMap sectionLogs = getPlan().getPreviousSectionLogs();
+			SectionLogMapDTO sectionLogs = getPlan().getPreviousSectionLogs();
 			// add in current section log so we can reference ourself
 			try {
-				sectionLogs.put("THIS", new LogFileContent(getPlan().getLog(), true /* incomplete is ok */));
+				sectionLogs.put("THIS", new LogFileContentBuilder().build(getPlan().getLog(), true /* incomplete is ok */));
 			} catch (NotALogFileException e) {
 				e.printStackTrace();
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
 
-			//TestSections dependencies = useReportManager.getTestSections();
+			//TestSections dependencies = useReportManager.getTestSectionsReferencedInUseReports();
 
 			try {
-				useReportManager.loadPriorTestSections(testConfig);
+				useReportManager.loadPriorTestSections(transactionSettings, testConfig);
 			} catch (Exception e) {
 
 				// because useReportManager.resolve below will take care of many problems
@@ -315,7 +327,7 @@ public abstract class BasicTransaction  {
 		.append("use_object_ref = ").append((use_object_ref == null) ? null : use_object_ref.toString())
 		.append("use_repository_unique_id = ").append((use_repository_unique_id == null) ? null : use_repository_unique_id.toString())
 		.append("data_refs = ").append((data_refs == null) ? null : data_refs.toString())
-		.append("assertions = ").append((assertions == null) ? null : assertions.toString())
+		.append("assertionEleList = ").append((assertionEleList == null) ? null : assertionEleList.toString())
 		.append("endpoint = ").append(endpoint).append("\n")
 		.append("linkage = ").append((local_linkage_data == null) ? null : local_linkage_data.toString())
 		.append("metadata_filename = ").append(metadata_filename).append("\n")
@@ -356,7 +368,7 @@ public abstract class BasicTransaction  {
 		use_object_ref = new ArrayList<OMElement>();
 		use_repository_unique_id = new ArrayList<OMElement>();
 		data_refs = new ArrayList<OMElement>();
-		assertions = new ArrayList<OMElement>();
+		assertionEleList = new ArrayList<OMElement>();
 		local_linkage_data = new HashMap<String, String>();
 		isSQ = false;
 
@@ -374,7 +386,7 @@ public abstract class BasicTransaction  {
 		step_failure = true;
 	}
 
-	void validate_registry_response_in_soap(OMElement env, int metadata_type) throws XdsInternalException, MetadataValidationException, MetadataException {
+	void validate_registry_response_in_soap(OMElement env, String topElementName, int metadata_type) throws XdsInternalException, MetadataValidationException, MetadataException {
 		if (!env.getLocalName().equals("Envelope"))
 			throw new XdsInternalException("Expected 'Envelope' but found " + env.getLocalName() + " instead");
 		OMElement hdr = env.getFirstElement();
@@ -390,22 +402,30 @@ public abstract class BasicTransaction  {
 			throw new XdsInternalException("Expected 'Body' but found nothing instead");
 		if (!body.getLocalName().equals("Body"))
 			throw new XdsInternalException("Expected 'Body' but found " + body.getLocalName() + " instead");
-		validate_registry_response(body.getFirstElement(), metadata_type);
+		validate_registry_response(body.getFirstElement(), topElementName, metadata_type);
 
 	}
 
-	void validate_registry_response(OMElement result, int metadata_type) throws XdsInternalException, MetadataValidationException, MetadataException {
+	void validate_registry_response(OMElement result, String topElementName, int metadata_type) throws XdsInternalException, MetadataValidationException, MetadataException {
 		// metadata type was MetadataTypes.METADATA_TYPE_PR
-		validate_registry_response_no_set_status(result, metadata_type);
+		validate_registry_response_no_set_status(result, topElementName, metadata_type);
 
 		add_step_status_to_output();
 	}
 
-	void validate_registry_response_no_set_status(OMElement registry_result, int metadata_type) throws XdsInternalException, MetadataValidationException, MetadataException {
+	void validate_registry_response_no_set_status(OMElement registry_result, String topElementName, int metadata_type) throws XdsInternalException, MetadataValidationException, MetadataException {
 		if (registry_result == null) {
 			s_ctx.set_error("No Result message");
 			step_failure = true;
 			return;
+		}
+
+		if (topElementName != null && registry_result != null) {
+			if (!topElementName.equals(registry_result.getLocalName())) {
+				s_ctx.set_error("Message top level element must be " + topElementName + " found " + registry_result.getLocalName() + " instead");
+				step_failure = true;
+				return;
+			}
 		}
 
 		RegistryResponseParser registry_response = new RegistryResponseParser(registry_result);
@@ -501,6 +521,15 @@ public abstract class BasicTransaction  {
 				step_failure = true;
 			}
 		} else {
+
+			if (currentStatus.isFault() && (expectedStatus.size()>0) && expectedStatus.get(0).isFault()) {
+				// Originally set to true in the BasicTransaction
+				// 			s_ctx.set_error("Internal Error: " + ExceptionUtil.exception_details(e));
+				// Since Fault is Expected Status, it is not a step failure.
+				s_ctx.resetStatus();
+				step_failure = false;
+				return;
+			}
 
 			StringBuffer expectedStatusSb = new StringBuffer();
 			int counter=1;
@@ -758,13 +787,13 @@ public abstract class BasicTransaction  {
 		showEndpoint();
 	}
 
-	protected void parseIDSEndpoint(String home, boolean isSecure) throws Exception {
+	protected void parseIDSEndpoint(String home, TransactionType transactionType, boolean isSecure) throws Exception {
 		if (endpoint == null || endpoint.equals("")) {
 			if (s_ctx.getPlan().getRegistryEndpoint() != null)
 				endpoint = s_ctx.getPlan().getRegistryEndpoint();
 			else
 				try {
-					endpoint = testConfig.site.getEndpoint(TransactionType.RET_IMG_DOC_SET, isSecure, async);
+					endpoint = testConfig.site.getEndpoint(transactionType, isSecure, async);
 //					endpoint = testConfig.site.getIGRetrieve(home, isSecure, async);
 				} catch (XdsInternalException e) {
 					fatal(ExceptionUtil.exception_details(e, 5));
@@ -801,6 +830,7 @@ public abstract class BasicTransaction  {
     }
 
 	public String getFail() {
+		if (failMsgs == null) return null;
 		return asString(failMsgs);
 	}
 
@@ -826,8 +856,9 @@ public abstract class BasicTransaction  {
 
 //        if (request_element == null)
 //            fatal("BasicTransaction:prepare_metadata(): metadata_element is null");
-		if (noMetadataProcessing) {
-			reportManagerPreRun(request_element);  // must run before prepareMetadata (assign uuids)
+		if (isNoMetadataProcessing()) {
+			if (!isNoReportManagerPreRun())
+				reportManagerPreRun(request_element);  // must run before prepareMetadata (assign uuids)
 			return null;
 		}
 		try {
@@ -964,13 +995,13 @@ public abstract class BasicTransaction  {
 				data_refs.add(part);
 			}
 			else if (part_name.equals("Assert")) {
-				assertions.add(part);
+				assertionEleList.add(part);
 			}
 		}
 	}
 
     // report the parameters to the request as Reports so they can be referenced
-    // in assertions
+    // in assertionEleList
     void reportStepParameters() {
         logger.info("generating linkageAsReports");
         if (reportManager == null)
@@ -979,10 +1010,10 @@ public abstract class BasicTransaction  {
         logger.info("transaction: " + params);
         for (String name : params.keySet()) {
             String value = params.get(name);
-            Report report = new Report(name, value);
-            logger.info("adding Report " + report);
-            reportManager.addReport(report);
-            logger.info("Report manager has " + reportManager.toString());
+            ReportDTO reportDTO = new ReportDTO(name, value);
+            logger.info("adding ReportDTO " + reportDTO);
+            reportManager.addReport(reportDTO);
+            logger.info("ReportBuilder manager has " + reportManager.toString());
         }
     }
 
@@ -1014,14 +1045,10 @@ public abstract class BasicTransaction  {
 			this.no_convert = true;
 		}
 		else if (part_name.equals("Report")) {
-			if (reportManager == null)
-				reportManager = new ReportManager(testConfig);
-			reportManager.addReport(part);
+			parseReportInstruction(part);
 		}
 		else if (part_name.equals("UseReport")) {
-			if (useReportManager == null)
-				useReportManager = new UseReportManager(testConfig);
-			useReportManager.add(part);
+			parseUseReportInstruction(part);
 		}
 		else if (part_name.equals("ParseMetadata")) {
 			String value = part.getText();
@@ -1123,6 +1150,18 @@ public abstract class BasicTransaction  {
 
 	}
 
+	protected void parseUseReportInstruction(OMElement part) throws XdsInternalException {
+		if (useReportManager == null)
+            useReportManager = new UseReportManager(testConfig);
+		useReportManager.add(part);
+	}
+
+	protected void parseReportInstruction(OMElement part) {
+		if (reportManager == null)
+            reportManager = new ReportManager(testConfig);
+		reportManager.addReport(part);
+	}
+
 	public class DocDetails {
 		String uri;
 		String size;
@@ -1178,18 +1217,19 @@ public abstract class BasicTransaction  {
 
 	public void runAssertionEngine(OMElement step_output, ErrorReportingInterface eri, OMElement assertion_output) throws XdsInternalException {
 
-        AssertionEngine engine = new AssertionEngine();
-		engine.setDataRefs(data_refs);
+      AssertionEngine engine = new AssertionEngine();
+      engine.setDataRefs(data_refs);
+      engine.setCaller(this);
 
         try {
             if (useReportManager != null) {
-                useReportManager.apply(assertions);
+                useReportManager.apply(assertionEleList);
             }
         } catch (Exception e) {
             failed();
         }
 
-		engine.setAssertions(assertions);
+		engine.setAssertions(assertionEleList);
 		engine.setLinkage(linkage);
 		engine.setOutput(step_output);
 		engine.setTestConfig(testConfig);
@@ -1259,20 +1299,42 @@ public abstract class BasicTransaction  {
 		return SoapActionFactory.getResponseAction(getRequestAction());
 	}
 
+	public OMElement getSecurityEl(String assertionStr) throws XdsInternalException  {
+		String wsse = "<wsse:Security soapenv:mustUnderstand=\"true\" xmlns:soapenv=\"http://www.w3.org/2003/05/soap-envelope\" xmlns:wsse=\"http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-secext-1.0.xsd\">"
+		+ assertionStr
+		+ "</wsse:Security>";
+
+		return Util.parse_xml(wsse);
+	}
+
 	protected void soapCall(OMElement requestBody) throws Exception {
 		soap = new Soap();
 		testConfig.soap = soap;
-		if(transactionSettings.siteSpec != null && transactionSettings.siteSpec.isSaml){
+
+		boolean samlEnabled = Installation.instance().propertyServiceManager().getPropertyManager().isEnableSaml();
+		if(samlEnabled && transactionSettings.siteSpec != null && transactionSettings.siteSpec.isSaml){
+			logger.info("SAML is ON. Preparing SAML header...");
 			testConfig.saml = transactionSettings.siteSpec.isSaml;
+			testConfig.gazelleXuaUsername = transactionSettings.siteSpec.getGazelleXuaUsername();
+			soap.setGazelleXuaUsername(testConfig.gazelleXuaUsername);
+
+			if (transactionSettings.siteSpec.getStsAssertion()!=null) {
+				if (additionalHeaders==null)
+					additionalHeaders = new ArrayList<OMElement>();
+				additionalHeaders.add(getSecurityEl(transactionSettings.siteSpec.getStsAssertion()));
+			}
 		}
 //		soap = testConfig.soap;
 		soap.setAsync(async);
 		soap.setUseSaml(testConfig.saml);
+
+		/*
 		if (testConfig.saml) {
 			System.out.println("\tAxis2 client Repository: " + testConfig.testmgmt_dir + File.separator + "rampart" + File.separator + "client_repositories");
 			System.out.println("\tEnabling WSSEC ...");
 			soap.setRepositoryLocation(testConfig.testmgmt_dir + File.separator + "rampart" + File.separator + "client_repositories" );
 		}
+		*/
 
 		if (additionalHeaders != null) {
 			for (OMElement hdr : additionalHeaders)
@@ -1297,6 +1359,8 @@ public abstract class BasicTransaction  {
 				}
 		}
 		*/
+
+
 
 		try {
 			testLog.add_name_value(instruction_output, "InputMetadata", requestBody);
@@ -1325,8 +1389,7 @@ public abstract class BasicTransaction  {
 					s_ctx.set_fault(e);
 			} catch (Exception e1) { // throws fault - deal with it
 			}
-				logger.info("soap fault reported 3");
-
+			logger.info("soap fault reported 3");
 		}
 		catch (XdsInternalException e) {
 			logger.info("internal exception");
@@ -1427,7 +1490,39 @@ public abstract class BasicTransaction  {
 		v.setTestConfig(testConfig);
 		v.run_test_assertions(m);
 
-		return v.getErrors();
+      return v.getErrors();
+   }
+
+   /**
+    * This method is overriden in subclasses which implement custom assertion
+    * processing routines, as indicated by the {@code <Assertion>} element
+    * having a process attribute. This code would only be called if an
+    * {@code <Assertion>} element had such a value erroneously, that is, the
+    * subclass does not actually implement this method. It is placed here to
+    * avoid having to instantiate it in those classes.
+    * @param engine AssertionEngine instance
+    * @param assertion Assert being processed
+    * @param assertion_output log.xml output element for that assert
+    * @throws XdsInternalException if this method is invoked.
+    */
+   public void processAssertion(AssertionEngine engine, Assertion assertion, OMElement assertion_output)
+      throws XdsInternalException {
+      throw new XdsInternalException("BasicTransaction#processAssertion: unknown process " + assertion.toString());
+   }
+
+	public boolean isNoReportManagerPreRun() {
+		return noReportManagerPreRun;
 	}
 
+	public void setNoReportManagerPreRun(boolean noReportManagerPreRun) {
+		this.noReportManagerPreRun = noReportManagerPreRun;
+	}
+
+	public boolean isNoMetadataProcessing() {
+		return noMetadataProcessing;
+	}
+
+	public void setNoMetadataProcessing(boolean noMetadataProcessing) {
+		this.noMetadataProcessing = noMetadataProcessing;
+	}
 }

@@ -11,7 +11,7 @@ import gov.nist.toolkit.envSetting.EnvSetting;
 import gov.nist.toolkit.installation.Installation;
 import gov.nist.toolkit.registrymetadata.client.Uids;
 import gov.nist.toolkit.results.client.Result;
-import gov.nist.toolkit.results.client.SiteSpec;
+import gov.nist.toolkit.sitemanagement.client.SiteSpec;
 import gov.nist.toolkit.results.client.TestInstance;
 import gov.nist.toolkit.results.client.TestLogs;
 import gov.nist.toolkit.services.shared.SimulatorServiceManager;
@@ -19,7 +19,7 @@ import gov.nist.toolkit.session.server.Session;
 import gov.nist.toolkit.session.server.serviceManager.QueryServiceManager;
 import gov.nist.toolkit.session.server.serviceManager.XdsTestServiceManager;
 import gov.nist.toolkit.sitemanagement.client.Site;
-import gov.nist.toolkit.xdsexception.ThreadPoolExhaustedException;
+import gov.nist.toolkit.xdsexception.client.ThreadPoolExhaustedException;
 import org.apache.log4j.Logger;
 
 import java.io.IOException;
@@ -36,6 +36,7 @@ import java.util.*;
 public class ToolkitApi {
     static Logger logger = Logger.getLogger(ToolkitApi.class);
     private Session session;
+    private String environmentName;
     boolean internalUse = true;
     private static ToolkitApi api = null;
 
@@ -66,7 +67,7 @@ public class ToolkitApi {
             api = new ToolkitApi();
             EnvSetting.installServiceEnvironment();
             api.session = new Session(
-                    Installation.installation().warHome(),
+                    Installation.instance().warHome(),
                     Installation.defaultServiceSessionName());
             api.internalUse = false;
             return api;
@@ -93,7 +94,10 @@ public class ToolkitApi {
         logger.info("ToolkitApi using session " + session.id());
     }
 
-
+    public ToolkitApi withEnvironment(String environmentName){
+        this.environmentName=environmentName;
+        return this;
+    }
 
     /**
      * Create a new simulator.
@@ -107,7 +111,7 @@ public class ToolkitApi {
     public Simulator createSimulator(ActorType actorType, SimId simId) throws Exception {
         simId.setActorType(actorType.getName());
         Simulator sim = simulatorServiceManager().getNewSimulator(actorType.getName(), simId);
-        sim.getConfig(0).getConfigEle(SimulatorProperties.environment).setValue(simId.getEnvironmentName());
+        sim.getConfig(0).getConfigEle(SimulatorProperties.environment).setStringValue(simId.getEnvironmentName());
         return sim;
     }
 
@@ -140,7 +144,7 @@ public class ToolkitApi {
      * @throws IOException - probably a bad configuration for toolkit
      * @throws NoSimException - simulator doesn't exist
      */
-    public void deleteSimulator(SimId simId) throws IOException, NoSimException {
+    public void deleteSimulator(SimId simId) throws Exception, NoSimException {
         simulatorServiceManager().deleteConfig(simId);
     }
 
@@ -149,7 +153,7 @@ public class ToolkitApi {
      * @param simId - id of simulator
      * @throws IOException - probably a bad configuration for toolkit - impossible to tell if delete happened
      */
-    public void deleteSimulatorIfItExists(SimId simId) throws IOException {
+    public void deleteSimulatorIfItExists(SimId simId) throws Exception {
         try {
             deleteSimulator(simId);
         }
@@ -159,7 +163,7 @@ public class ToolkitApi {
     /**
      * Get Site for a simulator.
      * @param simId - id of the simulator
-     * @return - site object
+     * @return - site model
      * @throws Exception if there is a problem finding or interpreting the sim
      */
     public Site getSiteForSimulator(SimId simId) throws Exception {
@@ -186,17 +190,20 @@ public class ToolkitApi {
     
     public Site getActorConfig(String id) throws Exception {
        if (session == null) return null;
+       logger.debug("ToolkitApi#getActorConfig for ID: " + id);
+       logger.debug(" Session ID: " + session.getId());
        SimManager simManager = new SimManager(session.getId());
        Collection<Site> sites = simManager.getAllSites().asCollection();
        for (Site site : sites) {
+          logger.debug(" Testing site name: " + site.getName());
           if (site.getName().equals(id)) return site;
        }
-       throw new Exception("Site not found");
+       throw new Exception("Site not found: " + id);
     }
 
     /**
      *
-     * @param testSession - name of test session to use or null to use default
+     * @param testSessionName - name of test session to use or null to use default
      * @param siteName - name of site to target
      * @param testInstance - which test
      * @param sections - list of section names or null to run all
@@ -205,15 +212,31 @@ public class ToolkitApi {
      * @return - list of Result objects - one per test step (transaction) run
      * @throws Exception if testSession could not be created
      */
-    public List<Result> runTest(String testSession, String siteName, TestInstance testInstance, List<String> sections, Map<String, String> params, boolean stopOnFirstFailure) throws Exception {
-        if (testSession == null) {
-            testSession = "API";
-            xdsTestServiceManager().addMesaTestSession(testSession);
+    public List<Result> runTest(String testSessionName, String siteName, TestInstance testInstance, List<String> sections, Map<String, String> params, boolean stopOnFirstFailure) throws Exception {
+        return runTest(testSessionName,siteName,false,testInstance,sections,params,stopOnFirstFailure);
+    }
+
+    public List<Result> runTest(String testSessionName, String siteName, boolean isTls, TestInstance testInstance, List<String> sections, Map<String, String> params, boolean stopOnFirstFailure) throws Exception {
+        if (testSessionName == null) {
+            testSessionName = "API";
+            xdsTestServiceManager().addMesaTestSession(testSessionName);
         }
         SiteSpec siteSpec = new SiteSpec();
         siteSpec.setName(siteName);
-        if (session.getMesaSessionName() == null) session.setMesaSessionName(testSession);
-        return xdsTestServiceManager().runMesaTest(testSession, siteSpec, testInstance, sections, params, null, stopOnFirstFailure);
+        siteSpec.setTls(isTls);
+        if (session.getMesaSessionName() == null) session.setMesaSessionName(testSessionName);
+        // TODO add environment name in following call?
+        return xdsTestServiceManager().runMesaTest(environmentName,testSessionName, siteSpec, testInstance, sections, params, null, stopOnFirstFailure);
+    }
+
+    public List<Result> runTest(String testSessionName, SiteSpec siteSpec, TestInstance testInstance, List<String> sections, Map<String, String> params, boolean stopOnFirstFailure) throws Exception {
+        if (testSessionName == null) {
+            testSessionName = "API";
+            xdsTestServiceManager().addMesaTestSession(testSessionName);
+        }
+        if (session.getMesaSessionName() == null) session.setMesaSessionName(testSessionName);
+        // TODO add environment name in following call?
+        return xdsTestServiceManager().runMesaTest(environmentName,testSessionName, siteSpec, testInstance, sections, params, null, stopOnFirstFailure);
     }
 
     public TestLogs getTestLogs(TestInstance testInstance) {
@@ -253,7 +276,7 @@ public class ToolkitApi {
     public List<String> getSimulatorEventIds(SimId simId, String transaction) throws Exception {
         List<String> ids = new ArrayList<>();
         for (TransactionInstance ti : new SimulatorServiceManager(session).getTransInstances(simId, "", transaction)) {
-            ids.add(ti.label);
+            ids.add(ti.messageId);
         }
         return ids;
     }

@@ -14,7 +14,7 @@ public class SoapFault {
 	public enum FaultCodes { VersionMismatch, MustUnderstand, DataEncodingUnknown, Sender, Receiver };
 
 	public SoapFault(FaultCodes code, String reason) {
-		faultCode = getCodeString(code);
+		setFaultCode(code);
 		faultReason = reason;
 	}
 
@@ -80,5 +80,9 @@ public class SoapFault {
 //		}
 
 		return root;
+	}
+
+	public void setFaultCode(FaultCodes code) {
+		faultCode = getCodeString(code);
 	}
 }

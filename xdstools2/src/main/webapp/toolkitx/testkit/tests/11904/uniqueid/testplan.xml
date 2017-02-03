@@ -1,0 +1,22 @@
+
+<TestPlan>
+  <Test>11904/uniqueid</Test>
+  <TestStep id="uniqueid">
+  <Rule>
+    <Transaction>SQ</Transaction>
+    <SQ>GetDocumentsAndAssociations</SQ>
+    <Assertion>Operation with UniqueId</Assertion>
+  </Rule>
+  <ExpectedStatus>Success</ExpectedStatus>
+  <StoredQueryTransaction>
+    <XDSb/>
+    <MetadataFile>query1.xml</MetadataFile>
+    <UseId testdir="../../12346/single_doc" id="Document01" symbol="$uniqueid$" step="submit_doc" section="AssignedUids"/>
+    <ExpectedContents>
+      <Associations count="1"/>
+      <Documents count="1"/>
+    </ExpectedContents>
+  </StoredQueryTransaction>
+</TestStep>
+
+</TestPlan>

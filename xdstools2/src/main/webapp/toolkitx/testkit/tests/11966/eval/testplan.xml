@@ -1,6 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?><TestPlan>
   <Test>11966/eval</Test>
   <TestStep id="eval">
+    <Goal>
+      Query the Registry simulator with a GetSubmissionSetandContents Stored Query
+      to verify the metadata containing a single DocumentEntry was forwarded in a
+      Register transaction.
+    </Goal>
     <ExpectedStatus>Success</ExpectedStatus>
     <StoredQueryTransaction>
       <XDSb/>

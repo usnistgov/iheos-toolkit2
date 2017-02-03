@@ -52,6 +52,10 @@ public class TransactionStatus {
 		return value.toString();
 	}
 
+	public boolean isFault() {
+		return value == StatusValue.FAULT;
+	}
+
 	public boolean isFailure() {
 		return value == StatusValue.Failure;
 	}
@@ -67,6 +71,8 @@ public class TransactionStatus {
 	public String getNamespace() {
 		if (!isPartialSuccess()) {
 			return MetadataSupport.response_status_type_namespace + value.toString();
+		} else if (isFault()) {
+			return "Fault";
 		} else {
 			return MetadataSupport.ihe_response_status_type_namespace + value.toString();
 		}

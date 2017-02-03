@@ -11,7 +11,7 @@ public interface DocumentRegRep  extends AbstractActorInterface {
     /**
      * This is the equivalent of a FindDocuments Stored Query.
      * @param patientID - full patient id with Assigning Authority
-     * @return list of object references - UUIDs of the DocumentEntries
+     * @return list of model references - UUIDs of the DocumentEntries
      * @throws ToolkitServiceException
      */
     RefList findDocumentsForPatientID(String patientID) throws ToolkitServiceException;

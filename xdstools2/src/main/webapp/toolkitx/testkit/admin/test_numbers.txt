@@ -131,6 +131,18 @@ Summer 2015 development
 15814 - IG negative tests
 15815 - RG negative tests
 15816 - OD Retreive test
+15817 - PID Feed for Registry/register conformance tests
+15818 - PID Feed for Registry/SQ tests
+15819 - PID Feed for MPQ
+15820 - PID Feed for MPQ
+15821 - PID Feed for single doc RG supporting submission
+15822 - PID Feed for two doc RG supporting submission
+15823 - PID Feed for simple RG supporting submission
+15824 - PID Feed for IG one doc
+15825 - PID Feed for IG two doc
+15826 - PID Feed for IG two RG
+15827 - PID Feed for IG registry error
+15828 - PID Feed for IG 12318 (IG as initiator)
 
 
 

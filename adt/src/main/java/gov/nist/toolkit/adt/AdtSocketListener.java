@@ -18,6 +18,11 @@ import java.net.SocketTimeoutException;
  */
 public class AdtSocketListener implements Runnable{
     static Logger logger = Logger.getLogger(AdtSocketListener.class);
+    private static String[] ackTemplate = new String[2];
+    static {
+        ackTemplate[0] = "MSH|^~\\&|LABADT|DH|EPICADT|DH|$timestamp$||ACK^A01^ACK |HL7ACK00001|P|2.3";
+        ackTemplate[1] = "MSA|AA|HL7MSG00001";
+    }
 
     ServerSocket server = null;
     ThreadPoolItem threadPoolItem;
@@ -35,7 +40,7 @@ public class AdtSocketListener implements Runnable{
             }
             listenSocket();
         } catch (Exception e) {
-            logger.error("Listen on socket " + threadPoolItem.port + " failed - " + e.getMessage());
+            logger.error("*********************************************\n\nListen on socket " + threadPoolItem.port + " failed - " + e.getMessage() + "\n\n********************************************");
         } finally {
             try {
                 server.close();
@@ -161,10 +166,23 @@ public class AdtSocketListener implements Runnable{
                     sendError = true;
                     logger.fatal(ExceptionUtil.exception_details(e));
                 }
-                if(sendError == true)
+                if(sendError)
                     writer.write(message.getNack());
-                else
-                    writer.write(message.getAck());
+                else {
+                    StringBuilder buf = new StringBuilder();
+
+                    for (int i=0; i<ackTemplate.length; i++) {
+                        buf.append(ackTemplate[i].trim()).append("\r\b");
+                    }
+                    String adtAckFile = AdtSocketListener.class.getResource("/adt/ACK.txt").getFile();
+                    logger.info("Loading template from " + adtAckFile);
+
+                    writer.write(0x0b);
+                    writer.write(buf.toString());
+                    writer.write(0x1c);
+                    writer.write(0x0d);
+                    //writer.write(message.getAck());
+                }
                 writer.flush();
                 socket.shutdownOutput();
                 socket.close();

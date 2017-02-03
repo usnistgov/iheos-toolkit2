@@ -11,7 +11,9 @@ import gov.nist.toolkit.sitemanagement.client.Site;
 import gov.nist.toolkit.sitemanagement.client.TransactionBean;
 import gov.nist.toolkit.sitemanagement.client.TransactionBean.RepositoryType;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
 
 public class RepositoryActorFactory extends AbstractActorFactory {
@@ -49,14 +51,28 @@ public class RepositoryActorFactory extends AbstractActorFactory {
 			addFixedEndpoint(sc, SimulatorProperties.pnrTlsEndpoint, actorType, TransactionType.PROVIDE_AND_REGISTER, true);
 			addFixedEndpoint(sc, SimulatorProperties.retrieveEndpoint, actorType, TransactionType.RETRIEVE, false);
 			addFixedEndpoint(sc, SimulatorProperties.retrieveTlsEndpoint, actorType, TransactionType.RETRIEVE, true);
-			addEditableEndpoint(sc, SimulatorProperties.registerEndpoint, actorType, TransactionType.REGISTER, false);
-			addEditableEndpoint(sc, SimulatorProperties.registerTlsEndpoint, actorType, TransactionType.REGISTER, true);
+			addEditableNullEndpoint(sc, SimulatorProperties.registerEndpoint, actorType, TransactionType.REGISTER, false);
+			addEditableNullEndpoint(sc, SimulatorProperties.registerTlsEndpoint, actorType, TransactionType.REGISTER, true);
 		}
 
 		return new Simulator(sc);
 	}
 	
-	static String getNewRepositoryUniqueId() {
+	static synchronized String getNewRepositoryUniqueId() {
+		Collection<String> existingIds;
+		try {
+			existingIds = SimCache.getAllRepositoryUniqueIds();
+		} catch (Throwable t) {
+			existingIds = new ArrayList<>();
+		}
+		String value = newValue();
+		while (existingIds.contains(value)) {
+			value = newValue();
+		}
+		return value;
+	}
+
+	private static String newValue() {
 		return repositoryUniqueIdBase + repositoryUniqueIdIncr++;
 	}
 

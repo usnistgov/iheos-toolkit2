@@ -14,11 +14,7 @@ public class TestConfig {
 	
 	// current test number
 	public TestInstance testInstance;
-	
-	// location of testkit
-	public File testkitHome = null;   // how is this used?
-	public File altTestkitHome = null;
-	
+
 	// location of log directory
 	public LogRepository logRepository = null;
 	
@@ -28,6 +24,7 @@ public class TestConfig {
 	// Output directory for log.xml files (organized in same dir structure as testkit)
 	// public String log_dir = null;
 	 public File logFile = null;
+	public File archiveLogFile = null;   // for archived logs - null if archiving turned off
 	
 	// Full path to xdstoolkit/xdstest directory
 	 public String testmgmt_dir = null;
@@ -56,6 +53,8 @@ public class TestConfig {
 	 public boolean secure = false;
 	 
 	 public boolean saml = false;
+
+	 public String gazelleXuaUsername;
 	
 	 public String version = "0.0";
 	

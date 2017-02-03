@@ -9,22 +9,25 @@ import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import gov.nist.toolkit.results.shared.Test;
 import gov.nist.toolkit.sitemanagement.client.Site;
-import gov.nist.toolkit.xdstools2.client.ToolkitService;
-import gov.nist.toolkit.xdstools2.client.ToolkitServiceAsync;
+import gov.nist.toolkit.xdstools2.client.command.command.ReloadAllTestResultsCommand;
+import gov.nist.toolkit.xdstools2.client.command.command.RunSingleTestCommand;
 import gov.nist.toolkit.xdstools2.client.resources.TableResources;
 import gov.nist.toolkit.xdstools2.client.tabs.testsOverviewTab.commandsWidget.CommandsCell;
 import gov.nist.toolkit.xdstools2.client.tabs.testsOverviewTab.commandsWidget.CommandsColumn;
 import gov.nist.toolkit.xdstools2.client.tabs.testsOverviewTab.statusCell.StatusColumn;
+import gov.nist.toolkit.xdstools2.client.util.ClientUtils;
+import gov.nist.toolkit.xdstools2.shared.command.request.RunSingleTestRequest;
 
 import java.util.List;
 import java.util.logging.Logger;
+
 
 /**
  * Created by Diane Azais local on 10/11/2015.
  */
 public class TestsOverviewWidget extends CellTable<Test> {
 
-    ToolkitServiceAsync service = (ToolkitServiceAsync) GWT.create(ToolkitService.class);
+//    ToolkitServiceAsync service = (ToolkitServiceAsync) GWT.create(ToolkitService.class);
     Logger LOGGER = Logger.getLogger("TestsOverviewWidget");
 
     TextColumn<Test> testnumberColumn, descriptionColumn, timeColumn;
@@ -84,10 +87,10 @@ public class TestsOverviewWidget extends CellTable<Test> {
                     //TODO retrieve test plan page based on Test or TestNumber and open link to that page
                     Window.open("link_to_HTML_page", "_blank", "");
                 } else if (value == CommandsCell.LOG_BUTTON_NAME) {
-                    //TODO add link to log page
+                    //TODO addTest link to log page
                     Window.open("link_to_HTML_page", "_blank", "");
                 } else if (value == CommandsCell.TEST_DESCRIPTION_BUTTON_NAME) {
-                    //TODO add link to description page
+                    //TODO addTest link to description page
                     Window.open("link_to_HTML_page", "_blank", "");
                 }
             }
@@ -129,36 +132,28 @@ public class TestsOverviewWidget extends CellTable<Test> {
      * Load the full list of tests for a given Site and the current Session, as well as their parameters from the server
      * @param testsListCallback
      */
-    private void loadTestsData(AsyncCallback<List<Test>> testsListCallback) {
+    private void loadTestsData(final AsyncCallback<List<Test>> testsListCallback) {
         try {
-            service.reloadAllTestResults(updater.getCurrentTestSession(), testsListCallback);
+            new ReloadAllTestResultsCommand(){
+                @Override
+                public void onComplete(List<Test> result) {
+                    testsListCallback.onSuccess(result);
+                }
+            }.run(ClientUtils.INSTANCE.getCommandContext());
         } catch (Exception e) {
             LOGGER.warning("Failed to retrieve test results.");
         }
     }
 
-
-    // --------------------------------------------------------------
-    // ------- Run a single test, retrieve and display results ------
-    // --------------------------------------------------------------
-
-    AsyncCallback<Test> runSingleTestCallback = new AsyncCallback<Test>()
-    {
-        @Override
-        public void onFailure(Throwable caught)
-        { LOGGER.severe("Failed to run a test for current site and session, in the Tests Overview tab.");
-        }
-
-        @Override
-        public void onSuccess(Test result)
-        { dataModel.updateSingleTestResult(result);
-            refreshUIData();
-        }
-    };
-
     //TODO replace the hardcoded site name with the one retrieved from the UI
     private void runSingleTest(int testId, int index){
-        service.runSingleTest(new Site("testEHR"), testId, runSingleTestCallback);
+        new RunSingleTestCommand(){
+            @Override
+            public void onComplete(Test result) {
+                dataModel.updateSingleTestResult(result);
+                refreshUIData();
+            }
+        }.run(new RunSingleTestRequest(ClientUtils.INSTANCE.getCommandContext(),new Site("testEHR"),testId));
     }
 
 
@@ -182,7 +177,7 @@ public class TestsOverviewWidget extends CellTable<Test> {
 
     //TODO replace the hardcoded site name with the one retrieved from the UI
     private void deleteSingleTestResults(int testId){
-        service.deleteSingleTestResult(new Site("testEHR"), testId, deleteSingleLogCallback);
+//        service.deleteSingleTestResult(testId, deleteSingleLogCallback);
     }
 
     /**

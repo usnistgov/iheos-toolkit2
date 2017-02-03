@@ -39,36 +39,36 @@ public class SubjectBean {
     }
 
     /**
-     * Method getSubjectName returns the subjectName of this SubjectBean object.
+     * Method getSubjectName returns the subjectName of this SubjectBean model.
      *
-     * @return the subjectName (type String) of this SubjectBean object.
+     * @return the subjectName (type String) of this SubjectBean model.
      */
     public String getSubjectName() {
         return subjectName;
     }
 
     /**
-     * Method setSubjectName sets the subjectName of this SubjectBean object.
+     * Method setSubjectName sets the subjectName of this SubjectBean model.
      *
-     * @param subjectName the subjectName of this SubjectBean object.
+     * @param subjectName the subjectName of this SubjectBean model.
      */
     public void setSubjectName(String subjectName) {
         this.subjectName = subjectName;
     }
     
     /**
-     * Method getSubjectNameQualifier returns the subjectNameQualifier of this SubjectBean object.
+     * Method getSubjectNameQualifier returns the subjectNameQualifier of this SubjectBean model.
      *
-     * @return the subjectNameQualifier (type String) of this SubjectBean object.
+     * @return the subjectNameQualifier (type String) of this SubjectBean model.
      */
     public String getSubjectNameQualifier() {
         return subjectNameQualifier;
     }
 
     /**
-     * Method setSubjectNameQualifier sets the subjectNameQualifier of this SubjectBean object.
+     * Method setSubjectNameQualifier sets the subjectNameQualifier of this SubjectBean model.
      *
-     * @param subjectNameQualifier the subjectNameQualifier of this SubjectBean object.
+     * @param subjectNameQualifier the subjectNameQualifier of this SubjectBean model.
      */
     public void setSubjectNameQualifier(String subjectNameQualifier) {
         this.subjectNameQualifier = subjectNameQualifier;
@@ -76,9 +76,9 @@ public class SubjectBean {
     
     /**
      * Method getSubjectConfirmationMethod returns the subjectConfirmationMethod of
-     * this SubjectBean object.
+     * this SubjectBean model.
      *
-     * @return the subjectConfirmationMethod (type String) of this SubjectBean object.
+     * @return the subjectConfirmationMethod (type String) of this SubjectBean model.
      */
     public String getSubjectConfirmationMethod() {
         return subjectConfirmationMethod;
@@ -86,10 +86,10 @@ public class SubjectBean {
 
     /**
      * Method setSubjectConfirmationMethod sets the subjectConfirmationMethod of
-     * this SubjectBean object.
+     * this SubjectBean model.
      *
      * @param subjectConfirmationMethod the subjectConfirmationMethod of this 
-     *        SubjectBean object.
+     *        SubjectBean model.
      */
     public void setSubjectConfirmationMethod(String subjectConfirmationMethod) {
         this.subjectConfirmationMethod = subjectConfirmationMethod;
@@ -97,9 +97,9 @@ public class SubjectBean {
     
     /**
      * Method getSubjectNameIDFormat returns the subjectNameIDFormat of this SubjectBean 
-     * object.
+     * model.
      *
-     * @return the subjectNameIDFormat (type String) of this SubjectBean object.
+     * @return the subjectNameIDFormat (type String) of this SubjectBean model.
      */
     public String getSubjectNameIDFormat() {
         return subjectNameIDFormat;
@@ -107,27 +107,27 @@ public class SubjectBean {
 
     /**
      * Method setSubjectNameIDFormat sets the subjectNameIDFormat of this SubjectBean 
-     * object.
+     * model.
      *
-     * @param subjectNameIDFormat the subjectNameIDFormat of this SubjectBean object.
+     * @param subjectNameIDFormat the subjectNameIDFormat of this SubjectBean model.
      */
     public void setSubjectNameIDFormat(String subjectNameIDFormat) {
         this.subjectNameIDFormat = subjectNameIDFormat;
     }
     
     /**
-     * Method getKeyInfo returns the keyInfo of this SubjectBean object.
+     * Method getKeyInfo returns the keyInfo of this SubjectBean model.
      *
-     * @return the keyInfo (type KeyInfoBean) of this SubjectBean object.
+     * @return the keyInfo (type KeyInfoBean) of this SubjectBean model.
      */
     public KeyInfoBean getKeyInfo() {
         return keyInfo;
     }
 
     /**
-     * Method setKeyInfo sets the keyInfo of this SubjectBean object.
+     * Method setKeyInfo sets the keyInfo of this SubjectBean model.
      *
-     * @param keyInfo the keyInfo of this SubjectBean object.
+     * @param keyInfo the keyInfo of this SubjectBean model.
      */
     public void setKeyInfo(KeyInfoBean keyInfo) {
         this.keyInfo = keyInfo;
@@ -183,7 +183,7 @@ public class SubjectBean {
     }
 
     /**
-     * @return the hashcode of this object
+     * @return the hashcode of this model
      */
     @Override
     public int hashCode() {

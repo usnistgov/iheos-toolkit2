@@ -1,0 +1,14 @@
+
+<TestPlan>
+  <Test>11996/submit</Test>
+  <TestStep id="submit">
+  <ExpectedStatus>Failure</ExpectedStatus>
+  <ExpectedErrorMessage>XDSUnknownPatientId</ExpectedErrorMessage>
+  <AltPatientId/>
+  <RegisterTransaction>
+    <XDSb/>
+    <MetadataFile>single_doc.xml</MetadataFile>
+  </RegisterTransaction>
+</TestStep>
+
+</TestPlan>

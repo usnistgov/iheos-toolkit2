@@ -18,8 +18,8 @@ class OdRegistrySpec extends ToolkitSpecification {
 
     @Shared String urlRoot = String.format("http://localhost:%s/xdstools2", remoteToolkitPort)
     String patientId = 'ODREG11^^^&1.2.460&ISO'
-    String reg = 'sunil__reg'
-    SimId simId = new SimId(reg)
+    @Shared String reg = 'sunil__reg'
+    @Shared SimId simId = new SimId(reg)
     @Shared String testSession = 'sunil';
 
     def setupSpec() {   // one time setup done when class launched
@@ -33,7 +33,7 @@ class OdRegistrySpec extends ToolkitSpecification {
 
         new BuildCollections().init(null)
 
-        spi.delete('reg', testSession)
+        spi.delete('reg',testSession)
 
         /*
         spi.create(
@@ -46,12 +46,14 @@ class OdRegistrySpec extends ToolkitSpecification {
     }
 
     def cleanupSpec() {  // one time shutdown when everything is done
+//        System.gc()
+        spi.delete('reg',testSession)
         server.stop()
         ListenerFactory.terminateAll()
     }
 
     def setup() {
-        println "EC is ${Installation.installation().externalCache().toString()}"
+        println "EC is ${Installation.instance().externalCache().toString()}"
         println "${api.getSiteNames(true)}"
         api.createTestSession(testSession)
         if (!api.simulatorExists(simId)) {

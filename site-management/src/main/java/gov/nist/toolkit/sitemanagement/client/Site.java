@@ -19,6 +19,25 @@ import java.util.Set;
  * A SiteSpec is a reference to a Site and a selection of one actor type. Having a SiteSpec you know
  * exactly which transactions are possible.
  *
+ * Usage for Orchestration
+ *
+ * From the perspective of SiteSpec:
+ * 	For tests that depend on Orchestration, we sometimes need to configure supporting actors into the
+ * Site. To do this and not alter the Vendor configured Site, a Orchestration Site is created with the following
+ * rules.
+ *   1. name refers to vendor site
+ *   2. orchestrationSiteName refers to orchestration site
+ *   3. When searching for endpoint or other facet, look in orchestration site first, vendor site second
+ *
+ * When a SiteSpec gets translated into a Site:
+ *
+ * 1. Orchestration Site has non-null mainSite attribute naming the Vendor Site
+ * 2. Searches for things like endpoints start with Orchestration Site and if not found proceed to search
+ * Vendor Site.
+ *
+ * The class Sites is used internally to look up the Vendor Site from the Orchestration Site (by name)
+ *
+ *
  * SiteSpec reference the Site through the name attribute.
  * @author bill
  *
@@ -30,8 +49,7 @@ public class Site  implements IsSerializable, Serializable {
 	private static final long serialVersionUID = 1L;
 	private String name = null;
 	TransactionCollection transactions = new TransactionCollection(false);
-	// There can be only one ODDS repository
-	// and one XDS.b repository in a site.
+	// There can be only one ODDS, one XDS.b, and one IDS repository in a site.
 	// An XDS.b Repository and a ODDS Repository
 	// can have the same repositoryUniqueId and endpoint. But
 	// they require two entries to identify them.
@@ -43,6 +61,26 @@ public class Site  implements IsSerializable, Serializable {
 	public String pidAllocateURI = null;
 	transient public boolean changed = false;
 	public String user = null;  // loaded from SimId - when non-null this site represents a sim
+	private String orchestrationSiteName = null;
+
+
+	/**
+	 * Site linkage is used to combine two sites into one.  Use case: The SUT is defined in a site. We
+	 * need to add other actors to the mix through orchestration.  Because the vendor controls the SUT site,
+	 * we create a separate site for the orchestration actors. We then link in the SUT site into
+	 * the orchestration site to have a single site to target.
+	 * @param linkedSite
+	 */
+	public void addLinkedSite(Site linkedSite) {
+		transactions.mergeIn(linkedSite.transactions());
+		repositories.mergeIn(linkedSite.repositories());
+		if (home == null)
+			home = linkedSite.home;
+		if (pifHost == null)
+			pifHost = linkedSite.pifHost;
+		if (pifPort == null)
+			pifPort = linkedSite.pifPort;
+	}
 
 	@Override
 	public int hashCode() {
@@ -63,7 +101,6 @@ public class Site  implements IsSerializable, Serializable {
 				((pidAllocateURI == null) ? s.pidAllocateURI == null : pidAllocateURI.equals(s.pidAllocateURI)) &&
 				transactions.equals(s.transactions) &&
 				repositories.equals(s.repositories);
-				
 	}
 	
 	public TransactionCollection transactions() {
@@ -112,8 +149,8 @@ public class Site  implements IsSerializable, Serializable {
 		// All Repository transactions must be for the same repositoryUniqueId
 		Set<String> repUids = repositoryUniqueIds();
 		if (repUids.size() > 1) {
-			buf.append("Site ").append(name).append(" contains more than one repositoryUniqueId. ")
-			.append("A site can define a single Document Repository.");
+			buf.append("Site ").append(name).append(" contains more than one repositoryUniqueId: " + repUids)
+			.append("  A site can define a single Document Repository.");
 		}		
 	}
 	
@@ -153,12 +190,13 @@ public class Site  implements IsSerializable, Serializable {
 
 	/**
 	 * Get Repository Bean
+	 * @param repositoryType
 	 * @param isSecure
 	 * @return TransactionBean
 	 */
-	public TransactionBean getRepositoryBean(boolean isSecure) {
+	public TransactionBean getRepositoryBean(RepositoryType repositoryType, boolean isSecure) {
 		for (TransactionBean b : repositories.transactions) {
-			if (b.repositoryType == RepositoryType.REPOSITORY && b.isSecure == isSecure)
+			if (b.repositoryType == repositoryType && b.isSecure == isSecure)
 				return b;
 		}
 		return null;
@@ -173,17 +211,17 @@ public class Site  implements IsSerializable, Serializable {
 		addRepository(bean);
 	}
 
-	public String getRepositoryUniqueId() throws Exception {
-		if (!hasRepositoryB())
+	public String getRepositoryUniqueId(RepositoryType repositoryType) throws Exception {
+		if (!hasRepositoryB(repositoryType))
 			throw new Exception("Site " + name + " does not define an XDS.b Repository");
 		TransactionBean transbean;
-		transbean = getRepositoryBean(false);  // try non-secure first
+		transbean = getRepositoryBean(repositoryType, false);  // try non-secure first
 		if (transbean != null) {
 			String repUid =  transbean.name;
 			if (repUid != null && !repUid.equals(""))
 				return repUid;
 		}
-		transbean = getRepositoryBean(true);  // secure next
+		transbean = getRepositoryBean(repositoryType, true);  // secure next
 		if (transbean != null) {
 			String repUid =  transbean.name;
 			if (repUid != null && !repUid.equals(""))
@@ -199,15 +237,16 @@ public class Site  implements IsSerializable, Serializable {
 	/**
 	 * This counts endpoints.  A repository can have endpoints
 	 * for all combinations of secure, async, and type.  There are
-	 * two basically different repository types, Document
-	 * Repository and On-Demand Document Source.
+	 * three basically different repository types, Document
+	 * Repository, On-Demand Document Source, and Image Document Source.
 	 * @return
 	 */
-	public int repositoryBCount() {
+	public int repositoryBCount(RepositoryType repositoryType) {
 		int cnt = 0;
 		if (name != null && name.equals("allRepositories")) return 0;
 		for (TransactionBean b : repositories.transactions) {
-			if (b.repositoryType == RepositoryType.REPOSITORY)
+//			if (b.repositoryType == RepositoryType.REPOSITORY || b.repositoryType == RepositoryType.ODDS)
+			if (b.repositoryType == repositoryType)
 				cnt++;
 		}
 		return cnt;
@@ -216,7 +255,7 @@ public class Site  implements IsSerializable, Serializable {
 	public Set<String> repositoryUniqueIds() {
 		Set<String> ids = new HashSet<String>();
 		for (TransactionBean b : repositories.transactions) {
-			if (b.repositoryType == RepositoryType.REPOSITORY) {
+			if (b.repositoryType == RepositoryType.REPOSITORY || b.repositoryType == RepositoryType.ODDS) {
 				ids.add(b.name); // repositoryUniqueId since this is a retrieve
 			}
 		}		
@@ -233,9 +272,26 @@ public class Site  implements IsSerializable, Serializable {
 		}		
 		return tbs;
 	}
+
+	/**
+	 * Get TransactionBean matching passed RepositoryType and uid.
+	 * @param repuid repository unique id
+	 * @param tType Repository Type
+	 * @return TransactionBean for match, or null
+	 */
+	public TransactionBean transactionBeanForRepositoryUniqueId(String repuid, RepositoryType tType) {
+	   for (TransactionBean bean : repositories.transactions) {
+	      if (bean.repositoryType == tType && bean.name.equals(repuid)) return bean;
+	   }
+	   return null;
+	}
 		
 	public boolean hasRepositoryB() {
-		return repositoryBCount() > 0;
+		return repositoryBCount(RepositoryType.REPOSITORY) > 0;
+	}
+
+	public boolean hasRepositoryB(RepositoryType repositoryType) {
+		return repositoryBCount(repositoryType) > 0;
 	}
 
 	public int getRepositoryCount() {
@@ -305,4 +361,17 @@ public class Site  implements IsSerializable, Serializable {
 		return name;
 	}
 
+	public SiteSpec siteSpec() {
+		SiteSpec siteSpec = new SiteSpec(getSiteName());
+		siteSpec.orchestrationSiteName = orchestrationSiteName;
+		return siteSpec;
+	}
+
+	public String getOrchestrationSiteName() {
+		return orchestrationSiteName;
+	}
+
+	public void setOrchestrationSiteName(String orchestrationSiteName) {
+		this.orchestrationSiteName = orchestrationSiteName;
+	}
 }

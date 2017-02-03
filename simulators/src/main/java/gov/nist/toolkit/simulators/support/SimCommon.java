@@ -3,22 +3,24 @@ package gov.nist.toolkit.simulators.support;
 import gov.nist.toolkit.actorfactory.SimDb;
 import gov.nist.toolkit.actorfactory.client.NoSimException;
 import gov.nist.toolkit.actorfactory.client.SimId;
+import gov.nist.toolkit.actorfactory.client.SimulatorConfig;
 import gov.nist.toolkit.errorrecording.ErrorRecorder;
 import gov.nist.toolkit.errorrecording.GwtErrorRecorder;
 import gov.nist.toolkit.errorrecording.GwtErrorRecorderBuilder;
 import gov.nist.toolkit.errorrecording.client.ValidationStepResult;
 import gov.nist.toolkit.installation.Installation;
 import gov.nist.toolkit.utilities.io.Io;
-import gov.nist.toolkit.valregmsg.validation.engine.ValidateMessageService;
+import gov.nist.toolkit.validatorsSoapMessage.engine.ValidateMessageService;
 import gov.nist.toolkit.valsupport.client.MessageValidationResults;
 import gov.nist.toolkit.valsupport.client.ValidationContext;
 import gov.nist.toolkit.valsupport.engine.MessageValidatorEngine;
 import gov.nist.toolkit.valsupport.engine.ValidationStep;
 import gov.nist.toolkit.valsupport.message.AbstractMessageValidator;
 import gov.nist.toolkit.valsupport.message.ServiceRequestContainer;
-import gov.nist.toolkit.xdsexception.XdsException;
+import gov.nist.toolkit.xdsexception.client.XdsException;
 import org.apache.log4j.Logger;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.File;
 import java.io.IOException;
@@ -33,7 +35,7 @@ import java.util.List;
  *
  */
 
-// NOTE: This should be limited to suporting functions for all simulators.
+// NOTE: This should be limited to supporting functions for all simulators.
     // References to Regindex, RepIndex, RegistryErrorListGenerator, documentsToAttach should be refactored out
 public class SimCommon {
 	public SimDb db = null;
@@ -41,9 +43,11 @@ public class SimCommon {
 	MessageValidationResults mvr = null;
 	public MessageValidatorEngine mvc = null;
 	public ValidationContext vc = null;
+	public SimulatorConfig simConfig = null;
+	public HttpServletRequest request = null;
 	public HttpServletResponse response = null;
 	OutputStream os = null;
-	ValidateMessageService vms = null;
+	ValidateMessageService vms = new ValidateMessageService(null);
 	boolean faultReturned = false;
 	boolean responseSent = false;
 	static Logger logger = Logger.getLogger(SimCommon.class);
@@ -52,15 +56,21 @@ public class SimCommon {
 		return faultReturned || responseSent;
 	}
 
+   public SimCommon(SimDb db, SimulatorConfig simConfig, boolean tls, ValidationContext vc, MessageValidatorEngine mvc, 
+      HttpServletRequest request, HttpServletResponse response) throws IOException, XdsException {
+      this(db, tls, vc, mvc, response);
+      this.simConfig = simConfig;
+      this.request = request;
+   }
 
 
 	/**
-	 * Build a new simulator support object
-	 * @param db the simulator database object supporting this simulator
+	 * Build a new simulator support model
+	 * @param db the simulator database model supporting this simulator
 	 * @param tls is tls employed
 	 * @param vc validation context used to validate the input message
 	 * @param mvc message validation engine
-	 * @param response HttpServletResponse object for accepting eventual output
+	 * @param response HttpServletResponse model for accepting eventual output
 	 * @throws IOException
 	 * @throws XdsException 
 	 */
@@ -200,7 +210,7 @@ public class SimCommon {
 	static public void deleteSim(SimId simulatorId) {
 		try {
 			logger.info("Delete sim " + simulatorId);
-			SimDb simdb = new SimDb(Installation.installation().simDbFile(), simulatorId, null, null);
+			SimDb simdb = new SimDb(Installation.instance().simDbFile(), simulatorId, null, null);
 			File simdir = simdb.getIpDir();
 			Io.delete(simdir);
 		} catch (IOException e) {
@@ -208,6 +218,22 @@ public class SimCommon {
 		} catch (NoSimException e) {
 			// doesn't exist - ok
 		}
+	}
+	
+	public void setLogger(Logger log) {
+	   logger = log;
+	}
+	
+	public void sendHttpFault(String em) {
+	   sendHttpFault(400, em);
+	}
+	public void sendHttpFault(int status, String em) {
+	   logger.info("HTTP Error response: " + status + " " + em);
+	   try {
+         response.sendError(status, em);
+      } catch (IOException e) {
+         logger.warn("IO error sending http response");
+      }
 	}
 
 

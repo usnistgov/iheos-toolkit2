@@ -11,7 +11,7 @@ public class UserType {
      * Gets the value of the personName property.
      * 
      * @return
-     *     possible object is
+     *     possible model is
      *     {@link PersonNameType }
      *     
      */
@@ -23,7 +23,7 @@ public class UserType {
      * Sets the value of the personName property.
      * 
      * @param value
-     *     allowed object is
+     *     allowed model is
      *     {@link PersonNameType }
      *     
      */
@@ -35,7 +35,7 @@ public class UserType {
      * Gets the value of the userName property.
      * 
      * @return
-     *     possible object is
+     *     possible model is
      *     {@link String }
      *     
      */
@@ -47,7 +47,7 @@ public class UserType {
      * Sets the value of the userName property.
      * 
      * @param value
-     *     allowed object is
+     *     allowed model is
      *     {@link String }
      *     
      */
@@ -59,7 +59,7 @@ public class UserType {
      * Gets the value of the org property.
      * 
      * @return
-     *     possible object is
+     *     possible model is
      *     {@link HomeCommunityType }
      *     
      */
@@ -71,7 +71,7 @@ public class UserType {
      * Sets the value of the org property.
      * 
      * @param value
-     *     allowed object is
+     *     allowed model is
      *     {@link HomeCommunityType }
      *     
      */
@@ -83,7 +83,7 @@ public class UserType {
      * Gets the value of the roleCoded property.
      * 
      * @return
-     *     possible object is
+     *     possible model is
      *     {@link CeType }
      *     
      */
@@ -95,7 +95,7 @@ public class UserType {
      * Sets the value of the roleCoded property.
      * 
      * @param value
-     *     allowed object is
+     *     allowed model is
      *     {@link CeType }
      *     
      */

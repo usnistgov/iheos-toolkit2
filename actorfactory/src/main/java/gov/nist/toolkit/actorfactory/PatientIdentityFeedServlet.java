@@ -8,7 +8,7 @@ import gov.nist.toolkit.adt.ListenerFactory;
 import gov.nist.toolkit.configDatatypes.SimulatorProperties;
 import gov.nist.toolkit.installation.Installation;
 import gov.nist.toolkit.simcommon.client.config.SimulatorConfigElement;
-import gov.nist.toolkit.xdsexception.ToolkitRuntimeException;
+import gov.nist.toolkit.xdsexception.client.ToolkitRuntimeException;
 import org.apache.log4j.Logger;
 
 import javax.servlet.ServletConfig;
@@ -38,12 +38,12 @@ public class PatientIdentityFeedServlet extends HttpServlet {
     public void initPatientIdentityFeed() {
         logger.info("Initializing AdtServlet");
         try {
-//            Installation.installation().warHome(warHome);
+//            Installation.instance().warHome(warHome);
 
             logger.info("Initializing ADT Listeners...");
 
             // Initialize available port range
-            List<String> portRange = Installation.installation().propertyServiceManager().getListenerPortRange();
+            List<String> portRange = Installation.instance().propertyServiceManager().getListenerPortRange();
             logger.info("Port range is " + portRange);
             int from = Integer.parseInt(portRange.get(0));
             int to = Integer.parseInt(portRange.get(1));
@@ -95,6 +95,7 @@ public class PatientIdentityFeedServlet extends HttpServlet {
         String portString = portFromSimulatorConfig(simulatorConfig);
         if (portString == null) return 0;
         int port = Integer.parseInt(portString);
+        logger.info("Create V2 PIF listener for " + simId + " on port " + port);
         ListenerFactory.generateListener(simId.toString(), port, new PifHandler());
         return port;
     }

@@ -1,17 +1,23 @@
 package gov.nist.toolkit.simulators.sim.ig;
 
 import gov.nist.toolkit.actorfactory.SimManager;
-import gov.nist.toolkit.configDatatypes.SimulatorProperties;
 import gov.nist.toolkit.actorfactory.client.SimulatorConfig;
 import gov.nist.toolkit.actortransaction.client.ActorType;
+import gov.nist.toolkit.commondatatypes.MetadataSupport;
+import gov.nist.toolkit.commondatatypes.client.MetadataTypes;
+import gov.nist.toolkit.configDatatypes.SimulatorProperties;
 import gov.nist.toolkit.configDatatypes.client.TransactionType;
 import gov.nist.toolkit.errorrecording.ErrorRecorder;
 import gov.nist.toolkit.errorrecording.client.XdsErrorCode;
 import gov.nist.toolkit.errorrecording.client.XdsErrorCode.Code;
 import gov.nist.toolkit.registrymetadata.Metadata;
 import gov.nist.toolkit.registrymetadata.MetadataParser;
-import gov.nist.toolkit.registrymsg.registry.*;
-import gov.nist.toolkit.commondatatypes.MetadataSupport;
+import gov.nist.toolkit.registrymsg.registry.AdhocQueryRequest;
+import gov.nist.toolkit.registrymsg.registry.AdhocQueryRequestParser;
+import gov.nist.toolkit.registrymsg.registry.AdhocQueryResponseParser;
+import gov.nist.toolkit.registrymsg.registry.Response;
+import gov.nist.toolkit.registrysupport.RegistryErrorListGenerator;
+import gov.nist.toolkit.simcommon.client.config.SimulatorConfigElement;
 import gov.nist.toolkit.simulators.sim.reg.AdhocQueryResponseGeneratingSim;
 import gov.nist.toolkit.simulators.support.DsSimCommon;
 import gov.nist.toolkit.simulators.support.MetadataGeneratingSim;
@@ -19,8 +25,9 @@ import gov.nist.toolkit.simulators.support.SimCommon;
 import gov.nist.toolkit.sitemanagement.Sites;
 import gov.nist.toolkit.sitemanagement.client.Site;
 import gov.nist.toolkit.soap.axis2.Soap;
+import gov.nist.toolkit.testengine.engine.RegistryUtility;
 import gov.nist.toolkit.utilities.xml.OMFormatter;
-import gov.nist.toolkit.valregmsg.message.SoapMessageValidator;
+import gov.nist.toolkit.validatorsSoapMessage.message.SoapMessageValidator;
 import gov.nist.toolkit.valregmsg.registry.AdhocQueryResponse;
 import gov.nist.toolkit.valsupport.engine.MessageValidatorEngine;
 import gov.nist.toolkit.valsupport.message.AbstractMessageValidator;
@@ -62,10 +69,6 @@ public class XcQuerySim extends AbstractMessageValidator implements MetadataGene
 			System.out.println(ExceptionUtil.exception_details(e));
 			startUpException = e;
 		}
-	}
-
-	public void setMockSoap(XcQueryMockSoap mockSoap) {
-		this.mockSoap = mockSoap;
 	}
 
 	public void run(ErrorRecorder er, MessageValidatorEngine mvc) {
@@ -145,6 +148,14 @@ public class XcQuerySim extends AbstractMessageValidator implements MetadataGene
 
 			List<OMElement> results = m.getAllObjects(); // everything but ObjectRefs
 			results.addAll(m.getObjectRefs());
+
+			// forceably remove home attribute from RG response if requested by configuration.
+			SimulatorConfigElement forceNoHomeEle = asc.getConfigEle(SimulatorProperties.returnNoHome);
+			if (forceNoHomeEle.asBoolean()) {
+				for (OMElement ele : results)
+					m.unsetHome(ele);
+			}
+
 			response.addQueryResults(results, false);
 
 			// set status
@@ -285,6 +296,8 @@ public class XcQuerySim extends AbstractMessageValidator implements MetadataGene
 		} else {
 			result = mockSoap.call(endpoint, request);
 		}
+
+		RegistryUtility.schema_validate_local(result, MetadataTypes.METADATA_TYPE_SQ);
 
 		gov.nist.toolkit.registrymsg.registry.AdhocQueryResponse response = new AdhocQueryResponseParser(result).getResponse();
 

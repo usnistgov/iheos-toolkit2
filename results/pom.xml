@@ -4,7 +4,7 @@
     <parent>
         <groupId>gov.nist.toolkit</groupId>
         <artifactId>tk-deps</artifactId>
-        <version>2.202.9.3</version>
+        <version>4.2.1</version>
         <relativePath>../tk-deps/pom.xml</relativePath>
     </parent>
 
@@ -18,6 +18,10 @@
         <dependency>
             <groupId>gov.nist.toolkit</groupId>
             <artifactId>actor-transaction</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>gov.nist.toolkit</groupId>
+            <artifactId>site-management</artifactId>
         </dependency>
         <dependency>
             <groupId>gov.nist.toolkit</groupId>

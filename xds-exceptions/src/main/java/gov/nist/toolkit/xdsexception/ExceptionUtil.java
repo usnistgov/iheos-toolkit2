@@ -2,6 +2,8 @@ package gov.nist.toolkit.xdsexception;
 
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
+import java.util.Scanner;
+
 
 public class ExceptionUtil {
 
@@ -16,9 +18,32 @@ public class ExceptionUtil {
 		if (emessage == null || emessage.equals(""))
 			emessage = "No Message";
 
-		return ("Exception thrown: " + e.getClass().getName() + "\n" + 
-		((message != null) ? message + "\n" : "") +
-		emessage + "\n" + new String(baos.toByteArray()));
+		String stackTrace = new String(baos.toByteArray());
+		StringBuilder buf = new StringBuilder();
+		buf.append("\nException ").append(e.getClass().getSimpleName());
+		Scanner scanner = new Scanner(stackTrace);
+//		if (scanner.hasNextLine()) scanner.nextLine();  // heading
+//		if (scanner.hasNextLine()) scanner.nextLine();  // here()
+		while (scanner.hasNextLine()) {
+			String line = scanner.nextLine().trim();
+			if (!line.contains("gov.nist.toolkit")) continue;
+			buf.append("\n\t").append(line);
+		}
+//		stackTrace = buf.toString();
+
+		StringBuilder msg = new StringBuilder();
+		if (message != null)
+			msg.append(message);
+		if (emessage != null && !emessage.equals(message)) {
+			if (msg.length() != 0) msg.append("\n");
+			msg.append(emessage);
+		}
+		msg.append(buf);
+
+//		=  ("Exception thrown: " + e.getClass().getName() + "\n" +
+//		((message != null) ? message + "\n" : "") +
+//		emessage + "\n" + stackTrace);
+		return msg.toString();
 	}
 	
 	static public String stack_trace(Exception e, int num_lines) {
@@ -57,7 +82,8 @@ public class ExceptionUtil {
 		try {
 			throw new Exception(message);
 		} catch (Exception e) {
-			return exception_details(e, message).replace("<", "[");
+			String str = exception_details(e, message).replace("<", "[");
+			return str;
 		}
 	}
 

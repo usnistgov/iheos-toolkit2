@@ -1,10 +1,10 @@
 package gov.nist.toolkit.toolkitServicesCommon.resource;
 
 
+import javax.xml.bind.annotation.XmlRootElement;
+
 import gov.nist.toolkit.toolkitServicesCommon.SimId;
 import gov.nist.toolkit.toolkitServicesCommon.ToolkitFactory;
-
-import javax.xml.bind.annotation.XmlRootElement;
 
 /**
  * Not for Public Use.
@@ -13,6 +13,10 @@ import javax.xml.bind.annotation.XmlRootElement;
 public class SimIdResource implements gov.nist.toolkit.toolkitServicesCommon.SimId {
     String user = null;
     String id = null;
+    /**
+     * If set, this overrides the default, which is user__id.
+     */
+    String fullId = null;
     String actorType = null;
     String environmentName = null;
 
@@ -61,10 +65,12 @@ public class SimIdResource implements gov.nist.toolkit.toolkitServicesCommon.Sim
 
     @Override
     public String getFullId() {
+       if (fullId != null && fullId.length() > 0) return fullId;
         return user + "__" + id;
     }
 
-    public void setFullId(String x) {}
+    public void setFullId(String fid) {
+       fullId = fid;}
 
     public void setEnvironmentName(String environmentName) {
         this.environmentName = environmentName;

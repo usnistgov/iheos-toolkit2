@@ -7,8 +7,8 @@ import gov.nist.toolkit.errorrecording.client.XdsErrorCode.Code;
 import gov.nist.toolkit.registrymetadata.Metadata;
 import gov.nist.toolkit.commondatatypes.MetadataSupport;
 import gov.nist.toolkit.simulators.sim.reg.store.RegIndex.AssocType;
-import gov.nist.toolkit.valregmetadata.field.SubmissionStructure;
-import gov.nist.toolkit.xdsexception.MetadataException;
+import gov.nist.toolkit.valregmetadata.top.SubmissionStructure;
+import gov.nist.toolkit.xdsexception.client.MetadataException;
 import org.apache.axiom.om.OMElement;
 import org.apache.log4j.Logger;
 
@@ -34,7 +34,7 @@ public class ProcessMetadataForRegister implements ProcessMetadataInterface {
 			if ( ! (m.isDocument(id) || m.isFolder(id) || m.isSubmissionSet(id))  ) 
 				continue;
 
-			log.debug("Processing metadata object " + m.getId(ele));
+			log.debug("Processing metadata model " + m.getId(ele));
 			String uid = null;
 			try {
 				uid = m.getUniqueIdValue(ele);
@@ -43,15 +43,15 @@ public class ProcessMetadataForRegister implements ProcessMetadataInterface {
 				continue;
 			}
 			if (uid == null) {
-				log.error("Processing metadata object " + m.getId(ele) + " - Unable to extract uniqueId from object");
-				er.err(XdsErrorCode.Code.XDSRegistryMetadataError, "Unable to extract uniqueId from object " + m.getId(ele), this, null);
+				log.error("Processing metadata model " + m.getId(ele) + " - Unable to extract uniqueId from model");
+				er.err(XdsErrorCode.Code.XDSRegistryMetadataError, "Unable to extract uniqueId from model " + m.getId(ele), this, null);
 				continue;
 			}
 			if (submittedUIDs.contains(uid)) 
-				er.err(XdsErrorCode.Code.XDSRegistryMetadataError, "UniqueID " + uid + "  is assigned to more than one object within the submission", this, null);
+				er.err(XdsErrorCode.Code.XDSRegistryMetadataError, "UniqueID " + uid + "  is assigned to more than one model within the submission", this, null);
 			submittedUIDs.add(uid);
 			
-			// getRetrievedDocumentsModel object from registry
+			// getRetrievedDocumentsModel model from registry
 			Ro ro = mc.getObjectByUid(uid);
 			if (ro != null) {
 				// RegistryObject with this UID already in Registry
@@ -62,7 +62,7 @@ public class ProcessMetadataForRegister implements ProcessMetadataInterface {
 						er.err(XdsErrorCode.Code.XDSNonIdenticalHash, "Registry contains DocumentEntry with UID " + uid + " and hash " + de.hash + 
 								". This submission contains DocumentEntry with same UID and a different hash (" + hash + ")", this, null);
 				} else
-					er.err(XdsErrorCode.Code.XDSRegistryMetadataError, "Submission includes unique ID " + uid + " on object " +  m.getObjectDescription(ele)  + 
+					er.err(XdsErrorCode.Code.XDSRegistryMetadataError, "Submission includes unique ID " + uid + " on model " +  m.getObjectDescription(ele)  +
 							". This UID is already present in the Registry as " + ro.getObjectDescription(), this, null);
 			}
 		}
@@ -129,8 +129,8 @@ public class ProcessMetadataForRegister implements ProcessMetadataInterface {
 	}
 
 	// verify that no associations are being added that:
-	//     reference a non-existant object in submission or registry
-	//     reference a Deprecated object in registry
+	//     reference a non-existant model in submission or registry
+	//     reference a Deprecated model in registry
 	//     link objects with different patient ids (except for special cases)
 	public void verifyAssocReferences(Metadata m) {
 		for (OMElement assocEle : m.getAssociations()) {
@@ -151,14 +151,14 @@ public class ProcessMetadataForRegister implements ProcessMetadataInterface {
 				if (ro == null) {
 					er.err(Code.XDSRegistryError, "Association " + 
 							type + "(" + m.getId(assocEle) + ")" +
-							" references an object with its sourceObject attribute that does not exist in submission or registry. " +
+							" references an model with its sourceObject attribute that does not exist in submission or registry. " +
 							"Object is " + source
 							, this, null);
 				} else {
 					if (ro.getAvailabilityStatus() == RegIndex.StatusValue.DEPRECATED) {
 						er.err(Code.XDSRegistryError, "Association " +
 								type + "(" + m.getId(assocEle) + ")" +
-								" references an object with its sourceObject attribute that has status Deprecated in the registry. " +
+								" references an model with its sourceObject attribute that has status Deprecated in the registry. " +
 								"Object is " + source
 								, this, null);
 					}
@@ -172,13 +172,13 @@ public class ProcessMetadataForRegister implements ProcessMetadataInterface {
 				if (ro == null) {
 					er.err(Code.XDSRegistryError, "Association " + 
 							type + "(" + m.getId(assocEle) + ")" +
-							" references an object with its targetObject attribute that does not exist in submission or registry. " +
+							" references an model with its targetObject attribute that does not exist in submission or registry. " +
 							"Object is " + target
 							, this, null);
 				} else if (ro.getAvailabilityStatus() == RegIndex.StatusValue.DEPRECATED) {
 					er.err(Code.XDSRegistryError, "Association " + 
 							type + "(" + m.getId(assocEle) + ")" +
-							" references an object with its targetObject attribute that has status Deprecated in the registry. " +
+							" references an model with its targetObject attribute that has status Deprecated in the registry. " +
 							"Object is " + target
 							, this, null);
 				}

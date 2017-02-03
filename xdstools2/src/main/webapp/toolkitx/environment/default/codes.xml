@@ -1,15 +1,48 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<!-- This list was curated by Steve Moore -->
+<!-- 
+        November 17, 2016
+
+        Additions were made to support RSNA Image Share
+        
+        formatCode extended with two values suggested by HL7 for C-CDA documents
+        healthcareFacilityTypeCode extended to support the IHE USA Data Access Framework (DAF) Supplement
+        practiceSettingCode extended to support the IHE USA Data Access Framework (DAF) Supplement
+        typeCodeRepresentation extended to support C-CDA documents
+        classCode extended to support DAF Supplement
+
+	November 1, 2014
+	
+	This is the Affinity Domain coding specification for the 2015 North American and European 
+	Connectathons. Questions and issues should be directed to Bill Majurski (bmajur@gmail.com).
+	
+	This list was curated by Steve Moore 
+-->
 <Codes>
 	<CodeType name="confidentialityCode" classScheme="urn:uuid:f4f85eac-e6cb-4883-b524-f2705394840f">
+		<!-- SMM 2016.09.21 RSNA ISN -->
+		<Code code="GRANT" display="GRANT" codingScheme="RSNA ISN" />
 		<!-- Added Sept. 2009 NHIN -->
 		<Code code="N" display="Normal" codingScheme="2.16.840.1.113883.5.25" />
 		<Code code="R" display="Restricted" codingScheme="2.16.840.1.113883.5.25" />
 		<Code code="V" display="very restricted" codingScheme="2.16.840.1.113883.5.25" />
 
+		<!-- SMM 2016.10.17 RSNA ISN -->
+		<Code code="V" display="very restricted" codingScheme="HL7 Confidentiality Codes" />
+		<!-- SMM 2016.10.17 RSNA ISN -->
+		<Code code="N" display="very restricted" codingScheme="HL7 Confidentiality Codes" />
+		<!-- SMM 2016.10.17 RSNA ISN -->
+		<Code code="R" display="very restricted" codingScheme="HL7 Confidentiality Codes" />
+
 	</CodeType>
 	<CodeType name="healthcareFacilityTypeCode" classScheme="urn:uuid:f33fb8ac-18af-42cc-ae0e-ed0b0bdb91e1">
+		<!-- SMM 2016.12.07 C-CDA / DAF -->
+		<Code code="39350007" display="Private physicians' group office"
+			codingScheme="2.16.840.1.113883.3.88.12.80.67" />
+
+		<!-- SMM 2016.09.21 RSNA ISN -->
+		<Code code="GENERAL HOSPITAL" display="GENERAL HOSPITAL"
+			codingScheme="RSNA-ISN" />
 		
 		<!-- Added Sept. 2009 NHIN -->
 		<Code code="281PC2000N" display="Hospitals; Chronic Disease Hospital; Children"
@@ -249,8 +282,11 @@
 			codingScheme="Connect-a-thon healthcareFacilityTypeCodes" />
 		<Code code="Assisted Living" display="Assisted Living"
 			codingScheme="Connect-a-thon healthcareFacilityTypeCodes" />
+
 		<Code code="Home Health Care" display="Home Health Care"
 			codingScheme="Connect-a-thon healthcareFacilityTypeCodes" />
+
+
 		<Code code="Hospital Setting" display="Hospital Setting"
 			codingScheme="Connect-a-thon healthcareFacilityTypeCodes" />
 		<Code code="Acute care hospital" display="Acute care hospital"
@@ -273,6 +309,10 @@
 			codingScheme="Connect-a-thon healthcareFacilityTypeCodes" />
 		<Code code="Outpatient" display="Outpatient"
 			codingScheme="Connect-a-thon healthcareFacilityTypeCodes 2" />
+		<Code code="Outpatient" display="Outpatient"
+			codingScheme="1.3.6.1.4.1.21367.100.1" />
+		<Code code="Outpatient" display="Outpatient"
+			codingScheme="2.16.840.1.1.1" />
 			
 		<!--  Codes for testing MPQ - since no patient id restrictions are used we need to have
 		some really restricted codes that are not used elsewhere.  Do not submit metadata with 
@@ -285,6 +325,13 @@
 		
 	</CodeType>
 	<CodeType name="practiceSettingCode" classScheme="urn:uuid:cccf5598-8b07-4b77-a05e-ae952c785ead">
+		<!-- SMM 2016.12.07 C-CDA / DAF -->
+		<Code code="419192003" display="Internal Medicine"
+			codingScheme="2.16.840.1.113883.6.96" />
+		
+		<!-- SMM 2016.09.21 RSNA ISN -->
+		<Code code="Radiology" display="Radiology"
+			codingScheme="RSNA-ISN" />
 		
 		<!-- Added Sept, 2009 NHIN -->
 		<Code code="394802001" display="General Medicine"
@@ -390,6 +437,9 @@
 		<Code code="Home" display="Home" codingScheme="Connect-a-thon practiceSettingCodes" />
 		<Code code="Veterinary Medicine" display="Veterinary Medicine"
 			codingScheme="Connect-a-thon practiceSettingCodes" />
+
+		<Code code="R-3027B" display="Radiology"
+			codingScheme="SRT" />
 	</CodeType>
 	<CodeType name="eventCodeList" classScheme="urn:uuid:2c6b8cb7-8b2a-4051-b291-b1ae6a575ef4">
 		<!-- 
@@ -1009,6 +1059,8 @@
 		<Code code="text/xml" ext="xml" />
 		<Code code="application/x-hl7" ext="hl7" />
 		<Code code="application/dicom" ext="dicom" />
+		<!-- SMM 2016.09.20 for RSNA Image Sharing -->
+		<Code code="application/dicom-kos" ext="dicom-kos" />
 		<Code code="text/plain" ext="txt" />
 		<Code code="multipart/related" ext="mpr" />
 		<Code code="image/tiff" ext="tiff" />
@@ -1054,8 +1106,31 @@
 
 
 	<CodeType name="typeCode" classScheme="urn:uuid:f0306f51-975f-434e-a61c-c59651d33983">
+		<!-- SMM 2016.12.14 C-CDA -->
+		<Code code="52521-2" codingScheme="2.16.840.1.113883.6.1" 
+			display = "Overall Plan of Care/Advance Care Directives" />
+		<!-- SMM 2016.12.14 C-CDA -->
+		<Code code="57133-1" codingScheme="2.16.840.1.113883.6.1" 
+			display = "Referral Note" />
+		<!-- SMM 2016.12.14 C-CDA -->
+		<Code code="18761-7" codingScheme="2.16.840.1.113883.6.1" 
+			display = "Provider-unspecified Transfer summary" />
+
+		<!-- SMM 2016.09.20 RSNA Image Share -->
+		<Code code="18748-4" codingScheme="LOINC" 
+			display = "Diagnostic Imaging Report" />
+
+		<!-- SMM 2016.10.17 RSNA Image Share -->
+		<Code code="34746-8" codingScheme="LOINC"
+			display = "Nursing Evaluation and Management Note" />
+
 		<Code code="34746-8" codingScheme="2.16.840.1.113883.6.1" 
 			display = "Nursing Evaluation and Management Note" />
+
+		<!-- SMM 2016.10.17 RSNA Image Share -->
+		<Code code="11502-2" codingScheme="LOINC"
+			display = "LABORATORY REPORT.TOTAL" />
+
 		<Code code="11502-2" codingScheme="2.16.840.1.113883.6.1" 
 			display = "LABORATORY REPORT.TOTAL" />
 		<Code code="HWS TYPECODE" codingScheme="1.3.6.1.4.1.21367.100.1" 
@@ -1064,6 +1139,11 @@
 			display = "Otorhinolaryngology Evaluation and Management Note" />
 		<Code code="XTHM-WD TYPECODE" codingScheme="1.3.6.1.4.1.21367.100.1" 
 			display = "XTHM-WD Type Code" />
+
+		<!-- SMM 2016.10.14 RSNA Image Share -->
+		<Code code="34133-9" codingScheme="LOINC"
+			display = "Summary of Episode Note" />
+
 		<Code code="34133-9" codingScheme="2.16.840.1.113883.6.1" 
 			display = "Summary of Episode Note" />
 		<Code code="11528-7" codingScheme="2.16.840.1.113883.6.1" 
@@ -1154,8 +1234,25 @@
 
 
 	<CodeType name="contentTypeCode" classScheme="urn:uuid:aa543740-bdda-424e-8c96-df4873be8500">
+		<!-- SMM 2016.12.07 C-CDA / DAF -->
+		<Code code="39350007" display="Private physicians' group office"
+			codingScheme="2.16.840.1.113883.3.88.12.80.67" />
+
+		<!-- SMM 2016.09.21 RSNA ISN -->
+		<Code code="Imaging Exam" codingScheme="RSNA-ISN"
+			display = "Imaging Exam" />
+
+		<!-- SMM 2016.10.17 RSNA Image Share -->
+		<Code code="34746-8" codingScheme="LOINC"
+			display = "Nursing Evaluation and Management Note" />
+
 		<Code code="34746-8" codingScheme="2.16.840.1.113883.6.1" 
 			display = "Nursing Evaluation and Management Note" />
+
+		<!-- SMM 2016.10.17 RSNA Image Share -->
+		<Code code="11502-2" codingScheme="LOINC"
+			display = "LABORATORY REPORT.TOTAL" />
+
 		<Code code="11502-2" codingScheme="2.16.840.1.113883.6.1" 
 			display = "LABORATORY REPORT.TOTAL" />
 		<Code code="HWS TYPECODE" codingScheme="1.3.6.1.4.1.21367.100.1" 
@@ -1164,6 +1261,11 @@
 			display = "Otorhinolaryngology Evaluation and Management Note" />
 		<Code code="XTHM-WD TYPECODE" codingScheme="1.3.6.1.4.1.21367.100.1" 
 			display = "XTHM-WD Type Code" />
+
+		<!-- SMM 2016.10.12 RSNA ISN -->
+		<Code code="34133-9" codingScheme="LOINC"
+			display = "Summary of Episode Note" />
+
 		<Code code="34133-9" codingScheme="2.16.840.1.113883.6.1" 
 			display = "Summary of Episode Note" />
 		<Code code="11528-7" codingScheme="2.16.840.1.113883.6.1" 
@@ -1254,16 +1356,53 @@
 
 
 	<CodeType name="classCode" classScheme="urn:uuid:41a5887f-8865-4c09-adf7-e362475b143a">
+		<!-- SMM 2016.12.07 DAF -->
+		<Code code="REPORTS" codingScheme="1.3.6.1.4.1.19376.1.2.6.1"
+			display = "Reports" />
+		<!-- SMM 2016.12.07 DAF -->
+		<Code code="SUMMARIES" codingScheme="1.3.6.1.4.1.19376.1.2.6.1"
+			display = "Summaries" />
+		<!-- SMM 2016.12.07 DAF -->
+		<Code code="IMAGES" codingScheme="1.3.6.1.4.1.19376.1.2.6.1"
+			display = "Images" />
+		<!-- SMM 2016.12.07 DAF -->
+		<Code code="PRESCRIPTIONS" codingScheme="1.3.6.1.4.1.19376.1.2.6.1"
+			display = "Prescribed Treatments and Diagnoses" />
+		<!-- SMM 2016.12.07 DAF -->
+		<Code code="DISPENSATIONS" codingScheme="1.3.6.1.4.1.19376.1.2.6.1"
+			display = "Dispensations" />
+		<!-- SMM 2016.12.07 DAF -->
+		<Code code="PLANS" codingScheme="1.3.6.1.4.1.19376.1.2.6.1"
+			display = "Treatment Plan or Protocol" />
+		<!-- SMM 2016.12.07 DAF -->
+		<Code code="HEALTH" codingScheme="1.3.6.1.4.1.19376.1.2.6.1"
+			display = "Health Certificates and Notifications" />
+		<!-- SMM 2016.12.07 DAF -->
+		<Code code="PATIENT" codingScheme="1.3.6.1.4.1.19376.1.2.6.1"
+			display = "Patient Expression and Preferences" />
+		<!-- SMM 2016.12.07 DAF -->
+		<Code code="WORKFLOWS" codingScheme="1.3.6.1.4.1.19376.1.2.6.1"
+			display = "Workflow Management" />
+
+		<!-- SMM 2016.09.21 RSNA ISN -->
+		<Code code="Imaging Exam" codingScheme="RSNA ISN"
+			display = "Imaging Exam" />
 		<Code code="51851-4" codingScheme="2.16.840.1.113883.6.1" 
 			display = "Workflow" />
+
+
 		<Code code="DEMO-Consult" codingScheme="1.3.6.1.4.1.21367.100.1" 
 			display = "Consultation" />
+
+
 		<Code code="DEMO-Procedure" codingScheme="1.3.6.1.4.1.21367.100.1" 
 			display = "Procedure" />
 		<Code code="DEMO-H &amp; P" codingScheme="1.3.6.1.4.1.21367.100.1" 
 			display = "History and Physical" />
 		<Code code="DEMO-Lab" codingScheme="1.3.6.1.4.1.21367.100.1" 
 			display = "Lab Result" />
+
+
 		<Code code="*" codingScheme="1.3.6.1.4.1.21367.100.1" 
 			display = "*" />
 		<Code code="DEMO-Ref" codingScheme="1.3.6.1.4.1.21367.100.1" 
@@ -1274,6 +1413,8 @@
 			display = "Patient Management" />
 		<Code code="DEMO-Ext Summary" codingScheme="1.3.6.1.4.1.21367.100.1" 
 			display = "Summary for External / Non Clinical Use" />
+
+
 		<Code code="DEMO-Index" codingScheme="1.3.6.1.4.1.21367.100.1" 
 			display = "Document Index" />
 		<Code code="DEMO-Department Rpt" codingScheme="1.3.6.1.4.1.21367.100.1" 
@@ -1282,6 +1423,9 @@
 			display = "Workflow Document" />
 		<Code code="DEMO-Summary" codingScheme="1.3.6.1.4.1.21367.100.1" 
 			display = "Summary" />
+
+
+
 		<Code code="DEMO-Security" codingScheme="1.3.6.1.4.1.21367.100.1" 
 			display = "Security" />
 
@@ -1292,10 +1436,65 @@
 
 
 	<CodeType name="formatCode" classScheme="urn:uuid:a09d5840-386c-46f2-b5ad-9c3699a4309d">
+		<!-- SMM 2016.12.07 C-CDA / DAF -->
+		<Code code="urn:hl7-org:sdwg:ccda-structuredBody:2.1"
+			codingScheme="1.3.6.1.4.1.19376.1.2.3" 
+			display = "urn:hl7-org:sdwg:ccda-structuredBody:2.1" />
+		<Code code="urn:hl7-org:sdwg:ccda-nonXMLBody:2.1"
+			codingScheme="1.3.6.1.4.1.19376.1.2.3" 
+			display = "urn:hl7-org:sdwg:ccda-nonXMLBody:2.1" />
+
+		<!-- SMM 2016.09.21 RSNA ISN -->
+		<Code code="TEXT" codingScheme="RSNA-ISN" 
+			display = "TEXT" />
+		<!-- SMM 2016.09.21 RSNA ISN -->
+		<!-- Secondary capture image -->
+		<Code code="1.2.840.10008.5.1.4.1.1.7" codingScheme="1.2.840.10008.2.6.1" 
+			display = "1.2.840.10008.5.1.4.1.1.7" />
+		<!-- SMM 2016.09.21 RSNA ISN -->
+		<!-- CR Image -->
+		<Code code="1.2.840.10008.5.1.4.1.1.1" codingScheme="1.2.840.10008.2.6.1" 
+			display = "1.2.840.10008.5.1.4.1.1.1" />
+		<!-- XX Image -->
+		<Code code="1.2.840.10008.5.1.4.1.1.1.2" codingScheme="1.2.840.10008.2.6.1" 
+			display = "1.2.840.10008.5.1.4.1.1.1.2" />
+		<!-- SMM 2016.09.21 RSNA ISN -->
+		<!-- XX Image -->
+		<Code code="1.2.840.10008.5.1.4.1.1.2" codingScheme="1.2.840.10008.2.6.1" 
+			display = "1.2.840.10008.5.1.4.1.1.2" />
+		<!-- SMM 2016.09.21 RSNA ISN -->
+		<!-- XX Image -->
+		<Code code="1.2.840.10008.5.1.4.1.1.3" codingScheme="1.2.840.10008.2.6.1" 
+			display = "1.2.840.10008.5.1.4.1.1.3" />
+		<!-- SMM 2016.09.21 RSNA ISN -->
+		<!-- XX Image -->
+		<Code code="1.2.840.10008.5.1.4.1.1.4" codingScheme="1.2.840.10008.2.6.1" 
+			display = "1.2.840.10008.5.1.4.1.1.4" />
+		<!-- SMM 2016.09.21 RSNA ISN -->
+		<!-- XX Image -->
+		<Code code="1.2.840.10008.5.1.4.1.1.12.1" codingScheme="1.2.840.10008.2.6.1" 
+			display = "1.2.840.10008.5.1.4.1.1.12.1" />
+		<!-- SMM 2016.09.21 RSNA ISN -->
+		<!-- XX Image -->
+		<Code code="1.2.840.10008.5.1.4.1.1.128" codingScheme="1.2.840.10008.2.6.1" 
+			display = "1.2.840.10008.5.1.4.1.1.128" />
+
+
+
 		<Code code="urn:ihe:rad:CDA:ImagingReportStructuredHeadings:2013" codingScheme="1.3.6.1.4.1.19376.1.2.3" 
 			display = "ImagingReportStructuredHeadings" />
+
+		<!-- 2016.10.17 SMM RSNA Image Share -->
+		<Code code="urn:ihe:qrph:ehcp:2010" codingScheme="IHE Format Codes"
+			display = "urn:ihe:qrph:ehcp:2010" />
+
 		<Code code="urn:ihe:qrph:ehcp:2010" codingScheme="1.3.6.1.4.1.19376.1.2.3" 
 			display = "urn:ihe:qrph:ehcp:2010" />
+
+		<!-- 2016.10.17 SMM RSNA Image Share -->
+		<Code code="urn:ihe:iti:bppc:2007" codingScheme="IHE Format Codes"
+			display = "urn:ihe:iti:bppc:2007" />
+
 		<Code code="urn:ihe:iti:bppc:2007" codingScheme="1.3.6.1.4.1.19376.1.2.3" 
 			display = "urn:ihe:iti:bppc:2007" />
 		<Code code="urn:ihe:pcc:xds-ms:2007" codingScheme="1.3.6.1.4.1.19376.1.2.3" 
@@ -1304,6 +1503,13 @@
 			display = "urn:ihe:iti:bppc-sd:2007" />
 		<Code code="urn:ihe:rad:TEXT" codingScheme="1.3.6.1.4.1.19376.1.2.3" 
 			display = "urn:ihe:rad:TEXT" />
+
+		<!-- SMM 2016.10.14 RSNA Image Share -->
+		<Code code="urn:ihe:rad:TEXT" codingScheme="1.3.6.1.4.1.21367.100.1"
+			display = "urn:ihe:rad:TEXT" />
+		<Code code="urn:ihe:rad:TEXT" codingScheme="IHE Format Codes"
+			display = "urn:ihe:rad:TEXT" />
+
 		<Code code="urn:ihe:pcc:its:2011" codingScheme="1.3.6.1.4.1.19376.1.2.3" 
 			display = "urn:ihe:pcc:its:2011" />
 		<Code code="urn:ihe:pcc:ehdiwd:2013" codingScheme="1.3.6.1.4.1.19376.1.2.3" 
@@ -1316,6 +1522,11 @@
 			display = "urn:ihe:pcc:aps:2007" />
 		<Code code="urn:ihe:qrph:hw:2013" codingScheme="1.3.6.1.4.1.19376.1.2.3" 
 			display = "urn:ihe:qrph:hw:2013" />
+
+		<!-- SMM 2016.10.17 RSNA ISN -->
+		<Code code="urn:ihe:qrph:hw:2013" codingScheme="IHE Format Codes"
+			display = "urn:ihe:qrph:hw:2013" />
+
 		<Code code="urn:ihe:pcc:nds:2010" codingScheme="1.3.6.1.4.1.19376.1.2.3" 
 			display = "urn:ihe:pcc:nds:2010" />
 		<Code code="1.2.840.10008.5.1.4.1.1.88.59" codingScheme="1.2.840.10008.2.6.1" 

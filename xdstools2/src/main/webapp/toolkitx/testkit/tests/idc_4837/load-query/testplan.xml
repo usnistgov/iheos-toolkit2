@@ -1,0 +1,15 @@
+<TestPlan>
+   <Test>load-query</Test>
+   <TestStep id="load-query">
+      <Goal>Load Registry Stored Query (ITI-18) sent from IDC SUT to Repository simulator</Goal>
+      <ExpectedStatus>Success</ExpectedStatus>
+      <ImgDetailTransaction>
+         <Assertions>
+            <Assert id="Registry Stored Query Load" process="loadSOAPSimTransaction">
+               <SimTransaction id="rr" transaction="sq" 
+                  pid="IDCAD013-a^^^&amp;1.3.6.1.4.1.21367.2005.13.20.1000&amp;ISO"/>
+            </Assert>
+         </Assertions>
+      </ImgDetailTransaction>
+   </TestStep>
+</TestPlan>

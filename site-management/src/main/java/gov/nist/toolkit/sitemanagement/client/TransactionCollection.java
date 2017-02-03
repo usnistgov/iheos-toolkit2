@@ -19,7 +19,13 @@ public class TransactionCollection implements IsSerializable, Serializable {
 	public String collectionName;    // never really used
 	boolean isRepositories = false; // a TransactionCollection is either for Repositories
 									// or not
-	
+
+	public void mergeIn(TransactionCollection tc) {
+		for (TransactionBean bean : tc.transactions) {
+			transactions.add(bean);
+		}
+	}
+
 	public boolean equals(TransactionCollection tc) {
 		if (tc == null)
 			return false;
@@ -220,6 +226,7 @@ public class TransactionCollection implements IsSerializable, Serializable {
 			return;
 //			throw new Exception("Actors.xml configuration problem: site " + collectionName + 
 //					" defines transaction " + t.toString() + " multiple times\n Relevant part of Site definition is:\n" + toString());
+		// Issue 98 TODO: set the repositoryType here
 		transactions.add(new TransactionBean(
 				transactionName, 	
 				isRepositories ? RepositoryType.REPOSITORY : RepositoryType.NONE, 

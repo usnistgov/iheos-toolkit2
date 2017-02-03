@@ -2,17 +2,16 @@ package gov.nist.toolkit.xdstools2.client.tabs;
 
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.user.client.ui.FlexTable;
-import com.google.gwt.user.client.ui.HTML;
-import com.google.gwt.user.client.ui.TextBox;
-import com.google.gwt.user.client.ui.VerticalPanel;
+import com.google.gwt.user.client.ui.*;
 import gov.nist.toolkit.configDatatypes.client.TransactionType;
-import gov.nist.toolkit.results.client.SiteSpec;
+import gov.nist.toolkit.results.client.Result;
+import gov.nist.toolkit.sitemanagement.client.SiteSpec;
 import gov.nist.toolkit.xdstools2.client.CoupledTransactions;
-import gov.nist.toolkit.xdstools2.client.PopupMessage;
-import gov.nist.toolkit.xdstools2.client.TabContainer;
+import gov.nist.toolkit.xdstools2.client.command.command.GetSrcStoresDocValCommand;
+import gov.nist.toolkit.xdstools2.client.widgets.PopupMessage;
 import gov.nist.toolkit.xdstools2.client.siteActorManagers.GetDocumentsSiteActorManager;
 import gov.nist.toolkit.xdstools2.client.tabs.genericQueryTab.GenericQueryTab;
+import gov.nist.toolkit.xdstools2.shared.command.request.GetSrcStoresDocValRequest;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -56,21 +55,18 @@ public class SourceStoredDocValTab extends GenericQueryTab {
 	public SourceStoredDocValTab() {
 		super(new GetDocumentsSiteActorManager());
 	}
-	
-	public void onTabLoad(TabContainer container, boolean select, String eventName) {
-		myContainer = container;
-		topPanel = new VerticalPanel();
-		container.addTab(topPanel, "SourceStoresDocVal", select);
-		addCloseButton(container,topPanel, help);
 
+	@Override
+	protected Widget buildUI() {
+		FlowPanel container = new FlowPanel();
 		HTML title = new HTML();
 		title.setHTML("<h2>Source Stores Document Validation</h2>");
-		topPanel.add(title);
+		container.add(title);
 
 		mainGrid = new FlexTable();
 		int row = 0;
-		
-		topPanel.add(mainGrid);
+
+		container.add(mainGrid);
 
 		HTML ssidLabel = new HTML();
 		ssidLabel.setText("Submission Set Unique ID or UUID");
@@ -80,10 +76,16 @@ public class SourceStoredDocValTab extends GenericQueryTab {
 		ssid.setWidth("500px");
 		mainGrid.setWidget(row, 1, ssid);
 		row++;
+		return container;
+	}
 
+	@Override
+	protected void bindUI() {
+	}
 
+	@Override
+	protected void configureTabView() {
 		queryBoilerplate = addQueryBoilerplate(new GetSSandContentsRunner(), transactionTypes, couplings, false);
-
 	}
 
 	class GetSSandContentsRunner implements ClickHandler {
@@ -105,7 +107,12 @@ public class SourceStoredDocValTab extends GenericQueryTab {
 			getGoButton().setEnabled(false);
 			getInspectButton().setEnabled(false);
 
-			toolkitService.srcStoresDocVal(siteSpec, ssid.getValue().trim(), queryCallback);
+			new GetSrcStoresDocValCommand(){
+				@Override
+				public void onComplete(List<Result> result) {
+					displayResults(result);
+				}
+			}.run(new GetSrcStoresDocValRequest(getCommandContext(),siteSpec,ssid.getValue().trim()));
 		}
 		
 	}

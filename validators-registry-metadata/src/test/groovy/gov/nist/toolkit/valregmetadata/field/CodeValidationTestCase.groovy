@@ -1,10 +1,4 @@
-import gov.nist.toolkit.errorrecording.TextErrorRecorder
-import gov.nist.toolkit.registrymetadata.MetadataParser
-import gov.nist.toolkit.utilities.xml.Util
-import gov.nist.toolkit.valregmetadata.field.CodeValidation
-import gov.nist.toolkit.valsupport.client.ValidationContext
 import groovy.util.logging.Log4j
-import org.apache.axiom.om.OMElement
 import spock.lang.Specification
 
 @Log4j

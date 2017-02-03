@@ -123,9 +123,9 @@ public class MultipartMap {
     }
     
     /**
-     * Constructor builds a MultipartMap object based upon the contents of an entire
-     * HttpServletRequest object.
-     * @param request An HttpServletRequest object that contains Multipart content.
+     * Constructor builds a MultipartMap model based upon the contents of an entire
+     * HttpServletRequest model.
+     * @param request An HttpServletRequest model that contains Multipart content.
      * @throws javax.mail.MessagingException Thrown if there is a problem parsing this input.
      * @throws java.io.IOException Thrown if there is an IO problem accessing this input.  (Check that 
      * HttpServletRequest is valid.)
@@ -162,16 +162,16 @@ public class MultipartMap {
     }
     
     /**
-     * Returns the HashMap representing the content in this object.
-     * @return The HashMap representing the content in this object.
+     * Returns the HashMap representing the content in this model.
+     * @return The HashMap representing the content in this model.
      */
     public HashMap getMap() {
         return map;
     }
     
     /**
-     * Returns the HashMap representing the content types in this object.
-     * @return The HashMap representing the content types in this object.
+     * Returns the HashMap representing the content types in this model.
+     * @return The HashMap representing the content types in this model.
      */
     public HashMap getTypeMap() {
         return typemap;

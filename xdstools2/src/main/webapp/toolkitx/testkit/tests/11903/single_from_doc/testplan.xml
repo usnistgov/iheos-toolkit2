@@ -1,0 +1,21 @@
+
+<TestPlan>
+  <Test>11903/single_from_doc</Test>
+  <TestStep id="single_from_doc">
+  <Rule>
+    <Transaction>SQ</Transaction>
+    <SQ>GetAssociations</SQ>
+    <Assertion>Single association referencing document</Assertion>
+  </Rule>
+  <ExpectedStatus>Success</ExpectedStatus>
+  <StoredQueryTransaction>
+    <XDSb/>
+    <MetadataFile>query1.xml</MetadataFile>
+    <UseId testdir="../../12346/single_doc" id="Document01" symbol="$uuid$" step="submit_doc" section="AssignedUuids"/>
+    <ExpectedContents>
+      <Associations count="1"/>
+    </ExpectedContents>
+  </StoredQueryTransaction>
+</TestStep>
+
+</TestPlan>

@@ -1,23 +1,24 @@
 package gov.nist.toolkit.testengine.engine;
 
 import gov.nist.toolkit.installation.Installation;
-import gov.nist.toolkit.registrysupport.logging.RegistryResponseLog;
-import gov.nist.toolkit.results.client.LogIdIOFormat;
-import gov.nist.toolkit.results.client.LogIdType;
+import gov.nist.toolkit.registrymsg.repository.RetrievedDocumentModel;
 import gov.nist.toolkit.results.client.TestInstance;
 import gov.nist.toolkit.sitemanagement.CombinedSiteLoader;
 import gov.nist.toolkit.sitemanagement.Sites;
 import gov.nist.toolkit.sitemanagement.client.Site;
 import gov.nist.toolkit.soap.axis2.Soap;
-import gov.nist.toolkit.testenginelogging.LogFileContent;
-import gov.nist.toolkit.testenginelogging.TestDetails;
-import gov.nist.toolkit.testenginelogging.TestStepLogContent;
+import gov.nist.toolkit.testenginelogging.LogFileContentBuilder;
+import gov.nist.toolkit.testenginelogging.TestLogDetails;
+import gov.nist.toolkit.testenginelogging.client.LogFileContentDTO;
 import gov.nist.toolkit.testenginelogging.logrepository.LogRepository;
-import gov.nist.toolkit.testenginelogging.logrepository.LogRepositoryFactory;
+import gov.nist.toolkit.testkitutilities.TestDefinition;
+import gov.nist.toolkit.testkitutilities.TestKitSearchPath;
 import gov.nist.toolkit.utilities.io.Io;
+import gov.nist.toolkit.utilities.xml.XmlUtil;
 import gov.nist.toolkit.xdsexception.ExceptionUtil;
-import gov.nist.toolkit.xdsexception.XdsInternalException;
 import gov.nist.toolkit.xdsexception.XdsParameterException;
+import gov.nist.toolkit.xdsexception.client.XdsInternalException;
+import org.apache.axiom.om.OMElement;
 import org.apache.log4j.Logger;
 
 import javax.xml.parsers.FactoryConfigurationError;
@@ -30,15 +31,14 @@ public class XdsTest {
 
 	String version = "xx.yy";
 	//controlling variables
-	File testkit;
-	File altTestkit;
+	TestKitSearchPath searchPath;
 	String mgmt;
 	File toolkit;
 	LogRepository logRepository;
 	TestInstance testInstance;
 	String testPart;
-	List<TestDetails> testSpecs;     
-	List<File> logFiles;
+	List<TestLogDetails> testSpecs;
+	List<File> logFiles;  // written but never used
 	String testDir; 
 	String tokens;
 	boolean verbose = false;
@@ -102,20 +102,9 @@ public class XdsTest {
 		operationOptionList = Arrays.asList(operationOptions);
 	}
 
-	public static boolean main(String[] args) {
-		logger.info("xdstest started");
-		XdsTest xt = new XdsTest(false);
-//		String[] a = {"-Dsite=dev", "-DXDSTOOLKIT=/Users/bill/tmp/toolkitc", "-DXDSTESTLOGDIR=/Users/bill/dev/xdstoolkit/logs", "-DXDSTESTKIT=/Users/bill/tmp/toolkitc/testkit","-t", "12318", "-err"};
-		return xt.run(args);
-	}
-
-	public XdsTest() {
+	public XdsTest(TestKitSearchPath searchPath) {
+		this.searchPath = searchPath;
 		noExit = true;
-		testConfig = new TestConfig();
-	}
-
-	public XdsTest(boolean noExit) {
-		this.noExit = noExit;
 		testConfig = new TestConfig();
 	}
 
@@ -131,108 +120,11 @@ public class XdsTest {
 		return out;
 	}
 
-	void validateEnvironment() throws XdsParameterException {
-		bassert(toolkit != null && toolkit.exists(),"XDSTOOLKIT directory " + toolkit + " does not exist");
-		bassert(new File(toolkit + "/xdstest").exists(),"XDSTOOLKIT directory " + toolkit + " is not really the toolkit, no xdstest subdirectory exists");
-
-//		bassert(logRepository != null && logRepository.isDirectory(),"XDSTESTLOGDIR directory " + logRepository + " does not exist or is not a directory");
-
-		bassert(testkit != null && testkit.exists(),"XDSTESTKIT directory " + testkit + " does not exist");
-		bassert(new File(testkit + "/tests").exists(),"XDSTESTKIT directory " + testkit + " is not really the testkit, no tests subdirectory exists");
-	}
-
-	String getFromEnv(String propName) {
-		String value = null;
-		value = System.getenv(propName);
-		if (value != null)
-			return value;
-		value = System.getProperty(propName);
-		return value;
-	}
-
-	public void loadProperties(List<String> props) {
-		String delete = null;
-		while (true) {
-			for (String prop : props) {
-				if (prop.startsWith("-D")) {
-					delete = prop;
-
-					prop = prop.substring(2);
-					String[] parts = prop.split("=");
-					if (parts.length == 2) {
-						System.out.println("Set Property " + parts[0] + " to " + parts[1]);
-						System.setProperty(parts[0], parts[1]);
-					}
-
-					break;
-				}
-			}
-			if (delete == null)
-				break;
-			props.remove(delete);
-			delete = null;
-		}
-	}
-
 	/**
 	 * Load config from environment. Used only from command line incantation. From
 	 * GUI, these are already filled in.
 	 * @throws Exception
 	 */
-	public void loadFromEnvironment() throws Exception  {
-		String toolkitstr = getFromEnv("XDSTOOLKIT");
-		String testkitdir = getFromEnv("XDSTESTKIT");
-		String logdirstr = getFromEnv("XDSTESTLOGDIR");
-		siteName = getFromEnv("site");
-
-		if (testkitdir != null)
-			testkit = new File(testkitdir);
-		if (logdirstr != null) {
-			File testLogCache = Installation.installation().testLogCache();
-			logRepository = new LogRepositoryFactory().
-					getRepository(
-							testLogCache,   // location
-							null,           // user
-							LogIdIOFormat.JAVA_SERIALIZATION,   // IO format
-							LogIdType.TIME_ID,                // ID type
-							null);            // ID
-		}
-		if (toolkitstr != null)
-			toolkit = new File(toolkitstr);
-
-		validateEnvironment();
-
-		version = Io.stringFromFile(new File(toolkit + "/admin/version")).trim();
-		testConfig.version = version;
-
-		mgmt = toolkit + File.separator + "xdstest";
-		testConfig.testmgmt_dir = mgmt;
-
-		loadTestKitVersion();
-		
-		// these properties are needed by the DSIG package in gov.nist.registry.common2.dsig
-		// specifically the KeyStoreAccessObject which need to know there to find the 
-		// keystore for signing SAML assertions
-		
-		try {
-			System.setProperty("DSIG_keystore_url",System.getProperty("javax.net.ssl.keyStore"));
-			System.setProperty("DSIG_keystore_password",System.getProperty("javax.net.ssl.keyStorePassword"));
-			System.setProperty("DSIG_keystore_alias", getFromEnv("keystore_alias"));
-		} catch (Exception e) {}
-	}
-
-	public boolean run(String[] in_args)  {
-		List<String> args = new ArrayList<String>();
-		for (int i=0; i<in_args.length; i++) args.add(in_args[i]);
-
-		try {
-			return run(args);
-		} catch (Exception e) {
-			showException(e);
-			return false;
-		}
-	}
-
 	void loadTestKitVersion() throws Exception {
 		File toolkitVersionFile = new File(toolkit + File.separator + "admin" + File.separator + "version");
 		if (!toolkitVersionFile.exists())
@@ -277,103 +169,7 @@ public class XdsTest {
 		this.sites = sites;
 	}
 
-
-	public boolean run(List<String> args) throws Exception   {
-
-		testConfig.args = args.toString();
-
-		loadProperties(args);
-
-		loadFromEnvironment();
-
-		parseOptions(args);
-
-		if (decodeEnvironmentVar != null) {
-			if (decodeEnvironmentVar.equals("XDSTOOLKIT")) {
-				System.out.println(toolkit);
-				System.exit(1);
-			}
-		}
-
-		if (site == null) logger.debug("No site specified");
-		else logger.debug("Site specified is " + site.getName());
-
-		sites = loadSites();
-		testConfig.allRepositoriesSite = sites.getAllRepositoriesSite();
-
-		if (siteName == null) {
-			// no site is offered on command line, maybe default is declared in actors.xml
-			siteName = sites.getDefaultSiteName();
-		}
-
-		if (site == null) {
-			logger.debug("site not set - try pulling default site");
-		}
-
-		site = sites.getSite(siteName);
-
-		if (site == null) {
-			logger.debug("site still not set");
-		}
-
-		testConfig.site = site;
-
-		logger.debug("XdsTest.run - Site is " + siteName);
-
-		if (showConfig) {
-			showConfiguration(sites);
-		}
-
-		if (verboseverbose)
-			System.out.println(site);
-
-
-		bassert(siteName != null, "No site specified on command line and no default present in actors.xml");
-
-		return runTest();	
-
-	}
-
-	public boolean runTest() throws Exception,
-	FactoryConfigurationError {
-
-
-		initTestConfig();
-
-
-		if (listingOnly) {
-			try {
-				TestDetails.listTestKitContents(testkit);
-			} catch (Exception e) {}
-			return true;
-		}
-
-		if (tcListingOnly) {
-			try {
-				TestCollection.listTestKitCollections(testkit);
-			} catch (Exception e) {}
-			if ( !noExit) System.exit(-1);
-		}
-
-
-
-		boolean status = true;
-		if (runFlag) 
-			status = run();
-
-		if (showResponseFlag)
-			showResponse();
-		else if (showErrorsFlag) 
-			showErrors();
-
-		if ( !noExit )
-			System.exit(0);
-		return status;
-	}
-
 	private void initTestConfig() {
-		testConfig.testkitHome = testkit;
-		testConfig.altTestkitHome = altTestkit;
 		testConfig.logRepository = logRepository;
 		testConfig.site = site;
 		testConfig.secure = secure;
@@ -390,71 +186,71 @@ public class XdsTest {
 	}
 
 	private void showResponse() throws FactoryConfigurationError, Exception {
-		for (File logFile : logFiles) {
-			LogFileContent log = new LogFileContent(logFile);
-			StringBuffer buf = new StringBuffer();
-			for (int i=0; i<log.size(); i++) {
-				TestStepLogContent tslog = log.getTestStepLog(i);
-				buf.append("STEP ");
-				buf.append(tslog.getName());
-				buf.append(":");
-				buf.append(tslog.getRegistryResponse().toString());
-				buf.append("\n");
-			}
-			System.out.println(buf);
-		}
+//		for (File logFile : logFiles) {
+//			LogFileContentDTO log = new LogFileContentBuilder().build(logFile);
+//			StringBuffer buf = new StringBuffer();
+//			for (int i=0; i<log.size(); i++) {
+//				TestStepLogContentDTO tslog = log.getTestStepLog(i);
+//				buf.append("STEP ");
+//				buf.append(tslog.getName());
+//				buf.append(":");
+//				buf.append(tslog.getRegistryResponse().toString());
+//				buf.append("\n");
+//			}
+//			System.out.println(buf);
+//		}
 	}
 
 	private void showErrors()  {
-		StringBuffer buf = new StringBuffer();
-		buf.append("*******************   Error Summary  *******************\n");
-		for (File logFile : logFiles) {
-			LogFileContent log;
-			try {
-				log = new LogFileContent(logFile);
-			} 
-			catch (Exception e) {
-				buf.append("Error: " + e.getMessage() );
-				buf.append(logFile);
-				buf.append("\n");
-				continue;
-			}
-			if ( !log.isSuccess() ) {
-				String fatal = log.getFatalError();
-				if (fatal != null) {
-					buf.append("Test ");
-					buf.append(log.getTestAttribute());
-					buf.append("\t");
-					buf.append("Fatal Error: ");
-					buf.append(fatal);
-					buf.append("\n");
-					continue;
-				}
-				for (int stepIndex=0; stepIndex<log.size(); stepIndex++) {
-					String stepName;
-					try {
-						stepName = log.stepName(stepIndex);
-					} catch (Exception e) {
-						buf.append("Error: cannot access " + stepIndex + "th step of log file\n");
-						continue;
-					}
-
-					addRegistryResponseErrors(buf,
-							log, stepIndex, stepName); 
-
-
-					addAssertionErrors(buf, log,
-							stepIndex);
-
-					addSoapFaults(buf, log,
-							stepIndex);
-				}
-			}
-		}
-		System.out.println(buf);
+//		StringBuffer buf = new StringBuffer();
+//		buf.append("*******************   Error Summary  *******************\n");
+//		for (File logFile : logFiles) {
+//			LogFileContentDTO log;
+//			try {
+//				log = new LogFileContentBuilder().build(logFile);
+//			}
+//			catch (Exception e) {
+//				buf.append("Error: " + e.getMessage() );
+//				buf.append(logFile);
+//				buf.append("\n");
+//				continue;
+//			}
+//			if ( !log.isSuccess() ) {
+//				String fatal = log.getFatalError();
+//				if (fatal != null) {
+//					buf.append("Test ");
+//					buf.append(log.getTestAttribute());
+//					buf.append("\t");
+//					buf.append("Fatal Error: ");
+//					buf.append(fatal);
+//					buf.append("\n");
+//					continue;
+//				}
+//				for (int stepIndex=0; stepIndex<log.size(); stepIndex++) {
+//					String stepName;
+//					try {
+//						stepName = log.stepName(stepIndex);
+//					} catch (Exception e) {
+//						buf.append("Error: cannot access " + stepIndex + "th step of log file\n");
+//						continue;
+//					}
+//
+//					addRegistryResponseErrors(buf,
+//							log, stepIndex, stepName);
+//
+//
+//					addAssertionErrors(buf, log,
+//							stepIndex);
+//
+//					addSoapFaults(buf, log,
+//							stepIndex);
+//				}
+//			}
+//		}
+//		System.out.println(buf);
 	}
 
-	private void addAssertionErrors(StringBuffer buf, LogFileContent log,
+	private void addAssertionErrors(StringBuffer buf, LogFileContentDTO log,
 			int stepIndex) {
 		List<String> assertionErrors = null;
 		try {
@@ -473,7 +269,7 @@ public class XdsTest {
 		}
 	}
 
-	private void addSoapFaults(StringBuffer buf, LogFileContent log,
+	private void addSoapFaults(StringBuffer buf, LogFileContentDTO log,
 			int stepIndex) {
 		List<String> soapFaults = null;
 		try {
@@ -493,27 +289,27 @@ public class XdsTest {
 		}
 	}
 
-	private void addRegistryResponseErrors(StringBuffer buf,
-			LogFileContent log, int stepIndex, String stepName) {
-		RegistryResponseLog rr;
-		try {
-			rr = log.getUnexpectedErrors(stepIndex);
-		} catch (Exception e) {
-			//			buf.append("Error: cannot extract RegistryResponse: " + e.getMessage() + "\n");
-			//			buf.append(ExceptionUtil.exception_details(e));
-			return;
-		}
-		if (rr.size() > 0) {
-			buf.append("***** Test ");
-			buf.append(log.getTestAttribute());
-			buf.append("\t");
-			buf.append("Step ");
-			buf.append(stepName);
-			buf.append("\n");
-			buf.append(rr.getErrorSummary());
-			buf.append("\n");
-		}
-	}
+//	private void addRegistryResponseErrors(StringBuffer buf,
+//			LogFileContentDTO log, int stepIndex, String stepName) {
+//		RegistryResponseLog rr;
+//		try {
+//			rr = log.getUnexpectedErrors(stepIndex);
+//		} catch (Exception e) {
+//			//			buf.append("Error: cannot extract RegistryResponse: " + e.getMessage() + "\n");
+//			//			buf.append(ExceptionUtil.exception_details(e));
+//			return;
+//		}
+//		if (rr.size() > 0) {
+//			buf.append("***** Test ");
+//			buf.append(log.getTestAttribute());
+//			buf.append("\t");
+//			buf.append("Step ");
+//			buf.append(stepName);
+//			buf.append("\n");
+//			buf.append(rr.getErrorSummary());
+//			buf.append("\n");
+//		}
+//	}
 
 	void showException(Exception e) {
 		if (showExceptionTrace || e instanceof NullPointerException) 
@@ -678,7 +474,7 @@ public class XdsTest {
 
 	boolean runHadError = false;
 
-	public List<TestDetails> runAndReturnLogs(Map<String, String> externalLinkage, Map<String, Object> externalLinkage2, TransactionSettings globalTransactionSettings, boolean writeLogFiles) throws Exception {
+	public List<TestLogDetails> runAndReturnLogs(Map<String, String> externalLinkage, Map<String, Object> externalLinkage2, TransactionSettings globalTransactionSettings, boolean writeLogFiles) throws Exception {
 		initTestConfig();
 
 		//resetTestSpecLogs();
@@ -697,9 +493,16 @@ public class XdsTest {
 		if (testSpecs == null)
 			throw new Exception("XdsTest#runAndReturnLogs: testSpecs is null");
 
+		TestKitSearchPath searchPath = new TestKitSearchPath(globalTransactionSettings.environmentName, globalTransactionSettings.testSession);
+
         this.status = true;
-		for (TestDetails testSpec : testSpecs) {
+		for (TestLogDetails testSpec : testSpecs) {
 			System.out.println("Test: " + testSpec.getTestInstance().getId());
+			TestDefinition testDefinition = searchPath.getTestDefinition(testSpec.getTestInstance().getId());
+			File testKitFile = searchPath.getTestKitForTest(testSpec.getTestInstance().getId()).getTestKitDir();
+			if (testKitFile == null)
+				throw new Exception("Test " + testSpec.getTestInstance() + " not found");
+
 			// Changes made by a test should be isolated to that test
 			// They need to run independently
 			TransactionSettings ts = globalTransactionSettings.clone();
@@ -713,36 +516,44 @@ public class XdsTest {
 
 				testConfig.testplanDir = testPlanFile.getParentFile();
 				testConfig.logFile = null;
+				testConfig.archiveLogFile = null;
 
 				TestInstance testLogId = testSpec.getTestInstance();
-				testSpec.testLogId = testLogId;
+				testSpec.setTestInstance(testLogId);
 				File logDirectory = logRepository.logDir(testLogId);
 				if (ts != null && ts.logRepository != null)
 					logDirectory = ts.logRepository.logDir(testLogId);
 
 				// This is the log.xml file
-				testConfig.logFile = new TestKitLog(logDirectory, testkit, altTestkit).getLogFile(testPlanFile);
+
+				testConfig.logFile = new TestKitLog(logDirectory, testKitFile).getLogFile(testPlanFile);
+				if (Installation.instance().propertyServiceManager().getArchiveLogs()) {
+					File now = Installation.instance().newArchiveDir();
+					testConfig.archiveLogFile = new File(now, "log.xml");
+				}
 				writeLogFiles = true;
 				if (writeLogFiles) {
 					logFiles.add(testConfig.logFile);
 				}
 				
 				PlanContext plan = new PlanContext();		
-				plan.setPreviousSectionLogs(testSpec.sectionLogMap);
+				plan.setPreviousSectionLogs(testSpec.sectionLogMapDTO);
 				plan.setTestConfig(testConfig);
 				plan.setCurrentSection(section);
 				plan.setExtraLinkage(externalLinkage);
 				plan.setExtraLinkage2(externalLinkage2);
 				plan.setWriteLogFiles(writeLogFiles);
-				plan.setPreviousSectionLogs(testSpec.sectionLogMap);
+				plan.setPreviousSectionLogs(testSpec.sectionLogMapDTO);
 				plan.setTransactionSettings(ts);
 
 				boolean status =  plan.run(testPlanFile);
 				// this.status records whether any test failed
                 if (this.status)
     				this.status = status;
-                // This use of section is used to link reports in log files
-				testSpec.addTestPlanLog(section, new LogFileContent(plan.results_document));
+				// Write document cache before the contents get stripped for response logging. Contents are preserved in  the full log.
+				writeDocumentCache(plan.getResultsDocument());
+                // This use of section is used to link reportDTOs in log files
+				testSpec.addTestPlanLog(section, new LogFileContentBuilder().build(plan.results_document));
 
 				if (status) 
 					System.out.println("\t\t...Pass");
@@ -764,9 +575,40 @@ public class XdsTest {
 		return testSpecs;
 	}
 
+	void writeDocumentCache(OMElement el) {
+		try {
+			el = XmlUtil.firstDecendentWithLocalName(
+					el,
+					"RetrieveDocumentSetResponse");
+
+			if (el!=null) {
+				RetrieveB rb = new RetrieveB();
+				Map<String, RetrievedDocumentModel> resMap = rb
+						.parse_rep_response(el).getMap();
+
+				for (String docUid : resMap.keySet()) {
+					RetrievedDocumentModel ri = resMap.get(docUid);
+					File localFile = new File(getRepositoryCache(), ri.getDocUid().replace(":","") + LogFileContentBuilder.getRepositoryCacheFileExtension(ri.getContent_type()));
+
+					Io.bytesToFile(localFile,
+							ri.getContents());
+				}
+			}
+
+		} catch (Throwable t) {
+			System.out.println(t.toString());
+		}
+	}
+
+	private File getRepositoryCache() {
+		File cache = new File(Installation.instance().warHome(), "DocumentCache");
+		cache.mkdirs();
+		return cache;
+	}
+
 	public void resetTestSpecLogs() {
 		if (testSpecs != null)
-			for (TestDetails testSpec : testSpecs) {
+			for (TestLogDetails testSpec : testSpecs) {
 				testSpec.resetLogs();
 			}		
 	}
@@ -778,7 +620,7 @@ public class XdsTest {
 			bargs = reverse(args); // bargs = bacwards args (works as stack)
 		} else
 			bargs = args;
-		testSpecs = new ArrayList<TestDetails>();
+		testSpecs = new ArrayList<TestLogDetails>();
 
 		parseOperationOptions();
 
@@ -802,161 +644,134 @@ public class XdsTest {
 	}
 
 	void parseOperationOptions() throws Exception {
-		while (bhas()) {
-			String option = bpop("");
-
-			if (option.equals("--secure") || option.equals("-S")) {
-				secure = true;
-			}
-			else if (option.equals("--wssec") ) {
-				wssec = true;
-			}
-			else if (option.equals("--phonehome") ) {
-				phoneHome = true;
-			}
-			else if (option.equals("--testcollection") || option.equals("-tc")) {
-				String testCollectionName = bpop("--testcollection expects a path");
-				optAssert(!testCollectionName.startsWith("-"), "--testcollection expects a test collection name");
-
-				TestCollection tcol = new TestCollection(testkit,testCollectionName);
-				if (verbose) System.out.println("testcollection: " + tcol);
-
-				testSpecs.addAll(tcol.getTestSpecs());
-
-				while (bhas() && !bpeek().startsWith("-")) {
-					testSpecs.addAll(new TestCollection(testkit,bpop("oops")).getTestSpecs());
-				}
-				runFlag = true;
-			}
-			else if (option.equals("--test") || option.equals("-t")) {
-				if (verbose) System.out.println("parsing -t");
-				bshow();
-				testInstance = new TestInstance(bpop("--testId expects a test number"));
-				if (verbose) System.out.println("testId=" + testInstance);
-				optAssert(!testInstance.getId().startsWith("-"), "--testId expects a test number");
-				TestDetails ts = new TestDetails(testkit, testInstance);
-
-				if (verbose) System.out.println("before section check");
-				if (verbose) System.out.println("testspec is " + ts);
-				bshow();
-				if (bhas() && !bpeek().startsWith("-")) {
-					if (verbose) System.out.println("Looking for sections");
-					bshow();
-					List<String> sections = null;
-					while (bhas() && !bpeek().startsWith("-")) {
-						String section = bpop("oops");
-						if (verbose) System.out.println("found section=" + section);
-						if (sections == null)
-							sections = new ArrayList<String>();
-						sections.add(section);
-					}
-					if (sections != null) {
-						ts.setLogRepository(logRepository);
-						ts.selectSections(sections);
-					}
-				}
-				testSpecs.add(ts);
-				testInstance = null;
-				runFlag = true;
-			}
-			else if (option.equals("--decode")) {
-				decodeEnvironmentVar = bpop("--decode option requires following name");
-			}
-			else if (option.equals("--config") || option.equals("-c")) {
-				showConfig = true;
-			}
-			else if (option.equals("--help") || option.equals("-h")) {
-				displayHelpAndExit();
-			}
-			else if (option.equals("--errors") || option.equals("-err")) {
-				showErrorsFlag = true;
-			}
-			else if (option.equals("--response") || option.equals("-r")) {
-				showResponseFlag = true;
-			}
-			else if (option.equals("--verboseverbose") || option.equals("-vv") ||
-					option.equals("--verbose") || option.equals("-v")) {
-				verboseverbose = true;
-				verbose = true;
-				testConfig.verbose = true;
-			}
-			else if (option.equals("-se") || option.equals("--stoponerror")) {
-				stopOnFirstFailure = true;
-			}
-			else if (option.equals("-O") || option.equals("--override")) {
-				testConfig.endpointOverride = true;
-			}
-			else if (option.equals("--listing") || option.equals("-ls")) {
-				listingOnly = true;
-				recursive = false;
-			}
-			else if (option.equals("-lsc")) {
-				tcListingOnly = true;
-				recursive = false;
-			}
-			else if (option.equals("-run")) {
-				runFlag = true;
-			}
-			else if (option.equals("-trace") || option.equals("--trace")) {
-				showExceptionTrace = true;
-			}
-			else if (option.equals("--prepare") || option.equals("-P")) {
-				prepareOnly = true;
-			}
-			else if (option.equals("--version") || option.equals("-V")) {
-				System.out.println("xdstest XDS Testing Tool version " + version);
-				if ( !noExit )
-					System.exit(0);
-			}
-			else if (option.equals("--selftest") || option.equals("-st")) {
-				selfTest();
-			}
-			else if (configurationOptionList.contains(option)) {
-				parameterError("Configuration option " + option + " must be specified before operation options. " +
-				" see xdstest -h for details.");
-			}
-			else 
-				System.out.println("Unknown option " + option + ". Ignoring. See xdstest -h for details.");
-
-		}
+//		while (bhas()) {
+//			String option = bpop("");
+//
+//			if (option.equals("--secure") || option.equals("-S")) {
+//				secure = true;
+//			}
+//			else if (option.equals("--wssec") ) {
+//				wssec = true;
+//			}
+//			else if (option.equals("--phonehome") ) {
+//				phoneHome = true;
+//			}
+//			else if (option.equals("--testcollection") || option.equals("-tc")) {
+//				String testCollectionName = bpop("--testcollection expects a path");
+//				optAssert(!testCollectionName.startsWith("-"), "--testcollection expects a test collection name");
+//
+//				TestCollection tcol = new TestCollection(testkit,testCollectionName);
+//				if (verbose) System.out.println("testcollection: " + tcol);
+//
+//				testSpecs.addAll(tcol.getTestSpecs());
+//
+//				while (bhas() && !bpeek().startsWith("-")) {
+//					testSpecs.addAll(new TestCollection(testkit,bpop("oops")).getTestSpecs());
+//				}
+//				runFlag = true;
+//			}
+//			else if (option.equals("--test") || option.equals("-t")) {
+//				if (verbose) System.out.println("parsing -t");
+//				bshow();
+//				testInstance = new TestInstance(bpop("--testId expects a test number"));
+//				if (verbose) System.out.println("testId=" + testInstance);
+//				optAssert(!testInstance.getId().startsWith("-"), "--testId expects a test number");
+//				TestLogDetails ts = new TestLogDetails(testkit, testInstance);
+//
+//				if (verbose) System.out.println("before section check");
+//				if (verbose) System.out.println("testspec is " + ts);
+//				bshow();
+//				if (bhas() && !bpeek().startsWith("-")) {
+//					if (verbose) System.out.println("Looking for SECTIONS");
+//					bshow();
+//					List<String> SECTIONS = null;
+//					while (bhas() && !bpeek().startsWith("-")) {
+//						String section = bpop("oops");
+//						if (verbose) System.out.println("found section=" + section);
+//						if (SECTIONS == null)
+//							SECTIONS = new ArrayList<String>();
+//						SECTIONS.add(section);
+//					}
+//					if (SECTIONS != null) {
+//						ts.setLogRepository(logRepository);
+//						ts.selectSections(SECTIONS);
+//					}
+//				}
+//				testSpecs.add(ts);
+//				testInstance = null;
+//				runFlag = true;
+//			}
+//			else if (option.equals("--decode")) {
+//				decodeEnvironmentVar = bpop("--decode option requires following name");
+//			}
+//			else if (option.equals("--config") || option.equals("-c")) {
+//				showConfig = true;
+//			}
+//			else if (option.equals("--help") || option.equals("-h")) {
+//				displayHelpAndExit();
+//			}
+//			else if (option.equals("--errors") || option.equals("-err")) {
+//				showErrorsFlag = true;
+//			}
+//			else if (option.equals("--response") || option.equals("-r")) {
+//				showResponseFlag = true;
+//			}
+//			else if (option.equals("--verboseverbose") || option.equals("-vv") ||
+//					option.equals("--verbose") || option.equals("-v")) {
+//				verboseverbose = true;
+//				verbose = true;
+//				testConfig.verbose = true;
+//			}
+//			else if (option.equals("-se") || option.equals("--stoponerror")) {
+//				stopOnFirstFailure = true;
+//			}
+//			else if (option.equals("-O") || option.equals("--override")) {
+//				testConfig.endpointOverride = true;
+//			}
+//			else if (option.equals("--listing") || option.equals("-ls")) {
+//				listingOnly = true;
+//				recursive = false;
+//			}
+//			else if (option.equals("-lsc")) {
+//				tcListingOnly = true;
+//				recursive = false;
+//			}
+//			else if (option.equals("-run")) {
+//				runFlag = true;
+//			}
+//			else if (option.equals("-trace") || option.equals("--trace")) {
+//				showExceptionTrace = true;
+//			}
+//			else if (option.equals("--prepare") || option.equals("-P")) {
+//				prepareOnly = true;
+//			}
+//			else if (option.equals("--version") || option.equals("-V")) {
+//				System.out.println("xdstest XDS Testing Tool version " + version);
+//				if ( !noExit )
+//					System.exit(0);
+//			}
+//			else if (option.equals("--selftest") || option.equals("-st")) {
+//				selfTest();
+//			}
+//			else if (configurationOptionList.contains(option)) {
+//				parameterError("Configuration option " + option + " must be specified before operation options. " +
+//				" see xdstest -h for details.");
+//			}
+//			else
+//				System.out.println("Unknown option " + option + ". Ignoring. See xdstest -h for details.");
+//
+//		}
 	}
 
-	public List<TestDetails> getTestSpecs() {
-		return testSpecs;
-	}
-
-	public void addTestSpec(TestDetails ts) {
+	public void addTestSpec(TestLogDetails ts) {
 		if (testSpecs == null)
-			testSpecs = new ArrayList<TestDetails>();
+			testSpecs = new ArrayList<TestLogDetails>();
 		testSpecs.add(ts);
-	}
-
-	public File getTestkit() {
-		return testkit;
-	}
-	public File getAltTestkit() {
-		return altTestkit;
-	}
-
-	public void setTestkit(File testkit) {
-		this.testkit = testkit;
-	}
-
-	public void setAltTestkit(File testkit) {
-		this.altTestkit = testkit;
-	}
-
-
-	public File getLogDir() throws IOException {
-		return logRepository.logDir();
 	}
 
 	public void setLogRepository(LogRepository logRepository) {
 		this.logRepository = logRepository;
 	}
-
-
-
 
 	public String getSiteName() {
 		return siteName;
@@ -964,20 +779,6 @@ public class XdsTest {
 
 	public void setSiteName(String siteName) {
 		this.siteName = siteName;
-	}
-
-	public void addTestCollection(String testCollectionName) throws Exception {
-		if (testSpecs == null)
-			testSpecs = new ArrayList<TestDetails>();
-
-		List<TestDetails> details;
-
-		try {
-			details = new TestCollection(altTestkit, testCollectionName).getTestSpecs();
-		} catch (Exception e) {
-			details = new TestCollection(testkit, testCollectionName).getTestSpecs();
-		}
-		testSpecs.addAll(details);
 	}
 
 	public boolean isSecure() {
@@ -996,7 +797,7 @@ public class XdsTest {
 		this.toolkit = toolkit;
 		mgmt = toolkit + File.separator + "xdstest";
 //		logRepository =
-//		new LogRepositoryFactory().getRepository(Installation.installation().testLogCache(), null, LogRepositoryFactory.IO_format.JAVA_SERIALIZATION, LogRepositoryFactory.Id_type.TIME_ID, null);
+//		new LogRepositoryFactory().getLogRepository(Installation.instance().testLogCache(), null, LogRepositoryFactory.IO_format.JAVA_SERIALIZATION, LogRepositoryFactory.Id_type.TIME_ID, null);
 		testConfig.testmgmt_dir = mgmt;
 	}
 

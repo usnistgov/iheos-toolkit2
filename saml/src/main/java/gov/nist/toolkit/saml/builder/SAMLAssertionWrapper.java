@@ -113,12 +113,12 @@ public class SAMLAssertionWrapper {
     private Element assertionElement;
     
     /**
-     * The SAMLKeyInfo object associated with the Subject KeyInfo
+     * The SAMLKeyInfo model associated with the Subject KeyInfo
      */
     private SAMLKeyInfo subjectKeyInfo;
     
     /**
-     * The SAMLKeyInfo object associated with the Signature on the Assertion
+     * The SAMLKeyInfo model associated with the Signature on the Assertion
      */
     private SAMLKeyInfo signatureKeyInfo;
 
@@ -250,9 +250,9 @@ public class SAMLAssertionWrapper {
     
     
     /**
-     * Method setSignature sets the signature of this AssertionWrapper object.
+     * Method setSignature sets the signature of this AssertionWrapper model.
      *
-     * @param signature the signature of this AssertionWrapper object.
+     * @param signature the signature of this AssertionWrapper model.
      */
     public void setSignatureToAssertion(Signature signature) {
         if (xmlObject instanceof SignableSAMLObject) {
@@ -261,7 +261,7 @@ public class SAMLAssertionWrapper {
             signableObject.releaseDOM();
             signableObject.releaseChildrenDOM(true);
         } else {
-            log.error("Attempt to sign an unsignable object " + xmlObject.getClass().getName());
+            log.error("Attempt to sign an unsignable model " + xmlObject.getClass().getName());
         }
     }
     
@@ -276,7 +276,7 @@ public class SAMLAssertionWrapper {
         XMLObjectBuilder<Signature> builder = OpenSamlBootStrap.getBuilderFactory().getBuilder(qName);
         if (builder == null) {
             log.error(
-                "Unable to retrieve builder for object QName " 
+                "Unable to retrieve builder for model QName "
                 + qName
             );
             return null;
@@ -360,27 +360,27 @@ public class SAMLAssertionWrapper {
         setSignatureToAssertion(signature);
     }
     /**
-     * Method getSaml2 returns the saml2 of this AssertionWrapper object.
+     * Method getSaml2 returns the saml2 of this AssertionWrapper model.
      *
-     * @return the saml2 (type Assertion) of this AssertionWrapper object.
+     * @return the saml2 (type Assertion) of this AssertionWrapper model.
      */
     public org.opensaml.saml2.core.Assertion getSaml2() {
         return saml2;
     }
 
     /**
-     * Method getXmlObject returns the xmlObject of this AssertionWrapper object.
+     * Method getXmlObject returns the xmlObject of this AssertionWrapper model.
      *
-     * @return the xmlObject (type XMLObject) of this AssertionWrapper object.
+     * @return the xmlObject (type XMLObject) of this AssertionWrapper model.
      */
     public XMLObject getXmlObject() {
         return xmlObject;
     }
 
     /**
-     * Method isCreated returns the created of this AssertionWrapper object.
+     * Method isCreated returns the created of this AssertionWrapper model.
      *
-     * @return the created (type boolean) of this AssertionWrapper object.
+     * @return the created (type boolean) of this AssertionWrapper model.
      */
     public boolean isCreated() {
         return saml2 != null;
@@ -410,16 +410,16 @@ public class SAMLAssertionWrapper {
     }
 
     /**
-     * Method getId returns the id of this AssertionWrapper object.
+     * Method getId returns the id of this AssertionWrapper model.
      *
-     * @return the id (type String) of this AssertionWrapper object.
+     * @return the id (type String) of this AssertionWrapper model.
      */
     public String getId() {
         String id = null;
         if (saml2 != null) {
             id = saml2.getID();
         } else {
-            log.error("AssertionWrapper: unable to return ID - no saml assertion object");
+            log.error("AssertionWrapper: unable to return ID - no saml assertion model");
         }
         if (id == null || id.length() == 0) {
             log.error("AssertionWrapper: ID was null, seeting a new ID value");
@@ -432,9 +432,9 @@ public class SAMLAssertionWrapper {
     }
 
     /**
-     * Method getIssuerString returns the issuerString of this AssertionWrapper object.
+     * Method getIssuerString returns the issuerString of this AssertionWrapper model.
      *
-     * @return the issuerString (type String) of this AssertionWrapper object.
+     * @return the issuerString (type String) of this AssertionWrapper model.
      */
     public String getIssuerString() {
         if (saml2 != null && saml2.getIssuer() != null) {
@@ -442,16 +442,16 @@ public class SAMLAssertionWrapper {
         }
         log.error(
             "AssertionWrapper: unable to return Issuer string - no saml assertion "
-            + "object or issuer is null"
+            + "model or issuer is null"
         );
         return null;
     }
 
     /**
      * Method getConfirmationMethods returns the confirmationMethods of this 
-     * AssertionWrapper object.
+     * AssertionWrapper model.
      *
-     * @return the confirmationMethods of this AssertionWrapper object.
+     * @return the confirmationMethods of this AssertionWrapper model.
      */
     public List<String> getConfirmationMethods() {
         List<String> methods = new ArrayList<String>();
@@ -467,9 +467,9 @@ public class SAMLAssertionWrapper {
     }
 
     /**
-     * Method isSigned returns the signed of this AssertionWrapper object.
+     * Method isSigned returns the signed of this AssertionWrapper model.
      *
-     * @return the signed (type boolean) of this AssertionWrapper object.
+     * @return the signed (type boolean) of this AssertionWrapper model.
      */
     public boolean isSigned() {
         if (saml2 != null) {
@@ -479,9 +479,9 @@ public class SAMLAssertionWrapper {
     }
 
     /**
-     * Method setSignature sets the signature of this AssertionWrapper object.
+     * Method setSignature sets the signature of this AssertionWrapper model.
      *
-     * @param signature the signature of this AssertionWrapper object.
+     * @param signature the signature of this AssertionWrapper model.
      */
     public void setSignature(Signature signature) {
         if (xmlObject instanceof SignableSAMLObject) {
@@ -490,14 +490,14 @@ public class SAMLAssertionWrapper {
             signableObject.releaseDOM();
             signableObject.releaseChildrenDOM(true);
         } else {
-            log.error("Attempt to sign an unsignable object " + xmlObject.getClass().getName());
+            log.error("Attempt to sign an unsignable model " + xmlObject.getClass().getName());
         }
     }
     
     /**
-     * Method getSamlVersion returns the samlVersion of this AssertionWrapper object.
+     * Method getSamlVersion returns the samlVersion of this AssertionWrapper model.
      *
-     * @return the samlVersion (type SAMLVersion) of this AssertionWrapper object.
+     * @return the samlVersion (type SAMLVersion) of this AssertionWrapper model.
      */
     public SAMLVersion getSamlVersion() {
         if (samlVersion == null) {

@@ -5,7 +5,9 @@ import gov.nist.toolkit.errorrecording.client.XdsErrorCode;
 import gov.nist.toolkit.registrymetadata.Metadata;
 import gov.nist.toolkit.registrymetadata.MetadataParser;
 import gov.nist.toolkit.registrymetadata.MetadataUtil;
-import gov.nist.toolkit.valregmetadata.field.MetadataValidator;
+import gov.nist.toolkit.valregmetadata.top.MetadataValidator;
+import gov.nist.toolkit.valregmetadata.top.ObjectStructureValidator;
+import gov.nist.toolkit.valregmetadata.top.SubmissionStructure;
 import gov.nist.toolkit.valsupport.client.ValidationContext;
 import gov.nist.toolkit.valsupport.engine.MessageValidatorEngine;
 import gov.nist.toolkit.valsupport.message.AbstractMessageValidator;
@@ -55,10 +57,9 @@ public class UpdateRequestValidator extends AbstractMessageValidator {
 			MetadataMessageValidator.contentSummary(er, m);
 
 			MetadataValidator mv = new MetadataValidator(m, vc, rvi);
-			mv.runObjectStructureValidation(er);
+			new ObjectStructureValidator(m, vc, rvi).run(er);
 			mv.runCodeValidation(er);
-			mv.runSubmissionStructureValidation(er);
-
+			new SubmissionStructure(m, rvi).run(er, vc);
 
 			if (m.getSubmissionSets().size() == 0) {
 				err("Cannot validate Update Request, no SubmissionSet present","ITI TF-2b: 3.57.4.1.3.1 Rule 1");

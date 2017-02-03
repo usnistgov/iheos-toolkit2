@@ -3,9 +3,11 @@ package gov.nist.toolkit.sitemanagement;
 import gov.nist.toolkit.actortransaction.client.ActorType;
 import gov.nist.toolkit.configDatatypes.client.TransactionType;
 import gov.nist.toolkit.sitemanagement.client.Site;
+import gov.nist.toolkit.sitemanagement.client.SiteSpec;
 import gov.nist.toolkit.sitemanagement.client.TransactionBean;
+import gov.nist.toolkit.sitemanagement.client.TransactionBean.RepositoryType;
 import gov.nist.toolkit.sitemanagement.client.TransactionCollection;
-import gov.nist.toolkit.xdsexception.XdsException;
+import gov.nist.toolkit.xdsexception.client.XdsException;
 
 import java.util.*;
 
@@ -26,6 +28,10 @@ public class Sites {
 		return
 				((defaultSiteName == null) ? s.defaultSiteName == null : defaultSiteName.equals(s.defaultSiteName)) &&
 				mapped;
+	}
+
+	public boolean exists(String siteName) {
+		return siteMap.keySet().contains(siteName);
 	}
 	
 	public int size() {
@@ -188,6 +194,19 @@ public class Sites {
 		}
 		return null;
 	}
+   
+   /**
+    * @param uid unique id to look for.
+    * @param repType type of repository to search
+    * @return Site instance with that id, or null if not found.
+    */
+   public Site getSiteForRepUid(String uid, RepositoryType repType) {
+      for (Site site : siteMap.values()) {
+         if (site.transactionBeanForRepositoryUniqueId(uid, repType) != null)
+            return site;
+      }
+      return null;
+   }
 
 	public List<String> getSiteNamesWithActor(ActorType actorType) throws Exception {
 		List<String> rs = new ArrayList<String>();
@@ -282,5 +301,19 @@ public class Sites {
 		return defaultSiteName;
 	}
 
+	/**
+	 * Site may be linked by orchestration.  If it is return accoring to documentation in Site.java
+	 * @param siteSpec
+	 * @return
+	 */
+	public Site getOrchestrationLinkedSites(SiteSpec siteSpec) throws Exception {
+		if (siteSpec.orchestrationSiteName != null) {
+			Site oSite = getSite(siteSpec.orchestrationSiteName);
+			Site sutSite = getSite(siteSpec.name);
+			oSite.addLinkedSite(sutSite);
+			return oSite;
+		}
+		return getSite(siteSpec.name);
+	}
 
 }
