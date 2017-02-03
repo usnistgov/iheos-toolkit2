@@ -293,6 +293,10 @@ public class Installation {
 		return props.getProperty("keyStorePassword");
 	}
 
+	public String wikiBaseAddress() {
+        return propertyServiceManager().getWikiBaseAddress();
+    }
+
     // Default codes.xml to use if no environments are configured
     public File internalEnvironmentFile(String envName) {
         return new File(new File(toolkitxFile(), "environment"), envName);

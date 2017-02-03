@@ -277,6 +277,10 @@ public class PropertyManager {
 		}
 		return props;
 	}
-	
 
+
+    public String getWikiBaseAddress() {
+		loadProperties();
+		return (String) toolkitProperties.getProperty("Wiki_Base_URL");
+    }
 }

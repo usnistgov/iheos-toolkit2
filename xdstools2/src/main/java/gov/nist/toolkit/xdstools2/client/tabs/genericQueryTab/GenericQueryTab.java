@@ -380,7 +380,7 @@ public abstract class GenericQueryTab  extends ToolWindow {
             infoImage.addClickHandler(new ClickHandler() {
                 @Override
                 public void onClick(ClickEvent clickEvent) {
-                    Window.open("https://github.com/usnistgov/iheos-toolkit2/wiki/System-selection-issues", "_blank","");
+                    Window.open(Xdstools2.wikiBaseUrl + "/System-selection-issues", "_blank","");
                 }
             });
 
