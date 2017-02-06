@@ -279,7 +279,7 @@ public class ActorConfigTab extends GenericQueryTab {
 				portbox.addValueChangeHandler(new PifPortChangedHandler(this, currentEditSite, portbox));
 				hpanel.add(portbox);
 				
-				actorEditGrid.setWidget(row, 1, hpanel);
+				actorEditGrid.setWidget(row, 2, hpanel);
 				
 				row++;
 			}
