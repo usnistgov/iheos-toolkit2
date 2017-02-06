@@ -1,9 +1,9 @@
 package gov.nist.toolkit.registrymetadata.client;
 
+import com.google.gwt.user.client.rpc.IsSerializable;
+
 import java.io.Serializable;
 import java.util.List;
-
-import com.google.gwt.user.client.rpc.IsSerializable;
 
 public class Author implements IsSerializable, Serializable {
 
@@ -19,5 +19,8 @@ public class Author implements IsSerializable, Serializable {
 	
 	public List<String> specialties;
 	public List<String> specialtiesDoc;
+
+	public List<String> telecom;
+	public List<String> telecomDoc;
 
 }
