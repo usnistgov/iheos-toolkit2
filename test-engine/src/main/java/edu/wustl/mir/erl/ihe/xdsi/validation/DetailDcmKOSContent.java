@@ -30,11 +30,11 @@ public class DetailDcmKOSContent extends DetailDcmContent {
       // Patient Sex (0010,0040)
       assertions.add(new DCMAssertion(TYPE.SAME, Tag.PatientSex));
       // Accession Number (0008,0050)
-      assertions.add(new DCMAssertion(TYPE.SAME, Tag.AccessionNumber));
+      assertions.add(new DCMAssertion(TYPE.SAME, Tag.AccessionNumber, "", CAT.SUCCESS, CAT.WARNING));
       // Modality (0008,0060)
       assertions.add(new DCMAssertion(TYPE.CONSTANT, Tag.Modality, "KO"));
       // Study Instance UID (0020,000D)
-      assertions.add(new DCMAssertion(TYPE.SAME, Tag.StudyInstanceUID));
+      assertions.add(new DCMAssertion(TYPE.SAME, Tag.StudyInstanceUID, "", CAT.SUCCESS, CAT.WARNING));
       // Series Instance UID (0020,000E)
       assertions.add(new DCMAssertion(TYPE.DIFFERENT, Tag.SeriesInstanceUID));
       // Content Sequence size (0040,A730)
