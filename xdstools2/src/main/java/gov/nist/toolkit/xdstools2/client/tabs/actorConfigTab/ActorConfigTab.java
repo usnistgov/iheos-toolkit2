@@ -306,7 +306,28 @@ public class ActorConfigTab extends GenericQueryTab {
 				}
 				row++;
 			}
+			for(TransactionType transType : actorType.getHTTPTransactions()) {
+				if (transType == TransactionType.RETRIEVE)
+					continue;   // Handled above
+				HTML transNameLabel = new HTML(transType.getName());
+				actorEditGrid.setWidget(row, 0, transNameLabel);
 
+				boolean isAsync = false;
+				for (Boolean isSecure : booleanValues()) {
+					TransactionBean transbean = site.transactions().find(transType, isSecure, isAsync);
+					if (transbean == null) {
+						transbean = new TransactionBean(transType, RepositoryType.REPOSITORY, "", isSecure, isAsync);
+						site.addTransaction(transbean);
+					}
+					TextBox endpointBox = new TextBox();
+					endpointBox.setWidth(boxwidth);
+					endpointBox.setText(trim(transbean.endpoint));
+					endpointBox.addValueChangeHandler(new EndpointChangedHandler(this, transbean, endpointBox));
+					actorEditGrid.setWidget(row, (isSecure) ? 1 : 2, endpointBox);
+
+				}
+				row++;
+			}
 
 		}
 

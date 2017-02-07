@@ -392,6 +392,8 @@ public enum ActorType implements IsSerializable, Serializable {
         return transactionTypes;
     }
 
+    public List<TransactionType> getHTTPTransactions() { return httpTransactionTypes; }
+
    public boolean hasTransaction(TransactionType transType) {
       for (TransactionType transType2 : transactionTypes) {
          if (transType2.equals(transType)) return true;
