@@ -10,7 +10,6 @@ import gov.nist.toolkit.errorrecording.GwtErrorRecorderBuilder;
 import gov.nist.toolkit.errorrecording.client.ValidationStepResult;
 import gov.nist.toolkit.errorrecording.client.ValidatorErrorItem;
 import gov.nist.toolkit.errorrecording.client.XdsErrorCode;
-import gov.nist.toolkit.errorrecording.factories.ErrorRecorderBuilder;
 import gov.nist.toolkit.http.HttpParserBa;
 import gov.nist.toolkit.installation.Installation;
 import gov.nist.toolkit.registrymetadata.Metadata;
@@ -30,9 +29,6 @@ import gov.nist.toolkit.validatorsSoapMessage.engine.ValidateMessageService;
 import gov.nist.toolkit.validatorsSoapMessage.message.*;
 import gov.nist.toolkit.valregmsg.message.StoredDocumentInt;
 import gov.nist.toolkit.valregmsg.service.SoapActionFactory;
-import gov.nist.toolkit.valsupport.client.ValidationContext;
-import gov.nist.toolkit.valsupport.engine.MessageValidatorEngine;
-import gov.nist.toolkit.valsupport.engine.ValidationStep;
 import gov.nist.toolkit.valsupport.message.AbstractMessageValidator;
 import gov.nist.toolkit.xdsexception.ExceptionUtil;
 import gov.nist.toolkit.xdsexception.client.MetadataException;
@@ -52,16 +48,15 @@ import java.util.*;
  *
  */
 public class DsSimCommon {
-    SimulatorConfig simulatorConfig = null;
     public RegIndex regIndex = null;
     public RepIndex repIndex = null;
     public SimCommon simCommon;
-    ErrorRecorder er = null;
+    private ErrorRecorder er = null;
 
-    Map<String, StoredDocument> documentsToAttach = null;  // cid => document
-    RegistryErrorListGenerator registryErrorListGenerator = null;
+    private Map<String, StoredDocument> documentsToAttach = null;  // cid => document
+    private RegistryErrorListGenerator registryErrorListGenerator = null;
 
-    static Logger logger = Logger.getLogger(DsSimCommon.class);
+    static private Logger logger = Logger.getLogger(DsSimCommon.class);
 
     public DsSimCommon(SimCommon simCommon, RegIndex regIndex, RepIndex repIndex) throws IOException, XdsException {
         this.simCommon = simCommon;
@@ -85,11 +80,11 @@ public class DsSimCommon {
     }
 
     public void setSimulatorConfig(SimulatorConfig config) {
-        this.simulatorConfig = config;
+        simCommon.setSimulatorConfig(config);
     }
 
     public SimulatorConfig getSimulatorConfig() {
-        return simulatorConfig;
+        return simCommon.getSimulatorConfig();
     }
 
     /**
@@ -102,53 +97,13 @@ public class DsSimCommon {
      * @throws IOException
      */
     public boolean runInitialValidationsAndFaultIfNecessary() throws IOException {
-        runInitialValidations();
+        simCommon.runInitialValidations(regIndex);
         return !returnFaultIfNeeded();
     }
 
-    public void runInitialValidations() throws IOException {
-        GwtErrorRecorderBuilder gerb = new GwtErrorRecorderBuilder();
-
-        simCommon.mvc = runValidation(simCommon.vc, simCommon.db, simCommon.mvc, gerb);
-        simCommon.mvc.run();
-        simCommon.buildMVR();
-
-        int stepsWithErrors = simCommon.mvc.getErroredStepCount();
-        ValidationStep lastValidationStep = simCommon.mvc.getLastValidationStep();
-        if (lastValidationStep != null) {
-            lastValidationStep.getErrorRecorder().detail
-                    (stepsWithErrors + " steps with errors");
-            logger.debug(stepsWithErrors + " steps with errors");
-        } else {
-            logger.debug("no steps with errors");
-        }
-    }
-
-    /**
-     * Starts the validation/simulator process by pulling the HTTP wrapper from 
-     * the db, creating a validation engine if necessary, and starting an HTTP 
-     * validator. It returns the validation engine. Remember that the basic 
-     * abstract Simulator class inherits directly from the abstract 
-     * MessageValidator class.
-     * @param vc
-     * @param db
-     * @param mvc
-     * @return
-     * @throws IOException
-     */
-    public MessageValidatorEngine runValidation(ValidationContext vc, SimDb db, 
-       MessageValidatorEngine mvc, ErrorRecorderBuilder gerb) throws IOException {
-       ValidateMessageService vms = new ValidateMessageService(regIndex);
-       MessageValidatorEngine mve = vms.runValidation(vc, 
-           db.getRequestMessageHeader(), db.getRequestMessageBody(), mvc, gerb);
-       hparser = vms.getHttpMessageValidator().getHttpParserBa();
-       return mve;
-    }
-    private HttpParserBa hparser;
     public HttpParserBa getHttpParserBa() {
-       return hparser;
+       return simCommon.getHttpParserBa();
     }
-
 
     public void sendErrorsInRegistryResponse(ErrorRecorder er) {
         if (er == null)
@@ -265,7 +220,7 @@ public class DsSimCommon {
         }
     }
 
-    public RegistryResponse getRegistryResponse(List<ValidationStepResult> results) throws XdsInternalException {
+    private RegistryResponse getRegistryResponse(List<ValidationStepResult> results) throws XdsInternalException {
         RegistryErrorListGenerator rel = getRegistryErrorList(results);
         RegistryResponse rr = new RegistryResponse(Response.version_3, rel);
         return rr;
@@ -467,7 +422,7 @@ public class DsSimCommon {
      * @param er
      * @return
      */
-    public StringBuffer wrapSoapEnvelopeInMultipartResponseBinary(OMElement env, ErrorRecorder er) {
+    private StringBuffer wrapSoapEnvelopeInMultipartResponseBinary(OMElement env, ErrorRecorder er) {
         logger.debug("DsSimCommon#wrapSoapEnvelopeInMultipartResponseBinary");
 
         er.detail("Wrapping in Multipart");
@@ -500,40 +455,10 @@ public class DsSimCommon {
         body.append(rn);
         body.append(rn);
 
-/*
-        if (documentsToAttach != null) {
-            er.detail("Attaching " + documentsToAttach.size() + " documents as separate Parts in the Multipart");
-            for (String cid : documentsToAttach.keySet()) {
-                StoredDocument sd = documentsToAttach.get(cid);
-                body.append("--").append(boundary).append(rn);
-                body.append("Content-Type: ").append(sd.getMimeType()).append(rn);
-                body.append("Content-Transfer-Encoding: binary").append(rn);
-                body.append("Content-ID: <" + cid + ">").append(rn);
-                body.append(rn);
-                try {
-                    String contents;
-                    if (sd.getCharset() != null) {
-                        contents = new String(sd.getContent(), sd.getCharset());
-                    } else {
-                        contents = new String(sd.getContent());
-                    }
-		    logger.debug("Attaching " + cid + " length " + contents.length());
-                    body.append(contents);
-                } catch (Exception e) {
-                    er.err(XdsErrorCode.Code.XDSRepositoryError, e);
-                }
-                body.append(rn);
-            }
-        }
-*/
-
-
-//        body.append("--").append(boundary).append("--").append(rn);
-
         return body;
     }
 
-    public StringBuffer getTrailer() {
+    private StringBuffer getTrailer() {
         String rn = "\r\n";
         String boundary = "MIMEBoundary112233445566778899";
         StringBuffer body = new StringBuffer();
@@ -543,7 +468,7 @@ public class DsSimCommon {
 
     public void sendFault(SoapFault fault) {
         OMElement env = wrapResponseInSoapEnvelope(fault.getXML());
-        sendHttpResponse(env, simCommon.getUnconnectedErrorRecorder(), true);
+        sendHttpResponse(env, SimCommon.getUnconnectedErrorRecorder(), true);
     }
 
     /**
@@ -552,7 +477,6 @@ public class DsSimCommon {
      * @param env         SOAPEnvelope
      * @param er
      * @param multipartOk
-     * @throws IOException
      */
     public void sendHttpResponse(OMElement env, ErrorRecorder er, boolean multipartOk) {
         if (simCommon.responseSent) {
@@ -636,7 +560,7 @@ public class DsSimCommon {
     }
 
     public ErrorRecorder registryResponseAsErrorRecorder(OMElement regResp) {
-        ErrorRecorder er = simCommon.getUnconnectedErrorRecorder();
+        ErrorRecorder er = SimCommon.getUnconnectedErrorRecorder();
 
         for (OMElement re : XmlUtil.decendentsWithLocalName(regResp, "RegistryError")) {
             String errorCode = re.getAttributeValue(MetadataSupport.error_code_qname);
@@ -656,7 +580,7 @@ public class DsSimCommon {
      * @return fault sent?
      * @throws IOException
      */
-    public boolean returnFaultIfNeeded() throws IOException {
+    private boolean returnFaultIfNeeded() throws IOException {
         if (simCommon.faultReturned) return false;
         SoapFault fault = getSoapErrors();
         if (fault != null) {
@@ -668,7 +592,7 @@ public class DsSimCommon {
     }
 
     public boolean verifySubmissionAllowed() {
-        if (simulatorConfig.get(SimulatorProperties.locked).asBoolean()) {
+        if (!simCommon.submissionAllowed()) {
             SoapFault fault = new SoapFault(SoapFault.FaultCodes.Receiver, "This actor simulator is locked and will not accept submissions");
             sendFault(fault);
             simCommon.faultReturned = true;
@@ -753,10 +677,13 @@ public class DsSimCommon {
      * Examine simulator/validator step defined by designated class
      * and if error(s) is found then generate SOAP fault message.
      *
+     * We know to generate a Fault and not a less severe error because this will only be called if
+     * we are in the fault zone.
+     *
      * @param clas Java class to look for on simulator stack
      * @return SoapFault instance
      */
-    SoapFault getFaultFromMessageValidator(Class clas) {
+    private SoapFault getFaultFromMessageValidator(Class clas) {
         AbstractMessageValidator mv = simCommon.getMessageValidatorIfAvailable(clas);
         if (mv == null) {
             logger.debug("MessageValidator for " + clas.getName() + " not found");
@@ -818,7 +745,7 @@ public class DsSimCommon {
        * to the image cache in the toolkit properties.
        */
         //Path imageCacheRoot = Paths.get(getImageCache());
-        String simCache = simulatorConfig.get(SimulatorProperties.idsImageCache).asString();
+        String simCache = getSimulatorConfig().get(SimulatorProperties.idsImageCache).asString();
         //Path idsRepositoryPath = imageCacheRoot.resolve(simCache);
         //File idsRepositoryDir = idsRepositoryPath.toFile();
         File idsRepositoryDir = Installation.instance().imageCache("sim" + File.separator + simCache);

@@ -24,7 +24,7 @@ import java.util.List;
  */
 
 public class ValidateMessageService {
-	RegistryValidationInterface rvi;
+	private RegistryValidationInterface rvi;
 	private HttpMessageValidator val = null;
 	
 	public HttpMessageValidator getHttpMessageValidator() {

@@ -4,10 +4,13 @@ import gov.nist.toolkit.actorfactory.SimDb;
 import gov.nist.toolkit.actorfactory.client.NoSimException;
 import gov.nist.toolkit.actorfactory.client.SimId;
 import gov.nist.toolkit.actorfactory.client.SimulatorConfig;
+import gov.nist.toolkit.configDatatypes.SimulatorProperties;
 import gov.nist.toolkit.errorrecording.ErrorRecorder;
 import gov.nist.toolkit.errorrecording.GwtErrorRecorder;
 import gov.nist.toolkit.errorrecording.GwtErrorRecorderBuilder;
 import gov.nist.toolkit.errorrecording.client.ValidationStepResult;
+import gov.nist.toolkit.errorrecording.factories.ErrorRecorderBuilder;
+import gov.nist.toolkit.http.HttpParserBa;
 import gov.nist.toolkit.installation.Installation;
 import gov.nist.toolkit.utilities.io.Io;
 import gov.nist.toolkit.validatorsSoapMessage.engine.ValidateMessageService;
@@ -17,6 +20,7 @@ import gov.nist.toolkit.valsupport.engine.MessageValidatorEngine;
 import gov.nist.toolkit.valsupport.engine.ValidationStep;
 import gov.nist.toolkit.valsupport.message.AbstractMessageValidator;
 import gov.nist.toolkit.valsupport.message.ServiceRequestContainer;
+import gov.nist.toolkit.valsupport.registry.RegistryValidationInterface;
 import gov.nist.toolkit.xdsexception.client.XdsException;
 import org.apache.log4j.Logger;
 
@@ -38,8 +42,9 @@ import java.util.List;
 // NOTE: This should be limited to supporting functions for all simulators.
     // References to Regindex, RepIndex, RegistryErrorListGenerator, documentsToAttach should be refactored out
 public class SimCommon {
+	private SimulatorConfig simulatorConfig = null;
 	public SimDb db = null;
-	boolean tls = false;
+	private boolean tls = false;
 	MessageValidationResults mvr = null;
 	public MessageValidatorEngine mvc = null;
 	public ValidationContext vc = null;
@@ -48,9 +53,9 @@ public class SimCommon {
 	public HttpServletResponse response = null;
 	OutputStream os = null;
 	ValidateMessageService vms = new ValidateMessageService(null);
-	boolean faultReturned = false;
+	boolean faultReturned = false;  // Fault for SOAP and HTTP error for HTTP
 	boolean responseSent = false;
-	static Logger logger = Logger.getLogger(SimCommon.class);
+	static private Logger logger = Logger.getLogger(SimCommon.class);
 
 	public boolean isResponseSent() {
 		return faultReturned || responseSent;
@@ -98,6 +103,64 @@ public class SimCommon {
             os = response.getOutputStream();
     }
 
+	public void setSimulatorConfig(SimulatorConfig config) {
+		this.simulatorConfig = config;
+	}
+
+	public SimulatorConfig getSimulatorConfig() {
+		return simulatorConfig;
+	}
+
+	/**
+	 *
+	 * @param regIndex - can be null if not relevant
+	 * @throws IOException
+	 */
+	void runInitialValidations(RegistryValidationInterface regIndex) throws IOException {
+		GwtErrorRecorderBuilder gerb = new GwtErrorRecorderBuilder();
+
+		mvc = runValidation(vc, db, mvc, gerb, regIndex);
+		mvc.run();
+		buildMVR();
+
+		int stepsWithErrors = mvc.getErroredStepCount();
+		ValidationStep lastValidationStep = mvc.getLastValidationStep();
+		if (lastValidationStep != null) {
+			lastValidationStep.getErrorRecorder().detail
+					(stepsWithErrors + " steps with errors");
+			logger.debug(stepsWithErrors + " steps with errors");
+		} else {
+			logger.debug("no steps with errors");
+		}
+	}
+
+	/**
+	 * Starts the validation/simulator process by pulling the HTTP wrapper from
+	 * the db, creating a validation engine if necessary, and starting an HTTP
+	 * validator. It returns the validation engine. Remember that the basic
+	 * abstract Simulator class inherits directly from the abstract
+	 * MessageValidator class.
+	 * @param vc
+	 * @param db
+	 * @param mvc
+	 * @return
+	 * @throws IOException
+	 */
+	private MessageValidatorEngine runValidation(ValidationContext vc, SimDb db,
+												MessageValidatorEngine mvc, ErrorRecorderBuilder gerb, RegistryValidationInterface regIndex) throws IOException {
+		ValidateMessageService vms = new ValidateMessageService(regIndex);
+		MessageValidatorEngine mve = vms.runValidation(vc,
+				db.getRequestMessageHeader(), db.getRequestMessageBody(), mvc, gerb);
+		hparser = vms.getHttpMessageValidator().getHttpParserBa();
+		return mve;
+	}
+
+	private HttpParserBa hparser;
+	HttpParserBa getHttpParserBa() {
+		return hparser;
+	}
+
+
 	/**
 	 * Is TLS enabled?
 	 * @return
@@ -118,7 +181,7 @@ public class SimCommon {
 
 	ErrorRecorder er = null;
 
-	public ErrorRecorder getCommonErrorRecorder() {
+	ErrorRecorder getCommonErrorRecorder() {
 		if (er == null) {
 			er = new GwtErrorRecorderBuilder().buildNewErrorRecorder();
 			ServiceRequestContainer val = new ServiceRequestContainer(vc);
@@ -213,9 +276,9 @@ public class SimCommon {
 			SimDb simdb = new SimDb(Installation.instance().simDbFile(), simulatorId, null, null);
 			File simdir = simdb.getIpDir();
 			Io.delete(simdir);
-		} catch (IOException e) {
-			// doesn't exist - ok
 		} catch (NoSimException e) {
+			// doesn't exist - ok
+		} catch (IOException e) {
 			// doesn't exist - ok
 		}
 	}
@@ -227,7 +290,7 @@ public class SimCommon {
 	public void sendHttpFault(String em) {
 	   sendHttpFault(400, em);
 	}
-	public void sendHttpFault(int status, String em) {
+	private void sendHttpFault(int status, String em) {
 	   logger.info("HTTP Error response: " + status + " " + em);
 	   try {
          response.sendError(status, em);
@@ -235,6 +298,11 @@ public class SimCommon {
          logger.warn("IO error sending http response");
       }
 	}
+
+	public boolean submissionAllowed() {
+		return !getSimulatorConfig().get(SimulatorProperties.locked).asBoolean();
+	}
+
 
 
 }

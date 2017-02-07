@@ -68,8 +68,8 @@ public abstract class BaseDsActorSimulator extends BaseActorSimulator {
 		return new GwtErrorRecorderBuilder().buildNewErrorRecorder();
 	}
 
-    public SimulatorConfig getSimulatorConfig() { return dsSimCommon.simulatorConfig; }
-    public void setSimulatorConfig(SimulatorConfig config) { dsSimCommon.simulatorConfig = config; }
+    public SimulatorConfig getSimulatorConfig() { return dsSimCommon.getSimulatorConfig(); }
+    public void setSimulatorConfig(SimulatorConfig config) { dsSimCommon.setSimulatorConfig(config); }
 
 	public SimCommon getCommon() {
 		return common;
