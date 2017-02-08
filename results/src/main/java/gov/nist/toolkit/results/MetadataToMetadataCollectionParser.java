@@ -426,11 +426,13 @@ public class MetadataToMetadataCollectionParser {
 			List<String> institutions = m.getSlotValues(authorClas, "authorInstitution");
 			List<String> roles = m.getSlotValues(authorClas, "authorRole");
 			List<String> specialties = m.getSlotValues(authorClas, "authorSpecialty");
+			List<String> telecoms = m.getSlotValues(authorClas, "authorTelecommunication");
 			Author a = new Author();
 			a.person = name;
 			a.institutions = institutions;
 			a.roles = roles;
 			a.specialties = specialties;
+			a.telecom = telecoms;
 			authors.add(a);
 		}
 

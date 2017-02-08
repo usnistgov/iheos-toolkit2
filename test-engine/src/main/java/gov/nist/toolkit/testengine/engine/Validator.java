@@ -438,6 +438,12 @@ public class Validator {
 				ss1Doc();
 				ssApproved();
 			}
+			else if (ec_name.equals("NoSubmissionSet")) {
+				hasNoSubmissionSet();
+			}
+			else if (ec_name.equals("NoDocument")) {
+				hasDocuments(0);
+			}
 			else if (ec_name.equals("SSApproved")) {
 				ssApproved();
 			}

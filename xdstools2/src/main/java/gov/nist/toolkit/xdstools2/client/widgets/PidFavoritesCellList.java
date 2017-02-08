@@ -79,8 +79,9 @@ public class PidFavoritesCellList extends Composite{
         ((Xdstools2EventBus) ClientUtils.INSTANCE.getEventBus()).addFavoritePidsUpdateEventHandler(new FavoritePidsUpdatedEvent.FavoritePidsUpdatedEventHandler() {
             @Override
             public void onFavPidsUpdate() {
-                model.setList(new LinkedList<Pid>(CookiesServices.retrievePidFavoritesFromCookies()));
-                model.refresh();
+//                model.setList(new LinkedList<Pid>(CookiesServices.retrievePidFavoritesFromCookies()));
+//                model.refresh();
+                loadData();
                 cellList.redraw();
             }
         });

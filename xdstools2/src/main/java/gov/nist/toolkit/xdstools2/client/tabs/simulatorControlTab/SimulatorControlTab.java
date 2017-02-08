@@ -326,32 +326,70 @@ public class SimulatorControlTab extends GenericQueryTab {
         });
         buttonPanel.add(pidImg);
 
-		Image editImg = new Image("icons2/edit.png");
-		editImg.setTitle("Edit Simulator Configuration");
-		editImg.setAltText("A pencil writing.");
-		applyImgIconStyle(editImg);
-		editImg.addClickHandler(new ClickHandlerData<SimulatorConfig>(config) {
-			@Override
-			public void onClick(ClickEvent clickEvent) {
-                loadSimStatus();
-				SimulatorConfig config = getData();
+        if (ActorType.OD_RESPONDING_GATEWAY.getShortName().equals(config.getActorType()) ) {
+            Image editRgImg = new Image("icons2/edit-rg.png");
+            editRgImg.setTitle("Edit RG Simulator Configuration");
+            editRgImg.setAltText("A pencil writing.");
+            applyImgIconStyle(editRgImg);
+            editRgImg.addClickHandler(new ClickHandlerData<SimulatorConfig>(config) {
+                @Override
+                public void onClick(ClickEvent clickEvent) {
+                    loadSimStatus();
+                    SimulatorConfig config = getData();
 
-//							GenericQueryTab editTab;
-                if (ActorType.ONDEMAND_DOCUMENT_SOURCE.getShortName().equals(config.getActorType())) {
+                        // Generic state-less type simulators
+                        GenericQueryTab editTab = new EditTab(self, config);
+                        editTab.onTabLoad(true, "SimConfig");
+                }
+            });
+            Image editOdImg = new Image("icons2/edit-od.png");
+            editOdImg.setTitle("Edit ODDS Simulator Configuration");
+            editOdImg.setAltText("A pencil writing.");
+            applyImgIconStyle(editOdImg);
+            editOdImg.addClickHandler(new ClickHandlerData<SimulatorConfig>(config) {
+                @Override
+                public void onClick(ClickEvent clickEvent) {
+                    loadSimStatus();
+                    SimulatorConfig config = getData();
                     // This simulator requires content state initialization
                     OddsEditTab editTab;
                     editTab = new OddsEditTab(self, config);
                     editTab.onTabLoad(true, "ODDS");
-                } else {
-                    // Generic state-less type simulators
-                    GenericQueryTab editTab = new EditTab(self, config);
-                    editTab.onTabLoad(true, "SimConfig");
                 }
+            });
+            buttonPanel.add(editRgImg);
+            buttonPanel.add(editOdImg);
+
+        } else {
+
+            Image editImg = new Image("icons2/edit.png");
+            editImg.setTitle("Edit Simulator Configuration");
+            editImg.setAltText("A pencil writing.");
+            applyImgIconStyle(editImg);
+            editImg.addClickHandler(new ClickHandlerData<SimulatorConfig>(config) {
+                @Override
+                public void onClick(ClickEvent clickEvent) {
+                    loadSimStatus();
+                    SimulatorConfig config = getData();
+
+//							GenericQueryTab editTab;
+                    if (ActorType.ONDEMAND_DOCUMENT_SOURCE.getShortName().equals(config.getActorType())
+                            ) {
+                        // This simulator requires content state initialization
+                        OddsEditTab editTab;
+                        editTab = new OddsEditTab(self, config);
+                        editTab.onTabLoad(true, "ODDS");
+                    } else {
+                        // Generic state-less type simulators
+                        GenericQueryTab editTab = new EditTab(self, config);
+                        editTab.onTabLoad(true, "SimConfig");
+                    }
 
 
-            }
-        });
-        buttonPanel.add(editImg);
+                }
+            });
+            buttonPanel.add(editImg);
+        }
 
         Image deleteImg = new Image("icons2/garbage.png");
         deleteImg.setTitle("Delete");
@@ -438,11 +476,14 @@ public class SimulatorControlTab extends GenericQueryTab {
     }
 
     private void applyImgIconStyle(Image imgIcon) {
-        imgIcon.setWidth("24px");
-        imgIcon.setHeight("24px");
+       applyImgIconStyle(imgIcon, 24);
+    }
+    private void applyImgIconStyle(Image imgIcon, int pixelSz) {
+        imgIcon.setWidth(pixelSz+"px");
+        imgIcon.setHeight(pixelSz+"px");
         imgIcon.getElement().getStyle().setVerticalAlign(Style.VerticalAlign.BOTTOM);
         imgIcon.getElement().getStyle().setCursor(Style.Cursor.POINTER);
-        imgIcon.getElement().getStyle().setMargin(6, Style.Unit.PX);
+        imgIcon.getElement().getStyle().setMargin((int)(pixelSz/4), Style.Unit.PX);
     }
 
     public String getWindowShortName() {

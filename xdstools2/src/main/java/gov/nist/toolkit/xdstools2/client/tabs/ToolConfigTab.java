@@ -4,15 +4,16 @@ import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.*;
+import gov.nist.toolkit.xdstools2.client.LoadGazelleConfigsClickHandler;
+import gov.nist.toolkit.xdstools2.client.PasswordManagement;
 import gov.nist.toolkit.xdstools2.client.command.command.GetToolkitPropertiesCommand;
 import gov.nist.toolkit.xdstools2.client.command.command.RemoveOldSimulatorsCommand;
 import gov.nist.toolkit.xdstools2.client.command.command.SetToolkitPropertiesCommand;
-import gov.nist.toolkit.xdstools2.client.widgets.AdminPasswordDialogBox;
-import gov.nist.toolkit.xdstools2.client.LoadGazelleConfigsClickHandler;
-import gov.nist.toolkit.xdstools2.client.PasswordManagement;
-import gov.nist.toolkit.xdstools2.client.widgets.PopupMessage;
 import gov.nist.toolkit.xdstools2.client.siteActorManagers.NullSiteActorManager;
 import gov.nist.toolkit.xdstools2.client.tabs.genericQueryTab.GenericQueryTab;
+import gov.nist.toolkit.xdstools2.client.util.InformationLink;
+import gov.nist.toolkit.xdstools2.client.widgets.AdminPasswordDialogBox;
+import gov.nist.toolkit.xdstools2.client.widgets.PopupMessage;
 import gov.nist.toolkit.xdstools2.client.widgets.TestkitConfigTool;
 import gov.nist.toolkit.xdstools2.shared.command.request.SetToolkitPropertiesRequest;
 
@@ -59,6 +60,8 @@ public class ToolConfigTab extends GenericQueryTab {
 		HTML subtitle1 = new HTML();
 		subtitle1.setHTML("<h3>Properties</h3>");
 		container.add(subtitle1);
+
+		container.add(new InformationLink("Property descriptions", "Toolkit properties help"));
 
 		container.add(grid);
 

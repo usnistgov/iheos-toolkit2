@@ -143,6 +143,7 @@ public class Util {
 //		return parse_xml(buf.toString());
 //	}
 
+	// I guess this is a "deep copy" for the purpose of pretty-printing. - Sunil
 	public static OMElement deep_copy(OMElement in) throws XdsInternalException {
 		String str = new OMFormatter(in).toString();
 //		String str = in.toString();
