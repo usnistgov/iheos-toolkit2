@@ -4,12 +4,13 @@ import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.Widget;
+import gov.nist.toolkit.actortransaction.client.ActorType;
 import gov.nist.toolkit.configDatatypes.client.TransactionType;
 import gov.nist.toolkit.xdstools2.client.CoupledTransactions;
 import gov.nist.toolkit.xdstools2.client.siteActorManagers.FindDocumentsSiteActorManager;
 import gov.nist.toolkit.xdstools2.client.tabs.genericQueryTab.GenericQueryTab;
 import gov.nist.toolkit.xdstools2.client.tabs.testsOverviewTab.commandsWidget.CommandsWidget;
-import gov.nist.toolkit.xdstools2.client.widgets.siteSelectionWidget.SiteSelectionWidget;
+import gov.nist.toolkit.xdstools2.client.widgets.SiteSelectionWidget_old.SiteSelectionWidget;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -70,7 +71,7 @@ public class TestsOverviewTab extends GenericQueryTab {
         // -------------------------------------------
         // ---------- Site Selection Widget-----------
         // -------------------------------------------
-        SiteSelectionWidget siteWidget = new SiteSelectionWidget(this);
+        SiteSelectionWidget siteWidget = new SiteSelectionWidget(couplings, ActorType.REGISTRY);
         tabTopPanel.add(siteWidget);
 
 
