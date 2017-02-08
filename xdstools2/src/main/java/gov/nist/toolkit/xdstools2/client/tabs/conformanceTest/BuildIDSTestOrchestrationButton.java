@@ -45,7 +45,14 @@ public class BuildIDSTestOrchestrationButton extends AbstractOrchestrationButton
        this.testContext = testContext;
        this.testContextView = testContextView;
        HTML instructions = new HTML(
-               "<p>" +
+               "<h2>Preamble</h2>" +
+               "<p>"  +
+                       "Please read the overview material here: " +
+                       "<a href=\"https://github.com/usnistgov/iheos-toolkit2/wiki/Conformance-XDSI-Imaging-Document-Source-DICOM-Instances\">" +
+                       "Conformance XDSI Imaging Document Source DICOM Instances</a> " +
+                       "for information about where to find the test data and for general execution instructions." +
+               "</p>" +
+               "<p>"  +
                        "The System Under Test (SUT) is an Imaging Document Source. " +
                        "The diagram below shows the test environment with the SUT in orange. " +
                        "The test software creates and configures the simulators in the diagram. " +
