@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- This file describes interaction sequences between actors within an XDS Toolkit conformance environment. -->
+
+<InteractionSequences>
+	<InteractionSequence type="ProvideAndRegisterTransaction"> 
+			<Actor role="Document Source" provider="TestClient">
+				<Transaction type="prb">
+					<Actor role="Repository" provider="SystemUnderTest">
+						<Transaction type="rb">
+							<Actor role="Registry" name="rep_test_support" provider="Simulator"/>
+						</Transaction>
+					</Actor>
+				</Transaction>
+			</Actor>
+	</InteractionSequence>
+</InteractionSequences>
+
+
+
+		
+

@@ -82,6 +82,8 @@ public class TestOverviewBuilder {
                     } else {
                         logFileContentDTO.setHasRun(true);
                     }
+
+                    // TODO: Since the "testOverview.addSection(sectionOverview)" is commented below, not sure what some blocks related to sectionOverview are really for. Looks like dead code.
                     SectionOverviewDTO sectionOverview = addSection(section, logFileContentDTO);
 
                     try {
@@ -109,7 +111,6 @@ public class TestOverviewBuilder {
                     sectionOverview.setRun(logFileContentDTO.isRun());
                     if (!sectionOverview.isPass())
                         testOverview.setPass(false);
-
 
 
                     try {
@@ -166,6 +167,12 @@ public class TestOverviewBuilder {
         stepOverview.addErrors(stepContent.getErrors());
         stepOverview.addErrors(stepContent.getAssertionErrors());
         stepOverview.setTransaction(stepContent.getTransaction());
+
+        // TODO:
+        // Add interaction sequence for the step transaction
+        // Is a specific pattern embedded?
+        // If not, use a general transaction pattern
+
         sectionOverview.addStep(stepName, stepOverview);
     }
 
