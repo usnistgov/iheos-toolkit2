@@ -15,6 +15,10 @@
             <groupId>com.google.gwt</groupId>
             <artifactId>gwt-user</artifactId>
         </dependency>
+        <dependency>
+            <groupId>gov.nist.toolkit</groupId>
+            <artifactId>testkit-utilities</artifactId>
+        </dependency>
     </dependencies>
 
 <build>

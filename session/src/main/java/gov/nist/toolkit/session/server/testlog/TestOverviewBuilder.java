@@ -166,7 +166,7 @@ public class TestOverviewBuilder {
         stepOverview.addErrors(stepContent.getSoapFaults());
         stepOverview.addErrors(stepContent.getErrors());
         stepOverview.addErrors(stepContent.getAssertionErrors());
-        stepOverview.setTransaction(stepContent.getTransaction());
+        stepOverview.setTransaction(stepContent.getTransaction()); // NOTE: This makes an assumption that only one transaction is allowed per step.
 
         // TODO:
         // Add interaction sequence for the step transaction
