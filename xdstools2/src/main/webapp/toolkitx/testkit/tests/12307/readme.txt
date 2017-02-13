@@ -1,17 +1,28 @@
 GetDocuments 
 
-Initiate a GetDocuments Cross-Community Query (XCQ) from your
-Initiating Gateway to the Public
-Registry server's Responding Gateway for documents discovered in
-test 12306. Request LeafClass be returned.
+Initiate a GetDocuments Cross-Community Query from
+your Initiating Gateway to the system listed above
+in Supporting Environment Configuration - XXX__community1.
+(XXX will reflect your Test Session name). Specifically
+the query should go to the endpoint listed for Cross-
+Community Query.
 
-The metadata contained in the file testplan.xml is an example of the request.  The content of element 
-/TestPlan/TestStep/XCQTransaction/Metadata is the actual request. You must substitute the correct
-patient ID for $patient_id$.  
+The DocumentEntry.entryUUID used in the query must be the
+value returned in test 12306.
 
-See http://ihewiki.wustl.edu/wiki/index.php/XDS_Test_Kit_2007-2008_Test_Descriptions#12307 
-for the Patient ID and Web Service Endpoint currently being used.
+This query must be for LeafClass.
 
+To validate this test, look again at the Supporting Environment 
+Configuration above and select the Simulator Log for XXX__community1.
+This will take you to the event log for the Responding Gateway
+simulator you sent the FindDocuments request to.  Selecting the
+event on the left will display details on the right.  When you
+find the correct event (should be the first on the list - most
+recent), declare this event as evidence of your testing.  The 
+link to this information will be displayed at the top of the tool.
+This link can be copied and reused later.
+
+The getdocs section below shows an example of this query.
 
 
 
