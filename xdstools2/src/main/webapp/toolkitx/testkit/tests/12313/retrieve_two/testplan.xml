@@ -1,0 +1,30 @@
+
+<TestPlan>
+  <Test>12313/retrieve_two</Test>
+  <TestStep id="retrieve_two">
+  <ExpectedStatus>Success</ExpectedStatus>
+  <XCRTransaction>
+    <UseReport test="12318" reportName="Document01_uid" section="init" step="init" useAs="$docuid1$"/>
+    <UseReport test="12318" reportName="Document02_uid" section="init" step="init" useAs="$docuid2$"/>
+    <UseReport test="12318" reportName="repuid" section="query" step="query" useAs="$repositoryuid$"/>
+    <UseReport test="12318" section="init" step="init" reportName="$testdata_home$" useAs="$home$"/>
+    <ExpectedMimeType>text/plain</ExpectedMimeType>
+    <ReferenceDocument uid="$docuid1$">../12318/my_document.txt</ReferenceDocument>
+    <ReferenceDocument uid="$docuid2$">../12318/my_document2.txt</ReferenceDocument>
+    <MetadataFile>query.xml</MetadataFile>
+    <Assertions>
+      <DataRef file="THIS" as="output"/>
+      <Assert id="TwoDocuments">
+              		count(//XCRTransaction/Result[1]/*[local-name()='RetrieveDocumentSetResponse']/*[local-name()='DocumentResponse']) = "2"                    
+         		</Assert>
+        <Assert id="HomeCommunityId"> 
+          //Result[1]/*[namespace-uri()='urn:ihe:iti:xds-b:2007' and local-name()='RetrieveDocumentSetResponse'][1]/*[namespace-uri()='urn:ihe:iti:xds-b:2007' and local-name()='DocumentResponse'][1]/*[namespace-uri()='urn:ihe:iti:xds-b:2007' and local-name()='HomeCommunityId'][1] = '$home$'
+        </Assert>
+        <Assert id="RepositoryUniqueId"> 
+          //Result[1]/*[namespace-uri()='urn:ihe:iti:xds-b:2007' and local-name()='RetrieveDocumentSetResponse'][1]/*[namespace-uri()='urn:ihe:iti:xds-b:2007' and local-name()='DocumentResponse'][1]/*[namespace-uri()='urn:ihe:iti:xds-b:2007' and local-name()='RepositoryUniqueId'][1] = '$repositoryuid$'
+        </Assert>
+    </Assertions>
+  </XCRTransaction>
+</TestStep>
+
+</TestPlan>
