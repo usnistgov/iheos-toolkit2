@@ -1,18 +1,26 @@
 FindDocuments for ObjectRef
 
-Initiate a FindDocuments Cross-Community Query from your
-Initiating Gateway to community1 (endpoints listed above) for the Patient ID identified
+Initiate a FindDocuments Cross-Community Query from
+your Initiating Gateway to the system listed above
+in Supporting Environment Configuration - XXX__community1.
+(XXX will reflect your Test Session name). Specifically
+the query should go to the endpoint listed for Cross-
+Community Query.
 
-the Public
-Registry server's Responding Gateway for a pre-determined Patient ID. Request ObjectRefs be returned.
+The Patient ID used in the query should be taken from the Test
+data section above.  The specific Patient ID is listed as 
+Single document in Community 1.
 
-The metadata contained in the file testplan.xml is an example of the request.  The content of element 
-/TestPlan/TestStep/XCQTransaction/Metadata is the actual request. You must substitute the correct
-patient ID for $patient_id$.  
+This query must be for ObjectRef.
 
-See http://ihewiki.wustl.edu/wiki/index.php/XDS_Test_Kit_2007-2008_Test_Descriptions#12306 
-for the Patient ID and Web Service Endpoint currently being used.
+To validate this test, look again at the Supporting Environment 
+Configuration above and select the Simulator Log for XXX__community1.
+This will take you to the event log for the Responding Gateway
+simulator you sent the FindDocuments request to.  Selecting the
+event on the left will display details on the right.  When you
+find the correct event (should be the first on the list - most
+recent), declare this event as evidence of your testing.  The 
+link to this information will be displayed at the top of the tool.
+This link can be copied and reused later.
 
-
-
-
+The finddocs section below shows an example of this query.
