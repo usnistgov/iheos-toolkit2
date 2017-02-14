@@ -1,7 +1,12 @@
 package gov.nist.toolkit.xdstools2.client.tabs;
 
-import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.baselet.gwt.client.element.DiagramXmlParser;
+import com.baselet.gwt.client.view.DrawPanel;
+import com.baselet.gwt.client.view.DrawPanelDiagram;
+import com.baselet.gwt.client.view.MainView;
+import com.baselet.gwt.client.view.widgets.propertiespanel.PropertiesTextArea;
 import com.google.gwt.user.client.ui.CheckBox;
+import com.google.gwt.user.client.ui.SimpleLayoutPanel;
 import gov.nist.toolkit.configDatatypes.client.Pid;
 import gov.nist.toolkit.configDatatypes.client.TransactionType;
 import gov.nist.toolkit.interactionmodel.client.InteractingEntity;
@@ -45,6 +50,12 @@ public class FindDocumentsTab extends AbstractTool {
 
         requirePatientId();
         declareTransactionTypes(transactionTypes);
+
+        MainView mainView = new MainView();
+
+        mainGrid.setWidget(row, 0, mainView);
+        row++;
+        drawUMLTest(mainView);
     }
 
     @Override
@@ -198,6 +209,39 @@ public class FindDocumentsTab extends AbstractTool {
         interactingEntityList.add(initiator2);
 
         return interactingEntityList;
+
+    }
+
+    public void drawUMLTest(MainView mainView) {
+        PropertiesTextArea propertiesPanel = new PropertiesTextArea();
+        SimpleLayoutPanel palettePanelWrapper;
+        final DrawPanel diagramPanel;
+        diagramPanel = new DrawPanelDiagram(mainView, propertiesPanel);
+
+        String diagramXmlStr =
+         "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\"?>\n" +
+                "<diagram program=\"umlet\" version=\"14.1.0\">\n" +
+                "  <zoom_level>10</zoom_level>\n" +
+                "  <element>\n" +
+                "    <id>UMLNote</id>\n" +
+                "    <coordinates>\n" +
+                "      <x>400</x>\n" +
+                "      <y>400</y>\n" +
+                "      <w>120</w>\n" +
+                "      <h>70</h>\n" +
+                "    </coordinates>\n" +
+                "    <panel_attributes>     Note..\n" +
+                "     Placeholder\n" +
+                "     laurem\n" +
+                "ipsum\n" +
+                "customelement=\n" +
+                "drawArc(5,5,10,50,50,80,false) fg=red bg=red //Parameters (x, y, width, height, start, extent, open)\n" +
+                "drawCircle(10,40,3) fg=red bg=red //Parameters (x, y, radius)</panel_attributes>\n" +
+                "    <additional_attributes/>\n" +
+                "  </element></diagram>";
+
+
+        diagramPanel.setDiagram(DiagramXmlParser.xmlToDiagram(diagramXmlStr));
 
     }
 

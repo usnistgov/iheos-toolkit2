@@ -82,6 +82,7 @@
         <module>interaction-model</module>
         <module>interaction-mapper</module>
         <module>interaction-diagram</module>
+        <module>umlet-parent</module>
     </modules>
 
 
