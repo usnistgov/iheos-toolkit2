@@ -1,6 +1,7 @@
 package gov.nist.toolkit.session.client.logtypes;
 
 import com.google.gwt.user.client.rpc.IsSerializable;
+import gov.nist.toolkit.testkitutilities.client.Gather;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -21,6 +22,7 @@ public class SectionOverviewDTO implements BasicSectionOverview, Serializable, I
     private List<String> stepNames = new ArrayList<>();
     private Map<String, StepOverviewDTO> steps = new HashMap<>();
     private boolean sutInitiated = false;
+    private List<Gather> gathers = null;
 
     public SectionOverviewDTO() {}
 

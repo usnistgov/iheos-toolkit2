@@ -592,7 +592,7 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner, TestTa
 
 
 
-	public void runTest(final TestInstance testInstance, final TestIterator testIterator) {
+	public void runTest(final TestInstance testInstance, final Map<String, String> sectionParms, final TestIterator testIterator) {
 
 		getSiteToIssueTestAgainst().setTls(orchInit.isTls());
 
@@ -617,7 +617,7 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner, TestTa
 							getSiteToIssueTestAgainst().setSaml(true);
 							getSiteToIssueTestAgainst().setStsAssertion(result);
 
-							runTestInstance(testInstance, null);
+							runTestInstance(testInstance, null, null);
 						}
 					}.run(new GetStsSamlAssertionRequest(getCommandContext(),xuaUsername,stsTestInstance,stsSpec,params));
 				} catch (Exception ex) {
@@ -625,18 +625,23 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner, TestTa
 				}
 			} else {
 				// Reuse SAML when running the entire Actor test collection OR as set by the Xua option
-				runTestInstance(testInstance, testIterator);
+				runTestInstance(testInstance, null, testIterator);
 			}
 
 		} else {
 			// No SAML
 			getSiteToIssueTestAgainst().setSaml(false);
-			runTestInstance(testInstance, testIterator);
+			runTestInstance(testInstance, sectionParms, testIterator);
 		}
 	}
 
-	private void runTestInstance(final TestInstance testInstance, final TestIterator testIterator) {
+	private void runTestInstance(final TestInstance testInstance, final Map<String, String> sectionParms, final TestIterator testIterator) {
 		Map<String, String> parms = initializeTestParameters();
+		if (sectionParms != null) {
+			for (String name : sectionParms.keySet()) {
+				parms.put(name, sectionParms.get(name));
+			}
+		}
 		if (parms == null) return;
 		try {
 			new RunTestCommand(){
@@ -650,7 +655,7 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner, TestTa
 					if (testIterator != null)
 						testIterator.onDone(testInstance);
 				}
-			}.run(new RunTestRequest(getCommandContext(),getSiteToIssueTestAgainst(),testInstance,parms,true));
+			}.run(new RunTestRequest(getCommandContext(),getSiteToIssueTestAgainst(),testInstance, parms,true));
 		} catch (Exception e) {
 			new PopupMessage(e.getMessage());
 		}

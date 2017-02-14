@@ -1,6 +1,5 @@
 package gov.nist.toolkit.xdstools2.client.tabs.GatewayTestsTabs;
 
-import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.FlexTable;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.Panel;
@@ -10,7 +9,6 @@ import gov.nist.toolkit.services.client.RgOrchestrationRequest;
 import gov.nist.toolkit.services.client.RgOrchestrationResponse;
 import gov.nist.toolkit.sitemanagement.client.SiteSpec;
 import gov.nist.toolkit.xdstools2.client.command.command.BuildRGTestOrchestrationCommand;
-import gov.nist.toolkit.xdstools2.client.widgets.PopupMessage;
 import gov.nist.toolkit.xdstools2.client.tabs.conformanceTest.ActorAndOption;
 import gov.nist.toolkit.xdstools2.client.tabs.genericQueryTab.GenericQueryTab;
 import gov.nist.toolkit.xdstools2.client.util.ClientUtils;
@@ -41,6 +39,7 @@ public class BuildRGTestOrchestrationButton extends AbstractOrchestrationButton 
     static {
         ACTOR_OPTIONS = java.util.Arrays.asList(
                 new ActorAndOption("rg", "", "Required", false),
+                new ActorAndOption("rg", "od", "On Demand", false),
                 new ActorAndOption("rg", XUA_OPTION, "XUA Option", false));
     }
 

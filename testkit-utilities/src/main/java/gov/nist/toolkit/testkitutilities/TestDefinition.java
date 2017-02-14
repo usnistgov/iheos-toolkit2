@@ -1,5 +1,6 @@
 package gov.nist.toolkit.testkitutilities;
 
+import gov.nist.toolkit.testkitutilities.client.Gather;
 import gov.nist.toolkit.testkitutilities.client.SectionDefinitionDAO;
 import gov.nist.toolkit.testkitutilities.client.StepDefinitionDAO;
 import gov.nist.toolkit.utilities.io.Io;
@@ -115,34 +116,47 @@ public class TestDefinition {
 		OMElement sutInitiatedEle = XmlUtil.firstDecendentWithLocalName(sectionEle, "SUTInitiates");
 		if (sutInitiatedEle != null) section.sutInitiated();
 
-		for (OMElement stepEle : XmlUtil.decendentsWithLocalName(sectionEle, "TestStep")) {
-			StepDefinitionDAO step = new StepDefinitionDAO();
-			step.setId(stepEle.getAttributeValue(new QName("id")));
+		List<Gather> gathers = null;
 
-			// parse goals
-			OMElement goalEle = XmlUtil.firstChildWithLocalName(stepEle, "Goal");
-			if (goalEle == null) continue;
-			String goalsString = goalEle.getText();
-			if (goalsString != null) goalsString = goalsString.trim();
-			Scanner scanner = new Scanner(goalsString);
-			while (scanner.hasNextLine()) {
-				String line = scanner.nextLine();
-				if (line == null) continue;
-				line = line.trim();
-				if (line.length() == 0) continue;
-				step.addGoals(line);
+		List<OMElement> gatherEles = XmlUtil.decendentsWithLocalName(sectionEle, "Gather");
+		if (gatherEles.size() > 0) {
+			gathers = new ArrayList<>();
+			for (OMElement gatherEle : gatherEles) {
+				gathers.add(new Gather(gatherEle.getAttributeValue(new QName("prompt")), null));
 			}
+			section.setGathers(gathers);
+		}
 
-			for (OMElement trans : XmlUtil.descendantsWithLocalNameEndsWith(stepEle, "Transaction")) {
-				for (OMElement useReport : XmlUtil.childrenWithLocalName(trans, "UseReport")) {
-					String testId = useReport.getAttributeValue(TEST_QNAME);
-					if (testId != null) {
-						section.addTestDependency(testId);
+		if (gathers == null) {
+			for (OMElement stepEle : XmlUtil.decendentsWithLocalName(sectionEle, "TestStep")) {
+				StepDefinitionDAO step = new StepDefinitionDAO();
+				step.setId(stepEle.getAttributeValue(new QName("id")));
+
+				// parse goals
+				OMElement goalEle = XmlUtil.firstChildWithLocalName(stepEle, "Goal");
+				if (goalEle == null) continue;
+				String goalsString = goalEle.getText();
+				if (goalsString != null) goalsString = goalsString.trim();
+				Scanner scanner = new Scanner(goalsString);
+				while (scanner.hasNextLine()) {
+					String line = scanner.nextLine();
+					if (line == null) continue;
+					line = line.trim();
+					if (line.length() == 0) continue;
+					step.addGoals(line);
+				}
+
+				for (OMElement trans : XmlUtil.descendantsWithLocalNameEndsWith(stepEle, "Transaction")) {
+					for (OMElement useReport : XmlUtil.childrenWithLocalName(trans, "UseReport")) {
+						String testId = useReport.getAttributeValue(TEST_QNAME);
+						if (testId != null) {
+							section.addTestDependency(testId);
+						}
 					}
 				}
-			}
 
-			section.addStep(step);
+				section.addStep(step);
+			}
 		}
 
 		return section;

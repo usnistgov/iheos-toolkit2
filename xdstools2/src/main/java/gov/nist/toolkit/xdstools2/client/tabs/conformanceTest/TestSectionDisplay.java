@@ -4,20 +4,26 @@ import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.logical.shared.OpenEvent;
 import com.google.gwt.event.logical.shared.OpenHandler;
-import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.*;
 import gov.nist.toolkit.results.client.TestInstance;
 import gov.nist.toolkit.session.client.logtypes.SectionOverviewDTO;
 import gov.nist.toolkit.session.client.logtypes.TestPartFileDTO;
 import gov.nist.toolkit.testenginelogging.client.LogFileContentDTO;
+import gov.nist.toolkit.testenginelogging.client.ReportDTO;
 import gov.nist.toolkit.testenginelogging.client.TestStepLogContentDTO;
+import gov.nist.toolkit.testkitutilities.client.Gather;
 import gov.nist.toolkit.xdstools2.client.command.command.GetSectionTestPartFileCommand;
 import gov.nist.toolkit.xdstools2.client.command.command.GetTestLogDetailsCommand;
+import gov.nist.toolkit.xdstools2.client.util.ClientUtils;
 import gov.nist.toolkit.xdstools2.client.widgets.HorizontalFlowPanel;
 import gov.nist.toolkit.xdstools2.client.widgets.PopupMessage;
-import gov.nist.toolkit.xdstools2.client.util.ClientUtils;
 import gov.nist.toolkit.xdstools2.shared.command.request.GetSectionTestPartFileRequest;
 import gov.nist.toolkit.xdstools2.shared.command.request.GetTestLogDetailsRequest;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 
 /**
@@ -60,7 +66,7 @@ class TestSectionDisplay implements IsWidget {
         }
 
         if (sectionOverview.isSutInitiated()) {
-            view.setDone("Operation done - contintue", "Operation done - contintue", null);
+            view.setDone("Manual operation", "Manual operation", null);
         }
         view.setDescription(sectionOverview.getDescription());
         view.build();
@@ -83,8 +89,10 @@ class TestSectionDisplay implements IsWidget {
             new GetSectionTestPartFileCommand(){
                 @Override
                 public void onComplete(TestPartFileDTO sectionTp) {
-                    TestPlanDisplay testPlanDisplay = new TestPlanDisplay(sectionTp.getHtlmizedContent().replace("<br/>", "\r\n"));
-                    view.setTestPlanDisplay(testPlanDisplay);
+                    if (sectionTp.getGathers() == null) {
+                        TestPlanDisplay testPlanDisplay = new TestPlanDisplay(sectionTp.getHtlmizedContent().replace("<br/>", "\r\n"));
+                        view.setTestPlanDisplay(testPlanDisplay);
+                    }
 
                     view.clearStepPanel();
                     boolean singleStep = sectionTp.getStepList().size() == 1;
@@ -113,8 +121,61 @@ class TestSectionDisplay implements IsWidget {
                         view.addStepPanel(stepPanel);
                     }
 
+                    addGathers(sectionTp, null);
+
                 }
             }.run(new GetSectionTestPartFileRequest(ClientUtils.INSTANCE.getCommandContext(),testInstance,section));
+        }
+    }
+
+    private void addGathers(TestPartFileDTO sectionTp, List<ReportDTO> reports) {
+        if (sectionTp.getGathers() != null) {
+            Map<String, TextBox> gatherDetails = new HashMap<>();
+
+            int row = 0;
+            FlexTable table = new FlexTable();
+            for (Gather gather : sectionTp.getGathers()) {
+                table.setWidget(row, 0, new HTML(gather.getPrompt()));
+                TextBox textBox = new TextBox();
+                textBox.setText(getReportValue(gather.getPrompt(), reports));
+                table.setWidget(row, 1, textBox);
+                row++;
+                gatherDetails.put(gather.getPrompt(), textBox);
+            }
+            Button submit = new Button("Submit");
+            table.setWidget(row, 0, submit);
+            submit.addClickHandler(new GatheringDoneClickHandler(gatherDetails));
+
+            view.addStepPanel(table);
+        }
+
+    }
+
+    private String getReportValue(String targetReportName, List<ReportDTO> reports) {
+        if (reports == null) return "";
+        for (ReportDTO report : reports) {
+            if (report.getName().equals(targetReportName))
+                return report.getValue();
+        }
+        return "";
+    }
+
+    private class GatheringDoneClickHandler implements ClickHandler {
+        Map<String, TextBox> gatherDetails;
+
+        GatheringDoneClickHandler(Map<String, TextBox> gatherDetails) {
+            this.gatherDetails = gatherDetails;
+        }
+
+        @Override
+        public void onClick(ClickEvent clickEvent) {
+            Map<String, String> sectionParms = new HashMap<>();
+            for (String name : gatherDetails.keySet()) {
+                TextBox textBox = gatherDetails.get(name);
+                String value = textBox.getValue().trim();
+                sectionParms.put(name, value);
+            }
+            testRunner.runTest(testInstance, sectionParms, null);
         }
     }
 
@@ -151,6 +212,13 @@ class TestSectionDisplay implements IsWidget {
                                 view.addStepPanel(stepView.asWidget());
 
                             }
+
+                            List<ReportDTO> reports = new ArrayList<>();
+                            for (TestStepLogContentDTO step : log.getSteps()) {
+                                reports.addAll(step.getReportDTOs());
+                            }
+
+                            addGathers(sectionTp, reports);
                         }
                     }.run(new GetSectionTestPartFileRequest(ClientUtils.INSTANCE.getCommandContext(),testInstance,testInstance.getSection()));
                 }
@@ -170,7 +238,7 @@ class TestSectionDisplay implements IsWidget {
             clickEvent.preventDefault();
             clickEvent.stopPropagation();
 
-            me.testRunner.runTest(testInstance, null);
+            me.testRunner.runTest(testInstance, null,null);
         }
     }
 
