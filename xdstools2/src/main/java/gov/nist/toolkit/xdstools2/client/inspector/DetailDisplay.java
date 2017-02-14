@@ -243,6 +243,11 @@ public class DetailDisplay {
 		ft.setWidget(row, 1, HyperlinkFactory.linkXMLView(it, de.lid, de.lidX));
 		row++;
 
+		b = diff.objectType != null;
+		ft.setHTML(row, 0, bold("objectType", b));
+		ft.setWidget(row, 1, HyperlinkFactory.linkXMLView(it, de.objectType, de.objectTypeX));
+		row++;
+
 		b = diff.version != null;
 		ft.setHTML(row, 0, bold("version",b));
 		ft.setWidget(row, 1, HyperlinkFactory.linkXMLView(it, de.version, de.versionX));

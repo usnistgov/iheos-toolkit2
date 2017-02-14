@@ -1488,6 +1488,10 @@ public class Metadata {
 		return eo.getAttributeValue(MetadataSupport.mime_type_qname);
 	}
 
+	public String getObjectType(OMElement eo) {
+		return eo.getAttributeValue(MetadataSupport.object_type_qname);
+	}
+
 	public String getHome(OMElement ro) {
 		return ro.getAttributeValue(MetadataSupport.home_qname);
 	}
