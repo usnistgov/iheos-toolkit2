@@ -758,4 +758,6 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner, TestTa
 			};
 		}
 	}
+
+	public ActorOption getCurrentActorOption() { return currentActorOption; }
 }

@@ -56,7 +56,7 @@ class TestSectionDisplay implements IsWidget {
         view.setTime(sectionOverview.getDisplayableTime());
 
         if (sectionOverview.isRun()) {
-            view.addOpenHandler(new SectionOpenHandler(new TestInstance(testInstance.getId(), sectionOverview.getName()), sessionName, sectionOverview.getName()));
+            view.addOpenHandler(new SectionAlreadyRunOpenHandler(new TestInstance(testInstance.getId(), sectionOverview.getName()), sessionName, sectionOverview.getName()));
         } else {
             view.addOpenHandler(new SectionNotRunOpenHandler(sessionName, testInstance, sectionOverview.getName()));
         }
@@ -72,6 +72,67 @@ class TestSectionDisplay implements IsWidget {
         view.build();
     }
 
+
+
+    private void addGathers(TestPartFileDTO sectionTp, List<ReportDTO> reports) {
+        if (sectionTp.getGathers() != null) {
+            Map<String, TextBox> gatherDetails = new HashMap<>();
+
+            FlowPanel panel = new FlowPanel();
+            panel.add(new HTML("This section gathers inputs from the user"));
+            int row = 0;
+            FlexTable table = new FlexTable();
+            table.setStyleName("with-border");
+            table.setWidget(row, 0, new HTML("Inputs:"));
+            row++;
+            for (Gather gather : sectionTp.getGathers()) {
+                table.setWidget(row, 0, new HTML(gather.getPrompt()));
+                TextBox textBox = new TextBox();
+                textBox.setText(getReportValue(gather.getPrompt(), reports));
+                table.setWidget(row, 1, textBox);
+                row++;
+                gatherDetails.put(gather.getPrompt(), textBox);
+            }
+            Button submit = new Button("Submit");
+            table.setWidget(row, 0, submit);
+            submit.addClickHandler(new GatheringDoneClickHandler(sectionTp.getPartName(), gatherDetails));
+
+            panel.add(table);
+            view.addStepPanel(panel);
+        }
+
+    }
+
+    private String getReportValue(String targetReportName, List<ReportDTO> reports) {
+        if (reports == null) return "";
+        for (ReportDTO report : reports) {
+            if (report.getName().equals(targetReportName))
+                return report.getValue();
+        }
+        return "";
+    }
+
+    private class GatheringDoneClickHandler implements ClickHandler {
+        Map<String, TextBox> gatherDetails;
+        String section;
+
+        GatheringDoneClickHandler(String section, Map<String, TextBox> gatherDetails) {
+            this.section = section;
+            this.gatherDetails = gatherDetails;
+        }
+
+        @Override
+        public void onClick(ClickEvent clickEvent) {
+            Map<String, String> sectionParms = new HashMap<>();
+            for (String name : gatherDetails.keySet()) {
+                TextBox textBox = gatherDetails.get(name);
+                String value = textBox.getValue().trim();
+                sectionParms.put(name, value);
+            }
+            testInstance.setSection(section);
+            testRunner.runTest(testInstance, sectionParms, null);
+        }
+    }
 
     private class SectionNotRunOpenHandler implements OpenHandler<DisclosurePanel> {
         String sessionName;
@@ -89,7 +150,8 @@ class TestSectionDisplay implements IsWidget {
             new GetSectionTestPartFileCommand(){
                 @Override
                 public void onComplete(TestPartFileDTO sectionTp) {
-                    if (sectionTp.getGathers() == null) {
+                    boolean hasGathers = sectionTp.getGathers() != null;
+                    if (!hasGathers) {
                         TestPlanDisplay testPlanDisplay = new TestPlanDisplay(sectionTp.getHtlmizedContent().replace("<br/>", "\r\n"));
                         view.setTestPlanDisplay(testPlanDisplay);
                     }
@@ -104,7 +166,8 @@ class TestSectionDisplay implements IsWidget {
                         stepHeader.add(stepHeaderTitle);
 
                         DisclosurePanel stepPanel = new DisclosurePanel(stepHeader);
-                        stepPanel.setOpen(singleStep);
+                        stepPanel.setOpen(false);
+                        //stepPanel.setOpen(singleStep);
 
                         final FlowPanel stepResults = new FlowPanel();
                         if (sectionTp.getStepTpfMap()!=null && sectionTp.getStepTpfMap().get(stepName)!=null) {
@@ -121,70 +184,20 @@ class TestSectionDisplay implements IsWidget {
                         view.addStepPanel(stepPanel);
                     }
 
-                    addGathers(sectionTp, null);
+                    if (hasGathers)
+                        addGathers(sectionTp, null);
 
                 }
             }.run(new GetSectionTestPartFileRequest(ClientUtils.INSTANCE.getCommandContext(),testInstance,section));
         }
     }
 
-    private void addGathers(TestPartFileDTO sectionTp, List<ReportDTO> reports) {
-        if (sectionTp.getGathers() != null) {
-            Map<String, TextBox> gatherDetails = new HashMap<>();
-
-            int row = 0;
-            FlexTable table = new FlexTable();
-            for (Gather gather : sectionTp.getGathers()) {
-                table.setWidget(row, 0, new HTML(gather.getPrompt()));
-                TextBox textBox = new TextBox();
-                textBox.setText(getReportValue(gather.getPrompt(), reports));
-                table.setWidget(row, 1, textBox);
-                row++;
-                gatherDetails.put(gather.getPrompt(), textBox);
-            }
-            Button submit = new Button("Submit");
-            table.setWidget(row, 0, submit);
-            submit.addClickHandler(new GatheringDoneClickHandler(gatherDetails));
-
-            view.addStepPanel(table);
-        }
-
-    }
-
-    private String getReportValue(String targetReportName, List<ReportDTO> reports) {
-        if (reports == null) return "";
-        for (ReportDTO report : reports) {
-            if (report.getName().equals(targetReportName))
-                return report.getValue();
-        }
-        return "";
-    }
-
-    private class GatheringDoneClickHandler implements ClickHandler {
-        Map<String, TextBox> gatherDetails;
-
-        GatheringDoneClickHandler(Map<String, TextBox> gatherDetails) {
-            this.gatherDetails = gatherDetails;
-        }
-
-        @Override
-        public void onClick(ClickEvent clickEvent) {
-            Map<String, String> sectionParms = new HashMap<>();
-            for (String name : gatherDetails.keySet()) {
-                TextBox textBox = gatherDetails.get(name);
-                String value = textBox.getValue().trim();
-                sectionParms.put(name, value);
-            }
-            testRunner.runTest(testInstance, sectionParms, null);
-        }
-    }
-
-    private class SectionOpenHandler implements OpenHandler<DisclosurePanel> {
+    private class SectionAlreadyRunOpenHandler implements OpenHandler<DisclosurePanel> {
         TestInstance testInstance; // must include section name
         String testSession;
         String section;
 
-        SectionOpenHandler(TestInstance testInstance, String testSession, String section) {
+        SectionAlreadyRunOpenHandler(TestInstance testInstance, String testSession, String section) {
             this.testInstance = testInstance;
             this.testSession = testSession;
             this.section = section;
@@ -200,25 +213,27 @@ class TestSectionDisplay implements IsWidget {
                     new GetSectionTestPartFileCommand(){
                         @Override
                         public void onComplete(TestPartFileDTO sectionTp) {
+                            boolean hasGathers = sectionTp.getGathers() != null;
                             TestPlanDisplay testPlanDisplay = new TestPlanDisplay(sectionTp.getHtlmizedContent().replace("<br/>", "\r\n"));
                             view.setTestPlanDisplay(testPlanDisplay);
                             view.clearStepPanel();
 
                             if (log.hasFatalError()) view.setFatalError(log.getFatalError());
+
+                            if (hasGathers) {
+                                List<ReportDTO> reports = new ArrayList<>();
+                                for (TestStepLogContentDTO step : log.getSteps()) {
+                                    reports.addAll(step.getReportDTOs());
+                                }
+                                addGathers(sectionTp, reports);
+                            }
+
                             boolean singleStep = log.getSteps().size() == 1;
                             for (TestStepLogContentDTO step : log.getSteps()) {
                                 StepView stepView = new StepView(sectionTp, sectionOverview, step, singleStep, testSession, testInstance, section);
-
                                 view.addStepPanel(stepView.asWidget());
-
                             }
 
-                            List<ReportDTO> reports = new ArrayList<>();
-                            for (TestStepLogContentDTO step : log.getSteps()) {
-                                reports.addAll(step.getReportDTOs());
-                            }
-
-                            addGathers(sectionTp, reports);
                         }
                     }.run(new GetSectionTestPartFileRequest(ClientUtils.INSTANCE.getCommandContext(),testInstance,testInstance.getSection()));
                 }

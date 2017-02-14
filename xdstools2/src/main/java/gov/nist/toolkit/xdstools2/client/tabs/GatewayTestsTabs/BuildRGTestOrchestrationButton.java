@@ -35,11 +35,13 @@ public class BuildRGTestOrchestrationButton extends AbstractOrchestrationButton 
         this.useSimAsSUT = useSimAsSUT;
     }
 
+    public static final String ON_DEMAND_OPTION = "od";
+
     public static List<ActorAndOption> ACTOR_OPTIONS = new ArrayList<>();
     static {
         ACTOR_OPTIONS = java.util.Arrays.asList(
                 new ActorAndOption("rg", "", "Required", false),
-                new ActorAndOption("rg", "od", "On Demand", false),
+                new ActorAndOption("rg", ON_DEMAND_OPTION, "On Demand", false),
                 new ActorAndOption("rg", XUA_OPTION, "XUA Option", false));
     }
 
