@@ -1,0 +1,10 @@
+<TestPlan>
+    <Test>15829/gatherpid</Test>
+    <SUTInitiates/>
+    <TestStep id="gather">
+        <Goal>
+            Collect inputs for the rest of the test.
+        </Goal>
+        <Gather prompt="Patient_ID"/>
+    </TestStep>
+</TestPlan>
