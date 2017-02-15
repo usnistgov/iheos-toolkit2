@@ -2,15 +2,13 @@ package gov.nist.toolkit.xdstools2.client.tabs;
 
 import com.baselet.gwt.client.element.DiagramXmlParser;
 import com.baselet.gwt.client.view.DrawPanel;
-import com.baselet.gwt.client.view.DrawPanelDiagram;
 import com.baselet.gwt.client.view.MainView;
-import com.baselet.gwt.client.view.widgets.propertiespanel.PropertiesTextArea;
+import com.google.gwt.dom.client.Style;
 import com.google.gwt.user.client.ui.CheckBox;
-import com.google.gwt.user.client.ui.SimpleLayoutPanel;
+import com.google.gwt.user.client.ui.HTML;
 import gov.nist.toolkit.configDatatypes.client.Pid;
 import gov.nist.toolkit.configDatatypes.client.TransactionType;
 import gov.nist.toolkit.interactionmodel.client.InteractingEntity;
-import gov.nist.toolkit.interactionmodel.client.InteractionIdentifierTerm;
 import gov.nist.toolkit.results.client.Result;
 import gov.nist.toolkit.sitemanagement.client.SiteSpec;
 import gov.nist.toolkit.xdstools2.client.CoupledTransactions;
@@ -51,11 +49,20 @@ public class FindDocumentsTab extends AbstractTool {
         requirePatientId();
         declareTransactionTypes(transactionTypes);
 
-        MainView mainView = new MainView();
 
-        mainGrid.setWidget(row, 0, mainView);
-        row++;
+        getTabTopPanel().add(new HTML("hello, this is a test."));
+
+        MainView mainView = new MainView();
+        mainView.getElement().getStyle().setWidth(600, Style.Unit.PX);
+        mainView.getElement().getStyle().setHeight(600, Style.Unit.PX);
+        getTabTopPanel().add(  mainView );
         drawUMLTest(mainView);
+
+//        SimpleLayoutPanel sp = new SimpleLayoutPanel();
+//        sp.getElement().getStyle().setWidth(100 , Style.Unit.PX);
+//        sp.getElement().getStyle().setHeight(100, Style.Unit.PX);
+//        sp.add(drawUMLTest(mainView));
+//        getTabTopPanel().add(sp);
     }
 
     @Override
@@ -105,144 +112,50 @@ public class FindDocumentsTab extends AbstractTool {
     }
 
 
-    public InteractingEntity getInteractionModel() {
-        // begin interaction model
-        InteractingEntity registryEntity = new InteractingEntity(); // Destination
-
-        origin.setName(null); // Matches with the transactionSettings origin. null=TestClient
-        origin.setDescription("Document Consumer - Toolkit");
-
-        registryEntity.setName(getSiteSelection().getName());
-        registryEntity.setDescription("Registry - SUT");
-        registryEntity.setSourceInteractionLabel("Stored Query (ITI-18)");
-
-        List<InteractionIdentifierTerm> identifierTerms = new ArrayList<>();
-        InteractionIdentifierTerm identifierTerm
-                = new InteractionIdentifierTerm("$patient_id$", InteractionIdentifierTerm.Operator.EQUALTO, pidTextBox.getValue().trim());
-        identifierTerms.add(identifierTerm);
-        registryEntity.setInteractionIdentifierTerms(identifierTerms);
-
-        origin.setInteractions(new ArrayList<InteractingEntity>());
-        origin.getInteractions().add(registryEntity);
-
-        // end
-        return origin;
-    }
-
-
-    public InteractingEntity testIG() {
-        InteractingEntity initiator = new InteractingEntity();
-        initiator.setName("Toolkit");
-
-        InteractingEntity ig = new InteractingEntity();
-        ig.setName("IG");
-
-        InteractingEntity rg1 = new InteractingEntity("rg1");
-        InteractingEntity reg1 = new InteractingEntity("reg1");
-        InteractingEntity rep1 = new InteractingEntity("rep1");
-
-        rg1.setInteractions(new ArrayList<InteractingEntity>());
-        rg1.getInteractions().add(reg1);
-        rg1.getInteractions().add(rep1);
-
-        ig.setInteractions(new ArrayList<InteractingEntity>());
-        ig.getInteractions().add(rg1);
-
-        InteractingEntity rg2 = new InteractingEntity("rg2");
-        InteractingEntity reg2 = new InteractingEntity("reg2");
-        InteractingEntity rep2 = new InteractingEntity("rep2");
-
-        rg2.setInteractions(new ArrayList<InteractingEntity>());
-        rg2.getInteractions().add(reg2);
-        rg2.getInteractions().add(rep2);
-
-        ig.getInteractions().add(rg2);
-
-        initiator.setInteractions(new ArrayList<InteractingEntity>());
-        initiator.getInteractions().add(ig);
-
-        return initiator;
-    }
-
-    public InteractingEntity testReuseLL() {
-        InteractingEntity initiator = new InteractingEntity();
-        initiator.setName("Toolkit");
-
-        InteractingEntity ig = new InteractingEntity();
-        ig.setName("IG");
-
-        InteractingEntity rg1 = new InteractingEntity("rg1");
-        InteractingEntity reg1 = new InteractingEntity("reg1");
-        InteractingEntity rep1 = new InteractingEntity("rep1");
-
-        rg1.setInteractions(new ArrayList<InteractingEntity>());
-        rg1.getInteractions().add(reg1);
-        rg1.getInteractions().add(rep1);
-
-        ig.setInteractions(new ArrayList<InteractingEntity>());
-        ig.getInteractions().add(rg1);
-
-        ig.getInteractions().add(rep1);
-
-        return ig;
-    }
-
-    public List<InteractingEntity> testTwoActors() {
-
-        List<InteractingEntity> interactingEntityList = new ArrayList<InteractingEntity>();
-
-        InteractingEntity initiator = new InteractingEntity();
-        initiator.setName("Tc/Rep");
-
-
-        InteractingEntity reg = new InteractingEntity("reg");
-
-        initiator.setInteractions(new ArrayList<InteractingEntity>());
-        initiator.getInteractions().add(reg);
-
-        InteractingEntity initiator2 = new InteractingEntity();
-        initiator2.setName("Tc/DocCons");
-        initiator2.setInteractions(new ArrayList<InteractingEntity>());
-        initiator2.getInteractions().add(reg);
-
-        interactingEntityList.add(initiator);
-        interactingEntityList.add(initiator2);
-
-        return interactingEntityList;
-
-    }
-
-    public void drawUMLTest(MainView mainView) {
-        PropertiesTextArea propertiesPanel = new PropertiesTextArea();
-        SimpleLayoutPanel palettePanelWrapper;
-        final DrawPanel diagramPanel;
-        diagramPanel = new DrawPanelDiagram(mainView, propertiesPanel);
+    public DrawPanel drawUMLTest(MainView mainView) {
+//        PropertiesTextArea propertiesPanel = new PropertiesTextArea();
+//        SimpleLayoutPanel palettePanelWrapper;
+//        final DrawPanel diagramPanel;
+//        diagramPanel = new DrawPanelDiagram(mainView, propertiesPanel);
 
         String diagramXmlStr =
-         "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\"?>\n" +
-                "<diagram program=\"umlet\" version=\"14.1.0\">\n" +
-                "  <zoom_level>10</zoom_level>\n" +
+        "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\"?>\n" +
+                "<diagram program=\"umlet\" version=\"13.3\">\n" +
+                "  <zoom_level>8</zoom_level>\n" +
                 "  <element>\n" +
-                "    <id>UMLNote</id>\n" +
+                "    <id>UMLClass</id>\n" +
                 "    <coordinates>\n" +
-                "      <x>400</x>\n" +
-                "      <y>400</y>\n" +
-                "      <w>120</w>\n" +
-                "      <h>70</h>\n" +
+                "      <x>16</x>\n" +
+                "      <y>48</y>\n" +
+                "      <w>168</w>\n" +
+                "      <h>152</h>\n" +
                 "    </coordinates>\n" +
-                "    <panel_attributes>     Note..\n" +
-                "     Placeholder\n" +
-                "     laurem\n" +
-                "ipsum\n" +
-                "customelement=\n" +
-                "drawArc(5,5,10,50,50,80,false) fg=red bg=red //Parameters (x, y, width, height, start, extent, open)\n" +
-                "drawCircle(10,40,3) fg=red bg=red //Parameters (x, y, radius)</panel_attributes>\n" +
+                "    <panel_attributes>&lt;&lt;Stereotype&gt;&gt;\n" +
+                "Package::FatClass\n" +
+                "{Some Properties}\n" +
+                "--\n" +
+                "-id: Long {composite}\n" +
+                "_-ClassAttribute: Long_\n" +
+                "--\n" +
+                "#Operation(i: int): int\n" +
+                "/+AbstractOperation()/\n" +
+                "--\n" +
+                "Responsibilities\n" +
+                "-- Resp1\n" +
+                "-- Resp2</panel_attributes>\n" +
                 "    <additional_attributes/>\n" +
-                "  </element></diagram>";
+                "  </element></diagram>"                ;
+
+        mainView.getDiagramPanel().setDiagram(DiagramXmlParser.xmlToDiagram(diagramXmlStr));
+        return mainView.getDiagramPanel();
 
 
-        diagramPanel.setDiagram(DiagramXmlParser.xmlToDiagram(diagramXmlStr));
-
+        /*
+        mainView.getDiagramPanel().setDiagram(DiagramXmlParser.xmlToDiagram(diagramXmlStr));
+        mainView.getDiagramPanel().getCanvas().getWidget().getElement().getStyle().setWidth(100, Style.Unit.PX);
+        mainView.getDiagramPanel().getCanvas().getWidget().getElement().getStyle().setHeight(100, Style.Unit.PX);
+        return mainView.getDiagramPanel();
+        */
     }
 
 }

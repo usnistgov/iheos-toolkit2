@@ -180,7 +180,7 @@ public class MainView extends Composite {
 
 		palettePanelWrapper.add(paletteScrollPanel);
 
-		RootLayoutPanel.get().add(hiddenUploadButton);
+//		RootLayoutPanel.get().add(hiddenUploadButton);
 		hiddenUploadButton.setVisible(false);
 		hiddenUploadButton.addChangeHandler(new ChangeHandler() {
 			@Override
@@ -290,5 +290,13 @@ public class MainView extends Composite {
 //				RootPanel.get("featurewarning").getElement().getStyle().setMarginLeft(menuPanel.getOffsetWidth(), Unit.PX);
 			}
 		});
+	}
+
+	public FileOpenHandler getHandler() {
+		return handler;
+	}
+
+	public DrawPanel getDiagramPanel() {
+		return diagramPanel;
 	}
 }

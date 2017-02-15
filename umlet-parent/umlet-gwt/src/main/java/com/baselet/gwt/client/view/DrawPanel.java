@@ -51,6 +51,8 @@ public abstract class DrawPanel extends SimplePanel implements CommandTarget, Ha
 
 	protected DrawCanvas canvas = new DrawCanvas();
 
+
+
 	SelectorNew selector;
 
 	CommandInvoker commandInvoker = CommandInvoker.getInstance();
@@ -471,5 +473,9 @@ public abstract class DrawPanel extends SimplePanel implements CommandTarget, Ha
 	@Override
 	public HandlerRegistration addMouseOutHandler(MouseOutHandler handler) {
 		return addDomHandler(handler, MouseOutEvent.getType());
+	}
+
+	public DrawCanvas getCanvas() {
+		return canvas;
 	}
 }
