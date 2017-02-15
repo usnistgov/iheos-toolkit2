@@ -222,7 +222,12 @@ public class DetailDisplay {
 		FlexTable ft = new FlexTable();
 		int row=0;
 		boolean b;
-		
+
+		b = diff.objectType != null;
+		ft.setHTML(row, 0, bold("objectType", b));
+		ft.setWidget(row, 1, HyperlinkFactory.linkXMLView(it, de.objectType, de.objectTypeX));
+		row++;
+
 		b = diff.title != null;
 		ft.setHTML(row, 0, bold("title",b));
 		ft.setWidget(row, 1, HyperlinkFactory.linkXMLView(it, de.title, de.titleX));
@@ -241,11 +246,6 @@ public class DetailDisplay {
 		b = diff.lid != null;
 		ft.setHTML(row, 0, bold("lid",b));
 		ft.setWidget(row, 1, HyperlinkFactory.linkXMLView(it, de.lid, de.lidX));
-		row++;
-
-		b = diff.objectType != null;
-		ft.setHTML(row, 0, bold("objectType", b));
-		ft.setWidget(row, 1, HyperlinkFactory.linkXMLView(it, de.objectType, de.objectTypeX));
 		row++;
 
 		b = diff.version != null;
