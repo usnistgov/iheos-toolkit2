@@ -70,9 +70,9 @@ public class BuildIGTestOrchestrationButton extends AbstractOrchestrationButton 
 
     private SiteSpec siteUnderTest(IgOrchestrationResponse orchResponse) {
         if (AD_OPTION.equals(actorOption.getOptionId())) {
-            return orchResponse.getSupportRG1().siteSpec();
+            return testContext.getSiteUnderTest().siteSpec();
         }
-        return testContext.getSiteUnderTest().siteSpec();
+        return orchResponse.getSupportRG1().siteSpec();
     }
 
     public void orchestrate() {
