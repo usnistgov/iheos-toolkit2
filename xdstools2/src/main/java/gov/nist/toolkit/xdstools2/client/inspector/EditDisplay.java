@@ -372,6 +372,16 @@ public class EditDisplay {
 				}
 			}
 
+			if (a.telecom.size() > 0) {
+				startRow = row;
+				for (String in : a.telecom) {
+					if (startRow == row)
+						ft.setText(row, 0, "telecom");
+					ft.setWidget(row, 1, newTB(in));
+					row++;
+				}
+			}
+
 		}
 
 		return row;

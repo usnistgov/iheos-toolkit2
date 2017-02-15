@@ -103,9 +103,16 @@ public abstract class DetailDcmContent extends Detail {
                case SAME:
                   t = testAttr.getString(assertion.tag);
                   s = stdAttr.getString(assertion.tag);
-                  if (StringUtils.isNotBlank(t) && StringUtils.isNotBlank(s) &&
-                     t.equals(s)) pass(assertion, t);
-                  else fail(assertion, t, s);
+                  if (t == null && testAttr.contains(assertion.tag)) {
+                     fail(assertion, "Zero length element detected when expecting a value", s);
+                  } else if (t == null) {
+                     fail(assertion, "Element not present in object when expecting a value", s);
+                  } else if (StringUtils.isNotBlank(t) && StringUtils.isNotBlank(s) &&
+                     t.equals(s)) {
+                     pass(assertion, t);
+                  } else {
+                     fail(assertion, t, s);
+                  }
                   break;
                case DIFFERENT:
                    t = testAttr.getString(assertion.tag);

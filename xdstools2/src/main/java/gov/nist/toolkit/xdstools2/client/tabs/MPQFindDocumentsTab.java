@@ -101,6 +101,7 @@ public class MPQFindDocumentsTab extends GenericQueryTab {
 
 		public void onClick(ClickEvent event) {
 			String pid = queryBoilerplate.getPatientId();
+			if (pid == null) pid = "";
 
 			resultPanel.clear();
 

@@ -273,4 +273,8 @@ public class PropertyServiceManager {
     public File getPropertiesFile(){
         return propertiesFile;
     }
+
+    public String getWikiBaseAddress ( ) {
+    	return getPropertyManager().getWikiBaseAddress() ;
+    }
 }

@@ -1,0 +1,3 @@
+
+
+Use SQ (GetSubmissionSetAndContents) to verify registry contents

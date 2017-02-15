@@ -46,6 +46,7 @@ class IdsOrchestrationBuilder {
            
            String user = request.getUserName();
            String env = request.getEnvironmentName();
+            String x = "";
            
            try {
               for (Orchestra sim : Orchestra.values()) {
@@ -74,11 +75,16 @@ class IdsOrchestrationBuilder {
                  } else {
                     simConfig = api.getConfig(simId);
                  }
+                  x = simConfig.getActorType();
+                  if (x.equals("rr")) {
+                      rrSimulatorConfig = simConfig;
+                  }
               }
               IdsOrchestrationResponse response = new IdsOrchestrationResponse();
               response.setIdsSimulatorConfig(sutSimulatorConfig);
               response.setRRConfig(rrSimulatorConfig);
               response.setSimulatorConfigs(simConfigs);
+
               return response;
 
            } catch (Exception e) {

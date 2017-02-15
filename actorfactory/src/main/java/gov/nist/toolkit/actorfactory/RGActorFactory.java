@@ -1,10 +1,5 @@
 package gov.nist.toolkit.actorfactory;
 
-import java.io.File;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-
 import gov.nist.toolkit.actorfactory.client.SimId;
 import gov.nist.toolkit.actorfactory.client.Simulator;
 import gov.nist.toolkit.actorfactory.client.SimulatorConfig;
@@ -17,17 +12,26 @@ import gov.nist.toolkit.envSetting.EnvSetting;
 import gov.nist.toolkit.sitemanagement.client.Site;
 import gov.nist.toolkit.sitemanagement.client.TransactionBean;
 import gov.nist.toolkit.sitemanagement.client.TransactionBean.RepositoryType;
-import gov.nist.toolkit.xdsexception.client.EnvironmentNotSelectedException;
+import gov.nist.toolkit.xdsexception.ExceptionUtil;
 import gov.nist.toolkit.xdsexception.NoSessionException;
 import gov.nist.toolkit.xdsexception.NoSimulatorException;
+import gov.nist.toolkit.xdsexception.client.EnvironmentNotSelectedException;
+import org.apache.log4j.Logger;
+
+import java.io.File;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 public class RGActorFactory extends AbstractActorFactory {
+   static private final Logger logger = Logger.getLogger(RGActorFactory.class);
+
    SimId newID = null;
 
-   static final String homeCommunityIdBase = "urn:oid:1.1.4567334.1.";
-   static int homeCommunityIdIncr = 1;
+   static private final String homeCommunityIdBase = "urn:oid:1.1.4567334.1.";
+   static private int homeCommunityIdIncr = 1;
 
-   static String getNewHomeCommunityId() {
+   static private String getNewHomeCommunityId() {
       return homeCommunityIdBase + homeCommunityIdIncr++ ;
    }
 
@@ -130,6 +134,7 @@ public class RGActorFactory extends AbstractActorFactory {
          return site;
       } catch (Throwable t) {
          sc.isExpired(true);
+         logger.error(ExceptionUtil.exception_details(t));
          throw new NoSimulatorException("Not Defined", t);
       }
    }

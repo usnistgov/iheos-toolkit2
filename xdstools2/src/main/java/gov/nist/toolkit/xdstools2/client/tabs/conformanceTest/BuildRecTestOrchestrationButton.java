@@ -1,6 +1,5 @@
 package gov.nist.toolkit.xdstools2.client.tabs.conformanceTest;
 
-import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.Panel;
@@ -30,7 +29,8 @@ public class BuildRecTestOrchestrationButton extends AbstractOrchestrationButton
     public static List<ActorAndOption> ACTOR_OPTIONS = new ArrayList<>();
     static {
         ACTOR_OPTIONS = java.util.Arrays.asList(
-                new ActorAndOption("rec", "", "Required", false));
+                new ActorAndOption("rec", "", "Required", false),
+                new ActorAndOption("rec", XUA_OPTION, "XUA Option", false));
     }
 
     BuildRecTestOrchestrationButton(ConformanceTestTab testTab, TestContext testContext, TestContextView testContextView, Panel initializationPanel, String label) {

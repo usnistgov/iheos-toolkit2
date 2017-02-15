@@ -247,13 +247,13 @@ public abstract class DetailDcmSequenceContent extends Detail {
                   if (testVal == null) testVal = "";
                   if (stdVal  == null) stdVal = "";
                   if (testVal.equals(stdVal)) pass(assertion);
-                  else fail(assertion);
+                  else fail(assertion, testVal, stdVal);
                   break;
                case SAME_SIZE:
                   int testSize = testAttr.getSequence(assertion.tag).size();
                   int stdSize = stdAttr.getSequence(assertion.tag).size();
                   if (testSize == stdSize) pass(assertion);
-                  else fail(assertion);
+                  else fail(assertion, testVal, stdVal);
                   break;
                default:
                   throw new Exception("invalid test type");
@@ -272,6 +272,11 @@ public abstract class DetailDcmSequenceContent extends Detail {
    }
    private void fail(DCMAssertion tst) {
       store(tst.failCat, tst.failDetail);
+      dtl.passed = false;
+   }
+   private void fail(DCMAssertion tst, String found, String expected) {
+      String messageString = tst.failDetail + " found-[" + found + "] expected-[" + expected + "]";
+      store(tst.failCat, messageString);
       dtl.passed = false;
    }
    private Entry dtl;
