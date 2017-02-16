@@ -4,7 +4,6 @@ import gov.nist.toolkit.installation.Installation;
 import gov.nist.toolkit.results.client.TestInstance;
 import gov.nist.toolkit.testenginelogging.client.LogFileContentDTO;
 import gov.nist.toolkit.testenginelogging.client.SectionLogMapDTO;
-import gov.nist.toolkit.testenginelogging.client.TestStepLogContentDTO;
 import gov.nist.toolkit.testenginelogging.logrepository.LogRepository;
 import gov.nist.toolkit.testkitutilities.SectionTestPlanFileMap;
 import gov.nist.toolkit.testkitutilities.TestDefinition;
@@ -84,10 +83,6 @@ public class TestLogDetails {
 		if (sectionLogMapDTO == null)
 			sectionLogMapDTO = new SectionLogMapDTO(testInstance);
 		sectionLogMapDTO.put(section, lf);
-		for (TestStepLogContentDTO stepLog: lf.getStepLogs()) {
-			sectionLogMapDTO.
-			stepLog.getAssertionErrors()
-		}
 	}
 	
 	public void resetLogs() {

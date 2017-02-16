@@ -1,6 +1,7 @@
 package gov.nist.toolkit.testengine.engine;
 
 import gov.nist.toolkit.commondatatypes.MetadataSupport;
+import gov.nist.toolkit.registrymsg.repository.RetrievedDocumentModel;
 import gov.nist.toolkit.testenginelogging.client.ReportDTO;
 import gov.nist.toolkit.utilities.xml.Util;
 import gov.nist.toolkit.xdsexception.client.XdsInternalException;
@@ -161,4 +162,17 @@ public class ReportManager {
       return top;
    }
 
+   public void add(String name, String value) {
+      ReportDTO ur = new ReportDTO(name, value);
+      reportDTOs.add(ur);
+   }
+
+   public void setRetInfo(RetrievedDocumentModel ri, int docIndex) {
+
+          add("$repuid_doc" + Integer.toString(docIndex)  + "$", ri.getRepUid());
+          add("$mimetype_doc" + Integer.toString(docIndex)  + "$", ri.getContent_type());
+          add("$hash_doc" + Integer.toString(docIndex)  + "$", ri.getHash());
+          add("$home_doc" + Integer.toString(docIndex)  + "$", ri.getHome());
+          add("$size_doc" + Integer.toString(docIndex)  + "$", Integer.toString(ri.getSize()));
+       }
 }

@@ -7,6 +7,7 @@ import com.google.gwt.event.logical.shared.OpenHandler;
 import com.google.gwt.user.client.ui.*;
 import gov.nist.toolkit.results.client.TestInstance;
 import gov.nist.toolkit.session.client.logtypes.SectionOverviewDTO;
+import gov.nist.toolkit.session.client.logtypes.StepOverviewDTO;
 import gov.nist.toolkit.session.client.logtypes.TestPartFileDTO;
 import gov.nist.toolkit.testenginelogging.client.LogFileContentDTO;
 import gov.nist.toolkit.testenginelogging.client.ReportDTO;
@@ -231,6 +232,14 @@ class TestSectionDisplay implements IsWidget {
                             boolean singleStep = log.getSteps().size() == 1;
                             for (TestStepLogContentDTO step : log.getSteps()) {
                                 StepView stepView = new StepView(sectionTp, sectionOverview, step, singleStep, testSession, testInstance, section);
+                                StepOverviewDTO stepDTO = sectionOverview.getStep(step.getId());
+                                if (stepDTO != null) {
+                                    StringBuilder buf = new StringBuilder();
+                                    for (String err : stepDTO.getErrors()) {
+                                        buf.append(err).append("<br />");
+                                    }
+                                    view.addStepPanel(new HTML(buf.toString()));
+                                }
                                 view.addStepPanel(stepView.asWidget());
                             }
 

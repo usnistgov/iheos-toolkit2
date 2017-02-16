@@ -44,6 +44,7 @@ public class RetrieveB {
 	boolean soap12 = true;
 	boolean async = false;
 	UseReportManager useReportManager = null;
+	ReportManager reportManager = null;
 	BasicTransaction basicTransaction;
 	OmLogger testLog = new TestLogFactory().getLogger();
 
@@ -241,58 +242,16 @@ public class RetrieveB {
 	public RetrievedDocumentsModel parse_rep_response(OMElement response) throws IOException, MetadataException, Exception {
 
         RetrievedDocumentsModel map = new RetrieveResponseParser(response).get();
+        int i=0;
         for (RetrievedDocumentModel retrievedDocumentModel : map.values()) {
             if (useReportManager != null) {
                 useReportManager.setRetInfo(retrievedDocumentModel, 1);
             }
+            if (reportManager != null)
+            	reportManager.setRetInfo(retrievedDocumentModel, i);
+            i++;
         }
         return map;
-
-
-//		int docIndex = 1;
-//		for (OMElement doc_response : XmlUtil.childrenWithLocalName(response, "DocumentResponse")) {
-//			RetInfo rr = new RetInfo();
-//
-//			OMElement doc_uid_ele = XmlUtil.firstChildWithLocalName(doc_response, "DocumentUniqueId") ;
-//			rr.setDocUid((doc_uid_ele != null) ? doc_uid_ele.getText() : null);
-//
-//			OMElement rep_uid_ele = XmlUtil.firstChildWithLocalName(doc_response, "RepositoryUniqueId") ;
-//			rr.setRepUid((rep_uid_ele != null) ? rep_uid_ele.getText() : null);
-//
-//			OMElement mime_type_ele = XmlUtil.firstChildWithLocalName(doc_response, "mimeType") ;
-//			rr.setContent_type((mime_type_ele != null) ? mime_type_ele.getText() : null);
-//
-//			OMElement document_content_ele = XmlUtil.firstChildWithLocalName(doc_response, "Document") ;
-//
-//			Mtom mtom = new Mtom();
-//			mtom.decode(document_content_ele);
-////			if ( !mtom.isOptimized()) {
-////				throw new XdsFormatException("Response to RetrieveDocumentSet is not in MTOM format");
-////			}
-//
-//			String mtom_mime = mtom.getContent_type();
-//			boolean isOptimized = mtom.isOptimized();
-//			if (this.log_parent != null)
-//				testLog.add_simple_element_with_id(log_parent, "IsOptimized", (isOptimized) ? "true" : "false");
-//
-//			// MTOM encoding does not require correct/accurate content type.  If MTOM package punted
-//			// and used application/octet-stream then take mime type from retrieve response metadata
-//			if (mtom_mime != null && mtom_mime.equals("application/octet-stream") && isOptimized)
-//				mtom_mime = rr.getContent_type();
-//			else if (mtom_mime != null && rr.getContent_type() != null && !rr.getContent_type().equals(mtom_mime))
-//				rr.addError("Mime Type attribute (" + rr.getContent_type() + ") does not match Content-Type (" + mtom_mime + ")");
-//			rr.setContents(mtom.getContents());
-//
-//			if (rr.getDocUid() == null)
-//				throw new MetadataException("parse_rep_result(): Document uniqueId not found in response", null);
-//
-//			map.put(rr.getDocUid(), rr);
-//
-//			if (useReportManager != null) {
-//				useReportManager.setRetInfo(rr, docIndex);
-//			}
-//		}
-//
 	}
 
 	protected String validate_retrieve() throws MetadataException {
@@ -431,6 +390,7 @@ public class RetrieveB {
 	}
 
 
-
-
+	public void setReportManager(ReportManager reportManager) {
+		this.reportManager = reportManager;
+	}
 }

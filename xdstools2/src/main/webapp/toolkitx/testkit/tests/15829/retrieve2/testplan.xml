@@ -1,3 +1,25 @@
 <TestPlan>
     <Test>15829/retrieve2</Test>
+  <TestStep id="retrieve">
+    <ExpectedStatus>Success</ExpectedStatus>
+    <XCRTransaction>
+    <UseReport test="15829" section="finddocs" step="FindDocuments" reportName="docUid" useAs="$docuid$"/>
+    <UseReport test="15829" section="finddocs" step="FindDocuments" reportName="home" useAs="$home$"/>
+    <UseReport test="15829" section="finddocs" step="FindDocuments" reportName="repUid" useAs="$repositoryuid$"/>
+      <ExpectedMimeType>text/plain</ExpectedMimeType>
+      <MetadataFile>query1.xml</MetadataFile>
+      <Assertions>
+        <DataRef file="THIS" as="output"/>
+        <Assert id="OneDocument">
+              		count(//XCRTransaction[@step="retrieve"]/Result[1]/*[local-name()='RetrieveDocumentSetResponse']/*[local-name()='DocumentResponse']) = "1"
+         		</Assert>
+        <Assert id="HomeCommunityId"> 
+          //Result[1]/*[namespace-uri()='urn:ihe:iti:xds-b:2007' and local-name()='RetrieveDocumentSetResponse'][1]/*[namespace-uri()='urn:ihe:iti:xds-b:2007' and local-name()='DocumentResponse'][1]/*[namespace-uri()='urn:ihe:iti:xds-b:2007' and local-name()='HomeCommunityId'][1] = '$home$'
+        </Assert>
+        <Assert id="RepositoryUniqueId"> 
+          //Result[1]/*[namespace-uri()='urn:ihe:iti:xds-b:2007' and local-name()='RetrieveDocumentSetResponse'][1]/*[namespace-uri()='urn:ihe:iti:xds-b:2007' and local-name()='DocumentResponse'][1]/*[namespace-uri()='urn:ihe:iti:xds-b:2007' and local-name()='RepositoryUniqueId'][1] = '$repositoryuid$'
+        </Assert>
+      </Assertions>
+    </XCRTransaction>
+  </TestStep>
 </TestPlan>
