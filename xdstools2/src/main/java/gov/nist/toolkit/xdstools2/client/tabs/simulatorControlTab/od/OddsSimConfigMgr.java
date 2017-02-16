@@ -19,6 +19,8 @@ import gov.nist.toolkit.simcommon.client.config.SimulatorConfigElement;
 import gov.nist.toolkit.sitemanagement.client.SiteSpec;
 import gov.nist.toolkit.xdstools2.client.StringSort;
 import gov.nist.toolkit.xdstools2.client.command.command.*;
+import gov.nist.toolkit.xdstools2.client.event.SimulatorUpdatedEvent;
+import gov.nist.toolkit.xdstools2.client.event.Xdstools2EventBus;
 import gov.nist.toolkit.xdstools2.client.tabs.simulatorControlTab.*;
 import gov.nist.toolkit.xdstools2.client.tabs.simulatorControlTab.intf.SimConfigMgrIntf;
 import gov.nist.toolkit.xdstools2.client.util.ClientUtils;
@@ -158,6 +160,23 @@ public class OddsSimConfigMgr implements SimConfigMgrIntf {
         // Supply State
         displaySupplyState();
 
+        // Register event handlers
+        registerSimulatorsUpdatedEvent();
+
+    }
+
+    private void registerSimulatorsUpdatedEvent() {
+        ((Xdstools2EventBus) ClientUtils.INSTANCE.getEventBus()).addSimulatorsUpdatedEventHandler(new SimulatorUpdatedEvent.SimulatorUpdatedEventHandler() {
+            @Override
+            public void onSimulatorsUpdate(SimulatorUpdatedEvent simulatorUpdatedEvent) {
+
+                final SimulatorConfigElement oddsRegistrySite = config.get(SimulatorProperties.oddsRegistrySite);
+                popRegSites(oddsRegistrySite);
+
+                final SimulatorConfigElement oddsReposSite = config.get(SimulatorProperties.oddsRepositorySite);
+                popRepositorySites(oddsReposSite);
+            }
+        });
     }
 
     public void displayPersistenceConfig() {
@@ -213,14 +232,8 @@ public class OddsSimConfigMgr implements SimConfigMgrIntf {
 
         final SimulatorConfigElement oddsReposSite = config.get(SimulatorProperties.oddsRepositorySite);
         if (oddsReposSite!=null) {
-            // Selecting a Repository for the ODDS
-            new GetSiteNamesByTranTypeCommand(){
-                @Override
-                public void onComplete(List<String> results) {
-                    reposSSP = new SiteSelectionPresenter("reposSites", results, oddsReposSite.asList(), reposSiteBoxes);
-                }
-            }.run(new GetSiteNamesByTranTypeRequest(ClientUtils.INSTANCE.getCommandContext(),TransactionType.PROVIDE_AND_REGISTER.getName()));
-            // ----
+            popRepositorySites(oddsReposSite);
+
 
             newRow();
             tbl.setWidget(getRow(), 0, lblReposSiteBoxes);
@@ -233,6 +246,20 @@ public class OddsSimConfigMgr implements SimConfigMgrIntf {
 
         }
 
+    }
+
+    private void popRepositorySites(final SimulatorConfigElement oddsReposSite) {
+        if (oddsReposSite!=null) {
+            // Selecting a Repository for the ODDS
+            new GetSiteNamesByTranTypeCommand() {
+                @Override
+                public void onComplete(List<String> results) {
+                    reposSiteBoxes.clear();
+                    reposSSP = new SiteSelectionPresenter("reposSites", results, oddsReposSite.asList(), reposSiteBoxes);
+                }
+            }.run(new GetSiteNamesByTranTypeRequest(ClientUtils.INSTANCE.getCommandContext(), TransactionType.PROVIDE_AND_REGISTER.getName()));
+            // ----
+        }
     }
 
     public void displayRetrieveConfig() {
@@ -363,6 +390,37 @@ public class OddsSimConfigMgr implements SimConfigMgrIntf {
         }.run(new GetOnDemandDocumentEntryDetailsRequest(ClientUtils.INSTANCE.getCommandContext(),getConfig().getId()));
     }
 
+    final HTML lblRegSiteBoxes = HtmlMarkup.html(SimulatorProperties.oddsRegistrySite);
+    final VerticalPanel regOptsVPanel = new VerticalPanel();
+    final VerticalPanel regActionVPanel = new VerticalPanel();
+
+    private void popRegSites(final SimulatorConfigElement oddsRegistrySite) {
+        if (oddsRegistrySite!=null) {
+            new GetSiteNamesByTranTypeCommand() {
+                @Override
+                public void onComplete(List<String> results) {
+                    regSiteBoxes.clear();
+                    regActionVPanel.clear();
+                    regOptsVPanel.clear();
+
+                    regOptsVPanel.add(regSiteBoxes);
+                    regSSP = new SiteSelectionPresenter("regSites", results, oddsRegistrySite.asList(), regSiteBoxes);
+                    List<String> siteNames = regSSP.getSiteNames();
+                    String errMsg = "";
+                    if (siteNames == null || (siteNames != null && siteNames.size() == 0)) {
+                        errMsg += "<li style='color:red'>No registry sites supporting an ODDE transaction are found/configured.</li>" +
+                                "<li style='color:red'>Please display a Registry site using the Simulator Manager or configure a Site that supports an ODDE transaction.</li>";
+                        regSiteBoxes.add(new HTML("<ul>" + errMsg + "</ul>"));
+                    } else {
+                        regButton.getElement().getStyle().setPaddingLeft(6, Style.Unit.PX);
+                        regActionVPanel.add(regButton);
+
+                    }
+                }
+            }.run(new GetSiteNamesByTranTypeRequest(ClientUtils.INSTANCE.getCommandContext(), TransactionType.REGISTER_ODDE.getName()));
+        }
+    }
+
     private void displayRegisterOptions() {
         SimulatorControlTab simulatorControlTab = getSimulatorControlTab();
         final SimulatorConfig config = getConfig();
@@ -431,12 +489,6 @@ public class OddsSimConfigMgr implements SimConfigMgrIntf {
         final SimulatorConfigElement oddsRegistrySite = config.get(SimulatorProperties.oddsRegistrySite);
 
         if (oddsRegistrySite!=null) {
-            final HTML lblRegSiteBoxes = HtmlMarkup.html(SimulatorProperties.oddsRegistrySite);
-
-
-            final VerticalPanel regOptsVPanel = new VerticalPanel();
-            final VerticalPanel regActionVPanel = new VerticalPanel();
-
             newRow();
             tbl.setWidget(getRow(),0,lblRegSiteBoxes);
             tbl.setWidget(getRow(),1,regOptsVPanel);
@@ -453,42 +505,31 @@ public class OddsSimConfigMgr implements SimConfigMgrIntf {
             tbl.setWidget(getRow(),0, regActionMessage);
             tbl.getFlexCellFormatter().setColSpan(getRow(),0,2);
 
-            new GetSiteNamesByTranTypeCommand(){
-                @Override
-                public void onComplete(List<String> results) {
-                    regSSP = new SiteSelectionPresenter("regSites", results, oddsRegistrySite.asList(), regSiteBoxes);
-                    regOptsVPanel.add(regSiteBoxes);
-                    List<String> siteNames = regSSP.getSiteNames();
-                    String errMsg = "";
-                    if (siteNames==null || (siteNames!=null && siteNames.size()==0)) {
-                        errMsg += "<li style='color:red'>No registry sites supporting an ODDE transaction are found/configured.</li>"+
-                                "<li style='color:red'>Please display a Registry site using the Simulator Manager or configure a Site that supports an ODDE transaction.</li>";
-                        regSiteBoxes.add(new HTML("<ul>" +  errMsg + "</ul>"));
-                    } else {
-                        regButton.getElement().getStyle().setPaddingLeft(6, Style.Unit.PX);
-                        regActionVPanel.add(regButton);
-                        regButton.addClickHandler(
-                                new ClickHandler() {
-                                    @Override
-                                    public void onClick(ClickEvent clickEvent) {
-                                        if (validateParams()) {
-                                            setRegButton("Please wait...", false);
-                                            saveSimConfig();
-                                            registerODDE();
-                                        }
-                                    }
-                                }
-                        );
-                        refreshImg.addClickHandler(new ClickHandler() {
-                            @Override
-                            public void onClick(ClickEvent clickEvent) {
-                                getOdDocumentEntries(getSimulatorControlTab());
-                            }
-                        });
+            popRegSites(oddsRegistrySite);
+
+            addActionHandlers();
+        }
+    }
+
+    private void addActionHandlers() {
+        regButton.addClickHandler(
+                new ClickHandler() {
+                    @Override
+                    public void onClick(ClickEvent clickEvent) {
+                        if (validateParams()) {
+                            setRegButton("Please wait...", false);
+                            saveSimConfig();
+                            registerODDE();
+                        }
                     }
                 }
-            }.run(new GetSiteNamesByTranTypeRequest(ClientUtils.INSTANCE.getCommandContext(),TransactionType.REGISTER_ODDE.getName()));
-        }
+        );
+        refreshImg.addClickHandler(new ClickHandler() {
+            @Override
+            public void onClick(ClickEvent clickEvent) {
+                getOdDocumentEntries(getSimulatorControlTab());
+            }
+        });
     }
 
 
