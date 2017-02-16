@@ -482,44 +482,6 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner, TestTa
 		}
 	}
 
-//	private class RunAllSectionsClickHandler implements ClickHandler, TestIterator {
-//		TestInstance testInstance;
-//		List<TestInstance> sections = new ArrayList<TestInstance>();  // One TestInstance per section
-//
-//		RunAllSectionsClickHandler(TestInstance testInstance) { this.testInstance = testInstance; }
-//
-//		@Override
-//		public void onClick(ClickEvent clickEvent) {
-//			clickEvent.preventDefault();
-//			clickEvent.stopPropagation();
-//
-//			new GetTestSectionsDAOsCommand(){
-//				@Override
-//				public void onComplete(List<SectionDefinitionDAO> sectionDefinitionDAOs) {
-//					sections.clear();
-//					for (SectionDefinitionDAO dao : sectionDefinitionDAOs) {
-//						TestInstance ti = testInstance.copy();
-//						ti.setSection(dao.getSectionName());
-//						ti.setSutInitiated(dao.isSutInitiated());
-//					}
-//					onDone(null);
-//				}
-//			}.run(new GetTestSectionsDAOsRequest(getCommandContext(),testInstance));
-//		}
-//
-//		@Override
-//		public void onDone(TestInstance unused) {
-//			testsHeaderView.showRunningMessage(true);
-//			if (sections.size() == 0) {
-//				testsHeaderView.showRunningMessage(false);
-//				return;
-//			}
-//			TestInstance next = sections.get(0);
-//			sections.remove(0);
-//			runSection(next, this);
-//		}
-//	}
-
 	@Override
 	public DeleteAllClickHandler getDeleteAllClickHandler() {
 		return new DeleteAllClickHandler(currentActorOption);
