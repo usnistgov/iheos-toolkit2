@@ -4,7 +4,6 @@ import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.logical.shared.OpenEvent;
 import com.google.gwt.event.logical.shared.OpenHandler;
-import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.*;
 import gov.nist.toolkit.results.client.TestInstance;
 import gov.nist.toolkit.session.client.logtypes.SectionOverviewDTO;
@@ -251,7 +250,7 @@ public class TestSectionComponent implements IsWidget {
             clickEvent.preventDefault();
             clickEvent.stopPropagation();
 
-            me.testRunner.runTest(testInstance, null);
+            me.testRunner.runTest(testInstance, null,null);
         }
     }
 

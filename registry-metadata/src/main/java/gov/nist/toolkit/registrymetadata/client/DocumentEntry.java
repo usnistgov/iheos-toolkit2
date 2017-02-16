@@ -1,9 +1,9 @@
 package gov.nist.toolkit.registrymetadata.client;
 
+import com.google.gwt.user.client.rpc.IsSerializable;
+
 import java.io.Serializable;
 import java.util.List;
-
-import com.google.gwt.user.client.rpc.IsSerializable;
 
 /**
  * Transfer bean to/from GUI.  ...X is the XML string representation.
@@ -16,6 +16,10 @@ public class DocumentEntry extends RegistryObject implements IsSerializable, Ser
 	public String lid;
 	public String lidX;
 	public String lidDoc;
+
+	public String objectType;
+	public String objectTypeX;
+	public String objectTypeDoc;
 
 	public String version;
 	public String versionX;

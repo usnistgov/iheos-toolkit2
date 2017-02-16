@@ -1,0 +1,13 @@
+<TestPlan>
+    <Test>15829/Verify_Changed</Test>
+  <TestStep id="verify">
+    <ExpectedStatus>Success</ExpectedStatus>
+    <NullTransaction>
+      <UseReport test="15829" section="retrieve1" step="retrieve" reportName="$hash_doc0$" useAs="$hash1$"/> 
+      <UseReport test="15829" section="retrieve2" step="retrieve" reportName="$hash_doc0$" useAs="$hash2$"/> 
+      <Assertions>
+        <Assert id="Hash changed"> '$hash1$' != '$hash2$' </Assert>
+      </Assertions>
+    </NullTransaction>
+  </TestStep>
+</TestPlan>

@@ -144,7 +144,7 @@ Summer 2015 development
 15827 - PID Feed for IG registry error
 15828 - PID Feed for IG 12318 (IG as initiator)
 
-
+15829 - RG OD Repeat Retrieve test
 
 
 

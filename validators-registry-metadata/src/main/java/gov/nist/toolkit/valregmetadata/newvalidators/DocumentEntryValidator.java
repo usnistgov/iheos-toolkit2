@@ -226,10 +226,10 @@ public class DocumentEntryValidator implements ObjectValidator {
         }
 
         //  Optional Slots required by this transaction
-        if (vc.hashRequired() && mo.getSlot("hash") == null)
+        if (vc.hashRequired() && mo.getSlot("hash") == null && !mo.isODDE())
             er.err(XdsErrorCode.Code.XDSRegistryMetadataError, mo.identifyingString() + ": Slot hash required in this context", this, table415);
 
-        if (vc.sizeRequired() && mo.getSlot("size") == null)
+        if (vc.sizeRequired() && mo.getSlot("size") == null && !mo.isODDE())
             er.err(XdsErrorCode.Code.XDSRegistryMetadataError, mo.identifyingString() + ": Slot size required in this context", this, table415);
 
         if (vc.repositoryUniqueIdRequired() && mo.getSlot("repositoryUniqueId") == null /*|| (vc.isXDR || vc.isXDRMinimal || vc.isXDRLimited) */)

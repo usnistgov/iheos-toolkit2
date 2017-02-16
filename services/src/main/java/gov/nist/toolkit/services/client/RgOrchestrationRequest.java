@@ -8,6 +8,7 @@ import gov.nist.toolkit.sitemanagement.client.SiteSpec;
 public class RgOrchestrationRequest extends AbstractOrchestrationRequest {
     private SiteSpec siteUnderTest;
     private boolean useExposedRR;  // alternative is External RR (Registry/Repository)
+    private boolean onDemand;  // SUT is RG with OD, useExposedRR is irrelevant
     private boolean useSimAsSUT;   // no longer used
 
     public RgOrchestrationRequest() {}
@@ -36,4 +37,11 @@ public class RgOrchestrationRequest extends AbstractOrchestrationRequest {
         this.useSimAsSUT = useSimAsSUT;
     }
 
+    public boolean isOnDemand() {
+        return onDemand;
+    }
+
+    public void setOnDemand(boolean onDemand) {
+        this.onDemand = onDemand;
+    }
 }
