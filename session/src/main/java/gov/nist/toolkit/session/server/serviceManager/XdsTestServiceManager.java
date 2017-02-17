@@ -662,9 +662,9 @@ public class XdsTestServiceManager extends CommonService {
 	}
 
 	// testInstance.user must be set or null will be returned
-	private File getTestLogDir(TestInstance testInstance) throws IOException {
-		return getTestLogCache().getTestDir(testInstance);
-	}
+//	private File getTestLogDir(TestInstance testInstance) throws IOException {
+//		return getTestLogCache().getTestDir(testInstance);
+//	}
 
 	public LogFileContentDTO getTestLogDetails(String sessionName, TestInstance testInstance) throws Exception {
 		try {
@@ -1101,6 +1101,11 @@ public class XdsTestServiceManager extends CommonService {
 		session.setMesaSessionName(sessionName);
 	}
 
+	public String getMesaTestSession() {
+		if (session == null) return "";
+		return session.getMesaSessionName();
+	}
+
 	public List<String> getTestdataSetListing(String environmentName,String testSessionName,String testdataSetName) {
 		logger.debug(session.id() + ": " + "getTestdataSetListing:" + testdataSetName);
 		TestKitSearchPath searchPath = new TestKitSearchPath(environmentName, testSessionName);
@@ -1254,11 +1259,12 @@ public class XdsTestServiceManager extends CommonService {
 		return new Test(testId, false, "test#", "test name", "returned result test", "05:23 PM EST", "failed");
 	}
 
-	public TestOverviewDTO deleteSingleTestResult(TestInstance testInstance) throws Exception {
+	public TestOverviewDTO deleteSingleTestResult(String environmentName, String testSession, TestInstance testInstance) throws Exception {
 		try {
-			File dir = getTestLogDir(testInstance);
-			if (dir != null)
-				Io.delete(dir);
+			TestKitSearchPath searchPath = new TestKitSearchPath(environmentName, testSession);
+			TestDefinition testDef = searchPath.getTestDefinition(testInstance.getId());
+			List<String> sectionNames = testDef.getSectionIndex();
+			new ResultPersistence().delete(testInstance, testSession, sectionNames);
 		} catch (Exception e) {
 			// oh well
 		}

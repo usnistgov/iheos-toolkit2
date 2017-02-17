@@ -24,4 +24,9 @@ This list has one entry for each option of the actor.  Each entry is a call
 to the constructor for ActorAndOption.java.  The last parameter, externalStart,
 triggers the behavior.
 
+## Choosing step names
+
+If you declare a duplicate step name (different section, same step name) within a test
+then the results of the second use of the name will not display in the Inspector.
+
 
