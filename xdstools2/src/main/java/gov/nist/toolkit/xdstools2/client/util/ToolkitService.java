@@ -178,6 +178,7 @@ public interface ToolkitService extends RemoteService  {
 	List<RepositoryStatus> getDashboardRepositoryData(CommandContext context) throws Exception;
 
 	List<String> getSiteNamesWithRG(CommandContext context) throws Exception;
+	List<String> getSiteNamesWithRepository(CommandContext context) throws Exception;
 	List<String> getSiteNamesWithRIG(CommandContext context) throws Exception;
 	List<String> getSiteNamesWithIDS(CommandContext context) throws Exception;
 	List<String> getSiteNamesByTranType(GetSiteNamesByTranTypeRequest request) throws Exception;
@@ -279,4 +280,5 @@ public interface ToolkitService extends RemoteService  {
 	boolean indexTestKits(CommandContext context);
 
     RawResponse buildRecTestOrchestration(BuildRecTestOrchestrationRequest request) throws Exception;
+
 }

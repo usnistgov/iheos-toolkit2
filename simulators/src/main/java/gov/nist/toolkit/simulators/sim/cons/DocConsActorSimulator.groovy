@@ -126,7 +126,7 @@ public class DocConsActorSimulator extends BaseDsActorSimulator  {
     OMElement buildRetrieve(RetrieveRequestModel model) {
         OMElement request = Util.parse_xml(retrieveTemplate)
         OMElement x
-        model.model.each { RetrieveItemRequestModel item ->
+        model.models.each { RetrieveItemRequestModel item ->
             OMElement r = XmlUtil.createElement('DocumentRequest', MetadataSupport.xdsB)
             if (item.homeId) {
                 x = XmlUtil.createElement('HomeCommunityId', MetadataSupport.xdsB)

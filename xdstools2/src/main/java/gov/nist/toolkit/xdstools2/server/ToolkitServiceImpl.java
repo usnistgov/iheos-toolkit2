@@ -296,6 +296,11 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements
         return siteServiceManager.getSiteNamesWithRG(session().getId());
     }
     @Override
+    public List<String> getSiteNamesWithRepository(CommandContext context) throws Exception {
+        installCommandContext(context);
+        return siteServiceManager.getSiteNamesWithRepository(session().getId());
+    }
+    @Override
     public List<String> getSiteNamesWithRIG(CommandContext context) throws Exception {
         installCommandContext(context);
         return siteServiceManager.getSiteNamesWithRIG(session().getId());

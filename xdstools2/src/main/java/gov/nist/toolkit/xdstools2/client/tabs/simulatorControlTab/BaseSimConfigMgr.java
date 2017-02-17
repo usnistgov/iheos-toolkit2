@@ -99,7 +99,7 @@ public abstract class BaseSimConfigMgr implements SimConfigMgrIntf {
             else if (SimulatorProperties.respondingGateways.equals(ele.name)) {
                 final SimulatorConfigElement configEle = ele;
                 HorizontalPanel rgBoxes = new HorizontalPanel();
-                final RGSelectionPresenter rgSelectionPresenter = new RGSelectionPresenter(/*simulatorControlTab.toolkitService, */configEle.asList(), rgBoxes);
+                final RGSelectionPresenter rgSelectionPresenter = new RGSelectionPresenter(configEle.asList(), rgBoxes);
                 tbl.setWidget(row, 0, HtmlMarkup.html(ele.name));
                 tbl.setWidget(row, 1, rgBoxes);
                 saveButton.addClickHandler(
@@ -107,14 +107,31 @@ public abstract class BaseSimConfigMgr implements SimConfigMgrIntf {
                             @Override
                             public void onClick(ClickEvent clickEvent) {
                                 configEle.setStringListValue(rgSelectionPresenter.getSelected());
-//                                config.updateDocTypeSelection();
-//                                saveSimConfig();
                             }
                         }
                 );
                 row++;
             }
-            
+
+            // Selecting Repositories behind the RG
+            else if (SimulatorProperties.repositories.equals(ele.name)) {
+                final SimulatorConfigElement configEle = ele;
+                HorizontalPanel rgBoxes = new HorizontalPanel();
+                // more general than the name suggests
+                final RepositorySelectionPresenter rgSelectionPresenter = new RepositorySelectionPresenter(configEle.asList(), rgBoxes);
+                tbl.setWidget(row, 0, HtmlMarkup.html(ele.name));
+                tbl.setWidget(row, 1, rgBoxes);
+                saveButton.addClickHandler(
+                        new ClickHandler() {
+                            @Override
+                            public void onClick(ClickEvent clickEvent) {
+                                configEle.setStringListValue(rgSelectionPresenter.getSelected());
+                            }
+                        }
+                );
+                row++;
+            }
+
             // Selecting RIGs for the IIG
             else if (SimulatorProperties.respondingImagingGateways.equals(ele.name)) {
                final SimulatorConfigElement configEle = ele;
