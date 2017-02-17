@@ -256,6 +256,7 @@ public interface ToolkitService extends RemoteService  {
 	Result register(RegisterRequest registerRequest) throws Exception;
 	Map<String, String> registerWithLocalizedTrackingInODDS(RegisterRequest registerRequest) throws Exception;
 	List<DocumentEntryDetail> getOnDemandDocumentEntryDetails(GetOnDemandDocumentEntryDetailsRequest request) throws Exception;
+	boolean setOdSupplyStateIndex(SetOdSupplyStateIndexRequest request) throws Exception;
 
 	//------------------------------------------------------------------------
 	//------------------------------------------------------------------------

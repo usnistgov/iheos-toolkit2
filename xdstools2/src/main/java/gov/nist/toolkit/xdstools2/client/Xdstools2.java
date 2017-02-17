@@ -49,6 +49,7 @@ public class Xdstools2  implements AcceptsOneWidget, IsWidget {
 	private boolean displayHomeTab = true;
 
 	public static String toolkitBaseUrl = null;
+	public static String wikiBaseUrl = null;
 
 	private static TkProps props = new TkProps();
 
@@ -193,6 +194,7 @@ public class Xdstools2  implements AcceptsOneWidget, IsWidget {
 					environmentState.setEnvironmentName(var1.getDefaultEnvironment());
 				getTestSessionManager().setTestSessions(var1.getTestSessions());
 				toolkitBaseUrl = var1.getToolkitBaseUrl();
+				wikiBaseUrl = var1.getWikiBaseUrl();
 				run2();  // cannot be run until this completes
 			}
 

@@ -65,10 +65,14 @@ public class PidDateFilenameFilter implements FilenameFilter {
          }
          String mds = PrsSimLogs.getSOAPMetaData(dir.toPath().resolve(name));
          OMElement md = XmlUtil.strToOM(mds);
+
+         List<OMElement> elements = null;
          
-         List<OMElement> elements = XmlUtil.childrenWithLocalName(md, "RegistryObjectList");
+/*         List<OMElement> elements = XmlUtil.childrenWithLocalName(md, "RegistryObjectList");
          if (elements.size() != 1) return false;
-         md = elements.get(0);
+         md = elements.get(0);*/
+         md = XmlUtil.firstDecendentWithLocalName(md, "RegistryObjectList");
+         if (md == null) return false;
          
          elements = XmlUtil.childrenWithLocalName(md, "ExtrinsicObject");
          md = null;

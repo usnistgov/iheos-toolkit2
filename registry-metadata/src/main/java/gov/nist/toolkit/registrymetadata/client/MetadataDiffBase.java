@@ -27,6 +27,7 @@ public class MetadataDiffBase {
 		b.institutions = dup(a.institutions);
 		b.roles = dup(a.roles);
 		b.specialties = dup(a.specialties);
+		b.telecom = dup(a.telecom);
 		return b;
 	}
 
@@ -35,6 +36,7 @@ public class MetadataDiffBase {
 		if (dif(a.institutions, b.institutions)) return true;
 		if (dif(a.roles, b.roles)) return true;
 		if (dif(a.specialties, b.specialties)) return true;
+		if (dif(a.telecom, b.telecom)) return true;
 		return false;
 	}
 

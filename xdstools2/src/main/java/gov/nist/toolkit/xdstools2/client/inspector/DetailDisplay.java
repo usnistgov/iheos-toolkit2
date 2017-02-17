@@ -116,6 +116,7 @@ public class DetailDisplay {
 			row = displayDetail(ft, row, bold, "institutions", author.institutions, xml);
 			row = displayDetail(ft, row, bold, "roles", author.roles, xml);
 			row = displayDetail(ft, row, bold, "specialties", author.specialties, xml);
+			row = displayDetail(ft, row, bold, "telecom", author.telecom, xml);
 		}
 
 
@@ -134,6 +135,7 @@ public class DetailDisplay {
 			row = displayDetail(ft, row, bold, "institutions", author.institutions, "");
 			row = displayDetail(ft, row, bold, "roles", author.roles, "");
 			row = displayDetail(ft, row, bold, "specialties", author.specialties, "");
+			row = displayDetail(ft, row, bold, "telecom", author.telecom, "");
 		}
 
 

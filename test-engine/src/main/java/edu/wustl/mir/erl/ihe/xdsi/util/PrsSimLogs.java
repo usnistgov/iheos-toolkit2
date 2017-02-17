@@ -313,7 +313,8 @@ public class PrsSimLogs {
     */
    public static String getSOAPMetaData(Path dir) {
       try {
-         String tag = "SubmitObjectsRequest";
+         //String tag = "SubmitObjectsRequest";
+         String tag = "Envelope";
          String str = getSOAPRequest(dir);
          int p = str.indexOf(tag);
          if (p < 0) {

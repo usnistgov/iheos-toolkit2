@@ -7,7 +7,19 @@ import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.resources.client.ClientBundle;
 import com.google.gwt.resources.client.ImageResource;
 import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
-import com.google.gwt.user.client.ui.*;
+import com.google.gwt.user.client.ui.Anchor;
+import com.google.gwt.user.client.ui.Button;
+import com.google.gwt.user.client.ui.CheckBox;
+import com.google.gwt.user.client.ui.FlexTable;
+import com.google.gwt.user.client.ui.FlowPanel;
+import com.google.gwt.user.client.ui.HTML;
+import com.google.gwt.user.client.ui.HasHorizontalAlignment;
+import com.google.gwt.user.client.ui.HasVerticalAlignment;
+import com.google.gwt.user.client.ui.HorizontalPanel;
+import com.google.gwt.user.client.ui.Image;
+import com.google.gwt.user.client.ui.ListBox;
+import com.google.gwt.user.client.ui.VerticalPanel;
+import gov.nist.toolkit.actorfactory.client.SimId;
 import gov.nist.toolkit.actorfactory.client.SimulatorConfig;
 import gov.nist.toolkit.actortransaction.client.ActorType;
 import gov.nist.toolkit.configDatatypes.SimulatorProperties;
@@ -18,14 +30,36 @@ import gov.nist.toolkit.results.client.TestInstance;
 import gov.nist.toolkit.simcommon.client.config.SimulatorConfigElement;
 import gov.nist.toolkit.sitemanagement.client.SiteSpec;
 import gov.nist.toolkit.xdstools2.client.StringSort;
-import gov.nist.toolkit.xdstools2.client.command.command.*;
-import gov.nist.toolkit.xdstools2.client.tabs.simulatorControlTab.*;
+import gov.nist.toolkit.xdstools2.client.command.command.GetCollectionCommand;
+import gov.nist.toolkit.xdstools2.client.command.command.GetOnDemandDocumentEntryDetailsCommand;
+import gov.nist.toolkit.xdstools2.client.command.command.GetSiteNamesByTranTypeCommand;
+import gov.nist.toolkit.xdstools2.client.command.command.PutSimConfigCommand;
+import gov.nist.toolkit.xdstools2.client.command.command.RegisterWithLocalizedTrackingInODDSCommand;
+import gov.nist.toolkit.xdstools2.client.command.command.SetOdSupplyStateIndexCommand;
+import gov.nist.toolkit.xdstools2.client.event.SimulatorUpdatedEvent;
+import gov.nist.toolkit.xdstools2.client.event.Xdstools2EventBus;
+import gov.nist.toolkit.xdstools2.client.tabs.simulatorControlTab.ConfigBooleanBox;
+import gov.nist.toolkit.xdstools2.client.tabs.simulatorControlTab.ConfigEditBox;
+import gov.nist.toolkit.xdstools2.client.tabs.simulatorControlTab.ConfigTextDisplayBox;
+import gov.nist.toolkit.xdstools2.client.tabs.simulatorControlTab.LoadSimulatorsClickHandler;
+import gov.nist.toolkit.xdstools2.client.tabs.simulatorControlTab.SimulatorControlTab;
+import gov.nist.toolkit.xdstools2.client.tabs.simulatorControlTab.SingleSelectionView;
+import gov.nist.toolkit.xdstools2.client.tabs.simulatorControlTab.SiteSelectionPresenter;
 import gov.nist.toolkit.xdstools2.client.tabs.simulatorControlTab.intf.SimConfigMgrIntf;
 import gov.nist.toolkit.xdstools2.client.util.ClientUtils;
 import gov.nist.toolkit.xdstools2.client.widgets.PopupMessage;
-import gov.nist.toolkit.xdstools2.shared.command.request.*;
+import gov.nist.toolkit.xdstools2.shared.command.request.GetCollectionRequest;
+import gov.nist.toolkit.xdstools2.shared.command.request.GetOnDemandDocumentEntryDetailsRequest;
+import gov.nist.toolkit.xdstools2.shared.command.request.GetSiteNamesByTranTypeRequest;
+import gov.nist.toolkit.xdstools2.shared.command.request.RegisterRequest;
+import gov.nist.toolkit.xdstools2.shared.command.request.SetOdSupplyStateIndexRequest;
+import gov.nist.toolkit.xdstools2.shared.command.request.SimConfigRequest;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 /**
  *
@@ -158,6 +192,23 @@ public class OddsSimConfigMgr implements SimConfigMgrIntf {
         // Supply State
         displaySupplyState();
 
+        // Register event handlers
+        registerSimulatorsUpdatedEvent();
+
+    }
+
+    private void registerSimulatorsUpdatedEvent() {
+        ((Xdstools2EventBus) ClientUtils.INSTANCE.getEventBus()).addSimulatorsUpdatedEventHandler(new SimulatorUpdatedEvent.SimulatorUpdatedEventHandler() {
+            @Override
+            public void onSimulatorsUpdate(SimulatorUpdatedEvent simulatorUpdatedEvent) {
+
+                final SimulatorConfigElement oddsRegistrySite = config.get(SimulatorProperties.oddsRegistrySite);
+                popRegSites(oddsRegistrySite);
+
+                final SimulatorConfigElement oddsReposSite = config.get(SimulatorProperties.oddsRepositorySite);
+                popRepositorySites(oddsReposSite);
+            }
+        });
     }
 
     public void displayPersistenceConfig() {
@@ -213,14 +264,8 @@ public class OddsSimConfigMgr implements SimConfigMgrIntf {
 
         final SimulatorConfigElement oddsReposSite = config.get(SimulatorProperties.oddsRepositorySite);
         if (oddsReposSite!=null) {
-            // Selecting a Repository for the ODDS
-            new GetSiteNamesByTranTypeCommand(){
-                @Override
-                public void onComplete(List<String> results) {
-                    reposSSP = new SiteSelectionPresenter("reposSites", results, oddsReposSite.asList(), reposSiteBoxes);
-                }
-            }.run(new GetSiteNamesByTranTypeRequest(ClientUtils.INSTANCE.getCommandContext(),TransactionType.PROVIDE_AND_REGISTER.getName()));
-            // ----
+            popRepositorySites(oddsReposSite);
+
 
             newRow();
             tbl.setWidget(getRow(), 0, lblReposSiteBoxes);
@@ -233,6 +278,20 @@ public class OddsSimConfigMgr implements SimConfigMgrIntf {
 
         }
 
+    }
+
+    private void popRepositorySites(final SimulatorConfigElement oddsReposSite) {
+        if (oddsReposSite!=null) {
+            // Selecting a Repository for the ODDS
+            new GetSiteNamesByTranTypeCommand() {
+                @Override
+                public void onComplete(List<String> results) {
+                    reposSiteBoxes.clear();
+                    reposSSP = new SiteSelectionPresenter("reposSites", results, oddsReposSite.asList(), reposSiteBoxes);
+                }
+            }.run(new GetSiteNamesByTranTypeRequest(ClientUtils.INSTANCE.getCommandContext(), TransactionType.PROVIDE_AND_REGISTER.getName()));
+            // ----
+        }
     }
 
     public void displayRetrieveConfig() {
@@ -277,7 +336,7 @@ public class OddsSimConfigMgr implements SimConfigMgrIntf {
         newRow();
         tbl.setWidget(getRow(), 0, new HTML("<hr/>"
                 + "<h2>On-Demand Document Supply State</h2>"
-                + "<p>This table displays the state of each On-Demand Document. A blank Repository value indicates that the Persistence Option did not apply for that On-Demand Document Entry at the time it was created. The first number in the the Supply State column indicates the index of the content section in the content bundle.</p>" ));
+                + "<p>This table displays the state of each On-Demand Document. If the Repository value is blank, it indicates that the Persistence Option did not apply for the On-Demand Document Entry at the time it was created. In other words, there is no persistence of a snapshot. The first number in the the Supply State column indicates the index of a content section in its content bundle. It is a zero-based index so a 0 value indicates initial state. Subsequent retrieves will progress through each content section in the content bundle and an option to Reset is then made available. To reset the content supply state, click the Reset link in the Supply State column.</p>" ));
         tbl.getFlexCellFormatter().setColSpan(getRow(),0,2);
 
         newRow();
@@ -287,7 +346,7 @@ public class OddsSimConfigMgr implements SimConfigMgrIntf {
 
         tbl.setWidget(getRow(), 0, oddeEntriesTbl);
 
-        getOdDocumentEntries(simulatorControlTab);
+        getOdDocumentEntries();
         addTable(tbl);
         tbl.getFlexCellFormatter().setColSpan(getRow(),0,2);
 
@@ -306,61 +365,122 @@ public class OddsSimConfigMgr implements SimConfigMgrIntf {
     }
 
 
-    private void getOdDocumentEntries(SimulatorControlTab simulatorControlTab) {
+    private void getOdDocumentEntries() {
         new GetOnDemandDocumentEntryDetailsCommand(){
             @Override
             public void onComplete(List<DocumentEntryDetail> documentEntryDetails) {
-                oddeEntriesTbl.clear();
-                int oddeRow = 0;
-
-                oddeEntriesTbl.setWidget(oddeRow, 0, new HTML("<b>Created On</b>"));
-                oddeEntriesTbl.setWidget(oddeRow, 1, new HTML("<b>On-Demand Document Unique ID</b>"));
-                oddeEntriesTbl.setWidget(oddeRow, 2, new HTML("<b>Registry</b>"));
-                oddeEntriesTbl.setWidget(oddeRow, 3, new HTML("<b>Repository</b>"));
-                oddeEntriesTbl.setWidget(oddeRow, 4, new HTML("<b>Patient ID</b>"));
-
-                HorizontalPanel ssHp = new HorizontalPanel();
-                ssHp.setVerticalAlignment(HasVerticalAlignment.ALIGN_MIDDLE);
-                ssHp.add(new HTML("<b>Supply State</b>"));
-                ssHp.setVerticalAlignment(HasVerticalAlignment.ALIGN_MIDDLE);
-                refreshImg.setAltText("Refresh");
-                refreshImg.setTitle("Refresh");
-                refreshImg.getElement().getStyle().setCursor(Style.Cursor.POINTER);
-                refreshImg.getElement().getStyle().setVerticalAlign(Style.VerticalAlign.MIDDLE);
-
-                ssHp.add(refreshImg);
-
-                oddeEntriesTbl.setWidget(oddeRow, 5, ssHp);
-                oddeRow++;
-
-                if (documentEntryDetails!=null) {
-                    // Sort descending (List is originally in ascending order)
-                    int oDdocCount = documentEntryDetails.size()-1 /* Z-B Idx*/;
-                    for (int cx=oDdocCount; cx>-1; cx--) {
-                        DocumentEntryDetail ded = documentEntryDetails.get(cx);
-                        oddeEntriesTbl.setWidget(oddeRow, 0, new HTML(ded.getTimestamp()));
-                        oddeEntriesTbl.setWidget(oddeRow, 1, new HTML(ded.getUniqueId()));
-                        oddeEntriesTbl.setWidget(oddeRow, 2, new HTML(ded.getRegSiteSpec().getName()));
-                        oddeEntriesTbl.setWidget(oddeRow, 3, new HTML(ded.getReposSiteSpec()==null?"&nbsp;":ded.getReposSiteSpec().getName()));
-                        oddeEntriesTbl.setWidget(oddeRow, 4, new HTML(ded.getPatientId()));
-
-                        if (ded.getContentBundleSections()!=null && ded.getContentBundleSections().size()>0) {
-                            String bundlePeek = "";
-                            if (ded.getSupplyStateIndex()<=ded.getContentBundleSections().size()-1) {
-                                int moreCt =  ded.getContentBundleSections().size() -  (ded.getSupplyStateIndex()+1);
-                                if (moreCt>0)
-                                    bundlePeek = ", [" + moreCt + " more On-Demand document(s)]";
-                                else
-                                    bundlePeek = ", no more On-Demand documents.";
-                            }
-                            oddeEntriesTbl.setWidget(oddeRow, 5, new HTML(""+ded.getSupplyStateIndex() + ": " + ded.getContentBundleSections().get(ded.getSupplyStateIndex()) + bundlePeek ));
-                        } else
-                            oddeEntriesTbl.setWidget(oddeRow, 5, new HTML(""+ded.getSupplyStateIndex() + ": Missing Content Bundle!"));
-                        oddeRow++;
-                    }
-                }
+                prepareOddeTable(documentEntryDetails);
             }
         }.run(new GetOnDemandDocumentEntryDetailsRequest(ClientUtils.INSTANCE.getCommandContext(),getConfig().getId()));
+    }
+
+    private void prepareOddeTable(List<DocumentEntryDetail> documentEntryDetails) {
+        oddeEntriesTbl.clear();
+        int oddeRow = 0;
+
+        oddeEntriesTbl.setWidget(oddeRow, 0, new HTML("<b>Created On</b>"));
+        oddeEntriesTbl.setWidget(oddeRow, 1, new HTML("<b>On-Demand Document Unique ID</b>"));
+        oddeEntriesTbl.setWidget(oddeRow, 2, new HTML("<b>Registry</b>"));
+        oddeEntriesTbl.setWidget(oddeRow, 3, new HTML("<b>Repository</b>"));
+        oddeEntriesTbl.setWidget(oddeRow, 4, new HTML("<b>Patient ID</b>"));
+
+        HorizontalPanel ssHp = new HorizontalPanel();
+        ssHp.setVerticalAlignment(HasVerticalAlignment.ALIGN_MIDDLE);
+        ssHp.add(new HTML("<b>Supply State</b>"));
+        ssHp.setVerticalAlignment(HasVerticalAlignment.ALIGN_MIDDLE);
+        refreshImg.setAltText("Refresh");
+        refreshImg.setTitle("Refresh");
+        refreshImg.getElement().getStyle().setCursor(Style.Cursor.POINTER);
+        refreshImg.getElement().getStyle().setVerticalAlign(Style.VerticalAlign.MIDDLE);
+
+        ssHp.add(refreshImg);
+
+        oddeEntriesTbl.setWidget(oddeRow, 5, ssHp);
+        oddeRow++;
+
+
+        if (documentEntryDetails!=null) {
+            // Sort descending (List is originally in ascending order)
+            int oDdocCount = documentEntryDetails.size()-1 /* Z-B Idx*/;
+            for (int cx=oDdocCount; cx>-1; cx--) {
+                final DocumentEntryDetail ded = documentEntryDetails.get(cx);
+                oddeEntriesTbl.setWidget(oddeRow, 0, new HTML(ded.getTimestamp()));
+                oddeEntriesTbl.setWidget(oddeRow, 1, new HTML(ded.getUniqueId()));
+                oddeEntriesTbl.setWidget(oddeRow, 2, new HTML(ded.getRegSiteSpec().getName()));
+                oddeEntriesTbl.setWidget(oddeRow, 3, new HTML(ded.getReposSiteSpec()==null?"&nbsp;":ded.getReposSiteSpec().getName()));
+                oddeEntriesTbl.setWidget(oddeRow, 4, new HTML(ded.getPatientId()));
+
+                if (ded.getContentBundleSections()!=null && ded.getContentBundleSections().size()>0) {
+                    String bundlePeek = "";
+                    if (ded.getSupplyStateIndex()<=ded.getContentBundleSections().size()-1) {
+                        int moreCt =  ded.getContentBundleSections().size() -  (ded.getSupplyStateIndex()+1);
+                        if (moreCt>0)
+                            bundlePeek = ", [" + moreCt + " more On-Demand document(s)]";
+                        else
+                            bundlePeek = ", no more On-Demand documents.";
+                    }
+                    final HorizontalPanel supplyStateHPanel =  new HorizontalPanel();
+                    HTML supplyStateHtml = new HTML(""+ded.getSupplyStateIndex() + ": " + ded.getContentBundleSections().get(ded.getSupplyStateIndex()) + bundlePeek);
+                    supplyStateHPanel.add(supplyStateHtml);
+
+                    if (ded.getSupplyStateIndex()>0) {
+                        supplyStateHPanel.add(new HTML("&nbsp;"));
+                        Anchor resetLnk = new Anchor("Reset.");
+                        resetLnk.addClickHandler(new ClickHandler() {
+                            @Override
+                            public void onClick(ClickEvent clickEvent) {
+                                new SetOdSupplyStateIndexCommand() {
+                                    @Override
+                                    public void onComplete(Boolean result) {
+                                        if (result.booleanValue())  {
+                                            getOdDocumentEntries();
+                                        } else {
+                                            new PopupMessage("Reset for document UniqueId ["+ded.getUniqueId()+"] failed!");
+                                        }
+                                    }
+                                }.run(new SetOdSupplyStateIndexRequest(ClientUtils.INSTANCE.getCommandContext(),new SimId(config.getId().toString()),ded,0));
+                            }
+                        });
+                        supplyStateHPanel.add(resetLnk);
+                    }
+
+                    oddeEntriesTbl.setWidget(oddeRow, 5, supplyStateHPanel);
+                } else
+                    oddeEntriesTbl.setWidget(oddeRow, 5, new HTML(""+ded.getSupplyStateIndex() + ": Missing Content Bundle!"));
+                oddeRow++;
+            }
+        }
+    }
+
+    final HTML lblRegSiteBoxes = HtmlMarkup.html(SimulatorProperties.oddsRegistrySite);
+    final VerticalPanel regOptsVPanel = new VerticalPanel();
+    final VerticalPanel regActionVPanel = new VerticalPanel();
+
+    private void popRegSites(final SimulatorConfigElement oddsRegistrySite) {
+        if (oddsRegistrySite!=null) {
+            new GetSiteNamesByTranTypeCommand() {
+                @Override
+                public void onComplete(List<String> results) {
+                    regSiteBoxes.clear();
+                    regActionVPanel.clear();
+                    regOptsVPanel.clear();
+
+                    regOptsVPanel.add(regSiteBoxes);
+                    regSSP = new SiteSelectionPresenter("regSites", results, oddsRegistrySite.asList(), regSiteBoxes);
+                    List<String> siteNames = regSSP.getSiteNames();
+                    String errMsg = "";
+                    if (siteNames == null || (siteNames != null && siteNames.size() == 0)) {
+                        errMsg += "<li style='color:red'>No registry sites supporting an ODDE transaction are found/configured.</li>" +
+                                "<li style='color:red'>Please display a Registry site using the Simulator Manager or configure a Site that supports an ODDE transaction.</li>";
+                        regSiteBoxes.add(new HTML("<ul>" + errMsg + "</ul>"));
+                    } else {
+                        regButton.getElement().getStyle().setPaddingLeft(6, Style.Unit.PX);
+                        regActionVPanel.add(regButton);
+
+                    }
+                }
+            }.run(new GetSiteNamesByTranTypeRequest(ClientUtils.INSTANCE.getCommandContext(), TransactionType.REGISTER_ODDE.getName()));
+        }
     }
 
     private void displayRegisterOptions() {
@@ -431,12 +551,6 @@ public class OddsSimConfigMgr implements SimConfigMgrIntf {
         final SimulatorConfigElement oddsRegistrySite = config.get(SimulatorProperties.oddsRegistrySite);
 
         if (oddsRegistrySite!=null) {
-            final HTML lblRegSiteBoxes = HtmlMarkup.html(SimulatorProperties.oddsRegistrySite);
-
-
-            final VerticalPanel regOptsVPanel = new VerticalPanel();
-            final VerticalPanel regActionVPanel = new VerticalPanel();
-
             newRow();
             tbl.setWidget(getRow(),0,lblRegSiteBoxes);
             tbl.setWidget(getRow(),1,regOptsVPanel);
@@ -453,42 +567,31 @@ public class OddsSimConfigMgr implements SimConfigMgrIntf {
             tbl.setWidget(getRow(),0, regActionMessage);
             tbl.getFlexCellFormatter().setColSpan(getRow(),0,2);
 
-            new GetSiteNamesByTranTypeCommand(){
-                @Override
-                public void onComplete(List<String> results) {
-                    regSSP = new SiteSelectionPresenter("regSites", results, oddsRegistrySite.asList(), regSiteBoxes);
-                    regOptsVPanel.add(regSiteBoxes);
-                    List<String> siteNames = regSSP.getSiteNames();
-                    String errMsg = "";
-                    if (siteNames==null || (siteNames!=null && siteNames.size()==0)) {
-                        errMsg += "<li style='color:red'>No registry sites supporting an ODDE transaction are found/configured.</li>"+
-                                "<li style='color:red'>Please display a Registry site using the Simulator Manager or configure a Site that supports an ODDE transaction.</li>";
-                        regSiteBoxes.add(new HTML("<ul>" +  errMsg + "</ul>"));
-                    } else {
-                        regButton.getElement().getStyle().setPaddingLeft(6, Style.Unit.PX);
-                        regActionVPanel.add(regButton);
-                        regButton.addClickHandler(
-                                new ClickHandler() {
-                                    @Override
-                                    public void onClick(ClickEvent clickEvent) {
-                                        if (validateParams()) {
-                                            setRegButton("Please wait...", false);
-                                            saveSimConfig();
-                                            registerODDE();
-                                        }
-                                    }
-                                }
-                        );
-                        refreshImg.addClickHandler(new ClickHandler() {
-                            @Override
-                            public void onClick(ClickEvent clickEvent) {
-                                getOdDocumentEntries(getSimulatorControlTab());
-                            }
-                        });
+            popRegSites(oddsRegistrySite);
+
+            addActionHandlers();
+        }
+    }
+
+    private void addActionHandlers() {
+        regButton.addClickHandler(
+                new ClickHandler() {
+                    @Override
+                    public void onClick(ClickEvent clickEvent) {
+                        if (validateParams()) {
+                            setRegButton("Please wait...", false);
+                            saveSimConfig();
+                            registerODDE();
+                        }
                     }
                 }
-            }.run(new GetSiteNamesByTranTypeRequest(ClientUtils.INSTANCE.getCommandContext(),TransactionType.REGISTER_ODDE.getName()));
-        }
+        );
+        refreshImg.addClickHandler(new ClickHandler() {
+            @Override
+            public void onClick(ClickEvent clickEvent) {
+                getOdDocumentEntries();
+            }
+        });
     }
 
 
@@ -553,7 +656,7 @@ public class OddsSimConfigMgr implements SimConfigMgrIntf {
                 } else {
                     regActionMessage.getElement().getStyle().setColor("black");
                     regActionMessage.setHTML("<br/>Registration was successful. ODDE Id is " + responseMap.get("key"));
-                    getOdDocumentEntries(getSimulatorControlTab());
+                    getOdDocumentEntries();
                 }
             }
         }.run(new RegisterRequest(ClientUtils.INSTANCE.getCommandContext(),

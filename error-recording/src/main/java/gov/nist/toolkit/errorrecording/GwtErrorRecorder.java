@@ -17,7 +17,7 @@ public class GwtErrorRecorder implements ErrorRecorder  {
 	ErrorRecorderBuilder errorRecorderBuilder;
 	List<ErrorRecorder> children = new ArrayList<>();
 	List<ValidatorErrorItem> summary = new ArrayList<>();
-	List<ValidatorErrorItem> errMsgs = new ArrayList<>();
+	private List<ValidatorErrorItem> errMsgs = new ArrayList<>();
 	int lastErrCount = 0;
 	
 	static Logger logger = Logger.getLogger(GwtErrorRecorder.class);
@@ -292,11 +292,11 @@ public class GwtErrorRecorder implements ErrorRecorder  {
 
 	@Override
 	public void concat(ErrorRecorder er) {
-		this.errMsgs.addAll(er.getErrMsgs());
+		errMsgs.addAll(er.getErrMsgs());
 	}
 	
 	public List<ValidatorErrorItem> getErrMsgs() {
-		return this.errMsgs;
+		return errMsgs;
 	}
 
 	@Override

@@ -54,7 +54,7 @@ public class ValidatorErrorItem implements IsSerializable {
 			buf.append(code.name() + " : ");
 		buf.append(msg.trim());
 		if (hasExpected() || hasFound() )
-			buf.append('\n').append("Expected [").append(expected).append("]  ").append("Found [ ").append("]\n");
+			buf.append('\n').append("Expected [").append(expected).append("]  ").append("Found [ ").append(found).append("]\n");
 
 		return buf.toString();
 	}

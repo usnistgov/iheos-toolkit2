@@ -103,6 +103,13 @@ public class MetadataCollectionToMetadata {
 					m.addSlotValue(iSlot, inst);
 				}
 			}
+			if (a.telecom.size() > 0) {
+				OMElement iSlot = m.mkSlot("authorTelecommunication");
+				aele.addChild(iSlot);
+				for (String inst : a.telecom) {
+					m.addSlotValue(iSlot, inst);
+				}
+			}
 		}
 		
 		OMElement spiEle = m.mkSlot("sourcePatientInfo");
@@ -167,6 +174,13 @@ public class MetadataCollectionToMetadata {
 				OMElement iSlot = m.mkSlot("authorSpecialty");
 				aele.addChild(iSlot);
 				for (String inst : a.specialties) {
+					m.addSlotValue(iSlot, inst);
+				}
+			}
+			if (a.telecom.size() > 0) {
+				OMElement iSlot = m.mkSlot("authorTelecommunication");
+				aele.addChild(iSlot);
+				for (String inst : a.telecom) {
 					m.addSlotValue(iSlot, inst);
 				}
 			}
