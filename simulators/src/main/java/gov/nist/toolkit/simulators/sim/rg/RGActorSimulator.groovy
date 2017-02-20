@@ -136,7 +136,7 @@ public class RGActorSimulator extends GatewaySimulatorCommon implements Metadata
                   // error already logged
                   continue
                }
-               aDocMap.each { uid, model -> docMap.put(uid, model) }  // add to overall result
+               aDocMap.each { String uid, RetrievedDocumentModel model -> docMap.put(uid, model) }  // add to overall result
                foundRepository = true
             } else {
                for (String repoUid : repositorySiteMap.keySet()) {
@@ -145,7 +145,7 @@ public class RGActorSimulator extends GatewaySimulatorCommon implements Metadata
                      Site site = repositorySiteMap[repoUid]
                      String endpoint = site.getRetrieveEndpoint(repoUid, common.isTls(), false)
                      Map<String, RetrievedDocumentModel> aDocMap = singleRetrieve(endpoint, requestModel)
-                     aDocMap.each { uid, model -> docMap.put(uid, model) }  // add to overall result
+                     aDocMap.each { String uid, RetrievedDocumentModel model -> docMap.put(uid, model) }  // add to overall result
                      if (!aDocMap) {
                         // error already logged
                         continue
