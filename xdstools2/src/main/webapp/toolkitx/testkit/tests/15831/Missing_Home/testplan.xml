@@ -1,0 +1,10 @@
+<TestPlan>
+    <Test>15830/Retrieve_OnDemand</Test>
+  <TestStep id="retrieve">
+    <ExpectedStatus>Failure</ExpectedStatus>
+    <XCRTransaction>
+      <ExpectedMimeType>text/plain</ExpectedMimeType>
+      <MetadataFile>query1.xml</MetadataFile>
+    </XCRTransaction>
+  </TestStep>
+</TestPlan>

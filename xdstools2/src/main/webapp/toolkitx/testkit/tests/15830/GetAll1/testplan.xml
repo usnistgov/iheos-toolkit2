@@ -1,15 +1,15 @@
 <TestPlan>
-    <Test>15829/finddocs</Test>
-    <TestStep id="FindDocuments">
+    <Test>15830/GetAll1</Test>
+    <TestStep id="GetAll">
         <ExpectedStatus>Success</ExpectedStatus>
         <XCQTransaction>
             <XDSb/>
             <CleanParams/>
             <MetadataFile>query.xml</MetadataFile>
-            <UseReport reportName="Patient_ID" test="15829" section="Gather_Inputs" step="gather" useAs="$Patient_ID$"/>
+            <UseReport reportName="Patient_ID" test="15830" section="Gather_Inputs" step="gather" useAs="$Patient_ID$"/>
             <Assertions>
                 <DataRef file="THIS" as="output"/>
-                <Assert id="SingleDocument">count(//TestStep/XCQTransaction[@step="FindDocuments"]/Result[1]/*[local-name()='AdhocQueryResponse']/*[local-name()='RegistryObjectList']/*[local-name()='ExtrinsicObject']) = "1"</Assert>
+                <Assert id="SingleDocumentReturned">count(//TestStep/*[local-name()='XCQTransaction'][@step="GetAll"]/Result/*[local-name()='AdhocQueryResponse']/*[local-name()='RegistryObjectList']/*[local-name()='ExtrinsicObject'][@objectType="urn:uuid:34268e47-fdf5-41a6-ba33-82133c465248"]) = "1"</Assert>
             </Assertions>
             <Report name="docUid" section="Result">//*[local-name()='ExtrinsicObject']/*[local-name()='ExternalIdentifier'][@identificationScheme='urn:uuid:2e82c1f6-a085-4c72-9da3-8640a32e42ab']/@value</Report>
             <Report name="repUid" section="Result">//*[local-name()='ExtrinsicObject']/*[local-name()='Slot'][@name='repositoryUniqueId']/*[local-name()='ValueList']/*[local-name()='Value']</Report>

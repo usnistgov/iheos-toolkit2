@@ -6,6 +6,6 @@
             Wait for the On Demand Responding Gateway to update the content so the
             next retrieve sees the new content.
         </Goal>
-<!--        <Gather prompt="Done"/>  -->
+       <Gather prompt="Done"/>
     </TestStep>
 </TestPlan>
