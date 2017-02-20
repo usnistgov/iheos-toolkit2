@@ -333,7 +333,10 @@ public class RGActorSimulator extends GatewaySimulatorCommon implements Metadata
    // repUId -> Site
    private Map<String, Site> getLinkedRepositoryMap() {
       SimManager simMgr = new SimManager("ignored");
-      List<Site> linkedRepositorySites = simMgr.getSites(getSimulatorConfig().getConfigEle(SimulatorProperties.repositories).asList());
+      List<Site> linkedRepositorySites = []
+      try {
+         linkedRepositorySites = simMgr.getSites(getSimulatorConfig().getConfigEle(SimulatorProperties.repositories).asList());
+      } catch (Exception e) {}
       // map from repUID to the Site that holds it - bascially where to forward the request
       Map<String, Site> repositorySiteMap = new HashMap<>();
       for (Site site : linkedRepositorySites) {
