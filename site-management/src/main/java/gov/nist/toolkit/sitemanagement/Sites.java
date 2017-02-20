@@ -257,8 +257,10 @@ public class Sites {
 		if (siteName == null)
 			throw new Exception("Internal error: null site requested");
 		List<String> sitenames = getSiteNames();
-		if ( !sitenames.contains(siteName))
+		if ( !sitenames.contains(siteName)) {
+			// System.out.println(sitenames + " - " + siteName);
 			throw new Exception("Site [" + siteName + "] is not defined");
+		}
 		Site s = siteMap.get(siteName);
 		return s;
 	}
@@ -302,7 +304,7 @@ public class Sites {
 	}
 
 	/**
-	 * Site may be linked by orchestration.  If it is return accoring to documentation in Site.java
+	 * Site may be linked by orchestration.  If it is return according to documentation in Site.java
 	 * @param siteSpec
 	 * @return
 	 */

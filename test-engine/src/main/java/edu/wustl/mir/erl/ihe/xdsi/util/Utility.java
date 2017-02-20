@@ -42,7 +42,7 @@ public class Utility {
     */
    public static final Charset utf8 = Charset.forName("UTF-8");
    
-   private static Logger log = getLog();
+   private static Logger log = Logger.getLogger(Utility.class);
 
    /**
     * @return String XDSI root directory path
@@ -98,24 +98,13 @@ public class Utility {
 
    private static boolean log4jConfigured = false;
 
-   /**
-    * @return SYSTEM log
-    */
    public static Logger getLog() {
-      return getLog("SYSTEM");
+      return log;
    }
 
-   /**
-    * @param logName logger name
-    * @return log for passed name
-    */
+
    public static Logger getLog(String logName) {
-      if (log4jConfigured == false) {
-         String pfn = getRunDirectoryPath().resolve("log4j.properties").toString();
-         PropertyConfigurator.configure(pfn);
-         log4jConfigured = true;
-      }
-      return Logger.getLogger(logName);
+      return log;
    }
 
    /**

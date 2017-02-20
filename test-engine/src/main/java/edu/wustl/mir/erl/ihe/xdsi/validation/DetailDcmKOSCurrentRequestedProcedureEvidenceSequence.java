@@ -3,15 +3,15 @@
  */
 package edu.wustl.mir.erl.ihe.xdsi.validation;
 
-import java.util.ArrayList;
-import java.util.List;
-
+import edu.wustl.mir.erl.ihe.xdsi.validation.DCMAssertion.TYPE;
+import edu.wustl.mir.erl.ihe.xdsi.validation.DetailDcmSetContent.AttributesAndHash;
 import org.dcm4che3.data.Attributes;
 import org.dcm4che3.data.Sequence;
 import org.dcm4che3.data.Tag;
 import org.javatuples.Pair;
 
-import edu.wustl.mir.erl.ihe.xdsi.validation.DCMAssertion.TYPE;
+import java.util.ArrayList;
+import java.util.List;
 
 
 @SuppressWarnings("javadoc")
@@ -51,10 +51,12 @@ public class DetailDcmKOSCurrentRequestedProcedureEvidenceSequence extends Detai
       }
    }
    
-   private List<Attributes> getList(Attributes attr) throws Exception {
-      List<Attributes> lst = new ArrayList<>();
+   private List<AttributesAndHash> getList(Attributes attr) throws Exception {
+      List<AttributesAndHash> lst = new ArrayList<>();
       Sequence sequence = attr.getSequence(Tag.CurrentRequestedProcedureEvidenceSequence);
-      lst.addAll(sequence);
+      for (Attributes a : sequence) {
+         lst.add(new AttributesAndHash(a));
+      }
       return lst;
    }
 }

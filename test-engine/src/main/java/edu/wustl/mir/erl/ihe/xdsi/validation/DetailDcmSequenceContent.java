@@ -3,14 +3,14 @@
  */
 package edu.wustl.mir.erl.ihe.xdsi.validation;
 
+import edu.wustl.mir.erl.ihe.xdsi.util.Utility;
+import edu.wustl.mir.erl.ihe.xdsi.validation.DetailDcmSetContent.AttributesAndHash;
+import org.apache.commons.lang3.StringUtils;
+import org.dcm4che3.data.Keyword;
+import org.dcm4che3.data.Sequence;
+
 import java.util.ArrayList;
 import java.util.List;
-
-import org.apache.commons.lang3.StringUtils;
-import org.dcm4che3.data.Attributes;
-import org.dcm4che3.data.Keyword;
-
-import edu.wustl.mir.erl.ihe.xdsi.util.Utility;
 
 /**
  *  Base class for Detail comparing two dicom document 
@@ -32,8 +32,8 @@ public abstract class DetailDcmSequenceContent extends Detail {
    
    protected int uniqueSequenceTag = 0;
    protected String uniqueSequenceName;
-   protected List<Attributes> test = null;
-   protected List<Attributes>  std = null;
+   protected List<AttributesAndHash> test = null;
+   protected List<AttributesAndHash>  std = null;
    List<Entry> testEntries = null;
    List<Entry> stdEntries = null;
    
@@ -63,15 +63,15 @@ public abstract class DetailDcmSequenceContent extends Detail {
        * objects, loading them into Lists.
        */
       testEntries = new ArrayList<>();
-      for (Attributes entry : test) {
+      for (AttributesAndHash entry : test) {
          Entry e = new Entry(entry);
-         e.uniqueId = entry.getString(uniqueSequenceTag);
+         e.uniqueId = entry.attributes.getString(uniqueSequenceTag);
          testEntries.add(e); 
          }
       stdEntries = new ArrayList<>();
-      for (Attributes entry : std) {
+      for (AttributesAndHash entry : std) {
          Entry e = new Entry(entry);
-         e.uniqueId = entry.getString(uniqueSequenceTag);
+         e.uniqueId = entry.attributes.getString(uniqueSequenceTag);
          stdEntries.add(e);
       }
       // Collect info on matched/not matched items here
@@ -137,8 +137,7 @@ public abstract class DetailDcmSequenceContent extends Detail {
       if (totalMatched > totalMatchedAndPassed) {
          for (Entry e : testEntries) {
             if (e.matched == false || e.passed == true) continue;
-            Attributes attr = e.attr;
-            String l = uniqueSequenceName + " " + attr.getString(uniqueSequenceTag) + " ";
+            String l = uniqueSequenceName + " " + e.getString(uniqueSequenceTag) + " ";
             successCount += e.successCount;
             errorCount += e.errorCount;
             warningCount += e.warningCount;
@@ -212,35 +211,33 @@ public abstract class DetailDcmSequenceContent extends Detail {
       String testVal = null;
       String stdVal = null;
       Object testObj = null;
-      Attributes testAttr = testEntry.attr;
-      Attributes stdAttr = stdEntry.attr;
       try {
          for (DCMAssertion assertion : assertions) {
             switch (assertion.type) {
                case PRESENT:
-                  testObj = testAttr.getValue(assertion.tag);
+                  testObj = testEntry.getValue(assertion.tag);
                   if (testObj != null) pass(assertion);
                   else fail(assertion);
                   break;
                case NOT_EMPTY:
-                  testObj = testAttr.getValue(assertion.tag);
+                  testObj = testEntry.getValue(assertion.tag);
                   if (testObj != null && 
                       StringUtils.isNotBlank(testObj.toString())) pass(assertion);
                   else fail(assertion);
                   break;
                case ABSENT:
-                  testObj = testAttr.getValue(assertion.tag);
+                  testObj = testEntry.getValue(assertion.tag);
                   if (testObj == null) pass(assertion);
                   else fail(assertion);
                   break;
                case CONSTANT:
-                  testVal = testAttr.getString(assertion.tag, "").trim();
+                  testVal = testEntry.getString(assertion.tag, "").trim();
                   if (testVal.equals(assertion.value)) pass(assertion);
                   else fail(assertion);
                   break;
                case SAME:
-                  testVal = testAttr.getString(assertion.tag);
-                  stdVal = stdAttr.getString(assertion.tag);
+                  testVal = testEntry.getString(assertion.tag);
+                  stdVal = stdEntry.getString(assertion.tag);
                   // Empty strings are returned as null.
                   // Test for null case and replace with zero-length string
                   // to prevent the comparison from throwing a fault.
@@ -250,8 +247,8 @@ public abstract class DetailDcmSequenceContent extends Detail {
                   else fail(assertion);
                   break;
                case SAME_SIZE:
-                  int testSize = testAttr.getSequence(assertion.tag).size();
-                  int stdSize = stdAttr.getSequence(assertion.tag).size();
+                  int testSize = testEntry.getSequence(assertion.tag).size();
+                  int stdSize = stdEntry.getSequence(assertion.tag).size();
                   if (testSize == stdSize) pass(assertion);
                   else fail(assertion);
                   break;
@@ -266,6 +263,8 @@ public abstract class DetailDcmSequenceContent extends Detail {
          errorDetails.add(em);
       }
    }
+
+
    
    private void pass(DCMAssertion tst) {
       store(tst.passCat, tst.passDetail);
@@ -313,7 +312,7 @@ public abstract class DetailDcmSequenceContent extends Detail {
    }
    
    private class Entry extends Detail{
-      Attributes attr;
+      AttributesAndHash attr;
       /** True if Entry matched an entry in the other list. */
       boolean matched = false;
       /** true if (test) Entry passed all DCMAssertions. */
@@ -325,8 +324,30 @@ public abstract class DetailDcmSequenceContent extends Detail {
       /** Any subsequences which were run for this test data */
       List<DetailDcmSequenceContent> subSeqs = new ArrayList<>();
       
-      Entry(Attributes ent) {
+      Entry(AttributesAndHash ent) {
          attr = ent;
+      }
+
+      public Object getValue(int a) {
+         if (a == -1) return attr.hash;
+         return attr.attributes.getValue(a);
+      }
+      public String getString(int a) {
+
+         try {
+            return (String) getValue(a);
+         } catch (Exception e) {
+            log.warn("getValue(" + a + ") - " + e.getMessage());
+            return "error";
+         }
+      }
+      public String getString(int a, String def) {
+         String r = getString(a);
+         if (r == null) r = def;
+         return r;
+      }
+      public Sequence getSequence(int a) {
+         return attr.attributes.getSequence(a);
       }
      
       @Override

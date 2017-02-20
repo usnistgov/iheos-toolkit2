@@ -51,6 +51,7 @@ public class SchemaValidator extends AbstractMessageValidator {
 			throw new XdsInternalException("Schema Validation threw internal error: " + e.getMessage());
 		}
 		if (schema_messages != null && schema_messages.length() > 0) {
+			System.out.println("SchemaValidationException at SchemaValidator:54");
 			throw new SchemaValidationException("Input did not validate against schema:" + schema_messages);
 		}
 	}

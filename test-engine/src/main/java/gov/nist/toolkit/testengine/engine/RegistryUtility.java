@@ -24,8 +24,10 @@ public class RegistryUtility {
 		} catch (Exception e) {
 			throw new XdsInternalException("Schema Validation threw internal error: " + e.getMessage());
 		}
-		if (schema_messages != null && schema_messages.length() > 0)
+		if (schema_messages != null && schema_messages.length() > 0) {
+			// System.out.println("SchemaValidationException at RegistryUtility:28");
 			throw new SchemaValidationException("Input did not validate against schema:" + schema_messages);
+		}
 	}
 
 	// the mapping from the call parameters into the ValidationContext is approximate at best. 

@@ -22,7 +22,8 @@ public class DCMAssertion {
    /**
     * Create a new DCM Assertion 
     * @param type TYPE of assertion to make
-    * @param tag dcm4che Tag of detail element to test
+    * @param tag dcm4che Tag of detail element to test. Special value of -1 for
+    *            hash code of entire file.
     * @param value value to match (CONSTANT TYPE only).
     * @param cat CATs to use, first is pass (default SUCCESS), second is fail
     * (default ERROR)
@@ -30,7 +31,8 @@ public class DCMAssertion {
    public DCMAssertion(TYPE type, int tag, String value, CAT... cat) {
       this.type = type;
       this.tag = tag;
-      this.tagName = Keyword.valueOf(tag);
+      if (tag == -1) this.tagName = "HASH";
+      else this.tagName = Keyword.valueOf(tag);
       this.value = value;
       if (cat.length > 0 && cat[0] != null) this.passCat = cat[0];
       this.passDetail = gpd(type.passDetail);

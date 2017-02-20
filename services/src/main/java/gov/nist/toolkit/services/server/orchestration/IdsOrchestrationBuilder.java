@@ -74,6 +74,9 @@ class IdsOrchestrationBuilder {
                  } else {
                     simConfig = api.getConfig(simId);
                  }
+                 simConfigs.add(simConfig);
+                 if (sim.name().equals(sutSimulatorName)) sutSimulatorConfig = simConfig;
+                 if (sim.name().equals(rrSimulatorName)) rrSimulatorConfig = simConfig;
               }
               IdsOrchestrationResponse response = new IdsOrchestrationResponse();
               response.setIdsSimulatorConfig(sutSimulatorConfig);

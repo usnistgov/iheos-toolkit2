@@ -103,7 +103,7 @@ public class RetrieveImgDocSetTransaction extends BasicTransaction {
 
       if (request_ele == null) throw new XdsInternalException("Retrieve transaction - request is null");
 
-      logger.debug(" Request Element: " + request_ele.getText());
+      logger.debug(" Request Element: " + request_ele.toString());
 
       applyLinkage(request_ele);
 
