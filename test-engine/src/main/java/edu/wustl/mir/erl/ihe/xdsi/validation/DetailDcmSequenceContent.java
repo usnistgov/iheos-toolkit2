@@ -335,7 +335,14 @@ public abstract class DetailDcmSequenceContent extends Detail {
       public String getString(int a) {
 
          try {
-            return (String) getValue(a);
+            Object o = getValue(a);
+            if (o instanceof String) return (String) o;
+            if (o instanceof byte[]) {
+               byte[] ba = (byte[]) o;
+               String s = new String(ba);
+               return s;
+            }
+            return (String) o;
          } catch (Exception e) {
             log.warn("getValue(" + a + ") - " + e.getMessage());
             return "error";
