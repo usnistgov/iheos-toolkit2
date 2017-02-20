@@ -99,7 +99,6 @@ import gov.nist.toolkit.xdstools2.shared.command.request.RunTestRequest;
 import gov.nist.toolkit.xdstools2.shared.command.request.SaveSiteRequest;
 import gov.nist.toolkit.xdstools2.shared.command.request.SendPidToRegistryRequest;
 import gov.nist.toolkit.xdstools2.shared.command.request.SetAssignedSiteForTestSessionRequest;
-import gov.nist.toolkit.xdstools2.shared.command.request.SetOdSupplyStateIndexRequest;
 import gov.nist.toolkit.xdstools2.shared.command.request.SetToolkitPropertiesRequest;
 import gov.nist.toolkit.xdstools2.shared.command.request.SimConfigRequest;
 import gov.nist.toolkit.xdstools2.shared.command.request.SubmitTestdataRequest;
@@ -309,6 +308,7 @@ public interface ToolkitServiceAsync {
     void buildIdcTestOrchestration(IdcOrchestrationRequest request, AsyncCallback<RawResponse> callback);
 	void getSiteNamesWithRIG(CommandContext context, AsyncCallback<List<String>> callback);
 	void getSiteNamesWithIDS(CommandContext context, AsyncCallback<List<String>> callback);
+    void getSiteNamesWithRepository(CommandContext context, AsyncCallback<List<String>> callback);
 	void register(RegisterRequest request, AsyncCallback<Result> callback) throws Exception;
 	void registerWithLocalizedTrackingInODDS(RegisterRequest registerRequest, AsyncCallback<Map<String, String>> callback);
 	void getOnDemandDocumentEntryDetails(GetOnDemandDocumentEntryDetailsRequest request, AsyncCallback<List<DocumentEntryDetail>> callback);

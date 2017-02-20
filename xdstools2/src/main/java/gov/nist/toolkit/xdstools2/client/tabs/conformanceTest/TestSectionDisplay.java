@@ -89,6 +89,7 @@ class TestSectionDisplay implements IsWidget {
             for (Gather gather : sectionTp.getGathers()) {
                 table.setWidget(row, 0, new HTML(gather.getPrompt()));
                 TextBox textBox = new TextBox();
+                textBox.setVisibleLength(64);
                 textBox.setText(getReportValue(gather.getPrompt(), reports));
                 table.setWidget(row, 1, textBox);
                 row++;

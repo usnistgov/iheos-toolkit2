@@ -312,6 +312,64 @@ public class Validator {
 		return found;
 	}
 
+	private boolean hasSnapshotPattern() throws MetadataException {
+		List<OMElement> snapshotAssocs = findAssociations("IsSnapshotOf");
+		if (snapshotAssocs.size() == 0) {
+			err("No IsSnapshotOf Associations found");
+			return false;
+		}
+		if (snapshotAssocs.size() > 1) {
+			err("Multiple IsSnapshotOf Associations found");
+			return false;
+		}
+		OMElement snapshotAssoc = snapshotAssocs.get(0);
+		String sourceUuid = m.getAssocSource(snapshotAssoc);
+		String targetUuid = m.getAssocTarget(snapshotAssoc);
+		OMElement sourceObject = m.getExtrinsicObject(sourceUuid);
+		if (sourceObject == null) {
+			err("SnapShot DocumentEntry (" + sourceUuid + ") is not in query results");
+			return false;
+		}
+		OMElement targetObject = m.getExtrinsicObject(targetUuid);
+		if (targetObject == null) {
+			err("On Demand DocumentEntry (" + targetUuid + ") is not in query results");
+			return false;
+		}
+
+		if (!isDocApproved(sourceObject)) {
+			err("SnapShot DocumentEntry is Deprecated");
+			return false;
+		}
+
+		if (!isDocApproved(targetObject)) {
+			err("On Demand DocumentEntry is Deprecated");
+			return false;
+		}
+
+		String targetObjectType = m.getObjectType(targetObject);
+		if (!MetadataSupport.on_demand_documententry_objecttype.equals(targetObjectType)) {
+			err("On Demand DocumentEntry should have objectType of " + MetadataSupport.on_demand_documententry_objecttype + ", found instead " + MetadataSupport.stable_documententry_objecttype);
+			return false;
+		}
+
+		String sourceObjectType = m.getObjectType(sourceObject);
+		if (!MetadataSupport.stable_documententry_objecttype.equals(sourceObjectType)) {
+			err("Stable DocumentEntry should have objectType of " + MetadataSupport.stable_documententry_objecttype + ", found instead " + MetadataSupport.on_demand_documententry_objecttype);
+			return false;
+		}
+		return true;
+	}
+
+	private List<OMElement> findAssociations(String type) throws MetadataException {
+		List<OMElement> assocs = new ArrayList<>();
+		for (OMElement assoc : m.getAssociations()) {
+			String theType = m.getSimpleAssocType(assoc);
+			if (type.equals(theType))
+				assocs.add(assoc);
+		}
+		return assocs;
+	}
+
 	public boolean isDocApproved(OMElement eo) {
 		String status = m.stripNamespace(eo.getAttributeValue(MetadataSupport.status_qname));
 		if ( status == null || !status.equals("Approved")) {
@@ -518,6 +576,8 @@ public class Validator {
 			}
 			else if (ec_name.equals("DocumentEntries")) {
 				verifyDocumentEntries(m, ec);
+			} else if (ec_name.equals("HasSnapshotPattern")) {
+				hasSnapshotPattern();
 			} else {
 				throw new XdsInternalException("QueryTransaction: validate_expected_contents(): don't understand verification request " + ec_name);
 			}

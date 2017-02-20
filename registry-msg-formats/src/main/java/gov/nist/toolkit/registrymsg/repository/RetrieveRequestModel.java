@@ -11,7 +11,7 @@ import java.util.Set;
 public class RetrieveRequestModel {
     List<RetrieveItemRequestModel> models = new ArrayList<>();
 
-    public List<RetrieveItemRequestModel> getModel() {
+    public List<RetrieveItemRequestModel> getModels() {
         return models;
     }
 

@@ -1,7 +1,7 @@
 package gov.nist.toolkit.xdstools2.client.tabs.simulatorControlTab;
 
 import com.google.gwt.user.client.ui.Panel;
-import gov.nist.toolkit.xdstools2.client.command.command.GetSiteNamesWithRGCommand;
+import gov.nist.toolkit.xdstools2.client.command.command.GetSiteNamesWithRepositoryCommand;
 import gov.nist.toolkit.xdstools2.client.util.ClientUtils;
 
 import java.util.ArrayList;
@@ -11,13 +11,13 @@ import java.util.List;
 /**
  *
  */
-public class RGSelectionPresenter {
+public class RepositorySelectionPresenter {
 
     MultiSelectionView view;
     List<String> sites;
 
-    public RGSelectionPresenter(final List<String> selected, final Panel panel) {
-        new GetSiteNamesWithRGCommand(){
+    public RepositorySelectionPresenter(final List<String> selected, final Panel panel) {
+        new GetSiteNamesWithRepositoryCommand(){
             @Override
             public void onComplete(List<String> siteNames) {
                 sites = siteNames;

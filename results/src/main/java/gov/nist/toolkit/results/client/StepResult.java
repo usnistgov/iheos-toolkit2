@@ -55,6 +55,7 @@ public class StepResult implements IsSerializable, Serializable {
 
     public String toString() {
         return
+				section + "/" + stepName + ": " +
                 metadata.docEntries.size() +
                 " DocumentEntries  " +
                         metadata.submissionSets.size() +

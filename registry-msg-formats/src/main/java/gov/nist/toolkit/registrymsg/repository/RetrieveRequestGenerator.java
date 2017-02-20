@@ -4,6 +4,7 @@ import gov.nist.toolkit.commondatatypes.MetadataSupport;
 import gov.nist.toolkit.utilities.xml.XmlUtil;
 import org.apache.axiom.om.OMElement;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -14,6 +15,11 @@ public class RetrieveRequestGenerator {
 
     public RetrieveRequestGenerator(List<RetrieveItemRequestModel> items) {
         this.items = items;
+    }
+
+    public RetrieveRequestGenerator(RetrieveItemRequestModel item) {
+        items = new ArrayList<>();
+        items.add(item);
     }
 
     public OMElement get() {

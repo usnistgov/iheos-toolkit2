@@ -216,6 +216,9 @@ public class MetadataSupport {
 
 	// Additional MU & on-demand Association types
 
+	public static String stable_documententry_objecttype = "urn:uuid:7edca82f-054d-47f2-a032-9b2a5b5186c1";
+	public static String on_demand_documententry_objecttype = "urn:uuid:34268e47-fdf5-41a6-ba33-82133c465248";
+
 	public static String assoctype_update_availabilityStatus = "urn:ihe:iti:2010:AssociationType:UpdateAvailabilityStatus";
 	public static String assoctype_submitAssociation = "urn:ihe:iti:2010:AssociationType:SubmitAssociation";
 
