@@ -248,6 +248,9 @@ public class MetadataToMetadataCollectionParser {
 		de.mimeType = asString(m.getMimeType(ele));
 		de.mimeTypeX = eoEleStr;
 
+		de.objectType = asString(m.getObjectType(ele));
+		de.objectTypeX = eoEleStr;
+
 		de.hash = asString(m.getSlotValue(ele, "hash", 0));
 		de.hashX = new OMFormatter(m.getSlot(ele, "hash")).toHtml();
 

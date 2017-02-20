@@ -2,6 +2,7 @@ package gov.nist.toolkit.xdstools2.server;
 
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 import gov.nist.toolkit.MessageValidatorFactory2.MessageValidatorFactoryFactory;
+import gov.nist.toolkit.actorfactory.SimDb;
 import gov.nist.toolkit.actorfactory.SimManager;
 import gov.nist.toolkit.actorfactory.SiteServiceManager;
 import gov.nist.toolkit.actorfactory.client.SimId;
@@ -36,6 +37,8 @@ import gov.nist.toolkit.session.client.logtypes.TestPartFileDTO;
 import gov.nist.toolkit.session.server.Session;
 import gov.nist.toolkit.session.server.serviceManager.QueryServiceManager;
 import gov.nist.toolkit.session.server.serviceManager.XdsTestServiceManager;
+import gov.nist.toolkit.simulators.sim.rep.RepIndex;
+import gov.nist.toolkit.simulators.support.StoredDocument;
 import gov.nist.toolkit.simulators.support.od.TransactionUtil;
 import gov.nist.toolkit.sitemanagement.client.Site;
 import gov.nist.toolkit.sitemanagement.client.SiteSpec;
@@ -133,6 +136,7 @@ import gov.nist.toolkit.xdstools2.shared.command.request.RunTestRequest;
 import gov.nist.toolkit.xdstools2.shared.command.request.SaveSiteRequest;
 import gov.nist.toolkit.xdstools2.shared.command.request.SendPidToRegistryRequest;
 import gov.nist.toolkit.xdstools2.shared.command.request.SetAssignedSiteForTestSessionRequest;
+import gov.nist.toolkit.xdstools2.shared.command.request.SetOdSupplyStateIndexRequest;
 import gov.nist.toolkit.xdstools2.shared.command.request.SetToolkitPropertiesRequest;
 import gov.nist.toolkit.xdstools2.shared.command.request.SimConfigRequest;
 import gov.nist.toolkit.xdstools2.shared.command.request.SubmitTestdataRequest;
@@ -294,6 +298,11 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements
     public List<String> getSiteNamesWithRG(CommandContext context) throws Exception {
         installCommandContext(context);
         return siteServiceManager.getSiteNamesWithRG(session().getId());
+    }
+    @Override
+    public List<String> getSiteNamesWithRepository(CommandContext context) throws Exception {
+        installCommandContext(context);
+        return siteServiceManager.getSiteNamesWithRepository(session().getId());
     }
     @Override
     public List<String> getSiteNamesWithRIG(CommandContext context) throws Exception {
@@ -466,7 +475,12 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements
         return session().xdsTestServiceManager().getTestResults(request.getTestIds(), request.getEnvironmentName(), request.getTestSessionName());
     }
     @Override
-    public String setMesaTestSession(String sessionName)  throws NoServletSessionException { session().xdsTestServiceManager().setMesaTestSession(sessionName); return sessionName;}
+    public String setMesaTestSession(String sessionName)  throws NoServletSessionException {
+        session().xdsTestServiceManager().setMesaTestSession(sessionName); return sessionName;
+    }
+    public String getMesaTestSession(String sessionName) throws NoServletSessionException {
+        return session().xdsTestServiceManager().getMesaTestSession();
+    }
     @Override
     public List<String> getMesaTestSessionNames(CommandContext request) throws Exception {
         installCommandContext(request);
@@ -490,7 +504,7 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements
     public TestOverviewDTO deleteSingleTestResult(DeleteSingleTestRequest request) throws Exception {
         installCommandContext(request);
         request.getTestInstance().setUser(request.getTestSessionName());
-        return session().xdsTestServiceManager().deleteSingleTestResult(request.getTestInstance());
+        return session().xdsTestServiceManager().deleteSingleTestResult(request.getEnvironmentName(), session().getMesaSessionName(),request.getTestInstance());
     }
     @Override
     public List<Test> runAllTests(AllTestRequest request) throws Exception {
@@ -1411,6 +1425,27 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements
     public List<DocumentEntryDetail> getOnDemandDocumentEntryDetails(GetOnDemandDocumentEntryDetailsRequest request) throws Exception{
         installCommandContext(request);
         return TransactionUtil.getOnDemandDocumentEntryDetails(request.getSimId());
+    }
+
+
+    @Override
+    public boolean setOdSupplyStateIndex(SetOdSupplyStateIndexRequest request) throws Exception {
+        installCommandContext(request);
+
+        SimId oddsSimId = request.getOddsSimId();
+        SimDb simDb = new SimDb(oddsSimId);
+        RepIndex repIndex = new RepIndex(simDb.getRepositoryIndexFile().toString(), oddsSimId);
+        StoredDocument sd = repIndex.getDocumentCollection().getStoredDocument(request.getDed().getUniqueId());
+        if (sd!=null) {
+            sd.getEntryDetail().setSupplyStateIndex(request.getNewIdx());
+            repIndex.getDocumentCollection().update(sd);
+            repIndex.save();
+            return true;
+        } else {
+            logger.error("setOdSupplyStateIndex Error: StoredDocument is null for the requested DocumentEntry UniqueId:" + request.getDed().getUniqueId());
+        }
+
+       return false;
     }
 
     //------------------------------------------------------------------------

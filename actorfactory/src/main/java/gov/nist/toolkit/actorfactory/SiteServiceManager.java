@@ -79,7 +79,17 @@ public class SiteServiceManager {
 		return ss;
 	}
 
-   public List<String> getSiteNamesWithRIG(String sessionId) throws Exception {
+	public List<String> getSiteNamesWithRepository(String sessionId) throws Exception {
+		logger.debug(sessionId + ": " + "getSiteNamesWithRepository");
+		List<String> ss = new ArrayList<>();
+		for (Site s : new SimCache().getSimManagerForSession(sessionId).getAllSites().asCollection()) {
+			if (s.hasActor(ActorType.REPOSITORY) || s.hasActor(ActorType.REPOSITORY_REGISTRY))
+				ss.add(s.getName());
+		}
+		return ss;
+	}
+
+	public List<String> getSiteNamesWithRIG(String sessionId) throws Exception {
       logger.debug(sessionId + ": " + "getSiteNamesWithRIG");
       List<String> ss = new ArrayList<>();
       for (Site s : new SimCache().getSimManagerForSession(sessionId).getAllSites().asCollection()) {

@@ -96,35 +96,8 @@ public class RetrieveTransaction extends BasicTransaction {
 
 		if (xds_version == BasicTransaction.xds_a) {
 			throw new Exception("XDS.a no longer supported");
-//			retrieve_a(s_ctx, instruction_output);
-		} /* else */ {
-
-			// metadata should be RequestDocumentSetRequest
-//			OMElement metadata_ele = null;
-//			if (metadata != null)
-//				metadata_ele = metadata;
-//			else
-//				metadata_ele = Util.parse_xml(new File(metadata_filename));
-
-//			if (metadata_filename == null && metadata_element == null)
-//				throw new XdsInternalException("No MetadataFile element or Metadata element found for RetrieveDocumentSetRequest Transaction instruction within step " + s_ctx.getRetrievedDocumentsModel("step_id"));
-//
-//			if (metadata_filename != null)
-//				request_ele = Util.parse_xml(new File(metadata_filename));
-
-			// this looks useless, metadata here is the Retrieve request
-//			Metadata m = MetadataParser.noParse(metadata_ele);
-
-
-//			if (use_id.size() > 0)
-//				compileUseIdLinkage(m, use_id);
-//
-//			if (use_xpath.size() > 0)
-//				compileUseXPathLinkage(m, use_xpath);
-//
-//			if (use_repository_unique_id.size() > 0)
-//				compileUseRepositoryUniqueId(m, use_repository_unique_id);
-
+		}
+		{
 			applyLinkage(request_ele);
 
 			reportManagerPreRun(request_ele);
@@ -176,10 +149,7 @@ public class RetrieveTransaction extends BasicTransaction {
 						fatal ("XGR: " + ExceptionUtil.exception_details(e));
 					}
 
-
 				}
-
-
 
 			} else {
 				// The above 'compile' steps may have updated critical SECTIONS of the metadata.  repositoryUniqueId is critical here.
@@ -207,7 +177,6 @@ public class RetrieveTransaction extends BasicTransaction {
 				// assign endpoint
 				parseRepEndpoint(repositoryUniqueId, testConfig.secure);
 
-				//System.out.println(this);
 			}
 
 			RetContext r_ctx = null;
@@ -224,6 +193,7 @@ public class RetrieveTransaction extends BasicTransaction {
 
 				RetrieveB ret_b = new RetrieveB(this, r_ctx, endpoint);
 				ret_b.setUseReportManager(useReportManager);
+				ret_b.setReportManager(getReportManager());
 				ret_b.setAsync(async);
 				ret_b.setUseIG(useIG);
 				ret_b.setExpectedMimeType(this.expected_mime_type);
@@ -232,7 +202,6 @@ public class RetrieveTransaction extends BasicTransaction {
 				ret_b.setSoap12(soap_1_2);
 				ret_b.setReferenceMetadata(reference_metadata);
 				OMElement result = ret_b.run();
-//				testLog.add_name_value(instruction_output, "Result", result);
 				ret_b.validate();
 			}
 			catch (XdsPreparsedException e) {
@@ -336,8 +305,6 @@ public class RetrieveTransaction extends BasicTransaction {
 		HashMap<String, RetrievedDocumentModel> request;
 		request = new HashMap<String, RetrievedDocumentModel>();
 		for (OMElement document_request : XmlUtil.childrenWithLocalName(metadata_ele, "DocumentRequest")) {
-			//			request_list.add(document_request);
-
 			OMElement doc_uid_ele = XmlUtil.firstChildWithLocalName(document_request, "DocumentUniqueId");
 			String doc_uid = doc_uid_ele.getText();
 
@@ -347,16 +314,6 @@ public class RetrieveTransaction extends BasicTransaction {
 			RetrievedDocumentModel rqst = new RetrievedDocumentModel();
 			rqst.setDocUid(doc_uid);
 			rqst.setRepUid(rep_uid);
-
-			//			if (reference_metadata != null) {
-			//			HashMap<String, OMElement> uid_doc_map = reference_metadata.getDocumentUidMap();
-			//			OMElement eo = uid_doc_map.getRetrievedDocumentsModel(doc_uid);
-			//			if (eo == null)
-			//			throw new XdsInternalException("RetrieveTransaction: build_request_info: reference document " + doc_uid + " not available");
-			//			rqst.setHash(reference_metadata.getSlotValue(eo, "hash", 0));
-			//			rqst.setSize(reference_metadata.getSlotValue(eo, "size", 0));
-			//			rqst.setHome(reference_metadata.getHome(eo));
-			//			}
 
 			request.put(doc_uid, rqst);
 
@@ -389,134 +346,10 @@ public class RetrieveTransaction extends BasicTransaction {
 					}
 				}
 			}
-			//			else {
-			//				throw new XdsInternalException("referenced_documents does not contain " + doc_uid +
-			//						"\nit has only " + referenced_documents +
-			//						"\nand linkage contains " + linkage);
-			//			}
 		}
 		return request;
 	}
 
-//	private void retrieve_a(StepContext s_ctx, OMElement instruction_output)
-//	throws XdsInternalException, FactoryConfigurationError,
-//	MetadataException, MetadataValidationException, XdsException {
-//		if ( uri == null && uri_ref == null)
-//			throw new XdsInternalException("No URI or URIRef element within step " + s_ctx.getRetrievedDocumentsModel("step_id"));
-//
-//		s_ctx.add_name_value(instruction_output, "URIRef", uri_ref);
-//
-//		if (uri_ref != null) {
-//			DocDetails docDetails = getDocDetailsFromLogfile(uri_ref);
-//
-//			if (docDetails.uri == null || docDetails.uri.equals("")) {
-//				fail ("URI not available from query results");
-//				return;
-//			}
-//			if (docDetails.size == null || docDetails.size.equals("")) {
-//				fail ("size not available from query results");
-//				return;
-//			}
-//			if (docDetails.hash == null || docDetails.hash.equals("")) {
-//				fail ("hash not available from query results");
-//				return;
-//			}
-//			if (docDetails.mimeType == null || docDetails.mimeType.equals("")) {
-//				fail ("mimeType not available from query results");
-//				return;
-//			}
-//			s_ctx.add_name_value(instruction_output, "URI_from_query", docDetails.uri);
-//			s_ctx.add_name_value(instruction_output, "size_from_query", docDetails.size);
-//			s_ctx.add_name_value(instruction_output, "hash_from_query", docDetails.hash);
-//			s_ctx.add_name_value(instruction_output, "mimeType_from_query", docDetails.mimeType);
-//
-//			RetrieveA reta = new RetrieveA(docDetails.uri);
-//
-//			byte[] contents = reta.retrieve();
-//			String mimeType = reta.get_content_type();
-//			if (reta.has_errors()) {
-//				throw new XdsInternalException(reta.get_errors());
-//			}
-//
-//			s_ctx.add_name_value(instruction_output, "mimeType", mimeType );
-//
-//			String size = String.valueOf(contents.length);
-//			s_ctx.add_name_value(instruction_output, "size", size );
-//
-//			String hash = null;
-//			try {
-//				hash = sha1(contents);
-//				s_ctx.add_name_value(instruction_output, "hash", hash );
-//			}
-//			catch (Exception e) {
-//				throw new XdsInternalException(ExceptionUtil.exception_details(e, "Sha1 computation failed"));
-//			}
-//
-//			if (!docDetails.size.equals(size))
-//				fail("Size does not match, from query = " + docDetails.size + " and from retrieve = " + size);
-//
-//			if (!docDetails.hash.equals(hash))
-//				fail("Hash does not match, from query = " + docDetails.hash + " and from retrieve = " + hash);
-//
-//			if (!docDetails.mimeType.equals(mimeType))
-//				fail("mimeType does not match, from query = " + docDetails.mimeType + " and from retrieve = " + mimeType);
-//
-//
-//		} else {   // uri used
-//
-//			RetrieveA reta = new RetrieveA(uri);
-//
-//			byte[] contents = reta.retrieve();
-//			String content_type = reta.get_content_type();
-//			if (reta.has_errors()) {
-//				throw new XdsInternalException(reta.get_errors());
-//			}
-//
-//			if (expected_mime_type != null && !expected_mime_type.equals(content_type))
-//				fail("Expected mime type of " + expected_mime_type +
-//						" but got " + content_type);
-//
-//			s_ctx.add_name_value(instruction_output, "mimetype", content_type);
-//
-//			s_ctx.add_name_value(instruction_output, "size", String.valueOf(contents.length));
-//			String returned_doc_hash = null;
-//			try {
-//				returned_doc_hash = sha1(contents);
-//				s_ctx.add_name_value(instruction_output, "hash", returned_doc_hash );
-//			}
-//			catch (Exception e) {
-//				throw new XdsInternalException(ExceptionUtil.exception_details(e, "Sha1 computation failed"));
-//
-//			}
-//
-//			if ( !referenced_documents.empty()) {
-//				String key = referenced_documents.keySet().iterator().next();
-//				String filename = referenced_documents.getRetrievedDocumentsModel(key);
-//
-//
-//
-//				try {
-//					FileInputStream fis = new FileInputStream(new File(filename));
-//					byte[] in_bytes = Io.getBytesFromInputStream(fis);
-//					String reference_document_hash = sha1(in_bytes);
-//
-//					if ( !returned_doc_hash.equals(reference_document_hash))
-//						fail("Hash does not match: submitted document has hash of " +
-//								reference_document_hash +
-//								" and returned document has hash of " +
-//								returned_doc_hash);
-//
-//				}
-//				catch (IOException e) {
-//					fail("Cannot read ReferenceDocument: " + filename);
-//				}
-//				catch (Exception e) {
-//					fail("sha1 calculation failed");
-//				}
-//			}
-//
-//		}
-//	}
 
 	protected void parseInstruction(OMElement part) throws XdsInternalException, MetadataException {
 		String part_name = part.getLocalName();
@@ -524,10 +357,6 @@ public class RetrieveTransaction extends BasicTransaction {
 			metadata_filename = testConfig.testplanDir + File.separator + part.getText();
 			testLog.add_name_value(instruction_output, "MetadataFile", metadata_filename);
 		}
-//		else if (part_name.equals("Metadata")) {
-//			metadata_filename = "";
-//			request_ele = part.getFirstElement();
-//		}
 		else if (part_name.equals("ExpectedContents")) {
 			expected_contents = part;
 			testLog.add_name_value(instruction_output, "ExpectedContents", part);
@@ -566,9 +395,6 @@ public class RetrieveTransaction extends BasicTransaction {
 			use_xpath.add(part);
 			testLog.add_name_value(instruction_output, "UseXRef", part);
 		}
-//		else if (part_name.equals("Assertions")) {
-//			parse_assertion_instruction(part);
-//		}
 		else if (part_name.equals("XDSb")) {
 			xds_version = BasicTransaction.xds_b;
 		}
@@ -588,30 +414,10 @@ public class RetrieveTransaction extends BasicTransaction {
 		}
 		else if (part_name.equals("XDSa")) {
 			xds_version = BasicTransaction.xds_a;
-			//throw new XdsException("Retrieve transaction (in xdstest2) does not support XDS.a");
 		} else {
-			//				throw new XdsException("Don't understand instruction " + part_name + " inside step " + s_ctx.getId());
 			parseBasicInstruction(part);
 		}
 	}
-
-	//	private String compute_hash(InputStream is)
-	//	throws MetadataException, XdsIOException, XdsInternalException, XdsConfigurationException, XdsException {
-	//	ByteBuffer buffer = new ByteBuffer();
-	//	int length = 4000;
-	//	byte[] buf = new byte[length];
-	//	int size = 0;
-	//	try { size = is.read(buf, 0, length); }  catch (IOException e) {   throw new XdsIOException("Error when starting to read document content");   }
-	//	buffer.append(buf, 0, size);
-	//	while (size > 0) {
-	//	try { size = is.read(buf, 0, length); }  catch (IOException e) {   throw new XdsIOException("Error reading document content");  }
-	//	buffer.append(buf,0, size);
-	//	}
-	//	try { is.close();  } catch (IOException e) {   throw new XdsIOException("Error closing repository item input stream");   }
-
-	//	// set size, hash, URI into metadata
-	//	return (new Hash()).compute_hash(buffer);
-	//	}
 
 	String sha1(byte[] buf) throws Exception {
 		Sha1Bean sb = new Sha1Bean();
@@ -628,12 +434,5 @@ public class RetrieveTransaction extends BasicTransaction {
    protected String getBasicTransactionName() {
 		return "ret";
 	}
-
-
-
-	//	private String validate_expected_contents(StepContext s_ctx, OMElement result, OMElement instruction_output, int metadata_type, OMElement expected_contents)
-	//	throws XdsInternalException, MetadataException, MetadataValidationException {
-	//	return "";
-	//	}
 
 }

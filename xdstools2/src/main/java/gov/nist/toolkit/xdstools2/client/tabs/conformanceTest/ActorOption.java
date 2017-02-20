@@ -4,6 +4,7 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 import gov.nist.toolkit.actortransaction.client.ActorType;
 import gov.nist.toolkit.results.client.TestInstance;
 import gov.nist.toolkit.xdstools2.client.command.command.GetCollectionMembersCommand;
+import gov.nist.toolkit.xdstools2.client.tabs.GatewayTestsTabs.BuildRGTestOrchestrationButton;
 import gov.nist.toolkit.xdstools2.client.util.ClientUtils;
 import gov.nist.toolkit.xdstools2.shared.command.request.GetCollectionRequest;
 
@@ -77,6 +78,10 @@ public class ActorOption {
 
     public boolean isEdgeServerSut() {
         return false;
+    }
+
+    public boolean isOnDemand() {
+        return optionId.equals(BuildRGTestOrchestrationButton.ON_DEMAND_OPTION);
     }
 
     public boolean isImagingDocSourceSut() {

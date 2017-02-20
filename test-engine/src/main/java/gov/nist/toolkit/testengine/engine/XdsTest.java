@@ -509,6 +509,7 @@ public class XdsTest {
 
 			testConfig.testInstance = testSpec.getTestInstance();
 			System.out.println("Sections: " + testSpec.testPlanFileMap.keySet());
+			boolean isMultiSectionTest = testSpec.testPlanFileMap.keySet().size() > 1;
 			for (String section : testSpec.testPlanFileMap.keySet()) {
                 // This is experimental - this would improve output quality but does it break anything?
                 String sectionLabel = testSpec.getTestInstance() + "-" + ((section.equals(".") ? "default" : section ));
@@ -546,7 +547,13 @@ public class XdsTest {
 				plan.setPreviousSectionLogs(testSpec.sectionLogMapDTO);
 				plan.setTransactionSettings(ts);
 
-				boolean status =  plan.run(testPlanFile);
+				boolean status;
+				try {
+					status = plan.run(testPlanFile, isMultiSectionTest);
+				} catch (MultiSectionTestRejectException e) {
+					// cannot continue automatically
+					break;
+				}
 				// this.status records whether any test failed
                 if (this.status)
     				this.status = status;

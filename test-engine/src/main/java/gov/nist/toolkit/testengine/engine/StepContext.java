@@ -392,6 +392,10 @@ public class StepContext extends BasicContext implements ErrorReportingInterface
 					stsTransaction.setStsQuery(instruction.getAttributeValue(new QName("stsQuery")));
 					transaction = stsTransaction;
 					break;
+				case "Gather":
+					GatherTransaction gatherTransaction = new GatherTransaction(this, instruction, instruction_output);
+					transaction = gatherTransaction;
+					break;
                default:
                   dumpContextIntoOutput(test_step_output);
                   throw new XdsInternalException(

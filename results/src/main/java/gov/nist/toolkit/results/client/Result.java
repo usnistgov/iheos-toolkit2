@@ -42,8 +42,16 @@ public class Result  implements IsSerializable, Serializable {
 	public void append(Result result) throws XdsInternalException {
 		if (!testInstance.getId().equals(result.testInstance.getId()))
 			throw new XdsInternalException("Cannot append Result objects from different tests.");
+
+		// This is a little wierd - since results can be packed into a consolidated file or live in their
+		// own files, conflicts can result.  Take the last one found.
 		for (StepResult stepResult : result.getStepResults()) {
-			stepResults.add(stepResult);
+			StepResult existingStepResult = findStep(stepResult.section, stepResult.stepName);
+			int index = stepResults.indexOf(existingStepResult);
+			if (index > -1) {
+				stepResults.set(index, stepResult);
+			} else
+				stepResults.add(stepResult);
 			if (!stepResult.status)
 				pass = false;
 		}
@@ -118,7 +126,15 @@ public class Result  implements IsSerializable, Serializable {
 		return null;
 	}
 
-    public List<MetadataCollection> getMetadataContent() {
+	public StepResult findStep(String sectionName, String stepName)  {
+		for (StepResult res : stepResults) {
+			if (stepName.equals(res.stepName) && sectionName.equals(res.section))
+				return res;
+		}
+		return null;
+	}
+
+	public List<MetadataCollection> getMetadataContent() {
         List<MetadataCollection> content = new ArrayList<>();
         for (StepResult sr : stepResults) {
             if (sr.hasContent()) {

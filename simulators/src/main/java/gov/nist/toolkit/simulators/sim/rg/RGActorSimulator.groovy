@@ -1,28 +1,25 @@
 package gov.nist.toolkit.simulators.sim.rg
 
 import gov.nist.toolkit.actorfactory.SimDb
+import gov.nist.toolkit.actorfactory.SimManager
 import gov.nist.toolkit.actorfactory.client.SimulatorConfig
 import gov.nist.toolkit.actortransaction.client.Severity
+import gov.nist.toolkit.commondatatypes.MetadataSupport
 import gov.nist.toolkit.configDatatypes.SimulatorProperties
-import gov.nist.toolkit.configDatatypes.client.PatientErrorList
-import gov.nist.toolkit.configDatatypes.client.PatientErrorMap
-import gov.nist.toolkit.configDatatypes.client.Pid
-import gov.nist.toolkit.configDatatypes.client.PidBuilder
-import gov.nist.toolkit.configDatatypes.client.TransactionType
+import gov.nist.toolkit.configDatatypes.client.*
 import gov.nist.toolkit.errorrecording.client.XdsErrorCode.Code
 import gov.nist.toolkit.registrymetadata.Metadata
 import gov.nist.toolkit.registrymsg.registry.AdhocQueryRequest
 import gov.nist.toolkit.registrymsg.registry.AdhocQueryRequestParser
 import gov.nist.toolkit.registrymsg.registry.Response
-import gov.nist.toolkit.registrymsg.repository.RetrieveDocumentResponseGenerator
-import gov.nist.toolkit.registrymsg.repository.RetrievedDocumentModel
-import gov.nist.toolkit.registrymsg.repository.RetrievedDocumentsModel
-import gov.nist.toolkit.commondatatypes.MetadataSupport
+import gov.nist.toolkit.registrymsg.repository.*
 import gov.nist.toolkit.simcommon.client.config.SimulatorConfigElement
 import gov.nist.toolkit.simulators.sim.reg.AdhocQueryResponseGenerator
 import gov.nist.toolkit.simulators.sim.reg.RegistryActorSimulator
 import gov.nist.toolkit.simulators.sim.reg.SoapWrapperRegistryResponseSim
 import gov.nist.toolkit.simulators.support.*
+import gov.nist.toolkit.sitemanagement.client.Site
+import gov.nist.toolkit.sitemanagement.client.TransactionBean
 import gov.nist.toolkit.soap.axis2.Soap
 import gov.nist.toolkit.testengine.engine.RetrieveB
 import gov.nist.toolkit.utilities.xml.XmlUtil
@@ -32,49 +29,48 @@ import gov.nist.toolkit.valsupport.client.ValidationContext
 import gov.nist.toolkit.valsupport.engine.MessageValidatorEngine
 import gov.nist.toolkit.valsupport.message.AbstractMessageValidator
 import groovy.transform.TypeChecked
-
 import org.apache.axiom.om.OMElement
 import org.apache.log4j.Logger
 
 @TypeChecked
 public class RGActorSimulator extends GatewaySimulatorCommon implements MetadataGeneratingSim {
-	SimDb db;
-	static Logger logger = Logger.getLogger(RegistryActorSimulator.class);
-	Metadata m;
-	MessageValidatorEngine mvc;
+   SimDb db;
+   static Logger logger = Logger.getLogger(RegistryActorSimulator.class);
+   Metadata m;
+   MessageValidatorEngine mvc;
 
-	public RGActorSimulator(SimCommon common, DsSimCommon dsSimCommon, SimDb db, SimulatorConfig simulatorConfig) {
-		super(common, dsSimCommon);
-		this.db = db;
-		setSimulatorConfig(simulatorConfig);
-	}
+   public RGActorSimulator(SimCommon common, DsSimCommon dsSimCommon, SimDb db, SimulatorConfig simulatorConfig) {
+      super(common, dsSimCommon);
+      this.db = db;
+      setSimulatorConfig(simulatorConfig);
+   }
 
-	public RGActorSimulator(DsSimCommon dsSimCommon, SimulatorConfig simulatorConfig) {
-		super(dsSimCommon.simCommon, dsSimCommon);
-		this.db = dsSimCommon.simCommon.db;
-        setSimulatorConfig(simulatorConfig);
-	}
+   public RGActorSimulator(DsSimCommon dsSimCommon, SimulatorConfig simulatorConfig) {
+      super(dsSimCommon.simCommon, dsSimCommon);
+      this.db = dsSimCommon.simCommon.db;
+      setSimulatorConfig(simulatorConfig);
+   }
 
-    public RGActorSimulator() {}
+   public RGActorSimulator() {}
 
-	public void init() {}
+   public void init() {}
 
 
-	public boolean run(TransactionType transactionType, MessageValidatorEngine mvc, String validation) throws IOException {
+   public boolean run(TransactionType transactionType, MessageValidatorEngine mvc, String validation) throws IOException {
 
-		this.mvc = mvc;
+      this.mvc = mvc;
 
       switch (transactionType) {
          case TransactionType.XC_RETRIEVE:
 
-			common.vc.isRequest = true;
-			common.vc.isRet = true;
-			common.vc.isXC = true;
-			common.vc.isSimpleSoap = false;
-			common.vc.hasSoap = true;
-			common.vc.hasHttp = true;
+            common.vc.isRequest = true;
+            common.vc.isRet = true;
+            common.vc.isXC = true;
+            common.vc.isSimpleSoap = false;
+            common.vc.hasSoap = true;
+            common.vc.hasHttp = true;
 
-         // this validates through soap wrapper
+            // this validates through soap wrapper
             if (!dsSimCommon.runInitialValidationsAndFaultIfNecessary())
                return false;    // SOAP Fault generated
 
@@ -83,7 +79,7 @@ public class RGActorSimulator extends GatewaySimulatorCommon implements Metadata
                return false;
             }
 
-         // extract retrieve request
+            // extract retrieve request
             AbstractMessageValidator mv = common.getMessageValidatorIfAvailable(SoapMessageValidator.class);
             if (mv == null || !(mv instanceof SoapMessageValidator)) {
                er.err(Code.XDSRegistryError, "RG Internal Error - cannot find SoapMessageValidator instance", "RespondingGatewayActorSimulator", "");
@@ -115,42 +111,55 @@ public class RGActorSimulator extends GatewaySimulatorCommon implements Metadata
                }
             }
 
+            // Find the reposistory to send the retrieve to.  It could be the one integrated with the registry in the
+            // base configuration of the RG or it could be another Repository sim linked as being part of the AD.
+            // This process must be repeated for each retrieve request in the transaction.  All the attempted retrieves are
+            // then consolidated into the response.
+
+            SimulatorConfigElement repUidConfEle = getSimulatorConfig().getConfigEle(SimulatorProperties.repositoryUniqueId);
+            // local repository
+            String configuredRepUid = repUidConfEle.asString();
+            // all other reachable repositories (repUid -> site)
+            Map<String, Site> repositorySiteMap = getLinkedRepositoryMap();
+
+            Map<String, RetrievedDocumentModel> docMap = new HashMap<>();  // all retrieved documents
+            RetrieveRequestModel requestModels = new RetrieveRequestParser(query).getRequest();
+         for (RetrieveItemRequestModel requestModel : requestModels.getModels()) {
+            boolean foundRepository = false;
+            String targetRepoUid = requestModel.getRepositoryId();
+            if (configuredRepUid == targetRepoUid) {
+               // local repository
+               String endpointLabel = (common.isTls()) ? SimulatorProperties.retrieveTlsEndpoint : SimulatorProperties.retrieveEndpoint;
+               String endpoint = getSimulatorConfig().get(endpointLabel).asString();
+               Map<String, RetrievedDocumentModel> aDocMap = singleRetrieve(endpoint, requestModel)
+               if (!aDocMap) {
+                  // error already logged
+                  continue
+               }
+               aDocMap.each { String uid, RetrievedDocumentModel model -> docMap.put(uid, model) }  // add to overall result
+               foundRepository = true
+            } else {
+               for (String repoUid : repositorySiteMap.keySet()) {
+                  if (repoUid == targetRepoUid) {
+                     // linked repository
+                     Site site = repositorySiteMap[repoUid]
+                     String endpoint = site.getRetrieveEndpoint(repoUid, common.isTls(), false)
+                     Map<String, RetrievedDocumentModel> aDocMap = singleRetrieve(endpoint, requestModel)
+                     aDocMap.each { String uid, RetrievedDocumentModel model -> docMap.put(uid, model) }  // add to overall result
+                     if (!aDocMap) {
+                        // error already logged
+                        continue
+                     }
+                     foundRepository = true
+                  }
+               }
+            }
+            if (!foundRepository) {
+               er.err(Code.XDSRepositoryError, "RepositoryUniqueId " + targetRepoUid + " not configured", this, "");
+            }
+         }
+
             if (mvc.hasErrors()) {
-               returnRetrieveError();
-               return false;
-            }
-
-         // getRetrievedDocumentsModel repository endpoint for retrieve
-            String endpointLabel = (common.isTls()) ? SimulatorProperties.retrieveTlsEndpoint : SimulatorProperties.retrieveEndpoint;
-            String endpoint = getSimulatorConfig().get(endpointLabel).asString();
-
-         // issue soap call to repository
-            Soap soap = new Soap();
-            OMElement result = null;
-
-            try {
-               result = soap.soapCall(query, endpoint, true, true, true, SoapActionFactory.ret_b_action, SoapActionFactory.getResponseAction(SoapActionFactory.ret_b_action));
-
-               // add these back in after testing sq
-               //				boolean hasErrors = passOnErrors(result);
-               //
-               //				if (hasErrors)
-               //					return false;
-
-            } catch (Exception e) {
-               er.err(Code.XDSRegistryError, e);
-               returnRetrieveError();
-               return false;
-            }
-
-
-            RetrieveB retb = new RetrieveB(null);
-            Map<String, RetrievedDocumentModel> docMap = null;
-
-            try {
-               docMap = retb.parse_rep_response(result).getMap();
-            } catch (Exception e) {
-               er.err(Code.XDSRegistryError, e);
                returnRetrieveError();
                return false;
             }
@@ -165,8 +174,8 @@ public class RGActorSimulator extends GatewaySimulatorCommon implements Metadata
             StoredDocumentMap stdocmap = new StoredDocumentMap(docMap);
             dsSimCommon.intallDocumentsToAttach(stdocmap);
 
-         // wrap in soap wrapper and http wrapper
-         //			mvc.addMessageValidator("SendResponseInSoapWrapper", new SoapWrapperResponseSim(common, dsSimCommon, result), er);
+            // wrap in soap wrapper and http wrapper
+            //			mvc.addMessageValidator("SendResponseInSoapWrapper", new SoapWrapperResponseSim(common, dsSimCommon, result), er);
 
             OMElement responseEle = new RetrieveDocumentResponseGenerator(models, dsSimCommon.registryErrorList).get()
             mvc.addMessageValidator("SendResponseInSoapWrapper", new SoapWrapperResponseSim(common, dsSimCommon, responseEle), er);
@@ -186,7 +195,7 @@ public class RGActorSimulator extends GatewaySimulatorCommon implements Metadata
             vc.hasSoap = true;
             vc.hasHttp = true;
 
-         // run validations on message
+            // run validations on message
             er.challenge("Scheduling initial validations");
             if (!dsSimCommon.runInitialValidationsAndFaultIfNecessary())
                return false;   // if SOAP Fault generated
@@ -196,7 +205,7 @@ public class RGActorSimulator extends GatewaySimulatorCommon implements Metadata
                return false;
             }
 
-         // extract query
+            // extract query
             AbstractMessageValidator mv = common.getMessageValidatorIfAvailable(SoapMessageValidator.class);
             if (mv == null || !(mv instanceof SoapMessageValidator)) {
                er.err(Code.XDSRegistryError, "RG Internal Error - cannot find SoapMessageValidator instance", "RespondingGatewayActorSimulator", "");
@@ -239,7 +248,7 @@ public class RGActorSimulator extends GatewaySimulatorCommon implements Metadata
                return false;
             }
 
-         // Handle forced error
+            // Handle forced error
             PatientErrorMap patientErrorMap = getSimulatorConfig().getConfigEle(SimulatorProperties.errorForPatient).asPatientErrorMap();
             PatientErrorList patientErrorList = patientErrorMap.get(transactionType.name);
             if (patientErrorList != null && !patientErrorList.empty()) {
@@ -265,17 +274,17 @@ public class RGActorSimulator extends GatewaySimulatorCommon implements Metadata
 
             String home = getSimulatorConfig().get(SimulatorProperties.homeCommunityId).asString();
 
-         // add homeCommunityId
+            // add homeCommunityId
             XCQHomeLabelSim xc = new XCQHomeLabelSim(common, this, home);
             mvc.addMessageValidator("Attach homeCommunityId", xc, newER());
 
-         // Add in errors
+            // Add in errors
             AdhocQueryResponseGenerator queryResponseGenerator = new AdhocQueryResponseGenerator(common, dsSimCommon, rss);
             mvc.addMessageValidator("Attach Errors", queryResponseGenerator, newER());
 
             mvc.run();
 
-         // wrap response in soap wrapper and http wrapper
+            // wrap response in soap wrapper and http wrapper
             mvc.addMessageValidator("ResponseInSoapWrapper", new SoapWrapperRegistryResponseSim(common, dsSimCommon, rss), newER());
 
             mvc.run();
@@ -288,6 +297,53 @@ public class RGActorSimulator extends GatewaySimulatorCommon implements Metadata
             return true;
       }
 
+   }
+
+   // uid -> retrieved model
+   private Map<String, RetrievedDocumentModel> singleRetrieve(String endpoint, RetrieveItemRequestModel requestModel) {
+      Soap soap = new Soap();
+      OMElement request = new RetrieveRequestGenerator(requestModel).get();
+      OMElement result = null;
+
+      er.detail("Forwarding Retreive to " + endpoint);
+
+      try {
+         result = soap.soapCall(request, endpoint, true, true, true, SoapActionFactory.ret_b_action, SoapActionFactory.getResponseAction(SoapActionFactory.ret_b_action));
+      } catch (Exception e) {
+         er.err(Code.XDSRegistryError, e);
+         returnRetrieveError();
+         return null;
+      }
+
+
+      RetrieveB retb = new RetrieveB(null);
+      Map<String, RetrievedDocumentModel> docMap = null;
+
+      try {
+         docMap = retb.parse_rep_response(result).getMap();
+      } catch (Exception e) {
+         er.err(Code.XDSRegistryError, e);
+         returnRetrieveError();
+         return null;  // indicates error
+      }
+
+      return docMap;
+   }
+
+   // repUId -> Site
+   private Map<String, Site> getLinkedRepositoryMap() {
+      SimManager simMgr = new SimManager("ignored");
+      List<Site> linkedRepositorySites = []
+      try {
+         linkedRepositorySites = simMgr.getSites(getSimulatorConfig().getConfigEle(SimulatorProperties.repositories).asList());
+      } catch (Exception e) {}
+      // map from repUID to the Site that holds it - bascially where to forward the request
+      Map<String, Site> repositorySiteMap = new HashMap<>();
+      for (Site site : linkedRepositorySites) {
+         String repUid = site.getRepositoryUniqueId(TransactionBean.RepositoryType.REPOSITORY);
+         repositorySiteMap.put(repUid, site);
+      }
+      return repositorySiteMap
    }
 
    private void returnRetrieveError() {

@@ -259,7 +259,9 @@ public class SimulatorProperties {
     public static final String                           creationTime = "Creation Time";
 
     public static final String                           respondingGateways = "Responding Gateways";
-    
+
+    public static final String                           repositories = "Repositories";
+
     public static final String                           respondingImagingGateways = "Responding Imaging Gateways";
     
     public static final String imagingDocumentSources = "Imaging Document Sources";

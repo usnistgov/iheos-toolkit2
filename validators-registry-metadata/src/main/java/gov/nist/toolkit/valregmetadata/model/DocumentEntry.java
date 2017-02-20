@@ -96,4 +96,6 @@ public class DocumentEntry extends AbstractRegistryObject implements TopLevelObj
 		return isClassifiedAs(MetadataSupport.XDSDocumentEntry_limitedMetadata_uuid);
 	}
 
+	public boolean isODDE() { return "urn:uuid:34268e47-fdf5-41a6-ba33-82133c465248".equals(getObjectType()); }
+
 }

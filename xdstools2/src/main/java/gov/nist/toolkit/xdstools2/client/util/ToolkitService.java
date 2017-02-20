@@ -178,6 +178,7 @@ public interface ToolkitService extends RemoteService  {
 	List<RepositoryStatus> getDashboardRepositoryData(CommandContext context) throws Exception;
 
 	List<String> getSiteNamesWithRG(CommandContext context) throws Exception;
+	List<String> getSiteNamesWithRepository(CommandContext context) throws Exception;
 	List<String> getSiteNamesWithRIG(CommandContext context) throws Exception;
 	List<String> getSiteNamesWithIDS(CommandContext context) throws Exception;
 	List<String> getSiteNamesByTranType(GetSiteNamesByTranTypeRequest request) throws Exception;
@@ -256,6 +257,7 @@ public interface ToolkitService extends RemoteService  {
 	Result register(RegisterRequest registerRequest) throws Exception;
 	Map<String, String> registerWithLocalizedTrackingInODDS(RegisterRequest registerRequest) throws Exception;
 	List<DocumentEntryDetail> getOnDemandDocumentEntryDetails(GetOnDemandDocumentEntryDetailsRequest request) throws Exception;
+	boolean setOdSupplyStateIndex(SetOdSupplyStateIndexRequest request) throws Exception;
 
 	//------------------------------------------------------------------------
 	//------------------------------------------------------------------------
@@ -279,4 +281,5 @@ public interface ToolkitService extends RemoteService  {
 	boolean indexTestKits(CommandContext context);
 
     RawResponse buildRecTestOrchestration(BuildRecTestOrchestrationRequest request) throws Exception;
+
 }

@@ -482,44 +482,6 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner, TestTa
 		}
 	}
 
-//	private class RunAllSectionsClickHandler implements ClickHandler, TestIterator {
-//		TestInstance testInstance;
-//		List<TestInstance> sections = new ArrayList<TestInstance>();  // One TestInstance per section
-//
-//		RunAllSectionsClickHandler(TestInstance testInstance) { this.testInstance = testInstance; }
-//
-//		@Override
-//		public void onClick(ClickEvent clickEvent) {
-//			clickEvent.preventDefault();
-//			clickEvent.stopPropagation();
-//
-//			new GetTestSectionsDAOsCommand(){
-//				@Override
-//				public void onComplete(List<SectionDefinitionDAO> sectionDefinitionDAOs) {
-//					sections.clear();
-//					for (SectionDefinitionDAO dao : sectionDefinitionDAOs) {
-//						TestInstance ti = testInstance.copy();
-//						ti.setSection(dao.getSectionName());
-//						ti.setSutInitiated(dao.isSutInitiated());
-//					}
-//					onDone(null);
-//				}
-//			}.run(new GetTestSectionsDAOsRequest(getCommandContext(),testInstance));
-//		}
-//
-//		@Override
-//		public void onDone(TestInstance unused) {
-//			testsHeaderView.showRunningMessage(true);
-//			if (sections.size() == 0) {
-//				testsHeaderView.showRunningMessage(false);
-//				return;
-//			}
-//			TestInstance next = sections.get(0);
-//			sections.remove(0);
-//			runSection(next, this);
-//		}
-//	}
-
 	@Override
 	public DeleteAllClickHandler getDeleteAllClickHandler() {
 		return new DeleteAllClickHandler(currentActorOption);
@@ -592,7 +554,7 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner, TestTa
 
 
 
-	public void runTest(final TestInstance testInstance, final TestIterator testIterator) {
+	public void runTest(final TestInstance testInstance, final Map<String, String> sectionParms, final TestIterator testIterator) {
 
 		getSiteToIssueTestAgainst().setTls(orchInit.isTls());
 
@@ -617,7 +579,7 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner, TestTa
 							getSiteToIssueTestAgainst().setSaml(true);
 							getSiteToIssueTestAgainst().setStsAssertion(result);
 
-							runTestInstance(testInstance, null);
+							runTestInstance(testInstance, null, null);
 						}
 					}.run(new GetStsSamlAssertionRequest(getCommandContext(),xuaUsername,stsTestInstance,stsSpec,params));
 				} catch (Exception ex) {
@@ -625,18 +587,23 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner, TestTa
 				}
 			} else {
 				// Reuse SAML when running the entire Actor test collection OR as set by the Xua option
-				runTestInstance(testInstance, testIterator);
+				runTestInstance(testInstance, null, testIterator);
 			}
 
 		} else {
 			// No SAML
 			getSiteToIssueTestAgainst().setSaml(false);
-			runTestInstance(testInstance, testIterator);
+			runTestInstance(testInstance, sectionParms, testIterator);
 		}
 	}
 
-	private void runTestInstance(final TestInstance testInstance, final TestIterator testIterator) {
+	private void runTestInstance(final TestInstance testInstance, final Map<String, String> sectionParms, final TestIterator testIterator) {
 		Map<String, String> parms = initializeTestParameters();
+		if (sectionParms != null) {
+			for (String name : sectionParms.keySet()) {
+				parms.put(name, sectionParms.get(name));
+			}
+		}
 		if (parms == null) return;
 		try {
 			new RunTestCommand(){
@@ -650,7 +617,7 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner, TestTa
 					if (testIterator != null)
 						testIterator.onDone(testInstance);
 				}
-			}.run(new RunTestRequest(getCommandContext(),getSiteToIssueTestAgainst(),testInstance,parms,true));
+			}.run(new RunTestRequest(getCommandContext(),getSiteToIssueTestAgainst(),testInstance, parms,true));
 		} catch (Exception e) {
 			new PopupMessage(e.getMessage());
 		}
@@ -753,4 +720,6 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner, TestTa
 			};
 		}
 	}
+
+	public ActorOption getCurrentActorOption() { return currentActorOption; }
 }

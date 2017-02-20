@@ -1,0 +1,11 @@
+<TestPlan>
+    <Test>15829/Publish_New_Document</Test>
+    <SUTInitiates/>
+    <TestStep id="gather">
+        <Goal>
+            Wait for the On Demand Responding Gateway to update the content so the
+            next retrieve sees the new content.
+        </Goal>
+<!--        <Gather prompt="Done"/>  -->
+    </TestStep>
+</TestPlan>

@@ -35,7 +35,7 @@ public class RunClickHandler implements ClickHandler {
 
         String msg = testContext.verifyTestContext();
         if (msg == null)
-            testRunner.runTest(testInstance, null);
+            testRunner.runTest(testInstance, null, null);
         else {
             if (testContextView != null)
                 testContextView.launchDialog(msg);
