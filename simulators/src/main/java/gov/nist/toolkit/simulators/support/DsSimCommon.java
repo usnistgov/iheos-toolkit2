@@ -3,6 +3,7 @@ package gov.nist.toolkit.simulators.support;
 import gov.nist.toolkit.actorfactory.client.SimulatorConfig;
 import gov.nist.toolkit.commondatatypes.MetadataSupport;
 import gov.nist.toolkit.errorrecording.common.XdsErrorCode;
+import gov.nist.toolkit.errorrecording.xml.XMLErrorRecorder;
 import gov.nist.toolkit.errorrecording.xml.XMLErrorRecorderBuilder;
 import gov.nist.toolkit.errorrecording.ErrorRecorder;
 import gov.nist.toolkit.errorrecording.gwt.GwtErrorRecorder;
@@ -91,10 +92,9 @@ public class DsSimCommon {
      */
     //TODO XMLErrorRecorder
     public void runInitialValidations() throws IOException {
-        XMLErrorRecorderBuilder xerb = new XMLErrorRecorderBuilder();
-        runErrorRecorder((ErrorRecorder)xerb);
-        // GwtErrorRecorderBuilder gerb = new GwtErrorRecorderBuilder();
-        // runErrorRecorder((ErrorRecorder)gerb);
+        // XMLErrorRecorderBuilder erb = new XMLErrorRecorderBuilder();
+         GwtErrorRecorderBuilder erb = new GwtErrorRecorderBuilder();
+         runErrorRecorder(erb.buildNewErrorRecorder());
     }
 
     /**
@@ -493,32 +493,34 @@ public class DsSimCommon {
      * @param multipartOk
      * @throws IOException
      */
-    public void sendHttpResponse(OMElement env, ErrorRecorder er, boolean multipartOk)  {
-        if (simCommon.responseSent) {
-            // this should never happen
-            logger.fatal(ExceptionUtil.here("Attempted to send second response"));
-            return;
-        }
-        simCommon.responseSent = true;
-        String respStr;
-        logger.info("vc is " + simCommon.vc);
-        logger.info("multipartOk is " + multipartOk);
-        if (simCommon.vc != null && simCommon.vc.requiresMtom() && multipartOk) {
-            StringBuffer body = wrapSoapEnvelopeInMultipartResponseBinary(env, er);
+    public void sendHttpResponse(OMElement env, ErrorRecorder er, boolean multipartOk) {
+        if (er instanceof GwtErrorRecorder) {
 
-            respStr = body.toString();
-        } else {
-            respStr = new OMFormatter(env).toString();
-        }
-        try {
-            if (simCommon.db != null)
-                Io.stringToFile(simCommon.db.getResponseBodyFile(), respStr);
-            simCommon.os.write(respStr.getBytes());
-            if (simCommon.vc.requiresMtom()) {
-                this.writeAttachments(simCommon.os, er);
-                simCommon.os.write(getTrailer().toString().getBytes());
+            if (simCommon.responseSent) {
+                // this should never happen
+                logger.fatal(ExceptionUtil.here("Attempted to send second response"));
+                return;
             }
-            simCommon.generateLog();
+            simCommon.responseSent = true;
+            String respStr;
+            logger.info("vc is " + simCommon.vc);
+            logger.info("multipartOk is " + multipartOk);
+            if (simCommon.vc != null && simCommon.vc.requiresMtom() && multipartOk) {
+                StringBuffer body = wrapSoapEnvelopeInMultipartResponseBinary(env, er);
+
+                respStr = body.toString();
+            } else {
+                respStr = new OMFormatter(env).toString();
+            }
+            try {
+                if (simCommon.db != null)
+                    Io.stringToFile(simCommon.db.getResponseBodyFile(), respStr);
+                simCommon.os.write(respStr.getBytes());
+                if (simCommon.vc.requiresMtom()) {
+                    this.writeAttachments(simCommon.os, er);
+                    simCommon.os.write(getTrailer().toString().getBytes());
+                }
+                simCommon.generateLog();
 //            SimulatorConfigElement callbackElement = getSimulatorConfig().getRetrievedDocumentsModel(SimulatorConfig.TRANSACTION_NOTIFICATION_URI);
 //            if (callbackElement != null) {
 //                String callbackURI = callbackElement.asString();
@@ -526,10 +528,20 @@ public class DsSimCommon {
 //                    new Callback().notify(simCommon.db, getSimulatorConfig(), callbackURI);
 //                }
 //            }
-        } catch (IOException e) {
-            logger.fatal(ExceptionUtil.exception_details(e));
-        }
+            } catch (IOException e) {
+                logger.fatal(ExceptionUtil.exception_details(e));
+            }
+
+        } // end if instance of GWTErrorRecorder
+        if (er instanceof XMLErrorRecorder){
+            try {
+                simCommon.generateLog(er);
+            } catch (IOException e) {
+                logger.fatal(ExceptionUtil.exception_details(e));
+            }
+        } // end instance of XMLErrorRecorder
     }
+
     private void writeAttachments(OutputStream os, ErrorRecorder er) {
         String boundary = "MIMEBoundary112233445566778899";
         String rn = "\r\n";

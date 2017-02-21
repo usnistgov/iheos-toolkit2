@@ -157,12 +157,14 @@ public class SimCommon {
 		return mvr.hasErrors();
 	}
 
+	/**
+	 * Writes the log to file
+	 * @throws IOException
+	 */
 	void generateLog() throws IOException {
 		if (mvc == null || db == null)
 			return;
 		StringBuffer buf = new StringBuffer();
-
-		//		buf.append(mvc.toString());
 
 		Enumeration<ValidationStep> steps = mvc.getValidationStepEnumeration();
 		while (steps.hasMoreElements()) {
@@ -174,9 +176,15 @@ public class SimCommon {
 				buf.append(ger);
 			}
 		}
-
-
 		Io.stringToFile(db.getLogFile(), buf.toString());
+	}
+
+	//TODO this is a new function - Diane
+	// Writes contents from an ErrorRecorder instead of SimCommon context
+	void generateLog(ErrorRecorder er) throws IOException {
+		System.out.println("Log:\n" + er.toString());
+
+		Io.stringToFile(db.getLogFile(), er.toString());
 	}
 
 	/**
