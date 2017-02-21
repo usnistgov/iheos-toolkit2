@@ -1,0 +1,40 @@
+<TestPlan>
+	<Test>ids_4812/Case 7: Empty Study and Series Instance UIDs</Test>
+	<TestStep id="retrieve-7">
+		<Goal>Imaging Document Set Retrieve exception: Empty Study and Series Instance UIDs</Goal>
+		<Goal>RegistryReponse status=urn:oasis:names:tc:ebxml-regrep:ResponseStatusType:Failure</Goal>
+		<ExpectedStatus>Failure</ExpectedStatus>
+		<ImagingDocSetRetrieveTransaction>
+			<MetadataFile>RAD-69Request.xml</MetadataFile>
+		</ImagingDocSetRetrieveTransaction>
+	</TestStep>
+	<TestStep id="errors-7">
+		<Goal>Empty Study Instance UID error validation</Goal>
+		<Goal>RegistryErrorList element SHALL contain one or more RegistryError elements</Goal>
+		<Standard>
+			<ResponseBody>
+				<xdsb:RetrieveDocumentSetResponse
+					xmlns:xdsb="urn:ihe:iti:xds-b:2007">
+					<rs:RegistryResponse xmlns:rs="urn:oasis:names:tc:ebxml-regrep:xsd:rs:3.0"
+						status="urn:oasis:names:tc:ebxml-regrep:ResponseStatusType:Failure">
+						<!--
+						<rs:RegistryErrorList>
+							<rs:RegistryError
+								codeContext="RetrieveImagingDocumentSetRequest StudyRequest element : must have studyInstanceUID attribute"
+								errorCode="XDSIRequestError" location="RetrieveImagingDocumentSetRequestValidator"
+								severity="urn:oasis:names:tc:ebxml-regrep:ErrorSeverityType:Error" />
+						</rs:RegistryErrorList>
+						-->
+					</rs:RegistryResponse>
+				</xdsb:RetrieveDocumentSetResponse>
+			</ResponseBody>
+		</Standard>
+		<XmlDetailTransaction>
+			<Assertions>
+				<Assert id="Returned doc(s)-7" process="registryErrorListNotEmpty">
+					<TestResponse testDir="THIS" step="retrieve-7" />
+				</Assert>
+			</Assertions>
+		</XmlDetailTransaction>
+	</TestStep>
+</TestPlan>

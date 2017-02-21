@@ -1,0 +1,7 @@
+case-0_Comparison_Transaction
+case-1_Unknown_SOP_Instance_UID
+case-2_UID_wrong_series
+case-3_UID_wrong_study
+case-4_Study_UID_empty
+case-5_Series_UID_empty
+case-6_Study_Series_UID_empty

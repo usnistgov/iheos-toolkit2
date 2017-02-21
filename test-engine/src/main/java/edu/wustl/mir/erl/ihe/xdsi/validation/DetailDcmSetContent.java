@@ -90,6 +90,9 @@ public class DetailDcmSetContent extends DetailDcmSequenceContent  {
             list.add(attributesAndHash);
          }
          return list;
+      } catch (Exception e) {
+         String em = e.getMessage();
+         return list;
       } finally {
          if (din != null) din.close();
       }
