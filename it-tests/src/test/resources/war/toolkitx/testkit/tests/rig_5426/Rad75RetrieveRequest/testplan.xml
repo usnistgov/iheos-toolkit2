@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<TestPlan>
+	<!-- Data for this test is loaded by xxxx -->
+	<Test>rig_5426/retrieve</Test>
+	<TestStep id="retrieve">
+		<Goal>Imaging Document Set Retrieve unknown IDS</Goal>
+		<ExpectedStatus>Failure</ExpectedStatus>
+		<ImagingDocSetRigRetrieveTransaction>
+			<MetadataFile>RAD-75Request.xml</MetadataFile>
+		</ImagingDocSetRigRetrieveTransaction>
+	</TestStep>
+	
+</TestPlan>

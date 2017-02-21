@@ -1,0 +1,53 @@
+<xdsiB:RetrieveImagingDocumentSetRequest
+    xmlns:xdsiB="urn:ihe:rad:xdsi-b:2009">
+  <!-- Initiating Imaging Gateway iig_5409: One image in Community A, 6 images in Community B -->
+  <!-- Request a study with one image from Community A -->
+  <xdsiB:StudyRequest studyInstanceUID="1.3.6.1.4.1.21367.201599.1.201606010958048">
+    <xdsiB:SeriesRequest seriesInstanceUID="1.3.6.1.4.1.21367.201599.2.201606010958048">
+      <xdsb:DocumentRequest xmlns:xdsb="urn:ihe:iti:xds-b:2007">
+        <xdsb:HomeCommunityId>urn:oid:1.3.6.1.4.1.21367.13.70.101</xdsb:HomeCommunityId>
+        <xdsb:RepositoryUniqueId>1.3.6.1.4.1.21367.13.71.101</xdsb:RepositoryUniqueId>
+        <xdsb:DocumentUniqueId>1.3.6.1.4.1.21367.201599.3.201606010958048.1</xdsb:DocumentUniqueId>
+      </xdsb:DocumentRequest>
+    </xdsiB:SeriesRequest>
+  </xdsiB:StudyRequest>
+
+  <!-- Request a study with 6 images from Community B -->
+  <xdsiB:StudyRequest studyInstanceUID="1.3.6.1.4.1.21367.201599.1.201606010958052">
+    <xdsiB:SeriesRequest seriesInstanceUID="1.3.6.1.4.1.21367.201599.2.201606010958052">
+      <xdsb:DocumentRequest xmlns:xdsb="urn:ihe:iti:xds-b:2007">
+        <xdsb:HomeCommunityId>urn:oid:1.3.6.1.4.1.21367.13.70.102</xdsb:HomeCommunityId>
+        <xdsb:RepositoryUniqueId>1.3.6.1.4.1.21367.13.71.102</xdsb:RepositoryUniqueId>
+        <xdsb:DocumentUniqueId>1.3.6.1.4.1.21367.201599.3.201606010958053.1</xdsb:DocumentUniqueId>
+      </xdsb:DocumentRequest>
+      <xdsb:DocumentRequest xmlns:xdsb="urn:ihe:iti:xds-b:2007">
+        <xdsb:HomeCommunityId>urn:oid:1.3.6.1.4.1.21367.13.70.102</xdsb:HomeCommunityId>
+        <xdsb:RepositoryUniqueId>1.3.6.1.4.1.21367.13.71.102</xdsb:RepositoryUniqueId>
+        <xdsb:DocumentUniqueId>1.3.6.1.4.1.21367.201599.3.201606010958053.2</xdsb:DocumentUniqueId>
+      </xdsb:DocumentRequest>
+      <xdsb:DocumentRequest xmlns:xdsb="urn:ihe:iti:xds-b:2007">
+        <xdsb:HomeCommunityId>urn:oid:1.3.6.1.4.1.21367.13.70.102</xdsb:HomeCommunityId>
+        <xdsb:RepositoryUniqueId>1.3.6.1.4.1.21367.13.71.102</xdsb:RepositoryUniqueId>
+        <xdsb:DocumentUniqueId>1.3.6.1.4.1.21367.201599.3.201606010958053.3</xdsb:DocumentUniqueId>
+      </xdsb:DocumentRequest>
+      <xdsb:DocumentRequest xmlns:xdsb="urn:ihe:iti:xds-b:2007">
+        <xdsb:HomeCommunityId>urn:oid:1.3.6.1.4.1.21367.13.70.102</xdsb:HomeCommunityId>
+        <xdsb:RepositoryUniqueId>1.3.6.1.4.1.21367.13.71.102</xdsb:RepositoryUniqueId>
+        <xdsb:DocumentUniqueId>1.3.6.1.4.1.21367.201599.3.201606010958053.4</xdsb:DocumentUniqueId>
+      </xdsb:DocumentRequest>
+      <xdsb:DocumentRequest xmlns:xdsb="urn:ihe:iti:xds-b:2007">
+        <xdsb:HomeCommunityId>urn:oid:1.3.6.1.4.1.21367.13.70.102</xdsb:HomeCommunityId>
+        <xdsb:RepositoryUniqueId>1.3.6.1.4.1.21367.13.71.102</xdsb:RepositoryUniqueId>
+        <xdsb:DocumentUniqueId>1.3.6.1.4.1.21367.201599.3.201606010958053.5</xdsb:DocumentUniqueId>
+      </xdsb:DocumentRequest>
+      <xdsb:DocumentRequest xmlns:xdsb="urn:ihe:iti:xds-b:2007">
+        <xdsb:HomeCommunityId>urn:oid:1.3.6.1.4.1.21367.13.70.102</xdsb:HomeCommunityId>
+        <xdsb:RepositoryUniqueId>1.3.6.1.4.1.21367.13.71.102</xdsb:RepositoryUniqueId>
+        <xdsb:DocumentUniqueId>1.3.6.1.4.1.21367.201599.3.201606010958053.6</xdsb:DocumentUniqueId>
+      </xdsb:DocumentRequest>
+    </xdsiB:SeriesRequest>
+  </xdsiB:StudyRequest>
+  <xdsiB:TransferSyntaxUIDList>
+    <xdsiB:TransferSyntaxUID>1.2.840.10008.1.2.1</xdsiB:TransferSyntaxUID>
+  </xdsiB:TransferSyntaxUIDList>
+</xdsiB:RetrieveImagingDocumentSetRequest>

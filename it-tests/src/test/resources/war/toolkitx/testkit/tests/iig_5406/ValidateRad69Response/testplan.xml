@@ -1,0 +1,35 @@
+<TestPlan>
+  <Test>iig_5406/validate-R</Test>
+  <TestStep id="validate-rad69-response">
+    <Goal>Correct RetrieveDocumentSetResponse SOAP values</Goal>
+    <Goal>RegistryErrorList element SHALL contain one or more RegistryError elements</Goal>
+    <Goal>No images are returned by the Initiating Imaging Gateway</Goal>
+    <Standard>
+      <ResponseBody>
+        <xdsb:RetrieveDocumentSetResponse
+            xmlns:xdsb="urn:ihe:iti:xds-b:2007">
+          <rs:RegistryResponse xmlns:rs="urn:oasis:names:tc:ebxml-regrep:xsd:rs:3.0"
+                               status="urn:oasis:names:tc:ebxml-regrep:ResponseStatusType:Failure">
+<!--            <rs:RegistryErrorList>
+              <rs:RegistryError
+                  codeContext="Don't have configuration for RG with homeCommunityId urn:oid:1.3.6.1.4.1.21367.13.70.102.999"
+                  errorCode="XDSRepositoryError" location="XcRetrieveImgSim"
+                  severity="urn:oasis:names:tc:ebxml-regrep:ErrorSeverityType:Error"/>
+            </rs:RegistryErrorList>-->
+          </rs:RegistryResponse>
+        </xdsb:RetrieveDocumentSetResponse>
+      </ResponseBody>
+    </Standard>
+    <XmlDetailTransaction>
+      <Assertions>
+        <Assert id="Returned doc(s)" process="sameRetImgs">
+          <TestResponse testDir="../Rad69RetrieveRequest" step="retrieve"/>
+        </Assert>
+        <Assert id="Registry Errors" process="registryErrorListNotEmpty">
+          <TestResponse testDir="../Rad69RetrieveRequest" step="retrieve"/>
+        </Assert>
+      </Assertions>
+    </XmlDetailTransaction>
+  </TestStep>
+
+</TestPlan>
