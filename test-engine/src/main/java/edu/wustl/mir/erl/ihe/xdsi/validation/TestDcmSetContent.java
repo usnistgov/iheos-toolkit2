@@ -3,18 +3,15 @@
  */
 package edu.wustl.mir.erl.ihe.xdsi.validation;
 
-import java.util.List;
-
 import org.apache.commons.lang3.NotImplementedException;
-import org.apache.log4j.Logger;
+
+import java.util.List;
 
 /**
  * Base class for test comparing two sets of DICOM documents.
  */
 public class TestDcmSetContent extends Test {
-   
-   private static Logger log = null;
-   
+
    /**
     * @param testPfns {@code List<String>} of absolute pfns for test image files.
     * @param stdPfns {@code List<String>} of absolute pfns for std image files.

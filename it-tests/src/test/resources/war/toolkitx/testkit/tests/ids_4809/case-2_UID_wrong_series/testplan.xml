@@ -1,0 +1,15 @@
+<TestPlan>
+	<Test>ids_4809/2</Test>
+	<TestStep id="case-2-retrieve">
+      <Goal>WADO Retrieve Failure, SOP Instance UID in wrong series</Goal>
+      <ExpectedStatus>Failure</ExpectedStatus>
+      <ExpectedErrorCode>404</ExpectedErrorCode>
+		<WADOTransaction>
+			<Parameters>
+			studyUID=1.3.6.1.4.1.21367.201599.1.201604020954048
+			seriesUID=1.3.6.1.4.1.21367.201599.2.201604020954048
+			objectUID=1.3.6.1.4.1.21367.201599.3.201604020954048.22
+			</Parameters>
+		</WADOTransaction>
+	</TestStep>
+</TestPlan>
