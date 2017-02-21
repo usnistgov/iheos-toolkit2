@@ -59,7 +59,7 @@ class RepSpec extends ToolkitSpecification {
     def setup() {
     }
 
-    def 'ids_4810 RAD-69 single image retrieve test' () {
+    def 'ids tests' () {
         setup: 'ids orchestration request is set up'
         IdsOrchestrationRequest request = new IdsOrchestrationRequest()
         request.environmentName = envName
@@ -88,7 +88,7 @@ class RepSpec extends ToolkitSpecification {
         Sites sites = simManager.getAllSites(new Sites())
         Site sutSite = sites.getSite(siteSpec.name)
 
-        TestInstance testInstance = new TestInstance('ids_4810')
+        TestInstance testInstance = new TestInstance(testId)
         List<String> sections = []
         Map<String, String> params = new HashMap<>()
 
@@ -96,6 +96,16 @@ class RepSpec extends ToolkitSpecification {
 
         then: 'Returned test status is pass'
         testOverviewDTO.pass
+
+        where: "tests to run include:"
+        testId         || valid
+        "ids_4805"     || true
+        "ids_4806"     || true
+        "ids_4809"     || true
+        "ids_4810"     || true
+        "ids_4811"     || true
+        "ids_4812"     || true
+        "ids_4820"     || true
     }
 
 }
