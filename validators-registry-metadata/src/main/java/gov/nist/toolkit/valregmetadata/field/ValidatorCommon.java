@@ -1,10 +1,10 @@
 package gov.nist.toolkit.valregmetadata.field;
 
 import gov.nist.toolkit.errorrecording.ErrorRecorder;
-import gov.nist.toolkit.errorrecording.client.GwtValidatorErrorItem;
-import gov.nist.toolkit.errorrecording.client.XdsErrorCode;
-import gov.nist.toolkit.errorrecording.client.XdsErrorCode.Code;
-import gov.nist.toolkit.errorrecording.client.assertions.Assertion;
+import gov.nist.toolkit.errorrecording.common.XdsErrorCode;
+import gov.nist.toolkit.errorrecording.gwt.client.GwtValidatorErrorItem;
+import gov.nist.toolkit.errorrecording.common.XdsErrorCode.Code;
+import gov.nist.toolkit.errorrecording.xml.assertions.Assertion;
 import gov.nist.toolkit.registrymetadata.Metadata;
 import gov.nist.toolkit.registrymsg.registry.RegistryErrorListGenerator;
 import gov.nist.toolkit.commondatatypes.MetadataSupport;
@@ -236,6 +236,11 @@ public class ValidatorCommon implements ErrorRecorder {
 
 	@Override
 	public void report(String name, String found) {
+
+	}
+
+	@Override
+	public void success(String dts, String name, String found, String expected, String RFC) {
 
 	}
 

@@ -5,7 +5,7 @@ import gov.nist.toolkit.actorfactory.client.SimulatorConfig
 import gov.nist.toolkit.configDatatypes.SimulatorProperties
 import gov.nist.toolkit.configDatatypes.client.TransactionType
 import gov.nist.toolkit.errorrecording.ErrorRecorder
-import gov.nist.toolkit.errorrecording.client.XdsErrorCode
+import gov.nist.toolkit.errorrecording.common.XdsErrorCode
 import gov.nist.toolkit.registrymsg.repository.RetImgDocSetReqParser
 import gov.nist.toolkit.registrymsg.repository.RetrieveDocumentResponseGenerator
 import gov.nist.toolkit.registrymsg.repository.RetrieveImageRequestGenerator

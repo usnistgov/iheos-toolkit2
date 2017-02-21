@@ -1,7 +1,7 @@
 package gov.nist.toolkit.valregmetadata.object.test.direct
 
 import gov.nist.toolkit.errorrecording.ErrorRecorder
-import gov.nist.toolkit.errorrecording.TextErrorRecorder
+import gov.nist.toolkit.errorrecording.text.TextErrorRecorder
 import gov.nist.toolkit.registrymetadata.Metadata
 import gov.nist.toolkit.registrymetadata.MetadataParser
 import gov.nist.toolkit.utilities.xml.Util

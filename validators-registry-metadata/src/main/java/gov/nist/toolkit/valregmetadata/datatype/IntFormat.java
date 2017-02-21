@@ -1,9 +1,7 @@
 package gov.nist.toolkit.valregmetadata.datatype;
 
 import gov.nist.toolkit.errorrecording.ErrorRecorder;
-import gov.nist.toolkit.errorrecording.client.XdsErrorCode;
-import gov.nist.toolkit.errorrecording.client.assertions.Assertion;
-import gov.nist.toolkit.errorrecording.client.assertions.AssertionLibrary;
+import gov.nist.toolkit.errorrecording.common.XdsErrorCode;
 import gov.nist.toolkit.valregmetadata.field.ValidatorCommon;
 
 public class IntFormat extends FormatValidator {

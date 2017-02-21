@@ -1,10 +1,9 @@
 package gov.nist.toolkit.valregmetadata.datatype;
 
 import gov.nist.toolkit.errorrecording.ErrorRecorder;
-import gov.nist.toolkit.errorrecording.client.XdsErrorCode;
-import gov.nist.toolkit.errorrecording.client.assertions.Assertion;
-import gov.nist.toolkit.errorrecording.client.assertions.AssertionLibrary;
-import gov.nist.toolkit.registrymetadata.client.Document;
+import gov.nist.toolkit.errorrecording.common.XdsErrorCode;
+import gov.nist.toolkit.errorrecording.xml.assertions.Assertion;
+import gov.nist.toolkit.errorrecording.xml.assertions.AssertionLibrary;
 import gov.nist.toolkit.valregmetadata.field.ValidatorCommon;
 import gov.nist.toolkit.valregmetadata.object.DocumentEntry;
 import gov.nist.toolkit.valregmetadata.object.Folder;

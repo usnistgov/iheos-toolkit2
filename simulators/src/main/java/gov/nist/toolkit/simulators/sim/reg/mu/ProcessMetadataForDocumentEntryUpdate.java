@@ -2,8 +2,8 @@ package gov.nist.toolkit.simulators.sim.reg.mu;
 
 import gov.nist.toolkit.common.datatypes.Hl7Date;
 import gov.nist.toolkit.errorrecording.ErrorRecorder;
-import gov.nist.toolkit.errorrecording.client.XdsErrorCode;
-import gov.nist.toolkit.errorrecording.client.XdsErrorCode.Code;
+import gov.nist.toolkit.errorrecording.common.XdsErrorCode;
+import gov.nist.toolkit.errorrecording.common.XdsErrorCode.Code;
 import gov.nist.toolkit.registrymetadata.Metadata;
 import gov.nist.toolkit.simulators.sim.reg.store.*;
 import gov.nist.toolkit.simulators.sim.reg.store.RegIndex.AssocType;

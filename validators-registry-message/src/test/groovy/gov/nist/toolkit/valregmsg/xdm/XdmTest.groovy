@@ -1,8 +1,8 @@
 package gov.nist.toolkit.valregmsg.xdm
 
 import gov.nist.toolkit.errorrecording.ErrorRecorder
-import gov.nist.toolkit.errorrecording.GwtErrorRecorderBuilder
-import gov.nist.toolkit.errorrecording.factories.ErrorRecorderBuilder
+import gov.nist.toolkit.errorrecording.gwt.GwtErrorRecorderBuilder
+import gov.nist.toolkit.errorrecording.ErrorRecorderBuilder
 import gov.nist.toolkit.valsupport.client.ValidationContext
 import gov.nist.toolkit.valsupport.engine.DefaultValidationContextFactory
 import gov.nist.toolkit.valsupport.engine.MessageValidatorEngine

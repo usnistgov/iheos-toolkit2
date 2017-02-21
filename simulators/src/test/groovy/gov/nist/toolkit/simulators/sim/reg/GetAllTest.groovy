@@ -1,5 +1,5 @@
 package gov.nist.toolkit.simulators.sim.reg
-import gov.nist.toolkit.errorrecording.TextErrorRecorder
+import gov.nist.toolkit.errorrecording.text.TextErrorRecorder
 import gov.nist.toolkit.registrymetadata.Metadata
 import gov.nist.toolkit.simulators.sim.reg.sq.GetAllSim
 import gov.nist.toolkit.simulators.sim.reg.store.RegIndex

@@ -1,7 +1,7 @@
 package gov.nist.toolkit.valregmsg.xdm
 
 import gov.nist.toolkit.errorrecording.ErrorRecorder
-import gov.nist.toolkit.errorrecording.GwtErrorRecorder
+import gov.nist.toolkit.errorrecording.gwt.GwtErrorRecorder
 import spock.lang.Specification
 /**
  *

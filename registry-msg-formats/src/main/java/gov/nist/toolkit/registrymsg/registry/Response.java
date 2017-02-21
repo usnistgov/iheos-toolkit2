@@ -1,8 +1,8 @@
 package gov.nist.toolkit.registrymsg.registry;
 
 import gov.nist.toolkit.errorrecording.ErrorRecorder;
-import gov.nist.toolkit.errorrecording.client.GwtValidatorErrorItem;
-import gov.nist.toolkit.errorrecording.client.GWTValidationStepResult;
+import gov.nist.toolkit.errorrecording.gwt.client.GwtValidatorErrorItem;
+import gov.nist.toolkit.errorrecording.gwt.client.GWTValidationStepResult;
 import gov.nist.toolkit.commondatatypes.MetadataSupport;
 import gov.nist.toolkit.registrysupport.logging.ErrorLogger;
 import gov.nist.toolkit.registrysupport.logging.LogMessage;

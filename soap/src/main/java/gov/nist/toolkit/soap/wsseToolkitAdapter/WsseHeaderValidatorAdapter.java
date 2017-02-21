@@ -1,7 +1,7 @@
 package gov.nist.toolkit.soap.wsseToolkitAdapter;
 
 import gov.nist.toolkit.errorrecording.ErrorRecorder;
-import gov.nist.toolkit.errorrecording.TextErrorRecorder;
+import gov.nist.toolkit.errorrecording.text.TextErrorRecorder;
 import gov.nist.toolkit.soap.wsseToolkitAdapter.log4jToErrorRecorder.AppenderForErrorRecorder;
 import gov.nist.toolkit.utilities.xml.XmlUtil;
 import gov.nist.toolkit.valsupport.client.ValidationContext;

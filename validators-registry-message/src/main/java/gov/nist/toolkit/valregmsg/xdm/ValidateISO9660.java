@@ -1,8 +1,8 @@
 package gov.nist.toolkit.valregmsg.xdm;
 
 import gov.nist.toolkit.errorrecording.ErrorRecorder;
-import gov.nist.toolkit.errorrecording.client.XdsErrorCode;
 import gov.nist.toolkit.commondatatypes.MetadataSupport;
+import gov.nist.toolkit.errorrecording.common.XdsErrorCode;
 
 /**
  * https://en.wikipedia.org/wiki/ISO_9660

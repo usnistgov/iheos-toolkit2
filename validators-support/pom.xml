@@ -13,6 +13,10 @@
     <dependencies>
         <dependency>
             <groupId>gov.nist.toolkit</groupId>
+            <artifactId>error-recording</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>gov.nist.toolkit</groupId>
             <artifactId>actor-transaction</artifactId>
         </dependency>
         <dependency>
@@ -30,10 +34,6 @@
         <dependency>
             <groupId>gov.nist.toolkit</groupId>
             <artifactId>common-datatypes</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>gov.nist.toolkit</groupId>
-            <artifactId>error-recording</artifactId>
         </dependency>
         <dependency>
             <groupId>org.apache.ws.commons.axiom</groupId>

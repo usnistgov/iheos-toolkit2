@@ -1,9 +1,8 @@
 package gov.nist.toolkit.simulators.sim.reg.sq;
 
-import gov.nist.toolkit.errorrecording.client.XdsErrorCode;
-import gov.nist.toolkit.errorrecording.client.XdsErrorCode.Code;
-import gov.nist.toolkit.errorrecording.client.assertions.Assertion;
-import gov.nist.toolkit.errorrecording.client.assertions.AssertionLibrary;
+import gov.nist.toolkit.errorrecording.common.XdsErrorCode;
+import gov.nist.toolkit.errorrecording.xml.assertions.Assertion;
+import gov.nist.toolkit.errorrecording.xml.assertions.AssertionLibrary;
 import gov.nist.toolkit.registrymetadata.Metadata;
 import gov.nist.toolkit.registrysupport.logging.LoggerException;
 import gov.nist.toolkit.simulators.sim.reg.store.DocEntry;

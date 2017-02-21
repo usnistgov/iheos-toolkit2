@@ -11,10 +11,10 @@ import spock.lang.Specification
 // 1/ Old imports for GwtErrorRecorder, TextErrorRecorder
 // import gov.nist.toolkit.errorrecordingold.ErrorRecorder
 // import gov.nist.toolkit.errorrecordingold.GwtErrorRecorder
-// import gov.nist.toolkit.errorrecording.TextErrorRecorder
+// import gov.nist.toolkit.errorrecordingold.TextErrorRecorder
 // 2/ New imports for XMLErrorRecorder
 import gov.nist.toolkit.errorrecording.ErrorRecorder
-import gov.nist.toolkit.errorrecording.XMLErrorRecorder
+import gov.nist.toolkit.errorrecording.xml.XMLErrorRecorder
 
 
 class XMLErrorRecorderTest extends Specification {

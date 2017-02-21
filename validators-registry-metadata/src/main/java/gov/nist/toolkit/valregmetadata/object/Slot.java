@@ -1,8 +1,8 @@
 package gov.nist.toolkit.valregmetadata.object;
 
 import gov.nist.toolkit.errorrecording.ErrorRecorder;
-import gov.nist.toolkit.errorrecording.client.XdsErrorCode;
 import gov.nist.toolkit.commondatatypes.MetadataSupport;
+import gov.nist.toolkit.errorrecording.common.XdsErrorCode;
 import gov.nist.toolkit.utilities.xml.XmlUtil;
 import gov.nist.toolkit.valregmetadata.datatype.FormatValidator;
 import gov.nist.toolkit.valregmetadata.datatype.FormatValidatorCalledIncorrectlyException;

@@ -9,7 +9,7 @@ import gov.nist.toolkit.configDatatypes.client.PatientErrorList
 import gov.nist.toolkit.configDatatypes.client.PatientErrorMap
 import gov.nist.toolkit.configDatatypes.client.Pid
 import gov.nist.toolkit.configDatatypes.client.PidBuilder
-import gov.nist.toolkit.errorrecording.client.XdsErrorCode.Code
+import gov.nist.toolkit.errorrecording.common.XdsErrorCode.Code
 import gov.nist.toolkit.registrymetadata.Metadata
 import gov.nist.toolkit.registrymsg.registry.AdhocQueryRequest
 import gov.nist.toolkit.registrymsg.registry.AdhocQueryRequestParser

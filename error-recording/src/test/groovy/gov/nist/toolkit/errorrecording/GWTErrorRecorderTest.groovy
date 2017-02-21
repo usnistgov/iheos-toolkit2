@@ -1,9 +1,7 @@
 package gov.nist.toolkit.errorrecording
 
-import gov.nist.toolkit.errorrecording.ErrorRecorder
-import gov.nist.toolkit.errorrecording.ErrorRecorderUtil
-import gov.nist.toolkit.errorrecording.GwtErrorRecorderBuilder
-import gov.nist.toolkit.errorrecording.factories.ErrorRecorderBuilder
+import gov.nist.toolkit.errorrecording.xml.ErrorRecorderUtil
+import gov.nist.toolkit.errorrecording.gwt.GwtErrorRecorderBuilder
 import spock.lang.Specification
 
 /**

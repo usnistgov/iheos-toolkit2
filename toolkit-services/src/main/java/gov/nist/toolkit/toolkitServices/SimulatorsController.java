@@ -17,9 +17,9 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 
 import gov.nist.toolkit.configDatatypes.SimulatorProperties;
-import gov.nist.toolkit.errorrecording.TextErrorRecorder;
-import gov.nist.toolkit.errorrecording.factories.ErrorRecorderBuilder;
-import gov.nist.toolkit.errorrecording.factories.TextErrorRecorderBuilder;
+import gov.nist.toolkit.errorrecording.text.TextErrorRecorder;
+import gov.nist.toolkit.errorrecording.ErrorRecorderBuilder;
+import gov.nist.toolkit.errorrecording.text.TextErrorRecorderBuilder;
 import gov.nist.toolkit.toolkitServicesCommon.resource.xdm.XdmItem;
 import gov.nist.toolkit.toolkitServicesCommon.resource.xdm.XdmReportResource;
 import gov.nist.toolkit.toolkitServicesCommon.resource.xdm.XdmRequestResource;

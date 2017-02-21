@@ -1,12 +1,11 @@
 package gov.nist.toolkit.registrymsg.registry;
 
 import gov.nist.toolkit.errorrecording.ErrorRecorder;
-import gov.nist.toolkit.errorrecording.GwtErrorRecorder;
-import gov.nist.toolkit.errorrecording.client.GwtValidatorErrorItem;
-import gov.nist.toolkit.errorrecording.client.GwtValidatorErrorItem.ReportingCompletionType;
-import gov.nist.toolkit.errorrecording.client.XdsErrorCode;
-import gov.nist.toolkit.errorrecording.client.XdsErrorCode.Code;
-import gov.nist.toolkit.errorrecording.client.assertions.Assertion;
+import gov.nist.toolkit.errorrecording.gwt.GwtErrorRecorder;
+import gov.nist.toolkit.errorrecording.gwt.client.GwtValidatorErrorItem;
+import gov.nist.toolkit.errorrecording.gwt.client.GwtValidatorErrorItem.ReportingCompletionType;
+import gov.nist.toolkit.errorrecording.common.XdsErrorCode.Code;
+import gov.nist.toolkit.errorrecording.xml.assertions.Assertion;
 import gov.nist.toolkit.registrymetadata.Metadata;
 import gov.nist.toolkit.commondatatypes.MetadataSupport;
 import gov.nist.toolkit.registrysupport.logging.ErrorLogger;
@@ -414,6 +413,11 @@ public class RegistryErrorListGenerator implements ErrorLogger, ErrorRecorder{
 
 	@Override
 	public void report(String name, String found) {
+
+	}
+
+	@Override
+	public void success(String dts, String name, String found, String expected, String RFC) {
 
 	}
 

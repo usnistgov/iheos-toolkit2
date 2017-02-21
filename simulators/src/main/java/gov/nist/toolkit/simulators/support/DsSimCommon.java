@@ -1,17 +1,18 @@
 package gov.nist.toolkit.simulators.support;
 
 import gov.nist.toolkit.actorfactory.client.SimulatorConfig;
+import gov.nist.toolkit.commondatatypes.MetadataSupport;
+import gov.nist.toolkit.errorrecording.common.XdsErrorCode;
+import gov.nist.toolkit.errorrecording.xml.XMLErrorRecorderBuilder;
 import gov.nist.toolkit.errorrecording.ErrorRecorder;
-import gov.nist.toolkit.errorrecording.GwtErrorRecorder;
-import gov.nist.toolkit.errorrecording.GwtErrorRecorderBuilder;
-import gov.nist.toolkit.errorrecording.client.GwtValidatorErrorItem;
-import gov.nist.toolkit.errorrecording.client.GWTValidationStepResult;
-import gov.nist.toolkit.errorrecording.client.XdsErrorCode;
+import gov.nist.toolkit.errorrecording.gwt.GwtErrorRecorder;
+import gov.nist.toolkit.errorrecording.gwt.GwtErrorRecorderBuilder;
+import gov.nist.toolkit.errorrecording.gwt.client.GWTValidationStepResult;
+import gov.nist.toolkit.errorrecording.gwt.client.GwtValidatorErrorItem;
 import gov.nist.toolkit.registrymetadata.Metadata;
 import gov.nist.toolkit.registrymsg.registry.RegistryErrorListGenerator;
 import gov.nist.toolkit.registrymsg.registry.RegistryResponse;
 import gov.nist.toolkit.registrymsg.registry.Response;
-import gov.nist.toolkit.commondatatypes.MetadataSupport;
 import gov.nist.toolkit.simulators.sim.reg.RegistryResponseSendingSim;
 import gov.nist.toolkit.simulators.sim.reg.store.RegIndex;
 import gov.nist.toolkit.simulators.sim.rep.RepIndex;
@@ -20,11 +21,7 @@ import gov.nist.toolkit.soap.http.SoapUtil;
 import gov.nist.toolkit.utilities.io.Io;
 import gov.nist.toolkit.utilities.xml.OMFormatter;
 import gov.nist.toolkit.utilities.xml.XmlUtil;
-import gov.nist.toolkit.valregmsg.message.HttpMessageValidator;
-import gov.nist.toolkit.valregmsg.message.MtomMessageValidator;
-import gov.nist.toolkit.valregmsg.message.SimpleSoapHttpHeaderValidator;
-import gov.nist.toolkit.valregmsg.message.SoapMessageValidator;
-import gov.nist.toolkit.valregmsg.message.StoredDocumentInt;
+import gov.nist.toolkit.valregmsg.message.*;
 import gov.nist.toolkit.valregmsg.service.SoapActionFactory;
 import gov.nist.toolkit.valregmsg.validation.engine.ValidateMessageService;
 import gov.nist.toolkit.valsupport.engine.ValidationStep;
@@ -35,10 +32,9 @@ import gov.nist.toolkit.xdsexception.XdsException;
 import gov.nist.toolkit.xdsexception.XdsInternalException;
 import org.apache.axiom.om.OMElement;
 import org.apache.log4j.Logger;
-
+import java.io.File;
 import java.io.IOException;
 import java.io.OutputStream;
-import java.io.File;
 import java.util.*;
 
 /**
@@ -89,13 +85,27 @@ public class DsSimCommon {
         return !returnFaultIfNeeded();
     }
 
+    /**
+     * Runs the validation functions. This is where the ErrorRecorder gets instanciated.
+     * @throws IOException
+     */
+    //TODO XMLErrorRecorder
     public void runInitialValidations() throws IOException {
-        GwtErrorRecorderBuilder gerb = new GwtErrorRecorderBuilder();
+        XMLErrorRecorderBuilder xerb = new XMLErrorRecorderBuilder();
+        runErrorRecorder((ErrorRecorder)xerb);
+        // GwtErrorRecorderBuilder gerb = new GwtErrorRecorderBuilder();
+        // runErrorRecorder((ErrorRecorder)gerb);
+    }
 
-        simCommon.mvc = simCommon.vms.runValidation(simCommon.vc, simCommon.db, simCommon.mvc, gerb);
+    /**
+     * While in transition between the GWTErrorRecorder and XMLErrorRecorder, this runs any ErrorRecorder
+     * @return SimCommon object
+     * @throws IOException
+     */
+    private void runErrorRecorder(ErrorRecorder err) throws IOException {
+        simCommon.mvc = simCommon.vms.runValidation(simCommon.vc, simCommon.db, simCommon.mvc, err);
         simCommon.mvc.run();
         simCommon.buildMVR();
-
         int stepsWithErrors = simCommon.mvc.getErroredStepCount();
         ValidationStep lastValidationStep = simCommon.mvc.getLastValidationStep();
         if (lastValidationStep != null) {

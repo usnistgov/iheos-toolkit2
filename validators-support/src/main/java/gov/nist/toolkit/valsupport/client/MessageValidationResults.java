@@ -1,9 +1,9 @@
 package gov.nist.toolkit.valsupport.client;
 
-import gov.nist.toolkit.errorrecording.client.GWTValidationStepResult;
-import gov.nist.toolkit.errorrecording.client.GwtValidatorErrorItem;
-import gov.nist.toolkit.errorrecording.client.GwtValidatorErrorItem.ReportingLevel;
-import gov.nist.toolkit.errorrecording.client.XdsErrorCode.Code;
+import gov.nist.toolkit.errorrecording.gwt.client.GWTValidationStepResult;
+import gov.nist.toolkit.errorrecording.gwt.client.GwtValidatorErrorItem;
+import gov.nist.toolkit.errorrecording.gwt.client.GwtValidatorErrorItem.ReportingLevel;
+import gov.nist.toolkit.errorrecording.common.XdsErrorCode.Code;
 
 import java.util.ArrayList;
 import java.util.List;

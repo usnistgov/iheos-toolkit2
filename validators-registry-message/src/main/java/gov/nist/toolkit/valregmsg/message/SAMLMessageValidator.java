@@ -2,8 +2,8 @@ package gov.nist.toolkit.valregmsg.message;
 
 
 import gov.nist.toolkit.errorrecording.ErrorRecorder;
-import gov.nist.toolkit.errorrecording.client.XdsErrorCode;
-import gov.nist.toolkit.errorrecording.factories.ErrorRecorderBuilder;
+import gov.nist.toolkit.errorrecording.ErrorRecorderBuilder;
+import gov.nist.toolkit.errorrecording.common.XdsErrorCode;
 import gov.nist.toolkit.saml.bean.*;
 import gov.nist.toolkit.saml.security.XMLSignatureValidatorUtil;
 import gov.nist.toolkit.saml.subject.HolderOfKeySubjectConfirmationValidator;

@@ -1,8 +1,8 @@
 package gov.nist.toolkit.valregmetadata.datatype;
 
 import gov.nist.toolkit.errorrecording.ErrorRecorder;
-import gov.nist.toolkit.errorrecording.client.XdsErrorCode;
 
+import gov.nist.toolkit.errorrecording.common.XdsErrorCode;
 import org.apache.axiom.om.OMElement;
 
 public abstract class FormatValidator {

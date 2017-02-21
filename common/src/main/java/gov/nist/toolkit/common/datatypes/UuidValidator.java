@@ -1,7 +1,7 @@
 package gov.nist.toolkit.common.datatypes;
 
 import gov.nist.toolkit.errorrecording.ErrorRecorder;
-import gov.nist.toolkit.errorrecording.client.XdsErrorCode;
+import gov.nist.toolkit.errorrecording.common.XdsErrorCode;
 
 public class UuidValidator {
 	ErrorRecorder er;

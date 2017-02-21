@@ -2,9 +2,9 @@ package gov.nist.toolkit.valsupport.message;
 
 import java.util.ArrayList;
 
-import gov.nist.toolkit.errorrecording.client.ErrorRecorderAdapter;
-import gov.nist.toolkit.errorrecording.client.GWTValidationStepResult;
-import gov.nist.toolkit.errorrecording.client.GwtValidatorErrorItem;
+import gov.nist.toolkit.errorrecording.gwt.client.ErrorRecorderAdapter;
+import gov.nist.toolkit.errorrecording.gwt.client.GWTValidationStepResult;
+import gov.nist.toolkit.errorrecording.gwt.client.GwtValidatorErrorItem;
 import gov.nist.toolkit.valsupport.client.MessageValidationResults;
 import gov.nist.toolkit.valsupport.client.ValFormatter;
 

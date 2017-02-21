@@ -1,8 +1,9 @@
 package gov.nist.toolkit.errorrecording
 
+import gov.nist.toolkit.errorrecording.xml.XMLGroovyExample
 import spock.lang.Specification
 
-import static gov.nist.toolkit.errorrecording.client.helpers.Utils.trimXMLWhitespaces
+import static gov.nist.toolkit.errorrecording.xml.assertions.helpers.Utils.trimXMLWhitespaces
 
 /**
  * Created by diane on 6/29/2016.

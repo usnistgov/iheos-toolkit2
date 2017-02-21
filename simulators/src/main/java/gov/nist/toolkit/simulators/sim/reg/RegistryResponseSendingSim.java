@@ -5,7 +5,7 @@ import gov.nist.toolkit.simulators.support.DsSimCommon;
 import gov.nist.toolkit.simulators.support.SimCommon;
 import gov.nist.toolkit.simulators.support.TransactionSimulator;
 import gov.nist.toolkit.valsupport.engine.MessageValidatorEngine;
-import gov.nist.toolkit.errorrecording.GwtErrorRecorderBuilder;
+import gov.nist.toolkit.errorrecording.gwt.GwtErrorRecorderBuilder;
 
 /**
  * Take errors recorded in MessageValidationEngine, package them in a RegistryResponse and send.

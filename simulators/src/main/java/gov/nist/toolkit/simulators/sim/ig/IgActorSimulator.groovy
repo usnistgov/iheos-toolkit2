@@ -2,7 +2,7 @@ package gov.nist.toolkit.simulators.sim.ig
 import gov.nist.toolkit.actorfactory.SimDb
 import gov.nist.toolkit.actorfactory.client.SimulatorConfig
 import gov.nist.toolkit.configDatatypes.client.TransactionType
-import gov.nist.toolkit.errorrecording.client.XdsErrorCode.Code
+import gov.nist.toolkit.errorrecording.common.XdsErrorCode
 import gov.nist.toolkit.simulators.sim.reg.AdhocQueryResponseGenerator
 import gov.nist.toolkit.simulators.sim.reg.SoapWrapperRegistryResponseSim
 import gov.nist.toolkit.simulators.support.DsSimCommon
@@ -64,7 +64,7 @@ public class IgActorSimulator extends GatewaySimulatorCommon {
          // extract query from validator chain
             AbstractMessageValidator mv = common.getMessageValidatorIfAvailable(SoapMessageValidator.class);
             if (mv == null || !(mv instanceof SoapMessageValidator)) {
-               er.err(Code.XDSRegistryError, "IG Internal Error - cannot find SoapMessageValidator instance", "InitiatingGatewayActorSimulator", "");
+               er.err(XdsErrorCode.Code.XDSRegistryError, "IG Internal Error - cannot find SoapMessageValidator instance", "InitiatingGatewayActorSimulator", "");
                dsSimCommon.sendErrorsInRegistryResponse(er);
                return false;
             }
@@ -114,7 +114,7 @@ public class IgActorSimulator extends GatewaySimulatorCommon {
          // extract retrieve request
             AbstractMessageValidator mv = common.getMessageValidatorIfAvailable(SoapMessageValidator.class);
             if (mv == null || !(mv instanceof SoapMessageValidator)) {
-               er.err(Code.XDSRegistryError, "IG Internal Error - cannot find SoapMessageValidator instance", "InitiatingGatewayActorSimulator", "");
+               er.err(XdsErrorCode.Code.XDSRegistryError, "IG Internal Error - cannot find SoapMessageValidator instance", "InitiatingGatewayActorSimulator", "");
                dsSimCommon.sendErrorsInRegistryResponse(er);
                return false;
             }
@@ -159,7 +159,7 @@ public class IgActorSimulator extends GatewaySimulatorCommon {
             logger.debug("Extract retrieve from validator chain");
             AbstractMessageValidator mv = common.getMessageValidatorIfAvailable(SoapMessageValidator.class);
             if (mv == null || !(mv instanceof SoapMessageValidator)) {
-                er.err(Code.XDSRegistryError, "IG Internal Error - cannot find SoapMessageValidator instance", "InitiatingGatewayActorSimulator", "");
+                er.err(XdsErrorCode.Code.XDSRegistryError, "IG Internal Error - cannot find SoapMessageValidator instance", "InitiatingGatewayActorSimulator", "");
                 dsSimCommon.sendErrorsInRegistryResponse(er);
                 return false;
             }
@@ -184,7 +184,7 @@ public class IgActorSimulator extends GatewaySimulatorCommon {
             // XCAI_TODO written, need to test
 
          default:
-            er.err(Code.XDSRegistryError, "Don't understand transaction " + transactionType, "InitiatingGatewayActorSimulator", "");
+            er.err(XdsErrorCode.Code.XDSRegistryError, "Don't understand transaction " + transactionType, "InitiatingGatewayActorSimulator", "");
             dsSimCommon.sendFault("Don't understand transaction " + transactionType, null);
             return true;
       }

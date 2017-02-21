@@ -67,7 +67,6 @@
         <module>utilities</module>
         <module>common</module>
         <module>error-recording</module>
-        <module>error-recording-old</module>
         <module>adt</module>
         <module>rest-tools</module>
     <!--<module>simple-service</module>-->

@@ -1,12 +1,13 @@
 package gov.nist.toolkit.registrymsgold.registry;
 
-import gov.nist.toolkit.errorrecordingold.ErrorRecorder;
-import gov.nist.toolkit.errorrecordingold.GwtErrorRecorder;
-import gov.nist.toolkit.errorrecordingold.client.GwtValidatorErrorItem;
-import gov.nist.toolkit.errorrecordingold.client.GwtValidatorErrorItem.ReportingCompletionType;
-import gov.nist.toolkit.errorrecordingold.client.XdsErrorCode.Code;
-import gov.nist.toolkit.registrymetadata.Metadata;
 import gov.nist.toolkit.commondatatypes.MetadataSupport;
+import gov.nist.toolkit.errorrecording.ErrorRecorder;
+import gov.nist.toolkit.errorrecording.common.XdsErrorCode.Code;
+import gov.nist.toolkit.errorrecording.gwt.GwtErrorRecorder;
+import gov.nist.toolkit.errorrecording.gwt.client.GwtValidatorErrorItem;
+import gov.nist.toolkit.errorrecording.gwt.client.GwtValidatorErrorItem.ReportingCompletionType;
+import gov.nist.toolkit.errorrecording.xml.assertions.Assertion;
+import gov.nist.toolkit.registrymetadata.Metadata;
 import gov.nist.toolkit.registrysupport.logging.ErrorLogger;
 import gov.nist.toolkit.registrysupport.logging.LogMessage;
 import gov.nist.toolkit.registrysupport.logging.LoggerException;
@@ -17,6 +18,7 @@ import org.apache.axiom.om.OMAttribute;
 import org.apache.axiom.om.OMElement;
 import org.apache.axiom.om.OMNamespace;
 import org.apache.log4j.Logger;
+
 import javax.xml.namespace.QName;
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
@@ -421,6 +423,31 @@ public class RegistryErrorListGenerator implements ErrorLogger, ErrorRecorder{
 	public void err(String code, String msg, String location, String resource,
 					Object logMessage) {
 		this.add_error(code, msg, location, resource, (LogMessage) logMessage);
+	}
+
+	@Override
+	public void err(Code code, Assertion assertion, String validatorModule, String location, String detail) {
+
+	}
+
+	@Override
+	public void err(Code code, Assertion assertion, Object validatorModule, String location, String detail) {
+
+	}
+
+	@Override
+	public void err(Code _code, Assertion _assertion, String _validatorModule, String _location, String _detail, String _logMessage) {
+
+	}
+
+	@Override
+	public void err(Code _code, Assertion _assertion, Object _validatorModule, String _location, String _detail, Object _logMessage) {
+
+	}
+
+	@Override
+	public void success(String location, String resource) {
+
 	}
 
 	public void err(Code code, String msg, String location, String resource,

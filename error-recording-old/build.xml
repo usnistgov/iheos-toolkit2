@@ -1,6 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<project basedir="." default="compile" name="error-recording-old">
-
-        <import file="../build-common.xml"/>
-
-</project>

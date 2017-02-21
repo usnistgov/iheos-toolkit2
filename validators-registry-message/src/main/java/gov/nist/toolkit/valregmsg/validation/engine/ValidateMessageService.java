@@ -1,11 +1,11 @@
 package gov.nist.toolkit.valregmsg.validation.engine;
 
 import gov.nist.toolkit.actorfactory.SimDb;
-import gov.nist.toolkit.errorrecording.GwtErrorRecorder;
-import gov.nist.toolkit.errorrecording.GwtErrorRecorderBuilder;
-import gov.nist.toolkit.errorrecording.client.GwtValidatorErrorItem;
-import gov.nist.toolkit.errorrecording.client.XdsErrorCode;
-import gov.nist.toolkit.errorrecording.factories.ErrorRecorderBuilder;
+import gov.nist.toolkit.errorrecording.common.XdsErrorCode;
+import gov.nist.toolkit.errorrecording.gwt.GwtErrorRecorder;
+import gov.nist.toolkit.errorrecording.gwt.GwtErrorRecorderBuilder;
+import gov.nist.toolkit.errorrecording.gwt.client.GwtValidatorErrorItem;
+import gov.nist.toolkit.errorrecording.ErrorRecorderBuilder;
 import gov.nist.toolkit.results.CommonService;
 import gov.nist.toolkit.valregmsg.message.HttpMessageValidator;
 import gov.nist.toolkit.valsupport.client.MessageValidationResults;

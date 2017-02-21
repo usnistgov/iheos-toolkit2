@@ -1,10 +1,10 @@
 package gov.nist.toolkit.valregmsg.validation.factories
 
 import gov.nist.toolkit.errorrecording.ErrorRecorder
-import gov.nist.toolkit.errorrecording.ErrorRecorderUtil
-import gov.nist.toolkit.errorrecording.GwtErrorRecorder
-import gov.nist.toolkit.errorrecording.GwtErrorRecorderBuilder
-import gov.nist.toolkit.errorrecording.factories.ErrorRecorderBuilder
+import gov.nist.toolkit.errorrecording.gwt.ErrorRecorderUtil
+import gov.nist.toolkit.errorrecording.gwt.GwtErrorRecorder
+import gov.nist.toolkit.errorrecording.gwt.GwtErrorRecorderBuilder
+import gov.nist.toolkit.errorrecording.ErrorRecorderBuilder
 import gov.nist.toolkit.utilities.xml.Util
 import gov.nist.toolkit.valsupport.client.ValidationContext
 import gov.nist.toolkit.valsupport.engine.MessageValidatorEngine
