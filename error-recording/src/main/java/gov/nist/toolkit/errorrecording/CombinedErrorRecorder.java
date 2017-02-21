@@ -28,8 +28,8 @@ public class CombinedErrorRecorder implements ErrorRecorder {
     //TODO uncomment here to switch between ErrorRecorders
     @Override
     public ErrorRecorder buildNewErrorRecorder() {
-        return oldEr.buildNewErrorRecorder(); //GWT
-        // return newEr.buildNewErrorRecorder(); //XML
+        // return oldEr.buildNewErrorRecorder(); //GWT
+         return newEr.buildNewErrorRecorder(); //XML
     }
 
     @Override

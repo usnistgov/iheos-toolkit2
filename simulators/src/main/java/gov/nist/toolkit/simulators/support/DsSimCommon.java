@@ -92,8 +92,8 @@ public class DsSimCommon {
      */
     //TODO XMLErrorRecorder
     public void runInitialValidations() throws IOException {
-        // XMLErrorRecorderBuilder erb = new XMLErrorRecorderBuilder();
-         GwtErrorRecorderBuilder erb = new GwtErrorRecorderBuilder();
+         XMLErrorRecorderBuilder erb = new XMLErrorRecorderBuilder();
+         // GwtErrorRecorderBuilder erb = new GwtErrorRecorderBuilder();
          runErrorRecorder(erb.buildNewErrorRecorder());
     }
 

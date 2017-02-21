@@ -16,6 +16,7 @@ public class XMLErrorRecorder implements ErrorRecorder {
 
     static Logger logger = Logger.getLogger(XMLErrorRecorder.class);
     boolean firstSectionHeading = true;
+    boolean hasErrors = false;
     def errXml = "<ErrorLog>\n"
 
     /**
@@ -74,6 +75,7 @@ public class XMLErrorRecorder implements ErrorRecorder {
         }
         // Parse and add
         errXml = errXml.concat(sw.toString() + "\n")
+        hasErrors = true;
     }
 
     public void err(Code _code, Assertion _assertion, String _validatorModule, String _location, String _detail, String _logMessage) {
@@ -92,6 +94,7 @@ public class XMLErrorRecorder implements ErrorRecorder {
         }
         // Parse and add
         errXml = errXml.concat(sw.toString() + "\n")
+        hasErrors = true;
     }
 
     // Updated
@@ -332,7 +335,7 @@ public class XMLErrorRecorder implements ErrorRecorder {
     @Override
     public boolean hasErrors() {
         println("boolhaserrors")
-        return (errRecords.contains("Error"));
+        return hasErrors;
     }
 
     // Not used / Not tested
