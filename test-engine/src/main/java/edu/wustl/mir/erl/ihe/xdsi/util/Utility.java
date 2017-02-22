@@ -187,7 +187,8 @@ public class Utility {
 
       File file = path.toFile();
 
-      if (!file.exists()) throw new Exception(msg + "not found");
+      if (!file.exists())
+         throw new Exception(msg + "not found");
 
       switch (pfnType) {
          case DIRECTORY:
