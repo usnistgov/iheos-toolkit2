@@ -40,13 +40,9 @@ public class PrsSimLogs {
    private static Installation installation = Installation.instance();
    private static PropertyServiceManager propertyServiceManager = installation.propertyServiceManager();
    private static PropertyManager propertyManager = propertyServiceManager.getPropertyManager();
-   
 
    private static SimpleDateFormat timeOfTransactionFormat = new SimpleDateFormat("yyyyMMddHHmmssSSS");
-   private static String externalCache = propertyManager.getExternalCache();
-   
-   
-   
+   private static String externalCache = installation.externalCache().getAbsolutePath();
    
    /**
     * Load SOAP Message components into passed {@link SimulatorTransaction} instance.
