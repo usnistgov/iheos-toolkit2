@@ -104,6 +104,15 @@ class RigSpec extends ToolkitSpecification {
         testId         || valid
         "rig_5420"     || true
         "rig_5421"     || true
+        "rig_5422"     || true
+        "rig_5423"     || true
+        "rig_5424"     || true
+        "rig_5425"     || true
+        "rig_5426"     || true
+        "rig_5427"     || true
+        "rig_5428"     || true
+        "rig_5429"     || true
+        "rig_5430"     || true
     }
 
 }
