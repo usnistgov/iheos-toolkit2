@@ -11,6 +11,9 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Manager PIDs within a Simulator
+ */
 public class PidDb {
     static Logger logger = Logger.getLogger(PidDb.class);
     private final SimDb simDb;

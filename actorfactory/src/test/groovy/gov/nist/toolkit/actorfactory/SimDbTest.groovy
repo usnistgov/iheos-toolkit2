@@ -32,7 +32,7 @@ class SimDbTest extends Specification {
         SimDb.deleteAllSims()
 
         then:
-        db.getAllSimIds().isEmpty()
+        SimDb.getAllSimIds().isEmpty()
     }
 
     def 'Single sim found'() {
@@ -42,7 +42,7 @@ class SimDbTest extends Specification {
         SimDb.mkSim(new SimId('bill', 'foo'), ActorType.REPOSITORY.name)
 
         then:
-        db.getAllSimIds().size() == 1
+        SimDb.getAllSimIds().size() == 1
     }
 
     def 'Extra directory skipped'() {
@@ -57,7 +57,7 @@ class SimDbTest extends Specification {
         file.mkdir()
 
         then:
-        db.getAllSimIds().size() == 1
+        SimDb.getAllSimIds().size() == 1
     }
 
     def 'Extra file skipped'() {
@@ -74,6 +74,6 @@ class SimDbTest extends Specification {
 
         then:
         file.exists()
-        db.getAllSimIds().size() == 1
+        SimDb.getAllSimIds().size() == 1
     }
 }

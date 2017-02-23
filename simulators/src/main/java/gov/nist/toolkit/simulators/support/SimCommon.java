@@ -8,7 +8,6 @@ import gov.nist.toolkit.errorrecording.ErrorRecorder;
 import gov.nist.toolkit.errorrecording.GwtErrorRecorder;
 import gov.nist.toolkit.errorrecording.GwtErrorRecorderBuilder;
 import gov.nist.toolkit.errorrecording.client.ValidationStepResult;
-import gov.nist.toolkit.installation.Installation;
 import gov.nist.toolkit.utilities.io.Io;
 import gov.nist.toolkit.validatorsSoapMessage.engine.ValidateMessageService;
 import gov.nist.toolkit.valsupport.client.MessageValidationResults;
@@ -210,7 +209,7 @@ public class SimCommon {
 	static public void deleteSim(SimId simulatorId) {
 		try {
 			logger.info("Delete sim " + simulatorId);
-			SimDb simdb = new SimDb(Installation.instance().simDbFile(), simulatorId, null, null);
+			SimDb simdb = new SimDb(simulatorId, null, null);
 			File simdir = simdb.getIpDir();
 			Io.delete(simdir);
 		} catch (IOException e) {

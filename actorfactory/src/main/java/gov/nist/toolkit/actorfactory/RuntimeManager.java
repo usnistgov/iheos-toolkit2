@@ -20,8 +20,7 @@ public class RuntimeManager {
     static Logger logger = Logger.getLogger(RuntimeManager.class);
 
     public static BaseActorSimulator getSimulatorRuntime(SimId simId) throws Exception, IOException, ClassNotFoundException, IllegalAccessException, InvocationTargetException, InstantiationException {
-        SimDb db = new SimDb();
-        SimulatorConfig config = GenericSimulatorFactory.getSimConfig(db.getRoot(), simId);
+        SimulatorConfig config = GenericSimulatorFactory.getSimConfig(simId);
         String actorTypeName = config.getActorType();
         ActorType actorType = ActorType.findActor(actorTypeName);
         String actorSimClassName = actorType.getSimulatorClassName();
@@ -63,7 +62,7 @@ public class RuntimeManager {
     */
    public static BaseActorSimulator getHttpSimulatorRuntime(SimId simId) throws NoSimException, Exception, ClassNotFoundException, IllegalAccessException, InvocationTargetException, InstantiationException {
        SimDb db = new SimDb();
-       SimulatorConfig config = GenericSimulatorFactory.getSimConfig(db.getRoot(), simId);
+       SimulatorConfig config = GenericSimulatorFactory.getSimConfig(simId);
        String actorTypeName = config.getActorType();
        ActorType actorType = ActorType.findActor(actorTypeName);
        String actorSimClassName = actorType.getHttpSimulatorClassName();
