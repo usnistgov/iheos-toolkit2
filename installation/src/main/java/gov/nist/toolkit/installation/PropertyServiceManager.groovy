@@ -37,6 +37,11 @@ public class PropertyServiceManager {
 		return null;
 	}
 
+	public boolean getArchiveLogs() {
+		logger.debug(": getArchiveLogs");
+		return getPropertyManager().archiveLogs();
+	}
+
 	public String getMSH3() {
 		logger.debug(": " + "getMSH3");
 		return getPropertyManager().getMSH3();
@@ -267,5 +272,9 @@ public class PropertyServiceManager {
      */
     public File getPropertiesFile(){
         return propertiesFile;
+    }
+
+    public String getWikiBaseAddress ( ) {
+    	return getPropertyManager().getWikiBaseAddress() ;
     }
 }

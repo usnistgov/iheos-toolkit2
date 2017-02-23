@@ -99,6 +99,15 @@ public enum ActorType implements IsSerializable, Serializable {
             true,
             null
     ),
+    OD_RESPONDING_GATEWAY(
+            "Responding Gateway - On Demand",
+            Arrays.asList("On_DEMAND_RESP_GATEWAY"),
+            "odrg",
+            "gov.nist.toolkit.simulators.sim.rg.ODRGActorSimulator",
+            Arrays.asList(TransactionType.XC_QUERY, TransactionType.XC_RETRIEVE),
+            true,
+            null
+    ),
     RESPONDING_IMAGING_GATEWAY(
        "Responding Imaging Gateway",
        Arrays.asList("RESP_IMG_GATEWAY"),
@@ -382,6 +391,8 @@ public enum ActorType implements IsSerializable, Serializable {
     public List<TransactionType> getTransactions() {
         return transactionTypes;
     }
+
+    public List<TransactionType> getHTTPTransactions() { return httpTransactionTypes; }
 
    public boolean hasTransaction(TransactionType transType) {
       for (TransactionType transType2 : transactionTypes) {

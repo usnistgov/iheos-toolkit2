@@ -4,6 +4,46 @@
                          xmlns:rs="urn:oasis:names:tc:ebxml-regrep:xsd:rs:3.0">
     <query:ResponseOption returnComposedObjects="true" returnType="$returnType$"/>
     <AdhocQuery id="urn:uuid:5c4f972b-d56b-40ac-a5fc-c8ca9b40b9d4">
+        <Slot name="$MetadataLevel">
+          <ValueList>
+            <Value>$metadatalevel$</Value>
+          </ValueList>
+        </Slot>
+        <Slot name="$XDSDocumentEntryLogicalID">
+            <ValueList>
+                <Value>('$lid0$')</Value>
+                <Value>('$lid1$')</Value>
+                <Value>('$lid2$')</Value>
+                <Value>('$lid3$')</Value>
+                <Value>('$lid4$')</Value>
+                <Value>('$lid5$')</Value>
+                <Value>('$lid6$')</Value>
+                <Value>('$lid7$')</Value>
+                <Value>('$lid8$')</Value>
+                <Value>('$lid9$')</Value>
+                <Value>('$lid10$')</Value>
+                <Value>('$lid11$')</Value>
+                <Value>('$lid12$')</Value>
+                <Value>('$lid13$')</Value>
+                <Value>('$lid14$')</Value>
+                <Value>('$lid15$')</Value>
+                <Value>('$lid16$')</Value>
+                <Value>('$lid17$')</Value>
+                <Value>('$lid18$')</Value>
+                <Value>('$lid19$')</Value>
+                <Value>('$lid20$')</Value>
+                <Value>('$lid21$')</Value>
+                <Value>('$lid22$')</Value>
+                <Value>('$lid23$')</Value>
+                <Value>('$lid24$')</Value>
+                <Value>('$lid25$')</Value>
+                <Value>('$lid26$')</Value>
+                <Value>('$lid27$')</Value>
+                <Value>('$lid28$')</Value>
+                <Value>('$lid29$')</Value>
+                <Value>('$lid30$')</Value>
+            </ValueList>
+        </Slot>
         <Slot name="$XDSDocumentEntryEntryUUID">
             <ValueList>
                 <Value>('$id0$')</Value>

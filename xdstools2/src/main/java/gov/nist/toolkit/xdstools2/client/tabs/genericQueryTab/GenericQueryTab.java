@@ -26,10 +26,13 @@ import gov.nist.toolkit.xdstools2.client.event.ActorConfigUpdatedEvent;
 import gov.nist.toolkit.xdstools2.client.event.EnvironmentChangedEvent;
 import gov.nist.toolkit.xdstools2.client.event.SimulatorUpdatedEvent;
 import gov.nist.toolkit.xdstools2.client.event.Xdstools2EventBus;
+import gov.nist.toolkit.xdstools2.client.event.testSession.TestSessionChangedEvent;
+import gov.nist.toolkit.xdstools2.client.event.testSession.TestSessionChangedEventHandler;
 import gov.nist.toolkit.xdstools2.client.event.testSession.TestSessionManager2;
 import gov.nist.toolkit.xdstools2.client.siteActorManagers.BaseSiteActorManager;
 import gov.nist.toolkit.xdstools2.client.tabs.actorConfigTab.ActorConfigTab;
 import gov.nist.toolkit.xdstools2.client.util.ClientUtils;
+import gov.nist.toolkit.xdstools2.client.util.InformationLink;
 import gov.nist.toolkit.xdstools2.client.widgets.PidWidget;
 import gov.nist.toolkit.xdstools2.client.widgets.PopupMessage;
 import gov.nist.toolkit.xdstools2.shared.command.request.GetStsSamlAssertionRequest;
@@ -148,10 +151,21 @@ public abstract class GenericQueryTab  extends ToolWindow {
         this.siteActorManager = siteActorManager;
         if (siteActorManager != null)
             siteActorManager.setGenericQueryTab(this);
+        bind();
+    }
 
+    private void bind(){
+        ClientUtils.INSTANCE.getEventBus().addHandler(TestSessionChangedEvent.TYPE, new TestSessionChangedEventHandler() {
+            @Override
+            public void onTestSessionChanged(TestSessionChangedEvent event) {
+                reloadTransactionOfferings();
+                refreshData();
+            }
+        });
         ((Xdstools2EventBus) ClientUtils.INSTANCE.getEventBus()).addEnvironmentChangedEventHandler(new EnvironmentChangedEvent.EnvironmentChangedEventHandler() {
             @Override
             public void onEnvironmentChange(EnvironmentChangedEvent event) {
+                reloadTransactionOfferings();
                 refreshData();
             }
         });
@@ -262,10 +276,8 @@ public abstract class GenericQueryTab  extends ToolWindow {
             formatter.setHorizontalAlignment(0, 0, HasHorizontalAlignment.ALIGN_LEFT);
             formatter.setVerticalAlignment(0, 0, HasVerticalAlignment.ALIGN_TOP);
 
-//			pidTextBox = new TextBox();
-            pidTextBox = new PidWidget();
-            pidTextBox.setWidth("400px");
-            pidTextBox.setText(getCommonPatientId());
+            pidTextBox.setWidth("500px");
+//            pidTextBox.setText(getCommonPatientId());
             pidTextBox.addChangeHandler(new PidChangeHandler(this));
             commonParamGrid.setWidget(commonGridRow++, contentsColumn, pidTextBox);
         }
@@ -363,6 +375,19 @@ public abstract class GenericQueryTab  extends ToolWindow {
             FlexTable siteSelectionPanel = new FlexTable();
             siteSelectionPanel.getFlexCellFormatter().setVerticalAlignment(0,0,HasVerticalAlignment.ALIGN_TOP);
             siteSelectionPanel.setWidget(0, 0, new HTML("<div style='margin-top:2px;font-size:1.1em;'>Send to</div>"));
+
+//            Image infoImage = new Image("icons/info.png");
+//            infoImage.setTitle("Help with system selection");
+//            infoImage.addClickHandler(new ClickHandler() {
+//                @Override
+//                public void onClick(ClickEvent clickEvent) {
+//                    Window.open(Xdstools2.wikiBaseUrl + "/System-selection-issues", "_blank","");
+//                }
+//            });
+//
+//            siteSelectionPanel.setWidget(0, 1, infoImage);
+
+            siteSelectionPanel.setWidget(0, 1, new InformationLink("Help with system selection", "System-selection-issues").asWidget());
 
             FlexTable siteGrid = new FlexTable();
             siteSelectionPanel.getFlexCellFormatter().setVerticalAlignment(0,1,HasVerticalAlignment.ALIGN_TOP);

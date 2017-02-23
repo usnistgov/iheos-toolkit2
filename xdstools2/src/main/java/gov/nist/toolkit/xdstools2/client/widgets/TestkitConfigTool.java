@@ -3,10 +3,7 @@ package gov.nist.toolkit.xdstools2.client.widgets;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.Window;
-import com.google.gwt.user.client.ui.Button;
-import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.HTML;
-import com.google.gwt.user.client.ui.VerticalPanel;
+import com.google.gwt.user.client.ui.*;
 import gov.nist.toolkit.xdstools2.client.TabContainer;
 import gov.nist.toolkit.xdstools2.client.command.command.CheckTestkitExistenceCommand;
 import gov.nist.toolkit.xdstools2.client.command.command.ConfigureTestkitCommand;
@@ -41,27 +38,46 @@ public class TestkitConfigTool extends Composite {
                 "the environment selected.<br/><br/>"));
         environmentManager = new EnvironmentManager(myTabContainer);
         container.add(environmentManager);
-        Button runUpdater=new Button("Run",new RunTestkitConfigHandler());
-        container.add(runUpdater);
-        container.add(new Button("Reindex Test Kits", new IndexTestKitsHandler()));
-        container.add(new Button("Create EC testkit structure",new TestkitConfigTool.CreateTestkitStructureHandler()));
+        Button runUpdater=new Button("Create local testkit",new RunTestkitConfigHandler());
+        runUpdater.setTitle("Run the generation of a local (codes updated) copy of the testkit in the selected environment.");
+        HorizontalPanel buttonsContainer = new HorizontalPanel();
+        buttonsContainer.setStyleName("HP");
+        buttonsContainer.add(runUpdater);
+        buttonsContainer.add(new Button("Reindex Test Kits", new IndexTestKitsHandler()));
+        buttonsContainer.add(new Button("Create EC testkit structure",new TestkitConfigTool.CreateTestkitStructureHandler()));
+        container.add(buttonsContainer);
         container.add(indexStatus);
 
         initWidget(container);
     }
 
+    /** ClickHandler class for the button trigger the creation of the testkits structure in all environment of the EC. **/
     private class CreateTestkitStructureHandler implements ClickHandler {
         @Override
         public void onClick(ClickEvent clickEvent) {
-            new GenerateTestkitStructureCommand().run(ClientUtils.INSTANCE.getCommandContext());
+            clearFeedbackBoard();
+            resultPanel.setHTML("Running...");
+            container.add(resultPanel);
+            container.addStyleName("loading");
+            new GenerateTestkitStructureCommand() {
+                @Override
+                public void onComplete(Void result) {
+                    resultPanel.setHTML("-- Success! ");
+                    container.add(resultPanel);
+                    container.removeStyleName("loading");
+                }
+            }.run(ClientUtils.INSTANCE.getCommandContext());
         }
     }
 
+    /** Click Handler for the button that trigger the indexation of all existing testkits. **/
     private class IndexTestKitsHandler implements ClickHandler {
 
         @Override
         public void onClick(ClickEvent clickEvent) {
+            clearFeedbackBoard();
             indexStatus.setHTML("Running...");
+            container.add(indexStatus);
             new IndexTestkitsCommand() {
                 @Override
                 public void onFailure(Throwable throwable) {
@@ -83,7 +99,7 @@ public class TestkitConfigTool extends Composite {
 
         @Override
         public void onClick(ClickEvent clickEvent) {
-            resultPanel.setHTML("Running (connection timeout is 30 sec) ...");
+            clearFeedbackBoard();
             new CheckTestkitExistenceCommand() {
                 @Override
                 public void onComplete(Boolean exists) {
@@ -91,6 +107,7 @@ public class TestkitConfigTool extends Composite {
                         boolean confirmed = Window.confirm("There already is a existing testkit configured for this environment. " +
                                 "This will override it. \nDo you want to proceed?");
                         if (confirmed) runConfigTestkit();
+                        else clearFeedbackBoard();
                     } else {
                         runConfigTestkit();
                     }
@@ -100,6 +117,9 @@ public class TestkitConfigTool extends Composite {
 
         /** Method that actually runs the configuration (code update) of the testkit. **/
         private void runConfigTestkit() {
+            container.addStyleName("loading");
+            resultPanel.setHTML("Running (connection timeout is 30 sec) ...");
+            container.add(resultPanel);
             new ConfigureTestkitCommand(){
                 @Override
                 public void onFailure(Throwable throwable){
@@ -110,8 +130,14 @@ public class TestkitConfigTool extends Composite {
                 public void onComplete(String result) {
                     resultPanel.setHTML(result.replace("\n", "<br/>"));
                     container.add(resultPanel);
+                    container.removeStyleName("loading");
                 }
             }.run(new CommandContext(environmentManager.getSelectedEnvironment(),ClientUtils.INSTANCE.getTestSessionManager().getCurrentTestSession()));
         }
+    }
+
+    private void clearFeedbackBoard() {
+        container.remove(resultPanel);
+        container.remove(indexStatus);
     }
 }

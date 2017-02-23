@@ -25,7 +25,7 @@
   <TestStep id="resubmit_doc_diff_hash">
     <ExpectedStatus>Failure</ExpectedStatus>
     <Goal>Resubmit same DocumentEntry with same uniqueId but different hash.  
-            Must fail with XDSDuplicateUniqueIdInRegistry error</Goal>
+            Must fail with XDSNonIdenticalHash error</Goal>
     <ExpectedErrorMessage>XDSNonIdenticalHash</ExpectedErrorMessage>
     <RegisterTransaction>
       <XDSb/>

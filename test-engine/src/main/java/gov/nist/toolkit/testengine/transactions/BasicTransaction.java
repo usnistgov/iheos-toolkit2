@@ -421,7 +421,8 @@ public abstract class BasicTransaction  {
 		}
 
 		if (topElementName != null && registry_result != null) {
-			if (!topElementName.equals(registry_result.getLocalName())) {
+			String topElementLocalName = registry_result.getLocalName();
+			if (!"Fault".equals(topElementLocalName) && !topElementName.equals(topElementLocalName)) {
 				s_ctx.set_error("Message top level element must be " + topElementName + " found " + registry_result.getLocalName() + " instead");
 				step_failure = true;
 				return;
@@ -1338,13 +1339,14 @@ public abstract class BasicTransaction  {
 
 		if (additionalHeaders != null) {
 			for (OMElement hdr : additionalHeaders)
-				try {
-					soap.addHeader(Util.deep_copy(hdr));
-				} catch (XdsInternalException e) {
-					s_ctx.set_error(e.getMessage());
-					failed();
-					logSoapRequest(soap);
-				}
+//				try {
+//					soap.addHeader(Util.deep_copy(hdr));
+					soap.addHeader(hdr);
+//				} catch (XdsInternalException e) {
+//					s_ctx.set_error(e.getMessage());
+//					failed();
+//					logSoapRequest(soap);
+//				}
 		}
 
 		/*

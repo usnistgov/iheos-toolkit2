@@ -1,12 +1,6 @@
 package gov.nist.toolkit.xdstools2.client.tabs.GatewayTestsTabs;
 
-import com.google.gwt.user.client.rpc.AsyncCallback;
-import com.google.gwt.user.client.ui.Anchor;
-import com.google.gwt.user.client.ui.FlexTable;
-import com.google.gwt.user.client.ui.FlowPanel;
-import com.google.gwt.user.client.ui.HTML;
-import com.google.gwt.user.client.ui.Panel;
-import com.google.gwt.user.client.ui.Widget;
+import com.google.gwt.user.client.ui.*;
 import gov.nist.toolkit.actortransaction.client.ActorType;
 import gov.nist.toolkit.configDatatypes.client.Pid;
 import gov.nist.toolkit.services.client.IgOrchestrationRequest;
@@ -14,15 +8,8 @@ import gov.nist.toolkit.services.client.IgOrchestrationResponse;
 import gov.nist.toolkit.services.client.RawResponse;
 import gov.nist.toolkit.sitemanagement.client.SiteSpec;
 import gov.nist.toolkit.xdstools2.client.command.command.BuildIGTestOrchestrationCommand;
-import gov.nist.toolkit.xdstools2.client.widgets.PopupMessage;
 import gov.nist.toolkit.xdstools2.client.tabs.FindDocumentsLauncher;
-import gov.nist.toolkit.xdstools2.client.tabs.conformanceTest.ActorAndOption;
-import gov.nist.toolkit.xdstools2.client.tabs.conformanceTest.ActorOption;
-import gov.nist.toolkit.xdstools2.client.tabs.conformanceTest.ConformanceTestTab;
-import gov.nist.toolkit.xdstools2.client.tabs.conformanceTest.SiteDisplay;
-import gov.nist.toolkit.xdstools2.client.tabs.conformanceTest.TestContext;
-import gov.nist.toolkit.xdstools2.client.tabs.conformanceTest.TestContextView;
-import gov.nist.toolkit.xdstools2.client.tabs.conformanceTest.TestRunner;
+import gov.nist.toolkit.xdstools2.client.tabs.conformanceTest.*;
 import gov.nist.toolkit.xdstools2.client.tabs.genericQueryTab.GenericQueryTab;
 import gov.nist.toolkit.xdstools2.client.util.ClientUtils;
 import gov.nist.toolkit.xdstools2.client.widgets.OrchestrationSupportTestsDisplay;
@@ -73,11 +60,11 @@ public class BuildIGTestOrchestrationButton extends AbstractOrchestrationButton 
 
     static private final String AD_OPTION = "ad";
     public static List<ActorAndOption> ACTOR_OPTIONS = new ArrayList<>();
-    static {
+    static {  // non-option must be listed first
         ACTOR_OPTIONS = java.util.Arrays.asList(
-                new ActorAndOption("ig", "", "Required", false),
-                new ActorAndOption("ig", AD_OPTION, "Affinity Domain Option", true),
-                new ActorAndOption("ig", XUA_OPTION, "XUA Option", false));
+                new ActorAndOption("ig", "", "non-Affinity Domain Option", true),
+                new ActorAndOption("ig", AD_OPTION, "Affinity Domain Option", false),
+                new ActorAndOption("ig", XUA_OPTION, "XUA/Affinity Domain Option", false));
 
     }
 

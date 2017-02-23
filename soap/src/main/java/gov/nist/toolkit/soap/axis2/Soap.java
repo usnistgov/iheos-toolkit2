@@ -477,7 +477,8 @@ public class Soap implements SoapInterface {
 //		{
 			if (additionalHeaders != null) {
 				for (OMElement hdr : additionalHeaders) {
-					getSoapHeader().addChild(Util.deep_copy(hdr));
+//					getSoapHeader().addChild(Util.deep_copy(hdr));
+					getSoapHeader().addChild(hdr);
 				}
 			}
 

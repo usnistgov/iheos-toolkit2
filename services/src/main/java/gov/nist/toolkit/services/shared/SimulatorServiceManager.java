@@ -217,7 +217,9 @@ public class SimulatorServiceManager extends CommonService {
 
 			String body = new String(Io.bytesFromFile(bodyFile));
 
-			return new Message(Io.stringFromFile(headerFile) + body);
+			return new Message(
+					((headerFile.exists()) ? Io.stringFromFile(headerFile) : "")
+							+ body);
 		} catch (Exception e) {
 			return new Message("Error: " + e.getMessage());
 		}
@@ -487,11 +489,11 @@ public class SimulatorServiceManager extends CommonService {
 		} catch (Exception e) {
 			throw new Exception("Cannot load simulator event - " + e.getMessage(), e);
 		}
-		File reqeustFile = db.getResponseBodyFile();
-		if (reqeustFile == null) return null;
+		if (!db.responseBodyExists()) return null;
+		String response = db.getResponseBody();
 		Metadata m = null;
 		try {
-			m = MetadataParser.parseContent(reqeustFile);
+			m = MetadataParser.parseContent(null, response);
 		} catch (Exception e) {
 			throw new Exception("Cannot load simulator event - " + e.getMessage(), e);
 		}

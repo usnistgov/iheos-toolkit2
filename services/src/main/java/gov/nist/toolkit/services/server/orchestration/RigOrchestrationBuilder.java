@@ -55,8 +55,11 @@ public class RigOrchestrationBuilder {
          for (Orchestra sim : Orchestra.values()) {
             SimulatorConfig simConfig = null;
             SimId simId = new SimId(user, sim.name(), sim.actorType.getName(), env);
-            if (!request.isUseExistingSimulator() || !api.simulatorExists(simId)) {
-            api.deleteSimulatorIfItExists(simId);
+            if (!request.isUseExistingState()) {
+               log.debug("Deleting: " + simId);
+               api.deleteSimulatorIfItExists(simId);
+            }
+            if (!api.simulatorExists(simId)) {
             log.debug("Creating " + simId.toString());
             simConfig = api.createSimulator(simId).getConfig(0);
             // plug our special parameter values

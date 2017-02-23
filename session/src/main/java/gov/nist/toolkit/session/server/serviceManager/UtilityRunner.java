@@ -74,7 +74,7 @@ public class UtilityRunner {
                     logger.info("*** logRepository user: " + session.getId());
                     session.transactionSettings.logRepository =
                             LogRepositoryFactory.
-                                    getRepository(
+                                    getLogRepository(
                                             Installation.instance().sessionCache(),
                                             session.getId(),
                                             LogIdIOFormat.JAVA_SERIALIZATION,
@@ -84,7 +84,7 @@ public class UtilityRunner {
                     logger.info("*** logRepository user (sessionName): " + session.getMesaSessionName());
                     session.transactionSettings.logRepository =
                             LogRepositoryFactory.
-                                    getRepository(
+                                    getLogRepository(
                                             Installation.instance().testLogCache(),
                                             session.getMesaSessionName(),
                                             LogIdIOFormat.JAVA_SERIALIZATION,

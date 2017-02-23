@@ -26,6 +26,7 @@ public class PropertyManager {
 	static private final String MSH_4 = "MSH_4";
 	static private final String MSH_5 = "MSH_5";
 	static private final String MSH_6 = "MSH_6";
+	static private final String ARCHIVE_LOGS = "Archive_Logs";
 
 	private String propFile;
 	private Properties toolkitProperties = null;
@@ -76,6 +77,13 @@ public class PropertyManager {
 			if (!f.exists())
 				throw new Exception("Cannot create Message_database_directory " + value);
 		}
+	}
+
+	public boolean archiveLogs() {
+		loadProperties();
+		String value = (String) toolkitProperties.get(ARCHIVE_LOGS);
+		if (value == null) return false;
+		return value.toLowerCase().equals("true");
 	}
 
 	public String getMSH3() {
@@ -269,6 +277,10 @@ public class PropertyManager {
 		}
 		return props;
 	}
-	
 
+
+    public String getWikiBaseAddress() {
+		loadProperties();
+		return (String) toolkitProperties.getProperty("Wiki_Base_URL");
+    }
 }

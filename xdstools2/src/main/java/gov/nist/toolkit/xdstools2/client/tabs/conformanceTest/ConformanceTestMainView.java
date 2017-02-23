@@ -6,6 +6,8 @@ import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.Panel;
 import com.google.gwt.user.client.ui.TabBar;
 import gov.nist.toolkit.xdstools2.client.ToolWindow;
+import gov.nist.toolkit.xdstools2.client.util.InformationLink;
+import gov.nist.toolkit.xdstools2.client.widgets.HorizontalFlowPanel;
 
 /**
  *
@@ -28,7 +30,10 @@ public class ConformanceTestMainView {
 
         FlowPanel sitesPanel = new FlowPanel();
         toolPanel.add(sitesPanel);
-        toolPanel.add(new HTML("Actor"));
+        HorizontalFlowPanel actorpanel = new HorizontalFlowPanel();
+        actorpanel.add(new HTML("Actor"));
+        actorpanel.add(new InformationLink("Help with Conformance Test tool", "Conformance-Test-Tool").asWidget());
+        toolPanel.add(actorpanel);
         toolPanel.add(actorTabBar);
         toolPanel.add(new HTML("Option"));
         toolPanel.add(optionsTabBar);

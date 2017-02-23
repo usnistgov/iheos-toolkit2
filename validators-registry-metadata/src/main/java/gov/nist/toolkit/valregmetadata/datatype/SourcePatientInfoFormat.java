@@ -45,7 +45,7 @@ public class SourcePatientInfoFormat extends FormatValidator{
 				continue;
 			}
 			if (parts[0].startsWith("PID-3")) {
-				String msg = ValidatorCommon.validate_CX_datatype(parts[1]);
+				String msg = ValidatorCommon.validate_CX_datatype_list(parts[1]);
 				if (msg != null)
 					err(context, "Slot sourcePatientInfo#PID-3 must be valid Patient ID: " + msg, xresource);
 			}
