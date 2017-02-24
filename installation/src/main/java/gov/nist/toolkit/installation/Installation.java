@@ -336,7 +336,7 @@ public class Installation {
         return new File(externalCache + sep + "ImageCache" + sep + cacheName);
     }
 
-    public File interactionSequencesFile() {
+    public File getInteractionSequencesFile() {
         return new File(toolkitxFile(), "interaction-sequences" + sep + "InteractionSequences.xml");
     }
 

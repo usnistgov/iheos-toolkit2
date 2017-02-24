@@ -3,7 +3,6 @@ package gov.nist.toolkit.interactionmodel.client;
 import com.google.gwt.user.client.rpc.IsSerializable;
 
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -14,6 +13,8 @@ public class InteractingEntity implements IsSerializable, Serializable {
     private static final long serialVersionUID = 1L;
 
     String name;
+    String role;
+    String provider;
     String description;
     int id = System.identityHashCode(this);
     /**
@@ -24,7 +25,7 @@ public class InteractingEntity implements IsSerializable, Serializable {
      * How this entity is being interacted with the Source entity.
      */
     String sourceInteractionLabel;
-    ArrayList<InteractingEntity> interactions;
+    List<InteractingEntity> interactions;
 
     /**
      *
@@ -86,11 +87,11 @@ public class InteractingEntity implements IsSerializable, Serializable {
         this.sourceInteractionLabel = sourceInteractionLabel;
     }
 
-    public ArrayList<InteractingEntity> getInteractions() {
+    public List<InteractingEntity> getInteractions() {
         return interactions;
     }
 
-    public void setInteractions(ArrayList<InteractingEntity> interactions) {
+    public void setInteractions(List<InteractingEntity> interactions) {
         this.interactions = interactions;
     }
 
@@ -148,5 +149,21 @@ public class InteractingEntity implements IsSerializable, Serializable {
 
     public void setErrors(List<String> errors) {
         this.errors = errors;
+    }
+
+    public String getRole() {
+        return role;
+    }
+
+    public void setRole(String role) {
+        this.role = role;
+    }
+
+    public String getProvider() {
+        return provider;
+    }
+
+    public void setProvider(String provider) {
+        this.provider = provider;
     }
 }

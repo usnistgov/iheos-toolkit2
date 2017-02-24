@@ -43,6 +43,10 @@
         </dependency>
         <dependency>
             <groupId>gov.nist.toolkit</groupId>
+            <artifactId>interaction-model</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>gov.nist.toolkit</groupId>
             <artifactId>grizzly-support</artifactId>
         </dependency>
 
@@ -120,12 +124,14 @@
                         <!--<include>**/OdConsumerSpec.java</include>-->
                         <!--<include>**/StsSamlAssertionSpec.groovy</include>-->
                         <!--<include>**/StsSamlAssertionSpec.java</include>-->
+                        <include>**/InteractionSequenceSpec.groovy</include>
+                        <include>**/InteractionSequenceSpec.java</include>
                         <!-- end include individual test -->
                         <!-- begin include all tests -->
-                        <include>**/*Spec.groovy</include>
-                        <include>**/*Spec.java</include>
-                        <include>**/*Test.java</include>
-                        <include>**/*IT.java</include>
+                        <!--<include>**/*Spec.groovy</include>-->
+                        <!--<include>**/*Spec.java</include>-->
+                        <!--<include>**/*Test.java</include>-->
+                        <!--<include>**/*IT.java</include>-->
                         <!-- end include all tests -->
                     </includes>
                     <!-- Explanation of the fork arguments in use here: Since there is only ONE external_cache dir, running tests in parallel causes one test to disturb other test environment. To remove this side effect, we start off with a clean environment each time (see cleanupDir method in ToolkitSpecification). -->
