@@ -7,8 +7,6 @@ import gov.nist.toolkit.registrymetadata.MetadataParser;
 import gov.nist.toolkit.registrymetadata.UuidAllocator;
 import gov.nist.toolkit.commondatatypes.MetadataSupport;
 import gov.nist.toolkit.simulators.sim.reg.store.RegIndex.AssocType;
-import gov.nist.toolkit.simulators.sim.reg.store.RegIndex.OldValueNewValueStatus;
-import gov.nist.toolkit.simulators.sim.reg.store.RegIndex.StatusValue;
 import gov.nist.toolkit.utilities.io.Io;
 import gov.nist.toolkit.utilities.xml.OMFormatter;
 import gov.nist.toolkit.valsupport.client.ValidationContext;
@@ -35,10 +33,10 @@ public class MetadataCollection implements Serializable, RegistryValidationInter
 	public FolCollection folCollection;
 
 	// collection of collections
-	transient List<RegObCollection> allCollections = null;
+	transient private List<RegObCollection> allCollections = null;
 
 	public transient FolCollection updatedFolCollection;
-	transient boolean dirty;
+	transient private boolean dirty;
 	transient public RegIndex regIndex;
 	transient public ValidationContext vc;
 
@@ -100,7 +98,7 @@ public class MetadataCollection implements Serializable, RegistryValidationInter
 	}
 
 	public void changeAvailabilityStatus(String id, StatusValue oldValue, StatusValue newValue) {
-		OldValueNewValueStatus ons = (new RegIndex()).new OldValueNewValueStatus(oldValue, newValue, id);
+		OldValueNewValueStatus ons = new OldValueNewValueStatus(oldValue, newValue, id);
 		statusChanges.add(ons);
 	}
 
@@ -583,5 +581,10 @@ public class MetadataCollection implements Serializable, RegistryValidationInter
 		}
 		return false;
 	}
+
+	public boolean isDirty() { return dirty; }
+	public void setDirty(boolean dirty) { this.dirty = dirty; }
+
+	public void clearAllCollections() { allCollections = null; }
 
 }

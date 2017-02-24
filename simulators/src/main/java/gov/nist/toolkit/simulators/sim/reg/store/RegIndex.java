@@ -22,9 +22,9 @@ public class RegIndex implements RegistryValidationInterface, Serializable {
 	public MetadataCollection mc;
 	private String filename;
 	public Calendar cacheExpires;
-	transient SimDb db;
+	transient private SimDb db;
 	private SimId simId;
-	
+
 	public RegIndex() {}
 
 	public RegIndex(String filename, SimId simId) {
@@ -35,15 +35,15 @@ public class RegIndex implements RegistryValidationInterface, Serializable {
 			logger.debug("Attempting to Restore Registry Index");
 			restore();
 			mc.regIndex = this;
-			mc.dirty = false;
+			mc.setDirty(false);
 		} catch (Exception e) {
 			// no existing database - initialize instead
 			logger.debug("No existing - creating new");
 			mc = new MetadataCollection();
 			mc.init();
 			mc.regIndex = this;
-			mc.dirty = false;
-			mc.allCollections = null;
+			mc.setDirty(false);
+			mc.clearAllCollections();
 		}
 	}
 
@@ -58,29 +58,8 @@ public class RegIndex implements RegistryValidationInterface, Serializable {
 	public SimDb getSimDb() {
 		return db;
 	}
-
-	public enum StatusValue { UNKNOWN, APPROVED, DEPRECATED };
 	
 	static public List<StatusValue> docEntryLegalStatusValues = new ArrayList<StatusValue>() {{ add(StatusValue.APPROVED); add(StatusValue.DEPRECATED); }};
-	
-	 class OldValueNewValueStatus {
-		StatusValue o;
-		StatusValue n;
-		String id;
-		Ro ro;
-		
-		
-		 OldValueNewValueStatus(StatusValue oldValue, StatusValue newValue, String id) {
-			o = oldValue;
-			n = newValue;
-			this.id = id;
-		}
-	}
-
-	static public StatusValue getStatusValue(Metadata m, OMElement ele) {
-		String stat = m.getStatus(ele);
-		return getStatusValue(stat);
-	}
 
 	public void setExpiration(Calendar expires) {
 		this.cacheExpires = expires;
@@ -96,7 +75,7 @@ public class RegIndex implements RegistryValidationInterface, Serializable {
 		return StatusValue.UNKNOWN;
 	}
 
-	static  String getStatusString(StatusValue status) {
+	public static  String getStatusString(StatusValue status) {
 		switch(status) {
 		case APPROVED: 
 			return "urn:oasis:names:tc:ebxml-regrep:StatusType:Approved";
@@ -118,13 +97,9 @@ public class RegIndex implements RegistryValidationInterface, Serializable {
 		return values;
 	}
 
-	public String statsToString() {
-		return mc.statsToString();
-	}
-
 	public enum AssocType { UNKNOWN, HASMEMBER, RPLC, RPLC_XFRM, XFRM, APND };
 
-	static  AssocType getAssocType(Metadata m, OMElement ele) {
+	static public AssocType getAssocType(Metadata m, OMElement ele) {
 		String typ = Metadata.getAssocType(ele);
 		return getAssocType(typ);
 	}
@@ -145,7 +120,7 @@ public class RegIndex implements RegistryValidationInterface, Serializable {
 		return AssocType.UNKNOWN;
 	}
 	
-	 static String getAssocString(AssocType type) {
+	 public static String getAssocString(AssocType type) {
 		switch (type) {
 		case HASMEMBER: return "HasMember";
 		default: return type.toString();
@@ -184,7 +159,7 @@ public class RegIndex implements RegistryValidationInterface, Serializable {
 // caller takes responsiblity for sync, must be on this
 	public void save() throws IOException {
 			saveRegistry(mc, filename);
-			mc.dirty = false;
+			mc.setDirty(false);
 	}
 
 	private void restore() throws IOException, ClassNotFoundException {

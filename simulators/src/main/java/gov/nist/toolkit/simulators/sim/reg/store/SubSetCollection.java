@@ -175,7 +175,7 @@ public class SubSetCollection extends RegObCollection implements Serializable {
 	}
 
 
-	public List<SubSet> filterByStatus(List<RegIndex.StatusValue> statuses, List<SubSet> ss) {
+	public List<SubSet> filterByStatus(List<StatusValue> statuses, List<SubSet> ss) {
 		if (ss.isEmpty()) return ss;
 		if (statuses == null || statuses.isEmpty()) return ss;
 		for (int i=0; i<ss.size(); i++) {

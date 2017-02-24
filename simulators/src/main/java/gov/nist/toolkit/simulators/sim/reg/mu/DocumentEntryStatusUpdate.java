@@ -7,7 +7,7 @@ import gov.nist.toolkit.registrymetadata.Metadata;
 import gov.nist.toolkit.simulators.sim.reg.RegRSim;
 import gov.nist.toolkit.simulators.sim.reg.store.DocEntry;
 import gov.nist.toolkit.simulators.sim.reg.store.RegIndex;
-import gov.nist.toolkit.simulators.sim.reg.store.RegIndex.StatusValue;
+import gov.nist.toolkit.simulators.sim.reg.store.StatusValue;
 import gov.nist.toolkit.simulators.support.DsSimCommon;
 import gov.nist.toolkit.simulators.support.SimCommon;
 import gov.nist.toolkit.valsupport.client.ValidationContext.MetadataPattern;

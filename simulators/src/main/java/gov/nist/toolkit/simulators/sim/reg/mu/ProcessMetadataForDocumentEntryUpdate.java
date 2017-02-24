@@ -7,7 +7,7 @@ import gov.nist.toolkit.errorrecording.client.XdsErrorCode.Code;
 import gov.nist.toolkit.registrymetadata.Metadata;
 import gov.nist.toolkit.simulators.sim.reg.store.*;
 import gov.nist.toolkit.simulators.sim.reg.store.RegIndex.AssocType;
-import gov.nist.toolkit.simulators.sim.reg.store.RegIndex.StatusValue;
+import gov.nist.toolkit.simulators.sim.reg.store.StatusValue;
 import gov.nist.toolkit.xdsexception.client.MetadataException;
 import org.apache.axiom.om.OMElement;
 import org.apache.log4j.Logger;
