@@ -3,11 +3,12 @@
 <!-- 
 
 INTRODUCTION:
-This file defines general interaction sequences between actors, within an XDS Toolkit conformance environment, as referred to by the test plan in question. It is meant to supplement a test plan. However, if a test plan specifies it's own InteractionSequence element, it takes precedence over this definition.
+This file defines general interaction sequences between actors, within an XDS Toolkit conformance environment, as referred to by the test plan in question. It is meant to supplement a test plan. However, if a test plan specifies it's own InteractionSequence element, it takes precedence over this definition. In this case the key must be unqiue like so: 11966_SpecialStep_ProvideAndRegister.
 
 IMPORTANT NOTES:
 i) The value of an actor element's name attribute provided by a toolkit simulator is linked to the Conformance Test Environment. This value is hardcoded in the Builder class for now. See the relevant OrchestrtionBuilder class depending on the SystemUnderTest provider's actor role. For example, if the actor role is Repository, see RepOrchestrationBuilder.groovy. Eventaully when the conformance test environment is scripted the name reference should resolve automatically. 
 ii) The value of an InteractionSequence element's type attribute is linked to a TestPlan's TestStep transaction element.
+iii) The key attribute value maps to the TestPlan TestStep Transaction.
 
 ASSUMPTIONS:
 Limited by the TestOverviewBuilder class, this makes an assumption that only one transaction is allowed per step.
@@ -16,7 +17,7 @@ Limited by the TestOverviewBuilder class, this makes an assumption that only one
 -->
 
 <InteractionSequences>
-	<InteractionSequence type="ProvideAndRegisterTransaction"> 
+	<InteractionSequence key="ProvideAndRegisterTransaction">
 			<Actor role="Document Source" provider="TestClient">
 				<Transaction type="prb">
 					<Actor role="Repository" provider="SystemUnderTest">

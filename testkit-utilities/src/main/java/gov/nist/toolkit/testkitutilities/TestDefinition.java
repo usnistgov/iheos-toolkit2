@@ -1,5 +1,7 @@
 package gov.nist.toolkit.testkitutilities;
 
+import gov.nist.toolkit.installation.Installation;
+import gov.nist.toolkit.interactionmodel.server.InteractionSequences;
 import gov.nist.toolkit.testkitutilities.client.SectionDefinitionDAO;
 import gov.nist.toolkit.testkitutilities.client.StepDefinitionDAO;
 import gov.nist.toolkit.utilities.io.Io;
@@ -134,6 +136,21 @@ public class TestDefinition {
 			}
 
 			for (OMElement trans : XmlUtil.descendantsWithLocalNameEndsWith(stepEle, "Transaction")) {
+
+				OMElement interactionSeq = XmlUtil.firstChildWithLocalName(trans, "InteractionSequence");
+				try {
+					InteractionSequences.init(Installation.instance().getInteractionSequencesFile());
+					String transactionKey = null;
+					if (interactionSeq==null) {
+						transactionKey = trans.getLocalName();
+					} else {
+						transactionKey = InteractionSequences.xformSequenceToEntity(interactionSeq);
+					}
+					step.setInteractionSequence(InteractionSequences.getInteractionSequenceByTransactionKey(transactionKey));
+				} catch (Exception ex) {
+
+				}
+
 				for (OMElement useReport : XmlUtil.childrenWithLocalName(trans, "UseReport")) {
 					String testId = useReport.getAttributeValue(TEST_QNAME);
 					if (testId != null) {

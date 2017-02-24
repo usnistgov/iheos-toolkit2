@@ -17,7 +17,7 @@
         </dependency>
         <dependency>
             <groupId>gov.nist.toolkit</groupId>
-            <artifactId>testkit-utilities</artifactId>
+            <artifactId>utilities</artifactId>
         </dependency>
 
         <dependency>

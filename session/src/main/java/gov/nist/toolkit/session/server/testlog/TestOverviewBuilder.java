@@ -93,6 +93,7 @@ public class TestOverviewBuilder {
                         for (String stepName : sectionDef.getStepNames()) {
                             StepOverviewDTO stepOverview = sectionOverview.getStep(stepName);
                             stepOverview.setGoals(sectionDef.getStep(stepName).getGoals());
+                            stepOverview.setInteractionSequence(sectionDef.getStep(stepName).getInteractionSequence());
 
                             TestStepLogContentDTO stepDTO = new TestStepLogContentDTO();
                             StepGoalsDTO goals = new StepGoalsDTO();

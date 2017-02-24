@@ -312,7 +312,7 @@ public class InteractionDiagram extends Composite {
         setEventBus(eventBus);
         setTestOverviewDTO(testOverviewDTO);
 
-        List<InteractingEntity> entityList = transformTestResultToInteractingEntity(testOverviewDTO);
+        List<InteractingEntity> entityList = getInteractingEntity(testOverviewDTO);
         if (entityList==null) {
             return;
         }
@@ -354,6 +354,31 @@ public class InteractionDiagram extends Composite {
 
         entity.setDescription(label);
         return label;
+    }
+
+
+    List<InteractingEntity> getInteractingEntity(TestOverviewDTO testResultDTO) {
+        if (testResultDTO == null || testResultDTO.getSectionNames() == null) return null;
+
+        List<String> sectionNames = testResultDTO.getSectionNames();
+
+        if (sectionNames == null || (sectionNames != null && sectionNames.isEmpty()))
+            return null;
+
+        List<InteractingEntity> result = new ArrayList<InteractingEntity>();
+
+        if (sectionNames.size()>0 && testResultDTO.getSections().size()>0)
+         for (String section : sectionNames) {
+            SectionOverviewDTO sectionOverviewDTO = testResultDTO.getSectionOverview(section);
+            if (sectionOverviewDTO.getStepNames()!=null && sectionOverviewDTO.getStepNames().size()>0) {
+                String stepName = sectionOverviewDTO.getStepNames().get(0);
+                StepOverviewDTO stepOverviewDTO = sectionOverviewDTO.getStep(stepName);
+
+                result.addAll(stepOverviewDTO.getInteractionSequence());
+            }
+         }
+
+        return result;
     }
 
     List<InteractingEntity> transformTestResultToInteractingEntity(TestOverviewDTO testResultDTO) {

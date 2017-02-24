@@ -1,12 +1,12 @@
 package gov.nist.toolkit.interactionmodel.server;
 
-import gov.nist.toolkit.installation.Installation;
 import gov.nist.toolkit.interactionmodel.client.InteractingEntity;
 import gov.nist.toolkit.utilities.xml.Util;
 import org.apache.axiom.om.OMElement;
 import org.apache.log4j.Logger;
 
 import javax.xml.namespace.QName;
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -26,17 +26,17 @@ public class InteractionSequences {
     private InteractionSequences() {
     }
 
-    static public void init() throws Exception {
-       if (!initialized) {
-            synchronized (InteractionSequences.class) {
+    static public void init(File interactionSequencesFile) throws Exception {
+        if (!initialized) {
+       synchronized (InteractionSequences.class) {
                 initialized=true;
-                OMElement interactionSequences = Util.parse_xml(Installation.instance().getInteractionSequencesFile());
+                OMElement interactionSequences = Util.parse_xml(interactionSequencesFile);
 
                 if (interactionSequences!=null) {
                     Iterator intSeqIt = interactionSequences.getChildElements();
                     while (intSeqIt.hasNext()) {
                         OMElement intSeqEl = (OMElement) intSeqIt.next();
-                        xformSequencesToEntityMap(intSeqEl);
+                        xformSequenceToEntity(intSeqEl);
                     }
 
                 }
@@ -44,11 +44,12 @@ public class InteractionSequences {
        }
     }
 
-    static public void xformSequencesToEntityMap(OMElement intSeqEl) {
+    static public String xformSequenceToEntity(OMElement intSeqEl) throws Exception {
         String partName = intSeqEl.getLocalName();
+        String transactionKey = null;
 
         if (partName.equals("InteractionSequence")) {
-            String transactionKey = intSeqEl.getAttributeValue(new QName("type"));
+            transactionKey = intSeqEl.getAttributeValue(new QName("key"));
 
             Iterator actorIt =  intSeqEl.getChildElements();
             List<InteractingEntity> ies = new ArrayList<>();
@@ -58,6 +59,8 @@ public class InteractionSequences {
             }
             interactingEntityMap.put(transactionKey,ies);
         }
+
+        return transactionKey;
 
     }
 
@@ -112,7 +115,7 @@ public class InteractionSequences {
 
     }
 
-    public static List<InteractingEntity> getInteractionSequenceByTransactionType(String key) {
+    public static List<InteractingEntity> getInteractionSequenceByTransactionKey(String key) throws Exception {
         if (getSequencesMap()!=null && key!=null)
             return getSequencesMap().get(key);
         return null;

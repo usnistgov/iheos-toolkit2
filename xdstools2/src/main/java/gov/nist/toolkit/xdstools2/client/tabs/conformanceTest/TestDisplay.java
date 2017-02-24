@@ -57,7 +57,7 @@ public class TestDisplay  implements IsWidget {
         view.setDescription(testOverview.getDescription());
 
         // build an interaction sequence diagram
-        if (testOverview.isRun()) view.setInteractionDiagram(new InteractionDiagramDisplay(testOverview));
+        view.setInteractionDiagram(new InteractionDiagramDisplay(testOverview));
 
         // build sections within test
         view.clearSections();
