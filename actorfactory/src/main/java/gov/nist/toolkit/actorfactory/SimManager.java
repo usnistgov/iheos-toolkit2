@@ -45,7 +45,7 @@ public class SimManager {
 				if (!hasSim(simId))
 					try {
 						logger.info("Load sim " + simId);
-						simConfigs.add(db.getSimulator(simId));
+						simConfigs.add(SimDb.getSimulator(simId));
 						loadedSimIds.add(simId);
 					}
 					catch (Exception e) {

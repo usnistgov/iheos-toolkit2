@@ -32,11 +32,9 @@ public class SimulatorApi {
     public Simulator create(String actorTypeName, SimId simID) throws Exception {
 //        return new SimulatorServiceManager(session).getNewSimulator(actorTypeName, simID);
         try {
-            SimDb db = new SimDb();
-            if (db.exists(simID))
+            if (SimDb.exists(simID))
                 throw new SimExistsException("Simulator " + simID + " exists");
 
-//            SimCache simCache = new SimCache();
             SimManager simMgr = SimCache.getSimManagerForSession(session.id(), true);
 
             Simulator scl = new GenericSimulatorFactory(simMgr).buildNewSimulator(simMgr, actorTypeName, simID);
@@ -46,11 +44,9 @@ public class SimulatorApi {
         } catch (EnvironmentNotSelectedException e) {
             logger.error("Cannot create Simulator - Environment Not Selected");
             throw e;
-//            throw new Exception("Cannot create Simulator - Environment Not Selected", e);
         } catch (Exception e) {
             logger.error("getNewSimulator:\n" + ExceptionUtil.exception_details(e));
             throw e;
-//            throw new Exception(e.getClass().getName() + ": " + e.getMessage());
         }
     }
 
@@ -68,7 +64,7 @@ public class SimulatorApi {
     }
 
     public boolean exists(SimId simId) {
-        return new SimDb().exists(simId);
+        return SimDb.exists(simId);
     }
 
     public void setConfig(SimulatorConfig config, String parameterName, String value) {

@@ -61,7 +61,6 @@ public class RuntimeManager {
     * @throws InstantiationException if not able to create the http server instance
     */
    public static BaseActorSimulator getHttpSimulatorRuntime(SimId simId) throws NoSimException, Exception, ClassNotFoundException, IllegalAccessException, InvocationTargetException, InstantiationException {
-       SimDb db = new SimDb();
        SimulatorConfig config = GenericSimulatorFactory.getSimConfig(simId);
        String actorTypeName = config.getActorType();
        ActorType actorType = ActorType.findActor(actorTypeName);

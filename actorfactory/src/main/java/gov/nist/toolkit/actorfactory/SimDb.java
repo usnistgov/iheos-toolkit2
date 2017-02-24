@@ -52,7 +52,7 @@ public class SimDb {
 		return mkSim(Installation.instance().simDbFile(), simid, actor);
 	}
 
-	static public SimDb mkSim(File dbRoot, SimId simid, String actor) throws IOException, NoSimException {
+	static SimDb mkSim(File dbRoot, SimId simid, String actor) throws IOException, NoSimException {
         validateSimId(simid);
 		if (!dbRoot.exists())
 			dbRoot.mkdir();
@@ -78,7 +78,7 @@ public class SimDb {
     * @return boolean true if a simulator directory for this id exists in the
     * simdb directory, false otherwise.
     */
-   public boolean exists(SimId simId) {
+   static public boolean exists(SimId simId) {
       return new File(Installation.instance().simDbFile(), simId.toString()).exists();
    }
 	
@@ -200,7 +200,7 @@ public class SimDb {
 		return (Date) Serialize.in(new File(eventDir, "date.ser"));
 	}
 
-	public File getRoot() { return dbRoot; }
+//	public File getRoot() { return dbRoot; }
 
 	/**
 	 * Delete simulator
@@ -266,7 +266,7 @@ public class SimDb {
 		return ids;
 	}
 
-    public List<SimId> getSimIdsForUser(String user) throws BadSimIdException {
+    public static List<SimId> getSimIdsForUser(String user) throws BadSimIdException {
         List<SimId> ids = getAllSimIds();
         List<SimId> selectedIds = new ArrayList<>();
         for (SimId id : ids) {
@@ -282,7 +282,7 @@ public class SimDb {
 	 * @throws IOException
 	 * @throws ClassNotFoundException
 	 */
-	public SimulatorConfig getSimulator(SimId simId) throws Exception {
+	static public SimulatorConfig getSimulator(SimId simId) throws Exception {
 		SimulatorConfig config = null;
 		try {
 			config = GenericSimulatorFactory.loadSimulator(simId, true);
@@ -424,7 +424,6 @@ public class SimDb {
 	}
 
 	static  List<SimId> getSimulatorIdsforActorType(ActorType actorType) throws IOException, NoSimException {
-		SimDb db = new SimDb();
 		List<SimId> allSimIds = getAllSimIds();
 		List<SimId> simIdsOfType = new ArrayList<>();
 		for (SimId simId : allSimIds) {
@@ -462,7 +461,7 @@ public class SimDb {
 		return Io.stringFromFile(simType).trim();
 	}
 
-	public void setSimulatorType(String type) throws IOException {
+	private void setSimulatorType(String type) throws IOException {
 		File simType = new File(simDir + File.separator + "sim_type.txt");
 		Io.stringToFile(simType, type);
 	}

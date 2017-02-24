@@ -123,7 +123,7 @@ class SimulatorServiceManagerTest extends Specification {
         mgr.deleteConfig(simId)
 
         then:
-        !new SimDb().exists(simId)
+        !SimDb.exists(simId)
     }
 
     def 'Create simulator with lower case name'() {

@@ -275,7 +275,6 @@ public class SimulatorServiceManager extends CommonService {
 
 		GenericSimulatorFactory simFact = new GenericSimulatorFactory(SimCache.getSimManagerForSession(session.id()));
 
-		SimDb db = new SimDb();
 		List<SimId> simIds = SimDb.getAllSimIds();
 
 		List<SimId> userSimIds = new ArrayList<>();
@@ -295,7 +294,6 @@ public class SimulatorServiceManager extends CommonService {
 	public void updateAllSimulatorsHostAndPort(String host, String port) throws Exception, IOException, ClassNotFoundException {
 		GenericSimulatorFactory simFact = new GenericSimulatorFactory(SimCache.getSimManagerForSession(session.id()));
 
-		SimDb db = new SimDb();
 		List<SimId> simIds = SimDb.getAllSimIds();
 
 		List<SimulatorConfig> configs = GenericSimulatorFactory.loadSimulators(simIds);
@@ -328,7 +326,7 @@ public class SimulatorServiceManager extends CommonService {
         SimulatorConfig config = SimCache.getSimulatorConfig(simId);
         if (config != null)
             return deleteConfig(config);
-        if (new SimDb().exists(simId)) {
+        if (SimDb.exists(simId)) {
             try {
                 new SimDb(simId).delete();
             } catch (Exception e) {

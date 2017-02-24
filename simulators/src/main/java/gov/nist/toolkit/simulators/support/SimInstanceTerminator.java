@@ -18,8 +18,6 @@ public class SimInstanceTerminator {
 	static Logger logger = Logger.getLogger(SimInstanceTerminator.class);
 
 	public int run() throws Exception  {
-		SimDb simdb = new SimDb();
-
 		Date now = new Date();
 		int deleted = 0;
 		
@@ -27,7 +25,7 @@ public class SimInstanceTerminator {
 		for (SimId simId : simIds) {
 			SimulatorConfig asc;
 			try {
-				asc = new SimCache().getSimulatorConfig(simId);
+				asc = SimCache.getSimulatorConfig(simId);
 				Date expiration = asc.getExpiration();
 				if (expiration.before(now)) {
 					SimCommon.deleteSim(simId);

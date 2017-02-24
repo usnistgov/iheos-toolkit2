@@ -326,8 +326,6 @@ public abstract class AbstractActorFactory {
 	}
 
 	static public List<SimulatorConfig> getSimConfigs(String actorTypeName) {
-		SimDb db = new SimDb();
-
 		List<SimId> allSimIds = SimDb.getAllSimIds();
 		List<SimulatorConfig> simConfigs = new ArrayList<>();
 

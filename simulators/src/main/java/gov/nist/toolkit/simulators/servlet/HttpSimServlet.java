@@ -195,7 +195,6 @@ public class HttpSimServlet extends HttpServlet {
    
    public static void onServiceStart()  {
       try {
-         SimDb db = new SimDb();
          List<SimId> simIds = SimDb.getAllSimIds();
          for (SimId simId : simIds) {
             BaseHttpActorSimulator sim = (BaseHttpActorSimulator) RuntimeManager.getHttpSimulatorRuntime(simId);
@@ -212,7 +211,6 @@ public class HttpSimServlet extends HttpServlet {
 
    public static void onServiceStop() {
       try {
-         SimDb db = new SimDb();
          List<SimId> simIds = SimDb.getAllSimIds();
          for (SimId simId : simIds) {
             BaseHttpActorSimulator sim = (BaseHttpActorSimulator) RuntimeManager.getHttpSimulatorRuntime(simId);
