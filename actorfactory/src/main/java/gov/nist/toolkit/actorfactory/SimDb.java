@@ -44,7 +44,7 @@ public class SimDb {
 	private String actor = null;
 	private String transaction = null;
 	private File transactionDir = null;
-	static Logger logger = Logger.getLogger(SimDb.class);
+	static private Logger logger = Logger.getLogger(SimDb.class);
 
 
 	static public SimDb mkSim(SimId simid, String actor) throws IOException, NoSimException {
@@ -52,7 +52,7 @@ public class SimDb {
 		return mkSim(Installation.instance().simDbFile(), simid, actor);
 	}
 
-	static SimDb mkSim(File dbRoot, SimId simid, String actor) throws IOException, NoSimException {
+	private static SimDb mkSim(File dbRoot, SimId simid, String actor) throws IOException, NoSimException {
         validateSimId(simid);
 		if (!dbRoot.exists())
 			dbRoot.mkdir();
@@ -200,8 +200,6 @@ public class SimDb {
 		return (Date) Serialize.in(new File(eventDir, "date.ser"));
 	}
 
-//	public File getRoot() { return dbRoot; }
-
 	/**
 	 * Delete simulator
 	 */
@@ -220,7 +218,7 @@ public class SimDb {
 		return actors;
 	}
 	
-	static public Date getNewExpiration(@SuppressWarnings("rawtypes") Class controllingClass)   {
+	static Date getNewExpiration(@SuppressWarnings("rawtypes") Class controllingClass)   {
 		// establish expiration for newly touched cache elements
 		Date now = new Date();
 		Calendar newExpiration = Calendar.getInstance();
@@ -383,10 +381,6 @@ public class SimDb {
 		return filename.substring(0, dot);
 	}
 
-	public File getAffinityDomainDir(String adOid) {
-		return pidDb.getAffinityDomainDir(adOid);
-	}
-
 	public void addPatientId(Pid pid) throws IOException {
 		pidDb.addPatientId(pid);
 	}
@@ -402,16 +396,7 @@ public class SimDb {
 	public boolean patientIdExists(Pid pid) throws IOException {
 		return pidDb.patientIdExists(pid);
 	}
-		//
-	//
-	//
 
-
-	//	public void setSimulatorType(String type) throws IOException {
-	//		File simType = new File(getDBFilePrefix(fileNameBase) + File.separator + "sim_type.txt");
-	//		Io.stringToFile(simType, type);
-	//	}
-	
 	public ActorType getSimulatorActorType() {
 		File typeFile = new File(simDir, "sim_type.txt");
 		String name = null;
@@ -435,9 +420,7 @@ public class SimDb {
 	}
 
 	static private ActorType getSimulatorActorType(SimId simId) throws IOException, NoSimException {
-		SimDb db = new SimDb(simId);
-		if (db == null) return null;
-		return db.getSimulatorActorType();
+		return new SimDb(simId).getSimulatorActorType();
 	}
 	
 	public List<String> getTransactionsForSimulator() {
@@ -469,8 +452,7 @@ public class SimDb {
 	public File getRepositoryDocumentFile(String documentId) {
 		File repDirFile = new File(getDBFilePrefix(event) + File.separator + "Repository");
 		repDirFile.mkdirs();
-		File repDocFile = new File(repDirFile.toString() + File.separator + oidToFilename(documentId) + ".bin");
-		return repDocFile;
+		return new File(repDirFile.toString() + File.separator + oidToFilename(documentId) + ".bin");
 	}
 
 	private String oidToFilename(String oid) {
@@ -721,13 +703,11 @@ public class SimDb {
 	}
 
 	public File getTransactionEvent(String simid, String actor, String trans, String event) {
-		File dir = new File(simDir 
+		return new File(simDir
 				+ File.separator + actor
 				+ File.separator + trans
 				+ File.separator + event
 		);
-
-		return dir;
 	}
 
 	public File getRequestHeaderFile(SimId simid, String actor, String trans, String event) {
