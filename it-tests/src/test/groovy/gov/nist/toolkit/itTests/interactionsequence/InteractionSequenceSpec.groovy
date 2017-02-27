@@ -24,12 +24,15 @@ class InteractionSequenceSpec extends ToolkitSpecification {
         then:
         InteractionSequences.getSequencesMap().size() > 0
 
-        List<InteractingEntity> seq = InteractionSequences.getInteractionSequenceByTransactionKey("ProvideAndRegisterTransaction")
+        List<InteractingEntity> seq = InteractionSequences.getInteractionSequenceById("ProvideAndRegisterTransaction")
 
         seq != null && seq.size() == 1
+
         InteractingEntity docSrc = seq.get(0)
         docSrc != null
         docSrc.role == "Document Source"
+
+        System.out.println(docSrc.toString())
 
         docSrc.getInteractions().size()==1
         InteractingEntity repos = docSrc.getInteractions().get(0)
@@ -37,6 +40,7 @@ class InteractionSequenceSpec extends ToolkitSpecification {
 
         InteractingEntity reg = repos.getInteractions().get(0)
         reg.role == "Registry"
+
 
     }
 }

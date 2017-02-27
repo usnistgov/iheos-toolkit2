@@ -11,7 +11,6 @@ import com.google.gwt.event.dom.client.MouseOverEvent;
 import com.google.gwt.event.dom.client.MouseOverHandler;
 import com.google.gwt.event.shared.EventHandler;
 import com.google.gwt.user.client.Timer;
-import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HTML;
@@ -59,7 +58,7 @@ public class InteractionDiagram extends Composite {
     int MAX_LABEL_DISPLAY_LEN = 27;
     int LL_FEET = 10; // life line feet (extra) lines after the last transaction
     int ll_margin = 108; // The width of a transaction connector
-    int maxLabelLen = 0;
+    int maxLabelLen = 10;
 
     int connection_topmargin = (NUM_LINES * LINE_HEIGHT) + (HALF_CROSS_HEIGHT *2) + 2; // top margin of a transaction
     int error_box_offset = 30;
@@ -73,7 +72,7 @@ public class InteractionDiagram extends Composite {
     TestOverviewDTO testOverviewDTO;
     EventBus eventBus;
 
-    static final int MAX_LL_DISPLAY_NAME = 11;
+    static final int MAX_LL_DISPLAY_NAME = 10;
     static final int MAX_TOOLTIPS = 5;
     static final int HIDE_TOOLTIP_ON_MOUSEOUT = -1;
     Tooltip tooltip = new Tooltip();
@@ -374,7 +373,10 @@ public class InteractionDiagram extends Composite {
                 String stepName = sectionOverviewDTO.getStepNames().get(0);
                 StepOverviewDTO stepOverviewDTO = sectionOverviewDTO.getStep(stepName);
 
-                result.addAll(stepOverviewDTO.getInteractionSequence());
+                List<InteractingEntity> interactionSequence = stepOverviewDTO.getInteractionSequence();
+
+                if (interactionSequence!=null)
+                    result.addAll(interactionSequence);
             }
          }
 
@@ -620,7 +622,8 @@ public class InteractionDiagram extends Composite {
         int textY = y;
 
         if (!response) {
-            int rightCenterTextX = x1;
+            int rightCenterTextX = (x1 + x2)/2;
+            /*
             if (lls.size()>2)
                 for (LL ll : lls) {
                     if (ll.getLl_stem_center()>x1) {
@@ -628,38 +631,46 @@ public class InteractionDiagram extends Composite {
                         break;
                     }
                 }
+             */
 
-            int centerTextX = (rightCenterTextX+x2)/2;
+//            int centerTextX = (rightCenterTextX+x2)/2;
+            int centerTextX = rightCenterTextX;
 
-            group.setAttribute("style","cursor:pointer");
 
             if (x2>x1)
                 group.appendChild(arrow_request_right(x2, y));
             else
                 group.appendChild(arrow_request_left(x2, y));
 
-            final List<String> messages = new ArrayList<String>();
-            messages.add("(Click to inspect results)");
-            addTooltip(group,messages, HIDE_TOOLTIP_ON_MOUSEOUT);
+            if (entity.getStatus()!=null) {
+                group.setAttribute("style","cursor:pointer");
+                final List<String> messages = new ArrayList<String>();
+                messages.add("(Click to inspect results)");
+                addTooltip(group, messages, HIDE_TOOLTIP_ON_MOUSEOUT);
 
-            String description = entity.getDescription();
-            String transaction = entity.getSourceInteractionLabel();
-            String[] lines = new String[] {"","",""}; // Length should equal NUM_LINES
-            if (description.indexOf("^")>-1) {
-                String[] descArray = description.split("\\^");
-                lines[0] = descArray[0];
-                lines[1] = descArray[1];
-            }
-            lines[2] = transaction;
-            group.appendChild(getTransactionLabel(centerTextX,textY,lines));
-
-            // -----
-            group.addClickHandler(new ClickHandler() {
-                @Override
-                public void onClick(ClickEvent clickEvent) {
-                    getEventBus().fireEvent(new DiagramClickedEvent(getTestOverviewDTO().getTestInstance(), DiagramPart.RequestConnector));
+                String description = entity.getDescription();
+                String transaction = entity.getSourceInteractionLabel();
+                String[] lines = new String[] {"","",""}; // Length should equal NUM_LINES
+                if (description!=null && description.indexOf("^")>-1) {
+                    String[] descArray = description.split("\\^");
+                    lines[0] = descArray[0];
+                    lines[1] = descArray[1];
                 }
-            } );
+                lines[2] = transaction;
+                group.appendChild(getTransactionLabel(centerTextX,textY,lines));
+
+                group.addClickHandler(new ClickHandler() {
+                    @Override
+                    public void onClick(ClickEvent clickEvent) {
+                        getEventBus().fireEvent(new DiagramClickedEvent(getTestOverviewDTO().getTestInstance(), DiagramPart.RequestConnector));
+                    }
+                });
+            } else {
+                // Templated
+
+                String[] lines = new String[] {entity.getSourceInteractionLabel()};// Length should equal NUM_LINES
+                group.appendChild(getTransactionLabel(centerTextX,textY,lines));
+            }
 
         } else {
             /*
@@ -845,19 +856,15 @@ public class InteractionDiagram extends Composite {
     OMSVGTextElement getTransactionLabel(int x, int y, String[] lines) {
         OMSVGTextElement text = doc.createSVGTextElement();
         text.setAttribute("x",""+x);
-        text.setAttribute("y",""+(y-(4+(LINE_HEIGHT * NUM_LINES)))); // Shift text up the connecting line, 3 for top of the line
+        text.setAttribute("y",""+(y-(4+(LINE_HEIGHT * lines.length)))); // Shift text up the connecting line, 3 for top of the line
         text.setAttribute("text-anchor","middle");
         text.setAttribute("font-family","Verdana");
         text.setAttribute("font-size","10");
 
-        OMSVGTSpanElement line1 = getOmsvgtSpanElement(x, "" + lines[0]);
-        text.appendChild(line1);
-
-        OMSVGTSpanElement line2 = getOmsvgtSpanElement(x, "" + lines[1]);
-        text.appendChild(line2);
-
-        OMSVGTSpanElement line3 = getOmsvgtSpanElement(x, "" + lines[2]);
-        text.appendChild(line3);
+        for (String line : lines) {
+            OMSVGTSpanElement line1 = getOmsvgtSpanElement(x, "" + line);
+            text.appendChild(line1);
+        }
 
        return text;
     }
@@ -956,14 +963,22 @@ public class InteractionDiagram extends Composite {
         ll.setLl_stem_center(x + (LL_BOX_WIDTH /2));
         rect.setAttribute("x",""+x);
         rect.setAttribute("y","0");
-        rect.setAttribute("style","fill:rgb(255,255,255);stroke-width:2;stroke:rgb(0,0,0)" );
+        String boxRgb = "rgb(255,255,255);";
+        if ("SystemUnderTest".equals(entity.getProvider())) {
+            boxRgb = "rgb(255,165,0);"; // Orange
+        } /*else if ("Simulator".equals(entity.getProvider())) {
+            boxRgb = "rgb(0,0,255);"; // Blue
+        } */
+        rect.setAttribute("style","fill:"+boxRgb+"stroke-width:2;stroke:rgb(0,0,0)" );
 
+        /*
         rect.addClickHandler(new ClickHandler() {
             @Override
             public void onClick(ClickEvent clickEvent) {
                 Window.alert(name);
             }
         });
+        */
 
         OMSVGTextElement text = doc.createSVGTextElement();
         text.setAttribute("x",""+ll.getLl_stem_center());
@@ -976,7 +991,7 @@ public class InteractionDiagram extends Composite {
         OMSVGGElement group = doc.createSVGGElement();
         String shortName = name;
         if (name.length()> MAX_LL_DISPLAY_NAME) {
-            shortName = name.substring(0, MAX_LABEL_DISPLAY_LEN);
+            shortName = name.substring(0, MAX_LL_DISPLAY_NAME-3) + "...";
             List<String> actorName = new ArrayList<String>();
             actorName.add(name);
             addTooltip(group,actorName, HIDE_TOOLTIP_ON_MOUSEOUT);

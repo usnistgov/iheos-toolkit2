@@ -166,4 +166,35 @@ public class InteractingEntity implements IsSerializable, Serializable {
     public void setProvider(String provider) {
         this.provider = provider;
     }
+
+    @Override
+    public String toString() {
+        try {
+            return seq(this, new StringBuilder()).toString();
+        } catch (Exception ex) {
+            return ex.toString();
+        }
+    }
+
+    private StringBuilder seq(InteractingEntity parent, StringBuilder sb) throws Exception {
+
+        if (sb==null) throw new Exception("Null StringBuilder object!");
+
+        sb.append(parent.getName() + " ------> ");
+
+        if (parent.getInteractions()!=null)  {
+            for (InteractingEntity child : parent.getInteractions()) {
+
+                sb.append(child.getName());
+                sb.append("\n");
+
+                if (child.getInteractions()!=null) {
+                    seq(child,sb);
+                }
+            }
+        }
+
+        return sb;
+    }
+
 }

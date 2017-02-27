@@ -12,13 +12,16 @@ import gov.nist.toolkit.xdstools2.client.util.ClientUtils;
 public class InteractionDiagramDisplay extends FlowPanel {
 
     public InteractionDiagramDisplay(TestOverviewDTO testResultDTO) {
-        InteractionDiagram diagram = new InteractionDiagram(ClientUtils.INSTANCE.getEventBus(), testResultDTO);
-        if (diagram!=null && diagram.hasMeaningfulDiagram()) {
-            add(new HTML("<p><b>Interaction Sequence:</b></p>"));
-            add(diagram);
-            add(new HTML("<br/>"));
-        } else {
-            add(new HTML("<p>No interaction sequence diagram is available.</p>"));
+        try {
+            InteractionDiagram diagram = new InteractionDiagram(ClientUtils.INSTANCE.getEventBus(), testResultDTO);
+            if (diagram!=null && diagram.hasMeaningfulDiagram()) {
+                add(new HTML("<p><b>Interaction Sequence:</b></p>"));
+                add(diagram);
+                add(new HTML("<br/>"));
+            }
+        } catch (Exception ex) {
+            add(new HTML("<p>Sequence Diagram Error: " + ex.toString()
+                    + "</p>"));
         }
 
     }

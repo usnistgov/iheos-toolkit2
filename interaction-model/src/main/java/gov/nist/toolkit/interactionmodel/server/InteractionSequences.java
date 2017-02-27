@@ -46,10 +46,10 @@ public class InteractionSequences {
 
     static public String xformSequenceToEntity(OMElement intSeqEl) throws Exception {
         String partName = intSeqEl.getLocalName();
-        String transactionKey = null;
+        String sequenceId = null;
 
         if (partName.equals("InteractionSequence")) {
-            transactionKey = intSeqEl.getAttributeValue(new QName("key"));
+            sequenceId = intSeqEl.getAttributeValue(new QName("id"));
 
             Iterator actorIt =  intSeqEl.getChildElements();
             List<InteractingEntity> ies = new ArrayList<>();
@@ -57,10 +57,10 @@ public class InteractionSequences {
                 OMElement actorEl = (OMElement)actorIt.next();
                 ies.add(xformSequenceToEntity(actorEl,null,null));
             }
-            interactingEntityMap.put(transactionKey,ies);
+            interactingEntityMap.put(sequenceId,ies);
         }
 
-        return transactionKey;
+        return sequenceId;
 
     }
 
@@ -115,9 +115,9 @@ public class InteractionSequences {
 
     }
 
-    public static List<InteractingEntity> getInteractionSequenceByTransactionKey(String key) throws Exception {
-        if (getSequencesMap()!=null && key!=null)
-            return getSequencesMap().get(key);
+    public static List<InteractingEntity> getInteractionSequenceById(String sequenceId) throws Exception {
+        if (getSequencesMap()!=null && sequenceId!=null)
+            return getSequencesMap().get(sequenceId);
         return null;
     }
 

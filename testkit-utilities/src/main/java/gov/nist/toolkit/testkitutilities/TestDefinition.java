@@ -146,7 +146,7 @@ public class TestDefinition {
 					} else {
 						transactionKey = InteractionSequences.xformSequenceToEntity(interactionSeq);
 					}
-					step.setInteractionSequence(InteractionSequences.getInteractionSequenceByTransactionKey(transactionKey));
+					step.setInteractionSequence(InteractionSequences.getInteractionSequenceById(transactionKey));
 				} catch (Exception ex) {
 
 				}

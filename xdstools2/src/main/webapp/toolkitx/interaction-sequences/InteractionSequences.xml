@@ -17,7 +17,7 @@ Limited by the TestOverviewBuilder class, this makes an assumption that only one
 -->
 
 <InteractionSequences>
-	<InteractionSequence key="ProvideAndRegisterTransaction">
+	<InteractionSequence id="ProvideAndRegisterTransaction">
 			<Actor role="Document Source" provider="TestClient">
 				<Transaction type="prb">
 					<Actor role="Repository" provider="SystemUnderTest">

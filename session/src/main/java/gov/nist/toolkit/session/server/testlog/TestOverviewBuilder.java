@@ -83,7 +83,6 @@ public class TestOverviewBuilder {
                         logFileContentDTO.setHasRun(true);
                     }
 
-                    // TODO: Since the "testOverview.addSection(sectionOverview)" is commented below, not sure what some blocks related to sectionOverview are really for. Looks like dead code.
                     SectionOverviewDTO sectionOverview = addSection(section, logFileContentDTO);
 
                     try {
@@ -92,6 +91,12 @@ public class TestOverviewBuilder {
                         testDependencies.addAll(sectionDef.getSectionDependencies());
                         for (String stepName : sectionDef.getStepNames()) {
                             StepOverviewDTO stepOverview = sectionOverview.getStep(stepName);
+                            if (stepOverview==null) { // Probably not yet executed
+                                stepOverview = new StepOverviewDTO();
+                                sectionOverview.getStepNames().add(stepName);
+                                sectionOverview.getSteps().put(stepName,stepOverview);
+                                stepOverview.setName(sectionDef.getStep(stepName).getId());
+                            }
                             stepOverview.setGoals(sectionDef.getStep(stepName).getGoals());
                             stepOverview.setInteractionSequence(sectionDef.getStep(stepName).getInteractionSequence());
 
@@ -148,6 +153,7 @@ public class TestOverviewBuilder {
         sectionOverview.setPass(logFileContentDTO.isSuccess());
         sectionOverview.setHl7Time(logFileContentDTO.getHl7Time());
         sectionOverview.setSite(logFileContentDTO.getSiteName());
+
         for (String stepName : logFileContentDTO.getStepMap().keySet()) {
             TestStepLogContentDTO stepContent = logFileContentDTO.getStepLog(stepName);
             addStep(stepName, stepContent, sectionOverview);
@@ -168,11 +174,6 @@ public class TestOverviewBuilder {
         stepOverview.addErrors(stepContent.getErrors());
         stepOverview.addErrors(stepContent.getAssertionErrors());
         stepOverview.setTransaction(stepContent.getTransaction()); // NOTE: This makes an assumption that only one transaction is allowed per step.
-
-        // TODO:
-        // Add interaction sequence for the step transaction
-        // Is a specific pattern embedded?
-        // If not, use a general transaction pattern
 
         sectionOverview.addStep(stepName, stepOverview);
     }
