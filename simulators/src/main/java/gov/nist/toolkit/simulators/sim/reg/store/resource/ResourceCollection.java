@@ -6,6 +6,7 @@ package gov.nist.toolkit.simulators.sim.reg.store.resource;
 public class ResourceCollection {
     transient private boolean dirty;
     transient private ResourceIndex index;
+    transient private ResourceCollection parent = null;
 
     public void setDirty(boolean dirty) {
         this.dirty = dirty;
