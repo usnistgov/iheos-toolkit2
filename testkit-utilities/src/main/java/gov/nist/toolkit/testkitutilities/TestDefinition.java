@@ -121,7 +121,22 @@ public class TestDefinition {
 			StepDefinitionDAO step = new StepDefinitionDAO();
 			step.setId(stepEle.getAttributeValue(new QName("id")));
 
-			// parse goals
+
+			for (OMElement trans : XmlUtil.descendantsWithLocalNameEndsWith(stepEle, "Transaction")) {
+				OMElement interactionSeq = XmlUtil.firstChildWithLocalName(trans, "InteractionSequence");
+				try {
+					InteractionSequences.init(Installation.instance().getInteractionSequencesFile());
+					String transactionKey = null;
+					if (interactionSeq == null) {
+						transactionKey = trans.getLocalName();
+					} else {
+						transactionKey = InteractionSequences.xformSequenceToEntity(interactionSeq);
+					}
+					step.setInteractionSequence(InteractionSequences.getInteractionSequenceById(transactionKey));
+				} catch (Exception ex) {}
+			}
+
+				// parse goals
 			OMElement goalEle = XmlUtil.firstChildWithLocalName(stepEle, "Goal");
 			if (goalEle == null) continue;
 			String goalsString = goalEle.getText();
@@ -136,21 +151,6 @@ public class TestDefinition {
 			}
 
 			for (OMElement trans : XmlUtil.descendantsWithLocalNameEndsWith(stepEle, "Transaction")) {
-
-				OMElement interactionSeq = XmlUtil.firstChildWithLocalName(trans, "InteractionSequence");
-				try {
-					InteractionSequences.init(Installation.instance().getInteractionSequencesFile());
-					String transactionKey = null;
-					if (interactionSeq==null) {
-						transactionKey = trans.getLocalName();
-					} else {
-						transactionKey = InteractionSequences.xformSequenceToEntity(interactionSeq);
-					}
-					step.setInteractionSequence(InteractionSequences.getInteractionSequenceById(transactionKey));
-				} catch (Exception ex) {
-
-				}
-
 				for (OMElement useReport : XmlUtil.childrenWithLocalName(trans, "UseReport")) {
 					String testId = useReport.getAttributeValue(TEST_QNAME);
 					if (testId != null) {

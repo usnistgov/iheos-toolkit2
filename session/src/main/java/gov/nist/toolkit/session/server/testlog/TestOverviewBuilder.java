@@ -96,9 +96,14 @@ public class TestOverviewBuilder {
                                 sectionOverview.getStepNames().add(stepName);
                                 sectionOverview.getSteps().put(stepName,stepOverview);
                                 stepOverview.setName(sectionDef.getStep(stepName).getId());
-                            }
+                            } // else
+                            // TODO: Inject session variables post-execution: I.e. Session siteSpec is not null.
+                            // 1) Add the session name prefix to the name (session__name) where Provider is Simulator
+                            // 2) Use the SiteSpec name where Provider is SystemUnderTest
+
                             stepOverview.setGoals(sectionDef.getStep(stepName).getGoals());
                             stepOverview.setInteractionSequence(sectionDef.getStep(stepName).getInteractionSequence());
+
 
                             TestStepLogContentDTO stepDTO = new TestStepLogContentDTO();
                             StepGoalsDTO goals = new StepGoalsDTO();

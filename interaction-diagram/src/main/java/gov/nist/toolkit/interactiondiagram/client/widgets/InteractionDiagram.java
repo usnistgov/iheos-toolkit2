@@ -990,12 +990,17 @@ public class InteractionDiagram extends Composite {
 
         OMSVGGElement group = doc.createSVGGElement();
         String shortName = name;
+        List<String> actorDetail = new ArrayList<String>();
+
         if (name.length()> MAX_LL_DISPLAY_NAME) {
             shortName = name.substring(0, MAX_LL_DISPLAY_NAME-3) + "...";
-            List<String> actorName = new ArrayList<String>();
-            actorName.add(name);
-            addTooltip(group,actorName, HIDE_TOOLTIP_ON_MOUSEOUT);
         }
+        if (!name.equals(entity.getProvider()))
+            actorDetail.add(name);
+        actorDetail.add(entity.getRole());
+        actorDetail.add(entity.getProvider());
+
+        addTooltip(group,actorDetail, HIDE_TOOLTIP_ON_MOUSEOUT);
 
         OMText textValue = doc.createTextNode(shortName);
         text.appendChild(textValue);
