@@ -180,12 +180,12 @@ public class InteractingEntity implements IsSerializable, Serializable {
 
         if (sb==null) throw new Exception("Null StringBuilder object!");
 
-        sb.append(parent.getName() + " ------> ");
+        sb.append("" + parent.getRole() + ":" + parent.getName() + " ------> ");
 
         if (parent.getInteractions()!=null)  {
             for (InteractingEntity child : parent.getInteractions()) {
 
-                sb.append(child.getName());
+                sb.append("" + child.getRole() + ":" + child.getName());
                 sb.append("\n");
 
                 if (child.getInteractions()!=null) {

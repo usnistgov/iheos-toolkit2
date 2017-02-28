@@ -52,13 +52,13 @@ public class InteractionDiagram extends Composite {
 
     static final int HALF_CROSS_HEIGHT = 5;
     static final int LINE_HEIGHT = 13;
-    static final int LL_BOX_WIDTH = 70;
-    static final int LL_BOX_HEIGHT = 25;
+    static final int LL_BOX_WIDTH = 82;
+    static final int LL_BOX_HEIGHT = 50;
 
     int MAX_LABEL_DISPLAY_LEN = 27;
     int LL_FEET = 10; // life line feet (extra) lines after the last transaction
     int ll_margin = 108; // The width of a transaction connector
-    int maxLabelLen = 10;
+    int maxLabelLen = 16;
 
     int connection_topmargin = (NUM_LINES * LINE_HEIGHT) + (HALF_CROSS_HEIGHT *2) + 2; // top margin of a transaction
     int error_box_offset = 30;
@@ -202,6 +202,7 @@ public class InteractionDiagram extends Composite {
         TouchPoint activityRange = new TouchPoint();
         TouchPoint tempTp = new TouchPoint();
 
+        String id;
         String name;
         boolean root;
 
@@ -219,6 +220,14 @@ public class InteractionDiagram extends Composite {
 
         public String getName() {
             return name;
+        }
+
+        public String getId() {
+            return id;
+        }
+
+        public void setId(String id) {
+            this.id = id;
         }
 
         public void setName(String name) {
@@ -657,7 +666,7 @@ public class InteractionDiagram extends Composite {
                     lines[1] = descArray[1];
                 }
                 lines[2] = transaction;
-                group.appendChild(getTransactionLabel(centerTextX,textY,lines));
+                group.appendChild(multiLineLabel(centerTextX,(textY-(4+(LINE_HEIGHT * lines.length))),lines,10, MAX_LABEL_DISPLAY_LEN));
 
                 group.addClickHandler(new ClickHandler() {
                     @Override
@@ -669,7 +678,7 @@ public class InteractionDiagram extends Composite {
                 // Templated
 
                 String[] lines = new String[] {entity.getSourceInteractionLabel()};// Length should equal NUM_LINES
-                group.appendChild(getTransactionLabel(centerTextX,textY,lines));
+                group.appendChild(multiLineLabel(centerTextX,(textY-(4+(LINE_HEIGHT * lines.length))),lines,10,MAX_LABEL_DISPLAY_LEN));
             }
 
         } else {
@@ -853,16 +862,16 @@ public class InteractionDiagram extends Composite {
         return x_group;
     }
 
-    OMSVGTextElement getTransactionLabel(int x, int y, String[] lines) {
+    OMSVGTextElement multiLineLabel(int x, int y, String[] lines, int fontSize, int maxLineLen) {
         OMSVGTextElement text = doc.createSVGTextElement();
         text.setAttribute("x",""+x);
-        text.setAttribute("y",""+(y-(4+(LINE_HEIGHT * lines.length)))); // Shift text up the connecting line, 3 for top of the line
+        text.setAttribute("y",""+y); // Shift text up the connecting line, 3 for top of the line
         text.setAttribute("text-anchor","middle");
         text.setAttribute("font-family","Verdana");
-        text.setAttribute("font-size","10");
+        text.setAttribute("font-size",""+fontSize);
 
         for (String line : lines) {
-            OMSVGTSpanElement line1 = getOmsvgtSpanElement(x, "" + line);
+            OMSVGTSpanElement line1 = getOmsvgtSpanElement(x, "" + getShortName(line,maxLineLen));
             text.appendChild(line1);
         }
 
@@ -871,19 +880,13 @@ public class InteractionDiagram extends Composite {
 
     private OMSVGTSpanElement getOmsvgtSpanElement(int x, String string2) {
         OMSVGTSpanElement line = doc.createSVGTSpanElement();
-        OMText line2Node = doc.createTextNode(getShortLabel(string2));
+        OMText line2Node = doc.createTextNode(getShortName(string2,MAX_LABEL_DISPLAY_LEN));
         line.setAttribute("x",""+x);
         line.setAttribute("dy",""+ LINE_HEIGHT);
         line.appendChild(line2Node);
         return line;
     }
 
-    String getShortLabel(String label) {
-       if (label.length()>MAX_LABEL_DISPLAY_LEN) {
-          return label.substring(0,MAX_LABEL_DISPLAY_LEN-3) + "...";
-       } else
-           return label;
-    }
 
 
     OMSVGPolygonElement arrow_request_left(int x, int y) {
@@ -942,13 +945,15 @@ public class InteractionDiagram extends Composite {
     LL create_LL(InteractingEntity entity) {
 
         final String name = (entity.getName()==null)?"Toolkit":entity.getName();
-        LL ll = getLL(name);
+        final String id = entity.getRole() + "_" + entity.getProvider() + "_" + entity.getName();
+        LL ll = getLL(id);
 
         if (ll!=null)
             return ll;
 
         ll = new LL();
         ll.setName(name);
+        ll.setId(id);
 
         int ll_count = lls.size();
         if (ll_count==0) // First LL being created is the root
@@ -992,9 +997,7 @@ public class InteractionDiagram extends Composite {
         String shortName = name;
         List<String> actorDetail = new ArrayList<String>();
 
-        if (name.length()> MAX_LL_DISPLAY_NAME) {
-            shortName = name.substring(0, MAX_LL_DISPLAY_NAME-3) + "...";
-        }
+        shortName = getShortName(name,maxLabelLen);
         if (!name.equals(entity.getProvider()))
             actorDetail.add(name);
         actorDetail.add(entity.getRole());
@@ -1006,7 +1009,9 @@ public class InteractionDiagram extends Composite {
         text.appendChild(textValue);
 
         group.appendChild(rect);
-        group.appendChild(text);
+//        group.appendChild(text);
+
+        group.appendChild(multiLineLabel(ll.getLl_stem_center(),2,actorDetail.toArray(new String[actorDetail.size()]),9,maxLabelLen));
 
         ll.setLlEl(group);
         lls.add(ll);
@@ -1015,11 +1020,19 @@ public class InteractionDiagram extends Composite {
         return ll;
     }
 
-    LL getLL(String name) {
-        if (name==null)
+    private String getShortName(String name, int truncateTo) {
+        if (name.length()> truncateTo) {
+            return name.substring(0, truncateTo-3) + "...";
+        }
+        else
+            return name;
+    }
+
+    LL getLL(String id) {
+        if (id==null)
             return null;
         for (LL ll : lls) {
-            if (name.equals(ll.getName())) {
+            if (id.equals(ll.getId())) {
                 return ll;
             }
         }

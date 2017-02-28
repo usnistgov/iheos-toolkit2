@@ -121,6 +121,7 @@ public class TestDefinition {
 			StepDefinitionDAO step = new StepDefinitionDAO();
 			step.setId(stepEle.getAttributeValue(new QName("id")));
 
+			OMElement goalEle = XmlUtil.firstChildWithLocalName(stepEle, "Goal");
 
 			for (OMElement trans : XmlUtil.descendantsWithLocalNameEndsWith(stepEle, "Transaction")) {
 				OMElement interactionSeq = XmlUtil.firstChildWithLocalName(trans, "InteractionSequence");
@@ -132,12 +133,17 @@ public class TestDefinition {
 					} else {
 						transactionKey = InteractionSequences.xformSequenceToEntity(interactionSeq);
 					}
-					step.setInteractionSequence(InteractionSequences.getInteractionSequenceById(transactionKey));
+					if (InteractionSequences.getInteractionSequenceById(transactionKey)!=null) {
+						step.setInteractionSequence(InteractionSequences.getInteractionSequenceById(transactionKey));
+
+						if (goalEle==null)
+							section.addStep(step);
+						break;
+					}
 				} catch (Exception ex) {}
 			}
 
 				// parse goals
-			OMElement goalEle = XmlUtil.firstChildWithLocalName(stepEle, "Goal");
 			if (goalEle == null) continue;
 			String goalsString = goalEle.getText();
 			if (goalsString != null) goalsString = goalsString.trim();

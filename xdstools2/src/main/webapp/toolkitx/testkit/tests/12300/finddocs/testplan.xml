@@ -13,7 +13,7 @@
             <InteractionSequence id="12300_finddocs_XCQTransaction">
                <Actor role="Initiating Gateway" provider="SystemUnderTest">
                    <Transaction type="xcq">
-                       <Actor role="Responding Gateway" provider="Simulator">
+                       <Actor role="Responding Gateway" name="community1" provider="Simulator">
                            <Transaction type="sq">
                                <Actor role="Registry" provider="Simulator"/>
                            </Transaction>
