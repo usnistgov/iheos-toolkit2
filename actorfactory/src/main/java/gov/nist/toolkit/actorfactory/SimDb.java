@@ -121,7 +121,7 @@ public class SimDb {
 
 	public PidDb getPidDb() { return pidDb; }
 
-    static void validateSimId(SimId simId) throws IOException {
+    private static void validateSimId(SimId simId) throws IOException {
         String badChars = " \t\n<>{}.";
         for (int i=0; i<badChars.length(); i++) {
             char c = badChars.charAt(i);
@@ -157,12 +157,27 @@ public class SimDb {
             return;
 
 		Date date = new Date();
-
-		event = Installation.asFilenameBase(date);
-
-		File eventDir = getEventDir();
+		File eventDir = mkEventDir(date);
 		eventDir.mkdirs();
 		Serialize.out(new File(eventDir, "date.ser"), date);
+	}
+
+	private File mkEventDir(Date date) {
+		int incr = 0;
+		String eventBase = Installation.asFilenameBase(date);
+		while (true) {
+			event = eventBase;
+			if (incr != 0)
+				event += '_' + incr;    // make unique
+			File eventDir = getEventDir();  // from event
+			if (eventDir.exists()) {
+				// must be fresh new dir - try again
+				incr++;
+			}
+			else
+				break;
+		}
+		return getEventDir();
 	}
 
 	public String getEvent() { return event; }
@@ -305,7 +320,7 @@ public class SimDb {
 		);
 	}
 
-	public File getRegistryObjectFile(String id) {
+	public File getObjectFile(DbObjectType type, String id) {
 		if (id == null)
 			return null;
 		if (!id.startsWith("urn:uuid:"))
@@ -314,7 +329,7 @@ public class SimDb {
 		// version of uuid that could be used as filename
 		String x = id.substring(9).replaceAll("-", "_");
 
-		File registryDir = new File(getDBFilePrefix(event) + File.separator + "Registry");
+		File registryDir = new File(getDBFilePrefix(event) + File.separator + type.getName());
 		registryDir.mkdirs();
 
 		return new File(registryDir.toString() + File.separator + x + ".xml");
