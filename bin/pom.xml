@@ -27,6 +27,12 @@
             <groupId>gov.nist.toolkit</groupId>
             <artifactId>actorfactory</artifactId>
         </dependency>
+        <dependency>
+            <groupId>com.google.gwt</groupId>
+            <artifactId>gwt-user</artifactId>
+            <version>${gwtVersion}</version>
+            <scope>compile</scope>
+        </dependency>
 
     </dependencies>
 

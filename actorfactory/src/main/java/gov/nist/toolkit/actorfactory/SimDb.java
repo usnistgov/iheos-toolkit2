@@ -123,12 +123,18 @@ public class SimDb {
 
     private static void validateSimId(SimId simId) throws IOException {
         String badChars = " \t\n<>{}.";
-        for (int i=0; i<badChars.length(); i++) {
-            char c = badChars.charAt(i);
-            int ind = -1;
-            if ((ind = simId.getId().indexOf(c)) != -1) throw new IOException(String.format("Simulator ID contains bad character at position %s", ind));
-            if ((ind = simId.getId().indexOf(c)) != -1) throw new IOException(String.format("Simulator User (testSession) contains bad character at position %s", i));
-        }
+        if (simId == null)
+        	throw new IOException("Simulator ID is null");
+        String id = simId.getId();
+        if (id != null) {
+			for (int i = 0; i < badChars.length(); i++) {
+				char c = badChars.charAt(i);
+				if (id.indexOf(c) != -1)
+					throw new IOException(String.format("Simulator ID contains bad character at position %d", i));
+				if (id.indexOf(c) != -1)
+					throw new IOException(String.format("Simulator User (testSession) contains bad character at position %d", i));
+			}
+		}
     }
 
     private void validateSimId() throws IOException { validateSimId(simId);}
@@ -160,6 +166,13 @@ public class SimDb {
 		File eventDir = mkEventDir(date);
 		eventDir.mkdirs();
 		Serialize.out(new File(eventDir, "date.ser"), date);
+	}
+
+	public File mkEvent(String transaction) {
+		Date date = new Date();
+		File eventDir = mkEventDir(date);
+		eventDir.mkdirs();
+		return eventDir;
 	}
 
 	private File mkEventDir(Date date) {

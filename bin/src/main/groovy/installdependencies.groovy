@@ -34,7 +34,8 @@ mvndepoutput.eachLine { String line ->
     lin = lin.trim()
 
     def parts = lin.split(':')
-    assert parts.size() == 5
+//    assert parts.size() == 5
+    if (parts.size() != 5) return
 
     Module module = new Module()
     module.group = parts[0]
