@@ -90,6 +90,8 @@ class BuildRepTestOrchestrationButton extends AbstractOrchestrationButton {
 
                 // test will be run out of support site so pass it back to conformance test tab
                 testTab.setSiteToIssueTestAgainst(orchResponse.getSupportSite().siteSpec());
+
+                testTab.displayTestCollection(testTab.getMainView().getTestsPanel());
             }
         }.run(new BuildRepTestOrchestrationRequest(ClientUtils.INSTANCE.getCommandContext(),request));
     }

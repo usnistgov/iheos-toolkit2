@@ -319,7 +319,7 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner, TestTa
 		displayOrchestrationHeader(mainView.getInitializationPanel());
 
 		initializeTestDisplay(testsPanel);
-		displayTestCollection(testsPanel);
+//		displayTestCollection(testsPanel);
 	}
 
 	private void initializeTestDisplay(Panel testsPanel) {
@@ -330,11 +330,19 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner, TestTa
 		loadingMessage.setStyleName("loadingMessage");
 		testsPanel.add(loadingMessage);
 		testsHeaderView.showSelfTestWarning(isSelfTest());
+
+		new AutoInitConformanceTestingCommand() {
+			@Override
+			public void onComplete(Boolean result) {
+				if (result)
+					orchInit.handleClick(null);   // auto init orchestration
+			}
+		}.run(getCommandContext());
+
 	}
 
 	// load test results for a single test collection (actor/option) for a single site
-	private void displayTestCollection(final Panel testsPanel) {
-
+	public void displayTestCollection(final Panel testsPanel) {
 
 		// what tests are in the collection
 		currentActorOption.loadTests(new AsyncCallback<List<TestInstance>>() {
@@ -352,11 +360,12 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner, TestTa
 	}
 
 
-	private void displayTests(final Panel testsPanel, List<TestInstance> testInstances, boolean allowRun) {
+	private void displayTests(final Panel testsPanel, final List<TestInstance> testInstances, boolean allowRun) {
 		// results (including logs) for a collection of tests
 
 		testDisplayGroup.allowRun(allowRun);
 		testDisplayGroup.showValidate(showValidate());
+
 
 		new GetTestsOverviewCommand() {
 			@Override
@@ -378,20 +387,16 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner, TestTa
 				for (TestOverviewDTO testOverview : testOverviews) {
 					updateTestOverview(testOverview);
 					TestDisplay testDisplay = testDisplayGroup.display(testOverview);
+					// Require late-binding of diagram due to orchestration place holders
+					testDisplay.getView().setInteractionDiagram(new InteractionDiagramDisplay(testOverview, testContext.getTestSession(), getSiteToIssueTestAgainst(), testContext.getSiteUnderTestAsSiteSpec().getName()));
 					testsPanel.add(testDisplay.asWidget());
 				}
 				updateTestsOverviewHeader(currentActorOption);
-
-				new AutoInitConformanceTestingCommand(){
-					@Override
-					public void onComplete(Boolean result) {
-						if (result)
-							orchInit.handleClick(null);   // auto init orchestration
-					}
-				}.run(getCommandContext());
 			}
-		}.run(new GetTestsOverviewRequest(getCommandContext(), testInstances));
+		}.run(new GetTestsOverviewRequest(getCommandContext(), testInstances, getTestContext().getCurrentSiteSpec(), getTestContext().getSiteUnderTest()));
 	}
+
+
 
 	private void displayOrchestrationHeader(Panel initializationPanel) {
 		String label = "Initialize Test Environment";
@@ -548,6 +553,8 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner, TestTa
 					public void onComplete(TestOverviewDTO testOverviewDTO) {
 						updateTestOverview(testOverviewDTO);
 						testDisplayGroup.display(testOverviewDTO);
+						// Require late-binding of diagram due to orchestration place holders
+//						testDisplay.getView().setInteractionDiagram(new InteractionDiagramDisplay(testOverview, testContext.getTestSession(), getSiteToIssueTestAgainst(), testContext.getSiteUnderTestAsSiteSpec().getName()));
 						updateTestsOverviewHeader(actorOption);
 					}
 				}.run(new DeleteSingleTestRequest(getCommandContext(),testInstance));
@@ -577,6 +584,8 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner, TestTa
 				public void onComplete(TestOverviewDTO testOverviewDTO) {
 					// returned testStatus of entire test
 					testDisplayGroup.display(testOverviewDTO);
+					// Require late-binding of diagram due to orchestration place holders
+//						testDisplay.getView().setInteractionDiagram(new InteractionDiagramDisplay(testOverview, testContext.getTestSession(), getSiteToIssueTestAgainst(), testContext.getSiteUnderTestAsSiteSpec().getName()));
 					Collection<TestOverviewDTO> overviews = updateTestOverview(testOverviewDTO);
 					updateTestsOverviewHeader(currentActorOption);
 					// Schedule next section to be run
@@ -644,6 +653,8 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner, TestTa
 				public void onComplete(TestOverviewDTO testOverviewDTO) {
 					// returned testStatus of entire test
 					testDisplayGroup.display(testOverviewDTO);
+					// Require late-binding of diagram due to orchestration place holders
+//						testDisplay.getView().setInteractionDiagram(new InteractionDiagramDisplay(testOverview, testContext.getTestSession(), getSiteToIssueTestAgainst(), testContext.getSiteUnderTestAsSiteSpec().getName()));
 					updateTestOverview(testOverviewDTO);
 					updateTestsOverviewHeader(currentActorOption);
 					// Schedule next test to be run
@@ -752,5 +763,9 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner, TestTa
 				}
 			};
 		}
+	}
+
+	public ConformanceTestMainView getMainView() {
+		return mainView;
 	}
 }
