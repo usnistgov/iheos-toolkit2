@@ -3,10 +3,7 @@
  */
 package gov.nist.toolkit.registrymsg.repository;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 /**
  * Encapsulates {@code <iherad:RetrieveImagingDocumentSetRequest>} 
@@ -163,6 +160,80 @@ public class RetrieveImageRequestModel {
          newModel.addTransferSyntaxUID(xferSyntax);
       return newModel;
    }
-   
+
+   /**
+    * Returns a list of string containing the composite uids (study, series, instance)
+    * separated by colons. If the flags are set, the additional codes are included.
+    * Empty strings are shown as zero length strings. Null values are replaced
+    * with the string "null".
+    * @param includeHcid include the home community ids
+    * @param includeRuid include the repository unique ids
+    * @return list of colon delimited strings
+    */
+   public List<String> getCompositeUids(boolean includeHcid, boolean includeRuid) {
+      List<String> compositeUids = new ArrayList<>();
+      for (RetrieveImageStudyRequestModel studyrm : studyRequests) {
+         for (RetrieveImageSeriesRequestModel seriesrm : studyrm.getSeriesRequests()) {
+            for (RetrieveItemRequestModel itemrm : seriesrm.getDocumentRequests()) {
+               String s = n(studyrm.getStudyInstanceUID()) + ":" +
+                          n(seriesrm.getSeriesInstanceUID()) + ":" +
+                          n(itemrm.getDocumentId());
+               if (includeHcid) s += ":" + n(itemrm.getHomeId());
+               if (includeRuid) s += ":" + n(itemrm.getRepositoryId());
+               compositeUids.add(s);
+            }
+         }
+      }
+      return compositeUids;
+   }
+   private String n(String input) {
+      return (input == null) ? "null" : input;
+   }
+
+   /**
+    * Generates a model from a valid set of String lists. For testing
+    * @param compositeUids a list of composite UID string, of the format
+    *        study UID, series UID, instance UID, home community ID, repository
+    *        unique ID, separated by colons. home community ID and repository ID
+    *        may be empty strings or "null". study, series, and instance UIDs
+    *        must be present.
+    * @param xferSyntaxUids a list or transfer syntax UIDs.
+    * @return
+    */
+   public static RetrieveImageRequestModel buildModel(List<String> compositeUids, List<String> xferSyntaxUids) {
+      RetrieveImageRequestModel model = new RetrieveImageRequestModel();
+      Collections.sort(compositeUids);
+      model.setTransferSyntaxUIDs(xferSyntaxUids);
+      RetrieveImageStudyRequestModel studyModel = null;
+      RetrieveImageSeriesRequestModel seriesModel = null;
+
+      for (String compositeUid : compositeUids) {
+         String[] tokens = compositeUid.split(":");
+         String studyUid = tokens[0];
+         String seriesUid = tokens[1];
+         String instanceUid = tokens[2];
+         String hcid = tokens[3].equalsIgnoreCase("null") ? null : tokens[3];
+         String repUid = tokens[4].equalsIgnoreCase("null") ? null : tokens[4];
+
+         if (!studyUid.equals(studyModel.getStudyInstanceUID())) {
+            if (studyModel == null || !studyModel.getStudyInstanceUID().equals(studyUid)) {
+               studyModel = new RetrieveImageStudyRequestModel();
+               studyModel.setStudyInstanceUID(studyUid);
+               model.addStudyRequest(studyModel);
+               seriesModel = null;
+            }
+            if (seriesModel == null || !seriesModel.getSeriesInstanceUID().equals(seriesUid)) {
+               seriesModel = new RetrieveImageSeriesRequestModel();
+               seriesModel.setSeriesInstanceUID(seriesUid);
+               studyModel.addSeriesRequest(seriesModel);
+            }
+            RetrieveItemRequestModel document = new RetrieveItemRequestModel();
+            document.setDocumentId(instanceUid);
+            document.setHomeId(hcid);
+            document.setRepositoryId(repUid);
+         }
+      }
+      return model;
+   }
 
 } // EO RetrieveImageRequestModel class
