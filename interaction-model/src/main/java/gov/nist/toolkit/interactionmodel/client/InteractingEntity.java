@@ -5,6 +5,7 @@ import com.google.gwt.user.client.rpc.IsSerializable;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by skb1 on 8/1/2016.
@@ -195,6 +196,33 @@ public class InteractingEntity implements IsSerializable, Serializable {
         }
 
         return sb;
+    }
+
+    public void setPlaceholders(InteractingEntity parent, Map<String,String> map) {
+
+        if (parent==null) parent = this;
+
+        setProviderPlaceholderValue(parent, map);
+
+        if (parent.getInteractions()!=null)  {
+            for (InteractingEntity child : parent.getInteractions()) {
+
+                setProviderPlaceholderValue(child,map);
+
+                if (child.getInteractions()!=null) {
+                    setPlaceholders(child,map);
+                }
+            }
+        }
+
+    }
+
+    private void setProviderPlaceholderValue(InteractingEntity entity, Map<String, String> map) {
+        if (map.get("SystemUnderTest")!=null && "SystemUnderTest".equals(entity.getProvider())) {
+                entity.setName(map.get("SystemUnderTest"));
+        } else if (map.get("Simulator")!=null && "Simulator".equals(entity.getProvider())) {
+                entity.setName(map.get("Simulator"));
+        }
     }
 
 }

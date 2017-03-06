@@ -21,6 +21,7 @@ import gov.nist.toolkit.interactionmodel.client.InteractingEntity;
 import gov.nist.toolkit.session.client.logtypes.SectionOverviewDTO;
 import gov.nist.toolkit.session.client.logtypes.StepOverviewDTO;
 import gov.nist.toolkit.session.client.logtypes.TestOverviewDTO;
+import gov.nist.toolkit.sitemanagement.client.SiteSpec;
 import org.vectomatic.dom.svg.OMSVGDocument;
 import org.vectomatic.dom.svg.OMSVGElement;
 import org.vectomatic.dom.svg.OMSVGGElement;
@@ -35,7 +36,9 @@ import org.vectomatic.dom.svg.OMText;
 import org.vectomatic.dom.svg.utils.OMSVGParser;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by skb1 Sunil.Bhaskarla on 8/12/2016.
@@ -55,6 +58,7 @@ public class InteractionDiagram extends Composite {
     static final int LL_BOX_WIDTH = 82;
     static final int LL_BOX_HEIGHT = 50;
 
+    static final int MAX_LL_DISPLAY_NAME = 15;
     int MAX_LABEL_DISPLAY_LEN = 27;
     int LL_FEET = 10; // life line feet (extra) lines after the last transaction
     int ll_margin = 108; // The width of a transaction connector
@@ -71,8 +75,10 @@ public class InteractionDiagram extends Composite {
 
     TestOverviewDTO testOverviewDTO;
     EventBus eventBus;
+    SiteSpec targetSite;
+    String sutName;
+    String sessionName;
 
-    static final int MAX_LL_DISPLAY_NAME = 10;
     static final int MAX_TOOLTIPS = 5;
     static final int HIDE_TOOLTIP_ON_MOUSEOUT = -1;
     Tooltip tooltip = new Tooltip();
@@ -316,11 +322,14 @@ public class InteractionDiagram extends Composite {
         return container;
     }
 
-    public InteractionDiagram(EventBus eventBus, final TestOverviewDTO testOverviewDTO) {
+    public InteractionDiagram(EventBus eventBus, final TestOverviewDTO testOverviewDTO, String sessionName, final SiteSpec target, String sutName) {
         setEventBus(eventBus);
         setTestOverviewDTO(testOverviewDTO);
+        setSessionName(sessionName);
+        setTargetSite(target);
+        setSutName(sutName);
 
-        List<InteractingEntity> entityList = getInteractingEntity(testOverviewDTO);
+        List<InteractingEntity> entityList = getInteractingEntity(testOverviewDTO, target);
         if (entityList==null) {
             return;
         }
@@ -344,10 +353,10 @@ public class InteractionDiagram extends Composite {
     }
 
 
-    String setLabelAndErrors(InteractingEntity entity, SectionOverviewDTO sectionOverviewDTO) {
+
+    String setLabelAndErrors(InteractingEntity entity, SectionOverviewDTO sectionOverviewDTO, String stepName) {
         String label = "";
         if (sectionOverviewDTO.getStepNames().size()>0) {
-            String stepName = sectionOverviewDTO.getStepNames().get(0);
             label = "Section: " + sectionOverviewDTO.getName() + "^" + "Step: " + stepName;
             StepOverviewDTO step = sectionOverviewDTO.getStep(stepName);
             entity.setErrors(step.getErrors());
@@ -365,7 +374,7 @@ public class InteractionDiagram extends Composite {
     }
 
 
-    List<InteractingEntity> getInteractingEntity(TestOverviewDTO testResultDTO) {
+    List<InteractingEntity> getInteractingEntity(TestOverviewDTO testResultDTO, SiteSpec targetSite) {
         if (testResultDTO == null || testResultDTO.getSectionNames() == null) return null;
 
         List<String> sectionNames = testResultDTO.getSectionNames();
@@ -384,14 +393,57 @@ public class InteractionDiagram extends Composite {
 
                 List<InteractingEntity> interactionSequence = stepOverviewDTO.getInteractionSequence();
 
-                if (interactionSequence!=null)
+                if (interactionSequence!=null) {
+                    setIePlaceholderValues(interactionSequence);
+                    setIeTransactionStatus(section, sectionOverviewDTO, stepName, stepOverviewDTO, interactionSequence);
+
                     result.addAll(interactionSequence);
+                }
             }
          }
 
         return result;
     }
 
+    private void setIeTransactionStatus(String section, SectionOverviewDTO sectionOverviewDTO, String stepName, StepOverviewDTO stepOverviewDTO, List<InteractingEntity> interactionSequence) {
+        if (sectionOverviewDTO.isRun() && interactionSequence.size()>0) {
+            InteractingEntity srcTranOrigin = interactionSequence.get(0);
+
+            if (srcTranOrigin.getInteractions().size()>0) {
+                InteractingEntity dest = srcTranOrigin.getInteractions().get(0);
+
+                setLabelAndErrors(dest, sectionOverviewDTO, stepName);
+                if (sectionOverviewDTO.isPass() ) {
+                    if (stepOverviewDTO.isExpectedSuccess()) {
+                        dest.setStatus(InteractingEntity.INTERACTIONSTATUS.COMPLETED);
+                    } else {
+                        dest.setStatus(InteractingEntity.INTERACTIONSTATUS.ERROR_EXPECTED);
+                        if (dest.getErrors()==null) {
+                            dest.setErrors(new ArrayList<String>());
+                        }
+                        dest.getErrors().add(0,""+ section + "/"+  stepName +":<br/> Response message contains errors as expected.");
+                        addLegend(InteractingEntity.INTERACTIONSTATUS.ERROR_EXPECTED);
+                    }
+
+                } else {
+                    dest.setStatus(InteractingEntity.INTERACTIONSTATUS.ERROR);
+                    addLegend(InteractingEntity.INTERACTIONSTATUS.ERROR);
+                }
+            }
+        }
+    }
+
+    private void setIePlaceholderValues(List<InteractingEntity> interactionSequence) {
+        Map<String,String> placeholderMap = new HashMap<>();
+        placeholderMap.put("SystemUnderTest",getSutName());
+        if (getTargetSite().getOrchestrationSiteName()!=null)
+            placeholderMap.put("Simulator",getTargetSite().getName());
+        for (InteractingEntity interactingEntity : interactionSequence) {
+            interactingEntity.setPlaceholders(null, placeholderMap);
+        }
+    }
+
+    /*
     List<InteractingEntity> transformTestResultToInteractingEntity(TestOverviewDTO testResultDTO) {
         if (testResultDTO==null || testResultDTO.getSectionNames()==null) return null;
 
@@ -435,6 +487,7 @@ public class InteractionDiagram extends Composite {
 
         return result;
     }
+    */
 
     private void addLegend(InteractingEntity.INTERACTIONSTATUS legend) {
         if (!legends.contains(legend)) {
@@ -997,7 +1050,7 @@ public class InteractionDiagram extends Composite {
         String shortName = name;
         List<String> actorDetail = new ArrayList<String>();
 
-        shortName = getShortName(name,maxLabelLen);
+        shortName = getShortName(name,MAX_LL_DISPLAY_NAME);
         if (!name.equals(entity.getProvider()))
             actorDetail.add(name);
         actorDetail.add(entity.getRole());
@@ -1011,7 +1064,7 @@ public class InteractionDiagram extends Composite {
         group.appendChild(rect);
 //        group.appendChild(text);
 
-        group.appendChild(multiLineLabel(ll.getLl_stem_center(),2,actorDetail.toArray(new String[actorDetail.size()]),9,maxLabelLen));
+        group.appendChild(multiLineLabel(ll.getLl_stem_center(),2,actorDetail.toArray(new String[actorDetail.size()]),9,MAX_LL_DISPLAY_NAME));
 
         ll.setLlEl(group);
         lls.add(ll);
@@ -1084,5 +1137,29 @@ public class InteractionDiagram extends Composite {
 
     public boolean hasMeaningfulDiagram() { // At-least two life lines for a meaningful diagram
        return (lls.size()>1);
+    }
+
+    public SiteSpec getTargetSite() {
+        return targetSite;
+    }
+
+    public void setTargetSite(SiteSpec targetSite) {
+        this.targetSite = targetSite;
+    }
+
+    public String getSessionName() {
+        return sessionName;
+    }
+
+    public void setSessionName(String sessionName) {
+        this.sessionName = sessionName;
+    }
+
+    public String getSutName() {
+        return sutName;
+    }
+
+    public void setSutName(String sutName) {
+        this.sutName = sutName;
     }
 }

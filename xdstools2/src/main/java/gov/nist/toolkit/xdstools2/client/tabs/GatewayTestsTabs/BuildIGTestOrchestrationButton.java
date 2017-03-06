@@ -159,6 +159,8 @@ public class BuildIGTestOrchestrationButton extends AbstractOrchestrationButton 
 
                 initializationResultsPanel.add(new HTML("<h3>Configure your Initiating Gateway to forward requests to both of the above Responding Gateways (listed under Supporting Environment Configuration).</h3><hr />"));
 
+                testTab.displayTestCollection(testTab.getMainView().getTestsPanel());
+
             }
         }.run(new BuildIgTestOrchestrationRequest(ClientUtils.INSTANCE.getCommandContext(),request));
     }

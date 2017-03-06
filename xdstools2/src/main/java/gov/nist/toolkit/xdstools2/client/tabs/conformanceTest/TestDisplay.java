@@ -57,7 +57,7 @@ public class TestDisplay  implements IsWidget {
         view.setDescription(testOverview.getDescription());
 
         // build an interaction sequence diagram
-        view.setInteractionDiagram(new InteractionDiagramDisplay(testOverview));
+//        view.setInteractionDiagram(new InteractionDiagramDisplay(testOverview));
 
         // build sections within test
         view.clearSections();
@@ -75,4 +75,8 @@ public class TestDisplay  implements IsWidget {
     }
 
     public Widget asWidget() { return view; }
+
+    public TestDisplayView getView() {
+        return view;
+    }
 }
