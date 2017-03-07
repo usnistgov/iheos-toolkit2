@@ -76,7 +76,7 @@ abstract public class AbstractOrchestrationButton implements ClickHandler {
             errorPanelAdded = true;
             panel.add(errorPanel);
         }
-        panel.add(new HTML("<hr /><h2>Testing Environment</h2>"));
+        panel.add(new HTML("<hr/><h2>Testing Environment</h2>"));
 
         if (systemDiagramUrl != null) {
             Image initiatingGatewayDiagram=new Image();
@@ -271,4 +271,5 @@ abstract public class AbstractOrchestrationButton implements ClickHandler {
     public static TestInstance getStsTestInstance() {
         return stsTestInstance;
     }
+
 }

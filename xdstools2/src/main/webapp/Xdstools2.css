@@ -191,10 +191,17 @@ h3 {
 }
 
 .loadingMessage {
+  visibility: visible;
+  display: block;
   border:2px solid darkslategray;
   font-size: 16pt;
   background-color: yellow !important;
   text-align: center;
+}
+
+.hiddenMessage {
+  visibility: hidden;
+  display: none;
 }
 
 .test-title {

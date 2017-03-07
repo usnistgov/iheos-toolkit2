@@ -634,7 +634,7 @@ public class InteractionDiagram extends Composite {
                 childll = create_LL(child);
                 svgsvgElement.appendChild(childll.getLlEl());
                 svgsvgElement.appendChild(connect(parentll,childll,false,child));
-                if (child.getInteractions()!=null) {
+                if (!InteractingEntity.INTERACTIONSTATUS.ERROR.equals(child.getStatus()) && child.getInteractions()!=null) {
                     sequence(child, childll);
                     if (childll!=null) {
                         g_depth++;
@@ -738,6 +738,8 @@ public class InteractionDiagram extends Composite {
             /*
              * Response
              */
+
+            /*
             int rightCenterTextX = x2;
             if (lls.size()>2)
                 for (int cx=lls.size()-2; cx>0; cx--) {
@@ -745,8 +747,9 @@ public class InteractionDiagram extends Composite {
                     rightCenterTextX = ll.getLl_stem_center();
                     break;
                 }
-
             int centerTextX = (rightCenterTextX+x1)/2;
+            */
+            int centerTextX = (x2+x1)/2;
 
             group.setAttribute("style","cursor:pointer");
 

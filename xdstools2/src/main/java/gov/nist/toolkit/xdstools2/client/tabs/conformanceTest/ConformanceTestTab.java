@@ -7,7 +7,6 @@ import com.google.gwt.event.logical.shared.SelectionHandler;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.user.client.rpc.AsyncCallback;
-import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.Panel;
 import com.google.gwt.user.client.ui.TabBar;
 import gov.nist.toolkit.actortransaction.client.ActorType;
@@ -25,7 +24,14 @@ import gov.nist.toolkit.sitemanagement.client.Site;
 import gov.nist.toolkit.sitemanagement.client.SiteSpec;
 import gov.nist.toolkit.testkitutilities.client.TestCollectionDefinitionDAO;
 import gov.nist.toolkit.xdstools2.client.ToolWindow;
-import gov.nist.toolkit.xdstools2.client.command.command.*;
+import gov.nist.toolkit.xdstools2.client.command.command.AutoInitConformanceTestingCommand;
+import gov.nist.toolkit.xdstools2.client.command.command.DeleteSingleTestCommand;
+import gov.nist.toolkit.xdstools2.client.command.command.GetAssignedSiteForTestSessionCommand;
+import gov.nist.toolkit.xdstools2.client.command.command.GetSiteCommand;
+import gov.nist.toolkit.xdstools2.client.command.command.GetStsSamlAssertionCommand;
+import gov.nist.toolkit.xdstools2.client.command.command.GetTestCollectionsCommand;
+import gov.nist.toolkit.xdstools2.client.command.command.GetTestsOverviewCommand;
+import gov.nist.toolkit.xdstools2.client.command.command.RunTestCommand;
 import gov.nist.toolkit.xdstools2.client.event.testSession.TestSessionChangedEvent;
 import gov.nist.toolkit.xdstools2.client.event.testSession.TestSessionChangedEventHandler;
 import gov.nist.toolkit.xdstools2.client.tabs.GatewayTestsTabs.BuildIGTestOrchestrationButton;
@@ -33,9 +39,17 @@ import gov.nist.toolkit.xdstools2.client.util.ClientUtils;
 import gov.nist.toolkit.xdstools2.client.widgets.LaunchInspectorClickHandler;
 import gov.nist.toolkit.xdstools2.client.widgets.PopupMessage;
 import gov.nist.toolkit.xdstools2.client.widgets.buttons.AbstractOrchestrationButton;
-import gov.nist.toolkit.xdstools2.shared.command.request.*;
+import gov.nist.toolkit.xdstools2.shared.command.request.DeleteSingleTestRequest;
+import gov.nist.toolkit.xdstools2.shared.command.request.GetCollectionRequest;
+import gov.nist.toolkit.xdstools2.shared.command.request.GetStsSamlAssertionRequest;
+import gov.nist.toolkit.xdstools2.shared.command.request.GetTestsOverviewRequest;
+import gov.nist.toolkit.xdstools2.shared.command.request.RunTestRequest;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * All Conformance tests will be run out of here
@@ -301,14 +315,13 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner, TestTa
 		}.run(new GetCollectionRequest(getCommandContext(), "actorcollections"));
 	}
 
-	private HTML loadingMessage;
 
 	private class RefreshTestCollectionHandler implements ClickHandler {
 
 		@Override
 		public void onClick(ClickEvent clickEvent) {
 			initializeTestDisplay(mainView.getTestsPanel());
-			displayTestCollection(mainView.getTestsPanel());
+//			displayTestCollection(mainView.getTestsPanel());
 		}
 	}
 
@@ -326,9 +339,10 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner, TestTa
 		testDisplayGroup.clear();  // so they reload
 		testsPanel.clear();
 
-		loadingMessage = new HTML("Initializing...");
-		loadingMessage.setStyleName("loadingMessage");
-		testsPanel.add(loadingMessage);
+//		loadingMessage = new HTML("Initializing...");
+//		loadingMessage.setStyleName("loadingMessage");
+//		testsPanel.add(loadingMessage);
+        mainView.showLoadingMessage("Initializing...");
 		testsHeaderView.showSelfTestWarning(isSelfTest());
 
 		new AutoInitConformanceTestingCommand() {
@@ -336,6 +350,8 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner, TestTa
 			public void onComplete(Boolean result) {
 				if (result)
 					orchInit.handleClick(null);   // auto init orchestration
+				else
+					displayTestCollection(getMainView().getTestsPanel());
 			}
 		}.run(getCommandContext());
 
@@ -353,7 +369,7 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner, TestTa
 
 			@Override
 			public void onSuccess(List<TestInstance> testInstances) {
-				loadingMessage.setHTML("Loading...");
+				mainView.showLoadingMessage("Loading...");
 				displayTests(testsPanel, testInstances, allowRun());
 			}
 		});
@@ -392,6 +408,8 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner, TestTa
 					testsPanel.add(testDisplay.asWidget());
 				}
 				updateTestsOverviewHeader(currentActorOption);
+
+				mainView.clearLoadingMessage();
 			}
 		}.run(new GetTestsOverviewRequest(getCommandContext(), testInstances, getTestContext().getCurrentSiteSpec(), getTestContext().getSiteUnderTest()));
 	}
@@ -552,9 +570,9 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner, TestTa
 					@Override
 					public void onComplete(TestOverviewDTO testOverviewDTO) {
 						updateTestOverview(testOverviewDTO);
-						testDisplayGroup.display(testOverviewDTO);
+						TestDisplay testDisplay = testDisplayGroup.display(testOverviewDTO);
 						// Require late-binding of diagram due to orchestration place holders
-//						testDisplay.getView().setInteractionDiagram(new InteractionDiagramDisplay(testOverview, testContext.getTestSession(), getSiteToIssueTestAgainst(), testContext.getSiteUnderTestAsSiteSpec().getName()));
+						testDisplay.getView().setInteractionDiagram(new InteractionDiagramDisplay(testOverviewDTO, testContext.getTestSession(), getSiteToIssueTestAgainst(), testContext.getSiteUnderTestAsSiteSpec().getName()));
 						updateTestsOverviewHeader(actorOption);
 					}
 				}.run(new DeleteSingleTestRequest(getCommandContext(),testInstance));
@@ -652,9 +670,9 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner, TestTa
 				@Override
 				public void onComplete(TestOverviewDTO testOverviewDTO) {
 					// returned testStatus of entire test
-					testDisplayGroup.display(testOverviewDTO);
+					TestDisplay testDisplay = testDisplayGroup.display(testOverviewDTO);
 					// Require late-binding of diagram due to orchestration place holders
-//						testDisplay.getView().setInteractionDiagram(new InteractionDiagramDisplay(testOverview, testContext.getTestSession(), getSiteToIssueTestAgainst(), testContext.getSiteUnderTestAsSiteSpec().getName()));
+					testDisplay.getView().setInteractionDiagram(new InteractionDiagramDisplay(testOverviewDTO, testContext.getTestSession(), getSiteToIssueTestAgainst(), testContext.getSiteUnderTestAsSiteSpec().getName()));
 					updateTestOverview(testOverviewDTO);
 					updateTestsOverviewHeader(currentActorOption);
 					// Schedule next test to be run
