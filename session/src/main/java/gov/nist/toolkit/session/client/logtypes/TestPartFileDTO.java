@@ -1,6 +1,7 @@
 package gov.nist.toolkit.session.client.logtypes;
 
 import com.google.gwt.user.client.rpc.IsSerializable;
+import gov.nist.toolkit.testkitutilities.client.Gather;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -22,6 +23,7 @@ public class TestPartFileDTO implements IsSerializable, Serializable {
     List<String> stepList = new ArrayList<>();
     Map<String,TestPartFileDTO> stepTpfMap = new HashMap<String,TestPartFileDTO>();
     List<TestPartFileDTO> contentBundle;
+    List<Gather> gathers = null;
 
 
     public enum TestPartFileType {
@@ -99,5 +101,13 @@ public class TestPartFileDTO implements IsSerializable, Serializable {
 
     public void setContentBundle(List<TestPartFileDTO> contentBundle) {
         this.contentBundle = contentBundle;
+    }
+
+    public void setGathers(List<Gather> gathers) {
+        this.gathers = gathers;
+    }
+
+    public List<Gather> getGathers() {
+        return gathers;
     }
 }

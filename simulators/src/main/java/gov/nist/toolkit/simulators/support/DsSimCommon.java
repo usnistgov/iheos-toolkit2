@@ -709,7 +709,8 @@ public class DsSimCommon {
     }
 
     public void intallDocumentsToAttach(StoredDocumentMap docmap) {
-        documentsToAttach = new HashMap<>();
+        if (documentsToAttach == null)
+            documentsToAttach = new HashMap<>();
         for (StoredDocument stor : docmap.docs) {
             documentsToAttach.put(stor.cid, stor);
         }

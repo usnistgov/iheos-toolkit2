@@ -139,6 +139,12 @@ public abstract class BasicTransaction  {
 		return planContext.getExtraLinkage();
 	}
 
+	public ReportManager getReportManager() {
+		if (reportManager == null)
+			reportManager = new ReportManager(testConfig);
+		return reportManager;
+	}
+
 	void applyTransactionSettings() {
 		if (transactionSettings == null)
 			return;

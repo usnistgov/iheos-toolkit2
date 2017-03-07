@@ -72,6 +72,10 @@ abstract public class AbstractOrchestrationButton implements ClickHandler {
     protected void setSystemDiagramUrl(String url) { this.systemDiagramUrl = url; }
 
     public Panel build() {
+        return build(true);
+    }
+
+    public Panel build(boolean enableReset) {
         if (!errorPanelAdded) {
             errorPanelAdded = true;
             panel.add(errorPanel);
@@ -90,10 +94,12 @@ abstract public class AbstractOrchestrationButton implements ClickHandler {
             panel.add(customPanel);
         }
 
-        String resetLabel = "Reset - Initialize will delete all supporting simulators and Patient IDs and recreate them.";
-        resetCheckBox = new CheckBox(resetLabel);
-        panel.add(resetCheckBox);
-        panel.add(new HTML("<br />"));
+        if (enableReset) {
+            String resetLabel = "Reset - Initialize will delete all supporting simulators and Patient IDs and recreate them.";
+            resetCheckBox = new CheckBox(resetLabel);
+            panel.add(resetCheckBox);
+            panel.add(new HTML("<br />"));
+        }
 
 //        panel.add(selftestCheckBox);
 //        panel.add(new HTML("<br />"));

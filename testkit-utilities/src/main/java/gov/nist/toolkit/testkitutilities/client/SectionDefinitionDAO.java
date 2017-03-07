@@ -14,6 +14,7 @@ public class SectionDefinitionDAO implements Serializable, IsSerializable {
     private Set<String> sectionDependencies = new HashSet<String>();
     private boolean sutInitiated = false;
     private String sectionName;
+    private List<Gather> gathers = null;
 
     public SectionDefinitionDAO(String sectionName) {
         this.sectionName = sectionName;
@@ -46,5 +47,13 @@ public class SectionDefinitionDAO implements Serializable, IsSerializable {
 
     public String getSectionName() {
         return sectionName;
+    }
+
+    public List<Gather> getGathers() {
+        return gathers;
+    }
+
+    public void setGathers(List<Gather> gathers) {
+        this.gathers = gathers;
     }
 }

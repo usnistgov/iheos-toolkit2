@@ -32,7 +32,7 @@ public class ConformanceTestMainView {
         FlowPanel sitesPanel = new FlowPanel();
         toolPanel.add(sitesPanel);
         HorizontalFlowPanel actorpanel = new HorizontalFlowPanel();
-        actorpanel.add(new HTML("Actor"));
+        actorpanel.add(new HTML("Actor to test"));
         actorpanel.add(new InformationLink("Help with Conformance Test tool", "Conformance-Test-Tool").asWidget());
         toolPanel.add(actorpanel);
         toolPanel.add(actorTabBar);

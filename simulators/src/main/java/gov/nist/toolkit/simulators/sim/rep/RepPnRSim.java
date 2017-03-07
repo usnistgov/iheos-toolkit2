@@ -212,6 +212,9 @@ public class RepPnRSim extends TransactionSimulator implements MetadataGeneratin
 					return;
 				}
 
+				er.detail("Forwarding Register transaction to " + endpoint);
+				logger.info("Forwarding Register transaction to " + endpoint);
+
 				Soap soap = new Soap();
 				try {
 					OMElement result = soap.soapCall(m.getV3SubmitObjectsRequest(), endpoint, false, true, true, SoapActionFactory.r_b_action, SoapActionFactory.getResponseAction(SoapActionFactory.r_b_action));

@@ -15,22 +15,15 @@ import gov.nist.toolkit.registrymsg.repository.RetrievedDocumentsModel;
 import gov.nist.toolkit.results.CommonService;
 import gov.nist.toolkit.results.MetadataToMetadataCollectionParser;
 import gov.nist.toolkit.results.ResultBuilder;
-import gov.nist.toolkit.results.client.AssertionResult;
-import gov.nist.toolkit.results.client.AssertionResults;
-import gov.nist.toolkit.results.client.CodesConfiguration;
-import gov.nist.toolkit.results.client.CodesResult;
-import gov.nist.toolkit.results.client.Result;
-import gov.nist.toolkit.results.client.StepResult;
-import gov.nist.toolkit.results.client.TestInstance;
-import gov.nist.toolkit.results.client.TestLogs;
+import gov.nist.toolkit.results.client.*;
 import gov.nist.toolkit.results.shared.Test;
 import gov.nist.toolkit.session.client.ConformanceSessionValidationStatus;
 import gov.nist.toolkit.session.client.logtypes.TestOverviewDTO;
 import gov.nist.toolkit.session.client.logtypes.TestPartFileDTO;
 import gov.nist.toolkit.session.server.CodesConfigurationBuilder;
 import gov.nist.toolkit.session.server.Session;
-import gov.nist.toolkit.session.server.testlog.TestOverviewBuilder;
 import gov.nist.toolkit.session.server.services.TestLogCache;
+import gov.nist.toolkit.session.server.testlog.TestOverviewBuilder;
 import gov.nist.toolkit.sitemanagement.client.Site;
 import gov.nist.toolkit.sitemanagement.client.SiteSpec;
 import gov.nist.toolkit.testengine.engine.ResultPersistence;
@@ -45,14 +38,11 @@ import gov.nist.toolkit.testenginelogging.logrepository.LogRepository;
 import gov.nist.toolkit.testkitutilities.TestDefinition;
 import gov.nist.toolkit.testkitutilities.TestKit;
 import gov.nist.toolkit.testkitutilities.TestKitSearchPath;
+import gov.nist.toolkit.testkitutilities.client.Gather;
 import gov.nist.toolkit.testkitutilities.client.SectionDefinitionDAO;
 import gov.nist.toolkit.testkitutilities.client.TestCollectionDefinitionDAO;
 import gov.nist.toolkit.utilities.io.Io;
-import gov.nist.toolkit.utilities.xml.OMFormatter;
-import gov.nist.toolkit.utilities.xml.Parse;
-import gov.nist.toolkit.utilities.xml.Util;
-import gov.nist.toolkit.utilities.xml.XmlFormatter;
-import gov.nist.toolkit.utilities.xml.XmlUtil;
+import gov.nist.toolkit.utilities.xml.*;
 import gov.nist.toolkit.xdsexception.ExceptionUtil;
 import gov.nist.toolkit.xdsexception.client.EnvironmentNotSelectedException;
 import gov.nist.toolkit.xdsexception.client.ToolkitRuntimeException;
@@ -65,14 +55,7 @@ import javax.xml.parsers.FactoryConfigurationError;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 
 public class XdsTestServiceManager extends CommonService {
@@ -483,10 +466,12 @@ public class XdsTestServiceManager extends CommonService {
 				logger.debug(session.id() + ": " + "getTestplanAsText");
 
 			File tsFile;
+			OMElement testPlanEle;
 
 			try {
 				TestDefinition testDefinition = session.getTestkitSearchPath().getTestDefinition(testInstance.getId());
 				tsFile = testDefinition.getTestplanFile(section);
+				testPlanEle = Util.parse_xml(tsFile);
 			} catch (Exception e) {
 				throw new Exception("Cannot load test plan " + testInstance + "#" + section);
 			}
@@ -496,6 +481,19 @@ public class XdsTestServiceManager extends CommonService {
 			testplanDTO.setFile(tsFile.toString());
 			testplanDTO.setContent(content);
 			testplanDTO.setHtlmizedContent(XmlFormatter.htmlize(content));
+
+			List<Gather> gathers = null;
+
+			List<OMElement> gatherEles = XmlUtil.decendentsWithLocalName(testPlanEle, "Gather");
+			if (gatherEles.size() > 0) {
+				gathers = new ArrayList<>();
+				for (OMElement gatherEle : gatherEles) {
+					gathers.add(new Gather(gatherEle.getAttributeValue(new QName("prompt")), null));
+				}
+				testplanDTO.setGathers(gathers);
+			}
+
+
 			return testplanDTO;
 		} catch (Throwable t) {
 			throw new Exception(t.getMessage() + "\n" + ExceptionUtil.exception_details(t));
@@ -664,9 +662,9 @@ public class XdsTestServiceManager extends CommonService {
 	}
 
 	// testInstance.user must be set or null will be returned
-	private File getTestLogDir(TestInstance testInstance) throws IOException {
-		return getTestLogCache().getTestDir(testInstance);
-	}
+//	private File getTestLogDir(TestInstance testInstance) throws IOException {
+//		return getTestLogCache().getTestDir(testInstance);
+//	}
 
 	public LogFileContentDTO getTestLogDetails(String sessionName, TestInstance testInstance) throws Exception {
 		try {
@@ -1103,6 +1101,11 @@ public class XdsTestServiceManager extends CommonService {
 		session.setMesaSessionName(sessionName);
 	}
 
+	public String getMesaTestSession() {
+		if (session == null) return "";
+		return session.getMesaSessionName();
+	}
+
 	public List<String> getTestdataSetListing(String environmentName,String testSessionName,String testdataSetName) {
 		logger.debug(session.id() + ": " + "getTestdataSetListing:" + testdataSetName);
 		TestKitSearchPath searchPath = new TestKitSearchPath(environmentName, testSessionName);
@@ -1256,11 +1259,12 @@ public class XdsTestServiceManager extends CommonService {
 		return new Test(testId, false, "test#", "test name", "returned result test", "05:23 PM EST", "failed");
 	}
 
-	public TestOverviewDTO deleteSingleTestResult(TestInstance testInstance) throws Exception {
+	public TestOverviewDTO deleteSingleTestResult(String environmentName, String testSession, TestInstance testInstance) throws Exception {
 		try {
-			File dir = getTestLogDir(testInstance);
-			if (dir != null)
-				Io.delete(dir);
+			TestKitSearchPath searchPath = new TestKitSearchPath(environmentName, testSession);
+			TestDefinition testDef = searchPath.getTestDefinition(testInstance.getId());
+			List<String> sectionNames = testDef.getSectionIndex();
+			new ResultPersistence().delete(testInstance, testSession, sectionNames);
 		} catch (Exception e) {
 			// oh well
 		}

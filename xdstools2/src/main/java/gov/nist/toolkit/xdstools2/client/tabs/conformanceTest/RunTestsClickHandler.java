@@ -103,7 +103,7 @@ class RunTestsClickHandler implements ClickHandler, TestIterator {
             setXuaOptionSamlAssertion(next);
         }
 
-        conformanceTestTab.runTest(next, this);
+        conformanceTestTab.runTest(next, null, this);
     }
 
     private void setXuaOptionSamlAssertion(TestInstance testInstance) {

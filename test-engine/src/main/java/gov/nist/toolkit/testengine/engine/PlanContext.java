@@ -178,7 +178,7 @@ public class PlanContext extends BasicContext {
 		}
 	}
 
-	boolean run(File testplanFile)  throws Exception {
+	boolean run(File testplanFile, boolean isMultiSectionTest)  throws Exception {
 		if (testConfig.verbose)
 			System.out.println("Run section " + testplanFile);
 		try {
@@ -242,6 +242,7 @@ public class PlanContext extends BasicContext {
 				{
 					// system under test initiates first transaction in this section
 					sutInitiates = true;
+					if (isMultiSectionTest) throw new MultiSectionTestRejectException();  // must do manually
 				}
 				else if (part_name.equals("TestStep"))
 				{

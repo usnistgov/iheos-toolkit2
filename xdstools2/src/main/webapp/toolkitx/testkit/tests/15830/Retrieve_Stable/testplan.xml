@@ -1,0 +1,19 @@
+<TestPlan>
+    <Test>15830/Retrieve_Stable</Test>
+  <TestStep id="retrieve2">
+    <ExpectedStatus>Success</ExpectedStatus>
+    <XCRTransaction>
+    <UseReport test="15830" section="GetAll2" step="GetAll2" reportName="docUidStable" useAs="$docuid$"/>
+    <UseReport test="15830" section="GetAll2" step="GetAll2" reportName="home" useAs="$home$"/>
+    <UseReport test="15830" section="GetAll2" step="GetAll2" reportName="repUidStable" useAs="$repositoryuid$"/>
+      <ExpectedMimeType>text/plain</ExpectedMimeType>
+      <MetadataFile>query1.xml</MetadataFile>
+      <Assertions>
+        <DataRef file="THIS" as="output"/>
+        <Assert id="OneDocument">
+              		count(//XCRTransaction[@step="retrieve2"]/Result[1]/*[local-name()='RetrieveDocumentSetResponse']/*[local-name()='DocumentResponse']) = "1"
+         		</Assert>
+      </Assertions>
+    </XCRTransaction>
+  </TestStep>
+</TestPlan>

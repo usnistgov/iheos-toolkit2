@@ -300,6 +300,11 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements
         return siteServiceManager.getSiteNamesWithRG(session().getId());
     }
     @Override
+    public List<String> getSiteNamesWithRepository(CommandContext context) throws Exception {
+        installCommandContext(context);
+        return siteServiceManager.getSiteNamesWithRepository(session().getId());
+    }
+    @Override
     public List<String> getSiteNamesWithRIG(CommandContext context) throws Exception {
         installCommandContext(context);
         return siteServiceManager.getSiteNamesWithRIG(session().getId());
@@ -470,7 +475,12 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements
         return session().xdsTestServiceManager().getTestResults(request.getTestIds(), request.getEnvironmentName(), request.getTestSessionName());
     }
     @Override
-    public String setMesaTestSession(String sessionName)  throws NoServletSessionException { session().xdsTestServiceManager().setMesaTestSession(sessionName); return sessionName;}
+    public String setMesaTestSession(String sessionName)  throws NoServletSessionException {
+        session().xdsTestServiceManager().setMesaTestSession(sessionName); return sessionName;
+    }
+    public String getMesaTestSession(String sessionName) throws NoServletSessionException {
+        return session().xdsTestServiceManager().getMesaTestSession();
+    }
     @Override
     public List<String> getMesaTestSessionNames(CommandContext request) throws Exception {
         installCommandContext(request);
@@ -494,7 +504,7 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements
     public TestOverviewDTO deleteSingleTestResult(DeleteSingleTestRequest request) throws Exception {
         installCommandContext(request);
         request.getTestInstance().setUser(request.getTestSessionName());
-        return session().xdsTestServiceManager().deleteSingleTestResult(request.getTestInstance());
+        return session().xdsTestServiceManager().deleteSingleTestResult(request.getEnvironmentName(), session().getMesaSessionName(),request.getTestInstance());
     }
     @Override
     public List<Test> runAllTests(AllTestRequest request) throws Exception {
