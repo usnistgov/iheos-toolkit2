@@ -31,6 +31,7 @@
         <maven-war-plugin.version>2.4</maven-war-plugin.version>
         <nexus-staging-maven-plugin.version>1.6.2</nexus-staging-maven-plugin.version>
         <tomcat7-maven-plugin.version>2.2</tomcat7-maven-plugin.version>
+        <hapi.version>2.3-SNAPSHOT</hapi.version>
     </properties>
 
 
@@ -62,6 +63,13 @@
         <repository>
             <id>apache-central</id>
             <url>https://repo.maven.apache.org/maven2</url>
+        </repository>
+        <repository>
+            <id>oss-snapshots</id>
+            <snapshots>
+                <enabled>true</enabled>
+            </snapshots>
+            <url>https://oss.sonatype.org/content/repositories/snapshots/</url>
         </repository>
     </repositories>
 
@@ -694,6 +702,18 @@
                 <artifactId>gwt-elemental</artifactId>
                 <version>${gwtVersion}</version>
             </dependency>
+
+            <dependency>
+                <groupId>ca.uhn.hapi.fhir</groupId>
+                <artifactId>hapi-fhir-base</artifactId>
+                <version>${hapi.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>ca.uhn.hapi.fhir</groupId>
+                <artifactId>hapi-fhir-structures-dstu2</artifactId>
+                <version>${hapi.version}</version>
+            </dependency>
+
         </dependencies>
 
     </dependencyManagement>
