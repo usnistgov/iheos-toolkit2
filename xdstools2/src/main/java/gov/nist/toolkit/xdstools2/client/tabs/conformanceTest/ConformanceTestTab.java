@@ -404,7 +404,7 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner, TestTa
 					updateTestOverview(testOverview);
 					TestDisplay testDisplay = testDisplayGroup.display(testOverview);
 					// Require late-binding of diagram due to orchestration place holders
-					testDisplay.getView().setInteractionDiagram(new InteractionDiagramDisplay(testOverview, testContext.getTestSession(), getSiteToIssueTestAgainst(), testContext.getSiteUnderTestAsSiteSpec().getName(),currentActorOption.getActorTypeId()));
+					testDisplay.getView().setInteractionDiagram(new InteractionDiagramDisplay(testOverview, testContext.getTestSession(), getSiteToIssueTestAgainst(), testContext.getSiteUnderTestAsSiteSpec().getName(),ActorType.findActor(currentActorOption.getActorTypeId()).getName()));
 					testsPanel.add(testDisplay.asWidget());
 				}
 				updateTestsOverviewHeader(currentActorOption);
@@ -534,7 +534,7 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner, TestTa
 						updateTestOverview(testOverviewDTO);
 						TestDisplay testDisplay = testDisplayGroup.display(testOverviewDTO);
 						// Require late-binding of diagram due to orchestration place holders
-						testDisplay.getView().setInteractionDiagram(new InteractionDiagramDisplay(testOverviewDTO, testContext.getTestSession(), getSiteToIssueTestAgainst(), testContext.getSiteUnderTestAsSiteSpec().getName(),actorOption.getActorTypeId()));
+						testDisplay.getView().setInteractionDiagram(new InteractionDiagramDisplay(testOverviewDTO, testContext.getTestSession(), getSiteToIssueTestAgainst(), testContext.getSiteUnderTestAsSiteSpec().getName(),ActorType.findActor(actorOption.getActorTypeId()).getName()));
 						updateTestsOverviewHeader(actorOption);
 					}
 				}.run(new DeleteSingleTestRequest(getCommandContext(),testInstance));
@@ -639,7 +639,7 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner, TestTa
 					// returned testStatus of entire test
 					TestDisplay testDisplay = testDisplayGroup.display(testOverviewDTO);
 					// Require late-binding of diagram due to orchestration place holders
-					testDisplay.getView().setInteractionDiagram(new InteractionDiagramDisplay(testOverviewDTO, testContext.getTestSession(), getSiteToIssueTestAgainst(), testContext.getSiteUnderTestAsSiteSpec().getName(),currentActorOption.getActorTypeId()));
+					testDisplay.getView().setInteractionDiagram(new InteractionDiagramDisplay(testOverviewDTO, testContext.getTestSession(), getSiteToIssueTestAgainst(), testContext.getSiteUnderTestAsSiteSpec().getName(),ActorType.findActor(currentActorOption.getActorTypeId()).getName()));
 					updateTestOverview(testOverviewDTO);
 					updateTestsOverviewHeader(currentActorOption);
 					// Schedule next test to be run
