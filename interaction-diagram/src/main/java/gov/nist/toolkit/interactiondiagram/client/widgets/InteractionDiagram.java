@@ -76,7 +76,8 @@ public class InteractionDiagram extends Composite {
     TestOverviewDTO testOverviewDTO;
     EventBus eventBus;
     SiteSpec targetSite;
-    String sutName;
+    String sutSystemName;
+    String sutActorRoleName;
     String sessionName;
 
     static final int MAX_TOOLTIPS = 5;
@@ -322,12 +323,14 @@ public class InteractionDiagram extends Composite {
         return container;
     }
 
-    public InteractionDiagram(EventBus eventBus, final TestOverviewDTO testOverviewDTO, String sessionName, final SiteSpec target, String sutName) {
+    public InteractionDiagram(EventBus eventBus, final TestOverviewDTO testOverviewDTO, String sessionName, final SiteSpec target, String sutName, String sutActorName) {
         setEventBus(eventBus);
         setTestOverviewDTO(testOverviewDTO);
         setSessionName(sessionName);
         setTargetSite(target);
-        setSutName(sutName);
+        setSutSystemName(sutName);
+        setSutActorRoleName(sutActorName);
+
 
         List<InteractingEntity> entityList = getInteractingEntity(testOverviewDTO, target);
         if (entityList==null) {
@@ -437,12 +440,19 @@ public class InteractionDiagram extends Composite {
     }
 
     private void setIePlaceholderValues(List<InteractingEntity> interactionSequence) {
+
+        for (InteractingEntity interactingEntity : interactionSequence) {
+            interactingEntity.setSutActorByRole(null, getSutActorRoleName());
+        }
+
         Map<String,String> placeholderMap = new HashMap<>();
-        placeholderMap.put("SystemUnderTest",getSutName());
+
+        placeholderMap.put("SystemUnderTest", getSutSystemName());
         if (getTargetSite().getOrchestrationSiteName()!=null)
             placeholderMap.put("Simulator",getTargetSite().getName());
+
         for (InteractingEntity interactingEntity : interactionSequence) {
-            interactingEntity.setPlaceholders(null, placeholderMap);
+            interactingEntity.setNameByProvider(null, placeholderMap);
         }
     }
 
@@ -1161,11 +1171,19 @@ public class InteractionDiagram extends Composite {
         this.sessionName = sessionName;
     }
 
-    public String getSutName() {
-        return sutName;
+    public String getSutSystemName() {
+        return sutSystemName;
     }
 
-    public void setSutName(String sutName) {
-        this.sutName = sutName;
+    public void setSutSystemName(String sutSystemName) {
+        this.sutSystemName = sutSystemName;
+    }
+
+    public String getSutActorRoleName() {
+        return sutActorRoleName;
+    }
+
+    public void setSutActorRoleName(String sutActorRoleName) {
+        this.sutActorRoleName = sutActorRoleName;
     }
 }

@@ -13,6 +13,8 @@ import java.util.Map;
  */
 public class InteractingEntity implements IsSerializable, Serializable {
     private static final long serialVersionUID = 1L;
+    public static final String SYSTEM_UNDER_TEST = "SystemUnderTest";
+    public static final String SIMULATOR = "Simulator";
 
     String name;
     String role;
@@ -199,30 +201,51 @@ public class InteractingEntity implements IsSerializable, Serializable {
         return sb;
     }
 
-    public void setPlaceholders(InteractingEntity parent, Map<String,String> map) {
+    public void setSutActorByRole(InteractingEntity parent, String sutActorRoleName) {
+       if (sutActorRoleName==null) return;
+
+       if (parent==null)  parent = this;
+
+       if (sutActorRoleName.equalsIgnoreCase(parent.getRole())) {
+          parent.setProvider(SYSTEM_UNDER_TEST);
+       }
+       if (parent.getInteractions()!=null) {
+           for (InteractingEntity child : parent.getInteractions()) {
+               setSutActorByRole(child, sutActorRoleName);
+           }
+       }
+    }
+
+    public void setNameByProvider(InteractingEntity parent, Map<String,String> map) {
 
         if (parent==null) parent = this;
 
-        setProviderPlaceholderValue(parent, map);
+        setEntityNameByProvider(parent, map);
 
         if (parent.getInteractions()!=null)  {
             for (InteractingEntity child : parent.getInteractions()) {
 
-                setProviderPlaceholderValue(child,map);
+                setEntityNameByProvider(child,map);
 
                 if (child.getInteractions()!=null) {
-                    setPlaceholders(child,map);
+                    setNameByProvider(child,map);
                 }
             }
         }
 
     }
 
-    private void setProviderPlaceholderValue(InteractingEntity entity, Map<String, String> map) {
-        if (map.get("SystemUnderTest")!=null && "SystemUnderTest".equals(entity.getProvider())) {
+    /**
+     *  key ----> value
+     * [ProviderType] ----> [EntityName]-
+     * @param entity
+     * @param map
+     */
+    private void setEntityNameByProvider(InteractingEntity entity, Map<String, String> map) {
+        if (map.get(SYSTEM_UNDER_TEST)!=null && SYSTEM_UNDER_TEST.equals(entity.getProvider())) {
                 entity.setName(map.get("SystemUnderTest"));
-        } else if (map.get("Simulator")!=null && "Simulator".equals(entity.getProvider())) {
-                entity.setName(map.get("Simulator"));
+        } else if (map.get(SIMULATOR)!=null && SIMULATOR.equals(entity.getProvider())) {
+                entity.setName(map.get(SIMULATOR));
         }
     }
 

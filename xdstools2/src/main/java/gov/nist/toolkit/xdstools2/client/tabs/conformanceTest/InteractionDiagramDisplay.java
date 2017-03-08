@@ -12,9 +12,9 @@ import gov.nist.toolkit.xdstools2.client.util.ClientUtils;
  */
 public class InteractionDiagramDisplay extends FlowPanel {
 
-    public InteractionDiagramDisplay(TestOverviewDTO testResultDTO, String sessionName, SiteSpec target, String sutName) {
+    public InteractionDiagramDisplay(TestOverviewDTO testResultDTO, String sessionName, SiteSpec target, String sutSystemName, String sutActorRoleName) {
         try {
-            InteractionDiagram diagram = new InteractionDiagram(ClientUtils.INSTANCE.getEventBus(), testResultDTO, sessionName,  target, sutName);
+            InteractionDiagram diagram = new InteractionDiagram(ClientUtils.INSTANCE.getEventBus(), testResultDTO, sessionName,  target, sutSystemName, sutActorRoleName);
             if (diagram!=null && diagram.hasMeaningfulDiagram()) {
                 add(new HTML("<p><b>Interaction Sequence:</b></p>"));
                 add(diagram);
