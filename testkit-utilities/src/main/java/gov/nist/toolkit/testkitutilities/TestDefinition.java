@@ -1,6 +1,7 @@
 package gov.nist.toolkit.testkitutilities;
 
 import gov.nist.toolkit.installation.Installation;
+import gov.nist.toolkit.interactionmodel.client.InteractingEntity;
 import gov.nist.toolkit.interactionmodel.server.InteractionSequences;
 import gov.nist.toolkit.testkitutilities.client.Gather;
 import gov.nist.toolkit.testkitutilities.client.SectionDefinitionDAO;
@@ -148,7 +149,16 @@ public class TestDefinition {
 							transactionKey = InteractionSequences.xformSequenceToEntity(interactionSeq);
 						}
 						if (InteractionSequences.getInteractionSequenceById(transactionKey)!=null) {
-							step.setInteractionSequence(InteractionSequences.getInteractionSequenceById(transactionKey));
+
+							List<InteractingEntity> src = InteractionSequences.getInteractionSequenceById(transactionKey);
+							List<InteractingEntity> copyIeList = new ArrayList<>();
+
+							if (src!=null) {
+								for (InteractingEntity ie : src) {
+								    copyIeList.add(ie.copy());
+								}
+								step.setInteractionSequence(copyIeList);
+							}
 
 							if (goalEle==null)
 								section.addStep(step);

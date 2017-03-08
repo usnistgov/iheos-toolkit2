@@ -397,6 +397,9 @@ public class InteractionDiagram extends Composite {
                     setIePlaceholderValues(interactionSequence);
                     setIeTransactionStatus(section, sectionOverviewDTO, stepName, stepOverviewDTO, interactionSequence);
 
+//                    if ("11981".equals(testResultDTO.getTestInstance().getId()))
+//                    alert("section: " + section + " step: " + stepName + " is hashcode: " + interactionSequence.hashCode() + " step hashcode: " + stepOverviewDTO.hashCode());
+
                     result.addAll(interactionSequence);
                 }
             }
@@ -684,7 +687,7 @@ public class InteractionDiagram extends Composite {
         int textY = y;
 
         if (!response) {
-            int rightCenterTextX = (x1 + x2)/2;
+            int centerTextX = (x1 + x2)/2;
             /*
             if (lls.size()>2)
                 for (LL ll : lls) {
@@ -695,14 +698,20 @@ public class InteractionDiagram extends Composite {
                 }
              */
 
-//            int centerTextX = (rightCenterTextX+x2)/2;
-            int centerTextX = rightCenterTextX;
 
 
-            if (x2>x1)
+            if (x2>x1) {
+                if (Math.abs(x2-x1)>190) {
+                    centerTextX = originll.getLl_stem_center() + activity_box_width + ll_margin;
+                }
+
                 group.appendChild(arrow_request_right(x2, y));
-            else
+            } else {
+                if (Math.abs(x1-x2)>190) {
+                    centerTextX = originll.getLl_stem_center() + activity_box_width - (ll_margin);
+                }
                 group.appendChild(arrow_request_left(x2, y));
+            }
 
             if (entity.getStatus()!=null) {
                 group.setAttribute("style","cursor:pointer");
@@ -749,7 +758,7 @@ public class InteractionDiagram extends Composite {
                 }
             int centerTextX = (rightCenterTextX+x1)/2;
             */
-            int centerTextX = (x2+x1)/2;
+            int centerTextX = (x1+x2)/2;
 
             group.setAttribute("style","cursor:pointer");
 

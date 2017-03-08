@@ -9,6 +9,7 @@ IMPORTANT NOTES:
 i) The value of an actor element's name attribute provided by a toolkit simulator is linked to the Conformance Test Environment. This value is hardcoded in the Builder class for now. See the relevant OrchestrtionBuilder class depending on the SystemUnderTest provider's actor role. For example, if the actor role is Repository, see RepOrchestrationBuilder.groovy. Eventaully when the conformance test environment is scripted the name reference should resolve automatically. 
 ii) The value of an InteractionSequence element's type attribute is linked to a TestPlan's TestStep transaction element.
 iii) The key attribute value maps to the TestPlan TestStep Transaction.
+iv) The transaction type id maps to TransactionType class
 
 ASSUMPTIONS:
 Limited by the TestOverviewBuilder class, this makes an assumption that only one transaction is allowed per step.
@@ -17,6 +18,22 @@ Limited by the TestOverviewBuilder class, this makes an assumption that only one
 -->
 
 <InteractionSequences>
+	<InteractionSequence id="RetrieveTransaction">
+		<Actor role="Document Consumer" provider="TestClient">
+			<Transaction type="ret.b">
+				<Actor role="Repository" provider="SystemUnderTest"/>
+			</Transaction>
+		</Actor>
+	</InteractionSequence>
+
+	<InteractionSequence id="RegisterTransaction">
+		<Actor role="Repository" provider="TestClient">
+			<Transaction type="rb">
+				<Actor role="Registry" provider="Simulator"/>
+			</Transaction>
+		</Actor>
+	</InteractionSequence>
+
 	<InteractionSequence id="ProvideAndRegisterTransaction">
 			<Actor role="Document Source" provider="TestClient">
 				<Transaction type="prb">

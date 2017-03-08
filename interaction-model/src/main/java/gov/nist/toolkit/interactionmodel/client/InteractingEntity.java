@@ -3,6 +3,7 @@ package gov.nist.toolkit.interactionmodel.client;
 import com.google.gwt.user.client.rpc.IsSerializable;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -223,6 +224,30 @@ public class InteractingEntity implements IsSerializable, Serializable {
         } else if (map.get("Simulator")!=null && "Simulator".equals(entity.getProvider())) {
                 entity.setName(map.get("Simulator"));
         }
+    }
+
+    public InteractingEntity copy() {
+       InteractingEntity newIe = new InteractingEntity();
+       newIe.setStatus(this.getStatus());
+        newIe.setBegin(this.getBegin());
+        newIe.setEnd(this.getEnd());
+        newIe.setDescription(this.getDescription());
+        newIe.setDisplayOrder(this.getDisplayOrder());
+        newIe.setErrors(this.getErrors());
+        newIe.setInteractionIdentifierTerms(this.getInteractionIdentifierTerms());
+        newIe.setName(this.getName());
+        newIe.setProvider(this.getProvider());
+        newIe.setRole(this.getRole());
+        newIe.setSourceInteractionLabel(this.getSourceInteractionLabel());
+
+        if (this.getInteractions()!=null) {
+            newIe.setInteractions(new ArrayList<InteractingEntity>());
+           for (InteractingEntity child : this.getInteractions())  {
+               newIe.getInteractions().add(child.copy());
+           }
+        }
+
+        return newIe;
     }
 
 }
