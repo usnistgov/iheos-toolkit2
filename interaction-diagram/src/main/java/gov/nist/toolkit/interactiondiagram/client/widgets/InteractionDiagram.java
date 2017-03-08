@@ -688,25 +688,18 @@ public class InteractionDiagram extends Composite {
 
         if (!response) {
             int centerTextX = (x1 + x2)/2;
-            /*
-            if (lls.size()>2)
-                for (LL ll : lls) {
-                    if (ll.getLl_stem_center()>x1) {
-                        rightCenterTextX = ll.getLl_stem_center();
-                        break;
-                    }
-                }
-             */
-
-
 
             if (x2>x1) {
-                if (Math.abs(x2-x1)>190) {
+                // Request
+                // x1 ----------------> x2
+                if (Math.abs(x2-x1)>190) { // Make labels stick closer to the origin if the line spans a long distance over multiple LLs.
                     centerTextX = originll.getLl_stem_center() + activity_box_width + ll_margin;
                 }
 
                 group.appendChild(arrow_request_right(x2, y));
             } else {
+                // Request
+                // x2 <----------------- x1
                 if (Math.abs(x1-x2)>190) {
                     centerTextX = originll.getLl_stem_center() + activity_box_width - (ll_margin);
                 }
@@ -748,24 +741,25 @@ public class InteractionDiagram extends Composite {
              * Response
              */
 
-            /*
-            int rightCenterTextX = x2;
-            if (lls.size()>2)
-                for (int cx=lls.size()-2; cx>0; cx--) {
-                    LL ll = lls.get(cx);
-                    rightCenterTextX = ll.getLl_stem_center();
-                    break;
-                }
-            int centerTextX = (rightCenterTextX+x1)/2;
-            */
             int centerTextX = (x1+x2)/2;
 
             group.setAttribute("style","cursor:pointer");
 
-            if (x2<x1)
+            if (x2<x1) {
+                // Response
+                // x2 <---------------- x1
+                if (Math.abs(x1-x2)>190)  {
+                    centerTextX = originll.getLl_stem_center() + activity_box_width - (ll_margin);
+                }
                 group.appendChild(arrow_response_left(x2, y));
-            else
+            } else {
+                // Response
+                // x1 ----------------> x2
+                if (Math.abs(x2-x1)>190) {
+                    centerTextX = originll.getLl_stem_center() + activity_box_width + ll_margin;
+                }
                 group.appendChild(arrow_response_right(x2, y));
+            }
 
             // -----
             String x_mark_Rgb = null;
