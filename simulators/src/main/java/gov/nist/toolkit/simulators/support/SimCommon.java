@@ -200,6 +200,7 @@ public class SimCommon {
 		return mvc.getValidatorNames();
 	}
 
+	// TODO what does this do?
 	public static ErrorRecorder getUnconnectedErrorRecorder() {
 		return new GwtErrorRecorder();
 	}

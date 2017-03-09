@@ -56,7 +56,6 @@ public class SimServlet  extends HttpServlet {
 	String contentType;
 	HttpHeader contentTypeHeader;
 	String bodyCharset;
-//	File simDbDir;
 	MessageValidationResults mvr;
 	PatientIdentityFeedServlet patientIdentityFeedServlet;
 
