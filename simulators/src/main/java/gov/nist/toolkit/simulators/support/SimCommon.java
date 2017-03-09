@@ -200,12 +200,6 @@ public class SimCommon {
 		return mvc.getValidatorNames();
 	}
 
-	// TODO what does this do?
-	public static ErrorRecorder getUnconnectedErrorRecorder() {
-		return new GwtErrorRecorder();
-	}
-
-
 	static public void deleteSim(SimId simulatorId) {
 		try {
 			logger.info("Delete sim " + simulatorId);

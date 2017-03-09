@@ -8,6 +8,7 @@ import gov.nist.toolkit.actortransaction.client.ATFactory;
 import gov.nist.toolkit.configDatatypes.SimulatorProperties;
 import gov.nist.toolkit.configDatatypes.client.TransactionType;
 import gov.nist.toolkit.errorrecording.ErrorRecorder;
+import gov.nist.toolkit.errorrecording.gwt.GwtErrorRecorder;
 import gov.nist.toolkit.errorrecording.gwt.GwtErrorRecorderBuilder;
 import gov.nist.toolkit.http.HttpHeader;
 import gov.nist.toolkit.http.HttpHeader.HttpHeaderParseException;
@@ -757,7 +758,7 @@ public class SimServlet  extends HttpServlet {
 			OMElement faultEle = sf.getXML();
             logger.info("Sending SOAP Fault:\n" + new OMFormatter(faultEle).toString());
 			OMElement soapEnv = dsSimCommon.wrapResponseInSoapEnvelope(faultEle);
-			dsSimCommon.sendHttpResponse(soapEnv, SimCommon.getUnconnectedErrorRecorder(), false);
+			dsSimCommon.sendHttpResponse(soapEnv, getUnconnectedErrorRecorder(), false);
 		} catch (Exception e) {
 			logger.error(ExceptionUtil.exception_details(e));
 		}
@@ -802,6 +803,10 @@ public class SimServlet  extends HttpServlet {
 		db.putRequestHeaderFile(buf.toString().getBytes());
 
 		db.putRequestBodyFile(Io.getBytesFromInputStream(request.getInputStream()));
+	}
 
+	// TODO  Architecture workaround-type gimmick inherited from v2. This should eventually go away.
+	public static ErrorRecorder getUnconnectedErrorRecorder() {
+		return new GwtErrorRecorder();
 	}
 }
