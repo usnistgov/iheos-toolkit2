@@ -1,4 +1,4 @@
-package gov.nist.toolkit.fhir
+package gov.nist.toolkit.fhirServer
 
 import ca.uhn.fhir.context.FhirContext
 import ca.uhn.fhir.model.dstu2.resource.Patient
@@ -30,5 +30,7 @@ class LoadPatientTest extends Specification {
 
         then:
         patient.name[0].family[0].getValue() == 'Chalmers'
+        patient.identifier[0].system == 'urn:oid:1.2.36.146.595.217.0.1'
+        patient.identifier[0].value == '12345'
     }
 }

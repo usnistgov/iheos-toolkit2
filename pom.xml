@@ -84,6 +84,7 @@
         <module>interaction-diagram</module>
         <module>bin</module>
         <module>fhir</module>
+        <module>fhir-server</module>
     </modules>
 
 
