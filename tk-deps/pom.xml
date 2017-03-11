@@ -35,6 +35,7 @@
         <hapi.version>2.3-SNAPSHOT</hapi.version>
         <spring_version>4.3.6.RELEASE</spring_version>
         <thymeleaf-version>3.0.2.RELEASE</thymeleaf-version>
+        <lucene-version>6.4.2</lucene-version>
     </properties>
 
 
@@ -746,6 +747,12 @@
                 <version>${spring_version}</version>
             </dependency>
 
+            <!-- https://mvnrepository.com/artifact/org.apache.lucene/lucene-core -->
+            <dependency>
+                <groupId>org.apache.lucene</groupId>
+                <artifactId>lucene-core</artifactId>
+                <version>${lucene-version}</version>
+            </dependency>
 
         </dependencies>
 

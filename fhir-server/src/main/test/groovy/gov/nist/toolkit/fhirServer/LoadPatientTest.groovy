@@ -10,7 +10,7 @@ import spock.lang.Specification
  */
 class LoadPatientTest extends Specification {
 
-    def 'simple test'() {
+    def 'simple load patient test'() {
         when:  '''load a Patient resource'''
         String patientString = this.getClass().getResource('/Patient1.json').text
 
