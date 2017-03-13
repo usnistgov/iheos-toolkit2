@@ -4,7 +4,7 @@
     targetNamespace="http://schemas.xmlsoap.org/soap/envelope/" >
     
     
-    <!-- Envelope, header and body -->
+    <!-- Envelope, header and bodyEle -->
     <xs:element name="Envelope" type="tns:Envelope" />
     <xs:complexType name="Envelope" >
         <xs:sequence>

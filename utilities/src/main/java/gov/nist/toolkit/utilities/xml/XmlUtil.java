@@ -236,6 +236,23 @@ public class XmlUtil {
 			decendentsWithLocalName1(descendants, child, localName, depth - 1);
 		}
 	}
+
+	public static List<OMElement> getDescendants(OMElement element, boolean includeSelf) {
+		List<OMElement> descendants = new ArrayList<>();
+		if (includeSelf) descendants.add(element);
+		descendants(descendants, element);
+		return descendants;
+	}
+
+	private static void descendants(List<OMElement> descendants, OMElement element) {
+		Iterator<OMElement> it = element.getChildElements();
+		while (it.hasNext()) {
+			OMElement child = it.next();
+			descendants.add(child);
+			descendants(descendants, child);
+		}
+
+	}
 	
 	public static String getAttributeValue(OMElement element, String attributeName) {
 	   return element.getAttributeValue(new QName(attributeName));

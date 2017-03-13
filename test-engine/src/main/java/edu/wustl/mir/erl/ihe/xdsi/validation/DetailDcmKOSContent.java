@@ -1,13 +1,9 @@
 package edu.wustl.mir.erl.ihe.xdsi.validation;
 
-import java.util.ArrayList;
-
-import org.dcm4che3.data.Tag;
-import org.dcm4che3.data.UID;
-
-import gov.nist.toolkit.testengine.engine.SimulatorTransaction;
-
 import edu.wustl.mir.erl.ihe.xdsi.validation.DCMAssertion.TYPE;
+import org.dcm4che3.data.Tag;
+
+import java.util.ArrayList;
 
 @SuppressWarnings("javadoc")
 public class DetailDcmKOSContent extends DetailDcmContent {
