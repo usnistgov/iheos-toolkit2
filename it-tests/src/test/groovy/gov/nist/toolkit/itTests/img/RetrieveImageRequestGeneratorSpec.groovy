@@ -31,10 +31,10 @@ class RetrieveImageRequestGeneratorSpec extends Specification {
 
         when: 'A SOAP message is generated'
         RetrieveImageRequestGenerator gen = new RetrieveImageRequestGenerator(requestModel)
-        OMElement request = gen.get()
+        OMElement test = gen.get()
 
         and: 'They are compared'
-        prsSameReqImgs(request, std)
+        prsSameReqImgs(test, std)
 
         then: 'they should compare OK'
         failed == false
