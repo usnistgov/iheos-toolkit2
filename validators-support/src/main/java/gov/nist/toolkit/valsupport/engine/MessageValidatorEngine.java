@@ -18,9 +18,9 @@ import java.util.List;
  *
  */
 public class MessageValidatorEngine {
-	static private Logger logger = Logger.getLogger(MessageValidatorEngine.class);
+	static protected Logger logger = Logger.getLogger(MessageValidatorEngine.class);
 
-	private List<ValidationStep> validationSteps = new ArrayList<ValidationStep>();
+	protected List<ValidationStep> validationSteps = new ArrayList<ValidationStep>();
 	private boolean isPartialSuccess = false;
 
 	public MessageValidatorEngine() {}
@@ -149,7 +149,7 @@ public class MessageValidatorEngine {
 	/**
 	 * Execute all validators that are queued up but never run.
 	 */
-	ValidationStep currentStep = null;
+	protected ValidationStep currentStep = null;
 
 	public void run() {
 		// this iteration is tricky since a step can add

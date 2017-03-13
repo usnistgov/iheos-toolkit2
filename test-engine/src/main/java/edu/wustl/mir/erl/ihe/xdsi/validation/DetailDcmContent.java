@@ -3,18 +3,17 @@
  */
 package edu.wustl.mir.erl.ihe.xdsi.validation;
 
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.List;
-
+import edu.wustl.mir.erl.ihe.xdsi.util.PfnType;
+import edu.wustl.mir.erl.ihe.xdsi.util.Utility;
 import org.apache.commons.lang3.StringUtils;
 import org.dcm4che3.data.Attributes;
 import org.dcm4che3.data.Tag;
 import org.dcm4che3.io.DicomInputStream;
 import org.javatuples.Pair;
 
-import edu.wustl.mir.erl.ihe.xdsi.util.PfnType;
-import edu.wustl.mir.erl.ihe.xdsi.util.Utility;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.List;
 
 /**
  * Base class for Detail comparing two dicom document's header tags
@@ -63,9 +62,9 @@ public abstract class DetailDcmContent extends Detail {
     */
    @SuppressWarnings("hiding")
    void initializeDetail(String testPfn, String stdPfn) {
-      initializeTests();
       this.testPfn = testPfn;
       this.stdPfn = stdPfn;
+      initializeTests();
    }
 
    

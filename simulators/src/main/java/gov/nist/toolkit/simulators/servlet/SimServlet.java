@@ -458,9 +458,6 @@ public class SimServlet  extends HttpServlet {
 			return;
 		}
 
-
-
-
 		boolean transactionOk = true;
 
 		MessageValidatorEngine mvc = new MessageValidatorEngine();

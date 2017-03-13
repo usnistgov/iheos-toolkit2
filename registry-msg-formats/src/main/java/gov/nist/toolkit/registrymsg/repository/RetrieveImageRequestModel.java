@@ -194,7 +194,7 @@ public class RetrieveImageRequestModel {
     * Generates a model from a valid set of String lists. For testing
     * @param compositeUids a list of composite UID string, of the format
     *        study UID, series UID, instance UID, home community ID, repository
-    *        unique ID, separated by colons. home community ID and repository ID
+    *        unique ID, separated by commas. home community ID and repository ID
     *        may be empty strings or "null". study, series, and instance UIDs
     *        must be present.
     * @param xferSyntaxUids a list or transfer syntax UIDs.
@@ -208,7 +208,7 @@ public class RetrieveImageRequestModel {
       RetrieveImageSeriesRequestModel seriesModel = null;
 
       for (String compositeUid : compositeUids) {
-         String[] tokens = compositeUid.split(":");
+         String[] tokens = compositeUid.split(",");
          String studyUid = tokens[0];
          String seriesUid = tokens[1];
          String instanceUid = tokens[2];
