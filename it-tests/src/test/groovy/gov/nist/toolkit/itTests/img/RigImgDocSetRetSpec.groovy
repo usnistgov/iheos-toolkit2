@@ -1,14 +1,19 @@
 package gov.nist.toolkit.itTests.img
 
 import gov.nist.toolkit.actorfactory.AbstractActorFactory
+import gov.nist.toolkit.actorfactory.SimDb
 import gov.nist.toolkit.actorfactory.SimManager
 import gov.nist.toolkit.actorfactory.client.SimId
 import gov.nist.toolkit.actorfactory.client.Simulator
 import gov.nist.toolkit.actorfactory.client.SimulatorConfig
 import gov.nist.toolkit.actortransaction.client.ActorType
 import gov.nist.toolkit.actortransaction.client.ParamType
+import gov.nist.toolkit.adt.ListenerFactory
 import gov.nist.toolkit.configDatatypes.SimulatorProperties
 import gov.nist.toolkit.errorrecording.ErrorRecorder
+import gov.nist.toolkit.errorrecording.GwtErrorRecorderBuilder
+import gov.nist.toolkit.installation.Installation
+import gov.nist.toolkit.itTests.support.ToolkitSpecification
 import gov.nist.toolkit.registrymsg.repository.RetImgDocSetReqParser
 import gov.nist.toolkit.registrymsg.repository.RetrieveImageRequestModel
 import gov.nist.toolkit.simcommon.client.config.SimulatorConfigElement
@@ -18,11 +23,20 @@ import gov.nist.toolkit.simulators.sim.rig.RigImgDocSetRet
 import gov.nist.toolkit.simulators.support.DsSimCommon
 import gov.nist.toolkit.simulators.support.SimCommon
 import gov.nist.toolkit.sitemanagement.client.Site
+import gov.nist.toolkit.toolkitApi.SimulatorBuilder
 import gov.nist.toolkit.utilities.xml.XmlUtil
+import gov.nist.toolkit.validatorsSoapMessage.message.SoapMessageValidator
+import gov.nist.toolkit.valsupport.client.ValidationContext
+import gov.nist.toolkit.valsupport.engine.DefaultValidationContextFactory
 import gov.nist.toolkit.valsupport.engine.MessageValidatorEngine
+import gov.nist.toolkit.valsupport.message.AbstractMessageValidator
+import gov.nist.toolkit.xdsexception.client.XdsException
 import org.apache.axiom.om.OMElement
+import spock.lang.Shared
 import spock.lang.Specification
 
+import javax.servlet.http.HttpServletRequest
+import javax.servlet.http.HttpServletResponse
 import java.nio.file.Path
 
 /**
@@ -30,12 +44,47 @@ import java.nio.file.Path
  *
  * Created by dmaffitt on 3/8/17.
  */
-class RigImgDocSetRetSpec extends Specification {
+class RigImgDocSetRetSpec extends ToolkitSpecification {
+
+    @Shared String testSession = 'rigitest'
+    @Shared String id = 'simulator_ids'
+    @Shared SimId simId = new SimId(testSession, id)
+    @Shared SimulatorBuilder spi
+    @Shared File simDbFile
+    @Shared OMElement requestElement
+    @Shared OMElement responseElement = null
+
+    /**
+     * Run once at class initialization.
+     * @return
+     */
+    def setupSpec() {
+        // Opens a grizzly server for testing, in lieu of tomcat
+        startGrizzly('8889')
+
+        // Initialize remote api for talking to toolkit on Grizzly
+        // Needed to build simulators
+        spi = getSimulatorApi(remoteToolkitPort)
+
+        simDbFile = Installation.instance().simDbFile()
+    }
+
+    // one time shutdown when everything is done
+    def cleanupSpec() {
+        api.deleteSimulatorIfItExists(simId)
+        server.stop()
+        ListenerFactory.terminateAll()
+    }
+
+    def setup() {
+        api.createTestSession(testSession)
+        createIdsSimulator()
+    }
 
     def 'Retrieve Image Document Set Request Processing Test - create RAD-69s for all IDS in request' () {
         println(testDesc)
 
-        when: 'The test SOAP message is parsed'
+        when: 'The RAD-75 message is parsed'
 
         OMElement requestElement = XmlUtil.strToOM(requestString)
 
@@ -43,24 +92,22 @@ class RigImgDocSetRetSpec extends Specification {
         requestElement
 
         when: 'the RigImgDocSetRet is instantiated'
-        SimCommon common = Stub(SimCommon);
-        DsSimCommon dsSimCommon = Stub(DsSimCommon);
-        SimulatorConfig asc = getConfig();
-        loadExtendedProperties()
-        Simulator repoSim1 = buildSims()
-
-        IdsActorSimulator repoSimE = new IdsActorSimulator()
+        MessageValidatorEngine mvc = new MessageValidatorEngine()
+        ValidationContext vc = DefaultValidationContextFactory.validationContext()
+        SimulatorConfig simConfig = api.getConfig(simId)
+        SimCommon common = new MockedSimCommon(db, simConfig, false, vc, mvc, null, null)
+        DsSimCommon dsSimCommon = new MockedDsSimCommon(common)
+        ErrorRecorder er = new GwtErrorRecorderBuilder().buildNewErrorRecorder()
+        mvc.addErrorRecorder(testName, er)
 
         RigImgDocSetRet rigImgDocSetRet = new RigImgDocSetRet( common, dsSimCommon, asc);
 
         then: 'An object is created'
         rigImgDocSetRet
 
-        ErrorRecorder er = Stub(ErrorRecorder)
-//        MessageValidatorEngine mve = Stub(MessageValidatorEngine)
-        MessageValidatorEngine mve = new MessageValidatorEngine()
-
-        rigImgDocSetRet.run(er, mve)
+        when: 'the RigImgDocSetSetRet is run'
+        rigImgDocSetRet.run(er, mvc)
+        String responseString = XmlUtil.OMToStr(responseElement)
 
         then: 'number of repos equals the number of rad-69s sent.'
         rigImgDocSetRet.getKnownIDSCount() == rigImgDocSetRet.getRad69ResponseCount()
@@ -177,4 +224,64 @@ class RigImgDocSetRetSpec extends Specification {
 ////			logger.info("Cannot load extended.properties");
 //        }
     }
+
+    /**
+     * Re/creates an IDS simulator with overrides for specific configuration
+     * parameters needed for testing
+     */
+    void createIdsSimulator() {
+        List<SimulatorConfigElement> elements = [
+                new SimulatorConfigElement(SimulatorProperties.idsRepositoryUniqueId, ParamType.TEXT, "1.3.6.1.4.1.21367.13.80.110"),
+                new SimulatorConfigElement(SimulatorProperties.idsImageCache, ParamType.TEXT, "ids-repository")]
+        api.deleteSimulatorIfItExists(simId)
+        SimulatorConfig conf = api.createSimulator(ActorType.IMAGING_DOC_SOURCE, simId).getConfig(0)
+        for (SimulatorConfigElement chg : elements) {
+            chg.setEditable(true);
+            conf.replace(chg);
+        }
+        api.saveSimulator(conf);
+    }
+
+    /*
+     * Partially mocked classes, mostly to turn off standard validations,
+     * bypassing them to get to the 'meat' of ids validations
+     */
+
+    class MockedDsSimCommon extends DsSimCommon {
+
+        MockedDsSimCommon (SimCommon common) {
+            super(common)
+        }
+
+        // Turns off initial validation, which is a general purpose routine
+        // from Bill's stuff. Just returns "OK"
+        @Override
+        boolean runInitialValidationsAndFaultIfNecessary() throws IOException {
+            return true
+        }
+
+        // Does not actually send http response, but grabs the SOAP message
+        // for testing.
+        @Override
+        public void sendHttpResponse(OMElement env, ErrorRecorder er) throws IOException {
+            responseElement = env;
+        }
+
+    }
+
+    class MockedSimCommon extends SimCommon {
+
+        MockedSimCommon (SimDb db, SimulatorConfig simConfig, boolean tls,
+                         ValidationContext vc, MessageValidatorEngine mvc,
+                         HttpServletRequest request, HttpServletResponse response)
+                throws IOException, XdsException {
+            super(db, simConfig, tls, vc, mvc, request, response)
+        }
+
+        // Returns a testing version of the SOAPMessageValidator
+        AbstractMessageValidator getMessageValidatorIfAvailable(Class cls) {
+            return new SoapMessageValidator(requestElement)
+        }
+    }
+
 }
