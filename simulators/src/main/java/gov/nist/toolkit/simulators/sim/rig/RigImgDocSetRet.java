@@ -34,7 +34,7 @@ import java.util.Map;
  * collects the results, and creates the RAD-75 response. *
  */
 @TypeChecked
-class RigImgDocSetRet extends AbstractMessageValidator {
+public class RigImgDocSetRet extends AbstractMessageValidator {
 
    //***************************************************************
    // static Properties
@@ -57,6 +57,10 @@ class RigImgDocSetRet extends AbstractMessageValidator {
    RetrieveMultipleResponse response;
    RetrievedDocumentsModel retrievedDocs = new RetrievedDocumentsModel();
    OMElement result = null;
+   private int knownIDSCount;  // The number of requested repositories which this RIG recognizes, i.e. the number of RAD-69s to send.
+   private int rad69ResponseCount; // The number of RAD-69 which have returned results. (more important in an async environment).
+
+   private SiteProvider siteProvider;
 
    //***************************************************************
    // Constructor
@@ -76,6 +80,10 @@ class RigImgDocSetRet extends AbstractMessageValidator {
          System.out.println(ExceptionUtil.exception_details(e));
          startUpException = e;
       }
+
+      knownIDSCount = 0;
+      rad69ResponseCount = 0;
+      siteProvider = new SiteProviderDefault();
    }
 
    // Not an exception, but thrown to run code in finally block.
@@ -107,13 +115,18 @@ class RigImgDocSetRet extends AbstractMessageValidator {
          
          // Get list of configured IDSs
          List<String> siteNames = asc.getConfigEle(SimulatorProperties.imagingDocumentSources).asList();  
-         SimManager simMgr = new SimManager("ignored");
-         List<Site> sites = simMgr.getSites(siteNames);
-         if (sites == null || sites.size() == 0) {
+//         SimManager simMgr = new SimManager("ignored");
+//         List<Site> sites = simMgr.getSites(siteNames);
+//         if (sites == null || sites.size() == 0) {
+//            er.err(XdsErrorCode.Code.XDSRepositoryError, "No Imaging Document Sources configured", this, null);
+//            throw new NonException();
+//         }
+//         Sites idsSites = new Sites(sites);
+         Sites idsSites = siteProvider.getSites( siteNames);
+         if ( idsSites.size() == 0) {
             er.err(XdsErrorCode.Code.XDSRepositoryError, "No Imaging Document Sources configured", this, null);
             throw new NonException();
          }
-         Sites idsSites = new Sites(sites);
 
          // Get SOAP body from inbound RAD-75
          SoapMessageValidator smv =
@@ -134,6 +147,7 @@ class RigImgDocSetRet extends AbstractMessageValidator {
                      "Don't have configuration for IDS with repository unique Id " + idsRepId, this, null);
                throw new NonException();
             }
+            knownIDSCount++;
             
             // Generate model for this repository unique id.
             RetrieveImageRequestModel idsModel = requestModel.getModelForRepository(idsRepId);
@@ -158,6 +172,7 @@ class RigImgDocSetRet extends AbstractMessageValidator {
                   
                // Get response and build model
                result = soap.getResult();
+               rad69ResponseCount++;
                RetrieveB retb = new RetrieveB(null);
                Map <String, RetrievedDocumentModel> map =
                      retb.parse_rep_response(result).getMap();
@@ -220,5 +235,15 @@ class RigImgDocSetRet extends AbstractMessageValidator {
          er.err(errorCode, codeContext, location, severity, null);
       }
    }
+
+   public int getKnownIDSCount() { return knownIDSCount;}
+   public int getRad69ResponseCount() { return rad69ResponseCount;}
+
+   /**
+    * Set the SiteProvider if we need to override the default one.
+    *
+    * @param provider
+    */
+   public void setSiteProvider( SiteProvider provider) {this.siteProvider = provider;}
 
 }  // EO RGImgDocSetRet class
