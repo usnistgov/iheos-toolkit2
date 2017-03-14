@@ -1,4 +1,4 @@
-package gov.nist.toolkit.fhirServer
+package gov.nist.toolkit.fhirServer.prototype
 
 import ca.uhn.fhir.context.FhirContext
 import ca.uhn.fhir.model.dstu2.resource.Patient
@@ -8,9 +8,9 @@ import spock.lang.Specification
 /**
  *
  */
-class LoadPatientTest extends Specification {
+class LoadHapiPatientTest extends Specification {
 
-    def 'simple load patient test'() {
+    def 'simple load patient with HAPI test'() {
         when:  '''load a Patient resource'''
         String patientString = this.getClass().getResource('/Patient1.json').text
 

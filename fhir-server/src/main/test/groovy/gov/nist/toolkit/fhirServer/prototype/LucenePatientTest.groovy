@@ -1,4 +1,4 @@
-package gov.nist.toolkit.fhirServer
+package gov.nist.toolkit.fhirServer.prototype
 
 import org.apache.lucene.document.Document
 import org.apache.lucene.document.Field
