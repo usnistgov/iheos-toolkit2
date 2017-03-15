@@ -43,7 +43,7 @@ public class PrsSimLogs {
    
 
    private static SimpleDateFormat timeOfTransactionFormat = new SimpleDateFormat("yyyyMMddHHmmssSSS");
-   private static String externalCache = propertyManager.getExternalCache();
+   private static String externalCache = Paths.get(propertyManager.getExternalCache()).toString();
    
    
    

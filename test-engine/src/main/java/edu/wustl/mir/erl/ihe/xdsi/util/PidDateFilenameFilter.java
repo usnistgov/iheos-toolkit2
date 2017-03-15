@@ -3,20 +3,18 @@
  */
 package edu.wustl.mir.erl.ihe.xdsi.util;
 
+import gov.nist.toolkit.utilities.xml.XmlUtil;
+import org.apache.axiom.om.OMElement;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.log4j.Logger;
+
+import javax.xml.namespace.QName;
+import javax.xml.xpath.XPathExpression;
 import java.io.File;
 import java.io.FilenameFilter;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
-
-import javax.xml.namespace.QName;
-import javax.xml.xpath.XPathExpression;
-
-import org.apache.axiom.om.OMElement;
-import org.apache.commons.lang3.StringUtils;
-import org.apache.log4j.Logger;
-
-import gov.nist.toolkit.utilities.xml.XmlUtil;
 
 /**
  *
@@ -27,8 +25,7 @@ import gov.nist.toolkit.utilities.xml.XmlUtil;
  */
 public class PidDateFilenameFilter implements FilenameFilter {
    private static Logger log = null;
-   private static SimpleDateFormat dateDirFormat = 
-            new SimpleDateFormat("yyyy_MM_dd_HH_mm_ss_SSS");
+   private static String DATE_DIR_FORMAT = "yyyy_MM_dd_HH_mm_ss_SSS";
    private static QName[] metaDataQnames = 
          { new QName("urn:oasis:names:tc:ebxml-regrep:rim:xsd:2.1", "dummy", "rim"),
             new QName("urn:oasis:names:tc:ebxml-regrep:registry:xsd:2.1", "dummy", "rs") };
@@ -54,7 +51,7 @@ public class PidDateFilenameFilter implements FilenameFilter {
       try {
     	 log.debug("PidDateFilenameFilter::accept " + dir.toString() + " " + name + " reference Patient ID " + pid);
          if (new File(dir, name).isDirectory() == false) return false;
-         Date dirDate = dateDirFormat.parse(name);
+         Date dirDate = new SimpleDateFormat(DATE_DIR_FORMAT).parse(name);
          if (date != null && dirDate.before(date)) {
         	 log.debug("Folder rejected on date criteria: reference date " + date.toString() + " folder date " + dirDate.toString());
         	 return false;
