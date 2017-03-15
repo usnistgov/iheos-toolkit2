@@ -60,8 +60,6 @@ public class RigImgDocSetRet extends AbstractMessageValidator {
    private int knownIDSCount;  // The number of requested repositories which this RIG recognizes, i.e. the number of RAD-69s to send.
    private int rad69ResponseCount; // The number of RAD-69 which have returned results. (more important in an async environment).
 
-   private SiteProvider siteProvider;
-
    //***************************************************************
    // Constructor
    //***************************************************************
@@ -83,7 +81,6 @@ public class RigImgDocSetRet extends AbstractMessageValidator {
 
       knownIDSCount = 0;
       rad69ResponseCount = 0;
-      siteProvider = new SiteProviderDefault();
    }
 
    // Not an exception, but thrown to run code in finally block.
@@ -115,18 +112,13 @@ public class RigImgDocSetRet extends AbstractMessageValidator {
          
          // Get list of configured IDSs
          List<String> siteNames = asc.getConfigEle(SimulatorProperties.imagingDocumentSources).asList();  
-//         SimManager simMgr = new SimManager("ignored");
-//         List<Site> sites = simMgr.getSites(siteNames);
-//         if (sites == null || sites.size() == 0) {
-//            er.err(XdsErrorCode.Code.XDSRepositoryError, "No Imaging Document Sources configured", this, null);
-//            throw new NonException();
-//         }
-//         Sites idsSites = new Sites(sites);
-         Sites idsSites = siteProvider.getSites( siteNames);
-         if ( idsSites.size() == 0) {
+         SimManager simMgr = new SimManager("ignored");
+         List<Site> sites = simMgr.getSites(siteNames);
+         if (sites == null || sites.size() == 0) {
             er.err(XdsErrorCode.Code.XDSRepositoryError, "No Imaging Document Sources configured", this, null);
             throw new NonException();
          }
+         Sites idsSites = new Sites(sites);
 
          // Get SOAP body from inbound RAD-75
          SoapMessageValidator smv =
@@ -238,12 +230,5 @@ public class RigImgDocSetRet extends AbstractMessageValidator {
 
    public int getKnownIDSCount() { return knownIDSCount;}
    public int getRad69ResponseCount() { return rad69ResponseCount;}
-
-   /**
-    * Set the SiteProvider if we need to override the default one.
-    *
-    * @param provider
-    */
-   public void setSiteProvider( SiteProvider provider) {this.siteProvider = provider;}
 
 }  // EO RGImgDocSetRet class
