@@ -138,14 +138,15 @@ public abstract class Response implements ErrorLogger {
 	 * <b>NOTE:</b> Must be invoked BEFORE {@link #getResponse()}
 	 * @param status the String value for the status attribute. This must be the
 	 * entire value, including the namespace. It is suggested to use one of:<ul>
-	 * <li/> {@link gov.nist.toolkit.registrysupport.MetadataSupport#status_success MetadataSupport.status_success}
-    * <li/> {@link gov.nist.toolkit.registrysupport.MetadataSupport#status_partial_success MetadataSupport.status_partial_success}
-    * <li/> {@link gov.nist.toolkit.registrysupport.MetadataSupport#status_failure MetadataSupport.status_failure}
+	 * <li/> {@link gov.nist.toolkit.commondatatypes.MetadataSupport#status_success MetadataSupport.status_success}
+    * <li/> {@link gov.nist.toolkit.commondatatypes.MetadataSupport#status_partial_success MetadataSupport.status_partial_success}
+    * <li/> {@link gov.nist.toolkit.commondatatypes.MetadataSupport#status_failure MetadataSupport.status_failure}
 	 * </ul>
 	 */
 	public void setForcedStatus(String status) {
 		forcedStatus = status;
 	}
+	public String getForcedStatus() { return forcedStatus; }
 
    /**
     * Gets the completed RetrieveDocumentSetResponse SOAP message body, first
