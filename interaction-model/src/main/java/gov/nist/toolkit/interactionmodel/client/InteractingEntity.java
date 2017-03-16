@@ -1,6 +1,8 @@
 package gov.nist.toolkit.interactionmodel.client;
 
+import com.google.gwt.i18n.client.DateTimeFormat;
 import com.google.gwt.user.client.rpc.IsSerializable;
+import gov.nist.toolkit.actortransaction.client.TransactionInstance;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -26,7 +28,7 @@ public class InteractingEntity implements IsSerializable, Serializable {
     (null if head/parent)
      */
     /**
-     * How this entity is being interacted with the Source entity.
+     * How this entity interacts with the Source entity.
      */
     String sourceInteractionLabel;
     List<InteractingEntity> interactions;
@@ -55,6 +57,7 @@ public class InteractingEntity implements IsSerializable, Serializable {
      */
     Date end;
     int displayOrder = 0;
+    TransactionInstance transactionInstance;
 
     public static enum INTERACTIONSTATUS {
         COMPLETED,
@@ -121,6 +124,11 @@ public class InteractingEntity implements IsSerializable, Serializable {
 
     public void setBegin(Date begin) {
         this.begin = begin;
+    }
+
+    public void setBegin(String hl7DateStr) {
+        DateTimeFormat dtf = DateTimeFormat.getFormat("yyyyMMddHHmmss");
+        setBegin(dtf.parse(hl7DateStr));
     }
 
     public Date getEnd() {
@@ -248,6 +256,41 @@ public class InteractingEntity implements IsSerializable, Serializable {
                 entity.setName(map.get(SIMULATOR));
         }
     }
+    public TransactionInstance getTransactionInstance() {
+        return transactionInstance;
+    }
+
+    public void setTransactionInstance(TransactionInstance transactionInstance) {
+        this.transactionInstance = transactionInstance;
+    }
+
+    public boolean hasSutInitiatedTransactions() {
+       return findInitiatorTransactions(this);
+    }
+
+    private boolean findInitiatorTransactions(InteractingEntity parent) {
+        if (parent == null) return false;
+
+        boolean hasInteractions = parent.getInteractions() != null && !parent.getInteractions().isEmpty();
+
+        if (hasInteractions) {
+            if (InteractingEntity.SYSTEM_UNDER_TEST.equals(parent.getProvider())) {
+                List<InteractingEntity> interactions = parent.getInteractions();
+                for (final InteractingEntity ie : interactions) {
+                    if (InteractingEntity.SIMULATOR.equals(ie.getProvider())) {
+                        return true;
+                    }
+                }
+            } else {
+                for (InteractingEntity ie : parent.getInteractions()) {
+                    return findInitiatorTransactions(ie);
+                }
+            }
+        }
+
+        return false;
+    }
+
 
     public InteractingEntity copy() {
        InteractingEntity newIe = new InteractingEntity();
@@ -262,6 +305,7 @@ public class InteractingEntity implements IsSerializable, Serializable {
         newIe.setProvider(this.getProvider());
         newIe.setRole(this.getRole());
         newIe.setSourceInteractionLabel(this.getSourceInteractionLabel());
+        newIe.setTransactionInstance(this.getTransactionInstance());
 
         if (this.getInteractions()!=null) {
             newIe.setInteractions(new ArrayList<InteractingEntity>());
@@ -272,5 +316,6 @@ public class InteractingEntity implements IsSerializable, Serializable {
 
         return newIe;
     }
+
 
 }

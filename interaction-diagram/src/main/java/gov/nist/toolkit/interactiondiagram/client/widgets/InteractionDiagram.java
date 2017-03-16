@@ -1,7 +1,6 @@
 package gov.nist.toolkit.interactiondiagram.client.widgets;
 
 
-import com.google.gwt.dom.client.Element;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.MouseEvent;
@@ -16,6 +15,7 @@ import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.PopupPanel;
 import com.google.web.bindery.event.shared.EventBus;
+import gov.nist.toolkit.actortransaction.client.TransactionInstance;
 import gov.nist.toolkit.interactiondiagram.client.events.DiagramClickedEvent;
 import gov.nist.toolkit.interactionmodel.client.InteractingEntity;
 import gov.nist.toolkit.session.client.logtypes.SectionOverviewDTO;
@@ -49,9 +49,9 @@ public class InteractionDiagram extends Composite {
     public static final int NUM_LINES = 3;
     public static final String RGB_255_0_0 = "rgb(255,0,0)";
     public static final String RGB_0_0_255 = "rgb(0,0,255)";
-    int g_depth = 0;
-    int g_x = 0;
-    int g_y = 0;
+    private int g_depth = 0;
+    private int g_x = 0;
+    private int g_y = 0;
 
     static final int HALF_CROSS_HEIGHT = 5;
     static final int LINE_HEIGHT = 13;
@@ -59,31 +59,32 @@ public class InteractionDiagram extends Composite {
     static final int LL_BOX_HEIGHT = 50;
 
     static final int MAX_LL_DISPLAY_NAME = 15;
-    int MAX_LABEL_DISPLAY_LEN = 27;
-    int LL_FEET = 10; // life line feet (extra) lines after the last transaction
-    int ll_margin = 108; // The width of a transaction connector
-    int maxLabelLen = 16;
+    private int MAX_LABEL_DISPLAY_LEN = 27;
+    private int LL_FEET = 10; // life line feet (extra) lines after the last transaction
+    private int ll_margin = 108; // The width of a transaction connector
+    private int maxLabelLen = 16;
 
-    int connection_topmargin = (NUM_LINES * LINE_HEIGHT) + (HALF_CROSS_HEIGHT *2) + 2; // top margin of a transaction
-    int error_box_offset = 30;
+    private int connection_topmargin = (NUM_LINES * LINE_HEIGHT) + (HALF_CROSS_HEIGHT *2) + 2; // top margin of a transaction
+    private int error_box_offset = 30;
 
-    int diagramHeight = 0;
-    int diagramWidth = 0;
+    private int diagramHeight = 0;
+    private int diagramWidth = 0;
 
-    OMSVGDocument doc = OMSVGParser.createDocument();
-    OMSVGSVGElement svgsvgElement =  doc.createSVGSVGElement();
+    private OMSVGDocument doc = OMSVGParser.createDocument();
+    private OMSVGSVGElement svgsvgElement =  doc.createSVGSVGElement();
 
-    TestOverviewDTO testOverviewDTO;
-    EventBus eventBus;
-    SiteSpec targetSite;
-    String sutSystemName;
-    String sutActorRoleName;
-    String sessionName;
+    private TestOverviewDTO testOverviewDTO;
+    private EventBus eventBus;
+    private SiteSpec targetSite;
+    private String sutSystemName;
+    private String sutActorRoleName;
+    private String sessionName;
 
-    static final int MAX_TOOLTIPS = 5;
-    static final int HIDE_TOOLTIP_ON_MOUSEOUT = -1;
-    Tooltip tooltip = new Tooltip();
-    List<InteractingEntity.INTERACTIONSTATUS> legends = new ArrayList<InteractingEntity.INTERACTIONSTATUS>();
+    private static final int MAX_TOOLTIPS = 5;
+    private static final int HIDE_TOOLTIP_ON_MOUSEOUT = -1;
+    private Tooltip tooltip = new Tooltip();
+    private List<InteractingEntity.INTERACTIONSTATUS> legends = new ArrayList<InteractingEntity.INTERACTIONSTATUS>();
+    private List<InteractingEntity> entityList;
 
     public enum DiagramPart {
        RequestConnector,
@@ -290,38 +291,14 @@ public class InteractionDiagram extends Composite {
     public InteractionDiagram(InteractingEntity interactingEntity, int diagramHeight, int diagramWidth) {
         setDiagramArea(diagramHeight, diagramWidth);
 
-        Element svg = draw(interactingEntity);
+
         FlowPanel container = new FlowPanel();
-        container.getElement().appendChild(svg);
+        container.getElement().appendChild(svgsvgElement.getElement());
 
       initWidget(container);
     }
 
 
-    public InteractionDiagram(InteractingEntity interactingEntity) {
-
-        List<InteractingEntity> entityList = new ArrayList<>();
-
-        entityList.add(interactingEntity);
-
-        FlowPanel container = getSvgElement(entityList);
-        initWidget(container);
-
-    }
-
-    public InteractionDiagram(List<InteractingEntity> interactingEntity) {
-
-        FlowPanel container = getSvgElement(interactingEntity);
-        initWidget(container);
-    }
-
-    private FlowPanel getSvgElement(List<InteractingEntity> interactingEntity) {
-        Element svg = draw(interactingEntity);
-
-        FlowPanel container = new FlowPanel();
-        container.getElement().appendChild(svg);
-        return container;
-    }
 
     public InteractionDiagram(EventBus eventBus, final TestOverviewDTO testOverviewDTO, String sessionName, final SiteSpec target, String sutName, String sutActorName) {
         setEventBus(eventBus);
@@ -332,12 +309,14 @@ public class InteractionDiagram extends Composite {
         setSutActorRoleName(sutActorName);
 
 
-        List<InteractingEntity> entityList = getInteractingEntity(testOverviewDTO, target);
-        if (entityList==null) {
+        setEntityList(getInteractingEntity(testOverviewDTO, target));
+        if (getEntityList()==null) {
             return;
         }
 
-        FlowPanel container = getSvgElement(entityList);
+        FlowPanel container = new FlowPanel();
+        container.getElement().appendChild(svgsvgElement.getElement());
+
         initWidget(container);
 
     }
@@ -415,19 +394,23 @@ public class InteractionDiagram extends Composite {
         if (sectionOverviewDTO.isRun() && interactionSequence.size()>0) {
             InteractingEntity srcTranOrigin = interactionSequence.get(0);
 
-            if (srcTranOrigin.getInteractions().size()>0) {
+            if (srcTranOrigin != null) {
+                srcTranOrigin.setBegin(sectionOverviewDTO.getHl7Time());
+
+             if (srcTranOrigin.getInteractions().size() > 0) {
                 InteractingEntity dest = srcTranOrigin.getInteractions().get(0);
+                 dest.setBegin(sectionOverviewDTO.getHl7Time());
 
                 setLabelAndErrors(dest, sectionOverviewDTO, stepName);
-                if (sectionOverviewDTO.isPass() ) {
+                if (sectionOverviewDTO.isPass()) {
                     if (stepOverviewDTO.isExpectedSuccess()) {
                         dest.setStatus(InteractingEntity.INTERACTIONSTATUS.COMPLETED);
                     } else {
                         dest.setStatus(InteractingEntity.INTERACTIONSTATUS.ERROR_EXPECTED);
-                        if (dest.getErrors()==null) {
+                        if (dest.getErrors() == null) {
                             dest.setErrors(new ArrayList<String>());
                         }
-                        dest.getErrors().add(0,""+ section + "/"+  stepName +":<br/> Response message contains errors as expected.");
+                        dest.getErrors().add(0, "" + section + "/" + stepName + ":<br/> Response message contains errors as expected.");
                         addLegend(InteractingEntity.INTERACTIONSTATUS.ERROR_EXPECTED);
                     }
 
@@ -436,6 +419,7 @@ public class InteractionDiagram extends Composite {
                     addLegend(InteractingEntity.INTERACTIONSTATUS.ERROR);
                 }
             }
+          }
         }
     }
 
@@ -518,19 +502,11 @@ public class InteractionDiagram extends Composite {
     }
 
 
-    public Element draw(InteractingEntity parent_entity) {
-
-        List<InteractingEntity> entityList = new ArrayList<>();
-        entityList.add(parent_entity);
-        return draw(entityList);
-
-    }
-
-    public Element draw(List<InteractingEntity> entityList) {
+    public void draw() {
 
         setMargins();
 
-        for (InteractingEntity interactingEntity : entityList) {
+        for (InteractingEntity interactingEntity : getEntityList()) {
             sequence(interactingEntity,null);
         }
         ll_stem();
@@ -538,8 +514,6 @@ public class InteractionDiagram extends Composite {
         legend();
 
         setDiagramArea(g_y+ LL_FEET,g_x);
-
-        return svgsvgElement.getElement();
     }
 
     void legend() {
@@ -719,7 +693,12 @@ public class InteractionDiagram extends Composite {
             if (entity.getStatus()!=null) {
                 group.setAttribute("style","cursor:pointer");
                 final List<String> messages = new ArrayList<String>();
-                messages.add("(Click to inspect results)");
+                String tooltipMessage = "(Click to inspect results)";
+                TransactionInstance tranInstance = entity.getTransactionInstance();
+                if (tranInstance!=null) {
+                    tooltipMessage = tranInstance.simId.toString() + "/" + tranInstance.actorType.getShortName() + "/" + tranInstance.trans + "/" + tranInstance.messageId;
+                }
+                messages.add(tooltipMessage);
                 addTooltip(group, messages, HIDE_TOOLTIP_ON_MOUSEOUT);
 
                 String description = entity.getDescription();
@@ -740,8 +719,6 @@ public class InteractionDiagram extends Composite {
                     }
                 });
             } else {
-                // Templated
-
                 String[] lines = new String[] {entity.getSourceInteractionLabel()};// Length should equal NUM_LINES
                 group.appendChild(multiLineLabel(centerTextX,(textY-(4+(LINE_HEIGHT * lines.length))),lines,10,MAX_LABEL_DISPLAY_LEN));
             }
@@ -1185,5 +1162,13 @@ public class InteractionDiagram extends Composite {
 
     public void setSutActorRoleName(String sutActorRoleName) {
         this.sutActorRoleName = sutActorRoleName;
+    }
+
+    public List<InteractingEntity> getEntityList() {
+        return entityList;
+    }
+
+    public void setEntityList(List<InteractingEntity> entityList) {
+        this.entityList = entityList;
     }
 }

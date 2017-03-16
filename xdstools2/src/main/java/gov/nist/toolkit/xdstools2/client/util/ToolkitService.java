@@ -96,6 +96,8 @@ public interface ToolkitService extends RemoteService  {
 	Message getTransactionRequest(GetTransactionRequest request) throws Exception;
 	Message getTransactionResponse(GetTransactionRequest request) throws Exception;
 	String getTransactionLog(GetTransactionRequest request)  throws Exception;
+	TransactionInstance getTransactionLogDirectoryPath(GetTransactionLogDirectoryPathRequest request) throws Exception;
+	List<InteractingEntity> setSutInitiatedTransactionInstance(SetSutInitiatedTransactionInstanceRequest request) throws Exception;
 	List<String> getTransactionsForSimulator(GetTransactionRequest request) throws Exception;
 	MessageValidationResults executeSimMessage(ExecuteSimMessageRequest request) throws Exception;
 

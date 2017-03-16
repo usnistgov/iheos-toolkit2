@@ -1,6 +1,7 @@
 package gov.nist.toolkit.xdstools2.server;
 
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
+import edu.wustl.mir.erl.ihe.xdsi.util.PrsSimLogs;
 import gov.nist.toolkit.MessageValidatorFactory2.MessageValidatorFactoryFactory;
 import gov.nist.toolkit.actorfactory.SimDb;
 import gov.nist.toolkit.actorfactory.SimManager;
@@ -10,6 +11,7 @@ import gov.nist.toolkit.actorfactory.client.Simulator;
 import gov.nist.toolkit.actorfactory.client.SimulatorConfig;
 import gov.nist.toolkit.actorfactory.client.SimulatorStats;
 import gov.nist.toolkit.actortransaction.TransactionErrorCodeDbLoader;
+import gov.nist.toolkit.actortransaction.client.ActorType;
 import gov.nist.toolkit.actortransaction.client.TransactionInstance;
 import gov.nist.toolkit.configDatatypes.client.Pid;
 import gov.nist.toolkit.configDatatypes.client.PidSet;
@@ -119,6 +121,7 @@ import gov.nist.toolkit.xdstools2.shared.command.request.GetTestdataSetListingRe
 import gov.nist.toolkit.xdstools2.shared.command.request.GetTestplanAsTextRequest;
 import gov.nist.toolkit.xdstools2.shared.command.request.GetTestsOverviewRequest;
 import gov.nist.toolkit.xdstools2.shared.command.request.GetTransactionErrorCodeRefsRequest;
+import gov.nist.toolkit.xdstools2.shared.command.request.GetTransactionLogDirectoryPathRequest;
 import gov.nist.toolkit.xdstools2.shared.command.request.GetTransactionRequest;
 import gov.nist.toolkit.xdstools2.shared.command.request.LifecycleValidationRequest;
 import gov.nist.toolkit.xdstools2.shared.command.request.LoadTestPartContentRequest;
@@ -138,6 +141,7 @@ import gov.nist.toolkit.xdstools2.shared.command.request.SendPidToRegistryReques
 import gov.nist.toolkit.xdstools2.shared.command.request.SetAssignedSiteForTestSessionRequest;
 import gov.nist.toolkit.xdstools2.shared.command.request.SetOdSupplyStateIndexRequest;
 import gov.nist.toolkit.xdstools2.shared.command.request.SetToolkitPropertiesRequest;
+import gov.nist.toolkit.xdstools2.shared.command.request.SetSutInitiatedTransactionInstanceRequest;
 import gov.nist.toolkit.xdstools2.shared.command.request.SimConfigRequest;
 import gov.nist.toolkit.xdstools2.shared.command.request.SubmitTestdataRequest;
 import gov.nist.toolkit.xdstools2.shared.command.request.ValidateMessageRequest;
@@ -151,6 +155,7 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
@@ -1112,6 +1117,74 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements
     }
 
     @Override
+    public TransactionInstance getTransactionLogDirectoryPath(GetTransactionLogDirectoryPathRequest r) throws Exception {
+        Path p = PrsSimLogs.getTransactionLogDirectoryPath(r.getSimId(),r.getTransactionCode(),r.getPid(),r.getHl7timeOfSectionRun());
+
+       if (p!=null) {
+            String transactionId = p.getFileName().toString();
+
+        TransactionInstance ti = new TransactionInstance();
+        ti.simId = r.getSimId().toString();
+        ti.actorType = ActorType.findActor(r.getSimId().getActorType());
+        ti.labelInterpretedAsDate = transactionId;
+        ti.nameInterpretedAsTransactionType = TransactionType.find(r.getTransactionCode());
+        ti.messageId = transactionId;
+        ti.trans = r.getTransactionCode();
+
+        return ti;
+       }
+
+        return null;
+    }
+
+    @Override
+    public List<InteractingEntity> setSutInitiatedTransactionInstance(SetSutInitiatedTransactionInstanceRequest stiRequest) throws Exception {
+
+        List<InteractingEntity> src = stiRequest.getInteractingEntityList();
+        for (InteractingEntity ie : src) {
+            setInitiatorTransactions(ie, stiRequest.getTranDestinationSimId(), stiRequest.getPatienId());
+        }
+        return src;
+    }
+
+    private void setInitiatorTransactions(InteractingEntity parent, SimId simId, String patientId) throws Exception {
+        if (parent == null) return;
+
+        boolean hasInteractions = parent.getInteractions() != null && !parent.getInteractions().isEmpty();
+
+        if (hasInteractions) {
+            if (InteractingEntity.SYSTEM_UNDER_TEST.equals(parent.getProvider())) {
+                Date beginDt = parent.getBegin();
+                List<InteractingEntity> interactions = parent.getInteractions();
+                for (final InteractingEntity ie : interactions) {
+                    if (InteractingEntity.SIMULATOR.equals(ie.getProvider())) {
+
+                        final GetTransactionLogDirectoryPathRequest request = new GetTransactionLogDirectoryPathRequest();
+                        simId.setActorType(ActorType.findActor(ie.getRole()).getShortName());
+                        request.setSimId(simId);
+                        request.setPid(patientId);
+                        request.setTransactionCode(ie.getSourceInteractionLabel());
+                        request.setHl7timeOfSectionRun(beginDt);
+
+                        TransactionInstance tranInstance = getTransactionLogDirectoryPath(request);
+                        if (tranInstance!=null) {
+                            ie.setStatus(InteractingEntity.INTERACTIONSTATUS.COMPLETED);
+                            ie.setTransactionInstance(tranInstance);
+                        } else {
+                            ie.setStatus(InteractingEntity.INTERACTIONSTATUS.UNKNOWN);
+                        }
+                    }
+                }
+            } else {
+                for (InteractingEntity ie : parent.getInteractions()) {
+                    setInitiatorTransactions(ie, simId, patientId);
+                }
+            }
+        }
+    }
+
+
+        @Override
     public List<Pid> getPatientIds(PatientIdsRequest request) throws Exception {
         installCommandContext(request);
         return new SimulatorServiceManager(session()).getPatientIds(request.getSimId());
@@ -1451,7 +1524,6 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements
     //------------------------------------------------------------------------
     //------------------------------------------------------------------------
     // Interaction methods
-    // TODO: this mapping method is to be replaced by the test log map method.
     //------------------------------------------------------------------------
     //------------------------------------------------------------------------
     @Override

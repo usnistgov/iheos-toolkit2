@@ -19,7 +19,10 @@
             <groupId>gov.nist.toolkit</groupId>
             <artifactId>utilities</artifactId>
         </dependency>
-
+        <dependency>
+            <groupId>gov.nist.toolkit</groupId>
+            <artifactId>actor-transaction</artifactId>
+        </dependency>
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>

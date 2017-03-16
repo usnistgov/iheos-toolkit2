@@ -377,6 +377,9 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner, TestTa
 
 
 	private void displayTests(final Panel testsPanel, final List<TestInstance> testInstances, boolean allowRun) {
+		Map<String, String> parms = initializeTestParameters();
+		final String patientId = getPatientIdStr(parms);
+
 		// results (including logs) for a collection of tests
 
 		testDisplayGroup.allowRun(allowRun);
@@ -404,7 +407,7 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner, TestTa
 					updateTestOverview(testOverview);
 					TestDisplay testDisplay = testDisplayGroup.display(testOverview);
 					// Require late-binding of diagram due to orchestration place holders
-					testDisplay.getView().setInteractionDiagram(new InteractionDiagramDisplay(testOverview, testContext.getTestSession(), getSiteToIssueTestAgainst(), testContext.getSiteUnderTestAsSiteSpec().getName(),ActorType.findActor(currentActorOption.getActorTypeId()).getName()));
+					testDisplay.getView().setInteractionDiagram(new InteractionDiagramDisplay(testOverview, testContext.getTestSession(), getSiteToIssueTestAgainst(), testContext.getSiteUnderTestAsSiteSpec().getName(),currentActorOption,patientId));
 					testsPanel.add(testDisplay.asWidget());
 				}
 				updateTestsOverviewHeader(currentActorOption);
@@ -414,6 +417,9 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner, TestTa
 		}.run(new GetTestsOverviewRequest(getCommandContext(), testInstances, getTestContext().getCurrentSiteSpec(), getTestContext().getSiteUnderTest()));
 	}
 
+	private static String getPatientIdStr(Map<String, String> parms) {
+		return (parms!=null)?parms.get("$patientid$"):null;
+	}
 
 
 	private void displayOrchestrationHeader(Panel initializationPanel) {
@@ -534,7 +540,7 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner, TestTa
 						updateTestOverview(testOverviewDTO);
 						TestDisplay testDisplay = testDisplayGroup.display(testOverviewDTO);
 						// Require late-binding of diagram due to orchestration place holders
-						testDisplay.getView().setInteractionDiagram(new InteractionDiagramDisplay(testOverviewDTO, testContext.getTestSession(), getSiteToIssueTestAgainst(), testContext.getSiteUnderTestAsSiteSpec().getName(),ActorType.findActor(actorOption.getActorTypeId()).getName()));
+						testDisplay.getView().setInteractionDiagram(new InteractionDiagramDisplay(testOverviewDTO, testContext.getTestSession(), getSiteToIssueTestAgainst(), testContext.getSiteUnderTestAsSiteSpec().getName(),actorOption,null));
 						updateTestsOverviewHeader(actorOption);
 					}
 				}.run(new DeleteSingleTestRequest(getCommandContext(),testInstance));
@@ -626,6 +632,8 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner, TestTa
 
 	private void runTestInstance(final TestInstance testInstance, final Map<String, String> sectionParms, final TestIterator testIterator) {
 		Map<String, String> parms = initializeTestParameters();
+		final String patientId = getPatientIdStr(parms);
+
 		if (sectionParms != null) {
 			for (String name : sectionParms.keySet()) {
 				parms.put(name, sectionParms.get(name));
@@ -639,7 +647,7 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner, TestTa
 					// returned testStatus of entire test
 					TestDisplay testDisplay = testDisplayGroup.display(testOverviewDTO);
 					// Require late-binding of diagram due to orchestration place holders
-					testDisplay.getView().setInteractionDiagram(new InteractionDiagramDisplay(testOverviewDTO, testContext.getTestSession(), getSiteToIssueTestAgainst(), testContext.getSiteUnderTestAsSiteSpec().getName(),ActorType.findActor(currentActorOption.getActorTypeId()).getName()));
+					testDisplay.getView().setInteractionDiagram(new InteractionDiagramDisplay(testOverviewDTO, testContext.getTestSession(), getSiteToIssueTestAgainst(), testContext.getSiteUnderTestAsSiteSpec().getName(),currentActorOption,patientId));
 					updateTestOverview(testOverviewDTO);
 					updateTestsOverviewHeader(currentActorOption);
 					// Schedule next test to be run
