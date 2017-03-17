@@ -57,8 +57,6 @@ public class RigImgDocSetRet extends AbstractMessageValidator {
    RetrieveMultipleResponse response;
    RetrievedDocumentsModel retrievedDocs = new RetrievedDocumentsModel();
    OMElement result = null;
-   private int knownIDSCount;  // The number of requested repositories which this RIG recognizes, i.e. the number of RAD-69s to send.
-   private int rad69ResponseCount; // The number of RAD-69 which have returned results. (more important in an async environment).
 
    //***************************************************************
    // Constructor
@@ -78,9 +76,6 @@ public class RigImgDocSetRet extends AbstractMessageValidator {
          System.out.println(ExceptionUtil.exception_details(e));
          startUpException = e;
       }
-
-      knownIDSCount = 0;
-      rad69ResponseCount = 0;
    }
 
    // Not an exception, but thrown to run code in finally block.
@@ -139,8 +134,7 @@ public class RigImgDocSetRet extends AbstractMessageValidator {
                      "Don't have configuration for IDS with repository unique Id " + idsRepId, this, null);
                throw new NonException();
             }
-            knownIDSCount++;
-            
+
             // Generate model for this repository unique id.
             RetrieveImageRequestModel idsModel = requestModel.getModelForRepository(idsRepId);
             
@@ -164,7 +158,6 @@ public class RigImgDocSetRet extends AbstractMessageValidator {
                   
                // Get response and build model
                result = soap.getResult();
-               rad69ResponseCount++;
                RetrieveB retb = new RetrieveB(null);
                Map <String, RetrievedDocumentModel> map =
                      retb.parse_rep_response(result).getMap();
@@ -227,8 +220,5 @@ public class RigImgDocSetRet extends AbstractMessageValidator {
          er.err(errorCode, codeContext, location, severity, null);
       }
    }
-
-   public int getKnownIDSCount() { return knownIDSCount;}
-   public int getRad69ResponseCount() { return rad69ResponseCount;}
 
 }  // EO RGImgDocSetRet class
