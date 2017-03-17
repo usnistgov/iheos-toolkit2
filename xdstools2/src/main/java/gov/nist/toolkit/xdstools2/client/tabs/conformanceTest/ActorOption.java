@@ -88,10 +88,15 @@ public class ActorOption {
         return actorTypeId != null
                 && ActorType.IMAGING_DOC_SOURCE.getShortName().equals(actorTypeId);
     }
-    
+
     public boolean isIDC() {
-       return actorTypeId != null 
+        return actorTypeId != null
                 && ActorType.IMAGING_DOC_CONSUMER.getShortName().equals(actorTypeId);
+    }
+
+    public boolean isIDCxca() {
+        return actorTypeId != null
+                && ActorType.IMAGING_DOC_CONSUMER_XCA.getShortName().equals(actorTypeId);
     }
 
     void setOptionId(String optionId) {

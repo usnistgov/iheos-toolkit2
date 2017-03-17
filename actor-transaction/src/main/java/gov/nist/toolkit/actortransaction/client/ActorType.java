@@ -207,7 +207,16 @@ public enum ActorType implements IsSerializable, Serializable {
             Arrays.asList(TransactionType.RET_IMG_DOC_SET),
             false,
             null
-    )
+    ),
+    IMAGING_DOC_CONSUMER_XCA(
+            "Imaging Document Consumer in XCA-I",
+            Arrays.asList("IMAGING_DOC_CONSUMER_XCA", "XDSI_Consumer"),
+            "idcxca",
+                    "gov.nist.toolkit.simulators.sim.idc.ImgDocConsActorSimulator",
+                    Arrays.asList(TransactionType.RET_IMG_DOC_SET),
+            false,
+            null
+            )
     ;
 
     private static final long serialVersionUID = 1L;
