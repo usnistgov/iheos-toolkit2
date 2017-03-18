@@ -38,7 +38,7 @@ import java.util.*;
 public class SimDb {
 	private final PidDb pidDb = new PidDb(this);
 	SimId simId = null;    // ip is the simulator id
-	private File dbRoot = null;  // base of the simulator db
+//	private File dbRoot = null;  // base of the simulator db
 	private String event = null;
 	private File simDir = null;   // directory within simdb that represents this event
 	private String actor = null;
@@ -71,6 +71,14 @@ public class SimDb {
 		return db;
 	}
 
+	/**
+	 * Return base dir of SimDb storage
+	 * @return
+	 */
+	public File getSimDbFile() {
+		return Installation.instance().simDbFile();
+	}
+
    /**
 	* Does simulator exist?
     * Checks for existence of simdb directory for passed id.
@@ -79,14 +87,14 @@ public class SimDb {
     * simdb directory, false otherwise.
     */
    static public boolean exists(SimId simId) {
-      return new File(Installation.instance().simDbFile(), simId.toString()).exists();
+      return new File(new SimDb().getSimDbFile(), simId.toString()).exists();
    }
 	
 	/**
 	 * Base constructor Loads the simulator db directory 
 	 */
 	public SimDb() {
-		dbRoot = Installation.instance().simDbFile();
+//		dbRoot = getSimDbFile();
 	}
 	
 	public SimDb(SimId simulatorId) throws IOException, NoSimException {
@@ -98,7 +106,7 @@ public class SimDb {
         validateSimId();
 		if (simId == null)
 			throw new ToolkitRuntimeException("SimDb - cannot build SimDb with null simId");
-		this.dbRoot = dbRoot;
+//		this.dbRoot = dbRoot;
 
 		if (!dbRoot.canWrite() || !dbRoot.isDirectory())
 			throw new IOException("Simulator database location, [" + dbRoot.toString() + "] is not a directory or cannot be written to");
@@ -121,7 +129,7 @@ public class SimDb {
 
 	public PidDb getPidDb() { return pidDb; }
 
-    private static void validateSimId(SimId simId) throws IOException {
+    public static void validateSimId(SimId simId) throws IOException {
         String badChars = " \t\n<>{}.";
         if (simId == null)
         	throw new IOException("Simulator ID is null");
@@ -280,8 +288,7 @@ public class SimDb {
     }
 	
 	static public List<SimId> getAllSimIds() throws BadSimIdException {
-		SimDb simDb = new SimDb();
-		File[] files = simDb.dbRoot.listFiles();
+		File[] files = Installation.instance().simDbFile().listFiles();
 		List<SimId> ids = new ArrayList<>();
 		if (files == null) return ids;
 
@@ -472,7 +479,7 @@ public class SimDb {
 		return Io.stringFromFile(simType).trim();
 	}
 
-	private void setSimulatorType(String type) throws IOException {
+	public void setSimulatorType(String type) throws IOException {
 		File simType = new File(simDir + File.separator + "sim_type.txt");
 		Io.stringToFile(simType, type);
 	}

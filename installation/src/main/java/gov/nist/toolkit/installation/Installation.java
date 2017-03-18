@@ -196,6 +196,10 @@ public class Installation {
         return new File(externalCache(), "simdb");
     }
 
+    public File fhirSimDbFile() {
+        return new File(externalCache(), "resdb");
+    }
+
     public List<String> getListenerPortRange() {
         return propertyServiceManager().getListenerPortRange();
     }

@@ -1,4 +1,4 @@
-package ca.uhn.example.model;
+package gov.nist.toolkit.fhirServer.model;
 
 import java.util.ArrayList;
 import java.util.List;

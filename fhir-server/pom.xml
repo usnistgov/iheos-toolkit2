@@ -26,9 +26,19 @@
 	<dependencies>
 
 		<dependency>
+			<groupId>gov.nist.toolkit</groupId>
+			<artifactId>actorfactory</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>com.google.gwt</groupId>
+			<artifactId>gwt-user</artifactId>
+			<scope>compile</scope>
+		</dependency>
+
+		<dependency>
 			<groupId>org.codehaus.groovy</groupId>
 			<artifactId>groovy-all</artifactId>
-			<version>${groovyVersion}</version>
 		</dependency>
 
 		<dependency>
@@ -114,12 +124,6 @@
 			<artifactId>json-path</artifactId>
 			<version>2.4.0</version>
 		</dependency>
-
-		<dependency>
-			<groupId>org.spockframework</groupId>
-			<artifactId>spock-core</artifactId>
-		</dependency>
-
 
 	</dependencies>
 

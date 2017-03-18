@@ -1,4 +1,4 @@
-package ca.uhn.example.config;
+package gov.nist.toolkit.fhirServer.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

@@ -1,4 +1,4 @@
-package ca.uhn.example.provider;
+package gov.nist.toolkit.fhirServer.provider;
 
 import ca.uhn.fhir.model.api.ResourceMetadataKeyEnum;
 import ca.uhn.fhir.model.dstu2.composite.HumanNameDt;

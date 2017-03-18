@@ -31,7 +31,7 @@ try {
 
     files.each { File file -> assert file.exists() }
 
-    println "simdb is ${Installation.instance().simDbFile()}"
+    println "simdb is ${FhirSimDb.getSimDbFile()}"
     SimDb simDb = Tk.simDb(simId, 'fhir')
     File event = simDb.getEventDir()
 

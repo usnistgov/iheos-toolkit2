@@ -1,6 +1,6 @@
-package ca.uhn.example.provider;
+package gov.nist.toolkit.fhirServer.provider;
 
-import ca.uhn.example.model.MyOrganization;
+import gov.nist.toolkit.fhirServer.model.MyOrganization;
 import ca.uhn.fhir.model.dstu2.composite.ContactPointDt;
 import ca.uhn.fhir.model.dstu2.valueset.ContactPointUseEnum;
 import ca.uhn.fhir.model.primitive.BooleanDt;
