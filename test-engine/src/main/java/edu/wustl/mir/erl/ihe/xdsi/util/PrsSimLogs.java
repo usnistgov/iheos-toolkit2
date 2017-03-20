@@ -368,7 +368,8 @@ public class PrsSimLogs {
             return null;
          }
          log.debug("Found " + logDirs.length + " folder matching search criteria; will return most recent folder");
-         return base.resolve(logDirs[logDirs.length - 1]);
+//         return base.resolve(logDirs[logDirs.length - 1]);
+         return base.resolve(logDirs[0]);  // The earliest transaction would be the first one after sorting.
       } catch (Exception e) {
          e.printStackTrace();
       }
