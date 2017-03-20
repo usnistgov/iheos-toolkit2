@@ -127,14 +127,13 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner, TestTa
 		// Initial load of tests in a test session
 		loadTestCollections();
 
-		// Register the Diagram clicked event handler
+		// Register the Diagram RequestConnector clicked event handler
 		ClientUtils.INSTANCE.getEventBus().addHandler(DiagramClickedEvent.TYPE, new DiagramPartClickedEventHandler() {
 			@Override
 			public void onClicked(TestInstance testInstance, InteractionDiagram.DiagramPart part) {
 				if (InteractionDiagram.DiagramPart.RequestConnector.equals(part)
 						|| InteractionDiagram.DiagramPart.ResponseConnector.equals(part)) {
 					new LaunchInspectorClickHandler(testInstance, getCurrentTestSession(), new SiteSpec(testContext.getSiteName())).onClick(null);
-//					launchInspectorTab(testInstance, getCurrentTestSession());
 				}
 			}
 		});
