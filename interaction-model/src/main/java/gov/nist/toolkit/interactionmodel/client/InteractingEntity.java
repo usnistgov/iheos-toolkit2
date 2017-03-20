@@ -127,8 +127,13 @@ public class InteractingEntity implements IsSerializable, Serializable {
     }
 
     public void setBegin(String hl7DateStr) {
-        DateTimeFormat dtf = DateTimeFormat.getFormat("yyyyMMddHHmmss");
-        setBegin(dtf.parse(hl7DateStr));
+        if (hl7DateStr==null||"".equals(hl7DateStr)) {
+            this.begin = null;
+            return;
+        } else {
+            DateTimeFormat dtf = DateTimeFormat.getFormat("yyyyMMddHHmmss.SSS");
+            setBegin(dtf.parse(hl7DateStr));
+        }
     }
 
     public Date getEnd() {
