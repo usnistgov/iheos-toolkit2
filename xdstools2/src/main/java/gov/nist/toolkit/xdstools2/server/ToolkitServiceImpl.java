@@ -1137,17 +1137,24 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements
         return null;
     }
 
+    /**
+     * This is our best-guess. If there are multiple SUT-initiated transactions per second as recorded in the log.xml, we will need more precision on the log.xml timestamp.
+     * @param stiRequest
+     * @return
+     * @throws Exception
+     */
     @Override
     public List<InteractingEntity> setSutInitiatedTransactionInstance(SetSutInitiatedTransactionInstanceRequest stiRequest) throws Exception {
 
         List<InteractingEntity> src = stiRequest.getInteractingEntityList();
+        List<String> messageIdsInUse = new ArrayList<>();
         for (InteractingEntity ie : src) {
-            setInitiatorTransactions(ie, stiRequest.getTranDestinationSimId(), stiRequest.getPatienId());
+            setInitiatorTransactions(ie, stiRequest.getTranDestinationSimId(), stiRequest.getPatienId(), messageIdsInUse);
         }
         return src;
     }
 
-    private void setInitiatorTransactions(InteractingEntity parent, SimId simId, String patientId) throws Exception {
+    private void setInitiatorTransactions(InteractingEntity parent, SimId simId, String patientId, final List<String> messageIdsInUse) throws Exception {
         if (parent == null) return;
 
         boolean hasInteractions = parent.getInteractions() != null && !parent.getInteractions().isEmpty();
@@ -1168,8 +1175,14 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements
 
                         TransactionInstance tranInstance = getTransactionLogDirectoryPath(request);
                         if (tranInstance!=null) {
-                            ie.setStatus(InteractingEntity.INTERACTIONSTATUS.COMPLETED);
-                            ie.setTransactionInstance(tranInstance);
+                            if (!messageIdsInUse.contains(tranInstance.messageId) ) {
+                                messageIdsInUse.add(tranInstance.messageId);
+                                ie.setStatus(InteractingEntity.INTERACTIONSTATUS.COMPLETED);
+                                ie.setTransactionInstance(tranInstance);
+                            } else {
+                                /* Oops, transaction already taken by another section/step !?!. */
+                                ie.setStatus(InteractingEntity.INTERACTIONSTATUS.UNKNOWN);
+                            }
                         } else {
                             ie.setStatus(InteractingEntity.INTERACTIONSTATUS.UNKNOWN);
                         }
@@ -1177,7 +1190,7 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements
                 }
             } else {
                 for (InteractingEntity ie : parent.getInteractions()) {
-                    setInitiatorTransactions(ie, simId, patientId);
+                    setInitiatorTransactions(ie, simId, patientId,messageIdsInUse);
                 }
             }
         }
