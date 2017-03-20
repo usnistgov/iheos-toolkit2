@@ -376,8 +376,7 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner, TestTa
 
 
 	private void displayTests(final Panel testsPanel, final List<TestInstance> testInstances, boolean allowRun) {
-		Map<String, String> parms = initializeTestParameters();
-		final String patientId = getPatientIdStr(parms);
+		final Map<String, String> parms = initializeTestParameters();
 
 		// results (including logs) for a collection of tests
 
@@ -406,7 +405,7 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner, TestTa
 					updateTestOverview(testOverview);
 					TestDisplay testDisplay = testDisplayGroup.display(testOverview);
 					// Require late-binding of diagram due to orchestration place holders
-					testDisplay.getView().setInteractionDiagram(new InteractionDiagramDisplay(testOverview, testContext.getTestSession(), getSiteToIssueTestAgainst(), testContext.getSiteUnderTestAsSiteSpec().getName(),currentActorOption,patientId));
+					testDisplay.getView().setInteractionDiagram(new InteractionDiagramDisplay(testOverview, testContext.getTestSession(), getSiteToIssueTestAgainst(), testContext.getSiteUnderTestAsSiteSpec().getName(),currentActorOption, getTestInstancePatientId(testOverview.getTestInstance(), parms)));
 					testsPanel.add(testDisplay.asWidget());
 				}
 				updateTestsOverviewHeader(currentActorOption);
@@ -631,7 +630,9 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner, TestTa
 
 	private void runTestInstance(final TestInstance testInstance, final Map<String, String> sectionParms, final TestIterator testIterator) {
 		Map<String, String> parms = initializeTestParameters();
-		final String patientId = getPatientIdStr(parms);
+		final String patientId = getTestInstancePatientId(testInstance, parms);
+
+		setPatientId(parms, patientId);
 
 		if (sectionParms != null) {
 			for (String name : sectionParms.keySet()) {
@@ -660,6 +661,14 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner, TestTa
 
 	}
 
+	private String setPatientId(Map<String, String> parms, String patientId) {
+		return parms.put("$patientid$",patientId);
+	}
+
+	private String getTestInstancePatientId(TestInstance testInstance, Map<String, String> parms) {
+		return testInstance.getId() + "_" + getPatientIdStr(parms);
+	}
+
 	private Map<String, String> initializeTestParameters() {
 		Map<String, String> parms = new HashMap<>();
 
@@ -669,15 +678,15 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner, TestTa
 		}
 
 		if (ActorType.REPOSITORY.getShortName().equals(currentActorOption.actorTypeId)) {
-			parms.put("$patientid$", repOrchestrationResponse.getPid().asString());
+			setPatientId(parms, repOrchestrationResponse.getPid().asString());
 		}
 
 		if (ActorType.DOCUMENT_RECIPIENT.getShortName().equals(currentActorOption.actorTypeId)) {
-			parms.put("$patientid$", recOrchestrationResponse.getRegisterPid().asString());
+			setPatientId(parms, recOrchestrationResponse.getRegisterPid().asString());
 		}
 
 		if (ActorType.REGISTRY.getShortName().equals(currentActorOption.actorTypeId)) {
-			parms.put("$patientid$", regOrchestrationResponse.getRegisterPid().asString());
+			setPatientId(parms, regOrchestrationResponse.getRegisterPid().asString());
 		}
 
 		if (getSiteToIssueTestAgainst() == null) {
