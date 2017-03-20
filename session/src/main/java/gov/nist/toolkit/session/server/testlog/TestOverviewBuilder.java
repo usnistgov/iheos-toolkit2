@@ -91,7 +91,7 @@ public class TestOverviewBuilder {
                         testDependencies.addAll(sectionDef.getSectionDependencies());
                         for (String stepName : sectionDef.getStepNames()) {
                             StepOverviewDTO stepOverview = sectionOverview.getStep(stepName);
-                            if (!sectionOverview.isRun() && stepOverview==null) { // Probably not yet executed, pre-run state
+                            if (stepOverview==null) { // Probably not yet executed, pre-run state
                                 stepOverview = new StepOverviewDTO();
                                 sectionOverview.getStepNames().add(stepName);
                                 sectionOverview.getSteps().put(stepName,stepOverview);
@@ -112,7 +112,9 @@ public class TestOverviewBuilder {
                             else
                                 existingStepLog.setStepGoalsDTO(goals);
                         }
-                    } catch (Exception e) {}
+                    } catch (Exception e) {
+                        System.out.println(e.toString());
+                    }
 
 
                     sectionOverview.setRun(logFileContentDTO.isRun());
