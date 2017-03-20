@@ -46,6 +46,7 @@ class BuildRepTestOrchestrationButton extends AbstractOrchestrationButton {
     public void orchestrate() {
         String msg = testContext.verifyTestContext();
         if (msg != null) {
+            testTab.getMainView().clearLoadingMessage();
             testContextView.launchDialog(msg);
             return;
         }
