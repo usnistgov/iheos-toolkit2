@@ -43,7 +43,6 @@ class IdsHttpActorSimulatorSpec extends Specification {
 
         hparser = Mock()
         hparser.getHttpMessage() >> httpMsg
-
         IdsHttpActorSimulator sim = new IdsHttpActorSimulator();
         sim.init(common)
         sim.setDsSimCommon(new MyDs(common))
@@ -53,11 +52,11 @@ class IdsHttpActorSimulatorSpec extends Specification {
         boolean ret = sim.run(type, mvc)
 
         then: 'It worked'
-        er.hasErrors() == false
+        er.hasErrors() == result
 
         where: 'tests to run'
         testName | acceptHeaderValue | studyUID | seriesUID | objectUID | contentType || result
-        'Simple Test' | 'application/dico' |
+        'Simple Test' | 'application/dicom' |
         '1.3.6.1.4.1.21367.201599.1.201604020954048' |
         '1.3.6.1.4.1.21367.201599.2.201604020954048' |
         '1.3.6.1.4.1.21367.201599.3.201604020954048.1' |
