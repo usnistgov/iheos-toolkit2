@@ -1161,17 +1161,15 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements
 
         if (hasInteractions) {
             if (InteractingEntity.SYSTEM_UNDER_TEST.equals(parent.getProvider())) {
-                Date beginDt = parent.getBegin();
                 List<InteractingEntity> interactions = parent.getInteractions();
                 for (final InteractingEntity ie : interactions) {
                     if (InteractingEntity.SIMULATOR.equals(ie.getProvider())) {
-
                         final GetTransactionLogDirectoryPathRequest request = new GetTransactionLogDirectoryPathRequest();
                         simId.setActorType(ActorType.findActor(ie.getRole()).getShortName());
                         request.setSimId(simId);
                         request.setPid(patientId);
                         request.setTransactionCode(ie.getSourceInteractionLabel());
-                        request.setHl7timeOfSectionRun(beginDt);
+                        request.setHl7timeOfSectionRun(parent.getBegin());
 
                         TransactionInstance tranInstance = getTransactionLogDirectoryPath(request);
                         if (tranInstance!=null) {

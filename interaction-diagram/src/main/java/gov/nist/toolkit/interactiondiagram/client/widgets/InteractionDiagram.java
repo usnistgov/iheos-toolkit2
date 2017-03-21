@@ -356,7 +356,7 @@ public class InteractionDiagram extends Composite {
             label = /*"Section: " +*/ sectionOverviewDTO.getName() + "/" + /*"Step: " + */  stepName;
             StepOverviewDTO step = sectionOverviewDTO.getStep(stepName);
             entity.setErrors(step.getErrors());
-            if (step.getTransaction()!=null)
+            if (entity.getSourceInteractionLabel()==null && step.getTransaction()!=null)
                 entity.setSourceInteractionLabel(step.getTransaction());
         } else
             label = sectionOverviewDTO.getName();
@@ -410,7 +410,7 @@ public class InteractionDiagram extends Composite {
             InteractingEntity srcTranOrigin = interactionSequence.get(0);
 
             if (srcTranOrigin != null) {
-                srcTranOrigin.setBegin(sectionOverviewDTO.getHl7Time()); // Is this needed here?
+                srcTranOrigin.setBegin(sectionOverviewDTO.getHl7Time());
 
              if (srcTranOrigin.getInteractions().size() > 0) {
                 InteractingEntity dest = srcTranOrigin.getInteractions().get(0);
@@ -661,7 +661,7 @@ public class InteractionDiagram extends Composite {
             if (x2>x1) {
                 // Request
                 // x1 ----------------> x2
-                if (Math.abs(x2-x1)>190) { // Make labels stick closer to the origin if the line spans a long distance over multiple LLs.
+                if (Math.abs(x2-x1)>TRANSACTION_PAIR_WIDTH) { // Make labels stick closer to the origin if the line spans a long distance over multiple LLs.
                     centerTextX = originll.getLl_stem_center() + activity_box_width + ll_margin;
                 }
 
@@ -669,7 +669,7 @@ public class InteractionDiagram extends Composite {
             } else {
                 // Request
                 // x2 <----------------- x1
-                if (Math.abs(x1-x2)>190) {
+                if (Math.abs(x1-x2)>TRANSACTION_PAIR_WIDTH) {
                     centerTextX = originll.getLl_stem_center() + activity_box_width - (ll_margin);
                 }
                 group.appendChild(arrow_request_left(x2, y, lineFillColor));
@@ -682,12 +682,14 @@ public class InteractionDiagram extends Composite {
                 if (tranInstance!=null) {
                     tooltipMessage = "#SimLog:"+ tranInstance.simId.toString() + "/" + tranInstance.actorType.getShortName() + "/" + tranInstance.trans + "/" + tranInstance.messageId;
                 }
-                messages.add(tooltipMessage);
 
                 List<String> lines = new ArrayList<>();
 
                 String description = entity.getDescription();
                 String transaction = entity.getSourceInteractionLabel();
+                if (description!=null && description.length()>MAX_LABEL_DISPLAY_LEN)
+                    messages.add(description);
+                messages.add(tooltipMessage);
                 if (entity.getDescription()!=null)
                     lines.add(description);
                 if (tranInstance!=null) {
@@ -695,12 +697,15 @@ public class InteractionDiagram extends Composite {
                     group.setAttribute("style","cursor:pointer");
                     addTooltip(group, messages, HIDE_TOOLTIP_ON_MOUSEOUT);
                 } else {
-                    TransactionType tranType = TransactionType.find(transaction);
-                    if (tranType!=null) {
-                        lines.add(tranType.getName());
-                    } else {
-                        if (transaction!=null)
+                    if (transaction!=null) {
+                        TransactionType tranType = TransactionType.find(transaction);
+                        if (tranType!=null) {
+                            lines.add(tranType.getName());
+                        } else {
                             lines.add(transaction.replace("Transaction",""));
+                        }
+                    } else {
+                        lines.add("Unknown Tx");
                     }
 
                     if (InteractingEntity.INTERACTIONSTATUS.UNKNOWN.equals(status)) {

@@ -47,7 +47,7 @@ public class InteractionDiagramDisplay extends FlowPanel {
 
                 }
 
-                if (testResultDTO.isRun() && hasSutInitiatedTrans) {
+                if (pid!=null && testResultDTO.isRun() && hasSutInitiatedTrans) {
                     new SetSutInitiatedTransactionInstanceCommand() {
                         @Override
                         public void onComplete(List<InteractingEntity> result) {
