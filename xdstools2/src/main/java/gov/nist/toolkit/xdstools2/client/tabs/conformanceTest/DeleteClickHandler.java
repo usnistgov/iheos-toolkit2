@@ -2,12 +2,10 @@ package gov.nist.toolkit.xdstools2.client.tabs.conformanceTest;
 
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.user.client.rpc.AsyncCallback;
 import gov.nist.toolkit.results.client.TestInstance;
 import gov.nist.toolkit.session.client.logtypes.TestOverviewDTO;
 import gov.nist.toolkit.xdstools2.client.command.command.DeleteSingleTestCommand;
 import gov.nist.toolkit.xdstools2.client.util.ClientUtils;
-import gov.nist.toolkit.xdstools2.client.widgets.PopupMessage;
 import gov.nist.toolkit.xdstools2.shared.command.request.DeleteSingleTestRequest;
 
 /**
@@ -34,7 +32,11 @@ public class DeleteClickHandler implements ClickHandler {
             @Override
             public void onComplete(TestOverviewDTO testOverviewDTO) {
                 testRunner.removeTestDetails(testOverviewDTO.getTestInstance());
-                testDisplayGroup.display(testOverviewDTO);
+                TestDisplay testDisplay = testDisplayGroup.display(testOverviewDTO);
+                try {
+                    // Require late-binding of diagram due to orchestration place holders
+                    testDisplay.getView().setInteractionDiagram(new InteractionDiagramDisplay(testOverviewDTO, testContext.getTestSession(), testRunner.getSiteToIssueTestAgainst(), testContext.getSiteUnderTestAsSiteSpec().getName(), testRunner.getCurrentActorOption(), null));
+                } catch (Throwable t) {}
             }
         }.run(new DeleteSingleTestRequest(ClientUtils.INSTANCE.getCommandContext(),testInstance));
     }

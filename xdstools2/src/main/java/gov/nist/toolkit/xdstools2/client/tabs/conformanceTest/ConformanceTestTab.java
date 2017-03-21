@@ -559,6 +559,7 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner, TestTa
 	 */
 	public void runSection(final TestInstance sectionInstance, final TestIterator sectionDone) {
 		Map<String, String> parms = initializeTestParameters();
+		final String patientId = getTestInstancePatientId(sectionInstance, parms);
 
 		if (parms == null) return;
 
@@ -567,9 +568,9 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner, TestTa
 				@Override
 				public void onComplete(TestOverviewDTO testOverviewDTO) {
 					// returned testStatus of entire test
-					testDisplayGroup.display(testOverviewDTO);
+					TestDisplay testDisplay = testDisplayGroup.display(testOverviewDTO);
 					// Require late-binding of diagram due to orchestration place holders
-//						testDisplay.getView().setInteractionDiagram(new InteractionDiagramDisplay(testOverview, testContext.getTestSession(), getSiteToIssueTestAgainst(), testContext.getSiteUnderTestAsSiteSpec().getName()));
+					testDisplay.getView().setInteractionDiagram(new InteractionDiagramDisplay(testOverviewDTO, testContext.getTestSession(), getSiteToIssueTestAgainst(), testContext.getSiteUnderTestAsSiteSpec().getName(),currentActorOption,patientId));
 					Collection<TestOverviewDTO> overviews = updateTestOverview(testOverviewDTO);
 					updateTestsOverviewHeader(currentActorOption);
 					// Schedule next section to be run
@@ -729,6 +730,7 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner, TestTa
 		return "testloglisting";
 	}
 
+	@Override
 	public SiteSpec getSiteToIssueTestAgainst() {
 		return siteToIssueTestAgainst;
 	}
@@ -769,5 +771,6 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner, TestTa
 	public ConformanceTestMainView getMainView() {
 		return mainView;
 	}
+	@Override
 	public ActorOption getCurrentActorOption() { return currentActorOption; }
 }
