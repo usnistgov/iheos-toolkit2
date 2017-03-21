@@ -84,6 +84,7 @@ public class InteractionDiagram extends Composite {
     private String sutSystemName;
     private String sutActorRoleName;
     private String sessionName;
+    private boolean atleastOneSectionWasRun = false;
 
     private static final int MAX_TOOLTIPS = 5;
     private static final int HIDE_TOOLTIP_ON_MOUSEOUT = -1;
@@ -380,6 +381,7 @@ public class InteractionDiagram extends Composite {
             return null;
 
         List<InteractingEntity> result = new ArrayList<InteractingEntity>();
+        setAtleastOneSectionWasRun(false);
 
         if (sectionNames.size()>0 && testResultDTO.getSections().size()>0)
          for (String section : sectionNames) {
@@ -422,6 +424,7 @@ public class InteractionDiagram extends Composite {
 
                 setLabelAndErrors(dest, sectionOverviewDTO, stepName);
                 if (sectionOverviewDTO.isRun()) {
+                    setAtleastOneSectionWasRun(true);
                     if (sectionOverviewDTO.isPass()) {
                         if (stepOverviewDTO.isExpectedSuccess()) {
                             dest.setStatus(InteractingEntity.INTERACTIONSTATUS.COMPLETED);
@@ -438,6 +441,8 @@ public class InteractionDiagram extends Composite {
                         dest.setStatus(InteractingEntity.INTERACTIONSTATUS.ERROR);
                         addLegend(InteractingEntity.INTERACTIONSTATUS.ERROR.name());
                     }
+                } else if (isAtleastOneSectionWasRun()) {
+                    dest.setStatus(InteractingEntity.INTERACTIONSTATUS.SKIPPED);
                 }
             }
           }
@@ -625,7 +630,7 @@ public class InteractionDiagram extends Composite {
         OMSVGGElement destination = destinationll.getLlEl();
 
         InteractingEntity.INTERACTIONSTATUS status = entity.getStatus();
-        String lineFillColor = (InteractingEntity.INTERACTIONSTATUS.UNKNOWN.equals(status))?"#dcdcdc":"black";
+        String lineFillColor = (InteractingEntity.INTERACTIONSTATUS.UNKNOWN.equals(status)|| InteractingEntity.INTERACTIONSTATUS.SKIPPED.equals(status))?"#dcdcdc":"black";
 
         OMSVGLineElement line = doc.createSVGLineElement();
         int x1 = (Integer.parseInt(((OMSVGRectElement)origin.getFirstChild()).getAttribute("x").toString())+(LL_BOX_WIDTH /2));
@@ -710,7 +715,7 @@ public class InteractionDiagram extends Composite {
 
                     if (InteractingEntity.INTERACTIONSTATUS.UNKNOWN.equals(status)) {
                         lines.add("Not Found");
-                    } else {
+                    } else if (!InteractingEntity.INTERACTIONSTATUS.SKIPPED.equals(status)) {
                         group.setAttribute("style", "cursor:pointer");
                         addTooltip(group, messages, HIDE_TOOLTIP_ON_MOUSEOUT);
                     }
@@ -726,7 +731,7 @@ public class InteractionDiagram extends Composite {
                             Window.open(url, "_blank", "");
                         }
                     });
-                } else if (!InteractingEntity.INTERACTIONSTATUS.UNKNOWN.equals(status)) {
+                } else if (!InteractingEntity.INTERACTIONSTATUS.UNKNOWN.equals(status)||!InteractingEntity.INTERACTIONSTATUS.SKIPPED.equals(status)) {
                     group.addClickHandler(new ClickHandler() {
                         @Override
                         public void onClick(ClickEvent clickEvent) {
@@ -1227,5 +1232,13 @@ public class InteractionDiagram extends Composite {
 
     public void setEntityList(List<InteractingEntity> entityList) {
         this.entityList = entityList;
+    }
+
+    public boolean isAtleastOneSectionWasRun() {
+        return atleastOneSectionWasRun;
+    }
+
+    public void setAtleastOneSectionWasRun(boolean atleastOneSectionWasRun) {
+        this.atleastOneSectionWasRun = atleastOneSectionWasRun;
     }
 }

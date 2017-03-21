@@ -63,7 +63,8 @@ public class InteractingEntity implements IsSerializable, Serializable {
         COMPLETED,
         ERROR,
         ERROR_EXPECTED,
-        UNKNOWN
+        UNKNOWN,
+        SKIPPED
     }
 
     public InteractingEntity() {
