@@ -57,7 +57,8 @@ public abstract class AbstractActorFactory {
 		factories.put(ActorType.OD_RESPONDING_GATEWAY.getName(),  		new ODRGActorFactory());
       factories.put(ActorType.XDR_DOC_SRC.getName(), 				   new XdrDocSrcActorFactory());
       factories.put(ActorType.DOC_CONSUMER.getName(), 			   new ConsumerActorFactory());
-      factories.put(ActorType.IMAGING_DOC_CONSUMER.getName(),         new ImgConsumerActorFactory());
+		factories.put(ActorType.IMAGING_DOC_CONSUMER.getName(),         new ImgConsumerActorFactory());
+		factories.put(ActorType.IMAGING_DOC_CONSUMER_XCA.getName(),     new ImgConsumerActorFactory());
       factories.put(ActorType.IMAGING_DOC_SOURCE.getName(), 		new ImagingDocSourceActorFactory());
       factories.put(ActorType.COMBINED_INITIATING_GATEWAY.getName(), new CigActorFactory());
       factories.put(ActorType.COMBINED_RESPONDING_GATEWAY.getName(), new CrgActorFactory());

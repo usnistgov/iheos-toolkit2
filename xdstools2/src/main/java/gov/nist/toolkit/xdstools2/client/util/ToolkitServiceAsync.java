@@ -29,6 +29,7 @@ import gov.nist.toolkit.xdstools2.shared.RepositoryStatus;
 import gov.nist.toolkit.xdstools2.shared.command.CommandContext;
 import gov.nist.toolkit.xdstools2.shared.command.InitializationResponse;
 import gov.nist.toolkit.xdstools2.shared.command.request.*;
+import org.apache.maven.model.Build;
 
 import java.util.Collection;
 import java.util.List;
@@ -227,7 +228,7 @@ public interface ToolkitServiceAsync {
 	void buildRigTestOrchestration(BuildRigTestOrchestrationRequest request, AsyncCallback<RawResponse> callback);
 	void buildIdsTestOrchestration(BuildIdsTestOrchestrationRequest request, AsyncCallback<RawResponse> callback);
     //    void buildIdcTestOrchestration(IdcOrchestrationRequest request, AsyncCallback<RawResponse> callback);
-    void buildIdcxcaTestOrchestration(IdcxcaOrchestrationRequest request, AsyncCallback<RawResponse> callback);
+    void buildIdcxcaTestOrchestration(BuildIdcxcaTestOrchestrationRequest request, AsyncCallback<RawResponse> callback);
 	void buildRepTestOrchestration(BuildRepTestOrchestrationRequest request, AsyncCallback<RawResponse> callback);
 	void buildRegTestOrchestration(BuildRegTestOrchestrationRequest request, AsyncCallback<RawResponse> callback);
 	void buildRecTestOrchestration(BuildRecTestOrchestrationRequest request, AsyncCallback<RawResponse> callback);

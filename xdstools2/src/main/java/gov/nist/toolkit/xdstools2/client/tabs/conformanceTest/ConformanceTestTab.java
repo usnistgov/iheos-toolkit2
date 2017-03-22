@@ -441,7 +441,7 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner, TestTa
 			initializationPanel.add(orchInit.panel());
 		}
 		else if (currentActorOption.isIDCxca()) {
-			orchInit = new BuildIDCxcaTestOrchestrationButton(this, testContext, testContextView, this, initializationPanel, label);
+			orchInit = new BuildIDCxcaTestOrchestrationButton(this, testContext, testContextView, initializationPanel, label);
 			orchInit.addSelfTestClickHandler(new RefreshTestCollectionHandler());
 			initializationPanel.add(orchInit.panel());
 		}
