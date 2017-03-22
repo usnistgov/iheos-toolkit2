@@ -96,8 +96,6 @@ public class Utility {
       return Paths.get(getXDSIRoot(), "runDirectory");
    }
 
-   private static boolean log4jConfigured = false;
-
    /**
     * @return SYSTEM log
     */
@@ -110,12 +108,7 @@ public class Utility {
     * @return log for passed name
     */
    public static Logger getLog(String logName) {
-      if (log4jConfigured == false) {
-         String pfn = getRunDirectoryPath().resolve("log4j.properties").toString();
-         PropertyConfigurator.configure(pfn);
-         log4jConfigured = true;
-      }
-      return Logger.getLogger(logName);
+      return Logger.getLogger(Utility.class);
    }
 
    /**
@@ -438,7 +431,7 @@ public class Utility {
    /**
     * Writes the bytes to a file on disc.
     * @param bytes byte[] to write
-    * @param outDir directory to write to. Must exist and be rx
+    * @param dir directory to write to. Must exist and be rx
     * @param fName file name. If exists, it is overwritten
     * @throws Exception on error
     */

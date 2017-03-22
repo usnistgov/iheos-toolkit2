@@ -3,39 +3,47 @@
  */
 package gov.nist.toolkit.testengine.transactions;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.InputStream;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-
-import javax.xml.namespace.QName;
-
-import org.apache.axiom.om.OMElement;
-import org.apache.commons.io.FileUtils;
-import org.apache.commons.lang3.StringUtils;
-import org.apache.http.*;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.client.utils.URIBuilder;
-import org.apache.http.impl.client.CloseableHttpClient;
-import org.apache.http.impl.client.HttpClients;
-import org.apache.log4j.Logger;
-
+import edu.wustl.mir.erl.ihe.xdsi.util.Utility;
 import gov.nist.toolkit.actorfactory.SimDb;
 import gov.nist.toolkit.actorfactory.client.SimId;
 import gov.nist.toolkit.actorfactory.client.SimulatorConfig;
 import gov.nist.toolkit.configDatatypes.SimulatorProperties;
 import gov.nist.toolkit.configDatatypes.client.TransactionType;
+import gov.nist.toolkit.installation.Installation;
 import gov.nist.toolkit.testengine.engine.StepContext;
 import gov.nist.toolkit.testengine.engine.TransactionStatus;
 import gov.nist.toolkit.xdsexception.client.MetadataException;
 import gov.nist.toolkit.xdsexception.client.XdsInternalException;
+import org.apache.axiom.om.OMElement;
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.http.Header;
+import org.apache.http.HttpEntity;
+import org.apache.http.HttpResponse;
+import org.apache.http.StatusLine;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.utils.URIBuilder;
+import org.apache.http.conn.ssl.SSLConnectionSocketFactory;
+import org.apache.http.conn.ssl.TrustSelfSignedStrategy;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.HttpClients;
+import org.apache.http.ssl.SSLContexts;
+import org.apache.log4j.Logger;
+import java.security.SecureRandom;
 
-import edu.wustl.mir.erl.ihe.xdsi.util.Utility;
+import javax.net.ssl.*;
+import javax.xml.namespace.QName;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.InputStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.security.KeyStore;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Manage WADO Retrieve (RAD-55) transactions, for example: 
@@ -159,7 +167,7 @@ public class WADOTransaction extends BasicTransaction {
    
    private void prsRequest() throws Exception {
       if (httpClient == null) {
-         httpClient = HttpClients.createDefault();
+         httpClient = getHttpClient();
          transCount = 0;
          resultElement = testLog.add_simple_element(instruction_output, "Result");
          resultElement = testLog.add_simple_element(resultElement, "Transactions");
@@ -356,4 +364,54 @@ public class WADOTransaction extends BasicTransaction {
       return "WADO";
    }
 
+   private CloseableHttpClient getHttpClient() throws Exception {
+      // Regular client
+     if (endpoint.startsWith("http:"))
+         return HttpClients.createDefault();
+     // SSL client - get keystore & pw for environment
+     String env = transactionSettings.environmentName;
+     File keystoreFile = Installation.instance().getKeystore(env);
+     String keystorePw = Installation.instance().getKeystorePassword(env);
+
+      SecureRandom rand = new SecureRandom();
+      rand.nextInt();
+     KeyStore keyStore = KeyStore.getInstance("JKS");
+     keyStore.load(new FileInputStream(keystoreFile), keystorePw.toCharArray());
+     KeyManagerFactory kmf = KeyManagerFactory.getInstance("SunX509");
+      kmf.init(keyStore, keystorePw.toCharArray());
+
+      // ------------------------------------ truststore
+      TrustManagerFactory tmf = TrustManagerFactory.getInstance("SunX509");
+      tmf.init(keyStore);
+      log.trace("server certificates initialized");
+
+      SSLContext sslContext = SSLContext.getInstance("TLSv1");
+      sslContext.init(kmf.getKeyManagers(), tmf.getTrustManagers(), rand);
+
+      SSLConnectionSocketFactory sslsf = new SSLConnectionSocketFactory(
+              sslContext,
+              new String[] { "TLSv1" },
+              new String[] {"SSL_RSA_WITH_3DES_EDE_CBC_SHA", "TLS_RSA_WITH_AES_128_CBC_SHA"},
+              hnv);
+      CloseableHttpClient httpclient = HttpClients.custom()
+              .setSSLSocketFactory(sslsf)
+              .build();
+     return httpclient;
+   }
+
+   /*
+    * Adds localhost to the accepted host names
+    */
+
+   HostnameVerifier hnv = new LocalhostVerifier();
+
+   class LocalhostVerifier implements HostnameVerifier {
+
+       private HostnameVerifier def = SSLConnectionSocketFactory.getDefaultHostnameVerifier();
+
+       @Override
+       public boolean verify(String s, SSLSession sslSession) {
+           return s.equalsIgnoreCase("localhost") || def.verify(s, sslSession);
+       }
+   }
 }
