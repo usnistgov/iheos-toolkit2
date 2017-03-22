@@ -18,12 +18,15 @@ def modules = []
 
 //def mvndepoutput = run('mvn dependency:list'.split(' '))
 
+println 'Running mvn -X dependency:list'
+
 String[] cmd = ['mvn', '-X', 'dependency:list']
 def mvndepoutput = run(cmd, '../../..')
 
 //println "mvn generated ${mvndepoutput.size()} chars"
 //println mvndepoutput
 
+println 'Parsing output, modules found are ...'
 // parse maven dependencies
 mvndepoutput.eachLine { String line ->
     def lin = line.trim()
@@ -44,8 +47,14 @@ mvndepoutput.eachLine { String line ->
 
 //    println "new artifact -> ${module}"
 
+    print " module ${module}"
+
     modules << module
 }
+
+println ''
+
+println 'Clearing ~/.groovy/lib'
 
 // clear ~/.groovy/lib  and make empty
 def userHome = System.getProperty('user.home')
@@ -63,13 +72,18 @@ def m2 = "$userHome/.m2/repository"
 assert trim('/foo/', '/') == 'foo'
 assert trim('/foo', '/') == 'foo'
 
+println 'Installing modules...'
+
 modules.each { Module m ->
+    print " ${m}"
     File jar = findJarInRepository(m2, m)
     assert jar.exists()
 //    println "$m ===>   ${jar} ===> Exists? ${jar.exists()}"
     String filename = jar.getName()
     Files.copy(jar.toPath(), new File(groovyLibFile, filename).toPath());
 }
+
+println ''
 
 println "Installed ${modules.size()} jars into $groovyLibFile"
 

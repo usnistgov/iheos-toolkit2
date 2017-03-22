@@ -257,7 +257,7 @@ public abstract class AbstractActorFactory {
 	public void saveConfiguration(SimulatorConfig config) throws Exception {
 		verifyActorConfigurationOptions(config);
 
-		SimDb simdb = SimDb.mkSim(config.getId(), config.getActorType());
+		SimDb simdb = new SimDb().mkSim(config.getId(), config.getActorType());
 		File simCntlFile = simdb.getSimulatorControlFile();
 		SimulatorConfigIoFactory.impl().save(config, simCntlFile.toString());
 //		SimulatorConfigIoJava.save(config, simCntlFile.toString());

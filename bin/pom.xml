@@ -33,6 +33,11 @@
             <version>${gwtVersion}</version>
             <scope>compile</scope>
         </dependency>
+        <dependency>
+            <groupId>gov.nist.toolkit</groupId>
+            <artifactId>fhir</artifactId>
+            <version>4.4.0-SNAPSHOT</version>
+        </dependency>
 
     </dependencies>
 

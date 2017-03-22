@@ -46,14 +46,9 @@ public class SimDb {
 	private File transactionDir = null;
 	static private Logger logger = Logger.getLogger(SimDb.class);
 
-
-	static public SimDb mkSim(SimId simid, String actor) throws IOException, NoSimException {
-        validateSimId(simid);
-		return mkSim(Installation.instance().simDbFile(), simid, actor);
-	}
-
-	private static SimDb mkSim(File dbRoot, SimId simid, String actor) throws IOException, NoSimException {
-        validateSimId(simid);
+	public SimDb mkSim(SimId simid, String actor) throws IOException, NoSimException {
+		File dbRoot = getSimDbFile();
+		validateSimId(simid);
 		if (!dbRoot.exists())
 			dbRoot.mkdir();
 		if (!dbRoot.canWrite() || !dbRoot.isDirectory())
@@ -76,6 +71,7 @@ public class SimDb {
 	 * @return
 	 */
 	public File getSimDbFile() {
+//		System.out.println("Using SimDb:getSimDbFile()");
 		return Installation.instance().simDbFile();
 	}
 
@@ -94,19 +90,14 @@ public class SimDb {
 	 * Base constructor Loads the simulator db directory 
 	 */
 	public SimDb() {
-//		dbRoot = getSimDbFile();
-	}
-	
-	public SimDb(SimId simulatorId) throws IOException, NoSimException {
-		this(simulatorId, null, null);
 	}
 
-	private SimDb(File dbRoot, SimId simId) throws IOException, NoSimException {
+	public SimDb(SimId simId) throws IOException, NoSimException {
+		File dbRoot = getSimDbFile();
 		this.simId = simId;
         validateSimId();
 		if (simId == null)
 			throw new ToolkitRuntimeException("SimDb - cannot build SimDb with null simId");
-//		this.dbRoot = dbRoot;
 
 		if (!dbRoot.canWrite() || !dbRoot.isDirectory())
 			throw new IOException("Simulator database location, [" + dbRoot.toString() + "] is not a directory or cannot be written to");
@@ -156,8 +147,7 @@ public class SimDb {
 
 	// ipAddr aka simid
 	public SimDb(SimId simId, String actor, String transaction) throws IOException, NoSimException {
-		this(Installation.instance().simDbFile(), simId);
-
+		this(simId);
 		this.actor = actor;
 		this.transaction = transaction;
 
@@ -168,7 +158,7 @@ public class SimDb {
 			if (!transactionDir.isDirectory())
 				throw new IOException("Cannot create content in Simulator database, creation of " + transactionDir + " failed");
 		} else
-            return;
+			return;
 
 		Date date = new Date();
 		File eventDir = mkEventDir(date);
@@ -214,7 +204,7 @@ public class SimDb {
 	}
 
 	public SimDb(TransactionInstance ti) throws IOException, NoSimException, BadSimIdException {
-		this(Installation.instance().simDbFile(), new SimId(ti.simId));
+		this(new SimId(ti.simId));
 
 		this.actor = ti.actorType.getShortName();
 		this.transaction = ti.trans;

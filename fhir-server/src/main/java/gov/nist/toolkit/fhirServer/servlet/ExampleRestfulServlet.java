@@ -8,11 +8,11 @@ import ca.uhn.fhir.rest.server.RestfulServer;
 import ca.uhn.fhir.rest.server.interceptor.CorsInterceptor;
 import ca.uhn.fhir.rest.server.interceptor.ResponseHighlighterInterceptor;
 import gov.nist.toolkit.actorfactory.client.SimId;
+import gov.nist.toolkit.fhir.support.ResDb;
 import gov.nist.toolkit.fhirServer.config.SimContext;
 import gov.nist.toolkit.fhirServer.config.SimTracker;
 import gov.nist.toolkit.fhirServer.provider.OrganizationResourceProvider;
 import gov.nist.toolkit.fhirServer.provider.PatientResourceProvider;
-import gov.nist.toolkit.fhirServer.support.FhirSimDb;
 import gov.nist.toolkit.installation.Installation;
 import org.springframework.web.cors.CorsConfiguration;
 
@@ -111,7 +111,7 @@ public class ExampleRestfulServlet extends RestfulServer {
 		if (Installation.instance().externalCache() == null)
 			throw new Exception("Server not initialized - External Cache not configured");
 		SimId simId = simIdFromURI(requestFullPath);
-		if (!FhirSimDb.exists(simId))
+		if (!ResDb.exists(simId))
 			throw new Exception("FHIR Simulator " + simId + " does not exist - request URI was " + requestFullPath);
 		SimTracker.setContext(new SimContext(simId));
 	}

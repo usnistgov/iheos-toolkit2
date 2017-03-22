@@ -179,7 +179,10 @@ public class PatientResourceProvider implements IResourceProvider {
 	@Read(version = true)
 	public Patient readPatient(@IdParam IdDt theId) {
 		Deque<Patient> retVal;
-		System.out.println("readPatient"); System.out.flush();
+		System.out.println("readPatient " + theId); System.out.flush();
+
+
+
 		try {
 			retVal = myIdToPatientVersions.get(theId.getIdPartAsLong());
 			System.out.println("patient is " + retVal); System.out.flush();

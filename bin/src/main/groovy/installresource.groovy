@@ -1,5 +1,5 @@
-import gov.nist.toolkit.actorfactory.SimDb
 import gov.nist.toolkit.actorfactory.client.SimId
+import gov.nist.toolkit.fhir.support.ResDb
 import gov.nist.toolkit.installation.Installation
 import gov.nist.toolkit.xdsexception.ExceptionUtil
 /**
@@ -17,10 +17,27 @@ try {
     SimId simId
     List<File> files = []
 
-    simId = Tk.parseSimId(args[0].trim())
+    if (args.size() < 2) {
+        println 'Usage: installresource.groovy [-c] simId resource_file+'
+        println '-c create simulator if it does not exist'
+    }
 
     List arglist = args.toList()
+
+    def create = false
+
+    if (arglist[0] == '-c') {
+        create = true
+        arglist.remove(0)
+    }
+
+    simId = Tk.parseSimId(arglist[0].trim())
     arglist.remove(0)
+
+    if (create) {
+        println "Creating sim ${simId}"
+        new ResDb().mkSim(simId, 'fhir')
+    }
 
     if (arglist.size() == 0) {
         println 'No resource files specified'
@@ -31,9 +48,9 @@ try {
 
     files.each { File file -> assert file.exists() }
 
-    println "simdb is ${FhirSimDb.getSimDbFile()}"
-    SimDb simDb = Tk.simDb(simId, 'fhir')
-    File event = simDb.getEventDir()
+    println "resdb is ${new ResDb().getSimDbFile()}"
+    ResDb resDb = Tk.resDb(simId, 'fhir', 'PUT')
+    File event = resDb.getEventDir()
 
     files.each { File file ->
         File newFile = new File(event, file.name)

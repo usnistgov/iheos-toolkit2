@@ -1,9 +1,7 @@
-import gov.nist.toolkit.actorfactory.SimDb
-import gov.nist.toolkit.actorfactory.client.NoSimException
 import gov.nist.toolkit.actorfactory.client.SimId
-
+import gov.nist.toolkit.fhir.support.ResDb
 /**
- * Created by bill on 3/2/17.
+ *
  */
 class Tk {
     static File getEc() {
@@ -31,17 +29,23 @@ class Tk {
     }
 
 
-    static SimDb simDb(SimId simId, String actor) {
-        SimDb simDb
-        try {
-            simDb = new SimDb(simId)
-        } catch (NoSimException e) {
-            if (actor)
-                simDb = SimDb.mkSim(simId, actor)
-            else
-                throw e
-        }
+//    static SimDb simDb(SimId simId, String actor) {
+//        SimDb simDb
+//        try {
+//            simDb = new SimDb(simId)
+//        } catch (NoSimException e) {
+//            if (actor)
+//                simDb = new SimDb().mkSim(simId, actor)
+//            else
+//                throw e
+//        }
+//
+//        return new SimDb(simId, actor, 'FHIR')
+//    }
 
-        return new SimDb(simId, actor, 'FHIR')
+    static ResDb resDb(SimId simId, String actor, String transaction) {
+        if (!ResDb.exists(simId))
+            new ResDb().mkSim(simId, actor)
+        return new ResDb(simId, actor, transaction)
     }
 }
