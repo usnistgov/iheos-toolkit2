@@ -7,7 +7,7 @@ package gov.nist.toolkit.errorrecording;
 
 public class SelectedErrorRecorder {
     public enum ErrorRecorderType {UNDEFINED, GWT_ERROR_RECORDER, XML_ERROR_RECORDER};
-    SelectedErrorRecorder selectedErrorRecorder = null;
+    static SelectedErrorRecorder selectedErrorRecorder = null;
     ErrorRecorderType type = ErrorRecorderType.UNDEFINED;
 
 
@@ -15,7 +15,7 @@ public class SelectedErrorRecorder {
         selectedErrorRecorder = this;
     }
 
-        public SelectedErrorRecorder getSelectedErrorRecorder(){
+        public static SelectedErrorRecorder getSelectedErrorRecorder(){
         if (selectedErrorRecorder != null) {
             return selectedErrorRecorder;
         }

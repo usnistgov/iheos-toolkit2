@@ -2,6 +2,7 @@ package gov.nist.toolkit.simulators.support;
 
 import gov.nist.toolkit.actorfactory.client.SimulatorConfig;
 import gov.nist.toolkit.commondatatypes.MetadataSupport;
+import gov.nist.toolkit.errorrecording.SelectedErrorRecorder;
 import gov.nist.toolkit.errorrecording.common.XdsErrorCode;
 import gov.nist.toolkit.errorrecording.xml.XMLErrorRecorder;
 import gov.nist.toolkit.errorrecording.xml.XMLErrorRecorderBuilder;
@@ -90,10 +91,19 @@ public class DsSimCommon {
      * Runs the validation functions. This is where the ErrorRecorder gets instanciated.
      * @throws IOException
      */
-    //TODO XMLErrorRecorder
+    //TODO This is where the ErrorRecorder gets instanciated.
     public void runInitialValidations() throws IOException {
         XMLErrorRecorderBuilder erb = new XMLErrorRecorderBuilder();
         // GwtErrorRecorderBuilder erb = new GwtErrorRecorderBuilder();
+
+        // Register the type of the ErrorRecorder
+        SelectedErrorRecorder selected = SelectedErrorRecorder.getSelectedErrorRecorder();
+        if (erb instanceof XMLErrorRecorderBuilder) {
+            selected.setSelectedErrorRecorder(SelectedErrorRecorder.ErrorRecorderType.XML_ERROR_RECORDER);
+        }
+        else {
+            selected.setSelectedErrorRecorder(SelectedErrorRecorder.ErrorRecorderType.GWT_ERROR_RECORDER);
+        }
         runErrorRecorder(erb.buildNewErrorRecorder());
     }
 
@@ -483,7 +493,7 @@ public class DsSimCommon {
 
     public void sendFault(SoapFault fault) {
         OMElement env = wrapResponseInSoapEnvelope(fault.getXML());
-        sendHttpResponse(env, simCommon.getUnconnectedErrorRecorder(), true);
+        sendHttpResponse(env, SimCommon.getUnconnectedErrorRecorder(), true);
     }
 
     /**

@@ -749,7 +749,6 @@ public class SimServlet  extends HttpServlet {
 		return newExpiration;
 	}
 
-
 	private void sendSoapFault(HttpServletResponse response, String message) {
 		try {
 			SoapFault sf = new SoapFault(SoapFault.FaultCodes.Sender, message);
@@ -758,7 +757,7 @@ public class SimServlet  extends HttpServlet {
 			OMElement faultEle = sf.getXML();
             logger.info("Sending SOAP Fault:\n" + new OMFormatter(faultEle).toString());
 			OMElement soapEnv = dsSimCommon.wrapResponseInSoapEnvelope(faultEle);
-			dsSimCommon.sendHttpResponse(soapEnv, getUnconnectedErrorRecorder(), false);
+			dsSimCommon.sendHttpResponse(soapEnv, c.getUnconnectedErrorRecorder(), false);
 		} catch (Exception e) {
 			logger.error(ExceptionUtil.exception_details(e));
 		}
@@ -805,8 +804,4 @@ public class SimServlet  extends HttpServlet {
 		db.putRequestBodyFile(Io.getBytesFromInputStream(request.getInputStream()));
 	}
 
-	// TODO  Architecture workaround-type gimmick inherited from v2. This should eventually go away.
-	public static ErrorRecorder getUnconnectedErrorRecorder() {
-		return new GwtErrorRecorder();
-	}
 }

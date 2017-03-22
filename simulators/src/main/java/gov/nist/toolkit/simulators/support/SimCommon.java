@@ -4,9 +4,11 @@ import gov.nist.toolkit.actorfactory.SimDb;
 import gov.nist.toolkit.actorfactory.client.NoSimException;
 import gov.nist.toolkit.actorfactory.client.SimId;
 import gov.nist.toolkit.errorrecording.ErrorRecorder;
+import gov.nist.toolkit.errorrecording.SelectedErrorRecorder;
 import gov.nist.toolkit.errorrecording.gwt.GwtErrorRecorder;
 import gov.nist.toolkit.errorrecording.gwt.GwtErrorRecorderBuilder;
 import gov.nist.toolkit.errorrecording.gwt.client.GWTValidationStepResult;
+import gov.nist.toolkit.errorrecording.xml.XMLErrorRecorder;
 import gov.nist.toolkit.installation.Installation;
 import gov.nist.toolkit.utilities.io.Io;
 import gov.nist.toolkit.valregmsg.validation.engine.ValidateMessageService;
@@ -158,7 +160,7 @@ public class SimCommon {
 	}
 
 	/**
-	 * Writes the log to file
+	 * Writes the log from a GWTErrorRecorder to file
 	 * @throws IOException
 	 */
 	void generateLog() throws IOException {
@@ -180,10 +182,8 @@ public class SimCommon {
 	}
 
 	//TODO this is a new function - Diane
-	// Writes contents from an ErrorRecorder instead of SimCommon context
+	// Writes the log from a GWTErrorRecorder to file (instead of SimCommon context)
 	void generateLog(ErrorRecorder er) throws IOException {
-		System.out.println("Log:\n" + er.toString());
-
 		Io.stringToFile(db.getLogFile(), er.toString());
 	}
 
@@ -211,6 +211,15 @@ public class SimCommon {
 		} catch (NoSimException e) {
 			// doesn't exist - ok
 		}
+	}
+
+	// TODO  Architecture workaround-type gimmick inherited from v2. This should eventually go away.
+	public static ErrorRecorder getUnconnectedErrorRecorder() {
+		SelectedErrorRecorder selected = SelectedErrorRecorder.getSelectedErrorRecorder();
+		if (selected.getType().equals(SelectedErrorRecorder.ErrorRecorderType.GWT_ERROR_RECORDER)){
+			return new GwtErrorRecorder();
+		}
+			return new XMLErrorRecorder();
 	}
 
 
