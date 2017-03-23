@@ -157,6 +157,7 @@
 				<build.profile.id>Sunil</build.profile.id>
 			</properties>
 		</profile>
+		<!--
 		<profile>
 			<id>Integration-Tests</id>
 			<properties>
@@ -209,6 +210,7 @@
 				</plugins>
 			</build>
 		</profile>
+		-->
 	</profiles>
 
 	<name>XDS Toolkit</name>
