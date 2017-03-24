@@ -60,13 +60,16 @@ public class InteractionDiagramDisplay extends FlowPanel {
                 }
 
 
-                add(new HTML("<p><b>Interaction Sequence:</b></p>"));
-                add(diagram);
-                add(new HTML("<br/>"));
+                if ((!testResultDTO.isRun() && diagram.hasMeaningfulDiagram()) || testResultDTO.isRun()) {
+                    add(new HTML("<p><b>Interaction Sequence:</b></p>"));
+                    add(diagram);
+                    add(new HTML("<br/>"));
+                }
             }
         } catch (Exception ex) {
-            add(new HTML("<p>Sequence Diagram Error: " + ex.toString()
-                    + "</p>"));
+            add(new HTML("<!-- Sequence Diagram Error: "
+                    + ex.toString()
+                    + " -->"));
         }
 
 
