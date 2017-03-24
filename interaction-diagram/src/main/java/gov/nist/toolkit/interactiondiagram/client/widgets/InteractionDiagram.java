@@ -458,8 +458,12 @@ public class InteractionDiagram extends Composite {
         Map<String,String> placeholderMap = new HashMap<>();
 
         placeholderMap.put("SystemUnderTest", getSutSystemName());
-        if (getTargetSite().getOrchestrationSiteName()!=null)
-            placeholderMap.put("Simulator",getTargetSite().getName());
+        if (getSutSystemName().equals(getTargetSite().getName())) {
+            // No simulators in use
+        } else {
+            placeholderMap.put("Simulator", getTargetSite().getName());
+            // getTargetSite().getOrchestrationSiteName() is the actual SUT. For combined SiteSpec like the Repository actor
+        }
 
         for (InteractingEntity interactingEntity : interactionSequence) {
             interactingEntity.setNameByProvider(null, placeholderMap);
@@ -630,7 +634,7 @@ public class InteractionDiagram extends Composite {
         OMSVGGElement destination = destinationll.getLlEl();
 
         InteractingEntity.INTERACTIONSTATUS status = entity.getStatus();
-        String lineFillColor = (InteractingEntity.INTERACTIONSTATUS.UNKNOWN.equals(status)|| InteractingEntity.INTERACTIONSTATUS.SKIPPED.equals(status))?"#dcdcdc":"black";
+        String lineFillColor = (isInspectableInteractionStatus(status))?"black":"#dcdcdc";
 
         OMSVGLineElement line = doc.createSVGLineElement();
         int x1 = (Integer.parseInt(((OMSVGRectElement)origin.getFirstChild()).getAttribute("x").toString())+(LL_BOX_WIDTH /2));
@@ -731,7 +735,7 @@ public class InteractionDiagram extends Composite {
                             Window.open(url, "_blank", "");
                         }
                     });
-                } else if (!InteractingEntity.INTERACTIONSTATUS.UNKNOWN.equals(status)||!InteractingEntity.INTERACTIONSTATUS.SKIPPED.equals(status)) {
+                } else if (isInspectableInteractionStatus(status)) {
                     group.addClickHandler(new ClickHandler() {
                         @Override
                         public void onClick(ClickEvent clickEvent) {
@@ -887,6 +891,10 @@ public class InteractionDiagram extends Composite {
         }
 
         return group;
+    }
+
+    private boolean isInspectableInteractionStatus(InteractingEntity.INTERACTIONSTATUS status) {
+        return !InteractingEntity.INTERACTIONSTATUS.UNKNOWN.equals(status)||!InteractingEntity.INTERACTIONSTATUS.SKIPPED.equals(status);
     }
 
     private void addTooltip(OMSVGGElement group, final List<String> messages, final int timeOutInMilliseconds) {
