@@ -1,17 +1,9 @@
 package gov.nist.toolkit.simulators.sim.ids;
 
-import java.util.*;
-
-import org.apache.axiom.om.OMAttribute;
-import org.apache.axiom.om.OMElement;
-import org.apache.commons.lang3.StringUtils;
-import org.apache.log4j.Logger;
-import org.javatuples.Pair;
-
+import gov.nist.toolkit.commondatatypes.MetadataSupport;
 import gov.nist.toolkit.errorrecording.ErrorRecorder;
 import gov.nist.toolkit.errorrecording.client.XdsErrorCode.Code;
 import gov.nist.toolkit.registrymsg.registry.Response;
-import gov.nist.toolkit.commondatatypes.MetadataSupport;
 import gov.nist.toolkit.simulators.sim.reg.RegistryResponseGeneratingSim;
 import gov.nist.toolkit.simulators.support.DsSimCommon;
 import gov.nist.toolkit.simulators.support.SimCommon;
@@ -20,6 +12,16 @@ import gov.nist.toolkit.simulators.support.TransactionSimulator;
 import gov.nist.toolkit.valregmsg.registry.RetrieveMultipleResponse;
 import gov.nist.toolkit.valsupport.client.ValidationContext;
 import gov.nist.toolkit.valsupport.engine.MessageValidatorEngine;
+import org.apache.axiom.om.OMAttribute;
+import org.apache.axiom.om.OMElement;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.log4j.Logger;
+import org.javatuples.Pair;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.List;
 
 public class RetrieveImagingDocSetResponseSim extends TransactionSimulator implements RegistryResponseGeneratingSim {
    static Logger logger = Logger.getLogger(RetrieveImagingDocSetResponseSim.class);
@@ -128,6 +130,7 @@ public class RetrieveImagingDocSetResponseSim extends TransactionSimulator imple
          
       } catch (Exception e) {
          er.err(Code.XDSRepositoryError, e);
+         e.printStackTrace();
          return;
       }
    }

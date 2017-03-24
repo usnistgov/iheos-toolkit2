@@ -14,6 +14,8 @@ import org.apache.log4j.Logger;
 import java.util.ArrayList;
 import java.util.Map;
 
+import javax.xml.namespace.QName;
+
 public class OmLogger implements ILogger {
 	static Logger logger = Logger.getLogger(OmLogger.class);
 
@@ -36,6 +38,10 @@ public class OmLogger implements ILogger {
 		OMElement ele = add_simple_element(parent, name);
 		ele.addAttribute("id", id, null);
 		return ele;
+	}
+	
+	public OMElement add_simple_element(OMElement parent, QName qName) {
+	   return MetadataSupport.om_factory.createOMElement(qName, parent);
 	}
 
 	/* (non-Javadoc)

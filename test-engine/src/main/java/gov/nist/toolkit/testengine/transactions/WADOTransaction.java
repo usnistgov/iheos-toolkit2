@@ -3,47 +3,39 @@
  */
 package gov.nist.toolkit.testengine.transactions;
 
-import edu.wustl.mir.erl.ihe.xdsi.util.Utility;
-import gov.nist.toolkit.actorfactory.SimDb;
-import gov.nist.toolkit.actorfactory.client.SimId;
-import gov.nist.toolkit.actorfactory.client.SimulatorConfig;
-import gov.nist.toolkit.configDatatypes.SimulatorProperties;
-import gov.nist.toolkit.configDatatypes.client.TransactionType;
-import gov.nist.toolkit.installation.Installation;
-import gov.nist.toolkit.testengine.engine.StepContext;
-import gov.nist.toolkit.testengine.engine.TransactionStatus;
-import gov.nist.toolkit.xdsexception.client.MetadataException;
-import gov.nist.toolkit.xdsexception.client.XdsInternalException;
-import org.apache.axiom.om.OMElement;
-import org.apache.commons.io.FileUtils;
-import org.apache.commons.lang3.StringUtils;
-import org.apache.http.Header;
-import org.apache.http.HttpEntity;
-import org.apache.http.HttpResponse;
-import org.apache.http.StatusLine;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.client.utils.URIBuilder;
-import org.apache.http.conn.ssl.SSLConnectionSocketFactory;
-import org.apache.http.conn.ssl.TrustSelfSignedStrategy;
-import org.apache.http.impl.client.CloseableHttpClient;
-import org.apache.http.impl.client.HttpClients;
-import org.apache.http.ssl.SSLContexts;
-import org.apache.log4j.Logger;
-import java.security.SecureRandom;
-
-import javax.net.ssl.*;
-import javax.xml.namespace.QName;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.security.KeyStore;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+import java.util.Base64.Encoder;
+
+import javax.xml.namespace.QName;
+
+import org.apache.axiom.om.OMElement;
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.http.*;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.utils.URIBuilder;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.HttpClients;
+import org.apache.http.util.EntityUtils;
+import org.apache.log4j.Logger;
+
+import gov.nist.toolkit.actorfactory.SimDb;
+import gov.nist.toolkit.actorfactory.client.SimId;
+import gov.nist.toolkit.actorfactory.client.SimulatorConfig;
+import gov.nist.toolkit.configDatatypes.SimulatorProperties;
+import gov.nist.toolkit.configDatatypes.client.TransactionType;
+import gov.nist.toolkit.testengine.engine.StepContext;
+import gov.nist.toolkit.testengine.engine.TransactionStatus;
+import gov.nist.toolkit.xdsexception.client.MetadataException;
+import gov.nist.toolkit.xdsexception.client.XdsInternalException;
+
+import edu.wustl.mir.erl.ihe.xdsi.util.Utility;
 
 /**
  * Manage WADO Retrieve (RAD-55) transactions, for example: 
@@ -91,6 +83,22 @@ import java.util.Map;
 public class WADOTransaction extends BasicTransaction {
    
    static Logger log = Logger.getLogger(WADOTransaction.class);
+   
+   static private QName RetrieveDocumentSetResponse =
+      new QName("urn:ihe:iti:xds-b:2007", "RetrieveDocumentSetResponse", "xdsb");
+   static private QName DocumentResponse =
+      new QName("urn:ihe:iti:xds-b:2007", "DocumentResponse", "xdsb");
+   static private QName RepositoryUniqueId =
+      new QName("urn:ihe:iti:xds-b:2007", "RepositoryUniqueId", "xdsb");
+   static private QName DocumentUniqueId =
+      new QName("urn:ihe:iti:xds-b:2007", "DocumentUniqueId", "xdsb");
+   static private QName mimeType =
+      new QName("urn:ihe:iti:xds-b:2007", "mimeType", "xdsb");
+   static private QName Document =
+      new QName("urn:ihe:iti:xds-b:2007", "Document", "xdsb");
+   static private QName RegistryResponse =
+      new QName("urn:oasis:names:tc:ebxml-regrep:xsd:rs:3.0", "RegistryResponse", "rs");
+   static private final String statusSuccess = "urn:oasis:names:tc:ebxml-regrep:ResponseStatusType:Success";
    
    private Map<String, String> headers;
    private Map<String, String> parameters;
@@ -164,12 +172,14 @@ public class WADOTransaction extends BasicTransaction {
    private OMElement requestElement;
    private OMElement outHdrElement;
    private OMElement inHdrElement;
+   private OMElement rsltElement;
+   private OMElement retrieveDocumentSetResponseElement = null;
    
    private void prsRequest() throws Exception {
       if (httpClient == null) {
-         httpClient = getHttpClient();
+         httpClient = HttpClients.createDefault();
          transCount = 0;
-         resultElement = testLog.add_simple_element(instruction_output, "Result");
+         rsltElement = resultElement = testLog.add_simple_element(instruction_output, "Result");
          resultElement = testLog.add_simple_element(resultElement, "Transactions");
          requestElement = testLog.add_simple_element(instruction_output, "InputMetadata");
          requestElement = testLog.add_simple_element(requestElement, "Transactions");
@@ -250,6 +260,7 @@ public class WADOTransaction extends BasicTransaction {
             return;
          }
       }
+      // Determine content type of response body
       String content = "application/dicom";
       OMElement hdrE = testLog.add_simple_element(resultE, "Headers");
       if (responseHeaders != null) {
@@ -259,21 +270,38 @@ public class WADOTransaction extends BasicTransaction {
                content = hdr.getValue();
          }
       }
-      // appropriate file name suffix
-      if (responseEntity != null) {
-         String c = StringUtils.substringBefore(content, ";");
+      if (retrieveDocumentSetResponseElement == null) {
+         retrieveDocumentSetResponseElement =
+            testLog.add_simple_element(resultElement, RetrieveDocumentSetResponse);
+      }
+      OMElement documentReponseElement = 
+         testLog.add_simple_element(retrieveDocumentSetResponseElement, DocumentResponse);
+      testLog.add_simple_element(documentReponseElement, RepositoryUniqueId);
+      OMElement documentUniqueId = 
+         testLog.add_simple_element(documentReponseElement, DocumentUniqueId);
+      documentUniqueId.setText(parameters.get("objectUID"));
+      OMElement mimeTypeElement = 
+         testLog.add_simple_element(documentReponseElement, mimeType);
+      mimeTypeElement.setText(content);
+      OMElement documentElement = 
+         testLog.add_simple_element(documentReponseElement, Document);
+      
+      byte[] entityBytes = EntityUtils.toByteArray(responseEntity);
       String suffix = "txt";
-      switch (c) {
+      switch (content) {
          case "application/jpeg":
             suffix = "jpeg";
+            documentElement.setText(Base64.getEncoder().encodeToString(entityBytes));
             break;
          case "application/dicom":
             suffix = "dcm";
+            documentElement.setText(Base64.getEncoder().encodeToString(entityBytes));
             break;
          case "application/html":
             suffix = "html";
-            break;
-            default:
+            //$FALL-THROUGH$
+         default:
+               documentElement.setText(new String(entityBytes, Utility.utf8));
       }
       // directory for files and this file name
       Path filesPath = Paths.get(linkage.getLogFileDir()).resolve("files");
@@ -283,18 +311,8 @@ public class WADOTransaction extends BasicTransaction {
          FileUtils.cleanDirectory(f);
       }
       String fileName = String.format("%06d.%s", transCount, suffix);
-      testLog.add_name_value(resultE, "File", fileName);
       // write entity to file.
-      InputStream is = responseEntity.getContent();
-      FileOutputStream fos = new FileOutputStream(filesPath.resolve(fileName).toFile());
-      int bite;
-      while ((bite = is.read()) != -1) fos.write(bite);
-      is.close();
-      fos.close();
-
-      }
-      
-      // TODO What are we going to do with all of this?
+      FileUtils.writeByteArrayToFile(filesPath.resolve(fileName).toFile(), entityBytes);
    }
    
    private boolean valid(Map<String, String> map, String... keys) {
@@ -364,54 +382,4 @@ public class WADOTransaction extends BasicTransaction {
       return "WADO";
    }
 
-   private CloseableHttpClient getHttpClient() throws Exception {
-      // Regular client
-     if (endpoint.startsWith("http:"))
-         return HttpClients.createDefault();
-     // SSL client - get keystore & pw for environment
-     String env = transactionSettings.environmentName;
-     File keystoreFile = Installation.instance().getKeystore(env);
-     String keystorePw = Installation.instance().getKeystorePassword(env);
-
-      SecureRandom rand = new SecureRandom();
-      rand.nextInt();
-     KeyStore keyStore = KeyStore.getInstance("JKS");
-     keyStore.load(new FileInputStream(keystoreFile), keystorePw.toCharArray());
-     KeyManagerFactory kmf = KeyManagerFactory.getInstance("SunX509");
-      kmf.init(keyStore, keystorePw.toCharArray());
-
-      // ------------------------------------ truststore
-      TrustManagerFactory tmf = TrustManagerFactory.getInstance("SunX509");
-      tmf.init(keyStore);
-      log.trace("server certificates initialized");
-
-      SSLContext sslContext = SSLContext.getInstance("TLSv1");
-      sslContext.init(kmf.getKeyManagers(), tmf.getTrustManagers(), rand);
-
-      SSLConnectionSocketFactory sslsf = new SSLConnectionSocketFactory(
-              sslContext,
-              new String[] { "TLSv1" },
-              new String[] {"SSL_RSA_WITH_3DES_EDE_CBC_SHA", "TLS_RSA_WITH_AES_128_CBC_SHA"},
-              hnv);
-      CloseableHttpClient httpclient = HttpClients.custom()
-              .setSSLSocketFactory(sslsf)
-              .build();
-     return httpclient;
-   }
-
-   /*
-    * Adds localhost to the accepted host names
-    */
-
-   HostnameVerifier hnv = new LocalhostVerifier();
-
-   class LocalhostVerifier implements HostnameVerifier {
-
-       private HostnameVerifier def = SSLConnectionSocketFactory.getDefaultHostnameVerifier();
-
-       @Override
-       public boolean verify(String s, SSLSession sslSession) {
-           return s.equalsIgnoreCase("localhost") || def.verify(s, sslSession);
-       }
-   }
 }

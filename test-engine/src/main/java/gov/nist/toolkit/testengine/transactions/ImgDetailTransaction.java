@@ -3,26 +3,9 @@
  */
 package gov.nist.toolkit.testengine.transactions;
 
-import java.io.File;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.*;
-
-import javax.xml.namespace.QName;
-import javax.xml.stream.XMLStreamException;
-
-import org.apache.axiom.om.OMElement;
-import org.apache.axiom.om.util.AXIOMUtil;
-import org.apache.commons.io.FileUtils;
-import org.apache.commons.io.filefilter.FileFilterUtils;
-import org.apache.commons.lang.StringEscapeUtils;
-import org.apache.commons.lang3.StringUtils;
-import org.apache.log4j.Logger;
-import org.dcm4che3.data.Attributes;
-import org.dcm4che3.data.Tag;
-import org.dcm4che3.io.DicomInputStream;
-import org.dcm4che3.util.TagUtils;
-
+import edu.wustl.mir.erl.ihe.xdsi.util.PfnType;
+import edu.wustl.mir.erl.ihe.xdsi.util.Utility;
+import edu.wustl.mir.erl.ihe.xdsi.validation.*;
 import gov.nist.toolkit.actorfactory.client.SimId;
 import gov.nist.toolkit.actortransaction.client.ActorType;
 import gov.nist.toolkit.configDatatypes.client.TransactionType;
@@ -37,10 +20,23 @@ import gov.nist.toolkit.testenginelogging.client.ReportDTO;
 import gov.nist.toolkit.utilities.xml.XmlUtil;
 import gov.nist.toolkit.xdsexception.client.MetadataException;
 import gov.nist.toolkit.xdsexception.client.XdsInternalException;
+import org.apache.axiom.om.OMElement;
+import org.apache.axiom.om.util.AXIOMUtil;
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.filefilter.FileFilterUtils;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.log4j.Logger;
+import org.dcm4che3.data.Attributes;
+import org.dcm4che3.data.Tag;
+import org.dcm4che3.io.DicomInputStream;
+import org.dcm4che3.util.TagUtils;
 
-import edu.wustl.mir.erl.ihe.xdsi.util.PfnType;
-import edu.wustl.mir.erl.ihe.xdsi.util.Utility;
-import edu.wustl.mir.erl.ihe.xdsi.validation.*;
+import javax.xml.namespace.QName;
+import javax.xml.stream.XMLStreamException;
+import java.io.File;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.*;
 
 /**
  * Handles validations for Retrieve Image Document Set Transactions:
@@ -637,8 +633,12 @@ public class ImgDetailTransaction extends BasicTransaction {
     * <Assert id="Returned img(s)" process="sameDcmImgs" >
     *    <TagList>
     *       Elements in TagList are the dcm4che Tag names for the DICOM
-    *       tags which are to be compared. They must appear in tagMap
-    *       (above), or have the Element name "TAG" and an attribute "hex" with
+    *       tags which are to be compared. They must:
+    *       1. Appear in tagMap (above)
+    *       2. Have the Element name "HASH", in which case a hash of the entire
+    *          file contents is used as the comparison value rather than the
+    *          contents of a DICOM tag
+    *       3. Have the Element name "TAG" and an attribute "hex" with
     *       a value which is a valid dicom tag group and element number 
     *       separated by a comma (for example hex="0020,0020") There are 
     *       four optional attributes for these elements:
@@ -739,6 +739,10 @@ public class ImgDetailTransaction extends BasicTransaction {
             int dcmTag;
             OMElement tag = tags.next();
             String tagName = tag.getLocalName().trim();
+            // HASH tag
+            if (tagName.equalsIgnoreCase("HASH")) {
+               dcmTag = -1;
+            } else
             // Tag defined with hex value
             if (tagName.equalsIgnoreCase("Tag")) {
                String hex = tag.getAttributeValue(new QName("hex"));

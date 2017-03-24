@@ -42,7 +42,7 @@ public class Utility {
     */
    public static final Charset utf8 = Charset.forName("UTF-8");
    
-   private static Logger log = getLog();
+   private static Logger log = Logger.getLogger(Utility.class);
 
    /**
     * @return String XDSI root directory path
@@ -96,19 +96,15 @@ public class Utility {
       return Paths.get(getXDSIRoot(), "runDirectory");
    }
 
-   /**
-    * @return SYSTEM log
-    */
+   private static boolean log4jConfigured = false;
+
    public static Logger getLog() {
-      return getLog("SYSTEM");
+      return log;
    }
 
-   /**
-    * @param logName logger name
-    * @return log for passed name
-    */
+
    public static Logger getLog(String logName) {
-      return Logger.getLogger(Utility.class);
+      return log;
    }
 
    /**
@@ -191,7 +187,8 @@ public class Utility {
 
       File file = path.toFile();
 
-      if (!file.exists()) throw new Exception(msg + "not found");
+      if (!file.exists())
+         throw new Exception(msg + "not found");
 
       switch (pfnType) {
          case DIRECTORY:
@@ -431,7 +428,7 @@ public class Utility {
    /**
     * Writes the bytes to a file on disc.
     * @param bytes byte[] to write
-    * @param dir directory to write to. Must exist and be rx
+    * @param outDir directory to write to. Must exist and be rx
     * @param fName file name. If exists, it is overwritten
     * @throws Exception on error
     */

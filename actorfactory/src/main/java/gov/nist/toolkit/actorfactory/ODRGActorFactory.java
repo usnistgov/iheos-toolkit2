@@ -64,8 +64,6 @@ public class ODRGActorFactory extends AbstractActorFactory {
          new ArrayList <String>(), false);
       addEditableConfig(sc, SimulatorProperties.errorForPatient,
          ParamType.SELECTION, new PatientErrorMap());
-      addEditableConfig(sc, SimulatorProperties.repositories,
-              ParamType.SELECTION, new ArrayList <String>(), true);
 
       // This needs to be grouped with a Document Registry
       SimulatorConfig registryConfig =

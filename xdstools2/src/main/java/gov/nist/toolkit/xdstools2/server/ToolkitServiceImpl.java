@@ -2,7 +2,6 @@ package gov.nist.toolkit.xdstools2.server;
 
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 import gov.nist.toolkit.MessageValidatorFactory2.MessageValidatorFactoryFactory;
-import gov.nist.toolkit.actorfactory.SimDb;
 import gov.nist.toolkit.actorfactory.SimManager;
 import gov.nist.toolkit.actorfactory.SiteServiceManager;
 import gov.nist.toolkit.actorfactory.client.SimId;
@@ -19,11 +18,7 @@ import gov.nist.toolkit.installation.Installation;
 import gov.nist.toolkit.installation.PropertyServiceManager;
 import gov.nist.toolkit.interactionmapper.InteractionMapper;
 import gov.nist.toolkit.interactionmodel.client.InteractingEntity;
-import gov.nist.toolkit.results.client.CodesResult;
-import gov.nist.toolkit.results.client.DocumentEntryDetail;
-import gov.nist.toolkit.results.client.Result;
-import gov.nist.toolkit.results.client.TestInstance;
-import gov.nist.toolkit.results.client.TestLogs;
+import gov.nist.toolkit.results.client.*;
 import gov.nist.toolkit.results.shared.Test;
 import gov.nist.toolkit.services.client.IdcOrchestrationRequest;
 import gov.nist.toolkit.services.client.RawResponse;
@@ -860,7 +855,7 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements
      * @param request
      */
     @Override
-    public void generateTestkitStructure(CommandContext request) /*throws Exception*/ {
+    public void generateTestkitStructure(CommandContext request) /*throws Exception*/{
 //        installCommandContext(request);
         File environmentFile = Installation.instance().environmentFile();
         for (File environment : environmentFile.listFiles()) {

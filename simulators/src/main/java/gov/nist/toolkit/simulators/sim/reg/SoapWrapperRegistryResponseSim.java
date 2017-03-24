@@ -39,4 +39,8 @@ public class SoapWrapperRegistryResponseSim extends TransactionSimulator {
 		} 
 	}
 
+	public RegistryResponseGeneratingSim getRrSim() {
+		return rrSim;
+	}
+
 }

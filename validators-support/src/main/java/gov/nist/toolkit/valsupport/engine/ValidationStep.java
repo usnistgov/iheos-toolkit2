@@ -42,4 +42,17 @@ public class ValidationStep {
 
         return buf.toString();
     }
+
+    public boolean isRan() {
+        return ran;
+    }
+    public void setRan(boolean r) {
+        ran = r;
+    }
+    public AbstractMessageValidator getValidator() {
+        return validator;
+    }
+    public ErrorRecorder getEr() {
+        return er;
+    }
 }

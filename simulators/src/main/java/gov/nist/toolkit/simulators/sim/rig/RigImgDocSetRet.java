@@ -34,7 +34,7 @@ import java.util.Map;
  * collects the results, and creates the RAD-75 response. *
  */
 @TypeChecked
-class RigImgDocSetRet extends AbstractMessageValidator {
+public class RigImgDocSetRet extends AbstractMessageValidator {
 
    //***************************************************************
    // static Properties
@@ -134,7 +134,7 @@ class RigImgDocSetRet extends AbstractMessageValidator {
                      "Don't have configuration for IDS with repository unique Id " + idsRepId, this, null);
                throw new NonException();
             }
-            
+
             // Generate model for this repository unique id.
             RetrieveImageRequestModel idsModel = requestModel.getModelForRepository(idsRepId);
             

@@ -50,7 +50,7 @@ class ReconfigureSpec extends Specification {
         port == '8889'
     }
 
-    def 'update endpoint and confirm'() {
+    def 'update endpoint and confirm' () {
         when:
         ReconfigureSimulators rs = new ReconfigureSimulators()
         rs.init(null)

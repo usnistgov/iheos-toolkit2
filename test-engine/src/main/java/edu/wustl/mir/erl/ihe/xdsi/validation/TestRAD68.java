@@ -7,8 +7,6 @@ import org.apache.commons.lang.NotImplementedException;
 import gov.nist.toolkit.testengine.engine.SimulatorTransaction;
 
 /**
- *
- * 
  * @author Ralph Moulton / MIR WUSTL IHE Development Project <a
  * href="mailto:moultonr@mir.wustl.edu">moultonr@mir.wustl.edu</a>
  *

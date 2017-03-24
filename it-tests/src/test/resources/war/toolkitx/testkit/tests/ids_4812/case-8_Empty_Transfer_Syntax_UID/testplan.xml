@@ -1,0 +1,39 @@
+<TestPlan>
+	<Test>ids_4812/Case 8: Empty Transfer Syntax UID</Test>
+	<TestStep id="retrieve-8">
+		<Goal>Imaging Document Set Retrieve exception: Empty Transfer Syntax UID</Goal>
+		<Goal>RegistryReponse status=urn:oasis:names:tc:ebxml-regrep:ResponseStatusType:Failure</Goal>
+		<ExpectedStatus>Failure</ExpectedStatus>
+		<ImagingDocSetRetrieveTransaction>
+			<MetadataFile>RAD-69Request.xml</MetadataFile>
+		</ImagingDocSetRetrieveTransaction>
+	</TestStep>
+	<TestStep id="errors-8">
+		<Goal>Empty Empty Transfer Syntax UID error validation</Goal>
+		<Goal>RegistryErrorList element SHALL contain one or more RegistryError elements</Goal>
+		<Standard>
+			<ResponseBody>
+				<xdsb:RetrieveDocumentSetResponse
+					xmlns:xdsb="urn:ihe:iti:xds-b:2007">
+					<rs:RegistryResponse xmlns:rs="urn:oasis:names:tc:ebxml-regrep:xsd:rs:3.0"
+						status="urn:oasis:names:tc:ebxml-regrep:ResponseStatusType:Failure">
+						<!--
+						<rs:RegistryErrorList>
+							<rs:RegistryError codeContext="No valid Xfer Syntax"
+								errorCode="XDSRepositoryError" location="IdsActorSimulator"
+								severity="urn:oasis:names:tc:ebxml-regrep:ErrorSeverityType:Error" />
+						</rs:RegistryErrorList>
+						-->
+					</rs:RegistryResponse>
+				</xdsb:RetrieveDocumentSetResponse>
+			</ResponseBody>
+		</Standard>
+		<XmlDetailTransaction>
+			<Assertions>
+				<Assert id="Returned doc(s)-8" process="registryErrorListNotEmpty">
+					<TestResponse testDir="THIS" step="retrieve-8" />
+				</Assert>
+			</Assertions>
+		</XmlDetailTransaction>
+	</TestStep>
+</TestPlan>

@@ -1,0 +1,32 @@
+<TestPlan>
+	<Test>iig_5425/validate-R</Test>
+	<TestStep id="validate-rad75-response">
+		<Goal>Validate RAD-75 Response from SUT</Goal>
+		<Standard>
+			<ResponseBody>
+				<xdsb:RetrieveDocumentSetResponse
+					xmlns:xdsb="urn:ihe:iti:xds-b:2007">
+					<rs:RegistryResponse xmlns:rs="urn:oasis:names:tc:ebxml-regrep:xsd:rs:3.0"
+						status="urn:oasis:names:tc:ebxml-regrep:ResponseStatusType:Failure">
+						<rs:RegistryErrorList>
+							<rs:RegistryError
+								codeContext="No document matching composite UID [1.3.6.1.4.1.21367.201599.1.201606021454002:1.3.6.1.4.1.21367.201599.2.201606021454003:1.3.6.1.4.1.21367.201599.3.201606021454003.1.999] "
+								errorCode="XDSDocumentUniqueIdError" location="IdsActorSimulator EL-2"
+								severity="urn:oasis:names:tc:ebxml-regrep:ErrorSeverityType:Error" />
+						</rs:RegistryErrorList>
+					</rs:RegistryResponse>
+				</xdsb:RetrieveDocumentSetResponse>
+			</ResponseBody>
+		</Standard>
+		<XmlDetailTransaction>
+			<Assertions>
+				<Assert id="Returned doc(s)" process="sameRetImgs">
+					<TestResponse testDir="../Rad75RetrieveRequest" step="retrieve" />
+				</Assert>
+				<Assert id="Registry Errors" process="registryErrorListNotEmpty">
+					<TestResponse testDir="../Rad75RetrieveRequest" step="retrieve" />
+				</Assert>
+			</Assertions>
+		</XmlDetailTransaction>
+	</TestStep>
+</TestPlan>

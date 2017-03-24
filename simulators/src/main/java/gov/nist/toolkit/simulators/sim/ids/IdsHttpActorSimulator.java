@@ -3,14 +3,6 @@
  */
 package gov.nist.toolkit.simulators.sim.ids;
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-
-import org.apache.commons.lang3.StringUtils;
-import org.apache.http.NameValuePair;
-import org.apache.log4j.Logger;
-
 import gov.nist.toolkit.configDatatypes.client.TransactionType;
 import gov.nist.toolkit.errorrecording.GwtErrorRecorderBuilder;
 import gov.nist.toolkit.errorrecording.client.XdsErrorCode.Code;
@@ -19,6 +11,12 @@ import gov.nist.toolkit.http.HttpParserBa;
 import gov.nist.toolkit.simulators.support.BaseHttpActorSimulator;
 import gov.nist.toolkit.simulators.support.DsSimCommon;
 import gov.nist.toolkit.valsupport.engine.MessageValidatorEngine;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.log4j.Logger;
+
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Simulator for Image Document Source (IDS) receiving WADO (RAD-55)
@@ -53,6 +51,9 @@ public class IdsHttpActorSimulator extends BaseHttpActorSimulator {
       "*/*" 
    };
 
+   private DsSimCommon dsSimCommon = null;
+   public void setDsSimCommon(DsSimCommon ds) {dsSimCommon = ds;}
+
    /*
     * (non-Javadoc)
     * 
@@ -67,7 +68,7 @@ public class IdsHttpActorSimulator extends BaseHttpActorSimulator {
       logger.info("IdsHttpActorSimulator: run - transactionType = " + transactionType);
       simCommon.setLogger(logger);
       GwtErrorRecorderBuilder gerb = new GwtErrorRecorderBuilder();
-      DsSimCommon dsSimCommon = new DsSimCommon(simCommon);
+      if (dsSimCommon == null) dsSimCommon = new DsSimCommon(simCommon);
 
       logger.debug(transactionType);
       switch (transactionType) {
