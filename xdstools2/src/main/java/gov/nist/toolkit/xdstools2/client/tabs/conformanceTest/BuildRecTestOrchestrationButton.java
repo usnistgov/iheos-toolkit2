@@ -91,6 +91,8 @@ public class BuildRecTestOrchestrationButton extends AbstractOrchestrationButton
 
                 initializationResultsPanel.add(new HTML("Patient ID for all tests: " + orchResponse.getRegisterPid().toString()));
                 initializationResultsPanel.add(new HTML("<br />"));
+
+                testTab.displayTestCollection(testTab.getMainView().getTestsPanel());
             }
         }.run(new BuildRecTestOrchestrationRequest(ClientUtils.INSTANCE.getCommandContext(),request));
     }
