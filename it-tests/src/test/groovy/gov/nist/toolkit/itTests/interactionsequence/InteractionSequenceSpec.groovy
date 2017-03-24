@@ -16,7 +16,7 @@ class InteractionSequenceSpec extends ToolkitSpecification {
 
     }
 
-    def 'Test transformation'() {
+    def 'Test PnR transformation'() {
 
         when:
         InteractionSequences.init(Installation.instance().getInteractionSequencesFile())
@@ -41,6 +41,37 @@ class InteractionSequenceSpec extends ToolkitSpecification {
         InteractingEntity reg = repos.getInteractions().get(0)
         reg.role == "Registry"
 
+    }
+
+    def 'Test XCR transformation'() {
+
+        when:
+        InteractionSequences.init(Installation.instance().getInteractionSequencesFile())
+
+        then:
+        InteractionSequences.getSequencesMap().size() > 0
+
+        List<InteractingEntity> seq = InteractionSequences.getInteractionSequenceById("XCRTransaction")
+
+        seq != null && seq.size() == 1
+
+        InteractingEntity ig = seq.get(0)
+        ig != null
+        ig.role == "Initiating Gateway"
+
+        System.out.println(ig.toString())
+
+        ig.getInteractions().size() == 2
+
+        InteractingEntity rg1 = ig.getInteractions().get(0)
+        rg1.role == "Responding Gateway"
+        System.out.println(rg1.toString())
+
+        InteractingEntity rg2 = ig.getInteractions().get(1)
+        rg2.role == "Responding Gateway"
+        System.out.println(rg2.toString())
+
 
     }
+
 }
