@@ -86,6 +86,7 @@ public class InteractionSequences {
                }
 
                Iterator transactionIt = actorEl.getChildElements();
+               List<InteractingEntity> interactingEntities = new ArrayList<>();
 
                while (transactionIt.hasNext()) {
                   OMElement tranEl = (OMElement)transactionIt.next();
@@ -93,7 +94,6 @@ public class InteractionSequences {
                    if ("Transaction".equals(tranEllLocalName)) {
                        String tranName = tranEl.getAttributeValue(new QName("type"));
                        Iterator destinationEls = tranEl.getChildElements();
-                       List<InteractingEntity> interactingEntities = new ArrayList<>();
                        while (destinationEls.hasNext()) {
                         OMElement destEl = (OMElement)destinationEls.next();
 
