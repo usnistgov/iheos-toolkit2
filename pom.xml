@@ -85,6 +85,7 @@
         <module>bin</module>
         <module>fhir</module>
         <module>fhir-server</module>
+        <module>itsupport</module>
     </modules>
 
 

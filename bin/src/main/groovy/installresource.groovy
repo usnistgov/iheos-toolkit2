@@ -1,6 +1,5 @@
 import gov.nist.toolkit.actorfactory.client.SimId
 import gov.nist.toolkit.fhir.support.ResDb
-import gov.nist.toolkit.installation.Installation
 import gov.nist.toolkit.xdsexception.ExceptionUtil
 /**
  * installresource simid file file file...
@@ -8,11 +7,7 @@ import gov.nist.toolkit.xdsexception.ExceptionUtil
  */
 
 try {
-    Installation.instance().externalCache(Tk.ec)
-    if (!Installation.instance().externalCache()) {
-        println 'External Cache location not set'
-        System.exit(-1)
-    }
+    Tk.init()
 
     SimId simId
     List<File> files = []

@@ -10,18 +10,23 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>bin</artifactId>
+    <artifactId>it-support</artifactId>
 
     <dependencies>
 
         <dependency>
             <groupId>gov.nist.toolkit</groupId>
-            <artifactId>it-support</artifactId>
+            <artifactId>actorfactory</artifactId>
         </dependency>
 
         <dependency>
             <groupId>gov.nist.toolkit</groupId>
-            <artifactId>actorfactory</artifactId>
+            <artifactId>results</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>gov.nist.toolkit</groupId>
+            <artifactId>services</artifactId>
         </dependency>
 
         <dependency>
@@ -29,20 +34,21 @@
             <artifactId>groovy-all</artifactId>
             <version>${groovyVersion}</version>
         </dependency>
+
         <dependency>
             <groupId>gov.nist.toolkit</groupId>
-            <artifactId>actorfactory</artifactId>
+            <artifactId>toolkit-api</artifactId>
         </dependency>
+
+        <dependency>
+            <groupId>gov.nist.toolkit</groupId>
+            <artifactId>toolkit-services</artifactId>
+        </dependency>
+
+        <!-- Just for the isSerializable interface -->
         <dependency>
             <groupId>com.google.gwt</groupId>
             <artifactId>gwt-user</artifactId>
-            <version>${gwtVersion}</version>
-            <scope>compile</scope>
-        </dependency>
-        <dependency>
-            <groupId>gov.nist.toolkit</groupId>
-            <artifactId>fhir</artifactId>
-            <version>4.4.0-SNAPSHOT</version>
         </dependency>
 
     </dependencies>
@@ -79,6 +85,5 @@
 
         </plugins>
     </build>
-
 
 </project>

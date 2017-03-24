@@ -58,19 +58,14 @@ println 'Clearing ~/.groovy/lib'
 
 // clear ~/.groovy/lib  and make empty
 def userHome = System.getProperty('user.home')
-//println "user.home is $userHome"
 def groovyLib = "$userHome/.groovy/lib"
-//println "groovyLib is $groovyLib"
 def groovyLibFile = new File(groovyLib)
 if (groovyLibFile.exists()) {
-    def output = run("rm -r ${groovyLib}")
+    run("rm -r ${groovyLib}")
 }
 groovyLibFile.mkdirs()
 
 def m2 = "$userHome/.m2/repository"
-
-assert trim('/foo/', '/') == 'foo'
-assert trim('/foo', '/') == 'foo'
 
 println 'Installing modules...'
 
@@ -99,8 +94,13 @@ File findJarInRepository(String m2, Module module) {
     }
     file = new File(file, module.artifact)
     file = new File(file, module.version)
-    file = new File(file, "${module.artifact}-${module.version}.jar")
-    return file
+    File artifactFile = new File(file, "${module.artifact}-${module.version}.jar")
+    if (artifactFile.exists())
+        return artifactFile
+    File martifactFile = new File(file, "${module.artifact}-${module.version}.mar")
+    if (martifactFile.exists())
+        return martifactFile
+    return artifactFile  // oh well, give up
 }
 
 String trim(String str, String c) {

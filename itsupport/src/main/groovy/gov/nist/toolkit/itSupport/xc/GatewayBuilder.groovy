@@ -1,4 +1,4 @@
-package gov.nist.toolkit.itTests.xc
+package gov.nist.toolkit.itSupport.xc
 
 import gov.nist.toolkit.actorfactory.SimCache
 import gov.nist.toolkit.configDatatypes.SimulatorProperties
@@ -11,7 +11,6 @@ import gov.nist.toolkit.toolkitApi.RespondingGateway
 import gov.nist.toolkit.toolkitApi.SimulatorBuilder
 import gov.nist.toolkit.toolkitServices.ToolkitFactory
 import gov.nist.toolkit.toolkitServicesCommon.SimConfig
-import groovy.transform.TypeChecked
 /**
  * Build Initiating Gateway and n Responding Gateways behind it.  Each RG
  * has a Registry/Repository pair initialized with a single two-Document
@@ -22,7 +21,7 @@ import groovy.transform.TypeChecked
  * converted to SimulatorConfig with
  *     ToolkitFactory.asSimulatorConfig(SimConfig)
  */
-@TypeChecked
+
 class GatewayBuilder {
 
     static build(ToolkitApi api, SimulatorBuilder spi, int numberCommunities, String userName, String environmentName, String patientId) {
@@ -49,8 +48,11 @@ class GatewayBuilder {
 
             rgConfigs << rgSimConfig
 
+            // load patient id for 12318
+
+
             // load the reg/rep with two documents
-            TestInstance testId = new TestInstance("12318")
+            TestInstance testId = new TestInstance("15832")
             List<String> sections = null
             Map<String, String> qparams = new HashMap<>()
             qparams.put('$patientid$', patientId)
