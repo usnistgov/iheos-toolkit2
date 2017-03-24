@@ -667,7 +667,10 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner, TestTa
 	}
 
 	private String getTestInstancePatientId(TestInstance testInstance, Map<String, String> parms) {
-		return testInstance.getId() + "_" + getPatientIdStr(parms);
+		if (ActorType.REPOSITORY.getShortName().equals(currentActorOption.actorTypeId)) {
+			return testInstance.getId() + "_" + getPatientIdStr(parms);
+		} else
+			return getPatientIdStr(parms);
 	}
 
 	private Map<String, String> initializeTestParameters() {
