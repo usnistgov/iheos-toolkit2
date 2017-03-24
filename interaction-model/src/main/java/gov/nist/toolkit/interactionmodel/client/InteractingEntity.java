@@ -258,10 +258,24 @@ public class InteractingEntity implements IsSerializable, Serializable {
     private void setEntityNameByProvider(InteractingEntity entity, Map<String, String> map) {
         if (map.get(SYSTEM_UNDER_TEST)!=null && SYSTEM_UNDER_TEST.equals(entity.getProvider())) {
                 entity.setName(map.get("SystemUnderTest"));
-        } else if (map.get(SIMULATOR)!=null && SIMULATOR.equals(entity.getProvider())) {
+        } else if ((entity.getName()==null || "".equals(entity.getName())) && map.get(SIMULATOR)!=null && SIMULATOR.equals(entity.getProvider())) {
                 entity.setName(map.get(SIMULATOR));
         }
     }
+
+    /**
+     * key -----> value
+     * SystemName -> Role, ProviderType
+     */
+    // TODO
+    /*
+    private void setEntityNameByProviderAndRole(InteractingEntity entity, Map<String, String> map, String role, String provider) {
+        if (map==null || role==null && provider==null) return;
+
+        if ()
+    }
+    */
+
     public TransactionInstance getTransactionInstance() {
         return transactionInstance;
     }
