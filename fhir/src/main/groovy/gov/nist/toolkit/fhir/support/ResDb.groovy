@@ -13,9 +13,27 @@ import org.apache.log4j.Logger
 class ResDb extends SimDb {
     static private Logger logger = Logger.getLogger(ResDb.class);
 
-    static private final String BASE_TYPE = "base"
+    static final String BASE_TYPE = "base"
+    final static String STORE_TRANSACTION = "store"
+
+    File storeNewResource(String resourceType, String resourceContents) {
+        File file = newResourceFile(resourceType)
+        file.text = resourceContents
+        return file
+    }
+
+    File newResourceFile(String resourceType) {
+        File eventDir = getEventDir()
+        for (int i=1; i<200; i++) {  // no more than 200 resources in an event
+            File resourceFile = new File(eventDir, resourceType + i)
+            if (!resourceFile.exists())
+                return resourceFile
+        }
+        return null
+    }
+
     /**
-     * Return base dir of SimDb storage
+     * Return base dir of SimDb storage for FHIR resources (all FHIR simulators)
      * @return
      */
     @Override
@@ -23,8 +41,31 @@ class ResDb extends SimDb {
         return Installation.instance().fhirSimDbFile();
     }
 
-    static public boolean exists(SimId simId) {
-        return new File(new ResDb().getSimDbFile(), simId.toString()).exists();
+    /**
+     * Get location of Lucene index for this simulator
+     * @param simId
+     * @return
+     */
+    static File getIndexFile(SimId simId) {
+        return new File(getSimBase(simId), 'simindex')
+    }
+
+    /**
+     * Does simulator exist?
+     * @param simId
+     * @return
+     */
+    static  boolean exists(SimId simId) {
+        return getSimBase(simId).exists();
+    }
+
+    /**
+     * Base location of simulator
+     * @param simId - which simulator
+     * @return
+     */
+    static File getSimBase(SimId simId) {
+        return new File(new ResDb().getSimDbFile(), simId.toString())
     }
 
     ResDb mkSim(SimId simid) throws IOException, NoSimException {
@@ -49,13 +90,13 @@ class ResDb extends SimDb {
             throw new IOException("Fhir Simulator " + simid + ", " + actor + " cannot be created");
         }
 
-        ResDb db = new ResDb(simid);
+        ResDb db = new ResDb(simid, BASE_TYPE, null);
         db.setSimulatorType(actor);
         return db;
     }
 
     ResDb(SimId simId) {
-        super(simId, BASE_TYPE, null)
+        super(simId)
     }
 
     ResDb(SimId simId, String actor, String transaction) {
