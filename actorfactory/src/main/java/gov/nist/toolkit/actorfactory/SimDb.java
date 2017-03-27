@@ -99,6 +99,9 @@ public class SimDb {
 		if (simId == null)
 			throw new ToolkitRuntimeException("SimDb - cannot build SimDb with null simId");
 
+		if (!dbRoot.exists())
+			dbRoot.mkdirs();
+
 		if (!dbRoot.canWrite() || !dbRoot.isDirectory())
 			throw new IOException("Simulator database location, [" + dbRoot.toString() + "] is not a directory or cannot be written to");
 

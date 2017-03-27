@@ -46,6 +46,11 @@
             <artifactId>hapi-fhir-structures-dstu2</artifactId>
         </dependency>
 
+        <dependency>
+            <groupId>com.google.gwt</groupId>
+            <artifactId>gwt-user</artifactId>
+        </dependency>
+
     </dependencies>
 
     <build>
