@@ -45,11 +45,12 @@ class SimIndexer {
      * Build indexes for all FHIR sims
      * @return
      */
-    static buildAllIndexes() {
+    static int buildAllIndexes() {
         List<SimId> simIds = new ResDb().getAllSimIds()
         simIds.each { SimId simId ->
             new SimIndexer(simId).buildIndex()
         }
+        return simIds.size()
     }
 
     SimIndexer open() {

@@ -7,7 +7,7 @@ import gov.nist.toolkit.installation.Installation
 import gov.nist.toolkit.utilities.io.Io
 import spock.lang.Specification
 /**
- * Created by bill on 11/2/15.
+ *
  */
 class SimDbTest extends Specification {
 
@@ -17,25 +17,25 @@ class SimDbTest extends Specification {
 
     def 'Empty simdb has no simIds'() {
         when:
-        SimDb.deleteAllSims()
+        new SimDb().deleteAllSims()
 
         then:
-        SimDb.getAllSimIds().isEmpty()
+        new SimDb().getAllSimIds().isEmpty()
     }
 
     def 'Single sim found'() {
         when:
-        SimDb.deleteAllSims()
-        SimDb.mkSim(new SimId('bill', 'foo'), ActorType.REPOSITORY.name)
+        new SimDb().deleteAllSims()
+        new SimDb().mkSim(new SimId('bill', 'foo'), ActorType.REPOSITORY.name)
 
         then:
-        SimDb.getAllSimIds().size() == 1
+        new SimDb().getAllSimIds().size() == 1
     }
 
     def 'Extra directory skipped'() {
         when:
-        SimDb.deleteAllSims()
-        SimDb.mkSim(new SimId('bill', 'foo'), ActorType.REPOSITORY.name)
+        new SimDb().deleteAllSims()
+        new SimDb().mkSim(new SimId('bill', 'foo'), ActorType.REPOSITORY.name)
 
         and:
         File sdb = Installation.instance().simDbFile()
@@ -43,13 +43,13 @@ class SimDbTest extends Specification {
         file.mkdir()
 
         then:
-        SimDb.getAllSimIds().size() == 1
+        new SimDb().getAllSimIds().size() == 1
     }
 
     def 'Extra file skipped'() {
         when:
-        SimDb.deleteAllSims()
-        SimDb.mkSim(new SimId('bill', 'foo'), ActorType.REPOSITORY.name)
+        new SimDb().deleteAllSims()
+        new SimDb().mkSim(new SimId('bill', 'foo'), ActorType.REPOSITORY.name)
 
         and:
         File sdb = Installation.instance().simDbFile()
@@ -59,6 +59,6 @@ class SimDbTest extends Specification {
 
         then:
         file.exists()
-        SimDb.getAllSimIds().size() == 1
+        new SimDb().getAllSimIds().size() == 1
     }
 }

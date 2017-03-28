@@ -1,5 +1,6 @@
 package gov.nist.toolkit.fhirServer.provider;
 
+import ca.uhn.fhir.context.FhirContext;
 import ca.uhn.fhir.model.api.ResourceMetadataKeyEnum;
 import ca.uhn.fhir.model.dstu2.composite.HumanNameDt;
 import ca.uhn.fhir.model.dstu2.resource.OperationOutcome;
@@ -17,7 +18,15 @@ import ca.uhn.fhir.rest.server.IResourceProvider;
 import ca.uhn.fhir.rest.server.exceptions.InvalidRequestException;
 import ca.uhn.fhir.rest.server.exceptions.ResourceNotFoundException;
 import ca.uhn.fhir.rest.server.exceptions.UnprocessableEntityException;
+import gov.nist.toolkit.actorfactory.client.SimId;
+import gov.nist.toolkit.fhir.support.ResDb;
+import gov.nist.toolkit.fhir.support.SimIndexer;
+import gov.nist.toolkit.fhirServer.config.SimContext;
+import gov.nist.toolkit.fhirServer.config.SimTracker;
+import gov.nist.toolkit.utilities.io.Io;
+import gov.nist.toolkit.xdsexception.ExceptionUtil;
 
+import java.io.File;
 import java.util.*;
 
 /**
@@ -25,6 +34,7 @@ import java.util.*;
  * but it is useful to help illustrate how to build a fully-functional server.
  */
 public class PatientResourceProvider implements IResourceProvider {
+	private static final org.slf4j.Logger ourLog = org.slf4j.LoggerFactory.getLogger(PatientResourceProvider.class);
 
 	/**
 	 * This map has a resource ID as a key, and each key maps to a Deque list containing all versions of the resource with that ID.
@@ -40,7 +50,7 @@ public class PatientResourceProvider implements IResourceProvider {
 	 * Constructor, which pre-populates the provider with one resource instance.
 	 */
 	public PatientResourceProvider() {
-		System.out.println("Starting Patient provider"); System.out.flush();
+		ourLog.info("Starting Patient provider");
 		long resourceId = myNextId++;
 		
 		Patient patient = new Patient();
@@ -179,9 +189,7 @@ public class PatientResourceProvider implements IResourceProvider {
 	@Read(version = true)
 	public Patient readPatient(@IdParam IdDt theId) {
 		Deque<Patient> retVal;
-		System.out.println("readPatient " + theId); System.out.flush();
-
-
+		ourLog.info("readPatient " + theId);
 
 		try {
 			retVal = myIdToPatientVersions.get(theId.getIdPartAsLong());
@@ -193,18 +201,39 @@ public class PatientResourceProvider implements IResourceProvider {
 			throw new ResourceNotFoundException(theId);
 		}
 
-		if (theId.hasVersionIdPart() == false) {
-			return retVal.getLast();
-		} else {
-			for (Patient nextVersion : retVal) {
-				String nextVersionId = nextVersion.getId().getVersionIdPart();
-				if (theId.getVersionIdPart().equals(nextVersionId)) {
-					return nextVersion;
-				}
-			}
-			// No matching version
-			throw new ResourceNotFoundException("Unknown version: " + theId.getValue());
+		SimContext simContext = SimTracker.getContext();
+		SimId simId = simContext.getSimId();
+		ResDb resDb = new ResDb(simId);
+		String patientId = theId.getIdPart();  // in the FHIR sense
+
+		SimIndexer simIndexer = new SimIndexer(simId).open();
+		List<String> paths = simIndexer.lookupByTypeAndId("Patient", patientId);
+		if (paths.size() == 0 || paths.size() > 1)
+			throw new ResourceNotFoundException(theId);
+
+		FhirContext ourCtx = FhirContext.forDstu2();
+		String resourceString;
+		try {
+			resourceString = Io.stringFromFile(new File(paths.get(0)));
+		} catch (Exception e) {
+			ourLog.error(ExceptionUtil.exception_details(e));
+			throw new ResourceNotFoundException(theId);
 		}
+		return ourCtx.newJsonParser().parseResource(Patient.class, resourceString);
+
+
+//		if (theId.hasVersionIdPart() == false) {
+//			return retVal.getLast();
+//		} else {
+//			for (Patient nextVersion : retVal) {
+//				String nextVersionId = nextVersion.getId().getVersionIdPart();
+//				if (theId.getVersionIdPart().equals(nextVersionId)) {
+//					return nextVersion;
+//				}
+//			}
+//			// No matching version
+//			throw new ResourceNotFoundException("Unknown version: " + theId.getValue());
+//		}
 
 	}
 
