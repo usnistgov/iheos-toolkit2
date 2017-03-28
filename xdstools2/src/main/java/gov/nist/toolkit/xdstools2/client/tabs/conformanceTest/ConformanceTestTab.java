@@ -403,9 +403,8 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner, TestTa
 //                testStatistics.setTestCount(testOverviews.size());
 				for (TestOverviewDTO testOverview : testOverviews) {
 					updateTestOverview(testOverview);
-					TestDisplay testDisplay = testDisplayGroup.display(testOverview);
-					// Require late-binding of diagram due to orchestration place holders
-					testDisplay.getView().setInteractionDiagram(new InteractionDiagramDisplay(testOverview, testContext.getTestSession(), getSiteToIssueTestAgainst(), testContext.getSiteUnderTestAsSiteSpec().getName(),currentActorOption, getTestInstancePatientId(testOverview.getTestInstance(), parms)));
+					InteractionDiagramDisplay diagramDisplay = new InteractionDiagramDisplay(testOverview, testContext.getTestSession(), getSiteToIssueTestAgainst(), testContext.getSiteUnderTestAsSiteSpec().getName(),currentActorOption, getTestInstancePatientId(testOverview.getTestInstance(), parms));
+					TestDisplay testDisplay = testDisplayGroup.display(testOverview, diagramDisplay);
 					testsPanel.add(testDisplay.asWidget());
 				}
 				updateTestsOverviewHeader(currentActorOption);
@@ -536,9 +535,8 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner, TestTa
 					@Override
 					public void onComplete(TestOverviewDTO testOverviewDTO) {
 						updateTestOverview(testOverviewDTO);
-						TestDisplay testDisplay = testDisplayGroup.display(testOverviewDTO);
-						// Require late-binding of diagram due to orchestration place holders
-						testDisplay.getView().setInteractionDiagram(new InteractionDiagramDisplay(testOverviewDTO, testContext.getTestSession(), getSiteToIssueTestAgainst(), testContext.getSiteUnderTestAsSiteSpec().getName(),actorOption,null));
+						InteractionDiagramDisplay diagramDisplay = new InteractionDiagramDisplay(testOverviewDTO, testContext.getTestSession(), getSiteToIssueTestAgainst(), testContext.getSiteUnderTestAsSiteSpec().getName(),actorOption,null);
+						testDisplayGroup.display(testOverviewDTO, diagramDisplay);
 						updateTestsOverviewHeader(actorOption);
 					}
 				}.run(new DeleteSingleTestRequest(getCommandContext(),testInstance));
@@ -567,11 +565,10 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner, TestTa
 			new RunTestCommand(){
 				@Override
 				public void onComplete(TestOverviewDTO testOverviewDTO) {
+				    InteractionDiagramDisplay diagramDisplay = new InteractionDiagramDisplay(testOverviewDTO, testContext.getTestSession(), getSiteToIssueTestAgainst(), testContext.getSiteUnderTestAsSiteSpec().getName(),currentActorOption,patientId);
 					// returned testStatus of entire test
-					TestDisplay testDisplay = testDisplayGroup.display(testOverviewDTO);
-					// Require late-binding of diagram due to orchestration place holders
-					testDisplay.getView().setInteractionDiagram(new InteractionDiagramDisplay(testOverviewDTO, testContext.getTestSession(), getSiteToIssueTestAgainst(), testContext.getSiteUnderTestAsSiteSpec().getName(),currentActorOption,patientId));
-					Collection<TestOverviewDTO> overviews = updateTestOverview(testOverviewDTO);
+					testDisplayGroup.display(testOverviewDTO, diagramDisplay);
+					updateTestOverview(testOverviewDTO);
 					updateTestsOverviewHeader(currentActorOption);
 					// Schedule next section to be run
 					if (sectionDone != null)
@@ -645,10 +642,9 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner, TestTa
 			new RunTestCommand(){
 				@Override
 				public void onComplete(TestOverviewDTO testOverviewDTO) {
+				    InteractionDiagramDisplay diagramDisplay = new InteractionDiagramDisplay(testOverviewDTO, testContext.getTestSession(), getSiteToIssueTestAgainst(), testContext.getSiteUnderTestAsSiteSpec().getName(),currentActorOption,patientId);
 					// returned testStatus of entire test
-					TestDisplay testDisplay = testDisplayGroup.display(testOverviewDTO);
-					// Require late-binding of diagram due to orchestration place holders
-					testDisplay.getView().setInteractionDiagram(new InteractionDiagramDisplay(testOverviewDTO, testContext.getTestSession(), getSiteToIssueTestAgainst(), testContext.getSiteUnderTestAsSiteSpec().getName(),currentActorOption,patientId));
+					testDisplayGroup.display(testOverviewDTO, diagramDisplay);
 					updateTestOverview(testOverviewDTO);
 					updateTestsOverviewHeader(currentActorOption);
 					// Schedule next test to be run

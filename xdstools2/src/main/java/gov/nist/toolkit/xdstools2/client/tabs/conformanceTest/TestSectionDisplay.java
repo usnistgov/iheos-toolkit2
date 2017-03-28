@@ -4,7 +4,14 @@ import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.logical.shared.OpenEvent;
 import com.google.gwt.event.logical.shared.OpenHandler;
-import com.google.gwt.user.client.ui.*;
+import com.google.gwt.user.client.ui.Button;
+import com.google.gwt.user.client.ui.DisclosurePanel;
+import com.google.gwt.user.client.ui.FlexTable;
+import com.google.gwt.user.client.ui.FlowPanel;
+import com.google.gwt.user.client.ui.HTML;
+import com.google.gwt.user.client.ui.IsWidget;
+import com.google.gwt.user.client.ui.TextBox;
+import com.google.gwt.user.client.ui.Widget;
 import gov.nist.toolkit.results.client.TestInstance;
 import gov.nist.toolkit.session.client.logtypes.SectionOverviewDTO;
 import gov.nist.toolkit.session.client.logtypes.StepOverviewDTO;
@@ -40,7 +47,7 @@ class TestSectionDisplay implements IsWidget {
     private TestSectionDisplay me;
 
 
-    TestSectionDisplay(String sessionName, TestInstance testInstance, SectionOverviewDTO sectionOverview, TestRunner testRunner, boolean allowRun) {
+    TestSectionDisplay(String sessionName, TestInstance testInstance, SectionOverviewDTO sectionOverview, TestRunner testRunner, boolean allowRun, InteractionDiagramDisplay diagramDisplay) {
         me = this;
         this.sessionName = sessionName;
         this.testInstance = testInstance;
@@ -70,6 +77,8 @@ class TestSectionDisplay implements IsWidget {
             view.setDone("Manual operation", "Manual operation", null);
         }
         view.setDescription(sectionOverview.getDescription());
+        if (diagramDisplay!=null)
+            view.setDiagram(diagramDisplay.render());
         view.build();
     }
 

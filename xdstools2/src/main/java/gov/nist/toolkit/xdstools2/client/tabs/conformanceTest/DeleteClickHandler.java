@@ -32,11 +32,8 @@ public class DeleteClickHandler implements ClickHandler {
             @Override
             public void onComplete(TestOverviewDTO testOverviewDTO) {
                 testRunner.removeTestDetails(testOverviewDTO.getTestInstance());
-                TestDisplay testDisplay = testDisplayGroup.display(testOverviewDTO);
-                try {
-                    // Require late-binding of diagram due to orchestration place holders
-                    testDisplay.getView().setInteractionDiagram(new InteractionDiagramDisplay(testOverviewDTO, testContext.getTestSession(), testRunner.getSiteToIssueTestAgainst(), testContext.getSiteUnderTestAsSiteSpec().getName(), testRunner.getCurrentActorOption(), null));
-                } catch (Throwable t) {}
+                InteractionDiagramDisplay diagramDisplay = new InteractionDiagramDisplay(testOverviewDTO, testContext.getTestSession(), testRunner.getSiteToIssueTestAgainst(), testContext.getSiteUnderTestAsSiteSpec().getName(), testRunner.getCurrentActorOption(), null);
+                TestDisplay testDisplay = testDisplayGroup.display(testOverviewDTO,diagramDisplay);
             }
         }.run(new DeleteSingleTestRequest(ClientUtils.INSTANCE.getCommandContext(),testInstance));
     }

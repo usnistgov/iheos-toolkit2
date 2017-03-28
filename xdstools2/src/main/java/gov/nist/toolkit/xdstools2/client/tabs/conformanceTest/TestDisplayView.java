@@ -96,9 +96,12 @@ class TestDisplayView extends FlowPanel implements TestStatusDisplay {
             this.description.setText(description);
     }
 
+    public Widget getInteractionDiagram() {
+        return interactionDiagram;
+    }
+
     void setInteractionDiagram(Widget diagram) {
         interactionDiagram = diagram;
-        display();
     }
 
     void clearSections() { sections.clear(); }

@@ -53,6 +53,7 @@ public class InteractionDiagram extends Composite {
     public static final String RGB_RED = "rgb(255,0,0)";
     public static final String RGB_BLUE = "rgb(0,0,255)";
     public static final String RGB_ORANGE = "rgb(255,165,0)";
+    public static final int MAX_FIRST_TRAN_REPEAT = 3;
     private int g_depth = 0;
     private int g_x = 0;
     private int g_y = 0;
@@ -371,6 +372,42 @@ public class InteractionDiagram extends Composite {
         return label;
     }
 
+    public static boolean  isFirstTransactionRepeatingTooManyTimes(TestOverviewDTO testOverviewDTO) {
+        int repeatCt = 0;
+        String firstTransaction = null;
+
+        if (testOverviewDTO == null || testOverviewDTO.getSectionNames() == null) return false;
+
+        List<String> sectionNames = testOverviewDTO.getSectionNames();
+
+        if (sectionNames == null || (sectionNames != null && sectionNames.isEmpty()))
+            return false;
+
+        if (sectionNames.size() > 0 && testOverviewDTO.getSections().size() > 0) {
+            for (String section : sectionNames) {
+                SectionOverviewDTO sectionOverviewDTO = testOverviewDTO.getSectionOverview(section);
+                if (sectionOverviewDTO.getStepNames() != null && sectionOverviewDTO.getStepNames().size() > 0) {
+                    String stepName = sectionOverviewDTO.getStepNames().get(0);
+                    StepOverviewDTO stepOverviewDTO = sectionOverviewDTO.getStep(stepName);
+
+                    // Manage display to avoid long monotone diagrams
+                    if (firstTransaction == null) {
+                        firstTransaction = stepOverviewDTO.getTransaction();
+                        repeatCt++;
+                    } else if (firstTransaction.equals(stepOverviewDTO.getTransaction())) {
+                        if (++repeatCt>MAX_FIRST_TRAN_REPEAT)
+                            return true;
+                    } else {
+                        return false; // Break away when the transaction doesn't repeat
+                    }
+
+
+                }
+            }
+        }
+        return false;
+    }
+
 
     List<InteractingEntity> getInteractingEntity(TestOverviewDTO testResultDTO, SiteSpec targetSite) {
         if (testResultDTO == null || testResultDTO.getSectionNames() == null) return null;
@@ -382,6 +419,7 @@ public class InteractionDiagram extends Composite {
 
         List<InteractingEntity> result = new ArrayList<InteractingEntity>();
         setAtleastOneSectionWasRun(false);
+
 
         if (sectionNames.size()>0 && testResultDTO.getSections().size()>0)
          for (String section : sectionNames) {
@@ -1249,4 +1287,5 @@ public class InteractionDiagram extends Composite {
     public void setAtleastOneSectionWasRun(boolean atleastOneSectionWasRun) {
         this.atleastOneSectionWasRun = atleastOneSectionWasRun;
     }
+
 }

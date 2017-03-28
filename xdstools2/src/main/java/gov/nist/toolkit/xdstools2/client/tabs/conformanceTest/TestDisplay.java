@@ -1,6 +1,8 @@
 package gov.nist.toolkit.xdstools2.client.tabs.conformanceTest;
 
-import com.google.gwt.user.client.ui.*;
+import com.google.gwt.user.client.ui.IsWidget;
+import com.google.gwt.user.client.ui.Widget;
+import gov.nist.toolkit.interactiondiagram.client.widgets.InteractionDiagram;
 import gov.nist.toolkit.results.client.TestInstance;
 import gov.nist.toolkit.session.client.logtypes.SectionOverviewDTO;
 import gov.nist.toolkit.session.client.logtypes.TestOverviewDTO;
@@ -20,6 +22,7 @@ public class TestDisplay  implements IsWidget {
     private boolean allowRun = true;
     private boolean showValidate = false;
     private TestDisplayView view = new TestDisplayView();
+    private InteractionDiagramDisplay diagramDisplay;
 
     public TestDisplay(TestInstance testInstance, TestDisplayGroup testDisplayGroup, TestRunner testRunner, TestContext testContext, TestContextView testContextView) {
         this.testInstance = testInstance;
@@ -56,21 +59,29 @@ public class TestDisplay  implements IsWidget {
 
         view.setDescription(testOverview.getDescription());
 
-        // build an interaction sequence diagram
-//        if (testOverview.isRun()) {
-//            try {
-//                view.setInteractionDiagram(new InteractionDiagramDisplay(testOverview));
-//            } catch(Exception e) {
-//
-//            }
-//        }
+        // Test level diagram -- normally comes from the TestDisplayView InteractionDiagram member
+        boolean firstTransactionRepeatingTooManyTimes = InteractionDiagram.isFirstTransactionRepeatingTooManyTimes(testOverview);
+        if (getDiagramDisplay()!=null && !firstTransactionRepeatingTooManyTimes) {
+            view.setInteractionDiagram(getDiagramDisplay().render());
+        }
 
         // build sections within test
         view.clearSections();
         for (String sectionName : testOverview.getSectionNames()) {
             SectionOverviewDTO sectionOverview = testOverview.getSectionOverview(sectionName);
-            TestSectionDisplay sectionComponent = new TestSectionDisplay(testContext.getTestSession(), testOverview.getTestInstance(), sectionOverview, testRunner, allowRun);
-            view.addSection(sectionComponent.asWidget());
+            // Section level diagram
+            if (getDiagramDisplay()!=null && firstTransactionRepeatingTooManyTimes) {
+               InteractionDiagramDisplay diagramDisplay = getDiagramDisplay().copy();
+               diagramDisplay.getTestOverviewDTO().getSectionNames().add(sectionName);
+               diagramDisplay.getTestOverviewDTO().getSections().put(sectionName,sectionOverview);
+
+                TestSectionDisplay sectionComponent = new TestSectionDisplay(testContext.getTestSession(), testOverview.getTestInstance(), sectionOverview, testRunner, allowRun, diagramDisplay);
+                view.addSection(sectionComponent.asWidget());
+            } else {
+                TestSectionDisplay sectionComponent = new TestSectionDisplay(testContext.getTestSession(), testOverview.getTestInstance(), sectionOverview, testRunner, allowRun, null);
+                view.addSection(sectionComponent.asWidget());
+            }
+
         }
 
         view.display();
@@ -84,5 +95,13 @@ public class TestDisplay  implements IsWidget {
 
     public TestDisplayView getView() {
         return view;
+    }
+
+    public InteractionDiagramDisplay getDiagramDisplay() {
+        return diagramDisplay;
+    }
+
+    public void setDiagramDisplay(InteractionDiagramDisplay diagramDisplay) {
+        this.diagramDisplay = diagramDisplay;
     }
 }

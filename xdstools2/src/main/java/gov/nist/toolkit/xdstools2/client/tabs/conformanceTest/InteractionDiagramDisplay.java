@@ -12,6 +12,7 @@ import gov.nist.toolkit.xdstools2.client.command.command.SetSutInitiatedTransact
 import gov.nist.toolkit.xdstools2.client.util.ClientUtils;
 import gov.nist.toolkit.xdstools2.shared.command.request.SetSutInitiatedTransactionInstanceRequest;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -20,10 +21,12 @@ import java.util.List;
 public class InteractionDiagramDisplay extends FlowPanel {
 
     TestOverviewDTO testOverviewDTO;
+
     String sessionName;
     SiteSpec testTarget;
     String pid;
     ActorOption actorOption;
+    String sutSystemName;
 
 
     public InteractionDiagramDisplay(TestOverviewDTO testResultDTO, String sessionName, SiteSpec testTarget, String sutSystemName, ActorOption actorOption, String pid) {
@@ -31,49 +34,58 @@ public class InteractionDiagramDisplay extends FlowPanel {
         setTestOverviewDTO(testResultDTO);
         setSessionName(sessionName);
         setTestTarget(testTarget);
-        setPid(pid);
+        setSutSystemName(sutSystemName);
         setActorOption(actorOption);
+        setPid(pid);
 
-        try {
-            final InteractionDiagram diagram = new InteractionDiagram(ClientUtils.INSTANCE.getEventBus(), testResultDTO, sessionName, testTarget, sutSystemName, ActorType.findActor(getActorOption().getActorTypeId()).getName());
-            if (diagram!=null) {
+    }
 
-                boolean hasSutInitiatedTrans = false;
-                for (InteractingEntity ie : diagram.getEntityList()) {
-                   if (ie.hasSutInitiatedTransactions()) {
-                       hasSutInitiatedTrans = true;
-                       break;
-                   }
+    public InteractionDiagramDisplay render() {
+        if (getTestOverviewDTO()!=null) {
+            try {
+                final InteractionDiagram diagram = new InteractionDiagram(ClientUtils.INSTANCE.getEventBus(), getTestOverviewDTO(), sessionName, testTarget, sutSystemName, ActorType.findActor(getActorOption().getActorTypeId()).getName());
+                if (diagram != null) {
 
-                }
+                        clear();
 
-                if (pid!=null && testResultDTO.isRun() && hasSutInitiatedTrans) {
-                    new SetSutInitiatedTransactionInstanceCommand() {
-                        @Override
-                        public void onComplete(List<InteractingEntity> result) {
-                            diagram.setEntityList(result);
+                        boolean hasSutInitiatedTrans = false;
+                        for (InteractingEntity ie : diagram.getEntityList()) {
+                            if (ie.hasSutInitiatedTransactions()) {
+                                hasSutInitiatedTrans = true;
+                                break;
+                            }
+
+                        }
+
+                        if (pid != null && getTestOverviewDTO().isRun() && hasSutInitiatedTrans) {
+                            new SetSutInitiatedTransactionInstanceCommand() {
+                                @Override
+                                public void onComplete(List<InteractingEntity> result) {
+                                    diagram.setEntityList(result);
+                                    diagram.draw();
+                                }
+                            }.run(new SetSutInitiatedTransactionInstanceRequest(ClientUtils.INSTANCE.getCommandContext(), diagram.getEntityList(), new SimId(getTestTarget().getName()), getPid()));
+                        } else {
                             diagram.draw();
                         }
-                    }.run(new SetSutInitiatedTransactionInstanceRequest(ClientUtils.INSTANCE.getCommandContext(), diagram.getEntityList(), new SimId(getTestTarget().getName()), getPid()));
-                } else {
-                    diagram.draw();
-                }
 
 
-                if ((!testResultDTO.isRun() && diagram.hasMeaningfulDiagram()) || testResultDTO.isRun()) {
-                    add(new HTML("<p><b>Interaction Sequence:</b></p>"));
-                    add(diagram);
-                    add(new HTML("<br/>"));
-                }
+                        if ((!getTestOverviewDTO().isRun() && diagram.hasMeaningfulDiagram()) || getTestOverviewDTO().isRun()) {
+                            add(new HTML("<p><b>Interaction Sequence:</b></p>"));
+                            add(diagram);
+                            add(new HTML("<br/>"));
+                        }
+                    }
+
+
+            } catch (Exception ex) {
+                add(new HTML("<!-- Sequence Diagram Error: "
+                        + ex.toString()
+                        + " -->"));
             }
-        } catch (Exception ex) {
-            add(new HTML("<!-- Sequence Diagram Error: "
-                    + ex.toString()
-                    + " -->"));
         }
 
-
-
+        return this;
     }
 
     public String getSessionName() {
@@ -114,5 +126,27 @@ public class InteractionDiagramDisplay extends FlowPanel {
 
     public void setActorOption(ActorOption actorOption) {
         this.actorOption = actorOption;
+    }
+
+
+    public InteractionDiagramDisplay copy() {
+        TestOverviewDTO testOverviewDTO = new TestOverviewDTO();
+        testOverviewDTO.setSectionNames(new ArrayList<String>());
+        testOverviewDTO.setTestInstance(getTestOverviewDTO().getTestInstance());
+        testOverviewDTO.setDescription(getTestOverviewDTO().getDescription());
+        testOverviewDTO.setTitle(getTestOverviewDTO().getTitle());
+        testOverviewDTO.setRun(getTestOverviewDTO().isRun());
+        testOverviewDTO.setPass(getTestOverviewDTO().isPass());
+
+       InteractionDiagramDisplay diagramDisplay =  new InteractionDiagramDisplay(testOverviewDTO, getSessionName(), getTestTarget(), getSutSystemName(), getActorOption(), getPid());
+       return diagramDisplay;
+    }
+
+    public String getSutSystemName() {
+        return sutSystemName;
+    }
+
+    public void setSutSystemName(String sutSystemName) {
+        this.sutSystemName = sutSystemName;
     }
 }

@@ -2,7 +2,12 @@ package gov.nist.toolkit.xdstools2.client.tabs.conformanceTest;
 
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.logical.shared.OpenHandler;
-import com.google.gwt.user.client.ui.*;
+import com.google.gwt.user.client.ui.DisclosurePanel;
+import com.google.gwt.user.client.ui.FlowPanel;
+import com.google.gwt.user.client.ui.HTML;
+import com.google.gwt.user.client.ui.Image;
+import com.google.gwt.user.client.ui.IsWidget;
+import com.google.gwt.user.client.ui.Widget;
 import gov.nist.toolkit.xdstools2.client.util.HtmlUtil;
 
 /**
@@ -20,6 +25,7 @@ public class TestSectionView implements IsWidget {
     private HTML description = new HTML();
 
     private HTML fatalError = new HTML();
+    private Widget diagram;
 
     TestSectionView() {
     }
@@ -30,6 +36,9 @@ public class TestSectionView implements IsWidget {
         body.clear();
         body.add(fatalError);
         body.add(description);
+
+        if (diagram!=null)
+            body.add(diagram);
 
         body.add(sectionResultsPanel);
 
@@ -153,4 +162,11 @@ public class TestSectionView implements IsWidget {
         return panel;
     }
 
+    public Widget getDiagram() {
+        return diagram;
+    }
+
+    public void setDiagram(Widget diagram) {
+        this.diagram = diagram;
+    }
 }

@@ -26,7 +26,7 @@ public class OrchestrationSupportTestsDisplay extends FlowPanel {
                 orchGroup.allowRun(false);
                 orchGroup.allowDelete(false);
                 for (TestOverviewDTO testOverview : testOverviews) {
-                    TestDisplay testDisplay = orchGroup.display(testOverview);
+                    TestDisplay testDisplay = orchGroup.display(testOverview,null);
                     add(testDisplay.asWidget());
                 }
             }
