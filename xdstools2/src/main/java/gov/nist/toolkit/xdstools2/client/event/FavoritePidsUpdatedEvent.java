@@ -4,7 +4,7 @@ import com.google.gwt.event.shared.EventHandler;
 import com.google.gwt.event.shared.GwtEvent;
 
 /**
- * Event thrown when there is a change in the list of favorite PIDs (creation, deletion, update).
+ * SimResource thrown when there is a change in the list of favorite PIDs (creation, deletion, update).
  * @see FavoritePidsUpdatedEventHandler
  * Created by onh2 on 9/27/16.
  */
@@ -21,7 +21,7 @@ public class FavoritePidsUpdatedEvent extends GwtEvent<FavoritePidsUpdatedEvent.
     }
 
     /**
-     * Event handler interface to use when there is an update in the list of favorite PIDs.
+     * SimResource handler interface to use when there is an update in the list of favorite PIDs.
      * @see FavoritePidsUpdatedEvent
      */
     public interface FavoritePidsUpdatedEventHandler extends EventHandler {

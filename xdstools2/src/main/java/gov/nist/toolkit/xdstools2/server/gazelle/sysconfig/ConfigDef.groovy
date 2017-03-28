@@ -122,12 +122,12 @@ ITI-41:Async Provide and Register.b:pr.as
 ITI-80:Cross-Gateway Doc Provide
 ITI-59:Provider Info Feed
 RAD-68:P&R Imaging Doc Set MTOM/XOP   Y
-ITI-81:Retrieve ATNA Audit Event
+ITI-81:Retrieve ATNA Audit SimResource
 RAD-69:Retrieve Imaging Doc Set
 RAD-107:WADO-RS Retrieve
 ITI-38:Cross Gateway Query:xcq
 ITI-71:Get Authorization Token
-ITI-82:Retrieve Syslog Event
+ITI-82:Retrieve Syslog SimResource
 ITI-72:ITI-72 Webservice
 ITI-48:Retrieve Value Set
 ITI-55:Cross GW Patient Discovery

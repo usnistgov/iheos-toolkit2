@@ -4,7 +4,7 @@ import com.google.gwt.event.shared.GwtEvent;
 import gov.nist.toolkit.xdstools2.client.event.testSession.TestSessionChangedEventHandler;
 
 /**
- * Event thrown when there is a change to the test sessions.
+ * SimResource thrown when there is a change to the test sessions.
  * Can carry one of three changes:
  * <ul>
  *     <li>delete;</li>
@@ -21,7 +21,7 @@ public class TestSessionChangedEvent extends GwtEvent<TestSessionChangedEventHan
     private String value;
 
     /**
-     * Event constructor.
+     * SimResource constructor.
      * @param changeType type of change made to the test session.
      * @param value name of the test session affected by the change.
      */

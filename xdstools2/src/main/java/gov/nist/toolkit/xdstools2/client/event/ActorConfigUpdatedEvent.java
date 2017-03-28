@@ -5,7 +5,7 @@ import com.google.gwt.event.shared.EventHandler;
 import com.google.gwt.event.shared.GwtEvent;
 
 /**
- * Event thrown when an ActorConfig is changed (creation, deletion, modification).
+ * SimResource thrown when an ActorConfig is changed (creation, deletion, modification).
  * @see ActorConfigUpdatedEventHandler
  * Created by onh2 on 9/20/16.
  */
@@ -23,7 +23,7 @@ public class ActorConfigUpdatedEvent extends GwtEvent<ActorConfigUpdatedEvent.Ac
     }
 
     /**
-     * Event handler interface for an ActorConfig update.
+     * SimResource handler interface for an ActorConfig update.
      * @see ActorConfigUpdatedEvent
      */
     public interface ActorConfigUpdatedEventHandler extends EventHandler{

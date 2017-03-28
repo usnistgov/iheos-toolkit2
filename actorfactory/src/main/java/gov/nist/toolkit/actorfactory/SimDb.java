@@ -365,6 +365,7 @@ public class SimDb {
 
 	public String getTransaction() { return transaction; }
 	public String getActor() { return actor; }
+	public SimId getSimId() { return simId; }
 
 	private void getActorIfAvailable() {
 		if (actor==null) {
@@ -733,37 +734,6 @@ public class SimDb {
 		return null;
 	}
 
-	public void perEvent(List<ActorType> actorTypes, List<TransactionType> transactionTypes, PerEvent perEvent) {
-		for (File actorFile : simDir.listFiles()) {
-			if (!actorFile.isDirectory())
-				continue;
-			ActorType actorType = null;
-			if (actorTypes != null && !actorTypes.isEmpty()) {
-				String actorTypeName = actorFile.getName();
-				actorType = ActorType.findActor(actorTypeName);
-			}
-			if (actorType == null) continue;
-			if (actorTypes != null && !actorTypes.contains(actorType))
-				continue;
-			for (File transFile : actorFile.listFiles()) {
-				if (!transFile.isDirectory())
-					continue;
-				String transTypeName = transFile.getName();
-				TransactionType transType = TransactionType.find(transTypeName);
-				if (transType == null) continue;
-				if (transactionTypes != null || !transactionTypes.contains(transType))
-					continue;
-				for (File eventFile : transFile.listFiles()) {
-					if (!eventFile.isDirectory())
-						continue;
-
-					perEvent.event(simId, actorType, transType, eventFile);
-
-
-				}
-			}
-		}
-	}
 
 
 	public File getTransactionEvent(String simid, String actor, String trans, String event) {

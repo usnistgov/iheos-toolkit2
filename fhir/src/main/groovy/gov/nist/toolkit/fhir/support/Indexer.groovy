@@ -21,9 +21,9 @@ class Indexer {
         indexDir = _indexDir
     }
 
-    boolean createIndex(File index) {
+    boolean createIndex() {
         try {
-            Directory dir = FSDirectory.open(index.toPath())
+            Directory dir = FSDirectory.open(indexDir.toPath())
             IndexWriterConfig iwc = new IndexWriterConfig()
             iwc.setOpenMode(IndexWriterConfig.OpenMode.CREATE)
             indexWriter = new IndexWriter(dir, iwc)
@@ -41,11 +41,13 @@ class Indexer {
         return indexSearcher
     }
 
-    void addResource(ResourceIndexItem resource) {
+    void addResource(ResourceIndex resource) {
         Document doc = new Document()
-        doc.add(new StringField('field', resource.field, Field.Store.YES))
-        doc.add(new StringField('value', resource.value, Field.Store.YES))
+        resource.items.each { ResourceIndexItem item ->
+            doc.add(new StringField(item.field, item.value, Field.Store.YES))
+        }
         doc.add(new StringField('path', resource.path, Field.Store.YES))
+        println 'indexing ' + doc
         try {
             indexWriter.addDocument(doc);
         } catch (IOException ex) {

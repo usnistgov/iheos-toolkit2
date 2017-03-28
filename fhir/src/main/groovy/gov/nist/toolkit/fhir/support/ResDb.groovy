@@ -1,8 +1,11 @@
 package gov.nist.toolkit.fhir.support
 
+import gov.nist.toolkit.actorfactory.PerResource
 import gov.nist.toolkit.actorfactory.SimDb
 import gov.nist.toolkit.actorfactory.client.NoSimException
 import gov.nist.toolkit.actorfactory.client.SimId
+import gov.nist.toolkit.actortransaction.client.ActorType
+import gov.nist.toolkit.configDatatypes.client.TransactionType
 import gov.nist.toolkit.installation.Installation
 import org.apache.log4j.Logger
 
@@ -16,6 +19,33 @@ class ResDb extends SimDb {
     static final String BASE_TYPE = "base"
     final static String STORE_TRANSACTION = "store"
 
+    public void perResource(List<ActorType> actorTypes, List<TransactionType> transactionTypes, PerResource perResource) {
+        for (File actorFile : simDir.listFiles()) {
+            if (!actorFile.isDirectory())
+                continue;
+            ActorType actorType = null;
+            if (actorTypes != null && !actorTypes.isEmpty()) {
+                String actorTypeName = actorFile.getName();
+                actorType = ActorType.findActor(actorTypeName);
+            }
+            for (File transFile : actorFile.listFiles()) {
+                if (!transFile.isDirectory())
+                    continue;
+                String transTypeName = transFile.getName();
+                TransactionType transType = TransactionType.find(transTypeName);
+                for (File eventFile : transFile.listFiles()) {
+                    if (!eventFile.isDirectory())
+                        continue;
+                    for (File resourceFile : eventFile.listFiles()) {
+                        if (resourceFile.name == 'date.ser')
+                            continue
+                        perResource.event(simId, actorType, transType, eventFile, resourceFile);
+                    }
+                }
+            }
+        }
+    }
+
     File storeNewResource(String resourceType, String resourceContents) {
         File file = newResourceFile(resourceType)
         file.text = resourceContents
@@ -25,7 +55,7 @@ class ResDb extends SimDb {
     File newResourceFile(String resourceType) {
         File eventDir = getEventDir()
         for (int i=1; i<200; i++) {  // no more than 200 resources in an event
-            File resourceFile = new File(eventDir, resourceType + i)
+            File resourceFile = new File(eventDir, (resourceType + i) + '.json')
             if (!resourceFile.exists())
                 return resourceFile
         }

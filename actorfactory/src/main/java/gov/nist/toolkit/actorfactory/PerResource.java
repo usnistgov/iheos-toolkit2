@@ -9,12 +9,12 @@ import java.io.File;
 /**
  * Callback event for scanning SimDb
  */
-public interface PerEvent {
+public interface PerResource {
     /**
      *
      * @param simId - required
      * @param actorType
      * @param transactionType
      */
-    public void event(SimId simId, ActorType actorType, TransactionType transactionType, File eventDir);
+    public void event(SimId simId, ActorType actorType, TransactionType transactionType, File eventDir, File resourceFile);
 }
