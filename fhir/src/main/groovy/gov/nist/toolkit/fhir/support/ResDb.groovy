@@ -17,16 +17,6 @@ class ResDb extends SimDb {
     static final String BASE_TYPE = "base"
     final static String STORE_TRANSACTION = "store"
 
-    /**
-     * Build indexes for all FHIR sims
-     * @return
-     */
-    static buildAllIndexes() {
-        List<SimId> simIds = new ResDb().getAllSimIds()
-        simIds.each { SimId simId ->
-            new SimIndexer(simId).buildIndex()
-        }
-    }
 
     /**
      * Index a single resource in a FHIR simulator. This is not intended to be called directly. It is part

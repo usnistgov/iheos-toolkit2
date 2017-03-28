@@ -30,12 +30,26 @@ class SimIndexer {
         simId = _simId
     }
 
+    /**
+     * Index FHIR sim
+     */
     def buildIndex() {
         ResDb resDb = new ResDb(simId)
         initIndexFile()
         indexer.createIndex()
         resDb.perResource(null, null, new ResourceHandler())
         indexer.finish()
+    }
+
+    /**
+     * Build indexes for all FHIR sims
+     * @return
+     */
+    static buildAllIndexes() {
+        List<SimId> simIds = new ResDb().getAllSimIds()
+        simIds.each { SimId simId ->
+            new SimIndexer(simId).buildIndex()
+        }
     }
 
     SimIndexer open() {
@@ -51,6 +65,12 @@ class SimIndexer {
         indexer = new ResDbIndexer(indexFile)
     }
 
+    /**
+     * Callback for FHIR sim tree walker that indexes single resource.
+     * the resource type is extracted from the resource itself.  This type string
+     * is used to look up the class that indexes that resource type.  INDEXER_PACKAGE houses
+     * the indexer classes for each resource type.
+     */
     private class ResourceHandler implements PerResource {
 
         @Override
@@ -71,9 +91,13 @@ class SimIndexer {
                 throw new Exception("Cannot index resource of type ${type}")
             }
 
+            // build resource type specific index
             ResourceIndex ri = indexer1.build(resource, simResource)
 
+            // add in path to the resource
             ri.path = simResource.filename
+
+            // add the single resource index to the overall sim index
             indexer.addResource(ri)
         }
     }
