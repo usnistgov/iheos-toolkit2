@@ -59,8 +59,6 @@ class SimIndexer {
             def slurper = new JsonSlurper()
             def resource = slurper.parseText(resourceFile.text)
             String type = resource.resourceType   // resource name, like Patient
-            String id = resource.id
-            if (!id) return
             if (!type) return
             SimResource simResource = new SimResource(actorType, transactionType, eventDir.name, resourceFile.toString())
 
@@ -74,10 +72,6 @@ class SimIndexer {
             }
 
             ResourceIndex ri = indexer1.build(resource, simResource)
-
-//            ResourceIndex ri = new ResourceIndex()
-//            ri.add(new ResourceIndexItem('id', id))
-//            ri.add(new ResourceIndexItem('type', type))
 
             ri.path = simResource.filename
             indexer.addResource(ri)
