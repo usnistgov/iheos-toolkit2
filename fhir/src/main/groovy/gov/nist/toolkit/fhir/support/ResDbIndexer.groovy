@@ -13,11 +13,11 @@ import org.apache.lucene.store.FSDirectory
 /**
  *
  */
-class Indexer {
+class ResDbIndexer {
     IndexWriter indexWriter
     File indexDir
 
-    Indexer(File _indexDir) {
+    ResDbIndexer(File _indexDir) {
         indexDir = _indexDir
     }
 

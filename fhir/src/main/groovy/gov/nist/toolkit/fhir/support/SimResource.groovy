@@ -6,7 +6,8 @@ import gov.nist.toolkit.actortransaction.client.ActorType
 import gov.nist.toolkit.configDatatypes.client.TransactionType
 
 /**
- *
+ * This contains details about where the resource is stored and
+ * what actor/transaction/event it belongs to.
  */
 class SimResource {
     String actor

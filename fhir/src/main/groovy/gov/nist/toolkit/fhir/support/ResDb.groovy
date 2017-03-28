@@ -39,7 +39,7 @@ class ResDb extends SimDb {
                     for (File resourceFile : eventFile.listFiles()) {
                         if (resourceFile.name == 'date.ser')
                             continue
-                        perResource.event(simId, actorType, transType, eventFile, resourceFile);
+                        perResource.resource(simId, actorType, transType, eventFile, resourceFile);
                     }
                 }
             }

@@ -12,12 +12,12 @@ import spock.lang.Specification
  */
 class LucenePatientTest extends Specification {
     File indexDir
-    Indexer indexer
+    ResDbIndexer indexer
 
     def setup() {
         File outLocation = new File(this.getClass().getResource('/output/finder.txt').toURI().path).parentFile
         indexDir = new File(outLocation, 'lucine.indexer')
-        indexer = new Indexer(indexDir)
+        indexer = new ResDbIndexer(indexDir)
     }
 
     def 'create index and search'() {

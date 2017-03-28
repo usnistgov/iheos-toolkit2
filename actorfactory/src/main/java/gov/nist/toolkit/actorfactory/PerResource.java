@@ -16,5 +16,5 @@ public interface PerResource {
      * @param actorType
      * @param transactionType
      */
-    public void event(SimId simId, ActorType actorType, TransactionType transactionType, File eventDir, File resourceFile);
+    public void resource(SimId simId, ActorType actorType, TransactionType transactionType, File eventDir, File resourceFile);
 }

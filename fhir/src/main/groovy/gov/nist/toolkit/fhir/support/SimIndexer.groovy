@@ -5,6 +5,7 @@ import gov.nist.toolkit.actorfactory.client.NoSimException
 import gov.nist.toolkit.actorfactory.client.SimId
 import gov.nist.toolkit.actortransaction.client.ActorType
 import gov.nist.toolkit.configDatatypes.client.TransactionType
+import gov.nist.toolkit.fhir.resourceIndexer.IResourceIndexer
 import gov.nist.toolkit.utilities.io.Io
 import groovy.json.JsonSlurper
 import org.apache.lucene.document.Document
@@ -13,12 +14,17 @@ import org.apache.lucene.search.*
 
 /**
  * Create Lucene index of a simulator
+ * Supported resource types have an indexer class
+ * in gov.nist.toolkit.fhir.resourceIndexer
+ * that implement the interface IResourceIndexer
  */
 class SimIndexer {
     File indexFile = null
-    Indexer indexer
+    ResDbIndexer indexer
     SimId simId
     IndexSearcher indexSearcher
+
+    final static String INDEXER_PACKAGE = 'gov.nist.toolkit.fhir.resourceIndexer.'
 
     SimIndexer(SimId _simId) {
         simId = _simId
@@ -42,26 +48,39 @@ class SimIndexer {
         if (!new ResDb(simId).isSim())
             throw new NoSimException('Sim ${simId} does not exist')
         indexFile = ResDb.getIndexFile(simId)
-        indexer = new Indexer(indexFile)
+        indexer = new ResDbIndexer(indexFile)
     }
 
     private class ResourceHandler implements PerResource {
 
         @Override
-        void event(SimId simId, ActorType actorType, TransactionType transactionType, File eventDir, File resourceFile) {
-                if (!resourceFile.name.endsWith('json')) return
-                def slurper = new JsonSlurper()
-                def resource = slurper.parseText(resourceFile.text)
-                String type = resource.resourceType
-                String id = resource.id
-                if (!id) return
-                if (!type) return
-                SimResource simResource = new SimResource(actorType, transactionType, eventDir.name, resourceFile.toString())
-                ResourceIndex ri = new ResourceIndex()
-                ri.add(new ResourceIndexItem('id', id))
-                ri.add(new ResourceIndexItem('type', type))
-                ri.path = simResource.filename
-                indexer.addResource(ri)
+        void resource(SimId simId, ActorType actorType, TransactionType transactionType, File eventDir, File resourceFile) {
+            if (!resourceFile.name.endsWith('json')) return
+            def slurper = new JsonSlurper()
+            def resource = slurper.parseText(resourceFile.text)
+            String type = resource.resourceType   // resource name, like Patient
+            String id = resource.id
+            if (!id) return
+            if (!type) return
+            SimResource simResource = new SimResource(actorType, transactionType, eventDir.name, resourceFile.toString())
+
+            // this part need specialization depending on resource type
+            def dy_instance = this.getClass().classLoader.loadClass(INDEXER_PACKAGE + type)?.newInstance()
+            IResourceIndexer indexer1
+            if (dy_instance instanceof IResourceIndexer) {
+                indexer1 = dy_instance
+            } else {
+                throw new Exception("Cannot index resource of type ${type}")
+            }
+
+            ResourceIndex ri = indexer1.build(resource, simResource)
+
+//            ResourceIndex ri = new ResourceIndex()
+//            ri.add(new ResourceIndexItem('id', id))
+//            ri.add(new ResourceIndexItem('type', type))
+
+            ri.path = simResource.filename
+            indexer.addResource(ri)
         }
     }
 
