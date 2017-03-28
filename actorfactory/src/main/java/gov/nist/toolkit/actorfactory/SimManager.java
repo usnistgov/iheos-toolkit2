@@ -38,7 +38,7 @@ public class SimManager {
 
 	public List<SimId> loadAllSims() {
 		SimDb db = new SimDb();
-		List<SimId> simIds = SimDb.getAllSimIds();
+		List<SimId> simIds = new SimDb().getAllSimIds();
 		List<SimId> loadedSimIds = new ArrayList<>();
 		for (SimId simId : simIds) {
 			try {

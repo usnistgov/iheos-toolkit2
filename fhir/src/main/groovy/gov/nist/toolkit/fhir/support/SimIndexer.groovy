@@ -30,7 +30,7 @@ class SimIndexer {
         simId = _simId
     }
 
-    def create() {
+    def buildIndex() {
         ResDb resDb = new ResDb(simId)
         initIndexFile()
         indexer.createIndex()

@@ -22,7 +22,7 @@ class IndexerTest extends Specification {
         resDb.storeNewResource('simple', buildResource('foo', 'Patient'))
 
         and:  'index it'
-        new SimIndexer(simId).create()
+        new SimIndexer(simId).buildIndex()
 
         and: '''search'''
         SimIndexer index = new SimIndexer(simId).open()
@@ -41,7 +41,7 @@ class IndexerTest extends Specification {
         resDb.storeNewResource('simple', buildResource('bar', 'Patient'))
 
         and: 'index it'
-        new SimIndexer(simId).create()
+        new SimIndexer(simId).buildIndex()
 
         and: '''get searchable index'''
         SimIndexer index = new SimIndexer(simId).open()
@@ -58,7 +58,7 @@ class IndexerTest extends Specification {
         resDb.storeNewResource('simple', buildResource('bar', 'Base'))
 
         and: 'index it'
-        new SimIndexer(simId).create()
+        new SimIndexer(simId).buildIndex()
 
         and: '''get searchable index'''
         SimIndexer index = new SimIndexer(simId).open()
@@ -80,7 +80,7 @@ class IndexerTest extends Specification {
         resDb.storeNewResource('simple', buildResource('bar', 'Base'))
 
         and: 'index it'
-        new SimIndexer(simId).create()
+        new SimIndexer(simId).buildIndex()
 
         and: '''get searchable index'''
         SimIndexer index = new SimIndexer(simId).open()

@@ -263,8 +263,8 @@ public class SimDb {
 		return newExpiration.getTime();
 	}
 
-	static public void deleteAllSims() throws IOException, NoSimException {
-		List<SimId> allSimIds = SimDb.getAllSimIds();
+	public void deleteAllSims() throws IOException, NoSimException {
+		List<SimId> allSimIds = getAllSimIds();
 		for (SimId simId : allSimIds) {
 			SimDb db = new SimDb(simId);
 			db.delete();
@@ -281,8 +281,8 @@ public class SimDb {
 		}
 	}
 
-	static public List<SimId> getAllSimIds() throws BadSimIdException {
-		File[] files = Installation.instance().simDbFile().listFiles();
+	public List<SimId> getAllSimIds() throws BadSimIdException {
+		File[] files = getSimDbFile().listFiles();
 		List<SimId> ids = new ArrayList<>();
 		if (files == null) return ids;
 
@@ -293,7 +293,7 @@ public class SimDb {
 		return ids;
 	}
 
-	public static List<SimId> getSimIdsForUser(String user) throws BadSimIdException {
+	public List<SimId> getSimIdsForUser(String user) throws BadSimIdException {
 		List<SimId> ids = getAllSimIds();
 		List<SimId> selectedIds = new ArrayList<>();
 		for (SimId id : ids) {
@@ -440,7 +440,7 @@ public class SimDb {
 		return ActorType.findActor(name);
 	}
 
-	static  List<SimId> getSimulatorIdsforActorType(ActorType actorType) throws IOException, NoSimException {
+	List<SimId> getSimulatorIdsforActorType(ActorType actorType) throws IOException, NoSimException {
 		List<SimId> allSimIds = getAllSimIds();
 		List<SimId> simIdsOfType = new ArrayList<>();
 		for (SimId simId : allSimIds) {

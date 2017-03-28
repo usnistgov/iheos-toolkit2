@@ -15,6 +15,7 @@ class Base implements IResourceIndexer {
      */
     ResourceIndex build(def json, SimResource simResource) {
         ResourceIndex ri = new ResourceIndex()
+
         String resourceType = json.resourceType
         ri.add(new ResourceIndexItem('type', resourceType))
 

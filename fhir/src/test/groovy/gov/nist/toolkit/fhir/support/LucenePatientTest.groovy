@@ -22,7 +22,7 @@ class LucenePatientTest extends Specification {
 
     def 'create index and search'() {
 
-        when: 'create indexer'
+        when: 'buildIndex indexer'
         boolean isOpen = indexer.createIndex()
 
         then:
