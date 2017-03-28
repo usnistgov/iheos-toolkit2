@@ -44,7 +44,7 @@ public class MetadataSupport {
 
 	static public String xdsB_uri = "urn:ihe:iti:xds-b:2007";
 	static public OMNamespace xdsB =   om_factory.createOMNamespace(xdsB_uri, "xdsb");
-	
+
 	static public String xdsiB_uri = "urn:ihe:rad:xdsi-b:2009";
 	static public OMNamespace xdsiB = om_factory.createOMNamespace(xdsiB_uri, "xdsiB");
 
@@ -318,11 +318,13 @@ public class MetadataSupport {
 	// uuids defined
 
 	public static String XDSSubmissionSet_patientid_uuid = "urn:uuid:6b5aea1a-874d-4603-a4bc-96a0a7b38446";
+	public static String XDSSubmissionSet_patientid_name="XDSSubmissionSet.patientId";
 	public static String XDSDocumentEntry_patientid_uuid = "urn:uuid:58a6f841-87b3-4a3e-92fd-a8ffeff98427";
     public static String XDSDocumentEntry_patientid_name = "XDSDocumentEntry.patientId";
 	public static String XDSFolder_patientid_uuid = "urn:uuid:f64ffdf0-4b97-4e06-b79f-a52b38ec2f8a";
 
 	public static String XDSSubmissionSet_uniqueid_uuid = "urn:uuid:96fdda7c-d067-4183-912e-bf5ee74998a8";
+	public static String XDSSubmissionSet_uniqueid_name="XDSSubmissionSet.uniqueId";
 	public static String XDSDocumentEntry_uniqueid_uuid = "urn:uuid:2e82c1f6-a085-4c72-9da3-8640a32e42ab";
     public static String XDSDocumentEntry_uniqueid_name = "XDSDocumentEntry.uniqueId";
 	public static String XDSFolder_uniqueid_uuid = "urn:uuid:75df8f67-9973-4fbe-a900-df66cefecc5a";
@@ -331,6 +333,7 @@ public class MetadataSupport {
 	public static String XDSDocumentEntry_author_uuid = "urn:uuid:93606bcf-9494-43ec-9b4e-a7748d1a838d";
 
 	public static String XDSSubmissionSet_sourceid_uuid="urn:uuid:554ac39e-e3fe-47fe-b233-965d2a147832";
+	public static String XDSSubmissionSet_sourceid_name="XDSSubmissionSet.sourceId";
 
 	public static String XDSDocumentEntry_objectType_uuid="urn:uuid:7edca82f-054d-47f2-a032-9b2a5b5186c1";
 	public static String XDSRODDEDocumentEntry_objectType_uuid="urn:uuid:34268e47-fdf5-41a6-ba33-82133c465248";

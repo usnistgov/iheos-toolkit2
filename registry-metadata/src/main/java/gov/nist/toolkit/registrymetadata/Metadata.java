@@ -985,11 +985,11 @@ public class Metadata {
 	}
 
 	public void addDocumentEntryPatientId(OMElement ele, String id) {
-		addExternalId(ele, MetadataSupport.XDSDocumentEntry_patientid_uuid, id);
+		addExternalId(ele, MetadataSupport.XDSDocumentEntry_patientid_uuid, id, MetadataSupport.XDSDocumentEntry_patientid_name);
 	}
 
 	public void addSubmissionSetPatientId(OMElement ele, String id) {
-		addExternalId(ele, MetadataSupport.XDSSubmissionSet_patientid_uuid, id);
+		addExternalId(ele, MetadataSupport.XDSSubmissionSet_patientid_uuid, id,MetadataSupport.XDSSubmissionSet_patientid_name);
 	}
 
 	public void addFolderPatientId(OMElement ele, String id) {
@@ -997,11 +997,11 @@ public class Metadata {
 	}
 
 	public void addDocumentEntryUniqueId(OMElement ele, String id) {
-		addExternalId(ele, MetadataSupport.XDSDocumentEntry_uniqueid_uuid, id);
+		addExternalId(ele, MetadataSupport.XDSDocumentEntry_uniqueid_uuid, id,MetadataSupport.XDSDocumentEntry_uniqueid_name);
 	}
 
 	public void addSubmissionSetUniqueId(OMElement ele, String id) {
-		addExternalId(ele, MetadataSupport.XDSSubmissionSet_uniqueid_uuid, id);
+		addExternalId(ele, MetadataSupport.XDSSubmissionSet_uniqueid_uuid, id,MetadataSupport.XDSSubmissionSet_uniqueid_name);
 	}
 
 	public void addFolderUniqueId(OMElement ele, String id) {
@@ -1026,8 +1026,8 @@ public class Metadata {
 
 	}
 
-    public void addSourceId(OMElement ele, String id){
-        addExternalId(ele,MetadataSupport.XDSSubmissionSet_sourceid_uuid,id,"XDSSubmissionSet.sourceId");
+    public void addSubmissionSetSourceId(OMElement ele, String id){
+        addExternalId(ele,MetadataSupport.XDSSubmissionSet_sourceid_uuid,id,MetadataSupport.XDSSubmissionSet_sourceid_name);
     }
 
 	public void addExternalId(OMElement ele, String uuid, String id, String name) {
@@ -1527,12 +1527,12 @@ public class Metadata {
 
 
 	public void addSlot(OMElement ele, String slot_name, String slot_value) {
-		OMElement slot = this.om_factory().createOMElement("Slot", null);
+		OMElement slot = this.om_factory().createOMElement("Slot", current_namespace());
 		slot.addAttribute("name", slot_name, null);
 		OMElement value_list = this.om_factory().createOMElement("ValueList",
-				null);
+				current_namespace());
 		slot.addChild(value_list);
-		OMElement value = this.om_factory().createOMElement("Value", null);
+		OMElement value = this.om_factory().createOMElement("Value", current_namespace());
 		value_list.addChild(value);
 		value.setText(slot_value);
 		ele.addChild(slot);
@@ -1541,10 +1541,10 @@ public class Metadata {
 
 	// this depends on getV2 or getV3 to sort the attributes into the correct order
 	public OMElement addSlot(OMElement ele, String slot_name) {
-		OMElement slot = this.om_factory().createOMElement("Slot", null);
+		OMElement slot = this.om_factory().createOMElement("Slot", current_namespace());
 		slot.addAttribute("name", slot_name, null);
 		OMElement value_list = this.om_factory().createOMElement("ValueList",
-				null);
+				current_namespace());
 		slot.addChild(value_list);
 		ele.addChild(slot);
 		mustDup = true;
@@ -1587,7 +1587,7 @@ public class Metadata {
 		OMElement value_list = XmlUtil.firstChildWithLocalName(slot,
 				"ValueList");
 
-		OMElement valueEle = this.om_factory().createOMElement("Value", null);
+		OMElement valueEle = this.om_factory().createOMElement("Value", current_namespace());
 		valueEle.setText(value);
 
 		value_list.addChild(valueEle);
