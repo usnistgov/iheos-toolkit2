@@ -4,7 +4,7 @@ import com.google.gwt.event.shared.EventHandler;
 import com.google.gwt.event.shared.GwtEvent;
 
 /**
- * Event thrown when a tab that is open already is selected again.
+ * SimResource thrown when a tab that is open already is selected again.
  * @see TabSelectedEventHandler
  * Created by onh2 on 9/27/16.
  */
@@ -31,7 +31,7 @@ public class TabSelectedEvent extends GwtEvent<TabSelectedEvent.TabSelectedEvent
     }
 
     /**
-     * Event handler to used with {@link TabSelectedEvent}
+     * SimResource handler to used with {@link TabSelectedEvent}
      */
     public interface TabSelectedEventHandler extends EventHandler {
         void onTabSelection(TabSelectedEvent event);

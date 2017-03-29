@@ -21,7 +21,7 @@ public class SimInstanceTerminator {
 		Date now = new Date();
 		int deleted = 0;
 		
-		List<SimId> simIds = SimDb.getAllSimIds();
+		List<SimId> simIds = new SimDb().getAllSimIds();
 		for (SimId simId : simIds) {
 			SimulatorConfig asc;
 			try {

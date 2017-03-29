@@ -77,14 +77,14 @@ class GetDocumentDetailsSpec extends ToolkitSpecification {
 
         when: 'get event ids for the register transactions this simulator'
         RefList eventIds = regRep.getEventIds(regRep.getFullId(), TransactionType.REGISTER)
-        println 'Event id: ' + eventIds.refs.get(0)
+        println 'SimResource id: ' + eventIds.refs.get(0)
 
         then:
         eventIds.refs.size() == 1
 
         when: 'retrieve event'
         RefList events = regRep.getEvent(regRep.getFullId(), TransactionType.REGISTER, eventIds.refs.get(0))
-        println "Event: " + events.refs.get(0)
+        println "SimResource: " + events.refs.get(0)
 
         then:
         events.refs.size() == 1

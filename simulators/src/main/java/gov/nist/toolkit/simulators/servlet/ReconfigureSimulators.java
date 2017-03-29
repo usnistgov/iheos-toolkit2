@@ -37,7 +37,7 @@ public class ReconfigureSimulators extends HttpServlet {
         configuredPort = Installation.instance().propertyServiceManager().getToolkitPort();
         configuredTlsPort = Installation.instance().propertyServiceManager().getToolkitTlsPort();
 
-        for (SimId simId : SimDb.getAllSimIds()) {
+        for (SimId simId : new SimDb().getAllSimIds()) {
             reconfigure(simId);
         }
     }

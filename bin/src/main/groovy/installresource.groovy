@@ -14,7 +14,7 @@ try {
 
     if (args.size() < 2) {
         println 'Usage: installresource.groovy [-c] simId resource_file+'
-        println '-c create simulator if it does not exist'
+        println '-c buildIndex simulator if it does not exist'
     }
 
     List arglist = args.toList()

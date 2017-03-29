@@ -1083,7 +1083,7 @@ public class XdsTestServiceManager extends CommonService {
 
 		// also delete simulators owned by this test session
 
-		SimDb.deleteSims(SimDb.getSimIdsForUser(name));
+		SimDb.deleteSims(new SimDb().getSimIdsForUser(name));
 		SimCache.clear();
 		return true;
 	}

@@ -9,14 +9,17 @@ import ca.uhn.fhir.rest.server.interceptor.CorsInterceptor;
 import ca.uhn.fhir.rest.server.interceptor.ResponseHighlighterInterceptor;
 import gov.nist.toolkit.actorfactory.client.SimId;
 import gov.nist.toolkit.fhir.support.ResDb;
+import gov.nist.toolkit.fhir.support.SimIndexer;
 import gov.nist.toolkit.fhirServer.config.SimContext;
 import gov.nist.toolkit.fhirServer.config.SimTracker;
 import gov.nist.toolkit.fhirServer.provider.OrganizationResourceProvider;
 import gov.nist.toolkit.fhirServer.provider.PatientResourceProvider;
 import gov.nist.toolkit.installation.Installation;
+import gov.nist.toolkit.xdsexception.ExceptionUtil;
 import org.springframework.web.cors.CorsConfiguration;
 
 import javax.servlet.ServletContext;
+import javax.servlet.UnavailableException;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -42,7 +45,7 @@ public class ExampleRestfulServlet extends RestfulServer {
 	 * servlet is initializing.
 	 */
 	@Override
-	public void initialize(ServletContext context) {
+	public void initialize(ServletContext context) throws UnavailableException {
 		/*
 		 * Two resource providers are defined. Each one handles a specific
 		 * type of resource.
@@ -90,12 +93,18 @@ public class ExampleRestfulServlet extends RestfulServer {
 		 * Initialize Toolkit SimDb
 		 */
 
-		File warHome = new File(context.getRealPath("/"));
-		ourLog.info("...warHome is " + warHome);
-		Installation.instance().warHome(warHome);
-		ourLog.info("...warHome initialized to " + Installation.instance().warHome());
-		ourLog.info("EC is " + Installation.instance().externalCache());
+		try {
+			File warHome = new File(context.getRealPath("/"));
+			ourLog.info("...warHome is " + warHome);
+			Installation.instance().warHome(warHome);
+			ourLog.info("...warHome initialized to " + Installation.instance().warHome());
 
+			ourLog.info("Indexing FHIR simulators...");
+			int simsIndexed = SimIndexer.buildAllIndexes();
+			ourLog.info("...indexed " + simsIndexed + " sims");
+		} catch (Exception e) {
+			throw new UnavailableException(ExceptionUtil.exception_details(e));
+		}
 	}
 
 

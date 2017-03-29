@@ -1,30 +1,121 @@
 package gov.nist.toolkit.fhir.support
 
+import gov.nist.toolkit.actorfactory.PerResource
 import gov.nist.toolkit.actorfactory.SimDb
 import gov.nist.toolkit.actorfactory.client.NoSimException
 import gov.nist.toolkit.actorfactory.client.SimId
+import gov.nist.toolkit.actortransaction.client.ActorType
+import gov.nist.toolkit.configDatatypes.client.TransactionType
 import gov.nist.toolkit.installation.Installation
 import org.apache.log4j.Logger
-
-
 /**
  * SibDb extensions for FHIR resources
  */
 class ResDb extends SimDb {
     static private Logger logger = Logger.getLogger(ResDb.class);
 
-    static private final String BASE_TYPE = "base"
+    static final String BASE_TYPE = "base"
+    final static String STORE_TRANSACTION = "store"
+
+
     /**
-     * Return base dir of SimDb storage
+     * Index a single resource in a FHIR simulator. This is not intended to be called directly. It is part
+     * of a larger indexing system.
+     * @param actorTypes
+     * @param transactionTypes
+     * @param perResource
+     */
+    void perResource(List<ActorType> actorTypes, List<TransactionType> transactionTypes, PerResource perResource) {
+        for (File actorFile : simDir.listFiles()) {
+            if (!actorFile.isDirectory())
+                continue;
+            ActorType actorType = null;
+            if (actorTypes != null && !actorTypes.isEmpty()) {
+                String actorTypeName = actorFile.getName();
+                actorType = ActorType.findActor(actorTypeName);
+            }
+            for (File transFile : actorFile.listFiles()) {
+                if (!transFile.isDirectory())
+                    continue;
+                String transTypeName = transFile.getName();
+                TransactionType transType = TransactionType.find(transTypeName);
+                for (File eventFile : transFile.listFiles()) {
+                    if (!eventFile.isDirectory())
+                        continue;
+                    for (File resourceFile : eventFile.listFiles()) {
+                        if (resourceFile.name == 'date.ser')
+                            continue
+                        perResource.resource(simId, actorType, transType, eventFile, resourceFile)
+                    }
+                }
+            }
+        }
+    }
+
+    /**
+     * Store a Resource in a sim
+     * @param resourceType  - resource type (Patient...)
+     * @param resourceContents - JSON for resource
+     * @return
+     */
+    File storeNewResource(String resourceType, String resourceContents) {
+        File file = newResourceFile(resourceType)
+        file.text = resourceContents
+        return file
+    }
+
+    /**
+     * Create a new file to store a resource in a sim inside the current event.
+     * @param resourceType
+     * @return
+     */
+    File newResourceFile(String resourceType) {
+        File eventDir = getEventDir()
+        for (int i=1; i<200; i++) {  // no more than 200 resources in an event
+            File resourceFile = new File(eventDir, (resourceType + i) + '.json')
+            if (!resourceFile.exists())
+                return resourceFile
+        }
+        return null
+    }
+
+    /**
+     * Return base dir of SimDb storage for FHIR resources (all FHIR simulators)
+     * This allows the inheritance to SimDb to work - SimDb actually manages
+     * both the SOAP simulators and the FHIR simulators.  This method controls
+     * which.
      * @return
      */
     @Override
     File getSimDbFile() {
-        return Installation.instance().fhirSimDbFile();
+        return Installation.instance().fhirSimDbFile()
     }
 
-    static public boolean exists(SimId simId) {
-        return new File(new ResDb().getSimDbFile(), simId.toString()).exists();
+    /**
+     * Get location of Lucene index for this simulator
+     * @param simId
+     * @return
+     */
+    static File getIndexFile(SimId simId) {
+        return new File(getSimBase(simId), 'simindex')
+    }
+
+    /**
+     * Does simulator exist?
+     * @param simId
+     * @return
+     */
+    static  boolean exists(SimId simId) {
+        return getSimBase(simId).exists()
+    }
+
+    /**
+     * Base location of simulator
+     * @param simId - which simulator
+     * @return
+     */
+    static File getSimBase(SimId simId) {
+        return new File(new ResDb().getSimDbFile(), simId.toString())
     }
 
     ResDb mkSim(SimId simid) throws IOException, NoSimException {
@@ -49,13 +140,13 @@ class ResDb extends SimDb {
             throw new IOException("Fhir Simulator " + simid + ", " + actor + " cannot be created");
         }
 
-        ResDb db = new ResDb(simid);
+        ResDb db = new ResDb(simid, BASE_TYPE, null);
         db.setSimulatorType(actor);
         return db;
     }
 
     ResDb(SimId simId) {
-        super(simId, BASE_TYPE, null)
+        super(simId)
     }
 
     ResDb(SimId simId, String actor, String transaction) {

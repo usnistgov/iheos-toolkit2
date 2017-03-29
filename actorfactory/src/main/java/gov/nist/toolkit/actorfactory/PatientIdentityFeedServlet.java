@@ -63,12 +63,12 @@ public class PatientIdentityFeedServlet extends HttpServlet {
 
 
     public static void generateCurrentlyConfiguredListeners() throws IOException, NoSimException, ClassNotFoundException {
-        List<SimId> simIds = SimDb.getSimulatorIdsforActorType(ActorType.REGISTRY);
+        List<SimId> simIds = new SimDb().getSimulatorIdsforActorType(ActorType.REGISTRY);
         generateListeners(simIds);
     }
 
     public static void terminateCurrentlyConfiguredListeners() throws IOException, NoSimException {
-        List<SimId> simIds = SimDb.getSimulatorIdsforActorType(ActorType.REGISTRY);
+        List<SimId> simIds = new SimDb().getSimulatorIdsforActorType(ActorType.REGISTRY);
         for (SimId simId : simIds)
             ListenerFactory.terminate(simId.toString());
     }

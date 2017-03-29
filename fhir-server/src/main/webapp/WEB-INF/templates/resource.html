@@ -509,7 +509,7 @@
 													var btn = $(this);
 													handleActionButtonClick($(this));
 													var id = $('#resource-update-id').val();
-													// Note we're using resource-create-id even though this is an update because
+													// Note we're using resource-buildIndex-id even though this is an update because
 													// the controller expects that...
 													if (id != null) btn.append($('<input />', { type: 'hidden', name: 'resource-create-id', value: id }));
 													var body = $('#resource-update-body').val();
