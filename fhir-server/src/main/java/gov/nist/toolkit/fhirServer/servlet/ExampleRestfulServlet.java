@@ -94,6 +94,7 @@ public class ExampleRestfulServlet extends RestfulServer {
 		ourLog.info("...warHome is " + warHome);
 		Installation.instance().warHome(warHome);
 		ourLog.info("...warHome initialized to " + Installation.instance().warHome());
+		ourLog.info("EC is " + Installation.instance().externalCache());
 
 	}
 
