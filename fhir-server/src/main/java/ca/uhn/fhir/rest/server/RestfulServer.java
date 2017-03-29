@@ -946,6 +946,31 @@ public class RestfulServer extends HttpServlet implements IRestfulServer<Servlet
         IIdType id = null;
         String operation = null;
         String compartment = null;
+
+        String actor = null;
+        String transaction = null;
+        String simidString = null;
+
+        if (tok.hasMoreTokens()) {
+            String fsim = tok.nextToken();
+            if (!fsim.equals("fsim")) {
+                throw new InvalidRequestException("URL Path does not start with fsim: " + theRequestPath);
+            }
+        }
+
+        if (tok.hasMoreTokens()) {
+            simidString = tok.nextToken();
+        }
+
+        if (tok.hasMoreTokens()) {
+            actor = tok.nextToken();
+        }
+
+        if (tok.hasMoreTokens()) {
+            transaction = tok.nextToken();
+        }
+
+
         if (tok.hasMoreTokens()) {
             resourceName = tok.nextToken();
             if (partIsOperation(resourceName)) {
