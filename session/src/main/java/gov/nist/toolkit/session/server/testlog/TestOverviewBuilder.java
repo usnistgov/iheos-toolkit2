@@ -13,6 +13,7 @@ import gov.nist.toolkit.testenginelogging.client.TestStepLogContentDTO;
 import gov.nist.toolkit.testkitutilities.ReadMe;
 import gov.nist.toolkit.testkitutilities.TestDefinition;
 import gov.nist.toolkit.testkitutilities.client.SectionDefinitionDAO;
+import gov.nist.toolkit.testkitutilities.client.StepDefinitionDAO;
 
 import java.io.IOException;
 import java.util.Collection;
@@ -93,9 +94,11 @@ public class TestOverviewBuilder {
                             StepOverviewDTO stepOverview = sectionOverview.getStep(stepName);
                             if (stepOverview==null) { // Probably not yet executed, pre-run state
                                 stepOverview = new StepOverviewDTO();
+                                StepDefinitionDAO stepSrc = sectionDef.getStep(stepName);
+                                stepOverview.setName(stepSrc.getId());
+                                stepOverview.setTransaction(stepSrc.getTransaction());
                                 sectionOverview.getStepNames().add(stepName);
                                 sectionOverview.getSteps().put(stepName,stepOverview);
-                                stepOverview.setName(sectionDef.getStep(stepName).getId());
                             }
 
                             stepOverview.setGoals(sectionDef.getStep(stepName).getGoals());

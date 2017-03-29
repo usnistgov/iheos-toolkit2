@@ -139,12 +139,13 @@ public class TestDefinition {
 				step.setId(stepEle.getAttributeValue(new QName("id")));
 
 				for (OMElement trans : XmlUtil.descendantsWithLocalNameEndsWith(stepEle, "Transaction")) {
+					step.setTransaction(trans.getLocalName());
 					OMElement interactionSeq = XmlUtil.firstChildWithLocalName(trans, "InteractionSequence");
 					try {
 						InteractionSequences.init(Installation.instance().getInteractionSequencesFile());
 						String transactionKey = null;
 						if (interactionSeq == null) {
-							transactionKey = trans.getLocalName();
+							transactionKey = step.getTransaction();
 						} else {
 							transactionKey = InteractionSequences.xformSequenceToEntity(interactionSeq);
 						}

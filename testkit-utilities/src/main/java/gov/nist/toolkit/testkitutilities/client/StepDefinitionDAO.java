@@ -13,6 +13,7 @@ import java.util.List;
 public class StepDefinitionDAO implements Serializable, IsSerializable {
     private List<String> goals = new ArrayList<>();
     private String id;
+    private String transaction;
     private List<InteractingEntity> interactionSequence;
 
     public StepDefinitionDAO() {
@@ -40,5 +41,13 @@ public class StepDefinitionDAO implements Serializable, IsSerializable {
 
     public void setInteractionSequence(List<InteractingEntity> interactionSequence) {
         this.interactionSequence = interactionSequence;
+    }
+
+    public String getTransaction() {
+        return transaction;
+    }
+
+    public void setTransaction(String transaction) {
+        this.transaction = transaction;
     }
 }
