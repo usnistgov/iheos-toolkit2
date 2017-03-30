@@ -557,7 +557,7 @@ public class InteractionDiagram extends Composite {
                     g_y+=LINE_HEIGHT+legend_margin;
                 } else if (InteractingEntity.INTERACTIONSTATUS.ERROR_EXPECTED.name().equals(legend)) {
                     svgsvgElement.appendChild(cross_mark(x, g_y+legend_margin, RGB_BLUE));
-                    group.appendChild(getSimpleLabel(x+ HALF_CROSS_HEIGHT *2,g_y- HALF_CROSS_HEIGHT,"Anticipated error"));
+                    group.appendChild(getSimpleLabel(x+ HALF_CROSS_HEIGHT *2,g_y- HALF_CROSS_HEIGHT,"Expected error"));
 //                    g_y+= HALF_CROSS_HEIGHT *2;
                     g_y+=LINE_HEIGHT+legend_margin;
                 } else if ("SystemUnderTest".equals(legend)) {
