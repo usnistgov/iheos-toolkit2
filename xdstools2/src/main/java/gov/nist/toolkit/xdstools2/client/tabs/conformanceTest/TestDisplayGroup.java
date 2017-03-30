@@ -32,9 +32,9 @@ public class TestDisplayGroup {
             testDisplay.allowDelete(allowDelete);
             testDisplay.allowRun(allowRun);
             testDisplay.showValidate(showValidate);
-            testDisplay.setDiagramDisplay(diagramDisplay);
             put(testOverview.getTestInstance(), testDisplay);
         }
+        testDisplay.setDiagramDisplay(diagramDisplay);
         testDisplay.display(testOverview);
         return testDisplay;
     }

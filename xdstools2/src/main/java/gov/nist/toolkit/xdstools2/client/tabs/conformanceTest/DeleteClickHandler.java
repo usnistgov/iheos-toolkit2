@@ -33,7 +33,7 @@ public class DeleteClickHandler implements ClickHandler {
             public void onComplete(TestOverviewDTO testOverviewDTO) {
                 testRunner.removeTestDetails(testOverviewDTO.getTestInstance());
                 InteractionDiagramDisplay diagramDisplay = new InteractionDiagramDisplay(testOverviewDTO, testContext.getTestSession(), testRunner.getSiteToIssueTestAgainst(), testContext.getSiteUnderTestAsSiteSpec().getName(), testRunner.getCurrentActorOption(), null);
-                TestDisplay testDisplay = testDisplayGroup.display(testOverviewDTO,diagramDisplay);
+                testDisplayGroup.display(testOverviewDTO,diagramDisplay);
             }
         }.run(new DeleteSingleTestRequest(ClientUtils.INSTANCE.getCommandContext(),testInstance));
     }
