@@ -28,7 +28,6 @@
 		<dependency>
 			<groupId>gov.nist.toolkit</groupId>
 			<artifactId>fhir</artifactId>
-			<version>4.4.0-SNAPSHOT</version>
 		</dependency>
 
 		<dependency>
@@ -134,7 +133,7 @@
 		Tells Maven to name the generated WAR file as
 		restful-server-example.war
 		-->
-		<finalName>f-toolkit</finalName>
+		<finalName>ftoolkit</finalName>
 		
 		<!-- 
 		The following is not required for the application to build, but
@@ -162,10 +161,10 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>
-				<configuration>
-					<source>1.6</source>
-					<target>1.6</target>
-				</configuration>
+				<!--<configuration>-->
+					<!--<source>1.6</source>-->
+					<!--<target>1.6</target>-->
+				<!--</configuration>-->
 			</plugin>
 			
 			<!-- 
