@@ -292,6 +292,16 @@ public class TestDefinition {
 			type=str;
 		}
 
+		public static TransactionType fromString(String transactionTypeAsAString){
+			if (transactionTypeAsAString.equals(PnR.toString())){
+				return PnR;
+			}
+			if (transactionTypeAsAString.equals(REGISTER.toString())){
+				return REGISTER;
+			}
+			return null;
+		}
+
 		@Override
 		public String toString() {
 			return type;
