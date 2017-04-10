@@ -1,14 +1,15 @@
 package gov.nist.toolkit.registrymetadata;
 
+import gov.nist.toolkit.commondatatypes.MetadataSupport;
 import gov.nist.toolkit.docref.EbRS;
 import gov.nist.toolkit.docref.EbRim;
 import gov.nist.toolkit.docref.MetadataTables;
-import gov.nist.toolkit.commondatatypes.MetadataSupport;
 import gov.nist.toolkit.registrysupport.logging.LogMessage;
 import gov.nist.toolkit.utilities.xml.OMFormatter;
 import gov.nist.toolkit.utilities.xml.Util;
 import gov.nist.toolkit.utilities.xml.XmlUtil;
-import gov.nist.toolkit.xdsexception.*;
+import gov.nist.toolkit.xdsexception.NoMetadataException;
+import gov.nist.toolkit.xdsexception.NoSubmissionSetException;
 import gov.nist.toolkit.xdsexception.client.MetadataException;
 import gov.nist.toolkit.xdsexception.client.MetadataValidationException;
 import gov.nist.toolkit.xdsexception.client.XdsInternalException;
@@ -317,7 +318,7 @@ public class Metadata {
 	 * Classification model can be top-level objects or nested inside the
 	 * objects they classify. Move all top-level classifications under the
 	 * objects they classify.
-     * @throws MetadataException
+	 * @throws MetadataException
 	 */
 	public void embedClassifications() throws MetadataException {
 		for (OMElement classification : classifications) {
@@ -1008,7 +1009,7 @@ public class Metadata {
 		addExternalId(ele, MetadataSupport.XDSFolder_uniqueid_uuid, id);
 	}
 
-    // @Deprecated
+	// @Deprecated
 	public void addExternalId(OMElement ele, String uuid, String id) {
 		OMElement e = MetadataSupport.om_factory.createOMElement(MetadataSupport.externalidentifier_qnamens);
 		ele.addChild(e);
@@ -1026,9 +1027,9 @@ public class Metadata {
 
 	}
 
-    public void addSubmissionSetSourceId(OMElement ele, String id){
-        addExternalId(ele,MetadataSupport.XDSSubmissionSet_sourceid_uuid,id,MetadataSupport.XDSSubmissionSet_sourceid_name);
-    }
+	public void addSubmissionSetSourceId(OMElement ele, String id){
+		addExternalId(ele,MetadataSupport.XDSSubmissionSet_sourceid_uuid,id,MetadataSupport.XDSSubmissionSet_sourceid_name);
+	}
 
 	public void addExternalId(OMElement ele, String uuid, String id, String name) {
 		OMElement e = MetadataSupport.om_factory.createOMElement(MetadataSupport.externalidentifier_qnamens);
@@ -1053,7 +1054,7 @@ public class Metadata {
 		OMElement e = addExtClassification(ele,uuid);
 
 		if (code!=null && !code.equals(""))
-            e.addAttribute("nodeRepresentation",code,null);
+			e.addAttribute("nodeRepresentation",code,null);
 		if (codingScheme != null && !codingScheme.equals(""))
 			addSlot(e, "codingScheme", codingScheme);
 		if (codeName != null && !codeName.equals(""))
@@ -1081,25 +1082,25 @@ public class Metadata {
 		return e;
 	}
 
-    public List<OMElement> addAuthorPersonToAll(String authorPersonValue) {
-        List<OMElement> added = new ArrayList<>();
-        for (OMElement docEle : getExtrinsicObjects()) {
-            OMElement authorClassification = addExtClassification(docEle, MetadataSupport.XDSDocumentEntry_author_uuid);
-            authorClassification.addAttribute("nodeRepresentation", "", null);
-            added.add(authorClassification);
-            addSlot(authorClassification, "authorPerson", authorPersonValue);
-        }
-        for (OMElement docEle : getSubmissionSets()) {
-            OMElement authorClassification = addExtClassification(docEle, MetadataSupport.XDSSubmissionSet_author_uuid);
-            authorClassification.addAttribute("nodeRepresentation", "", null);
-            added.add(authorClassification);
-            addSlot(authorClassification, "authorPerson", authorPersonValue);
-        }
-        return added;
-    }
+	public List<OMElement> addAuthorPersonToAll(String authorPersonValue) {
+		List<OMElement> added = new ArrayList<>();
+		for (OMElement docEle : getExtrinsicObjects()) {
+			OMElement authorClassification = addExtClassification(docEle, MetadataSupport.XDSDocumentEntry_author_uuid);
+			authorClassification.addAttribute("nodeRepresentation", "", null);
+			added.add(authorClassification);
+			addSlot(authorClassification, "authorPerson", authorPersonValue);
+		}
+		for (OMElement docEle : getSubmissionSets()) {
+			OMElement authorClassification = addExtClassification(docEle, MetadataSupport.XDSSubmissionSet_author_uuid);
+			authorClassification.addAttribute("nodeRepresentation", "", null);
+			added.add(authorClassification);
+			addSlot(authorClassification, "authorPerson", authorPersonValue);
+		}
+		return added;
+	}
 
 
-    public OMElement addIntClassification(OMElement ele, String uuid) {
+	public OMElement addIntClassification(OMElement ele, String uuid) {
 		OMElement e = MetadataSupport.om_factory.createOMElement(MetadataSupport.classification_qnamens);
 		ele.addChild(e);
 
@@ -1121,27 +1122,27 @@ public class Metadata {
 		e.addAttribute("versionName", version, null);
 	}
 
-    /**
-     * This method adds a localized string under the name node in the parent node given as parameter.
-     * @param ele parent node.
-     * @param lang localized string language.
-     * @param value localized string value.
-     */
-    public void addName(OMElement ele, String lang, String value){
-        OMElement nameNode=ele.getFirstChildWithName(MetadataSupport.name_qnamens);
-        if (nameNode==null){
-            nameNode= MetadataSupport.om_factory.createOMElement(MetadataSupport.name_qnamens);
-            ele.addChild(nameNode);
-        }
-        OMElement ls = MetadataSupport.om_factory.createOMElement(MetadataSupport.localizedstring_qnamens);
-        nameNode.addChild(ls);
-        ls.addAttribute("xml:lang", lang, null);
-        ls.addAttribute("value", value, null);
-    }
+	/**
+	 * This method adds a localized string under the name node in the parent node given as parameter.
+	 * @param ele parent node.
+	 * @param lang localized string language.
+	 * @param value localized string value.
+	 */
+	public void addName(OMElement ele, String lang, String value){
+		OMElement nameNode=ele.getFirstChildWithName(MetadataSupport.name_qnamens);
+		if (nameNode==null){
+			nameNode= MetadataSupport.om_factory.createOMElement(MetadataSupport.name_qnamens);
+			ele.addChild(nameNode);
+		}
+		OMElement ls = MetadataSupport.om_factory.createOMElement(MetadataSupport.localizedstring_qnamens);
+		nameNode.addChild(ls);
+		ls.addAttribute("xml:lang", lang, null);
+		ls.addAttribute("value", value, null);
+	}
 
-    void addName(OMElement ele, String value) {
-        addName(ele,"en-US",value);
-    }
+	void addName(OMElement ele, String value) {
+		addName(ele,"en-US",value);
+	}
 
 	public void addLid(OMElement ele, String lid) {
 		ele.addAttribute("lid", lid, null);
@@ -2197,7 +2198,7 @@ public class Metadata {
 
 	/**
 	 * This method adds a localized string under the 'Description' node in the parent node given as parameter.
-     * If it does not exist yet, this method will create the 'Description' node.
+	 * If it does not exist yet, this method will create the 'Description' node.
 	 * @param ele parent node.
 	 * @param lang localized string language.
 	 * @param value localized string value.
@@ -2855,6 +2856,23 @@ public class Metadata {
 		return null;
 	}
 
+	public List<OMElement> getSlots(OMElement object)
+			throws MetadataException {
+		return id_index().getSlots(this.getId(object));
+	}
+
+	public OMElement getNameElement(OMElement object) throws MetadataException{
+		return id_index().getName(this.getId(object));
+	}
+
+	public OMElement getDescriptionElement(OMElement object) throws MetadataException{
+		return id_index().getDescription(this.getId(object));
+	}
+
+	public List<OMElement> getExtIdentifiers(OMElement object) throws MetadataException{
+		return id_index().getExternalIdentifiers(this.getId(object));
+	}
+
 	public List<OMElement> getExternalIdentifiers(String object_id)
 			throws MetadataException {
 		return id_index().getExternalIdentifiers(object_id);
@@ -3131,6 +3149,39 @@ public class Metadata {
 
 	public Metadata reOrder() throws MetadataValidationException, XdsInternalException, MetadataException {
 		return new Metadata().addToMetadata(getV3(), true);
+	}
+
+    /**
+     * This method reorders the elements inside a RegistryPackage element (SubmissionSet or Folder) to
+     * respect what is defined in the standards [Slots, Name, Description, Classifications, External Identifiers].
+     * @param registryPackageOMElement registry package element to reorder (SubSet or Folder OMElement).
+     * @return the Metadata object
+     * @throws MetadataException
+     */
+	public Metadata reorderRegistryPackageElements(OMElement registryPackageOMElement) throws MetadataException {
+		List<OMElement> slots=getSlots(registryPackageOMElement);
+		OMElement name=getNameElement(registryPackageOMElement);
+		OMElement description=getDescriptionElement(registryPackageOMElement);
+		List<OMElement> classifications=getClassifications(registryPackageOMElement);
+		List<OMElement> extIds=getExtIdentifiers(registryPackageOMElement);
+
+		Iterator children=registryPackageOMElement.getChildren();
+		while (children.hasNext()){
+			children.next();
+			children.remove();
+		}
+		for (OMElement slot:slots){
+			submissionSet.addChild(slot);
+		}
+		submissionSet.addChild(name);
+		submissionSet.addChild(description);
+		for (OMElement classification:classifications){
+			submissionSet.addChild(classification);
+		}
+		for (OMElement extId:extIds){
+			submissionSet.addChild(extId);
+		}
+		return this;
 	}
 
 	OMElement find_child_element(OMElement root, String localname) {
