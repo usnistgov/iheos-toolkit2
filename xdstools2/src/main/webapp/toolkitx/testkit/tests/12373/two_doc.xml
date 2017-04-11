@@ -27,7 +27,7 @@
       </rim:Slot>
       <rim:Slot name="sourcePatientId">
         <rim:ValueList>
-          <rim:Value>89765a87b^^^&amp;3.4.5&amp;ISO</rim:Value>
+          <rim:Value>89765a87b^^^&amp;1.3.4.5&amp;ISO</rim:Value>
         </rim:ValueList>
       </rim:Slot>
       <rim:Slot name="sourcePatientInfo">
@@ -183,7 +183,7 @@
       </rim:Slot>
       <rim:Slot name="sourcePatientId">
         <rim:ValueList>
-          <rim:Value>89765a87b^^^&amp;3.4.5&amp;ISO</rim:Value>
+          <rim:Value>89765a87b^^^&amp;1.3.4.5&amp;ISO</rim:Value>
         </rim:ValueList>
       </rim:Slot>
       <rim:Slot name="sourcePatientInfo">
