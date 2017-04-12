@@ -195,7 +195,7 @@
       </rim:Description>
       <rim:Slot name="lastUpdateTime">
         <rim:ValueList>
-          <rim:Value>20041224</rim:Value>
+          <rim:Value>20041224000000</rim:Value>
         </rim:ValueList>
       </rim:Slot>
       <rim:Classification classifiedObject="Folder" nodeRepresentation="Referrals" classificationScheme="urn:uuid:1ba97051-7806-41a8-a48b-8fce7af683c5">

@@ -143,6 +143,8 @@ public class FolderValidator  implements ObjectValidator {
 
         //                    name				   multi	format                                                  resource
         new RegistryObjectValidator(mo, this).validateSlot(er, 	"lastUpdateTime", 	   false, 	new DtmFormat(er, "Slot lastUpdateTime",            table417),  table417);
+        // waiting for CP 949 to be integrated
+//        new RegistryObjectValidator(mo, this).validateSlot(er, 	"lastUpdateTime", 	   false, 	new DtmFormatWithMinSize(er, "Slot lastUpdateTime",            table417, 14),  table417);
     }
 
     public void validateRequiredSlotsPresent(ErrorRecorder er, ValidationContext vc) {
