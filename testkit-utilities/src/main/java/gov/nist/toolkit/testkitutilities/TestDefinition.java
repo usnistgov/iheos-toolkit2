@@ -13,6 +13,7 @@ import org.apache.axiom.om.OMElement;
 import javax.xml.namespace.QName;
 import java.io.File;
 import java.io.IOException;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
@@ -281,6 +282,37 @@ public class TestDefinition {
 		return testDir.toString();
 	}
 
+	public enum TransactionType implements Serializable {
+		PnR("ProvideAndRegisterTransaction"),
+		REGISTER("RegisterTransaction");
 
+		private String type;
 
+		private TransactionType(String str){
+			type=str;
+		}
+
+		public static TransactionType fromString(String transactionTypeAsAString){
+			if (transactionTypeAsAString.equals(PnR.toString())){
+				return PnR;
+			}
+			if (transactionTypeAsAString.equals(REGISTER.toString())){
+				return REGISTER;
+			}
+			return null;
+		}
+
+		@Override
+		public String toString() {
+			return type;
+		}
+
+		public String getTransactionTypeTestRepositoryName(){
+			if(this.equals(TransactionType.PnR)){
+				return "testdata-repository";
+			}else {
+				return "testdata-registry";
+			}
+		}
+	}
 }

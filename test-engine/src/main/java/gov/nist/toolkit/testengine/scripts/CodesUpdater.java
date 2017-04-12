@@ -455,41 +455,47 @@ public class CodesUpdater {
         // init environment dir
         File environment = new File(pathToEnvironment);
         // init testkit dir
-        testkit = new File(environment.getPath()+File.separator+"testkits"+File.separator+"default");
-        // init codes
-        allCodes = new CodesFactory().load(new File(environment.getPath()+File.separator+"codes.xml"));
-        try {
-            LOGGER.info("Copying testkit to "+testkit+"...");
-            FileUtils.copyDirectory(new File(pathToTestkit), testkit);
-            LOGGER.info("... testkit copied.");
-            out+="Testkit of referenced copied successfully to "+testkit;
-        } catch (IOException e) {
-            error=true;
-            out+="FAILURE. Could not copy testkit into environment.";
-            LOGGER.severe(e.getMessage());
-            return;
-        }
-        execute();
-        if (error) return;
-        reset();
-        execute();
-        if (error) return;
-        String outputSeparator = new String("----------------------------------------------------");
-        out = outputSeparator + outputSeparator + "\n" + "   SUCCESS on generating testkit in environment in " +
-                pathToEnvironment.split("/")[pathToEnvironment.split("/").length - 1] + "\n" +
-                outputSeparator + outputSeparator + "\n\n" + out;
-        try {
-            SimpleDateFormat dateFormatter = new SimpleDateFormat("yyyyMMddHHmmss");
-            File logDirectory = new File(pathToEnvironment, "Testkit update logs");
-            if (!logDirectory.exists()) {
-                logDirectory.mkdir();
+        File testkits=new File(environment.getPath()+File.separator+"testkits");
+        for (File tk:testkits.listFiles()) {
+            if (tk.getName().startsWith(".")) continue;
+            testkit = tk;
+            // init codes
+            allCodes = new CodesFactory().load(new File(environment.getPath() + File.separator + "codes.xml"));
+            if ("default".equals(tk.getName())){
+                try {
+                    LOGGER.info("Copying testkit to " + testkit + "...");
+                    FileUtils.copyDirectory(new File(pathToTestkit), testkit);
+                    LOGGER.info("... testkit copied.");
+                    out += "Testkit of referenced copied successfully to " + testkit;
+                } catch (IOException e) {
+                    error = true;
+                    out += "FAILURE. Could not copy testkit into environment.";
+                    LOGGER.severe(e.getMessage());
+                    return;
+                }
             }
-            File f = new File(logDirectory, dateFormatter.format(new Date()) + ".out");
-            LOGGER.info("Creating output log file in " + f.getPath() + "...");
-            Io.stringToFile(f, out);
-            LOGGER.info("... file created.");
-        } catch (IOException e) {
-            LOGGER.severe(e.getMessage());
+            execute();
+            if (error) return;
+            reset();
+            execute();
+            if (error) return;
+            String outputSeparator = new String("----------------------------------------------------");
+            out = outputSeparator + outputSeparator + "\n" + "   SUCCESS on generating testkit in environment in " +
+                    pathToEnvironment.split("/")[pathToEnvironment.split("/").length - 1] + "\n" +
+                    outputSeparator + outputSeparator + "\n\n" + out;
+            try {
+                SimpleDateFormat dateFormatter = new SimpleDateFormat("yyyyMMddHHmmss");
+                File logDirectory = new File(pathToEnvironment, "Testkit update logs");
+                if (!logDirectory.exists()) {
+                    logDirectory.mkdir();
+                }
+                File f = new File(logDirectory, dateFormatter.format(new Date()) + ".out");
+                LOGGER.info("Creating output log file in " + f.getPath() + "...");
+                Io.stringToFile(f, out);
+                LOGGER.info("... file created.");
+            } catch (IOException e) {
+                LOGGER.severe(e.getMessage());
+            }
         }
     }
 

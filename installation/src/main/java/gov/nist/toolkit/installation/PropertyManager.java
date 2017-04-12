@@ -30,11 +30,11 @@ public class PropertyManager {
 
 	private String propFile;
 	private Properties toolkitProperties = null;
-	
+
 	public PropertyManager(String propFile) {
-        this.propFile = propFile;
+		this.propFile = propFile;
 	}
-	
+
 	public void update(Map<String, String> props) throws Exception {
 		if (toolkitProperties == null)
 			toolkitProperties = new Properties();
@@ -123,17 +123,17 @@ public class PropertyManager {
 		loadProperties();
 		return (String) toolkitProperties.get(ADMIN_PASSWORD);
 	}
-	
+
 	public String getToolkitHost() {
 		loadProperties();
 		return (String) toolkitProperties.get(TOOLKIT_HOST);
 	}
-	
+
 	public String getToolkitPort() {
 		loadProperties();
 		return (String) toolkitProperties.get(TOOLKIT_PORT);
 	}
-	
+
 	public String getToolkitTlsPort() {
 		loadProperties();
 		return (String) toolkitProperties.get(TOOLKIT_TLS_PORT);
@@ -172,7 +172,7 @@ public class PropertyManager {
 		use = use.trim().toLowerCase();
 		return "true".compareTo(use) == 0;
 	}
-	
+
 	public String getExternalCache() {
 		loadProperties();
 		String cache = (String) toolkitProperties.get(EXTERNAL_CACHE);
@@ -182,7 +182,7 @@ public class PropertyManager {
 //		System.setProperty("External_Cache", cache);
 		return cache;
 	}
-	
+
 	public boolean isUseActorsFile() {
 		loadProperties();
 		String use = (String) toolkitProperties.get(USE_ACTORS_FILE);
@@ -190,26 +190,26 @@ public class PropertyManager {
 			return true;
 		return "true".compareToIgnoreCase(use) == 0;
 	}
-	
+
 	public String getDefaultAssigningAuthority() {
 		loadProperties();
 		return (String) toolkitProperties.get("PatientID_Assigning_Authority");
 	}
-	
+
 	public String getDefaultEnvironmentName() {
 		loadProperties();
 		return (String) toolkitProperties.get("Default_Environment");
 	}
 
-    public String getTestkit() {
-        loadProperties();
-        String testkit = (String) toolkitProperties.get(TESTKIT);
-        if (testkit != null) {
-            testkit = testkit.trim();
-            if ("".equals(testkit)) testkit = null;
-        }
-        return testkit;
-    }
+	public String getTestkit() {
+		loadProperties();
+		String testkit = (String) toolkitProperties.get(TESTKIT);
+		if (testkit != null) {
+			testkit = testkit.trim();
+			if ("".equals(testkit)) testkit = null;
+		}
+		return testkit;
+	}
 
 	@Deprecated
 	public String getCurrentEnvironmentName() {
@@ -221,24 +221,24 @@ public class PropertyManager {
 		} catch (IOException e) {}
 		return currentName;
 	}
-	
+
 	@Deprecated
 	public void setCurrentEnvironmentName(String name) throws IOException {
 		String cache = getExternalCache();
-		
+
 		File currentFile = new File(cache + File.separator + "environment" + File.separator + "current");
 		Io.stringToFile(currentFile, name);
 	}
-	
+
 	public String getToolkitEnableAllCiphers() {
 		loadProperties();
 		return (String) toolkitProperties.getProperty("Enable_all_ciphers");
 	}
-		
+
 	public void save(Map<String, String> props) throws Exception {
 		saveProperties();
 	}
-	
+
 	public void loadProperties() {
 		if (toolkitProperties != null)
 			return;
@@ -253,7 +253,7 @@ public class PropertyManager {
 			e.printStackTrace();
 		}
 	}
-	
+
 	public void saveProperties() {
 		try {
 			FileOutputStream fos = new FileOutputStream(propFile);
@@ -266,7 +266,7 @@ public class PropertyManager {
 			e.printStackTrace();
 		}
 	}
-	
+
 	public Map<String, String> getPropertyMap() {
 		loadProperties();
 		Map<String, String> props = new HashMap<String, String>();
@@ -279,8 +279,12 @@ public class PropertyManager {
 	}
 
 
-    public String getWikiBaseAddress() {
+	public String getWikiBaseAddress() {
 		loadProperties();
 		return (String) toolkitProperties.getProperty("Wiki_Base_URL");
-    }
+	}
+
+	public void setExternalCache(String externalCache){
+		toolkitProperties.setProperty(EXTERNAL_CACHE,externalCache);
+	}
 }
