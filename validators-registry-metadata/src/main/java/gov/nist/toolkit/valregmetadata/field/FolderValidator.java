@@ -2,11 +2,10 @@ package gov.nist.toolkit.valregmetadata.field;
 
 import gov.nist.toolkit.commondatatypes.MetadataSupport;
 import gov.nist.toolkit.xdsexception.client.MetadataException;
+import org.apache.axiom.om.OMElement;
 
 import java.util.Arrays;
 import java.util.List;
-
-import org.apache.axiom.om.OMElement;
 
 public class FolderValidator extends ValidatorCommon {
 	List<String> fol_slots =
@@ -45,19 +44,20 @@ public class FolderValidator extends ValidatorCommon {
 	void validate_folder_slots()  {
 		List<String> fol_ids = m.getFolderIds();
 		for (int i=0; i<fol_ids.size(); i++) {
-//			String id = (String) fol_ids.getRetrievedDocumentsModel(i);
-//			try {
-//			List<OMElement> slots = m.getSlots(id);
-
-			//                      					name						multi	required	number
-			// query only
-//			if (is_submit)
-//				validate_slot("Folder", id, slots, 		"lastUpdateTime", 			false, 	false, 		true);
-//			else
-//				validate_slot("Folder", id, slots, 		"lastUpdateTime", 			false, 	true, 		true);
-//			} catch (MetadataException e) {
-//				err(e);
-//			}
+			String id = (String) fol_ids.get(i);
+			try {
+			List<OMElement> slots = m.getSlots(id);
+			validate_slot("Folder", id, slots, 		"lastUpdateTime", 			false, 	false, 		true);
+			OMElement folder = m.getFolder(i);
+			String value = m.getSlotValue(folder, "lastUpdateTime", 0);
+			if (value != null) {
+				if (value.trim().length() < 14) {   // second resolution
+					err("Folder:lastUpdateTime must have at least second resolution");
+				}
+			}
+			} catch (MetadataException e) {
+				err(e);
+			}
 		}
 
 	}
