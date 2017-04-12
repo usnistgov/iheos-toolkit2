@@ -104,7 +104,7 @@
                classifiedObject="Document01" nodeRepresentation="">
             <Slot name="authorPerson">
                <ValueList>
-                  <Value>^^Dsub^Author-One^^^</Value>
+                  <Value>^Dsub^Author-One^^^</Value>
                </ValueList>
             </Slot>
             <Slot name="authorInstitution">
