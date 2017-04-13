@@ -1,4 +1,4 @@
-package gov.nist.toolkit.xdstools2.client.tabs.GatewayTestsTabs;
+package gov.nist.toolkit.xdstools2.client.tabs.conformanceTest;
 
 import com.google.gwt.user.client.ui.*;
 import gov.nist.toolkit.actortransaction.client.ActorType;
@@ -9,7 +9,6 @@ import gov.nist.toolkit.services.client.RawResponse;
 import gov.nist.toolkit.sitemanagement.client.SiteSpec;
 import gov.nist.toolkit.xdstools2.client.command.command.BuildIGTestOrchestrationCommand;
 import gov.nist.toolkit.xdstools2.client.tabs.FindDocumentsLauncher;
-import gov.nist.toolkit.xdstools2.client.tabs.conformanceTest.*;
 import gov.nist.toolkit.xdstools2.client.tabs.genericQueryTab.GenericQueryTab;
 import gov.nist.toolkit.xdstools2.client.util.ClientUtils;
 import gov.nist.toolkit.xdstools2.client.widgets.OrchestrationSupportTestsDisplay;

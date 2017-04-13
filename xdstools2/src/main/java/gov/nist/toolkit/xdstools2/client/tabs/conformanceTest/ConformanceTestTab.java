@@ -28,7 +28,6 @@ import gov.nist.toolkit.xdstools2.client.ToolWindow;
 import gov.nist.toolkit.xdstools2.client.command.command.*;
 import gov.nist.toolkit.xdstools2.client.event.testSession.TestSessionChangedEvent;
 import gov.nist.toolkit.xdstools2.client.event.testSession.TestSessionChangedEventHandler;
-import gov.nist.toolkit.xdstools2.client.tabs.GatewayTestsTabs.BuildIGTestOrchestrationButton;
 import gov.nist.toolkit.xdstools2.client.util.ClientUtils;
 import gov.nist.toolkit.xdstools2.client.widgets.LaunchInspectorClickHandler;
 import gov.nist.toolkit.xdstools2.client.widgets.PopupMessage;

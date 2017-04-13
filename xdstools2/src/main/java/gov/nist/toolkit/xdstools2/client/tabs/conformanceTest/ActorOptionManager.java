@@ -1,6 +1,5 @@
 package gov.nist.toolkit.xdstools2.client.tabs.conformanceTest;
 
-import gov.nist.toolkit.xdstools2.client.tabs.GatewayTestsTabs.BuildIGTestOrchestrationButton;
 import gov.nist.toolkit.xdstools2.client.tabs.GatewayTestsTabs.BuildRGTestOrchestrationButton;
 
 import java.util.ArrayList;

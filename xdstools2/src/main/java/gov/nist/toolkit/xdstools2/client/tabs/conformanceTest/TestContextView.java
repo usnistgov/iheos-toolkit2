@@ -36,7 +36,7 @@ public class TestContextView implements ClickHandler {
     }
 
     void updateTestingContextDisplay() {
-        testSessionDescription.setHTML("Test Context<br />" +
+        testSessionDescription.setHTML("<h3>Test Context</h3>" +
                 "Environment: " + toolWindow.getEnvironmentSelection() + "<br />" +
                 "TestSesson: " + toolWindow.getCurrentTestSession() + "<br />" +
                 "SUT: " + testContext.getSiteName());
