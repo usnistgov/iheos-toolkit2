@@ -1,4 +1,4 @@
-package gov.nist.toolkit.xdstools2.client.tabs.conformanceTest;
+package gov.nist.toolkit.xdstools2.client.tabs.conformanceTest.registry;
 
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HTML;
@@ -10,6 +10,7 @@ import gov.nist.toolkit.services.client.RegOrchestrationRequest;
 import gov.nist.toolkit.services.client.RegOrchestrationResponse;
 import gov.nist.toolkit.sitemanagement.client.SiteSpec;
 import gov.nist.toolkit.xdstools2.client.command.command.BuildRegTestOrchestrationCommand;
+import gov.nist.toolkit.xdstools2.client.tabs.conformanceTest.*;
 import gov.nist.toolkit.xdstools2.client.util.ClientUtils;
 import gov.nist.toolkit.xdstools2.client.widgets.OrchestrationSupportTestsDisplay;
 import gov.nist.toolkit.xdstools2.client.widgets.buttons.AbstractOrchestrationButton;
@@ -51,7 +52,7 @@ public class BuildRegTestOrchestrationButton extends AbstractOrchestrationButton
         );
     }
 
-    BuildRegTestOrchestrationButton(ConformanceTestTab testTab, TestContext testContext, TestContextView testContextView, Panel initializationPanel, String label) {
+    public BuildRegTestOrchestrationButton(ConformanceTestTab testTab, TestContext testContext, TestContextView testContextView, Panel initializationPanel, String label) {
         this.initializationPanel = initializationPanel;
         this.testTab = testTab;
         this.testContext = testContext;

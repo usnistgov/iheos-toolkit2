@@ -28,6 +28,7 @@ import gov.nist.toolkit.xdstools2.client.ToolWindow;
 import gov.nist.toolkit.xdstools2.client.command.command.*;
 import gov.nist.toolkit.xdstools2.client.event.testSession.TestSessionChangedEvent;
 import gov.nist.toolkit.xdstools2.client.event.testSession.TestSessionChangedEventHandler;
+import gov.nist.toolkit.xdstools2.client.tabs.conformanceTest.registry.BuildRegTestOrchestrationButton;
 import gov.nist.toolkit.xdstools2.client.util.ClientUtils;
 import gov.nist.toolkit.xdstools2.client.widgets.LaunchInspectorClickHandler;
 import gov.nist.toolkit.xdstools2.client.widgets.PopupMessage;
@@ -126,6 +127,11 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner, TestTa
 
 	}
 
+	/**
+	 * Collect test overviews for tests of a single ActorOption
+	 * @param actorOption
+	 * @return
+	 */
 	private List<TestOverviewDTO> testOverviews(ActorOption actorOption) {
 		List<TestInstance> testsForThisActorOption = testsPerActorOption.get(actorOption);
 		List<TestOverviewDTO> overviews = new ArrayList<>();
@@ -372,8 +378,6 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner, TestTa
 				testsPanel.clear();
 				testsHeaderView.allowRun(allowRun());
 				testsPanel.add(testsHeaderView.asWidget());
-//                testStatistics.clear();
-//                testStatistics.setTestCount(testOverviews.size());
 				for (TestOverviewDTO testOverview : testOverviews) {
 					updateTestOverview(testOverview);
 					TestDisplay testDisplay = testDisplayGroup.display(testOverview);
@@ -390,6 +394,9 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner, TestTa
 				}.run(getCommandContext());
 			}
 		}.run(new GetTestsOverviewRequest(getCommandContext(), testInstances));
+	}
+
+	private void loadTestResults(List<TestInstance> testInstances) {
 	}
 
 	private void displayOrchestrationHeader(Panel initializationPanel) {
@@ -670,7 +677,7 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner, TestTa
 		setOrchestrationResponse(recOrchestrationResponse);
 	}
 
-	void setRegOrchestrationResponse(RegOrchestrationResponse regOrchestrationResponse) {
+	public void setRegOrchestrationResponse(RegOrchestrationResponse regOrchestrationResponse) {
 		this.regOrchestrationResponse = regOrchestrationResponse;
 		setOrchestrationResponse(regOrchestrationResponse);
 	}

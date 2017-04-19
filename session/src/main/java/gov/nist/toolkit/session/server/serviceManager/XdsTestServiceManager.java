@@ -314,6 +314,13 @@ public class XdsTestServiceManager extends CommonService {
 		}
 	}
 
+	/**
+	 * rewrite using TestKitSearchPath
+	 * @param collectionSetName
+	 * @param collectionName
+	 * @return  name ==> description for collection
+	 * @throws Exception
+	 */
 	public Map<String, String> getCollection(String collectionSetName, String collectionName) throws Exception  {
 		if (session != null)
 			logger.debug(session.id() + ": " + "getCollection " + collectionSetName + ":" + collectionName);
@@ -323,13 +330,13 @@ public class XdsTestServiceManager extends CommonService {
             for (File testkitFile:Installation.instance().testkitFiles(session.getCurrentEnvName(),session.getMesaSessionName())) {
 				try {
 					TestKit tk = new TestKit(testkitFile);
-					Map<String, String> c = tk.getCollection(collectionSetName, collectionName);
-					for (String key : c.keySet()) {
+					Map<String, String> testName = tk.getCollection(collectionSetName, collectionName);  // name ==> description
+					for (String key : testName.keySet()) {
 						if (!collection.containsKey(key)) {
-							collection.put(key, c.get(key));
+							collection.put(key, testName.get(key));
 						}
 					}
-					return collection;
+					return collection;  // this is in the wrong place
 				} catch (Exception e) {
 					// not a problem until the list is exhausted
 				}
@@ -1312,6 +1319,7 @@ public class XdsTestServiceManager extends CommonService {
 		Io.deleteContents(testSessionDir);
 		return null;
 	}
+
 
 
 }

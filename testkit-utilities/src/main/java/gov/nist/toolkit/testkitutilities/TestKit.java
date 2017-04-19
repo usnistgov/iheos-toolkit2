@@ -15,13 +15,11 @@ import java.util.*;
  */
 public class TestKit {
 	File	testKit;
-//	String sessionId;
 
 	static Logger logger = Logger.getLogger(TestKit.class);
 
 	public TestKit(File testKit  /*, String sessionId  */) {
 		this.testKit = testKit;
-//		this.sessionId = sessionId;
 	}
 	
 	/**
@@ -147,6 +145,18 @@ public class TestKit {
 		return parts[0];
 	}
 
+	public List<String> getCollection(TestCollectionId testCollectionId) throws Exception {
+		return getCollectionMembers(testCollectionId.getTestCollectionType().getFilename(), testCollectionId.getTestCollectionName());
+
+	}
+
+	public File getCollectionFile(TestCollectionId testCollectionId) {
+		return getCollectionFileByName(testCollectionId.getTestCollectionType(), testCollectionId.getTestCollectionName());
+	}
+
+	public File getCollectionFileByName(TestCollectionType type, String collectionName) {
+		return getCollectionFileByName(type.getFilename(), collectionName);
+	}
 
 	/**
 	 * Given the name of a collection, return File reference. This format is used by collections and actorcollections

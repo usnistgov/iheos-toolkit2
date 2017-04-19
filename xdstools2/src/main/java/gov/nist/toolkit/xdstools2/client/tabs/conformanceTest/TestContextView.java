@@ -22,7 +22,7 @@ public class TestContextView implements ClickHandler {
         this.siteSelectionValidator = siteSelectionValidator;
     }
 
-    void launchDialog(String msg) {
+    public void launchDialog(String msg) {
         TestContextDialog dialog = new TestContextDialog(toolWindow, testContext, siteSelectionValidator, msg);
         int left = Window.getClientWidth()/ 3;
         int top = Window.getClientHeight()/ 20;

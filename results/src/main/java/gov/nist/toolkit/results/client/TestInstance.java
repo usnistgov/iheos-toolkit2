@@ -1,6 +1,7 @@
 package gov.nist.toolkit.results.client;
 
 import com.google.gwt.user.client.rpc.IsSerializable;
+import gov.nist.toolkit.actortransaction.client.ActorType;
 
 import java.io.Serializable;
 
@@ -9,11 +10,14 @@ import java.io.Serializable;
  * of the running test.
  */
 public class TestInstance implements IsSerializable, Serializable {
-	String id = null;    //  id of the test
-	String section = null;  // this is optional
-	String event = null;
-	String eventDir;
-	boolean sutInitiated;  // part of this test must be initiated by the SUT
+	private String id = null;    //  id of the test
+   private String section = null;  // this is optional
+   private String event = null;
+   private String eventDir;
+   private boolean sutInitiated;  // part of this test must be initiated by the SUT
+   private boolean runStatus;
+   private ActorType actorType = null;
+   private String option = null;
 
    // params to re-create LogRepository
    String location = null;
@@ -167,25 +171,6 @@ public class TestInstance implements IsSerializable, Serializable {
       this.eventDir = eventDir;
    }
 
-   @Override
-   public boolean equals(Object o) {
-      if (o == null) return false;
-      if (!(o instanceof TestInstance)) return false;
-      TestInstance x = (TestInstance) o;
-      if (id == null && x.id != null) return false;
-      if (id != null && !id.equals(x.id)) return false;
-      if (section == null && x.section != null) return false;
-      if (section != null && !section.equals(x.section)) return false;
-      if (event == null && x.event != null) return false;
-      if (event != null && !event.equals(x.event)) return false;
-      return true;
-   }
-
-   @Override
-   public int hashCode() {
-      return ((id == null) ? 42 : id.hashCode()) + ((event == null) ? 43 : event.hashCode());
-   }
-
    public String toString() {
       StringBuilder buf = new StringBuilder();
       if (event != null) buf.append(event);
@@ -203,4 +188,66 @@ public class TestInstance implements IsSerializable, Serializable {
 	public void setSutInitiated(boolean sutInitiated) {
 		this.sutInitiated = sutInitiated;
 	}
+
+   public boolean isRunStatus() {
+      return runStatus;
+   }
+
+   public void setRunStatus(boolean runStatus) {
+      this.runStatus = runStatus;
+   }
+
+   public ActorType getActorType() {
+      return actorType;
+   }
+
+   public void setActorType(ActorType actorType) {
+      this.actorType = actorType;
+   }
+
+   public String getOption() {
+      return option;
+   }
+
+   public void setOption(String option) {
+      this.option = option;
+   }
+
+   @Override
+   public boolean equals(Object o) {
+      if (this == o) return true;
+      if (o == null || getClass() != o.getClass()) return false;
+
+      TestInstance that = (TestInstance) o;
+
+      if (sutInitiated != that.sutInitiated) return false;
+      if (runStatus != that.runStatus) return false;
+      if (id != null ? !id.equals(that.id) : that.id != null) return false;
+      if (section != null ? !section.equals(that.section) : that.section != null) return false;
+      if (event != null ? !event.equals(that.event) : that.event != null) return false;
+      if (eventDir != null ? !eventDir.equals(that.eventDir) : that.eventDir != null) return false;
+      if (actorType != that.actorType) return false;
+      if (option != null ? !option.equals(that.option) : that.option != null) return false;
+      if (location != null ? !location.equals(that.location) : that.location != null) return false;
+      if (user != null ? !user.equals(that.user) : that.user != null) return false;
+      if (format != that.format) return false;
+      return idType == that.idType;
+   }
+
+   @Override
+   public int hashCode() {
+      int result = id != null ? id.hashCode() : 0;
+      result = 31 * result + (section != null ? section.hashCode() : 0);
+      result = 31 * result + (event != null ? event.hashCode() : 0);
+      result = 31 * result + (eventDir != null ? eventDir.hashCode() : 0);
+      result = 31 * result + (sutInitiated ? 1 : 0);
+      result = 31 * result + (runStatus ? 1 : 0);
+      result = 31 * result + (actorType != null ? actorType.hashCode() : 0);
+      result = 31 * result + (option != null ? option.hashCode() : 0);
+      result = 31 * result + (location != null ? location.hashCode() : 0);
+      result = 31 * result + (user != null ? user.hashCode() : 0);
+      result = 31 * result + (format != null ? format.hashCode() : 0);
+      result = 31 * result + (idType != null ? idType.hashCode() : 0);
+      return result;
+   }
 }
