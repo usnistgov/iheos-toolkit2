@@ -14,8 +14,6 @@ When successful, perform the following validations:
 
 * HomeCommunityId matches configuration
 
-
-==============================================
 missing_home - show proper error (XDSMissingHomeCommunityId) returned when 
 homeCommunityId not in request
 

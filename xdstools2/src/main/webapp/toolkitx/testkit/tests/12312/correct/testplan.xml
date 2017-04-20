@@ -12,13 +12,13 @@
       <MetadataFile>query1.xml</MetadataFile>
       <Assertions>
         <DataRef file="THIS" as="output"/>
-        <Assert id="OneDocument">
+        <Assert id="OneDocument" desc="One Document returned">
               		count(//XCRTransaction[@step="retrieve_small"]/Result[1]/*[local-name()='RetrieveDocumentSetResponse']/*[local-name()='DocumentResponse']) = "1"
          		</Assert>
-        <Assert id="HomeCommunityId"> 
+        <Assert id="HomeCommunityId" desc="homeCommunityId matches configuration"> 
           //Result[1]/*[namespace-uri()='urn:ihe:iti:xds-b:2007' and local-name()='RetrieveDocumentSetResponse'][1]/*[namespace-uri()='urn:ihe:iti:xds-b:2007' and local-name()='DocumentResponse'][1]/*[namespace-uri()='urn:ihe:iti:xds-b:2007' and local-name()='HomeCommunityId'][1] = '$home$'
         </Assert>
-        <Assert id="RepositoryUniqueId"> 
+        <Assert id="RepositoryUniqueId" desc="repositoryUniqueId matches configuration"> 
           //Result[1]/*[namespace-uri()='urn:ihe:iti:xds-b:2007' and local-name()='RetrieveDocumentSetResponse'][1]/*[namespace-uri()='urn:ihe:iti:xds-b:2007' and local-name()='DocumentResponse'][1]/*[namespace-uri()='urn:ihe:iti:xds-b:2007' and local-name()='RepositoryUniqueId'][1] = '$repositoryuid$'
         </Assert>
       </Assertions>
@@ -35,13 +35,13 @@
       <MetadataFile>query2.xml</MetadataFile>
       <Assertions>
         <DataRef file="THIS" as="output"/>
-        <Assert id="OneDocuments">
+        <Assert id="OneDocuments" desc="One Document returned">
               		count(//XCRTransaction[@step="retrieve_big"]/Result[1]/*[local-name()='RetrieveDocumentSetResponse']/*[local-name()='DocumentResponse']) = "1"
          		</Assert>
-        <Assert id="HomeCommunityId"> 
+        <Assert id="HomeCommunityId" desc="homeCommunityId matches configuration"> 
           //Result[1]/*[namespace-uri()='urn:ihe:iti:xds-b:2007' and local-name()='RetrieveDocumentSetResponse'][1]/*[namespace-uri()='urn:ihe:iti:xds-b:2007' and local-name()='DocumentResponse'][1]/*[namespace-uri()='urn:ihe:iti:xds-b:2007' and local-name()='HomeCommunityId'][1] = '$home$'
         </Assert>
-        <Assert id="RepositoryUniqueId"> 
+        <Assert id="RepositoryUniqueId" desc="repositoryUniqueId matches configuration"> 
           //Result[1]/*[namespace-uri()='urn:ihe:iti:xds-b:2007' and local-name()='RetrieveDocumentSetResponse'][1]/*[namespace-uri()='urn:ihe:iti:xds-b:2007' and local-name()='DocumentResponse'][1]/*[namespace-uri()='urn:ihe:iti:xds-b:2007' and local-name()='RepositoryUniqueId'][1] = '$repositoryuid$'
         </Assert>
       </Assertions>

@@ -38,7 +38,7 @@
             </Report>
     <Assertions>
       <DataRef file="THIS" as="output"/>
-      <Assert id="ExtrinsicObjectCount"> 
+      <Assert id="ExtrinsicObjectCount" desc="Metadata contains 2 DocumentEntries"> 
                     count(//XCQTransaction[@step="getdocs"]/Result/*[local-name(.)='AdhocQueryResponse']/*[local-name(.)='RegistryObjectList']/*[local-name(.)='ExtrinsicObject']) = 2
                 </Assert>
     </Assertions>
