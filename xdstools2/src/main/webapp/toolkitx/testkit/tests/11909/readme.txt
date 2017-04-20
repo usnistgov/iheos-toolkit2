@@ -7,21 +7,21 @@ Relies on test data loaded by test 12346
 
 Test Steps
 
-no_initial_doc
+no_initial_doc -
 	Original document does not exist. Nothing returned.
 
-uniqueid_no_related
+uniqueid_no_related -
 	Operation with single UniqueId as input but no related documents
 
-uuid_no_related
+uuid_no_related -
 	Operation with single UUID as input but no related documents
 
-uniqueid
+uniqueid -
 	Operation with single UniqueId as input.
 
-near_folder
+near_folder -
 	Operation near a folder.  Folders and Submission Sets are not returnd.
 
-uuid
+uuid -
 	Operation with UUID input
 

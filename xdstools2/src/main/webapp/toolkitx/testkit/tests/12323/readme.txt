@@ -3,7 +3,9 @@ R.b Folder lastUpdateTime
 This test verifies that the registry properly sets the XDSFolder.lastUpdateTime
 attribute.
 
-Steps
+
+Sections
+
 
 no_time - submit folder with no lastUpdateTime attribute
 

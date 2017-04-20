@@ -6,23 +6,23 @@ Stored Query must use SOAP version 1.2
 
 Test Steps
 
-uniqueid
+uniqueid -
 	Operation with UniqueId
 
-uniqueid2
+uniqueid2 -
 	Operation with multiple UniqueIds
 
-uuid
+uuid -
 	Operation with UUID
 
-uuid2
+uuid2 -
 	Operation with multiple UUIDs
 
-uuid_multiple_slot_values
+uuid_multiple_slot_values -
 	SQ parameter values spread across multiple Value elements
 of a Slot.  (CP 295)
 
-homeCommunityId
+homeCommunityId -
 	Section 3.18.4.1.3, part 4, For Document Registry Actors says
 	that the Document Registry must accept the homeCommunityId
 	on a Stored Query. This test repeats step uniqueid above

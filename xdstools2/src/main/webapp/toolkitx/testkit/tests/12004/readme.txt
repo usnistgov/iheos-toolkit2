@@ -13,18 +13,23 @@ document (hash matches) then this should not cause a conflict. They cannot
 allocate a new uniqueId for one of the copies because the Content Profile 
 stipulates taking the value from the document header.  This test validates:
 
-1) That resubmission does not generate an error
-2) That an apparent resubmission (same uniqueId) but different hash (different content) is rejected
-3) Both copies are available in query
+<ol>
+<li>That resubmission does not generate an error
+<li>That an apparent resubmission (same uniqueId) but different hash (different content) is rejected
+<li>Both copies are available in query
+</ol>
 
-submit
+Sections 
+
+
+submit -
 	Submit a Submission Set containing a single document
 
-resubmit_doc
+resubmit_doc -
 	Resubmit same with document having same XDSDocumentEntry.uniqueId and
 XDSDocumentEntry.hash.  The Register must be successful.
 
-resubmit_doc_diff_hash
+resubmit_doc_diff_hash -
 	Resubmit again with document having a different value in 
 XDSDocumentEntry.hash but same value in XDSDocumentEntry.uniqueId.  This must 
 return errorCode XDSDuplicateUniqueIdInRegistry.

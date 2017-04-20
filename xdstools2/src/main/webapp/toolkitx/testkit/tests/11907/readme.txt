@@ -2,19 +2,20 @@ SQ.b GetFolderAndContents Stored Query
 
 Relies on test data loaded by test 12346
 
+
 Test Steps
 
-uniqueid
+uniqueid -
 	Operation with UniqueId
 
-uuid
+uuid -
 	Operation with UUID
 
-conf_code
+conf_code -
 	Operation with UUID and confidentialityCode
 
-both_conf_code
+both_conf_code -
 	Operation with UUID and confidentialityCode
 
-format_code
+format_code -
 	Operation with UUID and formatCode
