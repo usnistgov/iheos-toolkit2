@@ -2,6 +2,39 @@
  * docgen.groovy
  */
 
+File testdir = null
+def doc = []  // strings
+
+if (args.size() != 3) usage()
+if (args[0] == '-test') {
+    def testbasedir = new File(args[1])
+    def testCollectionFile = new File(args[2])
+    def testcollection = []
+    testCollectionFile.eachLine { line -> testcollection.add(line.trim())}
+    testcollection.each { testid ->
+        def testdir1 = new File(testbasedir, testid)
+        doc = []
+        eachTest(doc, testdir1)
+        genOutput(doc, testid)
+    }
+}
+
+//eachTest(doc, testdir)
+//println '**********************************************'
+
+def genOutput(def doc, def testid) {
+    def outputHtml = true
+    if (outputHtml) {
+        def html = toHtml(doc)
+        new File(testid + '.html').withWriter { out ->
+            html.each { out.println it }
+        }
+    } else {
+        doc.each { println it }
+    }
+}
+
+def eachTest(def doc, File testdir) {
 import groovy.transform.Field
 
 File testdir = null
@@ -33,6 +66,7 @@ def genOutput(def doc, def testid) {
 
 def eachTest(def doc, File testdir) {
     if (!testdir.exists() || !testdir.isDirectory() || ! new File(testdir, 'index.idx').exists()) usage('Not a test directory')
+    if (!testdir.exists() || !testdir.isDirectory() || ! new File(testdir, 'index.idx').exists()) usage('Not a test directory')
     doc.add("= Test: ${testdir.name} ")
     doc.add(' ')
     doc.add('[%hardbreaks]')
@@ -47,6 +81,11 @@ def eachTest(def doc, File testdir) {
     }
 
     if (readme.size() > 0) readme.remove(0)
+
+        println "readme is ${readme}"
+    }
+
+    readme.remove(0)
     doc.addAll(readme)
     doc.add(' ')
 
@@ -57,6 +96,11 @@ def eachTest(def doc, File testdir) {
 }
 
 def eachSection(def doc, File sectionDir) {
+        walkTestplan(doc, sectionDir)
+    }
+}
+
+def walkTestplan(def doc, File sectionDir) {
     def plan = testplan(sectionDir)
     doc.add(' ')
     doc.add("== Section ${sectionDir.name}")
@@ -80,6 +124,11 @@ def eachTestStep(def doc, File sectionDir, def teststep) {
     doc.add('[%hardbreaks]')
     teststep.children().findAll { it.name() == 'Goal'}.each { doc.add(it)}
     doc.add("*Target Actor*: ${actName}")
+    doc.add(' ')
+    doc.add("=== StepID: ${teststep.@id}")
+    doc.add(' ')
+    doc.add('[%hardbreaks]')
+    teststep.children().findAll { it.name() == 'Goal'}.each { doc.add(it)}
     doc.add("*Transaction*: ${transName}")
     if (transName == 'StoredQuery') {
         doc.add("*QueryType*: ${storedQueryType(sectionDir, transEle)}")
@@ -321,6 +370,7 @@ def transactionName(def teststep) {
         String transEleName = transEle.name()
         def name = transEleName.minus('Transaction')
         name = transactionMap[name]
+        if (name == 'XCQ') name = 'Cross Community Query'
         return name
     } else return null
 }
@@ -403,6 +453,23 @@ def readme(File testdir) {
 
 def isBlank(def it) { it == '' || it == '<br />'}
 
+    def content = []
+    try {
+        new File(testdir, 'readme.txt').eachLine { line ->
+            def str = line.trim()
+            if (str.size() == 0) str = '<br />'
+            if (str == '<ul>') str = ' '
+            if (str == '</ul>') str = ' '
+//            if (str.contains('<li>')) str = '* ' + str.minus('<li>')
+            if (str.contains('<h2>')) str = "== ${str.minus('<h2>').minus('</h2>')}"
+//            if (str.contains('<p>')) str = "\n${str.minus('<p>')}"
+//            if (str.contains('</p>')) str = str.minus('</p>')
+            content.add(str)
+        }
+    } catch (Exception e) { }
+    return content
+}
+
 /**
  * read index.idx for a test
  * @param testdir
@@ -424,6 +491,52 @@ def usage() {
     println 'docgen -test <testdir>'
 //    println 'docgen -testkit <testkitdir>'
     System.exit(-1)
+}
+
+def toHtml(def doc) {
+    def out = []
+
+    out = doc.collect { node ->
+        def line = node as String
+        if (line.startsWith('==== ')) return "<h4>${line.minus('==== ')}</h4>"
+        if (line.startsWith('=== ')) return "<h3>${line.minus('=== ')}</h3>"
+        if (line.startsWith('== ')) return "<h2>${line.minus('== ')}</h2>"
+        if (line.startsWith('= ')) return "<h1>${line.minus('= ')}</h1>"
+        if (line.startsWith('*')) return line.replaceFirst('\\*', '<b>').replaceFirst('\\*', '</b>')
+        return line
+    }
+    def out1 = []
+
+    def breaks = false
+    out1 = out.collect { line ->
+        if (line.startsWith('[%hardbreaks]')) { breaks = true; return ' ' }
+        if (line.trim().size() == 0) breaks = false
+        if (breaks) return "${line}<br />"
+        return line
+
+    }
+
+    // clean out excessive breaks
+    def out2 = clean(out1)
+    def out3 = clean(out2)
+
+    return out3
+}
+
+def clean(def doc) {
+    def out = []
+    def last = ' '
+    doc.each { line ->
+        def skip = false
+        if (last == ' ' && line == '<br />') skip = true
+        if (last.startsWith('<h') && line == ' ') skip = true
+        if (last.startsWith('<h') && line == '<br />') skip = true
+        if (!skip)
+            out.add(line)
+        last = line
+    }
+
+    return out
 }
 
 def toHtml(def doc) {
