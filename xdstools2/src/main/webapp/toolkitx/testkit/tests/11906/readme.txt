@@ -5,26 +5,34 @@ Stored Query must use SOAP version 1.2
 Test 12346 must be run first to load test data needed
 for this test.
 
-uniqueid
+
+Sections
+
+
+uniqueid -
 	Query based on uniqueId
 
-folder_and_docs
+folder_and_docs -
 	Query based on uniqueId. Submission Set includes multiple documents and a folder.
 
-uuid
+uuid -
 	Query based on uuid
 
-format_code
+format_code -
 	Filter the documents via Format code
 
-conf_code
+conf_code -
 	Filter the documents via Confidentialitiy code
 	
-objectrefs
+objectrefs -
 	Request ObjectRefs instead of LeafClass. Should return 3 ObjectRefs.
+
 
 In the folder_and_docs, format_code,  and conf_code sections, one 
 of two DocumentEntries are returned. So, the SQ results include the SS, the folder, one DocumentEntry, and Associations between:
-	SS and Folder
-	SS and DocumentEntry
-	Folder and DocumentEntry
+
+- SS and Folder
+
+- SS and DocumentEntry
+
+- Folder and DocumentEntry

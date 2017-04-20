@@ -4,7 +4,8 @@ A Document Registry, when accepting a Document Replace, must find all
 Folders the original document is a member of and add the replacement
 document to those folders.
 
-Steps are:
+
+Sections are:
 
 submit_doc_w_fol - submit a document in a folder
 

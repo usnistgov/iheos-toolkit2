@@ -5,17 +5,37 @@
 File testdir = null
 def doc = []  // strings
 
-if (args.size() != 2) usage()
+if (args.size() != 3) usage()
 if (args[0] == '-test') {
-    testdir = new File(args[1])
-    if (!testdir.exists() || !testdir.isDirectory() || ! new File(testdir, 'index.idx').exists()) usage('Not a test directory')
+    def testbasedir = new File(args[1])
+    def testCollectionFile = new File(args[2])
+    def testcollection = []
+    testCollectionFile.eachLine { line -> testcollection.add(line.trim())}
+    testcollection.each { testid ->
+        def testdir1 = new File(testbasedir, testid)
+        doc = []
+        eachTest(doc, testdir1)
+        genOutput(doc, testid)
+    }
 }
 
-eachTest(doc, testdir)
+//eachTest(doc, testdir)
 //println '**********************************************'
-doc.each { println it }
+
+def genOutput(def doc, def testid) {
+    def outputHtml = true
+    if (outputHtml) {
+        def html = toHtml(doc)
+        new File(testid + '.html').withWriter { out ->
+            html.each { out.println it }
+        }
+    } else {
+        doc.each { println it }
+    }
+}
 
 def eachTest(def doc, File testdir) {
+    if (!testdir.exists() || !testdir.isDirectory() || ! new File(testdir, 'index.idx').exists()) usage('Not a test directory')
     doc.add("= Test: ${testdir.name} ")
     doc.add(' ')
     doc.add('[%hardbreaks]')
@@ -298,10 +318,13 @@ def profile(File testdir) {
     new File(testdir, 'collections.txt').eachLine { line -> collections.add(line.trim())}
     def xds = ['reg', 'rep']
     def xca = ['ig', 'rg']
+    def xcai = ['iig', 'rig']
     def isXds = collections.find { it in xds}
     if (isXds) return 'XDS'
     def isXca = collections.find { it in xca }
     if (isXca) return 'XCA'
+    def isXCAI = collections.find { it in xcai }
+    if (isXCAI) return 'XCA-I'
     return ''
 }
 
@@ -340,13 +363,13 @@ def readme(File testdir) {
     try {
         new File(testdir, 'readme.txt').eachLine { line ->
             def str = line.trim()
-//            if (str.size() > 0)
+            if (str.size() == 0) str = '<br />'
             if (str == '<ul>') str = ' '
             if (str == '</ul>') str = ' '
-            if (str.contains('<li>')) str = '* ' + str.minus('<li>')
-            if (str.contains('<h2>')) str = "==== ${str.minus('<h2>').minus('</h2>')}"
-            if (str.contains('<p>')) str = "\n${str.minus('<p>')}"
-            if (str.contains('</p>')) str = str.minus('</p>')
+//            if (str.contains('<li>')) str = '* ' + str.minus('<li>')
+            if (str.contains('<h2>')) str = "== ${str.minus('<h2>').minus('</h2>')}"
+//            if (str.contains('<p>')) str = "\n${str.minus('<p>')}"
+//            if (str.contains('</p>')) str = str.minus('</p>')
             content.add(str)
         }
     } catch (Exception e) { }
@@ -374,4 +397,50 @@ def usage() {
     println 'docgen -test <testdir>'
 //    println 'docgen -testkit <testkitdir>'
     System.exit(-1)
+}
+
+def toHtml(def doc) {
+    def out = []
+
+    out = doc.collect { node ->
+        def line = node as String
+        if (line.startsWith('==== ')) return "<h4>${line.minus('==== ')}</h4>"
+        if (line.startsWith('=== ')) return "<h3>${line.minus('=== ')}</h3>"
+        if (line.startsWith('== ')) return "<h2>${line.minus('== ')}</h2>"
+        if (line.startsWith('= ')) return "<h1>${line.minus('= ')}</h1>"
+        if (line.startsWith('*')) return line.replaceFirst('\\*', '<b>').replaceFirst('\\*', '</b>')
+        return line
+    }
+    def out1 = []
+
+    def breaks = false
+    out1 = out.collect { line ->
+        if (line.startsWith('[%hardbreaks]')) { breaks = true; return ' ' }
+        if (line.trim().size() == 0) breaks = false
+        if (breaks) return "${line}<br />"
+        return line
+
+    }
+
+    // clean out excessive breaks
+    def out2 = clean(out1)
+    def out3 = clean(out2)
+
+    return out3
+}
+
+def clean(def doc) {
+    def out = []
+    def last = ' '
+    doc.each { line ->
+        def skip = false
+        if (last == ' ' && line == '<br />') skip = true
+        if (last.startsWith('<h') && line == ' ') skip = true
+        if (last.startsWith('<h') && line == '<br />') skip = true
+        if (!skip)
+            out.add(line)
+        last = line
+    }
+
+    return out
 }

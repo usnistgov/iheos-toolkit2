@@ -9,32 +9,32 @@ Relies on test data loaded by test 12346
 
 The test steps are:
 
-simple
+simple -
 	Basic query using patient ID and status
 
-other_sourceid
+other_sourceid -
 	Adds selection on non-existant sourceId
 
-submissiontime_in
+submissiontime_in -
 	Includes all 5 in submission time range
 
-submissiontime_out
+submissiontime_out -
 	Includes none in submission time range
 
-submissiontime_no_start
+submissiontime_no_start -
 	No start time specified - includes all 5
 
-submissiontime_no_end
+submissiontime_no_end -
 	No end time - includes all 5
 
-author_all
+author_all -
 	Select all 5 based on same author
 
-author_none
+author_none -
 	Select none based on different author
 	
-contenttype_all
+contenttype_all -
 	Select all 5 based on same content type
 
-contenttype_none
+contenttype_none -
 	Select none based on different content type
