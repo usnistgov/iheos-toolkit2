@@ -9,7 +9,7 @@
       <MetadataFile>query.xml</MetadataFile>
       <Assertions>
         <DataRef file="THIS" as="output"/>
-        <Assert id="NoDocuments">
+        <Assert id="NoDocuments" desc="No Documents returned">
               		count(//XCRTransaction/Result[1]/*[local-name()='RetrieveDocumentSetResponse']/*[local-name()='DocumentResponse']) = "0"                    
          		</Assert>
       </Assertions>

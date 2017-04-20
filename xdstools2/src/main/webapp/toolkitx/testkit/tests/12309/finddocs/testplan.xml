@@ -19,13 +19,13 @@
             useAs="$home$"/> 
     <Assertions>
       <DataRef file="THIS" as="output"/>
-      <Assert id="ObjectRefCount"> 
+      <Assert id="ObjectRefCount" desc="Contains 2 ObjectRefs"> 
                     count(//XCQTransaction[@step="finddocs"]/Result/*[local-name(.)='AdhocQueryResponse']/*[local-name(.)='RegistryObjectList']/*[local-name(.)='ObjectRef']) = 2
       </Assert>
-      <Assert id="Object1HomeCommunityId"> 
+      <Assert id="Object1HomeCommunityId" desc="homeCommunityId on ObjectRef 1 matches configuration"> 
         //XCQTransaction[1]/Result[1]/*[namespace-uri()='urn:oasis:names:tc:ebxml-regrep:xsd:query:3.0' and local-name()='AdhocQueryResponse'][1]/*[namespace-uri()='urn:oasis:names:tc:ebxml-regrep:xsd:rim:3.0' and local-name()='RegistryObjectList'][1]/*[namespace-uri()='urn:oasis:names:tc:ebxml-regrep:xsd:rim:3.0' and local-name()='ObjectRef'][1]/@home = '$home$'
       </Assert>
-      <Assert id="Object2HomeCommunityId"> 
+      <Assert id="Object2HomeCommunityId" desc="homeCommunityId on ObjectRef 2 matches configurtion"> 
         //XCQTransaction[1]/Result[1]/*[namespace-uri()='urn:oasis:names:tc:ebxml-regrep:xsd:query:3.0' and local-name()='AdhocQueryResponse'][1]/*[namespace-uri()='urn:oasis:names:tc:ebxml-regrep:xsd:rim:3.0' and local-name()='RegistryObjectList'][1]/*[namespace-uri()='urn:oasis:names:tc:ebxml-regrep:xsd:rim:3.0' and local-name()='ObjectRef'][2]/@home = '$home$'
       </Assert>
     </Assertions>

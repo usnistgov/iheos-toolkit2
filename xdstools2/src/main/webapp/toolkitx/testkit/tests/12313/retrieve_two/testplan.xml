@@ -14,13 +14,13 @@
     <MetadataFile>query.xml</MetadataFile>
     <Assertions>
       <DataRef file="THIS" as="output"/>
-      <Assert id="TwoDocuments">
+      <Assert id="TwoDocuments" desc="Two Documents are returned">
               		count(//XCRTransaction/Result[1]/*[local-name()='RetrieveDocumentSetResponse']/*[local-name()='DocumentResponse']) = "2"                    
          		</Assert>
-        <Assert id="HomeCommunityId"> 
+        <Assert id="HomeCommunityId" desc="Configured homeCommunityId returned for each Document"> 
           //Result[1]/*[namespace-uri()='urn:ihe:iti:xds-b:2007' and local-name()='RetrieveDocumentSetResponse'][1]/*[namespace-uri()='urn:ihe:iti:xds-b:2007' and local-name()='DocumentResponse'][1]/*[namespace-uri()='urn:ihe:iti:xds-b:2007' and local-name()='HomeCommunityId'][1] = '$home$'
         </Assert>
-        <Assert id="RepositoryUniqueId"> 
+        <Assert id="RepositoryUniqueId" desc="Configured repositoryUniqueId returned for each Document"> 
           //Result[1]/*[namespace-uri()='urn:ihe:iti:xds-b:2007' and local-name()='RetrieveDocumentSetResponse'][1]/*[namespace-uri()='urn:ihe:iti:xds-b:2007' and local-name()='DocumentResponse'][1]/*[namespace-uri()='urn:ihe:iti:xds-b:2007' and local-name()='RepositoryUniqueId'][1] = '$repositoryuid$'
         </Assert>
     </Assertions>
