@@ -11,6 +11,7 @@ import org.apache.axiom.om.OMElement;
 
 import javax.xml.namespace.QName;
 import java.io.File;
+import java.io.FileInputStream;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -29,8 +30,12 @@ public class LogFileContentBuilder {
 
     public LogFileContentDTO build(File logfile, boolean incompleteOk) throws Exception {
 //        c.setInputFile(logfile);
-        log = Util.parse_xml(logfile);
-        init(false);
+        FileInputStream fis = new FileInputStream(logfile);
+        if (fis != null) {
+            log = Util.parse_xml(fis);
+            init(false);
+            fis.close();
+        }
         return c;
     }
 
