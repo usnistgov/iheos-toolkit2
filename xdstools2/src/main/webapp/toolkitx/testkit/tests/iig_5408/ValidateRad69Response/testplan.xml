@@ -56,7 +56,9 @@
 		</Standard>
 		<XmlDetailTransaction>
 			<Assertions>
-				<Assert id="Returned doc(s)" process="sameRetImgs">
+				<Assert id="Returned doc(s)" process="sameRetImgs"
+ desc="Response message from the system under test contains the proper set of image and other identifiers as determined by the test data."
+>
 					<TestResponse testDir="../Rad69RetrieveRequest" step="retrieve" />
 				</Assert>
 			</Assertions>

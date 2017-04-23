@@ -23,7 +23,9 @@
 		</Standard>
 		<XmlDetailTransaction>
 			<Assertions>
-				<Assert id="Request to RIG A" process="sameReqImgs" std="RequestBody-A">
+				<Assert id="Request to RIG A" process="sameReqImgs" std="RequestBody-A"
+ desc="Request message for images (RAD-75 or RAD-69) from the system under test contains the proper set of image and other identifiers as determined by the test data."
+>
 					<SimTransaction id="rig_a" transaction="xcr.ids" />
 				</Assert>
 			</Assertions>
