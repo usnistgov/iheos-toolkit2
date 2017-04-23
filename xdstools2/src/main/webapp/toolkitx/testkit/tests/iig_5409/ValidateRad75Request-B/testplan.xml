@@ -48,7 +48,7 @@
     </Standard>
     <XmlDetailTransaction>
       <Assertions>
-        <Assert id="Request to RIG B" process="sameReqImgs" std="RequestBody-B">
+        <Assert id="Request to RIG B" process="sameReqImgs" std="RequestBody-B" desc="Request message for images (RAD-75 or RAD-69) from the system under test contains the proper set of image and other identifiers as determined by the test data.">
           <SimTransaction id="rig_b" transaction="xcr.ids"/>
         </Assert>
       </Assertions>

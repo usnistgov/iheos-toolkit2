@@ -28,10 +28,14 @@
 		</Standard>
 		<XmlDetailTransaction>
 			<Assertions>
-				<Assert id="Returned doc(s)" process="sameRetImgs">
+				<Assert id="Returned doc(s)" process="sameRetImgs"
+ desc="Response message from the system under test contains the proper set of image and other identifiers as determined by the test data."
+ >
 					<TestResponse testDir="../Rad69RetrieveRequest" step="retrieve" />
 					</Assert>
-            <Assert id="Registry Errors" process="registryErrorListNotEmpty">
+            <Assert id="Registry Errors" process="registryErrorListNotEmpty"
+desc="This is a test step where the system under test is expected to return error codes due to the request or test data. This step determines if the system under test returns at least one error code without checking for specific values." 
+>
                <TestResponse testDir="../Rad69RetrieveRequest" step="retrieve" />
                </Assert>
 			</Assertions>
