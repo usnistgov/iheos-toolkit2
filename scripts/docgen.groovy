@@ -2,6 +2,8 @@
  * docgen.groovy
  */
 
+import groovy.transform.Field
+
 File testdir = null
 def doc = []  // strings
 
@@ -23,14 +25,9 @@ if (args[0] == '-test') {
 //println '**********************************************'
 
 def genOutput(def doc, def testid) {
-    def outputHtml = true
-    if (outputHtml) {
-        def html = toHtml(doc)
-        new File(testid + '.html').withWriter { out ->
-            html.each { out.println it }
-        }
-    } else {
-        doc.each { println it }
+    def html = toHtml(doc)
+    new File(testid + '.html').withWriter { out ->
+        html.each { out.println it }
     }
 }
 
@@ -85,13 +82,14 @@ def eachTest(def doc, File testdir) {
         println "readme is ${readme}"
     }
 
-    readme.remove(0)
+    if (readme.size() > 0) readme.remove(0)
     doc.addAll(readme)
     doc.add(' ')
 
     sections(testdir).each { sectionName ->
         File sectionDir = new File(testdir, sectionName)
         eachSection(doc, sectionDir)
+
     }
 }
 
@@ -100,7 +98,7 @@ def eachSection(def doc, File sectionDir) {
     }
 }
 
-def walkTestplan(def doc, File sectionDir) {
+def eachSection(def doc, File sectionDir) {
     def plan = testplan(sectionDir)
     doc.add(' ')
     doc.add("== Section ${sectionDir.name}")
@@ -124,11 +122,13 @@ def eachTestStep(def doc, File sectionDir, def teststep) {
     doc.add('[%hardbreaks]')
     teststep.children().findAll { it.name() == 'Goal'}.each { doc.add(it)}
     doc.add("*Target Actor*: ${actName}")
+    def actName = actorName(teststep)
     doc.add(' ')
-    doc.add("=== StepID: ${teststep.@id}")
+    doc.add("=== Transaction: ${teststep.@id}")
     doc.add(' ')
     doc.add('[%hardbreaks]')
     teststep.children().findAll { it.name() == 'Goal'}.each { doc.add(it)}
+    doc.add("*Target Actor*: ${actName}")
     doc.add("*Transaction*: ${transName}")
     if (transName == 'StoredQuery') {
         doc.add("*QueryType*: ${storedQueryType(sectionDir, transEle)}")
@@ -371,6 +371,7 @@ def transactionName(def teststep) {
         def name = transEleName.minus('Transaction')
         name = transactionMap[name]
         if (name == 'XCQ') name = 'Cross Community Query'
+        name = transactionMap[name]
         return name
     } else return null
 }
@@ -454,21 +455,29 @@ def readme(File testdir) {
 def isBlank(def it) { it == '' || it == '<br />'}
 
     def content = []
+    def stage1 = []
+    def stage2 = []
+    def stage3 = []
     try {
-        new File(testdir, 'readme.txt').eachLine { line ->
-            def str = line.trim()
-            if (str.size() == 0) str = '<br />'
-            if (str == '<ul>') str = ' '
-            if (str == '</ul>') str = ' '
-//            if (str.contains('<li>')) str = '* ' + str.minus('<li>')
-            if (str.contains('<h2>')) str = "== ${str.minus('<h2>').minus('</h2>')}"
-//            if (str.contains('<p>')) str = "\n${str.minus('<p>')}"
-//            if (str.contains('</p>')) str = str.minus('</p>')
-            content.add(str)
+        new File(testdir, 'readme.txt').eachLine { line -> stage1 << line.trim() }
+
+        // clear out repetitive blank lines
+        stage1.each {
+            if (isBlank(it) && stage2.size() > 0 && isBlank(stage2.last())) return
+            stage2 << it
+        }
+
+        // change blank lines into <p>
+        stage2.each {
+            if (isBlank(it)) stage3 << '<p>'
+            else stage3 << it
+
         }
     } catch (Exception e) { }
-    return content
+    return stage3
 }
+
+def isBlank(def it) { it == '' || it == '<br />'}
 
 /**
  * read index.idx for a test
