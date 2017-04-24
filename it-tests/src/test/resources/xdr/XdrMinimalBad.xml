@@ -21,7 +21,7 @@
                   </rim:Slot>
                   <rim:Slot name="sourcePatientId">
                      <rim:ValueList>
-                        <rim:Value>1^^^&amp;2.16.840.1.113883.4.6&amp;ISO</rim:Value>
+                        <rim:Value>1^^^&amp;1.2.16.840.1.113883.4.6&amp;ISO</rim:Value>
                      </rim:ValueList>
                   </rim:Slot>                  
                   <rim:Name>
@@ -112,7 +112,7 @@
                   </rim:Classification>
                   <rim:ExternalIdentifier
                      identificationScheme="urn:uuid:58a6f841-87b3-4a3e-92fd-a8ffeff98427"
-                     value="1^^^&amp;2.16.840.1.113883.4.6&amp;ISO"
+                     value="1^^^&amp;1.2.16.840.1.113883.4.6&amp;ISO"
                      objectType="urn:oasis:names:tc:ebxml-regrep:ObjectType:RegistryObject:ExternalIdentifier"
                      id="id_11" registryObject="Document01">
                      <rim:Name>
@@ -205,7 +205,7 @@
                   
                   <rim:ExternalIdentifier
                      identificationScheme="urn:uuid:6b5aea1a-874d-4603-a4bc-96a0a7b38446"
-                     value="1^^^&amp;2.16.840.1.113883.4.6&amp;ISO"
+                     value="1^^^&amp;1.2.16.840.1.113883.4.6&amp;ISO"
                      objectType="urn:oasis:names:tc:ebxml-regrep:ObjectType:RegistryObject:ExternalIdentifier"
                      id="id_17" registryObject="urn:uuid:96bd4589-6975-43bf-81e8-9cf1701d0f10">
                      <rim:Name>
