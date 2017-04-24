@@ -41,7 +41,7 @@ Content-ID: <0.85b57d7287e4fa4b528a8f050c41f8ad829c20332f23b48d@apache.org>
                         </rim:Slot>
                         <rim:Slot name="sourcePatientId">
                             <rim:ValueList>
-                                <rim:Value>89765a87b^^^&amp;3.4.5&amp;ISO</rim:Value>
+                                <rim:Value>89765a87b^^^&amp;1.3.4.5&amp;ISO</rim:Value>
                             </rim:ValueList>
                         </rim:Slot>
                         <rim:Slot name="sourcePatientInfo">

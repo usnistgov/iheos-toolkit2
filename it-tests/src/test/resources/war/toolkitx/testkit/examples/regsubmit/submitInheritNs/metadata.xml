@@ -66,7 +66,7 @@
       </Slot>
       <Slot name="sourcePatientId">
         <ValueList>
-          <Value>89765a87b^^^&amp;3.4.5&amp;ISO</Value>
+          <Value>89765a87b^^^&amp;1.3.4.5&amp;ISO</Value>
         </ValueList>
       </Slot>
       <Slot name="sourcePatientInfo">
