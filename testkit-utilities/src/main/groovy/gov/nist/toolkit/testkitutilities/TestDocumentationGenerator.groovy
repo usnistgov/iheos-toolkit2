@@ -21,8 +21,7 @@ class TestDocumentationGenerator {
     }
 
     def eachTest(def doc, File testdir) {
-        if (!testdir.exists() || !testdir.isDirectory() || ! new File(testdir, 'index.idx').exists())
-            usage('Not a test directory')
+        if (!testdir.exists() || !testdir.isDirectory() || ! new File(testdir, 'index.idx').exists()) usage('Not a test directory')
         doc.add("= Test: ${testdir.name} ")
         doc.add(' ')
         doc.add('[%hardbreaks]')
@@ -49,7 +48,6 @@ class TestDocumentationGenerator {
     def eachSection(def doc, File sectionDir) {
         def plan = testplan(sectionDir)
         doc.add(' ')
-        doc.add('<hr />')
         doc.add("== Section ${sectionDir.name}")
         doc.add(' ')
         def readme = readme(sectionDir)
@@ -66,18 +64,12 @@ class TestDocumentationGenerator {
         def transName = transactionName(teststep)
         def actName = actorName(teststep)
         doc.add(' ')
-        if (!transName && !actName) {
-            doc.add("=== Validation: ${teststep.@id}")
-        } else {
-            doc.add("=== Transaction: ${teststep.@id}")
-        }
+        doc.add("=== Transaction: ${teststep.@id}")
         doc.add(' ')
         doc.add('[%hardbreaks]')
         teststep.children().findAll { it.name() == 'Goal'}.each { doc.add(it)}
-        if (transName && actName) {
-            doc.add("*Target Actor*: ${actName}")
-            doc.add("*Transaction*: ${transName}")
-        }
+        doc.add("*Target Actor*: ${actName}")
+        doc.add("*Transaction*: ${transName}")
         if (transName == 'StoredQuery') {
             doc.add("*QueryType*: ${storedQueryType(sectionDir, transEle)}")
         }
@@ -289,30 +281,18 @@ class TestDocumentationGenerator {
         doc.add("Validation [${tag}] not implemented yet")
     }
 
-    // transaction names used in testplan ==> actor
     def actorMap = [
             XCQ : 'Responding Gateway',
             XCR : 'Responding Gateway',
-            IGR : 'Initiating Gateway',
             ImagingDocSetIigRetrieve : 'Imaging Initiating Gateway',
-            StoredQuery : 'XDS',
-            Register : 'XDS',
-            Mu : 'XDS',
-            ImagingDocSetRetrieve : 'Imaging Document Source',
-            XDRProvideAndRegister : 'Document Recipient'
+            StoredQuery : 'XDS'
     ]
 
-    // transaction names used in testplan ==> display name
     def transactionMap = [
             XCQ : 'Cross Community Query',
             XCR : 'Cross Community Retrieve',
-            IGR : 'Stored Query',
             ImagingDocSetIigRetrieve : 'RAD-69',
-            StoredQuery : 'Stored Query',
-            Register : 'Register',
-            Mu : 'Metadata Update',
-            ImagingDocSetRetrieve : 'Imaging Document Set Retrieve',
-            XDRProvideAndRegister : 'Provide and Register'
+            StoredQuery : 'Stored Query'
     ]
 
     def actorName(def teststep) {
@@ -421,11 +401,7 @@ class TestDocumentationGenerator {
  */
     def sections(File testdir) {
         def list = []
-        new File(testdir, 'index.idx').eachLine { line ->
-            line = line.trim()
-            if (line.length() > 0)
-                list.add(line)
-        }
+        new File(testdir, 'index.idx').eachLine { line -> list.add(line.trim())}
         return list
     }
 
@@ -437,7 +413,8 @@ class TestDocumentationGenerator {
     def usage() {
         println 'Usage:'
         println 'docgen -test <testdir>'
-        throw new Exception('Usage')
+//    println 'docgen -testkit <testkitdir>'
+        System.exit(-1)
     }
 
     def toHtml(def doc) {
