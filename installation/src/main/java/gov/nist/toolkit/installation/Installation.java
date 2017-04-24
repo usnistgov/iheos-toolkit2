@@ -28,7 +28,7 @@ public class Installation {
     private PropertyServiceManager propertyServiceMgr = null;
     private static Logger logger = Logger.getLogger(Installation.class);
 
-    static Installation me = new Installation();
+    static Installation me = null;
 
     public String toString() {
         return String.format("warHome=%s externalCache=%s", warHome, externalCache);
@@ -46,6 +46,8 @@ public class Installation {
     }
 
     static public Installation instance() {
+        if (me == null)
+            me = new Installation();
         return me;
     }
 

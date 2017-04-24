@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE web-app
+        PUBLIC "-//Sun Microsystems, Inc.//DTD Web Application 2.3//EN"
+        "http://java.sun.com/dtd/web-app_2_3.dtd">
+
+<web-app>
+    <display-name>Toolkit Test Documentation</display-name>
+    <description>Test Documentation Viewer</description>
+
+    <servlet>
+        <servlet-name>DocumentGenerator</servlet-name>
+        <display-name>Toolkit Test Documentation</display-name>
+        <description>Test Documentation Viewer</description>
+        <servlet-class>gov.nist.toolkit.testkitutilities.TestkitServlet</servlet-class>
+
+        <init-param>
+            <param-name>toolkit-warhome</param-name>
+            <param-value>/Users/bill/tk/xdstools2/target/xdstools2-4.3.4</param-value>
+        </init-param>
+        <init-param>
+            <param-name>toolkit-external-cache</param-name>
+            <param-value>/Users/bill/ec</param-value>
+        </init-param>
+    </servlet>
+
+    <servlet-mapping>
+        <servlet-name>DocumentGenerator</servlet-name>
+        <url-pattern>/testdoc/*</url-pattern>
+    </servlet-mapping>
+
+    <welcome-file-list>
+        <welcome-file>testdoctool.html</welcome-file>
+    </welcome-file-list>
+
+</web-app>
