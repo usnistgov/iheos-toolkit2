@@ -92,4 +92,25 @@ public class TestKitSearchPath {
 
         return buf.toString();
     }
+
+    /**
+     *
+     * @return Map shortname (actorCodes) ==> long name for all actorcollections
+     */
+    public Map<String, String> getActorCollectionsNamesAndDescriptions() {
+        Map<String, String> names = new HashMap<>();
+
+        for (TestKit testkit : testkits) {
+            try {
+                // name => description
+                Map<String, String> colls = testkit.getCollectionNames("actorcollections");
+                for (String name : colls.keySet()) {
+                    names.put(name, colls.get(name));
+                }
+            } catch (Exception e) {
+
+            }
+        }
+        return names;
+    }
 }

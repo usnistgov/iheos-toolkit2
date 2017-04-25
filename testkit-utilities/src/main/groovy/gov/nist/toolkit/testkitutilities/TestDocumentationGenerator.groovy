@@ -48,6 +48,7 @@ class TestDocumentationGenerator {
     def eachSection(def doc, File sectionDir) {
         def plan = testplan(sectionDir)
         doc.add(' ')
+        doc.add('<hr />')
         doc.add("== Section ${sectionDir.name}")
         doc.add(' ')
         def readme = readme(sectionDir)
