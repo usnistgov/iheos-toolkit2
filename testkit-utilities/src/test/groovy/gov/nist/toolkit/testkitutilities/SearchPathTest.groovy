@@ -44,6 +44,7 @@ class SearchPathTest extends Specification {
         t42
 
         when: 'internal contains 11990'
+        testKit = searchPath.getTestKitForTest('11990')
         TestDefinition t11990 = testKit.getTestDef('11990')
 
         then:
