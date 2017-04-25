@@ -34,6 +34,69 @@ public enum ActorType implements IsSerializable, Serializable {
             true,
             null
     ),
+    REGISTRY_MU(
+            "Metadata Update",
+            Arrays.asList(""),
+            "reg_mu",
+            "",
+            Arrays.asList(TransactionType.PIF),
+            false,
+            null
+    ),
+    REGISTRY_MPQ(
+            "Multi Patient Query",
+            Arrays.asList(""),
+            "reg_mpq",
+            "",
+            Arrays.asList(TransactionType.PIF),
+            false,
+            null
+    ),
+    REGISTRY_OD(
+            "On Demand",
+            Arrays.asList(""),
+            "reg_od",
+            "",
+            Arrays.asList(TransactionType.PIF),
+            false,
+            null
+    ),
+    REGISTRY_ISR(
+            "Integrated Source Repository",
+            Arrays.asList(""),
+            "reg_isr",
+            "",
+            Arrays.asList(TransactionType.PIF),
+            false,
+            null
+    ),
+    REGISTRY_XUA(
+            "XUA",
+            Arrays.asList(""),
+            "reg_xua",
+            "",
+            Arrays.asList(TransactionType.PIF),
+            false,
+            null
+    ),
+    REGISTRY_CAT_FOLDER(
+            "CAT Folder",
+            Arrays.asList(""),
+            "reg_catfolder",
+            "",
+            Arrays.asList(TransactionType.PIF),
+            false,
+            null
+    ),
+    REGISTRY_CAT_LIFECYCLE(
+            "CAT Lifecycle",
+            Arrays.asList(""),
+            "reg_catlifecycle",
+            "",
+            Arrays.asList(TransactionType.PIF),
+            false,
+            null
+    ),
     // Update option on Document Registry
     // this should be removed once implications are re-discovered
 //		UPDATE (
@@ -44,6 +107,15 @@ public enum ActorType implements IsSerializable, Serializable {
 //				false,
 //				null
 //				),
+    REPOSITORY_XUA(
+            "XUA",
+            Arrays.asList(""),
+            "rep_xua",
+            "",
+            Arrays.asList(TransactionType.PIF),
+            false,
+            "repository"
+    ),
     REPOSITORY(
             "Document Repository",
             Arrays.asList("DOC_REPOSITORY", "repositoryb"),
@@ -90,6 +162,15 @@ public enum ActorType implements IsSerializable, Serializable {
             true,
             null
     ),
+    DOCUMENT_RECIPIENT_XUA(
+            "XUA",
+            Arrays.asList(""),
+            "rec_xua",
+            "",
+            Arrays.asList(TransactionType.XDR_PROVIDE_AND_REGISTER),
+            false,
+            null
+    ),
     RESPONDING_GATEWAY(
             "Responding Gateway",
             Arrays.asList("RESP_GATEWAY"),
@@ -97,6 +178,24 @@ public enum ActorType implements IsSerializable, Serializable {
             "gov.nist.toolkit.simulators.sim.rg.RGADActorSimulator",
             Arrays.asList(TransactionType.XC_QUERY, TransactionType.XC_RETRIEVE),
             true,
+            null
+    ),
+    RESPONDING_GATEWAY_OD(
+            "On Demand",
+            Arrays.asList(""),
+            "rg_od",
+            "",
+            Arrays.asList(TransactionType.PIF),
+            false,
+            null
+    ),
+    RESPONDING_GATEWAY_XUA(
+            "XUA",
+            Arrays.asList(""),
+            "rg_xua",
+            "",
+            Arrays.asList(TransactionType.PIF),
+            false,
             null
     ),
     OD_RESPONDING_GATEWAY(
@@ -133,6 +232,24 @@ public enum ActorType implements IsSerializable, Serializable {
             "gov.nist.toolkit.simulators.sim.ig.IgActorSimulator",
             Arrays.asList(TransactionType.IG_QUERY, TransactionType.IG_RETRIEVE),
             true,
+            null
+    ),
+    INITIATING_GATEWAY_AD(
+            "Affinity Domain",
+            Arrays.asList(""),
+            "ig_ad",
+            "",
+            Arrays.asList(TransactionType.IG_QUERY),
+            false,
+            null
+    ),
+    INITIATING_GATEWAY_XUA(
+            "XUA",
+            Arrays.asList(""),
+            "ig_xua",
+            "",
+            Arrays.asList(TransactionType.IG_QUERY),
+            false,
             null
     ),
     INITIATING_IMAGING_GATEWAY(

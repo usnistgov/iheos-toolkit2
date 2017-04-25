@@ -452,7 +452,8 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner, TestTa
 	private void displayActorsTabBar(TabBar actorTabBar) {
 		if (actorTabBar.getTabCount() == 0) {
 			for (TestCollectionDefinitionDAO def : testCollectionDefinitionDAOs) {
-				actorTabBar.addTab(def.getCollectionTitle());
+				if (!def.isOption())
+					actorTabBar.addTab(def.getCollectionTitle());
 			}
 		}
 	}

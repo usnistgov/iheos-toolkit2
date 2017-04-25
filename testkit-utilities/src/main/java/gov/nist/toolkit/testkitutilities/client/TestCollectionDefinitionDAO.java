@@ -33,4 +33,6 @@ public class TestCollectionDefinitionDAO implements Serializable, IsSerializable
     public void setCollectionTitle(String collectionTitle) {
         this.collectionTitle = collectionTitle;
     }
+
+    public boolean isOption() { return collectionID.contains("_"); }
 }
