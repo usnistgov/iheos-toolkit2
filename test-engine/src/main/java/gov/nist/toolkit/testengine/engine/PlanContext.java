@@ -185,7 +185,7 @@ public class PlanContext extends BasicContext {
 			results_document = build_results_document();
 
 			OMElement timeEle = MetadataSupport.om_factory.createOMElement("Time", null);
-			timeEle.setText(new Hl7Date().now());
+			timeEle.setText(new Hl7Date().nowUpToMillisec());
 			results_document.addChild(timeEle);
 
 			OMElement siteEle = MetadataSupport.om_factory.createOMElement("Site", null);

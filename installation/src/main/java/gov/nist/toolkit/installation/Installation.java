@@ -338,6 +338,10 @@ public class Installation {
         return new File(externalCache + sep + "ImageCache" + sep + cacheName);
     }
 
+    public File getInteractionSequencesFile() {
+        return new File(toolkitxFile(), "interaction-sequences" + sep + "InteractionSequences.xml");
+    }
+
     public static String defaultSessionName() { return "STANDALONE"; }
     public static String defaultServiceSessionName() { return "SERVICE"; }
 

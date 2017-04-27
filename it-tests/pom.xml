@@ -43,6 +43,10 @@
         </dependency>
         <dependency>
             <groupId>gov.nist.toolkit</groupId>
+            <artifactId>interaction-model</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>gov.nist.toolkit</groupId>
             <artifactId>grizzly-support</artifactId>
         </dependency>
 
@@ -137,6 +141,10 @@
                         <!--<include>**/OdConsumerSpec.java</include>-->
                         <!--<include>**/StsSamlAssertionSpec.groovy</include>-->
                         <!--<include>**/StsSamlAssertionSpec.java</include>-->
+                        <!--<include>**/InteractionSequenceSpec.groovy</include>-->
+                        <!--<include>**/InteractionSequenceSpec.java</include>-->
+                        <!--<include>**/RigSpec.groovy</include>-->
+                        <!--<include>**/RigSpec.java</include>-->
                         <!-- end include individual test -->
                         <!-- begin include all tests -->
                         <include>**/*Spec.groovy</include>

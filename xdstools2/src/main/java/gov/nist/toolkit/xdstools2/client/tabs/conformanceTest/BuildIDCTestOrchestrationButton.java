@@ -177,6 +177,8 @@ public class BuildIDCTestOrchestrationButton extends AbstractOrchestrationButton
 
              initializationResultsPanel.add(new HTML("<p>Configure your " +
              "Imaging Document Consumer SUT to integrate with these simulators<hr/>"));
+
+             testTab.displayTestCollection(testTab.getMainView().getTestsPanel());
         }
 
     });

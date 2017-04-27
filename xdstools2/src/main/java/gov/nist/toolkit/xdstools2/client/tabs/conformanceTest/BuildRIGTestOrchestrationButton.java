@@ -191,6 +191,8 @@ public class BuildRIGTestOrchestrationButton extends AbstractOrchestrationButton
                 initializationResultsPanel.add(new HTML("<p>Configure your " +
                         "Responding Imaging Gateway SUT to forward Retrieve Imaging " +
                         "Document Set Requests to these Imaging Document Sources<hr/>"));
+
+                testTab.displayTestCollection(testTab.getMainView().getTestsPanel());
             }
         }.run(new BuildRigTestOrchestrationRequest(ClientUtils.INSTANCE.getCommandContext(),request));
     } @SuppressWarnings("javadoc")

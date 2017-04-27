@@ -42,8 +42,9 @@ public class PrsSimLogs {
    private static PropertyManager propertyManager = propertyServiceManager.getPropertyManager();
 
    private static SimpleDateFormat timeOfTransactionFormat = new SimpleDateFormat("yyyyMMddHHmmssSSS");
-   private static String externalCache = installation.externalCache().getAbsolutePath();
-   
+//   private static String externalCache = Paths.get(propertyManager.getExternalCache()).toString();
+   private static String externalCache = Paths.get(installation.externalCache().getAbsolutePath()).toString();
+
    /**
     * Load SOAP Message components into passed {@link SimulatorTransaction} instance.
     * <p/>
@@ -66,7 +67,7 @@ public class PrsSimLogs {
     * Header and Body files will not be present, but the raw Request and
     * Response xml files should always be present.<p/>
     * 
-    * @param dir xdstools log directory for transaction.
+    * @param trn SimulatorTransaction xdstools log directory for transaction.
     * @throws Exception on error, such as IO error.
     */
    public static void loadTransaction(SimulatorTransaction trn) throws Exception {
@@ -74,7 +75,10 @@ public class PrsSimLogs {
       Path path = getTransactionLogDirectoryPath(trn.getSimId(), 
          trn.getTransactionType().getShortName(), trn.getPid(), trn.getTimeStamp());
       if (path == null)
-         throw new Exception("No valid transactions for " + trn.getSimId());
+         throw new Exception("No valid transactions for " + trn.getSimId()
+         + " ec_dir via Paths.get is: [" + externalCache + "]"
+                 + " ec_dir via installation is: [" + installation.externalCache().getAbsolutePath() + "]"
+         );
       trn.setLogDirPath(path);
       
       // SOAP Request
@@ -348,8 +352,13 @@ public class PrsSimLogs {
     * there are no transactions or that all transactions were logged before the
     * passed time (probably an error).
     */
+   public static Path getTransactionLogDirectoryPath(SimId simId,
+                                                     String transactionCode, String pid, Date timeOfTransaction) {
+     return getTransactionLogDirectoryPath(simId,transactionCode,pid,timeOfTransaction,true);
+   }
+
    public static Path getTransactionLogDirectoryPath(SimId simId, 
-      String transactionCode, String pid, Date timeOfTransaction) {
+      String transactionCode, String pid, Date timeOfTransaction, boolean mostRecentTransaction) {
       try {
          String simulatorName = simId.toString();
          String simulatorType = simId.getActorType();
@@ -363,8 +372,13 @@ public class PrsSimLogs {
             log.debug("No metadata folder found for actor " + simulatorType + " Patient ID " + pid);
             return null;
          }
-         log.debug("Found " + logDirs.length + " folder matching search criteria; will return most recent folder");
-         return base.resolve(logDirs[logDirs.length - 1]);
+         if (mostRecentTransaction) {
+            log.debug("Found " + logDirs.length + " folder matching search criteria; will return most recent folder");
+            return base.resolve(logDirs[logDirs.length - 1]);
+         } else {
+            log.debug("Found " + logDirs.length + " folder matching search criteria; will return earliest folder");
+            return base.resolve(logDirs[0]);  // The earliest transaction would be the first one after sorting.
+         }
       } catch (Exception e) {
          e.printStackTrace();
       }
@@ -375,7 +389,7 @@ public class PrsSimLogs {
     * <p/>
     * To retrieve SOAP message components, arguments:
     * <ol start=0>
-    * <li/>GETSOAP = {@link #getSOAPComponents}
+    * <li/>GETSOAP
     * <li/>The simulator name from the NIST tools.
     * <li/>The simulator type from the NIST tools, for example "rg" for 
     * receiving gateway. Default is "rep" for repository.
@@ -394,7 +408,7 @@ public class PrsSimLogs {
     * <li/>GETREQUEST = {@link #getSOAPRequest} 
     * <li/>GETMETADATA = {@link #getSOAPMetaData} 
     * <li/>GETRESPONSE = {@link #getSOAPResponse}
-    * <li/>GETKOS = {@link #getSOAPFile} 
+    * <li/>GETKOS
     * </ul> 
     * <li/>The simulator name from the NIST xtools. 
     * <li/>The simulator type from the NIST tools, for example "rg" for 

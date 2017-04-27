@@ -1,6 +1,7 @@
 package gov.nist.toolkit.xdstools2.server;
 
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
+import edu.wustl.mir.erl.ihe.xdsi.util.PrsSimLogs;
 import gov.nist.toolkit.MessageValidatorFactory2.MessageValidatorFactoryFactory;
 import gov.nist.toolkit.actorfactory.SimDb;
 import gov.nist.toolkit.actorfactory.SimManager;
@@ -10,6 +11,7 @@ import gov.nist.toolkit.actorfactory.client.Simulator;
 import gov.nist.toolkit.actorfactory.client.SimulatorConfig;
 import gov.nist.toolkit.actorfactory.client.SimulatorStats;
 import gov.nist.toolkit.actortransaction.TransactionErrorCodeDbLoader;
+import gov.nist.toolkit.actortransaction.client.ActorType;
 import gov.nist.toolkit.actortransaction.client.TransactionInstance;
 import gov.nist.toolkit.configDatatypes.client.Pid;
 import gov.nist.toolkit.configDatatypes.client.PidSet;
@@ -75,7 +77,14 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
-import java.util.*;
+import java.nio.file.Path;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Scanner;
 
 @SuppressWarnings("serial")
 public class ToolkitServiceImpl extends RemoteServiceServlet implements
@@ -1030,6 +1039,85 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements
     }
 
     @Override
+    public TransactionInstance getTransactionLogDirectoryPath(GetTransactionLogDirectoryPathRequest r) throws Exception {
+        Path p = PrsSimLogs.getTransactionLogDirectoryPath(r.getSimId(),r.getTransactionCode(),r.getPid(),r.getHl7timeOfSectionRun(), false);
+
+       if (p!=null) {
+            String transactionId = p.getFileName().toString();
+
+        TransactionInstance ti = new TransactionInstance();
+        ti.simId = r.getSimId().toString();
+        ti.actorType = ActorType.findActor(r.getSimId().getActorType());
+        ti.labelInterpretedAsDate = transactionId;
+        ti.nameInterpretedAsTransactionType = TransactionType.find(r.getTransactionCode());
+        ti.messageId = transactionId;
+        ti.trans = r.getTransactionCode();
+
+        return ti;
+       }
+
+        return null;
+    }
+
+    /**
+     * This is our best-guess. If there are multiple SUT-initiated transactions per second as recorded in the log.xml, we will need more precision on the log.xml timestamp.
+     * @param stiRequest
+     * @return
+     * @throws Exception
+     */
+    @Override
+    public List<InteractingEntity> setSutInitiatedTransactionInstance(SetSutInitiatedTransactionInstanceRequest stiRequest) throws Exception {
+
+        List<InteractingEntity> src = stiRequest.getInteractingEntityList();
+        List<String> messageIdsInUse = new ArrayList<>();
+        for (InteractingEntity ie : src) {
+            setInitiatorTransactions(ie, stiRequest.getTranDestinationSimId(), stiRequest.getPatienId(), messageIdsInUse);
+        }
+        return src;
+    }
+
+    private void setInitiatorTransactions(InteractingEntity parent, SimId simId, String patientId, final List<String> messageIdsInUse) throws Exception {
+        if (parent == null) return;
+
+        boolean hasInteractions = parent.getInteractions() != null && !parent.getInteractions().isEmpty();
+
+        if (hasInteractions) {
+            if (InteractingEntity.SYSTEM_UNDER_TEST.equals(parent.getProvider())) {
+                List<InteractingEntity> interactions = parent.getInteractions();
+                for (final InteractingEntity ie : interactions) {
+                    if (InteractingEntity.SIMULATOR.equals(ie.getProvider())) {
+                        final GetTransactionLogDirectoryPathRequest request = new GetTransactionLogDirectoryPathRequest();
+                        simId.setActorType(ActorType.findActor(ie.getRole()).getShortName());
+                        request.setSimId(simId);
+                        request.setPid(patientId);
+                        request.setTransactionCode(ie.getSourceInteractionLabel());
+                        request.setHl7timeOfSectionRun(parent.getBegin());
+
+                        TransactionInstance tranInstance = getTransactionLogDirectoryPath(request);
+                        if (tranInstance!=null) {
+                            if (!messageIdsInUse.contains(tranInstance.messageId) ) {
+                                messageIdsInUse.add(tranInstance.messageId);
+                                ie.setStatus(InteractingEntity.INTERACTIONSTATUS.COMPLETED);
+                                ie.setTransactionInstance(tranInstance);
+                            } else {
+                                /* Oops, transaction already taken by another section/step !?!. */
+                                ie.setStatus(InteractingEntity.INTERACTIONSTATUS.UNKNOWN);
+                            }
+                        } else {
+                            ie.setStatus(InteractingEntity.INTERACTIONSTATUS.UNKNOWN);
+                        }
+                    }
+                }
+            } else {
+                for (InteractingEntity ie : parent.getInteractions()) {
+                    setInitiatorTransactions(ie, simId, patientId,messageIdsInUse);
+                }
+            }
+        }
+    }
+
+
+        @Override
     public List<Pid> getPatientIds(PatientIdsRequest request) throws Exception {
         installCommandContext(request);
         return new SimulatorServiceManager(session()).getPatientIds(request.getSimId());
@@ -1369,7 +1457,6 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements
     //------------------------------------------------------------------------
     //------------------------------------------------------------------------
     // Interaction methods
-    // TODO: this mapping method is to be replaced by the test log map method.
     //------------------------------------------------------------------------
     //------------------------------------------------------------------------
     @Override

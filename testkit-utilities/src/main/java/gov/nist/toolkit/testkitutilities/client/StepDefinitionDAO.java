@@ -1,6 +1,7 @@
 package gov.nist.toolkit.testkitutilities.client;
 
 import com.google.gwt.user.client.rpc.IsSerializable;
+import gov.nist.toolkit.interactionmodel.client.InteractingEntity;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -12,6 +13,8 @@ import java.util.List;
 public class StepDefinitionDAO implements Serializable, IsSerializable {
     private List<String> goals = new ArrayList<>();
     private String id;
+    private String transaction;
+    private List<InteractingEntity> interactionSequence;
 
     public StepDefinitionDAO() {
     }
@@ -30,5 +33,21 @@ public class StepDefinitionDAO implements Serializable, IsSerializable {
 
     public void setId(String id) {
         this.id = id;
+    }
+
+    public List<InteractingEntity> getInteractionSequence() {
+        return interactionSequence;
+    }
+
+    public void setInteractionSequence(List<InteractingEntity> interactionSequence) {
+        this.interactionSequence = interactionSequence;
+    }
+
+    public String getTransaction() {
+        return transaction;
+    }
+
+    public void setTransaction(String transaction) {
+        this.transaction = transaction;
     }
 }

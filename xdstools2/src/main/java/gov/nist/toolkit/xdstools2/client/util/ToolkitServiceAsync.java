@@ -69,8 +69,9 @@ public interface ToolkitServiceAsync {
     void getTransactionRequest(GetTransactionRequest request, AsyncCallback<Message> callback);
     void getTransactionResponse(GetTransactionRequest request, AsyncCallback<Message> callback);
     void getTransactionLog(GetTransactionRequest request, AsyncCallback<String> callback);
-
     void getTransactionsForSimulator(GetTransactionRequest request, AsyncCallback<List<String>> callback);
+    void getTransactionLogDirectoryPath(GetTransactionLogDirectoryPathRequest request, AsyncCallback<TransactionInstance> callback);
+    void setSutInitiatedTransactionInstance(SetSutInitiatedTransactionInstanceRequest request, AsyncCallback<List<InteractingEntity>> callback);
 
 //	void getActorNames(AsyncCallback<List<String>> notify);
 

@@ -1,5 +1,8 @@
 package gov.nist.toolkit.testkitutilities;
 
+import gov.nist.toolkit.installation.Installation;
+import gov.nist.toolkit.interactionmodel.client.InteractingEntity;
+import gov.nist.toolkit.interactionmodel.server.InteractionSequences;
 import gov.nist.toolkit.testkitutilities.client.Gather;
 import gov.nist.toolkit.testkitutilities.client.SectionDefinitionDAO;
 import gov.nist.toolkit.testkitutilities.client.StepDefinitionDAO;
@@ -130,11 +133,41 @@ public class TestDefinition {
 
 		if (gathers == null) {
 			for (OMElement stepEle : XmlUtil.decendentsWithLocalName(sectionEle, "TestStep")) {
+				OMElement goalEle = XmlUtil.firstChildWithLocalName(stepEle, "Goal");
 				StepDefinitionDAO step = new StepDefinitionDAO();
 				step.setId(stepEle.getAttributeValue(new QName("id")));
 
+				for (OMElement trans : XmlUtil.descendantsWithLocalNameEndsWith(stepEle, "Transaction")) {
+					step.setTransaction(trans.getLocalName());
+					OMElement interactionSeq = XmlUtil.firstChildWithLocalName(trans, "InteractionSequence");
+					try {
+						InteractionSequences.init(Installation.instance().getInteractionSequencesFile());
+						String transactionKey = null;
+						if (interactionSeq == null) {
+							transactionKey = step.getTransaction();
+						} else {
+							transactionKey = InteractionSequences.xformSequenceToEntity(interactionSeq);
+						}
+						if (InteractionSequences.getInteractionSequenceById(transactionKey)!=null) {
+
+							List<InteractingEntity> src = InteractionSequences.getInteractionSequenceById(transactionKey);
+							List<InteractingEntity> copyIeList = new ArrayList<>();
+
+							if (src!=null) {
+								for (InteractingEntity ie : src) {
+									copyIeList.add(ie.copy());
+								}
+								step.setInteractionSequence(copyIeList);
+							}
+
+							if (goalEle==null)
+								section.addStep(step);
+							break;
+						}
+					} catch (Exception ex) {}
+				}
+
 				// parse goals
-				OMElement goalEle = XmlUtil.firstChildWithLocalName(stepEle, "Goal");
 				if (goalEle == null) continue;
 				String goalsString = goalEle.getText();
 				if (goalsString != null) goalsString = goalsString.trim();
@@ -316,3 +349,4 @@ public class TestDefinition {
 		}
 	}
 }
+

@@ -21,6 +21,7 @@ public class ConformanceTestMainView {
 
     private HTML testSessionDescription = new HTML();
     private FlowPanel testSessionDescriptionPanel = new FlowPanel();
+    private HTML loadingMessage = new HTML();
 
     ConformanceTestMainView(ToolWindow toolWindow, OptionsTabBar optionsTabBar) {
         this.optionsTabBar = optionsTabBar;
@@ -37,6 +38,7 @@ public class ConformanceTestMainView {
         toolPanel.add(actorTabBar);
         toolPanel.add(new HTML("Option"));
         toolPanel.add(optionsTabBar);
+        toolPanel.add(loadingMessage);
         toolPanel.add(initializationPanel);
         toolPanel.add(testsPanel);
         toolPanel.add(new HTML("<br /><br />"));
@@ -72,5 +74,15 @@ public class ConformanceTestMainView {
 
     public FlowPanel getInitializationPanel() {
         return initializationPanel;
+    }
+
+    public void showLoadingMessage(String loadingMessage) {
+        this.loadingMessage.setStyleName("loadingMessage");
+        this.loadingMessage.setHTML(loadingMessage);
+    }
+
+    public void clearLoadingMessage() {
+        this.loadingMessage.setHTML("");
+        this.loadingMessage.setStyleName("hiddenMessage");
     }
 }

@@ -1,6 +1,10 @@
 package gov.nist.toolkit.simulators.servlet;
 
-import gov.nist.toolkit.actorfactory.*;
+import gov.nist.toolkit.actorfactory.GenericSimulatorFactory;
+import gov.nist.toolkit.actorfactory.PatientIdentityFeedServlet;
+import gov.nist.toolkit.actorfactory.RuntimeManager;
+import gov.nist.toolkit.actorfactory.SimDb;
+import gov.nist.toolkit.actorfactory.SimManager;
 import gov.nist.toolkit.actorfactory.client.NoSimException;
 import gov.nist.toolkit.actorfactory.client.SimId;
 import gov.nist.toolkit.actorfactory.client.SimulatorConfig;
@@ -45,7 +49,13 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.Enumeration;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class SimServlet  extends HttpServlet {
 	static Logger logger = Logger.getLogger(SimServlet.class);
@@ -73,7 +83,6 @@ public class SimServlet  extends HttpServlet {
 		logger.info("...warHome initialized to " + Installation.instance().warHome());
 
 		Installation.instance().setServletContextName(getServletContext().getContextPath());
-
 
 		patientIdentityFeedServlet = new PatientIdentityFeedServlet();
 		patientIdentityFeedServlet.init(config);

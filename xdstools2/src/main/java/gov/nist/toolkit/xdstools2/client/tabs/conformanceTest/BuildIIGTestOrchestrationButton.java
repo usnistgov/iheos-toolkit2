@@ -175,6 +175,8 @@ public class BuildIIGTestOrchestrationButton extends AbstractOrchestrationButton
             initializationResultsPanel.add(new HTML("<p>Configure your " +
                     "Initiating Imaging Gateway SUT to forward Retrieve Imaging " +
                     "Document Set Requests to these Responding Imaging Gateways<hr/>"));
+
+            testTab.displayTestCollection(testTab.getMainView().getTestsPanel());
          }
       }.run(new BuildIigTestOrchestrationRequest(ClientUtils.INSTANCE.getCommandContext(),request));
    } @SuppressWarnings("javadoc")

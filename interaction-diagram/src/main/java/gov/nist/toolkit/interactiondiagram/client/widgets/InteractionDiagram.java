@@ -1,7 +1,6 @@
 package gov.nist.toolkit.interactiondiagram.client.widgets;
 
 
-import com.google.gwt.dom.client.Element;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.MouseEvent;
@@ -17,11 +16,15 @@ import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.PopupPanel;
 import com.google.web.bindery.event.shared.EventBus;
+import gov.nist.toolkit.actortransaction.client.TransactionInstance;
+import gov.nist.toolkit.configDatatypes.client.TransactionType;
 import gov.nist.toolkit.interactiondiagram.client.events.DiagramClickedEvent;
 import gov.nist.toolkit.interactionmodel.client.InteractingEntity;
 import gov.nist.toolkit.session.client.logtypes.SectionOverviewDTO;
 import gov.nist.toolkit.session.client.logtypes.StepOverviewDTO;
 import gov.nist.toolkit.session.client.logtypes.TestOverviewDTO;
+import gov.nist.toolkit.sitemanagement.client.SiteSpec;
+import org.vectomatic.dom.svg.OMSVGAElement;
 import org.vectomatic.dom.svg.OMSVGDocument;
 import org.vectomatic.dom.svg.OMSVGElement;
 import org.vectomatic.dom.svg.OMSVGGElement;
@@ -36,7 +39,9 @@ import org.vectomatic.dom.svg.OMText;
 import org.vectomatic.dom.svg.utils.OMSVGParser;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by skb1 Sunil.Bhaskarla on 8/12/2016.
@@ -45,38 +50,48 @@ import java.util.List;
 public class InteractionDiagram extends Composite {
 
     public static final int NUM_LINES = 3;
-    public static final String RGB_255_0_0 = "rgb(255,0,0)";
-    public static final String RGB_0_0_255 = "rgb(0,0,255)";
-    int g_depth = 0;
-    int g_x = 0;
-    int g_y = 0;
+    public static final String RGB_RED = "rgb(255,0,0)";
+    public static final String RGB_BLUE = "rgb(0,0,255)";
+    public static final String RGB_ORANGE = "rgb(255,165,0)";
+    public static final int MAX_FIRST_TRAN_REPEAT = 3;
+    private int g_depth = 0;
+    private int g_x = 0;
+    private int g_y = 0;
 
-    static final int half_cross_height = 5;
-    static final int line_height = 13;
-    static final int ll_boxWidth = 70;
-    static final int ll_boxHeight = 25;
+    static final int HALF_CROSS_HEIGHT = 5;
+    static final int LINE_HEIGHT = 13;
+    static final int LL_BOX_WIDTH = 82;
+    static final int LL_BOX_HEIGHT = 50;
+    static final int TRANSACTION_PAIR_WIDTH=190;   // request origin | ------ width: 190px ------> | request destination
 
-    int MAX_LABEL_DISPLAY_LEN = 27;
-    int LL_FEET = 10; // life line feet (extra) lines after the last transaction
-    int ll_margin = 108; // The width of a transaction connector
-    int maxLabelLen = 0;
+    static final int MAX_LL_DISPLAY_NAME = 15;
+    private int MAX_LABEL_DISPLAY_LEN = 27;
+    private int LL_FEET = 10; // life line feet (extra) lines after the last transaction
+    private int ll_margin = 108; // The width of a transaction connector
+    private int maxLabelLen = 16;
 
-    int connection_topmargin = (NUM_LINES * line_height) + (half_cross_height*2) + 2; // top margin of a transaction
-    int error_box_offset = 30;
+    private int connection_topmargin = (NUM_LINES * LINE_HEIGHT) + (HALF_CROSS_HEIGHT *2) + 2; // top margin of a transaction
+    private int error_box_offset = 30;
 
-    int diagramHeight = 0;
-    int diagramWidth = 0;
+    private int diagramHeight = 0;
+    private int diagramWidth = 0;
 
-    OMSVGDocument doc = OMSVGParser.createDocument();
-    OMSVGSVGElement svg =  doc.createSVGSVGElement();
+    private OMSVGDocument doc = OMSVGParser.createDocument();
+    private OMSVGSVGElement svgsvgElement =  doc.createSVGSVGElement();
 
-    TestOverviewDTO testOverviewDTO;
-    EventBus eventBus;
+    private TestOverviewDTO testOverviewDTO;
+    private EventBus eventBus;
+    private SiteSpec targetSite;
+    private String sutSystemName;
+    private String sutActorRoleName;
+    private String sessionName;
+    private boolean atleastOneSectionWasRun = false;
 
-    static final int max_tooltips = 5;
-    static final int hide_tooltip_on_mouseout = -1;
-    Tooltip tooltip = new Tooltip();
-    List<InteractingEntity.INTERACTIONSTATUS> legends = new ArrayList<InteractingEntity.INTERACTIONSTATUS>();
+    private static final int MAX_TOOLTIPS = 5;
+    private static final int HIDE_TOOLTIP_ON_MOUSEOUT = -1;
+    private Tooltip tooltip = new Tooltip();
+    private List<String> legends = new ArrayList<>();
+    private List<InteractingEntity> entityList;
 
     public enum DiagramPart {
        RequestConnector,
@@ -102,8 +117,8 @@ public class InteractionDiagram extends Composite {
               int count = text.size();
                for (int cx=0; cx<count; cx++) {
                   contents.setHTML(contents.getHTML() + "<p>" + text.get(cx) + "</p>");
-                   if (cx==max_tooltips) {
-                      contents.setHTML(contents.getHTML() + "<p>"+ (count-max_tooltips) +" more...</p>");
+                   if (cx== MAX_TOOLTIPS) {
+                      contents.setHTML(contents.getHTML() + "<p>"+ (count- MAX_TOOLTIPS) +" more...</p>");
                    }
                }
            }
@@ -143,6 +158,7 @@ public class InteractionDiagram extends Composite {
         int y_max;
         String from;
         String to;
+        String lineFillColor;
 
         public TouchPoint() {
         }
@@ -186,6 +202,14 @@ public class InteractionDiagram extends Composite {
         public void setTo(String to) {
             this.to = to;
         }
+
+        public String getLineFillColor() {
+            return lineFillColor;
+        }
+
+        public void setLineFillColor(String lineFillColor) {
+            this.lineFillColor = lineFillColor;
+        }
     }
 
     int activity_box_width = 8;
@@ -202,6 +226,7 @@ public class InteractionDiagram extends Composite {
         TouchPoint activityRange = new TouchPoint();
         TouchPoint tempTp = new TouchPoint();
 
+        String id;
         String name;
         boolean root;
 
@@ -219,6 +244,14 @@ public class InteractionDiagram extends Composite {
 
         public String getName() {
             return name;
+        }
+
+        public String getId() {
+            return id;
+        }
+
+        public void setId(String id) {
+            this.id = id;
         }
 
         public void setName(String name) {
@@ -274,31 +307,37 @@ public class InteractionDiagram extends Composite {
     public InteractionDiagram(InteractingEntity interactingEntity, int diagramHeight, int diagramWidth) {
         setDiagramArea(diagramHeight, diagramWidth);
 
-        Element svg = draw(interactingEntity);
+
         FlowPanel container = new FlowPanel();
-        container.getElement().appendChild(svg);
+        container.getElement().appendChild(svgsvgElement.getElement());
 
       initWidget(container);
     }
 
-    public InteractionDiagram(List<InteractingEntity> interactingEntity, int diagramHeight, int diagramWidth) {
-        setDiagramArea(diagramHeight, diagramWidth);
 
-        Element svg = draw(interactingEntity);
-        FlowPanel container = new FlowPanel();
-        container.getElement().appendChild(svg);
 
-        initWidget(container);
-    }
-
-    public InteractionDiagram(EventBus eventBus, final TestOverviewDTO testOverviewDTO) {
+    public InteractionDiagram(EventBus eventBus, final TestOverviewDTO testOverviewDTO, String sessionName, final SiteSpec target, String sutName, String sutActorName) {
         setEventBus(eventBus);
         setTestOverviewDTO(testOverviewDTO);
+        setSessionName(sessionName);
+        setTargetSite(target);
+        setSutSystemName(sutName);
+        setSutActorRoleName(sutActorName);
 
-        List<InteractingEntity> interactingEntity = transformTestResultToInteractingEntity(testOverviewDTO);
-        if (interactingEntity==null)
+
+        setEntityList(getInteractingEntity(testOverviewDTO, target));
+        if (getEntityList()==null) {
             return;
+        }
 
+        FlowPanel container = new FlowPanel();
+        container.getElement().appendChild(svgsvgElement.getElement());
+
+        initWidget(container);
+
+    }
+
+    private void setMargins() {
         if (maxLabelLen > MAX_LABEL_DISPLAY_LEN) {
             maxLabelLen = MAX_LABEL_DISPLAY_LEN;
             ll_margin = 108;
@@ -309,25 +348,18 @@ public class InteractionDiagram extends Composite {
             connection_topmargin -= 3;
             error_box_offset = connection_topmargin - 2;
         }
-
-        Element svg = draw(interactingEntity);
-        setDiagramArea(g_y+ LL_FEET,g_x);
-
-        FlowPanel container = new FlowPanel();
-        container.getElement().appendChild(svg);
-
-        initWidget(container);
     }
 
 
-    String setLabelAndErrors(InteractingEntity entity, SectionOverviewDTO sectionOverviewDTO) {
+
+    String setLabelAndErrors(InteractingEntity entity, SectionOverviewDTO sectionOverviewDTO, String stepName) {
         String label = "";
         if (sectionOverviewDTO.getStepNames().size()>0) {
-            String stepName = sectionOverviewDTO.getStepNames().get(0);
-            label = "Section: " + sectionOverviewDTO.getName() + "^" + "Step: " + stepName;
+            label = /*"Section: " +*/ sectionOverviewDTO.getName() + "/" + /*"Step: " + */  stepName;
             StepOverviewDTO step = sectionOverviewDTO.getStep(stepName);
             entity.setErrors(step.getErrors());
-            entity.setSourceInteractionLabel(step.getTransaction());
+            if (entity.getSourceInteractionLabel()==null && step.getTransaction()!=null)
+                entity.setSourceInteractionLabel(step.getTransaction());
         } else
             label = sectionOverviewDTO.getName();
 
@@ -340,108 +372,202 @@ public class InteractionDiagram extends Composite {
         return label;
     }
 
-    List<InteractingEntity> transformTestResultToInteractingEntity(TestOverviewDTO testResultDTO) {
-        if (testResultDTO==null || testResultDTO.getSectionNames()==null) return null;
+    public static boolean  isFirstTransactionRepeatingTooManyTimes(TestOverviewDTO testOverviewDTO) {
+        int repeatCt = 0;
+        String firstTransaction = null;
+
+        if (testOverviewDTO == null || testOverviewDTO.getSectionNames() == null) return false;
+
+        List<String> sectionNames = testOverviewDTO.getSectionNames();
+
+        if (sectionNames == null || (sectionNames != null && sectionNames.isEmpty()))
+            return false;
+
+        if (sectionNames.size() > 0 && testOverviewDTO.getSections().size() > 0) {
+            for (String section : sectionNames) {
+                SectionOverviewDTO sectionOverviewDTO = testOverviewDTO.getSectionOverview(section);
+                if (sectionOverviewDTO.getStepNames() != null && sectionOverviewDTO.getStepNames().size() > 0) {
+                    String stepName = sectionOverviewDTO.getStepNames().get(0);
+                    StepOverviewDTO stepOverviewDTO = sectionOverviewDTO.getStep(stepName);
+
+                    // Manage display to avoid long monotone diagrams
+                    if (firstTransaction == null) {
+                        firstTransaction = stepOverviewDTO.getTransaction();
+                        repeatCt++;
+                    } else if (firstTransaction.equals(stepOverviewDTO.getTransaction())) {
+                        if (++repeatCt>MAX_FIRST_TRAN_REPEAT)
+                            return true;
+                    } else {
+                        return false; // Break away when the transaction doesn't repeat
+                    }
+
+
+                }
+            }
+        }
+        return false;
+    }
+
+
+    List<InteractingEntity> getInteractingEntity(TestOverviewDTO testResultDTO, SiteSpec targetSite) {
+        if (testResultDTO == null || testResultDTO.getSectionNames() == null) return null;
 
         List<String> sectionNames = testResultDTO.getSectionNames();
 
-        if (sectionNames==null || (sectionNames!=null && sectionNames.isEmpty()))
+        if (sectionNames == null || (sectionNames != null && sectionNames.isEmpty()))
             return null;
 
         List<InteractingEntity> result = new ArrayList<InteractingEntity>();
+        setAtleastOneSectionWasRun(false);
 
-        for (String section : sectionNames) {
-           SectionOverviewDTO sectionOverviewDTO = testResultDTO.getSectionOverview(section);
-            if (sectionOverviewDTO.isRun()) {
-                InteractingEntity source = new InteractingEntity();
-                source.setName("Toolkit"); // TODO: Source should come from the SectionOverviewDTO
-                InteractingEntity destination = new InteractingEntity();
-                destination.setName(sectionOverviewDTO.getSite());
-                setLabelAndErrors(destination,sectionOverviewDTO);
-                if (sectionOverviewDTO.isPass()) {
-                    String stepName = sectionOverviewDTO.getStepNames().get(0);
-                    StepOverviewDTO stepOverviewDTO = sectionOverviewDTO.getStep(stepName);
-                    if (stepOverviewDTO.isExpectedSuccess())
-                        destination.setStatus(InteractingEntity.INTERACTIONSTATUS.COMPLETED);
-                    else { // Special case
-                        destination.setStatus(InteractingEntity.INTERACTIONSTATUS.ERROR_EXPECTED);
-                        if (destination.getErrors()==null) {
-                           destination.setErrors(new ArrayList<String>());
-                        }
-                        destination.getErrors().add(0,""+ section + "/"+  stepName +":<br/> Response message contains errors as expected.");
-                        addLegend(InteractingEntity.INTERACTIONSTATUS.ERROR_EXPECTED);
-                    }
-                } else {
-                    destination.setStatus(InteractingEntity.INTERACTIONSTATUS.ERROR);
-                    addLegend(InteractingEntity.INTERACTIONSTATUS.ERROR);
+
+        if (sectionNames.size()>0 && testResultDTO.getSections().size()>0)
+         for (String section : sectionNames) {
+            SectionOverviewDTO sectionOverviewDTO = testResultDTO.getSectionOverview(section);
+            if (sectionOverviewDTO.getStepNames()!=null && sectionOverviewDTO.getStepNames().size()>0) {
+                String stepName = sectionOverviewDTO.getStepNames().get(0);
+                StepOverviewDTO stepOverviewDTO = sectionOverviewDTO.getStep(stepName);
+
+                List<InteractingEntity> interactionSequence = stepOverviewDTO.getInteractionSequence();
+
+                if (interactionSequence!=null) {
+                    setIePlaceholderValues(interactionSequence);
+                    setIeTransactionStatus(section, sectionOverviewDTO, stepName, stepOverviewDTO, interactionSequence);
+
+//                    if ("11981".equals(testResultDTO.getTestInstance().getId()))
+//                    alert("section: " + section + " step: " + stepName + " is hashcode: " + interactionSequence.hashCode() + " step hashcode: " + stepOverviewDTO.hashCode());
+
+                    result.addAll(interactionSequence);
                 }
-                source.setInteractions(new ArrayList<InteractingEntity>());
-                source.getInteractions().add(destination);
-                result.add(source);
             }
-        }
+         }
 
         return result;
     }
 
-    private void addLegend(InteractingEntity.INTERACTIONSTATUS legend) {
+    private void setIeTransactionStatus(String section, SectionOverviewDTO sectionOverviewDTO, String stepName, StepOverviewDTO stepOverviewDTO, List<InteractingEntity> interactionSequence) {
+        if (interactionSequence.size()>0) {
+            InteractingEntity srcTranOrigin = interactionSequence.get(0);
+
+            if (srcTranOrigin != null) {
+                srcTranOrigin.setBegin(sectionOverviewDTO.getHl7Time());
+
+             if (srcTranOrigin.getInteractions().size() > 0) {
+                InteractingEntity dest = srcTranOrigin.getInteractions().get(0);
+                 dest.setBegin(sectionOverviewDTO.getHl7Time());
+
+                 if ("SystemUnderTest".equals(dest.getProvider()) || "SystemUnderTest".equals(srcTranOrigin.getProvider())) {
+                    addLegend("SystemUnderTest");
+                 }
+
+                setLabelAndErrors(dest, sectionOverviewDTO, stepName);
+                if (sectionOverviewDTO.isRun()) {
+                    setAtleastOneSectionWasRun(true);
+                    if (sectionOverviewDTO.isPass()) {
+                        if (stepOverviewDTO.isExpectedSuccess()) {
+                            dest.setStatus(InteractingEntity.INTERACTIONSTATUS.COMPLETED);
+                        } else {
+                            dest.setStatus(InteractingEntity.INTERACTIONSTATUS.ERROR_EXPECTED);
+                            if (dest.getErrors() == null) {
+                                dest.setErrors(new ArrayList<String>());
+                            }
+                            dest.getErrors().add(0, "" + section + "/" + stepName + ":<br/> Response message contains errors as expected.");
+                            addLegend(InteractingEntity.INTERACTIONSTATUS.ERROR_EXPECTED.name());
+                        }
+
+                    } else {
+                        dest.setStatus(InteractingEntity.INTERACTIONSTATUS.ERROR);
+                        addLegend(InteractingEntity.INTERACTIONSTATUS.ERROR.name());
+                    }
+                } else if (isAtleastOneSectionWasRun()) {
+                    dest.setStatus(InteractingEntity.INTERACTIONSTATUS.SKIPPED);
+                }
+            }
+          }
+        }
+    }
+
+    private void setIePlaceholderValues(List<InteractingEntity> interactionSequence) {
+
+        for (InteractingEntity interactingEntity : interactionSequence) {
+            interactingEntity.setSutActorByRole(null, getSutActorRoleName());
+        }
+
+        Map<String,String> placeholderMap = new HashMap<>();
+
+        placeholderMap.put("SystemUnderTest", getSutSystemName());
+        if (getSutSystemName().equals(getTargetSite().getName())) {
+            // No simulators in use
+        } else {
+            placeholderMap.put("Simulator", getTargetSite().getName());
+            // getTargetSite().getOrchestrationSiteName() is the actual SUT. For combined SiteSpec like the Repository actor
+        }
+
+        for (InteractingEntity interactingEntity : interactionSequence) {
+            interactingEntity.setNameByProvider(null, placeholderMap);
+        }
+    }
+
+
+    private void addLegend(String legend) {
         if (!legends.contains(legend)) {
             legends.add(legend);
         }
     }
 
-
     private void setDiagramArea(int diagramHeight, int diagramWidth) {
         setDiagramHeight(diagramHeight);
         setDiagramWidth(diagramWidth);
 
-        svg.setAttribute("height",""+ getDiagramHeight());
-        svg.setAttribute("width",""+ getDiagramWidth());
-        svg.setNodeValue("Sorry, your browser does not seem to support inline SVG.");
+        svgsvgElement.setAttribute("xmlns","http://www.w3.org/2000/svg");
+        svgsvgElement.setAttribute("xmlns:xlink","http://www.w3.org/1999/xlink");
+        svgsvgElement.setAttribute("height",""+ getDiagramHeight());
+        svgsvgElement.setAttribute("width",""+ getDiagramWidth());
+        svgsvgElement.setNodeValue("Sorry, your browser does not seem to support inline SVG.");
     }
 
-    public Element draw(InteractingEntity parent_entity) {
 
-        sequence(parent_entity,null);
-        ll_stem();
-        ll_activitybox();
+    public void draw() {
 
-        return svg.getElement();
-    }
+        setMargins();
 
-    public Element draw(List<InteractingEntity> entityList) {
-
-        for (InteractingEntity interactingEntity : entityList) {
+        for (InteractingEntity interactingEntity : getEntityList()) {
             sequence(interactingEntity,null);
         }
         ll_stem();
         ll_activitybox();
         legend();
 
-        return svg.getElement();
+        setDiagramArea(g_y+ LL_FEET,g_x);
     }
 
     void legend() {
+        final int legend_margin = 3;
         if (legends.size()>0) {
-            int x = 0/* x of the diagram start area */ + half_cross_height * 2;
-            g_y+=line_height;
+            int x = 0/* x of the diagram start area */ + HALF_CROSS_HEIGHT * 2;
+            g_y+= LINE_HEIGHT;
             OMSVGGElement group = doc.createSVGGElement();
             group.appendChild(getSimpleLabel(0,g_y,"Legend:"));
-            g_y+=line_height+half_cross_height*2;
-            for (InteractingEntity.INTERACTIONSTATUS legend : legends) {
-                if (InteractingEntity.INTERACTIONSTATUS.ERROR.equals(legend)) {
-                    group.appendChild(cross_mark(x, g_y, RGB_255_0_0));
-                    group.appendChild(getSimpleLabel(x+half_cross_height*2,g_y-half_cross_height,"Error"));
-                    g_y+=(half_cross_height*2);
-                    g_y+=4;
-                } else if (InteractingEntity.INTERACTIONSTATUS.ERROR_EXPECTED.equals(legend)) {
-                    svg.appendChild(cross_mark(x, g_y, RGB_0_0_255));
-                    group.appendChild(getSimpleLabel(x+half_cross_height*2,g_y-half_cross_height,"Anticipated error"));
-                    g_y+=half_cross_height*2;
-                    g_y+=4;
+            g_y+= LINE_HEIGHT + HALF_CROSS_HEIGHT *2;
+            for (String legend : legends) {
+                if (InteractingEntity.INTERACTIONSTATUS.ERROR.name().equals(legend)) {
+                    group.appendChild(cross_mark(x, g_y+legend_margin, RGB_RED));
+                    group.appendChild(getSimpleLabel(x+ HALF_CROSS_HEIGHT *2,g_y- HALF_CROSS_HEIGHT,"Error"));
+//                    g_y+=(HALF_CROSS_HEIGHT *2);
+                    g_y+=LINE_HEIGHT+legend_margin;
+                } else if (InteractingEntity.INTERACTIONSTATUS.ERROR_EXPECTED.name().equals(legend)) {
+                    svgsvgElement.appendChild(cross_mark(x, g_y+legend_margin, RGB_BLUE));
+                    group.appendChild(getSimpleLabel(x+ HALF_CROSS_HEIGHT *2,g_y- HALF_CROSS_HEIGHT,"Expected error"));
+//                    g_y+= HALF_CROSS_HEIGHT *2;
+                    g_y+=LINE_HEIGHT+legend_margin;
+                } else if ("SystemUnderTest".equals(legend)) {
+                    svgsvgElement.appendChild(box(x-HALF_CROSS_HEIGHT,g_y, RGB_ORANGE));
+                    group.appendChild(getSimpleLabel(x+ HALF_CROSS_HEIGHT *2,g_y- HALF_CROSS_HEIGHT,"System Under Test"));
+//                    g_y+= HALF_CROSS_HEIGHT *2;
+                    g_y+=LINE_HEIGHT+legend_margin;
                 }
             }
-            svg.appendChild(group);
+            svgsvgElement.appendChild(group);
 
         }
     }
@@ -468,7 +594,7 @@ public class InteractionDiagram extends Composite {
 //                        svg.appendChild(getActivityBoxEl(ll.getActivityRange().getX_min(), ll.getActivityRange().getY_min(), ll.getActivityRange().getY_max()));
 //                    else
                        for (TouchPoint activityFrame : ll.getActivityFrames()) {
-                         svg.appendChild(getActivityBoxEl(activityFrame.getX_min(), activityFrame.getY_min(), activityFrame.getY_max()));
+                         svgsvgElement.appendChild(getActivityBoxEl(activityFrame.getX_min(), activityFrame.getY_min(), activityFrame.getY_max(),activityFrame.getLineFillColor()));
                        }
                 }
 
@@ -482,13 +608,13 @@ public class InteractionDiagram extends Composite {
      * @param y2
      * @return
      */
-    OMSVGElement getActivityBoxEl(int x, int y1, int y2) {
+    OMSVGElement getActivityBoxEl(int x, int y1, int y2, String strokeColor) {
         OMSVGRectElement box = doc.createSVGRectElement();
         box.setAttribute("width", "" + activity_box_width);
         box.setAttribute("height", "" + (y2 - y1));
         box.setAttribute("x", "" + (x-(activity_box_width/2)));
         box.setAttribute("y", "" + y1);
-        box.setAttribute("style", "fill:rgb(255,255,255);stroke-width:1;stroke:rgb(0,0,0)");
+        box.setAttribute("style", "fill:rgb(255,255,255);stroke-width:1;stroke:" + ((strokeColor==null||"".equals(strokeColor))?"black":strokeColor));
         return box;
 
     }
@@ -499,13 +625,13 @@ public class InteractionDiagram extends Composite {
         for (LL ll: lls) {
             OMSVGLineElement line = doc.createSVGLineElement();
             line.setAttribute("x1",""+ll.getLl_stem_center());
-            int y = ll_boxHeight;
+            int y = LL_BOX_HEIGHT;
             line.setAttribute("y1",""+y);
             line.setAttribute("x2",""+ll.getLl_stem_center());
             line.setAttribute("y2",""+(g_y+LL_FEET));
             line.setAttribute("style","stroke:rgb(0,0,0);stroke-dasharray:2,2");
 
-            svg.appendChild(line);
+            svgsvgElement.appendChild(line);
         }
         g_y+=LL_FEET;
     }
@@ -514,7 +640,7 @@ public class InteractionDiagram extends Composite {
         LL parentll = null;
         if (parent==null) {
             parentll = create_LL(parent_entity);
-            svg.appendChild(parentll.getLlEl());
+            svgsvgElement.appendChild(parentll.getLlEl());
         } else {
             parentll = parent;
         }
@@ -524,17 +650,17 @@ public class InteractionDiagram extends Composite {
             for (InteractingEntity child : parent_entity.getInteractions()) {
                 g_depth++;
                 childll = create_LL(child);
-                svg.appendChild(childll.getLlEl());
-                svg.appendChild(connect(parentll,childll,false,child));
-                if (child.getInteractions()!=null) {
+                svgsvgElement.appendChild(childll.getLlEl());
+                svgsvgElement.appendChild(connect(parentll,childll,false,child));
+                if (!InteractingEntity.INTERACTIONSTATUS.ERROR.equals(child.getStatus()) && child.getInteractions()!=null) {
                     sequence(child, childll);
                     if (childll!=null) {
                         g_depth++;
-                        svg.appendChild(connect(childll, parentll, true, child));
+                        svgsvgElement.appendChild(connect(childll, parentll, true, child));
                     }
                 } else {
                     g_depth++;
-                    svg.appendChild(connect(childll, parentll, true, child));
+                    svgsvgElement.appendChild(connect(childll, parentll, true, child));
                 }
             }
 
@@ -546,18 +672,19 @@ public class InteractionDiagram extends Composite {
         OMSVGGElement destination = destinationll.getLlEl();
 
         InteractingEntity.INTERACTIONSTATUS status = entity.getStatus();
+        String lineFillColor = (isInspectableInteractionStatus(status))?"black":"#dcdcdc";
 
         OMSVGLineElement line = doc.createSVGLineElement();
-        int x1 = (Integer.parseInt(((OMSVGRectElement)origin.getFirstChild()).getAttribute("x").toString())+(ll_boxWidth/2));
+        int x1 = (Integer.parseInt(((OMSVGRectElement)origin.getFirstChild()).getAttribute("x").toString())+(LL_BOX_WIDTH /2));
         line.setAttribute("x1",""+x1);
-        int y = Integer.parseInt(((OMSVGRectElement)origin.getFirstChild()).getAttribute("y").toString())+ll_boxHeight+g_depth*connection_topmargin;
+        int y = Integer.parseInt(((OMSVGRectElement)origin.getFirstChild()).getAttribute("y").toString())+ LL_BOX_HEIGHT +g_depth*connection_topmargin;
         g_y = y;
 
         line.setAttribute("y1",""+y);
-        int x2 = (Integer.parseInt(((OMSVGRectElement)destination.getFirstChild()).getAttribute("x").toString())+(ll_boxWidth/2));
+        int x2 = (Integer.parseInt(((OMSVGRectElement)destination.getFirstChild()).getAttribute("x").toString())+(LL_BOX_WIDTH /2));
         line.setAttribute("x2",""+x2);
         line.setAttribute("y2",""+y);
-        line.setAttribute("style","stroke:rgb(0,0,0);stroke-width:1;" + ((response)?"stroke-dasharray:4,8":""));
+        line.setAttribute("style","stroke:"+lineFillColor+";stroke-width:1;" + ((response)?"stroke-dasharray:4,8":""));
 
         OMSVGGElement group = doc.createSVGGElement();
         group.appendChild(line);
@@ -576,74 +703,129 @@ public class InteractionDiagram extends Composite {
         int textY = y;
 
         if (!response) {
-            int rightCenterTextX = x1;
-            if (lls.size()>2)
-                for (LL ll : lls) {
-                    if (ll.getLl_stem_center()>x1) {
-                        rightCenterTextX = ll.getLl_stem_center();
-                        break;
+            int centerTextX = (x1 + x2)/2;
+
+            if (x2>x1) {
+                // Request
+                // x1 ----------------> x2
+                if (Math.abs(x2-x1)>TRANSACTION_PAIR_WIDTH) { // Make labels stick closer to the origin if the line spans a long distance over multiple LLs.
+                    centerTextX = originll.getLl_stem_center() + activity_box_width + ll_margin;
+                }
+
+                group.appendChild(arrow_request_right(x2, y, lineFillColor));
+            } else {
+                // Request
+                // x2 <----------------- x1
+                if (Math.abs(x1-x2)>TRANSACTION_PAIR_WIDTH) {
+                    centerTextX = originll.getLl_stem_center() + activity_box_width - (ll_margin);
+                }
+                group.appendChild(arrow_request_left(x2, y, lineFillColor));
+            }
+
+            if (status!=null) {
+                final List<String> messages = new ArrayList<String>();
+                String tooltipMessage = "(Click to inspect results)";
+                TransactionInstance tranInstance = entity.getTransactionInstance();
+                if (tranInstance!=null) {
+                    tooltipMessage = "#SimLog:"+ tranInstance.simId.toString() + "/" + tranInstance.actorType.getShortName() + "/" + tranInstance.trans + "/" + tranInstance.messageId;
+                }
+
+                List<String> lines = new ArrayList<>();
+
+                String description = entity.getDescription();
+                String transaction = entity.getSourceInteractionLabel();
+                if (description!=null && description.length()>MAX_LABEL_DISPLAY_LEN)
+                    messages.add(description);
+                messages.add(tooltipMessage);
+                if (entity.getDescription()!=null)
+                    lines.add(description);
+                if (tranInstance!=null) {
+                   lines.add(tranInstance.nameInterpretedAsTransactionType.getName());
+                    group.setAttribute("style","cursor:pointer");
+                    addTooltip(group, messages, HIDE_TOOLTIP_ON_MOUSEOUT);
+                } else {
+                    if (transaction!=null) {
+                        TransactionType tranType = TransactionType.find(transaction);
+                        if (tranType!=null) {
+                            lines.add(tranType.getName());
+                        } else {
+                            lines.add(transaction.replace("Transaction",""));
+                        }
+                    } else {
+                        lines.add("Unknown Tx");
+                    }
+
+                    if (InteractingEntity.INTERACTIONSTATUS.UNKNOWN.equals(status)) {
+                        lines.add("Not Found");
+                    } else if (!InteractingEntity.INTERACTIONSTATUS.SKIPPED.equals(status)) {
+                        group.setAttribute("style", "cursor:pointer");
+                        addTooltip(group, messages, HIDE_TOOLTIP_ON_MOUSEOUT);
                     }
                 }
 
-            int centerTextX = (rightCenterTextX+x2)/2;
-
-            group.setAttribute("style","cursor:pointer");
-
-            if (x2>x1)
-                group.appendChild(arrow_request_right(x2, y));
-            else
-                group.appendChild(arrow_request_left(x2, y));
-
-            final List<String> messages = new ArrayList<String>();
-            messages.add("(Click to inspect results)");
-            addTooltip(group,messages,hide_tooltip_on_mouseout);
-
-            String description = entity.getDescription();
-            String transaction = entity.getSourceInteractionLabel();
-            String[] lines = new String[] {"","",""}; // Length should equal NUM_LINES
-            if (description.indexOf("^")>-1) {
-                String[] descArray = description.split("\\^");
-                lines[0] = descArray[0];
-                lines[1] = descArray[1];
-            }
-            lines[2] = transaction;
-            group.appendChild(getTransactionLabel(centerTextX,textY,lines));
-
-            // -----
-            group.addClickHandler(new ClickHandler() {
-                @Override
-                public void onClick(ClickEvent clickEvent) {
-                    getEventBus().fireEvent(new DiagramClickedEvent(getTestOverviewDTO().getTestInstance(), DiagramPart.RequestConnector));
+                group.appendChild(multiLineLabel(centerTextX, (textY - (4 + (LINE_HEIGHT * lines.size()))), lines.toArray(new String[0]), 10, MAX_LABEL_DISPLAY_LEN));
+                if (tranInstance!=null) {
+                    // Anchors don't seem to work in a Group.
+                    final String url = tooltipMessage;
+                    group.addClickHandler(new ClickHandler() {
+                        @Override
+                        public void onClick(ClickEvent clickEvent) {
+                            Window.open(url, "_blank", "");
+                        }
+                    });
+                } else if (isInspectableInteractionStatus(status)) {
+                    group.addClickHandler(new ClickHandler() {
+                        @Override
+                        public void onClick(ClickEvent clickEvent) {
+                            getEventBus().fireEvent(new DiagramClickedEvent(getTestOverviewDTO().getTestInstance(), DiagramPart.RequestConnector));
+                        }
+                    });
                 }
-            } );
+
+            } else {
+                /* No status - probably not yet executed */
+                TransactionType tranType = TransactionType.find(entity.getSourceInteractionLabel());
+                String transaction = (tranType!=null)?tranType.getName():entity.getSourceInteractionLabel();
+                List<String> lines = new ArrayList<>();
+                if (entity.getDescription() != null)
+                    lines.add(entity.getDescription());
+                if (transaction!=null)
+                    lines.add(transaction);
+                if (!lines.isEmpty())
+                    group.appendChild(multiLineLabel(centerTextX,(textY-(4+(LINE_HEIGHT * lines.size()))),lines.toArray(new String[0]),10,MAX_LABEL_DISPLAY_LEN));
+            }
 
         } else {
             /*
              * Response
              */
-            int rightCenterTextX = x2;
-            if (lls.size()>2)
-                for (int cx=lls.size()-2; cx>0; cx--) {
-                    LL ll = lls.get(cx);
-                    rightCenterTextX = ll.getLl_stem_center();
-                    break;
-                }
 
-            int centerTextX = (rightCenterTextX+x1)/2;
+            int centerTextX = (x1+x2)/2;
 
             group.setAttribute("style","cursor:pointer");
 
-            if (x2<x1)
-                group.appendChild(arrow_response_left(x2, y));
-            else
-                group.appendChild(arrow_response_right(x2, y));
+            if (x2<x1) {
+                // Response
+                // x2 <---------------- x1
+                if (Math.abs(x1-x2)>TRANSACTION_PAIR_WIDTH)  {
+                    centerTextX = originll.getLl_stem_center() + activity_box_width - (ll_margin);
+                }
+                group.appendChild(arrow_response_left(x2, y, lineFillColor));
+            } else {
+                // Response
+                // x1 ----------------> x2
+                if (Math.abs(x2-x1)>TRANSACTION_PAIR_WIDTH) {
+                    centerTextX = originll.getLl_stem_center() + activity_box_width + ll_margin;
+                }
+                group.appendChild(arrow_response_right(x2, y, lineFillColor));
+            }
 
             // -----
             String x_mark_Rgb = null;
             if (InteractingEntity.INTERACTIONSTATUS.ERROR.equals(status)) {
-               x_mark_Rgb = RGB_255_0_0;
+               x_mark_Rgb = RGB_RED;
             } else if (InteractingEntity.INTERACTIONSTATUS.ERROR_EXPECTED.equals(status)) {
-                x_mark_Rgb = RGB_0_0_255;
+                x_mark_Rgb = RGB_BLUE;
             }
 
             if (x_mark_Rgb!=null) {
@@ -652,7 +834,7 @@ public class InteractionDiagram extends Composite {
 //                textY -= (half_cross_height); // two lines of text
 
                 if (errors!=null) {
-                    addTooltip(group,errors,hide_tooltip_on_mouseout);
+                    addTooltip(group,errors, HIDE_TOOLTIP_ON_MOUSEOUT);
                 }
             }
 
@@ -730,7 +912,7 @@ public class InteractionDiagram extends Composite {
                 originFrame = originll.getActivityFrames().get(lastOriginAf);
             }
                 if (lastOriginAf==-1 || (originFrame!=null && originFrame.getY_max()!=0)) {// Previous frame unfinished, do not start a new one
-                    originFrame = getTouchPoint(originll, destinationll, y, x1);
+                    originFrame = getTouchPoint(originll, destinationll, y, x1, lineFillColor);
                     originll.getActivityFrames().add(originFrame);
                 }
 
@@ -741,12 +923,16 @@ public class InteractionDiagram extends Composite {
                 destFrame = destinationll.getActivityFrames().get(lastDestAf);
             }
                 if (lastDestAf==-1 || (destFrame!=null && destFrame.getY_max()!=0)) {
-                    destFrame = getTouchPoint(originll, destinationll, y, x2);
+                    destFrame = getTouchPoint(originll, destinationll, y, x2, lineFillColor);
                     destinationll.getActivityFrames().add(destFrame);
                 }
         }
 
         return group;
+    }
+
+    private boolean isInspectableInteractionStatus(InteractingEntity.INTERACTIONSTATUS status) {
+        return !InteractingEntity.INTERACTIONSTATUS.UNKNOWN.equals(status)||!InteractingEntity.INTERACTIONSTATUS.SKIPPED.equals(status);
     }
 
     private void addTooltip(OMSVGGElement group, final List<String> messages, final int timeOutInMilliseconds) {
@@ -765,7 +951,7 @@ public class InteractionDiagram extends Composite {
         });
     }
 
-    private TouchPoint getTouchPoint(LL originll, LL destinationll, int y, int x2) {
+    private TouchPoint getTouchPoint(LL originll, LL destinationll, int y, int x2, String lineFillColor) {
         TouchPoint destFrame;
         destFrame = new TouchPoint();
         destFrame.setX_min(x2);
@@ -773,6 +959,7 @@ public class InteractionDiagram extends Composite {
         destFrame.setY_max(0);
         destFrame.setFrom(originll.getName());
         destFrame.setTo(destinationll.getName());
+        destFrame.setLineFillColor(lineFillColor);
         return destFrame;
     }
 
@@ -785,12 +972,12 @@ public class InteractionDiagram extends Composite {
     OMSVGGElement cross_mark(int x, int y, String strokeRgb) {
         OMSVGGElement x_group = doc.createSVGGElement();
         OMSVGPathElement l_part = doc.createSVGPathElement();
-       l_part.setAttribute("d","M " + (x-half_cross_height) + " " + (y-half_cross_height) // constant is the half-height of the cross
+       l_part.setAttribute("d","M " + (x- HALF_CROSS_HEIGHT) + " " + (y- HALF_CROSS_HEIGHT) // constant is the half-height of the cross
                + " l5 5 l-5 5");
         l_part.setAttribute("style","fill:rgb(255,255,255);stroke-width:1.5;stroke:"+strokeRgb+";stroke-linecap:round");
         x_group.appendChild(l_part);
         OMSVGPathElement r_part = doc.createSVGPathElement();
-        r_part.setAttribute("d","M " + (x+half_cross_height) + " " + (y-half_cross_height)
+        r_part.setAttribute("d","M " + (x+ HALF_CROSS_HEIGHT) + " " + (y- HALF_CROSS_HEIGHT)
                 + " l-5 5 l5 5");
         r_part.setAttribute("style","fill:rgb(255,255,255);stroke-width:1.5;stroke:"+strokeRgb+";stroke-linecap:round");
         x_group.appendChild(r_part);
@@ -798,44 +985,60 @@ public class InteractionDiagram extends Composite {
         return x_group;
     }
 
-    OMSVGTextElement getTransactionLabel(int x, int y, String[] lines) {
-        OMSVGTextElement text = doc.createSVGTextElement();
-        text.setAttribute("x",""+x);
-        text.setAttribute("y",""+(y-(4+(line_height * NUM_LINES)))); // Shift text up the connecting line, 3 for top of the line
-        text.setAttribute("text-anchor","middle");
-        text.setAttribute("font-family","Verdana");
-        text.setAttribute("font-size","10");
+    OMSVGElement box(int x, int y, String strokeRgb) {
+        OMSVGRectElement rect = doc.createSVGRectElement();
+        rect.setAttribute("width",""+ HALF_CROSS_HEIGHT * 2);
+        rect.setAttribute("height",""+ HALF_CROSS_HEIGHT * 2);
+        rect.setAttribute("x",""+x);
+        rect.setAttribute("y","" + y);
+        rect.setAttribute("style","fill:"+strokeRgb+";stroke-width:2;stroke:" + strokeRgb );
 
-        OMSVGTSpanElement line1 = getOmsvgtSpanElement(x, "" + lines[0]);
-        text.appendChild(line1);
+        return rect;
+    }
 
-        OMSVGTSpanElement line2 = getOmsvgtSpanElement(x, "" + lines[1]);
-        text.appendChild(line2);
+    OMSVGAElement svgAnchor(int x, int y, String url, String[] lines, int fontSize, int maxLineLen) {
+        OMSVGAElement anchor = new OMSVGAElement();
+        anchor.setAttribute("xlink:href", url);
+        anchor.setAttribute("target","_blank");
 
-        OMSVGTSpanElement line3 = getOmsvgtSpanElement(x, "" + lines[2]);
-        text.appendChild(line3);
+        anchor.appendChild(multiLineLabel(x,y,lines,fontSize,maxLineLen));
+
+        return anchor;
+    }
+
+    OMSVGTextElement multiLineLabel(int x, int y, String[] lines, int fontSize, int maxLineLen) {
+        OMSVGTextElement text = getOmsvgTextElement(x, y, fontSize);
+
+        for (String line : lines) {
+            OMSVGTSpanElement line1 = getOmsvgtSpanElement(x, "" + getShortName(line,maxLineLen));
+            text.appendChild(line1);
+        }
 
        return text;
     }
 
+    private OMSVGTextElement getOmsvgTextElement(int x, int y, int fontSize) {
+        OMSVGTextElement text = doc.createSVGTextElement();
+        text.setAttribute("x",""+x);
+        text.setAttribute("y",""+y); // Shift text up the connecting line, 3 for top of the line
+        text.setAttribute("text-anchor","middle");
+        text.setAttribute("font-family","Verdana");
+        text.setAttribute("font-size",""+fontSize);
+        return text;
+    }
+
     private OMSVGTSpanElement getOmsvgtSpanElement(int x, String string2) {
         OMSVGTSpanElement line = doc.createSVGTSpanElement();
-        OMText line2Node = doc.createTextNode(getShortLabel(string2));
+        OMText line2Node = doc.createTextNode(getShortName(string2,MAX_LABEL_DISPLAY_LEN));
         line.setAttribute("x",""+x);
-        line.setAttribute("dy",""+line_height);
+        line.setAttribute("dy",""+ LINE_HEIGHT);
         line.appendChild(line2Node);
         return line;
     }
 
-    String getShortLabel(String label) {
-       if (label.length()>MAX_LABEL_DISPLAY_LEN) {
-          return label.substring(0,MAX_LABEL_DISPLAY_LEN-3) + "...";
-       } else
-           return label;
-    }
 
 
-    OMSVGPolygonElement arrow_request_left(int x, int y) {
+    OMSVGPolygonElement arrow_request_left(int x, int y, String fillColor) {
             x += (activity_box_width/2);
 
         OMSVGPolygonElement arrow = doc.createSVGPolygonElement();
@@ -844,11 +1047,11 @@ public class InteractionDiagram extends Composite {
                 + " " + (x+5) + "," + (y-5)
                 + " " + (x+5) + "," + (y+5)
         );
-        arrow.setAttribute("style","fill:black");
+        arrow.setAttribute("style","fill:" + fillColor);//black
 
         return arrow;
     }
-    OMSVGPolygonElement arrow_request_right(int x, int y) {
+    OMSVGPolygonElement arrow_request_right(int x, int y, String fillColor) {
         x -= (activity_box_width/2);
 
         OMSVGPolygonElement arrow = doc.createSVGPolygonElement();
@@ -857,12 +1060,12 @@ public class InteractionDiagram extends Composite {
                + " " + (x-5) + "," + (y-5)
                + " " + (x-5) + "," + (y+5)
             );
-            arrow.setAttribute("style","fill:black");
+            arrow.setAttribute("style","fill:" + fillColor);// black
 
         return arrow;
     }
 
-    OMSVGPolygonElement arrow_response_left(int x, int y) {
+    OMSVGPolygonElement arrow_response_left(int x, int y, String fillColor) {
         x += (activity_box_width/2);
 
         OMSVGPolygonElement arrow = doc.createSVGPolygonElement();
@@ -871,11 +1074,11 @@ public class InteractionDiagram extends Composite {
                        + " " + x + "," + y
                         + " " + (x+5) + "," + (y+5)
         );
-        arrow.setAttribute("style","fill:white;stroke:black;stroke-width:1");
+        arrow.setAttribute("style","fill:white;stroke:"+fillColor+";stroke-width:1"); // black
 
         return arrow;
     }
-    OMSVGPolygonElement arrow_response_right(int x, int y) {
+    OMSVGPolygonElement arrow_response_right(int x, int y, String fillColor) {
         x -= (activity_box_width/2);
 
         OMSVGPolygonElement arrow = doc.createSVGPolygonElement();
@@ -884,46 +1087,56 @@ public class InteractionDiagram extends Composite {
                         + " " + x + "," + y
                         + " " + (x-5) + "," + (y+5)
         );
-        arrow.setAttribute("style","fill:white;stroke:black;stroke-width:1");
+        arrow.setAttribute("style","fill:white;stroke:"+ fillColor +";stroke-width:1"); //black
         return arrow;
     }
 
     LL create_LL(InteractingEntity entity) {
 
         final String name = (entity.getName()==null)?"Toolkit":entity.getName();
-        LL ll = getLL(name);
+        final String id = entity.getRole() + "_" + entity.getProvider() + "_" + entity.getName();
+        LL ll = getLL(id);
 
         if (ll!=null)
             return ll;
 
         ll = new LL();
         ll.setName(name);
+        ll.setId(id);
 
         int ll_count = lls.size();
         if (ll_count==0) // First LL being created is the root
             ll.setRoot(true);
 
         OMSVGRectElement rect = doc.createSVGRectElement();
-        rect.setAttribute("width",""+ll_boxWidth);
-        rect.setAttribute("height",""+ll_boxHeight);
-        int x = ll_count* ll_boxWidth;
+        rect.setAttribute("width",""+ LL_BOX_WIDTH);
+        rect.setAttribute("height",""+ LL_BOX_HEIGHT);
+        int x = ll_count* LL_BOX_WIDTH;
         x+=ll_margin*ll_count; // margin that separates this lifeline from the previous one
-        g_x = x + ll_boxWidth;
-        ll.setLl_stem_center(x + (ll_boxWidth/2));
+        g_x = x + LL_BOX_WIDTH;
+        ll.setLl_stem_center(x + (LL_BOX_WIDTH /2));
         rect.setAttribute("x",""+x);
         rect.setAttribute("y","0");
-        rect.setAttribute("style","fill:rgb(255,255,255);stroke-width:2;stroke:rgb(0,0,0)" );
+        String boxRgb = "rgb(255,255,255);";
+        if ("SystemUnderTest".equals(entity.getProvider())) {
+            boxRgb = RGB_ORANGE ; // Orange
+        } /*else if ("Simulator".equals(entity.getProvider())) {
+            boxRgb = "rgb(0,0,255);"; // Blue
+        } */
+        rect.setAttribute("style","fill:"+boxRgb+";stroke-width:2;stroke:rgb(0,0,0)" );
 
+        /*
         rect.addClickHandler(new ClickHandler() {
             @Override
             public void onClick(ClickEvent clickEvent) {
                 Window.alert(name);
             }
         });
+        */
 
         OMSVGTextElement text = doc.createSVGTextElement();
         text.setAttribute("x",""+ll.getLl_stem_center());
-        text.setAttribute("y","" + (ll_boxHeight/2));
+        text.setAttribute("y","" + (LL_BOX_HEIGHT /2));
         text.setAttribute("dy","3");
         text.setAttribute("font-family","Verdana");
         text.setAttribute("font-size","10");
@@ -931,18 +1144,28 @@ public class InteractionDiagram extends Composite {
 
         OMSVGGElement group = doc.createSVGGElement();
         String shortName = name;
-        if (name.length()>12) {
-            shortName = name.substring(0, 12);
-            List<String> actorName = new ArrayList<String>();
-            actorName.add(name);
-            addTooltip(group,actorName,hide_tooltip_on_mouseout);
-        }
+        List<String> ll_label = new ArrayList<>();
+        List<String> actorDetail = new ArrayList<>();
+
+        shortName = getShortName(name,MAX_LL_DISPLAY_NAME);
+        if (!name.equals(entity.getProvider()))
+            actorDetail.add(name);
+        actorDetail.add(entity.getRole());
+        actorDetail.add(entity.getProvider());
+
+        addTooltip(group,actorDetail, HIDE_TOOLTIP_ON_MOUSEOUT);
 
         OMText textValue = doc.createTextNode(shortName);
         text.appendChild(textValue);
 
         group.appendChild(rect);
-        group.appendChild(text);
+
+       ll_label.add(entity.getRole());
+       if ("Simulator".equals(entity.getProvider())) {
+           ll_label.add(entity.getProvider());
+       }
+
+        group.appendChild(multiLineLabel(ll.getLl_stem_center(),2,ll_label.toArray(new String[0]),9,MAX_LL_DISPLAY_NAME));
 
         ll.setLlEl(group);
         lls.add(ll);
@@ -951,11 +1174,19 @@ public class InteractionDiagram extends Composite {
         return ll;
     }
 
-    LL getLL(String name) {
-        if (name==null)
+    private String getShortName(String name, int truncateTo) {
+        if (name!=null && name.length()> truncateTo) {
+            return name.substring(0, truncateTo-3) + "...";
+        }
+        else
+            return name;
+    }
+
+    LL getLL(String id) {
+        if (id==null)
             return null;
         for (LL ll : lls) {
-            if (name.equals(ll.getName())) {
+            if (id.equals(ll.getId())) {
                 return ll;
             }
         }
@@ -1008,4 +1239,53 @@ public class InteractionDiagram extends Composite {
     public boolean hasMeaningfulDiagram() { // At-least two life lines for a meaningful diagram
        return (lls.size()>1);
     }
+
+    public SiteSpec getTargetSite() {
+        return targetSite;
+    }
+
+    public void setTargetSite(SiteSpec targetSite) {
+        this.targetSite = targetSite;
+    }
+
+    public String getSessionName() {
+        return sessionName;
+    }
+
+    public void setSessionName(String sessionName) {
+        this.sessionName = sessionName;
+    }
+
+    public String getSutSystemName() {
+        return sutSystemName;
+    }
+
+    public void setSutSystemName(String sutSystemName) {
+        this.sutSystemName = sutSystemName;
+    }
+
+    public String getSutActorRoleName() {
+        return sutActorRoleName;
+    }
+
+    public void setSutActorRoleName(String sutActorRoleName) {
+        this.sutActorRoleName = sutActorRoleName;
+    }
+
+    public List<InteractingEntity> getEntityList() {
+        return entityList;
+    }
+
+    public void setEntityList(List<InteractingEntity> entityList) {
+        this.entityList = entityList;
+    }
+
+    public boolean isAtleastOneSectionWasRun() {
+        return atleastOneSectionWasRun;
+    }
+
+    public void setAtleastOneSectionWasRun(boolean atleastOneSectionWasRun) {
+        this.atleastOneSectionWasRun = atleastOneSectionWasRun;
+    }
+
 }

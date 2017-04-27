@@ -186,6 +186,8 @@ public class BuildRgTestOrchestrationButton extends AbstractOrchestrationButton 
 
                 displayPIDs(table, orchResponse, 0);
                 initializationResultsPanel.add(table);
+
+                testTab.displayTestCollection(testTab.getMainView().getTestsPanel());
             }
         }.run(new BuildRgTestOrchestrationRequest(ClientUtils.INSTANCE.getCommandContext(),request));
     }

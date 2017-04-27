@@ -127,6 +127,8 @@ public class BuildRegTestOrchestrationButton extends AbstractOrchestrationButton
                 initializationResultsPanel.add(new HTML("Patient ID for MPQ tests: " + orchResponse.getMpq2Pid().toString()));
                 initializationResultsPanel.add(new HTML("<br />"));
 
+                testTab.displayTestCollection(testTab.getMainView().getTestsPanel());
+
             }
         }.run(new BuildRegTestOrchestrationRequest(ClientUtils.INSTANCE.getCommandContext(),request));
     }

@@ -25,7 +25,7 @@ public class TestDisplayGroup {
         this.testRunner = testRunner;
     }
 
-    public TestDisplay display(TestOverviewDTO testOverview) {
+    public TestDisplay display(TestOverviewDTO testOverview, InteractionDiagramDisplay diagramDisplay) {
         TestDisplay testDisplay = get(testOverview.getTestInstance());
         if (testDisplay == null) {
             testDisplay = new TestDisplay(testOverview.getTestInstance(), this, testRunner, testContext, testContextView);
@@ -34,6 +34,7 @@ public class TestDisplayGroup {
             testDisplay.showValidate(showValidate);
             put(testOverview.getTestInstance(), testDisplay);
         }
+        testDisplay.setDiagramDisplay(diagramDisplay);
         testDisplay.display(testOverview);
         return testDisplay;
     }
@@ -63,4 +64,5 @@ public class TestDisplayGroup {
     public void showValidate(boolean showValidate) {
         this.showValidate = showValidate;
     }
+
 }

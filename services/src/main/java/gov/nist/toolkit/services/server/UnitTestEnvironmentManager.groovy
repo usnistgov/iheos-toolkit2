@@ -50,6 +50,7 @@ public class UnitTestEnvironmentManager {
         new EnvSetting(session.getId(), defaultEnvName, Installation.instance().environmentFile(defaultEnvName))
 
         ListenerFactory.init(Installation.instance().listenerPortRange);
+//        Installation.instance().propertyServiceManager().getPropertyManager().setExternalCache(externalCache.toString());
         return session
     }
 

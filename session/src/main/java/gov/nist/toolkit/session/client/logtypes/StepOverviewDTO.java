@@ -1,7 +1,7 @@
 package gov.nist.toolkit.session.client.logtypes;
 
 import com.google.gwt.user.client.rpc.IsSerializable;
-import gov.nist.toolkit.session.client.logtypes.BasicStepOverview;
+import gov.nist.toolkit.interactionmodel.client.InteractingEntity;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -18,6 +18,7 @@ public class StepOverviewDTO implements BasicStepOverview, Serializable, IsSeria
     List<String> errors = null;
     List<String> details;
     List<String> goals = new ArrayList<>();
+    List<InteractingEntity> interactionSequence;
 
     public StepOverviewDTO() {}
 
@@ -84,5 +85,13 @@ public class StepOverviewDTO implements BasicStepOverview, Serializable, IsSeria
 
     public void setExpectedSuccess(boolean expectedSuccess) {
         this.expectedSuccess = expectedSuccess;
+    }
+
+    public List<InteractingEntity> getInteractionSequence() {
+        return interactionSequence;
+    }
+
+    public void setInteractionSequence(List<InteractingEntity> interactionSequence) {
+        this.interactionSequence = interactionSequence;
     }
 }

@@ -217,6 +217,12 @@ public class SimulatorMessageViewTab extends ToolWindow {
 				for (String name : result.keySet()) {
 					simulatorNamesListBox.addItem(name);
 				}
+				// Auto-load if there is only one entry
+				if (result.size()==1) {
+					simulatorNamesListBox.setSelectedIndex(0);
+					simid = result.get(simulatorNamesListBox.getSelectedValue());
+					loadTransactionNames(simid);
+				}
 			}
 		}.run(getCommandContext());
 	}
@@ -230,6 +236,11 @@ public class SimulatorMessageViewTab extends ToolWindow {
 			public void onComplete(List<String> result) {
 				transactionNamesPanel.clear();
 				transactionChosen(simidFinal, "all");
+				// Auto-load if there is only one entry
+			 	if (result!=null && result.size()==1) {
+			 		transInstanceListBox.setSelectedIndex(0);
+			 		transactionInstanceSelected();
+				}
 			}
 		}.run(new GetTransactionRequest(getCommandContext(),simid));
 	}
@@ -308,26 +319,28 @@ public class SimulatorMessageViewTab extends ToolWindow {
 	ChangeHandler transactionInstanceChoiceChanged = new ChangeHandler() {
 
 		public void onChange(ChangeEvent event) {
-			int selectedItem = transInstanceListBox.getSelectedIndex();
-			String value = transInstanceListBox.getValue(selectedItem);
-			TransactionInstance ti = findTransactionInstance(value);
-			if (ti == null) return;
-			currentTransactionInstance = ti;
-			updateEventLink();
-			loadTransactionInstanceDetails(ti);
-
-			String messageId = getMessageIdFromLabel(value);
-			currentTransaction = getTransactionFromLabel(value);
-
-			String u = "<a href=\"" +
-					"message/" + simid + "/" + currentActor + "/" + currentTransaction + "/" + messageId + "\"" +
-//			" target=\"_blank\"" +
-					">Download Message</a>";
-			download.setHTML(u);
-
-
+			transactionInstanceSelected();
 		}
 	};
+
+	private void transactionInstanceSelected() {
+		int selectedItem = transInstanceListBox.getSelectedIndex();
+		String value = transInstanceListBox.getValue(selectedItem);
+		TransactionInstance ti = findTransactionInstance(value);
+		if (ti == null) return;
+		currentTransactionInstance = ti;
+		updateEventLink();
+		loadTransactionInstanceDetails(ti);
+
+		String messageId = getMessageIdFromLabel(value);
+		currentTransaction = getTransactionFromLabel(value);
+
+		String u = "<a href=\"" +
+                "message/" + simid + "/" + currentActor + "/" + currentTransaction + "/" + messageId + "\"" +
+//			" target=\"_blank\"" +
+                ">Download Message</a>";
+		download.setHTML(u);
+	}
 
 	HTML htmlize(String header, String in) {
 		HTML h = new HTML(

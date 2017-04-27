@@ -1147,8 +1147,9 @@ public abstract class BasicTransaction  {
 			} catch (Exception e) {
 				fatal("WaitBefore failed: " + e.getMessage());
 			}
-		}
-		else {
+		} else if (part_name.equals("InteractionSequence")) {
+				// Nothing to parse here at the moment.
+		} else {
 			throw new XdsInternalException("BasicTransaction: Don't understand instruction " + part_name);
 		}
 

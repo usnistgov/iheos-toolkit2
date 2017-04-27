@@ -13,6 +13,7 @@ import gov.nist.toolkit.testenginelogging.client.TestStepLogContentDTO;
 import gov.nist.toolkit.testkitutilities.ReadMe;
 import gov.nist.toolkit.testkitutilities.TestDefinition;
 import gov.nist.toolkit.testkitutilities.client.SectionDefinitionDAO;
+import gov.nist.toolkit.testkitutilities.client.StepDefinitionDAO;
 
 import java.io.IOException;
 import java.util.Collection;
@@ -82,6 +83,7 @@ public class TestOverviewBuilder {
                     } else {
                         logFileContentDTO.setHasRun(true);
                     }
+
                     SectionOverviewDTO sectionOverview = addSection(section, logFileContentDTO);
 
                     try {
@@ -90,7 +92,17 @@ public class TestOverviewBuilder {
                         testDependencies.addAll(sectionDef.getSectionDependencies());
                         for (String stepName : sectionDef.getStepNames()) {
                             StepOverviewDTO stepOverview = sectionOverview.getStep(stepName);
+                            if (stepOverview==null) { // Probably not yet executed, pre-run state
+                                stepOverview = new StepOverviewDTO();
+                                StepDefinitionDAO stepSrc = sectionDef.getStep(stepName);
+                                stepOverview.setName(stepSrc.getId());
+                                stepOverview.setTransaction(stepSrc.getTransaction());
+                                sectionOverview.getStepNames().add(stepName);
+                                sectionOverview.getSteps().put(stepName,stepOverview);
+                            }
+
                             stepOverview.setGoals(sectionDef.getStep(stepName).getGoals());
+                            stepOverview.setInteractionSequence(sectionDef.getStep(stepName).getInteractionSequence());
 
                             TestStepLogContentDTO stepDTO = new TestStepLogContentDTO();
                             StepGoalsDTO goals = new StepGoalsDTO();
@@ -103,13 +115,14 @@ public class TestOverviewBuilder {
                             else
                                 existingStepLog.setStepGoalsDTO(goals);
                         }
-                    } catch (Exception e) {}
+                    } catch (Exception e) {
+                        System.out.println(e.toString());
+                    }
 
 
                     sectionOverview.setRun(logFileContentDTO.isRun());
                     if (!sectionOverview.isPass())
                         testOverview.setPass(false);
-
 
 
                     try {
@@ -146,6 +159,7 @@ public class TestOverviewBuilder {
         sectionOverview.setPass(logFileContentDTO.isSuccess());
         sectionOverview.setHl7Time(logFileContentDTO.getHl7Time());
         sectionOverview.setSite(logFileContentDTO.getSiteName());
+
         for (String stepName : logFileContentDTO.getStepMap().keySet()) {
             TestStepLogContentDTO stepContent = logFileContentDTO.getStepLog(stepName);
             addStep(stepName, stepContent, sectionOverview);
@@ -167,7 +181,8 @@ public class TestOverviewBuilder {
         stepOverview.addErrors(stepContent.getSoapFaults());
         stepOverview.addErrors(stepContent.getErrors());
         stepOverview.addErrors(stepContent.getAssertionErrors());
-        stepOverview.setTransaction(stepContent.getTransaction());
+        stepOverview.setTransaction(stepContent.getTransaction()); // NOTE: This makes an assumption that only one transaction is allowed per step.
+
         sectionOverview.addStep(stepName, stepOverview);
     }
 

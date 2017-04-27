@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+
+<InteractionSequences>
+
+	<InteractionSequence id="ProvideAndRegisterTransaction">
+			<Actor role="Document Source" provider="TestClient">
+				<Transaction type="prb">
+					<Actor role="Repository" provider="SystemUnderTest">
+						<Transaction type="rb">
+							<Actor role="Registry" name="rep_test_support" provider="Simulator"/>
+						</Transaction>
+					</Actor>
+				</Transaction>
+			</Actor>
+	</InteractionSequence>
+
+
+	<InteractionSequence id="XCRTransaction">
+		<Actor role="Initiating Gateway" provider="Simulator">
+			<Transaction type="xcr">
+				<Actor role="Responding Gateway" provider="Simulator" name="community1">
+					<Transaction type="ret.b">
+						<Actor role="Document Repository" provider="Simulator" name="docrep1"/>
+					</Transaction>
+				</Actor>
+			</Transaction>
+			<Transaction type="xcr">
+				<Actor role="Responding Gateway" provider="Simulator" name="community2">
+					<Transaction type="ret.b">
+						<Actor role="Document Repository" provider="Simulator" name="docrep2"/>
+					</Transaction>
+				</Actor>
+			</Transaction>
+		</Actor>
+	</InteractionSequence>
+
+</InteractionSequences>
+
+
+
+		
+
