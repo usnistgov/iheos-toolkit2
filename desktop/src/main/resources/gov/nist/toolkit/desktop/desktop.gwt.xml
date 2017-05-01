@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<module rename-to='desktop'>
+  <!-- Inherit the core Web Toolkit stuff.                        -->
+  <inherits name='com.google.gwt.user.User' />
+
+  <!-- Inherit the default GWT style sheet.  You can change       -->
+  <!-- the theme of your GWT application by uncommenting          -->
+  <!-- any one of the following lines.                            -->
+  <inherits name='com.google.gwt.user.theme.clean.Clean' />
+  <inherits name="com.google.gwt.uibinder.UiBinder"/>
+  <inherits name="com.google.gwt.logging.Logging" />
+  <!--<inherits name='com.google.gwt.user.theme.standard.Standard' />-->
+  <!-- <inherits name='com.google.gwt.user.theme.chrome.Chrome'/> -->
+  <!-- <inherits name='com.google.gwt.user.theme.dark.Dark'/>     -->
+
+  <!-- Other module inherits                                      -->
+
+  <!-- Specify the app entry point class.                         -->
+  <entry-point class='gov.nist.toolkit.desktop.client.Desktop' />
+
+  <stylesheet src="desktop.css"/>
+
+  <!-- Enable log -->
+  <set-property name="gwt.logging.logLevel" value="INFO" />
+  <set-property name="gwt.logging.enabled" value="TRUE" />
+  <!--<set-property name="gwt.logging.popupHandler" value="DISABLED" />-->
+
+  <!-- Specify the paths for translatable code                    -->
+  <source path='client' />
+  <source path='shared' />
+
+</module>
