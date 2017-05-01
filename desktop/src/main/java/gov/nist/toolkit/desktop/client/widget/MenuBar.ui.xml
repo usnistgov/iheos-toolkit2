@@ -1,0 +1,42 @@
+<ui:UiBinder xmlns:ui='urn:ui:com.google.gwt.uibinder'
+             xmlns:g='urn:import:com.google.gwt.user.client.ui'
+             xmlns:f="urn:import:gov.nist.toolkit.desktop.client.widget">
+
+    <ui:with type="gov.nist.toolkit.desktop.client.TkResources" field="resource" />
+
+    <g:StackLayoutPanel unit="EM">
+        <g:stack>
+            <g:customHeader size='1.8'>
+                <f:MenuHeader text="Analyze" imageResource="{resource.menu}" />
+            </g:customHeader>
+            <g:LayoutPanel>
+                <g:layer left='0.5em' width='10em' top='0.5em'
+                         height='3em'>
+                    <f:MenuItem contentName="Snapshot" text="Symbol"
+                                imageResource="{resource.menu}" />
+                </g:layer>
+                <!-- top increment by 1.8 -->
+                <g:layer left='0.5em' width='10em' top='2.3em'
+                         height='3em'>
+                    <f:MenuItem contentName="Watchlist"
+                                text="Watchlists"
+                                imageResource="{resource.menu}" />
+                </g:layer>
+            </g:LayoutPanel>
+        </g:stack>
+        <g:stack>
+            <g:customHeader size='1.8'>
+                <f:MenuHeader text="Manage"
+                              imageResource="{resource.menu}" />
+            </g:customHeader>
+            <g:LayoutPanel>
+                <g:layer left='0.5em' width='10em' top='0.5em'
+                         height='3em'>
+                    <f:MenuItem contentName="ManageWatchlist"
+                                text="Watchlist"
+                                imageResource="{resource.menu}" />
+                </g:layer>
+            </g:LayoutPanel>
+        </g:stack>
+    </g:StackLayoutPanel>
+</ui:UiBinder>
