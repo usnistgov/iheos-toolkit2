@@ -244,7 +244,7 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner, TestTa
 		@Override
 		public void onSelection(SelectionEvent<Integer> selectionEvent) {
 			int i = selectionEvent.getSelectedItem();
-			String newActorTypeId = testCollectionDefinitionDAOs.get(i).getCollectionID();
+			String newActorTypeId = TestCollectionDefinitionDAO.getNonOption(testCollectionDefinitionDAOs).get(i).getCollectionID();
 			if (!newActorTypeId.equals(currentActorOption.actorTypeId)) {
 				orchestrationResponse = null;  // so we know orchestration not set up
 				currentActorOption = new ActorOption(newActorTypeId);
