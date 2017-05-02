@@ -1,6 +1,8 @@
 package gov.nist.toolkit.desktop.client.widget;
 
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.resources.client.ImageResource;
 import com.google.gwt.safehtml.shared.SafeHtml;
 import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
@@ -13,6 +15,8 @@ import com.google.gwt.user.client.ui.Anchor;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.Widget;
 import gov.nist.toolkit.desktop.client.TkResources;
+import gov.nist.toolkit.desktop.client.event.EventBus;
+import gov.nist.toolkit.desktop.client.event.MenuEvent;
 
 /**
  *
@@ -34,6 +38,12 @@ public class MenuItem extends Composite {
         initWidget(binder.createAndBindUi(this));
         anchor.setHTML(getHtml(imageResource, text));
         anchor.setName(contentName);
+        anchor.addClickHandler(new ClickHandler() {
+            @Override
+            public void onClick(ClickEvent event) {
+                EventBus.get().fireEvent(new MenuEvent(contentName));
+            }
+        });
     }
 
     private SafeHtml getHtml(ImageResource image, String text) {

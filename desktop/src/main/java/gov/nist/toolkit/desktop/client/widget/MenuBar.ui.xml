@@ -5,6 +5,8 @@
     <ui:with type="gov.nist.toolkit.desktop.client.TkResources" field="resource" />
 
     <g:StackLayoutPanel unit="EM">
+
+
         <g:stack>
             <g:customHeader size='1.8'>
                 <f:MenuHeader text="Analyze" imageResource="{resource.menu}" />
@@ -24,6 +26,8 @@
                 </g:layer>
             </g:LayoutPanel>
         </g:stack>
+
+
         <g:stack>
             <g:customHeader size='1.8'>
                 <f:MenuHeader text="Manage"

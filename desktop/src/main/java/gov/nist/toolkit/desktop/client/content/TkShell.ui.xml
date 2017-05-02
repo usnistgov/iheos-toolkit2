@@ -13,7 +13,7 @@
         <g:south size="3">
             <g:LayoutPanel>
                 <g:layer>
-                    <g:Label>Status Placeholder</g:Label>
+                    <f:Status ui:field="status" />
                 </g:layer>
             </g:LayoutPanel>
         </g:south>

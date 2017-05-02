@@ -17,6 +17,7 @@ public interface TkResources extends ClientBundle {
     @Source("images/Blank.png")
     ImageResource blank();
 
-
+    @Source("images/ic_close_black_16dp_1x.png")
+    ImageResource close();
 
 }
