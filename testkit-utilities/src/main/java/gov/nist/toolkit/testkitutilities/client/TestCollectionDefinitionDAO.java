@@ -3,6 +3,8 @@ package gov.nist.toolkit.testkitutilities.client;
 import com.google.gwt.user.client.rpc.IsSerializable;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  *
@@ -35,4 +37,16 @@ public class TestCollectionDefinitionDAO implements Serializable, IsSerializable
     }
 
     public boolean isOption() { return collectionID.contains("_"); }
+
+    static public List<TestCollectionDefinitionDAO> getNonOption(List<TestCollectionDefinitionDAO> all) {
+        List<TestCollectionDefinitionDAO> out = new ArrayList<>();
+
+        for (TestCollectionDefinitionDAO it : all) {
+            if (it.isOption())
+                continue;
+            out.add(it);
+        }
+
+        return out;
+    }
 }
