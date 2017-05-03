@@ -64,9 +64,11 @@ public abstract class BaseDsActorSimulator extends BaseActorSimulator {
 		return common.getValidationContext();
 	}
 
-	protected ErrorRecorder newER() {
+	// Was used in old v1-v2 version of toolkit. Replaced with SimCommon.getUnconnectedErrorRecorder()
+	/**protected ErrorRecorder newER() {
 		return new GwtErrorRecorderBuilder().buildNewErrorRecorder();
 	}
+	 **/
 
     public SimulatorConfig getSimulatorConfig() { return dsSimCommon.simulatorConfig; }
     public void setSimulatorConfig(SimulatorConfig config) { dsSimCommon.simulatorConfig = config; }

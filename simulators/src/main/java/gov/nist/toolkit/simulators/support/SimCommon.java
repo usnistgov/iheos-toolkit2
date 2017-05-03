@@ -213,7 +213,7 @@ public class SimCommon {
 		}
 	}
 
-	// TODO  Architecture workaround-type gimmick inherited from v2. This should eventually go away.
+	// TODO  Architecture workaround-type gimmick inherited from v2.
 	public static ErrorRecorder getUnconnectedErrorRecorder() {
 		SelectedErrorRecorder selected = SelectedErrorRecorder.getSelectedErrorRecorder();
 		if (selected.getType().equals(SelectedErrorRecorder.ErrorRecorderType.GWT_ERROR_RECORDER)){

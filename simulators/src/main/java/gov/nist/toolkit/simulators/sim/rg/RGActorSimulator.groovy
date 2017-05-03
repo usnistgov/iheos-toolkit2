@@ -255,7 +255,7 @@ public class RGActorSimulator extends GatewaySimulatorCommon implements Metadata
 
 			RemoteSqSim rss = new RemoteSqSim(common, dsSimCommon, this, getSimulatorConfig(), query);
 
-			mvc.addMessageValidator("Forward query to local Registry", rss, newER());
+			mvc.addMessageValidator("Forward query to local Registry", rss, SimCommon.getUnconnectedErrorRecorder());
 
 			mvc.run();
 
@@ -265,16 +265,16 @@ public class RGActorSimulator extends GatewaySimulatorCommon implements Metadata
 
 			// add homeCommunityId
 			XCQHomeLabelSim xc = new XCQHomeLabelSim(common, this, home);
-			mvc.addMessageValidator("Attach homeCommunityId", xc, newER());
+			mvc.addMessageValidator("Attach homeCommunityId", xc, SimCommon.getUnconnectedErrorRecorder());
 
 			// Add in errors
 			AdhocQueryResponseGenerator queryResponseGenerator = new AdhocQueryResponseGenerator(common, dsSimCommon, rss);
-			mvc.addMessageValidator("Attach Errors", queryResponseGenerator, newER());
+			mvc.addMessageValidator("Attach Errors", queryResponseGenerator, SimCommon.getUnconnectedErrorRecorder());
 
 			mvc.run();
 
 			// wrap response in soap wrapper and http wrapper
-			mvc.addMessageValidator("ResponseInSoapWrapper", new SoapWrapperRegistryResponseSim(common, dsSimCommon, rss), newER());
+			mvc.addMessageValidator("ResponseInSoapWrapper", new SoapWrapperRegistryResponseSim(common, dsSimCommon, rss), SimCommon.getUnconnectedErrorRecorder());
 
 			mvc.run();
 
@@ -317,7 +317,7 @@ public class RGActorSimulator extends GatewaySimulatorCommon implements Metadata
 
 			mvc.run();
 			// wrap response in soap wrapper and http wrapper
-			//mvc.addMessageValidator("ResponseInSoapWrapper", new SoapWrapperXCPDResponseSim(common, result), newER());
+			//mvc.addMessageValidator("ResponseInSoapWrapper", new SoapWrapperXCPDResponseSim(common, result), SimCommon.getUnconnectedErrorRecorder());
 			//mvc.addMessageValidator("ResponseInSoapWrapper", new SoapWrapperXCPDResponseSim(common, result), er);
 			mvc.addMessageValidator("SendResponseInSoapWrapper", new SoapWrapperResponseSim(common, dsSimCommon, result), er);
 

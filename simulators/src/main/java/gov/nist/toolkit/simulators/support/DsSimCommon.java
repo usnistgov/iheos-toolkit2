@@ -104,6 +104,10 @@ public class DsSimCommon {
         else {
             selected.setSelectedErrorRecorder(SelectedErrorRecorder.ErrorRecorderType.GWT_ERROR_RECORDER);
         }
+
+        // Display the type of ErrorRecorder selected
+        logger.info("Selected ErrorRecorder type: " + SelectedErrorRecorder.getSelectedErrorRecorder().getType().toString());
+
         runErrorRecorder(erb.buildNewErrorRecorder());
     }
 
@@ -113,9 +117,14 @@ public class DsSimCommon {
      * @throws IOException
      */
     private void runErrorRecorder(ErrorRecorder err) throws IOException {
+        // Parses the message and possibly creates a queue of specific validators (?)
         simCommon.mvc = simCommon.vms.runValidation(simCommon.vc, simCommon.db, simCommon.mvc, err);
+        // Runs the validators
         simCommon.mvc.run();
+        // Build validation results
         simCommon.buildMVR();
+
+        // Process error steps into logger
         int stepsWithErrors = simCommon.mvc.getErroredStepCount();
         ValidationStep lastValidationStep = simCommon.mvc.getLastValidationStep();
         if (lastValidationStep != null) {
@@ -505,6 +514,7 @@ public class DsSimCommon {
      */
     public void sendHttpResponse(OMElement env, ErrorRecorder er, boolean multipartOk) {
         if (er instanceof GwtErrorRecorder) {
+            logger.info("er instance of GwtErrorRecorder");
 
             if (simCommon.responseSent) {
                 // this should never happen
@@ -544,6 +554,8 @@ public class DsSimCommon {
 
         } // end if instance of GWTErrorRecorder
         if (er instanceof XMLErrorRecorder){
+            logger.info("er instance of XMLErrorRecorder");
+
             try {
                 simCommon.generateLog(er);
             } catch (IOException e) {
