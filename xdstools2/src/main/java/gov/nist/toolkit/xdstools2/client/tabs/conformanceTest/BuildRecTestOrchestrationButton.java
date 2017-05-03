@@ -30,7 +30,7 @@ public class BuildRecTestOrchestrationButton extends AbstractOrchestrationButton
     static {
         ACTOR_OPTIONS = java.util.Arrays.asList(
                 new ActorAndOption("rec", "", "Required", false),
-                new ActorAndOption("rec", XUA_OPTION, "XUA Option", false));
+                new ActorAndOption("rec_xua", XUA_OPTION, "XUA Option", false));
     }
 
     BuildRecTestOrchestrationButton(ConformanceTestTab testTab, TestContext testContext, TestContextView testContextView, Panel initializationPanel, String label) {
