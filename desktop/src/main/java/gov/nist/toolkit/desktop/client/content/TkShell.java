@@ -3,6 +3,7 @@ package gov.nist.toolkit.desktop.client.content;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
+import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.ResizeComposite;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.user.datepicker.client.DateBox;
@@ -31,8 +32,12 @@ public class TkShell extends ResizeComposite implements StatusEvent.StatusHandle
     @UiField
     Status status;
 
+    @UiField
+    Label logoLabel;
+
     public TkShell() {
         initWidget(binder.createAndBindUi(this));
+        logoLabel.setText("XDS Toolkit");
         contentPanel.addTab("Home", new DateBox());
 //        if (!GWT.isProdMode()) {
             contentPanel.addTab("Log", new LogTab());

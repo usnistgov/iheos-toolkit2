@@ -2,6 +2,8 @@
 <module rename-to='desktop'>
   <!-- Inherit the core Web Toolkit stuff.                        -->
   <inherits name='com.google.gwt.user.User' />
+  <inherits name="com.google.gwt.place.Place"/>
+  <inherits name="com.google.gwt.activity.Activity"/>
 
   <!-- Inherit the default GWT style sheet.  You can change       -->
   <!-- the theme of your GWT application by uncommenting          -->
@@ -18,7 +20,7 @@
   <!-- Specify the app entry point class.                         -->
   <entry-point class='gov.nist.toolkit.desktop.client.Desktop' />
 
-  <stylesheet src="desktop.css"/>
+  <!--<stylesheet src="desktop.css"/>-->
 
   <!-- Enable log -->
   <set-property name="gwt.logging.logLevel" value="INFO" />

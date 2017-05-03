@@ -5,8 +5,8 @@
     <g:DockLayoutPanel unit='PCT'>
         <g:north size="5">
             <g:LayoutPanel>
-                <g:layer left="90%" width="10%" top="25%" height="75%">
-                    <g:Label ui:field="logoLabel" text="Tk" styleName="tk-Logo-Label"/>
+                <g:layer>
+                    <g:Label ui:field="logoLabel" styleName="tk-Logo-Label"/>
                 </g:layer>
             </g:LayoutPanel>
         </g:north>
