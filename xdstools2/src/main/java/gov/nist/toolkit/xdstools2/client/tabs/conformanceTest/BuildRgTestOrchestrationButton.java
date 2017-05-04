@@ -160,7 +160,10 @@ public class BuildRgTestOrchestrationButton extends AbstractOrchestrationButton 
         new BuildRGTestOrchestrationCommand(){
             @Override
             public void onComplete(RawResponse rawResponse) {
-                if (handleError(rawResponse, RgOrchestrationResponse.class)) return;
+                if (handleError(rawResponse, RgOrchestrationResponse.class)) {
+                    testTab.getMainView().clearLoadingMessage();
+                    return;
+                }
                 RgOrchestrationResponse orchResponse = (RgOrchestrationResponse) rawResponse;
                 testTab.setOrchestrationResponse(orchResponse);
 

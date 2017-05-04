@@ -144,7 +144,10 @@ public class BuildIDSTestOrchestrationButton extends AbstractOrchestrationButton
         new BuildIdsTestOrchestrationCommand(){
             @Override
             public void onComplete(RawResponse rawResponse) {
-                if (handleError(rawResponse, IdsOrchestrationResponse.class)) return;
+                if (handleError(rawResponse, IdsOrchestrationResponse.class)) {
+                    testTab.getMainView().clearLoadingMessage();
+                    return;
+                }
                 IdsOrchestrationResponse orchResponse = (IdsOrchestrationResponse) rawResponse;
                 testTab.setOrchestrationResponse(orchResponse);
 

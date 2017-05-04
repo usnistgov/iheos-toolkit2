@@ -123,7 +123,10 @@ public class BuildIDCTestOrchestrationButton extends AbstractOrchestrationButton
          
          @Override
          public void onSuccess(RawResponse rawResponse) {
-            if (handleError(rawResponse, IdcOrchestrationResponse.class)) return;
+            if (handleError(rawResponse, IdcOrchestrationResponse.class)) {
+                testTab.getMainView().clearLoadingMessage();
+                return;
+            }
             IdcOrchestrationResponse orchResponse = (IdcOrchestrationResponse) rawResponse;
             testTab.setOrchestrationResponse(orchResponse);
 

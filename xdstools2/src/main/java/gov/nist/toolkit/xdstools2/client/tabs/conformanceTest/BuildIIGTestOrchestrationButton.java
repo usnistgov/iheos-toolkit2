@@ -117,7 +117,10 @@ public class BuildIIGTestOrchestrationButton extends AbstractOrchestrationButton
       new BuildIIGTestOrchestrationCommand(){
          @Override
          public void onComplete(RawResponse rawResponse) {
-            if (handleError(rawResponse, IigOrchestrationResponse.class)) return;
+            if (handleError(rawResponse, IigOrchestrationResponse.class)) {
+               testTab.getMainView().clearLoadingMessage();
+               return;
+            }
             IigOrchestrationResponse orchResponse = (IigOrchestrationResponse) rawResponse;
             testTab.setOrchestrationResponse(orchResponse);
 

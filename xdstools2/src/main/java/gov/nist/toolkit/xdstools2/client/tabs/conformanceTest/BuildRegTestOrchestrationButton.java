@@ -101,7 +101,10 @@ public class BuildRegTestOrchestrationButton extends AbstractOrchestrationButton
         new BuildRegTestOrchestrationCommand(){
             @Override
             public void onComplete(RawResponse rawResponse) {
-                if (handleError(rawResponse, RegOrchestrationResponse.class)) return;
+                if (handleError(rawResponse, RegOrchestrationResponse.class)) {
+                    testTab.getMainView().clearLoadingMessage();
+                    return;
+                }
                 final RegOrchestrationResponse orchResponse = (RegOrchestrationResponse) rawResponse;
                 testTab.setRegOrchestrationResponse(orchResponse);
 

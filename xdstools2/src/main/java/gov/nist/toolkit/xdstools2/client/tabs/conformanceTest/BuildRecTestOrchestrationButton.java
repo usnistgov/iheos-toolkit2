@@ -69,7 +69,10 @@ public class BuildRecTestOrchestrationButton extends AbstractOrchestrationButton
         new BuildRecTestOrchestrationCommand(){
             @Override
             public void onComplete(RawResponse rawResponse) {
-                if (handleError(rawResponse, RecOrchestrationResponse.class)) return;
+                if (handleError(rawResponse, RecOrchestrationResponse.class)) {
+                    testTab.getMainView().clearLoadingMessage();
+                    return;
+                }
                 final RecOrchestrationResponse orchResponse = (RecOrchestrationResponse) rawResponse;
                 testTab.setOrchestrationResponse(orchResponse);
                 testTab.setRecOrchestrationResponse(orchResponse);

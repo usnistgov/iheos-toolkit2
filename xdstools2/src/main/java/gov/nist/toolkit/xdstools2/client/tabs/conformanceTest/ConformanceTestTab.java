@@ -336,9 +336,11 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner, TestTa
 			public void onComplete(Boolean result) {
 				if (result)
 					orchInit.handleClick(null);   // auto init orchestration
-				else
+				else {
 					displayTestCollection(getMainView().getTestsPanel());
+				}
 			}
+
 		}.run(getCommandContext());
 	}
 
