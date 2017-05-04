@@ -15,7 +15,7 @@ import com.google.gwt.user.client.ui.Anchor;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.Widget;
 import gov.nist.toolkit.desktop.client.TkResources;
-import gov.nist.toolkit.desktop.client.event.EventBus;
+import gov.nist.toolkit.desktop.client.event.TkEventBus;
 import gov.nist.toolkit.desktop.client.event.MenuEvent;
 
 /**
@@ -41,7 +41,7 @@ public class MenuItem extends Composite {
         anchor.addClickHandler(new ClickHandler() {
             @Override
             public void onClick(ClickEvent event) {
-                EventBus.get().fireEvent(new MenuEvent(contentName));
+                TkEventBus.get().fireEvent(new MenuEvent(contentName));
             }
         });
     }

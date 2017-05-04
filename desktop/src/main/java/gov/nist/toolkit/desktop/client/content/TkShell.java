@@ -7,8 +7,9 @@ import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.ResizeComposite;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.user.datepicker.client.DateBox;
-import gov.nist.toolkit.desktop.client.event.EventBus;
 import gov.nist.toolkit.desktop.client.event.StatusEvent;
+import gov.nist.toolkit.desktop.client.event.TkEventBus;
+import gov.nist.toolkit.desktop.client.injection.TkGInjector;
 import gov.nist.toolkit.desktop.client.widget.ContentPanel;
 import gov.nist.toolkit.desktop.client.widget.Status;
 import gov.nist.toolkit.desktop.client.widget.ToolPanel;
@@ -19,6 +20,8 @@ import java.util.logging.Logger;
  *
  */
 public class TkShell extends ResizeComposite implements StatusEvent.StatusHandler {
+    private static final TkGInjector INJECTOR = TkGInjector.INSTANCE;
+    private final TkEventBus eventBus = INJECTOR.getEventBus();
 
     private static final Logger log = Logger.getLogger(TkShell.class.getName());
 
@@ -50,8 +53,8 @@ public class TkShell extends ResizeComposite implements StatusEvent.StatusHandle
         tool.addButton("Reset");
         contentPanel.addTab("Tool", tool);
 
-        EventBus.get().addHandler(StatusEvent.TYPE, this);
-        EventBus.get().fireEvent(new StatusEvent("your message"));
+        TkEventBus.get().addHandler(StatusEvent.TYPE, this);
+        TkEventBus.get().fireEvent(new StatusEvent("your message"));
         log.info("Module loaded. BaseURL - " + GWT.getModuleBaseURL());
     }
 

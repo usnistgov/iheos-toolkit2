@@ -10,7 +10,7 @@ import com.google.gwt.user.client.ui.ResizeComposite;
 import com.google.gwt.user.client.ui.TabLayoutPanel;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.user.datepicker.client.DateBox;
-import gov.nist.toolkit.desktop.client.event.EventBus;
+import gov.nist.toolkit.desktop.client.event.TkEventBus;
 import gov.nist.toolkit.desktop.client.event.MenuEvent;
 
 /**
@@ -26,7 +26,7 @@ public class ContentPanel extends ResizeComposite implements MenuEvent.MenuHandl
 
     public ContentPanel() {
         initWidget(ourUiBinder.createAndBindUi(this));
-        EventBus.get().addHandler(MenuEvent.TYPE, this);
+        TkEventBus.get().addHandler(MenuEvent.TYPE, this);
     }
 
     public void addTab(String text, Composite content) {

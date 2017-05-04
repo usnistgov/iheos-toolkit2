@@ -3,11 +3,14 @@ package gov.nist.toolkit.desktop.client.event;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.shared.SimpleEventBus;
 
+import javax.inject.Inject;
+
 /**
  *
  */
-public class EventBus {
-    private EventBus() {
+public class TkEventBus extends SimpleEventBus {
+    @Inject
+    private TkEventBus() {
     }
 
     private static final SimpleEventBus INSTANCE = GWT
