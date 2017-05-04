@@ -414,6 +414,16 @@ public enum ActorType implements IsSerializable, Serializable {
         return names;
     }
 
+    static public List<String> getActorNamesForConfigurationDisplays() {
+        List<String> names = new ArrayList<String>();
+
+        for (ActorType a : values())
+            if (a.showInConfig())
+                names.add(a.name);
+
+        return names;
+    }
+
     /**
      * Within toolkit, each TransactionType maps to a unique ActorType
      * (as receiver of the transaction). To make this work, transaction
