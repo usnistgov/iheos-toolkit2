@@ -25,6 +25,16 @@
                 <g:center>
                     <f:ContentPanel ui:field="contentPanel" />
                 </g:center>
+                <!--<g:east size="150">-->
+                    <!--<g:LayoutPanel>-->
+                        <!--<g:layer>-->
+                            <!--<f:ContextStackPanel ui:field="contextStack"/>-->
+                        <!--</g:layer>-->
+                        <!--<g:layer top="50%" height="50%">-->
+                            <!--<f:ButtonStackPanel ui:field="buttonStack"/>-->
+                        <!--</g:layer>-->
+                    <!--</g:LayoutPanel>-->
+                <!--</g:east>-->
             </g:SplitLayoutPanel>
         </g:center>
     </g:DockLayoutPanel>

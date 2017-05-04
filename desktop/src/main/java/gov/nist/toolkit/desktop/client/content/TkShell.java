@@ -11,6 +11,7 @@ import gov.nist.toolkit.desktop.client.event.EventBus;
 import gov.nist.toolkit.desktop.client.event.StatusEvent;
 import gov.nist.toolkit.desktop.client.widget.ContentPanel;
 import gov.nist.toolkit.desktop.client.widget.Status;
+import gov.nist.toolkit.desktop.client.widget.ToolPanel;
 
 import java.util.logging.Logger;
 
@@ -42,6 +43,13 @@ public class TkShell extends ResizeComposite implements StatusEvent.StatusHandle
 //        if (!GWT.isProdMode()) {
             contentPanel.addTab("Log", new LogTab());
 //        }
+
+        ToolPanel tool = new ToolPanel();
+        tool.addMain(new Label("main"));
+        tool.addContext(new Label("Environment"));
+        tool.addButton("Reset");
+        contentPanel.addTab("Tool", tool);
+
         EventBus.get().addHandler(StatusEvent.TYPE, this);
         EventBus.get().fireEvent(new StatusEvent("your message"));
         log.info("Module loaded. BaseURL - " + GWT.getModuleBaseURL());
