@@ -163,7 +163,7 @@ public class SimCommon {
 	 * Writes the log from a GWTErrorRecorder to file
 	 * @throws IOException
 	 */
-	void generateLog() throws IOException {
+	void generateXMLLog() throws IOException {
 		if (mvc == null || db == null)
 			return;
 		StringBuffer buf = new StringBuffer();
@@ -182,7 +182,7 @@ public class SimCommon {
 	}
 
 	// New function. Writes the log from an XMLErrorRecorder to file (instead of SimCommon context used in GWTErrorRecorder)
-	void generateLog(ErrorRecorder er) throws IOException {
+	void generateXMLLog(ErrorRecorder er) throws IOException {
 		Io.stringToFile(db.getXmlLogFile(), er.toString());
 	}
 
