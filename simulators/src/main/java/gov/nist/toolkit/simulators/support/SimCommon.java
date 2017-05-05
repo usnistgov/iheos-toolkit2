@@ -178,13 +178,12 @@ public class SimCommon {
 				buf.append(ger);
 			}
 		}
-		Io.stringToFile(db.getLogFile(), buf.toString());
+		Io.stringToFile(db.getTxtLogFile(), buf.toString());
 	}
 
-	//TODO this is a new function - Diane
-	// Writes the log from a GWTErrorRecorder to file (instead of SimCommon context)
+	// New function. Writes the log from an XMLErrorRecorder to file (instead of SimCommon context used in GWTErrorRecorder)
 	void generateLog(ErrorRecorder er) throws IOException {
-		Io.stringToFile(db.getLogFile(), er.toString());
+		Io.stringToFile(db.getXmlLogFile(), er.toString());
 	}
 
 	/**

@@ -608,8 +608,12 @@ public class SimDb {
 		return Io.bytesFromFile(f);
 	}
 
-	public File getLogFile() {
+	public File getTxtLogFile() {
 		return new File(getDBFilePrefix(event) + File.separator + "log.txt");
+	}
+
+	public File getXmlLogFile() {
+		return new File(getDBFilePrefix(event) + File.separator + "log.xml");
 	}
 	
 	public void getMessageLogZip(OutputStream os, String event) throws IOException {
@@ -685,7 +689,7 @@ public class SimDb {
 		return new File(dir + File.separator + "response_body.txt");
 	}
 
-	public File getLogFile(SimId simid, String actor, String trans, String event) {
+	public File getTxtLogFile(SimId simid, String actor, String trans, String event) {
 		File dir = findEventDir(trans, event);
 		if (dir == null)
 			return null;

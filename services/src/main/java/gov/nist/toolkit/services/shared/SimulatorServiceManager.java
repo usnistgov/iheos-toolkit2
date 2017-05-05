@@ -231,7 +231,7 @@ public class SimulatorServiceManager extends CommonService {
 			if (actor == null)
 				actor = db.getSimulatorActorType().toString();
 
-			File logFile = db.getLogFile(simid, actor, trans, event);
+			File logFile = db.getTxtLogFile(simid, actor, trans, event);
 
 			return Io.stringFromFile(logFile);
 		} catch (Exception e) {
