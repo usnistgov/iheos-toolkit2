@@ -540,7 +540,7 @@ public class DsSimCommon {
                     this.writeAttachments(simCommon.os, er);
                     simCommon.os.write(getTrailer().toString().getBytes());
                 }
-                simCommon.generateXMLLog();
+                simCommon.generateGWTLog();
 //            SimulatorConfigElement callbackElement = getSimulatorConfig().getRetrievedDocumentsModel(SimulatorConfig.TRANSACTION_NOTIFICATION_URI);
 //            if (callbackElement != null) {
 //                String callbackURI = callbackElement.asString();

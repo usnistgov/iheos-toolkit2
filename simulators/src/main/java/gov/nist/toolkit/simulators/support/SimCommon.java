@@ -163,7 +163,7 @@ public class SimCommon {
 	 * Writes the log from a GWTErrorRecorder to file
 	 * @throws IOException
 	 */
-	void generateXMLLog() throws IOException {
+	void generateGWTLog() throws IOException {
 		if (mvc == null || db == null)
 			return;
 		StringBuffer buf = new StringBuffer();
