@@ -1,4 +1,4 @@
-package gov.nist.toolkit.desktop.client.widget;
+package gov.nist.toolkit.desktop.client.modules.tool;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.uibinder.client.UiBinder;
@@ -7,11 +7,13 @@ import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.DockLayoutPanel;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Widget;
+import gov.nist.toolkit.desktop.client.widget.ButtonStackPanel;
+import gov.nist.toolkit.desktop.client.widget.ContextStackPanel;
 
 /**
  *
  */
-public class ToolPanel extends Composite {
+public class ToolPanel extends Composite implements ToolPresenter.MyView {
     interface ToolPanelUiBinder extends UiBinder<DockLayoutPanel, ToolPanel> {
     }
 
@@ -30,15 +32,15 @@ public class ToolPanel extends Composite {
         initWidget(ourUiBinder.createAndBindUi(this));
     }
 
-    public void addMain(Widget widget) {
+    void addMain(Widget widget) {
         main.add(widget);
     }
 
-    public void addContext(Widget widget) {
+    void addContext(Widget widget) {
         contextStack.add(widget);
     }
 
-    public void addButton(String text) {
+    void addButton(String text) {
         buttonStack.addButton(text);
     }
 }
