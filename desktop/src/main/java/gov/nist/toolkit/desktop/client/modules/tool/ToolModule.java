@@ -22,6 +22,7 @@ public class ToolModule {
 
     @Inject
     public ToolModule() {
+        assert(false);
         assert(v != null);
         assert(p != null);
         p.init(v);

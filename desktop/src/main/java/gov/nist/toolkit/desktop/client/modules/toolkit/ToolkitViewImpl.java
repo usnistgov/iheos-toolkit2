@@ -1,4 +1,4 @@
-package gov.nist.toolkit.desktop.client.widget;
+package gov.nist.toolkit.desktop.client.modules.toolkit;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.logical.shared.CloseEvent;
@@ -10,21 +10,25 @@ import com.google.gwt.user.client.ui.ResizeComposite;
 import com.google.gwt.user.client.ui.TabLayoutPanel;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.user.datepicker.client.DateBox;
-import gov.nist.toolkit.desktop.client.event.TkEventBus;
 import gov.nist.toolkit.desktop.client.event.MenuEvent;
+import gov.nist.toolkit.desktop.client.event.TkEventBus;
+import gov.nist.toolkit.desktop.client.widget.ClosePanel;
 
 /**
  *
  */
-public class ContentPanel extends ResizeComposite implements MenuEvent.MenuHandler, CloseHandler<ClosePanel> {
-    interface ContentPanelUiBinder extends UiBinder<Widget, ContentPanel> {}
+public class ToolkitViewImpl extends ResizeComposite implements ToolkitView, ToolkitPresenter.Display, MenuEvent.MenuHandler, CloseHandler<ClosePanel> {
+    interface ToolkitUiBinder extends UiBinder<Widget, ToolkitViewImpl> {}
 
-    private static ContentPanelUiBinder ourUiBinder = GWT.create(ContentPanelUiBinder.class);
+    private static ToolkitUiBinder ourUiBinder = GWT.create(ToolkitUiBinder.class);
+
+    private Presenter presenter;
+    private String name;
 
     @UiField
     TabLayoutPanel tab;
 
-    public ContentPanel() {
+    public ToolkitViewImpl() {
         initWidget(ourUiBinder.createAndBindUi(this));
         TkEventBus.get().addHandler(MenuEvent.TYPE, this);
     }
@@ -48,5 +52,15 @@ public class ContentPanel extends ResizeComposite implements MenuEvent.MenuHandl
         if (tab.getWidgetCount() > 1) {
             event.getTarget().removeFromParent();
         }
+    }
+
+    @Override
+    public void setPresenter(Presenter presenter) {
+        this.presenter = presenter;
+    }
+
+    @Override
+    public void setName(String name) {
+        this.name = name;
     }
 }

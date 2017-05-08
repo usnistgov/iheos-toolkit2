@@ -1,6 +1,7 @@
 <ui:UiBinder xmlns:ui='urn:ui:com.google.gwt.uibinder'
              xmlns:g='urn:import:com.google.gwt.user.client.ui'
-             xmlns:f="urn:import:gov.nist.toolkit.desktop.client.widget">
+             xmlns:f="urn:import:gov.nist.toolkit.desktop.client.widget"
+             xmlns:toolkit="urn:import:gov.nist.toolkit.desktop.client.modules.toolkit">
 
     <g:DockLayoutPanel unit='PCT'>
         <g:north size="5">
@@ -23,7 +24,7 @@
                     <f:MenuBar ui:field="menuBar" />
                 </g:west>
                 <g:center>
-                    <f:ContentPanel ui:field="contentPanel" />
+                    <toolkit:ToolkitViewImpl ui:field="contentPanel" />
                 </g:center>
                 <!--<g:east size="150">-->
                     <!--<g:LayoutPanel>-->

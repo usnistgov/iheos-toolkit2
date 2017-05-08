@@ -19,7 +19,7 @@
   <!-- Other module inherits                                      -->
 
   <!-- Specify the app entry point class.                         -->
-  <entry-point class='gov.nist.toolkit.desktop.client.Desktop' />
+  <entry-point class='gov.nist.toolkit.desktop.client.ToolkitMVP' />
 
   <!--<stylesheet src="desktop.css"/>-->
 
@@ -27,6 +27,10 @@
   <set-property name="gwt.logging.logLevel" value="INFO" />
   <set-property name="gwt.logging.enabled" value="TRUE" />
   <!--<set-property name="gwt.logging.popupHandler" value="DISABLED" />-->
+
+  <replace-with class="gov.nist.toolkit.desktop.client.ClientFactoryImpl">
+    <when-type-is class="gov.nist.toolkit.desktop.client.ClientFactory"/>
+  </replace-with>
 
   <!-- Specify the paths for translatable code                    -->
   <source path='client' />
