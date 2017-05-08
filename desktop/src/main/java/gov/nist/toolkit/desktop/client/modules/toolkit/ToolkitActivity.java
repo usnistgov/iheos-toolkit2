@@ -6,7 +6,6 @@ import com.google.gwt.place.shared.Place;
 import com.google.gwt.user.client.ui.AcceptsOneWidget;
 import com.google.inject.Inject;
 import gov.nist.toolkit.desktop.client.ClientFactory;
-import gov.nist.toolkit.desktop.client.root.ToolkitPlace;
 
 /**
  * This is the most basic Activity  - an empty toolkit display (no open tools)

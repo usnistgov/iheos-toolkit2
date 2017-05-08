@@ -2,7 +2,7 @@ package gov.nist.toolkit.desktop.client;
 
 import com.google.gwt.place.shared.PlaceHistoryMapper;
 import com.google.gwt.place.shared.WithTokenizers;
-import gov.nist.toolkit.desktop.client.root.ToolkitPlace;
+import gov.nist.toolkit.desktop.client.modules.toolkit.ToolkitPlace;
 
 /**
  * Monitors PlaceChangeEvents and History events and keep them in sync.

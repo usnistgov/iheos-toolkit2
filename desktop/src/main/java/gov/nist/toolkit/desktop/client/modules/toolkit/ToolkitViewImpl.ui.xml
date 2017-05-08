@@ -1,6 +1,6 @@
 <ui:UiBinder xmlns:ui='urn:ui:com.google.gwt.uibinder'
              xmlns:g='urn:import:com.google.gwt.user.client.ui'
-             >
+             xmlns:f="urn:import:gov.nist.toolkit.desktop.client.modules.toolkit.menu">
 
 
     <g:DockLayoutPanel unit='PCT'>
@@ -21,7 +21,7 @@
         <g:center>
             <g:SplitLayoutPanel ui:field="split">
                 <g:west size="150">
-                    <g:Label>Menu Placeholder</g:Label>
+                    <f:MenuBar ui:field="menuBar" />
                 </g:west>
                 <g:center>
                     <g:TabLayoutPanel ui:field="tab" barHeight="30" barUnit="PX"

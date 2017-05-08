@@ -19,7 +19,7 @@
   <!-- Other module inherits                                      -->
 
   <!-- Specify the app entry point class.                         -->
-  <entry-point class='gov.nist.toolkit.desktop.client.ToolkitMVP' />
+  <entry-point class='gov.nist.toolkit.desktop.client.modules.toolkit.ToolkitMVP' />
 
   <!--<stylesheet src="desktop.css"/>-->
 

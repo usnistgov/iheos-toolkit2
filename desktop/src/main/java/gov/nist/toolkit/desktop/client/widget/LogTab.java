@@ -1,4 +1,4 @@
-package gov.nist.toolkit.desktop.client.content;
+package gov.nist.toolkit.desktop.client.widget;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.logging.client.HasWidgetsLogHandler;

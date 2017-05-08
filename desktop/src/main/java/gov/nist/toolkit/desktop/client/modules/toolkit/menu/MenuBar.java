@@ -1,4 +1,4 @@
-package gov.nist.toolkit.desktop.client.widget;
+package gov.nist.toolkit.desktop.client.modules.toolkit.menu;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.uibinder.client.UiBinder;

@@ -1,4 +1,4 @@
-package gov.nist.toolkit.desktop.client.root;
+package gov.nist.toolkit.desktop.client.modules.toolkit;
 
 import com.google.gwt.place.shared.Place;
 import com.google.gwt.place.shared.PlaceTokenizer;

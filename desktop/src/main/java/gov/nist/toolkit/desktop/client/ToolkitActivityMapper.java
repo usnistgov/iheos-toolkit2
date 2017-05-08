@@ -1,12 +1,11 @@
-package gov.nist.toolkit.desktop.client.utils;
+package gov.nist.toolkit.desktop.client;
 
 import com.google.gwt.activity.shared.AbstractActivity;
 import com.google.gwt.activity.shared.Activity;
 import com.google.gwt.activity.shared.ActivityMapper;
 import com.google.gwt.place.shared.Place;
-import gov.nist.toolkit.desktop.client.ClientFactory;
 import gov.nist.toolkit.desktop.client.modules.toolkit.ToolkitActivity;
-import gov.nist.toolkit.desktop.client.root.ToolkitPlace;
+import gov.nist.toolkit.desktop.client.modules.toolkit.ToolkitPlace;
 
 import javax.inject.Inject;
 

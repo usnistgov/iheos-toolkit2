@@ -1,4 +1,4 @@
-package gov.nist.toolkit.desktop.client;
+package gov.nist.toolkit.desktop.client.modules.toolkit;
 
 import com.google.gwt.activity.shared.ActivityManager;
 import com.google.gwt.activity.shared.ActivityMapper;
@@ -10,8 +10,9 @@ import com.google.gwt.place.shared.PlaceController;
 import com.google.gwt.place.shared.PlaceHistoryHandler;
 import com.google.gwt.user.client.ui.RootLayoutPanel;
 import com.google.gwt.user.client.ui.SimpleLayoutPanel;
-import gov.nist.toolkit.desktop.client.root.ToolkitPlace;
-import gov.nist.toolkit.desktop.client.utils.ToolkitActivityMapper;
+import gov.nist.toolkit.desktop.client.ClientFactory;
+import gov.nist.toolkit.desktop.client.ToolkitPlaceHistoryMapper;
+import gov.nist.toolkit.desktop.client.ToolkitActivityMapper;
 
 /**
  * Entry point class
