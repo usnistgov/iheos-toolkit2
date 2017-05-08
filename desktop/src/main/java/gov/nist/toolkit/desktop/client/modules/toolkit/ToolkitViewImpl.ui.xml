@@ -1,6 +1,37 @@
 <ui:UiBinder xmlns:ui='urn:ui:com.google.gwt.uibinder'
              xmlns:g='urn:import:com.google.gwt.user.client.ui'
-             xmlns:f="urn:import:gov.nist.toolkit.desktop.client.widget">
-    <g:TabLayoutPanel ui:field="tab" barHeight="30" barUnit="PX"
-                      animationDuration="500"/>
+             >
+
+
+    <g:DockLayoutPanel unit='PCT'>
+        <g:north size='5'>
+            <g:LayoutPanel>
+                <g:layer left="90%" width="10%" top="25%" height="75%">
+                    <g:Label ui:field="logoLabel" text="Toolkit"/>
+                </g:layer>
+            </g:LayoutPanel>
+        </g:north>
+        <g:south size='3'>
+            <g:LayoutPanel>
+                <g:layer>
+                    <g:Label>Status Placeholder</g:Label>
+                </g:layer>
+            </g:LayoutPanel>
+        </g:south>
+        <g:center>
+            <g:SplitLayoutPanel ui:field="split">
+                <g:west size="150">
+                    <g:Label>Menu Placeholder</g:Label>
+                </g:west>
+                <g:center>
+                    <g:TabLayoutPanel ui:field="tab" barHeight="30" barUnit="PX"
+                                      animationDuration="500"/>
+                </g:center>
+            </g:SplitLayoutPanel>
+        </g:center>
+    </g:DockLayoutPanel>
+
+
+
+
 </ui:UiBinder>

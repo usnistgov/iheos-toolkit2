@@ -8,8 +8,8 @@ import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.place.shared.Place;
 import com.google.gwt.place.shared.PlaceController;
 import com.google.gwt.place.shared.PlaceHistoryHandler;
-import com.google.gwt.user.client.ui.RootPanel;
-import com.google.gwt.user.client.ui.SimplePanel;
+import com.google.gwt.user.client.ui.RootLayoutPanel;
+import com.google.gwt.user.client.ui.SimpleLayoutPanel;
 import gov.nist.toolkit.desktop.client.root.ToolkitPlace;
 import gov.nist.toolkit.desktop.client.utils.ToolkitActivityMapper;
 
@@ -18,7 +18,7 @@ import gov.nist.toolkit.desktop.client.utils.ToolkitActivityMapper;
  */
 public class ToolkitMVP implements EntryPoint {
   private Place defaultPlace = new ToolkitPlace("XDS Toolkit");
-  private SimplePanel appWidget = new SimplePanel();
+  private SimpleLayoutPanel appWidget = new SimpleLayoutPanel();
   /**
    * This is the entry point method.
    */
@@ -37,7 +37,7 @@ public class ToolkitMVP implements EntryPoint {
     PlaceHistoryHandler historyHandler = new PlaceHistoryHandler(historyMapper);
     historyHandler.register(placeController, eventBus, defaultPlace);
 
-    RootPanel.get().add(appWidget);
+    RootLayoutPanel.get().add(appWidget);
 
     // Goes to the place represented on URL else default place
     historyHandler.handleCurrentHistory();
