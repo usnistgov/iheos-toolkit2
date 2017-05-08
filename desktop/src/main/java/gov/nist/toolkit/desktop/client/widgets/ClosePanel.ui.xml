@@ -1,0 +1,11 @@
+<ui:UiBinder xmlns:ui='urn:ui:com.google.gwt.uibinder'
+             xmlns:g='urn:import:com.google.gwt.user.client.ui'>
+
+    <ui:with type="gov.nist.toolkit.desktop.client.framework.TkResources" field="resource" />
+
+    <g:HorizontalPanel>
+        <g:HTML ui:field="html" />
+        <g:Image resource="{resource.blank}" width="15px" />
+        <g:Image ui:field="close" resource="{resource.close}" />
+    </g:HorizontalPanel>
+</ui:UiBinder>

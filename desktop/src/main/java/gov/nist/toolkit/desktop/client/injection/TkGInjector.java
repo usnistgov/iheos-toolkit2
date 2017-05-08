@@ -5,9 +5,9 @@ import com.google.gwt.core.shared.GWT;
 import com.google.gwt.inject.client.GinModules;
 import com.google.gwt.inject.client.Ginjector;
 import com.google.gwt.place.shared.PlaceController;
-import gov.nist.toolkit.desktop.client.event.TkEventBus;
-import gov.nist.toolkit.desktop.client.modules.toolkit.ToolkitActivity;
-import gov.nist.toolkit.desktop.client.modules.toolkit.ToolkitViewImpl;
+import gov.nist.toolkit.desktop.client.events.TkEventBus;
+import gov.nist.toolkit.desktop.client.toolkit.ToolkitActivity;
+import gov.nist.toolkit.desktop.client.toolkit.ToolkitViewImpl;
 
 /**
  *

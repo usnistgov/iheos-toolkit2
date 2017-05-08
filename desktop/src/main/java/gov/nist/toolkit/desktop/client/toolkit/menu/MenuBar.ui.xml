@@ -1,0 +1,121 @@
+<ui:UiBinder xmlns:ui='urn:ui:com.google.gwt.uibinder'
+             xmlns:g='urn:import:com.google.gwt.user.client.ui'
+             xmlns:f="urn:import:gov.nist.toolkit.desktop.client.widgets"
+             xmlns:toolkit="urn:import:gov.nist.toolkit.desktop.client.toolkit"
+             xmlns:menu="urn:import:gov.nist.toolkit.desktop.client.toolkit.menu">
+
+    <ui:with type="gov.nist.toolkit.desktop.client.framework.TkResources" field="resource" />
+
+    <g:StackLayoutPanel unit="EM">
+
+
+        <g:stack>
+            <g:customHeader size='1.8'>
+                <menu:MenuHeader text="Manage" imageResource="{resource.menu}" />
+            </g:customHeader>
+            <g:LayoutPanel>
+                <g:layer left='0.5em' width='10em' top='0.5em'
+                         height='3em'>
+                    <menu:MenuItem contentName="Toolkit" text="Toolkit"
+                                   imageResource="{resource.menu}" />
+                </g:layer>
+                <!-- top increment by 1.8 -->
+                <g:layer left='0.5em' width='10em' top='2.3em'
+                         height='3em'>
+                    <menu:MenuItem contentName="Systems"
+                                   text="Systems"
+                                   imageResource="{resource.menu}" />
+                </g:layer>
+                <!-- top increment by 1.8 -->
+                <g:layer left='0.5em' width='10em' top='4.1em'
+                         height='3em'>
+                    <menu:MenuItem contentName="Simulators"
+                                   text="Simulators"
+                                   imageResource="{resource.menu}" />
+                </g:layer>
+                <!-- top increment by 1.8 -->
+                <g:layer left='0.5em' width='10em' top='5.9em'
+                         height='3em'>
+                    <menu:MenuItem contentName="Patients"
+                                   text="Patients"
+                                   imageResource="{resource.menu}" />
+                </g:layer>
+            </g:LayoutPanel>
+        </g:stack>
+
+
+        <g:stack>
+            <g:customHeader size='1.8'>
+                <menu:MenuHeader text="Query/Retrieve"
+                                 imageResource="{resource.menu}" />
+            </g:customHeader>
+            <g:LayoutPanel>
+                <g:layer left='0.5em' width='10em' top='0.5em'
+                         height='3em'>
+                    <menu:MenuItem contentName="FindDocuments"
+                                   text="FindDocuments"
+                                   imageResource="{resource.menu}" />
+                </g:layer>
+            </g:LayoutPanel>
+        </g:stack>
+
+        <g:stack>
+            <g:customHeader size='1.8'>
+                <menu:MenuHeader text="Testing"
+                                 imageResource="{resource.menu}" />
+            </g:customHeader>
+            <g:LayoutPanel>
+                <g:layer left='0.5em' width='10em' top='0.5em'
+                         height='3em'>
+                    <menu:MenuItem contentName="Conformance"
+                                   text="Conformance"
+                                   imageResource="{resource.menu}" />
+                </g:layer>
+            </g:LayoutPanel>
+        </g:stack>
+
+
+        <g:stack>
+            <g:customHeader size='1.8'>
+                <menu:MenuHeader text="Profiles"
+                                 imageResource="{resource.menu}" />
+            </g:customHeader>
+            <g:LayoutPanel>
+                <g:layer left='0.5em' width='10em' top='0.5em'
+                         height='3em'>
+                    <menu:MenuItem contentName="XDS"
+                                   text="XDS"
+                                   imageResource="{resource.menu}" />
+                </g:layer>
+                <!-- top increment by 1.8 -->
+                <g:layer left='0.5em' width='10em' top='2.3em'
+                         height='3em'>
+                    <menu:MenuItem contentName="XCA"
+                                   text="XCA"
+                                   imageResource="{resource.menu}" />
+                </g:layer>
+                <!-- top increment by 1.8 -->
+                <g:layer left='0.5em' width='10em' top='4.1em'
+                         height='3em'>
+                    <menu:MenuItem contentName="XDR"
+                                   text="XDR"
+                                   imageResource="{resource.menu}" />
+                </g:layer>
+                <!-- top increment by 1.8 -->
+                <g:layer left='0.5em' width='10em' top='5.9em'
+                         height='3em'>
+                    <menu:MenuItem contentName="XDS-I"
+                                   text="XDS-I"
+                                   imageResource="{resource.menu}" />
+                </g:layer>
+                <!-- top increment by 1.8 -->
+                <g:layer left='0.5em' width='10em' top='7.7em'
+                         height='3em'>
+                    <menu:MenuItem contentName="XCA-I"
+                                   text="XCA-I"
+                                   imageResource="{resource.menu}" />
+                </g:layer>
+            </g:LayoutPanel>
+        </g:stack>
+    </g:StackLayoutPanel>
+</ui:UiBinder>

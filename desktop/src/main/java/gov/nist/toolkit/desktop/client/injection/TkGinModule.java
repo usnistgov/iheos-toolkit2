@@ -5,7 +5,7 @@ import com.google.gwt.place.shared.PlaceController;
 import com.google.inject.Inject;
 import com.google.inject.Provider;
 import com.google.inject.Singleton;
-import gov.nist.toolkit.desktop.client.event.TkEventBus;
+import gov.nist.toolkit.desktop.client.events.TkEventBus;
 
 /**
  *
