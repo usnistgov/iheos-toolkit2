@@ -136,6 +136,10 @@ public class DsSimCommon {
         }
     }
 
+    /**
+     * One more separate ErrorRecorder to store the output of a Registry Simulator
+     * @param er
+     */
     public void sendErrorsInRegistryResponse(ErrorRecorder er) {
         if (er == null)
             er = new GwtErrorRecorderBuilder().buildNewErrorRecorder();
@@ -557,7 +561,8 @@ public class DsSimCommon {
             logger.info("er instance of XMLErrorRecorder");
 
             try {
-                simCommon.generateXMLLog(er);
+                 simCommon.generateXMLLog(er);
+               // simCommon.generateGWTLog();
             } catch (IOException e) {
                 logger.fatal(ExceptionUtil.exception_details(e));
             }

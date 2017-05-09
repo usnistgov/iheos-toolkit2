@@ -173,12 +173,18 @@ public class SimCommon {
 			ValidationStep step = steps.nextElement();
 			buf.append(step).append("\n");
 			ErrorRecorder er = step.getErrorRecorder();
+
+			// TODO not sure what this does. Appends nested ER outputs?
 			if (er instanceof GwtErrorRecorder) {
 				GwtErrorRecorder ger = (GwtErrorRecorder) er;
 				buf.append(ger);
 			}
+			if (er instanceof XMLErrorRecorder) {
+				XMLErrorRecorder xer = (XMLErrorRecorder) er;
+				buf.append(xer);
+			}
 		}
-		Io.stringToFile(db.getTxtLogFile(), buf.toString());
+		Io.stringToFile(db.getLogFile(), buf.toString());
 	}
 
 	// New function. Writes the log from an XMLErrorRecorder to file (instead of SimCommon context used in GWTErrorRecorder)

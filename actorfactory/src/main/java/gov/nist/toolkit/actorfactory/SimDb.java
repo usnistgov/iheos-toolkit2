@@ -1,10 +1,14 @@
 package gov.nist.toolkit.actorfactory;
 
-import gov.nist.toolkit.actorfactory.client.*;
+import gov.nist.toolkit.actorfactory.client.BadSimIdException;
+import gov.nist.toolkit.actorfactory.client.NoSimException;
+import gov.nist.toolkit.actorfactory.client.SimId;
+import gov.nist.toolkit.actorfactory.client.SimulatorConfig;
 import gov.nist.toolkit.actortransaction.client.ActorType;
 import gov.nist.toolkit.actortransaction.client.TransactionInstance;
-import gov.nist.toolkit.configDatatypes.client.TransactionType;
 import gov.nist.toolkit.configDatatypes.client.Pid;
+import gov.nist.toolkit.configDatatypes.client.TransactionType;
+import gov.nist.toolkit.errorrecording.SelectedErrorRecorder;
 import gov.nist.toolkit.http.HttpHeader.HttpHeaderParseException;
 import gov.nist.toolkit.http.HttpMessage;
 import gov.nist.toolkit.http.HttpParseException;
@@ -608,12 +612,35 @@ public class SimDb {
 		return Io.bytesFromFile(f);
 	}
 
-	public File getTxtLogFile() {
+	public File getLogFile() {
 		return new File(getDBFilePrefix(event) + File.separator + "log.txt");
 	}
 
 	public File getXmlLogFile() {
 		return new File(getDBFilePrefix(event) + File.separator + "log.xml");
+	}
+
+	/**
+	 * Get text log file by simulator ID
+	 * @param simid
+	 * @param actor
+	 * @param trans
+	 * @param event
+	 * @return
+	 */
+	public File getLogFile(SimId simid, String actor, String trans, String event) {
+		File dir = findEventDir(trans, event);
+		if (dir == null)
+			return null;
+
+		if (SelectedErrorRecorder.getSelectedErrorRecorder().getType().equals(SelectedErrorRecorder.ErrorRecorderType.XML_ERROR_RECORDER)){
+			return new File(dir + File.separator + "log.xml");
+		}
+		if (SelectedErrorRecorder.getSelectedErrorRecorder().getType().equals(SelectedErrorRecorder.ErrorRecorderType.GWT_ERROR_RECORDER)){
+			return new File(dir + File.separator + "log.txt");
+		}
+		// TODO Handle error case
+		return new File(dir + File.separator + "log.txt");
 	}
 	
 	public void getMessageLogZip(OutputStream os, String event) throws IOException {
@@ -687,13 +714,6 @@ public class SimDb {
 		if (dir == null)
 			return null;
 		return new File(dir + File.separator + "response_body.txt");
-	}
-
-	public File getTxtLogFile(SimId simid, String actor, String trans, String event) {
-		File dir = findEventDir(trans, event);
-		if (dir == null)
-			return null;
-		return new File(dir + File.separator + "log.txt");
 	}
 
 	public List<String> getRegistryIds(String simid, String actor, String trans, String event) {

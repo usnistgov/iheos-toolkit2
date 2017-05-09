@@ -61,7 +61,7 @@ public class TestKitLog {
 		} else
 			path = new File(testLog + File.separator + "log.xml");
 
-		System.out.println("getTxtLogFile");
+		System.out.println("getLogFile");
 		System.out.println("   testlog is " + testLog);
 		System.out.println("   testspec is " + testPlan);
 		System.out.println("   log file is " + path);

@@ -222,8 +222,7 @@ public class SimulatorServiceManager extends CommonService {
 		}
 	}
 
-	public String getTransactionLog(SimId simid, String actor, String trans,
-			String event) {
+	public String getTransactionLog(SimId simid, String actor, String trans, String event) {
 		logger.debug(session.id() + ": " + "getTransactionLog - " + simid + " - " + actor + " - " + trans + " - " + event);
 		try {
 			SimDb db = new SimDb(simid);
@@ -231,7 +230,7 @@ public class SimulatorServiceManager extends CommonService {
 			if (actor == null)
 				actor = db.getSimulatorActorType().toString();
 
-			File logFile = db.getTxtLogFile(simid, actor, trans, event);
+			File logFile = db.getLogFile(simid, actor, trans, event);
 
 			return Io.stringFromFile(logFile);
 		} catch (Exception e) {
