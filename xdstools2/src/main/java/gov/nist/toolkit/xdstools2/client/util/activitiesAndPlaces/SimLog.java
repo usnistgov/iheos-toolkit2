@@ -47,7 +47,7 @@ public class SimLog extends Place {
         }
     }
 
-    String getSimIdString() {
+    public String getSimIdString() {
         return simIdString;
     }
 

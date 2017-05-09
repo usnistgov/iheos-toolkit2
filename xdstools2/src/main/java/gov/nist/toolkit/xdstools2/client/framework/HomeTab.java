@@ -1,13 +1,7 @@
-package gov.nist.toolkit.xdstools2.client.tabs;
+package gov.nist.toolkit.xdstools2.client.framework;
 
-import com.google.gwt.user.client.ui.FlexTable;
-import com.google.gwt.user.client.ui.FlowPanel;
-import com.google.gwt.user.client.ui.Frame;
-import com.google.gwt.user.client.ui.ListBox;
-import com.google.gwt.user.client.ui.Widget;
+import com.google.gwt.user.client.ui.*;
 import gov.nist.toolkit.xdstools2.client.PasswordManagement;
-import gov.nist.toolkit.xdstools2.client.TabContainer;
-import gov.nist.toolkit.xdstools2.client.Xdstools2;
 import gov.nist.toolkit.xdstools2.client.command.command.GetAdminPasswordCommand;
 import gov.nist.toolkit.xdstools2.client.command.command.GetImplementationVersionCommand;
 import gov.nist.toolkit.xdstools2.client.inspector.HyperlinkFactory;

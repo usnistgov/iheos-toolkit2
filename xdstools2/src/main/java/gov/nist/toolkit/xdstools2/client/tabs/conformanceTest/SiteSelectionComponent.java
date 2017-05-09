@@ -8,9 +8,9 @@ import com.google.gwt.user.client.ui.*;
 import gov.nist.toolkit.actortransaction.client.ActorType;
 import gov.nist.toolkit.configDatatypes.client.TransactionType;
 import gov.nist.toolkit.sitemanagement.client.Site;
-import gov.nist.toolkit.xdstools2.client.widgets.HorizontalFlowPanel;
+import gov.nist.toolkit.sitemanagement.client.TransactionOfferings;
 import gov.nist.toolkit.xdstools2.client.StringSort;
-import gov.nist.toolkit.xdstools2.client.Xdstools2;
+import gov.nist.toolkit.xdstools2.client.widgets.HorizontalFlowPanel;
 
 import java.util.*;
 
@@ -22,6 +22,9 @@ public class SiteSelectionComponent extends Composite implements IsWidget, HasVa
     private HorizontalFlowPanel panel = new HorizontalFlowPanel();
     private List<RadioButton> buttons = new ArrayList<>();
     private SiteSelectionComponent me;
+
+    static public TransactionOfferings transactionOfferings = null;
+
 
     public SiteSelectionComponent(ActorType actorType, String testSession) {
         me = this;
@@ -84,6 +87,8 @@ public class SiteSelectionComponent extends Composite implements IsWidget, HasVa
 
     // since to has come over from server and tt was generated here, they
     // don't align hashvalues.  Search must be done the old fashion way
+    // TODO: Loading of transactionOfferings must be brought internal to Conformnace tool
+    //
     private List<Site> findSites(TransactionType tt, boolean tls, String testSession) {
         Map<TransactionType, List<Site>> map;
 
@@ -91,9 +96,9 @@ public class SiteSelectionComponent extends Composite implements IsWidget, HasVa
         String user = testSession;
 
         if (tls)
-            map = Xdstools2.transactionOfferings.tmap;
+            map = transactionOfferings.tmap;
         else
-            map = Xdstools2.transactionOfferings.map;
+            map = transactionOfferings.map;
 
         for (TransactionType t : map.keySet()) {
             if (t.getName().equals(tt.getName())) {

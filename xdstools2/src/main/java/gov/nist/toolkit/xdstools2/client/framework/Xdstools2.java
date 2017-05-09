@@ -1,4 +1,4 @@
-package gov.nist.toolkit.xdstools2.client;
+package gov.nist.toolkit.xdstools2.client.framework;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Style;
@@ -16,22 +16,24 @@ import gov.nist.toolkit.sitemanagement.client.TransactionOfferings;
 import gov.nist.toolkit.tk.client.TkProps;
 import gov.nist.toolkit.xdstools2.client.command.command.GetTransactionOfferingsCommand;
 import gov.nist.toolkit.xdstools2.client.command.command.InitializationCommand;
-import gov.nist.toolkit.xdstools2.client.widgets.PopupMessage;
-import gov.nist.toolkit.xdstools2.shared.command.InitializationResponse;
 import gov.nist.toolkit.xdstools2.client.event.testSession.TestSessionManager2;
+import gov.nist.toolkit.xdstools2.client.initialization.FrameworkSupport;
+import gov.nist.toolkit.xdstools2.client.initialization.FrameworkInitialization;
 import gov.nist.toolkit.xdstools2.client.selectors.EnvironmentManager;
 import gov.nist.toolkit.xdstools2.client.selectors.TestSessionSelector;
 import gov.nist.toolkit.xdstools2.client.tabs.EnvironmentState;
-import gov.nist.toolkit.xdstools2.client.tabs.HomeTab;
 import gov.nist.toolkit.xdstools2.client.tabs.QueryState;
+import gov.nist.toolkit.xdstools2.client.tabs.conformanceTest.SiteSelectionComponent;
 import gov.nist.toolkit.xdstools2.client.tabs.messageValidator.MessageValidatorTab;
 import gov.nist.toolkit.xdstools2.client.util.ClientFactory;
 import gov.nist.toolkit.xdstools2.client.util.ClientUtils;
+import gov.nist.toolkit.xdstools2.client.widgets.PopupMessage;
+import gov.nist.toolkit.xdstools2.shared.command.InitializationResponse;
 
 import java.util.logging.Logger;
 
 
-public class Xdstools2  implements AcceptsOneWidget, IsWidget {
+public class Xdstools2  implements AcceptsOneWidget, IsWidget, FrameworkSupport {
 	public static final int TRAY_SIZE = 190;
 	public static final int TRAY_CTL_BTN_SIZE = 9; // 23
 
@@ -43,17 +45,20 @@ public class Xdstools2  implements AcceptsOneWidget, IsWidget {
 	public SplitLayoutPanel mainSplitPanel = new SplitLayoutPanel(3);
 	private FlowPanel mainMenuPanel = new FlowPanel();
 	static final HomeTab ht = new HomeTab();
+	private  String toolkitBaseUrl = null;
+	private  String wikiBaseUrl = null;
 
 	private HorizontalPanel uiDebugPanel = new HorizontalPanel();
 	boolean UIDebug = false;
 	private boolean displayHomeTab = true;
 
-	public static String toolkitBaseUrl = null;
-	public static String wikiBaseUrl = null;
+//	public static String toolkitBaseUrl = null;
+//	public static String wikiBaseUrl = null;
 
 	private static TkProps props = new TkProps();
 
 	public Xdstools2() {
+		FrameworkInitialization.init(this);
 	}
 
 	static public Xdstools2 getInstance() {
@@ -68,10 +73,10 @@ public class Xdstools2  implements AcceptsOneWidget, IsWidget {
 	// This bus is used for v2 v3 integration that signals v2 launch tab event inside the v3 environment
 	EventBus v2V3IntegrationEventBus = null;
 
-	// This is as toolkit wide singleton.  See class for details.
-	public TestSessionManager2 getTestSessionManager() {
-		return ClientUtils.INSTANCE.getTestSessionManager();
-	}
+//	// This is as toolkit wide singleton.  See class for details.
+//	public TestSessionManager2 getTestSessionManager() {
+//		return ClientUtils.INSTANCE.getTestSessionManager();
+//	}
 
 	// Central storage for parameters shared across all
 	// query type tabs
@@ -80,9 +85,8 @@ public class Xdstools2  implements AcceptsOneWidget, IsWidget {
 		return queryState;
 	}
 
-	static public TransactionOfferings transactionOfferings = null;
 
-	void buildTabsWrapper() {
+	public void buildTabsWrapper() {
 		HorizontalPanel menuPanel = new HorizontalPanel();
 		EnvironmentManager environmentManager = new EnvironmentManager(TabContainer.instance());
 
@@ -111,6 +115,45 @@ public class Xdstools2  implements AcceptsOneWidget, IsWidget {
 			}
 
 		});
+	}
+
+	private String toolkitName;
+
+	@Override
+	public void setToolkitName(String name) {
+		this.toolkitName = name;
+	}
+
+	@Override
+	public String getToolkitName() {
+		return toolkitName;
+	}
+
+	@Override
+	public void setToolkitBaseUrl(String url) {
+		this.toolkitBaseUrl = url;
+	}
+
+	@Override
+	public String getToolkitBaseUrl() {
+		return toolkitBaseUrl;
+	}
+
+	@Override
+	public void setWikiBaseUrl(String url) {
+		this.wikiBaseUrl = url;
+	}
+
+	@Override
+	public String getWikiBaseUrl() {
+		return wikiBaseUrl;
+	}
+
+	public void displayHomeTab() {
+		if (!displayHomeTab)
+			ht.setDisplayTab(false);
+		ht.onTabLoad(false, "Home");
+
 	}
 
 	static public void addtoMainMenu(Widget w) { ME.mainMenuPanel.add(w); }
@@ -250,7 +293,7 @@ public class Xdstools2  implements AcceptsOneWidget, IsWidget {
 		reloadTransactionOfferings();
 	}
 
-	public String toolkitName;
+//	public String toolkitName;
 
 //	private void loadServletContext() {
 //		ht.toolkitService.getServletContextName(new AsyncCallback<String>() {
@@ -266,12 +309,12 @@ public class Xdstools2  implements AcceptsOneWidget, IsWidget {
 //		});
 //	}
 
-	private void reloadTransactionOfferings() {
+	public void reloadTransactionOfferings() {
 		new GetTransactionOfferingsCommand() {
 
 			@Override
 			public void onComplete(TransactionOfferings var1) {
-				transactionOfferings = var1;
+				SiteSelectionComponent.transactionOfferings = var1;
 			}
 		}.run(getHomeTab().getCommandContext());
 	}
@@ -300,5 +343,9 @@ public class Xdstools2  implements AcceptsOneWidget, IsWidget {
 	}
 
 	public static HomeTab getHomeTab() { return ht; }
+
+	public  TestSessionManager2 getTestSessionManager() {
+		return ClientUtils.INSTANCE.getTestSessionManager();
+	}
 
 }

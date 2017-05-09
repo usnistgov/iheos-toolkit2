@@ -1,35 +1,35 @@
-package gov.nist.toolkit.xdstools2.client.util.activitiesAndPlaces;
+package gov.nist.toolkit.xdstools2.client.framework;
 
 import com.google.gwt.activity.shared.AbstractActivity;
 import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.user.client.ui.AcceptsOneWidget;
-import gov.nist.toolkit.xdstools2.client.Xdstools2;
-import gov.nist.toolkit.xdstools2.client.toolLauncher.ToolLauncher;
+import gov.nist.toolkit.xdstools2.client.tabs.FindDocumentsTab;
 
 /**
  * This is the Activity of the application. It handles the tab opening.
  */
-public class ToolActivity extends AbstractActivity {
+public class TestInstanceActivity extends AbstractActivity {
     private Xdstools2 xdstools2view = Xdstools2.getInstance();
-    private String toolId;
+    private String tabId;
 
     @Override
     public void start(AcceptsOneWidget acceptsOneWidget, EventBus eventBus) {
         // TODO the following can be refactored in a specific method such as openTab
-        if(toolId!=null ) {
-            Xdstools2.getInstance().doNotDisplayHomeTab();
+        if(tabId!=null ) {
             // Open required tab
-            new ToolLauncher(toolId).launch();
+            System.out.println("GO TO");
+            if (tabId.equals("1234"))
+                new FindDocumentsTab().onTabLoad(true, null);
             xdstools2view.resizeToolkit();
         }
     }
 
     /**
-     * Method to set open Tool's ID (or to open)
-     * @param toolId
+     * Method to set open Tab's ID (or to open)
+     * @param tabId
      */
-    public void setToolId(String toolId) {
-        this.toolId = toolId;
+    public void setTabId(String tabId) {
+        this.tabId = tabId;
     }
 
     public Xdstools2 getView(){

@@ -3,6 +3,10 @@ package gov.nist.toolkit.xdstools2.client.util.activitiesAndPlaces;
 import com.google.gwt.activity.shared.Activity;
 import com.google.gwt.activity.shared.ActivityMapper;
 import com.google.gwt.place.shared.Place;
+import gov.nist.toolkit.xdstools2.client.framework.ConfActorActivity;
+import gov.nist.toolkit.xdstools2.client.framework.SimLogActivity;
+import gov.nist.toolkit.xdstools2.client.framework.TestInstanceActivity;
+import gov.nist.toolkit.xdstools2.client.framework.ToolActivity;
 import gov.nist.toolkit.xdstools2.client.util.ClientFactory;
 
 /**

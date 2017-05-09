@@ -2,7 +2,6 @@ package gov.nist.toolkit.xdstools2.client.selectors;
 
 import com.google.gwt.event.dom.client.*;
 import com.google.gwt.user.client.ui.*;
-import gov.nist.toolkit.xdstools2.client.Xdstools2;
 import gov.nist.toolkit.xdstools2.client.event.testSession.TestSessionChangedEvent;
 import gov.nist.toolkit.xdstools2.client.event.testSession.TestSessionChangedEventHandler;
 import gov.nist.toolkit.xdstools2.client.event.testSession.TestSessionsUpdatedEvent;

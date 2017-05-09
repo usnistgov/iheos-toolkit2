@@ -44,7 +44,7 @@
     <inherits name="elemental.Elemental"/>
 
     <!-- Specify the app entry point class.                         -->
-    <entry-point class='gov.nist.toolkit.xdstools2.client.Xdstools2EP'/>
+    <entry-point class='gov.nist.toolkit.xdstools2.client.framework.Xdstools2EP'/>
 
 
     <!-- DEBUG STUFF -->

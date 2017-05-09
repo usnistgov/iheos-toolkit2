@@ -2,10 +2,10 @@ package gov.nist.toolkit.xdstools2.client.util;
 
 import com.google.gwt.place.shared.PlaceController;
 import com.google.web.bindery.event.shared.EventBus;
-import gov.nist.toolkit.xdstools2.client.util.activitiesAndPlaces.ConfActorActivity;
-import gov.nist.toolkit.xdstools2.client.util.activitiesAndPlaces.SimLogActivity;
-import gov.nist.toolkit.xdstools2.client.util.activitiesAndPlaces.TestInstanceActivity;
-import gov.nist.toolkit.xdstools2.client.util.activitiesAndPlaces.ToolActivity;
+import gov.nist.toolkit.xdstools2.client.framework.ConfActorActivity;
+import gov.nist.toolkit.xdstools2.client.framework.SimLogActivity;
+import gov.nist.toolkit.xdstools2.client.framework.TestInstanceActivity;
+import gov.nist.toolkit.xdstools2.client.framework.ToolActivity;
 
 /**
  * This is a factory that provides references to objects needed
