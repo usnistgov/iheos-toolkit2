@@ -21,6 +21,11 @@ import spock.lang.Shared
  *    All the self tests will run
  */
 class StoredQuerySpec extends ToolkitSpecification {
+
+    // TODO there is an issue with this test. Every other time the test succeeds and every other time the two SQ tests
+    // TODO - fail regardless of data used. Should delete then recreate the simulator at the beginning.
+
+
     @Shared SimulatorBuilder spi
 
 

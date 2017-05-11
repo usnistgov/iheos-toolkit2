@@ -109,7 +109,8 @@ public class RegistryActorSimulator extends BaseDsActorSimulator {
 
 			if (!dsSimCommon.runInitialValidationsAndFaultIfNecessary())
 				return false;  // returns if SOAP Fault was generated
-			
+
+			// This is where the output is returned
 			if (mvc.hasErrors()) {
 				if (generateResponse)
 				dsSimCommon.sendErrorsInRegistryResponse(er);

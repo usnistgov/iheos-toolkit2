@@ -2,15 +2,15 @@ package gov.nist.toolkit.simulators.support;
 
 import gov.nist.toolkit.actorfactory.client.SimulatorConfig;
 import gov.nist.toolkit.commondatatypes.MetadataSupport;
+import gov.nist.toolkit.errorrecording.ErrorRecorder;
 import gov.nist.toolkit.errorrecording.SelectedErrorRecorder;
 import gov.nist.toolkit.errorrecording.common.XdsErrorCode;
-import gov.nist.toolkit.errorrecording.xml.XMLErrorRecorder;
-import gov.nist.toolkit.errorrecording.xml.XMLErrorRecorderBuilder;
-import gov.nist.toolkit.errorrecording.ErrorRecorder;
 import gov.nist.toolkit.errorrecording.gwt.GwtErrorRecorder;
 import gov.nist.toolkit.errorrecording.gwt.GwtErrorRecorderBuilder;
 import gov.nist.toolkit.errorrecording.gwt.client.GWTValidationStepResult;
 import gov.nist.toolkit.errorrecording.gwt.client.GwtValidatorErrorItem;
+import gov.nist.toolkit.errorrecording.xml.XMLErrorRecorder;
+import gov.nist.toolkit.errorrecording.xml.XMLErrorRecorderBuilder;
 import gov.nist.toolkit.registrymetadata.Metadata;
 import gov.nist.toolkit.registrymsg.registry.RegistryErrorListGenerator;
 import gov.nist.toolkit.registrymsg.registry.RegistryResponse;
@@ -34,10 +34,14 @@ import gov.nist.toolkit.xdsexception.XdsException;
 import gov.nist.toolkit.xdsexception.XdsInternalException;
 import org.apache.axiom.om.OMElement;
 import org.apache.log4j.Logger;
+
 import java.io.File;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.*;
+
+import static gov.nist.toolkit.errorrecording.SelectedErrorRecorder.ErrorRecorderType.GWT_ERROR_RECORDER;
+import static gov.nist.toolkit.errorrecording.SelectedErrorRecorder.ErrorRecorderType.XML_ERROR_RECORDER;
 
 /**
  *
@@ -99,10 +103,10 @@ public class DsSimCommon {
         // Register the type of the ErrorRecorder
         SelectedErrorRecorder selected = SelectedErrorRecorder.getSelectedErrorRecorder();
         if (erb instanceof XMLErrorRecorderBuilder) {
-            selected.setSelectedErrorRecorder(SelectedErrorRecorder.ErrorRecorderType.XML_ERROR_RECORDER);
+            selected.setSelectedErrorRecorder(XML_ERROR_RECORDER);
         }
         else {
-            selected.setSelectedErrorRecorder(SelectedErrorRecorder.ErrorRecorderType.GWT_ERROR_RECORDER);
+            selected.setSelectedErrorRecorder(GWT_ERROR_RECORDER);
         }
 
         // Display the type of ErrorRecorder selected
@@ -141,9 +145,22 @@ public class DsSimCommon {
      * @param er
      */
     public void sendErrorsInRegistryResponse(ErrorRecorder er) {
-        if (er == null)
-            er = new GwtErrorRecorderBuilder().buildNewErrorRecorder();
-
+        if (er == null) {
+            SelectedErrorRecorder.ErrorRecorderType selected = SelectedErrorRecorder.getSelectedErrorRecorder().getType();
+            if (selected.equals(XML_ERROR_RECORDER)) {
+                System.out.println("XMLErrorRecorder type selected in DsSimCommon > sendErrorsInRegistryResponse");
+                er = new XMLErrorRecorderBuilder().buildNewErrorRecorder();
+            }
+            if (selected.equals(GWT_ERROR_RECORDER)) {
+                System.out.println("GWTErrorRecorder type selected in DsSimCommon > sendErrorsInRegistryResponse");
+                er = new GwtErrorRecorderBuilder().buildNewErrorRecorder();
+            }
+            // TODO handle error case
+            else {
+                System.out.println("No ErrorRecorder type selected in DsSimCommon > sendErrorsInRegistryResponse");
+                er = new GwtErrorRecorderBuilder().buildNewErrorRecorder();
+            }
+        }
 
         // this works when RegistryResponse is the return message
         // need other options for other messaging environments
