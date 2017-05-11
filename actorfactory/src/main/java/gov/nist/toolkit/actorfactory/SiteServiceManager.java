@@ -368,7 +368,7 @@ public class SiteServiceManager {
 
 	public List<String> getActorTypeNames(String sessionId) {
 		logger.debug(sessionId + ": " + "getActorTypeNames");
-		return ActorType.getActorNames();
+		return ActorType.getActorNamesForConfigurationDisplays();
 	}
 
 }
