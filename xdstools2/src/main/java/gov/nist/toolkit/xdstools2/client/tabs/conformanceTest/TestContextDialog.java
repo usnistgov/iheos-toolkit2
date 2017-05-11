@@ -8,9 +8,9 @@ import com.google.gwt.user.client.ui.*;
 import gov.nist.toolkit.sitemanagement.client.SiteSpec;
 import gov.nist.toolkit.xdstools2.client.ErrorHandler;
 import gov.nist.toolkit.xdstools2.client.StringSort;
-import gov.nist.toolkit.xdstools2.client.framework.ToolWindow;
+import gov.nist.toolkit.xdstools2.client.ToolWindow;
 import gov.nist.toolkit.xdstools2.client.command.command.*;
-import gov.nist.toolkit.xdstools2.client.util.ClientUtils;
+import gov.nist.toolkit.xdstools2.client.initialization.FrameworkInitialization;
 import gov.nist.toolkit.xdstools2.client.widgets.HorizontalFlowPanel;
 import gov.nist.toolkit.xdstools2.shared.command.CommandContext;
 import gov.nist.toolkit.xdstools2.shared.command.request.GetSiteNamesRequest;
@@ -134,7 +134,7 @@ class TestContextDialog extends DialogBox {
                     sitesForTestSessionPanel.add(new HTML("None"));
                 }
             }
-        }.run(ClientUtils.INSTANCE.getCommandContext());
+        }.run(FrameworkInitialization.data().getCommandContext());
     }
 
 
@@ -151,7 +151,7 @@ class TestContextDialog extends DialogBox {
                     loadSites();
                     siteManager.setSiteName(TestContext.NONE);
                 }
-            }.run(ClientUtils.INSTANCE.getCommandContext());
+            }.run(FrameworkInitialization.data().getCommandContext());
         }
     }
 
@@ -167,7 +167,7 @@ class TestContextDialog extends DialogBox {
             siteManager.setSiteName(selectedSite);
             toolWindow.setCurrentTestSession(getSelectedTestSession());
             siteManager.update();
-            new SetAssignedSiteForTestSessionCommand().run(new SetAssignedSiteForTestSessionRequest(ClientUtils.INSTANCE.getCommandContext(),getSelectedTestSession(),selectedSite));
+            new SetAssignedSiteForTestSessionCommand().run(new SetAssignedSiteForTestSessionRequest(FrameworkInitialization.data().getCommandContext(),getSelectedTestSession(),selectedSite));
         }
     }
 
@@ -189,7 +189,7 @@ class TestContextDialog extends DialogBox {
                     siteManager.setSiteName(result);
                     selectSite(result);
                 }
-            }.run(ClientUtils.INSTANCE.getCommandContext());
+            }.run(FrameworkInitialization.data().getCommandContext());
         }
     }
 
@@ -264,7 +264,7 @@ class TestContextDialog extends DialogBox {
                     testSessionListBox.setSelectedIndex(testSessionListBox.getItemCount() - 1);
                     toolWindow.setCurrentTestSession(newItem);
                 }
-            }.run(new CommandContext(ClientUtils.INSTANCE.getEnvironmentState().getEnvironmentName(),newItem));
+            }.run(new CommandContext(FrameworkInitialization.data().getEnvironmentState().getEnvironmentName(),newItem));
         }
     }
     private void loadTestSessions(final String initialSelection) {
@@ -283,7 +283,7 @@ class TestContextDialog extends DialogBox {
                         testSessionListBox.setSelectedIndex(selectedIndex);
                 }
             }
-        }.run(ClientUtils.INSTANCE.getCommandContext());
+        }.run(FrameworkInitialization.data().getCommandContext());
     }
 
 
@@ -306,7 +306,7 @@ class TestContextDialog extends DialogBox {
                     siteListBox.setSelectedIndex(0);
                 }
             }
-        }.run(new GetSiteNamesRequest(ClientUtils.INSTANCE.getCommandContext(),true,true));
+        }.run(new GetSiteNamesRequest(FrameworkInitialization.data().getCommandContext(),true,true));
     }
 
     private void selectSite(String site) {

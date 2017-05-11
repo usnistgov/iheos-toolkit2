@@ -4,10 +4,13 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.rpc.AsyncCallback;
-import com.google.gwt.user.client.ui.*;
+import com.google.gwt.user.client.ui.Button;
+import com.google.gwt.user.client.ui.HTML;
+import com.google.gwt.user.client.ui.RadioButton;
+import com.google.gwt.user.client.ui.VerticalPanel;
 import gov.nist.toolkit.xdstools2.client.PidAllocateService;
 import gov.nist.toolkit.xdstools2.client.PidAllocateServiceAsync;
-import gov.nist.toolkit.xdstools2.client.framework.ToolWindow;
+import gov.nist.toolkit.xdstools2.client.ToolWindow;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -15,9 +15,9 @@ import gov.nist.toolkit.testenginelogging.client.UseReportDTO;
 import gov.nist.toolkit.xdstools2.client.command.command.GetSectionTestPartFileCommand;
 import gov.nist.toolkit.xdstools2.client.command.command.GetTestLogDetailsCommand;
 import gov.nist.toolkit.xdstools2.client.command.command.LoadTestPartContentCommand;
+import gov.nist.toolkit.xdstools2.client.initialization.FrameworkInitialization;
 import gov.nist.toolkit.xdstools2.client.sh.BrushFactory;
 import gov.nist.toolkit.xdstools2.client.sh.SyntaxHighlighter;
-import gov.nist.toolkit.xdstools2.client.util.ClientUtils;
 import gov.nist.toolkit.xdstools2.client.widgets.HorizontalFlowPanel;
 import gov.nist.toolkit.xdstools2.client.widgets.PopupMessage;
 import gov.nist.toolkit.xdstools2.shared.command.request.GetSectionTestPartFileRequest;
@@ -159,7 +159,7 @@ public class TestSectionComponent implements IsWidget {
                         String metadataStr = result.getHtlmizedContent().replace("<br/>", "\r\n");
                         viewerPanel.add(getShHtml(metadataStr));
                     }
-                }.run(new LoadTestPartContentRequest(ClientUtils.INSTANCE.getCommandContext(),metadataDTO));
+                }.run(new LoadTestPartContentRequest(FrameworkInitialization.data().getCommandContext(),metadataDTO));
             }
         }
     }
@@ -219,7 +219,7 @@ public class TestSectionComponent implements IsWidget {
                         sectionResults.add(stepPanel);
                     }
                 }
-            }.run(new GetSectionTestPartFileRequest(ClientUtils.INSTANCE.getCommandContext(),testInstance,section));
+            }.run(new GetSectionTestPartFileRequest(FrameworkInitialization.data().getCommandContext(),testInstance,section));
         }
     }
 
@@ -408,9 +408,9 @@ public class TestSectionComponent implements IsWidget {
                                 sectionResults.add(stepPanel);
                             }
                         }
-                    }.run(new GetSectionTestPartFileRequest(ClientUtils.INSTANCE.getCommandContext(),testInstance,testInstance.getSection()));
+                    }.run(new GetSectionTestPartFileRequest(FrameworkInitialization.data().getCommandContext(),testInstance,testInstance.getSection()));
                 }
-            }.run(new GetTestLogDetailsRequest(ClientUtils.INSTANCE.getCommandContext(),testInstance));
+            }.run(new GetTestLogDetailsRequest(FrameworkInitialization.data().getCommandContext(),testInstance));
 
         }
     }

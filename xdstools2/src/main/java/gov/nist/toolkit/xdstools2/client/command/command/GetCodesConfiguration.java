@@ -1,7 +1,7 @@
 package gov.nist.toolkit.xdstools2.client.command.command;
 
 import gov.nist.toolkit.results.client.CodesResult;
-import gov.nist.toolkit.xdstools2.client.util.ClientUtils;
+import gov.nist.toolkit.xdstools2.client.initialization.FrameworkInitialization;
 import gov.nist.toolkit.xdstools2.shared.command.CommandContext;
 
 /**
@@ -10,6 +10,6 @@ import gov.nist.toolkit.xdstools2.shared.command.CommandContext;
 public abstract class GetCodesConfiguration extends GenericCommand<CommandContext,CodesResult>{
     @Override
     public void run(CommandContext var1) {
-        ClientUtils.INSTANCE.getToolkitServices().getCodesConfiguration(var1,this);
+        FrameworkInitialization.data().getToolkitServices().getCodesConfiguration(var1,this);
     }
 }

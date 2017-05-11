@@ -1,6 +1,6 @@
 package gov.nist.toolkit.xdstools2.client.command.command;
 
-import gov.nist.toolkit.xdstools2.client.util.ClientUtils;
+import gov.nist.toolkit.xdstools2.client.initialization.FrameworkInitialization;
 import gov.nist.toolkit.xdstools2.shared.command.request.SetAssignedSiteForTestSessionRequest;
 
 /**
@@ -9,7 +9,7 @@ import gov.nist.toolkit.xdstools2.shared.command.request.SetAssignedSiteForTestS
 public class SetAssignedSiteForTestSessionCommand extends GenericCommand<SetAssignedSiteForTestSessionRequest,Void>{
     @Override
     public void run(SetAssignedSiteForTestSessionRequest var1) {
-        ClientUtils.INSTANCE.getToolkitServices().setAssignedSiteForTestSession(var1,this);
+        FrameworkInitialization.data().getToolkitServices().setAssignedSiteForTestSession(var1,this);
     }
 
     @Override

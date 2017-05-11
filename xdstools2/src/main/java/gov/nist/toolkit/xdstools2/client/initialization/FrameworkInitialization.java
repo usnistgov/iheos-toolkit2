@@ -2,7 +2,6 @@ package gov.nist.toolkit.xdstools2.client.initialization;
 
 import gov.nist.toolkit.xdstools2.client.command.command.InitializationCommand;
 import gov.nist.toolkit.xdstools2.client.tabs.EnvironmentState;
-import gov.nist.toolkit.xdstools2.client.util.ClientUtils;
 import gov.nist.toolkit.xdstools2.client.widgets.PopupMessage;
 import gov.nist.toolkit.xdstools2.shared.command.InitializationResponse;
 
@@ -19,7 +18,7 @@ public class FrameworkInitialization {
         theFramework = framework;
     }
 
-    public void run() {
+    static public void run() {
         new InitializationCommand() {
 
             @Override
@@ -28,7 +27,7 @@ public class FrameworkInitialization {
                 // environment names
                 // test session names
                 theFramework.setToolkitName(var1.getServletContextName());
-                EnvironmentState environmentState= ClientUtils.INSTANCE.getEnvironmentState();
+                EnvironmentState environmentState= theFramework.getEnvironmentState();
                 environmentState.setEnvironmentNameChoices(var1.getEnvironments());
                 if (environmentState.getEnvironmentName() == null)
                     environmentState.setEnvironmentName(var1.getDefaultEnvironment());
@@ -49,11 +48,11 @@ public class FrameworkInitialization {
 
                 run2();  // cannot be run until this completes
             }
-        }.run(ClientUtils.INSTANCE.getCommandContext());  // command context will be ignored by this cmd
+        }.run(theFramework.getCommandContext());  // command context will be ignored by this cmd
 
     }
 
-    private void run2() {
+    static private void run2() {
         theFramework.buildTabsWrapper();
 
         // If using ConfActor activity then home tab is a distraction

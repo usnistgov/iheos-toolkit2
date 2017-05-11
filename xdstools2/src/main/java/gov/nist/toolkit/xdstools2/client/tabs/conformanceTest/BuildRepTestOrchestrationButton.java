@@ -8,7 +8,7 @@ import gov.nist.toolkit.services.client.RepOrchestrationRequest;
 import gov.nist.toolkit.services.client.RepOrchestrationResponse;
 import gov.nist.toolkit.sitemanagement.client.SiteSpec;
 import gov.nist.toolkit.xdstools2.client.command.command.BuildRepTestOrchestrationCommand;
-import gov.nist.toolkit.xdstools2.client.util.ClientUtils;
+import gov.nist.toolkit.xdstools2.client.initialization.FrameworkInitialization;
 import gov.nist.toolkit.xdstools2.client.widgets.buttons.AbstractOrchestrationButton;
 import gov.nist.toolkit.xdstools2.shared.command.request.BuildRepTestOrchestrationRequest;
 
@@ -91,7 +91,7 @@ class BuildRepTestOrchestrationButton extends AbstractOrchestrationButton {
                 // test will be run out of support site so pass it back to conformance test tab
                 testTab.setSiteToIssueTestAgainst(orchResponse.getSupportSite().siteSpec());
             }
-        }.run(new BuildRepTestOrchestrationRequest(ClientUtils.INSTANCE.getCommandContext(),request));
+        }.run(new BuildRepTestOrchestrationRequest(FrameworkInitialization.data().getCommandContext(),request));
     }
 
 }

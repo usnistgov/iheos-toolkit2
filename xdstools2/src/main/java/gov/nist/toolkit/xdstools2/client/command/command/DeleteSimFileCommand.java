@@ -1,6 +1,6 @@
 package gov.nist.toolkit.xdstools2.client.command.command;
 
-import gov.nist.toolkit.xdstools2.client.util.ClientUtils;
+import gov.nist.toolkit.xdstools2.client.initialization.FrameworkInitialization;
 import gov.nist.toolkit.xdstools2.shared.command.request.DeleteSimFileRequest;
 
 /**
@@ -10,6 +10,6 @@ import gov.nist.toolkit.xdstools2.shared.command.request.DeleteSimFileRequest;
 public abstract class DeleteSimFileCommand extends GenericCommand<DeleteSimFileRequest,Void>{
     @Override
     public void run(DeleteSimFileRequest var1) {
-        ClientUtils.INSTANCE.getToolkitServices().deleteSimFile(var1,this);
+        FrameworkInitialization.data().getToolkitServices().deleteSimFile(var1,this);
     }
 }

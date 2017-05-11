@@ -29,11 +29,9 @@ import gov.nist.toolkit.xdstools2.client.event.Xdstools2EventBus;
 import gov.nist.toolkit.xdstools2.client.event.testSession.TestSessionChangedEvent;
 import gov.nist.toolkit.xdstools2.client.event.testSession.TestSessionChangedEventHandler;
 import gov.nist.toolkit.xdstools2.client.event.testSession.TestSessionManager2;
-import gov.nist.toolkit.xdstools2.client.framework.TabContainer;
-import gov.nist.toolkit.xdstools2.client.framework.ToolWindow;
+import gov.nist.toolkit.xdstools2.client.initialization.FrameworkInitialization;
 import gov.nist.toolkit.xdstools2.client.siteActorManagers.BaseSiteActorManager;
 import gov.nist.toolkit.xdstools2.client.tabs.actorConfigTab.ActorConfigTab;
-import gov.nist.toolkit.xdstools2.client.util.ClientUtils;
 import gov.nist.toolkit.xdstools2.client.util.InformationLink;
 import gov.nist.toolkit.xdstools2.client.widgets.PidWidget;
 import gov.nist.toolkit.xdstools2.client.widgets.PopupMessage;
@@ -157,14 +155,14 @@ public abstract class GenericQueryTab  extends ToolWindow {
     }
 
     private void bind(){
-        ClientUtils.INSTANCE.getEventBus().addHandler(TestSessionChangedEvent.TYPE, new TestSessionChangedEventHandler() {
+        FrameworkInitialization.data().getEventBus().addHandler(TestSessionChangedEvent.TYPE, new TestSessionChangedEventHandler() {
             @Override
             public void onTestSessionChanged(TestSessionChangedEvent event) {
                 reloadTransactionOfferings();
                 refreshData();
             }
         });
-        ((Xdstools2EventBus) ClientUtils.INSTANCE.getEventBus()).addEnvironmentChangedEventHandler(new EnvironmentChangedEvent.EnvironmentChangedEventHandler() {
+        ((Xdstools2EventBus) FrameworkInitialization.data().getEventBus()).addEnvironmentChangedEventHandler(new EnvironmentChangedEvent.EnvironmentChangedEventHandler() {
             @Override
             public void onEnvironmentChange(EnvironmentChangedEvent event) {
                 reloadTransactionOfferings();
@@ -172,7 +170,7 @@ public abstract class GenericQueryTab  extends ToolWindow {
             }
         });
 
-        ((Xdstools2EventBus) ClientUtils.INSTANCE.getEventBus()).addSimulatorsUpdatedEventHandler(new SimulatorUpdatedEvent.SimulatorUpdatedEventHandler() {
+        ((Xdstools2EventBus) FrameworkInitialization.data().getEventBus()).addSimulatorsUpdatedEventHandler(new SimulatorUpdatedEvent.SimulatorUpdatedEventHandler() {
             @Override
             public void onSimulatorsUpdate(SimulatorUpdatedEvent simulatorUpdatedEvent) {
                 saveSelectedSites();
@@ -180,7 +178,7 @@ public abstract class GenericQueryTab  extends ToolWindow {
             }
         });
 
-        ((Xdstools2EventBus) ClientUtils.INSTANCE.getEventBus()).addActorsConfigUpdatedEventHandler(new ActorConfigUpdatedEvent.ActorConfigUpdatedEventHandler() {
+        ((Xdstools2EventBus) FrameworkInitialization.data().getEventBus()).addActorsConfigUpdatedEventHandler(new ActorConfigUpdatedEvent.ActorConfigUpdatedEventHandler() {
             @Override
             public void onActorsConfigUpdate() {
                 if(!tabName.equals(ActorConfigTab.TAB_NAME)) {
@@ -513,7 +511,7 @@ public abstract class GenericQueryTab  extends ToolWindow {
                 GenericQueryTab.transactionOfferings = var1;
                 redisplay(false);
             }
-        }.run(ClientUtils.INSTANCE.getCommandContext());
+        }.run(FrameworkInitialization.data().getCommandContext());
     }
 
     static public HTML addHTML(String html) {

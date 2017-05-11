@@ -4,7 +4,7 @@ import com.google.gwt.user.client.ui.FlowPanel;
 import gov.nist.toolkit.actorfactory.client.SimId;
 import gov.nist.toolkit.actorfactory.client.SimulatorConfig;
 import gov.nist.toolkit.xdstools2.client.command.command.GetSimConfigsCommand;
-import gov.nist.toolkit.xdstools2.client.util.ClientUtils;
+import gov.nist.toolkit.xdstools2.client.initialization.FrameworkInitialization;
 import gov.nist.toolkit.xdstools2.shared.command.request.GetSimConfigsRequest;
 
 import java.util.ArrayList;
@@ -105,7 +105,7 @@ class SimConfigSuper {
 
 				refresh();
 			}
-		}.run(new GetSimConfigsRequest(ClientUtils.INSTANCE.getCommandContext(),getIds()));
+		}.run(new GetSimConfigsRequest(FrameworkInitialization.data().getCommandContext(),getIds()));
 	}
 
 }

@@ -1,7 +1,7 @@
 package gov.nist.toolkit.xdstools2.client.command.command;
 
 import gov.nist.toolkit.results.client.Result;
-import gov.nist.toolkit.xdstools2.client.util.ClientUtils;
+import gov.nist.toolkit.xdstools2.client.initialization.FrameworkInitialization;
 import gov.nist.toolkit.xdstools2.shared.command.request.GetSubmissionSetAndContentsRequest;
 
 import java.util.List;
@@ -12,6 +12,6 @@ import java.util.List;
 public abstract class GetSubmissionSetAndContentsCommand extends GenericCommand<GetSubmissionSetAndContentsRequest,List<Result>>{
     @Override
     public void run(GetSubmissionSetAndContentsRequest request) {
-        ClientUtils.INSTANCE.getToolkitServices().getSSandContents(request,this);
+        FrameworkInitialization.data().getToolkitServices().getSSandContents(request,this);
     }
 }

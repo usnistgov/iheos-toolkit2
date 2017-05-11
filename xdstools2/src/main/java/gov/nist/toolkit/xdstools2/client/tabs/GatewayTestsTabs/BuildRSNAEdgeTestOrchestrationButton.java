@@ -1,6 +1,5 @@
 package gov.nist.toolkit.xdstools2.client.tabs.GatewayTestsTabs;
 
-import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.user.client.ui.FlexTable;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.Panel;
@@ -11,8 +10,8 @@ import gov.nist.toolkit.services.client.RSNAEdgeOrchestrationRequest;
 import gov.nist.toolkit.services.client.RSNAEdgeOrchestrationResponse;
 import gov.nist.toolkit.services.client.RawResponse;
 import gov.nist.toolkit.xdstools2.client.command.command.BuildRSNAEdgeTestOrchestrationCommand;
+import gov.nist.toolkit.xdstools2.client.initialization.FrameworkInitialization;
 import gov.nist.toolkit.xdstools2.client.tabs.genericQueryTab.GenericQueryTab;
-import gov.nist.toolkit.xdstools2.client.util.ClientUtils;
 import gov.nist.toolkit.xdstools2.client.widgets.PopupMessage;
 import gov.nist.toolkit.xdstools2.client.widgets.buttons.AbstractOrchestrationButton;
 import gov.nist.toolkit.xdstools2.shared.command.request.BuildRSNAEdgeTestOrchestrationRequest;
@@ -74,7 +73,7 @@ class BuildRSNAEdgeTestOrchestrationButton extends AbstractOrchestrationButton {
 
                 testTab.genericQueryTab.reloadTransactionOfferings();
             }
-        }.run(new BuildRSNAEdgeTestOrchestrationRequest(ClientUtils.INSTANCE.getCommandContext(),request));
+        }.run(new BuildRSNAEdgeTestOrchestrationRequest(FrameworkInitialization.data().getCommandContext(),request));
     }
 
 }

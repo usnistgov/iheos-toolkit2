@@ -3,8 +3,6 @@
  */
 package gov.nist.toolkit.xdstools2.client.tabs.conformanceTest;
 
-import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.FlexTable;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HTML;
@@ -15,11 +13,10 @@ import gov.nist.toolkit.configDatatypes.client.TransactionType;
 import gov.nist.toolkit.services.client.IdsOrchestrationRequest;
 import gov.nist.toolkit.services.client.IdsOrchestrationResponse;
 import gov.nist.toolkit.services.client.RawResponse;
-import gov.nist.toolkit.sitemanagement.client.Site;
 import gov.nist.toolkit.sitemanagement.client.SiteSpec;
 import gov.nist.toolkit.sitemanagement.client.TransactionBean;
 import gov.nist.toolkit.xdstools2.client.command.command.BuildIdsTestOrchestrationCommand;
-import gov.nist.toolkit.xdstools2.client.util.ClientUtils;
+import gov.nist.toolkit.xdstools2.client.initialization.FrameworkInitialization;
 import gov.nist.toolkit.xdstools2.client.widgets.PopupMessage;
 import gov.nist.toolkit.xdstools2.client.widgets.buttons.AbstractOrchestrationButton;
 import gov.nist.toolkit.xdstools2.shared.command.request.BuildIdsTestOrchestrationRequest;
@@ -212,7 +209,7 @@ public class BuildIDSTestOrchestrationButton extends AbstractOrchestrationButton
                 // test will be run out of support site so pass it back to conformance test tab
                 //testTab.setSitetoIssueTestAgainst(orchResponse.getSupportSite());
             }
-        }.run(new BuildIdsTestOrchestrationRequest(ClientUtils.INSTANCE.getCommandContext(),request));
+        }.run(new BuildIdsTestOrchestrationRequest(FrameworkInitialization.data().getCommandContext(),request));
     }
 
 

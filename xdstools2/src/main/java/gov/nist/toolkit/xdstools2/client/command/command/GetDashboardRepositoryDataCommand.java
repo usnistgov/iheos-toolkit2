@@ -1,6 +1,6 @@
 package gov.nist.toolkit.xdstools2.client.command.command;
 
-import gov.nist.toolkit.xdstools2.client.util.ClientUtils;
+import gov.nist.toolkit.xdstools2.client.initialization.FrameworkInitialization;
 import gov.nist.toolkit.xdstools2.shared.RepositoryStatus;
 import gov.nist.toolkit.xdstools2.shared.command.CommandContext;
 
@@ -12,6 +12,6 @@ import java.util.List;
 public abstract class GetDashboardRepositoryDataCommand extends GenericCommand<CommandContext,List<RepositoryStatus>>{
     @Override
     public void run(CommandContext context) {
-        ClientUtils.INSTANCE.getToolkitServices().getDashboardRepositoryData(context,this);
+        FrameworkInitialization.data().getToolkitServices().getDashboardRepositoryData(context,this);
     }
 }

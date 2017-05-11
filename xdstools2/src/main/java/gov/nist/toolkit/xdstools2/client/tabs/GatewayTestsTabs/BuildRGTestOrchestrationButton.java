@@ -9,9 +9,9 @@ import gov.nist.toolkit.services.client.RgOrchestrationRequest;
 import gov.nist.toolkit.services.client.RgOrchestrationResponse;
 import gov.nist.toolkit.sitemanagement.client.SiteSpec;
 import gov.nist.toolkit.xdstools2.client.command.command.BuildRGTestOrchestrationCommand;
+import gov.nist.toolkit.xdstools2.client.initialization.FrameworkInitialization;
 import gov.nist.toolkit.xdstools2.client.tabs.conformanceTest.ActorAndOption;
 import gov.nist.toolkit.xdstools2.client.tabs.genericQueryTab.GenericQueryTab;
-import gov.nist.toolkit.xdstools2.client.util.ClientUtils;
 import gov.nist.toolkit.xdstools2.client.widgets.PopupMessage;
 import gov.nist.toolkit.xdstools2.client.widgets.buttons.AbstractOrchestrationButton;
 import gov.nist.toolkit.xdstools2.shared.command.request.BuildRgTestOrchestrationRequest;
@@ -106,7 +106,7 @@ public class BuildRGTestOrchestrationButton extends AbstractOrchestrationButton 
                     }
                 }
             }
-        }.run(new BuildRgTestOrchestrationRequest(ClientUtils.INSTANCE.getCommandContext(),request));
+        }.run(new BuildRgTestOrchestrationRequest(FrameworkInitialization.data().getCommandContext(),request));
     }
 
     int displayPIDs(FlexTable table, RgOrchestrationResponse response, int row) {

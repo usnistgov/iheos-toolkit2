@@ -10,7 +10,7 @@ import gov.nist.toolkit.services.client.RegOrchestrationRequest;
 import gov.nist.toolkit.services.client.RegOrchestrationResponse;
 import gov.nist.toolkit.sitemanagement.client.SiteSpec;
 import gov.nist.toolkit.xdstools2.client.command.command.BuildRegTestOrchestrationCommand;
-import gov.nist.toolkit.xdstools2.client.util.ClientUtils;
+import gov.nist.toolkit.xdstools2.client.initialization.FrameworkInitialization;
 import gov.nist.toolkit.xdstools2.client.widgets.OrchestrationSupportTestsDisplay;
 import gov.nist.toolkit.xdstools2.client.widgets.buttons.AbstractOrchestrationButton;
 import gov.nist.toolkit.xdstools2.shared.command.request.BuildRegTestOrchestrationRequest;
@@ -128,7 +128,7 @@ public class BuildRegTestOrchestrationButton extends AbstractOrchestrationButton
                 initializationResultsPanel.add(new HTML("<br />"));
 
             }
-        }.run(new BuildRegTestOrchestrationRequest(ClientUtils.INSTANCE.getCommandContext(),request));
+        }.run(new BuildRegTestOrchestrationRequest(FrameworkInitialization.data().getCommandContext(),request));
     }
 
 

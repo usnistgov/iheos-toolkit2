@@ -7,18 +7,7 @@ import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.resources.client.ClientBundle;
 import com.google.gwt.resources.client.ImageResource;
 import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
-import com.google.gwt.user.client.ui.Anchor;
-import com.google.gwt.user.client.ui.Button;
-import com.google.gwt.user.client.ui.CheckBox;
-import com.google.gwt.user.client.ui.FlexTable;
-import com.google.gwt.user.client.ui.FlowPanel;
-import com.google.gwt.user.client.ui.HTML;
-import com.google.gwt.user.client.ui.HasHorizontalAlignment;
-import com.google.gwt.user.client.ui.HasVerticalAlignment;
-import com.google.gwt.user.client.ui.HorizontalPanel;
-import com.google.gwt.user.client.ui.Image;
-import com.google.gwt.user.client.ui.ListBox;
-import com.google.gwt.user.client.ui.VerticalPanel;
+import com.google.gwt.user.client.ui.*;
 import gov.nist.toolkit.actorfactory.client.SimId;
 import gov.nist.toolkit.actorfactory.client.SimulatorConfig;
 import gov.nist.toolkit.actortransaction.client.ActorType;
@@ -30,36 +19,16 @@ import gov.nist.toolkit.results.client.TestInstance;
 import gov.nist.toolkit.simcommon.client.config.SimulatorConfigElement;
 import gov.nist.toolkit.sitemanagement.client.SiteSpec;
 import gov.nist.toolkit.xdstools2.client.StringSort;
-import gov.nist.toolkit.xdstools2.client.command.command.GetCollectionCommand;
-import gov.nist.toolkit.xdstools2.client.command.command.GetOnDemandDocumentEntryDetailsCommand;
-import gov.nist.toolkit.xdstools2.client.command.command.GetSiteNamesByTranTypeCommand;
-import gov.nist.toolkit.xdstools2.client.command.command.PutSimConfigCommand;
-import gov.nist.toolkit.xdstools2.client.command.command.RegisterWithLocalizedTrackingInODDSCommand;
-import gov.nist.toolkit.xdstools2.client.command.command.SetOdSupplyStateIndexCommand;
+import gov.nist.toolkit.xdstools2.client.command.command.*;
 import gov.nist.toolkit.xdstools2.client.event.SimulatorUpdatedEvent;
 import gov.nist.toolkit.xdstools2.client.event.Xdstools2EventBus;
-import gov.nist.toolkit.xdstools2.client.tabs.simulatorControlTab.ConfigBooleanBox;
-import gov.nist.toolkit.xdstools2.client.tabs.simulatorControlTab.ConfigEditBox;
-import gov.nist.toolkit.xdstools2.client.tabs.simulatorControlTab.ConfigTextDisplayBox;
-import gov.nist.toolkit.xdstools2.client.tabs.simulatorControlTab.LoadSimulatorsClickHandler;
-import gov.nist.toolkit.xdstools2.client.tabs.simulatorControlTab.SimulatorControlTab;
-import gov.nist.toolkit.xdstools2.client.tabs.simulatorControlTab.SingleSelectionView;
-import gov.nist.toolkit.xdstools2.client.tabs.simulatorControlTab.SiteSelectionPresenter;
+import gov.nist.toolkit.xdstools2.client.initialization.FrameworkInitialization;
+import gov.nist.toolkit.xdstools2.client.tabs.simulatorControlTab.*;
 import gov.nist.toolkit.xdstools2.client.tabs.simulatorControlTab.intf.SimConfigMgrIntf;
-import gov.nist.toolkit.xdstools2.client.util.ClientUtils;
 import gov.nist.toolkit.xdstools2.client.widgets.PopupMessage;
-import gov.nist.toolkit.xdstools2.shared.command.request.GetCollectionRequest;
-import gov.nist.toolkit.xdstools2.shared.command.request.GetOnDemandDocumentEntryDetailsRequest;
-import gov.nist.toolkit.xdstools2.shared.command.request.GetSiteNamesByTranTypeRequest;
-import gov.nist.toolkit.xdstools2.shared.command.request.RegisterRequest;
-import gov.nist.toolkit.xdstools2.shared.command.request.SetOdSupplyStateIndexRequest;
-import gov.nist.toolkit.xdstools2.shared.command.request.SimConfigRequest;
+import gov.nist.toolkit.xdstools2.shared.command.request.*;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 /**
  *
@@ -198,7 +167,7 @@ public class OddsSimConfigMgr implements SimConfigMgrIntf {
     }
 
     private void registerSimulatorsUpdatedEvent() {
-        ((Xdstools2EventBus) ClientUtils.INSTANCE.getEventBus()).addSimulatorsUpdatedEventHandler(new SimulatorUpdatedEvent.SimulatorUpdatedEventHandler() {
+        ((Xdstools2EventBus) FrameworkInitialization.data().getEventBus()).addSimulatorsUpdatedEventHandler(new SimulatorUpdatedEvent.SimulatorUpdatedEventHandler() {
             @Override
             public void onSimulatorsUpdate(SimulatorUpdatedEvent simulatorUpdatedEvent) {
 
@@ -289,7 +258,7 @@ public class OddsSimConfigMgr implements SimConfigMgrIntf {
                     reposSiteBoxes.clear();
                     reposSSP = new SiteSelectionPresenter("reposSites", results, oddsReposSite.asList(), reposSiteBoxes);
                 }
-            }.run(new GetSiteNamesByTranTypeRequest(ClientUtils.INSTANCE.getCommandContext(), TransactionType.PROVIDE_AND_REGISTER.getName()));
+            }.run(new GetSiteNamesByTranTypeRequest(FrameworkInitialization.data().getCommandContext(), TransactionType.PROVIDE_AND_REGISTER.getName()));
             // ----
         }
     }
@@ -371,7 +340,7 @@ public class OddsSimConfigMgr implements SimConfigMgrIntf {
             public void onComplete(List<DocumentEntryDetail> documentEntryDetails) {
                 prepareOddeTable(documentEntryDetails);
             }
-        }.run(new GetOnDemandDocumentEntryDetailsRequest(ClientUtils.INSTANCE.getCommandContext(),getConfig().getId()));
+        }.run(new GetOnDemandDocumentEntryDetailsRequest(FrameworkInitialization.data().getCommandContext(),getConfig().getId()));
     }
 
     private void prepareOddeTable(List<DocumentEntryDetail> documentEntryDetails) {
@@ -438,7 +407,7 @@ public class OddsSimConfigMgr implements SimConfigMgrIntf {
                                             new PopupMessage("Reset for document UniqueId ["+ded.getUniqueId()+"] failed!");
                                         }
                                     }
-                                }.run(new SetOdSupplyStateIndexRequest(ClientUtils.INSTANCE.getCommandContext(),new SimId(config.getId().toString()),ded,0));
+                                }.run(new SetOdSupplyStateIndexRequest(FrameworkInitialization.data().getCommandContext(),new SimId(config.getId().toString()),ded,0));
                             }
                         });
                         supplyStateHPanel.add(resetLnk);
@@ -479,7 +448,7 @@ public class OddsSimConfigMgr implements SimConfigMgrIntf {
 
                     }
                 }
-            }.run(new GetSiteNamesByTranTypeRequest(ClientUtils.INSTANCE.getCommandContext(), TransactionType.REGISTER_ODDE.getName()));
+            }.run(new GetSiteNamesByTranTypeRequest(FrameworkInitialization.data().getCommandContext(), TransactionType.REGISTER_ODDE.getName()));
         }
     }
 
@@ -613,7 +582,7 @@ public class OddsSimConfigMgr implements SimConfigMgrIntf {
                     lbx.setSelectedIndex(0);
                 }
             }
-        }.run(new GetCollectionRequest(ClientUtils.INSTANCE.getCommandContext(), "collections", testCollectionName));
+        }.run(new GetCollectionRequest(FrameworkInitialization.data().getCommandContext(), "collections", testCollectionName));
     }
 
     private void registerODDE() {
@@ -659,7 +628,7 @@ public class OddsSimConfigMgr implements SimConfigMgrIntf {
                     getOdDocumentEntries();
                 }
             }
-        }.run(new RegisterRequest(ClientUtils.INSTANCE.getCommandContext(),
+        }.run(new RegisterRequest(FrameworkInitialization.data().getCommandContext(),
                 getConfig().getId().getUser(),new TestInstance(contentBundleLbx.getSelectedValue()),
                 new SiteSpec(regSSP.getSelected().get(0), ActorType.REGISTRY, null),params, getConfig().getId()));
     }
@@ -729,7 +698,7 @@ public class OddsSimConfigMgr implements SimConfigMgrIntf {
                 // reload simulators to getRetrievedDocumentsModel updates
                 new LoadSimulatorsClickHandler(simulatorControlTab, testSession).onClick(null);
             }
-        }.run(new SimConfigRequest(ClientUtils.INSTANCE.getCommandContext(),config));
+        }.run(new SimConfigRequest(FrameworkInitialization.data().getCommandContext(),config));
     }
 
     public int getRow() {

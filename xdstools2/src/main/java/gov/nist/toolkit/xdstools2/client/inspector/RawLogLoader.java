@@ -3,11 +3,10 @@ package gov.nist.toolkit.xdstools2.client.inspector;
 
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.TreeItem;
 import gov.nist.toolkit.results.client.*;
 import gov.nist.toolkit.xdstools2.client.command.command.GetRawLogsCommand;
-import gov.nist.toolkit.xdstools2.client.util.ClientUtils;
+import gov.nist.toolkit.xdstools2.client.initialization.FrameworkInitialization;
 import gov.nist.toolkit.xdstools2.shared.command.request.GetRawLogsRequest;
 
 import java.util.List;
@@ -65,7 +64,7 @@ class RawLogLoader implements ClickHandler {
 					}
 				}
 			}
-		}.run(new GetRawLogsRequest(ClientUtils.INSTANCE.getCommandContext(),logId));
+		}.run(new GetRawLogsRequest(FrameworkInitialization.data().getCommandContext(),logId));
 	}
 
 }

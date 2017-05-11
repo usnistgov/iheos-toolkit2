@@ -11,10 +11,10 @@ import gov.nist.toolkit.results.client.TestInstance;
 import gov.nist.toolkit.sitemanagement.client.SiteSpec;
 import gov.nist.toolkit.xdstools2.client.StringSort;
 import gov.nist.toolkit.xdstools2.client.command.command.*;
+import gov.nist.toolkit.xdstools2.client.initialization.FrameworkInitialization;
 import gov.nist.toolkit.xdstools2.client.inspector.MetadataInspectorTab;
 import gov.nist.toolkit.xdstools2.client.tabs.SimulatorMessageViewTab;
 import gov.nist.toolkit.xdstools2.client.tabs.TextViewerTab;
-import gov.nist.toolkit.xdstools2.client.util.ClientUtils;
 import gov.nist.toolkit.xdstools2.client.widgets.PopupMessage;
 import gov.nist.toolkit.xdstools2.shared.command.request.GetCollectionRequest;
 import gov.nist.toolkit.xdstools2.shared.command.request.GetTestDetailsRequest;
@@ -70,7 +70,7 @@ class TestSelectionManager {
                     new TestSelectionChangeHandler(me).onChange(null);
                 }
             }
-        }.run(new GetCollectionRequest(ClientUtils.INSTANCE.getCommandContext(), "collections", testCollectionName));
+        }.run(new GetCollectionRequest(FrameworkInitialization.data().getCommandContext(), "collections", testCollectionName));
     }
 
     Widget buildSectionSelector() {
@@ -139,7 +139,7 @@ class TestSelectionManager {
                         itab.setSiteSpec(siteSpec);
                         itab.onTabLoad(true, "Insp");
                     }
-                }.run(new GetTestResultsRequest(ClientUtils.INSTANCE.getCommandContext(),tests));
+                }.run(new GetTestResultsRequest(FrameworkInitialization.data().getCommandContext(),tests));
             }
         });
         return button;
@@ -164,7 +164,7 @@ class TestSelectionManager {
                 }
                 selectedSections.clear();
             }
-        }.run(new GetTestDetailsRequest(ClientUtils.INSTANCE.getCommandContext(), tool.getSelectedTest()));
+        }.run(new GetTestDetailsRequest(FrameworkInitialization.data().getCommandContext(), tool.getSelectedTest()));
     }
 
     public List<String> getSelectedSections() {
@@ -186,7 +186,7 @@ class TestSelectionManager {
                 public void onComplete(String result) {
                     new TextViewerTab().onTabLoad(true, result, tool.getSelectedTest() + "#" + selectSectionList.getSelectedItemText());
                 }
-            }.run(new GetTestplanAsTextRequest(ClientUtils.INSTANCE.getCommandContext(),new TestInstance(tool.getSelectedTest()),selectSectionList.getSelectedItemText()));
+            }.run(new GetTestplanAsTextRequest(FrameworkInitialization.data().getCommandContext(),new TestInstance(tool.getSelectedTest()),selectSectionList.getSelectedItemText()));
         }
     }
 
@@ -228,7 +228,7 @@ class TestSelectionManager {
             public void onComplete(String result) {
                 documentation.setHTML(Util.htmlize(result));
             }
-        }.run(new GetTestDetailsRequest(ClientUtils.INSTANCE.getCommandContext(), tool.getSelectedTest()));
+        }.run(new GetTestDetailsRequest(FrameworkInitialization.data().getCommandContext(), tool.getSelectedTest()));
     }
 
     Button buildLogLauncher(final String simId, String label) {

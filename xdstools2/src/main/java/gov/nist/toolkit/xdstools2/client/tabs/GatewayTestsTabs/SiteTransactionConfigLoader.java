@@ -2,7 +2,7 @@ package gov.nist.toolkit.xdstools2.client.tabs.GatewayTestsTabs;
 
 import gov.nist.toolkit.sitemanagement.client.TransactionOfferings;
 import gov.nist.toolkit.xdstools2.client.command.command.GetTransactionOfferingsCommand;
-import gov.nist.toolkit.xdstools2.client.util.ClientUtils;
+import gov.nist.toolkit.xdstools2.client.initialization.FrameworkInitialization;
 
 /**
  *
@@ -18,6 +18,6 @@ public class SiteTransactionConfigLoader {
             public void onComplete(TransactionOfferings var1) {
                 handler.OnCompletion(var1);
             }
-        }.run(ClientUtils.INSTANCE.getCommandContext());
+        }.run(FrameworkInitialization.data().getCommandContext());
     }
 }

@@ -5,11 +5,13 @@ import gov.nist.toolkit.actorfactory.client.SimId;
 import gov.nist.toolkit.actorfactory.client.SimulatorConfig;
 import gov.nist.toolkit.sitemanagement.client.SiteSpec;
 import gov.nist.toolkit.xdstools2.client.command.command.GetSimConfigsCommand;
-import gov.nist.toolkit.xdstools2.client.util.ClientUtils;
+import gov.nist.toolkit.xdstools2.client.initialization.FrameworkInitialization;
 import gov.nist.toolkit.xdstools2.shared.command.request.GetSimConfigsRequest;
 
 import java.util.ArrayList;
 import java.util.List;
+
+
 
 /**
  * Multi-anchor that contains links to both system config and sim config (if it is a sim)
@@ -33,6 +35,6 @@ public class SimSystemAnchor extends HorizontalFlowPanel {
                     add(new SiteEditAnchor("[System Configuration]", siteSpec));
                 }
             }
-        }.run(new GetSimConfigsRequest(ClientUtils.INSTANCE.getCommandContext(),simIds));
+        }.run(new GetSimConfigsRequest(FrameworkInitialization.data().getCommandContext(),simIds));
     }
 }

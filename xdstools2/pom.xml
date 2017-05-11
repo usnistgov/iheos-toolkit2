@@ -230,7 +230,7 @@
 	<!--</organization> -->
 
 	<artifactId>xdstools2</artifactId>
-	<packaging>war</packaging>
+	<packaging>jar</packaging>
 
 	<dependencies>
 		<dependency>
@@ -517,114 +517,6 @@
 				</dependencies>
 			</plugin>
 
-
-			<!-- There are two copies of this plugin - I have no idea which one is 
-				running. I only know it works for the moment! -->
-			<plugin>
-				<groupId>org.codehaus.mojo</groupId>
-				<artifactId>gwt-maven-plugin</artifactId>
-				<version>${gwtVersion}</version>
-				<dependencies>
-					<dependency>
-						<groupId>com.google.gwt</groupId>
-						<artifactId>gwt-user</artifactId>
-						<version>${gwtVersion}</version>
-					</dependency>
-					<dependency>
-						<groupId>com.google.gwt</groupId>
-						<artifactId>gwt-dev</artifactId>
-						<version>${gwtVersion}</version>
-					</dependency>
-				</dependencies>
-				<executions>
-					<execution>
-						<phase>prepare-package</phase>
-						<goals>
-							<goal>compile</goal>
-							<goal>resources</goal>
-						</goals>
-					</execution>
-					<execution>
-						<id>compilation_profile</id>
-						<goals>
-							<goal>compile</goal>
-							<goal>resources</goal>
-						</goals>
-						<configuration>
-							<optimizationLevel>0</optimizationLevel>
-						</configuration>
-					</execution>
-				</executions>
-				<configuration>
-					<compileSourcesArtifacts>
-						<compileSourcesArtifact>${project.groupId}:tk</compileSourcesArtifact>
-						<compileSourcesArtifact>${project.groupId}:results</compileSourcesArtifact>
-						<compileSourcesArtifact>${project.groupId}:services</compileSourcesArtifact>
-						<compileSourcesArtifact>${project.groupId}:actor-transaction</compileSourcesArtifact>
-						<compileSourcesArtifact>${project.groupId}:site-management</compileSourcesArtifact>
-						<compileSourcesArtifact>${project.groupId}:registry-metadata</compileSourcesArtifact>
-						<compileSourcesArtifact>${project.groupId}:http</compileSourcesArtifact>
-						<compileSourcesArtifact>${project.groupId}:validators-support</compileSourcesArtifact>
-						<compileSourcesArtifact>${project.groupId}:actorfactory</compileSourcesArtifact>
-						<compileSourcesArtifact>${project.groupId}:sim-common</compileSourcesArtifact>
-						<compileSourcesArtifact>${project.groupId}:error-recording</compileSourcesArtifact>
-						<compileSourcesArtifact>${project.groupId}:common-datatypes</compileSourcesArtifact>
-						<compileSourcesArtifact>${project.groupId}:config-datatypes</compileSourcesArtifact>
-						<compileSourcesArtifact>${project.groupId}:session</compileSourcesArtifact>
-						<compileSourcesArtifact>${project.groupId}:testkit-utilities</compileSourcesArtifact>
-						<compileSourcesArtifact>${project.groupId}:xdstest2-logging</compileSourcesArtifact>
-						<compileSourcesArtifact>${project.groupId}:xds-exceptions</compileSourcesArtifact>
-						<compileSourcesArtifact>${project.groupId}:interaction-model</compileSourcesArtifact>
-						<compileSourcesArtifact>${project.groupId}:interaction-diagram</compileSourcesArtifact>
-					</compileSourcesArtifacts>
-					<runTarget>Xdstools2.html</runTarget>
-					<modules>
-						<module>${project.groupId}.xdstools2.Xdstools2</module>
-					</modules>
-				</configuration>
-			</plugin>
-			<!--<plugin>-->
-				<!--<groupId>org.codehaus.mojo</groupId>-->
-				<!--<artifactId>gwt-maven-plugin</artifactId>-->
-				<!--<version>${gwtVersion}</version>-->
-				<!--<dependencies>-->
-					<!--<dependency>-->
-						<!--<groupId>com.google.gwt</groupId>-->
-						<!--<artifactId>gwt-user</artifactId>-->
-						<!--<version>${gwtVersion}</version>-->
-					<!--</dependency>-->
-					<!--<dependency>-->
-						<!--<groupId>com.google.gwt</groupId>-->
-						<!--<artifactId>gwt-dev</artifactId>-->
-						<!--<version>${gwtVersion}</version>-->
-					<!--</dependency>-->
-				<!--</dependencies>-->
-				<!--&lt;!&ndash; JS is only needed in the package phase, this speeds up testing &ndash;&gt;-->
-				<!--<executions>-->
-					<!--<execution>-->
-						<!--<phase>prepare-package</phase>-->
-						<!--<goals>-->
-							<!--<goal>compile</goal>-->
-							<!--<goal>resources</goal>-->
-						<!--</goals>-->
-					<!--</execution>-->
-				<!--</executions>-->
-
-				<!--&lt;!&ndash; Plugin configuration. There are many available options, see gwt-maven-plugin -->
-					<!--documentation at codehaus.org &ndash;&gt;-->
-				<!--<configuration>-->
-					<!--&lt;!&ndash; URL that should be automatically opened in the GWT shell (gwt:run). &ndash;&gt;-->
-					<!--<runTarget>Xdstools2.html</runTarget>-->
-					<!--&lt;!&ndash; Ask GWT to create the Story of Your Compile (SOYC) (gwt:compile) &ndash;&gt;-->
-					<!--<compileReport>true</compileReport>-->
-					<!--<module>gov.nist.toolkit.xdstools2.Xdstools2</module>-->
-					<!--&lt;!&ndash;<logLevel>INFO</logLevel> &ndash;&gt;-->
-					<!--&lt;!&ndash;<style>${gwt.style}</style> &ndash;&gt;-->
-					<!--<copyWebapp>true</copyWebapp>-->
-					<!--&lt;!&ndash; <genParam>true</genParam> &ndash;&gt;-->
-				<!--</configuration>-->
-			<!--</plugin>-->
-
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-site-plugin</artifactId>
@@ -664,42 +556,28 @@
 				</executions>
 			</plugin>
 
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-jar-plugin</artifactId>
-				<executions>
-					<execution>
-						<id>build-normal-jar</id>
-						<phase>compile</phase>
-						<goals>
-							<goal>jar</goal>
-						</goals>
-					</execution>
-				</executions>
-			</plugin>
-
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-install-plugin</artifactId>
-				<executions>
-					<execution>
-						<id>install-regular-jar-file</id>
-						<phase>install</phase>
-						<goals>
-							<goal>install-file</goal>
-						</goals>
-						<configuration>
-							<packaging>jar</packaging>
-							<artifactId>${project.artifactId}</artifactId>
-							<groupId>${project.groupId}</groupId>
-							<version>${project.version}</version>
-							<file>
-								${project.build.directory}/${project.artifactId}-${project.version}.jar
-							</file>
-						</configuration>
-					</execution>
-				</executions>
-			</plugin>
+			<!--<plugin>-->
+				<!--<groupId>org.apache.maven.plugins</groupId>-->
+				<!--<artifactId>maven-install-plugin</artifactId>-->
+				<!--<executions>-->
+					<!--<execution>-->
+						<!--<id>install-regular-jar-file</id>-->
+						<!--<phase>install</phase>-->
+						<!--<goals>-->
+							<!--<goal>install-file</goal>-->
+						<!--</goals>-->
+						<!--<configuration>-->
+							<!--<packaging>jar</packaging>-->
+							<!--<artifactId>${project.artifactId}</artifactId>-->
+							<!--<groupId>${project.groupId}</groupId>-->
+							<!--<version>${project.version}</version>-->
+							<!--<file>-->
+								<!--${project.build.directory}/${project.artifactId}-${project.version}.jar-->
+							<!--</file>-->
+						<!--</configuration>-->
+					<!--</execution>-->
+				<!--</executions>-->
+			<!--</plugin>-->
 		</plugins>
 		<!-- Begin profile part 2/2 -->
 		<resources>

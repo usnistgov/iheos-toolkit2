@@ -1,6 +1,6 @@
 package gov.nist.toolkit.xdstools2.client.command.command;
 
-import gov.nist.toolkit.xdstools2.client.util.ClientUtils;
+import gov.nist.toolkit.xdstools2.client.initialization.FrameworkInitialization;
 import gov.nist.toolkit.xdstools2.shared.command.request.SimConfigRequest;
 
 /**
@@ -9,6 +9,6 @@ import gov.nist.toolkit.xdstools2.shared.command.request.SimConfigRequest;
 public abstract class DeleteConfigCommand extends GenericCommand<SimConfigRequest,String>{
     @Override
     public void run(SimConfigRequest var1) {
-        ClientUtils.INSTANCE.getToolkitServices().deleteConfig(var1,this);
+        FrameworkInitialization.data().getToolkitServices().deleteConfig(var1,this);
     }
 }

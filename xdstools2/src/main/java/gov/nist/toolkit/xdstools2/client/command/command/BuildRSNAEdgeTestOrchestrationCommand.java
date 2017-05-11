@@ -1,7 +1,7 @@
 package gov.nist.toolkit.xdstools2.client.command.command;
 
 import gov.nist.toolkit.services.client.RawResponse;
-import gov.nist.toolkit.xdstools2.client.util.ClientUtils;
+import gov.nist.toolkit.xdstools2.client.initialization.FrameworkInitialization;
 import gov.nist.toolkit.xdstools2.shared.command.request.BuildRSNAEdgeTestOrchestrationRequest;
 
 /**
@@ -10,6 +10,6 @@ import gov.nist.toolkit.xdstools2.shared.command.request.BuildRSNAEdgeTestOrches
 public abstract class BuildRSNAEdgeTestOrchestrationCommand extends GenericCommand<BuildRSNAEdgeTestOrchestrationRequest,RawResponse>{
     @Override
     public void run(BuildRSNAEdgeTestOrchestrationRequest var1) {
-        ClientUtils.INSTANCE.getToolkitServices().buildRSNAEdgeTestOrchestration(var1,this);
+        FrameworkInitialization.data().getToolkitServices().buildRSNAEdgeTestOrchestration(var1,this);
     }
 }

@@ -6,7 +6,7 @@ import gov.nist.toolkit.xdstools2.client.event.testSession.TestSessionChangedEve
 import gov.nist.toolkit.xdstools2.client.event.testSession.TestSessionChangedEventHandler;
 import gov.nist.toolkit.xdstools2.client.event.testSession.TestSessionsUpdatedEvent;
 import gov.nist.toolkit.xdstools2.client.event.testSession.TestSessionsUpdatedEventHandler;
-import gov.nist.toolkit.xdstools2.client.util.ClientUtils;
+import gov.nist.toolkit.xdstools2.client.initialization.FrameworkInitialization;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -30,7 +30,7 @@ public class TestSessionSelector {
     private void link() {
 
         // Test sessions reloaded
-        ClientUtils.INSTANCE.getEventBus().addHandler(TestSessionsUpdatedEvent.TYPE, new TestSessionsUpdatedEventHandler() {
+        FrameworkInitialization.data().getEventBus().addHandler(TestSessionsUpdatedEvent.TYPE, new TestSessionsUpdatedEventHandler() {
             @Override
             public void onTestSessionsUpdated(TestSessionsUpdatedEvent event) {
                 listBox.clear();
@@ -40,7 +40,7 @@ public class TestSessionSelector {
 
 
         // SELECT
-        ClientUtils.INSTANCE.getEventBus().addHandler(TestSessionChangedEvent.TYPE, new TestSessionChangedEventHandler() {
+        FrameworkInitialization.data().getEventBus().addHandler(TestSessionChangedEvent.TYPE, new TestSessionChangedEventHandler() {
             @Override
             public void onTestSessionChanged(TestSessionChangedEvent event) {
                 if (event.getChangeType() == TestSessionChangedEvent.ChangeType.SELECT) {
@@ -77,8 +77,8 @@ public class TestSessionSelector {
             public void onChange(ChangeEvent changeEvent) {
                 String newValue = listBox.getValue(listBox.getSelectedIndex());
                 if (NONSELECTION.equals(newValue)) return;
-                ClientUtils.INSTANCE.getTestSessionManager().setCurrentTestSession(newValue);
-                ClientUtils.INSTANCE.getEventBus().fireEvent(new TestSessionChangedEvent(TestSessionChangedEvent.ChangeType.SELECT, newValue));
+                FrameworkInitialization.data().getTestSessionManager().setCurrentTestSession(newValue);
+                FrameworkInitialization.data().getEventBus().fireEvent(new TestSessionChangedEvent(TestSessionChangedEvent.ChangeType.SELECT, newValue));
             }
         });
 
@@ -107,7 +107,7 @@ public class TestSessionSelector {
                 String value = textBox.getValue().trim();
                 textBox.setValue("");
                 if ("".equals(value)) return;
-                ClientUtils.INSTANCE.getEventBus().fireEvent(new TestSessionChangedEvent(TestSessionChangedEvent.ChangeType.ADD, value));
+                FrameworkInitialization.data().getEventBus().fireEvent(new TestSessionChangedEvent(TestSessionChangedEvent.ChangeType.ADD, value));
             }
         });
 
@@ -120,7 +120,7 @@ public class TestSessionSelector {
             @Override
             public void onClick(ClickEvent clickEvent) {
                 String value = listBox.getValue(listBox.getSelectedIndex());
-                ClientUtils.INSTANCE.getEventBus().fireEvent(new TestSessionChangedEvent(TestSessionChangedEvent.ChangeType.DELETE, value));
+                FrameworkInitialization.data().getEventBus().fireEvent(new TestSessionChangedEvent(TestSessionChangedEvent.ChangeType.DELETE, value));
             }
         });
     }
@@ -130,7 +130,7 @@ public class TestSessionSelector {
         value = value.replaceAll(" ", "_");
         textBox.setValue("");
         if ("".equals(value)) return;
-        ClientUtils.INSTANCE.getEventBus().fireEvent(new TestSessionChangedEvent(TestSessionChangedEvent.ChangeType.ADD, value));
+        FrameworkInitialization.data().getEventBus().fireEvent(new TestSessionChangedEvent(TestSessionChangedEvent.ChangeType.ADD, value));
     }
 
     public Widget asWidget() { return panel; }

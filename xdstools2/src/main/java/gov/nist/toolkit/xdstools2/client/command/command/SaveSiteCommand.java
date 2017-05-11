@@ -1,6 +1,6 @@
 package gov.nist.toolkit.xdstools2.client.command.command;
 
-import gov.nist.toolkit.xdstools2.client.util.ClientUtils;
+import gov.nist.toolkit.xdstools2.client.initialization.FrameworkInitialization;
 import gov.nist.toolkit.xdstools2.shared.command.request.SaveSiteRequest;
 
 /**
@@ -9,6 +9,6 @@ import gov.nist.toolkit.xdstools2.shared.command.request.SaveSiteRequest;
 public abstract class SaveSiteCommand extends GenericCommand<SaveSiteRequest,String>{
     @Override
     public void run(SaveSiteRequest var1) {
-        ClientUtils.INSTANCE.getToolkitServices().saveSite(var1,this);
+        FrameworkInitialization.data().getToolkitServices().saveSite(var1,this);
     }
 }

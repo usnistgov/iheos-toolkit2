@@ -1,7 +1,7 @@
 package gov.nist.toolkit.xdstools2.client.command.command;
 
 import gov.nist.toolkit.testkitutilities.client.SectionDefinitionDAO;
-import gov.nist.toolkit.xdstools2.client.util.ClientUtils;
+import gov.nist.toolkit.xdstools2.client.initialization.FrameworkInitialization;
 import gov.nist.toolkit.xdstools2.shared.command.request.GetTestSectionsDAOsRequest;
 
 import java.util.List;
@@ -13,6 +13,6 @@ import java.util.List;
 public abstract class GetTestSectionsDAOsCommand extends GenericCommand<GetTestSectionsDAOsRequest,List<SectionDefinitionDAO>> {
     @Override
     public void run(GetTestSectionsDAOsRequest request) {
-        ClientUtils.INSTANCE.getToolkitServices().getTestSectionsDAOs(request,this);
+        FrameworkInitialization.data().getToolkitServices().getTestSectionsDAOs(request,this);
     }
 }

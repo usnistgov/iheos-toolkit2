@@ -1,6 +1,6 @@
 package gov.nist.toolkit.xdstools2.client.command.command;
 
-import gov.nist.toolkit.xdstools2.client.util.ClientUtils;
+import gov.nist.toolkit.xdstools2.client.initialization.FrameworkInitialization;
 import gov.nist.toolkit.xdstools2.shared.command.request.GetTestdataSetListingRequest;
 
 import java.util.List;
@@ -11,6 +11,6 @@ import java.util.List;
 public abstract class GetTestdataSetListingCommand extends GenericCommand<GetTestdataSetListingRequest,List<String>>{
     @Override
     public void run(GetTestdataSetListingRequest var1) {
-        ClientUtils.INSTANCE.getToolkitServices().getTestdataSetListing(var1,this);
+        FrameworkInitialization.data().getToolkitServices().getTestdataSetListing(var1,this);
     }
 }

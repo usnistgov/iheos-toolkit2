@@ -1,6 +1,6 @@
 package gov.nist.toolkit.xdstools2.client.command.command;
 
-import gov.nist.toolkit.xdstools2.client.util.ClientUtils;
+import gov.nist.toolkit.xdstools2.client.initialization.FrameworkInitialization;
 import gov.nist.toolkit.xdstools2.shared.command.request.PatientIdsRequest;
 
 /**
@@ -9,6 +9,6 @@ import gov.nist.toolkit.xdstools2.shared.command.request.PatientIdsRequest;
 public abstract class AddPatientIdsCommand extends GenericCommand<PatientIdsRequest,String>{
     @Override
     public void run(PatientIdsRequest var1) {
-        ClientUtils.INSTANCE.getToolkitServices().addPatientIds(var1,this);
+        FrameworkInitialization.data().getToolkitServices().addPatientIds(var1,this);
     }
 }

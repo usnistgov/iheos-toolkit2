@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?><TestPlan>
+  <Test>11990eval_Xuagood/eval_Xuasocialworker</Test>
+  <Rule>Verify registration submission with a bad SAML was not successful.</Rule>
+  <TestStep id="by_uid">
+    <ExpectedStatus>Success</ExpectedStatus>
+    <StoredQueryTransaction>
+      <XDSb/>
+      <UseId testdir="../../11990_Xuasocialworker/submit" id="SubmissionSet01" symbol="$ssuid$" step="submit" section="AssignedUids"/>
+      <MetadataFile>query.xml</MetadataFile>
+      <ExpectedContents>
+		<NoSubmissionSet/>
+        <NoDocument/>
+      </ExpectedContents>
+    </StoredQueryTransaction>
+  </TestStep>
+</TestPlan>

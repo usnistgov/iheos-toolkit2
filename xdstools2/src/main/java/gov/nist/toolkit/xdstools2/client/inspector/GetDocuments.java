@@ -2,7 +2,6 @@ package gov.nist.toolkit.xdstools2.client.inspector;
 
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.user.client.rpc.AsyncCallback;
 import gov.nist.toolkit.registrymetadata.client.AnyIds;
 import gov.nist.toolkit.registrymetadata.client.ObjectRef;
 import gov.nist.toolkit.registrymetadata.client.ObjectRefs;
@@ -10,7 +9,7 @@ import gov.nist.toolkit.results.client.Result;
 import gov.nist.toolkit.results.client.StepResult;
 import gov.nist.toolkit.results.client.TestInstance;
 import gov.nist.toolkit.xdstools2.client.command.command.GetDocumentsCommand;
-import gov.nist.toolkit.xdstools2.client.util.ClientUtils;
+import gov.nist.toolkit.xdstools2.client.initialization.FrameworkInitialization;
 import gov.nist.toolkit.xdstools2.shared.command.request.GetDocumentsRequest;
 
 import java.util.List;
@@ -41,7 +40,7 @@ public class GetDocuments implements ClickHandler {
 					it.addToHistory(result);
 				}
 			}
-		}.run(new GetDocumentsRequest(ClientUtils.INSTANCE.getCommandContext(),null,aids));
+		}.run(new GetDocumentsRequest(FrameworkInitialization.data().getCommandContext(),null,aids));
 		if (originatingResult != null)
 			originatingResult.rmFromToBeRetrieved(ids);
 	}

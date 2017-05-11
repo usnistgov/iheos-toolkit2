@@ -1,7 +1,7 @@
 package gov.nist.toolkit.xdstools2.client.command.command;
 
 import gov.nist.toolkit.services.client.RawResponse;
-import gov.nist.toolkit.xdstools2.client.util.ClientUtils;
+import gov.nist.toolkit.xdstools2.client.initialization.FrameworkInitialization;
 import gov.nist.toolkit.xdstools2.shared.command.request.BuildIgTestOrchestrationRequest;
 
 /**
@@ -10,6 +10,6 @@ import gov.nist.toolkit.xdstools2.shared.command.request.BuildIgTestOrchestratio
 public abstract class BuildIGTestOrchestrationCommand extends GenericCommand<BuildIgTestOrchestrationRequest,RawResponse>{
     @Override
     public void run(BuildIgTestOrchestrationRequest var1) {
-        ClientUtils.INSTANCE.getToolkitServices().buildIgTestOrchestration(var1,this);
+        FrameworkInitialization.data().getToolkitServices().buildIgTestOrchestration(var1,this);
     }
 }

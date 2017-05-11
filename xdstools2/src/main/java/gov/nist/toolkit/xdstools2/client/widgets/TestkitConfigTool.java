@@ -4,13 +4,13 @@ import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.*;
-import gov.nist.toolkit.xdstools2.client.framework.TabContainer;
+import gov.nist.toolkit.xdstools2.client.TabContainer;
 import gov.nist.toolkit.xdstools2.client.command.command.CheckTestkitExistenceCommand;
 import gov.nist.toolkit.xdstools2.client.command.command.ConfigureTestkitCommand;
 import gov.nist.toolkit.xdstools2.client.command.command.GenerateTestkitStructureCommand;
 import gov.nist.toolkit.xdstools2.client.command.command.IndexTestkitsCommand;
+import gov.nist.toolkit.xdstools2.client.initialization.FrameworkInitialization;
 import gov.nist.toolkit.xdstools2.client.selectors.EnvironmentManager;
-import gov.nist.toolkit.xdstools2.client.util.ClientUtils;
 import gov.nist.toolkit.xdstools2.shared.command.CommandContext;
 
 
@@ -65,7 +65,7 @@ public class TestkitConfigTool extends Composite {
                     container.add(resultPanel);
                     container.removeStyleName("loading");
                 }
-            }.run(ClientUtils.INSTANCE.getCommandContext());
+            }.run(FrameworkInitialization.data().getCommandContext());
         }
     }
 
@@ -111,7 +111,7 @@ public class TestkitConfigTool extends Composite {
                         runConfigTestkit();
                     }
                 }
-            }.run(new CommandContext(environmentManager.getSelectedEnvironment(),ClientUtils.INSTANCE.getTestSessionManager().getCurrentTestSession()));
+            }.run(new CommandContext(environmentManager.getSelectedEnvironment(),FrameworkInitialization.data().getTestSessionManager().getCurrentTestSession()));
         }
 
         /** Method that actually runs the configuration (code update) of the testkit. **/
@@ -131,7 +131,7 @@ public class TestkitConfigTool extends Composite {
                     container.add(resultPanel);
                     container.removeStyleName("loading");
                 }
-            }.run(new CommandContext(environmentManager.getSelectedEnvironment(),ClientUtils.INSTANCE.getTestSessionManager().getCurrentTestSession()));
+            }.run(new CommandContext(environmentManager.getSelectedEnvironment(),FrameworkInitialization.data().getTestSessionManager().getCurrentTestSession()));
         }
     }
 

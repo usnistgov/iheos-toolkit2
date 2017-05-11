@@ -15,7 +15,7 @@ import gov.nist.toolkit.services.client.RigOrchestrationResponse;
 import gov.nist.toolkit.simcommon.client.config.SimulatorConfigElement;
 import gov.nist.toolkit.sitemanagement.client.SiteSpec;
 import gov.nist.toolkit.xdstools2.client.command.command.BuildRigTestOrchestrationCommand;
-import gov.nist.toolkit.xdstools2.client.util.ClientUtils;
+import gov.nist.toolkit.xdstools2.client.initialization.FrameworkInitialization;
 import gov.nist.toolkit.xdstools2.client.widgets.buttons.AbstractOrchestrationButton;
 import gov.nist.toolkit.xdstools2.shared.command.request.BuildRigTestOrchestrationRequest;
 
@@ -192,7 +192,7 @@ public class BuildRIGTestOrchestrationButton extends AbstractOrchestrationButton
                         "Responding Imaging Gateway SUT to forward Retrieve Imaging " +
                         "Document Set Requests to these Imaging Document Sources<hr/>"));
             }
-        }.run(new BuildRigTestOrchestrationRequest(ClientUtils.INSTANCE.getCommandContext(),request));
+        }.run(new BuildRigTestOrchestrationRequest(FrameworkInitialization.data().getCommandContext(),request));
     } @SuppressWarnings("javadoc")
     public enum Orchestra {
        

@@ -2,14 +2,13 @@ package gov.nist.toolkit.xdstools2.client.inspector;
 
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.user.client.rpc.AsyncCallback;
 import gov.nist.toolkit.registrymetadata.client.AnyIds;
 import gov.nist.toolkit.registrymetadata.client.ObjectRef;
 import gov.nist.toolkit.registrymetadata.client.ObjectRefs;
 import gov.nist.toolkit.results.client.Result;
 import gov.nist.toolkit.results.client.TestInstance;
 import gov.nist.toolkit.xdstools2.client.command.command.GetSubmissionSetsCommand;
-import gov.nist.toolkit.xdstools2.client.util.ClientUtils;
+import gov.nist.toolkit.xdstools2.client.initialization.FrameworkInitialization;
 import gov.nist.toolkit.xdstools2.shared.command.request.GetSubmissionSetsRequest;
 
 import java.util.List;
@@ -33,7 +32,7 @@ public class GetSubmissionSets implements ClickHandler {
 			public void onComplete(List<Result> result) {
 				it.addToHistory(result);
 			}
-		}.run(new GetSubmissionSetsRequest(ClientUtils.INSTANCE.getCommandContext(),null,new AnyIds(ids)));
+		}.run(new GetSubmissionSetsRequest(FrameworkInitialization.data().getCommandContext(),null,new AnyIds(ids)));
 	}
 
 	public GetSubmissionSets(MetadataInspectorTab it, ObjectRefs ids) {

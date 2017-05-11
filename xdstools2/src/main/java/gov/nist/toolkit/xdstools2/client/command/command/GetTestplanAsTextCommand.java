@@ -1,6 +1,6 @@
 package gov.nist.toolkit.xdstools2.client.command.command;
 
-import gov.nist.toolkit.xdstools2.client.util.ClientUtils;
+import gov.nist.toolkit.xdstools2.client.initialization.FrameworkInitialization;
 import gov.nist.toolkit.xdstools2.shared.command.request.GetTestplanAsTextRequest;
 
 /**
@@ -9,6 +9,6 @@ import gov.nist.toolkit.xdstools2.shared.command.request.GetTestplanAsTextReques
 public abstract class GetTestplanAsTextCommand extends GenericCommand<GetTestplanAsTextRequest,String>{
     @Override
     public void run(GetTestplanAsTextRequest var1) {
-        ClientUtils.INSTANCE.getToolkitServices().getTestplanAsText(var1,this);
+        FrameworkInitialization.data().getToolkitServices().getTestplanAsText(var1,this);
     }
 }

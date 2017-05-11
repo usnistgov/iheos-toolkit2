@@ -1,6 +1,6 @@
 package gov.nist.toolkit.xdstools2.client.command.command;
 
-import gov.nist.toolkit.xdstools2.client.util.ClientUtils;
+import gov.nist.toolkit.xdstools2.client.initialization.FrameworkInitialization;
 import gov.nist.toolkit.xdstools2.shared.command.request.SetToolkitPropertiesRequest;
 
 /**
@@ -9,6 +9,6 @@ import gov.nist.toolkit.xdstools2.shared.command.request.SetToolkitPropertiesReq
 public abstract class SetToolkitPropertiesCommand extends GenericCommand<SetToolkitPropertiesRequest,String>{
     @Override
     public void run(SetToolkitPropertiesRequest var1) {
-        ClientUtils.INSTANCE.getToolkitServices().setToolkitProperties(var1,this);
+        FrameworkInitialization.data().getToolkitServices().setToolkitProperties(var1,this);
     }
 }

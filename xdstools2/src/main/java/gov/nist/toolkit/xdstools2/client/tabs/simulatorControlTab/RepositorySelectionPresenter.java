@@ -2,7 +2,7 @@ package gov.nist.toolkit.xdstools2.client.tabs.simulatorControlTab;
 
 import com.google.gwt.user.client.ui.Panel;
 import gov.nist.toolkit.xdstools2.client.command.command.GetSiteNamesWithRepositoryCommand;
-import gov.nist.toolkit.xdstools2.client.util.ClientUtils;
+import gov.nist.toolkit.xdstools2.client.initialization.FrameworkInitialization;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -34,7 +34,7 @@ public class RepositorySelectionPresenter {
                 bind();
                 panel.add(view.asWidget());
             }
-        }.run(ClientUtils.INSTANCE.getCommandContext());
+        }.run(FrameworkInitialization.data().getCommandContext());
     }
 
     void bind() {}

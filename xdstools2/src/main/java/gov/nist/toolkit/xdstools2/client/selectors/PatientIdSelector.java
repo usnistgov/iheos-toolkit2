@@ -5,13 +5,11 @@ import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.Cookies;
-import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.*;
 import gov.nist.toolkit.xdstools2.client.CookieManager;
 import gov.nist.toolkit.xdstools2.client.Panel1;
 import gov.nist.toolkit.xdstools2.client.command.command.GetDefaultAssigningAuthorityCommand;
-import gov.nist.toolkit.xdstools2.client.widgets.PopupMessage;
-import gov.nist.toolkit.xdstools2.client.util.ClientUtils;
+import gov.nist.toolkit.xdstools2.client.initialization.FrameworkInitialization;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -42,7 +40,7 @@ public class PatientIdSelector {
 				public void onComplete(String result) {
 					defaultAssigningAuthority = result;
 				}
-			}.run(ClientUtils.INSTANCE.getCommandContext());
+			}.run(FrameworkInitialization.data().getCommandContext());
 		}
 		
 		PatientIdSelector sel = new PatientIdSelector(menuPanel);

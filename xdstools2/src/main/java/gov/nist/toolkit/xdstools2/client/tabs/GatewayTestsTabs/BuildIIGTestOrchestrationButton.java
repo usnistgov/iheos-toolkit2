@@ -13,9 +13,9 @@ import gov.nist.toolkit.services.client.IigOrchestrationResponse;
 import gov.nist.toolkit.services.client.RawResponse;
 import gov.nist.toolkit.simcommon.client.config.SimulatorConfigElement;
 import gov.nist.toolkit.xdstools2.client.command.command.BuildIIGTestOrchestrationCommand;
-import gov.nist.toolkit.xdstools2.client.widgets.PopupMessage;
+import gov.nist.toolkit.xdstools2.client.initialization.FrameworkInitialization;
 import gov.nist.toolkit.xdstools2.client.tabs.genericQueryTab.GenericQueryTab;
-import gov.nist.toolkit.xdstools2.client.util.ClientUtils;
+import gov.nist.toolkit.xdstools2.client.widgets.PopupMessage;
 import gov.nist.toolkit.xdstools2.client.widgets.buttons.AbstractOrchestrationButton;
 import gov.nist.toolkit.xdstools2.shared.command.request.BuildIigTestOrchestrationRequest;
 
@@ -93,7 +93,7 @@ class BuildIIGTestOrchestrationButton extends AbstractOrchestrationButton {
 
             } // pass Orchestration
          }
-      }.run(new BuildIigTestOrchestrationRequest(ClientUtils.INSTANCE.getCommandContext(),request));
+      }.run(new BuildIigTestOrchestrationRequest(FrameworkInitialization.data().getCommandContext(),request));
    }
    @SuppressWarnings("javadoc")
    public enum Orchestra {

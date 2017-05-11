@@ -7,14 +7,15 @@ import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.ListBox;
-import gov.nist.toolkit.xdstools2.client.*;
+import gov.nist.toolkit.xdstools2.client.CookieManager;
+import gov.nist.toolkit.xdstools2.client.Panel1;
+import gov.nist.toolkit.xdstools2.client.TabContainer;
 import gov.nist.toolkit.xdstools2.client.command.command.GetDefaultEnvironmentCommand;
 import gov.nist.toolkit.xdstools2.client.command.command.GetEnvironmentNamesCommand;
 import gov.nist.toolkit.xdstools2.client.command.command.SetEnvironmentCommand;
 import gov.nist.toolkit.xdstools2.client.event.Xdstools2EventBus;
-import gov.nist.toolkit.xdstools2.client.framework.TabContainer;
+import gov.nist.toolkit.xdstools2.client.initialization.FrameworkInitialization;
 import gov.nist.toolkit.xdstools2.client.tabs.EnvironmentState;
-import gov.nist.toolkit.xdstools2.client.util.ClientUtils;
 
 import java.util.List;
 
@@ -34,7 +35,7 @@ public class EnvironmentManager extends Composite{
 	
 	public EnvironmentManager(TabContainer tabContainer) {
 		this.tabContainer = tabContainer;
-		this.environmentState = ClientUtils.INSTANCE.getEnvironmentState();
+		this.environmentState = FrameworkInitialization.data().getEnvironmentState();
 		environmentManager = this;
 		
 		environmentState.addManager(this);
@@ -135,9 +136,9 @@ public class EnvironmentManager extends Composite{
 					updateCookie();
 				}
 			}
-		}.run(ClientUtils.INSTANCE.getCommandContext());
+		}.run(FrameworkInitialization.data().getCommandContext());
 
-		new SetEnvironmentCommand().run(ClientUtils.INSTANCE.getCommandContext().setEnvironmentName(initialEnvironmentName));
+		new SetEnvironmentCommand().run(FrameworkInitialization.data().getCommandContext().setEnvironmentName(initialEnvironmentName));
 	}
 	
 	void getDefaultEnvironment() {
@@ -153,7 +154,7 @@ public class EnvironmentManager extends Composite{
 					updateCookie();
 					updateServer();
 				}
-			}.run(ClientUtils.INSTANCE.getCommandContext());
+			}.run(FrameworkInitialization.data().getCommandContext());
 	}
 
 	void updateCookie() {
@@ -161,7 +162,7 @@ public class EnvironmentManager extends Composite{
 	}
 	
 	void updateServer() {
-		new SetEnvironmentCommand().run(ClientUtils.INSTANCE.getCommandContext());
+		new SetEnvironmentCommand().run(FrameworkInitialization.data().getCommandContext());
 	}
 
 	class EnvironmentChangeHandler implements ChangeHandler {
@@ -172,8 +173,8 @@ public class EnvironmentManager extends Composite{
 			change(value);
 			
 			environmentState.updated(environmentManager);
-			((Xdstools2EventBus) ClientUtils.INSTANCE.getEventBus()).fireEnvironmentChangedEvent(value);
-			new SetEnvironmentCommand().run(ClientUtils.INSTANCE.getCommandContext().setEnvironmentName(value));
+			((Xdstools2EventBus) FrameworkInitialization.data().getEventBus()).fireEnvironmentChangedEvent(value);
+			new SetEnvironmentCommand().run(FrameworkInitialization.data().getCommandContext().setEnvironmentName(value));
 		}
 
 	}

@@ -1,0 +1,439 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!-- The following sample document depicts a fictional character’s health summary. Any resemblance to a real person is coincidental. -->
+<ClinicalDocument xmlns="urn:hl7-org:v3" classCode="DOCCLIN" moodCode="EVN"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="urn:hl7-org:v3 CDA.xsd">
+    <typeId extension="POCD_HD000040" root="2.16.840.1.113883.1.3"/>
+    <templateId assigningAuthorityName="HITSP/C32" root="2.16.840.1.113883.3.88.11.32.1"/>
+    <templateId assigningAuthorityName="CCD" root="2.16.840.1.113883.10.20.1"/>
+    <id root="2.16.840.1.113883.3.72" extension="SamplePatientRecord02"
+        assigningAuthorityName="NIST Healthcare Project"/>
+    <code code="34133-9" codeSystem="2.16.840.1.113883.6.1"
+        displayName="Summarization of episode note"/>
+    <effectiveTime value="20080627134924-0800" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:type="SXCM_TS"/>
+    <confidentialityCode code="N" codeSystem="2.16.840.1.113883.5.25"
+        codeSystemName="Confidentiality" displayName="normal"/>
+    <languageCode code="en-US"/>
+    <recordTarget contextControlCode="OP" typeCode="RCT">
+        <patientRole classCode="PAT">
+            <id assigningAuthorityName="Axolotl Elysium" displayable="false"
+                extension="000000306969" root="1.3.6.1.4.1.29148"
+                xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="II"/>
+            <addr xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="AD">
+                <state>MO</state>
+                <city>HILLSBORO</city>
+                <postalCode>63050</postalCode>
+                <streetAddressLine>312 HILL ROAD</streetAddressLine>
+            </addr>
+            <telecom use="H" value="tel:+1-636-555-3055"
+                xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="TEL"/>
+            <patient classCode="PSN" determinerCode="INSTANCE">
+                <name xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="PN" use="L">
+                    <prefix>Mrs.</prefix>
+                    <given>Anna</given>
+                    <family>Schnur</family>
+                </name>
+                <administrativeGenderCode code="F" codeSystem="2.16.840.1.113883.5.1"
+                    codeSystemName="AdministrativeGender" displayName="Female"/>
+                <birthTime value="19560813"/>
+                <maritalStatusCode code="W" displayName="Widowed" codeSystem="2.16.840.1.113883.5.2"
+                    codeSystemName="MaritalStatusCode"/>
+                <languageCommunication>
+                    <languageCode code="en-US"/>
+                </languageCommunication>
+            </patient>
+        </patientRole>
+    </recordTarget>
+    <author contextControlCode="OP" typeCode="AUT">
+        <time xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="IVL_TS">
+            <low inclusive="true" value="20080604121510"/>
+            <high inclusive="true" value="20080604124737"/>
+        </time>
+        <assignedAuthor classCode="ASSIGNED">
+            <id assigningAuthorityName="NullFlavor" displayable="false" extension="NA"
+                root="2.16.840.1.113883.5.1008"
+                xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="II"/>
+            <assignedAuthoringDevice>
+                <softwareName>Axolotl Elysium</softwareName>
+            </assignedAuthoringDevice>
+            <representedOrganization classCode="ORG" determinerCode="INSTANCE">
+                <id assigningAuthorityName="Axolotl Elysium" displayable="false"
+                    extension="Elysium CCD Author" root="1.3.6.1.4.1.29148"
+                    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="II"/>
+                <name xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ON">Elysium
+                    CCD Author</name>
+            </representedOrganization>
+        </assignedAuthor>
+    </author>
+    <custodian typeCode="CST">
+        <assignedCustodian classCode="ASSIGNED">
+            <representedCustodianOrganization classCode="ORG" determinerCode="INSTANCE">
+                <id assigningAuthorityName="Axolotl Elysium" displayable="false"
+                    extension="Elysium CCD Custodian" root="1.3.6.1.4.1.29148"
+                    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="II"/>
+            </representedCustodianOrganization>
+        </assignedCustodian>
+    </custodian>
+    <participant contextControlCode="OP" typeCode="IND">
+        <templateId assigningAuthorityName="HITSP/C32" root="2.16.840.1.113883.3.88.11.32.3"/>
+        <time/>
+        <associatedEntity classCode="NOK">
+            <code nullFlavor="UNK" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                xsi:type="CS"/>
+            <associatedPerson>
+                <name>Unknown</name>
+            </associatedPerson>
+        </associatedEntity>
+    </participant>
+    <documentationOf typeCode="DOC">
+        <serviceEvent classCode="PCPR" moodCode="EVN">
+            <effectiveTime xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="IVL_TS">
+                <low inclusive="true" value="20070911"/>
+                <high inclusive="true" value="20080627"/>
+            </effectiveTime>
+            <performer typeCode="PRF">
+                <time xsi:type="IVL_TS">
+                    <low value="20000118"/>
+                    <high nullFlavor="NA" />
+                </time>
+                <assignedEntity classCode="ASSIGNED">                    
+                    <id assigningAuthorityName="Axolotl Elysium" displayable="false" extension="4"
+                        root="1.3.6.1.4.1.29148"
+                        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="II"/>
+                    <id assigningAuthorityName="RoleStatus" displayable="false" extension="active"
+                        root="2.16.840.1.113883.5.1068"
+                        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="II"/>                    
+                    <representedOrganization classCode="ORG" determinerCode="INSTANCE">
+                        <name xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ON"
+                            >Test Two Workgroup</name>
+                    </representedOrganization>
+                </assignedEntity>
+            </performer>
+        </serviceEvent>
+    </documentationOf>
+    <documentationOf typeCode="DOC">
+        <serviceEvent classCode="PCPR" moodCode="EVN">
+            <effectiveTime xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="IVL_TS">
+                <low inclusive="true" value="20070906"/>
+                <high inclusive="true" value="20080627"/>
+            </effectiveTime>
+            <performer typeCode="PRF">
+                <time xsi:type="IVL_TS">
+                    <low value="20000118"/>
+                    <high nullFlavor="NA" />
+                </time>
+                <assignedEntity classCode="ASSIGNED">
+                    <id assigningAuthorityName="Axolotl Elysium" displayable="false" extension="5"
+                        root="1.3.6.1.4.1.29148"
+                        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="II"/>
+                    <id assigningAuthorityName="RoleStatus" displayable="false" extension="active"
+                        root="2.16.840.1.113883.5.1068"
+                        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="II"/>
+                    <representedOrganization classCode="ORG" determinerCode="INSTANCE">
+                        <name xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ON"
+                            >Test One Workgroup</name>
+                    </representedOrganization>
+                </assignedEntity>
+            </performer>
+        </serviceEvent>
+    </documentationOf>
+    <component contextConductionInd="true" typeCode="COMP">
+        <structuredBody classCode="DOCBODY" moodCode="EVN">
+            <component contextConductionInd="true" typeCode="COMP">
+                <section classCode="DOCSECT" moodCode="EVN">
+                    <templateId assigningAuthorityName="CCD" root="2.16.840.1.113883.10.20.1.11"/>
+                    <code code="11450-4" codeSystem="2.16.840.1.113883.6.1"
+                        displayName="Problem list"/>
+                    <title mediaType="text/plain" representation="TXT">Problems</title>
+                    <text>No known problems</text>
+                    <entry contextConductionInd="true" typeCode="DRIV">
+                        <act classCode="ACT" moodCode="EVN">
+                            <templateId assigningAuthorityName="CCD"
+                                root="2.16.840.1.113883.10.20.1.27"/>
+                            <templateId assigningAuthorityName="HITSP/C32"
+                                root="2.16.840.1.113883.3.88.11.32.7"/>
+                            <id assigningAuthorityName="NullFlavor" displayable="false"
+                                extension="NA" root="2.16.840.1.113883.5.1008"
+                                xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="II"/>
+                            <code nullFlavor="NA"
+                                xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="CE"/>
+                            <entryRelationship contextConductionInd="true" typeCode="SUBJ">
+                                <observation classCode="OBS" moodCode="EVN">
+                                    <templateId assigningAuthorityName="CCD"
+                                        root="2.16.840.1.113883.10.20.1.28"/>
+                                    <code code="55607006" codeSystem="2.16.840.1.113883.6.96"
+                                        displayName="Problem"
+                                        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                                        xsi:type="CE"/>
+                                    <text>
+                                        <reference value="NA"/>
+                                    </text>
+                                    <statusCode code="completed"/>
+                                    <effectiveTime nullFlavor="NA" />
+                                </observation>
+                            </entryRelationship>
+                        </act>
+                    </entry>
+                </section>
+            </component>
+            <component contextConductionInd="true" typeCode="COMP">
+                <section classCode="DOCSECT" moodCode="EVN">
+                    <templateId assigningAuthorityName="CCD" root="2.16.840.1.113883.10.20.1.2"/>
+                    <code code="48765-2" codeSystem="2.16.840.1.113883.6.1"
+                        displayName="Allergies and adverse reactions, alerts"/>
+                    <title mediaType="text/plain" representation="TXT">Allergies and Adverse Reactions</title>
+                    <text>No known allergies</text>
+                    <entry contextConductionInd="true" typeCode="COMP">
+                        <act classCode="ACT" moodCode="EVN">
+                            <templateId assigningAuthorityName="CCD"
+                                root="2.16.840.1.113883.10.20.1.27"/>
+                            <templateId assigningAuthorityName="HITSP/C32"
+                                root="2.16.840.1.113883.3.88.11.32.6"/>
+                            <id assigningAuthorityName="NullFlavor" displayable="false"
+                                extension="NA" root="2.16.840.1.113883.5.1008"
+                                xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="II"/>
+                            <code nullFlavor="NA"
+                                xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="CE"/>
+                            <entryRelationship contextConductionInd="true" typeCode="SUBJ">
+                                <observation classCode="OBS" moodCode="EVN">
+                                    <code nullFlavor="NA"
+                                        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                                        xsi:type="CE"/>
+                                </observation>
+                            </entryRelationship>
+                        </act>
+                    </entry>
+                </section>
+            </component>
+            <component>
+                <!--Medications-->
+                <section>
+                    <templateId root="2.16.840.1.113883.10.20.1.8" assigningAuthorityName="CCD"/>
+                    <code code="10160-0" displayName="History of medication use"
+                        codeSystem="2.16.840.1.113883.6.1" codeSystemName="LOINC"/>
+                    <title>Medications - Prescription and Non-Prescription</title>
+                    <text>
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Medication</th>
+                                    <th>Patient Instruction</th>
+                                    <th>Fulfillment Instruction</th>
+                                    <th>Comment</th>
+                                    <th>Start Time</th>
+                                    <th>End Time (if applicable)</th>
+                                </tr>
+                            </thead>
+                            
+                            <tbody>
+                                <tr>
+                                    <td><content ID="sig-1"> Acetaminophen 325 mg tablet tid po prn</content></td>
+                                    <td><content ID="patient-instruction">Take with food</content></td>
+                                    <td><content ID="fulfillment-instruction1">Prepare with distilled water.</content></td>
+                                    <td><content ID="comment-1">Watch for any allergic reaction</content></td>
+                                    <td>2007-02-01</td>
+                                    <td>2007-02-10</td>
+                                </tr>
+                            </tbody>
+                        </table>                       
+                    </text>
+                    <entry>
+                        <substanceAdministration classCode="SBADM" moodCode="EVN">
+                            <templateId root="2.16.840.1.113883.10.20.1.24"
+                                assigningAuthorityName="CCD"/>
+                            <templateId root="2.16.840.1.113883.3.88.11.32.8"
+                                assigningAuthorityName="HITSP/C32"/>
+                            <id/>
+                            <code code="313782" displayName="Acetaminophen 325 mg tablet"
+                                codeSystem="2.16.840.1.113883.6.88" codeSystemName="RxNorm"/>
+                            <text>
+                                <reference value="#sig-1"/>
+                            </text>
+                            <statusCode code="completed"/>
+                            <effectiveTime xsi:type="IVL_TS">
+                                <low value="20070201"/>
+                                <high value="20070210"/>
+                            </effectiveTime>
+                            <effectiveTime xsi:type="PIVL_TS" institutionSpecified="false"
+                                operator="A">
+                                <period value="8" unit="h"/>
+                            </effectiveTime>
+                            <repeatNumber value="3"/>
+                            <routeCode code="C38288" displayName="Oral"
+                                codeSystem="2.16.840.1.113883.3.26.1.1"
+                                codeSystemName="FDA Route of Administration"/>
+                            <approachSiteCode code="91723000"
+                                displayName="Anatomical Structure hierarchy"
+                                codeSystem="2.16.840.1.113883.6.96" codeSystemName="SNOMED CT"/>
+                            <doseQuantity value="1" unit="{TABLET}"/>
+                            <administrationUnitCode code="C42998" displayName="TABLET"
+                                codeSystem="2.16.840.1.113883.3.26.1.1"
+                                codeSystemName="NCI Thesaurus"/>
+                            <consumable>
+                                <manufacturedProduct classCode="MANU">
+                                    <templateId root="2.16.840.1.113883.10.20.1.53"
+                                        assigningAuthorityName="CCD"/>
+                                    <templateId root="2.16.840.1.113883.3.88.11.32.9"
+                                        assigningAuthorityName="HITSP/C32"/>
+                                    <manufacturedMaterial classCode="MMAT" determinerCode="KIND">
+                                        <code code="N0000020025"
+                                            codeSystem="2.16.840.1.113883.4.209">
+                                            <originalText>Acetaminophen</originalText>
+                                            <translation code="202433" displayName="Tylenol"
+                                                codeSystem="2.16.840.1.113883.6.88"
+                                                codeSystemName="RxNorm"/>
+                                        </code>
+                                        <name>Tylenol</name>
+                                    </manufacturedMaterial>
+                                </manufacturedProduct>
+                            </consumable>
+                            <participant typeCode="CSM">
+                                <participantRole classCode="MANU">
+                                    <code code="412307009" displayName="drug vehicle"
+                                        codeSystem="2.16.840.1.113883.6.96"
+                                        codeSystemName="SNOMED CT"/>
+                                    <playingEntity classCode="MMAT">
+                                        <code codeSystem="2.16.840.1.113883.6.69" code="11"/>
+                                        <name>…</name>
+                                    </playingEntity>
+                                </participantRole>
+                            </participant>
+                            <entryRelationship typeCode="REFR">
+                                <observation classCode="OBS" moodCode="EVN">
+                                    <code code="33999-4" displayName="Status"
+                                        codeSystem="2.16.840.1.113883.6.1" codeSystemName="LOINC"/>
+                                    <statusCode code="completed"/>
+                                    <value xsi:type="CE" code="55561003" displayName="Active"
+                                        codeSystem="2.16.840.1.113883.6.96"
+                                        codeSystemName="SNOMED CT"/>
+                                </observation>
+                            </entryRelationship>
+                            <entryRelationship typeCode="RSON">
+                                <observation classCode="OBS" moodCode="EVN">
+                                    <templateId root="2.16.840.1.113883.10.20.1.28"
+                                        assigningAuthorityName="CCD"/>
+                                    <code code="Snomedcode" displayName="SnomedName"
+                                        codeSystem="2.16.840.1.113883.6.96"
+                                        codeSystemName="SNOMED CT"/>
+                                    <text>
+                                        <reference value="#indication-1"/>
+                                    </text>
+                                    <statusCode code="completed"/>
+                                    <effectiveTime value="2007"/>
+                                </observation>
+                            </entryRelationship>
+                            <entryRelationship typeCode="SUBJ" inversionInd="true">
+                                <act classCode="ACT" moodCode="INT">
+                                    <templateId root="2.16.840.1.113883.10.20.1.49"
+                                        assigningAuthorityName="CCD"/>
+                                    <code/>
+                                    <text>
+                                        <reference value="#patient-instruction"/>
+                                    </text>
+                                </act>
+                            </entryRelationship>
+                            <entryRelationship typeCode="REFR">
+                                <supply classCode="SPLY" moodCode="INT">
+                                    <templateId root="2.16.840.1.113883.3.88.1.11.32.11"
+                                        assigningAuthorityName="HITSP/C32"/>
+                                    <id root="14ED7742-2428-4e2c-9446-A9B0D0075272"
+                                        extension="SCRIP#"/>
+                                    <repeatNumber value="1"/>
+                                    <quantity value="100" unit="{TABLET}"/>
+                                    <author>
+                                        <time value="20070210"/>
+                                        <assignedAuthor>
+                                            <id/>
+                                            <assignedPerson>
+                                                <name>
+                                                    <prefix>Dr.</prefix>
+                                                    <given>Happy</given>
+                                                    <family>Face</family>
+                                                </name>
+                                            </assignedPerson>
+                                        </assignedAuthor>
+                                    </author>
+                                </supply>
+                            </entryRelationship>
+                            <entryRelationship typeCode="SUBJ">
+                                <act classCode="ACT" moodCode="INT">
+                                    <templateId root="2.16.840.1.113883.10.20.1.43"
+                                        assigningAuthorityName="CCD"/>
+                                    <code nullFlavor="NA"/>
+                                    <text>
+                                        <reference value="#fulfillment-instruction1"/>
+                                    </text>
+                                </act>
+                            </entryRelationship>
+                            <entryRelationship typeCode="REFR">
+                                <supply classCode="SPLY" moodCode="EVN">
+                                    <templateId root="2.16.840.1.113883.10.20.1.34"
+                                        assigningAuthorityName="CCD"/>
+                                    <id root="14ED7742-2428-4e2c-9446-A9B0D0075272"
+                                        extension="SCRIP#"/>
+                                    <code nullFlavor="NA"/>
+                                    <statusCode code="aborted"/>
+                                    <effectiveTime nullFlavor="NA"/>
+                                    <repeatNumber value="1"/>
+                                    <quantity value="1"/>
+                                    <performer>
+                                        <assignedEntity>
+                                            <id/>
+                                            <addr/>
+                                            <assignedPerson>
+                                                <name/>
+                                            </assignedPerson>
+                                        </assignedEntity>
+                                    </performer>
+                                    <author>
+                                        <time value="2007"/>
+                                        <assignedAuthor>
+                                            <id/>
+                                            <assignedPerson>
+                                                <name>
+                                                    <prefix>Dr.</prefix>
+                                                    <given>Non</given>
+                                                    <family>Descript</family>
+                                                </name>
+                                            </assignedPerson>
+                                        </assignedAuthor>
+                                    </author>
+                                    <entryRelationship typeCode="SUBJ">
+                                        <act classCode="ACT" moodCode="INT">
+                                            <templateId root="2.16.840.1.113883.10.20.1.43"
+                                                assigningAuthorityName="CCD"/>
+                                            <code/>
+                                        </act>
+                                    </entryRelationship>
+                                </supply>
+                            </entryRelationship>
+                            <entryRelationship typeCode="SUBJ" inversionInd="true">
+                                <act classCode="ACT" moodCode="EVN">
+                                    <templateId root="2.16.840.1.113883.10.20.1.40"
+                                        assigningAuthorityName="CCD"/>
+                                    <templateId root="2.16.840.1.113883.3.88.11.32.12"
+                                        assigningAuthorityName="HITSP/C32"/>
+                                    <code code="48767-8" displayName="Annotation Comment"
+                                        codeSystem="2.16.840.1.113883.6.1" codeSystemName="LOINC"/>
+                                    <text>
+                                        <reference value="#comment-1"/>
+                                    </text>
+                                    <author>
+                                        <time/>
+                                        <assignedAuthor>
+                                            <id/>
+                                            <assignedPerson>
+                                                <name>My Name</name>
+                                            </assignedPerson>
+                                        </assignedAuthor>
+                                    </author>
+                                </act>
+                            </entryRelationship>
+                        </substanceAdministration>
+                    </entry>
+                </section>
+            </component>
+        </structuredBody>
+    </component>
+</ClinicalDocument>

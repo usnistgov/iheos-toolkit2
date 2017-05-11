@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<module rename-to="xdstools2">
+<module>
 
 
     <!-- Inherit the core Web Toolkit stuff.                        -->
@@ -17,9 +17,7 @@
 
     <!-- Other module inherits          -->
     <inherits name="gov.nist.toolkit.simcommon.simCommon"/>
-    <!--<inherits name="gov.nist.toolkit.xdstestgui.xdstestGui"/>-->
     <inherits name="gov.nist.toolkit.testengine.testengine"/>
-
     <inherits name="gov.nist.toolkit.sitemanagement.siteManagement"/>
     <inherits name="gov.nist.toolkit.valsupport.validatorsSupport"/>
     <inherits name="gov.nist.toolkit.registrymsg.registryMsgFormats"/>
@@ -44,7 +42,7 @@
     <inherits name="elemental.Elemental"/>
 
     <!-- Specify the app entry point class.                         -->
-    <entry-point class='gov.nist.toolkit.xdstools2.client.framework.Xdstools2EP'/>
+    <!--<entry-point class='gov.nist.toolkit.xdstools2Framework.client.framework.Xdstools2EP'/>-->
 
 
     <!-- DEBUG STUFF -->
@@ -61,9 +59,9 @@
     <!-- <inherits name="com.google.gwt.logging.Logging"/> -->
 
     <!-- Use ClientFactoryImpl by default -->
-    <replace-with class="gov.nist.toolkit.xdstools2.client.util.ClientFactoryImpl">
-        <when-type-is class="gov.nist.toolkit.xdstools2.client.util.ClientFactory"/>
-    </replace-with>
+    <!--<replace-with class="gov.nist.toolkit.xdstools2Framework.client.framework.ClientFactoryImpl">-->
+        <!--<when-type-is class="gov.nist.toolkit.xdstools2Framework.client.framework.ClientFactory"/>-->
+    <!--</replace-with>-->
 
     <public path="public"/>
     <source path="client"/>

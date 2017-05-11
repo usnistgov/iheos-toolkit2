@@ -24,12 +24,12 @@ import gov.nist.toolkit.xdstools2.client.event.TabSelectedEvent;
 import gov.nist.toolkit.xdstools2.client.event.Xdstools2EventBus;
 import gov.nist.toolkit.xdstools2.client.event.testSession.TestSessionChangedEvent;
 import gov.nist.toolkit.xdstools2.client.event.testSession.TestSessionChangedEventHandler;
+import gov.nist.toolkit.xdstools2.client.initialization.FrameworkInitialization;
 import gov.nist.toolkit.xdstools2.client.siteActorManagers.BaseSiteActorManager;
 import gov.nist.toolkit.xdstools2.client.siteActorManagers.FindDocumentsSiteActorManager;
 import gov.nist.toolkit.xdstools2.client.tabs.SimulatorMessageViewTab;
 import gov.nist.toolkit.xdstools2.client.tabs.genericQueryTab.GenericQueryTab;
 import gov.nist.toolkit.xdstools2.client.tabs.simulatorControlTab.od.OddsEditTab;
-import gov.nist.toolkit.xdstools2.client.util.ClientUtils;
 import gov.nist.toolkit.xdstools2.client.widgets.AdminPasswordDialogBox;
 import gov.nist.toolkit.xdstools2.client.widgets.PopupMessage;
 import gov.nist.toolkit.xdstools2.shared.command.request.GetAllSimConfigsRequest;
@@ -123,14 +123,14 @@ public class SimulatorControlTab extends GenericQueryTab {
             }
         }.run(getCommandContext());
 
-        ClientUtils.INSTANCE.getEventBus().addHandler(TestSessionChangedEvent.TYPE, new TestSessionChangedEventHandler() {
+        FrameworkInitialization.data().getEventBus().addHandler(TestSessionChangedEvent.TYPE, new TestSessionChangedEventHandler() {
             @Override
             public void onTestSessionChanged(TestSessionChangedEvent event) {
                 loadSimStatus(event.getValue());
             }
         });
 
-		((Xdstools2EventBus) ClientUtils.INSTANCE.getEventBus()).addTabSelectedEventHandler(new TabSelectedEvent.TabSelectedEventHandler() {
+		((Xdstools2EventBus) FrameworkInitialization.data().getEventBus()).addTabSelectedEventHandler(new TabSelectedEvent.TabSelectedEventHandler() {
 			@Override
 			public void onTabSelection(TabSelectedEvent event) {
 				if (event.getTabName().equals(tabName)){
@@ -165,7 +165,7 @@ public class SimulatorControlTab extends GenericQueryTab {
                     simConfigSuper.add(config);
                 simConfigSuper.reloadSimulators();
                 loadSimStatus(getCurrentTestSession());
-                ((Xdstools2EventBus) ClientUtils.INSTANCE.getEventBus()).fireSimulatorsUpdatedEvent();
+                ((Xdstools2EventBus) FrameworkInitialization.data().getEventBus()).fireSimulatorsUpdatedEvent();
             }
         }.run(new GetNewSimulatorRequest(getCommandContext(),actorTypeName,simId));
     } // createNewSimulator

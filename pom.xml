@@ -83,7 +83,8 @@
         <module>interaction-mapper</module>
         <module>interaction-diagram</module>
         <module>testdoctool</module>
-        <module>desktop</module>
+        <!--<module>desktop</module>-->
+        <module>xdstools2Framework</module>
     </modules>
 
 

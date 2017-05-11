@@ -2,12 +2,11 @@ package gov.nist.toolkit.xdstools2.client.tabs.actorConfigTab;
 
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.user.client.rpc.AsyncCallback;
 import gov.nist.toolkit.sitemanagement.client.Site;
 import gov.nist.toolkit.sitemanagement.client.SiteSpec;
 import gov.nist.toolkit.xdstools2.client.command.command.GetSiteCommand;
+import gov.nist.toolkit.xdstools2.client.initialization.FrameworkInitialization;
 import gov.nist.toolkit.xdstools2.client.widgets.PopupMessage;
-import gov.nist.toolkit.xdstools2.client.util.ClientUtils;
 import gov.nist.toolkit.xdstools2.shared.command.request.GetSiteRequest;
 
 public class SiteChoose implements ClickHandler {
@@ -47,6 +46,6 @@ public class SiteChoose implements ClickHandler {
 			public void onComplete(Site result) {
 				actorConfigTab.displaySite(result);
 			}
-		}.run(new GetSiteRequest(ClientUtils.INSTANCE.getCommandContext(),siteName));
+		}.run(new GetSiteRequest(FrameworkInitialization.data().getCommandContext(),siteName));
 	}
 }

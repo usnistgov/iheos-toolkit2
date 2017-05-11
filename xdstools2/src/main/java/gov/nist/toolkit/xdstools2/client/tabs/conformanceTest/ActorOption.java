@@ -4,8 +4,8 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 import gov.nist.toolkit.actortransaction.client.ActorType;
 import gov.nist.toolkit.results.client.TestInstance;
 import gov.nist.toolkit.xdstools2.client.command.command.GetCollectionMembersCommand;
+import gov.nist.toolkit.xdstools2.client.initialization.FrameworkInitialization;
 import gov.nist.toolkit.xdstools2.client.tabs.GatewayTestsTabs.BuildRGTestOrchestrationButton;
-import gov.nist.toolkit.xdstools2.client.util.ClientUtils;
 import gov.nist.toolkit.xdstools2.shared.command.request.GetCollectionRequest;
 
 import java.util.List;
@@ -34,9 +34,9 @@ public class ActorOption {
     void loadTests(final AsyncCallback<List<TestInstance>> callback) {
         GetCollectionRequest request;
         if (optionId == null || optionId.equals("")) {
-            request = new GetCollectionRequest(ClientUtils.INSTANCE.getCommandContext(), "actorcollections", actorTypeId);
+            request = new GetCollectionRequest(FrameworkInitialization.data().getCommandContext(), "actorcollections", actorTypeId);
         } else {
-            request = new GetCollectionRequest(ClientUtils.INSTANCE.getCommandContext(), "collections", actorTypeId + "_" + optionId);
+            request = new GetCollectionRequest(FrameworkInitialization.data().getCommandContext(), "collections", actorTypeId + "_" + optionId);
         }
         new GetCollectionMembersCommand() {
             @Override

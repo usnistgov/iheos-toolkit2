@@ -2,15 +2,13 @@ package gov.nist.toolkit.xdstools2.client.tabs.conformanceTest;
 
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.ScrollPanel;
 import gov.nist.toolkit.results.client.TestInstance;
 import gov.nist.toolkit.session.client.logtypes.TestPartFileDTO;
 import gov.nist.toolkit.xdstools2.client.command.command.LoadTestPartContentCommand;
-import gov.nist.toolkit.xdstools2.client.widgets.PopupMessage;
-import gov.nist.toolkit.xdstools2.client.util.ClientUtils;
+import gov.nist.toolkit.xdstools2.client.initialization.FrameworkInitialization;
 import gov.nist.toolkit.xdstools2.shared.command.request.LoadTestPartContentRequest;
 
 import static gov.nist.toolkit.xdstools2.client.tabs.conformanceTest.TestPlanDisplay.getShHtml;
@@ -59,7 +57,7 @@ class MetadataDisplay extends FlowPanel {
                         String metadataStr = testPartFileDTO.getHtlmizedContent().replace("<br/>", "\r\n");
                         metadataViewerPanel.add(getShHtml(metadataStr));
                     }
-                }.run(new LoadTestPartContentRequest(ClientUtils.INSTANCE.getCommandContext(),testPartFileDTO));
+                }.run(new LoadTestPartContentRequest(FrameworkInitialization.data().getCommandContext(),testPartFileDTO));
             }
         }
     }

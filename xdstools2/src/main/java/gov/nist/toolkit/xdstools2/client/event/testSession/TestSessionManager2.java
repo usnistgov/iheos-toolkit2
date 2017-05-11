@@ -5,7 +5,7 @@ import gov.nist.toolkit.xdstools2.client.CookieManager;
 import gov.nist.toolkit.xdstools2.client.command.command.AddMesaTestSessionCommand;
 import gov.nist.toolkit.xdstools2.client.command.command.DeleteMesaTestSessionCommand;
 import gov.nist.toolkit.xdstools2.client.command.command.GetTestSessionNamesCommand;
-import gov.nist.toolkit.xdstools2.client.util.ClientUtils;
+import gov.nist.toolkit.xdstools2.client.initialization.FrameworkInitialization;
 import gov.nist.toolkit.xdstools2.shared.command.CommandContext;
 
 import java.util.List;
@@ -21,13 +21,13 @@ public class TestSessionManager2 {
     private String currentTestSession = "default";
 
     public TestSessionManager2() {
-        ClientUtils.INSTANCE.getEventBus().addHandler(TestSessionsUpdatedEvent.TYPE, new TestSessionsUpdatedEventHandler() {
+        FrameworkInitialization.data().getEventBus().addHandler(TestSessionsUpdatedEvent.TYPE, new TestSessionsUpdatedEventHandler() {
             @Override
             public void onTestSessionsUpdated(TestSessionsUpdatedEvent event) {
                 testSessions = event.testSessionNames;
             }
         });
-        ClientUtils.INSTANCE.getEventBus().addHandler(TestSessionChangedEvent.TYPE, new TestSessionChangedEventHandler() {
+        FrameworkInitialization.data().getEventBus().addHandler(TestSessionChangedEvent.TYPE, new TestSessionChangedEventHandler() {
             @Override
             public void onTestSessionChanged(TestSessionChangedEvent event) {
                 switch (event.getChangeType()) {
@@ -82,10 +82,10 @@ public class TestSessionManager2 {
                         deleteCookie();
                     }
                 }
-                ClientUtils.INSTANCE.getEventBus().fireEvent(new TestSessionsUpdatedEvent(testSessions));
-                ClientUtils.INSTANCE.getEventBus().fireEvent(new TestSessionChangedEvent(TestSessionChangedEvent.ChangeType.SELECT, currentTestSession));
+                FrameworkInitialization.data().getEventBus().fireEvent(new TestSessionsUpdatedEvent(testSessions));
+                FrameworkInitialization.data().getEventBus().fireEvent(new TestSessionChangedEvent(TestSessionChangedEvent.ChangeType.SELECT, currentTestSession));
             }
-        }.run(ClientUtils.INSTANCE.getCommandContext());
+        }.run(FrameworkInitialization.data().getCommandContext());
     }
 
     // save new sessionName to server and broadcast updates to all tabs
@@ -95,7 +95,7 @@ public class TestSessionManager2 {
             public void onComplete(Boolean result) {
                 load(sessionName);  // getRetrievedDocumentsModel full list and update all tabs
             }
-        }.run(new CommandContext(ClientUtils.INSTANCE.getEnvironmentState().getEnvironmentName(),sessionName));
+        }.run(new CommandContext(FrameworkInitialization.data().getEnvironmentState().getEnvironmentName(),sessionName));
     }
 
     // delete new sessionName from server and broadcast updates to all tabs
@@ -106,7 +106,7 @@ public class TestSessionManager2 {
                 currentTestSession=testSessions.get(0);
                 load(currentTestSession);  // getRetrievedDocumentsModel full list and update all tabs
             }
-        }.run(new CommandContext(ClientUtils.INSTANCE.getEnvironmentState().getEnvironmentName(),sessionName));
+        }.run(new CommandContext(FrameworkInitialization.data().getEnvironmentState().getEnvironmentName(),sessionName));
     }
 
     private boolean isEmpty(String x) { return x == null || x.trim().equals(""); }

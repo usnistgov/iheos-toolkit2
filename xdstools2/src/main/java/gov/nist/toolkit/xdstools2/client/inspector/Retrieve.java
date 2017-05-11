@@ -7,7 +7,7 @@ import gov.nist.toolkit.registrymetadata.client.Uids;
 import gov.nist.toolkit.results.client.Result;
 import gov.nist.toolkit.results.client.TestInstance;
 import gov.nist.toolkit.xdstools2.client.command.command.RetrieveDocumentCommand;
-import gov.nist.toolkit.xdstools2.client.util.ClientUtils;
+import gov.nist.toolkit.xdstools2.client.initialization.FrameworkInitialization;
 import gov.nist.toolkit.xdstools2.shared.command.request.RetrieveDocumentRequest;
 
 import java.util.List;
@@ -30,7 +30,7 @@ public class Retrieve implements ClickHandler {
 			public void onComplete(List<Result> result) {
 				it.addToHistory(result);
 			}
-		}.run(new RetrieveDocumentRequest(ClientUtils.INSTANCE.getCommandContext(),null,uids));
+		}.run(new RetrieveDocumentRequest(FrameworkInitialization.data().getCommandContext(),null,uids));
 	}
 
 	public Retrieve(MetadataInspectorTab it, Uid docUid) {

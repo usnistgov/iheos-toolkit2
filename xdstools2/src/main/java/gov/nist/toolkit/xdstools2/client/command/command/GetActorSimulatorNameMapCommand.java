@@ -1,7 +1,7 @@
 package gov.nist.toolkit.xdstools2.client.command.command;
 
 import gov.nist.toolkit.actorfactory.client.SimId;
-import gov.nist.toolkit.xdstools2.client.util.ClientUtils;
+import gov.nist.toolkit.xdstools2.client.initialization.FrameworkInitialization;
 import gov.nist.toolkit.xdstools2.shared.command.CommandContext;
 
 import java.util.Map;
@@ -12,6 +12,6 @@ import java.util.Map;
 public abstract class GetActorSimulatorNameMapCommand extends GenericCommand<CommandContext,Map<String,SimId>> {
     @Override
     public void run(CommandContext context) {
-        ClientUtils.INSTANCE.getToolkitServices().getActorSimulatorNameMap(context,this);
+        FrameworkInitialization.data().getToolkitServices().getActorSimulatorNameMap(context,this);
     }
 }

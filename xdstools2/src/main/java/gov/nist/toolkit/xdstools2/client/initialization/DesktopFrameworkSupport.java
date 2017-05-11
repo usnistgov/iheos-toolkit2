@@ -1,6 +1,16 @@
 package gov.nist.toolkit.xdstools2.client.initialization;
 
+import com.google.gwt.core.client.GWT;
+import gov.nist.toolkit.tk.client.TkProps;
+import gov.nist.toolkit.xdstools2.client.event.Xdstools2EventBus;
 import gov.nist.toolkit.xdstools2.client.event.testSession.TestSessionManager2;
+import gov.nist.toolkit.xdstools2.client.tabs.EnvironmentState;
+import gov.nist.toolkit.xdstools2.client.tabs.QueryState;
+import gov.nist.toolkit.xdstools2.client.tabs.genericQueryTab.GenericQueryTab;
+import gov.nist.toolkit.xdstools2.client.util.CommandContextFactory;
+import gov.nist.toolkit.xdstools2.client.util.ToolkitService;
+import gov.nist.toolkit.xdstools2.client.util.ToolkitServiceAsync;
+import gov.nist.toolkit.xdstools2.shared.command.CommandContext;
 
 /**
  * Desktop version
@@ -9,6 +19,8 @@ public class DesktopFrameworkSupport implements FrameworkSupport {
     private String toolkitName;
     private String toolkitBaseUrl;
     private String wikiBaseUrl;
+    private static final ToolkitServiceAsync TOOLKIT_SERVICES = GWT.create(ToolkitService.class);
+    private static final Xdstools2EventBus EVENT_BUS = new Xdstools2EventBus();
 
     @Override
     public void buildTabsWrapper() {
@@ -59,5 +71,49 @@ public class DesktopFrameworkSupport implements FrameworkSupport {
     public TestSessionManager2 getTestSessionManager() {
         // TODO:  need desktop version of getTestSessionManager
         return null;
+    }
+
+    @Override
+    public void resizeToolkit() {
+        // needed?
+    }
+
+    @Override
+    public Xdstools2EventBus getEventBus() {
+        return EVENT_BUS;
+    }
+
+    @Override
+    public TkProps getTkProps() {
+        // I don't think we need this.
+        return null;
+    }
+
+    @Override
+    public QueryState getQueryState() {
+        // I don't think we need this.
+        return null;
+    }
+
+    @Override
+    public EnvironmentState getEnvironmentState() {
+        // do we need this?
+        return null;
+    }
+
+    @Override
+    public GenericQueryTab getHomeTab() {
+        // Not needed
+        return null;
+    }
+
+    @Override
+    public CommandContext getCommandContext() {
+        return CommandContextFactory.getCommandContext();
+    }
+
+    @Override
+    public ToolkitServiceAsync getToolkitServices() {
+        return TOOLKIT_SERVICES;
     }
 }

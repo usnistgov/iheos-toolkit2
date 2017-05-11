@@ -1,6 +1,6 @@
 package gov.nist.toolkit.xdstools2.client.command.command;
 
-import gov.nist.toolkit.xdstools2.client.util.ClientUtils;
+import gov.nist.toolkit.xdstools2.client.initialization.FrameworkInitialization;
 import gov.nist.toolkit.xdstools2.shared.command.request.GetStsSamlAssertionRequest;
 
 /**
@@ -9,6 +9,6 @@ import gov.nist.toolkit.xdstools2.shared.command.request.GetStsSamlAssertionRequ
 public abstract class GetStsSamlAssertionCommand extends GenericCommand<GetStsSamlAssertionRequest,String>{
     @Override
     public void run(GetStsSamlAssertionRequest var1) {
-        ClientUtils.INSTANCE.getToolkitServices().getStsSamlAssertion(var1,this);
+        FrameworkInitialization.data().getToolkitServices().getStsSamlAssertion(var1,this);
     }
 }

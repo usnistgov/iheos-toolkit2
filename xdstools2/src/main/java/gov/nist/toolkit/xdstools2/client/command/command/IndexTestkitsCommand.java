@@ -1,6 +1,6 @@
 package gov.nist.toolkit.xdstools2.client.command.command;
 
-import gov.nist.toolkit.xdstools2.client.util.ClientUtils;
+import gov.nist.toolkit.xdstools2.client.initialization.FrameworkInitialization;
 import gov.nist.toolkit.xdstools2.shared.command.CommandContext;
 
 /**
@@ -10,7 +10,7 @@ public abstract class IndexTestkitsCommand extends GenericCommand<CommandContext
 
     @Override
     public void run(CommandContext commandContext) {
-        ClientUtils.INSTANCE.getToolkitServices().indexTestKits(commandContext,this);
+        FrameworkInitialization.data().getToolkitServices().indexTestKits(commandContext,this);
     }
 
 }

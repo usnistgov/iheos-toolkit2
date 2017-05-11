@@ -1,6 +1,6 @@
 package gov.nist.toolkit.xdstools2.client.command.command;
 
-import gov.nist.toolkit.xdstools2.client.util.ClientUtils;
+import gov.nist.toolkit.xdstools2.client.initialization.FrameworkInitialization;
 import gov.nist.toolkit.xdstools2.shared.command.CommandContext;
 
 /**
@@ -9,6 +9,6 @@ import gov.nist.toolkit.xdstools2.shared.command.CommandContext;
 public abstract class AutoInitConformanceTestingCommand extends GenericCommand<CommandContext,Boolean>{
     @Override
     public void run(CommandContext var1) {
-        ClientUtils.INSTANCE.getToolkitServices().getAutoInitConformanceTesting(var1,this);
+        FrameworkInitialization.data().getToolkitServices().getAutoInitConformanceTesting(var1,this);
     }
 }
