@@ -14,4 +14,5 @@ public interface TestRunner {
 //    void displayTest(FlowPanel testsPanel, TestDisplayGroup testDisplayGroup, TestOverviewDTO testOverview);
     SiteSpec getSiteToIssueTestAgainst();
     ActorOption getCurrentActorOption();
+    void setCurrentActorOption(ActorOption actorOption);
 }

@@ -3,10 +3,6 @@ package gov.nist.toolkit.xdstools2.client.tabs.conformanceTest;
 import gov.nist.toolkit.sitemanagement.client.Site;
 import gov.nist.toolkit.sitemanagement.client.SiteSpec;
 import gov.nist.toolkit.xdstools2.client.ToolWindow;
-import gov.nist.toolkit.xdstools2.client.command.command.GetSiteCommand;
-import gov.nist.toolkit.xdstools2.client.util.ClientUtils;
-import gov.nist.toolkit.xdstools2.client.widgets.PopupMessage;
-import gov.nist.toolkit.xdstools2.shared.command.request.GetSiteRequest;
 
 /**
  *
@@ -69,7 +65,8 @@ public class TestContext implements SiteManager {
 
     @Override
     public void setSiteName(String site) {
-        currentSiteSpec.setName(site);
+        setCurrentSiteSpec(site);
+        /*
         if (site == null) return;
         if (site.equals(NONE)) return;
         new GetSiteCommand(){
@@ -85,6 +82,7 @@ public class TestContext implements SiteManager {
                 siteUnderTest = result;
             }
         }.run(new GetSiteRequest(ClientUtils.INSTANCE.getCommandContext(),currentSiteSpec.getName()));
+        */
     }
 
     @Override
@@ -116,5 +114,9 @@ public class TestContext implements SiteManager {
 
     public void setSiteSelectionValidator(SiteSelectionValidator siteSelectionValidator) {
         this.siteSelectionValidator = siteSelectionValidator;
+    }
+
+    public void setCurrentSiteSpec(String siteName) {
+        this.currentSiteSpec.setName(siteName);
     }
 }
