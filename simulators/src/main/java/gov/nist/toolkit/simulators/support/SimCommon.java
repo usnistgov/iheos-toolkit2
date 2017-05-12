@@ -9,6 +9,7 @@ import gov.nist.toolkit.errorrecording.gwt.GwtErrorRecorder;
 import gov.nist.toolkit.errorrecording.gwt.GwtErrorRecorderBuilder;
 import gov.nist.toolkit.errorrecording.gwt.client.GWTValidationStepResult;
 import gov.nist.toolkit.errorrecording.xml.XMLErrorRecorder;
+import gov.nist.toolkit.errorrecording.xml.XMLErrorRecorderBuilder;
 import gov.nist.toolkit.installation.Installation;
 import gov.nist.toolkit.utilities.io.Io;
 import gov.nist.toolkit.valregmsg.validation.engine.ValidateMessageService;
@@ -110,9 +111,24 @@ public class SimCommon {
 
 	ErrorRecorder er = null;
 
+	/**
+	 * Called in RegistryActorSimulator when generating output.
+	 * @return
+	 */
 	public ErrorRecorder getCommonErrorRecorder() {
 		if (er == null) {
-			er = new GwtErrorRecorderBuilder().buildNewErrorRecorder();
+			// Create an independent ErrorRecorder based on the type of ER currently selected
+			SelectedErrorRecorder.ErrorRecorderType ERtype = SelectedErrorRecorder.getSelectedErrorRecorder().getType();
+			if (ERtype.equals(SelectedErrorRecorder.ErrorRecorderType.GWT_ERROR_RECORDER)){
+				er = new GwtErrorRecorderBuilder().buildNewErrorRecorder();
+			}
+			if (ERtype.equals(SelectedErrorRecorder.ErrorRecorderType.XML_ERROR_RECORDER)){
+				er = new XMLErrorRecorderBuilder().buildNewErrorRecorder();
+			}
+			// Error Case
+			else {
+				logger.error("Unrecognized ErrorRecorder type");
+			}
 			ServiceRequestContainer val = new ServiceRequestContainer(vc);
 			mvc.addMessageValidator("Default ErrorRecorder", val, er);
 		}
