@@ -1,6 +1,6 @@
 package gov.nist.toolkit.valregmetadata.field;
 
-import gov.nist.toolkit.errorrecording.ErrorRecorder;
+import gov.nist.toolkit.errorrecording.IErrorRecorder;
 import gov.nist.toolkit.errorrecording.common.XdsErrorCode;
 import gov.nist.toolkit.errorrecording.xml.assertions.Assertion;
 import gov.nist.toolkit.errorrecording.xml.assertions.AssertionLibrary;
@@ -14,11 +14,11 @@ import java.util.List;
 public class PatientId {
 	private AssertionLibrary ASSERTIONLIBRARY = AssertionLibrary.getInstance();
 	List<String> patient_ids;
-	ErrorRecorder er;
+	IErrorRecorder er;
 	Metadata m;
 
 
-	public PatientId( Metadata m, ErrorRecorder er) {
+	public PatientId( Metadata m, IErrorRecorder er) {
 		this.er = er;
 		this.m = m;
 		patient_ids = new ArrayList<String>();

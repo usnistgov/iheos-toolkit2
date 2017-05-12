@@ -1,6 +1,6 @@
 package gov.nist.toolkit.simulators.sim.reg;
 
-import gov.nist.toolkit.errorrecording.ErrorRecorder;
+import gov.nist.toolkit.errorrecording.IErrorRecorder;
 import gov.nist.toolkit.errorrecording.common.XdsErrorCode;
 import gov.nist.toolkit.registrymsg.registry.Response;
 import gov.nist.toolkit.simulators.support.DsSimCommon;
@@ -23,7 +23,7 @@ public class SoapWrapperRegistryResponseSim extends TransactionSimulator {
 		this.rrSim = rrSim;
 	}
 
-	public void run(ErrorRecorder er, MessageValidatorEngine mvc) {
+	public void run(IErrorRecorder er, MessageValidatorEngine mvc) {
 		this.response = rrSim.getResponse();
 		try {
 			er.detail("Wrapping response in SOAP Message");

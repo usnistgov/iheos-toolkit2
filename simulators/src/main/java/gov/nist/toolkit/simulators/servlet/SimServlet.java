@@ -7,8 +7,7 @@ import gov.nist.toolkit.actorfactory.client.SimulatorConfig;
 import gov.nist.toolkit.actortransaction.client.ATFactory;
 import gov.nist.toolkit.configDatatypes.SimulatorProperties;
 import gov.nist.toolkit.configDatatypes.client.TransactionType;
-import gov.nist.toolkit.errorrecording.ErrorRecorder;
-import gov.nist.toolkit.errorrecording.gwt.GwtErrorRecorder;
+import gov.nist.toolkit.errorrecording.IErrorRecorder;
 import gov.nist.toolkit.errorrecording.gwt.GwtErrorRecorderBuilder;
 import gov.nist.toolkit.http.HttpHeader;
 import gov.nist.toolkit.http.HttpHeader.HttpHeaderParseException;
@@ -474,7 +473,7 @@ public class SimServlet  extends HttpServlet {
 			SimCommon common= new SimCommon(db, uri.startsWith("https"), vc, mvc, response);
 			DsSimCommon dsSimCommon = new DsSimCommon(common, regIndex, repIndex);
 
-			ErrorRecorder er = new GwtErrorRecorderBuilder().buildNewErrorRecorder();
+			IErrorRecorder er = new GwtErrorRecorderBuilder().buildNewErrorRecorder();
 			er.sectionHeading("Endpoint");
 			er.detail("Endpoint is " + uri);
 			mvc.addErrorRecorder("**** Web Service: " + uri, er);

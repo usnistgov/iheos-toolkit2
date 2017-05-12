@@ -1,7 +1,7 @@
 package gov.nist.toolkit.simulators.sim.reg.store;
 
 import gov.nist.toolkit.common.datatypes.Hl7Date;
-import gov.nist.toolkit.errorrecording.ErrorRecorder;
+import gov.nist.toolkit.errorrecording.IErrorRecorder;
 import gov.nist.toolkit.errorrecording.common.XdsErrorCode;
 import gov.nist.toolkit.errorrecording.common.XdsErrorCode.Code;
 import gov.nist.toolkit.registrymetadata.Metadata;
@@ -17,11 +17,11 @@ import java.util.List;
 
 public class ProcessMetadataForRegister implements ProcessMetadataInterface {
 	static Logger log = Logger.getLogger(ProcessMetadataForRegister.class);
-	ErrorRecorder er;
+	IErrorRecorder er;
 	MetadataCollection mc;
 	MetadataCollection delta;
 
-	public ProcessMetadataForRegister(ErrorRecorder er, MetadataCollection mc, MetadataCollection delta) {
+	public ProcessMetadataForRegister(IErrorRecorder er, MetadataCollection mc, MetadataCollection delta) {
 		this.er = er;
 		this.mc = mc;
 		this.delta = delta;
@@ -200,7 +200,7 @@ public class ProcessMetadataForRegister implements ProcessMetadataInterface {
 	 * @param source
 	 * @param target
 	 */
-	void evalIsSnapshotOf(ErrorRecorder er, Metadata m, String source, String target) {
+	void evalIsSnapshotOf(IErrorRecorder er, Metadata m, String source, String target) {
 
 
 		// Check sourceObject's objectType to see if it is of Stable type
@@ -247,7 +247,7 @@ public class ProcessMetadataForRegister implements ProcessMetadataInterface {
 	 * See ITI TF-3: 4.2.2.5 Rev 12.1
 	 * According to Bill, the content of the sourceObject is not checked at this point.
 	 */
-	void evalSigns(ErrorRecorder er, Metadata m, String source, String target) {
+	void evalSigns(IErrorRecorder er, Metadata m, String source, String target) {
 		//
 	}
 

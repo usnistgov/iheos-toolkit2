@@ -2,8 +2,8 @@ package gov.nist.toolkit.valregmsg.validation.factories;
 
 import gov.nist.toolkit.MessageValidatorFactory2.MessageValidatorFactory2I;
 import gov.nist.toolkit.MessageValidatorFactory2.MessageValidatorFactoryFactory;
-import gov.nist.toolkit.errorrecording.ErrorRecorder;
-import gov.nist.toolkit.errorrecording.ErrorRecorderBuilder;
+import gov.nist.toolkit.errorrecording.IErrorRecorder;
+import gov.nist.toolkit.errorrecording.IErrorRecorderBuilder;
 import gov.nist.toolkit.errorrecording.common.XdsErrorCode;
 import gov.nist.toolkit.errorrecording.text.TextErrorRecorderBuilder;
 import gov.nist.toolkit.http.HttpParseException;
@@ -59,7 +59,7 @@ public class MessageValidatorFactory implements MessageValidatorFactory2I {
 	 * at least the first validation step so calling engine.run() will kick start the validation. Note that no
 	 * ValidationContext is created so the goals of the validation are not yet known.
 	 */
-	static public MessageValidatorEngine getValidator(ErrorRecorderBuilder erBuilder, File input, RegistryValidationInterface rvi) {
+	static public MessageValidatorEngine getValidator(IErrorRecorderBuilder erBuilder, File input, RegistryValidationInterface rvi) {
 		try {
 			OMElement xml = Util.parse_xml(input);
 			return getValidatorContext(erBuilder, xml, null, rvi);
@@ -90,11 +90,11 @@ public class MessageValidatorFactory implements MessageValidatorFactory2I {
 	 * at least the first validation step so calling engine.run() will kick start the validation. Note that no
 	 * ValidationContext is created so the goals of the validation are not yet known.
 	 */
-	public MessageValidatorEngine getValidator(ErrorRecorderBuilder erBuilder, byte[] input, byte[] directCertInput, ValidationContext vc, RegistryValidationInterface rvi) {
+	public MessageValidatorEngine getValidator(IErrorRecorderBuilder erBuilder, byte[] input, byte[] directCertInput, ValidationContext vc, RegistryValidationInterface rvi) {
 
 		MessageValidatorEngine mvc = new MessageValidatorEngine();
 		if (erBuilder != null) {
-			ErrorRecorder er = report(erBuilder, mvc, "Requested Validation Context");
+			IErrorRecorder er = report(erBuilder, mvc, "Requested Validation Context");
 			er.detail(vc.toString());
 		}
 
@@ -134,7 +134,7 @@ public class MessageValidatorFactory implements MessageValidatorFactory2I {
 	 * at least the first validation step so calling engine.run() will kick start the validation. Note that no
 	 * ValidationContext is created so the goals of the validation are not yet known.
 	 */
-	static public MessageValidatorEngine getValidatorForHttp(ErrorRecorderBuilder erBuilder, String httpInput, MessageValidatorEngine mvc, ValidationContext vc, RegistryValidationInterface rvi) {
+	static public MessageValidatorEngine getValidatorForHttp(IErrorRecorderBuilder erBuilder, String httpInput, MessageValidatorEngine mvc, ValidationContext vc, RegistryValidationInterface rvi) {
 		try {
 			HttpParserBa hparser = new HttpParserBa(httpInput.getBytes());
 			mvc = (mvc == null) ? new MessageValidatorEngine() : mvc;
@@ -153,7 +153,7 @@ public class MessageValidatorFactory implements MessageValidatorFactory2I {
 		}
 	}
 
-	static public MessageValidatorEngine getValidatorForXDM(ErrorRecorderBuilder erBuilder, byte[] input, MessageValidatorEngine mvc, ValidationContext vc, RegistryValidationInterface rvi) {
+	static public MessageValidatorEngine getValidatorForXDM(IErrorRecorderBuilder erBuilder, byte[] input, MessageValidatorEngine mvc, ValidationContext vc, RegistryValidationInterface rvi) {
 		mvc = (mvc == null) ? new MessageValidatorEngine() : mvc;
 		mvc.addMessageValidator("XDM Validator", new XdmDecoder(vc, erBuilder, Io.bytesToInputStream(input)), erBuilder.buildNewErrorRecorder());
 		return mvc;
@@ -169,7 +169,7 @@ public class MessageValidatorFactory implements MessageValidatorFactory2I {
 	 * at least the first validation step so calling engine.run() will kick start the validation. Note that no
 	 * ValidationContext is created so the goals of the validation are not yet known.
 	 */
-	static public MessageValidatorEngine getValidatorForNcpdp(ErrorRecorderBuilder erBuilder, String input, MessageValidatorEngine mvc, ValidationContext vc, RegistryValidationInterface rvi) {
+	static public MessageValidatorEngine getValidatorForNcpdp(IErrorRecorderBuilder erBuilder, String input, MessageValidatorEngine mvc, ValidationContext vc, RegistryValidationInterface rvi) {
 		//		if(EdiToXml.isEDI(input)){
 		//			EdiToXml edx = new EdiToXml(input);
 		//			edx.run();
@@ -188,7 +188,7 @@ public class MessageValidatorFactory implements MessageValidatorFactory2I {
 	 * at least the first validation step so calling engine.run() will kick start the validation. Note that no
 	 * ValidationContext is created so the goals of the validation are not yet known.
 	 */
-	static public MessageValidatorEngine getValidatorForXML(ErrorRecorderBuilder erBuilder, String input, MessageValidatorEngine mvc, ValidationContext vc, RegistryValidationInterface rvi) {
+	static public MessageValidatorEngine getValidatorForXML(IErrorRecorderBuilder erBuilder, String input, MessageValidatorEngine mvc, ValidationContext vc, RegistryValidationInterface rvi) {
 		OMElement xml = null;
 		try {
 			// for now all the message inputs are XML - later some will be HTTP wrapped around XML
@@ -197,7 +197,7 @@ public class MessageValidatorFactory implements MessageValidatorFactory2I {
 			xml.build();
 		} catch (Exception e) {
 			mvc = (mvc == null) ? new MessageValidatorEngine() : mvc;
-			ErrorRecorder er = reportError(erBuilder, mvc, "XML Parser", e.getMessage());
+			IErrorRecorder er = reportError(erBuilder, mvc, "XML Parser", e.getMessage());
 			if (input == null)
 				er.detail("Input was null");
 			else
@@ -231,7 +231,7 @@ public class MessageValidatorFactory implements MessageValidatorFactory2I {
 	 * at least the first validation step so calling engine.run() will kick start the validation. Note that no
 	 * ValidationContext is created so the goals of the validation are not yet known.
 	 */
-	static public MessageValidatorEngine getValidator(ErrorRecorderBuilder erBuilder, String input, MessageValidatorEngine mvc, String title, ValidationContext vc, RegistryValidationInterface rvi) {
+	static public MessageValidatorEngine getValidator(IErrorRecorderBuilder erBuilder, String input, MessageValidatorEngine mvc, String title, ValidationContext vc, RegistryValidationInterface rvi) {
 		OMElement xml = null;
 		try {
 			// for now all the message inputs are XML - later some will be HTTP wrapped around XML
@@ -240,7 +240,7 @@ public class MessageValidatorFactory implements MessageValidatorFactory2I {
 		} catch (Exception e) {
 			if (mvc == null)
 				mvc = new MessageValidatorEngine();
-			ErrorRecorder er = reportError(erBuilder, mvc, "XML Parser", e.getMessage());
+			IErrorRecorder er = reportError(erBuilder, mvc, "XML Parser", e.getMessage());
 			if (input == null)
 				er.detail("Input was null");
 			else
@@ -264,7 +264,7 @@ public class MessageValidatorFactory implements MessageValidatorFactory2I {
 	 * at least the first validation step so calling engine.run() will kick start the validation. Note that no
 	 * ValidationContext is created so the goals of the validation are not yet known.
 	 */
-	static public MessageValidatorEngine getValidatorContext(ErrorRecorderBuilder erBuilder, OMElement xml, ValidationContext vc, RegistryValidationInterface rvi) {
+	static public MessageValidatorEngine getValidatorContext(IErrorRecorderBuilder erBuilder, OMElement xml, ValidationContext vc, RegistryValidationInterface rvi) {
 		return getValidatorContext(erBuilder, xml, null, null, vc, rvi);
 	}
 
@@ -279,7 +279,7 @@ public class MessageValidatorFactory implements MessageValidatorFactory2I {
 	 * at least the first validation step so calling engine.run() will kick start the validation. Note that no
 	 * ValidationContext is created so the goals of the validation are not yet known.
 	 */
-	static public MessageValidatorEngine getValidatorContext(ErrorRecorderBuilder erBuilder, byte[] input, MessageValidatorEngine mvc, String title, ValidationContext vc, RegistryValidationInterface rvi) {
+	static public MessageValidatorEngine getValidatorContext(IErrorRecorderBuilder erBuilder, byte[] input, MessageValidatorEngine mvc, String title, ValidationContext vc, RegistryValidationInterface rvi) {
 		OMElement xml = null;
 		try {
 			// for now all the message inputs are XML - later some will be HTTP wrapped around XML
@@ -289,7 +289,7 @@ public class MessageValidatorFactory implements MessageValidatorFactory2I {
 		} catch (Exception e) {
 			if (mvc == null)
 				mvc = new MessageValidatorEngine();
-			ErrorRecorder er = reportError(erBuilder, mvc, "XML Parser", e.getMessage());
+			IErrorRecorder er = reportError(erBuilder, mvc, "XML Parser", e.getMessage());
 			if (input == null)
 				er.detail("Input was null");
 			else {
@@ -311,7 +311,7 @@ public class MessageValidatorFactory implements MessageValidatorFactory2I {
 	 * at least the first validation step so calling engine.run() will kick start the validation. Note that no
 	 * ValidationContext is created so the goals of the validation are not yet known.
 	 */
-	static public MessageValidatorEngine getValidatorContext(ErrorRecorderBuilder erBuilder, OMElement xml, MessageValidatorEngine mvc, String title, ValidationContext vc, RegistryValidationInterface rvi) {
+	static public MessageValidatorEngine getValidatorContext(IErrorRecorderBuilder erBuilder, OMElement xml, MessageValidatorEngine mvc, String title, ValidationContext vc, RegistryValidationInterface rvi) {
 		String rootElementName = xml.getLocalName();
 		if (vc == null)
 			vc = DefaultValidationContextFactory.validationContext();
@@ -356,7 +356,7 @@ public class MessageValidatorFactory implements MessageValidatorFactory2I {
 	 * @return the MessageValidatorEngine after it has run to completion
 	 */
 	public static MessageValidatorEngine validateBasedOnValidationContext(
-			ErrorRecorderBuilder erBuilder, String body,
+			IErrorRecorderBuilder erBuilder, String body,
 			MessageValidatorEngine mvc, ValidationContext vc, RegistryValidationInterface rvi) {
 		OMElement xml = null;
 		try {
@@ -364,7 +364,7 @@ public class MessageValidatorFactory implements MessageValidatorFactory2I {
 			xml = Util.parse_xml(body);
 			xml.build();
 		} catch (Exception e) {
-			ErrorRecorder er = reportError(erBuilder, mvc, "XML Parser", e.getMessage());
+			IErrorRecorder er = reportError(erBuilder, mvc, "XML Parser", e.getMessage());
 			if (body == null)
 				er.detail("Input was null");
 			else
@@ -385,7 +385,7 @@ public class MessageValidatorFactory implements MessageValidatorFactory2I {
 	 * @return the MessageValidatorEngine after it has run to completion
 	 */
 	public static MessageValidatorEngine validateBasedOnValidationContext(
-			ErrorRecorderBuilder erBuilder, OMElement xml,
+			IErrorRecorderBuilder erBuilder, OMElement xml,
 			MessageValidatorEngine mvc, ValidationContext vc, RegistryValidationInterface rvi) {
 		logger.debug("messageValidatorEngine#validateBasedOnValidationContext");
 		logger.debug(" VC: " + vc.toString());
@@ -536,7 +536,7 @@ public class MessageValidatorFactory implements MessageValidatorFactory2I {
 	 * @param should expected value
 	 * @param found real value to compare
 	 */
-	static void validateToplevelElement(ErrorRecorderBuilder erBuilder, MessageValidatorEngine mvc, String should, String found) {
+	static void validateToplevelElement(IErrorRecorderBuilder erBuilder, MessageValidatorEngine mvc, String should, String found) {
 		if (!should.equals(found))
 			reportError(erBuilder, mvc, "Top Element Validator", "Expected " + should + " but found " + found);
 	}
@@ -551,14 +551,14 @@ public class MessageValidatorFactory implements MessageValidatorFactory2I {
 	 * @return the MessageValidatorEngine after it has run to completion
 	 */
 	public static MessageValidatorEngine validateBasedOnRootElement(
-			ErrorRecorderBuilder erBuilder, String body,
+			IErrorRecorderBuilder erBuilder, String body,
 			MessageValidatorEngine mvc, ValidationContext vc, RegistryValidationInterface rvi) {
 		OMElement xml = null;
 		try {
 			xml = Util.parse_xml(body);
 			xml.build();
 		} catch (Exception e) {
-			ErrorRecorder er = reportError(erBuilder, mvc, "XML Parser", e.getMessage());
+			IErrorRecorder er = reportError(erBuilder, mvc, "XML Parser", e.getMessage());
 			if (body == null)
 				er.detail("Input was null");
 			else
@@ -580,7 +580,7 @@ public class MessageValidatorFactory implements MessageValidatorFactory2I {
 	 * @return the MessageValidatorEngine after it has run to completion
 	 */
 	public static MessageValidatorEngine validateBasedOnRootElement(
-			ErrorRecorderBuilder erBuilder, OMElement xml,
+			IErrorRecorderBuilder erBuilder, OMElement xml,
 			MessageValidatorEngine mvc, ValidationContext vc,
 			String rootElementName, RegistryValidationInterface rvi) {
 		if (rootElementName.equals("ProvideAndRegisterDocumentSetRequest")) {
@@ -690,7 +690,7 @@ public class MessageValidatorFactory implements MessageValidatorFactory2I {
 	 * at least the first validation step so calling engine.run() will kick start the validation. Note that no
 	 * ValidationContext is created so the goals of the validation are inferred from the contents.
 	 */
-	static MessageValidatorEngine getValidatorContextForTestLog(ErrorRecorderBuilder erBuilder, OMElement xml, RegistryValidationInterface rvi) {
+	static MessageValidatorEngine getValidatorContextForTestLog(IErrorRecorderBuilder erBuilder, OMElement xml, RegistryValidationInterface rvi) {
 		MessageValidatorEngine mvcx = new MessageValidatorEngine();
 
 		reportParseDecision(erBuilder, mvcx, "Parse Decision", "Input is a Test Log file");
@@ -741,8 +741,8 @@ public class MessageValidatorFactory implements MessageValidatorFactory2I {
 	 * @param error text of error
 	 * @return new ErrorRecorder
 	 */
-	static ErrorRecorder reportError(ErrorRecorderBuilder erBuilder, MessageValidatorEngine mvc, String title, String error) {
-		ErrorRecorder er = erBuilder.buildNewErrorRecorder();
+	static IErrorRecorder reportError(IErrorRecorderBuilder erBuilder, MessageValidatorEngine mvc, String title, String error) {
+		IErrorRecorder er = erBuilder.buildNewErrorRecorder();
 		er.err(XdsErrorCode.Code.XDSRegistryError, error, "MessageValidatorFactory", "");
 		mvc.addMessageValidator(title, new ServiceRequestContainer(DefaultValidationContextFactory.validationContext()), er);
 		return er;
@@ -755,8 +755,8 @@ public class MessageValidatorFactory implements MessageValidatorFactory2I {
 	 * @param title title of new ErrorRecorder section to be built
 	 * @return new ErrorRecorder
 	 */
-	static ErrorRecorder report(ErrorRecorderBuilder erBuilder, MessageValidatorEngine mvc, String title) {
-		ErrorRecorder er = erBuilder.buildNewErrorRecorder();
+	static IErrorRecorder report(IErrorRecorderBuilder erBuilder, MessageValidatorEngine mvc, String title) {
+		IErrorRecorder er = erBuilder.buildNewErrorRecorder();
 		mvc.addMessageValidator(title, new ServiceRequestContainer(DefaultValidationContextFactory.validationContext()), er);
 		return er;
 	}
@@ -768,8 +768,8 @@ public class MessageValidatorFactory implements MessageValidatorFactory2I {
 	 * @param title name of decision
 	 * @param text text of decision
 	 */
-	static void reportParseDecision(ErrorRecorderBuilder erBuilder, MessageValidatorEngine mvc, String title, String text) {
-		ErrorRecorder er = erBuilder.buildNewErrorRecorder();
+	static void reportParseDecision(IErrorRecorderBuilder erBuilder, MessageValidatorEngine mvc, String title, String text) {
+		IErrorRecorder er = erBuilder.buildNewErrorRecorder();
 		//		er.info1(text);
 		mvc.addMessageValidator(title + " - " + text, new ServiceRequestContainer(DefaultValidationContextFactory.validationContext()), er);
 	}

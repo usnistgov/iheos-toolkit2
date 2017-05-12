@@ -13,7 +13,7 @@ import spock.lang.Specification
 // import gov.nist.toolkit.errorrecordingold.GwtErrorRecorder
 // import gov.nist.toolkit.errorrecordingold.TextErrorRecorder
 // 2/ New imports for XMLErrorRecorder
-import gov.nist.toolkit.errorrecording.ErrorRecorder
+import gov.nist.toolkit.errorrecording.IErrorRecorder
 import gov.nist.toolkit.errorrecording.xml.XMLErrorRecorder
 
 
@@ -41,7 +41,7 @@ class XMLErrorRecorderTest extends Specification {
 
         // ErrorRecorder er = new GwtErrorRecorder()
         // ErrorRecorder er = new TextErrorRecorder()
-        ErrorRecorder er = new XMLErrorRecorder()
+        IErrorRecorder er = new XMLErrorRecorder()
 
         MetadataValidator val = new MetadataValidator(m, vc, null)
         val.run(er)

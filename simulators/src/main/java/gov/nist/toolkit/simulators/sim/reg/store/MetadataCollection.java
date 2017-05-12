@@ -1,6 +1,6 @@
 package gov.nist.toolkit.simulators.sim.reg.store;
 
-import gov.nist.toolkit.errorrecording.ErrorRecorder;
+import gov.nist.toolkit.errorrecording.IErrorRecorder;
 import gov.nist.toolkit.errorrecording.common.XdsErrorCode.Code;
 import gov.nist.toolkit.registrymetadata.Metadata;
 import gov.nist.toolkit.registrymetadata.MetadataParser;
@@ -107,7 +107,7 @@ public class MetadataCollection implements Serializable, RegistryValidationInter
 	// A delta has been created during the operation of a Register transaction
 	// Merge the delta into the parent record
 	// Caller takes responsibility for locking
-	public boolean mergeDelta(ErrorRecorder er) {
+	public boolean mergeDelta(IErrorRecorder er) {
 		if (parent == null)
 			return false;
 

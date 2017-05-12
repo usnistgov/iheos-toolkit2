@@ -2,7 +2,7 @@ package gov.nist.toolkit.simulators.sim.rg;
 
 import gov.nist.toolkit.configDatatypes.SimulatorProperties;
 import gov.nist.toolkit.actorfactory.client.SimulatorConfig;
-import gov.nist.toolkit.errorrecording.ErrorRecorder;
+import gov.nist.toolkit.errorrecording.IErrorRecorder;
 import gov.nist.toolkit.errorrecording.common.XdsErrorCode;
 import gov.nist.toolkit.registrymetadata.Metadata;
 import gov.nist.toolkit.registrymetadata.MetadataParser;
@@ -51,7 +51,7 @@ public class RemoteSqSim  extends TransactionSimulator implements MetadataGenera
 		}
 	}
 
-	public void run(ErrorRecorder er, MessageValidatorEngine mvc) {
+	public void run(IErrorRecorder er, MessageValidatorEngine mvc) {
 
 		if (startUpException != null)
 			er.err(XdsErrorCode.Code.XDSRegistryError, startUpException);

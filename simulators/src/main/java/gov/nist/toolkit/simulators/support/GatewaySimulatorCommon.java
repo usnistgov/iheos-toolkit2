@@ -1,6 +1,6 @@
 package gov.nist.toolkit.simulators.support;
 
-import gov.nist.toolkit.errorrecording.ErrorRecorder;
+import gov.nist.toolkit.errorrecording.IErrorRecorder;
 import gov.nist.toolkit.errorrecording.common.XdsErrorCode;
 import gov.nist.toolkit.errorrecording.common.XdsErrorCode.Code;
 import gov.nist.toolkit.errorrecording.xml.assertions.Assertion;
@@ -23,7 +23,7 @@ abstract public class GatewaySimulatorCommon extends BaseDsActorSimulator {
 
 	public GatewaySimulatorCommon() {}
 
-	public  boolean validateHomeCommunityId(ErrorRecorder er, OMElement query, boolean isRG) {
+	public  boolean validateHomeCommunityId(IErrorRecorder er, OMElement query, boolean isRG) {
 		// verify that if Patient ID param not present then homeCommunityId is in header
 		// and homeCommunityId is in proper format
 

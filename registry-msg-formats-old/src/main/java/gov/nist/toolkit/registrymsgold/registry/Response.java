@@ -1,7 +1,7 @@
 package gov.nist.toolkit.registrymsgold.registry;
 
 import gov.nist.toolkit.commondatatypes.MetadataSupport;
-import gov.nist.toolkit.errorrecording.ErrorRecorder;
+import gov.nist.toolkit.errorrecording.IErrorRecorder;
 import gov.nist.toolkit.errorrecording.gwt.client.GWTValidationStepResult;
 import gov.nist.toolkit.errorrecording.gwt.client.GwtValidatorErrorItem;
 import gov.nist.toolkit.registrysupport.logging.ErrorLogger;
@@ -38,7 +38,7 @@ public abstract class Response implements ErrorLogger {
 	OMElement content = null;
 	public RegistryErrorListGenerator registryErrorList;
 
-	public ErrorRecorder getErrorRecorder() { return registryErrorList; }
+	public IErrorRecorder getErrorRecorder() { return registryErrorList; }
 
 	public RegistryErrorListGenerator getRegistryErrorList() { return registryErrorList; }
 

@@ -1,6 +1,6 @@
 package gov.nist.toolkit.valsupport.engine;
 
-import gov.nist.toolkit.errorrecording.ErrorRecorder;
+import gov.nist.toolkit.errorrecording.IErrorRecorder;
 import gov.nist.toolkit.valsupport.message.AbstractMessageValidator;
 import gov.nist.toolkit.valsupport.message.ServiceRequestContainer;
 import gov.nist.toolkit.xdsexception.ToolkitRuntimeException;
@@ -128,7 +128,7 @@ public class MessageValidatorEngine {
 	 * @param er its private ErrorRecorder
 	 * @return the ValidationStep structure which is used internally to the engine
 	 */
-	public ValidationStep addMessageValidator(String stepName, AbstractMessageValidator v, ErrorRecorder er) {
+	public ValidationStep addMessageValidator(String stepName, AbstractMessageValidator v, IErrorRecorder er) {
 		ValidationStep step = new ValidationStep(stepName, v, er);
 		validationSteps.add(step);
 		logger.info("ENGINE: ADD: " + stepName + ": " + v.getClass().getSimpleName());
@@ -140,7 +140,7 @@ public class MessageValidatorEngine {
 	 * @param stepName name of the validation step
 	 * @param er its private ErrorRecorder
 	 */
-	public void addErrorRecorder(String stepName, ErrorRecorder er) {
+	public void addErrorRecorder(String stepName, IErrorRecorder er) {
 		ValidationStep step = addMessageValidator(stepName, new ServiceRequestContainer(DefaultValidationContextFactory.validationContext()), er);
 		step.ran = true;
 		logger.info("ENGINE: preRUN: " + step.toString());

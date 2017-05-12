@@ -1,6 +1,6 @@
 package gov.nist.toolkit.http;
 
-import gov.nist.toolkit.errorrecording.ErrorRecorder;
+import gov.nist.toolkit.errorrecording.IErrorRecorder;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -15,7 +15,7 @@ public class HttpHeader {
 	private Map<String, String> params;
 	private List<String> unnamedParams;
 	boolean parsed;
-	ErrorRecorder er = null;
+	IErrorRecorder er = null;
 
 	public HttpHeader(String line) throws  ParseException {
 		if (line == null)
@@ -25,7 +25,7 @@ public class HttpHeader {
 		parse();
 	}
 
-	public HttpHeader(String line, ErrorRecorder er) throws ParseException {
+	public HttpHeader(String line, IErrorRecorder er) throws ParseException {
 		if (line == null)
 			line = "";
 		this.line = line;

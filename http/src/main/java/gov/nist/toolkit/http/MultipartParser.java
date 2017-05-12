@@ -1,6 +1,6 @@
 package gov.nist.toolkit.http;
 
-import gov.nist.toolkit.errorrecording.ErrorRecorder;
+import gov.nist.toolkit.errorrecording.IErrorRecorder;
 import gov.nist.toolkit.errorrecording.common.XdsErrorCode;
 import gov.nist.toolkit.http.HttpHeader.HttpHeaderParseException;
 import org.apache.log4j.Logger;
@@ -10,7 +10,7 @@ import java.util.List;
 public class MultipartParser {
 	HttpParser hp;
 	HttpHeader contentTypeHeader;
-	ErrorRecorder er = null;
+	IErrorRecorder er = null;
 	boolean appendixV = true;
 	MultipartMessage message = new MultipartMessage();
 	static final Logger logger = Logger.getLogger(HttpParser.class);
@@ -21,7 +21,7 @@ public class MultipartParser {
 		parse();
 	}
 
-	public MultipartParser(HttpParser hp, ErrorRecorder er, boolean appendixV) throws ParseException, HttpHeaderParseException, HttpParseException {
+	public MultipartParser(HttpParser hp, IErrorRecorder er, boolean appendixV) throws ParseException, HttpHeaderParseException, HttpParseException {
 		logger.debug("new MultipartParser(" + this.toString() + ")");
 		this.hp = hp;
 		this.er = er;

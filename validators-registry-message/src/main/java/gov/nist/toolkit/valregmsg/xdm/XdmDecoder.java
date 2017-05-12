@@ -1,9 +1,9 @@
 package gov.nist.toolkit.valregmsg.xdm;
 
-import gov.nist.toolkit.errorrecording.ErrorRecorder;
+import gov.nist.toolkit.errorrecording.IErrorRecorder;
 import gov.nist.toolkit.errorrecording.text.TextErrorRecorder;
 import gov.nist.toolkit.errorrecording.common.XdsErrorCode.Code;
-import gov.nist.toolkit.errorrecording.ErrorRecorderBuilder;
+import gov.nist.toolkit.errorrecording.IErrorRecorderBuilder;
 import gov.nist.toolkit.errorrecording.text.TextErrorRecorderBuilder;
 import gov.nist.toolkit.registrymetadata.Metadata;
 import gov.nist.toolkit.utilities.io.Io;
@@ -27,11 +27,11 @@ import java.util.zip.ZipException;
 
 public class XdmDecoder extends AbstractMessageValidator {
 	InputStream in;
-	ErrorRecorderBuilder erBuilder;
+	IErrorRecorderBuilder erBuilder;
 	static Logger logger = Logger.getLogger(XdmDecoder.class);
 
 
-	public XdmDecoder(ValidationContext vc, ErrorRecorderBuilder erBuilder, InputStream zipInputStream) {
+	public XdmDecoder(ValidationContext vc, IErrorRecorderBuilder erBuilder, InputStream zipInputStream) {
 		super(vc);
 		this.erBuilder = erBuilder;
 		in = zipInputStream;
@@ -48,7 +48,7 @@ public class XdmDecoder extends AbstractMessageValidator {
 			InputStream is = Io.getInputStreamFromFile(new File(args[0]));
 			ValidationContext vc = DefaultValidationContextFactory.validationContext();
 			vc.isXDM = true;
-			ErrorRecorderBuilder erBuilder = new TextErrorRecorderBuilder();
+			IErrorRecorderBuilder erBuilder = new TextErrorRecorderBuilder();
 			TextErrorRecorder er = (TextErrorRecorder) erBuilder.buildNewErrorRecorder();
 			MessageValidatorEngine mvc = new MessageValidatorEngine();
 
@@ -82,7 +82,7 @@ public class XdmDecoder extends AbstractMessageValidator {
 		logger.info("Message looks like a XDM");
 	}
 
-	public void run(ErrorRecorder er, MessageValidatorEngine mvc) {
+	public void run(IErrorRecorder er, MessageValidatorEngine mvc) {
 		er.registerValidator(this);
 
 		logger.debug("running");
@@ -235,7 +235,7 @@ public class XdmDecoder extends AbstractMessageValidator {
         er.unRegisterValidator(this);
 	}
 
-	boolean decode(ErrorRecorder er) {
+	boolean decode(IErrorRecorder er) {
 		if (contents != null)
 			return true;  // already decoded
 		er.challenge("Decoding ZIP");

@@ -1,7 +1,7 @@
 package gov.nist.toolkit.valregmsg.message;
 
-import gov.nist.toolkit.errorrecording.ErrorRecorder;
-import gov.nist.toolkit.errorrecording.ErrorRecorderBuilder;
+import gov.nist.toolkit.errorrecording.IErrorRecorder;
+import gov.nist.toolkit.errorrecording.IErrorRecorderBuilder;
 import gov.nist.toolkit.errorrecording.common.XdsErrorCode;
 import gov.nist.toolkit.http.MultipartParserBa;
 import gov.nist.toolkit.registrymetadata.Metadata;
@@ -14,12 +14,12 @@ import java.util.List;
 public class DocumentElementValidator extends AbstractMessageValidator {
 	MessageValidatorEngine mvc;
 	
-	public DocumentElementValidator(ValidationContext vc, ErrorRecorderBuilder erBuilder, MessageValidatorEngine mvc) {
+	public DocumentElementValidator(ValidationContext vc, IErrorRecorderBuilder erBuilder, MessageValidatorEngine mvc) {
 		super(vc);
 		this.mvc = mvc;
 	}
 
-	public void run(ErrorRecorder er, MessageValidatorEngine mvc) {
+	public void run(IErrorRecorder er, MessageValidatorEngine mvc) {
 		this.er = er;
 		er.registerValidator(this);
 		

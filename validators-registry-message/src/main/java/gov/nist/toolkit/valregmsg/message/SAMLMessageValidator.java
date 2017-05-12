@@ -1,8 +1,8 @@
 package gov.nist.toolkit.valregmsg.message;
 
 
-import gov.nist.toolkit.errorrecording.ErrorRecorder;
-import gov.nist.toolkit.errorrecording.ErrorRecorderBuilder;
+import gov.nist.toolkit.errorrecording.IErrorRecorder;
+import gov.nist.toolkit.errorrecording.IErrorRecorderBuilder;
 import gov.nist.toolkit.errorrecording.common.XdsErrorCode;
 import gov.nist.toolkit.saml.bean.*;
 import gov.nist.toolkit.saml.security.XMLSignatureValidatorUtil;
@@ -40,14 +40,14 @@ public class SAMLMessageValidator extends AbstractMessageValidator {
 	OMElement messagebody = null;
 	String wsaction = null;
 	String reqMessageId = null; 
-	ErrorRecorder er;
-	ErrorRecorderBuilder erBuilder;
+	IErrorRecorder er;
+	IErrorRecorderBuilder erBuilder;
 	MessageValidatorEngine mvc;
 	RegistryValidationInterface rvi;
 	Schema schema = null ;
 	AssertionType assertionType ;
 	
-	public SAMLMessageValidator(ValidationContext vc, OMElement xml, ErrorRecorderBuilder erBuilder, 
+	public SAMLMessageValidator(ValidationContext vc, OMElement xml, IErrorRecorderBuilder erBuilder,
 			MessageValidatorEngine mvc, RegistryValidationInterface rvi) {
 		super(vc);
 		
@@ -73,7 +73,7 @@ public class SAMLMessageValidator extends AbstractMessageValidator {
 	void err(Exception e) {
 		er.err(XdsErrorCode.Code.NoCode, e);
 	}
-	public ErrorRecorder getErrorRecorder() {
+	public IErrorRecorder getErrorRecorder() {
 		return er;
 	}
 	void parse() {
@@ -84,7 +84,7 @@ public class SAMLMessageValidator extends AbstractMessageValidator {
 		assertion = firstChildWithLocalName(security, "Assertion");
 	}
 	@Override
-	public void run(ErrorRecorder er, MessageValidatorEngine mvc) {
+	public void run(IErrorRecorder er, MessageValidatorEngine mvc) {
 		this.er = er;
 		this.envlope = envlope;
 		try {

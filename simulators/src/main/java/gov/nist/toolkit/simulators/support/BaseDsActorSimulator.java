@@ -4,8 +4,7 @@ import gov.nist.toolkit.actorfactory.BaseActorSimulator;
 import gov.nist.toolkit.actorfactory.SimDb;
 import gov.nist.toolkit.actorfactory.client.SimulatorConfig;
 import gov.nist.toolkit.configDatatypes.client.TransactionType;
-import gov.nist.toolkit.errorrecording.ErrorRecorder;
-import gov.nist.toolkit.errorrecording.gwt.GwtErrorRecorderBuilder;
+import gov.nist.toolkit.errorrecording.IErrorRecorder;
 import gov.nist.toolkit.valsupport.client.ValidationContext;
 import gov.nist.toolkit.valsupport.engine.MessageValidatorEngine;
 
@@ -22,7 +21,7 @@ public abstract class BaseDsActorSimulator extends BaseActorSimulator {
     protected SimDb db;
 	protected SimCommon common = null;
 	protected DsSimCommon dsSimCommon = null;
-	protected ErrorRecorder er = null;
+	protected IErrorRecorder er = null;
 	public HttpServletResponse response;
 
 	/**

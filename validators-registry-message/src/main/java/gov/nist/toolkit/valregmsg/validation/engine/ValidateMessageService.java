@@ -5,7 +5,7 @@ import gov.nist.toolkit.errorrecording.common.XdsErrorCode;
 import gov.nist.toolkit.errorrecording.gwt.GwtErrorRecorder;
 import gov.nist.toolkit.errorrecording.gwt.GwtErrorRecorderBuilder;
 import gov.nist.toolkit.errorrecording.gwt.client.GwtValidatorErrorItem;
-import gov.nist.toolkit.errorrecording.ErrorRecorderBuilder;
+import gov.nist.toolkit.errorrecording.IErrorRecorderBuilder;
 import gov.nist.toolkit.results.CommonService;
 import gov.nist.toolkit.valregmsg.message.HttpMessageValidator;
 import gov.nist.toolkit.valsupport.client.MessageValidationResults;
@@ -42,11 +42,11 @@ public class ValidateMessageService extends CommonService {
 	 * @return
 	 * @throws IOException
 	 */
-	public MessageValidatorEngine runValidation(ValidationContext vc, SimDb db, MessageValidatorEngine mvc, ErrorRecorderBuilder gerb) throws IOException {
+	public MessageValidatorEngine runValidation(ValidationContext vc, SimDb db, MessageValidatorEngine mvc, IErrorRecorderBuilder gerb) throws IOException {
 		return runValidation(vc, db.getRequestMessageHeader(), db.getRequestMessageBody(), mvc, gerb);
 	}
 
-	public MessageValidatorEngine runValidation(ValidationContext vc, String httpMsgHdr, byte[] httpMsgBody, MessageValidatorEngine mvc, ErrorRecorderBuilder gerb) throws IOException {
+	public MessageValidatorEngine runValidation(ValidationContext vc, String httpMsgHdr, byte[] httpMsgBody, MessageValidatorEngine mvc, IErrorRecorderBuilder gerb) throws IOException {
 
 		if (mvc == null)
 			mvc = new MessageValidatorEngine();

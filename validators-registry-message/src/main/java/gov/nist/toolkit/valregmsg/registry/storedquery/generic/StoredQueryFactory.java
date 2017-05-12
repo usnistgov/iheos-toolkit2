@@ -1,7 +1,7 @@
 package gov.nist.toolkit.valregmsg.registry.storedquery.generic;
 
 import gov.nist.toolkit.docref.SqDocRef;
-import gov.nist.toolkit.errorrecording.ErrorRecorder;
+import gov.nist.toolkit.errorrecording.IErrorRecorder;
 import gov.nist.toolkit.errorrecording.common.XdsErrorCode;
 import gov.nist.toolkit.errorrecording.xml.assertions.Assertion;
 import gov.nist.toolkit.errorrecording.xml.assertions.AssertionLibrary;
@@ -57,7 +57,7 @@ abstract public class StoredQueryFactory {
 	String service_name;
 	boolean is_secure = false;
 	protected Response response = null;
-	protected ErrorRecorder er = null;
+	protected IErrorRecorder er = null;
 	String homeCommunityId = null;
 	private AssertionLibrary ASSERTIONLIBRARY = AssertionLibrary.getInstance();
 
@@ -83,7 +83,7 @@ abstract public class StoredQueryFactory {
 		build();
 	}
 
-	public StoredQueryFactory(OMElement ahqr, ErrorRecorder er) throws XdsException, LoggerException {
+	public StoredQueryFactory(OMElement ahqr, IErrorRecorder er) throws XdsException, LoggerException {
 		this.ahqr = ahqr;
 		this.params = null;
 		this.log_message = null;

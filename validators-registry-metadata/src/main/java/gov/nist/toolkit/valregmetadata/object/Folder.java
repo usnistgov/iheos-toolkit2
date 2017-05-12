@@ -1,6 +1,6 @@
 package gov.nist.toolkit.valregmetadata.object;
 
-import gov.nist.toolkit.errorrecording.ErrorRecorder;
+import gov.nist.toolkit.errorrecording.IErrorRecorder;
 import gov.nist.toolkit.errorrecording.common.XdsErrorCode;
 import gov.nist.toolkit.errorrecording.xml.assertions.Assertion;
 import gov.nist.toolkit.errorrecording.xml.assertions.AssertionLibrary;
@@ -141,8 +141,8 @@ public class Folder extends AbstractRegistryObject implements TopLevelObject {
 		return ro;
 	}
 
-	public void validate(ErrorRecorder er, ValidationContext vc,
-						 Set<String> knownIds) {
+	public void validate(IErrorRecorder er, ValidationContext vc,
+                         Set<String> knownIds) {
 
 		if (vc.skipInternalStructure)
 			return;
@@ -170,13 +170,13 @@ public class Folder extends AbstractRegistryObject implements TopLevelObject {
 		verifyIdsUnique(er, knownIds);
 	}
 
-	public void validateSlotsCodedCorrectly(ErrorRecorder er, ValidationContext vc)  {
+	public void validateSlotsCodedCorrectly(IErrorRecorder er, ValidationContext vc)  {
 
 		//                    name				   multi	format                                                  resource
 		validateSlot(er, 	"lastUpdateTime", 	   false, 	new DtmFormat(er, this, "Slot lastUpdateTime",            table417),  table417);
 	}
 
-	public void validateRequiredSlotsPresent(ErrorRecorder er, ValidationContext vc) {
+	public void validateRequiredSlotsPresent(IErrorRecorder er, ValidationContext vc) {
 		// Slots always required
 		for (String slotName : requiredSlots) {
 			if (getSlot(slotName) == null) {
@@ -187,7 +187,7 @@ public class Folder extends AbstractRegistryObject implements TopLevelObject {
 		}
 	}
 
-	public void validateSlotsLegal(ErrorRecorder er)  {
+	public void validateSlotsLegal(IErrorRecorder er)  {
 		verifySlotsUnique(er);
 		for (Slot slot : getSlots()) {
 			if ( ! legal_slot_name(slot.getName())) {
@@ -204,7 +204,7 @@ public class Folder extends AbstractRegistryObject implements TopLevelObject {
 		return definedSlots.contains(name);
 	}
 
-	public void validateTopAtts(ErrorRecorder er, ValidationContext vc) {
+	public void validateTopAtts(IErrorRecorder er, ValidationContext vc) {
 		validateTopAtts(er, vc, table417, statusValues);
 	}
 

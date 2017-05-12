@@ -1,6 +1,6 @@
 package gov.nist.toolkit.valsupport.message;
 
-import gov.nist.toolkit.errorrecording.ErrorRecorder;
+import gov.nist.toolkit.errorrecording.IErrorRecorder;
 import gov.nist.toolkit.valsupport.client.ValidationContext;
 import gov.nist.toolkit.valsupport.engine.MessageValidatorEngine;
 
@@ -14,9 +14,9 @@ import gov.nist.toolkit.valsupport.engine.MessageValidatorEngine;
  */
 abstract public class AbstractMessageValidator {
 	protected ValidationContext vc; 
-	public ErrorRecorder er;
+	public IErrorRecorder er;
 	
-	abstract public void run(ErrorRecorder er, MessageValidatorEngine mvc);
+	abstract public void run(IErrorRecorder er, MessageValidatorEngine mvc);
 
 	// System level validators, those that trigger soap faults, should
 	// override this method and return true
@@ -26,7 +26,7 @@ abstract public class AbstractMessageValidator {
 		this.vc = vc;
 	}
 	
-	public ErrorRecorder getErrorRecorder() {
+	public IErrorRecorder getErrorRecorder() {
 		return er;
 	}
 

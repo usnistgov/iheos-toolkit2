@@ -1,6 +1,6 @@
 package gov.nist.toolkit.valregmsg.registry.storedquery.support;
 
-import gov.nist.toolkit.errorrecording.ErrorRecorder;
+import gov.nist.toolkit.errorrecording.IErrorRecorder;
 import gov.nist.toolkit.errorrecording.common.XdsErrorCode;
 import gov.nist.toolkit.errorrecording.xml.assertions.Assertion;
 import gov.nist.toolkit.errorrecording.xml.assertions.AssertionLibrary;
@@ -12,7 +12,7 @@ import gov.nist.toolkit.valregmsg.registry.storedquery.generic.QueryReturnType;
 import java.util.ArrayList;
 
 public class StoredQuerySupport {
-	public ErrorRecorder er;
+	public IErrorRecorder er;
 	public LogMessage log_message;
 	public SqParams params;
 	public StringBuffer query;
@@ -34,7 +34,7 @@ public class StoredQuerySupport {
 	 * @param response
 	 * @param log_message
 	 */
-	public StoredQuerySupport(ErrorRecorder response, LogMessage log_message)  {
+	public StoredQuerySupport(IErrorRecorder response, LogMessage log_message)  {
 		this.er = response;
 		this.log_message = log_message;
 		init();
@@ -48,7 +48,7 @@ public class StoredQuerySupport {
 	 * @param log_message (Message)
 	 * @param is_secure
 	 */
-	public StoredQuerySupport(SqParams params, QueryReturnType return_objects, ErrorRecorder response, LogMessage log_message, boolean is_secure) {
+	public StoredQuerySupport(SqParams params, QueryReturnType return_objects, IErrorRecorder response, LogMessage log_message, boolean is_secure) {
 		this.er = response;
 		this.log_message = log_message;
 		this.params = params;

@@ -1,7 +1,7 @@
 package gov.nist.toolkit.valregmsg.message;
 
-import gov.nist.toolkit.errorrecording.ErrorRecorder;
-import gov.nist.toolkit.errorrecording.ErrorRecorderBuilder;
+import gov.nist.toolkit.errorrecording.IErrorRecorder;
+import gov.nist.toolkit.errorrecording.IErrorRecorderBuilder;
 import gov.nist.toolkit.commondatatypes.MetadataSupport;
 import gov.nist.toolkit.errorrecording.common.XdsErrorCode;
 import gov.nist.toolkit.soap.wsseToolkitAdapter.WsseHeaderValidatorAdapter;
@@ -33,7 +33,7 @@ public class SoapMessageValidator extends AbstractMessageValidator {
     OMElement messagebody = null;
     String wsaction = null;
     String reqMessageId = null;
-    ErrorRecorderBuilder erBuilder;
+    IErrorRecorderBuilder erBuilder;
     MessageValidatorEngine mvc;
     RegistryValidationInterface rvi;
 
@@ -59,7 +59,7 @@ public class SoapMessageValidator extends AbstractMessageValidator {
 
 
 
-    public SoapMessageValidator(ValidationContext vc, ErrorRecorderBuilder erBuilder, MessageValidatorEngine mvc, RegistryValidationInterface rvi) {
+    public SoapMessageValidator(ValidationContext vc, IErrorRecorderBuilder erBuilder, MessageValidatorEngine mvc, RegistryValidationInterface rvi) {
         super(vc);
         this.erBuilder = erBuilder;
         this.mvc = mvc;
@@ -76,7 +76,7 @@ public class SoapMessageValidator extends AbstractMessageValidator {
         return messagebody;
     }
 
-    public void run(ErrorRecorder er, MessageValidatorEngine mvc) {
+    public void run(IErrorRecorder er, MessageValidatorEngine mvc) {
         this.er = er;
         er.registerValidator(this);
 

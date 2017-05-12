@@ -1,10 +1,6 @@
 package gov.nist.toolkit.valregmsg.message;
 
-import gov.nist.toolkit.errorrecording.ErrorRecorder;
 import gov.nist.toolkit.valsupport.client.ValidationContext;
-import gov.nist.toolkit.valsupport.engine.MessageValidatorEngine;
-
-import org.apache.axiom.om.OMElement;
 
 public class RetrieveOrderValidator extends OrderValidator {
 

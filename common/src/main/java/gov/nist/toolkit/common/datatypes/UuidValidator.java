@@ -1,14 +1,14 @@
 package gov.nist.toolkit.common.datatypes;
 
-import gov.nist.toolkit.errorrecording.ErrorRecorder;
+import gov.nist.toolkit.errorrecording.IErrorRecorder;
 import gov.nist.toolkit.errorrecording.common.XdsErrorCode;
 
 public class UuidValidator {
-	ErrorRecorder er;
+	IErrorRecorder er;
 	String rawMsgPrefix = "Validating UUID format of "; 
 	String msgPrefix;
 	
-	public UuidValidator(ErrorRecorder er, String errorMsgPrefix) {
+	public UuidValidator(IErrorRecorder er, String errorMsgPrefix) {
 		this.er = er;
 		if (errorMsgPrefix != null) 
 			rawMsgPrefix = errorMsgPrefix;

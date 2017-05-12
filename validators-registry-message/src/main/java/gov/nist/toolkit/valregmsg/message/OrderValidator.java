@@ -1,6 +1,6 @@
 package gov.nist.toolkit.valregmsg.message;
 
-import gov.nist.toolkit.errorrecording.ErrorRecorder;
+import gov.nist.toolkit.errorrecording.IErrorRecorder;
 import gov.nist.toolkit.errorrecording.common.XdsErrorCode;
 import gov.nist.toolkit.registrymetadata.Metadata;
 import gov.nist.toolkit.valsupport.client.ValidationContext;
@@ -38,7 +38,7 @@ public abstract class OrderValidator extends AbstractMessageValidator {
 	 * @param mvc
 	 */
 	@Override
-	public void run(ErrorRecorder er, MessageValidatorEngine mvc) {
+	public void run(IErrorRecorder er, MessageValidatorEngine mvc) {
 		this.er = er;
 		er.registerValidator(this);
 		if (xml == null) {

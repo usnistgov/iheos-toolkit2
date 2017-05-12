@@ -1,6 +1,6 @@
 package gov.nist.toolkit.soap.wsseToolkitAdapter;
 
-import gov.nist.toolkit.errorrecording.ErrorRecorder;
+import gov.nist.toolkit.errorrecording.IErrorRecorder;
 import gov.nist.toolkit.errorrecording.text.TextErrorRecorder;
 import gov.nist.toolkit.soap.wsseToolkitAdapter.log4jToErrorRecorder.AppenderForErrorRecorder;
 import gov.nist.toolkit.utilities.xml.XmlUtil;
@@ -64,7 +64,7 @@ public class WsseHeaderValidatorAdapter extends AbstractMessageValidator {
 
 		WsseHeaderValidatorAdapter validator = new WsseHeaderValidatorAdapter(
 				DefaultValidationContextFactory.validationContext(), wsseHeader);
-		ErrorRecorder er = new TextErrorRecorder();
+		IErrorRecorder er = new TextErrorRecorder();
 		MessageValidatorEngine mvc = new MessageValidatorEngine();
 		validator.run(er, mvc);
 	}
@@ -93,7 +93,7 @@ public class WsseHeaderValidatorAdapter extends AbstractMessageValidator {
 	}
 
 	@Override
-	public void run(ErrorRecorder er, MessageValidatorEngine mvc) {
+	public void run(IErrorRecorder er, MessageValidatorEngine mvc) {
 
 		try {
 			// We use a special appender to record message coming from the wsse

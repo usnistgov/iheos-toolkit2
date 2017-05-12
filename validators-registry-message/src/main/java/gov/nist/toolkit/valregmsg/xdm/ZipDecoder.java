@@ -1,6 +1,6 @@
 package gov.nist.toolkit.valregmsg.xdm;
 
-import gov.nist.toolkit.errorrecording.ErrorRecorder;
+import gov.nist.toolkit.errorrecording.IErrorRecorder;
 import gov.nist.toolkit.utilities.io.Io;
 
 import java.io.IOException;
@@ -10,11 +10,11 @@ import java.util.zip.ZipException;
 import java.util.zip.ZipInputStream;
 
 public class ZipDecoder {
-	ErrorRecorder er = null;
+	IErrorRecorder er = null;
 
 	public ZipDecoder() {}
 
-	public ZipDecoder(ErrorRecorder er) { this.er = er; }
+	public ZipDecoder(IErrorRecorder er) { this.er = er; }
 
 	OMap parse(InputStream in) throws ZipException, IOException {
 		OMap contents = new OMap();

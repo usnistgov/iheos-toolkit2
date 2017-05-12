@@ -1,6 +1,6 @@
 package gov.nist.toolkit.valsupport.engine;
 
-import gov.nist.toolkit.errorrecording.ErrorRecorder;
+import gov.nist.toolkit.errorrecording.IErrorRecorder;
 import gov.nist.toolkit.valsupport.message.AbstractMessageValidator;
 
 /**
@@ -9,17 +9,17 @@ import gov.nist.toolkit.valsupport.message.AbstractMessageValidator;
 public class ValidationStep {
     String stepName;
     AbstractMessageValidator validator;
-    ErrorRecorder er;
+    IErrorRecorder er;
     boolean ran = false;
 
-    public ValidationStep(String stepName, AbstractMessageValidator validator, ErrorRecorder er) {
+    public ValidationStep(String stepName, AbstractMessageValidator validator, IErrorRecorder er) {
         this.stepName = stepName;
         this.validator = validator;
         this.er = er;
     }
 
     public String getStepName() { return stepName; }
-    public ErrorRecorder getErrorRecorder() { return er; }
+    public IErrorRecorder getErrorRecorder() { return er; }
     public boolean hasErrors() { return er.hasErrors(); }
 
     public String toString() {

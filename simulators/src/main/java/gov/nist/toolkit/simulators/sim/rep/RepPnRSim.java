@@ -3,7 +3,7 @@ package gov.nist.toolkit.simulators.sim.rep;
 import gov.nist.toolkit.configDatatypes.SimulatorProperties;
 import gov.nist.toolkit.actorfactory.client.SimulatorConfig;
 import gov.nist.toolkit.docref.Mtom;
-import gov.nist.toolkit.errorrecording.ErrorRecorder;
+import gov.nist.toolkit.errorrecording.IErrorRecorder;
 import gov.nist.toolkit.errorrecording.common.XdsErrorCode;
 import gov.nist.toolkit.errorrecording.common.XdsErrorCode.Code;
 import gov.nist.toolkit.errorrecording.xml.assertions.Assertion;
@@ -47,7 +47,7 @@ public class RepPnRSim extends TransactionSimulator implements MetadataGeneratin
 		return m;
 	}
 
-	public void run(ErrorRecorder er, MessageValidatorEngine mvc) {
+	public void run(IErrorRecorder er, MessageValidatorEngine mvc) {
 		this.er = er;
 
 		// if request didn't validate, return so errors can be reported
@@ -204,7 +204,7 @@ public class RepPnRSim extends TransactionSimulator implements MetadataGeneratin
 				Soap soap = new Soap();
 				try {
 					OMElement result = soap.soapCall(m.getV3SubmitObjectsRequest(), endpoint, false, true, true, SoapActionFactory.r_b_action, SoapActionFactory.getResponseAction(SoapActionFactory.r_b_action));
-					ErrorRecorder rrEr = dsSimCommon.registryResponseAsErrorRecorder(result);
+					IErrorRecorder rrEr = dsSimCommon.registryResponseAsErrorRecorder(result);
 					mvc.addErrorRecorder("RegistryResponse", rrEr);
 				} catch (Exception e) {
 					er.err(Code.XDSRepositoryError, e);

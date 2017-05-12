@@ -1,7 +1,7 @@
 package gov.nist.toolkit.valregmsg.message;
 
 import gov.nist.toolkit.common.coder.Base64Coder;
-import gov.nist.toolkit.errorrecording.ErrorRecorder;
+import gov.nist.toolkit.errorrecording.IErrorRecorder;
 import gov.nist.toolkit.errorrecording.common.XdsErrorCode;
 import gov.nist.toolkit.errorrecording.xml.assertions.Assertion;
 import gov.nist.toolkit.errorrecording.xml.assertions.AssertionLibrary;
@@ -81,7 +81,7 @@ public class DocumentAttachmentMapper  extends AbstractMessageValidator {
 		this.xml = xml;
 	}
 
-	public void run(ErrorRecorder er, MessageValidatorEngine mvc) {
+	public void run(IErrorRecorder er, MessageValidatorEngine mvc) {
 		this.er = er;
 		er.registerValidator(this);
 

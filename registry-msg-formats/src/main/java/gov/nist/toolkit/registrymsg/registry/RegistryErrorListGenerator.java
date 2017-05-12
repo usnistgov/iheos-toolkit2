@@ -1,6 +1,6 @@
 package gov.nist.toolkit.registrymsg.registry;
 
-import gov.nist.toolkit.errorrecording.ErrorRecorder;
+import gov.nist.toolkit.errorrecording.IErrorRecorder;
 import gov.nist.toolkit.errorrecording.gwt.GwtErrorRecorder;
 import gov.nist.toolkit.errorrecording.gwt.client.GwtValidatorErrorItem;
 import gov.nist.toolkit.errorrecording.gwt.client.GwtValidatorErrorItem.ReportingCompletionType;
@@ -27,7 +27,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 
-public class RegistryErrorListGenerator implements ErrorLogger, ErrorRecorder{
+public class RegistryErrorListGenerator implements ErrorLogger, IErrorRecorder {
 	public final static short version_2 = 2;
 	public final static short version_3 = 3;
 	String errors_and_warnings = "";
@@ -45,7 +45,7 @@ public class RegistryErrorListGenerator implements ErrorLogger, ErrorRecorder{
 	boolean verbose = true;
 	boolean log;
 	boolean isXCA = false;
-	List<ErrorRecorder> children = new ArrayList<>();
+	List<IErrorRecorder> children = new ArrayList<>();
 
 
 	public void setIsXCA() { isXCA = true; }
@@ -504,12 +504,12 @@ public class RegistryErrorListGenerator implements ErrorLogger, ErrorRecorder{
 	}
 
 	@Override
-	public ErrorRecorder buildNewErrorRecorder() {
+	public IErrorRecorder buildNewErrorRecorder() {
 		return this;
 	}
 
 	@Override
-	public ErrorRecorder buildNewErrorRecorder(Object o) {
+	public IErrorRecorder buildNewErrorRecorder(Object o) {
 		return null;
 	}
 
@@ -518,7 +518,7 @@ public class RegistryErrorListGenerator implements ErrorLogger, ErrorRecorder{
 		return 0;
 	}
 
-	public void concat(ErrorRecorder er) {
+	public void concat(IErrorRecorder er) {
 	}
 
 	public List<GwtValidatorErrorItem> getErrMsgs() {
@@ -526,7 +526,7 @@ public class RegistryErrorListGenerator implements ErrorLogger, ErrorRecorder{
 	}
 
 	@Override
-	public List<ErrorRecorder> getChildren() {
+	public List<IErrorRecorder> getChildren() {
 		return children;
 	}
 
@@ -535,7 +535,7 @@ public class RegistryErrorListGenerator implements ErrorLogger, ErrorRecorder{
 		int depth = 1;
 
 		int maxChildDepth = 0;
-		for (ErrorRecorder er : children) {
+		for (IErrorRecorder er : children) {
 			int childDepth = er.depth();
 			if (childDepth > maxChildDepth) maxChildDepth = childDepth;
 		}

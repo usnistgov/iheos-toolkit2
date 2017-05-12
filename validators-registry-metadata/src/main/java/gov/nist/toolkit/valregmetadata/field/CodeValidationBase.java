@@ -1,6 +1,6 @@
 package gov.nist.toolkit.valregmetadata.field;
 
-import gov.nist.toolkit.errorrecording.ErrorRecorder;
+import gov.nist.toolkit.errorrecording.IErrorRecorder;
 import gov.nist.toolkit.errorrecording.common.XdsErrorCode;
 import gov.nist.toolkit.errorrecording.xml.assertions.Assertion;
 import gov.nist.toolkit.errorrecording.xml.assertions.AssertionLibrary;
@@ -172,7 +172,7 @@ public class CodeValidationBase {
 		return objectType + "(" + m.getId(ele) + ")";
 	}
 
-	String getObjectTypeById(ErrorRecorder er, String id) {
+	String getObjectTypeById(IErrorRecorder er, String id) {
 		try {
 			return m.getObjectTypeById(id);
 		} catch (MetadataException e) {
@@ -181,7 +181,7 @@ public class CodeValidationBase {
 		}
 	}
 
-	OMElement getObjectById(ErrorRecorder er, String id) {
+	OMElement getObjectById(IErrorRecorder er, String id) {
 		try {
 			return m.getObjectById(id);
 		} catch (MetadataException e) {
@@ -190,7 +190,7 @@ public class CodeValidationBase {
 		}
 	}
 
-	String getSimpleAssocType(ErrorRecorder er, OMElement assoc) {
+	String getSimpleAssocType(IErrorRecorder er, OMElement assoc) {
 		try {
 			return m.getSimpleAssocType(assoc);
 		} catch (MetadataException e) {
@@ -199,12 +199,12 @@ public class CodeValidationBase {
 		}
 	}
 
-	void cannotValidate(ErrorRecorder er, Classification c) {
+	void cannotValidate(IErrorRecorder er, Classification c) {
 		Assertion assertion = ASSERTIONLIBRARY.getAssertion("TA047");
 		er.err(XdsErrorCode.Code.XDSRegistryMetadataError, assertion, this, c.identifyingString(), "");
 	}
 
-	public void run(ErrorRecorder er) {
+	public void run(IErrorRecorder er) {
 		if (startUpError != null) {
 			er.err(XdsErrorCode.Code.XDSRegistryMetadataError, startUpError);
 			return;
@@ -257,7 +257,7 @@ public class CodeValidationBase {
 
 	// if classified object is an Association, only some types of Associations can
 	// accept an associationDocumenation classification
-	void validateAssocClassifications(ErrorRecorder er, Classification cl) {
+	void validateAssocClassifications(IErrorRecorder er, Classification cl) {
 
 		String classification_type = cl.getClassificationScheme();
 
@@ -292,7 +292,7 @@ public class CodeValidationBase {
 		er.err(XdsErrorCode.Code.XDSRegistryMetadataError, assertion, this, "", detail);
 	}
 
-	void validate(ErrorRecorder er, Classification cl) {
+	void validate(IErrorRecorder er, Classification cl) {
 		String classification_scheme = cl.getClassificationScheme();
 
 		if (classification_scheme == null) {

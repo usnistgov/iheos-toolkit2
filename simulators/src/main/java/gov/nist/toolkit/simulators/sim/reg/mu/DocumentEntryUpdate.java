@@ -1,6 +1,6 @@
 package gov.nist.toolkit.simulators.sim.reg.mu;
 
-import gov.nist.toolkit.errorrecording.ErrorRecorder;
+import gov.nist.toolkit.errorrecording.IErrorRecorder;
 import gov.nist.toolkit.errorrecording.common.XdsErrorCode;
 import gov.nist.toolkit.errorrecording.xml.assertions.Assertion;
 import gov.nist.toolkit.errorrecording.xml.assertions.AssertionLibrary;
@@ -14,11 +14,11 @@ import gov.nist.toolkit.xdsexception.MetadataException;
 import org.apache.axiom.om.OMElement;
 
 public class DocumentEntryUpdate  {
-	ErrorRecorder er;
+	IErrorRecorder er;
 	private AssertionLibrary ASSERTIONLIBRARY = AssertionLibrary.getInstance();
 
 
-	public DocumentEntryUpdate(SimCommon common, ErrorRecorder er) {
+	public DocumentEntryUpdate(SimCommon common, IErrorRecorder er) {
 //		super(common);
 //		this.er = er;
 	}

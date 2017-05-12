@@ -1,7 +1,6 @@
 package gov.nist.toolkit.errorrecording;
 
 import gov.nist.toolkit.errorrecording.common.XdsErrorCode;
-import gov.nist.toolkit.errorrecording.xml.assertions.Assertion;
 
 import java.util.List;
 
@@ -10,16 +9,7 @@ import java.util.List;
  * @author dazais
  *
  */
-public interface ErrorRecorder extends XMLErrorRecorder, GWTErrorRecorder, ErrorRecorderBuilder {
-
-	//----- Prototypes used by the XML ErrorRecorder -----
-	void err(XdsErrorCode.Code code, Assertion assertion, String validatorModule, String location, String detail); // updated
-	void err(XdsErrorCode.Code code, Assertion assertion, Object validatorModule, String location, String detail); // updated
-	void err(XdsErrorCode.Code _code, Assertion _assertion, String _validatorModule, String _location, String _detail, String _logMessage); // updated
-	void err(XdsErrorCode.Code _code, Assertion _assertion, Object _validatorModule, String _location, String _detail, Object _logMessage); // updated
-	void success(String location, String resource);
-	//List<gov.nist.toolkit.errorrecording.ErrorRecorder> getChildren();
-
+public interface IGWTErrorRecorder extends IErrorRecorderBuilder {
 
 	//----- Prototypes used by the original GWTErrorRecorder -----
 	void err(XdsErrorCode.Code code, String msg, String location, String resource, Object log_message);
@@ -46,7 +36,7 @@ public interface ErrorRecorder extends XMLErrorRecorder, GWTErrorRecorder, Error
 	boolean hasErrors();
 	int getNbErrors();
 
-	List<ErrorRecorder> getChildren();
+	List<IErrorRecorder> getChildren();
 	int depth();
 	// register should be called at start of a validator run(ErrorRecorder er, MessageValidatorEngine mvc) method
 	//    call should be made as registerValidator(this)

@@ -4,7 +4,7 @@ import gov.nist.toolkit.actorfactory.SimManager
 import gov.nist.toolkit.actorfactory.client.SimulatorConfig
 import gov.nist.toolkit.configDatatypes.SimulatorProperties
 import gov.nist.toolkit.configDatatypes.client.TransactionType
-import gov.nist.toolkit.errorrecording.ErrorRecorder
+import gov.nist.toolkit.errorrecording.IErrorRecorder
 import gov.nist.toolkit.errorrecording.common.XdsErrorCode
 import gov.nist.toolkit.registrymsg.repository.RetImgDocSetReqParser
 import gov.nist.toolkit.registrymsg.repository.RetrieveDocumentResponseGenerator
@@ -74,7 +74,7 @@ class XcRetrieveImgSim extends AbstractMessageValidator {
    class NonException extends Exception { }
 
    @Override
-   public void run(ErrorRecorder er, MessageValidatorEngine mvc) {
+   public void run(IErrorRecorder er, MessageValidatorEngine mvc) {
       this.er = er;
       er.registerValidator(this);
 
@@ -221,7 +221,7 @@ class XcRetrieveImgSim extends AbstractMessageValidator {
       return resp.toStringWithConsume();
    }
 
-   private void logException(ErrorRecorder er, Exception e) {
+   private void logException(IErrorRecorder er, Exception e) {
       String msg = e.getMessage();
       if (msg == null || msg.equals(""))
          msg = ExceptionUtil.exception_details(e);

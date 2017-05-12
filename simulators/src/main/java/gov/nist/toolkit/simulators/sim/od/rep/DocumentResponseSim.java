@@ -1,6 +1,6 @@
 package gov.nist.toolkit.simulators.sim.od.rep;
 
-import gov.nist.toolkit.errorrecording.ErrorRecorder;
+import gov.nist.toolkit.errorrecording.IErrorRecorder;
 import gov.nist.toolkit.errorrecording.common.XdsErrorCode.Code;
 import gov.nist.toolkit.registrymsg.registry.Response;
 import gov.nist.toolkit.commondatatypes.MetadataSupport;
@@ -37,7 +37,7 @@ public class DocumentResponseSim extends TransactionSimulator implements Registr
 		this.repositoryUniqueId = repositoryUniqueId;
 	}
 
-	public void run(ErrorRecorder er, MessageValidatorEngine mvc) {
+	public void run(IErrorRecorder er, MessageValidatorEngine mvc) {
 		try {
 			response = new RetrieveMultipleResponse();
 

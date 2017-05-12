@@ -1,6 +1,6 @@
 package gov.nist.toolkit.simulators.support;
 
-import gov.nist.toolkit.errorrecording.ErrorRecorder;
+import gov.nist.toolkit.errorrecording.IErrorRecorder;
 import gov.nist.toolkit.errorrecording.common.XdsErrorCode.Code;
 import gov.nist.toolkit.registrymsg.registry.RegistryResponse;
 import gov.nist.toolkit.registrymsg.registry.Response;
@@ -25,7 +25,7 @@ public class UnknownSim extends TransactionSimulator implements RegistryResponse
 		}
 	}
 
-	public void run(ErrorRecorder er, MessageValidatorEngine mve) {
+	public void run(IErrorRecorder er, MessageValidatorEngine mve) {
 		if (startUpException != null)
 			er.err(Code.XDSRegistryError, startUpException);
 	}

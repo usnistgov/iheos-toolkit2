@@ -1,10 +1,10 @@
 package gov.nist.toolkit.errorrecording.xml;
 
-import gov.nist.toolkit.errorrecording.ErrorRecorder;
-import gov.nist.toolkit.errorrecording.ErrorRecorderBuilder;
+import gov.nist.toolkit.errorrecording.IErrorRecorder;
+import gov.nist.toolkit.errorrecording.IErrorRecorderBuilder;
 
 
-public class XMLErrorRecorderBuilder implements ErrorRecorderBuilder {
+public class XMLErrorRecorderBuilder implements IErrorRecorderBuilder {
 
     @Override
 	public XMLErrorRecorder buildNewErrorRecorder() {
@@ -14,7 +14,7 @@ public class XMLErrorRecorderBuilder implements ErrorRecorderBuilder {
 	}
 
 	@Override
-	public ErrorRecorder buildNewErrorRecorder(Object o) {
+	public IErrorRecorder buildNewErrorRecorder(Object o) {
 		return null;
 	}
 

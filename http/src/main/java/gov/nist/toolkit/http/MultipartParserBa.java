@@ -1,6 +1,6 @@
 package gov.nist.toolkit.http;
 
-import gov.nist.toolkit.errorrecording.ErrorRecorder;
+import gov.nist.toolkit.errorrecording.IErrorRecorder;
 import gov.nist.toolkit.errorrecording.common.XdsErrorCode;
 import gov.nist.toolkit.http.HttpHeader.HttpHeaderParseException;
 
@@ -9,7 +9,7 @@ import java.util.List;
 public class MultipartParserBa {
 		HttpParserBa hp;
 		HttpHeader contentTypeHeader;
-		ErrorRecorder er = null;
+		IErrorRecorder er = null;
 		boolean appendixV = true;
 		MultipartMessageBa message = new MultipartMessageBa();
 
@@ -18,7 +18,7 @@ public class MultipartParserBa {
 			parse();
 		}
 
-		public MultipartParserBa(HttpParserBa hp, ErrorRecorder er, boolean appendixV) throws ParseException, HttpHeaderParseException, HttpParseException {
+		public MultipartParserBa(HttpParserBa hp, IErrorRecorder er, boolean appendixV) throws ParseException, HttpHeaderParseException, HttpParseException {
 			this.hp = hp;
 			this.er = er;
 			this.appendixV = appendixV;

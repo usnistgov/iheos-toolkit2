@@ -1,7 +1,7 @@
 package gov.nist.toolkit.simulators.sim.reg.mu;
 
 import gov.nist.toolkit.actorfactory.client.SimulatorConfig;
-import gov.nist.toolkit.errorrecording.ErrorRecorder;
+import gov.nist.toolkit.errorrecording.IErrorRecorder;
 import gov.nist.toolkit.errorrecording.common.XdsErrorCode;
 import gov.nist.toolkit.errorrecording.common.XdsErrorCode.Code;
 import gov.nist.toolkit.errorrecording.xml.assertions.Assertion;
@@ -33,7 +33,7 @@ public class MuSim extends RegRSim {
 	}
 
 
-	public void run(ErrorRecorder er, MessageValidatorEngine mvc) {
+	public void run(IErrorRecorder er, MessageValidatorEngine mvc) {
 		this.er = er;
 		this.mvc = mvc;
 

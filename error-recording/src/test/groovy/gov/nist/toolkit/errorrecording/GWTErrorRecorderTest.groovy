@@ -11,14 +11,14 @@ class GWTErrorRecorderTest extends Specification {
 
     def 'Builder test'() {
         when: 'Build basic Error Recorder'
-        ErrorRecorderBuilder builder = new GwtErrorRecorderBuilder()
-        ErrorRecorder er = builder.buildNewErrorRecorder()
+        IErrorRecorderBuilder builder = new GwtErrorRecorderBuilder()
+        IErrorRecorder er = builder.buildNewErrorRecorder()
 
         then:
         er
 
         when: 'Build second generation Error Recorder'
-        ErrorRecorder er2 = er.buildNewErrorRecorder()
+        IErrorRecorder er2 = er.buildNewErrorRecorder()
 
         then:
         er2
@@ -27,7 +27,7 @@ class GWTErrorRecorderTest extends Specification {
         er != er2
 
         when: 'Collect into list'
-        List<ErrorRecorder> erl = ErrorRecorderUtil.errorRecorderChainAsList(er)
+        List<IErrorRecorder> erl = ErrorRecorderUtil.errorRecorderChainAsList(er)
 
         then:
         erl.size() == 2
@@ -35,16 +35,16 @@ class GWTErrorRecorderTest extends Specification {
 
     def 'Parent Child linkage'() {
         setup:
-        ErrorRecorderBuilder builder = new GwtErrorRecorderBuilder()
+        IErrorRecorderBuilder builder = new GwtErrorRecorderBuilder()
 
         when: 'Build parent ER'
-        ErrorRecorder erParent = builder.buildNewErrorRecorder()
+        IErrorRecorder erParent = builder.buildNewErrorRecorder()
 
         then:
         erParent
 
         when: 'Build child ER'
-        ErrorRecorder erChild = erParent.buildNewErrorRecorder()
+        IErrorRecorder erChild = erParent.buildNewErrorRecorder()
 
         then:
         erChild
@@ -59,7 +59,7 @@ class GWTErrorRecorderTest extends Specification {
         erChild.depth() == 1
 
         when: 'Collect into list'
-        List<ErrorRecorder> erl = ErrorRecorderUtil.errorRecorderChainAsList(erParent)
+        List<IErrorRecorder> erl = ErrorRecorderUtil.errorRecorderChainAsList(erParent)
 
         then:
         erl.size() == 2
@@ -67,12 +67,12 @@ class GWTErrorRecorderTest extends Specification {
 
     def 'List of three'() {
         setup:
-        ErrorRecorderBuilder builder = new GwtErrorRecorderBuilder()
+        IErrorRecorderBuilder builder = new GwtErrorRecorderBuilder()
 
         when: 'Build chain of 3 ER'
-        ErrorRecorder erParent = builder.buildNewErrorRecorder()
-        ErrorRecorder erChild = erParent.buildNewErrorRecorder()
-        ErrorRecorder erGChild = erChild.buildNewErrorRecorder()
+        IErrorRecorder erParent = builder.buildNewErrorRecorder()
+        IErrorRecorder erChild = erParent.buildNewErrorRecorder()
+        IErrorRecorder erGChild = erChild.buildNewErrorRecorder()
 
         then:
         erParent.depth() == 3
@@ -81,13 +81,13 @@ class GWTErrorRecorderTest extends Specification {
 
     def 'Family tree'() {
         setup:
-        ErrorRecorderBuilder builder = new GwtErrorRecorderBuilder()
+        IErrorRecorderBuilder builder = new GwtErrorRecorderBuilder()
 
         when: 'Build chain of 3 ER plus second grandkid'
-        ErrorRecorder erParent = builder.buildNewErrorRecorder()
-        ErrorRecorder erChild = erParent.buildNewErrorRecorder()
-        ErrorRecorder erGChild1 = erChild.buildNewErrorRecorder()
-        ErrorRecorder erGChild2 = erChild.buildNewErrorRecorder()
+        IErrorRecorder erParent = builder.buildNewErrorRecorder()
+        IErrorRecorder erChild = erParent.buildNewErrorRecorder()
+        IErrorRecorder erGChild1 = erChild.buildNewErrorRecorder()
+        IErrorRecorder erGChild2 = erChild.buildNewErrorRecorder()
 
         then:
         ErrorRecorderUtil.errorRecorderChainAsList(erParent).size() == 4

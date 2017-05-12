@@ -1,6 +1,6 @@
 package gov.nist.toolkit.valregmsg.message;
 
-import gov.nist.toolkit.errorrecording.ErrorRecorder;
+import gov.nist.toolkit.errorrecording.IErrorRecorder;
 import gov.nist.toolkit.errorrecording.common.XdsErrorCode;
 import gov.nist.toolkit.valregmsg.validation.schematron.ReportProcessor;
 import gov.nist.toolkit.valregmsg.validation.schematron.schematronValidation;
@@ -16,7 +16,7 @@ import org.apache.axiom.om.OMElement;
 import org.apache.xmlbeans.XmlObject;
 
 public class SchematronValidator extends AbstractMessageValidator {
-	ErrorRecorder er;
+	IErrorRecorder er;
 	OMElement message;
 
 	public SchematronValidator(ValidationContext vc, OMElement xml) {
@@ -36,7 +36,7 @@ public class SchematronValidator extends AbstractMessageValidator {
 		er.err(XdsErrorCode.Code.NoCode, e);
 	}
 
-	public void run(ErrorRecorder er, MessageValidatorEngine mvc) {
+	public void run(IErrorRecorder er, MessageValidatorEngine mvc) {
 		this.er = er;
 
 		int schematronValidationType = vc.getSchematronValidationType();
@@ -75,7 +75,7 @@ public class SchematronValidator extends AbstractMessageValidator {
 
 	}
 
-	public void reportFormatter(XmlObject report, ErrorRecorder er) {
+	public void reportFormatter(XmlObject report, IErrorRecorder er) {
 
 		// String formattedReport = null;
 		String reportAsString = report.xmlText();

@@ -1,16 +1,16 @@
 package gov.nist.toolkit.valregmetadata.datatype;
 
-import gov.nist.toolkit.errorrecording.ErrorRecorder;
+import gov.nist.toolkit.errorrecording.IErrorRecorder;
 
 import gov.nist.toolkit.errorrecording.common.XdsErrorCode;
 import org.apache.axiom.om.OMElement;
 
 public abstract class FormatValidator {
-	ErrorRecorder er;
+	IErrorRecorder er;
 	String context;
 	String resource;
 	
-	public FormatValidator(ErrorRecorder er, String context, String resource) {
+	public FormatValidator(IErrorRecorder er, String context, String resource) {
 		this.er = er;
 		this.context = context;
 		this.resource = resource;

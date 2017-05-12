@@ -1,6 +1,6 @@
 package gov.nist.toolkit.valregmetadata.datatype;
 
-import gov.nist.toolkit.errorrecording.ErrorRecorder;
+import gov.nist.toolkit.errorrecording.IErrorRecorder;
 import gov.nist.toolkit.errorrecording.common.XdsErrorCode;
 import gov.nist.toolkit.errorrecording.xml.assertions.Assertion;
 import gov.nist.toolkit.errorrecording.xml.assertions.AssertionLibrary;
@@ -9,7 +9,7 @@ import gov.nist.toolkit.valregmetadata.field.ValidatorCommon;
 public class CxFormat extends FormatValidator {
 	private AssertionLibrary ASSERTIONLIBRARY = AssertionLibrary.getInstance();
 
-	public CxFormat(ErrorRecorder er, String context, String resource) {
+	public CxFormat(IErrorRecorder er, String context, String resource) {
 		super(er, context, resource);
 	}
 

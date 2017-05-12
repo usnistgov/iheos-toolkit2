@@ -18,7 +18,7 @@ import javax.ws.rs.core.UriInfo;
 
 import gov.nist.toolkit.configDatatypes.SimulatorProperties;
 import gov.nist.toolkit.errorrecording.text.TextErrorRecorder;
-import gov.nist.toolkit.errorrecording.ErrorRecorderBuilder;
+import gov.nist.toolkit.errorrecording.IErrorRecorderBuilder;
 import gov.nist.toolkit.errorrecording.text.TextErrorRecorderBuilder;
 import gov.nist.toolkit.toolkitServicesCommon.resource.xdm.XdmItem;
 import gov.nist.toolkit.toolkitServicesCommon.resource.xdm.XdmReportResource;
@@ -606,7 +606,7 @@ public class SimulatorsController {
     public Response xdmValidation(final XdmRequestResource request) {
         ValidationContext vc = DefaultValidationContextFactory.validationContext();
         vc.isXDM = true;
-        ErrorRecorderBuilder erBuilder = new TextErrorRecorderBuilder();
+        IErrorRecorderBuilder erBuilder = new TextErrorRecorderBuilder();
         TextErrorRecorder er = (TextErrorRecorder) erBuilder.buildNewErrorRecorder();
         MessageValidatorEngine mvc = new MessageValidatorEngine();
 

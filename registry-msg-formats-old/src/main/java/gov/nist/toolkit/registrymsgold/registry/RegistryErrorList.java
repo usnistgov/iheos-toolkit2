@@ -1,6 +1,6 @@
 package gov.nist.toolkit.registrymsgold.registry;
 
-import gov.nist.toolkit.errorrecording.ErrorRecorder;
+import gov.nist.toolkit.errorrecording.IErrorRecorder;
 import gov.nist.toolkit.utilities.xml.XmlUtil;
 import gov.nist.toolkit.valsupport.client.ValidationContext;
 
@@ -29,7 +29,7 @@ public class RegistryErrorList {
 		return false;
 	}
 
-	public void validate(ErrorRecorder er, ValidationContext vc) {
+	public void validate(IErrorRecorder er, ValidationContext vc) {
 		for (RegistryError re : errors) {
 			re.validate(er, vc);
 		}

@@ -1,11 +1,11 @@
 package gov.nist.toolkit.valregmetadata.datatype;
 
-import gov.nist.toolkit.errorrecording.ErrorRecorder;
+import gov.nist.toolkit.errorrecording.IErrorRecorder;
 import gov.nist.toolkit.valregmetadata.field.ValidatorCommon;
 
 public class XonFormat extends FormatValidator {
 
-	public XonFormat(ErrorRecorder er, String context, String resource) {
+	public XonFormat(IErrorRecorder er, String context, String resource) {
 		super(er, context, resource);
 	}
 

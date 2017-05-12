@@ -1,6 +1,6 @@
 package gov.nist.toolkit.simulators.unused;
 
-import gov.nist.toolkit.errorrecording.ErrorRecorder;
+import gov.nist.toolkit.errorrecording.IErrorRecorder;
 import gov.nist.toolkit.errorrecording.common.XdsErrorCode;
 import gov.nist.toolkit.simulators.sim.rep.RepPnRSim;
 import gov.nist.toolkit.simulators.support.DsSimCommon;
@@ -34,7 +34,7 @@ public class RepositoryPnRSim extends AbstractMessageValidator {
 
 	}
 
-	public void run(ErrorRecorder er, MessageValidatorEngine mvc)  {
+	public void run(IErrorRecorder er, MessageValidatorEngine mvc)  {
 		this.er = er;
 		er.registerValidator(this);
 		

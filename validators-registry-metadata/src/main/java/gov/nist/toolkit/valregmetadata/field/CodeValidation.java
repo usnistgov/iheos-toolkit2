@@ -1,6 +1,6 @@
 package gov.nist.toolkit.valregmetadata.field;
 
-import gov.nist.toolkit.errorrecording.ErrorRecorder;
+import gov.nist.toolkit.errorrecording.IErrorRecorder;
 import gov.nist.toolkit.registrymetadata.Metadata;
 import gov.nist.toolkit.registrymsg.registry.RegistryErrorListGenerator;
 import gov.nist.toolkit.xdsexception.XdsInternalException;
@@ -10,7 +10,7 @@ import gov.nist.toolkit.xdsexception.XdsInternalException;
 //gets cached in memory.
 public class CodeValidation extends CodeValidationBase {
 //	RegistryErrorListGenerator rel;       all errors to go through the ErrorRecorder interface
-	ErrorRecorder er;
+	IErrorRecorder er;
 	boolean is_submit;
 	boolean xds_b;
 

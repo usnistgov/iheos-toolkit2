@@ -1,10 +1,10 @@
 package gov.nist.toolkit.valregmsg.message;
 
-import gov.nist.toolkit.errorrecording.ErrorRecorder;
+import gov.nist.toolkit.errorrecording.IErrorRecorder;
 import gov.nist.toolkit.errorrecording.common.XdsErrorCode;
 import gov.nist.toolkit.errorrecording.xml.assertions.Assertion;
 import gov.nist.toolkit.errorrecording.xml.assertions.AssertionLibrary;
-import gov.nist.toolkit.errorrecording.ErrorRecorderBuilder;
+import gov.nist.toolkit.errorrecording.IErrorRecorderBuilder;
 import gov.nist.toolkit.registrymetadata.Metadata;
 import gov.nist.toolkit.registrymetadata.MetadataParser;
 import gov.nist.toolkit.valregmetadata.field.MetadataValidator;
@@ -17,7 +17,7 @@ import gov.nist.toolkit.valsupport.registry.RegistryValidationInterface;
 public class MetadataMessageValidator extends AbstractMessageValidator {
 	//	OMElement xml;
 	Metadata m = null;
-	ErrorRecorderBuilder erBuilder;
+	IErrorRecorderBuilder erBuilder;
 	MessageValidatorEngine mvc;
 	RegistryValidationInterface rvi;
 	MessageBody messageBody;
@@ -31,7 +31,7 @@ public class MetadataMessageValidator extends AbstractMessageValidator {
 //		this.xml = xml;
 //	}
 
-	public MetadataMessageValidator(ValidationContext vc, MessageBody messageBody, ErrorRecorderBuilder erBuilder, MessageValidatorEngine mvc, RegistryValidationInterface rvi) {
+	public MetadataMessageValidator(ValidationContext vc, MessageBody messageBody, IErrorRecorderBuilder erBuilder, MessageValidatorEngine mvc, RegistryValidationInterface rvi) {
 		super(vc);
 		this.erBuilder = erBuilder;
 		this.mvc = mvc;
@@ -39,7 +39,7 @@ public class MetadataMessageValidator extends AbstractMessageValidator {
 		this.rvi = rvi;
 	}
 
-	public void run(ErrorRecorder er, MessageValidatorEngine mvc) {
+	public void run(IErrorRecorder er, MessageValidatorEngine mvc) {
 		this.er = er;
 		er.registerValidator(this);
 
@@ -78,7 +78,7 @@ public class MetadataMessageValidator extends AbstractMessageValidator {
 
 	}
 
-	static public void contentSummary(ErrorRecorder er, Metadata m) {
+	static public void contentSummary(IErrorRecorder er, Metadata m) {
 		er.sectionHeading("Content Summary");
 		er.detail(m.getSubmissionSetIds().size() + " SubmissionSets");
 		er.detail(m.getExtrinsicObjectIds().size() + " DocumentEntries");

@@ -1,10 +1,10 @@
 package gov.nist.toolkit.valregmsg.validation.factories
 
-import gov.nist.toolkit.errorrecording.ErrorRecorder
+import gov.nist.toolkit.errorrecording.IErrorRecorder
 import gov.nist.toolkit.errorrecording.gwt.ErrorRecorderUtil
 import gov.nist.toolkit.errorrecording.gwt.GwtErrorRecorder
 import gov.nist.toolkit.errorrecording.gwt.GwtErrorRecorderBuilder
-import gov.nist.toolkit.errorrecording.ErrorRecorderBuilder
+import gov.nist.toolkit.errorrecording.IErrorRecorderBuilder
 import gov.nist.toolkit.utilities.xml.Util
 import gov.nist.toolkit.valsupport.client.ValidationContext
 import gov.nist.toolkit.valsupport.engine.MessageValidatorEngine
@@ -23,7 +23,7 @@ class MessageValidatorFactoryTest extends Specification {
     def 'Pnr validation test'() {
         setup:
         def pnrXmlString = this.getClass().getResource('/messages/pnr.xml').text
-        ErrorRecorderBuilder erb = new GwtErrorRecorderBuilder().buildNewErrorRecorder()
+        IErrorRecorderBuilder erb = new GwtErrorRecorderBuilder().buildNewErrorRecorder()
         erb.sectionHeading('Pnr validation test')
         OMElement xml = Util.parse_xml(pnrXmlString)
         MessageValidatorEngine mvc = new MessageValidatorEngine()
@@ -50,13 +50,13 @@ class MessageValidatorFactoryTest extends Specification {
         stepCount == 6
 
         when:
-        ErrorRecorder er1 = rootVS.errorRecorder
+        IErrorRecorder er1 = rootVS.errorRecorder
 
         then:
         er1.class.name.endsWith('GwtErrorRecorder')
 
         when: 'Collect ER'
-        List<ErrorRecorder> erl = ErrorRecorderUtil.errorRecorderChainAsList(erb)
+        List<IErrorRecorder> erl = ErrorRecorderUtil.errorRecorderChainAsList(erb)
         println "${erl.size()} ERs"
         List<String> errors = erl.collect() { ((GwtErrorRecorder) it).toString()}
         println errors

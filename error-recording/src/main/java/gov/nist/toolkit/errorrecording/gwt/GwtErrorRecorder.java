@@ -1,7 +1,7 @@
 package gov.nist.toolkit.errorrecording.gwt;
 
-import gov.nist.toolkit.errorrecording.ErrorRecorder;
-import gov.nist.toolkit.errorrecording.ErrorRecorderBuilder;
+import gov.nist.toolkit.errorrecording.IErrorRecorder;
+import gov.nist.toolkit.errorrecording.IErrorRecorderBuilder;
 import gov.nist.toolkit.errorrecording.common.XdsErrorCode;
 import gov.nist.toolkit.errorrecording.common.XdsErrorCode.Code;
 import gov.nist.toolkit.errorrecording.gwt.client.GwtValidatorErrorItem;
@@ -15,10 +15,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-public class GwtErrorRecorder implements ErrorRecorder {
+public class GwtErrorRecorder implements IErrorRecorder {
 	
-	public ErrorRecorderBuilder errorRecorderBuilder;
-	List<ErrorRecorder> children = new ArrayList<>();
+	public IErrorRecorderBuilder errorRecorderBuilder;
+	List<IErrorRecorder> children = new ArrayList<>();
 	List<GwtValidatorErrorItem> summary = new ArrayList<>();
 	List<GwtValidatorErrorItem> errMsgs = new ArrayList<>();
 	int lastErrCount = 0;
@@ -297,14 +297,14 @@ public class GwtErrorRecorder implements ErrorRecorder {
 	}
 
 	@Override
-	public ErrorRecorder buildNewErrorRecorder() {
-		ErrorRecorder er =  errorRecorderBuilder.buildNewErrorRecorder();
+	public IErrorRecorder buildNewErrorRecorder() {
+		IErrorRecorder er =  errorRecorderBuilder.buildNewErrorRecorder();
         children.add(er);
         return er;
 	}
 
 	@Override
-	public ErrorRecorder buildNewErrorRecorder(Object o) {
+	public IErrorRecorder buildNewErrorRecorder(Object o) {
 		return null;
 	}
 
@@ -327,7 +327,7 @@ public class GwtErrorRecorder implements ErrorRecorder {
 	}
 
 	@Override
-	public List<ErrorRecorder> getChildren() {
+	public List<IErrorRecorder> getChildren() {
 		return children;
 	}
 
@@ -429,7 +429,7 @@ public class GwtErrorRecorder implements ErrorRecorder {
 		int depth = 1;
 
 		int maxChildDepth = 0;
-		for (ErrorRecorder er : children) {
+		for (IErrorRecorder er : children) {
 			int childDepth = er.depth();
 			if (childDepth > maxChildDepth) maxChildDepth = childDepth;
 		}

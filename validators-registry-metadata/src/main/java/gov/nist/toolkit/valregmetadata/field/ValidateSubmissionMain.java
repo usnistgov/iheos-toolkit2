@@ -1,6 +1,6 @@
 package gov.nist.toolkit.valregmetadata.field;
 
-import gov.nist.toolkit.errorrecording.ErrorRecorder;
+import gov.nist.toolkit.errorrecording.IErrorRecorder;
 import gov.nist.toolkit.errorrecording.common.XdsErrorCode;
 import gov.nist.toolkit.errorrecording.text.TextErrorRecorder;
 import gov.nist.toolkit.registrymetadata.Metadata;
@@ -17,7 +17,7 @@ public class ValidateSubmissionMain  {
 		ValidateSubmissionMain main = new ValidateSubmissionMain();
 		String sampleDir = "/Users/bill/dev/sampleSubmissions/";
 		
-		ErrorRecorder er = new TextErrorRecorder();
+		IErrorRecorder er = new TextErrorRecorder();
 
 		try {
 			m = MetadataParser.parseNonSubmission(new File(sampleDir + args[0]));

@@ -1,6 +1,6 @@
 package gov.nist.toolkit.valregmetadata.object;
 
-import gov.nist.toolkit.errorrecording.ErrorRecorder;
+import gov.nist.toolkit.errorrecording.IErrorRecorder;
 import gov.nist.toolkit.registrymetadata.Metadata;
 import gov.nist.toolkit.commondatatypes.MetadataSupport;
 import gov.nist.toolkit.valsupport.client.ValidationContext;
@@ -68,15 +68,15 @@ public class InternalClassification extends AbstractRegistryObject {
 		return ro;
 	}
 
-	public void validateRequiredSlotsPresent(ErrorRecorder er,
+	public void validateRequiredSlotsPresent(IErrorRecorder er,
 			ValidationContext vc) {
 	}
 
-	public void validateSlotsCodedCorrectly(ErrorRecorder er,
+	public void validateSlotsCodedCorrectly(IErrorRecorder er,
 			ValidationContext vc) {
 	}
 
-	public void validateSlotsLegal(ErrorRecorder er) {
+	public void validateSlotsLegal(IErrorRecorder er) {
 	}
 
 }

@@ -1,6 +1,6 @@
 package gov.nist.toolkit.valregmetadata.object;
 
-import gov.nist.toolkit.errorrecording.ErrorRecorder;
+import gov.nist.toolkit.errorrecording.IErrorRecorder;
 import gov.nist.toolkit.errorrecording.common.XdsErrorCode;
 import gov.nist.toolkit.errorrecording.xml.assertions.Assertion;
 import gov.nist.toolkit.errorrecording.xml.assertions.AssertionLibrary;
@@ -114,8 +114,8 @@ public class Association extends AbstractRegistryObject implements TopLevelObjec
 		return ro;
 	}
 
-	public void validate(ErrorRecorder er, ValidationContext vc,
-						 Set<String> knownIds) {
+	public void validate(IErrorRecorder er, ValidationContext vc,
+                         Set<String> knownIds) {
 		if (vc.skipInternalStructure)
 			return;
 
@@ -132,7 +132,7 @@ public class Association extends AbstractRegistryObject implements TopLevelObjec
 		verifyNotReferenceSelf(er);
 	}
 
-	void verifyNotReferenceSelf(ErrorRecorder er) {
+	void verifyNotReferenceSelf(IErrorRecorder er) {
 		if (source.equals(id)) {
 			Assertion assertion = ASSERTIONLIBRARY.getAssertion("TA031");
 			er.err(XdsErrorCode.Code.XDSRegistryMetadataError, assertion, this, identifyingString(), "");
@@ -151,7 +151,7 @@ public class Association extends AbstractRegistryObject implements TopLevelObjec
 					MetadataSupport.assoctype_xfrm_rplc
 			);
 
-	public void validateClassifications(ErrorRecorder er, ValidationContext vc) {
+	public void validateClassifications(IErrorRecorder er, ValidationContext vc) {
 
 		er.challenge("Classifications present are legal");
 
@@ -183,7 +183,7 @@ public class Association extends AbstractRegistryObject implements TopLevelObjec
 					MetadataSupport.assoctype_xfrm_rplc
 			);
 
-	public void validateTopAtts(ErrorRecorder er, ValidationContext vc) {
+	public void validateTopAtts(IErrorRecorder er, ValidationContext vc) {
 		validateId(er, vc, "entryUUID", id, null);
 
 		validateId(er, vc, "sourceObject", source, null);
@@ -215,7 +215,7 @@ public class Association extends AbstractRegistryObject implements TopLevelObjec
 		}
 	}
 
-	public void validateRequiredSlotsPresent(ErrorRecorder er, ValidationContext vc) {
+	public void validateRequiredSlotsPresent(IErrorRecorder er, ValidationContext vc) {
 //		Metadata m = getMetadata();
 //		if (type.equals(MetadataSupport.assoctype_has_member) &&
 //				m.isSubmissionSet(source) &&
@@ -228,7 +228,7 @@ public class Association extends AbstractRegistryObject implements TopLevelObjec
 
 	}
 
-	public void validateSlotsCodedCorrectly(ErrorRecorder er, ValidationContext vc) {
+	public void validateSlotsCodedCorrectly(IErrorRecorder er, ValidationContext vc) {
 		Slot s = getSlot(MetadataSupport.assoc_slot_submission_set_status);
 		if (s == null)
 			return;
@@ -245,7 +245,7 @@ public class Association extends AbstractRegistryObject implements TopLevelObjec
 		}
 	}
 
-	public void validateSlotsLegal(ErrorRecorder er) {
+	public void validateSlotsLegal(IErrorRecorder er) {
 		// work done by validateRequiredSlotsPresent
 	}
 

@@ -2,8 +2,6 @@ package gov.nist.toolkit.errorrecording
 
 import gov.nist.toolkit.errorrecording.xml.ErrorRecorderUtil
 import gov.nist.toolkit.errorrecording.xml.XMLErrorRecorderBuilder
-import gov.nist.toolkit.errorrecording.ErrorRecorder
-import gov.nist.toolkit.errorrecording.ErrorRecorderBuilder
 import spock.lang.Specification
 
 /**
@@ -13,14 +11,14 @@ class XMLErrorRecorderTest extends Specification {
 
     def 'Builder test'() {
         when: 'Build basic Error Recorder'
-        ErrorRecorderBuilder builder = new XMLErrorRecorderBuilder()
-        ErrorRecorder er = builder.buildNewErrorRecorder()
+        IErrorRecorderBuilder builder = new XMLErrorRecorderBuilder()
+        IErrorRecorder er = builder.buildNewErrorRecorder()
 
         then:
         er
 
         when: 'Build second generation Error Recorder'
-        ErrorRecorder er2 = er.buildNewErrorRecorder()
+        IErrorRecorder er2 = er.buildNewErrorRecorder()
 
         then:
         er2
@@ -29,7 +27,7 @@ class XMLErrorRecorderTest extends Specification {
         er != er2
 
         when: 'Collect into list'
-        List<ErrorRecorder> erl = ErrorRecorderUtil.errorRecorderChainAsList(er)
+        List<IErrorRecorder> erl = ErrorRecorderUtil.errorRecorderChainAsList(er)
 
         then:
         erl.size() == 2
@@ -37,16 +35,16 @@ class XMLErrorRecorderTest extends Specification {
 
     def 'Parent Child linkage'() {
         setup:
-        ErrorRecorderBuilder builder = new XMLErrorRecorderBuilder()
+        IErrorRecorderBuilder builder = new XMLErrorRecorderBuilder()
 
         when: 'Build parent ER'
-        ErrorRecorder erParent = builder.buildNewErrorRecorder()
+        IErrorRecorder erParent = builder.buildNewErrorRecorder()
 
         then:
         erParent
 
         when: 'Build child ER'
-        ErrorRecorder erChild = erParent.buildNewErrorRecorder()
+        IErrorRecorder erChild = erParent.buildNewErrorRecorder()
 
         then:
         erChild
@@ -61,7 +59,7 @@ class XMLErrorRecorderTest extends Specification {
         erChild.depth() == 1
 
         when: 'Collect into list'
-        List<ErrorRecorder> erl = ErrorRecorderUtil.errorRecorderChainAsList(erParent)
+        List<IErrorRecorder> erl = ErrorRecorderUtil.errorRecorderChainAsList(erParent)
 
         then:
         erl.size() == 2
@@ -69,12 +67,12 @@ class XMLErrorRecorderTest extends Specification {
 
     def 'List of three'() {
         setup:
-        ErrorRecorderBuilder builder = new XMLErrorRecorderBuilder()
+        IErrorRecorderBuilder builder = new XMLErrorRecorderBuilder()
 
         when: 'Build chain of 3 ER'
-        ErrorRecorder erParent = builder.buildNewErrorRecorder()
-        ErrorRecorder erChild = erParent.buildNewErrorRecorder()
-        ErrorRecorder erGChild = erChild.buildNewErrorRecorder()
+        IErrorRecorder erParent = builder.buildNewErrorRecorder()
+        IErrorRecorder erChild = erParent.buildNewErrorRecorder()
+        IErrorRecorder erGChild = erChild.buildNewErrorRecorder()
 
         then:
         erParent.depth() == 3
@@ -83,13 +81,13 @@ class XMLErrorRecorderTest extends Specification {
 
     def 'Family tree'() {
         setup:
-        ErrorRecorderBuilder builder = new XMLErrorRecorderBuilder()
+        IErrorRecorderBuilder builder = new XMLErrorRecorderBuilder()
 
         when: 'Build chain of 3 ER plus second grandkid'
-        ErrorRecorder erParent = builder.buildNewErrorRecorder()
-        ErrorRecorder erChild = erParent.buildNewErrorRecorder()
-        ErrorRecorder erGChild1 = erChild.buildNewErrorRecorder()
-        ErrorRecorder erGChild2 = erChild.buildNewErrorRecorder()
+        IErrorRecorder erParent = builder.buildNewErrorRecorder()
+        IErrorRecorder erChild = erParent.buildNewErrorRecorder()
+        IErrorRecorder erGChild1 = erChild.buildNewErrorRecorder()
+        IErrorRecorder erGChild2 = erChild.buildNewErrorRecorder()
 
         then:
         ErrorRecorderUtil.errorRecorderChainAsList(erParent).size() == 4

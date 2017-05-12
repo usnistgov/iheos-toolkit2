@@ -1,10 +1,10 @@
 package gov.nist.toolkit.valregmsg.message;
 
-import gov.nist.toolkit.errorrecording.ErrorRecorder;
+import gov.nist.toolkit.errorrecording.IErrorRecorder;
 import gov.nist.toolkit.errorrecording.common.XdsErrorCode;
 import gov.nist.toolkit.errorrecording.xml.assertions.Assertion;
 import gov.nist.toolkit.errorrecording.xml.assertions.AssertionLibrary;
-import gov.nist.toolkit.errorrecording.ErrorRecorderBuilder;
+import gov.nist.toolkit.errorrecording.IErrorRecorderBuilder;
 import gov.nist.toolkit.http.HttpParseException;
 import gov.nist.toolkit.http.HttpParserBa;
 import gov.nist.toolkit.http.MultipartParserBa;
@@ -21,14 +21,14 @@ import java.util.List;
 
 public class MtomMessageValidator extends AbstractMessageValidator {
 	HttpParserBa headers;
-	ErrorRecorderBuilder erBuilder;
+	IErrorRecorderBuilder erBuilder;
 	MessageValidatorEngine mvc;
 	RegistryValidationInterface rvi;
 	byte[] bodyBytes;
 	private AssertionLibrary ASSERTIONLIBRARY = AssertionLibrary.getInstance();
 
 
-	public MtomMessageValidator(ValidationContext vc, HttpParserBa headers, byte[] body, ErrorRecorderBuilder erBuilder, MessageValidatorEngine mvc, RegistryValidationInterface rvi) {
+	public MtomMessageValidator(ValidationContext vc, HttpParserBa headers, byte[] body, IErrorRecorderBuilder erBuilder, MessageValidatorEngine mvc, RegistryValidationInterface rvi) {
 		super(vc);
 		this.headers = headers;
 		this.erBuilder = erBuilder;
@@ -38,7 +38,7 @@ public class MtomMessageValidator extends AbstractMessageValidator {
 	}
 
 
-	public void run(ErrorRecorder er, MessageValidatorEngine mvc) {
+	public void run(IErrorRecorder er, MessageValidatorEngine mvc) {
 		this.er = er;
 		er.registerValidator(this);
 		headers.setErrorRecorder(er);

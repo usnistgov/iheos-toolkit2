@@ -3,7 +3,7 @@ package gov.nist.toolkit.http;
 import gov.nist.toolkit.errorrecording.common.XdsErrorCode;
 import org.apache.log4j.Logger;
 
-import gov.nist.toolkit.errorrecording.ErrorRecorder;
+import gov.nist.toolkit.errorrecording.IErrorRecorder;
 import gov.nist.toolkit.http.HttpHeader.HttpHeaderParseException;
 
 
@@ -18,7 +18,7 @@ public class PartParser extends HttpParser {
 		initPart();
 	}
 	
-	public PartParser(byte[] msg, ErrorRecorder er, boolean appendixV) throws HttpParseException, HttpHeaderParseException, ParseException {
+	public PartParser(byte[] msg, IErrorRecorder er, boolean appendixV) throws HttpParseException, HttpHeaderParseException, ParseException {
 //		super(msg,er);
 		logger.debug("new PartParser(" + this.toString() + ")");
 		this.er = er;

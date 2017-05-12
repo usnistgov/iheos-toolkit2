@@ -1,6 +1,6 @@
 package gov.nist.toolkit.http;
 
-import gov.nist.toolkit.errorrecording.ErrorRecorder;
+import gov.nist.toolkit.errorrecording.IErrorRecorder;
 import gov.nist.toolkit.http.HttpHeader.HttpHeaderParseException;
 import gov.nist.toolkit.utilities.io.Io;
 
@@ -14,7 +14,7 @@ public class HttpParserBa {
 	int from;
 	int to = 0;
 	boolean parsed = false;
-	ErrorRecorder er = null;
+	IErrorRecorder er = null;
 	String charset = null;
 	HttpMessageBa message = new HttpMessageBa();
 	MultipartParserBa multiparser;
@@ -60,7 +60,7 @@ public class HttpParserBa {
 		return message.multipart;
 	} 
 
-	public void setErrorRecorder(ErrorRecorder er) {
+	public void setErrorRecorder(IErrorRecorder er) {
 		this.er = er;
 	}
 
@@ -77,7 +77,7 @@ public class HttpParserBa {
 		init(request);
 	}
 
-	public HttpParserBa(HttpServletRequest request, ErrorRecorder er) throws IOException, HttpParseException {
+	public HttpParserBa(HttpServletRequest request, IErrorRecorder er) throws IOException, HttpParseException {
 		this.er = er;
 		init(request);
 	}
@@ -99,7 +99,7 @@ public class HttpParserBa {
 		init(msg, null);
 	}
 
-	public HttpParserBa(byte[] msg, ErrorRecorder er) throws HttpParseException, ParseException   {
+	public HttpParserBa(byte[] msg, IErrorRecorder er) throws HttpParseException, ParseException   {
 		this.er = er;
 		init(msg, null);
 	}

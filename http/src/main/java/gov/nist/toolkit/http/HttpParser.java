@@ -1,6 +1,6 @@
 package gov.nist.toolkit.http;
 
-import gov.nist.toolkit.errorrecording.ErrorRecorder;
+import gov.nist.toolkit.errorrecording.IErrorRecorder;
 import gov.nist.toolkit.errorrecording.text.TextErrorRecorder;
 import gov.nist.toolkit.http.HttpHeader.HttpHeaderParseException;
 import gov.nist.toolkit.utilities.io.Io;
@@ -17,7 +17,7 @@ public class HttpParser {
 	byte[] input;
 	int from;
 	int to = 0;
-	ErrorRecorder er = null;
+	IErrorRecorder er = null;
 	String charset = null;
 	HttpMessage message = new HttpMessage();
 	MultipartParser multiparser;
@@ -97,7 +97,7 @@ public class HttpParser {
 		return message.multipart;
 	} 
 
-	public void setErrorRecorder(ErrorRecorder er) {
+	public void setErrorRecorder(IErrorRecorder er) {
 		this.er = er;
 	}
 
@@ -117,7 +117,7 @@ public class HttpParser {
 		init(request);
 	}
 
-	public HttpParser(HttpServletRequest request, ErrorRecorder er) throws IOException, HttpParseException {
+	public HttpParser(HttpServletRequest request, IErrorRecorder er) throws IOException, HttpParseException {
 		logger.debug("new HttpParser(" + this.toString() + ")");
 		this.er = er;
 		init(request);
@@ -148,20 +148,20 @@ public class HttpParser {
 		init(msg, null, er);
 	}
 
-	public HttpParser(byte[] msg, ErrorRecorder er) throws HttpParseException, HttpHeaderParseException, ParseException  {
+	public HttpParser(byte[] msg, IErrorRecorder er) throws HttpParseException, HttpHeaderParseException, ParseException  {
 		logger.debug("new HttpParser(" + this.toString() + ")");
 		this.er = er;
 		init(msg, null, er);
 	}
 	
-	public HttpParser(byte[] msg, ErrorRecorder er, boolean appendixV) throws HttpParseException, HttpHeaderParseException, ParseException  {
+	public HttpParser(byte[] msg, IErrorRecorder er, boolean appendixV) throws HttpParseException, HttpHeaderParseException, ParseException  {
 		logger.debug("new HttpParser(" + this.toString() + ")");
 		this.er = er;
 		this.appendixV = appendixV;
 		init(msg, null, er);
 	}
 	
-	public void init(byte[] msg, HttpMessage hmessage, ErrorRecorder er) throws ParseException, HttpParseException  {
+	public void init(byte[] msg, HttpMessage hmessage, IErrorRecorder er) throws ParseException, HttpParseException  {
 		input = msg;
 		if (hmessage != null)
 			message = hmessage;

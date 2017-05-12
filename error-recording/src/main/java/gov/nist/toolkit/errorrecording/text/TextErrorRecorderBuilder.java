@@ -1,9 +1,9 @@
 package gov.nist.toolkit.errorrecording.text;
 
-import gov.nist.toolkit.errorrecording.ErrorRecorder;
-import gov.nist.toolkit.errorrecording.ErrorRecorderBuilder;
+import gov.nist.toolkit.errorrecording.IErrorRecorder;
+import gov.nist.toolkit.errorrecording.IErrorRecorderBuilder;
 
-public class TextErrorRecorderBuilder implements ErrorRecorderBuilder {
+public class TextErrorRecorderBuilder implements IErrorRecorderBuilder {
 
 	public TextErrorRecorder buildNewErrorRecorder() {
 		TextErrorRecorder rec =  new TextErrorRecorder();
@@ -12,7 +12,7 @@ public class TextErrorRecorderBuilder implements ErrorRecorderBuilder {
 	}
 
 	@Override
-	public ErrorRecorder buildNewErrorRecorder(Object o) {
+	public IErrorRecorder buildNewErrorRecorder(Object o) {
 		return null;
 	}
 

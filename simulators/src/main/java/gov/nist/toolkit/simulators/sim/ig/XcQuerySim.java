@@ -5,7 +5,7 @@ import gov.nist.toolkit.configDatatypes.SimulatorProperties;
 import gov.nist.toolkit.actorfactory.client.SimulatorConfig;
 import gov.nist.toolkit.actortransaction.client.ActorType;
 import gov.nist.toolkit.configDatatypes.client.TransactionType;
-import gov.nist.toolkit.errorrecording.ErrorRecorder;
+import gov.nist.toolkit.errorrecording.IErrorRecorder;
 import gov.nist.toolkit.errorrecording.common.XdsErrorCode;
 import gov.nist.toolkit.errorrecording.common.XdsErrorCode.Code;
 import gov.nist.toolkit.errorrecording.xml.assertions.Assertion;
@@ -72,7 +72,7 @@ public class XcQuerySim extends AbstractMessageValidator implements MetadataGene
 		this.mockSoap = mockSoap;
 	}
 
-	public void run(ErrorRecorder er, MessageValidatorEngine mvc) {
+	public void run(IErrorRecorder er, MessageValidatorEngine mvc) {
 		this.er = er;
 		er.registerValidator(this);
 
@@ -258,7 +258,7 @@ public class XcQuerySim extends AbstractMessageValidator implements MetadataGene
 		return ok;
 	}
 
-	private void logException(ErrorRecorder er, Exception e) {
+	private void logException(IErrorRecorder er, Exception e) {
 		String msg = e.getMessage();
 		if (msg == null || msg.equals(""))
 			msg = ExceptionUtil.exception_details(e);

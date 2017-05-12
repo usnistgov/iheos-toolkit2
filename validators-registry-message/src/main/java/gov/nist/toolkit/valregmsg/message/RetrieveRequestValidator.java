@@ -1,10 +1,10 @@
 package gov.nist.toolkit.valregmsg.message;
 
-import gov.nist.toolkit.errorrecording.ErrorRecorder;
+import gov.nist.toolkit.errorrecording.IErrorRecorder;
 import gov.nist.toolkit.errorrecording.common.XdsErrorCode;
 import gov.nist.toolkit.errorrecording.xml.assertions.Assertion;
 import gov.nist.toolkit.errorrecording.xml.assertions.AssertionLibrary;
-import gov.nist.toolkit.errorrecording.ErrorRecorderBuilder;
+import gov.nist.toolkit.errorrecording.IErrorRecorderBuilder;
 import gov.nist.toolkit.utilities.xml.XmlUtil;
 import gov.nist.toolkit.valsupport.client.ValidationContext;
 import gov.nist.toolkit.valsupport.engine.MessageValidatorEngine;
@@ -21,18 +21,18 @@ import java.util.List;
  */
 public class RetrieveRequestValidator  extends AbstractMessageValidator {
 	OMElement xml;
-	ErrorRecorderBuilder erBuilder;
+	IErrorRecorderBuilder erBuilder;
 	MessageValidatorEngine mvc;
 	private AssertionLibrary ASSERTIONLIBRARY = AssertionLibrary.getInstance();
 
 
-	public RetrieveRequestValidator(ValidationContext vc, ErrorRecorderBuilder erBuilder, MessageValidatorEngine mvc) {
+	public RetrieveRequestValidator(ValidationContext vc, IErrorRecorderBuilder erBuilder, MessageValidatorEngine mvc) {
 		super(vc);
 		this.erBuilder = erBuilder;
 		this.mvc = mvc;
 	}
 
-	public void run(ErrorRecorder er, MessageValidatorEngine mvc) {
+	public void run(IErrorRecorder er, MessageValidatorEngine mvc) {
 		this.er = er;
 		er.registerValidator(this);
 

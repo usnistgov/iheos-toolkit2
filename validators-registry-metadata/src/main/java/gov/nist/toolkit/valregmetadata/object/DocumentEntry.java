@@ -1,6 +1,6 @@
 package gov.nist.toolkit.valregmetadata.object;
 
-import gov.nist.toolkit.errorrecording.ErrorRecorder;
+import gov.nist.toolkit.errorrecording.IErrorRecorder;
 import gov.nist.toolkit.errorrecording.common.XdsErrorCode;
 import gov.nist.toolkit.errorrecording.common.XdsErrorCode.Code;
 import gov.nist.toolkit.errorrecording.xml.assertions.Assertion;
@@ -253,7 +253,7 @@ public class DocumentEntry extends AbstractRegistryObject implements TopLevelObj
 		return isClassifiedAs(MetadataSupport.XDSDocumentEntry_limitedMetadata_uuid);
 	}
 
-	public void validate(ErrorRecorder er, ValidationContext vc, Set<String> knownIds) {
+	public void validate(IErrorRecorder er, ValidationContext vc, Set<String> knownIds) {
 
 		if (vc.skipInternalStructure)
 			return;
@@ -297,7 +297,7 @@ public class DocumentEntry extends AbstractRegistryObject implements TopLevelObj
 	// this takes in two circumstances:
 	//	Slots always required
 	//  Optional Slots required by this transaction
-	public void validateRequiredSlotsPresent(ErrorRecorder er, ValidationContext vc) {
+	public void validateRequiredSlotsPresent(IErrorRecorder er, ValidationContext vc) {
 		// Slots always required
 
 		if (vc.isXDRMinimal) {
@@ -355,7 +355,7 @@ public class DocumentEntry extends AbstractRegistryObject implements TopLevelObj
 	 * Validate all slots present are legal for DocumentEntry
 	 * @param er
 	 */
-	public void validateSlotsLegal(ErrorRecorder er)  {
+	public void validateSlotsLegal(IErrorRecorder er)  {
 		verifySlotsUnique(er);
 		for (Slot slot : getSlots()) {
 			if ( ! legal_slot_name(slot.getName())) {
@@ -372,7 +372,7 @@ public class DocumentEntry extends AbstractRegistryObject implements TopLevelObj
 		return definedSlots.contains(name);
 	}
 
-	public void validateSlotsCodedCorrectly(ErrorRecorder er, ValidationContext vc)  {
+	public void validateSlotsCodedCorrectly(IErrorRecorder er, ValidationContext vc)  {
 
 		//                    name				   multi	format                                                  resource
 		validateSlot(er, 	"creationTime", 	   false, 	new DtmFormat(er, this, "Slot creationTime",      table415),  table415);
@@ -422,7 +422,7 @@ public class DocumentEntry extends AbstractRegistryObject implements TopLevelObj
 		}
 	}
 
-	public void validateTopAtts(ErrorRecorder er, ValidationContext vc) {
+	public void validateTopAtts(IErrorRecorder er, ValidationContext vc) {
 		if(vc.isRODDE) {
 			if (!MetadataSupport.XDSRODDEDocumentEntry_objectType_uuid.equals(objectType)) {
 				Assertion assertion = ASSERTIONLIBRARY.getAssertion("TA015");

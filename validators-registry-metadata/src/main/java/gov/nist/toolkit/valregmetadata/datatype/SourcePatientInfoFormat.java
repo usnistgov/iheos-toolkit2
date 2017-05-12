@@ -1,6 +1,6 @@
 package gov.nist.toolkit.valregmetadata.datatype;
 
-import gov.nist.toolkit.errorrecording.ErrorRecorder;
+import gov.nist.toolkit.errorrecording.IErrorRecorder;
 import gov.nist.toolkit.utilities.xml.XmlUtil;
 import gov.nist.toolkit.valregmetadata.field.ValidatorCommon;
 
@@ -8,8 +8,8 @@ import org.apache.axiom.om.OMElement;
 
 public class SourcePatientInfoFormat extends FormatValidator{
 
-	public SourcePatientInfoFormat(ErrorRecorder er, String context,
-			String resource) {
+	public SourcePatientInfoFormat(IErrorRecorder er, String context,
+                                   String resource) {
 		super(er, context, resource);
 	}
 

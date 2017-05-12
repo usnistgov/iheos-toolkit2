@@ -1,6 +1,6 @@
 package gov.nist.toolkit.valregmetadata.object.test.direct
 
-import gov.nist.toolkit.errorrecording.ErrorRecorder
+import gov.nist.toolkit.errorrecording.IErrorRecorder
 import gov.nist.toolkit.errorrecording.text.TextErrorRecorder
 import gov.nist.toolkit.registrymetadata.Metadata
 import gov.nist.toolkit.registrymetadata.MetadataParser
@@ -63,7 +63,7 @@ class SubmissionSetTest {
 		SubmissionSet sso = new SubmissionSet(m, ss)
 		ValidationContext vc = DefaultValidationContextFactory.validationContext()
 		vc.isXDRMinimal = true
-		ErrorRecorder er = new TextErrorRecorder();
+		IErrorRecorder er = new TextErrorRecorder();
 		er.sectionHeading("testValid()")
 		sso.validate(er, vc, new HashSet<String>());
 		System.out.println(er.toString());

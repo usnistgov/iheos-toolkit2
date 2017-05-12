@@ -1,10 +1,10 @@
 package gov.nist.toolkit.valregmsg.message;
 
-import gov.nist.toolkit.errorrecording.ErrorRecorder;
+import gov.nist.toolkit.errorrecording.IErrorRecorder;
 import gov.nist.toolkit.errorrecording.common.XdsErrorCode;
 import gov.nist.toolkit.errorrecording.xml.assertions.Assertion;
 import gov.nist.toolkit.errorrecording.xml.assertions.AssertionLibrary;
-import gov.nist.toolkit.errorrecording.ErrorRecorderBuilder;
+import gov.nist.toolkit.errorrecording.IErrorRecorderBuilder;
 import gov.nist.toolkit.http.HttpParseException;
 import gov.nist.toolkit.http.HttpParserBa;
 import gov.nist.toolkit.http.ParseException;
@@ -23,13 +23,13 @@ public class HttpMessageValidator extends AbstractMessageValidator {
 	String header = null;
 	byte[] body;
 	HttpParserBa hparser = null;
-	ErrorRecorderBuilder erBuilder;
+	IErrorRecorderBuilder erBuilder;
 	MessageValidatorEngine mvc;
 	RegistryValidationInterface rvi;
 	private AssertionLibrary ASSERTIONLIBRARY = AssertionLibrary.getInstance();
 
 
-	public HttpMessageValidator(ValidationContext vc, String header, byte[] body, ErrorRecorderBuilder erBuilder, MessageValidatorEngine mvc, RegistryValidationInterface rvi) {
+	public HttpMessageValidator(ValidationContext vc, String header, byte[] body, IErrorRecorderBuilder erBuilder, MessageValidatorEngine mvc, RegistryValidationInterface rvi) {
 		super(vc);
 		this.header = header;
 		this.body = body;
@@ -38,7 +38,7 @@ public class HttpMessageValidator extends AbstractMessageValidator {
 		this.rvi = rvi;
 	}
 
-	public HttpMessageValidator(ValidationContext vc, HttpParserBa hparser, ErrorRecorderBuilder erBuilder, MessageValidatorEngine mvc, RegistryValidationInterface rvi) {
+	public HttpMessageValidator(ValidationContext vc, HttpParserBa hparser, IErrorRecorderBuilder erBuilder, MessageValidatorEngine mvc, RegistryValidationInterface rvi) {
 		super(vc);
 		this.hparser = hparser;
 		this.erBuilder = erBuilder;
@@ -46,7 +46,7 @@ public class HttpMessageValidator extends AbstractMessageValidator {
 		this.rvi = rvi;
 	}
 
-	public void run(ErrorRecorder er, MessageValidatorEngine mvc) {
+	public void run(IErrorRecorder er, MessageValidatorEngine mvc) {
 		this.er = er;
 		er.registerValidator(this);
 		

@@ -1,6 +1,6 @@
 package gov.nist.toolkit.valregmsg.message;
 
-import gov.nist.toolkit.errorrecording.ErrorRecorder;
+import gov.nist.toolkit.errorrecording.IErrorRecorder;
 import gov.nist.toolkit.http.MultipartMessageBa;
 import gov.nist.toolkit.http.MultipartParserBa;
 import gov.nist.toolkit.http.PartBa;
@@ -20,7 +20,7 @@ public class MultipartContainer extends AbstractMessageValidator {
 		this.mp = mp;
 	}
 
-	public void run(ErrorRecorder er, MessageValidatorEngine mvc) {
+	public void run(IErrorRecorder er, MessageValidatorEngine mvc) {
 		this.er = er;
 		er.registerValidator(this);
 		

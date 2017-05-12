@@ -1,6 +1,6 @@
 package gov.nist.toolkit.simulators.unused;
 
-import gov.nist.toolkit.errorrecording.ErrorRecorder;
+import gov.nist.toolkit.errorrecording.IErrorRecorder;
 import gov.nist.toolkit.errorrecording.common.XdsErrorCode;
 import gov.nist.toolkit.simulators.support.DsSimCommon;
 import gov.nist.toolkit.simulators.support.SimCommon;
@@ -21,7 +21,7 @@ public class SoapWrapperXCPDResponseSim extends TransactionSimulator {
         this.dsSimCommon = dsSimCommon;
 	}
 
-	public void run(ErrorRecorder er, MessageValidatorEngine mvc) {
+	public void run(IErrorRecorder er, MessageValidatorEngine mvc) {
 		try {
 
 			er.detail("Wrapping response in SOAP Message");

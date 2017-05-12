@@ -1,13 +1,13 @@
 package gov.nist.toolkit.valregmsg.xdm
 
-import gov.nist.toolkit.errorrecording.ErrorRecorder
+import gov.nist.toolkit.errorrecording.IErrorRecorder
 import gov.nist.toolkit.errorrecording.gwt.GwtErrorRecorder
 import spock.lang.Specification
 /**
  *
  */
 class Iso9660Test extends Specification {
-    ErrorRecorder er = new GwtErrorRecorder()
+    IErrorRecorder er = new GwtErrorRecorder()
     ValidateISO9660 v = new ValidateISO9660(er)
 
     def 'simple name' () {

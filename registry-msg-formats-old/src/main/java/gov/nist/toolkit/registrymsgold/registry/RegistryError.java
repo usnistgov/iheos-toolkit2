@@ -1,6 +1,6 @@
 package gov.nist.toolkit.registrymsgold.registry;
 
-import gov.nist.toolkit.errorrecording.ErrorRecorder;
+import gov.nist.toolkit.errorrecording.IErrorRecorder;
 import gov.nist.toolkit.commondatatypes.MetadataSupport;
 import gov.nist.toolkit.errorrecording.xml.assertions.Assertion;
 import gov.nist.toolkit.errorrecording.xml.assertions.AssertionLibrary;
@@ -39,7 +39,7 @@ public class RegistryError {
 			severity = "urn:oasis:names:tc:ebxml-regrep:ErrorSeverityType:Error";
 	}
 
-	public void validate(ErrorRecorder er, ValidationContext vc) {
+	public void validate(IErrorRecorder er, ValidationContext vc) {
 		if (codeContext == null) {
 			Assertion assertion = ASSERTIONLIBRARY.getAssertion("TA092");
 			er.err(XdsErrorCode.Code.XDSRegistryMetadataError, assertion, this, "", "");

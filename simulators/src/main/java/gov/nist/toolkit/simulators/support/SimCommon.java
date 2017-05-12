@@ -3,7 +3,7 @@ package gov.nist.toolkit.simulators.support;
 import gov.nist.toolkit.actorfactory.SimDb;
 import gov.nist.toolkit.actorfactory.client.NoSimException;
 import gov.nist.toolkit.actorfactory.client.SimId;
-import gov.nist.toolkit.errorrecording.ErrorRecorder;
+import gov.nist.toolkit.errorrecording.IErrorRecorder;
 import gov.nist.toolkit.errorrecording.SelectedErrorRecorder;
 import gov.nist.toolkit.errorrecording.gwt.GwtErrorRecorder;
 import gov.nist.toolkit.errorrecording.gwt.GwtErrorRecorderBuilder;
@@ -109,13 +109,13 @@ public class SimCommon {
 		this.vc = vc;
 	}
 
-	ErrorRecorder er = null;
+	IErrorRecorder er = null;
 
 	/**
 	 * Called in RegistryActorSimulator when generating output.
 	 * @return
 	 */
-	public ErrorRecorder getCommonErrorRecorder() {
+	public IErrorRecorder getCommonErrorRecorder() {
 		if (er == null) {
 			// Create an independent ErrorRecorder based on the type of ER currently selected
 			SelectedErrorRecorder.ErrorRecorderType ERtype = SelectedErrorRecorder.getSelectedErrorRecorder().getType();
@@ -188,7 +188,7 @@ public class SimCommon {
 		while (steps.hasMoreElements()) {
 			ValidationStep step = steps.nextElement();
 			buf.append(step).append("\n");
-			ErrorRecorder er = step.getErrorRecorder();
+			IErrorRecorder er = step.getErrorRecorder();
 
 			// TODO not sure what this does. Appends nested ER outputs?
 			if (er instanceof GwtErrorRecorder) {
@@ -204,7 +204,7 @@ public class SimCommon {
 	}
 
 	// New function. Writes the log from an XMLErrorRecorder to file (instead of SimCommon context used in GWTErrorRecorder)
-	void generateXMLLog(ErrorRecorder er) throws IOException {
+	void generateXMLLog(IErrorRecorder er) throws IOException {
 		Io.stringToFile(db.getXmlLogFile(), er.toString());
 	}
 
@@ -235,7 +235,7 @@ public class SimCommon {
 	}
 
 	// TODO  Architecture workaround-type gimmick inherited from v2.
-	public static ErrorRecorder getUnconnectedErrorRecorder() {
+	public static IErrorRecorder getUnconnectedErrorRecorder() {
 		SelectedErrorRecorder selected = SelectedErrorRecorder.getSelectedErrorRecorder();
 		if (selected.getType().equals(SelectedErrorRecorder.ErrorRecorderType.GWT_ERROR_RECORDER)){
 			return new GwtErrorRecorder();

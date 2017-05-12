@@ -1,6 +1,6 @@
 package gov.nist.toolkit.valregmetadata.object;
 
-import gov.nist.toolkit.errorrecording.ErrorRecorder;
+import gov.nist.toolkit.errorrecording.IErrorRecorder;
 import gov.nist.toolkit.errorrecording.common.XdsErrorCode;
 import gov.nist.toolkit.errorrecording.xml.assertions.Assertion;
 import gov.nist.toolkit.errorrecording.xml.assertions.AssertionLibrary;
@@ -67,7 +67,7 @@ public class ExternalIdentifier extends AbstractRegistryObject {
 		return "ExternalIdentifier(identificationScheme=" + identificationScheme + ", type=" + name + ")";
 	}
 
-	public void validateStructure(ErrorRecorder er, ValidationContext vc) {
+	public void validateStructure(IErrorRecorder er, ValidationContext vc) {
 		validateId(er, vc, "entryUUID", id, null);
 		OMElement parentEle = (OMElement) ro.getParent();
 		String parentEleId = ((parentEle == null) ? "null" :
@@ -94,14 +94,14 @@ public class ExternalIdentifier extends AbstractRegistryObject {
 		return toXml(null);
 	}
 
-	public void validateRequiredSlotsPresent(ErrorRecorder er,
+	public void validateRequiredSlotsPresent(IErrorRecorder er,
 											 ValidationContext vc) {
 	}
 
-	public void validateSlotsCodedCorrectly(ErrorRecorder er,
+	public void validateSlotsCodedCorrectly(IErrorRecorder er,
 											ValidationContext vc) {
 	}
 
-	public void validateSlotsLegal(ErrorRecorder er) {
+	public void validateSlotsLegal(IErrorRecorder er) {
 	}
 }

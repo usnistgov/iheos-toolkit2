@@ -1,7 +1,7 @@
 package gov.nist.toolkit.simulators.sim.reg.mu;
 
 import gov.nist.toolkit.actorfactory.client.SimulatorConfig;
-import gov.nist.toolkit.errorrecording.ErrorRecorder;
+import gov.nist.toolkit.errorrecording.IErrorRecorder;
 import gov.nist.toolkit.errorrecording.common.XdsErrorCode;
 import gov.nist.toolkit.errorrecording.xml.assertions.Assertion;
 import gov.nist.toolkit.errorrecording.xml.assertions.AssertionLibrary;
@@ -17,11 +17,11 @@ import gov.nist.toolkit.valsupport.client.ValidationContext.MetadataPattern;
 import org.apache.axiom.om.OMElement;
 
 public class DocumentEntryStatusUpdate extends RegRSim {
-	ErrorRecorder er;
+	IErrorRecorder er;
 	DsSimCommon dsSimCommon;
 	private AssertionLibrary ASSERTIONLIBRARY = AssertionLibrary.getInstance();
 
-	public DocumentEntryStatusUpdate(SimCommon common, DsSimCommon dsSimCommon, ErrorRecorder er, SimulatorConfig asc) {
+	public DocumentEntryStatusUpdate(SimCommon common, DsSimCommon dsSimCommon, IErrorRecorder er, SimulatorConfig asc) {
 		super(common, dsSimCommon, asc);
 		this. dsSimCommon = dsSimCommon;
 		this.er = er;

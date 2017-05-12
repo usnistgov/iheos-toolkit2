@@ -1,8 +1,8 @@
 package gov.nist.toolkit.valregmsg.xdm
 
-import gov.nist.toolkit.errorrecording.ErrorRecorder
+import gov.nist.toolkit.errorrecording.IErrorRecorder
 import gov.nist.toolkit.errorrecording.gwt.GwtErrorRecorderBuilder
-import gov.nist.toolkit.errorrecording.ErrorRecorderBuilder
+import gov.nist.toolkit.errorrecording.IErrorRecorderBuilder
 import gov.nist.toolkit.valsupport.client.ValidationContext
 import gov.nist.toolkit.valsupport.engine.DefaultValidationContextFactory
 import gov.nist.toolkit.valsupport.engine.MessageValidatorEngine
@@ -20,8 +20,8 @@ class XdmTest extends Specification {
         when:
         ValidationContext vc = DefaultValidationContextFactory.validationContext();
         vc.isXDM = true;
-        ErrorRecorderBuilder erBuilder = new GwtErrorRecorderBuilder();
-        ErrorRecorder er = erBuilder.buildNewErrorRecorder();
+        IErrorRecorderBuilder erBuilder = new GwtErrorRecorderBuilder();
+        IErrorRecorder er = erBuilder.buildNewErrorRecorder();
         MessageValidatorEngine mvc = new MessageValidatorEngine();
 
         XdmDecoder xd = new XdmDecoder(vc, erBuilder, xdm);

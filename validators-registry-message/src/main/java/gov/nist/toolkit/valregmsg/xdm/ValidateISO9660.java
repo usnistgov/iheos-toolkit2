@@ -1,6 +1,6 @@
 package gov.nist.toolkit.valregmsg.xdm;
 
-import gov.nist.toolkit.errorrecording.ErrorRecorder;
+import gov.nist.toolkit.errorrecording.IErrorRecorder;
 import gov.nist.toolkit.commondatatypes.MetadataSupport;
 import gov.nist.toolkit.errorrecording.common.XdsErrorCode;
 
@@ -9,9 +9,9 @@ import gov.nist.toolkit.errorrecording.common.XdsErrorCode;
  * http://www.ecma-international.org/publications/standards/Ecma-119.htm
  */
 public class ValidateISO9660 {
-    ErrorRecorder er;
+    IErrorRecorder er;
 
-    public ValidateISO9660(ErrorRecorder er) {
+    public ValidateISO9660(IErrorRecorder er) {
         this.er  = er;
     }
 

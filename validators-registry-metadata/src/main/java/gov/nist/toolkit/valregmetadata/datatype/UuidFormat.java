@@ -1,6 +1,6 @@
 package gov.nist.toolkit.valregmetadata.datatype;
 
-import gov.nist.toolkit.errorrecording.ErrorRecorder;
+import gov.nist.toolkit.errorrecording.IErrorRecorder;
 import gov.nist.toolkit.errorrecording.common.XdsErrorCode;
 import gov.nist.toolkit.errorrecording.xml.assertions.Assertion;
 import gov.nist.toolkit.errorrecording.xml.assertions.AssertionLibrary;
@@ -8,7 +8,7 @@ import gov.nist.toolkit.errorrecording.xml.assertions.AssertionLibrary;
 public class UuidFormat extends FormatValidator {
 	private AssertionLibrary ASSERTIONLIBRARY = AssertionLibrary.getInstance();
 
-	public UuidFormat(ErrorRecorder er, String context, String resource) {
+	public UuidFormat(IErrorRecorder er, String context, String resource) {
 		super(er, context, resource);
 	}
 

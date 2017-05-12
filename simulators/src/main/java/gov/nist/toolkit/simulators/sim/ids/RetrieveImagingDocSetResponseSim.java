@@ -8,7 +8,7 @@ import org.apache.axiom.om.OMAttribute;
 import org.apache.axiom.om.OMElement;
 import org.apache.log4j.Logger;
 
-import gov.nist.toolkit.errorrecording.ErrorRecorder;
+import gov.nist.toolkit.errorrecording.IErrorRecorder;
 import gov.nist.toolkit.errorrecording.common.XdsErrorCode.Code;
 import gov.nist.toolkit.registrymsg.registry.Response;
 import gov.nist.toolkit.commondatatypes.MetadataSupport;
@@ -49,7 +49,7 @@ public class RetrieveImagingDocSetResponseSim extends TransactionSimulator imple
 	}
 
 	@Override
-   public void run(ErrorRecorder er, MessageValidatorEngine mvc) {
+   public void run(IErrorRecorder er, MessageValidatorEngine mvc) {
 		try {
 			response = new RetrieveMultipleResponse();
 

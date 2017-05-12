@@ -1,7 +1,7 @@
 package gov.nist.toolkit.simulators.sim.reg.mu;
 
 import gov.nist.toolkit.common.datatypes.Hl7Date;
-import gov.nist.toolkit.errorrecording.ErrorRecorder;
+import gov.nist.toolkit.errorrecording.IErrorRecorder;
 import gov.nist.toolkit.errorrecording.common.XdsErrorCode;
 import gov.nist.toolkit.errorrecording.common.XdsErrorCode.Code;
 import gov.nist.toolkit.registrymetadata.Metadata;
@@ -16,12 +16,12 @@ import java.util.List;
 
 public class ProcessMetadataForDocumentEntryUpdate implements ProcessMetadataInterface {
 	static Logger log = Logger.getLogger(ProcessMetadataForDocumentEntryUpdate.class);
-	ErrorRecorder er;
+	IErrorRecorder er;
 	MetadataCollection mc;
 	MetadataCollection delta;
 	String now;
 
-	public ProcessMetadataForDocumentEntryUpdate(ErrorRecorder er, MetadataCollection mc, MetadataCollection delta) {
+	public ProcessMetadataForDocumentEntryUpdate(IErrorRecorder er, MetadataCollection mc, MetadataCollection delta) {
 		this.er = er;
 		this.mc = mc;
 		this.delta = delta;

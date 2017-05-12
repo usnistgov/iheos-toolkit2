@@ -1,7 +1,7 @@
 package gov.nist.toolkit.valregmsg.registry.storedquery.validation;
 
 import gov.nist.toolkit.docref.SqDocRef;
-import gov.nist.toolkit.errorrecording.ErrorRecorder;
+import gov.nist.toolkit.errorrecording.IErrorRecorder;
 import gov.nist.toolkit.errorrecording.common.XdsErrorCode;
 import gov.nist.toolkit.errorrecording.xml.assertions.Assertion;
 import gov.nist.toolkit.errorrecording.xml.assertions.AssertionLibrary;
@@ -31,7 +31,7 @@ public class ValidationStoredQueryFactory extends StoredQueryFactory {
 		super(ahqr, response, null);
 	}
 
-	public ValidationStoredQueryFactory(OMElement ahqr, ErrorRecorder er) throws XdsException,
+	public ValidationStoredQueryFactory(OMElement ahqr, IErrorRecorder er) throws XdsException,
 			LoggerException {
 		super(ahqr, er);
 	}

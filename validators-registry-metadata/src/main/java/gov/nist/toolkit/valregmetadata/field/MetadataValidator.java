@@ -1,6 +1,6 @@
 package gov.nist.toolkit.valregmetadata.field;
 
-import gov.nist.toolkit.errorrecording.ErrorRecorder;
+import gov.nist.toolkit.errorrecording.IErrorRecorder;
 import gov.nist.toolkit.errorrecording.common.XdsErrorCode;
 import gov.nist.toolkit.errorrecording.xml.assertions.Assertion;
 import gov.nist.toolkit.errorrecording.xml.assertions.AssertionLibrary;
@@ -31,13 +31,13 @@ public class MetadataValidator {
 		this.rvi = rvi;
 	}
 
-	public void run(ErrorRecorder er) {
+	public void run(IErrorRecorder er) {
 		runObjectStructureValidation(er);
 		runCodeValidation(er);
 		runSubmissionStructureValidation(er);
 	}
 
-	public void runCodeValidation(ErrorRecorder er)   {
+	public void runCodeValidation(IErrorRecorder er)   {
 		CodeValidation cv = new CodeValidation(m);
 		try {
 			cv.setValidationContext(vc);
@@ -49,7 +49,7 @@ public class MetadataValidator {
 		cv.run(er);
 	}
 
-	public void runObjectStructureValidation(ErrorRecorder er)   {
+	public void runObjectStructureValidation(IErrorRecorder er)   {
 
 		if (vc.skipInternalStructure)
 			return;
@@ -121,7 +121,7 @@ public class MetadataValidator {
 		}
 	}
 
-	public void runSubmissionStructureValidation(ErrorRecorder er) {
+	public void runSubmissionStructureValidation(IErrorRecorder er) {
 		new SubmissionStructure(m, rvi).run(er, vc);
 	}
 

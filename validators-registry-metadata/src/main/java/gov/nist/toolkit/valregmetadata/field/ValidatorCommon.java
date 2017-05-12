@@ -1,6 +1,6 @@
 package gov.nist.toolkit.valregmetadata.field;
 
-import gov.nist.toolkit.errorrecording.ErrorRecorder;
+import gov.nist.toolkit.errorrecording.IErrorRecorder;
 import gov.nist.toolkit.errorrecording.common.XdsErrorCode;
 import gov.nist.toolkit.errorrecording.gwt.client.GwtValidatorErrorItem;
 import gov.nist.toolkit.errorrecording.common.XdsErrorCode.Code;
@@ -17,11 +17,11 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-public class ValidatorCommon implements ErrorRecorder {
+public class ValidatorCommon implements IErrorRecorder {
 	Metadata m;
 	RegistryErrorListGenerator rel;
 	ValidationContext valCtx = DefaultValidationContextFactory.validationContext();
-	List<ErrorRecorder> children = new ArrayList<>();
+	List<IErrorRecorder> children = new ArrayList<>();
 
 	public static String NeedReference = "Need Reference";
 
@@ -189,7 +189,7 @@ public class ValidatorCommon implements ErrorRecorder {
 			err(type + " " + id + " : Classification of type " + classification_scheme + " ( " + class_name + " ) is duplicated");
 	}
 
-	static public void validate_CX_datatype(ErrorRecorder er, String attName, String pid, String resource) {
+	static public void validate_CX_datatype(IErrorRecorder er, String attName, String pid, String resource) {
 		String err = validate_CX_datatype(pid);
 		if (err != null)
 			er.err(XdsErrorCode.Code.XDSRegistryMetadataError, attName + ": " + err, "ValidatorCommon", resource);
@@ -322,12 +322,12 @@ public class ValidatorCommon implements ErrorRecorder {
 	}
 
 	@Override
-	public ErrorRecorder buildNewErrorRecorder() {
+	public IErrorRecorder buildNewErrorRecorder() {
 		return this;
 	}
 
 	@Override
-	public ErrorRecorder buildNewErrorRecorder(Object o) {
+	public IErrorRecorder buildNewErrorRecorder(Object o) {
 		return null;
 	}
 
@@ -336,7 +336,7 @@ public class ValidatorCommon implements ErrorRecorder {
 		return 0;
 	}
 
-	public void concat(ErrorRecorder er) {
+	public void concat(IErrorRecorder er) {
 
 	}
 
@@ -345,7 +345,7 @@ public class ValidatorCommon implements ErrorRecorder {
 	}
 
 	@Override
-	public List<ErrorRecorder> getChildren() {
+	public List<IErrorRecorder> getChildren() {
 		return children;
 	}
 
@@ -354,7 +354,7 @@ public class ValidatorCommon implements ErrorRecorder {
 		int depth = 1;
 
 		int maxChildDepth = 0;
-		for (ErrorRecorder er : children) {
+		for (IErrorRecorder er : children) {
 			int childDepth = er.depth();
 			if (childDepth > maxChildDepth) maxChildDepth = childDepth;
 		}

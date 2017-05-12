@@ -1,11 +1,10 @@
 package gov.nist.toolkit.errorrecording.gwt;
 
-import gov.nist.toolkit.errorrecording.gwt.GwtErrorRecorder;
-import gov.nist.toolkit.errorrecording.ErrorRecorder;
-import gov.nist.toolkit.errorrecording.ErrorRecorderBuilder;
+import gov.nist.toolkit.errorrecording.IErrorRecorder;
+import gov.nist.toolkit.errorrecording.IErrorRecorderBuilder;
 
 
-public class GwtErrorRecorderBuilder implements ErrorRecorderBuilder {
+public class GwtErrorRecorderBuilder implements IErrorRecorderBuilder {
 
     @Override
 	public GwtErrorRecorder buildNewErrorRecorder() {
@@ -15,7 +14,7 @@ public class GwtErrorRecorderBuilder implements ErrorRecorderBuilder {
 	}
 
 	@Override
-	public ErrorRecorder buildNewErrorRecorder(Object o) {
+	public IErrorRecorder buildNewErrorRecorder(Object o) {
 		return null;
 	}
 

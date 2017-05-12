@@ -1,6 +1,6 @@
 package gov.nist.toolkit.valregmetadata.datatype;
 
-import gov.nist.toolkit.errorrecording.ErrorRecorder;
+import gov.nist.toolkit.errorrecording.IErrorRecorder;
 import gov.nist.toolkit.errorrecording.common.XdsErrorCode;
 import gov.nist.toolkit.errorrecording.xml.assertions.Assertion;
 import gov.nist.toolkit.errorrecording.xml.assertions.AssertionLibrary;
@@ -20,7 +20,7 @@ import gov.nist.toolkit.errorrecording.xml.assertions.AssertionLibrary;
  */
 public class Rfc3066Format extends FormatValidator {
 
-	public Rfc3066Format(ErrorRecorder er, String context, String resource) {
+	public Rfc3066Format(IErrorRecorder er, String context, String resource) {
 		super(er, context, resource);
 	}
 	private AssertionLibrary ASSERTIONLIBRARY = AssertionLibrary.getInstance();

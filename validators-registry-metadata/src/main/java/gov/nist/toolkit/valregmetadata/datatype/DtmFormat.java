@@ -1,6 +1,6 @@
 package gov.nist.toolkit.valregmetadata.datatype;
 
-import gov.nist.toolkit.errorrecording.ErrorRecorder;
+import gov.nist.toolkit.errorrecording.IErrorRecorder;
 import gov.nist.toolkit.errorrecording.common.XdsErrorCode;
 import gov.nist.toolkit.errorrecording.xml.assertions.Assertion;
 import gov.nist.toolkit.errorrecording.xml.assertions.AssertionLibrary;
@@ -14,7 +14,7 @@ public class DtmFormat extends FormatValidator {
 	private Object xdsType;
 
 
-	public DtmFormat(ErrorRecorder er, Object _xdsType, String context, String resource) {
+	public DtmFormat(IErrorRecorder er, Object _xdsType, String context, String resource) {
 		super(er, context, resource); // TODO change to include XDSType in super type
 		xdsType = _xdsType; // TODO this parameter should ultimately go away
 	}

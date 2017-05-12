@@ -2,7 +2,7 @@ package gov.nist.toolkit.simulators.support;
 
 import gov.nist.toolkit.actorfactory.client.SimulatorConfig;
 import gov.nist.toolkit.commondatatypes.MetadataSupport;
-import gov.nist.toolkit.errorrecording.ErrorRecorder;
+import gov.nist.toolkit.errorrecording.IErrorRecorder;
 import gov.nist.toolkit.errorrecording.SelectedErrorRecorder;
 import gov.nist.toolkit.errorrecording.common.XdsErrorCode;
 import gov.nist.toolkit.errorrecording.gwt.GwtErrorRecorder;
@@ -120,7 +120,7 @@ public class DsSimCommon {
      * @return SimCommon object
      * @throws IOException
      */
-    private void runErrorRecorder(ErrorRecorder err) throws IOException {
+    private void runErrorRecorder(IErrorRecorder err) throws IOException {
         // Parses the message and possibly creates a queue of specific validators (?)
         simCommon.mvc = simCommon.vms.runValidation(simCommon.vc, simCommon.db, simCommon.mvc, err);
         // Runs the validators
@@ -144,7 +144,7 @@ public class DsSimCommon {
      * One more separate ErrorRecorder to store the output of a Registry Simulator
      * @param er
      */
-    public void sendErrorsInRegistryResponse(ErrorRecorder er) {
+    public void sendErrorsInRegistryResponse(IErrorRecorder er) {
         if (er == null) {
             SelectedErrorRecorder.ErrorRecorderType selected = SelectedErrorRecorder.getSelectedErrorRecorder().getType();
             if (selected.equals(XML_ERROR_RECORDER)) {
@@ -260,7 +260,7 @@ public class DsSimCommon {
         return rr;
     }
 
-    public void addDocumentAttachments(Metadata m, ErrorRecorder er) {
+    public void addDocumentAttachments(Metadata m, IErrorRecorder er) {
         try {
             List<String> uids = new ArrayList<String>();
             for (OMElement eo : m.getExtrinsicObjects() ) {
@@ -274,7 +274,7 @@ public class DsSimCommon {
         }
     }
 
-    public void addDocumentAttachments(List<String> uids, ErrorRecorder er) throws XdsInternalException {
+    public void addDocumentAttachments(List<String> uids, IErrorRecorder er) throws XdsInternalException {
         int notFound = 0;
         for (String uid : uids) {
             StoredDocument sd = repIndex.getDocumentCollection().getStoredDocument(uid);
@@ -301,7 +301,7 @@ public class DsSimCommon {
 
     }
 
-    public void addImagingDocumentAttachments(List<String> imagingDocumentUids, List<String> transferSyntaxUids, ErrorRecorder er) {
+    public void addImagingDocumentAttachments(List<String> imagingDocumentUids, List<String> transferSyntaxUids, IErrorRecorder er) {
         logger.debug("DsSimComon#addImagingDocumentAttachments");
         for (String uid : imagingDocumentUids) {
             //StoredDocument sd = repIndex.getDocumentCollection().getStoredDocument(uid);
@@ -338,7 +338,7 @@ public class DsSimCommon {
      * @param env
      * @throws MetadataException
      */
-    void insertDocumentIncludes(OMElement env, ErrorRecorder er) throws MetadataException {
+    void insertDocumentIncludes(OMElement env, IErrorRecorder er) throws MetadataException {
         if (documentsToAttach == null)
             return;
 
@@ -376,7 +376,7 @@ public class DsSimCommon {
      * @param er
      * @return
      */
-    public StringBuffer wrapSoapEnvelopeInMultipartResponse(OMElement env, ErrorRecorder er) {
+    public StringBuffer wrapSoapEnvelopeInMultipartResponse(OMElement env, IErrorRecorder er) {
         logger.debug("DsSimCommon#wrapSoapEnvelopeInMultipartResponse");
 
         er.detail("Wrapping in Multipart");
@@ -447,7 +447,7 @@ public class DsSimCommon {
      * @param er
      * @return
      */
-    public StringBuffer wrapSoapEnvelopeInMultipartResponseBinary(OMElement env, ErrorRecorder er) {
+    public StringBuffer wrapSoapEnvelopeInMultipartResponseBinary(OMElement env, IErrorRecorder er) {
         logger.debug("DsSimCommon#wrapSoapEnvelopeInMultipartResponseBinary");
 
         er.detail("Wrapping in Multipart");
@@ -533,7 +533,7 @@ public class DsSimCommon {
      * @param multipartOk
      * @throws IOException
      */
-    public void sendHttpResponse(OMElement env, ErrorRecorder er, boolean multipartOk) {
+    public void sendHttpResponse(OMElement env, IErrorRecorder er, boolean multipartOk) {
         if (er instanceof GwtErrorRecorder) {
             logger.info("er instance of GwtErrorRecorder");
 
@@ -586,7 +586,7 @@ public class DsSimCommon {
         } // end instance of XMLErrorRecorder
     }
 
-    private void writeAttachments(OutputStream os, ErrorRecorder er) {
+    private void writeAttachments(OutputStream os, IErrorRecorder er) {
         String boundary = "MIMEBoundary112233445566778899";
         String rn = "\r\n";
         try {
@@ -631,8 +631,8 @@ public class DsSimCommon {
     }
 
     // TODO Assertions
-    public ErrorRecorder registryResponseAsErrorRecorder(OMElement regResp) {
-        ErrorRecorder er = simCommon.getUnconnectedErrorRecorder();
+    public IErrorRecorder registryResponseAsErrorRecorder(OMElement regResp) {
+        IErrorRecorder er = simCommon.getUnconnectedErrorRecorder();
 
         for (OMElement re : XmlUtil.decendentsWithLocalName(regResp, "RegistryError")) {
             String errorCode   = re.getAttributeValue(MetadataSupport.error_code_qname);
@@ -686,7 +686,7 @@ public class DsSimCommon {
      * @param er
      * @throws IOException
      */
-    public void sendHttpResponse(OMElement env, ErrorRecorder er) throws IOException {
+    public void sendHttpResponse(OMElement env, IErrorRecorder er) throws IOException {
         sendHttpResponse(env, er, true);
     }
 
@@ -739,7 +739,7 @@ public class DsSimCommon {
             return null;
         }
 
-        ErrorRecorder er = mv.getErrorRecorder();
+        IErrorRecorder er = mv.getErrorRecorder();
 
         // If using GWTErrorRecorder
         if (er instanceof GwtErrorRecorder) {

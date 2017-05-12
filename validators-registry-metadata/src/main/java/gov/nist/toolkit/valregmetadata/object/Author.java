@@ -1,6 +1,6 @@
 package gov.nist.toolkit.valregmetadata.object;
 
-import gov.nist.toolkit.errorrecording.ErrorRecorder;
+import gov.nist.toolkit.errorrecording.IErrorRecorder;
 import gov.nist.toolkit.errorrecording.common.XdsErrorCode;
 import gov.nist.toolkit.errorrecording.xml.assertions.Assertion;
 import gov.nist.toolkit.errorrecording.xml.assertions.AssertionLibrary;
@@ -99,7 +99,7 @@ public class Author extends AbstractRegistryObject {
 		classificationScheme = cl.getAttributeValue(MetadataSupport.classificationscheme_qname);
 	}
 
-	public void validateStructure(ErrorRecorder er, ValidationContext vc)  {
+	public void validateStructure(IErrorRecorder er, ValidationContext vc)  {
 		validateId(er, vc, "entryUUID", id, null);
 		OMElement parentEle = (OMElement) ro.getParent();
 		String parentEleId =  ((parentEle == null) ? "null" :
@@ -194,14 +194,14 @@ public class Author extends AbstractRegistryObject {
 		return toXml(owner);
 	}
 
-	public void validateRequiredSlotsPresent(ErrorRecorder er,
+	public void validateRequiredSlotsPresent(IErrorRecorder er,
 											 ValidationContext vc) {
 	}
 
-	public void validateSlotsCodedCorrectly(ErrorRecorder er,
+	public void validateSlotsCodedCorrectly(IErrorRecorder er,
 											ValidationContext vc) {
 	}
 
-	public void validateSlotsLegal(ErrorRecorder er) {
+	public void validateSlotsLegal(IErrorRecorder er) {
 	}
 }

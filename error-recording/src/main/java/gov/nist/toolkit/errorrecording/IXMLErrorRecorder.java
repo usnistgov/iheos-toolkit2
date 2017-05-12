@@ -3,14 +3,12 @@ package gov.nist.toolkit.errorrecording;
 import gov.nist.toolkit.errorrecording.common.XdsErrorCode;
 import gov.nist.toolkit.errorrecording.xml.assertions.Assertion;
 
-import java.util.List;
-
 /**
  * Combines functions from the old GWTErrorRecorder and the new XMLErrorRecorder
  * @author dazais
  *
  */
-public interface XMLErrorRecorder extends ErrorRecorderBuilder {
+public interface IXMLErrorRecorder extends IErrorRecorderBuilder {
 
 	//----- Prototypes used by the XML ErrorRecorder -----
 	void err(XdsErrorCode.Code code, Assertion assertion, String validatorModule, String location, String detail); // updated

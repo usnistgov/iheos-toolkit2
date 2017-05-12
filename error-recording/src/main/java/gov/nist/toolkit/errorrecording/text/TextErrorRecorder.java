@@ -1,18 +1,18 @@
 package gov.nist.toolkit.errorrecording.text;
 
-import gov.nist.toolkit.errorrecording.ErrorRecorder;
+import gov.nist.toolkit.errorrecording.IErrorRecorder;
 import gov.nist.toolkit.errorrecording.gwt.client.GwtValidatorErrorItem;
 import gov.nist.toolkit.errorrecording.common.XdsErrorCode.Code;
 import gov.nist.toolkit.errorrecording.xml.assertions.Assertion;
-import gov.nist.toolkit.errorrecording.ErrorRecorderBuilder;
+import gov.nist.toolkit.errorrecording.IErrorRecorderBuilder;
 
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.List;
 
-public class TextErrorRecorder implements ErrorRecorder {
-	List<ErrorRecorder> children = new ArrayList<>();
+public class TextErrorRecorder implements IErrorRecorder {
+	List<IErrorRecorder> children = new ArrayList<>();
 
 	public class ErrorInfo {
 		public int indent = 0;
@@ -66,7 +66,7 @@ public class TextErrorRecorder implements ErrorRecorder {
 	}
 
 	int lastErrCount = 0;
-	public ErrorRecorderBuilder errorRecorderBuilder;
+	public IErrorRecorderBuilder errorRecorderBuilder;
 
 	
 	int getLastErrCountChange() {
@@ -240,12 +240,12 @@ public class TextErrorRecorder implements ErrorRecorder {
 	}
 
 	@Override
-	public ErrorRecorder buildNewErrorRecorder() {
+	public IErrorRecorder buildNewErrorRecorder() {
 		return this;
 	}
 
 	@Override
-	public ErrorRecorder buildNewErrorRecorder(Object o) {
+	public IErrorRecorder buildNewErrorRecorder(Object o) {
 		return null;
 	}
 
@@ -254,7 +254,7 @@ public class TextErrorRecorder implements ErrorRecorder {
 		return errMsgs.size();
 	}
 
-	public void concat(ErrorRecorder er) {
+	public void concat(IErrorRecorder er) {
 
 	}
 
@@ -294,7 +294,7 @@ public class TextErrorRecorder implements ErrorRecorder {
 	}
 
 	@Override
-	public List<ErrorRecorder> getChildren() {
+	public List<IErrorRecorder> getChildren() {
 		return children;
 	}
 
@@ -302,7 +302,7 @@ public class TextErrorRecorder implements ErrorRecorder {
 		int depth = 1;
 
 		int maxChildDepth = 0;
-		for (ErrorRecorder er : children) {
+		for (IErrorRecorder er : children) {
 			int childDepth = er.depth();
 			if (childDepth > maxChildDepth) maxChildDepth = childDepth;
 		}

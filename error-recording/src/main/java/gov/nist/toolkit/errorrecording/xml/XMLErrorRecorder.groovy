@@ -1,7 +1,7 @@
 package gov.nist.toolkit.errorrecording.xml
 
-import gov.nist.toolkit.errorrecording.ErrorRecorder
-import gov.nist.toolkit.errorrecording.ErrorRecorderBuilder
+import gov.nist.toolkit.errorrecording.IErrorRecorder
+import gov.nist.toolkit.errorrecording.IErrorRecorderBuilder
 import gov.nist.toolkit.errorrecording.common.XdsErrorCode.Code
 import gov.nist.toolkit.errorrecording.xml.assertions.Assertion
 import gov.nist.toolkit.xdsexception.ExceptionUtil
@@ -11,8 +11,8 @@ import org.apache.log4j.Logger
 /**
  * Created by diane on 2/19/2016.
  */
-public class XMLErrorRecorder implements ErrorRecorder {
-    public ErrorRecorderBuilder errorRecorderBuilder;
+public class XMLErrorRecorder implements IErrorRecorder {
+    public IErrorRecorderBuilder errorRecorderBuilder;
 
     static Logger logger = Logger.getLogger(XMLErrorRecorder.class);
     boolean firstSectionHeading = true;
@@ -347,7 +347,7 @@ public class XMLErrorRecorder implements ErrorRecorder {
 
     // Not used / Not tested
     @Override
-    public List<ErrorRecorder> getChildren() {
+    public List<IErrorRecorder> getChildren() {
         println("NYI-errrecorder")
         return null;
     }
@@ -376,15 +376,15 @@ public class XMLErrorRecorder implements ErrorRecorder {
     }
 
     @Override
-    public ErrorRecorder buildNewErrorRecorder() {
+    public IErrorRecorder buildNewErrorRecorder() {
         XMLErrorRecorder rec =  new XMLErrorRecorder();
         rec.errorRecorderBuilder = this;
         return rec;
     }
 
     @Override
-    public ErrorRecorder buildNewErrorRecorder(Object o) {
-        ErrorRecorder er =  errorRecorderBuilder.buildNewErrorRecorder();
+    public IErrorRecorder buildNewErrorRecorder(Object o) {
+        IErrorRecorder er =  errorRecorderBuilder.buildNewErrorRecorder();
         children.add(er);
         return er;
     }
