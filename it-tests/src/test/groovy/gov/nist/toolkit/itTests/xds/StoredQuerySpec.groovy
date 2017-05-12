@@ -23,7 +23,7 @@ import spock.lang.Shared
 class StoredQuerySpec extends ToolkitSpecification {
 
     // TODO there is an issue with this test. Every other time the test succeeds and every other time the two SQ tests
-    // TODO - fail regardless of data used. Should delete then recreate the simulator at the beginning.
+    // TODO - fail regardless of data used. Should delete then recreate the simulator bill_reg at the beginning.
 
 
     @Shared SimulatorBuilder spi
