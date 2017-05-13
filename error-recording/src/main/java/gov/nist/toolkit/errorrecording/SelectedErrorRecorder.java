@@ -1,5 +1,8 @@
 package gov.nist.toolkit.errorrecording;
 
+import gov.nist.toolkit.errorrecording.gwt.GwtErrorRecorderBuilder;
+import gov.nist.toolkit.errorrecording.xml.XMLErrorRecorderBuilder;
+
 /**
  * Created by diane on 3/9/2017.
  * Indicates the type of the current ErrorRecorder (GWT or XML). For temporary use while refactoring the code. Singleton.

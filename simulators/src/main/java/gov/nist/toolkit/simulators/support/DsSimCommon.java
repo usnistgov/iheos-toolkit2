@@ -3,7 +3,9 @@ package gov.nist.toolkit.simulators.support;
 import gov.nist.toolkit.actorfactory.client.SimulatorConfig;
 import gov.nist.toolkit.commondatatypes.MetadataSupport;
 import gov.nist.toolkit.errorrecording.IErrorRecorder;
+import gov.nist.toolkit.errorrecording.IErrorRecorderBuilder;
 import gov.nist.toolkit.errorrecording.SelectedErrorRecorder;
+import gov.nist.toolkit.errorrecording.common.ErrorRecorderUtils;
 import gov.nist.toolkit.errorrecording.common.XdsErrorCode;
 import gov.nist.toolkit.errorrecording.gwt.GwtErrorRecorder;
 import gov.nist.toolkit.errorrecording.gwt.GwtErrorRecorderBuilder;
@@ -146,20 +148,9 @@ public class DsSimCommon {
      */
     public void sendErrorsInRegistryResponse(IErrorRecorder er) {
         if (er == null) {
-            SelectedErrorRecorder.ErrorRecorderType selected = SelectedErrorRecorder.getSelectedErrorRecorder().getType();
-            if (selected.equals(XML_ERROR_RECORDER)) {
-                System.out.println("XMLErrorRecorder type selected in DsSimCommon > sendErrorsInRegistryResponse");
-                er = new XMLErrorRecorderBuilder().buildNewErrorRecorder();
-            }
-            if (selected.equals(GWT_ERROR_RECORDER)) {
-                System.out.println("GWTErrorRecorder type selected in DsSimCommon > sendErrorsInRegistryResponse");
-                er = new GwtErrorRecorderBuilder().buildNewErrorRecorder();
-            }
-            // TODO handle error case
-            else {
-                System.out.println("No ErrorRecorder type selected in DsSimCommon > sendErrorsInRegistryResponse");
-                er = new GwtErrorRecorderBuilder().buildNewErrorRecorder();
-            }
+            // TODO this could actyually be integrated to the interface of ErrorRecBuilder in getNewErrorRecorderBuilder
+            IErrorRecorderBuilder builder = new ErrorRecorderUtils().getNewErrorRecorderBuilder();
+            er = builder.buildNewErrorRecorder();
         }
 
         // this works when RegistryResponse is the return message
