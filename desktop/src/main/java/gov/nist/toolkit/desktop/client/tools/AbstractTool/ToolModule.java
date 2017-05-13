@@ -8,7 +8,7 @@ import javax.inject.Inject;
  *
  */
 public class ToolModule {
-//    private static final TkGInjector INJECTOR = TkGInjector.INSTANCE;
+//    private static final TkGinInjector INJECTOR = TkGinInjector.INSTANCE;
 //
 //    private ToolPanel v = INJECTOR.getToolPanel();
 //

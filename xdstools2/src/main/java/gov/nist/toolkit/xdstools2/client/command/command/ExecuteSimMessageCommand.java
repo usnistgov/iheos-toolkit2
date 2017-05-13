@@ -1,7 +1,7 @@
 package gov.nist.toolkit.xdstools2.client.command.command;
 
 import gov.nist.toolkit.valsupport.client.MessageValidationResults;
-import gov.nist.toolkit.xdstools2.client.initialization.FrameworkInitialization;
+import gov.nist.toolkit.xdstools2.client.initialization.XdsTools2Presenter;
 import gov.nist.toolkit.xdstools2.shared.command.request.ExecuteSimMessageRequest;
 
 /**
@@ -10,6 +10,6 @@ import gov.nist.toolkit.xdstools2.shared.command.request.ExecuteSimMessageReques
 public abstract class ExecuteSimMessageCommand extends GenericCommand<ExecuteSimMessageRequest,MessageValidationResults>{
     @Override
     public void run(ExecuteSimMessageRequest request) {
-        FrameworkInitialization.data().getToolkitServices().executeSimMessage(request,this);
+        XdsTools2Presenter.data().getToolkitServices().executeSimMessage(request,this);
     }
 }

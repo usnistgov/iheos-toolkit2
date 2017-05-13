@@ -1,7 +1,7 @@
 package gov.nist.toolkit.xdstools2.client.command.command;
 
 import gov.nist.toolkit.results.client.Result;
-import gov.nist.toolkit.xdstools2.client.initialization.FrameworkInitialization;
+import gov.nist.toolkit.xdstools2.client.initialization.XdsTools2Presenter;
 import gov.nist.toolkit.xdstools2.shared.command.request.LifecycleValidationRequest;
 
 import java.util.List;
@@ -12,6 +12,6 @@ import java.util.List;
 public abstract class LifecycleValidationCommand extends GenericCommand<LifecycleValidationRequest,List<Result>>{
     @Override
     public void run(LifecycleValidationRequest var1) {
-        FrameworkInitialization.data().getToolkitServices().lifecycleValidation(var1,this);
+        XdsTools2Presenter.data().getToolkitServices().lifecycleValidation(var1,this);
     }
 }

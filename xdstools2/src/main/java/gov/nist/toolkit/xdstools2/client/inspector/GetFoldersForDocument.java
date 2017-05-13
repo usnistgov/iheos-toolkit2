@@ -8,7 +8,7 @@ import gov.nist.toolkit.registrymetadata.client.ObjectRefs;
 import gov.nist.toolkit.results.client.Result;
 import gov.nist.toolkit.results.client.TestInstance;
 import gov.nist.toolkit.xdstools2.client.command.command.GetFoldersForDocumentCommand;
-import gov.nist.toolkit.xdstools2.client.initialization.FrameworkInitialization;
+import gov.nist.toolkit.xdstools2.client.initialization.XdsTools2Presenter;
 import gov.nist.toolkit.xdstools2.shared.command.request.GetFoldersRequest;
 
 import java.util.List;
@@ -34,7 +34,7 @@ public class GetFoldersForDocument implements ClickHandler {
 					it.addToHistory(result);
 				}
 			}
-		}.run(new GetFoldersRequest(FrameworkInitialization.data().getCommandContext(),null,new AnyIds(ids)));
+		}.run(new GetFoldersRequest(XdsTools2Presenter.data().getCommandContext(),null,new AnyIds(ids)));
 	}
 
 	public GetFoldersForDocument(MetadataInspectorTab it, ObjectRefs ids) {

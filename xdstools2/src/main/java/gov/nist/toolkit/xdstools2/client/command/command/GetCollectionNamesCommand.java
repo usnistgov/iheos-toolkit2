@@ -1,6 +1,6 @@
 package gov.nist.toolkit.xdstools2.client.command.command;
 
-import gov.nist.toolkit.xdstools2.client.initialization.FrameworkInitialization;
+import gov.nist.toolkit.xdstools2.client.initialization.XdsTools2Presenter;
 import gov.nist.toolkit.xdstools2.shared.command.request.GetCollectionRequest;
 
 import java.util.Map;
@@ -11,6 +11,6 @@ import java.util.Map;
 public abstract class GetCollectionNamesCommand extends GenericCommand<GetCollectionRequest, Map<String, String>> {
     @Override
     public void run(GetCollectionRequest var1) {
-        FrameworkInitialization.data().getToolkitServices().getCollectionNames(var1, this);
+        XdsTools2Presenter.data().getToolkitServices().getCollectionNames(var1, this);
     }
 }

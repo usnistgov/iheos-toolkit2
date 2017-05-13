@@ -1,6 +1,6 @@
 package gov.nist.toolkit.xdstools2.client.command.command;
 
-import gov.nist.toolkit.xdstools2.client.initialization.FrameworkInitialization;
+import gov.nist.toolkit.xdstools2.client.initialization.XdsTools2Presenter;
 import gov.nist.toolkit.xdstools2.shared.command.request.GetTransactionRequest;
 
 /**
@@ -9,6 +9,6 @@ import gov.nist.toolkit.xdstools2.shared.command.request.GetTransactionRequest;
 public abstract class GetTransactionLogCommand extends GenericCommand<GetTransactionRequest,String>{
     @Override
     public void run(GetTransactionRequest request) {
-        FrameworkInitialization.data().getToolkitServices().getTransactionLog(request,this);
+        XdsTools2Presenter.data().getToolkitServices().getTransactionLog(request,this);
     }
 }

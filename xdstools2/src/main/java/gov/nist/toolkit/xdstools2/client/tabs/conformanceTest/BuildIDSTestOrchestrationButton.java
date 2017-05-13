@@ -16,7 +16,7 @@ import gov.nist.toolkit.services.client.RawResponse;
 import gov.nist.toolkit.sitemanagement.client.SiteSpec;
 import gov.nist.toolkit.sitemanagement.client.TransactionBean;
 import gov.nist.toolkit.xdstools2.client.command.command.BuildIdsTestOrchestrationCommand;
-import gov.nist.toolkit.xdstools2.client.initialization.FrameworkInitialization;
+import gov.nist.toolkit.xdstools2.client.initialization.XdsTools2Presenter;
 import gov.nist.toolkit.xdstools2.client.widgets.PopupMessage;
 import gov.nist.toolkit.xdstools2.client.widgets.buttons.AbstractOrchestrationButton;
 import gov.nist.toolkit.xdstools2.shared.command.request.BuildIdsTestOrchestrationRequest;
@@ -148,7 +148,7 @@ public class BuildIDSTestOrchestrationButton extends AbstractOrchestrationButton
                 IdsOrchestrationResponse orchResponse = (IdsOrchestrationResponse) rawResponse;
                 testTab.setOrchestrationResponse(orchResponse);
 
-                initializationResultsPanel.add(new HTML("FrameworkInitialization Complete"));
+                initializationResultsPanel.add(new HTML("XdsTools2Presenter Complete"));
 
                 if (testContext.getSiteUnderTest() != null) {
                     initializationResultsPanel.add(new HTML("<h2>System Under Test Configuration</h2>"));
@@ -209,7 +209,7 @@ public class BuildIDSTestOrchestrationButton extends AbstractOrchestrationButton
                 // test will be run out of support site so pass it back to conformance test tab
                 //testTab.setSitetoIssueTestAgainst(orchResponse.getSupportSite());
             }
-        }.run(new BuildIdsTestOrchestrationRequest(FrameworkInitialization.data().getCommandContext(),request));
+        }.run(new BuildIdsTestOrchestrationRequest(XdsTools2Presenter.data().getCommandContext(),request));
     }
 
 

@@ -11,7 +11,7 @@ import gov.nist.toolkit.actortransaction.client.ActorType;
 import gov.nist.toolkit.configDatatypes.client.TransactionType;
 import gov.nist.toolkit.sitemanagement.client.SiteSpec;
 import gov.nist.toolkit.xdstools2.client.command.command.GetCollectionNamesCommand;
-import gov.nist.toolkit.xdstools2.client.initialization.FrameworkInitialization;
+import gov.nist.toolkit.xdstools2.client.initialization.XdsTools2Presenter;
 import gov.nist.toolkit.xdstools2.client.tabs.genericQueryTab.GenericQueryTab;
 import gov.nist.toolkit.xdstools2.client.tabs.genericQueryTab.QueryBoilerplate;
 import gov.nist.toolkit.xdstools2.client.tabs.testsOverviewTab.TestsOverviewTab;
@@ -63,7 +63,7 @@ public class SiteSelectionWidget extends HorizontalPanel {
 					selectActorList.addItem(description, name);
 				}
 			}
-		}.run(new GetCollectionRequest(FrameworkInitialization.data().getCommandContext(), "actorcollections"));
+		}.run(new GetCollectionRequest(XdsTools2Presenter.data().getCommandContext(), "actorcollections"));
 	}
 
     /**

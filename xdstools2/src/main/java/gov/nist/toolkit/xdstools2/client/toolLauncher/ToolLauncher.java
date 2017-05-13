@@ -5,7 +5,7 @@ import com.google.gwt.event.dom.client.ClickHandler;
 import gov.nist.toolkit.registrymetadata.client.RegistryObject;
 import gov.nist.toolkit.sitemanagement.client.SiteSpec;
 import gov.nist.toolkit.xdstools2.client.ToolWindow;
-import gov.nist.toolkit.xdstools2.client.initialization.FrameworkInitialization;
+import gov.nist.toolkit.xdstools2.client.initialization.XdsTools2Presenter;
 import gov.nist.toolkit.xdstools2.client.tabs.*;
 import gov.nist.toolkit.xdstools2.client.tabs.GatewayTestsTabs.*;
 import gov.nist.toolkit.xdstools2.client.tabs.actorConfigTab.ActorConfigTab;
@@ -173,7 +173,7 @@ public class ToolLauncher implements ClickHandler {
 		if (menuName.equals(repositoryTabLabel)) return new RepositoryListingTab();
 		if (menuName.equals(pidFavoritesLabel)) return new PidFavoritesTab(def.getTabName());
 		if (menuName.equals(testsOverviewTabLabel)) return new TestsOverviewTab();
-		if (menuName.equals(homeTabLabel)) return FrameworkInitialization.data().getHomeTab();
+		if (menuName.equals(homeTabLabel)) return XdsTools2Presenter.data().getHomeTab();
 		if (menuName.equals(iigTestsTabLabel)) return new IIGTestTab();
 		if (menuName.equals(rigTestsTabLabel)) return new RIGTestTab();
 		if (menuName.equals(idsTestsTabLabel)) return new IDSTestTab();

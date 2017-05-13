@@ -1,6 +1,6 @@
 package gov.nist.toolkit.xdstools2.client.command.command;
 
-import gov.nist.toolkit.xdstools2.client.initialization.FrameworkInitialization;
+import gov.nist.toolkit.xdstools2.client.initialization.XdsTools2Presenter;
 import gov.nist.toolkit.xdstools2.shared.command.CommandContext;
 
 import java.util.Collection;
@@ -11,6 +11,6 @@ import java.util.Collection;
 public abstract class GetSitesForTestSessionCommand extends GenericCommand<CommandContext,Collection<String>>{
     @Override
     public void run(CommandContext context){
-        FrameworkInitialization.data().getToolkitServices().getSitesForTestSession(context,this);
+        XdsTools2Presenter.data().getToolkitServices().getSitesForTestSession(context,this);
     }
 }

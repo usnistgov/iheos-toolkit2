@@ -1,7 +1,7 @@
 package gov.nist.toolkit.xdstools2.client.command.command;
 
 import gov.nist.toolkit.testkitutilities.client.TestCollectionDefinitionDAO;
-import gov.nist.toolkit.xdstools2.client.initialization.FrameworkInitialization;
+import gov.nist.toolkit.xdstools2.client.initialization.XdsTools2Presenter;
 import gov.nist.toolkit.xdstools2.shared.command.request.GetCollectionRequest;
 
 import java.util.List;
@@ -12,6 +12,6 @@ import java.util.List;
 public abstract class GetTestCollectionsCommand extends GenericCommand<GetCollectionRequest, List<TestCollectionDefinitionDAO>> {
     @Override
     public void run(GetCollectionRequest var1) {
-        FrameworkInitialization.data().getToolkitServices().getTestCollections(var1, this);
+        XdsTools2Presenter.data().getToolkitServices().getTestCollections(var1, this);
     }
 }

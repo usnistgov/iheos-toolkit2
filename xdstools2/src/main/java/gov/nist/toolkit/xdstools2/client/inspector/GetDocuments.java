@@ -9,7 +9,7 @@ import gov.nist.toolkit.results.client.Result;
 import gov.nist.toolkit.results.client.StepResult;
 import gov.nist.toolkit.results.client.TestInstance;
 import gov.nist.toolkit.xdstools2.client.command.command.GetDocumentsCommand;
-import gov.nist.toolkit.xdstools2.client.initialization.FrameworkInitialization;
+import gov.nist.toolkit.xdstools2.client.initialization.XdsTools2Presenter;
 import gov.nist.toolkit.xdstools2.shared.command.request.GetDocumentsRequest;
 
 import java.util.List;
@@ -40,7 +40,7 @@ public class GetDocuments implements ClickHandler {
 					it.addToHistory(result);
 				}
 			}
-		}.run(new GetDocumentsRequest(FrameworkInitialization.data().getCommandContext(),null,aids));
+		}.run(new GetDocumentsRequest(XdsTools2Presenter.data().getCommandContext(),null,aids));
 		if (originatingResult != null)
 			originatingResult.rmFromToBeRetrieved(ids);
 	}

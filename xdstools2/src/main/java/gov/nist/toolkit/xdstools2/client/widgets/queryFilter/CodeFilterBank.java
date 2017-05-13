@@ -5,7 +5,7 @@ import gov.nist.toolkit.results.client.AssertionResult;
 import gov.nist.toolkit.results.client.CodesConfiguration;
 import gov.nist.toolkit.results.client.CodesResult;
 import gov.nist.toolkit.xdstools2.client.command.command.GetCodesConfiguration;
-import gov.nist.toolkit.xdstools2.client.initialization.FrameworkInitialization;
+import gov.nist.toolkit.xdstools2.client.initialization.XdsTools2Presenter;
 import gov.nist.toolkit.xdstools2.client.tabs.genericQueryTab.CodeEditButtonSelector;
 import gov.nist.toolkit.xdstools2.client.tabs.genericQueryTab.GenericQueryTab;
 
@@ -51,7 +51,7 @@ public class CodeFilterBank  {
                 }
                 enableCodeEditButtons();
             }
-        }.run(FrameworkInitialization.data().getCommandContext());
+        }.run(XdsTools2Presenter.data().getCommandContext());
     }
 
     public void addFilter(FlexTable paramGrid, int prow, int col, String filterName) {

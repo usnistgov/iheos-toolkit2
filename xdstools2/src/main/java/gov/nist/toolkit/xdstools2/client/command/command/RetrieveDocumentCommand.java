@@ -1,7 +1,7 @@
 package gov.nist.toolkit.xdstools2.client.command.command;
 
 import gov.nist.toolkit.results.client.Result;
-import gov.nist.toolkit.xdstools2.client.initialization.FrameworkInitialization;
+import gov.nist.toolkit.xdstools2.client.initialization.XdsTools2Presenter;
 import gov.nist.toolkit.xdstools2.shared.command.request.RetrieveDocumentRequest;
 
 import java.util.List;
@@ -12,6 +12,6 @@ import java.util.List;
 public abstract class RetrieveDocumentCommand extends GenericCommand<RetrieveDocumentRequest,List<Result>>{
     @Override
     public void run(RetrieveDocumentRequest var1) {
-        FrameworkInitialization.data().getToolkitServices().retrieveDocument(var1,this);
+        XdsTools2Presenter.data().getToolkitServices().retrieveDocument(var1,this);
     }
 }

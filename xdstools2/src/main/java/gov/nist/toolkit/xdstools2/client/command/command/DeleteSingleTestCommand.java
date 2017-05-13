@@ -1,7 +1,7 @@
 package gov.nist.toolkit.xdstools2.client.command.command;
 
 import gov.nist.toolkit.session.client.logtypes.TestOverviewDTO;
-import gov.nist.toolkit.xdstools2.client.initialization.FrameworkInitialization;
+import gov.nist.toolkit.xdstools2.client.initialization.XdsTools2Presenter;
 import gov.nist.toolkit.xdstools2.shared.command.request.DeleteSingleTestRequest;
 
 /**
@@ -10,6 +10,6 @@ import gov.nist.toolkit.xdstools2.shared.command.request.DeleteSingleTestRequest
 public abstract class DeleteSingleTestCommand extends GenericCommand<DeleteSingleTestRequest,TestOverviewDTO>{
     @Override
     public void run(DeleteSingleTestRequest var1) {
-        FrameworkInitialization.data().getToolkitServices().deleteSingleTestResult(var1,this);
+        XdsTools2Presenter.data().getToolkitServices().deleteSingleTestResult(var1,this);
     }
 }

@@ -10,7 +10,7 @@ import gov.nist.toolkit.services.client.RSNAEdgeOrchestrationRequest;
 import gov.nist.toolkit.services.client.RSNAEdgeOrchestrationResponse;
 import gov.nist.toolkit.services.client.RawResponse;
 import gov.nist.toolkit.xdstools2.client.command.command.BuildRSNAEdgeTestOrchestrationCommand;
-import gov.nist.toolkit.xdstools2.client.initialization.FrameworkInitialization;
+import gov.nist.toolkit.xdstools2.client.initialization.XdsTools2Presenter;
 import gov.nist.toolkit.xdstools2.client.tabs.genericQueryTab.GenericQueryTab;
 import gov.nist.toolkit.xdstools2.client.widgets.PopupMessage;
 import gov.nist.toolkit.xdstools2.client.widgets.buttons.AbstractOrchestrationButton;
@@ -73,7 +73,7 @@ class BuildRSNAEdgeTestOrchestrationButton extends AbstractOrchestrationButton {
 
                 testTab.genericQueryTab.reloadTransactionOfferings();
             }
-        }.run(new BuildRSNAEdgeTestOrchestrationRequest(FrameworkInitialization.data().getCommandContext(),request));
+        }.run(new BuildRSNAEdgeTestOrchestrationRequest(XdsTools2Presenter.data().getCommandContext(),request));
     }
 
 }

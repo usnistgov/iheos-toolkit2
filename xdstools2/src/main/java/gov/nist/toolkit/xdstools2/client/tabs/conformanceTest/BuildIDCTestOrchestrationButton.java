@@ -17,7 +17,7 @@ import gov.nist.toolkit.services.client.IdcOrchestrationResponse;
 import gov.nist.toolkit.services.client.RawResponse;
 import gov.nist.toolkit.simcommon.client.config.SimulatorConfigElement;
 import gov.nist.toolkit.sitemanagement.client.SiteSpec;
-import gov.nist.toolkit.xdstools2.client.initialization.FrameworkInitialization;
+import gov.nist.toolkit.xdstools2.client.initialization.XdsTools2Presenter;
 import gov.nist.toolkit.xdstools2.client.widgets.OrchestrationSupportTestsDisplay;
 import gov.nist.toolkit.xdstools2.client.widgets.buttons.AbstractOrchestrationButton;
 
@@ -115,7 +115,7 @@ public class BuildIDCTestOrchestrationButton extends AbstractOrchestrationButton
 
       testTab.setSiteToIssueTestAgainst(siteSpec);
       
-      FrameworkInitialization.data().getToolkitServices().buildIdcTestOrchestration(request, new AsyncCallback<RawResponse>() {
+      XdsTools2Presenter.data().getToolkitServices().buildIdcTestOrchestration(request, new AsyncCallback<RawResponse>() {
          @Override
          public void onFailure(Throwable throwable) {
              handleError(throwable);
@@ -127,7 +127,7 @@ public class BuildIDCTestOrchestrationButton extends AbstractOrchestrationButton
             IdcOrchestrationResponse orchResponse = (IdcOrchestrationResponse) rawResponse;
             testTab.setOrchestrationResponse(orchResponse);
 
-            initializationResultsPanel.add(new HTML("FrameworkInitialization Complete"));
+            initializationResultsPanel.add(new HTML("XdsTools2Presenter Complete"));
             
             if (testContext.getSiteUnderTest() != null) {
                initializationResultsPanel.add(new HTML("<h2>System Under Test Configuration</h2>"));

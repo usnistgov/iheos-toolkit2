@@ -11,7 +11,7 @@ import gov.nist.toolkit.results.client.TestInstance;
 import gov.nist.toolkit.sitemanagement.client.SiteSpec;
 import gov.nist.toolkit.xdstools2.client.StringSort;
 import gov.nist.toolkit.xdstools2.client.command.command.*;
-import gov.nist.toolkit.xdstools2.client.initialization.FrameworkInitialization;
+import gov.nist.toolkit.xdstools2.client.initialization.XdsTools2Presenter;
 import gov.nist.toolkit.xdstools2.client.inspector.MetadataInspectorTab;
 import gov.nist.toolkit.xdstools2.client.tabs.SimulatorMessageViewTab;
 import gov.nist.toolkit.xdstools2.client.tabs.TextViewerTab;
@@ -70,7 +70,7 @@ class TestSelectionManager {
                     new TestSelectionChangeHandler(me).onChange(null);
                 }
             }
-        }.run(new GetCollectionRequest(FrameworkInitialization.data().getCommandContext(), "collections", testCollectionName));
+        }.run(new GetCollectionRequest(XdsTools2Presenter.data().getCommandContext(), "collections", testCollectionName));
     }
 
     Widget buildSectionSelector() {
@@ -139,7 +139,7 @@ class TestSelectionManager {
                         itab.setSiteSpec(siteSpec);
                         itab.onTabLoad(true, "Insp");
                     }
-                }.run(new GetTestResultsRequest(FrameworkInitialization.data().getCommandContext(),tests));
+                }.run(new GetTestResultsRequest(XdsTools2Presenter.data().getCommandContext(),tests));
             }
         });
         return button;
@@ -164,7 +164,7 @@ class TestSelectionManager {
                 }
                 selectedSections.clear();
             }
-        }.run(new GetTestDetailsRequest(FrameworkInitialization.data().getCommandContext(), tool.getSelectedTest()));
+        }.run(new GetTestDetailsRequest(XdsTools2Presenter.data().getCommandContext(), tool.getSelectedTest()));
     }
 
     public List<String> getSelectedSections() {
@@ -186,7 +186,7 @@ class TestSelectionManager {
                 public void onComplete(String result) {
                     new TextViewerTab().onTabLoad(true, result, tool.getSelectedTest() + "#" + selectSectionList.getSelectedItemText());
                 }
-            }.run(new GetTestplanAsTextRequest(FrameworkInitialization.data().getCommandContext(),new TestInstance(tool.getSelectedTest()),selectSectionList.getSelectedItemText()));
+            }.run(new GetTestplanAsTextRequest(XdsTools2Presenter.data().getCommandContext(),new TestInstance(tool.getSelectedTest()),selectSectionList.getSelectedItemText()));
         }
     }
 
@@ -228,7 +228,7 @@ class TestSelectionManager {
             public void onComplete(String result) {
                 documentation.setHTML(Util.htmlize(result));
             }
-        }.run(new GetTestDetailsRequest(FrameworkInitialization.data().getCommandContext(), tool.getSelectedTest()));
+        }.run(new GetTestDetailsRequest(XdsTools2Presenter.data().getCommandContext(), tool.getSelectedTest()));
     }
 
     Button buildLogLauncher(final String simId, String label) {

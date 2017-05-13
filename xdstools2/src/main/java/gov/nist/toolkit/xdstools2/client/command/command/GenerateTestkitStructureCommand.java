@@ -1,6 +1,6 @@
 package gov.nist.toolkit.xdstools2.client.command.command;
 
-import gov.nist.toolkit.xdstools2.client.initialization.FrameworkInitialization;
+import gov.nist.toolkit.xdstools2.client.initialization.XdsTools2Presenter;
 import gov.nist.toolkit.xdstools2.shared.command.CommandContext;
 
 /**
@@ -9,6 +9,6 @@ import gov.nist.toolkit.xdstools2.shared.command.CommandContext;
 public abstract class GenerateTestkitStructureCommand extends GenericCommand<CommandContext,Void>{
     @Override
     public void run(CommandContext var1) {
-        FrameworkInitialization.data().getToolkitServices().generateTestkitStructure(var1,this);
+        XdsTools2Presenter.data().getToolkitServices().generateTestkitStructure(var1,this);
     }
 }

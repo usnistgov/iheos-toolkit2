@@ -1,7 +1,7 @@
 package gov.nist.toolkit.xdstools2.client.command.command;
 
 import gov.nist.toolkit.actorfactory.client.SimulatorConfig;
-import gov.nist.toolkit.xdstools2.client.initialization.FrameworkInitialization;
+import gov.nist.toolkit.xdstools2.client.initialization.XdsTools2Presenter;
 import gov.nist.toolkit.xdstools2.shared.command.request.GetSimConfigsRequest;
 
 import java.util.List;
@@ -12,6 +12,6 @@ import java.util.List;
 public abstract class GetSimConfigsCommand extends GenericCommand<GetSimConfigsRequest,List<SimulatorConfig>>{
     @Override
     public void run(GetSimConfigsRequest var1) {
-        FrameworkInitialization.data().getToolkitServices().getSimConfigs(var1,this);
+        XdsTools2Presenter.data().getToolkitServices().getSimConfigs(var1,this);
     }
 }

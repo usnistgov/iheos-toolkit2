@@ -22,7 +22,7 @@ import gov.nist.toolkit.xdstools2.client.StringSort;
 import gov.nist.toolkit.xdstools2.client.command.command.*;
 import gov.nist.toolkit.xdstools2.client.event.SimulatorUpdatedEvent;
 import gov.nist.toolkit.xdstools2.client.event.Xdstools2EventBus;
-import gov.nist.toolkit.xdstools2.client.initialization.FrameworkInitialization;
+import gov.nist.toolkit.xdstools2.client.initialization.XdsTools2Presenter;
 import gov.nist.toolkit.xdstools2.client.tabs.simulatorControlTab.*;
 import gov.nist.toolkit.xdstools2.client.tabs.simulatorControlTab.intf.SimConfigMgrIntf;
 import gov.nist.toolkit.xdstools2.client.widgets.PopupMessage;
@@ -167,7 +167,7 @@ public class OddsSimConfigMgr implements SimConfigMgrIntf {
     }
 
     private void registerSimulatorsUpdatedEvent() {
-        ((Xdstools2EventBus) FrameworkInitialization.data().getEventBus()).addSimulatorsUpdatedEventHandler(new SimulatorUpdatedEvent.SimulatorUpdatedEventHandler() {
+        ((Xdstools2EventBus) XdsTools2Presenter.data().getEventBus()).addSimulatorsUpdatedEventHandler(new SimulatorUpdatedEvent.SimulatorUpdatedEventHandler() {
             @Override
             public void onSimulatorsUpdate(SimulatorUpdatedEvent simulatorUpdatedEvent) {
 
@@ -258,7 +258,7 @@ public class OddsSimConfigMgr implements SimConfigMgrIntf {
                     reposSiteBoxes.clear();
                     reposSSP = new SiteSelectionPresenter("reposSites", results, oddsReposSite.asList(), reposSiteBoxes);
                 }
-            }.run(new GetSiteNamesByTranTypeRequest(FrameworkInitialization.data().getCommandContext(), TransactionType.PROVIDE_AND_REGISTER.getName()));
+            }.run(new GetSiteNamesByTranTypeRequest(XdsTools2Presenter.data().getCommandContext(), TransactionType.PROVIDE_AND_REGISTER.getName()));
             // ----
         }
     }
@@ -340,7 +340,7 @@ public class OddsSimConfigMgr implements SimConfigMgrIntf {
             public void onComplete(List<DocumentEntryDetail> documentEntryDetails) {
                 prepareOddeTable(documentEntryDetails);
             }
-        }.run(new GetOnDemandDocumentEntryDetailsRequest(FrameworkInitialization.data().getCommandContext(),getConfig().getId()));
+        }.run(new GetOnDemandDocumentEntryDetailsRequest(XdsTools2Presenter.data().getCommandContext(),getConfig().getId()));
     }
 
     private void prepareOddeTable(List<DocumentEntryDetail> documentEntryDetails) {
@@ -407,7 +407,7 @@ public class OddsSimConfigMgr implements SimConfigMgrIntf {
                                             new PopupMessage("Reset for document UniqueId ["+ded.getUniqueId()+"] failed!");
                                         }
                                     }
-                                }.run(new SetOdSupplyStateIndexRequest(FrameworkInitialization.data().getCommandContext(),new SimId(config.getId().toString()),ded,0));
+                                }.run(new SetOdSupplyStateIndexRequest(XdsTools2Presenter.data().getCommandContext(),new SimId(config.getId().toString()),ded,0));
                             }
                         });
                         supplyStateHPanel.add(resetLnk);
@@ -448,7 +448,7 @@ public class OddsSimConfigMgr implements SimConfigMgrIntf {
 
                     }
                 }
-            }.run(new GetSiteNamesByTranTypeRequest(FrameworkInitialization.data().getCommandContext(), TransactionType.REGISTER_ODDE.getName()));
+            }.run(new GetSiteNamesByTranTypeRequest(XdsTools2Presenter.data().getCommandContext(), TransactionType.REGISTER_ODDE.getName()));
         }
     }
 
@@ -582,7 +582,7 @@ public class OddsSimConfigMgr implements SimConfigMgrIntf {
                     lbx.setSelectedIndex(0);
                 }
             }
-        }.run(new GetCollectionRequest(FrameworkInitialization.data().getCommandContext(), "collections", testCollectionName));
+        }.run(new GetCollectionRequest(XdsTools2Presenter.data().getCommandContext(), "collections", testCollectionName));
     }
 
     private void registerODDE() {
@@ -628,7 +628,7 @@ public class OddsSimConfigMgr implements SimConfigMgrIntf {
                     getOdDocumentEntries();
                 }
             }
-        }.run(new RegisterRequest(FrameworkInitialization.data().getCommandContext(),
+        }.run(new RegisterRequest(XdsTools2Presenter.data().getCommandContext(),
                 getConfig().getId().getUser(),new TestInstance(contentBundleLbx.getSelectedValue()),
                 new SiteSpec(regSSP.getSelected().get(0), ActorType.REGISTRY, null),params, getConfig().getId()));
     }
@@ -698,7 +698,7 @@ public class OddsSimConfigMgr implements SimConfigMgrIntf {
                 // reload simulators to getRetrievedDocumentsModel updates
                 new LoadSimulatorsClickHandler(simulatorControlTab, testSession).onClick(null);
             }
-        }.run(new SimConfigRequest(FrameworkInitialization.data().getCommandContext(),config));
+        }.run(new SimConfigRequest(XdsTools2Presenter.data().getCommandContext(),config));
     }
 
     public int getRow() {

@@ -4,7 +4,7 @@ import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import gov.nist.toolkit.xdstools2.client.PasswordManagement;
 import gov.nist.toolkit.xdstools2.client.event.Xdstools2EventBus;
-import gov.nist.toolkit.xdstools2.client.initialization.FrameworkInitialization;
+import gov.nist.toolkit.xdstools2.client.initialization.XdsTools2Presenter;
 import gov.nist.toolkit.xdstools2.client.widgets.AdminPasswordDialogBox;
 import gov.nist.toolkit.xdstools2.client.widgets.PopupMessage;
 
@@ -26,7 +26,7 @@ class SaveButtonClickHandler implements ClickHandler {
 
 		if (PasswordManagement.isSignedIn) {
 			actorConfigTab.saveSignedInCallback.onSuccess(true);
-			((Xdstools2EventBus) FrameworkInitialization.data().getEventBus()).fireActorsConfigUpdatedEvent();
+			((Xdstools2EventBus) XdsTools2Presenter.data().getEventBus()).fireActorsConfigUpdatedEvent();
 		}
 		else {
 			PasswordManagement.addSignInCallback(actorConfigTab.saveSignedInCallback);

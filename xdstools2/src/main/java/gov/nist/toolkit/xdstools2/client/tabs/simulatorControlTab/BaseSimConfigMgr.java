@@ -16,7 +16,7 @@ import gov.nist.toolkit.http.client.HtmlMarkup;
 import gov.nist.toolkit.simcommon.client.config.SimulatorConfigElement;
 import gov.nist.toolkit.xdstools2.client.PasswordManagement;
 import gov.nist.toolkit.xdstools2.client.command.command.PutSimConfigCommand;
-import gov.nist.toolkit.xdstools2.client.initialization.FrameworkInitialization;
+import gov.nist.toolkit.xdstools2.client.initialization.XdsTools2Presenter;
 import gov.nist.toolkit.xdstools2.client.tabs.simulatorControlTab.intf.SimConfigMgrIntf;
 import gov.nist.toolkit.xdstools2.client.widgets.AdminPasswordDialogBox;
 import gov.nist.toolkit.xdstools2.shared.command.request.SimConfigRequest;
@@ -264,7 +264,7 @@ public abstract class BaseSimConfigMgr implements SimConfigMgrIntf {
                 if (simulatorControlTab != null)
                     new LoadSimulatorsClickHandler(simulatorControlTab, testSession).onClick(null);
             }
-        }.run(new SimConfigRequest(FrameworkInitialization.data().getCommandContext(),config));
+        }.run(new SimConfigRequest(XdsTools2Presenter.data().getCommandContext(),config));
     }
 
     // Boolean data type ignored

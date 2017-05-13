@@ -1,6 +1,6 @@
 package gov.nist.toolkit.xdstools2.client.command.command;
 
-import gov.nist.toolkit.xdstools2.client.initialization.FrameworkInitialization;
+import gov.nist.toolkit.xdstools2.client.initialization.XdsTools2Presenter;
 import gov.nist.toolkit.xdstools2.shared.command.request.DeleteSiteRequest;
 
 /**
@@ -9,6 +9,6 @@ import gov.nist.toolkit.xdstools2.shared.command.request.DeleteSiteRequest;
 public abstract class DeleteSiteCommand extends GenericCommand<DeleteSiteRequest,String>{
     @Override
     public void run(DeleteSiteRequest request) {
-        FrameworkInitialization.data().getToolkitServices().deleteSite(request,this);
+        XdsTools2Presenter.data().getToolkitServices().deleteSite(request,this);
     }
 }

@@ -12,7 +12,7 @@ import gov.nist.toolkit.sitemanagement.client.SiteSpec;
 import gov.nist.toolkit.xdstools2.client.ErrorHandler;
 import gov.nist.toolkit.xdstools2.client.command.command.GetStsSamlAssertionCommand;
 import gov.nist.toolkit.xdstools2.client.command.command.GetToolkitPropertiesCommand;
-import gov.nist.toolkit.xdstools2.client.initialization.FrameworkInitialization;
+import gov.nist.toolkit.xdstools2.client.initialization.XdsTools2Presenter;
 import gov.nist.toolkit.xdstools2.shared.command.request.GetStsSamlAssertionRequest;
 
 import java.util.HashMap;
@@ -138,7 +138,7 @@ abstract public class AbstractOrchestrationButton implements ClickHandler {
                     samlCheckBox.setStyleName("orchestrationOption");
                 }
             }
-        }.run(FrameworkInitialization.data().getCommandContext());
+        }.run(XdsTools2Presenter.data().getCommandContext());
 
     }
 
@@ -165,7 +165,7 @@ abstract public class AbstractOrchestrationButton implements ClickHandler {
                         setSamlAssertion(result);
                         orchestrate();
                     }
-                }.run(new GetStsSamlAssertionRequest(FrameworkInitialization.data().getCommandContext(), xuaUsername, getStsTestInstance(), getStsSpec(), getSamlParams()));
+                }.run(new GetStsSamlAssertionRequest(XdsTools2Presenter.data().getCommandContext(), xuaUsername, getStsTestInstance(), getStsSpec(), getSamlParams()));
             } catch (Throwable t) {}
         } else {
             orchestrate();

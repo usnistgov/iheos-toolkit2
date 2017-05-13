@@ -1,6 +1,6 @@
 package gov.nist.toolkit.xdstools2.client.command.command;
 
-import gov.nist.toolkit.xdstools2.client.initialization.FrameworkInitialization;
+import gov.nist.toolkit.xdstools2.client.initialization.XdsTools2Presenter;
 import gov.nist.toolkit.xdstools2.shared.command.CommandContext;
 
 import java.util.List;
@@ -13,6 +13,6 @@ public abstract class GetTestSessionNamesCommand extends GenericCommand<CommandC
 
     @Override
     public void run(CommandContext var1) {
-        FrameworkInitialization.data().getToolkitServices().getMesaTestSessionNames(var1, this);
+        XdsTools2Presenter.data().getToolkitServices().getMesaTestSessionNames(var1, this);
     }
 }

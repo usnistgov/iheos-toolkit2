@@ -11,7 +11,7 @@ import gov.nist.toolkit.results.shared.Test;
 import gov.nist.toolkit.sitemanagement.client.Site;
 import gov.nist.toolkit.xdstools2.client.command.command.ReloadAllTestResultsCommand;
 import gov.nist.toolkit.xdstools2.client.command.command.RunSingleTestCommand;
-import gov.nist.toolkit.xdstools2.client.initialization.FrameworkInitialization;
+import gov.nist.toolkit.xdstools2.client.initialization.XdsTools2Presenter;
 import gov.nist.toolkit.xdstools2.client.resources.TableResources;
 import gov.nist.toolkit.xdstools2.client.tabs.testsOverviewTab.commandsWidget.CommandsCell;
 import gov.nist.toolkit.xdstools2.client.tabs.testsOverviewTab.commandsWidget.CommandsColumn;
@@ -139,7 +139,7 @@ public class TestsOverviewWidget extends CellTable<Test> {
                 public void onComplete(List<Test> result) {
                     testsListCallback.onSuccess(result);
                 }
-            }.run(FrameworkInitialization.data().getCommandContext());
+            }.run(XdsTools2Presenter.data().getCommandContext());
         } catch (Exception e) {
             LOGGER.warning("Failed to retrieve test results.");
         }
@@ -153,7 +153,7 @@ public class TestsOverviewWidget extends CellTable<Test> {
                 dataModel.updateSingleTestResult(result);
                 refreshUIData();
             }
-        }.run(new RunSingleTestRequest(FrameworkInitialization.data().getCommandContext(),new Site("testEHR"),testId));
+        }.run(new RunSingleTestRequest(XdsTools2Presenter.data().getCommandContext(),new Site("testEHR"),testId));
     }
 
 

@@ -4,7 +4,7 @@ import gov.nist.toolkit.sitemanagement.client.Site;
 import gov.nist.toolkit.sitemanagement.client.SiteSpec;
 import gov.nist.toolkit.xdstools2.client.ToolWindow;
 import gov.nist.toolkit.xdstools2.client.command.command.GetSiteCommand;
-import gov.nist.toolkit.xdstools2.client.initialization.FrameworkInitialization;
+import gov.nist.toolkit.xdstools2.client.initialization.XdsTools2Presenter;
 import gov.nist.toolkit.xdstools2.client.widgets.PopupMessage;
 import gov.nist.toolkit.xdstools2.shared.command.request.GetSiteRequest;
 
@@ -84,7 +84,7 @@ public class TestContext implements SiteManager {
             public void onComplete(Site result) {
                 siteUnderTest = result;
             }
-        }.run(new GetSiteRequest(FrameworkInitialization.data().getCommandContext(),currentSiteSpec.getName()));
+        }.run(new GetSiteRequest(XdsTools2Presenter.data().getCommandContext(),currentSiteSpec.getName()));
     }
 
     @Override

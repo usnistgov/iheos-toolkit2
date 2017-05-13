@@ -6,20 +6,20 @@ import com.google.gwt.user.client.ui.AcceptsOneWidget;
 import gov.nist.toolkit.xdstools2.client.toolLauncher.ToolLauncher;
 
 /**
- * This is the Activity of the application. It handles the tab opening.
+ * This activity is used to launch all tools within toolkit
  */
 public class ToolActivity extends AbstractActivity {
-    private Xdstools2 xdstools2view = Xdstools2.getInstance();
+    private XdsTools2AppView xdstools2view = XdsTools2AppViewImpl.getInstance();
     private String toolId;
 
     @Override
     public void start(AcceptsOneWidget acceptsOneWidget, EventBus eventBus) {
+        assert(false);
         // TODO the following can be refactored in a specific method such as openTab
         if(toolId!=null ) {
-            Xdstools2.getInstance().doNotDisplayHomeTab();
             // Open required tab
             new ToolLauncher(toolId).launch();
-            xdstools2view.resizeToolkit();
+//            xdstools2view.resizeToolkit();
         }
     }
 
@@ -31,7 +31,7 @@ public class ToolActivity extends AbstractActivity {
         this.toolId = toolId;
     }
 
-    public Xdstools2 getView(){
+    public XdsTools2AppView getView(){
         return xdstools2view;
     }
 }

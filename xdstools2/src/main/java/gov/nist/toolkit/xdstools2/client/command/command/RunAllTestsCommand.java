@@ -1,7 +1,7 @@
 package gov.nist.toolkit.xdstools2.client.command.command;
 
 import gov.nist.toolkit.results.shared.Test;
-import gov.nist.toolkit.xdstools2.client.initialization.FrameworkInitialization;
+import gov.nist.toolkit.xdstools2.client.initialization.XdsTools2Presenter;
 import gov.nist.toolkit.xdstools2.shared.command.request.AllTestRequest;
 
 import java.util.List;
@@ -12,6 +12,6 @@ import java.util.List;
 public abstract class RunAllTestsCommand extends GenericCommand<AllTestRequest,List<Test>>{
     @Override
     public void run(AllTestRequest var1) {
-        FrameworkInitialization.data().getToolkitServices().runAllTests(var1,this);
+        XdsTools2Presenter.data().getToolkitServices().runAllTests(var1,this);
     }
 }

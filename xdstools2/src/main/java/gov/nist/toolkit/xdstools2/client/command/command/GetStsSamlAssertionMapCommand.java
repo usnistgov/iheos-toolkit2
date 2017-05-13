@@ -1,6 +1,6 @@
 package gov.nist.toolkit.xdstools2.client.command.command;
 
-import gov.nist.toolkit.xdstools2.client.initialization.FrameworkInitialization;
+import gov.nist.toolkit.xdstools2.client.initialization.XdsTools2Presenter;
 import gov.nist.toolkit.xdstools2.shared.command.request.GetStsSamlAssertionMapRequest;
 
 import java.util.Map;
@@ -11,7 +11,7 @@ import java.util.Map;
 public abstract class GetStsSamlAssertionMapCommand extends GenericCommand<GetStsSamlAssertionMapRequest,Map<String,String>>{
     @Override
     public void run(GetStsSamlAssertionMapRequest var1) {
-        FrameworkInitialization.data().getToolkitServices().getStsSamlAssertionsMap(var1,this);
-//        FrameworkInitialization.data().getToolkitServices().getStsSamlAssertionsMap(orchInit.getStsTestInstance(), orchInit.getStsSpec() , orchInit.getSamlParams(), this);
+        XdsTools2Presenter.data().getToolkitServices().getStsSamlAssertionsMap(var1,this);
+//        XdsTools2Presenter.data().getToolkitServices().getStsSamlAssertionsMap(orchInit.getStsTestInstance(), orchInit.getStsSpec() , orchInit.getSamlParams(), this);
     }
 }

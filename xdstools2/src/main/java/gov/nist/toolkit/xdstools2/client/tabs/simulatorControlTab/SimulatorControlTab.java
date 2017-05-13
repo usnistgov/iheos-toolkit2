@@ -24,7 +24,7 @@ import gov.nist.toolkit.xdstools2.client.event.TabSelectedEvent;
 import gov.nist.toolkit.xdstools2.client.event.Xdstools2EventBus;
 import gov.nist.toolkit.xdstools2.client.event.testSession.TestSessionChangedEvent;
 import gov.nist.toolkit.xdstools2.client.event.testSession.TestSessionChangedEventHandler;
-import gov.nist.toolkit.xdstools2.client.initialization.FrameworkInitialization;
+import gov.nist.toolkit.xdstools2.client.initialization.XdsTools2Presenter;
 import gov.nist.toolkit.xdstools2.client.siteActorManagers.BaseSiteActorManager;
 import gov.nist.toolkit.xdstools2.client.siteActorManagers.FindDocumentsSiteActorManager;
 import gov.nist.toolkit.xdstools2.client.tabs.SimulatorMessageViewTab;
@@ -123,14 +123,14 @@ public class SimulatorControlTab extends GenericQueryTab {
             }
         }.run(getCommandContext());
 
-        FrameworkInitialization.data().getEventBus().addHandler(TestSessionChangedEvent.TYPE, new TestSessionChangedEventHandler() {
+        XdsTools2Presenter.data().getEventBus().addHandler(TestSessionChangedEvent.TYPE, new TestSessionChangedEventHandler() {
             @Override
             public void onTestSessionChanged(TestSessionChangedEvent event) {
                 loadSimStatus(event.getValue());
             }
         });
 
-		((Xdstools2EventBus) FrameworkInitialization.data().getEventBus()).addTabSelectedEventHandler(new TabSelectedEvent.TabSelectedEventHandler() {
+		((Xdstools2EventBus) XdsTools2Presenter.data().getEventBus()).addTabSelectedEventHandler(new TabSelectedEvent.TabSelectedEventHandler() {
 			@Override
 			public void onTabSelection(TabSelectedEvent event) {
 				if (event.getTabName().equals(tabName)){
@@ -165,7 +165,7 @@ public class SimulatorControlTab extends GenericQueryTab {
                     simConfigSuper.add(config);
                 simConfigSuper.reloadSimulators();
                 loadSimStatus(getCurrentTestSession());
-                ((Xdstools2EventBus) FrameworkInitialization.data().getEventBus()).fireSimulatorsUpdatedEvent();
+                ((Xdstools2EventBus) XdsTools2Presenter.data().getEventBus()).fireSimulatorsUpdatedEvent();
             }
         }.run(new GetNewSimulatorRequest(getCommandContext(),actorTypeName,simId));
     } // createNewSimulator

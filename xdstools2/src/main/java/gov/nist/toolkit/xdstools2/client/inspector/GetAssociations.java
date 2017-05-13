@@ -7,7 +7,7 @@ import gov.nist.toolkit.registrymetadata.client.ObjectRefs;
 import gov.nist.toolkit.results.client.Result;
 import gov.nist.toolkit.results.client.TestInstance;
 import gov.nist.toolkit.xdstools2.client.command.command.GetAssociationsCommand;
-import gov.nist.toolkit.xdstools2.client.initialization.FrameworkInitialization;
+import gov.nist.toolkit.xdstools2.client.initialization.XdsTools2Presenter;
 import gov.nist.toolkit.xdstools2.shared.command.request.GetAssociationsRequest;
 
 import java.util.List;
@@ -32,7 +32,7 @@ public class GetAssociations implements ClickHandler {
 					it.addToHistory(result);
 				}
 			}
-		}.run(new GetAssociationsRequest(FrameworkInitialization.data().getCommandContext(),null,ids));
+		}.run(new GetAssociationsRequest(XdsTools2Presenter.data().getCommandContext(),null,ids));
 	}
 	
 	public GetAssociations(MetadataInspectorTab it, ObjectRefs ids) {

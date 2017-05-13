@@ -1,7 +1,7 @@
 package gov.nist.toolkit.xdstools2.client.command.command;
 
 import gov.nist.toolkit.session.client.logtypes.TestOverviewDTO;
-import gov.nist.toolkit.xdstools2.client.initialization.FrameworkInitialization;
+import gov.nist.toolkit.xdstools2.client.initialization.XdsTools2Presenter;
 import gov.nist.toolkit.xdstools2.shared.command.request.RunTestRequest;
 
 /**
@@ -10,6 +10,6 @@ import gov.nist.toolkit.xdstools2.shared.command.request.RunTestRequest;
 public abstract class RunTestCommand extends GenericCommand<RunTestRequest,TestOverviewDTO>{
     @Override
     public void run(RunTestRequest var1) {
-        FrameworkInitialization.data().getToolkitServices().runTest(var1,this);
+        XdsTools2Presenter.data().getToolkitServices().runTest(var1,this);
     }
 }

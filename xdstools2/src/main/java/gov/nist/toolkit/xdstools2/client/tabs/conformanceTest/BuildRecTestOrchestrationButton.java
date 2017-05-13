@@ -8,7 +8,7 @@ import gov.nist.toolkit.services.client.RecOrchestrationRequest;
 import gov.nist.toolkit.services.client.RecOrchestrationResponse;
 import gov.nist.toolkit.sitemanagement.client.SiteSpec;
 import gov.nist.toolkit.xdstools2.client.command.command.BuildRecTestOrchestrationCommand;
-import gov.nist.toolkit.xdstools2.client.initialization.FrameworkInitialization;
+import gov.nist.toolkit.xdstools2.client.initialization.XdsTools2Presenter;
 import gov.nist.toolkit.xdstools2.client.widgets.OrchestrationSupportTestsDisplay;
 import gov.nist.toolkit.xdstools2.client.widgets.buttons.AbstractOrchestrationButton;
 import gov.nist.toolkit.xdstools2.shared.command.request.BuildRecTestOrchestrationRequest;
@@ -74,7 +74,7 @@ public class BuildRecTestOrchestrationButton extends AbstractOrchestrationButton
                 testTab.setOrchestrationResponse(orchResponse);
                 testTab.setRecOrchestrationResponse(orchResponse);
 
-                initializationResultsPanel.add(new HTML("FrameworkInitialization Complete"));
+                initializationResultsPanel.add(new HTML("XdsTools2Presenter Complete"));
 
                 if (testContext.getSiteUnderTest() != null) {
                     initializationResultsPanel.add(new SiteDisplay("System Under Test Configuration", testContext.getSiteUnderTest()));
@@ -92,6 +92,6 @@ public class BuildRecTestOrchestrationButton extends AbstractOrchestrationButton
                 initializationResultsPanel.add(new HTML("Patient ID for all tests: " + orchResponse.getRegisterPid().toString()));
                 initializationResultsPanel.add(new HTML("<br />"));
             }
-        }.run(new BuildRecTestOrchestrationRequest(FrameworkInitialization.data().getCommandContext(),request));
+        }.run(new BuildRecTestOrchestrationRequest(XdsTools2Presenter.data().getCommandContext(),request));
     }
 }

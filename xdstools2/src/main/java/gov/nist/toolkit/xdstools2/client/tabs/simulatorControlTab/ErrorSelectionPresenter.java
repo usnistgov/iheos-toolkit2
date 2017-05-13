@@ -3,7 +3,7 @@ package gov.nist.toolkit.xdstools2.client.tabs.simulatorControlTab;
 import com.google.gwt.user.client.ui.Panel;
 import gov.nist.toolkit.actortransaction.client.Severity;
 import gov.nist.toolkit.xdstools2.client.command.command.GetTransactionErrorCodeRefsCommand;
-import gov.nist.toolkit.xdstools2.client.initialization.FrameworkInitialization;
+import gov.nist.toolkit.xdstools2.client.initialization.XdsTools2Presenter;
 import gov.nist.toolkit.xdstools2.shared.command.request.GetTransactionErrorCodeRefsRequest;
 
 import java.util.ArrayList;
@@ -37,7 +37,7 @@ public class ErrorSelectionPresenter {
 
                 panel.add(view.asWidget());
             }
-        }.run(new GetTransactionErrorCodeRefsRequest(FrameworkInitialization.data().getCommandContext(),transactionName,Severity.Error));
+        }.run(new GetTransactionErrorCodeRefsRequest(XdsTools2Presenter.data().getCommandContext(),transactionName,Severity.Error));
     }
 
     public List<String> getSelected() {

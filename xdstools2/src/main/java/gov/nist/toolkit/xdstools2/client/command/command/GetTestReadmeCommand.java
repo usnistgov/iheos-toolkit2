@@ -1,6 +1,6 @@
 package gov.nist.toolkit.xdstools2.client.command.command;
 
-import gov.nist.toolkit.xdstools2.client.initialization.FrameworkInitialization;
+import gov.nist.toolkit.xdstools2.client.initialization.XdsTools2Presenter;
 import gov.nist.toolkit.xdstools2.shared.command.request.GetTestDetailsRequest;
 
 /**
@@ -9,6 +9,6 @@ import gov.nist.toolkit.xdstools2.shared.command.request.GetTestDetailsRequest;
 public abstract class GetTestReadmeCommand extends GenericCommand<GetTestDetailsRequest, String> {
     @Override
     public void run(GetTestDetailsRequest var1) {
-        FrameworkInitialization.data().getToolkitServices().getTestReadme(var1, this);
+        XdsTools2Presenter.data().getToolkitServices().getTestReadme(var1, this);
     }
 }

@@ -1,7 +1,7 @@
 package gov.nist.toolkit.xdstools2.client.command.command;
 
 import gov.nist.toolkit.session.client.logtypes.TestOverviewDTO;
-import gov.nist.toolkit.xdstools2.client.initialization.FrameworkInitialization;
+import gov.nist.toolkit.xdstools2.client.initialization.XdsTools2Presenter;
 import gov.nist.toolkit.xdstools2.shared.command.request.GetTestsOverviewRequest;
 
 import java.util.List;
@@ -12,6 +12,6 @@ import java.util.List;
 public abstract class GetTestsOverviewCommand extends GenericCommand<GetTestsOverviewRequest,List<TestOverviewDTO>> {
     @Override
     public void run(GetTestsOverviewRequest request) {
-        FrameworkInitialization.data().getToolkitServices().getTestsOverview(request,this);
+        XdsTools2Presenter.data().getToolkitServices().getTestsOverview(request,this);
     }
 }

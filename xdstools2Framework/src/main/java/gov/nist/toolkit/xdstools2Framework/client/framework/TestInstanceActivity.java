@@ -9,7 +9,7 @@ import gov.nist.toolkit.xdstools2.client.tabs.FindDocumentsTab;
  * This is the Activity of the application. It handles the tab opening.
  */
 public class TestInstanceActivity extends AbstractActivity {
-    private Xdstools2 xdstools2view = Xdstools2.getInstance();
+    private XdsTools2AppView xdstools2view = XdsTools2AppViewImpl.getInstance();
     private String tabId;
 
     @Override
@@ -20,7 +20,7 @@ public class TestInstanceActivity extends AbstractActivity {
             System.out.println("GO TO");
             if (tabId.equals("1234"))
                 new FindDocumentsTab().onTabLoad(true, null);
-            xdstools2view.resizeToolkit();
+//            xdstools2view.resizeToolkit();
         }
     }
 
@@ -32,7 +32,7 @@ public class TestInstanceActivity extends AbstractActivity {
         this.tabId = tabId;
     }
 
-    public Xdstools2 getView(){
+    public XdsTools2AppView getView(){
         return xdstools2view;
     }
 }

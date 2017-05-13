@@ -15,13 +15,13 @@ import gov.nist.toolkit.xdstools2.client.util.activitiesAndPlaces.SimLog;
  *
  */
 public class SimLogActivity  extends AbstractActivity {
-    private Xdstools2 xdstools2view = Xdstools2.getInstance();
+    private XdsTools2AppView xdstools2view = XdsTools2AppViewImpl.getInstance();
     private SimLog simLog;
 
     @Override
     public void start(AcceptsOneWidget acceptsOneWidget, EventBus eventBus) {
         if (simLog != null && simLog.isValid()) {
-            Xdstools2.getInstance().doNotDisplayHomeTab();
+//            XdsTools2AppViewImpl.getInstance().doNotDisplayHomeTab();
 
             ToolWindow toolWindow = new ToolLauncher(ToolLauncher.simulatorMessageViewTabLabel).launch();
 
@@ -38,7 +38,7 @@ public class SimLogActivity  extends AbstractActivity {
             transactionInstance.trans = simLog.getTrans();
             transactionInstance.messageId = simLog.getMessageId();
             simulatorMessageViewTab.loadTransactionInstanceDetails(transactionInstance);
-            xdstools2view.resizeToolkit();
+//            xdstools2view.resizeToolkit();
             simulatorMessageViewTab.selectByMessageId(simLog.getMessageId());
         }
     }
@@ -47,5 +47,5 @@ public class SimLogActivity  extends AbstractActivity {
         this.simLog = simLog;
     }
 
-    public Xdstools2 getView() { return xdstools2view; }
+    public XdsTools2AppView getView() { return xdstools2view; }
 }

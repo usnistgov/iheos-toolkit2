@@ -7,7 +7,7 @@ import gov.nist.toolkit.registrymetadata.client.ObjectRefs;
 import gov.nist.toolkit.results.client.Result;
 import gov.nist.toolkit.results.client.TestInstance;
 import gov.nist.toolkit.xdstools2.client.command.command.GetObjectsCommand;
-import gov.nist.toolkit.xdstools2.client.initialization.FrameworkInitialization;
+import gov.nist.toolkit.xdstools2.client.initialization.XdsTools2Presenter;
 import gov.nist.toolkit.xdstools2.shared.command.request.GetObjectsRequest;
 
 import java.util.List;
@@ -32,7 +32,7 @@ public class GetObjects implements ClickHandler {
 					it.addToHistory(result);
 				}
 			}
-		}.run(new GetObjectsRequest(FrameworkInitialization.data().getCommandContext(),it.siteSpec,ids));
+		}.run(new GetObjectsRequest(XdsTools2Presenter.data().getCommandContext(),it.siteSpec,ids));
 	}
 	
 	public GetObjects(MetadataInspectorTab it, ObjectRefs ids) {

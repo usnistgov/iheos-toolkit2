@@ -15,7 +15,7 @@ import gov.nist.toolkit.xdstools2.client.command.command.RetrieveFavPidsCommand;
 import gov.nist.toolkit.xdstools2.client.event.EnvironmentChangedEvent;
 import gov.nist.toolkit.xdstools2.client.event.FavoritePidsUpdatedEvent;
 import gov.nist.toolkit.xdstools2.client.event.Xdstools2EventBus;
-import gov.nist.toolkit.xdstools2.client.initialization.FrameworkInitialization;
+import gov.nist.toolkit.xdstools2.client.initialization.XdsTools2Presenter;
 import gov.nist.toolkit.xdstools2.client.util.CookiesServices;
 import gov.nist.toolkit.xdstools2.shared.command.CommandContext;
 
@@ -76,7 +76,7 @@ public class PidFavoritesCellList extends Composite{
 
     private void bindUI() {
         // this refresh the list of PIDs after a new PID is added though the PID Manager.
-        ((Xdstools2EventBus) FrameworkInitialization.data().getEventBus()).addFavoritePidsUpdateEventHandler(new FavoritePidsUpdatedEvent.FavoritePidsUpdatedEventHandler() {
+        ((Xdstools2EventBus) XdsTools2Presenter.data().getEventBus()).addFavoritePidsUpdateEventHandler(new FavoritePidsUpdatedEvent.FavoritePidsUpdatedEventHandler() {
             @Override
             public void onFavPidsUpdate() {
 //                model.setList(new LinkedList<Pid>(CookiesServices.retrievePidFavoritesFromCookies()));
@@ -85,7 +85,7 @@ public class PidFavoritesCellList extends Composite{
                 cellList.redraw();
             }
         });
-        ((Xdstools2EventBus) FrameworkInitialization.data().getEventBus()).addEnvironmentChangedEventHandler(new EnvironmentChangedEvent.EnvironmentChangedEventHandler() {
+        ((Xdstools2EventBus) XdsTools2Presenter.data().getEventBus()).addEnvironmentChangedEventHandler(new EnvironmentChangedEvent.EnvironmentChangedEventHandler() {
             @Override
             public void onEnvironmentChange(EnvironmentChangedEvent event) {
                 loadData();
@@ -98,7 +98,7 @@ public class PidFavoritesCellList extends Composite{
      * This method loads all the PIDs for the of favorites from both Cookies and the server.
      */
     private void loadData(){
-        String environmentName = FrameworkInitialization.data().getEnvironmentState().getEnvironmentName();
+        String environmentName = XdsTools2Presenter.data().getEnvironmentState().getEnvironmentName();
         if (environmentName!=null) {
             new RetrieveFavPidsCommand() {
                 @Override
@@ -122,7 +122,7 @@ public class PidFavoritesCellList extends Composite{
                     pager.setHeight(height+"px");
                     cellList.redraw();
                 }
-            }.run(new CommandContext(environmentName, FrameworkInitialization.data().getTestSessionManager().getCurrentTestSession()));
+            }.run(new CommandContext(environmentName, XdsTools2Presenter.data().getTestSessionManager().getCurrentTestSession()));
         }
     }
 

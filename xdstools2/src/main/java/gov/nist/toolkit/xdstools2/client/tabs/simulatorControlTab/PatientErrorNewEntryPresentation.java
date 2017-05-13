@@ -9,7 +9,7 @@ import gov.nist.toolkit.configDatatypes.client.Pid;
 import gov.nist.toolkit.configDatatypes.client.PidBuilder;
 import gov.nist.toolkit.configDatatypes.client.TransactionType;
 import gov.nist.toolkit.xdstools2.client.command.command.GetTransactionErrorCodeRefsCommand;
-import gov.nist.toolkit.xdstools2.client.initialization.FrameworkInitialization;
+import gov.nist.toolkit.xdstools2.client.initialization.XdsTools2Presenter;
 import gov.nist.toolkit.xdstools2.client.widgets.PopupMessage;
 import gov.nist.toolkit.xdstools2.shared.command.request.GetTransactionErrorCodeRefsRequest;
 
@@ -91,7 +91,7 @@ public class PatientErrorNewEntryPresentation  {
                     });
 
                 }
-            }.run(new GetTransactionErrorCodeRefsRequest(FrameworkInitialization.data().getCommandContext(),transactionType.getName(),Severity.Error));
+            }.run(new GetTransactionErrorCodeRefsRequest(XdsTools2Presenter.data().getCommandContext(),transactionType.getName(),Severity.Error));
         }
     }
 

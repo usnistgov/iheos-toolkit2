@@ -1,7 +1,7 @@
 package gov.nist.toolkit.xdstools2.client.command.command;
 
 import gov.nist.toolkit.sitemanagement.client.Site;
-import gov.nist.toolkit.xdstools2.client.initialization.FrameworkInitialization;
+import gov.nist.toolkit.xdstools2.client.initialization.XdsTools2Presenter;
 import gov.nist.toolkit.xdstools2.shared.command.request.GetSiteRequest;
 
 /**
@@ -10,6 +10,6 @@ import gov.nist.toolkit.xdstools2.shared.command.request.GetSiteRequest;
 public abstract class GetSiteCommand extends GenericCommand<GetSiteRequest,Site> {
     @Override
     public void run(GetSiteRequest request) {
-        FrameworkInitialization.data().getToolkitServices().getSite(request,this);
+        XdsTools2Presenter.data().getToolkitServices().getSite(request,this);
     }
 }

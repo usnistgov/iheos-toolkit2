@@ -1,6 +1,6 @@
 package gov.nist.toolkit.xdstools2.client.command.command;
 
-import gov.nist.toolkit.xdstools2.client.initialization.FrameworkInitialization;
+import gov.nist.toolkit.xdstools2.client.initialization.XdsTools2Presenter;
 import gov.nist.toolkit.xdstools2.shared.command.request.SetOdSupplyStateIndexRequest;
 
 /**
@@ -9,6 +9,6 @@ import gov.nist.toolkit.xdstools2.shared.command.request.SetOdSupplyStateIndexRe
 public abstract class SetOdSupplyStateIndexCommand extends GenericCommand<SetOdSupplyStateIndexRequest,Boolean>{
     @Override
     public void run(SetOdSupplyStateIndexRequest request) {
-        FrameworkInitialization.data().getToolkitServices().setOdSupplyStateIndex(request, this);
+        XdsTools2Presenter.data().getToolkitServices().setOdSupplyStateIndex(request, this);
     }
 }

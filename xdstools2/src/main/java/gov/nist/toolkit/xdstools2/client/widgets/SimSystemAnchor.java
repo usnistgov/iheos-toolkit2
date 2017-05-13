@@ -5,7 +5,7 @@ import gov.nist.toolkit.actorfactory.client.SimId;
 import gov.nist.toolkit.actorfactory.client.SimulatorConfig;
 import gov.nist.toolkit.sitemanagement.client.SiteSpec;
 import gov.nist.toolkit.xdstools2.client.command.command.GetSimConfigsCommand;
-import gov.nist.toolkit.xdstools2.client.initialization.FrameworkInitialization;
+import gov.nist.toolkit.xdstools2.client.initialization.XdsTools2Presenter;
 import gov.nist.toolkit.xdstools2.shared.command.request.GetSimConfigsRequest;
 
 import java.util.ArrayList;
@@ -35,6 +35,6 @@ public class SimSystemAnchor extends HorizontalFlowPanel {
                     add(new SiteEditAnchor("[System Configuration]", siteSpec));
                 }
             }
-        }.run(new GetSimConfigsRequest(FrameworkInitialization.data().getCommandContext(),simIds));
+        }.run(new GetSimConfigsRequest(XdsTools2Presenter.data().getCommandContext(),simIds));
     }
 }

@@ -5,7 +5,7 @@ import com.google.gwt.event.dom.client.ClickHandler;
 import gov.nist.toolkit.results.client.TestInstance;
 import gov.nist.toolkit.session.client.logtypes.TestOverviewDTO;
 import gov.nist.toolkit.xdstools2.client.command.command.DeleteSingleTestCommand;
-import gov.nist.toolkit.xdstools2.client.initialization.FrameworkInitialization;
+import gov.nist.toolkit.xdstools2.client.initialization.XdsTools2Presenter;
 import gov.nist.toolkit.xdstools2.shared.command.request.DeleteSingleTestRequest;
 
 /**
@@ -34,6 +34,6 @@ public class DeleteClickHandler implements ClickHandler {
                 testRunner.removeTestDetails(testOverviewDTO.getTestInstance());
                 testDisplayGroup.display(testOverviewDTO);
             }
-        }.run(new DeleteSingleTestRequest(FrameworkInitialization.data().getCommandContext(),testInstance));
+        }.run(new DeleteSingleTestRequest(XdsTools2Presenter.data().getCommandContext(),testInstance));
     }
 }

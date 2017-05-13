@@ -1,7 +1,7 @@
 package gov.nist.toolkit.xdstools2.client.command.command;
 
 import gov.nist.toolkit.actorfactory.client.Simulator;
-import gov.nist.toolkit.xdstools2.client.initialization.FrameworkInitialization;
+import gov.nist.toolkit.xdstools2.client.initialization.XdsTools2Presenter;
 import gov.nist.toolkit.xdstools2.shared.command.request.GetNewSimulatorRequest;
 
 /**
@@ -10,6 +10,6 @@ import gov.nist.toolkit.xdstools2.shared.command.request.GetNewSimulatorRequest;
 public abstract class GetNewSimulatorCommand extends GenericCommand<GetNewSimulatorRequest,Simulator>{
     @Override
     public void run(GetNewSimulatorRequest var1) {
-        FrameworkInitialization.data().getToolkitServices().getNewSimulator(var1,this);
+        XdsTools2Presenter.data().getToolkitServices().getNewSimulator(var1,this);
     }
 }

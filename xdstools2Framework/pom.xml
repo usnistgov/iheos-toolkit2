@@ -20,6 +20,27 @@
             <groupId>gov.nist.toolkit</groupId>
             <artifactId>xdstools2</artifactId>
         </dependency>
+        <dependency>
+            <groupId>com.google.gwt</groupId>
+            <artifactId>gwt-servlet</artifactId>
+            <scope>runtime</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.google.gwt</groupId>
+            <artifactId>gwt-user</artifactId>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.google.gwt</groupId>
+            <artifactId>gwt-dev</artifactId>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.google.gwt.inject</groupId>
+            <artifactId>gin</artifactId>
+            <version>2.1.2</version>
+            <scope>compile</scope>
+        </dependency>
     </dependencies>
 
     <build>
@@ -40,6 +61,12 @@
                     <groupId>com.google.gwt</groupId>
                     <artifactId>gwt-dev</artifactId>
                     <version>${gwtVersion}</version>
+                </dependency>
+                <dependency>
+                    <groupId>com.google.gwt.inject</groupId>
+                    <artifactId>gin</artifactId>
+                    <version>1.5.0</version>
+                    <scope>compile</scope>
                 </dependency>
             </dependencies>
             <executions>

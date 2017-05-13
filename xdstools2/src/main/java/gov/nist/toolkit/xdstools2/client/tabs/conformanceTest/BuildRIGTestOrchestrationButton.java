@@ -15,7 +15,7 @@ import gov.nist.toolkit.services.client.RigOrchestrationResponse;
 import gov.nist.toolkit.simcommon.client.config.SimulatorConfigElement;
 import gov.nist.toolkit.sitemanagement.client.SiteSpec;
 import gov.nist.toolkit.xdstools2.client.command.command.BuildRigTestOrchestrationCommand;
-import gov.nist.toolkit.xdstools2.client.initialization.FrameworkInitialization;
+import gov.nist.toolkit.xdstools2.client.initialization.XdsTools2Presenter;
 import gov.nist.toolkit.xdstools2.client.widgets.buttons.AbstractOrchestrationButton;
 import gov.nist.toolkit.xdstools2.shared.command.request.BuildRigTestOrchestrationRequest;
 
@@ -127,7 +127,7 @@ public class BuildRIGTestOrchestrationButton extends AbstractOrchestrationButton
                 RigOrchestrationResponse orchResponse = (RigOrchestrationResponse) rawResponse;
                 testTab.setOrchestrationResponse(orchResponse);
 
-                initializationResultsPanel.add(new HTML("FrameworkInitialization Complete"));
+                initializationResultsPanel.add(new HTML("XdsTools2Presenter Complete"));
 
                 if (testContext.getSiteUnderTest() != null) {
                     initializationResultsPanel.add(new HTML("<h2>System Under Test Configuration</h2>"));
@@ -192,7 +192,7 @@ public class BuildRIGTestOrchestrationButton extends AbstractOrchestrationButton
                         "Responding Imaging Gateway SUT to forward Retrieve Imaging " +
                         "Document Set Requests to these Imaging Document Sources<hr/>"));
             }
-        }.run(new BuildRigTestOrchestrationRequest(FrameworkInitialization.data().getCommandContext(),request));
+        }.run(new BuildRigTestOrchestrationRequest(XdsTools2Presenter.data().getCommandContext(),request));
     } @SuppressWarnings("javadoc")
     public enum Orchestra {
        

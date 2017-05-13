@@ -9,7 +9,7 @@ import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.*;
 import gov.nist.toolkit.xdstools2.client.event.Xdstools2EventBus;
 import gov.nist.toolkit.xdstools2.client.event.tabContainer.V2TabOpenedEvent;
-import gov.nist.toolkit.xdstools2.client.initialization.FrameworkInitialization;
+import gov.nist.toolkit.xdstools2.client.initialization.XdsTools2Presenter;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -62,7 +62,7 @@ public class TabContainer {
 		TABBAR.selectTab(TABBAR.getTabCount() - 1);
 		selectTab();
 
-		FrameworkInitialization.data().resizeToolkit();
+		XdsTools2Presenter.data().resizeToolkit();
 
 		announceOpen(title);
 	}
@@ -74,7 +74,7 @@ public class TabContainer {
 			INNER_DECKPANEL.add(dockLp);
 		}else {
             String tabName=TABBAR.getTab(TABBAR.getSelectedTab()).toString().split("<div class=\"gwt-HTML\">")[1].split("</div>")[0];
-			((Xdstools2EventBus) FrameworkInitialization.data().getEventBus()).fireTabSelectedEvent(tabName);
+			((Xdstools2EventBus) XdsTools2Presenter.data().getEventBus()).fireTabSelectedEvent(tabName);
 		}
 //		INNER_DECKPANEL.getElement().getStyle().setMargin(4, Style.Unit.PX);
 		INNER_DECKPANEL.showWidget(dockLp);
@@ -84,8 +84,8 @@ public class TabContainer {
 		try {
 //			int index = TABPANEL.getWidgetCount() - 1;
 			int index = TABBAR.getTabCount() - 1;
-			if (FrameworkInitialization.data().getEventBus() !=null && index>0) {
-				FrameworkInitialization.data().getEventBus().fireEvent(new V2TabOpenedEvent(null,title /* this will be the dynamic tab code */,index));
+			if (XdsTools2Presenter.data().getEventBus() !=null && index>0) {
+				XdsTools2Presenter.data().getEventBus().fireEvent(new V2TabOpenedEvent(null,title /* this will be the dynamic tab code */,index));
 			}
 		} catch (Throwable t) {
 			Window.alert("V2TabOpenedEvent error: " +t.toString());

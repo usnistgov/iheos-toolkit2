@@ -9,21 +9,21 @@ import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.ListBox;
 import gov.nist.toolkit.xdstools2.client.CookieManager;
 import gov.nist.toolkit.xdstools2.client.Panel1;
-import gov.nist.toolkit.xdstools2.client.TabContainer;
 import gov.nist.toolkit.xdstools2.client.command.command.GetDefaultEnvironmentCommand;
 import gov.nist.toolkit.xdstools2.client.command.command.GetEnvironmentNamesCommand;
 import gov.nist.toolkit.xdstools2.client.command.command.SetEnvironmentCommand;
 import gov.nist.toolkit.xdstools2.client.event.Xdstools2EventBus;
-import gov.nist.toolkit.xdstools2.client.initialization.FrameworkInitialization;
-import gov.nist.toolkit.xdstools2.client.tabs.EnvironmentState;
+import gov.nist.toolkit.xdstools2.client.initialization.XdsTools2Presenter;
+import gov.nist.toolkit.xdstools2.client.tabs.EnvironmentStateImpl;
 
 import java.util.List;
 
+/**
+ * Manage the selection of the environment in the UI
+ */
 
 public class EnvironmentManager extends Composite{
-	TabContainer tabContainer;
-//	ToolkitServiceAsync toolkitService;
-	EnvironmentState environmentState;
+	EnvironmentStateImpl environmentState;
 	Panel1 menuPanel;
 	HorizontalPanel environmentPanel = new HorizontalPanel();
 	ListBox environmentListBox = new ListBox();
@@ -33,9 +33,8 @@ public class EnvironmentManager extends Composite{
 
 
 	
-	public EnvironmentManager(TabContainer tabContainer) {
-		this.tabContainer = tabContainer;
-		this.environmentState = FrameworkInitialization.data().getEnvironmentState();
+	public EnvironmentManager() {
+		this.environmentState = XdsTools2Presenter.data().getEnvironmentState();
 		environmentManager = this;
 		
 		environmentState.addManager(this);
@@ -136,9 +135,9 @@ public class EnvironmentManager extends Composite{
 					updateCookie();
 				}
 			}
-		}.run(FrameworkInitialization.data().getCommandContext());
+		}.run(XdsTools2Presenter.data().getCommandContext());
 
-		new SetEnvironmentCommand().run(FrameworkInitialization.data().getCommandContext().setEnvironmentName(initialEnvironmentName));
+		new SetEnvironmentCommand().run(XdsTools2Presenter.data().getCommandContext().setEnvironmentName(initialEnvironmentName));
 	}
 	
 	void getDefaultEnvironment() {
@@ -154,7 +153,7 @@ public class EnvironmentManager extends Composite{
 					updateCookie();
 					updateServer();
 				}
-			}.run(FrameworkInitialization.data().getCommandContext());
+			}.run(XdsTools2Presenter.data().getCommandContext());
 	}
 
 	void updateCookie() {
@@ -162,7 +161,7 @@ public class EnvironmentManager extends Composite{
 	}
 	
 	void updateServer() {
-		new SetEnvironmentCommand().run(FrameworkInitialization.data().getCommandContext());
+		new SetEnvironmentCommand().run(XdsTools2Presenter.data().getCommandContext());
 	}
 
 	class EnvironmentChangeHandler implements ChangeHandler {
@@ -173,8 +172,8 @@ public class EnvironmentManager extends Composite{
 			change(value);
 			
 			environmentState.updated(environmentManager);
-			((Xdstools2EventBus) FrameworkInitialization.data().getEventBus()).fireEnvironmentChangedEvent(value);
-			new SetEnvironmentCommand().run(FrameworkInitialization.data().getCommandContext().setEnvironmentName(value));
+			((Xdstools2EventBus) XdsTools2Presenter.data().getEventBus()).fireEnvironmentChangedEvent(value);
+			new SetEnvironmentCommand().run(XdsTools2Presenter.data().getCommandContext().setEnvironmentName(value));
 		}
 
 	}

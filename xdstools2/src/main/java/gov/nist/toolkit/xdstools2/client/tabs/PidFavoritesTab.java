@@ -24,7 +24,7 @@ import gov.nist.toolkit.xdstools2.client.command.command.GetAssigningAuthorities
 import gov.nist.toolkit.xdstools2.client.command.command.RetrieveFavPidsCommand;
 import gov.nist.toolkit.xdstools2.client.command.command.SendPidToRegistryCommand;
 import gov.nist.toolkit.xdstools2.client.event.Xdstools2EventBus;
-import gov.nist.toolkit.xdstools2.client.initialization.FrameworkInitialization;
+import gov.nist.toolkit.xdstools2.client.initialization.XdsTools2Presenter;
 import gov.nist.toolkit.xdstools2.client.siteActorManagers.GetDocumentsSiteActorManager;
 import gov.nist.toolkit.xdstools2.client.tabs.genericQueryTab.GenericQueryTab;
 import gov.nist.toolkit.xdstools2.client.util.CookiesServices;
@@ -235,7 +235,7 @@ public class PidFavoritesTab extends GenericQueryTab {
             }
         }
         CookiesServices.savePidFavoritesToCookies(pids);
-        ((Xdstools2EventBus) FrameworkInitialization.data().getEventBus()).fireFavoritePidsUpdateEvent();
+        ((Xdstools2EventBus) XdsTools2Presenter.data().getEventBus()).fireFavoritePidsUpdateEvent();
     }
 
     void retrieveAndInitFavPids() throws IOException {

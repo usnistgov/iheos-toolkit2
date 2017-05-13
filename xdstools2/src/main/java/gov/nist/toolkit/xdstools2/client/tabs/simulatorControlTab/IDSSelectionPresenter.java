@@ -5,7 +5,7 @@ package gov.nist.toolkit.xdstools2.client.tabs.simulatorControlTab;
 
 import com.google.gwt.user.client.ui.Panel;
 import gov.nist.toolkit.xdstools2.client.command.command.GetSiteNamesWithIDSCommand;
-import gov.nist.toolkit.xdstools2.client.initialization.FrameworkInitialization;
+import gov.nist.toolkit.xdstools2.client.initialization.XdsTools2Presenter;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -41,7 +41,7 @@ public class IDSSelectionPresenter {
                 bind();
                 panel.add(view.asWidget());
             }
-        }.run(FrameworkInitialization.data().getCommandContext());
+        }.run(XdsTools2Presenter.data().getCommandContext());
     }
 
     void bind() {}

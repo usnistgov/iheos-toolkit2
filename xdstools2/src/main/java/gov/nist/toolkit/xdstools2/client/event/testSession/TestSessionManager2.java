@@ -5,7 +5,7 @@ import gov.nist.toolkit.xdstools2.client.CookieManager;
 import gov.nist.toolkit.xdstools2.client.command.command.AddMesaTestSessionCommand;
 import gov.nist.toolkit.xdstools2.client.command.command.DeleteMesaTestSessionCommand;
 import gov.nist.toolkit.xdstools2.client.command.command.GetTestSessionNamesCommand;
-import gov.nist.toolkit.xdstools2.client.initialization.FrameworkInitialization;
+import gov.nist.toolkit.xdstools2.client.initialization.XdsTools2Presenter;
 import gov.nist.toolkit.xdstools2.shared.command.CommandContext;
 
 import java.util.List;
@@ -16,18 +16,18 @@ import java.util.List;
  * This is a singleton owned by Xdstools2 and should be reference through it. That
  * is where the current list is maintained so that new tabs can be initialized.
  */
-public class TestSessionManager2 {
+public class TestSessionManager2 implements TestSessionManager {
     private List<String> testSessions;  // this is maintained to initialize new tabs with
     private String currentTestSession = "default";
 
     public TestSessionManager2() {
-        FrameworkInitialization.data().getEventBus().addHandler(TestSessionsUpdatedEvent.TYPE, new TestSessionsUpdatedEventHandler() {
+        XdsTools2Presenter.data().getEventBus().addHandler(TestSessionsUpdatedEvent.TYPE, new TestSessionsUpdatedEventHandler() {
             @Override
             public void onTestSessionsUpdated(TestSessionsUpdatedEvent event) {
                 testSessions = event.testSessionNames;
             }
         });
-        FrameworkInitialization.data().getEventBus().addHandler(TestSessionChangedEvent.TYPE, new TestSessionChangedEventHandler() {
+        XdsTools2Presenter.data().getEventBus().addHandler(TestSessionChangedEvent.TYPE, new TestSessionChangedEventHandler() {
             @Override
             public void onTestSessionChanged(TestSessionChangedEvent event) {
                 switch (event.getChangeType()) {
@@ -82,10 +82,10 @@ public class TestSessionManager2 {
                         deleteCookie();
                     }
                 }
-                FrameworkInitialization.data().getEventBus().fireEvent(new TestSessionsUpdatedEvent(testSessions));
-                FrameworkInitialization.data().getEventBus().fireEvent(new TestSessionChangedEvent(TestSessionChangedEvent.ChangeType.SELECT, currentTestSession));
+                XdsTools2Presenter.data().getEventBus().fireEvent(new TestSessionsUpdatedEvent(testSessions));
+                XdsTools2Presenter.data().getEventBus().fireEvent(new TestSessionChangedEvent(TestSessionChangedEvent.ChangeType.SELECT, currentTestSession));
             }
-        }.run(FrameworkInitialization.data().getCommandContext());
+        }.run(XdsTools2Presenter.data().getCommandContext());
     }
 
     // save new sessionName to server and broadcast updates to all tabs
@@ -95,7 +95,7 @@ public class TestSessionManager2 {
             public void onComplete(Boolean result) {
                 load(sessionName);  // getRetrievedDocumentsModel full list and update all tabs
             }
-        }.run(new CommandContext(FrameworkInitialization.data().getEnvironmentState().getEnvironmentName(),sessionName));
+        }.run(new CommandContext(XdsTools2Presenter.data().getEnvironmentState().getEnvironmentName(),sessionName));
     }
 
     // delete new sessionName from server and broadcast updates to all tabs
@@ -106,7 +106,7 @@ public class TestSessionManager2 {
                 currentTestSession=testSessions.get(0);
                 load(currentTestSession);  // getRetrievedDocumentsModel full list and update all tabs
             }
-        }.run(new CommandContext(FrameworkInitialization.data().getEnvironmentState().getEnvironmentName(),sessionName));
+        }.run(new CommandContext(XdsTools2Presenter.data().getEnvironmentState().getEnvironmentName(),sessionName));
     }
 
     private boolean isEmpty(String x) { return x == null || x.trim().equals(""); }

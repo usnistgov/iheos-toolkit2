@@ -8,7 +8,7 @@ import com.google.gwt.user.client.ui.ScrollPanel;
 import gov.nist.toolkit.results.client.TestInstance;
 import gov.nist.toolkit.session.client.logtypes.TestPartFileDTO;
 import gov.nist.toolkit.xdstools2.client.command.command.LoadTestPartContentCommand;
-import gov.nist.toolkit.xdstools2.client.initialization.FrameworkInitialization;
+import gov.nist.toolkit.xdstools2.client.initialization.XdsTools2Presenter;
 import gov.nist.toolkit.xdstools2.shared.command.request.LoadTestPartContentRequest;
 
 import static gov.nist.toolkit.xdstools2.client.tabs.conformanceTest.TestPlanDisplay.getShHtml;
@@ -57,7 +57,7 @@ class MetadataDisplay extends FlowPanel {
                         String metadataStr = testPartFileDTO.getHtlmizedContent().replace("<br/>", "\r\n");
                         metadataViewerPanel.add(getShHtml(metadataStr));
                     }
-                }.run(new LoadTestPartContentRequest(FrameworkInitialization.data().getCommandContext(),testPartFileDTO));
+                }.run(new LoadTestPartContentRequest(XdsTools2Presenter.data().getCommandContext(),testPartFileDTO));
             }
         }
     }

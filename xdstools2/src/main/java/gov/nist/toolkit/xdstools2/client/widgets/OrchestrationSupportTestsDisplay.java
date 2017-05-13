@@ -5,7 +5,7 @@ import com.google.gwt.user.client.ui.HTML;
 import gov.nist.toolkit.services.client.AbstractOrchestrationResponse;
 import gov.nist.toolkit.session.client.logtypes.TestOverviewDTO;
 import gov.nist.toolkit.xdstools2.client.command.command.GetTestsOverviewCommand;
-import gov.nist.toolkit.xdstools2.client.initialization.FrameworkInitialization;
+import gov.nist.toolkit.xdstools2.client.initialization.XdsTools2Presenter;
 import gov.nist.toolkit.xdstools2.client.tabs.conformanceTest.*;
 import gov.nist.toolkit.xdstools2.shared.command.request.GetTestsOverviewRequest;
 
@@ -30,6 +30,6 @@ public class OrchestrationSupportTestsDisplay extends FlowPanel {
                     add(testDisplay.asWidget());
                 }
             }
-        }.run(new GetTestsOverviewRequest(FrameworkInitialization.data().getCommandContext(),orchResponse.getTestInstances()));
+        }.run(new GetTestsOverviewRequest(XdsTools2Presenter.data().getCommandContext(),orchResponse.getTestInstances()));
     }
 }

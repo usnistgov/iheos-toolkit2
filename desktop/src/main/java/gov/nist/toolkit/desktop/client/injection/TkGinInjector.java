@@ -14,8 +14,8 @@ import gov.nist.toolkit.desktop.client.toolkit.ToolkitViewImpl;
  */
 // Associating the module with the injector
 @GinModules(TkGinModule.class)
-public interface TkGInjector extends Ginjector {
-    TkGInjector INSTANCE = GWT.create(TkGInjector.class);
+public interface TkGinInjector extends Ginjector {
+    TkGinInjector INSTANCE = GWT.create(TkGinInjector.class);
 
     TkEventBus getEventBus();
 

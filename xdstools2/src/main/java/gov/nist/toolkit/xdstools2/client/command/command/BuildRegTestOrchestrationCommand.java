@@ -1,7 +1,7 @@
 package gov.nist.toolkit.xdstools2.client.command.command;
 
 import gov.nist.toolkit.services.client.RawResponse;
-import gov.nist.toolkit.xdstools2.client.initialization.FrameworkInitialization;
+import gov.nist.toolkit.xdstools2.client.initialization.XdsTools2Presenter;
 import gov.nist.toolkit.xdstools2.shared.command.request.BuildRegTestOrchestrationRequest;
 
 /**
@@ -10,6 +10,6 @@ import gov.nist.toolkit.xdstools2.shared.command.request.BuildRegTestOrchestrati
 public abstract class BuildRegTestOrchestrationCommand extends GenericCommand<BuildRegTestOrchestrationRequest,RawResponse>{
     @Override
     public void run(BuildRegTestOrchestrationRequest var1) {
-        FrameworkInitialization.data().getToolkitServices().buildRegTestOrchestration(var1,this);
+        XdsTools2Presenter.data().getToolkitServices().buildRegTestOrchestration(var1,this);
     }
 }

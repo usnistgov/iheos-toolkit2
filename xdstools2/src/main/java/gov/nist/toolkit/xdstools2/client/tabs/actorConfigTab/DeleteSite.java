@@ -6,7 +6,7 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 import gov.nist.toolkit.xdstools2.client.PasswordManagement;
 import gov.nist.toolkit.xdstools2.client.command.command.DeleteSiteCommand;
 import gov.nist.toolkit.xdstools2.client.event.Xdstools2EventBus;
-import gov.nist.toolkit.xdstools2.client.initialization.FrameworkInitialization;
+import gov.nist.toolkit.xdstools2.client.initialization.XdsTools2Presenter;
 import gov.nist.toolkit.xdstools2.client.widgets.AdminPasswordDialogBox;
 import gov.nist.toolkit.xdstools2.client.widgets.PopupMessage;
 import gov.nist.toolkit.xdstools2.shared.command.request.DeleteSiteRequest;
@@ -32,7 +32,7 @@ class DeleteSite implements ClickHandler {
 		}
 		if (PasswordManagement.isSignedIn) {
 			deleteSignedInCallback.onSuccess(true);
-//			((Xdstools2EventBus) FrameworkInitialization.data().getEventBus()).fireActorsConfigUpdatedEvent();
+//			((Xdstools2EventBus) XdsTools2Presenter.data().getEventBus()).fireActorsConfigUpdatedEvent();
 		}
 		else {
 			PasswordManagement.addSignInCallback(deleteSignedInCallback);
@@ -58,9 +58,9 @@ class DeleteSite implements ClickHandler {
 					actorConfigTab.currentEditSite.changed = false;
 					actorConfigTab.newActorEditGrid();
 					actorConfigTab.loadExternalSites();
-					((Xdstools2EventBus) FrameworkInitialization.data().getEventBus()).fireActorsConfigUpdatedEvent();
+					((Xdstools2EventBus) XdsTools2Presenter.data().getEventBus()).fireActorsConfigUpdatedEvent();
 				}
-			}.run(new DeleteSiteRequest(FrameworkInitialization.data().getCommandContext(),actorConfigTab.currentEditSite.getName()));
+			}.run(new DeleteSiteRequest(XdsTools2Presenter.data().getCommandContext(),actorConfigTab.currentEditSite.getName()));
 		}
 
 	};

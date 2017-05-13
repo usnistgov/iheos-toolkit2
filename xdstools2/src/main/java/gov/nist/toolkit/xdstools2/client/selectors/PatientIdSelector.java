@@ -9,7 +9,7 @@ import com.google.gwt.user.client.ui.*;
 import gov.nist.toolkit.xdstools2.client.CookieManager;
 import gov.nist.toolkit.xdstools2.client.Panel1;
 import gov.nist.toolkit.xdstools2.client.command.command.GetDefaultAssigningAuthorityCommand;
-import gov.nist.toolkit.xdstools2.client.initialization.FrameworkInitialization;
+import gov.nist.toolkit.xdstools2.client.initialization.XdsTools2Presenter;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -40,7 +40,7 @@ public class PatientIdSelector {
 				public void onComplete(String result) {
 					defaultAssigningAuthority = result;
 				}
-			}.run(FrameworkInitialization.data().getCommandContext());
+			}.run(XdsTools2Presenter.data().getCommandContext());
 		}
 		
 		PatientIdSelector sel = new PatientIdSelector(menuPanel);

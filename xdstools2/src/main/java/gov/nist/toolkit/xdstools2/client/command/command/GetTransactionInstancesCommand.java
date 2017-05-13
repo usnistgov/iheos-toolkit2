@@ -1,7 +1,7 @@
 package gov.nist.toolkit.xdstools2.client.command.command;
 
 import gov.nist.toolkit.actortransaction.client.TransactionInstance;
-import gov.nist.toolkit.xdstools2.client.initialization.FrameworkInitialization;
+import gov.nist.toolkit.xdstools2.client.initialization.XdsTools2Presenter;
 import gov.nist.toolkit.xdstools2.shared.command.request.GetTransactionRequest;
 
 import java.util.List;
@@ -12,6 +12,6 @@ import java.util.List;
 public abstract class GetTransactionInstancesCommand extends GenericCommand<GetTransactionRequest,List<TransactionInstance>>{
     @Override
     public void run(GetTransactionRequest request) {
-        FrameworkInitialization.data().getToolkitServices().getTransInstances(request,this);
+        XdsTools2Presenter.data().getToolkitServices().getTransInstances(request,this);
     }
 }

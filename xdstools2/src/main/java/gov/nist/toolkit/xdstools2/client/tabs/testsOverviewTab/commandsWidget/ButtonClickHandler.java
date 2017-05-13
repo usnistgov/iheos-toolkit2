@@ -8,7 +8,7 @@ import gov.nist.toolkit.sitemanagement.client.Site;
 import gov.nist.toolkit.xdstools2.client.command.command.DeleteAllTestResultsCommand;
 import gov.nist.toolkit.xdstools2.client.command.command.ReloadAllTestResultsCommand;
 import gov.nist.toolkit.xdstools2.client.command.command.RunAllTestsCommand;
-import gov.nist.toolkit.xdstools2.client.initialization.FrameworkInitialization;
+import gov.nist.toolkit.xdstools2.client.initialization.XdsTools2Presenter;
 import gov.nist.toolkit.xdstools2.client.tabs.testsOverviewTab.ReloadAllTestResultsCallback;
 import gov.nist.toolkit.xdstools2.client.tabs.testsOverviewTab.Updater;
 import gov.nist.toolkit.xdstools2.shared.command.request.AllTestRequest;
@@ -41,7 +41,7 @@ public class ButtonClickHandler implements ClickHandler {
                 public void onComplete(List<Test> result) {
                     updater.updateAll(result);
                 }
-            }.run(new AllTestRequest(FrameworkInitialization.data().getCommandContext(),new Site("testEHR")));
+            }.run(new AllTestRequest(XdsTools2Presenter.data().getCommandContext(),new Site("testEHR")));
         }
         else if (source == commandsWidget.getRemoveAllButton()){
             //TODO replace bogus site with actual site selected by user
@@ -50,7 +50,7 @@ public class ButtonClickHandler implements ClickHandler {
                 public void onComplete(List<Test> result) {
                     updater.updateAll(result);
                 }
-            }.run(new AllTestRequest(FrameworkInitialization.data().getCommandContext(),new Site("testEHR")));
+            }.run(new AllTestRequest(XdsTools2Presenter.data().getCommandContext(),new Site("testEHR")));
         }
         else if (source == commandsWidget.getRefreshAllButton()){
             //TODO replace bogus site with actual site selected by user
@@ -60,7 +60,7 @@ public class ButtonClickHandler implements ClickHandler {
                     public void onComplete(List<Test> result) {
                         reloadAllTestResultsCallback.onSuccess(result);
                     }
-                }.run(FrameworkInitialization.data().getCommandContext());
+                }.run(XdsTools2Presenter.data().getCommandContext());
         }
         else {
             // do nothing

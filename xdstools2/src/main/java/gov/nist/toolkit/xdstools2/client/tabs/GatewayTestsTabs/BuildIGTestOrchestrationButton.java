@@ -8,7 +8,7 @@ import gov.nist.toolkit.services.client.IgOrchestrationResponse;
 import gov.nist.toolkit.services.client.RawResponse;
 import gov.nist.toolkit.sitemanagement.client.SiteSpec;
 import gov.nist.toolkit.xdstools2.client.command.command.BuildIGTestOrchestrationCommand;
-import gov.nist.toolkit.xdstools2.client.initialization.FrameworkInitialization;
+import gov.nist.toolkit.xdstools2.client.initialization.XdsTools2Presenter;
 import gov.nist.toolkit.xdstools2.client.tabs.FindDocumentsLauncher;
 import gov.nist.toolkit.xdstools2.client.tabs.conformanceTest.*;
 import gov.nist.toolkit.xdstools2.client.tabs.genericQueryTab.GenericQueryTab;
@@ -98,7 +98,7 @@ public class BuildIGTestOrchestrationButton extends AbstractOrchestrationButton 
                 if (AD_OPTION.equals(actorOption.getOptionId()))
                     orchResponse.setExternalStart(true);
 
-                initializationResultsPanel.add(new HTML("FrameworkInitialization Complete"));
+                initializationResultsPanel.add(new HTML("XdsTools2Presenter Complete"));
 
                 if (testContext.getSiteUnderTest() != null) {
                     initializationResultsPanel.add(new SiteDisplay("System Under Test Configuration", testContext.getSiteUnderTest()));
@@ -160,7 +160,7 @@ public class BuildIGTestOrchestrationButton extends AbstractOrchestrationButton 
                 initializationResultsPanel.add(new HTML("<h3>Configure your Initiating Gateway to forward requests to both of the above Responding Gateways (listed under Supporting Environment Configuration).</h3><hr />"));
 
             }
-        }.run(new BuildIgTestOrchestrationRequest(FrameworkInitialization.data().getCommandContext(),request));
+        }.run(new BuildIgTestOrchestrationRequest(XdsTools2Presenter.data().getCommandContext(),request));
     }
 
 

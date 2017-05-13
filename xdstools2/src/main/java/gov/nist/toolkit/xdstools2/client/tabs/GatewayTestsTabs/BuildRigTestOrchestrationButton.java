@@ -13,7 +13,7 @@ import gov.nist.toolkit.services.client.RigOrchestrationRequest;
 import gov.nist.toolkit.services.client.RigOrchestrationResponse;
 import gov.nist.toolkit.simcommon.client.config.SimulatorConfigElement;
 import gov.nist.toolkit.xdstools2.client.command.command.BuildRigTestOrchestrationCommand;
-import gov.nist.toolkit.xdstools2.client.initialization.FrameworkInitialization;
+import gov.nist.toolkit.xdstools2.client.initialization.XdsTools2Presenter;
 import gov.nist.toolkit.xdstools2.client.tabs.genericQueryTab.GenericQueryTab;
 import gov.nist.toolkit.xdstools2.client.widgets.PopupMessage;
 import gov.nist.toolkit.xdstools2.client.widgets.buttons.AbstractOrchestrationButton;
@@ -93,7 +93,7 @@ class BuildRIGTestOrchestrationButton extends AbstractOrchestrationButton {
 
             } // pass Orchestration
          }
-      }.run(new BuildRigTestOrchestrationRequest(FrameworkInitialization.data().getCommandContext(),request));
+      }.run(new BuildRigTestOrchestrationRequest(XdsTools2Presenter.data().getCommandContext(),request));
 
    }
    @SuppressWarnings("javadoc")

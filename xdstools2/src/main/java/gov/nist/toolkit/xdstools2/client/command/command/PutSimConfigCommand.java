@@ -1,6 +1,6 @@
 package gov.nist.toolkit.xdstools2.client.command.command;
 
-import gov.nist.toolkit.xdstools2.client.initialization.FrameworkInitialization;
+import gov.nist.toolkit.xdstools2.client.initialization.XdsTools2Presenter;
 import gov.nist.toolkit.xdstools2.shared.command.request.SimConfigRequest;
 
 /**
@@ -9,6 +9,6 @@ import gov.nist.toolkit.xdstools2.shared.command.request.SimConfigRequest;
 public abstract class PutSimConfigCommand extends GenericCommand<SimConfigRequest,String>{
     @Override
     public void run(SimConfigRequest var1) {
-        FrameworkInitialization.data().getToolkitServices().putSimConfig(var1,this);
+        XdsTools2Presenter.data().getToolkitServices().putSimConfig(var1,this);
     }
 }

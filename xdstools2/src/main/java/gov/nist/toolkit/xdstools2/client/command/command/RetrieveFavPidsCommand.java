@@ -1,7 +1,7 @@
 package gov.nist.toolkit.xdstools2.client.command.command;
 
 import gov.nist.toolkit.configDatatypes.client.Pid;
-import gov.nist.toolkit.xdstools2.client.initialization.FrameworkInitialization;
+import gov.nist.toolkit.xdstools2.client.initialization.XdsTools2Presenter;
 import gov.nist.toolkit.xdstools2.shared.command.CommandContext;
 
 import java.util.List;
@@ -17,7 +17,7 @@ public abstract class RetrieveFavPidsCommand extends GenericCommand<CommandConte
      */
     @Override
     public void run(CommandContext commandContext) {
-        FrameworkInitialization.data().getToolkitServices().retrieveConfiguredFavoritesPid(commandContext,this);
+        XdsTools2Presenter.data().getToolkitServices().retrieveConfiguredFavoritesPid(commandContext,this);
     }
 
 }

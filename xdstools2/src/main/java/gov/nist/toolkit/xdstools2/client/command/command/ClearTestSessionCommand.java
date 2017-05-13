@@ -1,6 +1,6 @@
 package gov.nist.toolkit.xdstools2.client.command.command;
 
-import gov.nist.toolkit.xdstools2.client.initialization.FrameworkInitialization;
+import gov.nist.toolkit.xdstools2.client.initialization.XdsTools2Presenter;
 import gov.nist.toolkit.xdstools2.shared.command.CommandContext;
 
 /**
@@ -9,6 +9,6 @@ import gov.nist.toolkit.xdstools2.shared.command.CommandContext;
 public abstract class ClearTestSessionCommand extends GenericCommand<CommandContext,String>{
     @Override
     public void run(CommandContext context){
-        FrameworkInitialization.data().getToolkitServices().clearTestSession(context,this);
+        XdsTools2Presenter.data().getToolkitServices().clearTestSession(context,this);
     }
 }

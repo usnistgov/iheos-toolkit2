@@ -5,7 +5,7 @@ import com.google.gwt.event.dom.client.ClickHandler;
 import gov.nist.toolkit.actorfactory.client.SimId;
 import gov.nist.toolkit.actorfactory.client.SimulatorConfig;
 import gov.nist.toolkit.xdstools2.client.command.command.GetSimConfigsCommand;
-import gov.nist.toolkit.xdstools2.client.initialization.FrameworkInitialization;
+import gov.nist.toolkit.xdstools2.client.initialization.XdsTools2Presenter;
 import gov.nist.toolkit.xdstools2.client.widgets.PopupMessage;
 import gov.nist.toolkit.xdstools2.shared.command.request.GetSimConfigsRequest;
 
@@ -62,7 +62,7 @@ public class LoadSimulatorsClickHandler implements ClickHandler {
 					}
 				}
 			}
-		}.run(new GetSimConfigsRequest(FrameworkInitialization.data().getCommandContext(),ids));
+		}.run(new GetSimConfigsRequest(XdsTools2Presenter.data().getCommandContext(),ids));
 	}
 
 }

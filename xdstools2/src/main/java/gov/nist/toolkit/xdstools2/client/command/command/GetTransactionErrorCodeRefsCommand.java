@@ -1,6 +1,6 @@
 package gov.nist.toolkit.xdstools2.client.command.command;
 
-import gov.nist.toolkit.xdstools2.client.initialization.FrameworkInitialization;
+import gov.nist.toolkit.xdstools2.client.initialization.XdsTools2Presenter;
 import gov.nist.toolkit.xdstools2.shared.command.request.GetTransactionErrorCodeRefsRequest;
 
 import java.util.List;
@@ -11,6 +11,6 @@ import java.util.List;
 public abstract class GetTransactionErrorCodeRefsCommand extends GenericCommand<GetTransactionErrorCodeRefsRequest,List<String>>{
     @Override
     public void run(GetTransactionErrorCodeRefsRequest var1) {
-        FrameworkInitialization.data().getToolkitServices().getTransactionErrorCodeRefs(var1,this);
+        XdsTools2Presenter.data().getToolkitServices().getTransactionErrorCodeRefs(var1,this);
     }
 }

@@ -18,7 +18,7 @@ import gov.nist.toolkit.xdstools2.client.command.command.IsGazelleConfigFeedEnab
 import gov.nist.toolkit.xdstools2.client.command.command.ReloadExternalSitesCommand;
 import gov.nist.toolkit.xdstools2.client.command.command.SaveSiteCommand;
 import gov.nist.toolkit.xdstools2.client.event.Xdstools2EventBus;
-import gov.nist.toolkit.xdstools2.client.initialization.FrameworkInitialization;
+import gov.nist.toolkit.xdstools2.client.initialization.XdsTools2Presenter;
 import gov.nist.toolkit.xdstools2.client.siteActorManagers.NullSiteActorManager;
 import gov.nist.toolkit.xdstools2.client.tabs.genericQueryTab.GenericQueryTab;
 import gov.nist.toolkit.xdstools2.shared.command.request.GetSiteNamesRequest;
@@ -156,7 +156,7 @@ public class ActorConfigTab extends GenericQueryTab {
 			@Override
 			public void onClick(ClickEvent clickEvent) {
 				reloadExternalSites();
-				((Xdstools2EventBus) FrameworkInitialization.data().getEventBus()).fireActorsConfigUpdatedEvent();
+				((Xdstools2EventBus) XdsTools2Presenter.data().getEventBus()).fireActorsConfigUpdatedEvent();
 			}
 		});
 		sitesPanel.add(reloadSitesBtn);
@@ -541,7 +541,7 @@ public class ActorConfigTab extends GenericQueryTab {
 				}.run(new GetSiteNamesRequest(getCommandContext(),true,showSims.getValue()));
 			}
 		}.run(new SaveSiteRequest(getCommandContext(),currentEditSite));
-        ((Xdstools2EventBus) FrameworkInitialization.data().getEventBus()).fireActorsConfigUpdatedEvent();
+        ((Xdstools2EventBus) XdsTools2Presenter.data().getEventBus()).fireActorsConfigUpdatedEvent();
 	}
 	
 	void loadExternalSites() {

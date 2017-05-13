@@ -3,9 +3,8 @@ package gov.nist.toolkit.xdstools2.client;
 import com.google.gwt.dom.client.Style;
 import com.google.gwt.user.client.ui.*;
 import gov.nist.toolkit.sitemanagement.client.SiteSpec;
-import gov.nist.toolkit.tk.client.TkProps;
 import gov.nist.toolkit.xdstools2.client.event.testSession.TestSessionManager2;
-import gov.nist.toolkit.xdstools2.client.initialization.FrameworkInitialization;
+import gov.nist.toolkit.xdstools2.client.initialization.XdsTools2Presenter;
 import gov.nist.toolkit.xdstools2.client.selectors.EnvironmentManager;
 import gov.nist.toolkit.xdstools2.shared.command.CommandContext;
 
@@ -43,7 +42,7 @@ public abstract class ToolWindow {
 	String topMessage = null;
 
 	EnvironmentManager environmentManager = null;
-	protected TestSessionManager2 testSessionManager = FrameworkInitialization.data().getTestSessionManager();
+	protected TestSessionManager2 testSessionManager = XdsTools2Presenter.data().getTestSessionManager();
 	protected String tabName=new String();
 
 //	protected abstract Widget buildUI();
@@ -87,7 +86,7 @@ public abstract class ToolWindow {
 	}
 
 	public CommandContext getCommandContext() {
-		return FrameworkInitialization.data().getCommandContext();
+		return XdsTools2Presenter.data().getCommandContext();
 	}
 
 	/**
@@ -108,18 +107,14 @@ public abstract class ToolWindow {
 		TabContainer.instance().addTab(tabTopRawPanel, tabName, select);
 	}
 
-	public TkProps tkProps() {
-		return FrameworkInitialization.data().getTkProps();
-	}
-
 	// access to params shared between tabs
 	// delegate to proper model
-	public SiteSpec getCommonSiteSpec() { return FrameworkInitialization.data().getQueryState().getSiteSpec(); }
-	public void setCommonSiteSpec(SiteSpec s) { FrameworkInitialization.data().getQueryState().setSiteSpec(s); }
-	public String getCommonPatientId() { return FrameworkInitialization.data().getQueryState().getPatientId(); }
-	public void setCommonPatientId(String p) { FrameworkInitialization.data().getQueryState().setPatientId(p); }
+	public SiteSpec getCommonSiteSpec() { return XdsTools2Presenter.data().getQueryState().getSiteSpec(); }
+	public void setCommonSiteSpec(SiteSpec s) { XdsTools2Presenter.data().getQueryState().setSiteSpec(s); }
+	public String getCommonPatientId() { return XdsTools2Presenter.data().getQueryState().getPatientId(); }
+	public void setCommonPatientId(String p) { XdsTools2Presenter.data().getQueryState().setPatientId(p); }
 
-	public String getEnvironmentSelection() { return FrameworkInitialization.data().getEnvironmentState().getEnvironmentName(); }
+	public String getEnvironmentSelection() { return XdsTools2Presenter.data().getEnvironmentState().getEnvironmentName(); }
 //	public void setEnvironmentSelection(String envName) { ClientUtils.INSTANCE.getEnvironmentState().setEnvironmentName(envName); }
 
 

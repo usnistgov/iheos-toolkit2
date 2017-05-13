@@ -9,7 +9,7 @@ import gov.nist.toolkit.xdstools2.client.command.command.CheckTestkitExistenceCo
 import gov.nist.toolkit.xdstools2.client.command.command.ConfigureTestkitCommand;
 import gov.nist.toolkit.xdstools2.client.command.command.GenerateTestkitStructureCommand;
 import gov.nist.toolkit.xdstools2.client.command.command.IndexTestkitsCommand;
-import gov.nist.toolkit.xdstools2.client.initialization.FrameworkInitialization;
+import gov.nist.toolkit.xdstools2.client.initialization.XdsTools2Presenter;
 import gov.nist.toolkit.xdstools2.client.selectors.EnvironmentManager;
 import gov.nist.toolkit.xdstools2.shared.command.CommandContext;
 
@@ -65,7 +65,7 @@ public class TestkitConfigTool extends Composite {
                     container.add(resultPanel);
                     container.removeStyleName("loading");
                 }
-            }.run(FrameworkInitialization.data().getCommandContext());
+            }.run(XdsTools2Presenter.data().getCommandContext());
         }
     }
 
@@ -111,7 +111,7 @@ public class TestkitConfigTool extends Composite {
                         runConfigTestkit();
                     }
                 }
-            }.run(new CommandContext(environmentManager.getSelectedEnvironment(),FrameworkInitialization.data().getTestSessionManager().getCurrentTestSession()));
+            }.run(new CommandContext(environmentManager.getSelectedEnvironment(), XdsTools2Presenter.data().getTestSessionManager().getCurrentTestSession()));
         }
 
         /** Method that actually runs the configuration (code update) of the testkit. **/
@@ -131,7 +131,7 @@ public class TestkitConfigTool extends Composite {
                     container.add(resultPanel);
                     container.removeStyleName("loading");
                 }
-            }.run(new CommandContext(environmentManager.getSelectedEnvironment(),FrameworkInitialization.data().getTestSessionManager().getCurrentTestSession()));
+            }.run(new CommandContext(environmentManager.getSelectedEnvironment(), XdsTools2Presenter.data().getTestSessionManager().getCurrentTestSession()));
         }
     }
 

@@ -6,7 +6,7 @@ import gov.nist.toolkit.registrymetadata.client.ObjectRef;
 import gov.nist.toolkit.results.client.Result;
 import gov.nist.toolkit.results.client.TestInstance;
 import gov.nist.toolkit.xdstools2.client.command.command.GetRelatedCommand;
-import gov.nist.toolkit.xdstools2.client.initialization.FrameworkInitialization;
+import gov.nist.toolkit.xdstools2.client.initialization.XdsTools2Presenter;
 import gov.nist.toolkit.xdstools2.shared.command.request.GetRelatedRequest;
 
 import java.util.List;
@@ -36,7 +36,7 @@ public class GetRelated implements ClickHandler {
 			public void onComplete(List<Result> result) {
 				it.addToHistory(result);
 			}
-		}.run(new GetRelatedRequest(FrameworkInitialization.data().getCommandContext(),null,or,assocs));
+		}.run(new GetRelatedRequest(XdsTools2Presenter.data().getCommandContext(),null,or,assocs));
 	}
 
 	public void onClick(ClickEvent event) {

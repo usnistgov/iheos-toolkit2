@@ -7,11 +7,6 @@ import gov.nist.toolkit.xdstools2.client.util.activitiesAndPlaces.ConfActor;
 import gov.nist.toolkit.xdstools2.client.util.activitiesAndPlaces.SimLog;
 import gov.nist.toolkit.xdstools2.client.util.activitiesAndPlaces.TestInstance;
 import gov.nist.toolkit.xdstools2.client.util.activitiesAndPlaces.Tool;
-import gov.nist.toolkit.xdstools2Framework.client.framework.ConfActorActivity;
-import gov.nist.toolkit.xdstools2Framework.client.framework.SimLogActivity;
-import gov.nist.toolkit.xdstools2Framework.client.framework.TestInstanceActivity;
-import gov.nist.toolkit.xdstools2Framework.client.framework.ToolActivity;
-import gov.nist.toolkit.xdstools2Framework.client.framework.ClientFactory;
 
 /**
  * Finds the activity to run for a given Place, used to configure an ActivityManager.
@@ -22,12 +17,11 @@ import gov.nist.toolkit.xdstools2Framework.client.framework.ClientFactory;
  *
  * Created by onh2 on 9/22/2014.
  */
-public class Xdstools2ActivityMapper implements ActivityMapper {
-    private ClientFactory clientFactory;
+public class XdsTools2ActivityMapper implements ActivityMapper {
+    private static final TkGinInjector INJECTOR = TkGinInjector.INSTANCE;
 
-    public Xdstools2ActivityMapper(ClientFactory clientFactory) {
+    public XdsTools2ActivityMapper() {
         super();
-        this.clientFactory=clientFactory;
     }
 
     /**
@@ -40,14 +34,14 @@ public class Xdstools2ActivityMapper implements ActivityMapper {
     @Override
     public Activity getActivity(Place place) {
         if (place instanceof TestInstance) {
-            TestInstanceActivity testInstanceActivity = clientFactory.getTestInstanceActivity();
+            TestInstanceActivity testInstanceActivity = INJECTOR.getTestInstanceActivity();
             testInstanceActivity.setTabId(((TestInstance) place).getTabId());
             System.out.println("Go to " + ((TestInstance) place).getTabId());
             return testInstanceActivity;
         }
 
         if (place instanceof Tool) {
-            ToolActivity toolActivity = clientFactory.getToolActivity();
+            ToolActivity toolActivity = INJECTOR.getToolActivity();
             toolActivity.setToolId(((Tool) place).getToolId());
             System.out.println("Go to " + ((Tool) place).getToolId());
             return toolActivity;
@@ -55,17 +49,19 @@ public class Xdstools2ActivityMapper implements ActivityMapper {
 
         if (place instanceof ConfActor) {
             ConfActor confActor = (ConfActor) place;
-            ConfActorActivity confActorActivity = clientFactory.getConfActorActivity();
+            ConfActorActivity confActorActivity = INJECTOR.getConfActorActivity();
             confActorActivity.setConfActor(confActor);
             return confActorActivity;
         }
 
         if (place instanceof SimLog) {
             SimLog simLog = (SimLog) place;
-            SimLogActivity simLogActivity = clientFactory.getSimLogActivity();
+            SimLogActivity simLogActivity = INJECTOR.getSimLogActivity();
             simLogActivity.setSimLog(simLog);
             return simLogActivity;
         }
-        return null;
+
+        // the default - only the shell
+        return INJECTOR.getXdsTools2Activity();
     }
 }

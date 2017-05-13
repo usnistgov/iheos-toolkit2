@@ -1,7 +1,7 @@
 package gov.nist.toolkit.xdstools2.client;
 
 import gov.nist.toolkit.xdstools2.client.command.command.ReloadSystemFromGazelleCommand;
-import gov.nist.toolkit.xdstools2.client.initialization.FrameworkInitialization;
+import gov.nist.toolkit.xdstools2.client.initialization.XdsTools2Presenter;
 import gov.nist.toolkit.xdstools2.client.tabs.TextViewerTab;
 import gov.nist.toolkit.xdstools2.shared.command.request.ReloadSystemFromGazelleRequest;
 
@@ -23,7 +23,7 @@ public class LoadGazelleConfigs  {
 			public void onComplete(String result) {
 				launchTextViewer("Gazelle Log", result, false);
 			}
-		}.run(new ReloadSystemFromGazelleRequest(FrameworkInitialization.data().getCommandContext(),type));
+		}.run(new ReloadSystemFromGazelleRequest(XdsTools2Presenter.data().getCommandContext(),type));
 	}
 	
 	void launchTextViewer(String tabName, String contents, boolean escapeHTML) {

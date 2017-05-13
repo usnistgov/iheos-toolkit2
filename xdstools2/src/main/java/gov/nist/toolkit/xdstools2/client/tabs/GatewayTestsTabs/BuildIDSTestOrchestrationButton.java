@@ -10,7 +10,7 @@ import gov.nist.toolkit.services.client.IdsOrchestrationRequest;
 import gov.nist.toolkit.services.client.IdsOrchestrationResponse;
 import gov.nist.toolkit.services.client.RawResponse;
 import gov.nist.toolkit.xdstools2.client.command.command.BuildIdsTestOrchestrationCommand;
-import gov.nist.toolkit.xdstools2.client.initialization.FrameworkInitialization;
+import gov.nist.toolkit.xdstools2.client.initialization.XdsTools2Presenter;
 import gov.nist.toolkit.xdstools2.client.tabs.genericQueryTab.GenericQueryTab;
 import gov.nist.toolkit.xdstools2.client.widgets.PopupMessage;
 import gov.nist.toolkit.xdstools2.client.widgets.buttons.AbstractOrchestrationButton;
@@ -74,7 +74,7 @@ class BuildIDSTestOrchestrationButton extends AbstractOrchestrationButton {
 
                 testTab.genericQueryTab.reloadTransactionOfferings();
             }
-        }.run(new BuildIdsTestOrchestrationRequest(FrameworkInitialization.data().getCommandContext(),request));
+        }.run(new BuildIdsTestOrchestrationRequest(XdsTools2Presenter.data().getCommandContext(),request));
     }
 
     Widget light(Widget w) {

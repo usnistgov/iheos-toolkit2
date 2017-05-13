@@ -1,24 +1,45 @@
-package gov.nist.toolkit.xdstools2.client.initialization;
+package gov.nist.toolkit.xdstools2Framework.client.framework;
 
 import gov.nist.toolkit.xdstools2.client.command.command.InitializationCommand;
+import gov.nist.toolkit.xdstools2.client.event.testSession.TestSessionManager;
+import gov.nist.toolkit.xdstools2.client.initialization.FrameworkSupport;
 import gov.nist.toolkit.xdstools2.client.tabs.EnvironmentState;
 import gov.nist.toolkit.xdstools2.client.widgets.PopupMessage;
 import gov.nist.toolkit.xdstools2.shared.command.InitializationResponse;
 
+import javax.inject.Inject;
+
 /**
- * This is init stuff that is being pulled out of Xdstools2 so it can be shared with Desktop
- * Xdstools2 is the old framework and Desktop is the new one.
+ * this is a singleton because at the moment there are 282 static references
+ * to the data() method and I'm lazy.
  */
-public class FrameworkInitialization {
-    static private FrameworkSupport theFramework;
+public class XdsTools2Presenter {
+    private static XdsTools2Presenter INSTANCE;
+    private boolean enableHomeTab = true;
 
-    public static FrameworkSupport data() { return theFramework; }
+    @Inject
+    FrameworkSupport theFramework;
 
-    static public void init(FrameworkSupport framework) {
-        theFramework = framework;
+    @Inject
+    EnvironmentState environmentState;
+
+    @Inject
+    TestSessionManager testSessionManager;
+
+    XdsTools2AppView view;
+
+    public XdsTools2Presenter() {
+        INSTANCE = this;
     }
 
-    static public void run() {
+    public void setView(XdsTools2AppView view) { this.view = view; }
+
+    // This is a BiG PROBLEM
+    public static FrameworkSupport data() { return INSTANCE.theFramework; }
+
+    public void blockHomeTab() { enableHomeTab = false; }
+
+    public void run() {
         new InitializationCommand() {
 
             @Override
@@ -27,11 +48,10 @@ public class FrameworkInitialization {
                 // environment names
                 // test session names
                 theFramework.setToolkitName(var1.getServletContextName());
-                EnvironmentState environmentState= theFramework.getEnvironmentState();
                 environmentState.setEnvironmentNameChoices(var1.getEnvironments());
                 if (environmentState.getEnvironmentName() == null)
                     environmentState.setEnvironmentName(var1.getDefaultEnvironment());
-                theFramework.getTestSessionManager().setTestSessions(var1.getTestSessions());
+                testSessionManager.setTestSessions(var1.getTestSessions());
                 theFramework.setToolkitBaseUrl(var1.getToolkitBaseUrl());
                 theFramework.setWikiBaseUrl(var1.getWikiBaseUrl());
                 run2();  // cannot be run until this completes
@@ -48,15 +68,19 @@ public class FrameworkInitialization {
 
                 run2();  // cannot be run until this completes
             }
-        }.run(theFramework.getCommandContext());  // command context will be ignored by this cmd
+        }.run(theFramework.getCommandContext());
 
     }
 
-    static private void run2() {
-        theFramework.buildTabsWrapper();
+    private void run2() {
+        view.buildTabsWrapper();
 
         // If using ConfActor activity then home tab is a distraction
-        theFramework.displayHomeTab();
+        HomeTab homeTab = new HomeTab();
+        if (!enableHomeTab) {
+            homeTab.setDisplayTab(false);
+        }
+        homeTab.onTabLoad(false, "Home");
 
 //        History.addValueChangeHandler(new ValueChangeHandler<String>() {
 //            public void onValueChange(ValueChangeEvent<String> event) {
@@ -75,13 +99,13 @@ public class FrameworkInitialization {
 //        });
 
 
-        String currentTestSession = theFramework.getTestSessionManager().fromCookie();
+        String currentTestSession = testSessionManager.fromCookie();
         if (currentTestSession == null)
             currentTestSession = "default";
-        if (theFramework.getTestSessionManager().isLegalTestSession(currentTestSession)) {
+        if (testSessionManager.isLegalTestSession(currentTestSession)) {
             // Don't overwrite initialization by ConfActor activity
-            if (theFramework.getTestSessionManager().getCurrentTestSession() == null)
-                theFramework.getTestSessionManager().setCurrentTestSession(currentTestSession);
+            if (testSessionManager.getCurrentTestSession() == null)
+                testSessionManager.setCurrentTestSession(currentTestSession);
         }
         theFramework.reloadTransactionOfferings();
     }

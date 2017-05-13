@@ -1,7 +1,7 @@
 package gov.nist.toolkit.xdstools2.client.command.command;
 
 import gov.nist.toolkit.session.client.logtypes.TestPartFileDTO;
-import gov.nist.toolkit.xdstools2.client.initialization.FrameworkInitialization;
+import gov.nist.toolkit.xdstools2.client.initialization.XdsTools2Presenter;
 import gov.nist.toolkit.xdstools2.shared.command.request.GetSectionTestPartFileRequest;
 
 /**
@@ -10,6 +10,6 @@ import gov.nist.toolkit.xdstools2.shared.command.request.GetSectionTestPartFileR
 public abstract class GetSectionTestPartFileCommand extends GenericCommand<GetSectionTestPartFileRequest,TestPartFileDTO>{
     @Override
     public void run(GetSectionTestPartFileRequest var1) {
-        FrameworkInitialization.data().getToolkitServices().getSectionTestPartFile(var1,this);
+        XdsTools2Presenter.data().getToolkitServices().getSectionTestPartFile(var1,this);
     }
 }

@@ -15,7 +15,7 @@ import gov.nist.toolkit.testenginelogging.client.TestStepLogContentDTO;
 import gov.nist.toolkit.testkitutilities.client.Gather;
 import gov.nist.toolkit.xdstools2.client.command.command.GetSectionTestPartFileCommand;
 import gov.nist.toolkit.xdstools2.client.command.command.GetTestLogDetailsCommand;
-import gov.nist.toolkit.xdstools2.client.initialization.FrameworkInitialization;
+import gov.nist.toolkit.xdstools2.client.initialization.XdsTools2Presenter;
 import gov.nist.toolkit.xdstools2.client.widgets.HorizontalFlowPanel;
 import gov.nist.toolkit.xdstools2.client.widgets.PopupMessage;
 import gov.nist.toolkit.xdstools2.shared.command.request.GetSectionTestPartFileRequest;
@@ -190,7 +190,7 @@ class TestSectionDisplay implements IsWidget {
                         addGathers(sectionTp, null);
 
                 }
-            }.run(new GetSectionTestPartFileRequest(FrameworkInitialization.data().getCommandContext(),testInstance,section));
+            }.run(new GetSectionTestPartFileRequest(XdsTools2Presenter.data().getCommandContext(),testInstance,section));
         }
     }
 
@@ -245,9 +245,9 @@ class TestSectionDisplay implements IsWidget {
                             }
 
                         }
-                    }.run(new GetSectionTestPartFileRequest(FrameworkInitialization.data().getCommandContext(),testInstance,testInstance.getSection()));
+                    }.run(new GetSectionTestPartFileRequest(XdsTools2Presenter.data().getCommandContext(),testInstance,testInstance.getSection()));
                 }
-            }.run(new GetTestLogDetailsRequest(FrameworkInitialization.data().getCommandContext(),testInstance));
+            }.run(new GetTestLogDetailsRequest(XdsTools2Presenter.data().getCommandContext(),testInstance));
         }
     }
 

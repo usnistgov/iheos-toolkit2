@@ -1,7 +1,7 @@
 package gov.nist.toolkit.xdstools2.client.command.command;
 
 import com.google.gwt.user.client.rpc.AsyncCallback;
-import gov.nist.toolkit.xdstools2.client.initialization.FrameworkInitialization;
+import gov.nist.toolkit.xdstools2.client.initialization.XdsTools2Presenter;
 import gov.nist.toolkit.xdstools2.client.util.ToolkitServiceAsync;
 import gov.nist.toolkit.xdstools2.shared.command.CommandContext;
 
@@ -15,6 +15,6 @@ public abstract class CheckTestkitExistenceCommand extends GenericCommand<Comman
      * @param context
      */
     public void run(CommandContext context){
-        FrameworkInitialization.data().getToolkitServices().doesTestkitExist(context,this);
+        XdsTools2Presenter.data().getToolkitServices().doesTestkitExist(context,this);
     }
 }

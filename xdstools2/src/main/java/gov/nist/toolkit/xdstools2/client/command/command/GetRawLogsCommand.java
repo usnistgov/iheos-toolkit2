@@ -1,7 +1,7 @@
 package gov.nist.toolkit.xdstools2.client.command.command;
 
 import gov.nist.toolkit.results.client.TestLogs;
-import gov.nist.toolkit.xdstools2.client.initialization.FrameworkInitialization;
+import gov.nist.toolkit.xdstools2.client.initialization.XdsTools2Presenter;
 import gov.nist.toolkit.xdstools2.shared.command.request.GetRawLogsRequest;
 
 /**
@@ -10,6 +10,6 @@ import gov.nist.toolkit.xdstools2.shared.command.request.GetRawLogsRequest;
 public abstract class GetRawLogsCommand extends GenericCommand<GetRawLogsRequest,TestLogs>{
     @Override
     public void run(GetRawLogsRequest var1) {
-        FrameworkInitialization.data().getToolkitServices().getRawLogs(var1,this);
+        XdsTools2Presenter.data().getToolkitServices().getRawLogs(var1,this);
     }
 }

@@ -1,7 +1,7 @@
 package gov.nist.toolkit.xdstools2.client.command.command;
 
 import gov.nist.toolkit.results.client.DocumentEntryDetail;
-import gov.nist.toolkit.xdstools2.client.initialization.FrameworkInitialization;
+import gov.nist.toolkit.xdstools2.client.initialization.XdsTools2Presenter;
 import gov.nist.toolkit.xdstools2.shared.command.request.GetOnDemandDocumentEntryDetailsRequest;
 
 import java.util.List;
@@ -12,6 +12,6 @@ import java.util.List;
 public abstract class GetOnDemandDocumentEntryDetailsCommand extends GenericCommand<GetOnDemandDocumentEntryDetailsRequest,List<DocumentEntryDetail>>{
     @Override
     public void run(GetOnDemandDocumentEntryDetailsRequest var1) {
-        FrameworkInitialization.data().getToolkitServices().getOnDemandDocumentEntryDetails(var1,this);
+        XdsTools2Presenter.data().getToolkitServices().getOnDemandDocumentEntryDetails(var1,this);
     }
 }

@@ -10,13 +10,12 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.*;
 import com.google.gwt.user.client.ui.FormPanel.SubmitCompleteEvent;
 import com.google.gwt.user.client.ui.FormPanel.SubmitCompleteHandler;
-import gov.nist.toolkit.actorfactory.client.CcdaTypeSelection;
 import gov.nist.toolkit.http.client.HtmlMarkup;
 import gov.nist.toolkit.results.client.Result;
 import gov.nist.toolkit.valsupport.client.*;
 import gov.nist.toolkit.xdstools2.client.ToolWindow;
 import gov.nist.toolkit.xdstools2.client.command.command.*;
-import gov.nist.toolkit.xdstools2.client.initialization.FrameworkInitialization;
+import gov.nist.toolkit.xdstools2.client.initialization.XdsTools2Presenter;
 import gov.nist.toolkit.xdstools2.client.inspector.MetadataInspectorTab;
 import gov.nist.toolkit.xdstools2.client.tabs.TextViewerTab;
 import gov.nist.toolkit.xdstools2.client.widgets.PopupMessage;
@@ -45,7 +44,7 @@ public class MessageValidatorTab extends ToolWindow {
     final VerticalPanel chooseFromEndpointArea = new VerticalPanel();
     final FormPanel uploadForm = new FormPanel();
     final ListBox simFilesListBox = new ListBox();
-    CcdaTypeSelection ccdaSel;
+//    CcdaTypeSelection ccdaSel;
 
     static final String ValidationType_PnR_b = "ProvideAndRegister.b";
     static final String ValidationTypeR_b = "Register.b";
@@ -163,14 +162,14 @@ public class MessageValidatorTab extends ToolWindow {
             panel.add(HtmlMarkup.html("<hr />"));
             panel.add(HtmlMarkup.html(HtmlMarkup.bold("CCDA Document Validator (CCDA validation may take more than a minute to run)")));
 
-            List<String> ccdaTypes = ccdaSel.ccdaTypes();
-            for (String ctype : ccdaTypes) {
-                RadioButton rb1 = new RadioButton(validationGroupName, ctype);
-                rb1.addClickHandler(msgTypeClickHandler);
-                messageTypeButtons.add(rb1);
-                panel.add(rb1);
-                messageTypeButtonMap.put(ctype, rb1);
-            }
+//            List<String> ccdaTypes = ccdaSel.ccdaTypes();
+//            for (String ctype : ccdaTypes) {
+//                RadioButton rb1 = new RadioButton(validationGroupName, ctype);
+//                rb1.addClickHandler(msgTypeClickHandler);
+//                messageTypeButtons.add(rb1);
+//                panel.add(rb1);
+//                messageTypeButtonMap.put(ctype, rb1);
+//            }
             addToPanel = false;
         }
         if (addToPanel) {
@@ -208,7 +207,7 @@ public class MessageValidatorTab extends ToolWindow {
                 break;
             }
         }
-        ccdaSel.enableCcdaTypesRadioGroup(enableContentType);
+//        ccdaSel.enableCcdaTypesRadioGroup(enableContentType);
     }
 
     String simpleCcdaType(String type) {
@@ -272,19 +271,19 @@ public class MessageValidatorTab extends ToolWindow {
             vc.isPnR = true;
         else if (msgType.equals(ValidationTypeXDM))
             vc.isXDM = true;
-        else if (msgType.equals(ValidationTypeDirectXDM)) {
-            vc.isXDM = true;
-            ccdaSel.addDocTypeToValidation(vc);
-        }
+//        else if (msgType.equals(ValidationTypeDirectXDM)) {
+//            vc.isXDM = true;
+//            ccdaSel.addDocTypeToValidation(vc);
+//        }
         else if (msgType.equals(ValidationTypeXDR)) {
             vc.isXDR = true;
             vc.isPnR = true;
         }
-        else if (msgType.equals(ValidationTypeDirectXDR)) {
-            vc.isXDR = true;
-            vc.isPnR = true;
-            ccdaSel.addDocTypeToValidation(vc);
-        }
+//        else if (msgType.equals(ValidationTypeDirectXDR)) {
+//            vc.isXDR = true;
+//            vc.isPnR = true;
+//            ccdaSel.addDocTypeToValidation(vc);
+//        }
         else if (msgType.equals(ValidationType_Ret))
             vc.isRet = true;
         else if (msgType.equals(ValidationType_SQ))
@@ -298,10 +297,10 @@ public class MessageValidatorTab extends ToolWindow {
             vc.isNcpdp = true;
         else if (msgType.equals(ValidationType_C32))
             vc.isC32 = true;
-        else if (msgType.equals(ValidationType_direct)) {
-            vc.isDIRECT = true;
-            ccdaSel.addDocTypeToValidation(vc);
-        }
+//        else if (msgType.equals(ValidationType_direct)) {
+//            vc.isDIRECT = true;
+//            ccdaSel.addDocTypeToValidation(vc);
+//        }
         else if (msgType.equals(ValidationType_CCDA))
             vc.isCCDA = true;
         else {
@@ -330,7 +329,7 @@ public class MessageValidatorTab extends ToolWindow {
     @Override
     public void onTabLoad(boolean select, String eventName) {
         me = this;
-        ccdaSel = new CcdaTypeSelection(tkProps(), null);
+//        ccdaSel = new CcdaTypeSelection(tkProps(), null);
 
         registerTab(select, eventName);
 
@@ -350,8 +349,8 @@ public class MessageValidatorTab extends ToolWindow {
         topH.add(messageTypeArea);
         topH.add(rightSideVert);
         rightSideVert.add(typesAndWrappers);
-        ccdaSel.addCcdaTypesRadioGroup(rightSideVert, ccdaSel.ccdaTypes(), "CCDA Type for XDM or XDR content (CCDA validation may take a minute or more to run)");
-        ccdaSel.enableCcdaTypesRadioGroup(false);
+//        ccdaSel.addCcdaTypesRadioGroup(rightSideVert, ccdaSel.ccdaTypes(), "CCDA Type for XDM or XDR content (CCDA validation may take a minute or more to run)");
+//        ccdaSel.enableCcdaTypesRadioGroup(false);
         typesAndWrappers.add(inOutTypeArea);
         typesAndWrappers.add(validationCheckBoxes);
 
@@ -738,7 +737,7 @@ public class MessageValidatorTab extends ToolWindow {
     String clientIP = null;
     @SuppressWarnings("deprecation")
     void requestClientIP() {
-        FrameworkInitialization.data().getToolkitServices().getClientIPAddress(new AsyncCallback<String>() {
+        XdsTools2Presenter.data().getToolkitServices().getClientIPAddress(new AsyncCallback<String>() {
 
             public void onFailure(Throwable caught) {
                 new PopupMessage(caught.getMessage());

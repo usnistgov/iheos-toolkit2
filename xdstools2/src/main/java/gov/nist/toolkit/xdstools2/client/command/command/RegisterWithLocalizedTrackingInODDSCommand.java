@@ -1,6 +1,6 @@
 package gov.nist.toolkit.xdstools2.client.command.command;
 
-import gov.nist.toolkit.xdstools2.client.initialization.FrameworkInitialization;
+import gov.nist.toolkit.xdstools2.client.initialization.XdsTools2Presenter;
 import gov.nist.toolkit.xdstools2.shared.command.request.RegisterRequest;
 
 import java.util.Map;
@@ -11,6 +11,6 @@ import java.util.Map;
 public abstract class RegisterWithLocalizedTrackingInODDSCommand extends GenericCommand<RegisterRequest,Map<String,String>> {
     @Override
     public void run(RegisterRequest var1) {
-        FrameworkInitialization.data().getToolkitServices().registerWithLocalizedTrackingInODDS(var1,this);
+        XdsTools2Presenter.data().getToolkitServices().registerWithLocalizedTrackingInODDS(var1,this);
     }
 }

@@ -8,7 +8,7 @@ import gov.nist.toolkit.registrymetadata.client.ObjectRefs;
 import gov.nist.toolkit.results.client.Result;
 import gov.nist.toolkit.results.client.TestInstance;
 import gov.nist.toolkit.xdstools2.client.command.command.GetSubmissionSetsCommand;
-import gov.nist.toolkit.xdstools2.client.initialization.FrameworkInitialization;
+import gov.nist.toolkit.xdstools2.client.initialization.XdsTools2Presenter;
 import gov.nist.toolkit.xdstools2.shared.command.request.GetSubmissionSetsRequest;
 
 import java.util.List;
@@ -32,7 +32,7 @@ public class GetSubmissionSets implements ClickHandler {
 			public void onComplete(List<Result> result) {
 				it.addToHistory(result);
 			}
-		}.run(new GetSubmissionSetsRequest(FrameworkInitialization.data().getCommandContext(),null,new AnyIds(ids)));
+		}.run(new GetSubmissionSetsRequest(XdsTools2Presenter.data().getCommandContext(),null,new AnyIds(ids)));
 	}
 
 	public GetSubmissionSets(MetadataInspectorTab it, ObjectRefs ids) {

@@ -1,6 +1,6 @@
 package gov.nist.toolkit.xdstools2.client.command.command;
 
-import gov.nist.toolkit.xdstools2.client.initialization.FrameworkInitialization;
+import gov.nist.toolkit.xdstools2.client.initialization.XdsTools2Presenter;
 import gov.nist.toolkit.xdstools2.shared.command.request.ReloadSystemFromGazelleRequest;
 
 /**
@@ -9,6 +9,6 @@ import gov.nist.toolkit.xdstools2.shared.command.request.ReloadSystemFromGazelle
 public abstract class ReloadSystemFromGazelleCommand extends GenericCommand<ReloadSystemFromGazelleRequest,String>{
     @Override
     public void run(ReloadSystemFromGazelleRequest request) {
-        FrameworkInitialization.data().getToolkitServices().reloadSystemFromGazelle(request,this);
+        XdsTools2Presenter.data().getToolkitServices().reloadSystemFromGazelle(request,this);
     }
 }
