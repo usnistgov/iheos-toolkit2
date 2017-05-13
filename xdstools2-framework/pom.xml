@@ -1,0 +1,154 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <parent>
+        <groupId>gov.nist.toolkit</groupId>
+        <artifactId>tk-deps</artifactId>
+        <version>4.4.0-SNAPSHOT</version>
+        <relativePath>../tk-deps/pom.xml</relativePath>
+    </parent>
+    <modelVersion>4.0.0</modelVersion>
+
+    <artifactId>xdstools2-framework</artifactId>
+
+    <name>XDS Toolkit Framework</name>
+    <packaging>war</packaging>
+
+    <dependencies>
+        <!--<dependency>-->
+            <!--<groupId>gov.nist.toolkit</groupId>-->
+            <!--<artifactId>xdstools2</artifactId>-->
+        <!--</dependency>-->
+        <dependency>
+            <groupId>gov.nist.toolkit</groupId>
+            <artifactId>toolkit-framework</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.google.gwt</groupId>
+            <artifactId>gwt-servlet</artifactId>
+            <scope>runtime</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.google.gwt</groupId>
+            <artifactId>gwt-user</artifactId>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.google.gwt</groupId>
+            <artifactId>gwt-dev</artifactId>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.google.gwt.inject</groupId>
+            <artifactId>gin</artifactId>
+            <version>2.1.2</version>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>gov.nist.toolkit</groupId>
+            <artifactId>toolkit-events</artifactId>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <!--<outputDirectory>${webappDirectory}/WEB-INF/classes</outputDirectory>-->
+
+    <plugins>
+        <plugin>
+            <groupId>org.codehaus.mojo</groupId>
+            <artifactId>gwt-maven-plugin</artifactId>
+            <version>${gwtVersion}</version>
+            <dependencies>
+                <dependency>
+                    <groupId>com.google.gwt</groupId>
+                    <artifactId>gwt-user</artifactId>
+                    <version>${gwtVersion}</version>
+                </dependency>
+                <dependency>
+                    <groupId>com.google.gwt</groupId>
+                    <artifactId>gwt-dev</artifactId>
+                    <version>${gwtVersion}</version>
+                </dependency>
+                <dependency>
+                    <groupId>com.google.gwt.inject</groupId>
+                    <artifactId>gin</artifactId>
+                    <version>1.5.0</version>
+                    <scope>compile</scope>
+                </dependency>
+            </dependencies>
+            <executions>
+                <execution>
+                    <phase>prepare-package</phase>
+                    <goals>
+                        <goal>compile</goal>
+                        <goal>resources</goal>
+                    </goals>
+                </execution>
+                <execution>
+                    <id>compilation_profile</id>
+                    <goals>
+                        <goal>compile</goal>
+                        <goal>resources</goal>
+                    </goals>
+                    <configuration>
+                        <optimizationLevel>0</optimizationLevel>
+                    </configuration>
+                </execution>
+            </executions>
+            <configuration>
+                <compileSourcesArtifacts>
+                    <!--<compileSourcesArtifact>${project.groupId}:tk</compileSourcesArtifact>-->
+                    <!--<compileSourcesArtifact>${project.groupId}:results</compileSourcesArtifact>-->
+                    <!--<compileSourcesArtifact>${project.groupId}:services</compileSourcesArtifact>-->
+                    <!--<compileSourcesArtifact>${project.groupId}:actor-transaction</compileSourcesArtifact>-->
+                    <!--<compileSourcesArtifact>${project.groupId}:site-management</compileSourcesArtifact>-->
+                    <!--<compileSourcesArtifact>${project.groupId}:registry-metadata</compileSourcesArtifact>-->
+                    <!--<compileSourcesArtifact>${project.groupId}:http</compileSourcesArtifact>-->
+                    <!--<compileSourcesArtifact>${project.groupId}:validators-support</compileSourcesArtifact>-->
+                    <!--<compileSourcesArtifact>${project.groupId}:actorfactory</compileSourcesArtifact>-->
+                    <!--<compileSourcesArtifact>${project.groupId}:sim-common</compileSourcesArtifact>-->
+                    <!--<compileSourcesArtifact>${project.groupId}:error-recording</compileSourcesArtifact>-->
+                    <!--<compileSourcesArtifact>${project.groupId}:common-datatypes</compileSourcesArtifact>-->
+                    <!--<compileSourcesArtifact>${project.groupId}:config-datatypes</compileSourcesArtifact>-->
+                    <!--<compileSourcesArtifact>${project.groupId}:session</compileSourcesArtifact>-->
+                    <!--<compileSourcesArtifact>${project.groupId}:testkit-utilities</compileSourcesArtifact>-->
+                    <!--<compileSourcesArtifact>${project.groupId}:xdstest2-logging</compileSourcesArtifact>-->
+                    <!--<compileSourcesArtifact>${project.groupId}:xds-exceptions</compileSourcesArtifact>-->
+                    <!--<compileSourcesArtifact>${project.groupId}:interaction-model</compileSourcesArtifact>-->
+                    <!--<compileSourcesArtifact>${project.groupId}:interaction-diagram</compileSourcesArtifact>-->
+                    <!--<compileSourcesArtifact>${project.groupId}:xdstools2</compileSourcesArtifact>-->
+                    <compileSourcesArtifact>${project.groupId}:toolkitFramework</compileSourcesArtifact>
+                </compileSourcesArtifacts>
+                <runTarget>Xdstools2.html</runTarget>
+                <modules>
+                    <module>${project.groupId}.xdstools2Framework.Xdstools2Framework</module>
+                </modules>
+
+                <warSourceDirectory>${basedir}/src/main/webapp</warSourceDirectory>
+                <webappDirectory>${project.build.directory}/${project.build.finalName}</webappDirectory>
+                <hostedWebapp>${basedir}/src/main/webapp</hostedWebapp>
+
+
+            </configuration>
+        </plugin>
+
+        <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-source-plugin</artifactId>
+            <executions>
+                <execution>
+                    <id>build-sources-jar</id>
+                    <goals>
+                        <goal>jar</goal>
+                    </goals>
+                </execution>
+            </executions>
+        </plugin>
+
+
+    </plugins>
+
+    </build>
+
+</project>

@@ -1,9 +1,7 @@
 package gov.nist.toolkit.xdstools2.client.initialization;
 
-import gov.nist.toolkit.xdstools2.client.tabs.EnvironmentState;
 import gov.nist.toolkit.xdstools2.client.tabs.QueryState;
 import gov.nist.toolkit.xdstools2.client.tabs.genericQueryTab.GenericQueryTab;
-import gov.nist.toolkit.xdstools2.shared.command.CommandContext;
 
 /**
  * Things that are different between Xdstools2 and Desktop - the two frameworks
@@ -29,10 +27,6 @@ public interface FrameworkSupport {
 
     QueryState getQueryState();
 
-    EnvironmentState getEnvironmentState();
-
     GenericQueryTab getHomeTab();
-
-    CommandContext getCommandContext();
 
 }

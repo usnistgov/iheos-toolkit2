@@ -10,7 +10,7 @@ import gov.nist.toolkit.xdstools2.client.command.command.ConfigureTestkitCommand
 import gov.nist.toolkit.xdstools2.client.command.command.GenerateTestkitStructureCommand;
 import gov.nist.toolkit.xdstools2.client.command.command.IndexTestkitsCommand;
 import gov.nist.toolkit.xdstools2.client.initialization.XdsTools2Presenter;
-import gov.nist.toolkit.xdstools2.client.selectors.EnvironmentManager;
+import gov.nist.toolkit.toolkitFramework.client.selectors.EnvironmentManager;
 import gov.nist.toolkit.xdstools2.shared.command.CommandContext;
 
 

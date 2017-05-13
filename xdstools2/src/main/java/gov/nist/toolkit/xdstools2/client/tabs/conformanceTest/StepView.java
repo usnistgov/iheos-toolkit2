@@ -2,8 +2,6 @@ package gov.nist.toolkit.xdstools2.client.tabs.conformanceTest;
 
 import com.google.gwt.user.client.ui.*;
 
-import org.apache.commons.lang.StringUtils;
-
 import gov.nist.toolkit.results.client.TestInstance;
 import gov.nist.toolkit.session.client.logtypes.SectionOverviewDTO;
 import gov.nist.toolkit.session.client.logtypes.TestPartFileDTO;

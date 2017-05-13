@@ -3,7 +3,7 @@ package gov.nist.toolkit.xdstools2.client.initialization;
 import com.google.gwt.core.client.GWT;
 import gov.nist.toolkit.tk.client.TkProps;
 import gov.nist.toolkit.xdstools2.client.event.Xdstools2EventBus;
-import gov.nist.toolkit.xdstools2.client.event.testSession.TestSessionManager2;
+import gov.nist.toolkit.xdstools2Framework.client.framework.testSession.TestSessionManager2;
 import gov.nist.toolkit.xdstools2.client.tabs.EnvironmentStateImpl;
 import gov.nist.toolkit.xdstools2.client.tabs.QueryState;
 import gov.nist.toolkit.xdstools2.client.tabs.genericQueryTab.GenericQueryTab;

@@ -4,7 +4,7 @@ import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import gov.nist.toolkit.actorfactory.client.SimId;
 import gov.nist.toolkit.xdstools2.client.widgets.PopupMessage;
-import gov.nist.toolkit.xdstools2.client.event.testSession.TestSessionManager2;
+import gov.nist.toolkit.xdstools2Framework.client.framework.testSession.TestSessionManager2;
 
 class CreateButtonClickHandler implements ClickHandler {
 	SimulatorControlTab simulatorControlTab;

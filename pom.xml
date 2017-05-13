@@ -84,7 +84,8 @@
         <module>interaction-diagram</module>
         <module>testdoctool</module>
         <!--<module>desktop</module>-->
-        <module>xdstools2Framework</module>
+        <module>xdstools2-framework</module>
+        <module>toolkit-framework</module>
     </modules>
 
 
