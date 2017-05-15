@@ -8,7 +8,7 @@ import com.google.gwt.user.client.ui.AcceptsOneWidget;
  * This activity is used to launch all tools within toolkit
  */
 public class ToolActivity extends AbstractActivity {
-    private XdsTools2AppView xdstools2view = XdsTools2AppViewImpl.getInstance();
+//    private XdsTools2AppView xdstools2view = XdsTools2AppView.getInstance();
     private String toolId;
 
     @Override
@@ -31,6 +31,6 @@ public class ToolActivity extends AbstractActivity {
     }
 
     public XdsTools2AppView getView(){
-        return xdstools2view;
+        return null;
     }
 }

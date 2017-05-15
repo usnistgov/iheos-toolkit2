@@ -45,7 +45,7 @@
 
   <!-- No EP -->
   <!-- Specify the app entry point class.                         -->
-  <!-- <entry-point class='gov.nist.toolkit.xdstools2Framework.client.framework.XdsTools2AppViewImpl'/> -->
+  <!-- <entry-point class='gov.nist.toolkit.xdstools2Framework.client.framework.XdsTools2AppView'/> -->
 
 
   <!-- DEBUG STUFF -->

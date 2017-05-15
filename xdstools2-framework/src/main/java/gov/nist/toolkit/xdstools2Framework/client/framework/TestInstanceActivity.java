@@ -8,7 +8,7 @@ import com.google.gwt.user.client.ui.AcceptsOneWidget;
  * This is the Activity of the application. It handles the tab opening.
  */
 public class TestInstanceActivity extends AbstractActivity {
-    private XdsTools2AppView xdstools2view = XdsTools2AppViewImpl.getInstance();
+//    private XdsTools2AppView xdstools2view = XdsTools2AppView.getInstance();
     private String tabId;
 
     @Override
@@ -32,6 +32,6 @@ public class TestInstanceActivity extends AbstractActivity {
     }
 
     public XdsTools2AppView getView(){
-        return xdstools2view;
+        return null;
     }
 }

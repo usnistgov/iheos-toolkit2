@@ -6,7 +6,7 @@ import com.google.gwt.inject.client.AbstractGinModule;
 import com.google.gwt.place.shared.PlaceController;
 import com.google.inject.Provider;
 import com.google.inject.Singleton;
-import gov.nist.toolkit.toolkitFramework.client.util.MenuManagement;
+import gov.nist.toolkit.toolkitFramework.client.testSession.TestSessionManager;
 
 import javax.inject.Inject;
 
@@ -18,16 +18,27 @@ public class TkGinModule extends AbstractGinModule {
     protected void configure() {
         GWT.log("In TkGinModule");
 
-        bind(MenuManagement.class).to(XdsTools2AppView.class);
-
         bind(com.google.gwt.place.shared.PlaceController.class).toProvider(PlaceControllerProvider.class).in(Singleton.class);
 
         bind(ActivityDisplayer.class).to(ActivityDisplayer.XdsTools2AppDisplayer.class).in(Singleton.class);
 
+        bind(TestSessionManager.class).in(Singleton.class);
+
+        bind(XdsTools2AppView.class).in(Singleton.class);
+
+
+
+
+//        bind(XdsTools2AppView.class).to(XdsTools2AppView.class).in(Singleton.class);
+
+//        bind(MenuManagement.class).to(XdsTools2AppView.class);
+
+
+//        bind(ActivityDisplayer.class).to(ActivityDisplayer.XdsTools2AppDisplayer.class).in(Singleton.class);
+
 //        bind(ToolkitServiceAsync.class).in(Singleton.class);
 
 
-        bind(XdsTools2AppView.class).to(XdsTools2AppViewImpl.class).in(Singleton.class);
 
 
     }

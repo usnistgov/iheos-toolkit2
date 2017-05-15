@@ -3,8 +3,10 @@ package gov.nist.toolkit.xdstools2Framework.client.framework;
 import com.google.gwt.core.shared.GWT;
 import com.google.gwt.inject.client.GinModules;
 import com.google.gwt.place.shared.PlaceController;
+import gov.nist.toolkit.toolkitFramework.client.environment.EnvironmentState;
 import gov.nist.toolkit.toolkitFramework.client.injector.FrameworkGinInjector;
 import gov.nist.toolkit.toolkitFramework.client.injector.FrameworkGinModule;
+import gov.nist.toolkit.toolkitFramework.client.testSession.TestSessionManager;
 
 /**
  *
@@ -24,4 +26,7 @@ public interface TkGinInjector extends FrameworkGinInjector {
     ToolActivity getToolActivity();
     ConfActorActivity getConfActorActivity();
     SimLogActivity getSimLogActivity();
+
+    EnvironmentState getEnvironmentState();
+    TestSessionManager getTestSessionManager();
 }

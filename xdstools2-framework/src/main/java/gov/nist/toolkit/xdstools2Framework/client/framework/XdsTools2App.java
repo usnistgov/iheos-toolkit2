@@ -8,6 +8,8 @@ import com.google.gwt.place.shared.PlaceHistoryHandler;
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.Widget;
+import gov.nist.toolkit.toolkitFramework.client.testSession.TestSessionManager;
+import org.omg.PortableInterceptor.INACTIVE;
 
 import javax.inject.Inject;
 
@@ -23,12 +25,15 @@ public class XdsTools2App implements IsWidget {
     @Inject
     private XdsTools2AppView appView;
     private XdsTools2Presenter appPresenter;
+    private TestSessionManager testSessionManager;
 
     public XdsTools2App() {
         appView = INJECTOR.getXdsTools2AppView();
+        testSessionManager = INJECTOR.getTestSessionManager();
 
         assert(appView != null);
         assert(eventBus != null);
+        assert(testSessionManager != null);
 
         appPresenter = INJECTOR.getXdsTools2AppPresenter();
         appPresenter.setView(appView);

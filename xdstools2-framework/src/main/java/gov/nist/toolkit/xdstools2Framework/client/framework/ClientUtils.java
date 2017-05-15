@@ -6,8 +6,8 @@ package gov.nist.toolkit.xdstools2Framework.client.framework;
 public class ClientUtils {
 //    public static final ClientUtils INSTANCE=new ClientUtils();
 //    private ClientFactory clientFactory=GWT.create(ClientFactory.class);
-//    private EnvironmentStateImpl environmentState = new EnvironmentStateImpl();
-//    private TestSessionManager2 testSessionManager;
+//    private EnvironmentState environmentState = new EnvironmentState();
+//    private TestSessionManager testSessionManager;
 //
 //    // Private constructor whose sole is to hide the implicit public one and really have a Singleton.
 //    private ClientUtils(){}
@@ -20,11 +20,11 @@ public class ClientUtils {
 //        return clientFactory.getEventBus();
 //    }
 //
-//    public EnvironmentStateImpl getEnvironmentState() { return environmentState; }
+//    public EnvironmentState getEnvironmentState() { return environmentState; }
 //
-//    public TestSessionManager2 getTestSessionManager() {
+//    public TestSessionManager getTestSessionManager() {
 //        if (testSessionManager == null)
-//            testSessionManager = new TestSessionManager2();
+//            testSessionManager = new TestSessionManager();
 //        return testSessionManager;
 //    }
 

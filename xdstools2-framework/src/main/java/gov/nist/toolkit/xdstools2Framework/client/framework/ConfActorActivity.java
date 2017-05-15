@@ -8,13 +8,13 @@ import com.google.gwt.user.client.ui.AcceptsOneWidget;
  *
  */
 public class ConfActorActivity extends AbstractActivity {
-    private XdsTools2AppView xdstools2view = XdsTools2AppViewImpl.getInstance();
+//    private XdsTools2AppView xdstools2view = XdsTools2AppView.getInstance();
 //    private ConfActor confActor;
 
     @Override
     public void start(AcceptsOneWidget acceptsOneWidget, EventBus eventBus) {
 //        if (confActor != null) {
-////            XdsTools2AppViewImpl.getInstance().doNotDisplayHomeTab();
+////            XdsTools2AppView.getInstance().doNotDisplayHomeTab();
 //
 //            // Override start-up initialization of environment
 ////            ClientUtils.INSTANCE.getEnvironmentState().initEnvironmentName(confActor.getEnvironmentName());
@@ -30,5 +30,5 @@ public class ConfActorActivity extends AbstractActivity {
 
 //    public void setConfActor(ConfActor confActor) { this.confActor = confActor; }
 
-    public XdsTools2AppView getView() { return xdstools2view; }
+    public XdsTools2AppView getView() { return null; }
 }

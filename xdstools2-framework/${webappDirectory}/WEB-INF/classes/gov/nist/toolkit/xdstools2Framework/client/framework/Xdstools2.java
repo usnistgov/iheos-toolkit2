@@ -77,7 +77,7 @@ public class Xdstools2  implements AcceptsOneWidget, IsWidget, FrameworkSupport 
 	EventBus v2V3IntegrationEventBus = null;
 
 //	// This is as toolkit wide singleton.  See class for details.
-//	public TestSessionManager2 getTestSessionManager() {
+//	public TestSessionManager getTestSessionManager() {
 //		return ClientUtils.INSTANCE.getTestSessionManager();
 //	}
 

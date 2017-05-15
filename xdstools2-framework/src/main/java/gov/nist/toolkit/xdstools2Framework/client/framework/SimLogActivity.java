@@ -8,13 +8,13 @@ import com.google.gwt.user.client.ui.AcceptsOneWidget;
  *
  */
 public class SimLogActivity  extends AbstractActivity {
-    private XdsTools2AppView xdstools2view = XdsTools2AppViewImpl.getInstance();
+//    private XdsTools2AppView xdstools2view = XdsTools2AppView.getInstance();
 //    private SimLog simLog;
 
     @Override
     public void start(AcceptsOneWidget acceptsOneWidget, EventBus eventBus) {
 //        if (simLog != null && simLog.isValid()) {
-////            XdsTools2AppViewImpl.getInstance().doNotDisplayHomeTab();
+////            XdsTools2AppView.getInstance().doNotDisplayHomeTab();
 //
 //            ToolWindow toolWindow = new ToolLauncher(ToolLauncher.simulatorMessageViewTabLabel).launch();
 //
@@ -40,5 +40,5 @@ public class SimLogActivity  extends AbstractActivity {
 //        this.simLog = simLog;
 //    }
 
-    public XdsTools2AppView getView() { return xdstools2view; }
+    public XdsTools2AppView getView() { return null; }
 }

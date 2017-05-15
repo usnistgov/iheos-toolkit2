@@ -54,7 +54,7 @@ public class XdsTools2Presenter {
                 environmentState.setEnvironmentNameChoices(var1.getEnvironments());
                 if (environmentState.getEnvironmentName() == null)
                     environmentState.setEnvironmentName(var1.getDefaultEnvironment());
-                testSessionManager.setTestSessions(var1.getTestSessions());
+//                testSessionManager.setTestSessions(var1.getTestSessions());
                 setToolkitBaseUrl(var1.getToolkitBaseUrl());
                 setWikiBaseUrl(var1.getWikiBaseUrl());
                 run2();  // cannot be run until this completes
