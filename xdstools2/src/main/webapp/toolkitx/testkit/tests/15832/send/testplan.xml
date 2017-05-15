@@ -1,0 +1,9 @@
+<TestPlan>
+    <Test>15832/send</Test>
+    <TestStep id="xcpd">
+        <ExpectedStatus>Success</ExpectedStatus>
+        <XcpdTransaction>
+            <MetadataFile>query.xml</MetadataFile>
+        </XcpdTransaction>
+    </TestStep>
+</TestPlan>

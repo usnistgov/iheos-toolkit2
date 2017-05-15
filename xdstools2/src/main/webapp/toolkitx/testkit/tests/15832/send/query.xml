@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF8" standalone="yes"?>
+<PRPA_IN201305UV02 ITSVersion="XML_1.0" xmlns="urn:hl7-org:v3">
+    <id extension="26" root="1.3.6.1.4.1.12559.11.24.4.1.17.1"/>
+    <creationTime value="20170511113627"/>
+    <interactionId extension="PRPA_IN201305UV02" root="2.16.840.1.113883.1.6"/>
+    <processingCode code="T"/>
+    <processingModeCode code="T"/>
+    <acceptAckCode code="AL"/>
+    <receiver typeCode="RCV">
+        <device classCode="DEV" determinerCode="INSTANCE">
+            <id root="1.2.3"/>
+            <telecom value="http://localhost:8380/PAMSimulator-ejb/RespondingGateway_Service/RespondingGateway_PortType?wsdl"/>
+        </device>
+    </receiver>
+    <sender typeCode="SND">
+        <device classCode="DEV" determinerCode="INSTANCE">
+            <id root="1.3.6.1.4.1.12559.11.24.4.1.17"/>
+            <asAgent classCode="AGNT">
+                <representedOrganization classCode="ORG" determinerCode="INSTANCE">
+                    <id root="1.3.6.1.4.1.12559.11.24.4.12"/>
+                </representedOrganization>
+            </asAgent>
+        </device>
+    </sender>
+    <controlActProcess classCode="CACT" moodCode="EVN">
+        <code code="PRPA_TE201305UV02" displayName="2.16.840.1.113883.1.6"/>
+        <queryByParameter>
+            <queryId extension="25" root="1.3.6.1.4.1.12559.11.24.4.1.17.2"/>
+            <statusCode code="new"/>
+            <responseModalityCode code="R"/>
+            <responsePriorityCode code="I"/>
+            <parameterList>
+                <livingSubjectAdministrativeGender>
+                    <value code="F"/>
+                    <semanticsText>LivingSubject.administrativeGender</semanticsText>
+                </livingSubjectAdministrativeGender>
+                <livingSubjectBirthTime>
+                    <value value="19831017"/>
+                    <semanticsText>LivingSubject.birthTime</semanticsText>
+                </livingSubjectBirthTime>
+                <livingSubjectId>
+                    <value extension="666-66-0010" root="2.16.840.1.113883.4.1"/>
+                    <semanticsText>LivingSubject.id</semanticsText>
+                </livingSubjectId>
+                <livingSubjectName>
+                    <value xsi:type="PN" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+                        <given>Amy</given>
+                        <family>Davidson</family>
+                        <given>C</given>
+                    </value>
+                    <semanticsText>LivingSubject.name</semanticsText>
+                </livingSubjectName>
+                <patientAddress>
+                    <value>
+                        <city>Springfield</city>
+                        <state>MO</state>
+                        <streetAddressLine>809 First Ave</streetAddressLine>
+                        <country>USA</country>
+                        <postalCode>65801</postalCode>
+                    </value>
+                    <semanticsText>Patient.addr</semanticsText>
+                </patientAddress>
+                <patientTelecom>
+                    <value use="HP" value="tel:+1-417-989-0987"/>
+                    <value use="WP" value="tel:+1-417-989-3300"/>
+                    <semanticsText>Patient.telecom</semanticsText>
+                </patientTelecom>
+            </parameterList>
+        </queryByParameter>
+    </controlActProcess>
+</PRPA_IN201305UV02>
