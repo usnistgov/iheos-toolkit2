@@ -55,7 +55,7 @@ public interface IErrorRecorder extends IXMLErrorRecorder, IGWTErrorRecorder, IE
 	 * Call should be made as registerValidator(this)
 	 * Unregister should be called at end - in a finally block if necessary
 	 * @param validator
-	 * @see IErrorRecorder#unRegisterValidator(Object) 
+	 * @see IErrorRecorder#unRegisterValidator(Object)
 	 */
 	void registerValidator(Object validator);
 	//

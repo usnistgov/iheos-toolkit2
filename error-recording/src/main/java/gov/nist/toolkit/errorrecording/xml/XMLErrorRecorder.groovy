@@ -360,13 +360,13 @@ public class XMLErrorRecorder implements IErrorRecorder {
     @Override
     public void registerValidator(Object validator) {
         println("regvalidator")
-        errXml = errXml.concat(createXMLString("Detail", msg))
+        // This function is empty in GWTErrorRecorder so I left it the same way. What is it supposed to do?
     }
 
-    // Not used
     @Override
     public void unRegisterValidator(Object validator) {
-        println("NYI-unregvalidator")
+        println("unregvalidator")
+        // This function is empty in GWTErrorRecorder so I left it the same way. What is it supposed to do?
     }
 
     @Override
