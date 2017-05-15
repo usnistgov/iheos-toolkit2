@@ -1,6 +1,6 @@
 package gov.nist.toolkit.errorrecording
 
-import gov.nist.toolkit.errorrecording.xml.ErrorRecorderUtil
+import gov.nist.toolkit.errorrecording.common.ErrorRecorderUtil
 import gov.nist.toolkit.errorrecording.xml.XMLErrorRecorderBuilder
 import spock.lang.Specification
 

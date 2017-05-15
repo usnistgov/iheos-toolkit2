@@ -1,4 +1,4 @@
-package gov.nist.toolkit.errorrecording.xml;
+package gov.nist.toolkit.errorrecording.common;
 
 import gov.nist.toolkit.errorrecording.IErrorRecorder;
 

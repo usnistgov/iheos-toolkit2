@@ -226,7 +226,6 @@ public class XMLErrorRecorder implements IErrorRecorder {
 //errRecords.add(createXMLElement("ExternalChallenge", msg))
     }
 
-// Not used / Not tested
     @Override
     public void detail(String msg) {
         println("detail")
