@@ -26,7 +26,6 @@ public class SoapWrapperResponseSim extends TransactionSimulator {
 			er.detail("Wrapping response in SOAP Message");
 			OMElement env = dsSimCommon.wrapResponseInSoapEnvelope(response);
 
-
 			dsSimCommon.sendHttpResponse(env, er);
 		}
 		

@@ -48,12 +48,24 @@ public interface IErrorRecorder extends IXMLErrorRecorder, IGWTErrorRecorder, IE
 
 	List<IErrorRecorder> getChildren();
 	int depth();
-	// register should be called at start of a validator run(ErrorRecorder er, MessageValidatorEngine mvc) method
-	//    call should be made as registerValidator(this)
-	// unRegister should be called at end - in a finally block if necessary
-	void registerValidator(Object validator);    // Used to report location
-	// unRegister should be called at end - in a finally block if necessary
-	//    call should be made as unRegisterValidator(this)
+
+	/**
+	 * Used to report location
+	 * Use: Register should be called at start of a validator run(ErrorRecorder er, MessageValidatorEngine mvc) method.
+	 * Call should be made as registerValidator(this)
+	 * Unregister should be called at end - in a finally block if necessary
+	 * @param validator
+	 * @see IErrorRecorder#unRegisterValidator(Object) 
+	 */
+	void registerValidator(Object validator);
+	//
+
+	/**
+	 * Use: Unregister should be called at end - in a finally block if necessary
+	 * Call should be made as unRegisterValidator(this)
+	 * @param validator
+	 * @see IErrorRecorder#registerValidator(Object)
+	 */
 	void unRegisterValidator(Object validator);
 
 }

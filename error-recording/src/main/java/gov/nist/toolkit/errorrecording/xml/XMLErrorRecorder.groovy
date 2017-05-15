@@ -357,10 +357,10 @@ public class XMLErrorRecorder implements IErrorRecorder {
         return 0;
     }
 
-    // Not used
     @Override
     public void registerValidator(Object validator) {
-        println("NYI-regvalidator")
+        println("regvalidator")
+        errXml = errXml.concat(createXMLString("Detail", msg))
     }
 
     // Not used
