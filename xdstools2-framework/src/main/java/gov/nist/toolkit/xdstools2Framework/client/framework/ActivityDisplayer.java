@@ -21,6 +21,8 @@ public interface ActivityDisplayer {
         @Inject
         private XdsTools2AppView appView;
 
+        public XdsTools2AppDisplayer() {}
+
         @Override
         public void display(Widget w, AcceptsOneWidget p, EventBus b) {
             // not sure what needs to be done here

@@ -1,6 +1,15 @@
 package gov.nist.toolkit.xdstools2Framework.client.framework;
 
 
+import com.google.gwt.event.shared.EventBus;
+import gov.nist.toolkit.toolkitFramework.client.commands.InitializationCommand;
+import gov.nist.toolkit.toolkitFramework.client.environment.EnvironmentState;
+import gov.nist.toolkit.toolkitFramework.client.events.SystemsNeedReloadingEvent;
+import gov.nist.toolkit.toolkitFramework.client.testSession.TestSessionManager;
+import gov.nist.toolkit.toolkitFramework.client.util.CurrentCommandContext;
+import gov.nist.toolkit.toolkitFramework.client.widgets.PopupMessage;
+import gov.nist.toolkit.toolkitFramework.shared.InitializationResponse;
+
 import javax.inject.Inject;
 
 /**
@@ -10,12 +19,18 @@ import javax.inject.Inject;
 public class XdsTools2Presenter {
     private static XdsTools2Presenter INSTANCE;
     private boolean enableHomeTab = true;
+    private String toolkitName;
+    private String toolkitBaseUrl;
+    private String wikiBaseUrl;
 
     @Inject
     EnvironmentState environmentState;
 
     @Inject
     TestSessionManager testSessionManager;
+
+    @Inject
+    EventBus eventBus;
 
     XdsTools2AppView view;
 
@@ -24,9 +39,6 @@ public class XdsTools2Presenter {
     }
 
     public void setView(XdsTools2AppView view) { this.view = view; }
-
-    // This is a BiG PROBLEM
-    public static FrameworkSupport data() { return INSTANCE.theFramework; }
 
     public void blockHomeTab() { enableHomeTab = false; }
 
@@ -38,13 +50,13 @@ public class XdsTools2Presenter {
                 // default environment
                 // environment names
                 // test session names
-                theFramework.setToolkitName(var1.getServletContextName());
+                setToolkitName(var1.getServletContextName());
                 environmentState.setEnvironmentNameChoices(var1.getEnvironments());
                 if (environmentState.getEnvironmentName() == null)
                     environmentState.setEnvironmentName(var1.getDefaultEnvironment());
                 testSessionManager.setTestSessions(var1.getTestSessions());
-                theFramework.setToolkitBaseUrl(var1.getToolkitBaseUrl());
-                theFramework.setWikiBaseUrl(var1.getWikiBaseUrl());
+                setToolkitBaseUrl(var1.getToolkitBaseUrl());
+                setWikiBaseUrl(var1.getWikiBaseUrl());
                 run2();  // cannot be run until this completes
             }
 
@@ -59,7 +71,7 @@ public class XdsTools2Presenter {
 
                 run2();  // cannot be run until this completes
             }
-        }.run(theFramework.getCommandContext());
+        }.run(CurrentCommandContext.GET());
 
     }
 
@@ -98,7 +110,30 @@ public class XdsTools2Presenter {
             if (testSessionManager.getCurrentTestSession() == null)
                 testSessionManager.setCurrentTestSession(currentTestSession);
         }
-        theFramework.reloadTransactionOfferings();
+        eventBus.fireEvent(new SystemsNeedReloadingEvent());
     }
 
+    public String getToolkitName() {
+        return toolkitName;
+    }
+
+    public void setToolkitName(String toolkitName) {
+        this.toolkitName = toolkitName;
+    }
+
+    public String getToolkitBaseUrl() {
+        return toolkitBaseUrl;
+    }
+
+    public void setToolkitBaseUrl(String toolkitBaseUrl) {
+        this.toolkitBaseUrl = toolkitBaseUrl;
+    }
+
+    public String getWikiBaseUrl() {
+        return wikiBaseUrl;
+    }
+
+    public void setWikiBaseUrl(String wikiBaseUrl) {
+        this.wikiBaseUrl = wikiBaseUrl;
+    }
 }

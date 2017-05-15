@@ -12,9 +12,10 @@ import javax.inject.Inject;
 public class XdsTools2Activity extends AbstractActivity {
 
     @Inject
-    ActivityDisplayer displayer;
+    private ActivityDisplayer displayer;
+
     @Inject
-    XdsTools2App xdsTools2App;
+    private XdsTools2App xdsTools2App;
 
     @Override
     public void start(AcceptsOneWidget acceptsOneWidget, EventBus eventBus) {

@@ -1,15 +1,19 @@
 package gov.nist.toolkit.xdstools2Framework.client.framework;
 
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Style;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.logical.shared.ResizeEvent;
 import com.google.gwt.event.logical.shared.ResizeHandler;
+import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.*;
-import gov.nist.toolkit.toolkitFramework.client.testSession.TestSessionManager;
 import gov.nist.toolkit.toolkitFramework.client.environment.EnvironmentManager;
+import gov.nist.toolkit.toolkitFramework.client.events.ResizeToolkitEvent;
+import gov.nist.toolkit.toolkitFramework.client.testSession.TestSessionManager;
 import gov.nist.toolkit.toolkitFramework.client.testSession.TestSessionSelector;
+import gov.nist.toolkit.toolkitFramework.client.toolSupport.TabContainer;
 
 import javax.inject.Inject;
 import java.util.logging.Logger;
@@ -26,16 +30,16 @@ public class XdsTools2AppViewImpl implements XdsTools2AppView {
 	private final static Logger logger=Logger.getLogger(XdsTools2AppViewImpl.class.getName());
 
 	@Inject
-	TestSessionManager testSessionManager;
+	private TestSessionManager testSessionManager;
 
 	@Inject
-	FrameworkSupport frameworkSupport;
+	private EventBus eventBus;
 
 	private HorizontalPanel uiDebugPanel = new HorizontalPanel();
 	boolean UIDebug = false;
 
-	public XdsTools2AppViewImpl() {
-//		XdsTools2Presenter.init(this);
+	private XdsTools2AppViewImpl() {
+		GWT.log("In XdsTools2AppViewImpl");
 	}
 
 	static public XdsTools2AppView getInstance() {
@@ -81,7 +85,7 @@ public class XdsTools2AppViewImpl implements XdsTools2AppView {
 		Window.addResizeHandler(new ResizeHandler() {
 			@Override
 			public void onResize(ResizeEvent event) {
-				frameworkSupport.resizeToolkit();
+				eventBus.fireEvent(new ResizeToolkitEvent());
 			}
 
 		});

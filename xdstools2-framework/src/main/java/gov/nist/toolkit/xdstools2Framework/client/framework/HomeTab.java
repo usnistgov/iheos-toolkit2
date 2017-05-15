@@ -1,7 +1,15 @@
 package gov.nist.toolkit.xdstools2Framework.client.framework;
 
-import com.google.gwt.user.client.ui.*;
+import com.google.gwt.user.client.ui.FlowPanel;
+import com.google.gwt.user.client.ui.Frame;
+import com.google.gwt.user.client.ui.ListBox;
+import com.google.gwt.user.client.ui.Widget;
+import gov.nist.toolkit.toolkitFramework.client.commands.GetAdminPasswordCommand;
+import gov.nist.toolkit.toolkitFramework.client.commands.GetImplementationVersionCommand;
+import gov.nist.toolkit.toolkitFramework.client.toolSupport.TabContainer;
 import gov.nist.toolkit.toolkitFramework.client.toolSupport.ToolWindow;
+import gov.nist.toolkit.toolkitFramework.client.util.MainMenu;
+import gov.nist.toolkit.toolkitFramework.client.util.PasswordManagement;
 import gov.nist.toolkit.toolkitFramework.client.widgets.HorizontalFlowPanel;
 
 import javax.inject.Inject;
@@ -12,6 +20,9 @@ public class HomeTab extends ToolWindow {
 	
 	@Inject
 	XdsTools2AppView xdsTools2AppView;
+
+	@Inject
+	MainMenu mainMenu;
 
 	public HomeTab() {
 		super();
@@ -36,10 +47,10 @@ public class HomeTab extends ToolWindow {
 	public void bindUI() {
 		String th = "";
 
-		mainGrid = new FlexTable();
-		mainGrid.setCellSpacing(20);
+//		mainGrid = new FlexTable();
+//		mainGrid.setCellSpacing(20);
 
-		loadIHEGrid(0);
+		loadIHEGrid();
 		new GetAdminPasswordCommand(){
 			@Override
 			public void onComplete(String result) {
@@ -49,10 +60,10 @@ public class HomeTab extends ToolWindow {
 		loadVersion();
 	}
 
-	@Override
-	protected void configureTabView() {
-		addActorReloader();
-	}
+//	@Override
+//	protected void configureTabView() {
+//		addActorReloader();
+//	}
 
 //	@Override
 ////	public void onTabLoad(final xdsTools2AppView container, boolean select, String eventName) {
@@ -71,6 +82,11 @@ public class HomeTab extends ToolWindow {
 	boolean forDirect = false;
 	boolean forIHE = false;
 	boolean forNwHIN = false;
+	boolean displayTab = true;
+
+	public void setDisplayTab(boolean displayTab) {
+		this.displayTab = displayTab;
+	}
 
 	class MainGridLoader {
 
@@ -84,103 +100,8 @@ public class HomeTab extends ToolWindow {
 
 	}
 
-	public void loadIHEGrid(int startingColumn) {
-
-
-		xdsTools2AppView.clearMainMenu();
-
-		xdsTools2AppView.addtoMainMenu(addHTML("<h2>Toolkit</h2>"));
-
-		xdsTools2AppView.addtoMainMenu(HyperlinkFactory.launchTool(ToolLauncher.homeTabLabel, new ToolLauncher(ToolLauncher.homeTabLabel)));
-
-		xdsTools2AppView.addtoMainMenu(HyperlinkFactory.launchTool(ToolLauncher.toolConfigTabLabel, new ToolLauncher(ToolLauncher.toolConfigTabLabel)));
-
-		xdsTools2AppView.addtoMainMenu(HyperlinkFactory.launchTool(ToolLauncher.sitesTabLabel, new ToolLauncher(ToolLauncher.sitesTabLabel)));
-
-		xdsTools2AppView.addtoMainMenu(HyperlinkFactory.launchTool(ToolLauncher.pidFavoritesLabel, new ToolLauncher(ToolLauncher.pidFavoritesLabel)));
-
-		xdsTools2AppView.addtoMainMenu(HyperlinkFactory.launchTool(ToolLauncher.simulatorControlTabLabel, new ToolLauncher(ToolLauncher.simulatorControlTabLabel)));
-
-		xdsTools2AppView.addtoMainMenu(HyperlinkFactory.launchTool(ToolLauncher.simulatorMessageViewTabLabel, new ToolLauncher(ToolLauncher.simulatorMessageViewTabLabel)));
-
-		// **********************************************************************
-
-		xdsTools2AppView.addtoMainMenu(addHTML("<h3>Queries & Retrieves</h3>"));
-
-		xdsTools2AppView.addtoMainMenu(HyperlinkFactory.launchTool(ToolLauncher.findDocumentsTabLabel, new ToolLauncher(ToolLauncher.findDocumentsTabLabel)));
-
-		xdsTools2AppView.addtoMainMenu(HyperlinkFactory.launchTool(ToolLauncher.findDocumentsAllParametersTabLabel, new ToolLauncher(ToolLauncher.findDocumentsAllParametersTabLabel)));
-
-		xdsTools2AppView.addtoMainMenu(HyperlinkFactory.launchTool(ToolLauncher.findDocumentsByRefIdTabLabel, new ToolLauncher(ToolLauncher.findDocumentsByRefIdTabLabel)));
-
-		xdsTools2AppView.addtoMainMenu(HyperlinkFactory.launchTool(ToolLauncher.mpqFindDocumentsTabLabel, new ToolLauncher(ToolLauncher.mpqFindDocumentsTabLabel)));
-
-		xdsTools2AppView.addtoMainMenu(HyperlinkFactory.launchTool(ToolLauncher.getDocumentsTabLabel, new ToolLauncher(ToolLauncher.getDocumentsTabLabel)));
-
-		xdsTools2AppView.addtoMainMenu(HyperlinkFactory.launchTool(ToolLauncher.getRelatedTabLabel, new ToolLauncher(ToolLauncher.getRelatedTabLabel)));
-
-		xdsTools2AppView.addtoMainMenu(HyperlinkFactory.launchTool(ToolLauncher.findFoldersTabLabel, new ToolLauncher(ToolLauncher.findFoldersTabLabel)));
-
-		xdsTools2AppView.addtoMainMenu(HyperlinkFactory.launchTool(ToolLauncher.getFoldersTabLabel, new ToolLauncher(ToolLauncher.getFoldersTabLabel)));
-
-		xdsTools2AppView.addtoMainMenu(HyperlinkFactory.launchTool(ToolLauncher.getFolderAndContentsTabLabel, new ToolLauncher(ToolLauncher.getFolderAndContentsTabLabel)));
-
-		xdsTools2AppView.addtoMainMenu(HyperlinkFactory.launchTool(ToolLauncher.getSubmissionSetTabLabel, new ToolLauncher(ToolLauncher.getSubmissionSetTabLabel)));
-
-		xdsTools2AppView.addtoMainMenu(HyperlinkFactory.launchTool(ToolLauncher.getAllTabLabel, new ToolLauncher(ToolLauncher.getAllTabLabel)));
-
-		xdsTools2AppView.addtoMainMenu(HyperlinkFactory.launchTool(ToolLauncher.documentRetrieveTabLabel, new ToolLauncher(ToolLauncher.documentRetrieveTabLabel)));
-
-//			mainGrid.setWidget(row, col, HyperlinkFactory.launchTool(ToolLauncher.imagingDocumentSetRetrieveTabLabel, new ToolLauncher(ToolLauncher.imagingDocumentSetRetrieveTabLabel)));
-		xdsTools2AppView.addtoMainMenu(HyperlinkFactory.launchTool(ToolLauncher.imagingDocumentSetRetrieveTabLabel, new ToolLauncher(ToolLauncher.imagingDocumentSetRetrieveTabLabel)));
-
-		// ***************************************************************************
-		// Test data
-
-
-		xdsTools2AppView.addtoMainMenu(addHTML("<h3>Submit</h3>"));
-
-		xdsTools2AppView.addtoMainMenu(HyperlinkFactory.link(ToolLauncher.registryTestDataTabLabel, new ToolLauncher(ToolLauncher.registryTestDataTabLabel)));
-
-		xdsTools2AppView.addtoMainMenu(HyperlinkFactory.link(ToolLauncher.repositoryTestDataTabLabel, new ToolLauncher(ToolLauncher.repositoryTestDataTabLabel)));
-
-		xdsTools2AppView.addtoMainMenu(HyperlinkFactory.link(ToolLauncher.recipientTestDataTabLabel, new ToolLauncher(ToolLauncher.recipientTestDataTabLabel)));
-
-
-		// ***************************************************************************
-		// Tools
-
-		xdsTools2AppView.addtoMainMenu(addHTML("<h3>Other Tools</h3>"));
-
-		xdsTools2AppView.addtoMainMenu(HyperlinkFactory.launchTool(ToolLauncher.repositoryTabLabel, new ToolLauncher(ToolLauncher.repositoryTabLabel)));
-
-		xdsTools2AppView.addtoMainMenu(HyperlinkFactory.launchTool(ToolLauncher.connectathonTabLabel, new ToolLauncher(ToolLauncher.connectathonTabLabel)));
-
-//		xdsTools2AppView.addtoMainMenu(HyperlinkFactory.launchTool(ToolLauncher.messageValidatorTabLabel, new ToolLauncher(ToolLauncher.messageValidatorTabLabel)));
-
-		// ***************************************************************************
-		// Tests
-
-		xdsTools2AppView.addtoMainMenu(addHTML("<h3>Testing</h3>"));
-
-		xdsTools2AppView.addtoMainMenu(HyperlinkFactory.launchTool(ToolLauncher.conformanceTestsLabel, new ToolLauncher(ToolLauncher.conformanceTestsLabel)));
-
-//		xdsTools2AppView.addtoMainMenu(HyperlinkFactory.launchTool(ToolLauncher.mesaTabLabel, new ToolLauncher(ToolLauncher.mesaTabLabel)));
-//
-//		xdsTools2AppView.addtoMainMenu(HyperlinkFactory.launchTool(ToolLauncher.igTestsTabLabel, new ToolLauncher(ToolLauncher.igTestsTabLabel)));
-//
-//		xdsTools2AppView.addtoMainMenu(HyperlinkFactory.launchTool(ToolLauncher.rgTestsTabLabel, new ToolLauncher(ToolLauncher.rgTestsTabLabel)));
-
-//		xdsTools2AppView.addtoMainMenu(HyperlinkFactory.launchTool(ToolLauncher.iigTestsTabLabel, new ToolLauncher(ToolLauncher.iigTestsTabLabel)));
-
-//      xdsTools2AppView.addtoMainMenu(HyperlinkFactory.launchTool(ToolLauncher.rigTestsTabLabel, new ToolLauncher(ToolLauncher.rigTestsTabLabel)));
-
-//		xdsTools2AppView.addtoMainMenu(HyperlinkFactory.launchTool(ToolLauncher.idsTestsTabLabel, new ToolLauncher(ToolLauncher.idsTestsTabLabel)));
-
-//		xdsTools2AppView.addtoMainMenu(HyperlinkFactory.launchTool(ToolLauncher.rsnaedgeTestsTabLabel, new ToolLauncher(ToolLauncher.rsnaedgeTestsTabLabel)));
-
-
-
+	public void loadIHEGrid() {
+		mainMenu.loadMenu(xdsTools2AppView);
 	}
 
 	int getIndex(ListBox lb, String value) {

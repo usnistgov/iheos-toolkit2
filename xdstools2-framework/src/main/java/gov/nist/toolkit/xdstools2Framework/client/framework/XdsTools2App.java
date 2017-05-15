@@ -9,6 +9,8 @@ import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.Widget;
 
+import javax.inject.Inject;
+
 /**
  *
  */
@@ -17,11 +19,17 @@ public class XdsTools2App implements IsWidget {
     private final EventBus eventBus = INJECTOR.getEventBus();
 
     private SimplePanel activityPanel = new SimplePanel();
+
+    @Inject
     private XdsTools2AppView appView;
     private XdsTools2Presenter appPresenter;
 
     public XdsTools2App() {
         appView = INJECTOR.getXdsTools2AppView();
+
+        assert(appView != null);
+        assert(eventBus != null);
+
         appPresenter = INJECTOR.getXdsTools2AppPresenter();
         appPresenter.setView(appView);
 

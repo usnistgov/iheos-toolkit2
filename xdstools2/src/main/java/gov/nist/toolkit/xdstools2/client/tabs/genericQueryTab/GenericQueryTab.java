@@ -514,17 +514,6 @@ public abstract class GenericQueryTab  extends ToolWindow {
         }.run(XdsTools2Presenter.data().getCommandContext());
     }
 
-    static public HTML addHTML(String html) {
-        HTML msgBox = new HTML();
-        msgBox.setHTML(html);
-        return msgBox;
-    }
-
-    HTML addText(String text) {
-        HTML msgBox = new HTML();
-        msgBox.setText(text);
-        return msgBox;
-    }
 
     String red(String msg, boolean status) {
         if (status)

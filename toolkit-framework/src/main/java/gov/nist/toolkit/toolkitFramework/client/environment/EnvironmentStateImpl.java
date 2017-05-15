@@ -1,5 +1,8 @@
 package gov.nist.toolkit.toolkitFramework.client.environment;
 
+import com.google.gwt.core.client.GWT;
+
+import javax.inject.Inject;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -14,6 +17,11 @@ public class EnvironmentStateImpl implements EnvironmentState {
 	private String environmentName = "default";
 	private List<String> environmentNameChoices = new ArrayList<String>();
 	private List<EnvironmentManager> managers = new ArrayList<EnvironmentManager>();
+
+	@Inject
+	public EnvironmentStateImpl() {
+		GWT.log("In EnvironmentStateImpl");
+	}
 
 	public boolean isFirstManager() { return managers.size() == 1; }
 	

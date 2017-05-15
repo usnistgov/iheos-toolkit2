@@ -68,6 +68,11 @@
         <!--<when-type-is class="gov.nist.toolkit.xdstools2Framework.client.framework.ClientFactory"/>-->
     <!--</replace-with>-->
 
+    <!-- This is the empty menu for testing just the framework-->
+    <replace-with class="gov.nist.toolkit.xdstools2Framework.client.framework.FrameworkMainMenu">
+        <when-type-is class="gov.nist.toolkit.toolkitFramework.client.util.MainMenu"/>
+    </replace-with>
+
     <public path="public"/>
     <source path="client"/>
     <source path="shared"/>

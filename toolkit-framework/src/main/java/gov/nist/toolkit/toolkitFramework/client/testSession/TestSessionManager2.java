@@ -1,5 +1,6 @@
 package gov.nist.toolkit.toolkitFramework.client.testSession;
 
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.user.client.Cookies;
 import gov.nist.toolkit.toolkitFramework.client.commands.AddMesaTestSessionCommand;
@@ -8,9 +9,9 @@ import gov.nist.toolkit.toolkitFramework.client.commands.GetTestSessionNamesComm
 import gov.nist.toolkit.toolkitFramework.client.environment.EnvironmentState;
 import gov.nist.toolkit.toolkitFramework.client.events.TestSessionsUpdatedEvent;
 import gov.nist.toolkit.toolkitFramework.client.events.TestSessionsUpdatedEventHandler;
+import gov.nist.toolkit.toolkitFramework.client.toolSupport.command.CommandContext;
 import gov.nist.toolkit.toolkitFramework.client.util.CookieManager;
 import gov.nist.toolkit.toolkitFramework.client.util.CurrentCommandContext;
-import gov.nist.toolkit.toolkitFramework.client.toolSupport.command.CommandContext;
 
 import javax.inject.Inject;
 import java.util.List;
@@ -22,6 +23,7 @@ import java.util.List;
  * is where the current list is maintained so that new tabs can be initialized.
  */
 public class TestSessionManager2 implements TestSessionManager {
+//    private final EventBus eventBus = FrameworkGinInjector.INSTANCE.getEventBus();
     private List<String> testSessions;  // this is maintained to initialize new tabs with
     private String currentTestSession = "default";
 
@@ -32,6 +34,8 @@ public class TestSessionManager2 implements TestSessionManager {
     private EnvironmentState environmentState;
 
     public TestSessionManager2() {
+        GWT.log("In TestSessionManager2");
+        assert(eventBus != null);
         eventBus.addHandler(TestSessionsUpdatedEvent.TYPE, new TestSessionsUpdatedEventHandler() {
             @Override
             public void onTestSessionsUpdated(TestSessionsUpdatedEvent event) {

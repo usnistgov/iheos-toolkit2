@@ -26,7 +26,7 @@ import gov.nist.toolkit.valsupport.client.MessageValidationResults;
 import gov.nist.toolkit.xdstools2.shared.RegistryStatus;
 import gov.nist.toolkit.xdstools2.shared.RepositoryStatus;
 import gov.nist.toolkit.xdstools2.shared.command.CommandContext;
-import gov.nist.toolkit.xdstools2.shared.command.InitializationResponse;
+import gov.nist.toolkit.toolkitFramework.shared.InitializationResponse;
 import gov.nist.toolkit.xdstools2.shared.command.request.*;
 
 import java.util.Collection;
@@ -39,7 +39,6 @@ public interface ToolkitServiceAsync {
     void clearTestSession(CommandContext context, AsyncCallback<String> callback);
     void validateConformanceSession(String testSession, String siteName, AsyncCallback<ConformanceSessionValidationStatus> callback);
     void getSitesForTestSession(CommandContext context, AsyncCallback<Collection<String>> callback);
-    void getInitialization(CommandContext context,AsyncCallback<InitializationResponse> callback);
     void getTkProps(AsyncCallback<TkProps> callback);
     void getSessionProperties(AsyncCallback<Map<String, String>> callback);
     void setSessionProperties(Map<String, String> props, AsyncCallback callback);
@@ -145,9 +144,7 @@ public interface ToolkitServiceAsync {
     void getAll(GetAllRequest request, AsyncCallback<List<Result>> callback);
     void findDocuments2(FindDocuments2Request request, AsyncCallback<List<Result>> callback);
 
-    void getAdminPassword(CommandContext context,AsyncCallback<String> callback);
 
-    void getImplementationVersion(CommandContext context,AsyncCallback<String> callback);
 
     void getToolkitProperties(CommandContext context,AsyncCallback<Map<String, String>> callback);
     void setToolkitProperties(SetToolkitPropertiesRequest request, AsyncCallback<String> callback);

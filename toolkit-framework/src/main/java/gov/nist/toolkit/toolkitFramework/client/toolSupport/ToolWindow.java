@@ -32,6 +32,8 @@ public abstract class ToolWindow {
 
 	private DockLayoutPanel tabTopRawPanel = new DockLayoutPanel(Style.Unit.EM);
 	private ScrollPanel innerPanel = new ScrollPanel();
+
+	// Tab content goes here
 	public FlowPanel tabTopPanel = new FlowPanel();
 	private FlowPanel eastPanel = new FlowPanel();
 	private FlowPanel westPanel = new FlowPanel();

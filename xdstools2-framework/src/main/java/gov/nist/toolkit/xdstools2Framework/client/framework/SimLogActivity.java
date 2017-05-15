@@ -3,13 +3,6 @@ package gov.nist.toolkit.xdstools2Framework.client.framework;
 import com.google.gwt.activity.shared.AbstractActivity;
 import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.user.client.ui.AcceptsOneWidget;
-import gov.nist.toolkit.actorfactory.client.SimId;
-import gov.nist.toolkit.actortransaction.client.ActorType;
-import gov.nist.toolkit.actortransaction.client.TransactionInstance;
-import gov.nist.toolkit.xdstools2.client.ToolWindow;
-import gov.nist.toolkit.xdstools2.client.tabs.SimulatorMessageViewTab;
-import gov.nist.toolkit.xdstools2.client.toolLauncher.ToolLauncher;
-import gov.nist.toolkit.xdstools2.client.util.activitiesAndPlaces.SimLog;
 
 /**
  *
@@ -40,7 +33,7 @@ public class SimLogActivity  extends AbstractActivity {
 //            simulatorMessageViewTab.loadTransactionInstanceDetails(transactionInstance);
 ////            xdstools2view.resizeToolkit();
 //            simulatorMessageViewTab.selectByMessageId(simLog.getMessageId());
-        }
+//        }
     }
 
 //    public void setSimLog(SimLog simLog) {

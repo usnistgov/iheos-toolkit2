@@ -2,6 +2,7 @@ package gov.nist.toolkit.toolkitFramework.client.service;
 
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import gov.nist.toolkit.toolkitFramework.client.toolSupport.command.CommandContext;
+import gov.nist.toolkit.toolkitFramework.shared.InitializationResponse;
 
 import java.util.List;
 
@@ -15,5 +16,8 @@ public interface FrameworkServiceAsync {
     void getMesaTestSessionNames(CommandContext request, AsyncCallback<List<String>> callback);
     void addMesaTestSession(CommandContext context, AsyncCallback<Boolean> callback);
     void delMesaTestSession(CommandContext context, AsyncCallback<Boolean> callback);
+    void getAdminPassword(CommandContext context,AsyncCallback<String> callback);
+    void getInitialization(CommandContext context,AsyncCallback<InitializationResponse> callback);
+    void getImplementationVersion(CommandContext context,AsyncCallback<String> callback);
 
 }
