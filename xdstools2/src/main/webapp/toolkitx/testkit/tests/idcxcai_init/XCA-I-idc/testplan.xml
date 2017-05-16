@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <TestPlan>
     <Test>XDSIDocumentLoad</Test>
-    <TestStep id="submit_doc1">
+    <TestStep id="submit_doc">
         <ExpectedStatus>Success</ExpectedStatus>
         <ProvideAndRegisterTransaction>
             <XDSb/>
@@ -11,7 +11,8 @@
             <Document id="Document01">kos-IDCDEPT001-a.dcm</Document>
         </ProvideAndRegisterTransaction>
     </TestStep>
-    <TestStep id="submit_doc2">
+<!--
+    <TestStep id="submit_doc">
         <ExpectedStatus>Success</ExpectedStatus>
         <ProvideAndRegisterTransaction>
             <XDSb/>
@@ -21,7 +22,7 @@
             <Document id="Document01">kos-IDCDEPT011-a.dcm</Document>
         </ProvideAndRegisterTransaction>
     </TestStep>
-    <TestStep id="submit_doc3">
+    <TestStep id="submit_doc">
         <ExpectedStatus>Success</ExpectedStatus>
         <ProvideAndRegisterTransaction>
             <XDSb/>
@@ -31,7 +32,7 @@
             <Document id="Document01">kos-IDCDEPT012-a.dcm</Document>
         </ProvideAndRegisterTransaction>
     </TestStep>
-    <TestStep id="submit_doc4">
+    <TestStep id="submit_doc">
         <ExpectedStatus>Success</ExpectedStatus>
         <ProvideAndRegisterTransaction>
             <XDSb/>
@@ -41,7 +42,7 @@
             <Document id="Document01">kos-IDCDEPT013-a.dcm</Document>
         </ProvideAndRegisterTransaction>
     </TestStep>
-    <TestStep id="submit_doc5">
+    <TestStep id="submit_doc">
         <ExpectedStatus>Success</ExpectedStatus>
         <ProvideAndRegisterTransaction>
             <XDSb/>
@@ -51,7 +52,7 @@
             <Document id="Document01">kos-IDCDEPT021-a.dcm</Document>
         </ProvideAndRegisterTransaction>
     </TestStep>
-    <TestStep id="submit_doc6">
+    <TestStep id="submit_doc">
         <ExpectedStatus>Success</ExpectedStatus>
         <ProvideAndRegisterTransaction>
             <XDSb/>
@@ -61,7 +62,7 @@
             <Document id="Document01">kos-IDCDEPT022-a.dcm</Document>
         </ProvideAndRegisterTransaction>
     </TestStep>
-    <TestStep id="submit_doc7">
+    <TestStep id="submit_doc">
         <ExpectedStatus>Success</ExpectedStatus>
         <ProvideAndRegisterTransaction>
             <XDSb/>
@@ -71,7 +72,7 @@
             <Document id="Document01">kos-IDCDEPT023-a.dcm</Document>
         </ProvideAndRegisterTransaction>
     </TestStep>
-    <TestStep id="submit_doc8">
+    <TestStep id="submit_doc">
         <ExpectedStatus>Success</ExpectedStatus>
         <ProvideAndRegisterTransaction>
             <XDSb/>
@@ -81,7 +82,7 @@
             <Document id="Document01">kos-IDCDEPT031-a.dcm</Document>
         </ProvideAndRegisterTransaction>
     </TestStep>
-    <TestStep id="submit_doc9">
+    <TestStep id="submit_doc">
         <ExpectedStatus>Success</ExpectedStatus>
         <ProvideAndRegisterTransaction>
             <XDSb/>
@@ -91,7 +92,7 @@
             <Document id="Document01">kos-IDCDEPT032-a.dcm</Document>
         </ProvideAndRegisterTransaction>
     </TestStep>
-    <TestStep id="submit_doc10">
+    <TestStep id="submit_doc">
         <ExpectedStatus>Success</ExpectedStatus>
         <ProvideAndRegisterTransaction>
             <XDSb/>
@@ -101,7 +102,7 @@
             <Document id="Document01">kos-IDCDEPT033-a.dcm</Document>
         </ProvideAndRegisterTransaction>
     </TestStep>
-    <TestStep id="submit_doc11">
+    <TestStep id="submit_doc">
         <ExpectedStatus>Success</ExpectedStatus>
         <ProvideAndRegisterTransaction>
             <XDSb/>
@@ -111,7 +112,7 @@
             <Document id="Document01">kos-IDCDEPT034-a.dcm</Document>
         </ProvideAndRegisterTransaction>
     </TestStep>
-    <TestStep id="submit_doc12">
+    <TestStep id="submit_doc">
         <ExpectedStatus>Success</ExpectedStatus>
         <ProvideAndRegisterTransaction>
             <XDSb/>
@@ -121,7 +122,7 @@
             <Document id="Document01">kos-IDCDEPT035-a.dcm</Document>
         </ProvideAndRegisterTransaction>
     </TestStep>
-    <TestStep id="submit_doc13">
+    <TestStep id="submit_doc">
         <ExpectedStatus>Success</ExpectedStatus>
         <ProvideAndRegisterTransaction>
             <XDSb/>
@@ -131,7 +132,7 @@
             <Document id="Document01">kos-IDCDEPT036-a.dcm</Document>
         </ProvideAndRegisterTransaction>
     </TestStep>
-    <TestStep id="submit_doc14">
+    <TestStep id="submit_doc">
         <ExpectedStatus>Success</ExpectedStatus>
         <ProvideAndRegisterTransaction>
             <XDSb/>
@@ -141,7 +142,7 @@
             <Document id="Document01">kos-IDCDEPT041-a.dcm</Document>
         </ProvideAndRegisterTransaction>
     </TestStep>
-    <TestStep id="submit_doc15">
+    <TestStep id="submit_doc">
         <ExpectedStatus>Success</ExpectedStatus>
         <ProvideAndRegisterTransaction>
             <XDSb/>
@@ -151,4 +152,5 @@
             <Document id="Document01">kos-IDCDEPT042-a.dcm</Document>
         </ProvideAndRegisterTransaction>
     </TestStep>
+-->
 </TestPlan>

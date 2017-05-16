@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<TestPlan>
+    <Test>FindDocuments/IG</Test>
+    <!--<RegistryEndpoint>http://localhost:9280/sim/default__rr_a/reg/sq</RegistryEndpoint>-->
+    <!--<RegistryEndpoint>http://localhost:9280/sim/default__rg_a/reg/sq</RegistryEndpoint>-->
+    <RegistryEndpoint>http://localhost:9280/sim/default__ig/ig/igq</RegistryEndpoint>
+    <TestStep id="findDocumentsByPid">
+        <ExpectedStatus>Success</ExpectedStatus>
+        <IGQTransaction>
+            <XDSb/>
+            <CleanParams/>
+            <MetadataFile>query.xml</MetadataFile>
+            <Report name="doc_uid" section="Result">
+                //*[local-name()='ExtrinsicObject'][1]/*[local-name()='ExternalIdentifier'][@identificationScheme='urn:uuid:2e82c1f6-a085-4c72-9da3-8640a32e42ab']/@value
+            </Report>
+        </IGQTransaction>
+    </TestStep>
+</TestPlan>

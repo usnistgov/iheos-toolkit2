@@ -17,6 +17,7 @@ import gov.nist.toolkit.sitemanagement.client.SiteSpec;
 import gov.nist.toolkit.xdstools2.client.command.command.BuildIIGTestOrchestrationCommand;
 import gov.nist.toolkit.xdstools2.client.command.command.BuildIdcxcaTestOrchestrationCommand;
 import gov.nist.toolkit.xdstools2.client.util.ClientUtils;
+import gov.nist.toolkit.xdstools2.client.widgets.OrchestrationSupportTestsDisplay;
 import gov.nist.toolkit.xdstools2.client.widgets.buttons.AbstractOrchestrationButton;
 import gov.nist.toolkit.xdstools2.shared.command.request.BuildIdcxcaTestOrchestrationRequest;
 import gov.nist.toolkit.xdstools2.shared.command.request.BuildIigTestOrchestrationRequest;
@@ -31,8 +32,9 @@ public class BuildIDCxcaTestOrchestrationButton extends AbstractOrchestrationBut
     private FlowPanel initializationResultsPanel = new FlowPanel();
     private TestContext testContext;
     private TestContextView testContextView;
+    private TestRunner testRunner;
 
-    BuildIDCxcaTestOrchestrationButton(ConformanceTestTab testTab, TestContext testContext, TestContextView testContextView, Panel initializationPanel, String label) {
+    BuildIDCxcaTestOrchestrationButton(ConformanceTestTab testTab, TestContext testContext, TestContextView testContextView, TestRunner testRunner, Panel initializationPanel, String label) {
         this.initializationPanel = initializationPanel;
         this.testTab = testTab;
         this.testContext = testContext;
@@ -87,6 +89,8 @@ public class BuildIDCxcaTestOrchestrationButton extends AbstractOrchestrationBut
         initializationPanel.add(instructions);
 
         setSystemDiagramUrl("diagrams/IIGdiagram.png");
+
+        this.testRunner = testRunner;
 
         setParentPanel(initializationPanel);
         setLabel(label);
@@ -174,6 +178,12 @@ public class BuildIDCxcaTestOrchestrationButton extends AbstractOrchestrationBut
                     }
                 }
                 initializationResultsPanel.add(table);
+
+                initializationResultsPanel.add(new HTML("<br />"));
+
+                initializationResultsPanel.add(new OrchestrationSupportTestsDisplay(orchResponse, testContext, testContextView, testRunner ));
+
+                initializationResultsPanel.add(new HTML("<br />"));
 
                 initializationResultsPanel.add(new HTML("<p>Configure your " +
                         "Initiating Imaging Gateway SUT to forward Retrieve Imaging " +

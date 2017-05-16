@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<TestPlan>
+    <Test>RetrieveKOS/IG</Test>
+    <!--<RegistryEndpoint>http://localhost:9280/sim/default__rg_a/rep/ret</RegistryEndpoint>-->
+    <RegistryEndpoint>http://localhost:9280/sim/default__ig/ig/gr</RegistryEndpoint>
+    <TestStep id="retrieveKOS">
+        <ExpectedStatus>Success</ExpectedStatus>
+        <!--<RetrieveTransaction>-->
+            <!--<XDSb/>-->
+            <!--<ExpectedMimeType>application/dicom</ExpectedMimeType>-->
+            <!--<UseReport test="idcxcai_init" section="XCA-I-idc"  step="submit_doc" reportName="Document01_uuid" useAs="$uid$"/>-->
+            <!--<MetadataFile>retrieve.xml</MetadataFile>-->
+        <!--</RetrieveTransaction>-->
+        <IGRTransaction>
+            <ExpectedMimeType>application/dicom</ExpectedMimeType>
+            <UseReport test="idcxcai_init" section="XCA-I-idc"  step="submit_doc" reportName="Document01_uuid" useAs="$uid$"/>
+            <MetadataFile>retrieve.xml</MetadataFile>
+        </IGRTransaction>
+    </TestStep>
+</TestPlan>

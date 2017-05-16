@@ -47,6 +47,7 @@ public class IdcxcaOrchestrationBuilder {
 
         String user = request.getUserName();
         String env = request.getEnvironmentName();
+        SimulatorConfig rep_a_SimulatorCongfig = null;
 
         try {
             for (Orchestra sim : Orchestra.values()) {
@@ -79,12 +80,24 @@ public class IdcxcaOrchestrationBuilder {
                     simConfig = api.getConfig(simId);
                 }
                 if (sim.name().equals(sutSimulatorName)) sutSimulatorConfig = simConfig;
+//                if (sim.name().equals("rr_a")) rep_a_SimulatorCongfig = simConfig;
+                if (sim.name().equals("rg_a")) rep_a_SimulatorCongfig = simConfig;
                 simConfigs.add(simConfig);
             }
 
             IdcxcaOrchestrationResponse response = new IdcxcaOrchestrationResponse();
             response.setSimulatorConfigs(simConfigs);
             response.setSUTSimulatorConfig(sutSimulatorConfig);
+
+            TestInstance initTest =
+                    TestInstanceManager.initializeTestInstance(request.getUserName(), new TestInstance("idcxcai_init"));
+            MessageItem initMsgItem = response.addMessage(initTest, true, "");
+            try {
+                util.submit(request.getUserName(), SiteBuilder.siteSpecFromSimId(rep_a_SimulatorCongfig.getId()), initTest);
+            } catch (Exception e) {
+                initMsgItem.setMessage("Initialization of " + rep_a_SimulatorCongfig.getId() + " failed:\n" + e.getMessage());
+                initMsgItem.setSuccess(false);
+            }
 
             return response;
 
@@ -96,7 +109,14 @@ public class IdcxcaOrchestrationBuilder {
     public enum Orchestra {
 
         rg_a("Responding Gateway A", ActorType.RESPONDING_GATEWAY, new SimulatorConfigElement[]{
-                new SimulatorConfigElement(SimulatorProperties.homeCommunityId, ParamType.TEXT, "urn:oid:1.3.6.1.4.1.21367.13.70.101")}),
+                new SimulatorConfigElement(SimulatorProperties.homeCommunityId, ParamType.TEXT, "urn:oid:1.3.6.1.4.1.21367.13.70.101"),
+                new SimulatorConfigElement(SimulatorProperties.VALIDATE_AGAINST_PATIENT_IDENTITY_FEED, ParamType.BOOLEAN, false) }),
+
+        rr_a("Repository Registry A", ActorType.REPOSITORY_REGISTRY, new SimulatorConfigElement[] {
+                new SimulatorConfigElement(SimulatorProperties.VALIDATE_AGAINST_PATIENT_IDENTITY_FEED, ParamType.BOOLEAN,
+                        false),
+                new SimulatorConfigElement(SimulatorProperties.repositoryUniqueId, ParamType.TEXT,
+                        "1.3.6.1.4.1.21367.13.71.101.1") }),
 
         rig_a("Responding Imaging Gateway A", ActorType.RESPONDING_IMAGING_GATEWAY, new SimulatorConfigElement[]{
                 new SimulatorConfigElement(SimulatorProperties.homeCommunityId, ParamType.TEXT, "urn:oid:1.3.6.1.4.1.21367.13.70.101"),
