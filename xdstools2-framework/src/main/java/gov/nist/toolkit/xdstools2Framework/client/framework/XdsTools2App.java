@@ -2,56 +2,56 @@ package gov.nist.toolkit.xdstools2Framework.client.framework;
 
 import com.google.gwt.activity.shared.ActivityManager;
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.place.shared.PlaceController;
 import com.google.gwt.place.shared.PlaceHistoryHandler;
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.Widget;
-import gov.nist.toolkit.toolkitFramework.client.testSession.TestSessionManager;
-import org.omg.PortableInterceptor.INACTIVE;
-
-import javax.inject.Inject;
+import gov.nist.toolkit.toolkitFramework.client.injector.ToolkitEventBus;
 
 /**
  *
  */
 public class XdsTools2App implements IsWidget {
     private static final TkGinInjector INJECTOR = TkGinInjector.INSTANCE;
-    private final EventBus eventBus = INJECTOR.getEventBus();
+    private final ToolkitEventBus eventBus = INJECTOR.getEventBus();
 
     private SimplePanel activityPanel = new SimplePanel();
 
-    @Inject
     private XdsTools2AppView appView;
-    private XdsTools2Presenter appPresenter;
-    private TestSessionManager testSessionManager;
 
     public XdsTools2App() {
+        GWT.log("In XdsTools2App");
+
         appView = INJECTOR.getXdsTools2AppView();
-        testSessionManager = INJECTOR.getTestSessionManager();
 
-        assert(appView != null);
-        assert(eventBus != null);
-        assert(testSessionManager != null);
-
-        appPresenter = INJECTOR.getXdsTools2AppPresenter();
-        appPresenter.setView(appView);
+        GWT.log("setting placecontroller");
 
         PlaceController placeController = INJECTOR.getPlaceController();
 
+        GWT.log("placecontroller set");
+
+
+        GWT.log("setView done");
         XdsTools2ActivityMapper activityMapper = new XdsTools2ActivityMapper();
         ActivityManager activityManager = new ActivityManager(activityMapper, eventBus);
         activityManager.setDisplay(activityPanel);
+
+        GWT.log("before mapper");
 
         XdsTools2AppPlaceHistoryMapper historyMapper = GWT.create(XdsTools2AppPlaceHistoryMapper.class);
         PlaceHistoryHandler historyHandler = new PlaceHistoryHandler(historyMapper);
 
         historyHandler.register(placeController, eventBus, new WelcomePlace("Welcome"));
 
+        GWT.log("adding view to activity panel");
+
         activityPanel.add(appView.asWidget());
 
-        historyHandler.handleCurrentHistory();
+        GWT.log("handle history");
+
+//        historyHandler.handleCurrentHistory();
+        GWT.log("end of app");
     }
 
     @Override
@@ -65,10 +65,6 @@ public class XdsTools2App implements IsWidget {
 
     public static TkGinInjector getInjector() {
         return INJECTOR;
-    }
-
-    public EventBus getEventBus() {
-        return eventBus;
     }
 
 

@@ -6,11 +6,11 @@ import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.logical.shared.ResizeEvent;
 import com.google.gwt.event.logical.shared.ResizeHandler;
-import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.*;
 import gov.nist.toolkit.toolkitFramework.client.environment.EnvironmentManager;
 import gov.nist.toolkit.toolkitFramework.client.events.ResizeToolkitEvent;
+import gov.nist.toolkit.toolkitFramework.client.injector.ToolkitEventBus;
 import gov.nist.toolkit.toolkitFramework.client.testSession.TestSessionManager;
 import gov.nist.toolkit.toolkitFramework.client.testSession.TestSessionSelector;
 import gov.nist.toolkit.toolkitFramework.client.toolSupport.TabContainer;
@@ -32,27 +32,20 @@ public class XdsTools2AppView implements MenuManagement {
 
 	private TestSessionManager testSessionManager;
 
-	private EventBus eventBus;
+	private ToolkitEventBus eventBus;
 
 	private HorizontalPanel uiDebugPanel = new HorizontalPanel();
 	boolean UIDebug = false;
 
 	@Inject
-	public XdsTools2AppView(TestSessionManager testSessionManager, EventBus eventBus) {
-		ME = this;
+	public XdsTools2AppView(TestSessionManager testSessionManager, ToolkitEventBus eventBus) {
 		this.testSessionManager = testSessionManager;
 		this.eventBus = eventBus;
+		ME = this;
 		GWT.log("In XdsTools2AppView");
-		assert(testSessionManager != null);
 		assert(eventBus != null);
+		assert(testSessionManager != null);
 	}
-
-//	static public XdsTools2AppView getInstance() {
-//		if (ME==null){
-//			ME=new XdsTools2AppView();
-//		}
-//		return ME;
-//	}
 
 	public void setWidget(IsWidget isWidget) {
 		mainSplitPanel.add(isWidget.asWidget());
@@ -150,4 +143,11 @@ public class XdsTools2AppView implements MenuManagement {
 		mainMenuPanel.add(w);
 	}
 
+	public void setTestSessionManager(TestSessionManager testSessionManager) {
+		this.testSessionManager = testSessionManager;
+	}
+
+	public void setEventBus(ToolkitEventBus eventBus) {
+		this.eventBus = eventBus;
+	}
 }

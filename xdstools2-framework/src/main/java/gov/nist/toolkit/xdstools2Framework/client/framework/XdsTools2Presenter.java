@@ -1,10 +1,10 @@
 package gov.nist.toolkit.xdstools2Framework.client.framework;
 
 
-import com.google.gwt.event.shared.EventBus;
 import gov.nist.toolkit.toolkitFramework.client.commands.InitializationCommand;
 import gov.nist.toolkit.toolkitFramework.client.environment.EnvironmentState;
 import gov.nist.toolkit.toolkitFramework.client.events.SystemsNeedReloadingEvent;
+import gov.nist.toolkit.toolkitFramework.client.injector.ToolkitEventBus;
 import gov.nist.toolkit.toolkitFramework.client.testSession.TestSessionManager;
 import gov.nist.toolkit.toolkitFramework.client.util.CurrentCommandContext;
 import gov.nist.toolkit.toolkitFramework.client.widgets.PopupMessage;
@@ -24,21 +24,20 @@ public class XdsTools2Presenter {
     private String wikiBaseUrl;
 
     @Inject
-    EnvironmentState environmentState;
+    private EnvironmentState environmentState;
 
     @Inject
-    TestSessionManager testSessionManager;
+    private TestSessionManager testSessionManager;
 
     @Inject
-    EventBus eventBus;
+    private ToolkitEventBus eventBus;
 
-    XdsTools2AppView view;
+    @Inject
+    private XdsTools2AppView view;
 
     public XdsTools2Presenter() {
         INSTANCE = this;
     }
-
-    public void setView(XdsTools2AppView view) { this.view = view; }
 
     public void blockHomeTab() { enableHomeTab = false; }
 
@@ -136,4 +135,19 @@ public class XdsTools2Presenter {
     public void setWikiBaseUrl(String wikiBaseUrl) {
         this.wikiBaseUrl = wikiBaseUrl;
     }
+
+    public void setEnvironmentState(EnvironmentState environmentState) {
+        this.environmentState = environmentState;
+    }
+
+    public void setTestSessionManager(TestSessionManager testSessionManager) {
+        this.testSessionManager = testSessionManager;
+    }
+
+    public void setEventBus(ToolkitEventBus eventBus) {
+        this.eventBus = eventBus;
+    }
+
+    public void setView(XdsTools2AppView view) { this.view = view; }
+
 }
