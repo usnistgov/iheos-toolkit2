@@ -135,7 +135,7 @@ public class XMLErrorRecorder implements IErrorRecorder {
         // Log errors if any
         logger.debug(ExceptionUtil.here("err - " + _msg));
         if (_severity.indexOf("Error") != -1)
-            System.out.println("Got Error");
+            logger.debug("Got Error");
 
         // Prepare parameters for logging
         boolean isWarning = (_severity == null) ? false : ((_severity.indexOf("Warning") != -1));
@@ -244,12 +244,12 @@ public class XMLErrorRecorder implements IErrorRecorder {
     void success(String _dts, String _name, String _found, String _expected, String _RFC) {
         // public void success(Assertion _assertion, String _location, String _detail) {
 
-        println("success-1")
+        logger.debug("success-1")
         // Generate the new element
         def sw = new StringWriter()
         def builder = new MarkupBuilder(sw)
 
-        //TODO
+        // TODO
         /*
         builder.Success(dts:_dts, validatorModule:_validatorModule){
             Assertion(text:_assertion.getErrorMessage(), resource:_assertion.getLocation(),
