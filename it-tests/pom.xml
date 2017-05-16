@@ -215,6 +215,34 @@
                     </execution>
                 </executions>
             </plugin>
+            <plugin>
+                <groupId>org.eclipse.jetty</groupId>
+                <artifactId>jetty-maven-plugin</artifactId>
+                <version>9.2.21.v20170120</version>
+                <configuration>
+                    <!-- Enter any systemProperties here. -->
+                    <jettyXml>${basedir}/src/test/etc/jetty.xml,${basedir}/src/test/etc/jetty-http.xml,${basedir}/src/test/etc/jetty-https.xml,${basedir}/src/test/etc/jetty-ssl.xml,${basedir}/src/test/etc/jetty-logging.xml</jettyXml>
+                    <war>../xdstools2/target/xdstools2-${project.version}.war</war>
+                    <stopKey>alpha</stopKey>
+                    <stopPort>9099</stopPort>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>start-jetty</id>
+                        <phase>pre-integration-test</phase>
+                        <goals>
+                            <goal>deploy-war</goal>
+                        </goals>
+                    </execution>
+                    <execution>
+                        <id>stop-jetty</id>
+                        <phase>post-integration-test</phase>
+                        <goals>
+                            <goal>stop</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
         </plugins>
     </build>
 </project>

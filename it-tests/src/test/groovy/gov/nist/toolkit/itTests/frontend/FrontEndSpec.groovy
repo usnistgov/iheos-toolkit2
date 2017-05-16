@@ -6,9 +6,12 @@ import com.gargoylesoftware.htmlunit.WebClient
 import com.gargoylesoftware.htmlunit.WebRequest
 import com.gargoylesoftware.htmlunit.html.HtmlImage
 import com.gargoylesoftware.htmlunit.html.HtmlPage
+import org.w3c.dom.html.HTMLElement
 import spock.lang.Shared
 import spock.lang.Specification
+import spock.lang.Stepwise
 
+@Stepwise
 class FrontEndSpec extends Specification {
     @Shared
     WebClient webClient
@@ -17,8 +20,26 @@ class FrontEndSpec extends Specification {
 
 
     def setupSpec() {
-        webClient = new WebClient(BrowserVersion.FIREFOX_52);
+        webClient = new WebClient(BrowserVersion.FIREFOX_52)
 
+
+
+        page = webClient.getPage("http://localhost:8888/#ConfActor:default/default/reg")
+
+
+
+//         page = webClient.getPage("http://localhost:8888/Xdstools2.html#ConfActor:default/default/reg");
+//           page = webClient.getPage("http://localhost:8888/")
+//        page = webClient.getPage("http://ihexds.nist.gov:12093/xdstools4/#ConfActor:default/default/reg");
+
+
+        webClient.getOptions().setJavaScriptEnabled(true)
+        webClient.getOptions().setTimeout(60000*5)
+        webClient.setJavaScriptTimeout(60000*5)
+        webClient.waitForBackgroundJavaScript(60000*5)
+        webClient.getOptions().setPopupBlockerEnabled(false)
+
+        webClient.getCache().clear();
         webClient.setAjaxController(new AjaxController(){
             @Override
             public boolean processSynchron(HtmlPage page, WebRequest request, boolean async)
@@ -27,9 +48,7 @@ class FrontEndSpec extends Specification {
             }
         });
 
-        webClient.setJavaScriptTimeout(600000)
-        webClient.waitForBackgroundJavaScript(600000)
-        page = webClient.getPage("http://ihexds.nist.gov:12093/xdstools4/#ConfActor:default/default/reg");
+
     }
     def cleanupSpec() {
     }
@@ -38,36 +57,59 @@ class FrontEndSpec extends Specification {
     def cleanup() {
     }
 
-    def 'Test Access'() {
+    def 'Test Website Title'() {
         when:
         final xdsTitle = "XDS Toolkit"
 
         then:
+        println "Test Website title is running"
         xdsTitle == page.getTitleText()
     }
 
-    def 'Test FindElement'() {
+
+    def 'Test Registry ConfActor RunAll'() {
         when:
         HtmlPage page2 = null
+
+        List<HTMLElement> elementList = page.getByXPath("//div[@class='gwt-DialogBox']")
+        if (elementList!=null && elementList.size()>0) {
+            println "*** Found an unexpected dialogBox!!" + elementList.size()
+            HTMLElement el = elementList.get(0)
+            println el.getTextContent()
+            println el.toString()
+        }
+
+
+        boolean waitingMessageFound = false
         while(page.asText().contains("Initializing...") || page.asText().contains("Loading...")){
+            waitingMessageFound = true
             webClient.waitForBackgroundJavaScript(500)
         }
 
-        and:
+        if (!waitingMessageFound) {
+            print page.asXml()
+            println "waitingMessage is not Found. Retrying"
+            while(!page.asText().contains("Testing Environment") && page.asText().contains("Option")){
+                webClient.waitForBackgroundJavaScript(1000)
+            }
+            print "done."
+        }
+
+
         NodeList imgNl = page.getElementsByTagName("img")
         final Iterator<HtmlImage> nodesIterator = imgNl.iterator()
         // now iterate
 
-        and:
         println "begin page.asText()"
+        println page.asText()
         int failuresIdx = page.asText().indexOf("Failures")
         println page.asText().substring(failuresIdx,failuresIdx+20)
         println "end."
         for (HtmlImage img : nodesIterator) {
-               if ("icons2/play-32.png".equals(img.getSrcAttribute())) {
+               if ("icons2/play-32.png".equals(img.getSrcAttribute())) { // The big Run All HTML image button
                    println "img src is --> " + img.getSrcAttribute()
-                   page2 = img.click(false,false,false);
-                   webClient.waitForBackgroundJavaScript(600000)
+                   page2 = img.click(false,false,false)
+                   webClient.waitForBackgroundJavaScript(60000)
 
                    println "Running"
                    while(page2.asText().contains("Running...")){
