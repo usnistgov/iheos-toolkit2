@@ -1,5 +1,3 @@
 findDocumentsByPid
 retrieveKOS
-selftest-rad-69
-validate-request
-validate-images
+retrieveImage
