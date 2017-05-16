@@ -13,9 +13,9 @@ class AssertionsLoaderTest extends Specification {
             AssertionLibrary ASSERTIONLIBRARY = AssertionLibrary.getInstance();
 
             when: 'Load assertions from file into Assertion Library'
-            System.out.println("\n" + "Reset Assertions Library and load test assertions file...")
+            logger.debug("\n" + "Reset Assertions Library and load test assertions file...")
             ASSERTIONLIBRARY.loadAssertions(testFile)
-            System.out.println(ASSERTIONLIBRARY.toString());
+            logger.debug(ASSERTIONLIBRARY.toString());
 
             then: 'Check size of Assertion Library, check contents'
             ASSERTIONLIBRARY.size() == 1

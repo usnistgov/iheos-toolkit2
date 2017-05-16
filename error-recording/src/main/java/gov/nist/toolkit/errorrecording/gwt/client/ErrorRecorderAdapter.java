@@ -203,7 +203,7 @@ public class ErrorRecorderAdapter {
 				StringWriter writer = new StringWriter();
 				t.merge( context, writer );
 				// show the World
-				//System.out.println( writer.toString() );
+				//logger.debug( writer.toString() );
 				res = writer.toString();
 			} catch(Exception e) {
 				e.printStackTrace();

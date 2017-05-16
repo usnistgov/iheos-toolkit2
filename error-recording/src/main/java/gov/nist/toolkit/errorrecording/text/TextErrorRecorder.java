@@ -1,10 +1,11 @@
 package gov.nist.toolkit.errorrecording.text;
 
 import gov.nist.toolkit.errorrecording.IErrorRecorder;
-import gov.nist.toolkit.errorrecording.gwt.client.GwtValidatorErrorItem;
-import gov.nist.toolkit.errorrecording.common.XdsErrorCode.Code;
-import gov.nist.toolkit.errorrecording.xml.assertions.Assertion;
 import gov.nist.toolkit.errorrecording.IErrorRecorderBuilder;
+import gov.nist.toolkit.errorrecording.common.XdsErrorCode.Code;
+import gov.nist.toolkit.errorrecording.gwt.client.GwtValidatorErrorItem;
+import gov.nist.toolkit.errorrecording.xml.assertions.Assertion;
+import org.apache.log4j.Logger;
 
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
@@ -12,6 +13,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class TextErrorRecorder implements IErrorRecorder {
+	static Logger logger = Logger.getLogger(TextErrorRecorder.class);
+
 	List<IErrorRecorder> children = new ArrayList<>();
 
 	public class ErrorInfo {
@@ -92,7 +95,7 @@ public class TextErrorRecorder implements IErrorRecorder {
 	}
 	
 	public void showErrorInfo() {
-		System.out.println(toString());
+		logger.debug(toString());
 	}
 
 	public String toString() {
