@@ -239,9 +239,43 @@ public class XMLErrorRecorder implements IErrorRecorder {
         detail(name + " " + found);
     }
 
+    // TODO needs to be updated with Assertions - Not tested
     @Override
-    void success(String dts, String name, String found, String expected, String RFC) {
+    void success(String _dts, String _name, String _found, String _expected, String _RFC) {
+        // public void success(Assertion _assertion, String _location, String _detail) {
 
+        println("success-1")
+        // Generate the new element
+        def sw = new StringWriter()
+        def builder = new MarkupBuilder(sw)
+
+        //TODO
+        /*
+        builder.Success(dts:_dts, validatorModule:_validatorModule){
+            Assertion(text:_assertion.getErrorMessage(), resource:_assertion.getLocation(),
+                    gazelleScheme:_assertion.getGazelleScheme(), gazelleAssertionID:_assertion.getGazelleAssertionID()){
+                Detail(_detail);
+                Location(_location);
+            }
+        }
+        */
+
+        // Parse and add
+        errXml = errXml.concat(sw.toString() + "\n")
+        hasErrors = true;
+
+        /** --In GWT
+        tagLastInfo2();
+        GwtValidatorErrorItem ei = new GwtValidatorErrorItem();
+        ei.level = GwtValidatorErrorItem.ReportingLevel.D_SUCCESS;
+        ei.dts = dts;
+        ei.name = name;
+        ei.found = found;
+        ei.expected = expected;
+        ei.rfc = RFC;
+        ei.status = "Success";
+        errMsgs.add(ei);
+         **/
     }
 /**
  * Not used / Not tested
@@ -253,7 +287,7 @@ public class XMLErrorRecorder implements IErrorRecorder {
  */
     @Override
     public void success(String _location, String _resource) {
-        println("success")
+        println("success-2")
 
         // Generate the new element
         def sw = new StringWriter()
@@ -277,10 +311,11 @@ public class XMLErrorRecorder implements IErrorRecorder {
         //errRecords.add(el)
     }
 
-    // Not used / Not tested
     @Override
     public void test(boolean good, String dts, String name, String found, String expected, String RFC) {
-        println("NYI-test")
+        println("test")
+        if (good) success(dts, name, found, expected, RFC);
+        else error(dts, name, found, expected, RFC);
     }
 
     // Not used / Not tested
