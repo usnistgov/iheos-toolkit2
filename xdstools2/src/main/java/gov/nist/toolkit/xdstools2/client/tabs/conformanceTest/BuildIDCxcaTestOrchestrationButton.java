@@ -194,58 +194,40 @@ public class BuildIDCxcaTestOrchestrationButton extends AbstractOrchestrationBut
 
     @SuppressWarnings("javadoc")
 
+    // The actual SimulatorConfigElemnts are defined in IdcxcaOrchestrationBuilder on the server. They will be picked up from there.
+    // This is just to pick the relevant sims and organize display client-side.
     public enum Orchestra {
 
-        rg_a("Responding Gateway A", ActorType.RESPONDING_GATEWAY, new SimulatorConfigElement[]{
-                new SimulatorConfigElement(SimulatorProperties.homeCommunityId, ParamType.TEXT, "urn:oid:1.3.6.1.4.1.21367.13.70.101")}),
+        rg_a("Responding Gateway A", ActorType.RESPONDING_GATEWAY),
 
-        rig_a("Responding Imaging Gateway A", ActorType.RESPONDING_IMAGING_GATEWAY, new SimulatorConfigElement[]{
-                new SimulatorConfigElement(SimulatorProperties.homeCommunityId, ParamType.TEXT, "urn:oid:1.3.6.1.4.1.21367.13.70.101"),
-                new SimulatorConfigElement(SimulatorProperties.imagingDocumentSources, ParamType.SELECTION, new String[]{"${user}__ids_a1", "${user}__ids_a2"}, true)}),
+        rig_a("Responding Imaging Gateway A", ActorType.RESPONDING_IMAGING_GATEWAY),
 
-        ids_a1("Imaging Document Source A1", ActorType.IMAGING_DOC_SOURCE, new SimulatorConfigElement[]{
-                new SimulatorConfigElement(SimulatorProperties.idsRepositoryUniqueId, ParamType.TEXT, "1.3.6.1.4.1.21367.13.71.101"),
-                new SimulatorConfigElement(SimulatorProperties.idsImageCache, ParamType.TEXT, "xca-dataset-a1")}),
+        ids_a1("Imaging Document Source A1", ActorType.IMAGING_DOC_SOURCE),
 
-        ids_a2("Imaging Document Source A2", ActorType.IMAGING_DOC_SOURCE, new SimulatorConfigElement[]{
-                new SimulatorConfigElement(SimulatorProperties.idsRepositoryUniqueId, ParamType.TEXT, "1.3.6.1.4.1.21367.13.71.101.1"),
-                new SimulatorConfigElement(SimulatorProperties.idsImageCache, ParamType.TEXT, "xca-dataset-a2")}),
+        ids_a2("Imaging Document Source A2", ActorType.IMAGING_DOC_SOURCE),
 
-        rg_b("Responding Gateway B", ActorType.RESPONDING_GATEWAY, new SimulatorConfigElement[]{
-                new SimulatorConfigElement(SimulatorProperties.homeCommunityId, ParamType.TEXT, "urn:oid:1.3.6.1.4.1.21367.13.70.102")}),
+        rg_b("Responding Gateway B", ActorType.RESPONDING_GATEWAY),
 
-        rig_b("Responding Imaging Gateway B", ActorType.RESPONDING_IMAGING_GATEWAY, new SimulatorConfigElement[]{
-                new SimulatorConfigElement(SimulatorProperties.homeCommunityId, ParamType.TEXT, "urn:oid:1.3.6.1.4.1.21367.13.70.102"),
-                new SimulatorConfigElement(SimulatorProperties.imagingDocumentSources, ParamType.SELECTION, new String[]{"${user}__ids_b1"}, true)}),
+        rig_b("Responding Imaging Gateway B", ActorType.RESPONDING_IMAGING_GATEWAY),
 
-        ids_b1("Imaging Document Source B1", ActorType.IMAGING_DOC_SOURCE, new SimulatorConfigElement[]{
-                new SimulatorConfigElement(SimulatorProperties.idsRepositoryUniqueId, ParamType.TEXT, "1.3.6.1.4.1.21367.13.71.102"),
-                new SimulatorConfigElement(SimulatorProperties.idsImageCache, ParamType.TEXT, "xca-dataset-b")}),
+        ids_b1("Imaging Document Source B1", ActorType.IMAGING_DOC_SOURCE),
 
-        ig("Initiating Gateway", ActorType.INITIATING_GATEWAY, new SimulatorConfigElement[]{
-                new SimulatorConfigElement(SimulatorProperties.respondingGateways, ParamType.SELECTION, new String[]{"${user}__rg_a", "${user__rg_b"}, true)}),
+        ig("Initiating Gateway", ActorType.INITIATING_GATEWAY),
 
-        iig("Initiating Imaging Gateway", ActorType.INITIATING_IMAGING_GATEWAY, new SimulatorConfigElement[]{
-                new SimulatorConfigElement(SimulatorProperties.respondingImagingGateways, ParamType.SELECTION, new String[]{"${user}__rig_a", "${user}__rig_b"}, true)}),
+        iig("Initiating Imaging Gateway", ActorType.INITIATING_IMAGING_GATEWAY),
 
-        simulator_idc("Simulated IDC-XCAI SUT", ActorType.IMAGING_DOC_CONSUMER_XCA, new SimulatorConfigElement[]{});
+        simulator_idc("Simulated IDC-XCAI SUT", ActorType.IMAGING_DOC_CONSUMER_XCA);
 
         public final String title;
         public final ActorType actorType;
-        public final SimulatorConfigElement[] elements;
 
-        Orchestra(String title, ActorType actorType, SimulatorConfigElement[] elements) {
+        Orchestra(String title, ActorType actorType) {
             this.title = title;
             this.actorType = actorType;
-            this.elements = elements;
         }
 
         public ActorType getActorType() {
             return actorType;
-        }
-
-        public SimulatorConfigElement[] getElements() {
-            return elements;
         }
 
         public String[] getDisplayProps() {

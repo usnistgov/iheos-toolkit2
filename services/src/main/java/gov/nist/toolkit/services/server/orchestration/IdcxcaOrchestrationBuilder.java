@@ -106,39 +106,52 @@ public class IdcxcaOrchestrationBuilder {
         }
     } // EO build test environment
 
+
+    private static final String HOME_COMMUNITY_ID_A = "urn:oid:1.3.6.1.4.1.21367.13.70.101";
+    private static final String RG_A_REPOSITORY_UID = "1.3.6.1.4.1.21367.13.70.101.1";
+    private static final String IDS_A1_REPOSITORY_UID = "1.3.6.1.4.1.21367.13.70.101.2";
+    private static final String IDS_A2_REPOSITORY_UID = "1.3.6.1.4.1.21367.13.70.101.3";
+
+    private static final String HOME_COMMUNITY_ID_B = "urn:oid:1.3.6.1.4.1.21367.13.70.102";
+    private static final String RG_B_REPOSITORY_UID = "1.3.6.1.4.1.21367.13.70.102.1";
+    private static final String IDS_B1_REPOSITORY_UID = "1.3.6.1.4.1.21367.13.70.102.2";
+
     public enum Orchestra {
 
         rg_a("Responding Gateway A", ActorType.RESPONDING_GATEWAY, new SimulatorConfigElement[]{
-                new SimulatorConfigElement(SimulatorProperties.homeCommunityId, ParamType.TEXT, "urn:oid:1.3.6.1.4.1.21367.13.70.101"),
+                new SimulatorConfigElement(SimulatorProperties.homeCommunityId, ParamType.TEXT, HOME_COMMUNITY_ID_A),
+                new SimulatorConfigElement(SimulatorProperties.repositoryUniqueId, ParamType.TEXT, RG_A_REPOSITORY_UID),
                 new SimulatorConfigElement(SimulatorProperties.VALIDATE_AGAINST_PATIENT_IDENTITY_FEED, ParamType.BOOLEAN, false) }),
 
-        rr_a("Repository Registry A", ActorType.REPOSITORY_REGISTRY, new SimulatorConfigElement[] {
-                new SimulatorConfigElement(SimulatorProperties.VALIDATE_AGAINST_PATIENT_IDENTITY_FEED, ParamType.BOOLEAN,
-                        false),
-                new SimulatorConfigElement(SimulatorProperties.repositoryUniqueId, ParamType.TEXT,
-                        "1.3.6.1.4.1.21367.13.71.101.1") }),
+//        rr_a("Repository Registry A", ActorType.REPOSITORY_REGISTRY, new SimulatorConfigElement[] {
+//                new SimulatorConfigElement(SimulatorProperties.VALIDATE_AGAINST_PATIENT_IDENTITY_FEED, ParamType.BOOLEAN,
+//                        false),
+//                new SimulatorConfigElement(SimulatorProperties.repositoryUniqueId, ParamType.TEXT,
+//                        "1.3.6.1.4.1.21367.13.71.101.1") }),
 
         rig_a("Responding Imaging Gateway A", ActorType.RESPONDING_IMAGING_GATEWAY, new SimulatorConfigElement[]{
-                new SimulatorConfigElement(SimulatorProperties.homeCommunityId, ParamType.TEXT, "urn:oid:1.3.6.1.4.1.21367.13.70.101"),
+                new SimulatorConfigElement(SimulatorProperties.homeCommunityId, ParamType.TEXT, HOME_COMMUNITY_ID_A),
                 new SimulatorConfigElement(SimulatorProperties.imagingDocumentSources, ParamType.SELECTION, new String[]{"${user}__ids_a1", "${user}__ids_a2"}, true)}),
 
         ids_a1("Imaging Document Source A1", ActorType.IMAGING_DOC_SOURCE, new SimulatorConfigElement[]{
-                new SimulatorConfigElement(SimulatorProperties.idsRepositoryUniqueId, ParamType.TEXT, "1.3.6.1.4.1.21367.13.71.101"),
+                new SimulatorConfigElement(SimulatorProperties.idsRepositoryUniqueId, ParamType.TEXT, IDS_A1_REPOSITORY_UID),
                 new SimulatorConfigElement(SimulatorProperties.idsImageCache, ParamType.TEXT, "xca-dataset-a1")}),
 
         ids_a2("Imaging Document Source A2", ActorType.IMAGING_DOC_SOURCE, new SimulatorConfigElement[]{
-                new SimulatorConfigElement(SimulatorProperties.idsRepositoryUniqueId, ParamType.TEXT, "1.3.6.1.4.1.21367.13.71.101.1"),
+                new SimulatorConfigElement(SimulatorProperties.idsRepositoryUniqueId, ParamType.TEXT, IDS_A2_REPOSITORY_UID),
                 new SimulatorConfigElement(SimulatorProperties.idsImageCache, ParamType.TEXT, "xca-dataset-a2")}),
 
         rg_b("Responding Gateway B", ActorType.RESPONDING_GATEWAY, new SimulatorConfigElement[]{
-                new SimulatorConfigElement(SimulatorProperties.homeCommunityId, ParamType.TEXT, "urn:oid:1.3.6.1.4.1.21367.13.70.102")}),
+                new SimulatorConfigElement(SimulatorProperties.repositoryUniqueId, ParamType.TEXT, RG_B_REPOSITORY_UID),
+                new SimulatorConfigElement(SimulatorProperties.homeCommunityId, ParamType.TEXT, HOME_COMMUNITY_ID_B),
+                new SimulatorConfigElement(SimulatorProperties.VALIDATE_AGAINST_PATIENT_IDENTITY_FEED, ParamType.BOOLEAN, false) }),
 
         rig_b("Responding Imaging Gateway B", ActorType.RESPONDING_IMAGING_GATEWAY, new SimulatorConfigElement[]{
-                new SimulatorConfigElement(SimulatorProperties.homeCommunityId, ParamType.TEXT, "urn:oid:1.3.6.1.4.1.21367.13.70.102"),
+                new SimulatorConfigElement(SimulatorProperties.homeCommunityId, ParamType.TEXT, HOME_COMMUNITY_ID_B),
                 new SimulatorConfigElement(SimulatorProperties.imagingDocumentSources, ParamType.SELECTION, new String[]{"${user}__ids_b1"}, true)}),
 
         ids_b1("Imaging Document Source B1", ActorType.IMAGING_DOC_SOURCE, new SimulatorConfigElement[]{
-                new SimulatorConfigElement(SimulatorProperties.idsRepositoryUniqueId, ParamType.TEXT, "1.3.6.1.4.1.21367.13.71.102"),
+                new SimulatorConfigElement(SimulatorProperties.idsRepositoryUniqueId, ParamType.TEXT, IDS_B1_REPOSITORY_UID),
                 new SimulatorConfigElement(SimulatorProperties.idsImageCache, ParamType.TEXT, "xca-dataset-b")}),
 
         ig("Initiating Gateway", ActorType.INITIATING_GATEWAY, new SimulatorConfigElement[]{

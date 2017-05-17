@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<TestPlan>
+    <Test>RetrieveImage/IIG</Test>
+    <RegistryEndpoint>http://localhost:9280/sim/default__iig/iig/ret.iig</RegistryEndpoint>
+    <TestStep id="retrieveImage">
+        <Goal>Imaging Document Set Retrieve of a single image from Home Community B</Goal>
+        <ExpectedStatus>Success</ExpectedStatus>
+        <ImagingDocSetIigRetrieveTransaction>
+            <MetadataFile>retrieve.xml</MetadataFile>
+        </ImagingDocSetIigRetrieveTransaction>
+    </TestStep>
+</TestPlan>

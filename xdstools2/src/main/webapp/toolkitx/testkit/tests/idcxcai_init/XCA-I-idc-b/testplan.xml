@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<TestPlan>
+    <Test>XDSIDocumentLoad</Test>
+    <RegistryEndpoint>http://localhost:9280/sim/default__rg_b/rep/prb</RegistryEndpoint>
+    <TestStep id="submit_doc1">
+        <ExpectedStatus>Success</ExpectedStatus>
+        <ProvideAndRegisterTransaction>
+            <XDSb/>
+            <AssignUuids/>
+            <NoPatientId/>
+            <MetadataFile>metadata-IDCDEPT001-a.xml</MetadataFile>
+            <Document id="Document01">kos-IDCDEPT001-a.dcm</Document>
+        </ProvideAndRegisterTransaction>
+    </TestStep>
+</TestPlan>
