@@ -2,7 +2,7 @@
 <TestPlan>
     <Test>RetrieveKOS/IG</Test>
     <!--<RegistryEndpoint>http://localhost:9280/sim/default__rg_a/rep/ret</RegistryEndpoint>-->
-    <RegistryEndpoint>http://localhost:9280/sim/default__ig/ig/gr</RegistryEndpoint>
+    <RegistryEndpoint>http://localhost:9280/sim/default__ig/ig/igr</RegistryEndpoint>
     <TestStep id="retrieveKOS">
         <ExpectedStatus>Success</ExpectedStatus>
         <!--<RetrieveTransaction>-->
