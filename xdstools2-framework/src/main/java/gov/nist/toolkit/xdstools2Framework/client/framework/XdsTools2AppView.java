@@ -34,17 +34,24 @@ public class XdsTools2AppView implements MenuManagement {
 
 	private ToolkitEventBus eventBus;
 
+	private EnvironmentManager environmentManager;
+
+	private TabContainer tabContainer;
+
 	private HorizontalPanel uiDebugPanel = new HorizontalPanel();
 	boolean UIDebug = false;
 
 	@Inject
-	public XdsTools2AppView(TestSessionManager testSessionManager, ToolkitEventBus eventBus) {
+	public XdsTools2AppView(TestSessionManager testSessionManager, EnvironmentManager environmentManager, TabContainer tabContainer, ToolkitEventBus eventBus) {
 		this.testSessionManager = testSessionManager;
+		this.environmentManager = environmentManager;
+		this.tabContainer = tabContainer;
 		this.eventBus = eventBus;
 		ME = this;
 		GWT.log("In XdsTools2AppView");
 		assert(eventBus != null);
 		assert(testSessionManager != null);
+		buildTabsWrapper();
 	}
 
 	public void setWidget(IsWidget isWidget) {
@@ -57,7 +64,6 @@ public class XdsTools2AppView implements MenuManagement {
 
 	public void buildTabsWrapper() {
 		HorizontalPanel menuPanel = new HorizontalPanel();
-		EnvironmentManager environmentManager = new EnvironmentManager();
 
 		Widget decoratedTray = decorateMenuContainer();
 
@@ -74,8 +80,10 @@ public class XdsTools2AppView implements MenuManagement {
 
 		DockLayoutPanel mainPanel = new DockLayoutPanel(Style.Unit.EM);
 		mainPanel.addNorth(menuPanel, 4);
-		mainPanel.add(TabContainer.getTabPanel());
+		mainPanel.add(tabContainer.getTabPanel());
 		mainSplitPanel.add(mainPanel);
+
+		mainPanel.add(new Label("Hello World"));
 
 		Window.addResizeHandler(new ResizeHandler() {
 			@Override

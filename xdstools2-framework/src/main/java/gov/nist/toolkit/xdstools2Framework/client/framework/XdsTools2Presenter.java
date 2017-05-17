@@ -17,26 +17,25 @@ import javax.inject.Inject;
  * to the data() method and I'm lazy.
  */
 public class XdsTools2Presenter {
-    private static XdsTools2Presenter INSTANCE;
     private boolean enableHomeTab = true;
     private String toolkitName;
     private String toolkitBaseUrl;
     private String wikiBaseUrl;
 
-    @Inject
     private EnvironmentState environmentState;
 
-    @Inject
     private TestSessionManager testSessionManager;
 
-    @Inject
     private ToolkitEventBus eventBus;
 
-    @Inject
     private XdsTools2AppView view;
 
-    public XdsTools2Presenter() {
-        INSTANCE = this;
+    @Inject
+    public XdsTools2Presenter(EnvironmentState environmentState, TestSessionManager testSessionManager, XdsTools2AppView view, ToolkitEventBus eventBus) {
+        this.environmentState = environmentState;
+        this.testSessionManager = testSessionManager;
+        this.view = view;
+        this.eventBus = eventBus;
     }
 
     public void blockHomeTab() { enableHomeTab = false; }

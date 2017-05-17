@@ -38,18 +38,17 @@ public abstract class ToolWindow {
 	private FlowPanel eastPanel = new FlowPanel();
 	private FlowPanel westPanel = new FlowPanel();
 
-	public HorizontalPanel menuPanel = new HorizontalPanel();
-	protected TabContainer tabContainer;
-	String helpHTML;
-	String topMessage = null;
+	private  HorizontalPanel menuPanel = new HorizontalPanel();
+	private String helpHTML;
+	private String topMessage = null;
 
-	@Inject
-	EnvironmentManager environmentManager;
+	private EnvironmentManager environmentManager;
 
-	@Inject
-	TestSessionManager testSessionManager;
+	private TestSessionManager testSessionManager;
 
-	protected String tabName=new String();
+	private TabContainer tabContainer;
+
+	private  String tabName=new String();
 
 	public abstract Widget buildUI();
 	public abstract void bindUI();
@@ -57,7 +56,12 @@ public abstract class ToolWindow {
 	// getWindowShortName() + ".html"is documentation file in /doc
 	abstract public String getWindowShortName();
 
-	public ToolWindow() {
+	@Inject
+	public ToolWindow(EnvironmentManager environmentManager, TestSessionManager testSessionManager, TabContainer tabContainer) {
+		this.environmentManager = environmentManager;
+		this.testSessionManager = testSessionManager;
+		this.tabContainer = tabContainer;
+
 		String title = getTitle();
 		// .addNorth MUST come before .display - a condition of DockLayoutPanel
 		if (title != null)
@@ -110,7 +114,7 @@ public abstract class ToolWindow {
 
 	public void registerTab(boolean select, String tabName) {
 		this.tabName=tabName;
-		TabContainer.instance().addTab(tabTopRawPanel, tabName, select);
+		tabContainer.addTab(tabTopRawPanel, tabName, select);
 	}
 
 	// access to params shared between tabs

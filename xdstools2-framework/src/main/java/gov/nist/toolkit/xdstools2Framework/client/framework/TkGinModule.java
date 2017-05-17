@@ -7,6 +7,7 @@ import com.google.inject.Provider;
 import com.google.inject.Singleton;
 import gov.nist.toolkit.toolkitFramework.client.injector.ToolkitEventBus;
 import gov.nist.toolkit.toolkitFramework.client.testSession.TestSessionManager;
+import gov.nist.toolkit.toolkitFramework.client.toolSupport.TabContainer;
 
 import javax.inject.Inject;
 
@@ -25,6 +26,8 @@ public class TkGinModule extends AbstractGinModule {
         bind(TestSessionManager.class).in(Singleton.class);
 
         bind(XdsTools2AppView.class).in(Singleton.class);
+
+        bind(TabContainer.class).in(Singleton.class);
 
     }
 
