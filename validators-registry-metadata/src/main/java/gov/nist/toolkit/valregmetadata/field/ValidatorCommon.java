@@ -378,6 +378,11 @@ public class ValidatorCommon implements IErrorRecorder {
 	}
 
 	@Override
+	public void success(Assertion _assertion, Object _validatorModule, String _detail) {
+
+	}
+
+	@Override
 	public void error(String dts, String name, String found, String expected, String RFC) {
 
 	}

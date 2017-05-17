@@ -3,6 +3,8 @@ package gov.nist.toolkit.valregmsg.message;
 import gov.nist.toolkit.errorrecording.IErrorRecorder;
 import gov.nist.toolkit.errorrecording.IErrorRecorderBuilder;
 import gov.nist.toolkit.errorrecording.common.XdsErrorCode;
+import gov.nist.toolkit.errorrecording.xml.assertions.Assertion;
+import gov.nist.toolkit.errorrecording.xml.assertions.AssertionLibrary;
 import gov.nist.toolkit.http.HttpHeader;
 import gov.nist.toolkit.http.HttpParserBa;
 import gov.nist.toolkit.http.ParseException;
@@ -28,6 +30,8 @@ public class SimpleSoapHttpHeaderValidator extends AbstractMessageValidator {
 	String charset = null;
 	RegistryValidationInterface rvi;
 
+	private AssertionLibrary ASSERTIONLIBRARY = AssertionLibrary.getInstance();
+
 
 	public SimpleSoapHttpHeaderValidator(ValidationContext vc, HttpParserBa hparser, byte[] body, IErrorRecorderBuilder erBuilder, MessageValidatorEngine mvc, RegistryValidationInterface rvi) {
 		super(vc);
@@ -52,10 +56,10 @@ public class SimpleSoapHttpHeaderValidator extends AbstractMessageValidator {
 			if (!"application/soap+xml".equals(contentTypeValue.toLowerCase())) {
 				er.error("??", "Content-Type header", contentTypeValue, "application/soap+xml", "http://www.w3.org/TR/soap12-part0 - Section 4.1.2");
 			}
-                else
-                er.success("??", "Content-Type header", contentTypeValue, "application/soap+xml", "http://www.w3.org/TR/soap12-part0 - Section 4.1.2");
-            //err("Content-Type header must have value application/soap+xml - found instead " + contentTypeValue,"http://www.w3.org/TR/soap12-part0 - Section 4.1.2");
-
+                else {
+				Assertion assertion = ASSERTIONLIBRARY.getAssertion("TA181");
+				er.success(assertion, this, "");
+			}
 			charset = contentTypeHeader.getParam("charset");
 			if (charset == null || charset.equals("")) {
 				charset = "UTF-8";

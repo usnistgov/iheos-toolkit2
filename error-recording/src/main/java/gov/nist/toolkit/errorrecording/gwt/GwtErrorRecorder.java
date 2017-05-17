@@ -236,6 +236,11 @@ public class GwtErrorRecorder implements IErrorRecorder {
 
 	}
 
+	@Override
+	public void success(Assertion _assertion, Object _validatorModule, String _detail) {
+
+	}
+
 	public void err(String code, String msg, String location, String severity, String resource) {
 		err1(code, msg, location, severity, resource);
 	}

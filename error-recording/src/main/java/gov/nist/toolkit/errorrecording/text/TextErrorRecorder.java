@@ -170,6 +170,11 @@ public class TextErrorRecorder implements IErrorRecorder {
 
 	}
 
+	@Override
+	public void success(Assertion _assertion, Object _validatorModule, String _detail) {
+
+	}
+
 	public void err(Code code, String msg, String location, String resource,
 					Object log_message) {
 		err(msg, resource);

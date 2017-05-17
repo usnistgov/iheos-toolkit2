@@ -239,44 +239,38 @@ public class XMLErrorRecorder implements IErrorRecorder {
         detail(name + " " + found);
     }
 
-    // TODO needs to be updated with Assertions - Not tested
+    // Empty temporary GWT prototype
     @Override
-    void success(String _dts, String _name, String _found, String _expected, String _RFC) {
-        // public void success(Assertion _assertion, String _location, String _detail) {
+    void success(String dts, String name, String found, String expected, String RFC) {
+    }
 
+    // Updated - untested
+    // @Override
+    void success(Assertion _assertion, String _validatorModule, String _detail) {
         logger.debug("success-1")
+
         // Generate the new element
         def sw = new StringWriter()
         def builder = new MarkupBuilder(sw)
 
-        // TODO
-        /*
-        builder.Success(dts:_dts, validatorModule:_validatorModule){
+        builder.Success(validatorModule:_validatorModule){
             Assertion(text:_assertion.getErrorMessage(), resource:_assertion.getLocation(),
                     gazelleScheme:_assertion.getGazelleScheme(), gazelleAssertionID:_assertion.getGazelleAssertionID()){
                 Detail(_detail);
-                Location(_location);
             }
         }
-        */
 
         // Parse and add
         errXml = errXml.concat(sw.toString() + "\n")
-        hasErrors = true;
-
-        /** --In GWT
-        tagLastInfo2();
-        GwtValidatorErrorItem ei = new GwtValidatorErrorItem();
-        ei.level = GwtValidatorErrorItem.ReportingLevel.D_SUCCESS;
-        ei.dts = dts;
-        ei.name = name;
-        ei.found = found;
-        ei.expected = expected;
-        ei.rfc = RFC;
-        ei.status = "Success";
-        errMsgs.add(ei);
-         **/
+        //hasErrors = true; //TODO this should probably go away after testing
     }
+
+    void success(Assertion _assertion, Object _validatorModule, String _detail) {
+        println("success-3")
+        String valModuleName = getSimpleName(_validatorModule)
+        success(_assertion, valModuleName, _detail);
+    }
+
 /**
  * Not used / Not tested
  * @param dts
@@ -299,6 +293,7 @@ public class XMLErrorRecorder implements IErrorRecorder {
     }
 
 // Not used / Not tested
+    //TODO probably needs to be upgraded to assertions
     @Override
     public void error(String _dts, String _name, String _found, String _expected, String _rfc) {
         println("error")
