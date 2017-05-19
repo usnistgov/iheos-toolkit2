@@ -32,7 +32,6 @@ public interface ActivityDisplayer {
         public void display(Widget w, AbstractActivity activity, AcceptsOneWidget p, EventBus b) {
             GWT.log("ToolkitAppDisplayer:display: " + w.getClass().getName());
             tabContainer.addTab(w, "Title", activity);
-//            appView.setWidget(w);
         }
     }
 }

@@ -10,6 +10,9 @@ import gov.nist.toolkit.desktop.client.ClientUtils;
 import gov.nist.toolkit.desktop.client.TabContainer;
 import gov.nist.toolkit.desktop.client.ToolkitAppView;
 import gov.nist.toolkit.desktop.client.environment.EnvironmentMVP;
+import gov.nist.toolkit.desktop.client.environment.EnvironmentService;
+import gov.nist.toolkit.desktop.client.environment.LocalEnvironmentServiceImpl;
+import gov.nist.toolkit.desktop.client.environment.TestSessionMVP;
 import gov.nist.toolkit.desktop.client.events.ToolkitEventBus;
 import gov.nist.toolkit.desktop.client.tools.ToolMenu;
 
@@ -29,8 +32,6 @@ public class ToolkitGinModule extends AbstractGinModule {
 
         bind(ActivityDisplayer.class).to(ActivityDisplayer.ToolkitAppDisplayer.class).in(Singleton.class);
 
-//        bind(TestSessionManager.class).in(Singleton.class);
-
         bind(ToolkitAppView.class).in(Singleton.class);
 
         bind(TabContainer.class).in(Singleton.class);
@@ -39,11 +40,14 @@ public class ToolkitGinModule extends AbstractGinModule {
 
         bind(ClientUtils.class).in(Singleton.class);
 
-//        bind(ClientFactory.class).to(ClientFactoryImpl.class).in(Singleton.class);
-
         bind(EnvironmentMVP.class).in(Singleton.class);
 
+        bind(TestSessionMVP.class).in(Singleton.class);
 
+        // this is only for UI testing along with a hack
+        // in EnvironmentService
+        // and another in ClientUtils
+        bind(EnvironmentService.class).to(LocalEnvironmentServiceImpl.class).in(Singleton.class);
     }
 
     /** Provider for PlaceController */

@@ -8,6 +8,7 @@ import gov.nist.toolkit.desktop.client.ClientUtils;
 import gov.nist.toolkit.desktop.client.TabContainer;
 import gov.nist.toolkit.desktop.client.ToolkitAppView;
 import gov.nist.toolkit.desktop.client.environment.EnvironmentMVP;
+import gov.nist.toolkit.desktop.client.environment.TestSessionMVP;
 import gov.nist.toolkit.desktop.client.events.ToolkitEventBus;
 import gov.nist.toolkit.desktop.client.home.WelcomeActivity;
 import gov.nist.toolkit.desktop.client.tools.ToolMenu;
@@ -37,5 +38,6 @@ public interface ToolkitGinInjector extends Ginjector {
     ClientUtils getClientUtils();
 
     EnvironmentMVP getEnvironmentMVP();
+    TestSessionMVP getTestSessionMVP();
 
 }

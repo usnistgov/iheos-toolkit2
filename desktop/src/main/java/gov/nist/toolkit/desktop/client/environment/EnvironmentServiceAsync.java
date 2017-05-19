@@ -14,4 +14,9 @@ public interface EnvironmentServiceAsync {
     void setEnvironment(CommandContext context, AsyncCallback<String> callback);
     void getEnvironmentNames(CommandContext context, AsyncCallback<List<String>> callback);
 
+    void setMesaTestSession(String name, AsyncCallback<String> callback);
+    void getMesaTestSessionNames(CommandContext request, AsyncCallback<List<String>> callback);
+    void addMesaTestSession(CommandContext context, AsyncCallback<Boolean> callback);
+    void delMesaTestSession(CommandContext context, AsyncCallback<Boolean> callback);
+
 }

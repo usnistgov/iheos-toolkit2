@@ -43,6 +43,7 @@ public class EnvironmentPresenter extends AbstractPresenter<EnvironmentView> imp
         updateServer();
 
         eventBus.fireEvent(new EnvironmentChangedEvent(environmentName));
+
         new SetEnvironmentCommand().run(ClientUtils.INSTANCE.getCommandContext().setEnvironmentName(environmentName));
     }
 

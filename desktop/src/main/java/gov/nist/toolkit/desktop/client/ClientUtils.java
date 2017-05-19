@@ -2,16 +2,19 @@ package gov.nist.toolkit.desktop.client;
 
 import com.google.gwt.core.client.GWT;
 import gov.nist.toolkit.desktop.client.commands.util.CommandContext;
-import gov.nist.toolkit.desktop.client.environment.EnvironmentService;
 import gov.nist.toolkit.desktop.client.environment.EnvironmentServiceAsync;
+import gov.nist.toolkit.desktop.client.environment.LocalEnvironmentServiceImpl;
 
 /**
  * Client Utilities singleton.
  */
 public class ClientUtils {
     public static final ClientUtils INSTANCE=new ClientUtils();
-//    private ClientFactory clientFactory=GWT.create(ClientFactory.class);
-    public EnvironmentServiceAsync environmentService = GWT.create(EnvironmentService.class);
+
+    // production version
+//    public EnvironmentServiceAsync environmentService = GWT.create(EnvironmentService.class);
+    // UI testing version
+    public EnvironmentServiceAsync environmentService = GWT.create(LocalEnvironmentServiceImpl.class);
 
     public ClientUtils(){}
 

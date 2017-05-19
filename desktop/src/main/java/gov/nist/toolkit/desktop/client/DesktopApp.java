@@ -12,6 +12,7 @@ import com.google.gwt.place.shared.PlaceHistoryHandler;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.*;
 import gov.nist.toolkit.desktop.client.environment.EnvironmentMVP;
+import gov.nist.toolkit.desktop.client.environment.TestSessionMVP;
 import gov.nist.toolkit.desktop.client.events.ResizeToolkitEvent;
 import gov.nist.toolkit.desktop.client.events.ToolkitEventBus;
 import gov.nist.toolkit.desktop.client.home.WelcomePlace;
@@ -43,7 +44,8 @@ public class DesktopApp implements IsWidget {
 
     private static DesktopApp INSTANCE;
 
-    private EnvironmentMVP environmentMVP = INJECTOR.getEnvironmentMVP();;
+    private EnvironmentMVP environmentMVP = INJECTOR.getEnvironmentMVP();
+    private TestSessionMVP testSessionMVP = INJECTOR.getTestSessionMVP();
 
     private ToolkitAppView appView;
 
@@ -54,6 +56,9 @@ public class DesktopApp implements IsWidget {
         appView = INJECTOR.getToolkitAppView();
         assert(environmentMVP != null);
         assert(environmentMVP.getView() != null);
+
+        assert(testSessionMVP != null);
+        assert(testSessionMVP.getView() != null);
 
         PlaceController placeController = INJECTOR.getPlaceController();
 
@@ -108,8 +113,11 @@ public class DesktopApp implements IsWidget {
         FlowPanel northPanel = new FlowPanel();
         HorizontalFlowPanel environmentBar = new HorizontalFlowPanel();
         Widget edisp = environmentMVP.getDisplay();
+        Widget tdisp = testSessionMVP.getDisplay();
         GWT.log("edisp is " + edisp.getClass().getName());
+        GWT.log("tdisp is " + tdisp.getClass().getName());
         environmentBar.add(edisp);
+        environmentBar.add(tdisp);
         northPanel.add(environmentBar);
         northPanel.add(alertPanel);
         northPanel.add(menuPanel);
