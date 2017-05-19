@@ -15,15 +15,15 @@ public class Toy extends Place {
         GWT.log("Toy Place");
     }
 
-    public Toy(String toyname) {
+    Toy(String toyname) {
         super();
         GWT.log("Toy Place: " + toyname);
         this.name = toyname;
     }
 
 
-    public String getPlaceName() {
-        return "Toy " + name;
+    public String getName() {
+        return name;
     }
 
 

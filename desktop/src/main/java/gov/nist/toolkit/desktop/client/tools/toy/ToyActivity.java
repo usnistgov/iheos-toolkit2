@@ -17,6 +17,7 @@ import javax.inject.Inject;
 public class ToyActivity extends AbstractActivity {
     static private int counter = 0;
     private int myIndex;
+    private String name = "";
 
     @Inject
     private ActivityDisplayer displayer;
@@ -30,7 +31,7 @@ public class ToyActivity extends AbstractActivity {
     private Widget getContainer() {
         SimpleLayoutPanel panel = new SimpleLayoutPanel();
         myIndex = counter++;
-        Label label = new Label("Toy " + myIndex);
+        Label label = new Label("Toy " + myIndex + " " + name);
         panel.add(label);
         return label;
     }
@@ -40,4 +41,7 @@ public class ToyActivity extends AbstractActivity {
         GWT.log("Stopping Toy Activity " + myIndex);
     }
 
+    public void setName(String name) {
+        this.name = name;
+    }
 }

@@ -6,6 +6,7 @@ import com.google.gwt.activity.shared.ActivityMapper;
 import com.google.gwt.place.shared.Place;
 import gov.nist.toolkit.desktop.client.injection.ToolkitGinInjector;
 import gov.nist.toolkit.desktop.client.tools.toy.Toy;
+import gov.nist.toolkit.desktop.client.tools.toy.ToyActivity;
 
 /**
  * Finds the activity to run for a given Place, used to configure an ActivityManager.
@@ -32,6 +33,9 @@ public class ToolkitActivityMapper implements ActivityMapper {
 
         if (place instanceof Toy) {
             activity = INJECTOR.getToyActivity();
+            ToyActivity toyActivity = (ToyActivity) activity;
+            Toy toy = (Toy) place;
+            toyActivity.setName(toy.getName());
         }
 
         if (activity != null) return activity;
