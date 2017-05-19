@@ -9,6 +9,7 @@ import gov.nist.toolkit.desktop.client.ActivityDisplayer;
 import gov.nist.toolkit.desktop.client.TabContainer;
 import gov.nist.toolkit.desktop.client.ToolkitAppView;
 import gov.nist.toolkit.desktop.client.events.ToolkitEventBus;
+import gov.nist.toolkit.desktop.client.tools.ToolMenu;
 
 import javax.inject.Inject;
 
@@ -31,6 +32,9 @@ public class ToolkitGinModule extends AbstractGinModule {
         bind(ToolkitAppView.class).in(Singleton.class);
 
         bind(TabContainer.class).in(Singleton.class);
+
+        bind(ToolMenu.class).in(Singleton.class);
+
 
     }
 

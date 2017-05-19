@@ -15,7 +15,7 @@ public class Toy extends Place {
         GWT.log("Toy Place");
     }
 
-    Toy(String toyname) {
+    public Toy(String toyname) {
         super();
         GWT.log("Toy Place: " + toyname);
         this.name = toyname;

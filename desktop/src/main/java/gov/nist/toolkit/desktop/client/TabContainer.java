@@ -5,8 +5,6 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Style;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.event.logical.shared.SelectionEvent;
-import com.google.gwt.event.logical.shared.SelectionHandler;
 import com.google.gwt.place.shared.Place;
 import com.google.gwt.place.shared.PlaceController;
 import com.google.gwt.user.client.Window;
@@ -14,7 +12,7 @@ import com.google.gwt.user.client.ui.*;
 import gov.nist.toolkit.desktop.client.events.TabOpenedEvent;
 import gov.nist.toolkit.desktop.client.events.TabSelectedEvent;
 import gov.nist.toolkit.desktop.client.events.ToolkitEventBus;
-import gov.nist.toolkit.desktop.client.tools.toy.Toy;
+import gov.nist.toolkit.desktop.client.home.WelcomePanel;
 
 import javax.inject.Inject;
 import java.util.ArrayList;
@@ -54,26 +52,26 @@ public class TabContainer {
 		OUTERPANEL.add(INNER_DECKPANEL);
 
 		// add a starter tab
-		DockLayoutPanel thePanel = new DockLayoutPanel(EM);
-		FlowPanel innerPanel = new FlowPanel();
-		thePanel.add(innerPanel);
-		innerPanel.add(new Label("Sitting by the dock"));
-		addTab(thePanel,"Default", null);
-		TABBAR.addSelectionHandler(new SelectionHandler<Integer>() {
-			@Override
-			public void onSelection(SelectionEvent<Integer> selectionEvent) {
-				selectTab();
-			}
-		});
-
-		Button push = new Button("Push Me");
-		innerPanel.add(push);
-		push.addClickHandler(new ClickHandler() {
-			@Override
-			public void onClick(ClickEvent clickEvent) {
-				addTab(new Toy());
-			}
-		});
+//		DockLayoutPanel thePanel = new DockLayoutPanel(EM);
+//		FlowPanel innerPanel = new FlowPanel();
+//		thePanel.add(innerPanel);
+//		innerPanel.add(new Label("Sitting by the dock"));
+//		addTab(thePanel,"Default", null);
+//		TABBAR.addSelectionHandler(new SelectionHandler<Integer>() {
+//			@Override
+//			public void onSelection(SelectionEvent<Integer> selectionEvent) {
+//				selectTab();
+//			}
+//		});
+//
+//		Button push = new Button("Push Me");
+//		innerPanel.add(push);
+//		push.addClickHandler(new ClickHandler() {
+//			@Override
+//			public void onClick(ClickEvent clickEvent) {
+//				addTab(new Toy());
+//			}
+//		});
 
 	}
 
@@ -87,6 +85,12 @@ public class TabContainer {
 	 * @param title - title to appear in the little tab at the top
      */
 	public void addTab(/*DockLayoutPanel*/ Widget w, String title, AbstractActivity activity) {
+
+		// Without this, every time we create a new tab we get two:
+		// The intended one and a copy of WelcomePanel
+		// Don't know why. Something to do with history management.
+		if (w instanceof WelcomePanel)
+			return;
 
 		w.getElement().getStyle().setMarginLeft(4, Style.Unit.PX);
 		w.getElement().getStyle().setMarginRight(4, Style.Unit.PX);
@@ -136,6 +140,8 @@ public class TabContainer {
 		HorizontalPanel panel = new HorizontalPanel();
 		Anchor x = new Anchor("X");
 		x.setStyleName("roundedButton2");
+
+		// Handle tab delete
 		x.addClickHandler(new ClickHandler() {
 			@Override
 			public void onClick(ClickEvent clickEvent) {
@@ -146,9 +152,12 @@ public class TabContainer {
 				INNER_DECKPANEL.remove(i);
 				TABBAR.removeTab(i);
 				i = deck.size() - 1;
-				selectTab(i);
-				if (activity != null) {
-					activity.onStop();
+				// select last tab for display
+				if (i >= 0) {
+					selectTab(i);
+					if (activity != null) {
+						activity.onStop();
+					}
 				}
 			}
 		});

@@ -8,6 +8,7 @@ import gov.nist.toolkit.desktop.client.TabContainer;
 import gov.nist.toolkit.desktop.client.ToolkitAppView;
 import gov.nist.toolkit.desktop.client.events.ToolkitEventBus;
 import gov.nist.toolkit.desktop.client.home.WelcomeActivity;
+import gov.nist.toolkit.desktop.client.tools.ToolMenu;
 import gov.nist.toolkit.desktop.client.tools.toy.ToyActivity;
 
 /**
@@ -19,6 +20,8 @@ public interface ToolkitGinInjector extends Ginjector {
     ToolkitGinInjector INSTANCE = GWT.create(ToolkitGinInjector.class);
 
     ToolkitEventBus getEventBus();
+
+    ToolMenu getToolMenu();
 
     ToolkitAppView getToolkitAppView();
 

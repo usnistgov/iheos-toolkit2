@@ -15,6 +15,7 @@ import gov.nist.toolkit.desktop.client.events.ResizeToolkitEvent;
 import gov.nist.toolkit.desktop.client.events.ToolkitEventBus;
 import gov.nist.toolkit.desktop.client.home.WelcomePlace;
 import gov.nist.toolkit.desktop.client.injection.ToolkitGinInjector;
+import gov.nist.toolkit.desktop.client.tools.ToolMenu;
 
 /**
  *
@@ -35,6 +36,7 @@ public class DesktopApp implements IsWidget {
 
     private TabContainer tabContainer = INJECTOR.getTabContainer();
 
+    private ToolMenu toolMenu = INJECTOR.getToolMenu();
 
     private ToolkitAppView appView;
 
@@ -58,6 +60,8 @@ public class DesktopApp implements IsWidget {
         GWT.log("adding view to activity panel");
 
         // add main toolkit display to display wrapper
+
+        mainMenuPanel.add(toolMenu);
 
         buildTabsWrapper();
 
