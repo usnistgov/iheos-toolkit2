@@ -6,6 +6,7 @@ import com.google.gwt.place.shared.PlaceController;
 import com.google.inject.Provider;
 import com.google.inject.Singleton;
 import gov.nist.toolkit.desktop.client.ActivityDisplayer;
+import gov.nist.toolkit.desktop.client.TabContainer;
 import gov.nist.toolkit.desktop.client.ToolkitAppView;
 import gov.nist.toolkit.desktop.client.events.ToolkitEventBus;
 
@@ -29,7 +30,7 @@ public class ToolkitGinModule extends AbstractGinModule {
 
         bind(ToolkitAppView.class).in(Singleton.class);
 
-//        bind(TabContainer.class).in(Singleton.class);
+        bind(TabContainer.class).in(Singleton.class);
 
     }
 

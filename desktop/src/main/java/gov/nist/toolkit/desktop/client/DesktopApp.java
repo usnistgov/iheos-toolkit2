@@ -33,7 +33,7 @@ public class DesktopApp implements IsWidget {
     private static final int TRAY_CTL_BTN_SIZE = 9; // 23
     private final FlowPanel mainMenuPanel = new FlowPanel();
 
-    private TabContainer tabContainer = GWT.create(TabContainer.class);
+    private TabContainer tabContainer = INJECTOR.getTabContainer();
 
 
     private ToolkitAppView appView;

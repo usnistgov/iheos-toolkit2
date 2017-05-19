@@ -1,14 +1,20 @@
 package gov.nist.toolkit.desktop.client;
 
+import com.google.gwt.activity.shared.AbstractActivity;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Style;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.event.logical.shared.SelectionEvent;
+import com.google.gwt.event.logical.shared.SelectionHandler;
+import com.google.gwt.place.shared.Place;
+import com.google.gwt.place.shared.PlaceController;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.*;
 import gov.nist.toolkit.desktop.client.events.TabOpenedEvent;
 import gov.nist.toolkit.desktop.client.events.TabSelectedEvent;
 import gov.nist.toolkit.desktop.client.events.ToolkitEventBus;
+import gov.nist.toolkit.desktop.client.tools.toy.Toy;
 
 import javax.inject.Inject;
 import java.util.ArrayList;
@@ -18,8 +24,9 @@ import static com.google.gwt.dom.client.Style.Unit.EM;
 
 public class TabContainer {
 
-	@Inject
 	private ToolkitEventBus eventBus;
+
+	private PlaceController placeController;
 
 	// holds TabBar and currently selected panel from deck
 	// TabBar in North section.  Center holds SimpleLayoutPanel. SimpleLayoutPanel
@@ -31,36 +38,55 @@ public class TabContainer {
 	private  DeckLayoutPanel INNER_DECKPANEL;
 
 	// Each element of TABBAR maps to one element of deck
-	private  List<DockLayoutPanel> deck;
+	// and the same element of activities
+	private  List</*DockLayoutPanel*/Widget> deck = new ArrayList<>();
+	private List<AbstractActivity> activities = new ArrayList<>();
 
 	@Inject
-	private TabContainer() {
+	private TabContainer(final PlaceController placeController, ToolkitEventBus eventBus) {
+		this.placeController = placeController;
+		this.eventBus = eventBus;
 		GWT.log("starting tabcontainer");
+		assert(eventBus != null);
 		TABBAR = new TabBar();
-		deck = new ArrayList<>();
 		INNER_DECKPANEL = new DeckLayoutPanel();
 		OUTERPANEL.addNorth(TABBAR, 3.0);
 		OUTERPANEL.add(INNER_DECKPANEL);
 
 		// add a starter tab
-//		DockLayoutPanel thePanel = new DockLayoutPanel(EM);
-//		thePanel.add(new Label("Sitting by the dock"));
-//		addTab(thePanel,"Default", true);
-//		TABBAR.addSelectionHandler(new SelectionHandler<Integer>() {
-//			@Override
-//			public void onSelection(SelectionEvent<Integer> selectionEvent) {
-//				selectTab();
-//			}
-//		});
+		DockLayoutPanel thePanel = new DockLayoutPanel(EM);
+		FlowPanel innerPanel = new FlowPanel();
+		thePanel.add(innerPanel);
+		innerPanel.add(new Label("Sitting by the dock"));
+		addTab(thePanel,"Default", null);
+		TABBAR.addSelectionHandler(new SelectionHandler<Integer>() {
+			@Override
+			public void onSelection(SelectionEvent<Integer> selectionEvent) {
+				selectTab();
+			}
+		});
+
+		Button push = new Button("Push Me");
+		innerPanel.add(push);
+		push.addClickHandler(new ClickHandler() {
+			@Override
+			public void onClick(ClickEvent clickEvent) {
+				addTab(new Toy());
+			}
+		});
+
+	}
+
+	public void addTab(Place place) {
+		placeController.goTo(place);
 	}
 
 	/**
 	 * Create a new tab/tool.
 	 * @param w - content
 	 * @param title - title to appear in the little tab at the top
-	 * @param select - should be selected upon creation (ignored)
      */
-	public void addTab(DockLayoutPanel w, String title, boolean select) {
+	public void addTab(/*DockLayoutPanel*/ Widget w, String title, AbstractActivity activity) {
 
 		w.getElement().getStyle().setMarginLeft(4, Style.Unit.PX);
 		w.getElement().getStyle().setMarginRight(4, Style.Unit.PX);
@@ -69,6 +95,7 @@ public class TabContainer {
 		TABBAR.addTab(buildTabHeaderWidget(title, w));
 
 		deck.add(w);
+		activities.add(activity);
 		TABBAR.selectTab(TABBAR.getTabCount() - 1);
 		selectTab();
 
@@ -105,7 +132,7 @@ public class TabContainer {
 
 	}
 
-	private Widget buildTabHeaderWidget(String title, final DockLayoutPanel content) {
+	private Widget buildTabHeaderWidget(String title, final /*DockLayoutPanel*/ Widget content) {
 		HorizontalPanel panel = new HorizontalPanel();
 		Anchor x = new Anchor("X");
 		x.setStyleName("roundedButton2");
@@ -114,10 +141,15 @@ public class TabContainer {
 			public void onClick(ClickEvent clickEvent) {
 				int i = deck.indexOf(content);
 				deck.remove(i);
+				AbstractActivity activity = activities.get(i);
+				activities.remove(i);
 				INNER_DECKPANEL.remove(i);
 				TABBAR.removeTab(i);
 				i = deck.size() - 1;
 				selectTab(i);
+				if (activity != null) {
+					activity.onStop();
+				}
 			}
 		});
 		panel.add(x);

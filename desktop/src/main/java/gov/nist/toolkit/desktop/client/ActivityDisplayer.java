@@ -1,5 +1,6 @@
 package gov.nist.toolkit.desktop.client;
 
+import com.google.gwt.activity.shared.AbstractActivity;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.ui.AcceptsOneWidget;
 import com.google.gwt.user.client.ui.Widget;
@@ -11,7 +12,7 @@ import javax.inject.Inject;
  *
  */
 public interface ActivityDisplayer {
-    public void display(Widget w, AcceptsOneWidget p, EventBus b);
+    public void display(Widget w, AbstractActivity activity, AcceptsOneWidget p, EventBus b);
 
     /**
      * This is the displayer of the entire application. It enables to make the application more flexible
@@ -22,12 +23,16 @@ public interface ActivityDisplayer {
         @Inject
         private ToolkitAppView appView;  // this will be a singleton
 
+        @Inject
+        private TabContainer tabContainer;
+
         public ToolkitAppDisplayer() {}
 
         @Override
-        public void display(Widget w, AcceptsOneWidget p, EventBus b) {
+        public void display(Widget w, AbstractActivity activity, AcceptsOneWidget p, EventBus b) {
             GWT.log("ToolkitAppDisplayer:display: " + w.getClass().getName());
-            appView.setWidget(w);
+            tabContainer.addTab(w, "Title", activity);
+//            appView.setWidget(w);
         }
     }
 }

@@ -15,19 +15,29 @@ import javax.inject.Inject;
  *
  */
 public class ToyActivity extends AbstractActivity {
+    static private int counter = 0;
+    private int myIndex;
+
     @Inject
     private ActivityDisplayer displayer;
 
     @Override
     public void start(AcceptsOneWidget acceptsOneWidget, EventBus eventBus) {
         GWT.log("Starting Toy Activity");
-        displayer.display(getContainer(),acceptsOneWidget,eventBus);
+        displayer.display(getContainer(), this, acceptsOneWidget,eventBus);
     }
 
     private Widget getContainer() {
         SimpleLayoutPanel panel = new SimpleLayoutPanel();
-        Label label = new Label("Toy");
+        myIndex = counter++;
+        Label label = new Label("Toy " + myIndex);
         panel.add(label);
         return label;
     }
+
+    @Override
+    public void onStop() {
+        GWT.log("Stopping Toy Activity " + myIndex);
+    }
+
 }

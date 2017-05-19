@@ -8,6 +8,7 @@ import com.google.gwt.place.shared.PlaceTokenizer;
  *
  */
 public class Toy extends Place {
+    private String name = null;
 
     public Toy() {
         super();
@@ -17,11 +18,12 @@ public class Toy extends Place {
     public Toy(String toyname) {
         super();
         GWT.log("Toy Place: " + toyname);
+        this.name = toyname;
     }
 
 
     public String getPlaceName() {
-        return "Toy";
+        return "Toy " + name;
     }
 
 
@@ -33,7 +35,7 @@ public class Toy extends Place {
 
         @Override
         public String getToken(Toy toyPlace) {
-            return "";
+            return toyPlace.name;
         }
     }
 }
