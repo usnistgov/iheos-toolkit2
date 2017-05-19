@@ -19,6 +19,6 @@ public class WelcomeActivity extends AbstractActivity {
 
     @Override
     public void start(AcceptsOneWidget acceptsOneWidget, EventBus eventBus) {
-        displayer.display(welcomePanel.asWidget(), this, acceptsOneWidget,eventBus);
+        displayer.display(welcomePanel.asWidget(), "Welcome", this, acceptsOneWidget,eventBus);
     }
 }

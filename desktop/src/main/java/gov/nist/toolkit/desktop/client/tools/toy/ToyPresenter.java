@@ -13,6 +13,6 @@ public class ToyPresenter extends AbstractPresenter<ToyView> {
 
     @Override
     public void init() {
-
+        setTitle(name);
     }
 }

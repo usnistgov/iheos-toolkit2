@@ -13,6 +13,7 @@ public class Toy extends Place {
     public Toy() {
         super();
         GWT.log("Toy Place");
+        this.name = "Toy";
     }
 
     public Toy(String toyname) {

@@ -33,7 +33,7 @@ public class ToyActivity extends AbstractActivity {
         GWT.log("Starting Toy Activity");
         mvp = buildMVP();
         mvp.init();
-        displayer.display(getContainer(), this, acceptsOneWidget, eventBus);
+        displayer.display(getContainer(), presenter.getTitle(), this, acceptsOneWidget, eventBus);
     }
 
     private Widget getContainer() {
@@ -47,10 +47,15 @@ public class ToyActivity extends AbstractActivity {
 
     public void setName(String name) {
         presenter.name = name;
+        presenter.setTitle(name);
     }
 
     private GenericMVP<NullModel, ToyView, ToyPresenter> buildMVP() {
         return new GenericMVP<NullModel, ToyView, ToyPresenter>(view, presenter);
+    }
+
+    public void setTitle(String title) {
+        presenter.setTitle(title);
     }
 
 }

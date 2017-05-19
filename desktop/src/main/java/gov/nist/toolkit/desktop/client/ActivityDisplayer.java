@@ -12,7 +12,7 @@ import javax.inject.Inject;
  *
  */
 public interface ActivityDisplayer {
-    public void display(Widget w, AbstractActivity activity, AcceptsOneWidget p, EventBus b);
+    public void display(Widget w, String title, AbstractActivity activity, AcceptsOneWidget p, EventBus b);
 
     /**
      * This is the displayer of the entire application. It enables to make the application more flexible
@@ -29,9 +29,9 @@ public interface ActivityDisplayer {
         public ToolkitAppDisplayer() {}
 
         @Override
-        public void display(Widget w, AbstractActivity activity, AcceptsOneWidget p, EventBus b) {
+        public void display(Widget w, String title, AbstractActivity activity, AcceptsOneWidget p, EventBus b) {
             GWT.log("ToolkitAppDisplayer:display: " + w.getClass().getName());
-            tabContainer.addTab(w, "Title", activity);
+            tabContainer.addTab(w, title, activity);
         }
     }
 }

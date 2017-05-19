@@ -22,6 +22,8 @@ public abstract class AbstractPresenter<V extends AbstractView<?>> {
     // Variable that handles the instance of the view binded to this presenter
     protected V view;
 
+    private String title = "Tab";
+
     /**
      * Default "constructor"
      */
@@ -42,6 +44,16 @@ public abstract class AbstractPresenter<V extends AbstractView<?>> {
      * Abstract method called by mvp before view.init() does not necessarily need to do something.
      */
     public abstract void init();
+
+    /**
+     * The title that will appear on the tab.
+     * @param title
+     */
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public String getTitle() { return title; }
 
     /**
      * Abstract method called by mvp just before view.getDisplay()
