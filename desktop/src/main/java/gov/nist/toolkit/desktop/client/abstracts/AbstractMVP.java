@@ -1,5 +1,6 @@
 package gov.nist.toolkit.desktop.client.abstracts;
 
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.ui.Widget;
 
 /**
@@ -68,6 +69,7 @@ public abstract class AbstractMVP<M, V extends AbstractView<P>, P extends Abstra
 	 * @return View as a Widget
 	 */
 	public Widget getDisplay() {
+		GWT.log("Getting Environment display");
 		assert(view != null);
 		return view.asWidget();
 	}

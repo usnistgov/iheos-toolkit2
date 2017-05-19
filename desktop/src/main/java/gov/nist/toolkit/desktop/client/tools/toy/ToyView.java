@@ -10,7 +10,7 @@ import java.util.Map;
 /**
  *
  */
-public class ToyView extends AbstractView<ToyPressnter> {
+public class ToyView extends AbstractView<ToyPresenter> {
     @Override
     protected Map<String, Widget> getPathToWidgetsMap() {
         return null;

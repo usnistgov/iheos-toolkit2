@@ -5,7 +5,7 @@ import gov.nist.toolkit.desktop.client.abstracts.AbstractPresenter;
 /**
  *
  */
-public class ToyPressnter extends AbstractPresenter<ToyView> {
+public class ToyPresenter extends AbstractPresenter<ToyView> {
 
     static int counter = 0;
     int myIndex;

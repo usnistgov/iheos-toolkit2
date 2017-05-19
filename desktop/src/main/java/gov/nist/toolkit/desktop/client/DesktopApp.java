@@ -11,11 +11,13 @@ import com.google.gwt.place.shared.PlaceController;
 import com.google.gwt.place.shared.PlaceHistoryHandler;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.*;
+import gov.nist.toolkit.desktop.client.environment.EnvironmentMVP;
 import gov.nist.toolkit.desktop.client.events.ResizeToolkitEvent;
 import gov.nist.toolkit.desktop.client.events.ToolkitEventBus;
 import gov.nist.toolkit.desktop.client.home.WelcomePlace;
 import gov.nist.toolkit.desktop.client.injection.ToolkitGinInjector;
 import gov.nist.toolkit.desktop.client.tools.ToolMenu;
+import gov.nist.toolkit.desktop.client.widgets.HorizontalFlowPanel;
 
 /**
  *
@@ -33,17 +35,25 @@ public class DesktopApp implements IsWidget {
     private static final int TRAY_SIZE = 190;
     private static final int TRAY_CTL_BTN_SIZE = 9; // 23
     private final FlowPanel mainMenuPanel = new FlowPanel();
+    private final FlowPanel alertPanel = new FlowPanel();
 
     private TabContainer tabContainer = INJECTOR.getTabContainer();
 
     private ToolMenu toolMenu = INJECTOR.getToolMenu();
 
+    private static DesktopApp INSTANCE;
+
+    private EnvironmentMVP environmentMVP = INJECTOR.getEnvironmentMVP();;
+
     private ToolkitAppView appView;
 
     public DesktopApp() {
+        INSTANCE = this;
         GWT.log("In DesktopApp");
 
         appView = INJECTOR.getToolkitAppView();
+        assert(environmentMVP != null);
+        assert(environmentMVP.getView() != null);
 
         PlaceController placeController = INJECTOR.getPlaceController();
 
@@ -94,8 +104,16 @@ public class DesktopApp implements IsWidget {
 
         DockLayoutPanel mainPanel = new DockLayoutPanel(Style.Unit.EM);
 
-        // Menu?  Is this the tab bar?
-        mainPanel.addNorth(menuPanel, 4);
+        // Menu?  Is this the tab bar? - yes
+        FlowPanel northPanel = new FlowPanel();
+        HorizontalFlowPanel environmentBar = new HorizontalFlowPanel();
+        Widget edisp = environmentMVP.getDisplay();
+        GWT.log("edisp is " + edisp.getClass().getName());
+        environmentBar.add(edisp);
+        northPanel.add(environmentBar);
+        northPanel.add(alertPanel);
+        northPanel.add(menuPanel);
+        mainPanel.addNorth(northPanel, 4);
 		mainPanel.add(tabContainer.getTabPanel());
         mainSplitPanel.add(mainPanel);
 
@@ -163,6 +181,10 @@ public class DesktopApp implements IsWidget {
     @Override
     public Widget asWidget() {
         return activityPanel;
+    }
+
+    public static void alert(HTML alert) {
+        INSTANCE.alertPanel.add(alert);
     }
 
 }

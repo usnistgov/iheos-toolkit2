@@ -6,7 +6,7 @@ import gov.nist.toolkit.desktop.client.models.NullModel;
 /**
  *  Right now this seems useless
  */
-public class ToyMVP extends AbstractMVP<NullModel, ToyView, ToyPressnter> {
+public class ToyMVP extends AbstractMVP<NullModel, ToyView, ToyPresenter> {
 
     @Override
     public ToyView buildView() {
@@ -14,7 +14,7 @@ public class ToyMVP extends AbstractMVP<NullModel, ToyView, ToyPressnter> {
     }
 
     @Override
-    public ToyPressnter buildPresenter() {
+    public ToyPresenter buildPresenter() {
         return getPresenter();
     }
 }

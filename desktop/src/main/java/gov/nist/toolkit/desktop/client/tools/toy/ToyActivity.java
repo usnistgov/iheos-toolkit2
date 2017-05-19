@@ -20,12 +20,12 @@ public class ToyActivity extends AbstractActivity {
     private ToyView view;
 
     @Inject
-    private ToyPressnter presenter;
+    private ToyPresenter presenter;
 
     @Inject
     private ActivityDisplayer displayer;
 
-    private GenericMVP<NullModel,ToyView,ToyPressnter> mvp;
+    private GenericMVP<NullModel,ToyView,ToyPresenter> mvp;
 
 
     @Override
@@ -49,8 +49,8 @@ public class ToyActivity extends AbstractActivity {
         presenter.name = name;
     }
 
-    private GenericMVP<NullModel, ToyView, ToyPressnter> buildMVP() {
-        return new GenericMVP<NullModel, ToyView, ToyPressnter>(view, presenter);
+    private GenericMVP<NullModel, ToyView, ToyPresenter> buildMVP() {
+        return new GenericMVP<NullModel, ToyView, ToyPresenter>(view, presenter);
     }
 
 }

@@ -103,8 +103,6 @@ public class TabContainer {
 		TABBAR.selectTab(TABBAR.getTabCount() - 1);
 		selectTab();
 
-//		XdsTools2Presenter.data().resizeToolkit();
-
 		announceOpen(title);
 	}
 
@@ -122,7 +120,6 @@ public class TabContainer {
 
 	private void announceOpen(String title) {
 		try {
-//			int index = TABPANEL.getWidgetCount() - 1;
 			int index = TABBAR.getTabCount() - 1;
 			if (index>0) {
 				eventBus.fireEvent(new TabOpenedEvent(title /* this will be the dynamic tab code */,index));
@@ -179,12 +176,6 @@ public class TabContainer {
 		TABBAR.selectTab(tabIndex);
 
 		INNER_DECKPANEL.showWidget(tabIndex);
-		/*
-		INNERPANEL.clear();
-		INNERPANEL.addTest(deck.get(tabIndex));
-		*/
-
-//		TABPANEL.selectTab(tabIndex);
 	}
 
 	public Widget getTabPanel() {

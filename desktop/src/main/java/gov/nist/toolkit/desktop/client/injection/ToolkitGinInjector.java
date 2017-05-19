@@ -4,8 +4,10 @@ import com.google.gwt.core.shared.GWT;
 import com.google.gwt.inject.client.GinModules;
 import com.google.gwt.inject.client.Ginjector;
 import com.google.gwt.place.shared.PlaceController;
+import gov.nist.toolkit.desktop.client.ClientUtils;
 import gov.nist.toolkit.desktop.client.TabContainer;
 import gov.nist.toolkit.desktop.client.ToolkitAppView;
+import gov.nist.toolkit.desktop.client.environment.EnvironmentMVP;
 import gov.nist.toolkit.desktop.client.events.ToolkitEventBus;
 import gov.nist.toolkit.desktop.client.home.WelcomeActivity;
 import gov.nist.toolkit.desktop.client.tools.ToolMenu;
@@ -32,15 +34,8 @@ public interface ToolkitGinInjector extends Ginjector {
 
     PlaceController getPlaceController();
 
-//    XdsTools2AppView getXdsTools2AppView();
-//    XdsTools2Presenter getXdsTools2AppPresenter();
-//    XdsTools2Activity getXdsTools2Activity();
-//
-//    TestInstanceActivity getTestInstanceActivity();
-//    ToolActivity getToolActivity();
-//    ConfActorActivity getConfActorActivity();
-//    SimLogActivity getSimLogActivity();
+    ClientUtils getClientUtils();
 
-//    EnvironmentState getEnvironmentState();
-//    TestSessionManager getTestSessionManager();
+    EnvironmentMVP getEnvironmentMVP();
+
 }
