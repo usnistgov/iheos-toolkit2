@@ -86,6 +86,7 @@
         <!--<module>desktop</module>-->
         <module>xdstools2-framework</module>
         <module>toolkit-framework</module>
+        <module>desktop</module>
     </modules>
 
 

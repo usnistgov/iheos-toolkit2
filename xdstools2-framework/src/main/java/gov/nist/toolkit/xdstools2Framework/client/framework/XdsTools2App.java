@@ -5,7 +5,7 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.place.shared.PlaceController;
 import com.google.gwt.place.shared.PlaceHistoryHandler;
 import com.google.gwt.user.client.ui.IsWidget;
-import com.google.gwt.user.client.ui.SimplePanel;
+import com.google.gwt.user.client.ui.SimpleLayoutPanel;
 import com.google.gwt.user.client.ui.Widget;
 import gov.nist.toolkit.toolkitFramework.client.injector.ToolkitEventBus;
 
@@ -16,14 +16,14 @@ public class XdsTools2App implements IsWidget {
     private static final TkGinInjector INJECTOR = TkGinInjector.INSTANCE;
     private final ToolkitEventBus eventBus = INJECTOR.getEventBus();
 
-    private SimplePanel activityPanel = new SimplePanel();
+    public static SimpleLayoutPanel activityPanel = new SimpleLayoutPanel();
 
-    private XdsTools2AppView appView;
+//    private XdsTools2AppView appView;
 
     public XdsTools2App() {
         GWT.log("In XdsTools2App");
 
-        appView = INJECTOR.getXdsTools2AppView();
+//        appView = INJECTOR.getXdsTools2AppView();
 
         GWT.log("setting placecontroller");
 
@@ -46,7 +46,23 @@ public class XdsTools2App implements IsWidget {
 
         GWT.log("adding view to activity panel");
 
-        activityPanel.add(appView.asWidget());
+
+//        button1.addClickHandler(new ClickHandler() {
+//            @Override
+//            public void onClick(ClickEvent clickEvent) {
+//                activityPanel.add(panel2);
+//            }
+//        });
+//
+//        button2.addClickHandler(new ClickHandler() {
+//            @Override
+//            public void onClick(ClickEvent clickEvent) {
+//                activityPanel.add(panel1);
+//            }
+//        });
+
+//        activityPanel.add(appView.asWidget());
+        activityPanel.add(new Activity1().getWidget());
 
         GWT.log("handle history");
 
@@ -59,9 +75,9 @@ public class XdsTools2App implements IsWidget {
         return activityPanel;
     }
 
-    public XdsTools2AppView getAppView(){
-        return appView;
-    }
+//    public XdsTools2AppView getAppView(){
+//        return appView;
+//    }
 
     public static TkGinInjector getInjector() {
         return INJECTOR;

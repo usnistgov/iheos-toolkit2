@@ -1,39 +1,81 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<module rename-to='desktop'>
-  <!-- Inherit the core Web Toolkit stuff.                        -->
-  <inherits name='com.google.gwt.user.User' />
-  <inherits name="com.google.gwt.place.Place"/>
-  <inherits name="com.google.gwt.activity.Activity"/>
+<module rename-to="xdstools">
 
-  <!-- Inherit the default GWT style sheet.  You can change       -->
-  <!-- the theme of your GWT application by uncommenting          -->
-  <!-- any one of the following lines.                            -->
-  <inherits name='com.google.gwt.user.theme.clean.Clean' />
-  <inherits name="com.google.gwt.uibinder.UiBinder"/>
-  <inherits name="com.google.gwt.logging.Logging" />
+
+    <!-- Inherit the core Web Toolkit stuff.                        -->
+    <inherits name='com.google.gwt.user.User'/>
+    <inherits name="com.google.gwt.place.Place"/>
+    <inherits name="com.google.gwt.activity.Activity"/>
+
+    <!-- Inherit the default GWT style sheet.  You can change       -->
+    <!-- the theme of your GWT application by uncommenting          -->
+    <!-- any one of the following lines.                            -->
+    <inherits name='com.google.gwt.user.theme.standard.Standard'/>
+    <!-- <inherits name='com.google.gwt.user.theme.chrome.Chrome'/> -->
+    <!-- <inherits name='com.google.gwt.user.theme.dark.Dark'/>     -->
+
     <inherits name="com.google.gwt.inject.Inject"/>
-    <!--<inherits name='com.google.gwt.user.theme.standard.Standard' />-->
-  <!-- <inherits name='com.google.gwt.user.theme.chrome.Chrome'/> -->
-  <!-- <inherits name='com.google.gwt.user.theme.dark.Dark'/>     -->
 
-  <!-- Other module inherits                                      -->
 
-  <!-- Specify the app entry point class.                         -->
-  <entry-point class='gov.nist.toolkit.desktop.client.toolkit.ToolkitMVP' />
+    <!-- Other module inherits          -->
+    <!--<inherits name="gov.nist.toolkit.simcommon.simCommon"/>-->
+    <!--<inherits name="gov.nist.toolkit.testengine.testengine"/>-->
+    <!--<inherits name="gov.nist.toolkit.sitemanagement.siteManagement"/>-->
+    <!--<inherits name="gov.nist.toolkit.valsupport.validatorsSupport"/>-->
+    <!--<inherits name="gov.nist.toolkit.registrymsg.registryMsgFormats"/>-->
+    <!--<inherits name="gov.nist.toolkit.errorrecording.errorRecording"/>-->
+    <!--<inherits name="gov.nist.toolkit.registrymetadata.registryMetadata"/>-->
+    <!--<inherits name="gov.nist.toolkit.commondatatypes.commonDatatypes"/>-->
+    <!--<inherits name="gov.nist.toolkit.actortransaction.actorTransaction"/>-->
+    <!--<inherits name="gov.nist.toolkit.tk.tk"/>-->
+    <!--<inherits name="gov.nist.toolkit.results.results"/>-->
+    <!--<inherits name="gov.nist.toolkit.services.services"/>-->
+    <!--<inherits name="gov.nist.toolkit.actorfactory.actorfactory"/>-->
+    <!--<inherits name="gov.nist.toolkit.http.http"/>-->
+    <!--<inherits name="gov.nist.toolkit.configDatatypes.datatypes"/>-->
+    <!--<inherits name="gov.nist.toolkit.session.session"/>-->
+    <!--<inherits name="gov.nist.toolkit.testengine.testengine"/>-->
+    <!--<inherits name="gov.nist.toolkit.testkitutilities.testkitutilities"/>-->
+    <!--<inherits name="gov.nist.toolkit.testenginelogging.testenginelogging"/>-->
+    <!--<inherits name="gov.nist.toolkit.xdsexception.xdsexceptions"/>-->
+    <!--<inherits name="gov.nist.toolkit.interactionmodel.interactionModel"/>-->
+    <!--<inherits name="gov.nist.toolkit.interactiondiagram.interactionDiagram"/>-->
+    <!--<inherits name="gov.nist.toolkit.xdstools2.Xdstools2"/>-->
 
-  <!--<stylesheet src="desktop.css"/>-->
+    <!--<inherits name="elemental.Elemental"/>-->
 
-  <!-- Enable log -->
-  <set-property name="gwt.logging.logLevel" value="INFO" />
-  <set-property name="gwt.logging.enabled" value="TRUE" />
-  <!--<set-property name="gwt.logging.popupHandler" value="DISABLED" />-->
+    <!--<inherits name="gov.nist.toolkit.toolkitFramework.toolkitFramework"/>-->
 
-  <replace-with class="gov.nist.toolkit.desktop.client.framework.ClientFactoryImpl">
-    <when-type-is class="gov.nist.toolkit.desktop.client.framework.ClientFactory"/>
-  </replace-with>
+    <!-- Specify the app entry point class.                         -->
+    <entry-point class='gov.nist.toolkit.desktop.client.DesktopEP'/>
 
-  <!-- Specify the paths for translatable code                    -->
-  <source path='client' />
-  <source path='shared' />
 
+    <!-- DEBUG STUFF -->
+    <!-- Use Super Dev Mode -->
+    <!--From GWT 2.7, the xsiframe linker is the default-->
+    <!-- See http://www.gwtproject.org/articles/superdevmode.html -->
+    <!--<display-linker name="xsiframe"/>-->
+    <!--<set-configuration-property name="devModeRedirectEnabled" value="true"/>-->
+    <!--<set-property name="compiler.useSourceMaps" value="true"/>-->
+
+    <!-- Only build for one browser - safari setting includes chrome -->
+    <!-- <set-property name="user.agent" value="safari" />-->
+
+    <!-- <inherits name="com.google.gwt.logging.Logging"/> -->
+
+    <!-- Use ClientFactoryImpl by default -->
+    <!--<replace-with class="gov.nist.toolkit.xdstools2Framework.client.framework.ClientFactoryImpl">-->
+        <!--<when-type-is class="gov.nist.toolkit.xdstools2Framework.client.framework.ClientFactory"/>-->
+    <!--</replace-with>-->
+
+    <!-- This is the empty menu for testing just the framework-->
+    <!--<replace-with class="gov.nist.toolkit.xdstools2Framework.client.framework.FrameworkMainMenu">-->
+        <!--<when-type-is class="gov.nist.toolkit.toolkitFramework.client.util.MainMenu"/>-->
+    <!--</replace-with>-->
+
+    <public path="public"/>
+    <source path="client"/>
+    <source path="shared"/>
 </module>
+
+
