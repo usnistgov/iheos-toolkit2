@@ -77,11 +77,11 @@ public class XdsTools2Presenter {
         view.buildTabsWrapper();
 
         // If using ConfActor activity then home tab is a distraction
-        HomeTab homeTab = new HomeTab();
-        if (!enableHomeTab) {
-            homeTab.setDisplayTab(false);
-        }
-        homeTab.onTabLoad(false, "Home");
+//        HomeTab homeTab = new HomeTab();
+//        if (!enableHomeTab) {
+//            homeTab.setDisplayTab(false);
+//        }
+//        homeTab.onTabLoad(false, "Home");
 
 //        History.addValueChangeHandler(new ValueChangeHandler<String>() {
 //            public void onValueChange(ValueChangeEvent<String> event) {

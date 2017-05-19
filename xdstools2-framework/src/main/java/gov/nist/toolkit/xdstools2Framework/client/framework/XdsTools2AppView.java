@@ -12,7 +12,6 @@ import gov.nist.toolkit.toolkitFramework.client.environment.EnvironmentManager;
 import gov.nist.toolkit.toolkitFramework.client.events.ResizeToolkitEvent;
 import gov.nist.toolkit.toolkitFramework.client.injector.ToolkitEventBus;
 import gov.nist.toolkit.toolkitFramework.client.testSession.TestSessionManager;
-import gov.nist.toolkit.toolkitFramework.client.testSession.TestSessionSelector;
 import gov.nist.toolkit.toolkitFramework.client.toolSupport.TabContainer;
 import gov.nist.toolkit.toolkitFramework.client.util.MenuManagement;
 
@@ -76,11 +75,11 @@ public class XdsTools2AppView implements MenuManagement {
 
 		menuPanel.add(environmentManager);
 		menuPanel.setSpacing(10);
-		menuPanel.add(new TestSessionSelector(testSessionManager.getTestSessions(), testSessionManager.getCurrentTestSession()).asWidget());
+//		menuPanel.add(new TestSessionSelector(testSessionManager.getTestSessions(), testSessionManager.getCurrentTestSession()).asWidget());
 
 		DockLayoutPanel mainPanel = new DockLayoutPanel(Style.Unit.EM);
 		mainPanel.addNorth(menuPanel, 4);
-		mainPanel.add(tabContainer.getTabPanel());
+//		mainPanel.add(tabContainer.getTabPanel());
 		mainSplitPanel.add(mainPanel);
 
 		mainPanel.add(new Label("Hello World"));

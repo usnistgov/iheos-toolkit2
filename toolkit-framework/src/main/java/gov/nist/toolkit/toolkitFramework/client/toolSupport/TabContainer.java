@@ -43,7 +43,9 @@ public class TabContainer {
 		INNER_DECKPANEL = new DeckLayoutPanel();
 		OUTERPANEL.addNorth(TABBAR, 3.0);
 		OUTERPANEL.add(INNER_DECKPANEL);
-		addTab(new DockLayoutPanel(EM),"Default", true);
+		DockLayoutPanel thePanel = new DockLayoutPanel(EM);
+		thePanel.add(new Label("Siting by the dock"));
+		addTab(thePanel,"Default", true);
 		TABBAR.addSelectionHandler(new SelectionHandler<Integer>() {
 			@Override
 			public void onSelection(SelectionEvent<Integer> selectionEvent) {
