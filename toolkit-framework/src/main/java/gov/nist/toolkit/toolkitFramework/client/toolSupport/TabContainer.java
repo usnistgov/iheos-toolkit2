@@ -1,45 +1,51 @@
 package gov.nist.toolkit.toolkitFramework.client.toolSupport;
 
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Style;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.logical.shared.SelectionEvent;
 import com.google.gwt.event.logical.shared.SelectionHandler;
-import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.*;
 import gov.nist.toolkit.toolkitFramework.client.events.TabOpenedEvent;
 import gov.nist.toolkit.toolkitFramework.client.events.TabSelectedEvent;
+import gov.nist.toolkit.toolkitFramework.client.injector.ToolkitEventBus;
 
 import javax.inject.Inject;
 import java.util.ArrayList;
 import java.util.List;
 
-public class TabContainer {
-	private static TabContainer me = new TabContainer();
+import static com.google.gwt.dom.client.Style.Unit.EM;
 
-	@Inject
-	private EventBus eventBus;
+public class TabContainer {
+
+	private ToolkitEventBus eventBus;
 
 	// holds TabBar and currently selected panel from deck
 	// TabBar in North section.  Center holds SimpleLayoutPanel. SimpleLayoutPanel
 	// holds one element from the deck.
-	private static DockLayoutPanel OUTERPANEL = new DockLayoutPanel(Style.Unit.EM);
+	private  DockLayoutPanel OUTERPANEL = new DockLayoutPanel(EM);
 
-	private static TabBar TABBAR = new TabBar();
+	private static TabBar TABBAR;
 
-	private static DeckLayoutPanel INNER_DECKPANEL = new DeckLayoutPanel();
+	private  DeckLayoutPanel INNER_DECKPANEL;
 
 	// Each element of TABBAR maps to one element of deck
-	private static List<DockLayoutPanel> deck = new ArrayList<>();
+	private  List<DockLayoutPanel> deck;
 
-	static {
+	@Inject
+	private TabContainer(ToolkitEventBus eventBus) {
+		this.eventBus = eventBus;
+		GWT.log("starting tabcontainer");
+		TABBAR = new TabBar();
+		deck = new ArrayList<>();
+		INNER_DECKPANEL = new DeckLayoutPanel();
 		OUTERPANEL.addNorth(TABBAR, 3.0);
 		OUTERPANEL.add(INNER_DECKPANEL);
-
-	}
-
-	private TabContainer() {
+		DockLayoutPanel thePanel = new DockLayoutPanel(EM);
+		thePanel.add(new Label("Siting by the dock"));
+		addTab(thePanel,"Default", true);
 		TABBAR.addSelectionHandler(new SelectionHandler<Integer>() {
 			@Override
 			public void onSelection(SelectionEvent<Integer> selectionEvent) {
@@ -47,8 +53,6 @@ public class TabContainer {
 			}
 		});
 	}
-
-	public static TabContainer instance() { return me; }
 
 	/**
 	 * Create a new tab/tool.
@@ -61,6 +65,7 @@ public class TabContainer {
 		w.getElement().getStyle().setMarginLeft(4, Style.Unit.PX);
 		w.getElement().getStyle().setMarginRight(4, Style.Unit.PX);
 
+		assert(TABBAR != null);
 		TABBAR.addTab(buildTabHeaderWidget(title, w));
 
 		deck.add(w);
@@ -129,7 +134,7 @@ public class TabContainer {
 //		TABPANEL.setHeight(width);
 	}
 
-	public static void selectTab(int tabIndex) {
+	public void selectTab(int tabIndex) {
 		TABBAR.selectTab(tabIndex);
 
 		INNER_DECKPANEL.showWidget(tabIndex);
@@ -141,7 +146,7 @@ public class TabContainer {
 //		TABPANEL.selectTab(tabIndex);
 	}
 
-	public static Widget getTabPanel() {
+	public Widget getTabPanel() {
 		return OUTERPANEL;
 	}
 

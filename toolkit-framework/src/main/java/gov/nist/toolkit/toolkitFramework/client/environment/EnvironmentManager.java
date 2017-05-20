@@ -2,7 +2,6 @@ package gov.nist.toolkit.toolkitFramework.client.environment;
 
 import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
-import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.user.client.Cookies;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.HTML;
@@ -12,6 +11,7 @@ import gov.nist.toolkit.toolkitFramework.client.commands.GetDefaultEnvironmentCo
 import gov.nist.toolkit.toolkitFramework.client.commands.GetEnvironmentNamesCommand;
 import gov.nist.toolkit.toolkitFramework.client.commands.SetEnvironmentCommand;
 import gov.nist.toolkit.toolkitFramework.client.events.EnvironmentChangedEvent;
+import gov.nist.toolkit.toolkitFramework.client.injector.ToolkitEventBus;
 import gov.nist.toolkit.toolkitFramework.client.util.CookieManager;
 import gov.nist.toolkit.toolkitFramework.client.util.CurrentCommandContext;
 import gov.nist.toolkit.toolkitFramework.client.widgets.Panel1;
@@ -24,22 +24,23 @@ import java.util.List;
  */
 
 public class EnvironmentManager extends Composite{
-	Panel1 menuPanel;
-	HorizontalPanel environmentPanel = new HorizontalPanel();
-	ListBox environmentListBox = new ListBox();
-	static String choose = "-- Choose --";
-	boolean needsUpdating = false;
-	EnvironmentManager environmentManager;  // really this
+	private Panel1 menuPanel;
+	private HorizontalPanel environmentPanel = new HorizontalPanel();
+	private ListBox environmentListBox = new ListBox();
+	private static String choose = "-- Choose --";
+	private boolean needsUpdating = false;
+	private EnvironmentManager environmentManager;  // really this
+
+	private EnvironmentState environmentState;
+
+	private ToolkitEventBus eventBus;
 
 	@Inject
-	EnvironmentState environmentState;
-
-	@Inject
-	EventBus eventBus;
-	
-	public EnvironmentManager() {
+	public EnvironmentManager(EnvironmentState environmentState, ToolkitEventBus eventBus) {
 		environmentManager = this;
-		
+		this.environmentState = environmentState;
+		this.eventBus = eventBus;
+
 		environmentState.addManager(this);
 		
 		init();

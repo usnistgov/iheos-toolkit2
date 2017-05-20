@@ -6,13 +6,12 @@ import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.logical.shared.ResizeEvent;
 import com.google.gwt.event.logical.shared.ResizeHandler;
-import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.*;
 import gov.nist.toolkit.toolkitFramework.client.environment.EnvironmentManager;
 import gov.nist.toolkit.toolkitFramework.client.events.ResizeToolkitEvent;
+import gov.nist.toolkit.toolkitFramework.client.injector.ToolkitEventBus;
 import gov.nist.toolkit.toolkitFramework.client.testSession.TestSessionManager;
-import gov.nist.toolkit.toolkitFramework.client.testSession.TestSessionSelector;
 import gov.nist.toolkit.toolkitFramework.client.toolSupport.TabContainer;
 import gov.nist.toolkit.toolkitFramework.client.util.MenuManagement;
 
@@ -32,27 +31,27 @@ public class XdsTools2AppView implements MenuManagement {
 
 	private TestSessionManager testSessionManager;
 
-	private EventBus eventBus;
+	private ToolkitEventBus eventBus;
+
+	private EnvironmentManager environmentManager;
+
+	private TabContainer tabContainer;
 
 	private HorizontalPanel uiDebugPanel = new HorizontalPanel();
 	boolean UIDebug = false;
 
 	@Inject
-	public XdsTools2AppView(TestSessionManager testSessionManager, EventBus eventBus) {
-		ME = this;
+	public XdsTools2AppView(TestSessionManager testSessionManager, EnvironmentManager environmentManager, TabContainer tabContainer, ToolkitEventBus eventBus) {
 		this.testSessionManager = testSessionManager;
+		this.environmentManager = environmentManager;
+		this.tabContainer = tabContainer;
 		this.eventBus = eventBus;
+		ME = this;
 		GWT.log("In XdsTools2AppView");
-		assert(testSessionManager != null);
 		assert(eventBus != null);
+		assert(testSessionManager != null);
+		buildTabsWrapper();
 	}
-
-//	static public XdsTools2AppView getInstance() {
-//		if (ME==null){
-//			ME=new XdsTools2AppView();
-//		}
-//		return ME;
-//	}
 
 	public void setWidget(IsWidget isWidget) {
 		mainSplitPanel.add(isWidget.asWidget());
@@ -64,7 +63,6 @@ public class XdsTools2AppView implements MenuManagement {
 
 	public void buildTabsWrapper() {
 		HorizontalPanel menuPanel = new HorizontalPanel();
-		EnvironmentManager environmentManager = new EnvironmentManager();
 
 		Widget decoratedTray = decorateMenuContainer();
 
@@ -77,12 +75,14 @@ public class XdsTools2AppView implements MenuManagement {
 
 		menuPanel.add(environmentManager);
 		menuPanel.setSpacing(10);
-		menuPanel.add(new TestSessionSelector(testSessionManager.getTestSessions(), testSessionManager.getCurrentTestSession()).asWidget());
+//		menuPanel.add(new TestSessionSelector(testSessionManager.getTestSessions(), testSessionManager.getCurrentTestSession()).asWidget());
 
 		DockLayoutPanel mainPanel = new DockLayoutPanel(Style.Unit.EM);
 		mainPanel.addNorth(menuPanel, 4);
-		mainPanel.add(TabContainer.getTabPanel());
+//		mainPanel.add(tabContainer.getTabPanel());
 		mainSplitPanel.add(mainPanel);
+
+		mainPanel.add(new Label("Hello World"));
 
 		Window.addResizeHandler(new ResizeHandler() {
 			@Override
@@ -150,4 +150,11 @@ public class XdsTools2AppView implements MenuManagement {
 		mainMenuPanel.add(w);
 	}
 
+	public void setTestSessionManager(TestSessionManager testSessionManager) {
+		this.testSessionManager = testSessionManager;
+	}
+
+	public void setEventBus(ToolkitEventBus eventBus) {
+		this.eventBus = eventBus;
+	}
 }

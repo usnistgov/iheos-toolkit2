@@ -1,0 +1,152 @@
+package gov.nist.toolkit.desktop.client.environment;
+
+import com.google.gwt.event.dom.client.ChangeEvent;
+import com.google.gwt.event.dom.client.ChangeHandler;
+import com.google.gwt.user.client.Cookies;
+import com.google.gwt.user.client.ui.Composite;
+import com.google.gwt.user.client.ui.HTML;
+import com.google.gwt.user.client.ui.ListBox;
+import gov.nist.toolkit.desktop.client.widgets.HorizontalFlowPanel;
+import gov.nist.toolkit.xdstools2.client.command.command.GetDefaultEnvironmentCommand;
+import gov.nist.toolkit.xdstools2.client.command.command.GetEnvironmentNamesCommand;
+import gov.nist.toolkit.xdstools2.client.command.command.SetEnvironmentCommand;
+import gov.nist.toolkit.xdstools2.client.event.Xdstools2EventBus;
+import gov.nist.toolkit.xdstools2.client.util.ClientUtils;
+
+import java.util.List;
+
+
+public class EnvironmentManager extends Composite{
+//	ToolkitServiceAsync toolkitService;
+	EnvironmentState environmentState;
+	boolean needsUpdating = false;
+	EnvironmentManager environmentManager;  // really this
+
+
+	
+	public EnvironmentManager() {
+		this.environmentState = ClientUtils.INSTANCE.getEnvironmentState();
+		environmentManager = this;
+		
+		environmentState.addManager(this);
+		
+		init();
+		
+	}
+	
+	public void close() {
+		environmentState.deleteManager(this);
+	}
+	
+	void init() {
+
+
+//		updateEnvironmentListBox();
+		
+//		loadEnvironmentNames(null);
+//		getDefaultEnvironment();
+
+		updateEnvironmentListBox();
+		updateSelectionOnScreen();
+		updateCookie();
+
+		initWidget(environmentPanel);
+	}
+	
+	
+	public void needsUpdating() {
+		needsUpdating = true;
+		System.out.println("Environment Manager " + environmentState.getManagerIndex(this) + " needs updating");
+	}
+	
+	public void update() {
+		System.out.println("Updating Environment " + environmentState.getManagerIndex(this) + "???");
+		if (!needsUpdating) return;
+		needsUpdating = false;
+		System.out.println("Updating Environment " + environmentState.getManagerIndex(this));
+		updateEnvironmentListBox();
+		updateSelectionOnScreen();
+	}
+		
+	private boolean updateSelectionOnScreen() {
+		String sel = null;
+		if (environmentState.isValid())
+			sel = environmentState.getEnvironmentName();
+		if (isEmpty(sel))
+			sel = choose;
+
+		for (int i=0; i<environmentListBox.getItemCount(); i++) {
+			if (sel.equals(environmentListBox.getItemText(i))) { 
+				environmentListBox.setSelectedIndex(i);
+				return true;
+			}
+		}
+		return false;
+	}
+
+	
+	private void updateEnvironmentListBox() {
+		environmentListBox.clear();
+		environmentListBox.addItem(choose, "");
+		for (String val : environmentState.getEnvironmentNameChoices())
+			environmentListBox.addItem(val);
+	}
+	
+
+	
+	@SuppressWarnings("rawtypes")
+	private void loadEnvironmentNames(final String initialEnvironmentName) {
+
+		new GetEnvironmentNamesCommand() {
+
+			@Override
+			public void onComplete(List<String> result) {
+				environmentState.setEnvironmentNameChoices(result);
+				if (environmentState.getEnvironmentName() == null)
+					environmentState.setEnvironmentName(initialEnvironmentName);
+
+				if (environmentState.isFirstManager() && !environmentState.isValid())
+					getDefaultEnvironment();
+				else {
+					updateEnvironmentListBox();
+					updateSelectionOnScreen();
+					updateCookie();
+				}
+			}
+		}.run(ClientUtils.INSTANCE.getCommandContext());
+
+		new SetEnvironmentCommand().run(ClientUtils.INSTANCE.getCommandContext().setEnvironmentName(initialEnvironmentName));
+	}
+	
+	void getDefaultEnvironment() {
+		if (environmentState.getEnvironmentName() == null)
+			new GetDefaultEnvironmentCommand(){
+
+				@Override
+				public void onComplete(String result) {
+					environmentState.setEnvironmentName(result);
+
+					updateEnvironmentListBox();
+					updateSelectionOnScreen();
+					updateCookie();
+					updateServer();
+				}
+			}.run(ClientUtils.INSTANCE.getCommandContext());
+	}
+
+	void updateCookie() {
+			Cookies.removeCookie(CookieManager.ENVIRONMENTCOOKIENAME);
+	}
+	
+	void updateServer() {
+		new SetEnvironmentCommand().run(ClientUtils.INSTANCE.getCommandContext());
+	}
+
+
+	boolean isEmpty(String x) { return x == null || x.equals(""); }
+
+	public String getSelectedEnvironment(){
+		return environmentListBox.getItemText(environmentListBox.getSelectedIndex());
+	}
+	
+}

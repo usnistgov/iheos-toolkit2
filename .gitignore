@@ -71,6 +71,7 @@ fabric.properties
 # gwt caches and compiled units #
 war/gwt_bree/
 gwt-unitCache/
+WEB-INF/classes/
 
 # boilerplate generated classes #
 .apt_generated/

@@ -1,7 +1,6 @@
 package gov.nist.toolkit.toolkitFramework.client.testSession;
 
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.user.client.Cookies;
 import gov.nist.toolkit.toolkitFramework.client.commands.AddMesaTestSessionCommand;
 import gov.nist.toolkit.toolkitFramework.client.commands.DeleteMesaTestSessionCommand;
@@ -9,6 +8,7 @@ import gov.nist.toolkit.toolkitFramework.client.commands.GetTestSessionNamesComm
 import gov.nist.toolkit.toolkitFramework.client.environment.EnvironmentState;
 import gov.nist.toolkit.toolkitFramework.client.events.TestSessionsUpdatedEvent;
 import gov.nist.toolkit.toolkitFramework.client.events.TestSessionsUpdatedEventHandler;
+import gov.nist.toolkit.toolkitFramework.client.injector.ToolkitEventBus;
 import gov.nist.toolkit.toolkitFramework.client.toolSupport.command.CommandContext;
 import gov.nist.toolkit.toolkitFramework.client.util.CookieManager;
 import gov.nist.toolkit.toolkitFramework.client.util.CurrentCommandContext;
@@ -26,16 +26,20 @@ public class TestSessionManager {
     private List<String> testSessions;  // this is maintained to initialize new tabs with
     private String currentTestSession = "default";
 
-    @Inject
-    private EventBus eventBus;
+    private ToolkitEventBus eventBus;
 
-    @Inject
     private EnvironmentState environmentState;
 
-    public TestSessionManager() {
+    @Inject
+    public TestSessionManager(EnvironmentState environmentState, ToolkitEventBus eventBus) {
+        this.environmentState = environmentState;
+        this.eventBus = eventBus;
         GWT.log("In TestSessionManager");
+        assert(environmentState != null);
         assert(eventBus != null);
-        GWT.log("Has eventBus");
+    }
+
+    private void bind() {
         eventBus.addHandler(TestSessionsUpdatedEvent.TYPE, new TestSessionsUpdatedEventHandler() {
             @Override
             public void onTestSessionsUpdated(TestSessionsUpdatedEvent event) {
@@ -129,5 +133,15 @@ public class TestSessionManager {
 
     public void setTestSessions(List<String> testSessions) {
         this.testSessions = testSessions;
+    }
+
+    public void setEventBus(ToolkitEventBus eventBus) {
+        this.eventBus = eventBus;
+        if (environmentState != null) bind();
+    }
+
+    public void setEnvironmentState(EnvironmentState environmentState) {
+        this.environmentState = environmentState;
+        if (eventBus != null) bind();
     }
 }

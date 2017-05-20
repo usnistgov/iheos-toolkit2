@@ -1,10 +1,10 @@
 package gov.nist.toolkit.toolkitFramework.client.testSession;
 
 import com.google.gwt.event.dom.client.*;
-import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.user.client.ui.*;
 import gov.nist.toolkit.toolkitFramework.client.events.TestSessionsUpdatedEvent;
 import gov.nist.toolkit.toolkitFramework.client.events.TestSessionsUpdatedEventHandler;
+import gov.nist.toolkit.toolkitFramework.client.injector.ToolkitEventBus;
 
 import javax.inject.Inject;
 import java.util.ArrayList;
@@ -20,7 +20,7 @@ public class TestSessionSelector {
     static final String NONSELECTION = "--Select--";
 
     @Inject
-    EventBus eventBus;
+    ToolkitEventBus eventBus;
 
     @Inject
     TestSessionManager testSessionManager;

@@ -1,10 +1,10 @@
 package gov.nist.toolkit.xdstools2Framework.client.framework;
 
 
-import com.google.gwt.event.shared.EventBus;
 import gov.nist.toolkit.toolkitFramework.client.commands.InitializationCommand;
 import gov.nist.toolkit.toolkitFramework.client.environment.EnvironmentState;
 import gov.nist.toolkit.toolkitFramework.client.events.SystemsNeedReloadingEvent;
+import gov.nist.toolkit.toolkitFramework.client.injector.ToolkitEventBus;
 import gov.nist.toolkit.toolkitFramework.client.testSession.TestSessionManager;
 import gov.nist.toolkit.toolkitFramework.client.util.CurrentCommandContext;
 import gov.nist.toolkit.toolkitFramework.client.widgets.PopupMessage;
@@ -17,28 +17,26 @@ import javax.inject.Inject;
  * to the data() method and I'm lazy.
  */
 public class XdsTools2Presenter {
-    private static XdsTools2Presenter INSTANCE;
     private boolean enableHomeTab = true;
     private String toolkitName;
     private String toolkitBaseUrl;
     private String wikiBaseUrl;
 
-    @Inject
-    EnvironmentState environmentState;
+    private EnvironmentState environmentState;
+
+    private TestSessionManager testSessionManager;
+
+    private ToolkitEventBus eventBus;
+
+    private XdsTools2AppView view;
 
     @Inject
-    TestSessionManager testSessionManager;
-
-    @Inject
-    EventBus eventBus;
-
-    XdsTools2AppView view;
-
-    public XdsTools2Presenter() {
-        INSTANCE = this;
+    public XdsTools2Presenter(EnvironmentState environmentState, TestSessionManager testSessionManager, XdsTools2AppView view, ToolkitEventBus eventBus) {
+        this.environmentState = environmentState;
+        this.testSessionManager = testSessionManager;
+        this.view = view;
+        this.eventBus = eventBus;
     }
-
-    public void setView(XdsTools2AppView view) { this.view = view; }
 
     public void blockHomeTab() { enableHomeTab = false; }
 
@@ -79,11 +77,11 @@ public class XdsTools2Presenter {
         view.buildTabsWrapper();
 
         // If using ConfActor activity then home tab is a distraction
-        HomeTab homeTab = new HomeTab();
-        if (!enableHomeTab) {
-            homeTab.setDisplayTab(false);
-        }
-        homeTab.onTabLoad(false, "Home");
+//        HomeTab homeTab = new HomeTab();
+//        if (!enableHomeTab) {
+//            homeTab.setDisplayTab(false);
+//        }
+//        homeTab.onTabLoad(false, "Home");
 
 //        History.addValueChangeHandler(new ValueChangeHandler<String>() {
 //            public void onValueChange(ValueChangeEvent<String> event) {
@@ -136,4 +134,19 @@ public class XdsTools2Presenter {
     public void setWikiBaseUrl(String wikiBaseUrl) {
         this.wikiBaseUrl = wikiBaseUrl;
     }
+
+    public void setEnvironmentState(EnvironmentState environmentState) {
+        this.environmentState = environmentState;
+    }
+
+    public void setTestSessionManager(TestSessionManager testSessionManager) {
+        this.testSessionManager = testSessionManager;
+    }
+
+    public void setEventBus(ToolkitEventBus eventBus) {
+        this.eventBus = eventBus;
+    }
+
+    public void setView(XdsTools2AppView view) { this.view = view; }
+
 }

@@ -1,12 +1,13 @@
 package gov.nist.toolkit.xdstools2Framework.client.framework;
 
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.inject.client.AbstractGinModule;
 import com.google.gwt.place.shared.PlaceController;
 import com.google.inject.Provider;
 import com.google.inject.Singleton;
+import gov.nist.toolkit.toolkitFramework.client.injector.ToolkitEventBus;
 import gov.nist.toolkit.toolkitFramework.client.testSession.TestSessionManager;
+import gov.nist.toolkit.toolkitFramework.client.toolSupport.TabContainer;
 
 import javax.inject.Inject;
 
@@ -26,27 +27,14 @@ public class TkGinModule extends AbstractGinModule {
 
         bind(XdsTools2AppView.class).in(Singleton.class);
 
-
-
-
-//        bind(XdsTools2AppView.class).to(XdsTools2AppView.class).in(Singleton.class);
-
-//        bind(MenuManagement.class).to(XdsTools2AppView.class);
-
-
-//        bind(ActivityDisplayer.class).to(ActivityDisplayer.XdsTools2AppDisplayer.class).in(Singleton.class);
-
-//        bind(ToolkitServiceAsync.class).in(Singleton.class);
-
-
-
+        bind(TabContainer.class).in(Singleton.class);
 
     }
 
     /** Provider for PlaceController */
     public static class PlaceControllerProvider implements Provider<PlaceController> {
         @Inject
-        EventBus eventBus;
+        ToolkitEventBus eventBus;
         private PlaceController controller;
 
         @SuppressWarnings("deprecation")

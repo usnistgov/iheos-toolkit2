@@ -16,10 +16,6 @@
     <packaging>war</packaging>
 
     <dependencies>
-        <!--<dependency>-->
-            <!--<groupId>gov.nist.toolkit</groupId>-->
-            <!--<artifactId>xdstools2</artifactId>-->
-        <!--</dependency>-->
         <dependency>
             <groupId>gov.nist.toolkit</groupId>
             <artifactId>toolkit-framework</artifactId>
