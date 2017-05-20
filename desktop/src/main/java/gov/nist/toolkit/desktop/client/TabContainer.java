@@ -44,7 +44,6 @@ public class TabContainer {
 	private TabContainer(final PlaceController placeController, ToolkitEventBus eventBus) {
 		this.placeController = placeController;
 		this.eventBus = eventBus;
-		GWT.log("starting tabcontainer");
 		assert(eventBus != null);
 		TABBAR = new TabBar();
 		INNER_DECKPANEL = new DeckLayoutPanel();

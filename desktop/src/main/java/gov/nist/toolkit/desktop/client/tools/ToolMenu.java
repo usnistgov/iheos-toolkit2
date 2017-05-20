@@ -27,6 +27,7 @@ public class ToolMenu implements IsWidget /*, ValueChangeHandler<String> */{
     }
 
     private void build() {
+        GWT.log("Build Menu");
         panel.add(new HTML("<h2>Menu</h2>"));
         add("Toy", new Toy());
         add("Ball", new Toy("Ball"));

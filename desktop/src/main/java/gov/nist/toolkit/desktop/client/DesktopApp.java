@@ -11,6 +11,7 @@ import com.google.gwt.place.shared.PlaceController;
 import com.google.gwt.place.shared.PlaceHistoryHandler;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.*;
+import com.google.web.bindery.event.shared.HandlerRegistration;
 import gov.nist.toolkit.desktop.client.environment.EnvironmentMVP;
 import gov.nist.toolkit.desktop.client.environment.TestSessionMVP;
 import gov.nist.toolkit.desktop.client.events.ResizeToolkitEvent;
@@ -70,7 +71,7 @@ public class DesktopApp implements IsWidget {
         PlaceHistoryHandler historyHandler = new PlaceHistoryHandler(historyMapper);
 
         // Don't know why this is done - WelcomePlace is never displayed
-        historyHandler.register(placeController, eventBus, new WelcomePlace("Welcome"));
+        HandlerRegistration registration = historyHandler.register(placeController, eventBus, new WelcomePlace("Welcome"));
 
         GWT.log("adding view to activity panel");
 
@@ -80,13 +81,15 @@ public class DesktopApp implements IsWidget {
 
         buildTabsWrapper();
 
-
-
         activityPanel.add(mainSplitPanel);
 //        activityPanel.add(appView.getWidget());
 
-        // Goes to the place represented on URL else default place
+        // Goes to WelcomePlace because of the .register above
         historyHandler.handleCurrentHistory();
+
+        // remove the default place - otherwise it stays on the history stack and gets re-launched every time
+        // we open a tool
+        registration.removeHandler();
 
         GWT.log("end of app");
     }
@@ -114,8 +117,6 @@ public class DesktopApp implements IsWidget {
         HorizontalFlowPanel environmentBar = new HorizontalFlowPanel();
         Widget edisp = environmentMVP.getDisplay();
         Widget tdisp = testSessionMVP.getDisplay();
-        GWT.log("edisp is " + edisp.getClass().getName());
-        GWT.log("tdisp is " + tdisp.getClass().getName());
         environmentBar.add(edisp);
         environmentBar.add(tdisp);
         northPanel.add(environmentBar);

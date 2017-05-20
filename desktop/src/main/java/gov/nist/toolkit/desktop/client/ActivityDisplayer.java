@@ -19,9 +19,8 @@ public interface ActivityDisplayer {
      * and reduce the amount of code. This way there is only one part of the application that changes through the
      * browser navigation while the rest of the application stays the same and keeps working.
      */
-    public class ToolkitAppDisplayer implements ActivityDisplayer {
-        @Inject
-        private ToolkitAppView appView;  // this will be a singleton
+    class ToolkitAppDisplayer implements ActivityDisplayer {
+        private static int counter = 0;
 
         @Inject
         private TabContainer tabContainer;
@@ -31,6 +30,10 @@ public interface ActivityDisplayer {
         @Override
         public void display(Widget w, String title, AbstractActivity activity, AcceptsOneWidget p, EventBus b) {
             GWT.log("ToolkitAppDisplayer:display: " + w.getClass().getName());
+            if (title.equals("Welcome")) {
+                counter++;
+                assert(counter != 2);
+            }
             tabContainer.addTab(w, title, activity);
         }
     }

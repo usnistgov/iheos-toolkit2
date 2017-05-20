@@ -69,7 +69,6 @@ public abstract class AbstractMVP<M, V extends AbstractView<P>, P extends Abstra
 	 * @return View as a Widget
 	 */
 	public Widget getDisplay() {
-		GWT.log("Getting Environment display");
 		assert(view != null);
 		return view.asWidget();
 	}
