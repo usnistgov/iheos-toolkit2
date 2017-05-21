@@ -33,7 +33,7 @@ public interface ActivityDisplayer {
             GWT.log("ToolkitAppDisplayer:display: " + w.getClass().getName());
             if (title.equals("Welcome")) {
                 counter++;
-                assert(counter != 2);
+                assert(counter != 2);  // if this gets redisplayed then something is broken with places
             }
             tabContainer.addTab(w, title, activity);
         }

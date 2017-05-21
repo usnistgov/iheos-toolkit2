@@ -12,6 +12,7 @@ import gov.nist.toolkit.desktop.client.environment.TestSessionMVP;
 import gov.nist.toolkit.desktop.client.events.ToolkitEventBus;
 import gov.nist.toolkit.desktop.client.home.WelcomeActivity;
 import gov.nist.toolkit.desktop.client.tools.ToolMenu;
+import gov.nist.toolkit.desktop.client.tools.getDocuments.GetDocumentsActivity;
 import gov.nist.toolkit.desktop.client.tools.toy.ToyActivity;
 
 /**
@@ -39,5 +40,7 @@ public interface ToolkitGinInjector extends Ginjector {
 
     EnvironmentMVP getEnvironmentMVP();
     TestSessionMVP getTestSessionMVP();
+
+    GetDocumentsActivity getGetDocumentsActivity();
 
 }

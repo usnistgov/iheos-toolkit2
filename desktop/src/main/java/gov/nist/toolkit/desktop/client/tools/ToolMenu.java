@@ -6,6 +6,7 @@ import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.place.shared.Place;
 import com.google.gwt.place.shared.PlaceController;
 import com.google.gwt.user.client.ui.*;
+import gov.nist.toolkit.desktop.client.tools.getDocuments.GetDocuments;
 import gov.nist.toolkit.desktop.client.tools.toy.Toy;
 
 import javax.inject.Inject;
@@ -31,6 +32,7 @@ public class ToolMenu implements IsWidget /*, ValueChangeHandler<String> */{
         panel.add(new HTML("<h2>Menu</h2>"));
         add("Toy", new Toy());
         add("Ball", new Toy("Ball"));
+        add("GetDocuments", new GetDocuments());
     }
 
     private void add(String placeName, final Place place) {
