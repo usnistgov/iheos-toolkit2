@@ -38,11 +38,11 @@ public class ToolkitGinModule extends AbstractGinModule {
 
         bind(ToolMenu.class).in(Singleton.class);
 
-        bind(ClientUtils.class).in(Singleton.class);
-
         bind(EnvironmentMVP.class).in(Singleton.class);
 
         bind(TestSessionMVP.class).in(Singleton.class);
+
+        bind(ClientUtils.class).in(Singleton.class);
 
         // this is only for UI testing along with a hack
         // in EnvironmentService

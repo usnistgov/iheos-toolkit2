@@ -9,12 +9,8 @@ import gov.nist.toolkit.desktop.client.DesktopApp;
  */
 public abstract class CommandModule<C> implements AsyncCallback<C> {
 
-//    @Inject
-//    private DesktopApp desktopApp;
 
-    public CommandModule() {
-
-    }
+    CommandModule() { }
 
     /**
      * This is the method that implement the actions to be executed

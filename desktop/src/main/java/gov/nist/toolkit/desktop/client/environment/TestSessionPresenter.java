@@ -3,6 +3,7 @@ package gov.nist.toolkit.desktop.client.environment;
 import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.user.client.Cookies;
+import com.google.gwt.user.client.Timer;
 import gov.nist.toolkit.desktop.client.ClientUtils;
 import gov.nist.toolkit.desktop.client.CookieManager;
 import gov.nist.toolkit.desktop.client.abstracts.AbstractPresenter;
@@ -27,14 +28,26 @@ public class TestSessionPresenter extends AbstractPresenter<TestSessionView> imp
     @Inject
     public TestSessionPresenter(ToolkitEventBus eventBus) {
         this.eventBus = eventBus;
+        assert(ClientUtils.INSTANCE != null);
     }
 
     @Override
     public void init() {
-        // this should call reload()
-        List<String> items = new ArrayList<>();
-        items.add("default");
-        view.set(items);
+
+        // This timer is necessary because inside reload() we call ClientUtils.INSTANCE.getCurrentCommandContext()
+        // which depends on this class be fully initialized.  The delay lets the initialization
+        // complete
+        // The amount of delay is not important, The timer won't be looked at until initialization completes
+
+        Timer t = new Timer() {
+
+            @Override
+            public void run() {
+                reload();
+            }
+        };
+
+        t.schedule(5);
     }
 
     public void onChange(ChangeEvent unused) {
@@ -45,9 +58,7 @@ public class TestSessionPresenter extends AbstractPresenter<TestSessionView> imp
 
         eventBus.fireEvent(new TestSessionChangedEvent(TestSessionChangedEvent.ChangeType.SELECT,  testSessionName));
 
-        CommandContext cc = ClientUtils.INSTANCE.getCommandContext();
-        cc.setTestSessionName(testSessionName);
-        new SetTestSessionCommand().run(ClientUtils.INSTANCE.getCommandContext());
+        new SetTestSessionCommand().run(ClientUtils.INSTANCE.getCurrentCommandContext().setTestSessionName(testSessionName));
     }
 
     public void onAdd() {
@@ -58,16 +69,16 @@ public class TestSessionPresenter extends AbstractPresenter<TestSessionView> imp
 
     }
 
-    void reload() {
+    private void reload() {
         new GetTestSessionNamesCommand() {
 
             @Override
-            public void onComplete(List<String> result) {
-                view.set(result);
+            public void onComplete(List<String> testSessionNames) {
+                view.set(testSessionNames);
             }
-        }.run(ClientUtils.INSTANCE.getCommandContext());
+        }.run(ClientUtils.INSTANCE.getCurrentCommandContext());
 
-        new SetTestSessionCommand().run(ClientUtils.INSTANCE.getCommandContext().setEnvironmentName("default"));
+//        new SetTestSessionCommand().run(ClientUtils.INSTANCE.getCommandContext().setEnvironmentName("default"));
 
     }
 
@@ -76,7 +87,7 @@ public class TestSessionPresenter extends AbstractPresenter<TestSessionView> imp
     }
 
     private void updateServer() {
-        new SetTestSessionCommand().run(ClientUtils.INSTANCE.getCommandContext());
+        new SetTestSessionCommand().run(ClientUtils.INSTANCE.getCurrentCommandContext());
     }
 
     public String getTestSessionName() {

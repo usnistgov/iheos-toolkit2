@@ -3,11 +3,13 @@ package gov.nist.toolkit.desktop.client.environment;
 import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.user.client.Cookies;
+import com.google.gwt.user.client.Timer;
 import gov.nist.toolkit.desktop.client.ClientUtils;
 import gov.nist.toolkit.desktop.client.CookieManager;
 import gov.nist.toolkit.desktop.client.abstracts.AbstractPresenter;
 import gov.nist.toolkit.desktop.client.commands.GetEnvironmentNamesCommand;
 import gov.nist.toolkit.desktop.client.commands.SetEnvironmentCommand;
+import gov.nist.toolkit.desktop.client.commands.util.CommandContext;
 import gov.nist.toolkit.desktop.client.events.EnvironmentChangedEvent;
 import gov.nist.toolkit.desktop.client.events.ToolkitEventBus;
 
@@ -26,14 +28,26 @@ public class EnvironmentPresenter extends AbstractPresenter<EnvironmentView> imp
     @Inject
     public EnvironmentPresenter(ToolkitEventBus eventBus) {
         this.eventBus = eventBus;
+        assert(ClientUtils.INSTANCE != null);
     }
 
     @Override
     public void init() {
-        // this should call reload()
-        List<String> items = new ArrayList<>();
-        items.add("default");
-        view.set(items);
+
+        // This timer is necessary because inside reload() we call ClientUtils.INSTANCE.getCurrentCommandContext()
+        // which depends on this class be fully initialized.  The delay lets the initialization
+        // complete.
+        // The amount of delay is not important, The timer won't be looked at until initialization completes
+        Timer t = new Timer() {
+
+            @Override
+            public void run() {
+                reload();
+            }
+        };
+
+        t.schedule(5);
+
     }
 
     public void onChange(ChangeEvent unused) {
@@ -44,19 +58,19 @@ public class EnvironmentPresenter extends AbstractPresenter<EnvironmentView> imp
 
         eventBus.fireEvent(new EnvironmentChangedEvent(environmentName));
 
-        new SetEnvironmentCommand().run(ClientUtils.INSTANCE.getCommandContext().setEnvironmentName(environmentName));
+        new SetEnvironmentCommand().run(ClientUtils.INSTANCE.getCurrentCommandContext().setEnvironmentName(environmentName));
     }
 
-    void reload() {
+    private void reload() {
         new GetEnvironmentNamesCommand() {
 
             @Override
-            public void onComplete(List<String> result) {
-                view.set(result);
+            public void onComplete(List<String> environmentNames) {
+                view.set(environmentNames);
             }
-        }.run(ClientUtils.INSTANCE.getCommandContext());
+        }.run(ClientUtils.INSTANCE.getCurrentCommandContext());
 
-        new SetEnvironmentCommand().run(ClientUtils.INSTANCE.getCommandContext().setEnvironmentName("default"));
+//        new SetEnvironmentCommand().run(ClientUtils.INSTANCE.getCurrentCommandContext().setEnvironmentName(/* value not used */ "default"));
 
     }
 
@@ -64,8 +78,10 @@ public class EnvironmentPresenter extends AbstractPresenter<EnvironmentView> imp
         Cookies.removeCookie(CookieManager.ENVIRONMENTCOOKIENAME);
     }
 
+    // Updates environment selection and testsession selection
+    // this is repeated in TestSessionPresenter
     private void updateServer() {
-        new SetEnvironmentCommand().run(ClientUtils.INSTANCE.getCommandContext());
+        new SetEnvironmentCommand().run(ClientUtils.INSTANCE.getCurrentCommandContext());
     }
 
     public String getEnvironmentName() {
