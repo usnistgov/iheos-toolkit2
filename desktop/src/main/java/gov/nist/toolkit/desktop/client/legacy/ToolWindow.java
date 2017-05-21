@@ -2,8 +2,12 @@ package gov.nist.toolkit.desktop.client.legacy;
 
 import com.google.gwt.dom.client.Style;
 import com.google.gwt.user.client.ui.*;
+import gov.nist.toolkit.desktop.client.ClientUtils;
 import gov.nist.toolkit.desktop.client.TabContainer;
+import gov.nist.toolkit.desktop.client.abstracts.AbstractToolkitActivity;
 import gov.nist.toolkit.desktop.client.commands.util.CommandContext;
+import gov.nist.toolkit.desktop.client.injection.ToolkitGinInjector;
+import gov.nist.toolkit.sitemanagement.client.SiteSpec;
 
 import javax.inject.Inject;
 import java.util.logging.Logger;
@@ -36,17 +40,11 @@ public abstract class ToolWindow {
 	private FlowPanel eastPanel = new FlowPanel();
 	private FlowPanel westPanel = new FlowPanel();
 
-	private  HorizontalPanel menuPanel = new HorizontalPanel();
+	public  HorizontalPanel menuPanel = new HorizontalPanel();
 	private String helpHTML;
 	private String topMessage = null;
 
-	private EnvironmentManager environmentManager;
-
-	private TestSessionManager testSessionManager;
-
-	private TabContainer tabContainer;
-
-	private  String tabName=new String();
+	protected  String tabName=new String();
 
 	public abstract Widget buildUI();
 	public abstract void bindUI();
@@ -54,11 +52,16 @@ public abstract class ToolWindow {
 	// getWindowShortName() + ".html"is documentation file in /doc
 	abstract public String getWindowShortName();
 
+	AbstractToolkitActivity activity = null;
+
+	public void setActivity(AbstractToolkitActivity activity) { this.activity = activity; }
+
 	@Inject
-	public ToolWindow(EnvironmentManager environmentManager, TestSessionManager testSessionManager, TabContainer tabContainer) {
-		this.environmentManager = environmentManager;
-		this.testSessionManager = testSessionManager;
-		this.tabContainer = tabContainer;
+	private TabContainer tabContainer;
+
+	@Inject
+	public ToolWindow() {
+		assert(tabContainer != null);
 
 		String title = getTitle();
 		// .addNorth MUST come before .display - a condition of DockLayoutPanel
@@ -94,7 +97,7 @@ public abstract class ToolWindow {
 	}
 
 	public CommandContext getCommandContext() {
-		return CurrentCommandContext.GET();
+		return ClientUtils.INSTANCE.getCurrentCommandContext();
 	}
 
 	/**
@@ -105,22 +108,23 @@ public abstract class ToolWindow {
 
 	// Used to be protected but impractical for use with the new widget-based architecture in for ex. TestsOverviewTab
 	public String getCurrentTestSession() {
-		return testSessionManager.getCurrentTestSession();
+		return ToolkitGinInjector.INSTANCE.getTestSessionMVP().getPresenter().getTestSessionName();
 	}
 
-	public void setCurrentTestSession(String testSession) { testSessionManager.setCurrentTestSession(testSession);}
+//	public void setCurrentTestSession(String testSession) { testSessionManager.setCurrentTestSession(testSession);}
 
 	public void registerTab(boolean select, String tabName) {
+		assert(activity != null);
 		this.tabName=tabName;
-		tabContainer.addTab(tabTopRawPanel, tabName, select);
+		tabContainer.addTab(tabTopRawPanel, tabName, activity);
 	}
 
 	// access to params shared between tabs
 	// delegate to proper model
-//	public SiteSpec getCommonSiteSpec() { return XdsTools2Presenter.data().getQueryState().getSiteSpec(); }
-//	public void setCommonSiteSpec(SiteSpec s) { XdsTools2Presenter.data().getQueryState().setSiteSpec(s); }
-//	public String getCommonPatientId() { return XdsTools2Presenter.data().getQueryState().getPatientId(); }
-//	public void setCommonPatientId(String p) { XdsTools2Presenter.data().getQueryState().setPatientId(p); }
+	public SiteSpec getCommonSiteSpec() { return ClientUtils.INSTANCE.getQueryState().getSiteSpec(); }
+	public void setCommonSiteSpec(SiteSpec s) { ClientUtils.INSTANCE.getQueryState().setSiteSpec(s); }
+	public String getCommonPatientId() { return ClientUtils.INSTANCE.getQueryState().getPatientId(); }
+	public void setCommonPatientId(String p) { ClientUtils.INSTANCE.getQueryState().setPatientId(p); }
 
 //	public String getEnvironmentSelection() { return XdsTools2Presenter.data().getEnvironmentState().getEnvironmentName(); }
 //	public void setEnvironmentSelection(String envName) { ClientUtils.INSTANCE.getEnvironmentState().setEnvironmentName(envName); }
@@ -148,51 +152,8 @@ public abstract class ToolWindow {
 
 		System.out.println("calling envMgr.update");
 
-		environmentManager.update();
+//		environmentManager.update();
 	}
-
-	protected void setTopMessage(String msg) {
-		topMessage = msg;
-	}
-
-//	protected void addToolHeader(DockLayoutPanel panel, String helpHTML, SiteSpec site) {
-//		if (site != null) {
-//			String type = (site != null) ? site.getTypeName() : "site";
-//			String name = (site != null) ? site.name : "name";
-//			topMessage = "<h3>" + type + ": " + name + "</h3>";
-//		} else {
-//			topMessage = "<h3>No site</h3>";
-//		}
-//		addToolHeader(panel, helpHTML);
-//	}
-
-	// all panels getRetrievedDocumentsModel a close button except the home panel
-//	protected void addToolHeader(TabContainer container, LayoutPanel topPanel, String helpHTML) {
-//
-//		this.helpHTML = (helpHTML == null) ? "No Help Available" : helpHTML;
-//
-//		HTML help = new HTML();
-//		help.setHTML("<a href=\"" + "site/tools/" +  getWindowShortName()  + ".html" + "\" target=\"_blank\">" +  "[" + "help" + "]" + "</a>");
-//		menuPanel.display(help);
-//
-//		if (topMessage != null && !topMessage.equals("")) {
-//			HTML top = new HTML();
-//			top.setHTML(topMessage);
-//			top.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_RIGHT);
-//			menuPanel.display(top);
-//			menuPanel.setSpacing(30);
-//
-//		}
-//
-//		menuPanel.setSpacing(10);
-//		topPanel.display(menuPanel);
-//		HTML line = new HTML();
-//		line.setHTML("<hr />");
-//		topPanel.display(line);
-//
-////		topPanel.setCellWidth(menuPanel, "100%");
-//
-//	}
 
 	protected void addToolHeader(DockLayoutPanel topPanel, String helpHTML) {
 

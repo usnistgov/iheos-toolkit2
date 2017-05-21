@@ -69,7 +69,7 @@ public class TabContainer {
 	 * @param w - content
 	 * @param title - title to appear in the little tab at the top
      */
-	void addTab(/*DockLayoutPanel*/ Widget w, String title, AbstractToolkitActivity activity) {
+	public void addTab(/*DockLayoutPanel*/ Widget w, String title, AbstractToolkitActivity activity) {
 
 		// Without this, every time we create a new tab we get two:
 		// The intended one and a copy of WelcomePanel

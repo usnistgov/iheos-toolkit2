@@ -11,7 +11,6 @@ public class CommandContext implements Serializable, IsSerializable {
     // The current values
     private String environmentName;
     private String testSessionName;
-    private boolean changed;
 
     public CommandContext() {
     }
@@ -44,11 +43,4 @@ public class CommandContext implements Serializable, IsSerializable {
         return this;
     }
 
-    public boolean isChanged() {
-        return changed;
-    }
-
-    public void setChanged(boolean changed) {
-        this.changed = changed;
-    }
 }

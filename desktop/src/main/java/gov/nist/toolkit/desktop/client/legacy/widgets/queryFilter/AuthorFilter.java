@@ -3,8 +3,8 @@ package gov.nist.toolkit.desktop.client.legacy.widgets.queryFilter;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.ui.*;
-import gov.nist.toolkit.xdstools2.client.widgets.AuthorPicker;
-import gov.nist.toolkit.xdstools2.client.widgets.PopupMessage;
+import gov.nist.toolkit.desktop.client.legacy.widgets.AuthorPicker;
+import gov.nist.toolkit.desktop.client.legacy.widgets.PopupMessage;
 
 import java.util.ArrayList;
 import java.util.List;

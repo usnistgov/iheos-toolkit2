@@ -3,10 +3,10 @@ package gov.nist.toolkit.desktop.client.legacy.genericQueryTab;
 import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
 
-class PidChangeHandler implements ChangeHandler {
+public class PidChangeHandler implements ChangeHandler {
 	GenericQueryTab tab;
 	
-	PidChangeHandler(GenericQueryTab tab) {
+	public PidChangeHandler(GenericQueryTab tab) {
 		this.tab = tab;
 	}
 

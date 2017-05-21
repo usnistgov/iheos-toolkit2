@@ -4,9 +4,10 @@ import com.google.gwt.user.client.ui.Grid;
 import com.google.gwt.user.client.ui.RadioButton;
 import gov.nist.toolkit.actortransaction.client.ActorType;
 import gov.nist.toolkit.configDatatypes.client.TransactionType;
+import gov.nist.toolkit.desktop.client.ClientUtils;
+import gov.nist.toolkit.desktop.client.legacy.StringSort;
 import gov.nist.toolkit.sitemanagement.client.Site;
 import gov.nist.toolkit.sitemanagement.client.SiteSpec;
-import gov.nist.toolkit.xdstools2.client.StringSort;
 
 import java.util.*;
 
@@ -23,7 +24,7 @@ public class SiteLoader {
         Map<TransactionType, List<Site>> map;
 
         // aka testSession
-        String user = genericQueryTab.getTestSessionManager().getCurrentTestSession();
+        String user = ClientUtils.INSTANCE.getCurrentCommandContext().getTestSessionName();
 
         if (tls) {
             map = GenericQueryTab.transactionOfferings.tmap;

@@ -36,6 +36,22 @@
             <groupId>gov.nist.toolkit</groupId>
             <artifactId>http</artifactId>
         </dependency>
+        <dependency>
+            <groupId>gov.nist.toolkit</groupId>
+            <artifactId>registry-metadata</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>gov.nist.toolkit</groupId>
+            <artifactId>test-engine</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>gov.nist.toolkit</groupId>
+            <artifactId>services</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>gov.nist.toolkit</groupId>
+            <artifactId>interaction-diagram</artifactId>
+        </dependency>
 
         <!-- https://mvnrepository.com/artifact/com.google.gwt/gwt-elemental -->
         <dependency>

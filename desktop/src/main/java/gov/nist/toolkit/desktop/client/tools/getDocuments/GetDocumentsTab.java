@@ -5,7 +5,6 @@ import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.ui.*;
 import gov.nist.toolkit.configDatatypes.client.TransactionType;
 import gov.nist.toolkit.desktop.client.legacy.CoupledTransactions;
-import gov.nist.toolkit.desktop.client.legacy.tabs.GenericQueryTab;
 
 import java.util.ArrayList;
 import java.util.List;

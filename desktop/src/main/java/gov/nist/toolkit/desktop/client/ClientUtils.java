@@ -4,6 +4,7 @@ import com.google.gwt.core.client.GWT;
 import gov.nist.toolkit.desktop.client.commands.util.CommandContext;
 import gov.nist.toolkit.desktop.client.environment.*;
 import gov.nist.toolkit.desktop.client.injection.ToolkitGinInjector;
+import gov.nist.toolkit.desktop.client.legacy.QueryState;
 
 import javax.inject.Inject;
 
@@ -18,6 +19,11 @@ public class ClientUtils {
     // UI testing version
     private EnvironmentServiceAsync environmentService = GWT.create(LocalEnvironmentServiceAsync.class);
 
+    private ToolkitServiceAsync toolkitService = GWT.create(ToolkitServiceAsync.class);
+
+    private QueryState queryState = new QueryState();
+
+    public QueryState getQueryState() { return queryState; }
 
     public ClientUtils() {
         GWT.log("ClientUtils created");
@@ -26,6 +32,8 @@ public class ClientUtils {
     public EnvironmentServiceAsync getEnvironmentServices() {
         return environmentService;
     }
+
+    public ToolkitServiceAsync getToolkitServices() { return toolkitService; }
 
     public CommandContext getCurrentCommandContext() {
         EnvironmentMVP environmentMVP = ToolkitGinInjector.INSTANCE.getEnvironmentMVP();

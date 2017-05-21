@@ -10,11 +10,17 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.*;
 import gov.nist.toolkit.actortransaction.client.ActorType;
 import gov.nist.toolkit.configDatatypes.client.TransactionType;
+import gov.nist.toolkit.desktop.client.ClientUtils;
+import gov.nist.toolkit.desktop.client.InformationLink;
 import gov.nist.toolkit.desktop.client.TabContainer;
-import gov.nist.toolkit.desktop.client.events.EnvironmentChangedEvent;
-import gov.nist.toolkit.desktop.client.events.TestSessionChangedEvent;
-import gov.nist.toolkit.desktop.client.events.ToolkitEventBus;
+import gov.nist.toolkit.desktop.client.commands.GetStsSamlAssertionCommand;
+import gov.nist.toolkit.desktop.client.commands.GetStsSamlAssertionRequest;
+import gov.nist.toolkit.desktop.client.commands.GetToolkitPropertiesCommand;
+import gov.nist.toolkit.desktop.client.commands.GetTransactionOfferingsCommand;
+import gov.nist.toolkit.desktop.client.events.*;
 import gov.nist.toolkit.desktop.client.legacy.CoupledTransactions;
+import gov.nist.toolkit.desktop.client.legacy.GazelleXuaUsername;
+import gov.nist.toolkit.desktop.client.legacy.StringSort;
 import gov.nist.toolkit.desktop.client.legacy.ToolWindow;
 import gov.nist.toolkit.desktop.client.legacy.siteActorManagers.BaseSiteActorManager;
 import gov.nist.toolkit.desktop.client.legacy.widgets.PidWidget;
@@ -117,14 +123,14 @@ public abstract class GenericQueryTab  extends ToolWindow {
      * This method should mostly only contain GWT client widget.
      * @return UI of the tab as a Widget
      */
-    protected abstract Widget buildUI();
+    public abstract Widget buildUI();
 
     /**
      * This is the method that should bind the tab's widgets with actions, the eventbus and the server.
      * This methoud could contains eventbus handlers, calls to the server or even action handlers like click handler,
      * valuechange handler...
      */
-    protected abstract void bindUI();
+    public abstract void bindUI();
 
     /**
      * This is the method where all the UI configurations though call to existing method in GenericQueryTab should be.
@@ -158,7 +164,7 @@ public abstract class GenericQueryTab  extends ToolWindow {
                 refreshData();
             }
         });
-        eventBus.addEnvironmentChangedEventHandler(new EnvironmentChangedEvent.EnvironmentChangedEventHandler() {
+        eventBus.addHandler(EnvironmentChangedEvent.TYPE, new EnvironmentChangedEvent.EnvironmentChangedEventHandler() {
             @Override
             public void onEnvironmentChange(EnvironmentChangedEvent event) {
                 reloadTransactionOfferings();
@@ -166,7 +172,7 @@ public abstract class GenericQueryTab  extends ToolWindow {
             }
         });
 
-        eventBus.addSimulatorsUpdatedEventHandler(new SimulatorUpdatedEvent.SimulatorUpdatedEventHandler() {
+        eventBus.addHandler(SimulatorUpdatedEvent.TYPE, new SimulatorUpdatedEvent.SimulatorUpdatedEventHandler() {
             @Override
             public void onSimulatorsUpdate(SimulatorUpdatedEvent simulatorUpdatedEvent) {
                 saveSelectedSites();
@@ -174,10 +180,10 @@ public abstract class GenericQueryTab  extends ToolWindow {
             }
         });
 
-        eventBus.addActorsConfigUpdatedEventHandler(new ActorConfigUpdatedEvent.ActorConfigUpdatedEventHandler() {
+        eventBus.addHandler(ActorConfigUpdatedEvent.TYPE, new ActorConfigUpdatedEvent.ActorConfigUpdatedEventHandler() {
             @Override
             public void onActorsConfigUpdate() {
-                if(!tabName.equals(ActorConfigTab.TAB_NAME)) {
+                if(!tabName.equals("SystemConfig")) {
                     saveSelectedSites();
                     reloadTransactionOfferings();
                 }
@@ -507,7 +513,7 @@ public abstract class GenericQueryTab  extends ToolWindow {
                 GenericQueryTab.transactionOfferings = var1;
                 redisplay(false);
             }
-        }.run(XdsTools2Presenter.data().getCommandContext());
+        }.run(ClientUtils.INSTANCE.getCurrentCommandContext());
     }
 
 
@@ -784,10 +790,6 @@ public abstract class GenericQueryTab  extends ToolWindow {
         runButtonText = label;
     }
 
-    protected TestSessionManager2 getTestSessionManager() {
-        return testSessionManager;
-    }
-
     public void setTlsEnabled(boolean value) {
         tlsEnabled = value;
     }
@@ -943,6 +945,18 @@ public abstract class GenericQueryTab  extends ToolWindow {
 
     public void setDisplayTab(boolean displayTab) {
         this.displayTab = displayTab;
+    }
+
+    static public HTML addHTML(String html) {
+        HTML msgBox = new HTML();
+        msgBox.setHTML(html);
+        return msgBox;
+    }
+
+    HTML addText(String text) {
+        HTML msgBox = new HTML();
+        msgBox.setText(text);
+        return msgBox;
     }
 
 }
