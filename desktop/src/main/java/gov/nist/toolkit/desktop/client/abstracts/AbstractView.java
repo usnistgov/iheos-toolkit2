@@ -63,7 +63,6 @@ public abstract class AbstractView<P extends AbstractPresenter<?>> implements Is
      */
     protected abstract Map<String, Widget> getPathToWidgetsMap();
 
-
     public void start() {
     }
 

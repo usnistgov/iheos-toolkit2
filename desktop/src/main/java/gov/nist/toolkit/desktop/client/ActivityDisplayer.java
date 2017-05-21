@@ -5,6 +5,7 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.ui.AcceptsOneWidget;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.web.bindery.event.shared.EventBus;
+import gov.nist.toolkit.desktop.client.abstracts.AbstractToolkitActivity;
 
 import javax.inject.Inject;
 
@@ -12,7 +13,7 @@ import javax.inject.Inject;
  *
  */
 public interface ActivityDisplayer {
-    public void display(Widget w, String title, AbstractActivity activity, AcceptsOneWidget p, EventBus b);
+    public void display(Widget w, String title, AbstractToolkitActivity activity, AcceptsOneWidget p, EventBus b);
 
     /**
      * This is the displayer of the entire application. It enables to make the application more flexible
@@ -28,7 +29,7 @@ public interface ActivityDisplayer {
         public ToolkitAppDisplayer() {}
 
         @Override
-        public void display(Widget w, String title, AbstractActivity activity, AcceptsOneWidget p, EventBus b) {
+        public void display(Widget w, String title, AbstractToolkitActivity activity, AcceptsOneWidget p, EventBus b) {
             GWT.log("ToolkitAppDisplayer:display: " + w.getClass().getName());
             if (title.equals("Welcome")) {
                 counter++;

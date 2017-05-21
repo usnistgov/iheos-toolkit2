@@ -4,8 +4,10 @@ import com.google.gwt.activity.shared.AbstractActivity;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.user.client.ui.AcceptsOneWidget;
+import com.google.gwt.user.client.ui.LayoutPanel;
 import com.google.gwt.user.client.ui.Widget;
 import gov.nist.toolkit.desktop.client.ActivityDisplayer;
+import gov.nist.toolkit.desktop.client.abstracts.AbstractToolkitActivity;
 import gov.nist.toolkit.desktop.client.abstracts.GenericMVP;
 import gov.nist.toolkit.desktop.client.models.NullModel;
 
@@ -14,7 +16,7 @@ import javax.inject.Inject;
 /**
  *
  */
-public class ToyActivity extends AbstractActivity {
+public class ToyActivity extends AbstractToolkitActivity {
 
     @Inject
     private ToyView view;
@@ -58,4 +60,13 @@ public class ToyActivity extends AbstractActivity {
         presenter.setTitle(title);
     }
 
+    @Override
+    public GenericMVP getMVP() {
+        return mvp;
+    }
+
+    @Override
+    public LayoutPanel onResume() {
+        return null;
+    }
 }

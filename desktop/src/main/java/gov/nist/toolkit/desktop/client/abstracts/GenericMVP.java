@@ -22,4 +22,8 @@ public class GenericMVP<M, V extends AbstractView<P>, P extends AbstractPresente
 		return view;
 	}
 
+	public V getView() { return view; }
+
+	public P getPresenter() { return presenter; }
+
 }

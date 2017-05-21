@@ -22,6 +22,16 @@ public class Toy extends Place {
         this.name = toyname;
     }
 
+    // This is necessary!
+    // The GWT place controller uses this to see if the newly requested place already exists.
+    // If it exists it reuses it. Toolkit doesn't work this way. We use Places to represent
+    // a tool in a tab and we want to be able to have multiple copies of a tool/tab running
+    // at the same time. The easy way to accomplish this is to break the idea
+    // of Place equality.  (Vote for equal rights for Places!)
+    @Override
+    public boolean equals(Object o) {
+        return false;
+    }
 
     public String getName() {
         return name;

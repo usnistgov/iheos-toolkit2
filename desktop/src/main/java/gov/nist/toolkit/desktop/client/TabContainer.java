@@ -5,10 +5,14 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Style;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.event.logical.shared.SelectionEvent;
+import com.google.gwt.event.logical.shared.SelectionHandler;
 import com.google.gwt.place.shared.Place;
 import com.google.gwt.place.shared.PlaceController;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.*;
+import gov.nist.toolkit.desktop.client.abstracts.AbstractToolkitActivity;
+import gov.nist.toolkit.desktop.client.abstracts.GenericMVP;
 import gov.nist.toolkit.desktop.client.events.TabOpenedEvent;
 import gov.nist.toolkit.desktop.client.events.TabSelectedEvent;
 import gov.nist.toolkit.desktop.client.events.ToolkitEventBus;
@@ -38,7 +42,7 @@ public class TabContainer {
 	// Each element of TABBAR maps to one element of deck
 	// and the same element of activities
 	private  List</*DockLayoutPanel*/Widget> deck = new ArrayList<>();
-	private List<AbstractActivity> activities = new ArrayList<>();
+	private List<AbstractToolkitActivity> activities = new ArrayList<>();
 
 	@Inject
 	private TabContainer(final PlaceController placeController, ToolkitEventBus eventBus) {
@@ -56,12 +60,12 @@ public class TabContainer {
 //		thePanel.add(innerPanel);
 //		innerPanel.add(new Label("Sitting by the dock"));
 //		addTab(thePanel,"Default", null);
-//		TABBAR.addSelectionHandler(new SelectionHandler<Integer>() {
-//			@Override
-//			public void onSelection(SelectionEvent<Integer> selectionEvent) {
-//				selectTab();
-//			}
-//		});
+		TABBAR.addSelectionHandler(new SelectionHandler<Integer>() {
+			@Override
+			public void onSelection(SelectionEvent<Integer> selectionEvent) {
+				selectTab();
+			}
+		});
 //
 //		Button push = new Button("Push Me");
 //		innerPanel.add(push);
@@ -83,7 +87,7 @@ public class TabContainer {
 	 * @param w - content
 	 * @param title - title to appear in the little tab at the top
      */
-	public void addTab(/*DockLayoutPanel*/ Widget w, String title, AbstractActivity activity) {
+	void addTab(/*DockLayoutPanel*/ Widget w, String title, AbstractToolkitActivity activity) {
 
 		// Without this, every time we create a new tab we get two:
 		// The intended one and a copy of WelcomePanel
@@ -105,7 +109,7 @@ public class TabContainer {
 		announceOpen(title);
 	}
 
-	public void selectTab() {
+	private void selectTab() {
 		Widget dockLp = deck.get(TABBAR.getSelectedTab());
 
 		if (INNER_DECKPANEL.getWidgetIndex(dockLp)==-1) {
