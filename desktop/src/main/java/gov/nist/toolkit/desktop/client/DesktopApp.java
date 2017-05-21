@@ -118,6 +118,10 @@ public class DesktopApp implements IsWidget {
         Widget edisp = environmentMVP.getDisplay();
         Widget tdisp = testSessionMVP.getDisplay();
         environmentBar.add(edisp);
+        environmentBar.add(new Image(MyResources.INSTANCE.blankImage()));
+        environmentBar.add(new Image(MyResources.INSTANCE.blankImage()));
+        environmentBar.add(new Image(MyResources.INSTANCE.blankImage()));
+        environmentBar.add(new Image(MyResources.INSTANCE.blankImage()));
         environmentBar.add(tdisp);
         northPanel.add(environmentBar);
         northPanel.add(alertPanel);

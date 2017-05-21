@@ -25,5 +25,5 @@ public interface EnvironmentService
     String setMesaTestSession(String name) throws Exception;
     boolean addMesaTestSession(CommandContext context) throws Exception;
     boolean delMesaTestSession(CommandContext context) throws Exception;
-
+    String getDefaultTestSession(CommandContext context) throws Exception;
 }

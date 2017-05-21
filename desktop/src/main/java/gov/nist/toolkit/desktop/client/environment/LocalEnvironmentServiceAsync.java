@@ -83,4 +83,13 @@ public class LocalEnvironmentServiceAsync implements EnvironmentServiceAsync {
             callback.onFailure(e);
         }
     }
+
+    @Override
+    public void getDefaultTestSession(CommandContext context, AsyncCallback<String> callback) {
+        try {
+            callback.onSuccess(service.getDefaultEnvironment(context));
+        } catch (Exception e) {
+            callback.onFailure(e);
+        }
+    }
 }

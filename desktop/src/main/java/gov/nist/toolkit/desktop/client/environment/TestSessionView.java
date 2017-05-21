@@ -1,5 +1,8 @@
 package gov.nist.toolkit.desktop.client.environment;
 
+import com.google.gwt.event.dom.client.KeyCodes;
+import com.google.gwt.event.dom.client.KeyPressEvent;
+import com.google.gwt.event.dom.client.KeyPressHandler;
 import com.google.gwt.user.client.ui.*;
 import gov.nist.toolkit.desktop.client.abstracts.AbstractView;
 import gov.nist.toolkit.desktop.client.widgets.HorizontalFlowPanel;
@@ -35,7 +38,10 @@ public class TestSessionView extends AbstractView<TestSessionPresenter> {
 
     @Override
     protected void bindUI() {
-        listBox.addChangeHandler(presenter);
+        listBox.addChangeHandler(presenter.listBoxChangeHandler);
+        addButton.addClickHandler(presenter.addHandler);
+        textBox.addKeyPressHandler(presenter.addHandler);
+        rmButton.addClickHandler(presenter.deleteHandler);
     }
 
     void set(List<String> names) {
@@ -45,7 +51,7 @@ public class TestSessionView extends AbstractView<TestSessionPresenter> {
         }
     }
 
-    public void updateSelection(String value) {
+    void updateSelection(String value) {
         for (int i=0; i<listBox.getItemCount(); i++) {
             if (value.equals(listBox.getItemText(i))) {
                 listBox.setSelectedIndex(i);
@@ -54,9 +60,13 @@ public class TestSessionView extends AbstractView<TestSessionPresenter> {
         }
     }
 
-    public String selection() {
+    String selection() {
         int selectionI = listBox.getSelectedIndex();
         return listBox.getItemText(selectionI);
+    }
+
+    String newText() {
+        return textBox.getValue();
     }
 
     @Override
