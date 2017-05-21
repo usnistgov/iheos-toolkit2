@@ -17,6 +17,7 @@ import gov.nist.toolkit.desktop.client.events.TabOpenedEvent;
 import gov.nist.toolkit.desktop.client.events.TabSelectedEvent;
 import gov.nist.toolkit.desktop.client.events.ToolkitEventBus;
 import gov.nist.toolkit.desktop.client.home.WelcomePanel;
+import gov.nist.toolkit.desktop.client.tools.toy.Toy;
 
 import javax.inject.Inject;
 import java.util.ArrayList;
@@ -54,32 +55,13 @@ public class TabContainer {
 		OUTERPANEL.addNorth(TABBAR, 3.0);
 		OUTERPANEL.add(INNER_DECKPANEL);
 
-		// add a starter tab
-//		DockLayoutPanel thePanel = new DockLayoutPanel(EM);
-//		FlowPanel innerPanel = new FlowPanel();
-//		thePanel.add(innerPanel);
-//		innerPanel.add(new Label("Sitting by the dock"));
-//		addTab(thePanel,"Default", null);
 		TABBAR.addSelectionHandler(new SelectionHandler<Integer>() {
 			@Override
 			public void onSelection(SelectionEvent<Integer> selectionEvent) {
 				selectTab();
 			}
 		});
-//
-//		Button push = new Button("Push Me");
-//		innerPanel.add(push);
-//		push.addClickHandler(new ClickHandler() {
-//			@Override
-//			public void onClick(ClickEvent clickEvent) {
-//				addTab(new Toy());
-//			}
-//		});
 
-	}
-
-	public void addTab(Place place) {
-		placeController.goTo(place);
 	}
 
 	/**
@@ -112,11 +94,11 @@ public class TabContainer {
 	private void selectTab() {
 		Widget dockLp = deck.get(TABBAR.getSelectedTab());
 
-		if (INNER_DECKPANEL.getWidgetIndex(dockLp)==-1) {
+		if (INNER_DECKPANEL.getWidgetIndex(dockLp) == -1) {
 			INNER_DECKPANEL.add(dockLp);
-		}else {
-            String tabName=TABBAR.getTab(TABBAR.getSelectedTab()).toString().split("<div class=\"gwt-HTML\">")[1].split("</div>")[0];
-            eventBus.fireEvent(new TabSelectedEvent(tabName));
+		} else {
+			String tabName = TABBAR.getTab(TABBAR.getSelectedTab()).toString().split("<div class=\"gwt-HTML\">")[1].split("</div>")[0];
+			eventBus.fireEvent(new TabSelectedEvent(tabName));
 		}
 		INNER_DECKPANEL.showWidget(dockLp);
 	}
@@ -167,29 +149,26 @@ public class TabContainer {
 		return panel;
 	}
 
-	public static void setWidth(String width) {
+	static void setWidth(String width) {
 //		TABPANEL.setWidth(width);
 	}
 
-	public static void setHeight(String width) {
+	static void setHeight(String width) {
 //		TABPANEL.setHeight(width);
 	}
 
-	public void selectTab(int tabIndex) {
+	private void selectTab(int tabIndex) {
 		TABBAR.selectTab(tabIndex);
 
 		INNER_DECKPANEL.showWidget(tabIndex);
 	}
 
-	public Widget getTabPanel() {
+	Widget getTabPanel() {
 		return OUTERPANEL;
 	}
 
 	protected static int getSelectedTab() {
 		return TABBAR.getSelectedTab();
 	}
-//	protected static Widget getWidget(int tabIndex) {
-//		return INNERPANEL.getWidget(tabIndex);
-//	}
 
 }
