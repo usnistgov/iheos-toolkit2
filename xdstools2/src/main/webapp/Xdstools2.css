@@ -223,6 +223,7 @@ h3 {
   text-align: left;
 }
 
+
 .right {
   float: right;
   /*position: absolute;*/
@@ -277,6 +278,10 @@ h3 {
 
 .iconStyle_20x20 {
   width: 20px; height: 20px;
+}
+
+.orchestrationTest {
+    /* Marker class */
 }
 
 .orchestrationOption {

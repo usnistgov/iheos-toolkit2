@@ -27,4 +27,12 @@ public class TestOverviewDisplayPanel extends HorizontalFlowPanel implements Tes
         addStyleName("testOverviewHeaderNotRun");
     }
 
+    public void addExtraStyle(String extra) {
+        addStyleName(extra);
+    }
+
+    public void removeExtraStyle(String extra) {
+        removeStyleName(extra);
+    }
+
 }
