@@ -23,7 +23,7 @@ import java.util.*;
  */
 
 public class SimManager {
-	List<SimulatorConfig> simConfigs = new ArrayList<>();  // for this session
+	List<SimulatorConfig> simConfigs = new Vector<>();  // for this session
 	String sessionId;  // this is never used internally.  Other classes use it through the getter.
 	static Logger logger = Logger.getLogger(SimManager.class);
 
@@ -36,7 +36,7 @@ public class SimManager {
 		}
 	}
 
-	public List<SimId> loadAllSims() {
+	synchronized public List<SimId> loadAllSims() {
 		SimDb db = new SimDb();
 		List<SimId> simIds = db.getAllSimIds();
 		List<SimId> loadedSimIds = new ArrayList<>();
@@ -84,7 +84,7 @@ public class SimManager {
 		return sessionId;
 	}
 	
-	public void purge() throws IOException {
+	synchronized public void purge() throws IOException {
 		List<SimulatorConfig> deletions = new ArrayList<>();
 		for (SimulatorConfig sc : simConfigs) {
 			try {
@@ -96,14 +96,14 @@ public class SimManager {
 		simConfigs.removeAll(deletions);
 	}
 	
-	public void addSimConfigs(Simulator s) {
+	synchronized public void addSimConfigs(Simulator s) {
         logger.info("addSimConfigs: " + s);
 		for (SimulatorConfig config : s.getConfigs()) {
 			addSimConfig(config);
 		}
 	}
 	
-	public void addSimConfig(SimulatorConfig config) {
+	synchronized public void addSimConfig(SimulatorConfig config) {
         logger.info("addSimConfig: " + config);
 		delSimConfig(config.getId());
 		simConfigs.add(config);
@@ -114,7 +114,7 @@ public class SimManager {
         simConfigs = configs;
 	}
 
-	public void delSimConfig(SimId simId) {
+	synchronized public void delSimConfig(SimId simId) {
 		int index = findSimConfig(simId);
 		if (index != -1)
 			simConfigs.remove(index);
@@ -211,16 +211,16 @@ public class SimManager {
 	 * @param simId
 	 */
 	public void removeSimulatorConfig(SimId simId) {
-		List<SimulatorConfig> delete = new ArrayList<SimulatorConfig>();
-		for (SimulatorConfig sc : simConfigs) {
-			if (sc.getId().equals(simId))
-				delete.add(sc);
+		for (Iterator<SimulatorConfig> it = simConfigs.iterator(); it.hasNext();) {
+			SimulatorConfig simulatorConfig = it.next();
+			if (simulatorConfig.getId().equals(simId))
+			    it.remove();
 		}
-		simConfigs.removeAll(delete);
 	}
 
 	private boolean hasSim(SimId simId) {
-		for (SimulatorConfig config : simConfigs) {
+		for (Iterator<SimulatorConfig> it = simConfigs.iterator(); it.hasNext();) {
+			SimulatorConfig config = it.next();
 			if (config.getId() == null) continue;
 			if (config.getId().equals(simId)) return true;
 		}
