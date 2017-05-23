@@ -58,9 +58,6 @@ class RegSpec extends Specification {
     }
 
     def 'Test Website Title'() {
-        setup:
-        println "Test Website title"
-
         when:
         while(page.asText().contains("Initializing...")){
             webClient.waitForBackgroundJavaScript(maxWaitTimeInMills)
@@ -74,6 +71,7 @@ class RegSpec extends Specification {
         "XDS Toolkit" == page.getTitleText()
         page.asText().contains("Initialization Complete")
     }
+
 
     def 'Click Reset (or Initialize) Environment using defaults'() {
         when:
@@ -92,9 +90,9 @@ class RegSpec extends Specification {
         when:
         resetLabel.click()
         webClient.waitForBackgroundJavaScript(maxWaitTimeInMills)
+        HtmlCheckBoxInput resetCkbx = page.getElementById(resetLabel.getForAttribute())
 
         then:
-        HtmlCheckBoxInput resetCkbx = page.getElementById(resetLabel.getForAttribute())
         resetCkbx.isChecked()
     }
 
@@ -126,7 +124,7 @@ class RegSpec extends Specification {
 
         when:
         List<HTMLElement> elementList = page.getByXPath("//div[contains(@class, 'orchestrationTest') and contains(@class, 'testOverviewHeaderFail')]")  // Substring match, other CSS class must not contain this string.
-        // Use this for order dependent selection: "//div[@class='testOverviewHeaderFail orchestrationTest']")
+        // Use this for order dependent selection: "//div[@class='testOverviewHeaderFail orchestrationTest']"
 
         then:
         elementList!=null && elementList.size()==0
@@ -144,7 +142,6 @@ class RegSpec extends Specification {
         elementList!=null && elementList.size()==7
 
     }
-
 
     def 'Test Registry ConfActor RunAll'() {
 
@@ -203,10 +200,20 @@ class RegSpec extends Specification {
 
         then:
         page != null
-        int failuresIdx2 = page.asText().indexOf("Failures")
-        println page.asText().substring(failuresIdx2,failuresIdx2+20)
 
     }
 
+    def 'Get failed tests count'() {
+        when:
+        List<HTMLElement> nodeList = page.getByXPath("//div[@class='testFail']")
+        int testFail = -1
+
+        if (nodeList!=null && nodeList.size()==1) {
+            testFail = Integer.parseInt(nodeList.get(0).getTextContent())
+        }
+
+        then:
+        testFail == 0
+    }
 
 }
