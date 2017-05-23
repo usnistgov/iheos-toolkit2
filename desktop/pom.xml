@@ -18,6 +18,10 @@
 
         <dependency>
             <groupId>gov.nist.toolkit</groupId>
+            <artifactId>server</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>gov.nist.toolkit</groupId>
             <artifactId>config-datatypes</artifactId>
         </dependency>
         <dependency>

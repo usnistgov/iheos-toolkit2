@@ -5,6 +5,7 @@ import com.google.gwt.inject.client.GinModules;
 import com.google.gwt.inject.client.Ginjector;
 import com.google.gwt.place.shared.PlaceController;
 import gov.nist.toolkit.desktop.client.ClientUtils;
+import gov.nist.toolkit.desktop.client.ServerContext;
 import gov.nist.toolkit.desktop.client.TabContainer;
 import gov.nist.toolkit.desktop.client.ToolkitAppView;
 import gov.nist.toolkit.desktop.client.environment.EnvironmentMVP;
@@ -43,4 +44,5 @@ public interface ToolkitGinInjector extends Ginjector {
 
     GetDocumentsActivity getGetDocumentsActivity();
 
+    ServerContext getServerContext();
 }

@@ -14,7 +14,7 @@ import gov.nist.toolkit.desktop.client.InformationLink;
 import gov.nist.toolkit.desktop.client.ServerContext;
 import gov.nist.toolkit.desktop.client.TabContainer;
 import gov.nist.toolkit.desktop.client.commands.GetStsSamlAssertionCommand;
-import gov.nist.toolkit.desktop.shared.command.request.GetStsSamlAssertionRequest;
+import gov.nist.toolkit.server.shared.command.request.GetStsSamlAssertionRequest;
 import gov.nist.toolkit.desktop.client.commands.GetToolkitPropertiesCommand;
 import gov.nist.toolkit.desktop.client.events.*;
 import gov.nist.toolkit.desktop.client.legacy.CoupledTransactions;

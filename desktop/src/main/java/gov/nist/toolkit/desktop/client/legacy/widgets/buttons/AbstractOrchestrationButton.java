@@ -7,7 +7,7 @@ import com.google.gwt.user.client.ui.*;
 import gov.nist.toolkit.desktop.client.ClientUtils;
 import gov.nist.toolkit.desktop.client.ErrorHandler;
 import gov.nist.toolkit.desktop.client.commands.GetStsSamlAssertionCommand;
-import gov.nist.toolkit.desktop.shared.command.request.GetStsSamlAssertionRequest;
+import gov.nist.toolkit.server.shared.command.request.GetStsSamlAssertionRequest;
 import gov.nist.toolkit.desktop.client.commands.GetToolkitPropertiesCommand;
 import gov.nist.toolkit.results.client.TestInstance;
 import gov.nist.toolkit.services.client.AbstractOrchestrationResponse;

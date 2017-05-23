@@ -5,7 +5,7 @@ import com.google.gwt.user.client.ui.*;
 import gov.nist.toolkit.desktop.client.ClientUtils;
 import gov.nist.toolkit.desktop.client.TabContainer;
 import gov.nist.toolkit.desktop.client.abstracts.AbstractToolkitActivity;
-import gov.nist.toolkit.desktop.client.commands.util.CommandContext;
+import gov.nist.toolkit.server.shared.command.CommandContext;
 import gov.nist.toolkit.desktop.client.injection.ToolkitGinInjector;
 import gov.nist.toolkit.sitemanagement.client.SiteSpec;
 

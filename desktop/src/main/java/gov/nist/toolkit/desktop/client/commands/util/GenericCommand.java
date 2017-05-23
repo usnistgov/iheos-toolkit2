@@ -10,6 +10,4 @@ public abstract class GenericCommand<R, C> extends CommandModule<C> implements C
     public GenericCommand() {
         super();
     }
-
-    public abstract void run(CommandContext cc);
 }

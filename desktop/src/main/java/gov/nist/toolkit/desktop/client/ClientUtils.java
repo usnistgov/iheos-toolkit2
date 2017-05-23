@@ -1,12 +1,10 @@
 package gov.nist.toolkit.desktop.client;
 
 import com.google.gwt.core.client.GWT;
-import gov.nist.toolkit.desktop.client.commands.util.CommandContext;
+import gov.nist.toolkit.server.shared.command.CommandContext;
 import gov.nist.toolkit.desktop.client.environment.*;
 import gov.nist.toolkit.desktop.client.injection.ToolkitGinInjector;
 import gov.nist.toolkit.desktop.client.legacy.QueryState;
-
-import javax.inject.Inject;
 
 /**
  * Client Utilities singleton.
@@ -15,11 +13,11 @@ public class ClientUtils {
     public static final ClientUtils INSTANCE = new ClientUtils();  // I hope this is initialized early enough
 
     // production version
-//    public EnvironmentServiceAsync environmentService = GWT.create(EnvironmentService.class);
+    public EnvironmentServiceAsync environmentService = GWT.create(EnvironmentService.class);
     // UI testing version
-    private EnvironmentServiceAsync environmentService = GWT.create(LocalEnvironmentServiceAsync.class);
+//    private EnvironmentServiceAsync environmentService = GWT.create(LocalEnvironmentServiceAsync.class);
 
-    private ToolkitServiceAsync toolkitService = GWT.create(ToolkitServiceAsync.class);
+    private ToolkitServiceAsync toolkitService = GWT.create(ToolkitService.class);
 
     private QueryState queryState = new QueryState();
 

@@ -1,7 +1,7 @@
 package gov.nist.toolkit.desktop.client.environment;
 
 import com.google.gwt.user.client.rpc.AsyncCallback;
-import gov.nist.toolkit.desktop.client.commands.util.CommandContext;
+import gov.nist.toolkit.server.shared.command.CommandContext;
 
 import java.util.List;
 

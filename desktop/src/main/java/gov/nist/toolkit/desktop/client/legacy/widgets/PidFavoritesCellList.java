@@ -14,7 +14,7 @@ import gov.nist.toolkit.configDatatypes.client.Pid;
 import gov.nist.toolkit.desktop.client.ClientUtils;
 import gov.nist.toolkit.desktop.client.CookiesServices;
 import gov.nist.toolkit.desktop.client.commands.RetrieveFavPidsCommand;
-import gov.nist.toolkit.desktop.client.commands.util.CommandContext;
+import gov.nist.toolkit.server.shared.command.CommandContext;
 import gov.nist.toolkit.desktop.client.events.EnvironmentChangedEvent;
 import gov.nist.toolkit.desktop.client.events.FavoritePidsUpdatedEvent;
 import gov.nist.toolkit.desktop.client.events.ToolkitEventBus;

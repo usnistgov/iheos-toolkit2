@@ -7,8 +7,6 @@ import com.google.inject.Provider;
 import com.google.inject.Singleton;
 import gov.nist.toolkit.desktop.client.*;
 import gov.nist.toolkit.desktop.client.environment.EnvironmentMVP;
-import gov.nist.toolkit.desktop.client.environment.EnvironmentService;
-import gov.nist.toolkit.desktop.client.environment.LocalEnvironmentServiceImpl;
 import gov.nist.toolkit.desktop.client.environment.TestSessionMVP;
 import gov.nist.toolkit.desktop.client.events.ToolkitEventBus;
 import gov.nist.toolkit.desktop.client.tools.ToolMenu;
@@ -46,7 +44,7 @@ public class ToolkitGinModule extends AbstractGinModule {
         // this is only for UI testing along with a hack
         // in EnvironmentService
         // and another in ClientUtils
-        bind(EnvironmentService.class).to(LocalEnvironmentServiceImpl.class).in(Singleton.class);
+//        bind(EnvironmentService.class).to(LocalEnvironmentServiceImpl.class).in(Singleton.class);
     }
 
     /** Provider for PlaceController */

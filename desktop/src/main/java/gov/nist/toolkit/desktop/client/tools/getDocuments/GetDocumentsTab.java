@@ -5,7 +5,7 @@ import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.ui.*;
 import gov.nist.toolkit.configDatatypes.client.TransactionType;
 import gov.nist.toolkit.desktop.client.commands.GetDocumentsCommand;
-import gov.nist.toolkit.desktop.shared.command.request.GetDocumentsRequest;
+import gov.nist.toolkit.server.shared.command.request.GetDocumentsRequest;
 import gov.nist.toolkit.desktop.client.legacy.CoupledTransactions;
 import gov.nist.toolkit.desktop.client.legacy.genericQueryTab.GenericQueryTab;
 import gov.nist.toolkit.desktop.client.legacy.siteActorManagers.GetDocumentsSiteActorManager;

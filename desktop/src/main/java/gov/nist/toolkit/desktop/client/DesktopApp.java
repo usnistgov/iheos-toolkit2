@@ -9,7 +9,6 @@ import com.google.gwt.event.logical.shared.ResizeEvent;
 import com.google.gwt.event.logical.shared.ResizeHandler;
 import com.google.gwt.place.shared.PlaceController;
 import com.google.gwt.place.shared.PlaceHistoryHandler;
-import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.*;
 import com.google.web.bindery.event.shared.HandlerRegistration;
@@ -21,6 +20,7 @@ import gov.nist.toolkit.desktop.client.home.WelcomePlace;
 import gov.nist.toolkit.desktop.client.injection.ToolkitGinInjector;
 import gov.nist.toolkit.desktop.client.tools.ToolMenu;
 import gov.nist.toolkit.desktop.client.widgets.HorizontalFlowPanel;
+import org.omg.PortableInterceptor.INACTIVE;
 
 /**
  *
@@ -48,6 +48,7 @@ public class DesktopApp implements IsWidget {
 
     private EnvironmentMVP environmentMVP = INJECTOR.getEnvironmentMVP();
     private TestSessionMVP testSessionMVP = INJECTOR.getTestSessionMVP();
+    private ServerContext serverContext = INJECTOR.getServerContext();
 
     private ToolkitAppView appView;
 
@@ -92,7 +93,7 @@ public class DesktopApp implements IsWidget {
         // we open a tool
         registration.removeHandler();
 
-        GWT.log("end of app");
+        GWT.log("end of app initialization");
     }
 
     private void buildTabsWrapper() {
@@ -119,10 +120,10 @@ public class DesktopApp implements IsWidget {
         Widget edisp = environmentMVP.getDisplay();
         Widget tdisp = testSessionMVP.getDisplay();
         environmentBar.add(edisp);
-        environmentBar.add(new Image(IconResources.INSTANCE.blankImage()));
-        environmentBar.add(new Image(IconResources.INSTANCE.blankImage()));
-        environmentBar.add(new Image(IconResources.INSTANCE.blankImage()));
-        environmentBar.add(new Image(IconResources.INSTANCE.blankImage()));
+        environmentBar.add(new Image(IconsResources.INSTANCE.blankImage()));
+        environmentBar.add(new Image(IconsResources.INSTANCE.blankImage()));
+        environmentBar.add(new Image(IconsResources.INSTANCE.blankImage()));
+        environmentBar.add(new Image(IconsResources.INSTANCE.blankImage()));
         environmentBar.add(tdisp);
         northPanel.add(environmentBar);
         northPanel.add(alertPanel);

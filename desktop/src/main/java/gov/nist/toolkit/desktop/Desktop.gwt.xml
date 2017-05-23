@@ -18,6 +18,8 @@
 
 
     <!-- Other module inherits          -->
+    <inherits name="gov.nist.toolkit.server.server"/>
+
     <inherits name="gov.nist.toolkit.simcommon.simCommon"/>
     <inherits name="gov.nist.toolkit.testengine.testengine"/>
     <inherits name="gov.nist.toolkit.sitemanagement.siteManagement"/>

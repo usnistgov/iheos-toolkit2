@@ -9,12 +9,10 @@ import gov.nist.toolkit.desktop.client.CookieManager;
 import gov.nist.toolkit.desktop.client.abstracts.AbstractPresenter;
 import gov.nist.toolkit.desktop.client.commands.GetEnvironmentNamesCommand;
 import gov.nist.toolkit.desktop.client.commands.SetEnvironmentCommand;
-import gov.nist.toolkit.desktop.client.commands.util.CommandContext;
 import gov.nist.toolkit.desktop.client.events.EnvironmentChangedEvent;
 import gov.nist.toolkit.desktop.client.events.ToolkitEventBus;
 
 import javax.inject.Inject;
-import java.util.ArrayList;
 import java.util.List;
 
 /**

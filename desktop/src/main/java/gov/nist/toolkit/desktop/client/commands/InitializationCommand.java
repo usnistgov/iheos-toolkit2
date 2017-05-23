@@ -2,9 +2,9 @@ package gov.nist.toolkit.desktop.client.commands;
 
 
 import gov.nist.toolkit.desktop.client.ClientUtils;
-import gov.nist.toolkit.desktop.client.commands.util.CommandContext;
+import gov.nist.toolkit.server.shared.command.CommandContext;
 import gov.nist.toolkit.desktop.client.commands.util.GenericCommand;
-import gov.nist.toolkit.desktop.shared.command.InitializationResponse;
+import gov.nist.toolkit.server.shared.command.InitializationResponse;
 
 /**
  *

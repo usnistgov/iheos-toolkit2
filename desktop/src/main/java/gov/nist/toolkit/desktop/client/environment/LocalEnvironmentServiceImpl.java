@@ -1,8 +1,8 @@
 package gov.nist.toolkit.desktop.client.environment;
 
 import com.google.gwt.core.client.GWT;
-import gov.nist.toolkit.desktop.client.commands.util.CommandContext;
-import gov.nist.toolkit.desktop.shared.NoServletSessionException;
+import gov.nist.toolkit.server.shared.command.CommandContext;
+import gov.nist.toolkit.server.shared.NoServletSessionException;
 
 import java.util.ArrayList;
 import java.util.List;

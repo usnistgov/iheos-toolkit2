@@ -12,4 +12,7 @@ public interface IconsResources extends ClientBundle {
 
         @Source("icons/copy_button_21px.png")
         ImageResource copyButton();
+
+        @Source("icons/blank.png")
+        ImageResource blankImage();
 }

@@ -2,7 +2,7 @@ package gov.nist.toolkit.desktop.client.commands;
 
 import gov.nist.toolkit.desktop.client.ClientUtils;
 import gov.nist.toolkit.desktop.client.commands.util.GenericCommand;
-import gov.nist.toolkit.desktop.shared.command.request.GetDocumentsRequest;
+import gov.nist.toolkit.server.shared.command.request.GetDocumentsRequest;
 import gov.nist.toolkit.results.client.Result;
 
 import java.util.List;

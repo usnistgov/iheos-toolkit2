@@ -1,19 +1,14 @@
 package gov.nist.toolkit.desktop.client;
 
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.event.logical.shared.ValueChangeEvent;
-import com.google.gwt.event.logical.shared.ValueChangeHandler;
-import com.google.gwt.user.client.History;
 import com.google.gwt.user.client.Timer;
 import gov.nist.toolkit.desktop.client.commands.GetTransactionOfferingsCommand;
 import gov.nist.toolkit.desktop.client.commands.InitializationCommand;
 import gov.nist.toolkit.desktop.client.events.ToolkitEventBus;
 import gov.nist.toolkit.desktop.client.events.TransactionOfferingsReloadedEvent;
-import gov.nist.toolkit.desktop.client.legacy.genericQueryTab.GenericQueryTab;
 import gov.nist.toolkit.desktop.client.legacy.widgets.PopupMessage;
-import gov.nist.toolkit.desktop.shared.command.InitializationResponse;
+import gov.nist.toolkit.server.shared.command.InitializationResponse;
 import gov.nist.toolkit.sitemanagement.client.TransactionOfferings;
-import org.eclipse.jetty.server.Server;
 
 import javax.inject.Inject;
 
