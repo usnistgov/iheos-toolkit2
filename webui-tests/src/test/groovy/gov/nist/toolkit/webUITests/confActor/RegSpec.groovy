@@ -9,8 +9,10 @@ import org.w3c.dom.html.HTMLElement
 import spock.lang.Shared
 import spock.lang.Specification
 import spock.lang.Stepwise
+import spock.lang.Timeout
 
 @Stepwise
+@Timeout(120) // Timeout if everything here doesn't complete in 5 minutes.
 class RegSpec extends Specification {
     @Shared
     WebClient webClient
