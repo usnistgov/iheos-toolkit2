@@ -9,6 +9,7 @@ import gov.nist.toolkit.actortransaction.client.TransactionInstance;
 import gov.nist.toolkit.configDatatypes.client.Pid;
 import gov.nist.toolkit.desktop.client.commands.GetStsSamlAssertionRequest;
 import gov.nist.toolkit.desktop.client.commands.util.CommandContext;
+import gov.nist.toolkit.desktop.shared.command.InitializationResponse;
 import gov.nist.toolkit.interactionmodel.client.InteractingEntity;
 import gov.nist.toolkit.results.client.*;
 import gov.nist.toolkit.results.shared.Test;
@@ -25,9 +26,6 @@ import gov.nist.toolkit.testkitutilities.client.SectionDefinitionDAO;
 import gov.nist.toolkit.testkitutilities.client.TestCollectionDefinitionDAO;
 import gov.nist.toolkit.tk.client.TkProps;
 import gov.nist.toolkit.valsupport.client.MessageValidationResults;
-import gov.nist.toolkit.xdstools2.shared.RegistryStatus;
-import gov.nist.toolkit.xdstools2.shared.RepositoryStatus;
-import gov.nist.toolkit.xdstools2.shared.command.InitializationResponse;
 
 import java.util.Collection;
 import java.util.List;

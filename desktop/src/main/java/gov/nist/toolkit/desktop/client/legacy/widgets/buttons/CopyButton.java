@@ -8,7 +8,7 @@ import com.google.gwt.user.client.ui.PushButton;
 import elemental.client.Browser;
 import elemental.html.Selection;
 import elemental.ranges.Range;
-import gov.nist.toolkit.xdstools2.client.resources.IconsResources;
+import gov.nist.toolkit.desktop.client.IconsResources;
 
 /**
  * Class that creates a GWT Push button with a copy icon that copies the content of an IDed element

@@ -12,6 +12,7 @@ import gov.nist.toolkit.actortransaction.client.ActorType;
 import gov.nist.toolkit.configDatatypes.client.TransactionType;
 import gov.nist.toolkit.desktop.client.ClientUtils;
 import gov.nist.toolkit.desktop.client.InformationLink;
+import gov.nist.toolkit.desktop.client.ServerContext;
 import gov.nist.toolkit.desktop.client.TabContainer;
 import gov.nist.toolkit.desktop.client.commands.GetStsSamlAssertionCommand;
 import gov.nist.toolkit.desktop.client.commands.GetStsSamlAssertionRequest;
@@ -43,7 +44,7 @@ import java.util.*;
  * and allow the results to be inspected
  * @author bill
  */
-public abstract class GenericQueryTab  extends ToolWindow {
+public abstract class GenericQueryTab  extends ToolWindow implements TransactionOfferingsReloadedEvent.TransactionOfferingsReloadedEventHandler {
     GenericQueryTab me;
     private final SiteLoader siteLoader = new SiteLoader(this);
     static public TransactionOfferings transactionOfferings = null;  // Loaded from server
@@ -150,6 +151,9 @@ public abstract class GenericQueryTab  extends ToolWindow {
     public GenericQueryTab(BaseSiteActorManager siteActorManager, double east, double west) {
         super(east, west);
         me = this;
+
+
+
         this.siteActorManager = siteActorManager;
         if (siteActorManager != null)
             siteActorManager.setGenericQueryTab(this);
@@ -504,18 +508,16 @@ public abstract class GenericQueryTab  extends ToolWindow {
 
     /**
      * Call on backend to reload transactions (simulators).
+     * On completion, onTransactionOfferingsReloaded() will be called
      */
     public void reloadTransactionOfferings() {
-        new GetTransactionOfferingsCommand() {
-
-            @Override
-            public void onComplete(TransactionOfferings var1) {
-                GenericQueryTab.transactionOfferings = var1;
-                redisplay(false);
-            }
-        }.run(ClientUtils.INSTANCE.getCurrentCommandContext());
+        ServerContext.INSTANCE.reloadTransactionOfferings();
     }
 
+    public void onTransactionOfferingsReloaded(TransactionOfferingsReloadedEvent event) {
+        GenericQueryTab.transactionOfferings = event.getTransactionOfferings();
+        redisplay(false);
+    }
 
     String red(String msg, boolean status) {
         if (status)

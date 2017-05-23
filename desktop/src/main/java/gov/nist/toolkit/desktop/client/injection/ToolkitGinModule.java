@@ -5,10 +5,7 @@ import com.google.gwt.inject.client.AbstractGinModule;
 import com.google.gwt.place.shared.PlaceController;
 import com.google.inject.Provider;
 import com.google.inject.Singleton;
-import gov.nist.toolkit.desktop.client.ActivityDisplayer;
-import gov.nist.toolkit.desktop.client.ClientUtils;
-import gov.nist.toolkit.desktop.client.TabContainer;
-import gov.nist.toolkit.desktop.client.ToolkitAppView;
+import gov.nist.toolkit.desktop.client.*;
 import gov.nist.toolkit.desktop.client.environment.EnvironmentMVP;
 import gov.nist.toolkit.desktop.client.environment.EnvironmentService;
 import gov.nist.toolkit.desktop.client.environment.LocalEnvironmentServiceImpl;
@@ -43,6 +40,8 @@ public class ToolkitGinModule extends AbstractGinModule {
         bind(TestSessionMVP.class).in(Singleton.class);
 
         bind(ClientUtils.class).in(Singleton.class);
+
+        bind(ServerContext.class).in(Singleton.class);
 
         // this is only for UI testing along with a hack
         // in EnvironmentService

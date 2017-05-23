@@ -12,4 +12,5 @@ public abstract class GetStsSamlAssertionCommand extends GenericCommand<GetStsSa
     public void run(GetStsSamlAssertionRequest var1) {
         ClientUtils.INSTANCE.getToolkitServices().getStsSamlAssertion(var1,this);
     }
+
 }

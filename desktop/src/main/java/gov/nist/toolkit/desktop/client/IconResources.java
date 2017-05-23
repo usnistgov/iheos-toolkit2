@@ -7,8 +7,8 @@ import com.google.gwt.resources.client.ImageResource;
 /**
  *
  */
-public interface MyResources extends ClientBundle {
-    public static final MyResources INSTANCE =  GWT.create(MyResources.class);
+public interface IconResources extends ClientBundle {
+    public static final IconResources INSTANCE =  GWT.create(IconResources.class);
 
     @Source("images/Blank.png")
     ImageResource blankImage();

@@ -6,7 +6,6 @@ import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Widget;
-import gov.nist.toolkit.xdstools2.client.Xdstools2;
 
 /**
  * Build info link to project wiki
@@ -26,7 +25,7 @@ public class InformationLink implements IsWidget {
         infoImage.addClickHandler(new ClickHandler() {
             @Override
             public void onClick(ClickEvent clickEvent) {
-                Window.open(Xdstools2.wikiBaseUrl + pageName, "_blank","");
+                Window.open(ServerContext.INSTANCE.getWikiBaseUrl() + pageName, "_blank","");
             }
         });
 
