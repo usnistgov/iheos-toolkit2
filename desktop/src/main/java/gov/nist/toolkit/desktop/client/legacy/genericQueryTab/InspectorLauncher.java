@@ -2,7 +2,6 @@ package gov.nist.toolkit.desktop.client.legacy.genericQueryTab;
 
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
-import gov.nist.toolkit.xdstools2.client.inspector.MetadataInspectorTab;
 
 class InspectorLauncher implements ClickHandler {
 	private GenericQueryTab tab;
@@ -12,11 +11,10 @@ class InspectorLauncher implements ClickHandler {
 	}
 	
 	public void onClick(ClickEvent event) {
-		MetadataInspectorTab itab = new MetadataInspectorTab();
-		itab.setResults(tab.results);
-		itab.setSiteSpec(tab.getCommonSiteSpec());
-//		itab.setToolkitService(tab.toolkitService);
-		itab.onTabLoad(true, "Insp");
+//		MetadataInspectorTab itab = new MetadataInspectorTab();
+//		itab.setResults(tab.results);
+//		itab.setSiteSpec(tab.getCommonSiteSpec());
+//		itab.onTabLoad(true, "Insp");
 	}
 
 }

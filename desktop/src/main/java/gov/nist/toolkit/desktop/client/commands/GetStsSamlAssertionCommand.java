@@ -3,6 +3,7 @@ package gov.nist.toolkit.desktop.client.commands;
 
 import gov.nist.toolkit.desktop.client.ClientUtils;
 import gov.nist.toolkit.desktop.client.commands.util.GenericCommand;
+import gov.nist.toolkit.desktop.shared.command.request.GetStsSamlAssertionRequest;
 
 /**
  *

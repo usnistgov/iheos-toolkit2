@@ -11,18 +11,20 @@ import com.google.gwt.view.client.ProvidesKey;
 import com.google.gwt.view.client.SelectionChangeEvent;
 import com.google.gwt.view.client.SingleSelectionModel;
 import gov.nist.toolkit.configDatatypes.client.Pid;
-import gov.nist.toolkit.xdstools2.client.command.command.RetrieveFavPidsCommand;
-import gov.nist.toolkit.xdstools2.client.event.EnvironmentChangedEvent;
-import gov.nist.toolkit.xdstools2.client.event.FavoritePidsUpdatedEvent;
-import gov.nist.toolkit.xdstools2.client.event.Xdstools2EventBus;
-import gov.nist.toolkit.xdstools2.client.initialization.XdsTools2Presenter;
-import gov.nist.toolkit.xdstools2.client.util.CookiesServices;
-import gov.nist.toolkit.xdstools2.shared.command.CommandContext;
+import gov.nist.toolkit.desktop.client.ClientUtils;
+import gov.nist.toolkit.desktop.client.CookiesServices;
+import gov.nist.toolkit.desktop.client.commands.RetrieveFavPidsCommand;
+import gov.nist.toolkit.desktop.client.commands.util.CommandContext;
+import gov.nist.toolkit.desktop.client.events.EnvironmentChangedEvent;
+import gov.nist.toolkit.desktop.client.events.FavoritePidsUpdatedEvent;
+import gov.nist.toolkit.desktop.client.events.ToolkitEventBus;
 
+import javax.inject.Inject;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.LinkedList;
 import java.util.List;
+
 
 /**
  * Created by onh2 on 7/11/16.
@@ -44,6 +46,9 @@ public class PidFavoritesCellList extends Composite{
         }
     };
     private final ScrollingPager pager;
+
+    @Inject
+    ToolkitEventBus eventBus;
 
     /**
      * Default constructor
@@ -75,17 +80,16 @@ public class PidFavoritesCellList extends Composite{
     }
 
     private void bindUI() {
-        // this refresh the list of PIDs after a new PID is added though the PID Manager.
-        ((Xdstools2EventBus) XdsTools2Presenter.data().getEventBus()).addFavoritePidsUpdateEventHandler(new FavoritePidsUpdatedEvent.FavoritePidsUpdatedEventHandler() {
+        eventBus.addHandler(FavoritePidsUpdatedEvent.TYPE, new FavoritePidsUpdatedEvent.FavoritePidsUpdatedEventHandler() {
             @Override
-            public void onFavPidsUpdate() {
+            public void onFavoritePidsUpdated() {
 //                model.setList(new LinkedList<Pid>(CookiesServices.retrievePidFavoritesFromCookies()));
 //                model.refresh();
                 loadData();
                 cellList.redraw();
             }
         });
-        ((Xdstools2EventBus) XdsTools2Presenter.data().getEventBus()).addEnvironmentChangedEventHandler(new EnvironmentChangedEvent.EnvironmentChangedEventHandler() {
+        eventBus.addHandler(EnvironmentChangedEvent.TYPE, new EnvironmentChangedEvent.EnvironmentChangedEventHandler() {
             @Override
             public void onEnvironmentChange(EnvironmentChangedEvent event) {
                 loadData();
@@ -98,7 +102,7 @@ public class PidFavoritesCellList extends Composite{
      * This method loads all the PIDs for the of favorites from both Cookies and the server.
      */
     private void loadData(){
-        String environmentName = XdsTools2Presenter.data().getEnvironmentState().getEnvironmentName();
+        String environmentName = ClientUtils.INSTANCE.getCurrentCommandContext().getEnvironmentName();
         if (environmentName!=null) {
             new RetrieveFavPidsCommand() {
                 @Override
@@ -122,7 +126,7 @@ public class PidFavoritesCellList extends Composite{
                     pager.setHeight(height+"px");
                     cellList.redraw();
                 }
-            }.run(new CommandContext(environmentName, XdsTools2Presenter.data().getTestSessionManager().getCurrentTestSession()));
+            }.run(new CommandContext(environmentName, ClientUtils.INSTANCE.getCurrentCommandContext().getTestSessionName()));
         }
     }
 

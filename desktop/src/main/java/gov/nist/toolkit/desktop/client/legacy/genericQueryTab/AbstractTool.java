@@ -52,7 +52,7 @@ public abstract class AbstractTool extends GenericQueryTab {
     abstract public void run();
 
     @Override
-    protected Widget buildUI() {
+    public Widget buildUI() {
         FlowPanel fp=new FlowPanel();
         HTML title = new HTML();
         title.setHTML("<h2>" + getToolTitle() + "</h2>");

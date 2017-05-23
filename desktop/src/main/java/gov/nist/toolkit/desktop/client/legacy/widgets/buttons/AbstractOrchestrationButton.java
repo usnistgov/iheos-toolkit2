@@ -4,16 +4,16 @@ import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.user.client.ui.*;
+import gov.nist.toolkit.desktop.client.ClientUtils;
+import gov.nist.toolkit.desktop.client.ErrorHandler;
+import gov.nist.toolkit.desktop.client.commands.GetStsSamlAssertionCommand;
+import gov.nist.toolkit.desktop.shared.command.request.GetStsSamlAssertionRequest;
+import gov.nist.toolkit.desktop.client.commands.GetToolkitPropertiesCommand;
 import gov.nist.toolkit.results.client.TestInstance;
 import gov.nist.toolkit.services.client.AbstractOrchestrationResponse;
 import gov.nist.toolkit.services.client.MessageItem;
 import gov.nist.toolkit.services.client.RawResponse;
 import gov.nist.toolkit.sitemanagement.client.SiteSpec;
-import gov.nist.toolkit.xdstools2.client.ErrorHandler;
-import gov.nist.toolkit.xdstools2.client.command.command.GetStsSamlAssertionCommand;
-import gov.nist.toolkit.xdstools2.client.command.command.GetToolkitPropertiesCommand;
-import gov.nist.toolkit.xdstools2.client.initialization.XdsTools2Presenter;
-import gov.nist.toolkit.xdstools2.shared.command.request.GetStsSamlAssertionRequest;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -138,7 +138,7 @@ abstract public class AbstractOrchestrationButton implements ClickHandler {
                     samlCheckBox.setStyleName("orchestrationOption");
                 }
             }
-        }.run(XdsTools2Presenter.data().getCommandContext());
+        }.run(ClientUtils.INSTANCE.getCurrentCommandContext());
 
     }
 
@@ -165,7 +165,7 @@ abstract public class AbstractOrchestrationButton implements ClickHandler {
                         setSamlAssertion(result);
                         orchestrate();
                     }
-                }.run(new GetStsSamlAssertionRequest(XdsTools2Presenter.data().getCommandContext(), xuaUsername, getStsTestInstance(), getStsSpec(), getSamlParams()));
+                }.run(new GetStsSamlAssertionRequest(ClientUtils.INSTANCE.getCurrentCommandContext(), xuaUsername, getStsTestInstance(), getStsSpec(), getSamlParams()));
             } catch (Throwable t) {}
         } else {
             orchestrate();

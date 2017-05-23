@@ -4,7 +4,13 @@ import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.ui.*;
 import gov.nist.toolkit.configDatatypes.client.TransactionType;
+import gov.nist.toolkit.desktop.client.commands.GetDocumentsCommand;
+import gov.nist.toolkit.desktop.shared.command.request.GetDocumentsRequest;
 import gov.nist.toolkit.desktop.client.legacy.CoupledTransactions;
+import gov.nist.toolkit.desktop.client.legacy.genericQueryTab.GenericQueryTab;
+import gov.nist.toolkit.desktop.client.legacy.siteActorManagers.GetDocumentsSiteActorManager;
+import gov.nist.toolkit.desktop.client.legacy.widgets.PopupMessage;
+import gov.nist.toolkit.results.client.Result;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -37,7 +43,7 @@ public class GetDocumentsTab extends GenericQueryTab {
     }
 
     @Override
-    protected Widget buildUI() {
+    public Widget buildUI() {
         FlowPanel panel=new FlowPanel();
         tabTopPanel.add(new HTML("<h2>Get Documents</h2>"));
 
@@ -58,7 +64,7 @@ public class GetDocumentsTab extends GenericQueryTab {
     }
 
     @Override
-    protected void bindUI() {
+    public void bindUI() {
     }
 
     @Override
