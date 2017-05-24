@@ -173,6 +173,18 @@
         <load-on-startup>1</load-on-startup>
     </servlet>
 
+    <servlet>
+        <servlet-name>DocumentGenerator</servlet-name>
+        <display-name>Toolkit Test Documentation</display-name>
+        <description>Test Documentation Viewer</description>
+        <servlet-class>gov.nist.toolkit.testkitutilities.TestkitServlet</servlet-class>
+    </servlet>
+
+    <servlet-mapping>
+        <servlet-name>DocumentGenerator</servlet-name>
+        <url-pattern>/testdoc/*</url-pattern>
+    </servlet-mapping>
+
     <servlet-mapping>
         <servlet-name>RestDisplay</servlet-name>
         <url-pattern>/rest/display</url-pattern>
