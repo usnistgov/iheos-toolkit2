@@ -2,6 +2,7 @@ package gov.nist.toolkit.testkitutilities
 
 import gov.nist.toolkit.installation.Installation
 import gov.nist.toolkit.xdsexception.ExceptionUtil
+import org.apache.log4j.BasicConfigurator
 import org.apache.log4j.Logger
 
 import javax.servlet.ServletConfig
@@ -23,6 +24,10 @@ class TestkitServlet extends HttpServlet {
     @Override
     public void init(ServletConfig config) throws ServletException {
         this.config = config
+
+        BasicConfigurator.configure();
+
+
         this.init()
 
         try {
@@ -55,21 +60,54 @@ class TestkitServlet extends HttpServlet {
         def parts = uri.split('\\/')
         logger.info("URI parts are ${parts}")
 
-        if (parts.size() == 3) {
-            // index
-            response.setContentType('text/html')
-            def html = new StringBuilder()
-            html << '<html><body><h1>Test Index</h1>'
-            html << produceIndex()
-            html << '</body></html>'
-            response.getOutputStream().write(html.toString().bytes)
-            response.setStatus(HttpServletResponse.SC_OK)
+        // look though the parts, if testdoc is one of them then the next part is the testid
+        // otherwise display the index
+
+        int testdocIndex = -1
+        for (int i=0; i<parts.size(); i++) if (parts[i] == 'testdoc') testdocIndex = i
+
+        if (testdocIndex == -1) {
+            displayIndex(response)
+            return
+        }
+        if (testdocIndex + 1 < parts.size()) {
+            displayTestDoc(parts[testdocIndex+1], response)
             return
         }
 
-        try {
-            def testId = parts[3]
+        displayIndex(response)
 
+//        if (parts.size() == 3) {
+//            // index
+//            response.setContentType('text/html')
+//            def html = new StringBuilder()
+//            html << '<html><body><h1>Test Index</h1>'
+//            html << produceIndex()
+//            html << '</body></html>'
+//            response.getOutputStream().write(html.toString().bytes)
+//            response.setStatus(HttpServletResponse.SC_OK)
+//            return
+//        }
+//
+//        try {
+//            def testId = parts[3]
+//
+//            TestDocumentationGenerator gen = new TestDocumentationGenerator()
+//            def doc = []
+//            TestDefinition testDef = new TestKitSearchPath(environment, testSession).getTestDefinition(testId)
+//            gen.eachTest(doc, testDef.getTestDir())
+//            String html = gen.toHtml(doc).join('\n')
+//            response.setContentType('text/html')
+//            response.getOutputStream().write(html.bytes)
+//            response.setStatus(HttpServletResponse.SC_OK)
+//
+//        } catch (Exception e) {
+//            response.setStatus(HttpServletResponse.SC_NOT_FOUND)
+//        }
+    }
+
+    def displayTestDoc(def testId, HttpServletResponse response) {
+        try {
             TestDocumentationGenerator gen = new TestDocumentationGenerator()
             def doc = []
             TestDefinition testDef = new TestKitSearchPath(environment, testSession).getTestDefinition(testId)
@@ -78,10 +116,19 @@ class TestkitServlet extends HttpServlet {
             response.setContentType('text/html')
             response.getOutputStream().write(html.bytes)
             response.setStatus(HttpServletResponse.SC_OK)
-
         } catch (Exception e) {
             response.setStatus(HttpServletResponse.SC_NOT_FOUND)
         }
+    }
+
+    def displayIndex(HttpServletResponse response) {
+        response.setContentType('text/html')
+        def html = new StringBuilder()
+        html << '<html><body><h1>Test Index</h1>'
+        html << produceIndex()
+        html << '</body></html>'
+        response.getOutputStream().write(html.toString().bytes)
+        response.setStatus(HttpServletResponse.SC_OK)
     }
 
     def produceIndex() {
