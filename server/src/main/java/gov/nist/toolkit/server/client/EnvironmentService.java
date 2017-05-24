@@ -1,4 +1,4 @@
-package gov.nist.toolkit.desktop.client.environment;
+package gov.nist.toolkit.server.client;
 
 import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
 import gov.nist.toolkit.server.shared.command.CommandContext;
@@ -14,15 +14,11 @@ import java.util.List;
  */
 @RemoteServiceRelativePath("environment")
 public interface EnvironmentService
-//        extends RemoteService
-    extends LocalService
+//    extends LocalService
 {
     List<String> getEnvironmentNames(CommandContext context) throws Exception;
-    String setEnvironment(CommandContext context) throws Exception;
-    String getCurrentEnvironment() throws NoServletSessionException;
     String getDefaultEnvironment(CommandContext context) throws Exception;
     List<String> getMesaTestSessionNames(CommandContext request) throws Exception;
-    String setMesaTestSession(String name) throws Exception;
     boolean addMesaTestSession(CommandContext context) throws Exception;
     boolean delMesaTestSession(CommandContext context) throws Exception;
     String getDefaultTestSession(CommandContext context) throws Exception;

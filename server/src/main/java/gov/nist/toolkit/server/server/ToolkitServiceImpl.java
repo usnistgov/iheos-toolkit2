@@ -19,7 +19,18 @@ import gov.nist.toolkit.installation.Installation;
 import gov.nist.toolkit.installation.PropertyServiceManager;
 import gov.nist.toolkit.interactionmapper.InteractionMapper;
 import gov.nist.toolkit.interactionmodel.client.InteractingEntity;
+import gov.nist.toolkit.results.client.*;
 import gov.nist.toolkit.results.shared.Test;
+import gov.nist.toolkit.server.client.ToolkitService;
+import gov.nist.toolkit.server.server.serviceManager.DashboardServiceManager;
+import gov.nist.toolkit.server.server.serviceManager.GazelleServiceManager;
+import gov.nist.toolkit.server.shared.GazelleXuaUsername;
+import gov.nist.toolkit.server.shared.NoServletSessionException;
+import gov.nist.toolkit.server.shared.RegistryStatus;
+import gov.nist.toolkit.server.shared.RepositoryStatus;
+import gov.nist.toolkit.server.shared.command.CommandContext;
+import gov.nist.toolkit.server.shared.command.InitializationResponse;
+import gov.nist.toolkit.server.shared.command.request.*;
 import gov.nist.toolkit.services.client.IdcOrchestrationRequest;
 import gov.nist.toolkit.services.client.RawResponse;
 import gov.nist.toolkit.services.server.RawResponseBuilder;
@@ -54,15 +65,6 @@ import gov.nist.toolkit.valregmsg.validation.factories.CommonMessageValidatorFac
 import gov.nist.toolkit.valsupport.client.MessageValidationResults;
 import gov.nist.toolkit.xdsexception.ExceptionUtil;
 import gov.nist.toolkit.xdsexception.client.ToolkitRuntimeException;
-import gov.nist.toolkit.xdstools2.client.GazelleXuaUsername;
-import gov.nist.toolkit.xdstools2.client.util.ToolkitService;
-import gov.nist.toolkit.xdstools2.server.serviceManager.DashboardServiceManager;
-import gov.nist.toolkit.xdstools2.server.serviceManager.GazelleServiceManager;
-import gov.nist.toolkit.xdstools2.shared.NoServletSessionException;
-import gov.nist.toolkit.xdstools2.shared.RegistryStatus;
-import gov.nist.toolkit.xdstools2.shared.RepositoryStatus;
-import gov.nist.toolkit.xdstools2.shared.command.CommandContext;
-import gov.nist.toolkit.xdstools2.shared.command.InitializationResponse;
 import org.apache.log4j.Logger;
 
 import javax.servlet.ServletContext;
@@ -108,10 +110,6 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements
             logger.error(ExceptionUtil.here("session: " + getSessionId() + " installCommandContext: environment name is null"));
             throw new Exception("installCommandContext: environment name is null");
         }
-//		if (commandContext.getTestSessionName() == null) {
-//			throw new Exception("installCommandContext: test session name is null");
-//		}
-//        session().setEnvironment(commandContext.getEnvironmentName());
         setEnvironment(commandContext.getEnvironmentName());
         setMesaTestSession(commandContext.getTestSessionName());
     }
@@ -121,8 +119,8 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements
         installCommandContext(context);
         InitializationResponse response = new InitializationResponse();
         response.setDefaultEnvironment(Installation.DEFAULT_ENVIRONMENT_NAME);
-        response.setEnvironments(Session.getEnvironmentNames());
-        response.setTestSessions(session().xdsTestServiceManager().getMesaTestSessionNames());
+        response.setEnvironments(Installation.instance().getEnvironmentNames());
+        response.setTestSessions(Installation.instance().getMesaTestSessionNames());
         response.setServletContextName(getServletContextName());
         PropertyServiceManager props = Installation.instance().propertyServiceManager();
         String contextName = Installation.instance().getServletContextName();
@@ -400,7 +398,7 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements
     @Override
     public List<String> getMesaTestSessionNames(CommandContext request) throws Exception {
         installCommandContext(request);
-        return session().xdsTestServiceManager().getMesaTestSessionNames();
+        return Installation.instance().getMesaTestSessionNames();
     }
     @Override
     public boolean addMesaTestSession(CommandContext context) throws Exception { return session().xdsTestServiceManager().addMesaTestSession(context.getTestSessionName()); }
@@ -813,7 +811,7 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements
     @Override
     public List<String> getEnvironmentNames(CommandContext context) throws Exception {
 //		installCommandContext(context);  // not needed - may not be initialized
-        return session().getEnvironmentNames();
+        return Installation.instance().getEnvironmentNames();
     }
     @Override
     public String setEnvironment(CommandContext context) throws Exception {
@@ -823,17 +821,6 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements
     }
     @Override
     public String getCurrentEnvironment() throws NoServletSessionException { return session().getCurrentEnvironment(); }
-    @Override
-    public String getDefaultEnvironment(CommandContext context) throws Exception {
-        installCommandContext(context);
-        String defaultEnvironment = Installation.instance().propertyServiceManager().getDefaultEnvironment();
-        String name;
-        if (Session.environmentExists(defaultEnvironment))
-            name = defaultEnvironment;
-        name = Installation.DEFAULT_ENVIRONMENT_NAME;
-        logger.info("getDefaultEnvironment - " + name);
-        return name;
-    }
 
     //------------------------------------------------------------------------
     //------------------------------------------------------------------------
@@ -1179,22 +1166,6 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements
         standAloneSession = s;
     }
 
-    // This exception is passable to the GUI.  The server side exception
-    // is NoSessionException
-    public Session session() throws NoServletSessionException {
-        Session s = getSession();
-        if (s == null)
-            throw new NoServletSessionException("");
-//        logHere("On Session " + s.getId());
-//		String msg = ExceptionUtil.here("On Session " + s.getId());
-//		Scanner scanner = new Scanner(msg);
-//		while(scanner.hasNextLine()) {
-//			String line = scanner.nextLine();
-//			logger.info(line);
-//		}
-//		logger.info(msg);
-        return s;
-    }
 
     private void logHere(String themsg) {
         String msg = ExceptionUtil.here(themsg);
@@ -1205,78 +1176,6 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements
         }
     }
 
-    public Session getSession() {
-        HttpServletRequest request = this.getThreadLocalRequest();
-        return getSession(request);
-    }
-
-    public Session getSession(HttpServletRequest request) {
-        if (request == null && standAloneSession != null) {
-            // not running interactively - maybe part of Dashboard
-            return standAloneSession;
-        }
-
-        Session s = null;
-        HttpSession hsession = null;
-        if (request != null) {
-            hsession = request.getSession();
-            s = (Session) hsession.getAttribute(sessionVarName);
-            if (s != null)
-                return s;
-            servletContext();
-        }
-
-        // Force short session timeout for testing
-//		hsession.setMaxInactiveInterval(60/4);    // one quarter minute
-
-        //******************************************
-        //
-        // New session object to be created
-        //
-        //******************************************
-        File warHome = null;
-        if (s == null) {
-            ServletContext sc = servletContext();
-            warHome = Installation.instance().warHome();
-            if (sc != null && warHome == null) {
-                warHome = new File(sc.getRealPath("/"));
-                Installation.instance().warHome(warHome);
-                System.setProperty("warHome", warHome.toString());
-                System.out.print("warHome [ToolkitServiceImp]: " + warHome);
-                Installation.instance().warHome(warHome);
-            }
-            if (warHome != null)
-                System.setProperty("warHome", warHome.toString());
-
-            if (warHome != null) {
-                s = new Session(warHome, getSessionId());
-                if (hsession != null) {
-                    s.setSessionId(hsession.getId());
-//					logger.info("New Session ID " + hsession.getId());
-                    s.addSession();
-                    hsession.setAttribute(sessionVarName, s);
-                } else
-                    s.setSessionId("mysession");
-            }
-        }
-
-        if (request != null) {
-            if (s.getIpAddr() == null) {
-                s.setIpAddr(request.getRemoteHost());
-            }
-
-            s.setServerSpec(request.getLocalName(),
-                    String.valueOf(request.getLocalPort()));
-        }
-
-        if (warHome != null) {
-            if (SchemaValidation.toolkitSchemaLocation == null) {
-                SchemaValidation.toolkitSchemaLocation = warHome + File.separator + "toolkitx" + File.separator + "schema";
-            }
-        }
-
-        return s;
-    }
 
     @Override
     public String getLastFilename(CommandContext context) throws Exception {
@@ -1459,6 +1358,88 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements
         new BuildCollections().run();
         // FIXME why does this have to always return true? should we change for a void method?
         return true;
+    }
+
+    public Session getSession() {
+        HttpServletRequest request = this.getThreadLocalRequest();
+        return getSession(request);
+    }
+
+    public Session getSession(HttpServletRequest request) {
+        if (request == null && standAloneSession != null) {
+            // not running interactively - maybe part of Dashboard
+            return standAloneSession;
+        }
+
+        Session s = null;
+        HttpSession hsession = null;
+        if (request != null) {
+            hsession = request.getSession();
+            s = (Session) hsession.getAttribute(sessionVarName);
+            if (s != null)
+                return s;
+            servletContext();
+        }
+
+        // Force short session timeout for testing
+//		hsession.setMaxInactiveInterval(60/4);    // one quarter minute
+
+        //******************************************
+        //
+        // New session object to be created
+        //
+        //******************************************
+        File warHome = null;
+        if (s == null) {
+            ServletContext sc = servletContext();
+            warHome = Installation.instance().warHome();
+            if (sc != null && warHome == null) {
+                warHome = new File(sc.getRealPath("/"));
+                Installation.instance().warHome(warHome);
+                System.setProperty("warHome", warHome.toString());
+                System.out.print("warHome [ToolkitServiceImp]: " + warHome);
+                Installation.instance().warHome(warHome);
+            }
+            if (warHome != null)
+                System.setProperty("warHome", warHome.toString());
+
+            if (warHome != null) {
+                s = new Session(warHome, getSessionId());
+                if (hsession != null) {
+                    s.setSessionId(hsession.getId());
+//					logger.info("New Session ID " + hsession.getId());
+                    s.addSession();
+                    hsession.setAttribute(sessionVarName, s);
+                } else
+                    s.setSessionId("mysession");
+            }
+        }
+
+        if (request != null) {
+            if (s.getIpAddr() == null) {
+                s.setIpAddr(request.getRemoteHost());
+            }
+
+            s.setServerSpec(request.getLocalName(),
+                    String.valueOf(request.getLocalPort()));
+        }
+
+        if (warHome != null) {
+            if (SchemaValidation.toolkitSchemaLocation == null) {
+                SchemaValidation.toolkitSchemaLocation = warHome + File.separator + "toolkitx" + File.separator + "schema";
+            }
+        }
+
+        return s;
+    }
+
+    // This exception is passable to the GUI.  The server side exception
+    // is NoSessionException
+    public Session session() throws NoServletSessionException {
+        Session s = getSession();
+        if (s == null)
+            throw new NoServletSessionException("");
+        return s;
     }
 
 }

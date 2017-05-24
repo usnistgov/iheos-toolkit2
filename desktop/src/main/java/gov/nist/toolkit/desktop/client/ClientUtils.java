@@ -1,6 +1,10 @@
 package gov.nist.toolkit.desktop.client;
 
 import com.google.gwt.core.client.GWT;
+import gov.nist.toolkit.server.client.EnvironmentService;
+import gov.nist.toolkit.server.client.EnvironmentServiceAsync;
+import gov.nist.toolkit.server.client.ToolkitService;
+import gov.nist.toolkit.server.client.ToolkitServiceAsync;
 import gov.nist.toolkit.server.shared.command.CommandContext;
 import gov.nist.toolkit.desktop.client.environment.*;
 import gov.nist.toolkit.desktop.client.injection.ToolkitGinInjector;

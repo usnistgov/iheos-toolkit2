@@ -1,4 +1,4 @@
-package gov.nist.toolkit.desktop.client;
+package gov.nist.toolkit.server.client;
 
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import gov.nist.toolkit.actorfactory.client.SimId;
@@ -51,9 +51,9 @@ public interface ToolkitServiceAsync {
 
 
     void getCurrentEnvironment(AsyncCallback<String> callback);
-    void getDefaultEnvironment(CommandContext context, AsyncCallback<String> callback);
+//    void getDefaultEnvironment(CommandContext context, AsyncCallback<String> callback);
     void setEnvironment(CommandContext context, AsyncCallback<String> callback);
-    void getEnvironmentNames(CommandContext context, AsyncCallback<List<String>> callback);
+//    void getEnvironmentNames(CommandContext context, AsyncCallback<List<String>> callback);
     void isGazelleConfigFeedEnabled(CommandContext context, AsyncCallback<Boolean> callback) ;
     void reloadSystemFromGazelle(ReloadSystemFromGazelleRequest request, AsyncCallback<String> callback);
     void getSiteNamesWithRG(CommandContext context, AsyncCallback<List<String>> callback);

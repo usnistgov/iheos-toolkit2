@@ -1,7 +1,5 @@
 package gov.nist.toolkit.server.scripts;
 
-import gov.nist.toolkit.xdstools2.shared.RegistryStatus;
-import gov.nist.toolkit.xdstools2.shared.RepositoryStatus;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -9,6 +7,8 @@ import java.io.ObjectInputStream;
 import java.util.ArrayList;
 import java.util.List;
 
+import gov.nist.toolkit.server.shared.RegistryStatus;
+import gov.nist.toolkit.server.shared.RepositoryStatus;
 import org.apache.log4j.Logger;
 
 public class DashboardAccess {

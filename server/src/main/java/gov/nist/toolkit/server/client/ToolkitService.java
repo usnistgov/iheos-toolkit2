@@ -1,4 +1,4 @@
-package gov.nist.toolkit.desktop.client;
+package gov.nist.toolkit.server.client;
 
 
 import com.google.gwt.user.client.rpc.RemoteService;
@@ -188,7 +188,6 @@ public interface ToolkitService extends RemoteService  {
 	List<String> getEnvironmentNames(CommandContext context) throws Exception;
 	String setEnvironment(CommandContext context) throws Exception;
 	String getCurrentEnvironment() throws NoServletSessionException;
-	String getDefaultEnvironment(CommandContext context) throws Exception;
 	String getDefaultAssigningAuthority(CommandContext context) throws Exception;
 	String getAttributeValue(String username, String attName) throws Exception;
 	void setAttributeValue(String username, String attName, String attValue) throws Exception;

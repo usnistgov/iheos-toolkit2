@@ -279,7 +279,25 @@ public class Installation {
 		return new File(dir, "keystore.properties");
 	}
 
-	public String getKeystorePassword(String environmentName) throws IOException {
+    public List<String> getEnvironmentNames() {
+        List<String> names = new ArrayList<String>();
+
+        File k = Installation.instance().environmentFile();     //propertyServiceManager().getPropertyManager().getExternalCache() + File.separator + "environment");
+        if (!k.exists() || !k.isDirectory())
+            return names;
+        File[] files = k.listFiles();
+        for (File file : files)
+            if (file.isDirectory() && !(file.getName().equals("TestLogCache"))) {
+                names.add(file.getName());
+            }
+        return names;
+    }
+
+    public boolean environmentExists(String environmentName) {
+        return getEnvironmentNames().contains(environmentName);
+    }
+
+    public String getKeystorePassword(String environmentName) throws IOException {
 		File propertiesFile = getKeystorePropertiesFile(environmentName);
 		if (!propertiesFile.exists() || propertiesFile.isDirectory())
 			return null;
@@ -375,5 +393,36 @@ public class Installation {
 		logger.info("ServletContext initialized to " + servletContextName);
 		this.servletContextName = servletContextName;
 	}
+
+    public List<String> getMesaTestSessionNames() throws Exception  {
+        List<String> names = new ArrayList<String>();
+        File cache;
+        try {
+            cache = Installation.instance().propertyServiceManager().getTestLogCache();
+        } catch (Exception e) {
+            logger.error("getMesaTestSessionNames", e);
+            throw new Exception(e.getMessage());
+        }
+
+        String[] namea = cache.list();
+
+        for (int i=0; i<namea.length; i++) {
+            File dir = new File(cache, namea[i]);
+            if (!dir.isDirectory()) continue;
+            if (!namea[i].startsWith("."))
+                names.add(namea[i]);
+
+        }
+
+        if (names.size() == 0) {
+            names.add("default");
+            File def = new File(cache, "default");
+            def.mkdirs();
+        }
+
+        logger.debug("testSession names are " + names);
+        return names;
+    }
+
 
 }

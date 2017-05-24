@@ -3,6 +3,8 @@ package gov.nist.toolkit.server.server.serviceManager;
 import gov.nist.toolkit.installation.Installation;
 import gov.nist.toolkit.results.CommonService;
 import gov.nist.toolkit.server.scripts.DashboardAccess;
+import gov.nist.toolkit.server.shared.RegistryStatus;
+import gov.nist.toolkit.server.shared.RepositoryStatus;
 import gov.nist.toolkit.session.server.Session;
 import gov.nist.toolkit.xdsexception.ExceptionUtil;
 import gov.nist.toolkit.xdsexception.client.XdsException;

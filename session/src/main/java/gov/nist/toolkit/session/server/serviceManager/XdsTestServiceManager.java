@@ -568,7 +568,7 @@ public class XdsTestServiceManager extends CommonService {
 		if (session != null)
 			logger.debug(session.id() + ": " + "getTestlogListing(" + sessionName + ")");
 
-		List<String> sessionNames = getMesaTestSessionNames();
+		List<String> sessionNames = Installation.instance().getMesaTestSessionNames();
 
 		if (!sessionNames.contains(sessionName))
 			throw new Exception("Don't understand session name " + sessionName);
@@ -1013,37 +1013,6 @@ public class XdsTestServiceManager extends CommonService {
 		return  "DocumentCache/";
 	}
 
-	public List<String> getMesaTestSessionNames() throws Exception  {
-		if (session != null)
-			logger.debug(session.id() + ": " + "getMesaTestSessionNames");
-		List<String> names = new ArrayList<String>();
-		File cache;
-		try {
-			cache = Installation.instance().propertyServiceManager().getTestLogCache();
-		} catch (Exception e) {
-			logger.error("getMesaTestSessionNames", e);
-			throw new Exception(e.getMessage());
-		}
-
-		String[] namea = cache.list();
-
-		for (int i=0; i<namea.length; i++) {
-			File dir = new File(cache, namea[i]);
-			if (!dir.isDirectory()) continue;
-			if (!namea[i].startsWith("."))
-				names.add(namea[i]);
-
-		}
-
-		if (names.size() == 0) {
-			names.add("default");
-			File def = new File(cache, "default");
-			def.mkdirs();
-		}
-
-		logger.debug("testSession names are " + names);
-		return names;
-	}
 
 	public boolean addMesaTestSession(String name) throws Exception  {
 		File cache;

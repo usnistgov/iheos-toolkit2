@@ -8,6 +8,8 @@ import gov.nist.toolkit.registrymetadata.MetadataParser
 import gov.nist.toolkit.results.client.LogIdIOFormat
 import gov.nist.toolkit.results.client.LogIdType
 import gov.nist.toolkit.results.client.TestInstance
+import gov.nist.toolkit.server.shared.RegistryStatus
+import gov.nist.toolkit.server.shared.RepositoryStatus
 import gov.nist.toolkit.session.server.Session
 import gov.nist.toolkit.sitemanagement.SeparateSiteLoader
 import gov.nist.toolkit.sitemanagement.Sites
@@ -26,8 +28,6 @@ import gov.nist.toolkit.testkitutilities.TestKitSearchPath
 import gov.nist.toolkit.utilities.xml.Util
 import gov.nist.toolkit.utilities.xml.XmlUtil
 import gov.nist.toolkit.xdsexception.ExceptionUtil
-import gov.nist.toolkit.xdstools2.shared.RegistryStatus
-import gov.nist.toolkit.xdstools2.shared.RepositoryStatus
 import groovy.transform.TypeChecked
 import org.apache.axiom.om.OMElement
 

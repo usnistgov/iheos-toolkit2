@@ -41,6 +41,10 @@
             <groupId>gov.nist.toolkit</groupId>
             <artifactId>services</artifactId>
         </dependency>
+        <dependency>
+            <groupId>gov.nist.toolkit</groupId>
+            <artifactId>interaction-mapper</artifactId>
+        </dependency>
 
 
         <dependency>

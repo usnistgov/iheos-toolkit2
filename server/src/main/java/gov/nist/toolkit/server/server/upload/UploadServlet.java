@@ -1,9 +1,9 @@
 package gov.nist.toolkit.server.server.upload;
 
 import gov.nist.toolkit.http.*;
+import gov.nist.toolkit.server.server.ToolkitServiceImpl;
 import gov.nist.toolkit.session.server.Session;
 import gov.nist.toolkit.xdsexception.ExceptionUtil;
-import gov.nist.toolkit.xdstools2.server.ToolkitServiceImpl;
 import org.apache.log4j.Logger;
 
 import javax.servlet.http.HttpServlet;

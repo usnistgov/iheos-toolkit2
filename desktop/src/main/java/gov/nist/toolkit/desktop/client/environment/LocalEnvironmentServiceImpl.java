@@ -1,8 +1,8 @@
 package gov.nist.toolkit.desktop.client.environment;
 
 import com.google.gwt.core.client.GWT;
+import gov.nist.toolkit.server.client.EnvironmentService;
 import gov.nist.toolkit.server.shared.command.CommandContext;
-import gov.nist.toolkit.server.shared.NoServletSessionException;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -30,19 +30,6 @@ public class LocalEnvironmentServiceImpl implements EnvironmentService {
     }
 
     @Override
-    public String setEnvironment(CommandContext context) throws Exception {
-        assert(context.getEnvironmentName() != null);
-        envName = context.getEnvironmentName();
-        GWT.log("Set Environment to " + envName);
-        return "";
-    }
-
-    @Override
-    public String getCurrentEnvironment() throws NoServletSessionException {
-        return envName;
-    }
-
-    @Override
     public String getDefaultEnvironment(CommandContext context) throws Exception {
         return "default";
     }
@@ -53,14 +40,6 @@ public class LocalEnvironmentServiceImpl implements EnvironmentService {
     public List<String> getMesaTestSessionNames(CommandContext request) throws Exception {
         GWT.log("Get Test Sessions " + sessionNames);
         return sessionNames;
-    }
-
-    @Override
-    public String setMesaTestSession(String name) throws Exception {
-        assert(name != null);
-        sessionName = name;
-        GWT.log("Set Test Session to " + sessionName);
-        return "";
     }
 
     @Override
