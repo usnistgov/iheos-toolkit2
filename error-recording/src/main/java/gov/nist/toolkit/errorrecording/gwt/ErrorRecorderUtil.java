@@ -7,6 +7,7 @@ import java.util.List;
 
 /**
  * Created by bill on 6/25/15.
+ * @deprecated No use in code.
  */
 public class ErrorRecorderUtil {
 
@@ -24,6 +25,11 @@ public class ErrorRecorderUtil {
         return lst;
     }
 
+    /**
+     * @deprecated Used only in one test: MessageValidatorFactoryTest
+     * @param er
+     * @return
+     */
     static public boolean hasErrors(IErrorRecorder er) {
         List<IErrorRecorder> erl = errorRecorderChainAsList(er);
         for (IErrorRecorder er1: erl) {
