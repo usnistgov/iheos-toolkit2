@@ -40,6 +40,8 @@ public interface IGWTErrorRecorder extends IErrorRecorderBuilder {
 
 	void success(String dts, String name, String found, String expected, String RFC);
 
+	void success(String location, String resource);
+
 	void error(String dts, String name, String found, String expected, String RFC);
 
 	void test(boolean good, String dts, String name, String found, String expected, String RFC);

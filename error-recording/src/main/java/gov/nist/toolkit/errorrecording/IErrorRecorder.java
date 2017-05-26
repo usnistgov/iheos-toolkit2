@@ -17,9 +17,7 @@ public interface IErrorRecorder extends IXMLErrorRecorder, IGWTErrorRecorder, IE
 	void err(XdsErrorCode.Code code, Assertion assertion, Object validatorModule, String location, String detail); // updated
 	void err(XdsErrorCode.Code _code, Assertion _assertion, String _validatorModule, String _location, String _detail, String _logMessage); // updated
 	void err(XdsErrorCode.Code _code, Assertion _assertion, Object _validatorModule, String _location, String _detail, Object _logMessage); // updated
-	void success(String location, String resource);
 	void success(Assertion _assertion, Object _validatorModule, String _detail);
-	//List<gov.nist.toolkit.errorrecording.ErrorRecorder> getChildren();
 
 
 	//----- Prototypes used by the original GWTErrorRecorder -----
@@ -37,6 +35,7 @@ public interface IErrorRecorder extends IXMLErrorRecorder, IGWTErrorRecorder, IE
 	void detail(String msg); // detail findings
 	void report(String name, String found);
 	//void success(String dts, String name, String found, String expected, String RFC);
+	void success(String location, String resource);
 	void error(String dts, String name, String found, String expected, String RFC);
 	void test(boolean good, String dts, String name, String found, String expected, String RFC);
 	void warning(String dts, String name, String found, String expected, String RFC);
