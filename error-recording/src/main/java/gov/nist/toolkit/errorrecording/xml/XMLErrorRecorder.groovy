@@ -213,6 +213,7 @@ public class XMLErrorRecorder implements IErrorRecorder {
         errXml = errXml.concat(el)
     }
 
+    // TODO this should ultimately go away. A Challenge will be directly reported as either an error or success.
     @Override
     public void challenge(String msg) {
         println("challenge")
