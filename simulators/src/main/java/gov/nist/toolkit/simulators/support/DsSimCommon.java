@@ -569,8 +569,8 @@ public class DsSimCommon {
             logger.info("er instance of XMLErrorRecorder");
 
             try {
-                 simCommon.generateXMLLog(er);
-               // simCommon.generateGWTLog();
+                 //simCommon.generateXMLLog(er);
+                simCommon.generateGWTLog();
             } catch (IOException e) {
                 logger.fatal(ExceptionUtil.exception_details(e));
             }

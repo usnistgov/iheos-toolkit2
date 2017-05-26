@@ -26,6 +26,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.File;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.List;
 
@@ -192,10 +193,14 @@ public class SimCommon {
 
 			// TODO not sure what this does. Appends nested ER outputs?
 			if (er instanceof GwtErrorRecorder) {
-				GwtErrorRecorder ger = (GwtErrorRecorder) er;
+				logger.debug("Appending the GWTErrorRecorder outputs");
+				List<String> list = ((GwtErrorRecorder) er).getErrorMessages();
+				logger.debug(list.get(0) + list.get(1));
+;				GwtErrorRecorder ger = (GwtErrorRecorder) er;
 				buf.append(ger);
 			}
 			if (er instanceof XMLErrorRecorder) {
+				logger.debug("Appending the XMLErrorRecorder outputs");
 				XMLErrorRecorder xer = (XMLErrorRecorder) er;
 				buf.append(xer);
 			}
