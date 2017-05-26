@@ -40,7 +40,7 @@ public class MtomMessageValidator extends AbstractMessageValidator {
 
 	public void run(IErrorRecorder er, MessageValidatorEngine mvc) {
 		this.er = er;
-		er.registerValidator(this);
+		//er.registerValidator(this);
 		headers.setErrorRecorder(er);
 		try {
 
@@ -56,7 +56,7 @@ public class MtomMessageValidator extends AbstractMessageValidator {
 			er.detail("Multipart contains " + mp.getPartCount() + " parts");
 			if (mp.getPartCount() == 0) {
 				er.err(XdsErrorCode.Code.NoCode, "Cannot continue parsing, no Parts found", this, "");
-				er.unRegisterValidator(this);
+				//er.unRegisterValidator(this);
 				return;
 			}
 
@@ -76,7 +76,7 @@ public class MtomMessageValidator extends AbstractMessageValidator {
 				Assertion assertion = ASSERTIONLIBRARY.getAssertion("TA132");
 				String detail = "Start part ID expected: '" + mp.getStartPartId() + "'";
 				er.err(XdsErrorCode.Code.NoCode, assertion, this, "", detail);
-				er.unRegisterValidator(this);
+				//er.unRegisterValidator(this);
 				return;
 			}
 
@@ -96,7 +96,7 @@ public class MtomMessageValidator extends AbstractMessageValidator {
 			er.err(XdsErrorCode.Code.NoCode, e);
 		}
 		finally {
-			er.unRegisterValidator(this);
+			//er.unRegisterValidator(this);
 		}
 
 	}

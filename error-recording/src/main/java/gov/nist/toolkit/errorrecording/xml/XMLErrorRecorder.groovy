@@ -387,18 +387,6 @@ public class XMLErrorRecorder implements IErrorRecorder {
     }
 
     @Override
-    public void registerValidator(Object validator) {
-        println("regvalidator")
-        // This function is empty in GWTErrorRecorder so I left it the same way. What is it supposed to do?
-    }
-
-    @Override
-    public void unRegisterValidator(Object validator) {
-        println("unregvalidator")
-        // This function is empty in GWTErrorRecorder so I left it the same way. What is it supposed to do?
-    }
-
-    @Override
     public void showErrorInfo() {
         // was empty in original code
     }

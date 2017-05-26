@@ -42,10 +42,10 @@ public class UpdateRequestValidator extends AbstractMessageValidator {
 
 	public void run(IErrorRecorder er, MessageValidatorEngine mvc) {
 		this.er = er;
-		er.registerValidator(this);
+		//er.registerValidator(this);
 		if (xml == null) {
 			err("UpdateRequestValidator: top element null", "");
-            er.unRegisterValidator(this);
+            //er.unRegisterValidator(this);
 			return;
 		}
 
@@ -62,12 +62,12 @@ public class UpdateRequestValidator extends AbstractMessageValidator {
 
 			if (m.getSubmissionSets().size() == 0) {
 				err("Cannot validate Update Request, no SubmissionSet present","ITI TF-2b: 3.57.4.1.3.1 Rule 1");
-                er.unRegisterValidator(this);
+                //er.unRegisterValidator(this);
 				return;
 			}
 			else if (m.getSubmissionSets().size() > 1) {
 				err("Cannot validate Update Request, multiple SubmissionSets present","ITI TF-2b: 3.57.4.1.3.1 Rule 1");
-                er.unRegisterValidator(this);
+                //er.unRegisterValidator(this);
 				return;
 			}
 			
@@ -89,7 +89,7 @@ public class UpdateRequestValidator extends AbstractMessageValidator {
 			err(e);
 		}
         finally {
-            er.unRegisterValidator(this);
+            //er.unRegisterValidator(this);
         }
 
 		er.finish();

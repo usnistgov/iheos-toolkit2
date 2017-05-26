@@ -21,12 +21,10 @@ public class DocumentElementValidator extends AbstractMessageValidator {
 
 	public void run(IErrorRecorder er, MessageValidatorEngine mvc) {
 		this.er = er;
-		er.registerValidator(this);
-		
+
 		AbstractMessageValidator mcmv = mvc.findMessageValidator("MultipartContainer");
 		if (mcmv == null) {
 			er.detail("DocumentElementValidator: Document contents not available");
-            er.unRegisterValidator(this);
 			return;
 		}
 		MultipartContainer mpc = (MultipartContainer) mcmv;
@@ -34,7 +32,6 @@ public class DocumentElementValidator extends AbstractMessageValidator {
 		AbstractMessageValidator mmv = mvc.findMessageValidator("MetadataContainer");
 		if (mmv == null) {
 			er.err(XdsErrorCode.Code.XDSRegistryError, "DocumentElementValidator: cannot retrieve MetadataContainer class from validator stack", this, "Data not available");
-            er.unRegisterValidator(this);
 			return;
 		}
 		MetadataContainer mc = (MetadataContainer) mmv;
@@ -44,7 +41,6 @@ public class DocumentElementValidator extends AbstractMessageValidator {
 		
 		List<String> eoIds = m.getExtrinsicObjectIds();
 
-        er.unRegisterValidator(this);
 	}
 
 }

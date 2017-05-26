@@ -363,16 +363,6 @@ public class ValidatorCommon implements IErrorRecorder {
 	}
 
 	@Override
-	public void registerValidator(Object validator) {
-
-	}
-
-	@Override
-	public void unRegisterValidator(Object validator) {
-
-	}
-
-	@Override
 	public void success(String dts, String RFC) {
 
 	}

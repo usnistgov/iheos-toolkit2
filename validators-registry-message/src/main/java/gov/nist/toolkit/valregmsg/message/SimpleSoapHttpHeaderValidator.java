@@ -44,7 +44,6 @@ public class SimpleSoapHttpHeaderValidator extends AbstractMessageValidator {
 
 	public void run(IErrorRecorder er, MessageValidatorEngine mvc) {
 		this.er = er;
-		er.registerValidator(this);
 
 		er.challenge("Validate SIMPLE SOAP HTTP headers");
 
@@ -82,7 +81,6 @@ public class SimpleSoapHttpHeaderValidator extends AbstractMessageValidator {
 //			err(e);
 		}
 		finally {
-			er.unRegisterValidator(this);
 		}
 
 	}

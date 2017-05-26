@@ -41,16 +41,14 @@ public class MetadataMessageValidator extends AbstractMessageValidator {
 
 	public void run(IErrorRecorder er, MessageValidatorEngine mvc) {
 		this.er = er;
-		er.registerValidator(this);
+		//er.registerValidator(this);
 
 		if (messageBody == null) {
 			Assertion assertion = ASSERTIONLIBRARY.getAssertion("TA161");
 			er.err(XdsErrorCode.Code.XDSRegistryError, assertion, this, "", "");
-			er.unRegisterValidator(this);
+			//er.unRegisterValidator(this);
 			return;
 		}
-
-
 
 		try {
 			m = MetadataParser.parseNonSubmission(messageBody.getBody());
@@ -71,7 +69,7 @@ public class MetadataMessageValidator extends AbstractMessageValidator {
 			er.err(XdsErrorCode.Code.XDSRegistryError, e);
 		}
 		finally {
-			er.unRegisterValidator(this);
+			//er.unRegisterValidator(this);
 		}
 
 		er.finish();

@@ -40,7 +40,6 @@ public abstract class OrderValidator extends AbstractMessageValidator {
 	@Override
 	public void run(IErrorRecorder er, MessageValidatorEngine mvc) {
 		this.er = er;
-		er.registerValidator(this);
 		if (xml == null) {
 			MessageBodyContainer cont = (MessageBodyContainer) mvc.findMessageValidator("MessageBodyContainer");
 			xml = cont.getBody();
@@ -49,12 +48,10 @@ public abstract class OrderValidator extends AbstractMessageValidator {
 		// TODO Assertions
 		if (xml == null) {
 			er.err(XdsErrorCode.Code.XDSRegistryError, "No content present", this, "");
-			er.unRegisterValidator(this);
 			return;
 		}
 
 		checkElementOrder(xml);
-		er.unRegisterValidator(this);
 	}
 
 	public void setBody(OMElement xml) {

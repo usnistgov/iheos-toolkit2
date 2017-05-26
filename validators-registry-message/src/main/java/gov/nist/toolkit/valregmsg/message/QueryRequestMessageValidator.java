@@ -37,11 +37,11 @@ public class QueryRequestMessageValidator extends AbstractMessageValidator {
 
 	public void run(IErrorRecorder er, MessageValidatorEngine mvc) {
 		this.er = er;
-		er.registerValidator(this);
+		//er.registerValidator(this);
 
 		if (ahqr == null) {
 			er.err(XdsErrorCode.Code.XDSRegistryError, "AdhocQueryRequest: top element null", this, "");
-			er.unRegisterValidator(this);
+			//er.unRegisterValidator(this);
 			return;
 		}
 
@@ -109,7 +109,7 @@ public class QueryRequestMessageValidator extends AbstractMessageValidator {
 					Assertion assertion = ASSERTIONLIBRARY.getAssertion("TA138");
 					String detail = "Query ID found: '" + queryId + "'";
 					er.err(XdsErrorCode.Code.XDSRegistryError, assertion, this, "", detail);
-					er.unRegisterValidator(this);
+					//er.unRegisterValidator(this);
 					return;
 				}
 
@@ -123,7 +123,7 @@ public class QueryRequestMessageValidator extends AbstractMessageValidator {
 				er.err(XdsErrorCode.Code.XDSRegistryError, e.getMessage(), this, SqDocRef.Request_parms);
 			}
 			finally {
-				er.unRegisterValidator(this);
+				//er.unRegisterValidator(this);
 			}
 		}
 

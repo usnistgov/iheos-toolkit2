@@ -18,8 +18,6 @@ public class MessageBodyContainer extends AbstractMessageValidator {
 
     @Override
     public void run(IErrorRecorder er, MessageValidatorEngine mvc) {
-        er.registerValidator(this);
-        er.unRegisterValidator(this);
     }
 
     public OMElement getBody() {

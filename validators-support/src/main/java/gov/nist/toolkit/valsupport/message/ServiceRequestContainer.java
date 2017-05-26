@@ -20,8 +20,7 @@ public class ServiceRequestContainer extends AbstractMessageValidator {
 
 	public void run(IErrorRecorder er, MessageValidatorEngine mvc) {
 		this.er = er;
-        er.registerValidator(this);
-        er.unRegisterValidator(this);
+
 	}
 
 }

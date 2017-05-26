@@ -22,7 +22,6 @@ public class DocumentResponseValidator extends AbstractMessageValidator {
 
 	public void run(IErrorRecorder er, MessageValidatorEngine mvc) {
 		this.er = er;
-		er.registerValidator(this);
 
 		OMElement home = XmlUtil.firstChildWithLocalName(xml, "HomeCommunityId");
 
@@ -31,7 +30,6 @@ public class DocumentResponseValidator extends AbstractMessageValidator {
 				Assertion assertion = ASSERTIONLIBRARY.getAssertion("TA157");
 				er.err(XdsErrorCode.Code.XDSRegistryError, assertion, this, "", "");
 			}
-				er.unRegisterValidator(this);
 	}
 
 }

@@ -78,7 +78,6 @@ public class SoapMessageValidator extends AbstractMessageValidator {
 
     public void run(IErrorRecorder er, MessageValidatorEngine mvc) {
         this.er = er;
-        er.registerValidator(this);
 
         SoapMessageParser smp = (SoapMessageParser) mvc.findMessageValidator("SoapMessageParser");
 
@@ -127,7 +126,6 @@ public class SoapMessageValidator extends AbstractMessageValidator {
                 er.err(XdsErrorCode.Code.NoCode, e);
             }
         }
-        er.unRegisterValidator(this);
     }
 
 

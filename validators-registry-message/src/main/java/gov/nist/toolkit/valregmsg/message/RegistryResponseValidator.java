@@ -38,12 +38,10 @@ public class RegistryResponseValidator extends AbstractMessageValidator {
 
 	public void run(IErrorRecorder er, MessageValidatorEngine mvc) {
 		this.er = er;
-		er.registerValidator(this);
 
 		if (xml == null) {
 			Assertion assertion = ASSERTIONLIBRARY.getAssertion("TA139");
 			er.err(XdsErrorCode.Code.XDSRegistryError, assertion, this, "", "");
-			er.unRegisterValidator(this);
 			return;
 		}
 
@@ -51,7 +49,6 @@ public class RegistryResponseValidator extends AbstractMessageValidator {
 		if (longStatus == null) {
 			Assertion assertion = ASSERTIONLIBRARY.getAssertion("TA140");
 			er.err(XdsErrorCode.Code.XDSRegistryError, assertion, this, "", "");
-			er.unRegisterValidator(this);
 			return;
 		}
 
@@ -82,7 +79,6 @@ public class RegistryResponseValidator extends AbstractMessageValidator {
 			String detail = "Status found: '" + longStatus + "'";
 			er.err(XdsErrorCode.Code.XDSRegistryError, assertion, this, "", detail);
 		}
-		er.unRegisterValidator(this);
 	}
 
 	boolean isPartialSuccessPermitted() {

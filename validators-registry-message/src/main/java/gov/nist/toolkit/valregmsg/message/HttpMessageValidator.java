@@ -48,7 +48,7 @@ public class HttpMessageValidator extends AbstractMessageValidator {
 
 	public void run(IErrorRecorder er, MessageValidatorEngine mvc) {
 		this.er = er;
-		er.registerValidator(this);
+		//er.registerValidator(this);
 		
 		try {
 			if (mvc == null) 
@@ -58,7 +58,7 @@ public class HttpMessageValidator extends AbstractMessageValidator {
             if (!vc.isValid()) {
 				Assertion assertion = ASSERTIONLIBRARY.getAssertion("TA158");
 				er.err(vc.getBasicErrorCode(), assertion, this, "", "");
-                er.unRegisterValidator(this);
+                //er.unRegisterValidator(this);
                 return;
             }
 
@@ -94,7 +94,7 @@ public class HttpMessageValidator extends AbstractMessageValidator {
 			er.err(vc.getBasicErrorCode(), e);
 		}
 		finally {
-			er.unRegisterValidator(this);
+			//er.unRegisterValidator(this);
 		}
 
 	}

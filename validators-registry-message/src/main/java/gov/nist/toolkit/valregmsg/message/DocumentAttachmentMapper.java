@@ -83,7 +83,7 @@ public class DocumentAttachmentMapper  extends AbstractMessageValidator {
 
 	public void run(IErrorRecorder er, MessageValidatorEngine mvc) {
 		this.er = er;
-		er.registerValidator(this);
+		//er.registerValidator(this);
 
 		XPathEvaluator eval = new XPathEvaluator();
 		try {
@@ -168,7 +168,7 @@ public class DocumentAttachmentMapper  extends AbstractMessageValidator {
 			er.err(XdsErrorCode.Code.XDSRepositoryError, e);
 		}
 		finally {
-			er.unRegisterValidator(this);
+			//er.unRegisterValidator(this);
 		}
 	}
 

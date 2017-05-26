@@ -36,14 +36,12 @@ public class RepositoryPnRSim extends AbstractMessageValidator {
 
 	public void run(IErrorRecorder er, MessageValidatorEngine mvc)  {
 		this.er = er;
-		er.registerValidator(this);
-		
+
 		if (startUpException != null)
 			er.err(XdsErrorCode.Code.XDSRegistryError, startUpException);
 
 		// if request didn't validate, return so errors can be reported
 		if (common.hasErrors()) {
-			er.unRegisterValidator(this);
 			return;
 		}
 		
@@ -55,8 +53,6 @@ public class RepositoryPnRSim extends AbstractMessageValidator {
 //		common.mvc.addMessageValidator("RegRSim", new RegRSim(common), gerb.buildNewErrorRecorder());
 		
 		common.mvc.run();
-
-		er.unRegisterValidator(this);
 
 	}
 

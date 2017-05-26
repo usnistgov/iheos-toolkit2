@@ -442,14 +442,4 @@ public class GwtErrorRecorder implements IErrorRecorder {
 		return depth + maxChildDepth;
 	}
 
-	@Override
-	public void registerValidator(Object validator) {
-
-	}
-
-	@Override
-	public void unRegisterValidator(Object validator) {
-
-	}
-
 }

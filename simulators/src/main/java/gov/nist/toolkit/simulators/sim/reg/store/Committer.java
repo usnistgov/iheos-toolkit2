@@ -20,12 +20,9 @@ public class Committer extends AbstractMessageValidator {
 
 	public void run(IErrorRecorder er, MessageValidatorEngine mvc) {
 		this.er = er;
-		er.registerValidator(this);
-		
 
 		// merge in changes
 		delta.mergeDelta(er);
-		er.unRegisterValidator(this);
 	}
 
 }

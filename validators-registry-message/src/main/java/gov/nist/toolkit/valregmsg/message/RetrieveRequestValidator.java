@@ -34,7 +34,6 @@ public class RetrieveRequestValidator  extends AbstractMessageValidator {
 
 	public void run(IErrorRecorder er, MessageValidatorEngine mvc) {
 		this.er = er;
-		er.registerValidator(this);
 
 		MessageBodyContainer cont = (MessageBodyContainer) mvc.findMessageValidator("MessageBodyContainer");
 		xml = cont.getBody();
@@ -42,7 +41,6 @@ public class RetrieveRequestValidator  extends AbstractMessageValidator {
 		if (xml == null) {
 			Assertion assertion = ASSERTIONLIBRARY.getAssertion("TA148");
 			er.err(XdsErrorCode.Code.XDSRepositoryError, assertion, this, "", "");
-			er.unRegisterValidator(this);
 			return;
 		}
 
@@ -67,7 +65,6 @@ public class RetrieveRequestValidator  extends AbstractMessageValidator {
 				}
 			}
 		}
-		er.unRegisterValidator(this);
 	}
 
 }

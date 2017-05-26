@@ -58,7 +58,6 @@ public class XcRetrieveSim extends AbstractMessageValidator {
     @Override
     public void run(IErrorRecorder er, MessageValidatorEngine mvc) {
         this.er = er;
-        er.registerValidator(this);
 
         if (startUpException != null) {
             er.err(XdsErrorCode.Code.XDSRegistryError, startUpException);
@@ -106,7 +105,6 @@ public class XcRetrieveSim extends AbstractMessageValidator {
             logException(er, e);
         } finally {
             result = new RetrieveDocumentResponseGenerator(retrievedDocs, dsSimCommon.registryErrorList).get();
-            er.unRegisterValidator(this);
         }
     }
 

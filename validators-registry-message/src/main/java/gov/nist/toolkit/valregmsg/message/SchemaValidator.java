@@ -25,8 +25,7 @@ public class SchemaValidator extends AbstractMessageValidator {
 
 	public void run(IErrorRecorder er, MessageValidatorEngine mvc) {
 		this.er = er;
-		er.registerValidator(this);
-		
+
 		int schemaValidationType = vc.getSchemaValidationType();
 		
 		er.detail("Metadata Type (for selecting Schema) is " + vc.getSchemaValidationTypeName(schemaValidationType));
@@ -37,7 +36,6 @@ public class SchemaValidator extends AbstractMessageValidator {
 			er.err(XdsErrorCode.Code.XDSRegistryError, e.getMessage(), this, "Schema");
 		}
         finally {
-            er.unRegisterValidator(this);
         }
 
 	}

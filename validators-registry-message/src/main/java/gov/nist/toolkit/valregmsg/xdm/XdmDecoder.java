@@ -83,12 +83,10 @@ public class XdmDecoder extends AbstractMessageValidator {
 	}
 
 	public void run(IErrorRecorder er, MessageValidatorEngine mvc) {
-		er.registerValidator(this);
 
 		logger.debug("running");
 		if (!decode(er)) {
 			logger.info("Did not decode zip properly");
-			er.unRegisterValidator(this);
 			return;
 		}
 
@@ -226,13 +224,11 @@ public class XdmDecoder extends AbstractMessageValidator {
 				} catch (Exception e) {
 					er.err(Code.NoCode, "Error reading metadata from " + metadataFilename + "\n" + ExceptionUtil.exception_details(e), subsetDir,"");
 					logger.info("Error reading metadata from " + metadataFilename + "\n" + ExceptionUtil.exception_details(e));
-					er.unRegisterValidator(this);
 					return;
 				}
 			}
 		}
 		mvc.run();
-        er.unRegisterValidator(this);
 	}
 
 	boolean decode(IErrorRecorder er) {

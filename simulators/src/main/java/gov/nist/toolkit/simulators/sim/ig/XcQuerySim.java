@@ -74,7 +74,6 @@ public class XcQuerySim extends AbstractMessageValidator implements MetadataGene
 
 	public void run(IErrorRecorder er, MessageValidatorEngine mvc) {
 		this.er = er;
-		er.registerValidator(this);
 
 		if (startUpException != null)
 			er.err(XdsErrorCode.Code.XDSRegistryError, startUpException);
@@ -170,7 +169,6 @@ public class XcQuerySim extends AbstractMessageValidator implements MetadataGene
 			logException(er, e);
 		}
         finally {
-            er.unRegisterValidator(this);
         }
 
 	}

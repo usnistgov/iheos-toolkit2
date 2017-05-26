@@ -34,12 +34,12 @@ public class RetrieveResponseValidator extends AbstractMessageValidator {
 
 	public void run(IErrorRecorder er, MessageValidatorEngine mvc) {
 		this.er = er;
-		er.registerValidator(this);
+		//er.registerValidator(this);
 
 		if (xml == null) {
 			Assertion assertion = ASSERTIONLIBRARY.getAssertion("TA151");
 			er.err(XdsErrorCode.Code.XDSRegistryError, assertion, this, "", "");
-            er.unRegisterValidator(this);
+            //er.unRegisterValidator(this);
 			return;
 		}
 
@@ -59,7 +59,7 @@ public class RetrieveResponseValidator extends AbstractMessageValidator {
 			mvc.addMessageValidator("DocumentResponse element ordering", rov, erBuilder.buildNewErrorRecorder());
 			mvc.addMessageValidator("DocumentResponse Validator", new DocumentResponseValidator(vc, dr), erBuilder.buildNewErrorRecorder());
 		}
-        er.unRegisterValidator(this);
+        //er.unRegisterValidator(this);
 
 	}
 
