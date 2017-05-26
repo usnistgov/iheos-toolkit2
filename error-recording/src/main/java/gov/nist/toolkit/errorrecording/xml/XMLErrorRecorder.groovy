@@ -232,7 +232,6 @@ public class XMLErrorRecorder implements IErrorRecorder {
         errXml = errXml.concat(createXMLString("Detail", msg))
     }
 
-// Not used / Not tested
     @Override
     public void report(String name, String found) {
         println("report")

@@ -2,6 +2,7 @@ package gov.nist.toolkit.registrymsgold.registry;
 
 import gov.nist.toolkit.errorrecording.IErrorRecorder;
 import gov.nist.toolkit.commondatatypes.MetadataSupport;
+import gov.nist.toolkit.errorrecording.common.XdsErrorCode;
 import gov.nist.toolkit.errorrecording.xml.assertions.Assertion;
 import gov.nist.toolkit.errorrecording.xml.assertions.AssertionLibrary;
 import gov.nist.toolkit.valsupport.client.ValidationContext;
