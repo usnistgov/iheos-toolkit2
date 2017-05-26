@@ -5,10 +5,9 @@ import gov.nist.toolkit.commondatatypes.MetadataSupport;
 import gov.nist.toolkit.errorrecording.IErrorRecorder;
 import gov.nist.toolkit.errorrecording.IErrorRecorderBuilder;
 import gov.nist.toolkit.errorrecording.SelectedErrorRecorder;
-import gov.nist.toolkit.errorrecording.common.ErrorRecorderUtils;
+import gov.nist.toolkit.errorrecording.common.ErrorRecorderFactory;
 import gov.nist.toolkit.errorrecording.common.XdsErrorCode;
 import gov.nist.toolkit.errorrecording.gwt.GwtErrorRecorder;
-import gov.nist.toolkit.errorrecording.gwt.GwtErrorRecorderBuilder;
 import gov.nist.toolkit.errorrecording.gwt.client.GWTValidationStepResult;
 import gov.nist.toolkit.errorrecording.gwt.client.GwtValidatorErrorItem;
 import gov.nist.toolkit.errorrecording.xml.XMLErrorRecorder;
@@ -149,7 +148,7 @@ public class DsSimCommon {
     public void sendErrorsInRegistryResponse(IErrorRecorder er) {
         if (er == null) {
             // TODO this could actyually be integrated to the interface of ErrorRecBuilder in getNewErrorRecorderBuilder
-            IErrorRecorderBuilder builder = new ErrorRecorderUtils().getNewErrorRecorderBuilder();
+            IErrorRecorderBuilder builder = new ErrorRecorderFactory().getNewErrorRecorderBuilder();
             er = builder.buildNewErrorRecorder();
         }
 
