@@ -446,6 +446,11 @@ public class RegistryErrorListGenerator implements ErrorLogger, IErrorRecorder {
 	}
 
 	@Override
+	public void success(Assertion _assertion, Object _validatorModule, String _detail) {
+
+	}
+
+	@Override
 	public void success(String location, String resource) {
 
 	}
