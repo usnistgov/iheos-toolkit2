@@ -544,16 +544,6 @@ public class RegistryErrorListGenerator implements ErrorLogger, IErrorRecorder {
 		return depth + maxChildDepth;
 	}
 
-	@Override
-	public void registerValidator(Object validator) {
-
-	}
-
-	@Override
-	public void unRegisterValidator(Object validator) {
-
-	}
-
 	public void setPartialSuccess(boolean value) {
 		partialSuccess = value;
 	}
