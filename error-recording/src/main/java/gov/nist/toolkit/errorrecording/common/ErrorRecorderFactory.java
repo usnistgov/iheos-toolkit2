@@ -30,6 +30,11 @@ public class ErrorRecorderFactory {
         return null;
     }
 
+    /**
+     * Factory call that returns a new ErrorRecorder matching the current registered ErrorRecorderType in
+     * SelectedErrorRecorder class.
+     * @return a custom ErrorRecorder
+     */
     public IErrorRecorder getNewErrorRecorder() {
         return getBuilder().buildNewErrorRecorder();
     }
