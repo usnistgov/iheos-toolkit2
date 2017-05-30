@@ -1,7 +1,6 @@
 package gov.nist.toolkit.testkitutilities
 
 import gov.nist.toolkit.installation.Installation
-import gov.nist.toolkit.xdsexception.ExceptionUtil
 import org.apache.log4j.BasicConfigurator
 import org.apache.log4j.Logger
 
@@ -27,11 +26,11 @@ class TestkitServlet extends HttpServlet {
 
         BasicConfigurator.configure();
 
+        testDocBase = new File(config.servletContext.contextPath + '/testdoc')
 
-        this.init()
 
 //        try {
-            logger.info("TestkitServlet initializing")
+            logger.info("TestkitServlet initializing - testDocBase is ${testDocBase}")
 
 //            File ec = new File(config.getInitParameter('toolkit-external-cache'))
 //            if (!ec || !ec.isDirectory() || !new File(ec, 'environment').isDirectory()) {
