@@ -67,10 +67,15 @@
         <!--<load-on-startup>1</load-on-startup>-->
     <!--</servlet>-->
 
-    <!--<servlet>-->
-        <!--<servlet-name>toolkitServlet</servlet-name>-->
-        <!--<servlet-class>gov.nist.toolkit.xdstools2.server.ToolkitServiceImpl</servlet-class>-->
-    <!--</servlet>-->
+    <servlet>
+        <servlet-name>toolkitServlet</servlet-name>
+        <servlet-class>gov.nist.toolkit.server.server.ToolkitServiceImpl</servlet-class>
+    </servlet>
+
+    <servlet>
+        <servlet-name>environmentServlet</servlet-name>
+        <servlet-class>gov.nist.toolkit.server.server.EnvironmentServiceImpl</servlet-class>
+    </servlet>
 
     <!--<servlet>-->
         <!--<servlet-name>pidAllocateServlet</servlet-name>-->
@@ -82,11 +87,11 @@
         <!--<servlet-class>gov.nist.toolkit.xdstools2.server.upload.UploadServlet</servlet-class>-->
     <!--</servlet>-->
 
-	<!--<servlet>-->
-		<!--<servlet-name>simulatorServlet</servlet-name>-->
-		<!--<servlet-class>gov.nist.toolkit.simulators.servlet.SimServlet</servlet-class>-->
-		<!--<load-on-startup>1</load-on-startup>-->
-	<!--</servlet>-->
+	<servlet>
+		<servlet-name>simulatorServlet</servlet-name>
+		<servlet-class>gov.nist.toolkit.simulators.servlet.SimServlet</servlet-class>
+		<load-on-startup>1</load-on-startup>
+	</servlet>
 
     <!--<servlet>-->
         <!--<servlet-name>httpSimulatorServlet</servlet-name>-->
@@ -142,10 +147,15 @@
         <!--<url-pattern>/rest/display</url-pattern>-->
     <!--</servlet-mapping>-->
 
-    <!--<servlet-mapping>-->
-        <!--<servlet-name>toolkitServlet</servlet-name>-->
-        <!--<url-pattern>/xdstools2/toolkit</url-pattern>-->
-    <!--</servlet-mapping>-->
+    <servlet-mapping>
+        <servlet-name>toolkitServlet</servlet-name>
+        <url-pattern>/xdstools/toolkit</url-pattern>
+    </servlet-mapping>
+
+    <servlet-mapping>
+        <servlet-name>environmentServlet</servlet-name>
+        <url-pattern>/xdstools/environment</url-pattern>
+    </servlet-mapping>
 
     <!--<servlet-mapping>-->
         <!--<servlet-name>pidAllocateServlet</servlet-name>-->
@@ -182,10 +192,10 @@
         <!--<url-pattern>/sim/*</url-pattern>-->
     <!--</servlet-mapping>-->
 
-	<!--<servlet-mapping>-->
-		<!--<servlet-name>simulatorServlet</servlet-name>-->
-		<!--<url-pattern>/xdstools2/sim/*</url-pattern>-->
-	<!--</servlet-mapping>-->
+	<servlet-mapping>
+		<servlet-name>simulatorServlet</servlet-name>
+		<url-pattern>/xdstools  /sim/*</url-pattern>
+	</servlet-mapping>
 
     <!--<servlet-mapping>-->
         <!--<servlet-name>httpSimulatorServlet</servlet-name>-->

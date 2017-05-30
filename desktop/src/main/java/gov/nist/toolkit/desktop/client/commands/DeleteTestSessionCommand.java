@@ -17,7 +17,7 @@ public class DeleteTestSessionCommand extends GenericCommand<CommandContext, Boo
 
     @Override
     public void run(CommandContext cc) {
-        ToolkitGinInjector.INSTANCE.getClientUtils().getEnvironmentServices().delMesaTestSession(cc, this);
+        ToolkitGinInjector.INSTANCE.getClientUtils().getToolkitServices().delMesaTestSession(cc, this);
 
     }
 

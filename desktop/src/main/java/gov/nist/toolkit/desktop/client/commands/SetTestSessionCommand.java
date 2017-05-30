@@ -17,7 +17,7 @@ public class SetTestSessionCommand extends GenericCommand<CommandContext, String
 
     @Override
     public void run(CommandContext cc) {
-        ToolkitGinInjector.INSTANCE.getClientUtils().getEnvironmentServices().setMesaTestSession(cc.getTestSessionName(), this);
+        ToolkitGinInjector.INSTANCE.getClientUtils().getToolkitServices().setMesaTestSession(cc.getTestSessionName(), this);
 
     }
 

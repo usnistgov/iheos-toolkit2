@@ -17,7 +17,7 @@ import java.util.List;
  *
  */
 public class TestSessionPresenter extends AbstractPresenter<TestSessionView>  {
-    private String testSessionName = null;
+    private String testSessionName = "default";
 
     private ToolkitEventBus eventBus;
 

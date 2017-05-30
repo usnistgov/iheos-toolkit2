@@ -45,6 +45,7 @@ public class ToolkitGinModule extends AbstractGinModule {
         // in EnvironmentService
         // and another in ClientUtils
 //        bind(EnvironmentService.class).to(LocalEnvironmentServiceImpl.class).in(Singleton.class);
+//        bind(EnvironmentService.class).to(EnvironmentServiceImpl.class).in(Singleton.class);
     }
 
     /** Provider for PlaceController */

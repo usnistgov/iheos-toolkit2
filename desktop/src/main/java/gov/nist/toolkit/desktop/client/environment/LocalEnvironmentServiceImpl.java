@@ -42,23 +42,23 @@ public class LocalEnvironmentServiceImpl implements EnvironmentService {
         return sessionNames;
     }
 
-    @Override
-    public boolean addMesaTestSession(CommandContext context) throws Exception {
-        assert(context.getTestSessionName() != null);
-        sessionNames.add(context.getTestSessionName());
-        GWT.log("Add Test Session " + context.getTestSessionName());
-        return false;
-    }
+//    @Override
+//    public boolean addMesaTestSession(CommandContext context) throws Exception {
+//        assert(context.getTestSessionName() != null);
+//        sessionNames.add(context.getTestSessionName());
+//        GWT.log("Add Test Session " + context.getTestSessionName());
+//        return false;
+//    }
 
-    @Override
-    public boolean delMesaTestSession(CommandContext context) throws Exception {
-        assert(context.getTestSessionName() != null);
-        int i = sessionNames.indexOf(context.getTestSessionName());
-        if (i >= 0)
-            sessionNames.remove(i);
-        GWT.log("Delete Test Session " + context.getTestSessionName());
-        return false;
-    }
+//    @Override
+//    public boolean delMesaTestSession(CommandContext context) throws Exception {
+//        assert(context.getTestSessionName() != null);
+//        int i = sessionNames.indexOf(context.getTestSessionName());
+//        if (i >= 0)
+//            sessionNames.remove(i);
+//        GWT.log("Delete Test Session " + context.getTestSessionName());
+//        return false;
+//    }
 
     @Override
     public String getDefaultTestSession(CommandContext context) {

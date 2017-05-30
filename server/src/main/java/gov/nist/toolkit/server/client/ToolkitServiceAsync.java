@@ -1,252 +1,160 @@
 package gov.nist.toolkit.server.client;
 
-import com.google.gwt.user.client.rpc.AsyncCallback;
-import gov.nist.toolkit.actorfactory.client.SimId;
-import gov.nist.toolkit.actorfactory.client.Simulator;
-import gov.nist.toolkit.actorfactory.client.SimulatorConfig;
-import gov.nist.toolkit.actorfactory.client.SimulatorStats;
-import gov.nist.toolkit.actortransaction.client.TransactionInstance;
-import gov.nist.toolkit.configDatatypes.client.Pid;
-import gov.nist.toolkit.server.shared.command.CommandContext;
-import gov.nist.toolkit.server.shared.command.InitializationResponse;
-import gov.nist.toolkit.server.shared.RegistryStatus;
-import gov.nist.toolkit.server.shared.RepositoryStatus;
-import gov.nist.toolkit.server.shared.command.request.*;
-import gov.nist.toolkit.interactionmodel.client.InteractingEntity;
-import gov.nist.toolkit.results.client.*;
-import gov.nist.toolkit.results.shared.Test;
-import gov.nist.toolkit.services.client.IdcOrchestrationRequest;
-import gov.nist.toolkit.services.client.RawResponse;
-import gov.nist.toolkit.services.shared.Message;
-import gov.nist.toolkit.session.client.ConformanceSessionValidationStatus;
-import gov.nist.toolkit.session.client.logtypes.TestOverviewDTO;
-import gov.nist.toolkit.session.client.logtypes.TestPartFileDTO;
-import gov.nist.toolkit.sitemanagement.client.Site;
-import gov.nist.toolkit.sitemanagement.client.TransactionOfferings;
-import gov.nist.toolkit.testenginelogging.client.LogFileContentDTO;
-import gov.nist.toolkit.testkitutilities.client.SectionDefinitionDAO;
-import gov.nist.toolkit.testkitutilities.client.TestCollectionDefinitionDAO;
-import gov.nist.toolkit.tk.client.TkProps;
-import gov.nist.toolkit.valsupport.client.MessageValidationResults;
-
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
-
 public interface ToolkitServiceAsync {
 
-    void getAutoInitConformanceTesting(CommandContext context, AsyncCallback<Boolean> callback);
-    void clearTestSession(CommandContext context, AsyncCallback<String> callback);
-    void validateConformanceSession(String testSession, String siteName, AsyncCallback<ConformanceSessionValidationStatus> callback);
-    void getSitesForTestSession(CommandContext context, AsyncCallback<Collection<String>> callback);
-    void getInitialization(CommandContext context, AsyncCallback<InitializationResponse> callback);
-    void getTkProps(AsyncCallback<TkProps> callback);
-    void getSessionProperties(AsyncCallback<Map<String, String>> callback);
-    void setSessionProperties(Map<String, String> props, AsyncCallback callback);
-    void getNewPatientId(String assigningAuthority, AsyncCallback<String> callback);
-
-    void getDefaultAssigningAuthority(CommandContext context, AsyncCallback<String> callback) ;
-    void getAttributeValue(String username, String attName, AsyncCallback<String> callback);
-    void setAttributeValue(String username, String attName, String attValue, AsyncCallback callback);
-
-
-    void getCurrentEnvironment(AsyncCallback<String> callback);
-//    void getDefaultEnvironment(CommandContext context, AsyncCallback<String> callback);
-    void setEnvironment(CommandContext context, AsyncCallback<String> callback);
-//    void getEnvironmentNames(CommandContext context, AsyncCallback<List<String>> callback);
-    void isGazelleConfigFeedEnabled(CommandContext context, AsyncCallback<Boolean> callback) ;
-    void reloadSystemFromGazelle(ReloadSystemFromGazelleRequest request, AsyncCallback<String> callback);
-    void getSiteNamesWithRG(CommandContext context, AsyncCallback<List<String>> callback);
-    void getSiteNamesByTranType(GetSiteNamesByTranTypeRequest request, AsyncCallback<List<String>> callback);
-
-    void getDashboardRegistryData(CommandContext context, AsyncCallback<List<RegistryStatus>> callback);
-    void getDashboardRepositoryData(CommandContext context, AsyncCallback<List<RepositoryStatus>> callback);
-
-    void getTestsOverview(GetTestsOverviewRequest request, AsyncCallback<List<TestOverviewDTO>> callback);
-    void getTestSectionsDAOs(GetTestSectionsDAOsRequest request, AsyncCallback<List<SectionDefinitionDAO>> callback);
-    void getUpdateNames(AsyncCallback<List<String>> callback);
-
-    void getTransactionRequest(GetTransactionRequest request, AsyncCallback<Message> callback);
-    void getTransactionResponse(GetTransactionRequest request, AsyncCallback<Message> callback);
-    void getTransactionLog(GetTransactionRequest request, AsyncCallback<String> callback);
-
-    void getTransactionsForSimulator(GetTransactionRequest request, AsyncCallback<List<String>> callback);
-
-//	void getActorNames(AsyncCallback<List<String>> notify);
-
-    void executeSimMessage(ExecuteSimMessageRequest request, AsyncCallback<MessageValidationResults> callback);
-
-    void renameSimFile(RenameSimFileRequest request, AsyncCallback callback);
-
-    void deleteSimFile(DeleteSimFileRequest request, AsyncCallback callback);
-
-    void getSimulatorEndpoint(CommandContext context, AsyncCallback<String> callback);
-
-    void getSelectedMessage(GetSelectedMessageRequest request, AsyncCallback<List<Result>> callback);
-    void getSelectedMessageResponse(GetSelectedMessageRequest request, AsyncCallback<List<Result>> callback);
-    @Deprecated
-    void getClientIPAddress(AsyncCallback<String> callback);
-
-//	void  validateMessage(ValidationContext vc, String simFileName, AsyncCallback<MessageValidationResults> notify);
-
-    void  getTransInstances(GetTransactionRequest request, AsyncCallback<List<TransactionInstance>> callback);
-
-    void getLastMetadata(CommandContext context, AsyncCallback<List<Result>> callback);
-    void getLastFilename(CommandContext context, AsyncCallback<String> callback);
-    void getTimeAndDate(CommandContext context, AsyncCallback<String> callback);
-
-    void validateMessage(ValidateMessageRequest vrequest, AsyncCallback<MessageValidationResults> callback);
-
-    void getSiteNames(GetSiteNamesRequest request, AsyncCallback<List<String>> callback) ;
-
-    void getTransactionOfferings(CommandContext commandContext, AsyncCallback<TransactionOfferings> callback);
-    void getRegistryNames(AsyncCallback<List<String>> callback);
-    void getRepositoryNames(AsyncCallback<List<String>> callback);
-    void getRGNames(AsyncCallback<List<String>> callback);
-    void getIGNames(AsyncCallback<List<String>> callback);
-    void getRawLogs(GetRawLogsRequest request, AsyncCallback<TestLogs> callback);
-    void getTestdataSetListing(GetTestdataSetListingRequest request, AsyncCallback<List<String>> callback);
-    void getCodesConfiguration(CommandContext context, AsyncCallback<CodesResult> callback);
-    void getSite(GetSiteRequest request, AsyncCallback<Site> callback);
-    void getAllSites(CommandContext commandContext, AsyncCallback<Collection<Site>> callback);
-    void saveSite(SaveSiteRequest request, AsyncCallback<String> callback);
-    void reloadSites(boolean simAlso, AsyncCallback<List<String>> callback);
-    void reloadExternalSites(CommandContext context, AsyncCallback<List<String>> callback);
-    void deleteSite(DeleteSiteRequest request, AsyncCallback<String> callback);
-
-    void getSSandContents(GetSubmissionSetAndContentsRequest request, AsyncCallback<List<Result>> callback);
-    void srcStoresDocVal(GetSrcStoresDocValRequest request, AsyncCallback<List<Result>> callback);
-    void findDocuments(FindDocumentsRequest request, AsyncCallback<List<Result>> callback);
-    void findDocumentsByRefId(FindDocumentsRequest request, AsyncCallback<List<Result>> callback) ;
-    void findFolders(FoldersRequest request, AsyncCallback<List<Result>> callback);
-    void getDocuments(GetDocumentsRequest request, AsyncCallback<List<Result>> callback);
-    void getFolders(GetFoldersRequest request, AsyncCallback<List<Result>> callback);
-    void getFoldersForDocument(GetFoldersRequest request, AsyncCallback<List<Result>> callback);
-    void getFolderAndContents(GetFoldersRequest request, AsyncCallback<List<Result>> callback);
-    void getAssociations(GetAssociationsRequest request, AsyncCallback<List<Result>> callback);
-    void getObjects(GetObjectsRequest request, AsyncCallback<List<Result>> callback);
-    void getSubmissionSets(GetSubmissionSetsRequest request, AsyncCallback<List<Result>> callback);
-    void registerAndQuery(RegisterAndQueryRequest request, AsyncCallback<List<Result>> callback);
-    void getRelated(GetRelatedRequest request, AsyncCallback<List<Result>> callback);
-    void retrieveDocument(RetrieveDocumentRequest request, AsyncCallback<List<Result>> callback);
-    void retrieveImagingDocSet(RetrieveImagingDocSetRequest request, AsyncCallback<List<Result>> callback);
-    void submitRegistryTestdata(SubmitTestdataRequest request, AsyncCallback<List<Result>> callback);
-    void submitRepositoryTestdata(SubmitTestdataRequest request, AsyncCallback<List<Result>> callback);
-    void submitXDRTestdata(SubmitTestdataRequest request, AsyncCallback<List<Result>> callback);
-    /////////////////////////////////////////////////////
-    /////////////////////////////////////////////////////
-    // FoldersRequest has the right constructor??? //
-    /////////////////////////////////////////////////////
-    /////////////////////////////////////////////////////
-    void provideAndRetrieve(ProvideAndRetrieveRequest request, AsyncCallback<List<Result>> callback);
-    void lifecycleValidation(LifecycleValidationRequest request, AsyncCallback<List<Result>> callback);
-    void folderValidation(FoldersRequest request, AsyncCallback<List<Result>> callback);
-
-    //	void mpqFindDocuments(SiteSpec site, String pid, List<String> classCodes, List<String> hcftCodes, List<String> eventCodes, AsyncCallback<List<Result>> notify);
-    void mpqFindDocuments(MpqFindDocumentsRequest request, AsyncCallback<List<Result>> callback);
-    void getAll(GetAllRequest request, AsyncCallback<List<Result>> callback);
-    void findDocuments2(FindDocuments2Request request, AsyncCallback<List<Result>> callback);
-
-    void getAdminPassword(CommandContext context, AsyncCallback<String> callback);
-
-    void getImplementationVersion(CommandContext context, AsyncCallback<String> callback);
-
-    void getToolkitProperties(CommandContext context, AsyncCallback<Map<String, String>> callback);
-    void setToolkitProperties(SetToolkitPropertiesRequest request, AsyncCallback<String> callback);
-    void reloadPropertyFile(AsyncCallback<Boolean> callback);
-
-    void getActorTypeNames(CommandContext context, AsyncCallback<List<String>> callback);
-    void getNewSimulator(GetNewSimulatorRequest request, AsyncCallback<Simulator> callback);
-    void getSimConfigs(GetSimConfigsRequest request, AsyncCallback<List<SimulatorConfig>> callback);
-    void getAllSimConfigs(GetAllSimConfigsRequest user, AsyncCallback<List<SimulatorConfig>> callback);
-    void putSimConfig(SimConfigRequest request, AsyncCallback<String> callback);
-    void deleteConfig(SimConfigRequest request, AsyncCallback<String> callback);
-    void getActorSimulatorNameMap(CommandContext context, AsyncCallback<Map<String, SimId>> callback);
-    //	void getSimulatorTransactionNames(String simid, AsyncCallback<List<String>> notify);
-    void removeOldSimulators(CommandContext context, AsyncCallback<Integer> callback);
-    void getSimulatorStats(GetSimulatorStatsRequest request, AsyncCallback<List<SimulatorStats>> callback);
-    void getPatientIds(PatientIdsRequest request, AsyncCallback<List<Pid>> callback);
-    void addPatientIds(PatientIdsRequest request, AsyncCallback<String> callback);
-    void deletePatientIds(PatientIdsRequest request, AsyncCallback<Boolean> callback);
-
-    void getCollectionNames(GetCollectionRequest request, AsyncCallback<Map<String, String>> callback);
-
-    void getCollectionMembers(GetCollectionRequest request, AsyncCallback<List<TestInstance>> callback);
-
-    void getTestCollections(GetCollectionRequest request, AsyncCallback<List<TestCollectionDefinitionDAO>> callback);
-
-    void getCollection(GetCollectionRequest request, AsyncCallback<Map<String, String>> callback);
-
-    void getTestReadme(GetTestDetailsRequest request, AsyncCallback<String> callback);
-
-    void getTestIndex(GetTestDetailsRequest request, AsyncCallback<List<String>> callback);
-    void runMesaTest(RunTestRequest request, AsyncCallback<List<Result>> callback);
-    void runTest(RunTestRequest request, AsyncCallback<TestOverviewDTO> callback);
-    void isPrivateMesaTesting(AsyncCallback<Boolean> callback);
-    void addMesaTestSession(CommandContext context, AsyncCallback<Boolean> callback);
-    void delMesaTestSession(CommandContext context, AsyncCallback<Boolean> callback);
-    void createPid(GeneratePidRequest generatePidRequest, AsyncCallback<Pid> callback);
-    void getAssigningAuthority(CommandContext commandContext, AsyncCallback<String> callback);
-    void getAssigningAuthorities(CommandContext commandContext, AsyncCallback<List<String>> callback);
-    void sendPidToRegistry(SendPidToRegistryRequest request, AsyncCallback<List<Result>> callback);
-    void getSimulatorEventRequest(GetSimulatorEventRequest request, AsyncCallback<Result> callback) ;
-    void getSimulatorEventResponse(GetSimulatorEventRequest request, AsyncCallback<Result> callback) ;
-    void getTestLogDetails(GetTestLogDetailsRequest request, AsyncCallback<LogFileContentDTO> callback);
-
-    void getTestplanAsText(GetTestplanAsTextRequest request, AsyncCallback<String> callback);
-    void getSectionTestPartFile(GetSectionTestPartFileRequest request, AsyncCallback<TestPartFileDTO> callback);
-    void loadTestPartContent(LoadTestPartContentRequest request, AsyncCallback<TestPartFileDTO> callback);
-    void getHtmlizedString(String xml, AsyncCallback<String> callback);
-
-    void configureTestkit(CommandContext context, AsyncCallback<String> callback);
-    void doesTestkitExist(CommandContext context, AsyncCallback<Boolean> asyncCallback) ;
-    void generateTestkitStructure(CommandContext request, AsyncCallback<Void> asyncCallback);
-    void indexTestKits(CommandContext context, AsyncCallback<Boolean> callback);
-
-//	void getToolkitEnableNwHIN(AsyncCallback<String> notify);
-
-	//------------------------------------------------------------------------
-	//------------------------------------------------------------------------
-	// Test Services
-	//------------------------------------------------------------------------
-	//------------------------------------------------------------------------
-	void reloadAllTestResults(CommandContext context, AsyncCallback<List<Test>> callback) ;
-	void getTestlogListing(String sessionName, AsyncCallback<List<TestInstance>> callback);
-	void getTestResults(GetTestResultsRequest request, AsyncCallback<Map<String, Result>> callback);
-	void setMesaTestSession(String sessionName, AsyncCallback callback);
-	void getMesaTestSessionNames(CommandContext request, AsyncCallback<List<String>> callback);
-	void deleteAllTestResults(AllTestRequest request, AsyncCallback<List<Test>> callback);
-	void deleteSingleTestResult(DeleteSingleTestRequest request, AsyncCallback<TestOverviewDTO> callback);
-	void runAllTests(AllTestRequest request, AsyncCallback<List<Test>> callback);
-	void runSingleTest(RunSingleTestRequest request, AsyncCallback<Test> callback);
-	void getTransactionErrorCodeRefs(GetTransactionErrorCodeRefsRequest request, AsyncCallback<List<String>> callback);
-	void buildIgTestOrchestration(BuildIgTestOrchestrationRequest request, AsyncCallback<RawResponse> callback);
-	void buildRgTestOrchestration(BuildRgTestOrchestrationRequest request, AsyncCallback<RawResponse> callback);
-	void buildIigTestOrchestration(BuildIigTestOrchestrationRequest request, AsyncCallback<RawResponse> callback);
-	void buildRigTestOrchestration(BuildRigTestOrchestrationRequest request, AsyncCallback<RawResponse> callback);
-	void buildIdsTestOrchestration(BuildIdsTestOrchestrationRequest request, AsyncCallback<RawResponse> callback);
-//    void buildIdcTestOrchestration(IdcOrchestrationRequest request, AsyncCallback<RawResponse> callback);
-	void buildRepTestOrchestration(BuildRepTestOrchestrationRequest request, AsyncCallback<RawResponse> callback);
-	void buildRegTestOrchestration(BuildRegTestOrchestrationRequest request, AsyncCallback<RawResponse> callback);
-	void buildRecTestOrchestration(BuildRecTestOrchestrationRequest request, AsyncCallback<RawResponse> callback);
-	void buildRSNAEdgeTestOrchestration(BuildRSNAEdgeTestOrchestrationRequest request, AsyncCallback<RawResponse> callback);
-    void buildIdcTestOrchestration(IdcOrchestrationRequest request, AsyncCallback<RawResponse> callback);
-	void getSiteNamesWithRIG(CommandContext context, AsyncCallback<List<String>> callback);
-	void getSiteNamesWithIDS(CommandContext context, AsyncCallback<List<String>> callback);
-    void getSiteNamesWithRepository(CommandContext context, AsyncCallback<List<String>> callback);
-	void register(RegisterRequest request, AsyncCallback<Result> callback) throws Exception;
-	void registerWithLocalizedTrackingInODDS(RegisterRequest registerRequest, AsyncCallback<Map<String, String>> callback);
-	void getOnDemandDocumentEntryDetails(GetOnDemandDocumentEntryDetailsRequest request, AsyncCallback<List<DocumentEntryDetail>> callback);
-	void setOdSupplyStateIndex(SetOdSupplyStateIndexRequest request, AsyncCallback<Boolean> callback);
-	void getInteractionFromModel(GetInteractionFromModelRequest request, AsyncCallback<InteractingEntity> callback);
-	void getStsSamlAssertion(GetStsSamlAssertionRequest request, AsyncCallback<String> callback);
-    void getStsSamlAssertionsMap(GetStsSamlAssertionMapRequest request, AsyncCallback<Map<String, String>> callback);
-
-
-    void getServletContextName(AsyncCallback<String> callback);
-    void retrieveConfiguredFavoritesPid(CommandContext commandContext, AsyncCallback<List<Pid>> callback);
-
-    void getAssignedSiteForTestSession(CommandContext context, AsyncCallback<String> async);
-
-    void setAssignedSiteForTestSession(SetAssignedSiteForTestSessionRequest request, AsyncCallback<Void> async);
+    void addMesaTestSession(gov.nist.toolkit.server.shared.command.CommandContext context, com.google.gwt.user.client.rpc.AsyncCallback<java.lang.Boolean> arg2);
+    void addPatientIds(gov.nist.toolkit.server.shared.command.request.PatientIdsRequest request, com.google.gwt.user.client.rpc.AsyncCallback<java.lang.String> arg2);
+    void buildIdcTestOrchestration(gov.nist.toolkit.services.client.IdcOrchestrationRequest request, com.google.gwt.user.client.rpc.AsyncCallback<gov.nist.toolkit.services.client.RawResponse> arg2);
+    void buildIdsTestOrchestration(gov.nist.toolkit.server.shared.command.request.BuildIdsTestOrchestrationRequest request, com.google.gwt.user.client.rpc.AsyncCallback<gov.nist.toolkit.services.client.RawResponse> arg2);
+    void buildIgTestOrchestration(gov.nist.toolkit.server.shared.command.request.BuildIgTestOrchestrationRequest request, com.google.gwt.user.client.rpc.AsyncCallback<gov.nist.toolkit.services.client.RawResponse> arg2);
+    void buildIigTestOrchestration(gov.nist.toolkit.server.shared.command.request.BuildIigTestOrchestrationRequest request, com.google.gwt.user.client.rpc.AsyncCallback<gov.nist.toolkit.services.client.RawResponse> arg2);
+    void buildRSNAEdgeTestOrchestration(gov.nist.toolkit.server.shared.command.request.BuildRSNAEdgeTestOrchestrationRequest request, com.google.gwt.user.client.rpc.AsyncCallback<gov.nist.toolkit.services.client.RawResponse> arg2);
+    void buildRecTestOrchestration(gov.nist.toolkit.server.shared.command.request.BuildRecTestOrchestrationRequest request, com.google.gwt.user.client.rpc.AsyncCallback<gov.nist.toolkit.services.client.RawResponse> arg2);
+    void buildRegTestOrchestration(gov.nist.toolkit.server.shared.command.request.BuildRegTestOrchestrationRequest request, com.google.gwt.user.client.rpc.AsyncCallback<gov.nist.toolkit.services.client.RawResponse> arg2);
+    void buildRepTestOrchestration(gov.nist.toolkit.server.shared.command.request.BuildRepTestOrchestrationRequest request, com.google.gwt.user.client.rpc.AsyncCallback<gov.nist.toolkit.services.client.RawResponse> arg2);
+    void buildRgTestOrchestration(gov.nist.toolkit.server.shared.command.request.BuildRgTestOrchestrationRequest request, com.google.gwt.user.client.rpc.AsyncCallback<gov.nist.toolkit.services.client.RawResponse> arg2);
+    void buildRigTestOrchestration(gov.nist.toolkit.server.shared.command.request.BuildRigTestOrchestrationRequest request, com.google.gwt.user.client.rpc.AsyncCallback<gov.nist.toolkit.services.client.RawResponse> arg2);
+    void clearTestSession(gov.nist.toolkit.server.shared.command.CommandContext context, com.google.gwt.user.client.rpc.AsyncCallback<java.lang.String> arg2);
+    void configureTestkit(gov.nist.toolkit.server.shared.command.CommandContext context, com.google.gwt.user.client.rpc.AsyncCallback<java.lang.String> arg2);
+    void createPid(gov.nist.toolkit.server.shared.command.request.GeneratePidRequest generatePidRequest, com.google.gwt.user.client.rpc.AsyncCallback<gov.nist.toolkit.configDatatypes.client.Pid> arg2);
+    void delMesaTestSession(gov.nist.toolkit.server.shared.command.CommandContext context, com.google.gwt.user.client.rpc.AsyncCallback<java.lang.Boolean> arg2);
+    void deleteAllTestResults(gov.nist.toolkit.server.shared.command.request.AllTestRequest request, com.google.gwt.user.client.rpc.AsyncCallback<java.util.List<gov.nist.toolkit.results.shared.Test>> arg2);
+    void deleteConfig(gov.nist.toolkit.server.shared.command.request.SimConfigRequest request, com.google.gwt.user.client.rpc.AsyncCallback<java.lang.String> arg2);
+    void deletePatientIds(gov.nist.toolkit.server.shared.command.request.PatientIdsRequest request, com.google.gwt.user.client.rpc.AsyncCallback<java.lang.Boolean> arg2);
+    void deleteSimFile(gov.nist.toolkit.server.shared.command.request.DeleteSimFileRequest request, com.google.gwt.user.client.rpc.AsyncCallback<java.lang.Void> arg2);
+    void deleteSingleTestResult(gov.nist.toolkit.server.shared.command.request.DeleteSingleTestRequest request, com.google.gwt.user.client.rpc.AsyncCallback<gov.nist.toolkit.session.client.logtypes.TestOverviewDTO> arg2);
+    void deleteSite(gov.nist.toolkit.server.shared.command.request.DeleteSiteRequest request, com.google.gwt.user.client.rpc.AsyncCallback<java.lang.String> arg2);
+    void doesTestkitExist(gov.nist.toolkit.server.shared.command.CommandContext context, com.google.gwt.user.client.rpc.AsyncCallback<java.lang.Boolean> arg2);
+    void executeSimMessage(gov.nist.toolkit.server.shared.command.request.ExecuteSimMessageRequest request, com.google.gwt.user.client.rpc.AsyncCallback<gov.nist.toolkit.valsupport.client.MessageValidationResults> arg2);
+    void findDocuments(gov.nist.toolkit.server.shared.command.request.FindDocumentsRequest request, com.google.gwt.user.client.rpc.AsyncCallback<java.util.List<gov.nist.toolkit.results.client.Result>> arg2);
+    void findDocuments2(gov.nist.toolkit.server.shared.command.request.FindDocuments2Request request, com.google.gwt.user.client.rpc.AsyncCallback<java.util.List<gov.nist.toolkit.results.client.Result>> arg2);
+    void findDocumentsByRefId(gov.nist.toolkit.server.shared.command.request.FindDocumentsRequest request, com.google.gwt.user.client.rpc.AsyncCallback<java.util.List<gov.nist.toolkit.results.client.Result>> arg2);
+    void findFolders(gov.nist.toolkit.server.shared.command.request.FoldersRequest request, com.google.gwt.user.client.rpc.AsyncCallback<java.util.List<gov.nist.toolkit.results.client.Result>> arg2);
+    void folderValidation(gov.nist.toolkit.server.shared.command.request.FoldersRequest request, com.google.gwt.user.client.rpc.AsyncCallback<java.util.List<gov.nist.toolkit.results.client.Result>> arg2);
+    void generateTestkitStructure(gov.nist.toolkit.server.shared.command.CommandContext context, com.google.gwt.user.client.rpc.AsyncCallback<java.lang.Void> arg2);
+    void getActorSimulatorNameMap(gov.nist.toolkit.server.shared.command.CommandContext context, com.google.gwt.user.client.rpc.AsyncCallback<java.util.Map<java.lang.String, gov.nist.toolkit.actorfactory.client.SimId>> arg2);
+    void getActorTypeNames(gov.nist.toolkit.server.shared.command.CommandContext context, com.google.gwt.user.client.rpc.AsyncCallback<java.util.List<java.lang.String>> arg2);
+    void getAdminPassword(gov.nist.toolkit.server.shared.command.CommandContext context, com.google.gwt.user.client.rpc.AsyncCallback<java.lang.String> arg2);
+    void getAll(gov.nist.toolkit.server.shared.command.request.GetAllRequest request, com.google.gwt.user.client.rpc.AsyncCallback<java.util.List<gov.nist.toolkit.results.client.Result>> arg2);
+    void getAllSimConfigs(gov.nist.toolkit.server.shared.command.request.GetAllSimConfigsRequest user, com.google.gwt.user.client.rpc.AsyncCallback<java.util.List<gov.nist.toolkit.actorfactory.client.SimulatorConfig>> arg2);
+    void getAllSites(gov.nist.toolkit.server.shared.command.CommandContext commandContext, com.google.gwt.user.client.rpc.AsyncCallback<java.util.Collection<gov.nist.toolkit.sitemanagement.client.Site>> arg2);
+    void getAssignedSiteForTestSession(gov.nist.toolkit.server.shared.command.CommandContext context, com.google.gwt.user.client.rpc.AsyncCallback<java.lang.String> arg2);
+    void getAssigningAuthorities(gov.nist.toolkit.server.shared.command.CommandContext commandContext, com.google.gwt.user.client.rpc.AsyncCallback<java.util.List<java.lang.String>> arg2);
+    void getAssigningAuthority(gov.nist.toolkit.server.shared.command.CommandContext commandContext, com.google.gwt.user.client.rpc.AsyncCallback<java.lang.String> arg2);
+    void getAssociations(gov.nist.toolkit.server.shared.command.request.GetAssociationsRequest request, com.google.gwt.user.client.rpc.AsyncCallback<java.util.List<gov.nist.toolkit.results.client.Result>> arg2);
+    void getAttributeValue(java.lang.String username, java.lang.String attName, com.google.gwt.user.client.rpc.AsyncCallback<java.lang.String> arg3);
+    void getAutoInitConformanceTesting(gov.nist.toolkit.server.shared.command.CommandContext context, com.google.gwt.user.client.rpc.AsyncCallback<java.lang.Boolean> arg2);
+    void getClientIPAddress(com.google.gwt.user.client.rpc.AsyncCallback<java.lang.String> arg1);
+    void getCodesConfiguration(gov.nist.toolkit.server.shared.command.CommandContext context, com.google.gwt.user.client.rpc.AsyncCallback<gov.nist.toolkit.results.client.CodesResult> arg2);
+    void getCollection(gov.nist.toolkit.server.shared.command.request.GetCollectionRequest request, com.google.gwt.user.client.rpc.AsyncCallback<java.util.Map<java.lang.String, java.lang.String>> arg2);
+    void getCollectionMembers(gov.nist.toolkit.server.shared.command.request.GetCollectionRequest request, com.google.gwt.user.client.rpc.AsyncCallback<java.util.List<gov.nist.toolkit.results.client.TestInstance>> arg2);
+    void getCollectionNames(gov.nist.toolkit.server.shared.command.request.GetCollectionRequest request, com.google.gwt.user.client.rpc.AsyncCallback<java.util.Map<java.lang.String, java.lang.String>> arg2);
+    void getCurrentEnvironment(com.google.gwt.user.client.rpc.AsyncCallback<java.lang.String> arg1);
+    void getDashboardRegistryData(gov.nist.toolkit.server.shared.command.CommandContext context, com.google.gwt.user.client.rpc.AsyncCallback<java.util.List<gov.nist.toolkit.server.shared.RegistryStatus>> arg2);
+    void getDashboardRepositoryData(gov.nist.toolkit.server.shared.command.CommandContext context, com.google.gwt.user.client.rpc.AsyncCallback<java.util.List<gov.nist.toolkit.server.shared.RepositoryStatus>> arg2);
+    void getDefaultAssigningAuthority(gov.nist.toolkit.server.shared.command.CommandContext context, com.google.gwt.user.client.rpc.AsyncCallback<java.lang.String> arg2);
+    void getDocuments(gov.nist.toolkit.server.shared.command.request.GetDocumentsRequest request, com.google.gwt.user.client.rpc.AsyncCallback<java.util.List<gov.nist.toolkit.results.client.Result>> arg2);
+    void getFolderAndContents(gov.nist.toolkit.server.shared.command.request.GetFoldersRequest request, com.google.gwt.user.client.rpc.AsyncCallback<java.util.List<gov.nist.toolkit.results.client.Result>> arg2);
+    void getFolders(gov.nist.toolkit.server.shared.command.request.GetFoldersRequest request, com.google.gwt.user.client.rpc.AsyncCallback<java.util.List<gov.nist.toolkit.results.client.Result>> arg2);
+    void getFoldersForDocument(gov.nist.toolkit.server.shared.command.request.GetFoldersRequest request, com.google.gwt.user.client.rpc.AsyncCallback<java.util.List<gov.nist.toolkit.results.client.Result>> arg2);
+    void getHtmlizedString(java.lang.String xml, com.google.gwt.user.client.rpc.AsyncCallback<java.lang.String> arg2);
+    void getIGNames(com.google.gwt.user.client.rpc.AsyncCallback<java.util.List<java.lang.String>> arg1);
+    void getImplementationVersion(gov.nist.toolkit.server.shared.command.CommandContext context, com.google.gwt.user.client.rpc.AsyncCallback<java.lang.String> arg2);
+    void getInitialization(gov.nist.toolkit.server.shared.command.CommandContext context, com.google.gwt.user.client.rpc.AsyncCallback<gov.nist.toolkit.server.shared.command.InitializationResponse> arg2);
+    void getInteractionFromModel(gov.nist.toolkit.server.shared.command.request.GetInteractionFromModelRequest request, com.google.gwt.user.client.rpc.AsyncCallback<gov.nist.toolkit.interactionmodel.client.InteractingEntity> arg2);
+    void getLastFilename(gov.nist.toolkit.server.shared.command.CommandContext context, com.google.gwt.user.client.rpc.AsyncCallback<java.lang.String> arg2);
+    void getLastMetadata(gov.nist.toolkit.server.shared.command.CommandContext context, com.google.gwt.user.client.rpc.AsyncCallback<java.util.List<gov.nist.toolkit.results.client.Result>> arg2);
+    void getNewPatientId(java.lang.String assigningAuthority, com.google.gwt.user.client.rpc.AsyncCallback<java.lang.String> arg2);
+    void getNewSimulator(gov.nist.toolkit.server.shared.command.request.GetNewSimulatorRequest request, com.google.gwt.user.client.rpc.AsyncCallback<gov.nist.toolkit.actorfactory.client.Simulator> arg2);
+    void getObjects(gov.nist.toolkit.server.shared.command.request.GetObjectsRequest request, com.google.gwt.user.client.rpc.AsyncCallback<java.util.List<gov.nist.toolkit.results.client.Result>> arg2);
+    void getOnDemandDocumentEntryDetails(gov.nist.toolkit.server.shared.command.request.GetOnDemandDocumentEntryDetailsRequest request, com.google.gwt.user.client.rpc.AsyncCallback<java.util.List<gov.nist.toolkit.results.client.DocumentEntryDetail>> arg2);
+    void getPatientIds(gov.nist.toolkit.server.shared.command.request.PatientIdsRequest request, com.google.gwt.user.client.rpc.AsyncCallback<java.util.List<gov.nist.toolkit.configDatatypes.client.Pid>> arg2);
+    void getRGNames(com.google.gwt.user.client.rpc.AsyncCallback<java.util.List<java.lang.String>> arg1);
+    void getRawLogs(gov.nist.toolkit.server.shared.command.request.GetRawLogsRequest request, com.google.gwt.user.client.rpc.AsyncCallback<gov.nist.toolkit.results.client.TestLogs> arg2);
+    void getRegistryNames(com.google.gwt.user.client.rpc.AsyncCallback<java.util.List<java.lang.String>> arg1);
+    void getRelated(gov.nist.toolkit.server.shared.command.request.GetRelatedRequest request, com.google.gwt.user.client.rpc.AsyncCallback<java.util.List<gov.nist.toolkit.results.client.Result>> arg2);
+    void getRepositoryNames(com.google.gwt.user.client.rpc.AsyncCallback<java.util.List<java.lang.String>> arg1);
+    void getSSandContents(gov.nist.toolkit.server.shared.command.request.GetSubmissionSetAndContentsRequest request, com.google.gwt.user.client.rpc.AsyncCallback<java.util.List<gov.nist.toolkit.results.client.Result>> arg2);
+    void getSectionTestPartFile(gov.nist.toolkit.server.shared.command.request.GetSectionTestPartFileRequest request, com.google.gwt.user.client.rpc.AsyncCallback<gov.nist.toolkit.session.client.logtypes.TestPartFileDTO> arg2);
+    void getSelectedMessage(gov.nist.toolkit.server.shared.command.request.GetSelectedMessageRequest request, com.google.gwt.user.client.rpc.AsyncCallback<java.util.List<gov.nist.toolkit.results.client.Result>> arg2);
+    void getSelectedMessageResponse(gov.nist.toolkit.server.shared.command.request.GetSelectedMessageRequest request, com.google.gwt.user.client.rpc.AsyncCallback<java.util.List<gov.nist.toolkit.results.client.Result>> arg2);
+    void getServletContextName(com.google.gwt.user.client.rpc.AsyncCallback<java.lang.String> arg1);
+    void getSessionProperties(com.google.gwt.user.client.rpc.AsyncCallback<java.util.Map<java.lang.String, java.lang.String>> arg1);
+    void getSimConfigs(gov.nist.toolkit.server.shared.command.request.GetSimConfigsRequest request, com.google.gwt.user.client.rpc.AsyncCallback<java.util.List<gov.nist.toolkit.actorfactory.client.SimulatorConfig>> arg2);
+    void getSimulatorEndpoint(gov.nist.toolkit.server.shared.command.CommandContext context, com.google.gwt.user.client.rpc.AsyncCallback<java.lang.String> arg2);
+    void getSimulatorEventRequest(gov.nist.toolkit.server.shared.command.request.GetSimulatorEventRequest request, com.google.gwt.user.client.rpc.AsyncCallback<gov.nist.toolkit.results.client.Result> arg2);
+    void getSimulatorEventResponse(gov.nist.toolkit.server.shared.command.request.GetSimulatorEventRequest request, com.google.gwt.user.client.rpc.AsyncCallback<gov.nist.toolkit.results.client.Result> arg2);
+    void getSimulatorStats(gov.nist.toolkit.server.shared.command.request.GetSimulatorStatsRequest request, com.google.gwt.user.client.rpc.AsyncCallback<java.util.List<gov.nist.toolkit.actorfactory.client.SimulatorStats>> arg2);
+    void getSite(gov.nist.toolkit.server.shared.command.request.GetSiteRequest request, com.google.gwt.user.client.rpc.AsyncCallback<gov.nist.toolkit.sitemanagement.client.Site> arg2);
+    void getSiteNames(gov.nist.toolkit.server.shared.command.request.GetSiteNamesRequest request, com.google.gwt.user.client.rpc.AsyncCallback<java.util.List<java.lang.String>> arg2);
+    void getSiteNamesByTranType(gov.nist.toolkit.server.shared.command.request.GetSiteNamesByTranTypeRequest request, com.google.gwt.user.client.rpc.AsyncCallback<java.util.List<java.lang.String>> arg2);
+    void getSiteNamesWithIDS(gov.nist.toolkit.server.shared.command.CommandContext context, com.google.gwt.user.client.rpc.AsyncCallback<java.util.List<java.lang.String>> arg2);
+    void getSiteNamesWithRG(gov.nist.toolkit.server.shared.command.CommandContext context, com.google.gwt.user.client.rpc.AsyncCallback<java.util.List<java.lang.String>> arg2);
+    void getSiteNamesWithRIG(gov.nist.toolkit.server.shared.command.CommandContext context, com.google.gwt.user.client.rpc.AsyncCallback<java.util.List<java.lang.String>> arg2);
+    void getSiteNamesWithRepository(gov.nist.toolkit.server.shared.command.CommandContext context, com.google.gwt.user.client.rpc.AsyncCallback<java.util.List<java.lang.String>> arg2);
+    void getSitesForTestSession(gov.nist.toolkit.server.shared.command.CommandContext context, com.google.gwt.user.client.rpc.AsyncCallback<java.util.Collection<java.lang.String>> arg2);
+    void getStsSamlAssertion(gov.nist.toolkit.server.shared.command.request.GetStsSamlAssertionRequest request, com.google.gwt.user.client.rpc.AsyncCallback<java.lang.String> arg2);
+    void getStsSamlAssertionsMap(gov.nist.toolkit.server.shared.command.request.GetStsSamlAssertionMapRequest request, com.google.gwt.user.client.rpc.AsyncCallback<java.util.Map<java.lang.String, java.lang.String>> arg2);
+    void getSubmissionSets(gov.nist.toolkit.server.shared.command.request.GetSubmissionSetsRequest request, com.google.gwt.user.client.rpc.AsyncCallback<java.util.List<gov.nist.toolkit.results.client.Result>> arg2);
+    void getTestCollections(gov.nist.toolkit.server.shared.command.request.GetCollectionRequest request, com.google.gwt.user.client.rpc.AsyncCallback<java.util.List<gov.nist.toolkit.testkitutilities.client.TestCollectionDefinitionDAO>> arg2);
+    void getTestIndex(gov.nist.toolkit.server.shared.command.request.GetTestDetailsRequest request, com.google.gwt.user.client.rpc.AsyncCallback<java.util.List<java.lang.String>> arg2);
+    void getTestLogDetails(gov.nist.toolkit.server.shared.command.request.GetTestLogDetailsRequest request, com.google.gwt.user.client.rpc.AsyncCallback<gov.nist.toolkit.testenginelogging.client.LogFileContentDTO> arg2);
+    void getTestReadme(gov.nist.toolkit.server.shared.command.request.GetTestDetailsRequest request, com.google.gwt.user.client.rpc.AsyncCallback<java.lang.String> arg2);
+    void getTestResults(gov.nist.toolkit.server.shared.command.request.GetTestResultsRequest resultsRequest, com.google.gwt.user.client.rpc.AsyncCallback<java.util.Map<java.lang.String, gov.nist.toolkit.results.client.Result>> arg2);
+    void getTestSectionsDAOs(gov.nist.toolkit.server.shared.command.request.GetTestSectionsDAOsRequest request, com.google.gwt.user.client.rpc.AsyncCallback<java.util.List<gov.nist.toolkit.testkitutilities.client.SectionDefinitionDAO>> arg2);
+    void getTestdataSetListing(gov.nist.toolkit.server.shared.command.request.GetTestdataSetListingRequest request, com.google.gwt.user.client.rpc.AsyncCallback<java.util.List<java.lang.String>> arg2);
+    void getTestlogListing(java.lang.String sessionName, com.google.gwt.user.client.rpc.AsyncCallback<java.util.List<gov.nist.toolkit.results.client.TestInstance>> arg2);
+    void getTestplanAsText(gov.nist.toolkit.server.shared.command.request.GetTestplanAsTextRequest request, com.google.gwt.user.client.rpc.AsyncCallback<java.lang.String> arg2);
+    void getTestsOverview(gov.nist.toolkit.server.shared.command.request.GetTestsOverviewRequest request, com.google.gwt.user.client.rpc.AsyncCallback<java.util.List<gov.nist.toolkit.session.client.logtypes.TestOverviewDTO>> arg2);
+    void getTimeAndDate(gov.nist.toolkit.server.shared.command.CommandContext context, com.google.gwt.user.client.rpc.AsyncCallback<java.lang.String> arg2);
+    void getTkProps(com.google.gwt.user.client.rpc.AsyncCallback<gov.nist.toolkit.tk.client.TkProps> arg1);
+    void getToolkitProperties(gov.nist.toolkit.server.shared.command.CommandContext context, com.google.gwt.user.client.rpc.AsyncCallback<java.util.Map<java.lang.String, java.lang.String>> arg2);
+    void getTransInstances(gov.nist.toolkit.server.shared.command.request.GetTransactionRequest request, com.google.gwt.user.client.rpc.AsyncCallback<java.util.List<gov.nist.toolkit.actortransaction.client.TransactionInstance>> arg2);
+    void getTransactionErrorCodeRefs(gov.nist.toolkit.server.shared.command.request.GetTransactionErrorCodeRefsRequest refsRequest, com.google.gwt.user.client.rpc.AsyncCallback<java.util.List<java.lang.String>> arg2);
+    void getTransactionLog(gov.nist.toolkit.server.shared.command.request.GetTransactionRequest request, com.google.gwt.user.client.rpc.AsyncCallback<java.lang.String> arg2);
+    void getTransactionOfferings(gov.nist.toolkit.server.shared.command.CommandContext commandContext, com.google.gwt.user.client.rpc.AsyncCallback<gov.nist.toolkit.sitemanagement.client.TransactionOfferings> arg2);
+    void getTransactionRequest(gov.nist.toolkit.server.shared.command.request.GetTransactionRequest request, com.google.gwt.user.client.rpc.AsyncCallback<gov.nist.toolkit.services.shared.Message> arg2);
+    void getTransactionResponse(gov.nist.toolkit.server.shared.command.request.GetTransactionRequest request, com.google.gwt.user.client.rpc.AsyncCallback<gov.nist.toolkit.services.shared.Message> arg2);
+    void getTransactionsForSimulator(gov.nist.toolkit.server.shared.command.request.GetTransactionRequest request, com.google.gwt.user.client.rpc.AsyncCallback<java.util.List<java.lang.String>> arg2);
+    void getUpdateNames(com.google.gwt.user.client.rpc.AsyncCallback<java.util.List<java.lang.String>> arg1);
+    void indexTestKits(gov.nist.toolkit.server.shared.command.CommandContext context, com.google.gwt.user.client.rpc.AsyncCallback<java.lang.Boolean> arg2);
+    void isGazelleConfigFeedEnabled(gov.nist.toolkit.server.shared.command.CommandContext context, com.google.gwt.user.client.rpc.AsyncCallback<java.lang.Boolean> arg2);
+    void isPrivateMesaTesting(com.google.gwt.user.client.rpc.AsyncCallback<java.lang.Boolean> arg1);
+    void lifecycleValidation(gov.nist.toolkit.server.shared.command.request.LifecycleValidationRequest request, com.google.gwt.user.client.rpc.AsyncCallback<java.util.List<gov.nist.toolkit.results.client.Result>> arg2);
+    void loadTestPartContent(gov.nist.toolkit.server.shared.command.request.LoadTestPartContentRequest request, com.google.gwt.user.client.rpc.AsyncCallback<gov.nist.toolkit.session.client.logtypes.TestPartFileDTO> arg2);
+    void mpqFindDocuments(gov.nist.toolkit.server.shared.command.request.MpqFindDocumentsRequest request, com.google.gwt.user.client.rpc.AsyncCallback<java.util.List<gov.nist.toolkit.results.client.Result>> arg2);
+    void provideAndRetrieve(gov.nist.toolkit.server.shared.command.request.ProvideAndRetrieveRequest request, com.google.gwt.user.client.rpc.AsyncCallback<java.util.List<gov.nist.toolkit.results.client.Result>> arg2);
+    void putSimConfig(gov.nist.toolkit.server.shared.command.request.SimConfigRequest request, com.google.gwt.user.client.rpc.AsyncCallback<java.lang.String> arg2);
+    void register(gov.nist.toolkit.server.shared.command.request.RegisterRequest registerRequest, com.google.gwt.user.client.rpc.AsyncCallback<gov.nist.toolkit.results.client.Result> arg2);
+    void registerAndQuery(gov.nist.toolkit.server.shared.command.request.RegisterAndQueryRequest request, com.google.gwt.user.client.rpc.AsyncCallback<java.util.List<gov.nist.toolkit.results.client.Result>> arg2);
+    void registerWithLocalizedTrackingInODDS(gov.nist.toolkit.server.shared.command.request.RegisterRequest registerRequest, com.google.gwt.user.client.rpc.AsyncCallback<java.util.Map<java.lang.String, java.lang.String>> arg2);
+    void reloadAllTestResults(gov.nist.toolkit.server.shared.command.CommandContext context, com.google.gwt.user.client.rpc.AsyncCallback<java.util.List<gov.nist.toolkit.results.shared.Test>> arg2);
+    void reloadExternalSites(gov.nist.toolkit.server.shared.command.CommandContext context, com.google.gwt.user.client.rpc.AsyncCallback<java.util.List<java.lang.String>> arg2);
+    void reloadPropertyFile(com.google.gwt.user.client.rpc.AsyncCallback<java.lang.Boolean> arg1);
+    void reloadSites(boolean simAlso, com.google.gwt.user.client.rpc.AsyncCallback<java.util.List<java.lang.String>> arg2);
+    void reloadSystemFromGazelle(gov.nist.toolkit.server.shared.command.request.ReloadSystemFromGazelleRequest request, com.google.gwt.user.client.rpc.AsyncCallback<java.lang.String> arg2);
+    void removeOldSimulators(gov.nist.toolkit.server.shared.command.CommandContext context, com.google.gwt.user.client.rpc.AsyncCallback<java.lang.Integer> arg2);
+    void renameSimFile(gov.nist.toolkit.server.shared.command.request.RenameSimFileRequest request, com.google.gwt.user.client.rpc.AsyncCallback<java.lang.Void> arg2);
+    void retrieveConfiguredFavoritesPid(gov.nist.toolkit.server.shared.command.CommandContext commandContext, com.google.gwt.user.client.rpc.AsyncCallback<java.util.List<gov.nist.toolkit.configDatatypes.client.Pid>> arg2);
+    void retrieveDocument(gov.nist.toolkit.server.shared.command.request.RetrieveDocumentRequest request, com.google.gwt.user.client.rpc.AsyncCallback<java.util.List<gov.nist.toolkit.results.client.Result>> arg2);
+    void retrieveImagingDocSet(gov.nist.toolkit.server.shared.command.request.RetrieveImagingDocSetRequest request, com.google.gwt.user.client.rpc.AsyncCallback<java.util.List<gov.nist.toolkit.results.client.Result>> arg2);
+    void runAllTests(gov.nist.toolkit.server.shared.command.request.AllTestRequest request, com.google.gwt.user.client.rpc.AsyncCallback<java.util.List<gov.nist.toolkit.results.shared.Test>> arg2);
+    void runMesaTest(gov.nist.toolkit.server.shared.command.request.RunTestRequest request, com.google.gwt.user.client.rpc.AsyncCallback<java.util.List<gov.nist.toolkit.results.client.Result>> arg2);
+    void runSingleTest(gov.nist.toolkit.server.shared.command.request.RunSingleTestRequest request, com.google.gwt.user.client.rpc.AsyncCallback<gov.nist.toolkit.results.shared.Test> arg2);
+    void runTest(gov.nist.toolkit.server.shared.command.request.RunTestRequest request, com.google.gwt.user.client.rpc.AsyncCallback<gov.nist.toolkit.session.client.logtypes.TestOverviewDTO> arg2);
+    void saveSite(gov.nist.toolkit.server.shared.command.request.SaveSiteRequest request, com.google.gwt.user.client.rpc.AsyncCallback<java.lang.String> arg2);
+    void sendPidToRegistry(gov.nist.toolkit.server.shared.command.request.SendPidToRegistryRequest request, com.google.gwt.user.client.rpc.AsyncCallback<java.util.List<gov.nist.toolkit.results.client.Result>> arg2);
+    void setAssignedSiteForTestSession(gov.nist.toolkit.server.shared.command.request.SetAssignedSiteForTestSessionRequest request, com.google.gwt.user.client.rpc.AsyncCallback<java.lang.Void> arg2);
+    void setAttributeValue(java.lang.String username, java.lang.String attName, java.lang.String attValue, com.google.gwt.user.client.rpc.AsyncCallback<java.lang.Void> arg4);
+    void setEnvironment(gov.nist.toolkit.server.shared.command.CommandContext context, com.google.gwt.user.client.rpc.AsyncCallback<java.lang.String> arg2);
+    void setMesaTestSession(java.lang.String sessionName, com.google.gwt.user.client.rpc.AsyncCallback<java.lang.String> arg2);
+    void setOdSupplyStateIndex(gov.nist.toolkit.server.shared.command.request.SetOdSupplyStateIndexRequest request, com.google.gwt.user.client.rpc.AsyncCallback<java.lang.Boolean> arg2);
+    void setSessionProperties(java.util.Map<java.lang.String, java.lang.String> props, com.google.gwt.user.client.rpc.AsyncCallback<java.lang.Void> arg2);
+    void setToolkitProperties(gov.nist.toolkit.server.shared.command.request.SetToolkitPropertiesRequest request, com.google.gwt.user.client.rpc.AsyncCallback<java.lang.String> arg2);
+    void srcStoresDocVal(gov.nist.toolkit.server.shared.command.request.GetSrcStoresDocValRequest request, com.google.gwt.user.client.rpc.AsyncCallback<java.util.List<gov.nist.toolkit.results.client.Result>> arg2);
+    void submitRegistryTestdata(gov.nist.toolkit.server.shared.command.request.SubmitTestdataRequest request, com.google.gwt.user.client.rpc.AsyncCallback<java.util.List<gov.nist.toolkit.results.client.Result>> arg2);
+    void submitRepositoryTestdata(gov.nist.toolkit.server.shared.command.request.SubmitTestdataRequest request, com.google.gwt.user.client.rpc.AsyncCallback<java.util.List<gov.nist.toolkit.results.client.Result>> arg2);
+    void submitXDRTestdata(gov.nist.toolkit.server.shared.command.request.SubmitTestdataRequest request, com.google.gwt.user.client.rpc.AsyncCallback<java.util.List<gov.nist.toolkit.results.client.Result>> arg2);
+    void validateConformanceSession(java.lang.String testSession, java.lang.String siteName, com.google.gwt.user.client.rpc.AsyncCallback<gov.nist.toolkit.session.client.ConformanceSessionValidationStatus> arg3);
+    void validateMessage(gov.nist.toolkit.server.shared.command.request.ValidateMessageRequest request, com.google.gwt.user.client.rpc.AsyncCallback<gov.nist.toolkit.valsupport.client.MessageValidationResults> arg2);
 }

@@ -39,23 +39,23 @@ public class LocalEnvironmentServiceAsync implements EnvironmentServiceAsync {
         }
     }
 
-    @Override
-    public void addMesaTestSession(CommandContext context, AsyncCallback<Boolean> callback) {
-        try {
-            callback.onSuccess(service.addMesaTestSession(context));
-        } catch (Exception e) {
-            callback.onFailure(e);
-        }
-    }
+//    @Override
+//    public void addMesaTestSession(CommandContext context, AsyncCallback<Boolean> callback) {
+//        try {
+//            callback.onSuccess(service.addMesaTestSession(context));
+//        } catch (Exception e) {
+//            callback.onFailure(e);
+//        }
+//    }
 
-    @Override
-    public void delMesaTestSession(CommandContext context, AsyncCallback<Boolean> callback) {
-        try {
-            callback.onSuccess(service.delMesaTestSession(context));
-        } catch (Exception e) {
-            callback.onFailure(e);
-        }
-    }
+//    @Override
+//    public void delMesaTestSession(CommandContext context, AsyncCallback<Boolean> callback) {
+//        try {
+//            callback.onSuccess(service.delMesaTestSession(context));
+//        } catch (Exception e) {
+//            callback.onFailure(e);
+//        }
+//    }
 
     @Override
     public void getDefaultTestSession(CommandContext context, AsyncCallback<String> callback) {

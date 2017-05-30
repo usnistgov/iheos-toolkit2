@@ -19,7 +19,7 @@ import java.util.List;
  * Singleton
  */
 public class EnvironmentPresenter extends AbstractPresenter<EnvironmentView> implements ChangeHandler {
-    private String environmentName = null;
+    private String environmentName = "default";
 
     private ToolkitEventBus eventBus;
 

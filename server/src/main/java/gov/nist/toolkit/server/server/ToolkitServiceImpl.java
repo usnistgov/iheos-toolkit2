@@ -395,11 +395,11 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements
     public String getMesaTestSession(String sessionName) throws NoServletSessionException {
         return session().xdsTestServiceManager().getMesaTestSession();
     }
-    @Override
-    public List<String> getMesaTestSessionNames(CommandContext request) throws Exception {
-        installCommandContext(request);
-        return Installation.instance().getMesaTestSessionNames();
-    }
+//    @Override
+//    public List<String> getMesaTestSessionNames(CommandContext request) throws Exception {
+//        installCommandContext(request);
+//        return Installation.instance().getMesaTestSessionNames();
+//    }
     @Override
     public boolean addMesaTestSession(CommandContext context) throws Exception { return session().xdsTestServiceManager().addMesaTestSession(context.getTestSessionName()); }
     @Override
@@ -808,11 +808,11 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements
     // Environment management
     //------------------------------------------------------------------------
     //------------------------------------------------------------------------
-    @Override
-    public List<String> getEnvironmentNames(CommandContext context) throws Exception {
-//		installCommandContext(context);  // not needed - may not be initialized
-        return Installation.instance().getEnvironmentNames();
-    }
+//    @Override
+//    public List<String> getEnvironmentNames(CommandContext context) throws Exception {
+////		installCommandContext(context);  // not needed - may not be initialized
+//        return Installation.instance().getEnvironmentNames();
+//    }
     @Override
     public String setEnvironment(CommandContext context) throws Exception {
         logger.info("set environment - " + context.getEnvironmentName());

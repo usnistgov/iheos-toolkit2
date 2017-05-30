@@ -68,7 +68,7 @@ public interface ToolkitService extends RemoteService  {
     List<Result> runMesaTest(RunTestRequest request) throws Exception ;
 	TestOverviewDTO runTest(RunTestRequest request) throws Exception;
 	boolean isPrivateMesaTesting() throws NoServletSessionException ;
-	List<String> getMesaTestSessionNames(CommandContext request) throws Exception;
+//	List<String> getMesaTestSessionNames(CommandContext request) throws Exception;
 	boolean addMesaTestSession(CommandContext context) throws Exception;
 	boolean delMesaTestSession(CommandContext context) throws Exception;
 
@@ -185,7 +185,7 @@ public interface ToolkitService extends RemoteService  {
 
 	String reloadSystemFromGazelle(ReloadSystemFromGazelleRequest request) throws Exception;
 	boolean isGazelleConfigFeedEnabled(CommandContext context) throws Exception;
-	List<String> getEnvironmentNames(CommandContext context) throws Exception;
+//	List<String> getEnvironmentNames(CommandContext context) throws Exception;
 	String setEnvironment(CommandContext context) throws Exception;
 	String getCurrentEnvironment() throws NoServletSessionException;
 	String getDefaultAssigningAuthority(CommandContext context) throws Exception;

@@ -17,7 +17,7 @@ public class AddTestSessionCommand extends GenericCommand<CommandContext, Boolea
 
     @Override
     public void run(CommandContext cc) {
-        ToolkitGinInjector.INSTANCE.getClientUtils().getEnvironmentServices().addMesaTestSession(cc, this);
+        ToolkitGinInjector.INSTANCE.getClientUtils().getToolkitServices().addMesaTestSession(cc, this);
 
     }
 

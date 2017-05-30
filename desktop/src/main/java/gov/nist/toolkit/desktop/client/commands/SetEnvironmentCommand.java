@@ -12,7 +12,7 @@ public class SetEnvironmentCommand extends GenericCommand<CommandContext,String>
 
     @Override
     public void run(CommandContext context) {
-        ToolkitGinInjector.INSTANCE.getClientUtils().getEnvironmentServices().setEnvironment(context,this);
+        ToolkitGinInjector.INSTANCE.getClientUtils().getToolkitServices().setEnvironment(context,this);
     }
 
     @Override
