@@ -155,7 +155,7 @@ public class IdcxcaOrchestrationBuilder {
                 new SimulatorConfigElement(SimulatorProperties.idsImageCache, ParamType.TEXT, "xca-dataset-b")}),
 
         ig("Initiating Gateway", ActorType.INITIATING_GATEWAY, new SimulatorConfigElement[]{
-                new SimulatorConfigElement(SimulatorProperties.respondingGateways, ParamType.SELECTION, new String[]{"${user}__rg_a", "${user__rg_b"}, true)}),
+                new SimulatorConfigElement(SimulatorProperties.respondingGateways, ParamType.SELECTION, new String[]{"${user}__rg_a", "${user}__rg_b"}, true)}),
 
         iig("Initiating Imaging Gateway", ActorType.INITIATING_IMAGING_GATEWAY, new SimulatorConfigElement[]{
                 new SimulatorConfigElement(SimulatorProperties.respondingImagingGateways, ParamType.SELECTION, new String[]{"${user}__rig_a", "${user}__rig_b"}, true)}),
