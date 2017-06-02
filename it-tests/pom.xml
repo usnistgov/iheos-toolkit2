@@ -106,11 +106,7 @@
             <groupId>org.apache.axis2</groupId>
             <artifactId>axis2</artifactId>
         </dependency>
-        <dependency>
-            <groupId>net.sourceforge.htmlunit</groupId>
-            <artifactId>htmlunit</artifactId>
-            <version>2.26</version>
-        </dependency>
+
 
         <!-- These two needed by dcm4che -->
         <dependency>
