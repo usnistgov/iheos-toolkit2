@@ -86,6 +86,8 @@ public class Installation {
         propertyServiceManager();  // initialize
         String ec = propertyServiceManager().getPropertyManager().getExternalCache();
 
+        if (ec == null || ec.equals("")) logger.fatal("EC not found in toolkit.properties");
+
         logger.info("External Cache as reported by toolkit.properties");
 		if (externalCache == null) { // this can be different in a unit test situation
             externalCache = new File(ec);
@@ -163,7 +165,28 @@ public class Installation {
 //			logger.warn("Cannot load tk_props.txt file from External Cache");
             tkProps = new TkProps();
         }
+    }
 
+    public List<String> getEnvironmentNames() {
+        List<String> names = new ArrayList<>();
+        File envsFile = environmentFile();
+
+        for (File envFile : envsFile.listFiles()) {
+            if (envFile.isDirectory())
+                names.add(envFile.getName());
+        }
+        return names;
+    }
+
+    public List<String> getTestSessionNames() {
+        List<String> names = new ArrayList<>();
+        File tlsFile = testLogCache();
+
+        for (File tlFile : tlsFile.listFiles()) {
+            if (tlFile.isDirectory())
+                names.add(tlFile.getName());
+        }
+        return names;
     }
 
     public void overrideToolkitPort(String port) {

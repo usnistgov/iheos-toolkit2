@@ -2,6 +2,7 @@ package gov.nist.toolkit.testkitutilities
 
 import gov.nist.toolkit.installation.Installation
 import gov.nist.toolkit.xdsexception.ExceptionUtil
+import org.apache.log4j.BasicConfigurator
 import org.apache.log4j.Logger
 
 import javax.servlet.ServletConfig
@@ -23,28 +24,37 @@ class TestkitServlet extends HttpServlet {
     @Override
     public void init(ServletConfig config) throws ServletException {
         this.config = config
+
+        BasicConfigurator.configure();
+
+
         this.init()
 
-        try {
-            logger.info("TestkitServlet initialized")
+//        try {
+            logger.info("TestkitServlet initializing")
 
-            File ec = new File(config.getInitParameter('toolkit-external-cache'))
-            if (!ec || !ec.isDirectory() || !new File(ec, 'environment').isDirectory()) {
-                throw new ServletException("Initialization failed: external cache (${ec}) is invalid.")
-            }
-            Installation.instance().externalCache(ec)
+//            File ec = new File(config.getInitParameter('toolkit-external-cache'))
+//            if (!ec || !ec.isDirectory() || !new File(ec, 'environment').isDirectory()) {
+//                throw new ServletException("Initialization failed: external cache (${ec}) is invalid.")
+//            }
+//            Installation.instance().externalCache(ec)
 
-            File warHome = new File(config.getInitParameter('toolkit-warhome'))
-            if (warHome == null || !warHome.isDirectory() || !new File(warHome, 'toolkitx').isDirectory()) {
-                throw new ServletException("Initialization failed: warHome (${warHome}) is invalid.")
-            }
-            Installation.instance().warHome(warHome)
-        } catch (Throwable e) {
-            logger.fatal(ExceptionUtil.exception_details(e, 'Initialization failed'))
-        }
+//            File warHome = new File(config.getInitParameter('toolkit-warhome'))
+//            if (warHome == null || !warHome.isDirectory() || !new File(warHome, 'toolkitx').isDirectory()) {
+//                throw new ServletException("Initialization failed: warHome (${warHome}) is invalid.")
+//            }
+//            Installation.instance().warHome(warHome)
+//        } catch (Throwable e) {
+//            logger.fatal(ExceptionUtil.exception_details(e, 'Initialization failed'))
+//        }
 
         searchPath = new TestKitSearchPath(environment, testSession)
     }
+
+    // URI is  appname/testdoc/environment/testsession/testid
+    // URI is  appname/testdoc/environment/testsession
+    // or appname/testdoc/testid
+    // or appname/testdoc
 
     @Override
     public void doGet(HttpServletRequest request, HttpServletResponse response) {
@@ -53,35 +63,86 @@ class TestkitServlet extends HttpServlet {
         logger.info("URI is ${uri}")
 
         def parts = uri.split('\\/')
+        def size = parts.size()
         logger.info("URI parts are ${parts}")
 
-        if (parts.size() == 3) {
-            // index
-            response.setContentType('text/html')
-            def html = new StringBuilder()
-            html << '<html><body><h1>Test Index</h1>'
-            html << produceIndex()
-            html << '</body></html>'
-            response.getOutputStream().write(html.toString().bytes)
-            response.setStatus(HttpServletResponse.SC_OK)
+        int testdocIndex = -1
+        for (int i=0; i<parts.size(); i++) if (parts[i] == 'testdoc') testdocIndex = i
+
+        if (testdocIndex == -1) {
+            displayIndex(response)
             return
         }
 
-        try {
-            def testId = parts[3]
+        if (testdocIndex + 1 == size) {
+            displayIndex(response)
+            return
+        }
 
+        if (testdocIndex + 2 == size) {
+            def testId = parts[testdocIndex + 1]
+            displayTestDoc(testId, response)
+            return
+        }
+
+        if (testdocIndex + 3 == size) {
+            def env = parts[testdocIndex + 1]
+            def ts = parts[testdocIndex + 2]
+            if (isEnvironment(env) && isTestSession(ts)) {
+                environment = env
+                testSession = ts
+                displayIndex(response)
+                return
+            }
+        }
+
+        if (testdocIndex + 4 == size) {
+            def env = parts[testdocIndex + 1]
+            def ts = parts[testdocIndex + 2]
+            if (isEnvironment(env) && isTestSession(ts)) {
+                def testId = parts[testdocIndex + 3]
+                displayTestDoc(testId, response)
+                return
+            }
+        }
+
+        displayIndex(response)
+
+    }
+
+    boolean isEnvironment(String name) {
+        Installation.instance().getEnvironmentNames().contains(name)
+    }
+
+    boolean isTestSession(String name) {
+        Installation.instance().getTestSessionNames().contains(name)
+    }
+
+    def displayTestDoc(def testId, HttpServletResponse response) {
+        try {
             TestDocumentationGenerator gen = new TestDocumentationGenerator()
             def doc = []
             TestDefinition testDef = new TestKitSearchPath(environment, testSession).getTestDefinition(testId)
             gen.eachTest(doc, testDef.getTestDir())
-            String html = gen.toHtml(doc).join('\n')
+            String header = "<h1>Test Documentation</h1>\nEnvironment: ${environment} <br />Test Session: ${testSession} <br /><br />\n"
+            String html = header + gen.toHtml(doc).join('\n')
             response.setContentType('text/html')
             response.getOutputStream().write(html.bytes)
             response.setStatus(HttpServletResponse.SC_OK)
-
         } catch (Exception e) {
             response.setStatus(HttpServletResponse.SC_NOT_FOUND)
         }
+    }
+
+    def displayIndex(HttpServletResponse response) {
+        response.setContentType('text/html')
+        def html = new StringBuilder()
+        html << '<html><body><h1>Test Index</h1>'
+        html <<  "Environment: ${environment}  <br />Test Session: ${testSession} <br /><br />\n"
+        html << produceIndex()
+        html << '</body></html>'
+        response.getOutputStream().write(html.toString().bytes)
+        response.setStatus(HttpServletResponse.SC_OK)
     }
 
     def produceIndex() {
@@ -147,8 +208,10 @@ class TestkitServlet extends HttpServlet {
 
     def membersOfTheCollection(def buf, def subType) {
         def testIds = searchPath.getCollectionMembers('actorcollections', subType)
+//        println "Test collection ${subType} contains ${testIds}"
         testIds.each { def testId ->
             TestKit testkit = searchPath.getTestKitForTest(testId)
+            if (!testkit) return
             TestDefinition testDef = testkit.getTestDef(testId)
             def testDescription = testDef.readmeFirstLine
             buf << "<a href=\"${testDocBase}/${testId}\">"

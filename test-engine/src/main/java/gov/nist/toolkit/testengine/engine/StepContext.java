@@ -345,6 +345,9 @@ public class StepContext extends BasicContext implements ErrorReportingInterface
                case "XDRProvideAndRegisterTransaction":
                   transaction = new XDRProvideAndRegisterTransaction(this, instruction, instruction_output);
                   break;
+				case "XcpdTransaction":
+					transaction = new XcpdTransaction(this, instruction, instruction_output);
+					break;
                case "EchoV2Transaction":
                   transaction = new EchoV2Transaction(this, instruction, instruction_output);
                   break;

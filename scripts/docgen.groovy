@@ -32,6 +32,37 @@ def genOutput(def doc, def testid) {
 }
 
 def eachTest(def doc, File testdir) {
+import groovy.transform.Field
+
+File testdir = null
+def doc = []  // strings
+
+if (args.size() != 3) usage()
+if (args[0] == '-test') {
+    def testbasedir = new File(args[1])
+    def testCollectionFile = new File(args[2])
+    def testcollection = []
+    testCollectionFile.eachLine { line -> testcollection.add(line.trim())}
+    testcollection.each { testid ->
+        def testdir1 = new File(testbasedir, testid)
+        doc = []
+        eachTest(doc, testdir1)
+        genOutput(doc, testid)
+    }
+}
+
+//eachTest(doc, testdir)
+//println '**********************************************'
+
+def genOutput(def doc, def testid) {
+    def html = toHtml(doc)
+    new File(testid + '.html').withWriter { out ->
+        html.each { out.println it }
+    }
+}
+
+def eachTest(def doc, File testdir) {
+    if (!testdir.exists() || !testdir.isDirectory() || ! new File(testdir, 'index.idx').exists()) usage('Not a test directory')
     if (!testdir.exists() || !testdir.isDirectory() || ! new File(testdir, 'index.idx').exists()) usage('Not a test directory')
     doc.add("= Test: ${testdir.name} ")
     doc.add(' ')
@@ -47,12 +78,23 @@ def eachTest(def doc, File testdir) {
     }
 
     if (readme.size() > 0) readme.remove(0)
+
+        println "readme is ${readme}"
+    }
+
+    if (readme.size() > 0) readme.remove(0)
     doc.addAll(readme)
     doc.add(' ')
 
     sections(testdir).each { sectionName ->
         File sectionDir = new File(testdir, sectionName)
         eachSection(doc, sectionDir)
+
+    }
+}
+
+def eachSection(def doc, File sectionDir) {
+        walkTestplan(doc, sectionDir)
     }
 }
 
@@ -73,6 +115,13 @@ def eachSection(def doc, File sectionDir) {
 def eachTestStep(def doc, File sectionDir, def teststep) {
     def transEle = transaction(teststep)
     def transName = transactionName(teststep)
+    def actName = actorName(teststep)
+    doc.add(' ')
+    doc.add("=== Transaction: ${teststep.@id}")
+    doc.add(' ')
+    doc.add('[%hardbreaks]')
+    teststep.children().findAll { it.name() == 'Goal'}.each { doc.add(it)}
+    doc.add("*Target Actor*: ${actName}")
     def actName = actorName(teststep)
     doc.add(' ')
     doc.add("=== Transaction: ${teststep.@id}")
@@ -321,6 +370,8 @@ def transactionName(def teststep) {
         String transEleName = transEle.name()
         def name = transEleName.minus('Transaction')
         name = transactionMap[name]
+        if (name == 'XCQ') name = 'Cross Community Query'
+        name = transactionMap[name]
         return name
     } else return null
 }
@@ -403,6 +454,31 @@ def readme(File testdir) {
 
 def isBlank(def it) { it == '' || it == '<br />'}
 
+    def content = []
+    def stage1 = []
+    def stage2 = []
+    def stage3 = []
+    try {
+        new File(testdir, 'readme.txt').eachLine { line -> stage1 << line.trim() }
+
+        // clear out repetitive blank lines
+        stage1.each {
+            if (isBlank(it) && stage2.size() > 0 && isBlank(stage2.last())) return
+            stage2 << it
+        }
+
+        // change blank lines into <p>
+        stage2.each {
+            if (isBlank(it)) stage3 << '<p>'
+            else stage3 << it
+
+        }
+    } catch (Exception e) { }
+    return stage3
+}
+
+def isBlank(def it) { it == '' || it == '<br />'}
+
 /**
  * read index.idx for a test
  * @param testdir
@@ -424,6 +500,52 @@ def usage() {
     println 'docgen -test <testdir>'
 //    println 'docgen -testkit <testkitdir>'
     System.exit(-1)
+}
+
+def toHtml(def doc) {
+    def out = []
+
+    out = doc.collect { node ->
+        def line = node as String
+        if (line.startsWith('==== ')) return "<h4>${line.minus('==== ')}</h4>"
+        if (line.startsWith('=== ')) return "<h3>${line.minus('=== ')}</h3>"
+        if (line.startsWith('== ')) return "<h2>${line.minus('== ')}</h2>"
+        if (line.startsWith('= ')) return "<h1>${line.minus('= ')}</h1>"
+        if (line.startsWith('*')) return line.replaceFirst('\\*', '<b>').replaceFirst('\\*', '</b>')
+        return line
+    }
+    def out1 = []
+
+    def breaks = false
+    out1 = out.collect { line ->
+        if (line.startsWith('[%hardbreaks]')) { breaks = true; return ' ' }
+        if (line.trim().size() == 0) breaks = false
+        if (breaks) return "${line}<br />"
+        return line
+
+    }
+
+    // clean out excessive breaks
+    def out2 = clean(out1)
+    def out3 = clean(out2)
+
+    return out3
+}
+
+def clean(def doc) {
+    def out = []
+    def last = ' '
+    doc.each { line ->
+        def skip = false
+        if (last == ' ' && line == '<br />') skip = true
+        if (last.startsWith('<h') && line == ' ') skip = true
+        if (last.startsWith('<h') && line == '<br />') skip = true
+        if (!skip)
+            out.add(line)
+        last = line
+    }
+
+    return out
 }
 
 def toHtml(def doc) {
