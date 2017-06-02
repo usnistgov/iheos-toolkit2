@@ -1,4 +1,4 @@
-package gov.nist.toolkit.registrymetadata
+package gov.nist.toolkit.registrymetadata.deletion
 
 /**
  * Model the Registry
@@ -12,107 +12,107 @@ interface Registry {
      * @param id
      * @return
      */
-    boolean exists(UUID id)
+    boolean exists(Uuid id)
 
     /**
      * is the object a DocumentEntry
      * @param id
      * @return
      */
-    boolean isDE(UUID id)
+    boolean isDE(Uuid id)
 
     /**
      * is the object a SubmissionSet
      * @param id
      * @return
      */
-    boolean isSS(UUID id)
+    boolean isSS(Uuid id)
 
     /**
      * is the object a Folder
-     * @param uuid
+     * @param Uuid
      * @return
      */
-    boolean isFol(UUID id)
+    boolean isFol(Uuid id)
 
     /**
      * is the object an Association
      * @param id
      * @return
      */
-    boolean isASSN(UUID id)
+    boolean isASSN(Uuid id)
 
     /**
      * is the object a HasMember Association
      * @param id
      * @return
      */
-    boolean isHasMember(UUID id)
+    boolean isHasMember(Uuid id)
 
     /**
      * is the object an RPLC Association
      * @param id
      * @return
      */
-    boolean isRPLC(UUID id)
+    boolean isRPLC(Uuid id)
 
     /**
      * is the object an APND Assocation
      * @param id
      * @return
      */
-    boolean isAPND(UUID id)
+    boolean isAPND(Uuid id)
 
     /**
      * is the object an XFRM Assocation
      * @param id
      * @return
      */
-    boolean isXFRM(UUID id)
+    boolean isXFRM(Uuid id)
 
     /**
      * is the object an IsSnapshotOf Assocation
      * @param id
      * @return
      */
-    boolean isIsSnapshotOf(UUID id)
+    boolean isIsSnapshotOf(Uuid id)
 
     /**
      * is the object a SIGNS Assocation
      * @param id
      * @return
      */
-    boolean isSigns(UUID id)
+    boolean isSigns(Uuid id)
 
     /**
-     * get the sourceObject UUID from the Association
+     * get the sourceObject Uuid from the Association
      * @param id of the Assocation
-     * @return sourceObject UUID
+     * @return sourceObject Uuid
      */
-    UUID source(UUID id)
+    Uuid source(Uuid id)
 
     /**
-     * get the targetObject UUID from the Association
+     * get the targetObject Uuid from the Association
      * @param id of the Assocation
-     * @return targetObject UUID
+     * @return targetObject Uuid
      */
-    UUID target(UUID id)
+    Uuid target(Uuid id)
 
     /**
      * get the Association Type of the Assocation
      * @param id
      * @return
      */
-    AssnType assnType(UUID id)
+    AssnType assnType(Uuid id)
 
     /**
      * is the Association the only one of its type referencing the object
      * @param obj - object in question
-     * @param id - UUID of an Assocation
+     * @param id - Uuid of an Assocation
      * @param type - Association type
      * @return
      */
-    boolean onlyAssn(UUID obj, UUID id, AssnType type)
+    boolean onlyAssn(Uuid obj, Uuid id, AssnType type)
 
     /**
      * get the set of Associations that are linked to a Document Entry by their
@@ -120,12 +120,22 @@ interface Registry {
      * @param de
      * @return
      */
-    List<UUID> assnLinkedToDE(UUID de)
+    List<Uuid> assnLinkedToDE(Uuid de)
 
     /**
-     * add the error (referencing the object with this id) to the RegistryErrorList
-     * @param error - error name
-     * @param id - UUID of offending object
+     * get the set of Associations that are linked to a SubmissionSet by their
+     * sourceObject or targetObject attribute
+     * @param de
+     * @return
      */
-    void error(def error, UUID id)
+    List<Uuid> assnLinkedToSS(Uuid de)
+
+    /**
+     * get the set of Associations that are linked to a Folder by their
+     * sourceObject or targetObject attribute
+     * @param de
+     * @return
+     */
+    List<Uuid> assnLinkedToFol(Uuid de)
+
 }

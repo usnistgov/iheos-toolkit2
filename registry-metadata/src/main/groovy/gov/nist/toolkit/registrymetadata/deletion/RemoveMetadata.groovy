@@ -1,26 +1,26 @@
-package gov.nist.toolkit.registrymetadata
+package gov.nist.toolkit.registrymetadata.deletion
 
 /**
  *
  */
 class RemoveMetadata {
-    List<UUID> removeSet
-    Registry r = new RegistryImpl()
+    List<Uuid> removeSet
+    Registry r
     boolean muSupported = false
 
     /**
      * Does the object exist in the requested remove set
-     * @param uuid
+     * @param Uuid
      * @return
      */
-    boolean request(UUID id) { removeSet.contains(id)}
+    boolean request(Uuid id) { removeSet.contains(id)}
 
     /**
      * object not in Registry
      * @param id
      * @return
      */
-    Response ruleNotInRegistry(UUID id) {
+    Response ruleNotInRegistry(Uuid id) {
         if (!r.exists(id)) return new Response(ErrorType.UnresolvedReferenceException, id)
         return Response.NoError
     }
@@ -36,7 +36,7 @@ class RemoveMetadata {
      * @param id
      * @return
      */
-    Response ruleDanglingSS_DE_HasMember(UUID assn) {
+    Response ruleDanglingSS_DE_HasMember(Uuid assn) {
         if (
             isHasMemberAttachedToSS(assn) &&
                 r.isDE(r.target(assn)) &&
@@ -50,7 +50,7 @@ class RemoveMetadata {
      * @param fol
      * @return
      */
-    Response ruleDanglingSS_Fol_HasMember(UUID assn) {
+    Response ruleDanglingSS_Fol_HasMember(Uuid assn) {
         if (
             isHasMemberAttachedToSS(assn) &&
                 r.isFol(r.target(assn)) &&
@@ -64,7 +64,7 @@ class RemoveMetadata {
      * @param fol
      * @return
      */
-    Response ruleDanglingSS_ASSN_HasMember(UUID assn) {
+    Response ruleDanglingSS_ASSN_HasMember(Uuid assn) {
         if (
             isHasMemberAttachedToSS(assn) &&
                 r.isASSN(r.target(assn)) &&
@@ -78,7 +78,7 @@ class RemoveMetadata {
      * @param assn
      * @return
      */
-    Response ruleDanglingSS(UUID assn) {
+    Response ruleDanglingSS(Uuid assn) {
         if (
             isHasMemberAttachedToSS(assn) &&
                     !inRequest(r.source(assn)) &&
@@ -99,7 +99,7 @@ class RemoveMetadata {
      * @param assn
      * @return
      */
-    Response ruleDeletingXFRM(UUID assn) {
+    Response ruleDeletingXFRM(Uuid assn) {
         if (
             isDE_DE_Association(assn) &&
                     r.assnType(assn) == AssnType.XFRM &&
@@ -109,27 +109,27 @@ class RemoveMetadata {
         return Response.NoError
     }
 
-    /**
-     * removing APND Association - sourceObject must be in deletion set
-     * @param assn
-     * @return
-     */
-    Response ruleDeletingAPND(UUID assn) {
-        if (
-            isDE_DE_Association(assn) &&
-                r.assnType(assn) == AssnType.APND &&
-                !inRequest(r.source(assn))
-        )
-            return new Response(ErrorType.ObjectNotInDeletionSet, r.source(assn))
-        return Response.NoError
-    }
+//    /**
+//     * removing APND Association - sourceObject must be in deletion set
+//     * @param assn
+//     * @return
+//     */
+//    Response ruleDeletingAPND(Uuid assn) {
+//        if (
+//            isDE_DE_Association(assn) &&
+//                r.assnType(assn) == AssnType.APND &&
+//                !inRequest(r.source(assn))
+//        )
+//            return new Response(ErrorType.ObjectNotInDeletionSet, r.source(assn))
+//        return Response.NoError
+//    }
 
     /**
      * removing SIGNS Association - sourceObject must be in deletion set
      * @param assn
      * @return
      */
-    Response SIGNS(UUID assn) {
+    Response SIGNS(Uuid assn) {
         if (
             isDE_DE_Association(assn) &&
                 r.assnType(assn) == AssnType.SIGNS &&
@@ -144,7 +144,7 @@ class RemoveMetadata {
      * @param assn
      * @return
      */
-    Response ruleDeletingIsSnapshotOf(UUID assn) {
+    Response ruleDeletingIsSnapshotOf(Uuid assn) {
         if (
             isDE_DE_Association(assn) &&
                 r.assnType(assn) == AssnType.IsSnapshotOf &&
@@ -154,7 +154,7 @@ class RemoveMetadata {
         return Response.NoError
     }
 
-    Response ruleDeletingRPLCIsIllegalWithoutMU(UUID assn) {
+    Response ruleDeletingRPLCIsIllegalWithoutMU(Uuid assn) {
         if (
             !muSupported &&
                 isDE_DE_Association(assn) &&
@@ -177,7 +177,7 @@ class RemoveMetadata {
      * @param de
      * @return errors for linking associations not in deletion set
      */
-    MultiResponse ruleDeletingDocumentEntry(UUID de) {
+    MultiResponse ruleDeletingDocumentEntry(Uuid de) {
         MultiResponse multiResponse = new MultiResponse()
         if ( r.isDE(de) ) {
             notInRequest(r.assnLinkedToDE(de)).each {
@@ -194,10 +194,10 @@ class RemoveMetadata {
      * @param de
      * @return errors for linking associations not in deletion set
      */
-    MultiResponse ruleDeletingSubmissionSet(UUID ss) {
+    MultiResponse ruleDeletingSubmissionSet(Uuid ss) {
         MultiResponse multiResponse = new MultiResponse()
-        if ( r.isDE(ss) ) {
-            notInRequest(r.assnLinkedToDE(ss)).each {
+        if ( r.isSS(ss) ) {
+            notInRequest(r.assnLinkedToSS(ss)).each {
                 multiResponse.add(ErrorType.ObjectNotInDeletionSet, it)
             }
             return multiResponse
@@ -211,10 +211,10 @@ class RemoveMetadata {
      * @param de
      * @return errors for linking associations not in deletion set
      */
-    MultiResponse ruleDeletingFolder(UUID fol) {
+    MultiResponse ruleDeletingFolder(Uuid fol) {
         MultiResponse multiResponse = new MultiResponse()
-        if ( r.isDE(fol) ) {
-            notInRequest(r.assnLinkedToDE(fol)).each {
+        if ( r.isFol(fol) ) {
+            notInRequest(r.assnLinkedToFol(fol)).each {
                 multiResponse.add(ErrorType.ObjectNotInDeletionSet, it)
             }
             return multiResponse
@@ -222,7 +222,7 @@ class RemoveMetadata {
         return new MultiResponse(Response.NoError)
     }
 
-    private boolean isDE_DE_Association(UUID assn) {
+    private boolean isDE_DE_Association(Uuid assn) {
         r.isASSN(assn) && r.isDE(r.source(assn)) && r.isDE(r.target(assn))
     }
 
@@ -231,7 +231,7 @@ class RemoveMetadata {
      * @param assn
      * @return
      */
-    private boolean isHasMemberAttachedToSS(UUID assn) {
+    private boolean isHasMemberAttachedToSS(Uuid assn) {
         r.isHasMember(assn) &&
                 r.isSS(r.source(assn)) }
 
@@ -240,14 +240,14 @@ class RemoveMetadata {
      * @param id
      * @return
      */
-    private boolean inRequest(UUID id) { removeSet.contains(id) }
+    private boolean inRequest(Uuid id) { removeSet.contains(id) }
 
     /**
      * identify and return the IDs from ids that are not in removeSet
      * @param ids - ids to look for
      * @return - the IDs that are not in the request
      */
-    private List<UUID> notInRequest(List<UUID> ids) {
+    private List<Uuid> notInRequest(List<Uuid> ids) {
         ids.findAll { !removeSet.contains(it) }
     }
 }

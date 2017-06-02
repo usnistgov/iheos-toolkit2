@@ -1,4 +1,4 @@
-package gov.nist.toolkit.registrymetadata;
+package gov.nist.toolkit.registrymetadata.deletion;
 
 /**
  *
