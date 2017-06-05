@@ -39,7 +39,7 @@ public class ErrorRecorderFactory {
      * @return a custom ErrorRecorder
      */
     public IErrorRecorder getNewErrorRecorder() {
-        return ErrorRecorderFactory.getErrorRecorderFactory().getNewErrorRecorder();
+        return getBuilder().buildNewErrorRecorder();
     }
 
     /**
