@@ -82,10 +82,11 @@
         <module>interaction-model</module>
         <module>interaction-mapper</module>
         <module>interaction-diagram</module>
-        <module>bin</module>
-        <module>fhir</module>
-        <module>fhir-server</module>
+        <!--<module>bin</module>-->
+        <!--<module>fhir</module>-->
+        <!--<module>fhir-server</module>-->
         <module>itsupport</module>
+        <module>fhir-service</module>
     </modules>
 
 

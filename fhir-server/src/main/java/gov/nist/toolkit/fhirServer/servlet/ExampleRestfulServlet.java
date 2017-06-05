@@ -91,6 +91,8 @@ public class ExampleRestfulServlet extends RestfulServer {
 		 * Initialize Toolkit SimDb
 		 */
 
+		org.apache.log4j.BasicConfigurator.configure();
+
 		try {
 			File warHome = new File(context.getRealPath("/"));
 			ourLog.info("...warHome is " + warHome);
