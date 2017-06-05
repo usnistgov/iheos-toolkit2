@@ -10,33 +10,36 @@ import static gov.nist.toolkit.errorrecording.SelectedErrorRecorder.ErrorRecorde
 import static gov.nist.toolkit.errorrecording.SelectedErrorRecorder.ErrorRecorderType.UNDEFINED;
 import static gov.nist.toolkit.errorrecording.SelectedErrorRecorder.ErrorRecorderType.XML_ERROR_RECORDER;
 
-/**
+/** Factory that creates on-demand ErrorRecorders matching the current registered ErrorRecorderType in
+ * SelectedErrorRecorder class. Singleton type of access.
+ * @see SelectedErrorRecorder
  * Created by diane on 5/12/2017.
  */
 public class ErrorRecorderFactory {
+    private static ErrorRecorderFactory factory = null;
 
-    public ErrorRecorderFactory(){
+    private ErrorRecorderFactory(){
     }
 
-    public IErrorRecorderBuilder getNewErrorRecorderBuilder() {
-        switch (SelectedErrorRecorder.getSelectedErrorRecorder().getType()) {
-            case GWT_ERROR_RECORDER:
-                return new GwtErrorRecorderBuilder();
-            case XML_ERROR_RECORDER:
-                return new XMLErrorRecorderBuilder();
-            case UNDEFINED:
-                return null;
+    /**
+     * Singleton getter
+     */
+    public static ErrorRecorderFactory getErrorRecorderFactory(){
+        if (factory == null){
+            factory = new ErrorRecorderFactory();
         }
-        return null;
+        return factory;
     }
 
     /**
      * Factory call that returns a new ErrorRecorder matching the current registered ErrorRecorderType in
-     * SelectedErrorRecorder class.
+     * SelectedErrorRecorder class. This function may return null if the ErrorRecorder type is not declared when
+     * starting a validation run.
+     * @see SelectedErrorRecorder
      * @return a custom ErrorRecorder
      */
     public IErrorRecorder getNewErrorRecorder() {
-        return getBuilder().buildNewErrorRecorder();
+        return ErrorRecorderFactory.getErrorRecorderFactory().getNewErrorRecorder();
     }
 
     /**

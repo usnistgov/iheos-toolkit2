@@ -142,14 +142,12 @@ public class DsSimCommon {
     }
 
     /**
-     * One more separate ErrorRecorder to store the output of a Registry Simulator
+     * Create a separate ErrorRecorder to store the output of a Registry Simulator
      * @param er
      */
     public void sendErrorsInRegistryResponse(IErrorRecorder er) {
         if (er == null) {
-            // TODO this could actyually be integrated to the interface of ErrorRecBuilder in getNewErrorRecorderBuilder
-            IErrorRecorderBuilder builder = new ErrorRecorderFactory().getNewErrorRecorderBuilder();
-            er = builder.buildNewErrorRecorder();
+            er = ErrorRecorderFactory.getErrorRecorderFactory().getNewErrorRecorder();
         }
 
         // this works when RegistryResponse is the return message
