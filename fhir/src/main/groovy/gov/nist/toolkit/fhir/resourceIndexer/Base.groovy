@@ -11,7 +11,8 @@ class Base implements IResourceIndexer {
     /**
      * Index the base attributes
      * @param json - JsonSlurper representation of resource
-     * @return
+     * @param simResource - details about where the resource will be stored
+     * @return newly built index
      */
     ResourceIndex build(def json, SimResource simResource) {
         ResourceIndex ri = new ResourceIndex()

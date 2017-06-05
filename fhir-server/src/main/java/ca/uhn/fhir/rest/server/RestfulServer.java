@@ -1,6 +1,12 @@
 package ca.uhn.fhir.rest.server;
 
 /*
+ * This has been heavily hacked to work with toolkit
+ *
+ *
+ *
+ *
+ *
  * #%L
  * HAPI FHIR - Core Library
  * %%
@@ -41,6 +47,7 @@ import ca.uhn.fhir.rest.server.interceptor.IServerInterceptor;
 import ca.uhn.fhir.rest.server.interceptor.ResponseHighlighterInterceptor;
 import ca.uhn.fhir.rest.server.servlet.ServletRequestDetails;
 import ca.uhn.fhir.util.*;
+import gov.nist.toolkit.fhirServer.config.ToolkitIncomingRequestAddressStrategy;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.Validate;
@@ -106,11 +113,11 @@ public class RestfulServer extends HttpServlet implements IRestfulServer<Servlet
     private Lock myProviderRegistrationMutex = new ReentrantLock();
     private Map<String, ResourceBinding> myResourceNameToBinding = new HashMap<String, ResourceBinding>();
     private final List<IResourceProvider> myResourceProviders = new ArrayList<IResourceProvider>();
-    private IServerAddressStrategy myServerAddressStrategy = new IncomingRequestAddressStrategy();
+    private IServerAddressStrategy myServerAddressStrategy = new ToolkitIncomingRequestAddressStrategy();
     private ResourceBinding myServerBinding = new ResourceBinding();
     private BaseMethodBinding<?> myServerConformanceMethod;
     private Object myServerConformanceProvider;
-    private String myServerName = "HAPI FHIR Server";
+    private String myServerName = "Toolkit FHIR Server";
     /** This is configurable but by default we just use HAPI version */
     private String myServerVersion = VersionUtil.getVersion();
     private boolean myStarted;
@@ -600,7 +607,7 @@ public class RestfulServer extends HttpServlet implements IRestfulServer<Servlet
             }
 
             fhirServerBase = getServerBaseForRequest(theRequest);
-
+            requestDetails.setFhirServerBase(fhirServerBase);
 
             IIdType id;
             populateRequestDetailsFromRequestPath(requestDetails, requestPath);
@@ -626,7 +633,6 @@ public class RestfulServer extends HttpServlet implements IRestfulServer<Servlet
             }
             requestDetails.setRespondGzip(respondGzip);
             requestDetails.setRequestPath(requestPath);
-            requestDetails.setFhirServerBase(fhirServerBase);
             requestDetails.setCompleteUrl(completeUrl);
 
             // String pagingAction = theRequest.getParameter(Constants.PARAM_PAGINGACTION);
@@ -940,6 +946,8 @@ public class RestfulServer extends HttpServlet implements IRestfulServer<Servlet
     }
 
     public void populateRequestDetailsFromRequestPath(RequestDetails theRequestDetails, String theRequestPath) {
+        // start parsing after fsim/simId/
+        theRequestPath = theRequestPath.substring(new ToolkitIncomingRequestAddressStrategy().getServerBase(theRequestPath).length());
         StringTokenizer tok = new UrlPathTokenizer(theRequestPath);
         String resourceName = null;
 

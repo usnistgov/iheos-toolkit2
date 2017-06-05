@@ -31,7 +31,7 @@ class SimIndexer {
     }
 
     /**
-     * Index FHIR sim
+     * Index a single FHIR sim
      */
     def buildIndex() {
         ResDb resDb = new ResDb(simId)
@@ -74,6 +74,14 @@ class SimIndexer {
      */
     private class ResourceHandler implements PerResource {
 
+        /**
+         *
+         * @param simId - required
+         * @param actorType - if null will default to ResDb.BASE_TYPE
+         * @param transactionType - if null will default to ResDb.STORE_TRANSACTION
+         * @param eventDir
+         * @param resourceFile
+         */
         @Override
         void resource(SimId simId, ActorType actorType, TransactionType transactionType, File eventDir, File resourceFile) {
             if (!resourceFile.name.endsWith('json')) return
@@ -84,6 +92,9 @@ class SimIndexer {
             SimResource simResource = new SimResource(actorType, transactionType, eventDir.name, resourceFile.toString())
 
             // this part need specialization depending on resource type
+            // The variable being built here, indexer1, is a custom indexer for a resource
+            // So, to add a new resource the indexer must be built.  INDEXER_PACKAGE is where these
+            // are stored.  An indexer does the dirty work with Lucene so searches can be done later.
             def dy_instance = this.getClass().classLoader.loadClass(INDEXER_PACKAGE + type)?.newInstance()
             IResourceIndexer indexer1
             if (dy_instance instanceof IResourceIndexer) {
@@ -106,7 +117,7 @@ class SimIndexer {
     /**
      *
      * @param resourceType  must be non-null
-     * @param id   may be null (ignored)
+     * @param id   may be null (ignored) - if null then all resources of this type will be returned
      * @return
      */
     List<String> lookupByTypeAndId(String resourceType, String id) {
@@ -126,10 +137,13 @@ class SimIndexer {
 
         BooleanQuery query = builder.build()
 
+        // TopDocs is defined by Lucene as the container for
+        // search results
         TopDocs docs  = indexSearcher.search(query, 1000)
         List<String> paths = docs.scoreDocs.collect { ScoreDoc scoreDoc ->
             Document doc = indexSearcher.doc(scoreDoc.doc)
-            doc.get('path')
+            doc.get('path')  // this is the path attribute defined in ResourceIndex
+                             // the location in the ResDb
         }
         return paths
     }

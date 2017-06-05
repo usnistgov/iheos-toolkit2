@@ -155,31 +155,32 @@ public class PatientResourceProvider implements IResourceProvider {
 		return retVal;
 	}
 
-	@Search
-	public List<Patient> findPatientsUsingArbitraryCtriteria() {
-		LinkedList<Patient> retVal = new LinkedList<Patient>();
-
-		for (Deque<Patient> nextPatientList : myIdToPatientVersions.values()) {
-			Patient nextPatient = nextPatientList.getLast();
-			retVal.add(nextPatient);
-		}
-	
-		return retVal;
-	}
+//	@Search
+//	public List<Patient> findPatientsUsingArbitraryCtriteria() {
+//		LinkedList<Patient> retVal = new LinkedList<Patient>();
+//
+//		for (Deque<Patient> nextPatientList : myIdToPatientVersions.values()) {
+//			Patient nextPatient = nextPatientList.getLast();
+//			retVal.add(nextPatient);
+//		}
+//
+//		return retVal;
+//	}
 	
 	
 	/**
 	 * The getResourceType method comes from IResourceProvider, and must be overridden to indicate what type of resource this provider supplies.
 	 */
-	@Override
-	public Class<Patient> getResourceType() {
-		return Patient.class;
-	}
+		@Override
+		public Class<Patient> getResourceType() {
+			return Patient.class;
+		}
 
 	/**
 	 * This is the "read" operation. The "@Read" annotation indicates that this method supports the read and/or vread operation.
 	 * <p>
 	 * Read operations take a single parameter annotated with the {@link IdParam} paramater, and should return a single resource instance.
+	 * Using the ResDb we do not yet handle versions in the FHIR sense
 	 * </p>
 	 * 
 	 * @param theId
