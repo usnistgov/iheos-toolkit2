@@ -3,6 +3,7 @@ package gov.nist.toolkit.simulators.sim.recip;
 import gov.nist.toolkit.actorfactory.SimDb;
 import gov.nist.toolkit.actorfactory.client.SimulatorConfig;
 import gov.nist.toolkit.configDatatypes.client.TransactionType;
+import gov.nist.toolkit.errorrecording.common.ErrorRecorderFactory;
 import gov.nist.toolkit.errorrecording.gwt.GwtErrorRecorderBuilder;
 import gov.nist.toolkit.simulators.sim.reg.RegistryResponseGeneratorSim;
 import gov.nist.toolkit.simulators.sim.reg.SoapWrapperRegistryResponseSim;
@@ -62,11 +63,11 @@ public class RecipientActorSimulator extends BaseDsActorSimulator {
 			
 			RegistryResponseGeneratorSim rrg = new RegistryResponseGeneratorSim(common, dsSimCommon);
 			
-			mvc.addMessageValidator("Attach Errors", rrg, gerb.buildNewErrorRecorder());
+			mvc.addMessageValidator("Attach Errors", rrg, ErrorRecorderFactory.getErrorRecorderFactory().getNewErrorRecorder());
 						
 			// wrap in soap wrapper and http wrapper
 			// auto-detects need for multipart/MTOM
-			mvc.addMessageValidator("ResponseInSoapWrapper", new SoapWrapperRegistryResponseSim(common, dsSimCommon, rrg), gerb.buildNewErrorRecorder());
+			mvc.addMessageValidator("ResponseInSoapWrapper", new SoapWrapperRegistryResponseSim(common, dsSimCommon, rrg), ErrorRecorderFactory.getErrorRecorderFactory().getNewErrorRecorder());
 			
 			mvc.run();
 			

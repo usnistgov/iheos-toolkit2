@@ -2,6 +2,7 @@ package gov.nist.toolkit.simulators.unused;
 
 import gov.nist.toolkit.actorfactory.client.SimulatorConfig;
 import gov.nist.toolkit.errorrecording.IErrorRecorder;
+import gov.nist.toolkit.errorrecording.common.ErrorRecorderFactory;
 import gov.nist.toolkit.errorrecording.common.XdsErrorCode;
 import gov.nist.toolkit.simulators.sim.reg.RegRSim;
 import gov.nist.toolkit.simulators.sim.rep.RepPnRSim;
@@ -50,9 +51,9 @@ public class RecipientPnRSim extends AbstractMessageValidator {
 		
 		GwtErrorRecorderBuilder gerb = new GwtErrorRecorderBuilder();
 
-		common.mvc.addMessageValidator("RepPnrSim", new RepPnRSim(common, dsSimCommon, asc), gerb.buildNewErrorRecorder());
+		common.mvc.addMessageValidator("RepPnrSim", new RepPnRSim(common, dsSimCommon, asc), ErrorRecorderFactory.getErrorRecorderFactory().getNewErrorRecorder());
 
-		common.mvc.addMessageValidator("RegRSim", new RegRSim(common, dsSimCommon, asc), gerb.buildNewErrorRecorder());
+		common.mvc.addMessageValidator("RegRSim", new RegRSim(common, dsSimCommon, asc), ErrorRecorderFactory.getErrorRecorderFactory().getNewErrorRecorder());
 		
 		common.mvc.run();
 	}

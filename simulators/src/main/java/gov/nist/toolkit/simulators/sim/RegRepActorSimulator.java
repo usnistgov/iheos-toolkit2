@@ -2,6 +2,7 @@ package gov.nist.toolkit.simulators.sim;
 
 import gov.nist.toolkit.actorfactory.client.SimulatorConfig;
 import gov.nist.toolkit.configDatatypes.client.TransactionType;
+import gov.nist.toolkit.errorrecording.common.ErrorRecorderFactory;
 import gov.nist.toolkit.errorrecording.gwt.GwtErrorRecorderBuilder;
 import gov.nist.toolkit.simulators.sim.reg.RegistryActorSimulator;
 import gov.nist.toolkit.simulators.sim.reg.RegistryResponseGeneratorSim;
@@ -42,7 +43,6 @@ public class RegRepActorSimulator extends BaseDsActorSimulator {
     @Override
     public boolean run(TransactionType transactionType, MessageValidatorEngine mvc, String validation) throws IOException {
         if (transactionType.isIdentifiedBy("xdrpr")) {
-            GwtErrorRecorderBuilder gerb = new GwtErrorRecorderBuilder();
             rep.setForward(false);  // do not forward Register
             boolean ok = rep.run(transactionType, mvc, validation);
             if (!ok) return ok;
@@ -54,11 +54,11 @@ public class RegRepActorSimulator extends BaseDsActorSimulator {
             DsSimCommon registerDsCommon = reg.getDsSimCommon();
             RegistryResponseGeneratorSim rrg = new RegistryResponseGeneratorSim(rep.getCommon(), registerDsCommon);
 
-            mvc.addMessageValidator("Attach Errors", rrg, gerb.buildNewErrorRecorder());
+            mvc.addMessageValidator("Attach Errors", rrg, ErrorRecorderFactory.getErrorRecorderFactory().getNewErrorRecorder());
 
             // wrap in soap wrapper and http wrapper
             // auto-detects need for multipart/MTOM
-            mvc.addMessageValidator("ResponseInSoapWrapper", new SoapWrapperRegistryResponseSim(rep.getCommon(), registerDsCommon, rrg), gerb.buildNewErrorRecorder());
+            mvc.addMessageValidator("ResponseInSoapWrapper", new SoapWrapperRegistryResponseSim(rep.getCommon(), registerDsCommon, rrg), ErrorRecorderFactory.getErrorRecorderFactory().getNewErrorRecorder());
 
             mvc.run();
             return true;

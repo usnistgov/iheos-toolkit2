@@ -7,6 +7,7 @@ import gov.nist.toolkit.actorfactory.client.SimulatorConfig;
 import gov.nist.toolkit.actorfactory.client.SimulatorStats;
 import gov.nist.toolkit.configDatatypes.SimulatorProperties;
 import gov.nist.toolkit.configDatatypes.client.TransactionType;
+import gov.nist.toolkit.errorrecording.common.ErrorRecorderFactory;
 import gov.nist.toolkit.errorrecording.gwt.GwtErrorRecorderBuilder;
 import gov.nist.toolkit.errorrecording.common.XdsErrorCode.Code;
 import gov.nist.toolkit.registrymsg.registry.RegistryErrorListGenerator;
@@ -76,8 +77,6 @@ public class RepositoryActorSimulator extends BaseDsActorSimulator {
 
     @Override
 	public boolean run(TransactionType transactionType, MessageValidatorEngine mvc, String validation) throws IOException {
-		GwtErrorRecorderBuilder gerb = new GwtErrorRecorderBuilder();
-
 		logger.debug("Repository starting transaction " + transactionType);
 
 		/* if (transactionType.equals(TransactionType.PROVIDE_AND_REGISTER) ||
@@ -161,7 +160,7 @@ public class RepositoryActorSimulator extends BaseDsActorSimulator {
 
 
 
-			mvc.addMessageValidator("Generate DocumentResponse", (AbstractMessageValidator)dms, gerb.buildNewErrorRecorder());
+			mvc.addMessageValidator("Generate DocumentResponse", (AbstractMessageValidator)dms, ErrorRecorderFactory.getErrorRecorderFactory().getNewErrorRecorder());
 
 			mvc.run();
 
@@ -175,7 +174,7 @@ public class RepositoryActorSimulator extends BaseDsActorSimulator {
 
 			// wrap in soap wrapper and http wrapper
 			// auto-detects need for multipart/MTOM
-			mvc.addMessageValidator("ResponseInSoapWrapper", new SoapWrapperRegistryResponseSim(common, dsSimCommon, dms), gerb.buildNewErrorRecorder());
+			mvc.addMessageValidator("ResponseInSoapWrapper", new SoapWrapperRegistryResponseSim(common, dsSimCommon, dms), ErrorRecorderFactory.getErrorRecorderFactory().getNewErrorRecorder());
 
 			mvc.run();
 

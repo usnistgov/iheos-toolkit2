@@ -2,6 +2,7 @@ package gov.nist.toolkit.simulators.sim.ids
 import gov.nist.toolkit.actorfactory.SimDb
 import gov.nist.toolkit.actorfactory.client.SimulatorConfig
 import gov.nist.toolkit.configDatatypes.client.TransactionType
+import gov.nist.toolkit.errorrecording.common.ErrorRecorderFactory
 import gov.nist.toolkit.errorrecording.gwt.GwtErrorRecorderBuilder
 import gov.nist.toolkit.errorrecording.common.XdsErrorCode.Code;
 import gov.nist.toolkit.registrymsg.registry.RegistryErrorListGenerator
@@ -44,7 +45,6 @@ public class IdsActorSimulator extends GatewaySimulatorCommon {
 	public boolean run(TransactionType transactionType, MessageValidatorEngine mvc, String validationPattern) throws IOException {
 
         logger.info("IdsActorSimulator: run - transactionType is " + transactionType);
-	GwtErrorRecorderBuilder gerb = new GwtErrorRecorderBuilder();
 
 		if (transactionType.equals(TransactionType.RET_IMG_DOC_SET)) {
 			logger.debug("Transaction type: RET_IMG_DOC_SET");
@@ -120,7 +120,7 @@ public class IdsActorSimulator extends GatewaySimulatorCommon {
 				dsSimCommon,
 				repositoryUniqueId);
 
-			mvc.addMessageValidator("Generate DocumentResponse", dms, gerb.buildNewErrorRecorder());
+			mvc.addMessageValidator("Generate DocumentResponse", dms, ErrorRecorderFactory.getErrorRecorderFactory().getNewErrorRecorder());
 
 			mvc.run();
 
@@ -134,7 +134,7 @@ public class IdsActorSimulator extends GatewaySimulatorCommon {
 
 			// wrap in soap wrapper and http wrapper
 			// auto-detects need for multipart/MTOM
-			mvc.addMessageValidator("ResponseInSoapWrapper", new SoapWrapperRegistryResponseSim(common, dsSimCommon, dms), gerb.buildNewErrorRecorder());
+			mvc.addMessageValidator("ResponseInSoapWrapper", new SoapWrapperRegistryResponseSim(common, dsSimCommon, dms), ErrorRecorderFactory.getErrorRecorderFactory().getNewErrorRecorder());
 
 			mvc.run();
 

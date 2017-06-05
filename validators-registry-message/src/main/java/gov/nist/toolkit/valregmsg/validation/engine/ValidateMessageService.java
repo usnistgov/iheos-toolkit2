@@ -1,6 +1,7 @@
 package gov.nist.toolkit.valregmsg.validation.engine;
 
 import gov.nist.toolkit.actorfactory.SimDb;
+import gov.nist.toolkit.errorrecording.common.ErrorRecorderFactory;
 import gov.nist.toolkit.errorrecording.common.XdsErrorCode;
 import gov.nist.toolkit.errorrecording.gwt.GwtErrorRecorder;
 import gov.nist.toolkit.errorrecording.gwt.GwtErrorRecorderBuilder;
@@ -21,6 +22,8 @@ import java.util.List;
 
 /**
  * This wraps a bunch of MessageValidator tools for use with Simulators.
+ * TODO: The ErrorRecorderBuilder "gerb" should to be removed from the HttpMessageValidator call for consistency with the updated
+ * TODO/ mechanism of creating an ER using ErrorRecorderFactory.getErrorRecorderFactory().getNewErrorRecorder().
  * @author bill
  *
  */
@@ -51,7 +54,7 @@ public class ValidateMessageService extends CommonService {
 		if (mvc == null)
 			mvc = new MessageValidatorEngine();
 		HttpMessageValidator val = new HttpMessageValidator(vc, httpMsgHdr, httpMsgBody, gerb, mvc, rvi);
-		mvc.addMessageValidator("Parse HTTP Message", val, gerb.buildNewErrorRecorder());
+		mvc.addMessageValidator("Parse HTTP Message", val, ErrorRecorderFactory.getErrorRecorderFactory().getNewErrorRecorder());
 		mvc.run();
 
 		return mvc;

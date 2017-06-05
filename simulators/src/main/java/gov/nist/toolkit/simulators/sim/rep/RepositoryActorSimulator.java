@@ -6,6 +6,7 @@ import gov.nist.toolkit.actorfactory.client.SimId;
 import gov.nist.toolkit.actorfactory.client.SimulatorConfig;
 import gov.nist.toolkit.actorfactory.client.SimulatorStats;
 import gov.nist.toolkit.configDatatypes.client.TransactionType;
+import gov.nist.toolkit.errorrecording.common.ErrorRecorderFactory;
 import gov.nist.toolkit.errorrecording.gwt.GwtErrorRecorderBuilder;
 import gov.nist.toolkit.errorrecording.common.XdsErrorCode.Code;
 import gov.nist.toolkit.registrymsg.registry.RegistryErrorListGenerator;
@@ -104,15 +105,15 @@ public class RepositoryActorSimulator extends BaseDsActorSimulator {
 
 			RepPnRSim pnrSim = new RepPnRSim(common, dsSimCommon, getSimulatorConfig());
 			pnrSim.setForward(forward);
-			mvc.addMessageValidator("PnR", pnrSim, gerb.buildNewErrorRecorder());
+			mvc.addMessageValidator("PnR", pnrSim, ErrorRecorderFactory.getErrorRecorderFactory().getNewErrorRecorder());
 
 			RegistryResponseGeneratorSim rrg = new RegistryResponseGeneratorSim(common, dsSimCommon);
 
-			mvc.addMessageValidator("Attach Errors", rrg, gerb.buildNewErrorRecorder());
+			mvc.addMessageValidator("Attach Errors", rrg, ErrorRecorderFactory.getErrorRecorderFactory().getNewErrorRecorder());
 
 			// wrap in soap wrapper and http wrapper
 			// auto-detects need for multipart/MTOM
-			mvc.addMessageValidator("ResponseInSoapWrapper", new SoapWrapperRegistryResponseSim(common, dsSimCommon, rrg), gerb.buildNewErrorRecorder());
+			mvc.addMessageValidator("ResponseInSoapWrapper", new SoapWrapperRegistryResponseSim(common, dsSimCommon, rrg), ErrorRecorderFactory.getErrorRecorderFactory().getNewErrorRecorder());
 
 			mvc.run();
 
@@ -149,7 +150,7 @@ public class RepositoryActorSimulator extends BaseDsActorSimulator {
 			}
 
 			RetrieveDocumentResponseSim dms = new RetrieveDocumentResponseSim(common.vc, docUids, common, dsSimCommon, repositoryUniqueId);
-			mvc.addMessageValidator("Generate DocumentResponse", dms, gerb.buildNewErrorRecorder());
+			mvc.addMessageValidator("Generate DocumentResponse", dms, ErrorRecorderFactory.getErrorRecorderFactory().getNewErrorRecorder());
 
 			mvc.run();
 
@@ -163,7 +164,7 @@ public class RepositoryActorSimulator extends BaseDsActorSimulator {
 
 			// wrap in soap wrapper and http wrapper
 			// auto-detects need for multipart/MTOM
-			mvc.addMessageValidator("ResponseInSoapWrapper", new SoapWrapperRegistryResponseSim(common, dsSimCommon, dms), gerb.buildNewErrorRecorder());
+			mvc.addMessageValidator("ResponseInSoapWrapper", new SoapWrapperRegistryResponseSim(common, dsSimCommon, dms), ErrorRecorderFactory.getErrorRecorderFactory().getNewErrorRecorder());
 
 			mvc.run();
 
