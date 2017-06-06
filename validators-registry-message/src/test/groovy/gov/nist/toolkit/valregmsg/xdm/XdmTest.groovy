@@ -21,7 +21,7 @@ class XdmTest extends Specification {
         ValidationContext vc = DefaultValidationContextFactory.validationContext();
         vc.isXDM = true;
         IErrorRecorderBuilder erBuilder = new GwtErrorRecorderBuilder();
-        IErrorRecorder er = erBuilder.buildNewErrorRecorder();
+        IErrorRecorder er = ErrorRecorderFactory.getErrorRecorderFactory().getNewErrorRecorder();
         MessageValidatorEngine mvc = new MessageValidatorEngine();
 
         XdmDecoder xd = new XdmDecoder(vc, erBuilder, xdm);

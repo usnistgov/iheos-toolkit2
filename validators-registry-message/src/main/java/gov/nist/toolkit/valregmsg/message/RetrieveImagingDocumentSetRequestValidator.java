@@ -1,6 +1,7 @@
 package gov.nist.toolkit.valregmsg.message;
 
 import gov.nist.toolkit.errorrecording.IErrorRecorder;
+import gov.nist.toolkit.errorrecording.common.ErrorRecorderFactory;
 import gov.nist.toolkit.errorrecording.common.XdsErrorCode;
 import gov.nist.toolkit.errorrecording.xml.assertions.Assertion;
 import gov.nist.toolkit.errorrecording.xml.assertions.AssertionLibrary;
@@ -48,7 +49,7 @@ public class RetrieveImagingDocumentSetRequestValidator  extends AbstractMessage
 		for (OMElement dr : documentRequests) {
 			RetrieveOrderValidator rov = new RetrieveOrderValidator(vc);
 			rov.setBody(dr);
-			mvc.addMessageValidator("DocumentRequest element ordering", rov, erBuilder.buildNewErrorRecorder());
+			mvc.addMessageValidator("DocumentRequest element ordering", rov, ErrorRecorderFactory.getErrorRecorderFactory().getNewErrorRecorder());
 			if (vc.isXC) {
 				OMElement homeElement = XmlUtil.firstChildWithLocalName(dr, "HomeCommunityId");
 				if (homeElement == null) {

@@ -1,6 +1,7 @@
 package gov.nist.toolkit.valregmsg.message;
 
 import gov.nist.toolkit.errorrecording.IErrorRecorder;
+import gov.nist.toolkit.errorrecording.common.ErrorRecorderFactory;
 import gov.nist.toolkit.errorrecording.common.XdsErrorCode;
 import gov.nist.toolkit.errorrecording.xml.assertions.Assertion;
 import gov.nist.toolkit.errorrecording.xml.assertions.AssertionLibrary;
@@ -49,15 +50,15 @@ public class RetrieveResponseValidator extends AbstractMessageValidator {
 			er.err(XdsErrorCode.Code.XDSRegistryError, assertion, this, "", "");
 		}
 		else {
-			mvc.addMessageValidator("RegistryResponse", new RegistryResponseValidator(vc, registryResponse), erBuilder.buildNewErrorRecorder());
+			mvc.addMessageValidator("RegistryResponse", new RegistryResponseValidator(vc, registryResponse), ErrorRecorderFactory.getErrorRecorderFactory().getNewErrorRecorder());
 		}
 
 		List<OMElement> documentRequests = XmlUtil.childrenWithLocalName(xml, "DocumentResponse");
 		for (OMElement dr : documentRequests) {
 			RetrieveResponseOrderValidator rov = new RetrieveResponseOrderValidator(vc);
 			rov.setBody(dr);
-			mvc.addMessageValidator("DocumentResponse element ordering", rov, erBuilder.buildNewErrorRecorder());
-			mvc.addMessageValidator("DocumentResponse Validator", new DocumentResponseValidator(vc, dr), erBuilder.buildNewErrorRecorder());
+			mvc.addMessageValidator("DocumentResponse element ordering", rov, ErrorRecorderFactory.getErrorRecorderFactory().getNewErrorRecorder());
+			mvc.addMessageValidator("DocumentResponse Validator", new DocumentResponseValidator(vc, dr), ErrorRecorderFactory.getErrorRecorderFactory().getNewErrorRecorder());
 		}
         //er.unRegisterValidator(this);
 

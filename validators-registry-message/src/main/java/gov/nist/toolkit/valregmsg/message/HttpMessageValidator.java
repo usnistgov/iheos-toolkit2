@@ -1,6 +1,7 @@
 package gov.nist.toolkit.valregmsg.message;
 
 import gov.nist.toolkit.errorrecording.IErrorRecorder;
+import gov.nist.toolkit.errorrecording.common.ErrorRecorderFactory;
 import gov.nist.toolkit.errorrecording.common.XdsErrorCode;
 import gov.nist.toolkit.errorrecording.xml.assertions.Assertion;
 import gov.nist.toolkit.errorrecording.xml.assertions.AssertionLibrary;
@@ -76,7 +77,7 @@ public class HttpMessageValidator extends AbstractMessageValidator {
 				} else {
                     er.success("", "Message format", "Multipart", "Multipart", "ITI TF Volumes 2a and 2b");
 				}
-				mvc.addMessageValidator("Validate MTOM", new MtomMessageValidator(vc, hparser, body, erBuilder, mvc, rvi), erBuilder.buildNewErrorRecorder());
+				mvc.addMessageValidator("Validate MTOM", new MtomMessageValidator(vc, hparser, body, erBuilder, mvc, rvi), ErrorRecorderFactory.getErrorRecorderFactory().getNewErrorRecorder());
 			} else {
 				boolean mt = vc.requiresMtom();
                 if (mt) {
@@ -86,7 +87,7 @@ public class HttpMessageValidator extends AbstractMessageValidator {
                 } else {
                     er.success("", "Message format", "SIMPLE Format", "SIMPLE Format", "ITI TF Volumes 2a and 2b");
                 }
-				mvc.addMessageValidator("Parse SIMPLE SOAP message", new SimpleSoapHttpHeaderValidator(vc, hparser, body, erBuilder, mvc, rvi), erBuilder.buildNewErrorRecorder());
+				mvc.addMessageValidator("Parse SIMPLE SOAP message", new SimpleSoapHttpHeaderValidator(vc, hparser, body, erBuilder, mvc, rvi), ErrorRecorderFactory.getErrorRecorderFactory().getNewErrorRecorder());
 			}
 		} catch (HttpParseException e) {
 			er.err(vc.getBasicErrorCode(), e);

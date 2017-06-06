@@ -1,6 +1,7 @@
 package gov.nist.toolkit.valregmsg.message;
 
 import gov.nist.toolkit.errorrecording.IErrorRecorder;
+import gov.nist.toolkit.errorrecording.common.ErrorRecorderFactory;
 import gov.nist.toolkit.errorrecording.common.XdsErrorCode;
 import gov.nist.toolkit.errorrecording.xml.assertions.Assertion;
 import gov.nist.toolkit.errorrecording.xml.assertions.AssertionLibrary;
@@ -54,7 +55,7 @@ public class MetadataMessageValidator extends AbstractMessageValidator {
 			m = MetadataParser.parseNonSubmission(messageBody.getBody());
 
 			// save on validation stack so others can find it if they need it
-			mvc.addMessageValidator("MetadataContainer", new MetadataContainer(vc, m), erBuilder.buildNewErrorRecorder());
+			mvc.addMessageValidator("MetadataContainer", new MetadataContainer(vc, m), ErrorRecorderFactory.getErrorRecorderFactory().getNewErrorRecorder());
 
 
 			contentSummary(er, m);

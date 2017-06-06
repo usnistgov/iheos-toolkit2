@@ -113,7 +113,8 @@ public class DsSimCommon {
         // Display the type of ErrorRecorder selected
         logger.info("Selected ErrorRecorder type: " + SelectedErrorRecorder.getSelectedErrorRecorder().getType().toString());
 
-        runErrorRecorder(erb.buildNewErrorRecorder());
+        // Create an ErrorRecorder and run
+        runErrorRecorder(ErrorRecorderFactory.getErrorRecorderFactory().getNewErrorRecorder());
     }
 
     /**

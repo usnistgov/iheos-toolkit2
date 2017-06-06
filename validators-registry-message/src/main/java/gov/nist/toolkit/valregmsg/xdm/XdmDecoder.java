@@ -1,6 +1,7 @@
 package gov.nist.toolkit.valregmsg.xdm;
 
 import gov.nist.toolkit.errorrecording.IErrorRecorder;
+import gov.nist.toolkit.errorrecording.common.ErrorRecorderFactory;
 import gov.nist.toolkit.errorrecording.text.TextErrorRecorder;
 import gov.nist.toolkit.errorrecording.common.XdsErrorCode.Code;
 import gov.nist.toolkit.errorrecording.IErrorRecorderBuilder;
@@ -49,7 +50,7 @@ public class XdmDecoder extends AbstractMessageValidator {
 			ValidationContext vc = DefaultValidationContextFactory.validationContext();
 			vc.isXDM = true;
 			IErrorRecorderBuilder erBuilder = new TextErrorRecorderBuilder();
-			TextErrorRecorder er = (TextErrorRecorder) erBuilder.buildNewErrorRecorder();
+			TextErrorRecorder er = (TextErrorRecorder) ErrorRecorderFactory.getErrorRecorderFactory().getNewErrorRecorder();
 			MessageValidatorEngine mvc = new MessageValidatorEngine();
 
 			XdmDecoder xd = new XdmDecoder(vc, erBuilder, is);

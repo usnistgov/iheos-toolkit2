@@ -1,6 +1,7 @@
 package gov.nist.toolkit.valregmsg.message;
 
 import gov.nist.toolkit.errorrecording.IErrorRecorder;
+import gov.nist.toolkit.errorrecording.common.ErrorRecorderFactory;
 import gov.nist.toolkit.errorrecording.common.XdsErrorCode;
 import gov.nist.toolkit.errorrecording.xml.assertions.Assertion;
 import gov.nist.toolkit.errorrecording.xml.assertions.AssertionLibrary;
@@ -84,7 +85,7 @@ public class MtomMessageValidator extends AbstractMessageValidator {
 
 			// no actual validation, just saves Part list on validation stack so it can
 			// be found by later steps that need it
-			mvc.addMessageValidator("MultipartContainer", new MultipartContainer(vc, mp), erBuilder.buildNewErrorRecorder());
+			mvc.addMessageValidator("MultipartContainer", new MultipartContainer(vc, mp), ErrorRecorderFactory.getErrorRecorderFactory().getNewErrorRecorder());
 
 
 			er.detail("Scheduling validation of SOAP wrapper");

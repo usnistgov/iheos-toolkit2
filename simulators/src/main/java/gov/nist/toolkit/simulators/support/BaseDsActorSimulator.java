@@ -5,6 +5,7 @@ import gov.nist.toolkit.actorfactory.SimDb;
 import gov.nist.toolkit.actorfactory.client.SimulatorConfig;
 import gov.nist.toolkit.configDatatypes.client.TransactionType;
 import gov.nist.toolkit.errorrecording.IErrorRecorder;
+import gov.nist.toolkit.errorrecording.common.ErrorRecorderFactory;
 import gov.nist.toolkit.valsupport.client.ValidationContext;
 import gov.nist.toolkit.valsupport.engine.MessageValidatorEngine;
 
@@ -41,7 +42,7 @@ public abstract class BaseDsActorSimulator extends BaseActorSimulator {
 //		super(common.getValidationContext());
 		this.common = common;
 		this.dsSimCommon = dsSimCommon;
-		er = common.getCommonErrorRecorder();
+		er = ErrorRecorderFactory.getErrorRecorderFactory().getNewErrorRecorder();
 	}
 
 	public BaseDsActorSimulator() {}
@@ -50,7 +51,8 @@ public abstract class BaseDsActorSimulator extends BaseActorSimulator {
 		dsSimCommon = c;
 		if (c == null) return;
 		common = c.simCommon;
-		er = common.getCommonErrorRecorder();
+		er = ErrorRecorderFactory.getErrorRecorderFactory().getNewErrorRecorder();
+		// common.getCommonErrorRecorder();
 		db = c.simCommon.db;
 		dsSimCommon.setSimulatorConfig(config);
 		response = dsSimCommon.simCommon.response;

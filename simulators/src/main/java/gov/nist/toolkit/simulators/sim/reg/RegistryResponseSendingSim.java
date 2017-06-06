@@ -1,6 +1,7 @@
 package gov.nist.toolkit.simulators.sim.reg;
 
 import gov.nist.toolkit.errorrecording.IErrorRecorder;
+import gov.nist.toolkit.errorrecording.common.ErrorRecorderFactory;
 import gov.nist.toolkit.simulators.support.DsSimCommon;
 import gov.nist.toolkit.simulators.support.SimCommon;
 import gov.nist.toolkit.simulators.support.TransactionSimulator;
@@ -25,7 +26,9 @@ public class RegistryResponseSendingSim extends TransactionSimulator {
 		mvc.addMessageValidator("Attach Errors", registryResponseGenerator, er);
 		mvc.addMessageValidator("SendResponseInSoapWrapper", 
 				new SoapWrapperRegistryResponseSim(common, dsSimCommon, registryResponseGenerator), // wrap in SOAP and HTTP and send
-				new GwtErrorRecorderBuilder().buildNewErrorRecorder()   // if this ErrorRecorder catches something it will go in the logs but not sent
+				ErrorRecorderFactory.getErrorRecorderFactory().getNewErrorRecorder()
+				//new GwtErrorRecorderBuilder().buildNewErrorRecorder()
+				// if this ErrorRecorder catches something it will go in the logs but not sent
 				);
 		
 		mvc.run();

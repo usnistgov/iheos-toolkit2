@@ -116,6 +116,7 @@ public class SimCommon {
 	 * Called in RegistryActorSimulator when generating output.
 	 * @return
 	 */
+	/*
 	public IErrorRecorder getCommonErrorRecorder() {
 		if (er == null) {
 			// Create an independent ErrorRecorder based on the type of ER currently selected
@@ -136,13 +137,12 @@ public class SimCommon {
 
 		return er;
 	}
-
+	*/
 
 	/**
 	 * Build the collection of error/statuses/messages for the validation steps
 	 * so far. 
 	 */
-
 	void buildMVR() {
 		mvr = vms.getMessageValidationResults(mvc);
 	}
@@ -152,7 +152,6 @@ public class SimCommon {
 	 * Get the collection of error/statuses/messages for the validation steps
 	 * recorded so far. 
 	 */
-
 	public MessageValidationResults getMessageValidationResults() {
 		buildMVR();
 		return mvr;

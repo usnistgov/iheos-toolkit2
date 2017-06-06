@@ -3,6 +3,7 @@ package gov.nist.toolkit.valregmsg.message;
 import gov.nist.toolkit.errorrecording.IErrorRecorder;
 import gov.nist.toolkit.errorrecording.IErrorRecorderBuilder;
 import gov.nist.toolkit.commondatatypes.MetadataSupport;
+import gov.nist.toolkit.errorrecording.common.ErrorRecorderFactory;
 import gov.nist.toolkit.errorrecording.common.XdsErrorCode;
 import gov.nist.toolkit.soap.wsseToolkitAdapter.WsseHeaderValidatorAdapter;
 import gov.nist.toolkit.utilities.xml.XmlUtil;
@@ -117,11 +118,11 @@ public class SoapMessageValidator extends AbstractMessageValidator {
         OMElement security = XmlUtil.firstChildWithLocalName(header, "Security");
         if(security != null){
             vc.hasSaml = true; // setting the flag is not really necessary, for consistency only.
-            // mvc.addMessageValidator("SAML Validator", new SAMLMessageValidator(vc, envelope, erBuilder, mvc, rvi), erBuilder.buildNewErrorRecorder());
+            // mvc.addMessageValidator("SAML Validator", new SAMLMessageValidator(vc, envelope, erBuilder, mvc, rvi), ErrorRecorderFactory.getErrorRecorderFactory().getNewErrorRecorder());
             Element wsseHeader;
             try {
                 wsseHeader = XMLUtils.toDOM(security);
-                mvc.addMessageValidator("SAML Validator", new WsseHeaderValidatorAdapter(vc, wsseHeader,header), erBuilder.buildNewErrorRecorder());
+                mvc.addMessageValidator("SAML Validator", new WsseHeaderValidatorAdapter(vc, wsseHeader,header), ErrorRecorderFactory.getErrorRecorderFactory().getNewErrorRecorder());
             } catch (Exception e) {
                 er.err(XdsErrorCode.Code.NoCode, e);
             }
