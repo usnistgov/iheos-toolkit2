@@ -44,7 +44,7 @@ class PerResourceTest extends Specification {
     class CountingEventHandler implements PerResource {
 
         @Override
-        void resource(SimId simId, ActorType actorType, TransactionType transactionType, File eventDir, File resourceFile) {
+        void index(SimId simId, ActorType actorType, TransactionType transactionType, File eventDir, File resourceFile) {
             resourceCount++
         }
     }

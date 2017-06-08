@@ -7,9 +7,9 @@ import gov.nist.toolkit.fhir.support.SimResource
  */
 class Patient implements IResourceIndexer {
     /**
-     * Index the Patient resource attributes
-     * @param json - JsonSlurper representation of resource
-     * @param simResource - details about where the resource will be stored
+     * Index the Patient index attributes
+     * @param json - JsonSlurper representation of index
+     * @param simResource - details about where the index will be stored
      * @return newly built index
      */
     @Override

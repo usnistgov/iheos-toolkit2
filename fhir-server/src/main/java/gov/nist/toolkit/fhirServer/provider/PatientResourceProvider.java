@@ -30,14 +30,14 @@ import java.io.File;
 import java.util.*;
 
 /**
- * This is a resource provider which stores Patient resources in memory using a HashMap. This is obviously not a production-ready solution for many reasons, 
+ * This is a index provider which stores Patient resources in memory using a HashMap. This is obviously not a production-ready solution for many reasons,
  * but it is useful to help illustrate how to build a fully-functional server.
  */
 public class PatientResourceProvider implements IResourceProvider {
 	private static final org.slf4j.Logger ourLog = org.slf4j.LoggerFactory.getLogger(PatientResourceProvider.class);
 
 	/**
-	 * This map has a resource ID as a key, and each key maps to a Deque list containing all versions of the resource with that ID.
+	 * This map has a index ID as a key, and each key maps to a Deque list containing all versions of the index with that ID.
 	 */
 	private Map<Long, Deque<Patient>> myIdToPatientVersions = new HashMap<Long, Deque<Patient>>();
 
@@ -47,7 +47,7 @@ public class PatientResourceProvider implements IResourceProvider {
 	private long myNextId = 1;
 
 	/**
-	 * Constructor, which pre-populates the provider with one resource instance.
+	 * Constructor, which pre-populates the provider with one index instance.
 	 */
 	public PatientResourceProvider() {
 		ourLog.info("Starting Patient provider");
@@ -74,7 +74,7 @@ public class PatientResourceProvider implements IResourceProvider {
 	 * Stores a new version of the patient in memory so that it can be retrieved later.
 	 * 
 	 * @param thePatient
-	 *            The patient resource to store
+	 *            The patient index to store
 	 * @param theId
 	 *            The ID of the patient to retrieve
 	 */
@@ -100,7 +100,7 @@ public class PatientResourceProvider implements IResourceProvider {
 		// We just use the current number of versions as the next version number
 		String newVersion = Integer.toString(existingVersions.size());
 		
-		// Create an ID with the new version and assign it back to the resource
+		// Create an ID with the new version and assign it back to the index
 		IdDt newId = new IdDt("Patient", Long.toString(theId), newVersion);
 		thePatient.setId(newId);
 		
@@ -109,7 +109,7 @@ public class PatientResourceProvider implements IResourceProvider {
 
 	/**
 	 * The "@Create" annotation indicates that this method implements "create=type", which adds a 
-	 * new instance of a resource to the server.
+	 * new instance of a index to the server.
 	 */
 	@Create()
 	public MethodOutcome createPatient(@ResourceParam Patient thePatient) {
@@ -120,7 +120,7 @@ public class PatientResourceProvider implements IResourceProvider {
 
 		addNewVersion(thePatient, id);
 
-		// Let the caller know the ID of the newly created resource
+		// Let the caller know the ID of the newly created index
 		return new MethodOutcome(new IdDt(id));
 	}
 
@@ -169,7 +169,7 @@ public class PatientResourceProvider implements IResourceProvider {
 	
 	
 	/**
-	 * The getResourceType method comes from IResourceProvider, and must be overridden to indicate what type of resource this provider supplies.
+	 * The getResourceType method comes from IResourceProvider, and must be overridden to indicate what type of index this provider supplies.
 	 */
 		@Override
 		public Class<Patient> getResourceType() {
@@ -179,13 +179,13 @@ public class PatientResourceProvider implements IResourceProvider {
 	/**
 	 * This is the "read" operation. The "@Read" annotation indicates that this method supports the read and/or vread operation.
 	 * <p>
-	 * Read operations take a single parameter annotated with the {@link IdParam} paramater, and should return a single resource instance.
+	 * Read operations take a single parameter annotated with the {@link IdParam} paramater, and should return a single index instance.
 	 * Using the ResDb we do not yet handle versions in the FHIR sense
 	 * </p>
 	 * 
 	 * @param theId
 	 *            The read operation takes one parameter, which must be of type IdDt and must be annotated with the "@Read.IdParam" annotation.
-	 * @return Returns a resource matching this identifier, or null if none exists.
+	 * @return Returns a index matching this identifier, or null if none exists.
 	 */
 	@Read(version = true)
 	public Patient readPatient(@IdParam IdDt theId) {
@@ -197,7 +197,7 @@ public class PatientResourceProvider implements IResourceProvider {
 			System.out.println("patient is " + retVal); System.out.flush();
 		} catch (NumberFormatException e) {
 			/*
-			 * If we can't parse the ID as a long, it's not valid so this is an unknown resource
+			 * If we can't parse the ID as a long, it's not valid so this is an unknown index
 			 */
 			throw new ResourceNotFoundException(theId);
 		}
@@ -240,12 +240,12 @@ public class PatientResourceProvider implements IResourceProvider {
 
 	/**
 	 * The "@Update" annotation indicates that this method supports replacing an existing 
-	 * resource (by ID) with a new instance of that resource.
+	 * index (by ID) with a new instance of that index.
 	 * 
 	 * @param theId
 	 *            This is the ID of the patient to update
 	 * @param thePatient
-	 *            This is the actual resource to save
+	 *            This is the actual index to save
 	 * @return This method returns a "MethodOutcome"
 	 */
 	@Update()

@@ -16,7 +16,7 @@ import ca.uhn.fhir.rest.server.exceptions.ResourceNotFoundException;
  * which uses a custom subclassed resource definition to add statically bound
  * extensions.
  * 
- * See the MyOrganization definition to see how the custom resource 
+ * See the MyOrganization definition to see how the custom resource
  * definition works.
  */
 public class OrganizationResourceProvider implements IResourceProvider {

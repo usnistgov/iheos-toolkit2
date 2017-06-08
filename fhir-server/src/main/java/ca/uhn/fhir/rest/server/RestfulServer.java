@@ -544,7 +544,7 @@ public class RestfulServer extends HttpServlet implements IRestfulServer<Servlet
             String servletContextPath = IncomingRequestAddressStrategy.determineServletContextPath(theRequest, this);
 
 
-            // hook into tookit for sim handling
+            // hook into toolkit for sim handling
             initializeRequestHandler(requestFullPath);
 
 			/*
@@ -1047,7 +1047,7 @@ public class RestfulServer extends HttpServlet implements IRestfulServer<Servlet
 
     /**
      * Register a single provider. This could be a Resource Provider or a "plain" provider not associated with any
-     * resource.
+     * index.
      */
     public void registerProvider(Object provider) {
         if (provider != null) {

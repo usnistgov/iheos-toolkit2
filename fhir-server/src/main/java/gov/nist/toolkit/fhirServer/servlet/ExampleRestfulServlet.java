@@ -112,6 +112,9 @@ public class ExampleRestfulServlet extends RestfulServer {
 	 * Initialize linkage to toolkit needed to handle this request
 	 * Overrides method in RestfulServer where we try to keep changes
 	 * to a minimum since that is imported code
+	 *
+	 * This is called before the Interceptors
+	 *
 	 * @param requestFullPath
 	 * @throws Exception
 	 */

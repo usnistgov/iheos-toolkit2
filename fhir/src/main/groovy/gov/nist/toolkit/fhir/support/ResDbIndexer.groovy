@@ -11,22 +11,28 @@ import org.apache.lucene.search.IndexSearcher
 import org.apache.lucene.store.Directory
 import org.apache.lucene.store.FSDirectory
 /**
- *
+ * Lucene index for a single Simulator
  */
 class ResDbIndexer {
     IndexWriter indexWriter
     File indexDir
+    boolean openForWriting = false
 
     ResDbIndexer(File _indexDir) {
         indexDir = _indexDir
     }
 
-    boolean createIndex() {
+    /**
+     * After opening, index must be closed using finish()
+     * @return
+     */
+    boolean openIndexForWriting() {
         try {
             Directory dir = FSDirectory.open(indexDir.toPath())
             IndexWriterConfig iwc = new IndexWriterConfig()
-            iwc.setOpenMode(IndexWriterConfig.OpenMode.CREATE)
+            iwc.setOpenMode(IndexWriterConfig.OpenMode.CREATE_OR_APPEND)
             indexWriter = new IndexWriter(dir, iwc)
+            openForWriting = true
             return true;
         } catch (Exception e) {
             System.err.println("Error opening the index. " + e.getMessage());
@@ -34,11 +40,21 @@ class ResDbIndexer {
         return false;
     }
 
-    IndexSearcher openIndex(File index) {
-        FSDirectory indexDirectory = FSDirectory.open(index.toPath())
-        IndexReader indexReader = DirectoryReader.open(indexDirectory)
+    FSDirectory indexDirectory = null
+    IndexReader indexReader = null
+
+    IndexSearcher openIndexForSearching(File index) {
+        indexDirectory = FSDirectory.open(index.toPath())
+        indexReader = DirectoryReader.open(indexDirectory)
         IndexSearcher indexSearcher = new IndexSearcher(indexReader);
         return indexSearcher
+    }
+
+    void close() {
+        if (indexDirectory) indexDirectory.close()
+        indexDirectory = null
+        if (indexReader) indexReader.close()
+        indexReader = null
     }
 
     void addResource(ResourceIndex resource) {

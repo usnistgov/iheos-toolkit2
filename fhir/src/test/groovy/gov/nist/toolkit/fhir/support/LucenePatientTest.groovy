@@ -23,7 +23,7 @@ class LucenePatientTest extends Specification {
     def 'create index and search'() {
 
         when: 'buildIndex indexer'
-        boolean isOpen = indexer.createIndex()
+        boolean isOpen = indexer.openIndexForWriting()
 
         then:
         isOpen
@@ -38,7 +38,7 @@ class LucenePatientTest extends Specification {
         true
 
         when:  'initialize for search'
-        IndexSearcher indexSearcher = indexer.openIndex(indexDir)
+        IndexSearcher indexSearcher = indexer.openIndexForSearching(indexDir)
         Term term1 = new Term('pid', '1')
         Term term2 = new Term('hid', '2')
 

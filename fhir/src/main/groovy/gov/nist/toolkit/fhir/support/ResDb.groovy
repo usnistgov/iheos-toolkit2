@@ -19,7 +19,7 @@ class ResDb extends SimDb {
 
 
     /**
-     * Index a single resource in a FHIR simulator. This is not intended to be called directly. It is part
+     * Index a single index in a FHIR simulator. This is not intended to be called directly. It is part
      * of a larger indexing system.
      * @param actorTypes
      * @param transactionTypes
@@ -45,7 +45,7 @@ class ResDb extends SimDb {
                     for (File resourceFile : eventFile.listFiles()) {
                         if (resourceFile.name == 'date.ser')
                             continue
-                        perResource.resource(simId, actorType, transType, eventFile, resourceFile)
+                        perResource.index(simId, actorType, transType, eventFile, resourceFile)
                     }
                 }
             }
@@ -54,8 +54,8 @@ class ResDb extends SimDb {
 
     /**
      * Store a Resource in a sim
-     * @param resourceType  - resource type (Patient...)
-     * @param resourceContents - JSON for resource
+     * @param resourceType  - index type (Patient...)
+     * @param resourceContents - JSON for index
      * @return
      */
     File storeNewResource(String resourceType, String resourceContents) {
@@ -65,7 +65,7 @@ class ResDb extends SimDb {
     }
 
     /**
-     * Create a new file to store a resource in a sim inside the current event.
+     * Create a new file to store a index in a sim inside the current event.
      * @param resourceType
      * @return
      */
@@ -145,16 +145,38 @@ class ResDb extends SimDb {
         return db;
     }
 
+    /**
+     * This constructor is deprecated as a label that it should not be used.  It would be made protected
+     * except for its dependence on SimDb.  ResDb needs locking which SimDb does not.  See ResDbFactory
+     * for calls to use instead of this.
+     * @param simId
+     */
+
+    @Deprecated
     ResDb(SimId simId) {
         super(simId)
     }
 
+    /**
+     * This constructor is deprecated as a label that it should not be used.  It would be made protected
+     * except for its dependence on SimDb.  ResDb needs locking which SimDb does not.  See ResDbFactory
+     * for calls to use instead of this.
+     * @param simId
+     * @param actor
+     * @param transaction
+     */
+    @Deprecated
     ResDb(SimId simId, String actor, String transaction) {
         super(simId, actor, transaction)
     }
 
+    /**
+     * Only for use with mkSim(...)
+     */
     ResDb() {
         super()
     }
+
+
 
 }

@@ -6,14 +6,14 @@ import gov.nist.toolkit.actortransaction.client.ActorType
 import gov.nist.toolkit.configDatatypes.client.TransactionType
 
 /**
- * This contains details about where the resource is stored and
+ * This contains details about where the index is stored and
  * what actor/transaction/event it belongs to.
  */
 class SimResource {
     String actor
     String transaction
-    String event
-    String filename
+    String event   // name not path
+    String filename  // name not path
 
     SimResource(SimDb simDb) {
         actor = simDb.actor
