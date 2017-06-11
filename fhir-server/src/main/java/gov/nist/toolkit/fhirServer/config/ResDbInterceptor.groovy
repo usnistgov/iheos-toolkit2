@@ -3,6 +3,7 @@ package gov.nist.toolkit.fhirServer.config
 import ca.uhn.fhir.rest.method.RequestDetails
 import ca.uhn.fhir.rest.server.exceptions.AuthenticationException
 import ca.uhn.fhir.rest.server.interceptor.InterceptorAdapter
+import gov.nist.toolkit.fhir.support.SimContext
 import org.hl7.fhir.instance.model.api.IBaseResource
 
 import javax.servlet.http.HttpServletRequest

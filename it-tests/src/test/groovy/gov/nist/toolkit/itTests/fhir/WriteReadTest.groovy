@@ -4,6 +4,8 @@ import gov.nist.toolkit.actorfactory.client.SimId
 import gov.nist.toolkit.fhir.support.ResDb
 import gov.nist.toolkit.installation.Installation
 import gov.nist.toolkit.itTests.support.FhirSpecification
+import gov.nist.toolkit.utilities.io.Io
+import org.apache.http.HttpEntity
 import spock.lang.Shared
 /**
  *
@@ -125,8 +127,10 @@ class WriteReadTest extends FhirSpecification {
 
     def 'write'() {
         when:
-        def results = post("http://localhost:${remoteToolkitPort}/xdstools2/fsim/${simId}/Patient", patient)
-        println "Response is ${results}"
+        HttpEntity results = post("http://localhost:${remoteToolkitPort}/xdstools2/fsim/${simId}/Patient", patient)
+        InputStream is = results.getContent()
+        String content = Io.getStringFromInputStream(is)
+        println "Response is ${content}"
 
         then:
         true

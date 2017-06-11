@@ -22,69 +22,38 @@ class FhirSpecification extends ToolkitSpecification {
         Installation.instance().overrideToolkitPort(remoteToolkitPort)  // ignore toolkit.properties
     }
 
-    String post(def uri,  def _body) {
+    HttpEntity post(def uri,  def _body) {
         CloseableHttpClient httpclient = HttpClients.createDefault()
         HttpPost post = new HttpPost(uri)
         OutputStream baos
         HttpEntity entity = new StringEntity(_body)
         entity.contentType = 'application/fhir+json'
-//        HttpEntity() {
-//            @Override
-//            boolean isRepeatable() {
-//                return true
-//            }
-//
-//            @Override
-//            boolean isChunked() {
-//                return true
-//            }
-//
-//            @Override
-//            long getContentLength() {
-//                return -1
-//            }
-//
-//            @Override
-//            Header getContentType() {
-//                return new BasicHeader('Content-type','application/fhir+json')
-//            }
-//
-//            @Override
-//            Header getContentEncoding() {
-//                return null
-//            }
-//
-//            @Override
-//            InputStream getContent() throws IOException, UnsupportedOperationException {
-//                return Io.stringToInputStream(_body)
-//            }
-//
-//            @Override
-//            void writeTo(OutputStream outputStream) throws IOException {
-//                baos = outputStream
-//            }
-//
-//            @Override
-//            boolean isStreaming() {
-//                return false
-//            }
-//
-//            @Override
-//            void consumeContent() throws IOException {
-//
-//            }
-//        }
         post.setEntity(entity)
         CloseableHttpResponse response = httpclient.execute(post)
         HttpEntity entity2
-        def statusLine = null
         try {
-            statusLine = response.statusLine
             entity2 = response.entity
+            def statusLine = response.statusLine
+            println "status line : ${statusLine}"
+
+//            Header contentEncodingHeader = entity2.getContentEncoding();
+//
+//            if (contentEncodingHeader != null) {
+//                HeaderElement[] encodings =contentEncodingHeader.getElements();
+//                for (int i = 0; i < encodings.length; i++) {
+//                    if (encodings[i].getName().equalsIgnoreCase("gzip")) {
+//                        entity2 = new GzipDecompressingEntity(entity2);
+//                        break;
+//                    }
+//                }
+//            }
+
+            println entity2.getClass().getName()
+            return entity2
         } finally {
             response.close()
         }
-        println "status line : ${statusLine}"
+        return null
     }
 
 }

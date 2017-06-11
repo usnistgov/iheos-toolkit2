@@ -13,4 +13,11 @@ public class UuidAllocator {
         return "urn:uuid:" + uu;
     }
 
+    static public String allocateNaked() {
+        if (fact == null)
+            fact = UUIDFactory.getInstance();
+        UUID uu = fact.newUUID();
+        return uu.toString();
+    }
+
 }

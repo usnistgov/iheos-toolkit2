@@ -8,7 +8,7 @@ import ca.uhn.fhir.rest.server.interceptor.ResponseHighlighterInterceptor;
 import gov.nist.toolkit.actorfactory.client.SimId;
 import gov.nist.toolkit.fhir.support.ResDb;
 import gov.nist.toolkit.fhir.support.SimIndexer;
-import gov.nist.toolkit.fhirServer.config.SimContext;
+import gov.nist.toolkit.fhir.support.SimContext;
 import gov.nist.toolkit.fhirServer.config.SimTracker;
 import gov.nist.toolkit.fhirServer.provider.OrganizationResourceProvider;
 import gov.nist.toolkit.fhirServer.provider.PatientResourceProvider;

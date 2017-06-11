@@ -58,8 +58,8 @@ class ResDb extends SimDb {
      * @param resourceContents - JSON for index
      * @return
      */
-    File storeNewResource(String resourceType, String resourceContents) {
-        File file = newResourceFile(resourceType)
+    File storeNewResource(String resourceType, String resourceContents, String id) {
+        File file = new File(getEventDir(), "${id}.json")
         file.text = resourceContents
         return file
     }

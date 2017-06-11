@@ -5,12 +5,10 @@ import ca.uhn.fhir.model.api.ResourceMetadataKeyEnum;
 import ca.uhn.fhir.model.dstu2.composite.HumanNameDt;
 import ca.uhn.fhir.model.dstu2.resource.OperationOutcome;
 import ca.uhn.fhir.model.dstu2.resource.Patient;
-import ca.uhn.fhir.model.dstu2.valueset.AdministrativeGenderEnum;
 import ca.uhn.fhir.model.dstu2.valueset.IssueSeverityEnum;
 import ca.uhn.fhir.model.primitive.IdDt;
 import ca.uhn.fhir.model.primitive.InstantDt;
 import ca.uhn.fhir.model.primitive.StringDt;
-import ca.uhn.fhir.model.primitive.UriDt;
 import ca.uhn.fhir.parser.DataFormatException;
 import ca.uhn.fhir.rest.annotation.*;
 import ca.uhn.fhir.rest.api.MethodOutcome;
@@ -18,11 +16,10 @@ import ca.uhn.fhir.rest.server.IResourceProvider;
 import ca.uhn.fhir.rest.server.exceptions.InvalidRequestException;
 import ca.uhn.fhir.rest.server.exceptions.ResourceNotFoundException;
 import ca.uhn.fhir.rest.server.exceptions.UnprocessableEntityException;
-import gov.nist.toolkit.actorfactory.client.SimId;
-import gov.nist.toolkit.fhir.support.ResDb;
-import gov.nist.toolkit.fhir.support.SimIndexer;
-import gov.nist.toolkit.fhirServer.config.SimContext;
+import gov.nist.toolkit.fhir.search.SearchByTypeAndId;
+import gov.nist.toolkit.fhir.support.SimContext;
 import gov.nist.toolkit.fhirServer.config.SimTracker;
+import gov.nist.toolkit.registrymetadata.UuidAllocator;
 import gov.nist.toolkit.utilities.io.Io;
 import gov.nist.toolkit.xdsexception.ExceptionUtil;
 
@@ -39,7 +36,7 @@ public class PatientResourceProvider implements IResourceProvider {
 	/**
 	 * This map has a index ID as a key, and each key maps to a Deque list containing all versions of the index with that ID.
 	 */
-	private Map<Long, Deque<Patient>> myIdToPatientVersions = new HashMap<Long, Deque<Patient>>();
+	private Map<String, Deque<Patient>> myIdToPatientVersions = new HashMap<String, Deque<Patient>>();
 
 	/**
 	 * This is used to generate new IDs
@@ -51,22 +48,22 @@ public class PatientResourceProvider implements IResourceProvider {
 	 */
 	public PatientResourceProvider() {
 		ourLog.info("Starting Patient provider");
-		long resourceId = myNextId++;
-		
-		Patient patient = new Patient();
-		patient.setId(Long.toString(resourceId));
-		patient.addIdentifier();
-		patient.getIdentifier().get(0).setSystem(new UriDt("urn:hapitest:mrns"));
-		patient.getIdentifier().get(0).setValue("00002");
-		patient.addName().addFamily("Test");
-		patient.getName().get(0).addGiven("PatientOne");
-		patient.setGender(AdministrativeGenderEnum.FEMALE);
-
-		LinkedList<Patient> list = new LinkedList<Patient>();
-		list.add(patient);
-		
-		
-		myIdToPatientVersions.put(resourceId, list);
+//		long resourceId = myNextId++;
+//
+//		Patient patient = new Patient();
+//		patient.setId(Long.toString(resourceId));
+//		patient.addIdentifier();
+//		patient.getIdentifier().get(0).setSystem(new UriDt("urn:hapitest:mrns"));
+//		patient.getIdentifier().get(0).setValue("00002");
+//		patient.addName().addFamily("Test");
+//		patient.getName().get(0).addGiven("PatientOne");
+//		patient.setGender(AdministrativeGenderEnum.FEMALE);
+//
+//		LinkedList<Patient> list = new LinkedList<Patient>();
+//		list.add(patient);
+//
+//
+//		myIdToPatientVersions.put(resourceId, list);
 
 	}
 
@@ -78,7 +75,7 @@ public class PatientResourceProvider implements IResourceProvider {
 	 * @param theId
 	 *            The ID of the patient to retrieve
 	 */
-	private void addNewVersion(Patient thePatient, Long theId) {
+	private void addNewVersion(Patient thePatient, String theId) {
 		InstantDt publishedDate;
 		if (!myIdToPatientVersions.containsKey(theId)) {
 			myIdToPatientVersions.put(theId, new LinkedList<Patient>());
@@ -101,7 +98,7 @@ public class PatientResourceProvider implements IResourceProvider {
 		String newVersion = Integer.toString(existingVersions.size());
 		
 		// Create an ID with the new version and assign it back to the index
-		IdDt newId = new IdDt("Patient", Long.toString(theId), newVersion);
+		IdDt newId = new IdDt("Patient", theId, newVersion);
 		thePatient.setId(newId);
 		
 		existingVersions.add(thePatient);
@@ -115,13 +112,24 @@ public class PatientResourceProvider implements IResourceProvider {
 	public MethodOutcome createPatient(@ResourceParam Patient thePatient) {
 		validateResource(thePatient);
 
-		// Here we are just generating IDs sequentially
-		long id = myNextId++;
+		FhirContext ourCtx = FhirContext.forDstu2();
 
-		addNewVersion(thePatient, id);
+		// Create an ID with the new version and assign it back to the index
+
+		String theId = UuidAllocator.allocateNaked();
+		IdDt newId = new IdDt("Patient", theId, "1");
+		thePatient.setId(newId);
+
+		String patientString = ourCtx.newJsonParser().encodeResourceToString(thePatient);
+
+		SimTracker.getContext()
+				.store("Patient", patientString, theId)
+				.indexEvent();
+
+		addNewVersion(thePatient, theId);
 
 		// Let the caller know the ID of the newly created index
-		return new MethodOutcome(new IdDt(id));
+		return new MethodOutcome(new IdDt(theId));
 	}
 
 	/**
@@ -192,24 +200,24 @@ public class PatientResourceProvider implements IResourceProvider {
 		Deque<Patient> retVal;
 		ourLog.info("readPatient " + theId);
 
-		try {
-			retVal = myIdToPatientVersions.get(theId.getIdPartAsLong());
-			System.out.println("patient is " + retVal); System.out.flush();
-		} catch (NumberFormatException e) {
-			/*
-			 * If we can't parse the ID as a long, it's not valid so this is an unknown index
-			 */
-			throw new ResourceNotFoundException(theId);
-		}
+//		try {
+//			retVal = myIdToPatientVersions.get(theId.getIdPartAsLong());
+//			System.out.println("patient is " + retVal); System.out.flush();
+//		} catch (NumberFormatException e) {
+//			/*
+//			 * If we can't parse the ID as a long, it's not valid so this is an unknown index
+//			 */
+//			throw new ResourceNotFoundException(theId);
+//		}
 
 		SimContext simContext = SimTracker.getContext();
-		SimId simId = simContext.getSimId();
-		ResDb resDb = new ResDb(simId);
+//		SimId simId = simContext.getSimId();
+//		ResDb resDb = new ResDb(simId);
 		String patientId = theId.getIdPart();  // in the FHIR sense
 
-		SimIndexer simIndexer = new SimIndexer(simId).open();
-		List<String> paths = simIndexer.lookupByTypeAndId("Patient", patientId);
-		if (paths.size() == 0 || paths.size() > 1)
+		List<String> paths = new SearchByTypeAndId(simContext).run("Patient", patientId);
+
+		if (paths.size() != 1)
 			throw new ResourceNotFoundException(theId);
 
 		FhirContext ourCtx = FhirContext.forDstu2();
@@ -252,9 +260,9 @@ public class PatientResourceProvider implements IResourceProvider {
 	public MethodOutcome updatePatient(@IdParam IdDt theId, @ResourceParam Patient thePatient) {
 		validateResource(thePatient);
 
-		Long id;
+		String id;
 		try {
-			id = theId.getIdPartAsLong();
+			id = theId.getValueAsString();
 		} catch (DataFormatException e) {
 			throw new InvalidRequestException("Invalid ID " + theId.getValue() + " - Must be numeric");
 		}

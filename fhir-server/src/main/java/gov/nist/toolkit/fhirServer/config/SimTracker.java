@@ -1,5 +1,7 @@
 package gov.nist.toolkit.fhirServer.config;
 
+import gov.nist.toolkit.fhir.support.SimContext;
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -13,10 +15,13 @@ import java.util.Map;
  * needed, we index it off the Thread.  Each servlet request is handled
  * by its own thread.  The thread.id is used to lookup the SimContext
  * instance.
+ *
+ * In theory this is similar to the Request Context of the Servlet specification.
+ * Content is maintained that is relevant to the current request.
  */
 public class SimTracker {
 
-    static Map<Long, SimContext> contextMap = new HashMap<Long, SimContext>();
+    static private final Map<Long, SimContext> contextMap = new HashMap<Long, SimContext>();
 
     static public void setContext(SimContext cxt) {
         Long threadId = Thread.currentThread().getId();

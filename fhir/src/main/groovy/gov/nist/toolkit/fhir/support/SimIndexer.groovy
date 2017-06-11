@@ -9,15 +9,15 @@ import gov.nist.toolkit.fhir.resourceIndexer.IResourceIndexer
 import gov.nist.toolkit.utilities.io.Io
 import groovy.json.JsonSlurper
 import groovy.transform.Synchronized
-import org.apache.lucene.document.Document
-import org.apache.lucene.index.Term
-import org.apache.lucene.search.*
+import org.apache.lucene.search.IndexSearcher
 
 /**
  * Create Lucene index of a simulator
  * Supported index types have an indexer class
  * in gov.nist.toolkit.fhir.resourceIndexer
  * that implement the interface IResourceIndexer
+ *
+ * This class should only be referenced through SimContext since that is where the locking happens
  */
 class SimIndexer {
     File indexFile = null
@@ -44,15 +44,15 @@ class SimIndexer {
     }
 
     @Synchronized
-    def indexOneEvent(File eventDir) {
+    def indexOneEvent(Event event) {
         ResDb resDb = new ResDb(simId)
         initIndexFile()
         indexer.openIndexForWriting()
         ResourceIndexer resourceIndexer = new ResourceIndexer();
-        for (File resourceFile : eventDir.listFiles()) {
+        for (File resourceFile : event.getEventDir().listFiles()) {
             if (resourceFile.name == 'date.ser')
                 continue
-            resourceIndexer.index(simId, null, null, eventDir, resourceFile)
+            resourceIndexer.index(simId, null, null, event.getEventDir(), resourceFile)
         }
         indexer.finish()
     }
@@ -75,8 +75,10 @@ class SimIndexer {
      * @return
      */
     SimIndexer open() {
-        initIndexFile()
-        indexSearcher = indexer.openIndexForSearching(indexFile)
+        if (!indexSearcher) {
+            initIndexFile()
+            indexSearcher = indexer.openIndexForSearching(indexFile)
+        }
         return this
     }
 
@@ -145,39 +147,39 @@ class SimIndexer {
         }
     }
 
-    /**
-     *
-     * @param resourceType  must be non-null
-     * @param id   may be null (ignored) - if null then all resources of this type will be returned
-     * @return
-     */
-    List<String> lookupByTypeAndId(String resourceType, String id) {
-        if (!indexFile)
-            throw new Exception('SimIndexer : indexFile not specified')
-        BooleanQuery.Builder builder = new BooleanQuery.Builder()
-
-        Term term1 = new Term('type', resourceType)
-        TermQuery termQuery1 = new TermQuery(term1)
-        builder.add(termQuery1, BooleanClause.Occur.MUST)
-
-        if (id) {
-            Term term2 = new Term('id', id)
-            TermQuery termQuery2 = new TermQuery(term2)
-            builder.add(termQuery2, BooleanClause.Occur.MUST)
-        }
-
-        BooleanQuery query = builder.build()
-
-        // TopDocs is defined by Lucene as the container for
-        // search results
-        TopDocs docs  = indexSearcher.search(query, 1000)
-        List<String> paths = docs.scoreDocs.collect { ScoreDoc scoreDoc ->
-            Document doc = indexSearcher.doc(scoreDoc.doc)
-            doc.get('path')  // this is the path attribute defined in ResourceIndex
-                             // the location in the ResDb
-        }
-        return paths
-    }
+//    /**
+//     *
+//     * @param resourceType  must be non-null
+//     * @param id   may be null (ignored) - if null then all resources of this type will be returned
+//     * @return
+//     */
+//    List<String> lookupByTypeAndId(String resourceType, String id) {
+//        if (!indexFile)
+//            throw new Exception('SimIndexer : indexFile not specified')
+//        BooleanQuery.Builder builder = new BooleanQuery.Builder()
+//
+//        Term term1 = new Term('type', resourceType)
+//        TermQuery termQuery1 = new TermQuery(term1)
+//        builder.add(termQuery1, BooleanClause.Occur.MUST)
+//
+//        if (id) {
+//            Term term2 = new Term('id', id)
+//            TermQuery termQuery2 = new TermQuery(term2)
+//            builder.add(termQuery2, BooleanClause.Occur.MUST)
+//        }
+//
+//        BooleanQuery query = builder.build()
+//
+//        // TopDocs is defined by Lucene as the container for
+//        // search results
+//        TopDocs docs  = indexSearcher.search(query, 1000)
+//        List<String> paths = docs.scoreDocs.collect { ScoreDoc scoreDoc ->
+//            Document doc = indexSearcher.doc(scoreDoc.doc)
+//            doc.get('path')  // this is the path attribute defined in ResourceIndex
+//                             // the location in the ResDb
+//        }
+//        return paths
+//    }
 
     static delete(SimId simId) {
         if (!new ResDb(simId).isSim())
