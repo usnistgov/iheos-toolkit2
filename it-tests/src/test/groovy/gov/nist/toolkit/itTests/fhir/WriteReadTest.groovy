@@ -1,11 +1,13 @@
 package gov.nist.toolkit.itTests.fhir
 
+import ca.uhn.fhir.context.FhirContext
 import gov.nist.toolkit.actorfactory.client.SimId
 import gov.nist.toolkit.fhir.support.ResDb
 import gov.nist.toolkit.installation.Installation
 import gov.nist.toolkit.itTests.support.FhirSpecification
-import gov.nist.toolkit.utilities.io.Io
-import org.apache.http.HttpEntity
+import org.apache.http.message.BasicStatusLine
+import org.hl7.fhir.dstu3.model.OperationOutcome
+import org.hl7.fhir.instance.model.api.IBaseResource
 import spock.lang.Shared
 /**
  *
@@ -127,13 +129,20 @@ class WriteReadTest extends FhirSpecification {
 
     def 'write'() {
         when:
-        HttpEntity results = post("http://localhost:${remoteToolkitPort}/xdstools2/fsim/${simId}/Patient", patient)
-        InputStream is = results.getContent()
-        String content = Io.getStringFromInputStream(is)
-        println "Response is ${content}"
+        def (BasicStatusLine statusLine, String results) = post("http://localhost:${remoteToolkitPort}/xdstools2/fsim/${simId}/Patient", patient)
+        FhirContext ourCtx = FhirContext.forDstu3()
+        OperationOutcome oo
+        if (results) {
+            IBaseResource resource = ourCtx.newJsonParser().parseResource(results)
+            if (resource instanceof OperationOutcome) {
+                oo = (OperationOutcome) resource
+                println results
+            }
+        }
 
         then:
-        true
+        statusLine.statusCode == 201
+        !oo
     }
 
     String mkUrl() {

@@ -87,6 +87,7 @@
         <!--<module>fhir-server</module>-->
         <module>itsupport</module>
         <module>fhir-service</module>
+        <module>fhirserver2</module>
     </modules>
 
 

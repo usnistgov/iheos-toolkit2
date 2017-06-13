@@ -1,6 +1,6 @@
 package gov.nist.toolkit.grizzlySupport
 
-import gov.nist.toolkit.fhirServer.servlet.ExampleRestfulServlet
+import gov.nist.toolkit.fhirserver2.servlet.RestfulServlet
 import gov.nist.toolkit.simulators.servlet.SimServlet
 import groovy.transform.TypeChecked
 import org.apache.log4j.Logger
@@ -77,7 +77,7 @@ abstract public class AbstractGrizzlyController {
 
     AbstractGrizzlyController withFhirServlet() {
         final WebappContext tools2 = new WebappContext("fhir","")
-        final ServletRegistration sims = tools2.addServlet("fhir", new ExampleRestfulServlet());
+        final ServletRegistration sims = tools2.addServlet("fhir", new RestfulServlet());
         sims.addMapping('/xdstools2/fhir/*')
         tools2.deploy(getHttpServer())
         this
