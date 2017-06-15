@@ -3,15 +3,14 @@ package gov.nist.toolkit.fhir.support
 import org.apache.lucene.document.Document
 import org.apache.lucene.document.Field
 import org.apache.lucene.document.StringField
-import org.apache.lucene.index.DirectoryReader
-import org.apache.lucene.index.IndexReader
 import org.apache.lucene.index.IndexWriter
 import org.apache.lucene.index.IndexWriterConfig
-import org.apache.lucene.search.IndexSearcher
 import org.apache.lucene.store.Directory
 import org.apache.lucene.store.FSDirectory
 /**
  * Lucene index for a single Simulator
+ * This is only used by SimIndexer, hence the
+ * protected status.
  */
 class ResDbIndexer {
     IndexWriter indexWriter
@@ -22,11 +21,17 @@ class ResDbIndexer {
         indexDir = _indexDir
     }
 
+    /********************************************************
+     *
+     * Update the index support.  Called only by SimIndexer
+     *
+     ********************************************************/
+
     /**
      * After opening, index must be closed using finish()
      * @return
      */
-    boolean openIndexForWriting() {
+    protected openIndexForWriting() {
         try {
             Directory dir = FSDirectory.open(indexDir.toPath())
             IndexWriterConfig iwc = new IndexWriterConfig()
@@ -40,24 +45,12 @@ class ResDbIndexer {
         return false;
     }
 
-    FSDirectory indexDirectory = null
-    IndexReader indexReader = null
-
-    IndexSearcher openIndexForSearching(File index) {
-        indexDirectory = FSDirectory.open(index.toPath())
-        indexReader = DirectoryReader.open(indexDirectory)
-        IndexSearcher indexSearcher = new IndexSearcher(indexReader);
-        return indexSearcher
-    }
-
-    void close() {
-        if (indexDirectory) indexDirectory.close()
-        indexDirectory = null
-        if (indexReader) indexReader.close()
-        indexReader = null
-    }
-
-    void addResource(ResourceIndex resource) {
+    /**
+     * add details of a resource to the index.  Called only by
+     * SimIndexer.ResourceIndexer#index
+     * @param resource
+     */
+    protected addResource(ResourceIndex resource) {
         Document doc = new Document()
         resource.items.each { ResourceIndexItem item ->
             doc.add(new StringField(item.field, item.value, Field.Store.YES))
@@ -71,12 +64,14 @@ class ResDbIndexer {
         }
     }
 
-    void finish() {
-        try {
+    protected commit() {
             indexWriter.commit();
-            indexWriter.close();
-        } catch (IOException ex) {
-            System.err.println("We had a problem closing the index: " + ex.getMessage());
-        }
     }
+
+    protected close() {
+        if (indexWriter)
+            indexWriter.close()
+        indexWriter = null
+    }
+
 }

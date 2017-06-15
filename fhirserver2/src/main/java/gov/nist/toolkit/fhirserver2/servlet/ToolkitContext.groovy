@@ -18,7 +18,9 @@ public class ToolkitContext {
     }
 
     public SimContext getSimContext() {
-        return (SimContext) theRequest.getAttribute(SIMULATOR_CONTEXT);
+        SimContext simContext = (SimContext) theRequest.getAttribute(SIMULATOR_CONTEXT);
+        assert simContext
+        return simContext
     }
 
     public ToolkitContext setSimContext(SimContext simContext) {

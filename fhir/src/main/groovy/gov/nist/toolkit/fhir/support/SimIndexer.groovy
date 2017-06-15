@@ -10,7 +10,6 @@ import gov.nist.toolkit.utilities.io.Io
 import groovy.json.JsonSlurper
 import groovy.transform.Synchronized
 import org.apache.lucene.search.IndexSearcher
-
 /**
  * Create Lucene index of a simulator
  * Supported index types have an indexer class
@@ -18,18 +17,67 @@ import org.apache.lucene.search.IndexSearcher
  * that implement the interface IResourceIndexer
  *
  * This class should only be referenced through SimContext since that is where the locking happens
+ * Only one instance of this class should ever exist for a single simulator.  SimIndexManager
+ * provides that
  */
 class SimIndexer {
-    File indexFile = null
+    File indexFile = null  // the directory within the Sim for holding the index
     ResDbIndexer indexer = null
     SimId simId
-    IndexSearcher indexSearcher
 
+    // home of the resource index builders
+    // There should be an indexer class for each resource of interest
+    // named for that resource - for Patient it would be Patient.java or Patient.groovy
     final static String INDEXER_PACKAGE = 'gov.nist.toolkit.fhir.resourceIndexer.'
 
-    SimIndexer(SimId _simId) {
+    /**
+     * should only be called by SimIndexManager - that class provides synchronization
+     * @param _simId
+     */
+    protected SimIndexer(SimId _simId) {
         simId = _simId
+        initIndexFile()
     }
+
+    /**
+     * Index all the resources in one simulator event. Since only one instance of this class
+     * will exist per simulator the @Synchronized takes care of the thread management
+     * @param event
+     * @return
+     */
+    @Synchronized
+    def indexEvent(Event event) {
+//        ResDb resDb = new ResDb(simId)
+        indexer.openIndexForWriting()  // locks Lucene index
+        ResourceIndexer resourceIndexer = new ResourceIndexer();
+        for (File resourceFile : event.getEventDir().listFiles()) {
+            if (resourceFile.name == 'date.ser')
+                continue
+            resourceIndexer.index(simId, null, null, event.getEventDir(), resourceFile)
+        }
+        indexer.commit()    // commit and clear Lucene index lock
+    }
+
+    /**
+     * Link the ResDbIndexer to the Lucene directory inside the simulator
+     * @return
+     */
+    private initIndexFile() {
+        if (!new ResDb(simId).isSim())
+            throw new NoSimException('Sim ${simId} does not exist')
+        indexFile = ResDb.getIndexFile(simId)
+        indexer = new ResDbIndexer(indexFile)
+    }
+
+    def close() {
+        if (indexer) indexer.close()
+        indexer = null
+    }
+
+
+
+
+
 
     /**
      * Index a single FHIR sim
@@ -40,22 +88,10 @@ class SimIndexer {
         initIndexFile()
         indexer.openIndexForWriting()
         resDb.perResource(null, null, new ResourceIndexer())
-        indexer.finish()
+        indexer.commit()
     }
 
-    @Synchronized
-    def indexOneEvent(Event event) {
-        ResDb resDb = new ResDb(simId)
-        initIndexFile()
-        indexer.openIndexForWriting()
-        ResourceIndexer resourceIndexer = new ResourceIndexer();
-        for (File resourceFile : event.getEventDir().listFiles()) {
-            if (resourceFile.name == 'date.ser')
-                continue
-            resourceIndexer.index(simId, null, null, event.getEventDir(), resourceFile)
-        }
-        indexer.finish()
-    }
+
 
     /**
      * Build indexes for all FHIR sims
@@ -70,6 +106,12 @@ class SimIndexer {
         return simIds.size()
     }
 
+
+
+
+
+    IndexSearcher indexSearcher
+
     /**
      * open for search
      * @return
@@ -82,21 +124,7 @@ class SimIndexer {
         return this
     }
 
-    def close() {
-        if (indexer) indexer.close()
-        indexer = null
-    }
 
-    /**
-     * Link the ResDbIndexer to the Lucene directory inside the simulator
-     * @return
-     */
-    private initIndexFile() {
-        if (!new ResDb(simId).isSim())
-            throw new NoSimException('Sim ${simId} does not exist')
-        indexFile = ResDb.getIndexFile(simId)
-        indexer = new ResDbIndexer(indexFile)
-    }
 
     /**
      * Callback for FHIR sim tree walker that indexes single Resource.

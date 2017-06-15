@@ -3,6 +3,7 @@ package gov.nist.toolkit.itTests.fhir
 import ca.uhn.fhir.context.FhirContext
 import gov.nist.toolkit.actorfactory.client.SimId
 import gov.nist.toolkit.fhir.support.ResDb
+import gov.nist.toolkit.fhir.support.SimIndexManager
 import gov.nist.toolkit.installation.Installation
 import gov.nist.toolkit.itTests.support.FhirSpecification
 import org.apache.http.message.BasicStatusLine
@@ -122,14 +123,19 @@ class WriteReadTest extends FhirSpecification {
         new ResDb().mkSim(simId)
     }
 
+    def cleanupSpec() {
+        SimIndexManager.close()
+    }
+
     def setup() {
         println "EC is ${Installation.instance().externalCache().toString()}"
     }
 
 
+
     def 'write'() {
         when:
-        def (BasicStatusLine statusLine, String results) = post("http://localhost:${remoteToolkitPort}/xdstools2/fsim/${simId}/Patient", patient)
+        def (BasicStatusLine statusLine, String results, LocationHeader locationHeader) = post("http://localhost:${remoteToolkitPort}/xdstools2/fsim/${simId}/Patient", patient)
         FhirContext ourCtx = FhirContext.forDstu3()
         OperationOutcome oo
         if (results) {
@@ -142,6 +148,28 @@ class WriteReadTest extends FhirSpecification {
 
         then:
         statusLine.statusCode == 201
+        locationHeader.id
+        locationHeader.vid == '1'
+        !oo
+    }
+
+    def 'write 2'() {
+        when:
+        def (BasicStatusLine statusLine, String results, LocationHeader locationHeader) = post("http://localhost:${remoteToolkitPort}/xdstools2/fsim/${simId}/Patient", patient)
+        FhirContext ourCtx = FhirContext.forDstu3()
+        OperationOutcome oo
+        if (results) {
+            IBaseResource resource = ourCtx.newJsonParser().parseResource(results)
+            if (resource instanceof OperationOutcome) {
+                oo = (OperationOutcome) resource
+                println results
+            }
+        }
+
+        then:
+        statusLine.statusCode == 201
+        locationHeader.id
+        locationHeader.vid == '1'
         !oo
     }
 

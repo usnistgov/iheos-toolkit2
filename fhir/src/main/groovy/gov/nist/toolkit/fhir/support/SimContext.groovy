@@ -11,10 +11,9 @@ public class SimContext {
     private Event event = null
     private ResDb resDb = null
 
-    private SimIndexer simIndexer = null // not initialized until needed
     IndexSearcher indexSearcher = null
-    private File indexFile = null
-    private ResDbIndexer indexer = null
+//    private File indexFile = null
+//    private ResDbIndexer indexer = null
 
     SimContext(SimId _simId) {
         simId = _simId
@@ -34,29 +33,8 @@ public class SimContext {
             throw new NoSimException('Sim ${simId} does not exist')
         resDb = new ResDb(simId, ResDb.BASE_TYPE, ResDb.STORE_TRANSACTION /* this is a stretch */)
         event = new Event(new File(resDb.getEvent()))
-        indexFile = ResDb.getIndexFile(simId)
-        indexer = new ResDbIndexer(indexFile)
-    }
-
-    IndexSearcher withSearch() {
-       return lock().open().indexSearcher
-    }
-
-    /**
-     * doesn't really mean lock yet... maybe later
-     * don't know how to manage the locking yet
-     */
-    SimIndexer lock() {
-        if (!simIndexer) {
-            simIndexer = new SimIndexer(simId)
-        }
-        return simIndexer
-    }
-
-    void unlock() {
-        if (!simIndexer) return
-        simIndexer.close()  // this marks the end of queries during the processing of the current event
-        simIndexer = null
+//        indexFile = ResDb.getIndexFile(simId)
+//        indexer = new ResDbIndexer(indexFile)
     }
 
     /**
@@ -74,6 +52,6 @@ public class SimContext {
      * Index the current event
      */
     void indexEvent() {
-        lock().indexOneEvent(event)
+        SimIndexManager.getIndexer(simId).indexEvent(event)
     }
 }

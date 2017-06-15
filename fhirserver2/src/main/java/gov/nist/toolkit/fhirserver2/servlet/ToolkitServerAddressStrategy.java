@@ -1,8 +1,6 @@
 package gov.nist.toolkit.fhirserver2.servlet;
 
 import ca.uhn.fhir.rest.server.IServerAddressStrategy;
-import gov.nist.toolkit.actorfactory.client.SimId;
-import gov.nist.toolkit.fhir.support.SimContext;
 
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
@@ -12,28 +10,34 @@ import javax.servlet.http.HttpServletRequest;
  */
 public class ToolkitServerAddressStrategy implements IServerAddressStrategy {
 
-    static final private String context = "fsim";
+//    static final private String context = "fsim";
+
+    private String base = null;
 
     @Override
     public String determineServerBase(ServletContext servletContext, HttpServletRequest httpServletRequest) {
+        if (base != null)
+            return base;
+
+
         String uri =  httpServletRequest.getRequestURI();
 
-        int index = uri.indexOf(context);
+        int index = uri.indexOf(HttpRequestParser.CONTEXT);
         if (index == -1) return uri;
         index = uri.indexOf("/", index); // / following context
         if (index == -1) return uri;
         index++;     // start of simId
-        int simIdStart = index;
+//        int simIdStart = index;
         if (index >= uri.length()) return uri;
         index = uri.indexOf("/", index +1);
-        int simIdEnd = index;
+//        int simIdEnd = index;
 
-        String simId = uri.substring(simIdStart, simIdEnd);
+//        String simId = uri.substring(simIdStart, simIdEnd);
+//
+//        SimContext simContext = new SimContext(new SimId(simId));
+//        new ToolkitContext(httpServletRequest).setSimContext(simContext);
 
-        SimContext simContext = new SimContext(new SimId(simId));
-        new ToolkitContext(httpServletRequest).setSimContext(simContext);
-
-        String base = uri.substring(0, index);
+        base = uri.substring(0, index);
         return base;
     }
 }

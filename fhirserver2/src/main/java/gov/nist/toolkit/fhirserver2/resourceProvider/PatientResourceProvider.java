@@ -8,7 +8,8 @@ import ca.uhn.fhir.rest.api.MethodOutcome;
 import ca.uhn.fhir.rest.param.StringParam;
 import ca.uhn.fhir.rest.server.IResourceProvider;
 import ca.uhn.fhir.rest.server.exceptions.UnprocessableEntityException;
-import gov.nist.toolkit.fhirserver2.servlet.ToolkitContext;
+import gov.nist.toolkit.fhir.support.SimContext;
+import gov.nist.toolkit.fhirserver2.servlet.HttpRequestParser;
 import gov.nist.toolkit.registrymetadata.UuidAllocator;
 import org.hl7.fhir.dstu3.model.*;
 
@@ -45,16 +46,16 @@ public class PatientResourceProvider implements IResourceProvider {
 
         String patientString = ourCtx.newJsonParser().encodeResourceToString(thePatient);
 
-        new ToolkitContext(theRequest).getSimContext()
+        new SimContext(HttpRequestParser.simIdFromRequest(theRequest))
                 .store("Patient", patientString, theId)
                 .indexEvent();
 
 
 
-        addNewVersion(thePatient, theId);
+//        addNewVersion(thePatient, theId);
 
         // Let the caller know the ID of the newly created resource
-        return new MethodOutcome(new IdDt(theId));
+        return new MethodOutcome(newId);
     }
 
     /**
