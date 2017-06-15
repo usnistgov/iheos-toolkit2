@@ -3,18 +3,25 @@ package gov.nist.toolkit.fhirserver2.resourceProvider;
 import ca.uhn.fhir.context.FhirContext;
 import ca.uhn.fhir.model.primitive.IdDt;
 import ca.uhn.fhir.model.primitive.InstantDt;
+import ca.uhn.fhir.parser.IParser;
 import ca.uhn.fhir.rest.annotation.*;
 import ca.uhn.fhir.rest.api.MethodOutcome;
 import ca.uhn.fhir.rest.param.StringParam;
 import ca.uhn.fhir.rest.server.IResourceProvider;
+import ca.uhn.fhir.rest.server.exceptions.InternalErrorException;
 import ca.uhn.fhir.rest.server.exceptions.UnprocessableEntityException;
+import gov.nist.toolkit.fhir.search.SearchByTypeAndId;
 import gov.nist.toolkit.fhir.support.SimContext;
+import gov.nist.toolkit.fhirserver2.context.ToolkitFhirContext;
 import gov.nist.toolkit.fhirserver2.servlet.HttpRequestParser;
 import gov.nist.toolkit.registrymetadata.UuidAllocator;
 import org.hl7.fhir.dstu3.model.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.util.Collections;
 import java.util.List;
 
@@ -38,7 +45,7 @@ public class PatientResourceProvider implements IResourceProvider {
                                        HttpServletResponse theResponse) {
         validateResource(thePatient);
 
-        FhirContext ourCtx = FhirContext.forDstu3();
+        FhirContext ourCtx = ToolkitFhirContext.get();
 
         String theId = UuidAllocator.allocateNaked();
         IdDt newId = new IdDt("Patient", theId, "1");
@@ -49,10 +56,6 @@ public class PatientResourceProvider implements IResourceProvider {
         new SimContext(HttpRequestParser.simIdFromRequest(theRequest))
                 .store("Patient", patientString, theId)
                 .indexEvent();
-
-
-
-//        addNewVersion(thePatient, theId);
 
         // Let the caller know the ID of the newly created resource
         return new MethodOutcome(newId);
@@ -108,16 +111,32 @@ public class PatientResourceProvider implements IResourceProvider {
      *    Returns a resource matching this identifier, or null if none exists.
      */
     @Read()
-    public Patient getResourceById(@IdParam IdType theId) {
-        Patient patient = new Patient();
-        patient.addIdentifier();
-        patient.getIdentifier().get(0).setSystem("urn:hapitest:mrns");
-        patient.getIdentifier().get(0).setValue("00002");
-        patient.addName();
-        patient.getName().get(0).setFamily("Test");
-        patient.getName().get(0).addGiven("PatientOne");
-        patient.setGender(Enumerations.AdministrativeGender.FEMALE);
-        return patient;
+    public Patient getResourceById(@IdParam IdType theId,
+                                   HttpServletRequest theRequest,
+                                   HttpServletResponse theResponse) {
+
+        FhirContext ourCtx = ToolkitFhirContext.get();
+
+        String resourceType = theId.getResourceType();
+        String id = theId.getIdPart();
+
+        List<String> paths = new SearchByTypeAndId(new SimContext(HttpRequestParser.simIdFromRequest(theRequest))).run(resourceType, id);
+
+        if (paths.size() == 0)
+            return null;
+
+        if (paths.size() > 1)
+            throw new InternalErrorException("Multiple results found");
+
+        File f = new File(paths.get(0));
+
+        try {
+            IParser parser = ourCtx.newJsonParser();
+            Patient patient = parser.parseResource(Patient.class, new FileReader(f));
+            return patient;
+        } catch (FileNotFoundException e) {
+            throw new InternalErrorException("File " + paths.get(0) + " not found");
+        }
     }
 
     /**

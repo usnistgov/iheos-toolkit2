@@ -3,6 +3,7 @@ package gov.nist.toolkit.fhir.support
 import gov.nist.toolkit.actorfactory.client.NoSimException
 import gov.nist.toolkit.actorfactory.client.SimId
 import org.apache.lucene.search.IndexSearcher
+
 /**
  *
  */
@@ -11,9 +12,7 @@ public class SimContext {
     private Event event = null
     private ResDb resDb = null
 
-    IndexSearcher indexSearcher = null
-//    private File indexFile = null
-//    private ResDbIndexer indexer = null
+   // IndexSearcher indexSearcher = null   // referenced by various search utilities
 
     SimContext(SimId _simId) {
         simId = _simId
@@ -24,6 +23,10 @@ public class SimContext {
         return simId
     }
 
+    IndexSearcher getIndexSearcher() {
+        SimIndexManager.getIndexer(simId).indexSearcher
+    }
+
     /**
      * Link the ResDbIndexer to the Lucene directory inside the simulator
      * @return
@@ -32,9 +35,7 @@ public class SimContext {
         if (!new ResDb(simId).isSim())
             throw new NoSimException('Sim ${simId} does not exist')
         resDb = new ResDb(simId, ResDb.BASE_TYPE, ResDb.STORE_TRANSACTION /* this is a stretch */)
-        event = new Event(new File(resDb.getEvent()))
-//        indexFile = ResDb.getIndexFile(simId)
-//        indexer = new ResDbIndexer(indexFile)
+        event = new Event(resDb.getEventDir())
     }
 
     /**

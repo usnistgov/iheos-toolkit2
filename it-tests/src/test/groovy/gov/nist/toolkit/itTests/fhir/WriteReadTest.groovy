@@ -1,13 +1,16 @@
 package gov.nist.toolkit.itTests.fhir
 
 import ca.uhn.fhir.context.FhirContext
+import ca.uhn.fhir.parser.IParser
 import gov.nist.toolkit.actorfactory.client.SimId
 import gov.nist.toolkit.fhir.support.ResDb
 import gov.nist.toolkit.fhir.support.SimIndexManager
 import gov.nist.toolkit.installation.Installation
+import gov.nist.toolkit.itTests.support.FhirId
 import gov.nist.toolkit.itTests.support.FhirSpecification
 import org.apache.http.message.BasicStatusLine
 import org.hl7.fhir.dstu3.model.OperationOutcome
+import org.hl7.fhir.dstu3.model.Patient
 import org.hl7.fhir.instance.model.api.IBaseResource
 import spock.lang.Shared
 /**
@@ -116,6 +119,7 @@ class WriteReadTest extends FhirSpecification {
 '''
 
     @Shared SimId simId = new SimId('default', 'test')
+    @Shared FhirContext ourCtx = FhirContext.forDstu3()
 
     def setupSpec() {
         startGrizzly('8889')   // sets up Grizzly server on remoteToolkitPort
@@ -135,8 +139,7 @@ class WriteReadTest extends FhirSpecification {
 
     def 'write'() {
         when:
-        def (BasicStatusLine statusLine, String results, LocationHeader locationHeader) = post("http://localhost:${remoteToolkitPort}/xdstools2/fsim/${simId}/Patient", patient)
-        FhirContext ourCtx = FhirContext.forDstu3()
+        def (BasicStatusLine statusLine, String results, FhirId locationHeader) = post("http://localhost:${remoteToolkitPort}/xdstools2/fsim/${simId}/Patient", patient)
         OperationOutcome oo
         if (results) {
             IBaseResource resource = ourCtx.newJsonParser().parseResource(results)
@@ -151,11 +154,25 @@ class WriteReadTest extends FhirSpecification {
         locationHeader.id
         locationHeader.vid == '1'
         !oo
+
+        when:
+        def (BasicStatusLine statusLine2, String results2) = get("http://localhost:${remoteToolkitPort}/xdstools2/fsim/${simId}/Patient/${locationHeader.id}")
+
+        then:
+        statusLine2.statusCode == 200
+
+        when:
+        IParser parser = ourCtx.newJsonParser()
+        Patient patient = parser.parseResource(Patient.class, results2)
+        String fid = patient.id
+
+        then:
+        new FhirId(fid) == locationHeader
     }
 
     def 'write 2'() {
         when:
-        def (BasicStatusLine statusLine, String results, LocationHeader locationHeader) = post("http://localhost:${remoteToolkitPort}/xdstools2/fsim/${simId}/Patient", patient)
+        def (BasicStatusLine statusLine, String results, FhirId locationHeader) = post("http://localhost:${remoteToolkitPort}/xdstools2/fsim/${simId}/Patient", patient)
         FhirContext ourCtx = FhirContext.forDstu3()
         OperationOutcome oo
         if (results) {

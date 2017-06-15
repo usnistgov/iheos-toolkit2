@@ -6,8 +6,10 @@ import gov.nist.toolkit.utilities.io.Io
 import org.apache.http.HttpEntity
 import org.apache.http.HttpResponse
 import org.apache.http.client.HttpClient
+import org.apache.http.client.methods.HttpGet
 import org.apache.http.client.methods.HttpPost
 import org.apache.http.entity.StringEntity
+import org.apache.http.impl.client.HttpClientBuilder
 import org.apache.http.impl.client.HttpClients
 
 /**
@@ -24,11 +26,6 @@ class FhirSpecification extends ToolkitSpecification {
         Installation.instance().overrideToolkitPort(remoteToolkitPort)  // ignore toolkit.properties
     }
 
-    class LocationHeader {
-        String id = null   // id
-        String vid = null  // version
-    }
-
 
     def post(def uri,  def _body) {
         HttpClient httpclient = HttpClients.createDefault()
@@ -37,25 +34,16 @@ class FhirSpecification extends ToolkitSpecification {
         entity.contentType = 'application/fhir+json'
         post.setEntity(entity)
         HttpResponse response = httpclient.execute(post)
-        LocationHeader locationHeader = new LocationHeader()
+        FhirId locationHeader
         String lhdr = response.getFirstHeader('Location')
         if (lhdr) {
             def (nametag, value) = lhdr.split(':')
-            def locationParts = value.split('/')
-            int historyIndex = locationParts.findIndexOf { it == '_history'}
-            if (historyIndex != -1) {
-                locationHeader.id = locationParts[historyIndex - 1]
-                locationHeader.vid = locationParts[historyIndex + 1]
-            } else {
-                locationHeader.id = locationParts[locationParts.size()-1]
-            }
+            locationHeader = new FhirId(value)
         }
         HttpEntity entity2
         try {
             entity2 = response.entity
             def statusLine = response.statusLine
-//            println "status line : ${statusLine}"
-//            println entity2.getClass().getName()
 
             InputStream is = entity2.getContent()
             String content = Io.getStringFromInputStream(is)
@@ -65,6 +53,14 @@ class FhirSpecification extends ToolkitSpecification {
             response.close()
         }
         return null
+    }
+
+    def get(def uri) {
+        HttpClient client = HttpClientBuilder.create().build()
+        HttpGet request = new HttpGet(uri)
+        request.addHeader('Content-Type', 'application/fhir+json')
+        HttpResponse response = client.execute(request)
+        return [response.statusLine, Io.getStringFromInputStream(response.getEntity().content)]
     }
 
 }

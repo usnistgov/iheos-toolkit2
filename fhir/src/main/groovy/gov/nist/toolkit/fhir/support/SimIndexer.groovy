@@ -47,7 +47,6 @@ class SimIndexer {
      */
     @Synchronized
     def indexEvent(Event event) {
-//        ResDb resDb = new ResDb(simId)
         indexer.openIndexForWriting()  // locks Lucene index
         ResourceIndexer resourceIndexer = new ResourceIndexer();
         for (File resourceFile : event.getEventDir().listFiles()) {
@@ -106,25 +105,9 @@ class SimIndexer {
         return simIds.size()
     }
 
-
-
-
-
-    IndexSearcher indexSearcher
-
-    /**
-     * open for search
-     * @return
-     */
-    SimIndexer open() {
-        if (!indexSearcher) {
-            initIndexFile()
-            indexSearcher = indexer.openIndexForSearching(indexFile)
-        }
-        return this
+    IndexSearcher getIndexSearcher() {
+        indexer.openIndexForSearching(indexFile)
     }
-
-
 
     /**
      * Callback for FHIR sim tree walker that indexes single Resource.

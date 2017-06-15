@@ -7,7 +7,7 @@ import gov.nist.toolkit.actorfactory.client.SimId
  */
 class SimIndexManager {
     /*
-     * Each SimIndexer manages a single Lucene IndexSearcher instance for
+     * Each SimIndexer manages a single Lucene IndexWriter instance for
      * each simulator.
      */
     static private Map<SimId, SimIndexer> indexers = [ : ]
