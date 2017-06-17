@@ -59,7 +59,13 @@ class ResDb extends SimDb {
      * @return
      */
     File storeNewResource(String resourceType, String resourceContents, String id) {
-        File file = new File(getEventDir(), "${id}.json")
+
+        File resourceTypeDir = new File(getEventDir(), resourceType)
+
+//        File resourceTypeDir = getEventDir()
+
+        resourceTypeDir.mkdirs()
+        File file = new File(resourceTypeDir, "${id}.json")
         file.text = resourceContents
         return file
     }
@@ -91,13 +97,15 @@ class ResDb extends SimDb {
         return Installation.instance().fhirSimDbFile()
     }
 
+    static String luceneIndexDirectoryName = 'simindex'
+
     /**
      * Get location of Lucene index for this simulator
      * @param simId
      * @return
      */
     static File getIndexFile(SimId simId) {
-        return new File(getSimBase(simId), 'simindex')
+        return new File(getSimBase(simId), luceneIndexDirectoryName)
     }
 
     /**

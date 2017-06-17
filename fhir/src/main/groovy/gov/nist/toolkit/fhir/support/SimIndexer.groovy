@@ -9,7 +9,12 @@ import gov.nist.toolkit.fhir.resourceIndexer.IResourceIndexer
 import gov.nist.toolkit.utilities.io.Io
 import groovy.json.JsonSlurper
 import groovy.transform.Synchronized
+import org.apache.lucene.document.Document
+import org.apache.lucene.index.DirectoryReader
+import org.apache.lucene.index.IndexReader
 import org.apache.lucene.search.IndexSearcher
+import org.apache.lucene.store.FSDirectory
+
 /**
  * Create Lucene index of a simulator
  * Supported index types have an indexer class
@@ -49,12 +54,31 @@ class SimIndexer {
     def indexEvent(Event event) {
         indexer.openIndexForWriting()  // locks Lucene index
         ResourceIndexer resourceIndexer = new ResourceIndexer();
-        for (File resourceFile : event.getEventDir().listFiles()) {
-            if (resourceFile.name == 'date.ser')
-                continue
-            resourceIndexer.index(simId, null, null, event.getEventDir(), resourceFile)
-        }
+        File eventDir = event.getEventDir()
+        println "Index eventDir: ${eventDir}"
+
+        indexDir(eventDir, resourceIndexer, ['.json'])
+
+//        for (File resourceFile : eventDir.listFiles()) {
+//            if (resourceFile.name == 'date.ser')
+//                continue
+//            resourceIndexer.index(simId, null, null, event.getEventDir(), resourceFile)
+//        }
+
         indexer.commit()    // commit and clear Lucene index lock
+    }
+
+    private indexDir(File dir, ResourceIndexer resourceIndexer, def fileTypes) {
+        dir.listFiles().each { File f ->
+            if (isIndexableFile(f, fileTypes))
+                resourceIndexer.index(simId, null, null, dir, f)
+            else if (f.isDirectory())
+                indexDir(f, resourceIndexer, fileTypes)
+        }
+    }
+
+    static boolean isIndexableFile(File f, def fileTypes) {
+        fileTypes.find { f.name.endsWith(it)}
     }
 
     /**
@@ -73,7 +97,21 @@ class SimIndexer {
         indexer = null
     }
 
-
+    def dump() {
+        if (!indexFile)
+            indexFile = ResDb.getIndexFile(simId)
+        IndexReader indexReader = DirectoryReader.open(FSDirectory.open(indexFile.toPath()))
+        (0..indexReader.numDocs()-1).each {
+            println "Document ${it}"
+            Document d = indexReader.document(it)
+            println "${d.fields.find { it.name() == ResDbIndexer.PATH_FIELD}.stringValue()}"
+            d.fields.each { field ->
+                if (field.name() != ResDbIndexer.PATH_FIELD)
+                println "   ${field.name()}: ${field.stringValue()}"
+            }
+        }
+        indexReader.close()
+    }
 
 
 

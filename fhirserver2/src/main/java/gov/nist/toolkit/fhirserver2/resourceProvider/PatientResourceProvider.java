@@ -12,6 +12,7 @@ import ca.uhn.fhir.rest.server.exceptions.InternalErrorException;
 import ca.uhn.fhir.rest.server.exceptions.UnprocessableEntityException;
 import gov.nist.toolkit.fhir.search.SearchByTypeAndId;
 import gov.nist.toolkit.fhir.support.SimContext;
+import gov.nist.toolkit.fhir.support.SimIndexManager;
 import gov.nist.toolkit.fhirserver2.context.ToolkitFhirContext;
 import gov.nist.toolkit.fhirserver2.servlet.HttpRequestParser;
 import gov.nist.toolkit.registrymetadata.UuidAllocator;
@@ -119,6 +120,8 @@ public class PatientResourceProvider implements IResourceProvider {
 
         String resourceType = theId.getResourceType();
         String id = theId.getIdPart();
+
+        SimIndexManager.getIndexer(HttpRequestParser.simIdFromRequest(theRequest)).dump();
 
         List<String> paths = new SearchByTypeAndId(new SimContext(HttpRequestParser.simIdFromRequest(theRequest))).run(resourceType, id);
 

@@ -63,6 +63,8 @@ class ResDbIndexer {
         indexReader = null
     }
 
+    static String PATH_FIELD = 'path'
+
     /**
      * add details of a resource to the index.  Called only by
      * SimIndexer.ResourceIndexer#index
@@ -73,7 +75,7 @@ class ResDbIndexer {
         resource.items.each { ResourceIndexItem item ->
             doc.add(new StringField(item.field, item.value, Field.Store.YES))
         }
-        doc.add(new StringField('path', resource.path, Field.Store.YES))
+        doc.add(new StringField(PATH_FIELD, resource.path, Field.Store.YES))
         println 'indexing ' + doc
         try {
             indexWriter.addDocument(doc);
