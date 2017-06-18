@@ -84,6 +84,10 @@ class ResDbIndexer {
         }
     }
 
+    def addResource(ResourceIndexSet resourceIndexSet) {
+        resourceIndexSet.items.each { addResource(it)}
+    }
+
     FSDirectory indexDirectory = null
     IndexReader indexReader = null
 

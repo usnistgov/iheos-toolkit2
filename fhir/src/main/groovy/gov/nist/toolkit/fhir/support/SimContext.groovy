@@ -2,7 +2,10 @@ package gov.nist.toolkit.fhir.support
 
 import gov.nist.toolkit.actorfactory.client.NoSimException
 import gov.nist.toolkit.actorfactory.client.SimId
+import gov.nist.toolkit.fhir.context.ToolkitFhirContext
+import gov.nist.toolkit.fhir.resourceIndexer.IResourceIndexer
 import org.apache.lucene.search.IndexSearcher
+import org.hl7.fhir.dstu3.model.DomainResource
 
 /**
  *
@@ -11,6 +14,8 @@ public class SimContext {
     private SimId simId = null
     private Event event = null
     private ResDb resDb = null
+    // all the resources added in a transaction (aka a SimContext instance)
+    ResourceIndexSet resourceIndexSet = new ResourceIndexSet()
 
    // IndexSearcher indexSearcher = null   // referenced by various search utilities
 
@@ -41,18 +46,49 @@ public class SimContext {
     /**
      * This does not require locking - only the indexing
      * since it must update a shared resource - the index tables
-     * @param resourceType
-     * @param resourceContents
+     * @param resourceType - resource type name
+     * @param theResource - resource object
+     * @param resourceString - resource as JSON string
      */
-    SimContext store(String resourceType, String resourceContents, String id) {
-        resDb.storeNewResource(resourceType, resourceContents, id)
-        return this
+    File store(String resourceType, DomainResource theResource, String id) {
+        File resourceFile = resDb.storeNewResource(resourceType,
+                ToolkitFhirContext.get().newJsonParser().encodeResourceToString(theResource),
+                id)
+        return resourceFile
+    }
+
+    /**
+     * build index for one resource
+     * @param resourceType - resource type name
+     * @param theResource - resource object
+     * @param resourceString - resource object as string
+     * @param id - resource id
+     */
+    ResourceIndex index(String resourceType, DomainResource theResource, String id) {
+        String indexerClassName = "${resourceType}Indexer"
+
+        // this part need specialization depending on index type
+        // The variable being built here, indexer1, is a custom indexer for a resource
+        // So, to add a new resource the indexer must be built.  INDEXER_PACKAGE is where these
+        // are stored.  An indexer does the dirty work with Lucene so searches can be done later.
+        def dy_instance = this.getClass().classLoader.loadClass(SimIndexer.INDEXER_PACKAGE + indexerClassName)?.newInstance()
+        IResourceIndexer indexer
+        if (dy_instance instanceof IResourceIndexer) {
+            indexer = dy_instance
+        } else {
+            throw new Exception("Cannot index index of type ${resourceType}")
+        }
+
+        // build index type specific index
+        ResourceIndex ri = indexer.build(theResource, id)
+        resourceIndexSet.add(ri)
+        return ri
     }
 
     /**
      * Index the current event
      */
-    void indexEvent() {
-        SimIndexManager.getIndexer(simId).indexEvent(event)
+    void flushIndex() {
+        SimIndexManager.getIndexer(simId).flushIndex(resourceIndexSet)
     }
 }

@@ -1,7 +1,8 @@
 package gov.nist.toolkit.fhir.resourceIndexer
 
 import gov.nist.toolkit.fhir.support.ResourceIndex
-import gov.nist.toolkit.fhir.support.SimResource
+import org.hl7.fhir.dstu3.model.DomainResource
+
 /**
  *
  */
@@ -13,8 +14,8 @@ class PatientIndexer implements IResourceIndexer {
      * @return newly built index
      */
     @Override
-    ResourceIndex build(Object json, SimResource simResource) {
-        ResourceIndex resourceIndex = new Base().build(json, simResource)
+    ResourceIndex build(DomainResource theResource, String id) {
+        ResourceIndex resourceIndex = new Base().build(theResource, id)
 
 //        String field = Patient.SP_FAMILY
 //        String value

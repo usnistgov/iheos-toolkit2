@@ -48,23 +48,6 @@ public class PatientResourceProvider implements IResourceProvider {
 	 */
 	public PatientResourceProvider() {
 		ourLog.info("Starting Patient provider");
-//		long resourceId = myNextId++;
-//
-//		Patient patient = new Patient();
-//		patient.setId(Long.toString(resourceId));
-//		patient.addIdentifier();
-//		patient.getIdentifier().get(0).setSystem(new UriDt("urn:hapitest:mrns"));
-//		patient.getIdentifier().get(0).setValue("00002");
-//		patient.addName().addFamily("Test");
-//		patient.getName().get(0).addGiven("PatientOne");
-//		patient.setGender(AdministrativeGenderEnum.FEMALE);
-//
-//		LinkedList<Patient> list = new LinkedList<Patient>();
-//		list.add(patient);
-//
-//
-//		myIdToPatientVersions.put(resourceId, list);
-
 	}
 
 	/**
@@ -115,7 +98,6 @@ public class PatientResourceProvider implements IResourceProvider {
 		FhirContext ourCtx = FhirContext.forDstu2();
 
 		// Create an ID with the new version and assign it back to the index
-
 		String theId = UuidAllocator.allocateNaked();
 		IdDt newId = new IdDt("Patient", theId, "1");
 		thePatient.setId(newId);

@@ -1,4 +1,4 @@
-package gov.nist.toolkit.fhirserver2.context
+package gov.nist.toolkit.fhir.context
 
 import ca.uhn.fhir.context.FhirContext
 

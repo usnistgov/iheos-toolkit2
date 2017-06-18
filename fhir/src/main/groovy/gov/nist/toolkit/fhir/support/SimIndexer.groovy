@@ -44,6 +44,12 @@ class SimIndexer {
         initIndexFile()
     }
 
+    def flushIndex(ResourceIndexSet resourceIndexSet) {
+        indexer.openIndexForWriting()  // locks Lucene index
+        indexer.addResource(resourceIndexSet)
+        indexer.commit()    // commit and clear Lucene index lock
+    }
+
     /**
      * Index all the resources in one simulator event. Since only one instance of this class
      * will exist per simulator the @Synchronized takes care of the thread management

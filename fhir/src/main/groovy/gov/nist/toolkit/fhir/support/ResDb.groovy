@@ -56,7 +56,7 @@ class ResDb extends SimDb {
      * Store a Resource in a sim
      * @param resourceType  - index type (Patient...)
      * @param resourceContents - JSON for index
-     * @return
+     * @return file where resource stored is ResDb
      */
     File storeNewResource(String resourceType, String resourceContents, String id) {
 

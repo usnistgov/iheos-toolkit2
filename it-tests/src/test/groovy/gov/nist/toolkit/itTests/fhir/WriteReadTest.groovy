@@ -157,7 +157,7 @@ class WriteReadTest extends FhirSpecification {
 
     @Shared FhirId submission
 
-    def 'submit patient'() {
+    def 'submit and query patient'() {
         when:
         def (BasicStatusLine statusLine, String results, FhirId locationHeader) = post("http://localhost:${remoteToolkitPort}/xdstools2/fsim/${simId}/Patient", patient)
         submission = locationHeader

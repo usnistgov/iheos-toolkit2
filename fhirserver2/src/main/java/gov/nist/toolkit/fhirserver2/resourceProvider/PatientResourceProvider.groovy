@@ -42,7 +42,10 @@ public class PatientResourceProvider extends BaseResourceProvider implements IRe
         saveRequest(theRequest)
         validateResource(thePatient);
 
-        IdDt newId = setResource(thePatient)
+        IdDt newId = addResource(thePatient)
+        simContext.flushIndex()
+
+        displayIndex()
 
         // Let the caller know the ID of the newly created resource
         return new MethodOutcome(newId);

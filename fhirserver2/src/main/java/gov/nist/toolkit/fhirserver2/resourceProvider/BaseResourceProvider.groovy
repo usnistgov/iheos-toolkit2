@@ -3,20 +3,24 @@ package gov.nist.toolkit.fhirserver2.resourceProvider
 import ca.uhn.fhir.context.FhirContext
 import ca.uhn.fhir.model.primitive.IdDt
 import ca.uhn.fhir.parser.IParser
+import gov.nist.toolkit.actorfactory.client.SimId
+import gov.nist.toolkit.fhir.context.ToolkitFhirContext
+import gov.nist.toolkit.fhir.support.ResourceIndex
 import gov.nist.toolkit.fhir.support.SimContext
 import gov.nist.toolkit.fhir.support.SimIndexManager
-import gov.nist.toolkit.fhirserver2.context.ToolkitFhirContext
 import gov.nist.toolkit.fhirserver2.servlet.HttpRequestParser
 import gov.nist.toolkit.registrymetadata.UuidAllocator
 import org.hl7.fhir.dstu3.model.DomainResource
 
 import javax.servlet.http.HttpServletRequest
+
 /**
  * Toolkit *ResourceProviders should extend this class.
  */
 abstract class BaseResourceProvider {
     FhirContext fhirContext
     HttpServletRequest request
+    SimContext simContext
 
     abstract Class<?> getResourceType()
 
@@ -32,17 +36,19 @@ abstract class BaseResourceProvider {
         request = _request
     }
 
-    IdDt setResource(DomainResource resource) {
-        String resourceType = resource.getResourceType().name()
+    SimId getSimId() { HttpRequestParser.simIdFromRequest(request) }
+
+    IdDt addResource(DomainResource theResource) {
+        String resourceType = theResource.getResourceType().name()
         String id = UuidAllocator.allocateNaked()
         IdDt idDt = new IdDt(resourceType, id, "1")
-        resource.setId(idDt)
+        theResource.setId(idDt)
 
-        String str = fhirContext.newJsonParser().encodeResourceToString(resource)
+        if (!simContext) simContext = new SimContext(simId)
 
-        new SimContext(HttpRequestParser.simIdFromRequest(request))
-                .store(resourceType, str, id)
-                .indexEvent();
+        File resourceFile = simContext.store(resourceType, theResource, id)
+        ResourceIndex resourceIndex = simContext.index(resourceType, theResource, id)
+        resourceIndex.path = resourceFile.path
 
         return idDt
     }
@@ -53,7 +59,6 @@ abstract class BaseResourceProvider {
      */
     def displayIndex() {
         SimIndexManager.getIndexer(HttpRequestParser.simIdFromRequest(request)).dump();
-
     }
 
     IParser getJsonParser() {
