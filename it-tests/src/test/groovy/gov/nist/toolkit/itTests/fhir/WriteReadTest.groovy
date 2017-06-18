@@ -136,8 +136,7 @@ class WriteReadTest extends FhirSpecification {
     }
 
 
-
-    def 'write'() {
+    def 'submit first patient'() {
         when:
         def (BasicStatusLine statusLine, String results, FhirId locationHeader) = post("http://localhost:${remoteToolkitPort}/xdstools2/fsim/${simId}/Patient", patient)
         OperationOutcome oo
@@ -153,6 +152,28 @@ class WriteReadTest extends FhirSpecification {
         statusLine.statusCode == 201
         locationHeader.id
         locationHeader.vid == '1'
+        !oo
+    }
+
+    @Shared FhirId submission
+
+    def 'submit patient'() {
+        when:
+        def (BasicStatusLine statusLine, String results, FhirId locationHeader) = post("http://localhost:${remoteToolkitPort}/xdstools2/fsim/${simId}/Patient", patient)
+        submission = locationHeader
+        OperationOutcome oo
+        if (results) {
+            IBaseResource resource = ourCtx.newJsonParser().parseResource(results)
+            if (resource instanceof OperationOutcome) {
+                oo = (OperationOutcome) resource
+                println results
+            }
+        }
+
+        then:
+        statusLine.statusCode == 201
+        submission.id
+        submission.vid == '1'
         !oo
 
         when:
@@ -170,25 +191,6 @@ class WriteReadTest extends FhirSpecification {
         new FhirId(fid) == locationHeader
     }
 
-    def 'write 2'() {
-        when:
-        def (BasicStatusLine statusLine, String results, FhirId locationHeader) = post("http://localhost:${remoteToolkitPort}/xdstools2/fsim/${simId}/Patient", patient)
-        FhirContext ourCtx = FhirContext.forDstu3()
-        OperationOutcome oo
-        if (results) {
-            IBaseResource resource = ourCtx.newJsonParser().parseResource(results)
-            if (resource instanceof OperationOutcome) {
-                oo = (OperationOutcome) resource
-                println results
-            }
-        }
-
-        then:
-        statusLine.statusCode == 201
-        locationHeader.id
-        locationHeader.vid == '1'
-        !oo
-    }
 
     String mkUrl() {
         "http://localhost:${remoteToolkitPort}/xdstools2/fsim/${simId}/Patient"

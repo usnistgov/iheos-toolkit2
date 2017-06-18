@@ -5,7 +5,7 @@ import gov.nist.toolkit.fhir.support.SimResource
 /**
  *
  */
-class Patient implements IResourceIndexer {
+class PatientIndexer implements IResourceIndexer {
     /**
      * Index the Patient index attributes
      * @param json - JsonSlurper representation of index
@@ -15,6 +15,11 @@ class Patient implements IResourceIndexer {
     @Override
     ResourceIndex build(Object json, SimResource simResource) {
         ResourceIndex resourceIndex = new Base().build(json, simResource)
+
+//        String field = Patient.SP_FAMILY
+//        String value
+//
+//        resourceIndex.add(new ResourceIndexItem(field, value))
 
         // Add specialization here
 

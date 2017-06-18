@@ -1,35 +1,24 @@
-package gov.nist.toolkit.fhirserver2.resourceProvider;
+package gov.nist.toolkit.fhirserver2.resourceProvider
 
-import ca.uhn.fhir.context.FhirContext;
-import ca.uhn.fhir.model.primitive.IdDt;
-import ca.uhn.fhir.model.primitive.InstantDt;
-import ca.uhn.fhir.parser.IParser;
-import ca.uhn.fhir.rest.annotation.*;
-import ca.uhn.fhir.rest.api.MethodOutcome;
-import ca.uhn.fhir.rest.param.StringParam;
-import ca.uhn.fhir.rest.server.IResourceProvider;
-import ca.uhn.fhir.rest.server.exceptions.InternalErrorException;
-import ca.uhn.fhir.rest.server.exceptions.UnprocessableEntityException;
-import gov.nist.toolkit.fhir.search.SearchByTypeAndId;
-import gov.nist.toolkit.fhir.support.SimContext;
-import gov.nist.toolkit.fhir.support.SimIndexManager;
-import gov.nist.toolkit.fhirserver2.context.ToolkitFhirContext;
-import gov.nist.toolkit.fhirserver2.servlet.HttpRequestParser;
-import gov.nist.toolkit.registrymetadata.UuidAllocator;
-import org.hl7.fhir.dstu3.model.*;
+import ca.uhn.fhir.model.primitive.IdDt
+import ca.uhn.fhir.model.primitive.InstantDt
+import ca.uhn.fhir.rest.annotation.*
+import ca.uhn.fhir.rest.api.MethodOutcome
+import ca.uhn.fhir.rest.param.StringParam
+import ca.uhn.fhir.rest.server.IResourceProvider
+import ca.uhn.fhir.rest.server.exceptions.InternalErrorException
+import ca.uhn.fhir.rest.server.exceptions.UnprocessableEntityException
+import gov.nist.toolkit.fhir.search.SearchByTypeAndId
+import gov.nist.toolkit.fhir.support.SimContext
+import gov.nist.toolkit.fhirserver2.servlet.HttpRequestParser
+import org.hl7.fhir.dstu3.model.*
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.util.Collections;
-import java.util.List;
-
+import javax.servlet.http.HttpServletRequest
+import javax.servlet.http.HttpServletResponse
 /**
  *
  */
-public class PatientResourceProvider implements IResourceProvider {
+public class PatientResourceProvider extends BaseResourceProvider implements IResourceProvider {
     /**
      * The getResourceType method comes from IResourceProvider, and must
      * be overridden to indicate what type of resource this provider
@@ -44,19 +33,16 @@ public class PatientResourceProvider implements IResourceProvider {
     public MethodOutcome createPatient(@ResourceParam Patient thePatient,
                                        HttpServletRequest theRequest,
                                        HttpServletResponse theResponse) {
+        println '***************************'
+        println '*'
+        println ' CREATE PATIENT'
+        println '*'
+        println '***************************'
+
+        saveRequest(theRequest)
         validateResource(thePatient);
 
-        FhirContext ourCtx = ToolkitFhirContext.get();
-
-        String theId = UuidAllocator.allocateNaked();
-        IdDt newId = new IdDt("Patient", theId, "1");
-        thePatient.setId(newId);
-
-        String patientString = ourCtx.newJsonParser().encodeResourceToString(thePatient);
-
-        new SimContext(HttpRequestParser.simIdFromRequest(theRequest))
-                .store("Patient", patientString, theId)
-                .indexEvent();
+        IdDt newId = setResource(thePatient)
 
         // Let the caller know the ID of the newly created resource
         return new MethodOutcome(newId);
@@ -115,15 +101,19 @@ public class PatientResourceProvider implements IResourceProvider {
     public Patient getResourceById(@IdParam IdType theId,
                                    HttpServletRequest theRequest,
                                    HttpServletResponse theResponse) {
+        saveRequest(theRequest)
 
-        FhirContext ourCtx = ToolkitFhirContext.get();
-
-        String resourceType = theId.getResourceType();
         String id = theId.getIdPart();
 
-        SimIndexManager.getIndexer(HttpRequestParser.simIdFromRequest(theRequest)).dump();
+        println '***************************'
+        println '*'
+        println " GET PATIENT ${id}"
+        println '*'
+        println '***************************'
 
-        List<String> paths = new SearchByTypeAndId(new SimContext(HttpRequestParser.simIdFromRequest(theRequest))).run(resourceType, id);
+        displayIndex()
+
+        List<String> paths = new SearchByTypeAndId(new SimContext(HttpRequestParser.simIdFromRequest(theRequest))).run(resourceTypeAsString(), id);
 
         if (paths.size() == 0)
             return null;
@@ -134,9 +124,7 @@ public class PatientResourceProvider implements IResourceProvider {
         File f = new File(paths.get(0));
 
         try {
-            IParser parser = ourCtx.newJsonParser();
-            Patient patient = parser.parseResource(Patient.class, new FileReader(f));
-            return patient;
+            return jsonParser.parseResource(Patient.class, new FileReader(f));
         } catch (FileNotFoundException e) {
             throw new InternalErrorException("File " + paths.get(0) + " not found");
         }
@@ -159,7 +147,11 @@ public class PatientResourceProvider implements IResourceProvider {
      *    matching resources, or it may also be empty.
      */
     @Search()
-    public List<Patient> getPatient(@RequiredParam(name = Patient.SP_FAMILY) StringParam theFamilyName) {
+    public List<Patient> getPatient(@RequiredParam(name = Patient.SP_FAMILY) StringParam theFamilyName,
+                                    HttpServletRequest theRequest,
+                                    HttpServletResponse theResponse) {
+        saveRequest(theRequest)
+
         Patient patient = new Patient();
         patient.addIdentifier();
         patient.getIdentifier().get(0).setUse(Identifier.IdentifierUse.OFFICIAL);

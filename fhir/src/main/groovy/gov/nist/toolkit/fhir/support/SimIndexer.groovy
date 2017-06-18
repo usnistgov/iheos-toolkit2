@@ -169,20 +169,21 @@ class SimIndexer {
             if (!resourceFile.name.endsWith('json')) return
             def slurper = new JsonSlurper()
             def resource = slurper.parseText(resourceFile.text)
-            String type = resource.resourceType   // index name, like Patient
-            if (!type) return
+            String resourceType = resource.resourceType   // index name, like Patient
+            if (!resourceType) return
+            String indexerClassName = "${resourceType}Indexer"
             SimResource simResource = new SimResource(actorType, transactionType, eventDir.name, resourceFile.toString())
 
             // this part need specialization depending on index type
             // The variable being built here, indexer1, is a custom indexer for a resource
             // So, to add a new resource the indexer must be built.  INDEXER_PACKAGE is where these
             // are stored.  An indexer does the dirty work with Lucene so searches can be done later.
-            def dy_instance = this.getClass().classLoader.loadClass(INDEXER_PACKAGE + type)?.newInstance()
+            def dy_instance = this.getClass().classLoader.loadClass(INDEXER_PACKAGE + indexerClassName)?.newInstance()
             IResourceIndexer indexer1
             if (dy_instance instanceof IResourceIndexer) {
                 indexer1 = dy_instance
             } else {
-                throw new Exception("Cannot index index of type ${type}")
+                throw new Exception("Cannot index index of type ${resourceType}")
             }
 
             // build index type specific index
