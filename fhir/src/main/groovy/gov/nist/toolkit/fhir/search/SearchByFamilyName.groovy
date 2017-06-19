@@ -5,31 +5,23 @@ import org.apache.lucene.index.Term
 import org.apache.lucene.search.BooleanClause
 import org.apache.lucene.search.BooleanQuery
 import org.apache.lucene.search.TermQuery
+import org.hl7.fhir.dstu3.model.Patient
 /**
- * Generic search by Resource Type and ID
+ *
  */
-class SearchByTypeAndId extends BaseQuery {
+class SearchByFamilyName extends BaseQuery {
 
-    SearchByTypeAndId(SimContext simContext) {
+    SearchByFamilyName(SimContext simContext) {
         super(simContext)
     }
 
-    List<String> run(String resourceType, String id) {
+    List<String> run(String familyName) {
         BooleanQuery.Builder builder = new BooleanQuery.Builder()
 
-        Term term1 = new Term('type', resourceType)
+        Term term1 = new Term(Patient.SP_FAMILY, familyName)
         TermQuery termQuery1 = new TermQuery(term1)
         builder.add(termQuery1, BooleanClause.Occur.MUST)
 
-        if (id) {
-            Term term2 = new Term('id', id)
-            TermQuery termQuery2 = new TermQuery(term2)
-            builder.add(termQuery2, BooleanClause.Occur.MUST)
-        }
-
         return execute(builder)
-
     }
-
-
 }

@@ -8,9 +8,8 @@ import ca.uhn.fhir.rest.param.StringParam
 import ca.uhn.fhir.rest.server.IResourceProvider
 import ca.uhn.fhir.rest.server.exceptions.InternalErrorException
 import ca.uhn.fhir.rest.server.exceptions.UnprocessableEntityException
+import gov.nist.toolkit.fhir.search.SearchByFamilyName
 import gov.nist.toolkit.fhir.search.SearchByTypeAndId
-import gov.nist.toolkit.fhir.support.SimContext
-import gov.nist.toolkit.fhirserver2.servlet.HttpRequestParser
 import org.hl7.fhir.dstu3.model.*
 
 import javax.servlet.http.HttpServletRequest
@@ -116,7 +115,7 @@ public class PatientResourceProvider extends BaseResourceProvider implements IRe
 
         displayIndex()
 
-        List<String> paths = new SearchByTypeAndId(new SimContext(HttpRequestParser.simIdFromRequest(theRequest))).run(resourceTypeAsString(), id);
+        List<String> paths = new SearchByTypeAndId(simContext).run(resourceTypeAsString(), id);
 
         if (paths.size() == 0)
             return null;
@@ -155,16 +154,20 @@ public class PatientResourceProvider extends BaseResourceProvider implements IRe
                                     HttpServletResponse theResponse) {
         saveRequest(theRequest)
 
-        Patient patient = new Patient();
-        patient.addIdentifier();
-        patient.getIdentifier().get(0).setUse(Identifier.IdentifierUse.OFFICIAL);
-        patient.getIdentifier().get(0).setSystem("urn:hapitest:mrns");
-        patient.getIdentifier().get(0).setValue("00001");
-        patient.addName();
-        patient.getName().get(0).setFamily(theFamilyName.getValue());
-        patient.getName().get(0).addGiven("PatientOne");
-        patient.setGender(Enumerations.AdministrativeGender.MALE);
-        return Collections.singletonList(patient);
+        List<String> paths = new SearchByFamilyName(simContext).run(theFamilyName.value)
+
+        return searchResults(paths)
+
+//        Patient patient = new Patient();
+//        patient.addIdentifier();
+//        patient.getIdentifier().get(0).setUse(Identifier.IdentifierUse.OFFICIAL);
+//        patient.getIdentifier().get(0).setSystem("urn:hapitest:mrns");
+//        patient.getIdentifier().get(0).setValue("00001");
+//        patient.addName();
+//        patient.getName().get(0).setFamily(theFamilyName.getValue());
+//        patient.getName().get(0).addGiven("PatientOne");
+//        patient.setGender(Enumerations.AdministrativeGender.MALE);
+//        return Collections.singletonList(patient);
     }
 
     /**

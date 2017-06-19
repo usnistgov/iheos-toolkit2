@@ -34,6 +34,8 @@ abstract class BaseResourceProvider {
 
     def saveRequest(HttpServletRequest _request) {
         request = _request
+
+        simContext = new SimContext(HttpRequestParser.simIdFromRequest(request))
     }
 
     SimId getSimId() { HttpRequestParser.simIdFromRequest(request) }
@@ -63,5 +65,16 @@ abstract class BaseResourceProvider {
 
     IParser getJsonParser() {
         fhirContext.newJsonParser()
+    }
+
+    List searchResults(List<String> paths) {
+        def items
+
+        items = paths.collect { String path ->
+            File f = new File(path)
+            jsonParser.parseResource(resourceType, new FileReader(f))
+        }
+
+        return items
     }
 }

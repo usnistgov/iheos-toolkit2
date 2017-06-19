@@ -1,7 +1,9 @@
 package gov.nist.toolkit.fhir.resourceIndexer
 
 import gov.nist.toolkit.fhir.support.ResourceIndex
+import gov.nist.toolkit.fhir.support.ResourceIndexItem
 import org.hl7.fhir.dstu3.model.DomainResource
+import org.hl7.fhir.dstu3.model.Patient
 
 /**
  *
@@ -17,12 +19,15 @@ class PatientIndexer implements IResourceIndexer {
     ResourceIndex build(DomainResource theResource, String id) {
         ResourceIndex resourceIndex = new Base().build(theResource, id)
 
-//        String field = Patient.SP_FAMILY
-//        String value
-//
-//        resourceIndex.add(new ResourceIndexItem(field, value))
-
         // Add specialization here
+
+        Patient patient = (Patient) theResource
+
+        String field = Patient.SP_FAMILY
+        String value = patient.getName().get(0).getFamily()
+
+        resourceIndex.add(new ResourceIndexItem(field, value))
+
 
 
         return resourceIndex
