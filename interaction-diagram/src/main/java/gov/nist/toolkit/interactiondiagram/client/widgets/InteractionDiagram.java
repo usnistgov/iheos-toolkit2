@@ -64,7 +64,7 @@ public class InteractionDiagram extends Composite {
     static final int LL_BOX_HEIGHT = 50;
     static final int TRANSACTION_PAIR_WIDTH=190;   // request origin | ------ width: 190px ------> | request destination
 
-    static final int MAX_LL_DISPLAY_NAME = 15;
+    static final int MAX_LL_DISPLAY_NAME = 14;
     private int MAX_LABEL_DISPLAY_LEN = 27;
     private int LL_FEET = 10; // life line feet (extra) lines after the last transaction
     private int ll_margin = 108; // The width of a transaction connector
