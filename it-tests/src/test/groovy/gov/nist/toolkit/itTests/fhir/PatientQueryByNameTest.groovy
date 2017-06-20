@@ -83,6 +83,34 @@ class PatientQueryByNameTest extends FhirSpecification {
         patients.size() >= 1
     }
 
+    def 'query by first and last name'() {
+        when:
+        def (BasicStatusLine statusLine2, String results2) = get("http://localhost:${remoteToolkitPort}/xdstools2/fsim/${simId}/Patient?family=Chalmers&given=Peter")
+
+        then:
+        statusLine2.statusCode == 200
+
+        when:
+        IParser parser = ourCtx.newJsonParser()
+        IBaseResource bundleResource = parser.parseResource(results2)
+
+        then:
+        bundleResource instanceof Bundle
+
+        when:
+        Bundle bundle = (Bundle) bundleResource
+        def patients = bundle.getEntry().collect { Bundle.BundleEntryComponent comp ->
+            Resource resource = comp.getResource()
+            assert resource instanceof Patient
+            Patient patient = (Patient) resource
+            assert patient.name.get(0).family == 'Chalmers'
+            resource
+        }
+
+        then:
+        patients.size() >= 1
+    }
+
     def patient = '''
 {
   "resourceType": "Patient",
@@ -127,12 +155,6 @@ class PatientQueryByNameTest extends FhirSpecification {
       "given": [
         "Peter",
         "James"
-      ]
-    },
-    {
-      "use": "usual",
-      "given": [
-        "Jim"
       ]
     }
   ],

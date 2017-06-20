@@ -23,11 +23,11 @@ class PatientIndexer implements IResourceIndexer {
 
         Patient patient = (Patient) theResource
 
-        String field = Patient.SP_FAMILY
-        String value = patient.getName().get(0).getFamily()
+        resourceIndex.add(new ResourceIndexItem(Patient.SP_FAMILY, patient.getName().get(0).getFamily()))
 
-        resourceIndex.add(new ResourceIndexItem(field, value))
-
+        patient.name.get(0).given.each {
+            resourceIndex.add(new ResourceIndexItem(Patient.SP_GIVEN, it.value))
+        }
 
 
         return resourceIndex

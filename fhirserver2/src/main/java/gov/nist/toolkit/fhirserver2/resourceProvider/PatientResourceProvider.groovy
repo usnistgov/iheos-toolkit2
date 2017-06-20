@@ -8,9 +8,16 @@ import ca.uhn.fhir.rest.param.StringParam
 import ca.uhn.fhir.rest.server.IResourceProvider
 import ca.uhn.fhir.rest.server.exceptions.InternalErrorException
 import ca.uhn.fhir.rest.server.exceptions.UnprocessableEntityException
-import gov.nist.toolkit.fhir.search.SearchByFamilyName
+import gov.nist.toolkit.fhir.search.BaseQuery
 import gov.nist.toolkit.fhir.search.SearchByTypeAndId
-import org.hl7.fhir.dstu3.model.*
+import org.apache.lucene.index.Term
+import org.apache.lucene.search.BooleanClause
+import org.apache.lucene.search.BooleanQuery
+import org.apache.lucene.search.TermQuery
+import org.hl7.fhir.dstu3.model.CodeableConcept
+import org.hl7.fhir.dstu3.model.IdType
+import org.hl7.fhir.dstu3.model.OperationOutcome
+import org.hl7.fhir.dstu3.model.Patient
 
 import javax.servlet.http.HttpServletRequest
 import javax.servlet.http.HttpServletResponse
@@ -149,25 +156,33 @@ public class PatientResourceProvider extends BaseResourceProvider implements IRe
      *    matching resources, or it may also be empty.
      */
     @Search()
-    public List<Patient> getPatient(@RequiredParam(name = Patient.SP_FAMILY) StringParam theFamilyName,
+    public List<Patient> getPatient(
+            @RequiredParam(name = Patient.SP_FAMILY) StringParam theFamilyName,
+            @OptionalParam(name = Patient.SP_GIVEN) StringParam theGivenName,
                                     HttpServletRequest theRequest,
                                     HttpServletResponse theResponse) {
         saveRequest(theRequest)
 
-        List<String> paths = new SearchByFamilyName(simContext).run(theFamilyName.value)
+        displayIndex()
 
-        return searchResults(paths)
+        BooleanQuery.Builder builder = new BooleanQuery.Builder()
 
-//        Patient patient = new Patient();
-//        patient.addIdentifier();
-//        patient.getIdentifier().get(0).setUse(Identifier.IdentifierUse.OFFICIAL);
-//        patient.getIdentifier().get(0).setSystem("urn:hapitest:mrns");
-//        patient.getIdentifier().get(0).setValue("00001");
-//        patient.addName();
-//        patient.getName().get(0).setFamily(theFamilyName.getValue());
-//        patient.getName().get(0).addGiven("PatientOne");
-//        patient.setGender(Enumerations.AdministrativeGender.MALE);
-//        return Collections.singletonList(patient);
+        Term term
+        TermQuery termQuery
+
+        term = new Term(Patient.SP_FAMILY, theFamilyName.value)
+        termQuery = new TermQuery(term)
+        builder.add ( termQuery, BooleanClause.Occur.MUST )
+
+        if (theGivenName) {
+            term = new Term(Patient.SP_GIVEN, theGivenName.value)
+            termQuery = new TermQuery(term)
+            builder.add(termQuery, BooleanClause.Occur.MUST)
+        }
+
+
+        return searchResults(new BaseQuery(simContext).execute(builder))
+
     }
 
     /**
