@@ -1,0 +1,229 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+
+	<parent>
+		<groupId>gov.nist.toolkit</groupId>
+		<artifactId>tk-deps</artifactId>
+		<version>4.4.0-SNAPSHOT</version>
+		<relativePath>../tk-deps/pom.xml</relativePath>
+	</parent>
+	
+	<artifactId>fhir-server</artifactId>
+	<packaging>war</packaging>
+
+	<name>FHIR Simulator Server</name>
+
+	<repositories>
+		<repository>
+			<id>oss-snapshots</id>
+			<snapshots>
+				<enabled>true</enabled>
+			</snapshots>
+			<url>https://oss.sonatype.org/content/repositories/snapshots/</url>
+		</repository>
+	</repositories>
+
+	<dependencies>
+
+		<dependency>
+			<groupId>gov.nist.toolkit</groupId>
+			<artifactId>fhir</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>gov.nist.toolkit</groupId>
+			<artifactId>actorfactory</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>com.google.gwt</groupId>
+			<artifactId>gwt-user</artifactId>
+			<scope>compile</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>org.codehaus.groovy</groupId>
+			<artifactId>groovy-all</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>org.spockframework</groupId>
+			<artifactId>spock-core</artifactId>
+		</dependency>
+
+		<!-- This dependency includes the core HAPI-FHIR classes -->
+		<dependency>
+			<groupId>ca.uhn.hapi.fhir</groupId>
+			<artifactId>hapi-fhir-base</artifactId>
+			<version>${hapi.version}</version>
+		</dependency>
+		<!-- At least one "structures" JAR must also be included -->
+		<dependency>
+			<groupId>ca.uhn.hapi.fhir</groupId>
+			<artifactId>hapi-fhir-structures-dstu2</artifactId>
+			<version>${hapi.version}</version>
+		</dependency>
+
+		<!-- This dependency is used for the "FHIR Tester" web app overlay -->
+		<dependency>
+			<groupId>ca.uhn.hapi.fhir</groupId>
+			<artifactId>hapi-fhir-testpage-overlay</artifactId>
+			<version>${hapi.version}</version>
+			<type>war</type>
+			<scope>provided</scope>		
+		</dependency>
+		<dependency>
+			<groupId>ca.uhn.hapi.fhir</groupId>
+			<artifactId>hapi-fhir-testpage-overlay</artifactId>
+			<version>${hapi.version}</version>
+			<classifier>classes</classifier>
+			<scope>provided</scope>		
+		</dependency>
+
+		<!-- 
+		HAPI-FHIR uses Logback for logging support. The logback library is included 
+		automatically by Maven as a part of the hapi-fhir-base dependency, but you 
+		also need to include a logging library. Logback is used here, but log4j
+		would also be fine.
+		
+		Note on Dependency Versions: This POM file inherits 
+		versions (<version>1.0</version>) in each dependency and plugin
+		from the parent pom.xml file. If you want to use this POM as the basis
+		for your own project, you'll need to manually add versions to the
+		dependencies below. 
+		-->
+		<dependency>
+			<groupId>ch.qos.logback</groupId>
+			<artifactId>logback-classic</artifactId>
+		</dependency>
+
+		<!-- Needed for JEE/Servlet support -->
+		<dependency>
+			<groupId>javax.servlet</groupId>
+			<artifactId>javax.servlet-api</artifactId>
+			<scope>provided</scope>
+		</dependency>
+
+		<!-- 
+		If you are using HAPI narrative generation, you will need to include Thymeleaf
+		as well. Otherwise the following can be omitted.
+		 -->
+		<!--<dependency>-->
+			<!--<groupId>org.thymeleaf</groupId>-->
+			<!--<artifactId>thymeleaf</artifactId>-->
+		<!--</dependency>-->
+
+		<!-- Used for CORS support -->
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-web</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>com.jayway.restassured</groupId>
+			<artifactId>json-path</artifactId>
+			<version>2.4.0</version>
+		</dependency>
+
+	</dependencies>
+
+	<build>
+		
+		<!-- 
+		Tells Maven to name the generated WAR file as
+		restful-server-example.war
+		-->
+		<finalName>ftoolkit</finalName>
+		
+		<!-- 
+		The following is not required for the application to build, but
+		allows you to test it by issuing "mvn jetty:run" from the command
+		line. 
+		-->
+		<pluginManagement>
+			<plugins>
+				<plugin>
+					<groupId>org.eclipse.jetty</groupId>
+					<artifactId>jetty-maven-plugin</artifactId>
+					<configuration>
+						<webAppConfig>
+							<allowDuplicateFragmentNames>true</allowDuplicateFragmentNames>
+						</webAppConfig>
+					</configuration>
+				</plugin>
+			</plugins>
+		</pluginManagement>
+	
+		<plugins>
+			<!-- 
+			Tell Maven which Java source version you want to use
+			-->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<!--<configuration>-->
+					<!--<source>1.6</source>-->
+					<!--<target>1.6</target>-->
+				<!--</configuration>-->
+			</plugin>
+			
+			<!-- 
+			The configuration here tells the WAR plugin to include the FHIR Tester
+			overlay. You can omit it if you are not using that feature.
+			-->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-war-plugin</artifactId>
+				<configuration>
+					<overlays>
+						<overlay>
+							<groupId>ca.uhn.hapi.fhir</groupId>
+							<artifactId>hapi-fhir-testpage-overlay</artifactId>
+						</overlay>
+					</overlays>
+				</configuration>
+			</plugin>
+			
+			<!-- 
+			This plugin is just a part of the HAPI internal build process, you do not
+			need to incude it in your own projects
+			-->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-deploy-plugin</artifactId>
+				<configuration>
+					<skip>false</skip>
+				</configuration>
+			</plugin>
+
+			<plugin>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<!-- 2.8.0-01 and later require maven-compiler-plugin 3.1 or higher -->
+				<version>3.1</version>
+				<configuration>
+					<compilerId>groovy-eclipse-compiler</compilerId>
+					<!-- set verbose to be true if you want lots of uninteresting messages -->
+					<!-- <verbose>true</verbose> -->
+				</configuration>
+				<dependencies>
+					<dependency>
+						<groupId>org.codehaus.groovy</groupId>
+						<artifactId>groovy-eclipse-compiler</artifactId>
+						<version>2.8.0-01</version>
+					</dependency>
+					<!-- for 2.8.0-01 and later you must have an explicit dependency on groovy-eclipse-batch -->
+					<dependency>
+						<groupId>org.codehaus.groovy</groupId>
+						<artifactId>groovy-eclipse-batch</artifactId>
+						<version>2.1.8-01</version>
+						<!-- or choose a different compiler version -->
+						<!-- <version>1.8.6-01</version> -->
+						<!-- <version>1.7.10-06</version> -->
+					</dependency>
+				</dependencies>
+			</plugin>
+
+		</plugins>
+	</build>
+
+</project>

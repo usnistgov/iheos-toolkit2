@@ -21,7 +21,6 @@ import javax.servlet.http.HttpServlet;
  *   Toolkit TLS Port
  */
 public class ReconfigureSimulators extends HttpServlet {
-    private SimDb db;
     private String configuredHost;
     private String configuredPort;
     private String configuredTlsPort;
@@ -38,8 +37,7 @@ public class ReconfigureSimulators extends HttpServlet {
         configuredPort = Installation.instance().propertyServiceManager().getToolkitPort();
         configuredTlsPort = Installation.instance().propertyServiceManager().getToolkitTlsPort();
 
-        db = new SimDb();
-        for (SimId simId : db.getAllSimIds()) {
+        for (SimId simId : new SimDb().getAllSimIds()) {
             reconfigure(simId);
         }
     }
@@ -50,7 +48,7 @@ public class ReconfigureSimulators extends HttpServlet {
         SimulatorConfig config;
         logger.info("Reconfiguring Simulator " + simId.toString());
         try {
-            config = db.getSimulator(simId);
+            config = SimDb.getSimulator(simId);
         } catch (Exception e) {
             logger.error("    Cannot load " + ExceptionUtil.exception_details(e, 5));
             return;

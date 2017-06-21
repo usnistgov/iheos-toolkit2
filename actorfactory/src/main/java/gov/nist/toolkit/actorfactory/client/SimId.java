@@ -69,8 +69,27 @@ public class SimId implements Serializable, IsSerializable {
         this.id = id;
     }
 
-    public boolean equals(SimId simId) {
-        return this.user.equals(simId.user) && this.id.equals(simId.id);
+//    public boolean equals(SimId simId) {
+//        return this.user.equals(simId.user) && this.id.equals(simId.id);
+//    }
+
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        SimId simId = (SimId) o;
+
+        if (user != null ? !user.equals(simId.user) : simId.user != null) return false;
+        return id != null ? id.equals(simId.id) : simId.id == null;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = user != null ? user.hashCode() : 0;
+        result = 31 * result + (id != null ? id.hashCode() : 0);
+        return result;
     }
 
     public String toString() { return user + SEPARATOR + id; }

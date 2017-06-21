@@ -299,7 +299,7 @@ public class SimulatorMessageViewTab extends ToolWindow {
 		}
 	}
 
-//	static private Label eventLinkLabel = new Label("Event Link: ");
+//	static private Label eventLinkLabel = new Label("SimResource Link: ");
 	private void updateEventLink() {
 //		linkPanel.clear();
 //		linkPanel.add(eventLinkLabel);
@@ -312,7 +312,7 @@ public class SimulatorMessageViewTab extends ToolWindow {
 		linkPanel.clear();
 		if (currentTransactionInstance != null) {
 			SimLog simLog = new SimLog(currentTransactionInstance);
-			linkPanel.add(new ToolkitLink("Event Link: ", "#SimLog:" + (new SimLog.Tokenizer()).getToken(simLog)));
+			linkPanel.add(new ToolkitLink("SimResource Link: ", "#SimLog:" + (new SimLog.Tokenizer()).getToken(simLog)));
 		}
 	}
 

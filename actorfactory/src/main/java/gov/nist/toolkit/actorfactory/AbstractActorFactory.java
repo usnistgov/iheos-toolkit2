@@ -257,7 +257,7 @@ public abstract class AbstractActorFactory {
 	public void saveConfiguration(SimulatorConfig config) throws Exception {
 		verifyActorConfigurationOptions(config);
 
-		SimDb simdb = SimDb.mkSim(Installation.instance().simDbFile(), config.getId(), config.getActorType());
+		SimDb simdb = new SimDb().mkSim(config.getId(), config.getActorType());
 		File simCntlFile = simdb.getSimulatorControlFile();
 		SimulatorConfigIoFactory.impl().save(config, simCntlFile.toString());
 //		SimulatorConfigIoJava.save(config, simCntlFile.toString());
@@ -277,8 +277,7 @@ public abstract class AbstractActorFactory {
 				sim.onDelete(config);
 
 			simdb = new SimDb(simId);
-			File simDir = simdb.getSimDir();
-			simdb.delete(simDir);
+			simdb.delete();
         } catch (NoSimException e) {
 			return;		
 		} catch (ClassNotFoundException e) {
@@ -327,9 +326,7 @@ public abstract class AbstractActorFactory {
 	}
 
 	static public List<SimulatorConfig> getSimConfigs(String actorTypeName) {
-		SimDb db = new SimDb();
-
-		List<SimId> allSimIds = db.getAllSimIds();
+		List<SimId> allSimIds = new SimDb().getAllSimIds();
 		List<SimulatorConfig> simConfigs = new ArrayList<>();
 
 		try {
@@ -417,8 +414,8 @@ public abstract class AbstractActorFactory {
 		return config;
 	}	
 
-	static public SimulatorConfig getSimConfig(File simDbFile, SimId simulatorId) throws Exception {
-		SimDb simdb = new SimDb(simDbFile, simulatorId, null, null);
+	static public SimulatorConfig getSimConfig(SimId simulatorId) throws Exception {
+		SimDb simdb = new SimDb(simulatorId);
 		File simCntlFile = simdb.getSimulatorControlFile();
 		return restoreSimulator(simCntlFile.toString());
 	}

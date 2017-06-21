@@ -22,6 +22,10 @@
             <artifactId>simulators</artifactId>
         </dependency>
         <dependency>
+            <groupId>gov.nist.toolkit</groupId>
+            <artifactId>fhir-server2</artifactId>
+        </dependency>
+        <dependency>
             <groupId>org.glassfish.jersey.containers</groupId>
             <artifactId>jersey-container-grizzly2-http</artifactId>
             <!--<version>2.8</version>-->
@@ -50,6 +54,16 @@
         <dependency>
             <groupId>log4j</groupId>
             <artifactId>log4j</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>gov.nist.toolkit</groupId>
+            <artifactId>fhir-server</artifactId>
+            <version>4.4.0-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>gov.nist.toolkit</groupId>
+            <artifactId>fhir-server2</artifactId>
+            <version>4.4.0-SNAPSHOT</version>
         </dependency>
 
     </dependencies>

@@ -61,7 +61,6 @@ class ToolkitSpecification extends Specification {
         server.start(remoteToolkitPort);
         server.withToolkit()
         Installation.instance().overrideToolkitPort(remoteToolkitPort)  // ignore toolkit.properties
-
     }
 
     SimulatorBuilder getSimulatorApi(String remoteToolkitPort) {

@@ -363,8 +363,7 @@ public class WADOTransaction extends BasicTransaction {
       try {
       String sim = part.getAttributeValue(new QName("sim"));
       String user = testConfig.testInstance.getUser();
-      SimDb db = new SimDb();
-      SimulatorConfig simConfig = db.getSimulator(new SimId(user, sim));
+      SimulatorConfig simConfig = SimDb.getSimulator(new SimId(user, sim));
       target = simConfig.getConfigEle(SimulatorProperties.wadoEndpoint).asString();
       } catch (Exception e) {
          

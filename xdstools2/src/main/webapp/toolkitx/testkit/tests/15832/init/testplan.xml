@@ -1,0 +1,15 @@
+
+<TestPlan>
+  <Test>15832/init</Test>
+  <TestStep id="init">
+  <ExpectedStatus>Success</ExpectedStatus>
+  <ProvideAndRegisterTransaction>
+    <XDSb/>
+    <AssignUuids/>
+    <MetadataFile>two_doc.xml</MetadataFile>
+    <Document id="Document01">my_document.txt</Document>
+    <Document id="Document02">summary.xml</Document>
+  </ProvideAndRegisterTransaction>
+</TestStep>
+
+</TestPlan>

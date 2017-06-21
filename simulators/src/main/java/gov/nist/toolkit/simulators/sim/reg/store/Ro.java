@@ -18,13 +18,13 @@ public class Ro  implements Serializable  {
 	public String id;
 	public String uid;
 	String pathToMetadata;
-	private RegIndex.StatusValue availabilityStatus = RegIndex.StatusValue.APPROVED;
+	private StatusValue availabilityStatus = StatusValue.APPROVED;
 	
-	public void setAvailabilityStatus(RegIndex.StatusValue status) {
+	public void setAvailabilityStatus(StatusValue status) {
 		availabilityStatus = status;
 	}
 	
-	public RegIndex.StatusValue getAvailabilityStatus() {
+	public StatusValue getAvailabilityStatus() {
 		return availabilityStatus;
 	}
 		

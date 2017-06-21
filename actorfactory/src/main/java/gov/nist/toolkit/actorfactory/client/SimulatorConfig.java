@@ -260,4 +260,31 @@ public class SimulatorConfig implements Serializable, IsSerializable {
 		this.vc = vc;
 	}
 
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) return true;
+		if (o == null || getClass() != o.getClass()) return false;
+
+		SimulatorConfig that = (SimulatorConfig) o;
+
+		if (expired != that.expired) return false;
+		if (id != null ? !id.equals(that.id) : that.id != null) return false;
+		if (actorType != null ? !actorType.equals(that.actorType) : that.actorType != null) return false;
+		if (expires != null ? !expires.equals(that.expires) : that.expires != null) return false;
+		if (elements != null ? !elements.equals(that.elements) : that.elements != null) return false;
+		if (vc != null ? !vc.equals(that.vc) : that.vc != null) return false;
+		return docTypeSelector != null ? docTypeSelector.equals(that.docTypeSelector) : that.docTypeSelector == null;
+	}
+
+	@Override
+	public int hashCode() {
+		int result = id != null ? id.hashCode() : 0;
+		result = 31 * result + (actorType != null ? actorType.hashCode() : 0);
+		result = 31 * result + (expires != null ? expires.hashCode() : 0);
+		result = 31 * result + (expired ? 1 : 0);
+		result = 31 * result + (elements != null ? elements.hashCode() : 0);
+		result = 31 * result + (vc != null ? vc.hashCode() : 0);
+		result = 31 * result + (docTypeSelector != null ? docTypeSelector.hashCode() : 0);
+		return result;
+	}
 }

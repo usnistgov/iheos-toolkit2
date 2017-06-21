@@ -114,7 +114,8 @@ public class SimulatorServiceManager extends CommonService {
 		logger.debug(session.id() + ": " + "deleteSimFile");
 		try {
 			SimDb sdb = new SimDb(session.getDefaultSimId());
-			sdb.delete(simFileSpec);
+			// only used by ValidatorTab - need to rethink - delete of part of simulator?????
+//			sdb.delete(simFileSpec);
 		} catch (IOException e) {
 			logger.error("deleteSimFile", e);
 			throw new Exception(e.getMessage());
@@ -274,8 +275,7 @@ public class SimulatorServiceManager extends CommonService {
 
 		GenericSimulatorFactory simFact = new GenericSimulatorFactory(SimCache.getSimManagerForSession(session.id()));
 
-		SimDb db = new SimDb();
-		List<SimId> simIds = db.getAllSimIds();
+		List<SimId> simIds = new SimDb().getAllSimIds();
 
 		List<SimId> userSimIds = new ArrayList<>();
 		for (SimId simId : simIds) {
@@ -294,8 +294,7 @@ public class SimulatorServiceManager extends CommonService {
 	public void updateAllSimulatorsHostAndPort(String host, String port) throws Exception, IOException, ClassNotFoundException {
 		GenericSimulatorFactory simFact = new GenericSimulatorFactory(SimCache.getSimManagerForSession(session.id()));
 
-		SimDb db = new SimDb();
-		List<SimId> simIds = db.getAllSimIds();
+		List<SimId> simIds = new SimDb().getAllSimIds();
 
 		List<SimulatorConfig> configs = GenericSimulatorFactory.loadSimulators(simIds);
 		for (SimulatorConfig config : configs) {
@@ -327,7 +326,7 @@ public class SimulatorServiceManager extends CommonService {
         SimulatorConfig config = SimCache.getSimulatorConfig(simId);
         if (config != null)
             return deleteConfig(config);
-        if (new SimDb().exists(simId)) {
+        if (SimDb.exists(simId)) {
             try {
                 new SimDb(simId).delete();
             } catch (Exception e) {

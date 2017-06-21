@@ -1,6 +1,7 @@
 package gov.nist.toolkit.itTests.xc
 
 import gov.nist.toolkit.actortransaction.client.ActorType
+import gov.nist.toolkit.itSupport.xc.GatewayBuilder
 import gov.nist.toolkit.itTests.support.ToolkitSpecification
 import gov.nist.toolkit.registrymetadata.client.MetadataCollection
 import gov.nist.toolkit.commondatatypes.MetadataSupport

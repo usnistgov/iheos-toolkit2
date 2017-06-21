@@ -38,14 +38,14 @@ public class SimManager {
 
 	public List<SimId> loadAllSims() {
 		SimDb db = new SimDb();
-		List<SimId> simIds = db.getAllSimIds();
+		List<SimId> simIds = new SimDb().getAllSimIds();
 		List<SimId> loadedSimIds = new ArrayList<>();
 		for (SimId simId : simIds) {
 			try {
 				if (!hasSim(simId))
 					try {
 						logger.info("Load sim " + simId);
-						simConfigs.add(db.getSimulator(simId));
+						simConfigs.add(SimDb.getSimulator(simId));
 						loadedSimIds.add(simId);
 					}
 					catch (Exception e) {

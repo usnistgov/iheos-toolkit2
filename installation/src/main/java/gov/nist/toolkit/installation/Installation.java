@@ -82,7 +82,7 @@ public class Installation {
         if (warHome == null)
             logger.error(ExceptionUtil.here("warhome is null"));
         this.warHome = warHome;
-        propertyServiceMgr = null;
+//        propertyServiceMgr = null;
         propertyServiceManager();  // initialize
         String ec = propertyServiceManager().getPropertyManager().getExternalCache();
 
@@ -93,6 +93,11 @@ public class Installation {
             externalCache = new File(ec);
         }
 		logger.info("Installation: External Cache set to " + externalCache);
+		if (!externalCache.exists()) {
+            logger.info("External Cache does not exist at " + externalCache);
+            externalCache = null;
+            return;
+        }
         logger.info("Toolkit running at " + propertyServiceManager().getToolkitHost() + ":" + propertyServiceManager().getToolkitPort());
     }
 
@@ -219,6 +224,10 @@ public class Installation {
     */
    public File simDbFile() {
         return new File(externalCache(), "simdb");
+    }
+
+    public File fhirSimDbFile() {
+        return new File(externalCache(), "resdb");
     }
 
     public List<String> getListenerPortRange() {

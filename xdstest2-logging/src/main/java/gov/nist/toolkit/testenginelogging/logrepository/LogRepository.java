@@ -100,7 +100,7 @@ public class LogRepository  {
         File dir = new File(
                 location + File.separator + user +
                         File.separator + event);
-        log.debug(String.format("Assigning Event Dir to test instance %s - %s", testInstance, dir));
+        log.debug(String.format("Assigning SimResource Dir to test instance %s - %s", testInstance, dir));
         testInstance.setEventDir(dir.toString());
         testInstance.setLocation(location.toString());
         testInstance.setUser(user);

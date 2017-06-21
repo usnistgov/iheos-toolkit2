@@ -3,6 +3,8 @@ package gov.nist.toolkit.simulators.sim.reg.sq;
 import gov.nist.toolkit.docref.EbRim;
 import gov.nist.toolkit.registrymetadata.Metadata;
 import gov.nist.toolkit.simulators.sim.reg.store.*;
+import gov.nist.toolkit.simulators.sim.reg.store.RegIndex;
+import gov.nist.toolkit.simulators.sim.reg.store.StatusValue;
 import gov.nist.toolkit.valregmsg.registry.SQCodeAnd;
 import gov.nist.toolkit.valregmsg.registry.SQCodeOr;
 import gov.nist.toolkit.valregmsg.registry.storedquery.generic.GetAll;
@@ -60,15 +62,15 @@ public class GetAllSim extends GetAll {
 //        System.out.println("   FOL: " + folResults);
 
         // filter on DE availabilityStatus
-        List<RegIndex.StatusValue> deStatuses = ri.translateStatusValues(deStatus);
+        List<StatusValue> deStatuses = ri.translateStatusValues(deStatus);
         deResults = mc.docEntryCollection.filterByStatus(deStatuses, deResults);
 
         // filter on SS availabilityStatus
-        List<RegIndex.StatusValue> ssStatuses = ri.translateStatusValues(ssStatus);
+        List<StatusValue> ssStatuses = ri.translateStatusValues(ssStatus);
         ssResults = mc.subSetCollection.filterByStatus(ssStatuses, ssResults);
 
         // filter on FOL availabilityStatus
-        List<RegIndex.StatusValue> folStatuses = ri.translateStatusValues(folStatus);
+        List<StatusValue> folStatuses = ri.translateStatusValues(folStatus);
         folResults = mc.folCollection.filterByStatus(folStatuses, folResults);
 
 //        System.out.println("After status filter:");

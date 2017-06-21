@@ -297,12 +297,11 @@ public class RetrieveImgDocSetTransaction extends BasicTransaction {
    }
    
    private String target = null;
-   protected void parseTargetInstruction(OMElement part) {
+   private void parseTargetInstruction(OMElement part) {
       try {
       String sim = part.getAttributeValue(new QName("sim"));
       String user = testConfig.testInstance.getUser();
-      SimDb db = new SimDb();
-      SimulatorConfig simConfig = db.getSimulator(new SimId(user, sim));
+      SimulatorConfig simConfig = SimDb.getSimulator(new SimId(user, sim));
       target = simConfig.getConfigEle(SimulatorProperties.idsrEndpoint).asString();
       } catch (Exception e) {
          
