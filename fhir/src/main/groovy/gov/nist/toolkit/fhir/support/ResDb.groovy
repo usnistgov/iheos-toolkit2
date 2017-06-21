@@ -7,6 +7,7 @@ import gov.nist.toolkit.actorfactory.client.SimId
 import gov.nist.toolkit.actortransaction.client.ActorType
 import gov.nist.toolkit.configDatatypes.client.TransactionType
 import gov.nist.toolkit.installation.Installation
+import gov.nist.toolkit.utilities.io.Io
 import org.apache.log4j.Logger
 /**
  * SibDb extensions for FHIR resources
@@ -118,6 +119,17 @@ class ResDb extends SimDb {
     }
 
     /**
+     * delete FHIR sim
+     * @param simId
+     * @return
+     */
+    static boolean delete(SimId simId) {
+        if (!exists(simId)) return false
+        Io.delete(getSimBase(simId))
+        return true
+    }
+
+    /**
      * Base location of simulator
      * @param simId - which simulator
      * @return
@@ -137,7 +149,7 @@ class ResDb extends SimDb {
     private static ResDb mkSimi(File dbRoot, SimId simid, String actor) throws IOException, NoSimException {
         validateSimId(simid);
         if (!dbRoot.exists())
-            dbRoot.mkdir();
+            dbRoot.mkdirs();
         if (!dbRoot.canWrite() || !dbRoot.isDirectory())
             throw new IOException("Resource Simulator database location, " + dbRoot.toString() + " is not a directory or cannot be written to");
 

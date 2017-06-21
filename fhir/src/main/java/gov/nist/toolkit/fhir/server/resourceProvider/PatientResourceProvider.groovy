@@ -1,4 +1,4 @@
-package gov.nist.toolkit.fhirserver2.resourceProvider
+package gov.nist.toolkit.fhir.server.resourceProvider
 
 import ca.uhn.fhir.model.primitive.IdDt
 import ca.uhn.fhir.model.primitive.InstantDt

@@ -1,4 +1,4 @@
-package gov.nist.toolkit.fhirserver2.servlet;
+package gov.nist.toolkit.fhir.servlet;
 
 import gov.nist.toolkit.fhir.support.SimContext;
 

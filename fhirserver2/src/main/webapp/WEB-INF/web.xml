@@ -28,7 +28,7 @@
 	-->
 	<servlet>
 		<servlet-name>fhirServlet</servlet-name>
-		<servlet-class>gov.nist.toolkit.fhirServer2.servlet.RestfulServlet</servlet-class>
+		<servlet-class>gov.nist.toolkit.fhir.servlet.RestfulServlet</servlet-class>
 		<load-on-startup>1</load-on-startup>
 	</servlet>
 	<servlet-mapping>

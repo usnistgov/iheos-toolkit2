@@ -5,7 +5,6 @@ import ca.uhn.fhir.parser.IParser
 import gov.nist.toolkit.actorfactory.client.SimId
 import gov.nist.toolkit.fhir.support.ResDb
 import gov.nist.toolkit.fhir.support.SimIndexManager
-import gov.nist.toolkit.fhir.support.SimIndexer
 import gov.nist.toolkit.installation.Installation
 import gov.nist.toolkit.itTests.support.FhirId
 import gov.nist.toolkit.itTests.support.FhirSpecification
@@ -16,7 +15,6 @@ import org.hl7.fhir.dstu3.model.Patient
 import org.hl7.fhir.dstu3.model.Resource
 import org.hl7.fhir.instance.model.api.IBaseResource
 import spock.lang.Shared
-
 /**
  *
  */
@@ -25,7 +23,7 @@ class PatientQueryByNameTest extends FhirSpecification {
     @Shared FhirContext ourCtx = FhirContext.forDstu3()
 
     def setupSpec() {
-        SimIndexer.delete(simId)
+        ResDb.delete(simId)
 
         startGrizzly('8889')   // sets up Grizzly server on remoteToolkitPort
 

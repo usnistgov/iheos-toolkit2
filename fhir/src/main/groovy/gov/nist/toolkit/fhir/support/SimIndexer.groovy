@@ -182,7 +182,7 @@ class SimIndexer {
     }
 
     /**
-     * delete ResDb for this simId
+     * delete Lucene index for this simId
      * @param simId
      * @return
      */

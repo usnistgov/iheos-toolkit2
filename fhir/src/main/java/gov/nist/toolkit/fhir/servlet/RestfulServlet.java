@@ -1,9 +1,9 @@
-package gov.nist.toolkit.fhirserver2.servlet;
+package gov.nist.toolkit.fhir.servlet;
 
 import ca.uhn.fhir.context.FhirContext;
 import ca.uhn.fhir.rest.server.IResourceProvider;
 import ca.uhn.fhir.rest.server.RestfulServer;
-import gov.nist.toolkit.fhirserver2.resourceProvider.PatientResourceProvider;
+import gov.nist.toolkit.fhir.server.resourceProvider.PatientResourceProvider;
 
 import javax.servlet.ServletException;
 import java.util.ArrayList;

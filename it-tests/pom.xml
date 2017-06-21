@@ -112,7 +112,7 @@
         </dependency>
         <dependency>
             <groupId>gov.nist.toolkit</groupId>
-            <artifactId>fhir-server2</artifactId>
+            <artifactId>fhir</artifactId>
         </dependency>
 
         <!-- These two needed by dcm4che -->
