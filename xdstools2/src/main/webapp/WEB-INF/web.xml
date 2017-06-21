@@ -180,6 +180,17 @@
         <servlet-class>gov.nist.toolkit.testkitutilities.TestkitServlet</servlet-class>
     </servlet>
 
+    <servlet>
+        <servlet-name>fhirServlet</servlet-name>
+        <servlet-class>gov.nist.toolkit.fhir.servlet.RestfulServlet</servlet-class>
+        <load-on-startup>1</load-on-startup>
+    </servlet>
+
+    <servlet-mapping>
+        <servlet-name>fhirServlet</servlet-name>
+        <url-pattern>/fhir/*</url-pattern>
+    </servlet-mapping>
+
     <servlet-mapping>
         <servlet-name>DocumentGenerator</servlet-name>
         <url-pattern>/testdoc/*</url-pattern>

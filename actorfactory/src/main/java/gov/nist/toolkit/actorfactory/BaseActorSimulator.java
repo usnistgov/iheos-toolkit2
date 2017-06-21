@@ -3,7 +3,7 @@ package gov.nist.toolkit.actorfactory;
 import gov.nist.toolkit.actorfactory.client.SimulatorConfig;
 
 /**
- * Created by bill on 9/14/15.
+ *
  */
 public class BaseActorSimulator {
     // Services may need extension via hooks.  These are the hooks

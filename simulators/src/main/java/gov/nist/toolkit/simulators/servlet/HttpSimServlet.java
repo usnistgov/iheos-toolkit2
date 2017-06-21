@@ -4,7 +4,7 @@
 package gov.nist.toolkit.simulators.servlet;
 
 import edu.wustl.mir.erl.ihe.xdsi.util.Utility;
-import gov.nist.toolkit.actorfactory.GenericSimulatorFactory;
+import gov.nist.toolkit.actorfactory.factories.GenericSimulatorFactory;
 import gov.nist.toolkit.actorfactory.RuntimeManager;
 import gov.nist.toolkit.actorfactory.SimDb;
 import gov.nist.toolkit.actorfactory.client.BadSimIdException;

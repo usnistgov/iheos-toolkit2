@@ -4,6 +4,7 @@ import gov.nist.toolkit.actorfactory.client.BadSimIdException;
 import gov.nist.toolkit.actorfactory.client.NoSimException;
 import gov.nist.toolkit.actorfactory.client.SimId;
 import gov.nist.toolkit.actorfactory.client.SimulatorConfig;
+import gov.nist.toolkit.actorfactory.factories.GenericSimulatorFactory;
 import gov.nist.toolkit.actortransaction.client.ActorType;
 import gov.nist.toolkit.actortransaction.client.TransactionInstance;
 import gov.nist.toolkit.configDatatypes.client.Pid;
@@ -248,7 +249,7 @@ public class SimDb {
 		return actors;
 	}
 
-	static Date getNewExpiration(@SuppressWarnings("rawtypes") Class controllingClass)   {
+	static public Date getNewExpiration(@SuppressWarnings("rawtypes") Class controllingClass)   {
 		// establish expiration for newly touched cache elements
 		Date now = new Date();
 		Calendar newExpiration = Calendar.getInstance();
@@ -318,11 +319,11 @@ public class SimDb {
 		return config;
 	}
 
-	File getSimulatorControlFile() {
+	public File getSimulatorControlFile() {
 		return new File(simDir.toString() + File.separatorChar + "simctl.json");
 	}
 
-	static String getTransactionDirName(TransactionType tt)  {
+	static public String getTransactionDirName(TransactionType tt)  {
 		return tt.getShortName();
 	}
 
@@ -503,7 +504,7 @@ public class SimDb {
 		event = base;
 	}
 
-	File getSimDir() {
+	public File getSimDir() {
 		return getIpDir();
 	}
 
@@ -511,7 +512,7 @@ public class SimDb {
 		return simDir;
 	}
 
-	List<TransactionInstance> getTransInstances(String ignored_actor, String trans) {
+	public List<TransactionInstance> getTransInstances(String ignored_actor, String trans) {
 		String event_save = event;
 		File transDir_save = transactionDir;
 		List<String> names = new ArrayList<String>();
@@ -712,7 +713,7 @@ public class SimDb {
 		Io.delete(f);
 	}
 
-	void rename(String fileNameBase, String newFileNameBase) throws IOException {
+	public void rename(String fileNameBase, String newFileNameBase) throws IOException {
 
 		File from = getDBFilePrefix(fileNameBase);
 		File to = getDBFilePrefix(newFileNameBase);

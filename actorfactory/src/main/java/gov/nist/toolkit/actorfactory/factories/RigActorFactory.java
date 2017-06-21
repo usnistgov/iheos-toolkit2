@@ -1,12 +1,9 @@
 /**
  * 
  */
-package gov.nist.toolkit.actorfactory;
+package gov.nist.toolkit.actorfactory.factories;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-
+import gov.nist.toolkit.actorfactory.SimManager;
 import gov.nist.toolkit.actorfactory.client.SimId;
 import gov.nist.toolkit.actorfactory.client.Simulator;
 import gov.nist.toolkit.actorfactory.client.SimulatorConfig;
@@ -17,9 +14,13 @@ import gov.nist.toolkit.configDatatypes.client.TransactionType;
 import gov.nist.toolkit.sitemanagement.client.Site;
 import gov.nist.toolkit.sitemanagement.client.TransactionBean;
 import gov.nist.toolkit.sitemanagement.client.TransactionBean.RepositoryType;
-import gov.nist.toolkit.xdsexception.client.EnvironmentNotSelectedException;
 import gov.nist.toolkit.xdsexception.NoSessionException;
 import gov.nist.toolkit.xdsexception.NoSimulatorException;
+import gov.nist.toolkit.xdsexception.client.EnvironmentNotSelectedException;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * Creates Responding Imaging Gateway Simulator
@@ -28,7 +29,7 @@ import gov.nist.toolkit.xdsexception.NoSimulatorException;
  * href="mailto:moultonr@mir.wustl.edu">moultonr@mir.wustl.edu</a>
  *
  */
-public class RigActorFactory extends AbstractActorFactory {
+public class RigActorFactory extends AbstractActorFactory  implements IActorFactory {
    SimId newID = null;
 
    static final String homeCommunityIdBase = "urn:oid:1.1.4567334.101.";
@@ -42,8 +43,8 @@ public class RigActorFactory extends AbstractActorFactory {
       Arrays.asList(TransactionType.XC_RET_IMG_DOC_SET);
 
    @Override
-   protected Simulator buildNew(SimManager simm, @SuppressWarnings("hiding") SimId newID,
-      boolean configureBase)
+   public  Simulator buildNew(SimManager simm, @SuppressWarnings("hiding") SimId newID,
+                              boolean configureBase)
          throws EnvironmentNotSelectedException, NoSessionException {
       this.newID = newID;
       ActorType actorType = ActorType.RESPONDING_IMAGING_GATEWAY;
@@ -105,4 +106,8 @@ public class RigActorFactory extends AbstractActorFactory {
       return incomingTransactions;
    }
 
+   @Override
+   public ActorType getActorType() {
+      return ActorType.RESPONDING_IMAGING_GATEWAY;
+   }
 }

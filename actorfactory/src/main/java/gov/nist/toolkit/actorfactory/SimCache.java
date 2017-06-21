@@ -3,6 +3,7 @@ package gov.nist.toolkit.actorfactory;
 
 import gov.nist.toolkit.actorfactory.client.SimId;
 import gov.nist.toolkit.actorfactory.client.SimulatorConfig;
+import gov.nist.toolkit.actorfactory.factories.GenericSimulatorFactory;
 import gov.nist.toolkit.sitemanagement.client.Site;
 import org.apache.log4j.Logger;
 
@@ -37,7 +38,7 @@ public class SimCache {
         return sitesSet;
     }
 
-    static Collection<String> getAllRepositoryUniqueIds() throws Exception {
+    public static Collection<String> getAllRepositoryUniqueIds() throws Exception {
         Collection<Site> sites = getAllSites();
         Set<String> ids = new HashSet<>();
         for (Site site : sites) {

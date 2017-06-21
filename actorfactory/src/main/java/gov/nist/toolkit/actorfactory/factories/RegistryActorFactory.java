@@ -1,27 +1,28 @@
-package gov.nist.toolkit.actorfactory;
+package gov.nist.toolkit.actorfactory.factories;
 
+import gov.nist.toolkit.actorfactory.SimManager;
 import gov.nist.toolkit.actorfactory.client.SimId;
 import gov.nist.toolkit.actorfactory.client.Simulator;
 import gov.nist.toolkit.actorfactory.client.SimulatorConfig;
 import gov.nist.toolkit.actortransaction.client.ActorType;
 import gov.nist.toolkit.actortransaction.client.ParamType;
+import gov.nist.toolkit.adt.ListenerFactory;
 import gov.nist.toolkit.configDatatypes.SimulatorProperties;
 import gov.nist.toolkit.configDatatypes.client.TransactionType;
-import gov.nist.toolkit.adt.ListenerFactory;
 import gov.nist.toolkit.envSetting.EnvSetting;
 import gov.nist.toolkit.installation.Installation;
 import gov.nist.toolkit.simcommon.client.config.SimulatorConfigElement;
 import gov.nist.toolkit.sitemanagement.client.Site;
 import gov.nist.toolkit.sitemanagement.client.TransactionBean;
 import gov.nist.toolkit.sitemanagement.client.TransactionBean.RepositoryType;
-import gov.nist.toolkit.xdsexception.client.EnvironmentNotSelectedException;
 import gov.nist.toolkit.xdsexception.NoSessionException;
+import gov.nist.toolkit.xdsexception.client.EnvironmentNotSelectedException;
 
 import java.io.File;
 import java.util.Arrays;
 import java.util.List;
 
-public class RegistryActorFactory extends AbstractActorFactory {
+public class RegistryActorFactory extends AbstractActorFactory  implements IActorFactory {
 	boolean isRecipient = false;  // used as part of Document Recipient
 	boolean isOnDemand = false;
 
@@ -66,7 +67,7 @@ public class RegistryActorFactory extends AbstractActorFactory {
                 File codesFile = es.getCodesFile();
                 addEditableConfig(sc, SimulatorProperties.codesEnvironment, ParamType.SELECTION, codesFile.toString());
             } else {
-                File codesFile = EnvSetting.getEnvSetting(simm.sessionId).getCodesFile();
+                File codesFile = EnvSetting.getEnvSetting(simm.sessionId()).getCodesFile();
                 addEditableConfig(sc, SimulatorProperties.codesEnvironment, ParamType.SELECTION, codesFile.toString());
             }
 
@@ -205,5 +206,9 @@ public class RegistryActorFactory extends AbstractActorFactory {
 		return incomingTransactions;
 	}
 
-	
+
+	@Override
+	public ActorType getActorType() {
+		return ActorType.REGISTRY;
+	}
 }

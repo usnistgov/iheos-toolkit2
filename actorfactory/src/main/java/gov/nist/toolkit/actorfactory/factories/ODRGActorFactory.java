@@ -1,5 +1,6 @@
-package gov.nist.toolkit.actorfactory;
+package gov.nist.toolkit.actorfactory.factories;
 
+import gov.nist.toolkit.actorfactory.SimManager;
 import gov.nist.toolkit.actorfactory.client.SimId;
 import gov.nist.toolkit.actorfactory.client.Simulator;
 import gov.nist.toolkit.actorfactory.client.SimulatorConfig;
@@ -21,7 +22,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-public class ODRGActorFactory extends AbstractActorFactory {
+public class ODRGActorFactory extends AbstractActorFactory  implements IActorFactory {
    SimId newID = null;
 
    static final String homeCommunityIdBase = "urn:oid:1.1.4567334.2.";
@@ -36,7 +37,7 @@ public class ODRGActorFactory extends AbstractActorFactory {
 
    @Override
    protected Simulator buildNew(SimManager simm, @SuppressWarnings("hiding") SimId newID,
-      boolean configureBase)
+                                boolean configureBase)
          throws EnvironmentNotSelectedException, NoSessionException {
       this.newID = newID;
       ActorType actorType = ActorType.OD_RESPONDING_GATEWAY;
@@ -46,7 +47,7 @@ public class ODRGActorFactory extends AbstractActorFactory {
 
       SimId simId = sc.getId();
 
-      File codesFile = EnvSetting.getEnvSetting(simm.sessionId).getCodesFile();
+      File codesFile = EnvSetting.getEnvSetting(simm.sessionId()).getCodesFile();
       addEditableConfig(sc, SimulatorProperties.codesEnvironment,
          ParamType.SELECTION, codesFile.toString());
       addEditableConfig(sc, SimulatorProperties.homeCommunityId, ParamType.TEXT,
@@ -143,4 +144,8 @@ public class ODRGActorFactory extends AbstractActorFactory {
       return tt;
    }
 
+   @Override
+   public ActorType getActorType() {
+      return ActorType.OD_RESPONDING_GATEWAY;
+   }
 }

@@ -1,5 +1,6 @@
-package gov.nist.toolkit.actorfactory;
+package gov.nist.toolkit.actorfactory.factories;
 
+import gov.nist.toolkit.actorfactory.SimManager;
 import gov.nist.toolkit.actorfactory.client.SimId;
 import gov.nist.toolkit.actorfactory.client.Simulator;
 import gov.nist.toolkit.actorfactory.client.SimulatorConfig;
@@ -15,14 +16,14 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-public class IGActorFactory extends AbstractActorFactory {
+public class IGActorFactory extends AbstractActorFactory  implements IActorFactory {
    SimId newID = null;
 
    static final List <TransactionType> incomingTransactions =
       Arrays.asList(TransactionType.STORED_QUERY, TransactionType.RETRIEVE);
 
    public Simulator buildNew(SimManager simm, SimId newID,
-      boolean configureBase) {
+                             boolean configureBase) {
       this.newID = newID;
 
       ActorType actorType = ActorType.INITIATING_GATEWAY;
@@ -80,4 +81,8 @@ public class IGActorFactory extends AbstractActorFactory {
       return incomingTransactions;
    }
 
+   @Override
+   public ActorType getActorType() {
+      return ActorType.INITIATING_GATEWAY;
+   }
 }

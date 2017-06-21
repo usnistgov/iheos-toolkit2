@@ -324,7 +324,17 @@ public enum ActorType implements IsSerializable, Serializable {
             Arrays.asList(TransactionType.RET_IMG_DOC_SET),
             false,
             null
+    ),
+    FHIR_SERVER(
+            "FHIR Server",
+            Arrays.asList(""),
+            "fhir",
+            "gov.nist.toolkit.fhir.simulators.FhirSimulator",
+            Arrays.asList(TransactionType.FHIR),
+            true,
+            null
     )
+
     ;
 
     private static final long serialVersionUID = 1L;

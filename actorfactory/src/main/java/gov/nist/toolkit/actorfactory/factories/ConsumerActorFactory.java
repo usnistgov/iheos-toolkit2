@@ -1,8 +1,6 @@
-package gov.nist.toolkit.actorfactory;
+package gov.nist.toolkit.actorfactory.factories;
 
-import java.util.ArrayList;
-import java.util.List;
-
+import gov.nist.toolkit.actorfactory.SimManager;
 import gov.nist.toolkit.actorfactory.client.SimId;
 import gov.nist.toolkit.actorfactory.client.Simulator;
 import gov.nist.toolkit.actorfactory.client.SimulatorConfig;
@@ -15,15 +13,18 @@ import gov.nist.toolkit.xdsexception.client.EnvironmentNotSelectedException;
 import gov.nist.toolkit.xdsexception.NoSessionException;
 import gov.nist.toolkit.xdsexception.NoSimulatorException;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
- * XDSI Document Consumer Simulator Factory
+ * XDS Document Consumer Simulator Factory
  */
-public class ImgConsumerActorFactory  extends AbstractActorFactory {
+public class ConsumerActorFactory  extends AbstractActorFactory  implements IActorFactory {
     static final List<TransactionType> incomingTransactions = new ArrayList<>();
 
     @Override
     public Simulator buildNew(SimManager simm, SimId simId, boolean configureBase) throws EnvironmentNotSelectedException, NoSessionException {
-        ActorType actorType = ActorType.IMAGING_DOC_CONSUMER;
+        ActorType actorType = ActorType.DOC_CONSUMER;
         SimulatorConfig sc;
         if (configureBase)
             sc = configureBaseElements(actorType, simId);
@@ -59,5 +60,10 @@ public class ImgConsumerActorFactory  extends AbstractActorFactory {
     @Override
     public List<TransactionType> getIncomingTransactions() {
         return incomingTransactions;
+    }
+
+    @Override
+    public ActorType getActorType() {
+        return ActorType.DOC_CONSUMER;
     }
 }

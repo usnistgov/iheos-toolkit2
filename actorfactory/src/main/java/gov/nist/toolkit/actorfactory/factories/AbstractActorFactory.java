@@ -1,9 +1,11 @@
-package gov.nist.toolkit.actorfactory;
+package gov.nist.toolkit.actorfactory.factories;
 
+import gov.nist.toolkit.actorfactory.*;
 import gov.nist.toolkit.actorfactory.client.NoSimException;
 import gov.nist.toolkit.actorfactory.client.SimId;
 import gov.nist.toolkit.actorfactory.client.Simulator;
 import gov.nist.toolkit.actorfactory.client.SimulatorConfig;
+import gov.nist.toolkit.actorfactory.loader.ActorFactoryLoader;
 import gov.nist.toolkit.actortransaction.client.ActorType;
 import gov.nist.toolkit.actortransaction.client.ParamType;
 import gov.nist.toolkit.actortransaction.client.TransactionInstance;
@@ -45,22 +47,41 @@ public abstract class AbstractActorFactory {
 
 	static private final Map<String /* ActorType.name */, AbstractActorFactory> factories = new HashMap<String, AbstractActorFactory>();
 	static {
-		factories.put(ActorType.REGISTRY.getName(),           		new RegistryActorFactory());
-		factories.put(ActorType.REPOSITORY.getName(),         		new RepositoryActorFactory());
-		factories.put(ActorType.ONDEMAND_DOCUMENT_SOURCE.getName(),	new OnDemandDocumentSourceActorFactory());
-		factories.put(ActorType.DOCUMENT_RECIPIENT.getName(),  		new RecipientActorFactory());
-		factories.put(ActorType.REPOSITORY_REGISTRY.getName(), 		new RepositoryRegistryActorFactory());
-		factories.put(ActorType.INITIATING_GATEWAY.getName(),  		new IGActorFactory());
-		factories.put(ActorType.INITIATING_IMAGING_GATEWAY.getName(), new IigActorFactory());
-		factories.put(ActorType.RESPONDING_IMAGING_GATEWAY.getName(), new RigActorFactory());
-		factories.put(ActorType.RESPONDING_GATEWAY.getName(),  		new RGActorFactory());
-		factories.put(ActorType.OD_RESPONDING_GATEWAY.getName(),  		new ODRGActorFactory());
-      factories.put(ActorType.XDR_DOC_SRC.getName(), 				   new XdrDocSrcActorFactory());
-      factories.put(ActorType.DOC_CONSUMER.getName(), 			   new ConsumerActorFactory());
-      factories.put(ActorType.IMAGING_DOC_CONSUMER.getName(),         new ImgConsumerActorFactory());
-      factories.put(ActorType.IMAGING_DOC_SOURCE.getName(), 		new ImagingDocSourceActorFactory());
-      factories.put(ActorType.COMBINED_INITIATING_GATEWAY.getName(), new CigActorFactory());
-      factories.put(ActorType.COMBINED_RESPONDING_GATEWAY.getName(), new CrgActorFactory());
+
+		// for this loader to work, the following requirements must be met by the factory class:
+		// 1. In package gov.nist.toolkit.actorfactory.factories
+		// 2. Implement interface IActorFactory
+		// 3. Extend class AbstractActorFactory
+
+		List<Class> af = ActorFactoryLoader.getActorFactories();
+		for (Class c : af) {
+			try {
+				IActorFactory inf = (IActorFactory) c.newInstance();
+				ActorType actorType = inf.getActorType();
+				factories.put(actorType.getName(), (AbstractActorFactory) inf);
+			} catch (Throwable t) {
+				logger.fatal("Cannot load factory class for Actor Type " + c.getName());
+			}
+		}
+
+
+//		factories.put(ActorType.REGISTRY.getName(),           		new RegistryActorFactory());
+//		factories.put(ActorType.REPOSITORY.getName(),         		new RepositoryActorFactory());
+//		factories.put(ActorType.ONDEMAND_DOCUMENT_SOURCE.getName(),	new OnDemandDocumentSourceActorFactory());
+//		factories.put(ActorType.DOCUMENT_RECIPIENT.getName(),  		new RecipientActorFactory());
+//		factories.put(ActorType.REPOSITORY_REGISTRY.getName(), 		new RepositoryRegistryActorFactory());
+//		factories.put(ActorType.INITIATING_GATEWAY.getName(),  		new IGActorFactory());
+//		factories.put(ActorType.INITIATING_IMAGING_GATEWAY.getName(), new IigActorFactory());
+//		factories.put(ActorType.RESPONDING_IMAGING_GATEWAY.getName(), new RigActorFactory());
+//		factories.put(ActorType.RESPONDING_GATEWAY.getName(),  		new RGActorFactory());
+//		factories.put(ActorType.OD_RESPONDING_GATEWAY.getName(),  		new ODRGActorFactory());
+//      factories.put(ActorType.XDR_DOC_SRC.getName(), 				   new XdrDocSrcActorFactory());
+//      factories.put(ActorType.DOC_CONSUMER.getName(), 			   new ConsumerActorFactory());
+//      factories.put(ActorType.IMAGING_DOC_CONSUMER.getName(),         new ImgConsumerActorFactory());
+//      factories.put(ActorType.IMAGING_DOC_SOURCE.getName(), 		new ImagingDocSourceActorFactory());
+//      factories.put(ActorType.COMBINED_INITIATING_GATEWAY.getName(), new CigActorFactory());
+//      factories.put(ActorType.COMBINED_RESPONDING_GATEWAY.getName(), new CrgActorFactory());
+//      factories.put(ActorType.FHIR_SERVER.getName(), new FhirActorFactory());
 	}
 
 	static public AbstractActorFactory getActorFactory(ActorType at) {
@@ -102,7 +123,7 @@ public abstract class AbstractActorFactory {
 			File codesFile = es.getCodesFile();
 			addEditableConfig(sc, SimulatorProperties.codesEnvironment, ParamType.SELECTION, codesFile.toString());
 		} else {
-			File codesFile = EnvSetting.getEnvSetting(simm.sessionId).getCodesFile();
+			File codesFile = EnvSetting.getEnvSetting(simm.sessionId()).getCodesFile();
 			addEditableConfig(sc, SimulatorProperties.codesEnvironment, ParamType.SELECTION, codesFile.toString());
 		}
 	}
@@ -235,7 +256,6 @@ public abstract class AbstractActorFactory {
 	protected String mkEndpoint(SimulatorConfig asc, SimulatorConfigElement ele, String actor, boolean isTLS) {
 		String transtype = SimDb.getTransactionDirName(ele.transType);
 
-//		String contextName = Installation.instance().tkProps.get("toolkit.servlet.context", "xdstools2");
 		String contextName = Installation.instance().getServletContextName();
 
 		return "http"
@@ -252,6 +272,29 @@ public abstract class AbstractActorFactory {
 		actor           //asc.getActorType().toLowerCase()
 		+ "/" 
 		+ transtype;
+	}
+
+	protected String mkFhirEndpoint(SimulatorConfig asc, SimulatorConfigElement ele, String actor, boolean isTLS) {
+		String transtype = SimDb.getTransactionDirName(ele.transType);
+
+		String contextName = Installation.instance().getServletContextName();
+
+		return "http"
+				+ ((isTLS) ? "s" : "")
+				+ "://"
+				+ Installation.instance().propertyServiceManager().getToolkitHost()
+				+ ":"
+				+ ((isTLS) ? Installation.instance().propertyServiceManager().getToolkitTlsPort() : Installation.instance().propertyServiceManager().getToolkitPort())
+//		+ "/"  context name includes preceding /
+				+ contextName
+				+ "/"
+				+ "fsim"
+				+ "/"
+				+ asc.getId();
+//				+ "/"
+//				+ actor           //asc.getActorType().toLowerCase()
+//				+ "/"
+//				+ transtype;
 	}
 
 	public void saveConfiguration(SimulatorConfig config) throws Exception {
@@ -401,7 +444,7 @@ public abstract class AbstractActorFactory {
 //		return config;
 	}
 
-	static SimulatorConfig loadSimulator(SimId simid, boolean okifNotExist) throws Exception {
+	public static SimulatorConfig loadSimulator(SimId simid, boolean okifNotExist) throws Exception {
 		SimDb simdb;
 		try {
 			simdb = new SimDb(simid);
@@ -500,6 +543,15 @@ public abstract class AbstractActorFactory {
 		ele.type = ParamType.ENDPOINT;
 		ele.transType = transactionType;
 		ele.setStringValue(mkEndpoint(sc, ele, actorType.getShortName(), tls));
+		addFixed(sc, ele);
+	}
+
+	public void addFixedFhirEndpoint(SimulatorConfig sc, String endpointName, ActorType actorType, TransactionType transactionType, boolean tls) {
+		SimulatorConfigElement ele = new SimulatorConfigElement();
+		ele.name = endpointName;
+		ele.type = ParamType.ENDPOINT;
+		ele.transType = transactionType;
+		ele.setStringValue(mkFhirEndpoint(sc, ele, actorType.getShortName(), tls));
 		addFixed(sc, ele);
 	}
 

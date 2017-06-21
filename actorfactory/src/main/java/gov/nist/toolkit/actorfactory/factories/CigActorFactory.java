@@ -1,11 +1,9 @@
 /**
  * 
  */
-package gov.nist.toolkit.actorfactory;
+package gov.nist.toolkit.actorfactory.factories;
 
-import java.util.ArrayList;
-import java.util.List;
-
+import gov.nist.toolkit.actorfactory.SimManager;
 import gov.nist.toolkit.actorfactory.client.SimId;
 import gov.nist.toolkit.actorfactory.client.Simulator;
 import gov.nist.toolkit.actorfactory.client.SimulatorConfig;
@@ -13,6 +11,9 @@ import gov.nist.toolkit.actortransaction.client.ActorType;
 import gov.nist.toolkit.configDatatypes.client.TransactionType;
 import gov.nist.toolkit.sitemanagement.client.Site;
 import gov.nist.toolkit.xdsexception.NoSimulatorException;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Factory class for Combined Initiating Gateway Simulator
@@ -22,7 +23,7 @@ import gov.nist.toolkit.xdsexception.NoSimulatorException;
  * href="mailto:moultonr@mir.wustl.edu">moultonr@mir.wustl.edu</a>
  *
  */
-public class CigActorFactory extends AbstractActorFactory { 
+public class CigActorFactory extends AbstractActorFactory implements IActorFactory {
    
    @Override
    protected Simulator buildNew(SimManager simm, SimId newID, boolean configureBase) throws Exception {
@@ -75,4 +76,8 @@ public List<TransactionType> getIncomingTransactions() {
 }
 
 
+   @Override
+   public ActorType getActorType() {
+      return ActorType.COMBINED_INITIATING_GATEWAY;
+   }
 }

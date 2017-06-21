@@ -26,7 +26,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class RegistryActorSimulator extends BaseDsActorSimulator {
-	static Logger logger = Logger.getLogger(RegistryActorSimulator.class);
+	private static Logger logger = Logger.getLogger(RegistryActorSimulator.class);
 	boolean updateEnabled;
 	private boolean generateResponse = true;
 

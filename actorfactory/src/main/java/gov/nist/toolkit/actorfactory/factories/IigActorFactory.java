@@ -1,10 +1,5 @@
-package gov.nist.toolkit.actorfactory;
+package gov.nist.toolkit.actorfactory.factories;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-
-import gov.nist.toolkit.actorfactory.AbstractActorFactory;
 import gov.nist.toolkit.actorfactory.SimManager;
 import gov.nist.toolkit.actorfactory.client.SimId;
 import gov.nist.toolkit.actorfactory.client.Simulator;
@@ -17,6 +12,10 @@ import gov.nist.toolkit.sitemanagement.client.Site;
 import gov.nist.toolkit.sitemanagement.client.TransactionBean;
 import gov.nist.toolkit.sitemanagement.client.TransactionBean.RepositoryType;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
 /**
  * Factory for Initiating Imaging Gateway
  * 
@@ -24,14 +23,14 @@ import gov.nist.toolkit.sitemanagement.client.TransactionBean.RepositoryType;
  * href="mailto:moultonr@mir.wustl.edu">moultonr@mir.wustl.edu</a>
  *
  */
-public class IigActorFactory extends AbstractActorFactory {
+public class IigActorFactory extends AbstractActorFactory  implements IActorFactory {
    SimId newID = null;
 
 
    static final List <TransactionType> incomingTransactions =
       Arrays.asList(TransactionType.RET_IMG_DOC_SET_GW);
 
-   protected Simulator buildNew(SimManager simm, SimId newID, boolean configureBase) {
+   public Simulator buildNew(SimManager simm, SimId newID, boolean configureBase) {
       this.newID = newID;
 
       ActorType actorType = ActorType.INITIATING_IMAGING_GATEWAY;
@@ -78,4 +77,8 @@ public class IigActorFactory extends AbstractActorFactory {
       return incomingTransactions;
    }
 
+   @Override
+   public ActorType getActorType() {
+      return ActorType.INITIATING_IMAGING_GATEWAY;
+   }
 }

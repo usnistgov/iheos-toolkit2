@@ -1,5 +1,6 @@
-package gov.nist.toolkit.actorfactory;
+package gov.nist.toolkit.actorfactory.factories;
 
+import gov.nist.toolkit.actorfactory.SimManager;
 import gov.nist.toolkit.actorfactory.client.SimId;
 import gov.nist.toolkit.actorfactory.client.Simulator;
 import gov.nist.toolkit.actorfactory.client.SimulatorConfig;
@@ -23,7 +24,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-public class RGActorFactory extends AbstractActorFactory {
+public class RGActorFactory extends AbstractActorFactory implements IActorFactory  {
    static private final Logger logger = Logger.getLogger(RGActorFactory.class);
 
    SimId newID = null;
@@ -39,8 +40,8 @@ public class RGActorFactory extends AbstractActorFactory {
       Arrays.asList(TransactionType.XC_QUERY, TransactionType.XC_RETRIEVE);
 
    @Override
-   protected Simulator buildNew(SimManager simm, @SuppressWarnings("hiding") SimId newID,
-      boolean configureBase)
+   public  Simulator buildNew(SimManager simm, @SuppressWarnings("hiding") SimId newID,
+                              boolean configureBase)
          throws EnvironmentNotSelectedException, NoSessionException {
       this.newID = newID;
       ActorType actorType = ActorType.RESPONDING_GATEWAY;
@@ -50,7 +51,7 @@ public class RGActorFactory extends AbstractActorFactory {
 
       SimId simId = sc.getId();
 
-      File codesFile = EnvSetting.getEnvSetting(simm.sessionId).getCodesFile();
+      File codesFile = EnvSetting.getEnvSetting(simm.sessionId()).getCodesFile();
       addEditableConfig(sc, SimulatorProperties.codesEnvironment,
          ParamType.SELECTION, codesFile.toString());
       addEditableConfig(sc, SimulatorProperties.homeCommunityId, ParamType.TEXT,
@@ -151,4 +152,8 @@ public class RGActorFactory extends AbstractActorFactory {
       return tt;
    }
 
+   @Override
+   public ActorType getActorType() {
+      return ActorType.RESPONDING_GATEWAY;
+   }
 }

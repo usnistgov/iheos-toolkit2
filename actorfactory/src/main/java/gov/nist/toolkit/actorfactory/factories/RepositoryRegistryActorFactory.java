@@ -1,5 +1,6 @@
-package gov.nist.toolkit.actorfactory;
+package gov.nist.toolkit.actorfactory.factories;
 
+import gov.nist.toolkit.actorfactory.SimManager;
 import gov.nist.toolkit.actorfactory.client.SimId;
 import gov.nist.toolkit.actorfactory.client.Simulator;
 import gov.nist.toolkit.actorfactory.client.SimulatorConfig;
@@ -10,7 +11,7 @@ import gov.nist.toolkit.sitemanagement.client.Site;
 import java.util.ArrayList;
 import java.util.List;
 
-public class RepositoryRegistryActorFactory extends AbstractActorFactory {
+public class RepositoryRegistryActorFactory extends AbstractActorFactory implements IActorFactory  {
 
 	protected Simulator buildNew(SimManager simm, SimId newID, boolean configureBase) throws Exception {
 		RegistryActorFactory registryActorFactory;
@@ -67,4 +68,8 @@ public class RepositoryRegistryActorFactory extends AbstractActorFactory {
 	}
 
 
+	@Override
+	public ActorType getActorType() {
+		return ActorType.REPOSITORY_REGISTRY;
+	}
 }

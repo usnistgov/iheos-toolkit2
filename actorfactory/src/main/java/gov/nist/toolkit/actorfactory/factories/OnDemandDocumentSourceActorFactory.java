@@ -1,5 +1,6 @@
-package gov.nist.toolkit.actorfactory;
+package gov.nist.toolkit.actorfactory.factories;
 
+import gov.nist.toolkit.actorfactory.SimManager;
 import gov.nist.toolkit.actorfactory.client.SimId;
 import gov.nist.toolkit.actorfactory.client.Simulator;
 import gov.nist.toolkit.actorfactory.client.SimulatorConfig;
@@ -20,7 +21,7 @@ import java.util.List;
  * This actor factory is based on the repository actor factory.
  *
  */
-public class OnDemandDocumentSourceActorFactory extends AbstractActorFactory {
+public class OnDemandDocumentSourceActorFactory extends AbstractActorFactory  implements IActorFactory {
 
 	static final String repositoryUniqueIdBase = "1.1.4567248.1."; // This arbitrary value is different from the regular repository unique id.
 	static int repositoryUniqueIdIncr = 1;
@@ -116,5 +117,8 @@ public class OnDemandDocumentSourceActorFactory extends AbstractActorFactory {
 	}
 
 
-
+	@Override
+	public ActorType getActorType() {
+		return ActorType.ONDEMAND_DOCUMENT_SOURCE;
+	}
 }

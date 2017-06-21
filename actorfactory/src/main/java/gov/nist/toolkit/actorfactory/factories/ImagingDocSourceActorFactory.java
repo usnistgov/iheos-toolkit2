@@ -1,5 +1,6 @@
-package gov.nist.toolkit.actorfactory;
+package gov.nist.toolkit.actorfactory.factories;
 
+import gov.nist.toolkit.actorfactory.SimManager;
 import gov.nist.toolkit.actorfactory.client.SimId;
 import gov.nist.toolkit.actorfactory.client.Simulator;
 import gov.nist.toolkit.actorfactory.client.SimulatorConfig;
@@ -14,7 +15,7 @@ import gov.nist.toolkit.sitemanagement.client.TransactionBean.RepositoryType;
 import java.util.Arrays;
 import java.util.List;
 
-public class ImagingDocSourceActorFactory extends AbstractActorFactory {
+public class ImagingDocSourceActorFactory extends AbstractActorFactory  implements IActorFactory {
 	SimId newID = null;
 	static final String idsRepositoryUniqueIdBase = "1.1.4567332.10.";
 	static int idsRepositoryUniqueIdIncr = 1;
@@ -113,4 +114,8 @@ public class ImagingDocSourceActorFactory extends AbstractActorFactory {
 	}
 
 
+	@Override
+	public ActorType getActorType() {
+		return ActorType.IMAGING_DOC_SOURCE;
+	}
 }
