@@ -5,6 +5,7 @@ import ca.uhn.fhir.parser.IParser
 import gov.nist.toolkit.actorfactory.client.SimId
 import gov.nist.toolkit.fhir.support.ResDb
 import gov.nist.toolkit.fhir.support.SimIndexManager
+import gov.nist.toolkit.fhir.support.SimIndexer
 import gov.nist.toolkit.installation.Installation
 import gov.nist.toolkit.itTests.support.FhirId
 import gov.nist.toolkit.itTests.support.FhirSpecification
@@ -17,6 +18,87 @@ import spock.lang.Shared
  *
  */
 class WriteReadTest extends FhirSpecification {
+
+    @Shared SimId simId = new SimId('default', 'test')
+    @Shared FhirContext ourCtx = FhirContext.forDstu3()
+
+    def setupSpec() {
+        SimIndexer.delete(simId)
+
+        startGrizzly('8889')   // sets up Grizzly server on remoteToolkitPort
+
+        new ResDb().mkSim(simId)
+    }
+
+    def cleanupSpec() {
+        SimIndexManager.close()
+    }
+
+    def setup() {
+        println "EC is ${Installation.instance().externalCache().toString()}"
+    }
+
+
+    def 'submit first patient'() {
+        when:
+        def (BasicStatusLine statusLine, String results, FhirId locationHeader) = post("http://localhost:${remoteToolkitPort}/xdstools2/fsim/${simId}/Patient", patient)
+        OperationOutcome oo
+        if (results) {
+            IBaseResource resource = ourCtx.newJsonParser().parseResource(results)
+            if (resource instanceof OperationOutcome) {
+                oo = (OperationOutcome) resource
+                println results
+            }
+        }
+
+        then:
+        statusLine.statusCode == 201
+        locationHeader.id
+        locationHeader.vid == '1'
+        !oo
+    }
+
+    @Shared FhirId submission
+
+    def 'submit and query patient'() {
+        when:
+        def (BasicStatusLine statusLine, String results, FhirId locationHeader) = post("http://localhost:${remoteToolkitPort}/xdstools2/fsim/${simId}/Patient", patient)
+        submission = locationHeader
+        OperationOutcome oo
+        if (results) {
+            IBaseResource resource = ourCtx.newJsonParser().parseResource(results)
+            if (resource instanceof OperationOutcome) {
+                oo = (OperationOutcome) resource
+                println results
+            }
+        }
+
+        then:
+        statusLine.statusCode == 201
+        submission.id
+        submission.vid == '1'
+        !oo
+
+        when:
+        def (BasicStatusLine statusLine2, String results2) = get("http://localhost:${remoteToolkitPort}/xdstools2/fsim/${simId}/Patient/${locationHeader.id}")
+
+        then:
+        statusLine2.statusCode == 200
+
+        when:
+        IParser parser = ourCtx.newJsonParser()
+        Patient patient = parser.parseResource(Patient.class, results2)
+        String fid = patient.id
+
+        then:
+        new FhirId(fid) == locationHeader
+    }
+
+
+    String mkUrl() {
+        "http://localhost:${remoteToolkitPort}/xdstools2/fsim/${simId}/Patient"
+    }
+
     def patient = '''
 {
   "resourceType": "Patient",
@@ -118,81 +200,4 @@ class WriteReadTest extends FhirSpecification {
 }
 '''
 
-    @Shared SimId simId = new SimId('default', 'test')
-    @Shared FhirContext ourCtx = FhirContext.forDstu3()
-
-    def setupSpec() {
-        startGrizzly('8889')   // sets up Grizzly server on remoteToolkitPort
-
-        new ResDb().mkSim(simId)
-    }
-
-    def cleanupSpec() {
-        SimIndexManager.close()
-    }
-
-    def setup() {
-        println "EC is ${Installation.instance().externalCache().toString()}"
-    }
-
-
-    def 'submit first patient'() {
-        when:
-        def (BasicStatusLine statusLine, String results, FhirId locationHeader) = post("http://localhost:${remoteToolkitPort}/xdstools2/fsim/${simId}/Patient", patient)
-        OperationOutcome oo
-        if (results) {
-            IBaseResource resource = ourCtx.newJsonParser().parseResource(results)
-            if (resource instanceof OperationOutcome) {
-                oo = (OperationOutcome) resource
-                println results
-            }
-        }
-
-        then:
-        statusLine.statusCode == 201
-        locationHeader.id
-        locationHeader.vid == '1'
-        !oo
-    }
-
-    @Shared FhirId submission
-
-    def 'submit and query patient'() {
-        when:
-        def (BasicStatusLine statusLine, String results, FhirId locationHeader) = post("http://localhost:${remoteToolkitPort}/xdstools2/fsim/${simId}/Patient", patient)
-        submission = locationHeader
-        OperationOutcome oo
-        if (results) {
-            IBaseResource resource = ourCtx.newJsonParser().parseResource(results)
-            if (resource instanceof OperationOutcome) {
-                oo = (OperationOutcome) resource
-                println results
-            }
-        }
-
-        then:
-        statusLine.statusCode == 201
-        submission.id
-        submission.vid == '1'
-        !oo
-
-        when:
-        def (BasicStatusLine statusLine2, String results2) = get("http://localhost:${remoteToolkitPort}/xdstools2/fsim/${simId}/Patient/${locationHeader.id}")
-
-        then:
-        statusLine2.statusCode == 200
-
-        when:
-        IParser parser = ourCtx.newJsonParser()
-        Patient patient = parser.parseResource(Patient.class, results2)
-        String fid = patient.id
-
-        then:
-        new FhirId(fid) == locationHeader
-    }
-
-
-    String mkUrl() {
-        "http://localhost:${remoteToolkitPort}/xdstools2/fsim/${simId}/Patient"
-    }
 }

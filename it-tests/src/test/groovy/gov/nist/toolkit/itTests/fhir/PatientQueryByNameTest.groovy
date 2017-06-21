@@ -5,6 +5,7 @@ import ca.uhn.fhir.parser.IParser
 import gov.nist.toolkit.actorfactory.client.SimId
 import gov.nist.toolkit.fhir.support.ResDb
 import gov.nist.toolkit.fhir.support.SimIndexManager
+import gov.nist.toolkit.fhir.support.SimIndexer
 import gov.nist.toolkit.installation.Installation
 import gov.nist.toolkit.itTests.support.FhirId
 import gov.nist.toolkit.itTests.support.FhirSpecification
@@ -24,6 +25,8 @@ class PatientQueryByNameTest extends FhirSpecification {
     @Shared FhirContext ourCtx = FhirContext.forDstu3()
 
     def setupSpec() {
+        SimIndexer.delete(simId)
+
         startGrizzly('8889')   // sets up Grizzly server on remoteToolkitPort
 
         new ResDb().mkSim(simId)
@@ -54,7 +57,7 @@ class PatientQueryByNameTest extends FhirSpecification {
         !oo
     }
 
-
+    // depends on previous
     def 'query by last name'() {
         when:
         def (BasicStatusLine statusLine2, String results2) = get("http://localhost:${remoteToolkitPort}/xdstools2/fsim/${simId}/Patient?family=Chalmers")
@@ -80,9 +83,10 @@ class PatientQueryByNameTest extends FhirSpecification {
         }
 
         then:
-        patients.size() >= 1
+        patients.size() == 1
     }
 
+    // depends on above submission
     def 'query by first and last name'() {
         when:
         def (BasicStatusLine statusLine2, String results2) = get("http://localhost:${remoteToolkitPort}/xdstools2/fsim/${simId}/Patient?family=Chalmers&given=Peter")
@@ -108,7 +112,7 @@ class PatientQueryByNameTest extends FhirSpecification {
         }
 
         then:
-        patients.size() >= 1
+        patients.size() == 1
     }
 
     def patient = '''

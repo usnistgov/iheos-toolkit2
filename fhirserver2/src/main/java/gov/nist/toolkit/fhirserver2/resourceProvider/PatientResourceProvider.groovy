@@ -24,7 +24,7 @@ import javax.servlet.http.HttpServletResponse
 /**
  *
  */
-public class PatientResourceProvider extends BaseResourceProvider implements IResourceProvider {
+public class PatientResourceProvider implements IResourceProvider {
     /**
      * The getResourceType method comes from IResourceProvider, and must
      * be overridden to indicate what type of resource this provider
@@ -45,19 +45,19 @@ public class PatientResourceProvider extends BaseResourceProvider implements IRe
         println '*'
         println '***************************'
 
-        saveRequest(theRequest)
+        ToolkitResourceProvider tk = new ToolkitResourceProvider(getResourceType(), theRequest)
         validateResource(thePatient);
 
-        IdDt newId = addResource(thePatient)
-        simContext.flushIndex()
+        IdDt newId = tk.addResource(thePatient)
+        tk.flushIndex()
 
-        displayIndex()
+        tk.displayIndex()
 
         // Let the caller know the ID of the newly created resource
         return new MethodOutcome(newId);
     }
 
-    /**
+    /**  NOT LINKED TO RESDB YET
      * Stores a new version of the patient in memory so that it can be retrieved later.
      *
      * @param thePatient
@@ -110,7 +110,8 @@ public class PatientResourceProvider extends BaseResourceProvider implements IRe
     public Patient getResourceById(@IdParam IdType theId,
                                    HttpServletRequest theRequest,
                                    HttpServletResponse theResponse) {
-        saveRequest(theRequest)
+
+        ToolkitResourceProvider tk = new ToolkitResourceProvider(getResourceType(), theRequest)
 
         String id = theId.getIdPart();
 
@@ -120,9 +121,9 @@ public class PatientResourceProvider extends BaseResourceProvider implements IRe
         println '*'
         println '***************************'
 
-        displayIndex()
+        tk.displayIndex()
 
-        List<String> paths = new SearchByTypeAndId(simContext).run(resourceTypeAsString(), id);
+        List<String> paths = new SearchByTypeAndId(tk.simContext).run(tk.resourceTypeAsString(), id);
 
         if (paths.size() == 0)
             return null;
@@ -133,7 +134,7 @@ public class PatientResourceProvider extends BaseResourceProvider implements IRe
         File f = new File(paths.get(0));
 
         try {
-            return jsonParser.parseResource(Patient.class, new FileReader(f));
+            return tk.jsonParser.parseResource(Patient.class, new FileReader(f));
         } catch (FileNotFoundException e) {
             throw new InternalErrorException("File " + paths.get(0) + " not found");
         }
@@ -161,9 +162,9 @@ public class PatientResourceProvider extends BaseResourceProvider implements IRe
             @OptionalParam(name = Patient.SP_GIVEN) StringParam theGivenName,
                                     HttpServletRequest theRequest,
                                     HttpServletResponse theResponse) {
-        saveRequest(theRequest)
+        ToolkitResourceProvider tk = new ToolkitResourceProvider(getResourceType(), theRequest)
 
-        displayIndex()
+        tk.displayIndex()
 
         BooleanQuery.Builder builder = new BooleanQuery.Builder()
 
@@ -181,7 +182,7 @@ public class PatientResourceProvider extends BaseResourceProvider implements IRe
         }
 
 
-        return searchResults(new BaseQuery(simContext).execute(builder))
+        return tk.searchResults(new BaseQuery(tk.simContext).execute(builder))
 
     }
 

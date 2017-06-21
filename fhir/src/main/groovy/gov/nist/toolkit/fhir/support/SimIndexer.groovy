@@ -8,13 +8,12 @@ import gov.nist.toolkit.configDatatypes.client.TransactionType
 import gov.nist.toolkit.fhir.resourceIndexer.IResourceIndexer
 import gov.nist.toolkit.utilities.io.Io
 import groovy.json.JsonSlurper
-import groovy.transform.Synchronized
+import org.apache.http.annotation.Obsolete
 import org.apache.lucene.document.Document
 import org.apache.lucene.index.DirectoryReader
 import org.apache.lucene.index.IndexReader
 import org.apache.lucene.search.IndexSearcher
 import org.apache.lucene.store.FSDirectory
-
 /**
  * Create Lucene index of a simulator
  * Supported index types have an indexer class
@@ -50,30 +49,6 @@ class SimIndexer {
         indexer.commit()    // commit and clear Lucene index lock
     }
 
-    /**
-     * Index all the resources in one simulator event. Since only one instance of this class
-     * will exist per simulator the @Synchronized takes care of the thread management
-     * @param event
-     * @return
-     */
-    @Synchronized
-    def indexEvent(Event event) {
-        indexer.openIndexForWriting()  // locks Lucene index
-        ResourceIndexer resourceIndexer = new ResourceIndexer();
-        File eventDir = event.getEventDir()
-        println "Index eventDir: ${eventDir}"
-
-        indexDir(eventDir, resourceIndexer, ['.json'])
-
-//        for (File resourceFile : eventDir.listFiles()) {
-//            if (resourceFile.name == 'date.ser')
-//                continue
-//            resourceIndexer.index(simId, null, null, event.getEventDir(), resourceFile)
-//        }
-
-        indexer.commit()    // commit and clear Lucene index lock
-    }
-
     private indexDir(File dir, ResourceIndexer resourceIndexer, def fileTypes) {
         dir.listFiles().each { File f ->
             if (isIndexableFile(f, fileTypes))
@@ -103,6 +78,10 @@ class SimIndexer {
         indexer = null
     }
 
+    /**
+     * display contents of ResDb index
+     * @return
+     */
     def dump() {
         if (!indexFile)
             indexFile = ResDb.getIndexFile(simId)
@@ -119,13 +98,11 @@ class SimIndexer {
         indexReader.close()
     }
 
-
-
-
     /**
      * Index a single FHIR sim
      * Not synchronized - do not call while toolkit is running
      */
+    @Obsolete
     def buildIndex() {
         ResDb resDb = new ResDb(simId)
         initIndexFile()
@@ -141,6 +118,7 @@ class SimIndexer {
      * Not synchronized - do not call while toolkit is running
      * @return
      */
+    @Obsolete
     static int buildAllIndexes() {
         List<SimId> simIds = new ResDb().getAllSimIds()
         simIds.each { SimId simId ->
@@ -203,40 +181,11 @@ class SimIndexer {
         }
     }
 
-//    /**
-//     *
-//     * @param resourceType  must be non-null
-//     * @param id   may be null (ignored) - if null then all resources of this type will be returned
-//     * @return
-//     */
-//    List<String> lookupByTypeAndId(String resourceType, String id) {
-//        if (!indexFile)
-//            throw new Exception('SimIndexer : indexFile not specified')
-//        BooleanQuery.Builder builder = new BooleanQuery.Builder()
-//
-//        Term term1 = new Term('type', resourceType)
-//        TermQuery termQuery1 = new TermQuery(term1)
-//        builder.add(termQuery1, BooleanClause.Occur.MUST)
-//
-//        if (id) {
-//            Term term2 = new Term('id', id)
-//            TermQuery termQuery2 = new TermQuery(term2)
-//            builder.add(termQuery2, BooleanClause.Occur.MUST)
-//        }
-//
-//        BooleanQuery query = builder.build()
-//
-//        // TopDocs is defined by Lucene as the container for
-//        // search results
-//        TopDocs docs  = indexSearcher.search(query, 1000)
-//        List<String> paths = docs.scoreDocs.collect { ScoreDoc scoreDoc ->
-//            Document doc = indexSearcher.doc(scoreDoc.doc)
-//            doc.get('path')  // this is the path attribute defined in ResourceIndex
-//                             // the location in the ResDb
-//        }
-//        return paths
-//    }
-
+    /**
+     * delete ResDb for this simId
+     * @param simId
+     * @return
+     */
     static delete(SimId simId) {
         if (!new ResDb(simId).isSim())
             return
