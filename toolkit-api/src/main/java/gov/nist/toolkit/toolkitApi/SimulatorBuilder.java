@@ -167,6 +167,13 @@ public class SimulatorBuilder {
         return act;
     }
 
+    public DocumentRepository createDocumentRepository(String id, String user, String environmentName)  throws ToolkitServiceException {
+        XdsDocumentRepository act = new XdsDocumentRepository();
+        act.engine = engine;
+        act.config = engine.create(id, user, SimulatorActorType.REPOSITORY, environmentName);
+        return act;
+    }
+
     public RespondingGateway createRespondingGateway(String id, String user, String environmentName) throws ToolkitServiceException {
         XcaRespondingGateway act = new XcaRespondingGateway();
         act.engine = engine;
