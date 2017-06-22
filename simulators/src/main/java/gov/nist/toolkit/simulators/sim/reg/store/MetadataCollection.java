@@ -1,6 +1,6 @@
 package gov.nist.toolkit.simulators.sim.reg.store;
 
-import gov.nist.toolkit.actorfactory.DbObjectType;
+import gov.nist.toolkit.simcommon.server.DbObjectType;
 import gov.nist.toolkit.errorrecording.ErrorRecorder;
 import gov.nist.toolkit.errorrecording.client.XdsErrorCode.Code;
 import gov.nist.toolkit.registrymetadata.Metadata;

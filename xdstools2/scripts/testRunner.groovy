@@ -4,7 +4,7 @@ package gov.nist.toolkit.xdstools2.scripts
  * Created by bmajur on 11/12/14.
  */
 
-import gov.nist.toolkit.actorfactory.SiteServiceManager
+import gov.nist.toolkit.simcommon.server.SiteServiceManager
 import gov.nist.toolkit.results.foofoo.Result
 import gov.nist.toolkit.session.server.Session
 import gov.nist.toolkit.session.server.serviceManager.XdsTestServiceManager

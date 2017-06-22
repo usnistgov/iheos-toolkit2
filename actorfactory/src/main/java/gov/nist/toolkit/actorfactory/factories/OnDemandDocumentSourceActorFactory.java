@@ -1,17 +1,20 @@
 package gov.nist.toolkit.actorfactory.factories;
 
-import gov.nist.toolkit.actorfactory.SimManager;
-import gov.nist.toolkit.actorfactory.client.SimId;
-import gov.nist.toolkit.actorfactory.client.Simulator;
-import gov.nist.toolkit.actorfactory.client.SimulatorConfig;
 import gov.nist.toolkit.actortransaction.client.ActorType;
 import gov.nist.toolkit.actortransaction.client.ParamType;
 import gov.nist.toolkit.configDatatypes.SimulatorProperties;
 import gov.nist.toolkit.configDatatypes.client.TransactionType;
+import gov.nist.toolkit.simcommon.client.SimId;
+import gov.nist.toolkit.simcommon.client.Simulator;
+import gov.nist.toolkit.simcommon.client.SimulatorConfig;
 import gov.nist.toolkit.simcommon.client.config.SimulatorConfigElement;
+import gov.nist.toolkit.simcommon.server.AbstractActorFactory;
+import gov.nist.toolkit.simcommon.server.IActorFactory;
+import gov.nist.toolkit.simcommon.server.SimManager;
 import gov.nist.toolkit.sitemanagement.client.Site;
 import gov.nist.toolkit.sitemanagement.client.TransactionBean;
 import gov.nist.toolkit.sitemanagement.client.TransactionBean.RepositoryType;
+import org.apache.log4j.Logger;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -21,7 +24,8 @@ import java.util.List;
  * This actor factory is based on the repository actor factory.
  *
  */
-public class OnDemandDocumentSourceActorFactory extends AbstractActorFactory  implements IActorFactory {
+public class OnDemandDocumentSourceActorFactory extends AbstractActorFactory implements IActorFactory {
+	static Logger logger = Logger.getLogger(OnDemandDocumentSourceActorFactory.class);
 
 	static final String repositoryUniqueIdBase = "1.1.4567248.1."; // This arbitrary value is different from the regular repository unique id.
 	static int repositoryUniqueIdIncr = 1;

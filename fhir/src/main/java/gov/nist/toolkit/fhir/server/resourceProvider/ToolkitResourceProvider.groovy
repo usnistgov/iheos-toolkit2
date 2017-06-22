@@ -3,13 +3,13 @@ package gov.nist.toolkit.fhir.server.resourceProvider
 import ca.uhn.fhir.context.FhirContext
 import ca.uhn.fhir.model.primitive.IdDt
 import ca.uhn.fhir.parser.IParser
-import gov.nist.toolkit.actorfactory.client.SimId
 import gov.nist.toolkit.fhir.context.ToolkitFhirContext
 import gov.nist.toolkit.fhir.servlet.HttpRequestParser
 import gov.nist.toolkit.fhir.support.ResourceIndex
 import gov.nist.toolkit.fhir.support.SimContext
 import gov.nist.toolkit.fhir.support.SimIndexManager
 import gov.nist.toolkit.registrymetadata.UuidAllocator
+import gov.nist.toolkit.simcommon.client.SimId
 import org.hl7.fhir.dstu3.model.DomainResource
 
 import javax.servlet.http.HttpServletRequest

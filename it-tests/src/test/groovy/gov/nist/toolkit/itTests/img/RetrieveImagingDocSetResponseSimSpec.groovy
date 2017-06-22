@@ -1,11 +1,11 @@
 package gov.nist.toolkit.itTests.img
 
-import gov.nist.toolkit.actorfactory.SimDb
-import gov.nist.toolkit.actorfactory.client.SimulatorConfig
 import gov.nist.toolkit.commondatatypes.MetadataSupport
 import gov.nist.toolkit.errorrecording.ErrorRecorder
 import gov.nist.toolkit.errorrecording.GwtErrorRecorder
 import gov.nist.toolkit.itTests.support.ToolkitSpecification
+import gov.nist.toolkit.simcommon.client.SimulatorConfig
+import gov.nist.toolkit.simcommon.server.SimDb
 import gov.nist.toolkit.simulators.sim.ids.RetrieveImagingDocSetResponseSim
 import gov.nist.toolkit.simulators.support.DsSimCommon
 import gov.nist.toolkit.simulators.support.SimCommon

@@ -3,7 +3,7 @@
  */
 package gov.nist.toolkit.simulators.servlet;
 
-import gov.nist.toolkit.actorfactory.SimDb;
+import gov.nist.toolkit.simcommon.server.SimDb;
 import gov.nist.toolkit.errorrecording.ErrorRecorder;
 import gov.nist.toolkit.errorrecording.GwtErrorRecorder;
 import gov.nist.toolkit.utilities.io.Io;

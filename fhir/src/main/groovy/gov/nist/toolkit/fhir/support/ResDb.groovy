@@ -1,14 +1,15 @@
 package gov.nist.toolkit.fhir.support
 
 import gov.nist.toolkit.actorfactory.PerResource
-import gov.nist.toolkit.actorfactory.SimDb
-import gov.nist.toolkit.actorfactory.client.NoSimException
-import gov.nist.toolkit.actorfactory.client.SimId
 import gov.nist.toolkit.actortransaction.client.ActorType
 import gov.nist.toolkit.configDatatypes.client.TransactionType
 import gov.nist.toolkit.installation.Installation
+import gov.nist.toolkit.simcommon.client.NoSimException
+import gov.nist.toolkit.simcommon.client.SimId
+import gov.nist.toolkit.simcommon.server.SimDb
 import gov.nist.toolkit.utilities.io.Io
 import org.apache.log4j.Logger
+
 /**
  * SibDb extensions for FHIR resources
  */

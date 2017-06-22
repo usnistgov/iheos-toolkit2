@@ -1,13 +1,6 @@
 package gov.nist.toolkit.simulators.servlet;
 
-import gov.nist.toolkit.actorfactory.factories.GenericSimulatorFactory;
 import gov.nist.toolkit.actorfactory.PatientIdentityFeedServlet;
-import gov.nist.toolkit.actorfactory.RuntimeManager;
-import gov.nist.toolkit.actorfactory.SimDb;
-import gov.nist.toolkit.actorfactory.SimManager;
-import gov.nist.toolkit.actorfactory.client.NoSimException;
-import gov.nist.toolkit.actorfactory.client.SimId;
-import gov.nist.toolkit.actorfactory.client.SimulatorConfig;
 import gov.nist.toolkit.actortransaction.client.ATFactory;
 import gov.nist.toolkit.configDatatypes.SimulatorProperties;
 import gov.nist.toolkit.configDatatypes.client.TransactionType;
@@ -17,7 +10,14 @@ import gov.nist.toolkit.http.HttpHeader;
 import gov.nist.toolkit.http.HttpHeader.HttpHeaderParseException;
 import gov.nist.toolkit.http.ParseException;
 import gov.nist.toolkit.installation.Installation;
+import gov.nist.toolkit.simcommon.client.NoSimException;
+import gov.nist.toolkit.simcommon.client.SimId;
+import gov.nist.toolkit.simcommon.client.SimulatorConfig;
 import gov.nist.toolkit.simcommon.client.config.SimulatorConfigElement;
+import gov.nist.toolkit.simcommon.server.GenericSimulatorFactory;
+import gov.nist.toolkit.simcommon.server.RuntimeManager;
+import gov.nist.toolkit.simcommon.server.SimDb;
+import gov.nist.toolkit.simcommon.server.SimManager;
 import gov.nist.toolkit.simulators.sim.reg.store.MetadataCollection;
 import gov.nist.toolkit.simulators.sim.reg.store.RegIndex;
 import gov.nist.toolkit.simulators.sim.rep.RepIndex;
@@ -49,13 +49,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.Enumeration;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class SimServlet  extends HttpServlet {
 	static Logger logger = Logger.getLogger(SimServlet.class);

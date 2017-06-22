@@ -1,10 +1,5 @@
 package gov.nist.toolkit.services.shared;
 
-import gov.nist.toolkit.actorfactory.factories.GenericSimulatorFactory;
-import gov.nist.toolkit.actorfactory.SimCache;
-import gov.nist.toolkit.actorfactory.SimDb;
-import gov.nist.toolkit.actorfactory.SimManager;
-import gov.nist.toolkit.actorfactory.client.*;
 import gov.nist.toolkit.actortransaction.client.ActorType;
 import gov.nist.toolkit.actortransaction.client.TransactionInstance;
 import gov.nist.toolkit.configDatatypes.client.Pid;
@@ -22,7 +17,12 @@ import gov.nist.toolkit.results.client.TestInstance;
 import gov.nist.toolkit.services.client.EnvironmentNotSelectedClientException;
 import gov.nist.toolkit.services.server.SimulatorApi;
 import gov.nist.toolkit.session.server.Session;
+import gov.nist.toolkit.simcommon.client.*;
 import gov.nist.toolkit.simcommon.client.config.SimulatorConfigElement;
+import gov.nist.toolkit.simcommon.server.GenericSimulatorFactory;
+import gov.nist.toolkit.simcommon.server.SimCache;
+import gov.nist.toolkit.simcommon.server.SimDb;
+import gov.nist.toolkit.simcommon.server.SimManager;
 import gov.nist.toolkit.simulators.servlet.ServletSimulator;
 import gov.nist.toolkit.simulators.servlet.SimServlet;
 import gov.nist.toolkit.simulators.sim.reg.RegistryActorSimulator;

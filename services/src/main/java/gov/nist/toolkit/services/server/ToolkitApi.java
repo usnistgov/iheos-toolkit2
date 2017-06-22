@@ -1,9 +1,5 @@
 package gov.nist.toolkit.services.server;
 
-import gov.nist.toolkit.actorfactory.SimDb;
-import gov.nist.toolkit.actorfactory.SimManager;
-import gov.nist.toolkit.actorfactory.SiteServiceManager;
-import gov.nist.toolkit.actorfactory.client.*;
 import gov.nist.toolkit.actortransaction.client.ActorType;
 import gov.nist.toolkit.actortransaction.client.TransactionInstance;
 import gov.nist.toolkit.configDatatypes.SimulatorProperties;
@@ -11,14 +7,18 @@ import gov.nist.toolkit.envSetting.EnvSetting;
 import gov.nist.toolkit.installation.Installation;
 import gov.nist.toolkit.registrymetadata.client.Uids;
 import gov.nist.toolkit.results.client.Result;
-import gov.nist.toolkit.sitemanagement.client.SiteSpec;
 import gov.nist.toolkit.results.client.TestInstance;
 import gov.nist.toolkit.results.client.TestLogs;
 import gov.nist.toolkit.services.shared.SimulatorServiceManager;
 import gov.nist.toolkit.session.server.Session;
 import gov.nist.toolkit.session.server.serviceManager.QueryServiceManager;
 import gov.nist.toolkit.session.server.serviceManager.XdsTestServiceManager;
+import gov.nist.toolkit.simcommon.client.*;
+import gov.nist.toolkit.simcommon.server.SimDb;
+import gov.nist.toolkit.simcommon.server.SimManager;
+import gov.nist.toolkit.simcommon.server.SiteServiceManager;
 import gov.nist.toolkit.sitemanagement.client.Site;
+import gov.nist.toolkit.sitemanagement.client.SiteSpec;
 import gov.nist.toolkit.xdsexception.client.ThreadPoolExhaustedException;
 import org.apache.log4j.Logger;
 
@@ -87,7 +87,7 @@ public class ToolkitApi {
     /**
      * Constructor
      */
-    private ToolkitApi() { }
+    public ToolkitApi() { }
 
     private ToolkitApi(Session session) {
         this.session = session;
@@ -104,7 +104,6 @@ public class ToolkitApi {
      * @param actorType - simulator type
      * @param simId - id for the simulator
      * @return - simulator description
-     * @throws NoSimException if actortype does not exist
      * @throws ThreadPoolExhaustedException if simulator needs to launch a socket listener and no ports are left in the configuration
      * @throws Exception - if simulator of that id already exists
      */

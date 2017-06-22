@@ -1,7 +1,7 @@
 package gov.nist.toolkit.actorfactory.client
 
 import gov.nist.toolkit.actorfactory.factories.IGActorFactory
-import gov.nist.toolkit.actorfactory.loader.ActorFactoryLoader
+import gov.nist.toolkit.simcommon.server.ActorFactoryLoader
 import spock.lang.Specification
 /**
  *

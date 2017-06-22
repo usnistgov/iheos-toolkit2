@@ -1,7 +1,7 @@
 package gov.nist.toolkit.session.server.serviceManager;
 
-import gov.nist.toolkit.actorfactory.SimCache;
-import gov.nist.toolkit.actorfactory.SimDb;
+import gov.nist.toolkit.simcommon.server.SimCache;
+import gov.nist.toolkit.simcommon.server.SimDb;
 import gov.nist.toolkit.commondatatypes.MetadataSupport;
 import gov.nist.toolkit.configDatatypes.client.Pid;
 import gov.nist.toolkit.installation.Installation;

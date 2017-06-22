@@ -1,11 +1,11 @@
 package gov.nist.toolkit.fhir.support
 
 import gov.nist.toolkit.actorfactory.PerResource
-import gov.nist.toolkit.actorfactory.client.NoSimException
-import gov.nist.toolkit.actorfactory.client.SimId
 import gov.nist.toolkit.actortransaction.client.ActorType
 import gov.nist.toolkit.configDatatypes.client.TransactionType
 import gov.nist.toolkit.fhir.resourceIndexer.IResourceIndexer
+import gov.nist.toolkit.simcommon.client.NoSimException
+import gov.nist.toolkit.simcommon.client.SimId
 import gov.nist.toolkit.utilities.io.Io
 import groovy.json.JsonSlurper
 import org.apache.http.annotation.Obsolete

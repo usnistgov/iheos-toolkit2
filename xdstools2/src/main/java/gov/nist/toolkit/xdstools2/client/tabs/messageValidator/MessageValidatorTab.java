@@ -10,7 +10,7 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.*;
 import com.google.gwt.user.client.ui.FormPanel.SubmitCompleteEvent;
 import com.google.gwt.user.client.ui.FormPanel.SubmitCompleteHandler;
-import gov.nist.toolkit.actorfactory.client.CcdaTypeSelection;
+import gov.nist.toolkit.simcommon.client.CcdaTypeSelection;
 import gov.nist.toolkit.http.client.HtmlMarkup;
 import gov.nist.toolkit.results.client.Result;
 import gov.nist.toolkit.valsupport.client.*;

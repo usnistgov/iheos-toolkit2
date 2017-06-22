@@ -1,7 +1,5 @@
 package gov.nist.toolkit.itTests.xc
 
-import gov.nist.toolkit.actorfactory.SimCache
-import gov.nist.toolkit.actorfactory.client.SimulatorConfig
 import gov.nist.toolkit.actortransaction.client.ActorType
 import gov.nist.toolkit.commondatatypes.MetadataSupport
 import gov.nist.toolkit.configDatatypes.SimulatorActorType
@@ -16,8 +14,10 @@ import gov.nist.toolkit.registrymsg.repository.RetrievedDocumentModel
 import gov.nist.toolkit.registrymsg.repository.RetrievedDocumentsModel
 import gov.nist.toolkit.results.client.CodesConfiguration
 import gov.nist.toolkit.results.client.Result
-import gov.nist.toolkit.sitemanagement.client.SiteSpec
 import gov.nist.toolkit.results.client.TestInstance
+import gov.nist.toolkit.simcommon.client.SimulatorConfig
+import gov.nist.toolkit.simcommon.server.SimCache
+import gov.nist.toolkit.sitemanagement.client.SiteSpec
 import gov.nist.toolkit.toolkitApi.BasicSimParameters
 import gov.nist.toolkit.toolkitApi.SimulatorBuilder
 import gov.nist.toolkit.toolkitServices.ToolkitFactory
@@ -25,6 +25,7 @@ import gov.nist.toolkit.toolkitServicesCommon.SimConfig
 import gov.nist.toolkit.toolkitServicesCommon.SimId
 import gov.nist.toolkit.valregmsg.registry.storedquery.generic.QueryReturnType
 import spock.lang.Shared
+
 /**
  * Build RG, initialize it with a single submission, query and retrieve the submission.
  *

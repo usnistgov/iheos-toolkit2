@@ -1,9 +1,9 @@
 package gov.nist.toolkit.fhir.simulators
 
-import gov.nist.toolkit.actorfactory.BaseActorSimulator
-import gov.nist.toolkit.actorfactory.client.SimulatorConfig
 import gov.nist.toolkit.configDatatypes.client.TransactionType
 import gov.nist.toolkit.errorrecording.ErrorRecorder
+import gov.nist.toolkit.simcommon.client.SimulatorConfig
+import gov.nist.toolkit.simcommon.server.BaseActorSimulator
 import gov.nist.toolkit.simulators.support.SimCommon
 import gov.nist.toolkit.valsupport.engine.MessageValidatorEngine
 

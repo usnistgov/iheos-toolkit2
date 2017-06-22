@@ -1,7 +1,7 @@
 package gov.nist.toolkit.session.server.serviceManager;
 
-import gov.nist.toolkit.actorfactory.SimCache;
-import gov.nist.toolkit.actorfactory.SiteServiceManager;
+import gov.nist.toolkit.simcommon.server.SimCache;
+import gov.nist.toolkit.simcommon.server.SiteServiceManager;
 import gov.nist.toolkit.actortransaction.client.ActorType;
 import gov.nist.toolkit.registrymetadata.Metadata;
 import gov.nist.toolkit.registrymetadata.client.*;

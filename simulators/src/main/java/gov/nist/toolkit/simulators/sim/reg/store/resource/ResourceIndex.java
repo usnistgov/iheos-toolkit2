@@ -1,7 +1,7 @@
 package gov.nist.toolkit.simulators.sim.reg.store.resource;
 
-import gov.nist.toolkit.actorfactory.SimDb;
-import gov.nist.toolkit.actorfactory.client.SimId;
+import gov.nist.toolkit.simcommon.client.SimId;
+import gov.nist.toolkit.simcommon.server.SimDb;
 import org.apache.log4j.Logger;
 
 import java.io.*;

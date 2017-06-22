@@ -1,9 +1,9 @@
 package gov.nist.toolkit.fhir.support
 
-import gov.nist.toolkit.actorfactory.client.NoSimException
-import gov.nist.toolkit.actorfactory.client.SimId
 import gov.nist.toolkit.fhir.context.ToolkitFhirContext
 import gov.nist.toolkit.fhir.resourceIndexer.IResourceIndexer
+import gov.nist.toolkit.simcommon.client.NoSimException
+import gov.nist.toolkit.simcommon.client.SimId
 import org.apache.lucene.search.IndexSearcher
 import org.hl7.fhir.dstu3.model.DomainResource
 

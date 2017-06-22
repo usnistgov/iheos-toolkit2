@@ -3,12 +3,14 @@
  */
 package gov.nist.toolkit.actorfactory.factories;
 
-import gov.nist.toolkit.actorfactory.SimManager;
-import gov.nist.toolkit.actorfactory.client.SimId;
-import gov.nist.toolkit.actorfactory.client.Simulator;
-import gov.nist.toolkit.actorfactory.client.SimulatorConfig;
 import gov.nist.toolkit.actortransaction.client.ActorType;
 import gov.nist.toolkit.configDatatypes.client.TransactionType;
+import gov.nist.toolkit.simcommon.client.SimId;
+import gov.nist.toolkit.simcommon.client.Simulator;
+import gov.nist.toolkit.simcommon.client.SimulatorConfig;
+import gov.nist.toolkit.simcommon.server.AbstractActorFactory;
+import gov.nist.toolkit.simcommon.server.IActorFactory;
+import gov.nist.toolkit.simcommon.server.SimManager;
 import gov.nist.toolkit.sitemanagement.client.Site;
 import gov.nist.toolkit.xdsexception.NoSimulatorException;
 

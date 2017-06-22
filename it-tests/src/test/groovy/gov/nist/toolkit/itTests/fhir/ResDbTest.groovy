@@ -1,8 +1,8 @@
 package gov.nist.toolkit.itTests.fhir
 
-import gov.nist.toolkit.actorfactory.client.SimId
 import gov.nist.toolkit.fhir.support.ResDb
 import gov.nist.toolkit.itTests.support.FhirSpecification
+import gov.nist.toolkit.simcommon.client.SimId
 import spock.lang.Shared
 
 /**

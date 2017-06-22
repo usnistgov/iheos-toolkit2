@@ -1,6 +1,6 @@
 package gov.nist.toolkit.session.server.services;
 
-import gov.nist.toolkit.actorfactory.SiteServiceManager;
+import gov.nist.toolkit.simcommon.server.SiteServiceManager;
 import gov.nist.toolkit.results.CommonService;
 import gov.nist.toolkit.results.ResultBuilder;
 import gov.nist.toolkit.results.client.AssertionResult;

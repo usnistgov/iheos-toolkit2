@@ -1,8 +1,5 @@
 package gov.nist.toolkit.simulators.sim.rg
 
-import gov.nist.toolkit.actorfactory.SimDb
-import gov.nist.toolkit.actorfactory.SimManager
-import gov.nist.toolkit.actorfactory.client.SimulatorConfig
 import gov.nist.toolkit.actortransaction.client.Severity
 import gov.nist.toolkit.commondatatypes.MetadataSupport
 import gov.nist.toolkit.configDatatypes.SimulatorProperties
@@ -13,7 +10,10 @@ import gov.nist.toolkit.registrymsg.registry.AdhocQueryRequest
 import gov.nist.toolkit.registrymsg.registry.AdhocQueryRequestParser
 import gov.nist.toolkit.registrymsg.registry.Response
 import gov.nist.toolkit.registrymsg.repository.*
+import gov.nist.toolkit.simcommon.client.SimulatorConfig
 import gov.nist.toolkit.simcommon.client.config.SimulatorConfigElement
+import gov.nist.toolkit.simcommon.server.SimDb
+import gov.nist.toolkit.simcommon.server.SimManager
 import gov.nist.toolkit.simulators.sim.reg.AdhocQueryResponseGenerator
 import gov.nist.toolkit.simulators.sim.reg.RegistryActorSimulator
 import gov.nist.toolkit.simulators.sim.reg.SoapWrapperRegistryResponseSim

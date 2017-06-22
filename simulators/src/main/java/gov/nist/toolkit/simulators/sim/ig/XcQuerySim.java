@@ -1,7 +1,5 @@
 package gov.nist.toolkit.simulators.sim.ig;
 
-import gov.nist.toolkit.actorfactory.SimManager;
-import gov.nist.toolkit.actorfactory.client.SimulatorConfig;
 import gov.nist.toolkit.actortransaction.client.ActorType;
 import gov.nist.toolkit.commondatatypes.MetadataSupport;
 import gov.nist.toolkit.commondatatypes.client.MetadataTypes;
@@ -17,7 +15,9 @@ import gov.nist.toolkit.registrymsg.registry.AdhocQueryRequestParser;
 import gov.nist.toolkit.registrymsg.registry.AdhocQueryResponseParser;
 import gov.nist.toolkit.registrymsg.registry.Response;
 import gov.nist.toolkit.registrysupport.RegistryErrorListGenerator;
+import gov.nist.toolkit.simcommon.client.SimulatorConfig;
 import gov.nist.toolkit.simcommon.client.config.SimulatorConfigElement;
+import gov.nist.toolkit.simcommon.server.SimManager;
 import gov.nist.toolkit.simulators.sim.reg.AdhocQueryResponseGeneratingSim;
 import gov.nist.toolkit.simulators.support.DsSimCommon;
 import gov.nist.toolkit.simulators.support.MetadataGeneratingSim;

@@ -1,8 +1,8 @@
 package gov.nist.toolkit.actorfactory;
 
-import gov.nist.toolkit.actorfactory.client.SimId;
 import gov.nist.toolkit.actortransaction.client.ActorType;
 import gov.nist.toolkit.configDatatypes.client.TransactionType;
+import gov.nist.toolkit.simcommon.client.SimId;
 
 import java.io.File;
 

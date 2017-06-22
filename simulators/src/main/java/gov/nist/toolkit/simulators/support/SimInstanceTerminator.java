@@ -1,9 +1,9 @@
 package gov.nist.toolkit.simulators.support;
 
-import gov.nist.toolkit.actorfactory.SimCache;
-import gov.nist.toolkit.actorfactory.SimDb;
-import gov.nist.toolkit.actorfactory.client.SimId;
-import gov.nist.toolkit.actorfactory.client.SimulatorConfig;
+import gov.nist.toolkit.simcommon.client.SimId;
+import gov.nist.toolkit.simcommon.client.SimulatorConfig;
+import gov.nist.toolkit.simcommon.server.SimCache;
+import gov.nist.toolkit.simcommon.server.SimDb;
 import org.apache.log4j.Logger;
 
 import java.util.Date;

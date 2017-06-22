@@ -1,7 +1,7 @@
 package gov.nist.toolkit.fhir.simulators
 
-import gov.nist.toolkit.actorfactory.client.SimulatorConfig
 import gov.nist.toolkit.configDatatypes.client.TransactionType
+import gov.nist.toolkit.simcommon.client.SimulatorConfig
 import gov.nist.toolkit.valsupport.engine.MessageValidatorEngine
 import org.apache.log4j.Logger
 /**

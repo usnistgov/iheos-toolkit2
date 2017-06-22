@@ -1,6 +1,6 @@
 package gov.nist.toolkit.simulators.support;
 
-import gov.nist.toolkit.actorfactory.client.SimulatorConfig;
+import gov.nist.toolkit.simcommon.client.SimulatorConfig;
 import gov.nist.toolkit.valsupport.message.AbstractMessageValidator;
 
 

@@ -1,9 +1,9 @@
 package gov.nist.toolkit.fhir.support
 
-import gov.nist.toolkit.actorfactory.SimDb
-import gov.nist.toolkit.actorfactory.client.SimId
 import gov.nist.toolkit.actortransaction.client.ActorType
 import gov.nist.toolkit.configDatatypes.client.TransactionType
+import gov.nist.toolkit.simcommon.client.SimId
+import gov.nist.toolkit.simcommon.server.SimDb
 
 /**
  * This contains details about where the index is stored and

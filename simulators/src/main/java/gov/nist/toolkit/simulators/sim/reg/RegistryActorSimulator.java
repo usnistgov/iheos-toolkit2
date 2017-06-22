@@ -2,11 +2,11 @@ package gov.nist.toolkit.simulators.sim.reg;
 
 import gov.nist.toolkit.actorfactory.PatientIdentityFeedServlet;
 import gov.nist.toolkit.configDatatypes.SimulatorProperties;
-import gov.nist.toolkit.actorfactory.client.NoSimException;
-import gov.nist.toolkit.actorfactory.client.SimId;
-import gov.nist.toolkit.actorfactory.client.SimulatorConfig;
-import gov.nist.toolkit.actorfactory.client.SimulatorStats;
 import gov.nist.toolkit.configDatatypes.client.TransactionType;
+import gov.nist.toolkit.simcommon.client.NoSimException;
+import gov.nist.toolkit.simcommon.client.SimId;
+import gov.nist.toolkit.simcommon.client.SimulatorConfig;
+import gov.nist.toolkit.simcommon.client.SimulatorStats;
 import gov.nist.toolkit.simcommon.client.config.SimulatorConfigElement;
 import gov.nist.toolkit.simulators.servlet.SimServlet;
 import gov.nist.toolkit.simulators.sim.reg.mu.MuSim;

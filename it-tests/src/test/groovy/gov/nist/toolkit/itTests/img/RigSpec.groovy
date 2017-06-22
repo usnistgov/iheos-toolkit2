@@ -1,18 +1,15 @@
 package gov.nist.toolkit.itTests.img
 
-import gov.nist.toolkit.actorfactory.SimManager
-import gov.nist.toolkit.actorfactory.client.SimId
 import gov.nist.toolkit.adt.ListenerFactory
 import gov.nist.toolkit.itTests.support.ToolkitSpecification
 import gov.nist.toolkit.results.client.TestInstance
-import gov.nist.toolkit.services.client.IdsOrchestrationRequest
-import gov.nist.toolkit.services.client.IdsOrchestrationResponse
 import gov.nist.toolkit.services.client.RawResponse
 import gov.nist.toolkit.services.client.RigOrchestrationRequest
 import gov.nist.toolkit.services.client.RigOrchestrationResponse
-import gov.nist.toolkit.services.server.orchestration.IdsOrchestrationBuilder
 import gov.nist.toolkit.services.server.orchestration.RigOrchestrationBuilder
 import gov.nist.toolkit.session.client.logtypes.TestOverviewDTO
+import gov.nist.toolkit.simcommon.client.SimId
+import gov.nist.toolkit.simcommon.server.SimManager
 import gov.nist.toolkit.sitemanagement.Sites
 import gov.nist.toolkit.sitemanagement.client.Site
 import gov.nist.toolkit.sitemanagement.client.SiteSpec
@@ -20,6 +17,7 @@ import gov.nist.toolkit.testengine.scripts.BuildCollections
 import gov.nist.toolkit.toolkitApi.SimulatorBuilder
 import gov.nist.toolkit.toolkitServicesCommon.SimConfig
 import spock.lang.Shared
+
 /**
  * Integration tests for RIG Simulator
  */

@@ -1,6 +1,6 @@
 package gov.nist.toolkit.itTests.xds
 
-import gov.nist.toolkit.actorfactory.SimCache
+import gov.nist.toolkit.simcommon.server.SimCache
 import gov.nist.toolkit.configDatatypes.SimulatorProperties
 import gov.nist.toolkit.configDatatypes.client.TransactionType
 import gov.nist.toolkit.installation.Installation

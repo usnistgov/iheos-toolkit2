@@ -1,15 +1,17 @@
 package gov.nist.toolkit.actorfactory.factories;
 
-import gov.nist.toolkit.actorfactory.SimManager;
-import gov.nist.toolkit.actorfactory.client.SimId;
-import gov.nist.toolkit.actorfactory.client.Simulator;
-import gov.nist.toolkit.actorfactory.client.SimulatorConfig;
 import gov.nist.toolkit.actortransaction.client.ActorType;
 import gov.nist.toolkit.actortransaction.client.ParamType;
 import gov.nist.toolkit.configDatatypes.SimulatorProperties;
 import gov.nist.toolkit.configDatatypes.client.PatientErrorMap;
 import gov.nist.toolkit.configDatatypes.client.TransactionType;
 import gov.nist.toolkit.envSetting.EnvSetting;
+import gov.nist.toolkit.simcommon.client.SimId;
+import gov.nist.toolkit.simcommon.client.Simulator;
+import gov.nist.toolkit.simcommon.client.SimulatorConfig;
+import gov.nist.toolkit.simcommon.server.AbstractActorFactory;
+import gov.nist.toolkit.simcommon.server.IActorFactory;
+import gov.nist.toolkit.simcommon.server.SimManager;
 import gov.nist.toolkit.sitemanagement.client.Site;
 import gov.nist.toolkit.sitemanagement.client.TransactionBean;
 import gov.nist.toolkit.sitemanagement.client.TransactionBean.RepositoryType;
@@ -24,7 +26,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-public class RGActorFactory extends AbstractActorFactory implements IActorFactory  {
+public class RGActorFactory extends AbstractActorFactory implements IActorFactory {
    static private final Logger logger = Logger.getLogger(RGActorFactory.class);
 
    SimId newID = null;
@@ -40,8 +42,8 @@ public class RGActorFactory extends AbstractActorFactory implements IActorFactor
       Arrays.asList(TransactionType.XC_QUERY, TransactionType.XC_RETRIEVE);
 
    @Override
-   public  Simulator buildNew(SimManager simm, @SuppressWarnings("hiding") SimId newID,
-                              boolean configureBase)
+   public Simulator buildNew(SimManager simm, @SuppressWarnings("hiding") SimId newID,
+                             boolean configureBase)
          throws EnvironmentNotSelectedException, NoSessionException {
       this.newID = newID;
       ActorType actorType = ActorType.RESPONDING_GATEWAY;
