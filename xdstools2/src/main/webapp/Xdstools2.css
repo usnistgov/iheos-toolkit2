@@ -280,13 +280,11 @@ h3 {
   width: 20px; height: 20px;
 }
 
-.orchestrationTest {
-    /* Marker class */
-}
+.orchestrationTest {/* Marker class */}
 
-.confActorSutSelector {
-  /* Marker class */
-}
+.confActorSutSelector {/* Marker class */}
+
+.SupportingEnvironmentConfiguration {/*Marker class*/}
 
 .orchestrationOption {
   margin-bottom: 7px;

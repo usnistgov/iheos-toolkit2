@@ -15,7 +15,9 @@ import java.util.List;
 public class SiteTransactionTable extends FlexTable {
     private int row = 0;
 
-    public SiteTransactionTable(Site site) {
+    public SiteTransactionTable(Site site, String className) {
+        if (className!=null)
+            addStyleName(className.replace(" ",""));
         build(site);
     }
 

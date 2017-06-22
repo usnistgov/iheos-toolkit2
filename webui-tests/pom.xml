@@ -17,6 +17,10 @@
             <groupId>gov.nist.toolkit</groupId>
             <artifactId>toolkit-api</artifactId>
         </dependency>
+        <dependency>
+            <groupId>gov.nist.toolkit</groupId>
+            <artifactId>config-datatypes</artifactId>
+        </dependency>
 
         <dependency>
             <groupId>com.google.gwt</groupId>
@@ -46,8 +50,10 @@
                 <version>2.19.1</version>
                 <configuration>
                     <includes>
-                        <include>**/RegSpec.groovy</include>
-                        <include>**/RegSpec.java</include>
+                        <!--<include>**/RegistryActorSimulatorSpec.groovy</include>-->
+                        <!--<include>**/RegistryActorSimulatorSpec.java</include>-->
+                        <include>**/RepositoryActorSimulatorSpec.groovy</include>
+                        <include>**/RepositoryActorSimulatorSpec.java</include>
                     </includes>
                     <!-- We should NOT ignore test failures. TestFailureIgnore should be false. -->
                     <testFailureIgnore>false</testFailureIgnore>
@@ -86,6 +92,7 @@
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>build-helper-maven-plugin</artifactId>
+                <version>3.0.0</version>
                 <executions>
                     <execution>
                         <id>add-groovy-test-source</id>

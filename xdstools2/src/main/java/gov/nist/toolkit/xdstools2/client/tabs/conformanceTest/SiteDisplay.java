@@ -15,6 +15,6 @@ public class SiteDisplay extends FlowPanel {
         add(new HTML("<h2>" + title + "</h2>"));
         add(new SimSystemAnchor("System: " + site.getName(), site.siteSpec()));
         add(new HTML("<br />"));
-        add(new SiteTransactionTable(site));
+        add(new SiteTransactionTable(site,title));
     }
 }
