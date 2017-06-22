@@ -44,7 +44,7 @@ class RepositoryActorSimulatorSpec extends ConformanceActor {
 
 
     // Repository actor specific
-    def 'Get registry conformance actor page.'() {
+    def 'Get repository conformance actor page.'() {
         when:
         loadPage(String.format("%s/#ConfActor:default/default/rep", toolkitBaseUrl))
 
@@ -128,7 +128,7 @@ class RepositoryActorSimulatorSpec extends ConformanceActor {
         // There are no tests for repository orchestration tests to look for.
     }
 
-    def 'Update register endpoint.'() {
+    def 'Update register endpoint using the supporting sim.'() {
         // However, we need to pick up the Supporting Environment Configuration and plug it in to the Repository Sim Config.
 
         when:
@@ -177,7 +177,7 @@ class RepositoryActorSimulatorSpec extends ConformanceActor {
         return getSpi().update(simConfig)
     }
 
-    def 'Get (again) registry conformance actor page.'() {
+    def 'Get (again) repository conformance actor page.'() {
         when:
         loadPage(String.format("%s/#ConfActor:default/default/rep",toolkitBaseUrl))
 
@@ -261,8 +261,6 @@ class RepositoryActorSimulatorSpec extends ConformanceActor {
             }
             print "done."
         }
-
-
 
         // now iterate
 
