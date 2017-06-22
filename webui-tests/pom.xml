@@ -50,10 +50,12 @@
                 <version>2.19.1</version>
                 <configuration>
                     <includes>
-                        <!--<include>**/RegistryActorSimulatorSpec.groovy</include>-->
-                        <!--<include>**/RegistryActorSimulatorSpec.java</include>-->
+                        <include>**/RegistryActorSimulatorSpec.groovy</include>
+                        <include>**/RegistryActorSimulatorSpec.java</include>
                         <include>**/RepositoryActorSimulatorSpec.groovy</include>
                         <include>**/RepositoryActorSimulatorSpec.java</include>
+                        <include>**/RecipientActorSimulatorSpec.groovy</include>
+                        <include>**/RecipientActorSimulatorSpec.java</include>
                     </includes>
                     <!-- We should NOT ignore test failures. TestFailureIgnore should be false. -->
                     <testFailureIgnore>false</testFailureIgnore>
