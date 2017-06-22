@@ -7,13 +7,13 @@
         Additions for APPC:
 
         FormatCode
-        <Code code=“urn:ihe:iti:appc:2016" codingScheme="1.3.6.1.4.1.19376.1.2.3" display="urn:ihe:iti:appc:2016”/>
+        <Code code="urn:ihe:iti:appc:2016" codingScheme="1.3.6.1.4.1.19376.1.2.3" display="urn:ihe:iti:appc:2016"/>
 
         EventCodeList
-        <Code code="1.3.6.1.4.1.21367.2017.7.101" display=“Foundational Connectathon Read-Access Policy" codingScheme="Connect-a-thon eventCodeList”/>
-<Code code="1.3.6.1.4.1.21367.2017.7.102" display=“Location-based Write-Access Policy" codingScheme="Connect-a-thon eventCodeList”/>
-<Code code="1.3.6.1.4.1.21367.2017.7.103" display=“Withhold Consent to Disclose to Provider Policy" codingScheme="Connect-a-thon eventCodeList”/>
-<Code code="1.3.6.1.4.1.21367.2017.7.104" display=“Limit-document-visibility Policy" codingScheme="Connect-a-thon eventCodeList”/>
+        <Code code="1.3.6.1.4.1.21367.2017.7.101" display="Foundational Connectathon Read-Access Policy" codingScheme="Connect-a-thon eventCodeList"/>
+<Code code="1.3.6.1.4.1.21367.2017.7.102" display="Location-based Write-Access Policy" codingScheme="Connect-a-thon eventCodeList"/>
+<Code code="1.3.6.1.4.1.21367.2017.7.103" display="Withhold Consent to Disclose to Provider Policy" codingScheme="Connect-a-thon eventCodeList"/>
+<Code code="1.3.6.1.4.1.21367.2017.7.104" display="Limit-document-visibility Policy" codingScheme="Connect-a-thon eventCodeList"/>
 
 
         November 17, 2016
@@ -461,10 +461,10 @@
 		<!--
 			Added For APPC    March 13, 2017
 		-->
-		<Code code="1.3.6.1.4.1.21367.2017.7.101" display=“Foundational Connectathon Read-Access Policy" codingScheme="Connect-a-thon eventCodeList”/>
-		<Code code="1.3.6.1.4.1.21367.2017.7.102" display=“Location-based Write-Access Policy" codingScheme="Connect-a-thon eventCodeList”/>
-		<Code code="1.3.6.1.4.1.21367.2017.7.103" display=“Withhold Consent to Disclose to Provider Policy" codingScheme="Connect-a-thon eventCodeList”/>
-		<Code code="1.3.6.1.4.1.21367.2017.7.104" display=“Limit-document-visibility Policy" codingScheme="Connect-a-thon eventCodeList”/>
+		<Code code="1.3.6.1.4.1.21367.2017.7.101" display="Foundational Connectathon Read-Access Policy" codingScheme="Connect-a-thon eventCodeList"/>
+		<Code code="1.3.6.1.4.1.21367.2017.7.102" display="Location-based Write-Access Policy" codingScheme="Connect-a-thon eventCodeList"/>
+		<Code code="1.3.6.1.4.1.21367.2017.7.103" display="Withhold Consent to Disclose to Provider Policy" codingScheme="Connect-a-thon eventCodeList"/>
+		<Code code="1.3.6.1.4.1.21367.2017.7.104" display="Limit-document-visibility Policy" codingScheme="Connect-a-thon eventCodeList"/>
 
 		<!-- 
         These codes were generated for RSNA 2008
@@ -1466,7 +1466,7 @@
 			Added for APPC   March 13, 2017
 
 		-->
-		<Code code=“urn:ihe:iti:appc:2016" codingScheme="1.3.6.1.4.1.19376.1.2.3" display="urn:ihe:iti:appc:2016”/>
+		<Code code="urn:ihe:iti:appc:2016" codingScheme="1.3.6.1.4.1.19376.1.2.3" display="urn:ihe:iti:appc:2016"/>
 
 		<!-- SMM 2016.12.07 C-CDA / DAF -->
 		<Code code="urn:hl7-org:sdwg:ccda-structuredBody:2.1"
