@@ -4,6 +4,7 @@ import gov.nist.toolkit.fhir.context.ToolkitFhirContext
 import gov.nist.toolkit.fhir.resourceIndexer.IResourceIndexer
 import gov.nist.toolkit.simcommon.client.NoSimException
 import gov.nist.toolkit.simcommon.client.SimId
+import gov.nist.toolkit.simcommon.server.SimDb
 import org.apache.lucene.search.IndexSearcher
 import org.hl7.fhir.dstu3.model.DomainResource
 
@@ -37,9 +38,9 @@ public class SimContext {
      * @return
      */
     private init() {
-        if (!new ResDb(simId).isSim())
+        if (!new SimDb(simId).isSim())
             throw new NoSimException('Sim ${simId} does not exist')
-        resDb = new ResDb(simId, ResDb.BASE_TYPE, ResDb.STORE_TRANSACTION /* this is a stretch */)
+        resDb = new SimDb(simId, ResDb.BASE_TYPE, ResDb.STORE_TRANSACTION /* this is a stretch */)
         event = new Event(resDb.getEventDir())
     }
 

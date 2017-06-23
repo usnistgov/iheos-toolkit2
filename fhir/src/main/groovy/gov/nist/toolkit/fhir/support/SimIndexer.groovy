@@ -6,6 +6,7 @@ import gov.nist.toolkit.configDatatypes.client.TransactionType
 import gov.nist.toolkit.fhir.resourceIndexer.IResourceIndexer
 import gov.nist.toolkit.simcommon.client.NoSimException
 import gov.nist.toolkit.simcommon.client.SimId
+import gov.nist.toolkit.simcommon.server.SimDb
 import gov.nist.toolkit.utilities.io.Io
 import groovy.json.JsonSlurper
 import org.apache.http.annotation.Obsolete
@@ -67,7 +68,7 @@ class SimIndexer {
      * @return
      */
     private initIndexFile() {
-        if (!new ResDb(simId).isSim())
+        if (!new SimDb(simId).isSim())
             throw new NoSimException('Sim ${simId} does not exist')
         indexFile = ResDb.getIndexFile(simId)
         indexer = new ResDbIndexer(indexFile)
@@ -104,7 +105,7 @@ class SimIndexer {
      */
     @Obsolete
     def buildIndex() {
-        ResDb resDb = new ResDb(simId)
+        ResDb resDb = new SimDb(simId)
         initIndexFile()
         indexer.openIndexForWriting()
         resDb.perResource(null, null, new ResourceIndexer())
@@ -120,7 +121,7 @@ class SimIndexer {
      */
     @Obsolete
     static int buildAllIndexes() {
-        List<SimId> simIds = new ResDb().getAllSimIds()
+        List<SimId> simIds = new SimDb().getAllSimIds()
         simIds.each { SimId simId ->
             new SimIndexer(simId).buildIndex()
         }
@@ -187,7 +188,7 @@ class SimIndexer {
      * @return
      */
     static delete(SimId simId) {
-        if (!new ResDb(simId).isSim())
+        if (!new SimDb(simId).isSim())
             return
         File index = ResDb.getIndexFile(simId)
         Io.delete(index)

@@ -340,16 +340,16 @@ public abstract class AbstractActorFactory {
 //		AbstractActorFactory actorFactory = getActorFactory(config);
 	}
 
-	static public boolean simExists(SimulatorConfig config) throws IOException {
-		SimDb simdb;
-		try {
-			simdb = new SimDb(config.getId());
-		} catch (NoSimException e) {
-			return false;
-		}
-		File simDir = simdb.getSimDir();
-		return simDir.exists();
-	}
+//	static public boolean simExists(SimulatorConfig config) throws IOException {
+//		SimDb simdb;
+//		try {
+//			simdb = new SimDb(config.getId());
+//		} catch (NoSimException e) {
+//			return false;
+//		}
+//		File simDir = simdb.getSimDir();
+//		return simDir.exists();
+//	}
 
 	static public List<TransactionInstance> getTransInstances(SimId simid, String xactor, String trans) throws NoSimException
 	{

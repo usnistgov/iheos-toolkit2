@@ -3,6 +3,7 @@ package gov.nist.toolkit.itTests.fhir
 import gov.nist.toolkit.fhir.support.ResDb
 import gov.nist.toolkit.itTests.support.FhirSpecification
 import gov.nist.toolkit.simcommon.client.SimId
+import gov.nist.toolkit.simcommon.server.SimDb
 import spock.lang.Shared
 
 /**
@@ -13,17 +14,17 @@ class ResDbTest extends FhirSpecification {
 
     def 'build/delete fhir sim'() {
         when:
-        ResDb.delete(simId)  // just in case
+        ResDb.fdelete(simId)  // just in case
 
-        new ResDb().mkSim(simId)
+        new SimDb().mkfSim(simId)
 
         then:
-        ResDb.exists(simId)
+        SimDb.fexists(simId)
 
         when:
-        ResDb.delete(simId)
+        SimDb.fdelete(simId)
 
         then:
-        !ResDb.exists(simId)
+        !SimDb.fexists(simId)
     }
 }
