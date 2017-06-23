@@ -2,7 +2,6 @@ package gov.nist.toolkit.simcommon.server;
 
 import gov.nist.toolkit.actortransaction.client.ActorType;
 import gov.nist.toolkit.installation.Installation;
-import gov.nist.toolkit.simcommon.client.NoSimException;
 import gov.nist.toolkit.simcommon.client.SimId;
 import gov.nist.toolkit.simcommon.client.Simulator;
 import gov.nist.toolkit.simcommon.client.SimulatorConfig;
@@ -12,7 +11,6 @@ import gov.nist.toolkit.xdsexception.ExceptionUtil;
 import gov.nist.toolkit.xdsexception.client.ToolkitRuntimeException;
 import org.apache.log4j.Logger;
 
-import java.io.IOException;
 import java.util.*;
 
 /**
@@ -84,14 +82,11 @@ public class SimManager {
 		return sessionId;
 	}
 	
-	public void purge() throws IOException {
+	public void purge()  {
 		List<SimulatorConfig> deletions = new ArrayList<>();
 		for (SimulatorConfig sc : simConfigs) {
-			try {
-				new SimDb(sc.getId());
-			} catch (NoSimException e) {
+			if (SimDb.exists(sc.getId()))
 				deletions.add(sc);
-			}
 		}
 		simConfigs.removeAll(deletions);
 	}

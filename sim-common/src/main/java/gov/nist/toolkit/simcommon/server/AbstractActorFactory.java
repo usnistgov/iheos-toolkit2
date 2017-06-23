@@ -50,22 +50,24 @@ public abstract class AbstractActorFactory {
 	/**
 	 * ActorType.name ==> ActorFactory
 	 */
-	static private final Map<String, AbstractActorFactory> factories = new HashMap<>();
+	static private Map<String, AbstractActorFactory> factories = new HashMap<>();
 	static {
+		logger.info("Loading Actor Factories");
 
 		// for this loader to work, the following requirements must be met by the factory class:
-		// 1. In package gov.nist.toolkit.actorfactory.factories
-		// 2. Implement interface IActorFactory
-		// 3. Extend class AbstractActorFactory
+		// 1. Extend class AbstractActorFactory
 
-		List<Class> af = ActorFactoryLoader.getActorFactories();
-		for (Class c : af) {
+
+		for (ActorType actorType : ActorType.values()) {
+			String factoryClassName = actorType.getSimulatorFactoryName();
+			if (factoryClassName == null || factoryClassName.equals("")) continue;
 			try {
-				IActorFactory inf = (IActorFactory) c.newInstance();
-				ActorType actorType = inf.getActorType();
-				factories.put(actorType.getName(), (AbstractActorFactory) inf);
+				Class c = Class.forName(factoryClassName);
+				AbstractActorFactory inf = (AbstractActorFactory) c.newInstance();
+				logger.info("Loading ActorType " + actorType.getName());
+				factories.put(actorType.getName(), inf);
 			} catch (Throwable t) {
-				logger.fatal("Cannot load factory class for Actor Type " + c.getName());
+				logger.fatal("Cannot load factory class for Actor Type " + actorType.getName() + " - " + t.getMessage());
 			}
 		}
 
@@ -155,13 +157,14 @@ public abstract class AbstractActorFactory {
         return sc;
 	}
 
-	protected AbstractActorFactory() {}
-
-	protected void setSimManager(SimManager simManager) {
-		this.simManager = simManager;
+	protected AbstractActorFactory() {
 	}
 
 	public AbstractActorFactory(SimManager simManager) {
+		this.simManager = simManager;
+	}
+
+	protected void setSimManager(SimManager simManager) {
 		this.simManager = simManager;
 	}
 
@@ -186,7 +189,7 @@ public abstract class AbstractActorFactory {
 		AbstractActorFactory af = factories.get(actorTypeName);
 
 		if (af == null)
-			throw new Exception(String.format("Cannot build simulator of type %s - cannot find Factory for ActorType [", actorTypeName) + "]");
+			throw new Exception(String.format("Cannot build simulator of type %s - cannot find Factory for ActorType", actorTypeName));
 
 		af.setSimManager(simm);
 
@@ -354,11 +357,7 @@ public abstract class AbstractActorFactory {
 	static public List<TransactionInstance> getTransInstances(SimId simid, String xactor, String trans) throws NoSimException
 	{
 		SimDb simdb;
-		try {
-			simdb = new SimDb(simid);
-		} catch (IOException e) {
-			throw new ToolkitRuntimeException("Error loading sim " + simid + " of actor " + xactor,e);
-		}
+		simdb = new SimDb(simid);
 		ActorType actor = simdb.getSimulatorActorType();
 		return simdb.getTransInstances(actor.toString(), trans);
 	}
@@ -452,7 +451,7 @@ public abstract class AbstractActorFactory {
 		SimDb simdb;
 		try {
 			simdb = new SimDb(simid);
-		} catch (NoSimException e) {
+		} catch (Exception e) {
 			if (okifNotExist) return null;
 			throw e;
 		}

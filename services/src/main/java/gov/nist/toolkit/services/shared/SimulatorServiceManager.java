@@ -111,15 +111,7 @@ public class SimulatorServiceManager extends CommonService {
 	}
 
 	public void deleteSimFile(String simFileSpec) throws Exception  {
-		logger.debug(session.id() + ": " + "deleteSimFile");
-		try {
-			SimDb sdb = new SimDb(session.getDefaultSimId());
-			// only used by ValidatorTab - need to rethink - delete of part of simulator?????
-//			sdb.delete(simFileSpec);
-		} catch (IOException e) {
-			logger.error("deleteSimFile", e);
-			throw new Exception(e.getMessage());
-		}
+		throw new Exception("Not Implemented");
 	}
 
 	public void renameSimFile(String simFileSpec, String newSimFileSpec)
@@ -171,13 +163,7 @@ public class SimulatorServiceManager extends CommonService {
 
 	public List<String> getTransactionsForSimulator(SimId simid) throws Exception  {
 		logger.debug(session.id() + ": " + "getTransactionsForSimulator(" + simid + ")");
-		SimDb simdb;
-		try {
-			simdb = new SimDb(simid);
-		} catch (IOException e) {
-			logger.error("getTransactionsForSimulator", e);
-			throw new Exception(e.getMessage(),e);
-		}
+		SimDb simdb = new SimDb(simid);
 		return simdb.getTransactionsForSimulator();
 	}
 

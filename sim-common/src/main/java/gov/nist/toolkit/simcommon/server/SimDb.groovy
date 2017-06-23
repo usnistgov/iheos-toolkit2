@@ -82,7 +82,7 @@ public class SimDb {
 	public SimDb() {
 	}
 
-	public SimDb(SimId simId) throws IOException, NoSimException {
+	public SimDb(SimId simId) throws NoSimException {
 		File dbRoot = getSimDbFile();
 		this.simId = simId;
 		validateSimId(simId);
@@ -93,7 +93,7 @@ public class SimDb {
 			dbRoot.mkdirs();
 
 		if (!dbRoot.canWrite() || !dbRoot.isDirectory())
-			throw new IOException("Simulator database location, [" + dbRoot.toString() + "] is not a directory or cannot be written to");
+			throw new ToolkitRuntimeException("Simulator database location, [" + dbRoot.toString() + "] is not a directory or cannot be written to");
 
 		String ipdir = simId.toString();
 		simDir = new File(dbRoot.toString()  /*.getAbsolutePath()*/ + File.separatorChar + ipdir);
@@ -105,7 +105,7 @@ public class SimDb {
 		simDir.mkdirs();
 
 		if (!simDir.isDirectory())
-			throw new IOException("Cannot create content in Simulator database, creation of " + simDir.toString() + " failed");
+			throw new ToolkitRuntimeException("Cannot create content in Simulator database, creation of " + simDir.toString() + " failed");
 
 		// add this for safety when deleting simulators
 		Io.stringToFile(simSafetyFile(), simId.toString());
