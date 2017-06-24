@@ -2,7 +2,6 @@ package gov.nist.toolkit.itTests.fhir
 
 import ca.uhn.fhir.context.FhirContext
 import ca.uhn.fhir.parser.IParser
-import gov.nist.toolkit.fhir.support.ResDb
 import gov.nist.toolkit.fhir.support.SimIndexManager
 import gov.nist.toolkit.installation.Installation
 import gov.nist.toolkit.itTests.support.FhirId
@@ -23,7 +22,7 @@ class WriteReadTest extends FhirSpecification {
     @Shared FhirContext ourCtx = FhirContext.forDstu3()
 
     def setupSpec() {
-        ResDb.fdelete(simId)
+        SimDb.fdelete(simId)
 
         startGrizzly('8889')   // sets up Grizzly server on remoteToolkitPort
 

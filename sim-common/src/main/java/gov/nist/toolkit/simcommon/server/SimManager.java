@@ -9,6 +9,7 @@ import gov.nist.toolkit.sitemanagement.Sites;
 import gov.nist.toolkit.sitemanagement.client.Site;
 import gov.nist.toolkit.xdsexception.ExceptionUtil;
 import gov.nist.toolkit.xdsexception.client.ToolkitRuntimeException;
+import groovy.transform.Synchronized;
 import org.apache.log4j.Logger;
 
 import java.util.*;
@@ -16,14 +17,16 @@ import java.util.*;
 /**
  * Maintains the list of loaded SimulatorConfig objects for a
  * single session.
+ *
+ * All methods that reference simConfigs are labeled @Synchronized
  * @author bill
  *
  */
 
 public class SimManager {
-	List<SimulatorConfig> simConfigs = new ArrayList<>();  // for this session
-	String sessionId;  // this is never used internally.  Other classes use it through the getter.
-	static Logger logger = Logger.getLogger(SimManager.class);
+	private List<SimulatorConfig> simConfigs = new ArrayList<>();  // for this session
+	private String sessionId;  // this is never used internally.  Other classes use it through the getter.
+	private static Logger logger = Logger.getLogger(SimManager.class);
 
 
 	public SimManager(String sessionId) {
@@ -34,6 +37,7 @@ public class SimManager {
 		}
 	}
 
+	@Synchronized
 	public List<SimId> loadAllSims() {
 		SimDb db = new SimDb();
 		List<SimId> simIds = new SimDb().getAllSimIds();
@@ -81,7 +85,8 @@ public class SimManager {
 	public String sessionId() {
 		return sessionId;
 	}
-	
+
+	@Synchronized
 	public void purge()  {
 		List<SimulatorConfig> deletions = new ArrayList<>();
 		for (SimulatorConfig sc : simConfigs) {
@@ -97,25 +102,33 @@ public class SimManager {
 			addSimConfig(config);
 		}
 	}
-	
+
 	public void addSimConfig(SimulatorConfig config) {
-        logger.info("addSimConfig: " + config);
-		delSimConfig(config.getId());
-		simConfigs.add(config);
-	}
-	
-	public void setSimConfigs(List<SimulatorConfig> configs) {
-		logger.info("setSimConfigs: " + configs);
-        simConfigs = configs;
+        logger.info("addSimConfig: " + config.getId());
+		delSimConfig(config.getId());    // syncronized
+		addSimConfigInternal(config);    // syncronized
 	}
 
-	public void delSimConfig(SimId simId) {
+	@Synchronized
+	private void addSimConfigInternal(SimulatorConfig config) {
+		simConfigs.add(config);
+	}
+
+//	@Synchronized
+//	public void setSimConfigs(List<SimulatorConfig> configs) {
+//		logger.info("setSimConfigs: " + configs);
+//        simConfigs = configs;
+//	}
+
+	@Synchronized
+	private void delSimConfig(SimId simId) {
 		int index = findSimConfig(simId);
 		if (index != -1)
 			simConfigs.remove(index);
 	}
 
-	public int findSimConfig(SimId simId) {
+
+	private int findSimConfig(SimId simId) {
 		for (int i=0; i<simConfigs.size(); i++) {
 			if (simConfigs.get(i).getId().equals(simId)) {
 				return i;
@@ -123,7 +136,8 @@ public class SimManager {
 		}
 		return -1;
 	}
-	
+
+	@Synchronized
 	public SimulatorConfig getSimulatorConfig(SimId simId) {
 		for (SimulatorConfig config : simConfigs) {
 			if (simId.equals(config.getId()) && !config.isExpired())
@@ -139,6 +153,30 @@ public class SimManager {
 	 */
 	public Sites getAllSites() throws Exception {
 		return getAllSites(SiteServiceManager.getSiteServiceManager().getCommonSites());
+	}
+
+	@Synchronized
+	public Sites getAllSites(Sites commonSites)  throws Exception{
+		Sites sites;
+
+		loadAllSims();
+
+		if (commonSites == null)
+			sites = new Sites();
+		else
+			sites = commonSites.clone();
+
+		for (SimulatorConfig asc : simConfigs) {
+			if (!asc.isExpired()) {
+				Site site = getSite(asc);
+				if (site != null) // not all sims can generate a site
+					sites.putSite(site);
+			}
+		}
+
+		sites.buildRepositoriesSite();
+
+		return sites;
 	}
 
 	public boolean exists(String siteName) {
@@ -161,33 +199,12 @@ public class SimManager {
         return siteList;
     }
 	
-	public Sites getAllSites(Sites commonSites)  throws Exception{
-		Sites sites;
-
-		loadAllSims();
-		
-		if (commonSites == null)
-			sites = new Sites();
-		else
-			sites = commonSites.clone();
-		
-		for (SimulatorConfig asc : simConfigs) {
-			if (!asc.isExpired()) {
-                Site site = getSite(asc);
-                if (site != null) // not all sims can generate a site
-                    sites.putSite(site);
-            }
-		}
-		
-		sites.buildRepositoriesSite();
-		
-		return sites;
-	}
 
 	/**
 	 * Return map from simName = simId
 	 * @return
 	 */
+	@Synchronized
 	public Map<String, SimId> getNameMap() {
 		Map<String, SimId> nameMap = new HashMap<>();
 		
@@ -205,7 +222,8 @@ public class SimManager {
 	 * not because there can be multiple (there can't)
 	 * @param simId
 	 */
-	public void removeSimulatorConfig(SimId simId) {
+	@Synchronized
+	 void removeSimulatorConfig(SimId simId) {
 		List<SimulatorConfig> delete = new ArrayList<SimulatorConfig>();
 		for (SimulatorConfig sc : simConfigs) {
 			if (sc.getId().equals(simId))

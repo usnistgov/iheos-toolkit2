@@ -31,7 +31,7 @@ public class RepositoryActorFactory extends AbstractActorFactory implements IAct
 				TransactionType.PROVIDE_AND_REGISTER,
 				TransactionType.RETRIEVE);
 
-	RepositoryActorFactory(){ super(); }
+	public RepositoryActorFactory(){ super(); }
 
 	// Label as a DocumentRecipient
 	public void asRecipient() {

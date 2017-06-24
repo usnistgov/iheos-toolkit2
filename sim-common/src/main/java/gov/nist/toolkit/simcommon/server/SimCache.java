@@ -18,8 +18,8 @@ import java.util.*;
  *
  */
 public class SimCache {
-    static Logger logger = Logger.getLogger(SimCache.class);
-    static Map<String, SimManager> mgrs = new HashMap<String, SimManager>(); // sessionID => SimManager (sims for a session)
+    static private Logger logger = Logger.getLogger(SimCache.class);
+    static private Map<String, SimManager> mgrs = new HashMap<String, SimManager>(); // sessionID => SimManager (sims for a session)
 
     static public void clear() {
         mgrs.clear();
@@ -76,7 +76,7 @@ public class SimCache {
         SimId simId = sc.getId();
         SimulatorConfig sc1 = sm.getSimulatorConfig(simId);
         if (sc1 == null) {
-            logger.info("adding sim to configuration: " + sc);
+            logger.info("adding sim to configuration: " + sc.getId());
             sm.addSimConfig(sc);
         }
     }

@@ -8,7 +8,7 @@ import gov.nist.toolkit.fhir.servlet.HttpRequestParser
 import gov.nist.toolkit.fhir.support.ResourceIndex
 import gov.nist.toolkit.fhir.support.SimContext
 import gov.nist.toolkit.fhir.support.SimIndexManager
-import gov.nist.toolkit.registrymetadata.UuidAllocator
+import gov.nist.toolkit.utilities.id.UuidAllocator
 import gov.nist.toolkit.simcommon.client.SimId
 import org.hl7.fhir.dstu3.model.DomainResource
 

@@ -7,7 +7,7 @@ import gov.nist.toolkit.configDatatypes.client.Pid;
 import gov.nist.toolkit.installation.Installation;
 import gov.nist.toolkit.registrymetadata.Metadata;
 import gov.nist.toolkit.registrymetadata.MetadataParser;
-import gov.nist.toolkit.registrymetadata.UuidAllocator;
+import gov.nist.toolkit.utilities.id.UuidAllocator;
 import gov.nist.toolkit.registrymetadata.client.Document;
 import gov.nist.toolkit.registrymsg.repository.RetrieveResponseParser;
 import gov.nist.toolkit.registrymsg.repository.RetrievedDocumentModel;

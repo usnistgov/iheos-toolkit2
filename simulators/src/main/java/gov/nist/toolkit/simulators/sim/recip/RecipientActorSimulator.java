@@ -48,9 +48,9 @@ public class RecipientActorSimulator extends BaseDsActorSimulator {
 			common.vc.hasHttp = true;
 			common.vc.hasSoap = true;
 			
-			if (getSimulatorConfig().getValidationContext()  != null) {
-				common.vc.addInnerContext(getSimulatorConfig().getValidationContext());
-			}
+//			if (getSimulatorConfig().getValidationContext()  != null) {
+//				common.vc.addInnerContext(getSimulatorConfig().getValidationContext());
+//			}
 			
 			if (!dsSimCommon.runInitialValidationsAndFaultIfNecessary())
 				return false;

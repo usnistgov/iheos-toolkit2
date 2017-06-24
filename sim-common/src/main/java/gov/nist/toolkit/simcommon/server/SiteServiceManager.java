@@ -56,7 +56,7 @@ public class SiteServiceManager {
 	public List<Site> getAllSites(String sessionId) throws Exception {
 		logger.debug(sessionId + ": " + "getAllSites");
 		ArrayList<Site> sites = new ArrayList<>();   //getCommonSites().asCollection());
-		sites.addAll(new SimCache().getSimManagerForSession(sessionId).getAllSites().asCollection());
+		sites.addAll(SimCache.getSimManagerForSession(sessionId).getAllSites().asCollection());
 		List<String> names = new ArrayList<>();
 
 		List<Site> sites2 = new ArrayList<>();
@@ -113,7 +113,7 @@ public class SiteServiceManager {
 		logger.debug(sessionId + ": " + "getSiteNamesWithRep");
 		List<String> pnrSites = null;
 		try {
-			Collection<Site> siteCollection = new SimCache().getSimManagerForSession(sessionId).getAllSites().asCollection();
+			Collection<Site> siteCollection = SimCache.getSimManagerForSession(sessionId).getAllSites().asCollection();
 
 			Sites theSites = new Sites(siteCollection);
 
@@ -178,16 +178,16 @@ public class SiteServiceManager {
 	}
 
 	// return common and simulator sites
-	public Sites addSimulatorSites(String sessionId) throws Exception {
+	private Sites addSimulatorSites(String sessionId) throws Exception {
 		try {
-			return new SimCache().getSimManagerForSession(sessionId, true).getAllSites();
+			return SimCache.getSimManagerForSession(sessionId, true).getAllSites();
 		} catch (Exception e) {
 			logger.error("addSimulatorSites", e);
 			throw new Exception(e.getMessage(), e);
 		}
 	}
 
-	boolean useActorsFile() {
+	private boolean useActorsFile() {
 		if (useGazelleConfigFeed())
 			return false;
 		return Installation.instance().propertyServiceManager().getPropertyManager()
@@ -205,7 +205,7 @@ public class SiteServiceManager {
 		try {
 			getAllSites(sessionId);
 
-			return new SimCache().getSimManagerForSession(sessionId).getAllSites().getSiteNamesWithActor(
+			return SimCache.getSimManagerForSession(sessionId).getAllSites().getSiteNamesWithActor(
 					ActorType.REGISTRY);
 		} catch (Exception e) {
 			System.out.println(ExceptionUtil.exception_details(e, 10));
@@ -218,7 +218,7 @@ public class SiteServiceManager {
 		try {
 			getAllSites(sessionId);
 
-			return new SimCache().getSimManagerForSession(sessionId).getAllSites().getSiteNamesWithTransaction(
+			return SimCache.getSimManagerForSession(sessionId).getAllSites().getSiteNamesWithTransaction(
 					TransactionType.UPDATE);
 		} catch (Exception e) {
 			System.out.println(ExceptionUtil.exception_details(e, 10));
@@ -231,7 +231,7 @@ public class SiteServiceManager {
 		try {
 			getAllSites(sessionId);
 
-			return new SimCache().getSimManagerForSession(sessionId).getAllSites().getSiteNamesWithRepository();
+			return SimCache.getSimManagerForSession(sessionId).getAllSites().getSiteNamesWithRepository();
 		} catch (Exception e) {
 			System.out.println(ExceptionUtil.exception_details(e, 10));
 			return new ArrayList<>();
@@ -242,7 +242,7 @@ public class SiteServiceManager {
 		logger.debug(sessionId + ": " + "getRGNames");
 		try {
 			getAllSites(sessionId);
-			return new SimCache().getSimManagerForSession(sessionId)
+			return SimCache.getSimManagerForSession(sessionId)
 					.getAllSites()
 					.getSiteNamesWithActor(ActorType.RESPONDING_GATEWAY);
 		} catch (Exception e) {
@@ -255,7 +255,7 @@ public class SiteServiceManager {
 		logger.debug(sessionId + ": " + "getIGNames");
 		try {
 			getAllSites(sessionId);
-			return new SimCache().getSimManagerForSession(sessionId)
+			return SimCache.getSimManagerForSession(sessionId)
 					.getAllSites()
 					.getSiteNamesWithActor(ActorType.INITIATING_GATEWAY);
 		} catch (Exception e) {
@@ -277,8 +277,7 @@ public class SiteServiceManager {
 		logger.debug(sessionId + ": " + "getSite");
 		try {
 			getAllSites(sessionId);
-			Site site = SimCache.getSimManagerForSession(sessionId).getAllSites().getSite(siteName);
-			return site;
+			return SimCache.getSimManagerForSession(sessionId).getAllSites().getSite(siteName);
 		} catch (Exception e) {
 			logger.error("getSite", e);
 			throw new Exception(e.getMessage());
@@ -357,7 +356,7 @@ public class SiteServiceManager {
 				+ "getTransactionOfferings");
 		try {
 			getAllSites(sessionId);
-			Sites sits = new SimCache().getSimManagerForSession(sessionId).getAllSites();
+			Sites sits = SimCache.getSimManagerForSession(sessionId).getAllSites();
 			logger.debug("site Names: " + sits.getSiteNames());
 			return new TransactionOfferingFactory(sits).get();
 		} catch (Exception e) {

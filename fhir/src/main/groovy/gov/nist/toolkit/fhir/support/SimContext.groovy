@@ -14,7 +14,7 @@ import org.hl7.fhir.dstu3.model.DomainResource
 public class SimContext {
     private SimId simId = null
     private Event event = null
-    private ResDb resDb = null
+    private SimDb resDb = null
     // all the resources added in a transaction (aka a SimContext instance)
     ResourceIndexSet resourceIndexSet = new ResourceIndexSet()
 

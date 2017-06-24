@@ -6,7 +6,6 @@ import com.google.gwt.user.client.rpc.IsSerializable;
 import gov.nist.toolkit.actortransaction.client.ActorType;
 import gov.nist.toolkit.actortransaction.client.ParamType;
 import gov.nist.toolkit.simcommon.client.config.SimulatorConfigElement;
-import gov.nist.toolkit.valsupport.client.ValidationContext;
 
 import java.io.Serializable;
 import java.util.*;
@@ -35,8 +34,8 @@ public class SimulatorConfig implements Serializable, IsSerializable {
 	// This is only used to record validation requirements for included document(s)
 	// vc != null triggers UI to display selections from tk_props and accept
 	// selection.
-	private ValidationContext vc = null;
-	private transient CcdaTypeSelection docTypeSelector;
+//	private ValidationContext vc = null;
+//	private transient CcdaTypeSelection docTypeSelector;
 
     public boolean isExpired() { return expired; }
 	public void isExpired(boolean is) { expired = is; }
@@ -62,19 +61,19 @@ public class SimulatorConfig implements Serializable, IsSerializable {
 	 * Update ValidationContext from CCDA selection inside CcdaTypeSelection. Called
 	 * just before saving SimulatorConfig back to server.
 	 */
-	public void updateDocTypeSelection() {
-		if (docTypeSelector == null)
-			return;
-		vc.ccdaType = docTypeSelector.getCcdaContentType();
-	}
+//	public void updateDocTypeSelection() {
+//		if (docTypeSelector == null)
+//			return;
+//		vc.ccdaType = docTypeSelector.getCcdaContentType();
+//	}
 	
-	public void setDocTypeSelector(CcdaTypeSelection sel) {
-		docTypeSelector = sel;
-	}
+//	public void setDocTypeSelector(CcdaTypeSelection sel) {
+//		docTypeSelector = sel;
+//	}
 	
-	public CcdaTypeSelection getDocTypeSelector() {
-		return docTypeSelector;
-	}
+//	public CcdaTypeSelection getDocTypeSelector() {
+//		return docTypeSelector;
+//	}
 		
 	public String toString() {
 		StringBuffer buf = new StringBuffer();
@@ -252,13 +251,13 @@ public class SimulatorConfig implements Serializable, IsSerializable {
 		return get("Name").asString(); // + "." + getActorType();
 	}
 	
-	public ValidationContext getValidationContext() {
-		return vc;
-	}
+//	public ValidationContext getValidationContext() {
+//		return vc;
+//	}
 	
-	public void setValidationContext(ValidationContext vc) {
-		this.vc = vc;
-	}
+//	public void setValidationContext(ValidationContext vc) {
+//		this.vc = vc;
+//	}
 
 	@Override
 	public boolean equals(Object o) {
@@ -271,9 +270,7 @@ public class SimulatorConfig implements Serializable, IsSerializable {
 		if (id != null ? !id.equals(that.id) : that.id != null) return false;
 		if (actorType != null ? !actorType.equals(that.actorType) : that.actorType != null) return false;
 		if (expires != null ? !expires.equals(that.expires) : that.expires != null) return false;
-		if (elements != null ? !elements.equals(that.elements) : that.elements != null) return false;
-		if (vc != null ? !vc.equals(that.vc) : that.vc != null) return false;
-		return docTypeSelector != null ? docTypeSelector.equals(that.docTypeSelector) : that.docTypeSelector == null;
+		return elements != null ? elements.equals(that.elements) : that.elements == null;
 	}
 
 	@Override
@@ -283,8 +280,6 @@ public class SimulatorConfig implements Serializable, IsSerializable {
 		result = 31 * result + (expires != null ? expires.hashCode() : 0);
 		result = 31 * result + (expired ? 1 : 0);
 		result = 31 * result + (elements != null ? elements.hashCode() : 0);
-		result = 31 * result + (vc != null ? vc.hashCode() : 0);
-		result = 31 * result + (docTypeSelector != null ? docTypeSelector.hashCode() : 0);
 		return result;
 	}
 }

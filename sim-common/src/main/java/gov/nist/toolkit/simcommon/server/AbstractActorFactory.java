@@ -9,7 +9,7 @@ import gov.nist.toolkit.configDatatypes.client.TransactionType;
 import gov.nist.toolkit.envSetting.EnvSetting;
 import gov.nist.toolkit.installation.Installation;
 import gov.nist.toolkit.installation.PropertyServiceManager;
-import gov.nist.toolkit.registrymetadata.UuidAllocator;
+import gov.nist.toolkit.utilities.id.UuidAllocator;
 import gov.nist.toolkit.simcommon.client.NoSimException;
 import gov.nist.toolkit.simcommon.client.SimId;
 import gov.nist.toolkit.simcommon.client.Simulator;
@@ -318,7 +318,7 @@ public abstract class AbstractActorFactory {
     }
 
     static public void delete(SimId simId) throws Exception {
-        logger.info("delete simulator" + simId);
+        logger.info("delete simulator " + simId);
 		SimDb simdb;
 		try {
 			BaseActorSimulator sim = RuntimeManager.getSimulatorRuntime(simId);

@@ -1,4 +1,4 @@
-package gov.nist.toolkit.registrymetadata;
+package gov.nist.toolkit.utilities.id;
 
 import com.sun.ebxml.registry.util.UUID;
 import com.sun.ebxml.registry.util.UUIDFactory;

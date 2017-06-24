@@ -51,7 +51,7 @@ public class SimulatorApi {
     }
 
     public void delete(SimId simID) throws Exception {
-        logger.info("Delete simulator " + simID + " from session " + session.id());
+        logger.info(session.id() + ": Delete simulator " + simID);
 //        SimulatorConfig config = new SimulatorConfig(simID, "", null);
         SimManager simMgr = SimCache.getSimManagerForSession(session.id(), true);
         try {
