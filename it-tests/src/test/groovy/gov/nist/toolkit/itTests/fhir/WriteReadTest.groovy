@@ -40,7 +40,7 @@ class WriteReadTest extends FhirSpecification {
 
     def 'submit first patient'() {
         when:
-        def (BasicStatusLine statusLine, String results, FhirId locationHeader) = post("http://localhost:${remoteToolkitPort}/xdstools2/fsim/${simId}/Patient", patient)
+        def (BasicStatusLine statusLine, String results, FhirId locationHeader) = post("${baseURL(simId)}Patient", patient)
         OperationOutcome oo
         if (results) {
             IBaseResource resource = ourCtx.newJsonParser().parseResource(results)
@@ -61,7 +61,7 @@ class WriteReadTest extends FhirSpecification {
 
     def 'submit and query patient'() {
         when:
-        def (BasicStatusLine statusLine, String results, FhirId locationHeader) = post("http://localhost:${remoteToolkitPort}/xdstools2/fsim/${simId}/Patient", patient)
+        def (BasicStatusLine statusLine, String results, FhirId locationHeader) = post("${baseURL(simId)}Patient", patient)
         submission = locationHeader
         OperationOutcome oo
         if (results) {
@@ -79,7 +79,7 @@ class WriteReadTest extends FhirSpecification {
         !oo
 
         when:
-        def (BasicStatusLine statusLine2, String results2) = get("http://localhost:${remoteToolkitPort}/xdstools2/fsim/${simId}/Patient/${locationHeader.id}")
+        def (BasicStatusLine statusLine2, String results2) = get("${baseURL(simId)}Patient/${locationHeader.id}")
 
         then:
         statusLine2.statusCode == 200
@@ -91,11 +91,6 @@ class WriteReadTest extends FhirSpecification {
 
         then:
         new FhirId(fid) == locationHeader
-    }
-
-
-    String mkUrl() {
-        "http://localhost:${remoteToolkitPort}/xdstools2/fsim/${simId}/Patient"
     }
 
     def patient = '''
