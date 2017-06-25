@@ -21,6 +21,7 @@ public class SimId implements Serializable, IsSerializable {
     public String id = null;
     private String actorType = null;
     private String environmentName = null;
+    private boolean fhir = false;
 
     // server only
     public SimId(String user, String id, String actorType, String environmentName) throws BadSimIdException {
@@ -58,6 +59,13 @@ public class SimId implements Serializable, IsSerializable {
     }
 
     public SimId() {}
+
+    public SimId forFhir() {
+        fhir = true;
+        return this;
+    }
+
+    public boolean isFhir() { return fhir; }
 
     private void build(String user, String id) throws BadSimIdException {
         user = cleanId(user);

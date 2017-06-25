@@ -1,6 +1,7 @@
-package gov.nist.toolkit.actorfactory.factories;
+package gov.nist.toolkit.simcommon.server.factories;
 
 import gov.nist.toolkit.actortransaction.client.ActorType;
+import gov.nist.toolkit.configDatatypes.SimulatorProperties;
 import gov.nist.toolkit.configDatatypes.client.TransactionType;
 import gov.nist.toolkit.simcommon.client.SimId;
 import gov.nist.toolkit.simcommon.client.Simulator;
@@ -9,41 +10,51 @@ import gov.nist.toolkit.simcommon.server.AbstractActorFactory;
 import gov.nist.toolkit.simcommon.server.IActorFactory;
 import gov.nist.toolkit.simcommon.server.SimManager;
 import gov.nist.toolkit.sitemanagement.client.Site;
+import gov.nist.toolkit.sitemanagement.client.TransactionBean;
+import gov.nist.toolkit.sitemanagement.client.TransactionBean.RepositoryType;
+import gov.nist.toolkit.xdsexception.NoSessionException;
+import gov.nist.toolkit.xdsexception.client.EnvironmentNotSelectedException;
 
-import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
-public class RepositoryRegistryActorFactory extends AbstractActorFactory implements IActorFactory {
+public class RecipientActorFactory  extends AbstractActorFactory implements IActorFactory {
 
-	protected Simulator buildNew(SimManager simm, SimId newID, boolean configureBase) throws Exception {
+	static final List<TransactionType> incomingTransactions = 
+		Arrays.asList(TransactionType.XDR_PROVIDE_AND_REGISTER);
+
+
+	protected Simulator buildNew(SimManager simm, SimId newID, boolean configureBase) throws EnvironmentNotSelectedException, NoSessionException {
 		RegistryActorFactory registryActorFactory;
 		RepositoryActorFactory repositoryActorFactory;
-		ActorType actorType = ActorType.REPOSITORY_REGISTRY;
+
+		ActorType actorType = ActorType.DOCUMENT_RECIPIENT;
 		SimulatorConfig sc;
 		if (configureBase)
 			sc = configureBaseElements(actorType, newID);
-		else
+		else 
 			sc = new SimulatorConfig();
 
 		SimId simId = sc.getId();
 		// This needs to be grouped with a Document Registry
 		registryActorFactory = new RegistryActorFactory();
+		registryActorFactory.asRecipient();
 		SimulatorConfig registryConfig = registryActorFactory.buildNew(simm, simId, true).getConfig(0);
-		
+
 		// This needs to be grouped with a Document Repository also
 		repositoryActorFactory = new RepositoryActorFactory();
+		repositoryActorFactory.asRecipient();  // behave like Document Recipient
 		SimulatorConfig repositoryConfig = repositoryActorFactory.buildNew(simm, simId, true).getConfig(0);
 
 		// two combined simulators do not have separate lives
 		sc.add(registryConfig);
 		sc.add(repositoryConfig);
-		
+
 		return new Simulator(sc);
 	}
 
-	@Override
 	protected void verifyActorConfigurationOptions(SimulatorConfig sc) {
-		
+
 	}
 
 	public Site getActorSite(SimulatorConfig sc, Site site) {
@@ -51,27 +62,34 @@ public class RepositoryRegistryActorFactory extends AbstractActorFactory impleme
 
 		if (site == null)
 			site = new Site(siteName);
+
 		site.user = sc.getId().user;  // labels this site as coming from a sim
 
 		boolean isAsync = false;
 
-		new RegistryActorFactory().getActorSite(sc, site);
-		new RepositoryActorFactory().getActorSite(sc, site);
+		site.addTransaction(new TransactionBean(
+				TransactionType.XDR_PROVIDE_AND_REGISTER.getCode(),
+				RepositoryType.NONE,
+				sc.get(SimulatorProperties.pnrEndpoint).asString(),
+				false, 
+				isAsync));
+		site.addTransaction(new TransactionBean(
+				TransactionType.XDR_PROVIDE_AND_REGISTER.getCode(),
+				RepositoryType.NONE,
+				sc.get(SimulatorProperties.pnrTlsEndpoint).asString(),
+				true, 
+				isAsync));
 
 		return site;
 	}
 
-	@Override
 	public List<TransactionType> getIncomingTransactions() {
-		List<TransactionType> tt = new ArrayList<TransactionType>();
-		tt.addAll(new RegistryActorFactory().getIncomingTransactions());
-		tt.addAll(new RepositoryActorFactory().getIncomingTransactions());
-		return tt;
+		return incomingTransactions;
 	}
 
 
 	@Override
 	public ActorType getActorType() {
-		return ActorType.REPOSITORY_REGISTRY;
+		return ActorType.DOCUMENT_RECIPIENT;
 	}
 }

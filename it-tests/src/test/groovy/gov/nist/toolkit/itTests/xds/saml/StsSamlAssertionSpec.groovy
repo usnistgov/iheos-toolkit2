@@ -67,8 +67,6 @@ class StsSamlAssertionSpec extends ToolkitSpecification {
         gazelleStsSite = new Site(gazelleSiteName)
         gazelleStsSite.addTransaction(transName, endpoint, isSecure, isAsync);
 
-        new SimCache().getSimManagerForSession("sunil",true)
-
         // Adding a site dynamically doesn't work. Must use Actors.xml file.
 //       .allSites.getAllSites().add(gazelleStsSite)
     }

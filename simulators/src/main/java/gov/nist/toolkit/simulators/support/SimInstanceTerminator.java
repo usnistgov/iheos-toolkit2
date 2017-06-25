@@ -2,7 +2,6 @@ package gov.nist.toolkit.simulators.support;
 
 import gov.nist.toolkit.simcommon.client.SimId;
 import gov.nist.toolkit.simcommon.client.SimulatorConfig;
-import gov.nist.toolkit.simcommon.server.SimCache;
 import gov.nist.toolkit.simcommon.server.SimDb;
 import org.apache.log4j.Logger;
 
@@ -21,11 +20,11 @@ public class SimInstanceTerminator {
 		Date now = new Date();
 		int deleted = 0;
 		
-		List<SimId> simIds = new SimDb().getAllSimIds();
+		List<SimId> simIds = SimDb.getAllSimIds();
 		for (SimId simId : simIds) {
 			SimulatorConfig asc;
 			try {
-				asc = SimCache.getSimulatorConfig(simId);
+				asc = SimDb.getSimulator(simId);
 				Date expiration = asc.getExpiration();
 				if (expiration.before(now)) {
 					SimCommon.deleteSim(simId);

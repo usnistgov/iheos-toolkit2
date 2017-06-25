@@ -1,13 +1,10 @@
 package gov.nist.toolkit.session.server.serviceManager;
 
-import gov.nist.toolkit.simcommon.server.SimCache;
-import gov.nist.toolkit.simcommon.server.SimDb;
 import gov.nist.toolkit.commondatatypes.MetadataSupport;
 import gov.nist.toolkit.configDatatypes.client.Pid;
 import gov.nist.toolkit.installation.Installation;
 import gov.nist.toolkit.registrymetadata.Metadata;
 import gov.nist.toolkit.registrymetadata.MetadataParser;
-import gov.nist.toolkit.utilities.id.UuidAllocator;
 import gov.nist.toolkit.registrymetadata.client.Document;
 import gov.nist.toolkit.registrymsg.repository.RetrieveResponseParser;
 import gov.nist.toolkit.registrymsg.repository.RetrievedDocumentModel;
@@ -24,6 +21,7 @@ import gov.nist.toolkit.session.server.CodesConfigurationBuilder;
 import gov.nist.toolkit.session.server.Session;
 import gov.nist.toolkit.session.server.services.TestLogCache;
 import gov.nist.toolkit.session.server.testlog.TestOverviewBuilder;
+import gov.nist.toolkit.simcommon.server.SimDb;
 import gov.nist.toolkit.sitemanagement.client.Site;
 import gov.nist.toolkit.sitemanagement.client.SiteSpec;
 import gov.nist.toolkit.testengine.engine.ResultPersistence;
@@ -41,6 +39,7 @@ import gov.nist.toolkit.testkitutilities.TestKitSearchPath;
 import gov.nist.toolkit.testkitutilities.client.Gather;
 import gov.nist.toolkit.testkitutilities.client.SectionDefinitionDAO;
 import gov.nist.toolkit.testkitutilities.client.TestCollectionDefinitionDAO;
+import gov.nist.toolkit.utilities.id.UuidAllocator;
 import gov.nist.toolkit.utilities.io.Io;
 import gov.nist.toolkit.utilities.xml.*;
 import gov.nist.toolkit.xdsexception.ExceptionUtil;
@@ -1083,8 +1082,7 @@ public class XdsTestServiceManager extends CommonService {
 
 		// also delete simulators owned by this test session
 
-		SimDb.deleteSims(new SimDb().getSimIdsForUser(name));
-		SimCache.clear();
+		SimDb.deleteSims(SimDb.getSimIdsForUser(name));
 		return true;
 	}
 

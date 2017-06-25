@@ -50,9 +50,12 @@ public abstract class AbstractActorFactory {
 	/**
 	 * ActorType.name ==> ActorFactory
 	 */
-	static private Map<String, AbstractActorFactory> factories = new HashMap<>();
-	static {
-		logger.info("Loading Actor Factories");
+	static private Map<String, AbstractActorFactory> theFactories = null;
+	private static Map<String, AbstractActorFactory> factories() {
+	 	if (theFactories != null) return theFactories;
+		theFactories = new HashMap<>();
+
+		 logger.info("Loading Actor Factories");
 
 		// for this loader to work, the following requirements must be met by the factory class:
 		// 1. Extend class AbstractActorFactory
@@ -65,11 +68,12 @@ public abstract class AbstractActorFactory {
 				Class c = Class.forName(factoryClassName);
 				AbstractActorFactory inf = (AbstractActorFactory) c.newInstance();
 				logger.info("Loading ActorType " + actorType.getName());
-				factories.put(actorType.getName(), inf);
+				theFactories.put(actorType.getName(), inf);
 			} catch (Throwable t) {
 				logger.fatal("Cannot load factory class for Actor Type " + actorType.getName() + " - " + t.getMessage());
 			}
 		}
+		return theFactories;
 
 
 //		factories.put(ActorType.REGISTRY.getName(),           		new RegistryActorFactory());
@@ -91,8 +95,8 @@ public abstract class AbstractActorFactory {
 //      factories.put(ActorType.FHIR_SERVER.getName(), new FhirActorFactory());
 	}
 
-	static public AbstractActorFactory getActorFactory(ActorType at) {
-		return factories.get(at.getName());
+	public AbstractActorFactory getActorFactory(ActorType at) {
+		return factories().get(at.getName());
 	}
 
     public static final String                        xcpdEndpoint = "XCPD_endpoint";
@@ -105,7 +109,6 @@ public abstract class AbstractActorFactory {
 	static final String description = "Description";
 
 	PropertyServiceManager propertyServiceMgr = null;
-	SimManager simManager;
 
 	static public ActorType getActorTypeFromName(String name) {
 		return ActorType.findActor(name);
@@ -160,14 +163,6 @@ public abstract class AbstractActorFactory {
 	protected AbstractActorFactory() {
 	}
 
-	public AbstractActorFactory(SimManager simManager) {
-		this.simManager = simManager;
-	}
-
-	protected void setSimManager(SimManager simManager) {
-		this.simManager = simManager;
-	}
-
 	// Returns list since multiple simulators could be built as a grouping/cluster
 	// only used by SimulatorFactory to offer a generic API for building sims
 	public Simulator buildNewSimulator(SimManager simm, String simtype, SimId simID, boolean save) throws Exception {
@@ -186,12 +181,10 @@ public abstract class AbstractActorFactory {
 
 		// This is the simulator-specific factory
         String actorTypeName = at.getName();
-		AbstractActorFactory af = factories.get(actorTypeName);
+		AbstractActorFactory af = factories().get(actorTypeName);
 
 		if (af == null)
 			throw new Exception(String.format("Cannot build simulator of type %s - cannot find Factory for ActorType", actorTypeName));
-
-		af.setSimManager(simm);
 
         if (simID.getId().contains("__"))
             throw new Exception("Simulator ID cannot contain double underscore (__)");
@@ -226,7 +219,7 @@ public abstract class AbstractActorFactory {
 	static public AbstractActorFactory getActorFactory(SimulatorConfig config) {
 		ActorType actorType = getActorType(config);
 		String actorTypeName = actorType.getName();
-		AbstractActorFactory actorFactory = factories.get(actorTypeName);
+		AbstractActorFactory actorFactory = factories().get(actorTypeName);
 		return actorFactory;
 	}
 

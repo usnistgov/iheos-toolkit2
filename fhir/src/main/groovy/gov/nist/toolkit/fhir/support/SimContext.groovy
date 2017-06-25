@@ -40,7 +40,7 @@ public class SimContext {
     private init() {
         if (!new SimDb(simId).isSim())
             throw new NoSimException('Sim ${simId} does not exist')
-        resDb = new SimDb(simId, ResDb.BASE_TYPE, ResDb.STORE_TRANSACTION /* this is a stretch */)
+        resDb = new SimDb(simId, SimDb.BASE_TYPE, SimDb.STORE_TRANSACTION /* this is a stretch */)
         event = new Event(resDb.getEventDir())
     }
 

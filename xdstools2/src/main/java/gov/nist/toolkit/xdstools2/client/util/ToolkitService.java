@@ -14,7 +14,6 @@ import gov.nist.toolkit.services.shared.Message;
 import gov.nist.toolkit.session.client.ConformanceSessionValidationStatus;
 import gov.nist.toolkit.session.client.logtypes.TestOverviewDTO;
 import gov.nist.toolkit.session.client.logtypes.TestPartFileDTO;
-import gov.nist.toolkit.simcommon.client.SimId;
 import gov.nist.toolkit.simcommon.client.Simulator;
 import gov.nist.toolkit.simcommon.client.SimulatorConfig;
 import gov.nist.toolkit.simcommon.client.SimulatorStats;
@@ -79,7 +78,7 @@ public interface ToolkitService extends RemoteService  {
 	List<SimulatorConfig> getAllSimConfigs(GetAllSimConfigsRequest user) throws Exception;
 	String putSimConfig(SimConfigRequest request) throws Exception;
 	String deleteConfig(SimConfigRequest request) throws Exception;
-	Map<String, SimId> getActorSimulatorNameMap(CommandContext context) throws Exception;
+	List<String> getActorSimulatorNameMap(CommandContext context) throws Exception;
 	//	 List<String> getSimulatorTransactionNames(String simid) throws Exception;
 	int removeOldSimulators(CommandContext context) throws Exception;
 	List<SimulatorStats> getSimulatorStats(GetSimulatorStatsRequest request) throws Exception;

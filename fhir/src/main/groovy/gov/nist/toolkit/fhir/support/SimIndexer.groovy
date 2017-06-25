@@ -8,6 +8,7 @@ import groovy.transform.TypeChecked
 import org.apache.lucene.document.Document
 import org.apache.lucene.index.DirectoryReader
 import org.apache.lucene.index.IndexReader
+import org.apache.lucene.index.IndexableField
 import org.apache.lucene.search.IndexSearcher
 import org.apache.lucene.store.FSDirectory
 /**
@@ -83,11 +84,11 @@ class SimIndexer {
         if (!indexFile)
             indexFile = SimDb.getIndexFile(simId)
         IndexReader indexReader = DirectoryReader.open(FSDirectory.open(indexFile.toPath()))
-        (0..indexReader.numDocs()-1).each {
-            println "Document ${it}"
-            Document d = indexReader.document(it)
-            println "${d.fields.find { it.name() == ResDbIndexer.PATH_FIELD}.stringValue()}"
-            d.fields.each { field ->
+        (0..indexReader.numDocs()-1).each { int doci ->
+            println "Document ${doci}"
+            Document d = indexReader.document(doci)
+            println "${d.fields.find { IndexableField field -> field.name() == ResDbIndexer.PATH_FIELD}.stringValue()}"
+            d.fields.each { IndexableField field ->
                 if (field.name() != ResDbIndexer.PATH_FIELD)
                 println "   ${field.name()}: ${field.stringValue()}"
             }

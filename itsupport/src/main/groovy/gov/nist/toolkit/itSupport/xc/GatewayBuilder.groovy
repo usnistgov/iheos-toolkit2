@@ -1,15 +1,12 @@
 package gov.nist.toolkit.itSupport.xc
 
-import gov.nist.toolkit.simcommon.server.SimCache
 import gov.nist.toolkit.configDatatypes.SimulatorProperties
-import gov.nist.toolkit.installation.Installation
 import gov.nist.toolkit.results.client.Result
 import gov.nist.toolkit.results.client.TestInstance
 import gov.nist.toolkit.services.server.ToolkitApi
 import gov.nist.toolkit.toolkitApi.InitiatingGateway
 import gov.nist.toolkit.toolkitApi.RespondingGateway
 import gov.nist.toolkit.toolkitApi.SimulatorBuilder
-import gov.nist.toolkit.toolkitServices.ToolkitFactory
 import gov.nist.toolkit.toolkitServicesCommon.SimConfig
 /**
  * Build Initiating Gateway and n Responding Gateways behind it.  Each RG
@@ -37,10 +34,6 @@ class GatewayBuilder {
             RespondingGateway respondingGateway = spi.createRespondingGateway(id, userName, environmentName)
 
             SimConfig rgSimConfig = spi.get(respondingGateway)
-
-            // this expects full server version of simulator config
-            // this call makes the configuration available as a site for the test client
-            SimCache.addToSession(Installation.defaultSessionName(),  ToolkitFactory.asSimulatorConfig(rgSimConfig))
 
             // disable checking of Patient Identity Feed
             rgSimConfig.setProperty(SimulatorProperties.VALIDATE_AGAINST_PATIENT_IDENTITY_FEED, false)
@@ -72,10 +65,6 @@ class GatewayBuilder {
         igConfig.setProperty(SimulatorProperties.respondingGateways, rgConfigIds)
         println igConfig.describe()
         igConfig = spi.update(igConfig)
-
-        // this expects full server version of simulator config
-        // this call makes the configuration available as a site for the test client
-        SimCache.addToSession(Installation.defaultSessionName(),  ToolkitFactory.asSimulatorConfig(igConfig))
 
 
         [igConfig, rgConfigs]

@@ -16,7 +16,7 @@ class ActorFactoryLoadTest extends Specification {
         GenericSimulatorFactory fact = new GenericSimulatorFactory(null)
 
         then:
-        GenericSimulatorFactory.getActorFactory(ActorType.REPOSITORY)
+        new GenericSimulatorFactory().getActorFactory(ActorType.REPOSITORY)
 
     }
 }

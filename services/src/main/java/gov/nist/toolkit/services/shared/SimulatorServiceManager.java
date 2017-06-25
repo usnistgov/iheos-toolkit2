@@ -41,7 +41,6 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 /**
  * Each new request should go to a new instance.  All persistence
@@ -249,9 +248,6 @@ public class SimulatorServiceManager extends CommonService {
 		List<SimulatorConfig> configs = simFact.loadAvailableSimulators(ids);
 //		List<SimulatorConfig> configs = simServices.getSimConfigs(ids);
 
-		// update cache
-		SimCache.update(session.id(), configs);
-		
 		return configs;
 	}
 
@@ -261,7 +257,7 @@ public class SimulatorServiceManager extends CommonService {
 
 		GenericSimulatorFactory simFact = new GenericSimulatorFactory(SimCache.getSimManagerForSession(session.id()));
 
-		List<SimId> simIds = new SimDb().getAllSimIds();
+		List<SimId> simIds = SimDb.getAllSimIds();
 
 		List<SimId> userSimIds = new ArrayList<>();
 		for (SimId simId : simIds) {
@@ -270,9 +266,6 @@ public class SimulatorServiceManager extends CommonService {
 		}
 
 		List<SimulatorConfig> configs = GenericSimulatorFactory.loadSimulators(userSimIds);
-
-		// update cache
-		SimCache.update(session.id(), configs);
 
 		return configs;
 	}
@@ -289,10 +282,6 @@ public class SimulatorServiceManager extends CommonService {
 
 			}
 		}
-
-		// update cache
-		SimCache.update(session.id(), configs);
-
 	}
 
 	public String saveSimConfig(SimulatorConfig config) throws Exception  {
@@ -309,7 +298,7 @@ public class SimulatorServiceManager extends CommonService {
 	}
 
     public String deleteConfig(SimId simId) throws Exception {
-        SimulatorConfig config = SimCache.getSimulatorConfig(simId);
+        SimulatorConfig config = SimDb.getSimulator(simId);
         if (config != null)
             return deleteConfig(config);
         if (SimDb.exists(simId)) {
@@ -341,9 +330,9 @@ public class SimulatorServiceManager extends CommonService {
 	 * 
 	 * @return map from simulator name (private name) to simulator id (global id)
 	 */
-	public Map<String, SimId> getSimulatorNameMap() {
+	public List<String> getSimulatorNameMap() {
 		logger.debug(session.id() + ": " + "getActorSimulatorNameMap");
-		return SimCache.getSimManagerForSession(session.id(), true).getNameMap();
+		return SimDb.getAllSimNames();
 	}
 
 	public int removeOldSimulators() {

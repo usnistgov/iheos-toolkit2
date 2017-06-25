@@ -1,4 +1,4 @@
-package gov.nist.toolkit.actorfactory.factories;
+package gov.nist.toolkit.simcommon.server.factories;
 
 import gov.nist.toolkit.actortransaction.client.ActorType;
 import gov.nist.toolkit.actortransaction.client.ParamType;
@@ -19,14 +19,15 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * XDS Document Consumer Simulator Factory
+ * XDR Document Source Simulator Factory
  */
-public class ConsumerActorFactory  extends AbstractActorFactory implements IActorFactory {
+public class XdrDocSrcActorFactory extends AbstractActorFactory implements IActorFactory {
+
     static final List<TransactionType> incomingTransactions = new ArrayList<>();
 
     @Override
     public Simulator buildNew(SimManager simm, SimId simId, boolean configureBase) throws EnvironmentNotSelectedException, NoSessionException {
-        ActorType actorType = ActorType.DOC_CONSUMER;
+        ActorType actorType = ActorType.XDR_DOC_SRC;
         SimulatorConfig sc;
         if (configureBase)
             sc = configureBaseElements(actorType, simId);
@@ -34,10 +35,8 @@ public class ConsumerActorFactory  extends AbstractActorFactory implements IActo
             sc = new SimulatorConfig();
 
         // placeholders - must be updated by client
-        addEditableConfig(sc, SimulatorProperties.storedQueryEndpoint, ParamType.ENDPOINT, "http://host:port/service");
-        addEditableConfig(sc, SimulatorProperties.storedQueryTlsEndpoint, ParamType.ENDPOINT, "https://host:port/service");
-        addEditableConfig(sc, SimulatorProperties.retrieveEndpoint, ParamType.ENDPOINT, "http://host:port/service");
-        addEditableConfig(sc, SimulatorProperties.retrieveTlsEndpoint, ParamType.ENDPOINT, "https://host:port/service");
+        addEditableConfig(sc, SimulatorProperties.pnrEndpoint, ParamType.ENDPOINT, "http://host:port/service");
+        addEditableConfig(sc, SimulatorProperties.pnrTlsEndpoint, ParamType.ENDPOINT, "https://host:port/service");
 
         return new Simulator(sc);
     }
@@ -66,6 +65,6 @@ public class ConsumerActorFactory  extends AbstractActorFactory implements IActo
 
     @Override
     public ActorType getActorType() {
-        return ActorType.DOC_CONSUMER;
+        return ActorType.XDR_DOC_SRC;
     }
 }

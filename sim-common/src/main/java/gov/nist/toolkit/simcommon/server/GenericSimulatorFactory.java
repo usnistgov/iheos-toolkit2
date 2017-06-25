@@ -18,11 +18,11 @@ import java.util.List;
 public class GenericSimulatorFactory extends AbstractActorFactory {
 	SimId newID = null;
 	@SuppressWarnings("unused")
-	private GenericSimulatorFactory() {
+	public GenericSimulatorFactory() {
 	}
 	
 	public GenericSimulatorFactory(SimManager simManager) {
-		super(simManager);
+		super();
 	}
 
 	// ActorFactory needs to be directly

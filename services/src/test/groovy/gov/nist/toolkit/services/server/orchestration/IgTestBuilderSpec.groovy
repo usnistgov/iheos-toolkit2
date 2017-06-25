@@ -28,7 +28,7 @@ class IgTestBuilderSpec extends Specification {
     }
 
     def setup() {
-        SimDb.deleteAllSims()
+        new SimDb().deleteAllSims()
 //        SimDb.deleteSims(new SimDb().getSimIdsForUser(user))
     }
 

@@ -1,4 +1,4 @@
-package gov.nist.toolkit.actorfactory.factories;
+package gov.nist.toolkit.simcommon.server.factories;
 
 import gov.nist.toolkit.actortransaction.client.ActorType;
 import gov.nist.toolkit.actortransaction.client.ParamType;

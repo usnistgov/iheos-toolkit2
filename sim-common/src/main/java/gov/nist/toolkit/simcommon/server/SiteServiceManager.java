@@ -56,7 +56,7 @@ public class SiteServiceManager {
 	public List<Site> getAllSites(String sessionId) throws Exception {
 		logger.debug(sessionId + ": " + "getAllSites");
 		ArrayList<Site> sites = new ArrayList<>();   //getCommonSites().asCollection());
-		sites.addAll(SimCache.getSimManagerForSession(sessionId).getAllSites().asCollection());
+		sites.addAll(SimManager.getAllSites().asCollection());
 		List<String> names = new ArrayList<>();
 
 		List<Site> sites2 = new ArrayList<>();
@@ -72,7 +72,7 @@ public class SiteServiceManager {
 	public List<String> getSiteNamesWithRG(String sessionId) throws Exception {
 		logger.debug(sessionId + ": " + "getSiteNamesWithRG");
 		List<String> ss = new ArrayList<>();
-		for (Site s : new SimCache().getSimManagerForSession(sessionId).getAllSites().asCollection()) {
+		for (Site s : SimManager.getAllSites().asCollection()) {
 			if (s.hasActor(ActorType.RESPONDING_GATEWAY))
 				ss.add(s.getName());
 		}

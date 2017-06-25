@@ -166,38 +166,32 @@ public class ToolkitApi {
      * @throws Exception if there is a problem finding or interpreting the sim
      */
     public Site getSiteForSimulator(SimId simId) throws Exception {
-        SimManager simManager = new SimManager(session.getId());
-        simManager.loadAllSims();
-        SimulatorConfig config = simManager.getSimulatorConfig(simId);
-        if (config == null) throw new Exception("Simulator " + simId.toString() + " does not exist");
-        return SimManager.getSite(config);
+        return SimManager.getSite(getConfig(simId));
     }
 
     public SimulatorConfig getConfig(SimId simId) throws Exception {
-        if (session == null) return null;
-        SimManager simManager = new SimManager(session.getId());
-        simManager.loadAllSims();
-        return simManager.getSimulatorConfig(simId);
+        SimulatorConfig config =  SimDb.getSimulator(simId);
+        if (config == null)throw new NoSimException("Simulator not found: " + simId);
+        return config;
     }
 
-    public SiteSpec getSiteSpecForSimulator(SimId simId) throws Exception {
-        Site site = getSiteForSimulator(simId);
-        SiteSpec siteSpec = new SiteSpec();
-        siteSpec.setName(site.getName());
-        return siteSpec;
-    }
-    
+//    public SiteSpec getSiteSpecForSimulator(SimId simId) throws Exception {
+//        Site site = getSiteForSimulator(simId);
+//        SiteSpec siteSpec = new SiteSpec();
+//        siteSpec.setName(site.getName());
+//        return siteSpec;
+//    }
+
+    /**
+     * get site
+     * @param id  String version of SimId
+     * @return
+     * @throws Exception
+     */
     public Site getActorConfig(String id) throws Exception {
-       if (session == null) return null;
-       logger.debug("ToolkitApi#getActorConfig for ID: " + id);
-       logger.debug(" Session ID: " + session.getId());
-       SimManager simManager = new SimManager(session.getId());
-       Collection<Site> sites = simManager.getAllSites().asCollection();
-       for (Site site : sites) {
-          logger.debug(" Testing site name: " + site.getName());
-          if (site.getName().equals(id)) return site;
-       }
-       throw new Exception("Site not found: " + id);
+        logger.debug("ToolkitApi#getActorConfig for ID: " + id);
+        SimId simId = new SimId(id);
+        return getSiteForSimulator(simId);
     }
 
     /**

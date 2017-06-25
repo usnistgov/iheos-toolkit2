@@ -2,7 +2,7 @@ package gov.nist.toolkit.xdstools2.patientIdentityFeed
 
 import gov.nist.toolkit.actorfactory.PatientIdentityFeedServlet
 import gov.nist.toolkit.actorfactory.PifHandler
-import gov.nist.toolkit.actorfactory.factories.RegistryActorFactory
+import gov.nist.toolkit.simcommon.server.factories.RegistryActorFactory
 import gov.nist.toolkit.actortransaction.client.ActorType
 import gov.nist.toolkit.adt.AdtSender
 import gov.nist.toolkit.adt.ListenerFactory

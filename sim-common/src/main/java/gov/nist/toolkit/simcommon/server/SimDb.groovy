@@ -58,12 +58,25 @@ public class SimDb {
 
 	/**
 	 * Return base dir of SimDb storage
+	 * or its FHIR equivalent if the SimId is from a FHIR sim
 	 * @return
 	 */
-	public File getSimDbFile() {
+	static public File getSimDbFile(SimId simId) {
 //		System.out.println("Using SimDb:getSimDbFile()");
+		if (simId.isFhir())
+			return Installation.instance().fhirSimDbFile();
 		return Installation.instance().simDbFile();
 	}
+
+	static public File getSimDbFile() {
+		return Installation.instance().simDbFile()
+	}
+
+	static public File getFSimDbFile() {
+		return Installation.instance().fhirSimDbFile()
+	}
+
+
 
 	/**
 	 * Does simulator exist?
@@ -73,7 +86,7 @@ public class SimDb {
 	 * simdb directory, false otherwise.
 	 */
 	static public boolean exists(SimId simId) {
-		return new File(new SimDb().getSimDbFile(), simId.toString()).exists();
+		return new File(getSimDbFile(simId), simId.toString()).exists();
 	}
 
 	/**
@@ -83,7 +96,7 @@ public class SimDb {
 	}
 
 	public SimDb(SimId simId) throws NoSimException {
-		File dbRoot = getSimDbFile();
+		File dbRoot = getSimDbFile(simId);
 		this.simId = simId;
 		validateSimId(simId);
 		if (simId == null)
@@ -271,7 +284,7 @@ public class SimDb {
 		}
 	}
 
-	public List<SimId> getAllSimIds() throws BadSimIdException {
+	static List<SimId> getAllSimIds() throws BadSimIdException {
 		File[] files = getSimDbFile().listFiles();
 		List<SimId> ids = new ArrayList<>();
 		if (files == null) return ids;
@@ -283,7 +296,11 @@ public class SimDb {
 		return ids;
 	}
 
-	public List<SimId> getSimIdsForUser(String user) throws BadSimIdException {
+	static List<String> getAllSimNames() {
+		getAllSimIds().collect { it.toString()}
+	}
+
+	static List<SimId> getSimIdsForUser(String user) throws BadSimIdException {
 		List<SimId> ids = getAllSimIds();
 		List<SimId> selectedIds = new ArrayList<>();
 		for (SimId id : ids) {
@@ -867,7 +884,7 @@ public class SimDb {
 	 * @return
 	 */
 
-	File getResDbFile() {
+	static File getResDbFile() {
 		return Installation.instance().fhirSimDbFile()
 	}
 
@@ -888,7 +905,7 @@ public class SimDb {
 	 * @return
 	 */
 	static File getSimBase(SimId simId) {
-		return new File(new SimDb().getResDbFile(), simId.toString())
+		return new File(getResDbFile(), simId.toString())
 	}
 
 	/**
@@ -920,6 +937,7 @@ public class SimDb {
 	}
 
 	private static SimDb mkfSimi(File dbRoot, SimId simid, String actor) throws IOException, NoSimException {
+		simid.forFhir()
 		validateSimId(simid);
 		if (!dbRoot.exists())
 			dbRoot.mkdirs();

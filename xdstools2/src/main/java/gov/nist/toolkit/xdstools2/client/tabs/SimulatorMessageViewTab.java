@@ -25,7 +25,6 @@ import gov.nist.toolkit.xdstools2.shared.command.request.GetTransactionRequest;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 public class SimulatorMessageViewTab extends ToolWindow {
 	private HorizontalPanel simDisplayPanel = new HorizontalPanel();
@@ -200,27 +199,27 @@ public class SimulatorMessageViewTab extends ToolWindow {
 			if (parts.length == 2)
 				currentActor = parts[1];
 
-			simid = simNameToIdMap.get(simName);
+			simid = new SimId(simName);
 			loadTransactionNames(simid);
 		}
 	}
 
-	Map<String, SimId> simNameToIdMap;
+	List<String> simNameToIdMap;
 
 	void loadSimulatorNamesListBox() {
 		simulatorNamesListBox.clear();
 		new GetActorSimulatorNameMapCommand(){
 			@Override
-			public void onComplete(Map<String, SimId> result) {
+			public void onComplete(List<String> result) {
 				simulatorNamesListBox.addItem("");
 				simNameToIdMap = result;
-				for (String name : result.keySet()) {
+				for (String name : result) {
 					simulatorNamesListBox.addItem(name);
 				}
 				// Auto-load if there is only one entry
 				if (result.size()==1) {
 					simulatorNamesListBox.setSelectedIndex(0);
-					simid = result.get(simulatorNamesListBox.getSelectedValue());
+					simid = new SimId(simulatorNamesListBox.getSelectedValue());
 					loadTransactionNames(simid);
 				}
 			}

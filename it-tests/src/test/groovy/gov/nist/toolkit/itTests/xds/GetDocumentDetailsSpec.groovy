@@ -1,9 +1,7 @@
 package gov.nist.toolkit.itTests.xds
 
-import gov.nist.toolkit.simcommon.server.SimCache
 import gov.nist.toolkit.configDatatypes.SimulatorProperties
 import gov.nist.toolkit.configDatatypes.client.TransactionType
-import gov.nist.toolkit.installation.Installation
 import gov.nist.toolkit.itTests.support.ToolkitSpecification
 import gov.nist.toolkit.registrymetadata.Metadata
 import gov.nist.toolkit.registrymetadata.MetadataParser
@@ -11,7 +9,6 @@ import gov.nist.toolkit.results.client.Result
 import gov.nist.toolkit.results.client.TestInstance
 import gov.nist.toolkit.toolkitApi.DocumentRegRep
 import gov.nist.toolkit.toolkitApi.SimulatorBuilder
-import gov.nist.toolkit.toolkitServices.ToolkitFactory
 import gov.nist.toolkit.toolkitServicesCommon.DocumentContent
 import gov.nist.toolkit.toolkitServicesCommon.RefList
 import gov.nist.toolkit.toolkitServicesCommon.SimConfig
@@ -40,9 +37,6 @@ class GetDocumentDetailsSpec extends ToolkitSpecification {
         DocumentRegRep regRep = spi.createDocumentRegRep('reg', userName, environmentName)
         SimConfig regrepSimConfig = spi.get(regRep)
 
-        // this expects full server version of simulator config
-        // this call makes the configuration available as a site for the test client
-        SimCache.addToSession(Installation.defaultSessionName(),  ToolkitFactory.asSimulatorConfig(regrepSimConfig))
 
         // disable checking of Patient Identity Feed
         regrepSimConfig.setProperty(SimulatorProperties.VALIDATE_AGAINST_PATIENT_IDENTITY_FEED, false)

@@ -14,7 +14,6 @@ import gov.nist.toolkit.xdsexception.client.EnvironmentNotSelectedException;
 import gov.nist.toolkit.xdsexception.client.ToolkitRuntimeException;
 import org.apache.log4j.Logger;
 
-import java.io.IOException;
 import java.util.Properties;
 
 /**
@@ -38,7 +37,6 @@ public class SimulatorApi {
             SimManager simMgr = SimCache.getSimManagerForSession(session.id(), true);
 
             Simulator scl = new GenericSimulatorFactory(simMgr).buildNewSimulator(simMgr, actorTypeName, simID);
-            simMgr.addSimConfigs(scl);
             logger.info("New simulator for session " + session.id() + ": " + actorTypeName + " ==> " + scl.getIds());
             return scl;
         } catch (EnvironmentNotSelectedException e) {
@@ -50,17 +48,9 @@ public class SimulatorApi {
         }
     }
 
-    public void delete(SimId simID) throws Exception {
-        logger.info(session.id() + ": Delete simulator " + simID);
-//        SimulatorConfig config = new SimulatorConfig(simID, "", null);
-        SimManager simMgr = SimCache.getSimManagerForSession(session.id(), true);
-        try {
-            SimCache.deleteSimConfig(simID);
-            simMgr.purge();
-        } catch (IOException e) {
-            logger.error("deleteConfig", e);
-            throw e;
-        }
+    public void delete(SimId simId) throws Exception {
+        logger.info(session.id() + ": Delete simulator " + simId);
+                GenericSimulatorFactory.delete(simId);
     }
 
     public boolean exists(SimId simId) {
@@ -73,7 +63,7 @@ public class SimulatorApi {
     }
 
     public void setConfig(SimulatorConfig config, String parameterName, Boolean value) {
-        SimManager simMgr = new SimCache().getSimManagerForSession(session.id(), true);
+        SimManager simMgr = SimCache.getSimManagerForSession(session.id(), true);
         new GenericSimulatorFactory(simMgr).setConfig(config, parameterName, value);
     }
 

@@ -129,7 +129,6 @@ public class UtilityRunner {
 
 //                Sites theSites = new Sites(SiteServiceManager.getSiteServiceManager().getAllSites(session.getId()));
                 Collection<Site> siteCollection = SimCache.getAllSites();
-                logger.debug("UtilityRunner - defined sites - " + SimCache.describe());
                 Sites theSites = new Sites(siteCollection);
                 // Only for SOAP messages will siteSpec.name be filled in.  For Direct it is not expected
                 if (session.siteSpec != null && session.siteSpec.name != null && !session.siteSpec.name.equals("")) {

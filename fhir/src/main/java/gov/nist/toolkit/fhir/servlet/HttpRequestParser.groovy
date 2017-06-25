@@ -25,6 +25,6 @@ class HttpRequestParser {
 
         String simId = uri.substring(simIdStart, simIdEnd);
 
-        return new SimId(simId)
+        return new SimId(simId).forFhir()
     }
 }

@@ -1,4 +1,4 @@
-package gov.nist.toolkit.actorfactory.factories;
+package gov.nist.toolkit.simcommon.server.factories;
 
 import gov.nist.toolkit.actortransaction.client.ActorType;
 import gov.nist.toolkit.actortransaction.client.ParamType;
@@ -19,14 +19,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * XDSI Document Consumer Simulator Factory
+ * XDS Document Consumer Simulator Factory
  */
-public class ImgConsumerActorFactory  extends AbstractActorFactory implements IActorFactory {
+public class ConsumerActorFactory  extends AbstractActorFactory implements IActorFactory {
     static final List<TransactionType> incomingTransactions = new ArrayList<>();
 
     @Override
     public Simulator buildNew(SimManager simm, SimId simId, boolean configureBase) throws EnvironmentNotSelectedException, NoSessionException {
-        ActorType actorType = ActorType.IMAGING_DOC_CONSUMER;
+        ActorType actorType = ActorType.DOC_CONSUMER;
         SimulatorConfig sc;
         if (configureBase)
             sc = configureBaseElements(actorType, simId);
@@ -66,6 +66,6 @@ public class ImgConsumerActorFactory  extends AbstractActorFactory implements IA
 
     @Override
     public ActorType getActorType() {
-        return ActorType.IMAGING_DOC_CONSUMER;
+        return ActorType.DOC_CONSUMER;
     }
 }

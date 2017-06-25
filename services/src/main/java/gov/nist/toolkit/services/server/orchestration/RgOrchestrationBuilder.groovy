@@ -15,11 +15,9 @@ import gov.nist.toolkit.session.server.Session
 import gov.nist.toolkit.simcommon.client.SimId
 import gov.nist.toolkit.simcommon.client.SimulatorConfig
 import gov.nist.toolkit.simcommon.client.config.SimulatorConfigElement
-import gov.nist.toolkit.simcommon.server.SimCache
 import gov.nist.toolkit.sitemanagement.client.Site
 import gov.nist.toolkit.sitemanagement.client.SiteSpec
 import groovy.transform.TypeChecked
-
 /**
  * Build environment for testing Responding Gateway SUT.
  */
@@ -140,10 +138,6 @@ class RgOrchestrationBuilder {
                     response.regrepConfig = supportSimConfig;
                     home = rrSite.homeId
                 }
-
-
-                if (supportSimConfig)
-                    SimCache.addToSession(Installation.defaultSessionName(), supportSimConfig)
 
                 TestInstance testInstance12318 = new TestInstance('12318')
                 MessageItem item12318 = response.addMessage(testInstance12318, true, "")
