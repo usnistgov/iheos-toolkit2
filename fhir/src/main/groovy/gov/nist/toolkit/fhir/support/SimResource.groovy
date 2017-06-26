@@ -29,7 +29,7 @@ class SimResource {
     }
 
     SimResource(String _path) {
-        (actor, transaction, event, filename) = _path.split('/')
+        (actor, transaction, event, filename) = _path.split(File.separator)
     }
 
     SimResource(File _file) {
