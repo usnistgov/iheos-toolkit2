@@ -23,7 +23,7 @@ class SimResource {
 
     SimResource(ActorType actorType, TransactionType transactionType, String event, String filename) {
         actor = actorType ? actorType.shortName : ResDb.BASE_TYPE
-        transaction = transactionType ? transactionType.shortName : ResDb.STORE_TRANSACTION
+        transaction = transactionType ? transactionType.shortName : ResDb.ANY_TRANSACTION
         this.event = event
         this.filename = filename
     }

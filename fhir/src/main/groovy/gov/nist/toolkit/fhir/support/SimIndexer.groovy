@@ -141,7 +141,7 @@ class SimIndexer {
 //         *
 //         * @param simId - required
 //         * @param actorType - if null will default to ResDb.BASE_TYPE
-//         * @param transactionType - if null will default to ResDb.STORE_TRANSACTION
+//         * @param transactionType - if null will default to ResDb.ANY_TRANSACTION
 //         * @param eventDir
 //         * @param resourceFile
 //         * Indexer must already be open

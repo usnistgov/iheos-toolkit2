@@ -95,6 +95,11 @@ public class SimDb {
 	public SimDb() {
 	}
 
+	/**
+	 * open existing sim
+	 * @param simId
+	 * @throws NoSimException
+	 */
 	public SimDb(SimId simId) throws NoSimException {
 		File dbRoot = getSimDbFile(simId);
 		this.simId = simId;
@@ -120,7 +125,7 @@ public class SimDb {
 		if (!simDir.isDirectory())
 			throw new ToolkitRuntimeException("Cannot create content in Simulator database, creation of " + simDir.toString() + " failed");
 
-		// add this for safety when deleting simulators
+		// add this for safety when deleting simulators -
 		Io.stringToFile(simSafetyFile(), simId.toString());
 	}
 
@@ -151,18 +156,26 @@ public class SimDb {
 	}
 	private static boolean isSimDir(File dir) { return new File(dir, "simId.txt").exists(); }
 
-	// ipAddr aka simid
+	/**
+	 * create new sim
+	 * @param simId
+	 * @param actor
+	 * @param transaction
+	 * @throws IOException
+	 * @throws NoSimException
+	 */
 	public SimDb(SimId simId, String actor, String transaction) throws IOException, NoSimException {
 		this(simId);
 		this.actor = actor;
 		this.transaction = transaction;
 
 		if (actor != null && transaction != null) {
-			String transdir = new File(new File(simDir, actor), transaction).path;
-			transactionDir = new File(transdir);
-			transactionDir.mkdirs();
-			if (!transactionDir.isDirectory())
-				throw new IOException("Cannot create content in Simulator database, creation of " + transactionDir + " failed");
+//			String transdir = new File(new File(simDir, actor), transaction).path;
+//			transactionDir = new File(transdir);
+//			transactionDir.mkdirs();
+//			if (!transactionDir.isDirectory())
+//				throw new IOException("Cannot create content in Simulator database, creation of " + transactionDir + " failed");
+			transactionDir = transactionDirectory(actor, transaction)
 		} else
 			return;
 
@@ -170,6 +183,18 @@ public class SimDb {
 		File eventDir = mkEventDir(date);
 		eventDir.mkdirs();
 		Serialize.out(new File(eventDir, "date.ser"), date);
+	}
+
+	File transactionDirectory(String actor, String transaction) {
+		assert actor
+		assert transaction
+
+		String transdir = new File(new File(simDir, actor), transaction).path;
+		File dir = new File(transdir);
+		dir.mkdirs();
+		if (!dir.isDirectory())
+			throw new IOException("Cannot create content in Simulator database, creation of " + transactionDir + " failed");
+		return dir
 	}
 
 	public File mkEvent(String transaction) {
@@ -195,6 +220,11 @@ public class SimDb {
 				break;
 		}
 		return getEventDir();
+	}
+
+	void openMostRecentEvent(String actor, String transaction) {
+		transactionDir = transactionDirectory(actor, transaction)
+		event = transactionDir.list().sort().last()
 	}
 
 	public String getEvent() { return event; }
@@ -617,28 +647,34 @@ public class SimDb {
 	}
 
 	public File getResponseHdrFile() {
-		return new File(getDBFilePrefix(event), "response_hdr.txt");
+		return new File(getDBFilePrefix(event), RESPONSE_HEADER_FILE);
 	}
 
+	static final String REQUEST_HEADER_FILE = 'request_hdr.txt'
+	static final String REQUEST_BODY_TXT_FILE = 'request_body.txt'
+	static final String REQUEST_BODY_BIN_FILE = 'request_body.bin'
+	static final String RESPONSE_HEADER_FILE = 'response_hdr.txt'
+	static final String RESPONSE_BODY_TXT_FILE = 'response_body.txt'
+
 	private File getRequestMsgHdrFile(String filenamebase) {
-		return new File(getDBFilePrefix(filenamebase), "request_hdr.txt");
+		return new File(getDBFilePrefix(filenamebase), REQUEST_HEADER_FILE);
 	}
 
 	private File getRequestMsgBodyFile(String filenamebase) {
-		return new File(getDBFilePrefix(filenamebase), "request_body.bin");
+		return new File(getDBFilePrefix(filenamebase), REQUEST_BODY_BIN_FILE);
 	}
 
 	private File getAlternateRequestMsgBodyFile(String filenamebase) {
-		return new File(getDBFilePrefix(filenamebase), "request_body.txt");
+		return new File(getDBFilePrefix(filenamebase), REQUEST_BODY_TXT_FILE);
 	}
 
 	private File getResponseMsgHdrFile(String filenamebase) {
-		return new File(getDBFilePrefix(filenamebase), "response_hdr.txt");
+		return new File(getDBFilePrefix(filenamebase), RESPONSE_HEADER_FILE);
 	}
 
 	@Obsolete
 	private File getResponseMsgBodyFile(String filenamebase) {
-		return new File(getDBFilePrefix(filenamebase), "response_body.txt");
+		return new File(getDBFilePrefix(filenamebase), RESPONSE_BODY_TXT_FILE);
 	}
 
 	public String getRequestMessageHeader() throws IOException {
@@ -857,8 +893,8 @@ public class SimDb {
 	 *
 	 **************************************************************************/
 
-	static final String BASE_TYPE = "base"
-	final static String STORE_TRANSACTION = "store"
+	static final String BASE_TYPE = 'fhir'
+	final static String ANY_TRANSACTION = 'any'
 
 	/**
 	 * Store a Resource in a sim

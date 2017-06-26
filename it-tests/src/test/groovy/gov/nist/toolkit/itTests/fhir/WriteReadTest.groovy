@@ -55,6 +55,19 @@ class WriteReadTest extends FhirSpecification {
         locationHeader.id
         locationHeader.vid == '1'
         !oo
+
+        when:
+        SimDb simDb = new SimDb(simId)
+        simDb.openMostRecentEvent(SimDb.BASE_TYPE, SimDb.ANY_TRANSACTION)
+        File eventDir = simDb.getEventDir()
+
+        then:
+        eventDir.exists()
+        new File(eventDir, SimDb.REQUEST_HEADER_FILE).exists()
+        new File(eventDir, SimDb.REQUEST_BODY_BIN_FILE).exists() || new File(eventDir, SimDb.REQUEST_BODY_TXT_FILE).exists()
+//        new File(eventDir, SimDb.RESPONSE_HEADER_FILE).exists()
+//        new File(eventDir, SimDb.RESPONSE_BODY_TXT_FILE).exists()
+        new File(eventDir,'Patient').isDirectory()
     }
 
     @Shared FhirId submission
