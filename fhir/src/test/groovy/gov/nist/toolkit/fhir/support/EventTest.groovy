@@ -6,10 +6,11 @@ import spock.lang.Specification
  *
  */
 class EventTest extends Specification {
+    def sep = File.separator
 
     def 'from string'() {
         when:
-        def path = 'actor/trans/event/Patient1'
+        def path = "actor${sep}trans${sep}event${sep}Patient1"
         SimResource event = new SimResource(path)
 
         then:
@@ -21,7 +22,7 @@ class EventTest extends Specification {
 
     def 'from file'() {
         when:
-        File file = new File('/home/bill/ec/simdb/actor/trans/event/Patient1')
+        File file = new File("${sep}home${sep}bill${sep}ec${sep}simdb${sep}actor${sep}trans${sep}event${sep}Patient1")
         SimResource event = new SimResource(file)
 
         then:
@@ -33,7 +34,7 @@ class EventTest extends Specification {
 
     def 'from string to string'() {
         when:
-        def path = 'actor/trans/event/Patient1'
+        def path = "actor${sep}trans${sep}event${sep}Patient1"
         SimResource event = new SimResource(path)
 
         then:
