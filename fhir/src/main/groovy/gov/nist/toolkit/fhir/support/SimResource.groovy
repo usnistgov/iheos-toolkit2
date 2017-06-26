@@ -5,6 +5,8 @@ import gov.nist.toolkit.actorfactory.client.SimId
 import gov.nist.toolkit.actortransaction.client.ActorType
 import gov.nist.toolkit.configDatatypes.client.TransactionType
 
+import java.util.regex.Pattern
+
 /**
  * This contains details about where the index is stored and
  * what actor/transaction/event it belongs to.
@@ -29,11 +31,11 @@ class SimResource {
     }
 
     SimResource(String _path) {
-        (actor, transaction, event, filename) = _path.split(File.separator)
+        (actor, transaction, event, filename) = _path.split(Pattern.quote(File.separator))
     }
 
     SimResource(File _file) {
-        def path = _file.toString().split('/')
+        def path = _file.toString().split(Pattern.quote(File.separator))
         filename = path[-1]
         event = path[-2]
         transaction = path[-3]
@@ -42,7 +44,7 @@ class SimResource {
 
     String asPath() {
         File file = new File(filename)
-        "${actor}/${transaction}/${event}/${file.name}"
+        "${actor}${File.separator}${transaction}${File.separator}${event}${File.separator}${file.name}"
     }
 
     SimDb asSimDb(SimId simId) {
