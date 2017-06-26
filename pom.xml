@@ -58,7 +58,7 @@
 <!--        <module>dns</module>   -->
         <module>envSettings</module>
         <module>testkit-utilities</module>
-        <module>simDb</module>
+        <!--<module>simDb</module>-->
         <module>tk</module>
         <module>tk-deps</module>
         <module>utilities</module>
