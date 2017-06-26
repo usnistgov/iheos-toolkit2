@@ -1,19 +1,16 @@
 package gov.nist.toolkit.itTests.xc
 
-import gov.nist.toolkit.actorfactory.SimCache
-import gov.nist.toolkit.actorfactory.client.SimulatorConfig
 import gov.nist.toolkit.configDatatypes.SimulatorActorType
-import gov.nist.toolkit.installation.Installation
 import gov.nist.toolkit.itTests.support.ToolkitSpecification
 import gov.nist.toolkit.results.client.Result
 import gov.nist.toolkit.results.client.TestInstance
+import gov.nist.toolkit.simcommon.client.SimulatorConfig
 import gov.nist.toolkit.toolkitApi.BasicSimParameters
 import gov.nist.toolkit.toolkitApi.SimulatorBuilder
 import gov.nist.toolkit.toolkitServices.ToolkitFactory
 import gov.nist.toolkit.toolkitServicesCommon.SimConfig
 import gov.nist.toolkit.toolkitServicesCommon.SimId
 import spock.lang.Shared
-
 /**
  *
  */
@@ -77,7 +74,6 @@ class RGQuerySpec extends ToolkitSpecification {
         SimulatorConfig rgSimConfig = ToolkitFactory.asSimulatorConfig(RGConfig)
         println "local simconfig"
         println 'local rg site\n' + rgSimConfig.toString()
-        SimCache.addToSession(Installation.defaultSessionName(), rgSimConfig)
 
         and: 'issue XC GetDocuments - homeCommunityId is missing from parameters'
         testId = new TestInstance('rg-bad-home')

@@ -15,7 +15,7 @@ public class EndpointParser {
     }
 
     public boolean validate() {
-        if (endpoint == null || parts == null || parts.length < 1) {
+        if (endpoint == null || endpoint.equals("") || parts == null || parts.length < 1) {
             error = "null or empty endpoint";
             return false;
         }

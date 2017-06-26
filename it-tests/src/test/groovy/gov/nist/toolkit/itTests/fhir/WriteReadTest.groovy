@@ -2,12 +2,12 @@ package gov.nist.toolkit.itTests.fhir
 
 import ca.uhn.fhir.context.FhirContext
 import ca.uhn.fhir.parser.IParser
-import gov.nist.toolkit.actorfactory.client.SimId
-import gov.nist.toolkit.fhir.support.ResDb
 import gov.nist.toolkit.fhir.support.SimIndexManager
 import gov.nist.toolkit.installation.Installation
 import gov.nist.toolkit.itTests.support.FhirId
 import gov.nist.toolkit.itTests.support.FhirSpecification
+import gov.nist.toolkit.simcommon.client.SimId
+import gov.nist.toolkit.simcommon.server.SimDb
 import org.apache.http.message.BasicStatusLine
 import org.hl7.fhir.dstu3.model.OperationOutcome
 import org.hl7.fhir.dstu3.model.Patient
@@ -22,11 +22,11 @@ class WriteReadTest extends FhirSpecification {
     @Shared FhirContext ourCtx = FhirContext.forDstu3()
 
     def setupSpec() {
-        ResDb.delete(simId)
+        SimDb.fdelete(simId)
 
         startGrizzly('8889')   // sets up Grizzly server on remoteToolkitPort
 
-        new ResDb().mkSim(simId)
+        new SimDb().mkfSim(simId)
     }
 
     def cleanupSpec() {
@@ -40,7 +40,7 @@ class WriteReadTest extends FhirSpecification {
 
     def 'submit first patient'() {
         when:
-        def (BasicStatusLine statusLine, String results, FhirId locationHeader) = post("http://localhost:${remoteToolkitPort}/xdstools2/fsim/${simId}/Patient", patient)
+        def (BasicStatusLine statusLine, String results, FhirId locationHeader) = post("${baseURL(simId)}Patient", patient)
         OperationOutcome oo
         if (results) {
             IBaseResource resource = ourCtx.newJsonParser().parseResource(results)
@@ -55,13 +55,26 @@ class WriteReadTest extends FhirSpecification {
         locationHeader.id
         locationHeader.vid == '1'
         !oo
+
+        when:
+        SimDb simDb = new SimDb(simId)
+        simDb.openMostRecentEvent(SimDb.BASE_TYPE, SimDb.ANY_TRANSACTION)
+        File eventDir = simDb.getEventDir()
+
+        then:
+        eventDir.exists()
+        new File(eventDir, SimDb.REQUEST_HEADER_FILE).exists()
+        new File(eventDir, SimDb.REQUEST_BODY_BIN_FILE).exists() || new File(eventDir, SimDb.REQUEST_BODY_TXT_FILE).exists()
+//        new File(eventDir, SimDb.RESPONSE_HEADER_FILE).exists()
+//        new File(eventDir, SimDb.RESPONSE_BODY_TXT_FILE).exists()
+        new File(eventDir,'Patient').isDirectory()
     }
 
     @Shared FhirId submission
 
     def 'submit and query patient'() {
         when:
-        def (BasicStatusLine statusLine, String results, FhirId locationHeader) = post("http://localhost:${remoteToolkitPort}/xdstools2/fsim/${simId}/Patient", patient)
+        def (BasicStatusLine statusLine, String results, FhirId locationHeader) = post("${baseURL(simId)}Patient", patient)
         submission = locationHeader
         OperationOutcome oo
         if (results) {
@@ -79,7 +92,7 @@ class WriteReadTest extends FhirSpecification {
         !oo
 
         when:
-        def (BasicStatusLine statusLine2, String results2) = get("http://localhost:${remoteToolkitPort}/xdstools2/fsim/${simId}/Patient/${locationHeader.id}")
+        def (BasicStatusLine statusLine2, String results2) = get("${baseURL(simId)}Patient/${locationHeader.id}")
 
         then:
         statusLine2.statusCode == 200
@@ -91,11 +104,6 @@ class WriteReadTest extends FhirSpecification {
 
         then:
         new FhirId(fid) == locationHeader
-    }
-
-
-    String mkUrl() {
-        "http://localhost:${remoteToolkitPort}/xdstools2/fsim/${simId}/Patient"
     }
 
     def patient = '''

@@ -1,11 +1,11 @@
 package gov.nist.toolkit.simulators.sim.reg.store;
 
-import gov.nist.toolkit.actorfactory.SimDb;
-import gov.nist.toolkit.actorfactory.client.NoSimException;
-import gov.nist.toolkit.actorfactory.client.SimId;
-import gov.nist.toolkit.actorfactory.client.SimulatorStats;
 import gov.nist.toolkit.actortransaction.client.ActorType;
 import gov.nist.toolkit.registrymetadata.Metadata;
+import gov.nist.toolkit.simcommon.client.NoSimException;
+import gov.nist.toolkit.simcommon.client.SimId;
+import gov.nist.toolkit.simcommon.client.SimulatorStats;
+import gov.nist.toolkit.simcommon.server.SimDb;
 import gov.nist.toolkit.valsupport.registry.RegistryValidationInterface;
 import org.apache.axiom.om.OMElement;
 import org.apache.log4j.Logger;

@@ -4,12 +4,6 @@
 package gov.nist.toolkit.simulators.servlet;
 
 import edu.wustl.mir.erl.ihe.xdsi.util.Utility;
-import gov.nist.toolkit.actorfactory.GenericSimulatorFactory;
-import gov.nist.toolkit.actorfactory.RuntimeManager;
-import gov.nist.toolkit.actorfactory.SimDb;
-import gov.nist.toolkit.actorfactory.client.BadSimIdException;
-import gov.nist.toolkit.actorfactory.client.SimId;
-import gov.nist.toolkit.actorfactory.client.SimulatorConfig;
 import gov.nist.toolkit.actortransaction.client.ATFactory;
 import gov.nist.toolkit.configDatatypes.SimulatorProperties;
 import gov.nist.toolkit.configDatatypes.client.TransactionType;
@@ -19,7 +13,13 @@ import gov.nist.toolkit.http.HttpHeader;
 import gov.nist.toolkit.http.HttpHeader.HttpHeaderParseException;
 import gov.nist.toolkit.http.ParseException;
 import gov.nist.toolkit.installation.Installation;
+import gov.nist.toolkit.simcommon.client.BadSimIdException;
+import gov.nist.toolkit.simcommon.client.SimId;
+import gov.nist.toolkit.simcommon.client.SimulatorConfig;
 import gov.nist.toolkit.simcommon.client.config.SimulatorConfigElement;
+import gov.nist.toolkit.simcommon.server.GenericSimulatorFactory;
+import gov.nist.toolkit.simcommon.server.RuntimeManager;
+import gov.nist.toolkit.simcommon.server.SimDb;
 import gov.nist.toolkit.simulators.support.BaseHttpActorSimulator;
 import gov.nist.toolkit.simulators.support.SimCommon;
 import gov.nist.toolkit.utilities.io.Io;

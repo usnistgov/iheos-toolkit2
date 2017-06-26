@@ -4,6 +4,7 @@ import ca.uhn.fhir.model.primitive.IdDt
 import ca.uhn.fhir.model.primitive.InstantDt
 import ca.uhn.fhir.rest.annotation.*
 import ca.uhn.fhir.rest.api.MethodOutcome
+import ca.uhn.fhir.rest.method.RequestDetails
 import ca.uhn.fhir.rest.param.StringParam
 import ca.uhn.fhir.rest.server.IResourceProvider
 import ca.uhn.fhir.rest.server.exceptions.InternalErrorException
@@ -37,6 +38,7 @@ public class PatientResourceProvider implements IResourceProvider {
 
     @Create()
     public MethodOutcome createPatient(@ResourceParam Patient thePatient,
+                                       RequestDetails requestDetails,
                                        HttpServletRequest theRequest,
                                        HttpServletResponse theResponse) {
         println '***************************'

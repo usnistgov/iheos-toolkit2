@@ -2,8 +2,7 @@ package gov.nist.toolkit.xdstools2.client.tabs.simulatorControlTab;
 
 
 import com.google.gwt.user.client.ui.FlowPanel;
-import gov.nist.toolkit.actorfactory.client.SimulatorConfig;
-
+import gov.nist.toolkit.simcommon.client.SimulatorConfig;
 
 
 /**

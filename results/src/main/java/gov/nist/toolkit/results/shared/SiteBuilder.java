@@ -1,8 +1,8 @@
 package gov.nist.toolkit.results.shared;
 
-import gov.nist.toolkit.actorfactory.SiteServiceManager;
-import gov.nist.toolkit.actorfactory.client.SimId;
 import gov.nist.toolkit.actortransaction.client.ActorType;
+import gov.nist.toolkit.simcommon.client.SimId;
+import gov.nist.toolkit.simcommon.server.SiteServiceManager;
 import gov.nist.toolkit.sitemanagement.client.Site;
 import gov.nist.toolkit.sitemanagement.client.SiteSpec;
 

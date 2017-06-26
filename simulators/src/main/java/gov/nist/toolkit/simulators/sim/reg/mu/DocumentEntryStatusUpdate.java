@@ -1,9 +1,9 @@
 package gov.nist.toolkit.simulators.sim.reg.mu;
 
-import gov.nist.toolkit.actorfactory.client.SimulatorConfig;
 import gov.nist.toolkit.errorrecording.ErrorRecorder;
 import gov.nist.toolkit.errorrecording.client.XdsErrorCode.Code;
 import gov.nist.toolkit.registrymetadata.Metadata;
+import gov.nist.toolkit.simcommon.client.SimulatorConfig;
 import gov.nist.toolkit.simulators.sim.reg.RegRSim;
 import gov.nist.toolkit.simulators.sim.reg.store.DocEntry;
 import gov.nist.toolkit.simulators.sim.reg.store.RegIndex;
@@ -11,7 +11,6 @@ import gov.nist.toolkit.simulators.sim.reg.store.StatusValue;
 import gov.nist.toolkit.simulators.support.DsSimCommon;
 import gov.nist.toolkit.simulators.support.SimCommon;
 import gov.nist.toolkit.valsupport.client.ValidationContext.MetadataPattern;
-
 import org.apache.axiom.om.OMElement;
 
 public class DocumentEntryStatusUpdate extends RegRSim {

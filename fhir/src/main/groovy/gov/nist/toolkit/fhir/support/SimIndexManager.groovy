@@ -1,6 +1,7 @@
 package gov.nist.toolkit.fhir.support
 
-import gov.nist.toolkit.actorfactory.client.SimId
+import gov.nist.toolkit.simcommon.client.SimId
+
 
 /**
  *
@@ -10,7 +11,7 @@ class SimIndexManager {
      * Each SimIndexer manages a single Lucene IndexWriter instance for
      * each simulator.
      */
-    static private Map<SimId, SimIndexer> indexers = [ : ]
+    static private Map<SimId, SimIndexer> indexers = [: ]
 
     static SimIndexer getIndexer(SimId simId) {
         SimIndexer si = indexers[simId]

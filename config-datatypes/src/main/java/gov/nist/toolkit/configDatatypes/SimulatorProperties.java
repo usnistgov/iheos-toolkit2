@@ -325,4 +325,8 @@ public class SimulatorProperties {
      * Requires admin to edit config.  While locked no updating transactions are permitted
      */
     public static final String locked = "Locked";
+
+    public static final String fhirEndpoint = "FHIR Endpoint";
+
+    public static final String fhirTlsEndpoint = "FHIR TLS Endpoint";
 }

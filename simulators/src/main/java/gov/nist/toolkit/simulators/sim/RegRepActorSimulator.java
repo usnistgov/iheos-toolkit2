@@ -1,8 +1,8 @@
 package gov.nist.toolkit.simulators.sim;
 
-import gov.nist.toolkit.actorfactory.client.SimulatorConfig;
 import gov.nist.toolkit.configDatatypes.client.TransactionType;
 import gov.nist.toolkit.errorrecording.GwtErrorRecorderBuilder;
+import gov.nist.toolkit.simcommon.client.SimulatorConfig;
 import gov.nist.toolkit.simulators.sim.reg.RegistryActorSimulator;
 import gov.nist.toolkit.simulators.sim.reg.RegistryResponseGeneratorSim;
 import gov.nist.toolkit.simulators.sim.reg.SoapWrapperRegistryResponseSim;

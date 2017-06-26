@@ -2,12 +2,12 @@ package gov.nist.toolkit.itTests.fhir
 
 import ca.uhn.fhir.context.FhirContext
 import ca.uhn.fhir.parser.IParser
-import gov.nist.toolkit.actorfactory.client.SimId
-import gov.nist.toolkit.fhir.support.ResDb
 import gov.nist.toolkit.fhir.support.SimIndexManager
 import gov.nist.toolkit.installation.Installation
 import gov.nist.toolkit.itTests.support.FhirId
 import gov.nist.toolkit.itTests.support.FhirSpecification
+import gov.nist.toolkit.simcommon.client.SimId
+import gov.nist.toolkit.simcommon.server.SimDb
 import org.apache.http.message.BasicStatusLine
 import org.hl7.fhir.dstu3.model.Bundle
 import org.hl7.fhir.dstu3.model.OperationOutcome
@@ -23,11 +23,11 @@ class PatientQueryByNameTest extends FhirSpecification {
     @Shared FhirContext ourCtx = FhirContext.forDstu3()
 
     def setupSpec() {
-        ResDb.delete(simId)
+        SimDb.fdelete(simId)
 
         startGrizzly('8889')   // sets up Grizzly server on remoteToolkitPort
 
-        new ResDb().mkSim(simId)
+        new SimDb().mkfSim(simId)
     }
 
     def cleanupSpec() {

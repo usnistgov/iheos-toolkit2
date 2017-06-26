@@ -1,9 +1,9 @@
 package gov.nist.toolkit.fhir.support
 
-import gov.nist.toolkit.actorfactory.SimDb
-import gov.nist.toolkit.actorfactory.client.SimId
 import gov.nist.toolkit.actortransaction.client.ActorType
 import gov.nist.toolkit.configDatatypes.client.TransactionType
+import gov.nist.toolkit.simcommon.client.SimId
+import gov.nist.toolkit.simcommon.server.SimDb
 
 import java.util.regex.Pattern
 
@@ -25,7 +25,7 @@ class SimResource {
 
     SimResource(ActorType actorType, TransactionType transactionType, String event, String filename) {
         actor = actorType ? actorType.shortName : ResDb.BASE_TYPE
-        transaction = transactionType ? transactionType.shortName : ResDb.STORE_TRANSACTION
+        transaction = transactionType ? transactionType.shortName : ResDb.ANY_TRANSACTION
         this.event = event
         this.filename = filename
     }

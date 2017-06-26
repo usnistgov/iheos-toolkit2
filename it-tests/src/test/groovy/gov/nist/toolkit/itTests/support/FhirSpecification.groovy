@@ -2,6 +2,7 @@ package gov.nist.toolkit.itTests.support
 
 import gov.nist.toolkit.grizzlySupport.GrizzlyController
 import gov.nist.toolkit.installation.Installation
+import gov.nist.toolkit.simcommon.client.SimId
 import gov.nist.toolkit.utilities.io.Io
 import org.apache.http.HttpEntity
 import org.apache.http.HttpResponse
@@ -26,6 +27,9 @@ class FhirSpecification extends ToolkitSpecification {
         Installation.instance().overrideToolkitPort(remoteToolkitPort)  // ignore toolkit.properties
     }
 
+    String baseURL() { "http://localhost:${remoteToolkitPort}/xdstools2/fsim/"}
+
+    String baseURL(SimId simId) { "${baseURL()}${simId.toString()}/"}
 
     def post(def uri,  def _body) {
         HttpClient httpclient = HttpClients.createDefault()
@@ -52,7 +56,6 @@ class FhirSpecification extends ToolkitSpecification {
         } finally {
             response.close()
         }
-        return null
     }
 
     def get(def uri) {

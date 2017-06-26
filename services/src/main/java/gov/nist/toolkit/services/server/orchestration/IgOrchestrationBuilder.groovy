@@ -1,22 +1,20 @@
 package gov.nist.toolkit.services.server.orchestration
 
-import gov.nist.toolkit.actorfactory.SimCache
-import gov.nist.toolkit.actorfactory.client.SimId
-import gov.nist.toolkit.actorfactory.client.SimulatorConfig
 import gov.nist.toolkit.actortransaction.client.ActorType
 import gov.nist.toolkit.configDatatypes.SimulatorProperties
 import gov.nist.toolkit.configDatatypes.client.*
-import gov.nist.toolkit.installation.Installation
 import gov.nist.toolkit.results.client.TestInstance
 import gov.nist.toolkit.results.shared.SiteBuilder
 import gov.nist.toolkit.services.client.*
 import gov.nist.toolkit.services.server.RawResponseBuilder
 import gov.nist.toolkit.services.server.ToolkitApi
 import gov.nist.toolkit.session.server.Session
+import gov.nist.toolkit.simcommon.client.SimId
+import gov.nist.toolkit.simcommon.client.SimulatorConfig
 import gov.nist.toolkit.simcommon.client.config.SimulatorConfigElement
+import gov.nist.toolkit.simcommon.server.SimCache
 import gov.nist.toolkit.sitemanagement.client.Site
 import groovy.transform.TypeChecked
-
 /**
  * Build environment for testing Initiating Gateway SUT.
  *
@@ -198,11 +196,6 @@ class IgOrchestrationBuilder {
             rgSimConfig2 = api.createSimulator(rgSimId2).getConfig(0)
         }
 
-
-        // this expects full server version of simulator config
-        // this call makes the configuration available as a site for the test client
-        SimCache.addToSession(Installation.defaultSessionName(), rgSimConfig1)
-        SimCache.addToSession(Installation.defaultSessionName(), rgSimConfig2)
 
         SimulatorConfigElement rgEle
 

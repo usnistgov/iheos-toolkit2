@@ -3,14 +3,16 @@
  */
 package gov.nist.toolkit.services.server.orchestration;
 
-import gov.nist.toolkit.actorfactory.client.SimId;
-import gov.nist.toolkit.actorfactory.client.SimulatorConfig;
 import gov.nist.toolkit.actortransaction.client.ActorType;
 import gov.nist.toolkit.configDatatypes.SimulatorProperties;
-import gov.nist.toolkit.services.client.*;
+import gov.nist.toolkit.services.client.RSNAEdgeOrchestrationRequest;
+import gov.nist.toolkit.services.client.RSNAEdgeOrchestrationResponse;
+import gov.nist.toolkit.services.client.RawResponse;
 import gov.nist.toolkit.services.server.RawResponseBuilder;
 import gov.nist.toolkit.services.server.ToolkitApi;
 import gov.nist.toolkit.session.server.Session;
+import gov.nist.toolkit.simcommon.client.SimId;
+import gov.nist.toolkit.simcommon.client.SimulatorConfig;
 import gov.nist.toolkit.simcommon.client.config.SimulatorConfigElement;
 import org.apache.log4j.Logger;
 

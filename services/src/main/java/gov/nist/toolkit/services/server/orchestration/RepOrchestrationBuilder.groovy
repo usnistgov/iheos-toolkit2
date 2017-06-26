@@ -1,8 +1,5 @@
 package gov.nist.toolkit.services.server.orchestration
 
-import gov.nist.toolkit.actorfactory.SimCache
-import gov.nist.toolkit.actorfactory.client.SimId
-import gov.nist.toolkit.actorfactory.client.SimulatorConfig
 import gov.nist.toolkit.actortransaction.client.ActorType
 import gov.nist.toolkit.configDatatypes.SimulatorProperties
 import gov.nist.toolkit.configDatatypes.client.Pid
@@ -13,9 +10,13 @@ import gov.nist.toolkit.services.client.RepOrchestrationResponse
 import gov.nist.toolkit.services.server.RawResponseBuilder
 import gov.nist.toolkit.services.server.ToolkitApi
 import gov.nist.toolkit.session.server.Session
+import gov.nist.toolkit.simcommon.client.SimId
+import gov.nist.toolkit.simcommon.client.SimulatorConfig
 import gov.nist.toolkit.simcommon.client.config.SimulatorConfigElement
+import gov.nist.toolkit.simcommon.server.SimCache
 import gov.nist.toolkit.sitemanagement.client.Site
 import groovy.transform.TypeChecked
+
 /**
  * Build orchestration for testing a Repository.
  * A Registry sim is built and configured to not validate Register transactions against PIF.

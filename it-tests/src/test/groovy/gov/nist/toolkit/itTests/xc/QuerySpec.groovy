@@ -1,12 +1,9 @@
 package gov.nist.toolkit.itTests.xc
 
-import gov.nist.toolkit.actorfactory.SimCache
-import gov.nist.toolkit.actorfactory.client.SimulatorConfig
 import gov.nist.toolkit.actortransaction.client.ActorType
 import gov.nist.toolkit.commondatatypes.MetadataSupport
 import gov.nist.toolkit.configDatatypes.SimulatorActorType
 import gov.nist.toolkit.configDatatypes.SimulatorProperties
-import gov.nist.toolkit.installation.Installation
 import gov.nist.toolkit.itTests.support.ToolkitSpecification
 import gov.nist.toolkit.registrymetadata.client.MetadataCollection
 import gov.nist.toolkit.registrymetadata.client.Uid
@@ -16,8 +13,9 @@ import gov.nist.toolkit.registrymsg.repository.RetrievedDocumentModel
 import gov.nist.toolkit.registrymsg.repository.RetrievedDocumentsModel
 import gov.nist.toolkit.results.client.CodesConfiguration
 import gov.nist.toolkit.results.client.Result
-import gov.nist.toolkit.sitemanagement.client.SiteSpec
 import gov.nist.toolkit.results.client.TestInstance
+import gov.nist.toolkit.simcommon.client.SimulatorConfig
+import gov.nist.toolkit.sitemanagement.client.SiteSpec
 import gov.nist.toolkit.toolkitApi.BasicSimParameters
 import gov.nist.toolkit.toolkitApi.SimulatorBuilder
 import gov.nist.toolkit.toolkitServices.ToolkitFactory
@@ -105,7 +103,6 @@ class QuerySpec extends ToolkitSpecification {
         SimulatorConfig rgSimConfig = ToolkitFactory.asSimulatorConfig(RGConfig)
         println "local simconfig"
         println 'local rg site\n' + rgSimConfig.toString()
-        SimCache.addToSession(Installation.defaultSessionName(), rgSimConfig)
 
         and: 'Submit one Document to Rep/Reg behind RG'
 //        String testSession = testSession;  // use default
@@ -166,7 +163,6 @@ class QuerySpec extends ToolkitSpecification {
         when: 'send FindDocuments stored query to IG'
         println 'STEP - SEND FIND DOCUMENTS TO IG'
         SimulatorConfig igSimConfig = ToolkitFactory.asSimulatorConfig(updatedIGConfig)
-        SimCache.getSimManagerForSession(Installation.defaultSessionName(), true).addSimConfig(igSimConfig)
         println 'Site names ' + api.getSiteNames(true)
         def site = new SiteSpec(String.format('%s__%s', IGParams.user, IGParams.id), ActorType.INITIATING_GATEWAY, null)
         Map<String, List<String>> selectedCodes = new HashMap<>()

@@ -1,7 +1,7 @@
 package gov.nist.toolkit.services.server.orchestration
 
 import gov.nist.toolkit.actorfactory.PatientIdentityFeedServlet
-import gov.nist.toolkit.actorfactory.SimDb
+import gov.nist.toolkit.simcommon.server.SimDb
 import gov.nist.toolkit.installation.ExternalCacheManager
 import gov.nist.toolkit.installation.Installation
 import gov.nist.toolkit.services.client.IgOrchestrationRequest
@@ -28,7 +28,7 @@ class IgTestBuilderSpec extends Specification {
     }
 
     def setup() {
-        SimDb.deleteAllSims()
+        new SimDb().deleteAllSims()
 //        SimDb.deleteSims(new SimDb().getSimIdsForUser(user))
     }
 

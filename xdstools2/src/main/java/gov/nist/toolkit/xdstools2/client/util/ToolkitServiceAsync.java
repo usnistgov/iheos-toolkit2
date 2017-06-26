@@ -1,10 +1,6 @@
 package gov.nist.toolkit.xdstools2.client.util;
 
 import com.google.gwt.user.client.rpc.AsyncCallback;
-import gov.nist.toolkit.actorfactory.client.SimId;
-import gov.nist.toolkit.actorfactory.client.Simulator;
-import gov.nist.toolkit.actorfactory.client.SimulatorConfig;
-import gov.nist.toolkit.actorfactory.client.SimulatorStats;
 import gov.nist.toolkit.actortransaction.client.TransactionInstance;
 import gov.nist.toolkit.configDatatypes.client.Pid;
 import gov.nist.toolkit.interactionmodel.client.InteractingEntity;
@@ -16,6 +12,9 @@ import gov.nist.toolkit.services.shared.Message;
 import gov.nist.toolkit.session.client.ConformanceSessionValidationStatus;
 import gov.nist.toolkit.session.client.logtypes.TestOverviewDTO;
 import gov.nist.toolkit.session.client.logtypes.TestPartFileDTO;
+import gov.nist.toolkit.simcommon.client.Simulator;
+import gov.nist.toolkit.simcommon.client.SimulatorConfig;
+import gov.nist.toolkit.simcommon.client.SimulatorStats;
 import gov.nist.toolkit.sitemanagement.client.Site;
 import gov.nist.toolkit.sitemanagement.client.TransactionOfferings;
 import gov.nist.toolkit.testenginelogging.client.LogFileContentDTO;
@@ -162,7 +161,7 @@ public interface ToolkitServiceAsync {
     void getAllSimConfigs(GetAllSimConfigsRequest user, AsyncCallback<List<SimulatorConfig>> callback);
     void putSimConfig(SimConfigRequest request, AsyncCallback<String> callback);
     void deleteConfig(SimConfigRequest request, AsyncCallback<String> callback);
-    void getActorSimulatorNameMap(CommandContext context,AsyncCallback<Map<String, SimId>> callback);
+    void getActorSimulatorNameMap(CommandContext context,AsyncCallback<List<String>> callback);
     //	void getSimulatorTransactionNames(String simid, AsyncCallback<List<String>> notify);
     void removeOldSimulators(CommandContext context,AsyncCallback<Integer> callback);
     void getSimulatorStats(GetSimulatorStatsRequest request, AsyncCallback<List<SimulatorStats>> callback);
