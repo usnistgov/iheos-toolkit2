@@ -1,13 +1,13 @@
 package gov.nist.toolkit.session.server.testlog;
 
-import gov.nist.toolkit.actorfactory.client.SimId;
 import gov.nist.toolkit.common.datatypes.Hl7Date;
 import gov.nist.toolkit.configDatatypes.client.Pid;
 import gov.nist.toolkit.configDatatypes.client.TransactionType;
+import gov.nist.toolkit.session.client.logtypes.BasicTestOverview;
 import gov.nist.toolkit.session.client.logtypes.SectionOverviewDTO;
 import gov.nist.toolkit.session.client.logtypes.StepOverviewDTO;
 import gov.nist.toolkit.session.client.logtypes.TestOverviewDTO;
-import gov.nist.toolkit.session.client.logtypes.BasicTestOverview;
+import gov.nist.toolkit.simcommon.client.SimId;
 import gov.nist.toolkit.testengine.engine.SimulatorTransaction;
 import gov.nist.toolkit.testengine.engine.TransactionStatus;
 import gov.nist.toolkit.utilities.xml.Util;

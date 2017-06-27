@@ -1,6 +1,7 @@
 package gov.nist.toolkit.registrymetadata;
 
 import gov.nist.toolkit.commondatatypes.MetadataSupport;
+import gov.nist.toolkit.utilities.id.UuidAllocator;
 import gov.nist.toolkit.xdsexception.client.XdsInternalException;
 
 import java.util.ArrayList;

@@ -1,13 +1,13 @@
 package gov.nist.toolkit.simulators.sim.cons
 
+import gov.nist.toolkit.commondatatypes.MetadataSupport
 import gov.nist.toolkit.configDatatypes.SimulatorProperties
-import gov.nist.toolkit.actorfactory.client.SimulatorConfig
 import gov.nist.toolkit.configDatatypes.client.TransactionType
 import gov.nist.toolkit.registrymsg.repository.RetrieveItemRequestModel
 import gov.nist.toolkit.registrymsg.repository.RetrieveRequestModel
 import gov.nist.toolkit.registrymsg.repository.RetrievedDocumentModel
 import gov.nist.toolkit.registrymsg.repository.RetrievedDocumentsModel
-import gov.nist.toolkit.commondatatypes.MetadataSupport
+import gov.nist.toolkit.simcommon.client.SimulatorConfig
 import gov.nist.toolkit.simulators.support.BaseDsActorSimulator
 import gov.nist.toolkit.soap.axis2.Soap
 import gov.nist.toolkit.testengine.engine.RetrieveB
@@ -17,6 +17,7 @@ import gov.nist.toolkit.valsupport.engine.MessageValidatorEngine
 import groovy.transform.TypeChecked
 import org.apache.axiom.om.OMElement
 import org.apache.log4j.Logger
+
 /**
  *
  */

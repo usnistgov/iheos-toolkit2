@@ -3,13 +3,12 @@
  */
 package edu.wustl.mir.erl.ihe.xdsi.util;
 
-import gov.nist.toolkit.actorfactory.client.SimId;
 import gov.nist.toolkit.installation.Installation;
 import gov.nist.toolkit.installation.PropertyManager;
 import gov.nist.toolkit.installation.PropertyServiceManager;
+import gov.nist.toolkit.simcommon.client.SimId;
 import gov.nist.toolkit.testengine.engine.SimulatorTransaction;
 import gov.nist.toolkit.utilities.xml.XmlUtil;
-
 import org.apache.axiom.om.OMElement;
 import org.apache.commons.codec.Charsets;
 import org.apache.commons.io.FileUtils;

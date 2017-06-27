@@ -1,11 +1,11 @@
 package gov.nist.toolkit.simulators.sim.reg.store;
 
-import gov.nist.toolkit.actorfactory.DbObjectType;
+import gov.nist.toolkit.simcommon.server.DbObjectType;
 import gov.nist.toolkit.errorrecording.ErrorRecorder;
 import gov.nist.toolkit.errorrecording.client.XdsErrorCode.Code;
 import gov.nist.toolkit.registrymetadata.Metadata;
 import gov.nist.toolkit.registrymetadata.MetadataParser;
-import gov.nist.toolkit.registrymetadata.UuidAllocator;
+import gov.nist.toolkit.utilities.id.UuidAllocator;
 import gov.nist.toolkit.commondatatypes.MetadataSupport;
 import gov.nist.toolkit.simulators.sim.reg.store.RegIndex.AssocType;
 import gov.nist.toolkit.utilities.io.Io;

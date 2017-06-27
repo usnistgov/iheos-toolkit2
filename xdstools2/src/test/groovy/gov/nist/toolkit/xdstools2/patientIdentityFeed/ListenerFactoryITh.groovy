@@ -1,16 +1,18 @@
 package gov.nist.toolkit.xdstools2.patientIdentityFeed
+
 import gov.nist.toolkit.actorfactory.PifHandler
-import gov.nist.toolkit.actorfactory.SimDb
-import gov.nist.toolkit.configDatatypes.client.Pid
-import gov.nist.toolkit.configDatatypes.client.PidBuilder
-import gov.nist.toolkit.actorfactory.client.SimId
 import gov.nist.toolkit.actortransaction.client.ActorType
 import gov.nist.toolkit.adt.AdtSender
 import gov.nist.toolkit.adt.ListenerFactory
 import gov.nist.toolkit.adt.ThreadPoolItem
+import gov.nist.toolkit.configDatatypes.client.Pid
+import gov.nist.toolkit.configDatatypes.client.PidBuilder
 import gov.nist.toolkit.services.server.UnitTestEnvironmentManager
+import gov.nist.toolkit.simcommon.client.SimId
+import gov.nist.toolkit.simcommon.server.SimDb
 import org.apache.log4j.Logger
 import spock.lang.Specification
+
 /**
  * Created by bill on 9/2/15.
  */

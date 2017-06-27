@@ -1,14 +1,13 @@
 package gov.nist.toolkit.toolkitServices;
 
-import org.apache.log4j.Logger;
-
-import gov.nist.toolkit.actorfactory.client.SimulatorConfig;
 import gov.nist.toolkit.actortransaction.client.ParamType;
+import gov.nist.toolkit.simcommon.client.SimulatorConfig;
 import gov.nist.toolkit.simcommon.client.config.SimulatorConfigElement;
 import gov.nist.toolkit.toolkitServicesCommon.SimConfig;
 import gov.nist.toolkit.toolkitServicesCommon.SimId;
 import gov.nist.toolkit.toolkitServicesCommon.resource.SimConfigResource;
 import gov.nist.toolkit.toolkitServicesCommon.resource.SimIdResource;
+import org.apache.log4j.Logger;
 
 /**
  * Not for public use.
@@ -17,11 +16,11 @@ import gov.nist.toolkit.toolkitServicesCommon.resource.SimIdResource;
 public class ToolkitFactory {
     static Logger logger = Logger.getLogger(ToolkitFactory.class);
 
-    static public gov.nist.toolkit.actorfactory.client.SimId asServerSimId(SimId simId) {
-        return new gov.nist.toolkit.actorfactory.client.SimId(simId.getUser(), simId.getId(), simId.getActorType(), simId.getEnvironmentName());
+    static public gov.nist.toolkit.simcommon.client.SimId asServerSimId(SimId simId) {
+        return new gov.nist.toolkit.simcommon.client.SimId(simId.getUser(), simId.getId(), simId.getActorType(), simId.getEnvironmentName());
     }
 
-    static public SimIdResource asSimIdBean(gov.nist.toolkit.actorfactory.client.SimId simId) {
+    static public SimIdResource asSimIdBean(gov.nist.toolkit.simcommon.client.SimId simId) {
         SimIdResource bean = new SimIdResource();
         bean.setId(simId.getId());
         bean.setUser(simId.getUser());
@@ -50,7 +49,7 @@ public class ToolkitFactory {
 
     static public SimulatorConfig asSimulatorConfig(SimConfig res) {
         SimulatorConfig config = new SimulatorConfig();
-        config.setId(new gov.nist.toolkit.actorfactory.client.SimId(res.getFullId()));
+        config.setId(new gov.nist.toolkit.simcommon.client.SimId(res.getFullId()));
         config.setActorType(res.getActorType());
 
         for (String propName : res.getPropertyNames()) {

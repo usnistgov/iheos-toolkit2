@@ -1,8 +1,5 @@
 package gov.nist.toolkit.services.server.orchestration
 
-import gov.nist.toolkit.actorfactory.SimCache
-import gov.nist.toolkit.actorfactory.client.SimId
-import gov.nist.toolkit.actorfactory.client.SimulatorConfig
 import gov.nist.toolkit.actortransaction.client.ActorType
 import gov.nist.toolkit.configDatatypes.SimulatorProperties
 import gov.nist.toolkit.configDatatypes.client.Pid
@@ -11,19 +8,16 @@ import gov.nist.toolkit.configDatatypes.client.TransactionType
 import gov.nist.toolkit.installation.Installation
 import gov.nist.toolkit.results.client.TestInstance
 import gov.nist.toolkit.results.shared.SiteBuilder
-import gov.nist.toolkit.services.client.MessageItem
-import gov.nist.toolkit.services.client.PifType
-import gov.nist.toolkit.services.client.RawResponse
-import gov.nist.toolkit.services.client.RgOrchestrationRequest
-import gov.nist.toolkit.services.client.RgOrchestrationResponse
+import gov.nist.toolkit.services.client.*
 import gov.nist.toolkit.services.server.RawResponseBuilder
 import gov.nist.toolkit.services.server.ToolkitApi
 import gov.nist.toolkit.session.server.Session
+import gov.nist.toolkit.simcommon.client.SimId
+import gov.nist.toolkit.simcommon.client.SimulatorConfig
 import gov.nist.toolkit.simcommon.client.config.SimulatorConfigElement
 import gov.nist.toolkit.sitemanagement.client.Site
 import gov.nist.toolkit.sitemanagement.client.SiteSpec
 import groovy.transform.TypeChecked
-
 /**
  * Build environment for testing Responding Gateway SUT.
  */
@@ -144,10 +138,6 @@ class RgOrchestrationBuilder {
                     response.regrepConfig = supportSimConfig;
                     home = rrSite.homeId
                 }
-
-
-                if (supportSimConfig)
-                    SimCache.addToSession(Installation.defaultSessionName(), supportSimConfig)
 
                 TestInstance testInstance12318 = new TestInstance('12318')
                 MessageItem item12318 = response.addMessage(testInstance12318, true, "")

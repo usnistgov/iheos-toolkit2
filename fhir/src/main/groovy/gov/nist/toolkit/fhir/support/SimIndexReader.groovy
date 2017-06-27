@@ -1,15 +1,11 @@
 package gov.nist.toolkit.fhir.support
 
-import gov.nist.toolkit.actorfactory.client.NoSimException
-import gov.nist.toolkit.actorfactory.client.SimId
+import gov.nist.toolkit.simcommon.client.NoSimException
+import gov.nist.toolkit.simcommon.client.SimId
+import gov.nist.toolkit.simcommon.server.SimDb
 import org.apache.lucene.document.Document
 import org.apache.lucene.index.Term
-import org.apache.lucene.search.BooleanClause
-import org.apache.lucene.search.BooleanQuery
-import org.apache.lucene.search.IndexSearcher
-import org.apache.lucene.search.ScoreDoc
-import org.apache.lucene.search.TermQuery
-import org.apache.lucene.search.TopDocs
+import org.apache.lucene.search.*
 
 /**
  * This does READONLY things on a sim index - like search
@@ -31,7 +27,7 @@ class SimIndexReader {
      * @return
      */
     private initIndexFile() {
-        if (!new ResDb(simId).isSim())
+        if (!new SimDb(simId).isSim())
             throw new NoSimException('Sim ${simId} does not exist')
         indexFile = ResDb.getIndexFile(simId)
         indexer = new ResDbIndexer(indexFile)

@@ -3,13 +3,13 @@
  */
 package gov.nist.toolkit.simulators.support;
 
-import java.io.IOException;
-
-import gov.nist.toolkit.actorfactory.BaseActorSimulator;
-import gov.nist.toolkit.actorfactory.client.SimulatorConfig;
 import gov.nist.toolkit.configDatatypes.client.TransactionType;
 import gov.nist.toolkit.errorrecording.ErrorRecorder;
+import gov.nist.toolkit.simcommon.client.SimulatorConfig;
+import gov.nist.toolkit.simcommon.server.BaseActorSimulator;
 import gov.nist.toolkit.valsupport.engine.MessageValidatorEngine;
+
+import java.io.IOException;
 
 /**
  * Base class for all Http (only) server simulators

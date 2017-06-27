@@ -1,6 +1,6 @@
 package gov.nist.toolkit.fhir.servlet
 
-import gov.nist.toolkit.actorfactory.client.SimId
+import gov.nist.toolkit.simcommon.client.SimId
 
 import javax.servlet.http.HttpServletRequest
 /**
@@ -25,6 +25,6 @@ class HttpRequestParser {
 
         String simId = uri.substring(simIdStart, simIdEnd);
 
-        return new SimId(simId)
+        return new SimId(simId).forFhir()
     }
 }

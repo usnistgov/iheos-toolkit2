@@ -1,9 +1,10 @@
 package gov.nist.toolkit.fhir.support
 
-import gov.nist.toolkit.actorfactory.client.NoSimException
-import gov.nist.toolkit.actorfactory.client.SimId
 import gov.nist.toolkit.fhir.context.ToolkitFhirContext
 import gov.nist.toolkit.fhir.resourceIndexer.IResourceIndexer
+import gov.nist.toolkit.simcommon.client.NoSimException
+import gov.nist.toolkit.simcommon.client.SimId
+import gov.nist.toolkit.simcommon.server.SimDb
 import org.apache.lucene.search.IndexSearcher
 import org.hl7.fhir.dstu3.model.DomainResource
 
@@ -13,15 +14,27 @@ import org.hl7.fhir.dstu3.model.DomainResource
 public class SimContext {
     private SimId simId = null
     private Event event = null
-    private ResDb resDb = null
+    private SimDb simDb = null
     // all the resources added in a transaction (aka a SimContext instance)
     ResourceIndexSet resourceIndexSet = new ResourceIndexSet()
 
    // IndexSearcher indexSearcher = null   // referenced by various search utilities
 
+    /**
+     * this is usable only for tests
+     * production code must use other constructor or two events will
+     * be created for each transaction
+     * @param _simId
+     */
     SimContext(SimId _simId) {
         simId = _simId
         init()
+    }
+
+    SimContext(SimDb _simDb) {
+        simDb = _simDb
+        simId = simDb.simId
+        event = new Event(simDb.getEventDir())
     }
 
     SimId getSimId() {
@@ -37,10 +50,12 @@ public class SimContext {
      * @return
      */
     private init() {
-        if (!new ResDb(simId).isSim())
-            throw new NoSimException('Sim ${simId} does not exist')
-        resDb = new ResDb(simId, ResDb.BASE_TYPE, ResDb.STORE_TRANSACTION /* this is a stretch */)
-        event = new Event(resDb.getEventDir())
+        if (!simDb) {  // this triggers if SimContext(SimId) was used - testing only
+            if (!new SimDb(simId).isSim())
+                throw new NoSimException("Sim ${simId} does not exist")
+            simDb = new SimDb(simId, SimDb.BASE_TYPE, SimDb.ANY_TRANSACTION /* this is a stretch */)
+            event = new Event(simDb.getEventDir())
+        }
     }
 
     /**
@@ -51,7 +66,7 @@ public class SimContext {
      * @param resourceString - resource as JSON string
      */
     File store(String resourceType, DomainResource theResource, String id) {
-        File resourceFile = resDb.storeNewResource(resourceType,
+        File resourceFile = simDb.storeNewResource(resourceType,
                 ToolkitFhirContext.get().newJsonParser().encodeResourceToString(theResource),
                 id)
         return resourceFile

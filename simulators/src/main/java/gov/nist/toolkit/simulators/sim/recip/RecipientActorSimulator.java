@@ -1,9 +1,9 @@
 package gov.nist.toolkit.simulators.sim.recip;
 
-import gov.nist.toolkit.actorfactory.SimDb;
-import gov.nist.toolkit.actorfactory.client.SimulatorConfig;
 import gov.nist.toolkit.configDatatypes.client.TransactionType;
 import gov.nist.toolkit.errorrecording.GwtErrorRecorderBuilder;
+import gov.nist.toolkit.simcommon.client.SimulatorConfig;
+import gov.nist.toolkit.simcommon.server.SimDb;
 import gov.nist.toolkit.simulators.sim.reg.RegistryResponseGeneratorSim;
 import gov.nist.toolkit.simulators.sim.reg.SoapWrapperRegistryResponseSim;
 import gov.nist.toolkit.simulators.support.BaseDsActorSimulator;
@@ -48,9 +48,9 @@ public class RecipientActorSimulator extends BaseDsActorSimulator {
 			common.vc.hasHttp = true;
 			common.vc.hasSoap = true;
 			
-			if (getSimulatorConfig().getValidationContext()  != null) {
-				common.vc.addInnerContext(getSimulatorConfig().getValidationContext());
-			}
+//			if (getSimulatorConfig().getValidationContext()  != null) {
+//				common.vc.addInnerContext(getSimulatorConfig().getValidationContext());
+//			}
 			
 			if (!dsSimCommon.runInitialValidationsAndFaultIfNecessary())
 				return false;

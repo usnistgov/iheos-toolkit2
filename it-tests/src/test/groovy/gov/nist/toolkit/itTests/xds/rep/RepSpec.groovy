@@ -1,8 +1,5 @@
 package gov.nist.toolkit.itTests.xds.rep
 
-import gov.nist.toolkit.actorfactory.SimManager
-import gov.nist.toolkit.actorfactory.client.SimId
-import gov.nist.toolkit.actorfactory.client.SimulatorConfig
 import gov.nist.toolkit.adt.ListenerFactory
 import gov.nist.toolkit.configDatatypes.SimulatorActorType
 import gov.nist.toolkit.configDatatypes.SimulatorProperties
@@ -13,6 +10,9 @@ import gov.nist.toolkit.services.client.RepOrchestrationRequest
 import gov.nist.toolkit.services.client.RepOrchestrationResponse
 import gov.nist.toolkit.services.server.orchestration.RepOrchestrationBuilder
 import gov.nist.toolkit.session.client.logtypes.TestOverviewDTO
+import gov.nist.toolkit.simcommon.client.SimId
+import gov.nist.toolkit.simcommon.client.SimulatorConfig
+import gov.nist.toolkit.simcommon.server.SimManager
 import gov.nist.toolkit.sitemanagement.Sites
 import gov.nist.toolkit.sitemanagement.client.Site
 import gov.nist.toolkit.sitemanagement.client.SiteSpec

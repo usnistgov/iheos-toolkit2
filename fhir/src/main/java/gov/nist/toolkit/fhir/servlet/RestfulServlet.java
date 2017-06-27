@@ -40,5 +40,10 @@ public class RestfulServlet extends RestfulServer {
         List<IResourceProvider> resourceProviders = new ArrayList<IResourceProvider>();
         resourceProviders.add(new PatientResourceProvider());
         setResourceProviders(resourceProviders);
+
+        /**
+         * this interceptor log the request message
+         */
+        registerInterceptor(new RequestLoggingInterceptor());
     }
 }

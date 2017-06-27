@@ -3,17 +3,16 @@
  */
 package gov.nist.toolkit.simulators.sim;
 
-import java.io.IOException;
-
-import org.apache.log4j.Logger;
-
-import gov.nist.toolkit.actorfactory.client.SimulatorConfig;
 import gov.nist.toolkit.configDatatypes.client.TransactionType;
+import gov.nist.toolkit.simcommon.client.SimulatorConfig;
 import gov.nist.toolkit.simulators.sim.ig.IgActorSimulator;
 import gov.nist.toolkit.simulators.sim.iig.IigActorSimulator;
 import gov.nist.toolkit.simulators.support.BaseDsActorSimulator;
 import gov.nist.toolkit.simulators.support.DsSimCommon;
 import gov.nist.toolkit.valsupport.engine.MessageValidatorEngine;
+import org.apache.log4j.Logger;
+
+import java.io.IOException;
 
 /**
  * Combination Initiating Gateway Simulator

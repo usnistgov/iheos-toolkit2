@@ -6,16 +6,6 @@
 
         Additions for APPC:
 
-        FormatCode
-        <Code code=“urn:ihe:iti:appc:2016" codingScheme="1.3.6.1.4.1.19376.1.2.3" display="urn:ihe:iti:appc:2016”/>
-
-        EventCodeList
-        <Code code="1.3.6.1.4.1.21367.2017.7.101" display=“Foundational Connectathon Read-Access Policy" codingScheme="Connect-a-thon eventCodeList”/>
-<Code code="1.3.6.1.4.1.21367.2017.7.102" display=“Location-based Write-Access Policy" codingScheme="Connect-a-thon eventCodeList”/>
-<Code code="1.3.6.1.4.1.21367.2017.7.103" display=“Withhold Consent to Disclose to Provider Policy" codingScheme="Connect-a-thon eventCodeList”/>
-<Code code="1.3.6.1.4.1.21367.2017.7.104" display=“Limit-document-visibility Policy" codingScheme="Connect-a-thon eventCodeList”/>
-
-
         November 17, 2016
 
         Additions were made to support RSNA Image Share
@@ -461,10 +451,10 @@
 		<!--
 			Added For APPC    March 13, 2017
 		-->
-		<Code code="1.3.6.1.4.1.21367.2017.7.101" display=“Foundational Connectathon Read-Access Policy" codingScheme="Connect-a-thon eventCodeList”/>
-		<Code code="1.3.6.1.4.1.21367.2017.7.102" display=“Location-based Write-Access Policy" codingScheme="Connect-a-thon eventCodeList”/>
-		<Code code="1.3.6.1.4.1.21367.2017.7.103" display=“Withhold Consent to Disclose to Provider Policy" codingScheme="Connect-a-thon eventCodeList”/>
-		<Code code="1.3.6.1.4.1.21367.2017.7.104" display=“Limit-document-visibility Policy" codingScheme="Connect-a-thon eventCodeList”/>
+		<Code code="1.3.6.1.4.1.21367.2017.7.101" display="Foundational Connectathon Read-Access Policy" codingScheme="Connect-a-thon eventCodeList"/>
+		<Code code="1.3.6.1.4.1.21367.2017.7.102" display="Location-based Write-Access Policy" codingScheme="Connect-a-thon eventCodeList"/>
+		<Code code="1.3.6.1.4.1.21367.2017.7.103" display="Withhold Consent to Disclose to Provider Policy" codingScheme="Connect-a-thon eventCodeList"/>
+		<Code code="1.3.6.1.4.1.21367.2017.7.104" display="Limit-document-visibility Policy" codingScheme="Connect-a-thon eventCodeList"/>
 
 		<!-- 
         These codes were generated for RSNA 2008
@@ -998,76 +988,6 @@
 				
 	</CodeType>
 	
-	<!-- 
-		
-		This section replaced by folderCodeList below.
-		
-		
-	<CodeType name="codeList" classScheme="urn:uuid:1ba97051-7806-41a8-a48b-8fce7af683c5">
-		<Code code="Anesthesia" display="Anesthesia" codingScheme="Connect-a-thon codeList" />
-		<Code code="Cardiology" display="Cardiology" codingScheme="Connect-a-thon codeList" />
-		<Code code="Case Manager" display="Case Manager" codingScheme="Connect-a-thon codeList" />
-		<Code code="Chaplain" display="Chaplain" codingScheme="Connect-a-thon codeList" />
-		<Code code="Chemotherapy" display="Chemotherapy" codingScheme="Connect-a-thon codeList" />
-		<Code code="Chiropractic" display="Chiropractic" codingScheme="Connect-a-thon codeList" />
-		<Code code="Critical Care" display="Critical Care" codingScheme="Connect-a-thon codeList" />
-		<Code code="Dentistry" display="Dentistry" codingScheme="Connect-a-thon codeList" />
-		<Code code="Diabetology" display="Diabetology" codingScheme="Connect-a-thon codeList" />
-		<Code code="Dialysis" display="Dialysis" codingScheme="Connect-a-thon codeList" />
-		<Code code="Emergency" display="Emergency" codingScheme="Connect-a-thon codeList" />
-		<Code code="Endocrinology" display="Endocrinology" codingScheme="Connect-a-thon codeList" />
-		<Code code="Gastroenterology" display="Gastroenterology"
-			codingScheme="Connect-a-thon codeList" />
-		<Code code="General Medicine" display="General Medicine"
-			codingScheme="Connect-a-thon codeList" />
-		<Code code="General Surgery" display="General Surgery"
-			codingScheme="Connect-a-thon codeList" />
-		<Code code="Gynecology" display="Gynecology" codingScheme="Connect-a-thon codeList" />
-		<Code code="Labor and Delivery" display="Labor and Delivery"
-			codingScheme="Connect-a-thon codeList" />
-		<Code code="Laboratory" display="Laboratory" codingScheme="Connect-a-thon codeList" />
-		<Code code="Multidisciplinary" display="Multidisciplinary"
-			codingScheme="Connect-a-thon codeList" />
-		<Code code="Neonatal Intensive Care" display="Neonatal Intensive Care"
-			codingScheme="Connect-a-thon codeList" />
-		<Code code="Neurosurgery" display="Neurosurgery" codingScheme="Connect-a-thon codeList" />
-		<Code code="Nursery" display="Nursery" codingScheme="Connect-a-thon codeList" />
-		<Code code="Nursing" display="Nursing" codingScheme="Connect-a-thon codeList" />
-		<Code code="Obstetrics" display="Obstetrics" codingScheme="Connect-a-thon codeList" />
-		<Code code="Occupational Therapy" display="Occupational Therapy"
-			codingScheme="Connect-a-thon codeList" />
-		<Code code="Ophthalmology" display="Ophthalmology" codingScheme="Connect-a-thon codeList" />
-		<Code code="Optometry" display="Optometry" codingScheme="Connect-a-thon codeList" />
-		<Code code="Orthopedics" display="Orthopedics" codingScheme="Connect-a-thon codeList" />
-		<Code code="Otorhinolaryngology" display="Otorhinolaryngology"
-			codingScheme="Connect-a-thon codeList" />
-		<Code code="Pathology" display="Pathology" codingScheme="Connect-a-thon codeList" />
-		<Code code="Perioperative" display="Perioperative" codingScheme="Connect-a-thon codeList" />
-		<Code code="Pharmacacy" display="Pharmacacy" codingScheme="Connect-a-thon codeList" />
-		<Code code="Physical Medicine" display="Physical Medicine"
-			codingScheme="Connect-a-thon codeList" />
-		<Code code="Plastic Surgery" display="Plastic Surgery"
-			codingScheme="Connect-a-thon codeList" />
-		<Code code="Podiatry" display="Podiatry" codingScheme="Connect-a-thon codeList" />
-		<Code code="Psychiatry" display="Psychiatry" codingScheme="Connect-a-thon codeList" />
-		<Code code="Pulmonary" display="Pulmonary" codingScheme="Connect-a-thon codeList" />
-		<Code code="Radiology" display="Radiology" codingScheme="Connect-a-thon codeList" />
-		<Code code="Social Services" display="Social Services"
-			codingScheme="Connect-a-thon codeList" />
-		<Code code="Speech Therapy" display="Speech Therapy"
-			codingScheme="Connect-a-thon codeList" />
-		<Code code="Thyroidology" display="Thyroidology" codingScheme="Connect-a-thon codeList" />
-		<Code code="Tumor Board" display="Tumor Board" codingScheme="Connect-a-thon codeList" />
-		<Code code="Urology" display="Urology" codingScheme="Connect-a-thon codeList" />
-		<Code code="Veterinary Medicine" display="Veterinary Medicine"
-			codingScheme="Connect-a-thon codeList" />
-		<Code code="Blood Pressure" display="Blood Pressure"
-			codingScheme="Connect-a-thon codeList" />
-			
-			
-	</CodeType>
-	
-	-->
 
 	<!--
 		This section is used to validate mime type requests and to map mime
@@ -1466,7 +1386,7 @@
 			Added for APPC   March 13, 2017
 
 		-->
-		<Code code=“urn:ihe:iti:appc:2016" codingScheme="1.3.6.1.4.1.19376.1.2.3" display="urn:ihe:iti:appc:2016”/>
+		<Code code="urn:ihe:iti:appc:2016" codingScheme="1.3.6.1.4.1.19376.1.2.3" display="urn:ihe:iti:appc:2016"/>
 
 		<!-- SMM 2016.12.07 C-CDA / DAF -->
 		<Code code="urn:hl7-org:sdwg:ccda-structuredBody:2.1"

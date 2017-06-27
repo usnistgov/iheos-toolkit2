@@ -1,6 +1,5 @@
 package gov.nist.toolkit.itTests.testpath
 
-import gov.nist.toolkit.actorfactory.client.SimId
 import gov.nist.toolkit.actortransaction.client.ActorType
 import gov.nist.toolkit.adt.ListenerFactory
 import gov.nist.toolkit.configDatatypes.SimulatorActorType
@@ -8,6 +7,7 @@ import gov.nist.toolkit.installation.Installation
 import gov.nist.toolkit.itTests.support.ToolkitSpecification
 import gov.nist.toolkit.results.client.Result
 import gov.nist.toolkit.results.client.TestInstance
+import gov.nist.toolkit.simcommon.client.SimId
 import gov.nist.toolkit.testengine.scripts.BuildCollections
 import gov.nist.toolkit.toolkitApi.SimulatorBuilder
 import spock.lang.Shared
