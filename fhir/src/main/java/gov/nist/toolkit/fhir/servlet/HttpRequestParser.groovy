@@ -1,5 +1,6 @@
 package gov.nist.toolkit.fhir.servlet
 
+import ca.uhn.fhir.rest.method.RequestDetails
 import gov.nist.toolkit.simcommon.client.SimId
 
 import javax.servlet.http.HttpServletRequest
@@ -11,8 +12,15 @@ class HttpRequestParser {
     static final protected String CONTEXT = "fsim"
 
     static SimId simIdFromRequest(HttpServletRequest httpServletRequest) {
-        String uri =  httpServletRequest.getRequestURI();
+        String uri = httpServletRequest.getRequestURI();
+        return simIdFromURI(uri)
+    }
 
+    static SimId simIdFromRequest(RequestDetails requestDetails) {
+        return simIdFromURI(requestDetails.completeUrl)
+    }
+
+    static SimId simIdFromURI(String uri) {
         int index = uri.indexOf(CONTEXT);
         if (index == -1) return null;
         index = uri.indexOf("/", index); // / following context

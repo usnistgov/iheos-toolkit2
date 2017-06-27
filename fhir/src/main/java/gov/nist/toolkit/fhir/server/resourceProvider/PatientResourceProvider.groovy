@@ -47,7 +47,8 @@ public class PatientResourceProvider implements IResourceProvider {
         println '*'
         println '***************************'
 
-        ToolkitResourceProvider tk = new ToolkitResourceProvider(getResourceType(), theRequest)
+
+        ToolkitResourceProvider tk = new ToolkitResourceProvider(getResourceType(), requestDetails)
         validateResource(thePatient);
 
         IdDt newId = tk.addResource(thePatient)
@@ -57,43 +58,6 @@ public class PatientResourceProvider implements IResourceProvider {
 
         // Let the caller know the ID of the newly created resource
         return new MethodOutcome(newId);
-    }
-
-    /**  NOT LINKED TO RESDB YET
-     * Stores a new version of the patient in memory so that it can be retrieved later.
-     *
-     * @param thePatient
-     *            The patient index to store
-     * @param theId
-     *            The ID of the patient to retrieve
-     */
-    private void addNewVersion(Patient thePatient, String theId) {
-        InstantDt publishedDate = InstantDt.withCurrentTime();
-//        if (!myIdToPatientVersions.containsKey(theId)) {
-//            myIdToPatientVersions.put(theId, new LinkedList<Patient>());
-//            publishedDate = InstantDt.withCurrentTime();
-//        } else {
-//            Patient currentPatitne = myIdToPatientVersions.get(theId).getLast();
-//            Map<ResourceMetadataKeyEnum<?>, Object> resourceMetadata = currentPatitne.getResourceMetadata();
-//            publishedDate = (InstantDt) resourceMetadata.get(ResourceMetadataKeyEnum.PUBLISHED);
-//        }
-
-		/*
-		 * PUBLISHED time will always be set to the time that the first version was stored. UPDATED time is set to the time that the new version was stored.
-		 */
-//        thePatient.getResourceMetadata().put(ResourceMetadataKeyEnum.PUBLISHED, publishedDate);
-//        thePatient.getResourceMetadata().put(ResourceMetadataKeyEnum.UPDATED, InstantDt.withCurrentTime());
-//
-//        Deque<Patient> existingVersions = myIdToPatientVersions.get(theId);
-//
-//        // We just use the current number of versions as the next version number
-//        String newVersion = Integer.toString(existingVersions.size());
-
-        // Create an ID with the new version and assign it back to the index
-        IdDt newId = new IdDt("Patient", theId, "1");
-        thePatient.setId(newId);
-
-//        existingVersions.add(thePatient);
     }
 
 
@@ -110,10 +74,11 @@ public class PatientResourceProvider implements IResourceProvider {
      */
     @Read()
     public Patient getResourceById(@IdParam IdType theId,
+                                   RequestDetails requestDetails,
                                    HttpServletRequest theRequest,
                                    HttpServletResponse theResponse) {
 
-        ToolkitResourceProvider tk = new ToolkitResourceProvider(getResourceType(), theRequest)
+        ToolkitResourceProvider tk = new ToolkitResourceProvider(getResourceType(), requestDetails)
 
         String id = theId.getIdPart();
 
@@ -162,9 +127,10 @@ public class PatientResourceProvider implements IResourceProvider {
     public List<Patient> getPatient(
             @RequiredParam(name = Patient.SP_FAMILY) StringParam theFamilyName,
             @OptionalParam(name = Patient.SP_GIVEN) StringParam theGivenName,
+            RequestDetails requestDetails,
                                     HttpServletRequest theRequest,
                                     HttpServletResponse theResponse) {
-        ToolkitResourceProvider tk = new ToolkitResourceProvider(getResourceType(), theRequest)
+        ToolkitResourceProvider tk = new ToolkitResourceProvider(getResourceType(), requestDetails)
 
         tk.displayIndex()
 
@@ -187,6 +153,45 @@ public class PatientResourceProvider implements IResourceProvider {
         return tk.searchResults(new BaseQuery(tk.simContext).execute(builder))
 
     }
+
+    /**  NOT LINKED TO RESDB YET
+     * Stores a new version of the patient in memory so that it can be retrieved later.
+     *
+     * @param thePatient
+     *            The patient index to store
+     * @param theId
+     *            The ID of the patient to retrieve
+     */
+    private void addNewVersion(Patient thePatient, String theId) {
+        InstantDt publishedDate = InstantDt.withCurrentTime();
+//        if (!myIdToPatientVersions.containsKey(theId)) {
+//            myIdToPatientVersions.put(theId, new LinkedList<Patient>());
+//            publishedDate = InstantDt.withCurrentTime();
+//        } else {
+//            Patient currentPatitne = myIdToPatientVersions.get(theId).getLast();
+//            Map<ResourceMetadataKeyEnum<?>, Object> resourceMetadata = currentPatitne.getResourceMetadata();
+//            publishedDate = (InstantDt) resourceMetadata.get(ResourceMetadataKeyEnum.PUBLISHED);
+//        }
+
+        /*
+         * PUBLISHED time will always be set to the time that the first version was stored. UPDATED time is set to the time that the new version was stored.
+         */
+//        thePatient.getResourceMetadata().put(ResourceMetadataKeyEnum.PUBLISHED, publishedDate);
+//        thePatient.getResourceMetadata().put(ResourceMetadataKeyEnum.UPDATED, InstantDt.withCurrentTime());
+//
+//        Deque<Patient> existingVersions = myIdToPatientVersions.get(theId);
+//
+//        // We just use the current number of versions as the next version number
+//        String newVersion = Integer.toString(existingVersions.size());
+
+        // Create an ID with the new version and assign it back to the index
+        IdDt newId = new IdDt("Patient", theId, "1");
+        thePatient.setId(newId);
+
+//        existingVersions.add(thePatient);
+    }
+
+
 
     /**
      * This method just provides simple business validation for resources we are storing.
