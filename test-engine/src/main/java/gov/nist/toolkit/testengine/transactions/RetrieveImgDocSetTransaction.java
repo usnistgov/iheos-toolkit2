@@ -1,13 +1,13 @@
 package gov.nist.toolkit.testengine.transactions;
 
-import gov.nist.toolkit.actorfactory.SimDb;
-import gov.nist.toolkit.actorfactory.client.SimId;
-import gov.nist.toolkit.actorfactory.client.SimulatorConfig;
 import gov.nist.toolkit.configDatatypes.SimulatorProperties;
 import gov.nist.toolkit.configDatatypes.client.TransactionType;
 import gov.nist.toolkit.registrymetadata.Metadata;
 import gov.nist.toolkit.registrymsg.repository.RetrievedDocumentModel;
 import gov.nist.toolkit.registrymsg.repository.RetrievedDocumentsModel;
+import gov.nist.toolkit.simcommon.client.SimId;
+import gov.nist.toolkit.simcommon.client.SimulatorConfig;
+import gov.nist.toolkit.simcommon.server.SimDb;
 import gov.nist.toolkit.testengine.engine.Linkage;
 import gov.nist.toolkit.testengine.engine.Rad69;
 import gov.nist.toolkit.testengine.engine.RetContext;
@@ -27,7 +27,6 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
 
 import javax.xml.namespace.QName;
-
 import java.io.File;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -297,12 +296,11 @@ public class RetrieveImgDocSetTransaction extends BasicTransaction {
    }
    
    private String target = null;
-   protected void parseTargetInstruction(OMElement part) {
+   private void parseTargetInstruction(OMElement part) {
       try {
       String sim = part.getAttributeValue(new QName("sim"));
       String user = testConfig.testInstance.getUser();
-      SimDb db = new SimDb();
-      SimulatorConfig simConfig = db.getSimulator(new SimId(user, sim));
+      SimulatorConfig simConfig = SimDb.getSimulator(new SimId(user, sim));
       target = simConfig.getConfigEle(SimulatorProperties.idsrEndpoint).asString();
       } catch (Exception e) {
          

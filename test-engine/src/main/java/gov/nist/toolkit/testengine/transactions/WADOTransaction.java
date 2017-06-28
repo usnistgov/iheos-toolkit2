@@ -3,21 +3,23 @@
  */
 package gov.nist.toolkit.testengine.transactions;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.InputStream;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.*;
-import java.util.Base64.Encoder;
-
-import javax.xml.namespace.QName;
-
+import edu.wustl.mir.erl.ihe.xdsi.util.Utility;
+import gov.nist.toolkit.configDatatypes.SimulatorProperties;
+import gov.nist.toolkit.configDatatypes.client.TransactionType;
+import gov.nist.toolkit.simcommon.client.SimId;
+import gov.nist.toolkit.simcommon.client.SimulatorConfig;
+import gov.nist.toolkit.simcommon.server.SimDb;
+import gov.nist.toolkit.testengine.engine.StepContext;
+import gov.nist.toolkit.testengine.engine.TransactionStatus;
+import gov.nist.toolkit.xdsexception.client.MetadataException;
+import gov.nist.toolkit.xdsexception.client.XdsInternalException;
 import org.apache.axiom.om.OMElement;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.http.*;
+import org.apache.http.Header;
+import org.apache.http.HttpEntity;
+import org.apache.http.HttpResponse;
+import org.apache.http.StatusLine;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.utils.URIBuilder;
 import org.apache.http.impl.client.CloseableHttpClient;
@@ -25,17 +27,15 @@ import org.apache.http.impl.client.HttpClients;
 import org.apache.http.util.EntityUtils;
 import org.apache.log4j.Logger;
 
-import gov.nist.toolkit.actorfactory.SimDb;
-import gov.nist.toolkit.actorfactory.client.SimId;
-import gov.nist.toolkit.actorfactory.client.SimulatorConfig;
-import gov.nist.toolkit.configDatatypes.SimulatorProperties;
-import gov.nist.toolkit.configDatatypes.client.TransactionType;
-import gov.nist.toolkit.testengine.engine.StepContext;
-import gov.nist.toolkit.testengine.engine.TransactionStatus;
-import gov.nist.toolkit.xdsexception.client.MetadataException;
-import gov.nist.toolkit.xdsexception.client.XdsInternalException;
-
-import edu.wustl.mir.erl.ihe.xdsi.util.Utility;
+import javax.xml.namespace.QName;
+import java.io.File;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.Base64;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Manage WADO Retrieve (RAD-55) transactions, for example: 
@@ -363,8 +363,7 @@ public class WADOTransaction extends BasicTransaction {
       try {
       String sim = part.getAttributeValue(new QName("sim"));
       String user = testConfig.testInstance.getUser();
-      SimDb db = new SimDb();
-      SimulatorConfig simConfig = db.getSimulator(new SimId(user, sim));
+      SimulatorConfig simConfig = SimDb.getSimulator(new SimId(user, sim));
       target = simConfig.getConfigEle(SimulatorProperties.wadoEndpoint).asString();
       } catch (Exception e) {
          

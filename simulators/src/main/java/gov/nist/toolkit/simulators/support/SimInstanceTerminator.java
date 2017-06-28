@@ -1,9 +1,8 @@
 package gov.nist.toolkit.simulators.support;
 
-import gov.nist.toolkit.actorfactory.SimCache;
-import gov.nist.toolkit.actorfactory.SimDb;
-import gov.nist.toolkit.actorfactory.client.SimId;
-import gov.nist.toolkit.actorfactory.client.SimulatorConfig;
+import gov.nist.toolkit.simcommon.client.SimId;
+import gov.nist.toolkit.simcommon.client.SimulatorConfig;
+import gov.nist.toolkit.simcommon.server.SimDb;
 import org.apache.log4j.Logger;
 
 import java.util.Date;
@@ -18,16 +17,14 @@ public class SimInstanceTerminator {
 	static Logger logger = Logger.getLogger(SimInstanceTerminator.class);
 
 	public int run() throws Exception  {
-		SimDb simdb = new SimDb();
-
 		Date now = new Date();
 		int deleted = 0;
 		
-		List<SimId> simIds = simdb.getAllSimIds();
+		List<SimId> simIds = SimDb.getAllSimIds();
 		for (SimId simId : simIds) {
 			SimulatorConfig asc;
 			try {
-				asc = new SimCache().getSimulatorConfig(simId);
+				asc = SimDb.getSimulator(simId);
 				Date expiration = asc.getExpiration();
 				if (expiration.before(now)) {
 					SimCommon.deleteSim(simId);

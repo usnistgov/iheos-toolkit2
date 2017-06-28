@@ -1,11 +1,11 @@
 package gov.nist.toolkit.simulators.support;
 
-import gov.nist.toolkit.actorfactory.BaseActorSimulator;
-import gov.nist.toolkit.actorfactory.SimDb;
-import gov.nist.toolkit.actorfactory.client.SimulatorConfig;
 import gov.nist.toolkit.configDatatypes.client.TransactionType;
 import gov.nist.toolkit.errorrecording.ErrorRecorder;
 import gov.nist.toolkit.errorrecording.GwtErrorRecorderBuilder;
+import gov.nist.toolkit.simcommon.client.SimulatorConfig;
+import gov.nist.toolkit.simcommon.server.BaseActorSimulator;
+import gov.nist.toolkit.simcommon.server.SimDb;
 import gov.nist.toolkit.valsupport.client.ValidationContext;
 import gov.nist.toolkit.valsupport.engine.MessageValidatorEngine;
 

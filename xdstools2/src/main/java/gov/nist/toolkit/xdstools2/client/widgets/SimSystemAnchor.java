@@ -1,8 +1,8 @@
 package gov.nist.toolkit.xdstools2.client.widgets;
 
 import com.google.gwt.user.client.ui.HTML;
-import gov.nist.toolkit.actorfactory.client.SimId;
-import gov.nist.toolkit.actorfactory.client.SimulatorConfig;
+import gov.nist.toolkit.simcommon.client.SimId;
+import gov.nist.toolkit.simcommon.client.SimulatorConfig;
 import gov.nist.toolkit.sitemanagement.client.SiteSpec;
 import gov.nist.toolkit.xdstools2.client.command.command.GetSimConfigsCommand;
 import gov.nist.toolkit.xdstools2.client.util.ClientUtils;

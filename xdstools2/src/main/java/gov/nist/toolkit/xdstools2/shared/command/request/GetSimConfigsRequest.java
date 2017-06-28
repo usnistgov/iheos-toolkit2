@@ -1,6 +1,6 @@
 package gov.nist.toolkit.xdstools2.shared.command.request;
 
-import gov.nist.toolkit.actorfactory.client.SimId;
+import gov.nist.toolkit.simcommon.client.SimId;
 import gov.nist.toolkit.xdstools2.shared.command.CommandContext;
 
 import java.util.List;

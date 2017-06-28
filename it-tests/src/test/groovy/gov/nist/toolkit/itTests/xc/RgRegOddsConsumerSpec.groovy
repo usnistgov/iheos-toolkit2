@@ -1,6 +1,5 @@
 package gov.nist.toolkit.itTests.xc
 
-import gov.nist.toolkit.actorfactory.client.SimId
 import gov.nist.toolkit.actortransaction.client.ActorType
 import gov.nist.toolkit.adt.ListenerFactory
 import gov.nist.toolkit.configDatatypes.SimulatorActorType
@@ -12,6 +11,7 @@ import gov.nist.toolkit.results.client.StepResult
 import gov.nist.toolkit.results.client.TestInstance
 import gov.nist.toolkit.services.server.UnitTestEnvironmentManager
 import gov.nist.toolkit.session.server.Session
+import gov.nist.toolkit.simcommon.client.SimId
 import gov.nist.toolkit.simulators.support.od.TransactionUtil
 import gov.nist.toolkit.sitemanagement.client.SiteSpec
 import gov.nist.toolkit.testengine.scripts.BuildCollections

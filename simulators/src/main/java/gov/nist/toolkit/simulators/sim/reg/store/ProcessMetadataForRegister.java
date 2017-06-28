@@ -155,7 +155,7 @@ public class ProcessMetadataForRegister implements ProcessMetadataInterface {
 							"Object is " + source
 							, this, null);
 				} else {
-					if (ro.getAvailabilityStatus() == RegIndex.StatusValue.DEPRECATED) {
+					if (ro.getAvailabilityStatus() == StatusValue.DEPRECATED) {
 						er.err(Code.XDSRegistryError, "Association " +
 								type + "(" + m.getId(assocEle) + ")" +
 								" references an model with its sourceObject attribute that has status Deprecated in the registry. " +
@@ -175,7 +175,7 @@ public class ProcessMetadataForRegister implements ProcessMetadataInterface {
 							" references an model with its targetObject attribute that does not exist in submission or registry. " +
 							"Object is " + target
 							, this, null);
-				} else if (ro.getAvailabilityStatus() == RegIndex.StatusValue.DEPRECATED) {
+				} else if (ro.getAvailabilityStatus() == StatusValue.DEPRECATED) {
 					er.err(Code.XDSRegistryError, "Association " + 
 							type + "(" + m.getId(assocEle) + ")" +
 							" references an model with its targetObject attribute that has status Deprecated in the registry. " +
@@ -224,7 +224,7 @@ public class ProcessMetadataForRegister implements ProcessMetadataInterface {
 
 				DocEntry de = ((DocEntry)delta.getObjectById(target));
 				// #3 The targetObject DocumentEntry has availabilityStatus of Approved
-				if (!RegIndex.StatusValue.APPROVED.equals(de.getAvailabilityStatus())) {
+				if (!StatusValue.APPROVED.equals(de.getAvailabilityStatus())) {
 					er.err(XdsErrorCode.Code.XDSRegistryMetadataError, "targetObject's DocumentEntry availabilityStatus is not Approved." , this, "ITI TF-3: 4.2.2.2.6"); // Rev 12.1
 				}
 				// #5 Verify that the objectType attribute of the targetObject DocumentEntry is (On-Demand)
@@ -306,7 +306,7 @@ public class ProcessMetadataForRegister implements ProcessMetadataInterface {
 			er.err(Code.XDSRegistryError, "RPLC failed, replaced DocumentEntry [ " + docId + "] does not exist in registry", this, null);
 		} else {
 			// Deprecate
-			delta.changeAvailabilityStatus(docId, ro.getAvailabilityStatus(), RegIndex.StatusValue.DEPRECATED);
+			delta.changeAvailabilityStatus(docId, ro.getAvailabilityStatus(), StatusValue.DEPRECATED);
 			delta.mkDirty();
 			// Find all XFRMs and APNDs and deprecate - recurse
 			

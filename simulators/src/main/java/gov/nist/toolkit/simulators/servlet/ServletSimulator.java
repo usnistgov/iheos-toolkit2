@@ -1,6 +1,6 @@
 package gov.nist.toolkit.simulators.servlet;
 
-import gov.nist.toolkit.actorfactory.SimDb;
+import gov.nist.toolkit.simcommon.server.SimDb;
 import gov.nist.toolkit.http.HttpHeader.HttpHeaderParseException;
 import gov.nist.toolkit.http.HttpMessage;
 import gov.nist.toolkit.http.HttpParseException;

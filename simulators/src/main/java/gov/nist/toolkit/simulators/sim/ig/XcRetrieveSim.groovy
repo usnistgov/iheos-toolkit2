@@ -1,11 +1,12 @@
 package gov.nist.toolkit.simulators.sim.ig
-import gov.nist.toolkit.actorfactory.SimManager
+
 import gov.nist.toolkit.configDatatypes.SimulatorProperties
-import gov.nist.toolkit.actorfactory.client.SimulatorConfig
 import gov.nist.toolkit.configDatatypes.client.TransactionType
 import gov.nist.toolkit.errorrecording.ErrorRecorder
 import gov.nist.toolkit.errorrecording.client.XdsErrorCode
 import gov.nist.toolkit.registrymsg.repository.*
+import gov.nist.toolkit.simcommon.client.SimulatorConfig
+import gov.nist.toolkit.simcommon.server.SimManager
 import gov.nist.toolkit.simulators.support.DsSimCommon
 import gov.nist.toolkit.simulators.support.SimCommon
 import gov.nist.toolkit.sitemanagement.Sites
@@ -19,6 +20,7 @@ import gov.nist.toolkit.xdsexception.ExceptionUtil
 import groovy.transform.TypeChecked
 import org.apache.axiom.om.OMElement
 import org.apache.log4j.Logger
+
 /**
  *
  */

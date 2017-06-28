@@ -1,13 +1,15 @@
 package gov.nist.toolkit.actorfactory;
 
-import gov.nist.toolkit.actorfactory.client.NoSimException;
-import gov.nist.toolkit.actorfactory.client.SimId;
-import gov.nist.toolkit.actorfactory.client.SimulatorConfig;
 import gov.nist.toolkit.actortransaction.client.ActorType;
 import gov.nist.toolkit.adt.ListenerFactory;
 import gov.nist.toolkit.configDatatypes.SimulatorProperties;
 import gov.nist.toolkit.installation.Installation;
+import gov.nist.toolkit.simcommon.client.NoSimException;
+import gov.nist.toolkit.simcommon.client.SimId;
+import gov.nist.toolkit.simcommon.client.SimulatorConfig;
 import gov.nist.toolkit.simcommon.client.config.SimulatorConfigElement;
+import gov.nist.toolkit.simcommon.server.GenericSimulatorFactory;
+import gov.nist.toolkit.simcommon.server.SimDb;
 import gov.nist.toolkit.xdsexception.client.ToolkitRuntimeException;
 import org.apache.log4j.Logger;
 
@@ -63,14 +65,12 @@ public class PatientIdentityFeedServlet extends HttpServlet {
 
 
     public static void generateCurrentlyConfiguredListeners() throws IOException, NoSimException, ClassNotFoundException {
-        SimDb db = new SimDb();
-        List<SimId> simIds = db.getSimulatorIdsforActorType(ActorType.REGISTRY);
+        List<SimId> simIds = new SimDb().getSimulatorIdsforActorType(ActorType.REGISTRY);
         generateListeners(simIds);
     }
 
     public static void terminateCurrentlyConfiguredListeners() throws IOException, NoSimException {
-        SimDb db = new SimDb();
-        List<SimId> simIds = db.getSimulatorIdsforActorType(ActorType.REGISTRY);
+        List<SimId> simIds = new SimDb().getSimulatorIdsforActorType(ActorType.REGISTRY);
         for (SimId simId : simIds)
             ListenerFactory.terminate(simId.toString());
     }

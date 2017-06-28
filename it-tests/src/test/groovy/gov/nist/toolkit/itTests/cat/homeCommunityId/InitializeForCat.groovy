@@ -4,7 +4,7 @@ import gov.nist.toolkit.adt.ListenerFactory
 import gov.nist.toolkit.configDatatypes.SimulatorProperties
 import gov.nist.toolkit.installation.Installation
 import gov.nist.toolkit.itTests.support.ToolkitSpecification
-import gov.nist.toolkit.itTests.xc.GatewayBuilder
+import gov.nist.toolkit.itSupport.xc.GatewayBuilder
 import gov.nist.toolkit.results.client.TestLogs
 import gov.nist.toolkit.toolkitApi.DocumentConsumer
 import gov.nist.toolkit.toolkitApi.SimulatorBuilder
@@ -26,7 +26,7 @@ class InitializeForCat extends ToolkitSpecification {
     def setupSpec() {   // one time setup done when class launched
         startGrizzly('8889')
 
-        Installation.instance().externalCache(new File('/home/bill/tmp/toolkit2a'))
+        Installation.instance().externalCache(new File('/Users/bill/tmp/toolkit2a'))
 
         println "EC is ${Installation.instance().externalCache().toString()}"
         println "${api.getSiteNames(true)}"

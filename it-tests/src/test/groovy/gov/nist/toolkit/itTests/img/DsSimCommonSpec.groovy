@@ -1,8 +1,5 @@
 package gov.nist.toolkit.itTests.img
 
-import gov.nist.toolkit.actorfactory.SimDb
-import gov.nist.toolkit.actorfactory.client.SimId
-import gov.nist.toolkit.actorfactory.client.SimulatorConfig
 import gov.nist.toolkit.actortransaction.client.ActorType
 import gov.nist.toolkit.actortransaction.client.ParamType
 import gov.nist.toolkit.adt.ListenerFactory
@@ -10,7 +7,10 @@ import gov.nist.toolkit.configDatatypes.SimulatorProperties
 import gov.nist.toolkit.errorrecording.ErrorRecorder
 import gov.nist.toolkit.installation.Installation
 import gov.nist.toolkit.itTests.support.ToolkitSpecification
+import gov.nist.toolkit.simcommon.client.SimId
+import gov.nist.toolkit.simcommon.client.SimulatorConfig
 import gov.nist.toolkit.simcommon.client.config.SimulatorConfigElement
+import gov.nist.toolkit.simcommon.server.SimDb
 import gov.nist.toolkit.simulators.support.DsSimCommon
 import gov.nist.toolkit.simulators.support.SimCommon
 import gov.nist.toolkit.simulators.support.StoredDocument
@@ -19,6 +19,7 @@ import gov.nist.toolkit.valsupport.client.ValidationContext
 import spock.lang.Shared
 
 import java.nio.file.Path
+
 /**
  * Test DsSimCommon methods for images
  * Created by rmoult01 on 3/13/17.

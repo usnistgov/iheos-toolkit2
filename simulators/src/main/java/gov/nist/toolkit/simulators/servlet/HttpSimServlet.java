@@ -3,26 +3,7 @@
  */
 package gov.nist.toolkit.simulators.servlet;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.util.*;
-
-import javax.servlet.ServletConfig;
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
-import org.apache.commons.lang3.StringUtils;
-import org.apache.log4j.Logger;
-
-import gov.nist.toolkit.actorfactory.GenericSimulatorFactory;
-import gov.nist.toolkit.actorfactory.RuntimeManager;
-import gov.nist.toolkit.actorfactory.SimDb;
-import gov.nist.toolkit.actorfactory.client.BadSimIdException;
-import gov.nist.toolkit.actorfactory.client.SimId;
-import gov.nist.toolkit.actorfactory.client.SimulatorConfig;
+import edu.wustl.mir.erl.ihe.xdsi.util.Utility;
 import gov.nist.toolkit.actortransaction.client.ATFactory;
 import gov.nist.toolkit.configDatatypes.SimulatorProperties;
 import gov.nist.toolkit.configDatatypes.client.TransactionType;
@@ -32,7 +13,13 @@ import gov.nist.toolkit.http.HttpHeader;
 import gov.nist.toolkit.http.HttpHeader.HttpHeaderParseException;
 import gov.nist.toolkit.http.ParseException;
 import gov.nist.toolkit.installation.Installation;
+import gov.nist.toolkit.simcommon.client.BadSimIdException;
+import gov.nist.toolkit.simcommon.client.SimId;
+import gov.nist.toolkit.simcommon.client.SimulatorConfig;
 import gov.nist.toolkit.simcommon.client.config.SimulatorConfigElement;
+import gov.nist.toolkit.simcommon.server.GenericSimulatorFactory;
+import gov.nist.toolkit.simcommon.server.RuntimeManager;
+import gov.nist.toolkit.simcommon.server.SimDb;
 import gov.nist.toolkit.simulators.support.BaseHttpActorSimulator;
 import gov.nist.toolkit.simulators.support.SimCommon;
 import gov.nist.toolkit.utilities.io.Io;
@@ -41,8 +28,18 @@ import gov.nist.toolkit.valsupport.client.ValidationContext;
 import gov.nist.toolkit.valsupport.engine.DefaultValidationContextFactory;
 import gov.nist.toolkit.valsupport.engine.MessageValidatorEngine;
 import gov.nist.toolkit.xdsexception.ExceptionUtil;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.log4j.Logger;
 
-import edu.wustl.mir.erl.ihe.xdsi.util.Utility;
+import javax.servlet.ServletConfig;
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.util.*;
 
 /**
  * Servlet for http (only) based transaction simulations
@@ -99,7 +96,7 @@ public class HttpSimServlet extends HttpServlet {
          }
          simDbFile = Installation.instance().simDbFile();
          try {
-            simConfig = GenericSimulatorFactory.getSimConfig(simDbFile, simid);
+            simConfig = GenericSimulatorFactory.getSimConfig(simid);
          } catch (IOException ioe) {
             throw new Exception("IO error trying to load simulator id [" + simulatorName + "]");
          } catch (ClassNotFoundException cnfe) {
@@ -128,7 +125,7 @@ public class HttpSimServlet extends HttpServlet {
       MessageValidatorEngine mvc = new MessageValidatorEngine();
       try {
          
-         SimDb db = new SimDb(simDbFile, simid, actor, transaction);
+         SimDb db = new SimDb(simid, actor, transaction);
          // These are passed to the filter for logging
          request.setAttribute("SimDb", db);
          logRequest(request, db, actor, transaction);
@@ -198,13 +195,12 @@ public class HttpSimServlet extends HttpServlet {
    
    public static void onServiceStart()  {
       try {
-         SimDb db = new SimDb();
-         List<SimId> simIds = db.getAllSimIds();
+         List<SimId> simIds = new SimDb().getAllSimIds();
          for (SimId simId : simIds) {
             BaseHttpActorSimulator sim = (BaseHttpActorSimulator) RuntimeManager.getHttpSimulatorRuntime(simId);
             if (sim == null) continue;
 
-            SimulatorConfig asc = GenericSimulatorFactory.getSimConfig(db.getRoot(), simId);
+            SimulatorConfig asc = GenericSimulatorFactory.getSimConfig(simId);
             sim.init(asc);
             sim.onServiceStart(asc);
          }
@@ -215,13 +211,12 @@ public class HttpSimServlet extends HttpServlet {
 
    public static void onServiceStop() {
       try {
-         SimDb db = new SimDb();
-         List<SimId> simIds = db.getAllSimIds();
+         List<SimId> simIds = new SimDb().getAllSimIds();
          for (SimId simId : simIds) {
             BaseHttpActorSimulator sim = (BaseHttpActorSimulator) RuntimeManager.getHttpSimulatorRuntime(simId);
             if (sim == null) continue;
 
-            SimulatorConfig asc = GenericSimulatorFactory.getSimConfig(db.getRoot(), simId);
+            SimulatorConfig asc = GenericSimulatorFactory.getSimConfig(simId);
             sim.init(asc);
             sim.onServiceStop(asc);
          }

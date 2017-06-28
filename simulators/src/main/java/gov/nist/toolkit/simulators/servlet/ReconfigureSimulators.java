@@ -1,13 +1,13 @@
 package gov.nist.toolkit.simulators.servlet;
 
-import gov.nist.toolkit.actorfactory.GenericSimulatorFactory;
-import gov.nist.toolkit.actorfactory.SimDb;
-import gov.nist.toolkit.actorfactory.client.SimId;
-import gov.nist.toolkit.actorfactory.client.SimulatorConfig;
 import gov.nist.toolkit.actortransaction.EndpointParser;
 import gov.nist.toolkit.configDatatypes.SimulatorProperties;
 import gov.nist.toolkit.installation.Installation;
+import gov.nist.toolkit.simcommon.client.SimId;
+import gov.nist.toolkit.simcommon.client.SimulatorConfig;
 import gov.nist.toolkit.simcommon.client.config.SimulatorConfigElement;
+import gov.nist.toolkit.simcommon.server.GenericSimulatorFactory;
+import gov.nist.toolkit.simcommon.server.SimDb;
 import gov.nist.toolkit.xdsexception.ExceptionUtil;
 import org.apache.log4j.Logger;
 
@@ -21,7 +21,6 @@ import javax.servlet.http.HttpServlet;
  *   Toolkit TLS Port
  */
 public class ReconfigureSimulators extends HttpServlet {
-    private SimDb db;
     private String configuredHost;
     private String configuredPort;
     private String configuredTlsPort;
@@ -38,8 +37,7 @@ public class ReconfigureSimulators extends HttpServlet {
         configuredPort = Installation.instance().propertyServiceManager().getToolkitPort();
         configuredTlsPort = Installation.instance().propertyServiceManager().getToolkitTlsPort();
 
-        db = new SimDb();
-        for (SimId simId : db.getAllSimIds()) {
+        for (SimId simId : new SimDb().getAllSimIds()) {
             reconfigure(simId);
         }
     }
@@ -50,7 +48,7 @@ public class ReconfigureSimulators extends HttpServlet {
         SimulatorConfig config;
         logger.info("Reconfiguring Simulator " + simId.toString());
         try {
-            config = db.getSimulator(simId);
+            config = SimDb.getSimulator(simId);
         } catch (Exception e) {
             logger.error("    Cannot load " + ExceptionUtil.exception_details(e, 5));
             return;

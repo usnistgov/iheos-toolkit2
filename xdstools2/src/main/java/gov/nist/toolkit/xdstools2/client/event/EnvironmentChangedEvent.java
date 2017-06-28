@@ -4,7 +4,7 @@ import com.google.gwt.event.shared.EventHandler;
 import com.google.gwt.event.shared.GwtEvent;
 
 /**
- * Event thrown when another environment is selected.
+ * SimResource thrown when another environment is selected.
  * @see EnvironmentChangedEventHandler
  * Created by onh2 on 8/30/16.
  */
@@ -14,7 +14,7 @@ public class EnvironmentChangedEvent extends GwtEvent<EnvironmentChangedEvent.En
     private final String environment;
 
     /**
-     * Event constructor.
+     * SimResource constructor.
      * @param selectedEnvironment name of the environment selected.
      */
     public EnvironmentChangedEvent(String selectedEnvironment) {
@@ -39,7 +39,7 @@ public class EnvironmentChangedEvent extends GwtEvent<EnvironmentChangedEvent.En
     }
 
     /**
-     * Event handler interface for an Environment change (environment selection changed).
+     * SimResource handler interface for an Environment change (environment selection changed).
      * @see EnvironmentChangedEvent
      */
     public interface EnvironmentChangedEventHandler extends EventHandler {

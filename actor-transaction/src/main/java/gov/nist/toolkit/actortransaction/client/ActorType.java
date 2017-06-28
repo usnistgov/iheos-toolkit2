@@ -20,82 +20,100 @@ public enum ActorType implements IsSerializable, Serializable {
             "XDR Document Source",
             Arrays.asList("XDR_Source"),
             "xdrsrc",
+            "gov.nist.toolkit.simcommon.server.factories.XdrDocSrcActorFactory",
             "gov.nist.toolkit.simulators.sim.src.XdrDocSrcActorSimulator",
             Arrays.asList(TransactionType.XDR_PROVIDE_AND_REGISTER),
             false,
-            null
+            null,
+            false
     ),
     REGISTRY(
             "Document Registry",
             Arrays.asList("DOC_REGISTRY", "registryb", "initialize_for_stored_query"),
             "reg",
+            "gov.nist.toolkit.simcommon.server.factories.RegistryActorFactory",
             "gov.nist.toolkit.simulators.sim.reg.RegistryActorSimulator",
             Arrays.asList(TransactionType.REGISTER, TransactionType.REGISTER_ODDE, TransactionType.STORED_QUERY, TransactionType.UPDATE, TransactionType.MPQ),
             true,
-            null
+            null,
+            false
     ),
     REGISTRY_MU(
             "Metadata Update",
             Arrays.asList(""),
             "reg_mu",
             "",
+            "",
             Arrays.asList(TransactionType.PIF),
             false,
-            null
+            null,
+            false
     ),
     REGISTRY_MPQ(
             "Multi Patient Query",
             Arrays.asList(""),
             "reg_mpq",
             "",
+            "",
             Arrays.asList(TransactionType.PIF),
             false,
-            null
+            null,
+            false
     ),
     REGISTRY_OD(
             "On Demand",
             Arrays.asList(""),
             "reg_od",
             "",
+            "",
             Arrays.asList(TransactionType.PIF),
             false,
-            null
+            null,
+            false
     ),
     REGISTRY_ISR(
             "Integrated Source Repository",
             Arrays.asList(""),
             "reg_isr",
             "",
+            "",
             Arrays.asList(TransactionType.PIF),
             false,
-            null
+            null,
+            false
     ),
     REGISTRY_XUA(
             "XUA",
             Arrays.asList(""),
             "reg_xua",
             "",
+            "",
             Arrays.asList(TransactionType.PIF),
             false,
-            null
+            null,
+            false
     ),
     REGISTRY_CAT_FOLDER(
             "CAT Folder",
             Arrays.asList(""),
             "reg_catfolder",
             "",
+            "",
             Arrays.asList(TransactionType.PIF),
             false,
-            null
+            null,
+            false
     ),
     REGISTRY_CAT_LIFECYCLE(
             "CAT Lifecycle",
             Arrays.asList(""),
             "reg_catlifecycle",
             "",
+            "",
             Arrays.asList(TransactionType.PIF),
             false,
-            null
+            null,
+            false
     ),
     // Update option on Document Registry
     // this should be removed once implications are re-discovered
@@ -112,181 +130,221 @@ public enum ActorType implements IsSerializable, Serializable {
             Arrays.asList(""),
             "rep_xua",
             "",
+            "",
             Arrays.asList(TransactionType.PIF),
             false,
-            "repository"
+            "repository",
+            false
     ),
     REPOSITORY(
             "Document Repository",
             Arrays.asList("DOC_REPOSITORY", "repositoryb"),
             "rep",
+            "gov.nist.toolkit.simcommon.server.factories.RepositoryActorFactory",
             "gov.nist.toolkit.simulators.sim.rep.RepositoryActorSimulator",
             Arrays.asList(TransactionType.PROVIDE_AND_REGISTER, TransactionType.RETRIEVE),
             true,
-            "repository"
+            "repository",
+            false
     ),
     ONDEMAND_DOCUMENT_SOURCE(
             "On-Demand Document Source",
             Arrays.asList("ODDS", "ON_DEMAND_DOC_SOURCE"),
             "odds",
+            "gov.nist.toolkit.simcommon.server.factories.OnDemandDocumentSourceActorFactory",
             "gov.nist.toolkit.simulators.sim.rep.od.OddsActorSimulator",
 //            Arrays.asList(TransactionType.RETRIEVE),
             Arrays.asList(TransactionType.ODDS_RETRIEVE),
             true,
-            "odds"
+            "odds",
+            false
     ),
     ISR(
             "Integrated Source/Repository",
             Arrays.asList("EMBED_REPOS"),
             "isr",
             null,
+            null,
             Arrays.asList(TransactionType.ISR_RETRIEVE),
             true,
-            "isr"
+            "isr",
+            false
     ),
     REPOSITORY_REGISTRY(
             "Document Repository/Registry",
             new ArrayList<String>(),
             "rr",
+            "gov.nist.toolkit.simcommon.server.factories.RepositoryRegistryActorFactory",
             "gov.nist.toolkit.simulators.sim.RegRepActorSimulator",
             Arrays.asList(TransactionType.REGISTER, TransactionType.STORED_QUERY, TransactionType.UPDATE, TransactionType.MPQ, TransactionType.PROVIDE_AND_REGISTER, TransactionType.RETRIEVE),
             true,
-            null
+            null,
+            false
     ),
     DOCUMENT_RECIPIENT(
             "Document Recipient",
             Arrays.asList("DOC_RECIPIENT"),
             "rec",
+            "gov.nist.toolkit.simcommon.server.factories.RecipientActorFactory",
             "gov.nist.toolkit.simulators.sim.RegRepActorSimulator",
             Arrays.asList(TransactionType.XDR_PROVIDE_AND_REGISTER),
             true,
-            null
+            null,
+            false
     ),
     DOCUMENT_RECIPIENT_XUA(
             "XUA",
             Arrays.asList(""),
             "rec_xua",
+            null,
             "",
             Arrays.asList(TransactionType.XDR_PROVIDE_AND_REGISTER),
             false,
-            null
+            null,
+            false
     ),
     RESPONDING_GATEWAY(
             "Responding Gateway",
             Arrays.asList("RESP_GATEWAY"),
             "rg",
+            "gov.nist.toolkit.simcommon.server.factories.RGActorFactory",
             "gov.nist.toolkit.simulators.sim.rg.RGADActorSimulator",
             Arrays.asList(TransactionType.XC_QUERY, TransactionType.XC_RETRIEVE, TransactionType.XCPD),
             true,
-            null
+            null,
+            false
     ),
     RESPONDING_GATEWAY_OD(
             "On Demand",
             Arrays.asList(""),
             "rg_od",
+            null,
             "",
             Arrays.asList(TransactionType.PIF),
             false,
-            null
+            null,
+            false
     ),
     RESPONDING_GATEWAY_XUA(
             "XUA",
             Arrays.asList(""),
             "rg_xua",
+            null,
             "",
             Arrays.asList(TransactionType.PIF),
             false,
-            null
+            null,
+            false
     ),
     OD_RESPONDING_GATEWAY(
             "Responding Gateway - On Demand",
             Arrays.asList("On_DEMAND_RESP_GATEWAY"),
             "odrg",
+            "gov.nist.toolkit.simcommon.server.factories.ODRGActorFactory",
             "gov.nist.toolkit.simulators.sim.rg.ODRGActorSimulator",
             Arrays.asList(TransactionType.XC_QUERY, TransactionType.XC_RETRIEVE),
             true,
-            null
+            null,
+            false
     ),
     RESPONDING_IMAGING_GATEWAY(
        "Responding Imaging Gateway",
        Arrays.asList("RESP_IMG_GATEWAY"),
        "rig",
+            "gov.nist.toolkit.simcommon.server.factories.RigActorFactory",
        "gov.nist.toolkit.simulators.sim.rig.RigActorSimulator",
        Arrays.asList(TransactionType.XC_RET_IMG_DOC_SET),
        true,
-       null
+       null,
+            false
 ),
     COMBINED_RESPONDING_GATEWAY(
        "Combined Responding Gateway",
        Arrays.asList("COMB_RESP_GATEWAY"),
        "crg",
+            "gov.nist.toolkit.simcommon.server.factories.CrgActorFactory",
        "gov.nist.toolkit.simulators.sim.CrgActorSimulator",
        Arrays.asList(TransactionType.XC_QUERY, TransactionType.XC_RETRIEVE, TransactionType.XC_RET_IMG_DOC_SET),
        true,
-       null
+       null,
+            false
 ),
     INITIATING_GATEWAY(
             "Initiating Gateway",
             Arrays.asList("INIT_GATEWAY"),
             "ig",
+            "gov.nist.toolkit.simcommon.server.factories.IGActorFactory",
             "gov.nist.toolkit.simulators.sim.ig.IgActorSimulator",
             Arrays.asList(TransactionType.IG_QUERY, TransactionType.IG_RETRIEVE),
             true,
-            null
+            null,
+            false
     ),
     INITIATING_GATEWAY_AD(
             "Affinity Domain",
             Arrays.asList(""),
             "ig_ad",
+            null,
             "",
             Arrays.asList(TransactionType.IG_QUERY),
             false,
-            null
+            null,
+            false
     ),
     INITIATING_GATEWAY_XUA(
             "XUA",
             Arrays.asList(""),
             "ig_xua",
+            null,
             "",
             Arrays.asList(TransactionType.IG_QUERY),
             false,
-            null
+            null,
+            false
     ),
     INITIATING_IMAGING_GATEWAY(
        "Initiating Imaging Gateway",
        Arrays.asList("INIT_IMG_GATEWAY"),
        "iig",
+            "gov.nist.toolkit.simcommon.server.factories.IigActorFactory",
        "gov.nist.toolkit.simulators.sim.iig.IigActorSimulator",
        Arrays.asList(TransactionType.RET_IMG_DOC_SET_GW),
        true,
-       null
+       null,
+            false
     ),
     RSNA_EDGE_DEVICE(
             "RSNA Image Sharing Source",
             Arrays.asList("RSNA_EDGE"),
             "ris",
+            null,
             "gov.nist.toolkit.simulators.sim.ris.RisActorSimulator", //TODO: Change to correct domainß
             Arrays.asList(TransactionType.RET_IMG_DOC_SET_GW), //TODO: Change to correct Transaction Type
             true,
-            null
+            null,
+            false
     ),
     COMBINED_INITIATING_GATEWAY(
        "Combined Initiating Gateway",
        Arrays.asList("COMB_INIT_GATEWAY"),
        "cig",
+            "gov.nist.toolkit.simcommon.server.factories.CigActorFactory",
        "gov.nist.toolkit.simulators.sim.CigActorSimulator",
        Arrays.asList(TransactionType.IG_QUERY, TransactionType.IG_RETRIEVE,TransactionType.RET_IMG_DOC_SET_GW),
        true,
-       null
+       null,
+            false
        ),
     INITIALIZE_FOR_STORED_QUERY (  // this is an artificial type used by test indexer
             "Initialize for Stored Query",
             new ArrayList<String>(),
             "initialize_for_stored_query",
             null,
+            null,
             new ArrayList<TransactionType>(),
             false,
-            null
+            null,
+            false
     ),
 
     // Issue 78 (ODDS Issue 98)
@@ -300,15 +358,18 @@ public enum ActorType implements IsSerializable, Serializable {
             "XDS Document Consumer",
             Arrays.asList("XDS_Consumer", "doccons"),
             "cons",
+            "gov.nist.toolkit.simcommon.server.factories.ConsumerActorFactory",
             "gov.nist.toolkit.simulators.sim.cons.DocConsActorSimulator",
             Arrays.asList(TransactionType.STORED_QUERY, TransactionType.RETRIEVE),
             false,
-            null
+            null,
+            false
     ),
     IMAGING_DOC_SOURCE(
             "Imaging Document Source",
             Arrays.asList("IMAGING_DOC_SOURCE"),
             "ids",
+            "gov.nist.toolkit.simcommon.server.factories.ImagingDocSourceActorFactory",
             "gov.nist.toolkit.simulators.sim.ids.IdsActorSimulator",
             Arrays.asList(TransactionType.RET_IMG_DOC_SET),
             true,
@@ -320,11 +381,25 @@ public enum ActorType implements IsSerializable, Serializable {
             "Imaging Document Consumer",
             Arrays.asList("IMAGING_DOC_CONSUMER", "XDSI_Consumer"),
             "idc",
+            "gov.nist.toolkit.simcommon.server.factories.ImgConsumerActorFactory",
             "gov.nist.toolkit.simulators.sim.idc.ImgDocConsActorSimulator",
             Arrays.asList(TransactionType.RET_IMG_DOC_SET),
             false,
-            null
+            null,
+            false
+    ),
+    FHIR_SERVER(
+            "FHIR Server",
+            Arrays.asList(""),
+            "fhir",
+            "gov.nist.toolkit.simcommon.server.factories.FhirActorFactory",
+            "gov.nist.toolkit.fhir.simulators.FhirSimulator",
+            Arrays.asList(TransactionType.FHIR),
+            true,
+            null,
+            true
     )
+
     ;
 
     private static final long serialVersionUID = 1L;
@@ -334,32 +409,40 @@ public enum ActorType implements IsSerializable, Serializable {
     List<TransactionType> transactionTypes; // TransactionTypes this actor can receive
     boolean showInConfig;
     String actorsFileLabel;
+    String simulatorFactoryName;
     String simulatorClassName;
     List<TransactionType> httpTransactionTypes;
     String httpSimulatorClassName;
+    boolean isFhir;
 
     ActorType() {
     } // for GWT
 
-    ActorType(String name, List<String> altNames, String shortName, String simulatorClassName, List<TransactionType> tt, boolean showInConfig, String actorsFileLabel) {
+    ActorType(String name, List<String> altNames, String shortName, String simulatorFactoryName, String simulatorClassName, List<TransactionType> tt, boolean showInConfig, String actorsFileLabel, boolean isFhir) {
         this.name = name;
         this.altNames = altNames;
         this.shortName = shortName;
+        this.simulatorFactoryName = simulatorFactoryName;
         this.simulatorClassName = simulatorClassName;
         this.transactionTypes = tt;   // This actor receives
         this.showInConfig = showInConfig;
         this.actorsFileLabel = actorsFileLabel;
         this.httpTransactionTypes = new ArrayList<>();
         this.httpSimulatorClassName = null;
+        this.isFhir = isFhir;
     }
     
-    ActorType(String name, List<String> altNames, String shortName, 
+    ActorType(String name, List<String> altNames, String shortName, String simulatorFactoryName,
        String simulatorClassName, List<TransactionType> tt, boolean showInConfig, 
        String actorsFileLabel, String httpSimulatorClassName, List<TransactionType> httpTt) {
-       this(name, altNames, shortName, simulatorClassName, tt, showInConfig, actorsFileLabel);
+       this(name, altNames, shortName, simulatorFactoryName, simulatorClassName, tt, showInConfig, actorsFileLabel, false);
        this.httpTransactionTypes = httpTt;
        this.httpSimulatorClassName = httpSimulatorClassName;
    }
+
+   public boolean isFhir() { return isFhir; }
+
+   public String getSimulatorFactoryName() { return simulatorFactoryName; }
 
     public boolean showInConfig() {
         return showInConfig;

@@ -5,7 +5,7 @@ import gov.nist.toolkit.registrysupport.logging.LoggerException;
 import gov.nist.toolkit.simulators.sim.reg.store.DocEntry;
 import gov.nist.toolkit.simulators.sim.reg.store.MetadataCollection;
 import gov.nist.toolkit.simulators.sim.reg.store.RegIndex;
-import gov.nist.toolkit.simulators.sim.reg.store.RegIndex.StatusValue;
+import gov.nist.toolkit.simulators.sim.reg.store.StatusValue;
 import gov.nist.toolkit.valregmsg.registry.SQCodeAnd;
 import gov.nist.toolkit.valregmsg.registry.SQCodeOr;
 import gov.nist.toolkit.valregmsg.registry.storedquery.generic.FindDocuments;

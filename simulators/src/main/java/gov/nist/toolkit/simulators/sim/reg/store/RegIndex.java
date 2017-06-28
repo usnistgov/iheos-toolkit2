@@ -1,11 +1,11 @@
 package gov.nist.toolkit.simulators.sim.reg.store;
 
-import gov.nist.toolkit.actorfactory.SimDb;
-import gov.nist.toolkit.actorfactory.client.NoSimException;
-import gov.nist.toolkit.actorfactory.client.SimId;
-import gov.nist.toolkit.actorfactory.client.SimulatorStats;
 import gov.nist.toolkit.actortransaction.client.ActorType;
 import gov.nist.toolkit.registrymetadata.Metadata;
+import gov.nist.toolkit.simcommon.client.NoSimException;
+import gov.nist.toolkit.simcommon.client.SimId;
+import gov.nist.toolkit.simcommon.client.SimulatorStats;
+import gov.nist.toolkit.simcommon.server.SimDb;
 import gov.nist.toolkit.valsupport.registry.RegistryValidationInterface;
 import org.apache.axiom.om.OMElement;
 import org.apache.log4j.Logger;
@@ -16,20 +16,16 @@ import java.util.Calendar;
 import java.util.List;
 
 public class RegIndex implements RegistryValidationInterface, Serializable {
-	static Logger logger = Logger.getLogger(RegIndex.class);
+	private static Logger logger = Logger.getLogger(RegIndex.class);
 
 	private static final long serialVersionUID = 1L;
 	public MetadataCollection mc;
-	String filename;
+	private String filename;
 	public Calendar cacheExpires;
-	transient SimDb db;
-	SimId simId;
-	
-	public RegIndex() {}
+	transient private SimDb db;
+	private SimId simId;
 
-	public RegIndex(File file, SimId simId) {
-		this(file.toString(), simId);
-	}
+	public RegIndex() {}
 
 	public RegIndex(String filename, SimId simId) {
 		this.filename = filename;
@@ -39,15 +35,15 @@ public class RegIndex implements RegistryValidationInterface, Serializable {
 			logger.debug("Attempting to Restore Registry Index");
 			restore();
 			mc.regIndex = this;
-			mc.dirty = false;
+			mc.setDirty(false);
 		} catch (Exception e) {
 			// no existing database - initialize instead
 			logger.debug("No existing - creating new");
 			mc = new MetadataCollection();
 			mc.init();
 			mc.regIndex = this;
-			mc.dirty = false;
-			mc.allCollections = null;
+			mc.setDirty(false);
+			mc.clearAllCollections();
 		}
 	}
 
@@ -62,31 +58,8 @@ public class RegIndex implements RegistryValidationInterface, Serializable {
 	public SimDb getSimDb() {
 		return db;
 	}
-
-	public enum StatusValue { UNKNOWN, APPROVED, DEPRECATED };
-	
-	
 	
 	static public List<StatusValue> docEntryLegalStatusValues = new ArrayList<StatusValue>() {{ add(StatusValue.APPROVED); add(StatusValue.DEPRECATED); }};
-	
-	public class OldValueNewValueStatus {
-		StatusValue o;
-		StatusValue n;
-		String id;
-		Ro ro;
-		
-		
-		public OldValueNewValueStatus(StatusValue oldValue, StatusValue newValue, String id) {
-			o = oldValue;
-			n = newValue;
-			this.id = id;
-		}
-	}
-
-	static public StatusValue getStatusValue(Metadata m, OMElement ele) {
-		String stat = m.getStatus(ele);
-		return getStatusValue(stat);
-	}
 
 	public void setExpiration(Calendar expires) {
 		this.cacheExpires = expires;
@@ -102,7 +75,7 @@ public class RegIndex implements RegistryValidationInterface, Serializable {
 		return StatusValue.UNKNOWN;
 	}
 
-	static public String getStatusString(StatusValue status) {
+	public static  String getStatusString(StatusValue status) {
 		switch(status) {
 		case APPROVED: 
 			return "urn:oasis:names:tc:ebxml-regrep:StatusType:Approved";
@@ -124,18 +97,10 @@ public class RegIndex implements RegistryValidationInterface, Serializable {
 		return values;
 	}
 
-	public String statsToString() {
-		return mc.statsToString();
-	}
-
-	class PidDb {
-		List<String> knownPids;
-	}
-
 	public enum AssocType { UNKNOWN, HASMEMBER, RPLC, RPLC_XFRM, XFRM, APND };
 
 	static public AssocType getAssocType(Metadata m, OMElement ele) {
-		String typ = m.getAssocType(ele);
+		String typ = Metadata.getAssocType(ele);
 		return getAssocType(typ);
 	}
 
@@ -155,14 +120,14 @@ public class RegIndex implements RegistryValidationInterface, Serializable {
 		return AssocType.UNKNOWN;
 	}
 	
-	public static String getAssocString(AssocType type) {
+	 public static String getAssocString(AssocType type) {
 		switch (type) {
 		case HASMEMBER: return "HasMember";
 		default: return type.toString();
 		}
 	}
 
-	static void saveRegistry(MetadataCollection mc, String filename) throws IOException {
+	private static void saveRegistry(MetadataCollection mc, String filename) throws IOException {
 		logger.debug("Save Registry Index");
 		FileOutputStream fos = null;
 		ObjectOutputStream out = null;
@@ -174,7 +139,7 @@ public class RegIndex implements RegistryValidationInterface, Serializable {
 	}
 
 	// This must be called from a synchronize block
-	static MetadataCollection restoreRegistry(String filename) throws IOException, ClassNotFoundException {
+	private static MetadataCollection restoreRegistry(String filename) throws IOException, ClassNotFoundException {
 		FileInputStream fis = null;
 		ObjectInputStream in = null;
 		MetadataCollection mc;
@@ -183,22 +148,21 @@ public class RegIndex implements RegistryValidationInterface, Serializable {
 			in = new ObjectInputStream(fis);
 			mc = (MetadataCollection)in.readObject();
 		} finally {
-			in.close();
+			if (in != null)
+				in.close();
 			if (fis!=null)
 				fis.close();
 		}
-
-
 		return mc;
 	}
 
 // caller takes responsiblity for sync, must be on this
 	public void save() throws IOException {
 			saveRegistry(mc, filename);
-			mc.dirty = false;
+			mc.setDirty(false);
 	}
 
-	public void restore() throws IOException, ClassNotFoundException {
+	private void restore() throws IOException, ClassNotFoundException {
 		synchronized(this) {
 			mc = restoreRegistry(filename);
 		}

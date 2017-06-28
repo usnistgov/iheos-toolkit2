@@ -27,6 +27,8 @@ import gov.nist.toolkit.sitemanagement.client.SiteSpec;
 import gov.nist.toolkit.testkitutilities.client.TestCollectionDefinitionDAO;
 import gov.nist.toolkit.xdstools2.client.ToolWindow;
 import gov.nist.toolkit.xdstools2.client.command.command.*;
+import gov.nist.toolkit.xdstools2.client.event.testContext.TestContextChangedEvent;
+import gov.nist.toolkit.xdstools2.client.event.testContext.TestContextChangedEventHandler;
 import gov.nist.toolkit.xdstools2.client.event.testSession.TestSessionChangedEvent;
 import gov.nist.toolkit.xdstools2.client.event.testSession.TestSessionChangedEventHandler;
 import gov.nist.toolkit.xdstools2.client.tabs.GatewayTestsTabs.BuildIGTestOrchestrationButton;
@@ -123,6 +125,16 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner, TestTa
 				if (InteractionDiagram.DiagramPart.RequestConnector.equals(part)
 						|| InteractionDiagram.DiagramPart.ResponseConnector.equals(part)) {
 					new LaunchInspectorClickHandler(testInstance, getCurrentTestSession(), new SiteSpec(testContext.getSiteName())).onClick(null);
+				}
+			}
+		});
+
+		ClientUtils.INSTANCE.getEventBus().addHandler(TestContextChangedEvent.TYPE, new TestContextChangedEventHandler() {
+			@Override
+			public void onTestContextChanged(TestContextChangedEvent event) {
+				if (updateDisplayedActorAndOptionType()) {
+					orchInit.clear();
+					initializeTestDisplay(mainView.getTestsPanel());
 				}
 			}
 		});
@@ -228,7 +240,7 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner, TestTa
 		new GetAssignedSiteForTestSessionCommand(){
 			@Override
 			public void onComplete(final String result) {
-				testContext.setSiteName(result);
+				testContext.setCurrentSiteSpec(result);
 				testContextView.updateTestingContextDisplay();
 
 				if (result == null) return;
@@ -291,17 +303,23 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner, TestTa
 	}
 
 	// for use by ConfActorActivity
-	private void updateDisplayedActorAndOptionType() {
+	private boolean updateDisplayedActorAndOptionType() {
 		currentActorTypeDescription = getDescriptionForTestCollection(currentActorOption.actorTypeId);
 
 		int idx=0;
+		boolean foundSelectedActorTab = false;
 		for (TestCollectionDefinitionDAO tcd : TestCollectionDefinitionDAO.getNonOption(testCollectionDefinitionDAOs)) {
-			if (currentActorOption.getActorTypeId().equals(tcd.getCollectionID()))
+			if (currentActorOption.getActorTypeId().equals(tcd.getCollectionID())) {
+				foundSelectedActorTab = true;
 				break;
+			}
 			idx++;
 		}
 
-		getMainView().getActorTabBar().selectTab(idx,true);
+		if (foundSelectedActorTab)
+			getMainView().getActorTabBar().selectTab(idx,true);
+
+		return foundSelectedActorTab;
 
 	}
 

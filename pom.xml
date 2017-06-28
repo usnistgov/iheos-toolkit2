@@ -58,7 +58,7 @@
 <!--        <module>dns</module>   -->
         <module>envSettings</module>
         <module>testkit-utilities</module>
-        <module>simDb</module>
+        <!--<module>simDb</module>-->
         <module>tk</module>
         <module>tk-deps</module>
         <module>utilities</module>
@@ -76,13 +76,15 @@
         <module>sim-test-servlet</module>
         <module>config-datatypes</module>
         <module>config-datatypes-io</module>
-        <!--<module>it-tests</module>-->
+        <module>it-tests</module>
         <module>validators-soap-message</module>
         <module>new-validation-system</module>
         <module>interaction-model</module>
         <module>interaction-mapper</module>
         <module>interaction-diagram</module>
         <module>testdoctool</module>
+        <module>itsupport</module>
+        <module>fhir</module>
     </modules>
 
     <profiles>

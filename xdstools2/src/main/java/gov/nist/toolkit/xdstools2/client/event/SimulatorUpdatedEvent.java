@@ -5,7 +5,7 @@ import com.google.gwt.event.shared.EventHandler;
 import com.google.gwt.event.shared.GwtEvent;
 
 /**
- * Event thrown when the simulators change (creation, deletion, modification).
+ * SimResource thrown when the simulators change (creation, deletion, modification).
  * @see SimulatorUpdatedEventHandler
  * Created by onh2 on 9/19/16.
  */
@@ -24,7 +24,7 @@ public class SimulatorUpdatedEvent extends GwtEvent<SimulatorUpdatedEvent.Simula
     }
 
     /**
-     * Event handler interface for a simulator change (environment selection changed).
+     * SimResource handler interface for a simulator change (environment selection changed).
      * @see SimulatorUpdatedEvent
      */
     public interface SimulatorUpdatedEventHandler extends EventHandler{

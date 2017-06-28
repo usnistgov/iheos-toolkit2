@@ -1,10 +1,10 @@
 package gov.nist.toolkit.simulators.sim.src;
 
 import gov.nist.toolkit.configDatatypes.SimulatorProperties;
-import gov.nist.toolkit.actorfactory.client.SimulatorConfig;
 import gov.nist.toolkit.configDatatypes.client.TransactionType;
 import gov.nist.toolkit.errorrecording.GwtErrorRecorderBuilder;
 import gov.nist.toolkit.securityCommon.SecurityParamsFactory;
+import gov.nist.toolkit.simcommon.client.SimulatorConfig;
 import gov.nist.toolkit.simulators.support.BaseDsActorSimulator;
 import gov.nist.toolkit.soap.DocumentMap;
 import gov.nist.toolkit.soap.axis2.MtomBuilder;

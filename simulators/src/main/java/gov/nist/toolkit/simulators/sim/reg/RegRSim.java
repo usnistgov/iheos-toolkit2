@@ -1,16 +1,16 @@
 package gov.nist.toolkit.simulators.sim.reg;
 
+import gov.nist.toolkit.common.datatypes.UuidValidator;
+import gov.nist.toolkit.commondatatypes.MetadataSupport;
 import gov.nist.toolkit.configDatatypes.SimulatorProperties;
 import gov.nist.toolkit.configDatatypes.client.Pid;
 import gov.nist.toolkit.configDatatypes.client.PidBuilder;
-import gov.nist.toolkit.actorfactory.client.SimulatorConfig;
-import gov.nist.toolkit.common.datatypes.UuidValidator;
 import gov.nist.toolkit.errorrecording.ErrorRecorder;
 import gov.nist.toolkit.errorrecording.client.XdsErrorCode;
 import gov.nist.toolkit.errorrecording.client.XdsErrorCode.Code;
 import gov.nist.toolkit.registrymetadata.IdParser;
 import gov.nist.toolkit.registrymetadata.Metadata;
-import gov.nist.toolkit.commondatatypes.MetadataSupport;
+import gov.nist.toolkit.simcommon.client.SimulatorConfig;
 import gov.nist.toolkit.simcommon.client.config.SimulatorConfigElement;
 import gov.nist.toolkit.simulators.sim.reg.store.*;
 import gov.nist.toolkit.simulators.support.DsSimCommon;

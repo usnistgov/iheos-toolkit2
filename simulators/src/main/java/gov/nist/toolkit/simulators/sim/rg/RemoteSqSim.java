@@ -1,15 +1,15 @@
 package gov.nist.toolkit.simulators.sim.rg;
 
+import gov.nist.toolkit.commondatatypes.MetadataSupport;
 import gov.nist.toolkit.configDatatypes.SimulatorProperties;
-import gov.nist.toolkit.actorfactory.client.SimulatorConfig;
 import gov.nist.toolkit.errorrecording.ErrorRecorder;
 import gov.nist.toolkit.errorrecording.client.XdsErrorCode;
 import gov.nist.toolkit.registrymetadata.Metadata;
 import gov.nist.toolkit.registrymetadata.MetadataParser;
 import gov.nist.toolkit.registrymsg.registry.AdhocQueryResponseParser;
-import gov.nist.toolkit.registrysupport.RegistryErrorListGenerator;
 import gov.nist.toolkit.registrymsg.registry.Response;
-import gov.nist.toolkit.commondatatypes.MetadataSupport;
+import gov.nist.toolkit.registrysupport.RegistryErrorListGenerator;
+import gov.nist.toolkit.simcommon.client.SimulatorConfig;
 import gov.nist.toolkit.simulators.sim.reg.AdhocQueryResponseGeneratingSim;
 import gov.nist.toolkit.simulators.sim.reg.RegistryResponseSendingSim;
 import gov.nist.toolkit.simulators.sim.reg.sq.SqSim;

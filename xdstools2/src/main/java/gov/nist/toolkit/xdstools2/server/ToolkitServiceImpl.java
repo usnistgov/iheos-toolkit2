@@ -3,13 +3,6 @@ package gov.nist.toolkit.xdstools2.server;
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 import edu.wustl.mir.erl.ihe.xdsi.util.PrsSimLogs;
 import gov.nist.toolkit.MessageValidatorFactory2.MessageValidatorFactoryFactory;
-import gov.nist.toolkit.actorfactory.SimDb;
-import gov.nist.toolkit.actorfactory.SimManager;
-import gov.nist.toolkit.actorfactory.SiteServiceManager;
-import gov.nist.toolkit.actorfactory.client.SimId;
-import gov.nist.toolkit.actorfactory.client.Simulator;
-import gov.nist.toolkit.actorfactory.client.SimulatorConfig;
-import gov.nist.toolkit.actorfactory.client.SimulatorStats;
 import gov.nist.toolkit.actortransaction.TransactionErrorCodeDbLoader;
 import gov.nist.toolkit.actortransaction.client.ActorType;
 import gov.nist.toolkit.actortransaction.client.TransactionInstance;
@@ -35,6 +28,13 @@ import gov.nist.toolkit.session.client.logtypes.TestPartFileDTO;
 import gov.nist.toolkit.session.server.Session;
 import gov.nist.toolkit.session.server.serviceManager.QueryServiceManager;
 import gov.nist.toolkit.session.server.serviceManager.XdsTestServiceManager;
+import gov.nist.toolkit.simcommon.client.SimId;
+import gov.nist.toolkit.simcommon.client.Simulator;
+import gov.nist.toolkit.simcommon.client.SimulatorConfig;
+import gov.nist.toolkit.simcommon.client.SimulatorStats;
+import gov.nist.toolkit.simcommon.server.SimDb;
+import gov.nist.toolkit.simcommon.server.SimManager;
+import gov.nist.toolkit.simcommon.server.SiteServiceManager;
 import gov.nist.toolkit.simulators.sim.rep.RepIndex;
 import gov.nist.toolkit.simulators.support.StoredDocument;
 import gov.nist.toolkit.simulators.support.od.TransactionUtil;
@@ -78,13 +78,7 @@ import java.io.IOException;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Scanner;
+import java.util.*;
 
 @SuppressWarnings("serial")
 public class ToolkitServiceImpl extends RemoteServiceServlet implements
@@ -993,7 +987,7 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements
         return new SimulatorServiceManager(session()).getSelectedMessageResponse(request.getFilename());
     }
     @Override
-    public Map<String, SimId> getActorSimulatorNameMap(CommandContext context) throws Exception {
+    public List<String> getActorSimulatorNameMap(CommandContext context) throws Exception {
         installCommandContext(context);
         return new SimulatorServiceManager(session()).getSimulatorNameMap();
     }

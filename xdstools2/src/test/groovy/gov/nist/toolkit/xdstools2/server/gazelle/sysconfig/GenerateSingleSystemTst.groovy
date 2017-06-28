@@ -8,7 +8,7 @@ import spock.lang.Specification
  */
 class GenerateSingleSystemTst extends Specification {
     File cache = new File('/Users/bill/tmp/actors')
-    def testingSession = '35'
+    def testingSession = '38'
     def gazelleBaseUrl = 'https://gazelle.ihe.net/EU-CAT/systemConfigurations.seam?testingSessionId=' + testingSession
     GazellePull gazellePull = new GazellePull(gazelleBaseUrl)
 

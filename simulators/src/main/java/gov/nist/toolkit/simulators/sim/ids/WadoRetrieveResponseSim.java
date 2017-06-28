@@ -3,23 +3,25 @@
  */
 package gov.nist.toolkit.simulators.sim.ids;
 
-import java.io.IOException;
-import java.util.*;
-
-import javax.servlet.ServletOutputStream;
-
+import edu.emory.mathcs.backport.java.util.Arrays;
+import gov.nist.toolkit.errorrecording.ErrorRecorder;
+import gov.nist.toolkit.errorrecording.client.XdsErrorCode.Code;
+import gov.nist.toolkit.http.HttpMessageBa;
+import gov.nist.toolkit.simulators.support.DsSimCommon;
+import gov.nist.toolkit.simulators.support.SimCommon;
+import gov.nist.toolkit.simulators.support.StoredDocument;
+import gov.nist.toolkit.simulators.support.TransactionSimulator;
+import gov.nist.toolkit.valsupport.engine.MessageValidatorEngine;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.http.NameValuePair;
 import org.apache.log4j.Logger;
 
-import gov.nist.toolkit.actorfactory.client.SimulatorConfig;
-import gov.nist.toolkit.errorrecording.ErrorRecorder;
-import gov.nist.toolkit.errorrecording.client.XdsErrorCode.Code;
-import gov.nist.toolkit.http.HttpMessageBa;
-import gov.nist.toolkit.simulators.support.*;
-import gov.nist.toolkit.valsupport.engine.MessageValidatorEngine;
-
-import edu.emory.mathcs.backport.java.util.Arrays;
+import javax.servlet.ServletOutputStream;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Generates HTTP Response for WADO Retrieve Request (RAD-55)

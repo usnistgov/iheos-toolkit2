@@ -134,6 +134,11 @@ public class PropertyServiceManager {
 		return propertyManager;
 	}
 
+	public void loadPropertyManager(File toolkitPropertiesFile){
+		logger.info("Property manager initialized from " + toolkitPropertiesFile);
+		propertyManager = new PropertyManager(toolkitPropertiesFile.toString())
+	}
+
 	public void loadPropertyManager() {
 		if (propertyManager != null)
 			return;
@@ -154,6 +159,7 @@ public class PropertyServiceManager {
 			t.printStackTrace();
 		}
 
+		logger.info("Property manager initialized from " + location);
 		propertyManager = new PropertyManager(location);
 
 		// This removes the dependency that
