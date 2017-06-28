@@ -38,9 +38,9 @@ class WriteReadTest extends FhirSpecification {
     }
 
 
-    def 'submit first patient'() {
+    def 'CREATE first patient'() {
         when:
-        def (BasicStatusLine statusLine, String results, FhirId locationHeader) = post("${baseURL(simId)}Patient", patient)
+        def (BasicStatusLine statusLine, String results, FhirId locationHeader) = post("${baseURL(simId)}/Patient", patient)
         OperationOutcome oo
         if (results) {
             IBaseResource resource = ourCtx.newJsonParser().parseResource(results)
@@ -61,10 +61,12 @@ class WriteReadTest extends FhirSpecification {
         simDb.openMostRecentEvent(SimDb.BASE_TYPE, SimDb.ANY_TRANSACTION)
         File eventDir = simDb.getEventDir()
 
-        then:
+        then: 'verify all these get created'
         eventDir.exists()
         new File(eventDir, SimDb.REQUEST_HEADER_FILE).exists()
         new File(eventDir, SimDb.REQUEST_BODY_BIN_FILE).exists() || new File(eventDir, SimDb.REQUEST_BODY_TXT_FILE).exists()
+
+        // TODO - response logging needs ServletRestfulResponse
 //        new File(eventDir, SimDb.RESPONSE_HEADER_FILE).exists()
 //        new File(eventDir, SimDb.RESPONSE_BODY_TXT_FILE).exists()
         new File(eventDir,'Patient').isDirectory()
@@ -72,9 +74,9 @@ class WriteReadTest extends FhirSpecification {
 
     @Shared FhirId submission
 
-    def 'submit and query patient'() {
+    def 'CREATE and READ patient'() {
         when:
-        def (BasicStatusLine statusLine, String results, FhirId locationHeader) = post("${baseURL(simId)}Patient", patient)
+        def (BasicStatusLine statusLine, String results, FhirId locationHeader) = post("${baseURL(simId)}/Patient", patient)
         submission = locationHeader
         OperationOutcome oo
         if (results) {
@@ -92,7 +94,7 @@ class WriteReadTest extends FhirSpecification {
         !oo
 
         when:
-        def (BasicStatusLine statusLine2, String results2) = get("${baseURL(simId)}Patient/${locationHeader.id}")
+        def (BasicStatusLine statusLine2, String results2) = get("${baseURL(simId)}/Patient/${locationHeader.id}")
 
         then:
         statusLine2.statusCode == 200

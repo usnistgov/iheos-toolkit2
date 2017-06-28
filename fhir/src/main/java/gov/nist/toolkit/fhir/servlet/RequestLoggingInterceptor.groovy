@@ -4,10 +4,12 @@ import ca.uhn.fhir.model.api.Bundle
 import ca.uhn.fhir.model.api.TagList
 import ca.uhn.fhir.rest.api.RestOperationTypeEnum
 import ca.uhn.fhir.rest.method.RequestDetails
+import ca.uhn.fhir.rest.server.IRestfulResponse
 import ca.uhn.fhir.rest.server.exceptions.AuthenticationException
 import ca.uhn.fhir.rest.server.exceptions.BaseServerResponseException
 import ca.uhn.fhir.rest.server.interceptor.IServerInterceptor
 import ca.uhn.fhir.rest.server.servlet.ServletRequestDetails
+import gov.nist.toolkit.fhir.context.ToolkitFhirContext
 import gov.nist.toolkit.simcommon.client.SimId
 import gov.nist.toolkit.simcommon.server.SimDb
 import gov.nist.toolkit.utilities.io.Io
@@ -21,8 +23,6 @@ import javax.servlet.http.HttpServletResponse
  */
 class RequestLoggingInterceptor implements IServerInterceptor {
 
-    static final String SIMID = 'SIMID'
-    static final String SIMDB = 'SIMDB'
 
     @Override
     boolean handleException(RequestDetails theRequestDetails, BaseServerResponseException theException, HttpServletRequest theServletRequest, HttpServletResponse theServletResponse) throws ServletException, IOException {
@@ -31,18 +31,11 @@ class RequestLoggingInterceptor implements IServerInterceptor {
 
     @Override
     boolean incomingRequestPostProcessed(RequestDetails theRequestDetails, HttpServletRequest theRequest, HttpServletResponse theResponse) throws AuthenticationException {
-        return true
-    }
 
-    @Override
-    void incomingRequestPreHandled(RestOperationTypeEnum theOperation, IServerInterceptor.ActionRequestDetails theProcessedRequest) {
-
-    }
-
-    @Override
-    boolean incomingRequestPreProcessed(HttpServletRequest theRequest, HttpServletResponse theResponse) {
-        // do logging here
-        SimId simId = HttpRequestParser.simIdFromRequest(theRequest)
+        //
+        // log incoming message
+        //
+        SimId simId = HttpRequestParser.simIdFromRequest(theRequestDetails)
         if (!simId) return true // note: id not added to request
 
         SimDb simDb
@@ -52,9 +45,9 @@ class RequestLoggingInterceptor implements IServerInterceptor {
             return true;// this will be noticed in the main flow and handled separately
         }
 
-
-        theRequest.setAttribute(SIMID, simId)
-        theRequest.setAttribute(SIMDB, simDb)
+        Attributes a = new Attributes(theRequestDetails)
+        a.simId = simId
+        a.simDb = simDb
 
         List<String> headers = theRequest.headerNames.collect { String headerName ->
             "${headerName}: ${theRequest.getHeader(headerName)}"
@@ -66,12 +59,23 @@ class RequestLoggingInterceptor implements IServerInterceptor {
         InputStream ins = theRequest.inputStream
         assert ins.markSupported(), 'Mark not supported on inputstream'
 
-        ins.mark(5*1024*1000)
+        ins.mark(1*1024*1000)
         String request = Io.getStringFromInputStream(ins)
         ins.reset()  // so the REST processor can re-read
 
         simDb.putRequestBodyFile(request.bytes)
 
+
+        return true
+    }
+
+    @Override
+    void incomingRequestPreHandled(RestOperationTypeEnum theOperation, IServerInterceptor.ActionRequestDetails theProcessedRequest) {
+
+    }
+
+    @Override
+    boolean incomingRequestPreProcessed(HttpServletRequest theRequest, HttpServletResponse theResponse) {
         return true
     }
 
@@ -97,9 +101,27 @@ class RequestLoggingInterceptor implements IServerInterceptor {
 
     @Override
     boolean outgoingResponse(RequestDetails theRequestDetails, IBaseResource theResponseObject) {
-        // log single resource response
+        //
+        // log outgoing message
+        //
 
+        if (theResponseObject) {
+            Attributes a = new Attributes(theRequestDetails)
+            SimId simId = a.simId
+            SimDb simDb = a.simDb
 
+            assert simId, 'SimId not available to outgoing logger'
+            assert simDb, 'SimDb not available to outgoing logger'
+
+            String resourceString = ToolkitFhirContext.get().newJsonParser().encodeResourceToString(theResponseObject)
+
+            simDb.putResponseBody(resourceString)
+        }
+
+        if (theRequestDetails.getResponse()) {
+            assert theRequestDetails
+            IRestfulResponse restfulResponse = theRequestDetails.getResponse()
+        }
 
         return true
     }
