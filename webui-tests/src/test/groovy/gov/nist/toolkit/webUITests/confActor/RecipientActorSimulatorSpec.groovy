@@ -1,5 +1,6 @@
 package gov.nist.toolkit.webUITests.confActor
 
+import com.gargoylesoftware.htmlunit.html.HtmlButton
 import com.gargoylesoftware.htmlunit.html.HtmlCheckBoxInput
 import com.gargoylesoftware.htmlunit.html.HtmlDivision
 import com.gargoylesoftware.htmlunit.html.HtmlImage
@@ -99,7 +100,60 @@ class RecipientActorSimulatorSpec extends ConformanceActor {
         resetCkbx.isChecked()
     }
 
-    def 'Find and Click the RunAll Test Registry Conformance Actor image button.'() {
+    def 'Click Initialize.'() {
+        when:
+        HtmlButton initializeBtn = null
+
+        NodeList btnNl = page.getElementsByTagName("button")
+        final Iterator<HtmlButton> nodesIterator = btnNl.iterator()
+        for (HtmlButton button: nodesIterator) {
+            if (button.getTextContent().contains("Initialize Testing Environment")) {
+                initializeBtn = button
+            }
+        }
+
+        then:
+        initializeBtn != null
+
+        when:
+        page = initializeBtn.click(false,false,false)
+        webClient.waitForBackgroundJavaScript(maxWaitTimeInMills)
+
+        while(!page.asText().contains("Initialization Complete")){
+            webClient.waitForBackgroundJavaScript(500)
+        }
+
+        then:
+        page.asText().contains("Initialization Complete")
+
+        when:
+        List<HtmlDivision> elementList = page.getByXPath("//div[contains(@class, 'orchestrationTest') and contains(@class, 'testOverviewHeaderFail')]")  // Substring match, other CSS class must not contain this string.
+        // Use this for order dependent selection: "//div[@class='testOverviewHeaderFail orchestrationTest']"
+
+        /*
+        If Initialization failed...
+        1. Check PIF port numbers
+            - Is there a java.net.ConnectException: Connection refused: connect message in the jetty log? Try a different port number range in toolkit.properties.
+        2. Check SUT URLs for the two stored query orchestration tests.
+         */
+        then:
+        elementList!=null && elementList.size()==0
+
+        when:
+        elementList = page.getByXPath("//div[contains(@class, 'orchestrationTest') and contains(@class, 'testOverviewHeaderNotRun')]")
+
+        then:
+        elementList!=null && elementList.size()==1
+        /* Special case: The Patient Identity Feed is not sent (so this is never displayed as run (green color in UI). */
+
+        when:
+        elementList = page.getByXPath("//div[contains(@class, 'orchestrationTest') and contains(@class, 'testOverviewHeaderSuccess')]")
+
+        then:
+        elementList!=null && elementList.size()==0
+    }
+
+    def 'Find and Click the RunAll Test Recipient Conformance Actor image button.'() {
 
         when:
         List<HtmlDivision> elementList = page.getByXPath("//div[contains(@class,'gwt-DialogBox')]")
