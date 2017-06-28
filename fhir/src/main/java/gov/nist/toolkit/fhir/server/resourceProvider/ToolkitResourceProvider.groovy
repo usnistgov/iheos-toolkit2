@@ -3,9 +3,13 @@ package gov.nist.toolkit.fhir.server.resourceProvider
 import ca.uhn.fhir.context.FhirContext
 import ca.uhn.fhir.model.primitive.IdDt
 import ca.uhn.fhir.parser.IParser
+import ca.uhn.fhir.rest.api.MethodOutcome
+import ca.uhn.fhir.rest.method.RequestDetails
+import ca.uhn.fhir.rest.server.exceptions.InternalErrorException
 import gov.nist.toolkit.fhir.context.ToolkitFhirContext
+import gov.nist.toolkit.fhir.search.SearchByTypeAndId
+import gov.nist.toolkit.fhir.servlet.Attributes
 import gov.nist.toolkit.fhir.servlet.HttpRequestParser
-import gov.nist.toolkit.fhir.servlet.RequestLoggingInterceptor
 import gov.nist.toolkit.fhir.support.ResourceIndex
 import gov.nist.toolkit.fhir.support.SimContext
 import gov.nist.toolkit.fhir.support.SimIndexManager
@@ -13,8 +17,7 @@ import gov.nist.toolkit.simcommon.client.SimId
 import gov.nist.toolkit.simcommon.server.SimDb
 import gov.nist.toolkit.utilities.id.UuidAllocator
 import org.hl7.fhir.dstu3.model.DomainResource
-
-import javax.servlet.http.HttpServletRequest
+import org.hl7.fhir.dstu3.model.IdType
 
 /**
  * Collection of utilities for linking HAPI ResourceProvider
@@ -23,18 +26,19 @@ import javax.servlet.http.HttpServletRequest
 class ToolkitResourceProvider {
     FhirContext fhirContext  // expensive to create so it is built once
     Class<?> resourceType
-    HttpServletRequest request
+    RequestDetails requestDetails
     SimContext simContext
 
-    ToolkitResourceProvider(Class<?> resourceType, HttpServletRequest request) {
+    ToolkitResourceProvider(Class<?> resourceType, RequestDetails requestDetails) {
         this.resourceType = resourceType
-        this.request = request
+        this.requestDetails = requestDetails
 
         // get simgleton copy - expensive to build
         fhirContext = ToolkitFhirContext.get()
 
         // linkage to ResDb simulator environment
-        SimDb simDb = (SimDb) request.getAttribute(RequestLoggingInterceptor.SIMDB)
+        Attributes a = new Attributes(requestDetails)
+        SimDb simDb = a.simDb
         assert simDb, 'SimDb not set by logging interceptor'
         simContext = new SimContext(simDb)
     }
@@ -48,8 +52,45 @@ class ToolkitResourceProvider {
      * @return
      */
 //    SimId getSimId() { HttpRequestParser.simIdFromRequest(request) }
-    SimId getSimId() { (SimId) request.getAttribute(RequestLoggingInterceptor.SIMID) }
-    SimDb getSimDb() { (SimDb) request.getAttribute(RequestLoggingInterceptor.SIMDB) }
+    SimId getSimId() { new Attributes(requestDetails).simId }
+    SimDb getSimDb() { new Attributes(requestDetails).simDb }
+
+    /**
+     * this implements most of the requirements for the CREATE
+     * operation on a Resource.  Before calling this the
+     * Resource should be validated.
+     * @param theResource
+     * @return
+     */
+    MethodOutcome createOperation(DomainResource theResource) {
+        // store the resource
+        IdDt newId = addResource(theResource)
+
+        // flush and close the index
+        flushIndex()
+
+        // Let the caller know the ID of the newly created resource
+        return new MethodOutcome(newId);
+    }
+
+    /**
+     * this is most of the read operation for any Resource.
+     * @param theId of the Resource
+     * @return File containing the Resource
+     */
+    File readOperation(IdType theId) {
+        String id = theId.getIdPart();
+
+        List<String> paths = new SearchByTypeAndId(simContext).run(resourceTypeAsString(), id);
+
+        if (paths.size() == 0)
+            return null;
+
+        if (paths.size() > 1)
+            throw new InternalErrorException("Multiple results found");
+
+        return new File(paths.get(0));
+    }
 
     /**
      * add a resource instance to the store. Allocate a resource id.  We use UUIDs
@@ -61,13 +102,18 @@ class ToolkitResourceProvider {
      */
     IdDt addResource(DomainResource theResource) {
         String resourceType = theResource.getResourceType().name()
+
+        // Generate the id
         String id = UuidAllocator.allocateNaked()
         IdDt idDt = new IdDt(resourceType, id, "1")
         theResource.setId(idDt)
 
         if (!simContext) simContext = new SimContext(simDb)
 
+        // save resource
         File resourceFile = simContext.store(resourceType, theResource, id)
+
+        // add it to the index
         ResourceIndex resourceIndex = simContext.index(resourceType, theResource, id)
         resourceIndex.path = resourceFile.path
 
@@ -88,7 +134,7 @@ class ToolkitResourceProvider {
      * @return
      */
     def displayIndex() {
-        SimIndexManager.getIndexer(HttpRequestParser.simIdFromRequest(request)).dump();
+        SimIndexManager.getIndexer(HttpRequestParser.simIdFromRequest(requestDetails)).dump();
     }
 
     IParser getJsonParser() {

@@ -27,9 +27,9 @@ class FhirSpecification extends ToolkitSpecification {
         Installation.instance().overrideToolkitPort(remoteToolkitPort)  // ignore toolkit.properties
     }
 
-    String baseURL() { "http://localhost:${remoteToolkitPort}/xdstools2/fsim/"}
+    String baseURL() { "http://localhost:${remoteToolkitPort}/xdstools2/fsim"}
 
-    String baseURL(SimId simId) { "${baseURL()}${simId.toString()}/"}
+    String baseURL(SimId simId) { "${baseURL()}/${simId.toString()}"}
 
     def post(def uri,  def _body) {
         HttpClient httpclient = HttpClients.createDefault()
