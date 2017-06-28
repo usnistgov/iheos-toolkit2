@@ -68,10 +68,6 @@ public class BuildRIGTestOrchestrationButton extends AbstractOrchestrationButton
                         "After you have initialized the test environment, you should see the full set of configuration " +
                         "parameters needed to configure and test your system. " +
                         "</p>" +
-                        "<p>"  +
-                        "Note that your Initiating Imaging Gateway only communicates with the Responding Imaging Gateway simulators. " +
-                        "Your system will not connect directly to any of the Imaging Document Source simulators." +
-                        "</p>" +
                 "<p>"  +
                         "Tests are run using three DICOM transfer syntaxes. The UIDs for these are:" +
                         "<ul><li>1.2.840.10008.1.2.1</li>" +
