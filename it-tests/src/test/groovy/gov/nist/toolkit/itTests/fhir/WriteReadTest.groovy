@@ -65,6 +65,8 @@ class WriteReadTest extends FhirSpecification {
         eventDir.exists()
         new File(eventDir, SimDb.REQUEST_HEADER_FILE).exists()
         new File(eventDir, SimDb.REQUEST_BODY_BIN_FILE).exists() || new File(eventDir, SimDb.REQUEST_BODY_TXT_FILE).exists()
+
+        // TODO - response logging needs ServletRestfulResponse
 //        new File(eventDir, SimDb.RESPONSE_HEADER_FILE).exists()
 //        new File(eventDir, SimDb.RESPONSE_BODY_TXT_FILE).exists()
         new File(eventDir,'Patient').isDirectory()
