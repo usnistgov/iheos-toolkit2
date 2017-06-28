@@ -5,18 +5,30 @@
 class Module {
     static ROOT = new File('/Users/bill/tk')
 
-    static List<File> calledBy(String moduleName) {
+    /**
+     *
+     * @param moduleName
+     * @return list of module names
+     */
+    static Set<File> calledBy(String moduleName) {
         String pkgName = packageName(asModule(moduleName))
         println "${moduleName} ==> ${pkgName}"
-        List<File> sourceFiles = getSourceFiles(moduleName)
-        Set calledBy = []
-        sourceFiles.each {File f ->
-            f.eachLine { String line ->
-                if (line.indexOf('import') > -1 && line.index(pkgName) > -1)
-                    calledBy.add(f.name)
+        Set<File> calledBy = []
+        getModules().each { File module ->
+            List<File> sourceFiles = getSourceFiles(module)
+            sourceFiles.each {File f ->
+                f.eachLine { String line ->
+                    if (line.indexOf('import') > -1 && line.indexOf(pkgName) > -1)
+                        calledBy.add(f)
+                }
             }
         }
+//        calledBy.collect { File module -> nameOfModule(module)}
         calledBy
+    }
+
+    static String nameOfModule(File file) {
+        (file.path - ROOT).split(File.separator)[1]
     }
 
     static File asModule(String moduleName) {
@@ -24,29 +36,15 @@ class Module {
     }
 
     static String packageName(File module) {
-        File main = new File(new File(module, 'src'), 'main')
-        if (!main.exists()) return null
-        File groovy = new File(main, 'groovy')
-        println "groovy: ${groovy}"
-        if (groovy.exists() && groovy.listFiles().size() > 0) {
-            // TODO - dig into the source tree
-            File firstFile = groovy.listFiles()[0]
-            String[] parts = firstFile.name.split('.')
-            if (parts.size() >= 4) {
-                def pkg = parts[3]
-                return pkg
-            }
-        }
-        File jav = new File(main, 'java')
-        println "jav: ${jav}"
-        if (jav.exists() && jav.listFiles().size() > 0) {
-            // TODO - dig into the source tree
-            File firstFile = jav.listFiles()[0]
-            String[] parts = firstFile.name.split('.')
-            if (parts.size() >= 4) {
-                def pkg = parts[3]
-                return pkg
-            }
+        List<File> srcs = findSrc(module, ['java', 'groovy'])
+        assert srcs, 'No sources below ${module}'
+        File aSrc = srcs.first()
+        String[] parts = aSrc.path.split(File.separator)
+        println "Parts: ${parts}"
+        int i = parts.findIndexOf { it == 'gov'}
+        if (i>0) {
+            println "Package name is ${parts[i+3]}"
+            return parts[i + 3]
         }
         return null
     }
