@@ -444,13 +444,14 @@ public abstract class AbstractActorFactory {
 		SimDb simdb;
 		try {
 			simdb = new SimDb(simid);
+			File simCntlFile = simdb.getSimulatorControlFile();
+			SimulatorConfig config = restoreSimulator(simCntlFile.toString());
+			return config;
 		} catch (Exception e) {
 			if (okifNotExist) return null;
 			throw e;
 		}
-		File simCntlFile = simdb.getSimulatorControlFile();
-		SimulatorConfig config = restoreSimulator(simCntlFile.toString());
-		return config;
+
 	}	
 
 	static public SimulatorConfig getSimConfig(SimId simulatorId) throws Exception {

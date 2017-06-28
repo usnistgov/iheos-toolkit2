@@ -156,7 +156,7 @@ public class ToolkitApi {
         try {
             deleteSimulator(simId);
         }
-        catch (NoSimException e) {}
+        catch (Exception e) {}
     }
 
     /**

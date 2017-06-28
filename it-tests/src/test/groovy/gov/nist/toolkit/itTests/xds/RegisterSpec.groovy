@@ -47,7 +47,6 @@ class RegisterSpec extends ToolkitSpecification {
     }
 
     def cleanupSpec() {  // one time shutdown when everything is done
-//        System.gc()
         spi.delete('reg', testSession)
         spi.delete('reg', 'test')
         api.deleteSimulatorIfItExists(simId)

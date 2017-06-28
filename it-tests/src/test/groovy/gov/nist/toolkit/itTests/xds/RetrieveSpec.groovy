@@ -15,7 +15,7 @@ import gov.nist.toolkit.toolkitServicesCommon.resource.SimConfigResource
 import spock.lang.Shared
 
 /**
- * Test the Register transaction
+ * Test the Retrieve transaction
  */
 class RetrieveSpec extends ToolkitSpecification {
     @Shared SimulatorBuilder spi
@@ -54,7 +54,6 @@ class RetrieveSpec extends ToolkitSpecification {
     }
 
     def cleanupSpec() {  // one time shutdown when everything is done
-//        System.gc()
         spi.delete('rr', testSession)
         api.deleteSimulatorIfItExists(simId)
         server.stop()
