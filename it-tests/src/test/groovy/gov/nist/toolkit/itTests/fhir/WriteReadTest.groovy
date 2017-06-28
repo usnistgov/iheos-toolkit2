@@ -38,7 +38,7 @@ class WriteReadTest extends FhirSpecification {
     }
 
 
-    def 'submit first patient'() {
+    def 'CREATE first patient'() {
         when:
         def (BasicStatusLine statusLine, String results, FhirId locationHeader) = post("${baseURL(simId)}/Patient", patient)
         OperationOutcome oo
@@ -72,7 +72,7 @@ class WriteReadTest extends FhirSpecification {
 
     @Shared FhirId submission
 
-    def 'submit and query patient'() {
+    def 'CREATE and READ patient'() {
         when:
         def (BasicStatusLine statusLine, String results, FhirId locationHeader) = post("${baseURL(simId)}/Patient", patient)
         submission = locationHeader

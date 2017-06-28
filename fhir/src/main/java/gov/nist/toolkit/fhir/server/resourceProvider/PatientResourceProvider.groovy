@@ -10,7 +10,6 @@ import ca.uhn.fhir.rest.server.IResourceProvider
 import ca.uhn.fhir.rest.server.exceptions.InternalErrorException
 import ca.uhn.fhir.rest.server.exceptions.UnprocessableEntityException
 import gov.nist.toolkit.fhir.search.BaseQuery
-import gov.nist.toolkit.fhir.search.SearchByTypeAndId
 import org.apache.lucene.index.Term
 import org.apache.lucene.search.BooleanClause
 import org.apache.lucene.search.BooleanQuery
@@ -19,9 +18,6 @@ import org.hl7.fhir.dstu3.model.CodeableConcept
 import org.hl7.fhir.dstu3.model.IdType
 import org.hl7.fhir.dstu3.model.OperationOutcome
 import org.hl7.fhir.dstu3.model.Patient
-
-import javax.servlet.http.HttpServletRequest
-import javax.servlet.http.HttpServletResponse
 /**
  *
  */
@@ -38,26 +34,11 @@ public class PatientResourceProvider implements IResourceProvider {
 
     @Create()
     public MethodOutcome createPatient(@ResourceParam Patient thePatient,
-                                       RequestDetails requestDetails,
-                                       HttpServletRequest theRequest,
-                                       HttpServletResponse theResponse) {
-        println '***************************'
-        println '*'
-        println ' CREATE PATIENT'
-        println '*'
-        println '***************************'
+                                       RequestDetails requestDetails) {
 
-
-        ToolkitResourceProvider tk = new ToolkitResourceProvider(getResourceType(), requestDetails)
         validateResource(thePatient);
 
-        IdDt newId = tk.addResource(thePatient)
-        tk.flushIndex()
-
-        tk.displayIndex()
-
-        // Let the caller know the ID of the newly created resource
-        return new MethodOutcome(newId);
+        return new ToolkitResourceProvider(Patient.class, requestDetails).createOperation(thePatient)
     }
 
 
@@ -74,36 +55,16 @@ public class PatientResourceProvider implements IResourceProvider {
      */
     @Read()
     public Patient getResourceById(@IdParam IdType theId,
-                                   RequestDetails requestDetails,
-                                   HttpServletRequest theRequest,
-                                   HttpServletResponse theResponse) {
+                                   RequestDetails requestDetails) {
 
         ToolkitResourceProvider tk = new ToolkitResourceProvider(getResourceType(), requestDetails)
 
-        String id = theId.getIdPart();
-
-        println '***************************'
-        println '*'
-        println " GET PATIENT ${id}"
-        println '*'
-        println '***************************'
-
-        tk.displayIndex()
-
-        List<String> paths = new SearchByTypeAndId(tk.simContext).run(tk.resourceTypeAsString(), id);
-
-        if (paths.size() == 0)
-            return null;
-
-        if (paths.size() > 1)
-            throw new InternalErrorException("Multiple results found");
-
-        File f = new File(paths.get(0));
+        File f = tk.readOperation(theId)
 
         try {
             return tk.jsonParser.parseResource(Patient.class, new FileReader(f));
         } catch (FileNotFoundException e) {
-            throw new InternalErrorException("File " + paths.get(0) + " not found");
+            throw new InternalErrorException("File " + f + " not found");
         }
     }
 
@@ -127,12 +88,8 @@ public class PatientResourceProvider implements IResourceProvider {
     public List<Patient> getPatient(
             @RequiredParam(name = Patient.SP_FAMILY) StringParam theFamilyName,
             @OptionalParam(name = Patient.SP_GIVEN) StringParam theGivenName,
-            RequestDetails requestDetails,
-                                    HttpServletRequest theRequest,
-                                    HttpServletResponse theResponse) {
+            RequestDetails requestDetails) {
         ToolkitResourceProvider tk = new ToolkitResourceProvider(getResourceType(), requestDetails)
-
-        tk.displayIndex()
 
         BooleanQuery.Builder builder = new BooleanQuery.Builder()
 
@@ -148,7 +105,6 @@ public class PatientResourceProvider implements IResourceProvider {
             termQuery = new TermQuery(term)
             builder.add(termQuery, BooleanClause.Occur.MUST)
         }
-
 
         return tk.searchResults(new BaseQuery(tk.simContext).execute(builder))
 

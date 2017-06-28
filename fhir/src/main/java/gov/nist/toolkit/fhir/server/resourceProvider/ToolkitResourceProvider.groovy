@@ -3,8 +3,11 @@ package gov.nist.toolkit.fhir.server.resourceProvider
 import ca.uhn.fhir.context.FhirContext
 import ca.uhn.fhir.model.primitive.IdDt
 import ca.uhn.fhir.parser.IParser
+import ca.uhn.fhir.rest.api.MethodOutcome
 import ca.uhn.fhir.rest.method.RequestDetails
+import ca.uhn.fhir.rest.server.exceptions.InternalErrorException
 import gov.nist.toolkit.fhir.context.ToolkitFhirContext
+import gov.nist.toolkit.fhir.search.SearchByTypeAndId
 import gov.nist.toolkit.fhir.servlet.Attributes
 import gov.nist.toolkit.fhir.servlet.HttpRequestParser
 import gov.nist.toolkit.fhir.support.ResourceIndex
@@ -14,6 +17,8 @@ import gov.nist.toolkit.simcommon.client.SimId
 import gov.nist.toolkit.simcommon.server.SimDb
 import gov.nist.toolkit.utilities.id.UuidAllocator
 import org.hl7.fhir.dstu3.model.DomainResource
+import org.hl7.fhir.dstu3.model.IdType
+
 /**
  * Collection of utilities for linking HAPI ResourceProvider
  * classes to toolkit ResDb funtions.
@@ -51,6 +56,43 @@ class ToolkitResourceProvider {
     SimDb getSimDb() { new Attributes(requestDetails).simDb }
 
     /**
+     * this implements most of the requirements for the CREATE
+     * operation on a Resource.  Before calling this the
+     * Resource should be validated.
+     * @param theResource
+     * @return
+     */
+    MethodOutcome createOperation(DomainResource theResource) {
+        // store the resource
+        IdDt newId = addResource(theResource)
+
+        // flush and close the index
+        flushIndex()
+
+        // Let the caller know the ID of the newly created resource
+        return new MethodOutcome(newId);
+    }
+
+    /**
+     * this is most of the read operation for any Resource.
+     * @param theId of the Resource
+     * @return File containing the Resource
+     */
+    File readOperation(IdType theId) {
+        String id = theId.getIdPart();
+
+        List<String> paths = new SearchByTypeAndId(simContext).run(resourceTypeAsString(), id);
+
+        if (paths.size() == 0)
+            return null;
+
+        if (paths.size() > 1)
+            throw new InternalErrorException("Multiple results found");
+
+        return new File(paths.get(0));
+    }
+
+    /**
      * add a resource instance to the store. Allocate a resource id.  We use UUIDs
      * because we don't yet have a way to allocate sequential integers.  UUIDs are
      * legal but unconventional in FHIR.
@@ -60,13 +102,18 @@ class ToolkitResourceProvider {
      */
     IdDt addResource(DomainResource theResource) {
         String resourceType = theResource.getResourceType().name()
+
+        // Generate the id
         String id = UuidAllocator.allocateNaked()
         IdDt idDt = new IdDt(resourceType, id, "1")
         theResource.setId(idDt)
 
         if (!simContext) simContext = new SimContext(simDb)
 
+        // save resource
         File resourceFile = simContext.store(resourceType, theResource, id)
+
+        // add it to the index
         ResourceIndex resourceIndex = simContext.index(resourceType, theResource, id)
         resourceIndex.path = resourceFile.path
 
