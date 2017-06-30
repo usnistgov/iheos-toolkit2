@@ -11,8 +11,8 @@ import gov.nist.toolkit.session.client.logtypes.TestOverviewDTO
 import gov.nist.toolkit.simcommon.client.SimId
 import gov.nist.toolkit.simcommon.server.SimManager
 import gov.nist.toolkit.sitemanagement.Sites
-import gov.nist.toolkit.sitemanagement.client.Site
-import gov.nist.toolkit.sitemanagement.client.SiteSpec
+import gov.nist.toolkit.sitemanagementui.client.Site
+import gov.nist.toolkit.sitemanagementui.client.SiteSpec
 import gov.nist.toolkit.testengine.scripts.BuildCollections
 import gov.nist.toolkit.toolkitApi.SimulatorBuilder
 import gov.nist.toolkit.toolkitServicesCommon.SimConfig

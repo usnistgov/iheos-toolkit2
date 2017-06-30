@@ -13,6 +13,10 @@
     <dependencies>
         <dependency>
             <groupId>gov.nist.toolkit</groupId>
+            <artifactId>site-management-ui</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>gov.nist.toolkit</groupId>
             <artifactId>config-datatypes</artifactId>
         </dependency>
         <dependency>
@@ -37,25 +41,8 @@
         </dependency>
     </dependencies>
 
-<build>
-        <plugins>
-<plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-source-plugin</artifactId>
-                <version>${maven-source-plugin.version}</version>
-                <executions>
-                    <execution>
-                        <id>attach-sources</id>
-                        <goals>
-                            <goal>jar</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
- 	</plugins>
-</build>
 
-  <scm>
-    <tag>v3.0.2a</tag>
-  </scm>
+    <scm>
+        <tag>v3.0.2a</tag>
+    </scm>
 </project>

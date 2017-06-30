@@ -15,8 +15,8 @@ import gov.nist.toolkit.session.server.Session
 import gov.nist.toolkit.simcommon.client.SimId
 import gov.nist.toolkit.simcommon.client.SimulatorConfig
 import gov.nist.toolkit.simcommon.client.config.SimulatorConfigElement
-import gov.nist.toolkit.sitemanagement.client.Site
-import gov.nist.toolkit.sitemanagement.client.SiteSpec
+import gov.nist.toolkit.sitemanagementui.client.Site
+import gov.nist.toolkit.sitemanagementui.client.SiteSpec
 import groovy.transform.TypeChecked
 /**
  * Build environment for testing Responding Gateway SUT.

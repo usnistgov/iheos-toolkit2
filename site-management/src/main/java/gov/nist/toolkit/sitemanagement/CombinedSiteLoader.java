@@ -1,7 +1,7 @@
 package gov.nist.toolkit.sitemanagement;
 
 import gov.nist.toolkit.commondatatypes.MetadataSupport;
-import gov.nist.toolkit.sitemanagement.client.Site;
+import gov.nist.toolkit.sitemanagementui.client.Site;
 import gov.nist.toolkit.utilities.xml.Util;
 
 import java.io.File;

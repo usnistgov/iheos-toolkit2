@@ -3,7 +3,7 @@ package gov.nist.toolkit.simcommon.client;
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.google.gwt.user.client.rpc.IsSerializable;
 import gov.nist.toolkit.actortransaction.client.ActorType;
-import gov.nist.toolkit.sitemanagement.client.SiteSpec;
+import gov.nist.toolkit.sitemanagementui.client.SiteSpec;
 
 import java.io.Serializable;
 

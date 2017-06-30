@@ -85,6 +85,7 @@
         <module>testdoctool</module>
         <module>itsupport</module>
         <module>fhir</module>
+        <module>site-management-ui</module>
     </modules>
 
     <profiles>

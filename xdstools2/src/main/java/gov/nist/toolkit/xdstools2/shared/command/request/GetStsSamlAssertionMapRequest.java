@@ -1,7 +1,7 @@
 package gov.nist.toolkit.xdstools2.shared.command.request;
 
 import gov.nist.toolkit.results.client.TestInstance;
-import gov.nist.toolkit.sitemanagement.client.SiteSpec;
+import gov.nist.toolkit.sitemanagementui.client.SiteSpec;
 import gov.nist.toolkit.xdstools2.shared.command.CommandContext;
 
 import java.util.Map;

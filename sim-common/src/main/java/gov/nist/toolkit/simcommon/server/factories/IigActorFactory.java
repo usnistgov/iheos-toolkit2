@@ -10,9 +10,9 @@ import gov.nist.toolkit.simcommon.client.SimulatorConfig;
 import gov.nist.toolkit.simcommon.server.AbstractActorFactory;
 import gov.nist.toolkit.simcommon.server.IActorFactory;
 import gov.nist.toolkit.simcommon.server.SimManager;
-import gov.nist.toolkit.sitemanagement.client.Site;
-import gov.nist.toolkit.sitemanagement.client.TransactionBean;
-import gov.nist.toolkit.sitemanagement.client.TransactionBean.RepositoryType;
+import gov.nist.toolkit.sitemanagementui.client.Site;
+import gov.nist.toolkit.sitemanagementui.client.TransactionBean;
+import gov.nist.toolkit.sitemanagementui.client.TransactionBean.RepositoryType;
 
 import java.util.ArrayList;
 import java.util.Arrays;

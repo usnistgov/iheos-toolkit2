@@ -8,7 +8,7 @@ import gov.nist.toolkit.configDatatypes.client.TransactionType;
 import gov.nist.toolkit.results.client.Result;
 import gov.nist.toolkit.results.client.TestInstance;
 import gov.nist.toolkit.simcommon.client.SimulatorConfig;
-import gov.nist.toolkit.sitemanagement.client.SiteSpec;
+import gov.nist.toolkit.sitemanagementui.client.SiteSpec;
 import gov.nist.toolkit.xdstools2.client.CoupledTransactions;
 import gov.nist.toolkit.xdstools2.client.TabContainer;
 import gov.nist.toolkit.xdstools2.client.command.command.GetTestResultsCommand;

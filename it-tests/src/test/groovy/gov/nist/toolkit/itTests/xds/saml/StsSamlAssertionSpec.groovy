@@ -9,7 +9,7 @@ import gov.nist.toolkit.results.client.TestInstance
 import gov.nist.toolkit.session.server.Session
 import gov.nist.toolkit.simcommon.client.SimId
 import gov.nist.toolkit.simcommon.server.SimCache
-import gov.nist.toolkit.sitemanagement.client.Site
+import gov.nist.toolkit.sitemanagementui.client.Site
 import gov.nist.toolkit.testengine.scripts.BuildCollections
 import gov.nist.toolkit.toolkitApi.SimulatorBuilder
 import gov.nist.toolkit.toolkitServicesCommon.SimConfig

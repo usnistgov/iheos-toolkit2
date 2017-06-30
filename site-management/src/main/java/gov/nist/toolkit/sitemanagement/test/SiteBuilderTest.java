@@ -2,8 +2,8 @@ package gov.nist.toolkit.sitemanagement.test;
 
 import gov.nist.toolkit.actortransaction.client.ActorType;
 import gov.nist.toolkit.configDatatypes.client.TransactionType;
-import gov.nist.toolkit.sitemanagement.client.Site;
-import gov.nist.toolkit.sitemanagement.client.TransactionBean.RepositoryType;
+import gov.nist.toolkit.sitemanagementui.client.Site;
+import gov.nist.toolkit.sitemanagementui.client.TransactionBean.RepositoryType;
 import org.junit.Before;
 import org.junit.Test;
 

@@ -2,7 +2,7 @@ package gov.nist.toolkit.services.client;
 
 import gov.nist.toolkit.configDatatypes.client.Pid;
 import gov.nist.toolkit.simcommon.client.SimulatorConfig;
-import gov.nist.toolkit.sitemanagement.client.SiteSpec;
+import gov.nist.toolkit.sitemanagementui.client.SiteSpec;
 
 /**
  *

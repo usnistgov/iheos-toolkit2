@@ -1,7 +1,7 @@
 package gov.nist.toolkit.xdstools2.client.siteActorManagers;
 
 
-import gov.nist.toolkit.sitemanagement.client.SiteSpec;
+import gov.nist.toolkit.sitemanagementui.client.SiteSpec;
 
 public class GetDocumentsSiteActorManager extends BaseSiteActorManager {
 

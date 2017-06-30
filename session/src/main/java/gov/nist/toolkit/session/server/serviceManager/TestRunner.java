@@ -8,7 +8,7 @@ import gov.nist.toolkit.results.client.Result;
 import gov.nist.toolkit.results.client.TestInstance;
 import gov.nist.toolkit.session.server.Session;
 import gov.nist.toolkit.session.server.TestSessionNotSelectedException;
-import gov.nist.toolkit.sitemanagement.client.SiteSpec;
+import gov.nist.toolkit.sitemanagementui.client.SiteSpec;
 import gov.nist.toolkit.testengine.engine.ResultPersistence;
 import gov.nist.toolkit.testenginelogging.logrepository.LogRepositoryFactory;
 import gov.nist.toolkit.xdsexception.ExceptionUtil;

@@ -5,8 +5,20 @@
 class Module {
     static ROOT = new File('/Users/bill/tk')
 
+    static void calledByUtil(String moduleName) {
+        Set<File> calledby = calledBy(moduleName)
+        calledby.each { File by ->
+            String path = by.path
+            int start = path.indexOf('toolkit')
+            def printablePath = path.substring(start + 'toolkit/'.size())
+            String pkgName = packageName(asModule(moduleName))
+            if (!printablePath.startsWith(pkgName))
+                println printablePath
+        }
+    }
+
     /**
-     *
+     * what java/groovy classes call this module?
      * @param moduleName
      * @return list of module names
      */
@@ -18,7 +30,8 @@ class Module {
             List<File> sourceFiles = getSourceFiles(module)
             sourceFiles.each {File f ->
                 f.eachLine { String line ->
-                    if (line.indexOf('import') > -1 && line.indexOf(pkgName) > -1)
+                    if (line.indexOf('import') > -1 &&
+                            line.indexOf(".${pkgName}.") > -1)
                         calledBy.add(f)
                 }
             }
@@ -40,10 +53,10 @@ class Module {
         assert srcs, 'No sources below ${module}'
         File aSrc = srcs.first()
         String[] parts = aSrc.path.split(File.separator)
-        println "Parts: ${parts}"
+//        println "Parts: ${parts}"
         int i = parts.findIndexOf { it == 'gov'}
         if (i>0) {
-            println "Package name is ${parts[i+3]}"
+//            println "Package name is ${parts[i+3]}"
             return parts[i + 3]
         }
         return null
@@ -85,8 +98,4 @@ class Module {
 
     static boolean isTest(File file) { file.name.indexOf('Test.') != -1 }
 
-    static main(def argv) {
-        println getSourceFiles('fhir')
-
-    }
 }

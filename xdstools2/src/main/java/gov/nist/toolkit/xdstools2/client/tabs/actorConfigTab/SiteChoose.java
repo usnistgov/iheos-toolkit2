@@ -2,9 +2,8 @@ package gov.nist.toolkit.xdstools2.client.tabs.actorConfigTab;
 
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.user.client.rpc.AsyncCallback;
-import gov.nist.toolkit.sitemanagement.client.Site;
-import gov.nist.toolkit.sitemanagement.client.SiteSpec;
+import gov.nist.toolkit.sitemanagementui.client.Site;
+import gov.nist.toolkit.sitemanagementui.client.SiteSpec;
 import gov.nist.toolkit.xdstools2.client.command.command.GetSiteCommand;
 import gov.nist.toolkit.xdstools2.client.widgets.PopupMessage;
 import gov.nist.toolkit.xdstools2.client.util.ClientUtils;

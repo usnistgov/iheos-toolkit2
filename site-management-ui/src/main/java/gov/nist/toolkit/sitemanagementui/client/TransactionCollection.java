@@ -1,10 +1,9 @@
-package gov.nist.toolkit.sitemanagement.client;
+package gov.nist.toolkit.sitemanagementui.client;
 
 import com.google.gwt.user.client.rpc.IsSerializable;
 import gov.nist.toolkit.actortransaction.client.ATFactory;
 import gov.nist.toolkit.actortransaction.client.ActorType;
 import gov.nist.toolkit.configDatatypes.client.TransactionType;
-import gov.nist.toolkit.sitemanagement.client.TransactionBean.RepositoryType;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -229,7 +228,7 @@ public class TransactionCollection implements IsSerializable, Serializable {
 		// Issue 98 TODO: set the repositoryType here
 		transactions.add(new TransactionBean(
 				transactionName, 	
-				isRepositories ? RepositoryType.REPOSITORY : RepositoryType.NONE, 
+				isRepositories ? TransactionBean.RepositoryType.REPOSITORY : TransactionBean.RepositoryType.NONE,
 				endpoint, 
 				isSecure, 
 				isAsync));

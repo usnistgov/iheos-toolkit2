@@ -350,6 +350,10 @@
 		</dependency>
 		<dependency>
 			<groupId>gov.nist.toolkit</groupId>
+			<artifactId>site-management-ui</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>gov.nist.toolkit</groupId>
 			<artifactId>registry-metadata</artifactId>
 		</dependency>
 		<dependency>
@@ -563,7 +567,7 @@
 						<compileSourcesArtifact>${project.groupId}:results</compileSourcesArtifact>
 						<compileSourcesArtifact>${project.groupId}:services</compileSourcesArtifact>
 						<compileSourcesArtifact>${project.groupId}:actor-transaction</compileSourcesArtifact>
-						<compileSourcesArtifact>${project.groupId}:site-management</compileSourcesArtifact>
+						<compileSourcesArtifact>${project.groupId}:site-management-ui</compileSourcesArtifact>
 						<compileSourcesArtifact>${project.groupId}:registry-metadata</compileSourcesArtifact>
 						<compileSourcesArtifact>${project.groupId}:http</compileSourcesArtifact>
 						<compileSourcesArtifact>${project.groupId}:validators-support</compileSourcesArtifact>

@@ -3,8 +3,8 @@ package gov.nist.toolkit.results.shared;
 import gov.nist.toolkit.actortransaction.client.ActorType;
 import gov.nist.toolkit.simcommon.client.SimId;
 import gov.nist.toolkit.simcommon.server.SiteServiceManager;
-import gov.nist.toolkit.sitemanagement.client.Site;
-import gov.nist.toolkit.sitemanagement.client.SiteSpec;
+import gov.nist.toolkit.sitemanagementui.client.Site;
+import gov.nist.toolkit.sitemanagementui.client.SiteSpec;
 
 /**
  *
@@ -13,7 +13,7 @@ import gov.nist.toolkit.sitemanagement.client.SiteSpec;
 public class SiteBuilder {
 
     static public Site siteFromSiteSpec(SiteSpec siteSpec, String sessionId) throws Exception {
-        Site site = SiteServiceManager.getSiteServiceManager().getSite(sessionId, siteSpec.name);
+        Site site = SiteServiceManager.getSiteServiceManager().getSite(siteSpec.name);
         return site;
     }
 

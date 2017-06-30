@@ -1,9 +1,8 @@
-package gov.nist.toolkit.sitemanagement.client;
+package gov.nist.toolkit.sitemanagementui.client;
 
 import com.google.gwt.user.client.rpc.IsSerializable;
 import gov.nist.toolkit.actortransaction.client.ActorType;
 import gov.nist.toolkit.configDatatypes.client.TransactionType;
-import gov.nist.toolkit.sitemanagement.client.TransactionBean.RepositoryType;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -169,7 +168,7 @@ public class Site  implements IsSerializable, Serializable {
 	}
 	
 	public void addTransaction(String transactionName, String endpoint, boolean isSecure, boolean isAsync) {
-		addTransaction(new TransactionBean(transactionName, RepositoryType.NONE, endpoint, isSecure, isAsync));
+		addTransaction(new TransactionBean(transactionName, TransactionBean.RepositoryType.NONE, endpoint, isSecure, isAsync));
 	}
 
 	public void addTransaction(TransactionBean transbean) {
@@ -194,7 +193,7 @@ public class Site  implements IsSerializable, Serializable {
 	 * @param isSecure
 	 * @return TransactionBean
 	 */
-	public TransactionBean getRepositoryBean(RepositoryType repositoryType, boolean isSecure) {
+	public TransactionBean getRepositoryBean(TransactionBean.RepositoryType repositoryType, boolean isSecure) {
 		for (TransactionBean b : repositories.transactions) {
 			if (b.repositoryType == repositoryType && b.isSecure == isSecure)
 				return b;
@@ -206,12 +205,12 @@ public class Site  implements IsSerializable, Serializable {
 		repositories.addTransaction(transbean);
 	}
 	
-	public void addRepository(String repositoryUniqueId, RepositoryType repositoryType, String endpoint, boolean isSecure, boolean isAsync) {
+	public void addRepository(String repositoryUniqueId, TransactionBean.RepositoryType repositoryType, String endpoint, boolean isSecure, boolean isAsync) {
 		TransactionBean bean = new TransactionBean(repositoryUniqueId, repositoryType, endpoint, isSecure, isAsync);
 		addRepository(bean);
 	}
 
-	public String getRepositoryUniqueId(RepositoryType repositoryType) throws Exception {
+	public String getRepositoryUniqueId(TransactionBean.RepositoryType repositoryType) throws Exception {
 		if (!hasRepositoryB(repositoryType))
 			throw new Exception("Site " + name + " does not define an XDS.b Repository");
 		TransactionBean transbean;
@@ -241,7 +240,7 @@ public class Site  implements IsSerializable, Serializable {
 	 * Repository, On-Demand Document Source, and Image Document Source.
 	 * @return
 	 */
-	public int repositoryBCount(RepositoryType repositoryType) {
+	public int repositoryBCount(TransactionBean.RepositoryType repositoryType) {
 		int cnt = 0;
 		if (name != null && name.equals("allRepositories")) return 0;
 		for (TransactionBean b : repositories.transactions) {
@@ -255,7 +254,7 @@ public class Site  implements IsSerializable, Serializable {
 	public Set<String> repositoryUniqueIds() {
 		Set<String> ids = new HashSet<String>();
 		for (TransactionBean b : repositories.transactions) {
-			if (b.repositoryType == RepositoryType.REPOSITORY || b.repositoryType == RepositoryType.ODDS) {
+			if (b.repositoryType == TransactionBean.RepositoryType.REPOSITORY || b.repositoryType == TransactionBean.RepositoryType.ODDS) {
 				ids.add(b.name); // repositoryUniqueId since this is a retrieve
 			}
 		}		
@@ -279,7 +278,7 @@ public class Site  implements IsSerializable, Serializable {
 	 * @param tType Repository Type
 	 * @return TransactionBean for match, or null
 	 */
-	public TransactionBean transactionBeanForRepositoryUniqueId(String repuid, RepositoryType tType) {
+	public TransactionBean transactionBeanForRepositoryUniqueId(String repuid, TransactionBean.RepositoryType tType) {
 	   for (TransactionBean bean : repositories.transactions) {
 	      if (bean.repositoryType == tType && bean.name.equals(repuid)) return bean;
 	   }
@@ -287,10 +286,10 @@ public class Site  implements IsSerializable, Serializable {
 	}
 		
 	public boolean hasRepositoryB() {
-		return repositoryBCount(RepositoryType.REPOSITORY) > 0;
+		return repositoryBCount(TransactionBean.RepositoryType.REPOSITORY) > 0;
 	}
 
-	public boolean hasRepositoryB(RepositoryType repositoryType) {
+	public boolean hasRepositoryB(TransactionBean.RepositoryType repositoryType) {
 		return repositoryBCount(repositoryType) > 0;
 	}
 

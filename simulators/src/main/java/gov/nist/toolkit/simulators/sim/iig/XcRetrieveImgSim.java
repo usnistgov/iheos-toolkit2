@@ -13,7 +13,7 @@ import gov.nist.toolkit.simcommon.server.SimManager;
 import gov.nist.toolkit.simulators.support.DsSimCommon;
 import gov.nist.toolkit.simulators.support.SimCommon;
 import gov.nist.toolkit.sitemanagement.Sites;
-import gov.nist.toolkit.sitemanagement.client.Site;
+import gov.nist.toolkit.sitemanagementui.client.Site;
 import gov.nist.toolkit.soap.axis2.Soap;
 import gov.nist.toolkit.testengine.engine.RetrieveB;
 import gov.nist.toolkit.utilities.xml.XmlUtil;

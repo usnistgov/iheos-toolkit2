@@ -12,7 +12,7 @@ import gov.nist.toolkit.simcommon.client.config.SimulatorConfigElement;
 import gov.nist.toolkit.simcommon.server.SimDb;
 import gov.nist.toolkit.simulators.sim.rep.RepIndex;
 import gov.nist.toolkit.simulators.support.StoredDocument;
-import gov.nist.toolkit.sitemanagement.client.SiteSpec;
+import gov.nist.toolkit.sitemanagementui.client.SiteSpec;
 import gov.nist.toolkit.testkitutilities.TestDefinition;
 import gov.nist.toolkit.testkitutilities.TestKitSearchPath;
 import gov.nist.toolkit.utilities.xml.Util;

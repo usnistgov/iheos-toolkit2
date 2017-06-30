@@ -11,7 +11,7 @@ import gov.nist.toolkit.http.client.HtmlMarkup;
 import gov.nist.toolkit.results.client.Result;
 import gov.nist.toolkit.services.shared.Message;
 import gov.nist.toolkit.simcommon.client.SimId;
-import gov.nist.toolkit.sitemanagement.client.SiteSpec;
+import gov.nist.toolkit.sitemanagementui.client.SiteSpec;
 import gov.nist.toolkit.xdstools2.client.Panel1;
 import gov.nist.toolkit.xdstools2.client.ToolWindow;
 import gov.nist.toolkit.xdstools2.client.command.command.*;

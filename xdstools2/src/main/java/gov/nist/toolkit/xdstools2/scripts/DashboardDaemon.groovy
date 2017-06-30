@@ -11,8 +11,8 @@ import gov.nist.toolkit.results.client.TestInstance
 import gov.nist.toolkit.session.server.Session
 import gov.nist.toolkit.sitemanagement.SeparateSiteLoader
 import gov.nist.toolkit.sitemanagement.Sites
-import gov.nist.toolkit.sitemanagement.client.Site
-import gov.nist.toolkit.sitemanagement.client.SiteSpec
+import gov.nist.toolkit.sitemanagementui.client.Site
+import gov.nist.toolkit.sitemanagementui.client.SiteSpec
 import gov.nist.toolkit.testengine.engine.TransactionSettings
 import gov.nist.toolkit.testengine.engine.Xdstest2
 import gov.nist.toolkit.testenginelogging.client.LogFileContentDTO

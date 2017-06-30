@@ -2,9 +2,9 @@ package gov.nist.toolkit.testengine.engine;
 
 import gov.nist.toolkit.configDatatypes.client.TransactionType;
 import gov.nist.toolkit.sitemanagement.Sites;
-import gov.nist.toolkit.sitemanagement.client.Site;
-import gov.nist.toolkit.sitemanagement.client.TransactionBean;
-import gov.nist.toolkit.sitemanagement.client.TransactionOfferings;
+import gov.nist.toolkit.sitemanagementui.client.Site;
+import gov.nist.toolkit.sitemanagementui.client.TransactionBean;
+import gov.nist.toolkit.sitemanagementui.client.TransactionOfferings;
 
 import java.util.ArrayList;
 import java.util.List;

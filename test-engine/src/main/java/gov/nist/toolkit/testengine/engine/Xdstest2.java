@@ -3,7 +3,7 @@ package gov.nist.toolkit.testengine.engine;
 import gov.nist.toolkit.results.client.TestInstance;
 import gov.nist.toolkit.securityCommon.SecurityParams;
 import gov.nist.toolkit.sitemanagement.Sites;
-import gov.nist.toolkit.sitemanagement.client.Site;
+import gov.nist.toolkit.sitemanagementui.client.Site;
 import gov.nist.toolkit.testengine.errormgr.AssertionResults;
 import gov.nist.toolkit.testenginelogging.TestLogDetails;
 import gov.nist.toolkit.testenginelogging.client.LogFileContentDTO;

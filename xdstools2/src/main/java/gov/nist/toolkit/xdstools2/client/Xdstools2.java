@@ -12,7 +12,7 @@ import com.google.gwt.user.client.History;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.*;
 import com.google.web.bindery.event.shared.EventBus;
-import gov.nist.toolkit.sitemanagement.client.TransactionOfferings;
+import gov.nist.toolkit.sitemanagementui.client.TransactionOfferings;
 import gov.nist.toolkit.tk.client.TkProps;
 import gov.nist.toolkit.xdstools2.client.command.command.GetTransactionOfferingsCommand;
 import gov.nist.toolkit.xdstools2.client.command.command.InitializationCommand;

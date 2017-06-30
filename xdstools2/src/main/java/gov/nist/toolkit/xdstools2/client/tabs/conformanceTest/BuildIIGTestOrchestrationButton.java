@@ -13,7 +13,7 @@ import gov.nist.toolkit.services.client.IigOrchestrationResponse;
 import gov.nist.toolkit.services.client.RawResponse;
 import gov.nist.toolkit.simcommon.client.SimulatorConfig;
 import gov.nist.toolkit.simcommon.client.config.SimulatorConfigElement;
-import gov.nist.toolkit.sitemanagement.client.SiteSpec;
+import gov.nist.toolkit.sitemanagementui.client.SiteSpec;
 import gov.nist.toolkit.xdstools2.client.command.command.BuildIIGTestOrchestrationCommand;
 import gov.nist.toolkit.xdstools2.client.util.ClientUtils;
 import gov.nist.toolkit.xdstools2.client.widgets.buttons.AbstractOrchestrationButton;

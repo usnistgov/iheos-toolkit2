@@ -2,8 +2,8 @@ package gov.nist.toolkit.xdstools2.client.widgets;
 
 import com.google.gwt.user.client.ui.FlexTable;
 import com.google.gwt.user.client.ui.HTML;
-import gov.nist.toolkit.sitemanagement.client.Site;
-import gov.nist.toolkit.sitemanagement.client.TransactionBean;
+import gov.nist.toolkit.sitemanagementui.client.Site;
+import gov.nist.toolkit.sitemanagementui.client.TransactionBean;
 import gov.nist.toolkit.xdstools2.client.widgets.SiteSelectionWidget_old.SiteSorter;
 
 import java.util.ArrayList;

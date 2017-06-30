@@ -1,8 +1,8 @@
 package gov.nist.toolkit.sitemanagement.test
 
 import gov.nist.toolkit.configDatatypes.client.TransactionType
-import gov.nist.toolkit.sitemanagement.client.TransactionBean
-import gov.nist.toolkit.sitemanagement.client.TransactionBean.RepositoryType
+import gov.nist.toolkit.sitemanagementui.client.TransactionBean
+import gov.nist.toolkit.sitemanagementui.client.TransactionBean.RepositoryType
 import org.junit.Test
 
 import static org.junit.Assert.*

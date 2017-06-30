@@ -23,7 +23,7 @@ import gov.nist.toolkit.interactionmodel.client.InteractingEntity;
 import gov.nist.toolkit.session.client.logtypes.SectionOverviewDTO;
 import gov.nist.toolkit.session.client.logtypes.StepOverviewDTO;
 import gov.nist.toolkit.session.client.logtypes.TestOverviewDTO;
-import gov.nist.toolkit.sitemanagement.client.SiteSpec;
+import gov.nist.toolkit.sitemanagementui.client.SiteSpec;
 import org.vectomatic.dom.svg.OMSVGAElement;
 import org.vectomatic.dom.svg.OMSVGDocument;
 import org.vectomatic.dom.svg.OMSVGElement;

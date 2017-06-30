@@ -6,7 +6,7 @@ import gov.nist.toolkit.configDatatypes.client.Pid;
 import gov.nist.toolkit.services.client.IgOrchestrationRequest;
 import gov.nist.toolkit.services.client.IgOrchestrationResponse;
 import gov.nist.toolkit.services.client.RawResponse;
-import gov.nist.toolkit.sitemanagement.client.SiteSpec;
+import gov.nist.toolkit.sitemanagementui.client.SiteSpec;
 import gov.nist.toolkit.xdstools2.client.command.command.BuildIGTestOrchestrationCommand;
 import gov.nist.toolkit.xdstools2.client.tabs.FindDocumentsLauncher;
 import gov.nist.toolkit.xdstools2.client.tabs.conformanceTest.*;

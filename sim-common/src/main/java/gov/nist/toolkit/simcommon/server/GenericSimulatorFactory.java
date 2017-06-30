@@ -4,7 +4,7 @@ import gov.nist.toolkit.configDatatypes.client.TransactionType;
 import gov.nist.toolkit.simcommon.client.SimId;
 import gov.nist.toolkit.simcommon.client.Simulator;
 import gov.nist.toolkit.simcommon.client.SimulatorConfig;
-import gov.nist.toolkit.sitemanagement.client.Site;
+import gov.nist.toolkit.sitemanagementui.client.Site;
 
 import java.util.List;
 

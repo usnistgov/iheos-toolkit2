@@ -7,8 +7,8 @@ import gov.nist.toolkit.sitemanagement.CombinedSiteLoader;
 import gov.nist.toolkit.sitemanagement.SeparateSiteLoader;
 import gov.nist.toolkit.sitemanagement.Sites;
 import gov.nist.toolkit.sitemanagement.TransactionOfferingFactory;
-import gov.nist.toolkit.sitemanagement.client.Site;
-import gov.nist.toolkit.sitemanagement.client.TransactionOfferings;
+import gov.nist.toolkit.sitemanagementui.client.Site;
+import gov.nist.toolkit.sitemanagementui.client.TransactionOfferings;
 import gov.nist.toolkit.xdsexception.ExceptionUtil;
 import org.apache.log4j.Logger;
 
@@ -45,16 +45,7 @@ public class SiteServiceManager {
 
 	static public SiteServiceManager getInstance() { return getSiteServiceManager(); }
 
-//	public void setCommonSites(Sites commonSites) {
-//		this.commonSites = commonSites;
-//	}
-//
-//	public Sites getSimSites(String sessionId) throws Exception {
-//		return new SimCache().getSimManagerForSession(sessionId).getAllSites();
-//	}
-
-	public List<Site> getAllSites(String sessionId) throws Exception {
-		logger.debug(sessionId + ": " + "getAllSites");
+	public List<Site> getAllSites() throws Exception {
 		ArrayList<Site> sites = new ArrayList<>();   //getCommonSites().asCollection());
 		sites.addAll(SimManager.getAllSites().asCollection());
 		List<String> names = new ArrayList<>();
@@ -69,8 +60,7 @@ public class SiteServiceManager {
 		return sites2;
 	}
 
-	public List<String> getSiteNamesWithRG(String sessionId) throws Exception {
-		logger.debug(sessionId + ": " + "getSiteNamesWithRG");
+	public List<String> getSiteNamesWithRG() throws Exception {
 		List<String> ss = new ArrayList<>();
 		for (Site s : SimManager.getAllSites().asCollection()) {
 			if (s.hasActor(ActorType.RESPONDING_GATEWAY))
@@ -79,41 +69,37 @@ public class SiteServiceManager {
 		return ss;
 	}
 
-	public List<String> getSiteNamesWithRepository(String sessionId) throws Exception {
-		logger.debug(sessionId + ": " + "getSiteNamesWithRepository");
+	public List<String> getSiteNamesWithRepository() throws Exception {
 		List<String> ss = new ArrayList<>();
-		for (Site s : new SimCache().getSimManagerForSession(sessionId).getAllSites().asCollection()) {
+		for (Site s : SimManager.getAllSites().asCollection()) {
 			if (s.hasActor(ActorType.REPOSITORY) || s.hasActor(ActorType.REPOSITORY_REGISTRY))
 				ss.add(s.getName());
 		}
 		return ss;
 	}
 
-	public List<String> getSiteNamesWithRIG(String sessionId) throws Exception {
-      logger.debug(sessionId + ": " + "getSiteNamesWithRIG");
+	public List<String> getSiteNamesWithRIG() throws Exception {
       List<String> ss = new ArrayList<>();
-      for (Site s : new SimCache().getSimManagerForSession(sessionId).getAllSites().asCollection()) {
+      for (Site s : SimManager.getAllSites().asCollection()) {
          if (s.hasActor(ActorType.RESPONDING_IMAGING_GATEWAY))
             ss.add(s.getName());
       }
       return ss;
    }
 
-   public List<String> getSiteNamesWithIDS(String sessionId) throws Exception {
-      logger.debug(sessionId + ": " + "getSiteNamesWithIDS");
+   public List<String> getSiteNamesWithIDS() throws Exception {
       List<String> ss = new ArrayList<>();
-      for (Site s : new SimCache().getSimManagerForSession(sessionId).getAllSites().asCollection()) {
+      for (Site s : SimManager.getAllSites().asCollection()) {
          if (s.hasActor(ActorType.IMAGING_DOC_SOURCE))
             ss.add(s.getName());
       }
       return ss;
    }
 
-	public List<String> getSiteNamesByTran(String tranTypeStr, String sessionId) throws Exception {
-		logger.debug(sessionId + ": " + "getSiteNamesWithRep");
+	public List<String> getSiteNamesByTran(String tranTypeStr) throws Exception {
 		List<String> pnrSites = null;
 		try {
-			Collection<Site> siteCollection = SimCache.getSimManagerForSession(sessionId).getAllSites().asCollection();
+			Collection<Site> siteCollection = SimManager.getAllSites().asCollection();
 
 			Sites theSites = new Sites(siteCollection);
 
@@ -132,8 +118,7 @@ public class SiteServiceManager {
 
 	}
 	
-	public List<String> getSiteNames(String sessionId, boolean reload, boolean returnSimAlso)   {
-		logger.debug(sessionId + ": " + "getSiteNames");
+	public List<String> getSiteNames(boolean reload, boolean returnSimAlso)   {
 
 		if (reload)
 			commonSites = null;
@@ -141,7 +126,7 @@ public class SiteServiceManager {
 		try {
 			if (returnSimAlso) {
 				List<String> names = new ArrayList<>();
-				for (Site s : getAllSites(sessionId))
+				for (Site s : getAllSites())
 					names.add(s.getName());
 				return names;
 			} else {
@@ -177,16 +162,6 @@ public class SiteServiceManager {
 		return commonSites;
 	}
 
-	// return common and simulator sites
-	private Sites addSimulatorSites(String sessionId) throws Exception {
-		try {
-			return SimCache.getSimManagerForSession(sessionId, true).getAllSites();
-		} catch (Exception e) {
-			logger.error("addSimulatorSites", e);
-			throw new Exception(e.getMessage(), e);
-		}
-	}
-
 	private boolean useActorsFile() {
 		if (useGazelleConfigFeed())
 			return false;
@@ -200,12 +175,11 @@ public class SiteServiceManager {
 		return c.trim().length() > 0;
 	}
 
-	public List<String> getRegistryNames(String sessionId) {
-		logger.debug(sessionId + ": " + "getRegistryNames");
+	public List<String> getRegistryNames() {
 		try {
-			getAllSites(sessionId);
+			getAllSites();
 
-			return SimCache.getSimManagerForSession(sessionId).getAllSites().getSiteNamesWithActor(
+			return SimManager.getAllSites().getSiteNamesWithActor(
 					ActorType.REGISTRY);
 		} catch (Exception e) {
 			System.out.println(ExceptionUtil.exception_details(e, 10));
@@ -213,12 +187,11 @@ public class SiteServiceManager {
 		}
 	}
 
-	public List<String> getUpdateNames(String sessionId) {
-		logger.debug(sessionId + ": " + "getUpdateNames");
+	public List<String> getUpdateNames() {
 		try {
-			getAllSites(sessionId);
+			getAllSites();
 
-			return SimCache.getSimManagerForSession(sessionId).getAllSites().getSiteNamesWithTransaction(
+			return SimManager.getAllSites().getSiteNamesWithTransaction(
 					TransactionType.UPDATE);
 		} catch (Exception e) {
 			System.out.println(ExceptionUtil.exception_details(e, 10));
@@ -226,24 +199,21 @@ public class SiteServiceManager {
 		}
 	}
 
-	public List<String> getRepositoryNames(String sessionId) {
-		logger.debug(sessionId + ": " + "getRepositoryNames");
+	public List<String> getRepositoryNames() {
 		try {
-			getAllSites(sessionId);
+			getAllSites();
 
-			return SimCache.getSimManagerForSession(sessionId).getAllSites().getSiteNamesWithRepository();
+			return SimManager.getAllSites().getSiteNamesWithRepository();
 		} catch (Exception e) {
 			System.out.println(ExceptionUtil.exception_details(e, 10));
 			return new ArrayList<>();
 		}
 	}
 
-	public List<String> getRGNames(String sessionId) {
-		logger.debug(sessionId + ": " + "getRGNames");
+	public List<String> getRGNames() {
 		try {
-			getAllSites(sessionId);
-			return SimCache.getSimManagerForSession(sessionId)
-					.getAllSites()
+			getAllSites();
+			return SimManager.getAllSites()
 					.getSiteNamesWithActor(ActorType.RESPONDING_GATEWAY);
 		} catch (Exception e) {
 			System.out.println(ExceptionUtil.exception_details(e, 10));
@@ -251,12 +221,10 @@ public class SiteServiceManager {
 		}
 	}
 
-	public List<String> getIGNames(String sessionId) {
-		logger.debug(sessionId + ": " + "getIGNames");
+	public List<String> getIGNames() {
 		try {
-			getAllSites(sessionId);
-			return SimCache.getSimManagerForSession(sessionId)
-					.getAllSites()
+			getAllSites();
+			return SimManager.getAllSites()
 					.getSiteNamesWithActor(ActorType.INITIATING_GATEWAY);
 		} catch (Exception e) {
 			System.out.println(ExceptionUtil.exception_details(e, 10));
@@ -265,27 +233,24 @@ public class SiteServiceManager {
 
 	}
 
-	public List<String> reloadSites(String sessionId, boolean simAlso)
+	public List<String> reloadSites(boolean simAlso)
 			throws FactoryConfigurationError, Exception {
-		logger.debug(sessionId + ": " + "reloadSites");
 		// sites = null;
 		// loadSites();
-		return getSiteNames(sessionId, true, simAlso);
+		return getSiteNames(true, simAlso);
 	}
 
-	public Site getSite(String sessionId, String siteName) throws Exception {
-		logger.debug(sessionId + ": " + "getSite");
+	public Site getSite(String siteName) throws Exception {
 		try {
-			getAllSites(sessionId);
-			return SimCache.getSimManagerForSession(sessionId).getAllSites().getSite(siteName);
+			getAllSites();
+			return SimManager.getAllSites().getSite(siteName);
 		} catch (Exception e) {
 			logger.error("getSite", e);
 			throw new Exception(e.getMessage());
 		}
 	}
 
-	public String saveSite(String sessionId, Site site) throws Exception {
-		logger.debug(sessionId + ": " + "saveSite");
+	public String saveSite(Site site) throws Exception {
 		try {
             if (commonSites == null) commonSites = new Sites();
             commonSites.putSite(site);
@@ -298,7 +263,6 @@ public class SiteServiceManager {
 				loader.saveToFile(Installation.instance().propertyServiceManager()
 						.configuredActorsFile(false), loader.toXML(commonSites));
 			}
-			addSimulatorSites(sessionId);
 		} catch (Exception e) {
 			logger.error("saveSite", e);
 			throw new Exception(e.getMessage(), e);
@@ -308,8 +272,7 @@ public class SiteServiceManager {
 		return null;
 	}
 
-	public String deleteSite(String sessionId, String siteName) throws Exception {
-		logger.debug(sessionId + ": " + "deleteSite");
+	public String deleteSite(String siteName) throws Exception {
 		commonSites.deleteSite(siteName);
 		try {
 			// sites.saveToFile(configuredActorsFile(false));
@@ -319,7 +282,6 @@ public class SiteServiceManager {
 			else
 				new CombinedSiteLoader().saveToFile(Installation.instance().propertyServiceManager()
 						.configuredActorsFile(false), commonSites);
-			addSimulatorSites(sessionId);
 		} catch (Exception e) {
 			logger.error("deleteSite", e);
 			throw new Exception(e.getMessage());
@@ -351,12 +313,10 @@ public class SiteServiceManager {
 		return commonSites.getSiteNames();
 	}
 
-	public TransactionOfferings getTransactionOfferings(String sessionId) throws Exception {
-		logger.debug(sessionId + ": "
-				+ "getTransactionOfferings");
+	public TransactionOfferings getTransactionOfferings() throws Exception {
 		try {
-			getAllSites(sessionId);
-			Sites sits = SimCache.getSimManagerForSession(sessionId).getAllSites();
+			getAllSites();
+			Sites sits = SimManager.getAllSites();
 			logger.debug("site Names: " + sits.getSiteNames());
 			return new TransactionOfferingFactory(sits).get();
 		} catch (Exception e) {
@@ -365,8 +325,7 @@ public class SiteServiceManager {
 		}
 	}
 
-	public List<String> getActorTypeNames(String sessionId) {
-		logger.debug(sessionId + ": " + "getActorTypeNames");
+	public List<String> getActorTypeNames() {
 		return ActorType.getActorNamesForConfigurationDisplays();
 	}
 

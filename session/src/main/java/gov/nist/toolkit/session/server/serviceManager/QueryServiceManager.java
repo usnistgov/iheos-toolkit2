@@ -11,9 +11,9 @@ import gov.nist.toolkit.results.ResultBuilder;
 import gov.nist.toolkit.results.client.*;
 import gov.nist.toolkit.session.server.Session;
 import gov.nist.toolkit.session.server.services.*;
-import gov.nist.toolkit.sitemanagement.client.Site;
-import gov.nist.toolkit.sitemanagement.client.SiteSpec;
-import gov.nist.toolkit.sitemanagement.client.TransactionBean;
+import gov.nist.toolkit.sitemanagementui.client.Site;
+import gov.nist.toolkit.sitemanagementui.client.SiteSpec;
+import gov.nist.toolkit.sitemanagementui.client.TransactionBean;
 import gov.nist.toolkit.xdsexception.ExceptionUtil;
 import gov.nist.toolkit.xdsexception.client.XdsException;
 import org.apache.log4j.Logger;
@@ -491,7 +491,7 @@ public class QueryServiceManager extends CommonService {
 				} else {
 					if (s2 == null) {
 						SiteServiceManager ssm = SiteServiceManager.getSiteServiceManager();
-						s2 = ssm.getSite(ssm.getAllSites(session.id()), s.siteSpec.name);
+						s2 = ssm.getSite(ssm.getAllSites(), s.siteSpec.name);
 					}
 					if (s2.getHome() == null || s2.getHome().equals(""))
 						throw new Exception("Cross Community request but site " + s.siteSpec.name + " has no homeCommunityId configured");

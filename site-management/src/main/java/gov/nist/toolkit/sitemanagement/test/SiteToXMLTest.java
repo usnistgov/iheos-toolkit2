@@ -4,12 +4,11 @@ import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 import gov.nist.toolkit.sitemanagement.CombinedSiteLoader;
 import gov.nist.toolkit.sitemanagement.Sites;
-import gov.nist.toolkit.sitemanagement.client.Site;
-import gov.nist.toolkit.sitemanagement.client.TransactionBean.RepositoryType;
+import gov.nist.toolkit.sitemanagementui.client.Site;
+import gov.nist.toolkit.sitemanagementui.client.TransactionBean.RepositoryType;
 
 import org.apache.axiom.om.OMElement;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 
 public class SiteToXMLTest {

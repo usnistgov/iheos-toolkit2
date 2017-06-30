@@ -3,7 +3,7 @@
  */
 package gov.nist.toolkit.services.client;
 
-import gov.nist.toolkit.sitemanagement.client.SiteSpec;
+import gov.nist.toolkit.sitemanagementui.client.SiteSpec;
 
 /**
  * Orchestration request for Image Document Consumer SUT

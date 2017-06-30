@@ -7,7 +7,7 @@ import gov.nist.toolkit.services.client.PifType;
 import gov.nist.toolkit.services.client.RawResponse;
 import gov.nist.toolkit.services.client.RgOrchestrationRequest;
 import gov.nist.toolkit.services.client.RgOrchestrationResponse;
-import gov.nist.toolkit.sitemanagement.client.SiteSpec;
+import gov.nist.toolkit.sitemanagementui.client.SiteSpec;
 import gov.nist.toolkit.xdstools2.client.command.command.BuildRGTestOrchestrationCommand;
 import gov.nist.toolkit.xdstools2.client.util.ClientUtils;
 import gov.nist.toolkit.xdstools2.client.widgets.OrchestrationSupportTestsDisplay;

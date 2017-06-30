@@ -1,4 +1,4 @@
-package gov.nist.toolkit.sitemanagement.client;
+package gov.nist.toolkit.sitemanagementui.client;
 
 import com.google.gwt.user.client.rpc.IsSerializable;
 import gov.nist.toolkit.actortransaction.client.ActorType;

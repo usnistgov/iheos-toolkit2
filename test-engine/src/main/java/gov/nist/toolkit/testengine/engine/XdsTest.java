@@ -5,7 +5,7 @@ import gov.nist.toolkit.registrymsg.repository.RetrievedDocumentModel;
 import gov.nist.toolkit.results.client.TestInstance;
 import gov.nist.toolkit.sitemanagement.CombinedSiteLoader;
 import gov.nist.toolkit.sitemanagement.Sites;
-import gov.nist.toolkit.sitemanagement.client.Site;
+import gov.nist.toolkit.sitemanagementui.client.Site;
 import gov.nist.toolkit.soap.axis2.Soap;
 import gov.nist.toolkit.testenginelogging.LogFileContentBuilder;
 import gov.nist.toolkit.testenginelogging.TestLogDetails;

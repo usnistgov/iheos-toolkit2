@@ -2,11 +2,11 @@ package gov.nist.toolkit.sitemanagement;
 
 import gov.nist.toolkit.actortransaction.client.ActorType;
 import gov.nist.toolkit.configDatatypes.client.TransactionType;
-import gov.nist.toolkit.sitemanagement.client.Site;
-import gov.nist.toolkit.sitemanagement.client.SiteSpec;
-import gov.nist.toolkit.sitemanagement.client.TransactionBean;
-import gov.nist.toolkit.sitemanagement.client.TransactionBean.RepositoryType;
-import gov.nist.toolkit.sitemanagement.client.TransactionCollection;
+import gov.nist.toolkit.sitemanagementui.client.Site;
+import gov.nist.toolkit.sitemanagementui.client.SiteSpec;
+import gov.nist.toolkit.sitemanagementui.client.TransactionBean;
+import gov.nist.toolkit.sitemanagementui.client.TransactionBean.RepositoryType;
+import gov.nist.toolkit.sitemanagementui.client.TransactionCollection;
 import gov.nist.toolkit.xdsexception.client.XdsException;
 
 import java.util.*;

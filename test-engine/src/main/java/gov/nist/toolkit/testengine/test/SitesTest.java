@@ -1,13 +1,6 @@
 package gov.nist.toolkit.testengine.test;
 
-import gov.nist.toolkit.sitemanagement.CombinedSiteLoader;
 import gov.nist.toolkit.sitemanagement.Sites;
-import gov.nist.toolkit.sitemanagement.client.Site;
-
-import javax.xml.parsers.FactoryConfigurationError;
-
-import org.junit.Test;
-
 
 
 public class SitesTest {

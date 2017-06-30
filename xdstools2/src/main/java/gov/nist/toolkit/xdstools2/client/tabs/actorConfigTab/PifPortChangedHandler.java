@@ -3,7 +3,7 @@ package gov.nist.toolkit.xdstools2.client.tabs.actorConfigTab;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.user.client.ui.TextBox;
-import gov.nist.toolkit.sitemanagement.client.Site;
+import gov.nist.toolkit.sitemanagementui.client.Site;
 
 class PifPortChangedHandler implements ValueChangeHandler {
 	/**

@@ -2,8 +2,8 @@ package gov.nist.toolkit.xdstools2.server.gazelle.actorConfig;
 
 import gov.nist.toolkit.actortransaction.client.ActorType;
 import gov.nist.toolkit.configDatatypes.client.TransactionType;
-import gov.nist.toolkit.sitemanagement.client.TransactionBean;
-import gov.nist.toolkit.sitemanagement.client.TransactionBean.RepositoryType;
+import gov.nist.toolkit.sitemanagementui.client.TransactionBean;
+import gov.nist.toolkit.sitemanagementui.client.TransactionBean.RepositoryType;
 
 class SysConfig {
 	/**

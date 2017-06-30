@@ -1,7 +1,7 @@
 package gov.nist.toolkit.testengine.engine;
 
 import gov.nist.toolkit.results.client.TestInstance;
-import gov.nist.toolkit.sitemanagement.client.Site;
+import gov.nist.toolkit.sitemanagementui.client.Site;
 import gov.nist.toolkit.soap.axis2.Soap;
 import gov.nist.toolkit.testenginelogging.logrepository.LogRepository;
 

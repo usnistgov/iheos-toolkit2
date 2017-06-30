@@ -11,7 +11,7 @@ import gov.nist.toolkit.results.client.AssertionResults
 import gov.nist.toolkit.results.client.Result
 import gov.nist.toolkit.results.client.TestInstance
 import gov.nist.toolkit.simcommon.client.SimId
-import gov.nist.toolkit.sitemanagement.client.SiteSpec
+import gov.nist.toolkit.sitemanagementui.client.SiteSpec
 import gov.nist.toolkit.testengine.scripts.BuildCollections
 import gov.nist.toolkit.toolkitApi.SimulatorBuilder
 import gov.nist.toolkit.toolkitServicesCommon.resource.SimConfigResource

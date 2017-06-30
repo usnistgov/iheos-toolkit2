@@ -25,7 +25,7 @@ import gov.nist.toolkit.simulators.support.BaseDsActorSimulator;
 import gov.nist.toolkit.simulators.support.DsSimCommon;
 import gov.nist.toolkit.simulators.support.SimCommon;
 import gov.nist.toolkit.sitemanagement.SeparateSiteLoader;
-import gov.nist.toolkit.sitemanagement.client.Site;
+import gov.nist.toolkit.sitemanagementui.client.Site;
 import gov.nist.toolkit.soap.http.SoapFault;
 import gov.nist.toolkit.utilities.io.Io;
 import gov.nist.toolkit.utilities.xml.OMFormatter;

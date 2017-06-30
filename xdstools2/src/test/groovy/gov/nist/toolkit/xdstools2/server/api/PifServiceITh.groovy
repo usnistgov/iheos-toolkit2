@@ -7,7 +7,7 @@ import gov.nist.toolkit.services.server.ToolkitApi
 import gov.nist.toolkit.session.server.Session
 import gov.nist.toolkit.session.server.serviceManager.XdsTestServiceManager
 import gov.nist.toolkit.simcommon.client.SimId
-import gov.nist.toolkit.sitemanagement.client.SiteSpec
+import gov.nist.toolkit.sitemanagementui.client.SiteSpec
 import spock.lang.Specification
 
 /**

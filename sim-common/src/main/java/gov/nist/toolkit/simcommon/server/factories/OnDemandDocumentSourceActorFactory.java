@@ -11,9 +11,9 @@ import gov.nist.toolkit.simcommon.client.config.SimulatorConfigElement;
 import gov.nist.toolkit.simcommon.server.AbstractActorFactory;
 import gov.nist.toolkit.simcommon.server.IActorFactory;
 import gov.nist.toolkit.simcommon.server.SimManager;
-import gov.nist.toolkit.sitemanagement.client.Site;
-import gov.nist.toolkit.sitemanagement.client.TransactionBean;
-import gov.nist.toolkit.sitemanagement.client.TransactionBean.RepositoryType;
+import gov.nist.toolkit.sitemanagementui.client.Site;
+import gov.nist.toolkit.sitemanagementui.client.TransactionBean;
+import gov.nist.toolkit.sitemanagementui.client.TransactionBean.RepositoryType;
 import org.apache.log4j.Logger;
 
 import java.util.ArrayList;

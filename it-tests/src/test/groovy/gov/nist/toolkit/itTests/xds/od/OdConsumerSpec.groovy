@@ -13,7 +13,7 @@ import gov.nist.toolkit.services.server.UnitTestEnvironmentManager
 import gov.nist.toolkit.session.server.Session
 import gov.nist.toolkit.simcommon.client.SimId
 import gov.nist.toolkit.simulators.support.od.TransactionUtil
-import gov.nist.toolkit.sitemanagement.client.SiteSpec
+import gov.nist.toolkit.sitemanagementui.client.SiteSpec
 import gov.nist.toolkit.testengine.scripts.BuildCollections
 import gov.nist.toolkit.toolkitApi.SimulatorBuilder
 import gov.nist.toolkit.toolkitServicesCommon.SimConfig

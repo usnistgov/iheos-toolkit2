@@ -3,9 +3,9 @@ package gov.nist.toolkit.xdstools2.client.tabs.GatewayTestsTabs;
 import com.google.gwt.user.client.ui.*;
 import gov.nist.toolkit.actortransaction.client.ActorType;
 import gov.nist.toolkit.configDatatypes.client.TransactionType;
-import gov.nist.toolkit.sitemanagement.client.Site;
-import gov.nist.toolkit.sitemanagement.client.SiteSpec;
-import gov.nist.toolkit.sitemanagement.client.TransactionOfferings;
+import gov.nist.toolkit.sitemanagementui.client.Site;
+import gov.nist.toolkit.sitemanagementui.client.SiteSpec;
+import gov.nist.toolkit.sitemanagementui.client.TransactionOfferings;
 import gov.nist.toolkit.xdstools2.client.CoupledTransactions;
 import gov.nist.toolkit.xdstools2.client.StringSort;
 

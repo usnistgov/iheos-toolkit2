@@ -3,7 +3,7 @@ package gov.nist.toolkit.xdstools2.client.tabs;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import gov.nist.toolkit.registrymetadata.client.RegistryObject;
-import gov.nist.toolkit.sitemanagement.client.SiteSpec;
+import gov.nist.toolkit.sitemanagementui.client.SiteSpec;
 import gov.nist.toolkit.xdstools2.client.TabContainer;
 import gov.nist.toolkit.xdstools2.client.inspector.MetadataEditorTab;
 import gov.nist.toolkit.xdstools2.client.tabs.GatewayTestsTabs.IDSTestTab;

@@ -8,7 +8,7 @@ import com.google.gwt.user.cellview.client.TextColumn;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import gov.nist.toolkit.results.shared.Test;
-import gov.nist.toolkit.sitemanagement.client.Site;
+import gov.nist.toolkit.sitemanagementui.client.Site;
 import gov.nist.toolkit.xdstools2.client.command.command.ReloadAllTestResultsCommand;
 import gov.nist.toolkit.xdstools2.client.command.command.RunSingleTestCommand;
 import gov.nist.toolkit.xdstools2.client.resources.TableResources;

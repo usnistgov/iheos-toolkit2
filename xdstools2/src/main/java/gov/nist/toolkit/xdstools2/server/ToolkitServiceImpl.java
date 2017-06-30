@@ -38,9 +38,9 @@ import gov.nist.toolkit.simcommon.server.SiteServiceManager;
 import gov.nist.toolkit.simulators.sim.rep.RepIndex;
 import gov.nist.toolkit.simulators.support.StoredDocument;
 import gov.nist.toolkit.simulators.support.od.TransactionUtil;
-import gov.nist.toolkit.sitemanagement.client.Site;
-import gov.nist.toolkit.sitemanagement.client.SiteSpec;
-import gov.nist.toolkit.sitemanagement.client.TransactionOfferings;
+import gov.nist.toolkit.sitemanagementui.client.Site;
+import gov.nist.toolkit.sitemanagementui.client.SiteSpec;
+import gov.nist.toolkit.sitemanagementui.client.TransactionOfferings;
 import gov.nist.toolkit.testengine.Sections;
 import gov.nist.toolkit.testengine.scripts.BuildCollections;
 import gov.nist.toolkit.testengine.scripts.CodesUpdater;
@@ -164,38 +164,38 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements
     @Override
     public List<String> getSiteNames(GetSiteNamesRequest request) throws Exception {
         installCommandContext(request);
-        return siteServiceManager.getSiteNames(session().getId(), request.getReload(), request.getSimAlso());
+        return siteServiceManager.getSiteNames(request.getReload(), request.getSimAlso());
     }
     @Override
     public Collection<Site> getAllSites(CommandContext commandContext) throws Exception {
         installCommandContext(commandContext);
-        return siteServiceManager.getAllSites(session().getId());
+        return siteServiceManager.getAllSites();
     }
 
     @Override
-    public List<String> reloadSites(boolean simAlso) throws FactoryConfigurationError, Exception { return siteServiceManager.reloadSites(session().getId(), simAlso); }
+    public List<String> reloadSites(boolean simAlso) throws FactoryConfigurationError, Exception { return siteServiceManager.reloadSites(simAlso); }
     @Override
     public Site getSite(GetSiteRequest request) throws Exception {
         installCommandContext(request);
-        return siteServiceManager.getSite(session().getId(), request.getSiteName());
+        return siteServiceManager.getSite(request.getSiteName());
     }
     @Override
     public String saveSite(SaveSiteRequest request) throws Exception {
         installCommandContext(request);
-        return siteServiceManager.saveSite(session().getId(), request.getSite());
+        return siteServiceManager.saveSite(request.getSite());
     }
     @Override
     public String deleteSite(DeleteSiteRequest request) throws Exception {
         installCommandContext(request);
-        return siteServiceManager.deleteSite(session().getId(), request.getSiteName());
+        return siteServiceManager.deleteSite(request.getSiteName());
     }
     //	public String getHome() throws Exception { return session().getHome(); }
     @Override
-    public List<String> getUpdateNames()  throws NoServletSessionException { return siteServiceManager.getUpdateNames(session().getId()); }
+    public List<String> getUpdateNames()  throws NoServletSessionException { return siteServiceManager.getUpdateNames(); }
     @Override
     public TransactionOfferings getTransactionOfferings(CommandContext commandContext) throws Exception {
         installCommandContext(commandContext);
-        return siteServiceManager.getTransactionOfferings(session().getId());
+        return siteServiceManager.getTransactionOfferings();
     }
     @Override
     public List<String> reloadExternalSites(CommandContext context) throws FactoryConfigurationError, Exception {
@@ -203,37 +203,37 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements
         return siteServiceManager.reloadCommonSites();
     }
     @Override
-    public List<String> getRegistryNames()  throws NoServletSessionException { return siteServiceManager.getRegistryNames(session().getId()); }
+    public List<String> getRegistryNames()  throws NoServletSessionException { return siteServiceManager.getRegistryNames(); }
     @Override
-    public List<String> getRepositoryNames()  throws NoServletSessionException { return siteServiceManager.getRepositoryNames(session().getId()); }
+    public List<String> getRepositoryNames()  throws NoServletSessionException { return siteServiceManager.getRepositoryNames(); }
     @Override
-    public List<String> getRGNames()  throws NoServletSessionException { return siteServiceManager.getRGNames(session().getId()); }
+    public List<String> getRGNames()  throws NoServletSessionException { return siteServiceManager.getRGNames(); }
     @Override
-    public List<String> getIGNames()  throws NoServletSessionException { return siteServiceManager.getIGNames(session().getId()); }
+    public List<String> getIGNames()  throws NoServletSessionException { return siteServiceManager.getIGNames(); }
     @Override
     public List<String> getActorTypeNames(CommandContext context)  throws Exception {
         installCommandContext(context);
-        return siteServiceManager.getActorTypeNames(session().getId());
+        return siteServiceManager.getActorTypeNames();
     }
     @Override
     public List<String> getSiteNamesWithRG(CommandContext context) throws Exception {
         installCommandContext(context);
-        return siteServiceManager.getSiteNamesWithRG(session().getId());
+        return siteServiceManager.getSiteNamesWithRG();
     }
     @Override
     public List<String> getSiteNamesWithRepository(CommandContext context) throws Exception {
         installCommandContext(context);
-        return siteServiceManager.getSiteNamesWithRepository(session().getId());
+        return siteServiceManager.getSiteNamesWithRepository();
     }
     @Override
     public List<String> getSiteNamesWithRIG(CommandContext context) throws Exception {
         installCommandContext(context);
-        return siteServiceManager.getSiteNamesWithRIG(session().getId());
+        return siteServiceManager.getSiteNamesWithRIG();
     }
     @Override
     public List<String> getSiteNamesWithIDS(CommandContext context) throws Exception {
         installCommandContext(context);
-        return siteServiceManager.getSiteNamesWithIDS(session().getId());
+        return siteServiceManager.getSiteNamesWithIDS();
     }
 
     //------------------------------------------------------------------------
@@ -1418,7 +1418,7 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements
     @Override
     public List<String> getSiteNamesByTranType(GetSiteNamesByTranTypeRequest request) throws Exception {
         installCommandContext(request);
-        return siteServiceManager.getSiteNamesByTran(request.getTransactionTypeName(), session().getId());
+        return siteServiceManager.getSiteNamesByTran(request.getTransactionTypeName());
     }
 
     @Override

@@ -20,7 +20,7 @@
     <!--<inherits name="gov.nist.toolkit.xdstestgui.xdstestGui"/>-->
     <inherits name="gov.nist.toolkit.testengine.testengine"/>
 
-    <inherits name="gov.nist.toolkit.sitemanagement.siteManagement"/>
+    <inherits name="gov.nist.toolkit.sitemanagementui.siteManagementUi"/>
     <inherits name="gov.nist.toolkit.valsupport.validatorsSupport"/>
     <inherits name="gov.nist.toolkit.registrymsg.registryMsgFormats"/>
     <inherits name="gov.nist.toolkit.errorrecording.errorRecording"/>

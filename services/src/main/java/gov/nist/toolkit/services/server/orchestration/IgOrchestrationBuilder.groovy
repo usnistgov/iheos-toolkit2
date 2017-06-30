@@ -13,7 +13,7 @@ import gov.nist.toolkit.simcommon.client.SimId
 import gov.nist.toolkit.simcommon.client.SimulatorConfig
 import gov.nist.toolkit.simcommon.client.config.SimulatorConfigElement
 import gov.nist.toolkit.simcommon.server.SimCache
-import gov.nist.toolkit.sitemanagement.client.Site
+import gov.nist.toolkit.sitemanagementui.client.Site
 import groovy.transform.TypeChecked
 /**
  * Build environment for testing Initiating Gateway SUT.

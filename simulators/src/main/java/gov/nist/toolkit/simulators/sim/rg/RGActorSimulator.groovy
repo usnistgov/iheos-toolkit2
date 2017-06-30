@@ -18,8 +18,8 @@ import gov.nist.toolkit.simulators.sim.reg.AdhocQueryResponseGenerator
 import gov.nist.toolkit.simulators.sim.reg.RegistryActorSimulator
 import gov.nist.toolkit.simulators.sim.reg.SoapWrapperRegistryResponseSim
 import gov.nist.toolkit.simulators.support.*
-import gov.nist.toolkit.sitemanagement.client.Site
-import gov.nist.toolkit.sitemanagement.client.TransactionBean
+import gov.nist.toolkit.sitemanagementui.client.Site
+import gov.nist.toolkit.sitemanagementui.client.TransactionBean
 import gov.nist.toolkit.soap.axis2.Soap
 import gov.nist.toolkit.testengine.engine.RetrieveB
 import gov.nist.toolkit.utilities.xml.XmlUtil

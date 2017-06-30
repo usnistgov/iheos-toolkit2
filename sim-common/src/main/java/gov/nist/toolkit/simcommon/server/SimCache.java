@@ -3,7 +3,7 @@ package gov.nist.toolkit.simcommon.server;
 
 import gov.nist.toolkit.simcommon.client.SimId;
 import gov.nist.toolkit.sitemanagement.Sites;
-import gov.nist.toolkit.sitemanagement.client.Site;
+import gov.nist.toolkit.sitemanagementui.client.Site;
 import org.apache.log4j.Logger;
 
 import java.util.*;

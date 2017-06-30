@@ -17,8 +17,8 @@ import gov.nist.toolkit.simcommon.client.*;
 import gov.nist.toolkit.simcommon.server.SimDb;
 import gov.nist.toolkit.simcommon.server.SimManager;
 import gov.nist.toolkit.simcommon.server.SiteServiceManager;
-import gov.nist.toolkit.sitemanagement.client.Site;
-import gov.nist.toolkit.sitemanagement.client.SiteSpec;
+import gov.nist.toolkit.sitemanagementui.client.Site;
+import gov.nist.toolkit.sitemanagementui.client.SiteSpec;
 import gov.nist.toolkit.xdsexception.client.ThreadPoolExhaustedException;
 import org.apache.log4j.Logger;
 
@@ -237,7 +237,7 @@ public class ToolkitApi {
     }
 
     public List<String> getSiteNames(boolean simAlso) {
-        return siteServiceManager().getSiteNames(session.getId(), true, simAlso);
+        return siteServiceManager().getSiteNames(true, simAlso);
     }
 
     public void setConfig(SimulatorConfig config, String parameterName, String value) {

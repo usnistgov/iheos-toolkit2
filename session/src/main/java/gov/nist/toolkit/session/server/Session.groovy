@@ -15,9 +15,9 @@ import gov.nist.toolkit.simcommon.client.SimId
 import gov.nist.toolkit.simcommon.server.ExtendedPropertyManager
 import gov.nist.toolkit.simcommon.server.SimCache
 import gov.nist.toolkit.sitemanagement.Sites
-import gov.nist.toolkit.sitemanagement.client.Site
-import gov.nist.toolkit.sitemanagement.client.SiteSpec
-import gov.nist.toolkit.sitemanagement.client.TransactionBean
+import gov.nist.toolkit.sitemanagementui.client.Site
+import gov.nist.toolkit.sitemanagementui.client.SiteSpec
+import gov.nist.toolkit.sitemanagementui.client.TransactionBean
 import gov.nist.toolkit.testengine.engine.PatientIdAllocator
 import gov.nist.toolkit.testengine.engine.TransactionSettings
 import gov.nist.toolkit.testengine.engine.Xdstest2

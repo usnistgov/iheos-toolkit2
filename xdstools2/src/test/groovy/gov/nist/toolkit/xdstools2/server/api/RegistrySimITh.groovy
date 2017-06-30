@@ -5,7 +5,7 @@ import gov.nist.toolkit.installation.Installation
 import gov.nist.toolkit.results.client.Result
 import gov.nist.toolkit.services.server.ToolkitApi
 import gov.nist.toolkit.simcommon.client.SimId
-import gov.nist.toolkit.sitemanagement.client.Site
+import gov.nist.toolkit.sitemanagementui.client.Site
 import spock.lang.Specification
 /**
  * Created by bill on 9/22/15.

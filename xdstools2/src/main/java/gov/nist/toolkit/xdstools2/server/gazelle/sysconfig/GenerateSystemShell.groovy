@@ -1,7 +1,7 @@
 package gov.nist.toolkit.xdstools2.server.gazelle.sysconfig
 
 import gov.nist.toolkit.sitemanagement.SeparateSiteLoader
-import gov.nist.toolkit.sitemanagement.client.Site
+import gov.nist.toolkit.sitemanagementui.client.Site
 
 /**
  *

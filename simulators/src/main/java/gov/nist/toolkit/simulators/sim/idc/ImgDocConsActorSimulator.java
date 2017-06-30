@@ -24,7 +24,7 @@ import gov.nist.toolkit.registrymsg.repository.RetrieveImageRequestModel;
 import gov.nist.toolkit.registrymsg.repository.RetrievedDocumentModel;
 import gov.nist.toolkit.registrymsg.repository.RetrievedDocumentsModel;
 import gov.nist.toolkit.simulators.support.BaseDsActorSimulator;
-import gov.nist.toolkit.sitemanagement.client.Site;
+import gov.nist.toolkit.sitemanagementui.client.Site;
 import gov.nist.toolkit.soap.axis2.Soap;
 import gov.nist.toolkit.testengine.engine.RetrieveB;
 import gov.nist.toolkit.valsupport.engine.MessageValidatorEngine;

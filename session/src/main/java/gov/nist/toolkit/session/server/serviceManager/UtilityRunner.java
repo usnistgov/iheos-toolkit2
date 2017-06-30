@@ -7,7 +7,7 @@ import gov.nist.toolkit.results.ResultBuilder;
 import gov.nist.toolkit.results.client.*;
 import gov.nist.toolkit.session.server.Session;
 import gov.nist.toolkit.sitemanagement.Sites;
-import gov.nist.toolkit.sitemanagement.client.Site;
+import gov.nist.toolkit.sitemanagementui.client.Site;
 import gov.nist.toolkit.testengine.engine.TestCollection;
 import gov.nist.toolkit.testengine.engine.TransactionSettings;
 import gov.nist.toolkit.testenginelogging.logrepository.LogRepositoryFactory;
@@ -125,7 +125,7 @@ public class UtilityRunner {
                 }
 
                 // force loading of site definitions
-                SiteServiceManager.getSiteServiceManager().getAllSites(session.getId());
+                SiteServiceManager.getSiteServiceManager().getAllSites();
 
 //                Sites theSites = new Sites(SiteServiceManager.getSiteServiceManager().getAllSites(session.getId()));
                 Collection<Site> siteCollection = SimCache.getAllSites();
