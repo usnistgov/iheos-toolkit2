@@ -583,6 +583,7 @@
 					<modules>
 						<module>${project.groupId}.xdstools2.Xdstools2</module>
 					</modules>
+                                        <extraJvmArgs>-Xms1024m -Xmx1024m -XX:MaxPermSize=256m</extraJvmArgs>
 				</configuration>
 			</plugin>
 			<!--<plugin>-->
