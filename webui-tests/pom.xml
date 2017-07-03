@@ -49,13 +49,16 @@
                 <artifactId>maven-failsafe-plugin</artifactId>
                 <version>2.19.1</version>
                 <configuration>
+                    <!-- debug individual tests -->
+                    <!--<includes>-->
+                        <!--<include>**/RegistryActorSimulatorSpec.java</include>-->
+                        <!--<include>**/RepositoryActorSimulatorSpec.java</include>-->
+                        <!--<include>**/RecipientActorSimulatorSpec.java</include>-->
+                        <!--<include>**/RespondingGatewayActorSimulatorSpec.java</include>-->
+                    <!--</includes>-->
+                    <!-- Run all tests -->
                     <includes>
-                        <include>**/RegistryActorSimulatorSpec.groovy</include>
-                        <include>**/RegistryActorSimulatorSpec.java</include>
-                        <include>**/RepositoryActorSimulatorSpec.groovy</include>
-                        <include>**/RepositoryActorSimulatorSpec.java</include>
-                        <include>**/RecipientActorSimulatorSpec.groovy</include>
-                        <include>**/RecipientActorSimulatorSpec.java</include>
+                        <include>**/*ActorSimulatorSpec.java</include>
                     </includes>
                     <!-- We should NOT ignore test failures. TestFailureIgnore should be false. -->
                     <testFailureIgnore>false</testFailureIgnore>
