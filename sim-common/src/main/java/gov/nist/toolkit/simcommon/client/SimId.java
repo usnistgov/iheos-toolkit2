@@ -24,6 +24,13 @@ public class SimId implements Serializable, IsSerializable {
     private boolean fhir = false;
 
     // server only
+    public SimId(String user, String id, String actorType, String environmentName, boolean fhir) throws BadSimIdException {
+        this(user, id, actorType);
+        this.environmentName = environmentName;
+        this.fhir = fhir;
+    }
+
+    // server only
     public SimId(String user, String id, String actorType, String environmentName) throws BadSimIdException {
         this(user, id, actorType);
         this.environmentName = environmentName;

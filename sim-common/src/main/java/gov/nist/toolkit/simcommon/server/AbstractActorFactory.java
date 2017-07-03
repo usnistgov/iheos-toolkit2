@@ -291,10 +291,6 @@ public abstract class AbstractActorFactory {
 				+ "fsim"
 				+ "/"
 				+ asc.getId();
-//				+ "/"
-//				+ actor           //asc.getActorType().toLowerCase()
-//				+ "/"
-//				+ transtype;
 	}
 
 	public void saveConfiguration(SimulatorConfig config) throws Exception {
@@ -303,7 +299,6 @@ public abstract class AbstractActorFactory {
 		SimDb simdb = new SimDb().mkSim(config.getId(), config.getActorType());
 		File simCntlFile = simdb.getSimulatorControlFile();
 		SimulatorConfigIoFactory.impl().save(config, simCntlFile.toString());
-//		SimulatorConfigIoJava.save(config, simCntlFile.toString());
 	}
 
 	static public void delete(SimulatorConfig config) throws Exception {

@@ -1,19 +1,15 @@
 package gov.nist.toolkit.toolkitApi;
 
-import java.util.Collection;
-import java.util.List;
-
-import javax.ws.rs.core.Response;
-
-import gov.nist.toolkit.configDatatypes.SimulatorProperties;
 import gov.nist.toolkit.configDatatypes.client.PatientErrorMap;
 import gov.nist.toolkit.configDatatypes.client.TransactionType;
 import gov.nist.toolkit.toolkitServicesCommon.RefList;
 import gov.nist.toolkit.toolkitServicesCommon.SimConfig;
 import gov.nist.toolkit.toolkitServicesCommon.resource.RefListResource;
-import gov.nist.toolkit.toolkitServicesCommon.resource.SimConfigResource;
 
+import javax.ws.rs.core.Response;
 import java.io.IOException;
+import java.util.Collection;
+import java.util.List;
 
 /**
  *
@@ -165,4 +161,6 @@ abstract class AbstractActor implements AbstractActorInterface {
 //        return config.getPatientErrorMap();
     }
 
+    @Override
+    public boolean isFhir() { return false; }
 }

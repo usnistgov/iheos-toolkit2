@@ -8,6 +8,7 @@ import gov.nist.toolkit.itTests.support.FhirId
 import gov.nist.toolkit.itTests.support.FhirSpecification
 import gov.nist.toolkit.simcommon.client.SimId
 import gov.nist.toolkit.simcommon.server.SimDb
+import gov.nist.toolkit.toolkitApi.SimulatorBuilder
 import org.apache.http.message.BasicStatusLine
 import org.hl7.fhir.dstu3.model.OperationOutcome
 import org.hl7.fhir.dstu3.model.Patient
@@ -17,14 +18,24 @@ import spock.lang.Shared
  *
  */
 class WriteReadTest extends FhirSpecification {
+    @Shared SimulatorBuilder spi
 
-    @Shared SimId simId = new SimId('default', 'test')
+    @Shared def testSession = 'default'
+    @Shared def simIdName = 'test'
+
+    @Shared SimId simId = new SimId(testSession, simIdName)
     @Shared FhirContext ourCtx = FhirContext.forDstu3()
 
     def setupSpec() {
-        SimDb.fdelete(simId)
-
         startGrizzly('8889')   // sets up Grizzly server on remoteToolkitPort
+
+        // Initialize remote api for talking to toolkit on Grizzly
+        // Needed to build simulators
+        spi = getSimulatorApi(remoteToolkitPort)
+
+        spi.delete(simIdName, testSession)
+
+        SimDb.fdelete(simId)
 
         new SimDb().mkfSim(simId)
     }

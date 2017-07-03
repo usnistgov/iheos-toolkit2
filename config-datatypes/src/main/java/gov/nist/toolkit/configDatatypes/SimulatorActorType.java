@@ -69,7 +69,9 @@ public enum SimulatorActorType {
     /**
      * Initiating Gateway
      */
-    INITIATING_IMAGING_GATEWAY("iig");
+    INITIATING_IMAGING_GATEWAY("iig"),
+
+    FHIR_SERVER("fhir");
 
     String name;  // name that matches ActorType.java
 

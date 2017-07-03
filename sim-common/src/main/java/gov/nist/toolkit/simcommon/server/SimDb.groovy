@@ -37,6 +37,16 @@ public class SimDb {
 	static private Logger logger = Logger.getLogger(SimDb.class);
 
 	public SimDb mkSim(SimId simid, String actor) throws IOException, NoSimException {
+
+		// if this is a FHIR sim there is a different factory method to use
+		ActorType actorType = ActorType.findActor(actor);
+		if (actorType == ActorType.FHIR_SERVER)
+			simid.forFhir()
+		if (simid.isFhir()) {
+			return mkfSim(simid)
+		}
+
+
 		File dbRoot = getSimDbFile();
 		validateSimId(simid);
 		if (!dbRoot.exists())
@@ -964,11 +974,11 @@ public class SimDb {
 		return getSimBase(simId).exists()
 	}
 
-	SimDb mkfSim(SimId simid) throws IOException, NoSimException {
+	static SimDb mkfSim(SimId simid) throws IOException, NoSimException {
 		return mkfSimi(getResDbFile(), simid, BASE_TYPE)
 	}
 
-	SimDb mkfSim(SimId simid, String actor) throws IOException, NoSimException {
+	static SimDb mkfSim(SimId simid, String actor) throws IOException, NoSimException {
 		return mkfSimi(getResDbFile(), simid, actor)
 	}
 
