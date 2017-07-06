@@ -14,10 +14,7 @@ import gov.nist.toolkit.simcommon.client.NoSimException;
 import gov.nist.toolkit.simcommon.client.SimId;
 import gov.nist.toolkit.simcommon.client.SimulatorConfig;
 import gov.nist.toolkit.simcommon.client.config.SimulatorConfigElement;
-import gov.nist.toolkit.simcommon.server.GenericSimulatorFactory;
-import gov.nist.toolkit.simcommon.server.RuntimeManager;
-import gov.nist.toolkit.simcommon.server.SimDb;
-import gov.nist.toolkit.simcommon.server.SimManager;
+import gov.nist.toolkit.simcommon.server.*;
 import gov.nist.toolkit.simulators.sim.reg.store.MetadataCollection;
 import gov.nist.toolkit.simulators.sim.reg.store.RegIndex;
 import gov.nist.toolkit.simulators.sim.rep.RepIndex;
@@ -655,14 +652,17 @@ public class SimServlet  extends HttpServlet {
 
 	private static void onServiceStart()  {
 		try {
-			List<SimId> simIds = new SimDb().getAllSimIds();
+			List<SimId> simIds = SimDb.getAllSimIds();
 			for (SimId simId : simIds) {
-				BaseDsActorSimulator sim = (BaseDsActorSimulator) RuntimeManager.getSimulatorRuntime(simId);
-				if (sim == null) continue;
-				DsSimCommon dsSimCommon = null;
-				SimulatorConfig asc = GenericSimulatorFactory.getSimConfig(simId);
-				sim.init(dsSimCommon, asc);
-				sim.onServiceStart(asc);
+				BaseActorSimulator baseSim = (BaseActorSimulator) RuntimeManager.getSimulatorRuntime(simId);
+				if (baseSim == null) continue;
+				if (baseSim instanceof  BaseDsActorSimulator) {
+					BaseDsActorSimulator sim = (BaseDsActorSimulator) baseSim;
+					DsSimCommon dsSimCommon = null;
+					SimulatorConfig asc = GenericSimulatorFactory.getSimConfig(simId);
+					sim.init(dsSimCommon, asc);
+					sim.onServiceStart(asc);
+				}
 			}
 		} catch (Exception e) {
 			logger.fatal(ExceptionUtil.exception_details(e));
@@ -671,14 +671,17 @@ public class SimServlet  extends HttpServlet {
 
 	private static void onServiceStop() {
 		try {
-			List<SimId> simIds = new SimDb().getAllSimIds();
+			List<SimId> simIds = SimDb.getAllSimIds();
 			for (SimId simId : simIds) {
-				BaseDsActorSimulator sim = (BaseDsActorSimulator) RuntimeManager.getSimulatorRuntime(simId);
-				if (sim == null) continue;
-				DsSimCommon dsSimCommon = null;
-				SimulatorConfig asc = GenericSimulatorFactory.getSimConfig(simId);
-				sim.init(dsSimCommon, asc);
-				sim.onServiceStop(asc);
+				BaseActorSimulator baseSim = (BaseActorSimulator) RuntimeManager.getSimulatorRuntime(simId);
+				if (baseSim == null) continue;
+				if (baseSim instanceof  BaseDsActorSimulator) {
+					BaseDsActorSimulator sim = (BaseDsActorSimulator) baseSim;
+					DsSimCommon dsSimCommon = null;
+					SimulatorConfig asc = GenericSimulatorFactory.getSimConfig(simId);
+					sim.init(dsSimCommon, asc);
+					sim.onServiceStop(asc);
+				}
 			}
 		} catch (Exception e) {
 			logger.fatal(ExceptionUtil.exception_details(e));

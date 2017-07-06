@@ -41,21 +41,6 @@
 
     <repositories>
         <repository>
-            <id>dcm4che</id>
-            <name>dcm4che</name>
-            <url>http://www.dcm4che.org/maven2</url>
-        </repository>
-        <repository>
-            <id>gazelle-3rd-party</id>
-            <name>gazelle nexus</name>
-            <url>https://gazelle.ihe.net/nexus/content/repositories/thirdparty</url>
-        </repository>
-        <repository>
-            <id>gazelle-snapshots</id>
-            <name>gazelle nexus</name>
-            <url>https://gazelle.ihe.net/nexus/content/repositories/snapshots</url>
-        </repository>
-        <repository>
             <id>repository.jboss.org-public</id>
             <name>JBoss.org Maven repository</name>
             <url>https://repository.jboss.org/nexus/content/groups/public</url>
@@ -75,6 +60,21 @@
             </snapshots>
             <url>https://oss.sonatype.org/content/repositories/snapshots/</url>
         </repository>
+        <repository>
+            <id>dcm4che</id>
+            <name>dcm4che</name>
+            <url>http://www.dcm4che.org/maven2</url>
+        </repository>
+        <!--<repository>-->
+            <!--<id>gazelle-3rd-party</id>-->
+            <!--<name>gazelle nexus</name>-->
+            <!--<url>https://gazelle.ihe.net/nexus/content/repositories/thirdparty</url>-->
+        <!--</repository>-->
+        <!--<repository>-->
+            <!--<id>gazelle-snapshots</id>-->
+            <!--<name>gazelle nexus</name>-->
+            <!--<url>https://gazelle.ihe.net/nexus/content/repositories/snapshots</url>-->
+        <!--</repository>-->
     </repositories>
 
     <scm>
