@@ -42,6 +42,11 @@ class WriteReadSpec extends FhirSpecification {
 
     def cleanupSpec() {
         SimIndexManager.close()
+
+        // this is really really important
+        // this test creates an invalid sim - so if this is not cleaned
+        // up it will break the tests that follow.
+        SimDb.fdelete(simId)
     }
 
     def setup() {
