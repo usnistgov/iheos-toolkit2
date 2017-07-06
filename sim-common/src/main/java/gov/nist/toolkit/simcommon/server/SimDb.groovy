@@ -339,7 +339,7 @@ public class SimDb {
 			new SimId(dir.name).forFhir()
 		}
 
-		soapSimIds + fhirSimIds
+		soapSimIds + fhirSimIds as List
 //
 //
 //
