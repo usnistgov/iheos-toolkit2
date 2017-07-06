@@ -66,4 +66,15 @@ class TestClientSpec extends FhirSpecification {
         results.size() == 1
         results.get(0).passed()
     }
+
+    def 'do query'() {
+        when:
+        def sections = ['query']
+        def params = [ :]
+        List<Result> results = api.runTest(testSession, siteName, testInstance, sections, params, true)
+
+        then:
+        results.size() == 1
+        results.get(0).passed()
+    }
 }

@@ -12,6 +12,7 @@ import org.hl7.fhir.instance.model.api.IBaseResource
 abstract class BasicFhirTransaction extends BasicTransaction {
     File resourceFile = null
     String urlExtension = ''
+    String queryParams = ''
     FhirContext fhirCtx = FhirContext.forDstu3()
 
     abstract void doRun(IBaseResource resource, String urlExtension)
@@ -44,6 +45,8 @@ abstract class BasicFhirTransaction extends BasicTransaction {
             testLog.add_name_value(this.instruction_output, "ResourceFile", resourceFile.path)
         } else if (part_name == 'UrlExtension') {
             urlExtension = part.getText()
+        } else if (part_name == 'QueryParams') {
+            queryParams = part.getText()
         } else
             parseBasicInstruction(part);
     }

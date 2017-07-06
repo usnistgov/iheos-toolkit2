@@ -1,0 +1,10 @@
+<TestPlan>
+    <Test>FhirTestClientCreate/query</Test>
+    <TestStep id="query">
+        <ExpectedStatus>Success</ExpectedStatus>
+        <FhirQueryTransaction>
+            <UseReport test="FhirTestClientCreate" section="create" step="create" reportName="Url" useAs="Url"/>
+            <QueryParams>?family=Chalmers</QueryParams>
+        </FhirQueryTransaction>
+    </TestStep>
+</TestPlan>
