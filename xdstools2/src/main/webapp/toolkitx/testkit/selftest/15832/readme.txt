@@ -1,1 +1,0 @@
-Send XCPD Query

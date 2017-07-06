@@ -97,6 +97,13 @@ public class TestDisplay  implements IsWidget {
         return view;
     }
 
+    public void addExtraStyle(String name) {
+        view.addExtraStyle(name);
+    }
+    public void removeExtraStyle(String name) {
+        view.removeExtraStyle(name);
+    }
+
     public InteractionDiagramDisplay getDiagramDisplay() {
         return diagramDisplay;
     }

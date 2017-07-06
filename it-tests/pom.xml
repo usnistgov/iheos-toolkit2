@@ -115,6 +115,7 @@
             <artifactId>fhir</artifactId>
         </dependency>
 
+
         <!-- These two needed by dcm4che -->
         <dependency>
             <groupId>org.slf4j</groupId>
@@ -162,6 +163,8 @@
                         <!--<include>**/InteractionSequenceSpec.java</include>-->
                         <!--<include>**/RigSpec.groovy</include>-->
                         <!--<include>**/RigSpec.java</include>-->
+                        <!--<include>**/FrontEndSpec.groovy</include>-->
+                        <!--<include>**/FrontEndSpec.java</include>-->
                         <!-- end include individual test -->
                         <!-- begin include all tests -->
                         <include>**/*Spec.java</include>

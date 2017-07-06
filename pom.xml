@@ -76,7 +76,7 @@
         <module>sim-test-servlet</module>
         <module>config-datatypes</module>
         <module>config-datatypes-io</module>
-        <module>it-tests</module>
+        <!--<module>it-tests</module>-->
         <module>validators-soap-message</module>
         <module>new-validation-system</module>
         <module>interaction-model</module>
@@ -88,16 +88,29 @@
     </modules>
 
     <profiles>
-    <profile>
+        <profile>
         <id>Integration-Tests</id>
         <activation>
             <activeByDefault>false</activeByDefault>
         </activation>
-    <modules>
-        <module>it-tests</module>
-    </modules>
-    </profile>
+        <modules>
+            <module>it-tests</module>
+        </modules>
+        </profile>
+
+        <profile>
+            <id>WebUI-Tests</id>
+            <activation>
+                <activeByDefault>false</activeByDefault>
+            </activation>
+            <modules>
+                <module>webui-tests</module>
+            </modules>
+        </profile>
+
     </profiles>
+
+
 
     <build>
         <outputDirectory>${webappDirectory}/WEB-INF/classes</outputDirectory>

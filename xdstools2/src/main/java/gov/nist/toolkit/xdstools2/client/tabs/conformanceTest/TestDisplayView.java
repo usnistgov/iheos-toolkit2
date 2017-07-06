@@ -127,4 +127,14 @@ class TestDisplayView extends FlowPanel implements TestStatusDisplay {
     public void labelNotRun() {
         header.labelNotRun();
     }
+
+    @Override
+    public void addExtraStyle(String name) {
+       header.addExtraStyle(name);
+    }
+
+    @Override
+    public void removeExtraStyle(String name) {
+        header.removeExtraStyle(name);
+    }
 }

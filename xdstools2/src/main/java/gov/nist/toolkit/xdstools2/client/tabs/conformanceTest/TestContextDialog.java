@@ -97,6 +97,7 @@ class TestContextDialog extends DialogBox {
         HorizontalFlowPanel siteSelection = new HorizontalFlowPanel();
         siteSelection.add(new HTML("System under test"));
         siteSelection.add(siteListBox);
+        siteListBox.addStyleName("confActorSutSelector");
         siteListBox.setVisibleItemCount(10);
         siteListBox.addChangeHandler(new SiteSelectionChangeHandler());
         loadSites();
