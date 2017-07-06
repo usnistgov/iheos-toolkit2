@@ -24,6 +24,9 @@ class TestClientSpec extends FhirSpecification {
 
     @Shared SimDb simDb
 
+    @Shared TestInstance testInstance = new TestInstance('FhirTestClientCreate')
+
+
     def setupSpec() {
         startGrizzlyWithFhir('8889')
 
@@ -42,10 +45,20 @@ class TestClientSpec extends FhirSpecification {
 
     }
 
-    def 'send create'() {
+    def 'do create'() {
         when:
-        TestInstance testInstance = new TestInstance('FhirTestClientCreate')
-        def sections = []
+        def sections = ['create']
+        def params = [ :]
+        List<Result> results = api.runTest(testSession, siteName, testInstance, sections, params, true)
+
+        then:
+        results.size() == 1
+        results.get(0).passed()
+    }
+
+    def 'do read'() {
+        when:
+        def sections = ['read']
         def params = [ :]
         List<Result> results = api.runTest(testSession, siteName, testInstance, sections, params, true)
 

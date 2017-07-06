@@ -35,6 +35,8 @@ public class SectionLogMapDTO implements Serializable, IsSerializable {
 	public void put(String sectionName, LogFileContentDTO log) throws XdsInternalException {
 		if (log == null)
 			throw new XdsInternalException("Null log for section " + sectionName);
+		if (sectionName == null)
+			throw new XdsInternalException("SectionLogMapDTO#put - sectionName is null");
 		sectionNames.add(sectionName);
 		sectionLogs.put(sectionName, log);
 		setSection(log.getReportDTOs(), sectionName);

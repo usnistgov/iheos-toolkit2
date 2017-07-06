@@ -1,5 +1,5 @@
 <TestPlan>
-    <Test>FhirTestClientCreate</Test>
+    <Test>FhirTestClientCreate/create</Test>
     <TestStep id="create">
         <ExpectedStatus>Success</ExpectedStatus>
         <FhirCreateTransaction>

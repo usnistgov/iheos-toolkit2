@@ -232,6 +232,12 @@ public class UseReportManager  {
 		}
 	}
 
-
+	public String get(String theUseAs) {
+		for (UseReport ur : useReports) {
+			if (theUseAs.equals(ur.useAs))
+				return ur.value;
+		}
+		return null;
+	}
 
 }

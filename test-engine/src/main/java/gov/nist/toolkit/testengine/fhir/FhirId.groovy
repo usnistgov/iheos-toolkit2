@@ -23,6 +23,15 @@ class FhirId {
 
     }
 
+    @Override
+    public String toString() {
+        "${type}/${id}/_history/${vid}"
+    }
+
+    public String withoutHistory() {
+        "${type}/${id}"
+    }
+
     boolean equals(o) {
         if (this.is(o)) return true
         if (getClass() != o.class) return false

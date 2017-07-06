@@ -19,7 +19,7 @@ class FhirClient {
      * Send an HTTP POST
      * @param uri  URI
      * @param _body anything that evaluates to a string
-     * @return  [ HttpResponse.StatusLine, String contentReturned, String HTTP Location header]
+     * @return  [ BasicStatusLine, String contentReturned, String HTTP Location header]
      */
     static post(def uri,  def _body) {
         HttpClient httpclient = HttpClients.createDefault()
@@ -51,7 +51,7 @@ class FhirClient {
     /**
      * send an HTTP GET
      * @param uri URI
-     * @return [ HttpResponse.StatusLine, String contentReturned ]
+     * @return [ BasicStatusLine, String contentReturned ]
      */
     static get(def uri) {
         HttpClient client = HttpClientBuilder.create().build()

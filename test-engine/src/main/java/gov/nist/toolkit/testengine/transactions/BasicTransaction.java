@@ -116,6 +116,8 @@ public abstract class BasicTransaction  {
 		return s_ctx;
 	}
 
+	public UseReportManager getUseReportManager() { return useReportManager; }
+
 	public Map<String, String> getExternalLinkage() {
 		return planContext.getExtraLinkage();
 	}

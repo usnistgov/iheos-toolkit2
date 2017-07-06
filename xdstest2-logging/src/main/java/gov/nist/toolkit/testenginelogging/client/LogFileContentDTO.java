@@ -166,8 +166,10 @@ public class LogFileContentDTO implements Serializable, IsSerializable {
 		this.test = test;
 	}
 
-	public void setSection(String section) {
+	public void setSection(String section) throws XdsInternalException {
 		this.section = section;
+		if (section == null)
+			throw new XdsInternalException("LogFileContentDTO#setSection - section is null");
 	}
 
 	public SectionGoalsDTO getSectionGoalsDTO() {
