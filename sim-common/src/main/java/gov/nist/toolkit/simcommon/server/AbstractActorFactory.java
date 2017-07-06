@@ -437,9 +437,10 @@ public abstract class AbstractActorFactory {
 
 	public static SimulatorConfig loadSimulator(SimId simid, boolean okifNotExist) throws Exception {
 		SimDb simdb;
+		File simCntlFile;
 		try {
 			simdb = new SimDb(simid);
-			File simCntlFile = simdb.getSimulatorControlFile();
+			simCntlFile = simdb.getSimulatorControlFile();
 			SimulatorConfig config = restoreSimulator(simCntlFile.toString());
 			return config;
 		} catch (Exception e) {

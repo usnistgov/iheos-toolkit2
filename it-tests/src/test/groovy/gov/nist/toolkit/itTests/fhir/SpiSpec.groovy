@@ -6,12 +6,11 @@ import gov.nist.toolkit.itTests.support.FhirSpecification
 import gov.nist.toolkit.simcommon.client.SimId
 import gov.nist.toolkit.simcommon.server.SimDb
 import gov.nist.toolkit.toolkitApi.SimulatorBuilder
-import gov.nist.toolkit.toolkitServicesCommon.ToolkitFactory
 import spock.lang.Shared
 /**
  * Test FHIR accessibility through the toolkit spi
  */
-class SpiTest extends FhirSpecification {
+class SpiSpec extends FhirSpecification {
     @Shared SimulatorBuilder spi
 
     @Shared def testSession = 'default'
@@ -21,7 +20,7 @@ class SpiTest extends FhirSpecification {
     @Shared FhirContext ourCtx = FhirContext.forDstu3()
 
     def setupSpec() {
-        startGrizzly('8889')
+        startGrizzlyWithFhir('8889')
 
         // Initialize remote api for talking to toolkit on Grizzly
         // Needed to build simulators
@@ -94,8 +93,7 @@ class SpiTest extends FhirSpecification {
         SimDb.fexists(simId)
 
         when:
-        gov.nist.toolkit.toolkitServicesCommon.SimId spiSimId = ToolkitFactory.newSimId(simId.id, simId.user, simId.actorType, simId.environmentName, true)
-        spi.delete(spiSimId)
+        spi.delete(spiSimId(simId))
 
         then:
         !SimDb.fexists(simId)

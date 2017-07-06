@@ -82,6 +82,9 @@ abstract public class AbstractGrizzlyController {
         final WebappContext tools2 = new WebappContext("fhir","")
         final ServletRegistration sims = tools2.addServlet("fhir", new RestfulServlet());
         sims.addMapping('/xdstools2/fhir/*')
+        sims.addMapping('xdstool2/fsim/*')
+        sims.addMapping('fsim/*')
+        sims.setLoadOnStartup(1)
         tools2.deploy(getHttpServer())
         this
     }

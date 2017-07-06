@@ -4,7 +4,7 @@ import ca.uhn.fhir.context.FhirContext
 import ca.uhn.fhir.parser.IParser
 import gov.nist.toolkit.fhir.support.SimIndexManager
 import gov.nist.toolkit.installation.Installation
-import gov.nist.toolkit.itTests.support.FhirId
+import gov.nist.toolkit.testengine.fhir.FhirId
 import gov.nist.toolkit.itTests.support.FhirSpecification
 import gov.nist.toolkit.simcommon.client.SimId
 import gov.nist.toolkit.simcommon.server.SimDb
@@ -18,14 +18,14 @@ import spock.lang.Shared
 /**
  *
  */
-class PatientQueryByNameTest extends FhirSpecification {
+class PatientQueryByNameSpec extends FhirSpecification {
     @Shared SimId simId = new SimId('default', 'test')
     @Shared FhirContext ourCtx = FhirContext.forDstu3()
 
     def setupSpec() {
         SimDb.fdelete(simId)
 
-        startGrizzly('8889')   // sets up Grizzly server on remoteToolkitPort
+        startGrizzlyWithFhir('8889')   // sets up Grizzly server on remoteToolkitPort
 
         new SimDb().mkfSim(simId)
     }

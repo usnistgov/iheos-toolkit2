@@ -51,6 +51,8 @@ public class SimManager {
 
 	static public Site getSite(SimId simId) throws Exception {
 		SimulatorConfig config = SimDb.getSimulator(simId);
+		if (config == null)
+			throw new Exception("Simulator " + simId.toString() + " does not exist");
 		return getSite(config);
 	}
 //*****************************************

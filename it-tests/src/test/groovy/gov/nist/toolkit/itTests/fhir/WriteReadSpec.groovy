@@ -4,7 +4,7 @@ import ca.uhn.fhir.context.FhirContext
 import ca.uhn.fhir.parser.IParser
 import gov.nist.toolkit.fhir.support.SimIndexManager
 import gov.nist.toolkit.installation.Installation
-import gov.nist.toolkit.itTests.support.FhirId
+import gov.nist.toolkit.testengine.fhir.FhirId
 import gov.nist.toolkit.itTests.support.FhirSpecification
 import gov.nist.toolkit.simcommon.client.SimId
 import gov.nist.toolkit.simcommon.server.SimDb
@@ -17,7 +17,7 @@ import spock.lang.Shared
 /**
  *
  */
-class WriteReadTest extends FhirSpecification {
+class WriteReadSpec extends FhirSpecification {
     @Shared SimulatorBuilder spi
 
     @Shared def testSession = 'default'
@@ -27,7 +27,7 @@ class WriteReadTest extends FhirSpecification {
     @Shared FhirContext ourCtx = FhirContext.forDstu3()
 
     def setupSpec() {
-        startGrizzly('8889')   // sets up Grizzly server on remoteToolkitPort
+        startGrizzlyWithFhir('8889')   // sets up Grizzly server on remoteToolkitPort
 
         // Initialize remote api for talking to toolkit on Grizzly
         // Needed to build simulators
@@ -53,7 +53,7 @@ class WriteReadTest extends FhirSpecification {
         when:
         def (BasicStatusLine statusLine, String results, FhirId locationHeader) = post("${baseURL(simId)}/Patient", patient)
         OperationOutcome oo
-        if (results) {
+        if (statusLine.statusCode in 200..299 && results) {
             IBaseResource resource = ourCtx.newJsonParser().parseResource(results)
             if (resource instanceof OperationOutcome) {
                 oo = (OperationOutcome) resource

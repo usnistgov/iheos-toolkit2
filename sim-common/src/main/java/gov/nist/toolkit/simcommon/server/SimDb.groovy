@@ -96,7 +96,8 @@ public class SimDb {
 	 * simdb directory, false otherwise.
 	 */
 	static public boolean exists(SimId simId) {
-		return new File(getSimDbFile(simId), simId.toString()).exists();
+		File f = new File(getSimDbFile(simId), simId.toString())
+		return f.exists();
 	}
 
 	/**
@@ -325,15 +326,32 @@ public class SimDb {
 	}
 
 	static List<SimId> getAllSimIds() throws BadSimIdException {
-		File[] files = getSimDbFile().listFiles();
-		List<SimId> ids = new ArrayList<>();
-		if (files == null) return ids;
 
-		for (File dir : files) {
-			if (isSimDir(dir))
-				ids.add(new SimId(dir.getName()));
+		List<SimId> soapSimIds = getSimDbFile().listFiles().findAll { File file ->
+			isSimDir(file)
+		}.collect { File dir ->
+			new SimId(dir.name)
 		}
-		return ids;
+
+		List<SimId> fhirSimIds = getFSimDbFile().listFiles().findAll { File file ->
+			isSimDir(file)
+		}.collect { File dir ->
+			new SimId(dir.name).forFhir()
+		}
+
+		soapSimIds + fhirSimIds
+//
+//
+//
+//		File[] files = getSimDbFile().listFiles();
+//		List<SimId> ids = new ArrayList<>();
+//		if (files == null) return ids;
+//
+//		for (File dir : files) {
+//			if (isSimDir(dir))
+//				ids.add(new SimId(dir.getName()));
+//		}
+//		return ids;
 	}
 
 	static List<String> getAllSimNames() {

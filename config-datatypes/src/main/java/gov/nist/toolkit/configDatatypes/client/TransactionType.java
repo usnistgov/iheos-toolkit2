@@ -33,7 +33,7 @@ public enum TransactionType implements Serializable, IsSerializable {
     RET_IMG_DOC_SET_GW("RAD-69", "Retrieve Img Doc Set Gateway", "ret.iig", "ret.iig.b", "ret.iig.as", true, "urn:ihe:rad:2009:RetrieveImagingDocumentSet", "urn:ihe:iti:2007:RetrieveDocumentSetResponse", true),
     XC_RET_IMG_DOC_SET("RAD-75", "Cross-Community Ret Img Doc Set", "xcr.ids", "xcr.ids.b", "xcr.ids.as", true, "urn:ihe:rad:2011:CrossGatewayRetrieveImagingDocumentSet", "urn:ihe:rad:2011:CrossGatewayRetrieveImagingDocumentSetResponse", true),
     STS("STS", "Secure Token Service", "sts", "sts", "sts.as", true, "sts", "sts", true),
-    FHIR("FHIR", "FHIR", "fhir", "fhir", "fhir.as", true, "fhir", "fhir", true);
+    FHIR("FHIR", "FHIR", "fhir", "fhir", "fhir.as", true, "fhir", "fhir", true, true);
 
 	private static final long serialVersionUID = 1L;
     String id = "";
@@ -47,6 +47,7 @@ public enum TransactionType implements Serializable, IsSerializable {
     boolean requiresMtom = false;
     boolean http = false; // Is this Http only (non-SOAP) transaction
 //    Map<String, TransactionType> basicTypeMap = new HashMap<>();
+    boolean fhir = true;
 
 	TransactionType() {
 	}  // For GWT
@@ -62,6 +63,20 @@ public enum TransactionType implements Serializable, IsSerializable {
         this.responseAction = responseAction;
         this.requiresMtom = requiresMtom;
     }
+
+    TransactionType(String id, String name, String shortName, String code, String asyncCode, boolean needsRepUid, String requestAction, String responseAction, boolean requiresMtom, boolean fhir) {
+        this.id = id;
+        this.name = name;
+        this.shortName = shortName;
+        this.code = code;
+        this.asyncCode = asyncCode;
+        this.needsRepUid = needsRepUid;
+        this.requestAction = requestAction;
+        this.responseAction = responseAction;
+        this.requiresMtom = requiresMtom;
+        this.fhir = fhir;
+    }
+
     TransactionType(String id, String name, String shortName, String code, String asyncCode, boolean needsRepUid, boolean requiresMtom, boolean httpOnly) {
        this.id = id;
        this.name = name;
@@ -72,6 +87,8 @@ public enum TransactionType implements Serializable, IsSerializable {
        this.requiresMtom = requiresMtom;
        this.http = httpOnly;
    }
+
+   public boolean isFhir() { return fhir;  }
 
     public boolean isRequiresMtom() {
         return requiresMtom;

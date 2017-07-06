@@ -376,6 +376,9 @@ public class StepContext extends BasicContext implements ErrorReportingInterface
                case "WADOTransaction":
                   transaction = new WADOTransaction(this, instruction, instruction_output);
                   break;
+				case "FhirCreateTransaction":
+					transaction = new FhirCreateTransaction(this, instruction, instruction_output);
+					break;
 			   case "HttpTransaction":
 					HTTPTransaction hTransaction = new HTTPTransaction(this, instruction, instruction_output);
 					hTransaction.setNoMetadataProcessing(true);
