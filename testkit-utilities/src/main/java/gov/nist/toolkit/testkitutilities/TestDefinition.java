@@ -348,5 +348,22 @@ public class TestDefinition {
 			}
 		}
 	}
+
+	public TestKitSourceEnum detectSource() {
+			String testDir = getTestDir().toString();
+			if ((testDir != null)) {
+				if (testDir.startsWith(Installation.instance().warHome().toString())) {
+					return TestKitSourceEnum.EMBEDDED;
+				} else if (testDir.startsWith(Installation.instance().externalCache().toString())) {
+					return TestKitSourceEnum.LOCAL;
+				}
+			}
+
+		return TestKitSourceEnum.UNKNOWN;
+	}
+
+	public String getTestKitSection() {
+		return getTestDir().getParentFile().getName();
+	}
 }
 

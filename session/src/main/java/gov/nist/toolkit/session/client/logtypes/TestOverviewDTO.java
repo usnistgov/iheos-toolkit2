@@ -5,7 +5,11 @@ import gov.nist.toolkit.results.client.TestInstance;
 import gov.nist.toolkit.testenginelogging.client.LogMapDTO;
 
 import java.io.Serializable;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Should be renamed TestResultsDTO!!!!
@@ -21,6 +25,8 @@ public class TestOverviewDTO implements BasicTestOverview, Serializable, IsSeria
     private Map<String, SectionOverviewDTO> sections = new HashMap<>();
     private LogMapDTO logMapDTO = null;
     private Collection<String> dependencies;
+    private String testKitSource;
+    private String testKitSection;
 
     public TestOverviewDTO() {}
 
@@ -147,4 +153,20 @@ public class TestOverviewDTO implements BasicTestOverview, Serializable, IsSeria
    public int compareTo(Object o) {
       return name.compareTo(((TestOverviewDTO)o).name);
    }
+
+    public String getTestKitSource() {
+        return testKitSource;
+    }
+
+    public void setTestKitSource(String testKitSource) {
+        this.testKitSource = testKitSource;
+    }
+
+    public String getTestKitSection() {
+        return testKitSection;
+    }
+
+    public void setTestKitSection(String testKitSection) {
+        this.testKitSection = testKitSection;
+    }
 }
