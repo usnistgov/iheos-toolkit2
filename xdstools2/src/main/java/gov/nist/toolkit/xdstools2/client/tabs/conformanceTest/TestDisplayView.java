@@ -143,7 +143,9 @@ class TestDisplayView extends FlowPanel implements TestStatusDisplay {
     public void setTestKitSourceIcon(String testKitSource, String testKitSection) {
         String sourceIcon = null;
         if ("Embedded".equals(testKitSource)) {
-            sourceIcon = "icons2/capital_e-24.png";
+            // Too verbose
+            // sourceIcon = "icons2/capital_e-24.png";
+           return;
         } else if ("Local".equals(testKitSource)) {
             sourceIcon = "icons2/capital_l-24.png";
         } else {
@@ -157,6 +159,5 @@ class TestDisplayView extends FlowPanel implements TestStatusDisplay {
         testKitSourceIcon.addStyleName("right");
         testKitSourceIcon.addStyleName("iconStyle");
         testKitSourceIcon.addStyleName("iconStyle_20x20");
-
     }
 }
