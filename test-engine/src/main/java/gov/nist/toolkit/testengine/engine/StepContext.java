@@ -300,6 +300,9 @@ public class StepContext extends BasicContext implements ErrorReportingInterface
                case "XCQTransaction":
                   transaction = new XCQTransaction(this, instruction, instruction_output);
                   break;
+               case "QDTransaction":
+                   transaction = new QDTransaction(this, instruction, instruction_output);
+                   break;
                case "EpsosTransaction":
                   transaction = new EpsosTransaction(this, instruction, instruction_output);
                   break;
@@ -319,6 +322,10 @@ public class StepContext extends BasicContext implements ErrorReportingInterface
                   transaction = new RetrieveTransaction(this, instruction, instruction_output);
                   ((RetrieveTransaction) transaction).setIsXca(true);
                   break;
+               case "RDTransaction":
+                   transaction = new RDTransaction(this, instruction, instruction_output);
+                   ((RetrieveTransaction) transaction).setIsXca(true);
+                   break;
                case "IGRTransaction":
                   transaction = new RetrieveTransaction(this, instruction, instruction_output);
                   ((RetrieveTransaction) transaction).setIsXca(true);
@@ -453,5 +460,10 @@ public class StepContext extends BasicContext implements ErrorReportingInterface
    public String getRegistryEndpoint() {
       return getRecursive("RegistryEndpoint");
    }
+
+public void add_name_value(OMElement instruction_output, String string, OMElement omElement) {
+	// TODO Auto-generated method stub
+	
+}
 
 }

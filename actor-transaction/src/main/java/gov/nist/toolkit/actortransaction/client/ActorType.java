@@ -176,7 +176,7 @@ public enum ActorType implements IsSerializable, Serializable {
             Arrays.asList("RESP_GATEWAY"),
             "rg",
             "gov.nist.toolkit.simulators.sim.rg.RGADActorSimulator",
-            Arrays.asList(TransactionType.XC_QUERY, TransactionType.XC_RETRIEVE, TransactionType.XCPD),
+            Arrays.asList(TransactionType.XC_QUERY, TransactionType.XC_RETRIEVE, TransactionType.XCPD, TransactionType.QD, TransactionType.RD),
             true,
             null
     ),
@@ -230,7 +230,7 @@ public enum ActorType implements IsSerializable, Serializable {
             Arrays.asList("INIT_GATEWAY"),
             "ig",
             "gov.nist.toolkit.simulators.sim.ig.IgActorSimulator",
-            Arrays.asList(TransactionType.IG_QUERY, TransactionType.IG_RETRIEVE),
+            Arrays.asList(TransactionType.IG_QUERY, TransactionType.IG_RETRIEVE, TransactionType.QD, TransactionType.RD),
             true,
             null
     ),
