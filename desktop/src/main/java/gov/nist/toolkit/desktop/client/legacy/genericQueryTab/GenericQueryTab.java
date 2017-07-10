@@ -10,10 +10,12 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.*;
 import gov.nist.toolkit.actortransaction.client.ActorType;
 import gov.nist.toolkit.configDatatypes.client.TransactionType;
+import gov.nist.toolkit.desktop.client.ClientUtils;
 import gov.nist.toolkit.desktop.client.InformationLink;
 import gov.nist.toolkit.desktop.client.ServerContext;
 import gov.nist.toolkit.desktop.client.TabContainer;
 import gov.nist.toolkit.desktop.client.commands.GetStsSamlAssertionCommand;
+import gov.nist.toolkit.server.shared.command.CommandContext;
 import gov.nist.toolkit.server.shared.command.request.GetStsSamlAssertionRequest;
 import gov.nist.toolkit.desktop.client.commands.GetToolkitPropertiesCommand;
 import gov.nist.toolkit.desktop.client.events.*;
@@ -42,7 +44,9 @@ import java.util.*;
  * and allow the results to be inspected
  * @author bill
  */
-public abstract class GenericQueryTab  extends ToolWindow implements TransactionOfferingsReloadedEvent.TransactionOfferingsReloadedEventHandler {
+public abstract class GenericQueryTab
+//        extends ToolWindow
+        implements TransactionOfferingsReloadedEvent.TransactionOfferingsReloadedEventHandler {
     GenericQueryTab me;
     private final SiteLoader siteLoader = new SiteLoader(this);
     static public TransactionOfferings transactionOfferings = null;  // Loaded from server
@@ -139,22 +143,11 @@ public abstract class GenericQueryTab  extends ToolWindow implements Transaction
 
     /**
      * Super constructor.
-     * @param siteActorManager
+     *
      */
-    public GenericQueryTab(BaseSiteActorManager siteActorManager) {
-        this(siteActorManager, 0.0, 0.0);
+    public GenericQueryTab() {
         assert(eventBus != null);
-    }
-
-    public GenericQueryTab(BaseSiteActorManager siteActorManager, double east, double west) {
-        super(east, west);
         me = this;
-
-
-
-        this.siteActorManager = siteActorManager;
-        if (siteActorManager != null)
-            siteActorManager.setGenericQueryTab(this);
         bind();
     }
 
@@ -182,16 +175,21 @@ public abstract class GenericQueryTab  extends ToolWindow implements Transaction
             }
         });
 
-        eventBus.addHandler(ActorConfigUpdatedEvent.TYPE, new ActorConfigUpdatedEvent.ActorConfigUpdatedEventHandler() {
-            @Override
-            public void onActorsConfigUpdate() {
-                if(!tabName.equals("SystemConfig")) {
-                    saveSelectedSites();
-                    reloadTransactionOfferings();
-                }
-            }
-        });
+//        eventBus.addHandler(ActorConfigUpdatedEvent.TYPE, new ActorConfigUpdatedEvent.ActorConfigUpdatedEventHandler() {
+//            @Override
+//            public void onActorsConfigUpdate() {
+//                if(!tabName.equals("SystemConfig")) {
+//                    saveSelectedSites();
+//                    reloadTransactionOfferings();
+//                }
+//            }
+//        });
     }
+
+    public CommandContext getCommandContext() {
+        return ClientUtils.INSTANCE.getCurrentCommandContext();
+    }
+
 
     private void saveSelectedSites() {
         selectedSites.clear();
@@ -211,21 +209,21 @@ public abstract class GenericQueryTab  extends ToolWindow implements Transaction
         }
     }
 
-    @Override
-    public void onTabLoad(boolean select, String eventName) {
-        if (displayTab)
-            registerTab(true, eventName);
-        buildView();  // the view is still built because of old code in HomeTab -
-    }
+//    @Override
+//    public void onTabLoad(boolean select, String eventName) {
+//        if (displayTab)
+//            registerTab(true, eventName);
+//        buildView();  // the view is still built because of old code in HomeTab -
+//    }
 
-    protected void buildView(){
-        widget=buildUI();
-        if (widget != null) {
-            tabTopPanel.add(widget);
-            configureTabView();
-            bindUI();
-        }
-    }
+//    protected void buildView(){
+//        widget=buildUI();
+//        if (widget != null) {
+//            tabTopPanel.add(widget);
+//            configureTabView();
+//            bindUI();
+//        }
+//    }
 
     private void refreshData(){
         bindUI();
@@ -287,7 +285,7 @@ public abstract class GenericQueryTab  extends ToolWindow implements Transaction
         }
 
         SiteSpec commonSiteSpec = null;
-        commonSiteSpec = getCommonSiteSpec();
+//        commonSiteSpec = getCommonSiteSpec();
 
         final FlowPanel fp = new FlowPanel();
         final HTML samlLabel = new HTML("SAML");
@@ -426,6 +424,9 @@ public abstract class GenericQueryTab  extends ToolWindow implements Transaction
             addRunnerButtons(mainConfigPanel);
     }
 
+    public SiteSpec getCommonSiteSpec() { return ClientUtils.INSTANCE.getQueryState().getSiteSpec(); }
+
+
     public void tabIsSelected() {
         System.out.println("tab selected: " + getCommonSiteSpec());
 
@@ -449,9 +450,9 @@ public abstract class GenericQueryTab  extends ToolWindow implements Transaction
         return queryBoilerplate;
     }
 
-    protected QueryBoilerplate addQueryBoilerplate(ClickHandler runner, List<TransactionType> transactionTypes, CoupledTransactions couplings) {
-        return addQueryBoilerplate(runner, transactionTypes, couplings, true);
-    }
+//    protected QueryBoilerplate addQueryBoilerplate(ClickHandler runner, List<TransactionType> transactionTypes, CoupledTransactions couplings) {
+//        return addQueryBoilerplate(runner, transactionTypes, couplings, true);
+//    }
 
     public QueryBoilerplate addQueryBoilerplate(ClickHandler runner, List<TransactionType> transactionTypes,
                                                 CoupledTransactions couplings, boolean hasPatientIdParam) {
@@ -477,29 +478,30 @@ public abstract class GenericQueryTab  extends ToolWindow implements Transaction
         return queryBoilerplate;
     }
 
-    public void addActorReloader() {
-        if (reload == null) {
-            reload = new Anchor();
-            reload.setTitle("Reload actors configuration");
-            reload.setText("[reload]");
-            me.addToMenu(reload);
-
-            reload.addClickHandler(new ClickHandler() {
-
-                public void onClick(ClickEvent event) {
-                    reloadTransactionOfferings();
-                }
-
-            });
-            reload.addClickHandler(new ClickHandler() {
-
-                public void onClick(ClickEvent event) {
-                    onReload();
-                }
-
-            });
-        }
-    }
+//    public void addActorReloader() {
+//        if (reload == null) {
+//            reload = new Anchor();
+//            reload.setTitle("Reload actors configuration");
+//            reload.setText("[reload]");
+//            me.addToMenu(reload);
+//
+//            reload.addClickHandler(new ClickHandler() {
+//
+//                public void onClick(ClickEvent event) {
+//                    reloadTransactionOfferings();
+//                }
+//
+//            });
+//            reload.addClickHandler(new ClickHandler() {
+//
+//                public void onClick(ClickEvent event) {
+//                    onReload();
+//                }
+//
+//            });
+//        }
+//    }
+    public String getCommonPatientId() { return ClientUtils.INSTANCE.getQueryState().getPatientId(); }
 
     // so it can be overloaded
     public void onReload() {}
@@ -843,6 +845,9 @@ public abstract class GenericQueryTab  extends ToolWindow implements Transaction
         this.inspectButton = inspectButton;
         inspectButton.setVisible(showInspectButton);
     }
+
+    public void setCommonSiteSpec(SiteSpec s) { ClientUtils.INSTANCE.getQueryState().setSiteSpec(s); }
+
 
     /////////////////////////////////////////////////////////////////////////
     // - Internal class implementation

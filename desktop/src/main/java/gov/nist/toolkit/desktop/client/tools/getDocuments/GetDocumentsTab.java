@@ -3,19 +3,24 @@ package gov.nist.toolkit.desktop.client.tools.getDocuments;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.ui.*;
+import com.google.inject.Inject;
 import gov.nist.toolkit.configDatatypes.client.TransactionType;
 import gov.nist.toolkit.desktop.client.commands.GetDocumentsCommand;
+import gov.nist.toolkit.desktop.client.legacy.AbstractTab;
 import gov.nist.toolkit.server.shared.command.request.GetDocumentsRequest;
 import gov.nist.toolkit.desktop.client.legacy.CoupledTransactions;
 import gov.nist.toolkit.desktop.client.legacy.genericQueryTab.GenericQueryTab;
 import gov.nist.toolkit.desktop.client.legacy.siteActorManagers.GetDocumentsSiteActorManager;
 import gov.nist.toolkit.desktop.client.legacy.widgets.PopupMessage;
 import gov.nist.toolkit.results.client.Result;
+import org.junit.runner.Runner;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class GetDocumentsTab extends GenericQueryTab {
+public class GetDocumentsTab extends AbstractTab
+//        extends GenericQueryTab
+{
     // The TransactionTypes to list as actor categories
     static List<TransactionType> transactionTypes = new ArrayList<TransactionType>();
     static {
@@ -38,14 +43,16 @@ public class GetDocumentsTab extends GenericQueryTab {
     String help ="Retrieve full metadata for list of DocumentEntry UUIDs. " +
             "UUIDs can be separated by any of [,;() \\t\\n\\r']";
 
+
+    @Inject
     public GetDocumentsTab() {
-        super(new GetDocumentsSiteActorManager());
+//        super(new GetDocumentsSiteActorManager());
     }
 
-    @Override
+//    @Override
     public Widget buildUI() {
         FlowPanel panel=new FlowPanel();
-        tabTopPanel.add(new HTML("<h2>Get Documents</h2>"));
+        panel.add(new HTML("<h2>Get Documents</h2>"));
 
         mainGrid = new FlexTable();
         int row = 0;
@@ -63,11 +70,11 @@ public class GetDocumentsTab extends GenericQueryTab {
         return panel;
     }
 
-    @Override
+//    @Override
     public void bindUI() {
     }
 
-    @Override
+//    @Override
     protected void configureTabView() {
         queryBoilerplate = addQueryBoilerplate(new Runner(), transactionTypes, couplings, false);
     }

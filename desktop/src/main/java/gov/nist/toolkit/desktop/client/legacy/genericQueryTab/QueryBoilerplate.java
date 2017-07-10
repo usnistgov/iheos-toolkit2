@@ -42,7 +42,7 @@ public class QueryBoilerplate {
 //		genericQueryTab.tabTopPanel.add(genericQueryTab.resultPanel);
 
 
-		genericQueryTab.addActorReloader();
+//		genericQueryTab.addActorReloader();
 
 		if (GenericQueryTab.transactionOfferings == null) {
 			genericQueryTab.reloadTransactionOfferings();
@@ -71,13 +71,14 @@ public class QueryBoilerplate {
 	}
 
 	void remove() {
-		if (genericQueryTab == null)
-			return;
-		if (genericQueryTab.resultPanel != null)
-			genericQueryTab.tabTopPanel.remove(genericQueryTab.resultPanel);
-		if (reload != null)
-			genericQueryTab.menuPanel.remove(reload);
-		genericQueryTab.initMainGrid();
+		assert(false);
+//		if (genericQueryTab == null)
+//			return;
+//		if (genericQueryTab.resultPanel != null)
+//			genericQueryTab.tabTopPanel.remove(genericQueryTab.resultPanel);
+//		if (reload != null)
+//			genericQueryTab.menuPanel.remove(reload);
+//		genericQueryTab.initMainGrid();
 	}
 
 	boolean isDisplayGW() {
@@ -90,16 +91,16 @@ public class QueryBoilerplate {
 
 	public SiteSpec getSiteSelection() {
 		if (genericQueryTab.selectByActor != null) {    // Used in Mesa test tab
-			for (RadioButton b : genericQueryTab.byActorButtons) {
-				if (b.getValue()) {
-					genericQueryTab.setCommonSiteSpec(new SiteSpec(b.getText(), genericQueryTab.selectByActor, genericQueryTab.getCommonSiteSpec()));
-					return genericQueryTab.getCommonSiteSpec();
-				}
-			}
+//			for (RadioButton b : genericQueryTab.byActorButtons) {
+//				if (b.getValue()) {
+//					genericQueryTab.setCommonSiteSpec(new SiteSpec(b.getText(), genericQueryTab.selectByActor, genericQueryTab.getCommonSiteSpec()));
+//					return genericQueryTab.getCommonSiteSpec();
+//				}
+//			}
 		} else {   // Select by transaction (used in GetDocuments tab)
 			if (genericQueryTab.transactionSelectionManager != null) {
 				SiteSpec siteSpec = genericQueryTab.transactionSelectionManager.generateSiteSpec();
-				genericQueryTab.setCommonSiteSpec(siteSpec);
+//				genericQueryTab.setCommonSiteSpec(siteSpec);
 				return siteSpec;
 			}
 		}
@@ -107,7 +108,7 @@ public class QueryBoilerplate {
 		return null;
 	}
 
-	public String getPatientId() { return genericQueryTab.getCommonPatientId(); }
+//	public String getPatientId() { return genericQueryTab.getCommonPatientId(); }
 
 
 }
