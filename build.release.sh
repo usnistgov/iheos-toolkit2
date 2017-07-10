@@ -16,26 +16,30 @@ fi
 
 SCRIPTNAME=$(basename $0 .sh)
 
-cd ~/tk
-mvn clean package -DskipTests -Dmaven.test.skip=true
+cd /media/aberge/DATA/workspace-sequoia/toolkit
+/usr/local/maven/bin/mvn clean package -DskipTests -Dmaven.test.skip=true
 
 cd xdstools2/target
 WARNAME=$(basename *.war .war)
 
-cd ~/tk
+cd /media/aberge/DATA/workspace-sequoia/toolkit
 mkdir xdstools2/target/$WARNAME/javadoc
 bash $BASEDIR/genapidoc.sh xdstools2/target/$WARNAME/javadoc
 
+echo "generating site"
 cd xdstools2
-mvn -o site
+/usr/local/maven/bin/mvn -o site
 
+echo "replacing site directory"
 cd target
 rm -r $WARNAME/site
 mv site $WARNAME
 
+echo "reassembling xdstools4"
 cd $WARNAME
 jar cf ../xdstools4.war *
 
+echo "changing directory to " ${BASEDIR}/${SCRIPTNAME}.stuff
 cd ${BASEDIR}/${SCRIPTNAME}.stuff
-jar uf ~/tk/xdstools2/target/xdstools4.war WEB-INF
+jar uf /media/aberge/DATA/workspace-sequoia/toolkit/xdstools2/target/xdstools4.war WEB-INF
 

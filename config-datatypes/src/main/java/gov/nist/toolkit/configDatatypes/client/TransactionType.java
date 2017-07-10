@@ -32,7 +32,9 @@ public enum TransactionType implements Serializable, IsSerializable {
     RET_IMG_DOC_SET("RAD-69", "Retrieve Imaging Document Set", "ret.ids", "ret.ids.b", "ret.ids.as", true, "urn:ihe:rad:2009:RetrieveImagingDocumentSet", "urn:ihe:iti:2007:RetrieveDocumentSetResponse", true),
     RET_IMG_DOC_SET_GW("RAD-69", "Retrieve Img Doc Set Gateway", "ret.iig", "ret.iig.b", "ret.iig.as", true, "urn:ihe:rad:2009:RetrieveImagingDocumentSet", "urn:ihe:iti:2007:RetrieveDocumentSetResponse", true),
     XC_RET_IMG_DOC_SET("RAD-75", "Cross-Community Ret Img Doc Set", "xcr.ids", "xcr.ids.b", "xcr.ids.as", true, "urn:ihe:rad:2011:CrossGatewayRetrieveImagingDocumentSet", "urn:ihe:rad:2011:CrossGatewayRetrieveImagingDocumentSetResponse", true),
-    STS("STS", "Secure Token Service", "sts", "sts", "sts.as", true, "sts", "sts", true);
+    STS("STS", "Secure Token Service", "sts", "sts", "sts.as", true, "sts", "sts", true),
+	QD("QD", "Sequoia Query Document", "qd", "qd", "qd.as", false, "urn:ihe:iti:2007:CrossGatewayQuery", "urn:ihe:iti:2007:CrossGatewayQueryResponse", false),
+	RD("RD", "Sequoia Retrieve Document", "rd", "rd", "rd.as", false, "urn:ihe:iti:2007:CrossGatewayRetrieve", "urn:ihe:iti:2007:CrossGatewayRetrieveResponse", true);
 
 	private static final long serialVersionUID = 1L;
     String id = "";
