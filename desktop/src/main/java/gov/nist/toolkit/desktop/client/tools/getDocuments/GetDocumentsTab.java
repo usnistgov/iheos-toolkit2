@@ -22,14 +22,14 @@ public class GetDocumentsTab extends AbstractTab
 //        extends GenericQueryTab
 {
     // The TransactionTypes to list as actor categories
-    static List<TransactionType> transactionTypes = new ArrayList<TransactionType>();
+    private static List<TransactionType> transactionTypes = new ArrayList<TransactionType>();
     static {
         transactionTypes.add(TransactionType.STORED_QUERY);
         transactionTypes.add(TransactionType.IG_QUERY);
         transactionTypes.add(TransactionType.XC_QUERY);
     }
 
-    static CoupledTransactions couplings = new CoupledTransactions();
+    private static CoupledTransactions couplings = new CoupledTransactions();
     static {
         // If an Initiating Gateway is selected (IG_QUERY) then
         // a Responding Gateway (XC_QUERY) must also be selected
@@ -38,7 +38,7 @@ public class GetDocumentsTab extends AbstractTab
         couplings.add(TransactionType.IG_QUERY, TransactionType.XC_QUERY);
     }
 
-    TextArea textArea;
+    private TextArea textArea;
     GetDocumentsTab tab;
     String help ="Retrieve full metadata for list of DocumentEntry UUIDs. " +
             "UUIDs can be separated by any of [,;() \\t\\n\\r']";

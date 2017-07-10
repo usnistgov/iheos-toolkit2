@@ -1,8 +1,6 @@
 package gov.nist.toolkit.desktop.client.legacy.genericQueryTab;
 
 import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.user.client.ui.Anchor;
-import com.google.gwt.user.client.ui.RadioButton;
 import gov.nist.toolkit.actortransaction.client.ATFactory;
 import gov.nist.toolkit.actortransaction.client.ActorType;
 import gov.nist.toolkit.configDatatypes.client.TransactionType;
@@ -12,10 +10,6 @@ import gov.nist.toolkit.sitemanagement.client.SiteSpec;
 import java.util.List;
 
 public class QueryBoilerplate {
-	/**
-	 * 
-	 */
-
 	// This class is really a factory class and should be restructured as such.
 	// when this happens a few of the calls below will move to GenericQueryTab
 	// Each query type tab
@@ -23,12 +17,6 @@ public class QueryBoilerplate {
 	//    contains an instance of QueryBoilerplate
 	// this references the tab class (forward and backward pointers)
 	public final GenericQueryTab genericQueryTab;
-
-	Anchor reload;
-	
-	public void enableRun(boolean enable) {
-		genericQueryTab.runEnabled = enable;
-	}
 
 	QueryBoilerplate(GenericQueryTab genericQueryTab, ClickHandler runner, List<TransactionType> transactionTypes, CoupledTransactions couplings, ActorType selectByActor) {
 		this.genericQueryTab = genericQueryTab;
@@ -40,8 +28,6 @@ public class QueryBoilerplate {
 
 //		genericQueryTab.resultPanel = new VerticalPanel();
 //		genericQueryTab.tabTopPanel.add(genericQueryTab.resultPanel);
-
-
 //		genericQueryTab.addActorReloader();
 
 		if (GenericQueryTab.transactionOfferings == null) {
@@ -52,10 +38,12 @@ public class QueryBoilerplate {
 		}
 	}
 
-
 	QueryBoilerplate(GenericQueryTab genericQueryTab2, ClickHandler runner, List<TransactionType> transactionTypes, CoupledTransactions couplings) {
 		this(genericQueryTab2, runner, transactionTypes, couplings, null);
+	}
 
+	public void enableRun(boolean enable) {
+		genericQueryTab.runEnabled = enable;
 	}
 
 	public void enableTls(boolean enable) {

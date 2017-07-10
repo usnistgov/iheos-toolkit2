@@ -27,7 +27,7 @@ public abstract class AbstractPresenter<V extends AbstractView<?>> {
     /**
      * Default "constructor"
      */
-    @Inject
+//    @Inject
     public AbstractPresenter() {
     }
 

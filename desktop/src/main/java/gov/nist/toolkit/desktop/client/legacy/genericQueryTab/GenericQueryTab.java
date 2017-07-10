@@ -52,7 +52,7 @@ public abstract class GenericQueryTab
     static public TransactionOfferings transactionOfferings = null;  // Loaded from server
 
     @Inject
-    ToolkitEventBus eventBus;
+    private ToolkitEventBus eventBus;
 
     protected FlexTable mainGrid;
     public TabContainer myContainer;
@@ -186,6 +186,8 @@ public abstract class GenericQueryTab
 //        });
     }
 
+    private FlowPanel getTabTopPanel() { return tabTopPanel; }
+
     public CommandContext getCommandContext() {
         return ClientUtils.INSTANCE.getCurrentCommandContext();
     }
@@ -233,7 +235,7 @@ public abstract class GenericQueryTab
     public void initMainGrid() {
         if (mainGrid == null) {
             mainGrid = new FlexTable();
-            tabTopPanel.add(mainGrid);
+            getTabTopPanel().add(mainGrid);
         }
         while (mainGrid.getRowCount() > row_initial)
             mainGrid.removeRow(mainGrid.getRowCount() - 1);
@@ -464,13 +466,13 @@ public abstract class GenericQueryTab
 
         if (mainConfigPanelDivider == null) {
             mainConfigPanelDivider = new HTML("<hr />");
-            tabTopPanel.add(mainConfigPanelDivider);
+            getTabTopPanel().add(mainConfigPanelDivider);
             mainConfigPanel = new VerticalPanel();
-            tabTopPanel.add(mainConfigPanel);
-            tabTopPanel.add(new HTML("<hr />"));
+            getTabTopPanel().add(mainConfigPanel);
+            getTabTopPanel().add(new HTML("<hr />"));
         }
         if (addResultsPanel)
-            tabTopPanel.add(resultPanel);
+            getTabTopPanel().add(resultPanel);
         queryBoilerplate = new QueryBoilerplate(
                 this, runner, transactionTypes,
                 couplings
@@ -537,37 +539,37 @@ public abstract class GenericQueryTab
         showMessage(caught.getMessage());
     }
 
-    protected void showMessage(String message) {
+    private void showMessage(String message) {
         HTML msgBox = new HTML();
         msgBox.setHTML("<b>" + message + "</b>");
-        tabTopPanel.add(msgBox);
+        getTabTopPanel().add(msgBox);
     }
 
-    public void setStatus(String message, boolean status) {
+    private void setStatus(String message, boolean status) {
         statusBox.setHTML(HtmlMarkup.bold(red(message,status)));
     }
 
-    public void setStatus(String message) {
+    private void setStatus(String message) {
         statusBox.setHTML(message);
     }
 
 
-    public void addStatusBox() {
+    private void addStatusBox() {
         addStatusBox(getRunningMessage());
     }
 
-    public void addStatusBox(String initialMessage) {
+    private void addStatusBox(String initialMessage) {
         setStatus(initialMessage, true);
         resultPanel.add(statusBox);
     }
 
-    public void prepareToRun() {
+    void prepareToRun() {
         addStatusBox();
         getGoButton().setEnabled(false);
         getInspectButton().setEnabled(false);
     }
 
-    public void addRunnerButtons(Panel panel) {
+    private void addRunnerButtons(Panel panel) {
         boolean hasRunButton = runnerPanel.getWidgetIndex(runButton) > -1;
 
         panel.add(runnerPanel);
@@ -669,7 +671,7 @@ public abstract class GenericQueryTab
         return true;
     }
 
-    protected boolean verifyPidProvided() {
+    boolean verifyPidProvided() {
         if (pidTextBox.getValue() == null || pidTextBox.getValue().equals("")) {
             new PopupMessage("You must enter a Patient ID first");
             return false;
@@ -677,7 +679,7 @@ public abstract class GenericQueryTab
         return true;
     }
 
-    public boolean verifySiteProvided() {
+    boolean verifySiteProvided() {
         SiteSpec siteSpec = getSiteSelection();
         if (siteSpec == null) {
             new PopupMessage("You must select a site first");
@@ -727,7 +729,7 @@ public abstract class GenericQueryTab
         return lb.getValue(i);
     }
 
-    List<Site> getSiteList(TransactionType tt) {
+    private List<Site> getSiteList(TransactionType tt) {
         List<Site> sites = siteLoader.findSites(tt, isTLS());
         List<String> siteNames = new ArrayList<String>();
         for (Site site : sites)
@@ -746,7 +748,7 @@ public abstract class GenericQueryTab
         return sites;
     }
 
-    Widget getSiteTableWidgetforTransactions(TransactionType tt) {
+    private Widget getSiteTableWidgetforTransactions(TransactionType tt) {
         if (transactionSelectionManager == null)
             transactionSelectionManager = new TransactionSelectionManager(couplings, this);
         List<Site> sites = getSiteList(tt);
@@ -784,7 +786,7 @@ public abstract class GenericQueryTab
 
     public SiteSpec getSiteSelection() { return queryBoilerplate.getSiteSelection(); }
 
-    int getSiteTableForTransactionsSize(TransactionType tt) {
+    private int getSiteTableForTransactionsSize(TransactionType tt) {
         return getSiteList(tt).size();
     }
 
@@ -806,11 +808,11 @@ public abstract class GenericQueryTab
             inspectButton.setVisible(showInspectButton);
     }
 
-    public boolean isTLS() {
+    boolean isTLS() {
         return doTls.getValue();
     }
 
-    public boolean isSaml() {
+    boolean isSaml() {
         int selection = samlListBox.getSelectedIndex();
         if (selection > 0)
             return true;  // first selection must be no saml
@@ -825,28 +827,28 @@ public abstract class GenericQueryTab
         return queryBoilerplate;
     }
 
-    public String getRunningMessage() {
+    private String getRunningMessage() {
         return "Running (connection timeout is 30 sec) ...";
     }
 
-    public Button getGoButton() {
+    private Button getGoButton() {
         return goButton;
     }
 
-    public void setGoButton(Button goButton) {
+    private void setGoButton(Button goButton) {
         this.goButton = goButton;
     }
 
-    public Button getInspectButton() {
+    private Button getInspectButton() {
         return inspectButton;
     }
 
-    public void setInspectButton(Button inspectButton) {
+    private void setInspectButton(Button inspectButton) {
         this.inspectButton = inspectButton;
         inspectButton.setVisible(showInspectButton);
     }
 
-    public void setCommonSiteSpec(SiteSpec s) { ClientUtils.INSTANCE.getQueryState().setSiteSpec(s); }
+    private void setCommonSiteSpec(SiteSpec s) { ClientUtils.INSTANCE.getQueryState().setSiteSpec(s); }
 
 
     /////////////////////////////////////////////////////////////////////////
@@ -880,7 +882,7 @@ public abstract class GenericQueryTab
 
     };
 
-    protected void displayResults(List<Result> theresult) {
+    private void displayResults(List<Result> theresult) {
         resultsShortDescription.setText("");
         try {
             if (theresult.size() == 1) {
@@ -952,13 +954,13 @@ public abstract class GenericQueryTab
         this.displayTab = displayTab;
     }
 
-    static public HTML addHTML(String html) {
+    static private HTML addHTML(String html) {
         HTML msgBox = new HTML();
         msgBox.setHTML(html);
         return msgBox;
     }
 
-    HTML addText(String text) {
+    private HTML addText(String text) {
         HTML msgBox = new HTML();
         msgBox.setText(text);
         return msgBox;
