@@ -37,8 +37,8 @@ class FhirCreateTransaction extends BasicFhirTransaction {
         }
 //        reportManager.add("FhirIdWithHistory", fhirId.toString())
 //        reportManager.add('RefWithHistory', "${endpoint}/${fhirId}")
-//        reportManager.add("FhirId", fhirId.withoutHistory())
-//        reportManager.add('Ref', "${endpoint}/${fhirId.withoutHistory()}")
+        reportManager.add("FhirId", fhirId.withoutHistory())
+        reportManager.add('Ref', "${endpoint}/${fhirId.withoutHistory()}")
     }
 
     @Override

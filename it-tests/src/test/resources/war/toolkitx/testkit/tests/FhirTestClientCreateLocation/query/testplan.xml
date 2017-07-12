@@ -1,10 +1,10 @@
 <TestPlan>
-    <Test>FhirTestClientCreate/query</Test>
+    <Test>FhirTestClientCreateLocation/query</Test>
     <TestStep id="query">
         <ExpectedStatus>Success</ExpectedStatus>
         <FhirQueryTransaction>
-            <UseReport test="FhirTestClientCreate" section="create" step="create" reportName="Url" useAs="Url"/>
-            <QueryParams>?family=Chalmers</QueryParams>
+            <UseReport test="FhirTestClientCreateLocation" section="create" step="create" reportName="Url" useAs="Url"/>
+            <QueryParams>?address-city=Denver</QueryParams>
         </FhirQueryTransaction>
     </TestStep>
 </TestPlan>
