@@ -29,7 +29,7 @@ public abstract class AbstractTool extends GenericQueryTab {
     /**
      * @return Full title to be displayed at top of tool.
      */
-    public abstract String getToolTitle();
+    abstract String getToolTitle();
 
     /**
      * @return a short name for tool that corresponds to its documentation in

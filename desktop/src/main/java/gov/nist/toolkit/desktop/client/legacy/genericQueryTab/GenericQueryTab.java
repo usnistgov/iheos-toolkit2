@@ -191,6 +191,8 @@ public abstract class GenericQueryTab
 //        });
     }
 
+    private FlowPanel getTabTopPanel() { return tabTopPanel; }
+
     public CommandContext getCommandContext() {
         return ClientUtils.INSTANCE.getCurrentCommandContext();
     }
@@ -547,19 +549,19 @@ public abstract class GenericQueryTab
     protected void showMessage(String message) {
         HTML msgBox = new HTML();
         msgBox.setHTML("<b>" + message + "</b>");
-        getTabTopPanel().add(msgBox);
+        tabTopPanel.add(msgBox);
     }
 
-    public void setStatus(String message, boolean status) {
+    private void setStatus(String message, boolean status) {
         statusBox.setHTML(HtmlMarkup.bold(red(message,status)));
     }
 
-    public void setStatus(String message) {
+    private void setStatus(String message) {
         statusBox.setHTML(message);
     }
 
 
-    public void addStatusBox() {
+    private void addStatusBox() {
         addStatusBox(getRunningMessage());
     }
 
@@ -676,7 +678,7 @@ public abstract class GenericQueryTab
         return true;
     }
 
-    protected boolean verifyPidProvided() {
+    boolean verifyPidProvided() {
         if (pidTextBox.getValue() == null || pidTextBox.getValue().equals("")) {
             new PopupMessage("You must enter a Patient ID first");
             return false;
@@ -684,7 +686,7 @@ public abstract class GenericQueryTab
         return true;
     }
 
-    public boolean verifySiteProvided() {
+    boolean verifySiteProvided() {
         SiteSpec siteSpec = getSiteSelection();
         if (siteSpec == null) {
             new PopupMessage("You must select a site first");
@@ -856,6 +858,7 @@ public abstract class GenericQueryTab
     public void setCommonSiteSpec(SiteSpec s) { ClientUtils.INSTANCE.getQueryState().setSiteSpec(s); }
     public void setCommonPatientId(String p) { ClientUtils.INSTANCE.getQueryState().setPatientId(p); }
 
+    private void setCommonSiteSpec(SiteSpec s) { ClientUtils.INSTANCE.getQueryState().setSiteSpec(s); }
 
 
     /////////////////////////////////////////////////////////////////////////

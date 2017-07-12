@@ -10,10 +10,6 @@ import gov.nist.toolkit.sitemanagement.client.SiteSpec;
 import java.util.List;
 
 public class QueryBoilerplate {
-	/**
-	 * 
-	 */
-
 	// This class is really a factory class and should be restructured as such.
 	// when this happens a few of the calls below will move to GenericQueryTab
 	// Each query type tab
@@ -29,6 +25,7 @@ public class QueryBoilerplate {
 	}
 
 	QueryBoilerplate(GenericQueryTab genericQueryTab, ClickHandler runner, List<TransactionType> transactionTypes, CoupledTransactions couplings) {
+	QueryBoilerplate(GenericQueryTab genericQueryTab, ClickHandler runner, List<TransactionType> transactionTypes, CoupledTransactions couplings, ActorType selectByActor) {
 		this.genericQueryTab = genericQueryTab;
 		genericQueryTab.row_initial = genericQueryTab.mainGrid.getRowCount();
 		genericQueryTab.runner = runner;
@@ -37,8 +34,6 @@ public class QueryBoilerplate {
 
 //		genericQueryTab.resultPanel = new VerticalPanel();
 //		genericQueryTab.tabTopPanel.add(genericQueryTab.resultPanel);
-
-
 //		genericQueryTab.addActorReloader();
 
 		if (GenericQueryTab.transactionOfferings == null) {
@@ -47,6 +42,14 @@ public class QueryBoilerplate {
             // TODO - this probablt needs to change to true
 			genericQueryTab.redisplay(false);
 		}
+	}
+
+	QueryBoilerplate(GenericQueryTab genericQueryTab2, ClickHandler runner, List<TransactionType> transactionTypes, CoupledTransactions couplings) {
+		this(genericQueryTab2, runner, transactionTypes, couplings, null);
+	}
+
+	public void enableRun(boolean enable) {
+		genericQueryTab.runEnabled = enable;
 	}
 
 	public void enableTls(boolean enable) {
