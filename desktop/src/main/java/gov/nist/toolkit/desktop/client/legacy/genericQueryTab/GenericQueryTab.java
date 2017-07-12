@@ -15,14 +15,11 @@ import gov.nist.toolkit.desktop.client.InformationLink;
 import gov.nist.toolkit.desktop.client.ServerContext;
 import gov.nist.toolkit.desktop.client.TabContainer;
 import gov.nist.toolkit.desktop.client.commands.GetStsSamlAssertionCommand;
-import gov.nist.toolkit.server.shared.command.CommandContext;
-import gov.nist.toolkit.server.shared.command.request.GetStsSamlAssertionRequest;
 import gov.nist.toolkit.desktop.client.commands.GetToolkitPropertiesCommand;
 import gov.nist.toolkit.desktop.client.events.*;
 import gov.nist.toolkit.desktop.client.legacy.CoupledTransactions;
 import gov.nist.toolkit.desktop.client.legacy.GazelleXuaUsername;
 import gov.nist.toolkit.desktop.client.legacy.StringSort;
-import gov.nist.toolkit.desktop.client.legacy.ToolWindow;
 import gov.nist.toolkit.desktop.client.legacy.siteActorManagers.BaseSiteActorManager;
 import gov.nist.toolkit.desktop.client.legacy.widgets.PidWidget;
 import gov.nist.toolkit.desktop.client.legacy.widgets.PopupMessage;
@@ -31,6 +28,8 @@ import gov.nist.toolkit.registrymetadata.client.*;
 import gov.nist.toolkit.results.client.AssertionResult;
 import gov.nist.toolkit.results.client.Result;
 import gov.nist.toolkit.results.client.TestInstance;
+import gov.nist.toolkit.server.shared.command.CommandContext;
+import gov.nist.toolkit.server.shared.command.request.GetStsSamlAssertionRequest;
 import gov.nist.toolkit.sitemanagement.client.Site;
 import gov.nist.toolkit.sitemanagement.client.SiteSpec;
 import gov.nist.toolkit.sitemanagement.client.TransactionOfferings;
@@ -61,7 +60,7 @@ public abstract class GenericQueryTab
 
     public boolean tlsEnabled = true;
     public boolean tlsOptionEnabled = true;
-    public ActorType selectByActor = null;
+//    ActorType selectByActor = null;
     List<TransactionType> transactionTypes;
     public TransactionSelectionManager transactionSelectionManager = null;
     public boolean enableInspectResults = true;
@@ -141,6 +140,12 @@ public abstract class GenericQueryTab
      */
     protected abstract void configureTabView();
 
+    abstract public String getWindowShortName();
+
+    private FlowPanel tabTopPanel = new FlowPanel();
+
+    public FlowPanel getTabTopPanel() { return tabTopPanel; }
+
     /**
      * Super constructor.
      *
@@ -193,13 +198,14 @@ public abstract class GenericQueryTab
 
     private void saveSelectedSites() {
         selectedSites.clear();
-        if (selectByActor != null) {    // Used in Mesa test tab
-            for (RadioButton b : byActorButtons) {
-                if (b.getValue()) {
-                    selectedSites.add(b.getText());
-                }
-            }
-        } else {   // Select by transaction (used in GetDocuments tab)
+//        if (selectByActor != null) {    // Used in Mesa test tab
+//            for (RadioButton b : byActorButtons) {
+//                if (b.getValue()) {
+//                    selectedSites.add(b.getText());
+//                }
+//            }
+//        } else
+            {   // Select by transaction (used in GetDocuments tab)
             if (transactionSelectionManager != null) {
                 SiteSpec site = transactionSelectionManager.generateSiteSpec();
                 if (site != null) {
@@ -233,7 +239,7 @@ public abstract class GenericQueryTab
     public void initMainGrid() {
         if (mainGrid == null) {
             mainGrid = new FlexTable();
-            tabTopPanel.add(mainGrid);
+            getTabTopPanel().add(mainGrid);
         }
         while (mainGrid.getRowCount() > row_initial)
             mainGrid.removeRow(mainGrid.getRowCount() - 1);
@@ -367,13 +373,14 @@ public abstract class GenericQueryTab
             row++;
         }
 
-        if (selectByActor != null) {  // this is only used in Mesa test related panels
-            HTML label = new HTML();
-            label.setHTML("Site");
-            mainGrid.setWidget(row, 0, label);
-            byActorButtons = siteLoader.addSitesForActor(selectByActor, row);
-            row++;
-        } else if (transactionTypes != null){    // most queries and retrieves use this
+//        if (selectByActor != null) {  // this is only used in Mesa test related panels
+//            HTML label = new HTML();
+//            label.setHTML("Site");
+//            mainGrid.setWidget(row, 0, label);
+//            byActorButtons = siteLoader.addSitesForActor(selectByActor, row);
+//            row++;
+//        } else
+            if (transactionTypes != null){    // most queries and retrieves use this
             FlexTable siteSelectionPanel = new FlexTable();
             siteSelectionPanel.getFlexCellFormatter().setVerticalAlignment(0,0,HasVerticalAlignment.ALIGN_TOP);
             siteSelectionPanel.setWidget(0, 0, new HTML("<div style='margin-top:2px;font-size:1.1em;'>Send to</div>"));
@@ -438,14 +445,14 @@ public abstract class GenericQueryTab
 
     // These three versions of addQueryBoilerplate should be made into static methods
     //  probably hung off a QueryBoilerplateFactory class
-    protected QueryBoilerplate addQueryBoilerplate(ClickHandler runner, List<TransactionType> transactionTypes, CoupledTransactions couplings, ActorType selectByActor) {
+    protected QueryBoilerplate addQueryBoilerplate(ClickHandler runner, List<TransactionType> transactionTypes, CoupledTransactions couplings) {
         if (queryBoilerplate != null) {
             queryBoilerplate.remove();
             queryBoilerplate = null;
         }
         queryBoilerplate = new QueryBoilerplate(
                 this, runner, transactionTypes,
-                couplings, selectByActor
+                couplings
         );
         return queryBoilerplate;
     }
@@ -454,7 +461,7 @@ public abstract class GenericQueryTab
 //        return addQueryBoilerplate(runner, transactionTypes, couplings, true);
 //    }
 
-    public QueryBoilerplate addQueryBoilerplate(ClickHandler runner, List<TransactionType> transactionTypes,
+    void addQueryBoilerplate(ClickHandler runner, List<TransactionType> transactionTypes,
                                                 CoupledTransactions couplings, boolean hasPatientIdParam) {
         if (queryBoilerplate != null) {
             queryBoilerplate.remove();
@@ -464,18 +471,18 @@ public abstract class GenericQueryTab
 
         if (mainConfigPanelDivider == null) {
             mainConfigPanelDivider = new HTML("<hr />");
-            tabTopPanel.add(mainConfigPanelDivider);
+            getTabTopPanel().add(mainConfigPanelDivider);
             mainConfigPanel = new VerticalPanel();
-            tabTopPanel.add(mainConfigPanel);
-            tabTopPanel.add(new HTML("<hr />"));
+            getTabTopPanel().add(mainConfigPanel);
+            getTabTopPanel().add(new HTML("<hr />"));
         }
         if (addResultsPanel)
-            tabTopPanel.add(resultPanel);
+            getTabTopPanel().add(resultPanel);
         queryBoilerplate = new QueryBoilerplate(
                 this, runner, transactionTypes,
                 couplings
         );
-        return queryBoilerplate;
+//        return queryBoilerplate;
     }
 
 //    public void addActorReloader() {
@@ -540,7 +547,7 @@ public abstract class GenericQueryTab
     protected void showMessage(String message) {
         HTML msgBox = new HTML();
         msgBox.setHTML("<b>" + message + "</b>");
-        tabTopPanel.add(msgBox);
+        getTabTopPanel().add(msgBox);
     }
 
     public void setStatus(String message, boolean status) {
@@ -847,6 +854,8 @@ public abstract class GenericQueryTab
     }
 
     public void setCommonSiteSpec(SiteSpec s) { ClientUtils.INSTANCE.getQueryState().setSiteSpec(s); }
+    public void setCommonPatientId(String p) { ClientUtils.INSTANCE.getQueryState().setPatientId(p); }
+
 
 
     /////////////////////////////////////////////////////////////////////////

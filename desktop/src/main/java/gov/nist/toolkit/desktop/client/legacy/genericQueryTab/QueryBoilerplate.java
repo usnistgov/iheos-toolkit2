@@ -2,9 +2,7 @@ package gov.nist.toolkit.desktop.client.legacy.genericQueryTab;
 
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.ui.Anchor;
-import com.google.gwt.user.client.ui.RadioButton;
 import gov.nist.toolkit.actortransaction.client.ATFactory;
-import gov.nist.toolkit.actortransaction.client.ActorType;
 import gov.nist.toolkit.configDatatypes.client.TransactionType;
 import gov.nist.toolkit.desktop.client.legacy.CoupledTransactions;
 import gov.nist.toolkit.sitemanagement.client.SiteSpec;
@@ -30,9 +28,8 @@ public class QueryBoilerplate {
 		genericQueryTab.runEnabled = enable;
 	}
 
-	QueryBoilerplate(GenericQueryTab genericQueryTab, ClickHandler runner, List<TransactionType> transactionTypes, CoupledTransactions couplings, ActorType selectByActor) {
+	QueryBoilerplate(GenericQueryTab genericQueryTab, ClickHandler runner, List<TransactionType> transactionTypes, CoupledTransactions couplings) {
 		this.genericQueryTab = genericQueryTab;
-		genericQueryTab.selectByActor = selectByActor;
 		genericQueryTab.row_initial = genericQueryTab.mainGrid.getRowCount();
 		genericQueryTab.runner = runner;
 		genericQueryTab.transactionTypes = transactionTypes;
@@ -50,12 +47,6 @@ public class QueryBoilerplate {
             // TODO - this probablt needs to change to true
 			genericQueryTab.redisplay(false);
 		}
-	}
-
-
-	QueryBoilerplate(GenericQueryTab genericQueryTab2, ClickHandler runner, List<TransactionType> transactionTypes, CoupledTransactions couplings) {
-		this(genericQueryTab2, runner, transactionTypes, couplings, null);
-
 	}
 
 	public void enableTls(boolean enable) {
@@ -90,14 +81,15 @@ public class QueryBoilerplate {
 	}
 
 	public SiteSpec getSiteSelection() {
-		if (genericQueryTab.selectByActor != null) {    // Used in Mesa test tab
-//			for (RadioButton b : genericQueryTab.byActorButtons) {
-//				if (b.getValue()) {
-//					genericQueryTab.setCommonSiteSpec(new SiteSpec(b.getText(), genericQueryTab.selectByActor, genericQueryTab.getCommonSiteSpec()));
-//					return genericQueryTab.getCommonSiteSpec();
-//				}
-//			}
-		} else {   // Select by transaction (used in GetDocuments tab)
+//		if (genericQueryTab.selectByActor != null) {    // Used in Mesa test tab
+////			for (RadioButton b : genericQueryTab.byActorButtons) {
+////				if (b.getValue()) {
+////					genericQueryTab.setCommonSiteSpec(new SiteSpec(b.getText(), genericQueryTab.selectByActor, genericQueryTab.getCommonSiteSpec()));
+////					return genericQueryTab.getCommonSiteSpec();
+////				}
+////			}
+//		} else
+			{   // Select by transaction (used in GetDocuments tab)
 			if (genericQueryTab.transactionSelectionManager != null) {
 				SiteSpec siteSpec = genericQueryTab.transactionSelectionManager.generateSiteSpec();
 //				genericQueryTab.setCommonSiteSpec(siteSpec);
