@@ -35,8 +35,8 @@ class FhirCreateTransaction extends BasicFhirTransaction {
         if (statusLine.statusCode in 400..599)  {
             stepContext.set_error("Status:${statusLine}")
         }
-        reportManager.add("FhirIdWithHistory", fhirId.toString())
-        reportManager.add('RefWithHistory', "${endpoint}/${fhirId}")
+//        reportManager.add("FhirIdWithHistory", fhirId.toString())
+//        reportManager.add('RefWithHistory', "${endpoint}/${fhirId}")
         reportManager.add("FhirId", fhirId.withoutHistory())
         reportManager.add('Ref', "${endpoint}/${fhirId.withoutHistory()}")
     }
