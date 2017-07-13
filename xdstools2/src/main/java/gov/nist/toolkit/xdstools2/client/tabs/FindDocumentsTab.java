@@ -3,7 +3,6 @@ package gov.nist.toolkit.xdstools2.client.tabs;
 import com.google.gwt.user.client.ui.CheckBox;
 import gov.nist.toolkit.configDatatypes.client.Pid;
 import gov.nist.toolkit.configDatatypes.client.TransactionType;
-import gov.nist.toolkit.interactionmodel.client.InteractingEntity;
 import gov.nist.toolkit.results.client.Result;
 import gov.nist.toolkit.sitemanagement.client.SiteSpec;
 import gov.nist.toolkit.xdstools2.client.CoupledTransactions;
@@ -12,7 +11,6 @@ import gov.nist.toolkit.xdstools2.client.tabs.genericQueryTab.AbstractTool;
 import gov.nist.toolkit.xdstools2.shared.command.request.FindDocumentsRequest;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 public class FindDocumentsTab extends AbstractTool {
@@ -27,7 +25,6 @@ public class FindDocumentsTab extends AbstractTool {
     static CoupledTransactions couplings = new CoupledTransactions();
 
     CheckBox selectOnDemand;
-    InteractingEntity origin = new InteractingEntity(); //  new InteractingEntity(); // Destination
     private Pid patientId;
     private SiteSpec site;
     private boolean onDemand;
@@ -82,7 +79,6 @@ public class FindDocumentsTab extends AbstractTool {
 
     @Override
     public void run() {
-        origin.setBegin(new Date());
         new FindDocumentsCommand(){
             @Override
             public void onComplete(List<Result> results) {
