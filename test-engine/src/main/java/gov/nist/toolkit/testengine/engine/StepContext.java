@@ -382,8 +382,8 @@ public class StepContext extends BasicContext implements ErrorReportingInterface
 				case "FhirReadTransaction":
 					transaction = new FhirReadTransaction(this, instruction, instruction_output);
 					break;
-				case "FhirQueryTransaction":
-					transaction = new FhirQueryTransaction(this, instruction, instruction_output);
+				case "FhirSearchTransaction":
+					transaction = new FhirSearchTransaction(this, instruction, instruction_output);
 					break;
 			   case "HttpTransaction":
 					HTTPTransaction hTransaction = new HTTPTransaction(this, instruction, instruction_output);
