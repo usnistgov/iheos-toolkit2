@@ -57,7 +57,7 @@ class RequestLoggingInterceptor implements IServerInterceptor {
 
         simDb.putRequestHeaderFile(headerblock.bytes)
         InputStream ins = theRequest.inputStream
-        assert ins.markSupported(), 'Mark not supported on inputstream'
+        assert ins.markSupported(), "Mark not supported on inputstream - implementing class is ${ins.getClass().getName()}"
 
         ins.mark(1*1024*1000)
         String request = Io.getStringFromInputStream(ins)

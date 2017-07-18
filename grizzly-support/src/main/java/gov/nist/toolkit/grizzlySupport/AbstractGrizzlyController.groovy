@@ -1,11 +1,13 @@
 package gov.nist.toolkit.grizzlySupport
 
+import gov.nist.toolkit.fhir.servlet.FhirServletFilter
 import gov.nist.toolkit.simulators.servlet.HttpSimServlet
 import gov.nist.toolkit.fhir.servlet.RestfulServlet
 import gov.nist.toolkit.simulators.servlet.SimServlet
 import groovy.transform.TypeChecked
 import org.apache.log4j.Logger
 import org.glassfish.grizzly.http.server.HttpServer
+import org.glassfish.grizzly.servlet.FilterRegistration
 import org.glassfish.grizzly.servlet.ServletRegistration
 import org.glassfish.grizzly.servlet.WebappContext
 import org.glassfish.jersey.grizzly2.httpserver.GrizzlyHttpServerFactory
@@ -14,6 +16,9 @@ import org.glassfish.jersey.server.ServerConfig
 import org.glassfish.jersey.server.ServerProperties
 import org.glassfish.jersey.server.model.Resource
 import org.glassfish.jersey.server.model.ResourceMethod
+
+import javax.servlet.DispatcherType
+
 /**
  *
  *
@@ -80,6 +85,10 @@ abstract public class AbstractGrizzlyController {
 
     AbstractGrizzlyController withFhirServlet() {
         final WebappContext tools2 = new WebappContext("fhir","")
+        FilterRegistration fhirFilter = tools2.addFilter("FhirLoggingFilter", FhirServletFilter.class)
+        fhirFilter.addMappingForUrlPatterns(EnumSet.allOf(DispatcherType.class), '/fsim/*')
+        fhirFilter.addMappingForUrlPatterns(EnumSet.allOf(DispatcherType.class), '/xdstools2/fsim/*')
+
         final ServletRegistration sims = tools2.addServlet("fhir", new RestfulServlet());
         sims.addMapping('/xdstools2/fhir/*')
         sims.addMapping('xdstool2/fsim/*')
