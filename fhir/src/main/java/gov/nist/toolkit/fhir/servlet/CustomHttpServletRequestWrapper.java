@@ -3,8 +3,6 @@ package gov.nist.toolkit.fhir.servlet;
 import org.apache.log4j.Logger;
 
 import javax.servlet.ServletInputStream;
-import javax.servlet.ServletRequest;
-import javax.servlet.ServletRequestWrapper;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletRequestWrapper;
 import java.io.*;
@@ -13,7 +11,7 @@ import java.io.*;
  *
  */
 
-public class CustomHttpServletRequestWrapper extends ServletRequestWrapper {
+public class CustomHttpServletRequestWrapper extends HttpServletRequestWrapper {
 
     private static final Logger logger = Logger.getLogger(CustomHttpServletRequestWrapper.class);
     private final String body;

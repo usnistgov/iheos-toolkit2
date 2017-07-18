@@ -23,11 +23,11 @@ class FhirSearchTransaction extends BasicFhirTransaction {
      */
     @Override
     void doRun(IBaseResource resource, String urlExtension) {
-        def endpoint = useReportManager.get('Base_Type')
-        assert endpoint, 'FhirSearchTransaction - UseReport Base_Type is null'
+        def base = useReportManager.get('Base')
+        assert base, 'FhirSearchTransaction - UseReport Base_Type is null'
         assert queryParams, 'FhirSearchTransaction - UseReport QueryParams is null'
 
-        def fullEndpoint = "${endpoint}${queryParams}"
+        def fullEndpoint = "${base}${queryParams}"
 
         reportManager.add('Url', fullEndpoint)
 

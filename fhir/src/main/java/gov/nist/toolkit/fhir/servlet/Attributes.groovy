@@ -10,8 +10,8 @@ import gov.nist.toolkit.simcommon.server.SimDb
 class Attributes {
     RequestDetails requestDetails
 
-    private static final String SIMID = 'SIMID'
-    private static final String SIMDB = 'SIMDB'
+    static final String SIMID = 'SIMID'
+    static final String SIMDB = 'SIMDB'
 
 
     Attributes(RequestDetails _requestDetails) { requestDetails = _requestDetails }

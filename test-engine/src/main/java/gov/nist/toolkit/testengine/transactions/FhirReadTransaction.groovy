@@ -25,6 +25,7 @@ class FhirReadTransaction extends BasicFhirTransaction {
     void doRun(IBaseResource resource, String urlExtension) {
 
         def fullEndpoint = useReportManager.get('Ref')
+        assert fullEndpoint, 'FhirReadTransaction: Ref is null'
 
         reportManager.add('Url', fullEndpoint)
 

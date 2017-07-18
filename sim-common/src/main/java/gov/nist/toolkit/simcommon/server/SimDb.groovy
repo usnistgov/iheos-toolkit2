@@ -683,9 +683,14 @@ public class SimDb {
 	static final String REQUEST_BODY_BIN_FILE = 'request_body.bin'
 	static final String RESPONSE_HEADER_FILE = 'response_hdr.txt'
 	static final String RESPONSE_BODY_TXT_FILE = 'response_body.txt'
+	static final String REQUEST_URI_FILE = 'request_uri.txt'
 
 	private File getRequestMsgHdrFile(String filenamebase) {
 		return new File(getDBFilePrefix(filenamebase), REQUEST_HEADER_FILE);
+	}
+
+	File getRequestURIFile(String filenamebase) {
+		return new File(getDBFilePrefix(filenamebase), REQUEST_URI_FILE)
 	}
 
 	private File getRequestMsgBodyFile(String filenamebase) {
@@ -857,6 +862,10 @@ public class SimDb {
 		return ids;
 	}
 
+	File getRequestURIFile() {
+		return getRequestURIFile(event)
+	}
+
 	public File getRequestHeaderFile() {
 		return getRequestMsgHdrFile(event);
 	}
@@ -869,6 +878,15 @@ public class SimDb {
 		return getAlternateRequestMsgBodyFile(event);
 	}
 
+	void putRequestURI(String uri) {
+		File f = getRequestURIFile()
+		OutputStream out = new FileOutputStream(f)
+		try {
+			out.write(uri.bytes);
+		} finally {
+			out.close();
+		}
+	}
 
 	public void putRequestHeaderFile(byte[] bytes) throws IOException {
 		File f = getRequestHeaderFile();

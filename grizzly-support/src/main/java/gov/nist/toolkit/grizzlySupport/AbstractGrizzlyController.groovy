@@ -86,6 +86,7 @@ abstract public class AbstractGrizzlyController {
     AbstractGrizzlyController withFhirServlet() {
         final WebappContext tools2 = new WebappContext("fhir","")
         FilterRegistration fhirFilter = tools2.addFilter("FhirLoggingFilter", FhirServletFilter.class)
+        fhirFilter.addMappingForUrlPatterns(EnumSet.allOf(DispatcherType.class), '/*')
         fhirFilter.addMappingForUrlPatterns(EnumSet.allOf(DispatcherType.class), '/fsim/*')
         fhirFilter.addMappingForUrlPatterns(EnumSet.allOf(DispatcherType.class), '/xdstools2/fsim/*')
 
