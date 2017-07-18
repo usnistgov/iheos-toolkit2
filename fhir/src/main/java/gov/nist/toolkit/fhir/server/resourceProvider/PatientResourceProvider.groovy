@@ -111,7 +111,7 @@ public class PatientResourceProvider implements IResourceProvider {
         if (theGivenName) {
             term = new Term(Patient.SP_GIVEN, theGivenName.value)
             termQuery = new TermQuery(term)
-            builder.add(termQuery, BooleanClause.Occur.MUST)
+            builder.add(termQuery, BooleanClause.Occur.SHOULD)
         }
 
         return tk.searchResults(new BaseQuery(tk.simContext).execute(builder))

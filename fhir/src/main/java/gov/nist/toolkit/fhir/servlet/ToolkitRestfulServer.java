@@ -25,7 +25,7 @@ public class ToolkitRestfulServer extends RestfulServer implements IRestfulServe
     public void populateRequestDetailsFromRequestPath(RequestDetails theRequestDetails, String theRequestPath) {
 
         /*
-         * Added by bill for Toolkit - this did not take into consideration the serverBaseForRequest
+         * This did not take into consideration the serverBaseForRequest
          * as registered with the IServerAddressStrategy
          */
         String serverBase = theRequestDetails.getServerBaseForRequest();

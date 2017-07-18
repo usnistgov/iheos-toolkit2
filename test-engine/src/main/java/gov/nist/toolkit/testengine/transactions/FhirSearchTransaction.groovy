@@ -11,8 +11,8 @@ import org.hl7.fhir.instance.model.api.IBaseResource
 /**
  *
  */
-class FhirQueryTransaction extends BasicFhirTransaction {
-    FhirQueryTransaction(StepContext s_ctx, OMElement instruction, OMElement instruction_output) {
+class FhirSearchTransaction extends BasicFhirTransaction {
+    FhirSearchTransaction(StepContext s_ctx, OMElement instruction, OMElement instruction_output) {
         super(s_ctx, instruction, instruction_output)
     }
 
@@ -23,9 +23,9 @@ class FhirQueryTransaction extends BasicFhirTransaction {
      */
     @Override
     void doRun(IBaseResource resource, String urlExtension) {
-        def endpoint = useReportManager.get('Url')
-        assert endpoint, 'FhirQueryTransaction - UseReport Url is null'
-        assert queryParams, 'FhirQueryTransaction - UseReport QueryParams is null'
+        def endpoint = useReportManager.get('Base_Type')
+        assert endpoint, 'FhirSearchTransaction - UseReport Base_Type is null'
+        assert queryParams, 'FhirSearchTransaction - UseReport QueryParams is null'
 
         def fullEndpoint = "${endpoint}${queryParams}"
 

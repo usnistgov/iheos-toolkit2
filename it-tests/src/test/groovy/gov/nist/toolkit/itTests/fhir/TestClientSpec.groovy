@@ -67,9 +67,9 @@ class TestClientSpec extends FhirSpecification {
         results.get(0).passed()
     }
 
-    def 'do query'() {
+    def 'do search'() {
         when:
-        def sections = ['query']
+        def sections = ['search']
         def params = [ :]
         List<Result> results = api.runTest(testSession, siteName, testInstance, sections, params, true)
 
