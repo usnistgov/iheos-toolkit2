@@ -35,6 +35,7 @@ public class ConformanceTestMainView {
         actorpanel.add(new HTML("Actor to test"));
         actorpanel.add(new InformationLink("Help with Conformance Test tool", "Conformance-Test-Tool").asWidget());
         toolPanel.add(actorpanel);
+        // TODO: create a container here for tabs
         toolPanel.add(actorTabBar);
         toolPanel.add(new HTML("Option"));
         toolPanel.add(optionsTabBar);

@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+
+
+
+<tabs label="Actors">
+	<!-- tcCode:
+    tcCode is the test collection code that is made up of three parts actor_profile_option.
+    See collections.txt file for indexing.
+	-->
+	<tab label="Repository" type="actor" tcCode="rep">		<!-- Maps to testCollectionDefinitionDAOs in ActorSelectionHandler -->
+		<tabs label="Profiles">
+			<tab label="XDS" type="profile" tcCode="xds">   <!-- If there is only one profile, select it. Then go ahead and show the default option. But if multiple profiles exist, without a default tab setting, show the profile map. -->
+				<tabs label="Options"> 						<!-- Retrofit to ActorAndOption in Build*OrchestrationButton.java -->
+					<tab label="Required"  type="option" tcCode="" externalStart="false"/>
+					<tab label="XUA Option" type="option" tcCode="xua" externalStart="false"/> 
+				</tabs>
+			</tab>
+		</tabs>
+	</tab>	
+
+
+</tabs>
+
