@@ -86,7 +86,17 @@ public class SimDb {
 		return Installation.instance().fhirSimDbFile()
 	}
 
+	static boolean isSim(File simRoot) {
+		isPrefix(simRoot, getSimDbFile())
+	}
 
+	static boolean isFSim(File simRoot) {
+		isPrefix(simRoot, getFSimDbFile())
+	}
+
+	static boolean isPrefix(File file, File possiblePrefix) {
+		file.getCanonicalPath().startsWith(possiblePrefix.getCanonicalPath())
+	}
 
 	/**
 	 * Does simulator exist?
@@ -325,35 +335,35 @@ public class SimDb {
 		}
 	}
 
+	static SimId simIdBuilder(File simDefDir) {
+		SimId simId = new SimId(simDefDir.name)
+		if (isFSim(simDefDir)) simId.forFhir()
+		simId.actorType = new SimDb(simId).getSimulatorType()
+		simId
+	}
+
 	static List<SimId> getAllSimIds() throws BadSimIdException {
 
 		List<SimId> soapSimIds = getSimDbFile().listFiles().findAll { File file ->
 			isSimDir(file)
 		}.collect { File dir ->
-			new SimId(dir.name)
+			simIdBuilder (dir)
 		}
 
 		List<SimId> fhirSimIds = getFSimDbFile().listFiles().findAll { File file ->
 			isSimDir(file)
 		}.collect { File dir ->
-			new SimId(dir.name).forFhir()
+			simIdBuilder(dir)
 		}
 
 		soapSimIds + fhirSimIds as List
-//
-//
-//
-//		File[] files = getSimDbFile().listFiles();
-//		List<SimId> ids = new ArrayList<>();
-//		if (files == null) return ids;
-//
-//		for (File dir : files) {
-//			if (isSimDir(dir))
-//				ids.add(new SimId(dir.getName()));
-//		}
-//		return ids;
 	}
 
+	/**
+	 * should always use SimId - carries more information
+	 * @return
+	 */
+	@Obsolete
 	static List<String> getAllSimNames() {
 		getAllSimIds().collect { it.toString()}
 	}

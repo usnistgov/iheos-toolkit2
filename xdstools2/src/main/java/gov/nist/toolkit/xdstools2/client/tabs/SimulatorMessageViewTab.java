@@ -20,6 +20,7 @@ import gov.nist.toolkit.xdstools2.client.util.ToolkitLink;
 import gov.nist.toolkit.xdstools2.client.util.activitiesAndPlaces.SimLog;
 import gov.nist.toolkit.xdstools2.client.widgets.HorizontalFlowPanel;
 import gov.nist.toolkit.xdstools2.client.widgets.RadioButtonGroup;
+import gov.nist.toolkit.xdstools2.shared.command.request.GetSimIdsForUserRequest;
 import gov.nist.toolkit.xdstools2.shared.command.request.GetSimulatorEventRequest;
 import gov.nist.toolkit.xdstools2.shared.command.request.GetTransactionRequest;
 
@@ -92,7 +93,7 @@ public class SimulatorMessageViewTab extends ToolWindow {
 		onTabLoad(true, simid.toString());
 	}
 
-	HorizontalFlowPanel linkPanel = new HorizontalFlowPanel();
+	private HorizontalFlowPanel linkPanel = new HorizontalFlowPanel();
 
 	// If eventName is null then display list of simulators.  If non-null then it is
 	// the simulator id. In this case do not allow simulator selection.
@@ -199,22 +200,37 @@ public class SimulatorMessageViewTab extends ToolWindow {
 			if (parts.length == 2)
 				currentActor = parts[1];
 
-			simid = new SimId(simName);
-			loadTransactionNames(simid);
+			loadTransactionNames(getServerSimId(new SimId(simName)));
 		}
 	}
 
-	List<String> simNameToIdMap;
+	/**
+	 * this simIds returned from the server have full content so they should be used in all
+	 * calls to the server.  This call looks up the SimId
+	 * @param simId - minimal SimId (only needs user and id attributes)
+	 * @return - fully configured SimId instance loaded from server
+	 */
+	private SimId getServerSimId(SimId simId) {
+		for (SimId sid : simIds) {
+			if (sid.equals(simId)) return sid;
+		}
+		return null;
+	}
 
-	void loadSimulatorNamesListBox() {
+	/**
+	 * SimIds loaded from server - fully loaded with actor type and isFhir status
+	 */
+	private List<SimId> simIds;
+
+	private void loadSimulatorNamesListBox() {
 		simulatorNamesListBox.clear();
-		new GetActorSimulatorNameMapCommand(){
+		new GetSimIdForUser(){
 			@Override
-			public void onComplete(List<String> result) {
+			public void onComplete(List<SimId> result) {
 				simulatorNamesListBox.addItem("");
-				simNameToIdMap = result;
-				for (String name : result) {
-					simulatorNamesListBox.addItem(name);
+				simIds = result;
+				for (SimId simId : result) {
+					simulatorNamesListBox.addItem(simId.toString());
 				}
 				// Auto-load if there is only one entry
 				if (result.size()==1) {
@@ -223,7 +239,7 @@ public class SimulatorMessageViewTab extends ToolWindow {
 					loadTransactionNames(simid);
 				}
 			}
-		}.run(getCommandContext());
+		}.run(new GetSimIdsForUserRequest(getCommandContext(), null));
 	}
 
 	public void loadTransactionNames(SimId simid) {
@@ -244,7 +260,7 @@ public class SimulatorMessageViewTab extends ToolWindow {
 		}.run(new GetTransactionRequest(getCommandContext(),simid));
 	}
 
-	TransactionInstance findTransactionInstance(String label) {
+	private TransactionInstance findTransactionInstance(String label) {
 		if (label == null) return null;
 		for (TransactionInstance ti : transactionInstances) {
 			if (label.equals(ti.messageId)) return ti;
@@ -315,7 +331,7 @@ public class SimulatorMessageViewTab extends ToolWindow {
 		}
 	}
 
-	ChangeHandler transactionInstanceChoiceChanged = new ChangeHandler() {
+	private ChangeHandler transactionInstanceChoiceChanged = new ChangeHandler() {
 
 		public void onChange(ChangeEvent event) {
 			transactionInstanceSelected();
@@ -341,7 +357,7 @@ public class SimulatorMessageViewTab extends ToolWindow {
 		download.setHTML(u);
 	}
 
-	HTML htmlize(String header, String in) {
+	private HTML htmlize(String header, String in) {
 		HTML h = new HTML(
 				(header == null) ? "" : "<b>" + header + "</b><br /><br />" +
 
@@ -354,14 +370,14 @@ public class SimulatorMessageViewTab extends ToolWindow {
 		return h;
 	}
 
-	String getMessageIdFromLabel(String label) {
+	private String getMessageIdFromLabel(String label) {
 		String[] parts = label.split(" ");
 		if (parts.length == 2)
 			return parts[0];
 		return label;
 	}
 
-	String getTransactionFromLabel(String label) {
+	private String getTransactionFromLabel(String label) {
 		String[] parts = label.split(" ");
 		if (parts.length == 2)
 			return parts[1];
@@ -432,7 +448,7 @@ public class SimulatorMessageViewTab extends ToolWindow {
 
 	};
 
-	ClickHandler inspectRequestClickHandler = new ClickHandler() {
+	private ClickHandler inspectRequestClickHandler = new ClickHandler() {
 		@Override
 		public void onClick(ClickEvent clickEvent) {
 			new GetSimulatorEventRequestCommand(){
@@ -454,7 +470,7 @@ public class SimulatorMessageViewTab extends ToolWindow {
 		tab.onTabLoad(true, "Insp");
 	}
 
-	ClickHandler inspectResponseClickHandler = new ClickHandler() {
+	private ClickHandler inspectResponseClickHandler = new ClickHandler() {
 		@Override
 		public void onClick(ClickEvent clickEvent) {
 			new GetSimulatorEventResponseCommand(){
@@ -512,33 +528,8 @@ public class SimulatorMessageViewTab extends ToolWindow {
 
 	}
 
-//	public void doDelete(String url) {
-//		RequestBuilder builder = new RequestBuilder(RequestBuilder.GET, url);
-//
-//		try {
-//			@SuppressWarnings("unused")
-//			Request response = builder.sendRequest(null, new RequestCallback() {
-//				public void onError(Request request, Throwable exception) {
-//					if (exception.getMessage() != null)
-//						new PopupMessage("Error: " + exception);
-//				}
-//
-//				public void onResponseReceived(Request request, Response response) {
-//					int status = response.getStatusCode();
-//					if (status == 200) {
-//						transactionChosen(currentActor, currentTransaction);					}
-//					else
-//						new PopupMessage("Failure");
-//				}
-//			});
-//		} catch (RequestException e) {
-//			// Code omitted for clarity
-//		}
-//	}
-
-
-	String transName = "";
-	SimId simidFinal = new SimId("");
+	private String transName = "";
+	private SimId simidFinal = new SimId("");
 
 	class TransactionNamesRadioButtonGroup extends RadioButtonGroup {
 		SimId simid;

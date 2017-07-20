@@ -987,9 +987,9 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements
         return new SimulatorServiceManager(session()).getSelectedMessageResponse(request.getFilename());
     }
     @Override
-    public List<String> getActorSimulatorNameMap(CommandContext context) throws Exception {
+    public List<SimId> getSimIdsForUser(GetSimIdsForUserRequest context) throws Exception {
         installCommandContext(context);
-        return new SimulatorServiceManager(session()).getSimulatorNameMap();
+        return new SimulatorServiceManager(session()).getSimIds(context.getUser());
     }
     @Override
     public MessageValidationResults validateMessage(ValidateMessageRequest request) throws Exception {

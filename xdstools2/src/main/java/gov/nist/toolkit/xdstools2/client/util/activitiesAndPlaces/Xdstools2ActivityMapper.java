@@ -2,7 +2,10 @@ package gov.nist.toolkit.xdstools2.client.util.activitiesAndPlaces;
 
 import com.google.gwt.activity.shared.Activity;
 import com.google.gwt.activity.shared.ActivityMapper;
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.place.shared.Place;
+import gov.nist.toolkit.xdstools2.client.tabs.simMsgViewerTab.SimMsgViewer;
+import gov.nist.toolkit.xdstools2.client.tabs.simMsgViewerTab.SimMsgViewerActivity;
 import gov.nist.toolkit.xdstools2.client.util.ClientFactory;
 
 /**
@@ -57,6 +60,13 @@ public class Xdstools2ActivityMapper implements ActivityMapper {
             SimLogActivity simLogActivity = clientFactory.getSimLogActivity();
             simLogActivity.setSimLog(simLog);
             return simLogActivity;
+        }
+
+        if (place instanceof SimMsgViewer) {
+            GWT.log("Launch SimMsgViewer");
+            SimMsgViewer simMsgViewer = (SimMsgViewer) place;
+            SimMsgViewerActivity activity = clientFactory.getSimMsgViewerActivity();
+            return activity;
         }
         return null;
     }

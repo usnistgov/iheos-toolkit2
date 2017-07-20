@@ -12,6 +12,7 @@ import gov.nist.toolkit.xdstools2.client.tabs.conformanceTest.ConformanceTestTab
 import gov.nist.toolkit.xdstools2.client.tabs.findDocuments2Tab.FindDocuments2Tab;
 import gov.nist.toolkit.xdstools2.client.tabs.getAllTab.GetAllTab;
 import gov.nist.toolkit.xdstools2.client.tabs.messageValidator.MessageValidatorTab;
+import gov.nist.toolkit.xdstools2.client.tabs.simMsgViewerTab.SimMsgViewer;
 import gov.nist.toolkit.xdstools2.client.tabs.simulatorControlTab.SimulatorControlTab;
 import gov.nist.toolkit.xdstools2.client.tabs.testsOverviewTab.TestsOverviewTab;
 
@@ -37,7 +38,8 @@ public class ToolLauncher implements ClickHandler {
 	final static public String getRelatedTabLabel = "GetRelated";
 	final static public String connectathonTabLabel = "Connectathon Tools";
 	final static public String messageValidatorTabLabel = "Message Validator";
-	final static public String simulatorMessageViewTabLabel = " Simulator Logs";
+	final static public String simulatorMessageViewTabLabel = "Simulator Logs";
+	final static public String newSimulatorMessageViewTabLabel = "New Simulator Logs";
 	final static public String simulatorControlTabLabel = "Simulators";
 	final static public String srcStoresDocValTabLabel = "XDS.b_Doc_Source_Stores_Document";
 	final static public String documentRetrieveTabLabel = "RetrieveDocuments";
@@ -90,6 +92,7 @@ public class ToolLauncher implements ClickHandler {
 		tools.add(new ToolDef(connectathonTabLabel, "Connectathon", "Connectathon"));
 		tools.add(new ToolDef(messageValidatorTabLabel, "MsgVal", "MsgVal"));
 		tools.add(new ToolDef(simulatorMessageViewTabLabel, "SimMsgs", "SimMsgs"));
+		tools.add(new ToolDef(newSimulatorMessageViewTabLabel, "New SimMsgs", "New SimMsgs"));
 		tools.add(new ToolDef(simulatorControlTabLabel, "SimCntl", "SimCntl"));
 		tools.add(new ToolDef(srcStoresDocValTabLabel, "SrcStores", "SrcStores"));
 		tools.add(new ToolDef(documentRetrieveTabLabel, "DocRet", "DocRet"));
@@ -164,6 +167,7 @@ public class ToolLauncher implements ClickHandler {
 		if (menuName.equals(sitesTabLabel)) return new ActorConfigTab();
 		if (menuName.equals(messageValidatorTabLabel)) return new MessageValidatorTab();
 		if (menuName.equals(simulatorMessageViewTabLabel)) return new SimulatorMessageViewTab();
+		if (menuName.equals(newSimulatorMessageViewTabLabel)) return new NewToolLauncher().launch(new SimMsgViewer());
 		if (menuName.equals(simulatorControlTabLabel)) return new SimulatorControlTab();
 		if (menuName.equals(toolConfigTabLabel)) return new ToolConfigTab();
 		if (menuName.equals(mesaTabLabel)) return new MesaTestTab();

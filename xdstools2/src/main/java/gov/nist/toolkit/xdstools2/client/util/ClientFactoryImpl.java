@@ -4,6 +4,7 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.place.shared.PlaceController;
 import com.google.web.bindery.event.shared.EventBus;
 import gov.nist.toolkit.xdstools2.client.event.Xdstools2EventBus;
+import gov.nist.toolkit.xdstools2.client.tabs.simMsgViewerTab.SimMsgViewerActivity;
 import gov.nist.toolkit.xdstools2.client.util.activitiesAndPlaces.ConfActorActivity;
 import gov.nist.toolkit.xdstools2.client.util.activitiesAndPlaces.SimLogActivity;
 import gov.nist.toolkit.xdstools2.client.util.activitiesAndPlaces.TestInstanceActivity;
@@ -21,6 +22,7 @@ public class ClientFactoryImpl implements ClientFactory {
     private static final ConfActorActivity CONF_ACTOR_ACTIVITY = new ConfActorActivity();
     private static final SimLogActivity SIM_LOG_ACTIVITY = new SimLogActivity();
     private static final ToolkitServiceAsync TOOLKIT_SERVICES = GWT.create(ToolkitService.class);
+    private static final SimMsgViewerActivity MSG_VIEWER_ACTIVITY = GWT.create(SimMsgViewerActivity.class);
 
     @Override
     public EventBus getEventBus() {
@@ -55,5 +57,10 @@ public class ClientFactoryImpl implements ClientFactory {
     @Override
     public SimLogActivity getSimLogActivity() {
         return SIM_LOG_ACTIVITY;
+    }
+
+    @Override
+    public SimMsgViewerActivity getSimMsgViewerActivity() {
+        return MSG_VIEWER_ACTIVITY;
     }
 }

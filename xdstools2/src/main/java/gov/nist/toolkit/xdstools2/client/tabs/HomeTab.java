@@ -118,6 +118,8 @@ public class HomeTab extends GenericQueryTab {
 
 		Xdstools2.addtoMainMenu(HyperlinkFactory.launchTool(ToolLauncher.simulatorMessageViewTabLabel, new ToolLauncher(ToolLauncher.simulatorMessageViewTabLabel)));
 
+		Xdstools2.addtoMainMenu(HyperlinkFactory.launchTool(ToolLauncher.newSimulatorMessageViewTabLabel, new ToolLauncher(ToolLauncher.newSimulatorMessageViewTabLabel)));
+
 		// **********************************************************************
 
 		Xdstools2.addtoMainMenu(addHTML("<h3>Queries & Retrieves</h3>"));

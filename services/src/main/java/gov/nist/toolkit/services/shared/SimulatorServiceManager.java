@@ -327,12 +327,20 @@ public class SimulatorServiceManager extends CommonService {
 	}
 
 	/**
-	 * 
-	 * @return map from simulator name (private name) to simulator id (global id)
+	 * get all SimIds
+	 * @param userFilter - if not null, only return simids for this user
+	 * @return
 	 */
-	public List<String> getSimulatorNameMap() {
-		logger.debug(session.id() + ": " + "getActorSimulatorNameMap");
-		return SimDb.getAllSimNames();
+	public List<SimId> getSimIds(String userFilter) {
+		logger.debug(session.id() + ": " + "getSimIds for " + userFilter);
+		List<SimId> all = SimDb.getAllSimIds();
+		if (userFilter == null) return all;
+		List<SimId> filtered = new ArrayList<>();
+		for (SimId sid : all) {
+			if (userFilter.equals(sid.getUser()))
+				filtered.add(sid);
+		}
+		return filtered;
 	}
 
 	public int removeOldSimulators() {

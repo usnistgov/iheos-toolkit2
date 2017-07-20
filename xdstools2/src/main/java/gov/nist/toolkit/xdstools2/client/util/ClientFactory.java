@@ -2,6 +2,8 @@ package gov.nist.toolkit.xdstools2.client.util;
 
 import com.google.gwt.place.shared.PlaceController;
 import com.google.web.bindery.event.shared.EventBus;
+import gov.nist.toolkit.xdstools2.client.tabs.simMsgViewerTab.SimMsgViewerActivity;
+import gov.nist.toolkit.xdstools2.client.tabs.simMsgViewerTab.SimMsgViewerView;
 import gov.nist.toolkit.xdstools2.client.util.activitiesAndPlaces.ConfActorActivity;
 import gov.nist.toolkit.xdstools2.client.util.activitiesAndPlaces.SimLogActivity;
 import gov.nist.toolkit.xdstools2.client.util.activitiesAndPlaces.TestInstanceActivity;
@@ -21,4 +23,7 @@ public interface ClientFactory {
     ToolkitServiceAsync getToolkitServices();
 
     SimLogActivity getSimLogActivity();
+
+    SimMsgViewerActivity getSimMsgViewerActivity();
+    SimMsgViewerView getSimMsgViewerView();
 }
