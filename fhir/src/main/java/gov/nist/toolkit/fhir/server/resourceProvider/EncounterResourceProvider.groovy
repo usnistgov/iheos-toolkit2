@@ -3,49 +3,30 @@ package gov.nist.toolkit.fhir.server.resourceProvider
 import ca.uhn.fhir.rest.annotation.*
 import ca.uhn.fhir.rest.api.MethodOutcome
 import ca.uhn.fhir.rest.method.RequestDetails
-import ca.uhn.fhir.rest.param.DateParam
-import ca.uhn.fhir.rest.param.ParamPrefixEnum
 import ca.uhn.fhir.rest.param.ReferenceParam
-import ca.uhn.fhir.rest.param.StringParam
 import ca.uhn.fhir.rest.server.IResourceProvider
 import ca.uhn.fhir.rest.server.exceptions.InternalErrorException
 import gov.nist.toolkit.fhir.search.BaseQuery
-import org.apache.lucene.document.DateTools
-import org.apache.lucene.document.DateTools.Resolution
 import org.apache.lucene.index.Term
 import org.apache.lucene.search.BooleanQuery
-import org.apache.lucene.search.Query
 import org.apache.lucene.search.TermQuery
 import org.hl7.fhir.dstu3.model.IdType
-import org.hl7.fhir.dstu3.model.AllergyIntolerance
+import org.hl7.fhir.dstu3.model.Encounter
 import org.hl7.fhir.instance.model.api.IBaseResource
 
-import static org.apache.lucene.search.TermRangeQuery.newStringRange
-
-class AllergyIntoleranceResourceProvider implements IResourceProvider{
+class EncounterResourceProvider implements IResourceProvider{
     @Override
     Class<? extends IBaseResource> getResourceType() {
-        return AllergyIntolerance.class
+        return Encounter.class
     }
 
-    /**
-     * The "@Read" annotation indicates that this method supports the
-     * read operation. Read operations should return a single resource
-     * instance.
-     *
-     * @param theId
-     *    The read operation takes one parameter, which must be of type
-     *    IdDt and must be annotated with the "@Read.IdParam" annotation.
-     * @return
-     *    Returns a resource matching this identifier, or null if none exists.
-     */
     @Create()
-    public MethodOutcome createObservation(@ResourceParam AllergyIntolerance theAllergy,
+    public MethodOutcome createImmunization(@ResourceParam Encounter theEncounter,
                                        RequestDetails requestDetails) {
 
-        validateResource(theAllergy);
+        validateResource(theEncounter);
 
-        return new ToolkitResourceProvider(AllergyIntolerance.class, requestDetails).createOperation(theAllergy)
+        return new ToolkitResourceProvider(theEncounter.class, requestDetails).createOperation(theEncounter)
     }
 
     /**
@@ -60,7 +41,7 @@ class AllergyIntoleranceResourceProvider implements IResourceProvider{
      *    Returns a resource matching this identifier, or null if none exists.
      */
     @Read()
-    public AllergyIntolerance getResourceById(@IdParam IdType theId,
+    public Encounter getResourceById(@IdParam IdType theId,
                                    RequestDetails requestDetails) {
 
         ToolkitResourceProvider tk = new ToolkitResourceProvider(getResourceType(), requestDetails)
@@ -82,12 +63,12 @@ class AllergyIntoleranceResourceProvider implements IResourceProvider{
      *
      * @param thePatient
      * @return
-     *    This method returns a list of AllergyIntolerance. This list may contain multiple
+     *    This method returns a list of Condition. This list may contain multiple
      *    matching resources, or it may be empty.
      */
     @Search()
-    public List<AllergyIntolerance> getAllergies(
-            @RequiredParam(name = AllergyIntolerance.SP_PATIENT) ReferenceParam thePatient,
+    public List<Encounter> getImmunization(
+            @RequiredParam(name = Encounter.SP_PATIENT) ReferenceParam thePatient,
             RequestDetails requestDetails) {
         ToolkitResourceProvider tk = new ToolkitResourceProvider(getResourceType(), requestDetails)
 
@@ -96,12 +77,12 @@ class AllergyIntoleranceResourceProvider implements IResourceProvider{
         Term term
         TermQuery termQuery
 
-        term = new Term(AllergyIntolerance.SP_PATIENT, thePatient.value)
+        term = new Term(Encounter.SP_PATIENT, thePatient.value)
         termQuery = new TermQuery(term)
         builder.add ( termQuery, org.apache.lucene.search.BooleanClause.Occur.MUST )
 
         return tk.searchResults(new BaseQuery(tk.simContext).execute(builder))
     }
 
-    def validateResource(AllergyIntolerance theAllergy) {}
+    def validateResource(Encounter theImmunization) {}
 }

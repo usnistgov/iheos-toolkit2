@@ -1,0 +1,10 @@
+<TestPlan>
+    <Test>FhirTestClientCreateAllergyIntolerance/create</Test>
+    <TestStep id="create">
+        <ExpectedStatus>Success</ExpectedStatus>
+        <FhirCreateTransaction>
+            <ResourceFile>allergyIntolerance.json</ResourceFile>
+            <UrlExtension>/AllergyIntolerance</UrlExtension>
+        </FhirCreateTransaction>
+    </TestStep>
+</TestPlan>

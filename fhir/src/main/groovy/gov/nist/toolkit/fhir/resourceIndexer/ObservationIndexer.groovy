@@ -13,7 +13,6 @@ import org.hl7.fhir.dstu3.model.Period
 /**
  *
  */
-
 class ObservationIndexer implements IResourceIndexer {
     /**
      * Index the Observation index attributes
