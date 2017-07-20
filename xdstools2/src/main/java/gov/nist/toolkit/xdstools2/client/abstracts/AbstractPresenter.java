@@ -2,6 +2,8 @@ package gov.nist.toolkit.xdstools2.client.abstracts;
 
 
 import com.google.gwt.event.shared.EventBus;
+import gov.nist.toolkit.xdstools2.client.util.ClientUtils;
+import gov.nist.toolkit.xdstools2.shared.command.CommandContext;
 
 import javax.inject.Inject;
 import java.util.logging.Logger;
@@ -93,5 +95,12 @@ public abstract class AbstractPresenter<V extends AbstractView<?>> {
     public void setEventBus(EventBus eventBus) {
         this.eventBus = eventBus;
     }
+
+
+    // move to utilities class????
+    public CommandContext getCommandContext() {
+        return ClientUtils.INSTANCE.getCommandContext();
+    }
+
 
 }

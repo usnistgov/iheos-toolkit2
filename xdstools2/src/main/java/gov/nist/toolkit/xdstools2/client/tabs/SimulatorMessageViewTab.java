@@ -132,12 +132,13 @@ public class SimulatorMessageViewTab extends ToolWindow {
 		simControlPanel.add(HtmlMarkup.html(HtmlMarkup.h2("Transaction Log")));
 		simControlPanel.add(simSelectionDisplayPanel);
 
-		if (simid != null) {
+		if (simid != null) {   // not moved
 			loadTransactionNames(simid);
 		}
 		loadSimulatorNamesListBox();
 		simulatorNamesListBox.addChangeHandler(new SimulatorNameChangeHandler());
 
+		// continue here
 		simControlPanel.add(transactionDisplayPanel);
 
 		transactionDisplayPanel.add(transactionNamesPanel);

@@ -16,7 +16,10 @@ import gov.nist.toolkit.xdstools2.client.injector.Injector;
  */
 public class ToolkitAppDisplayer implements ActivityDisplayer {
 
-    public ToolkitAppDisplayer() {}
+    public ToolkitAppDisplayer() {
+        super();
+        GWT.log("Build ToolkitAppDisplayer");
+    }
 
     @Override
     public void display(Widget w, String title, AbstractToolkitActivity activity, AcceptsOneWidget p, EventBus b) {

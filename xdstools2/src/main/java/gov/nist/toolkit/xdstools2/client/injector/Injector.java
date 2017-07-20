@@ -4,6 +4,7 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.inject.client.GinModules;
 import com.google.gwt.inject.client.Ginjector;
 import gov.nist.toolkit.xdstools2.client.TabContainer;
+import gov.nist.toolkit.xdstools2.client.abstracts.ToolkitAppDisplayer;
 import gov.nist.toolkit.xdstools2.client.event.Xdstools2EventBus;
 import gov.nist.toolkit.xdstools2.client.tabs.simMsgViewerTab.SimMsgViewerMVP;
 import gov.nist.toolkit.xdstools2.client.tabs.simMsgViewerTab.SimMsgViewerPresenter;
@@ -23,7 +24,7 @@ public interface Injector extends Ginjector {
     SimMsgViewerMVP getSimMsgViewerMVP();
 
     TabContainer getTabContainer();
-
+    ToolkitAppDisplayer getToolkitAppDisplayer();
 
 
 }

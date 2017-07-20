@@ -1,8 +1,11 @@
 package gov.nist.toolkit.xdstools2.client.abstracts;
 
+import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.SimpleLayoutPanel;
 import com.google.gwt.user.client.ui.Widget;
+import gov.nist.toolkit.xdstools2.client.util.ClientUtils;
+import gov.nist.toolkit.xdstools2.shared.command.CommandContext;
 
 import java.util.Map;
 import java.util.logging.Logger;
@@ -96,4 +99,26 @@ public abstract class AbstractView<P extends AbstractPresenter<?>> implements Is
     public void setPresenter(P presenter) {
         this.presenter = presenter;
     }
+
+    // this stuff needs to move to a utilities package
+
+
+    // this one only belongs in the presenter
+    public CommandContext getCommandContext() {
+        return ClientUtils.INSTANCE.getCommandContext();
+    }
+
+    public HTML htmlize(String header, String in) {
+        HTML h = new HTML(
+                (header == null) ? "" : "<b>" + header + "</b><br /><br />" +
+
+                        in.replaceAll("<", "&lt;")
+                                .replaceAll("\n\n", "\n")
+                                .replaceAll("\t", "&nbsp;&nbsp;&nbsp;")
+                                .replaceAll(" ", "&nbsp;")
+                                .replaceAll("\n", "<br />")
+        );
+        return h;
+    }
+
 }
