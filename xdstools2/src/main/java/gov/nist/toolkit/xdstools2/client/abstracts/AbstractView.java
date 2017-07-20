@@ -102,12 +102,6 @@ public abstract class AbstractView<P extends AbstractPresenter<?>> implements Is
 
     // this stuff needs to move to a utilities package
 
-
-    // this one only belongs in the presenter
-    public CommandContext getCommandContext() {
-        return ClientUtils.INSTANCE.getCommandContext();
-    }
-
     public HTML htmlize(String header, String in) {
         HTML h = new HTML(
                 (header == null) ? "" : "<b>" + header + "</b><br /><br />" +
