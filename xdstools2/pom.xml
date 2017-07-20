@@ -374,6 +374,10 @@
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
+			<groupId>com.google.gwt.inject</groupId>
+			<artifactId>gin</artifactId>
+		</dependency>
+		<dependency>
 			<groupId>org.apache.axis2</groupId>
 			<artifactId>axis2</artifactId>
 		</dependency>

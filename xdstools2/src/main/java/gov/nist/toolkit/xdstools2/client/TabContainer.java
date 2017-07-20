@@ -1,27 +1,23 @@
 package gov.nist.toolkit.xdstools2.client;
 
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Style;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.logical.shared.SelectionEvent;
 import com.google.gwt.event.logical.shared.SelectionHandler;
 import com.google.gwt.user.client.Window;
-import com.google.gwt.user.client.ui.Anchor;
-import com.google.gwt.user.client.ui.DeckLayoutPanel;
-import com.google.gwt.user.client.ui.DockLayoutPanel;
-import com.google.gwt.user.client.ui.HTML;
-import com.google.gwt.user.client.ui.HorizontalPanel;
-import com.google.gwt.user.client.ui.TabBar;
-import com.google.gwt.user.client.ui.Widget;
+import com.google.gwt.user.client.ui.*;
 import gov.nist.toolkit.xdstools2.client.event.Xdstools2EventBus;
 import gov.nist.toolkit.xdstools2.client.event.tabContainer.V2TabOpenedEvent;
 import gov.nist.toolkit.xdstools2.client.util.ClientUtils;
 
+import javax.inject.Inject;
 import java.util.ArrayList;
 import java.util.List;
 
 public class TabContainer {
-	private static TabContainer me = new TabContainer();
+//	private static TabContainer me = new TabContainer();
 
 	// holds TabBar and currently selected panel from deck
 	// TabBar in North section.  Center holds SimpleLayoutPanel. SimpleLayoutPanel
@@ -47,9 +43,12 @@ public class TabContainer {
 		});
 	}
 
-	private TabContainer() {}
+	@Inject
+	public TabContainer() {
+		GWT.log("Build TabContainer");
+	}
 
-	public static TabContainer instance() { return me; }
+	//public static TabContainer instance() { return me; }
 
 	/**
 	 * Create a new tab/tool.

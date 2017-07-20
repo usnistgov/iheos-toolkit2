@@ -20,7 +20,7 @@
         <jackson.version>2.6.3</jackson.version>
         <!--<groovyVersion>2.1.1</groovyVersion>-->
         <groovyVersion>2.4.5</groovyVersion>
-        <gwtVersion>2.7.0</gwtVersion>
+        <gwtVersion>2.8.0</gwtVersion>    <!-- 2.7.0 -->
         <!-- <gwtVersion>2.6.1</gwtVersion> -->
         <mavenCompilerPluginVersion>3.1</mavenCompilerPluginVersion>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -546,7 +546,7 @@
             <dependency>
                 <groupId>com.google.gwt.inject</groupId>
                 <artifactId>gin</artifactId>
-                <version>1.5.0</version>
+                <version>2.1.2</version>
             </dependency>
             <!--  -->
 

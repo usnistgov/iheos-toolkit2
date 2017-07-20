@@ -12,13 +12,13 @@ public class SimMsgViewer extends Place {
 
     public SimMsgViewer() {
         super();
-        GWT.log("SimMsgViewer Place");
+        GWT.log("Build SimMsgViewer Place");
         this.name = "SimMsgViewer";
     }
 
     public SimMsgViewer(String name) {
         super();
-        GWT.log("SimMsgViewer Place: " + name);
+        GWT.log("Build SimMsgViewer Place: " + name);
         this.name = name;
     }
 

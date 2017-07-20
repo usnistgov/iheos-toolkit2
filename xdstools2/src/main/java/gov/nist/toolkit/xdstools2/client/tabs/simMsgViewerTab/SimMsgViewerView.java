@@ -14,6 +14,7 @@ import java.util.Map;
 public class SimMsgViewerView extends AbstractView<SimMsgViewerPresenter> {
 
     public SimMsgViewerView() {
+        super();
         GWT.log("SimMsgViewerView create");
     }
 

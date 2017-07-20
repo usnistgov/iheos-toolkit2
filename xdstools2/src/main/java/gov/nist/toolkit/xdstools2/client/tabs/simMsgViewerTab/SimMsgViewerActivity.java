@@ -8,22 +8,26 @@ import com.google.gwt.user.client.ui.Widget;
 import gov.nist.toolkit.xdstools2.client.abstracts.AbstractToolkitActivity;
 import gov.nist.toolkit.xdstools2.client.abstracts.ActivityDisplayer;
 import gov.nist.toolkit.xdstools2.client.abstracts.GenericMVP;
+import gov.nist.toolkit.xdstools2.client.abstracts.ToolkitAppDisplayer;
+import gov.nist.toolkit.xdstools2.client.injector.Injector;
 import gov.nist.toolkit.xdstools2.client.tabs.models.SimIdsModel;
-
-import javax.inject.Inject;
 
 /**
  *
  */
 public class SimMsgViewerActivity extends AbstractToolkitActivity {
-    @Inject
+
     private SimMsgViewerView view;
 
-    @Inject
+
     private SimMsgViewerPresenter presenter;
 
-    @Inject
     private ActivityDisplayer displayer;
+
+    public SimMsgViewerActivity() {
+        super();
+        GWT.log("Build SimMsgViewerActivity");
+    }
 
     private GenericMVP<SimIdsModel,SimMsgViewerView,SimMsgViewerPresenter> mvp;
 
@@ -41,6 +45,9 @@ public class SimMsgViewerActivity extends AbstractToolkitActivity {
     @Override
     public void start(AcceptsOneWidget acceptsOneWidget, EventBus eventBus) {
         GWT.log("Starting SimMsgViewer Activity");
+        presenter = Injector.INSTANCE.getSimMsgViewerPresenter();
+        view =      Injector.INSTANCE.getSimMsgViewerView();
+        displayer = GWT.create(ToolkitAppDisplayer.class);
         assert(presenter != null);
         mvp = buildMVP();
         assert(mvp != null);

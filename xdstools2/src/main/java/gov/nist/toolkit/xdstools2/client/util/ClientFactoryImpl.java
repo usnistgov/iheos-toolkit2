@@ -1,9 +1,9 @@
 package gov.nist.toolkit.xdstools2.client.util;
 
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.place.shared.PlaceController;
-import com.google.web.bindery.event.shared.EventBus;
-import gov.nist.toolkit.xdstools2.client.event.Xdstools2EventBus;
+import gov.nist.toolkit.xdstools2.client.injector.Injector;
 import gov.nist.toolkit.xdstools2.client.tabs.simMsgViewerTab.SimMsgViewerActivity;
 import gov.nist.toolkit.xdstools2.client.util.activitiesAndPlaces.ConfActorActivity;
 import gov.nist.toolkit.xdstools2.client.util.activitiesAndPlaces.SimLogActivity;
@@ -15,7 +15,7 @@ import gov.nist.toolkit.xdstools2.client.util.activitiesAndPlaces.ToolActivity;
  * throughout the application like the event bus.
  */
 public class ClientFactoryImpl implements ClientFactory {
-    private static final EventBus EVENT_BUS = new Xdstools2EventBus();
+    private static final EventBus EVENT_BUS = Injector.INSTANCE.getEventBus(); //new Xdstools2EventBus();
     private static final PlaceController PLACE_CONTROLLER = new PlaceController(EVENT_BUS);
     private static final TestInstanceActivity TEST_INSTANCE_ACTIVITY = new TestInstanceActivity();
     private static final ToolActivity TOOL_ACTIVITY = new ToolActivity();
