@@ -17,7 +17,6 @@ import org.hl7.fhir.dstu3.model.Reference
  *       http://hl7.org/fhir/STU3/organization.html#search.
  *       active, identifier, name, partof, and type
  */
-@CompileStatic
 class OrganizationIndexer implements IResourceIndexer {
     private ResourceIndex resourceIndex = null
     /**

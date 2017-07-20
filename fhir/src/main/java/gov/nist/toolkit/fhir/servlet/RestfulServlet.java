@@ -47,6 +47,10 @@ public class RestfulServlet extends ToolkitRestfulServer {
         resourceProviders.add(new PractitionerRoleResourceProvider());
         resourceProviders.add(new HealthcareServiceResourceProvider());
         resourceProviders.add(new ObservationResourceProvider());
+        resourceProviders.add(new DiagnosticReportResourceProvider());
+        resourceProviders.add(new MedicationStatementResourceProvider());
+        resourceProviders.add(new MedicationRequestResourceProvider());
+        resourceProviders.add(new ProcedureResourceProvider());
         setResourceProviders(resourceProviders);
 
         /**

@@ -17,7 +17,6 @@ import org.hl7.fhir.dstu3.model.Practitioner
  *       http://hl7.org/fhir/STU3/practitioner.html#search.
  *       active, identifier, name, given, and family
  */
-@CompileStatic
 class PractitionerIndexer implements IResourceIndexer {
     private ResourceIndex resourceIndex = null
     /**
