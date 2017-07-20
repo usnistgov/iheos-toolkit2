@@ -14,32 +14,36 @@ then
 	BASEDIR=$(pwd)
 fi
 
+echo "BASEDIR is $BASEDIR"
+
 SCRIPTNAME=$(basename $0 .sh)
 
-cd /media/aberge/DATA/workspace-sequoia/toolkit
-/usr/local/maven/bin/mvn clean package -DskipTests -Dmaven.test.skip=true
+cd $BASEDIR
+mvn -o clean package -DskipTests -Dmaven.test.skip=true
 
-cd xdstools2/target
+cd $BASEDIR/xdstools2/target
 WARNAME=$(basename *.war .war)
 
-cd /media/aberge/DATA/workspace-sequoia/toolkit
-mkdir xdstools2/target/$WARNAME/javadoc
-bash $BASEDIR/genapidoc.sh xdstools2/target/$WARNAME/javadoc
+rm -rf $BASEDIR/xdstools2/target/$WARNAME/javadoc
+#mkdir $BASEDIR/xdstools2/target/$WARNAME/javadoc
+cd $BASEDIR  
+bash $BASEDIR/genapidoc.sh $BASEDIR/xdstools2/target/$WARNAME/javadoc
 
-echo "generating site"
-cd xdstools2
-/usr/local/maven/bin/mvn -o site
+cd $BASEDIR/xdstools2
 
-echo "replacing site directory"
-cd target
-rm -r $WARNAME/site
+// warning - if -o is present then it runs much much faster
+// but the first time you run it on a machine -o must be removed
+// so that the necessary plugins can be downloaded
+mvn -o site
+
+cd $BASEDIR/xdstools2/target
+rm -rf $WARNAME/site
 mv site $WARNAME
 
-echo "reassembling xdstools4"
-cd $WARNAME
-jar cf ../xdstools4.war *
+cd $BASEDIR/xdstools2/target/$WARNAME
+rm ../$WARNAME.war
+jar cf ../$WARNAME.war *
 
-echo "changing directory to " ${BASEDIR}/${SCRIPTNAME}.stuff
 cd ${BASEDIR}/${SCRIPTNAME}.stuff
-jar uf /media/aberge/DATA/workspace-sequoia/toolkit/xdstools2/target/xdstools4.war WEB-INF
+jar uf $BASEDIR/xdstools2/target/${WARNAME}.war WEB-INF
 
