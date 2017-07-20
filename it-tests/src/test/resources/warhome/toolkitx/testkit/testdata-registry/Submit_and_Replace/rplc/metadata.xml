@@ -1,0 +1,265 @@
+<?xml version="1.0" encoding="UTF-8"?><rs:SubmitObjectsRequest xmlns:rs="urn:oasis:names:tc:ebxml-regrep:registry:xsd:2.1">
+  <tag0:LeafRegistryObjectList xmlns:tag0="urn:oasis:names:tc:ebxml-regrep:rim:xsd:2.1">
+    <tag0:ObjectRef id="urn:uuid:7edca82f-054d-47f2-a032-9b2a5b518fff"/>
+    <tag0:ObjectRef id="urn:uuid:a54d6aa5-d40d-43f9-88c5-b4633d873bdd"/>
+    <tag0:ObjectRef id="urn:uuid:f64ffdf0-4b97-4e06-b79f-a52b38ec2f8a"/>
+    <tag0:ObjectRef id="urn:uuid:96fdda7c-d067-4183-912e-bf5ee74998a8"/>
+    <tag0:ObjectRef id="urn:uuid:554ac39e-e3fe-47fe-b233-965d2a147832"/>
+    <tag0:ObjectRef id="urn:uuid:6b5aea1a-874d-4603-a4bc-96a0a7b38446"/>
+    <tag0:ObjectRef id="urn:uuid:d9d542f3-6cc4-48b6-8870-ea235fbc94c2"/>
+    <tag0:ObjectRef id="urn:uuid:f33fb8ac-18af-42cc-ae0e-ed0b0bdb91e1"/>
+    <tag0:ObjectRef id="urn:uuid:aa543740-bdda-424e-8c96-df4873be8500"/>
+    <tag0:ObjectRef id="urn:uuid:75df8f67-9973-4fbe-a900-df66cefecc5a"/>
+    <tag0:ObjectRef id="urn:uuid:f4f85eac-e6cb-4883-b524-f2705394840f"/>
+    <tag0:ObjectRef id="urn:uuid:a09d5840-386c-46f2-b5ad-9c3699a4309d"/>
+    <tag0:ObjectRef id="urn:uuid:cccf5598-8b07-4b77-a05e-ae952c785ead"/>
+    <tag0:ObjectRef id="urn:uuid:f0306f51-975f-434e-a61c-c59651d33983"/>
+    <tag0:ObjectRef id="urn:uuid:41a5887f-8865-4c09-adf7-e362475b143a"/>
+    <tag0:ObjectRef id="urn:uuid:2e82c1f6-a085-4c72-9da3-8640a32e42ab"/>
+    <tag0:ObjectRef id="urn:uuid:58a6f841-87b3-4a3e-92fd-a8ffeff98427"/>
+    <tag0:ObjectRef id="urn:uuid:a7058bb9-b4e4-4307-ba5b-e3f0ab85e12d"/>
+    <tag0:ObjectRef id="urn:uuid:93606bcf-9494-43ec-9b4e-a7748d1a838d"/>
+    <tag0:ExtrinsicObject id="Document01" objectType="urn:uuid:7edca82f-054d-47f2-a032-9b2a5b5186c1" mimeType="text/xml">
+      <tag0:Name>
+        <tag0:LocalizedString value="Physical"/>
+      </tag0:Name>
+      <tag0:Description/>
+      <tag0:Slot name="size">
+        <tag0:ValueList>
+          <tag0:Value>061224</tag0:Value>
+        </tag0:ValueList>
+      </tag0:Slot>
+      <tag0:Slot name="hash">
+        <tag0:ValueList>
+          <tag0:Value>e543712c0e10501972de13a5bfcbe826c49feb75</tag0:Value>
+        </tag0:ValueList>
+      </tag0:Slot>
+      <tag0:Slot name="repositoryUniqueId">
+        <tag0:ValueList>
+          <tag0:Value>1.19.6.24.109.42.1</tag0:Value>
+        </tag0:ValueList>
+      </tag0:Slot>
+      <tag0:Slot name="creationTime">
+        <tag0:ValueList>
+          <tag0:Value>20061224</tag0:Value>
+        </tag0:ValueList>
+      </tag0:Slot>
+      <tag0:Slot name="languageCode">
+        <tag0:ValueList>
+          <tag0:Value>en-us</tag0:Value>
+        </tag0:ValueList>
+      </tag0:Slot>
+      <tag0:Slot name="serviceStartTime">
+        <tag0:ValueList>
+          <tag0:Value>200612230800</tag0:Value>
+        </tag0:ValueList>
+      </tag0:Slot>
+      <tag0:Slot name="serviceStopTime">
+        <tag0:ValueList>
+          <tag0:Value>200612230900</tag0:Value>
+        </tag0:ValueList>
+      </tag0:Slot>
+      <tag0:Slot name="sourcePatientId">
+        <tag0:ValueList>
+          <tag0:Value>89765a87b^^^&amp;1.3.4.5&amp;ISO</tag0:Value>
+        </tag0:ValueList>
+      </tag0:Slot>
+      <tag0:Slot name="sourcePatientInfo">
+        <tag0:ValueList>
+          <tag0:Value>PID-3|pid1^^^&amp;1.2.3&amp;ISO</tag0:Value>
+          <tag0:Value>PID-5|Doe^John^^^</tag0:Value>
+          <tag0:Value>PID-7|19560527</tag0:Value>
+          <tag0:Value>PID-8|M</tag0:Value>
+          <tag0:Value>PID-11|100 Main St^^Metropolis^Il^44130^USA</tag0:Value>
+        </tag0:ValueList>
+      </tag0:Slot>
+      <tag0:Classification classifiedObject="Document01" nodeRepresentation="" classificationScheme="urn:uuid:93606bcf-9494-43ec-9b4e-a7748d1a838d">
+        <tag0:Slot name="authorPerson">
+          <tag0:ValueList>
+            <tag0:Value>^Smitty^Gerald^^^</tag0:Value>
+          </tag0:ValueList>
+        </tag0:Slot>
+        <tag0:Slot name="authorInstitution">
+          <tag0:ValueList>
+            <tag0:Value>Cleveland Clinic</tag0:Value>
+            <tag0:Value>Parma Community</tag0:Value>
+          </tag0:ValueList>
+        </tag0:Slot>
+        <tag0:Slot name="authorRole">
+          <tag0:ValueList>
+            <tag0:Value>Attending</tag0:Value>
+          </tag0:ValueList>
+        </tag0:Slot>
+        <tag0:Slot name="authorSpecialty">
+          <tag0:ValueList>
+            <tag0:Value>Orthopedic</tag0:Value>
+          </tag0:ValueList>
+        </tag0:Slot>
+      </tag0:Classification>
+      <tag0:Classification classifiedObject="Document01" nodeRepresentation="" classificationScheme="urn:uuid:93606bcf-9494-43ec-9b4e-a7748d1a838d">
+        <tag0:Slot name="authorPerson">
+          <tag0:ValueList>
+            <tag0:Value>^Dopplemeyer^Sherry^^^</tag0:Value>
+          </tag0:ValueList>
+        </tag0:Slot>
+        <tag0:Slot name="authorInstitution">
+          <tag0:ValueList>
+            <tag0:Value>Cleveland Clinic</tag0:Value>
+            <tag0:Value>Berea Community</tag0:Value>
+          </tag0:ValueList>
+        </tag0:Slot>
+        <tag0:Slot name="authorRole">
+          <tag0:ValueList>
+            <tag0:Value>Primary Surgon</tag0:Value>
+          </tag0:ValueList>
+        </tag0:Slot>
+        <tag0:Slot name="authorSpecialty">
+          <tag0:ValueList>
+            <tag0:Value>Orthopedic</tag0:Value>
+          </tag0:ValueList>
+        </tag0:Slot>
+      </tag0:Classification>
+      <tag0:Classification classifiedObject="Document01" nodeRepresentation="DEMO-Consult" classificationScheme="urn:uuid:41a5887f-8865-4c09-adf7-e362475b143a">
+        <tag0:Name>
+          <tag0:LocalizedString value="Consultation"/>
+        </tag0:Name>
+        <tag0:Slot name="codingScheme">
+          <tag0:ValueList>
+            <tag0:Value>1.3.6.1.4.1.21367.100.1</tag0:Value>
+          </tag0:ValueList>
+        </tag0:Slot>
+      </tag0:Classification>
+      <tag0:Classification classifiedObject="Document01" nodeRepresentation="N" classificationScheme="urn:uuid:f4f85eac-e6cb-4883-b524-f2705394840f">
+        <tag0:Name>
+          <tag0:LocalizedString value="Normal"/>
+        </tag0:Name>
+        <tag0:Slot name="codingScheme">
+          <tag0:ValueList>
+            <tag0:Value>2.16.840.1.113883.5.25</tag0:Value>
+          </tag0:ValueList>
+        </tag0:Slot>
+      </tag0:Classification>
+      <tag0:Classification classifiedObject="Document01" nodeRepresentation="urn:ihe:qrph:ehcp:2010" classificationScheme="urn:uuid:a09d5840-386c-46f2-b5ad-9c3699a4309d">
+        <tag0:Name>
+          <tag0:LocalizedString value="urn:ihe:qrph:ehcp:2010"/>
+        </tag0:Name>
+        <tag0:Slot name="codingScheme">
+          <tag0:ValueList>
+            <tag0:Value>1.3.6.1.4.1.19376.1.2.3</tag0:Value>
+          </tag0:ValueList>
+        </tag0:Slot>
+      </tag0:Classification>
+      <tag0:Classification classifiedObject="Document01" nodeRepresentation="Outpatient" classificationScheme="urn:uuid:f33fb8ac-18af-42cc-ae0e-ed0b0bdb91e1">
+        <tag0:Name>
+          <tag0:LocalizedString value="Outpatient"/>
+        </tag0:Name>
+        <tag0:Slot name="codingScheme">
+          <tag0:ValueList>
+            <tag0:Value>Connect-a-thon healthcareFacilityTypeCodes</tag0:Value>
+          </tag0:ValueList>
+        </tag0:Slot>
+      </tag0:Classification>
+      <tag0:Classification classifiedObject="Document01" nodeRepresentation="Dialysis" classificationScheme="urn:uuid:cccf5598-8b07-4b77-a05e-ae952c785ead">
+        <tag0:Name>
+          <tag0:LocalizedString value="Dialysis"/>
+        </tag0:Name>
+        <tag0:Slot name="codingScheme">
+          <tag0:ValueList>
+            <tag0:Value>Connect-a-thon practiceSettingCodes</tag0:Value>
+          </tag0:ValueList>
+        </tag0:Slot>
+      </tag0:Classification>
+      <tag0:Classification classifiedObject="Document01" nodeRepresentation="34746-8" classificationScheme="urn:uuid:f0306f51-975f-434e-a61c-c59651d33983">
+        <tag0:Name>
+          <tag0:LocalizedString value="Nursing Evaluation and Management Note"/>
+        </tag0:Name>
+        <tag0:Slot name="codingScheme">
+          <tag0:ValueList>
+            <tag0:Value>2.16.840.1.113883.6.1</tag0:Value>
+          </tag0:ValueList>
+        </tag0:Slot>
+      </tag0:Classification>
+      <tag0:ExternalIdentifier value="$patientid$" identificationScheme="urn:uuid:58a6f841-87b3-4a3e-92fd-a8ffeff98427">
+        <tag0:Name>
+          <tag0:LocalizedString value="XDSDocumentEntry.patientId"/>
+        </tag0:Name>
+      </tag0:ExternalIdentifier>
+      <tag0:ExternalIdentifier value="Document01" identificationScheme="urn:uuid:2e82c1f6-a085-4c72-9da3-8640a32e42ab">
+        <tag0:Name>
+          <tag0:LocalizedString value="XDSDocumentEntry.uniqueId"/>
+        </tag0:Name>
+      </tag0:ExternalIdentifier>
+    </tag0:ExtrinsicObject>
+    <tag0:RegistryPackage id="SubmissionSet01">
+      <tag0:Name>
+        <tag0:LocalizedString value="Physical"/>
+      </tag0:Name>
+      <tag0:Description>
+        <tag0:LocalizedString value="Annual physical"/>
+      </tag0:Description>
+      <tag0:Slot name="submissionTime">
+        <tag0:ValueList>
+          <tag0:Value>20041225235050</tag0:Value>
+        </tag0:ValueList>
+      </tag0:Slot>
+      <tag0:Classification classifiedObject="SubmissionSet01" nodeRepresentation="" classificationScheme="urn:uuid:a7058bb9-b4e4-4307-ba5b-e3f0ab85e12d">
+        <tag0:Slot name="authorPerson">
+          <tag0:ValueList>
+            <tag0:Value>^Dopplemeyer^Sherry^^^</tag0:Value>
+          </tag0:ValueList>
+        </tag0:Slot>
+        <tag0:Slot name="authorInstitution">
+          <tag0:ValueList>
+            <tag0:Value>Cleveland Clinic</tag0:Value>
+            <tag0:Value>Berea Community</tag0:Value>
+          </tag0:ValueList>
+        </tag0:Slot>
+        <tag0:Slot name="authorRole">
+          <tag0:ValueList>
+            <tag0:Value>Primary Surgon</tag0:Value>
+          </tag0:ValueList>
+        </tag0:Slot>
+        <tag0:Slot name="authorSpecialty">
+          <tag0:ValueList>
+            <tag0:Value>Orthopedic</tag0:Value>
+          </tag0:ValueList>
+        </tag0:Slot>
+      </tag0:Classification>
+      <tag0:Classification classifiedObject="SubmissionSet01" nodeRepresentation="34746-8" classificationScheme="urn:uuid:aa543740-bdda-424e-8c96-df4873be8500">
+        <tag0:Name>
+          <tag0:LocalizedString value="Nursing Evaluation and Management Note"/>
+        </tag0:Name>
+        <tag0:Slot name="codingScheme">
+          <tag0:ValueList>
+            <tag0:Value>2.16.840.1.113883.6.1</tag0:Value>
+          </tag0:ValueList>
+        </tag0:Slot>
+      </tag0:Classification>
+      <tag0:ExternalIdentifier value="SubmissionSet01" identificationScheme="urn:uuid:96fdda7c-d067-4183-912e-bf5ee74998a8">
+        <tag0:Name>
+          <tag0:LocalizedString value="XDSSubmissionSet.uniqueId"/>
+        </tag0:Name>
+      </tag0:ExternalIdentifier>
+      <tag0:ExternalIdentifier value="129.6.58.92.1.1" identificationScheme="urn:uuid:554ac39e-e3fe-47fe-b233-965d2a147832">
+        <tag0:Name>
+          <tag0:LocalizedString value="XDSSubmissionSet.sourceId"/>
+        </tag0:Name>
+      </tag0:ExternalIdentifier>
+      <tag0:ExternalIdentifier value="$patientid$" identificationScheme="urn:uuid:6b5aea1a-874d-4603-a4bc-96a0a7b38446">
+        <tag0:Name>
+          <tag0:LocalizedString value="XDSSubmissionSet.patientId"/>
+        </tag0:Name>
+      </tag0:ExternalIdentifier>
+    </tag0:RegistryPackage>
+    <tag0:Classification classifiedObject="SubmissionSet01" classificationNode="urn:uuid:a54d6aa5-d40d-43f9-88c5-b4633d873bdd"/>
+    <tag0:Association targetObject="Document01" sourceObject="SubmissionSet01" associationType="HasMember">
+      <tag0:Slot name="SubmissionSetStatus">
+        <tag0:ValueList>
+          <tag0:Value>Original</tag0:Value>
+        </tag0:ValueList>
+      </tag0:Slot>
+    </tag0:Association>
+    <tag0:Association targetObject="$rplc_doc_uuid$" sourceObject="Document01" associationType="RPLC"/>
+    <tag0:ObjectRef id="$rplc_doc_uuid$"/>
+  </tag0:LeafRegistryObjectList>
+</rs:SubmitObjectsRequest>

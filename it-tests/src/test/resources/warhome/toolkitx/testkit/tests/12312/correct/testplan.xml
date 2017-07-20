@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<TestPlan>
+  <Test>12312/correct</Test>
+  <TestStep id="retrieve_small">
+    <ExpectedStatus>Success</ExpectedStatus>
+    <XCRTransaction>
+      <UseReport test="12311" reportName="$doc_uid_1$" step="getdocs" useAs="$docuid$"/>
+      <UseReport test="12311" reportName="$requestHome$" step="getdocs" useAs="$home$"/>
+      <UseReport test="12311" reportName="$repositoryUniqueId$" step="getdocs" useAs="$repositoryuid$"/>
+      <ExpectedMimeType>text/plain</ExpectedMimeType>
+      <ReferenceDocument uid="$docuid$">../../12318/my_document.txt</ReferenceDocument>
+      <MetadataFile>query1.xml</MetadataFile>
+      <Assertions>
+        <DataRef file="THIS" as="output"/>
+        <Assert id="OneDocument">
+              		count(//XCRTransaction[@step="retrieve_small"]/Result[1]/*[local-name()='RetrieveDocumentSetResponse']/*[local-name()='DocumentResponse']) = "1"
+         		</Assert>
+      </Assertions>
+    </XCRTransaction>
+  </TestStep>
+  <TestStep id="retrieve_big">
+    <ExpectedStatus>Success</ExpectedStatus>
+    <XCRTransaction>
+      <UseReport test="12311" reportName="$doc_uid_2$" step="getdocs" useAs="$docuid$"/>
+      <UseReport test="12311" reportName="$requestHome$" step="getdocs" useAs="$home$"/>
+      <UseReport test="12311" reportName="$repositoryUniqueId$" step="getdocs" useAs="$repositoryuid$"/>
+      <ExpectedMimeType>text/xml</ExpectedMimeType>
+      <ReferenceDocument uid="$docuid$">../../12318/summary.xml</ReferenceDocument>
+      <MetadataFile>query2.xml</MetadataFile>
+      <Assertions>
+        <DataRef file="THIS" as="output"/>
+        <Assert id="OneDocuments">
+              		count(//XCRTransaction[@step="retrieve_big"]/Result[1]/*[local-name()='RetrieveDocumentSetResponse']/*[local-name()='DocumentResponse']) = "1"
+         		</Assert>
+      </Assertions>
+    </XCRTransaction>
+  </TestStep>
+</TestPlan>

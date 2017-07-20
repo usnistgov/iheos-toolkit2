@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<TestPlan>
+  <Test>11909</Test>
+  <Rule>Test GetRelatedDocuments Stored Query</Rule>
+  <TestStep id="no_initial_doc">
+    <Rule>
+      <Transaction>SQ</Transaction>
+      <SQ>GetRelatedDocuments</SQ>
+      <Assertion>Original document does not exist</Assertion>
+    </Rule>
+    <ExpectedStatus>Success</ExpectedStatus>
+    <StoredQueryTransaction>
+      <XDSb/>
+      <MetadataFile>query1.xml</MetadataFile>
+      <ExpectedContents>
+        <Associations count="0"/>
+        <Documents count="0"/>
+      </ExpectedContents>
+    </StoredQueryTransaction>
+  </TestStep>
+  <TestStep id="uniqueid_no_related">
+    <Rule>
+      <Transaction>SQ</Transaction>
+      <SQ>GetRelatedDocuments</SQ>
+      <Assertion>Operation with single UniqueId as input but no related documents</Assertion>
+    </Rule>
+    <ExpectedStatus>Success</ExpectedStatus>
+    <StoredQueryTransaction>
+      <XDSb/>
+      <MetadataFile>query2.xml</MetadataFile>
+      <UseId testdir="../12346/single_doc" id="Document01" symbol="$uniqueid$" step="submit_doc" section="AssignedUids"/>
+      <ExpectedContents>
+        <Associations count="0"/>
+        <Documents count="0"/>
+      </ExpectedContents>
+    </StoredQueryTransaction>
+  </TestStep>
+  <TestStep id="uuid_no_related">
+    <Rule>
+      <Transaction>SQ</Transaction>
+      <SQ>GetRelatedDocuments</SQ>
+      <Assertion>Operation with single UUID as input but no related documents</Assertion>
+    </Rule>
+    <ExpectedStatus>Success</ExpectedStatus>
+    <StoredQueryTransaction>
+      <XDSb/>
+      <MetadataFile>query3.xml</MetadataFile>
+      <UseId testdir="../12346/single_doc" id="Document01" symbol="$uuid$" step="submit_doc" section="AssignedUuids"/>
+      <ExpectedContents>
+        <Associations count="0"/>
+        <Documents count="0"/>
+      </ExpectedContents>
+    </StoredQueryTransaction>
+  </TestStep>
+  <TestStep id="uniqueid">
+    <Rule>
+      <Transaction>SQ</Transaction>
+      <SQ>GetRelatedDocuments</SQ>
+      <Assertion>Operation with single UniqueId as input</Assertion>
+    </Rule>
+    <ExpectedStatus>Success</ExpectedStatus>
+    <StoredQueryTransaction>
+      <XDSb/>
+      <MetadataFile>query4.xml</MetadataFile>
+      <UseId testdir="../12346/doc_for_rplc" id="Document01" symbol="$uniqueid$" step="doc_for_rplc" section="AssignedUids"/>
+      <ExpectedContents>
+        <Associations count="1"/>
+        <Documents count="2"/>
+      </ExpectedContents>
+    </StoredQueryTransaction>
+  </TestStep>
+  <TestStep id="near_folder">
+    <Rule>
+      <Transaction>SQ</Transaction>
+      <SQ>GetRelatedDocuments</SQ>
+      <Assertion>Operation near a folder</Assertion>
+    </Rule>
+    <ExpectedStatus>Success</ExpectedStatus>
+    <StoredQueryTransaction>
+      <XDSb/>
+      <MetadataFile>query5.xml</MetadataFile>
+      <UseId testdir="../12346/two_doc_w_fol" id="Document02" symbol="$uniqueid$" step="submit_2doc_w_fol" section="AssignedUids"/>
+      <ExpectedContents>
+        <Associations count="0"/>
+        <Documents count="0"/>
+      </ExpectedContents>
+    </StoredQueryTransaction>
+  </TestStep>
+  <TestStep id="uuid">
+    <Rule>
+      <Transaction>SQ</Transaction>
+      <SQ>GetRelatedDocuments</SQ>
+      <Assertion>Operation near a folder</Assertion>
+    </Rule>
+    <ExpectedStatus>Success</ExpectedStatus>
+    <StoredQueryTransaction>
+      <XDSb/>
+      <MetadataFile>query6.xml</MetadataFile>
+      <UseId testdir="../12346/two_doc_w_fol" id="Document02" symbol="$uuid$" step="submit_2doc_w_fol" section="AssignedUuids"/>
+      <ExpectedContents>
+        <Associations count="0"/>
+        <Documents count="0"/>
+      </ExpectedContents>
+    </StoredQueryTransaction>
+  </TestStep>
+</TestPlan>

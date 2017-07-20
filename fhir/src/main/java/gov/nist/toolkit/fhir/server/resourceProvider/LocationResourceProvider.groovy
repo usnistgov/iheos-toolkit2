@@ -7,6 +7,7 @@ import ca.uhn.fhir.rest.param.StringParam
 import ca.uhn.fhir.rest.server.IResourceProvider
 import ca.uhn.fhir.rest.server.exceptions.InternalErrorException
 import gov.nist.toolkit.fhir.search.BaseQuery
+import groovy.transform.CompileStatic
 import org.apache.lucene.index.Term
 import org.apache.lucene.search.BooleanQuery
 import org.apache.lucene.search.TermQuery
@@ -40,23 +41,14 @@ import org.hl7.fhir.instance.model.api.IBaseResource
 }
  */
 
+
 class LocationResourceProvider implements IResourceProvider{
     @Override
     Class<? extends IBaseResource> getResourceType() {
         return Location.class
     }
 
-    /**
-     * The "@Read" annotation indicates that this method supports the
-     * read operation. Read operations should return a single resource
-     * instance.
-     *
-     * @param theId
-     *    The read operation takes one parameter, which must be of type
-     *    IdDt and must be annotated with the "@Read.IdParam" annotation.
-     * @return
-     *    Returns a resource matching this identifier, or null if none exists.
-     */
+
     @Create()
     public MethodOutcome createLocation(@ResourceParam Location theLocation,
                                        RequestDetails requestDetails) {
@@ -86,7 +78,7 @@ class LocationResourceProvider implements IResourceProvider{
         File f = tk.readOperation(theId)
 
         try {
-            return tk.jsonParser.parseResource(getResourceType(), new FileReader(f));
+            return (Location) tk.jsonParser.parseResource(getResourceType(), new FileReader(f));
         } catch (FileNotFoundException e) {
             throw new InternalErrorException("File " + f + " not found");
         }
@@ -110,7 +102,7 @@ class LocationResourceProvider implements IResourceProvider{
      */
     @Search()
     public List<Location> getLocation(
-            @RequiredParam(name = Location.SP_ADDRESS_CITY) StringParam theAddressCity,
+            @RequiredParam(name = Location.SP_IDENTIFIER) StringParam theIdentifier,
             RequestDetails requestDetails) {
         ToolkitResourceProvider tk = new ToolkitResourceProvider(getResourceType(), requestDetails)
 
@@ -119,12 +111,12 @@ class LocationResourceProvider implements IResourceProvider{
         Term term
         TermQuery termQuery
 
-        term = new Term(Location.SP_ADDRESS_CITY, theAddressCity.value)
+        term = new Term(Location.SP_IDENTIFIER, theIdentifier.value)
         termQuery = new TermQuery(term)
         builder.add ( termQuery, org.apache.lucene.search.BooleanClause.Occur.MUST )
 
 
-        return tk.searchResults(new BaseQuery(tk.simContext).execute(builder))
+        return  tk.searchResults(new BaseQuery(tk.simContext).execute(builder))
 
     }
 

@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?><TestPlan>
+  <Test>12028/query</Test>
+  <Rule>GetDocuments Stored Query</Rule>
+  <TestStep id="uniqueid">
+    <Rule>
+      <Transaction>SQ</Transaction>
+      <SQ>GetDocuments</SQ>
+      <Assertion>Get DocumentEntry info via UniqueId</Assertion>
+    </Rule>
+    <ExpectedStatus>Success</ExpectedStatus>
+    <StoredQueryTransaction>
+      <XDSb/>
+      <MetadataFile>query.xml</MetadataFile>
+      <Report name="repuid" section="Result">
+                //*[local-name()='ExtrinsicObject']/*[local-name()='Slot'][@name='repositoryUniqueId']/*[local-name()='ValueList']/*[local-name()='Value']
+            </Report>
+      <UseId testdir="../submit" id="Document01" symbol="$uid$" step="submit" section="AssignedUids"/>
+      <ExpectedContents>
+        <Documents count="1"/>
+      </ExpectedContents>
+    </StoredQueryTransaction>
+  </TestStep>
+</TestPlan>

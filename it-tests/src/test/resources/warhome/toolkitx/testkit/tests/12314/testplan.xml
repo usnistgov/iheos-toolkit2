@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?><TestPlan>
+  <Test>12314</Test>
+  <TestStep id="finddocs">
+    <ExpectedStatus>Success</ExpectedStatus>
+    <Rule>
+      <Transaction>XGQ</Transaction>
+      <SQ>Test FindDocuments XGQ over TLS</SQ>
+      <Assertion>ObjectRef return</Assertion>
+    </Rule>
+    <XCQTransaction>
+      <MetadataFile>query.xml</MetadataFile>
+      <UseId testdir="../12318" id="SubmissionSet01" symbol="$patient_id$" step="init" section="AssignedPatientId"/>
+      <Assertions>
+        <DataRef file="THIS" as="output"/>
+        <Assert id="ObjectRefCount"> 
+                    count(//XCQTransaction[@step="finddocs"]/Result/*[local-name(.)='AdhocQueryResponse']/*[local-name(.)='RegistryObjectList']/*[local-name(.)='ObjectRef']) = 2
+                </Assert>
+      </Assertions>
+    </XCQTransaction>
+  </TestStep>
+</TestPlan>

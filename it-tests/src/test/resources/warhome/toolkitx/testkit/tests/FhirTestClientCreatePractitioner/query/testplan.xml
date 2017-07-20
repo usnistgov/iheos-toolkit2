@@ -1,0 +1,10 @@
+<TestPlan>
+    <Test>FhirTestClientCreatePractitioner/query</Test>
+    <TestStep id="query">
+        <ExpectedStatus>Success</ExpectedStatus>
+        <FhirQueryTransaction>
+            <UseReport test="FhirTestClientCreatePractitioner" section="create" step="create" reportName="Url" useAs="Url"/>
+            <QueryParams>?active=true</QueryParams>
+        </FhirQueryTransaction>
+    </TestStep>
+</TestPlan>

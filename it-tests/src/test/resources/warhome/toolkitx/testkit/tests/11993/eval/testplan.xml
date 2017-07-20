@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?><TestPlan>
+  <Test>11993/eval</Test>
+  <TestStep id="validate_original">
+    <ExpectedStatus>Success</ExpectedStatus>
+    <StoredQueryTransaction>
+      <XDSb/>
+      <UseReport reportName="ssuid" section="submit" step="submit" useAs="$ssuid$"/>
+      <MetadataFile>query1.xml</MetadataFile>
+      <ExpectedContents>
+        <SSwithOneDoc/>
+        <DocApp/>
+      </ExpectedContents>
+    </StoredQueryTransaction>
+  </TestStep>
+  <TestStep id="validate_apnd">
+    <ExpectedStatus>Success</ExpectedStatus>
+    <StoredQueryTransaction>
+      <XDSb/>
+      <UseReport reportName="ssuid" section="apnd" step="apnd" useAs="$ssuid$"/>
+      <MetadataFile>query2.xml</MetadataFile>
+      <ExpectedContents>
+        <SSwithOneDoc/>
+        <DocApp/>
+      </ExpectedContents>
+    </StoredQueryTransaction>
+  </TestStep>
+  <TestStep id="no_validate_rplc_apnd">
+    <ExpectedStatus>Success</ExpectedStatus>
+    <StoredQueryTransaction>
+      <XDSb/>
+      <UseReport reportName="ssuid" section="apnd" step="apnd_rplc" useAs="$ssuid$"/>
+      <MetadataFile>query3.xml</MetadataFile>
+      <ExpectedContents>
+        <None/>
+      </ExpectedContents>
+    </StoredQueryTransaction>
+  </TestStep>
+</TestPlan>

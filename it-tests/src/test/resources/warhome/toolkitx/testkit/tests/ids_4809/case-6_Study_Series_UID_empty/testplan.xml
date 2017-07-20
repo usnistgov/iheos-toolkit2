@@ -1,0 +1,15 @@
+<TestPlan>
+	<Test>ids_4809/6</Test>
+	<TestStep id="case-6-retrieve">
+      <Goal>WADO Retrieve Failure, empty Study and series UID</Goal>
+      <ExpectedStatus>Failure</ExpectedStatus>
+      <ExpectedErrorCode>404</ExpectedErrorCode>
+		<WADOTransaction>
+			<Parameters>
+			studyUID=
+			seriesUID=
+			objectUID=1.3.6.1.4.1.21367.201599.3.201604020954048.1
+			</Parameters>
+		</WADOTransaction>
+	</TestStep>
+</TestPlan>

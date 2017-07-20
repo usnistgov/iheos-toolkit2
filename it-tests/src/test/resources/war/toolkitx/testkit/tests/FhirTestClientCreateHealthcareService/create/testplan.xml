@@ -1,0 +1,10 @@
+<TestPlan>
+    <Test>FhirTestClientCreateHealthcareService/create</Test>
+    <TestStep id="create">
+        <ExpectedStatus>Success</ExpectedStatus>
+        <FhirCreateTransaction>
+            <ResourceFile>healthcareService.json</ResourceFile>
+            <UrlExtension>/HealthcareService</UrlExtension>
+        </FhirCreateTransaction>
+    </TestStep>
+</TestPlan>

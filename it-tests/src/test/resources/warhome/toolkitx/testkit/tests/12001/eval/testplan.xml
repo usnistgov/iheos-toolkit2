@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?><TestPlan>
+  <Test>12001/eval</Test>
+  <TestStep id="folder_and_contents">
+    <Goal>Use GetFolderAndContents to retrieve Folder with DocumentEntry inside</Goal>
+    <ExpectedStatus>Success</ExpectedStatus>
+    <StoredQueryTransaction>
+      <XDSb/>
+      <UseReport reportName="foluid" section="create_folder" step="submit_fol" useAs="$uniqueid$"/>
+      <MetadataFile>query.xml</MetadataFile>
+      <ExpectedContents>
+        <Associations count="1"/>
+        <Documents count="1"/>
+        <Folders count="1"/>
+      </ExpectedContents>
+    </StoredQueryTransaction>
+  </TestStep>
+</TestPlan>

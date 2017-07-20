@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?><TestPlan>
+  <Test>regsubmit/evalInheritNs</Test>
+  <TestStep id="validate_original">
+    <ExpectedStatus>Success</ExpectedStatus>
+    <StoredQueryTransaction>
+      <XDSb/>
+      <UseReport reportName="ssuid" section="submitInheritNs" step="submit" useAs="$ssuid$"/>
+      <MetadataFile>query1.xml</MetadataFile>
+      <ExpectedContents>
+        <SSwithOneDoc/>
+        <DocApp/>
+      </ExpectedContents>
+    </StoredQueryTransaction>
+  </TestStep>
+</TestPlan>

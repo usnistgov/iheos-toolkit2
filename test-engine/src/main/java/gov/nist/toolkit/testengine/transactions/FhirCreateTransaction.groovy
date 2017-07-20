@@ -32,7 +32,7 @@ class FhirCreateTransaction extends BasicFhirTransaction {
         reportManager.add('Url', fullEndpoint)
 
         def (BasicStatusLine statusLine, String content, FhirId fhirId) = FhirClient.post(new URI(fullEndpoint), fhirCtx.newJsonParser().encodeResourceToString(resource))
-        if (statusLine.statusCode in 400..599)  {
+        if (statusLine.statusCode in 400..599) {
             stepContext.set_error("Status:${statusLine}")
         }
 //        reportManager.add("FhirIdWithHistory", fhirId.toString())

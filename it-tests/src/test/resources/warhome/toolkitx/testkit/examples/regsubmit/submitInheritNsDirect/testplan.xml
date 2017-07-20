@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?><TestPlan>
+  <Test>regsubmit/submitInheritNsDirect</Test>
+  <TestStep id="submit">
+    <Goal>Submit DocumentEntry</Goal>
+    <ExpectedStatus>Success</ExpectedStatus>
+
+  <HttpTransaction type="r.b" hasLinkage="true">
+      <Headers>
+        Content-Type: application/soap+xml;charset=UTF-8
+      </Headers>
+
+      <BodyFile>body.txt</BodyFile>
+
+    </HttpTransaction>
+
+  </TestStep>
+</TestPlan>

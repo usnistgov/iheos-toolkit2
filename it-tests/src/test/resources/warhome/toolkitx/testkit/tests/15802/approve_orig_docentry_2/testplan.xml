@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?><TestPlan>
+  <Test>15802/approve_orig_docentry_2</Test>
+  <TestStep id="approve_orig_docentry_2">
+    <ExpectedStatus>Failure</ExpectedStatus>
+    <MuTransaction>
+      <XDSb/>
+      <AssignUuids/>
+      <MetadataFile>approve.xml</MetadataFile>
+      <UseReport reportName="doc_uuid" section="load_docentry_2" step="load_docentry_2" useAs="$orig_docentry_uuid$"/>
+    </MuTransaction>
+  </TestStep>
+</TestPlan>

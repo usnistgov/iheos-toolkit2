@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<TestPlan>
+    <Test>12308</Test>
+    <TestStep id="retrieve_two">
+        <ExpectedStatus>Success</ExpectedStatus>
+        <XCRTransaction>
+            <!--
+            <UseXPath testdir="../12300" step="finddocs" symbol="$docuid1$">
+//TestStep[@id='finddocs']/XCQTransaction/Result/*[local-name()='AdhocQueryResponse']/*[local-name()='RegistryObjectList']/*[local-name()='ExtrinsicObject'][1]/*[local-name()='ExternalIdentifier'][@identificationScheme='urn:uuid:2e82c1f6-a085-4c72-9da3-8640a32e42ab']/@value            </UseXPath>
+            <UseXPath testdir="../12300" step="finddocs" symbol="$docuid2$">
+                //TestStep[@id='finddocs']/XCQTransaction/Result/*[local-name()='AdhocQueryResponse']/*[local-name()='RegistryObjectList']/*[local-name()='ExtrinsicObject'][2]/*[local-name()='ExternalIdentifier'][@identificationScheme='urn:uuid:2e82c1f6-a085-4c72-9da3-8640a32e42ab']/@value            </UseXPath>
+            <UseXPath testdir="../12300" step="finddocs" symbol="$repositoryuid$">
+/TestResults/TestStep[@id='finddocs']/XCQTransaction/Result/*[local-name()='AdhocQueryResponse']/*[local-name()='RegistryObjectList']/*[local-name()='ExtrinsicObject'][1]/*[local-name()='Slot'][@name='repositoryUniqueId']/*[local-name()='ValueList']/*[local-name()='Value'][1]              </UseXPath>
+            <UseXPath testdir="../12300" step="finddocs" symbol="$home$">
+/TestResults/TestStep[@id='finddocs']/XCQTransaction/Result/*[local-name()='AdhocQueryResponse']/*[local-name()='RegistryObjectList']/*[local-name()='ExtrinsicObject'][1]/@home
+            </UseXPath>
+            -->
+            <UseReport test="12300" section="finddocs" step="finddocs" reportName="$doc_uid_1$" useAs="$docuid1$"/>
+            <UseReport test="12300" section="finddocs" step="finddocs" reportName="$doc_uid_2$" useAs="$docuid2$"/>
+            <UseReport test="12300" section="finddocs" step="finddocs" reportName="$home$" useAs="$home$"/>
+            <UseReport test="12300" section="finddocs" step="finddocs" reportName="$repositoryUniqueId$" useAs="$repositoryuid$"/>
+            <ExpectedMimeType>text/plain</ExpectedMimeType>
+            <ReferenceDocument uid="$docuid$">../../testdata/12318/my_document.txt</ReferenceDocument>
+            <MetadataFile>retrieve.xml</MetadataFile>
+        </XCRTransaction>
+    </TestStep>
+</TestPlan>

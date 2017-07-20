@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?><TestPlan>
+  <Test>15802/verify_orig_docentry_2_deprecated</Test>
+  <TestStep id="verify_orig_docentry_2_deprecated">
+    <Rule>
+      <Transaction>SQ</Transaction>
+      <SQ>GetDocuments</SQ>
+    </Rule>
+    <ExpectedStatus>Success</ExpectedStatus>
+    <StoredQueryTransaction>
+      <XDSb/>
+      <UseReport reportName="doc_uuid" section="load_docentry_2" step="load_docentry_2" useAs="$orig_docentry_uuid$"/>
+      <MetadataFile>query.xml</MetadataFile>
+      <ExpectedContents>
+        <OneDocDep/>
+      </ExpectedContents>
+    </StoredQueryTransaction>
+  </TestStep>
+</TestPlan>

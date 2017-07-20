@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<TestPlan>
+	<Test>rig_5429/retrieve</Test>
+	<TestStep id="retrieve">
+		<Goal>Imaging Document Set Retrieve Multi-image, multi-IDS</Goal>
+		<ExpectedStatus>Success</ExpectedStatus>
+		<ImagingDocSetRigRetrieveTransaction>
+			<MetadataFile>RAD-75Request.xml</MetadataFile>
+		</ImagingDocSetRigRetrieveTransaction>
+	</TestStep>
+</TestPlan>

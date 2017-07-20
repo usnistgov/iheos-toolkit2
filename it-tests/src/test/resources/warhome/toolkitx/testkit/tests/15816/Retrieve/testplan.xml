@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?><TestPlan>
+  <Test>15816/Retrieve</Test>
+
+
+<!-- See Issue 87. Needs discussion with Bill. 
+  <TestStep id="badrepuid">
+    <ExpectedStatus>Failure</ExpectedStatus>
+    <RetrieveTransaction>
+
+	  <UseReport reportName="Document01_uid" section="PnR" step="SubmitStableDocumentEntry" useAs="$doc_uid0$"/> 
+	  <UseReport reportName="Document01_uid" section="PnR" step="SubmitStableDocumentEntry" useAs="$doc_uid1$"/> 
+
+      <MetadataFile>badrepuid_query.xml</MetadataFile>
+      <ExpectedContents/>
+
+      <XDSb/>
+    </RetrieveTransaction>
+  </TestStep>
+-->
+
+
+
+</TestPlan>

@@ -21,6 +21,7 @@ import org.hl7.fhir.dstu3.model.Patient
 /**
  *
  */
+
 public class PatientResourceProvider implements IResourceProvider {
     /**
      * The getResourceType method comes from IResourceProvider, and must

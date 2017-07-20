@@ -136,12 +136,10 @@ class WadoRetriveResponseSimSpec extends Specification {
 
         void write(int b) { os.write(b)}
 
-        @Override
         boolean isReady() {
             return true
         }
 
-        @Override
         void setWriteListener(WriteListener writeListener) {
 
         }

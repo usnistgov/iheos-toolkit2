@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<TestPlan>
+	<Test>rig_5427/retrieve</Test>
+	<TestStep id="retrieve">
+		<Goal>Imaging Document Set Retrieve partial success, single IDS</Goal>
+		<ExpectedStatus>PartialSuccess</ExpectedStatus>
+		<ImagingDocSetRigRetrieveTransaction>
+			<MetadataFile>RAD-75Request.xml</MetadataFile>
+		</ImagingDocSetRigRetrieveTransaction>
+	</TestStep>
+</TestPlan>

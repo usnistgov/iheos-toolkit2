@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<TestPlan>
+    <Test>12343</Test>
+    <TestStep id="retrieve">
+        <ExpectedStatus>Success</ExpectedStatus>
+        <RetrieveTransaction>
+            <XDSb/>
+            <UseXPath testdir="../12342" step="uuid" symbol="$docuid1$">
+                //TestStep[@id='uuid']/IGQTransaction/Result/*[local-name()='AdhocQueryResponse'][1]/*[local-name()='RegistryObjectList'][1]/*[local-name()='ExtrinsicObject'][1]/*[local-name()='ExternalIdentifier'][@identificationScheme='urn:uuid:2e82c1f6-a085-4c72-9da3-8640a32e42ab']/@value            </UseXPath>
+            <UseXPath testdir="../12342" step="uuid" symbol="$repositoryuid$">
+                /TestResults/TestStep[@id='uuid']/IGQTransaction/Result/*[local-name()='AdhocQueryResponse'][1]/*[local-name()='RegistryObjectList'][1]/*[local-name()='ExtrinsicObject'][1]/*[local-name()='Slot'][@name='repositoryUniqueId']/*[local-name()='ValueList']/*[local-name()='Value'][1]              </UseXPath>
+            <UseXPath testdir="../12342" step="uuid" symbol="$home$">
+                /TestResults/TestStep[@id='uuid']/IGQTransaction/Result/*[local-name()='AdhocQueryResponse'][1]/*[local-name()='RegistryObjectList'][1]/*[local-name()='ExtrinsicObject'][1]/@home
+            </UseXPath>
+            <ExpectedMimeType>text/plain</ExpectedMimeType>
+            <ReferenceDocument uid="$docuid$">../testdata/12318/my_document.txt</ReferenceDocument>
+            <MetadataFile>retrieve.xml</MetadataFile>
+            <Assertions>
+                <DataRef file="THIS" as="output"/>
+                <Assert id="vaidateHome"> 
+                    //RetrieveTransaction[@step="retrieve"]/Result//*[local-name(.)='HomeCommunityId'] = '$configHome$'
+                </Assert>
+            </Assertions>
+        </RetrieveTransaction>
+    </TestStep>
+</TestPlan>

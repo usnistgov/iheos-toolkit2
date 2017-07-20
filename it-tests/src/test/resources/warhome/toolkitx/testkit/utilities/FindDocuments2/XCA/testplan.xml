@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<TestPlan>
+    <Test>FindDocuments</Test>
+    <TestStep id="object_refs">
+        <ExpectedStatus>Success</ExpectedStatus>
+        <XCQTransaction>
+            <XDSb/>
+            <CleanParams/>
+            <MetadataFile>query.xml</MetadataFile>
+        </XCQTransaction>
+    </TestStep>
+</TestPlan>

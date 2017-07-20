@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?><TestPlan>
+  <Test>11904</Test>
+  <TestStep id="uniqueid">
+    <Rule>
+      <Transaction>SQ</Transaction>
+      <SQ>GetDocumentsAndAssociations</SQ>
+      <Assertion>Operation with UniqueId</Assertion>
+    </Rule>
+    <ExpectedStatus>Success</ExpectedStatus>
+    <StoredQueryTransaction>
+      <XDSb/>
+      <MetadataFile>query1.xml</MetadataFile>
+      <UseId testdir="../12346/single_doc" id="Document01" symbol="$uniqueid$" step="submit_doc" section="AssignedUids"/>
+      <ExpectedContents>
+        <Associations count="1"/>
+        <Documents count="1"/>
+      </ExpectedContents>
+    </StoredQueryTransaction>
+  </TestStep>
+  <TestStep id="uniqueids">
+    <Rule>
+      <Transaction>SQ</Transaction>
+      <SQ>GetDocumentsAndAssociations</SQ>
+      <Assertion>Operation with multiple UniqueIds</Assertion>
+    </Rule>
+    <ExpectedStatus>Success</ExpectedStatus>
+    <StoredQueryTransaction>
+      <XDSb/>
+      <MetadataFile>query2.xml</MetadataFile>
+      <UseId testdir="../12346/single_doc" id="Document01" symbol="$uniqueid1$" step="submit_doc" section="AssignedUids"/>
+      <UseId testdir="../12346/doc_w_fol" id="Document01" symbol="$uniqueid2$" step="submit_doc_w_fol" section="AssignedUids"/>
+      <ExpectedContents>
+        <Associations count="3"/>
+        <Documents count="2"/>
+      </ExpectedContents>
+    </StoredQueryTransaction>
+  </TestStep>
+  <TestStep id="uuid">
+    <Rule>
+      <Transaction>SQ</Transaction>
+      <SQ>GetDocumentsAndAssociations</SQ>
+      <Assertion>Operation with UUID</Assertion>
+    </Rule>
+    <ExpectedStatus>Success</ExpectedStatus>
+    <StoredQueryTransaction>
+      <XDSb/>
+      <MetadataFile>query3.xml</MetadataFile>
+      <UseId testdir="../12346/single_doc" id="Document01" symbol="$uuid$" step="submit_doc" section="AssignedUuids"/>
+      <ExpectedContents>
+        <Associations count="1"/>
+        <Documents count="1"/>
+      </ExpectedContents>
+    </StoredQueryTransaction>
+  </TestStep>
+  <TestStep id="uuids">
+    <Rule>
+      <Transaction>SQ</Transaction>
+      <SQ>GetDocumentsAndAssociations</SQ>
+      <Assertion>Operation with multiple UUIDs</Assertion>
+    </Rule>
+    <ExpectedStatus>Success</ExpectedStatus>
+    <StoredQueryTransaction>
+      <XDSb/>
+      <MetadataFile>query4.xml</MetadataFile>
+      <UseId testdir="../12346/single_doc" id="Document01" symbol="$uuid1$" step="submit_doc" section="AssignedUuids"/>
+      <UseId testdir="../12346/doc_w_fol" id="Document01" symbol="$uuid2$" step="submit_doc_w_fol" section="AssignedUuids"/>
+      <ExpectedContents>
+        <Associations count="3"/>
+        <Documents count="2"/>
+      </ExpectedContents>
+    </StoredQueryTransaction>
+  </TestStep>
+</TestPlan>

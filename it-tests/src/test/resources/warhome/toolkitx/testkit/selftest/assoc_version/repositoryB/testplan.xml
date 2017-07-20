@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<TestPlan>
+   <Test>assoc_version/repositoryB</Test>
+    <RegistryEndpoint>http://ihexds.nist.gov:12080/tf6/services/xdsregistryb</RegistryEndpoint>
+    <TestStep id="bad_assoc_version">
+        <ExpectedStatus>Failure</ExpectedStatus>
+        <RegisterTransaction>
+            <NoConvert/>
+            <XDSb/>
+            <MetadataFile>single_doc.xml</MetadataFile>
+            <AssignUuids/>
+        </RegisterTransaction>
+    </TestStep>
+</TestPlan>

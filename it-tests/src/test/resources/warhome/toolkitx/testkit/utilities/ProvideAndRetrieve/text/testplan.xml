@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<TestPlan>
+   <Test>ProvideAndRetrieve/text</Test>
+    <TestStep id="submit">
+    	<Goal>Submit Text Document to Repository</Goal>
+        <ExpectedStatus>Success</ExpectedStatus>
+        <ProvideAndRegisterTransaction>
+            <XDSb/>
+            <NoPatientId/>
+            <MetadataFile>metadata.xml</MetadataFile>
+            <Document id="Document01">doc.txt</Document>
+        </ProvideAndRegisterTransaction>
+    </TestStep>
+    <TestStep id="retrieve">
+    	<Goal>Retrieve Text Document From Repository</Goal>
+    	<Goal>   Perform the following comparisions between submitted document and retrieved document</Goal>
+    	<Goal>      Hash matches</Goal>
+    	<Goal>      MimeType matches</Goal>
+    	<Goal>      Size matches</Goal>
+    	<Goal>   Verify Repository Unique ID matches</Goal>
+        <ExpectedStatus>Success</ExpectedStatus>
+        <RetrieveTransaction>
+			<UseReport section="THIS" step="submit" reportName="Document01_uid" useAs="$docuid$"/>
+			<UseReport section="THIS" step="submit" reportName="$repositoryUniqueId$" useAs="$repuid$"/>
+            <XDSb/>
+            <MetadataFile>retrieve.xml</MetadataFile>
+			<Assertions>
+			<Assert id="origDocHashMatchesRetrieve">
+                '68cd6548363bdbc67444b18085cf3a2c3f082add' = '$hash_doc1$' or '68CD6548363BDBC67444B18085CF3A2C3F082ADD' = '$hash_doc1$'
+            </Assert>
+			<Assert id="repositoryUniqueIdMatches">'$repuid$' = '$repuid_doc1$'</Assert>
+			<Assert id="origDocMimetypeMatchesRetrieve">'text/plain' = '$mimetype_doc1$'</Assert>
+			<Assert id="origSizeMatchesRetrieve">'32' = '$size_doc1$'</Assert>
+			</Assertions>
+        </RetrieveTransaction>
+    </TestStep>
+</TestPlan>

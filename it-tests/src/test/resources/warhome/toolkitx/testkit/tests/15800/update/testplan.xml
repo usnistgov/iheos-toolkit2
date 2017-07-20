@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?><TestPlan>
+  <Test>15800/update</Test>
+  <Rule>Update original DocumentEntry</Rule>
+  <TestStep id="update">
+    <ExpectedStatus>Success</ExpectedStatus>
+    <MuTransaction>
+      <NoAssignUids id="Document01"/>
+      <XDSb/>
+      <AssignUuids/>
+      <MetadataFile>single_doc.xml</MetadataFile>
+      <UseId testdir="../original" id="Document01" symbol="$lid$" step="original" section="AssignedUuids"/>
+      <UseId testdir="../original" id="Document01" symbol="$Document01_uid$" step="original" section="AssignedUids"/>
+      <Report name="update_doc_uuid" section="InputMetadata">
+                //*[local-name()='ExtrinsicObject'][1]/@id
+        </Report>
+    </MuTransaction>
+  </TestStep>
+</TestPlan>

@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?><TestPlan>
+  <Test>15806/Register_OD/ContentBundle/Content1</Test>
+  <Rule>desc todo</Rule>
+  <PatientId>$patientid$</PatientId>
+  <TestStep id="SubmitStableIsSnapshotOfDocumentEntry">
+    <ExpectedStatus>Success</ExpectedStatus>
+	 <ProvideAndRegisterTransaction>
+      <XDSb/>
+	  <AssignUuids/>
+	  <!-- <UseReport reportName="oddocid" section="THIS" step="SubmitOnDemandDocumentEntry" useAs="$od_doc_uuid$"/> -->
+		<!--
+		<UseReport reportName="doc01" section="THIS" step="SubmitStableIsSnapshotOfDocumentEntry" useAs="$stable_snap1_doc_uuid$"/> 
+		-->
+		
+
+		<!--
+		<UseId testdir="../../" id="Document01" symbol="$od_doc_uuid$" step="Register" section="AssignedUuids"/> 
+		-->
+
+      <MetadataFile>single_stable_snapshot_doc.xml</MetadataFile>
+	  <Document  id="Document01">my_document.txt</Document>
+    </ProvideAndRegisterTransaction>
+  </TestStep>
+</TestPlan>

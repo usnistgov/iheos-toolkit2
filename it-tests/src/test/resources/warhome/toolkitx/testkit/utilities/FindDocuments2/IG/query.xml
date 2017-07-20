@@ -1,0 +1,172 @@
+<query:AdhocQueryRequest xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                         xmlns:query="urn:oasis:names:tc:ebxml-regrep:xsd:query:3.0"
+                         xmlns="urn:oasis:names:tc:ebxml-regrep:xsd:rim:3.0"
+                         xmlns:rs="urn:oasis:names:tc:ebxml-regrep:xsd:rs:3.0">
+    <query:ResponseOption returnComposedObjects="true" returnType="$rt0$"/>
+    <!-- FindDocuments2 -->
+    <AdhocQuery id="urn:uuid:14d4debf-8f97-4251-9a74-a90016b0af0d" home="$home$">
+        <Slot name="$XDSDocumentEntryPatientId">
+            <ValueList>
+                <Value>'$patient_id$'</Value>
+            </ValueList>
+        </Slot>
+        <Slot name="$XDSDocumentEntryType">
+            <ValueList>
+                <Value>('$ot0$')</Value>
+                <Value>('$ot1$')</Value>
+                <Value>('$ot2$')</Value>
+                <Value>('$ot3$')</Value>
+            </ValueList>
+        </Slot>
+        <Slot name="$XDSDocumentEntryStatus">
+            <ValueList>
+                <Value>('$dst0$')</Value>
+                <Value>('$dst1$')</Value>
+                <Value>('$dst2$')</Value>
+                <Value>('$dst3$')</Value>
+            </ValueList>
+        </Slot>
+        <Slot name="$XDSDocumentEntryClassCode">
+            <ValueList>
+                <Value>('$clc0$')</Value>
+                <Value>('$clc1$')</Value>
+                <Value>('$clc2$')</Value>
+                <Value>('$clc3$')</Value>
+                <Value>('$clc4$')</Value>
+                <Value>('$clc5$')</Value>
+                <Value>('$clc6$')</Value>
+                <Value>('$clc7$')</Value>
+                <Value>('$clc8$')</Value>
+                <Value>('$clc9$')</Value>
+            </ValueList>
+        </Slot>
+        <Slot name="$XDSDocumentEntryTypeCode">
+            <ValueList>
+                <Value>('$tc0$')</Value>
+                <Value>('$tc1$')</Value>
+                <Value>('$tc2$')</Value>
+                <Value>('$tc3$')</Value>
+                <Value>('$tc4$')</Value>
+                <Value>('$tc5$')</Value>
+                <Value>('$tc6$')</Value>
+                <Value>('$tc7$')</Value>
+                <Value>('$tc8$')</Value>
+                <Value>('$tc9$')</Value>
+            </ValueList>
+        </Slot>
+        <Slot name="$XDSDocumentEntryFormatCode">
+            <ValueList>
+                <Value>('$fc0$')</Value>
+                <Value>('$fc1$')</Value>
+                <Value>('$fc2$')</Value>
+                <Value>('$fc3$')</Value>
+                <Value>('$fc4$')</Value>
+                <Value>('$fc5$')</Value>
+                <Value>('$fc6$')</Value>
+                <Value>('$fc7$')</Value>
+                <Value>('$fc8$')</Value>
+                <Value>('$fc9$')</Value>
+            </ValueList>
+        </Slot>
+        <Slot name="$XDSDocumentEntryHealthcareFacilityTypeCode">
+            <ValueList>
+                <Value>('$hftc0$')</Value>
+                <Value>('$hftc1$')</Value>
+                <Value>('$hftc2$')</Value>
+                <Value>('$hftc3$')</Value>
+                <Value>('$hftc4$')</Value>
+                <Value>('$hftc5$')</Value>
+                <Value>('$hftc6$')</Value>
+                <Value>('$hftc7$')</Value>
+                <Value>('$hftc8$')</Value>
+                <Value>('$hftc9$')</Value>
+            </ValueList>
+        </Slot>
+        <Slot name="$XDSDocumentEntryPracticeSettingCode">
+            <ValueList>
+                <Value>('$psc0$')</Value>
+                <Value>('$psc1$')</Value>
+                <Value>('$psc2$')</Value>
+                <Value>('$psc3$')</Value>
+                <Value>('$psc4$')</Value>
+                <Value>('$psc5$')</Value>
+                <Value>('$psc6$')</Value>
+                <Value>('$psc7$')</Value>
+                <Value>('$psc8$')</Value>
+                <Value>('$psc9$')</Value>
+            </ValueList>
+        </Slot>
+        <Slot name="$XDSDocumentEntryConfidentialityCode">
+            <ValueList>
+                <Value>('$cc0$')</Value>
+                <Value>('$cc1$')</Value>
+                <Value>('$cc2$')</Value>
+                <Value>('$cc3$')</Value>
+                <Value>('$cc4$')</Value>
+                <Value>('$cc5$')</Value>
+                <Value>('$cc6$')</Value>
+                <Value>('$cc7$')</Value>
+                <Value>('$cc8$')</Value>
+                <Value>('$cc9$')</Value>
+            </ValueList>
+        </Slot>
+        <Slot name="$XDSDocumentEntryEventCodeList">
+            <ValueList>
+                <Value>('$ecl0$')</Value>
+                <Value>('$ecl1$')</Value>
+                <Value>('$ecl2$')</Value>
+                <Value>('$ecl3$')</Value>
+                <Value>('$ecl4$')</Value>
+                <Value>('$ecl5$')</Value>
+                <Value>('$ecl6$')</Value>
+                <Value>('$ecl7$')</Value>
+                <Value>('$ecl8$')</Value>
+                <Value>('$ecl9$')</Value>
+            </ValueList>
+        </Slot>
+        <Slot name="$XDSDocumentEntryCreationTimeFrom">
+            <ValueList>
+                <Value>$ctf0$</Value>
+            </ValueList>
+        </Slot>
+        <Slot name="$XDSDocumentEntryCreationTimeTo">
+            <ValueList>
+                <Value>$ctt0$</Value>
+            </ValueList>
+        </Slot>
+        <Slot name="$XDSDocumentEntryServiceStartTimeFrom">
+            <ValueList>
+                <Value>$sstf0$</Value>
+            </ValueList>
+        </Slot>
+        <Slot name="$XDSDocumentEntryServiceStartTimeTo">
+            <ValueList>
+                <Value>$sstt0$</Value>
+            </ValueList>
+        </Slot>
+        <Slot name="$XDSDocumentEntryServiceStopTimeFrom">
+            <ValueList>
+                <Value>$sttf0$</Value>
+            </ValueList>
+        </Slot>
+        <Slot name="$XDSDocumentEntryServiceStopTimeTo">
+            <ValueList>
+                <Value>$sttt0$</Value>
+            </ValueList>
+        </Slot>
+        <Slot name="$XDSDocumentEntryAuthorPerson">
+            <ValueList>
+                <Value>('$ap0$')</Value>
+                <Value>('$ap1$')</Value>
+                <Value>('$ap2$')</Value>
+                <Value>('$ap3$')</Value>
+                <Value>('$ap4$')</Value>
+                <Value>('$ap5$')</Value>
+                <Value>('$ap6$')</Value>
+                <Value>('$ap7$')</Value>
+                <Value>('$ap8$')</Value>
+                <Value>('$ap9$')</Value>
+            </ValueList>
+        </Slot>
+    </AdhocQuery>
+</query:AdhocQueryRequest>

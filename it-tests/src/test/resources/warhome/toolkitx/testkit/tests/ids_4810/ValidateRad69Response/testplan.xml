@@ -1,0 +1,29 @@
+
+<TestPlan>
+	<Test>ids_4810/validate-R</Test>
+	<TestStep id="validate-rad69-response">
+		<Goal>Correct RetrieveDocumentSetResponse values</Goal>
+		<Standard>
+			<ResponseBody>
+				<xdsb:RetrieveDocumentSetResponse
+					xmlns:xdsb="urn:ihe:iti:xds-b:2007">
+					<rs:RegistryResponse xmlns:rs="urn:oasis:names:tc:ebxml-regrep:xsd:rs:3.0"
+						status="urn:oasis:names:tc:ebxml-regrep:ResponseStatusType:Success" />
+					<xdsb:DocumentResponse>
+						<xdsb:RepositoryUniqueId></xdsb:RepositoryUniqueId>
+						<xdsb:DocumentUniqueId>1.3.6.1.4.1.21367.201599.3.201604020954048.1</xdsb:DocumentUniqueId>
+						<xdsb:mimeType>application/dicom</xdsb:mimeType>
+						<xdsb:Document>...</xdsb:Document>
+					</xdsb:DocumentResponse>
+				</xdsb:RetrieveDocumentSetResponse>
+			</ResponseBody>
+		</Standard>
+		<XmlDetailTransaction>
+			<Assertions>
+				<Assert id="Returned doc(s)" process="sameRetImgs">
+					<TestResponse testDir="../Rad69RetrieveRequest" step="retrieve" />
+				</Assert>
+			</Assertions>
+		</XmlDetailTransaction>
+	</TestStep>
+</TestPlan>

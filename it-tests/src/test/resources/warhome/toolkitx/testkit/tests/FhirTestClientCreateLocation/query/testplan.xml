@@ -1,0 +1,10 @@
+<TestPlan>
+    <Test>FhirTestClientCreateLocation/query</Test>
+    <TestStep id="query">
+        <ExpectedStatus>Success</ExpectedStatus>
+        <FhirQueryTransaction>
+            <UseReport test="FhirTestClientCreateLocation" section="create" step="create" reportName="Url" useAs="Url"/>
+            <QueryParams>?identifier=B1-S.F2</QueryParams>
+        </FhirQueryTransaction>
+    </TestStep>
+</TestPlan>

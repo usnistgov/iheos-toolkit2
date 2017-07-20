@@ -1,0 +1,10 @@
+<TestPlan>
+    <Test>FhirTestClientCreateOrganization/query</Test>
+    <TestStep id="query">
+        <ExpectedStatus>Success</ExpectedStatus>
+        <FhirQueryTransaction>
+            <UseReport test="FhirTestClientCreateOrganization" section="create" step="create" reportName="Url" useAs="Url"/>
+            <QueryParams>?partof=Organization/23</QueryParams>
+        </FhirQueryTransaction>
+    </TestStep>
+</TestPlan>

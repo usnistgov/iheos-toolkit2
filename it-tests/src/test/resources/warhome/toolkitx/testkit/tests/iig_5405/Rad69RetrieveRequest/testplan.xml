@@ -1,0 +1,11 @@
+
+<TestPlan>
+  <Test>iig_5405/retrieve</Test>
+  <TestStep id="retrieve">
+  <Goal>Imaging Document Set Retrieve Unknown DICOM UIDs, Single Responding Gateway</Goal>
+  <ExpectedStatus>Failure</ExpectedStatus>
+  <ImagingDocSetIigRetrieveTransaction>
+    <MetadataFile>RAD-69Request.xml</MetadataFile>
+  </ImagingDocSetIigRetrieveTransaction>
+</TestStep>
+</TestPlan>

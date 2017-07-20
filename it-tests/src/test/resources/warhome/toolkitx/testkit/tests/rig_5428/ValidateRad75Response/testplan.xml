@@ -1,0 +1,57 @@
+<TestPlan>
+	<Test>iig_5427/validate-R</Test>
+	<TestStep id="validate-rad75-response">
+		<Goal>Validate RAD-75 Response from SUT</Goal>
+		<Standard>
+			<ResponseBody>
+				<xdsb:RetrieveDocumentSetResponse
+					xmlns:xdsb="urn:ihe:iti:xds-b:2007">
+					<rs:RegistryResponse xmlns:rs="urn:oasis:names:tc:ebxml-regrep:xsd:rs:3.0"
+						status="urn:oasis:names:tc:ebxml-regrep:ResponseStatusType:Success" />
+					<xdsb:DocumentResponse>
+						<xdsb:HomeCommunityId>urn:oid:1.3.6.1.4.1.21367.13.70.201</xdsb:HomeCommunityId>
+						<xdsb:RepositoryUniqueId>1.3.6.1.4.1.21367.13.71.201.2</xdsb:RepositoryUniqueId>
+						<xdsb:DocumentUniqueId>1.3.6.1.4.1.21367.201599.3.201606061008031.1</xdsb:DocumentUniqueId>
+						<xdsb:mimeType>application/dicom</xdsb:mimeType>
+						<xdsb:Document>...</xdsb:Document>
+					</xdsb:DocumentResponse>
+					<xdsb:DocumentResponse>
+						<xdsb:HomeCommunityId>urn:oid:1.3.6.1.4.1.21367.13.70.201</xdsb:HomeCommunityId>
+						<xdsb:RepositoryUniqueId>1.3.6.1.4.1.21367.13.71.201.2</xdsb:RepositoryUniqueId>
+						<xdsb:DocumentUniqueId>1.3.6.1.4.1.21367.201599.3.201606061008031.2</xdsb:DocumentUniqueId>
+						<xdsb:mimeType>application/dicom</xdsb:mimeType>
+						<xdsb:Document>...</xdsb:Document>
+					</xdsb:DocumentResponse>
+					<xdsb:DocumentResponse>
+						<xdsb:HomeCommunityId>urn:oid:1.3.6.1.4.1.21367.13.70.201</xdsb:HomeCommunityId>
+						<xdsb:RepositoryUniqueId>1.3.6.1.4.1.21367.13.71.201.2</xdsb:RepositoryUniqueId>
+						<xdsb:DocumentUniqueId>1.3.6.1.4.1.21367.201599.3.201606061008031.3</xdsb:DocumentUniqueId>
+						<xdsb:mimeType>application/dicom</xdsb:mimeType>
+						<xdsb:Document>...</xdsb:Document>
+					</xdsb:DocumentResponse>
+					<xdsb:DocumentResponse>
+						<xdsb:HomeCommunityId>urn:oid:1.3.6.1.4.1.21367.13.70.201</xdsb:HomeCommunityId>
+						<xdsb:RepositoryUniqueId>1.3.6.1.4.1.21367.13.71.201.2</xdsb:RepositoryUniqueId>
+						<xdsb:DocumentUniqueId>1.3.6.1.4.1.21367.201599.3.201606061008031.4</xdsb:DocumentUniqueId>
+						<xdsb:mimeType>application/dicom</xdsb:mimeType>
+						<xdsb:Document>...</xdsb:Document>
+					</xdsb:DocumentResponse>
+					<xdsb:DocumentResponse>
+						<xdsb:HomeCommunityId>urn:oid:1.3.6.1.4.1.21367.13.70.201</xdsb:HomeCommunityId>
+						<xdsb:RepositoryUniqueId>1.3.6.1.4.1.21367.13.71.201.2</xdsb:RepositoryUniqueId>
+						<xdsb:DocumentUniqueId>1.3.6.1.4.1.21367.201599.3.201606061008031.5</xdsb:DocumentUniqueId>
+						<xdsb:mimeType>application/dicom</xdsb:mimeType>
+						<xdsb:Document>...</xdsb:Document>
+					</xdsb:DocumentResponse>
+				</xdsb:RetrieveDocumentSetResponse>
+			</ResponseBody>
+		</Standard>
+		<XmlDetailTransaction>
+			<Assertions>
+				<Assert id="Returned doc(s)" process="sameRetImgs">
+					<TestResponse testDir="../Rad75RetrieveRequest" step="retrieve" />
+				</Assert>
+			</Assertions>
+		</XmlDetailTransaction>
+	</TestStep>
+</TestPlan>

@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?><TestPlan>
+  <Test>GazelleSts/samlassertion-validate</Test>
+  <TestStep id="validate">
+    <ExpectedStatus>Success</ExpectedStatus>
+    <StsTransaction stsQuery="validate">
+      <Headers>
+        Content-Type: application/soap+xml;charset=UTF-8
+      </Headers>
+      <!-- IMPORTANT:
+      According to the Gazelle STS requirement, the payload must have all whitespace stripped off
+      -->
+      <BodyFile>body.txt</BodyFile>
+      <UseReport reportName="saml-assertion" section="samlassertion-issue" step="issue" useAs="$saml-assertion$"/>
+    </StsTransaction>
+  </TestStep>
+</TestPlan>

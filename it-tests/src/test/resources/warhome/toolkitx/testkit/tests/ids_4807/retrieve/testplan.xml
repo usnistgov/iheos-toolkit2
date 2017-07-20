@@ -1,0 +1,15 @@
+<TestPlan>
+	<Test>ids_4807/retrieve</Test>
+	<TestStep id="retrieve">
+		<Goal>WADO Retrieve of a jpeg image</Goal>
+		<ExpectedStatus>Success</ExpectedStatus>
+		<WADOTransaction>
+			<Headers>
+				<contentType>application/jpeg</contentType>
+			</Headers>
+			<Parameters>
+			</Parameters>
+			<UIDFile>images.txt</UIDFile>
+		</WADOTransaction>
+	</TestStep>
+</TestPlan>
