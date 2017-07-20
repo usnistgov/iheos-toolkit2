@@ -1,0 +1,10 @@
+<TestPlan>
+    <Test>FhirTestClientCreateEncounter/create</Test>
+    <TestStep id="create">
+        <ExpectedStatus>Success</ExpectedStatus>
+        <FhirCreateTransaction>
+            <ResourceFile>encounter.json</ResourceFile>
+            <UrlExtension>/Encounter</UrlExtension>
+        </FhirCreateTransaction>
+    </TestStep>
+</TestPlan>

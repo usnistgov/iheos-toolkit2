@@ -17,7 +17,6 @@ import org.hl7.fhir.dstu3.model.Reference
  *       http://hl7.org/fhir/STU3/location.html#search.
  *       identifier, name, organization, partOf, status, and type.
  */
-@CompileStatic
 class LocationIndexer implements IResourceIndexer {
     private ResourceIndex resourceIndex = null
     /**

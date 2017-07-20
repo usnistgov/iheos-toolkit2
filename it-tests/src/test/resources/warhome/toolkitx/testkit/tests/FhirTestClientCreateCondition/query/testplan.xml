@@ -1,0 +1,10 @@
+<TestPlan>
+    <Test>FhirTestClientCondition/query</Test>
+    <TestStep id="query">
+        <ExpectedStatus>Success</ExpectedStatus>
+        <FhirQueryTransaction>
+            <UseReport test="FhirTestClientCreateCondition" section="create" step="create" reportName="Url" useAs="Url"/>
+            <QueryParams>?patient=Patient/f201</QueryParams>
+        </FhirQueryTransaction>
+    </TestStep>
+</TestPlan>

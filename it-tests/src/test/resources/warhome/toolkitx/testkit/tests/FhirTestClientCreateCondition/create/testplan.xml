@@ -1,0 +1,10 @@
+<TestPlan>
+    <Test>FhirTestClientCreateCondition/create</Test>
+    <TestStep id="create">
+        <ExpectedStatus>Success</ExpectedStatus>
+        <FhirCreateTransaction>
+            <ResourceFile>condition.json</ResourceFile>
+            <UrlExtension>/Condition</UrlExtension>
+        </FhirCreateTransaction>
+    </TestStep>
+</TestPlan>

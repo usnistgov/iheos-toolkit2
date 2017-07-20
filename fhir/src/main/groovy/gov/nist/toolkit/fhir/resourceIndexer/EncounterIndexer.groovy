@@ -1,17 +1,16 @@
 package gov.nist.toolkit.fhir.resourceIndexer
 
 import gov.nist.toolkit.fhir.support.ResourceIndex
-import gov.nist.toolkit.fhir.support.ResourceIndexDateItem
 import gov.nist.toolkit.fhir.support.ResourceIndexItem
 import org.hl7.fhir.dstu3.model.DomainResource
-import org.hl7.fhir.dstu3.model.Condition
+import org.hl7.fhir.dstu3.model.Encounter
 
 /**
  *
  */
-class ConditionIndexer implements IResourceIndexer {
+class EncounterIndexer implements IResourceIndexer {
     /**
-     * Index the Condition resource attributes
+     * Index the Encounter resource attributes
      * @param json - JsonSlurper representation of index
      * @param simResource - details about where the index will be stored
      * @return newly built index
@@ -22,9 +21,9 @@ class ConditionIndexer implements IResourceIndexer {
 
         // Add specialization here
 
-        Condition condition = (Condition) theResource
+        Encounter immunization = (Encounter) theResource
 
-        resourceIndex.add(new ResourceIndexItem(Condition.SP_PATIENT, condition.getSubject().getReference()))
+        resourceIndex.add(new ResourceIndexItem(Encounter.SP_PATIENT, immunization.getSubject().getReference()))
 
         return resourceIndex
     }
