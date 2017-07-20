@@ -50,6 +50,10 @@
             <url>https://gazelle.ihe.net/nexus/content/repositories/snapshots</url>
         </repository>
         <repository>
+            <id>gazelle-releases</id>
+            <url>https://gazelle.ihe.net/nexus/content/repositories/releases</url>
+        </repository>
+        <repository>
             <id>repository.jboss.org-public</id>
             <name>JBoss.org Maven repository</name>
             <url>https://repository.jboss.org/nexus/content/groups/public</url>
