@@ -3,6 +3,9 @@ package gov.nist.toolkit.fhir.servlet;
 import ca.uhn.fhir.context.FhirContext;
 import ca.uhn.fhir.rest.server.IResourceProvider;
 import gov.nist.toolkit.fhir.server.resourceProvider.*;
+import gov.nist.toolkit.fhir.server.resourceProvider.LocationResourceProvider;
+import gov.nist.toolkit.fhir.server.resourceProvider.ObservationResourceProvider;
+import gov.nist.toolkit.fhir.server.resourceProvider.PatientResourceProvider;
 
 import javax.servlet.ServletException;
 import java.util.ArrayList;
@@ -43,6 +46,7 @@ public class RestfulServlet extends ToolkitRestfulServer {
         resourceProviders.add(new PractitionerResourceProvider());
         resourceProviders.add(new PractitionerRoleResourceProvider());
         resourceProviders.add(new HealthcareServiceResourceProvider());
+        resourceProviders.add(new ObservationResourceProvider());
         setResourceProviders(resourceProviders);
 
         /**
