@@ -20,11 +20,29 @@ class CareTeamIndexer implements IResourceIndexer {
 
         // Add specialization here
 
-        CareTeam organization = (CareTeam) theResource
+        CareTeam team = (CareTeam) theResource
 
-        Reference subject = organization.subject
+        team.category.each {
+            addIndex(CareTeam.SP_CATEGORY, "${it.coding.system}|${it.coding.code}")
+        }
+        if (team.context) addIndex(CareTeam.SP_CONTEXT, team.context.reference)
+
+        team.identifier.each {
+            addIndex(CareTeam.SP_IDENTIFIER, it.value)
+        }
+
+        team.participant.each {
+            if (it.member)
+                addIndex(CareTeam.SP_PARTICIPANT, it.member.reference)
+        }
+
+        Reference subject = team.subject
         if (subject) {
             addIndex(CareTeam.SP_SUBJECT, subject.reference)
+        }
+
+        if (team.status) {
+            addIndex(CareTeam.SP_STATUS, "${team.status.system}|${team.status.toCode()}")
         }
 
         return resourceIndex
