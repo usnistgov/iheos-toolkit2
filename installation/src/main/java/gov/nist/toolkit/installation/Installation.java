@@ -160,6 +160,8 @@ public class Installation {
         return now;
     }
 
+    public File datasets() { return new File(externalCache(), "datasets"); }
+
 	public File externalCache() { return externalCache; }
 	public void externalCache(File externalCache) {
 			this.externalCache = externalCache;
