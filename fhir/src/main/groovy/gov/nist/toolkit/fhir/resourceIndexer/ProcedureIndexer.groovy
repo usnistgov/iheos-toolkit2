@@ -21,9 +21,43 @@ class ProcedureIndexer implements IResourceIndexer {
 
         // Add specialization here
 
-        Procedure procedure = (Procedure) theResource
+        Procedure rs = (Procedure) theResource
 
-        Reference subject = procedure.subject
+        rs.basedOn.each {
+            addIndex(Procedure.SP_BASED_ON, it.reference)
+        }
+
+        if (rs.category)
+            addIndex(Procedure.SP_CATEGORY, "${rs.category.coding.system}|${rs.category.coding.code}")
+
+        if (rs.code)
+            addIndex(Procedure.SP_CODE, "${rs.code.coding.system}|${rs.code.coding.code}")
+
+        if (rs.context)
+            addIndex(Procedure.SP_CONTEXT, rs.context.reference)
+
+        rs.definition.each {
+            addIndex(Procedure.SP_DEFINITION, it.reference)
+        }
+
+        rs.identifier.each {
+            addIndex(Procedure.SP_IDENTIFIER, it.value)
+        }
+
+        if (rs.location)
+            addIndex(Procedure.SP_LOCATION, rs.location.reference)
+
+        rs.partOf.each {
+            addIndex(Procedure.SP_PART_OF, it.reference)
+        }
+
+        rs.performer.each {
+            addIndex(Procedure.SP_PERFORMER, it.actor.reference)
+        }
+
+        addIndex(Procedure.SP_STATUS, "${rs.status.system}|${rs.status.toCode()}")
+
+        Reference subject = rs.subject
         if (subject) addIndex(Procedure.SP_SUBJECT, subject.reference)
 
         return resourceIndex
