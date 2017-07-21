@@ -1,0 +1,9 @@
+<TestPlan>
+    <Test>FhirTestClientCreateCareTeam/read</Test>
+    <TestStep id="read">
+        <ExpectedStatus>Success</ExpectedStatus>
+        <FhirReadTransaction>
+            <UseReport test="FhirTestClientCreateCareTeam" section="create" step="create" reportName="Ref" useAs="Ref"/>
+        </FhirReadTransaction>
+    </TestStep>
+</TestPlan>
