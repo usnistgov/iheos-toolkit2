@@ -24,7 +24,7 @@ public class SamlSignatureKeyInfoType {
      *     byte[]
      */
     public void setRsaKeyValueModulus(byte[] value) {
-        this.rsaKeyValueModulus = ((byte[]) value);
+        this.rsaKeyValueModulus = value;
     }
 
     /**
@@ -46,7 +46,7 @@ public class SamlSignatureKeyInfoType {
      *     byte[]
      */
     public void setRsaKeyValueExponent(byte[] value) {
-        this.rsaKeyValueExponent = ((byte[]) value);
+        this.rsaKeyValueExponent = value;
     }
 
 }

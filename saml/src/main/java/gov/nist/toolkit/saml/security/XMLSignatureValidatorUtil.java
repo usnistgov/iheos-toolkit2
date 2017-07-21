@@ -83,7 +83,7 @@ public class XMLSignatureValidatorUtil
 			Iterator<Reference> i = signature.getSignedInfo().getReferences().iterator();
 			for (int j=0; i.hasNext(); j++) 
 			{
-				boolean refValid = ((Reference) i.next()).validate(valContext);
+				boolean refValid = i.next().validate(valContext);
 				
 			}
 		} catch (MarshalException e) {

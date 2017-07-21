@@ -18,7 +18,7 @@ public class InteractionIdentifierTerm implements IsSerializable, Serializable {
         private boolean deleted;
         private int id;
 
-        public static enum Operator {
+        public enum Operator {
             EQUALTO("equal to", Boolean.FALSE) {
                 @Override
                 public String toString() {
@@ -82,7 +82,7 @@ public class InteractionIdentifierTerm implements IsSerializable, Serializable {
             private String displayName;
             private Boolean multipleValues;
 
-            private Operator(String displayName, Boolean allowsMultipleValues) {
+            Operator(String displayName, Boolean allowsMultipleValues) {
                 setDisplayName(displayName);
                 setMultipleValues(allowsMultipleValues);
             }

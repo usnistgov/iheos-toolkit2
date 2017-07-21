@@ -266,7 +266,7 @@ public class SAMLAssertionBuilder {
      */
     @SuppressWarnings("unchecked")
     public static Subject createSaml2Subject(SubjectBean subjectBean) 
-        throws org.opensaml.xml.security.SecurityException, Exception {
+        throws Exception {
         if (subjectBuilder == null) {
             subjectBuilder = (SAMLObjectBuilder<Subject>) 
                 builderFactory.getBuilder(Subject.DEFAULT_ELEMENT_NAME);
@@ -342,7 +342,7 @@ public class SAMLAssertionBuilder {
         String recipient, 
         DateTime notOnOrAfter,
         KeyInfoBean keyInfoBean
-    ) throws org.opensaml.xml.security.SecurityException, Exception {
+    ) throws Exception {
         SubjectConfirmationData subjectConfirmationData = null;
         KeyInfo keyInfo = null;
         if (keyInfoBean == null) {
@@ -466,7 +466,7 @@ public class SAMLAssertionBuilder {
      * @throws org.opensaml.xml.security.SecurityException
      */
     public static KeyInfo createKeyInfo(KeyInfoBean keyInfo) 
-        throws org.opensaml.xml.security.SecurityException, Exception {
+        throws Exception {
         if (keyInfo.getElement() != null) {
             return (KeyInfo)fromDom(keyInfo.getElement());
         } else {

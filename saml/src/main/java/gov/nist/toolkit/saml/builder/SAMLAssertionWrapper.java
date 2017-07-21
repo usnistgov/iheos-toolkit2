@@ -281,10 +281,10 @@ public class SAMLAssertionWrapper {
             );
             return null;
         }
-        return 
-            (Signature)builder.buildObject(
-                 qName.getNamespaceURI(), qName.getLocalPart(), qName.getPrefix()
-             );
+        return
+                builder.buildObject(
+                     qName.getNamespaceURI(), qName.getLocalPart(), qName.getPrefix()
+                 );
     }
     
       

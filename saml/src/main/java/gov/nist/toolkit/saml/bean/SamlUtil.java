@@ -90,7 +90,7 @@ public class SamlUtil {
 	
 	public static Element marshallObject(XMLObject object) throws Exception {
 		if (object.getDOM() == null) {
-			Marshaller m = (Marshaller) Configuration.getMarshallerFactory().getMarshaller(object);
+			Marshaller m = Configuration.getMarshallerFactory().getMarshaller(object);
 			if (m == null) {
 				throw new IllegalArgumentException("No unmarshaller for " + object);
 			}

@@ -9,7 +9,7 @@ class CodeValidationTestCase extends Specification{
     // Olivier Windows
     // String codePath="W:\\WorkEnvironment\\Workspaces\\IntelliJ-workspace\\toolkit_v2\\validators-registry-metadata\\src\\test\\resources\\codes.xml";
     // Olivier Mac
-    String codePath="/Users/oherrmann/Development/nist-workspace/toolkit_v2/validators-registry-metadata/src/test/resources/codes.xml";
+    String codePath="/Users/oherrmann/Development/nist-workspace/toolkit_v2/validators-registry-metadata/src/test/resources/codes.xml"
     String metadata
 
     def setup(){

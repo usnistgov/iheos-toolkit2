@@ -83,12 +83,8 @@ public class KeyValueKeySelector extends KeySelector {
 		if (algName.equalsIgnoreCase("DSA") &&
 				algURI.equalsIgnoreCase(SignatureMethod.DSA_SHA1)) {
 			return true;
-		} else if (algName.equalsIgnoreCase("RSA") &&
-				algURI.equalsIgnoreCase(SignatureMethod.RSA_SHA1)) {
-			return true;
-		} else {
-			return false;
-		}
+		} else return algName.equalsIgnoreCase("RSA") &&
+                algURI.equalsIgnoreCase(SignatureMethod.RSA_SHA1);
 	}	
 
 }

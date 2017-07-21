@@ -195,7 +195,7 @@ public class SamlTokenExtractor {
                    // that is why we are looking for a string data type here.
                    //----------------------------------------------------------------------------------------------------------------
                    if (jaxElem1.toString() instanceof String) {
-                       String sValue = (String) jaxElem1.toString();
+                       String sValue = jaxElem1.toString();
                        samlAuthnStatement.setAuthContextClassRef(sValue);
                        log.debug("Assertion.samlAuthnStatement.authContextClassRef = " + samlAuthnStatement.getAuthContextClassRef());
                    }   // if (jaxElem1.getValue() instanceof AuthnContext)
@@ -496,7 +496,7 @@ public class SamlTokenExtractor {
     	signature.getSignatureAlgorithm();
     	List<ContentReference> contentReference1 = signature.getContentReferences();
     	
-    	ContentReference contentReference = (ContentReference)contentReference1.get(0);
+    	ContentReference contentReference = contentReference1.get(0);
     	signature.getSigningCredential().getPublicKey().getAlgorithm();
     	
     	//signature.getSigningCredential().

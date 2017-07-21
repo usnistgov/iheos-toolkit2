@@ -78,13 +78,9 @@ public class HolderOfKeySubjectConfirmationValidator extends AbstractSubjectConf
 		     */
 		    public boolean isValidConfirmationDataType(SubjectConfirmation confirmation) {
 		        QName confirmationDataSchemaType = confirmation.getSubjectConfirmationData().getSchemaType();
-		        if (confirmationDataSchemaType != null
-		                && !confirmationDataSchemaType.equals(KeyInfoConfirmationDataType.TYPE_NAME)) {
-		            return false;
-		        }
-		        
-		        return true;
-		    }
+                return confirmationDataSchemaType == null
+                        || confirmationDataSchemaType.equals(KeyInfoConfirmationDataType.TYPE_NAME);
+            }
 
 	@Override
 	protected ValidationResult doValidate(SubjectConfirmation confirmation,

@@ -378,7 +378,7 @@ public class SamlResponseValidator {
     
     
     
-    private void verifyAssertion(Assertion assertion, AuthnRequest request, BasicSAMLMessageContext context) throws  SAMLException, org.opensaml.xml.security.SecurityException, ValidationException, Exception {
+    private void verifyAssertion(Assertion assertion, AuthnRequest request, BasicSAMLMessageContext context) throws Exception {
         // Verify assertion time skew
         if (!isDateTimeSkewValid(MAX_ASSERTION_TIME, assertion.getIssueInstant())) {
             System.out.println("Authentication statement is too old to be used"+assertion.getIssueInstant());

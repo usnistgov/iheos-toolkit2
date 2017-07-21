@@ -9,7 +9,7 @@ import com.google.gwt.resources.client.ImageResource;
  */
 public interface TestsOverviewResources extends ClientBundle {
 
-        public static final TestsOverviewResources INSTANCE = GWT.create(TestsOverviewResources.class);
+        TestsOverviewResources INSTANCE = GWT.create(TestsOverviewResources.class);
 
         // ----- Load icons -----//
         @Source("icons/ic_delete_white_24dp_1x.png")

@@ -74,7 +74,7 @@ public class InteractionMapper {
 
         List<Interaction> interactions = new ArrayList<>();
         InteractionLog interactionLog =  InteractionLog.getInstance();
-        Iterator<Interaction> it = interactionLog.getInteractions().iterator();
+        Iterator<Interaction> it = InteractionLog.getInteractions().iterator();
 
         if (it!=null)
             while (it.hasNext()) {

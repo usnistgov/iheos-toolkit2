@@ -59,7 +59,7 @@ public class InteractingEntity implements IsSerializable, Serializable {
     int displayOrder = 0;
     TransactionInstance transactionInstance;
 
-    public static enum INTERACTIONSTATUS {
+    public enum INTERACTIONSTATUS {
         COMPLETED,
         ERROR,
         ERROR_EXPECTED,

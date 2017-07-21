@@ -115,7 +115,7 @@ public class CommandsCell extends AbstractSafeHtmlCell<String> {
             }
         }
 
-    };
+    }
 
     /**
      * onEnterKeyDown is called when the user presses the ENTER key will the

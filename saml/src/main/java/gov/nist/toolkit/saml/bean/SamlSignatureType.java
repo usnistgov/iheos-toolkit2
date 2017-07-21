@@ -48,7 +48,7 @@ public class SamlSignatureType {
      *     byte[]
      */
     public void setSignatureValue(byte[] value) {
-        this.signatureValue = ((byte[]) value);
+        this.signatureValue = value;
     }
 
 }

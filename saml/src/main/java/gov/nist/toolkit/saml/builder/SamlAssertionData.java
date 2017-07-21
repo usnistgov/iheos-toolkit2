@@ -111,7 +111,7 @@ public class SamlAssertionData {
 		actionBean
 				.setActionNamespace("urn:oasis:names:tc:SAML:1.0:action:rwedc");
 		authzBean.setActions(Collections.singletonList(actionBean));
-		authzBean.setDecision(authzBean.getDecision().PERMIT);
+		authzBean.setDecision(AuthDecisionStatementBean.Decision.PERMIT);
 		authzBean
 				.setResource("https://nhinri2c23.aegis.net:443/RespondingGateway_Query_Service/DocQuery");
 		authzBean.setSubject(subject);

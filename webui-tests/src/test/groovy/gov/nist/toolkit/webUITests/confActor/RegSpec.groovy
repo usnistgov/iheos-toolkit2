@@ -17,7 +17,7 @@ import spock.lang.*
 class RegSpec extends Specification {
     @Shared WebClient webClient
     @Shared HtmlPage page
-    @Shared int toolkitPort = 8888;
+    @Shared int toolkitPort = 8888
     @Shared String toolkitBaseUrl = String.format("http://localhost:%s",toolkitPort)
     @Shared SimulatorBuilder spi
     @Shared DocumentRegRep regRepSim
@@ -57,14 +57,14 @@ class RegSpec extends Specification {
         webClient.waitForBackgroundJavaScript(maxWaitTimeInMills)
         webClient.getOptions().setPopupBlockerEnabled(false)
 
-        webClient.getCache().clear();
+        webClient.getCache().clear()
         webClient.setAjaxController(new AjaxController(){
             @Override
-            public boolean processSynchron(HtmlPage page, WebRequest request, boolean async)
+            boolean processSynchron(HtmlPage page, WebRequest request, boolean async)
             {
-                return true;
+                return true
             }
-        });
+        })
         webClient.waitForBackgroundJavaScript(maxWaitTimeInMills)
     }
 

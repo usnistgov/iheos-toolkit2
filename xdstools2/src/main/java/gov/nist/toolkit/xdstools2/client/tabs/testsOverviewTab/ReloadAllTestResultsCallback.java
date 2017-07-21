@@ -34,7 +34,7 @@ public class ReloadAllTestResultsCallback implements AsyncCallback<List<Test>> {
   public ReloadAllTestResultsCallback(Updater _updater){
       updater = _updater;
   }
-};
+}
 
 
 

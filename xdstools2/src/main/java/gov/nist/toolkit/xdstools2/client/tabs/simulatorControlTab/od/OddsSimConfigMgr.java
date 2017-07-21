@@ -61,7 +61,7 @@ public class OddsSimConfigMgr implements SimConfigMgrIntf {
 //    Button refreshSupplyState = new Button("<span style=\"font-size:8px;color:blue\">Refresh</span>");
 
     interface OddsResources extends ClientBundle {
-        public static final OddsResources INSTANCE = GWT.create(OddsResources.class);
+        OddsResources INSTANCE = GWT.create(OddsResources.class);
 
         @Source("icons/ic_refresh_black_24dp_1x.png")
         ImageResource getRefreshIcon();

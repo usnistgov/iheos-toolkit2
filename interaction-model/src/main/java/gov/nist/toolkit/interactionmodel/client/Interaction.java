@@ -18,7 +18,8 @@ public class Interaction implements IsSerializable, Serializable {
     public enum Direction {
         RESPONDING,
         INITIATING
-    };
+    }
+
     Date time;
     Direction direction;
     String from;

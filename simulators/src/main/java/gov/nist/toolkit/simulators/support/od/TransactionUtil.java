@@ -179,7 +179,7 @@ public class TransactionUtil {
                     ded.setTestInstance(testInstance);
                     ded.setPatientId(result.stepResults.get(0).getMetadata().docEntries.get(0).patientId);
                     ded.setRegSiteSpec(registry);
-                    SimulatorConfig simulatorConfig = simDb.getSimulator(oddsSimId);
+                    SimulatorConfig simulatorConfig = SimDb.getSimulator(oddsSimId);
                     if (simulatorConfig.get(SimulatorProperties.PERSISTENCE_OF_RETRIEVED_DOCS).asBoolean()) {
                         SimulatorConfigElement sce = simulatorConfig.get(SimulatorProperties.oddsRepositorySite);
                         if (sce!=null && sce.asList()!=null && sce.asList().size()>0) {
