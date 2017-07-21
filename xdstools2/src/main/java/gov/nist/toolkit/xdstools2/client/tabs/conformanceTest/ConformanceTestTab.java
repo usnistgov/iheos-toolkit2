@@ -25,8 +25,15 @@ import gov.nist.toolkit.session.client.sort.TestSorter;
 import gov.nist.toolkit.sitemanagement.client.Site;
 import gov.nist.toolkit.sitemanagement.client.SiteSpec;
 import gov.nist.toolkit.testkitutilities.client.TestCollectionDefinitionDAO;
-import gov.nist.toolkit.xdstools2.client.ToolWindow;
-import gov.nist.toolkit.xdstools2.client.command.command.*;
+import gov.nist.toolkit.xdstools2.client.command.command.AutoInitConformanceTestingCommand;
+import gov.nist.toolkit.xdstools2.client.command.command.DeleteSingleTestCommand;
+import gov.nist.toolkit.xdstools2.client.command.command.GetAssignedSiteForTestSessionCommand;
+import gov.nist.toolkit.xdstools2.client.command.command.GetSiteCommand;
+import gov.nist.toolkit.xdstools2.client.command.command.GetStsSamlAssertionCommand;
+import gov.nist.toolkit.xdstools2.client.command.command.GetTabConfigCommand;
+import gov.nist.toolkit.xdstools2.client.command.command.GetTestCollectionsCommand;
+import gov.nist.toolkit.xdstools2.client.command.command.GetTestsOverviewCommand;
+import gov.nist.toolkit.xdstools2.client.command.command.RunTestCommand;
 import gov.nist.toolkit.xdstools2.client.event.testContext.TestContextChangedEvent;
 import gov.nist.toolkit.xdstools2.client.event.testContext.TestContextChangedEventHandler;
 import gov.nist.toolkit.xdstools2.client.event.testSession.TestSessionChangedEvent;
@@ -36,16 +43,26 @@ import gov.nist.toolkit.xdstools2.client.util.ClientUtils;
 import gov.nist.toolkit.xdstools2.client.widgets.LaunchInspectorClickHandler;
 import gov.nist.toolkit.xdstools2.client.widgets.PopupMessage;
 import gov.nist.toolkit.xdstools2.client.widgets.buttons.AbstractOrchestrationButton;
-import gov.nist.toolkit.xdstools2.shared.command.request.*;
+import gov.nist.toolkit.xdstools2.shared.command.request.DeleteSingleTestRequest;
+import gov.nist.toolkit.xdstools2.shared.command.request.GetCollectionRequest;
+import gov.nist.toolkit.xdstools2.shared.command.request.GetSiteRequest;
+import gov.nist.toolkit.xdstools2.shared.command.request.GetStsSamlAssertionRequest;
+import gov.nist.toolkit.xdstools2.shared.command.request.GetTabConfigRequest;
+import gov.nist.toolkit.xdstools2.shared.command.request.GetTestsOverviewRequest;
+import gov.nist.toolkit.xdstools2.shared.command.request.RunTestRequest;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import static gov.nist.toolkit.xdstools2.client.tabs.conformanceTest.TestContext.NONE;
 
 /**
  * All Conformance tests will be run out of here
  */
-public class ConformanceTestTab extends ToolWindow implements TestRunner, TestTarget, TestsHeaderView.Controller {
+public class ConformanceTestTab extends ToolWindowWithMenu implements TestRunner, TestTarget, TestsHeaderView.Controller {
 
 	private final ConformanceTestTab me;
 
@@ -115,8 +132,17 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner, TestTa
 		mainView.getActorTabBar().addSelectionHandler(new ActorSelectionHandler());
 		mainView.getOptionsTabBar().addSelectionHandler(new OptionSelectionHandler());
 
-		// Initial load of tests in a test session
-		loadTestCollections();
+		// 1. TODO: get the tabConfig here {
+		new GetTabConfigCommand() {
+			@Override
+			public void onComplete(TabConfig tabConfig) {
+				ConformanceTestTab.super.tabConfig = tabConfig;
+
+				// Initial load of tests in a test session
+				loadTestCollections();
+			}
+		}.run(new GetTabConfigRequest("ConfTests"));
+		// }
 
 		// Register the Diagram RequestConnector clicked event handler
 		ClientUtils.INSTANCE.getEventBus().addHandler(DiagramClickedEvent.TYPE, new DiagramPartClickedEventHandler() {
@@ -277,6 +303,7 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner, TestTa
 
 		@Override
 		public void onSelection(SelectionEvent<Integer> selectionEvent) {
+			// 3. TODO Draw out all actor tabs (profile & option)
 			int i = selectionEvent.getSelectedItem();
 			String newActorTypeId = TestCollectionDefinitionDAO.getNonOption(testCollectionDefinitionDAOs).get(i).getCollectionID();
 			if (getInitTestSession()!=null || !newActorTypeId.equals(currentActorOption.actorTypeId)) {
@@ -339,6 +366,19 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner, TestTa
 			public void onComplete(List<TestCollectionDefinitionDAO> testCollectionDefinitionDAOs) {
 				me.testCollectionDefinitionDAOs = testCollectionDefinitionDAOs;
 				displayActorsTabBar(mainView.getActorTabBar());
+				// 2. TODO Write the site map here
+
+
+				List<String> tcList = new ArrayList<>();
+				for (TestCollectionDefinitionDAO tcd : testCollectionDefinitionDAOs) {
+					tcList.add(tcd.getCollectionID());
+				}
+
+				if (displayMenu(mainView.getTestsPanel(), tcList)) {
+					mainView.getTabBarPanel().setVisible(false);
+				}
+
+
 				currentActorTypeDescription = getDescriptionForTestCollection(currentActorOption.actorTypeId);
 //				updateTestsOverviewHeader();
 
@@ -349,6 +389,7 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner, TestTa
 			}
 		}.run(new GetCollectionRequest(getCommandContext(), "actorcollections"));
 	}
+
 
 	private HTML loadingMessage;
 

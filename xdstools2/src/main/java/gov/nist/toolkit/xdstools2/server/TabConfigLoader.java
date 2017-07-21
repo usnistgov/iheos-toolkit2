@@ -15,22 +15,26 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 public class TabConfigLoader {
     private static final Logger logger = Logger.getLogger(TabConfigLoader.class);
-//    private static final ConcurrentHashMap<String,ToolTabConfig> confToolTabMap = new ConcurrentHashMap<>();
-    private static boolean initialized = false;
+    private static final ConcurrentHashMap<String,TabConfig> initMap = new ConcurrentHashMap<>();
 
     private TabConfigLoader() {}
 
-    static public void init(ConcurrentHashMap<String,TabConfig> toolTabMap, File toolTabFile) throws Exception {
+    static public void init(File toolTabFile) throws Exception {
+        if (toolTabFile==null) throw new Exception("Null config file");
+        String confFileName = toolTabFile.getName();
+        boolean initialized = initMap.contains(confFileName);
+
         if (!initialized) {
             synchronized (TabConfigLoader.class) {
-                initialized = true;
-
                 OMElement tabsEl = Util.parse_xml(toolTabFile);
 
                 if (tabsEl !=null) {
                     String parentLabel = tabsEl.getAttributeValue(new QName("label"));
-                    TabConfig parent = new TabConfig(parentLabel);
-                   toolTabMap.put(parentLabel,xform(tabsEl, parent));
+                    if (parentLabel!=null) {
+                        TabConfig parent = new TabConfig(parentLabel);
+                        initMap.put(confFileName,xform(tabsEl, parent));
+                    }
+
                 }
             }
         }
@@ -48,8 +52,8 @@ public class TabConfigLoader {
                    String type = tabEl.getAttributeValue(new QName("type"));
                    String tcCode = tabEl.getAttributeValue(new QName("tcCode"));
                    String externalStartStr = tabEl.getAttributeValue(new QName("externalStart"));
+                   String displayColorCode = tabEl.getAttributeValue(new QName("displayColorCode"));
                    Boolean externalStart = null;
-
 
                    if (externalStartStr!=null) {
                        externalStart = Boolean.valueOf(externalStartStr);
@@ -58,6 +62,9 @@ public class TabConfigLoader {
                    TabConfig tabConfig = new TabConfig(label,type,tcCode);
                     if (externalStart!=null) {
                         tabConfig.setExternalStart(externalStart);
+                    }
+                    if (displayColorCode!=null) {
+                        tabConfig.setDisplayColorCode(displayColorCode);
                     }
 
                    parent.getChildTabConfigs().add(tabConfig);
@@ -81,6 +88,13 @@ public class TabConfigLoader {
         return parent;
     }
 
+    public static ConcurrentHashMap<String, TabConfig> getInitMap() {
+        return initMap;
+    }
 
+    public static TabConfig getTabConfig(String toolId) {
+
+        return initMap.get(toolId + "Tabs.xml");
+    }
 
 }

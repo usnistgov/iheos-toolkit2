@@ -323,3 +323,26 @@ h3 {
 .HP .gwt-Button {
   margin-right: 10px;
 }
+
+.tabConfigRow::after {
+  content: "";
+  clear: both;
+  display: table;
+}
+[class*="tabConfigCol-"] {
+  float: left;
+  padding: 15px;
+}
+
+.tabConfigMenu ul {
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+}
+.tabConfigMenu li {
+  padding: 8px;
+  margin-bottom: 7px;
+}
+.tabConfigMenu li:hover {
+  background-color: #0099cc;
+}

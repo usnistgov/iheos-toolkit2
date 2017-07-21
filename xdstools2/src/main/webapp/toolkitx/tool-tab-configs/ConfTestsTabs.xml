@@ -8,17 +8,116 @@
     tcCode is the test collection code that is made up of three parts actor_profile_option.
     See collections.txt file for indexing.
 	-->
-	<tab label="Repository" type="actor" tcCode="rep">		<!-- Maps to testCollectionDefinitionDAOs in ActorSelectionHandler -->
+
+	<!-- Each actor tab maps to testCollectionDefinitionDAOs in ActorSelectionHandler -->
+
+	<!-- If there is only one profile, select it. Then go ahead and show the default option. But if multiple profiles exist, without a default tab setting, show the profile map. -->
+
+	<!-- Retrofit to ActorAndOption in Build*OrchestrationButton.java -->
+
+	<tab label="Document Recipient" type="actor" tcCode="rec" displayColorCode="#dcffe2">
 		<tabs label="Profiles">
-			<tab label="XDS" type="profile" tcCode="xds">   <!-- If there is only one profile, select it. Then go ahead and show the default option. But if multiple profiles exist, without a default tab setting, show the profile map. -->
-				<tabs label="Options"> 						<!-- Retrofit to ActorAndOption in Build*OrchestrationButton.java -->
+			<tab label="XDS" type="profile" tcCode="xds">
+				<tabs label="Options">
+					<tab label="Required"  type="option" tcCode="" externalStart="false"/>
+					<tab label="XUA Option" type="option" tcCode="xua" externalStart="false"/>
+				</tabs>
+			</tab>
+		</tabs>
+	</tab>
+
+	<tab label="Repository" type="actor" tcCode="rep" displayColorCode="#f1d7ff">
+		<tabs label="Profiles">
+			<tab label="XDS" type="profile" tcCode="xds">
+				<tabs label="Options">
 					<tab label="Required"  type="option" tcCode="" externalStart="false"/>
 					<tab label="XUA Option" type="option" tcCode="xua" externalStart="false"/> 
 				</tabs>
 			</tab>
 		</tabs>
-	</tab>	
+	</tab>
 
+	<tab label="Imaging Document Consumer" type="actor" tcCode="idc" displayColorCode="#a6ffd0">
+		<tabs label="Profiles">
+			<tab label="XDS" type="profile" tcCode="xds">
+				<tabs label="Options">
+					<tab label="Required"  type="option" tcCode="" externalStart="false"/>
+				</tabs>
+			</tab>
+		</tabs>
+	</tab>
+
+	<tab label="Imaging Document Source" type="actor" tcCode="ids" displayColorCode="#f7e5ff">
+		<tabs label="Profiles">
+			<tab label="XDS" type="profile" tcCode="xds">
+				<tabs label="Options">
+					<tab label="Required"  type="option" tcCode="" externalStart="false"/>
+				</tabs>
+			</tab>
+		</tabs>
+	</tab>
+
+	<tab label="Initiating Gateway" type="actor" tcCode="ig" displayColorCode="#c8ffe5">
+		<tabs label="Profiles">
+			<tab label="XDS" type="profile" tcCode="xds">
+				<tabs label="Options">
+					<tab label="non-Affinity Domain Option"  type="option" tcCode="" externalStart="false"/>
+					<tab label="Affinity Domain Option"  type="option" tcCode="ad" externalStart="false"/>
+					<tab label="XUA/Affinity Domain Option"  type="option" tcCode="xua" externalStart="false"/>
+				</tabs>
+			</tab>
+		</tabs>
+	</tab>
+
+	<tab label="Initiating Imaging Gateway" type="actor" tcCode="iig" displayColorCode="#d7c7e1">
+		<tabs label="Profiles">
+			<tab label="XDS" type="profile" tcCode="xds">
+				<tabs label="Options">
+					<tab label="Required"  type="option" tcCode="" externalStart="false"/>
+				</tabs>
+			</tab>
+		</tabs>
+	</tab>
+
+
+	<tab label="Registry" type="actor" tcCode="reg" displayColorCode="#ebd8f0">
+		<tabs label="Profiles">
+			<tab label="XDS" type="profile" tcCode="xds">
+				<tabs label="Options">
+					<tab label="Required"  type="option" tcCode="" externalStart="false"/>
+					<tab label="Metadata Update Option" type="option" tcCode="mu" externalStart="false"/>
+					<tab label="MPQ Option" type="option" tcCode="mpq" externalStart="false"/>
+					<tab label="On Demand Option" type="option" tcCode="od" externalStart="false"/>
+					<tab label="Integrated Source Repository" type="option" tcCode="isr" externalStart="true"/>
+					<tab label="XUA Option" type="option" tcCode="xua" externalStart="false"/>
+					<tab label="CAT Folder" type="option" tcCode="catfolder" externalStart="false"/>
+					<tab label="CAT Lifecycle" type="option" tcCode="catlifecycle" externalStart="false"/>
+				</tabs>
+			</tab>
+		</tabs>
+	</tab>
+
+	<tab label="Responding Gateway" type="actor" tcCode="rg" displayColorCode="#d5b8d8">
+		<tabs label="Profiles">
+			<tab label="XDS" type="profile" tcCode="xds">
+				<tabs label="Options">
+					<tab label="Required" type="option" tcCode="" externalStart="false"/>
+					<tab label="On Demand" type="option" tcCode="od" externalStart="false"/>
+					<tab label="XUA Option" type="option" tcCode="xua" externalStart="false"/>
+				</tabs>
+			</tab>
+		</tabs>
+	</tab>
+
+	<tab label="Responding Imaging Gateway" type="actor" tcCode="rig" displayColorCode="#f8eefd">
+		<tabs label="Profiles">
+			<tab label="XDS" type="profile" tcCode="xds">
+				<tabs label="Options">
+					<tab label="Required" type="option" tcCode="" externalStart="false"/>
+				</tabs>
+			</tab>
+		</tabs>
+	</tab>
 
 </tabs>
 

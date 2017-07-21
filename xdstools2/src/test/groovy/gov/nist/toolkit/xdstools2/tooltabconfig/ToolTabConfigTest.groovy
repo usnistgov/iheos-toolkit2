@@ -5,8 +5,6 @@ import gov.nist.toolkit.xdstools2.client.tabs.conformanceTest.TabConfig
 import gov.nist.toolkit.xdstools2.server.TabConfigLoader
 import spock.lang.Specification
 
-import java.util.concurrent.ConcurrentHashMap
-
 class ToolTabConfigTest extends Specification {
 
     def setupSpec() {
@@ -21,36 +19,45 @@ class ToolTabConfigTest extends Specification {
     def 'Test ToolTabConfig transformation'() {
 
         when:
-        ConcurrentHashMap<String,TabConfig> confTestsTabMap = new ConcurrentHashMap<>();
-        TabConfigLoader.init(confTestsTabMap,Installation.instance().getToolTabConfigFile("ConfTests"))
-
+        String toolId = "ConfTests"
+        TabConfigLoader.init(Installation.instance().getToolTabConfigFile(toolId))
+        TabConfig confTestsTabConfig = TabConfigLoader.getTabConfig(toolId)
 
         then:
-        confTestsTabMap.size() > 0
+        confTestsTabConfig != null
 
-        TabConfig actorsGroup = confTestsTabMap.get("Actors")
-        actorsGroup != null
-        "Actors".equals(actorsGroup.getLabel())
+        then:
+        "Actors".equals(confTestsTabConfig.getLabel())
 
-        for (TabConfig tabConfig : actorsGroup.getChildTabConfigs()) {
+        for (TabConfig tabConfig : confTestsTabConfig.getChildTabConfigs()) {
             println tabConfig.getLabel()
         }
 
+        when:
         println "Checking structure..."
+        TabConfig rep = confTestsTabConfig.getFirstChildTabConfig()
 
-        TabConfig rep = actorsGroup.getChildTabConfigs().get(0)
+        then:
         "Repository".equals(rep.getLabel())
 
-        TabConfig profiles = rep.getChildTabConfigs().get(0)
+        when:
+        TabConfig profiles = rep.getFirstChildTabConfig()
+        then:
         "Profiles".equals(profiles.getLabel())
 
-        TabConfig xdsProfile = profiles.getChildTabConfigs().get(0)
+        when:
+        TabConfig xdsProfile = profiles.getFirstChildTabConfig()
+        then:
         "XDS".equals(xdsProfile.getLabel())
 
-        TabConfig options = xdsProfile.getChildTabConfigs().get(0)
+        when:
+        TabConfig options = xdsProfile.getFirstChildTabConfig()
+        then:
         "Options".equals(options.getLabel())
 
-        TabConfig requiredOpt = options.getChildTabConfigs().get(0)
+        when:
+        TabConfig requiredOpt = options.getFirstChildTabConfig()
+        then:
         "Required".equals(requiredOpt.getLabel())
         "option".equals(requiredOpt.getType())
         "".equals(requiredOpt.getTcCode())

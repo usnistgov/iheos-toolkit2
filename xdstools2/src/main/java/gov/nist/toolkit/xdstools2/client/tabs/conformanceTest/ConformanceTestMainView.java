@@ -16,7 +16,9 @@ public class ConformanceTestMainView {
     private final FlowPanel toolPanel = new FlowPanel();   // Outer-most panel for the tool
     private final FlowPanel initializationPanel = new FlowPanel();
     private final FlowPanel testsPanel = new FlowPanel();  // panel for displaying tests
+    private final FlowPanel tabBarPanel = new FlowPanel();
     private final TabBar actorTabBar = new TabBar();            // tab bar at the top for selecting actor types
+    private final TabBar profileTabBar = new TabBar();
     private final OptionsTabBar optionsTabBar;
 
     private HTML testSessionDescription = new HTML();
@@ -31,14 +33,20 @@ public class ConformanceTestMainView {
 
         FlowPanel sitesPanel = new FlowPanel();
         toolPanel.add(sitesPanel);
+
         HorizontalFlowPanel actorpanel = new HorizontalFlowPanel();
         actorpanel.add(new HTML("Actor to test"));
         actorpanel.add(new InformationLink("Help with Conformance Test tool", "Conformance-Test-Tool").asWidget());
         toolPanel.add(actorpanel);
-        // TODO: create a container here for tabs
-        toolPanel.add(actorTabBar);
-        toolPanel.add(new HTML("Option"));
-        toolPanel.add(optionsTabBar);
+        tabBarPanel.add(actorTabBar);
+        // . TODO create a panel for the bars and hide it by default? Unless access by URL.
+        // 0. TODO: create a profile tab here
+        tabBarPanel.add(new HTML("Profile"));
+        tabBarPanel.add(profileTabBar);
+        tabBarPanel.add(new HTML("Option"));
+        tabBarPanel.add(optionsTabBar);
+        toolPanel.add(tabBarPanel);
+
         toolPanel.add(loadingMessage);
         toolPanel.add(initializationPanel);
         toolPanel.add(testsPanel);
@@ -65,6 +73,10 @@ public class ConformanceTestMainView {
         return actorTabBar;
     }
 
+    public TabBar getProfileTabBar() {
+        return profileTabBar;
+    }
+
     public OptionsTabBar getOptionsTabBar() {
         return optionsTabBar;
     }
@@ -85,5 +97,9 @@ public class ConformanceTestMainView {
     public void clearLoadingMessage() {
         this.loadingMessage.setHTML("");
         this.loadingMessage.setStyleName("hiddenMessage");
+    }
+
+    public FlowPanel getTabBarPanel() {
+        return tabBarPanel;
     }
 }
