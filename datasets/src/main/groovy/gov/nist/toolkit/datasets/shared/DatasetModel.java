@@ -11,11 +11,13 @@ import java.util.List;
  */
 public class DatasetModel implements Serializable, IsSerializable {
     private String name;
-    private List<DatasetElement> items = new ArrayList<>();
+    private List<DatasetElement> items = new ArrayList<DatasetElement>();
 
     public DatasetModel(String name) {
         this.name = name;
     }
+
+    public DatasetModel() {}
 
     public String getName() {
         return name;

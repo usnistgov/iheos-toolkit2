@@ -48,4 +48,11 @@ class DatasetFactory {
             }
         }
     }
+
+    static Map<String, DatasetModel> getAllDatasets() {
+        Map<String, DatasetModel> all = new HashMap<>();
+        def names = datasetNames
+        names.each { all[it] = getDataset(it) }
+        all
+    }
 }

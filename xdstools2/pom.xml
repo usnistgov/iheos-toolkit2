@@ -237,6 +237,10 @@
 	<dependencies>
 		<dependency>
 			<groupId>gov.nist.toolkit</groupId>
+			<artifactId>datasets</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>gov.nist.toolkit</groupId>
 			<artifactId>transaction-notification-service</artifactId>
 		</dependency>
 		<dependency>
@@ -582,6 +586,7 @@
 						<compileSourcesArtifact>${project.groupId}:xds-exceptions</compileSourcesArtifact>
 						<compileSourcesArtifact>${project.groupId}:interaction-model</compileSourcesArtifact>
 						<compileSourcesArtifact>${project.groupId}:interaction-diagram</compileSourcesArtifact>
+						<compileSourcesArtifact>${project.groupId}:datasets</compileSourcesArtifact>
 					</compileSourcesArtifacts>
 					<runTarget>Xdstools2.html</runTarget>
 					<modules>

@@ -1,40 +1,37 @@
-package gov.nist.toolkit.xdstools2.client.tabs.simMsgViewerTab;
+package gov.nist.toolkit.xdstools2.client.tabs.SubmitResourceTab;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.user.client.ui.AcceptsOneWidget;
 import com.google.gwt.user.client.ui.LayoutPanel;
 import com.google.gwt.user.client.ui.Widget;
-import com.google.gwt.view.client.TreeViewModel;
+import gov.nist.toolkit.datasets.shared.DatasetModel;
 import gov.nist.toolkit.xdstools2.client.abstracts.AbstractToolkitActivity;
 import gov.nist.toolkit.xdstools2.client.abstracts.ActivityDisplayer;
 import gov.nist.toolkit.xdstools2.client.abstracts.GenericMVP;
 import gov.nist.toolkit.xdstools2.client.injector.Injector;
-import gov.nist.toolkit.xdstools2.client.tabs.models.SimIdsModel;
 
 /**
  *
  */
-public class SimMsgViewerActivity extends AbstractToolkitActivity {
+public class SubmitResourceActivity extends AbstractToolkitActivity {
 
-    private SimMsgViewerView view;
+    private SubmitResourceView view;
 
-
-    private SimMsgViewerPresenter presenter;
+    private SubmitResourcePresenter presenter;
 
     private ActivityDisplayer displayer;
 
-    public SimMsgViewerActivity() {
+    public SubmitResourceActivity() {
         super();
-        GWT.log("Build SimMsgViewerActivity");
+        GWT.log("Build SubmitResourceActivity");
     }
 
-    private GenericMVP<SimIdsModel,SimMsgViewerView,SimMsgViewerPresenter> mvp;
+    private GenericMVP<DatasetModel, SubmitResourceView, SubmitResourcePresenter> mvp;
 
     @Override
     public GenericMVP getMVP() {
-        assert(mvp != null);
-        return mvp;
+        return null;
     }
 
     @Override
@@ -44,25 +41,22 @@ public class SimMsgViewerActivity extends AbstractToolkitActivity {
 
     @Override
     public void start(AcceptsOneWidget acceptsOneWidget, EventBus eventBus) {
-        GWT.log("Starting SimMsgViewer Activity");
-        presenter = Injector.INSTANCE.getSimMsgViewerPresenter();
-        view =      Injector.INSTANCE.getSimMsgViewerView();
+        GWT.log("Starting SubmitResource Activity");
+        presenter = Injector.INSTANCE.getSubmitResourcePresenter();
+        view =      Injector.INSTANCE.getSubmitResourceView();
         displayer = Injector.INSTANCE.getToolkitAppDisplayer();
-        assert(presenter != null);
+
         mvp = buildMVP();
+
         mvp.init();
         displayer.display(getContainer(), presenter.getTitle(), this, acceptsOneWidget, eventBus);
     }
 
-    private GenericMVP<SimIdsModel, SimMsgViewerView, SimMsgViewerPresenter> buildMVP() {
-        assert(presenter != null);
-        assert(view != null);
-        return new GenericMVP<SimIdsModel, SimMsgViewerView, SimMsgViewerPresenter>(view, presenter);
+    private GenericMVP<DatasetModel, SubmitResourceView, SubmitResourcePresenter> buildMVP() {
+        return new GenericMVP<DatasetModel, SubmitResourceView, SubmitResourcePresenter>(view, presenter);
     }
 
     private Widget getContainer() {
-        assert(mvp != null);
         return mvp.getDisplay();
     }
-
 }

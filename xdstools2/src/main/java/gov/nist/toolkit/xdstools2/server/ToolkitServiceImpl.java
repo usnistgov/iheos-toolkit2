@@ -9,6 +9,8 @@ import gov.nist.toolkit.actortransaction.client.TransactionInstance;
 import gov.nist.toolkit.configDatatypes.client.Pid;
 import gov.nist.toolkit.configDatatypes.client.PidSet;
 import gov.nist.toolkit.configDatatypes.client.TransactionType;
+import gov.nist.toolkit.datasets.server.DatasetFactory;
+import gov.nist.toolkit.datasets.shared.DatasetModel;
 import gov.nist.toolkit.installation.ExternalCacheManager;
 import gov.nist.toolkit.installation.Installation;
 import gov.nist.toolkit.installation.PropertyServiceManager;
@@ -1542,6 +1544,12 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements
         new BuildCollections().run();
         // FIXME why does this have to always return true? should we change for a void method?
         return true;
+    }
+
+    @Override
+    public Map<String, DatasetModel> getAllDatasets(CommandContext context) throws Exception {
+        installCommandContext(context);
+        return DatasetFactory.getAllDatasets();
     }
 
 }

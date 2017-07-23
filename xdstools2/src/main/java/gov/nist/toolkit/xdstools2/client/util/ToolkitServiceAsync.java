@@ -3,6 +3,7 @@ package gov.nist.toolkit.xdstools2.client.util;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import gov.nist.toolkit.actortransaction.client.TransactionInstance;
 import gov.nist.toolkit.configDatatypes.client.Pid;
+import gov.nist.toolkit.datasets.shared.DatasetModel;
 import gov.nist.toolkit.interactionmodel.client.InteractingEntity;
 import gov.nist.toolkit.results.client.*;
 import gov.nist.toolkit.results.shared.Test;
@@ -250,4 +251,6 @@ public interface ToolkitServiceAsync {
     void getAssignedSiteForTestSession(CommandContext context, AsyncCallback<String> async);
 
     void setAssignedSiteForTestSession(SetAssignedSiteForTestSessionRequest request, AsyncCallback<Void> async);
+
+    void getAllDatasets(CommandContext context, AsyncCallback<Map<String, DatasetModel>> callback);
 }

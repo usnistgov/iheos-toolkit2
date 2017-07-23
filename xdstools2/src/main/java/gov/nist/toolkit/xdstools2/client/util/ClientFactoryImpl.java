@@ -1,9 +1,12 @@
 package gov.nist.toolkit.xdstools2.client.util;
 
+import com.google.gwt.activity.shared.Activity;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.place.shared.PlaceController;
 import gov.nist.toolkit.xdstools2.client.injector.Injector;
+import gov.nist.toolkit.xdstools2.client.tabs.SubmitResourceTab.SubmitResource;
+import gov.nist.toolkit.xdstools2.client.tabs.SubmitResourceTab.SubmitResourceActivity;
 import gov.nist.toolkit.xdstools2.client.tabs.simMsgViewerTab.SimMsgViewerActivity;
 import gov.nist.toolkit.xdstools2.client.util.activitiesAndPlaces.ConfActorActivity;
 import gov.nist.toolkit.xdstools2.client.util.activitiesAndPlaces.SimLogActivity;
@@ -23,6 +26,7 @@ public class ClientFactoryImpl implements ClientFactory {
     private static final SimLogActivity SIM_LOG_ACTIVITY = new SimLogActivity();
     private static final ToolkitServiceAsync TOOLKIT_SERVICES = GWT.create(ToolkitService.class);
     private static final SimMsgViewerActivity MSG_VIEWER_ACTIVITY = GWT.create(SimMsgViewerActivity.class);
+    private static final SubmitResourceActivity SUBMIT_RESOURCE_ACTIVITY = GWT.create(SubmitResourceActivity.class);
 
     @Override
     public EventBus getEventBus() {
@@ -63,4 +67,7 @@ public class ClientFactoryImpl implements ClientFactory {
     public SimMsgViewerActivity getSimMsgViewerActivity() {
         return MSG_VIEWER_ACTIVITY;
     }
+
+    @Override
+    public Activity getSubmitResourceActivity() { return SUBMIT_RESOURCE_ACTIVITY; }
 }

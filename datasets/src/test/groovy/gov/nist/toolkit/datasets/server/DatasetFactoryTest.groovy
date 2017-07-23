@@ -60,7 +60,7 @@ class DatasetFactoryTest extends Specification {
         when:
         DatasetModel model = DatasetFactory.getDataset(datasets, list[0])
         def results = model.items.collect { DatasetElement ele ->
-            ele.path
+            ele.type + '/' + ele.file
         } as Set
 
         then:

@@ -4,9 +4,12 @@ import com.google.gwt.activity.shared.Activity;
 import com.google.gwt.activity.shared.ActivityMapper;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.place.shared.Place;
+import gov.nist.toolkit.xdstools2.client.tabs.SubmitResourceTab.SubmitResource;
+import gov.nist.toolkit.xdstools2.client.tabs.SubmitResourceTab.SubmitResourceActivity;
 import gov.nist.toolkit.xdstools2.client.tabs.simMsgViewerTab.SimMsgViewer;
 import gov.nist.toolkit.xdstools2.client.tabs.simMsgViewerTab.SimMsgViewerActivity;
 import gov.nist.toolkit.xdstools2.client.util.ClientFactory;
+import org.apache.lucene.index.DocIDMerger;
 
 /**
  * Finds the activity to run for a given Place, used to configure an ActivityManager.
@@ -67,6 +70,11 @@ public class Xdstools2ActivityMapper implements ActivityMapper {
             SimMsgViewer simMsgViewer = (SimMsgViewer) place;
             SimMsgViewerActivity activity = clientFactory.getSimMsgViewerActivity();
             return activity;
+        }
+        if (place instanceof SubmitResource) {
+            GWT.log("Launch SubmitResource");
+            SubmitResource submitResource = (SubmitResource) place;
+            return clientFactory.getSubmitResourceActivity();
         }
         return null;
     }

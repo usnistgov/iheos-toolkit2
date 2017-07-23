@@ -7,6 +7,7 @@ import gov.nist.toolkit.sitemanagement.client.SiteSpec;
 import gov.nist.toolkit.xdstools2.client.ToolWindow;
 import gov.nist.toolkit.xdstools2.client.tabs.*;
 import gov.nist.toolkit.xdstools2.client.tabs.GatewayTestsTabs.*;
+import gov.nist.toolkit.xdstools2.client.tabs.SubmitResourceTab.SubmitResource;
 import gov.nist.toolkit.xdstools2.client.tabs.actorConfigTab.ActorConfigTab;
 import gov.nist.toolkit.xdstools2.client.tabs.conformanceTest.ConformanceTestTab;
 import gov.nist.toolkit.xdstools2.client.tabs.findDocuments2Tab.FindDocuments2Tab;
@@ -66,6 +67,7 @@ public class ToolLauncher implements ClickHandler {
 	final static public String imagingDocumentSetRetrieveTabLabel = "RetrieveImagingDocumentSet";
 	final static public String homeTabLabel = "Home";
 	final static public String SysConfigTabLabel = "SUT Configuration";
+	final static public String submitResourceTabLabel = "Submit Resource";
 
 
 
@@ -122,6 +124,7 @@ public class ToolLauncher implements ClickHandler {
 		tools.add(new ToolDef(toolConfigTabLabel, "ToolkitConf", "ToolkitConf"));
 		tools.add(new ToolDef(homeTabLabel, "Home", "Home"));
 		tools.add(new ToolDef(SysConfigTabLabel, "Admin", "Admin"));
+		tools.add(new ToolDef(submitResourceTabLabel, "Submit Resource", "SubmitResource"));
 	}
 
 	private ToolDef getToolDef(String requestedName) {
@@ -181,6 +184,7 @@ public class ToolLauncher implements ClickHandler {
 		if (menuName.equals(rigTestsTabLabel)) return new RIGTestTab();
 		if (menuName.equals(idsTestsTabLabel)) return new IDSTestTab();
 		if (menuName.equals(rsnaedgeTestsTabLabel)) return new RSNAEdgeTestTab();
+		if (menuName.equals(submitResourceTabLabel)) return new NewToolLauncher().launch(new SubmitResource());
 		return null;
 	}
 
