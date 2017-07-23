@@ -13,6 +13,13 @@ import java.io.IOException;
 public class ExternalCacheManager {
     static Logger logger = Logger.getLogger(ExternalCacheManager.class);
 
+    /**
+     * initialize external cache to location.  If external cache location is already initialized this will be ignored.
+     * To change location use reinitialize()
+     * @param location an existing writable directory
+     * @return
+     * @throws XdsException
+     */
     synchronized public static String initialize(File location) throws XdsException {
         logger.info("Initialize External Cache to " + location);
         if (!location.exists()) return String.format("External Cache location %s does not exist", location);
@@ -27,7 +34,7 @@ public class ExternalCacheManager {
 
     synchronized public static void reinitialize(File location) throws XdsException {
         logger.info("Reinitialize External Cache to " + location);
-        Installation.instance().externalCache(null);
+        Installation.instance().externalCache(null);  // so that it can be updated
         String error = initialize(location);
         if (error != null) throw new XdsException(error, "");
         File environment = Installation.instance().environmentFile();
@@ -75,7 +82,12 @@ public class ExternalCacheManager {
 
     public static void initialize() throws XdsException {
         File location = new File(Installation.instance().propertyServiceManager().getPropertyManager().getExternalCache());
-        initialize(location);
+        String error = initialize(location);
+        if (error != null) {
+            String msg = "External cache location " + location + " does not exist, is not writeable or is not a directory";
+            logger.error(msg);
+            throw new XdsException(msg, null);
+        }
         initializeDefaultSites();
     }
 
