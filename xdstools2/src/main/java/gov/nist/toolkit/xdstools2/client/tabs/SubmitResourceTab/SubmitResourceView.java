@@ -22,8 +22,9 @@ import java.util.Map;
 public class SubmitResourceView extends AbstractView<SubmitResourcePresenter> {
     private MessagePanel messagePanel = new MessagePanel();
     private VerticalPanel tabTopPanel = new VerticalPanel();
+    private String selectedResourcePath = "None";
+    private HTML selected = new HTML();
 
-    private DatasetTreeModel datasetTreeModel = new DatasetTreeModel();
     private CellBrowser browser;
 
     public SubmitResourceView() {
@@ -53,12 +54,16 @@ public class SubmitResourceView extends AbstractView<SubmitResourcePresenter> {
 
     }
 
-
-    DatasetTreeModel getDatasetTreeModel() {
-        return datasetTreeModel;
-    }
-
     void setData(List<DatasetModel> content) {
+        DatasetTreeModel datasetTreeModel = new DatasetTreeModel() {
+
+            @Override
+            protected void doSelect(String path) {
+                selectedResourcePath = path;
+                showSelection();
+            }
+        };
+
         datasetTreeModel.init(content);
 
         browser = new CellBrowser(datasetTreeModel, null);
@@ -70,9 +75,16 @@ public class SubmitResourceView extends AbstractView<SubmitResourcePresenter> {
         panel.setBorderWidth(1);
         panel.add(browser);
 
+        showSelection();
+        panel.add(selected);
+
         tabTopPanel.add(panel);
 
         lateBindUI();
+    }
+
+    private void showSelection() {
+        selected.setHTML("<br /><b>Selected resource: <b /> " + selectedResourcePath + "<br /><br />");
     }
 
 }

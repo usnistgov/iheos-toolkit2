@@ -2,6 +2,7 @@ package gov.nist.toolkit.xdstools2.client.widgets;
 
 import com.google.gwt.cell.client.*;
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.dom.client.NativeEvent;
 import com.google.gwt.safehtml.shared.SafeHtml;
 import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
 import com.google.gwt.user.client.Window;
@@ -12,8 +13,10 @@ import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.view.client.ListDataProvider;
 import com.google.gwt.view.client.SingleSelectionModel;
 import com.google.gwt.view.client.TreeViewModel;
+import elemental.events.Event;
 import gov.nist.toolkit.datasets.shared.DatasetElement;
 import gov.nist.toolkit.datasets.shared.DatasetModel;
+
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -23,7 +26,7 @@ import java.util.Map;
 /**
  *
  */
-public class DatasetTreeModel implements TreeViewModel {
+public abstract class DatasetTreeModel implements TreeViewModel {
 
     private static class Resource {
         private final String path;
@@ -114,8 +117,11 @@ public class DatasetTreeModel implements TreeViewModel {
     }
 
     private List<Dataset> datasets = new ArrayList<>();
+    DatasetTreeModel myModel;
 
-    public DatasetTreeModel() {}
+    public DatasetTreeModel() {
+        this.myModel = this;
+    }
 
     public void init(List<DatasetModel> content) {
         datasets.clear();
@@ -138,7 +144,7 @@ public class DatasetTreeModel implements TreeViewModel {
         return datasetName + "/" + resourceType + "/" + file;
     }
 
-    private final SingleSelectionModel<String> selectionModel = new SingleSelectionModel<String>();
+    private final SingleSelectionModel<Resource> selectionModel = new SingleSelectionModel<Resource>();
 
 
     @Override
@@ -168,12 +174,12 @@ public class DatasetTreeModel implements TreeViewModel {
             return new DefaultNodeInfo<ResourceType>(dataProvider, cell);
         }
         else if (t instanceof ResourceType) {
-            ListDataProvider<String> dataProvider
-                    = new ListDataProvider<String>(
-                    ((ResourceType) t).getResourceNames());
+            ListDataProvider<Resource> dataProvider
+                    = new ListDataProvider<Resource>(
+                    ((ResourceType) t).getResources());
 
             // Use the shared selection model.
-            return new DefaultNodeInfo<String>(dataProvider, new TextCell(),
+            return new DefaultNodeInfo<Resource>(dataProvider, new MyCell(this),
                     selectionModel, null);
         }
 
@@ -185,5 +191,34 @@ public class DatasetTreeModel implements TreeViewModel {
         GWT.log("Type is " + o.getClass().getName());
         return o instanceof String;
     }
+
+    private static class MyCell extends AbstractCell<Resource> {
+        DatasetTreeModel model;
+
+        MyCell(DatasetTreeModel model) {
+            super(Event.CLICK);
+            this.model = model;
+        }
+
+        @Override
+        public void render(Context context, Resource resource, SafeHtmlBuilder safeHtmlBuilder) {
+            if (resource == null) return;
+            safeHtmlBuilder.appendEscaped(resource.getName());
+        }
+
+        @Override
+        public void onBrowserEvent(Context context, com.google.gwt.dom.client.Element parent, Resource value, NativeEvent event, ValueUpdater<Resource> valueUpdater) {
+            String eventType = event.getType();
+            if("click".equals(eventType)) {
+                this.onClick(context, parent, value, event, valueUpdater);
+            }
+
+        }
+        void onClick(Context context, com.google.gwt.dom.client.Element parent, Resource resource, NativeEvent event, ValueUpdater<Resource> valueUpdater) {
+            model.doSelect(resource.getPath());
+        }
+    }
+
+    protected abstract void doSelect(String path);
 
 }
