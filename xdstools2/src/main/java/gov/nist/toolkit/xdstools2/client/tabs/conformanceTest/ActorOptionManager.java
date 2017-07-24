@@ -1,10 +1,6 @@
 package gov.nist.toolkit.xdstools2.client.tabs.conformanceTest;
 
-import gov.nist.toolkit.xdstools2.client.tabs.GatewayTestsTabs.BuildIGTestOrchestrationButton;
-import gov.nist.toolkit.xdstools2.client.tabs.GatewayTestsTabs.BuildRGTestOrchestrationButton;
-
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -14,6 +10,10 @@ import java.util.Map;
 
 public class ActorOptionManager {
     // ActorType => list of options
+    // Load configuration from external data source
+    private static Map<String, List<ActorAndOption>> actorOptions;
+
+    /*
     private static final Map<String, List<ActorAndOption>> actorOptions;
     static {
         actorOptions = new HashMap<>();
@@ -23,8 +23,10 @@ public class ActorOptionManager {
         actorOptions.put("rep", BuildRepTestOrchestrationButton.ACTOR_OPTIONS);
         actorOptions.put("rec", BuildRecTestOrchestrationButton.ACTOR_OPTIONS);
     };
+    */
 
     private ActorOptionManager() {}
+
 
     public static ActorAndOption actorDetails(ActorOption actorOption) {
         List<ActorAndOption> aaos = actorOptions.get(actorOption.actorTypeId);

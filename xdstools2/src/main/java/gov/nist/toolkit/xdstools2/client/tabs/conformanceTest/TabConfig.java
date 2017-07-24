@@ -99,4 +99,6 @@ public class TabConfig implements Serializable, IsSerializable {
     public void setDisplayColorCode(String displayColorCode) {
         this.displayColorCode = displayColorCode;
     }
+
+
 }

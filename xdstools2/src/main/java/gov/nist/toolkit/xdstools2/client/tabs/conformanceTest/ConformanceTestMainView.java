@@ -18,15 +18,15 @@ public class ConformanceTestMainView {
     private final FlowPanel testsPanel = new FlowPanel();  // panel for displaying tests
     private final FlowPanel tabBarPanel = new FlowPanel();
     private final TabBar actorTabBar = new TabBar();            // tab bar at the top for selecting actor types
-    private final TabBar profileTabBar = new TabBar();
-    private final OptionsTabBar optionsTabBar;
+    private final UserDefinedTabBar profileTabBar = new UserDefinedTabBar();
+    private final UserDefinedTabBar optionsTabBar = new UserDefinedTabBar();
+//    private final OptionsTabBar optionsTabBar;
 
     private HTML testSessionDescription = new HTML();
     private FlowPanel testSessionDescriptionPanel = new FlowPanel();
     private HTML loadingMessage = new HTML();
 
-    ConformanceTestMainView(ToolWindow toolWindow, OptionsTabBar optionsTabBar) {
-        this.optionsTabBar = optionsTabBar;
+    ConformanceTestMainView(ToolWindow toolWindow) {
         toolPanel.getElement().getStyle().setMargin(4, Style.Unit.PX);
         toolPanel.getElement().getStyle().setMarginLeft(0, Style.Unit.PX);
         testsPanel.getElement().getStyle().setMarginRight(4, Style.Unit.PX);
@@ -45,6 +45,7 @@ public class ConformanceTestMainView {
         tabBarPanel.add(profileTabBar);
         tabBarPanel.add(new HTML("Option"));
         tabBarPanel.add(optionsTabBar);
+        tabBarPanel.setVisible(false);
         toolPanel.add(tabBarPanel);
 
         toolPanel.add(loadingMessage);
@@ -73,11 +74,11 @@ public class ConformanceTestMainView {
         return actorTabBar;
     }
 
-    public TabBar getProfileTabBar() {
+    public UserDefinedTabBar getProfileTabBar() {
         return profileTabBar;
     }
 
-    public OptionsTabBar getOptionsTabBar() {
+    public UserDefinedTabBar getOptionsTabBar() {
         return optionsTabBar;
     }
 
