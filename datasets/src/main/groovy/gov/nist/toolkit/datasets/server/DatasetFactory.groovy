@@ -31,28 +31,29 @@ class DatasetFactory {
         File datasetDir = new File(root, name)
         if (!datasetDir.exists() || !datasetDir.isDirectory()) return model
 
-        list(model, datasetDir.absolutePath, datasetDir)
+        list(model, name, datasetDir.absolutePath, datasetDir)
         model
     }
 
     static DatasetModel getDataset(String name) {
-        File root = new File(Installation.instance().datasets(), name)
+//        File root = new File(Installation.instance().datasets(), name)
+        File root = Installation.instance().datasets()
         getDataset(root, name)
     }
 
-    static void list(DatasetModel model, String root, File dir) {
+    static void list(DatasetModel model, String name, String root, File dir) {
         dir.listFiles().each { File f ->
-            if (f.isDirectory()) list(model, root, f)
+            if (f.isDirectory()) list(model, name, root, f)
             else if (f.path.endsWith('.xml') || f.path.endsWith('.json')) {
-                model.add(new DatasetElement(f.absolutePath - root - '/'))
+                model.add(new DatasetElement(name, f.absolutePath - root - '/'))
             }
         }
     }
 
-    static Map<String, DatasetModel> getAllDatasets() {
-        Map<String, DatasetModel> all = new HashMap<>();
+    static List<DatasetModel> getAllDatasets() {
+        List<DatasetModel> all = new ArrayList<>();
         def names = datasetNames
-        names.each { all[it] = getDataset(it) }
+        names.each { all << getDataset(it) }
         all
     }
 }

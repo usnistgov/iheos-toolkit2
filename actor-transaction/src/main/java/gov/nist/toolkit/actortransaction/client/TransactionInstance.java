@@ -38,4 +38,8 @@ public class TransactionInstance implements IsSerializable {
 
     public String getTransactionTypeName() { return trans; }
     public ActorType getActorType() { return actorType; }
+
+    public void setActorType(ActorType actorType) {
+        this.actorType = actorType;
+    }
 }

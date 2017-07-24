@@ -1547,7 +1547,7 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements
     }
 
     @Override
-    public Map<String, DatasetModel> getAllDatasets(CommandContext context) throws Exception {
+    public List<DatasetModel> getAllDatasets(CommandContext context) throws Exception {
         installCommandContext(context);
         return DatasetFactory.getAllDatasets();
     }

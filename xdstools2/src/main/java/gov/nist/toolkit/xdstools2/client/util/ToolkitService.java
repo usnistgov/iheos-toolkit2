@@ -286,6 +286,6 @@ public interface ToolkitService extends RemoteService  {
     RawResponse buildRecTestOrchestration(BuildRecTestOrchestrationRequest request) throws Exception;
 
 
-	Map<String, DatasetModel> getAllDatasets(CommandContext context) throws Exception;
+	List<DatasetModel> getAllDatasets(CommandContext context) throws Exception;
 
 }

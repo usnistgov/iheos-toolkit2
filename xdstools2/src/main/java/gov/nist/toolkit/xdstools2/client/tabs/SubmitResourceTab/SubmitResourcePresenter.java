@@ -6,6 +6,7 @@ import gov.nist.toolkit.xdstools2.client.abstracts.AbstractPresenter;
 import gov.nist.toolkit.xdstools2.client.command.command.GetAllDatasetsCommand;
 import gov.nist.toolkit.xdstools2.shared.command.CommandContext;
 
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -23,7 +24,7 @@ public class SubmitResourcePresenter extends AbstractPresenter<SubmitResourceVie
 
         new GetAllDatasetsCommand() {
             @Override
-            public void onComplete(Map<String, DatasetModel> result) {
+            public void onComplete(List<DatasetModel> result) {
                 getView().setData(result);
             }
         }.run(getCommandContext());

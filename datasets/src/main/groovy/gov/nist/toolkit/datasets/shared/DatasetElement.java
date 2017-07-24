@@ -8,10 +8,12 @@ import java.io.Serializable;
  *
  */
 public class DatasetElement implements Serializable, IsSerializable {
+    private String name;
     private String type;
     private String file;
 
-    public DatasetElement(String type, String file) {
+    public DatasetElement(String name, String type, String file) {
+        this.name = name;
         this.type = type;
         this.file = file;
     }
@@ -20,8 +22,8 @@ public class DatasetElement implements Serializable, IsSerializable {
      *
      * @param path   type/file.ext format
      */
-    public DatasetElement(String path) {
-        this(part(path, 0), part(path, 1));
+    public DatasetElement(String name, String path) {
+        this(name, part(path, 0), part(path, 1));
     }
 
     public DatasetElement() {

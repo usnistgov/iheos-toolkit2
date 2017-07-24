@@ -252,5 +252,5 @@ public interface ToolkitServiceAsync {
 
     void setAssignedSiteForTestSession(SetAssignedSiteForTestSessionRequest request, AsyncCallback<Void> async);
 
-    void getAllDatasets(CommandContext context, AsyncCallback<Map<String, DatasetModel>> callback);
+    void getAllDatasets(CommandContext context, AsyncCallback<List<DatasetModel>> callback);
 }
