@@ -113,7 +113,7 @@ public abstract class ToolWindowWithMenu extends ToolWindow {
                 treeItem = new TabConfigTreeItem(tabConfig);
                 treeItem.setState(true);
                 treeItem.setText(tabConfig.getLabel());
-                treeItem.setHTML("<span class='gwt-TabBarItem' style='font-size:21px;background-color:"+ tabConfig.getDisplayColorCode()+"'><span style='margin:5px'>"+treeItem.getText()+"</span></span>");
+                treeItem.setHTML("<span class='gwt-TabBarItem' style='font-size:16px;background-color:"+ tabConfig.getDisplayColorCode()+"'><span style='margin:5px'>"+treeItem.getText()+"</span></span>");
 //                tabConfig.getDisplayColorCode()
             }
 
@@ -122,7 +122,7 @@ public abstract class ToolWindowWithMenu extends ToolWindow {
                 for (TabConfig tc : tabConfig.getChildTabConfigs()) {
                     TabConfigTreeItem ti = new TabConfigTreeItem(tc);
                     ti.setState(true);
-                    ti.setHTML("<span style='font-size:18px;'>" + tc.getLabel() + "</span>");
+                    ti.setHTML("<span style='font-size:14px;'>" + tc.getLabel() + "</span>");
                     ti.setIndex(idx++);
 
                     if (treeItem!=null)
@@ -137,7 +137,7 @@ public abstract class ToolWindowWithMenu extends ToolWindow {
 
                 TabConfigTreeItem ti = new TabConfigTreeItem(tabConfig);
                 ti.setState(true);
-                ti.setHTML("<span style='font-size:18px;'>" + tabConfig.getLabel() + "</span>");
+                ti.setHTML("<span style='font-size:14px;'>" + tabConfig.getLabel() + "</span>");
 
                 return ti;
             }
