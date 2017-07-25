@@ -2,12 +2,19 @@ package gov.nist.toolkit.xdstools2.client.tabs.conformanceTest;
 
 import com.google.gwt.user.client.ui.TabBar;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  *
  */
 class UserDefinedTabBar extends TabBar  {
+    List<TabConfig> tabConfigs = new ArrayList<>();
 
-    void clear() { while(getTabCount() > 0) removeTab(0); }
+    void clear() {
+        tabConfigs.clear();
+        while(getTabCount() > 0) removeTab(0);
+    }
 
 
     /**
@@ -23,7 +30,9 @@ class UserDefinedTabBar extends TabBar  {
               TabConfig subTabConfig = child.getFirstChildTabConfig();
               if (targetTabGroupType.equals(subTabConfig.getLabel())) {
                  for (TabConfig targetTab : subTabConfig.getChildTabConfigs())  {
-                    addTab(targetTab.getLabel());
+                     String tabTitle = targetTab.getLabel();
+                     addTab(tabTitle);
+                     tabConfigs.add(targetTab);
                  }
               }
            } else if (child.hasChildren()) {
@@ -33,4 +42,11 @@ class UserDefinedTabBar extends TabBar  {
     }
 
 
-};
+    public List<TabConfig> getTabConfigs() {
+        return tabConfigs;
+    }
+
+    public void setTabConfigs(List<TabConfig> tabConfigs) {
+        this.tabConfigs = tabConfigs;
+    }
+}

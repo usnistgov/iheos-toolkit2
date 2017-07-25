@@ -17,7 +17,7 @@ public abstract class ToolWindowWithMenu extends ToolWindow {
 
     // Tab config
     protected TabConfig tabConfig;
-    protected int menuCols = 4;
+    protected int menuCols = 3;
 
     public ToolWindowWithMenu() {
     }
@@ -26,7 +26,7 @@ public abstract class ToolWindowWithMenu extends ToolWindow {
         super(east, west);
     }
 
-    public abstract void onMenuSelect(TabConfig actor, Map<String,String> target);
+    public abstract void onMenuSelect(TabConfig actor, Map<String,TabConfig> target);
 
     public boolean displayMenu(Panel destinationPanel) {
         if (tabConfig!=null) {
@@ -56,14 +56,12 @@ public abstract class ToolWindowWithMenu extends ToolWindow {
                             @Override
                             public void onSelection(SelectionEvent<TreeItem> treeItem) {
                                 TabConfigTreeItem tcTreeItem = (TabConfigTreeItem)treeItem.getSelectedItem();
-                                TabConfig tabConfig = ((TabConfig)tcTreeItem.getUserObject());
-                                Map<String,String> tcMap = new HashMap<>();
-                                getParentTcCodePath(tcMap,tcTreeItem);
+//                                TabConfig tabConfig = ((TabConfig)tcTreeItem.getUserObject());
+                                Map<String,TabConfig> tcMap = new HashMap<>();
+                                setParentTcCodePath(tcMap,tcTreeItem);
                                 onMenuSelect(root.getTabConfig(), tcMap);
-
                             }
                         });
-
 
                         expandAllTreeItems(root);
 
@@ -73,6 +71,7 @@ public abstract class ToolWindowWithMenu extends ToolWindow {
                         simplePanel.getElement().getStyle().setFloat(Style.Float.LEFT);
                         rowPanel.add(simplePanel);
                         rowPanel.getElement().addClassName("tabConfigRow");
+                        rowPanel.getElement().getStyle().setMargin(30, Style.Unit.PX);
                         menuCt++;
                         rowAdded = false;
 //                        destinationPanel .add(simplePanel);
@@ -89,13 +88,13 @@ public abstract class ToolWindowWithMenu extends ToolWindow {
         return false;
     }
 
-    static void getParentTcCodePath(Map<String,String> rs, TabConfigTreeItem treeItem) {
+    static void setParentTcCodePath(Map<String,TabConfig> rs, TabConfigTreeItem treeItem) {
 
         TabConfig tabConfig = treeItem.getTabConfig();
         if (tabConfig.getTcCode()!=null)
-            rs.put(tabConfig.getType(), tabConfig.getTcCode());
+            rs.put(tabConfig.getType(), tabConfig);
        if (treeItem.getParentItem()!=null)  {
-           getParentTcCodePath(rs,(TabConfigTreeItem)treeItem.getParentItem());
+           setParentTcCodePath(rs,(TabConfigTreeItem)treeItem.getParentItem());
        }
     }
 
@@ -114,15 +113,17 @@ public abstract class ToolWindowWithMenu extends ToolWindow {
                 treeItem = new TabConfigTreeItem(tabConfig);
                 treeItem.setState(true);
                 treeItem.setText(tabConfig.getLabel());
-                treeItem.setHTML("<span style='font-size:16px;background-color:"+tabConfig.getDisplayColorCode()+"'>"+treeItem.getText()+"</span>");
+                treeItem.setHTML("<span class='gwt-TabBarItem' style='font-size:21px;background-color:"+ tabConfig.getDisplayColorCode()+"'><span style='margin:5px'>"+treeItem.getText()+"</span></span>");
+//                tabConfig.getDisplayColorCode()
             }
 
             if (tabConfig.hasChildren()) {
-
+                int idx = 0;
                 for (TabConfig tc : tabConfig.getChildTabConfigs()) {
                     TabConfigTreeItem ti = new TabConfigTreeItem(tc);
                     ti.setState(true);
-                    ti.setText(tc.getLabel());
+                    ti.setHTML("<span style='font-size:18px;'>" + tc.getLabel() + "</span>");
+                    ti.setIndex(idx++);
 
                     if (treeItem!=null)
                         treeItem.addItem(ti);
@@ -136,7 +137,7 @@ public abstract class ToolWindowWithMenu extends ToolWindow {
 
                 TabConfigTreeItem ti = new TabConfigTreeItem(tabConfig);
                 ti.setState(true);
-                ti.setText(tabConfig.getLabel());
+                ti.setHTML("<span style='font-size:18px;'>" + tabConfig.getLabel() + "</span>");
 
                 return ti;
             }
@@ -150,12 +151,22 @@ public abstract class ToolWindowWithMenu extends ToolWindow {
 
 
     protected class TabConfigTreeItem extends TreeItem {
+        private int index;
         public TabConfigTreeItem(TabConfig tabConfig) {
             setUserObject(tabConfig);
         }
         public TabConfig getTabConfig() {
             return (TabConfig)getUserObject();
         }
+
+        public int getIndex() {
+            return index;
+        }
+
+        public void setIndex(int index) {
+            this.index = index;
+        }
     }
+
 
 }

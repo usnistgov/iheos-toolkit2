@@ -1,6 +1,6 @@
 package gov.nist.toolkit.xdstools2.client.tabs.conformanceTest;
 
-import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -11,7 +11,7 @@ import java.util.Map;
 public class ActorOptionManager {
     // ActorType => list of options
     // Load configuration from external data source
-    private static Map<String, List<ActorAndOption>> actorOptions;
+    protected static Map<String, List<ActorAndOption>> actorOptions = new HashMap<>();
 
     /*
     private static final Map<String, List<ActorAndOption>> actorOptions;
@@ -28,6 +28,7 @@ public class ActorOptionManager {
     private ActorOptionManager() {}
 
 
+    /*
     public static ActorAndOption actorDetails(ActorOption actorOption) {
         List<ActorAndOption> aaos = actorOptions.get(actorOption.actorTypeId);
         if (aaos == null) return null;
@@ -38,26 +39,10 @@ public class ActorOptionManager {
         }
         return null;
     }
+    */
 
-    public static List<String> optionTitles(String actorId) {
-        List<String> names = new ArrayList<>();
-        List<ActorAndOption> aaos = actorOptions.get(actorId);
-        if (aaos == null) return names;
-        for (ActorAndOption aao : aaos) {
-            if (aao.getActorId().equals(actorId))
-                names.add(aao.getOptionTitle());
-        }
-        return names;
-    }
 
-    public static List<String> optionIds(String actorId) {
-        List<String> names = new ArrayList<>();
-        List<ActorAndOption> aaos = actorOptions.get(actorId);
-        if (aaos == null) return names;
-        for (ActorAndOption aao : aaos) {
-            if (aao.getActorId().equals(actorId))
-                names.add(aao.getOptionId());
-        }
-        return names;
-    }
+
+
+
 }
