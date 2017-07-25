@@ -163,7 +163,6 @@ public class ConformanceTestTab extends ToolWindowWithMenu implements TestRunner
 			@Override
 			public void onTestContextChanged(TestContextChangedEvent event) {
 				if (updateDisplayedActorAndOptionType(null)) { // . TODO check if currentactoroptin is properly set (ok if profile & option is null)
-					orchInit.clear();
 					initializeTestDisplay(mainView.getTestsPanel());
 				}
 			}
@@ -409,7 +408,6 @@ public class ConformanceTestTab extends ToolWindowWithMenu implements TestRunner
 		}
 
 		if (foundSelectedActorTab) {
-		    getMainView().getInitializationPanel().clear();
 		    getMainView().getTestsPanel().clear();
 			getMainView().getActorTabBar().selectTab(idx, true);
 			// . TODO: set index in tab config
