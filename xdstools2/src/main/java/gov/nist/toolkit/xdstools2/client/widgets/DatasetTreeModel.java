@@ -1,15 +1,11 @@
 package gov.nist.toolkit.xdstools2.client.widgets;
 
-import com.google.gwt.cell.client.*;
+import com.google.gwt.cell.client.AbstractCell;
+import com.google.gwt.cell.client.Cell;
+import com.google.gwt.cell.client.ValueUpdater;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.NativeEvent;
-import com.google.gwt.safehtml.shared.SafeHtml;
 import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
-import com.google.gwt.user.client.Window;
-import com.google.gwt.user.client.ui.CheckBox;
-import com.google.gwt.user.client.ui.IsWidget;
-import com.google.gwt.user.client.ui.Label;
-import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.view.client.ListDataProvider;
 import com.google.gwt.view.client.SingleSelectionModel;
 import com.google.gwt.view.client.TreeViewModel;
@@ -17,11 +13,8 @@ import elemental.events.Event;
 import gov.nist.toolkit.datasets.shared.DatasetElement;
 import gov.nist.toolkit.datasets.shared.DatasetModel;
 
-
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 /**
  *
@@ -189,7 +182,7 @@ public abstract class DatasetTreeModel implements TreeViewModel {
     @Override
     public boolean isLeaf(Object o) {
         GWT.log("Type is " + o.getClass().getName());
-        return o instanceof String;
+        return o instanceof Resource;
     }
 
     private static class MyCell extends AbstractCell<Resource> {
