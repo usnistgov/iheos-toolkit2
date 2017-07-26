@@ -47,7 +47,7 @@ public class ConformanceTestMainView {
         tabBarPanel.add(profileTabBar);
         tabBarPanel.add(new HTML("Option"));
         tabBarPanel.add(optionsTabBar);
-        tabBarPanel.setVisible(false);
+//        tabBarPanel.setVisible(false);
         toolPanel.add(tabBarPanel);
 
         toolPanel.add(loadingMessage);

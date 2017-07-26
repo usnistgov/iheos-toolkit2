@@ -29,7 +29,8 @@ public class ConfActorActivity extends AbstractActivity {
             ConformanceTestTab conformanceTestTab = (ConformanceTestTab) toolWindow;
             conformanceTestTab.setInitTestSession(confActor.getTestSessionName());
             conformanceTestTab.getCurrentActorOption().setActorTypeId(confActor.getActorType());
-            conformanceTestTab.getCurrentActorOption().setOptionId("");
+            conformanceTestTab.getCurrentActorOption().setProfileId(confActor.getProfileId());
+            conformanceTestTab.getCurrentActorOption().setOptionId(confActor.getOptionId());
             xdstools2view.resizeToolkit();
         }
     }
