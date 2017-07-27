@@ -1,0 +1,10 @@
+<TestPlan>
+    <Test>FHIR/create</Test>
+    <TestStep id="create">
+        <ExpectedStatus>Success</ExpectedStatus>
+        <FhirCreateTransaction>
+            <ResourceFile>$ResourceFile$</ResourceFile>
+            <UrlExtension>$UrlExtension$</UrlExtension>
+        </FhirCreateTransaction>
+    </TestStep>
+</TestPlan>

@@ -28,6 +28,7 @@ import gov.nist.toolkit.session.client.ConformanceSessionValidationStatus;
 import gov.nist.toolkit.session.client.logtypes.TestOverviewDTO;
 import gov.nist.toolkit.session.client.logtypes.TestPartFileDTO;
 import gov.nist.toolkit.session.server.Session;
+import gov.nist.toolkit.session.server.serviceManager.FhirServiceManager;
 import gov.nist.toolkit.session.server.serviceManager.QueryServiceManager;
 import gov.nist.toolkit.session.server.serviceManager.XdsTestServiceManager;
 import gov.nist.toolkit.simcommon.client.SimId;
@@ -1550,6 +1551,12 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements
     public List<DatasetModel> getAllDatasets(CommandContext context) throws Exception {
         installCommandContext(context);
         return DatasetFactory.getAllDatasets();
+    }
+
+    @Override
+    public List<Result> fhirCreate(FhirCreateRequest request) throws Exception {
+        installCommandContext(request);
+        return new FhirServiceManager(session()).create(request.getSite(), request.getResourcePath(), request.getUrlExtension());
     }
 
 }

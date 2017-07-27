@@ -253,4 +253,6 @@ public interface ToolkitServiceAsync {
     void setAssignedSiteForTestSession(SetAssignedSiteForTestSessionRequest request, AsyncCallback<Void> async);
 
     void getAllDatasets(CommandContext context, AsyncCallback<List<DatasetModel>> callback);
+
+    void fhirCreate(FhirCreateRequest request, AsyncCallback<List<Result>> async);
 }

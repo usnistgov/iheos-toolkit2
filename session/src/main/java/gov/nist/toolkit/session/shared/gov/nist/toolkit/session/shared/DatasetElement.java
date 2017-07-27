@@ -10,7 +10,9 @@ import java.io.Serializable;
  * path is an offset from that directory
  */
 public class DatasetElement implements Serializable, IsSerializable {
-    private final String path;
+    private String path;
+
+    public DatasetElement() {}
 
     public DatasetElement(String path) {
         this.path = path;

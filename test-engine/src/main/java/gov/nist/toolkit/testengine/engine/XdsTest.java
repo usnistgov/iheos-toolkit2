@@ -521,9 +521,11 @@ public class XdsTest {
 
 				TestInstance testLogId = testSpec.getTestInstance();
 				testSpec.setTestInstance(testLogId);
-				File logDirectory = logRepository.logDir(testLogId);
+				File logDirectory;
 				if (ts != null && ts.logRepository != null)
 					logDirectory = ts.logRepository.logDir(testLogId);
+				else
+					logDirectory = logRepository.logDir(testLogId);
 
 				// This is the log.xml file
 

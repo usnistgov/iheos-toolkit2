@@ -4,9 +4,7 @@ package gov.nist.toolkit.sitemanagement.client;
 import com.google.gwt.user.client.rpc.IsSerializable;
 import gov.nist.toolkit.configDatatypes.client.TransactionType;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * This is as close as toolkit comes to managing Actor configurations. ATFactory
@@ -45,5 +43,16 @@ public class TransactionOfferings implements IsSerializable {
 	}
 	
 	public TransactionOfferings() {} // For GWT
+
+	public List<Site> getAllSites() {
+		List<Site> sites = new ArrayList<>();
+
+		Set<Site> siteSet = new HashSet<>();
+		for (List<Site> aList : map.values()) {
+			siteSet.addAll(aList);
+		}
+		sites.addAll(siteSet);
+		return sites;
+	}
 
 }

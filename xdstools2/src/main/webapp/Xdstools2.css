@@ -323,3 +323,14 @@ h3 {
 .HP .gwt-Button {
   margin-right: 10px;
 }
+
+.siteSelected {
+  margin: 0;
+  padding: 3px 5px;
+  text-decoration: none;
+  color: white;
+  font-size:small;
+  background-color: #628cd5;
+  border:1px solid #bbb;
+  border-bottom: 1px solid #a0a0a0;
+}

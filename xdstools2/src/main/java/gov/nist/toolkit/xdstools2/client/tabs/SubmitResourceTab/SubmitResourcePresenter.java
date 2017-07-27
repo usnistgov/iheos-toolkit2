@@ -1,18 +1,23 @@
 package gov.nist.toolkit.xdstools2.client.tabs.SubmitResourceTab;
 
 import com.google.gwt.core.client.GWT;
+import gov.nist.toolkit.configDatatypes.client.TransactionType;
 import gov.nist.toolkit.datasets.shared.DatasetModel;
+import gov.nist.toolkit.sitemanagement.client.Site;
+import gov.nist.toolkit.sitemanagement.client.TransactionOfferings;
 import gov.nist.toolkit.xdstools2.client.abstracts.AbstractPresenter;
 import gov.nist.toolkit.xdstools2.client.command.command.GetAllDatasetsCommand;
-import gov.nist.toolkit.xdstools2.shared.command.CommandContext;
+import gov.nist.toolkit.xdstools2.client.command.command.GetTransactionOfferingsCommand;
+import gov.nist.toolkit.xdstools2.client.util.ClientUtils;
 
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 /**
  *
  */
 public class SubmitResourcePresenter extends AbstractPresenter<SubmitResourceView> {
+    private String selectedSite = null;
 
     public SubmitResourcePresenter() {
         super();
@@ -28,5 +33,29 @@ public class SubmitResourcePresenter extends AbstractPresenter<SubmitResourceVie
                 getView().setData(result);
             }
         }.run(getCommandContext());
+
+        new GetTransactionOfferingsCommand() {
+            @Override
+            public void onComplete(TransactionOfferings to) {
+                List<Site> allSites = to.getAllSites();
+                List<Site> fhirSites = to.map.get(TransactionType.FHIR);
+                SiteNameSet siteNameSet = new SiteNameSet();
+                List<ASite> sites = new ArrayList<>();
+                for (Site s : allSites) {
+                    sites.add(new ASite(fhirSites.contains(s), s.getName()));
+                }
+                getView().setSiteNames(sites);
+            }
+        }.run(ClientUtils.INSTANCE.getCommandContext());
+
+        getView().lateBindUI();
+    }
+
+    void doSiteSelected(String siteName) {
+        selectedSite = siteName;
+    }
+
+    void doResourceSelected(String resourcePath) {
+
     }
 }

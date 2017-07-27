@@ -3,7 +3,6 @@ package gov.nist.toolkit.session.server.serviceManager;
 import gov.nist.toolkit.installation.Installation;
 import gov.nist.toolkit.results.ResultBuilder;
 import gov.nist.toolkit.results.client.*;
-import gov.nist.toolkit.session.server.DatasetReference;
 import gov.nist.toolkit.session.server.Session;
 import gov.nist.toolkit.simcommon.server.SimCache;
 import gov.nist.toolkit.simcommon.server.SiteServiceManager;
@@ -19,7 +18,6 @@ import gov.nist.toolkit.xdsexception.client.EnvironmentNotSelectedException;
 import org.apache.log4j.Logger;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
@@ -30,60 +28,10 @@ public class UtilityRunner {
     private AssertionResults assertionResults = new AssertionResults();
     private final TestRunType testRunType;
 
-    public UtilityRunner(XdsTestServiceManager xdsTestServiceManager, TestRunType testRunType) {
+    UtilityRunner(XdsTestServiceManager xdsTestServiceManager, TestRunType testRunType) {
         this.xdsTestServiceManager = xdsTestServiceManager;
         this.testRunType = testRunType;
     }
-
-    public Result run(Session session, Map<String, String> params, Map<String, Object> params2, DatasetReference datasetReference) {
-        TestInstance testInstance = null;
-        List<String> sections = new ArrayList<>();
-
-        xdsTestServiceManager.cleanupParams(params);
-
-        try {
-            // Initialize if necessary.  Used by TestRunner and it may have other settings
-            // to enforce
-            if (session.transactionSettings == null) {
-                session.transactionSettings = new TransactionSettings();
-            }
-
-            // depending on the configuration, this could be null
-            session.transactionSettings.patientIdAssigningAuthorityOid = session.currentCodesConfiguration().getAssigningAuthorityOid();
-
-            if (session.xt == null)
-                throw new Exception("UtilityRunner#run: session.xt not initialized");
-
-
-            initializeLogRepository(session);
-
-            session.xt.setLogRepository(session.transactionSettings.logRepository);
-            logger.info("*** logRepository user (sessionName): " + session.transactionSettings.logRepository.getUser());
-
-            session.xt.addTest(testKit, testInstance, sections, null);
-
-            // force loading of site definitions
-            SiteServiceManager.getSiteServiceManager().getAllSites(session.getId());
-
-
-            assignSite(session, new Sites(SimCache.getAllSites()));
-
-            return getResult(session, params, params2, sections, testInstance, true);
-
-
-
-        } catch (Throwable e) {
-            logger.error(ExceptionUtil.exception_details(e));
-            assertionResults.add(ExceptionUtil.exception_details(e), false);
-            return ResultBuilder.RESULT(null, assertionResults, null, null);
-        }
-        finally {
-            session.clear();
-        }
-
-    }
-
-
 
     /**
      * Run a testplan(s) as a utility within a session.  This is different from
