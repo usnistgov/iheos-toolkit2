@@ -4,6 +4,7 @@ import com.google.gwt.dom.client.Style;
 import com.google.gwt.event.logical.shared.SelectionEvent;
 import com.google.gwt.event.logical.shared.SelectionHandler;
 import com.google.gwt.user.client.ui.FlowPanel;
+import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.Panel;
 import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.Tree;
@@ -27,6 +28,7 @@ public abstract class ToolWindowWithMenu extends ToolWindow {
     }
 
     public abstract void onMenuSelect(TabConfig actor, Map<String,TabConfig> target);
+    public abstract void setTestStatistics(HTML statsBar, ActorOption actorOption);
 
     public boolean displayMenu(Panel destinationPanel) {
         if (tabConfig!=null) {
@@ -49,7 +51,7 @@ public abstract class ToolWindowWithMenu extends ToolWindow {
                         }
                         SimplePanel simplePanel = new SimplePanel();
                         Tree tree = new Tree();
-                        final TabConfigTreeItem root = flattenedTabConfig(null, tc);
+                        final TabConfigTreeItem root = flattenedTabConfig(new HashMap<String, String>(),null, tc);
                         tree.addItem(root);
 
                         tree.addSelectionHandler(new SelectionHandler<TreeItem>() {
@@ -83,6 +85,16 @@ public abstract class ToolWindowWithMenu extends ToolWindow {
                 destinationPanel.add(rowPanel);
             }
 
+            // Add legend row
+            FlowPanel legendRowPanel = new FlowPanel();
+                legendRowPanel.add(new HTML("<div>Legend:</div>"
+                        + "<div style='margin:3px'><div style=\"width:6px;height:14px;border:1px solid white;float:left;margin-right:2px;background-color:white;\"></div>Not Run</div>"
+                        + "<div style='margin:3px'><div style=\"width:6px;height:14px;border:1px solid;float:left;margin-right:2px;background-color:cyan;\"></div><span>Successes</span></div>\n"
+                        + "<div style='margin:3px'><div style=\"width:6px;height:14px;border:1px solid;float:left;margin-right:2px;background-color:coral;\"></div><span>Failures</span></div>\n"
+                ));
+            legendRowPanel.getElement().addClassName("tabConfigRow");
+            destinationPanel.add(legendRowPanel);
+
             return true;
         }
         return false;
@@ -106,14 +118,16 @@ public abstract class ToolWindowWithMenu extends ToolWindow {
           }
     }
 
-    private TabConfigTreeItem flattenedTabConfig(TabConfigTreeItem treeItem, TabConfig tabConfig) {
+    private TabConfigTreeItem flattenedTabConfig(Map<String, String> tcCodeMap, TabConfigTreeItem treeItem, TabConfig tabConfig) {
         if (tabConfig!=null) {
 
             if (treeItem==null) {
                 treeItem = new TabConfigTreeItem(tabConfig);
                 treeItem.setState(true);
                 treeItem.setText(tabConfig.getLabel());
-                treeItem.setHTML("<span class='gwt-TabBarItem' style='font-size:16px;background-color:"+ tabConfig.getDisplayColorCode()+"'><span style='margin:5px'>"+treeItem.getText()+"</span></span>");
+                treeItem.setHTML("<span class='gwt-TabBarItem' style='font-size:16px;background-color:#D0E4F6'><span style='margin:5px'>"+treeItem.getText()+"</span></span>");
+                if (tabConfig.getType()!=null)
+                    tcCodeMap.put(tabConfig.getType(), tabConfig.getTcCode());
 //                tabConfig.getDisplayColorCode()
             }
 
@@ -122,14 +136,46 @@ public abstract class ToolWindowWithMenu extends ToolWindow {
                 for (TabConfig tc : tabConfig.getChildTabConfigs()) {
                     TabConfigTreeItem ti = new TabConfigTreeItem(tc);
                     ti.setState(true);
-                    ti.setHTML("<span style='font-size:14px;'>" + tc.getLabel() + "</span>");
+
+                    if (tabConfig.getType()!=null)
+                        tcCodeMap.put(tabConfig.getType(), tabConfig.getTcCode());
+                    if (tc.getType()!=null)
+                        tcCodeMap.put(tc.getType(), tc.getTcCode());
+
+                    FlowPanel flowPanel = new FlowPanel();
+                    HTML statsBar = new HTML();
+                    flowPanel.add(statsBar);
+                    if (!tc.hasChildren()) {
+
+//                        Window.alert(""+tcCodeMap.get("actor") + tcCodeMap.get("profile") + tcCodeMap.get("option"));
+
+                        if (tcCodeMap.get("actor")!=null) {
+                            ActorOption actorOption = new ActorOption(tcCodeMap.get("actor"));
+                            if (tcCodeMap.get("profile")!=null) {
+                                actorOption.setProfileId(tcCodeMap.get("profile"));
+
+                                if (tcCodeMap.get("option")!=null) {
+                                    actorOption.setOptionId(tcCodeMap.get("option"));
+
+                                    setTestStatistics(statsBar, actorOption);
+
+                                }
+
+                            }
+
+                        }
+                    }
+
+                    HTML label = new HTML("<span style='font-size:14px;'>" + tc.getLabel() + "</span>");
+                    flowPanel.add(label);
+                    ti.setWidget(flowPanel);
                     ti.setIndex(idx++);
 
                     if (treeItem!=null)
                         treeItem.addItem(ti);
 
                     if (tc.hasChildren()) {
-                        flattenedTabConfig(ti, tc);
+                        flattenedTabConfig(tcCodeMap, ti, tc);
                     }
                 }
 
@@ -138,6 +184,8 @@ public abstract class ToolWindowWithMenu extends ToolWindow {
                 TabConfigTreeItem ti = new TabConfigTreeItem(tabConfig);
                 ti.setState(true);
                 ti.setHTML("<span style='font-size:14px;'>" + tabConfig.getLabel() + "</span>");
+                if (tabConfig.getType()!=null)
+                    tcCodeMap.put(tabConfig.getType(), tabConfig.getTcCode());
 
                 return ti;
             }

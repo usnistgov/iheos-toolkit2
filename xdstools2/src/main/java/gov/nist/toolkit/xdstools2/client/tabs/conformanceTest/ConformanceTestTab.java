@@ -172,7 +172,7 @@ public class ConformanceTestTab extends ToolWindowWithMenu implements TestRunner
 
 
 
-	private List<TestOverviewDTO> testOverviews(ActorOption actorOption) {
+	private List<TestOverviewDTO> testOverviews(Map<ActorOption, List<TestInstance>> testsPerActorOption, Map<TestInstance, TestOverviewDTO> testOverviewDTOs, ActorOption actorOption) {
 		List<TestInstance> testsForThisActorOption = testsPerActorOption.get(actorOption);
 		List<TestOverviewDTO> overviews = new ArrayList<>();
 		for (TestOverviewDTO dto : testOverviewDTOs.values()) {
@@ -229,7 +229,7 @@ public class ConformanceTestTab extends ToolWindowWithMenu implements TestRunner
 		if (dto != null)
 			dto.setRun(false);
 //		testOverviewDTOs.remove(testInstance);
-		updateTestsOverviewHeader(currentActorOption);
+		updateTestsOverviewHeader(testsPerActorOption, testOverviewDTOs, testStatistics, currentActorOption);
 	}
 
 	// overwrites existing status
@@ -243,9 +243,17 @@ public class ConformanceTestTab extends ToolWindowWithMenu implements TestRunner
 	 * updates the build since it could not be constructed correctly at first.
 	 * This must be called after testCollectionDefinitionDAOs is initialized.
 	 */
-	private void updateTestsOverviewHeader(ActorOption actorOption) {
-		Collection<TestOverviewDTO> items = testOverviews(actorOption);
-		resetStatistics(items.size());
+	private void updateTestsOverviewHeader(Map<ActorOption, List<TestInstance>> testsPerActorOption, Map<TestInstance, TestOverviewDTO> testOverviewDTOs, TestStatistics testStatistics, ActorOption actorOption) {
+		updateTestStatistics(testsPerActorOption, testOverviewDTOs, testStatistics, actorOption);
+
+		// Display testStatus with statistics
+		testsHeaderView.allowRun(allowRun());
+		testsHeaderView.update(testStatistics, currentActorTypeDescription + " - " + getCurrentOptionTitle());
+	}
+
+	private void updateTestStatistics(Map<ActorOption, List<TestInstance>> testsPerActorOption, Map<TestInstance, TestOverviewDTO> testOverviewDTOs, TestStatistics testStatistics, ActorOption actorOption) {
+		Collection<TestOverviewDTO> items = testOverviews(testsPerActorOption, testOverviewDTOs, actorOption);
+		resetStatistics(testStatistics,items.size());
 		for (TestOverviewDTO testOverview : items) {
 			if (testOverview.isRun()) {
 				if (testOverview.isPass()) {
@@ -255,10 +263,61 @@ public class ConformanceTestTab extends ToolWindowWithMenu implements TestRunner
 				}
 			}
 		}
+	}
 
-		// Display testStatus with statistics
-		testsHeaderView.allowRun(allowRun());
-		testsHeaderView.update(testStatistics, currentActorTypeDescription + " - " + getCurrentOptionTitle());
+	public void setTestStatistics(final HTML statsBar,  final ActorOption actorOption) {
+		final TestStatistics testStatistics = new TestStatistics();
+
+	    final Map<TestInstance, TestOverviewDTO> myTestOverviewDTOs = new HashMap<>();
+		final Map<ActorOption, List<TestInstance>> myTestsPerActorOption = new HashMap<>();
+		actorOption.loadTests(new AsyncCallback<List<TestInstance>>() {
+			@Override
+			public void onFailure(Throwable throwable) {
+				new PopupMessage("getTestStatistics: " + throwable.getMessage());
+			}
+
+			@Override
+			public void onSuccess(List<TestInstance> testInstances) {
+				myTestsPerActorOption.put(actorOption, testInstances);
+
+				new GetTestsOverviewCommand() {
+					@Override
+					public void onComplete(List<TestOverviewDTO> testOverviews) {
+						for (TestOverviewDTO testOverview : testOverviews) {
+							myTestOverviewDTOs.put(testOverview.getTestInstance(), testOverview);
+						}
+
+						updateTestStatistics(myTestsPerActorOption, myTestOverviewDTOs, testStatistics, actorOption);
+
+						if (testStatistics.getNotRun() != testStatistics.getTestCount()) { // Don't show anything if not run is 100%
+							String htmlStr = "<div style=\"width:6px;height:14px;border:1px solid;float:left;margin-right:2px\">\n";
+							if (testStatistics.getSuccesses()==testStatistics.getTestCount()) {
+								htmlStr += "<div style=\"background-color:cyan;height:100%\"></div>\n";
+							} else if (testStatistics.getFailures()==testStatistics.getTestCount()) {
+								htmlStr += "<div style=\"background-color:coral;height:100%\"></div>\n";
+							} else {
+								htmlStr +=
+										((testStatistics.getNotRun() > 0) ? "<div style=\"background-color:white;height:" + ((((float)testStatistics.getNotRun() / (float)testStatistics.getTestCount()) >= .5) ? "66.66%" : "33.33%") + "\"></div>\n" : "") +
+
+												(testStatistics.getSuccesses()>0?
+										"<div style=\"background-color:cyan;height:" + ( ((((float)testStatistics.getSuccesses() / (float)testStatistics.getTestCount()) >= .5) ? "66.66%" : "33.33%")) + "\"></div>\n"
+												:"") +
+												(testStatistics.getFailures()>0?
+										"<div style=\"background-color:coral;height:" + ( ((((float)testStatistics.getFailures() / (float)testStatistics.getTestCount()) >= .5) ? "66.66%" : "33.33%")) + "\"></div>\n"
+                                                :"") +
+										"</div>\n";
+							}
+							htmlStr += "</div>\n";
+							statsBar.setHTML(htmlStr);
+						}
+
+					}
+				}.run(new GetTestsOverviewRequest(getCommandContext(), testInstances));
+
+			}
+		});
+
+
 	}
 
 	private String getCurrentOptionTitle() {
@@ -309,7 +368,7 @@ public class ConformanceTestTab extends ToolWindowWithMenu implements TestRunner
 		}.run(getCommandContext());
 	}
 
-	private void resetStatistics(int testcount) {
+	private void resetStatistics(TestStatistics testStatistics, int testcount) {
 		testStatistics.clear();
 		testStatistics.setTestCount(testcount);
 	}
@@ -629,7 +688,7 @@ public class ConformanceTestTab extends ToolWindowWithMenu implements TestRunner
 					TestDisplay testDisplay = testDisplayGroup.display(testOverview, diagramDisplay);
 					testsPanel.add(testDisplay.asWidget());
 				}
-				updateTestsOverviewHeader(currentActorOption);
+				updateTestsOverviewHeader(testsPerActorOption, testOverviewDTOs, testStatistics, currentActorOption);
 
 				mainView.clearLoadingMessage();
 
@@ -760,7 +819,7 @@ public class ConformanceTestTab extends ToolWindowWithMenu implements TestRunner
 						updateTestOverview(testOverviewDTO);
 						InteractionDiagramDisplay diagramDisplay = new InteractionDiagramDisplay(testOverviewDTO, testContext.getTestSession(), getSiteToIssueTestAgainst(), testContext.getSiteUnderTestAsSiteSpec().getName(),actorOption,null);
 						testDisplayGroup.display(testOverviewDTO, diagramDisplay);
-						updateTestsOverviewHeader(actorOption);
+						updateTestsOverviewHeader(testsPerActorOption, testOverviewDTOs, testStatistics, actorOption);
 					}
 				}.run(new DeleteSingleTestRequest(getCommandContext(),testInstance));
 			}
@@ -792,7 +851,7 @@ public class ConformanceTestTab extends ToolWindowWithMenu implements TestRunner
 					// returned testStatus of entire test
 					testDisplayGroup.display(testOverviewDTO, diagramDisplay);
 					Collection<TestOverviewDTO> overviews = updateTestOverview(testOverviewDTO);
-					updateTestsOverviewHeader(currentActorOption);
+					updateTestsOverviewHeader(testsPerActorOption, testOverviewDTOs, testStatistics, currentActorOption);
 					// Schedule next section to be run
 					if (sectionDone != null)
 						sectionDone.onDone(sectionInstance);
@@ -869,7 +928,7 @@ public class ConformanceTestTab extends ToolWindowWithMenu implements TestRunner
 					// returned testStatus of entire test
 					testDisplayGroup.display(testOverviewDTO, diagramDisplay);
 					updateTestOverview(testOverviewDTO);
-					updateTestsOverviewHeader(currentActorOption);
+					updateTestsOverviewHeader(testsPerActorOption, testOverviewDTOs, testStatistics, currentActorOption);
 					// Schedule next test to be run
 					if (testIterator != null)
 						testIterator.onDone(testInstance);

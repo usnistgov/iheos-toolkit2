@@ -9,7 +9,7 @@ import java.util.List;
  *
  */
 class UserDefinedTabBar extends TabBar  {
-    List<TabConfig> tabConfigs = new ArrayList<>();
+    final List<TabConfig> tabConfigs = new ArrayList<>();
 
     void clear() {
         tabConfigs.clear();
@@ -46,7 +46,4 @@ class UserDefinedTabBar extends TabBar  {
         return tabConfigs;
     }
 
-    public void setTabConfigs(List<TabConfig> tabConfigs) {
-        this.tabConfigs = tabConfigs;
-    }
 }
