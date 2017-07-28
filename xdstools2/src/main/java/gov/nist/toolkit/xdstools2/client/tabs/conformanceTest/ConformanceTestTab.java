@@ -289,23 +289,52 @@ public class ConformanceTestTab extends ToolWindowWithMenu implements TestRunner
 
 						updateTestStatistics(myTestsPerActorOption, myTestOverviewDTOs, testStatistics, actorOption);
 
-						if (testStatistics.getNotRun() != testStatistics.getTestCount()) { // Don't show anything if not run is 100%
+						if (testStatistics.getTestCount()>0 && testStatistics.getNotRun() != testStatistics.getTestCount()) { // Don't show anything if not run is 100%
 							String htmlStr = "<div style=\"width:6px;height:14px;border:1px solid;float:left;margin-right:2px\">\n";
 							if (testStatistics.getSuccesses()==testStatistics.getTestCount()) {
 								htmlStr += "<div style=\"background-color:cyan;height:100%\"></div>\n";
 							} else if (testStatistics.getFailures()==testStatistics.getTestCount()) {
 								htmlStr += "<div style=\"background-color:coral;height:100%\"></div>\n";
 							} else {
-								htmlStr +=
-										((testStatistics.getNotRun() > 0) ? "<div style=\"background-color:white;height:" + ((((float)testStatistics.getNotRun() / (float)testStatistics.getTestCount()) >= .5) ? "66.66%" : "33.33%") + "\"></div>\n" : "") +
+								float ts[] = new float[3];
+								ts[0] = (float)testStatistics.getNotRun() / (float)testStatistics.getTestCount();
+								ts[1] = (float)testStatistics.getSuccesses() / (float)testStatistics.getTestCount();
+								ts[2] = (float)testStatistics.getFailures() / (float)testStatistics.getTestCount();
 
-												(testStatistics.getSuccesses()>0?
-										"<div style=\"background-color:cyan;height:" + ( ((((float)testStatistics.getSuccesses() / (float)testStatistics.getTestCount()) >= .5) ? "66.66%" : "33.33%")) + "\"></div>\n"
-												:"") +
-												(testStatistics.getFailures()>0?
-										"<div style=\"background-color:coral;height:" + ( ((((float)testStatistics.getFailures() / (float)testStatistics.getTestCount()) >= .5) ? "66.66%" : "33.33%")) + "\"></div>\n"
-                                                :"") +
-										"</div>\n";
+								// Boost small values below 10% to make more visible
+								float boostVal = 0.0F;
+								for (int idx=0; idx < ts.length; idx++) {
+									if (ts[idx]>0 && ts[idx]<.1F) {
+										boostVal  += .1F;
+										ts[idx] = .1F;
+									}
+								}
+								// Compensate for boosting from the majority index
+								if (boostVal >0.0F) {
+									int majorityIdx = -1;
+									for (int idx = 0; idx < ts.length; idx++) {
+										if (ts[idx] >= .33F) {
+											if (majorityIdx==-1)  {
+												majorityIdx = idx;
+											} else {
+												if (ts[idx]>ts[majorityIdx]) {
+													majorityIdx=idx;
+												}
+											}
+										}
+									}
+									if (majorityIdx>-1)
+										ts[majorityIdx] -= boostVal ;
+								}
+
+
+								htmlStr +=
+										((testStatistics.getNotRun() > 0) ?
+												"<div style=\"background-color:white;height:" + ts[0]*100F + "%;\"></div>\n" : "") +
+										(testStatistics.getSuccesses()>0?
+												"<div style=\"background-color:cyan;height:" + ts[1]*100F  + "%;\"></div>\n"	:"") +
+										(testStatistics.getFailures()>0?
+												"<div style=\"background-color:coral;height:" + ts[2]*100F + "%;\"></div>\n" :"");
 							}
 							htmlStr += "</div>\n";
 							statsBar.setHTML(htmlStr);
