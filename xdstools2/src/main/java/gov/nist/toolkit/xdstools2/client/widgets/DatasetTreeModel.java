@@ -24,10 +24,12 @@ public abstract class DatasetTreeModel implements TreeViewModel {
     private static class Resource {
         private final String path;
         private final String name;
+        private final String type;
 
-        Resource(String path, String name) {
+        Resource(String path, String type, String name) {
             this.path = path;
             this.name = name;
+            this.type = type;
             GWT.log("Build Resource " + path);
         }
 
@@ -37,6 +39,10 @@ public abstract class DatasetTreeModel implements TreeViewModel {
 
         public String getPath() {
             return path;
+        }
+
+        public DatasetElement getDatasetElement() {
+            return new DatasetElement(name, path);
         }
     }
 
@@ -128,7 +134,7 @@ public abstract class DatasetTreeModel implements TreeViewModel {
                 String file = ele.getFile();
 
                 ResourceType resourceType = dataset.getResourceType(type);
-                resourceType.addResource(new Resource(getResourcePath(model.getName(), type, file), file));
+                resourceType.addResource(new Resource(getResourcePath(model.getName(), type, file), type, file));
             }
         }
     }
@@ -208,10 +214,10 @@ public abstract class DatasetTreeModel implements TreeViewModel {
 
         }
         void onClick(Context context, com.google.gwt.dom.client.Element parent, Resource resource, NativeEvent event, ValueUpdater<Resource> valueUpdater) {
-            model.doSelect(resource.getPath());
+            model.doSelect(resource.getDatasetElement());
         }
     }
 
-    protected abstract void doSelect(String path);
+    public abstract void doSelect(DatasetElement datasetElement);
 
 }

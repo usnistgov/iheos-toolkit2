@@ -5,12 +5,16 @@ import com.google.gwt.user.client.rpc.IsSerializable;
 import java.io.Serializable;
 
 /**
- *
+ * Reference to a resource in the EC/dataset collection
+ * which is referenced by File Installation.instance().datasets();
+ * path is an offset from that directory
  */
 public class DatasetElement implements Serializable, IsSerializable {
     private String name;
     private String type;
     private String file;
+
+    public DatasetElement() {}
 
     public DatasetElement(String name, String type, String file) {
         this.name = name;
@@ -18,37 +22,24 @@ public class DatasetElement implements Serializable, IsSerializable {
         this.file = file;
     }
 
-    /**
-     *
-     * @param path   type/file.ext format
-     */
-    public DatasetElement(String name, String path) {
-        this(name, part(path, 0), part(path, 1));
+
+    public String getPath() {
+        return name + "/" + type + "/" + file;
     }
 
-    public DatasetElement() {
+    public boolean isValid() {
+        return getParts().length == 3;
     }
 
-    private static String part(String data, int part) {
-        String[] parts = data.split("/");
-        if (parts.length <= part) return null;
-        return parts[part];
+    public String[] getParts() {
+        String[] parts = new String[3];
+        parts[0] = name;
+        parts[1] = type;
+        parts[2] = file;
+        return parts;
     }
 
-    public String getType() {
-        return type;
-    }
+    @Override
+    public String toString() { return getPath(); }
 
-    public String getFile() {
-        return file;
-    }
-
-
-    public void setType(String type) {
-        this.type = type;
-    }
-
-    public void setFile(String file) {
-        this.file = file;
-    }
 }

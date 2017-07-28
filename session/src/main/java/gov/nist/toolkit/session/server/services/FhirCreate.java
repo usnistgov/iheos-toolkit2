@@ -1,11 +1,11 @@
 package gov.nist.toolkit.session.server.services;
 
+import gov.nist.toolkit.datasets.shared.DatasetElement;
 import gov.nist.toolkit.installation.Installation;
 import gov.nist.toolkit.results.client.Result;
 import gov.nist.toolkit.results.client.TestInstance;
 import gov.nist.toolkit.session.server.Session;
 import gov.nist.toolkit.session.server.serviceManager.XdsTestServiceManager;
-import gov.nist.toolkit.session.shared.gov.nist.toolkit.session.shared.DatasetElement;
 import gov.nist.toolkit.sitemanagement.client.SiteSpec;
 
 import java.io.File;

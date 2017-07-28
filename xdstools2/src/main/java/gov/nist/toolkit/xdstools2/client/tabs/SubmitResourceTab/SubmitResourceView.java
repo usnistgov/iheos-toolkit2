@@ -6,6 +6,7 @@ import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.cellview.client.CellBrowser;
 import com.google.gwt.user.cellview.client.HasKeyboardSelectionPolicy;
 import com.google.gwt.user.client.ui.*;
+import gov.nist.toolkit.datasets.shared.DatasetElement;
 import gov.nist.toolkit.datasets.shared.DatasetModel;
 import gov.nist.toolkit.xdstools2.client.abstracts.AbstractView;
 import gov.nist.toolkit.xdstools2.client.abstracts.MessagePanel;
@@ -22,7 +23,6 @@ import java.util.Map;
 public class SubmitResourceView extends AbstractView<SubmitResourcePresenter> {
     private MessagePanel messagePanel = new MessagePanel();
     private VerticalPanel tabTopPanel = new VerticalPanel();
-    private String selectedResourcePath = "None";
     private HTML selected = new HTML();
     private FlexTable siteTable = new FlexTable();
     private SimplePanel datasetsPanel = new SimplePanel();
@@ -33,8 +33,6 @@ public class SubmitResourceView extends AbstractView<SubmitResourcePresenter> {
     private HTML resourceTypeLabel = new HTML("Resource Type");
     private HTML resourceLabel = new HTML("Resource");
 
-
-    private CellBrowser browser;
 
     public SubmitResourceView() {
         super();
@@ -63,7 +61,7 @@ public class SubmitResourceView extends AbstractView<SubmitResourcePresenter> {
 
         DecoratorPanel datasetDecoration = new DecoratorPanel();
         VerticalPanel datasetWrapper = new VerticalPanel();
-        HTML datasetTitle = new HTML("<br /><b>Send Resource:</b><br /><hr />");
+        HTML datasetTitle = new HTML("<br /><b>Select Resource:</b><br /><hr />");
         datasetWrapper.add(datasetTitle);
 
         HorizontalFlowPanel datasetCaption = new HorizontalFlowPanel();
@@ -101,6 +99,12 @@ public class SubmitResourceView extends AbstractView<SubmitResourcePresenter> {
     @Override
     protected void bindUI() {
 
+        runButton.addClickHandler(new ClickHandler() {
+            @Override
+            public void onClick(ClickEvent clickEvent) {
+                getPresenter().doRun();
+            }
+        });
     }
 
     void lateBindUI() {
@@ -108,17 +112,18 @@ public class SubmitResourceView extends AbstractView<SubmitResourcePresenter> {
     }
 
     void setData(List<DatasetModel> content) {
+
         DatasetTreeModel datasetTreeModel = new DatasetTreeModel() {
 
             @Override
-            protected void doSelect(String path) {
-                selectedResourcePath = path;
+            public void doSelect(DatasetElement datasetElement) {
+                getPresenter().doResourceSelected(datasetElement);
             }
         };
 
         datasetTreeModel.init(content);
 
-        browser = new CellBrowser(datasetTreeModel, null);
+        CellBrowser browser = new CellBrowser(datasetTreeModel, null);
         browser.setKeyboardSelectionPolicy(HasKeyboardSelectionPolicy.KeyboardSelectionPolicy.ENABLED);
         browser.setHeight("200px");
         browser.setWidth("640px");
@@ -143,7 +148,6 @@ public class SubmitResourceView extends AbstractView<SubmitResourcePresenter> {
             Button b = new Button(site.getName());
             b.setText(site.getName());
             b.setEnabled(site.isEnabled());
-//            b.removeStyleName("gwt-Button");
             siteButtons.add(b);
             siteTable.setWidget(row, col, b);
             col++;
@@ -184,5 +188,10 @@ public class SubmitResourceView extends AbstractView<SubmitResourcePresenter> {
     }
 
     MessagePanel getMessagePanel() { return messagePanel; }
+
+    void setRunEnabled(boolean enabled) {
+        runButton.setEnabled(enabled);
+        viewResourceButton.setEnabled((enabled));
+    }
 
 }
