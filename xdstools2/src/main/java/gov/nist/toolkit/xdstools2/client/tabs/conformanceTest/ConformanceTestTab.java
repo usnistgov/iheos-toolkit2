@@ -426,8 +426,7 @@ public class ConformanceTestTab extends ToolWindowWithMenu implements TestRunner
 				mainView.getProfileTabBar().clear();
 				mainView.getOptionsTabBar().clear();
 				mainView.getProfileTabBar().display(ConformanceTestTab.super.tabConfig, "Profiles", newActorTypeId);
-//				Window.alert("" + mainView.getProfileTabBar().tabConfigs.size());
-//				mainView.getOptionsTabBar().display(newActorTypeId); // . TODO: This method adds option tabs and selects an option
+				selectProfileAndOptionTab();
 			}
 		}
 	}
@@ -503,39 +502,42 @@ public class ConformanceTestTab extends ToolWindowWithMenu implements TestRunner
 
 			mainView.getProfileTabBar().clear();
 			mainView.getProfileTabBar().display(ConformanceTestTab.super.tabConfig, "Profiles", currentActorOption.getActorTypeId());
-
-			// If profile is not provided and there is only one profile, select it.
-			UserDefinedTabBar profileTabBar = getMainView().getProfileTabBar();
-			if (profileTabBar!=null && currentActorOption.getProfileId()==null) {
-				if (profileTabBar.getTabConfigs().size()==1) {
-					 currentActorOption.setProfileId(profileTabBar.getTabConfigs().get(0).getTcCode());
-				}
-			}
-
-			if (currentActorOption.getProfileId()!=null) {
-				selectTab(currentActorOption.getProfileId(), profileTabBar);
-
-				mainView.getOptionsTabBar().clear();
-				mainView.getOptionsTabBar().display(currentActorOption.getTabConfig(), "Options", currentActorOption.getProfileId());
-
-				// If option is not provided, automatically select the first tab.
-				String optionCode = currentActorOption.getOptionId();
-				if (optionCode==null) {
-					if (mainView.getOptionsTabBar().getTabConfigs().size()>0) {
-						currentActorOption.setOptionId(mainView.getOptionsTabBar().getTabConfigs().get(0).getTcCode());
-					}
-				}
-
-				if (currentActorOption.getOptionId()!=null) {
-					selectTab(currentActorOption.getOptionId(), getMainView().getOptionsTabBar());
-				}
-			}
+			selectProfileAndOptionTab();
 
 
 		}
 
 		return foundSelectedActorTab;
 
+	}
+
+	private void selectProfileAndOptionTab() {
+		// If profile is not provided and there is only one profile, select it.
+		UserDefinedTabBar profileTabBar = getMainView().getProfileTabBar();
+		if (profileTabBar!=null && currentActorOption.getProfileId()==null) {
+            if (profileTabBar.getTabConfigs().size()==1) {
+                 currentActorOption.setProfileId(profileTabBar.getTabConfigs().get(0).getTcCode());
+            }
+        }
+
+		if (currentActorOption.getProfileId()!=null) {
+            selectTab(currentActorOption.getProfileId(), profileTabBar);
+
+            mainView.getOptionsTabBar().clear();
+            mainView.getOptionsTabBar().display(currentActorOption.getTabConfig(), "Options", currentActorOption.getProfileId());
+
+            // If option is not provided, automatically select the first tab.
+            String optionCode = currentActorOption.getOptionId();
+            if (optionCode==null) {
+                if (mainView.getOptionsTabBar().getTabConfigs().size()>0) {
+                    currentActorOption.setOptionId(mainView.getOptionsTabBar().getTabConfigs().get(0).getTcCode());
+                }
+            }
+
+            if (currentActorOption.getOptionId()!=null) {
+                selectTab(currentActorOption.getOptionId(), getMainView().getOptionsTabBar());
+            }
+        }
 	}
 
 	private void selectTab(String tcCode, UserDefinedTabBar tabBar) {
