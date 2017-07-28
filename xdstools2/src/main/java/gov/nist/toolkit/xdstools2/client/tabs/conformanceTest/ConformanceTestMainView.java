@@ -3,6 +3,7 @@ package gov.nist.toolkit.xdstools2.client.tabs.conformanceTest;
 import com.google.gwt.dom.client.Style;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HTML;
+import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Panel;
 import com.google.gwt.user.client.ui.TabBar;
 import gov.nist.toolkit.xdstools2.client.ToolWindow;
@@ -20,7 +21,7 @@ public class ConformanceTestMainView {
     private final TabBar actorTabBar = new TabBar();            // tab bar at the top for selecting actor types
     private final UserDefinedTabBar profileTabBar = new UserDefinedTabBar();
     private final UserDefinedTabBar optionsTabBar = new UserDefinedTabBar();
-//    private final OptionsTabBar optionsTabBar;
+    private final Image menuImage = new Image("icons2/menu-32.png");
 
     private HTML testSessionDescription = new HTML();
     private FlowPanel testSessionDescriptionPanel = new FlowPanel();
@@ -35,6 +36,9 @@ public class ConformanceTestMainView {
         toolPanel.add(sitesPanel);
 
         HorizontalFlowPanel actorpanel = new HorizontalFlowPanel();
+        menuImage.getElement().getStyle().setMarginLeft(98, Style.Unit.PCT);
+        menuImage.setAltText("Conformance Test Index");
+        toolPanel.add(menuImage);
         HTML actorToTest = new HTML("Actor to test");
 //        actorToTest.addStyleName("section-title");
         actorpanel.add(actorToTest);
@@ -104,5 +108,9 @@ public class ConformanceTestMainView {
 
     public FlowPanel getTabBarPanel() {
         return tabBarPanel;
+    }
+
+    public Image getMenuImage() {
+        return menuImage;
     }
 }

@@ -156,8 +156,9 @@ public abstract class ToolWindowWithMenu extends ToolWindow {
 
                                 if (tcCodeMap.get("option")!=null) {
                                     actorOption.setOptionId(tcCodeMap.get("option"));
-
-                                    setTestStatistics(statsBar, actorOption);
+                                    try {
+                                        setTestStatistics(statsBar, actorOption);
+                                    } catch (Throwable t) {}
 
                                 }
 

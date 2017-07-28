@@ -133,6 +133,20 @@ public class ConformanceTestTab extends ToolWindowWithMenu implements TestRunner
 		mainView.getProfileTabBar().addSelectionHandler(new ProfileSelectionHandler());
 		mainView.getOptionsTabBar().addSelectionHandler(new OptionSelectionHandler());
 
+		mainView.getMenuImage().addClickHandler(new ClickHandler() {
+			@Override
+			public void onClick(ClickEvent clickEvent) {
+				mainView.getTabBarPanel().setVisible(false);
+				getMainView().getInitializationPanel().clear();
+				getMainView().getTestsPanel().clear();
+				mainView.getProfileTabBar().clear();
+				mainView.getOptionsTabBar().clear();
+
+				displayMenu(mainView.getTestsPanel());
+			}
+		});
+
+
 		// 1. TODO: get the tabConfig here {
 		new GetTabConfigCommand() {
 			@Override
