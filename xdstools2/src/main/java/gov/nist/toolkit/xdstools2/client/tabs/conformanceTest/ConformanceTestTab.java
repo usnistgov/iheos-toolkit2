@@ -133,6 +133,8 @@ public class ConformanceTestTab extends ToolWindowWithMenu implements TestRunner
 		mainView.getProfileTabBar().addSelectionHandler(new ProfileSelectionHandler());
 		mainView.getOptionsTabBar().addSelectionHandler(new OptionSelectionHandler());
 
+		mainView.getMenuImage().addStyleName("iconbutton");
+		mainView.getMenuImage().setTitle("Index");
 		mainView.getMenuImage().addClickHandler(new ClickHandler() {
 			@Override
 			public void onClick(ClickEvent clickEvent) {

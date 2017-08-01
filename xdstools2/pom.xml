@@ -488,8 +488,6 @@
 		</filters>
 		<!-- End profile part 1/2 -->
 
-
-
 		<plugins>
 			<plugin>
 				<artifactId>maven-compiler-plugin</artifactId>
@@ -652,6 +650,17 @@
 					<dependencyLocationsEnabled>false</dependencyLocationsEnabled>
 				</configuration>
 			</plugin>
+
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-surefire-plugin</artifactId>
+				<configuration>
+					<systemPropertyVariables>
+						<confTestsTabsConfigFile>${basedir}/src/main/webapp/toolkitx/tool-tab-configs/ConfTestsTabs.xml</confTestsTabsConfigFile>
+					</systemPropertyVariables>
+				</configuration>
+			</plugin>
+
 		</plugins>
 		<!-- Begin profile part 2/2 -->
 		<resources>
