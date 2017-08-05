@@ -3,7 +3,6 @@ package gov.nist.toolkit.datasets.server
 import gov.nist.toolkit.datasets.shared.DatasetElement
 import gov.nist.toolkit.datasets.shared.DatasetModel
 import gov.nist.toolkit.installation.Installation
-
 /**
  *
  */
@@ -31,21 +30,28 @@ class DatasetFactory {
         File datasetDir = new File(root, name)
         if (!datasetDir.exists() || !datasetDir.isDirectory()) return model
 
-        list(model, name, datasetDir.absolutePath, datasetDir)
+        scanTypes(model, name, datasetDir.absolutePath, datasetDir)
         model
     }
 
     static DatasetModel getDataset(String name) {
-//        File root = new File(Installation.instance().datasets(), name)
         File root = Installation.instance().datasets()
         getDataset(root, name)
     }
 
-    static void list(DatasetModel model, String name, String root, File dir) {
+    static void scanTypes(DatasetModel model, String name, String root, File dir) {
+        assert dir.exists()
+        assert dir.isDirectory()
         dir.listFiles().each { File f ->
-            if (f.isDirectory()) list(model, name, root, f)
-            else if (f.path.endsWith('.xml') || f.path.endsWith('.json')) {
-                model.add(new DatasetElement(name, f.absolutePath - root - '/'))
+            if (f.isDirectory()) scanResources(model, name, root, f)
+        }
+    }
+
+    static void scanResources(DatasetModel model, String name, String root, File resourceTypeDir) {
+        String type = resourceTypeDir.name
+        resourceTypeDir.listFiles().each { File file ->
+            if (file.path.endsWith('.xml') || file.path.endsWith('.json')) {
+                model.add(new DatasetElement(name, type, file.absolutePath - root - '/' - type - '/'))
             }
         }
     }

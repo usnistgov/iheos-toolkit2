@@ -42,7 +42,7 @@ public abstract class DatasetTreeModel implements TreeViewModel {
         }
 
         public DatasetElement getDatasetElement() {
-            return new DatasetElement(name, path);
+            return new DatasetElement(name, type, path);
         }
     }
 

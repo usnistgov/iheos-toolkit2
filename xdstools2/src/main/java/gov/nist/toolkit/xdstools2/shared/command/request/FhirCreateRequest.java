@@ -20,7 +20,7 @@ public class FhirCreateRequest extends CommandContext {
         this.datasetElement = datasetElement;
     }
 
-    public DatasetElement getResourcePath() {
+    public DatasetElement getDatasetElement() {
         return datasetElement;
     }
 

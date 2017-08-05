@@ -1550,13 +1550,15 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements
     @Override
     public List<DatasetModel> getAllDatasets(CommandContext context) throws Exception {
         installCommandContext(context);
+        logger.debug(sessionID + ": getAllDatasets()");
         return DatasetFactory.getAllDatasets();
     }
 
     @Override
     public List<Result> fhirCreate(FhirCreateRequest request) throws Exception {
         installCommandContext(request);
-        return new FhirServiceManager(session()).create(request.getSite(), request.getResourcePath(), request.getUrlExtension());
+        logger.debug(sessionID + ": fhirCreate()");
+        return new FhirServiceManager(session()).create(request.getSite(), request.getDatasetElement());
     }
 
 }

@@ -17,7 +17,7 @@ class FhirServiceManager {
         this.session = session
     }
 
-    List<Result> create(SiteSpec site, DatasetElement datasetElement, String urlExtension) {
-        return new FhirCreate(session).run(site, datasetElement, urlExtension);
+    List<Result> create(SiteSpec site, DatasetElement datasetElement) {
+        return new FhirCreate(session).run(site, datasetElement);
     }
 }

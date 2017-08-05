@@ -27,7 +27,7 @@ public class FhirCreate {
         this.session = session;
     }
 
-    public List<Result> run(SiteSpec site, DatasetElement datasetElement, String urlExtension) {
+    public List<Result> run(SiteSpec site, DatasetElement datasetElement) {
         try {
             session.setSiteSpec(site);
             session.transactionSettings.assignPatientId = false;
@@ -35,8 +35,8 @@ public class FhirCreate {
             List<String> sections = new ArrayList<>();
             sections.add("create");
             Map<String, String> params = new HashMap<String, String>();
-            params.put("$ResourceFile$", new File(Installation.instance().datasets(), datasetElement.getPath()).getPath());
-            params.put("$UrlExtension$", urlExtension);
+            params.put("$ResourceFile$", new File(Installation.instance().datasets(), datasetElement.getFile()).getPath());
+            params.put("$UrlExtension$", '/' + datasetElement.getType());
 
             return asList(new XdsTestServiceManager(session).xdstest(testInstance, sections, params, null, null, true));
         } catch (Exception e) {

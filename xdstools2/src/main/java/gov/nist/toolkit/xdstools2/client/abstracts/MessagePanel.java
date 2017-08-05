@@ -22,7 +22,7 @@ public class MessagePanel extends DecoratorPanel {
         clearButton.addClickHandler(new ClickHandler() {
             @Override
             public void onClick(ClickEvent clickEvent) {
-                clear();
+                clearMessages();
             }
         });
     }

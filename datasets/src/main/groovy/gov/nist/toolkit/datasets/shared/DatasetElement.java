@@ -42,4 +42,11 @@ public class DatasetElement implements Serializable, IsSerializable {
     @Override
     public String toString() { return getPath(); }
 
+    public String getType() {
+        return type;
+    }
+
+    public String getFile() {
+        return file;
+    }
 }
