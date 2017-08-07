@@ -37,6 +37,9 @@ public abstract class ToolWindowWithMenu extends ToolWindow {
 
             int colWidth = 100 / menuCols;
             int menuCt = 0;
+            /**
+             * A row of actor/option trees
+             */
             boolean rowAdded = false;
 
             FlowPanel rowPanel = new FlowPanel();
@@ -88,9 +91,9 @@ public abstract class ToolWindowWithMenu extends ToolWindow {
             // Add legend row
             FlowPanel legendRowPanel = new FlowPanel();
                 legendRowPanel.add(new HTML("<div>Legend:</div>"
-                        + "<div style='margin:3px'><div style=\"width:6px;height:14px;border:1px solid white;float:left;margin-right:2px;background-color:white;\"></div>Not Run</div>"
-                        + "<div style='margin:3px'><div style=\"width:6px;height:14px;border:1px solid;float:left;margin-right:2px;background-color:cyan;\"></div><span>Successes</span></div>\n"
-                        + "<div style='margin:3px'><div style=\"width:6px;height:14px;border:1px solid;float:left;margin-right:2px;background-color:coral;\"></div><span>Failures</span></div>\n"
+                        + "<div style='margin:3px'><div style=\"width:10px;height:14px;border:1px solid white;float:left;margin-right:2px;background-color:white;\"></div>Not Run</div>"
+                        + "<div style='margin:3px'><div style=\"width:10px;height:14px;border:1px solid;float:left;margin-right:2px;background-color:cyan;\"></div><span>Successes</span></div>\n"
+                        + "<div style='margin:3px'><div style=\"width:10px;height:14px;border:1px solid;float:left;margin-right:2px;background-color:coral;\"></div><span>Failures</span></div>\n"
                 ));
             legendRowPanel.getElement().addClassName("tabConfigRow");
             destinationPanel.add(legendRowPanel);

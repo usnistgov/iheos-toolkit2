@@ -286,9 +286,15 @@ public class ConformanceTestTab extends ToolWindowWithMenu implements TestRunner
 
 	    final Map<TestInstance, TestOverviewDTO> myTestOverviewDTOs = new HashMap<>();
 		final Map<ActorOption, List<TestInstance>> myTestsPerActorOption = new HashMap<>();
+
+		String loadImgHtmlStr = "<img style=\"float:left;\" src=\"icons2/ajax-loader.gif\"/>";
+
+		statsBar.setHTML(loadImgHtmlStr);
+
 		actorOption.loadTests(new AsyncCallback<List<TestInstance>>() {
 			@Override
 			public void onFailure(Throwable throwable) {
+				statsBar.setVisible(false);
 				new PopupMessage("getTestStatistics: " + throwable.getMessage());
 			}
 
@@ -306,7 +312,7 @@ public class ConformanceTestTab extends ToolWindowWithMenu implements TestRunner
 						updateTestStatistics(myTestsPerActorOption, myTestOverviewDTOs, testStatistics, actorOption);
 
 						if (testStatistics.getTestCount()>0 && testStatistics.getNotRun() != testStatistics.getTestCount()) { // Don't show anything if not run is 100%
-							String htmlStr = "<div style=\"width:6px;height:14px;border:1px solid;float:left;margin-right:2px\">\n";
+							String htmlStr = "<div style=\"width:10px;height:14px;border:1px solid;float:left;margin-right:2px\">\n";
 							if (testStatistics.getSuccesses()==testStatistics.getTestCount()) {
 								htmlStr += "<div style=\"background-color:cyan;height:100%\"></div>\n";
 							} else if (testStatistics.getFailures()==testStatistics.getTestCount()) {
@@ -317,16 +323,17 @@ public class ConformanceTestTab extends ToolWindowWithMenu implements TestRunner
 								ts[1] = (float)testStatistics.getSuccesses() / (float)testStatistics.getTestCount();
 								ts[2] = (float)testStatistics.getFailures() / (float)testStatistics.getTestCount();
 
-								// Boost small values below 10% to make more visible
-								float boostVal = 0.0F;
+								// Boost small values below $boostVal to make more visible
+								float adjustedVal = 0.0F;
+								float boostVal = .1F;
 								for (int idx=0; idx < ts.length; idx++) {
-									if (ts[idx]>0 && ts[idx]<.1F) {
-										boostVal  += .1F;
-										ts[idx] = .1F;
+									if (ts[idx]>0 && ts[idx]<boostVal) {
+										adjustedVal  += boostVal;
+										ts[idx] = boostVal;
 									}
 								}
 								// Compensate for boosting from the majority index
-								if (boostVal >0.0F) {
+								if (adjustedVal >0.0F) {
 									int majorityIdx = -1;
 									for (int idx = 0; idx < ts.length; idx++) {
 										if (ts[idx] >= .33F) {
@@ -340,7 +347,7 @@ public class ConformanceTestTab extends ToolWindowWithMenu implements TestRunner
 										}
 									}
 									if (majorityIdx>-1)
-										ts[majorityIdx] -= boostVal ;
+										ts[majorityIdx] -= adjustedVal ;
 								}
 
 
@@ -354,8 +361,10 @@ public class ConformanceTestTab extends ToolWindowWithMenu implements TestRunner
 							}
 							htmlStr += "</div>\n";
 							statsBar.setHTML(htmlStr);
+						} else {
+							statsBar.setHTML("");
+							statsBar.setVisible(false);
 						}
-
 					}
 				}.run(new GetTestsOverviewRequest(getCommandContext(), testInstances));
 
