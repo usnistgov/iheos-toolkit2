@@ -6,6 +6,7 @@ import gov.nist.toolkit.simcommon.client.SimulatorStats;
 public class SimInfo {
    private SimulatorConfig simulatorConfig;
    private SimulatorStats simulatorStats;
+   private String createdDtHl7fmt;
    private String lastAccessedDt;
    private String lastAccessedDtHl7fmt;
    private String lastTransaction;
@@ -56,5 +57,13 @@ public class SimInfo {
 
     public void setLastTransaction(String lastTransaction) {
         this.lastTransaction = lastTransaction;
+    }
+
+    public String getCreatedDtHl7fmt() {
+        return createdDtHl7fmt;
+    }
+
+    public void setCreatedDtHl7fmt(String createdDtHl7fmt) {
+        this.createdDtHl7fmt = createdDtHl7fmt;
     }
 }

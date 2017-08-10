@@ -5,15 +5,14 @@ import com.google.gwt.cell.client.Cell;
 import com.google.gwt.cell.client.CompositeCell;
 import com.google.gwt.cell.client.FieldUpdater;
 import com.google.gwt.cell.client.HasCell;
-import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Style;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.resources.client.ClientBundle;
-import com.google.gwt.resources.client.ImageResource;
+import com.google.gwt.i18n.client.DateTimeFormat;
 import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
 import com.google.gwt.user.cellview.client.CellTable;
 import com.google.gwt.user.cellview.client.Column;
+import com.google.gwt.user.cellview.client.ColumnSortEvent;
 import com.google.gwt.user.cellview.client.SimplePager;
 import com.google.gwt.user.cellview.client.TextColumn;
 import com.google.gwt.user.client.Window;
@@ -65,8 +64,11 @@ import gov.nist.toolkit.xdstools2.shared.command.request.GetSimulatorStatsReques
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Comparator;
+import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 
 public class SimulatorControlTab extends GenericQueryTab {
 
@@ -94,12 +96,14 @@ public class SimulatorControlTab extends GenericQueryTab {
     public SimulatorControlTab() {  super(new FindDocumentsSiteActorManager());	}
 
 
+    /*
     interface ScTabResources extends ClientBundle {
         public static final ScTabResources INSTANCE = GWT.create(ScTabResources.class);
 
         @Source("icons/log-file-format-symbol.png")
         ImageResource getLogIcon();
     }
+    */
 
 //    ScTabResources scTabResources = GWT.create(ScTabResources.class);
 
@@ -214,6 +218,27 @@ public class SimulatorControlTab extends GenericQueryTab {
                 return simInfo.getSimulatorConfig().getDefaultName();
             }
         };
+        // Add a ColumnSortEvent.ListHandler to connect sorting to the
+        // java.util.List.
+        ColumnSortEvent.ListHandler<SimInfo> columnSortHandler = new ColumnSortEvent.ListHandler<SimInfo>(
+                dataProvider.getList());
+        newSimTable.addColumnSortHandler(columnSortHandler);
+
+        nameColumn.setSortable(true);
+        columnSortHandler.setComparator(nameColumn,
+                new Comparator<SimInfo>() {
+                    public int compare(SimInfo o1, SimInfo o2) {
+                        if (o1 == o2) {
+                            return 0;
+                        }
+
+                        // Compare the name columns.
+                        if (o1 != null) {
+                            return (o2 != null) ? o1.getSimulatorConfig().getDefaultName().compareTo(o2.getSimulatorConfig().getDefaultName()) : 1;
+                        }
+                        return -1;
+                    }
+                });
 
         TextColumn<SimInfo> idColumn = new TextColumn<SimInfo>() {
             @Override
@@ -228,6 +253,24 @@ public class SimulatorControlTab extends GenericQueryTab {
                 return simInfo.getSimulatorConfig().get(SimulatorProperties.creationTime).asString();
             }
         };
+        createdDtColumn.setSortable(true);
+        createdDtColumn.setDefaultSortAscending(false);
+        columnSortHandler.setComparator(createdDtColumn,
+                new Comparator<SimInfo>() {
+                    public int compare(SimInfo o1, SimInfo o2) {
+                        if (o1 == o2) {
+                            return 0;
+                        }
+
+                        // Compare the created dt columns.
+                        if (o1.getCreatedDtHl7fmt() != null) {
+                            return (o2.getCreatedDtHl7fmt() != null) ? o1.getCreatedDtHl7fmt().compareTo(o2.getCreatedDtHl7fmt()) : 1;
+                        }
+                        return -1;
+                    }
+                });
+
+
 
         TextColumn<SimInfo> lastTranColumn = new TextColumn<SimInfo>() {
             @Override
@@ -260,6 +303,29 @@ public class SimulatorControlTab extends GenericQueryTab {
                 return null;
             }
         };
+        pifPortColumn.setSortable(true);
+        pifPortColumn.setDefaultSortAscending(false);
+        columnSortHandler.setComparator(pifPortColumn, new Comparator<SimInfo>() {
+            public int compare(SimInfo o1, SimInfo o2) {
+                if (o1 == o2) {
+                    return 0;
+                }
+
+                // Compare the pif port columns.
+                SimulatorConfigElement o1pif = o1.getSimulatorConfig().get(SimulatorProperties.PIF_PORT);
+                SimulatorConfigElement o2pif = o2.getSimulatorConfig().get(SimulatorProperties.PIF_PORT);
+
+                if (o1pif==o2pif)
+                    return 0;
+
+
+
+                if (o1pif != null) {
+                    return (o2pif != null) ? new Integer(o1pif.asString()).compareTo(new Integer(o2pif.asString())) : 1;
+                }
+                return -1;
+            }
+        });
 
         TextColumn<SimInfo> ssCtColumn = new TextColumn<SimInfo>() {
             @Override
@@ -280,6 +346,46 @@ public class SimulatorControlTab extends GenericQueryTab {
                 return null;
             }
         };
+        desCtColumn.setSortable(true);
+        desCtColumn.setDefaultSortAscending(false);
+        columnSortHandler.setComparator(desCtColumn, new Comparator<SimInfo>() {
+            public int compare(SimInfo o1, SimInfo o2) {
+                if (o1 == o2) {
+                    return 0;
+                }
+
+
+                // Compare the DEs columns.
+                SimulatorStats o1des = o1.getSimulatorStats();
+                SimulatorStats o2des = o2.getSimulatorStats();
+
+                if (o1des==o2des)
+                    return 0;
+
+
+                if (o1des != null) {
+                    if (o2des != null)  {
+
+                       Map<String,String> o1map = o1des.getStats();
+                       Map<String,String> o2map = o2des.getStats();
+
+                       if (o1map==o2map)
+                           return 0;
+
+                       String o1deCt = o1map!=null? o1map.get(SimulatorStats.DOCUMENT_ENTRY_COUNT) : null;
+                       String o2deCt = o2map!=null? o2map.get(SimulatorStats.DOCUMENT_ENTRY_COUNT) : null;
+
+                       if (o1deCt==o2deCt)
+                           return  0;
+
+
+                       if (o1deCt!=null)
+                           return (o2deCt!=null) ? new Integer(o1deCt).compareTo(new Integer(o2deCt)) : 1;
+                    }
+                }
+                return -1;
+            }
+        });
 
         TextColumn<SimInfo> foldersCtColumn = new TextColumn<SimInfo>() {
             @Override
@@ -324,7 +430,7 @@ public class SimulatorControlTab extends GenericQueryTab {
         */
 
         SafeHtmlBuilder logIconImgHtml = new SafeHtmlBuilder();
-        logIconImgHtml.appendHtmlConstant("<img src=\"icons2/log-file-format-symbol.png\">");
+        logIconImgHtml.appendHtmlConstant("<img style=\"width: 24px; height: 24px;\" src=\"icons2/log-file-format-symbol.png\">");
         Column<SimInfo, SimInfo> logActionCol =
         new Column<SimInfo, SimInfo>(new ActionCell<SimInfo>(logIconImgHtml.toSafeHtml(), new ActionCell.Delegate<SimInfo>() {
             @Override
@@ -341,7 +447,7 @@ public class SimulatorControlTab extends GenericQueryTab {
         };
 
         SafeHtmlBuilder pidIconImgHtml = new SafeHtmlBuilder();
-        pidIconImgHtml.appendHtmlConstant("<img src=\"icons2/id.png\">");
+        pidIconImgHtml.appendHtmlConstant("<img style=\"width: 24px; height: 24px;\" src=\"icons2/id.png\">");
         Column<SimInfo, SimInfo> idActionCol =
         new Column<SimInfo, SimInfo>(new ActionCell<SimInfo>(pidIconImgHtml.toSafeHtml(), new ActionCell.Delegate<SimInfo>() {
             @Override
@@ -357,9 +463,85 @@ public class SimulatorControlTab extends GenericQueryTab {
             }
         };
 
-
         Column<SimInfo, SimInfo> editActionCol = getButtonColumn();
 
+        SafeHtmlBuilder trashBinIconImgHtml = new SafeHtmlBuilder();
+        trashBinIconImgHtml.appendHtmlConstant("<img style=\"width: 24px; height: 24px;\"  title=\"Delete\" src=\"icons2/garbage.png\">");
+        Column<SimInfo, SimInfo> trashBinActionCol =
+                new Column<SimInfo, SimInfo>(new ActionCell<SimInfo>(trashBinIconImgHtml.toSafeHtml(), new ActionCell.Delegate<SimInfo>() {
+                    @Override
+                    public void execute(final SimInfo simInfo) {
+                        SimulatorConfigElement ele = simInfo.getSimulatorConfig().getConfigEle(SimulatorProperties.locked);
+                        boolean locked = (ele == null) ? false : ele.asBoolean();
+                        if (locked) {
+                            if (PasswordManagement.isSignedIn) {
+                                doDelete(simInfo.getSimulatorConfig());
+                            }
+                            else {
+                                PasswordManagement.addSignInCallback(
+                                        new AsyncCallback<Boolean> () {
+
+                                            public void onFailure(Throwable ignored) {
+                                            }
+
+                                            public void onSuccess(Boolean ignored) {
+                                                doDelete(simInfo.getSimulatorConfig());
+                                            }
+
+                                        }
+                                );
+
+                                new AdminPasswordDialogBox(simCtrlContainer);
+
+                                return;
+                            }
+                        } else {
+                            doDelete(simInfo.getSimulatorConfig());
+                        }
+                    }
+
+                    private void doDelete(SimulatorConfig config) {
+                        VerticalPanel body = new VerticalPanel();
+                        body.add(new HTML("<p>Delete " + config.getId().toString() + "?</p>"));
+                        Button actionButton = new Button("Yes");
+                        actionButton.addClickHandler(
+                                new ClickHandlerData<SimulatorConfig>(config) {
+                                    @Override
+                                    public void onClick(ClickEvent clickEvent) {
+                                        SimulatorConfig config = getData();
+                                        DeleteButtonClickHandler handler = new DeleteButtonClickHandler(self, config);
+                                        handler.delete();
+                                    }
+                                }
+                        );
+                        SafeHtmlBuilder safeHtmlBuilder = new SafeHtmlBuilder();
+                        safeHtmlBuilder.appendHtmlConstant("<img src=\"icons2/garbage.png\" height=\"16\" width=\"16\"/>");
+                        safeHtmlBuilder.appendHtmlConstant("Confirm Delete Simulator");
+                        new PopupMessage(safeHtmlBuilder.toSafeHtml() , body, actionButton);
+                    }
+                })) {
+                    @Override
+                    public SimInfo getValue(SimInfo simInfo) {
+                        return simInfo;
+                    }
+
+
+                };
+
+        SafeHtmlBuilder downloadIconImgHtml = new SafeHtmlBuilder();
+        downloadIconImgHtml.appendHtmlConstant("<img style=\"width: 24px; height: 24px;\" title=\"Download\" src=\"icons2/download.png\">");
+        Column<SimInfo, SimInfo> downloadActionCol =
+                new Column<SimInfo, SimInfo>(new ActionCell<SimInfo>(downloadIconImgHtml.toSafeHtml(), new ActionCell.Delegate<SimInfo>() {
+                    @Override
+                    public void execute(SimInfo simInfo) {
+                        Window.open("siteconfig/"+simInfo.getSimulatorConfig().getId().toString(), "_blank","");
+                    }
+                })) {
+                    @Override
+                    public SimInfo getValue(SimInfo simInfo) {
+                        return simInfo;
+                    }
+                };
 
 
 
@@ -389,6 +571,8 @@ public class SimulatorControlTab extends GenericQueryTab {
 //        newSimTable.addColumn(logImgColumn, "Action");
         newSimTable.addColumn(logActionCol, "Action");
         newSimTable.addColumn(editActionCol,"");
+        newSimTable.addColumn(trashBinActionCol,"");
+        newSimTable.addColumn(downloadActionCol,"");
 
 //        newSimTable.addColumn(
 
@@ -409,8 +593,23 @@ public class SimulatorControlTab extends GenericQueryTab {
             @Override
             public void execute(final SimInfo object) {
                 //Action on button click
-                Window.alert("You clicked " + object.getSimulatorConfig().getDefaultName());
+//                Window.alert("You clicked " + object.getSimulatorConfig().getDefaultName());
 
+                loadSimStatus();
+                SimulatorConfig config = object.getSimulatorConfig();
+
+//							GenericQueryTab editTab;
+                if (ActorType.ONDEMAND_DOCUMENT_SOURCE.getShortName().equals(config.getActorType())
+                        ) {
+                    // This simulator requires content state initialization
+                    OddsEditTab editTab;
+                    editTab = new OddsEditTab(self, config);
+                    editTab.onTabLoad(true, "ODDS");
+                } else {
+                    // Generic state-less type simulators
+                    GenericQueryTab editTab = new EditTab(self, config);
+                    editTab.onTabLoad(true, "SimConfig");
+                }
             }
 
             @Override
@@ -420,7 +619,7 @@ public class SimulatorControlTab extends GenericQueryTab {
                 if (!ActorType.OD_RESPONDING_GATEWAY.getShortName().equals(data.getSimulatorConfig().getActorType()) ) {
                     SafeHtmlBuilder mySb = new SafeHtmlBuilder();
 
-                    mySb.appendHtmlConstant("<img style=\"width: 24px; height: 24px;\" src=\"icons2/edit.png\">");
+                    mySb.appendHtmlConstant("<img style=\"width: 24px; height: 24px;\" title=\"Edit\" src=\"icons2/edit.png\">");
 
                     sb.append(mySb.toSafeHtml());
                 }
@@ -432,8 +631,12 @@ public class SimulatorControlTab extends GenericQueryTab {
             @Override
             public void execute(final SimInfo object) {
                 //Action on button click
-                Window.alert("You clicked RG" + object.getSimulatorConfig().getDefaultName());
+//                Window.alert("You clicked RG" + object.getSimulatorConfig().getDefaultName());
 
+                SimulatorConfig config = object.getSimulatorConfig();
+                // Generic state-less type simulators
+                GenericQueryTab editTab = new EditTab(self, config);
+                editTab.onTabLoad(true, "SimConfig");
             }
 
             @Override
@@ -443,7 +646,7 @@ public class SimulatorControlTab extends GenericQueryTab {
 
 
                 if (ActorType.OD_RESPONDING_GATEWAY.getShortName().equals(data.getSimulatorConfig().getActorType()) ) {
-                    mySb.appendHtmlConstant("<img style=\"width: 24px; height: 24px;\"  src=\"icons2/edit-rg.png\">");
+                    mySb.appendHtmlConstant("<img style=\"width: 24px; height: 24px;\" title=\"Edit RG config\"  src=\"icons2/edit-rg.png\">");
                     sb.append(mySb.toSafeHtml());
                 }
 
@@ -454,7 +657,14 @@ public class SimulatorControlTab extends GenericQueryTab {
             @Override
             public void execute(final SimInfo object) {
                 //Action on button click
-                Window.alert("You clicked RGOD" + object.getSimulatorConfig().getDefaultName());
+//                Window.alert("You clicked RGOD" + object.getSimulatorConfig().getDefaultName());
+
+                loadSimStatus();
+                SimulatorConfig config = object.getSimulatorConfig();
+                // This simulator requires content state initialization
+                OddsEditTab editTab;
+                editTab = new OddsEditTab(self, config);
+                editTab.onTabLoad(true, "ODDS");
 
             }
 
@@ -464,7 +674,7 @@ public class SimulatorControlTab extends GenericQueryTab {
                 SafeHtmlBuilder mySb = new SafeHtmlBuilder();
 
                 if (ActorType.OD_RESPONDING_GATEWAY.getShortName().equals(data.getSimulatorConfig().getActorType()) ) {
-                    mySb.appendHtmlConstant("<img style=\"width: 24px; height: 24px;\"  src=\"icons2/edit-od.png\">");
+                    mySb.appendHtmlConstant("<img style=\"width: 24px; height: 24px;\" title=\"Edit OD config\" src=\"icons2/edit-od.png\">");
                     sb.append(mySb.toSafeHtml());
                 }
 
@@ -611,12 +821,41 @@ public class SimulatorControlTab extends GenericQueryTab {
         // widget.
         List<SimInfo> list = dataProvider.getList();
 
-        int row = 0;
-        for (SimulatorConfig config : configs) {
-            SimInfo simInfo = new SimInfo(config, statsList.get(row));
-            // TODO last trans
-            list.add(simInfo);
-            row++;
+        if (list!=null && configs!=null && list.size()!=configs.size()) {
+            list.clear();
+            int row = 0;
+            for (SimulatorConfig config : configs) {
+                SimInfo simInfo = new SimInfo(config, statsList.get(row));
+                if (simInfo.getSimulatorConfig()!=null && simInfo.getSimulatorConfig().get(SimulatorProperties.creationTime)!=null) {
+                    String creationTime = simInfo.getSimulatorConfig().get(SimulatorProperties.creationTime).asString();
+                    String dateParts[] = creationTime.split(" ");
+                    String newTimeWoTz = null;
+                    if (dateParts.length==6) {// Expected format Mon Jul 31 18:18:27 EDT 2017
+                       newTimeWoTz = dateParts[0] + " " + dateParts[1] + " " + dateParts[2] + " " + dateParts[3] + " " + dateParts[5];
+                        Date newTime = DateTimeFormat.getFormat("EEE MMM dd HH:mm:ss yyyy").parse(newTimeWoTz); // Local Tz
+                        String hl7TimeWoTz = DateTimeFormat.getFormat("yyyyMMddHHmmss").format(newTime).toString();
+                        /**
+                         * TODO: fix this later when GWT supports timezone parsing.
+                         * Assumption
+                         * As of August 2017, using GWT 2.7 and according to the latest docs
+                         * In the current implementation, timezone parsing only supports GMT:hhmm, GMT:+hhmm, and GMT:-hhmm.
+                         *
+                         * Since GWT doesn't fully support timezone parsing at the client side,
+                         * for comparison purposes, assume all timestamps are local.
+                         *
+                         http://www.gwtproject.org/javadoc/latest/com/google/gwt/i18n/client/DateTimeFormat.html
+
+                         This throws an Exception.
+                         Window.alert(DateTimeFormat.getFormat("EEE MMM dd HH:mm:ss Z").parse("Mon Jul 31 18:18:27 EDT").toString());
+                         */
+                        simInfo.setCreatedDtHl7fmt(hl7TimeWoTz);
+                    }
+
+                }
+                // TODO last trans
+                list.add(simInfo);
+                row++;
+            }
         }
 
 
