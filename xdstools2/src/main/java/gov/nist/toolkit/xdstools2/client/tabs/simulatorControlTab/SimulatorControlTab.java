@@ -1,12 +1,35 @@
 package gov.nist.toolkit.xdstools2.client.tabs.simulatorControlTab;
 
+import com.google.gwt.cell.client.ActionCell;
+import com.google.gwt.cell.client.Cell;
+import com.google.gwt.cell.client.CompositeCell;
+import com.google.gwt.cell.client.FieldUpdater;
+import com.google.gwt.cell.client.HasCell;
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Style;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.resources.client.ClientBundle;
+import com.google.gwt.resources.client.ImageResource;
 import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
+import com.google.gwt.user.cellview.client.CellTable;
+import com.google.gwt.user.cellview.client.Column;
+import com.google.gwt.user.cellview.client.SimplePager;
+import com.google.gwt.user.cellview.client.TextColumn;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
-import com.google.gwt.user.client.ui.*;
+import com.google.gwt.user.client.ui.Button;
+import com.google.gwt.user.client.ui.FlexTable;
+import com.google.gwt.user.client.ui.FlowPanel;
+import com.google.gwt.user.client.ui.HTML;
+import com.google.gwt.user.client.ui.HorizontalPanel;
+import com.google.gwt.user.client.ui.Image;
+import com.google.gwt.user.client.ui.ListBox;
+import com.google.gwt.user.client.ui.TextArea;
+import com.google.gwt.user.client.ui.TextBox;
+import com.google.gwt.user.client.ui.VerticalPanel;
+import com.google.gwt.user.client.ui.Widget;
+import com.google.gwt.view.client.ListDataProvider;
 import gov.nist.toolkit.actortransaction.client.ActorType;
 import gov.nist.toolkit.configDatatypes.SimulatorProperties;
 import gov.nist.toolkit.http.client.HtmlMarkup;
@@ -19,7 +42,11 @@ import gov.nist.toolkit.sitemanagement.client.Site;
 import gov.nist.toolkit.xdstools2.client.ClickHandlerData;
 import gov.nist.toolkit.xdstools2.client.PasswordManagement;
 import gov.nist.toolkit.xdstools2.client.StringSort;
-import gov.nist.toolkit.xdstools2.client.command.command.*;
+import gov.nist.toolkit.xdstools2.client.command.command.GetActorTypeNamesCommand;
+import gov.nist.toolkit.xdstools2.client.command.command.GetAllSimConfigsCommand;
+import gov.nist.toolkit.xdstools2.client.command.command.GetAllSitesCommand;
+import gov.nist.toolkit.xdstools2.client.command.command.GetNewSimulatorCommand;
+import gov.nist.toolkit.xdstools2.client.command.command.GetSimulatorStatsCommand;
 import gov.nist.toolkit.xdstools2.client.event.TabSelectedEvent;
 import gov.nist.toolkit.xdstools2.client.event.Xdstools2EventBus;
 import gov.nist.toolkit.xdstools2.client.event.testSession.TestSessionChangedEvent;
@@ -38,6 +65,7 @@ import gov.nist.toolkit.xdstools2.shared.command.request.GetSimulatorStatsReques
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.LinkedList;
 import java.util.List;
 
 public class SimulatorControlTab extends GenericQueryTab {
@@ -50,6 +78,10 @@ public class SimulatorControlTab extends GenericQueryTab {
     private Button          createActorSimulatorButton = new Button("Create Actor Simulator");
     Button          loadSimulatorsButton = new Button("Load Simulators");
     private FlexTable       table = new FlexTable();
+    // Cell table
+    CellTable<SimInfo> newSimTable = new CellTable<SimInfo>();
+    // Create a data provider.
+    ListDataProvider<SimInfo> dataProvider = new ListDataProvider<SimInfo>();
     private FlowPanel simCtrlContainer;
 
     SimConfigSuper simConfigSuper;
@@ -59,10 +91,73 @@ public class SimulatorControlTab extends GenericQueryTab {
         super(siteActorManager);
     }
 
-    public SimulatorControlTab() {
-        super(new FindDocumentsSiteActorManager());	}
+    public SimulatorControlTab() {  super(new FindDocumentsSiteActorManager());	}
 
-	@Override
+
+    interface ScTabResources extends ClientBundle {
+        public static final ScTabResources INSTANCE = GWT.create(ScTabResources.class);
+
+        @Source("icons/log-file-format-symbol.png")
+        ImageResource getLogIcon();
+    }
+
+//    ScTabResources scTabResources = GWT.create(ScTabResources.class);
+
+
+    public abstract class AbstractActionButton<SimInfo> implements HasCell<SimInfo, SimInfo> {
+
+        @Override
+        public Cell<SimInfo> getCell() {
+            return new ActionCell<SimInfo>("Button title", new ActionCell.Delegate<SimInfo>() {
+                @Override
+                public void execute(SimInfo object) {
+                    AbstractActionButton.this.execute(object);
+                }
+            }) {
+                @Override
+                public void render(Context context, SimInfo data, SafeHtmlBuilder sb) {
+                    AbstractActionButton.this.render(context, data, sb);
+                }
+            };
+        }
+
+        //Replaced by delegate but still need to be overriden
+        @Override
+        public FieldUpdater<SimInfo, SimInfo> getFieldUpdater() {
+            return null;
+        }
+
+        @Override
+        public SimInfo getValue(SimInfo object) {
+            return object;
+        }
+
+        /**
+         * You can override this method to render your button differently. Not mandatory
+         * @param context
+         * @param data
+         * @param sb
+         */
+        public abstract void render(Cell.Context context, SimInfo data, SafeHtmlBuilder sb);
+
+        /**
+         * Called when the button is clicked
+         * @param object
+         */
+        public abstract void execute(SimInfo object);
+    }
+
+    private Column<SimInfo, SimInfo> getButtonColumn() {
+        return new Column<SimInfo, SimInfo>(getButtonsCell()) {
+            @Override
+            public SimInfo getValue(SimInfo object) {
+                return object;
+            }
+        };
+    }
+
+
+    @Override
 	protected Widget buildUI() {
         simCtrlContainer = new FlowPanel();
         self = this;
@@ -104,14 +199,290 @@ public class SimulatorControlTab extends GenericQueryTab {
 
 		simCtrlContainer.add(tableWrapper);
 
-
         simConfigWrapperPanel.add(simConfigPanel);
 
 
-		return simCtrlContainer;
+        simCtrlContainer.add(newSimTable);
+        SimplePager simplePager = new SimplePager();
+        simplePager.setDisplay(newSimTable);
+        simplePager.setPageSize(50);
+        simCtrlContainer.add(simplePager);
+
+        TextColumn<SimInfo> nameColumn = new TextColumn<SimInfo>() {
+            @Override
+            public String getValue(SimInfo simInfo) {
+                return simInfo.getSimulatorConfig().getDefaultName();
+            }
+        };
+
+        TextColumn<SimInfo> idColumn = new TextColumn<SimInfo>() {
+            @Override
+            public String getValue(SimInfo simInfo) {
+                return simInfo.getSimulatorConfig().getId().toString();
+            }
+        };
+
+        TextColumn<SimInfo> createdDtColumn = new TextColumn<SimInfo>() {
+            @Override
+            public String getValue(SimInfo simInfo) {
+                return simInfo.getSimulatorConfig().get(SimulatorProperties.creationTime).asString();
+            }
+        };
+
+        TextColumn<SimInfo> lastTranColumn = new TextColumn<SimInfo>() {
+            @Override
+            public String getValue(SimInfo simInfo) {
+                return simInfo.getLastTransaction();
+            }
+        };
+
+        TextColumn<SimInfo> lastAccessedDtColumn = new TextColumn<SimInfo>() {
+            @Override
+            public String getValue(SimInfo simInfo) {
+                return simInfo.getLastAccessedDt();
+            }
+        };
+
+        TextColumn<SimInfo> typeColumn = new TextColumn<SimInfo>() {
+            @Override
+            public String getValue(SimInfo simInfo) {
+                return ActorType.findActor(simInfo.getSimulatorConfig().getActorType()).getName();
+            }
+        };
+
+        TextColumn<SimInfo> pifPortColumn = new TextColumn<SimInfo>() {
+            @Override
+            public String getValue(SimInfo simInfo) {
+
+                SimulatorConfigElement portConfig = simInfo.getSimulatorConfig().get(SimulatorProperties.PIF_PORT);
+                if (portConfig!=null)
+                    return portConfig.asString();
+                return null;
+            }
+        };
+
+        TextColumn<SimInfo> ssCtColumn = new TextColumn<SimInfo>() {
+            @Override
+            public String getValue(SimInfo simInfo) {
+                if (simInfo.getSimulatorStats()!=null) {
+                    return simInfo.getSimulatorStats().getStats().get(SimulatorStats.SUBMISSION_SET_COUNT);
+                }
+                return null;
+            }
+        };
+
+        TextColumn<SimInfo> desCtColumn = new TextColumn<SimInfo>() {
+            @Override
+            public String getValue(SimInfo simInfo) {
+                if (simInfo.getSimulatorStats()!=null) {
+                    return simInfo.getSimulatorStats().getStats().get(SimulatorStats.DOCUMENT_ENTRY_COUNT);
+                }
+                return null;
+            }
+        };
+
+        TextColumn<SimInfo> foldersCtColumn = new TextColumn<SimInfo>() {
+            @Override
+            public String getValue(SimInfo simInfo) {
+                if (simInfo.getSimulatorStats()!=null) {
+                    return simInfo.getSimulatorStats().getStats().get(SimulatorStats.FOLDER_COUNT);
+                }
+                return null;
+            }
+        };
+
+        TextColumn<SimInfo> docsCtColumn = new TextColumn<SimInfo>() {
+            @Override
+            public String getValue(SimInfo simInfo) {
+                if (simInfo.getSimulatorStats()!=null) {
+                    return simInfo.getSimulatorStats().getStats().get(SimulatorStats.DOCUMENT_COUNT);
+                }
+                return null;
+            }
+        };
+
+        TextColumn<SimInfo> pidsCtColumn = new TextColumn<SimInfo>() {
+            @Override
+            public String getValue(SimInfo simInfo) {
+                if (simInfo.getSimulatorStats()!=null) {
+                    return simInfo.getSimulatorStats().getStats().get(SimulatorStats.PATIENT_ID_COUNT);
+                }
+                return null;
+            }
+        };
+
+
+        /*
+        Column<SimInfo, ImageResource> logImgColumn =
+                new Column<SimInfo, ImageResource>(new ImageResourceCell()) {
+                    @Override
+                    public ImageResource getValue(SimInfo object) {
+                        return ScTabResources.INSTANCE.getLogIcon();
+                    }
+
+                };
+        */
+
+        SafeHtmlBuilder logIconImgHtml = new SafeHtmlBuilder();
+        logIconImgHtml.appendHtmlConstant("<img src=\"icons2/log-file-format-symbol.png\">");
+        Column<SimInfo, SimInfo> logActionCol =
+        new Column<SimInfo, SimInfo>(new ActionCell<SimInfo>(logIconImgHtml.toSafeHtml(), new ActionCell.Delegate<SimInfo>() {
+            @Override
+            public void execute(SimInfo simInfo) {
+                SimulatorConfig config = simInfo.getSimulatorConfig();
+                SimulatorMessageViewTab viewTab = new SimulatorMessageViewTab();
+                viewTab.onTabLoad(config.getId());
+            }
+        })) {
+            @Override
+            public SimInfo getValue(SimInfo simInfo) {
+                return simInfo;
+            }
+        };
+
+        SafeHtmlBuilder pidIconImgHtml = new SafeHtmlBuilder();
+        pidIconImgHtml.appendHtmlConstant("<img src=\"icons2/id.png\">");
+        Column<SimInfo, SimInfo> idActionCol =
+        new Column<SimInfo, SimInfo>(new ActionCell<SimInfo>(pidIconImgHtml.toSafeHtml(), new ActionCell.Delegate<SimInfo>() {
+            @Override
+            public void execute(SimInfo simInfo) {
+                SimulatorConfig config = simInfo.getSimulatorConfig();
+                PidEditTab editTab = new PidEditTab(config);
+                editTab.onTabLoad(true, "PIDEdit");
+            }
+        })) {
+            @Override
+            public SimInfo getValue(SimInfo simInfo) {
+                return simInfo;
+            }
+        };
+
+
+        Column<SimInfo, SimInfo> editActionCol = getButtonColumn();
+
+
+
+
+
+
+        /*
+         * Columns
+         * Name	ID	[created dt] [last tran] [last accessed dt == filter on date],  Type	Patient Feed Port	SubmissionSets	DocumentEntries	Folders	Documents	PatientIds	Action
+         *
+         * Sorting
+         * Use the Hl7 date values in the comparator
+         */
+
+        newSimTable.addColumn(nameColumn, "Name");
+        newSimTable.addColumn(idColumn, "ID");
+        newSimTable.addColumn(createdDtColumn,"Created Date");
+        newSimTable.addColumn(lastTranColumn, "Last Tran");
+        newSimTable.addColumn(lastAccessedDtColumn, "Last Tran Date");
+        newSimTable.addColumn(typeColumn, "Type");
+        newSimTable.addColumn(pifPortColumn, "Patient Feed Port");
+        newSimTable.addColumn(ssCtColumn, "SubmissionSets");
+        newSimTable.addColumn(desCtColumn, "DocumentEntries");
+        newSimTable.addColumn(foldersCtColumn, "Folders");
+        newSimTable.addColumn(docsCtColumn, "Documents");
+        newSimTable.addColumn(pidsCtColumn, "PatientIds");
+        // TODO add image cells
+//        newSimTable.addColumn(logImgColumn, "Action");
+        newSimTable.addColumn(logActionCol, "Action");
+        newSimTable.addColumn(editActionCol,"");
+
+//        newSimTable.addColumn(
+
+        // Connect the table to the data provider.
+        dataProvider.addDataDisplay(newSimTable);
+
+
+
+
+        return simCtrlContainer;
 	}
 
-	@Override
+
+    private CompositeCell getButtonsCell() {
+        List<HasCell<SimInfo, ?>> cells = new LinkedList<>();
+
+        HasCell<SimInfo,SimInfo> normalEdit =   new AbstractActionButton<SimInfo>() {
+            @Override
+            public void execute(final SimInfo object) {
+                //Action on button click
+                Window.alert("You clicked " + object.getSimulatorConfig().getDefaultName());
+
+            }
+
+            @Override
+            public void render(Cell.Context context, SimInfo data, SafeHtmlBuilder sb) {
+                //
+
+                if (!ActorType.OD_RESPONDING_GATEWAY.getShortName().equals(data.getSimulatorConfig().getActorType()) ) {
+                    SafeHtmlBuilder mySb = new SafeHtmlBuilder();
+
+                    mySb.appendHtmlConstant("<img style=\"width: 24px; height: 24px;\" src=\"icons2/edit.png\">");
+
+                    sb.append(mySb.toSafeHtml());
+                }
+
+            }
+        };
+
+        HasCell<SimInfo,SimInfo> rgEdit = new AbstractActionButton<SimInfo>() {
+            @Override
+            public void execute(final SimInfo object) {
+                //Action on button click
+                Window.alert("You clicked RG" + object.getSimulatorConfig().getDefaultName());
+
+            }
+
+            @Override
+            public void render(Cell.Context context, SimInfo data, SafeHtmlBuilder sb) {
+                //
+                SafeHtmlBuilder mySb = new SafeHtmlBuilder();
+
+
+                if (ActorType.OD_RESPONDING_GATEWAY.getShortName().equals(data.getSimulatorConfig().getActorType()) ) {
+                    mySb.appendHtmlConstant("<img style=\"width: 24px; height: 24px;\"  src=\"icons2/edit-rg.png\">");
+                    sb.append(mySb.toSafeHtml());
+                }
+
+            }
+        };
+
+        HasCell<SimInfo,SimInfo> rgOdEdit = new AbstractActionButton<SimInfo>() {
+            @Override
+            public void execute(final SimInfo object) {
+                //Action on button click
+                Window.alert("You clicked RGOD" + object.getSimulatorConfig().getDefaultName());
+
+            }
+
+            @Override
+            public void render(Cell.Context context, SimInfo data, SafeHtmlBuilder sb) {
+                //
+                SafeHtmlBuilder mySb = new SafeHtmlBuilder();
+
+                if (ActorType.OD_RESPONDING_GATEWAY.getShortName().equals(data.getSimulatorConfig().getActorType()) ) {
+                    mySb.appendHtmlConstant("<img style=\"width: 24px; height: 24px;\"  src=\"icons2/edit-od.png\">");
+                    sb.append(mySb.toSafeHtml());
+                }
+
+            }
+        };
+
+            cells.add(rgEdit);
+            cells.add(rgOdEdit);
+            cells.add(normalEdit);
+
+
+        CompositeCell<SimInfo> compositeCell = new CompositeCell<>(cells);
+
+        return compositeCell;
+    }
+
+
+    @Override
 	protected void bindUI() {
 		// force loading of sites in the back end
 		// funny errors occur without this
@@ -227,11 +598,28 @@ public class SimulatorControlTab extends GenericQueryTab {
                     @Override
                     public void onComplete(List<SimulatorStats> simulatorStatses) {
                         buildTable(configs, simulatorStatses);
+                        popCellTable(configs, simulatorStatses);
                     }
                 }.run(new GetSimulatorStatsRequest(getCommandContext(),simIds));
 
             }
         }.run(new GetAllSimConfigsRequest(getCommandContext(), user));
+    }
+
+    private void popCellTable(List<SimulatorConfig> configs, List<SimulatorStats> statsList) {
+        // Add the data to the data provider, which automatically pushes it to the
+        // widget.
+        List<SimInfo> list = dataProvider.getList();
+
+        int row = 0;
+        for (SimulatorConfig config : configs) {
+            SimInfo simInfo = new SimInfo(config, statsList.get(row));
+            // TODO last trans
+            list.add(simInfo);
+            row++;
+        }
+
+
     }
 
     private void buildTable(List<SimulatorConfig> configs, List<SimulatorStats> stats) {

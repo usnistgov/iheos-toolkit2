@@ -346,3 +346,9 @@ h3 {
 .tabConfigMenu li:hover {
   background-color: #0099cc;
 }
+
+/* Clear off border for the simulator manager buttons */
+table tr td div button {
+  border:none;
+  background-color:transparent;
+}
