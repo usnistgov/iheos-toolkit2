@@ -18,7 +18,7 @@ import gov.nist.toolkit.simcommon.client.config.SimulatorConfigElement;
 import gov.nist.toolkit.sitemanagement.client.Site;
 import gov.nist.toolkit.xdstools2.client.ClickHandlerData;
 import gov.nist.toolkit.xdstools2.client.PasswordManagement;
-import gov.nist.toolkit.xdstools2.client.StringSort;
+import gov.nist.toolkit.sitemanagement.client.StringSort;
 import gov.nist.toolkit.xdstools2.client.command.command.*;
 import gov.nist.toolkit.xdstools2.client.event.TabSelectedEvent;
 import gov.nist.toolkit.xdstools2.client.event.Xdstools2EventBus;

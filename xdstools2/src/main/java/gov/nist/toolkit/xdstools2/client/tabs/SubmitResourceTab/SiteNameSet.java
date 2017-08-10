@@ -1,7 +1,7 @@
 package gov.nist.toolkit.xdstools2.client.tabs.SubmitResourceTab;
 
 import gov.nist.toolkit.sitemanagement.client.Site;
-import gov.nist.toolkit.xdstools2.client.StringSort;
+import gov.nist.toolkit.sitemanagement.client.StringSort;
 
 import java.util.HashSet;
 import java.util.List;

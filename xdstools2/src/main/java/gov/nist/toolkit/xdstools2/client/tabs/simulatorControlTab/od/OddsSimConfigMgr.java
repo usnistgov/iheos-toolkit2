@@ -18,7 +18,7 @@ import gov.nist.toolkit.simcommon.client.SimId;
 import gov.nist.toolkit.simcommon.client.SimulatorConfig;
 import gov.nist.toolkit.simcommon.client.config.SimulatorConfigElement;
 import gov.nist.toolkit.sitemanagement.client.SiteSpec;
-import gov.nist.toolkit.xdstools2.client.StringSort;
+import gov.nist.toolkit.sitemanagement.client.StringSort;
 import gov.nist.toolkit.xdstools2.client.command.command.*;
 import gov.nist.toolkit.xdstools2.client.event.SimulatorUpdatedEvent;
 import gov.nist.toolkit.xdstools2.client.event.Xdstools2EventBus;

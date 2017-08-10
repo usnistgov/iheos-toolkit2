@@ -9,7 +9,6 @@ import gov.nist.toolkit.sitemanagement.client.Site;
 import gov.nist.toolkit.sitemanagement.client.SiteSpec;
 import gov.nist.toolkit.sitemanagement.client.TransactionOfferings;
 import gov.nist.toolkit.xdstools2.client.abstracts.AbstractPresenter;
-import gov.nist.toolkit.xdstools2.client.abstracts.MessagePanel;
 import gov.nist.toolkit.xdstools2.client.command.command.FhirCreateCommand;
 import gov.nist.toolkit.xdstools2.client.command.command.GetAllDatasetsCommand;
 import gov.nist.toolkit.xdstools2.client.command.command.GetTransactionOfferingsCommand;
@@ -46,6 +45,7 @@ public class SubmitResourcePresenter extends AbstractPresenter<SubmitResourceVie
             public void onComplete(TransactionOfferings to) {
                 List<Site> allSites = to.getAllSites();
                 List<Site> fhirSites = to.map.get(TransactionType.FHIR);
+//                fhirSites.addAll(to.tmap.get(TransactionType.FHIR));   Exclude secure sites for now
                 List<ASite> sites = new ArrayList<>();
                 for (Site s : allSites) {
                     sites.add(new ASite(fhirSites.contains(s), s.getName()));
@@ -68,13 +68,13 @@ public class SubmitResourcePresenter extends AbstractPresenter<SubmitResourceVie
     }
 
     void doRun() {
+        getView().clearLog();
         new FhirCreateCommand() {
             @Override
             public void onComplete(List<Result> results) {
                 Result result = results.get(0);
-                MessagePanel msgs = getView().getMessagePanel();
-                msgs.addMessage("At " + result.getTimestamp());
-                msgs.addMessage("Status is " + result.passed());
+                getView().addLog("At " + result.getTimestamp());
+                getView().addLog("Status is " + result.passed());
             }
         }.run(new FhirCreateRequest(getCommandContext(), new SiteSpec(selectedSite), selectedDatasetElement));
     }

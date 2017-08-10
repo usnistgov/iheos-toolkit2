@@ -1,4 +1,4 @@
-package gov.nist.toolkit.xdstools2.client;
+package gov.nist.toolkit.sitemanagement.client;
 
 import java.util.ArrayList;
 import java.util.Collection;

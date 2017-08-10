@@ -1,6 +1,7 @@
 package gov.nist.toolkit.xdstools2.client.tabs.SubmitResourceTab;
 
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.dom.client.Style;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.cellview.client.CellBrowser;
@@ -24,10 +25,14 @@ public class SubmitResourceView extends AbstractView<SubmitResourcePresenter> {
     private MessagePanel messagePanel = new MessagePanel();
     private VerticalPanel tabTopPanel = new VerticalPanel();
     private HTML selected = new HTML();
-    private FlexTable siteTable = new FlexTable();
+//    private FlexTable siteTable = new FlexTable();
     private SimplePanel datasetsPanel = new SimplePanel();
     private Button runButton = new Button("Send Resource (CREATE)");
     private Button viewResourceButton = new Button("View Resource");
+    private FlowPanel thePanel = new FlowPanel();
+    private FlowPanel siteTablePanel = new FlowPanel();
+    private FlowPanel logPanel = new FlowPanel();
+    private FlowPanel inspectorPanel = new FlowPanel();
 
     private HTML datasetLabel = new HTML("Data Set");
     private HTML resourceTypeLabel = new HTML("Resource Type");
@@ -46,23 +51,26 @@ public class SubmitResourceView extends AbstractView<SubmitResourcePresenter> {
 
     @Override
     protected Widget buildUI() {
+        tabTopPanel.setWidth("100%");
         tabTopPanel.add(messagePanel);
         tabTopPanel.add(new HTML("<h2>Submit Resource</h2>"));
 
-        DecoratorPanel siteTableDecoration = new DecoratorPanel();
-        FlowPanel siteTablePanel = new FlowPanel();
-        siteTableDecoration.add(siteTablePanel);
-        HTML siteTableTitle = new HTML("<br /><b>To System:</b><br /><hr />");
-        siteTablePanel.add(siteTableTitle);
-        siteTablePanel.add(siteTable);
-        tabTopPanel.add(siteTableDecoration);
+        HTML siteTableTitle = new HTML("<b>To System</b>");
+        siteTableTitle.setWidth("100%");
+        siteTableTitle.addStyleName("my-table-header");
+        thePanel.add(siteTableTitle);
+        thePanel.add(siteTablePanel);
 
-//        tabTopPanel.add(new HTML("<br />"));
+        thePanel.setWidth("100%");
+        tabTopPanel.add(thePanel);
 
-        DecoratorPanel datasetDecoration = new DecoratorPanel();
         VerticalPanel datasetWrapper = new VerticalPanel();
-        HTML datasetTitle = new HTML("<br /><b>Select Resource:</b><br /><hr />");
-        datasetWrapper.add(datasetTitle);
+        datasetWrapper.setWidth("100%");
+        thePanel.add(new HTML("<br />"));
+        HTML datasetTitle = new HTML("<b>Send Resource</b>");
+        datasetTitle.addStyleName("my-table-header");
+        datasetTitle.setWidth("100%");
+        thePanel.add(datasetTitle);
 
         HorizontalFlowPanel datasetCaption = new HorizontalFlowPanel();
 
@@ -77,22 +85,43 @@ public class SubmitResourceView extends AbstractView<SubmitResourcePresenter> {
 
         datasetWrapper.add(datasetCaption);
 
-        datasetWrapper.add(new HTML("<hr />"));
+        DecoratorPanel datasetWrapper2 = new DecoratorPanel();
 
         datasetWrapper.add(datasetsPanel);
-        datasetDecoration.add(datasetWrapper);
-        tabTopPanel.add(datasetDecoration);
+        datasetWrapper2.add(datasetWrapper);
+        thePanel.add(datasetWrapper2);
 
-        tabTopPanel.add(new HTML("<br />"));
+        HTML buttonPanelTitle = new HTML("Actions");
+        buttonPanelTitle.addStyleName("my-table-header");
+        buttonPanelTitle.setWidth("100%");
+        thePanel.add(new HTML("<br />"));
+        thePanel.add(buttonPanelTitle);
 
         HorizontalFlowPanel buttonPanel = new HorizontalFlowPanel();
         runButton.setEnabled(false);
         viewResourceButton.setEnabled(false);
         buttonPanel.add(runButton);
         buttonPanel.add(viewResourceButton);
-        tabTopPanel.add(buttonPanel);
+        thePanel.add(buttonPanel);
 
-        //siteTableDecoration.setWidth("100%");
+        thePanel.add(new HTML("<br />"));
+        HTML logTitle = new HTML("<b>Logs</b>");
+        logTitle.addStyleName("my-table-header");
+        thePanel.add(logTitle);
+
+        TabLayoutPanel bottomPanel = new TabLayoutPanel(1.5, Style.Unit.EM);
+        bottomPanel.setWidth("800px");
+        bottomPanel.setHeight("400px");
+        thePanel.add(bottomPanel);
+        logPanel.setWidth("100%");
+        logPanel.setHeight("100%");
+//        logPanel.add(new HTML("<p>Hello Internet</p>"));
+//        logPanel.add(new Button("Goodby"));
+        bottomPanel.add(logPanel, "[Log]");
+
+        bottomPanel.add(inspectorPanel, "[Inspector]");
+        inspectorPanel.setWidth("100%");
+
         return tabTopPanel;
     }
 
@@ -140,21 +169,12 @@ public class SubmitResourceView extends AbstractView<SubmitResourcePresenter> {
     private List<Button> siteButtons = new ArrayList<>();
 
     void setSiteNames(List<ASite> sites) {
-        int width = 3;
-        int row = 0;
-        int col = 0;
-        int length = 0;
         for (ASite site : sites) {
             Button b = new Button(site.getName());
             b.setText(site.getName());
             b.setEnabled(site.isEnabled());
             siteButtons.add(b);
-            siteTable.setWidget(row, col, b);
-            col++;
-            if (col%width == 0) {
-                row++;
-                col = 0;
-            }
+            siteTablePanel.add(b);
         }
         bindSites();
     }
@@ -193,5 +213,15 @@ public class SubmitResourceView extends AbstractView<SubmitResourcePresenter> {
         runButton.setEnabled(enabled);
         viewResourceButton.setEnabled((enabled));
     }
+
+    void addLog(String msg) {
+        addLog(new HTML(msg));
+    }
+
+    void addLog(Widget msg) {
+        logPanel.add(msg);
+    }
+
+    void clearLog() { logPanel.clear(); }
 
 }

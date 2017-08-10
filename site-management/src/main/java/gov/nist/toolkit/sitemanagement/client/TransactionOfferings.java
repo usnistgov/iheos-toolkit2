@@ -51,8 +51,28 @@ public class TransactionOfferings implements IsSerializable {
 		for (List<Site> aList : map.values()) {
 			siteSet.addAll(aList);
 		}
+		for (List<Site> aList : tmap.values()) {
+			siteSet.addAll(aList);
+		}
 		sites.addAll(siteSet);
-		return sites;
+
+		List<String> names = new ArrayList<>();
+		for (Site s : sites) names.add(s.getName());
+		names = StringSort.sort(names);
+
+		List<Site> sortedSites = new ArrayList<>();
+		for (String name : names) {
+			sortedSites.add(getSite(sites, name));
+		}
+
+		return sortedSites;
+	}
+
+	private static Site getSite(List<Site> sites, String name) {
+		for (Site site : sites) {
+			if (name.equals(site.getName())) return site;
+		}
+		return null;
 	}
 
 }
