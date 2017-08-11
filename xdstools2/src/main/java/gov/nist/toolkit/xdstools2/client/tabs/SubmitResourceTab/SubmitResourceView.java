@@ -13,6 +13,7 @@ import gov.nist.toolkit.xdstools2.client.abstracts.AbstractView;
 import gov.nist.toolkit.xdstools2.client.abstracts.MessagePanel;
 import gov.nist.toolkit.xdstools2.client.widgets.DatasetTreeModel;
 import gov.nist.toolkit.xdstools2.client.widgets.HorizontalFlowPanel;
+import gov.nist.toolkit.xdstools2.client.widgets.SystemSelector;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -38,6 +39,13 @@ public class SubmitResourceView extends AbstractView<SubmitResourcePresenter> {
     private HTML resourceTypeLabel = new HTML("Resource Type");
     private HTML resourceLabel = new HTML("Resource");
 
+    private SystemSelector systemSelector = new SystemSelector("To System") {
+        @Override
+        public void doSiteSelected(String label) {
+            getPresenter().doSiteSelected(label);
+        }
+    };
+
 
     public SubmitResourceView() {
         super();
@@ -55,11 +63,7 @@ public class SubmitResourceView extends AbstractView<SubmitResourcePresenter> {
         tabTopPanel.add(messagePanel);
         tabTopPanel.add(new HTML("<h2>Submit Resource</h2>"));
 
-        HTML siteTableTitle = new HTML("<b>To System</b>");
-        siteTableTitle.setWidth("100%");
-        siteTableTitle.addStyleName("my-table-header");
-        thePanel.add(siteTableTitle);
-        thePanel.add(siteTablePanel);
+        thePanel.add(systemSelector.asWidget());
 
         thePanel.setWidth("100%");
         tabTopPanel.add(thePanel);
@@ -68,7 +72,7 @@ public class SubmitResourceView extends AbstractView<SubmitResourcePresenter> {
         datasetWrapper.setWidth("100%");
         thePanel.add(new HTML("<br />"));
         HTML datasetTitle = new HTML("<b>Send Resource</b>");
-        datasetTitle.addStyleName("my-table-header");
+        datasetTitle.addStyleName("tool-section-header");
         datasetTitle.setWidth("100%");
         thePanel.add(datasetTitle);
 
@@ -92,7 +96,7 @@ public class SubmitResourceView extends AbstractView<SubmitResourcePresenter> {
         thePanel.add(datasetWrapper2);
 
         HTML buttonPanelTitle = new HTML("Actions");
-        buttonPanelTitle.addStyleName("my-table-header");
+        buttonPanelTitle.addStyleName("tool-section-header");
         buttonPanelTitle.setWidth("100%");
         thePanel.add(new HTML("<br />"));
         thePanel.add(buttonPanelTitle);
@@ -106,7 +110,7 @@ public class SubmitResourceView extends AbstractView<SubmitResourcePresenter> {
 
         thePanel.add(new HTML("<br />"));
         HTML logTitle = new HTML("<b>Logs</b>");
-        logTitle.addStyleName("my-table-header");
+        logTitle.addStyleName("tool-section-header");
         thePanel.add(logTitle);
 
         TabLayoutPanel bottomPanel = new TabLayoutPanel(1.5, Style.Unit.EM);
@@ -166,45 +170,8 @@ public class SubmitResourceView extends AbstractView<SubmitResourcePresenter> {
 
     }
 
-    private List<Button> siteButtons = new ArrayList<>();
-
     void setSiteNames(List<ASite> sites) {
-        for (ASite site : sites) {
-            Button b = new Button(site.getName());
-            b.setText(site.getName());
-            b.setEnabled(site.isEnabled());
-            siteButtons.add(b);
-            siteTablePanel.add(b);
-        }
-        bindSites();
-    }
-
-    /**
-     * I tried using the defined style SiteButtonSelected defined in css
-     * but it is ignored so removing the default style gives a dark
-     * grey to the background (on MAC) which is good enough for now.  Needs
-     * to be tested on Windows and Linux.
-     */
-    private void bindSites() {
-        for (Button b : siteButtons) {
-            b.addClickHandler(new ClickHandler() {
-                @Override
-                public void onClick(ClickEvent clickEvent) {
-                    Object o = clickEvent.getSource();
-                    if (o instanceof Button) {
-                        updateSiteSelectedView((Button) o);
-                    }
-                }
-            });
-        }
-    }
-
-    private void updateSiteSelectedView(Button button) {
-        for (Button u : siteButtons) {
-            u.setStyleName("gwt-Button");
-        }
-        button.setStyleName("siteSelected");
-        getPresenter().doSiteSelected(button.getText());
+        systemSelector.setSiteNames(sites);
     }
 
     MessagePanel getMessagePanel() { return messagePanel; }
