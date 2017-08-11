@@ -28,7 +28,7 @@ public class SubmitResourceView extends AbstractView<SubmitResourcePresenter> {
 //    private FlexTable siteTable = new FlexTable();
     private SimplePanel datasetsPanel = new SimplePanel();
     private Button runButton = new Button("Send Resource (CREATE)");
-    private Button viewResourceButton = new Button("View Resource");
+    private Button viewResourceButton = new Button("View selected resource");
     private FlowPanel thePanel = new FlowPanel();
     private FlowPanel siteTablePanel = new FlowPanel();
     private FlowPanel logPanel = new FlowPanel();

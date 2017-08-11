@@ -62,7 +62,7 @@ public class Site  implements IsSerializable, Serializable {
 	transient public boolean changed = false;
 	public String user = null;  // loaded from SimId - when non-null this site represents a sim
 	private String orchestrationSiteName = null;
-
+	private boolean isASimulator = false;
 
 	/**
 	 * Site linkage is used to combine two sites into one.  Use case: The SUT is defined in a site. We
@@ -374,4 +374,11 @@ public class Site  implements IsSerializable, Serializable {
 	public void setOrchestrationSiteName(String orchestrationSiteName) {
 		this.orchestrationSiteName = orchestrationSiteName;
 	}
+
+	public Site setSimulator(boolean isa) {
+		isASimulator = isa;
+		return this;
+	}
+
+	public boolean isSimulator() { return isASimulator; }
 }

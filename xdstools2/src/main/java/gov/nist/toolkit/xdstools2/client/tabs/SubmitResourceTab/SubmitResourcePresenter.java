@@ -5,6 +5,7 @@ import gov.nist.toolkit.configDatatypes.client.TransactionType;
 import gov.nist.toolkit.datasets.shared.DatasetElement;
 import gov.nist.toolkit.datasets.shared.DatasetModel;
 import gov.nist.toolkit.results.client.Result;
+import gov.nist.toolkit.sitemanagement.Sites;
 import gov.nist.toolkit.sitemanagement.client.Site;
 import gov.nist.toolkit.sitemanagement.client.SiteSpec;
 import gov.nist.toolkit.sitemanagement.client.TransactionOfferings;
@@ -13,10 +14,13 @@ import gov.nist.toolkit.xdstools2.client.command.command.FhirCreateCommand;
 import gov.nist.toolkit.xdstools2.client.command.command.GetAllDatasetsCommand;
 import gov.nist.toolkit.xdstools2.client.command.command.GetTransactionOfferingsCommand;
 import gov.nist.toolkit.xdstools2.client.util.ClientUtils;
+import gov.nist.toolkit.xdstools2.client.util.SiteFilter;
 import gov.nist.toolkit.xdstools2.shared.command.request.FhirCreateRequest;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 /**
  *
@@ -43,13 +47,13 @@ public class SubmitResourcePresenter extends AbstractPresenter<SubmitResourceVie
         new GetTransactionOfferingsCommand() {
             @Override
             public void onComplete(TransactionOfferings to) {
-                List<Site> allSites = to.getAllSites();
-                List<Site> fhirSites = to.map.get(TransactionType.FHIR);
-//                fhirSites.addAll(to.tmap.get(TransactionType.FHIR));   Exclude secure sites for now
-                List<ASite> sites = new ArrayList<>();
-                for (Site s : allSites) {
-                    sites.add(new ASite(fhirSites.contains(s), s.getName()));
-                }
+                List<TransactionType> transactionTypes = new ArrayList<>();
+                transactionTypes.add(TransactionType.FHIR);
+
+                List<ASite> sites = new SiteFilter(to)
+                        .transactionTypesOnly(transactionTypes, false, true)
+                        .sorted();
+
                 getView().setSiteNames(sites);
             }
         }.run(ClientUtils.INSTANCE.getCommandContext());

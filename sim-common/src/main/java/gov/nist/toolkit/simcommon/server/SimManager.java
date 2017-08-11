@@ -39,7 +39,7 @@ public class SimManager {
 	static public Site getSite(SimulatorConfig config) throws Exception {
 		AbstractActorFactory af = getActorFactory(config);
 //        logger.info("Getting original actor factory to generate site - " + af.getClass().getName());
-		return af.getActorSite(config, null);
+		return af.getActorSite(config, null).setSimulator(true);
 	}
 
 	static private AbstractActorFactory getActorFactory(SimulatorConfig config) throws Exception {
