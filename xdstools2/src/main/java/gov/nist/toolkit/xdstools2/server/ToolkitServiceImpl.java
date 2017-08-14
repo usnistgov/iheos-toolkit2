@@ -122,6 +122,7 @@ import gov.nist.toolkit.xdstools2.shared.command.request.GetTestSectionsDAOsRequ
 import gov.nist.toolkit.xdstools2.shared.command.request.GetTestdataSetListingRequest;
 import gov.nist.toolkit.xdstools2.shared.command.request.GetTestplanAsTextRequest;
 import gov.nist.toolkit.xdstools2.shared.command.request.GetTestsOverviewRequest;
+import gov.nist.toolkit.xdstools2.shared.command.request.GetTransactionListsRequest;
 import gov.nist.toolkit.xdstools2.shared.command.request.GetTransactionErrorCodeRefsRequest;
 import gov.nist.toolkit.xdstools2.shared.command.request.GetTransactionLogDirectoryPathRequest;
 import gov.nist.toolkit.xdstools2.shared.command.request.GetTransactionRequest;
@@ -1046,6 +1047,20 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements
     public List<TransactionInstance> getTransInstances(GetTransactionRequest request) throws Exception {
         installCommandContext(request);
         return new SimulatorServiceManager(session()).getTransInstances(request.getSimid(), request.getActor(), request.getTrans());
+    }
+    @Override
+    public List<List<TransactionInstance>> getTransInstancesLists(GetTransactionListsRequest request) throws Exception {
+        try {
+            installCommandContext(request);
+            SimulatorServiceManager ssm = new SimulatorServiceManager(session());
+            List<List<TransactionInstance>> lists = new ArrayList<List<TransactionInstance>>();
+            for (SimId simId : request.getSimIds()) {
+                lists.add(ssm.getTransInstances(simId, "", null));
+            }
+            return lists;
+        } catch (Exception ex) {
+            return null;
+        }
     }
     @Override
     public Message getTransactionRequest(GetTransactionRequest request) throws Exception {

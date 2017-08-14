@@ -86,6 +86,7 @@ import gov.nist.toolkit.xdstools2.shared.command.request.GetTestdataSetListingRe
 import gov.nist.toolkit.xdstools2.shared.command.request.GetTestplanAsTextRequest;
 import gov.nist.toolkit.xdstools2.shared.command.request.GetTestsOverviewRequest;
 import gov.nist.toolkit.xdstools2.shared.command.request.GetTransactionErrorCodeRefsRequest;
+import gov.nist.toolkit.xdstools2.shared.command.request.GetTransactionListsRequest;
 import gov.nist.toolkit.xdstools2.shared.command.request.GetTransactionLogDirectoryPathRequest;
 import gov.nist.toolkit.xdstools2.shared.command.request.GetTransactionRequest;
 import gov.nist.toolkit.xdstools2.shared.command.request.LifecycleValidationRequest;
@@ -189,6 +190,7 @@ public interface ToolkitService extends RemoteService  {
 	String getClientIPAddress();
 
 	List<TransactionInstance> getTransInstances(GetTransactionRequest request)  throws Exception;
+	List<List<TransactionInstance>> getTransInstancesLists(GetTransactionListsRequest request)  throws Exception;
 
 	List<Result> getLastMetadata(CommandContext context) throws Exception;
 	String getLastFilename(CommandContext context) throws Exception;

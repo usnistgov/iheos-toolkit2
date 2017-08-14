@@ -1,15 +1,21 @@
 package gov.nist.toolkit.xdstools2.client.tabs.simulatorControlTab;
 
+import gov.nist.toolkit.actortransaction.client.TransactionInstance;
 import gov.nist.toolkit.simcommon.client.SimulatorConfig;
 import gov.nist.toolkit.simcommon.client.SimulatorStats;
 
+import java.util.ArrayList;
+import java.util.List;
+
+/**
+ * Created by skb1 on 08/11/17.
+ */
 public class SimInfo {
    private SimulatorConfig simulatorConfig;
    private SimulatorStats simulatorStats;
    private String createdDtHl7fmt;
-   private String lastAccessedDt;
-   private String lastAccessedDtHl7fmt;
-   private String lastTransaction;
+   public static final int TOP_TRANSACTION_CT  = 3;
+   private final List<TransactionInstance> topThreeTransInstances = new ArrayList<TransactionInstance>();
 
     public SimInfo() {
     }
@@ -23,47 +29,18 @@ public class SimInfo {
         return simulatorConfig;
     }
 
-    public void setSimulatorConfig(SimulatorConfig simulatorConfig) {
-        this.simulatorConfig = simulatorConfig;
-    }
-
     public SimulatorStats getSimulatorStats() {
         return simulatorStats;
     }
-
-    public void setSimulatorStats(SimulatorStats simulatorStats) {
-        this.simulatorStats = simulatorStats;
-    }
-
-    public String getLastAccessedDt() {
-        return lastAccessedDt;
-    }
-
-    public void setLastAccessedDt(String lastAccessedDt) {
-        this.lastAccessedDt = lastAccessedDt;
-    }
-
-    public String getLastAccessedDtHl7fmt() {
-        return lastAccessedDtHl7fmt;
-    }
-
-    public void setLastAccessedDtHl7fmt(String lastAccessedDtHl7fmt) {
-        this.lastAccessedDtHl7fmt = lastAccessedDtHl7fmt;
-    }
-
-    public String getLastTransaction() {
-        return lastTransaction;
-    }
-
-    public void setLastTransaction(String lastTransaction) {
-        this.lastTransaction = lastTransaction;
-    }
-
     public String getCreatedDtHl7fmt() {
         return createdDtHl7fmt;
     }
 
     public void setCreatedDtHl7fmt(String createdDtHl7fmt) {
         this.createdDtHl7fmt = createdDtHl7fmt;
+    }
+
+    public List<TransactionInstance> getTopThreeTransInstances() {
+        return topThreeTransInstances;
     }
 }

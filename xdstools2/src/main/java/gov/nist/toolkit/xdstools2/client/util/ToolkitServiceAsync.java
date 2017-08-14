@@ -91,6 +91,7 @@ public interface ToolkitServiceAsync {
 //	void  validateMessage(ValidationContext vc, String simFileName, AsyncCallback<MessageValidationResults> notify);
 
     void  getTransInstances(GetTransactionRequest request, AsyncCallback<List<TransactionInstance>> callback);
+    void  getTransInstancesLists(GetTransactionListsRequest request, AsyncCallback<List<List<TransactionInstance>>> callback);
 
     void getLastMetadata(CommandContext context,AsyncCallback<List<Result>> callback);
     void getLastFilename(CommandContext context,AsyncCallback<String> callback);
