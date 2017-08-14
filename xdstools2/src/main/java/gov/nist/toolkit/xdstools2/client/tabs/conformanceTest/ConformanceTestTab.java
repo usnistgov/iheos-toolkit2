@@ -325,10 +325,10 @@ public class ConformanceTestTab extends ToolWindowWithMenu implements TestRunner
 
 								// Boost small values below $boostVal to make more visible
 								float adjustedVal = 0.0F;
-								float boostVal = .1F;
+								float boostVal = .25F;
 								for (int idx=0; idx < ts.length; idx++) {
 									if (ts[idx]>0 && ts[idx]<boostVal) {
-										adjustedVal  += boostVal;
+										adjustedVal  += (boostVal-ts[idx]);
 										ts[idx] = boostVal;
 									}
 								}
