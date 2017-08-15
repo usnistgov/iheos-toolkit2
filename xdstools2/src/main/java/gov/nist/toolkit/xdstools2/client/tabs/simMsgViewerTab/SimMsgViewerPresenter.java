@@ -9,12 +9,8 @@ import gov.nist.toolkit.sitemanagement.client.SiteSpec;
 import gov.nist.toolkit.xdstools2.client.abstracts.AbstractPresenter;
 import gov.nist.toolkit.xdstools2.client.command.command.*;
 import gov.nist.toolkit.xdstools2.client.inspector.MetadataInspectorTab;
-import gov.nist.toolkit.xdstools2.client.util.ASite;
-import gov.nist.toolkit.xdstools2.client.util.ClientUtils;
-import gov.nist.toolkit.xdstools2.client.util.SiteFilter;
-import gov.nist.toolkit.xdstools2.client.util.ToolkitLink;
+import gov.nist.toolkit.xdstools2.client.util.*;
 import gov.nist.toolkit.xdstools2.client.util.activitiesAndPlaces.SimLog;
-import gov.nist.toolkit.xdstools2.shared.command.request.GetFullSimIdRequest;
 import gov.nist.toolkit.xdstools2.shared.command.request.GetSimIdsForUserRequest;
 import gov.nist.toolkit.xdstools2.shared.command.request.GetSimulatorEventRequest;
 import gov.nist.toolkit.xdstools2.shared.command.request.GetTransactionRequest;
@@ -59,14 +55,7 @@ public class SimMsgViewerPresenter extends AbstractPresenter<SimMsgViewerView> {
      */
     void setCurrentSimId(SimId simId) {
         currentSimId = simId;  // this prevents init() from loading full context
-        new GetFullSimId() {
-
-            @Override
-            public void onComplete(SimId result) {
-                currentSimId = result;
-                loadSimulatorNames();
-            }
-        }.run(new GetFullSimIdRequest(getCommandContext(), simId));
+        loadSimulatorNames();
     }
 
     private void loadSimulatorNames() {
@@ -126,7 +115,17 @@ public class SimMsgViewerPresenter extends AbstractPresenter<SimMsgViewerView> {
         getView().displayEvents(eventInfos);
     }
 
+    void preselectEvent(final String eventId) {
+        loadEventsForSimulator(new SimpleCallback() {
+            @Override
+            public void run() {
+                doUpdateChosenEvent(eventId);
+            }
+        });
+    }
+
     void doUpdateChosenEvent(String messageId) {
+        GWT.log("doUpdateChosenEvent " + messageId);
         TransactionInstance transactionInstance = null;
 
         for (TransactionInstance ti : events) {
@@ -135,6 +134,7 @@ public class SimMsgViewerPresenter extends AbstractPresenter<SimMsgViewerView> {
                 break;
             }
         }
+        GWT.log("transactionInstance is " + transactionInstance);
         if (transactionInstance == null) return;
         currentTransactionInstance = transactionInstance;
 
@@ -162,10 +162,18 @@ public class SimMsgViewerPresenter extends AbstractPresenter<SimMsgViewerView> {
     }
 
     private void loadEventsForSimulator() {
-        loadEventsForSimulator("all");
+        loadEventsForSimulator((SimpleCallback) null);
+    }
+
+    private void loadEventsForSimulator(SimpleCallback callback) {
+        loadEventsForSimulator("all", callback);
     }
 
     private void loadEventsForSimulator(String transNameFilter) {
+        loadEventsForSimulator(transNameFilter, null);
+    }
+
+    private void loadEventsForSimulator(String transNameFilter, final SimpleCallback callback) {
         if (currentSimId == null) {
             getView().message("Select Simulator from the list");
             return;
@@ -179,6 +187,8 @@ public class SimMsgViewerPresenter extends AbstractPresenter<SimMsgViewerView> {
             @Override
             public void onComplete(List<TransactionInstance> events) {
                 displayEvents(events);
+                if (callback != null)
+                    callback.run();
             }
         }.run(new GetTransactionRequest(getCommandContext(), currentSimId,"",transNameFilter));
     }

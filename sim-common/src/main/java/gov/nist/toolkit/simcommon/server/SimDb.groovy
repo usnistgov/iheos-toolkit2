@@ -284,7 +284,7 @@ public class SimDb {
 	}
 
 	public SimDb(TransactionInstance ti) throws IOException, NoSimException, BadSimIdException {
-		this(new SimId(ti.simId));
+		this(getFullSimId(new SimId(ti.simId)));
 
 		this.actor = ti.actorType.getShortName();
 		this.transaction = ti.trans;

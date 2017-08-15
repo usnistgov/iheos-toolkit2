@@ -1,6 +1,5 @@
 package gov.nist.toolkit.services.shared;
 
-import com.sun.xml.internal.bind.v2.runtime.output.XmlOutput;
 import gov.nist.toolkit.actortransaction.client.ActorType;
 import gov.nist.toolkit.actortransaction.client.TransactionInstance;
 import gov.nist.toolkit.configDatatypes.client.Pid;
@@ -475,7 +474,8 @@ public class SimulatorServiceManager extends CommonService {
 		try {
 			m = MetadataParser.parseContent(reqeustFile);
 		} catch (Exception e) {
-			throw new Exception("Cannot load simulator event - " + e.getMessage(), e);
+			return ResultBuilder.RESULT(new Metadata());
+//			throw new Exception("Cannot load simulator event - " + e.getMessage(), e);
 		}
 		return ResultBuilder.RESULT(m);
 	}
@@ -493,7 +493,8 @@ public class SimulatorServiceManager extends CommonService {
 		try {
 			m = MetadataParser.parseContent(null, response);
 		} catch (Exception e) {
-			throw new Exception("Cannot load simulator event - " + e.getMessage(), e);
+			return ResultBuilder.RESULT(new Metadata());
+//			throw new Exception("Cannot load simulator event - " + e.getMessage(), e);
 		}
 		return ResultBuilder.RESULT(m);
 	}

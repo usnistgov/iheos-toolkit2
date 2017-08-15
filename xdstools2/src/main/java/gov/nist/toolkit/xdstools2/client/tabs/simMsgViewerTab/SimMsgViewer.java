@@ -13,7 +13,6 @@ public class SimMsgViewer extends Place {
     public SimMsgViewer() {
         super();
         GWT.log("Build SimMsgViewer Place");
-        this.placeName = "SimMsgViewer";
     }
 
     public SimMsgViewer(String placeName) {

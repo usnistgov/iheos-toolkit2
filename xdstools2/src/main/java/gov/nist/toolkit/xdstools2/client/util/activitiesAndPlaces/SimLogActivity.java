@@ -23,7 +23,7 @@ public class SimLogActivity  extends AbstractActivity {
         if (simLog != null && simLog.isValid()) {
             Xdstools2.getInstance().doNotDisplayHomeTab();
 
-            ToolWindow toolWindow = new ToolLauncher(ToolLauncher.simulatorMessageViewTabLabel).launch();
+            ToolWindow toolWindow = new ToolLauncher(ToolLauncher.newSimulatorMessageViewTabLabel).launch();
 
             SimId simId = new SimId(simLog.getSimIdString());
             SimulatorMessageViewTab simulatorMessageViewTab = (SimulatorMessageViewTab) toolWindow;

@@ -7,14 +7,15 @@ import com.google.gwt.user.client.ui.AcceptsOneWidget;
 import com.google.gwt.user.client.ui.LayoutPanel;
 import com.google.gwt.user.client.ui.Widget;
 import gov.nist.toolkit.simcommon.client.SimId;
+import gov.nist.toolkit.xdstools2.client.Xdstools2;
 import gov.nist.toolkit.xdstools2.client.abstracts.AbstractToolkitActivity;
 import gov.nist.toolkit.xdstools2.client.abstracts.ActivityDisplayer;
 import gov.nist.toolkit.xdstools2.client.abstracts.GenericMVP;
+import gov.nist.toolkit.xdstools2.client.command.command.GetFullSimId;
 import gov.nist.toolkit.xdstools2.client.injector.Injector;
 import gov.nist.toolkit.xdstools2.client.tabs.models.SimIdsModel;
 import gov.nist.toolkit.xdstools2.client.util.ClientFactoryImpl;
-
-import java.util.List;
+import gov.nist.toolkit.xdstools2.shared.command.request.GetFullSimIdRequest;
 
 /**
  *
@@ -35,7 +36,7 @@ public class SimMsgViewerActivity extends AbstractToolkitActivity {
         if (place != null) {
             this.simName = place.getName();
             GWT.log("simName is " + simName);
-            if (simName.indexOf('/') != -1) {
+            if (simName != null && simName.indexOf('/') != -1) {
                 // really simname/actor/trans/event
                 String[] parts = simName.split("/");
                 if (parts.length == 4) {
@@ -63,7 +64,7 @@ public class SimMsgViewerActivity extends AbstractToolkitActivity {
     }
 
     @Override
-    public void start(AcceptsOneWidget acceptsOneWidget, EventBus eventBus) {
+    public void start(final AcceptsOneWidget acceptsOneWidget, final EventBus eventBus) {
         GWT.log("Starting SimMsgViewer Activity - simName is " + simName + " event is " + event);
         presenter = Injector.INSTANCE.getSimMsgViewerPresenter();
         view =      Injector.INSTANCE.getSimMsgViewerView();
@@ -71,14 +72,28 @@ public class SimMsgViewerActivity extends AbstractToolkitActivity {
         assert(presenter != null);
 
         presenter.setTitle("SimLog");
-        if (simName != null)
-            presenter.setCurrentSimId(new SimId(simName));
+        if (simName != null && !simName.equals("")) {
+            // need full id (all context) to proceed
+            new GetFullSimId() {
 
+                @Override
+                public void onComplete(SimId simId) {
+                    presenter.setCurrentSimId(simId);
+                    finish(acceptsOneWidget, eventBus);
+                }
+
+            }.run(new GetFullSimIdRequest(Xdstools2.getHomeTab().getCommandContext(), new SimId(simName)));
+        } else {
+            finish(acceptsOneWidget, eventBus);
+        }
+    }
+
+    private void finish(AcceptsOneWidget acceptsOneWidget, EventBus eventBus) {
         mvp = buildMVP();
         mvp.init();
 
         if (event != null) {
-            presenter.doUpdateChosenEvent(event);
+            presenter.preselectEvent(event);
         }
 
         displayer.display(getContainer(), presenter.getTitle(), this, acceptsOneWidget, eventBus);

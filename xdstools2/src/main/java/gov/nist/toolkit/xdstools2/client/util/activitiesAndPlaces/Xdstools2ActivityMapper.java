@@ -4,12 +4,10 @@ import com.google.gwt.activity.shared.Activity;
 import com.google.gwt.activity.shared.ActivityMapper;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.place.shared.Place;
+import gov.nist.toolkit.xdstools2.client.Xdstools2;
 import gov.nist.toolkit.xdstools2.client.tabs.SubmitResourceTab.SubmitResource;
-import gov.nist.toolkit.xdstools2.client.tabs.SubmitResourceTab.SubmitResourceActivity;
 import gov.nist.toolkit.xdstools2.client.tabs.simMsgViewerTab.SimMsgViewer;
-import gov.nist.toolkit.xdstools2.client.tabs.simMsgViewerTab.SimMsgViewerActivity;
 import gov.nist.toolkit.xdstools2.client.util.ClientFactory;
-import org.apache.lucene.index.DocIDMerger;
 
 /**
  * Finds the activity to run for a given Place, used to configure an ActivityManager.
@@ -37,10 +35,12 @@ public class Xdstools2ActivityMapper implements ActivityMapper {
      */
     @Override
     public Activity getActivity(Place place) {
+        GWT.log("Xdstools2ActivityMapper - place is of type " + place.getClass().getName() );
         if (place instanceof TestInstance) {
             TestInstanceActivity testInstanceActivity = clientFactory.getTestInstanceActivity();
             testInstanceActivity.setTabId(((TestInstance) place).getTabId());
             System.out.println("Go to " + ((TestInstance) place).getTabId());
+            pushHomeTabToBackground();
             return testInstanceActivity;
         }
 
@@ -48,6 +48,7 @@ public class Xdstools2ActivityMapper implements ActivityMapper {
             ToolActivity toolActivity = clientFactory.getToolActivity();
             toolActivity.setToolId(((Tool) place).getToolId());
             System.out.println("Go to " + ((Tool) place).getToolId());
+            pushHomeTabToBackground();
             return toolActivity;
         }
 
@@ -55,6 +56,7 @@ public class Xdstools2ActivityMapper implements ActivityMapper {
             ConfActor confActor = (ConfActor) place;
             ConfActorActivity confActorActivity = clientFactory.getConfActorActivity();
             confActorActivity.setConfActor(confActor);
+            pushHomeTabToBackground();
             return confActorActivity;
         }
 
@@ -62,18 +64,25 @@ public class Xdstools2ActivityMapper implements ActivityMapper {
             SimLog simLog = (SimLog) place;
             SimLogActivity simLogActivity = clientFactory.getSimLogActivity();
             simLogActivity.setSimLog(simLog);
+            pushHomeTabToBackground();
             return simLogActivity;
         }
 
         if (place instanceof SimMsgViewer) {
             GWT.log("Launch SimMsgViewer");
+            pushHomeTabToBackground();
             return clientFactory.getSimMsgViewerActivity((SimMsgViewer) place);
         }
         if (place instanceof SubmitResource) {
             GWT.log("Launch SubmitResource");
             SubmitResource submitResource = (SubmitResource) place;
+            pushHomeTabToBackground();
             return clientFactory.getSubmitResourceActivity();
         }
         return null;
+    }
+
+    private void pushHomeTabToBackground() {
+        Xdstools2.getHomeTab().setDisplayTab(false);
     }
 }

@@ -273,6 +273,10 @@ public class Xdstools2  implements AcceptsOneWidget, IsWidget {
 //		});
 //	}
 
+	/**
+	 * request must be attached to a tab so use home tab
+	 * since it's available
+	 */
 	private void reloadTransactionOfferings() {
 		new GetTransactionOfferingsCommand() {
 
