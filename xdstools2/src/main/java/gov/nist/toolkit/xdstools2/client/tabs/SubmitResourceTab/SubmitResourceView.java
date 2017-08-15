@@ -11,11 +11,11 @@ import gov.nist.toolkit.datasets.shared.DatasetElement;
 import gov.nist.toolkit.datasets.shared.DatasetModel;
 import gov.nist.toolkit.xdstools2.client.abstracts.AbstractView;
 import gov.nist.toolkit.xdstools2.client.abstracts.MessagePanel;
+import gov.nist.toolkit.xdstools2.client.util.ASite;
 import gov.nist.toolkit.xdstools2.client.widgets.DatasetTreeModel;
 import gov.nist.toolkit.xdstools2.client.widgets.HorizontalFlowPanel;
 import gov.nist.toolkit.xdstools2.client.widgets.SystemSelector;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -119,8 +119,6 @@ public class SubmitResourceView extends AbstractView<SubmitResourcePresenter> {
         thePanel.add(bottomPanel);
         logPanel.setWidth("100%");
         logPanel.setHeight("100%");
-//        logPanel.add(new HTML("<p>Hello Internet</p>"));
-//        logPanel.add(new Button("Goodby"));
         bottomPanel.add(logPanel, "[Log]");
 
         bottomPanel.add(inspectorPanel, "[Inspector]");

@@ -10,7 +10,7 @@ import gov.nist.toolkit.xdstools2.client.util.ClientFactoryImpl;
  */
 public class NewToolLauncher {
 
-    PlaceController placeController = new ClientFactoryImpl().getPlaceController();
+    private PlaceController placeController = new ClientFactoryImpl().getPlaceController();
 
     public ToolWindow launch(Place place) {
         assert(placeController != null);

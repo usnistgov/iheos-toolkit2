@@ -8,18 +8,18 @@ import com.google.gwt.place.shared.PlaceTokenizer;
  *
  */
 public class SimMsgViewer extends Place {
-    private String name = null;
+    private String placeName = null;
 
     public SimMsgViewer() {
         super();
         GWT.log("Build SimMsgViewer Place");
-        this.name = "SimMsgViewer";
+        this.placeName = "SimMsgViewer";
     }
 
-    public SimMsgViewer(String name) {
+    public SimMsgViewer(String placeName) {
         super();
-        GWT.log("Build SimMsgViewer Place: " + name);
-        this.name = name;
+        GWT.log("Build SimMsgViewer Place: " + placeName);
+        this.placeName = placeName;
     }
 
     // This is necessary!
@@ -34,7 +34,7 @@ public class SimMsgViewer extends Place {
     }
 
     public String getName() {
-        return name;
+        return placeName;
     }
 
 
@@ -46,7 +46,7 @@ public class SimMsgViewer extends Place {
 
         @Override
         public String getToken(SimMsgViewer toyPlace) {
-            return toyPlace.name;
+            return toyPlace.placeName;
         }
     }
 }

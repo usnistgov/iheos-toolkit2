@@ -77,7 +77,7 @@ class ListenerFactoryITh extends Specification {
 
         then:
         db.patientIdExists(pid1)
-        !db.patientIdExists(PidBuilder.createPid("xxx^^^&1.2&ISO"))  // random name to check for
+        !db.patientIdExists(PidBuilder.createPid("xxx^^^&1.2&ISO"))  // random simName to check for
 
         when:
         sleep(1*1000)
@@ -107,7 +107,7 @@ class ListenerFactoryITh extends Specification {
 
         then:
         db.patientIdExists(pid1)
-        !db.patientIdExists(PidBuilder.createPid("xxx^^^&1.2&ISO"))  // random name to check for
+        !db.patientIdExists(PidBuilder.createPid("xxx^^^&1.2&ISO"))  // random simName to check for
 
         when: 'Send another A01'
         new AdtSender(templateFile, 'localhost', port).send(pid2.asString())

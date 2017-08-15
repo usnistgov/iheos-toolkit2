@@ -1,25 +1,20 @@
 package gov.nist.toolkit.xdstools2.client.tabs.simMsgViewerTab;
 
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.dom.client.Style;
 import com.google.gwt.event.dom.client.*;
 import com.google.gwt.user.client.ui.*;
-import gov.nist.toolkit.actortransaction.client.TransactionInstance;
 import gov.nist.toolkit.http.client.HtmlMarkup;
-import gov.nist.toolkit.results.client.Result;
 import gov.nist.toolkit.services.shared.Message;
 import gov.nist.toolkit.simcommon.client.SimId;
-import gov.nist.toolkit.sitemanagement.client.SiteSpec;
 import gov.nist.toolkit.xdstools2.client.abstracts.AbstractView;
 import gov.nist.toolkit.xdstools2.client.abstracts.MessagePanel;
-import gov.nist.toolkit.xdstools2.client.command.command.*;
-import gov.nist.toolkit.xdstools2.client.inspector.MetadataInspectorTab;
-import gov.nist.toolkit.xdstools2.client.util.ToolkitLink;
-import gov.nist.toolkit.xdstools2.client.util.activitiesAndPlaces.SimLog;
+import gov.nist.toolkit.xdstools2.client.util.ASite;
 import gov.nist.toolkit.xdstools2.client.widgets.HorizontalFlowPanel;
-import gov.nist.toolkit.xdstools2.shared.command.request.GetSimulatorEventRequest;
-import gov.nist.toolkit.xdstools2.shared.command.request.GetTransactionRequest;
+import gov.nist.toolkit.xdstools2.client.widgets.SystemSelector;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -28,17 +23,16 @@ import java.util.Map;
  */
 public class SimMsgViewerView extends AbstractView<SimMsgViewerPresenter> {
     private HorizontalPanel simDisplayPanel = new HorizontalPanel();
-    private VerticalPanel simControlPanel = new VerticalPanel();
-    private VerticalPanel detailPanel = new VerticalPanel();
-    private HorizontalPanel inOutPanel = new HorizontalPanel();
-    private VerticalPanel transInPanel = new VerticalPanel();
-    private VerticalPanel transOutPanel = new VerticalPanel();
-    private VerticalPanel logPanel = new VerticalPanel();
+    private FlowPanel simControlPanel = new FlowPanel();
+    private FlowPanel detailPanel = new FlowPanel();
+    private HorizontalFlowPanel inOutPanel = new HorizontalFlowPanel();
+    private FlowPanel transInPanel = new FlowPanel();
+    private FlowPanel transOutPanel = new FlowPanel();
+    private FlowPanel logPanel = new FlowPanel();
     private ScrollPanel scrollInPanel = new ScrollPanel();
     private ScrollPanel scrollOutPanel = new ScrollPanel();
     private ScrollPanel scrollLogPanel = new ScrollPanel();
     private HorizontalFlowPanel simSelectionDisplayPanel = new HorizontalFlowPanel();
-    private FlowPanel simSelectionPanel = new FlowPanel();
     private HorizontalFlowPanel eventLinkPanel = new HorizontalFlowPanel();
     private HorizontalFlowPanel filterPanel = new HorizontalFlowPanel();
     private TextBox filterField = new TextBox();
@@ -50,12 +44,6 @@ public class SimMsgViewerView extends AbstractView<SimMsgViewerPresenter> {
     ListBox eventListBox = new ListBox();
 
     private HorizontalFlowPanel linkPanel = new HorizontalFlowPanel();
-
-    //	Only one of these will be displayed depending on whether simId is set
-    private ListBox simulatorNamesListBox = new ListBox();
-    private Label simulatorNameLabel = new Label();
-
-    private FlowPanel simNameOrNamesPanel = new FlowPanel();
 
     private Button refreshButton = new Button("Refresh");
     private Button inspectRequestButton = new Button("Inspect Request");
@@ -84,6 +72,12 @@ public class SimMsgViewerView extends AbstractView<SimMsgViewerPresenter> {
         download.setHTML(link);
     }
 
+    private SystemSelector systemSelector = new SystemSelector("Simulator") {
+        @Override
+        public void doSiteSelected(String label) {
+            getPresenter().doUpdateChosenSimulator(label);
+        }
+    };
 
 
 //    class FilterClickHandler implements ClickHandler {
@@ -104,24 +98,10 @@ public class SimMsgViewerView extends AbstractView<SimMsgViewerPresenter> {
 //        }
 //    }
 
-    private String selectedSimId() {
-        String simId = simulatorNamesListBox.getSelectedValue();
-        if (simId ==null || simId.equals("")) return null;
-        return simId;
-    }
-
     private String selectedEvent() {
         return eventListBox.getSelectedValue();
     }
 
-    public SimId getSimid() { return simid; }
-    public void setSimId(SimId simid) {
-        this.simid = simid;
-        simulatorNameLabel.setText(simid.toString());
-        simNameOrNamesPanel.clear();
-        simNameOrNamesPanel.add(simulatorNameLabel);
-        refreshButton.setEnabled(false);
-    }
 
     ///////////////////////////////////////////////////////
     //
@@ -140,43 +120,120 @@ public class SimMsgViewerView extends AbstractView<SimMsgViewerPresenter> {
         return null;
     }
 
+    List<Tab> tabs = new ArrayList<>();
+    private TabLayoutPanel detailsTabPanel;
+
+    static private final String requestHeaderTabName = "[Request Header]";
+    static private final String requestBodyTabName = "[Request Body]";
+    static private final String responseHeaderTabName = "[Response Header]";
+    static private final String responseBodyTabName = "[Response Body]";
+    static private final String logTabName = "[Log]";
+
+    static private final List<String> tabNames = new ArrayList<>();
+    static {
+        tabNames.add(requestHeaderTabName);
+        tabNames.add(requestBodyTabName);
+        tabNames.add(responseHeaderTabName);
+        tabNames.add(responseBodyTabName);
+        tabNames.add(logTabName);
+    }
+
+    private void buildTabs() {
+        for (String name : tabNames)
+            new Tab(name);
+        detailsTabPanel.selectTab(tabNames.indexOf(requestBodyTabName));
+    }
+
+    private Map<String, Tab> tabMap = new HashMap<>();
+
+    class Tab {
+        String title;
+        FlowPanel outerPanel = new FlowPanel();
+        ScrollPanel scrollPanel = new ScrollPanel();
+        FlowPanel contentPanel = new FlowPanel();
+
+        Tab(String title) {
+            this.title = title;
+//            outerPanel.add(contentPanel);
+//            scrollPanel.add(contentPanel);
+            scrollPanel.add(contentPanel);
+            outerPanel.add(scrollPanel);
+            detailsTabPanel.add(outerPanel, title);
+
+            outerPanel.setWidth("100%");
+            outerPanel.setHeight("100%");
+            scrollPanel.setWidth("100%");
+            scrollPanel.setHeight("100%");
+            contentPanel.setWidth("100%");
+            contentPanel.setHeight("100%");
+
+            tabMap.put(title, this);
+        }
+
+        Tab clear() {
+            contentPanel.clear();
+            return this;
+        }
+
+        FlowPanel newContent() {
+            clear();
+            return contentPanel;
+        }
+    }
+
+    private Tab getTab(String title) {
+        return tabMap.get(title);
+    }
+
     @Override
     protected Widget buildUI() {
         FlowPanel tabTopPanel = new FlowPanel();
 
-        simSelectionDisplayPanel.add(HtmlMarkup.html(HtmlMarkup.h2("Simulator:")));
-        simSelectionDisplayPanel.add(simNameOrNamesPanel);
-        simNameOrNamesPanel.add(simulatorNamesListBox);  // will be removed later is simId is set
+        tabTopPanel.add(HtmlMarkup.html(HtmlMarkup.h2("Transaction Log")));
 
         tabTopPanel.add(messagePanel);
+
+        tabTopPanel.add(new HTML("<br />"));
+        tabTopPanel.add(systemSelector.asWidget());
+
+        tabTopPanel.add(new HTML("<br />"));
         tabTopPanel.add(linkPanel);
+        tabTopPanel.add(new HTML("<br />"));
 
         tabTopPanel.add(simDisplayPanel);
-        simDisplayPanel.add(simControlPanel);
         simDisplayPanel.add(detailPanel);
 
-        detailPanel.add(inOutPanel);
-        detailPanel.add(logPanel);
+        detailsTabPanel = new TabLayoutPanel(1.5, Style.Unit.EM);
+        detailsTabPanel.setWidth("800px");
+        detailsTabPanel.setHeight("400px");
+
+        simDisplayPanel.add(simControlPanel);
+        simDisplayPanel.add(detailsTabPanel);
+
+        buildTabs();
+
+
+//        detailPanel.add(inOutPanel);
+//        detailPanel.add(logPanel);
 
         scrollInPanel.setWidth("500px");
         scrollInPanel.setHeight("300px");
-        transInPanel.setBorderWidth(1);
+//        transInPanel.setBorderWidth(1);
         transInPanel.add(scrollInPanel);
 
         scrollOutPanel.setWidth("500px");
         scrollOutPanel.setHeight("300px");
-        transOutPanel.setBorderWidth(1);
+        //transOutPanel.setBorderWidth(1);
         transOutPanel.add(scrollOutPanel);
 
         scrollLogPanel.setWidth("1000px");
         scrollLogPanel.setHeight("300px");
-        logPanel.setBorderWidth(1);
+        //logPanel.setBorderWidth(1);
         logPanel.add(scrollLogPanel);
 
         inOutPanel.add(transInPanel);
         inOutPanel.add(transOutPanel);
 
-        simControlPanel.add(HtmlMarkup.html(HtmlMarkup.h2("Transaction Log")));
         simControlPanel.add(simSelectionDisplayPanel);
 
         simControlPanel.add(transactionDisplayPanel);
@@ -209,13 +266,6 @@ public class SimMsgViewerView extends AbstractView<SimMsgViewerPresenter> {
 
     @Override
     protected void bindUI() {
-        simulatorNamesListBox.addChangeHandler(new ChangeHandler() {
-            @Override
-            public void onChange(ChangeEvent changeEvent) {
-                getPresenter().doUpdateChosenSimulator(selectedSimId());
-            }
-        });
-
         eventListBox.addChangeHandler(new ChangeHandler() {
             @Override
             public void onChange(ChangeEvent changeEvent) { getPresenter().doUpdateChosenEvent(selectedEvent()); }
@@ -242,16 +292,19 @@ public class SimMsgViewerView extends AbstractView<SimMsgViewerPresenter> {
 
     }
 
-    void clear() {
-        scrollInPanel.clear();
-        scrollOutPanel.clear();
-        scrollLogPanel.clear();
+    void clearAllTabs() {
+        for (Tab tab : tabMap.values()) {
+            tab.clear();
+        }
+//        scrollInPanel.clear();
+//        scrollOutPanel.clear();
+//        scrollLogPanel.clear();
     }
 
 
 //    private void updateTransactionsDisplay() {
 //        String filterText = filterField.getText().trim().toLowerCase();
-//        eventListBox.clear();
+//        eventListBox.clearAllTabs();
 //        currentTransactionInstance = null;
 //        updateEventLink();
 //
@@ -281,15 +334,8 @@ public class SimMsgViewerView extends AbstractView<SimMsgViewerPresenter> {
         linkPanel.add(w);
     }
 
-    void displaySimulators(List<String> names) {
-        simulatorNamesListBox.clear();
-        simulatorNamesListBox.addItem("--choose--");
-        for (String name : names) simulatorNamesListBox.addItem(name);
-    }
-
-    void selectSimulator(int i) {
-        simulatorNamesListBox.setSelectedIndex(i);
-
+    void selectSimulator(String simId) {
+        systemSelector.updateSiteSelectedView(simId);
     }
 
     void displayEvents(List<EventInfo> events) {
@@ -299,20 +345,32 @@ public class SimMsgViewerView extends AbstractView<SimMsgViewerPresenter> {
         }
     }
 
+    /**
+     * This updates which transaction is displayed but does not change
+     * which part of the transaction is displayed
+     * @param message
+     */
     void setRequestMessageDetail(Message message) {
-        FlowPanel panel = new FlowPanel();
-        panel.add(htmlize("Request Message<br />", message.getParts().get(0)));
-        scrollInPanel.add(panel);
+        GWT.log("Request Message Detail");
+        getTab(requestHeaderTabName).newContent().add(htmlize(message.getParts().get(0)));
+        if (message.getParts().size() > 1)
+        getTab(requestBodyTabName).newContent().add(htmlize(message.getParts().get(1)));
     }
 
+    /**
+     * This updates which transaction is displayed but does not change
+     * which part of the transaction is displayed
+     * @param message
+     */
     void setResponseMessageDetail(Message message) {
-        FlowPanel panel = new FlowPanel();
-        panel.add(htmlize("Response Message<br />", message.getParts().get(0)));
-        scrollOutPanel.add(panel);
+        GWT.log("Response Message Detail");
+        getTab(responseHeaderTabName).newContent().add(htmlize(message.getParts().get(0)));
+        if (message.getParts().size() > 1)
+            getTab(responseBodyTabName).newContent().add(htmlize(message.getParts().get(1)));
     }
 
     void setLogDetail(String details) {
-        scrollLogPanel.add(htmlize("Log", details));
+        getTab(logTabName).newContent().add(htmlize(details));
     }
 
     void message(String msg) { messagePanel.addMessage(msg); }
@@ -320,5 +378,13 @@ public class SimMsgViewerView extends AbstractView<SimMsgViewerPresenter> {
     void message(HTML msg) { messagePanel.addMessage(msg); }
 
     void clearMessages() { messagePanel.clear(); }
+
+    void setSiteNames(List<ASite> sites) {
+        systemSelector.setSiteNames(sites);
+    }
+
+    void selectSite(String siteName) {
+        systemSelector.updateSiteSelectedView(siteName);
+    }
 
 }

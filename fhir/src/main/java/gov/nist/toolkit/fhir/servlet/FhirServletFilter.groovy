@@ -61,7 +61,8 @@ public class FhirServletFilter implements Filter
             // need to do the same magic here to capture the response for logging
             OutputStream outputStream = responseWrapper.outputStream
             File responseBodyFile = simDb.getResponseBodyFile(simId, SimDb.BASE_TYPE, SimDb.ANY_TRANSACTION, simDb.event)
-            responseBodyFile.text = new String(responseWrapper.toByteArray())
+            String response = new String(responseWrapper.toByteArray())
+            responseBodyFile.text = response
         }
     }
 

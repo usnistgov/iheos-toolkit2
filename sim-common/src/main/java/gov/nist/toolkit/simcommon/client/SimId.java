@@ -88,7 +88,7 @@ public class SimId implements Serializable, IsSerializable {
 //        return this.user.equals(simId.user) && this.id.equals(simId.id);
 //    }
 
-
+    // equals and hashCode ignore FHIR status on purpose
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

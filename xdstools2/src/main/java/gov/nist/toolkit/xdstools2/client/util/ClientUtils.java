@@ -2,6 +2,8 @@ package gov.nist.toolkit.xdstools2.client.util;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.shared.EventBus;
+import com.google.gwt.place.shared.Place;
+import com.google.gwt.place.shared.PlaceController;
 import gov.nist.toolkit.xdstools2.client.event.testSession.TestSessionManager2;
 import gov.nist.toolkit.xdstools2.client.tabs.EnvironmentState;
 import gov.nist.toolkit.xdstools2.shared.command.CommandContext;
@@ -40,5 +42,6 @@ public class ClientUtils {
         if (env == null || env.equals("null")) env = "default";
         return new CommandContext(env, getTestSessionManager().getCurrentTestSession());
     }
+
 
 }

@@ -116,7 +116,9 @@ public interface ToolkitService extends RemoteService  {
 	String getLastFilename(CommandContext context) throws Exception;
 	String getTimeAndDate(CommandContext context) throws Exception;
 
-	MessageValidationResults validateMessage(ValidateMessageRequest request) throws Exception;
+    SimId getFullSimId(GetFullSimIdRequest request) throws Exception;
+
+    MessageValidationResults validateMessage(ValidateMessageRequest request) throws Exception;
 
 	List<String> getSiteNames(GetSiteNamesRequest request) throws Exception;
 	List<String> getRegistryNames() throws Exception;

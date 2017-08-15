@@ -1,5 +1,6 @@
 package gov.nist.toolkit.services.shared;
 
+import com.sun.xml.internal.bind.v2.runtime.output.XmlOutput;
 import gov.nist.toolkit.actortransaction.client.ActorType;
 import gov.nist.toolkit.actortransaction.client.TransactionInstance;
 import gov.nist.toolkit.configDatatypes.client.Pid;
@@ -35,10 +36,15 @@ import gov.nist.toolkit.valsupport.client.MessageValidationResults;
 import gov.nist.toolkit.valsupport.client.ValidationContext;
 import gov.nist.toolkit.xdsexception.ExceptionUtil;
 import gov.nist.toolkit.xdsexception.client.EnvironmentNotSelectedException;
+import groovy.json.JsonOutput;
+import groovy.util.XmlNodePrinter;
+import groovy.util.XmlParser;
 import org.apache.log4j.Logger;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -180,8 +186,18 @@ public class SimulatorServiceManager extends CommonService {
 			File bodyFile = db.getRequestBodyFile(simid, actor, trans, event);
 
 			String body = new String(Io.bytesFromFile(bodyFile));
+			boolean isJson = body.trim().startsWith("{");
+			if (isJson) {
+				// format json but leave embedded HTML alone
+				body = JsonOutput.prettyPrint(body);
+			} else {
+				StringWriter xmlOutput = new StringWriter();
+				XmlNodePrinter printer = new XmlNodePrinter(new PrintWriter(xmlOutput));
+				printer.print(new XmlParser().parseText(body));
+				body = xmlOutput.toString();
+			}
 
-			return new Message(Io.stringFromFile(headerFile) + body);
+			return new Message(Io.stringFromFile(headerFile), body);
 		} catch (Exception e) {
 			return new Message("Error: " + e.getMessage());
 		}
@@ -205,7 +221,7 @@ public class SimulatorServiceManager extends CommonService {
 
 			return new Message(
 					((headerFile.exists()) ? Io.stringFromFile(headerFile) : "")
-							+ body);
+							, body);
 		} catch (Exception e) {
 			return new Message("Error: " + e.getMessage());
 		}

@@ -3,7 +3,7 @@ package gov.nist.toolkit.xdstools2.client.widgets;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.ui.*;
-import gov.nist.toolkit.xdstools2.client.tabs.SubmitResourceTab.ASite;
+import gov.nist.toolkit.xdstools2.client.util.ASite;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -25,10 +25,12 @@ abstract public class SystemSelector implements IsWidget {
         siteTableTitle.addStyleName("tool-section-header");
         thePanel.add(siteTableTitle);
         thePanel.add(siteTablePanel);
+        siteTablePanel.add(new HTML("No appropriate systems to show"));
     }
 
 
     public void setSiteNames(List<ASite> sites) {
+        if (!sites.isEmpty()) siteTablePanel.clear();
         for (ASite site : sites) {
             Button b = new Button(site.getName());
             b.setText(site.getName());
@@ -65,6 +67,24 @@ abstract public class SystemSelector implements IsWidget {
         }
         button.setStyleName("siteSelected");
         doSiteSelected(button.getText());
+    }
+
+    public void updateSiteSelectedView(String title) {
+        for (Button u : siteButtons) {
+            u.setStyleName("gwt-Button");
+        }
+        Button button = findButton(title);
+        button.setStyleName("siteSelected");
+        doSiteSelected(button.getText());
+    }
+
+    private Button findButton(String title) {
+        for (Button b : siteButtons) {
+            if (b.getTitle().equals(title)) return b;
+        }
+        if (siteButtons.size() > 0)
+            return siteButtons.get(0);
+        return new Button("Fake");
     }
 
     @Override

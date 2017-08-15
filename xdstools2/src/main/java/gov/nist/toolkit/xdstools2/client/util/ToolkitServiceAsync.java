@@ -255,4 +255,6 @@ public interface ToolkitServiceAsync {
     void getAllDatasets(CommandContext context, AsyncCallback<List<DatasetModel>> callback);
 
     void fhirCreate(FhirCreateRequest request, AsyncCallback<List<Result>> async);
+
+    void getFullSimId(GetFullSimIdRequest request, AsyncCallback<SimId> async);
 }

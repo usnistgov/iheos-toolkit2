@@ -1,7 +1,12 @@
-package gov.nist.toolkit.xdstools2.client.tabs.SubmitResourceTab;
+package gov.nist.toolkit.xdstools2.client.util;
+
+import gov.nist.toolkit.simcommon.client.SimId;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
- *
+ * A Site name annotated with enabled status
  */
 public class ASite {
     private boolean enabled;

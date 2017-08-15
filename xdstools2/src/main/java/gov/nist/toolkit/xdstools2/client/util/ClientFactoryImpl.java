@@ -7,6 +7,7 @@ import com.google.gwt.place.shared.PlaceController;
 import gov.nist.toolkit.xdstools2.client.injector.Injector;
 import gov.nist.toolkit.xdstools2.client.tabs.SubmitResourceTab.SubmitResource;
 import gov.nist.toolkit.xdstools2.client.tabs.SubmitResourceTab.SubmitResourceActivity;
+import gov.nist.toolkit.xdstools2.client.tabs.simMsgViewerTab.SimMsgViewer;
 import gov.nist.toolkit.xdstools2.client.tabs.simMsgViewerTab.SimMsgViewerActivity;
 import gov.nist.toolkit.xdstools2.client.util.activitiesAndPlaces.ConfActorActivity;
 import gov.nist.toolkit.xdstools2.client.util.activitiesAndPlaces.SimLogActivity;
@@ -25,7 +26,7 @@ public class ClientFactoryImpl implements ClientFactory {
     private static final ConfActorActivity CONF_ACTOR_ACTIVITY = new ConfActorActivity();
     private static final SimLogActivity SIM_LOG_ACTIVITY = new SimLogActivity();
     private static final ToolkitServiceAsync TOOLKIT_SERVICES = GWT.create(ToolkitService.class);
-    private static final SimMsgViewerActivity MSG_VIEWER_ACTIVITY = GWT.create(SimMsgViewerActivity.class);
+//    private static final SimMsgViewerActivity MSG_VIEWER_ACTIVITY = GWT.create(SimMsgViewerActivity.class);
     private static final SubmitResourceActivity SUBMIT_RESOURCE_ACTIVITY = GWT.create(SubmitResourceActivity.class);
 
     @Override
@@ -64,8 +65,8 @@ public class ClientFactoryImpl implements ClientFactory {
     }
 
     @Override
-    public SimMsgViewerActivity getSimMsgViewerActivity() {
-        return MSG_VIEWER_ACTIVITY;
+    public SimMsgViewerActivity getSimMsgViewerActivity(SimMsgViewer place) {
+        return new SimMsgViewerActivity(place);
     }
 
     @Override

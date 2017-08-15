@@ -1,4 +1,4 @@
-package gov.nist.toolkit.xdstools2.client.tabs.SubmitResourceTab;
+package gov.nist.toolkit.xdstools2.client.util;
 
 import gov.nist.toolkit.sitemanagement.client.Site;
 import gov.nist.toolkit.sitemanagement.client.StringSort;

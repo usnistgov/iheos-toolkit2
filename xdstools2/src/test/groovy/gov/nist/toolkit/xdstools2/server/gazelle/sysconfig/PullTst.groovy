@@ -8,7 +8,7 @@ import gov.nist.toolkit.xdstools2.server.gazelle.sysconfig.OidDef
 import gov.nist.toolkit.xdstools2.server.gazelle.sysconfig.OidsParser
 import spock.lang.Specification
 /**
- * The name is *Tst instead of Test because I don't want this run automatically.
+ * The simName is *Tst instead of Test because I don't want this run automatically.
  */
 class PullTst extends Specification {
     File cache = new File('/Users/bill/tmp/actors')

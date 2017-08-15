@@ -1,10 +1,10 @@
 package gov.nist.toolkit.xdstools2.client.util;
 
 import gov.nist.toolkit.configDatatypes.client.TransactionType;
+import gov.nist.toolkit.simcommon.client.SimId;
 import gov.nist.toolkit.sitemanagement.client.Site;
 import gov.nist.toolkit.sitemanagement.client.StringSort;
 import gov.nist.toolkit.sitemanagement.client.TransactionOfferings;
-import gov.nist.toolkit.xdstools2.client.tabs.SubmitResourceTab.ASite;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -29,6 +29,14 @@ public class SiteFilter {
         this.transactionOfferings = transactionOfferings;
         this.sites = transactionOfferings.getAllSites();
         this.selected.addAll(sites);
+    }
+
+    public SiteFilter(List<SimId> simIds) {
+        sites = new ArrayList<>();
+        for (SimId simId : simIds) {
+            sites.add(new Site(simId.toString()));
+        }
+        selected.addAll(sites);
     }
 
     public SiteFilter transactionTypesOnly(List<TransactionType> transactionTypes, boolean includeTls, boolean includeNonTls) {

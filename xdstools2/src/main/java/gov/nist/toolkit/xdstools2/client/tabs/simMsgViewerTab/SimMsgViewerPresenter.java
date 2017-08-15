@@ -9,9 +9,12 @@ import gov.nist.toolkit.sitemanagement.client.SiteSpec;
 import gov.nist.toolkit.xdstools2.client.abstracts.AbstractPresenter;
 import gov.nist.toolkit.xdstools2.client.command.command.*;
 import gov.nist.toolkit.xdstools2.client.inspector.MetadataInspectorTab;
+import gov.nist.toolkit.xdstools2.client.util.ASite;
 import gov.nist.toolkit.xdstools2.client.util.ClientUtils;
+import gov.nist.toolkit.xdstools2.client.util.SiteFilter;
 import gov.nist.toolkit.xdstools2.client.util.ToolkitLink;
 import gov.nist.toolkit.xdstools2.client.util.activitiesAndPlaces.SimLog;
+import gov.nist.toolkit.xdstools2.shared.command.request.GetFullSimIdRequest;
 import gov.nist.toolkit.xdstools2.shared.command.request.GetSimIdsForUserRequest;
 import gov.nist.toolkit.xdstools2.shared.command.request.GetSimulatorEventRequest;
 import gov.nist.toolkit.xdstools2.shared.command.request.GetTransactionRequest;
@@ -32,10 +35,6 @@ public class SimMsgViewerPresenter extends AbstractPresenter<SimMsgViewerView> {
     private List<TransactionInstance> events = new ArrayList<>();
     private TransactionInstance currentTransactionInstance = null;
 
-    // remove this later
-    public SimId getCurrentSimId() {
-        return currentSimId;
-    }
 
     private SimId currentSimId = null;
     private String currentTransaction;
@@ -49,7 +48,25 @@ public class SimMsgViewerPresenter extends AbstractPresenter<SimMsgViewerView> {
     @Override
     public void init() {
         GWT.log("Init SimMsgViewerPresenter");
-        loadSimulatorNames();
+        if (currentSimId == null)  // setCurrentSimId was already called so Sims are not listed
+            loadSimulatorNames();
+    }
+
+    /**
+     * Request is coming from UI so this is only partial info in the SimId. Get full context
+     * from server
+     * @param simId
+     */
+    void setCurrentSimId(SimId simId) {
+        currentSimId = simId;  // this prevents init() from loading full context
+        new GetFullSimId() {
+
+            @Override
+            public void onComplete(SimId result) {
+                currentSimId = result;
+                loadSimulatorNames();
+            }
+        }.run(new GetFullSimIdRequest(getCommandContext(), simId));
     }
 
     private void loadSimulatorNames() {
@@ -58,23 +75,27 @@ public class SimMsgViewerPresenter extends AbstractPresenter<SimMsgViewerView> {
             @Override
             public void onComplete(List<SimId> result) {
                 simIds = result;
+                List<ASite> aSites = new SiteFilter(result).sorted();
+                getView().setSiteNames(aSites);
                 for (SimId simId : result) {
                     names.add(simId.toString());
                 }
-                getView().displaySimulators(names);
+//                getView().displaySimulators(names);
 
                 if (currentSimId != null) {
                     int i = names.indexOf(currentSimId.toString());
                     if (i != -1) {
-                        getView().selectSimulator(i);
+                        getView().selectSimulator(currentSimId.toString());
                         loadTransactionTypes();
                     }
                 }
                 else if (result.size()==1) {
-                    getView().selectSimulator(0);
                     currentSimId = result.get(0);
+                    getView().selectSimulator(currentSimId.toString());
                     loadTransactionTypes();
                 }
+                if(currentSimId != null)
+                    getView().selectSite(currentSimId.toString());
             }
         }.run(new GetSimIdsForUserRequest(getCommandContext(), null));
 
@@ -92,6 +113,7 @@ public class SimMsgViewerPresenter extends AbstractPresenter<SimMsgViewerView> {
                 getView().transactionNamesPanel.clear();
                 loadEventsForSimulator("all");
             }
+
         }.run(new GetTransactionRequest(ClientUtils.INSTANCE.getCommandContext(), currentSimId));
     }
 
@@ -135,7 +157,7 @@ public class SimMsgViewerPresenter extends AbstractPresenter<SimMsgViewerView> {
     private void updateEventLink() {
         if (currentTransactionInstance != null) {
             SimLog simLog = new SimLog(currentTransactionInstance);
-            getView().updateEventLink(new ToolkitLink("SimResource Link: ", "#SimLog:" + (new SimLog.Tokenizer()).getToken(simLog)).asWidget());
+            getView().updateEventLink(new ToolkitLink("SimResource Link: ", "#SimMsgViewer:" + (new SimLog.Tokenizer()).getToken(simLog)).asWidget());
         }
     }
 
@@ -149,7 +171,7 @@ public class SimMsgViewerPresenter extends AbstractPresenter<SimMsgViewerView> {
             return;
         }
         currentTransaction = transNameFilter;
-        getView().clear();
+        getView().clearAllTabs();
 
         if ("all".equalsIgnoreCase(transNameFilter))
             transNameFilter = null;
@@ -189,6 +211,7 @@ public class SimMsgViewerPresenter extends AbstractPresenter<SimMsgViewerView> {
         // translates to server version of simid
         currentSimId = getServerSimId(new SimId(simName));
         loadEventsForSimulator();
+        getView().clearAllTabs();
     }
 
     void doInspectRequest() {
@@ -226,7 +249,7 @@ public class SimMsgViewerPresenter extends AbstractPresenter<SimMsgViewerView> {
         String trans = ti.trans;
         String messageId = ti.messageId;
 
-        getView().clear();
+        getView().clearAllTabs();
 
         new GetTransactionRequestCommand(){
             @Override
@@ -235,6 +258,10 @@ public class SimMsgViewerPresenter extends AbstractPresenter<SimMsgViewerView> {
             }
         }.run(new GetTransactionRequest(getCommandContext(), currentSimId,actor,trans,messageId));
 
+        /*
+         * Update which message is displayed - does not change which part of the
+         * message is currently in the display.
+         */
         new GetTransactionResponseCommand(){
             @Override
             public void onComplete(Message message) {
@@ -255,7 +282,8 @@ public class SimMsgViewerPresenter extends AbstractPresenter<SimMsgViewerView> {
         loadTransactionTypes();
         loadEventsForSimulator(currentTransaction);
 
-        getView().clear();
+        getView().clearAllTabs();
 
     }
+
 }

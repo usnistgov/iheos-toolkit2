@@ -3,6 +3,7 @@ package gov.nist.toolkit.xdstools2.client.injector;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.inject.client.GinModules;
 import com.google.gwt.inject.client.Ginjector;
+import com.google.gwt.place.shared.PlaceController;
 import gov.nist.toolkit.xdstools2.client.TabContainer;
 import gov.nist.toolkit.xdstools2.client.abstracts.ToolkitAppDisplayer;
 import gov.nist.toolkit.xdstools2.client.event.Xdstools2EventBus;
@@ -21,6 +22,7 @@ public interface Injector extends Ginjector {
 
     Xdstools2EventBus getEventBus();
 
+
     SimMsgViewerPresenter getSimMsgViewerPresenter();
     SimMsgViewerView getSimMsgViewerView();
     SimMsgViewerMVP getSimMsgViewerMVP();
@@ -32,4 +34,5 @@ public interface Injector extends Ginjector {
     SubmitResourcePresenter getSubmitResourcePresenter();
 
     SubmitResourceView getSubmitResourceView();
+
 }

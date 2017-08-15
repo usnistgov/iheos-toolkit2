@@ -46,7 +46,6 @@ public class SimDb {
 			return mkfSim(simid)
 		}
 
-
 		File dbRoot = getSimDbFile();
 		validateSimId(simid);
 		if (!dbRoot.exists())
@@ -65,6 +64,29 @@ public class SimDb {
 		db.setSimulatorType(actor);
 		return db;
 	}
+
+	/**
+	 * Given partial information (user and id) build the full simId
+	 * @param simId1
+	 * @return
+	 */
+	static SimId getFullSimId(SimId simId) {
+		SimId ssimId = new SimId(simId.getUser(), simId.getId())
+		if (exists(ssimId)) {
+			// soap based sim
+			SimDb simDb = new SimDb(ssimId)
+			return simIdBuilder(simDb.getSimDir())
+		} else {
+			ssimId = ssimId.forFhir()
+			if (exists(ssimId)) {
+				// FHIR based sim
+				SimDb simDb = new SimDb(ssimId)
+				return simIdBuilder(simDb.getSimDir())
+			}
+		}
+		throw new BadSimIdException("Simulator " + simId.toString() + " does not exist.")
+	}
+
 
 	/**
 	 * Return base dir of SimDb storage
@@ -992,13 +1014,14 @@ public class SimDb {
 	}
 
 	/**
-	 * Base location of simulator
+	 * Base location of FHIR simulator
 	 * @param simId - which simulator
 	 * @return
 	 */
 	static File getSimBase(SimId simId) {
 		return new File(getResDbFile(), simId.toString())
 	}
+
 
 	/**
 	 * delete FHIR sim

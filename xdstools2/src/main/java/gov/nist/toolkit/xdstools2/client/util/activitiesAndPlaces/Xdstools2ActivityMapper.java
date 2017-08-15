@@ -67,9 +67,7 @@ public class Xdstools2ActivityMapper implements ActivityMapper {
 
         if (place instanceof SimMsgViewer) {
             GWT.log("Launch SimMsgViewer");
-            SimMsgViewer simMsgViewer = (SimMsgViewer) place;
-            SimMsgViewerActivity activity = clientFactory.getSimMsgViewerActivity();
-            return activity;
+            return clientFactory.getSimMsgViewerActivity((SimMsgViewer) place);
         }
         if (place instanceof SubmitResource) {
             GWT.log("Launch SubmitResource");

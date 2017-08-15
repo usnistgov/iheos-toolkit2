@@ -31,7 +31,7 @@ public class SubmitResourceActivity extends AbstractToolkitActivity {
 
     @Override
     public GenericMVP getMVP() {
-        return null;
+        return mvp;
     }
 
     @Override
@@ -45,6 +45,8 @@ public class SubmitResourceActivity extends AbstractToolkitActivity {
         presenter = Injector.INSTANCE.getSubmitResourcePresenter();
         view =      Injector.INSTANCE.getSubmitResourceView();
         displayer = Injector.INSTANCE.getToolkitAppDisplayer();
+
+        presenter.setTitle("SubmitResource");
 
         mvp = buildMVP();
 

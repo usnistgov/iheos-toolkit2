@@ -1,5 +1,6 @@
 package gov.nist.toolkit.xdstools2.client.abstracts;
 
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.SimpleLayoutPanel;
@@ -106,13 +107,36 @@ public abstract class AbstractView<P extends AbstractPresenter<?>> implements Is
         HTML h = new HTML(
                 (header == null) ? "" : "<b>" + header + "</b><br /><br />" +
 
-                        in.replaceAll("<", "&lt;")
-                                .replaceAll("\n\n", "\n")
-                                .replaceAll("\t", "&nbsp;&nbsp;&nbsp;")
-                                .replaceAll(" ", "&nbsp;")
-                                .replaceAll("\n", "<br />")
+                        htmlize(in)
+//                        in.replaceAll("<", "&lt;")
+//                                .replaceAll("\n\n", "\n")
+//                                .replaceAll("\t", "&nbsp;&nbsp;&nbsp;")
+//                                .replaceAll(" ", "&nbsp;")
+//                                .replaceAll("\n", "<br />")
         );
         return h;
     }
 
+    public HTML htmlize(String in) {
+        if (in.trim().startsWith("{")) {
+            return htmlizeJson(in);
+        }
+        String content = in.replaceAll("<", "&lt;")
+                //  .replaceAll("\\n\\n", "\n")
+                .replaceAll("\t", "&nbsp;&nbsp;&nbsp;")
+                .replaceAll(" ", "&nbsp;")
+                .replaceAll("\n", "<br />");
+        HTML h = new HTML(content);
+        return h;
+    }
+
+    public HTML htmlizeJson(String in) {
+        String content = in
+                //  .replaceAll("\\n\\n", "\n")
+                .replaceAll("\t", "&nbsp;&nbsp;&nbsp;")
+                .replaceAll(" ", "&nbsp;")
+                .replaceAll("\\n", "<br />");
+        HTML h = new HTML(content);
+        return h;
+    }
 }

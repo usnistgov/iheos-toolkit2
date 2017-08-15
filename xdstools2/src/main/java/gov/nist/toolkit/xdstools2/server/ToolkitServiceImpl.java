@@ -994,6 +994,18 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements
         installCommandContext(context);
         return new SimulatorServiceManager(session()).getSimIds(context.getUser());
     }
+
+    @Override
+    public SimId getFullSimId(GetFullSimIdRequest request) throws Exception {
+        installCommandContext(request);
+        try {
+            return SimDb.getFullSimId(request.getSimId());
+        } catch (Exception e) {
+            logger.error("getFullSimId - error - " + e.getMessage());
+            throw e;
+        }
+    }
+
     @Override
     public MessageValidationResults validateMessage(ValidateMessageRequest request) throws Exception {
         installCommandContext(request);
