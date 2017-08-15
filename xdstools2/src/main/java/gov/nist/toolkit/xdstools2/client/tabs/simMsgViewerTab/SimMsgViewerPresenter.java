@@ -73,6 +73,7 @@ public class SimMsgViewerPresenter extends AbstractPresenter<SimMsgViewerView> {
 
                 if (currentSimId != null) {
                     int i = names.indexOf(currentSimId.toString());
+                    GWT.log("loadSimulatorNames - preselect " + i);
                     if (i != -1) {
                         getView().selectSimulator(currentSimId.toString());
                         loadTransactionTypes();
@@ -83,8 +84,8 @@ public class SimMsgViewerPresenter extends AbstractPresenter<SimMsgViewerView> {
                     getView().selectSimulator(currentSimId.toString());
                     loadTransactionTypes();
                 }
-                if(currentSimId != null)
-                    getView().selectSite(currentSimId.toString());
+//                if(currentSimId != null)
+//                    getView().selectSite(currentSimId.toString());
             }
         }.run(new GetSimIdsForUserRequest(getCommandContext(), null));
 
@@ -216,6 +217,7 @@ public class SimMsgViewerPresenter extends AbstractPresenter<SimMsgViewerView> {
     }
 
     void doUpdateChosenSimulator(String simName) {
+        GWT.log("doUpdateChosenSimulator - " + simName);
         assert(simName != null);
         assert(!simName.equals(""));
         // translates to server version of simid

@@ -1,5 +1,6 @@
 package gov.nist.toolkit.xdstools2.client.widgets;
 
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.ui.*;
@@ -70,18 +71,22 @@ abstract public class SystemSelector implements IsWidget {
     }
 
     public void updateSiteSelectedView(String title) {
+        GWT.log("updateSiteSelectedView - " + title);
+
         for (Button u : siteButtons) {
             u.setStyleName("gwt-Button");
         }
         Button button = findButton(title);
         button.setStyleName("siteSelected");
-        doSiteSelected(button.getText());
+        doSiteSelected(title);
     }
 
     private Button findButton(String title) {
         for (Button b : siteButtons) {
             if (b.getTitle().equals(title)) return b;
+            if (b.getText().equals(title)) return b;
         }
+        GWT.log("System Button - " + title + " not found");
         if (siteButtons.size() > 0)
             return siteButtons.get(0);
         return new Button("Fake");
