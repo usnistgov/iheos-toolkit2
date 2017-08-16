@@ -222,21 +222,6 @@ public class SimManagerWidget extends Composite {
                 dataProvider.getList());
         newSimTable.addColumnSortHandler(columnSortHandler);
 
-        nameColumn.setSortable(true);
-        columnSortHandler.setComparator(nameColumn,
-                new Comparator<SimInfo>() {
-                    public int compare(SimInfo o1, SimInfo o2) {
-                        if (o1 == o2) {
-                            return 0;
-                        }
-
-                        // Compare the name columns.
-                        if (o1 != null) {
-                            return (o2 != null) ? o1.getSimulatorConfig().getDefaultName().compareTo(o2.getSimulatorConfig().getDefaultName()) : 1;
-                        }
-                        return -1;
-                    }
-                });
 
         TextColumn<SimInfo> idColumn = new TextColumn<SimInfo>() {
             @Override
@@ -244,6 +229,21 @@ public class SimManagerWidget extends Composite {
                 return simInfo.getSimulatorConfig().getId().toString();
             }
         };
+        idColumn.setSortable(true);
+        columnSortHandler.setComparator(idColumn,
+                new Comparator<SimInfo>() {
+                    public int compare(SimInfo o1, SimInfo o2) {
+                        if (o1 == o2) {
+                            return 0;
+                        }
+
+                        // Compare the name columns.
+                        if (o1 != null && o1.getSimulatorConfig().getId()!=null) {
+                            return (o2 != null && o2.getSimulatorConfig().getId()!=null) ? o1.getSimulatorConfig().getId().toString().compareTo(o2.getSimulatorConfig().getId().toString()) : 1;
+                        }
+                        return -1;
+                    }
+                });
 
         TextColumn<SimInfo> createdDtColumn = new TextColumn<SimInfo>() {
             @Override
@@ -604,18 +604,18 @@ public class SimManagerWidget extends Composite {
          * Use the Hl7 date values in the comparator
          */
 
-        newSimTable.addColumn(nameColumn, "Name");
+//        newSimTable.addColumn(nameColumn, "Name");
         newSimTable.addColumn(idColumn, "ID");
         newSimTable.addColumn(createdDtColumn,"Created Date");
         newSimTable.addColumn(typeColumn, "Type");
         newSimTable.addColumn(lastTranColumn, "Last Tran");
         newSimTable.addColumn(lastAccessedDtColumn, "Last Tran Date");
         newSimTable.addColumn(pifPortColumn, "Patient Feed Port");
-        newSimTable.addColumn(ssCtColumn, "SubmissionSets");
-        newSimTable.addColumn(desCtColumn, "DocumentEntries");
+        newSimTable.addColumn(ssCtColumn, "Submission Sets");
+        newSimTable.addColumn(desCtColumn, "Doc Entries");
         newSimTable.addColumn(foldersCtColumn, "Folders");
-        newSimTable.addColumn(docsCtColumn, "Documents");
-        newSimTable.addColumn(pidsCtColumn, "PatientIds");
+        newSimTable.addColumn(docsCtColumn, "Docs");
+        newSimTable.addColumn(pidsCtColumn, "PIds");
         newSimTable.addColumn(logActionCol, "Action");
         newSimTable.addColumn(editActionCol,"");
         newSimTable.addColumn(trashBinActionCol,"");
