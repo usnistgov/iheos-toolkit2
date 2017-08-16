@@ -1,7 +1,10 @@
 package gov.nist.toolkit.xdstools2.client.tabs.simulatorControlTab;
 
 import com.google.gwt.dom.client.Style;
+import com.google.gwt.event.logical.shared.ResizeEvent;
+import com.google.gwt.event.logical.shared.ResizeHandler;
 import com.google.gwt.user.cellview.client.CellTable;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.FlexTable;
 import com.google.gwt.user.client.ui.FlowPanel;
@@ -61,7 +64,7 @@ public class SimulatorControlTab extends GenericQueryTab {
 
     SimConfigSuper simConfigSuper;
     private SimulatorControlTab self;
-    private SimManagerWidget simManagerWidget;
+    private SimManagerWidget2 simManagerWidget;
 
     public SimulatorControlTab(BaseSiteActorManager siteActorManager) {
         super(siteActorManager);
@@ -115,13 +118,49 @@ public class SimulatorControlTab extends GenericQueryTab {
         simConfigWrapperPanel.add(simConfigPanel);
 
 
-        simManagerWidget = new SimManagerWidget(getCommandContext(), this);
+        simManagerWidget = new SimManagerWidget2(getCommandContext(), this);
+
+        Window.addResizeHandler(new ResizeHandler() {
+            @Override
+            public void onResize(ResizeEvent event) {
+
+                resizeSimMgrWidget(simConfigWrapperPanel, simManagerWidget);
+
+            }
+        });
         simCtrlContainer.add(simManagerWidget);
+
+        resizeSimMgrWidget(simConfigWrapperPanel, simManagerWidget);
 
         return simCtrlContainer;
 	}
 
 
+	protected void resizeSimMgrWidget(HorizontalPanel container, SimManagerWidget2 widget2) {
+
+        int containerWidth;
+
+        try {
+            containerWidth = (int)(container.getParent().getElement().getClientWidth() * .90); // Window.getClientWidth())
+        } catch (Exception ex) {
+           containerWidth = (int)(Window.getClientWidth() * .90);
+        }
+
+        /*
+        int containerHeight;
+        try {
+            containerHeight = (int)(container.getParent().getElement().getClientHeight() * .60); // Window.getClientHeight()
+        } catch (Exception ex) {
+            containerHeight = Window.getClientHeight();
+        }
+        */
+
+//        Window.alert(containerWidth + " height: " + containerHeight);
+
+        widget2.setWidthInPx(containerWidth);
+//        widget2.setHeightInPx(containerHeight);
+
+    }
 
 
     @Override
