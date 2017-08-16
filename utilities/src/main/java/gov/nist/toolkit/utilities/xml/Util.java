@@ -68,10 +68,12 @@ public class Util {
 		XMLStreamReader parser=null;
 
 		try {
-			parser = XMLInputFactory.newInstance().createXMLStreamReader(new FileInputStream(infile));
+			parser = XMLInputFactory.newInstance().createXMLStreamReader(new FileInputStream(infile.getCanonicalFile()));
 		} catch (XMLStreamException e) {
 			throw new XdsInternalException("Could not create XMLStreamReader from " + infile.getName());
 		} catch (FileNotFoundException e) {
+			throw new XdsInternalException("Could not find input file " + infile.getAbsolutePath());
+		} catch (IOException e) {
 			throw new XdsInternalException("Could not find input file " + infile.getAbsolutePath());
 		}
 

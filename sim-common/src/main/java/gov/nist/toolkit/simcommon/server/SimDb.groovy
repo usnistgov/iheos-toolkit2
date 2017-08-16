@@ -366,19 +366,19 @@ public class SimDb {
 
 	static List<SimId> getAllSimIds() throws BadSimIdException {
 
-		List<SimId> soapSimIds = getSimDbFile().listFiles().findAll { File file ->
+		List soapSimIds = getSimDbFile().listFiles().findAll { File file ->
 			isSimDir(file)
 		}.collect { File dir ->
 			simIdBuilder (dir)
 		}
 
-		List<SimId> fhirSimIds = getFSimDbFile().listFiles().findAll { File file ->
+		List fhirSimIds = getFSimDbFile().listFiles().findAll { File file ->
 			isSimDir(file)
 		}.collect { File dir ->
 			simIdBuilder(dir)
 		}
 
-		soapSimIds + fhirSimIds as List
+		(soapSimIds + fhirSimIds) as List<SimId>
 	}
 
 	/**

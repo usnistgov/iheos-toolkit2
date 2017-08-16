@@ -41,7 +41,7 @@ public class UnitTestEnvironmentManager {
 
         // Important to set this before war home since it is overriding contents of toolkit.properties
         if (!externalCache || !externalCache.isDirectory())throw new ToolkitRuntimeException('External Cache not found')
-        ExternalCacheManager.initialize(externalCache)
+        ExternalCacheManager.reinitialize(externalCache)
 //        Installation.instance().externalCache(externalCache)
 
         Session session = new Session(warHome, externalCache)

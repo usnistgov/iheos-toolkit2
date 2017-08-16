@@ -86,7 +86,7 @@ public class ExternalCacheManager {
         if (error != null) {
             String msg = "External cache location " + location + " does not exist, is not writeable or is not a directory";
             logger.error(msg);
-            throw new XdsException(msg, null);
+            //throw new XdsException(msg, null);
         }
         initializeDefaultSites();
     }

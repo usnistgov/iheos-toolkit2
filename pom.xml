@@ -86,6 +86,7 @@
         <module>itsupport</module>
         <module>fhir</module>
         <module>datasets</module>
+        <module>it-tests</module>
     </modules>
 
     <profiles>
