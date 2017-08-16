@@ -66,11 +66,11 @@ RAD-69 Retrieve: Single Image Study
       &nbsp;xmlns:iherad="urn:ihe:rad:xdsi-b:2009"
       &nbsp;xmlns:ihe="urn:ihe:iti:xds-b:2007"
       &nbsp;xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
-      &nbsp;<iherad:StudyRequest studyInstanceUID="1.3.6.1.4.1.21367.201599.1.201602281031046">
-        &nbsp;&nbsp;<iherad:SeriesRequest seriesInstanceUID="1.3.6.1.4.1.21367.201599.2.201602281031046">
+      &nbsp;<iherad:StudyRequest studyInstanceUID="1.3.6.1.4.1.21367.201599.1.201604021948025">
+        &nbsp;&nbsp;<iherad:SeriesRequest seriesInstanceUID="1.3.6.1.4.1.21367.201599.2.201604021948025">
           &nbsp;&nbsp;&nbsp;<ihe:DocumentRequest>
-            &nbsp;&nbsp;&nbsp;&nbsp;<ihe:RepositoryUniqueId>1.1.4567332.10.99</ihe:RepositoryUniqueId>
-            &nbsp;&nbsp;&nbsp;&nbsp;<ihe:DocumentUniqueId>1.3.6.1.4.1.21367.201599.3.201602281031046.1</ihe:DocumentUniqueId>
+            &nbsp;&nbsp;&nbsp;&nbsp;<ihe:RepositoryUniqueId>1.3.6.1.4.1.21367.102.1.1</ihe:RepositoryUniqueId>
+            &nbsp;&nbsp;&nbsp;&nbsp;<ihe:DocumentUniqueId>1.3.6.1.4.1.21367.201599.3.201604021948025.1</ihe:DocumentUniqueId>
             &nbsp;&nbsp;&nbsp;</ihe:DocumentRequest>
           &nbsp;&nbsp;</iherad:SeriesRequest>
         &nbsp;</iherad:StudyRequest>

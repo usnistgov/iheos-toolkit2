@@ -115,6 +115,69 @@ public enum ActorType implements IsSerializable, Serializable {
             null,
             false
     ),
+    REGISTRY_MU(
+            "Metadata Update",
+            Arrays.asList(""),
+            "reg_mu",
+            "",
+            Arrays.asList(TransactionType.PIF),
+            false,
+            null
+    ),
+    REGISTRY_MPQ(
+            "Multi Patient Query",
+            Arrays.asList(""),
+            "reg_mpq",
+            "",
+            Arrays.asList(TransactionType.PIF),
+            false,
+            null
+    ),
+    REGISTRY_OD(
+            "On Demand",
+            Arrays.asList(""),
+            "reg_od",
+            "",
+            Arrays.asList(TransactionType.PIF),
+            false,
+            null
+    ),
+    REGISTRY_ISR(
+            "Integrated Source Repository",
+            Arrays.asList(""),
+            "reg_isr",
+            "",
+            Arrays.asList(TransactionType.PIF),
+            false,
+            null
+    ),
+    REGISTRY_XUA(
+            "XUA",
+            Arrays.asList(""),
+            "reg_xua",
+            "",
+            Arrays.asList(TransactionType.PIF),
+            false,
+            null
+    ),
+    REGISTRY_CAT_FOLDER(
+            "CAT Folder",
+            Arrays.asList(""),
+            "reg_catfolder",
+            "",
+            Arrays.asList(TransactionType.PIF),
+            false,
+            null
+    ),
+    REGISTRY_CAT_LIFECYCLE(
+            "CAT Lifecycle",
+            Arrays.asList(""),
+            "reg_catlifecycle",
+            "",
+            Arrays.asList(TransactionType.PIF),
+            false,
+            null
+    ),
     // Update option on Document Registry
     // this should be removed once implications are re-discovered
 //		UPDATE (

@@ -53,6 +53,9 @@ RAD-55 WADO Retrieve: Multi Image Study
           1.3.6.1.4.1.21367.201599.2.201604021948031.21</li>
         <li>objectUID 1.3.6.1.4.1.21367.201599.3.201604021948031.1</li>
         <li>contentType (shall be application/dicom or image/jpeg)</li>
+        <br/> GET
+            /wado?requestType=WADO&studyUID=1.3.6.1.4.1.21367.201599.1.xxx&seriesUID=1.3.6.1.4.1.21367.201599.2.xxx&objectUID=1.3.6.1.4.1.21367.201599.3.xxx&contentType=application/dicom&overlays=false
+            HTTP/1.1
       </ol>
     </li>
   </ol>

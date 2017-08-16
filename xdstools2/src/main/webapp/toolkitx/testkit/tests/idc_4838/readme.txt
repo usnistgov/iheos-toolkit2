@@ -38,7 +38,7 @@ RAD-69 Retrieve: Multi Image Study
         <tr><td>(0010,0020) LO #10 [IDCDEPT023-a]</td><td>PatientID</td></tr>
       </table>
     </li>
-    <li>Test Manager: Using an Internet desk sharing application, review the r endered study
+    <li>Test Manager: Using an Internet desk sharing application, review the rendered study
       presented by the Imaging Document Consumer. If the Imaging Document Consumer is not an
       application with a user facing GUI, the Imaging Document Consumer must somehow demonstrate
       that the images were indeed retrieved and made available for other use.</li>
