@@ -3,6 +3,8 @@ package gov.nist.toolkit.actorfactory;
 import gov.nist.toolkit.actortransaction.client.ActorType;
 import gov.nist.toolkit.configDatatypes.client.TransactionType;
 import gov.nist.toolkit.installation.Installation;
+import gov.nist.toolkit.simcommon.server.SimCache;
+import gov.nist.toolkit.simcommon.server.SimManager;
 import gov.nist.toolkit.sitemanagement.CombinedSiteLoader;
 import gov.nist.toolkit.sitemanagement.SeparateSiteLoader;
 import gov.nist.toolkit.sitemanagement.Sites;
@@ -56,7 +58,7 @@ public class SiteServiceManager {
 	public List<Site> getAllSites(String sessionId) throws Exception {
 		logger.debug(sessionId + ": " + "getAllSites");
 		ArrayList<Site> sites = new ArrayList<>();   //getCommonSites().asCollection());
-		sites.addAll(new SimCache().getSimManagerForSession(sessionId).getAllSites().asCollection());
+		sites.addAll(SimManager.getAllSites().asCollection());
 		List<String> names = new ArrayList<>();
 
 		List<Site> sites2 = new ArrayList<>();
@@ -72,7 +74,7 @@ public class SiteServiceManager {
 	public List<String> getSiteNamesWithRG(String sessionId) throws Exception {
 		logger.debug(sessionId + ": " + "getSiteNamesWithRG");
 		List<String> ss = new ArrayList<>();
-		for (Site s : new SimCache().getSimManagerForSession(sessionId).getAllSites().asCollection()) {
+		for (Site s : SimManager.getAllSites().asCollection()) {
 			if (s.hasActor(ActorType.RESPONDING_GATEWAY))
 				ss.add(s.getName());
 		}
@@ -82,7 +84,7 @@ public class SiteServiceManager {
 	public List<String> getSiteNamesWithRepository(String sessionId) throws Exception {
 		logger.debug(sessionId + ": " + "getSiteNamesWithRepository");
 		List<String> ss = new ArrayList<>();
-		for (Site s : new SimCache().getSimManagerForSession(sessionId).getAllSites().asCollection()) {
+		for (Site s : SimManager.getAllSites().asCollection()) {
 			if (s.hasActor(ActorType.REPOSITORY) || s.hasActor(ActorType.REPOSITORY_REGISTRY))
 				ss.add(s.getName());
 		}
@@ -92,7 +94,7 @@ public class SiteServiceManager {
 	public List<String> getSiteNamesWithRIG(String sessionId) throws Exception {
       logger.debug(sessionId + ": " + "getSiteNamesWithRIG");
       List<String> ss = new ArrayList<>();
-      for (Site s : new SimCache().getSimManagerForSession(sessionId).getAllSites().asCollection()) {
+      for (Site s : SimManager.getAllSites().asCollection()) {
          if (s.hasActor(ActorType.RESPONDING_IMAGING_GATEWAY))
             ss.add(s.getName());
       }
@@ -102,7 +104,7 @@ public class SiteServiceManager {
    public List<String> getSiteNamesWithIDS(String sessionId) throws Exception {
       logger.debug(sessionId + ": " + "getSiteNamesWithIDS");
       List<String> ss = new ArrayList<>();
-      for (Site s : new SimCache().getSimManagerForSession(sessionId).getAllSites().asCollection()) {
+      for (Site s : SimManager.getAllSites().asCollection()) {
          if (s.hasActor(ActorType.IMAGING_DOC_SOURCE))
             ss.add(s.getName());
       }
@@ -113,7 +115,7 @@ public class SiteServiceManager {
 		logger.debug(sessionId + ": " + "getSiteNamesWithRep");
 		List<String> pnrSites = null;
 		try {
-			Collection<Site> siteCollection = new SimCache().getSimManagerForSession(sessionId).getAllSites().asCollection();
+			Collection<Site> siteCollection = SimManager.getAllSites().asCollection();
 
 			Sites theSites = new Sites(siteCollection);
 
