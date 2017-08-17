@@ -17,7 +17,7 @@ fi
 SCRIPTNAME=$(basename $0 .sh)
 
 cd ~/tk
-mvn -o clean package -DskipTests -Dmaven.test.skip=true
+mvn  clean package -DskipTests -Dmaven.test.skip=true
 
 cd xdstools2/target
 WARNAME=$(basename *.war .war)

@@ -23,6 +23,7 @@ class TestDisplayView extends FlowPanel implements TestStatusDisplay {
     private Image delete = null;
     private Image inspect = null;
     private Image statusIcon = null;
+    private Image testKitSourceIcon = null;
 
     // Parts of the body
     private HTML description = new HTML();
@@ -46,6 +47,7 @@ class TestDisplayView extends FlowPanel implements TestStatusDisplay {
         if (play != null) header.add(play);
 
         // flush right stuff
+        if (testKitSourceIcon!=null) header.add(testKitSourceIcon);
         if (delete != null) header.add(delete);
         if (statusIcon != null) header.add(statusIcon);
         if (inspect != null) header.add(inspect);
@@ -136,5 +138,26 @@ class TestDisplayView extends FlowPanel implements TestStatusDisplay {
     @Override
     public void removeExtraStyle(String name) {
         header.removeExtraStyle(name);
+    }
+
+    public void setTestKitSourceIcon(String testKitSource, String testKitSection) {
+        String sourceIcon = null;
+        if ("Embedded".equals(testKitSource)) {
+            // Too verbose
+            // sourceIcon = "icons2/capital_e-24.png";
+           return;
+        } else if ("Local".equals(testKitSource)) {
+            sourceIcon = "icons2/capital_l-24.png";
+        } else {
+            sourceIcon = "icons2/red_questionmark-24.png";
+        }
+        testKitSourceIcon = new Image(sourceIcon);
+        String displayMsg = "TestKit Source: " + testKitSource + "; Section: " + testKitSection;
+        testKitSourceIcon.setTitle(displayMsg);
+        testKitSourceIcon.setAltText(displayMsg);
+
+        testKitSourceIcon.addStyleName("right");
+        testKitSourceIcon.addStyleName("iconStyle");
+        testKitSourceIcon.addStyleName("iconStyle_20x20");
     }
 }

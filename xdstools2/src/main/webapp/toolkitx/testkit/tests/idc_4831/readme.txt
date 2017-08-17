@@ -1,14 +1,14 @@
 Retrieve KOS: Single Image Study
 <h2>Imaging Document Consumer Retrieve KOS: Single Image Study</h2>
 
-Tests the ability of the Image Document Consumer actor (SUT) to retrieve data
-from a Repository Registry for a specific single image study.
+Tests the ability of the Imaging Document Consumer actor (SUT) to retrieve one KOS object
+from a Repository/Registry for a specific single image study.
 
 <h3>Purpose / Context</h3>
 The Imaging Document Consumer SUT: <ul>
-<li/>Sends an ITI-18 Registry Stored Query to the Repository Registry simulator
+<li/>Sends an ITI-18 Registry Stored Query to the Repository/Registry simulator
 to locate the KOS object for a specific patient.
-<li/>Sends an ITI-43 Retrieve Document Set to the Repository Registry simulator
+<li/>Sends an ITI-43 Retrieve Document Set to the Repository/Registry simulator
 to retrieve the KOS object specified for this test.</ul>
 The test points are:<ul>
 <li/>The Imaging Document Consumer can perform a valid ITI-18 Registry Stored 

@@ -47,6 +47,8 @@ public class TestDisplay  implements IsWidget {
             else view.labelFailure();
         } else view.labelNotRun();
 
+       view.setTestKitSourceIcon(testOverview.getTestKitSource(), testOverview.getTestKitSection());
+
         view.setTestTitle("Test: " + testOverview.getName() + " - " +testOverview.getTitle());
         view.setTime(testOverview.getLatestSectionTime());
 

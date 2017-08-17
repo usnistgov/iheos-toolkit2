@@ -36,6 +36,8 @@ public class TestOverviewBuilder {
         this.testLogDetails = testLogDetails;
         this.testId = testLogDetails.getTestInstance().getId();
         this.testDefinition = session.getTestkitSearchPath().getTestDefinition(testId);
+        testOverview.setTestKitSource(testDefinition.detectSource().toString());
+        testOverview.setTestKitSection(testDefinition.getTestKitSection());
         testServiceManager = new XdsTestServiceManager(session);
     }
 

@@ -14,6 +14,7 @@ import java.util.*;
  *
  */
 public class TestKit {
+	private
 	File	testKit;
 //	String sessionId;
 

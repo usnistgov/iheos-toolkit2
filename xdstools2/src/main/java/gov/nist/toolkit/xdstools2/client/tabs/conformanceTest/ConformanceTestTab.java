@@ -824,4 +824,3 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner, TestTa
 		this.currentActorOption = actorOption;
 	}
 }
-

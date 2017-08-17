@@ -16,11 +16,11 @@
         <init-param>
             <param-name>toolkit-warhome</param-name>
             <!--<param-value>/Users/bill/tk/xdstools2/target/xdstools2-4.3.4</param-value>-->
-            <param-value>/Users/bill/Library/Caches/IntelliJIdea2016.3/gwt/iheos-toolkit2.f6be686/xdstools2.a2ef4ffe/run/www</param-value>
+            <param-value>/home/bill/opt/apache-tomcat-7.0.78/webapps/xdstools-4.3.5-RC1</param-value>
         </init-param>
         <init-param>
             <param-name>toolkit-external-cache</param-name>
-            <param-value>/Users/bill/ec</param-value>
+            <param-value>/home/bill/ec</param-value>
         </init-param>
     </servlet>
 

@@ -75,6 +75,10 @@ public class SimServlet  extends HttpServlet {
 
 		Installation.instance().setServletContextName(getServletContext().getContextPath());
 
+
+		Installation.instance().setServletContextName(getServletContext().getContextPath());
+
+
 		patientIdentityFeedServlet = new PatientIdentityFeedServlet();
 		patientIdentityFeedServlet.init(config);
 

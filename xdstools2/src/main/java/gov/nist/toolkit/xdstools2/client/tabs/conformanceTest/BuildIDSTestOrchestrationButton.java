@@ -69,19 +69,22 @@ public class BuildIDSTestOrchestrationButton extends AbstractOrchestrationButton
                        "<br /><blockquote>IDS-AD001-a^^^&amp;1.3.6.1.4.1.21367.2005.13.20.1000&amp;ISO</blockquote>" +
                "</p>" +
                "<p>"  +
-                       "Imaging Document Source is required to use the following OID in the repositoryUniqueID for " +
+                       "The Imaging Document Source is required to use the following OID in the repositoryUniqueID for " +
                        "RAD-69 transactions and in the Retrieve Location UID (0040,&nbsp;E011) element in the KOS object:" +
                        "<br /><blockquote>1.3.6.1.4.1.21367.13.80.110</blockquote>" +
                        "No restrictions are placed on the element Retrieve AE Title (0008,&nbsp;0054)" +
                "</p>" +
                "<p>"  +
-                       "The tests for an Imaging Document Consumer use a fixed set of images as input data. " +
+                       "The tests for an Imaging Document Source use a fixed set of images as input data. " +
                        "Each imaging study is identified by a department identifier (DICOM Patient ID (0010,&nbsp;0020) " +
                        "and possibly by an Accession Number (0008,&nbsp;0050). " +
                        "The Patient Identifier in the XDS.b metadata is not the same as the identifier in the " +
                        "DICOM image. " +
                        "It is the responsibility of the Imaging Document Source to map the departmental identifier " +
                        "to the Affinity Domain identifier specified in the test cases. " +
+                       "The Imaging Document Source only needs to use the Affinity Domain identifier in the XDS.b metadata. " +
+                       "The Imaging Document Source is not required to change the DICOM Patient ID (0010,0020) in the DICOM KOS object itself. " +
+                       "Do not change the Patient ID inside the DICOM KOS object unless your software naturally does that. " +
                "</p>" +
                "<p>"  +
                        "The tests below assume a standard testing procedure:" +
@@ -91,7 +94,7 @@ public class BuildIDSTestOrchestrationButton extends AbstractOrchestrationButton
                        "<li>The Imaging Document Source maps the departmental identifiers to the identifiers " +
                        " identified by the Affinity Domain (see individual tests for values). " +
                        "The test tools do not provide a mapping service.</li>" +
-                       "<li>Imaging Document Source generates a KOS object for each imaging study and submits that " +
+                       "<li>The Imaging Document Source generates a KOS object for each imaging study and submits that " +
                        "KOS object via a Provide and Register transaction to a Repository/Registry simulator that is " +
                        "dedicated to the Imaging Document Source. " +
                        "<ul><li>Note that there is at least one patient that has three imaging studies. " +
@@ -100,9 +103,9 @@ public class BuildIDSTestOrchestrationButton extends AbstractOrchestrationButton
                        "the imaging studies are for the same patient.</li></ul>" +
                        "</li>" +
 
-                       "<li>Imaging Document Source provides access to each imaging study using all three mechanisms defined by the XDS-I profile:" +
+                       "<li>The Imaging Document Source provides access to each imaging study using all three mechanisms defined by the XDS-I profile:" +
                        "<ol><li>RAD-69 Retrieve Imaging Document Set</li>" +
-                       "<li>RAD-55 DICOM WADO Retrieve (Not yet ready)</li>" +
+                       "<li>RAD-55 DICOM WADO Retrieve</li>" +
                        "<li>RAD-16 DICOM C-Move (Not yet ready)</li></ol>" +
                        "</li>" +
                        "</ol>" +

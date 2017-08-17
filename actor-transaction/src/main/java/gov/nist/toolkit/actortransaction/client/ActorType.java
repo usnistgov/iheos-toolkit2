@@ -47,7 +47,8 @@ public enum ActorType implements IsSerializable, Serializable {
             Arrays.asList(TransactionType.PIF),
             false,
             null,
-            false
+            null,
+            null
     ),
     REGISTRY_MPQ(
             "Multi Patient Query",
@@ -436,6 +437,8 @@ public enum ActorType implements IsSerializable, Serializable {
        String simulatorClassName, List<TransactionType> tt, boolean showInConfig, 
        String actorsFileLabel, String httpSimulatorClassName, List<TransactionType> httpTt) {
        this(name, altNames, shortName, simulatorFactoryName, simulatorClassName, tt, showInConfig, actorsFileLabel, false);
+       if (httpTt == null)
+           httpTt = new ArrayList<>();
        this.httpTransactionTypes = httpTt;
        this.httpSimulatorClassName = httpSimulatorClassName;
    }
