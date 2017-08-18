@@ -66,10 +66,10 @@ class BasicSpec extends ToolkitSpecification {
     }
 
     def cleanupSpec() {  // one time shutdown when everything is done
-        spi.delete(id, testSession)
-        spi.delete(proxyId, testSession)
-        api.deleteSimulatorIfItExists(simId)
-        api.deleteSimulatorIfItExists(simProxyId)
+//        spi.delete(id, testSession)
+//        spi.delete(proxyId, testSession)
+//        api.deleteSimulatorIfItExists(simId)
+//        api.deleteSimulatorIfItExists(simProxyId)
         server.stop()
         ListenerFactory.terminateAll()
     }

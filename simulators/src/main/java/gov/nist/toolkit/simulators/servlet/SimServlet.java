@@ -508,16 +508,25 @@ public class SimServlet  extends HttpServlet {
 			response.setContentType("application/soap+xml");
 
 //			BaseDsActorSimulator sim = getSimulatorRuntime(simid);
-			BaseDsActorSimulator sim = (BaseDsActorSimulator) RuntimeManager.getSimulatorRuntime(simid);
+			BaseActorSimulator baseSim = RuntimeManager.getSimulatorRuntime(simid);
+			if (baseSim instanceof BaseDsActorSimulator) {
+				BaseDsActorSimulator sim = (BaseDsActorSimulator) baseSim;
 
-			sim.init(dsSimCommon, asc);
-			if (asc.getConfigEle(SimulatorProperties.FORCE_FAULT).asBoolean()) {
-				sendSoapFault(dsSimCommon, "Forced Fault");
-				responseSent = true;
+				sim.init(dsSimCommon, asc);
+				if (asc.getConfigEle(SimulatorProperties.FORCE_FAULT).asBoolean()) {
+					sendSoapFault(dsSimCommon, "Forced Fault");
+					responseSent = true;
+				} else {
+					sim.onTransactionBegin(asc);
+					transactionOk = sim.run(transactionType, mvc, validation);
+					sim.onTransactionEnd(asc);
+				}
 			} else {
-				sim.onTransactionBegin(asc);
-				transactionOk = sim.run(transactionType, mvc, validation);
-				sim.onTransactionEnd(asc);
+				// this is custom for the SimProxy - but maybe others over time
+				baseSim.onTransactionBegin(asc);
+				transactionOk = baseSim.run(transactionType, mvc, validation);
+				baseSim.onTransactionEnd(asc);
+
 			}
 
 			// Archive logs

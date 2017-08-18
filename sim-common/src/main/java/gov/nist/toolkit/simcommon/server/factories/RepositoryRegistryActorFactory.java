@@ -28,6 +28,7 @@ public class RepositoryRegistryActorFactory extends AbstractActorFactory impleme
 		SimId simId = sc.getId();
 		// This needs to be grouped with a Document Registry
 		registryActorFactory = new RegistryActorFactory();
+		registryActorFactory.setTransactionOnly(isTransactionOnly());
 		SimulatorConfig registryConfig = registryActorFactory.buildNew(simm, simId, true).getConfig(0);
 		
 		// This needs to be grouped with a Document Repository also
@@ -55,8 +56,8 @@ public class RepositoryRegistryActorFactory extends AbstractActorFactory impleme
 
 		boolean isAsync = false;
 
-		new RegistryActorFactory().getActorSite(sc, site);
-		new RepositoryActorFactory().getActorSite(sc, site);
+		site = new RegistryActorFactory().getActorSite(sc, site);
+		site = new RepositoryActorFactory().getActorSite(sc, site);
 
 		return site;
 	}

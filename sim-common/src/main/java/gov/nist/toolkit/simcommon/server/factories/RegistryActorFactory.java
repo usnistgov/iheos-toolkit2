@@ -200,7 +200,8 @@ public class RegistryActorFactory extends AbstractActorFactory implements IActor
 					isAsync));
 //		}
 		SimulatorConfigElement pifPortElement = asc.get(SimulatorProperties.PIF_PORT);
-		site.pifPort = pifPortElement.asString();
+		if (pifPortElement != null)
+			site.pifPort = pifPortElement.asString();
 		site.pifHost = Installation.instance().propertyServiceManager().getToolkitHost();
 
 		return site;

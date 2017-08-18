@@ -13,7 +13,7 @@ import gov.nist.toolkit.simcommon.server.SimManager
 import gov.nist.toolkit.sitemanagement.client.Site
 import gov.nist.toolkit.xdsexception.NoSimulatorException
 /**
- *
+ * A singleton factory for creating Sim Proxy
  */
 class SimProxyFactory extends AbstractActorFactory implements IActorFactory{
     static final List<TransactionType> incomingTransactions = TransactionType.asList()  // accepts all known transactions
@@ -41,18 +41,27 @@ class SimProxyFactory extends AbstractActorFactory implements IActorFactory{
 
     }
 
+    // this only works because this is a singleton class
+    private boolean locked = false;
+
     @Override
     Site getActorSite(SimulatorConfig asc, Site site) throws NoSimulatorException {
-        Site aSite = null
-        for (ActorType actorType : ActorType.getAllActorTypes()) {
+        Site aSite = (site) ? site : new Site(asc.defaultName)
+        if (locked) return aSite;
+        locked = true
+        Set<ActorType> types = ActorType.getAllActorTypes()
+        for (ActorType actorType : types) {
             if (actorType.equals(ActorType.SIM_PROXY)) continue;
+            int transactionCount = aSite.transactions().size()
             AbstractActorFactory af = new GenericSimulatorFactory().getActorFactory(actorType)
             if (af) {
-                af.setTransactionOnly(true)
+                af.setTransactionOnly(true)  // don't include PIF - we will run out of ports - not needed for SimProxy
                 Simulator sim = af.buildNew(new SimManager(EnvSetting.DEFAULTSESSIONID), asc.getId(), true)
                 aSite = af.getActorFactory(actorType).getActorSite(sim.getConfig(0), (aSite) ? aSite : site)
+                assert aSite.transactions().size() >= transactionCount, "ActorFactory ${af.getClass().getName()} does not maintain list of Transactions correctly"
             }
         }
+        locked = false
         return aSite
     }
 

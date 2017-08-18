@@ -1,12 +1,19 @@
 package gov.nist.toolkit.simcommon.server;
 
 
+import gov.nist.toolkit.configDatatypes.client.TransactionType;
 import gov.nist.toolkit.simcommon.client.SimulatorConfig;
+import gov.nist.toolkit.valsupport.engine.MessageValidatorEngine;
+
+import java.io.IOException;
 
 /**
  *
  */
-public class BaseActorSimulator {
+abstract public class BaseActorSimulator {
+
+    abstract  public boolean run(TransactionType transactionType, MessageValidatorEngine mvc, String validation) throws IOException;
+
     // Services may need extension via hooks.  These are the hooks
     // They are meant to be overloaded
     public void onCreate(SimulatorConfig config) {}

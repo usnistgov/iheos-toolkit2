@@ -102,7 +102,7 @@ public class TransactionCollection implements IsSerializable, Serializable {
 	}
 	
 	public void addTransaction(TransactionBean transbean) {
-//		if (!contains(transbean))
+		if (!contains(transbean))
 			transactions.add(transbean);
 	}
 	

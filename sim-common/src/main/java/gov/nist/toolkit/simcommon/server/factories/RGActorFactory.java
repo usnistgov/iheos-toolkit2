@@ -76,8 +76,10 @@ public class RGActorFactory extends AbstractActorFactory implements IActorFactor
 
 
       // This needs to be grouped with a Document Registry
+      RegistryActorFactory raf = new RegistryActorFactory();
+      raf.setTransactionOnly(isTransactionOnly());
       SimulatorConfig registryConfig =
-         new RegistryActorFactory().buildNew(simm, simId, true).getConfig(0); // was
+         raf.buildNew(simm, simId, true).getConfig(0); // was
                                                                               // false
 
       // This needs to be grouped with a Document Repository also
@@ -134,8 +136,8 @@ public class RGActorFactory extends AbstractActorFactory implements IActorFactor
 
          site.setHome(sc.get(SimulatorProperties.homeCommunityId).asString());
 
-         new RegistryActorFactory().getActorSite(sc, site);
-         new RepositoryActorFactory().getActorSite(sc, site);
+         site = new RegistryActorFactory().getActorSite(sc, site);
+         site = new RepositoryActorFactory().getActorSite(sc, site);
 
          return site;
       } catch (Throwable t) {

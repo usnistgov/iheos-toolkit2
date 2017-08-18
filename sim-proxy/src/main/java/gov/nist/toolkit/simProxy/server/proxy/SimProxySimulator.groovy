@@ -14,7 +14,7 @@ class SimProxySimulator extends BaseActorSimulator {
 
     SimProxySimulator() {}
     
-    boolean run(TransactionType transactionType, MessageValidatorEngine mvc) throws IOException {
+    public boolean run(TransactionType transactionType, MessageValidatorEngine mvc, String validation) throws IOException {
         return false
     }
 

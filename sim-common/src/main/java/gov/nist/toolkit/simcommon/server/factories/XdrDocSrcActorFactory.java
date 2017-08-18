@@ -55,7 +55,7 @@ public class XdrDocSrcActorFactory extends AbstractActorFactory implements IActo
      */
     @Override
     public Site getActorSite(SimulatorConfig asc, Site site) throws NoSimulatorException {
-        return new Site();
+        return (site == null) ? new Site(asc.getDefaultName()) : site;
     }
 
     @Override
