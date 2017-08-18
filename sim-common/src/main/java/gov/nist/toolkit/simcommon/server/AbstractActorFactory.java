@@ -70,7 +70,7 @@ public abstract class AbstractActorFactory {
 				logger.info("Loading ActorType " + actorType.getName());
 				theFactories.put(actorType.getName(), inf);
 			} catch (Throwable t) {
-				logger.fatal("Cannot load factory class for Actor Type " + actorType.getName() + " - " + t.getMessage());
+				logger.fatal("AbstractActorFactory: Cannot load factory class for Actor Type " + actorType.getName() + " - " + ExceptionUtil.exception_details(t));
 			}
 		}
 		return theFactories;
@@ -107,6 +107,8 @@ public abstract class AbstractActorFactory {
 	static final String isTls = "UseTLS";
 	static final String owner = "Owner";
 	static final String description = "Description";
+
+	private boolean transactionOnly = false;
 
 	PropertyServiceManager propertyServiceMgr = null;
 
@@ -547,6 +549,15 @@ public abstract class AbstractActorFactory {
 		ele.setStringValue(mkFhirEndpoint(sc, ele, actorType.getShortName(), tls));
 		addFixed(sc, ele);
 	}
+
+	public boolean isTransactionOnly() {
+		return transactionOnly;
+	}
+
+	public void setTransactionOnly(boolean transactionOnly) {
+		this.transactionOnly = transactionOnly;
+	}
+
 
 
 }

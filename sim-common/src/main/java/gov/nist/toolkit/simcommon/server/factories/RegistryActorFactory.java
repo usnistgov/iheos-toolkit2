@@ -79,7 +79,8 @@ public class RegistryActorFactory extends AbstractActorFactory implements IActor
 			addEditableConfig(sc, SimulatorProperties.VALIDATE_CODES, ParamType.BOOLEAN, true);
 			addEditableConfig(sc, SimulatorProperties.TRANSACTION_NOTIFICATION_URI, ParamType.TEXT, "");
             addEditableConfig(sc, SimulatorProperties.TRANSACTION_NOTIFICATION_CLASS, ParamType.TEXT, "");
-			addFixedConfig(sc, SimulatorProperties.PIF_PORT, ParamType.TEXT, Integer.toString(ListenerFactory.allocatePort(simId.toString())));
+            if (!isTransactionOnly())
+				addFixedConfig(sc, SimulatorProperties.PIF_PORT, ParamType.TEXT, Integer.toString(ListenerFactory.allocatePort(simId.toString())));
 			addFixedEndpoint(sc, SimulatorProperties.registerEndpoint,       actorType, TransactionType.REGISTER,     false);
 			addFixedEndpoint(sc, SimulatorProperties.registerTlsEndpoint,    actorType, TransactionType.REGISTER,     true);
 			addFixedEndpoint(sc, SimulatorProperties.registerOddeEndpoint,       actorType, TransactionType.REGISTER_ODDE,     false);

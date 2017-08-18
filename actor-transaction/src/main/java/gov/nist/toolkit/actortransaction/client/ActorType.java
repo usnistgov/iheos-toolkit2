@@ -399,6 +399,17 @@ public enum ActorType implements IsSerializable, Serializable {
             true,
             null,
             true
+    ),
+    SIM_PROXY(
+            "Sim Proxy",
+            Arrays.asList(""),
+            "simproxy",
+            "gov.nist.toolkit.simProxy.server.proxy.SimProxyFactory",
+            "gov.nist.toolkit.simProxy.server.proxy.SimProxySimulator",
+            Arrays.asList(TransactionType.PIF),  // place holder
+            false,
+            null,
+            false
     )
 
     ;
@@ -535,6 +546,14 @@ public enum ActorType implements IsSerializable, Serializable {
             return types;
         for (ActorType at : values()) {
             if (at.hasTransaction(tt))
+                types.add(at);
+        }
+        return types;
+    }
+
+    static public Set<ActorType> getAllActorTypes() {
+        Set<ActorType> types = new HashSet<>();
+        for (ActorType at : values()) {
                 types.add(at);
         }
         return types;

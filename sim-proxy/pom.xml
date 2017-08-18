@@ -10,56 +10,22 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>services</artifactId>
+    <artifactId>sim-proxy</artifactId>
 
     <dependencies>
-        <dependency>
-            <groupId>gov.nist.toolkit</groupId>
-            <artifactId>session</artifactId>
-        </dependency>
         <dependency>
             <groupId>gov.nist.toolkit</groupId>
             <artifactId>simulators</artifactId>
         </dependency>
         <dependency>
-            <groupId>gov.nist.toolkit</groupId>
-            <artifactId>sim-proxy</artifactId>
-        </dependency>
-
-        <dependency>
             <groupId>com.google.gwt</groupId>
             <artifactId>gwt-user</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.axis2</groupId>
-            <artifactId>axis2-transport-http</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.axis2</groupId>
-            <artifactId>axis2-transport-tcp</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.axis2</groupId>
-            <artifactId>axis2-transport-local</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.axis2</groupId>
-            <artifactId>axis2-adb</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.axis2</groupId>
-            <artifactId>axis2-kernel</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.axis2</groupId>
-            <artifactId>axis2</artifactId>
         </dependency>
         <dependency>
             <groupId>org.spockframework</groupId>
             <artifactId>spock-core</artifactId>
             <scope>test</scope>
         </dependency>
-
     </dependencies>
 
     <build>
@@ -105,4 +71,5 @@
             </plugin>
         </plugins>
     </build>
+
 </project>
