@@ -1,6 +1,8 @@
 package gov.nist.toolkit.simProxy.server.proxy
 
 import gov.nist.toolkit.actortransaction.client.ActorType
+import gov.nist.toolkit.actortransaction.client.ParamType
+import gov.nist.toolkit.configDatatypes.SimulatorProperties
 import gov.nist.toolkit.configDatatypes.client.TransactionType
 import gov.nist.toolkit.envSetting.EnvSetting
 import gov.nist.toolkit.simcommon.client.SimId
@@ -31,6 +33,9 @@ class SimProxyFactory extends AbstractActorFactory implements IActorFactory{
             simulatorConfig = configureBaseElements(actorType, simId)
         else
             simulatorConfig = new SimulatorConfig()
+
+        addEditableNullEndpoint(simulatorConfig, SimulatorProperties.proxyForwardEndpoint, ActorType.ANY , TransactionType.ANY, false);
+        addEditableNullEndpoint(simulatorConfig, SimulatorProperties.proxyTlsForwardEndpoint, ActorType.ANY, TransactionType.ANY, true);
 
 
         return new Simulator(simulatorConfig)

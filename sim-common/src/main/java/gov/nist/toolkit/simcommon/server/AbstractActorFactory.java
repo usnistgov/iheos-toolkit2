@@ -519,6 +519,7 @@ public abstract class AbstractActorFactory {
 		ele.name = endpointName;
 		ele.type = ParamType.ENDPOINT;
 		ele.transType = transactionType;
+		ele.setTls(tls);
 		ele.setStringValue(mkEndpoint(sc, ele, actorType.getShortName(), tls));
 		addUser(sc, ele);
 	}
@@ -528,6 +529,7 @@ public abstract class AbstractActorFactory {
 		ele.name = endpointName;
 		ele.type = ParamType.ENDPOINT;
 		ele.transType = transactionType;
+		ele.setTls(tls);
 		ele.setStringValue("");
 		addUser(sc, ele);
 	}
@@ -538,6 +540,7 @@ public abstract class AbstractActorFactory {
 		ele.type = ParamType.ENDPOINT;
 		ele.transType = transactionType;
 		ele.setStringValue(mkEndpoint(sc, ele, actorType.getShortName(), tls));
+		ele.setTls(tls);
 		addFixed(sc, ele);
 	}
 
@@ -547,6 +550,7 @@ public abstract class AbstractActorFactory {
 		ele.type = ParamType.ENDPOINT;
 		ele.transType = transactionType;
 		ele.setStringValue(mkFhirEndpoint(sc, ele, actorType.getShortName(), tls));
+		ele.setTls(tls);
 		addFixed(sc, ele);
 	}
 

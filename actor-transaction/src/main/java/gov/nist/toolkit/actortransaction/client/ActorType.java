@@ -407,6 +407,17 @@ public enum ActorType implements IsSerializable, Serializable {
             "gov.nist.toolkit.simProxy.server.proxy.SimProxyFactory",
             "gov.nist.toolkit.simProxy.server.proxy.SimProxySimulator",
             Arrays.asList(TransactionType.PIF),  // place holder
+            true,
+            null,
+            false
+    ),
+    ANY(
+            "Any",
+            Arrays.asList(""),
+            "any",
+            null,
+            null,
+            Arrays.asList(TransactionType.PIF),  // place holder
             false,
             null,
             false

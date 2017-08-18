@@ -33,6 +33,7 @@ public class SimulatorConfigElement implements Serializable,IsSerializable {
 	private List<String> listValue = new ArrayList<>();
 	private PatientErrorMap patientErrorMap = new PatientErrorMap();
 	private String extraValue = "";
+	private boolean tls = false;
 
 	private boolean editable = false;
 
@@ -123,6 +124,8 @@ public class SimulatorConfigElement implements Serializable,IsSerializable {
 		StringBuffer buf = new StringBuffer();
 
 		buf.append("name=").append(name);
+		if (tls)
+			buf.append(" tls");
 		buf.append(" type=").append(type);
 		buf.append(" transType=").append(transType);
 		if (valueType == ValueType.BOOLEAN)
@@ -174,6 +177,7 @@ public class SimulatorConfigElement implements Serializable,IsSerializable {
 
 		SimulatorConfigElement that = (SimulatorConfigElement) o;
 
+		if (tls != that.tls) return false;
 		if (booleanValue != that.booleanValue) return false;
 		if (editable != that.editable) return false;
 		if (name != null ? !name.equals(that.name) : that.name != null) return false;
@@ -193,6 +197,7 @@ public class SimulatorConfigElement implements Serializable,IsSerializable {
 		result = 31 * result + (type != null ? type.hashCode() : 0);
 		result = 31 * result + (transType != null ? transType.hashCode() : 0);
 		result = 31 * result + valueType.hashCode();
+		result = 31 * result + (tls ? 1 : 0);
 		result = 31 * result + (booleanValue ? 1 : 0);
 		result = 31 * result + stringValue.hashCode();
 		result = 31 * result + listValue.hashCode();
@@ -202,5 +207,11 @@ public class SimulatorConfigElement implements Serializable,IsSerializable {
 		return result;
 	}
 
+	public boolean isTls() {
+		return tls;
+	}
 
+	public void setTls(boolean tls) {
+		this.tls = tls;
+	}
 }

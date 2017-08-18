@@ -329,4 +329,7 @@ public class SimulatorProperties {
     public static final String fhirEndpoint = "FHIR Endpoint";
 
     public static final String fhirTlsEndpoint = "FHIR TLS Endpoint";
+
+    public static final String proxyForwardEndpoint = "Proxy Forward Endpoint";
+    public static final String proxyTlsForwardEndpoint = "Proxy TLS Forward Endpoint";
 }
