@@ -559,7 +559,7 @@ public class SimManagerWidget extends Composite {
                                     public void onClick(ClickEvent clickEvent) {
                                         SimulatorConfig config = getData();
                                         DeleteButtonClickHandler handler = new DeleteButtonClickHandler(hostTab, config);
-                                        handler.delete();
+                                        handler.delete(true);
                                     }
                                 }
                         );

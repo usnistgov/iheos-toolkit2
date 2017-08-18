@@ -146,19 +146,17 @@ public class SimulatorControlTab extends GenericQueryTab {
            containerWidth = (int)(Window.getClientWidth() * .90);
         }
 
-        /*
         int containerHeight;
         try {
-            containerHeight = (int)(container.getParent().getElement().getClientHeight() * .60); // Window.getClientHeight()
+            containerHeight = (int)(container.getParent().getElement().getClientHeight() * .50); // Window.getClientHeight()
         } catch (Exception ex) {
-            containerHeight = Window.getClientHeight();
+            containerHeight = (int)(Window.getClientHeight() * .5);
         }
-        */
 
 //        Window.alert(containerWidth + " height: " + containerHeight);
 
         widget2.setWidthInPx(containerWidth);
-//        widget2.setHeightInPx(containerHeight);
+        widget2.setHeightInPx(containerHeight);
 
     }
 

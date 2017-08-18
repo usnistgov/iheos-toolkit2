@@ -6,23 +6,24 @@ import com.google.gwt.cell.client.CheckboxCell;
 import com.google.gwt.cell.client.CompositeCell;
 import com.google.gwt.cell.client.FieldUpdater;
 import com.google.gwt.cell.client.HasCell;
+import com.google.gwt.dom.client.Style;
 import com.google.gwt.i18n.client.DateTimeFormat;
 import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
-import com.google.gwt.safehtml.shared.SafeHtmlUtils;
 import com.google.gwt.user.cellview.client.Column;
 import com.google.gwt.user.cellview.client.ColumnSortEvent;
 import com.google.gwt.user.cellview.client.DataGrid;
 import com.google.gwt.user.cellview.client.Header;
-import com.google.gwt.user.cellview.client.SafeHtmlHeader;
 import com.google.gwt.user.cellview.client.SimplePager;
 import com.google.gwt.user.cellview.client.TextColumn;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
+import com.google.gwt.view.client.CellPreviewEvent;
 import com.google.gwt.view.client.DefaultSelectionEventManager;
 import com.google.gwt.view.client.ListDataProvider;
 import com.google.gwt.view.client.MultiSelectionModel;
 import com.google.gwt.view.client.ProvidesKey;
+import com.google.gwt.view.client.SelectionChangeEvent;
 import com.google.gwt.view.client.SelectionModel;
 import gov.nist.toolkit.actortransaction.client.ActorType;
 import gov.nist.toolkit.actortransaction.client.TransactionInstance;
@@ -37,6 +38,8 @@ import gov.nist.toolkit.xdstools2.client.tabs.simulatorControlTab.od.OddsEditTab
 import gov.nist.toolkit.xdstools2.shared.command.CommandContext;
 import gov.nist.toolkit.xdstools2.shared.command.request.GetTransactionRequest;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.LinkedList;
@@ -55,12 +58,13 @@ public class SimManagerWidget2 extends Composite {
 
 //    private CellTable<SimInfo> newSimTable = new CellTable<SimInfo>();
     private DataGrid<SimInfo> newSimTable = new DataGrid<SimInfo>();
+    private DataGrid<SimInfo> actionTable = new DataGrid<SimInfo>();
     // Create a data provider.
     private ListDataProvider<SimInfo> dataProvider = new ListDataProvider<SimInfo>();
+    private ListDataProvider<SimInfo> actionDataProvider = new ListDataProvider<SimInfo>();
+
 
     public SimManagerWidget2() {
-        // TODO
-        // initWidget
     }
 
     public SimManagerWidget2(CommandContext commandContext, SimulatorControlTab hostTab) {
@@ -69,6 +73,12 @@ public class SimManagerWidget2 extends Composite {
 
 
         buildTableColumns();
+
+        actionTable.setWidth("500px");
+        actionTable.setHeight("100px");
+        containerPanel.add(actionTable);
+
+
         newSimTable.setWidth("1000px");
         newSimTable.setHeight("500px");
         newSimTable.setSkipRowHoverCheck(true);
@@ -79,6 +89,7 @@ public class SimManagerWidget2 extends Composite {
 
         containerPanel.add(newSimTable);
         SimplePager simplePager = new SimplePager();
+        simplePager.getElement().getStyle().setMarginLeft(50, Style.Unit.PCT);
         simplePager.setDisplay(newSimTable);
         simplePager.setPageSize(50);
         containerPanel.add(simplePager);
@@ -152,6 +163,7 @@ public class SimManagerWidget2 extends Composite {
                 }.run(new GetTransactionRequest(commandContext,simInfo.getSimulatorConfig().getId(),"",null));
 
 
+//                Window.alert("adding " + simInfo.getSimulatorConfig().getId().toString());
 
                 list.add(simInfo);
                 row++;
@@ -531,7 +543,10 @@ public class SimManagerWidget2 extends Composite {
                 new Column<SimInfo, SimInfo>(new ActionCell<SimInfo>(trashBinIconImgHtml.toSafeHtml(), new ActionCell.Delegate<SimInfo>() {
                     @Override
                     public void execute(final SimInfo simInfo) {
-                        new DeleteSimInfo(containerPanel,hostTab).delete(simInfo);
+
+                        DeleteSimInfo deleteSimInfo = new DeleteSimInfo(containerPanel,hostTab);
+                        deleteSimInfo.setSimInfoList(Arrays.asList(new SimInfo[]{simInfo}));
+                        deleteSimInfo.delete();
                     }
 
 
@@ -566,7 +581,35 @@ public class SimManagerWidget2 extends Composite {
         // Add a selection model so we can select cells.
         final SelectionModel<SimInfo> selectionModel =
                 new MultiSelectionModel<SimInfo>(KEY_PROVIDER);
-        newSimTable.setSelectionModel(selectionModel, DefaultSelectionEventManager.<SimInfo> createCheckboxManager());
+
+            newSimTable.setSelectionModel(selectionModel,
+                    DefaultSelectionEventManager.createCustomManager(
+                            new DefaultSelectionEventManager.CheckboxEventTranslator<SimInfo>() {
+                                @Override
+                                public DefaultSelectionEventManager.SelectAction translateSelectionEvent(CellPreviewEvent<SimInfo> event) {
+                                    DefaultSelectionEventManager.SelectAction action = super.translateSelectionEvent(event);
+                                    if (action.equals(DefaultSelectionEventManager.SelectAction.IGNORE)) {
+//                                    selectionModel.clear();
+                                        return DefaultSelectionEventManager.SelectAction.TOGGLE;
+                                    }
+                                    return action;
+//                                return DefaultSelectionEventManager.SelectAction.DEFAULT;
+                                }
+                            }
+                    ));
+
+
+        selectionModel.addSelectionChangeHandler(new SelectionChangeEvent.Handler() {
+            @Override
+            public void onSelectionChange(SelectionChangeEvent selectionChangeEvent) {
+                final List<SimInfo> list = actionDataProvider.getList();
+                list.clear();
+                Set<SimInfo> mySelection = ((MultiSelectionModel) newSimTable.getSelectionModel()).getSelectedSet();
+                if (mySelection.size()==1) {
+                    list.add(mySelection.iterator().next());
+                }
+            }
+        });
 
 
         Column<SimInfo, Boolean> checkColumn =
@@ -579,18 +622,27 @@ public class SimManagerWidget2 extends Composite {
                 };
 
 
-        Header<SimInfo> delBtnFooter = new Header<SimInfo>(new ActionCell<SimInfo>(trashBinIconImgHtml.toSafeHtml(), new ActionCell.Delegate<SimInfo>() {
+        SafeHtmlBuilder trashBinSmIconImgHtml = new SafeHtmlBuilder();
+        trashBinSmIconImgHtml.appendHtmlConstant("<img style=\"width: 18px; height: 18px;\"  title=\"Delete\" src=\"icons2/garbage.png\">");
+        Header<SimInfo> delBtnFooter = new Header<SimInfo>(new ActionCell<SimInfo>(trashBinSmIconImgHtml.toSafeHtml(), new ActionCell.Delegate<SimInfo>() {
             @Override
             public void execute(SimInfo object) {
                 try {
                     String selectionIds = "";
                     Set<SimInfo> mySelection = ((MultiSelectionModel) newSimTable.getSelectionModel()).getSelectedSet();
-                    for (SimInfo s : mySelection) {
-                       selectionIds += s.getSimulatorConfig().getId().toString() + " ";
-                    }
-                    Window.alert(selectionIds);
+//                    for (SimInfo s : mySelection) {
+//                       selectionIds += s.getSimulatorConfig().getId().toString() + " ";
+//                    }
+//                    Window.alert(selectionIds);
+
+                    DeleteSimInfo deleteSimInfo = new DeleteSimInfo(containerPanel,hostTab);
+                    deleteSimInfo.setSimInfoList(new ArrayList<SimInfo>(mySelection));
+                    deleteSimInfo.delete();
+
+                    ((MultiSelectionModel) newSimTable.getSelectionModel()).clear();
+
                 } catch (Exception ex) {
-                    Window.alert(ex.toString());
+//                    Window.alert(ex.toString());
                 }
 
             }
@@ -601,7 +653,7 @@ public class SimManagerWidget2 extends Composite {
                return null;
             }
         };
-        newSimTable.addColumn(checkColumn, new SafeHtmlHeader(SafeHtmlUtils.fromSafeConstant("Delete")), delBtnFooter );
+//        newSimTable.addColumn(checkColumn, new SafeHtmlHeader(SafeHtmlUtils.fromSafeConstant("Delete")), delBtnFooter );
 
         /*
          * Columns
@@ -623,36 +675,44 @@ public class SimManagerWidget2 extends Composite {
         newSimTable.addColumn(foldersCtColumn, "Folders");
         newSimTable.addColumn(docsCtColumn, "Docs");
         newSimTable.addColumn(pidsCtColumn, "PIds");
-        newSimTable.addColumn(logActionCol, "Action");
-        newSimTable.addColumn(pidActionCol,"");
-        newSimTable.addColumn(editActionCol,"");
-        newSimTable.addColumn(trashBinActionCol,"");
-        newSimTable.addColumn(downloadActionCol,"");
 
 
-        newSimTable.setColumnWidth(checkColumn, "3%");
-        newSimTable.setColumnWidth(idColumn, "15%");
-        newSimTable.setColumnWidth(createdDtColumn, "10%");
-        newSimTable.setColumnWidth(typeColumn, "12%");
-        newSimTable.setColumnWidth(lastTranColumn, "7%");
-        newSimTable.setColumnWidth(lastAccessedDtColumn, "10%");
-        newSimTable.setColumnWidth(pifPortColumn, "6%");
-        newSimTable.setColumnWidth(ssCtColumn, "5%");
-        newSimTable.setColumnWidth(desCtColumn, "5%");
-        newSimTable.setColumnWidth(foldersCtColumn, "5%");
-        newSimTable.setColumnWidth(docsCtColumn, "5%");
-        newSimTable.setColumnWidth(pidsCtColumn, "5%");
+
+        // Sim info
+//        newSimTable.setColumnWidth(checkColumn, "4%");
+//        newSimTable.setColumnWidth(idColumn, "15%");
+//        newSimTable.setColumnWidth(createdDtColumn, "10%");
+//        newSimTable.setColumnWidth(typeColumn, "11%");
+//        newSimTable.setColumnWidth(lastTranColumn, "7%");
+//        newSimTable.setColumnWidth(lastAccessedDtColumn, "10%");
+//        newSimTable.setColumnWidth(pifPortColumn, "6%");
+
+        // Sim stats
+//        newSimTable.setColumnWidth(ssCtColumn, "5%");
+//        newSimTable.setColumnWidth(desCtColumn, "5%");
+//        newSimTable.setColumnWidth(foldersCtColumn, "5%");
+//        newSimTable.setColumnWidth(docsCtColumn, "5%");
+//        newSimTable.setColumnWidth(pidsCtColumn, "5%");
+
+        /*
+        // Action
         newSimTable.setColumnWidth(logActionCol, "5%");
         newSimTable.setColumnWidth(pidActionCol,"4%");
         newSimTable.setColumnWidth(editActionCol,"5%");
         newSimTable.setColumnWidth(trashBinActionCol,"4%");
         newSimTable.setColumnWidth(downloadActionCol,"4%");
-
-
-//        newSimTable.addColumn(
+        */
 
         // Connect the table to the data provider.
         dataProvider.addDataDisplay(newSimTable);
+
+        actionTable.addColumn(logActionCol, "Action");
+        actionTable.addColumn(pidActionCol,"");
+        actionTable.addColumn(editActionCol,"");
+        actionTable.addColumn(trashBinActionCol,"");
+        actionTable.addColumn(downloadActionCol,"");
+
+        actionDataProvider.addDataDisplay(actionTable);
     }
 
     private static final ProvidesKey<SimInfo> KEY_PROVIDER = new ProvidesKey<SimInfo>() {
