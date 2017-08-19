@@ -12,6 +12,7 @@ import gov.nist.toolkit.registrymsg.registry.Response
 import gov.nist.toolkit.registrymsg.repository.*
 import gov.nist.toolkit.simcommon.client.SimulatorConfig
 import gov.nist.toolkit.simcommon.client.config.SimulatorConfigElement
+import gov.nist.toolkit.simulators.support.SimCommon
 import gov.nist.toolkit.simcommon.server.SimDb
 import gov.nist.toolkit.simcommon.server.SimManager
 import gov.nist.toolkit.simulators.sim.reg.AdhocQueryResponseGenerator

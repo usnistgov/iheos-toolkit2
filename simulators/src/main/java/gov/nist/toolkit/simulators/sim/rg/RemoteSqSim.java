@@ -10,6 +10,7 @@ import gov.nist.toolkit.registrymsg.registry.AdhocQueryResponseParser;
 import gov.nist.toolkit.registrymsg.registry.Response;
 import gov.nist.toolkit.registrysupport.RegistryErrorListGenerator;
 import gov.nist.toolkit.simcommon.client.SimulatorConfig;
+import gov.nist.toolkit.simulators.support.SimCommon;
 import gov.nist.toolkit.simulators.sim.reg.AdhocQueryResponseGeneratingSim;
 import gov.nist.toolkit.simulators.sim.reg.RegistryResponseSendingSim;
 import gov.nist.toolkit.simulators.sim.reg.sq.SqSim;

@@ -5,7 +5,6 @@ import gov.nist.toolkit.errorrecording.ErrorRecorder;
 import gov.nist.toolkit.errorrecording.GwtErrorRecorderBuilder;
 import gov.nist.toolkit.simcommon.client.SimulatorConfig;
 import gov.nist.toolkit.simcommon.server.BaseActorSimulator;
-import gov.nist.toolkit.simcommon.server.SimDb;
 import gov.nist.toolkit.valsupport.client.ValidationContext;
 import gov.nist.toolkit.valsupport.engine.MessageValidatorEngine;
 
@@ -19,8 +18,8 @@ import java.io.IOException;
  *
  */
 public abstract class BaseDsActorSimulator extends BaseActorSimulator {
-    protected SimDb db;
-	protected SimCommon common = null;
+//    protected SimDb db;
+//    protected SimCommon common = null;
 	protected DsSimCommon dsSimCommon = null;
 	protected ErrorRecorder er = null;
 	public HttpServletResponse response;
@@ -39,8 +38,9 @@ public abstract class BaseDsActorSimulator extends BaseActorSimulator {
 
 
 	public BaseDsActorSimulator(SimCommon common, DsSimCommon dsSimCommon) {
+		super(simCommon);
 //		super(common.getValidationContext());
-		this.common = common;
+//		this.common = common;
 		this.dsSimCommon = dsSimCommon;
 		er = common.getCommonErrorRecorder();
 	}
@@ -48,10 +48,11 @@ public abstract class BaseDsActorSimulator extends BaseActorSimulator {
 	public BaseDsActorSimulator() {}
 
 	public void init(DsSimCommon c, SimulatorConfig config) {
+		super.init(config);
 		dsSimCommon = c;
 		if (c == null) return;
-		common = c.simCommon;
-		er = common.getCommonErrorRecorder();
+//		common = c.simCommon;
+		er = simCommon.getCommonErrorRecorder();
 		db = c.simCommon.db;
 		dsSimCommon.setSimulatorConfig(config);
 		response = dsSimCommon.simCommon.response;
@@ -61,7 +62,7 @@ public abstract class BaseDsActorSimulator extends BaseActorSimulator {
 
 
 	public ValidationContext getValidationContext() {
-		return common.getValidationContext();
+		return simCommon.getValidationContext();
 	}
 
 	protected ErrorRecorder newER() {
@@ -72,7 +73,7 @@ public abstract class BaseDsActorSimulator extends BaseActorSimulator {
     public void setSimulatorConfig(SimulatorConfig config) { dsSimCommon.simulatorConfig = config; }
 
 	public SimCommon getCommon() {
-		return common;
+		return simCommon;
 	}
 
 	public DsSimCommon getDsSimCommon() { return dsSimCommon; }

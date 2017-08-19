@@ -11,8 +11,22 @@ import java.io.IOException;
  *
  */
 abstract public class BaseActorSimulator {
+    public SimDb  db;
+    public SimCommon simCommon;
+    SimulatorConfig config;
 
     abstract  public boolean run(TransactionType transactionType, MessageValidatorEngine mvc, String validation) throws IOException;
+
+    public BaseActorSimulator() {}
+
+    public BaseActorSimulator(SimCommon simCommon) {
+        this.simCommon = simCommon;
+        db = simCommon.db;
+    }
+
+    public void init(SimulatorConfig config) {
+        this.config = config;
+    }
 
     // Services may need extension via hooks.  These are the hooks
     // They are meant to be overloaded
