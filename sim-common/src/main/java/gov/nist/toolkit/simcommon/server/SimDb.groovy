@@ -207,7 +207,7 @@ public class SimDb {
 	 * @throws IOException
 	 * @throws NoSimException
 	 */
-	public SimDb(SimId simId, String actor, String transaction) throws IOException, NoSimException {
+	public SimDb(SimId simId, String actor, String transaction) /*throws IOException, NoSimException*/ {
 		this(simId);
 		this.actor = actor;
 		this.transaction = transaction;

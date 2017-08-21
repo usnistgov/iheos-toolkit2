@@ -10,7 +10,7 @@ import gov.nist.toolkit.simulators.sim.reg.store.ProcessMetadataForRegister;
 import gov.nist.toolkit.simulators.sim.reg.store.ProcessMetadataInterface;
 import gov.nist.toolkit.simulators.sim.reg.store.RegIndex;
 import gov.nist.toolkit.simulators.support.DsSimCommon;
-import gov.nist.toolkit.simulators.support.SimCommon;
+import gov.nist.toolkit.simcommon.server.SimCommon;
 import gov.nist.toolkit.valsupport.engine.MessageValidatorEngine;
 import gov.nist.toolkit.xdsexception.client.MetadataException;
 import org.apache.axiom.om.OMElement;

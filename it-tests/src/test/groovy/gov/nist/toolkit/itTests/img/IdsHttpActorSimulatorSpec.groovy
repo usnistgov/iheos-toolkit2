@@ -9,7 +9,7 @@ import gov.nist.toolkit.simcommon.client.SimulatorConfig
 import gov.nist.toolkit.simcommon.server.SimDb
 import gov.nist.toolkit.simulators.sim.ids.IdsHttpActorSimulator
 import gov.nist.toolkit.simulators.support.DsSimCommon
-import gov.nist.toolkit.simulators.support.SimCommon
+import gov.nist.toolkit.simcommon.server.SimCommon
 import gov.nist.toolkit.valsupport.client.ValidationContext
 import gov.nist.toolkit.valsupport.engine.MessageValidatorEngine
 import spock.lang.Specification
@@ -46,9 +46,11 @@ class IdsHttpActorSimulatorSpec extends Specification {
         hparser.getHttpMessage() >> httpMsg
         IdsHttpActorSimulator sim = new IdsHttpActorSimulator();
         sim.init(common)
-        sim.setDsSimCommon(new MyDs(common))
 
         MessageValidatorEngine mvc = Mock()
+
+        sim.setDsSimCommon(new MyDs(common, mvc))
+
 
         boolean ret = sim.run(type, mvc)
 
@@ -66,8 +68,8 @@ class IdsHttpActorSimulatorSpec extends Specification {
 
     public class MyDs extends DsSimCommon {
 
-        public MyDs(SimCommon) {
-            super(SimCommon)
+        public MyDs(SimCommon simCommon, MessageValidatorEngine mvc) {
+            super(simCommon, mvc)
         }
          public HttpParserBa getHttpParserBa() {
              return hparser

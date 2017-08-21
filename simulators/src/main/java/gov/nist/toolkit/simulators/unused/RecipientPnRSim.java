@@ -7,7 +7,7 @@ import gov.nist.toolkit.simcommon.client.SimulatorConfig;
 import gov.nist.toolkit.simulators.sim.reg.RegRSim;
 import gov.nist.toolkit.simulators.sim.rep.RepPnRSim;
 import gov.nist.toolkit.simulators.support.DsSimCommon;
-import gov.nist.toolkit.simulators.support.SimCommon;
+import gov.nist.toolkit.simcommon.server.SimCommon;
 import gov.nist.toolkit.valsupport.engine.MessageValidatorEngine;
 import gov.nist.toolkit.valsupport.message.AbstractMessageValidator;
 
@@ -45,7 +45,7 @@ public class RecipientPnRSim extends AbstractMessageValidator {
 			er.err(XdsErrorCode.Code.XDSRegistryError, startUpException);
 
 		// if request didn't validation, return so errors can be reported
-		if (common.hasErrors()) {
+		if (dsSimCommon.hasErrors()) {
 			er.unRegisterValidator(this);
 			return;
 		}

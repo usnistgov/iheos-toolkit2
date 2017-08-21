@@ -7,7 +7,7 @@ import gov.nist.toolkit.simcommon.client.SimulatorConfig
 import gov.nist.toolkit.simcommon.server.SimDb
 import gov.nist.toolkit.simulators.sim.ids.WadoRetrieveResponseSim
 import gov.nist.toolkit.simulators.support.DsSimCommon
-import gov.nist.toolkit.simulators.support.SimCommon
+import gov.nist.toolkit.simcommon.server.SimCommon
 import gov.nist.toolkit.simulators.support.StoredDocument
 import gov.nist.toolkit.valsupport.client.ValidationContext
 import gov.nist.toolkit.valsupport.engine.MessageValidatorEngine
@@ -48,7 +48,7 @@ class WadoRetriveResponseSimSpec extends Specification {
         common.getCommonErrorRecorder() >> er
         common.response = response
 
-        DsSimCommon dsSimCommon = Mock(DsSimCommon, constructorArgs: [common])
+        DsSimCommon dsSimCommon = Mock(DsSimCommon, constructorArgs: [common, new MessageValidatorEngine()])
         dsSimCommon.getStoredImagingDocument(*_) >> {args -> getDoc((String)args[0], contentType)}
 
         when: 'A WadoRetriveResponseSim instance is created and run'

@@ -20,7 +20,7 @@ import gov.nist.toolkit.simulators.sim.reg.store.RegIndex;
 import gov.nist.toolkit.simulators.sim.rep.RepIndex;
 import gov.nist.toolkit.simulators.support.BaseDsActorSimulator;
 import gov.nist.toolkit.simulators.support.DsSimCommon;
-import gov.nist.toolkit.simulators.support.SimCommon;
+import gov.nist.toolkit.simcommon.server.SimCommon;
 import gov.nist.toolkit.sitemanagement.SeparateSiteLoader;
 import gov.nist.toolkit.sitemanagement.client.Site;
 import gov.nist.toolkit.soap.http.SoapFault;
@@ -157,14 +157,14 @@ public class SimServlet  extends HttpServlet {
 		}
 
 		if (actor == null || actor.equals("null")) {
-			try {
+//			try {
 				SimDb sdb = new SimDb(new SimId(simid), null, null);
 				actor = sdb.getActorsForSimulator().get(0);
-			} catch (IOException e) {
-				e.printStackTrace();
-			} catch (NoSimException e) {
-				e.printStackTrace();
-			}
+//			} catch (IOException e) {
+//				e.printStackTrace();
+//			} catch (NoSimException e) {
+//				e.printStackTrace();
+//			}
 		}
 
 		if (actor == null || actor.equals("null")) {
@@ -251,14 +251,14 @@ public class SimServlet  extends HttpServlet {
 		}
 
 		if (actor == null || actor.equals("null")) {
-			try {
+//			try {
 				SimDb sdb = new SimDb(new SimId(simid), null, null);
 				actor = sdb.getActorsForSimulator().get(0);
-			} catch (IOException e) {
-				e.printStackTrace();
-			} catch (NoSimException e) {
-				e.printStackTrace();
-			}
+//			} catch (IOException e) {
+//				e.printStackTrace();
+//			} catch (NoSimException e) {
+//				e.printStackTrace();
+//			}
 		}
 
 		if (actor == null || actor.equals("null")) {
@@ -336,14 +336,14 @@ public class SimServlet  extends HttpServlet {
 		}
 
 		if (actor == null || actor.equals("null")) {
-			try {
+//			try {
 				SimDb sdb = new SimDb(new SimId(simid), null, null);
 				actor = sdb.getActorsForSimulator().get(0);
-			} catch (IOException e) {
-				e.printStackTrace();
-			} catch (NoSimException e) {
-				e.printStackTrace();
-			}
+//			} catch (IOException e) {
+//				e.printStackTrace();
+//			} catch (NoSimException e) {
+//				e.printStackTrace();
+//			}
 		}
 
 		if (actor == null || actor.equals("null")) {
@@ -388,6 +388,8 @@ public class SimServlet  extends HttpServlet {
 		RepIndex repIndex = null;
 		ServletContext servletContext = config.getServletContext();
 		boolean responseSent = false;
+		MessageValidatorEngine mvc = new MessageValidatorEngine();
+		ValidationContext vc = DefaultValidationContextFactory.validationContext();
 
 		Date now = new Date();
 
@@ -426,7 +428,7 @@ public class SimServlet  extends HttpServlet {
 				break;
 		}
 		if (simIndex >= uriParts.length) {
-			sendSoapFault(response, "Simulator: Do not understand endpoint http://" + request.getLocalName() + ":" + request.getLocalPort()  + uri + endpointFormat);
+			sendSoapFault(response, "Simulator: Do not understand endpoint http://" + request.getLocalName() + ":" + request.getLocalPort()  + uri + endpointFormat, mvc, vc);
 			return;
 		}
 
@@ -444,7 +446,7 @@ public class SimServlet  extends HttpServlet {
 			transaction = uriParts[simIndex + 3];
 		}
 		catch (Exception e) {
-			sendSoapFault(response, "Simulator: Do not understand endpoint http://" + request.getLocalName() + ":" + request.getLocalPort() + uri + endpointFormat + " - " + e.getClass().getName() + ": " + e.getMessage());
+			sendSoapFault(response, "Simulator: Do not understand endpoint http://" + request.getLocalName() + ":" + request.getLocalPort() + uri + endpointFormat + " - " + e.getClass().getName() + ": " + e.getMessage(), mvc, vc);
 			return;
 		}
 
@@ -458,13 +460,12 @@ public class SimServlet  extends HttpServlet {
 		logger.debug("Incoming transaction is " + transaction);
 		logger.debug("... which is " + transactionType);
 		if (transactionType == null) {
-			sendSoapFault(response, "Simulator: Do not understand the transaction requested by this endpoint (" + transaction + ") in http://" + request.getLocalName() + ":" + request.getLocalPort() + uri + endpointFormat);
+			sendSoapFault(response, "Simulator: Do not understand the transaction requested by this endpoint (" + transaction + ") in http://" + request.getLocalName() + ":" + request.getLocalPort() + uri + endpointFormat, mvc, vc);
 			return;
 		}
 
 		boolean transactionOk = true;
 
-		MessageValidatorEngine mvc = new MessageValidatorEngine();
 		try {
 
 			// DB space for this simulator
@@ -480,7 +481,6 @@ public class SimServlet  extends HttpServlet {
 			regIndex = getRegIndex(simid);
 			repIndex = getRepIndex(simid);
 
-			ValidationContext vc = DefaultValidationContextFactory.validationContext();
 			vc.forceMtom = transactionType.isRequiresMtom();
 
 			SimulatorConfigElement stsSce = asc.get(SimulatorProperties.requiresStsSaml);
@@ -491,8 +491,8 @@ public class SimServlet  extends HttpServlet {
 			if (asce != null)
 				vc.setCodesFilename(asce.asString());
 
-			SimCommon common= new SimCommon(db, request.isSecure(), vc, mvc, response);
-			DsSimCommon dsSimCommon = new DsSimCommon(common, regIndex, repIndex);
+			SimCommon common= new SimCommon(db, request.isSecure(), vc, response, mvc);
+			DsSimCommon dsSimCommon = new DsSimCommon(common, regIndex, repIndex, mvc);
 
 			ErrorRecorder er = new GwtErrorRecorderBuilder().buildNewErrorRecorder();
 			er.sectionHeading("Endpoint");
@@ -543,53 +543,53 @@ public class SimServlet  extends HttpServlet {
 
 		}
 		catch (InvocationTargetException e) {
-			sendSoapFault(response, ExceptionUtil.exception_details(e));
+			sendSoapFault(response, ExceptionUtil.exception_details(e), mvc, vc);
 			logger.error(ExceptionUtil.exception_details(e));
 			responseSent = true;
 		}
 		catch (IllegalAccessException e) {
-			sendSoapFault(response, ExceptionUtil.exception_details(e));
+			sendSoapFault(response, ExceptionUtil.exception_details(e), mvc, vc);
 			logger.error(ExceptionUtil.exception_details(e));
 			responseSent = true;
 		}
 		catch (InstantiationException e) {
-			sendSoapFault(response, ExceptionUtil.exception_details(e));
+			sendSoapFault(response, ExceptionUtil.exception_details(e), mvc, vc);
 			logger.error(ExceptionUtil.exception_details(e));
 			responseSent = true;
 		}
 		catch (RuntimeException e) {
-			sendSoapFault(response, ExceptionUtil.exception_details(e));
+			sendSoapFault(response, ExceptionUtil.exception_details(e), mvc, vc);
 			logger.error(ExceptionUtil.exception_details(e));
 			responseSent = true;
 		}
 		catch (IOException e) {
-			sendSoapFault(response, ExceptionUtil.exception_details(e));
+			sendSoapFault(response, ExceptionUtil.exception_details(e), mvc, vc);
 			logger.error(ExceptionUtil.exception_details(e));
 			responseSent = true;
 		}
 		catch (HttpHeaderParseException e) {
-			sendSoapFault(response, ExceptionUtil.exception_details(e));
+			sendSoapFault(response, ExceptionUtil.exception_details(e), mvc, vc);
 			logger.error(ExceptionUtil.exception_details(e));
 			responseSent = true;
 		} catch (ClassNotFoundException e) {
-			sendSoapFault(response, ExceptionUtil.exception_details(e));
+			sendSoapFault(response, ExceptionUtil.exception_details(e), mvc, vc);
 			logger.error(ExceptionUtil.exception_details(e));
 			responseSent = true;
 		} catch (XdsException e) {
-			sendSoapFault(response, ExceptionUtil.exception_details(e));
+			sendSoapFault(response, ExceptionUtil.exception_details(e), mvc, vc);
 			logger.error(ExceptionUtil.exception_details(e));
 			responseSent = true;
 		} catch (NoSimException e) {
-			sendSoapFault(response, ExceptionUtil.exception_details(e));
+			sendSoapFault(response, ExceptionUtil.exception_details(e), mvc, vc);
 			logger.error(ExceptionUtil.exception_details(e));
 			responseSent = true;
 		} catch (ParseException e) {
-			sendSoapFault(response, ExceptionUtil.exception_details(e));
+			sendSoapFault(response, ExceptionUtil.exception_details(e), mvc, vc);
 			logger.error(ExceptionUtil.exception_details(e));
 			responseSent = true;
 		}
 		catch (Exception e) {
-			sendSoapFault(response, ExceptionUtil.exception_details(e));
+			sendSoapFault(response, ExceptionUtil.exception_details(e), mvc, vc);
 			logger.error(ExceptionUtil.exception_details(e));
 			responseSent = true;
 		}
@@ -654,7 +654,7 @@ public class SimServlet  extends HttpServlet {
 		} catch (IOException e) {
 			logger.info("Done with Reg/Rep Cache cleanout");
 			if (!responseSent)
-				sendSoapFault(response, ExceptionUtil.exception_details(e));
+				sendSoapFault(response, ExceptionUtil.exception_details(e), mvc, vc);
 			e.printStackTrace();
 		}
 
@@ -770,11 +770,12 @@ public class SimServlet  extends HttpServlet {
 	}
 
 
-	private void sendSoapFault(HttpServletResponse response, String message) {
+	private void sendSoapFault(HttpServletResponse response, String message, MessageValidatorEngine mvc, ValidationContext vc) {
 		try {
 			SoapFault sf = new SoapFault(SoapFault.FaultCodes.Sender, message);
 			SimCommon c = new SimCommon(response);
-			DsSimCommon dsSimCommon = new DsSimCommon(c);
+			c.vc = vc;
+			DsSimCommon dsSimCommon = new DsSimCommon(c, mvc);
 			OMElement faultEle = sf.getXML();
 			logger.info("Sending SOAP Fault:\n" + new OMFormatter(faultEle).toString());
 			OMElement soapEnv = dsSimCommon.wrapResponseInSoapEnvelope(faultEle);

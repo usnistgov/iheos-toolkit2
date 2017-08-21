@@ -6,7 +6,7 @@ import gov.nist.toolkit.errorrecording.client.XdsErrorCode.Code;
 import gov.nist.toolkit.registrymetadata.Metadata;
 import gov.nist.toolkit.simulators.sim.reg.store.DocEntry;
 import gov.nist.toolkit.simulators.sim.reg.store.StatusValue;
-import gov.nist.toolkit.simulators.support.SimCommon;
+import gov.nist.toolkit.simcommon.server.SimCommon;
 import gov.nist.toolkit.valsupport.client.ValidationContext.MetadataPattern;
 import gov.nist.toolkit.xdsexception.client.MetadataException;
 

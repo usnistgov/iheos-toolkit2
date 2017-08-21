@@ -12,7 +12,7 @@ import java.io.IOException;
  */
 abstract public class BaseActorSimulator {
     public SimDb  db;
-    public SimCommon simCommon;
+    public SimCommon common;
     SimulatorConfig config;
 
     abstract  public boolean run(TransactionType transactionType, MessageValidatorEngine mvc, String validation) throws IOException;
@@ -20,7 +20,7 @@ abstract public class BaseActorSimulator {
     public BaseActorSimulator() {}
 
     public BaseActorSimulator(SimCommon simCommon) {
-        this.simCommon = simCommon;
+        this.common = simCommon;
         db = simCommon.db;
     }
 

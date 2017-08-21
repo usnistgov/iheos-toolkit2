@@ -12,10 +12,12 @@ import gov.nist.toolkit.simcommon.client.SimulatorConfig
 import gov.nist.toolkit.simcommon.client.config.SimulatorConfigElement
 import gov.nist.toolkit.simcommon.server.SimDb
 import gov.nist.toolkit.simulators.support.DsSimCommon
-import gov.nist.toolkit.simulators.support.SimCommon
+import gov.nist.toolkit.simcommon.server.SimCommon
 import gov.nist.toolkit.simulators.support.StoredDocument
 import gov.nist.toolkit.toolkitApi.SimulatorBuilder
+import gov.nist.toolkit.valsupport.client.MessageValidationResults
 import gov.nist.toolkit.valsupport.client.ValidationContext
+import gov.nist.toolkit.valsupport.engine.MessageValidatorEngine
 import spock.lang.Shared
 
 import java.nio.file.Path
@@ -71,7 +73,7 @@ class DsSimCommonSpec extends ToolkitSpecification {
         ValidationContext vc = Mock(ValidationContext)
         SimulatorConfig simConfig = api.getConfig(simId)
         SimCommon common = Mock(SimCommon, constructorArgs: [db, simConfig, false, vc, null, null, null])
-        DsSimCommon dsSimCommon = new DsSimCommon(common, null, null)
+        DsSimCommon dsSimCommon = new DsSimCommon(common, null, null, new MessageValidatorEngine())
         dsSimCommon.setSimulatorConfig(simConfig)
         ErrorRecorder er = Mock(ErrorRecorder)
 

@@ -8,7 +8,7 @@ import gov.nist.toolkit.errorrecording.client.XdsErrorCode.Code;
 import gov.nist.toolkit.registrymetadata.Metadata;
 import gov.nist.toolkit.simcommon.client.SimulatorConfig;
 import gov.nist.toolkit.simcommon.client.config.SimulatorConfigElement;
-import gov.nist.toolkit.simulators.support.SimCommon;
+import gov.nist.toolkit.simcommon.server.SimCommon;
 import gov.nist.toolkit.simulators.support.*;
 import gov.nist.toolkit.soap.axis2.Soap;
 import gov.nist.toolkit.utilities.io.Hash;
@@ -48,18 +48,18 @@ public class RepPnRSim extends TransactionSimulator implements MetadataGeneratin
 		this.er = er;
 
 		// if request didn't validate, return so errors can be reported
-		if (common.hasErrors()) {
+		if (dsSimCommon.hasErrors()) {
 			return;
 		}
 
 		try {
 
-			MetadataContainer metaCon = (MetadataContainer) common.getMessageValidatorIfAvailable(MetadataContainer.class);
+			MetadataContainer metaCon = (MetadataContainer) dsSimCommon.getMessageValidatorIfAvailable(MetadataContainer.class);
 			m = metaCon.getMetadata();
 
 			// DocumentAttachmentMapper should always be scheduled to run before this class, MultipartContainer too.
-			DocumentAttachmentMapper dam = (DocumentAttachmentMapper) common.getMessageValidatorIfAvailable(DocumentAttachmentMapper.class);
-			MultipartContainer multipartContainer = (MultipartContainer) common.getMessageValidatorIfAvailable(MultipartContainer.class);
+			DocumentAttachmentMapper dam = (DocumentAttachmentMapper) dsSimCommon.getMessageValidatorIfAvailable(DocumentAttachmentMapper.class);
+			MultipartContainer multipartContainer = (MultipartContainer) dsSimCommon.getMessageValidatorIfAvailable(MultipartContainer.class);
 
 			Map<String, StoredDocument> sdMap = new HashMap<String, StoredDocument>();
 

@@ -14,7 +14,7 @@ import gov.nist.toolkit.simcommon.client.SimulatorConfig;
 import gov.nist.toolkit.simcommon.client.config.SimulatorConfigElement;
 import gov.nist.toolkit.simulators.sim.reg.store.*;
 import gov.nist.toolkit.simulators.support.DsSimCommon;
-import gov.nist.toolkit.simulators.support.SimCommon;
+import gov.nist.toolkit.simcommon.server.SimCommon;
 import gov.nist.toolkit.simulators.support.TransactionSimulator;
 import gov.nist.toolkit.valregmsg.message.MetadataContainer;
 import gov.nist.toolkit.valsupport.engine.MessageValidatorEngine;
@@ -104,7 +104,7 @@ public class RegRSim extends TransactionSimulator   {
 
 		// Pull metadata container off validation stack
 		try {
-			MetadataContainer metaCon = (MetadataContainer) common.getMessageValidatorIfAvailable(MetadataContainer.class);
+			MetadataContainer metaCon = (MetadataContainer) dsSimCommon.getMessageValidatorIfAvailable(MetadataContainer.class);
 			m = metaCon.getMetadata();
 			if (m == null) throw new Exception("");
 		} catch (Exception e) {

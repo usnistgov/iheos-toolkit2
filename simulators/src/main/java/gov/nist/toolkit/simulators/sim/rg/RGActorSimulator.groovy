@@ -12,7 +12,7 @@ import gov.nist.toolkit.registrymsg.registry.Response
 import gov.nist.toolkit.registrymsg.repository.*
 import gov.nist.toolkit.simcommon.client.SimulatorConfig
 import gov.nist.toolkit.simcommon.client.config.SimulatorConfigElement
-import gov.nist.toolkit.simulators.support.SimCommon
+import gov.nist.toolkit.simcommon.server.SimCommon
 import gov.nist.toolkit.simcommon.server.SimDb
 import gov.nist.toolkit.simcommon.server.SimManager
 import gov.nist.toolkit.simulators.sim.reg.AdhocQueryResponseGenerator
@@ -81,7 +81,7 @@ public class RGActorSimulator extends GatewaySimulatorCommon implements Metadata
             }
 
             // extract retrieve request
-            AbstractMessageValidator mv = common.getMessageValidatorIfAvailable(SoapMessageValidator.class);
+            AbstractMessageValidator mv = dsSimCommon.getMessageValidatorIfAvailable(SoapMessageValidator.class);
             if (mv == null || !(mv instanceof SoapMessageValidator)) {
                er.err(Code.XDSRegistryError, "RG Internal Error - cannot find SoapMessageValidator instance", "RespondingGatewayActorSimulator", "");
                returnRetrieveError();
@@ -207,7 +207,7 @@ public class RGActorSimulator extends GatewaySimulatorCommon implements Metadata
             }
 
             // extract query
-            AbstractMessageValidator mv = common.getMessageValidatorIfAvailable(SoapMessageValidator.class);
+            AbstractMessageValidator mv = dsSimCommon.getMessageValidatorIfAvailable(SoapMessageValidator.class);
             if (mv == null || !(mv instanceof SoapMessageValidator)) {
                er.err(Code.XDSRegistryError, "RG Internal Error - cannot find SoapMessageValidator instance", "RespondingGatewayActorSimulator", "");
                dsSimCommon.sendErrorsInAdhocQueryResponse(er);

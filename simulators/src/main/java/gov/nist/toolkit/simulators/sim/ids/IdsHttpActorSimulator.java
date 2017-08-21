@@ -73,7 +73,7 @@ public class IdsHttpActorSimulator extends BaseHttpActorSimulator {
       logger.info("IdsHttpActorSimulator: run - transactionType = " + transactionType);
       simCommon.setLogger(logger);
       GwtErrorRecorderBuilder gerb = new GwtErrorRecorderBuilder();
-      if (dsSimCommon == null) dsSimCommon = new DsSimCommon(simCommon);
+      if (dsSimCommon == null) dsSimCommon = new DsSimCommon(simCommon, mvc);
 
       logger.debug(transactionType);
       switch (transactionType) {

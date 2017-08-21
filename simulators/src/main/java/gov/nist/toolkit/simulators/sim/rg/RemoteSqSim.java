@@ -10,7 +10,7 @@ import gov.nist.toolkit.registrymsg.registry.AdhocQueryResponseParser;
 import gov.nist.toolkit.registrymsg.registry.Response;
 import gov.nist.toolkit.registrysupport.RegistryErrorListGenerator;
 import gov.nist.toolkit.simcommon.client.SimulatorConfig;
-import gov.nist.toolkit.simulators.support.SimCommon;
+import gov.nist.toolkit.simcommon.server.SimCommon;
 import gov.nist.toolkit.simulators.sim.reg.AdhocQueryResponseGeneratingSim;
 import gov.nist.toolkit.simulators.sim.reg.RegistryResponseSendingSim;
 import gov.nist.toolkit.simulators.sim.reg.sq.SqSim;
@@ -58,7 +58,7 @@ public class RemoteSqSim  extends TransactionSimulator implements MetadataGenera
 			er.err(XdsErrorCode.Code.XDSRegistryError, startUpException);
 
 		// if request didn't validate, return so errors can be reported
-		if (common.hasErrors()) {
+		if (dsSimCommon.hasErrors()) {
 			try {
 				response.add(dsSimCommon.getRegistryErrorList(), null);
 			} catch (XdsInternalException e) {
