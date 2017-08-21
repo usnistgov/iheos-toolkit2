@@ -66,6 +66,7 @@ public class SimulatorControlTab extends GenericQueryTab {
     private SimulatorControlTab self;
     private SimManagerWidget2 simManagerWidget;
 
+
     public SimulatorControlTab(BaseSiteActorManager siteActorManager) {
         super(siteActorManager);
     }
@@ -141,22 +142,23 @@ public class SimulatorControlTab extends GenericQueryTab {
         int containerWidth;
 
         try {
-            containerWidth = (int)(container.getParent().getElement().getClientWidth() * .90); // Window.getClientWidth())
+            containerWidth = (int)(container.getParent().getElement().getClientWidth() * .80); // Window.getClientWidth())
         } catch (Exception ex) {
-           containerWidth = (int)(Window.getClientWidth() * .90);
+           containerWidth = (int)(Window.getClientWidth() * .80);
         }
 
-        int containerHeight;
-        try {
-            containerHeight = (int)(container.getParent().getElement().getClientHeight() * .50); // Window.getClientHeight()
-        } catch (Exception ex) {
-            containerHeight = (int)(Window.getClientHeight() * .5);
-        }
+//        int containerHeight;
+//        try {
+//            containerHeight = (int)(container.getParent().getElement().getClientHeight() * .50); // Window.getClientHeight()
+//        } catch (Exception ex) {
+//            containerHeight = (int)(Window.getClientHeight() * .5);
+//        }
 
 //        Window.alert(containerWidth + " height: " + containerHeight);
 
-        widget2.setWidthInPx(containerWidth);
-        widget2.setHeightInPx(containerHeight);
+        widget2.resizeTable(containerWidth);
+
+//        widget2.setHeightInPx(containerHeight);
 
     }
 
@@ -257,6 +259,7 @@ public class SimulatorControlTab extends GenericQueryTab {
 //                        buildTable(configs, simulatorStatses);
 
                         simManagerWidget.popCellTable(configs, simulatorStatses);
+                        resizeSimMgrWidget(simConfigWrapperPanel, simManagerWidget);
 
                     }
                 }.run(new GetSimulatorStatsRequest(getCommandContext(),simIds));

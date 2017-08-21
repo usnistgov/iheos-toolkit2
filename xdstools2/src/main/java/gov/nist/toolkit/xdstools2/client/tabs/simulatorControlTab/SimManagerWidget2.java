@@ -6,9 +6,16 @@ import com.google.gwt.cell.client.CheckboxCell;
 import com.google.gwt.cell.client.CompositeCell;
 import com.google.gwt.cell.client.FieldUpdater;
 import com.google.gwt.cell.client.HasCell;
+import com.google.gwt.dom.builder.shared.DivBuilder;
+import com.google.gwt.dom.builder.shared.TableCellBuilder;
+import com.google.gwt.dom.builder.shared.TableRowBuilder;
 import com.google.gwt.dom.client.Style;
 import com.google.gwt.i18n.client.DateTimeFormat;
+import com.google.gwt.safehtml.shared.SafeHtml;
 import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
+import com.google.gwt.safehtml.shared.SafeHtmlUtils;
+import com.google.gwt.user.cellview.client.AbstractCellTable;
+import com.google.gwt.user.cellview.client.AbstractHeaderOrFooterBuilder;
 import com.google.gwt.user.cellview.client.Column;
 import com.google.gwt.user.cellview.client.ColumnSortEvent;
 import com.google.gwt.user.cellview.client.DataGrid;
@@ -39,7 +46,6 @@ import gov.nist.toolkit.xdstools2.shared.command.CommandContext;
 import gov.nist.toolkit.xdstools2.shared.command.request.GetTransactionRequest;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.LinkedList;
@@ -52,17 +58,24 @@ import java.util.Set;
  */
 public class SimManagerWidget2 extends Composite {
 
+    private static final int ROW_BUFFER = 38;
+    private static final int PAGE_SIZE = 25;
+
     CommandContext commandContext;
     private SimulatorControlTab hostTab;
     private FlowPanel containerPanel = new FlowPanel();
 
 //    private CellTable<SimInfo> newSimTable = new CellTable<SimInfo>();
     private DataGrid<SimInfo> newSimTable = new DataGrid<SimInfo>();
-    private DataGrid<SimInfo> actionTable = new DataGrid<SimInfo>();
+    private DataGrid<SimInfo> actionTableTop = new DataGrid<SimInfo>();
+    private DataGrid<SimInfo> actionTableBottom = new DataGrid<SimInfo>();
     // Create a data provider.
     private ListDataProvider<SimInfo> dataProvider = new ListDataProvider<SimInfo>();
     private ListDataProvider<SimInfo> actionDataProvider = new ListDataProvider<SimInfo>();
+    private SimInfo placeHolderSimInfo = new SimInfo();
 
+
+    private int rows;
 
     public SimManagerWidget2() {
     }
@@ -72,28 +85,42 @@ public class SimManagerWidget2 extends Composite {
         this.hostTab = hostTab;
 
 
+        actionDataProvider.getList().add(placeHolderSimInfo);
         buildTableColumns();
 
-        actionTable.setWidth("500px");
-        actionTable.setHeight("100px");
-        containerPanel.add(actionTable);
 
 
-        newSimTable.setWidth("1000px");
-        newSimTable.setHeight("500px");
+
+
+        newSimTable.setWidth("640px");
+//        newSimTable.setHeight("400px");
         newSimTable.setSkipRowHoverCheck(true);
         newSimTable.setSkipRowHoverFloatElementCheck(true);
 //        txTable.setSkipRowHoverStyleUpdate(true);
 //        txTable.setStyleName("txDataGridNoTableSpacing");
         newSimTable.getElement().getStyle().setProperty("wordWrap","break-word");
 
-        containerPanel.add(newSimTable);
-        SimplePager simplePager = new SimplePager();
-        simplePager.getElement().getStyle().setMarginLeft(50, Style.Unit.PCT);
-        simplePager.setDisplay(newSimTable);
-        simplePager.setPageSize(50);
-        containerPanel.add(simplePager);
 
+        containerPanel.add(newSimTable);
+
+
+
+        actionTableTop.setWidth("500px");
+        actionTableTop.setHeight("75px");
+//        actionTableTop.getElement().getStyle().setMarginLeft(40, Style.Unit.PCT);
+        actionTableTop.getElement().getStyle().setMarginTop(8, Style.Unit.PX);
+        actionTableTop.getElement().getStyle().setMarginLeft(10, Style.Unit.PX);
+        actionTableTop.setHeaderBuilder(new MyCustomHeaderBuilder(actionTableTop, false));
+        containerPanel.add(actionTableTop);
+//        actionTableBottom.setWidth("500px");
+//        actionTableBottom.setHeight("100px");
+//        containerPanel.add(actionTableBottom);
+        SimplePager simplePager = new SimplePager();
+        simplePager.getElement().getStyle().setMarginTop(7, Style.Unit.PX);
+        simplePager.getElement().getStyle().setMarginLeft(40, Style.Unit.PCT);
+        simplePager.setDisplay(newSimTable);
+        simplePager.setPageSize(PAGE_SIZE);
+        containerPanel.add(simplePager);
 
         initWidget(containerPanel);
     }
@@ -102,12 +129,13 @@ public class SimManagerWidget2 extends Composite {
         // Add the data to the data provider, which automatically pushes it to the
         // widget.
         final List<SimInfo> list = dataProvider.getList();
+        rows = 0;
 
         if (list!=null && configs!=null && list.size()!=configs.size()) {
             list.clear();
-            int row = 0;
+            int rowCt = 0;
             for (SimulatorConfig config : configs) {
-                final SimInfo simInfo = new SimInfo(config, statsList.get(row));
+                final SimInfo simInfo = new SimInfo(config, statsList.get(rowCt));
                 if (simInfo.getSimulatorConfig()!=null && simInfo.getSimulatorConfig().get(SimulatorProperties.creationTime)!=null) {
                     String creationTime = simInfo.getSimulatorConfig().get(SimulatorProperties.creationTime).asString();
                     String dateParts[] = creationTime.split(" ");
@@ -166,12 +194,16 @@ public class SimManagerWidget2 extends Composite {
 //                Window.alert("adding " + simInfo.getSimulatorConfig().getId().toString());
 
                 list.add(simInfo);
-                row++;
+                rowCt++;
+            }
+            if (rowCt>0) {
+                rows = rowCt;
             }
         }
 
 
     }
+
 
     public abstract class AbstractActionButton<SimInfo> implements HasCell<SimInfo, SimInfo> {
 
@@ -500,10 +532,12 @@ public class SimManagerWidget2 extends Composite {
                 };
         */
 
-        SafeHtmlBuilder logIconImgHtml = new SafeHtmlBuilder();
-        logIconImgHtml.appendHtmlConstant("<img style=\"width: 24px; height: 24px;\" title=\"View Transaction Logs\" src=\"icons2/log-file-format-symbol.png\">");
+
+//        SafeHtmlBuilder logIconImgHtml = new SafeHtmlBuilder();
+//        logIconImgHtml.appendHtmlConstant("<img style=\"width: 24px; height: 24px;\" title=\"View Transaction Logs\" src=\"icons2/log-file-format-symbol.png\">");
         Column<SimInfo, SimInfo> logActionCol =
-                new Column<SimInfo, SimInfo>(new ActionCell<SimInfo>(logIconImgHtml.toSafeHtml(), new ActionCell.Delegate<SimInfo>() {
+                new Column<SimInfo, SimInfo>(new ActionCell<SimInfo>("", new ActionCell.Delegate<SimInfo>() {
+
                     @Override
                     public void execute(SimInfo simInfo) {
                         SimulatorConfig config = simInfo.getSimulatorConfig();
@@ -512,15 +546,21 @@ public class SimManagerWidget2 extends Composite {
                     }
                 })) {
                     @Override
+                    public void render(Cell.Context context, SimInfo object, SafeHtmlBuilder sb) {
+//                        super.render(context, object, sb);
+                        sb.append(getImgHtml("icons2/log-file-format-symbol.png", "View Transaction Logs", false));
+                    }
+
+                    @Override
                     public SimInfo getValue(SimInfo simInfo) {
                         return simInfo;
                     }
                 };
 
-        SafeHtmlBuilder pidIconImgHtml = new SafeHtmlBuilder();
-        pidIconImgHtml.appendHtmlConstant("<img style=\"width: 24px; height: 24px;\" title=\"Edit Patient Ids\" src=\"icons2/id.png\">");
+//        SafeHtmlBuilder pidIconImgHtml = new SafeHtmlBuilder();
+//        pidIconImgHtml.appendHtmlConstant("<img style=\"width: 24px; height: 24px;\" title=\"Edit Patient Ids\" src=\"icons2/id.png\">");
         Column<SimInfo, SimInfo> pidActionCol =
-                new Column<SimInfo, SimInfo>(new ActionCell<SimInfo>(pidIconImgHtml.toSafeHtml(), new ActionCell.Delegate<SimInfo>() {
+                new Column<SimInfo, SimInfo>(new ActionCell<SimInfo>("", new ActionCell.Delegate<SimInfo>() {
                     @Override
                     public void execute(SimInfo simInfo) {
                         SimulatorConfig config = simInfo.getSimulatorConfig();
@@ -528,6 +568,11 @@ public class SimManagerWidget2 extends Composite {
                         editTab.onTabLoad(true, "PIDEdit");
                     }
                 })) {
+                    @Override
+                    public void render(Cell.Context context, SimInfo object, SafeHtmlBuilder sb) {
+                        sb.append(getImgHtml("icons2/id.png", "Edit Patient Ids", false));
+                    }
+
                     @Override
                     public SimInfo getValue(SimInfo simInfo) {
                         return simInfo;
@@ -537,20 +582,34 @@ public class SimManagerWidget2 extends Composite {
 
         Column<SimInfo, SimInfo> editActionCol = getButtonColumn();
 
-        SafeHtmlBuilder trashBinIconImgHtml = new SafeHtmlBuilder();
-        trashBinIconImgHtml.appendHtmlConstant("<img style=\"width: 24px; height: 24px;\"  title=\"Delete\" src=\"icons2/garbage.png\">");
+//        SafeHtmlBuilder trashBinIconImgHtml = new SafeHtmlBuilder();
+//        trashBinIconImgHtml.appendHtmlConstant("<img style=\"width: 24px; height: 24px;\"  title=\"Delete\" src=\"icons2/garbage.png\">");
         Column<SimInfo, SimInfo> trashBinActionCol =
-                new Column<SimInfo, SimInfo>(new ActionCell<SimInfo>(trashBinIconImgHtml.toSafeHtml(), new ActionCell.Delegate<SimInfo>() {
+                new Column<SimInfo, SimInfo>(new ActionCell<SimInfo>("", new ActionCell.Delegate<SimInfo>() {
                     @Override
                     public void execute(final SimInfo simInfo) {
 
+//                        DeleteSimInfo deleteSimInfo = new DeleteSimInfo(containerPanel,hostTab);
+//                        deleteSimInfo.setSimInfoList(Arrays.asList(new SimInfo[]{simInfo}));
+//                        deleteSimInfo.delete();
+
+                        Set<SimInfo> mySelection = ((MultiSelectionModel) newSimTable.getSelectionModel()).getSelectedSet();
+
                         DeleteSimInfo deleteSimInfo = new DeleteSimInfo(containerPanel,hostTab);
-                        deleteSimInfo.setSimInfoList(Arrays.asList(new SimInfo[]{simInfo}));
+                        deleteSimInfo.setSimInfoList(new ArrayList<SimInfo>(mySelection));
                         deleteSimInfo.delete();
+
+                        ((MultiSelectionModel) newSimTable.getSelectionModel()).clear();
                     }
 
 
                 })) {
+
+                    @Override
+                    public void render(Cell.Context context, SimInfo object, SafeHtmlBuilder sb) {
+                        sb.append(getImgHtml("icons2/garbage.png","Delete", true));
+                    }
+
                     @Override
                     public SimInfo getValue(SimInfo simInfo) {
                         return simInfo;
@@ -559,15 +618,20 @@ public class SimManagerWidget2 extends Composite {
 
                 };
 
-        SafeHtmlBuilder downloadIconImgHtml = new SafeHtmlBuilder();
-        downloadIconImgHtml.appendHtmlConstant("<img style=\"width: 24px; height: 24px;\" title=\"Download\" src=\"icons2/download.png\">");
+//        SafeHtmlBuilder downloadIconImgHtml = new SafeHtmlBuilder();
+//        downloadIconImgHtml.appendHtmlConstant("<img style=\"width: 24px; height: 24px;\" title=\"Download\" src=\"icons2/download.png\">");
         Column<SimInfo, SimInfo> downloadActionCol =
-                new Column<SimInfo, SimInfo>(new ActionCell<SimInfo>(downloadIconImgHtml.toSafeHtml(), new ActionCell.Delegate<SimInfo>() {
+                new Column<SimInfo, SimInfo>(new ActionCell<SimInfo>("", new ActionCell.Delegate<SimInfo>() {
                     @Override
                     public void execute(SimInfo simInfo) {
                         Window.open("siteconfig/"+simInfo.getSimulatorConfig().getId().toString(), "_blank","");
                     }
                 })) {
+                    @Override
+                    public void render(Cell.Context context, SimInfo object, SafeHtmlBuilder sb) {
+                        sb.append(getImgHtml("icons2/download.png", "Download configuration", false));
+                    }
+
                     @Override
                     public SimInfo getValue(SimInfo simInfo) {
                         return simInfo;
@@ -603,10 +667,16 @@ public class SimManagerWidget2 extends Composite {
             @Override
             public void onSelectionChange(SelectionChangeEvent selectionChangeEvent) {
                 final List<SimInfo> list = actionDataProvider.getList();
-                list.clear();
                 Set<SimInfo> mySelection = ((MultiSelectionModel) newSimTable.getSelectionModel()).getSelectedSet();
+                list.clear();
                 if (mySelection.size()==1) {
-                    list.add(mySelection.iterator().next());
+
+                    for (SimInfo simInfo : mySelection) {
+                        list.add(simInfo);
+                    }
+
+                } else if (mySelection.size()==0 || mySelection.size()>1) {
+                    list.add(placeHolderSimInfo);
                 }
             }
         });
@@ -706,14 +776,46 @@ public class SimManagerWidget2 extends Composite {
         // Connect the table to the data provider.
         dataProvider.addDataDisplay(newSimTable);
 
-        actionTable.addColumn(logActionCol, "Action");
-        actionTable.addColumn(pidActionCol,"");
-        actionTable.addColumn(editActionCol,"");
-        actionTable.addColumn(trashBinActionCol,"");
-        actionTable.addColumn(downloadActionCol,"");
+//        actionTable.getElement().getStyle().setMarginLeft(40, Style.Unit.PCT);
+        actionTableTop.addColumn(logActionCol, "Action(s)");
+        actionTableTop.addColumn(pidActionCol,"");
+        actionTableTop.addColumn(editActionCol,"");
+        actionTableTop.addColumn(trashBinActionCol,"");
+        actionTableTop.addColumn(downloadActionCol,"");
 
-        actionDataProvider.addDataDisplay(actionTable);
+        actionDataProvider.addDataDisplay(actionTableTop);
+
+
+        actionTableBottom.addColumn(logActionCol, "Action(s)");
+        actionTableBottom.addColumn(pidActionCol,"");
+//        actionTableBottom.addColumn(editActionCol,"");
+        actionTableBottom.addColumn(trashBinActionCol,"");
+        actionTableBottom.addColumn(downloadActionCol,"");
+
+//        actionDataProvider.addDataDisplay(actionTableBottom);
     }
+
+    SafeHtml getImgHtml(String iconFilePath, String title, boolean supportsMultiple) {
+        Set<SimInfo> mySelection = ((MultiSelectionModel) newSimTable.getSelectionModel()).getSelectedSet();
+//        Window.alert("selection size is " + mySelection.size() + "; icon is " + iconFilePath + "; supportsMultiple " + supportsMultiple);
+        if (mySelection.size()>1) {
+
+            if (supportsMultiple)
+                return new SafeHtmlBuilder().appendHtmlConstant("<img style=\"width: 24px; height: 24px;\" title=\"" + title + "\" src=\"" + iconFilePath + "\">").toSafeHtml();
+            else
+                return new SafeHtmlBuilder().appendHtmlConstant("<input type=\"image\" style=\"width: 24px; height: 24px; opacity:0.5\" src=\"" + iconFilePath + "\" border=0 disabled/>").toSafeHtml();
+
+        } else {
+            final List<SimInfo> list = actionDataProvider.getList();
+            if (list.get(0).getSimulatorConfig()==null) {
+                return new SafeHtmlBuilder().appendHtmlConstant("<input type=\"image\" style=\"width: 24px; height: 24px; opacity:0.5\" src=\"" + iconFilePath + "\" border=0 disabled/>").toSafeHtml();
+            } else {
+                return new SafeHtmlBuilder().appendHtmlConstant("<img style=\"width: 24px; height: 24px;\" title=\"" + title +"\" src=\"" + iconFilePath + "\">").toSafeHtml();
+            }
+        }
+
+    }
+
 
     private static final ProvidesKey<SimInfo> KEY_PROVIDER = new ProvidesKey<SimInfo>() {
         @Override
@@ -752,15 +854,12 @@ public class SimManagerWidget2 extends Composite {
             @Override
             public void render(Cell.Context context, SimInfo data, SafeHtmlBuilder sb) {
                 //
-
-                if (!ActorType.OD_RESPONDING_GATEWAY.getShortName().equals(data.getSimulatorConfig().getActorType()) ) {
-                    SafeHtmlBuilder mySb = new SafeHtmlBuilder();
-
-                    mySb.appendHtmlConstant("<img style=\"width: 24px; height: 24px;\" title=\"Edit\" src=\"icons2/edit.png\">");
-
-                    sb.append(mySb.toSafeHtml());
-                }
-
+                if (data.getSimulatorConfig()!=null) {
+                    if (!ActorType.OD_RESPONDING_GATEWAY.getShortName().equals(data.getSimulatorConfig().getActorType())) {
+                        sb.append(getImgHtml("icons2/edit.png", "Edit", false));
+                    }
+                } else
+                    sb.append(getImgHtml("icons2/edit.png", "", false));
             }
         };
 
@@ -782,11 +881,12 @@ public class SimManagerWidget2 extends Composite {
                 SafeHtmlBuilder mySb = new SafeHtmlBuilder();
 
 
-                if (ActorType.OD_RESPONDING_GATEWAY.getShortName().equals(data.getSimulatorConfig().getActorType()) ) {
-                    mySb.appendHtmlConstant("<img style=\"width: 24px; height: 24px;\" title=\"Edit RG config\"  src=\"icons2/edit-rg.png\">");
-                    sb.append(mySb.toSafeHtml());
+                if (data.getSimulatorConfig()!=null) {
+                    if (ActorType.OD_RESPONDING_GATEWAY.getShortName().equals(data.getSimulatorConfig().getActorType())) {
+//                    mySb.appendHtmlConstant("<img style=\"width: 24px; height: 24px;\" title=\"Edit RG config\"  src=\"icons2/edit-rg.png\">");
+                        sb.append(getImgHtml("icons2/edit-rg.png", "Edit RG configuration", false));
+                    }
                 }
-
             }
         };
 
@@ -810,11 +910,12 @@ public class SimManagerWidget2 extends Composite {
                 //
                 SafeHtmlBuilder mySb = new SafeHtmlBuilder();
 
-                if (ActorType.OD_RESPONDING_GATEWAY.getShortName().equals(data.getSimulatorConfig().getActorType()) ) {
-                    mySb.appendHtmlConstant("<img style=\"width: 24px; height: 24px;\" title=\"Edit OD config\" src=\"icons2/edit-od.png\">");
-                    sb.append(mySb.toSafeHtml());
+                if (data.getSimulatorConfig()!=null) {
+                    if (ActorType.OD_RESPONDING_GATEWAY.getShortName().equals(data.getSimulatorConfig().getActorType())) {
+//                    mySb.appendHtmlConstant("<img style=\"width: 24px; height: 24px;\" title=\"Edit OD config\" src=\"icons2/edit-od.png\">");
+                        sb.append(getImgHtml("icons2/edit-od.png", "Edit OD configuration", false));
+                    }
                 }
-
             }
         };
 
@@ -870,13 +971,45 @@ public class SimManagerWidget2 extends Composite {
     // <div>Icons made by <a href="http://www.flaticon.com/authors/retinaicons" title="Retinaicons">Retinaicons</a> from <a href="http://www.flaticon.com" title="Flaticon">www.flaticon.com</a> is licensed by <a href="http://creativecommons.org/licenses/by/3.0/" title="Creative Commons BY 3.0" target="_blank">CC 3.0 BY</a></div>
     // <div>Icons made by <a href="http://www.flaticon.com/authors/gregor-cresnar" title="Gregor Cresnar">Gregor Cresnar</a> from <a href="http://www.flaticon.com" title="Flaticon">www.flaticon.com</a> is licensed by <a href="http://creativecommons.org/licenses/by/3.0/" title="Creative Commons BY 3.0" target="_blank">CC 3.0 BY</a></div>
 
-    void setWidthInPx(int widthInPx) {
-        if (newSimTable!=null)
+    void resizeTable(int widthInPx) {
+        if (newSimTable!=null) {
             newSimTable.setWidth(widthInPx + "px");
+
+            float rowHeight = 30;
+            try {
+                rowHeight = newSimTable.getRowElement(0).getClientHeight();
+            } catch (Exception ex) {}
+
+
+
+            newSimTable.setHeight("" + (rowHeight * (rows>PAGE_SIZE?PAGE_SIZE:rows) + ROW_BUFFER) + "px");
+        }
     }
 
-    void setHeightInPx(int heightInPx) {
-        if (newSimTable!=null)
-            newSimTable.setHeight(heightInPx + "px");
+
+    public class MyCustomHeaderBuilder extends AbstractHeaderOrFooterBuilder<SimInfo> {
+
+        public MyCustomHeaderBuilder(AbstractCellTable<SimInfo> table,
+                                     boolean isFooter) {
+            super(table, isFooter);
+            // TODO Auto-generated constructor stub
+        }
+
+        @Override
+        public boolean buildHeaderOrFooterImpl() {
+            TableRowBuilder row = startRow();
+            TableCellBuilder th = row.startTH(); //.colSpan(5);
+            DivBuilder div = th.startDiv();
+
+
+            div.html(SafeHtmlUtils.fromTrustedString("<b>Action(s):</b>"));
+
+            div.end();
+            th.endTH();
+            row.endTR();
+
+
+            return true;
+        }
     }
 }
