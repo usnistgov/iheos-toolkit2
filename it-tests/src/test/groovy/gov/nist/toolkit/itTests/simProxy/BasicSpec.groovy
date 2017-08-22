@@ -65,7 +65,8 @@ class BasicSpec extends ToolkitSpecification {
                 envName
         )
 
-        proxySimConfig.setProperty(SimulatorProperties.proxyForwardEndpoint, recSimConfig.asString(SimulatorProperties.pnrEndpoint))
+//        proxySimConfig.setProperty(SimulatorProperties.proxyForwardEndpoint, recSimConfig.asString(SimulatorProperties.pnrEndpoint))
+        proxySimConfig.setProperty(SimulatorProperties.proxyForwardEndpoint, 'http://vm:8080/xdstools-4.3.4/sim/default__rr/rep/prb')
         spi.update(proxySimConfig)
     }
 
@@ -97,7 +98,7 @@ class BasicSpec extends ToolkitSpecification {
         when:
         SiteSpec siteSpec = new SiteSpec(simProxyName)
         TestInstance testInstance = new TestInstance('12360')
-        List<String> sections = []
+        List<String> sections = ['submit']
         Map<String, String> params = new HashMap<>()
         params.put('$patientid$', "P20160803215512.2^^^&1.3.6.1.4.1.21367.2005.13.20.1000&ISO");
 

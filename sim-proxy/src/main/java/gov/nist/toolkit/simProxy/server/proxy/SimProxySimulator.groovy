@@ -1,12 +1,12 @@
 package gov.nist.toolkit.simProxy.server.proxy
 
-import gov.nist.toolkit.actortransaction.EndpointParser
 import gov.nist.toolkit.configDatatypes.SimulatorProperties
 import gov.nist.toolkit.configDatatypes.client.TransactionType
 import gov.nist.toolkit.simcommon.server.BaseActorSimulator
 import gov.nist.toolkit.valsupport.engine.MessageValidatorEngine
 import org.apache.log4j.Logger
 
+import javax.servlet.http.HttpServletResponse
 /**
  *
  */
@@ -18,67 +18,108 @@ class SimProxySimulator extends BaseActorSimulator {
     
     public boolean run(TransactionType transactionType, MessageValidatorEngine mvc, String validation) throws IOException {
         String rawHeader = db.getRequestMessageHeader()
+        MyHeaders headers = new MyHeaders()
+        RequestLine requestLine = null
+        // grab headers
+        rawHeader.eachLine {String line ->
+            line = line.trim()
+            if (requestLine) {
+                if (line)
+                    headers.add(line)
+            }
+            else
+                requestLine = new RequestLine(line)
+        }
+
+        // delete chunked header if it exists
+        String encoding = headers.get('transfer-encoding')
+        if ('chunked' == encoding.toLowerCase())
+            headers.remove('transfer-encoding')
 
         String endpoint = config.getConfigEle(SimulatorProperties.proxyForwardEndpoint).asString()
-        EndpointParser parser = new EndpointParser(endpoint)
-        String host = parser.host
-        String port = parser.port
-        port = '9999'
 
-        StringBuilder headerBuf = new StringBuilder()
-        rawHeader.eachLine { String line ->
-            String lcLine = line.toLowerCase()
-            if (!(lcLine.contains('chunked') && lcLine.contains('transfer-encoding')) && !lcLine.startsWith('post')) {
-                if (line.trim() != '')
-                    headerBuf.append(line).append('\r\n')
-            }
-            if (line.startsWith("POST")) {
-                String[] parts = line.split()
-                parts[0] = 'POST'
-                parts[1] = parser.getService();
-                StringBuilder buf = new StringBuilder()
-                parts.each { buf.append(it).append(' ') }
-                line = buf.toString().trim() + '\r\n'
-                headerBuf.append(line)
-            }
+        def post = new URL(endpoint).openConnection()
+        post.setRequestMethod("POST")
+        post.setDoOutput(true)
+        headers.props.each { String key, value ->
+            if (key)  // status line will be posted with null key
+                post.setRequestProperty(key, value)
         }
+        post.getOutputStream().write(db.getRequestMessageBody())
+        def responseCode = post.getResponseCode()
 
-        String body = new String(db.getRequestMessageBody())
+        HttpServletResponse response = common.response
+        response.setStatus(responseCode)
 
-        headerBuf.append("Content-Length: ${body.size()}\r\n")
-        headerBuf.append('\r\n')
-        String header = headerBuf.toString()
-
-
-        StringBuilder msg = new StringBuilder()
-        msg.append(header)
-        msg.append(body)
-        String msgout = msg.toString()
-
-        StringBuilder rheader = new StringBuilder()
-        StringBuilder rbody = new StringBuilder()
-
-        Socket s = new Socket(host, port as Integer)
-        s.withStreams { input, output ->
-            output << msgout
-            List<String> lines = input.newReader().readLines()
-            boolean isHeader = true
-            lines.each {
-                if (it.trim() == '')
-                    isHeader = false
-                else if (isHeader)
-                    rheader.append(it)
-                else
-                    rbody.append(it)
-            }
-
+        Map<String, List<String>> hdrs = post.getHeaderFields()
+        hdrs.each { String name, List<String> values ->
+            response.addHeader(name, values.join('; '))
         }
-
-        String responseHeader = rheader.toString()
-        String responseBody = rbody.toString()
-
+        if (responseCode < 300) {
+            response.getOutputStream().write(post.getInputStream().bytes)
+            response.getOutputStream().close()
+        }
 
         return false
+    }
+
+
+    class MyHeader {
+        String name
+        String value
+
+        MyHeader(String h) {
+            h = h.trim()
+            int i = h.indexOf(':')
+            if (i == -1) {
+                name = h
+                value = ""
+            } else {
+                name = h.substring(0, i)
+                value = h.substring(i+1)
+            }
+        }
+    }
+
+    class MyHeaders {
+        Properties props = new Properties()
+
+        def add(String header) {
+            MyHeader myHeader = new MyHeader(header)
+            props.setProperty(myHeader.name, myHeader.value)
+        }
+
+        def get(String name) {
+            String key = key(name)
+            if (!key) return null
+            return props.getProperty(key).trim()
+        }
+
+        def key(String name) {
+            String lowerName = name.toLowerCase()
+            String key = props.keySet().find { String akey ->
+                String lowerKey = akey.toLowerCase()
+                lowerKey == lowerName
+            }
+            key
+        }
+
+        def remove(String key) {
+            props.remove(key)
+        }
+    }
+
+    class RequestLine {
+        def method
+        def uri
+        def httpversion
+
+        RequestLine(String line) {
+            String[] parts = line.trim().split(' ')
+            method = parts[0]
+            uri = parts[1]
+            httpversion = parts[2]
+        }
     }
 
 }
