@@ -3,6 +3,7 @@ package gov.nist.toolkit.itTests.simProxy
 import gov.nist.toolkit.actortransaction.client.ActorType
 import gov.nist.toolkit.adt.ListenerFactory
 import gov.nist.toolkit.configDatatypes.SimulatorActorType
+import gov.nist.toolkit.configDatatypes.SimulatorProperties
 import gov.nist.toolkit.installation.Installation
 import gov.nist.toolkit.itTests.support.ToolkitSpecification
 import gov.nist.toolkit.results.client.TestInstance
@@ -63,6 +64,9 @@ class BasicSpec extends ToolkitSpecification {
                 SimulatorActorType.SIM_PROXY,
                 envName
         )
+
+        proxySimConfig.setProperty(SimulatorProperties.proxyForwardEndpoint, recSimConfig.asString(SimulatorProperties.pnrEndpoint))
+        spi.update(proxySimConfig)
     }
 
     def cleanupSpec() {  // one time shutdown when everything is done
@@ -89,7 +93,7 @@ class BasicSpec extends ToolkitSpecification {
         }
     }
 
-    def 'null'() {
+    def 'send through simproxy'() {
         when:
         SiteSpec siteSpec = new SiteSpec(simProxyName)
         TestInstance testInstance = new TestInstance('12360')

@@ -523,6 +523,9 @@ public class SimServlet  extends HttpServlet {
 				}
 			} else {
 				// this is custom for the SimProxy - but maybe others over time
+				baseSim.db = db;
+				baseSim.common = common;
+				baseSim.config = asc;
 				baseSim.onTransactionBegin(asc);
 				transactionOk = baseSim.run(transactionType, mvc, validation);
 				baseSim.onTransactionEnd(asc);

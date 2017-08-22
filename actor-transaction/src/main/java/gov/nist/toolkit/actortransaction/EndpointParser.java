@@ -29,6 +29,16 @@ public class EndpointParser {
         return true;
     }
 
+    public String getService() {
+        StringBuilder buf = new StringBuilder();
+
+        for (int i=3; i<parts.length; i++) {
+            buf.append("/").append(parts[i]);
+        }
+
+        return buf.toString();
+    }
+
     public String getProtocol() {
         String[] cparts = parts[0].split(":");
         if (cparts.length < 1) return "";
