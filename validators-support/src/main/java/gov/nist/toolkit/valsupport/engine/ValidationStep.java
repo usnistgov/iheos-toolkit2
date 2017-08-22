@@ -34,6 +34,7 @@ public class ValidationStep {
 
 
         buf
+                .append((ran) ? " RAN " : "")
                 .append(stepName)
                 .append(" [")
                 .append(className)

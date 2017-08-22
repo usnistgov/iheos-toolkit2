@@ -14,7 +14,6 @@ import gov.nist.toolkit.testengine.scripts.BuildCollections
 import gov.nist.toolkit.toolkitApi.SimulatorBuilder
 import gov.nist.toolkit.toolkitServicesCommon.SimConfig
 import spock.lang.Shared
-
 /**
  *
  */
@@ -65,8 +64,8 @@ class BasicSpec extends ToolkitSpecification {
                 envName
         )
 
-//        proxySimConfig.setProperty(SimulatorProperties.proxyForwardEndpoint, recSimConfig.asString(SimulatorProperties.pnrEndpoint))
-        proxySimConfig.setProperty(SimulatorProperties.proxyForwardEndpoint, 'http://vm:8080/xdstools-4.3.4/sim/default__rr/rep/prb')
+        proxySimConfig.setProperty(SimulatorProperties.proxyForwardEndpoint, recSimConfig.asString(SimulatorProperties.pnrEndpoint))
+//        proxySimConfig.setProperty(SimulatorProperties.proxyForwardEndpoint, 'http://vm:8080/xdstools-4.3.4/sim/default__rr/rep/prb')
         spi.update(proxySimConfig)
     }
 
@@ -105,6 +104,7 @@ class BasicSpec extends ToolkitSpecification {
         TestOverviewDTO testOverviewDTO = session.xdsTestServiceManager().runTest(envName, testSession, siteSpec, testInstance, sections, params, null, true)
 
         then:
-        testOverviewDTO.pass
+        testOverviewDTO.sections.get('submit').pass
+ //       testOverviewDTO.pass
     }
 }
