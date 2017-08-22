@@ -1117,4 +1117,3 @@ public class ConformanceTestTab extends ToolWindowWithMenu implements TestRunner
 	public ActorOption getCurrentActorOption() { return currentActorOption; }
 
 }
-

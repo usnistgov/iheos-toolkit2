@@ -28,10 +28,15 @@ class TestkitServlet extends HttpServlet {
         BasicConfigurator.configure();
 
 
-        this.init()
+        //this.init()
 
 //        try {
             logger.info("TestkitServlet initializing")
+        testDocBase = new File(config.servletContext.contextPath + '/testdoc')
+
+
+//        try {
+            logger.info("TestkitServlet initializing - testDocBase is ${testDocBase}")
 
 //            File ec = new File(config.getInitParameter('toolkit-external-cache'))
 //            if (!ec || !ec.isDirectory() || !new File(ec, 'environment').isDirectory()) {
