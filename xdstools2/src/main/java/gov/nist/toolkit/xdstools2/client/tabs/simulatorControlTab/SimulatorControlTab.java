@@ -253,17 +253,19 @@ public class SimulatorControlTab extends GenericQueryTab {
                 final List<SimId> simIds = new ArrayList<>();
                 for (SimulatorConfig config : configs)
                     simIds.add(config.getId());
-                new GetSimulatorStatsCommand(){
-                    @Override
-                    public void onComplete(final List<SimulatorStats> simulatorStatses) {
+                try {
+                    new GetSimulatorStatsCommand() {
+                        @Override
+                        public void onComplete(final List<SimulatorStats> simulatorStatses) {
 //                        buildTable(configs, simulatorStatses);
 
-                        simManagerWidget.popCellTable(configs, simulatorStatses);
-                        resizeSimMgrWidget(simConfigWrapperPanel, simManagerWidget);
+                            simManagerWidget.popCellTable(configs, simulatorStatses);
+                            resizeSimMgrWidget(simConfigWrapperPanel, simManagerWidget);
 
-                    }
-                }.run(new GetSimulatorStatsRequest(getCommandContext(),simIds));
+                        }
+                    }.run(new GetSimulatorStatsRequest(getCommandContext(), simIds));
 
+                }catch (Exception ex) {}
             }
         }.run(new GetAllSimConfigsRequest(getCommandContext(), user));
     }

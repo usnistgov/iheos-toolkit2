@@ -167,28 +167,28 @@ public class SimManagerWidget2 extends Composite {
 
                  */
 
+                try {
 
-                new GetTransactionInstancesCommand(){
-                    @Override
-                    public void onComplete(List<TransactionInstance> result) {
-                        if (result!=null && result.size()>0)  {
+                    new GetTransactionInstancesCommand() {
+                        @Override
+                        public void onComplete(List<TransactionInstance> result) {
+                            if (result != null && result.size() > 0) {
 
 
-
-
-                            for (int idx=0; idx<SimInfo.TOP_TRANSACTION_CT; idx++) {
-                                if (result.size()>idx) {
-                                    simInfo.getTopThreeTransInstances().add(TransactionInstance.copy(result.get(idx)));
-                                    try {
-                                        newSimTable.redraw();
-                                    } catch (Throwable t) {
+                                for (int idx = 0; idx < SimInfo.TOP_TRANSACTION_CT; idx++) {
+                                    if (result.size() > idx) {
+                                        simInfo.getTopThreeTransInstances().add(TransactionInstance.copy(result.get(idx)));
+                                        try {
+                                            newSimTable.redraw();
+                                        } catch (Exception ex) {
+                                        }
                                     }
                                 }
                             }
-                        }
 
-                    }
-                }.run(new GetTransactionRequest(commandContext,simInfo.getSimulatorConfig().getId(),"",null));
+                        }
+                    }.run(new GetTransactionRequest(commandContext, simInfo.getSimulatorConfig().getId(), "", null));
+                } catch (Exception ex) {}
 
 
 //                Window.alert("adding " + simInfo.getSimulatorConfig().getId().toString());
@@ -981,8 +981,11 @@ public class SimManagerWidget2 extends Composite {
             } catch (Exception ex) {}
 
 
+            float tableHeight = 100F;
+            if (rows>0)
+                tableHeight =  (rowHeight * (rows>PAGE_SIZE?PAGE_SIZE:rows) + ROW_BUFFER);
 
-            newSimTable.setHeight("" + (rowHeight * (rows>PAGE_SIZE?PAGE_SIZE:rows) + ROW_BUFFER) + "px");
+            newSimTable.setHeight("" + tableHeight + "px");
         }
     }
 
