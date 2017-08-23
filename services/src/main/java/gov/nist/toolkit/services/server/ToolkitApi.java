@@ -170,7 +170,7 @@ public class ToolkitApi {
     }
 
     public SimulatorConfig getConfig(SimId simId) throws Exception {
-        SimulatorConfig config =  SimDb.getSimulator(simId);
+        SimulatorConfig config =  new SimDb().getSimulator(simId);
         if (config == null)throw new NoSimException("Simulator not found: " + simId);
         return config;
     }

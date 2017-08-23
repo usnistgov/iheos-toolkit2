@@ -50,9 +50,13 @@ public class SimManager {
 	}
 
 	static public Site getSite(SimId simId) throws Exception {
-		SimulatorConfig config = SimDb.getSimulator(simId);
+		SimulatorConfig config = new SimDb().getSimulator(simId);
+		if (config == null) {
+			throw new Exception("Simulator " + simId.toString() + " does not exist");
+		}
 		return getSite(config);
 	}
+
 //*****************************************
 	
 	public String sessionId() {
