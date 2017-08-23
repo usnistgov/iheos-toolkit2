@@ -343,6 +343,12 @@ public class SimMsgViewerView extends AbstractView<SimMsgViewerPresenter> {
         for (EventInfo e : events) {
             eventListBox.addItem(e.getDisplay(), e.getId());
         }
+        if (events.size() > 0) {
+            eventListBox.setItemSelected(0, true);
+            EventInfo eventInfo = events.get(0);
+            String id = eventInfo.getId();
+            getPresenter().doUpdateChosenEvent(id);
+        }
     }
 
     /**

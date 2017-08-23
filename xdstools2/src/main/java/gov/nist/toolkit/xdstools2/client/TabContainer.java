@@ -32,7 +32,7 @@ public class TabContainer {
 	private static List<DockLayoutPanel> deck = new ArrayList<>();
 
 	static {
-		OUTERPANEL.addNorth(TABBAR, 3.0);
+		OUTERPANEL.addNorth(TABBAR, 4.0);
 		OUTERPANEL.add(INNER_DECKPANEL);
 
 		TABBAR.addSelectionHandler(new SelectionHandler<Integer>() {
@@ -63,6 +63,7 @@ public class TabContainer {
 
 		int tabIndex = TABBAR.getTabCount();
 		HTML titleHtml = new HTML(title);
+		formatTitle(titleHtml);
 		TABBAR.addTab(buildTabHeaderWidget(titleHtml, w));
 
 		deck.add(w);
@@ -104,7 +105,13 @@ public class TabContainer {
 
 	}
 
-	private HTML titleHTML = new HTML("foo");
+	private void formatTitle(HTML titleHtml) {
+		String h = titleHtml.getHTML();
+		if (h.indexOf(' ') == -1) {
+			h = h + " .";
+			titleHtml.setHTML(h);
+		}
+	}
 
 	private Widget buildTabHeaderWidget(HTML titleHtml, final DockLayoutPanel content) {
 		HorizontalPanel panel = new HorizontalPanel();
@@ -122,6 +129,9 @@ public class TabContainer {
 			}
 		});
 		panel.add(x);
+
+		formatTitle(titleHtml);
+
 		panel.add(titleHtml);
 		return panel;
 	}

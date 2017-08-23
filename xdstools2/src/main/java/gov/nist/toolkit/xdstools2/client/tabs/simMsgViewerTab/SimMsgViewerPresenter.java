@@ -1,6 +1,7 @@
 package gov.nist.toolkit.xdstools2.client.tabs.simMsgViewerTab;
 
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.user.client.ui.HTML;
 import gov.nist.toolkit.actortransaction.client.TransactionInstance;
 import gov.nist.toolkit.results.client.Result;
 import gov.nist.toolkit.services.shared.Message;
@@ -160,6 +161,8 @@ public class SimMsgViewerPresenter extends AbstractPresenter<SimMsgViewerView> {
         if (currentTransactionInstance != null) {
             SimLog simLog = new SimLog(currentTransactionInstance);
             getView().updateEventLink(new ToolkitLink("SimResource Link: ", "#SimMsgViewer:" + (new SimLog.Tokenizer()).getToken(simLog)).asWidget());
+        } else {
+            getView().updateEventLink(new HTML(""));
         }
     }
 
@@ -225,6 +228,8 @@ public class SimMsgViewerPresenter extends AbstractPresenter<SimMsgViewerView> {
         currentSimId = getServerSimId(new SimId(simName));
         loadEventsForSimulator();
         getView().clearAllTabs();
+        currentTransactionInstance = null;
+        updateEventLink();
         setTitle("Log " + currentSimId.toString());
     }
 

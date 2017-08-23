@@ -50,6 +50,9 @@ class SimProxySimulator extends BaseActorSimulator {
 
         String endpoint = config.getConfigEle(SimulatorProperties.proxyForwardEndpoint).asString()
         EndpointParser eparser = new EndpointParser(endpoint)
+
+        db2.setClientIpAddess(eparser.host)
+
         StringBuilder outHeaders = new StringBuilder()
 
         outHeaders.append("POST ${eparser.service} HTTP/1.1\r\n")

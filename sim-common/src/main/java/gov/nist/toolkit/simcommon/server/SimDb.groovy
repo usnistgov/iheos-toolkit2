@@ -30,6 +30,7 @@ public class SimDb {
 	SimId simId = null;    // ip is the simulator id
 	//	private File dbRoot = null;  // base of the simulator db
 	private String event = null;
+	private Date eventDate;
 	private File simDir = null;   // directory within simdb that represents this event
 	private String actor = null;
 	private String transaction = null;
@@ -199,6 +200,11 @@ public class SimDb {
 	}
 	private static boolean isSimDir(File dir) { return new File(dir, "simId.txt").exists(); }
 
+
+	public Date getEventDate() {
+		return eventDate;
+	}
+
 	/**
 	 * create new sim
 	 * @param simId
@@ -222,10 +228,10 @@ public class SimDb {
 		} else
 			return;
 
-		Date date = new Date();
-		File eventDir = mkEventDir(date);
+		eventDate = new Date();
+		File eventDir = mkEventDir(eventDate);
 		eventDir.mkdirs();
-		Serialize.out(new File(eventDir, "date.ser"), date);
+		Serialize.out(new File(eventDir, "date.ser"), eventDate);
 	}
 
 	/**
@@ -237,9 +243,10 @@ public class SimDb {
 		this.transaction = transaction
 		transactionDir = transactionDirectory(actor, transaction)
 		String event = otherSimDb.event
+		eventDate = otherSimDb.getEventDate()
 		File eventDir = mkEventDir(event)
 		eventDir.mkdirs()
-		Serialize.out(new File(eventDir, 'date.ser'), event)
+		Serialize.out(new File(eventDir, 'date.ser'), eventDate)
 	}
 
 	File transactionDirectory(String actor, String transaction) {
@@ -301,6 +308,14 @@ public class SimDb {
 		}
 	}
 
+	String getClientIpAddress() {
+		File eventDir = getEventDir()
+		if (eventDir?.isDirectory()) {
+			return Io.stringFromFile(new File(eventDir, 'ip.txt'))
+		}
+		return null;
+	}
+
 	public SimDb(TransactionInstance ti) throws IOException, NoSimException, BadSimIdException {
 		this(getFullSimId(new SimId(ti.simId)));
 
@@ -318,10 +333,11 @@ public class SimDb {
 	}
 
 	// actor, transaction, and event must be filled in
-	private Date getEventDate() throws IOException, ClassNotFoundException {
+	private Date retrieveEventDate() throws IOException, ClassNotFoundException {
 		if (transactionDir == null || event == null) return null;
 		File eventDir = new File(transactionDir, event);
-		return (Date) Serialize.in(new File(eventDir, "date.ser"));
+		eventDate = (Date) Serialize.in(new File(eventDir, "date.ser"));
+		return eventDate;
 	}
 
 	/**
@@ -653,7 +669,7 @@ public class SimDb {
 					event = t.messageId;
 					Date date = null;
 					try {
-						date = getEventDate();
+						date = retrieveEventDate();
 					} catch (IOException e) {
 					} catch (ClassNotFoundException e) {
 					}
