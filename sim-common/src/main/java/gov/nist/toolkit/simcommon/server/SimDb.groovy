@@ -228,6 +228,20 @@ public class SimDb {
 		Serialize.out(new File(eventDir, "date.ser"), date);
 	}
 
+	/**
+	 * Used by simproxy to get outbound sim half of proxy to have same event ids (time stamps)
+	 * @param otherSimDb
+	 */
+	void mirrorEvent(SimDb otherSimDb, String actor, String transaction) {
+		this.actor = actor
+		this.transaction = transaction
+		transactionDir = transactionDirectory(actor, transaction)
+		String event = otherSimDb.event
+		File eventDir = mkEventDir(event)
+		eventDir.mkdirs()
+		Serialize.out(new File(eventDir, 'date.ser'), event)
+	}
+
 	File transactionDirectory(String actor, String transaction) {
 		assert actor
 		assert transaction
@@ -248,8 +262,12 @@ public class SimDb {
 	}
 
 	private File mkEventDir(Date date) {
-		int incr = 0;
 		String eventBase = Installation.asFilenameBase(date);
+		return mkEventDir(eventBase)
+	}
+
+	private File mkEventDir(String eventBase) {
+		int incr = 0;
 		while (true) {
 			event = eventBase;
 			if (incr != 0)

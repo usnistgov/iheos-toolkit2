@@ -1,8 +1,11 @@
 package gov.nist.toolkit.simProxy.server.proxy
 
+import gov.nist.toolkit.actortransaction.EndpointParser
 import gov.nist.toolkit.configDatatypes.SimulatorProperties
 import gov.nist.toolkit.configDatatypes.client.TransactionType
+import gov.nist.toolkit.simcommon.client.SimId
 import gov.nist.toolkit.simcommon.server.BaseActorSimulator
+import gov.nist.toolkit.simcommon.server.SimDb
 import gov.nist.toolkit.valsupport.engine.MessageValidatorEngine
 import org.apache.log4j.Logger
 
@@ -17,6 +20,10 @@ class SimProxySimulator extends BaseActorSimulator {
     SimProxySimulator() {}
     
     public boolean run(TransactionType transactionType, MessageValidatorEngine mvc, String validation) throws IOException {
+        SimId simId2 = new SimId(config.getConfigEle(SimulatorProperties.proxyPartner).asString())
+        SimDb db2 = new SimDb(simId2)
+        db2.mirrorEvent(db, 'proxy', 'relay')
+
         String rawHeader = db.getRequestMessageHeader()
         MyHeaders headers = new MyHeaders()
         RequestLine requestLine = null
@@ -37,27 +44,54 @@ class SimProxySimulator extends BaseActorSimulator {
             headers.remove('transfer-encoding')
 
         String endpoint = config.getConfigEle(SimulatorProperties.proxyForwardEndpoint).asString()
+        EndpointParser eparser = new EndpointParser(endpoint)
+        StringBuilder outHeaders = new StringBuilder()
+
+        outHeaders.append("POST ${eparser.service} HTTP/1.1\r\n")
 
         def post = new URL(endpoint).openConnection()
         post.setRequestMethod("POST")
         post.setDoOutput(true)
         headers.props.each { String key, value ->
-            if (key)  // status line will be posted with null key
+            if (key) { // status line will be posted with null key
                 post.setRequestProperty(key, value)
+                outHeaders.append(key).append(': ').append(value).append('\r\n')
+            }
         }
-        post.getOutputStream().write(db.getRequestMessageBody())
+
+        String outputHeaders = outHeaders.toString()
+        byte[] outputBody = db.getRequestMessageBody()
+
+        // Transformation goes here and alters outputHeaders and outputBody
+
+
+
+        // end of transformation
+
+
+
+        db2.putRequestHeaderFile(outputHeaders.bytes)
+        db2.putRequestBodyFile(outputBody)
+
+        post.getOutputStream().write(outputBody)
         def responseCode = post.getResponseCode()
 
         HttpServletResponse response = common.response
         response.setStatus(responseCode)
 
+        StringBuilder inHeaders = new StringBuilder()
         Map<String, List<String>> hdrs = post.getHeaderFields()
         hdrs.each { String name, List<String> values ->
-            response.addHeader(name, values.join('; '))
+            String value = values.join('; ')
+            response.addHeader(name, value)
+            inHeaders.append("${name}: ${value}\r\n")
         }
+        db2.getResponseHdrFile().text = inHeaders.toString()
         if (responseCode < 300) {
-            response.getOutputStream().write(post.getInputStream().bytes)
+            byte[] responseBytes = post.getInputStream().bytes
+            response.getOutputStream().write(responseBytes)
             response.getOutputStream().close()
+            db2.putResponseBody(new String(responseBytes))
         }
 
         return false

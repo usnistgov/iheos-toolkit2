@@ -42,6 +42,9 @@ class BasicSpec extends ToolkitSpecification {
         // Needed to build simulators
         spi = getSimulatorApi(remoteToolkitPort)
 
+        api.deleteSimulatorIfItExists(simId)
+        api.deleteSimulatorIfItExists(simProxyId)
+
         // local customization
 
         new BuildCollections().init(null)
@@ -65,15 +68,10 @@ class BasicSpec extends ToolkitSpecification {
         )
 
         proxySimConfig.setProperty(SimulatorProperties.proxyForwardEndpoint, recSimConfig.asString(SimulatorProperties.pnrEndpoint))
-//        proxySimConfig.setProperty(SimulatorProperties.proxyForwardEndpoint, 'http://vm:8080/xdstools-4.3.4/sim/default__rr/rep/prb')
         spi.update(proxySimConfig)
     }
 
     def cleanupSpec() {  // one time shutdown when everything is done
-//        spi.delete(id, testSession)
-//        spi.delete(proxyId, testSession)
-//        api.deleteSimulatorIfItExists(simId)
-//        api.deleteSimulatorIfItExists(simProxyId)
         server.stop()
         ListenerFactory.terminateAll()
     }

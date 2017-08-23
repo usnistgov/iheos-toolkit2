@@ -50,10 +50,9 @@ public abstract class BaseDsActorSimulator extends BaseActorSimulator {
 
 	public void init(DsSimCommon c, SimulatorConfig config) {
 		super.init(config);
+		if (c == null) return;
 		dsSimCommon = c;
 		common = dsSimCommon.simCommon;
-		if (c == null) return;
-//		common = c.common;
 		er = c.simCommon.getCommonErrorRecorder();
 		db = c.simCommon.db;
 		dsSimCommon.setSimulatorConfig(config);

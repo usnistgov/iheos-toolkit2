@@ -16,6 +16,14 @@ import gov.nist.toolkit.sitemanagement.client.Site
 import gov.nist.toolkit.xdsexception.NoSimulatorException
 /**
  * A singleton factory for creating Sim Proxy
+ *
+ * This actually creates a pair of simulators.  First, using the SimId provided,
+ * is the sim that receives the input message.  The second simulator sends the
+ * message on to the configured endpoint.
+ *
+ * That is the theory, it is not coded that way.  The first simulator does all the work
+ * and has all the configuration information.  The second simulator is just the container
+ * for the logs holding the messages to the configured endpoint.
  */
 class SimProxyFactory extends AbstractActorFactory implements IActorFactory{
     static final List<TransactionType> incomingTransactions = TransactionType.asList()  // accepts all known transactions
@@ -28,17 +36,27 @@ class SimProxyFactory extends AbstractActorFactory implements IActorFactory{
     @Override
     protected Simulator buildNew(SimManager simm, SimId simId, boolean configureBase) throws Exception {
         ActorType actorType = ActorType.SIM_PROXY
-        SimulatorConfig simulatorConfig
+        SimulatorConfig config
         if (configureBase)
-            simulatorConfig = configureBaseElements(actorType, simId)
+            config = configureBaseElements(actorType, simId)
         else
-            simulatorConfig = new SimulatorConfig()
+            config = new SimulatorConfig()
 
-        addEditableNullEndpoint(simulatorConfig, SimulatorProperties.proxyForwardEndpoint, ActorType.ANY , TransactionType.ANY, false);
-        addEditableNullEndpoint(simulatorConfig, SimulatorProperties.proxyTlsForwardEndpoint, ActorType.ANY, TransactionType.ANY, true);
+        addEditableNullEndpoint(config, SimulatorProperties.proxyForwardEndpoint, ActorType.ANY , TransactionType.ANY, false);
+        addEditableNullEndpoint(config, SimulatorProperties.proxyTlsForwardEndpoint, ActorType.ANY, TransactionType.ANY, true);
 
+        SimId simId2 = new SimId(simId.user, simId.id + '_be')   // 'be' for back end
+        SimulatorConfig config2
+        if (configureBase)
+            config2 = configureBaseElements(actorType, simId2)
+        else
+            config2 = new SimulatorConfig()
 
-        return new Simulator(simulatorConfig)
+        // link the two sims
+        addFixedConfig(config, SimulatorProperties.proxyPartner, ParamType.SELECTION, simId2.toString())
+        addFixedConfig(config2, SimulatorProperties.proxyPartner, ParamType.SELECTION, simId.toString())
+
+        return new Simulator([config, config2])
     }
 
     @Override
@@ -49,6 +67,14 @@ class SimProxyFactory extends AbstractActorFactory implements IActorFactory{
     // this only works because this is a singleton class
     private boolean locked = false;
 
+    /**
+     * Build Site with ALL transactions defined so we don't have to know
+     * what it will be used for
+     * @param asc
+     * @param site
+     * @return
+     * @throws NoSimulatorException
+     */
     @Override
     Site getActorSite(SimulatorConfig asc, Site site) throws NoSimulatorException {
         Site aSite = (site) ? site : new Site(asc.defaultName)

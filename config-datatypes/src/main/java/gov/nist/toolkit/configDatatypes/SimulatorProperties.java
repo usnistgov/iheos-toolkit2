@@ -332,4 +332,6 @@ public class SimulatorProperties {
 
     public static final String proxyForwardEndpoint = "Proxy Forward Endpoint";
     public static final String proxyTlsForwardEndpoint = "Proxy TLS Forward Endpoint";
+
+    public static final String proxyPartner = "Proxy Partner";
 }
