@@ -30,6 +30,7 @@ import org.dcm4che3.data.Attributes;
 import org.dcm4che3.data.Tag;
 import org.dcm4che3.io.DicomInputStream;
 import org.dcm4che3.util.TagUtils;
+import sun.misc.BASE64Decoder;
 
 import javax.xml.namespace.QName;
 import javax.xml.stream.XMLStreamException;
@@ -701,7 +702,7 @@ public class ImgDetailTransaction extends BasicTransaction {
                }
             }
          }
-         testImgPath = testImgPath.resolve(subDir);
+         testImgPath = Paths.get(testImgPath.resolve(subDir).toFile().getCanonicalPath());
          File testImgDir = testImgPath.toFile();
          OMElement testResponseBody = getTestTrans(a, "response");
          if (testResponseBody != null ) {
@@ -1102,10 +1103,11 @@ public class ImgDetailTransaction extends BasicTransaction {
          OMElement docRespEle = docRespEles.next();
          String docUID = XmlUtil.onlyChildWithLocalName(docRespEle, "DocumentUniqueId").getText();
          OMElement docEle = XmlUtil.onlyChildWithLocalName(docRespEle, "Document");
-         Mtom mtom = new Mtom();
-         mtom.decode(docEle);
+         String txt = docEle.getText();
+         BASE64Decoder d  = new BASE64Decoder();
+         byte[] contents = d.decodeBuffer(txt);
          File dcmFile = dirPath.resolve(docUID + ".dcm").toFile();
-         FileUtils.writeByteArrayToFile(dcmFile, mtom.getContents());
+         FileUtils.writeByteArrayToFile(dcmFile, contents);
       }
 
    }
