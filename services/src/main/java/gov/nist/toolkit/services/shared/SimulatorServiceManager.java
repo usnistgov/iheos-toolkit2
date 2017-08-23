@@ -15,6 +15,7 @@ import gov.nist.toolkit.results.ResultBuilder;
 import gov.nist.toolkit.results.client.Result;
 import gov.nist.toolkit.results.client.TestInstance;
 import gov.nist.toolkit.services.client.EnvironmentNotSelectedClientException;
+import gov.nist.toolkit.services.server.MultipartFormatter;
 import gov.nist.toolkit.services.server.SimulatorApi;
 import gov.nist.toolkit.session.server.Session;
 import gov.nist.toolkit.simcommon.client.*;
@@ -39,7 +40,9 @@ import groovy.json.JsonOutput;
 import groovy.util.XmlNodePrinter;
 import groovy.util.XmlParser;
 import org.apache.log4j.Logger;
+import org.xml.sax.SAXException;
 
+import javax.xml.parsers.ParserConfigurationException;
 import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -185,21 +188,35 @@ public class SimulatorServiceManager extends CommonService {
 			File bodyFile = db.getRequestBodyFile(simid, actor, trans, event);
 
 			String body = new String(Io.bytesFromFile(bodyFile));
-			boolean isJson = body.trim().startsWith("{");
-			if (isJson) {
-				// format json but leave embedded HTML alone
-				body = JsonOutput.prettyPrint(body);
-			} else {
-				StringWriter xmlOutput = new StringWriter();
-				XmlNodePrinter printer = new XmlNodePrinter(new PrintWriter(xmlOutput));
-				printer.print(new XmlParser().parseText(body));
-				body = xmlOutput.toString();
-			}
-
+			body = formatMessage(body);
 			return new Message(Io.stringFromFile(headerFile), body);
 		} catch (Exception e) {
 			return new Message("Error: " + e.getMessage());
 		}
+	}
+
+	private String formatMessage(String message) throws IOException, SAXException, ParserConfigurationException {
+		String trimBody = message.trim();
+		boolean isJson = trimBody.startsWith("{");
+		boolean isXml = trimBody.startsWith("<");
+		boolean isMultipart = trimBody.startsWith("--");
+		if (isJson) {
+			// format json but leave embedded HTML alone
+			message = JsonOutput.prettyPrint(message);
+		} else if (isXml) {
+			message = formatXml(message);
+		} else if (isMultipart) {
+			message = MultipartFormatter.format(message);
+		}
+		return message;
+	}
+
+	private String formatXml(String xml) throws ParserConfigurationException, SAXException, IOException {
+		StringWriter xmlOutput = new StringWriter();
+		XmlNodePrinter printer = new XmlNodePrinter(new PrintWriter(xmlOutput));
+		printer.print(new XmlParser().parseText(xml));
+		xml = xmlOutput.toString();
+		return xml;
 	}
 
 	public Message getTransactionResponse(SimId simid, String actor,
@@ -217,7 +234,7 @@ public class SimulatorServiceManager extends CommonService {
 					.getResponseBodyFile(simid, actor, trans, event);
 
 			String body = new String(Io.bytesFromFile(bodyFile));
-
+			body = formatMessage(body);
 			return new Message(
 					((headerFile.exists()) ? Io.stringFromFile(headerFile) : "")
 							, body);

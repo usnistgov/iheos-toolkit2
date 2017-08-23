@@ -56,12 +56,14 @@ public class TabContainer {
 	 * @param title - title to appear in the little tab at the top
 	 * @param select - should be selected upon creation (ignored)
      */
-	public void addTab(DockLayoutPanel w, String title, boolean select) {
+	public HTML addTab(DockLayoutPanel w, String title, boolean select) {
 
 		w.getElement().getStyle().setMarginLeft(4, Style.Unit.PX);
 		w.getElement().getStyle().setMarginRight(4, Style.Unit.PX);
 
-		TABBAR.addTab(buildTabHeaderWidget(title, w));
+		int tabIndex = TABBAR.getTabCount();
+		HTML titleHtml = new HTML(title);
+		TABBAR.addTab(buildTabHeaderWidget(titleHtml, w));
 
 		deck.add(w);
 		TABBAR.selectTab(TABBAR.getTabCount() - 1);
@@ -70,6 +72,7 @@ public class TabContainer {
 		Xdstools2.getInstance().resizeToolkit();
 
 		announceOpen(title);
+		return titleHtml;
 	}
 
 	public static void selectTab() {
@@ -101,7 +104,9 @@ public class TabContainer {
 
 	}
 
-	private Widget buildTabHeaderWidget(String title, final DockLayoutPanel content) {
+	private HTML titleHTML = new HTML("foo");
+
+	private Widget buildTabHeaderWidget(HTML titleHtml, final DockLayoutPanel content) {
 		HorizontalPanel panel = new HorizontalPanel();
 		Anchor x = new Anchor("X");
 		x.setStyleName("roundedButton2");
@@ -117,8 +122,7 @@ public class TabContainer {
 			}
 		});
 		panel.add(x);
-		HTML h = new HTML(title);
-		panel.add(h);
+		panel.add(titleHtml);
 		return panel;
 	}
 

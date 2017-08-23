@@ -22,6 +22,16 @@ public abstract class AbstractPresenter<V extends AbstractView<?>> {
     @Inject
     protected EventBus eventBus;
 
+    private ActivityDisplayer activityDisplayer = null;
+
+    public ActivityDisplayer getActivityDisplayer() {
+        return activityDisplayer;
+    }
+
+    public void setActivityDisplayer(ActivityDisplayer activityDisplayer) {
+        this.activityDisplayer = activityDisplayer;
+    }
+
     // Variable that handles the instance of the view binded to this presenter
     protected V view;
 
@@ -54,6 +64,8 @@ public abstract class AbstractPresenter<V extends AbstractView<?>> {
      */
     public void setTitle(String title) {
         this.title = title;
+        if (activityDisplayer != null && title != null && !title.equals(""))
+            activityDisplayer.setTitle(title);
     }
 
     public String getTitle() { return title; }

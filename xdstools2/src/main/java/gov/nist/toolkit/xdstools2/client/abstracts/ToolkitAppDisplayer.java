@@ -5,6 +5,7 @@ import com.google.gwt.dom.client.Style;
 import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.user.client.ui.AcceptsOneWidget;
 import com.google.gwt.user.client.ui.DockLayoutPanel;
+import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.Widget;
 import gov.nist.toolkit.xdstools2.client.TabContainer;
 import gov.nist.toolkit.xdstools2.client.injector.Injector;
@@ -15,6 +16,7 @@ import gov.nist.toolkit.xdstools2.client.injector.Injector;
  * browser navigation while the rest of the application stays the same and keeps working.
  */
 public class ToolkitAppDisplayer implements ActivityDisplayer {
+    private HTML titleHtml;
 
     public ToolkitAppDisplayer() {
         super();
@@ -30,6 +32,11 @@ public class ToolkitAppDisplayer implements ActivityDisplayer {
         DockLayoutPanel panel = new DockLayoutPanel(Style.Unit.PX);
         panel.add(w);
 
-        tabContainer.addTab(panel, title, true /* activity*/);
+        titleHtml = tabContainer.addTab(panel, title, true /* activity*/);
+    }
+
+    @Override
+    public void setTitle(String title) {
+        titleHtml.setHTML(title);
     }
 }

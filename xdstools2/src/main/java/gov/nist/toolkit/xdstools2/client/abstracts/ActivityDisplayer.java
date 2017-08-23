@@ -15,5 +15,6 @@ import javax.inject.Inject;
  */
 public interface ActivityDisplayer {
     void display(Widget w, String title, AbstractToolkitActivity activity, AcceptsOneWidget p, EventBus b);
+    void setTitle(String title);
 
 }

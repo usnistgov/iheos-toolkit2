@@ -55,6 +55,7 @@ public class SimMsgViewerPresenter extends AbstractPresenter<SimMsgViewerView> {
      */
     void setCurrentSimId(SimId simId) {
         currentSimId = simId;  // this prevents init() from loading full context
+        setTitle("Log " + simId.toString());
         loadSimulatorNames();
     }
 
@@ -224,6 +225,7 @@ public class SimMsgViewerPresenter extends AbstractPresenter<SimMsgViewerView> {
         currentSimId = getServerSimId(new SimId(simName));
         loadEventsForSimulator();
         getView().clearAllTabs();
+        setTitle("Log " + currentSimId.toString());
     }
 
     void doInspectRequest() {

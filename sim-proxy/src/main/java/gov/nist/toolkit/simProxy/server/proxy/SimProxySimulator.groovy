@@ -21,8 +21,13 @@ class SimProxySimulator extends BaseActorSimulator {
     
     public boolean run(TransactionType transactionType, MessageValidatorEngine mvc, String validation) throws IOException {
         SimId simId2 = new SimId(config.getConfigEle(SimulatorProperties.proxyPartner).asString())
+        String actor = db.actor
+        String transaction = db.transaction
         SimDb db2 = new SimDb(simId2)
-        db2.mirrorEvent(db, 'proxy', 'relay')
+        db2.mirrorEvent(db, actor, transaction)
+
+        // db is front side of proxy
+        // db2 is back side of proxy
 
         String rawHeader = db.getRequestMessageHeader()
         MyHeaders headers = new MyHeaders()
@@ -40,7 +45,7 @@ class SimProxySimulator extends BaseActorSimulator {
 
         // delete chunked header if it exists
         String encoding = headers.get('transfer-encoding')
-        if ('chunked' == encoding.toLowerCase())
+        if (encoding && 'chunked' == encoding.toLowerCase())
             headers.remove('transfer-encoding')
 
         String endpoint = config.getConfigEle(SimulatorProperties.proxyForwardEndpoint).asString()
@@ -83,15 +88,22 @@ class SimProxySimulator extends BaseActorSimulator {
         Map<String, List<String>> hdrs = post.getHeaderFields()
         hdrs.each { String name, List<String> values ->
             String value = values.join('; ')
-            response.addHeader(name, value)
-            inHeaders.append("${name}: ${value}\r\n")
+            if (name) {
+                response.addHeader(name, value)
+                inHeaders.append("${name}: ${value}\r\n")
+            } else {
+                inHeaders.append("${value}\r\n")
+            }
         }
-        db2.getResponseHdrFile().text = inHeaders.toString()
+        String inputHeaders = inHeaders.toString()
+        db2.getResponseHdrFile().text = inputHeaders
+        db.getResponseHdrFile().text = inputHeaders
         if (responseCode < 300) {
             byte[] responseBytes = post.getInputStream().bytes
             response.getOutputStream().write(responseBytes)
             response.getOutputStream().close()
             db2.putResponseBody(new String(responseBytes))
+            db.putResponseBody(new String(responseBytes))
         }
 
         return false

@@ -649,7 +649,7 @@ public class SimDb {
 					t.trans = name;
 
 					transactionDir = new File(actor, name);
-					logger.debug("transaction dir is " + transactionDir);
+					//logger.debug("transaction dir is " + transactionDir);
 					event = t.messageId;
 					Date date = null;
 					try {
@@ -670,7 +670,7 @@ public class SimDb {
 						}
 					} catch (IOException e) {}
 
-					logger.debug("Found " + t);
+					//logger.debug("Found " + t);
 					transList.add(t);
 				}
 			}

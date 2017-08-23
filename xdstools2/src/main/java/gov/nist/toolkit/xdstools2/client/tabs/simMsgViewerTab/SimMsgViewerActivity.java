@@ -79,6 +79,7 @@ public class SimMsgViewerActivity extends AbstractToolkitActivity {
                 @Override
                 public void onComplete(SimId simId) {
                     presenter.setCurrentSimId(simId);
+                    presenter.setTitle("Log " + simId.toString());
                     finish(acceptsOneWidget, eventBus);
                 }
 
@@ -96,6 +97,7 @@ public class SimMsgViewerActivity extends AbstractToolkitActivity {
             presenter.preselectEvent(event);
         }
 
+        presenter.setActivityDisplayer(displayer);  // so presenter can update tab title
         displayer.display(getContainer(), presenter.getTitle(), this, acceptsOneWidget, eventBus);
     }
 
