@@ -1,8 +1,7 @@
-package gov.nist.toolkit.itTests.simProxy
+package gov.nist.toolkit.itTests.simlog
 
 import gov.nist.toolkit.adt.ListenerFactory
 import gov.nist.toolkit.configDatatypes.SimulatorActorType
-import gov.nist.toolkit.configDatatypes.SimulatorProperties
 import gov.nist.toolkit.installation.Installation
 import gov.nist.toolkit.itTests.support.ToolkitSpecification
 import gov.nist.toolkit.results.client.TestInstance
@@ -16,7 +15,7 @@ import spock.lang.Shared
 /**
  *
  */
-class BasicSpec extends ToolkitSpecification {
+class MarkerSpec extends ToolkitSpecification {
     @Shared SimulatorBuilder spi
 
 
@@ -29,10 +28,7 @@ class BasicSpec extends ToolkitSpecification {
     @Shared String rec = "${testSession}__${id}"
     @Shared SimId simId = new SimId(rec)  // ultimate destination
     @Shared String proxyId = "simproxy"
-    @Shared String simProxyName = "${testSession}__${proxyId}"
-    @Shared SimId simProxyId = new SimId(simProxyName)
     @Shared SimConfig recSimConfig
-    @Shared SimConfig proxySimConfig
 
     def setupSpec() {   // one time setup done when class launched
         startGrizzly('8889')
@@ -42,16 +38,14 @@ class BasicSpec extends ToolkitSpecification {
         spi = getSimulatorApi(remoteToolkitPort)
 
         api.deleteSimulatorIfItExists(simId)
-        api.deleteSimulatorIfItExists(simProxyId)
-
-        api.createTestSession(testSession)
 
         // local customization
 
         new BuildCollections().init(null)
 
+        api.createTestSession(testSession)
+
         spi.delete(id, testSession)
-        spi.delete(proxyId, testSession)
 
         Installation.instance().defaultEnvironmentName()
 
@@ -61,15 +55,6 @@ class BasicSpec extends ToolkitSpecification {
                 SimulatorActorType.DOCUMENT_RECIPIENT,
                 envName)
 
-        proxySimConfig = spi.create(
-                'simproxy',
-                testSession,
-                SimulatorActorType.SIM_PROXY,
-                envName
-        )
-
-        proxySimConfig.setProperty(SimulatorProperties.proxyForwardEndpoint, recSimConfig.asString(SimulatorProperties.pnrEndpoint))
-        spi.update(proxySimConfig)
     }
 
     def cleanupSpec() {  // one time shutdown when everything is done
@@ -80,21 +65,11 @@ class BasicSpec extends ToolkitSpecification {
     def setup() {
         println "EC is ${Installation.instance().externalCache().toString()}"
         println "${api.getSiteNames(true)}"
-//        api.createTestSession(testSession)
-//        if (!api.simulatorExists(simId)) {
-//            println "Creating sim ${simId}"
-//            api.createSimulator(ActorType.REGISTRY, simId)
-//        }
-//
-//        if (!api.simulatorExists(simProxyId)) {
-//            println "Creating sim ${simProxyId}"
-//            api.createSimulator(ActorType.SIM_PROXY, simProxyId)
-//        }
     }
 
-    def 'send through simproxy'() {
+    def 'send to REC'() {
         when:
-        SiteSpec siteSpec = new SiteSpec(simProxyName)
+        SiteSpec siteSpec = new SiteSpec(rec)
         TestInstance testInstance = new TestInstance('12360')
         List<String> sections = ['submit']
         Map<String, String> params = new HashMap<>()
@@ -105,4 +80,5 @@ class BasicSpec extends ToolkitSpecification {
         then:
         testOverviewDTO.sections.get('submit').pass
     }
+
 }

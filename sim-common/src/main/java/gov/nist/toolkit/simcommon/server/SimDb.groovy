@@ -37,6 +37,8 @@ public class SimDb {
 	private File transactionDir = null;
 	static private Logger logger = Logger.getLogger(SimDb.class);
 
+	static final String MARKER = 'MARKER';
+
 	public SimDb mkSim(SimId simid, String actor) throws IOException, NoSimException {
 
 		// if this is a FHIR sim there is a different factory method to use
@@ -234,6 +236,34 @@ public class SimDb {
 		Serialize.out(new File(eventDir, "date.ser"), eventDate);
 	}
 
+	static SimDb createMarker(SimId simId) {
+		return new SimDb(simId, MARKER, MARKER)
+	}
+
+	List<File> getEventsSinceMarker() {
+		List<File> events = getAllEvents()
+		Map<String, File> eventMap = [:]
+		events.each { File event -> eventMap[event.name] = event }
+		List<String> ordered = eventMap.keySet().sort().reverse()
+		List<File> selected = []
+		for (String event : ordered) {
+			List<String> parts = parseEventDir(eventMap[event])
+			String actor = parts[0]
+			if (MARKER == actor)
+				break
+			selected << eventMap[event]
+		}
+	}
+
+	List<String> parseEventDir(File eventDir) {
+		def revParts = eventDir.path.split(File.separator).reverse()
+		return [
+		        revParts[0],    // eventID
+				revParts[1],    // transaction
+				revParts[2]    // actor
+		].reverse()
+	}
+
 	/**
 	 * Used by simproxy to get outbound sim half of proxy to have same event ids (time stamps)
 	 * @param otherSimDb
@@ -293,6 +323,10 @@ public class SimDb {
 	void openMostRecentEvent(String actor, String transaction) {
 		transactionDir = transactionDirectory(actor, transaction)
 		event = transactionDir.list().sort().last()
+	}
+
+	List<String> eventsSinceLastMarker() {
+
 	}
 
 	public String getEvent() { return event; }
@@ -867,6 +901,19 @@ public class SimDb {
 		return null;
 	}
 
+	private List<File> getAllEvents() {
+		List<File> eventDirs = []
+		for (File actorDir : simDir.listFiles()) {
+			if (!actorDir.isDirectory()) continue
+			for (File transDir : actorDir.listFiles()) {
+				if (!transDir.isDirectory()) continue
+				for (File eventDir : transDir.listFiles()) {
+					eventDirs << eventDir
+				}
+			}
+		}
+		return eventDirs
+	}
 
 
 	public File getTransactionEvent(String simid, String actor, String trans, String event) {

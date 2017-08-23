@@ -80,6 +80,18 @@ public class RecipientActorFactory  extends AbstractActorFactory implements IAct
 				true, 
 				isAsync));
 
+		site.addTransaction(new TransactionBean(
+				TransactionType.PROVIDE_AND_REGISTER.getCode(),
+				RepositoryType.NONE,
+				sc.get(SimulatorProperties.pnrEndpoint).asString(),
+				false,
+				isAsync));
+		site.addTransaction(new TransactionBean(
+				TransactionType.PROVIDE_AND_REGISTER.getCode(),
+				RepositoryType.NONE,
+				sc.get(SimulatorProperties.pnrTlsEndpoint).asString(),
+				true,
+				isAsync));
 		return site;
 	}
 
