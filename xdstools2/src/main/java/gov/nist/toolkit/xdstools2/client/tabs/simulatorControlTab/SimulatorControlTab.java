@@ -1,6 +1,9 @@
 package gov.nist.toolkit.xdstools2.client.tabs.simulatorControlTab;
 
 import com.google.gwt.dom.client.Style;
+import com.google.gwt.event.dom.client.KeyCodes;
+import com.google.gwt.event.dom.client.KeyUpEvent;
+import com.google.gwt.event.dom.client.KeyUpHandler;
 import com.google.gwt.event.logical.shared.ResizeEvent;
 import com.google.gwt.event.logical.shared.ResizeHandler;
 import com.google.gwt.user.cellview.client.CellTable;
@@ -97,11 +100,20 @@ public class SimulatorControlTab extends GenericQueryTab {
         actorSelectPanel.add(actorSelectListBox);
         loadActorSelectListBox();
 
+        final CreateButtonClickHandler createButtonClickHandler = new CreateButtonClickHandler(this, testSessionManager);
+        newSimIdTextBox.addKeyUpHandler(new KeyUpHandler() {
+            @Override
+            public void onKeyUp(KeyUpEvent keyUpEvent) {
+                if (keyUpEvent!=null && keyUpEvent.getNativeKeyCode() == KeyCodes.KEY_ENTER)
+                    createButtonClickHandler.doClick();
+            }
+        });
+
         actorSelectPanel.add(HtmlMarkup.html("Simulator ID"));
         actorSelectPanel.add(newSimIdTextBox);
 
         actorSelectPanel.add(createActorSimulatorButton);
-        createActorSimulatorButton.addClickHandler(new CreateButtonClickHandler(this, testSessionManager));
+        createActorSimulatorButton.addClickHandler(createButtonClickHandler);
 
 		simCtrlContainer.add(actorSelectPanel);
 
