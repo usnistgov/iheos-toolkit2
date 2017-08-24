@@ -129,10 +129,10 @@ public class SimManagerWidget2 extends Composite {
         // Add the data to the data provider, which automatically pushes it to the
         // widget.
         final List<SimInfo> list = dataProvider.getList();
-        rows = 0;
 
         if (list!=null && configs!=null && list.size()!=configs.size()) {
             list.clear();
+            rows = 0;
             int rowCt = 0;
             for (SimulatorConfig config : configs) {
                 final SimInfo simInfo = new SimInfo(config, statsList.get(rowCt));
@@ -978,14 +978,18 @@ public class SimManagerWidget2 extends Composite {
             float rowHeight = 30;
             try {
                 rowHeight = newSimTable.getRowElement(0).getClientHeight();
-            } catch (Exception ex) {}
+            } catch (Exception ex) {
+//                Window.alert(ex.toString());
+            }
 
+//            Window.alert("resize is called with " + widthInPx + ". rowHeight is " + rowHeight + ". rows " + rows);
 
             float tableHeight = 100F;
             if (rows>0)
                 tableHeight =  (rowHeight * (rows>PAGE_SIZE?PAGE_SIZE:rows) + ROW_BUFFER);
 
             newSimTable.setHeight("" + tableHeight + "px");
+            newSimTable.redraw();
         }
     }
 
@@ -1015,4 +1019,7 @@ public class SimManagerWidget2 extends Composite {
             return true;
         }
     }
+
+
+
 }
