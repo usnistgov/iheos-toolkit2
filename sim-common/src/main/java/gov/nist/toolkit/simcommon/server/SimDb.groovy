@@ -175,6 +175,18 @@ public class SimDb {
 		Io.stringToFile(simSafetyFile(), simId.toString());
 	}
 
+	void openMostRecentEvent(String actor, String transaction) {
+		transactionDir = transactionDirectory(actor, transaction)
+		event = transactionDir.list().sort().last()
+	}
+
+	static SimDb open(SimDbEvent event) {
+		SimDb db = new SimDb(event.simId)
+		db.transactionDir = db.transactionDirectory(event.actor, event.trans)
+		db.event =  event.eventId
+		return db
+	}
+
 	public PidDb getPidDb() { return pidDb; }
 
 	public static void validateSimId(SimId simId) throws IOException {
@@ -240,32 +252,22 @@ public class SimDb {
 		return new SimDb(simId, MARKER, MARKER)
 	}
 
-	List<File> getEventsSinceMarker() {
-		List<File> events = getAllEvents()
-		Map<String, File> eventMap = [:]
-		events.each { File event -> eventMap[event.name] = event }
-		List<String> ordered = eventMap.keySet().sort().reverse()
-		List<File> selected = []
+	List<SimDbEvent> getEventsSinceMarker() {
+		List<SimDbEvent> events = getAllEvents()
+		Map<String, SimDbEvent> eventMap = [:]
+		events.each { SimDbEvent event -> eventMap[event.eventId] = event }
+		def ordered = eventMap.keySet().sort().reverse()
+		List<SimDbEvent> selected = []
 		for (String event : ordered) {
-			List<String> parts = parseEventDir(eventMap[event])
-			String actor = parts[0]
-			if (MARKER == actor)
+			if (MARKER == eventMap[event].actor)
 				break
 			selected << eventMap[event]
 		}
-	}
-
-	List<String> parseEventDir(File eventDir) {
-		def revParts = eventDir.path.split(File.separator).reverse()
-		return [
-		        revParts[0],    // eventID
-				revParts[1],    // transaction
-				revParts[2]    // actor
-		].reverse()
+		return selected
 	}
 
 	/**
-	 * Used by simproxy to get outbound sim half of proxy to have same event ids (time stamps)
+	 * Used by simproxy to get outbound sim half of proxy to have same event id (time stamp)
 	 * @param otherSimDb
 	 */
 	void mirrorEvent(SimDb otherSimDb, String actor, String transaction) {
@@ -318,15 +320,6 @@ public class SimDb {
 				break;
 		}
 		return getEventDir();
-	}
-
-	void openMostRecentEvent(String actor, String transaction) {
-		transactionDir = transactionDirectory(actor, transaction)
-		event = transactionDir.list().sort().last()
-	}
-
-	List<String> eventsSinceLastMarker() {
-
 	}
 
 	public String getEvent() { return event; }
@@ -901,14 +894,14 @@ public class SimDb {
 		return null;
 	}
 
-	private List<File> getAllEvents() {
-		List<File> eventDirs = []
+	private List<SimDbEvent> getAllEvents() {
+		List<SimDbEvent> eventDirs = []
 		for (File actorDir : simDir.listFiles()) {
 			if (!actorDir.isDirectory()) continue
 			for (File transDir : actorDir.listFiles()) {
 				if (!transDir.isDirectory()) continue
 				for (File eventDir : transDir.listFiles()) {
-					eventDirs << eventDir
+					eventDirs << new SimDbEvent(simId, actorDir.name, transDir.name, eventDir.name)
 				}
 			}
 		}
