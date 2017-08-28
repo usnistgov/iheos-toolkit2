@@ -22,6 +22,8 @@ import com.google.gwt.user.cellview.client.DataGrid;
 import com.google.gwt.user.cellview.client.Header;
 import com.google.gwt.user.cellview.client.SimplePager;
 import com.google.gwt.user.cellview.client.TextColumn;
+import com.google.gwt.user.client.Event;
+import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
@@ -67,6 +69,8 @@ public class SimManagerWidget2 extends Composite {
 
 //    private CellTable<SimInfo> newSimTable = new CellTable<SimInfo>();
     private DataGrid<SimInfo> newSimTable = new DataGrid<SimInfo>();
+    private Timer singleClickTimer;
+    private int clickCount = 0;
     private DataGrid<SimInfo> actionTableTop = new DataGrid<SimInfo>();
     private DataGrid<SimInfo> actionTableBottom = new DataGrid<SimInfo>();
     // Create a data provider.
@@ -88,9 +92,33 @@ public class SimManagerWidget2 extends Composite {
         actionDataProvider.getList().add(placeHolderSimInfo);
         buildTableColumns();
 
+        newSimTable.addCellPreviewHandler(new CellPreviewEvent.Handler<SimInfo>() {
+            @Override
+            public void onCellPreview(CellPreviewEvent<SimInfo> cellPreviewEvent) {
 
+               if (Event.getTypeInt(cellPreviewEvent.getNativeEvent().getType()) == Event.ONCLICK) {
+                    clickCount++;
+                    if (clickCount == 1) {
+                        singleClickTimer = new Timer() {
 
-
+                            @Override
+                            public void run() {
+                                clickCount = 0; // Cancel clickCount if Double click did not happen within the specified timeframe
+                            }
+                        };
+                        singleClickTimer.schedule(300);
+                    } else if (clickCount == 2) {
+                        singleClickTimer.cancel();
+                        clickCount = 0;
+                        DataGrid<SimInfo> grid = (DataGrid<SimInfo>) cellPreviewEvent.getSource();
+                        int row = grid.getKeyboardSelectedRow();
+                        SimInfo item = grid.getVisibleItem(row);
+//                        Window.alert("Do Something Here" + item.getSimulatorConfig().getId().toString());
+                        defaultEditTabAction(item.getSimulatorConfig());
+                    }
+                }
+            }
+        });
 
         newSimTable.setWidth("640px");
 //        newSimTable.setHeight("400px");
@@ -746,8 +774,6 @@ public class SimManagerWidget2 extends Composite {
         newSimTable.addColumn(docsCtColumn, "Docs");
         newSimTable.addColumn(pidsCtColumn, "PIds");
 
-
-
         // Sim info
 //        newSimTable.setColumnWidth(checkColumn, "4%");
 //        newSimTable.setColumnWidth(idColumn, "15%");
@@ -836,19 +862,9 @@ public class SimManagerWidget2 extends Composite {
 
 //                loadSimStatus();
                 SimulatorConfig config = object.getSimulatorConfig();
+                defaultEditTabAction(config);
 
-//							GenericQueryTab editTab;
-                if (ActorType.ONDEMAND_DOCUMENT_SOURCE.getShortName().equals(config.getActorType())
-                        ) {
-                    // This simulator requires content state initialization
-                    OddsEditTab editTab;
-                    editTab = new OddsEditTab(hostTab, config);
-                    editTab.onTabLoad(true, "ODDS");
-                } else {
-                    // Generic state-less type simulators
-                    GenericQueryTab editTab = new EditTab(hostTab, config);
-                    editTab.onTabLoad(true, "SimConfig");
-                }
+
             }
 
             @Override
@@ -927,6 +943,21 @@ public class SimManagerWidget2 extends Composite {
         CompositeCell<SimInfo> compositeCell = new CompositeCell<>(cells);
 
         return compositeCell;
+    }
+
+    private void defaultEditTabAction(SimulatorConfig config) {
+        //							GenericQueryTab editTab;
+        if (ActorType.ONDEMAND_DOCUMENT_SOURCE.getShortName().equals(config.getActorType())
+                ) {
+            // This simulator requires content state initialization
+            OddsEditTab editTab;
+            editTab = new OddsEditTab(hostTab, config);
+            editTab.onTabLoad(true, "ODDS");
+        } else {
+            // Generic state-less type simulators
+            GenericQueryTab editTab = new EditTab(hostTab, config);
+            editTab.onTabLoad(true, "SimConfig");
+        }
     }
 
 
