@@ -1,7 +1,7 @@
 package gov.nist.toolkit.toolkitApi;
 
 
-import gov.nist.toolkit.configDatatypes.SimulatorActorType;
+import gov.nist.toolkit.configDatatypes.server.SimulatorActorType;
 
 /**
  * Not for Public Use.

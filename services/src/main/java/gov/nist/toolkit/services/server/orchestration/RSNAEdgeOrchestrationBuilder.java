@@ -4,7 +4,7 @@
 package gov.nist.toolkit.services.server.orchestration;
 
 import gov.nist.toolkit.actortransaction.client.ActorType;
-import gov.nist.toolkit.configDatatypes.SimulatorProperties;
+import gov.nist.toolkit.configDatatypes.server.SimulatorProperties;
 import gov.nist.toolkit.services.client.RSNAEdgeOrchestrationRequest;
 import gov.nist.toolkit.services.client.RSNAEdgeOrchestrationResponse;
 import gov.nist.toolkit.services.client.RawResponse;

@@ -1,6 +1,6 @@
 package gov.nist.toolkit.simulators.sim.rep;
 
-import gov.nist.toolkit.configDatatypes.SimulatorProperties;
+import gov.nist.toolkit.configDatatypes.server.SimulatorProperties;
 import gov.nist.toolkit.docref.Mtom;
 import gov.nist.toolkit.errorrecording.ErrorRecorder;
 import gov.nist.toolkit.errorrecording.client.XdsErrorCode;

@@ -1,6 +1,6 @@
 package gov.nist.toolkit.simulators.sim.ids
 
-import gov.nist.toolkit.configDatatypes.SimulatorProperties
+import gov.nist.toolkit.configDatatypes.server.SimulatorProperties
 import gov.nist.toolkit.configDatatypes.client.TransactionType
 import gov.nist.toolkit.errorrecording.GwtErrorRecorderBuilder
 import gov.nist.toolkit.errorrecording.client.XdsErrorCode.Code

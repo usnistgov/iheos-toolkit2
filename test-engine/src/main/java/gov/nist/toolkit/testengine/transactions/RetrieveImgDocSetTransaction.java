@@ -1,6 +1,6 @@
 package gov.nist.toolkit.testengine.transactions;
 
-import gov.nist.toolkit.configDatatypes.SimulatorProperties;
+import gov.nist.toolkit.configDatatypes.server.SimulatorProperties;
 import gov.nist.toolkit.configDatatypes.client.TransactionType;
 import gov.nist.toolkit.registrymetadata.Metadata;
 import gov.nist.toolkit.registrymsg.repository.RetrievedDocumentModel;

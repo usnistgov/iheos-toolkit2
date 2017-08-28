@@ -2,7 +2,8 @@ package gov.nist.toolkit.simulators.servlet;
 
 import gov.nist.toolkit.actorfactory.PatientIdentityFeedServlet;
 import gov.nist.toolkit.actortransaction.client.ATFactory;
-import gov.nist.toolkit.configDatatypes.SimulatorProperties;
+import gov.nist.toolkit.actortransaction.client.ActorType;
+import gov.nist.toolkit.configDatatypes.server.SimulatorProperties;
 import gov.nist.toolkit.configDatatypes.client.TransactionType;
 import gov.nist.toolkit.errorrecording.ErrorRecorder;
 import gov.nist.toolkit.errorrecording.GwtErrorRecorderBuilder;
@@ -464,6 +465,12 @@ public class SimServlet  extends HttpServlet {
 			return;
 		}
 
+		ActorType actorType = ActorType.findActor(actor);
+		if (actorType == null) {
+			sendSoapFault(response, "Simulator: Do not understand the actor requested by this endpoint (" + actor + ") in http://" + request.getLocalName() + ":" + request.getLocalPort() + uri + endpointFormat, mvc, vc);
+			return;
+		}
+
 		boolean transactionOk = true;
 
 		try {
@@ -493,6 +500,9 @@ public class SimServlet  extends HttpServlet {
 
 			SimCommon common= new SimCommon(db, request.isSecure(), vc, response, mvc);
 			DsSimCommon dsSimCommon = new DsSimCommon(common, regIndex, repIndex, mvc);
+
+			common.setActorType(actorType);
+			common.setTransactionType(transactionType);
 
 			ErrorRecorder er = new GwtErrorRecorderBuilder().buildNewErrorRecorder();
 			er.sectionHeading("Endpoint");

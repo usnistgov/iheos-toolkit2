@@ -1,6 +1,7 @@
-package gov.nist.toolkit.services.server
+package gov.nist.toolkit.utilities.message
 
 import groovy.xml.XmlUtil
+
 
 /**
  *

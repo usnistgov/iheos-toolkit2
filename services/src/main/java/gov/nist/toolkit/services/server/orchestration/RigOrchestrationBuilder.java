@@ -5,7 +5,7 @@ package gov.nist.toolkit.services.server.orchestration;
 
 import gov.nist.toolkit.actortransaction.client.ActorType;
 import gov.nist.toolkit.actortransaction.client.ParamType;
-import gov.nist.toolkit.configDatatypes.SimulatorProperties;
+import gov.nist.toolkit.configDatatypes.server.SimulatorProperties;
 import gov.nist.toolkit.services.client.RawResponse;
 import gov.nist.toolkit.services.client.RigOrchestrationRequest;
 import gov.nist.toolkit.services.client.RigOrchestrationResponse;

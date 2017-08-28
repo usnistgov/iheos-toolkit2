@@ -1,5 +1,7 @@
 package gov.nist.toolkit.simcommon.server;
 
+import gov.nist.toolkit.actortransaction.client.ActorType;
+import gov.nist.toolkit.configDatatypes.client.TransactionType;
 import gov.nist.toolkit.errorrecording.ErrorRecorder;
 import gov.nist.toolkit.errorrecording.GwtErrorRecorder;
 import gov.nist.toolkit.errorrecording.GwtErrorRecorderBuilder;
@@ -41,6 +43,8 @@ public class SimCommon {
 	public boolean responseSent = false;
 	static Logger logger = Logger.getLogger(SimCommon.class);
 	public MessageValidatorEngine mvc;
+	public TransactionType transactionType;
+	public ActorType actorType;
 
 	public boolean isResponseSent() {
 		return faultReturned || responseSent;
@@ -155,5 +159,19 @@ public class SimCommon {
       }
 	}
 
+	public TransactionType getTransactionType() {
+		return transactionType;
+	}
 
+	public void setTransactionType(TransactionType transactionType) {
+		this.transactionType = transactionType;
+	}
+
+	public ActorType getActorType() {
+		return actorType;
+	}
+
+	public void setActorType(ActorType actorType) {
+		this.actorType = actorType;
+	}
 }

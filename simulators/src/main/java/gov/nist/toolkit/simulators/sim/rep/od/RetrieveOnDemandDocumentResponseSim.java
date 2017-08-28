@@ -1,7 +1,7 @@
 package gov.nist.toolkit.simulators.sim.rep.od;
 
 import gov.nist.toolkit.commondatatypes.MetadataSupport;
-import gov.nist.toolkit.configDatatypes.SimulatorProperties;
+import gov.nist.toolkit.configDatatypes.server.SimulatorProperties;
 import gov.nist.toolkit.errorrecording.ErrorRecorder;
 import gov.nist.toolkit.errorrecording.client.XdsErrorCode.Code;
 import gov.nist.toolkit.installation.Installation;

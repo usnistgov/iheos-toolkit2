@@ -2,7 +2,7 @@ package gov.nist.toolkit.actorfactory;
 
 import gov.nist.toolkit.actortransaction.client.ActorType;
 import gov.nist.toolkit.adt.ListenerFactory;
-import gov.nist.toolkit.configDatatypes.SimulatorProperties;
+import gov.nist.toolkit.configDatatypes.server.SimulatorProperties;
 import gov.nist.toolkit.installation.Installation;
 import gov.nist.toolkit.simcommon.client.NoSimException;
 import gov.nist.toolkit.simcommon.client.SimId;

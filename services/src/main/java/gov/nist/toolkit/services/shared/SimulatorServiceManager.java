@@ -15,7 +15,7 @@ import gov.nist.toolkit.results.ResultBuilder;
 import gov.nist.toolkit.results.client.Result;
 import gov.nist.toolkit.results.client.TestInstance;
 import gov.nist.toolkit.services.client.EnvironmentNotSelectedClientException;
-import gov.nist.toolkit.services.server.MultipartFormatter;
+import gov.nist.toolkit.utilities.message.MultipartFormatter;
 import gov.nist.toolkit.services.server.SimulatorApi;
 import gov.nist.toolkit.session.server.Session;
 import gov.nist.toolkit.simcommon.client.*;

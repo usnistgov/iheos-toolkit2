@@ -54,6 +54,10 @@ public class SimCache {
         }
     }
 
+    static public Site getSite(String siteName) {
+        return getSite(null, siteName);
+    }
+
     static public SimManager getSimManagerForSession(String sessionId, boolean create) {
         return new SimManager(sessionId);
     }

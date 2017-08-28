@@ -1,7 +1,7 @@
 package gov.nist.toolkit.itTests.xds.saml
 
-import gov.nist.toolkit.configDatatypes.SimulatorActorType
-import gov.nist.toolkit.configDatatypes.SimulatorProperties
+import gov.nist.toolkit.configDatatypes.server.SimulatorActorType
+import gov.nist.toolkit.configDatatypes.server.SimulatorProperties
 import gov.nist.toolkit.configDatatypes.client.TransactionType
 import gov.nist.toolkit.itTests.support.ToolkitSpecification
 import gov.nist.toolkit.results.client.Result

@@ -1,7 +1,7 @@
 package gov.nist.toolkit.itTests.fhir
 
 import ca.uhn.fhir.context.FhirContext
-import gov.nist.toolkit.configDatatypes.SimulatorActorType
+import gov.nist.toolkit.configDatatypes.server.SimulatorActorType
 import gov.nist.toolkit.itTests.support.FhirSpecification
 import gov.nist.toolkit.simcommon.client.SimId
 import gov.nist.toolkit.simcommon.server.SimDb

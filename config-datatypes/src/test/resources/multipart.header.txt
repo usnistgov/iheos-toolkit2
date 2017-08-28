@@ -1,0 +1,9 @@
+POST /sim/default__rr/rep/prb HTTP/1.1
+Cache-Control: no-cache
+Accept: text/html, image/gif, image/jpeg, *; q=.2, */*; q=.2
+User-Agent: Axis2
+Connection: keep-alive
+Host: localhost:8888
+Pragma: no-cache
+Content-Length: 14325
+Content-Type: multipart/related; boundary="MIMEBoundary_ba2e384099b4a244bc1c7bab88c735b4f94aeb2925619b62"; type="application/xop+xml"; start="<0.8a2e384099b4a244bc1c7bab88c735b4f94aeb2925619b62@apache.org>"; start-info="application/soap+xml"; action="urn:ihe:iti:2007:ProvideAndRegisterDocumentSet-b"

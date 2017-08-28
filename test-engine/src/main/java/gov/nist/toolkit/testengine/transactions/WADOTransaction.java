@@ -4,7 +4,7 @@
 package gov.nist.toolkit.testengine.transactions;
 
 import edu.wustl.mir.erl.ihe.xdsi.util.Utility;
-import gov.nist.toolkit.configDatatypes.SimulatorProperties;
+import gov.nist.toolkit.configDatatypes.server.SimulatorProperties;
 import gov.nist.toolkit.configDatatypes.client.TransactionType;
 import gov.nist.toolkit.simcommon.client.SimId;
 import gov.nist.toolkit.simcommon.client.SimulatorConfig;

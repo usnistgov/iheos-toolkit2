@@ -1,7 +1,7 @@
 package gov.nist.toolkit.simulators.servlet;
 
 import gov.nist.toolkit.actortransaction.EndpointParser;
-import gov.nist.toolkit.configDatatypes.SimulatorProperties;
+import gov.nist.toolkit.configDatatypes.server.SimulatorProperties;
 import gov.nist.toolkit.installation.Installation;
 import gov.nist.toolkit.simcommon.client.SimId;
 import gov.nist.toolkit.simcommon.client.SimulatorConfig;

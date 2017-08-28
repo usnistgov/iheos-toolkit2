@@ -5,7 +5,7 @@ package gov.nist.toolkit.simulators.servlet;
 
 import edu.wustl.mir.erl.ihe.xdsi.util.Utility;
 import gov.nist.toolkit.actortransaction.client.ATFactory;
-import gov.nist.toolkit.configDatatypes.SimulatorProperties;
+import gov.nist.toolkit.configDatatypes.server.SimulatorProperties;
 import gov.nist.toolkit.configDatatypes.client.TransactionType;
 import gov.nist.toolkit.errorrecording.ErrorRecorder;
 import gov.nist.toolkit.errorrecording.GwtErrorRecorderBuilder;

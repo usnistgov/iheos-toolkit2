@@ -1,8 +1,8 @@
 package gov.nist.toolkit.itTests.simProxy
 
 import gov.nist.toolkit.adt.ListenerFactory
-import gov.nist.toolkit.configDatatypes.SimulatorActorType
-import gov.nist.toolkit.configDatatypes.SimulatorProperties
+import gov.nist.toolkit.configDatatypes.server.SimulatorActorType
+import gov.nist.toolkit.configDatatypes.server.SimulatorProperties
 import gov.nist.toolkit.installation.Installation
 import gov.nist.toolkit.itTests.support.ToolkitSpecification
 import gov.nist.toolkit.results.client.TestInstance
@@ -68,7 +68,7 @@ class BasicSpec extends ToolkitSpecification {
                 envName
         )
 
-        proxySimConfig.setProperty(SimulatorProperties.proxyForwardEndpoint, recSimConfig.asString(SimulatorProperties.pnrEndpoint))
+        proxySimConfig.setProperty(SimulatorProperties.proxyForwardSite, rec)
         spi.update(proxySimConfig)
     }
 

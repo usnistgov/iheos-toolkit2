@@ -1,8 +1,8 @@
 package gov.nist.toolkit.itTests.xds.rep
 
 import gov.nist.toolkit.adt.ListenerFactory
-import gov.nist.toolkit.configDatatypes.SimulatorActorType
-import gov.nist.toolkit.configDatatypes.SimulatorProperties
+import gov.nist.toolkit.configDatatypes.server.SimulatorActorType
+import gov.nist.toolkit.configDatatypes.server.SimulatorProperties
 import gov.nist.toolkit.itTests.support.ToolkitSpecification
 import gov.nist.toolkit.results.client.TestInstance
 import gov.nist.toolkit.services.client.RawResponse
