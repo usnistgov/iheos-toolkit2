@@ -23,6 +23,10 @@
         </dependency>
         <dependency>
             <groupId>gov.nist.toolkit</groupId>
+            <artifactId>sim-common</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>gov.nist.toolkit</groupId>
             <artifactId>sim-proxy</artifactId>
         </dependency>
 

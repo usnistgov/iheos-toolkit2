@@ -5,7 +5,7 @@ import gov.nist.toolkit.actortransaction.client.TransactionInstance;
 import gov.nist.toolkit.configDatatypes.client.Pid;
 import gov.nist.toolkit.errorrecording.GwtErrorRecorderBuilder;
 import gov.nist.toolkit.errorrecording.client.XdsErrorCode;
-import gov.nist.toolkit.http.HttpHeader.HttpHeaderParseException;
+import gov.nist.toolkit.http.HttpHeader;
 import gov.nist.toolkit.http.HttpParseException;
 import gov.nist.toolkit.http.ParseException;
 import gov.nist.toolkit.registrymetadata.Metadata;
@@ -15,7 +15,6 @@ import gov.nist.toolkit.results.ResultBuilder;
 import gov.nist.toolkit.results.client.Result;
 import gov.nist.toolkit.results.client.TestInstance;
 import gov.nist.toolkit.services.client.EnvironmentNotSelectedClientException;
-import gov.nist.toolkit.utilities.message.MultipartFormatter;
 import gov.nist.toolkit.services.server.SimulatorApi;
 import gov.nist.toolkit.session.server.Session;
 import gov.nist.toolkit.simcommon.client.*;
@@ -31,6 +30,7 @@ import gov.nist.toolkit.simulators.sim.rep.RepositoryActorSimulator;
 import gov.nist.toolkit.simulators.sim.rep.od.OddsActorSimulator;
 import gov.nist.toolkit.simulators.support.SimInstanceTerminator;
 import gov.nist.toolkit.utilities.io.Io;
+import gov.nist.toolkit.utilities.message.MultipartFormatter;
 import gov.nist.toolkit.validatorsSoapMessage.engine.ValidateMessageService;
 import gov.nist.toolkit.valsupport.client.MessageValidationResults;
 import gov.nist.toolkit.valsupport.client.ValidationContext;
@@ -42,6 +42,7 @@ import groovy.util.XmlParser;
 import org.apache.log4j.Logger;
 import org.xml.sax.SAXException;
 
+
 import javax.xml.parsers.ParserConfigurationException;
 import java.io.File;
 import java.io.IOException;
@@ -49,6 +50,7 @@ import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.List;
+
 
 /**
  * Each new request should go to a new instance.  All persistence
@@ -149,7 +151,7 @@ public class SimulatorServiceManager extends CommonService {
 					ExceptionUtil.exception_details(e));
 			return mvr;
 		} 
-		catch (HttpHeaderParseException e) {
+		catch (HttpHeader.HttpHeaderParseException e) {
 			MessageValidationResults mvr = new MessageValidationResults();
 			mvr.addError(XdsErrorCode.Code.NoCode, "Exception",
 					ExceptionUtil.exception_details(e));
