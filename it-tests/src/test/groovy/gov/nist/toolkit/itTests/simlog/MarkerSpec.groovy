@@ -26,7 +26,7 @@ class MarkerSpec extends ToolkitSpecification {
     @Shared String patientId2 = 'BR15^^^&1.2.360&ISO'
     @Shared String envName = 'test'
     @Shared String testSession = 'bill';
-    @Shared String id = 'rec'
+    @Shared String id = 'regrep'
     @Shared String id2 = 'rec2'
     @Shared String rec = "${testSession}__${id}"
     @Shared String rec2 = "${testSession}__${id2}"

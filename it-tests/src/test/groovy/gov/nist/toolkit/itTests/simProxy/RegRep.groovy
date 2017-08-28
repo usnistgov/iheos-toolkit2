@@ -16,7 +16,7 @@ import spock.lang.Shared
 /**
  *
  */
-class BasicSpec extends ToolkitSpecification {
+class RegRep extends ToolkitSpecification {
     @Shared SimulatorBuilder spi
 
 
@@ -25,13 +25,13 @@ class BasicSpec extends ToolkitSpecification {
     @Shared String patientId2 = 'BR15^^^&1.2.360&ISO'
     @Shared String envName = 'test'
     @Shared String testSession = 'bill';
-    @Shared String id = 'rec'
-    @Shared String rec = "${testSession}__${id}"
-    @Shared SimId simId = new SimId(rec)  // ultimate destination
+    @Shared String id = 'regrep'
+    @Shared String regrep = "${testSession}__${id}"
+    @Shared SimId simId = new SimId(regrep)  // ultimate destination
     @Shared String proxyId = "simproxy"
     @Shared String simProxyName = "${testSession}__${proxyId}"
     @Shared SimId simProxyId = new SimId(simProxyName)
-    @Shared SimConfig recSimConfig
+    @Shared SimConfig regrepSimConfig
     @Shared SimConfig proxySimConfig
 
     def setupSpec() {   // one time setup done when class launched
@@ -55,10 +55,10 @@ class BasicSpec extends ToolkitSpecification {
 
         Installation.instance().defaultEnvironmentName()
 
-        recSimConfig = spi.create(
+        regrepSimConfig = spi.create(
                 id,
                 testSession,
-                SimulatorActorType.DOCUMENT_RECIPIENT,
+                SimulatorActorType.REPOSITORY_REGISTRY,
                 envName)
 
         proxySimConfig = spi.create(
@@ -68,7 +68,10 @@ class BasicSpec extends ToolkitSpecification {
                 envName
         )
 
-        proxySimConfig.setProperty(SimulatorProperties.proxyForwardSite, rec)
+        regrepSimConfig.setProperty(SimulatorProperties.VALIDATE_AGAINST_PATIENT_IDENTITY_FEED, false)
+        spi.update(regrepSimConfig)
+
+        proxySimConfig.setProperty(SimulatorProperties.proxyForwardSite, regrep)
         spi.update(proxySimConfig)
     }
 
@@ -92,7 +95,7 @@ class BasicSpec extends ToolkitSpecification {
 //        }
     }
 
-    def 'send through simproxy'() {
+    def 'send pnr through simproxy'() {
         when:
         SiteSpec siteSpec = new SiteSpec(simProxyName)
         TestInstance testInstance = new TestInstance('12360')
@@ -104,5 +107,21 @@ class BasicSpec extends ToolkitSpecification {
 
         then:
         testOverviewDTO.sections.get('submit').pass
+    }
+
+    def 'send pnr and query through simproxy'() {
+        when:
+        SiteSpec siteSpec = new SiteSpec(simProxyName)
+        TestInstance testInstance = new TestInstance('12360')
+        List<String> sections = []
+        Map<String, String> params = new HashMap<>()
+        params.put('$patientid$', "P20160803215512.2^^^&1.3.6.1.4.1.21367.2005.13.20.1000&ISO");
+
+        TestOverviewDTO testOverviewDTO = session.xdsTestServiceManager().runTest(envName, testSession, siteSpec, testInstance, sections, params, null, true)
+
+        then:
+        testOverviewDTO.sections.get('submit').pass
+        testOverviewDTO.sections.get('query').pass
+        testOverviewDTO.pass
     }
 }
