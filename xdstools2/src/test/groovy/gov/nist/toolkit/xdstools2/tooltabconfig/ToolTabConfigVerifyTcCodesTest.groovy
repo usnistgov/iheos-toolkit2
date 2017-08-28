@@ -20,7 +20,7 @@ class ToolTabConfigVerifyTcCodesTest extends Specification {
 
         when:
         String toolId = "ConfTests"
-        TabConfigLoader.init(new File(System.getProperty("confTestsTabsConfigFile")))
+        TabConfigLoader.init(new File(System.getProperty("confTestsTabsConfigFile")))  // property set in POM file
         TabConfig confTestsTabConfig = TabConfigLoader.getTabConfig(toolId)
 
         then:
