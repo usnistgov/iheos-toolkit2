@@ -25,7 +25,7 @@ public class SimInstanceTerminator {
 		for (SimId simId : simIds) {
 			SimulatorConfig asc;
 			try {
-				asc = SimDb.getSimulator(simId);
+				asc = new SimDb().getSimulator(simId);
 				Date expiration = asc.getExpiration();
 				if (expiration.before(now)) {
 					SimCommon.deleteSim(simId);

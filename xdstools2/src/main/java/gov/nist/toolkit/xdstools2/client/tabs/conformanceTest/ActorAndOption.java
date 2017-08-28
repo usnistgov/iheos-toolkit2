@@ -5,6 +5,7 @@ package gov.nist.toolkit.xdstools2.client.tabs.conformanceTest;
  */
 public class ActorAndOption {
     private String actorId;
+    private String profileId;
     private String optionId;
     private String optionTitle;
     private boolean externalStart;
@@ -42,5 +43,13 @@ public class ActorAndOption {
 
     public boolean isExternalStart() {
         return externalStart;
+    }
+
+    public String getProfileId() {
+        return profileId;
+    }
+
+    public void setProfileId(String profileId) {
+        this.profileId = profileId;
     }
 }

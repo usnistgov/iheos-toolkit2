@@ -189,13 +189,13 @@ public class RegIndex implements RegistryValidationInterface, Serializable {
 		stats.actorType = ActorType.REGISTRY;
 		stats.simId = simId;
 
-		stats.put(SimulatorStats.DOCUMENT_ENTRY_COUNT, mc.docEntryCollection.size());
-		stats.put(SimulatorStats.SUBMISSION_SET_COUNT, mc.subSetCollection.size());
-		stats.put(SimulatorStats.ASSOCIATION_COUNT, mc.assocCollection.size());
-		stats.put(SimulatorStats.FOLDER_COUNT, mc.folCollection.size());
+		stats.put(SimulatorStats.DOCUMENT_ENTRY_COUNT, (mc!=null&&mc.docEntryCollection!=null)?mc.docEntryCollection.size():0);
+		stats.put(SimulatorStats.SUBMISSION_SET_COUNT, (mc!=null&&mc.subSetCollection!=null)?mc.subSetCollection.size():0);
+		stats.put(SimulatorStats.ASSOCIATION_COUNT, (mc!=null&&mc.assocCollection!=null)?mc.assocCollection.size():0);
+		stats.put(SimulatorStats.FOLDER_COUNT,  (mc!=null&&mc.folCollection!=null)?mc.folCollection.size():0);
 
 		SimDb db = new SimDb(simId);
-		stats.put(SimulatorStats.PATIENT_ID_COUNT, db.getAllPatientIds().size());
+		stats.put(SimulatorStats.PATIENT_ID_COUNT, (db!=null&&db.getAllPatientIds()!=null)?db.getAllPatientIds().size():0);
 
 		return stats;
 	}

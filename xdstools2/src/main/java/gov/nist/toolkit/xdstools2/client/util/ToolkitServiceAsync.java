@@ -24,6 +24,7 @@ import gov.nist.toolkit.testkitutilities.client.SectionDefinitionDAO;
 import gov.nist.toolkit.testkitutilities.client.TestCollectionDefinitionDAO;
 import gov.nist.toolkit.tk.client.TkProps;
 import gov.nist.toolkit.valsupport.client.MessageValidationResults;
+import gov.nist.toolkit.xdstools2.client.tabs.conformanceTest.TabConfig;
 import gov.nist.toolkit.xdstools2.shared.RegistryStatus;
 import gov.nist.toolkit.xdstools2.shared.RepositoryStatus;
 import gov.nist.toolkit.xdstools2.shared.command.CommandContext;
@@ -92,6 +93,7 @@ public interface ToolkitServiceAsync {
 //	void  validateMessage(ValidationContext vc, String simFileName, AsyncCallback<MessageValidationResults> notify);
 
     void  getTransInstances(GetTransactionRequest request, AsyncCallback<List<TransactionInstance>> callback);
+    void  getTransInstancesLists(GetTransactionListsRequest request, AsyncCallback<List<List<TransactionInstance>>> callback);
 
     void getLastMetadata(CommandContext context,AsyncCallback<List<Result>> callback);
     void getLastFilename(CommandContext context,AsyncCallback<String> callback);
@@ -257,4 +259,7 @@ public interface ToolkitServiceAsync {
     void fhirCreate(FhirCreateRequest request, AsyncCallback<List<Result>> async);
 
     void getFullSimId(GetFullSimIdRequest request, AsyncCallback<SimId> async);
+
+    // Tab configuration
+    void getToolTabConfig(GetTabConfigRequest request, AsyncCallback<TabConfig> callback);
 }

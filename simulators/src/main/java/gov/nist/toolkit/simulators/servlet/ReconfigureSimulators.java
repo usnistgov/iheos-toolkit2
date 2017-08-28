@@ -48,7 +48,7 @@ public class ReconfigureSimulators extends HttpServlet {
         SimulatorConfig config;
         logger.info("Reconfiguring Simulator " + simId.toString());
         try {
-            config = SimDb.getSimulator(simId);
+            config = new SimDb().getSimulator(simId);
         } catch (Exception e) {
             logger.error("    Cannot load " + ExceptionUtil.exception_details(e, 5));
             return;

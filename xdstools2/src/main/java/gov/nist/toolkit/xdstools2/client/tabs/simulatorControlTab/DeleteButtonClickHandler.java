@@ -20,15 +20,17 @@ class DeleteButtonClickHandler implements ClickHandler {
 	public void onClick(ClickEvent event) {
 		simulatorControlTab.simConfigSuper.delete(config);
 		simulatorControlTab.simConfigSuper.refresh();
-		delete();
+		delete(true);
 	}
 
-	public void delete() {
+	public void delete(final boolean refresh) {
 		new DeleteConfigCommand(){
 			@Override
 			public void onComplete(String result) {
-				simulatorControlTab.loadSimStatus();
-				((Xdstools2EventBus) ClientUtils.INSTANCE.getEventBus()).fireSimulatorsUpdatedEvent();
+				if (refresh) {
+					simulatorControlTab.loadSimStatus();
+					((Xdstools2EventBus) ClientUtils.INSTANCE.getEventBus()).fireSimulatorsUpdatedEvent();
+				}
 			}
 		}.run(new SimConfigRequest(ClientUtils.INSTANCE.getCommandContext(),config));
 	}

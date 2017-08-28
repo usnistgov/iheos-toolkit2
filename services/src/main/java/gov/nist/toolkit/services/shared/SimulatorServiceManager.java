@@ -330,7 +330,7 @@ public class SimulatorServiceManager extends CommonService {
 	}
 
     public String deleteConfig(SimId simId) throws Exception {
-        SimulatorConfig config = SimDb.getSimulator(simId);
+        SimulatorConfig config = new SimDb().getSimulator(simId);
         if (config != null)
             return deleteConfig(config);
         if (SimDb.exists(simId)) {

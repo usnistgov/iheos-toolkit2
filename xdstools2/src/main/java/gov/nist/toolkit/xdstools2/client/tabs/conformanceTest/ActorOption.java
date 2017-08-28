@@ -15,17 +15,27 @@ import java.util.List;
  */
 public class ActorOption {
     String actorTypeId;
+    String profileId;
     String optionId;
+    TabConfig tabConfig;
 
     public ActorOption(String actorTypeId) {
         this.actorTypeId = actorTypeId;
+        profileId = "xds";
         optionId = "";
     }
 
     public ActorOption(String actorTypeId, String optionId) {
-        this.actorTypeId = actorTypeId;
+        this(actorTypeId);
         this.optionId = optionId;
     }
+
+    public ActorOption(String actorTypeId, String profileId, String optionId) {
+        this(actorTypeId, optionId);
+        this.profileId = profileId;
+    }
+
+    // . TODO: change all tests to actor_profile_option ?? Or assume xds if actor_option and extract profile when three parts are found?
 
     /**
      * Tests for options are listed in collections as actorType_optionName
@@ -33,10 +43,14 @@ public class ActorOption {
      */
     void loadTests(final AsyncCallback<List<TestInstance>> callback) {
         GetCollectionRequest request;
-        if (optionId == null || optionId.equals("")) {
-            request = new GetCollectionRequest(ClientUtils.INSTANCE.getCommandContext(), "actorcollections", actorTypeId);
-        } else {
-            request = new GetCollectionRequest(ClientUtils.INSTANCE.getCommandContext(), "collections", actorTypeId + "_" + optionId);
+        if ((profileId==null || "".equals(profileId) || "xds".equals(profileId))) {
+                if (optionId == null || optionId.equals(""))   {
+                    request = new GetCollectionRequest(ClientUtils.INSTANCE.getCommandContext(), "actorcollections", actorTypeId);
+                } else {
+                    request = new GetCollectionRequest(ClientUtils.INSTANCE.getCommandContext(), "collections", actorTypeId + "_" + optionId);
+                }
+        } else { // All three must be present
+            request = new GetCollectionRequest(ClientUtils.INSTANCE.getCommandContext(), "collections", actorTypeId + "_" + profileId + "_" + optionId);
         }
         new GetCollectionMembersCommand() {
             @Override
@@ -94,12 +108,24 @@ public class ActorOption {
                 && ActorType.IMAGING_DOC_CONSUMER.getShortName().equals(actorTypeId);
     }
 
-    void setOptionId(String optionId) {
+    public void setOptionId(String optionId) {
         this.optionId = optionId;
     }
 
     public String getActorTypeId() {
         return actorTypeId;
+    }
+
+    public void setActorTypeId(String actorTypeId) {
+        this.actorTypeId = actorTypeId;
+    }
+
+    public String getProfileId() {
+        return profileId;
+    }
+
+    public void setProfileId(String profileId) {
+        this.profileId = profileId;
     }
 
     public String getOptionId() {
@@ -128,5 +154,13 @@ public class ActorOption {
         int result = actorTypeId != null ? actorTypeId.hashCode() : 0;
         result = 31 * result + (optionId != null ? optionId.hashCode() : 0);
         return result;
+    }
+
+    public TabConfig getTabConfig() {
+        return tabConfig;
+    }
+
+    public void setTabConfig(TabConfig tabConfig) {
+        this.tabConfig = tabConfig;
     }
 }

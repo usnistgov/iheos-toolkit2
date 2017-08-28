@@ -376,6 +376,12 @@ public class Installation {
         return new File(toolkitxFile(), "interaction-sequences" + sep + "InteractionSequences.xml");
     }
 
+    public File getToolTabConfigFile(String toolId) {
+        if (toolId!=null)
+            return new File(toolkitxFile(), "tool-tab-configs" + sep + toolId + "Tabs.xml");
+        return null;
+    }
+
     public static String defaultSessionName() { return "STANDALONE"; }
     public static String defaultServiceSessionName() { return "SERVICE"; }
 

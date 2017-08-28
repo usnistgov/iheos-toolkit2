@@ -5,7 +5,6 @@ import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.user.client.ui.AcceptsOneWidget;
 import gov.nist.toolkit.xdstools2.client.ToolWindow;
 import gov.nist.toolkit.xdstools2.client.Xdstools2;
-import gov.nist.toolkit.xdstools2.client.tabs.conformanceTest.ActorOption;
 import gov.nist.toolkit.xdstools2.client.tabs.conformanceTest.ConformanceTestTab;
 import gov.nist.toolkit.xdstools2.client.toolLauncher.ToolLauncher;
 import gov.nist.toolkit.xdstools2.client.util.ClientUtils;
@@ -29,8 +28,9 @@ public class ConfActorActivity extends AbstractActivity {
             toolWindow.setCurrentTestSession(confActor.getTestSessionName());
             ConformanceTestTab conformanceTestTab = (ConformanceTestTab) toolWindow;
             conformanceTestTab.setInitTestSession(confActor.getTestSessionName());
-            ActorOption actorOption = new ActorOption(confActor.getActorType(), "");
-            conformanceTestTab.setCurrentActorOption(actorOption);
+            conformanceTestTab.getCurrentActorOption().setActorTypeId(confActor.getActorType());
+            conformanceTestTab.getCurrentActorOption().setProfileId(confActor.getProfileId());
+            conformanceTestTab.getCurrentActorOption().setOptionId(confActor.getOptionId());
             xdstools2view.resizeToolkit();
         }
     }
