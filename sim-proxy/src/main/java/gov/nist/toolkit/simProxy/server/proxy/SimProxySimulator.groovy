@@ -3,6 +3,7 @@ package gov.nist.toolkit.simProxy.server.proxy
 import gov.nist.toolkit.actortransaction.EndpointParser
 import gov.nist.toolkit.configDatatypes.server.SimulatorProperties
 import gov.nist.toolkit.configDatatypes.client.TransactionType
+import gov.nist.toolkit.errorrecording.client.XdsErrorCode
 import gov.nist.toolkit.simcommon.client.SimId
 import gov.nist.toolkit.simcommon.server.BaseActorSimulator
 import gov.nist.toolkit.simcommon.server.SimCache
@@ -59,14 +60,25 @@ class SimProxySimulator extends BaseActorSimulator {
 //        }
         String forwardSiteName = config.getConfigEle(SimulatorProperties.proxyForwardSite)?.asString()
         if (!forwardSiteName) {
-            throw new XdsInternalException("No Proxy forward system configured")
+            def msg = 'No Proxy forward system configured'
+            Exception e = new XdsInternalException(msg)
+            common.getCommonErrorRecorder().err(XdsErrorCode.Code.NoCode, e)
+            throw e
         }
         Site site = SimCache.getSite(forwardSiteName)
-        if (!site)
-            throw new XdsInternalException("Proxy configured to forward to System ${site} which does not exist")
+        if (!site) {
+            def msg = "Proxy configured to forward to System ${forwardSiteName} which does not exist"
+            Exception e = new XdsInternalException(msg)
+            common.getCommonErrorRecorder().err(XdsErrorCode.Code.NoCode, e)
+            throw e
+        }
         String endpoint = site.getEndpoint(transactionType, false, false)
-        if (!endpoint)
-            throw new XdsInternalException("Proxy configured to forward to System ${site} which is not configured for Transaction type ${transactionType}")
+        if (!endpoint) {
+            def msg = "Proxy configured to forward to System ${site} which is not configured for Transaction type ${transactionType}"
+            Exception e = new XdsInternalException(msg)
+            common.getCommonErrorRecorder().err(XdsErrorCode.Code.NoCode, e)
+            throw e
+        }
         EndpointParser eparser = new EndpointParser(endpoint)
 
         db2.setClientIpAddess(eparser.host)

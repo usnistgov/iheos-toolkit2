@@ -41,7 +41,7 @@ public class SimCommon {
 	public OutputStream os = null;
 	public boolean faultReturned = false;
 	public boolean responseSent = false;
-	static Logger logger = Logger.getLogger(SimCommon.class);
+	private static Logger logger = Logger.getLogger(SimCommon.class);
 	public MessageValidatorEngine mvc;
 	public TransactionType transactionType;
 	public ActorType actorType;
