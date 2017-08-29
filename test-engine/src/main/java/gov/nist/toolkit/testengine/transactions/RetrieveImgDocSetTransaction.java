@@ -1,6 +1,6 @@
 package gov.nist.toolkit.testengine.transactions;
 
-import gov.nist.toolkit.configDatatypes.SimulatorProperties;
+import gov.nist.toolkit.configDatatypes.server.SimulatorProperties;
 import gov.nist.toolkit.configDatatypes.client.TransactionType;
 import gov.nist.toolkit.registrymetadata.Metadata;
 import gov.nist.toolkit.registrymsg.repository.RetrievedDocumentModel;
@@ -300,7 +300,7 @@ public class RetrieveImgDocSetTransaction extends BasicTransaction {
       try {
       String sim = part.getAttributeValue(new QName("sim"));
       String user = testConfig.testInstance.getUser();
-      SimulatorConfig simConfig = SimDb.getSimulator(new SimId(user, sim));
+      SimulatorConfig simConfig = new SimDb().getSimulator(new SimId(user, sim));
       target = simConfig.getConfigEle(SimulatorProperties.idsrEndpoint).asString();
       } catch (Exception e) {
          

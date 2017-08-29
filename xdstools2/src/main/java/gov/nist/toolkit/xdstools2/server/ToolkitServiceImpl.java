@@ -16,7 +16,11 @@ import gov.nist.toolkit.installation.Installation;
 import gov.nist.toolkit.installation.PropertyServiceManager;
 import gov.nist.toolkit.interactionmapper.InteractionMapper;
 import gov.nist.toolkit.interactionmodel.client.InteractingEntity;
-import gov.nist.toolkit.results.client.*;
+import gov.nist.toolkit.results.client.CodesResult;
+import gov.nist.toolkit.results.client.DocumentEntryDetail;
+import gov.nist.toolkit.results.client.Result;
+import gov.nist.toolkit.results.client.TestInstance;
+import gov.nist.toolkit.results.client.TestLogs;
 import gov.nist.toolkit.results.shared.Test;
 import gov.nist.toolkit.services.client.IdcOrchestrationRequest;
 import gov.nist.toolkit.services.client.RawResponse;
@@ -61,6 +65,7 @@ import gov.nist.toolkit.valsupport.client.MessageValidationResults;
 import gov.nist.toolkit.xdsexception.ExceptionUtil;
 import gov.nist.toolkit.xdsexception.client.ToolkitRuntimeException;
 import gov.nist.toolkit.xdstools2.client.GazelleXuaUsername;
+import gov.nist.toolkit.xdstools2.client.tabs.conformanceTest.TabConfig;
 import gov.nist.toolkit.xdstools2.client.util.ToolkitService;
 import gov.nist.toolkit.xdstools2.server.serviceManager.DashboardServiceManager;
 import gov.nist.toolkit.xdstools2.server.serviceManager.GazelleServiceManager;
@@ -81,7 +86,13 @@ import java.io.IOException;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Scanner;
 
 @SuppressWarnings("serial")
 public class ToolkitServiceImpl extends RemoteServiceServlet implements
@@ -965,6 +976,20 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements
         return new SimulatorServiceManager(session()).getTransInstances(request.getSimid(), request.getActor(), request.getTrans());
     }
     @Override
+    public List<List<TransactionInstance>> getTransInstancesLists(GetTransactionListsRequest request) throws Exception {
+        try {
+            installCommandContext(request);
+            SimulatorServiceManager ssm = new SimulatorServiceManager(session());
+            List<List<TransactionInstance>> lists = new ArrayList<List<TransactionInstance>>();
+            for (SimId simId : request.getSimIds()) {
+                lists.add(ssm.getTransInstances(simId, "", null));
+            }
+            return lists;
+        } catch (Exception ex) {
+            return null;
+        }
+    }
+    @Override
     public Message getTransactionRequest(GetTransactionRequest request) throws Exception {
         installCommandContext(request);
         return new SimulatorServiceManager(session()).getTransactionRequest(request.getSimid(), request.getActor(), request.getTrans(), request.getMessageId());
@@ -1539,6 +1564,12 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements
         }
 
         return assertionMap;
+    }
+
+    public TabConfig getToolTabConfig(GetTabConfigRequest request) throws Exception {
+        String toolId = request.getToolId();
+        TabConfigLoader.init(Installation.instance().getToolTabConfigFile(toolId));
+       return TabConfigLoader.getTabConfig(toolId);
     }
 
     @Override

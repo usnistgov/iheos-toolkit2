@@ -1,7 +1,7 @@
 package gov.nist.toolkit.toolkitApi;
 
 
-import gov.nist.toolkit.configDatatypes.SimulatorActorType;
+import gov.nist.toolkit.configDatatypes.server.SimulatorActorType;
 import gov.nist.toolkit.toolkitServicesCommon.*;
 import gov.nist.toolkit.toolkitServicesCommon.resource.*;
 import gov.nist.toolkit.toolkitServicesCommon.resource.xdm.XdmReport;

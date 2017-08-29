@@ -1,6 +1,6 @@
 package gov.nist.toolkit.simulators.servlet;
 
-import gov.nist.toolkit.configDatatypes.SimulatorProperties;
+import gov.nist.toolkit.configDatatypes.server.SimulatorProperties;
 import gov.nist.toolkit.http.HttpMessage;
 import gov.nist.toolkit.http.HttpParseException;
 import gov.nist.toolkit.simcommon.client.SimulatorConfig;

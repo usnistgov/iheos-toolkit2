@@ -1,7 +1,7 @@
 package gov.nist.toolkit.simulators.servlet;
 
 import gov.nist.toolkit.actortransaction.EndpointParser;
-import gov.nist.toolkit.configDatatypes.SimulatorProperties;
+import gov.nist.toolkit.configDatatypes.server.SimulatorProperties;
 import gov.nist.toolkit.installation.Installation;
 import gov.nist.toolkit.simcommon.client.SimId;
 import gov.nist.toolkit.simcommon.client.SimulatorConfig;
@@ -48,7 +48,7 @@ public class ReconfigureSimulators extends HttpServlet {
         SimulatorConfig config;
         logger.info("Reconfiguring Simulator " + simId.toString());
         try {
-            config = SimDb.getSimulator(simId);
+            config = new SimDb().getSimulator(simId);
         } catch (Exception e) {
             logger.error("    Cannot load " + ExceptionUtil.exception_details(e, 5));
             return;

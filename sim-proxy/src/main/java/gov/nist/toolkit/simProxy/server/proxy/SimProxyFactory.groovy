@@ -2,7 +2,7 @@ package gov.nist.toolkit.simProxy.server.proxy
 
 import gov.nist.toolkit.actortransaction.client.ActorType
 import gov.nist.toolkit.actortransaction.client.ParamType
-import gov.nist.toolkit.configDatatypes.SimulatorProperties
+import gov.nist.toolkit.configDatatypes.server.SimulatorProperties
 import gov.nist.toolkit.configDatatypes.client.TransactionType
 import gov.nist.toolkit.envSetting.EnvSetting
 import gov.nist.toolkit.simcommon.client.SimId
@@ -42,8 +42,8 @@ class SimProxyFactory extends AbstractActorFactory implements IActorFactory{
         else
             config = new SimulatorConfig()
 
-        addEditableNullEndpoint(config, SimulatorProperties.proxyForwardEndpoint, ActorType.ANY , TransactionType.ANY, false);
-        addEditableNullEndpoint(config, SimulatorProperties.proxyTlsForwardEndpoint, ActorType.ANY, TransactionType.ANY, true);
+//        addEditableNullEndpoint(config, SimulatorProperties.proxyForwardEndpoint, ActorType.ANY , TransactionType.ANY, false);
+//        addEditableNullEndpoint(config, SimulatorProperties.proxyTlsForwardEndpoint, ActorType.ANY, TransactionType.ANY, true);
 
         SimId simId2 = new SimId(simId.user, simId.id + '_be')   // 'be' for back end
         SimulatorConfig config2
@@ -55,6 +55,8 @@ class SimProxyFactory extends AbstractActorFactory implements IActorFactory{
         // link the two sims
         addFixedConfig(config, SimulatorProperties.proxyPartner, ParamType.SELECTION, simId2.toString())
         addFixedConfig(config2, SimulatorProperties.proxyPartner, ParamType.SELECTION, simId.toString())
+
+        addEditableConfig(config, SimulatorProperties.proxyForwardSite, ParamType.SELECTION, "");
 
         return new Simulator([config, config2])
     }

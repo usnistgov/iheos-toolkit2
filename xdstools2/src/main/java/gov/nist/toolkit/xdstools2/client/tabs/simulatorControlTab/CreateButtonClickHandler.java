@@ -16,6 +16,10 @@ class CreateButtonClickHandler implements ClickHandler {
 	}
 
 	public void onClick(ClickEvent event) {
+		doClick();
+	}
+
+	public void doClick() {
 		int actorTypeIndex = simulatorControlTab.actorSelectListBox.getSelectedIndex();
 		String actorTypeName = simulatorControlTab.actorSelectListBox.getItemText(actorTypeIndex);
 		if (actorTypeName == null || actorTypeName.equals("")) {
@@ -32,7 +36,7 @@ class CreateButtonClickHandler implements ClickHandler {
 			return;
 		}
 		SimId simId;
-        try {
+		try {
             simId = new SimId(testSessionManager.getCurrentTestSession(), rawSimId);
         } catch (Exception e) {
             new PopupMessage(e.getMessage());
@@ -40,5 +44,5 @@ class CreateButtonClickHandler implements ClickHandler {
         }
 		simulatorControlTab.createNewSimulator(actorTypeName, simId);
 	}
-	
+
 }

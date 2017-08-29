@@ -1,12 +1,17 @@
 package gov.nist.toolkit.simProxy.server.proxy
 
 import gov.nist.toolkit.actortransaction.EndpointParser
-import gov.nist.toolkit.configDatatypes.SimulatorProperties
+import gov.nist.toolkit.actortransaction.server.ProxyTransform
+import gov.nist.toolkit.configDatatypes.server.SimulatorProperties
 import gov.nist.toolkit.configDatatypes.client.TransactionType
+import gov.nist.toolkit.errorrecording.client.XdsErrorCode
 import gov.nist.toolkit.simcommon.client.SimId
 import gov.nist.toolkit.simcommon.server.BaseActorSimulator
+import gov.nist.toolkit.simcommon.server.SimCache
 import gov.nist.toolkit.simcommon.server.SimDb
+import gov.nist.toolkit.sitemanagement.client.Site
 import gov.nist.toolkit.valsupport.engine.MessageValidatorEngine
+import gov.nist.toolkit.xdsexception.client.XdsInternalException
 import org.apache.log4j.Logger
 
 import javax.servlet.http.HttpServletResponse
@@ -48,7 +53,33 @@ class SimProxySimulator extends BaseActorSimulator {
         if (encoding && 'chunked' == encoding.toLowerCase())
             headers.remove('transfer-encoding')
 
-        String endpoint = config.getConfigEle(SimulatorProperties.proxyForwardEndpoint).asString()
+//        String endpoint = config.getConfigEle(SimulatorProperties.proxyForwardEndpoint).asString()
+
+//        String endpointConfigElementName = transactionType.getEndpointSimPropertyName()
+//        if (!endpointConfigElementName) {
+//            throw new XdsInternalException("Not configured to forward transaction type ${transactionType} to actor type ${actor} - see table TransactionType.java")
+//        }
+        String forwardSiteName = config.getConfigEle(SimulatorProperties.proxyForwardSite)?.asString()
+        if (!forwardSiteName) {
+            def msg = 'No Proxy forward system configured'
+            Exception e = new XdsInternalException(msg)
+            common.getCommonErrorRecorder().err(XdsErrorCode.Code.NoCode, e)
+            throw e
+        }
+        Site site = SimCache.getSite(forwardSiteName)
+        if (!site) {
+            def msg = "Proxy configured to forward to System ${forwardSiteName} which does not exist"
+            Exception e = new XdsInternalException(msg)
+            common.getCommonErrorRecorder().err(XdsErrorCode.Code.NoCode, e)
+            throw e
+        }
+        String endpoint = site.getEndpoint(transactionType, false, false)
+        if (!endpoint) {
+            def msg = "Proxy configured to forward to System ${site} which is not configured for Transaction type ${transactionType}"
+            Exception e = new XdsInternalException(msg)
+            common.getCommonErrorRecorder().err(XdsErrorCode.Code.NoCode, e)
+            throw e
+        }
         EndpointParser eparser = new EndpointParser(endpoint)
 
         db2.setClientIpAddess(eparser.host)
@@ -72,7 +103,32 @@ class SimProxySimulator extends BaseActorSimulator {
 
         // Transformation goes here and alters outputHeaders and outputBody
 
+        String transformInHeader = outputHeaders
+        byte[] transformInBody = outputBody
 
+        common.actorType.proxyTransformClassNames?.each { String transformClassName ->
+            def instance = Class.forName(transformClassName).newInstance()
+            if (!(instance instanceof ProxyTransform)) {
+                def msg = "Proxy Transform named ${transformClassName} cannot be created."
+                Exception e = new XdsInternalException(msg)
+                common.getCommonErrorRecorder().err(XdsErrorCode.Code.NoCode, e)
+                throw e
+            }
+
+            ProxyTransform transform = (ProxyTransform) instance
+            transform.inputHeader = transformInHeader
+            transform.inputBody = transformInBody
+
+            transform.run()
+
+            // set up for next transform
+            transformInHeader = transform.outputHeader
+            transformInBody = transform.outputBody
+
+            // just in case this is the last transform
+            outputHeaders = transform.outputHeader
+            outputBody = transform.outputBody
+        }
 
         // end of transformation
 

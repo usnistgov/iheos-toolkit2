@@ -2,7 +2,7 @@ package gov.nist.toolkit.services.server;
 
 import gov.nist.toolkit.actortransaction.client.ActorType;
 import gov.nist.toolkit.actortransaction.client.TransactionInstance;
-import gov.nist.toolkit.configDatatypes.SimulatorProperties;
+import gov.nist.toolkit.configDatatypes.server.SimulatorProperties;
 import gov.nist.toolkit.envSetting.EnvSetting;
 import gov.nist.toolkit.installation.Installation;
 import gov.nist.toolkit.registrymetadata.client.Uids;
@@ -170,7 +170,7 @@ public class ToolkitApi {
     }
 
     public SimulatorConfig getConfig(SimId simId) throws Exception {
-        SimulatorConfig config =  SimDb.getSimulator(simId);
+        SimulatorConfig config =  new SimDb().getSimulator(simId);
         if (config == null)throw new NoSimException("Simulator not found: " + simId);
         return config;
     }

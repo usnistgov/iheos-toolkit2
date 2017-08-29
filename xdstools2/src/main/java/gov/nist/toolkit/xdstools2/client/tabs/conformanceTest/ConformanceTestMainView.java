@@ -3,6 +3,7 @@ package gov.nist.toolkit.xdstools2.client.tabs.conformanceTest;
 import com.google.gwt.dom.client.Style;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HTML;
+import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Panel;
 import com.google.gwt.user.client.ui.TabBar;
 import gov.nist.toolkit.xdstools2.client.ToolWindow;
@@ -16,28 +17,43 @@ public class ConformanceTestMainView {
     private final FlowPanel toolPanel = new FlowPanel();   // Outer-most panel for the tool
     private final FlowPanel initializationPanel = new FlowPanel();
     private final FlowPanel testsPanel = new FlowPanel();  // panel for displaying tests
+    private final FlowPanel tabBarPanel = new FlowPanel();
     private final TabBar actorTabBar = new TabBar();            // tab bar at the top for selecting actor types
-    private final OptionsTabBar optionsTabBar;
+    private final UserDefinedTabBar profileTabBar = new UserDefinedTabBar();
+    private final UserDefinedTabBar optionsTabBar = new UserDefinedTabBar();
+    private final Image menuImage = new Image("icons2/menu-32.png");
 
     private HTML testSessionDescription = new HTML();
     private FlowPanel testSessionDescriptionPanel = new FlowPanel();
     private HTML loadingMessage = new HTML();
 
-    ConformanceTestMainView(ToolWindow toolWindow, OptionsTabBar optionsTabBar) {
-        this.optionsTabBar = optionsTabBar;
+    ConformanceTestMainView(ToolWindow toolWindow) {
         toolPanel.getElement().getStyle().setMargin(4, Style.Unit.PX);
         toolPanel.getElement().getStyle().setMarginLeft(0, Style.Unit.PX);
         testsPanel.getElement().getStyle().setMarginRight(4, Style.Unit.PX);
 
         FlowPanel sitesPanel = new FlowPanel();
         toolPanel.add(sitesPanel);
+
         HorizontalFlowPanel actorpanel = new HorizontalFlowPanel();
-        actorpanel.add(new HTML("Actor to test"));
+        menuImage.getElement().getStyle().setMarginLeft(98, Style.Unit.PCT);
+        menuImage.setAltText("Conformance Test Index");
+        toolPanel.add(menuImage);
+        HTML actorToTest = new HTML("Actor to test");
+//        actorToTest.addStyleName("section-title");
+        actorpanel.add(actorToTest);
         actorpanel.add(new InformationLink("Help with Conformance Test tool", "Conformance-Test-Tool").asWidget());
         toolPanel.add(actorpanel);
-        toolPanel.add(actorTabBar);
-        toolPanel.add(new HTML("Option"));
-        toolPanel.add(optionsTabBar);
+        tabBarPanel.add(actorTabBar);
+        // . TODO create a panel for the bars and hide it by default? Unless access by URL.
+        // 0. TODO: create a profile tab here
+        tabBarPanel.add(new HTML("Profile"));
+        tabBarPanel.add(profileTabBar);
+        tabBarPanel.add(new HTML("Option"));
+        tabBarPanel.add(optionsTabBar);
+        tabBarPanel.setVisible(false);
+        toolPanel.add(tabBarPanel);
+
         toolPanel.add(loadingMessage);
         toolPanel.add(initializationPanel);
         toolPanel.add(testsPanel);
@@ -64,7 +80,11 @@ public class ConformanceTestMainView {
         return actorTabBar;
     }
 
-    public OptionsTabBar getOptionsTabBar() {
+    public UserDefinedTabBar getProfileTabBar() {
+        return profileTabBar;
+    }
+
+    public UserDefinedTabBar getOptionsTabBar() {
         return optionsTabBar;
     }
 
@@ -84,5 +104,13 @@ public class ConformanceTestMainView {
     public void clearLoadingMessage() {
         this.loadingMessage.setHTML("");
         this.loadingMessage.setStyleName("hiddenMessage");
+    }
+
+    public FlowPanel getTabBarPanel() {
+        return tabBarPanel;
+    }
+
+    public Image getMenuImage() {
+        return menuImage;
     }
 }

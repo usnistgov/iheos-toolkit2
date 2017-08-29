@@ -1,6 +1,6 @@
 package gov.nist.toolkit.itTests.xds
 
-import gov.nist.toolkit.configDatatypes.SimulatorProperties
+import gov.nist.toolkit.configDatatypes.server.SimulatorProperties
 import gov.nist.toolkit.adt.ListenerFactory
 import gov.nist.toolkit.configDatatypes.client.Pid
 import gov.nist.toolkit.installation.Installation

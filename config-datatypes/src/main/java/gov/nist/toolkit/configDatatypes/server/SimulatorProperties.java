@@ -1,4 +1,4 @@
-package gov.nist.toolkit.configDatatypes;
+package gov.nist.toolkit.configDatatypes.server;
 
 /**
  * These are properties to be used with gov.nist.toolkit.toolkitServicesCommon.SimConfig
@@ -330,8 +330,10 @@ public class SimulatorProperties {
 
     public static final String fhirTlsEndpoint = "FHIR TLS Endpoint";
 
-    public static final String proxyForwardEndpoint = "Proxy Forward Endpoint";
-    public static final String proxyTlsForwardEndpoint = "Proxy TLS Forward Endpoint";
+//    public static final String proxyForwardEndpoint = "Proxy Forward Endpoint";
+//    public static final String proxyTlsForwardEndpoint = "Proxy TLS Forward Endpoint";
+
+    public static final String proxyForwardSite = "Proxy Forward Site";
 
     public static final String proxyPartner = "Proxy Partner";
 }

@@ -38,24 +38,24 @@ public class RepIndex implements Serializable {
 		}
 	}
 
-	public void restore() throws IOException, ClassNotFoundException {
+	public void restore() throws Exception, ClassNotFoundException {
 		synchronized(this) {
 			dc = RepIndex.restoreRepository(filename);
 		}
 	}
 
-	static DocumentCollection restoreRepository(String filename) throws IOException, ClassNotFoundException {
+	static DocumentCollection restoreRepository(String filename) throws Exception {
 		logger.debug("Restore Repository Index");
 		FileInputStream fis = null;
 		ObjectInputStream in = null;
 		DocumentCollection dc;
 		try {
-			fis = new FileInputStream(filename);
-			in = new ObjectInputStream(fis);
-			dc = (DocumentCollection)in.readObject();
-
+				fis = new FileInputStream(filename);
+				in = new ObjectInputStream(fis);
+				dc = (DocumentCollection) in.readObject();
 		} finally {
-			in.close();
+			if (in!=null)
+				in.close();
 			if (fis!=null)
 				fis.close();
 		}
@@ -93,7 +93,7 @@ public class RepIndex implements Serializable {
 		stats.simId = simId;
 
 		if (ActorType.REPOSITORY.equals(actorType))
-			stats.put(SimulatorStats.DOCUMENT_COUNT, dc.size());
+			stats.put(SimulatorStats.DOCUMENT_COUNT, (dc!=null)?dc.size():0);
 		return stats;
 	}
 

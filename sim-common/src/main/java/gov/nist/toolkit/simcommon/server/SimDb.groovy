@@ -171,8 +171,19 @@ public class SimDb {
 		if (!simDir.isDirectory())
 			throw new ToolkitRuntimeException("Cannot create content in Simulator database, creation of " + simDir.toString() + " failed");
 
-		// add this for safety when deleting simulators -
-		Io.stringToFile(simSafetyFile(), simId.toString());
+
+		int retry=3;
+		boolean hasSafetyFile = false;
+		while (!hasSafetyFile && retry-->0) {
+			try {
+				// add this for safety when deleting simulators -
+				Io.stringToFile(simSafetyFile(), simId.toString());
+                hasSafetyFile=true;
+			} catch (Exception ex) {
+				Thread.sleep(1000);
+			}
+		}
+
 	}
 
 	void openMostRecentEvent(String actor, String transaction) {
@@ -467,12 +478,23 @@ public class SimDb {
 	 * @throws IOException
 	 * @throws ClassNotFoundException
 	 */
-	static public SimulatorConfig getSimulator(SimId simId) throws Exception {
+	public SimulatorConfig getSimulator(SimId simId) throws Exception {
 		SimulatorConfig config = null;
-		try {
-			config = GenericSimulatorFactory.loadSimulator(simId, true);
-		} catch (NoSimException e) { // cannot actually happen give parameters
+		boolean okIfNotExist = true;
+		int retry = 3;
+        // Sometimes loadSimulator returns Null even though there is valid simulator
+		while (config == null && retry-->0) {
+			try {
+				config = GenericSimulatorFactory.loadSimulator(simId, okIfNotExist);
+			} catch (Exception ex) {
+				Thread.sleep(1000);
+				logger.info("LoadSimulator retrying attempt..." + retry);
+			}
 		}
+
+		if (!okIfNotExist && retry==0 && config==null)
+			throw new Exception("Null config for " + simId.toString() + " even after retry attempts.");
+
 		return config;
 	}
 

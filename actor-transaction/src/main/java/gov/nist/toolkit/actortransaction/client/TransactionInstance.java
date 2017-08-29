@@ -42,4 +42,16 @@ public class TransactionInstance implements IsSerializable {
     public void setActorType(ActorType actorType) {
         this.actorType = actorType;
     }
+
+    public static TransactionInstance copy(TransactionInstance src) {
+       TransactionInstance ti = new TransactionInstance();
+       ti.simId = src.simId;
+       ti.messageId = src.messageId;
+       ti.labelInterpretedAsDate = src.labelInterpretedAsDate;
+       ti.trans = src.trans;
+       ti.nameInterpretedAsTransactionType = src.nameInterpretedAsTransactionType;
+       ti.actorType = src.actorType;
+       ti.ipAddress = src.ipAddress;
+       return ti;
+    }
 }

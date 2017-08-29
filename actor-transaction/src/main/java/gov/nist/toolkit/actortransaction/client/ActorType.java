@@ -1,6 +1,7 @@
 package gov.nist.toolkit.actortransaction.client;
 
 import com.google.gwt.user.client.rpc.IsSerializable;
+import gov.nist.toolkit.actortransaction.server.ProxyTransform;
 import gov.nist.toolkit.configDatatypes.client.TransactionType;
 
 import java.io.Serializable;
@@ -48,6 +49,8 @@ public enum ActorType implements IsSerializable, Serializable {
             false,
             null,
             null,
+            null,
+            false,
             null
     ),
     REGISTRY_MPQ(
@@ -376,7 +379,9 @@ public enum ActorType implements IsSerializable, Serializable {
             true,
             null,
             "gov.nist.toolkit.simulators.sim.ids.IdsHttpActorSimulator",
-            Arrays.asList(TransactionType.WADO_RETRIEVE)  
+            Arrays.asList(TransactionType.WADO_RETRIEVE),
+            false,
+            null
         ),
     IMAGING_DOC_CONSUMER(
             "Imaging Document Consumer",
@@ -437,10 +442,12 @@ public enum ActorType implements IsSerializable, Serializable {
     List<TransactionType> httpTransactionTypes;
     String httpSimulatorClassName;
     boolean isFhir;
+    List<String> proxyTransformClassNames;
 
     ActorType() {
     } // for GWT
 
+    // Basic constructor for "older" simulator types
     ActorType(String name, List<String> altNames, String shortName, String simulatorFactoryName, String simulatorClassName, List<TransactionType> tt, boolean showInConfig, String actorsFileLabel, boolean isFhir) {
         this.name = name;
         this.altNames = altNames;
@@ -454,15 +461,20 @@ public enum ActorType implements IsSerializable, Serializable {
         this.httpSimulatorClassName = null;
         this.isFhir = isFhir;
     }
-    
+
+    // All growth happens here
     ActorType(String name, List<String> altNames, String shortName, String simulatorFactoryName,
-       String simulatorClassName, List<TransactionType> tt, boolean showInConfig, 
-       String actorsFileLabel, String httpSimulatorClassName, List<TransactionType> httpTt) {
+       String simulatorClassName, List<TransactionType> tt, boolean showInConfig,
+       String actorsFileLabel, String httpSimulatorClassName, List<TransactionType> httpTt,
+              boolean isFhir,
+              List<String> proxyTransformClassNames) {
        this(name, altNames, shortName, simulatorFactoryName, simulatorClassName, tt, showInConfig, actorsFileLabel, false);
        if (httpTt == null)
            httpTt = new ArrayList<>();
        this.httpTransactionTypes = httpTt;
        this.httpSimulatorClassName = httpSimulatorClassName;
+       this.isFhir = isFhir;
+       this.proxyTransformClassNames = proxyTransformClassNames;
    }
 
    public boolean isFhir() { return isFhir; }
@@ -654,5 +666,9 @@ public enum ActorType implements IsSerializable, Serializable {
         } catch (Exception e) {
         }
         return false;
+    }
+
+    public List<String> getProxyTransformClassNames() {
+        return proxyTransformClassNames;
     }
 }
