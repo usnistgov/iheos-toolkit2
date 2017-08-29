@@ -1,6 +1,7 @@
 package gov.nist.toolkit.simProxy.server.proxy
 
 import gov.nist.toolkit.actortransaction.EndpointParser
+import gov.nist.toolkit.actortransaction.server.ProxyTransform
 import gov.nist.toolkit.configDatatypes.server.SimulatorProperties
 import gov.nist.toolkit.configDatatypes.client.TransactionType
 import gov.nist.toolkit.errorrecording.client.XdsErrorCode
@@ -102,7 +103,32 @@ class SimProxySimulator extends BaseActorSimulator {
 
         // Transformation goes here and alters outputHeaders and outputBody
 
+        String transformInHeader = outputHeaders
+        byte[] transformInBody = outputBody
 
+        common.actorType.proxyTransformClassNames?.each { String transformClassName ->
+            def instance = Class.forName(transformClassName).newInstance()
+            if (!(instance instanceof ProxyTransform)) {
+                def msg = "Proxy Transform named ${transformClassName} cannot be created."
+                Exception e = new XdsInternalException(msg)
+                common.getCommonErrorRecorder().err(XdsErrorCode.Code.NoCode, e)
+                throw e
+            }
+
+            ProxyTransform transform = (ProxyTransform) instance
+            transform.inputHeader = transformInHeader
+            transform.inputBody = transformInBody
+
+            transform.run()
+
+            // set up for next transform
+            transformInHeader = transform.outputHeader
+            transformInBody = transform.outputBody
+
+            // just in case this is the last transform
+            outputHeaders = transform.outputHeader
+            outputBody = transform.outputBody
+        }
 
         // end of transformation
 
