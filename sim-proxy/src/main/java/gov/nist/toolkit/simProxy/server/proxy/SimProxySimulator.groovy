@@ -107,12 +107,14 @@ class SimProxySimulator extends BaseActorSimulator {
         byte[] transformInBody = outputBody
 
         common.actorType.proxyTransformClassNames?.each { String transformClassName ->
-            def instance = Class.forName(transformClassName).newInstance()
-            if (!(instance instanceof ProxyTransform)) {
-                def msg = "Proxy Transform named ${transformClassName} cannot be created."
-                Exception e = new XdsInternalException(msg)
-                common.getCommonErrorRecorder().err(XdsErrorCode.Code.NoCode, e)
-                throw e
+            if (transformClassName) {
+                def instance = Class.forName(transformClassName).newInstance()
+                if (!(instance instanceof ProxyTransform)) {
+                    def msg = "Proxy Transform named ${transformClassName} cannot be created."
+                    Exception e = new XdsInternalException(msg)
+                    common.getCommonErrorRecorder().err(XdsErrorCode.Code.NoCode, e)
+                    throw e
+                }
             }
 
             ProxyTransform transform = (ProxyTransform) instance

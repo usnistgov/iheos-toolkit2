@@ -1,15 +1,10 @@
 package gov.nist.toolkit.actortransaction.client;
 
 import com.google.gwt.user.client.rpc.IsSerializable;
-import gov.nist.toolkit.actortransaction.server.ProxyTransform;
 import gov.nist.toolkit.configDatatypes.client.TransactionType;
 
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 // This file must be kept up to date with SimulatorActorTypes.java
 
@@ -411,10 +406,13 @@ public enum ActorType implements IsSerializable, Serializable {
             "simproxy",
             "gov.nist.toolkit.simProxy.server.proxy.SimProxyFactory",
             "gov.nist.toolkit.simProxy.server.proxy.SimProxySimulator",
-            Arrays.asList(TransactionType.PIF),  // place holder
-            true,
-            null,
-            false
+            Arrays.asList(TransactionType.PIF),  // place holder - transaction types
+            true,  // show in config
+            null,  // actorsFileLabel
+            null,   // httpSimulatorClassName
+            null,    // http transaction types
+            false,    // is fhir
+            Arrays.asList("")   // proxy transform classes
     ),
     ANY(
             "Any",

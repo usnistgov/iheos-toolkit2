@@ -9,6 +9,9 @@ abstract class ProxyTransform {
     String outputHeader
     byte[] outputBody
 
+    /**
+     * takes inputHeader, inputBody and produces outputHeader, outputBody
+     */
     abstract void run()
 
 }
