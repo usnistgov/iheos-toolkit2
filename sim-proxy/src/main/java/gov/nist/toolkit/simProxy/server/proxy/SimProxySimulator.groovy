@@ -16,7 +16,8 @@ import org.apache.log4j.Logger
 
 import javax.servlet.http.HttpServletResponse
 /**
- *
+ * Gazelle has good example of terminology and display at
+ * https://gazelle.ihe.net/proxy/messages/http.seam?id=1808249&conversationId=35
  */
 class SimProxySimulator extends BaseActorSimulator {
     private static Logger logger = Logger.getLogger(SimProxySimulator.class)
