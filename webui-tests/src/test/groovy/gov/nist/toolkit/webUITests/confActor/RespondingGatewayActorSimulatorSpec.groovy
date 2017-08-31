@@ -126,7 +126,7 @@ class RespondingGatewayActorSimulatorSpec extends ConformanceActor {
         page.asText().contains("Initialization Complete")
 
         when:
-        List<HtmlDivision> elementList = page.getByXPath("//div[contains(@class, 'orchestrationTest') and contains(@class, 'testOverviewHeaderFail')]")  // Substring match, other CSS class must not contain this string.
+        List<HtmlDivision> elementList = page.getByXPath("//div[contains(@class, 'orchestrationTestMc') and contains(@class, 'testOverviewHeaderFail')]")  // Substring match, other CSS class must not contain this string.
         // Use this for order dependent selection: "//div[@class='testOverviewHeaderFail orchestrationTest']"
 
         /*
@@ -139,13 +139,13 @@ class RespondingGatewayActorSimulatorSpec extends ConformanceActor {
         elementList!=null && elementList.size()==0
 
         when:
-        elementList = page.getByXPath("//div[contains(@class, 'orchestrationTest') and contains(@class, 'testOverviewHeaderNotRun')]")
+        elementList = page.getByXPath("//div[contains(@class, 'orchestrationTestMc') and contains(@class, 'testOverviewHeaderNotRun')]")
 
         then:
         elementList!=null && elementList.size()==0
 
         when:
-        elementList = page.getByXPath("//div[contains(@class, 'orchestrationTest') and contains(@class, 'testOverviewHeaderSuccess')]")
+        elementList = page.getByXPath("//div[contains(@class, 'orchestrationTestMc') and contains(@class, 'testOverviewHeaderSuccess')]")
 
         then:
         elementList!=null && elementList.size()==2

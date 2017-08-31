@@ -82,7 +82,8 @@ public class PopupMessage  extends DialogBox {
 		// DialogBox is a SimplePanel, so you have to set its widget property to
 		// whatever you want its contents to be.
 
-		Widget ok = getOkBtn("<b>Ok</b>"); // This is bolded to indicate this singleOption can be dismissed by the Enter Key event
+		Widget ok = getOkBtn("Ok"); // This is bolded to indicate this singleOption can be dismissed by the Enter Key event
+        ok.addStyleName("bold-face");
 
 		VerticalPanel verticalPanel = new VerticalPanel();
 		if (content!=null)

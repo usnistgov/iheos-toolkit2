@@ -1,18 +1,6 @@
 package gov.nist.toolkit.webUITests.confActor
 
-import com.gargoylesoftware.htmlunit.AjaxController
-import com.gargoylesoftware.htmlunit.BrowserVersion
-import com.gargoylesoftware.htmlunit.WebClient
-import com.gargoylesoftware.htmlunit.WebRequest
-import com.gargoylesoftware.htmlunit.html.HtmlAnchor
-import com.gargoylesoftware.htmlunit.html.HtmlButton
-import com.gargoylesoftware.htmlunit.html.HtmlDivision
-import com.gargoylesoftware.htmlunit.html.HtmlOption
-import com.gargoylesoftware.htmlunit.html.HtmlPage
-import com.gargoylesoftware.htmlunit.html.HtmlSelect
-import gov.nist.toolkit.toolkitApi.SimulatorBuilder
-import spock.lang.Shared
-import spock.lang.Specification
+import com.gargoylesoftware.htmlunit.html.*
 import spock.lang.Stepwise
 import spock.lang.Timeout
 /**
@@ -20,24 +8,12 @@ import spock.lang.Timeout
  */
 @Stepwise
 @Timeout(120)
-abstract class ConformanceActor extends Specification implements ConformanceActorSimulatorIntf {
-    @Shared WebClient webClient
-    @Shared HtmlPage page
-    @Shared int toolkitPort = 8888
-    @Shared String toolkitHostName = "http://localhost"
-    @Shared String toolkitBaseUrl
-    @Shared SimulatorBuilder spi
+abstract class ConformanceActor extends ToolkitWebPage {
 
-    static final int maxWaitTimeInMills = 60000*5 // 5 minutes
-
-    void composeToolkitBaseUrl() {
-        this.toolkitBaseUrl = String.format("%s:%s", toolkitHostName, toolkitPort)
-    }
-
+    abstract void setupSim()
+    abstract String getSimId()
 
     def setupSpec() {
-        composeToolkitBaseUrl()
-        setupSpi()
         setupSim()
     }
     def cleanupSpec() {
@@ -47,38 +23,7 @@ abstract class ConformanceActor extends Specification implements ConformanceActo
     def cleanup() {
     }
 
-    void loadPage(String url) {
-
-        if (webClient!=null) webClient.close()
-
-        webClient = new WebClient(BrowserVersion.FIREFOX_52)
-
-        // 1. Load the Simulator Manager tool page
-        page = webClient.getPage(url)
-        webClient.getOptions().setJavaScriptEnabled(true)
-        webClient.getOptions().setTimeout(maxWaitTimeInMills)
-        webClient.setJavaScriptTimeout(maxWaitTimeInMills)
-        webClient.waitForBackgroundJavaScript(maxWaitTimeInMills)
-        webClient.getOptions().setPopupBlockerEnabled(false)
-
-        webClient.getCache().clear();
-        webClient.setAjaxController(new AjaxController(){
-            @Override
-            public boolean processSynchron(HtmlPage page, WebRequest request, boolean async)
-            {
-                return true;
-            }
-        });
-        webClient.waitForBackgroundJavaScript(maxWaitTimeInMills)
-    }
-
-    void setupSpi() {
-        spi = new SimulatorBuilder(getToolkitBaseUrl())
-    }
-
-
-
-    def 'Check if Simulators page contains the newly created Rep actor sim.'() {
+    def 'Check if Simulators page contains the newly created actor sim.'() {
         when:
         loadPage(String.format("%s/#Tool:Simulators",toolkitBaseUrl))
 
@@ -138,7 +83,7 @@ abstract class ConformanceActor extends Specification implements ConformanceActo
 
     def 'Select the newly created sim.'() {
         when:
-        List<HtmlSelect> selectList = page.getByXPath("//select[contains(@class, 'gwt-ListBox') and contains(@class, 'confActorSutSelector')]")  // Substring match, other CSS class must not contain this string.
+        List<HtmlSelect> selectList = page.getByXPath("//select[contains(@class, 'gwt-ListBox') and contains(@class, 'confActorSutSelectorMc')]")  // Substring match. No other CSS class must contain this string.
 
         then:
         selectList!=null && selectList.size()==1 // Should be only one

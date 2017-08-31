@@ -15,6 +15,10 @@
     <dependencies>
         <dependency>
             <groupId>gov.nist.toolkit</groupId>
+            <artifactId>actor-transaction</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>gov.nist.toolkit</groupId>
             <artifactId>toolkit-api</artifactId>
         </dependency>
         <dependency>
@@ -50,16 +54,17 @@
                 <version>2.19.1</version>
                 <configuration>
                     <!-- debug individual tests -->
-                    <!--<includes>-->
+                    <includes>
                         <!--<include>**/RegistryActorSimulatorSpec.java</include>-->
                         <!--<include>**/RepositoryActorSimulatorSpec.java</include>-->
                         <!--<include>**/RecipientActorSimulatorSpec.java</include>-->
                         <!--<include>**/RespondingGatewayActorSimulatorSpec.java</include>-->
-                    <!--</includes>-->
-                    <!-- Run all tests -->
-                    <includes>
-                        <include>**/*ActorSimulatorSpec.java</include>
+                        <include>**/SimulatorManagerSpec.java</include>
                     </includes>
+                    <!-- Run all tests -->
+                    <!--<includes>-->
+                        <!--<include>**/*ActorSimulatorSpec.java</include>-->
+                    <!--</includes>-->
                     <!-- We should NOT ignore test failures. TestFailureIgnore should be false. -->
                     <testFailureIgnore>false</testFailureIgnore>
                 </configuration>

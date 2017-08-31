@@ -280,11 +280,13 @@ h3 {
   width: 20px; height: 20px;
 }
 
-.orchestrationTest {/* Marker class */}
-
-.confActorSutSelector {/* Marker class */}
-
-.SupportingEnvironmentConfiguration {/*Marker class*/}
+.orchestrationTestMc {/* Marker class */}
+.confActorSutSelectorMc {/* Marker class */}
+.supportingEnvironmentConfigurationMc {/*Marker class*/}
+.testSessionSelectorMc {/* Marker class */}
+.testSessionInputMc {/*Marker class */}
+.selectActorTypeMc {/*Marker class */}
+.simulatorIdInputMc {/* Marker class */}
 
 .orchestrationOption {
   margin-bottom: 7px;

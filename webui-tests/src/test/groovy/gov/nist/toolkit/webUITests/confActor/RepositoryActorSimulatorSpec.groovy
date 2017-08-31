@@ -132,7 +132,7 @@ class RepositoryActorSimulatorSpec extends ConformanceActor {
         // However, we need to pick up the Supporting Environment Configuration and plug it in to the Repository Sim Config.
 
         when:
-        List<HtmlTable> tableList = page.getByXPath("//table[contains(@class,'SupportingEnvironmentConfiguration')]")
+        List<HtmlTable> tableList = page.getByXPath("//table[contains(@class,'supportingEnvironmentConfigurationMc')]")
 
         then:
         tableList!=null && tableList.size()==1

@@ -97,9 +97,13 @@ public class SimulatorControlTab extends GenericQueryTab {
 
         HorizontalPanel actorSelectPanel = new HorizontalPanel();
         actorSelectPanel.add(HtmlMarkup.html("Select actor type"));
+        actorSelectListBox.removeStyleName("selectActorTypeMc");
+        actorSelectListBox.addStyleName("selectActorTypeMc");
         actorSelectPanel.add(actorSelectListBox);
         loadActorSelectListBox();
 
+        newSimIdTextBox.removeStyleName("simulatorIdInputMc");
+        newSimIdTextBox.addStyleName("simulatorIdInputMc");
         final CreateButtonClickHandler createButtonClickHandler = new CreateButtonClickHandler(this, testSessionManager);
         newSimIdTextBox.addKeyUpHandler(new KeyUpHandler() {
             @Override
