@@ -1,6 +1,8 @@
 package gov.nist.toolkit.fhir.mhd
 
 import org.hl7.fhir.dstu3.model.Binary
+import org.hl7.fhir.dstu3.model.CodeableConcept
+import org.hl7.fhir.dstu3.model.Coding
 import org.hl7.fhir.dstu3.model.DocumentReference
 import org.hl7.fhir.dstu3.model.Identifier
 import org.hl7.fhir.dstu3.model.Patient
@@ -91,16 +93,6 @@ class MhdUtility {
         total == 0
     }
 
-    def 'is uuid test'() {
-        when:
-        def value = '3fdc72f4-a11d-4a9d-9260-a9f745779e1d'
-
-        then:
-        value[0] == '3'
-        hexChars.contains('7')
-        isUUID(value)
-    }
-
     def asUUID(String uuid) {
         if (uuid.startsWith('urn:uuid:')) return uuid
         return 'urn:uuid:' + uuid
@@ -112,7 +104,7 @@ class MhdUtility {
         return uuid
     }
 
-    def addTitle(builder, value) {
+    def addName(builder, value) {
         builder.Name() {
             LocalizedString(value: "${value}")
         }
@@ -141,12 +133,25 @@ class MhdUtility {
         }
     }
 
+    def addClassification(builder, scheme, id ,registryObject, value, codeScheme, displayName) {
+        builder.Classification(
+                classificationScheme: "${scheme}",
+                id: "${id}",
+                objectType: 'urn:oasis:names:tc:ebxml-regrep:ObjectType:RegistryObject:Classification',
+                nodeRepresentation: "${value}",
+                classifiedObject: "${registryObject}"
+        ) {
+            addName(builder, displayName)
+            addSlot(builder, 'codingScheme', [codeScheme])
+        }
+    }
+
     def addExtrinsicObject(builder, fullUrl, dr, bin) {
         String drId = asUUID(resourceIdFromUrl(fullUrl))
         builder.ExtrinsicObject(
                 id: drId,
                 objectType:'urn:uuid:7edca82f-054d-47f2-a032-9b2a5b5186c1',
-                mimeType: bin.contentType) {
+                mimeType: dr.content.attachment.contentType[0]) {
             // 20130701231133
             if (dr.indexed)
                 addSlot(builder, 'creationTime', [translateDateTime(dr.indexed)])
@@ -158,7 +163,7 @@ class MhdUtility {
                 addSlot(builder, 'serviceStopTime', [translateDateTime(dr.context.period.end)])
 
             if (dr.description)
-                addTitle(builder, dr.description)
+                addName(builder, dr.description)
 
             if (dr.masterIdentifier?.value)
                 addExternalIdentifier(builder, 'urn:uuid:2e82c1f6-a085-4c72-9da3-8640a32e42ab', unURN(dr.masterIdentifier.value), newId(), drId, 'XDSDocumentEntry.uniqueId')
@@ -177,6 +182,51 @@ class MhdUtility {
                 assert official
 
                 addExternalIdentifier(builder, 'urn:uuid:58a6f841-87b3-4a3e-92fd-a8ffeff98427', official.value, newId(), drId, 'XDSDocumentEntry.patientId')
+            }
+
+            if (dr.type) {
+                CodeableConcept cc = dr.type
+                assert cc.coding
+                Coding coding = cc.coding[0]
+                addClassification(builder, 'urn:uuid:f0306f51-975f-434e-a61c-c59651d33983', newId(), drId, coding.code, coding.system, coding.display)
+            }
+
+            if (dr.class_) {
+                CodeableConcept cc = dr.class_
+                assert cc.coding
+                Coding coding = cc.coding[0]
+                addClassification(builder, 'urn:uuid:41a5887f-8865-4c09-adf7-e362475b143a', newId(), drId, coding.code, coding.system, coding.display)
+            }
+
+            if (dr.content?.format) {
+//                CodeableConcept cc = dr.content.format
+//                assert cc.coding
+                List<Coding> codings = dr.content.format
+                Coding coding = codings[0]
+                addClassification(builder, 'urn:uuid:a09d5840-386c-46f2-b5ad-9c3699a4309d', newId(), drId, coding.code, coding.system, coding.display)
+            }
+
+            if (dr.context?.facilityType) {
+                CodeableConcept cc = dr.context.facilityType
+                if (cc.coding) {
+                    Coding coding = cc.coding[0]
+                    addClassification(builder, 'urn:uuid:f33fb8ac-18af-42cc-ae0e-ed0b0bdb91e1', newId(), drId, coding.code, coding.system, coding.display)
+                }
+            }
+
+            if (dr.context?.practiceSetting) {
+                CodeableConcept cc = dr.context.practiceSetting
+                assert cc.coding
+                Coding coding = cc.coding[0]
+                addClassification(builder, 'urn:uuid:cccf5598-8b07-4b77-a05e-ae952c785ead', newId(), drId, coding.code, coding.system, coding.display)
+            }
+
+            if (dr.context?.event) {
+                CodeableConcept cc = dr.format
+                assert cc.coding
+                cc.coding.each { Coding coding ->
+                    addClassification(builder, 'urn:uuid:2c6b8cb7-8b2a-4051-b291-b1ae6a575ef4', newId(), drId, coding.code, coding.system, coding.display)
+                }
             }
         }
     }

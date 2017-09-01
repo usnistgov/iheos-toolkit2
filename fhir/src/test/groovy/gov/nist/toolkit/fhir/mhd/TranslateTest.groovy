@@ -9,12 +9,23 @@ import spock.lang.Specification
  *
  */
 class TranslateTest extends Specification {
+    MhdUtility u = new MhdUtility()
 
     @Shared FhirContext ctx = FhirContext.forDstu3()
 
+    def 'is uuid test'() {
+        when:
+        def value = '3fdc72f4-a11d-4a9d-9260-a9f745779e1d'
+
+        then:
+        value[0] == '3'
+        u.hexChars.contains('7')
+        u.isUUID(value)
+    }
+
+
     def 'utilities test'() {
         when:
-        MhdUtility u = new MhdUtility()
         def fullUrl = 'http://localhost:80/fhir/Partient/A'
 
         then:
@@ -23,7 +34,6 @@ class TranslateTest extends Specification {
 
     def 'load test'() {
         setup:
-        MhdUtility u = new MhdUtility()
         def writer = new StringWriter()
         def xml = new MarkupBuilder(writer)
 
@@ -114,6 +124,9 @@ class TranslateTest extends Specification {
 
         ol.ExtrinsicObject[0].ExternalIdentifier.find {it.@identificationScheme == 'urn:uuid:2e82c1f6-a085-4c72-9da3-8640a32e42ab'}.@value == '129.6.58.92.88336'
         ol.ExtrinsicObject[0].ExternalIdentifier.find {it.@identificationScheme == 'urn:uuid:58a6f841-87b3-4a3e-92fd-a8ffeff98427'}.@value == 'MRN'
+
+        ol.ExtrinsicObject[0].Classification.find {it.@classificationScheme == 'urn:uuid:f0306f51-975f-434e-a61c-c59651d33983'}.@nodeRepresentation == 'History and Physical'
+        ol.ExtrinsicObject[0].Classification.find {it.@classificationScheme == 'urn:uuid:41a5887f-8865-4c09-adf7-e362475b143a'}.@nodeRepresentation == '47039-3'
     }
 
 }
