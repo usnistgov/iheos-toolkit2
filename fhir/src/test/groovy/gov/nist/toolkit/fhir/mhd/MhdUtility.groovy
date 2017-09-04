@@ -1,29 +1,129 @@
 package gov.nist.toolkit.fhir.mhd
 
+import ca.uhn.fhir.context.FhirContext
+import groovy.xml.MarkupBuilder
 import org.hl7.fhir.dstu3.model.Binary
+import org.hl7.fhir.dstu3.model.Bundle
 import org.hl7.fhir.dstu3.model.CodeableConcept
 import org.hl7.fhir.dstu3.model.Coding
+import org.hl7.fhir.dstu3.model.DocumentManifest
 import org.hl7.fhir.dstu3.model.DocumentReference
 import org.hl7.fhir.dstu3.model.Identifier
 import org.hl7.fhir.dstu3.model.Patient
 import org.hl7.fhir.dstu3.model.Practitioner
+import org.hl7.fhir.dstu3.model.Resource
+import org.hl7.fhir.instance.model.api.IBaseResource
+import sun.net.ResourceManager
 
 import java.text.SimpleDateFormat
 
 /**
  *
  */
+
+// TODO - add hash
+// TODO - add languageCode
+// TODO - add legalAuthenticator
+// TODO - add sourcePatientInfo
+// TODO - add referenceIdList
+// TODO - add case where Patient not in bundle
+
 class MhdUtility {
+    FhirContext ctx = FhirContext.forDstu3()
+
     int newIdCounter = 1
 
-    Map<String, DocumentReference> docRefs = [:]   // index is fullUrl
-    Map<String, Binary> binaries = [:]
-    Map<String, Patient> patients = [:]
-    Map<String, Practitioner> practitioners = [:]
+    class ResourceMgr {
+        // Object is some Resource type
+        def resources = [:]
+
+        String toString() {
+            StringBuilder buf = new StringBuilder()
+
+            resources.each { url, resource ->
+                buf.append(url).append('   ').append(resource.class.name).append('\n')
+            }
+            buf
+        }
+
+        static resolveUrl(containingUrl, referenceUrl) {
+            if (isAbsolute(containingUrl) && isAbsolute(referenceUrl)) return referenceUrl
+            if (isAbsolute(containingUrl) && isRelative(referenceUrl)) return baseUrlFromUrl(containingUrl) + '/' + referenceUrl
+            if (isRelative(containingUrl) && isAbsolute(referenceUrl)) return referenceUrl
+            if (isRelative(containingUrl) && isRelative(referenceUrl)) return referenceUrl
+            assert false, 'Impossible'
+        }
+
+        Object getResource(referenceUrl) {
+            return resources[referenceUrl]
+        }
+
+        Object getResource(containingUrl, referenceUrl) {
+            def url = resolveUrl(containingUrl, referenceUrl)
+            if (url)
+                return resources[url]
+            return null
+        }
+
+        def addResource(url, resource) {
+            resources[url] = resource
+        }
+
+        /**
+         *
+         * @param type
+         * @return list of [url, Resource]
+         */
+        def getAllOfType(type) {
+            def all = []
+            resources.each { url, resource -> if (type == resource.class.simpleName) all.add([url, resource])}
+            all
+        }
+
+        /**
+         *
+         * @param containingUrl
+         * @param referenceUrl
+         * @return [url, Resource]
+         */
+        def resolveReference(String containingUrl, String referenceUrl) {
+            if (resources[referenceUrl]) return [referenceUrl, resources[referenceUrl]]
+            if (!MhdUtility.isAbsolute(containingUrl) && MhdUtility.isRelative(referenceUrl)) {
+                def x = resources.find {
+                    def key = it.key
+                    key.endsWith(referenceUrl)
+                }
+                if (x) return [x.key, x.value]
+            }
+            if (MhdUtility.isAbsolute(containingUrl) && MhdUtility.isRelative(referenceUrl)) {
+                def url = rebase(containingUrl, referenceUrl)
+                if (resources[url])
+                    return [url, resources[url]]
+            }
+            [null, null]
+        }
+    }
+
+    ResourceMgr rMgr = new ResourceMgr()
+
+//    Map<String, DocumentManifest> docMans = [:]
+//    Map<String, DocumentReference> docRefs = [:]   // index is fullUrl
+//    Map<String, Binary> binaries = [:]
+//    Map<String, Patient> patients = [:]
+//    Map<String, Practitioner> practitioners = [:]
+
+    def clear() {
+        rMgr = new ResourceMgr()
+//        docMans = [:]
+//        docRefs = [:]
+//        binaries = [:]
+//        patients = [:]
+//        practitioners = [:]
+    }
 
     def newId() { String.format("ID%02d", newIdCounter++) }
 
-    String translateDateTime(Date theDate) {
+    static String translateDateTime(Date theDate) {
         // TODO - hour is not right - don't know why
         SimpleDateFormat isoFormat = new SimpleDateFormat('yyyyMMddHHmmssSSS')
 //        isoFormat.setTimeZone(TimeZone.getTimeZone('America/New_York'))   // UTC
@@ -36,45 +136,54 @@ class MhdUtility {
         return utcTime
     }
 
-    def trimTrailingZeros(String input) {
+    static trimTrailingZeros(String input) {
         while (input.size() > 0 && input[input.size()-1] == '0') {
             input = input.substring(0, input.size()-1)
         }
         input
     }
 
-    Identifier getOfficial(List<Identifier> identifiers) {
+    static Identifier getOfficial(List<Identifier> identifiers) {
         if (identifiers.size() ==1) return identifiers[0]
         return identifiers.find { it.getUse() == Identifier.IdentifierUse.OFFICIAL }
     }
 
-    String resourceTypeFromUrl(String fullUrl) {
+    static boolean isUuidUrn(ref) {
+        ref.startsWith('urn:uuid') || ref.startsWith('urn:oid')
+    }
+
+    static String rebase(String containingUrl, String referenceUrl) {
+        baseUrlFromUrl(containingUrl) + '/' + referenceUrl
+    }
+
+    static String resourceTypeFromUrl(String fullUrl) {
         fullUrl.reverse().split('/')[1].reverse()
     }
 
-    String resourceIdFromUrl(String fullUrl) {
+    static String resourceIdFromUrl(String fullUrl) {
         fullUrl.reverse().split('/')[0].reverse()
     }
 
-    String relativeUrl(String fullUrl) {
+    static String relativeUrl(String fullUrl) {
         List<String> parts = fullUrl.split('/')
         [parts[parts.size() - 2], parts.size() - 1].join('/')
     }
 
-    String baseUrlFromUrl(String fullUrl) {
+
+    static String baseUrlFromUrl(String fullUrl) {
+        if (fullUrl.startsWith('urn')) return fullUrl
         List<String> parts = fullUrl.split('/')
         parts.remove(parts.size() - 1)
         parts.remove(parts.size() - 1)
         parts.join('/')
     }
 
-    boolean isRelative(String url) {
-        !url.startsWith('http')
+    static boolean isRelative( url) {
+        url && !url.startsWith('http') && url.split('/').size() ==2
     }
 
-    String buildFullUrl(String baseUrl, theUrl) {
-        if (!isRelative(theUrl)) return theUrl
-        return baseUrl + '/' + theUrl
+    static boolean isAbsolute(url) {
+        url.startsWith('http')
     }
 
     def hexChars = ('0'..'9') + ('a'..'f')
@@ -93,16 +202,22 @@ class MhdUtility {
         total == 0
     }
 
-    def asUUID(String uuid) {
+    static asUUID(String uuid) {
         if (uuid.startsWith('urn:uuid:')) return uuid
         return 'urn:uuid:' + uuid
     }
 
-    def unURN(String uuid) {
+    static unURN(String uuid) {
         if (uuid.startsWith('urn:uuid:')) return uuid.substring(9)
         if (uuid.startsWith('urn:oid:')) return uuid.substring(8)
         return uuid
     }
+
+    /**
+     * resolveUrl fullUrl for referenceUrl
+     * @param containingUrl - fullUrl of entry
+     * @param referenceUrl - reference found within containing
+     */
 
     def addName(builder, value) {
         builder.Name() {
@@ -146,12 +261,16 @@ class MhdUtility {
         }
     }
 
-    def addExtrinsicObject(builder, fullUrl, dr, bin) {
+
+    def addExtrinsicObject(builder, fullUrl, dr) {
         String drId = asUUID(resourceIdFromUrl(fullUrl))
+        assert dr.content
+        assert dr.content[0]
+        assert dr.content[0].attachment
         builder.ExtrinsicObject(
                 id: drId,
                 objectType:'urn:uuid:7edca82f-054d-47f2-a032-9b2a5b5186c1',
-                mimeType: dr.content.attachment.contentType[0]) {
+                mimeType: dr.content[0].attachment.contentType) {
             // 20130701231133
             if (dr.indexed)
                 addSlot(builder, 'creationTime', [translateDateTime(dr.indexed)])
@@ -170,11 +289,12 @@ class MhdUtility {
 
             if (dr.subject) {
                 org.hl7.fhir.dstu3.model.Reference subject = dr.subject
-                String ref = subject.getReference()
-                ref = buildFullUrl(baseUrlFromUrl(fullUrl), ref)
+                def ref1 = subject.getReference()
+                def (url, ref) = rMgr.resolveReference(fullUrl, ref1)
                 assert ref
+                assert ref instanceof Patient
 
-                Patient patient = patients[ref]
+                Patient patient = (Patient) ref
                 assert patient
 
                 List<Identifier> identifiers = patient.getIdentifier()
@@ -199,8 +319,6 @@ class MhdUtility {
             }
 
             if (dr.content?.format) {
-//                CodeableConcept cc = dr.content.format
-//                assert cc.coding
                 List<Coding> codings = dr.content.format
                 Coding coding = codings[0]
                 addClassification(builder, 'urn:uuid:a09d5840-386c-46f2-b5ad-9c3699a4309d', newId(), drId, coding.code, coding.system, coding.display)
@@ -229,6 +347,52 @@ class MhdUtility {
                 }
             }
         }
+    }
+
+    static addSubmissionSet(builder, fullUrl, dm) {
+        String dmId = asUUID(resourceIdFromUrl(fullUrl))
+        builder.RegistryPackage(
+                id: dmId,
+                objectType: ''
+        )
+    }
+
+    def loadBundle(IBaseResource bundle) {
+        assert bundle
+        assert bundle instanceof Bundle
+        assert bundle.type == Bundle.BundleType.TRANSACTION
+
+        bundle.getEntry().each { Bundle.BundleEntryComponent component ->
+            if (component.hasResource()) {
+                rMgr.addResource(component.fullUrl, component.getResource())
+            }
+        }
+    }
+
+    def translateBundle(def xml, IBaseResource bundle) {
+        loadBundle(bundle)
+
+        xml.RegistryObjectList(xmlns: 'urn:oasis:names:tc:ebxml-regrep:xsd:rim:3.0') {
+            rMgr.getAllOfType('DocumentManifest').each { url, resource ->
+                DocumentManifest dm = (DocumentManifest) resource
+                addSubmissionSet(xml, dm.getId(), dm)
+            }
+            rMgr.getAllOfType('DocumentReference').each { url, resource ->
+                DocumentReference dr = (DocumentReference) resource
+                def (ref, binary) = rMgr.resolveReference(url, dr.content[0].attachment.url)
+                assert binary instanceof Binary
+                addExtrinsicObject(xml, dr.getId(), dr)
+            }
+        }
+    }
+
+    String translateBundle(Bundle bundle) {
+        def writer = new StringWriter()
+        def xml = new MarkupBuilder(writer)
+
+        translateBundle(xml, bundle)
+
+        return writer.toString()
     }
 
 }
