@@ -17,13 +17,11 @@ class TranslateTest extends Specification {
         def value = '3fdc72f4-a11d-4a9d-9260-a9f745779e1d'
 
         then:
-        value[0] == '3'
-        u.hexChars.contains('7')
         u.isUUID(value)
     }
 
 
-    def 'utilities test'() {
+    def 'base from url'() {
         when:
         def fullUrl = 'http://localhost:80/fhir/Partient/A'
 
@@ -31,16 +29,12 @@ class TranslateTest extends Specification {
         'http://localhost:80/fhir' == u.baseUrlFromUrl(fullUrl)
     }
 
-    def 'in bundle reference' () {
-        setup:
+    def 'relative reference in bundle' () {
+        when:
         def bundle = ctx.newXmlParser().parseResource(getClass().getResource('/resources/docrefrelativebundle1.xml').text)
         u.loadBundle(bundle)
-        println u.rMgr
 
-        when:
-        def x = 1
-
-        then:
+        then: // only one Resource with relative url Patient/a2
         u.rMgr.resolveReference('urn:uuid:1', 'Patient/a2')[0] == 'http://localhost:9556/svc/fhir/Patient/a2'
     }
 
@@ -55,7 +49,7 @@ class TranslateTest extends Specification {
         u.translateBundle(xml, bundle)
 
         and:
-        DocumentReference dr = u.rMgr.getAllOfType('DocumentReference')[0][1]
+        DocumentReference dr = u.rMgr.getAllOfType('DocumentReference')[0][1]    // returns List of [url, Resource]
         def xmlText = writer.toString()
         println xmlText
         def ol = new XmlSlurper().parseText(xmlText)

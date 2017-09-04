@@ -19,7 +19,7 @@ class ResolveBundleReferenceTest extends Specification {
         def ref = 'http://example.com/fhir/Patient/3'
 
         when:
-        def resolve = u.rMgr.resolveUrl(full, ref)
+        def resolve = ResourceMgr.resolveUrl(full, ref)
 
         then:
         resolve == ref
@@ -69,7 +69,7 @@ class ResolveBundleReferenceTest extends Specification {
 
     def 'resolve reference' () {
         given:
-        MhdUtility.ResourceMgr rMgr = new MhdUtility.ResourceMgr()
+        ResourceMgr rMgr = new ResourceMgr()
         def fullUrl = 'http://example.com/fhir/Collection/6'
 
         when:
