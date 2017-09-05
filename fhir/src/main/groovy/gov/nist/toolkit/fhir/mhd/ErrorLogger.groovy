@@ -20,4 +20,10 @@ class ErrorLogger {
         log.each { buf.append(it.toString()).append('\n')}
         return buf.toString()
     }
+
+    def getError(int i) {
+        if (i < log.size())
+            return log[i]
+        return null
+    }
 }

@@ -7,7 +7,6 @@ import gov.nist.toolkit.xdsexception.ExceptionUtil
  *
  */
 abstract class AbstractError {
-    String reference
     String stackTrace
 
     AbstractError(ErrorLogger errorLogger) {
@@ -15,8 +14,5 @@ abstract class AbstractError {
         stackTrace = ExceptionUtil.here('Error detected here')
     }
 
-    String toString() {
-        getClass().simpleName + ': ' + reference + '\n' + stackTrace
-    }
 
 }

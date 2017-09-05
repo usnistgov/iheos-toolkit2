@@ -59,11 +59,15 @@ class ResourceMgr {
      * @param referenceUrl
      * @return [url, Resource]
      */
-    def resolveReference(String containingUrl, String referenceUrl) {
+    def resolveReference(String containingUrl, String referenceUrl, relativeReferenceOk) {
         if (resources[referenceUrl]) return [referenceUrl, resources[referenceUrl]]
+        def isRelativeReference = ResourceMgr.isRelative(referenceUrl)
+        def type = resourceTypeFromUrl(referenceUrl)
         if (!isAbsolute(containingUrl) && isRelative(referenceUrl)) {
             def x = resources.find {
                 def key = it.key
+                // for Patient, it must be absolute reference
+                if ('Patient' == type && isRelativeReference && !relativeReferenceOk) return false
                 key.endsWith(referenceUrl)
             }
             if (x) return [x.key, x.value]

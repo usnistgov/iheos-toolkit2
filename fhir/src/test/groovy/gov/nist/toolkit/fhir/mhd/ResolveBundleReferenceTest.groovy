@@ -84,8 +84,8 @@ class ResolveBundleReferenceTest extends Specification {
 //        rMgr.resolveReference(fullUrl, 'urn:oid:1.2.3')[1] == bob  // local ref
 //        rMgr.resolveReference(fullUrl, 'urn:oid:1.2.4')[1] == alice  // different local ref
 //        rMgr.resolveReference(fullUrl, 'http://example.com/fhir/Person/1')[1] == internal  // in bundle
-        rMgr.resolveReference(fullUrl, 'Person/1')[1] == internal    // should get 'adopted' by full url base
-        rMgr.resolveReference(fullUrl, 'http://example.com/fhir/Person/2')[1] == null  // not available from bundle
+        rMgr.resolveReference(fullUrl, 'Person/1', true)[1] == internal    // should get 'adopted' by full url base
+        rMgr.resolveReference(fullUrl, 'http://example.com/fhir/Person/2', true)[1] == null  // not available from bundle
     }
 
     def 'get all of type' () {

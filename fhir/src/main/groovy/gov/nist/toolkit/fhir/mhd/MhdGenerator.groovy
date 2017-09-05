@@ -40,6 +40,7 @@ class MhdGenerator {
 
     def clear() {
         rMgr = new ResourceMgr()
+        errorLogger = new ErrorLogger()
     }
 
     def newId() { String.format("ID%02d", newIdCounter++) }
@@ -304,14 +305,14 @@ class MhdGenerator {
      */
     def addSubject(builder, fullUrl, containingObjectId, scheme,  org.hl7.fhir.dstu3.model.Reference subject, attName) {
         def ref1 = subject.getReference()
-        def (url, ref) = rMgr.resolveReference(fullUrl, ref1)
+        def (url, ref) = rMgr.resolveReference(fullUrl, ref1, false)
         if (!ref) {
             // not available in bundle - try local cache next
             if (ResourceMgr.isAbsolute(ref1)) {
                 ref = resourceCacheMgr.getResource(ref1)
             }
             if (!ref) {
-                new ResourceNotAvailable(errorLogger, "Patient reference in ${fullUrl} : ${ref1} cannot be resolved")
+                new ResourceNotAvailable(errorLogger, fullUrl, ref1)
                 return
             }
         }
@@ -382,7 +383,7 @@ class MhdGenerator {
             }
             rMgr.getAllOfType('DocumentReference').each { url, resource ->
                 DocumentReference dr = (DocumentReference) resource
-                def (ref, binary) = rMgr.resolveReference(url, dr.content[0].attachment.url)
+                def (ref, binary) = rMgr.resolveReference(url, dr.content[0].attachment.url, true)
                 assert binary instanceof Binary
                 addExtrinsicObject(xml, dr.getId(), dr)
             }
