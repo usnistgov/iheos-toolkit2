@@ -10,17 +10,32 @@ class ResourceNotAvailable extends AbstractError {
     String referencedUrl
     String referencedResourceType
     String referencingUrl
+    String extra
+    String specref
 
     ResourceNotAvailable(ErrorLogger errorLogger, String referencingObjectUrl, String referencedUrl) {
+        this(errorLogger, referencingObjectUrl, referencedUrl, null, null)
+    }
+
+    ResourceNotAvailable(ErrorLogger errorLogger, String referencingObjectUrl, String referencedUrl, String extra, String specref) {
         super(errorLogger)
         this.referencedUrl = referencedUrl
         this.referencingUrl = referencingObjectUrl
+        this.extra = extra
+        this.specref = specref
         if (referencedUrl)
             referencedResourceType = ResourceMgr.resourceTypeFromUrl(referencedUrl)
     }
 
     String toString() {
-        "${referencedResourceType} reference in ${referencingUrl} : ${referencedUrl} cannot be resolved"
+        StringBuilder buf = new StringBuilder()
+        buf.append("${referencedResourceType} reference in ${referencingUrl} : ${referencedUrl} cannot be resolved")
+        if (extra)
+            buf.append('\n').append(extra)
+        if (specref)
+            buf.append('\nSee: ').append(specref)
+
+        return buf.toString()
     }
 
 }

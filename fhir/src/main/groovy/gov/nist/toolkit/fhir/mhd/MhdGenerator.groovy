@@ -312,7 +312,7 @@ class MhdGenerator {
                 ref = resourceCacheMgr.getResource(ref1)
             }
             if (!ref) {
-                new ResourceNotAvailable(errorLogger, fullUrl, ref1)
+                new ResourceNotAvailable(errorLogger, fullUrl, ref1, 'All DocumentReference.subject and DocumentManifest.subject values shall be\nReferences to FHIR Patient Resources identified by an absolute external reference (URL).', '3.65.4.1.2.2 Patient Identity')
                 return
             }
         }
