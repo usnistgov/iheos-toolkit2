@@ -33,7 +33,7 @@
         <text value="History and Physical"/>
     </type>
     <subject>
-        <reference value="Patient/xcda"/>
+        <reference value="http://localhost:8080/fhir/Patient/xcda"/>
     </subject>
     <created value="2004-12-25T23:50:50-05:00"/>
     <author>

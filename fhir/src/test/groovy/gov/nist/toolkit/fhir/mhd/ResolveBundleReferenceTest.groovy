@@ -11,7 +11,7 @@ import spock.lang.Specification
  * When looking at reference, entry.fullUrl is documented as the base URL
  */
 class ResolveBundleReferenceTest extends Specification {
-    @Shared MhdUtility u = new MhdUtility()
+    @Shared MhdGenerator u = new MhdGenerator()
 
     def 'absolute absolute' () {
         given:

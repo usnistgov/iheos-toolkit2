@@ -38,7 +38,7 @@
                     </coding>
                 </class>
                 <subject>
-                    <reference value="Patient/a2"/>
+                    <reference value="http://localhost:8080/fhir/Patient/a2"/>
                 </subject>
                 <created value="2005-12-24"/>
                 <indexed value="2013-07-01T23:11:33+10:00"/>
@@ -87,39 +87,39 @@
             <url value="DocumentReference"/>
         </request>
     </entry>
-    <entry>
-        <fullUrl value="http://localhost:9556/svc/fhir/Patient/a2"/>
-        <resource>
-            <!--    if the server can find a matching resource, use that, else create a new
-            resource with these details    -->
-            <Patient>
-                <id value="a2"/>
-                <meta>
-                    <lastUpdated value="2013-07-01T13:11:33Z"/>
-                </meta>
-                <text>
-                    <status value="generated"/>
-                    <div xmlns="http://www.w3.org/1999/xhtml">Person DOE, John, M, dob: 27/05/1956</div>
-                </text>
-                <identifier>
-                    <use value="usual"/>
-                    <value value="MRN"/>
-                </identifier>
-                <name>
-                    <use value="usual"/>
-                    <text value="DOE, John"/>
-                    <family value="Doe"/>
-                    <given value="John"/>
-                </name>
-                <birthDate value="1956-05-27"/>
-            </Patient>
-        </resource>
-        <request>
-            <method value="POST"/>
-            <url value="Patient"/>
-            <ifNoneExist value="Patient?identifier=http://acme.org/xds/patients!89765a87b"/>
-        </request>
-    </entry>
+    <!--<entry>-->
+        <!--<fullUrl value="http://localhost:9556/svc/fhir/Patient/a2"/>-->
+        <!--<resource>-->
+            <!--&lt;!&ndash;    if the server can find a matching resource, use that, else create a new-->
+            <!--resource with these details    &ndash;&gt;-->
+            <!--<Patient>-->
+                <!--<id value="a2"/>-->
+                <!--<meta>-->
+                    <!--<lastUpdated value="2013-07-01T13:11:33Z"/>-->
+                <!--</meta>-->
+                <!--<text>-->
+                    <!--<status value="generated"/>-->
+                    <!--<div xmlns="http://www.w3.org/1999/xhtml">Person DOE, John, M, dob: 27/05/1956</div>-->
+                <!--</text>-->
+                <!--<identifier>-->
+                    <!--<use value="usual"/>-->
+                    <!--<value value="MRN"/>-->
+                <!--</identifier>-->
+                <!--<name>-->
+                    <!--<use value="usual"/>-->
+                    <!--<text value="DOE, John"/>-->
+                    <!--<family value="Doe"/>-->
+                    <!--<given value="John"/>-->
+                <!--</name>-->
+                <!--<birthDate value="1956-05-27"/>-->
+            <!--</Patient>-->
+        <!--</resource>-->
+        <!--<request>-->
+            <!--<method value="POST"/>-->
+            <!--<url value="Patient"/>-->
+            <!--<ifNoneExist value="Patient?identifier=http://acme.org/xds/patients!89765a87b"/>-->
+        <!--</request>-->
+    <!--</entry>-->
     <entry>
         <fullUrl value="http://localhost:9556/svc/fhir/Practitioner/a3"/>
         <resource>

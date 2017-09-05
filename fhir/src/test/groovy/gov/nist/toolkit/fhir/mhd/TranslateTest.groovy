@@ -1,6 +1,7 @@
 package gov.nist.toolkit.fhir.mhd
 
 import ca.uhn.fhir.context.FhirContext
+import gov.nist.toolkit.fhir.support.UnitTestResourceCacheFactory
 import groovy.xml.MarkupBuilder
 import org.hl7.fhir.dstu3.model.*
 import spock.lang.Shared
@@ -9,8 +10,9 @@ import spock.lang.Specification
  *
  */
 class TranslateTest extends Specification {
-    @Shared MhdUtility u = new MhdUtility()
-    @Shared FhirContext ctx = u.ctx
+    @Shared FhirContext ctx = ResourceCache.ctx
+    @Shared ResourceCacheMgr resourceCacheMgr = UnitTestResourceCacheFactory.getResourceCacheMgr()
+    @Shared MhdGenerator u = new MhdGenerator(resourceCacheMgr)
 
     def 'is uuid test'() {
         when:
@@ -26,7 +28,7 @@ class TranslateTest extends Specification {
         def fullUrl = 'http://localhost:80/fhir/Partient/A'
 
         then:
-        'http://localhost:80/fhir' == u.baseUrlFromUrl(fullUrl)
+        'http://localhost:80/fhir' == u.rMgr.baseUrlFromUrl(fullUrl)
     }
 
     def 'relative reference in bundle' () {
@@ -34,8 +36,23 @@ class TranslateTest extends Specification {
         def bundle = ctx.newXmlParser().parseResource(getClass().getResource('/resources/docrefrelativebundle1.xml').text)
         u.loadBundle(bundle)
 
-        then: // only one Resource with relative url Patient/a2
-        u.rMgr.resolveReference('urn:uuid:1', 'Patient/a2')[0] == 'http://localhost:9556/svc/fhir/Patient/a2'
+        then: // only one Resource with relative url Practitioner/a3
+        u.rMgr.resolveReference('urn:uuid:1', 'Practitioner/a3')[0] == 'http://localhost:9556/svc/fhir/Practitioner/a3'
+    }
+
+    def 'patient id from patient resource' () {
+        when:
+        ResourceCacheMgr cacheMgr = UnitTestResourceCacheFactory.getResourceCacheMgr()
+        def patient = cacheMgr.getResource('http://localhost:8080/fhir/Patient/a2')
+
+        then:
+        patient instanceof Patient
+
+        when:
+        def pid = u.cxiFromPatient(patient)
+
+        then:
+        pid == 'MRN^^^&1.2.3.4.5.6&ISO^urn:ihe:iti:xds:2013:accession'
     }
 
     def 'load docref with absolute ref to bin test'() {
@@ -92,6 +109,12 @@ class TranslateTest extends Specification {
         def ol = new XmlSlurper().parseText(xmlText)
 
         then:
+        println '================   Error Logger output  =================='
+        println u.errorLogger.asString()
+        println '=========================================================='
+
+        u.errorLogger.size() == 0
+
         u.rMgr.getAllOfType('DocumentReference').size() == 1
         u.rMgr.getAllOfType('Binary').size() == 1
 
@@ -110,6 +133,26 @@ class TranslateTest extends Specification {
 
         ol.ExtrinsicObject[0].Classification.find {it.@classificationScheme == 'urn:uuid:f0306f51-975f-434e-a61c-c59651d33983'}.@nodeRepresentation == 'History and Physical'
         ol.ExtrinsicObject[0].Classification.find {it.@classificationScheme == 'urn:uuid:41a5887f-8865-4c09-adf7-e362475b143a'}.@nodeRepresentation == '47039-3'
+
+    }
+
+    def 'load document manifest' () {
+        setup:
+        u.clear()
+        def writer = new StringWriter()
+        def xml = new MarkupBuilder(writer)
+        def resource = ctx.newXmlParser().parseResource(getClass().getResource('/resources/docman1.xml').text)
+
+        when:
+        u.translateResource(xml, resource)
+        def xmlText = writer.toString()
+        println xmlText
+        println '================   Error Logger output  =================='
+        println u.errorLogger.asString()
+        println '=========================================================='
+
+        then:
+        u.errorLogger.size() == 0
     }
 
 }
