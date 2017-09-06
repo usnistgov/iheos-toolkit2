@@ -14,11 +14,10 @@ import spock.lang.Timeout
 @Timeout(120)
 class RepositoryActorSimulatorSpec extends ConformanceActor {
 
-    static final String simName = "automatedwebuitestrep" /* Sim names should be lowered cased */
-    static final String simUser = "default"
+    static final String simName = "rep" /* Sim names should be lowered cased */
+    final String actorPage = String.format("%s/#ConfActor:default/%s/rep", toolkitBaseUrl, simUser)
 
     @Shared DocumentRepository repSim
-
 
     @Override
     void setupSim() {
@@ -46,7 +45,7 @@ class RepositoryActorSimulatorSpec extends ConformanceActor {
     // Repository actor specific
     def 'Get repository conformance actor page.'() {
         when:
-        loadPage(String.format("%s/#ConfActor:default/default/rep", toolkitBaseUrl))
+        loadPage(actorPage)
 
         then:
         page != null
@@ -132,7 +131,7 @@ class RepositoryActorSimulatorSpec extends ConformanceActor {
         // However, we need to pick up the Supporting Environment Configuration and plug it in to the Repository Sim Config.
 
         when:
-        List<HtmlTable> tableList = page.getByXPath("//table[contains(@class,'supportingEnvironmentConfigurationMc')]")
+        List<HtmlTable> tableList = page.getByXPath("//table[contains(@class,'SupportingEnvironmentConfiguration')]")
 
         then:
         tableList!=null && tableList.size()==1
@@ -179,7 +178,7 @@ class RepositoryActorSimulatorSpec extends ConformanceActor {
 
     def 'Get (again) repository conformance actor page.'() {
         when:
-        loadPage(String.format("%s/#ConfActor:default/default/rep",toolkitBaseUrl))
+        loadPage(actorPage)
 
         then:
         page != null

@@ -17,8 +17,7 @@ import spock.lang.Timeout
 @Timeout(120)
 class RegistryActorSimulatorSpec extends ConformanceActor {
 
-    static final String simName = "automatedwebuitestreg" /* Sim names should be lowered cased */
-    static final String simUser = "default"
+    static final String simName = "reg" /* Sim names should be lowered cased */
 
     @Shared DocumentRegRep regRepSim
 
@@ -47,10 +46,19 @@ class RegistryActorSimulatorSpec extends ConformanceActor {
     // Registry actor specific
     def 'Get registry conformance actor page.'() {
         when:
-        loadPage(String.format("%s/#ConfActor:default/default/reg",toolkitBaseUrl))
+        loadPage(String.format("%s/#ConfActor:default/%s/reg",toolkitBaseUrl,simUser))
 
         then:
         page != null
+    }
+
+    // Was there a previous SUT selected but doesn't exist now?
+    def 'No weird popup or error message presented in a dialog box.'() {
+        when:
+        List<HtmlDivision> elementList = page.getByXPath("//div[contains(@class,'gwt-DialogBox')]")
+
+        then:
+        elementList!=null && elementList.size()==0
     }
 
     def 'Check Conformance page loading status and its title.'() {

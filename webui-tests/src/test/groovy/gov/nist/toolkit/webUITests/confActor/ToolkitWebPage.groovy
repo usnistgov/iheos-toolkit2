@@ -22,6 +22,7 @@ abstract class ToolkitWebPage extends Specification  {
     @Shared String toolkitHostName = "http://localhost"
     @Shared String toolkitBaseUrl
     @Shared SimulatorBuilder spi
+    static final String simUser = "webuitest"
 
 
     static final int maxWaitTimeInMills = 60000*5 // 5 minutes
@@ -76,7 +77,7 @@ abstract class ToolkitWebPage extends Specification  {
         List<HtmlOption> optionsList = htmlSelect.getOptions()
         for (HtmlOption optionElement : optionsList) {
             if (optionValue == optionElement.getText().toLowerCase() && optionValue == optionElement.getValueAttribute().toLowerCase()) {
-                optionElement.setSelected(true)
+                page = optionElement.setSelected(true)
                 return optionElement
             }
         }
@@ -115,8 +116,8 @@ abstract class ToolkitWebPage extends Specification  {
             listHasOnlyOneItem(addButtonList)
 
             HtmlButton addButton = addButtonList.get(0)
-            addButton.click()
             webClient.waitForBackgroundJavaScript(1000)
+            page = addButton.click()
 
             selectOptionByValue(sessionSelector, sessionName)
         }

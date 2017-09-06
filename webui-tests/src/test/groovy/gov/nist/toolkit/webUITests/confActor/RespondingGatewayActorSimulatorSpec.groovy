@@ -16,9 +16,7 @@ import spock.lang.Timeout
 @Timeout(120)
 class RespondingGatewayActorSimulatorSpec extends ConformanceActor {
 
-    static final String simName = "automatedwebuitestrg" /* Sim names should be lowered cased */
-    static final String simUser = "default"
-
+    static final String simName = "rg" /* Sim names should be lowered cased */
 
     @Shared RespondingGateway rgSim
 
@@ -47,7 +45,7 @@ class RespondingGatewayActorSimulatorSpec extends ConformanceActor {
 
     def 'Get rg actor page.'() {
         when:
-        loadPage(String.format("%s/#ConfActor:default/default/rg", toolkitBaseUrl))
+        loadPage(String.format("%s/#ConfActor:default/%s/rg", toolkitBaseUrl, simUser))
 
         then:
         page != null

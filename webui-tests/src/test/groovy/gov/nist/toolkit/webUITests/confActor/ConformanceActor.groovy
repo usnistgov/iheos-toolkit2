@@ -23,11 +23,18 @@ abstract class ConformanceActor extends ToolkitWebPage {
     def cleanup() {
     }
 
-    def 'Check if Simulators page contains the newly created actor sim.'() {
+    def 'Select session.'() {
         when:
         loadPage(String.format("%s/#Tool:Simulators",toolkitBaseUrl))
+        HtmlOption newlySelectedSessionOption = useTestSession(simUser)
 
         then:
+        newlySelectedSessionOption !=null
+        newlySelectedSessionOption.isSelected()
+    }
+
+    def 'Check if Simulators page contains the newly created actor sim.'() {
+        expect:
         page.asText().contains("Simulator Manager") and page.asText().contains("Add new simulator to this test session")
         page.asText().contains(getSimId())
     }

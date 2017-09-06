@@ -54,17 +54,18 @@
                 <version>2.19.1</version>
                 <configuration>
                     <!-- debug individual tests -->
-                    <includes>
+                    <!--<includes>-->
+                        <!--<include>**/SimulatorManagerSpec.java</include>-->
                         <!--<include>**/RegistryActorSimulatorSpec.java</include>-->
                         <!--<include>**/RepositoryActorSimulatorSpec.java</include>-->
                         <!--<include>**/RecipientActorSimulatorSpec.java</include>-->
                         <!--<include>**/RespondingGatewayActorSimulatorSpec.java</include>-->
-                        <include>**/SimulatorManagerSpec.java</include>
-                    </includes>
-                    <!-- Run all tests -->
-                    <!--<includes>-->
-                        <!--<include>**/*ActorSimulatorSpec.java</include>-->
                     <!--</includes>-->
+                    <!-- Run all tests -->
+                    <includes>
+                        <include>**/SimulatorManagerSpec.java</include>
+                        <include>**/*ActorSimulatorSpec.java</include>
+                    </includes>
                     <!-- We should NOT ignore test failures. TestFailureIgnore should be false. -->
                     <testFailureIgnore>false</testFailureIgnore>
                 </configuration>

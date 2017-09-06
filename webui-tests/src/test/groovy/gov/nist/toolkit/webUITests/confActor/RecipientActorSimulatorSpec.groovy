@@ -17,9 +17,7 @@ import spock.lang.Timeout
 @Timeout(120)
 class RecipientActorSimulatorSpec extends ConformanceActor {
 
-    static final String simName = "automatedwebuitestrecip" /* Sim names should be lowered cased */
-    static final String simUser = "default"
-
+    static final String simName = "recip" /* Sim names should be lowered cased */
 
     @Shared DocumentRecipient recipSim
 
@@ -48,7 +46,7 @@ class RecipientActorSimulatorSpec extends ConformanceActor {
 
     def 'Get recipient actor page.'() {
         when:
-        loadPage(String.format("%s/#ConfActor:default/default/rec", toolkitBaseUrl))
+        loadPage(String.format("%s/#ConfActor:default/%s/rec", toolkitBaseUrl, simUser))
 
         then:
         page != null
