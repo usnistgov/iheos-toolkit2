@@ -8,7 +8,7 @@ import org.hl7.fhir.dstu3.model.DomainResource
 class ResourceMgr {
     // Object is some Resource type
     def resources = [:]
-    def temporaryResources = [:]
+    def containedResources = [:]
 
     String toString() {
         StringBuilder buf = new StringBuilder()
@@ -45,13 +45,18 @@ class ResourceMgr {
         resources[url] = resource
     }
 
-    def addTemporaryResource(resource) {
+    def addContainedResource(resource) {
         assert resource instanceof DomainResource
-        temporaryResources[resource.id] = resource
+        containedResources[resource.id] = resource
     }
 
-    def clearTemporaryResources() {
-        temporaryResources = [:]
+    def clearContainedResources() {
+        containedResources = [:]
+    }
+
+    def getContainedResource(id) {
+        assert id
+        return containedResources[id]
     }
 
     /**
@@ -71,9 +76,16 @@ class ResourceMgr {
      * @param referenceUrl
      * @return [url, Resource]
      */
-    def resolveReference(String containingUrl, String referenceUrl, relativeReferenceOk) {
+    def resolveReference(String containingUrl, String referenceUrl, relativeReferenceOk, relativeReferenceRequired) {
+        assert referenceUrl
+        if (relativeReferenceOk && referenceUrl.startsWith('#')) {
+            def res = getContainedResource(referenceUrl)
+            def val =  [referenceUrl, res]
+            return val
+        }
         if (resources[referenceUrl]) return [referenceUrl, resources[referenceUrl]]
         def isRelativeReference = ResourceMgr.isRelative(referenceUrl)
+        if (relativeReferenceRequired && !isRelativeReference) return [null, null]
         def type = resourceTypeFromUrl(referenceUrl)
         if (!isAbsolute(containingUrl) && isRelative(referenceUrl)) {
             def x = resources.find {
@@ -98,6 +110,7 @@ class ResourceMgr {
 
     static String resourceTypeFromUrl(String fullUrl) {
         assert fullUrl
+        if (fullUrl.startsWith('#')) return null
         fullUrl.reverse().split('/')[1].reverse()
     }
 
@@ -136,6 +149,16 @@ class ResourceMgr {
 
     static boolean isAbsolute(url) {
         url.startsWith('http')
+    }
+
+    /**
+     *
+     * @param id
+     * @return [Resource]
+     */
+    def resolveId(id) {
+        assert id
+        return resources.values().find { it.id == id }
     }
 
 }

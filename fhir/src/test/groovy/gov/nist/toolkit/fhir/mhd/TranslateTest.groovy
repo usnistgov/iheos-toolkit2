@@ -38,7 +38,7 @@ class TranslateTest extends Specification {
         u.loadBundle(bundle)
 
         then: // only one Resource with relative url Practitioner/a3
-        u.rMgr.resolveReference('urn:uuid:1', 'Practitioner/a3', true)[0] == 'http://localhost:9556/svc/fhir/Practitioner/a3'
+        u.rMgr.resolveReference('urn:uuid:1', 'Practitioner/a3', true, false)[0] == 'http://localhost:9556/svc/fhir/Practitioner/a3'
     }
 
     def 'patient id from patient resource' () {
@@ -84,7 +84,7 @@ class TranslateTest extends Specification {
         def bundle = ctx.newXmlParser().parseResource(getClass().getResource('/resources/docrefabsolutebundle1.xml').text)
 
         when:
-        u.translateBundle(xml, bundle)
+        u.translateBundle(xml, bundle, true)
 
         and:
         DocumentReference dr = u.rMgr.getAllOfType('DocumentReference')[0][1]    // returns List of [url, Resource]
@@ -121,7 +121,7 @@ class TranslateTest extends Specification {
         def bundle = ctx.newXmlParser().parseResource(getClass().getResource('/resources/docrefrelativebundle1.xml').text)
 
         when:
-        u.translateBundle(xml, bundle)
+        u.translateBundle(xml, bundle, true)
 
         and:
         DocumentReference dr = u.rMgr.getAllOfType('DocumentReference')[0][1]
@@ -142,7 +142,7 @@ class TranslateTest extends Specification {
         '20130701' == u.translateDateTime(dr.indexed).substring(0, 8)
 //        '20130701231133' == utcTime   // this tests for "wrong" hour
 
-        ol.ExtrinsicObject[0].@id == 'urn:uuid:3fdc72f4-a11d-4a9d-9260-a9f745779e1d'
+//        ol.ExtrinsicObject[0].@id == 'urn:uuid:3fdc72f4-a11d-4a9d-9260-a9f745779e1d'
         ol.ExtrinsicObject[0].@mimeType == 'text/plain'
 
         ol.ExtrinsicObject[0].Slot.find {it.@name == 'creationTime'}.ValueList.Value == u.translateDateTime(dr.indexed)
@@ -165,7 +165,7 @@ class TranslateTest extends Specification {
         def bundle = ctx.newXmlParser().parseResource(getClass().getResource('/resources/docrefpatientinbundle.xml').text)
 
         when:
-        u.translateBundle(xml, bundle)
+        u.translateBundle(xml, bundle, true)
 
         and:
         DocumentReference dr = u.rMgr.getAllOfType('DocumentReference')[0][1]
@@ -186,7 +186,7 @@ class TranslateTest extends Specification {
         '20130701' == u.translateDateTime(dr.indexed).substring(0, 8)
 //        '20130701231133' == utcTime   // this tests for "wrong" hour
 
-        ol.ExtrinsicObject[0].@id == 'urn:uuid:3fdc72f4-a11d-4a9d-9260-a9f745779e1d'
+//        ol.ExtrinsicObject[0].@id == 'urn:uuid:3fdc72f4-a11d-4a9d-9260-a9f745779e1d'
         ol.ExtrinsicObject[0].@mimeType == 'text/plain'
 
         ol.ExtrinsicObject[0].Slot.find {it.@name == 'creationTime'}.ValueList.Value == u.translateDateTime(dr.indexed)
@@ -209,7 +209,7 @@ class TranslateTest extends Specification {
         def bundle = ctx.newXmlParser().parseResource(getClass().getResource('/resources/docrefpatientrelinbundle.xml').text)
 
         when:
-        u.translateBundle(xml, bundle)
+        u.translateBundle(xml, bundle, true)
 
         and:
         DocumentReference dr = u.rMgr.getAllOfType('DocumentReference')[0][1]
@@ -237,6 +237,25 @@ class TranslateTest extends Specification {
 
         when:
         u.translateResource(xml, resource)
+        def xmlText = writer.toString()
+        println xmlText
+        println '================   Error Logger output  =================='
+        println u.errorLogger.asString()
+        println '=========================================================='
+
+        then:
+        u.errorLogger.size() == 0
+    }
+
+    def 'single doc submit' () {
+        setup:
+        u.clear()
+        def writer = new StringWriter()
+        def xml = new MarkupBuilder(writer)
+        def bundle = ctx.newXmlParser().parseResource(getClass().getResource('/resources/singledocsubmit.xml').text)
+
+        when:
+        u.translateBundle(xml, bundle, true)
         def xmlText = writer.toString()
         println xmlText
         println '================   Error Logger output  =================='
