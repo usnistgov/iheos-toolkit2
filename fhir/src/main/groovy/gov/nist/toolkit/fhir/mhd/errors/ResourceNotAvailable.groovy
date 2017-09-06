@@ -13,11 +13,11 @@ class ResourceNotAvailable extends AbstractError {
     String extra
     String specref
 
-    ResourceNotAvailable(ErrorLogger errorLogger, String referencingObjectUrl, String referencedUrl) {
+    ResourceNotAvailable(ErrorLogger errorLogger, referencingObjectUrl, referencedUrl) {
         this(errorLogger, referencingObjectUrl, referencedUrl, null, null)
     }
 
-    ResourceNotAvailable(ErrorLogger errorLogger, String referencingObjectUrl, String referencedUrl, String extra, String specref) {
+    ResourceNotAvailable(ErrorLogger errorLogger, referencingObjectUrl, referencedUrl, extra, specref) {
         super(errorLogger)
         this.referencedUrl = referencedUrl
         this.referencingUrl = referencingObjectUrl

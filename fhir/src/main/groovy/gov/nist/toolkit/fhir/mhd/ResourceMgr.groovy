@@ -1,11 +1,14 @@
 package gov.nist.toolkit.fhir.mhd
 
+import org.hl7.fhir.dstu3.model.DomainResource
+
 /**
  *
  */
 class ResourceMgr {
     // Object is some Resource type
     def resources = [:]
+    def temporaryResources = [:]
 
     String toString() {
         StringBuilder buf = new StringBuilder()
@@ -40,6 +43,15 @@ class ResourceMgr {
 
     def addResource(url, resource) {
         resources[url] = resource
+    }
+
+    def addTemporaryResource(resource) {
+        assert resource instanceof DomainResource
+        temporaryResources[resource.id] = resource
+    }
+
+    def clearTemporaryResources() {
+        temporaryResources = [:]
     }
 
     /**
@@ -85,6 +97,7 @@ class ResourceMgr {
     }
 
     static String resourceTypeFromUrl(String fullUrl) {
+        assert fullUrl
         fullUrl.reverse().split('/')[1].reverse()
     }
 

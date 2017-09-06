@@ -6,10 +6,14 @@ import org.hl7.fhir.dstu3.model.Binary
 import org.hl7.fhir.dstu3.model.Bundle
 import org.hl7.fhir.dstu3.model.CodeableConcept
 import org.hl7.fhir.dstu3.model.Coding
+import org.hl7.fhir.dstu3.model.Device
 import org.hl7.fhir.dstu3.model.DocumentManifest
 import org.hl7.fhir.dstu3.model.DocumentReference
+import org.hl7.fhir.dstu3.model.DomainResource
+import org.hl7.fhir.dstu3.model.Group
 import org.hl7.fhir.dstu3.model.Identifier
 import org.hl7.fhir.dstu3.model.Patient
+import org.hl7.fhir.dstu3.model.Practitioner
 import org.hl7.fhir.dstu3.model.Resource
 import org.hl7.fhir.dstu3.model.codesystems.DocumentReferenceStatus
 import org.hl7.fhir.instance.model.api.IBaseResource
@@ -251,20 +255,6 @@ class MhdGenerator {
 
             if (dr.subject) {
                 addSubject(builder, fullUrl, drId, 'urn:uuid:58a6f841-87b3-4a3e-92fd-a8ffeff98427', dr.subject, 'XDSDocumentEntry.patientId')
-//                org.hl7.fhir.dstu3.model.Reference subject = dr.subject
-//                def ref1 = subject.getReference()
-//                def (url, ref) = rMgr.resolveReference(fullUrl, ref1)
-//                assert ref
-//                assert ref instanceof Patient
-//
-//                Patient patient = (Patient) ref
-//                assert patient
-//
-//                List<Identifier> identifiers = patient.getIdentifier()
-//                Identifier official = getOfficial(identifiers)
-//                assert official
-//
-//                addExternalIdentifier(builder, 'urn:uuid:58a6f841-87b3-4a3e-92fd-a8ffeff98427', official.value, newId(), drId, 'XDSDocumentEntry.patientId')
             }
 
             if (dr.type)
@@ -274,10 +264,6 @@ class MhdGenerator {
                 addClassificationFromCodeableConcept(builder, dr.class_, 'urn:uuid:41a5887f-8865-4c09-adf7-e362475b143a', drId)
 
             if (dr.content?.format) {
-//                List<DocumentReference.DocumentReferenceContentComponent> components = dr.content
-//                DocumentReference.DocumentReferenceContentComponent aComponent = components[0]
-//                Coding theCoding = aComponent.format
-//                CodeableConcept cc = theCoding.
                 addClassificationFromCoding(builder, dr.content[0].format, 'urn:uuid:a09d5840-386c-46f2-b5ad-9c3699a4309d', drId)
             }
 
@@ -305,16 +291,10 @@ class MhdGenerator {
      */
     def addSubject(builder, fullUrl, containingObjectId, scheme,  org.hl7.fhir.dstu3.model.Reference subject, attName) {
         def ref1 = subject.getReference()
-        def (url, ref) = rMgr.resolveReference(fullUrl, ref1, false)
+        def (url, ref) = resolveReference(fullUrl, ref1, false)
         if (!ref) {
-            // not available in bundle - try local cache next
-            if (ResourceMgr.isAbsolute(ref1)) {
-                ref = resourceCacheMgr.getResource(ref1)
-            }
-            if (!ref) {
-                new ResourceNotAvailable(errorLogger, fullUrl, ref1, 'All DocumentReference.subject and DocumentManifest.subject values shall be\nReferences to FHIR Patient Resources identified by an absolute external reference (URL).', '3.65.4.1.2.2 Patient Identity')
-                return
-            }
+            new ResourceNotAvailable(errorLogger, fullUrl, ref1, 'All DocumentReference.subject and DocumentManifest.subject values shall be\nReferences to FHIR Patient Resources identified by an absolute external reference (URL).', '3.65.4.1.2.2 Patient Identity')
+            return
         }
         assert ref instanceof Patient
 
@@ -327,35 +307,52 @@ class MhdGenerator {
         addExternalIdentifier(builder, scheme, official.value, newId(), containingObjectId, attName)
     }
 
+    /**
+     *
+     * @param fullUrl
+     * @param reference
+     * @return [url, Resource]
+     */
+    def resolveReference(fullUrl, reference, relativeReferenceOk) {
+        def (url, ref) = rMgr.resolveReference(fullUrl, reference, relativeReferenceOk)
+        if (!ref) {
+            // not available in bundle - try local cache next
+            if (ResourceMgr.isAbsolute(reference)) {
+                ref = resourceCacheMgr.getResource(reference)
+            }
+        }
+        return [url, ref]
+    }
+
     def addSubmissionSet(builder, fullUrl, dm) {
         String dmId = getEntryUuidValue(fullUrl, dm.identifier)
         builder.RegistryPackage(
                 id: dmId,
                 objectType: 'urn:oasis:names:tc:ebxml-regrep:ObjectType:RegistryObject:RegistryPackage',
                 status: 'urn:oasis:names:tc:ebxml-regrep:StatusType:Approved') {
+
+            if (dm.recipient) {
+                def values = []
+                dm.recipient.each {
+                    String reference = it.reference
+                    def (url, resource) = resolveReference(fullUrl, reference, true)
+                    if (!resource) {
+                        new ResourceNotAvailable(errorLogger, fullUrl, reference)
+                        return // really continue
+                    }
+                    assert (resource instanceof Patient) || (resource instanceof Practitioner) || (resource instanceof Group) || (resource instanceof Device)
+                    // TODO - does this work if not a patient?
+                    assert resource instanceof Patient
+                    values << cxiFromPatient(resource)
+                }
+                addSlot(builder, 'intendedRecipient', values)
+            }
+
             if (dm.masterIdentifier?.value)
                 addExternalIdentifier(builder, 'urn:uuid:96fdda7c-d067-4183-912e-bf5ee74998a8', unURN(dm.masterIdentifier.value), newId(), dmId, 'XDSDocumentEntry.uniqueId')
 
-            if (dm.subject) {
+            if (dm.subject)
                 addSubject(builder, fullUrl, dmId, 'urn:uuid:6b5aea1a-874d-4603-a4bc-96a0a7b38446', dm.subject, 'XDSSubmissionSet.patientId')
-
-//                org.hl7.fhir.dstu3.model.Reference subject = dm.subject
-//                def ref1 = subject.getReference()
-//                def (url, ref) = rMgr.resolveReference(fullUrl, ref1)
-//                if (!ref) {
-//                    new ResourceNotAvailable(errorLogger, "Patient reference ${fullUrl} : ${ref1} cannot be resolved")
-//                }
-//                assert ref instanceof Patient
-//
-//                Patient patient = (Patient) ref
-//                assert patient
-//
-//                List<Identifier> identifiers = patient.getIdentifier()
-//                Identifier official = getOfficial(identifiers)
-//                assert official
-//
-//                addExternalIdentifier(builder, 'urn:uuid:58a6f841-87b3-4a3e-92fd-a8ffeff98427', official.value, newId(), drId, 'XDSDocumentEntry.patientId')
-            }
 
             addClassification(builder, 'urn:uuid:a54d6aa5-d40d-43f9-88c5-b4633d873bdd', newId(), dmId)
         }
@@ -378,10 +375,12 @@ class MhdGenerator {
 
         xml.RegistryObjectList(xmlns: 'urn:oasis:names:tc:ebxml-regrep:xsd:rim:3.0') {
             rMgr.getAllOfType('DocumentManifest').each { url, resource ->
+                loadContained(resource)
                 DocumentManifest dm = (DocumentManifest) resource
                 addSubmissionSet(xml, dm.getId(), dm)
             }
             rMgr.getAllOfType('DocumentReference').each { url, resource ->
+                loadContained(resource)
                 DocumentReference dr = (DocumentReference) resource
                 def (ref, binary) = rMgr.resolveReference(url, dr.content[0].attachment.url, true)
                 assert binary instanceof Binary
@@ -401,10 +400,20 @@ class MhdGenerator {
 
     def translateResource(def xml, Resource resource) {
         assert (resource instanceof DocumentManifest) || (resource instanceof DocumentReference)
+        loadContained(resource)
         if (resource instanceof DocumentManifest) {
             addSubmissionSet(xml, resource.getId(), resource)
         } else if (resource instanceof DocumentReference) {
             addExtrinsicObject(xml, resource.getId(), resource)
+        }
+    }
+
+    def loadContained(resource) {
+        rMgr.clearTemporaryResources()
+        assert resource instanceof DomainResource
+        def contained = resource.contained
+        contained?.each { Resource r ->
+            rMgr.addTemporaryResource(r)
         }
     }
 

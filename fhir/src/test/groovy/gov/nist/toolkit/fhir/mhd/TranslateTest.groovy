@@ -56,6 +56,26 @@ class TranslateTest extends Specification {
         pid == 'MRN^^^&1.2.3.4.5.6&ISO^urn:ihe:iti:xds:2013:accession'
     }
 
+    def 'slot test' () {
+        setup:
+        u.clear()
+        def writer = new StringWriter()
+        def xml = new MarkupBuilder(writer)
+
+        when:
+        u.addSlot(xml, 'myslot', ['value1', 'value2'])
+
+        and:
+        def xmlText = writer.toString()
+        def o = new XmlSlurper().parseText(xmlText)
+
+        then:
+        o.name() == 'Slot'
+        o.@name == 'myslot'
+        o.ValueList.Value[0] == 'value1'
+        o.ValueList.Value[1] == 'value2'
+    }
+
     def 'load docref with absolute ref to bin test'() {
         setup:
         u.clear()
