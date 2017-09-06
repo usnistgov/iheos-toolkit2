@@ -97,6 +97,7 @@ public class BuildIDCTestOrchestrationButton extends AbstractOrchestrationButton
    }
 
    public void orchestrate() {
+
        String msg = testContext.verifyTestContext();
        if (msg != null) {
            testContextView.launchDialog(msg);
@@ -104,6 +105,7 @@ public class BuildIDCTestOrchestrationButton extends AbstractOrchestrationButton
        }
 
       initializationResultsPanel.clear();
+       testTab.getMainView().showLoadingMessage("Initializing...");
       
       IdcOrchestrationRequest request = new IdcOrchestrationRequest();
       request.setUserName(testTab.getCurrentTestSession());

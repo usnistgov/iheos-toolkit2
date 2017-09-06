@@ -76,6 +76,7 @@ public class BuildRegTestOrchestrationButton extends AbstractOrchestrationButton
     }
 
     public void orchestrate() {
+        testTab.getMainView().showLoadingMessage("Initializing...");
         String msg = testContext.verifyTestContext();
         if (msg != null) {
             testContextView.launchDialog(msg);
@@ -83,6 +84,7 @@ public class BuildRegTestOrchestrationButton extends AbstractOrchestrationButton
         }
 
         initializationResultsPanel.clear();
+        testTab.getMainView().showLoadingMessage("Initializing...");
 
         RegOrchestrationRequest request = new RegOrchestrationRequest();
         request.selfTest(isSelfTest());

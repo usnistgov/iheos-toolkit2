@@ -36,7 +36,7 @@ public class ConformanceTestMainView {
         toolPanel.add(sitesPanel);
 
         HorizontalFlowPanel actorpanel = new HorizontalFlowPanel();
-        menuImage.getElement().getStyle().setMarginLeft(98, Style.Unit.PCT);
+        menuImage.getElement().getStyle().setMarginLeft(52, Style.Unit.PCT);
         menuImage.setAltText("Conformance Test Index");
         toolPanel.add(menuImage);
         HTML actorToTest = new HTML("Actor to test");

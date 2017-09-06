@@ -101,6 +101,7 @@ public class BuildIIGTestOrchestrationButton extends AbstractOrchestrationButton
       }
 
       initializationResultsPanel.clear();
+      testTab.getMainView().showLoadingMessage("Initializing...");
 
       IigOrchestrationRequest request = new IigOrchestrationRequest();
       request.setUserName(testTab.getCurrentTestSession());

@@ -101,6 +101,7 @@ public class BuildRIGTestOrchestrationButton extends AbstractOrchestrationButton
         }
 
         initializationResultsPanel.clear();
+        testTab.getMainView().showLoadingMessage("Initializing...");
 
         RigOrchestrationRequest request = new RigOrchestrationRequest();
         request.setUserName(testTab.getCurrentTestSession());

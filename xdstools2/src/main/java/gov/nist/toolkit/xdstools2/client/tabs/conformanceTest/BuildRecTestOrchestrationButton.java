@@ -53,6 +53,7 @@ public class BuildRecTestOrchestrationButton extends AbstractOrchestrationButton
         }
 
         initializationResultsPanel.clear();
+        testTab.getMainView().showLoadingMessage("Initializing...");
 
         RecOrchestrationRequest request = new RecOrchestrationRequest();
         request.setUserName(testTab.getCurrentTestSession());

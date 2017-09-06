@@ -280,9 +280,9 @@ h3 {
   width: 20px; height: 20px;
 }
 
+.SupportingEnvironmentConfiguration {/* This marker class was generated using the ConfActor Table title (and automatically assigned) in Conformance actor. */}
 .orchestrationTestMc {/* Marker class */}
 .confActorSutSelectorMc {/* Marker class */}
-.supportingEnvironmentConfigurationMc {/*Marker class*/}
 .testSessionSelectorMc {/* Marker class */}
 .testSessionInputMc {/*Marker class */}
 .selectActorTypeMc {/*Marker class */}

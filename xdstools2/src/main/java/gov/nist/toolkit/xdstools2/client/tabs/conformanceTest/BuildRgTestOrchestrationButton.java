@@ -135,6 +135,7 @@ public class BuildRgTestOrchestrationButton extends AbstractOrchestrationButton 
             return;
         }
 
+        testTab.getMainView().showLoadingMessage("Initializing...");
         RgOrchestrationRequest request = new RgOrchestrationRequest();
         request.setOnDemand(isOnDemand);  // much of the rest is ignored if this is true
         request.setUserName(testTab.getCurrentTestSession());

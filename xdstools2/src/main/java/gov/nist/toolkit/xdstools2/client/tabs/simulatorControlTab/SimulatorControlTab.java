@@ -34,8 +34,6 @@ import gov.nist.toolkit.xdstools2.client.command.command.GetNewSimulatorCommand;
 import gov.nist.toolkit.xdstools2.client.command.command.GetSimulatorStatsCommand;
 import gov.nist.toolkit.xdstools2.client.event.TabSelectedEvent;
 import gov.nist.toolkit.xdstools2.client.event.Xdstools2EventBus;
-import gov.nist.toolkit.xdstools2.client.event.testSession.TestSessionChangedEvent;
-import gov.nist.toolkit.xdstools2.client.event.testSession.TestSessionChangedEventHandler;
 import gov.nist.toolkit.xdstools2.client.siteActorManagers.BaseSiteActorManager;
 import gov.nist.toolkit.xdstools2.client.siteActorManagers.FindDocumentsSiteActorManager;
 import gov.nist.toolkit.xdstools2.client.tabs.genericQueryTab.GenericQueryTab;
@@ -81,6 +79,15 @@ public class SimulatorControlTab extends GenericQueryTab {
 	protected Widget buildUI() {
         simCtrlContainer = new FlowPanel();
         self = this;
+
+        ((Xdstools2EventBus) ClientUtils.INSTANCE.getEventBus()).addTabSelectedEventHandler(new TabSelectedEvent.TabSelectedEventHandler() {
+            @Override
+            public void onTabSelection(TabSelectedEvent event) {
+                if (event.getTabName().equals(tabName)){
+                    loadSimStatus();
+                }
+            }
+        });
 
         simConfigSuper = new SimConfigSuper(this, simConfigPanel, getCurrentTestSession());
 
@@ -191,21 +198,6 @@ public class SimulatorControlTab extends GenericQueryTab {
             }
         }.run(getCommandContext());
 
-        ClientUtils.INSTANCE.getEventBus().addHandler(TestSessionChangedEvent.TYPE, new TestSessionChangedEventHandler() {
-            @Override
-            public void onTestSessionChanged(TestSessionChangedEvent event) {
-                loadSimStatus(event.getValue());
-            }
-        });
-
-		((Xdstools2EventBus) ClientUtils.INSTANCE.getEventBus()).addTabSelectedEventHandler(new TabSelectedEvent.TabSelectedEventHandler() {
-			@Override
-			public void onTabSelection(TabSelectedEvent event) {
-				if (event.getTabName().equals(tabName)){
-					loadSimStatus();
-				}
-			}
-		});
 
 		loadSimStatus();
 	}
@@ -260,7 +252,7 @@ public class SimulatorControlTab extends GenericQueryTab {
         loadSimStatus(getCurrentTestSession());
     }
 
-    void loadSimStatus(String user)  {
+    void loadSimStatus(final String user)  {
         new GetAllSimConfigsCommand() {
 
             @Override
@@ -274,8 +266,8 @@ public class SimulatorControlTab extends GenericQueryTab {
                         @Override
                         public void onComplete(final List<SimulatorStats> simulatorStatses) {
 //                        buildTable(configs, simulatorStatses);
-
-                            simManagerWidget.popCellTable(configs, simulatorStatses);
+//                            Window.alert("Calling widget " + user);
+                            simManagerWidget.popCellTable(user, configs, simulatorStatses);
                             resizeSimMgrWidget(simConfigWrapperPanel, simManagerWidget);
 
                         }

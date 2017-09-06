@@ -52,6 +52,7 @@ class BuildRepTestOrchestrationButton extends AbstractOrchestrationButton {
         }
 
         initializationResultsPanel.clear();
+        testTab.getMainView().showLoadingMessage("Initializing...");
 
         RepOrchestrationRequest request = new RepOrchestrationRequest();
         SiteSpec sutSiteSpec = testContext.getSiteUnderTest().siteSpec();

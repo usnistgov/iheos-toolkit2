@@ -77,6 +77,7 @@ public class SimManagerWidget2 extends Composite {
     private ListDataProvider<SimInfo> dataProvider = new ListDataProvider<SimInfo>();
     private ListDataProvider<SimInfo> actionDataProvider = new ListDataProvider<SimInfo>();
     private SimInfo placeHolderSimInfo = new SimInfo();
+    private String testSession = "";
 
 
     private int rows;
@@ -153,12 +154,15 @@ public class SimManagerWidget2 extends Composite {
         initWidget(containerPanel);
     }
 
-    protected void popCellTable(List<SimulatorConfig> configs, List<SimulatorStats> statsList) {
+    protected void popCellTable(String testSession, List<SimulatorConfig> configs, List<SimulatorStats> statsList) {
         // Add the data to the data provider, which automatically pushes it to the
         // widget.
         final List<SimInfo> list = dataProvider.getList();
 
-        if (list!=null && configs!=null && list.size()!=configs.size()) {
+        boolean reload = (!this.testSession.equals(testSession)) ||  (list!=null && configs!=null && list.size()!=configs.size());
+//        Window.alert(" testSession: " + testSession + " reload " + reload);
+        if (reload) {
+            setTestSession(testSession);
             list.clear();
             rows = 0;
             int rowCt = 0;
@@ -1051,6 +1055,12 @@ public class SimManagerWidget2 extends Composite {
         }
     }
 
+    public String getTestSession() {
+        return testSession;
+    }
 
-
+    public void setTestSession(String testSession) {
+        if (testSession!=null)
+            this.testSession = testSession;
+    }
 }

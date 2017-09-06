@@ -149,12 +149,12 @@ public class ConformanceTestTab extends ToolWindowWithMenu implements TestRunner
 		});
 
 
-		// 1. TODO: get the tabConfig here {
+		// 1. Get the tabConfig here {
 		new GetTabConfigCommand() {
 			@Override
 			public void onComplete(TabConfig tabConfig) {
 				ConformanceTestTab.super.tabConfig = tabConfig;
-				// . TODO retrofit tab config into actoroptionmanager
+				// Retrofit tab config into actoroptionmanager
 
 
 
@@ -175,14 +175,20 @@ public class ConformanceTestTab extends ToolWindowWithMenu implements TestRunner
 			}
 		});
 
-		ClientUtils.INSTANCE.getEventBus().addHandler(TestContextChangedEvent.TYPE, new TestContextChangedEventHandler() {
-			@Override
-			public void onTestContextChanged(TestContextChangedEvent event) {
-				if (updateDisplayedActorAndOptionType()) { // . TODO check if currentactoroptin is properly set (ok if profile & option is null)
-					initializeTestDisplay(mainView.getTestsPanel());
+		// This is needed to only refresh the status index page
+//		if (false) {
+			ClientUtils.INSTANCE.getEventBus().addHandler(TestContextChangedEvent.TYPE, new TestContextChangedEventHandler() {
+				@Override
+				public void onTestContextChanged(TestContextChangedEvent event) {
+					if (getInitTestSession()==null) {
+						displayMenu(mainView.getTestsPanel());
+//						if (updateDisplayedActorAndOptionType()) { // . Check if currentactoroptin is properly set (ok if profile & option is null)
+//							initializeTestDisplay(mainView.getTestsPanel());
+//						}
+					}
 				}
-			}
-		});
+			});
+//		}
 
 	}
 
@@ -427,19 +433,20 @@ public class ConformanceTestTab extends ToolWindowWithMenu implements TestRunner
 		testStatistics.setTestCount(testcount);
 	}
 
-	// . TODO: show profiles
+	// . Show profiles
 	// actor type selection changes
 	private class ActorSelectionHandler implements SelectionHandler<Integer> {
 
 		@Override
 		public void onSelection(SelectionEvent<Integer> selectionEvent) {
-			// 3. TODO Draw out all actor tabs (profile & option)
+			// 3. Draw out all actor tabs (profile & option)
 			int i = selectionEvent.getSelectedItem();
 			String newActorTypeId = TestCollectionDefinitionDAO.getNonOption(testCollectionDefinitionDAOs).get(i).getCollectionID();
-			if (getInitTestSession()!=null || !newActorTypeId.equals(currentActorOption.actorTypeId)) {
+//			if (getInitTestSession()!=null || !newActorTypeId.equals(currentActorOption.actorTypeId)) {
 				orchestrationResponse = null;  // so we know orchestration not set up
 //				currentActorOption = new ActorOption(newActorTypeId);
 				currentActorOption.setActorTypeId(newActorTypeId);
+				currentActorOption.setOptionId("");
 				for (TabConfig tabConfig : ConformanceTestTab.super.tabConfig.getChildTabConfigs()) {
 					if (tabConfig.getTcCode().equals(newActorTypeId)) {
 						currentActorOption.setTabConfig(tabConfig);
@@ -452,7 +459,7 @@ public class ConformanceTestTab extends ToolWindowWithMenu implements TestRunner
 				mainView.getOptionsTabBar().clear();
 				mainView.getProfileTabBar().display(ConformanceTestTab.super.tabConfig, "Profiles", newActorTypeId);
 				selectProfileAndOptionTab();
-			}
+//			}
 		}
 	}
 
@@ -522,14 +529,12 @@ public class ConformanceTestTab extends ToolWindowWithMenu implements TestRunner
 		if (foundSelectedActorTab) {
 		    getMainView().getTestsPanel().clear();
 			getMainView().getActorTabBar().selectTab(idx, true);
-			// . TODO: set index in tab config
+			// . Set index in tab config
 //			Window.alert("" + getMainView().getProfileTabBar().tabConfigs.size() + " " + getMainView().getProfileTabBar().isVisible());
 
-			mainView.getProfileTabBar().clear();
-			mainView.getProfileTabBar().display(ConformanceTestTab.super.tabConfig, "Profiles", currentActorOption.getActorTypeId());
-			selectProfileAndOptionTab();
-
-
+//			mainView.getProfileTabBar().clear();
+//			mainView.getProfileTabBar().display(ConformanceTestTab.super.tabConfig, "Profiles", currentActorOption.getActorTypeId());
+//			selectProfileAndOptionTab();
 		}
 
 		return foundSelectedActorTab;
@@ -546,7 +551,7 @@ public class ConformanceTestTab extends ToolWindowWithMenu implements TestRunner
         }
 
 		if (currentActorOption.getProfileId()!=null) {
-            selectTab(currentActorOption.getProfileId(), profileTabBar);
+			selectTab(currentActorOption.getProfileId(), profileTabBar);
 
             mainView.getOptionsTabBar().clear();
             mainView.getOptionsTabBar().display(currentActorOption.getTabConfig(), "Options", currentActorOption.getProfileId());
@@ -608,7 +613,7 @@ public class ConformanceTestTab extends ToolWindowWithMenu implements TestRunner
 
 
 				displayActorsTabBar(mainView.getActorTabBar());
-				// 2. TODO Write the site map here
+				// 2. Write the site map here
 
 				if (getInitTestSession()==null) {
 
