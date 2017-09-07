@@ -228,6 +228,12 @@ public class Installation {
         return new File(externalCache(), "simdb");
     }
 
+    public File resourceCacheFile() {
+       File f = new File(externalCache(), "resourceCache");
+       f.mkdirs();
+       return f;
+   }
+
     public File fhirSimDbFile() {
         return new File(externalCache(), "resdb");
     }

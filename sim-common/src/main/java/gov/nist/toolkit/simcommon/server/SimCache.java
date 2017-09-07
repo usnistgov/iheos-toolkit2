@@ -43,11 +43,15 @@ public class SimCache {
     static public Site getSite(String sessionId, String siteName) {
         try {
             Sites sites = SiteServiceManager.getSiteServiceManager().getCommonSites();
-            return sites.getSite(siteName);
+            Site site = sites.getSite(siteName);
+            if (site != null) return site;
+            SimId simId = new SimId(siteName);
+            return SimManager.getSite(simId);
         } catch (Exception e) {
             try {
                 SimId simId = new SimId(siteName);
-                return SimManager.getSite(simId);
+                Site s = SimManager.getSite(simId);
+                return s;
             } catch (Exception e1) {
                 return null;
             }

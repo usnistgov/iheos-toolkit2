@@ -3,7 +3,7 @@ package gov.nist.toolkit.fhir.mhd
 import org.hl7.fhir.dstu3.model.Resource
 
 /**
- *
+ * build by a factory - either UnitTestResourceCacheFactory or ResourceCacheFactory
  */
 class ResourceCacheMgr {
     Map<String, ResourceCache> caches = [:]  // baseUrl -> cache

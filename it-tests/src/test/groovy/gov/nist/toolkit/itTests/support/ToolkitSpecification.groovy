@@ -12,12 +12,11 @@ import gov.nist.toolkit.services.server.UnitTestEnvironmentManager
 import gov.nist.toolkit.session.server.Session
 import gov.nist.toolkit.toolkitApi.SimulatorBuilder
 import gov.nist.toolkit.toolkitServicesCommon.SimId
+import org.apache.commons.io.FileUtils
 import org.junit.Rule
 import org.junit.rules.TestName
 import spock.lang.Shared
 import spock.lang.Specification
-import org.apache.commons.io.FileUtils
-
 /**
  *
  */
@@ -111,4 +110,5 @@ class ToolkitSpecification extends Specification {
         assert results.get(0).passed()
         return testLogs
     }
+
 }

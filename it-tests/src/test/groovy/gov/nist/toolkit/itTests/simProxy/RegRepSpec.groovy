@@ -14,9 +14,9 @@ import gov.nist.toolkit.toolkitApi.SimulatorBuilder
 import gov.nist.toolkit.toolkitServicesCommon.SimConfig
 import spock.lang.Shared
 /**
- *
+ * Test SimProxy without transformation as front end to RegRepSpec simulator
  */
-class RegRep extends ToolkitSpecification {
+class RegRepSpec extends ToolkitSpecification {
     @Shared SimulatorBuilder spi
 
 
@@ -83,16 +83,6 @@ class RegRep extends ToolkitSpecification {
     def setup() {
         println "EC is ${Installation.instance().externalCache().toString()}"
         println "${api.getSiteNames(true)}"
-//        api.createTestSession(testSession)
-//        if (!api.simulatorExists(simId)) {
-//            println "Creating sim ${simId}"
-//            api.createSimulator(ActorType.REGISTRY, simId)
-//        }
-//
-//        if (!api.simulatorExists(simProxyId)) {
-//            println "Creating sim ${simProxyId}"
-//            api.createSimulator(ActorType.SIM_PROXY, simProxyId)
-//        }
     }
 
     def 'send pnr through simproxy'() {

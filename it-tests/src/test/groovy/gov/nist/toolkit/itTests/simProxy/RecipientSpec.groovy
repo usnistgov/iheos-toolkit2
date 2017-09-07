@@ -16,7 +16,7 @@ import spock.lang.Shared
 /**
  *
  */
-class Recipient extends ToolkitSpecification {
+class RecipientSpec extends ToolkitSpecification {
     @Shared SimulatorBuilder spi
 
 

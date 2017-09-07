@@ -410,12 +410,6 @@ class MhdGenerator {
         }
     }
 
-    //**************************************************************************
-    //
-    // Entry points start here. Everything above could be labeled private later
-    //
-    //**************************************************************************
-
     def loadBundle(IBaseResource bundle) {
         assert bundle
         assert bundle instanceof Bundle
@@ -428,6 +422,13 @@ class MhdGenerator {
             }
         }
     }
+
+    //**************************************************************************
+    //
+    // Entry points start here. Everything above could be labeled private later
+    //
+    //**************************************************************************
+
 
     def translateBundle(def xml, IBaseResource bundle, isSubmission) {
         loadBundle(bundle)
@@ -474,5 +475,18 @@ class MhdGenerator {
         }
     }
 
+    Submission buildSubmission(Bundle bundle) {
+        Submission submission = new Submission()
+
+        submission.metadata = translateBundle(bundle, true)
+        rMgr.resources.values().findAll { it instanceOf Binary }.each { Binary b ->
+            Attachment a = new Attachment()
+            a.contentType = b.contentType
+            a.content = b.content
+            submission.attachments << a
+        }
+
+        return submission
+    }
 
 }

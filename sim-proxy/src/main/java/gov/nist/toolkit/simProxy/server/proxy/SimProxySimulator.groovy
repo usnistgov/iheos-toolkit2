@@ -1,7 +1,7 @@
 package gov.nist.toolkit.simProxy.server.proxy
 
 import gov.nist.toolkit.actortransaction.EndpointParser
-import gov.nist.toolkit.actortransaction.server.ProxyTransform
+import gov.nist.toolkit.actortransaction.server.AbstractProxyTransform
 import gov.nist.toolkit.configDatatypes.server.SimulatorProperties
 import gov.nist.toolkit.configDatatypes.client.TransactionType
 import gov.nist.toolkit.errorrecording.client.XdsErrorCode
@@ -9,6 +9,7 @@ import gov.nist.toolkit.simcommon.client.SimId
 import gov.nist.toolkit.simcommon.server.BaseActorSimulator
 import gov.nist.toolkit.simcommon.server.SimCache
 import gov.nist.toolkit.simcommon.server.SimDb
+import gov.nist.toolkit.simcommon.server.SimManager
 import gov.nist.toolkit.sitemanagement.client.Site
 import gov.nist.toolkit.valsupport.engine.MessageValidatorEngine
 import gov.nist.toolkit.xdsexception.client.XdsInternalException
@@ -24,7 +25,7 @@ class SimProxySimulator extends BaseActorSimulator {
     static List<TransactionType> transactions = TransactionType.asList()
 
     SimProxySimulator() {}
-    
+
     public boolean run(TransactionType transactionType, MessageValidatorEngine mvc, String validation) throws IOException {
         SimId simId2 = new SimId(config.getConfigEle(SimulatorProperties.proxyPartner).asString())
         String actor = db.actor
@@ -67,22 +68,18 @@ class SimProxySimulator extends BaseActorSimulator {
             common.getCommonErrorRecorder().err(XdsErrorCode.Code.NoCode, e)
             throw e
         }
-        Site site = SimCache.getSite(forwardSiteName)
+        Site site = findForwardSite(forwardSiteName)
         if (!site) {
             def msg = "Proxy configured to forward to System ${forwardSiteName} which does not exist"
             Exception e = new XdsInternalException(msg)
             common.getCommonErrorRecorder().err(XdsErrorCode.Code.NoCode, e)
             throw e
         }
-        String endpoint = site.getEndpoint(transactionType, false, false)
-        if (!endpoint) {
-            def msg = "Proxy configured to forward to System ${site} which is not configured for Transaction type ${transactionType}"
-            Exception e = new XdsInternalException(msg)
-            common.getCommonErrorRecorder().err(XdsErrorCode.Code.NoCode, e)
-            throw e
-        }
-        EndpointParser eparser = new EndpointParser(endpoint)
 
+        // find endpoint to forward message to
+        def (EndpointParser eparser, String endpoint) = lookupForwardEndpoint(site, transactionType)
+
+        // log host name that we are forwarding to
         db2.setClientIpAddess(eparser.host)
 
         StringBuilder outHeaders = new StringBuilder()
@@ -99,48 +96,20 @@ class SimProxySimulator extends BaseActorSimulator {
             }
         }
 
+
         String outputHeaders = outHeaders.toString()
         byte[] outputBody = db.getRequestMessageBody()
 
-        // Transformation goes here and alters outputHeaders and outputBody
+        def transformClassNames = common.actorType.proxyTransformClassNames
 
-        String transformInHeader = outputHeaders
-        byte[] transformInBody = outputBody
+        def (outHdrs, outBody, forwardTransactionType) = processTransformations(transformClassNames, outputHeaders, outputBody)
 
-        common.actorType.proxyTransformClassNames?.each { String transformClassName ->
-            if (transformClassName) {
-                def instance = Class.forName(transformClassName).newInstance()
-                if (!(instance instanceof ProxyTransform)) {
-                    def msg = "Proxy Transform named ${transformClassName} cannot be created."
-                    Exception e = new XdsInternalException(msg)
-                    common.getCommonErrorRecorder().err(XdsErrorCode.Code.NoCode, e)
-                    throw e
-                }
-            }
-
-            ProxyTransform transform = (ProxyTransform) instance
-            transform.inputHeader = transformInHeader
-            transform.inputBody = transformInBody
-
-            transform.run()
-
-            // set up for next transform
-            transformInHeader = transform.outputHeader
-            transformInBody = transform.outputBody
-
-            // just in case this is the last transform
-            outputHeaders = transform.outputHeader
-            outputBody = transform.outputBody
-        }
-
-        // end of transformation
+        db2.putRequestHeaderFile(outHdrs.bytes)
+        db2.putRequestBodyFile(outBody)
 
 
 
-        db2.putRequestHeaderFile(outputHeaders.bytes)
-        db2.putRequestBodyFile(outputBody)
-
-        post.getOutputStream().write(outputBody)
+        post.getOutputStream().write(outBody)
         def responseCode = post.getResponseCode()
 
         HttpServletResponse response = common.response
@@ -169,6 +138,71 @@ class SimProxySimulator extends BaseActorSimulator {
         }
 
         return false
+    }
+
+    private List lookupForwardEndpoint(Site site, TransactionType transactionType) {
+        String endpoint = null
+        try {
+            endpoint = site.getEndpoint(transactionType, false, false)
+        } catch (Exception e) {
+
+        }
+        if (!endpoint) {
+            def msg = "Proxy configured to forward to System ${site} which is not configured for Transaction type ${transactionType}"
+            Exception e = new XdsInternalException(msg)
+            common.getCommonErrorRecorder().err(XdsErrorCode.Code.NoCode, e)
+            throw e
+        }
+        EndpointParser eparser = new EndpointParser(endpoint)
+        [eparser, endpoint]
+    }
+
+    /**
+     *
+     * @param transformClassNames
+     * @param transformInHeader
+     * @param transformInBody
+     * @return [ outHeader, outBody, forwardTransactionType]
+     */
+    List processTransformations(transformClassNames, String transformInHeader, byte[] transformInBody) {
+        TransactionType forwardTransactionType = null
+
+        common.actorType.proxyTransformClassNames?.each { String transformClassName ->
+            assert transformClassName
+            def instance = Class.forName(transformClassName).newInstance()
+            if (!(instance instanceof AbstractProxyTransform)) {
+                def msg = "Proxy Transform named ${transformClassName} cannot be created."
+                Exception e = new XdsInternalException(msg)
+                common.getCommonErrorRecorder().err(XdsErrorCode.Code.NoCode, e)
+                throw e
+            }
+
+            AbstractProxyTransform transform = (AbstractProxyTransform) instance
+            transform.inputHeader = transformInHeader
+            transform.inputBody = transformInBody
+
+            TransactionType tt = transform.run()
+            if (tt) forwardTransactionType = tt
+
+            // set up for next transform
+            transformInHeader = transform.outputHeader
+            transformInBody = transform.outputBody
+        }
+        return [transformInHeader, transformInBody, forwardTransactionType]
+
+    }
+
+    Site findForwardSite(forwardSiteName) {
+        Site site = SimCache.getSite(forwardSiteName)
+        if (site) return site
+        // maybe site is a sim or even a FHIR sim
+        SimId simId = new SimId(forwardSiteName)
+        if (new SimDb().getSimulator(simId))
+            return SimManager.getSite(simId)
+        simId.forFhir()
+        if (new SimDb().getSimulator(simId))
+            return SimManager.getSite(simId)
+        return null
     }
 
 
