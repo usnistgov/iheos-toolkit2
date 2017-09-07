@@ -2,7 +2,7 @@ package gov.nist.toolkit.simcommon.server.factories;
 
 import gov.nist.toolkit.actortransaction.client.ActorType;
 import gov.nist.toolkit.actortransaction.client.ParamType;
-import gov.nist.toolkit.configDatatypes.SimulatorProperties;
+import gov.nist.toolkit.configDatatypes.server.SimulatorProperties;
 import gov.nist.toolkit.configDatatypes.client.TransactionType;
 import gov.nist.toolkit.simcommon.client.SimId;
 import gov.nist.toolkit.simcommon.client.Simulator;
@@ -55,7 +55,7 @@ public class XdrDocSrcActorFactory extends AbstractActorFactory implements IActo
      */
     @Override
     public Site getActorSite(SimulatorConfig asc, Site site) throws NoSimulatorException {
-        return null;
+        return (site == null) ? new Site(asc.getDefaultName()) : site;
     }
 
     @Override

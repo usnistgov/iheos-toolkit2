@@ -2,7 +2,8 @@ package gov.nist.toolkit.simulators.servlet;
 
 import gov.nist.toolkit.actorfactory.PatientIdentityFeedServlet;
 import gov.nist.toolkit.actortransaction.client.ATFactory;
-import gov.nist.toolkit.configDatatypes.SimulatorProperties;
+import gov.nist.toolkit.actortransaction.client.ActorType;
+import gov.nist.toolkit.configDatatypes.server.SimulatorProperties;
 import gov.nist.toolkit.configDatatypes.client.TransactionType;
 import gov.nist.toolkit.errorrecording.ErrorRecorder;
 import gov.nist.toolkit.errorrecording.GwtErrorRecorderBuilder;
@@ -14,16 +15,13 @@ import gov.nist.toolkit.simcommon.client.NoSimException;
 import gov.nist.toolkit.simcommon.client.SimId;
 import gov.nist.toolkit.simcommon.client.SimulatorConfig;
 import gov.nist.toolkit.simcommon.client.config.SimulatorConfigElement;
-import gov.nist.toolkit.simcommon.server.GenericSimulatorFactory;
-import gov.nist.toolkit.simcommon.server.RuntimeManager;
-import gov.nist.toolkit.simcommon.server.SimDb;
-import gov.nist.toolkit.simcommon.server.SimManager;
+import gov.nist.toolkit.simcommon.server.*;
 import gov.nist.toolkit.simulators.sim.reg.store.MetadataCollection;
 import gov.nist.toolkit.simulators.sim.reg.store.RegIndex;
 import gov.nist.toolkit.simulators.sim.rep.RepIndex;
 import gov.nist.toolkit.simulators.support.BaseDsActorSimulator;
 import gov.nist.toolkit.simulators.support.DsSimCommon;
-import gov.nist.toolkit.simulators.support.SimCommon;
+import gov.nist.toolkit.simcommon.server.SimCommon;
 import gov.nist.toolkit.sitemanagement.SeparateSiteLoader;
 import gov.nist.toolkit.sitemanagement.client.Site;
 import gov.nist.toolkit.soap.http.SoapFault;
@@ -160,14 +158,14 @@ public class SimServlet  extends HttpServlet {
 		}
 
 		if (actor == null || actor.equals("null")) {
-			try {
+//			try {
 				SimDb sdb = new SimDb(new SimId(simid), null, null);
 				actor = sdb.getActorsForSimulator().get(0);
-			} catch (IOException e) {
-				e.printStackTrace();
-			} catch (NoSimException e) {
-				e.printStackTrace();
-			}
+//			} catch (IOException e) {
+//				e.printStackTrace();
+//			} catch (NoSimException e) {
+//				e.printStackTrace();
+//			}
 		}
 
 		if (actor == null || actor.equals("null")) {
@@ -254,14 +252,14 @@ public class SimServlet  extends HttpServlet {
 		}
 
 		if (actor == null || actor.equals("null")) {
-			try {
+//			try {
 				SimDb sdb = new SimDb(new SimId(simid), null, null);
 				actor = sdb.getActorsForSimulator().get(0);
-			} catch (IOException e) {
-				e.printStackTrace();
-			} catch (NoSimException e) {
-				e.printStackTrace();
-			}
+//			} catch (IOException e) {
+//				e.printStackTrace();
+//			} catch (NoSimException e) {
+//				e.printStackTrace();
+//			}
 		}
 
 		if (actor == null || actor.equals("null")) {
@@ -339,14 +337,14 @@ public class SimServlet  extends HttpServlet {
 		}
 
 		if (actor == null || actor.equals("null")) {
-			try {
+//			try {
 				SimDb sdb = new SimDb(new SimId(simid), null, null);
 				actor = sdb.getActorsForSimulator().get(0);
-			} catch (IOException e) {
-				e.printStackTrace();
-			} catch (NoSimException e) {
-				e.printStackTrace();
-			}
+//			} catch (IOException e) {
+//				e.printStackTrace();
+//			} catch (NoSimException e) {
+//				e.printStackTrace();
+//			}
 		}
 
 		if (actor == null || actor.equals("null")) {
@@ -391,6 +389,8 @@ public class SimServlet  extends HttpServlet {
 		RepIndex repIndex = null;
 		ServletContext servletContext = config.getServletContext();
 		boolean responseSent = false;
+		MessageValidatorEngine mvc = new MessageValidatorEngine();
+		ValidationContext vc = DefaultValidationContextFactory.validationContext();
 
 		Date now = new Date();
 
@@ -429,7 +429,7 @@ public class SimServlet  extends HttpServlet {
 				break;
 		}
 		if (simIndex >= uriParts.length) {
-			sendSoapFault(response, "Simulator: Do not understand endpoint http://" + request.getLocalName() + ":" + request.getLocalPort()  + uri + endpointFormat);
+			sendSoapFault(response, "Simulator: Do not understand endpoint http://" + request.getLocalName() + ":" + request.getLocalPort()  + uri + endpointFormat, mvc, vc);
 			return;
 		}
 
@@ -447,7 +447,7 @@ public class SimServlet  extends HttpServlet {
 			transaction = uriParts[simIndex + 3];
 		}
 		catch (Exception e) {
-			sendSoapFault(response, "Simulator: Do not understand endpoint http://" + request.getLocalName() + ":" + request.getLocalPort() + uri + endpointFormat + " - " + e.getClass().getName() + ": " + e.getMessage());
+			sendSoapFault(response, "Simulator: Do not understand endpoint http://" + request.getLocalName() + ":" + request.getLocalPort() + uri + endpointFormat + " - " + e.getClass().getName() + ": " + e.getMessage(), mvc, vc);
 			return;
 		}
 
@@ -461,13 +461,18 @@ public class SimServlet  extends HttpServlet {
 		logger.debug("Incoming transaction is " + transaction);
 		logger.debug("... which is " + transactionType);
 		if (transactionType == null) {
-			sendSoapFault(response, "Simulator: Do not understand the transaction requested by this endpoint (" + transaction + ") in http://" + request.getLocalName() + ":" + request.getLocalPort() + uri + endpointFormat);
+			sendSoapFault(response, "Simulator: Do not understand the transaction requested by this endpoint (" + transaction + ") in http://" + request.getLocalName() + ":" + request.getLocalPort() + uri + endpointFormat, mvc, vc);
+			return;
+		}
+
+		ActorType actorType = ActorType.findActor(actor);
+		if (actorType == null) {
+			sendSoapFault(response, "Simulator: Do not understand the actor requested by this endpoint (" + actor + ") in http://" + request.getLocalName() + ":" + request.getLocalPort() + uri + endpointFormat, mvc, vc);
 			return;
 		}
 
 		boolean transactionOk = true;
 
-		MessageValidatorEngine mvc = new MessageValidatorEngine();
 		try {
 
 			// DB space for this simulator
@@ -483,7 +488,6 @@ public class SimServlet  extends HttpServlet {
 			regIndex = getRegIndex(simid);
 			repIndex = getRepIndex(simid);
 
-			ValidationContext vc = DefaultValidationContextFactory.validationContext();
 			vc.forceMtom = transactionType.isRequiresMtom();
 
 			SimulatorConfigElement stsSce = asc.get(SimulatorProperties.requiresStsSaml);
@@ -494,8 +498,11 @@ public class SimServlet  extends HttpServlet {
 			if (asce != null)
 				vc.setCodesFilename(asce.asString());
 
-			SimCommon common= new SimCommon(db, request.isSecure(), vc, mvc, response);
-			DsSimCommon dsSimCommon = new DsSimCommon(common, regIndex, repIndex);
+			SimCommon common= new SimCommon(db, request.isSecure(), vc, response, mvc);
+			DsSimCommon dsSimCommon = new DsSimCommon(common, regIndex, repIndex, mvc);
+
+			common.setActorType(actorType);
+			common.setTransactionType(transactionType);
 
 			ErrorRecorder er = new GwtErrorRecorderBuilder().buildNewErrorRecorder();
 			er.sectionHeading("Endpoint");
@@ -511,16 +518,28 @@ public class SimServlet  extends HttpServlet {
 			response.setContentType("application/soap+xml");
 
 //			BaseDsActorSimulator sim = getSimulatorRuntime(simid);
-			BaseDsActorSimulator sim = (BaseDsActorSimulator) RuntimeManager.getSimulatorRuntime(simid);
+			BaseActorSimulator baseSim = RuntimeManager.getSimulatorRuntime(simid);
+			if (baseSim instanceof BaseDsActorSimulator) {
+				BaseDsActorSimulator sim = (BaseDsActorSimulator) baseSim;
 
-			sim.init(dsSimCommon, asc);
-			if (asc.getConfigEle(SimulatorProperties.FORCE_FAULT).asBoolean()) {
-				sendSoapFault(dsSimCommon, "Forced Fault");
-				responseSent = true;
+				sim.init(dsSimCommon, asc);
+				if (asc.getConfigEle(SimulatorProperties.FORCE_FAULT).asBoolean()) {
+					sendSoapFault(dsSimCommon, "Forced Fault");
+					responseSent = true;
+				} else {
+					sim.onTransactionBegin(asc);
+					transactionOk = sim.run(transactionType, mvc, validation);
+					sim.onTransactionEnd(asc);
+				}
 			} else {
-				sim.onTransactionBegin(asc);
-				transactionOk = sim.run(transactionType, mvc, validation);
-				sim.onTransactionEnd(asc);
+				// this is custom for the SimProxy - but maybe others over time
+				baseSim.db = db;
+				baseSim.common = common;
+				baseSim.config = asc;
+				baseSim.onTransactionBegin(asc);
+				transactionOk = baseSim.run(transactionType, mvc, validation);
+				baseSim.onTransactionEnd(asc);
+
 			}
 
 			// Archive logs
@@ -537,53 +556,53 @@ public class SimServlet  extends HttpServlet {
 
 		}
 		catch (InvocationTargetException e) {
-			sendSoapFault(response, ExceptionUtil.exception_details(e));
+			sendSoapFault(response, ExceptionUtil.exception_details(e), mvc, vc);
 			logger.error(ExceptionUtil.exception_details(e));
 			responseSent = true;
 		}
 		catch (IllegalAccessException e) {
-			sendSoapFault(response, ExceptionUtil.exception_details(e));
+			sendSoapFault(response, ExceptionUtil.exception_details(e), mvc, vc);
 			logger.error(ExceptionUtil.exception_details(e));
 			responseSent = true;
 		}
 		catch (InstantiationException e) {
-			sendSoapFault(response, ExceptionUtil.exception_details(e));
+			sendSoapFault(response, ExceptionUtil.exception_details(e), mvc, vc);
 			logger.error(ExceptionUtil.exception_details(e));
 			responseSent = true;
 		}
 		catch (RuntimeException e) {
-			sendSoapFault(response, ExceptionUtil.exception_details(e));
+			sendSoapFault(response, ExceptionUtil.exception_details(e), mvc, vc);
 			logger.error(ExceptionUtil.exception_details(e));
 			responseSent = true;
 		}
 		catch (IOException e) {
-			sendSoapFault(response, ExceptionUtil.exception_details(e));
+			sendSoapFault(response, ExceptionUtil.exception_details(e), mvc, vc);
 			logger.error(ExceptionUtil.exception_details(e));
 			responseSent = true;
 		}
 		catch (HttpHeaderParseException e) {
-			sendSoapFault(response, ExceptionUtil.exception_details(e));
+			sendSoapFault(response, ExceptionUtil.exception_details(e), mvc, vc);
 			logger.error(ExceptionUtil.exception_details(e));
 			responseSent = true;
 		} catch (ClassNotFoundException e) {
-			sendSoapFault(response, ExceptionUtil.exception_details(e));
+			sendSoapFault(response, ExceptionUtil.exception_details(e), mvc, vc);
 			logger.error(ExceptionUtil.exception_details(e));
 			responseSent = true;
 		} catch (XdsException e) {
-			sendSoapFault(response, ExceptionUtil.exception_details(e));
+			sendSoapFault(response, ExceptionUtil.exception_details(e), mvc, vc);
 			logger.error(ExceptionUtil.exception_details(e));
 			responseSent = true;
 		} catch (NoSimException e) {
-			sendSoapFault(response, ExceptionUtil.exception_details(e));
+			sendSoapFault(response, ExceptionUtil.exception_details(e), mvc, vc);
 			logger.error(ExceptionUtil.exception_details(e));
 			responseSent = true;
 		} catch (ParseException e) {
-			sendSoapFault(response, ExceptionUtil.exception_details(e));
+			sendSoapFault(response, ExceptionUtil.exception_details(e), mvc, vc);
 			logger.error(ExceptionUtil.exception_details(e));
 			responseSent = true;
 		}
 		catch (Exception e) {
-			sendSoapFault(response, ExceptionUtil.exception_details(e));
+			sendSoapFault(response, ExceptionUtil.exception_details(e), mvc, vc);
 			logger.error(ExceptionUtil.exception_details(e));
 			responseSent = true;
 		}
@@ -648,7 +667,7 @@ public class SimServlet  extends HttpServlet {
 		} catch (IOException e) {
 			logger.info("Done with Reg/Rep Cache cleanout");
 			if (!responseSent)
-				sendSoapFault(response, ExceptionUtil.exception_details(e));
+				sendSoapFault(response, ExceptionUtil.exception_details(e), mvc, vc);
 			e.printStackTrace();
 		}
 
@@ -659,14 +678,17 @@ public class SimServlet  extends HttpServlet {
 
 	private static void onServiceStart()  {
 		try {
-			List<SimId> simIds = new SimDb().getAllSimIds();
+			List<SimId> simIds = SimDb.getAllSimIds();
 			for (SimId simId : simIds) {
-				BaseDsActorSimulator sim = (BaseDsActorSimulator) RuntimeManager.getSimulatorRuntime(simId);
-				if (sim == null) continue;
-				DsSimCommon dsSimCommon = null;
-				SimulatorConfig asc = GenericSimulatorFactory.getSimConfig(simId);
-				sim.init(dsSimCommon, asc);
-				sim.onServiceStart(asc);
+				BaseActorSimulator baseSim = (BaseActorSimulator) RuntimeManager.getSimulatorRuntime(simId);
+				if (baseSim == null) continue;
+				if (baseSim instanceof  BaseDsActorSimulator) {
+					BaseDsActorSimulator sim = (BaseDsActorSimulator) baseSim;
+					DsSimCommon dsSimCommon = null;
+					SimulatorConfig asc = GenericSimulatorFactory.getSimConfig(simId);
+					sim.init(dsSimCommon, asc);
+					sim.onServiceStart(asc);
+				}
 			}
 		} catch (Exception e) {
 			logger.fatal(ExceptionUtil.exception_details(e));
@@ -675,14 +697,17 @@ public class SimServlet  extends HttpServlet {
 
 	private static void onServiceStop() {
 		try {
-			List<SimId> simIds = new SimDb().getAllSimIds();
+			List<SimId> simIds = SimDb.getAllSimIds();
 			for (SimId simId : simIds) {
-				BaseDsActorSimulator sim = (BaseDsActorSimulator) RuntimeManager.getSimulatorRuntime(simId);
-				if (sim == null) continue;
-				DsSimCommon dsSimCommon = null;
-				SimulatorConfig asc = GenericSimulatorFactory.getSimConfig(simId);
-				sim.init(dsSimCommon, asc);
-				sim.onServiceStop(asc);
+				BaseActorSimulator baseSim = (BaseActorSimulator) RuntimeManager.getSimulatorRuntime(simId);
+				if (baseSim == null) continue;
+				if (baseSim instanceof  BaseDsActorSimulator) {
+					BaseDsActorSimulator sim = (BaseDsActorSimulator) baseSim;
+					DsSimCommon dsSimCommon = null;
+					SimulatorConfig asc = GenericSimulatorFactory.getSimConfig(simId);
+					sim.init(dsSimCommon, asc);
+					sim.onServiceStop(asc);
+				}
 			}
 		} catch (Exception e) {
 			logger.fatal(ExceptionUtil.exception_details(e));
@@ -758,11 +783,12 @@ public class SimServlet  extends HttpServlet {
 	}
 
 
-	private void sendSoapFault(HttpServletResponse response, String message) {
+	private void sendSoapFault(HttpServletResponse response, String message, MessageValidatorEngine mvc, ValidationContext vc) {
 		try {
 			SoapFault sf = new SoapFault(SoapFault.FaultCodes.Sender, message);
 			SimCommon c = new SimCommon(response);
-			DsSimCommon dsSimCommon = new DsSimCommon(c);
+			c.vc = vc;
+			DsSimCommon dsSimCommon = new DsSimCommon(c, mvc);
 			OMElement faultEle = sf.getXML();
 			logger.info("Sending SOAP Fault:\n" + new OMFormatter(faultEle).toString());
 			OMElement soapEnv = dsSimCommon.wrapResponseInSoapEnvelope(faultEle);

@@ -5,7 +5,7 @@ import gov.nist.toolkit.actortransaction.client.TransactionInstance;
 import gov.nist.toolkit.configDatatypes.client.Pid;
 import gov.nist.toolkit.errorrecording.GwtErrorRecorderBuilder;
 import gov.nist.toolkit.errorrecording.client.XdsErrorCode;
-import gov.nist.toolkit.http.HttpHeader.HttpHeaderParseException;
+import gov.nist.toolkit.http.HttpHeader;
 import gov.nist.toolkit.http.HttpParseException;
 import gov.nist.toolkit.http.ParseException;
 import gov.nist.toolkit.registrymetadata.Metadata;
@@ -30,17 +30,27 @@ import gov.nist.toolkit.simulators.sim.rep.RepositoryActorSimulator;
 import gov.nist.toolkit.simulators.sim.rep.od.OddsActorSimulator;
 import gov.nist.toolkit.simulators.support.SimInstanceTerminator;
 import gov.nist.toolkit.utilities.io.Io;
+import gov.nist.toolkit.utilities.message.MultipartFormatter;
 import gov.nist.toolkit.validatorsSoapMessage.engine.ValidateMessageService;
 import gov.nist.toolkit.valsupport.client.MessageValidationResults;
 import gov.nist.toolkit.valsupport.client.ValidationContext;
 import gov.nist.toolkit.xdsexception.ExceptionUtil;
 import gov.nist.toolkit.xdsexception.client.EnvironmentNotSelectedException;
+import groovy.json.JsonOutput;
+import groovy.util.XmlNodePrinter;
+import groovy.util.XmlParser;
 import org.apache.log4j.Logger;
+import org.xml.sax.SAXException;
 
+
+import javax.xml.parsers.ParserConfigurationException;
 import java.io.File;
 import java.io.IOException;
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.List;
+
 
 /**
  * Each new request should go to a new instance.  All persistence
@@ -141,7 +151,7 @@ public class SimulatorServiceManager extends CommonService {
 					ExceptionUtil.exception_details(e));
 			return mvr;
 		} 
-		catch (HttpHeaderParseException e) {
+		catch (HttpHeader.HttpHeaderParseException e) {
 			MessageValidationResults mvr = new MessageValidationResults();
 			mvr.addError(XdsErrorCode.Code.NoCode, "Exception",
 					ExceptionUtil.exception_details(e));
@@ -180,11 +190,35 @@ public class SimulatorServiceManager extends CommonService {
 			File bodyFile = db.getRequestBodyFile(simid, actor, trans, event);
 
 			String body = new String(Io.bytesFromFile(bodyFile));
-
-			return new Message(Io.stringFromFile(headerFile) + body);
+			body = formatMessage(body);
+			return new Message(Io.stringFromFile(headerFile), body);
 		} catch (Exception e) {
 			return new Message("Error: " + e.getMessage());
 		}
+	}
+
+	private String formatMessage(String message) throws IOException, SAXException, ParserConfigurationException {
+		String trimBody = message.trim();
+		boolean isJson = trimBody.startsWith("{");
+		boolean isXml = trimBody.startsWith("<");
+		boolean isMultipart = trimBody.startsWith("--");
+		if (isJson) {
+			// format json but leave embedded HTML alone
+			message = JsonOutput.prettyPrint(message);
+		} else if (isXml) {
+			message = formatXml(message);
+		} else if (isMultipart) {
+			message = MultipartFormatter.format(message);
+		}
+		return message;
+	}
+
+	private String formatXml(String xml) throws ParserConfigurationException, SAXException, IOException {
+		StringWriter xmlOutput = new StringWriter();
+		XmlNodePrinter printer = new XmlNodePrinter(new PrintWriter(xmlOutput));
+		printer.print(new XmlParser().parseText(xml));
+		xml = xmlOutput.toString();
+		return xml;
 	}
 
 	public Message getTransactionResponse(SimId simid, String actor,
@@ -202,10 +236,10 @@ public class SimulatorServiceManager extends CommonService {
 					.getResponseBodyFile(simid, actor, trans, event);
 
 			String body = new String(Io.bytesFromFile(bodyFile));
-
+			body = formatMessage(body);
 			return new Message(
 					((headerFile.exists()) ? Io.stringFromFile(headerFile) : "")
-							+ body);
+							, body);
 		} catch (Exception e) {
 			return new Message("Error: " + e.getMessage());
 		}
@@ -327,12 +361,20 @@ public class SimulatorServiceManager extends CommonService {
 	}
 
 	/**
-	 * 
-	 * @return map from simulator name (private name) to simulator id (global id)
+	 * get all SimIds
+	 * @param userFilter - if not null, only return simids for this user
+	 * @return
 	 */
-	public List<String> getSimulatorNameMap() {
-		logger.debug(session.id() + ": " + "getActorSimulatorNameMap");
-		return SimDb.getAllSimNames();
+	public List<SimId> getSimIds(String userFilter) {
+		logger.debug(session.id() + ": " + "getSimIds for " + userFilter);
+		List<SimId> all = SimDb.getAllSimIds();
+		if (userFilter == null) return all;
+		List<SimId> filtered = new ArrayList<>();
+		for (SimId sid : all) {
+			if (userFilter.equals(sid.getUser()))
+				filtered.add(sid);
+		}
+		return filtered;
 	}
 
 	public int removeOldSimulators() {
@@ -451,7 +493,8 @@ public class SimulatorServiceManager extends CommonService {
 		try {
 			m = MetadataParser.parseContent(reqeustFile);
 		} catch (Exception e) {
-			throw new Exception("Cannot load simulator event - " + e.getMessage(), e);
+			return ResultBuilder.RESULT(new Metadata());
+//			throw new Exception("Cannot load simulator event - " + e.getMessage(), e);
 		}
 		return ResultBuilder.RESULT(m);
 	}
@@ -469,7 +512,8 @@ public class SimulatorServiceManager extends CommonService {
 		try {
 			m = MetadataParser.parseContent(null, response);
 		} catch (Exception e) {
-			throw new Exception("Cannot load simulator event - " + e.getMessage(), e);
+			return ResultBuilder.RESULT(new Metadata());
+//			throw new Exception("Cannot load simulator event - " + e.getMessage(), e);
 		}
 		return ResultBuilder.RESULT(m);
 	}

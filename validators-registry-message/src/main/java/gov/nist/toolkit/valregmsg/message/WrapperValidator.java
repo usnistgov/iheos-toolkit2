@@ -19,9 +19,42 @@ import java.util.*;
  *
  */
 public class WrapperValidator extends AbstractMessageValidator {
+
+	class Mapper {
+		List<String> wrapperList = new ArrayList<>();
+		String transaction;
+		String profile;
+		ValidationContext vc;
+
+		Mapper(String profile, String transaction) {
+			this.profile = profile;
+			this.transaction = transaction;
+		}
+
+		void addWrapper(String wrapper) {
+			wrapperList.add(wrapper);
+		}
+	}
+	private List<Mapper> mappers = new ArrayList<>();
+
+	private void newMapper(String profile, ValidationContext vc, List<String> wrapperList) {
+		Mapper m = new Mapper(profile, vc.getTransactionName());
+		m.vc = vc;
+		m.wrapperList = wrapperList;
+		mappers.add(m);
+	}
+
+	private List<Mapper> findMapper(String transaction) {
+		List<Mapper> mappers = new ArrayList<>();
+		for (Mapper m : mappers) {
+			if (transaction != null && !transaction.equals(m.transaction)) continue;
+		}
+		return mappers;
+	}
+
 	OMElement xml;
-	Map<String, List<String>> wrapperList = new HashMap<String, List<String>>();
-	List<String> elementOrder = new ArrayList<String>();
+	private List<List<String>> wrapperList = new ArrayList<>();
+	private List<String> elementOrder = new ArrayList<String>();
 
 	public WrapperValidator(ValidationContext vc) {
 		super(vc);
@@ -29,6 +62,13 @@ public class WrapperValidator extends AbstractMessageValidator {
 	
 	void err(String msg, String ref) {
 		er.err(XdsErrorCode.Code.XDSRegistryMetadataError, msg, this, ref);
+	}
+
+	private final String XDR = "XDR";
+	private final String XDS = "XDS";
+
+	String getProfileName(ValidationContext vd) {
+		return (vc.isXDR) ? XDR : XDS;
 	}
 
 	public void run(ErrorRecorder er, MessageValidatorEngine mvc) {
@@ -39,7 +79,8 @@ public class WrapperValidator extends AbstractMessageValidator {
 		xml = cont.getBody();
 		init();
 		String transaction = vc.getTransactionName();
-		List<String> expectedWrappers = wrapperList.get(transaction);
+
+		List<String> expectedWrappers = findWrapperList(vc);
 
 		if (xml == null) {
 			err("No content present", "");
@@ -60,6 +101,24 @@ public class WrapperValidator extends AbstractMessageValidator {
 
 	}
 
+	private List<String> findWrapperList(ValidationContext vc) {
+		String transactionName = vc.getTransactionName();
+		String profileName = getProfileName(vc);
+
+		List<Mapper> choices = new ArrayList<>();
+		for (Mapper m : mappers) {
+			if (transactionName.equals(m.transaction))
+				choices.add(m);
+		}
+		if (choices.size() == 1) return choices.get(0).wrapperList;
+		if (choices.size() > 1 && profileName != null) {
+			for (Mapper choice : choices) {
+				if (profileName.equals(choice.profile)) return choice.wrapperList;
+			}
+		}
+		return null;
+	}
+
 	void initElementOrder() {
 		elementOrder.add("Slot");
 		elementOrder.add("Name");
@@ -74,13 +133,23 @@ public class WrapperValidator extends AbstractMessageValidator {
 		ValidationContext v;
 
 		v = DefaultValidationContextFactory.validationContext();
+		x = new ArrayList<>();
+		x.add("ProvideAndRegisterDocumentSetRequest");
+		x.add("SubmitObjectsRequest");
+		x.add("RegistryObjectList");
+		v.isXDR = true;
+		v.isR = true;
+		v.isRequest = true;
+		newMapper(XDR, v, x);
+
+		v = DefaultValidationContextFactory.validationContext();
 		x = new ArrayList<String>();
 		x.add("ProvideAndRegisterDocumentSetRequest");
 		x.add("SubmitObjectsRequest");
 		x.add("RegistryObjectList");
 		v.isPnR = true;
 		v.isRequest = true;
-		wrapperList.put(v.getTransactionName(), x);
+		newMapper(XDS, v, x);
 
 		v = DefaultValidationContextFactory.validationContext();
 		x = new ArrayList<String>();
@@ -88,10 +157,10 @@ public class WrapperValidator extends AbstractMessageValidator {
 		x.add("RegistryObjectList");
 		v.isR = true;
 		v.isRequest = true;
-		wrapperList.put(v.getTransactionName(), x);
+		newMapper(null, v, x);
 		v.isR = false;
 		v.isXDM = true;
-		wrapperList.put(v.getTransactionName(), x);
+		newMapper(null, v, x);
 		v.isXDM = false;
 
 		v = DefaultValidationContextFactory.validationContext();
@@ -99,9 +168,9 @@ public class WrapperValidator extends AbstractMessageValidator {
 		x.add("AdhocQueryRequest");
 		v.isSQ = true;
 		v.isRequest = true;
-		wrapperList.put(v.getTransactionName(), x);
+		newMapper(null, v, x);
 		v.isXC = true;
-		wrapperList.put(v.getTransactionName(), x);
+		newMapper(null, v, x);
 
 		v = DefaultValidationContextFactory.validationContext();
 		x = new ArrayList<String>();
@@ -109,9 +178,9 @@ public class WrapperValidator extends AbstractMessageValidator {
 		x.add("RegistryObjectList");
 		v.isSQ = true;
 		v.isResponse = true;
-		wrapperList.put(v.getTransactionName(), x);
+		newMapper(null, v, x);
 		v.isXC = true;
-		wrapperList.put(v.getTransactionName(), x);
+		newMapper(null, v, x);
 
 		v = DefaultValidationContextFactory.validationContext();
 		x = new ArrayList<String>();
@@ -119,9 +188,9 @@ public class WrapperValidator extends AbstractMessageValidator {
 		x.add("DocumentRequest");
 		v.isRet = true;
 		v.isRequest = true;
-		wrapperList.put(v.getTransactionName(), x);
+		newMapper(null, v, x);
 		v.isXC = true;
-		wrapperList.put(v.getTransactionName(), x);
+		newMapper(null, v, x);
 	}
 
 //	@SuppressWarnings("unchecked")
@@ -209,7 +278,7 @@ public class WrapperValidator extends AbstractMessageValidator {
 		return null;
 	}
 
-    OMElement findElement(Iterator<OMNode> it) {
+    private OMElement findElement(Iterator<OMNode> it) {
         while(it.hasNext()) {
             OMNode n = it.next();
             if (n instanceof OMElement)
@@ -218,7 +287,7 @@ public class WrapperValidator extends AbstractMessageValidator {
         return null;
     }
 
-	List<String> firstNestedElements(OMElement ele, int depth) {
+	private List<String> firstNestedElements(OMElement ele, int depth) {
         List<String> names = new ArrayList<>();
         while(ele != null && names.size() < depth) {
             String name = ele.getLocalName();
@@ -228,7 +297,7 @@ public class WrapperValidator extends AbstractMessageValidator {
         return names;
     }
 
-	void validateWrappers(OMElement ele, List<String> expectedWrappers) {
+	private void validateWrappers(OMElement ele, List<String> expectedWrappers) {
 		List<String> foundWrappers = new ArrayList<String>();
 		for (String wrapper : expectedWrappers) {
 			OMElement focus = findPeerWithName(ele, wrapper);

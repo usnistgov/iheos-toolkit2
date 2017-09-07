@@ -30,4 +30,9 @@ class FhirSimulator extends BaseFhirSimulator {
     boolean run(TransactionType transactionType, MessageValidatorEngine mvc) throws IOException {
         return false
     }
+
+    @Override
+    boolean run(TransactionType transactionType, MessageValidatorEngine mvc, String validation) throws IOException {
+        return false
+    }
 }

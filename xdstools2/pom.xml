@@ -5,7 +5,7 @@
 	<parent>
 		<groupId>gov.nist.toolkit</groupId>
 		<artifactId>tk-deps</artifactId>
-		<version>4.5.0-SNAPSHOT</version>
+		<version>5.0.0-SNAPSHOT</version>
 		<relativePath>../tk-deps/pom.xml</relativePath>
 	</parent>
 
@@ -237,6 +237,10 @@
 	<dependencies>
 		<dependency>
 			<groupId>gov.nist.toolkit</groupId>
+			<artifactId>datasets</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>gov.nist.toolkit</groupId>
 			<artifactId>transaction-notification-service</artifactId>
 		</dependency>
 		<dependency>
@@ -374,6 +378,10 @@
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
+			<groupId>com.google.gwt.inject</groupId>
+			<artifactId>gin</artifactId>
+		</dependency>
+		<dependency>
 			<groupId>org.apache.axis2</groupId>
 			<artifactId>axis2</artifactId>
 		</dependency>
@@ -488,6 +496,8 @@
 		</filters>
 		<!-- End profile part 1/2 -->
 
+
+
 		<plugins>
 			<plugin>
 				<artifactId>maven-compiler-plugin</artifactId>
@@ -576,6 +586,7 @@
 						<compileSourcesArtifact>${project.groupId}:xds-exceptions</compileSourcesArtifact>
 						<compileSourcesArtifact>${project.groupId}:interaction-model</compileSourcesArtifact>
 						<compileSourcesArtifact>${project.groupId}:interaction-diagram</compileSourcesArtifact>
+						<compileSourcesArtifact>${project.groupId}:datasets</compileSourcesArtifact>
 					</compileSourcesArtifacts>
 					<runTarget>Xdstools2.html</runTarget>
 					<modules>
@@ -643,16 +654,6 @@
 			</plugin>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-project-info-reportBuilders-plugin</artifactId>
-				<version>2.7</version>
-
-				<configuration>
-					<dependencyLocationsEnabled>false</dependencyLocationsEnabled>
-				</configuration>
-			</plugin>
-
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-surefire-plugin</artifactId>
 				<configuration>
 					<systemPropertyVariables>
@@ -660,7 +661,15 @@
 					</systemPropertyVariables>
 				</configuration>
 			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-project-info-reportBuilders-plugin</artifactId>
+				<version>2.7</version>
 
+				<configuration>
+					<dependencyLocationsEnabled>false</dependencyLocationsEnabled>
+				</configuration>
+			</plugin>
 		</plugins>
 		<!-- Begin profile part 2/2 -->
 		<resources>

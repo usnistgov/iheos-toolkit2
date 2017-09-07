@@ -1,6 +1,6 @@
 package gov.nist.toolkit.toolkitApi;
 
-import gov.nist.toolkit.configDatatypes.SimulatorActorType;
+import gov.nist.toolkit.configDatatypes.server.SimulatorActorType;
 import gov.nist.toolkit.toolkitServicesCommon.SimConfig;
 import gov.nist.toolkit.toolkitServicesCommon.SimId;
 import gov.nist.toolkit.toolkitServicesCommon.resource.SimConfigResource;
@@ -145,6 +145,14 @@ public class SimulatorBuilder {
         return act;
     }
 
+    public IFhirServer createFhirServer(String id, String user, String environmentName) throws ToolkitServiceException {
+        FhirServer server = new FhirServer();
+        server.engine = engine;
+        server.config = engine.create(id, user, SimulatorActorType.FHIR_SERVER, environmentName);
+        return server;
+    }
+
+
     /**
      * Create new Document Registry/Repository simulator with default configuration.
      * To create a simulator with
@@ -229,7 +237,7 @@ public class SimulatorBuilder {
 
     /**
      * Delete a simulator. There is another call available using separate raw ID and USER parameters.
-     * USER and ID are components of the more formal SimId type.  The two calls function identically.
+     * USER and ID are components of the more formal SimId type.  The two calls functionally identically.
      * If the simulator does not exist no error is returned.
      * @param simId Simulator ID
      * @throws ToolkitServiceException if anything goes wrong

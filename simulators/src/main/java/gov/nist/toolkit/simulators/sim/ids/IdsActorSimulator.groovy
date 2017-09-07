@@ -1,6 +1,6 @@
 package gov.nist.toolkit.simulators.sim.ids
 
-import gov.nist.toolkit.configDatatypes.SimulatorProperties
+import gov.nist.toolkit.configDatatypes.server.SimulatorProperties
 import gov.nist.toolkit.configDatatypes.client.TransactionType
 import gov.nist.toolkit.errorrecording.GwtErrorRecorderBuilder
 import gov.nist.toolkit.errorrecording.client.XdsErrorCode.Code
@@ -12,7 +12,7 @@ import gov.nist.toolkit.simulators.sim.reg.AdhocQueryResponseGenerator
 import gov.nist.toolkit.simulators.sim.reg.SoapWrapperRegistryResponseSim
 import gov.nist.toolkit.simulators.support.DsSimCommon
 import gov.nist.toolkit.simulators.support.GatewaySimulatorCommon
-import gov.nist.toolkit.simulators.support.SimCommon
+import gov.nist.toolkit.simcommon.server.SimCommon
 import gov.nist.toolkit.utilities.xml.XmlUtil
 import gov.nist.toolkit.validatorsSoapMessage.message.HttpMessageValidator
 import gov.nist.toolkit.validatorsSoapMessage.message.SoapMessageValidator
@@ -91,7 +91,7 @@ public class IdsActorSimulator extends GatewaySimulatorCommon {
 
          // extract query from validator chain
             logger.debug("Extract query from validator chain");
-            SoapMessageValidator smv = (SoapMessageValidator) common.getMessageValidatorIfAvailable(SoapMessageValidator.class);
+            SoapMessageValidator smv = (SoapMessageValidator) dsSimCommon.getMessageValidatorIfAvailable(SoapMessageValidator.class);
             if (smv == null || !(smv instanceof SoapMessageValidator)) {
                er.err(Code.XDSRegistryError, "IDS Internal Error - cannot find SoapMessageValidator instance",
                      "IdsActorSimulator", "");
@@ -288,7 +288,7 @@ public class IdsActorSimulator extends GatewaySimulatorCommon {
             return false;
          }
          logger.debug("Extract query from validator chain");
-         HttpMessageValidator smv = (HttpMessageValidator) common.getMessageValidatorIfAvailable(HttpMessageValidator.class);
+         HttpMessageValidator smv = (HttpMessageValidator) dsSimCommon.getMessageValidatorIfAvailable(HttpMessageValidator.class);
          if (smv == null || !(smv instanceof HttpMessageValidator)) {
             er.err(Code.XDSRegistryError, "IDS Internal Error - cannot find HttpMessageValidator instance",
                   "IdsActorSimulator", "");

@@ -2,7 +2,7 @@ package gov.nist.toolkit.simulators.sim.reg;
 
 import gov.nist.toolkit.common.datatypes.UuidValidator;
 import gov.nist.toolkit.commondatatypes.MetadataSupport;
-import gov.nist.toolkit.configDatatypes.SimulatorProperties;
+import gov.nist.toolkit.configDatatypes.server.SimulatorProperties;
 import gov.nist.toolkit.configDatatypes.client.Pid;
 import gov.nist.toolkit.configDatatypes.client.PidBuilder;
 import gov.nist.toolkit.errorrecording.ErrorRecorder;
@@ -14,7 +14,7 @@ import gov.nist.toolkit.simcommon.client.SimulatorConfig;
 import gov.nist.toolkit.simcommon.client.config.SimulatorConfigElement;
 import gov.nist.toolkit.simulators.sim.reg.store.*;
 import gov.nist.toolkit.simulators.support.DsSimCommon;
-import gov.nist.toolkit.simulators.support.SimCommon;
+import gov.nist.toolkit.simcommon.server.SimCommon;
 import gov.nist.toolkit.simulators.support.TransactionSimulator;
 import gov.nist.toolkit.valregmsg.message.MetadataContainer;
 import gov.nist.toolkit.valsupport.engine.MessageValidatorEngine;
@@ -104,7 +104,7 @@ public class RegRSim extends TransactionSimulator   {
 
 		// Pull metadata container off validation stack
 		try {
-			MetadataContainer metaCon = (MetadataContainer) common.getMessageValidatorIfAvailable(MetadataContainer.class);
+			MetadataContainer metaCon = (MetadataContainer) dsSimCommon.getMessageValidatorIfAvailable(MetadataContainer.class);
 			m = metaCon.getMetadata();
 			if (m == null) throw new Exception("");
 		} catch (Exception e) {

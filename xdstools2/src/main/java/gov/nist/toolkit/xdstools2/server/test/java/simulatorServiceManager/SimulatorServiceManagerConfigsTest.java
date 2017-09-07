@@ -7,7 +7,7 @@ import gov.nist.toolkit.simcommon.client.Simulator;
 import gov.nist.toolkit.simcommon.client.SimulatorConfig;
 import gov.nist.toolkit.simcommon.server.SimCache;
 import gov.nist.toolkit.simcommon.server.SimManager;
-import gov.nist.toolkit.simulators.support.SimCommon;
+import gov.nist.toolkit.simcommon.server.SimCommon;
 import gov.nist.toolkit.xdsexception.ExceptionUtil;
 import org.junit.After;
 import org.junit.Assert;

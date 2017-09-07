@@ -12,7 +12,6 @@ import ca.uhn.fhir.rest.server.servlet.ServletRequestDetails
 import gov.nist.toolkit.fhir.context.ToolkitFhirContext
 import gov.nist.toolkit.simcommon.client.SimId
 import gov.nist.toolkit.simcommon.server.SimDb
-import gov.nist.toolkit.utilities.io.Io
 import org.hl7.fhir.instance.model.api.IBaseResource
 
 import javax.servlet.ServletException
@@ -32,38 +31,44 @@ class RequestLoggingInterceptor implements IServerInterceptor {
     @Override
     boolean incomingRequestPostProcessed(RequestDetails theRequestDetails, HttpServletRequest theRequest, HttpServletResponse theResponse) throws AuthenticationException {
 
-        //
-        // log incoming message
-        //
-        SimId simId = HttpRequestParser.simIdFromRequest(theRequestDetails)
-        if (!simId) return true // note: id not added to request
+        // Pass SIM attributes from the HTTP Request to the REST Attributes maps
+        Attributes attributes = new Attributes(theRequestDetails)
+        attributes.simId = theRequest.getAttribute(Attributes.SIMID)
+        attributes.simDb = theRequest.getAttribute(Attributes.SIMDB)
 
-        SimDb simDb
-        try {
-            simDb = new SimDb(simId, SimDb.BASE_TYPE, SimDb.ANY_TRANSACTION)
-        } catch (Exception e) {
-            return true;// this will be noticed in the main flow and handled separately
-        }
 
-        Attributes a = new Attributes(theRequestDetails)
-        a.simId = simId
-        a.simDb = simDb
-
-        List<String> headers = theRequest.headerNames.collect { String headerName ->
-            "${headerName}: ${theRequest.getHeader(headerName)}"
-        }
-
-        String headerblock = headers.join('\r\n')
-
-        simDb.putRequestHeaderFile(headerblock.bytes)
-        InputStream ins = theRequest.inputStream
-        assert ins.markSupported(), 'Mark not supported on inputstream'
-
-        ins.mark(1*1024*1000)
-        String request = Io.getStringFromInputStream(ins)
-        ins.reset()  // so the REST processor can re-read
-
-        simDb.putRequestBodyFile(request.bytes)
+//        //
+//        // log incoming message
+//        //
+//        SimId simId = HttpRequestParser.simIdFromRequest(theRequestDetails)
+//        if (!simId) return true // note: id not added to request
+//
+//        SimDb simDb
+//        try {
+//            simDb = new SimDb(simId, SimDb.BASE_TYPE, SimDb.ANY_TRANSACTION)
+//        } catch (Exception e) {
+//            return true;// this will be noticed in the main flow and handled separately
+//        }
+//
+//        Attributes a = new Attributes(theRequestDetails)
+//        a.simId = simId
+//        a.simDb = simDb
+//
+//        List<String> headers = theRequest.headerNames.collect { String headerName ->
+//            "${headerName}: ${theRequest.getHeader(headerName)}"
+//        }
+//
+//        String headerblock = headers.join('\r\n')
+//
+//        simDb.putRequestHeaderFile(headerblock.bytes)
+//        InputStream ins = theRequest.inputStream
+//        assert ins.markSupported(), "Mark not supported on inputstream - implementing class is ${ins.getClass().getName()}"
+//
+//        ins.mark(1*1024*1000)
+//        String request = Io.getStringFromInputStream(ins)
+//        ins.reset()  // so the REST processor can re-read
+//
+//        simDb.putRequestBodyFile(request.bytes)
 
 
         return true

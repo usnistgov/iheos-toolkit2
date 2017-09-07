@@ -2,7 +2,7 @@ package gov.nist.toolkit.itTests.testpath
 
 import gov.nist.toolkit.actortransaction.client.ActorType
 import gov.nist.toolkit.adt.ListenerFactory
-import gov.nist.toolkit.configDatatypes.SimulatorActorType
+import gov.nist.toolkit.configDatatypes.server.SimulatorActorType
 import gov.nist.toolkit.installation.Installation
 import gov.nist.toolkit.itTests.support.ToolkitSpecification
 import gov.nist.toolkit.results.client.Result

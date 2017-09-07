@@ -8,17 +8,16 @@ import com.google.gwt.event.logical.shared.ResizeEvent;
 import com.google.gwt.event.logical.shared.ResizeHandler;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
+import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.user.client.History;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.*;
-import com.google.web.bindery.event.shared.EventBus;
 import gov.nist.toolkit.sitemanagement.client.TransactionOfferings;
 import gov.nist.toolkit.tk.client.TkProps;
 import gov.nist.toolkit.xdstools2.client.command.command.GetTransactionOfferingsCommand;
 import gov.nist.toolkit.xdstools2.client.command.command.InitializationCommand;
-import gov.nist.toolkit.xdstools2.client.widgets.PopupMessage;
-import gov.nist.toolkit.xdstools2.shared.command.InitializationResponse;
 import gov.nist.toolkit.xdstools2.client.event.testSession.TestSessionManager2;
+import gov.nist.toolkit.xdstools2.client.injector.Injector;
 import gov.nist.toolkit.xdstools2.client.selectors.EnvironmentManager;
 import gov.nist.toolkit.xdstools2.client.selectors.TestSessionSelector;
 import gov.nist.toolkit.xdstools2.client.tabs.EnvironmentState;
@@ -27,7 +26,10 @@ import gov.nist.toolkit.xdstools2.client.tabs.QueryState;
 import gov.nist.toolkit.xdstools2.client.tabs.messageValidator.MessageValidatorTab;
 import gov.nist.toolkit.xdstools2.client.util.ClientFactory;
 import gov.nist.toolkit.xdstools2.client.util.ClientUtils;
+import gov.nist.toolkit.xdstools2.client.widgets.PopupMessage;
+import gov.nist.toolkit.xdstools2.shared.command.InitializationResponse;
 
+import javax.inject.Inject;
 import java.util.logging.Logger;
 
 
@@ -82,9 +84,14 @@ public class Xdstools2  implements AcceptsOneWidget, IsWidget {
 
 	static public TransactionOfferings transactionOfferings = null;
 
+	@Inject
+	private TabContainer tabContainer;
+
 	void buildTabsWrapper() {
 		HorizontalPanel menuPanel = new HorizontalPanel();
-		EnvironmentManager environmentManager = new EnvironmentManager(TabContainer.instance());
+		tabContainer = Injector.INSTANCE.getTabContainer();
+		assert(tabContainer != null);
+		EnvironmentManager environmentManager = new EnvironmentManager(tabContainer);
 
 		Widget decoratedTray = decorateMenuContainer();
 
@@ -266,6 +273,10 @@ public class Xdstools2  implements AcceptsOneWidget, IsWidget {
 //		});
 //	}
 
+	/**
+	 * request must be attached to a tab so use home tab
+	 * since it's available
+	 */
 	private void reloadTransactionOfferings() {
 		new GetTransactionOfferingsCommand() {
 

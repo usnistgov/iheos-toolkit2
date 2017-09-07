@@ -21,7 +21,7 @@ import spock.lang.Shared
 /**
  * Integration tests for IDS Simulator
  */
-class RepSpec extends ToolkitSpecification {
+class IdsSpec extends ToolkitSpecification {
     @Shared SimulatorBuilder spi
     @Shared String testSession = 'idsspec';
     @Shared String id = 'simulator_ids'

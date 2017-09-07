@@ -2,6 +2,8 @@ package gov.nist.toolkit.xdstools2.client.util.activitiesAndPlaces;
 
 import com.google.gwt.place.shared.PlaceHistoryMapper;
 import com.google.gwt.place.shared.WithTokenizers;
+import gov.nist.toolkit.xdstools2.client.tabs.SubmitResourceTab.SubmitResource;
+import gov.nist.toolkit.xdstools2.client.tabs.simMsgViewerTab.SimMsgViewer;
 
 /**
  * Monitors PlaceChangeEvents and History events and keep them in sync.
@@ -9,6 +11,13 @@ import com.google.gwt.place.shared.WithTokenizers;
  *
  * Created by onh2 on 12/10/2015.
  */
-@WithTokenizers({TestInstance.Tokenizer.class, Tool.Tokenizer.class, ConfActor.Tokenizer.class, SimLog.Tokenizer.class})
+@WithTokenizers({
+        TestInstance.Tokenizer.class,
+        Tool.Tokenizer.class,
+        ConfActor.Tokenizer.class,
+        SimLog.Tokenizer.class,
+        SimMsgViewer.Tokenizer.class,
+        SubmitResource.Tokenizer.class
+})
 public interface Xdstools2PlaceHistoryMapper extends PlaceHistoryMapper{
 }

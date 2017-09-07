@@ -80,6 +80,10 @@ h3 {
 	color: red;
 }
 
+.tool-section-header {
+  background-color: #B0B0B0
+}
+
 .my-table-header {
 	background-color: #B0B0B0
 }
@@ -326,6 +330,16 @@ h3 {
   margin-right: 10px;
 }
 
+.siteSelected {
+  margin: 0;
+  padding: 3px 5px;
+  text-decoration: none;
+  color: white;
+  font-size:small;
+  background-color: #628cd5;
+  border:1px solid #bbb;
+  border-bottom: 1px solid #a0a0a0;
+}
 .tabConfigRow::after {
   content: "";
   clear: both;

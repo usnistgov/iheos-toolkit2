@@ -10,6 +10,8 @@ import ca.uhn.fhir.rest.server.IResourceProvider
 import ca.uhn.fhir.rest.server.exceptions.InternalErrorException
 import ca.uhn.fhir.rest.server.exceptions.UnprocessableEntityException
 import gov.nist.toolkit.fhir.search.BaseQuery
+import gov.nist.toolkit.session.server.serviceManager.UtilityRunner
+import org.apache.log4j.Logger
 import org.apache.lucene.index.Term
 import org.apache.lucene.search.BooleanClause
 import org.apache.lucene.search.BooleanQuery
@@ -22,6 +24,8 @@ import org.hl7.fhir.dstu3.model.Patient
  *
  */
 public class PatientResourceProvider implements IResourceProvider {
+    static Logger logger = Logger.getLogger(PatientResourceProvider.class);
+
     /**
      * The getResourceType method comes from IResourceProvider, and must
      * be overridden to indicate what type of resource this provider
@@ -36,6 +40,7 @@ public class PatientResourceProvider implements IResourceProvider {
     public MethodOutcome createPatient(@ResourceParam Patient thePatient,
                                        RequestDetails requestDetails) {
 
+        logger.info("Create Patient")
         validateResource(thePatient);
 
         return new ToolkitResourceProvider(Patient.class, requestDetails).createOperation(thePatient)
@@ -57,6 +62,7 @@ public class PatientResourceProvider implements IResourceProvider {
     public Patient getResourceById(@IdParam IdType theId,
                                    RequestDetails requestDetails) {
 
+        logger.info("Get Patient by ID ${theId}")
         ToolkitResourceProvider tk = new ToolkitResourceProvider(getResourceType(), requestDetails)
 
         File f = tk.readOperation(theId)
@@ -89,6 +95,8 @@ public class PatientResourceProvider implements IResourceProvider {
             @RequiredParam(name = Patient.SP_FAMILY) StringParam theFamilyName,
             @OptionalParam(name = Patient.SP_GIVEN) StringParam theGivenName,
             RequestDetails requestDetails) {
+
+        logger.info("Search Patient")
         ToolkitResourceProvider tk = new ToolkitResourceProvider(getResourceType(), requestDetails)
 
         BooleanQuery.Builder builder = new BooleanQuery.Builder()
@@ -103,7 +111,7 @@ public class PatientResourceProvider implements IResourceProvider {
         if (theGivenName) {
             term = new Term(Patient.SP_GIVEN, theGivenName.value)
             termQuery = new TermQuery(term)
-            builder.add(termQuery, BooleanClause.Occur.MUST)
+            builder.add(termQuery, BooleanClause.Occur.SHOULD)
         }
 
         return tk.searchResults(new BaseQuery(tk.simContext).execute(builder))

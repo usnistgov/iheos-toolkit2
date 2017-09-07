@@ -70,6 +70,7 @@ class Mapping {
 
     static private List<String> decodeList(String value) {
         List<String> lst = new ArrayList<String>();
+        if (value == null) return lst;
         value = value.trim();
         if (value.charAt(0) != '[' || value.charAt(value.length()-1) != ']')
             return lst;

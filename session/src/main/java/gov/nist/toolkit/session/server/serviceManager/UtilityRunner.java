@@ -1,11 +1,11 @@
 package gov.nist.toolkit.session.server.serviceManager;
 
-import gov.nist.toolkit.simcommon.server.SimCache;
-import gov.nist.toolkit.simcommon.server.SiteServiceManager;
 import gov.nist.toolkit.installation.Installation;
 import gov.nist.toolkit.results.ResultBuilder;
 import gov.nist.toolkit.results.client.*;
 import gov.nist.toolkit.session.server.Session;
+import gov.nist.toolkit.simcommon.server.SimCache;
+import gov.nist.toolkit.simcommon.server.SiteServiceManager;
 import gov.nist.toolkit.sitemanagement.Sites;
 import gov.nist.toolkit.sitemanagement.client.Site;
 import gov.nist.toolkit.testengine.engine.TestCollection;
@@ -17,17 +17,18 @@ import gov.nist.toolkit.xdsexception.ExceptionUtil;
 import gov.nist.toolkit.xdsexception.client.EnvironmentNotSelectedException;
 import org.apache.log4j.Logger;
 
+import java.io.IOException;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
 public class UtilityRunner {
     private final XdsTestServiceManager xdsTestServiceManager;  // this is here only because of an automatic refactoring
-    static Logger logger = Logger.getLogger(UtilityRunner.class);
-    AssertionResults assertionResults = new AssertionResults();
-    final TestRunType testRunType;
+    private static Logger logger = Logger.getLogger(UtilityRunner.class);
+    private AssertionResults assertionResults = new AssertionResults();
+    private final TestRunType testRunType;
 
-    public UtilityRunner(XdsTestServiceManager xdsTestServiceManager, TestRunType testRunType) {
+    UtilityRunner(XdsTestServiceManager xdsTestServiceManager, TestRunType testRunType) {
         this.xdsTestServiceManager = xdsTestServiceManager;
         this.testRunType = testRunType;
     }
@@ -63,35 +64,8 @@ public class UtilityRunner {
             if (session.xt == null)
                 throw new Exception("UtilityRunner#run: session.xt not initialized");
 
-//            if (assertionResults == null)
-//                assertionResults = new AssertionResults();
-//            assertionResults = assertionResults;
+            initializeLogRepository(session);
 
-
-
-            if (session.transactionSettings.logRepository == null) {
-                if (testRunType == TestRunType.UTILITY) {
-                    logger.info("*** logRepository user: " + session.getId());
-                    session.transactionSettings.logRepository =
-                            LogRepositoryFactory.
-                                    getLogRepository(
-                                            Installation.instance().sessionCache(),
-                                            session.getId(),
-                                            LogIdIOFormat.JAVA_SERIALIZATION,
-                                            LogIdType.TIME_ID,
-                                            null);
-                } else if (testRunType == TestRunType.TEST) {
-                    logger.info("*** logRepository user (sessionName): " + session.getMesaSessionName());
-                    session.transactionSettings.logRepository =
-                            LogRepositoryFactory.
-                                    getLogRepository(
-                                            Installation.instance().testLogCache(),
-                                            session.getMesaSessionName(),
-                                            LogIdIOFormat.JAVA_SERIALIZATION,
-                                            LogIdType.SPECIFIC_ID,
-                                            null);
-                }
-            }
             session.xt.setLogRepository(session.transactionSettings.logRepository);
             logger.info("*** logRepository user (sessionName): " + session.transactionSettings.logRepository.getUser());
 
@@ -127,27 +101,9 @@ public class UtilityRunner {
                 // force loading of site definitions
                 SiteServiceManager.getSiteServiceManager().getAllSites(session.getId());
 
-//                Sites theSites = new Sites(SiteServiceManager.getSiteServiceManager().getAllSites(session.getId()));
                 Collection<Site> siteCollection = SimCache.getAllSites();
                 Sites theSites = new Sites(siteCollection);
-                // Only for SOAP messages will siteSpec.name be filled in.  For Direct it is not expected
-                if (session.siteSpec != null && session.siteSpec.name != null && !session.siteSpec.name.equals("")) {
-                    // See Site.java for details on this lookup
-//                    Site site = theSites.getSite(session.siteSpec.name);
-                    Site site = theSites.getOrchestrationLinkedSites(session.siteSpec);
-
-                    if (site == null)
-                        throw new Exception("Cannot find site " + session.siteSpec.name);
-                    logger.info("Using site: " + site.describe());
-                    session.xt.setSite(site);
-                    session.xt.setSites(theSites);
-                } else if (session.repUid != null) {
-                    Site site = theSites.getSite("allRepositories");
-                    if (site == null)
-                        throw new Exception("Cannot find site 'allRepositories'");
-                    session.xt.setSite(site);
-                    session.xt.setSites(theSites);
-                }
+                assignSite(session, theSites);
             } catch (Exception e) {
                 logger.error(ExceptionUtil.exception_details(e));
                 assertionResults.add(ExceptionUtil.exception_details(e), false);
@@ -172,48 +128,8 @@ public class UtilityRunner {
                     assertionResults.add("Site: " + session.siteSpec.name);
             }
 
-            assertionResults.add("Parameters:");
-            for (String param : params.keySet()) {
-                assertionResults.add("..." + param + ": " + params.get(param));
-            }
+            return getResult(session, params, params2, sections, testInstance, stopOnFirstFailure);
 
-            if (session.siteSpec != null)
-                System.out.println("Site is " + session.siteSpec.name);
-
-            try {
-                assertionResults.add("Starting");
-                // s.assertionResults.add("Log Cache: " + s.getLogCount() + " entries");
-                session.transactionSettings.securityParams = session;
-
-                if (session.transactionSettings.environmentName==null)
-                    session.transactionSettings.environmentName=session.getCurrentEnvName();
-                if (session.transactionSettings.testSession==null)
-                    session.transactionSettings.testSession=session.getMesaSessionName();
-                session.xt.run(params, params2, stopOnFirstFailure, session.transactionSettings);
-
-                assertionResults.add(session.transactionSettings.res);
-
-                // Save the created logs in the SessionCache
-//                TestId testId1 = xdsTestServiceManager.newTestLogId();
-
-                // it writes a uuid named file to TestLogCache/${user}/
-                if (!testInstance.isTestCollection())
-                    session.transactionSettings.logRepository.logOutIfLinkedToUser(testInstance, session.xt.getLogMap());
-
-                Result result = xdsTestServiceManager.buildResult(session.xt.getTestSpecs(), testInstance);
-                xdsTestServiceManager.scanLogs(session.xt, assertionResults, sections);
-                assertionResults.add("Finished");
-                result.assertions.add(assertionResults);
-                return result;
-            } catch (EnvironmentNotSelectedException e) {
-                logger.error(ExceptionUtil.exception_details(e));
-                assertionResults.add("Environment not selected", false);
-                return ResultBuilder.RESULT(testInstance, assertionResults, null, null);
-            } catch (Exception e) {
-                logger.error(ExceptionUtil.exception_details(e));
-                assertionResults.add(ExceptionUtil.exception_details(e), false);
-                return ResultBuilder.RESULT(testInstance, assertionResults, null, null);
-            }
         } catch (NullPointerException e) {
             logger.error(ExceptionUtil.exception_details(e));
             assertionResults.add(ExceptionUtil.exception_details(e), false);
@@ -225,6 +141,93 @@ public class UtilityRunner {
         }
         finally {
             session.clear();
+        }
+    }
+
+    private Result getResult(Session session, Map<String, String> params, Map<String, Object> params2, List<String> sections, TestInstance testInstance, boolean stopOnFirstFailure) {
+        assertionResults.add("Parameters:");
+        for (String param : params.keySet()) {
+            assertionResults.add("..." + param + ": " + params.get(param));
+        }
+
+        if (session.siteSpec != null)
+            System.out.println("Site is " + session.siteSpec.name);
+
+        try {
+            assertionResults.add("Starting");
+            // s.assertionResults.add("Log Cache: " + s.getLogCount() + " entries");
+            session.transactionSettings.securityParams = session;
+
+            if (session.transactionSettings.environmentName==null)
+                session.transactionSettings.environmentName=session.getCurrentEnvName();
+            if (session.transactionSettings.testSession==null)
+                session.transactionSettings.testSession=session.getMesaSessionName();
+
+            session.xt.run(params, params2, stopOnFirstFailure, session.transactionSettings);
+
+            assertionResults.add(session.transactionSettings.res);
+
+            // it writes a uuid named file to TestLogCache/${user}/
+            if (!testInstance.isTestCollection())
+                session.transactionSettings.logRepository.logOutIfLinkedToUser(testInstance, session.xt.getLogMap());
+
+            Result result = xdsTestServiceManager.buildResult(session.xt.getTestSpecs(), testInstance);
+            xdsTestServiceManager.scanLogs(session.xt, assertionResults, sections);
+            assertionResults.add("Finished");
+            result.assertions.add(assertionResults);
+            return result;
+        } catch (EnvironmentNotSelectedException e) {
+            logger.error(ExceptionUtil.exception_details(e));
+            assertionResults.add("Environment not selected", false);
+            return ResultBuilder.RESULT(testInstance, assertionResults, null, null);
+        } catch (Exception e) {
+            logger.error(ExceptionUtil.exception_details(e));
+            assertionResults.add(ExceptionUtil.exception_details(e), false);
+            return ResultBuilder.RESULT(testInstance, assertionResults, null, null);
+        }
+    }
+
+    private void initializeLogRepository(Session session) throws IOException {
+        if (session.transactionSettings.logRepository == null) {
+            if (testRunType == TestRunType.UTILITY) {
+                logger.info("*** logRepository user: " + session.getId());
+                session.transactionSettings.logRepository =
+                        LogRepositoryFactory.
+                                getLogRepository(
+                                        Installation.instance().sessionCache(),
+                                        session.getId(),
+                                        LogIdIOFormat.JAVA_SERIALIZATION,
+                                        LogIdType.TIME_ID,
+                                        null);
+            } else if (testRunType == TestRunType.TEST) {
+                logger.info("*** logRepository user (sessionName): " + session.getMesaSessionName());
+                session.transactionSettings.logRepository =
+                        LogRepositoryFactory.
+                                getLogRepository(
+                                        Installation.instance().testLogCache(),
+                                        session.getMesaSessionName(),
+                                        LogIdIOFormat.JAVA_SERIALIZATION,
+                                        LogIdType.SPECIFIC_ID,
+                                        null);
+            }
+        }
+    }
+
+    private void assignSite(Session session, Sites theSites) throws Exception {
+        if (session.siteSpec != null && session.siteSpec.name != null && !session.siteSpec.name.equals("")) {
+            Site site = theSites.getOrchestrationLinkedSites(session.siteSpec);
+
+            if (site == null)
+                throw new Exception("Cannot find site " + session.siteSpec.name);
+            logger.info("Using site: " + site.describe());
+            session.xt.setSite(site);
+            session.xt.setSites(theSites);
+        } else if (session.repUid != null) {
+            Site site = theSites.getSite("allRepositories");
+            if (site == null)
+                throw new Exception("Cannot find site 'allRepositories'");
+            session.xt.setSite(site);
+            session.xt.setSites(theSites);
         }
     }
 

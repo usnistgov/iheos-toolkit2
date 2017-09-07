@@ -3,7 +3,7 @@ package gov.nist.toolkit.simcommon.server.factories;
 import gov.nist.toolkit.actortransaction.client.ActorType;
 import gov.nist.toolkit.actortransaction.client.ParamType;
 import gov.nist.toolkit.adt.ListenerFactory;
-import gov.nist.toolkit.configDatatypes.SimulatorProperties;
+import gov.nist.toolkit.configDatatypes.server.SimulatorProperties;
 import gov.nist.toolkit.configDatatypes.client.TransactionType;
 import gov.nist.toolkit.envSetting.EnvSetting;
 import gov.nist.toolkit.installation.Installation;
@@ -79,7 +79,8 @@ public class RegistryActorFactory extends AbstractActorFactory implements IActor
 			addEditableConfig(sc, SimulatorProperties.VALIDATE_CODES, ParamType.BOOLEAN, true);
 			addEditableConfig(sc, SimulatorProperties.TRANSACTION_NOTIFICATION_URI, ParamType.TEXT, "");
             addEditableConfig(sc, SimulatorProperties.TRANSACTION_NOTIFICATION_CLASS, ParamType.TEXT, "");
-			addFixedConfig(sc, SimulatorProperties.PIF_PORT, ParamType.TEXT, Integer.toString(ListenerFactory.allocatePort(simId.toString())));
+            if (!isTransactionOnly())
+				addFixedConfig(sc, SimulatorProperties.PIF_PORT, ParamType.TEXT, Integer.toString(ListenerFactory.allocatePort(simId.toString())));
 			addFixedEndpoint(sc, SimulatorProperties.registerEndpoint,       actorType, TransactionType.REGISTER,     false);
 			addFixedEndpoint(sc, SimulatorProperties.registerTlsEndpoint,    actorType, TransactionType.REGISTER,     true);
 			addFixedEndpoint(sc, SimulatorProperties.registerOddeEndpoint,       actorType, TransactionType.REGISTER_ODDE,     false);
@@ -199,7 +200,8 @@ public class RegistryActorFactory extends AbstractActorFactory implements IActor
 					isAsync));
 //		}
 		SimulatorConfigElement pifPortElement = asc.get(SimulatorProperties.PIF_PORT);
-		site.pifPort = pifPortElement.asString();
+		if (pifPortElement != null)
+			site.pifPort = pifPortElement.asString();
 		site.pifHost = Installation.instance().propertyServiceManager().getToolkitHost();
 
 		return site;

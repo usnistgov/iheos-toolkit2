@@ -21,7 +21,7 @@ class GenerateSingleSystem {
     boolean hasErrors = false
 
     // When a systeName is requested, it may have one of these extensions on it.  They are added by
-    // this tool and should be stripped off to get Gazelle name.
+    // this tool and should be stripped off to get Gazelle simName.
     static nameExtensions = [
             ' - ROD',
             ' - IDS',

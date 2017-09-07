@@ -8,7 +8,7 @@ import gov.nist.toolkit.simulators.sim.reg.AdhocQueryResponseGenerator
 import gov.nist.toolkit.simulators.sim.reg.SoapWrapperRegistryResponseSim
 import gov.nist.toolkit.simulators.support.DsSimCommon
 import gov.nist.toolkit.simulators.support.GatewaySimulatorCommon
-import gov.nist.toolkit.simulators.support.SimCommon
+import gov.nist.toolkit.simcommon.server.SimCommon
 import gov.nist.toolkit.validatorsSoapMessage.message.SoapMessageValidator
 import gov.nist.toolkit.valsupport.engine.MessageValidatorEngine
 import gov.nist.toolkit.valsupport.message.AbstractMessageValidator
@@ -62,7 +62,7 @@ public class IgActorSimulator extends GatewaySimulatorCommon {
             }
 
          // extract query from validator chain
-            AbstractMessageValidator mv = common.getMessageValidatorIfAvailable(SoapMessageValidator.class);
+            AbstractMessageValidator mv = dsSimCommon.getMessageValidatorIfAvailable(SoapMessageValidator.class);
             if (mv == null || !(mv instanceof SoapMessageValidator)) {
                er.err(Code.XDSRegistryError, "IG Internal Error - cannot find SoapMessageValidator instance", "InitiatingGatewayActorSimulator", "");
                dsSimCommon.sendErrorsInRegistryResponse(er);
@@ -112,7 +112,7 @@ public class IgActorSimulator extends GatewaySimulatorCommon {
             }
 
          // extract retrieve request
-            AbstractMessageValidator mv = common.getMessageValidatorIfAvailable(SoapMessageValidator.class);
+            AbstractMessageValidator mv = dsSimCommon.getMessageValidatorIfAvailable(SoapMessageValidator.class);
             if (mv == null || !(mv instanceof SoapMessageValidator)) {
                er.err(Code.XDSRegistryError, "IG Internal Error - cannot find SoapMessageValidator instance", "InitiatingGatewayActorSimulator", "");
                dsSimCommon.sendErrorsInRegistryResponse(er);

@@ -3,7 +3,7 @@ package gov.nist.toolkit.simcommon.server;
 import gov.nist.toolkit.actortransaction.client.ActorType;
 import gov.nist.toolkit.actortransaction.client.ParamType;
 import gov.nist.toolkit.actortransaction.client.TransactionInstance;
-import gov.nist.toolkit.configDatatypes.SimulatorProperties;
+import gov.nist.toolkit.configDatatypes.server.SimulatorProperties;
 import gov.nist.toolkit.configDatatypes.client.PatientErrorMap;
 import gov.nist.toolkit.configDatatypes.client.TransactionType;
 import gov.nist.toolkit.envSetting.EnvSetting;
@@ -70,7 +70,7 @@ public abstract class AbstractActorFactory {
 				logger.info("Loading ActorType " + actorType.getName());
 				theFactories.put(actorType.getName(), inf);
 			} catch (Throwable t) {
-				logger.fatal("Cannot load factory class for Actor Type " + actorType.getName() + " - " + t.getMessage());
+				logger.fatal("AbstractActorFactory: Cannot load factory class for Actor Type " + actorType.getName() + " - " + ExceptionUtil.exception_details(t));
 			}
 		}
 		return theFactories;
@@ -107,6 +107,8 @@ public abstract class AbstractActorFactory {
 	static final String isTls = "UseTLS";
 	static final String owner = "Owner";
 	static final String description = "Description";
+
+	private boolean transactionOnly = false;
 
 	PropertyServiceManager propertyServiceMgr = null;
 
@@ -291,10 +293,6 @@ public abstract class AbstractActorFactory {
 				+ "fsim"
 				+ "/"
 				+ asc.getId();
-//				+ "/"
-//				+ actor           //asc.getActorType().toLowerCase()
-//				+ "/"
-//				+ transtype;
 	}
 
 	public void saveConfiguration(SimulatorConfig config) throws Exception {
@@ -303,7 +301,6 @@ public abstract class AbstractActorFactory {
 		SimDb simdb = new SimDb().mkSim(config.getId(), config.getActorType());
 		File simCntlFile = simdb.getSimulatorControlFile();
 		SimulatorConfigIoFactory.impl().save(config, simCntlFile.toString());
-//		SimulatorConfigIoJava.save(config, simCntlFile.toString());
 	}
 
 	static public void delete(SimulatorConfig config) throws Exception {
@@ -442,9 +439,10 @@ public abstract class AbstractActorFactory {
 
 	public static SimulatorConfig loadSimulator(SimId simid, boolean okifNotExist) throws Exception {
 		SimDb simdb;
+		File simCntlFile;
 		try {
 			simdb = new SimDb(simid);
-			File simCntlFile = simdb.getSimulatorControlFile();
+			simCntlFile = simdb.getSimulatorControlFile();
 			SimulatorConfig config = restoreSimulator(simCntlFile.toString());
 			return config;
 		} catch (Exception e) {
@@ -521,6 +519,7 @@ public abstract class AbstractActorFactory {
 		ele.name = endpointName;
 		ele.type = ParamType.ENDPOINT;
 		ele.transType = transactionType;
+		ele.setTls(tls);
 		ele.setStringValue(mkEndpoint(sc, ele, actorType.getShortName(), tls));
 		addUser(sc, ele);
 	}
@@ -530,6 +529,7 @@ public abstract class AbstractActorFactory {
 		ele.name = endpointName;
 		ele.type = ParamType.ENDPOINT;
 		ele.transType = transactionType;
+		ele.setTls(tls);
 		ele.setStringValue("");
 		addUser(sc, ele);
 	}
@@ -540,6 +540,7 @@ public abstract class AbstractActorFactory {
 		ele.type = ParamType.ENDPOINT;
 		ele.transType = transactionType;
 		ele.setStringValue(mkEndpoint(sc, ele, actorType.getShortName(), tls));
+		ele.setTls(tls);
 		addFixed(sc, ele);
 	}
 
@@ -549,8 +550,18 @@ public abstract class AbstractActorFactory {
 		ele.type = ParamType.ENDPOINT;
 		ele.transType = transactionType;
 		ele.setStringValue(mkFhirEndpoint(sc, ele, actorType.getShortName(), tls));
+		ele.setTls(tls);
 		addFixed(sc, ele);
 	}
+
+	public boolean isTransactionOnly() {
+		return transactionOnly;
+	}
+
+	public void setTransactionOnly(boolean transactionOnly) {
+		this.transactionOnly = transactionOnly;
+	}
+
 
 
 }

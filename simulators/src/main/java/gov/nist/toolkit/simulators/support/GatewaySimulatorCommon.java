@@ -3,6 +3,7 @@ package gov.nist.toolkit.simulators.support;
 import gov.nist.toolkit.errorrecording.ErrorRecorder;
 import gov.nist.toolkit.errorrecording.client.XdsErrorCode.Code;
 import gov.nist.toolkit.registrymsg.registry.Response;
+import gov.nist.toolkit.simcommon.server.SimCommon;
 import gov.nist.toolkit.simulators.sim.reg.sq.SQFactory;
 import gov.nist.toolkit.valregmsg.registry.AdhocQueryResponse;
 import gov.nist.toolkit.valregmsg.registry.storedquery.generic.StoredQuery;

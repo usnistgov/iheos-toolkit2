@@ -13,21 +13,7 @@ import gov.nist.toolkit.securityCommon.SecurityParams;
 import gov.nist.toolkit.soap.axis2.Soap;
 import gov.nist.toolkit.testengine.assertionEngine.Assertion;
 import gov.nist.toolkit.testengine.assertionEngine.AssertionEngine;
-import gov.nist.toolkit.testengine.engine.ErrorReportingInterface;
-import gov.nist.toolkit.testengine.engine.Linkage;
-import gov.nist.toolkit.testengine.engine.OmLogger;
-import gov.nist.toolkit.testengine.engine.PatientIdAllocator;
-import gov.nist.toolkit.testengine.engine.PlanContext;
-import gov.nist.toolkit.testengine.engine.RegistryUtility;
-import gov.nist.toolkit.testengine.engine.ReportManager;
-import gov.nist.toolkit.testengine.engine.StepContext;
-import gov.nist.toolkit.testengine.engine.TestConfig;
-import gov.nist.toolkit.testengine.engine.TestLogFactory;
-import gov.nist.toolkit.testengine.engine.TestMgmt;
-import gov.nist.toolkit.testengine.engine.TransactionSettings;
-import gov.nist.toolkit.testengine.engine.TransactionStatus;
-import gov.nist.toolkit.testengine.engine.UseReportManager;
-import gov.nist.toolkit.testengine.engine.Validator;
+import gov.nist.toolkit.testengine.engine.*;
 import gov.nist.toolkit.testenginelogging.LogFileContentBuilder;
 import gov.nist.toolkit.testenginelogging.NotALogFileException;
 import gov.nist.toolkit.testenginelogging.client.ReportDTO;
@@ -52,12 +38,7 @@ import org.apache.log4j.Logger;
 import javax.xml.namespace.QName;
 import javax.xml.parsers.FactoryConfigurationError;
 import java.io.File;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public abstract class BasicTransaction  {
 	protected OMElement instruction;
@@ -135,6 +116,8 @@ public abstract class BasicTransaction  {
 		return s_ctx;
 	}
 
+	public UseReportManager getUseReportManager() { return useReportManager; }
+
 	public Map<String, String> getExternalLinkage() {
 		return planContext.getExtraLinkage();
 	}
@@ -159,9 +142,13 @@ public abstract class BasicTransaction  {
 			planContext.setAltPatientId(transactionSettings.altPatientId);
 	}
 
+	public boolean getUseMtom() { return useMtom; }
+	public void setUseMtom(boolean value) { useMtom = value; }
+	public OmLogger getTestLog() { return testLog; }
 	public void setTestConfig(TestConfig config) {
 		testConfig = config;
 	}
+	public TestConfig getTestConfig() { return testConfig; }
 
 	public void setPlanContext(PlanContext pc) {
 		planContext = pc;
@@ -1415,6 +1402,7 @@ public abstract class BasicTransaction  {
 
 		scanResponseForErrors();
 	}
+
 
 	protected boolean scanResponseForErrors() throws XdsInternalException {
 		if (s_ctx.getExpectedStatus().size()==1 && s_ctx.getExpectedStatus().get(0).isSuccess()) {

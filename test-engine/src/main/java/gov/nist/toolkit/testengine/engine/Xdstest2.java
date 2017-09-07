@@ -60,8 +60,8 @@ public class Xdstest2 {
 		xt.setToolkit(toolkitDir);
 		xt.loadTestKitVersion();
 		this.tki = tki;
-		initSecurity(toolkitDir);
-		foofoo();
+//		initSecurity(toolkitDir);
+//		foofoo();
 	}
 	
 	

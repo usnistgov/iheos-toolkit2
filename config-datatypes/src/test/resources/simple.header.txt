@@ -1,0 +1,4 @@
+POST /sim/default__rr/reg/rb HTTP/1.1
+User-Agent: Axis2
+Host: localhost:8888
+Content-Type: application/soap+xml; charset=UTF-8; action="urn:ihe:iti:2007:RegisterDocumentSet-b"

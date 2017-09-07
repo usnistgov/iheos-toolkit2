@@ -22,7 +22,7 @@ import java.util.List;
 import java.util.Scanner;
 
 public class TestDefinition {
-	File testDir;
+	private File testDir;
 
 	private static final String testPlanFileName = "testplan.xml";
 
@@ -62,7 +62,7 @@ public class TestDefinition {
 	 * @return
 	 * @throws IOException
 	 */
-	public String getTestTitle() throws IOException {
+	String getTestTitle() throws IOException {
 		ReadMe readme = getTestReadme();
 		if (readme == null) return "";
 		return readme.line1.trim();
@@ -112,7 +112,7 @@ public class TestDefinition {
 		return parseTestPlan(Util.parse_xml(new File(new File(testDir, sectionName), "testplan.xml")), sectionName);
 	}
 
-	final static QName TEST_QNAME = new QName("test");
+	private final static QName TEST_QNAME = new QName("test");
 
 	private SectionDefinitionDAO parseTestPlan(OMElement sectionEle, String sectionName) {
 		SectionDefinitionDAO section = new SectionDefinitionDAO(sectionName);
@@ -259,7 +259,7 @@ public class TestDefinition {
 		return new File(testDir + File.separator + "index.idx");
 	}
 
-	SectionTestPlanFileMap getTestPlansFromIndex(File index) throws Exception {
+	private SectionTestPlanFileMap getTestPlansFromIndex(File index) throws Exception {
 		SectionTestPlanFileMap plans = new SectionTestPlanFileMap();
 
 		for (LinesOfFile lof = new LinesOfFile(index); lof.hasNext(); ) {
@@ -275,7 +275,7 @@ public class TestDefinition {
 		return plans;
 	}
 
-	SectionTestPlanFileMap getTestPlanFromDir(File dir) throws Exception {
+	private SectionTestPlanFileMap getTestPlanFromDir(File dir) throws Exception {
 		SectionTestPlanFileMap plans = new SectionTestPlanFileMap();
 
 		File path = new File(dir + File.separator + testPlanFileName);

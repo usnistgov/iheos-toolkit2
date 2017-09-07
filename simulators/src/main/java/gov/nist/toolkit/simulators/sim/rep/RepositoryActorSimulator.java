@@ -16,7 +16,7 @@ import gov.nist.toolkit.simulators.sim.reg.RegistryResponseGeneratorSim;
 import gov.nist.toolkit.simulators.sim.reg.SoapWrapperRegistryResponseSim;
 import gov.nist.toolkit.simulators.support.BaseDsActorSimulator;
 import gov.nist.toolkit.simulators.support.DsSimCommon;
-import gov.nist.toolkit.simulators.support.SimCommon;
+import gov.nist.toolkit.simcommon.server.SimCommon;
 import gov.nist.toolkit.utilities.xml.XmlUtil;
 import gov.nist.toolkit.validatorsSoapMessage.message.SoapMessageValidator;
 import gov.nist.toolkit.valsupport.engine.MessageValidatorEngine;
@@ -138,7 +138,7 @@ public class RepositoryActorSimulator extends BaseDsActorSimulator {
 				return false;
 			}
 
-			SoapMessageValidator smv = (SoapMessageValidator) common.getMessageValidatorIfAvailable(SoapMessageValidator.class);
+			SoapMessageValidator smv = (SoapMessageValidator) dsSimCommon.getMessageValidatorIfAvailable(SoapMessageValidator.class);
 			if (smv == null) {
 				er.err(Code.XDSRepositoryError, "Internal Error: cannot find SoapMessageValidator.class", "RepositoryActorSimulator.java", null);
 				return false;

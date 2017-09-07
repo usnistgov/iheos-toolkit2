@@ -3,7 +3,7 @@ package gov.nist.toolkit.simulators.sim.ig;
 import gov.nist.toolkit.actortransaction.client.ActorType;
 import gov.nist.toolkit.commondatatypes.MetadataSupport;
 import gov.nist.toolkit.commondatatypes.client.MetadataTypes;
-import gov.nist.toolkit.configDatatypes.SimulatorProperties;
+import gov.nist.toolkit.configDatatypes.server.SimulatorProperties;
 import gov.nist.toolkit.configDatatypes.client.TransactionType;
 import gov.nist.toolkit.errorrecording.ErrorRecorder;
 import gov.nist.toolkit.errorrecording.client.XdsErrorCode;
@@ -21,7 +21,7 @@ import gov.nist.toolkit.simcommon.server.SimManager;
 import gov.nist.toolkit.simulators.sim.reg.AdhocQueryResponseGeneratingSim;
 import gov.nist.toolkit.simulators.support.DsSimCommon;
 import gov.nist.toolkit.simulators.support.MetadataGeneratingSim;
-import gov.nist.toolkit.simulators.support.SimCommon;
+import gov.nist.toolkit.simcommon.server.SimCommon;
 import gov.nist.toolkit.sitemanagement.Sites;
 import gov.nist.toolkit.sitemanagement.client.Site;
 import gov.nist.toolkit.soap.axis2.Soap;
@@ -80,13 +80,13 @@ public class XcQuerySim extends AbstractMessageValidator implements MetadataGene
 
 		try {
 			// if request didn't validate, return so errors can be reported
-			if (common.hasErrors()) {
+			if (dsSimCommon.hasErrors()) {
 				response.add(dsSimCommon.getRegistryErrorList(), null);
 				return;
 			}
 
 			// Get body of request
-			SoapMessageValidator smv = (SoapMessageValidator) common.getMessageValidatorIfAvailable(SoapMessageValidator.class);
+			SoapMessageValidator smv = (SoapMessageValidator) dsSimCommon.getMessageValidatorIfAvailable(SoapMessageValidator.class);
 			OMElement ahqr = smv.getMessageBody();
 
 			request = new AdhocQueryRequestParser(ahqr).getAdhocQueryRequest();

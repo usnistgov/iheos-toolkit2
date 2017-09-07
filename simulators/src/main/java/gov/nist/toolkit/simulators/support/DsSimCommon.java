@@ -1,7 +1,7 @@
 package gov.nist.toolkit.simulators.support;
 
 import gov.nist.toolkit.commondatatypes.MetadataSupport;
-import gov.nist.toolkit.configDatatypes.SimulatorProperties;
+import gov.nist.toolkit.configDatatypes.server.SimulatorProperties;
 import gov.nist.toolkit.errorrecording.ErrorRecorder;
 import gov.nist.toolkit.errorrecording.GwtErrorRecorder;
 import gov.nist.toolkit.errorrecording.GwtErrorRecorderBuilder;
@@ -16,6 +16,7 @@ import gov.nist.toolkit.registrymsg.registry.RegistryResponse;
 import gov.nist.toolkit.registrymsg.registry.Response;
 import gov.nist.toolkit.registrysupport.RegistryErrorListGenerator;
 import gov.nist.toolkit.simcommon.client.SimulatorConfig;
+import gov.nist.toolkit.simcommon.server.SimCommon;
 import gov.nist.toolkit.simcommon.server.SimDb;
 import gov.nist.toolkit.simulators.sim.reg.AdhocQueryResponseGenerator;
 import gov.nist.toolkit.simulators.sim.reg.RegistryResponseSendingSim;
@@ -24,12 +25,14 @@ import gov.nist.toolkit.simulators.sim.reg.store.RegIndex;
 import gov.nist.toolkit.simulators.sim.rep.RepIndex;
 import gov.nist.toolkit.soap.http.SoapFault;
 import gov.nist.toolkit.soap.http.SoapUtil;
+import gov.nist.toolkit.utilities.io.Io;
 import gov.nist.toolkit.utilities.xml.OMFormatter;
 import gov.nist.toolkit.utilities.xml.XmlUtil;
 import gov.nist.toolkit.validatorsSoapMessage.engine.ValidateMessageService;
 import gov.nist.toolkit.validatorsSoapMessage.message.*;
 import gov.nist.toolkit.valregmsg.message.StoredDocumentInt;
 import gov.nist.toolkit.valregmsg.service.SoapActionFactory;
+import gov.nist.toolkit.valsupport.client.MessageValidationResults;
 import gov.nist.toolkit.valsupport.client.ValidationContext;
 import gov.nist.toolkit.valsupport.engine.MessageValidatorEngine;
 import gov.nist.toolkit.valsupport.engine.ValidationStep;
@@ -49,7 +52,8 @@ import java.nio.file.Paths;
 import java.util.*;
 
 /**
- *
+ * Support class for SOAP based simulators
+ * More generic stuff comes from SimCommon
  */
 public class DsSimCommon {
     SimulatorConfig simulatorConfig = null;
@@ -57,17 +61,21 @@ public class DsSimCommon {
     public RepIndex repIndex = null;
     public SimCommon simCommon;
     ErrorRecorder er = null;
+    MessageValidationResults mvr = null;
+    ValidateMessageService vms = new ValidateMessageService(null);
+
 
     Map<String, StoredDocument> documentsToAttach = null;  // cid => document
     RegistryErrorListGenerator registryErrorListGenerator = null;
 
     static Logger logger = Logger.getLogger(DsSimCommon.class);
 
-    public DsSimCommon(SimCommon simCommon, RegIndex regIndex, RepIndex repIndex) throws IOException, XdsException {
+    public DsSimCommon(SimCommon simCommon, RegIndex regIndex, RepIndex repIndex, MessageValidatorEngine mvc) throws IOException, XdsException {
         this.simCommon = simCommon;
-        this.er = this.simCommon.getCommonErrorRecorder();
+        this.er = simCommon.getCommonErrorRecorder();
         this.regIndex = regIndex;
         this.repIndex = repIndex;
+        simCommon.mvc = mvc;
 
         if (regIndex != null) {
             regIndex.setSimDb(simCommon.db);
@@ -75,13 +83,79 @@ public class DsSimCommon {
             regIndex.mc.vc = simCommon.vc;
         }
 
-        simCommon.vms = new ValidateMessageService(regIndex);
+        vms = new ValidateMessageService(regIndex);
     }
 
     // only used to issue Soap Faults
-    public DsSimCommon(SimCommon simCommon) {
+    public DsSimCommon(SimCommon simCommon, MessageValidatorEngine mvc) {
         this.simCommon = simCommon;
-        this.er = this.simCommon.getCommonErrorRecorder();
+        if (mvc == null)
+            mvc = new MessageValidatorEngine();
+        simCommon.mvc = mvc;
+        this.er = simCommon.getCommonErrorRecorder();
+    }
+
+    /**
+     * Get the collection of error/statuses/messages for the validation steps
+     * recorded so far.
+     */
+
+    public MessageValidationResults getMessageValidationResults() {
+        buildMVR();
+        return mvr;
+    }
+
+    /**
+     * Return the collection of results/status/errors
+     * @return
+     */
+    public List<ValidationStepResult> getErrors() {
+        buildMVR();
+        return mvr.getResults();
+    }
+
+    /**
+     * Examine simulator stack - errors found?
+     * @return
+     */
+    public boolean hasErrors() {
+        buildMVR();
+        return mvr.hasErrors();
+    }
+
+    public List<String> getValidatorNames() {
+        return simCommon.mvc.getValidatorNames();
+    }
+
+    /**
+     * Get MessageValidator off validation queue that is an instance of clas.
+     * @param clas
+     * @return Matching MessageValidator
+     */
+    public AbstractMessageValidator getMessageValidatorIfAvailable(@SuppressWarnings("rawtypes") Class clas) {
+        return simCommon.mvc.findMessageValidatorIfAvailable(clas.getCanonicalName());
+    }
+
+    void generateLog() throws IOException {
+        if (simCommon.mvc == null || simCommon.db == null)
+            return;
+        StringBuffer buf = new StringBuffer();
+
+        //		buf.append(mvc.toString());
+
+        Enumeration<ValidationStep> steps = simCommon.mvc.getValidationStepEnumeration();
+        while (steps.hasMoreElements()) {
+            ValidationStep step = steps.nextElement();
+            buf.append(step).append("\n");
+            ErrorRecorder er = step.getErrorRecorder();
+            if (er instanceof GwtErrorRecorder) {
+                GwtErrorRecorder ger = (GwtErrorRecorder) er;
+                buf.append(ger);
+            }
+        }
+
+
+        Io.stringToFile(simCommon.db.getLogFile(), buf.toString());
     }
 
     public void setSimulatorConfig(SimulatorConfig config) {
@@ -91,6 +165,16 @@ public class DsSimCommon {
     public SimulatorConfig getSimulatorConfig() {
         return simulatorConfig;
     }
+
+    /**
+     * Build the collection of error/statuses/messages for the validation steps
+     * so far.
+     */
+
+    void buildMVR() {
+        mvr = vms.getMessageValidationResults(simCommon.mvc);
+    }
+
 
     /**
      * Starts the validation process by scheduling the HTTP parser. This is called
@@ -111,7 +195,7 @@ public class DsSimCommon {
 
         simCommon.mvc = runValidation(simCommon.vc, simCommon.db, simCommon.mvc, gerb);
         simCommon.mvc.run();
-        simCommon.buildMVR();
+        buildMVR();
 
         int stepsWithErrors = simCommon.mvc.getErroredStepCount();
         ValidationStep lastValidationStep = simCommon.mvc.getLastValidationStep();
@@ -170,7 +254,7 @@ public class DsSimCommon {
         // need other options for other messaging environments
         AdhocQueryResponseGenerator queryResponseGenerator = new AdhocQueryResponseGenerator(simCommon, this);
         simCommon.mvc.addMessageValidator("Send AdhocQueryResponse with errors", queryResponseGenerator, er);
-//        simCommon.mvc.addMessageValidator("Send AdhocQueryResponse with errors", new RegistryResponseSendingSim(simCommon, this), er);
+//        common.mvc.addMessageValidator("Send AdhocQueryResponse with errors", new RegistryResponseSendingSim(common, this), er);
         simCommon.mvc.addMessageValidator("ResponseInSoapWrapper", new SoapWrapperRegistryResponseSim(simCommon, this, queryResponseGenerator), er);
 
         simCommon.mvc.run();
@@ -190,7 +274,7 @@ public class DsSimCommon {
         SoapMessageValidator smv = null;
 
         try {
-            smv = (SoapMessageValidator) simCommon.getMessageValidatorIfAvailable(SoapMessageValidator.class);
+            smv = (SoapMessageValidator) getMessageValidatorIfAvailable(SoapMessageValidator.class);
         } catch (Exception e) {
 
         }
@@ -218,16 +302,12 @@ public class DsSimCommon {
     }
 
     public RegistryResponse getRegistryResponse() throws XdsInternalException {
-        simCommon.buildMVR();
-        return getRegistryResponse(simCommon.mvr.getResults());
+        buildMVR();
+        return getRegistryResponse(mvr.getResults());
     }
 
     public RegistryErrorListGenerator getRegistryErrorList() throws XdsInternalException {
-        return getRegistryErrorList(simCommon.getErrors());
-    }
-
-    public boolean hasErrors() {
-        return simCommon.hasErrors();
+        return getRegistryErrorList(getErrors());
     }
 
     public void setRegistryErrorListGenerator(RegistryErrorListGenerator relg) {
@@ -574,18 +654,19 @@ public class DsSimCommon {
         try {
             if (simCommon.db != null)
                 simCommon.db.putResponseBody(respStr);
-//                Io.stringToFile(simCommon.db.getResponseBodyFile(), respStr);
-            simCommon.os.write(respStr.getBytes());
+//                Io.stringToFile(common.db.getResponseBodyFile(), respStr);
+            if (simCommon.os != null)
+                simCommon.os.write(respStr.getBytes());
             if (simCommon.vc.requiresMtom()) {
                 this.writeAttachments(simCommon.os, er);
                 simCommon.os.write(getTrailer().toString().getBytes());
             }
-            simCommon.generateLog();
+            generateLog();
 //            SimulatorConfigElement callbackElement = getSimulatorConfig().getRetrievedDocumentsModel(SimulatorConfig.TRANSACTION_NOTIFICATION_URI);
 //            if (callbackElement != null) {
 //                String callbackURI = callbackElement.asString();
 //                if (callbackURI != null && !callbackURI.equals("")) {
-//                    new Callback().notify(simCommon.db, getSimulatorConfig(), callbackURI);
+//                    new Callback().notify(common.db, getSimulatorConfig(), callbackURI);
 //                }
 //            }
         } catch (IOException e) {
@@ -758,7 +839,7 @@ public class DsSimCommon {
      * @return SoapFault instance
      */
     SoapFault getFaultFromMessageValidator(Class clas) {
-        AbstractMessageValidator mv = simCommon.getMessageValidatorIfAvailable(clas);
+        AbstractMessageValidator mv = getMessageValidatorIfAvailable(clas);
         if (mv == null) {
             logger.debug("MessageValidator for " + clas.getName() + " not found");
             return null;

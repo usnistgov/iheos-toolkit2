@@ -1,9 +1,14 @@
 package gov.nist.toolkit.xdstools2.client.util;
 
+import com.google.gwt.activity.shared.Activity;
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.place.shared.PlaceController;
-import com.google.web.bindery.event.shared.EventBus;
-import gov.nist.toolkit.xdstools2.client.event.Xdstools2EventBus;
+import gov.nist.toolkit.xdstools2.client.injector.Injector;
+import gov.nist.toolkit.xdstools2.client.tabs.SubmitResourceTab.SubmitResource;
+import gov.nist.toolkit.xdstools2.client.tabs.SubmitResourceTab.SubmitResourceActivity;
+import gov.nist.toolkit.xdstools2.client.tabs.simMsgViewerTab.SimMsgViewer;
+import gov.nist.toolkit.xdstools2.client.tabs.simMsgViewerTab.SimMsgViewerActivity;
 import gov.nist.toolkit.xdstools2.client.util.activitiesAndPlaces.ConfActorActivity;
 import gov.nist.toolkit.xdstools2.client.util.activitiesAndPlaces.SimLogActivity;
 import gov.nist.toolkit.xdstools2.client.util.activitiesAndPlaces.TestInstanceActivity;
@@ -14,13 +19,15 @@ import gov.nist.toolkit.xdstools2.client.util.activitiesAndPlaces.ToolActivity;
  * throughout the application like the event bus.
  */
 public class ClientFactoryImpl implements ClientFactory {
-    private static final EventBus EVENT_BUS = new Xdstools2EventBus();
+    private static final EventBus EVENT_BUS = Injector.INSTANCE.getEventBus(); //new Xdstools2EventBus();
     private static final PlaceController PLACE_CONTROLLER = new PlaceController(EVENT_BUS);
     private static final TestInstanceActivity TEST_INSTANCE_ACTIVITY = new TestInstanceActivity();
     private static final ToolActivity TOOL_ACTIVITY = new ToolActivity();
     private static final ConfActorActivity CONF_ACTOR_ACTIVITY = new ConfActorActivity();
     private static final SimLogActivity SIM_LOG_ACTIVITY = new SimLogActivity();
     private static final ToolkitServiceAsync TOOLKIT_SERVICES = GWT.create(ToolkitService.class);
+//    private static final SimMsgViewerActivity MSG_VIEWER_ACTIVITY = GWT.create(SimMsgViewerActivity.class);
+    private static final SubmitResourceActivity SUBMIT_RESOURCE_ACTIVITY = GWT.create(SubmitResourceActivity.class);
 
     @Override
     public EventBus getEventBus() {
@@ -56,4 +63,12 @@ public class ClientFactoryImpl implements ClientFactory {
     public SimLogActivity getSimLogActivity() {
         return SIM_LOG_ACTIVITY;
     }
+
+    @Override
+    public SimMsgViewerActivity getSimMsgViewerActivity(SimMsgViewer place) {
+        return new SimMsgViewerActivity(place);
+    }
+
+    @Override
+    public Activity getSubmitResourceActivity() { return SUBMIT_RESOURCE_ACTIVITY; }
 }

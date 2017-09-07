@@ -1,6 +1,7 @@
 package gov.nist.toolkit.configDatatypes.client;
 
 import com.google.gwt.user.client.rpc.IsSerializable;
+import gov.nist.toolkit.configDatatypes.server.SimulatorProperties;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -10,30 +11,31 @@ import java.util.List;
  *
  */
 public enum TransactionType implements Serializable, IsSerializable {
-    PROVIDE_AND_REGISTER("ITI-41", "Provide and Register", "prb", "pr.b", "pr.as", false, "urn:ihe:iti:2007:ProvideAndRegisterDocumentSet-b", "urn:ihe:iti:2007:ProvideAndRegisterDocumentSet-bResponse", true),
-    XDR_PROVIDE_AND_REGISTER("ITI-41", "XDR Provide and Register", "xdrpr", "xdrpr", "xdrpr.as", false, "urn:ihe:iti:2007:ProvideAndRegisterDocumentSet-b", "urn:ihe:iti:2007:ProvideAndRegisterDocumentSet-bResponse", true),
-    REGISTER("ITI-42", "Register", "rb", "r.b", "r.as", false, "urn:ihe:iti:2007:RegisterDocumentSet-b", "urn:ihe:iti:2007:RegisterDocumentSet-bResponse", false),
-    REGISTER_ODDE("ITI-61","Register On-Demand Document Entry", "rodde", "rodde", "rodde.as", false, "urn:ihe:iti:2010:RegisterOnDemandDocumentEntry", "urn:ihe:iti:2010:RegisterOnDemandDocumentResponse", false),
-    RETRIEVE("ITI-43", "Retrieve", "ret", "ret.b", "ret.as", true, "urn:ihe:iti:2007:RetrieveDocumentSet", "urn:ihe:iti:2007:RetrieveDocumentSetResponse", true),
-    IG_RETRIEVE("ITI-43", "Initiating Gateway Retrieve", "igr", "igr", "igr.as", false, "urn:ihe:iti:2007:RetrieveDocumentSet", "urn:ihe:iti:2007:RetrieveDocumentSetResponse", true),
-    ODDS_RETRIEVE("ITI-43", "On-Demand Document Source Retrieve", "ret", "ret.b", "ret.as", true, "urn:ihe:iti:2007:RetrieveDocumentSet", "urn:ihe:iti:2007:RetrieveDocumentSetResponse", true),
-    ISR_RETRIEVE("ITI-43", "Integrated Source/Repository Retrieve", "isr", "isr", "isr.as", false, "urn:ihe:iti:2007:RetrieveDocumentSet", "urn:ihe:iti:2007:RetrieveDocumentSetResponse", true),
-    STORED_QUERY("ITI-18", "Stored Query", "sq", "sq.b", "sq.as", false, "urn:ihe:iti:2007:RegistryStoredQuery", "urn:ihe:iti:2007:RegistryStoredQueryResponse", false),
-    XCPD("ITI-55", "XCPD Query", "xcpd", "xcpd", "xcpd.as", false, "urn:hl7-org:v3:PRPA_IN201305UV02:CrossGatewayPatientDiscovery", "urn:hl7-org:v3:PRPA_IN201305UV02:CrossGatewayPatientDiscoveryResponse", false),
-    IG_QUERY("ITI-18", "Initiating Gateway Query", "igq", "igq", "igq.as", false, "urn:ihe:iti:2007:RegistryStoredQuery", "urn:ihe:iti:2007:RegistryStoredQueryResponse", false),
-    UPDATE("ITI-57", "Update", "update", "update.b", "update.b.as", false, "urn:ihe:iti:2010:UpdateDocumentSet", "urn:ihe:iti:2010:UpdateDocumentSetResponse", false),
-    XC_QUERY("ITI-38", "Cross-Community Query", "xcq", "xcq", "xcq.as", false, "urn:ihe:iti:2007:CrossGatewayQuery", "urn:ihe:iti:2007:CrossGatewayQueryResponse", false),
-    XC_RETRIEVE("ITI-39", "Cross-Community Retrieve", "xcr", "xcr", "xcr.as", false, "urn:ihe:iti:2007:CrossGatewayRetrieve", "urn:ihe:iti:2007:CrossGatewayRetrieveResponse", true),
-    MPQ("ITI-51", "Multi-Patient Query", "mpq", "mpq", "mpq.as", false, "urn:ihe:iti:2009:MultiPatientStoredQuery", "urn:ihe:iti:2009:MultiPatientStoredQueryResponse", false),
-    XC_PATIENT_DISCOVERY("ITI-55", "Cross Community Patient Discovery", "xcpd", "xcpd", "xcpd.as", false, "urn:hl7-org:v3:PRPA_IN201305UV02:CrossGatewayPatientDiscovery", "urn:hl7-org:v3:PRPA_IN201306UV02:CrossGatewayPatientDiscovery", false),
-    DIRECT("ONC-DIRECT", "ONC-DIRECT", "direct", "direct", "direct.as", false, "", "", false),
-    PIF("PIF", "Patient Identity Feed", "pif", "pif", "pif", false, "", "", false),
-    WADO_RETRIEVE("RAD-55", "WADO Retrieve", "wado.ret.ids", "wado.ret.ids", "wado", false, false, true),
-    RET_IMG_DOC_SET("RAD-69", "Retrieve Imaging Document Set", "ret.ids", "ret.ids.b", "ret.ids.as", true, "urn:ihe:rad:2009:RetrieveImagingDocumentSet", "urn:ihe:iti:2007:RetrieveDocumentSetResponse", true),
-    RET_IMG_DOC_SET_GW("RAD-69", "Retrieve Img Doc Set Gateway", "ret.iig", "ret.iig.b", "ret.iig.as", true, "urn:ihe:rad:2009:RetrieveImagingDocumentSet", "urn:ihe:iti:2007:RetrieveDocumentSetResponse", true),
-    XC_RET_IMG_DOC_SET("RAD-75", "Cross-Community Ret Img Doc Set", "xcr.ids", "xcr.ids.b", "xcr.ids.as", true, "urn:ihe:rad:2011:CrossGatewayRetrieveImagingDocumentSet", "urn:ihe:rad:2011:CrossGatewayRetrieveImagingDocumentSetResponse", true),
-    STS("STS", "Secure Token Service", "sts", "sts", "sts.as", true, "sts", "sts", true),
-    FHIR("FHIR", "FHIR", "fhir", "fhir", "fhir.as", true, "fhir", "fhir", true);
+    PROVIDE_AND_REGISTER("ITI-41", "Provide and Register", "prb", "pr.b", "pr.as", false, "urn:ihe:iti:2007:ProvideAndRegisterDocumentSet-b", "urn:ihe:iti:2007:ProvideAndRegisterDocumentSet-bResponse", true, SimulatorProperties.pnrEndpoint, SimulatorProperties.pnrTlsEndpoint),
+    XDR_PROVIDE_AND_REGISTER("ITI-41", "XDR Provide and Register", "xdrpr", "xdrpr", "xdrpr.as", false, "urn:ihe:iti:2007:ProvideAndRegisterDocumentSet-b", "urn:ihe:iti:2007:ProvideAndRegisterDocumentSet-bResponse", true, null, null),
+    REGISTER("ITI-42", "Register", "rb", "r.b", "r.as", false, "urn:ihe:iti:2007:RegisterDocumentSet-b", "urn:ihe:iti:2007:RegisterDocumentSet-bResponse", false, SimulatorProperties.registerEndpoint, SimulatorProperties.registerTlsEndpoint),
+    REGISTER_ODDE("ITI-61","Register On-Demand Document Entry", "rodde", "rodde", "rodde.as", false, "urn:ihe:iti:2010:RegisterOnDemandDocumentEntry", "urn:ihe:iti:2010:RegisterOnDemandDocumentResponse", false, SimulatorProperties.registerOddeEndpoint, SimulatorProperties.registerOddeTlsEndpoint),
+    RETRIEVE("ITI-43", "Retrieve", "ret", "ret.b", "ret.as", true, "urn:ihe:iti:2007:RetrieveDocumentSet", "urn:ihe:iti:2007:RetrieveDocumentSetResponse", true, SimulatorProperties.retrieveEndpoint, SimulatorProperties.retrieveTlsEndpoint),
+    IG_RETRIEVE("ITI-43", "Initiating Gateway Retrieve", "igr", "igr", "igr.as", false, "urn:ihe:iti:2007:RetrieveDocumentSet", "urn:ihe:iti:2007:RetrieveDocumentSetResponse", true, SimulatorProperties.igrEndpoint, SimulatorProperties.igrTlsEndpoint),
+    ODDS_RETRIEVE("ITI-43", "On-Demand Document Source Retrieve", "ret", "ret.b", "ret.as", true, "urn:ihe:iti:2007:RetrieveDocumentSet", "urn:ihe:iti:2007:RetrieveDocumentSetResponse", true, null, null),
+    ISR_RETRIEVE("ITI-43", "Integrated Source/Repository Retrieve", "isr", "isr", "isr.as", false, "urn:ihe:iti:2007:RetrieveDocumentSet", "urn:ihe:iti:2007:RetrieveDocumentSetResponse", true, null, null),
+    STORED_QUERY("ITI-18", "Stored Query", "sq", "sq.b", "sq.as", false, "urn:ihe:iti:2007:RegistryStoredQuery", "urn:ihe:iti:2007:RegistryStoredQueryResponse", false, SimulatorProperties.storedQueryEndpoint, SimulatorProperties.storedQueryTlsEndpoint),
+    XCPD("ITI-55", "XCPD Query", "xcpd", "xcpd", "xcpd.as", false, "urn:hl7-org:v3:PRPA_IN201305UV02:CrossGatewayPatientDiscovery", "urn:hl7-org:v3:PRPA_IN201305UV02:CrossGatewayPatientDiscoveryResponse", false, null, null),
+    IG_QUERY("ITI-18", "Initiating Gateway Query", "igq", "igq", "igq.as", false, "urn:ihe:iti:2007:RegistryStoredQuery", "urn:ihe:iti:2007:RegistryStoredQueryResponse", false, SimulatorProperties.igqEndpoint, SimulatorProperties.igqTlsEndpoint),
+    UPDATE("ITI-57", "Update", "update", "update.b", "update.b.as", false, "urn:ihe:iti:2010:UpdateDocumentSet", "urn:ihe:iti:2010:UpdateDocumentSetResponse", false, SimulatorProperties.updateEndpoint, SimulatorProperties.updateTlsEndpoint),
+    XC_QUERY("ITI-38", "Cross-Community Query", "xcq", "xcq", "xcq.as", false, "urn:ihe:iti:2007:CrossGatewayQuery", "urn:ihe:iti:2007:CrossGatewayQueryResponse", false, SimulatorProperties.xcqEndpoint, SimulatorProperties.xcqTlsEndpoint),
+    XC_RETRIEVE("ITI-39", "Cross-Community Retrieve", "xcr", "xcr", "xcr.as", false, "urn:ihe:iti:2007:CrossGatewayRetrieve", "urn:ihe:iti:2007:CrossGatewayRetrieveResponse", true, SimulatorProperties.xcrEndpoint, SimulatorProperties.xcrTlsEndpoint),
+    MPQ("ITI-51", "Multi-Patient Query", "mpq", "mpq", "mpq.as", false, "urn:ihe:iti:2009:MultiPatientStoredQuery", "urn:ihe:iti:2009:MultiPatientStoredQueryResponse", false, null, null),
+    XC_PATIENT_DISCOVERY("ITI-55", "Cross Community Patient Discovery", "xcpd", "xcpd", "xcpd.as", false, "urn:hl7-org:v3:PRPA_IN201305UV02:CrossGatewayPatientDiscovery", "urn:hl7-org:v3:PRPA_IN201306UV02:CrossGatewayPatientDiscovery", false, null, null),
+    DIRECT("ONC-DIRECT", "ONC-DIRECT", "direct", "direct", "direct.as", false, "", "", false, null, null),
+    PIF("PIF", "Patient Identity Feed", "pif", "pif", "pif", false, "", "", false, null, null),
+    WADO_RETRIEVE("RAD-55", "WADO Retrieve", "wado.ret.ids", "wado.ret.ids", "wado", false, false, SimulatorProperties.wadoEndpoint, SimulatorProperties.wadoTlsEndpoint, true),
+    RET_IMG_DOC_SET("RAD-69", "Retrieve Imaging Document Set", "ret.ids", "ret.ids.b", "ret.ids.as", true, "urn:ihe:rad:2009:RetrieveImagingDocumentSet", "urn:ihe:iti:2007:RetrieveDocumentSetResponse", true, SimulatorProperties.idsrEndpoint, SimulatorProperties.idsrTlsEndpoint),
+    RET_IMG_DOC_SET_GW("RAD-69", "Retrieve Img Doc Set Gateway", "ret.iig", "ret.iig.b", "ret.iig.as", true, "urn:ihe:rad:2009:RetrieveImagingDocumentSet", "urn:ihe:iti:2007:RetrieveDocumentSetResponse", true, SimulatorProperties.idsrIigEndpoint, SimulatorProperties.idsrIigTlsEndpoint),
+    XC_RET_IMG_DOC_SET("RAD-75", "Cross-Community Ret Img Doc Set", "xcr.ids", "xcr.ids.b", "xcr.ids.as", true, "urn:ihe:rad:2011:CrossGatewayRetrieveImagingDocumentSet", "urn:ihe:rad:2011:CrossGatewayRetrieveImagingDocumentSetResponse", true, SimulatorProperties.xcirEndpoint, SimulatorProperties.xcirTlsEndpoint),
+    STS("STS", "Secure Token Service", "sts", "sts", "sts.as", true, "sts", "sts", true, null, null),
+    FHIR("FHIR", "FHIR", "fhir", "fhir", "fhir.as", true, "fhir", "fhir", true, SimulatorProperties.fhirEndpoint, SimulatorProperties.fhirTlsEndpoint, true);
+//    ANY("ANY", "ANY", "any", "any", "any.as", false, "any", "any", false, null, null, false);
 
 	private static final long serialVersionUID = 1L;
     String id = "";
@@ -47,11 +49,14 @@ public enum TransactionType implements Serializable, IsSerializable {
     boolean requiresMtom = false;
     boolean http = false; // Is this Http only (non-SOAP) transaction
 //    Map<String, TransactionType> basicTypeMap = new HashMap<>();
+    boolean fhir = true;
+    String endpointSimPropertyName;
+    String tlsEndpointSimPropertyName;
 
 	TransactionType() {
 	}  // For GWT
 
-    TransactionType(String id, String name, String shortName, String code, String asyncCode, boolean needsRepUid, String requestAction, String responseAction, boolean requiresMtom) {
+    TransactionType(String id, String name, String shortName, String code, String asyncCode, boolean needsRepUid, String requestAction, String responseAction, boolean requiresMtom, String endpointSimPropertyName, String tlsEndpointSimPropertyName) {
         this.id = id;
         this.name = name;
         this.shortName = shortName;
@@ -61,17 +66,39 @@ public enum TransactionType implements Serializable, IsSerializable {
         this.requestAction = requestAction;
         this.responseAction = responseAction;
         this.requiresMtom = requiresMtom;
+        this.endpointSimPropertyName = endpointSimPropertyName;
+        this.tlsEndpointSimPropertyName = tlsEndpointSimPropertyName;
     }
-    TransactionType(String id, String name, String shortName, String code, String asyncCode, boolean needsRepUid, boolean requiresMtom, boolean httpOnly) {
+
+    TransactionType(String id, String name, String shortName, String code, String asyncCode, boolean needsRepUid, String requestAction, String responseAction, boolean requiresMtom, String endpointSimPropertyName, String tlsEndpointSimPropertyName, boolean fhir) {
+        this.id = id;
+        this.name = name;
+        this.shortName = shortName;
+        this.code = code;
+        this.asyncCode = asyncCode;
+        this.needsRepUid = needsRepUid;
+        this.requestAction = requestAction;
+        this.responseAction = responseAction;
+        this.requiresMtom = requiresMtom;
+        this.endpointSimPropertyName = endpointSimPropertyName;
+        this.tlsEndpointSimPropertyName = tlsEndpointSimPropertyName;
+        this.fhir = fhir;
+    }
+
+    TransactionType(String id, String name, String shortName, String code, String asyncCode, boolean needsRepUid, boolean requiresMtom, String endpointSimPropertyName, String tlsEndpointSimPropertyName, boolean httpOnly) {
        this.id = id;
        this.name = name;
        this.shortName = shortName;
        this.code = code;
        this.asyncCode = asyncCode;
        this.needsRepUid = needsRepUid;
-       this.requiresMtom = requiresMtom;
+       this.requiresMtom = requiresMtom;this.endpointSimPropertyName = endpointSimPropertyName;
+        this.endpointSimPropertyName = endpointSimPropertyName;
+        this.tlsEndpointSimPropertyName = tlsEndpointSimPropertyName;
        this.http = httpOnly;
    }
+
+   public boolean isFhir() { return fhir;  }
 
     public boolean isRequiresMtom() {
         return requiresMtom;
@@ -187,5 +214,11 @@ public enum TransactionType implements Serializable, IsSerializable {
         return l;
     }
 
+    public String getEndpointSimPropertyName() {
+        return endpointSimPropertyName;
+    }
 
+    public String getTlsEndpointSimPropertyName() {
+        return tlsEndpointSimPropertyName;
+    }
 }

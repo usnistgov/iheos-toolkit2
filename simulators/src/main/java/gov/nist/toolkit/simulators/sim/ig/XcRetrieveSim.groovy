@@ -1,6 +1,6 @@
 package gov.nist.toolkit.simulators.sim.ig
 
-import gov.nist.toolkit.configDatatypes.SimulatorProperties
+import gov.nist.toolkit.configDatatypes.server.SimulatorProperties
 import gov.nist.toolkit.configDatatypes.client.TransactionType
 import gov.nist.toolkit.errorrecording.ErrorRecorder
 import gov.nist.toolkit.errorrecording.client.XdsErrorCode
@@ -8,7 +8,7 @@ import gov.nist.toolkit.registrymsg.repository.*
 import gov.nist.toolkit.simcommon.client.SimulatorConfig
 import gov.nist.toolkit.simcommon.server.SimManager
 import gov.nist.toolkit.simulators.support.DsSimCommon
-import gov.nist.toolkit.simulators.support.SimCommon
+import gov.nist.toolkit.simcommon.server.SimCommon
 import gov.nist.toolkit.sitemanagement.Sites
 import gov.nist.toolkit.sitemanagement.client.Site
 import gov.nist.toolkit.soap.axis2.Soap
@@ -69,7 +69,7 @@ public class XcRetrieveSim extends AbstractMessageValidator {
 
         try {
             // if request didn't validate, return so errors can be reported
-            if (common.hasErrors()) {
+            if (dsSimCommon.hasErrors()) {
                 response.add(dsSimCommon.getRegistryErrorList(), null);
                 throw new NonException();  // need to run finally code
             }
@@ -83,7 +83,7 @@ public class XcRetrieveSim extends AbstractMessageValidator {
             Sites remoteSites = new Sites(sites);
 
             // Get body of request
-            SoapMessageValidator smv = (SoapMessageValidator) common.getMessageValidatorIfAvailable(SoapMessageValidator.class);
+            SoapMessageValidator smv = (SoapMessageValidator) dsSimCommon.getMessageValidatorIfAvailable(SoapMessageValidator.class);
             OMElement ahqr = smv.getMessageBody();
             RetrieveRequestParser requestParser = new RetrieveRequestParser(ahqr);
             RetrieveRequestModel requestModel = requestParser.getRequest();

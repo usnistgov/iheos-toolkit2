@@ -1,15 +1,9 @@
 package gov.nist.toolkit.toolkitApi;
 
 
-import javax.ws.rs.client.Client;
-import javax.ws.rs.client.ClientBuilder;
-import javax.ws.rs.client.Entity;
-import javax.ws.rs.client.Invocation.Builder;
-import javax.ws.rs.client.WebTarget;
-import javax.ws.rs.core.Configuration;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
-
+import gov.nist.toolkit.configDatatypes.server.SimulatorActorType;
+import gov.nist.toolkit.toolkitServicesCommon.*;
+import gov.nist.toolkit.toolkitServicesCommon.resource.*;
 import gov.nist.toolkit.toolkitServicesCommon.resource.xdm.XdmReport;
 import gov.nist.toolkit.toolkitServicesCommon.resource.xdm.XdmReportResource;
 import gov.nist.toolkit.toolkitServicesCommon.resource.xdm.XdmRequest;
@@ -18,24 +12,14 @@ import org.glassfish.jersey.client.ClientConfig;
 import org.glassfish.jersey.filter.LoggingFilter;
 import org.glassfish.jersey.jackson.JacksonFeature;
 
-import gov.nist.toolkit.configDatatypes.SimulatorActorType;
-import gov.nist.toolkit.toolkitServicesCommon.LeafClassRegistryResponse;
-import gov.nist.toolkit.toolkitServicesCommon.RawSendRequest;
-import gov.nist.toolkit.toolkitServicesCommon.RawSendResponse;
-import gov.nist.toolkit.toolkitServicesCommon.RetrieveRequest;
-import gov.nist.toolkit.toolkitServicesCommon.RetrieveResponse;
-import gov.nist.toolkit.toolkitServicesCommon.SimConfig;
-import gov.nist.toolkit.toolkitServicesCommon.SimId;
-import gov.nist.toolkit.toolkitServicesCommon.StoredQueryRequest;
-import gov.nist.toolkit.toolkitServicesCommon.ToolkitFactory;
-import gov.nist.toolkit.toolkitServicesCommon.resource.LeafClassRegistryResponseResource;
-import gov.nist.toolkit.toolkitServicesCommon.resource.OperationResultResource;
-import gov.nist.toolkit.toolkitServicesCommon.resource.RawSendResponseResource;
-import gov.nist.toolkit.toolkitServicesCommon.resource.RetImgDocSetReqResource;
-import gov.nist.toolkit.toolkitServicesCommon.resource.RetImgDocSetRespResource;
-import gov.nist.toolkit.toolkitServicesCommon.resource.RetrieveResponseResource;
-import gov.nist.toolkit.toolkitServicesCommon.resource.SimConfigResource;
-import gov.nist.toolkit.toolkitServicesCommon.resource.SimIdResource;
+import javax.ws.rs.client.Client;
+import javax.ws.rs.client.ClientBuilder;
+import javax.ws.rs.client.Entity;
+import javax.ws.rs.client.Invocation.Builder;
+import javax.ws.rs.client.WebTarget;
+import javax.ws.rs.core.Configuration;
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
 
 /**
  * Builder class for building and using Simulator configurations.  Simulators come in two flavors:
@@ -70,13 +54,25 @@ public class EngineSpi {
 
     public SimConfigResource create(String id, String user, SimulatorActorType actorType, String environmentName) throws ToolkitServiceException {
         String actorTypeString = actorType.getName();
-        SimId simId = ToolkitFactory.newSimId(id, user, actorTypeString, environmentName);
+        SimId simId = ToolkitFactory.newSimId(id, user, actorTypeString, environmentName, actorType == SimulatorActorType.FHIR_SERVER);
         SimIdResource bean = new SimIdResource(simId);
         logger.info(bean.describe());
         Response response = target
                 .path("simulators")
                 .request(MediaType.APPLICATION_JSON)
                 .post(Entity.json(bean));
+        exceptionOnNot200(response);
+//        if (response.getStatus() != 200) {
+//            logger.error("status is " + response.getStatus());
+//            for (String key : response.getHeaders().keySet()) {
+//                logger.error(key + ": " + response.getHeaderString(key));
+//            }
+//            throw new ToolkitServiceException(response.readEntity(OperationResultResource.class));
+//        }
+        return response.readEntity(SimConfigResource.class);
+    }
+
+    private void exceptionOnNot200(Response response) throws ToolkitServiceException {
         if (response.getStatus() != 200) {
             logger.error("status is " + response.getStatus());
             for (String key : response.getHeaders().keySet()) {
@@ -84,7 +80,6 @@ public class EngineSpi {
             }
             throw new ToolkitServiceException(response.readEntity(OperationResultResource.class));
         }
-        return response.readEntity(SimConfigResource.class);
     }
 
     /**
@@ -111,15 +106,44 @@ public class EngineSpi {
         throw new ToolkitServiceException(response);
     }
 
+    /**
+     * This cannot be used to delete a FHIR sim
+     * @param id
+     * @param user
+     * @throws ToolkitServiceException
+     */
     public void delete(String id, String user) throws ToolkitServiceException {
         SimId simId = ToolkitFactory.newSimId(id, user, null, null);
         delete(simId);
     }
 
+    /**
+     * You must use this call to delete a FHIR sim
+     * @param simId
+     * @throws ToolkitServiceException
+     */
     public void delete(SimId simId) throws ToolkitServiceException {
-        Response response = target.path("simulators/" + simId.getUser() + "__" + simId.getId()).request().delete();
-        if (response.getStatus() != 200)
-            throw new ToolkitServiceException(response);
+        if (simId.isFhir()) {
+            SimIdResource bean = new SimIdResource(simId);
+            logger.info(bean.describe());
+            Response response = target
+                    .path("simulators/_delete")
+                    .request(MediaType.APPLICATION_JSON)
+                    .post(Entity.json(bean));
+            exceptionOnNot200(response);
+//            if (response.getStatus() != 200) {
+//                logger.error("status is " + response.getStatus());
+//                for (String key : response.getHeaders().keySet()) {
+//                    logger.error(key + ": " + response.getHeaderString(key));
+//                }
+//                throw new ToolkitServiceException(response.readEntity(OperationResultResource.class));
+//            }
+
+        } else {
+            Response response = target.path("simulators/" + simId.getUser() + "__" + simId.getId()).request().delete();
+            if (response.getStatus() != 200)
+                throw new ToolkitServiceException(response);
+        }
     }
 
     /**

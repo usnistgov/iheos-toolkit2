@@ -7,7 +7,7 @@ import gov.nist.toolkit.registrymsg.registry.Response;
 import gov.nist.toolkit.simulators.sim.reg.AdhocQueryResponseGeneratingSim;
 import gov.nist.toolkit.simulators.support.DsSimCommon;
 import gov.nist.toolkit.simulators.support.MetadataGeneratingSim;
-import gov.nist.toolkit.simulators.support.SimCommon;
+import gov.nist.toolkit.simcommon.server.SimCommon;
 import gov.nist.toolkit.simulators.support.TransactionSimulator;
 import gov.nist.toolkit.validatorsSoapMessage.message.SoapMessageValidator;
 import gov.nist.toolkit.valregmsg.registry.AdhocQueryResponse;
@@ -59,7 +59,7 @@ public class SqSim  extends TransactionSimulator implements MetadataGeneratingSi
 			er.err(XdsErrorCode.Code.XDSRegistryError, startUpException);
 
 		// if request didn't validate, return so errors can be reported
-		if (common.hasErrors()) {
+		if (dsSimCommon.hasErrors()) {
 			try {
 				response.add(dsSimCommon.getRegistryErrorList(), null);
 			} catch (XdsInternalException e) {
@@ -70,7 +70,7 @@ public class SqSim  extends TransactionSimulator implements MetadataGeneratingSi
 		
 		// run stored query
 		try {
-			SoapMessageValidator smv = (SoapMessageValidator) common.getMessageValidatorIfAvailable(SoapMessageValidator.class);
+			SoapMessageValidator smv = (SoapMessageValidator) dsSimCommon.getMessageValidatorIfAvailable(SoapMessageValidator.class);
 			OMElement ahqr = smv.getMessageBody();
 			
 			StoredQueryFactory fact = null;

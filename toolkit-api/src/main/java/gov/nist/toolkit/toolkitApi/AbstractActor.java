@@ -1,19 +1,16 @@
 package gov.nist.toolkit.toolkitApi;
 
-import java.util.Collection;
-import java.util.List;
-
-import javax.ws.rs.core.Response;
-
-import gov.nist.toolkit.configDatatypes.SimulatorProperties;
 import gov.nist.toolkit.configDatatypes.client.PatientErrorMap;
 import gov.nist.toolkit.configDatatypes.client.TransactionType;
+import gov.nist.toolkit.configDatatypes.server.SimulatorProperties;
 import gov.nist.toolkit.toolkitServicesCommon.RefList;
 import gov.nist.toolkit.toolkitServicesCommon.SimConfig;
 import gov.nist.toolkit.toolkitServicesCommon.resource.RefListResource;
-import gov.nist.toolkit.toolkitServicesCommon.resource.SimConfigResource;
 
+import javax.ws.rs.core.Response;
 import java.io.IOException;
+import java.util.Collection;
+import java.util.List;
 
 /**
  *
@@ -49,7 +46,7 @@ abstract class AbstractActor implements AbstractActorInterface {
 
     /**
      * Set a property that takes a String value
-     * @param name property name. See {@link gov.nist.toolkit.configDatatypes.SimulatorProperties} for property names.
+     * @param name property name. See {@link SimulatorProperties} for property names.
      * @param value property value
      */
     public void setProperty(String name, String value) {
@@ -60,7 +57,7 @@ abstract class AbstractActor implements AbstractActorInterface {
     }
     /**
      * Set a property that takes a boolean value
-     * @param name property name. See {@link gov.nist.toolkit.configDatatypes.SimulatorProperties} for property names.
+     * @param name property name. See {@link SimulatorProperties} for property names.
      * @param value property value
      */
     public void setProperty(String name, boolean value) {
@@ -68,7 +65,7 @@ abstract class AbstractActor implements AbstractActorInterface {
     }
     /**
      * Is named property a boolean value?
-     * @param name property name. See {@link gov.nist.toolkit.configDatatypes.SimulatorProperties} for property names.
+     * @param name property name. See {@link SimulatorProperties} for property names.
      * @return boolean
      */
     public boolean isBoolean(String name) { return config.isBoolean(name);}
@@ -83,13 +80,13 @@ abstract class AbstractActor implements AbstractActorInterface {
 
     /**
      * Return named property as a String
-     * @param name property name. See {@link gov.nist.toolkit.configDatatypes.SimulatorProperties} for property names.
+     * @param name property name. See {@link SimulatorProperties} for property names.
      * @return String value
      */
     public String asString(String name) { return config.asString(name); }
     /**
      * Return named property as a String
-     * @param name property name. See {@link gov.nist.toolkit.configDatatypes.SimulatorProperties} for property names.
+     * @param name property name. See {@link SimulatorProperties} for property names.
      * @return boolean value
      */
     public boolean asBoolean(String name) { return config.asBoolean(name); }
@@ -165,4 +162,6 @@ abstract class AbstractActor implements AbstractActorInterface {
 //        return config.getPatientErrorMap();
     }
 
+    @Override
+    public boolean isFhir() { return false; }
 }

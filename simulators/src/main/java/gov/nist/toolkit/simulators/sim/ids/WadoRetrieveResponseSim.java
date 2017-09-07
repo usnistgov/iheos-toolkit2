@@ -8,7 +8,7 @@ import gov.nist.toolkit.errorrecording.ErrorRecorder;
 import gov.nist.toolkit.errorrecording.client.XdsErrorCode.Code;
 import gov.nist.toolkit.http.HttpMessageBa;
 import gov.nist.toolkit.simulators.support.DsSimCommon;
-import gov.nist.toolkit.simulators.support.SimCommon;
+import gov.nist.toolkit.simcommon.server.SimCommon;
 import gov.nist.toolkit.simulators.support.StoredDocument;
 import gov.nist.toolkit.simulators.support.TransactionSimulator;
 import gov.nist.toolkit.valsupport.engine.MessageValidatorEngine;

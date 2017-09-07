@@ -40,8 +40,10 @@
     <inherits name="gov.nist.toolkit.xdsexception.xdsexceptions"/>
     <inherits name="gov.nist.toolkit.interactionmodel.interactionModel"/>
     <inherits name="gov.nist.toolkit.interactiondiagram.interactionDiagram"/>
+    <inherits name="gov.nist.toolkit.datasets.datasets"/>
 
     <inherits name="elemental.Elemental"/>
+    <inherits name="com.google.gwt.inject.Inject"/>
 
     <!-- Specify the app entry point class.                         -->
     <entry-point class='gov.nist.toolkit.xdstools2.client.Xdstools2EP'/>

@@ -5,7 +5,7 @@ package gov.nist.toolkit.simulators.servlet;
 
 import edu.wustl.mir.erl.ihe.xdsi.util.Utility;
 import gov.nist.toolkit.actortransaction.client.ATFactory;
-import gov.nist.toolkit.configDatatypes.SimulatorProperties;
+import gov.nist.toolkit.configDatatypes.server.SimulatorProperties;
 import gov.nist.toolkit.configDatatypes.client.TransactionType;
 import gov.nist.toolkit.errorrecording.ErrorRecorder;
 import gov.nist.toolkit.errorrecording.GwtErrorRecorderBuilder;
@@ -21,7 +21,7 @@ import gov.nist.toolkit.simcommon.server.GenericSimulatorFactory;
 import gov.nist.toolkit.simcommon.server.RuntimeManager;
 import gov.nist.toolkit.simcommon.server.SimDb;
 import gov.nist.toolkit.simulators.support.BaseHttpActorSimulator;
-import gov.nist.toolkit.simulators.support.SimCommon;
+import gov.nist.toolkit.simcommon.server.SimCommon;
 import gov.nist.toolkit.utilities.io.Io;
 import gov.nist.toolkit.valsupport.client.MessageValidationResults;
 import gov.nist.toolkit.valsupport.client.ValidationContext;
@@ -134,7 +134,7 @@ public class HttpSimServlet extends HttpServlet {
          ValidationContext vc = DefaultValidationContextFactory.validationContext();
          SimulatorConfigElement asce = simConfig.get(SimulatorProperties.codesEnvironment);
          if (asce != null) vc.setCodesFilename(asce.asString());
-         SimCommon simCommon = new SimCommon(db, simConfig, request.getRequestURI().startsWith("https"), vc, mvc, request, response);
+         SimCommon simCommon = new SimCommon(db, simConfig, request.getRequestURI().startsWith("https"), vc, request, response, mvc);
          
 
          ErrorRecorder er = new GwtErrorRecorderBuilder().buildNewErrorRecorder();

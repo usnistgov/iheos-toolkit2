@@ -4,7 +4,7 @@
 println 'Starting...'
 
 import gov.nist.toolkit.adt.ListenerFactory
-import gov.nist.toolkit.configDatatypes.SimulatorProperties
+import gov.nist.toolkit.configDatatypes.server.SimulatorProperties
 import gov.nist.toolkit.installation.Installation
 import gov.nist.toolkit.itTests.xc.GatewayBuilder
 import gov.nist.toolkit.results.client.TestLogs

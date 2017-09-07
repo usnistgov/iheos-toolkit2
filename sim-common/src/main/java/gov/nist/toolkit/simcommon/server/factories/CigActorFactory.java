@@ -63,8 +63,8 @@ public Site getActorSite(SimulatorConfig sc, Site site) throws NoSimulatorExcept
 
    boolean isAsync = false;
 
-   new IGActorFactory().getActorSite(sc, site);
-   new IigActorFactory().getActorSite(sc, site);
+   site = new IGActorFactory().getActorSite(sc, site);
+   site = new IigActorFactory().getActorSite(sc, site);
 
    return site;
 }

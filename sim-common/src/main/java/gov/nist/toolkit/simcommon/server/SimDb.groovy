@@ -30,13 +30,25 @@ public class SimDb {
 	SimId simId = null;    // ip is the simulator id
 	//	private File dbRoot = null;  // base of the simulator db
 	private String event = null;
+	private Date eventDate;
 	private File simDir = null;   // directory within simdb that represents this event
 	private String actor = null;
 	private String transaction = null;
 	private File transactionDir = null;
 	static private Logger logger = Logger.getLogger(SimDb.class);
 
+	static final String MARKER = 'MARKER';
+
 	public SimDb mkSim(SimId simid, String actor) throws IOException, NoSimException {
+
+		// if this is a FHIR sim there is a different factory method to use
+		ActorType actorType = ActorType.findActor(actor);
+		if (actorType == ActorType.FHIR_SERVER)
+			simid.forFhir()
+		if (simid.isFhir()) {
+			return mkfSim(simid)
+		}
+
 		File dbRoot = getSimDbFile();
 		validateSimId(simid);
 		if (!dbRoot.exists())
@@ -55,6 +67,29 @@ public class SimDb {
 		db.setSimulatorType(actor);
 		return db;
 	}
+
+	/**
+	 * Given partial information (user and id) build the full simId
+	 * @param simId1
+	 * @return
+	 */
+	static SimId getFullSimId(SimId simId) {
+		SimId ssimId = new SimId(simId.getUser(), simId.getId())
+		if (exists(ssimId)) {
+			// soap based sim
+			SimDb simDb = new SimDb(ssimId)
+			return simIdBuilder(simDb.getSimDir())
+		} else {
+			ssimId = ssimId.forFhir()
+			if (exists(ssimId)) {
+				// FHIR based sim
+				SimDb simDb = new SimDb(ssimId)
+				return simIdBuilder(simDb.getSimDir())
+			}
+		}
+		throw new BadSimIdException("Simulator " + simId.toString() + " does not exist.")
+	}
+
 
 	/**
 	 * Return base dir of SimDb storage
@@ -76,7 +111,17 @@ public class SimDb {
 		return Installation.instance().fhirSimDbFile()
 	}
 
+	static boolean isSim(File simRoot) {
+		isPrefix(simRoot, getSimDbFile())
+	}
 
+	static boolean isFSim(File simRoot) {
+		isPrefix(simRoot, getFSimDbFile())
+	}
+
+	static boolean isPrefix(File file, File possiblePrefix) {
+		file.getCanonicalPath().startsWith(possiblePrefix.getCanonicalPath())
+	}
 
 	/**
 	 * Does simulator exist?
@@ -86,7 +131,8 @@ public class SimDb {
 	 * simdb directory, false otherwise.
 	 */
 	static public boolean exists(SimId simId) {
-		return new File(getSimDbFile(simId), simId.toString()).exists();
+		File f = new File(getSimDbFile(simId), simId.toString())
+		return f.exists();
 	}
 
 	/**
@@ -140,6 +186,18 @@ public class SimDb {
 
 	}
 
+	void openMostRecentEvent(String actor, String transaction) {
+		transactionDir = transactionDirectory(actor, transaction)
+		event = transactionDir.list().sort().last()
+	}
+
+	static SimDb open(SimDbEvent event) {
+		SimDb db = new SimDb(event.simId)
+		db.transactionDir = db.transactionDirectory(event.actor, event.trans)
+		db.event =  event.eventId
+		return db
+	}
+
 	public PidDb getPidDb() { return pidDb; }
 
 	public static void validateSimId(SimId simId) throws IOException {
@@ -167,6 +225,11 @@ public class SimDb {
 	}
 	private static boolean isSimDir(File dir) { return new File(dir, "simId.txt").exists(); }
 
+
+	public Date getEventDate() {
+		return eventDate;
+	}
+
 	/**
 	 * create new sim
 	 * @param simId
@@ -175,7 +238,7 @@ public class SimDb {
 	 * @throws IOException
 	 * @throws NoSimException
 	 */
-	public SimDb(SimId simId, String actor, String transaction) throws IOException, NoSimException {
+	public SimDb(SimId simId, String actor, String transaction) /*throws IOException, NoSimException*/ {
 		this(simId);
 		this.actor = actor;
 		this.transaction = transaction;
@@ -190,10 +253,43 @@ public class SimDb {
 		} else
 			return;
 
-		Date date = new Date();
-		File eventDir = mkEventDir(date);
+		eventDate = new Date();
+		File eventDir = mkEventDir(eventDate);
 		eventDir.mkdirs();
-		Serialize.out(new File(eventDir, "date.ser"), date);
+		Serialize.out(new File(eventDir, "date.ser"), eventDate);
+	}
+
+	static SimDb createMarker(SimId simId) {
+		return new SimDb(simId, MARKER, MARKER)
+	}
+
+	List<SimDbEvent> getEventsSinceMarker() {
+		List<SimDbEvent> events = getAllEvents()
+		Map<String, SimDbEvent> eventMap = [:]
+		events.each { SimDbEvent event -> eventMap[event.eventId] = event }
+		def ordered = eventMap.keySet().sort().reverse()
+		List<SimDbEvent> selected = []
+		for (String event : ordered) {
+			if (MARKER == eventMap[event].actor)
+				break
+			selected << eventMap[event]
+		}
+		return selected
+	}
+
+	/**
+	 * Used by simproxy to get outbound sim half of proxy to have same event id (time stamp)
+	 * @param otherSimDb
+	 */
+	void mirrorEvent(SimDb otherSimDb, String actor, String transaction) {
+		this.actor = actor
+		this.transaction = transaction
+		transactionDir = transactionDirectory(actor, transaction)
+		String event = otherSimDb.event
+		eventDate = otherSimDb.getEventDate()
+		File eventDir = mkEventDir(event)
+		eventDir.mkdirs()
+		Serialize.out(new File(eventDir, 'date.ser'), eventDate)
 	}
 
 	File transactionDirectory(String actor, String transaction) {
@@ -216,8 +312,12 @@ public class SimDb {
 	}
 
 	private File mkEventDir(Date date) {
-		int incr = 0;
 		String eventBase = Installation.asFilenameBase(date);
+		return mkEventDir(eventBase)
+	}
+
+	private File mkEventDir(String eventBase) {
+		int incr = 0;
 		while (true) {
 			event = eventBase;
 			if (incr != 0)
@@ -233,11 +333,6 @@ public class SimDb {
 		return getEventDir();
 	}
 
-	void openMostRecentEvent(String actor, String transaction) {
-		transactionDir = transactionDirectory(actor, transaction)
-		event = transactionDir.list().sort().last()
-	}
-
 	public String getEvent() { return event; }
 	public void setEvent(String _event) { event = _event; }
 
@@ -251,8 +346,16 @@ public class SimDb {
 		}
 	}
 
+	String getClientIpAddress() {
+		File eventDir = getEventDir()
+		if (eventDir?.isDirectory()) {
+			return Io.stringFromFile(new File(eventDir, 'ip.txt'))
+		}
+		return null;
+	}
+
 	public SimDb(TransactionInstance ti) throws IOException, NoSimException, BadSimIdException {
-		this(new SimId(ti.simId));
+		this(getFullSimId(new SimId(ti.simId)));
 
 		this.actor = ti.actorType.getShortName();
 		this.transaction = ti.trans;
@@ -268,10 +371,11 @@ public class SimDb {
 	}
 
 	// actor, transaction, and event must be filled in
-	private Date getEventDate() throws IOException, ClassNotFoundException {
+	private Date retrieveEventDate() throws IOException, ClassNotFoundException {
 		if (transactionDir == null || event == null) return null;
 		File eventDir = new File(transactionDir, event);
-		return (Date) Serialize.in(new File(eventDir, "date.ser"));
+		eventDate = (Date) Serialize.in(new File(eventDir, "date.ser"));
+		return eventDate;
 	}
 
 	/**
@@ -325,18 +429,35 @@ public class SimDb {
 		}
 	}
 
-	static List<SimId> getAllSimIds() throws BadSimIdException {
-		File[] files = getSimDbFile().listFiles();
-		List<SimId> ids = new ArrayList<>();
-		if (files == null) return ids;
-
-		for (File dir : files) {
-			if (isSimDir(dir))
-				ids.add(new SimId(dir.getName()));
-		}
-		return ids;
+	static SimId simIdBuilder(File simDefDir) {
+		SimId simId = new SimId(simDefDir.name)
+		if (isFSim(simDefDir)) simId.forFhir()
+		simId.actorType = new SimDb(simId).getSimulatorType()
+		simId
 	}
 
+	static List<SimId> getAllSimIds() throws BadSimIdException {
+
+		List soapSimIds = getSimDbFile().listFiles().findAll { File file ->
+			isSimDir(file)
+		}.collect { File dir ->
+			simIdBuilder (dir)
+		}
+
+		List fhirSimIds = getFSimDbFile().listFiles().findAll { File file ->
+			isSimDir(file)
+		}.collect { File dir ->
+			simIdBuilder(dir)
+		}
+
+		(soapSimIds + fhirSimIds) as List<SimId>
+	}
+
+	/**
+	 * should always use SimId - carries more information
+	 * @return
+	 */
+	@Obsolete
 	static List<String> getAllSimNames() {
 		getAllSimIds().collect { it.toString()}
 	}
@@ -593,11 +714,11 @@ public class SimDb {
 					t.trans = name;
 
 					transactionDir = new File(actor, name);
-					logger.debug("transaction dir is " + transactionDir);
+					//logger.debug("transaction dir is " + transactionDir);
 					event = t.messageId;
 					Date date = null;
 					try {
-						date = getEventDate();
+						date = retrieveEventDate();
 					} catch (IOException e) {
 					} catch (ClassNotFoundException e) {
 					}
@@ -614,7 +735,7 @@ public class SimDb {
 						}
 					} catch (IOException e) {}
 
-					logger.debug("Found " + t);
+					//logger.debug("Found " + t);
 					transList.add(t);
 				}
 			}
@@ -677,9 +798,14 @@ public class SimDb {
 	static final String REQUEST_BODY_BIN_FILE = 'request_body.bin'
 	static final String RESPONSE_HEADER_FILE = 'response_hdr.txt'
 	static final String RESPONSE_BODY_TXT_FILE = 'response_body.txt'
+	static final String REQUEST_URI_FILE = 'request_uri.txt'
 
 	private File getRequestMsgHdrFile(String filenamebase) {
 		return new File(getDBFilePrefix(filenamebase), REQUEST_HEADER_FILE);
+	}
+
+	File getRequestURIFile(String filenamebase) {
+		return new File(getDBFilePrefix(filenamebase), REQUEST_URI_FILE)
 	}
 
 	private File getRequestMsgBodyFile(String filenamebase) {
@@ -790,6 +916,19 @@ public class SimDb {
 		return null;
 	}
 
+	private List<SimDbEvent> getAllEvents() {
+		List<SimDbEvent> eventDirs = []
+		for (File actorDir : simDir.listFiles()) {
+			if (!actorDir.isDirectory()) continue
+			for (File transDir : actorDir.listFiles()) {
+				if (!transDir.isDirectory()) continue
+				for (File eventDir : transDir.listFiles()) {
+					eventDirs << new SimDbEvent(simId, actorDir.name, transDir.name, eventDir.name)
+				}
+			}
+		}
+		return eventDirs
+	}
 
 
 	public File getTransactionEvent(String simid, String actor, String trans, String event) {
@@ -851,6 +990,10 @@ public class SimDb {
 		return ids;
 	}
 
+	File getRequestURIFile() {
+		return getRequestURIFile(event)
+	}
+
 	public File getRequestHeaderFile() {
 		return getRequestMsgHdrFile(event);
 	}
@@ -863,6 +1006,15 @@ public class SimDb {
 		return getAlternateRequestMsgBodyFile(event);
 	}
 
+	void putRequestURI(String uri) {
+		File f = getRequestURIFile()
+		OutputStream out = new FileOutputStream(f)
+		try {
+			out.write(uri.bytes);
+		} finally {
+			out.close();
+		}
+	}
 
 	public void putRequestHeaderFile(byte[] bytes) throws IOException {
 		File f = getRequestHeaderFile();
@@ -958,13 +1110,14 @@ public class SimDb {
 	}
 
 	/**
-	 * Base location of simulator
+	 * Base location of FHIR simulator
 	 * @param simId - which simulator
 	 * @return
 	 */
 	static File getSimBase(SimId simId) {
 		return new File(getResDbFile(), simId.toString())
 	}
+
 
 	/**
 	 * delete FHIR sim
@@ -986,11 +1139,11 @@ public class SimDb {
 		return getSimBase(simId).exists()
 	}
 
-	SimDb mkfSim(SimId simid) throws IOException, NoSimException {
+	static SimDb mkfSim(SimId simid) throws IOException, NoSimException {
 		return mkfSimi(getResDbFile(), simid, BASE_TYPE)
 	}
 
-	SimDb mkfSim(SimId simid, String actor) throws IOException, NoSimException {
+	static SimDb mkfSim(SimId simid, String actor) throws IOException, NoSimException {
 		return mkfSimi(getResDbFile(), simid, actor)
 	}
 

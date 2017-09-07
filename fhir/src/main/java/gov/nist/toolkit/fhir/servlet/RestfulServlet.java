@@ -2,7 +2,6 @@ package gov.nist.toolkit.fhir.servlet;
 
 import ca.uhn.fhir.context.FhirContext;
 import ca.uhn.fhir.rest.server.IResourceProvider;
-import ca.uhn.fhir.rest.server.RestfulServer;
 import gov.nist.toolkit.fhir.server.resourceProvider.PatientResourceProvider;
 
 import javax.servlet.ServletException;
@@ -12,7 +11,7 @@ import java.util.List;
 /**
  *
  */
-public class RestfulServlet extends RestfulServer {
+public class RestfulServlet extends ToolkitRestfulServer {
     private static final long serialVersionUID = 1L;
 
 

@@ -305,6 +305,8 @@ public class PlanContext extends BasicContext {
 
 				FileOutputStream os;
 
+				File parentDir = logFile.getParentFile();
+				parentDir.mkdirs();
 				os = new FileOutputStream(logFile);
 				os.write(x.getBytes());
 				os.flush();

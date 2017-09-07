@@ -160,6 +160,8 @@ public class Installation {
         return now;
     }
 
+    public File datasets() { return new File(externalCache(), "datasets"); }
+
 	public File externalCache() { return externalCache; }
 	public void externalCache(File externalCache) {
 			this.externalCache = externalCache;
@@ -225,6 +227,12 @@ public class Installation {
    public File simDbFile() {
         return new File(externalCache(), "simdb");
     }
+
+    public File resourceCacheFile() {
+       File f = new File(externalCache(), "resourceCache");
+       f.mkdirs();
+       return f;
+   }
 
     public File fhirSimDbFile() {
         return new File(externalCache(), "resdb");

@@ -5,7 +5,7 @@ import gov.nist.toolkit.registrymetadata.Metadata;
 import gov.nist.toolkit.registrymsg.registry.Response;
 import gov.nist.toolkit.simulators.sim.reg.RegistryResponseGeneratingSim;
 import gov.nist.toolkit.simulators.support.MetadataGeneratingSim;
-import gov.nist.toolkit.simulators.support.SimCommon;
+import gov.nist.toolkit.simcommon.server.SimCommon;
 import gov.nist.toolkit.simulators.support.TransactionSimulator;
 import gov.nist.toolkit.valsupport.engine.MessageValidatorEngine;
 

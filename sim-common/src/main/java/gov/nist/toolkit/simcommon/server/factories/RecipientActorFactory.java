@@ -1,7 +1,7 @@
 package gov.nist.toolkit.simcommon.server.factories;
 
 import gov.nist.toolkit.actortransaction.client.ActorType;
-import gov.nist.toolkit.configDatatypes.SimulatorProperties;
+import gov.nist.toolkit.configDatatypes.server.SimulatorProperties;
 import gov.nist.toolkit.configDatatypes.client.TransactionType;
 import gov.nist.toolkit.simcommon.client.SimId;
 import gov.nist.toolkit.simcommon.client.Simulator;
@@ -80,6 +80,18 @@ public class RecipientActorFactory  extends AbstractActorFactory implements IAct
 				true, 
 				isAsync));
 
+		site.addTransaction(new TransactionBean(
+				TransactionType.PROVIDE_AND_REGISTER.getCode(),
+				RepositoryType.NONE,
+				sc.get(SimulatorProperties.pnrEndpoint).asString(),
+				false,
+				isAsync));
+		site.addTransaction(new TransactionBean(
+				TransactionType.PROVIDE_AND_REGISTER.getCode(),
+				RepositoryType.NONE,
+				sc.get(SimulatorProperties.pnrTlsEndpoint).asString(),
+				true,
+				isAsync));
 		return site;
 	}
 

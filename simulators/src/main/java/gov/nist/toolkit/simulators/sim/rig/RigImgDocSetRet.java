@@ -1,6 +1,6 @@
 package gov.nist.toolkit.simulators.sim.rig;
 
-import gov.nist.toolkit.configDatatypes.SimulatorProperties;
+import gov.nist.toolkit.configDatatypes.server.SimulatorProperties;
 import gov.nist.toolkit.configDatatypes.client.TransactionType;
 import gov.nist.toolkit.errorrecording.ErrorRecorder;
 import gov.nist.toolkit.errorrecording.client.XdsErrorCode;
@@ -8,7 +8,7 @@ import gov.nist.toolkit.registrymsg.repository.*;
 import gov.nist.toolkit.simcommon.client.SimulatorConfig;
 import gov.nist.toolkit.simcommon.server.SimManager;
 import gov.nist.toolkit.simulators.support.DsSimCommon;
-import gov.nist.toolkit.simulators.support.SimCommon;
+import gov.nist.toolkit.simcommon.server.SimCommon;
 import gov.nist.toolkit.sitemanagement.Sites;
 import gov.nist.toolkit.sitemanagement.client.Site;
 import gov.nist.toolkit.sitemanagement.client.TransactionBean.RepositoryType;
@@ -100,7 +100,7 @@ public class RigImgDocSetRet extends AbstractMessageValidator {
          }
 
          // Request failed initial validation
-         if (common.hasErrors()) {
+         if (dsSimCommon.hasErrors()) {
             response.add(dsSimCommon.getRegistryErrorList(), null);
             throw new NonException();
          }
@@ -117,7 +117,7 @@ public class RigImgDocSetRet extends AbstractMessageValidator {
 
          // Get SOAP body from inbound RAD-75
          SoapMessageValidator smv =
-               (SoapMessageValidator) common.getMessageValidatorIfAvailable(SoapMessageValidator.class);
+               (SoapMessageValidator) dsSimCommon.getMessageValidatorIfAvailable(SoapMessageValidator.class);
          OMElement ridrBody = smv.getMessageBody();
          
          // Parse SOAP Request

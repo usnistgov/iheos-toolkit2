@@ -1,7 +1,7 @@
 package gov.nist.toolkit.simulators.sim.reg;
 
 import gov.nist.toolkit.actorfactory.PatientIdentityFeedServlet;
-import gov.nist.toolkit.configDatatypes.SimulatorProperties;
+import gov.nist.toolkit.configDatatypes.server.SimulatorProperties;
 import gov.nist.toolkit.configDatatypes.client.TransactionType;
 import gov.nist.toolkit.simcommon.client.NoSimException;
 import gov.nist.toolkit.simcommon.client.SimId;
@@ -16,7 +16,7 @@ import gov.nist.toolkit.simulators.sim.reg.store.MetadataCollection;
 import gov.nist.toolkit.simulators.sim.reg.store.RegIndex;
 import gov.nist.toolkit.simulators.support.BaseDsActorSimulator;
 import gov.nist.toolkit.simulators.support.DsSimCommon;
-import gov.nist.toolkit.simulators.support.SimCommon;
+import gov.nist.toolkit.simcommon.server.SimCommon;
 import gov.nist.toolkit.valsupport.client.ValidationContext;
 import gov.nist.toolkit.valsupport.engine.MessageValidatorEngine;
 import org.apache.log4j.Logger;
@@ -86,7 +86,7 @@ public class RegistryActorSimulator extends BaseDsActorSimulator {
 		RegistryResponseGeneratorSim registryResponseGenerator;
 
         logger.info(getSimulatorConfig());
-		
+
 		common.getValidationContext().updateEnabled = updateEnabled;
 		
 		if (transactionType.equals(TransactionType.REGISTER)) {
@@ -139,10 +139,10 @@ public class RegistryActorSimulator extends BaseDsActorSimulator {
 			}
 
 			// commit updates (delta) to registry database
-			if (!common.hasErrors())
+			if (!dsSimCommon.hasErrors())
 				commit(mvc, common, rsim.delta);
 			
-			return !common.hasErrors();
+			return !dsSimCommon.hasErrors();
 
 		}
 		if (transactionType.equals(TransactionType.REGISTER_ODDE)) { // ITI-61 is an optional implementation of the registry actor
@@ -194,10 +194,10 @@ public class RegistryActorSimulator extends BaseDsActorSimulator {
 			mvc.run();
 
 			// commit updates (delta) to registry database
-			if (!common.hasErrors())
+			if (!dsSimCommon.hasErrors())
 				commit(mvc, common, rsim.delta);
 
-			return !common.hasErrors();
+			return !dsSimCommon.hasErrors();
 
 
 		}
@@ -278,11 +278,11 @@ public class RegistryActorSimulator extends BaseDsActorSimulator {
 			// run all the queued up validators so we can check for errors
 			mvc.run();
 
-			if (!common.hasErrors())
+			if (!dsSimCommon.hasErrors())
 				commit(mvc, common, musim.delta);
 
 
-			return !common.hasErrors();
+			return !dsSimCommon.hasErrors();
 
 		}
 		else {
@@ -314,7 +314,7 @@ public class RegistryActorSimulator extends BaseDsActorSimulator {
 
 			mvc.run();
 
-			if (!common.hasErrors()) {
+			if (!dsSimCommon.hasErrors()) {
 				dsSimCommon.regIndex.save();
 			}
 		}

@@ -34,4 +34,6 @@ public interface SimId {
      * @return value
      */
     String getFullId();
+
+    boolean isFhir();
 }

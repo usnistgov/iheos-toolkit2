@@ -38,6 +38,7 @@ public class CrgActorFactory extends AbstractActorFactory implements IActorFacto
       
       // Group with a Responding Gateway
       RGActorFactory rg = new RGActorFactory();
+      rg.setTransactionOnly(isTransactionOnly());
       SimulatorConfig rgConfig = rg.buildNew(simm, simId, true).getConfig(0);
       sc.add(rgConfig);
       
@@ -63,8 +64,8 @@ public class CrgActorFactory extends AbstractActorFactory implements IActorFacto
 
       boolean isAsync = false;
 
-      new RGActorFactory().getActorSite(sc, site);
-      new RigActorFactory().getActorSite(sc, site);
+      site = new RGActorFactory().getActorSite(sc, site);
+      site = new RigActorFactory().getActorSite(sc, site);
 
       return site;
    }

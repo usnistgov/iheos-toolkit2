@@ -1,27 +1,23 @@
 package gov.nist.toolkit.xdstools2.client;
 
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Style;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.logical.shared.SelectionEvent;
 import com.google.gwt.event.logical.shared.SelectionHandler;
 import com.google.gwt.user.client.Window;
-import com.google.gwt.user.client.ui.Anchor;
-import com.google.gwt.user.client.ui.DeckLayoutPanel;
-import com.google.gwt.user.client.ui.DockLayoutPanel;
-import com.google.gwt.user.client.ui.HTML;
-import com.google.gwt.user.client.ui.HorizontalPanel;
-import com.google.gwt.user.client.ui.TabBar;
-import com.google.gwt.user.client.ui.Widget;
+import com.google.gwt.user.client.ui.*;
 import gov.nist.toolkit.xdstools2.client.event.Xdstools2EventBus;
 import gov.nist.toolkit.xdstools2.client.event.tabContainer.V2TabOpenedEvent;
 import gov.nist.toolkit.xdstools2.client.util.ClientUtils;
 
+import javax.inject.Inject;
 import java.util.ArrayList;
 import java.util.List;
 
 public class TabContainer {
-	private static TabContainer me = new TabContainer();
+//	private static TabContainer me = new TabContainer();
 
 	// holds TabBar and currently selected panel from deck
 	// TabBar in North section.  Center holds SimpleLayoutPanel. SimpleLayoutPanel
@@ -36,7 +32,7 @@ public class TabContainer {
 	private static List<DockLayoutPanel> deck = new ArrayList<>();
 
 	static {
-		OUTERPANEL.addNorth(TABBAR, 3.0);
+		OUTERPANEL.addNorth(TABBAR, 4.0);
 		OUTERPANEL.add(INNER_DECKPANEL);
 
 		TABBAR.addSelectionHandler(new SelectionHandler<Integer>() {
@@ -47,9 +43,12 @@ public class TabContainer {
 		});
 	}
 
-	private TabContainer() {}
+	@Inject
+	public TabContainer() {
+		GWT.log("Build TabContainer");
+	}
 
-	public static TabContainer instance() { return me; }
+	//public static TabContainer instance() { return me; }
 
 	/**
 	 * Create a new tab/tool.
@@ -57,12 +56,15 @@ public class TabContainer {
 	 * @param title - title to appear in the little tab at the top
 	 * @param select - should be selected upon creation (ignored)
      */
-	public void addTab(DockLayoutPanel w, String title, boolean select) {
+	public HTML addTab(DockLayoutPanel w, String title, boolean select) {
 
 		w.getElement().getStyle().setMarginLeft(4, Style.Unit.PX);
 		w.getElement().getStyle().setMarginRight(4, Style.Unit.PX);
 
-		TABBAR.addTab(buildTabHeaderWidget(title, w));
+		int tabIndex = TABBAR.getTabCount();
+		HTML titleHtml = new HTML(title);
+		formatTitle(titleHtml);
+		TABBAR.addTab(buildTabHeaderWidget(titleHtml, w));
 
 		deck.add(w);
 		TABBAR.selectTab(TABBAR.getTabCount() - 1);
@@ -71,6 +73,7 @@ public class TabContainer {
 		Xdstools2.getInstance().resizeToolkit();
 
 		announceOpen(title);
+		return titleHtml;
 	}
 
 	public static void selectTab() {
@@ -102,7 +105,15 @@ public class TabContainer {
 
 	}
 
-	private Widget buildTabHeaderWidget(String title, final DockLayoutPanel content) {
+	private void formatTitle(HTML titleHtml) {
+		String h = titleHtml.getHTML();
+		if (h.indexOf(' ') == -1) {
+			h = h + " .";
+			titleHtml.setHTML(h);
+		}
+	}
+
+	private Widget buildTabHeaderWidget(HTML titleHtml, final DockLayoutPanel content) {
 		HorizontalPanel panel = new HorizontalPanel();
 		Anchor x = new Anchor("X");
 		x.setStyleName("roundedButton2");
@@ -118,8 +129,10 @@ public class TabContainer {
 			}
 		});
 		panel.add(x);
-		HTML h = new HTML(title);
-		panel.add(h);
+
+		formatTitle(titleHtml);
+
+		panel.add(titleHtml);
 		return panel;
 	}
 

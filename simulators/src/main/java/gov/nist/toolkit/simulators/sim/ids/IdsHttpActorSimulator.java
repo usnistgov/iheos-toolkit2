@@ -54,6 +54,11 @@ public class IdsHttpActorSimulator extends BaseHttpActorSimulator {
    private DsSimCommon dsSimCommon = null;
    public void setDsSimCommon(DsSimCommon ds) {dsSimCommon = ds;}
 
+   @Override
+   public boolean run(TransactionType transactionType, MessageValidatorEngine mvc) throws IOException {
+      return run(transactionType, mvc, null);
+   }
+
    /*
     * (non-Javadoc)
     * 
@@ -63,12 +68,12 @@ public class IdsHttpActorSimulator extends BaseHttpActorSimulator {
     * gov.nist.toolkit.valsupport.engine.MessageValidatorEngine)
     */
    @Override
-   public boolean run(TransactionType transactionType, MessageValidatorEngine mvc) throws IOException {
+   public boolean run(TransactionType transactionType, MessageValidatorEngine mvc, String validation) throws IOException {
 
       logger.info("IdsHttpActorSimulator: run - transactionType = " + transactionType);
       simCommon.setLogger(logger);
       GwtErrorRecorderBuilder gerb = new GwtErrorRecorderBuilder();
-      if (dsSimCommon == null) dsSimCommon = new DsSimCommon(simCommon);
+      if (dsSimCommon == null) dsSimCommon = new DsSimCommon(simCommon, mvc);
 
       logger.debug(transactionType);
       switch (transactionType) {

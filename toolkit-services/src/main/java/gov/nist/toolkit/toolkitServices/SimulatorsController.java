@@ -2,7 +2,7 @@ package gov.nist.toolkit.toolkitServices;
 
 import gov.nist.toolkit.actortransaction.client.ActorType;
 import gov.nist.toolkit.commondatatypes.MetadataSupport;
-import gov.nist.toolkit.configDatatypes.SimulatorProperties;
+import gov.nist.toolkit.configDatatypes.server.SimulatorProperties;
 import gov.nist.toolkit.configDatatypes.client.TransactionType;
 import gov.nist.toolkit.errorrecording.TextErrorRecorder;
 import gov.nist.toolkit.errorrecording.factories.ErrorRecorderBuilder;
@@ -285,7 +285,8 @@ public class SimulatorsController {
     }
 
     /**
-     * Delete simulator with id
+     * Delete simulator with
+     * This cannot be used with FHIR since the FHIR'ness of it is not passed
      * @param id
      * @return
      */
@@ -302,6 +303,25 @@ public class SimulatorsController {
         }
         return Response.status(Response.Status.OK).build();
     }
+
+
+    @POST
+    @Path("/_delete")
+    @Consumes("application/json")
+    @Produces("application/json")
+    public Response deleteFhir(final SimIdResource simIdResource) {
+        logger.info("Delete " + simIdResource.asSimId());
+        try {
+            SimId simId = ToolkitFactory.asServerSimId(simIdResource);
+            if (simIdResource.isFhir()) simId.forFhir();
+            api.deleteSimulatorIfItExists(simId);
+        }
+        catch (Throwable e) {
+            return new ResultBuilder().mapExceptionToResponse(e, simIdResource.getId(), ResponseType.THROW);
+        }
+        return Response.status(Response.Status.OK).build();
+    }
+
 
     /**
      * Get full SimId given id

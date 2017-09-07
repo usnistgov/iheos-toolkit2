@@ -11,6 +11,7 @@ import com.google.gwt.user.client.ui.Widget;
 import gov.nist.toolkit.sitemanagement.client.SiteSpec;
 import gov.nist.toolkit.tk.client.TkProps;
 import gov.nist.toolkit.xdstools2.client.event.testSession.TestSessionManager2;
+import gov.nist.toolkit.xdstools2.client.injector.Injector;
 import gov.nist.toolkit.xdstools2.client.selectors.EnvironmentManager;
 import gov.nist.toolkit.xdstools2.client.util.ClientUtils;
 import gov.nist.toolkit.xdstools2.shared.command.CommandContext;
@@ -44,7 +45,7 @@ public abstract class ToolWindow {
 	private FlowPanel westPanel = new FlowPanel();
 
 	public HorizontalPanel menuPanel = new HorizontalPanel();
-	protected TabContainer tabContainer;
+//	protected TabContainer tabContainer;
 	String helpHTML;
 	String topMessage = null;
 
@@ -59,6 +60,7 @@ public abstract class ToolWindow {
 	abstract public String getWindowShortName();
 
 	public ToolWindow() {
+		tabContainer = Injector.INSTANCE.getTabContainer();
 		String title = getTitle();
 		// .addNorth MUST come before .display - a condition of DockLayoutPanel
 		if (title != null)
@@ -70,6 +72,7 @@ public abstract class ToolWindow {
 	}
 
 	public ToolWindow(double east, double west) {
+		tabContainer = Injector.INSTANCE.getTabContainer();
 		String title = getTitle();
 		// .addNorth MUST come before .display - a condition of DockLayoutPanel
 		if (title != null)
@@ -109,9 +112,12 @@ public abstract class ToolWindow {
 
 	public void setCurrentTestSession(String testSession) { testSessionManager.setCurrentTestSession(testSession);}
 
+	private TabContainer tabContainer;
+
 	public void registerTab(boolean select, String tabName) {
 		this.tabName=tabName;
-		TabContainer.instance().addTab(tabTopRawPanel, tabName, select);
+		assert(tabContainer != null);
+		tabContainer.addTab(tabTopRawPanel, tabName, select);
 	}
 
 	public TkProps tkProps() {

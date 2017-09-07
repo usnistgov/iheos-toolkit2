@@ -43,6 +43,11 @@
 
    -->
 
+    <filter>
+        <filter-name>fhir-request-log</filter-name>
+        <filter-class>gov.nist.toolkit.fhir.servlet.FhirServletFilter</filter-class>
+    </filter>
+
     <!--  The filter is necessary so the simulator response headers can be captured for the message log -->
     <filter>
         <filter-name>response-header-log</filter-name>
@@ -53,6 +58,11 @@
         <filter-name>response-header-log2</filter-name>
         <filter-class>gov.nist.toolkit.simulators.servlet.SimServletFilter</filter-class>
     </filter>
+
+    <filter-mapping>
+        <filter-name>fhir-request-log</filter-name>
+        <url-pattern>/fsim/*</url-pattern>
+    </filter-mapping>
 
     <filter-mapping>
         <filter-name>response-header-log</filter-name>
@@ -188,7 +198,7 @@
 
     <servlet-mapping>
         <servlet-name>fhirServlet</servlet-name>
-        <url-pattern>/fhir/*</url-pattern>
+        <url-pattern>/fsim/*</url-pattern>
     </servlet-mapping>
 
     <servlet-mapping>

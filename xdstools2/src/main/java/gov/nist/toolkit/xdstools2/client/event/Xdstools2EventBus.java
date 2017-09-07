@@ -1,7 +1,7 @@
 package gov.nist.toolkit.xdstools2.client.event;
 
+import com.google.gwt.event.shared.SimpleEventBus;
 import com.google.web.bindery.event.shared.HandlerRegistration;
-import com.google.web.bindery.event.shared.SimpleEventBus;
 import gov.nist.toolkit.xdstools2.client.event.EnvironmentChangedEvent.EnvironmentChangedEventHandler;
 
 /**

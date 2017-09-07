@@ -1,10 +1,10 @@
 package gov.nist.toolkit.toolkitServicesCommon.resource;
 
 
-import javax.xml.bind.annotation.XmlRootElement;
-
 import gov.nist.toolkit.toolkitServicesCommon.SimId;
 import gov.nist.toolkit.toolkitServicesCommon.ToolkitFactory;
+
+import javax.xml.bind.annotation.XmlRootElement;
 
 /**
  * Not for Public Use.
@@ -13,12 +13,13 @@ import gov.nist.toolkit.toolkitServicesCommon.ToolkitFactory;
 public class SimIdResource implements gov.nist.toolkit.toolkitServicesCommon.SimId {
     String user = null;
     String id = null;
+    private boolean fhir = false;
     /**
      * If set, this overrides the default, which is user__id.
      */
-    String fullId = null;
+    private String fullId = null;
     String actorType = null;
-    String environmentName = null;
+    private String environmentName = null;
 
     public SimIdResource() { }
 
@@ -27,6 +28,7 @@ public class SimIdResource implements gov.nist.toolkit.toolkitServicesCommon.Sim
         id = simId.getId();
         actorType = simId.getActorType();
         environmentName = simId.getEnvironmentName();
+        fhir = simId.isFhir();
     }
 
     @Override
@@ -69,6 +71,15 @@ public class SimIdResource implements gov.nist.toolkit.toolkitServicesCommon.Sim
         return user + "__" + id;
     }
 
+    public void forFhir() {
+        fhir = true;
+    }
+
+    @Override
+    public boolean isFhir() {
+        return fhir;
+    }
+
     public void setFullId(String fid) {
        fullId = fid;}
 
@@ -95,6 +106,9 @@ public class SimIdResource implements gov.nist.toolkit.toolkitServicesCommon.Sim
         buf.append("\"");
         buf.append(environmentName);
         buf.append("\"");
+        buf.append(", fhir=");
+        buf.append("\"");
+        buf.append(fhir);
 
         buf.append("}");
         return buf.toString();

@@ -3,6 +3,7 @@ package gov.nist.toolkit.xdstools2.client.util;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import gov.nist.toolkit.actortransaction.client.TransactionInstance;
 import gov.nist.toolkit.configDatatypes.client.Pid;
+import gov.nist.toolkit.datasets.shared.DatasetModel;
 import gov.nist.toolkit.interactionmodel.client.InteractingEntity;
 import gov.nist.toolkit.results.client.*;
 import gov.nist.toolkit.results.shared.Test;
@@ -12,6 +13,7 @@ import gov.nist.toolkit.services.shared.Message;
 import gov.nist.toolkit.session.client.ConformanceSessionValidationStatus;
 import gov.nist.toolkit.session.client.logtypes.TestOverviewDTO;
 import gov.nist.toolkit.session.client.logtypes.TestPartFileDTO;
+import gov.nist.toolkit.simcommon.client.SimId;
 import gov.nist.toolkit.simcommon.client.Simulator;
 import gov.nist.toolkit.simcommon.client.SimulatorConfig;
 import gov.nist.toolkit.simcommon.client.SimulatorStats;
@@ -163,7 +165,7 @@ public interface ToolkitServiceAsync {
     void getAllSimConfigs(GetAllSimConfigsRequest user, AsyncCallback<List<SimulatorConfig>> callback);
     void putSimConfig(SimConfigRequest request, AsyncCallback<String> callback);
     void deleteConfig(SimConfigRequest request, AsyncCallback<String> callback);
-    void getActorSimulatorNameMap(CommandContext context,AsyncCallback<List<String>> callback);
+    void getSimIdsForUser(GetSimIdsForUserRequest context, AsyncCallback<List<SimId>> callback);
     //	void getSimulatorTransactionNames(String simid, AsyncCallback<List<String>> notify);
     void removeOldSimulators(CommandContext context,AsyncCallback<Integer> callback);
     void getSimulatorStats(GetSimulatorStatsRequest request, AsyncCallback<List<SimulatorStats>> callback);
@@ -251,6 +253,12 @@ public interface ToolkitServiceAsync {
     void getAssignedSiteForTestSession(CommandContext context, AsyncCallback<String> async);
 
     void setAssignedSiteForTestSession(SetAssignedSiteForTestSessionRequest request, AsyncCallback<Void> async);
+
+    void getAllDatasets(CommandContext context, AsyncCallback<List<DatasetModel>> callback);
+
+    void fhirCreate(FhirCreateRequest request, AsyncCallback<List<Result>> async);
+
+    void getFullSimId(GetFullSimIdRequest request, AsyncCallback<SimId> async);
 
     // Tab configuration
     void getToolTabConfig(GetTabConfigRequest request, AsyncCallback<TabConfig> callback);

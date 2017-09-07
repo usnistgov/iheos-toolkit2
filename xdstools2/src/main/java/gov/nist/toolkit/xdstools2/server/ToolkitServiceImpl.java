@@ -9,6 +9,8 @@ import gov.nist.toolkit.actortransaction.client.TransactionInstance;
 import gov.nist.toolkit.configDatatypes.client.Pid;
 import gov.nist.toolkit.configDatatypes.client.PidSet;
 import gov.nist.toolkit.configDatatypes.client.TransactionType;
+import gov.nist.toolkit.datasets.server.DatasetFactory;
+import gov.nist.toolkit.datasets.shared.DatasetModel;
 import gov.nist.toolkit.installation.ExternalCacheManager;
 import gov.nist.toolkit.installation.Installation;
 import gov.nist.toolkit.installation.PropertyServiceManager;
@@ -30,6 +32,7 @@ import gov.nist.toolkit.session.client.ConformanceSessionValidationStatus;
 import gov.nist.toolkit.session.client.logtypes.TestOverviewDTO;
 import gov.nist.toolkit.session.client.logtypes.TestPartFileDTO;
 import gov.nist.toolkit.session.server.Session;
+import gov.nist.toolkit.session.server.serviceManager.FhirServiceManager;
 import gov.nist.toolkit.session.server.serviceManager.QueryServiceManager;
 import gov.nist.toolkit.session.server.serviceManager.XdsTestServiceManager;
 import gov.nist.toolkit.simcommon.client.SimId;
@@ -71,83 +74,7 @@ import gov.nist.toolkit.xdstools2.shared.RegistryStatus;
 import gov.nist.toolkit.xdstools2.shared.RepositoryStatus;
 import gov.nist.toolkit.xdstools2.shared.command.CommandContext;
 import gov.nist.toolkit.xdstools2.shared.command.InitializationResponse;
-import gov.nist.toolkit.xdstools2.shared.command.request.AllTestRequest;
-import gov.nist.toolkit.xdstools2.shared.command.request.BuildIdsTestOrchestrationRequest;
-import gov.nist.toolkit.xdstools2.shared.command.request.BuildIgTestOrchestrationRequest;
-import gov.nist.toolkit.xdstools2.shared.command.request.BuildIigTestOrchestrationRequest;
-import gov.nist.toolkit.xdstools2.shared.command.request.BuildRSNAEdgeTestOrchestrationRequest;
-import gov.nist.toolkit.xdstools2.shared.command.request.BuildRecTestOrchestrationRequest;
-import gov.nist.toolkit.xdstools2.shared.command.request.BuildRegTestOrchestrationRequest;
-import gov.nist.toolkit.xdstools2.shared.command.request.BuildRepTestOrchestrationRequest;
-import gov.nist.toolkit.xdstools2.shared.command.request.BuildRgTestOrchestrationRequest;
-import gov.nist.toolkit.xdstools2.shared.command.request.BuildRigTestOrchestrationRequest;
-import gov.nist.toolkit.xdstools2.shared.command.request.DeleteSimFileRequest;
-import gov.nist.toolkit.xdstools2.shared.command.request.DeleteSingleTestRequest;
-import gov.nist.toolkit.xdstools2.shared.command.request.DeleteSiteRequest;
-import gov.nist.toolkit.xdstools2.shared.command.request.ExecuteSimMessageRequest;
-import gov.nist.toolkit.xdstools2.shared.command.request.FindDocuments2Request;
-import gov.nist.toolkit.xdstools2.shared.command.request.FindDocumentsRequest;
-import gov.nist.toolkit.xdstools2.shared.command.request.FoldersRequest;
-import gov.nist.toolkit.xdstools2.shared.command.request.GeneratePidRequest;
-import gov.nist.toolkit.xdstools2.shared.command.request.GetAllRequest;
-import gov.nist.toolkit.xdstools2.shared.command.request.GetAllSimConfigsRequest;
-import gov.nist.toolkit.xdstools2.shared.command.request.GetAssociationsRequest;
-import gov.nist.toolkit.xdstools2.shared.command.request.GetCollectionRequest;
-import gov.nist.toolkit.xdstools2.shared.command.request.GetDocumentsRequest;
-import gov.nist.toolkit.xdstools2.shared.command.request.GetFoldersRequest;
-import gov.nist.toolkit.xdstools2.shared.command.request.GetInteractionFromModelRequest;
-import gov.nist.toolkit.xdstools2.shared.command.request.GetNewSimulatorRequest;
-import gov.nist.toolkit.xdstools2.shared.command.request.GetObjectsRequest;
-import gov.nist.toolkit.xdstools2.shared.command.request.GetOnDemandDocumentEntryDetailsRequest;
-import gov.nist.toolkit.xdstools2.shared.command.request.GetRawLogsRequest;
-import gov.nist.toolkit.xdstools2.shared.command.request.GetRelatedRequest;
-import gov.nist.toolkit.xdstools2.shared.command.request.GetSectionTestPartFileRequest;
-import gov.nist.toolkit.xdstools2.shared.command.request.GetSelectedMessageRequest;
-import gov.nist.toolkit.xdstools2.shared.command.request.GetSimConfigsRequest;
-import gov.nist.toolkit.xdstools2.shared.command.request.GetSimulatorEventRequest;
-import gov.nist.toolkit.xdstools2.shared.command.request.GetSimulatorStatsRequest;
-import gov.nist.toolkit.xdstools2.shared.command.request.GetSiteNamesByTranTypeRequest;
-import gov.nist.toolkit.xdstools2.shared.command.request.GetSiteNamesRequest;
-import gov.nist.toolkit.xdstools2.shared.command.request.GetSiteRequest;
-import gov.nist.toolkit.xdstools2.shared.command.request.GetSrcStoresDocValRequest;
-import gov.nist.toolkit.xdstools2.shared.command.request.GetStsSamlAssertionMapRequest;
-import gov.nist.toolkit.xdstools2.shared.command.request.GetStsSamlAssertionRequest;
-import gov.nist.toolkit.xdstools2.shared.command.request.GetSubmissionSetAndContentsRequest;
-import gov.nist.toolkit.xdstools2.shared.command.request.GetSubmissionSetsRequest;
-import gov.nist.toolkit.xdstools2.shared.command.request.GetTabConfigRequest;
-import gov.nist.toolkit.xdstools2.shared.command.request.GetTestDetailsRequest;
-import gov.nist.toolkit.xdstools2.shared.command.request.GetTestLogDetailsRequest;
-import gov.nist.toolkit.xdstools2.shared.command.request.GetTestResultsRequest;
-import gov.nist.toolkit.xdstools2.shared.command.request.GetTestSectionsDAOsRequest;
-import gov.nist.toolkit.xdstools2.shared.command.request.GetTestdataSetListingRequest;
-import gov.nist.toolkit.xdstools2.shared.command.request.GetTestplanAsTextRequest;
-import gov.nist.toolkit.xdstools2.shared.command.request.GetTestsOverviewRequest;
-import gov.nist.toolkit.xdstools2.shared.command.request.GetTransactionListsRequest;
-import gov.nist.toolkit.xdstools2.shared.command.request.GetTransactionErrorCodeRefsRequest;
-import gov.nist.toolkit.xdstools2.shared.command.request.GetTransactionLogDirectoryPathRequest;
-import gov.nist.toolkit.xdstools2.shared.command.request.GetTransactionRequest;
-import gov.nist.toolkit.xdstools2.shared.command.request.LifecycleValidationRequest;
-import gov.nist.toolkit.xdstools2.shared.command.request.LoadTestPartContentRequest;
-import gov.nist.toolkit.xdstools2.shared.command.request.MpqFindDocumentsRequest;
-import gov.nist.toolkit.xdstools2.shared.command.request.PatientIdsRequest;
-import gov.nist.toolkit.xdstools2.shared.command.request.ProvideAndRetrieveRequest;
-import gov.nist.toolkit.xdstools2.shared.command.request.RegisterAndQueryRequest;
-import gov.nist.toolkit.xdstools2.shared.command.request.RegisterRequest;
-import gov.nist.toolkit.xdstools2.shared.command.request.ReloadSystemFromGazelleRequest;
-import gov.nist.toolkit.xdstools2.shared.command.request.RenameSimFileRequest;
-import gov.nist.toolkit.xdstools2.shared.command.request.RetrieveDocumentRequest;
-import gov.nist.toolkit.xdstools2.shared.command.request.RetrieveImagingDocSetRequest;
-import gov.nist.toolkit.xdstools2.shared.command.request.RunSingleTestRequest;
-import gov.nist.toolkit.xdstools2.shared.command.request.RunTestRequest;
-import gov.nist.toolkit.xdstools2.shared.command.request.SaveSiteRequest;
-import gov.nist.toolkit.xdstools2.shared.command.request.SendPidToRegistryRequest;
-import gov.nist.toolkit.xdstools2.shared.command.request.SetAssignedSiteForTestSessionRequest;
-import gov.nist.toolkit.xdstools2.shared.command.request.SetOdSupplyStateIndexRequest;
-import gov.nist.toolkit.xdstools2.shared.command.request.SetSutInitiatedTransactionInstanceRequest;
-import gov.nist.toolkit.xdstools2.shared.command.request.SetToolkitPropertiesRequest;
-import gov.nist.toolkit.xdstools2.shared.command.request.SimConfigRequest;
-import gov.nist.toolkit.xdstools2.shared.command.request.SubmitTestdataRequest;
-import gov.nist.toolkit.xdstools2.shared.command.request.ValidateMessageRequest;
+import gov.nist.toolkit.xdstools2.shared.command.request.*;
 import org.apache.log4j.Logger;
 
 import javax.servlet.ServletContext;
@@ -1088,10 +1015,22 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements
         return new SimulatorServiceManager(session()).getSelectedMessageResponse(request.getFilename());
     }
     @Override
-    public List<String> getActorSimulatorNameMap(CommandContext context) throws Exception {
+    public List<SimId> getSimIdsForUser(GetSimIdsForUserRequest context) throws Exception {
         installCommandContext(context);
-        return new SimulatorServiceManager(session()).getSimulatorNameMap();
+        return new SimulatorServiceManager(session()).getSimIds(context.getUser());
     }
+
+    @Override
+    public SimId getFullSimId(GetFullSimIdRequest request) throws Exception {
+        installCommandContext(request);
+        try {
+            return SimDb.getFullSimId(request.getSimId());
+        } catch (Exception e) {
+            logger.error("getFullSimId - error - " + e.getMessage());
+            throw e;
+        }
+    }
+
     @Override
     public MessageValidationResults validateMessage(ValidateMessageRequest request) throws Exception {
         installCommandContext(request);
@@ -1649,6 +1588,20 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements
         new BuildCollections().run();
         // FIXME why does this have to always return true? should we change for a void method?
         return true;
+    }
+
+    @Override
+    public List<DatasetModel> getAllDatasets(CommandContext context) throws Exception {
+        installCommandContext(context);
+        logger.debug(sessionID + ": getAllDatasets()");
+        return DatasetFactory.getAllDatasets();
+    }
+
+    @Override
+    public List<Result> fhirCreate(FhirCreateRequest request) throws Exception {
+        installCommandContext(request);
+        logger.debug(sessionID + ": fhirCreate()");
+        return new FhirServiceManager(session()).create(request.getSite(), request.getDatasetElement());
     }
 
 }
