@@ -199,7 +199,8 @@ public class BuildRgTestOrchestrationButton extends AbstractOrchestrationButton 
     private int displayPIDs(FlexTable table, RgOrchestrationResponse response, int row) {
         table.setHTML(row++, 0, "<h3>Patient IDs</h3>");
         table.setText(row, 0, "Patient ID");
-        table.setText(row++, 1, response.getSimplePid().asString());
+        String pidStr = response.getSimplePid()!=null?response.getSimplePid().asString():"";
+        table.setText(row++, 1, pidStr);
         return row;
     }
 

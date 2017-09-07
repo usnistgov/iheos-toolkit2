@@ -55,11 +55,14 @@ class BuildRepTestOrchestrationButton extends AbstractOrchestrationButton {
         testTab.getMainView().showLoadingMessage("Initializing...");
 
         RepOrchestrationRequest request = new RepOrchestrationRequest();
-        SiteSpec sutSiteSpec = testContext.getSiteUnderTest().siteSpec();
-        if (isSaml()) {
-            setSamlAssertion(sutSiteSpec);
-        }
-        request.setSutSite(sutSiteSpec);
+        if (testContext.getSiteUnderTest()!=null) {
+            SiteSpec sutSiteSpec = testContext.getSiteUnderTest().siteSpec();
+            if (isSaml()) {
+                setSamlAssertion(sutSiteSpec);
+            }
+            request.setSutSite(sutSiteSpec);
+        } else
+            request.setSutSite(null);
         request.setUserName(testTab.getCurrentTestSession());
         request.setEnvironmentName(testTab.getEnvironmentSelection());
         request.setUseExistingSimulator(!isResetRequested());

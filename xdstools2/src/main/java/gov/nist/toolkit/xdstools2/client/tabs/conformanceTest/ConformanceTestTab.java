@@ -124,7 +124,10 @@ public class ConformanceTestTab extends ToolWindowWithMenu implements TestRunner
 			@Override
 			public void onTestSessionChanged(TestSessionChangedEvent event) {
 				if (event.getChangeType() == TestSessionChangedEvent.ChangeType.SELECT) {
-					loadTestCollections();
+				    if (mainView.getActorTabBar().getSelectedTab()>-1) {
+						loadTestCollections();
+						updateDisplayedActorAndOptionType();
+					}
 				}
 			}
 		});
@@ -141,6 +144,7 @@ public class ConformanceTestTab extends ToolWindowWithMenu implements TestRunner
 				mainView.getTabBarPanel().setVisible(false);
 				getMainView().getInitializationPanel().clear();
 				getMainView().getTestsPanel().clear();
+				mainView.getActorTabBar().selectTab(-1);
 				mainView.getProfileTabBar().clear();
 				mainView.getOptionsTabBar().clear();
 
@@ -181,7 +185,7 @@ public class ConformanceTestTab extends ToolWindowWithMenu implements TestRunner
 				@Override
 				public void onTestContextChanged(TestContextChangedEvent event) {
 					if (getInitTestSession()==null) {
-						displayMenu(mainView.getTestsPanel());
+//						displayMenu(mainView.getTestsPanel());
 //						if (updateDisplayedActorAndOptionType()) { // . Check if currentactoroptin is properly set (ok if profile & option is null)
 //							initializeTestDisplay(mainView.getTestsPanel());
 //						}
@@ -453,14 +457,18 @@ public class ConformanceTestTab extends ToolWindowWithMenu implements TestRunner
 					}
 				}
 
-				getMainView().getInitializationPanel().clear();
-				getMainView().getTestsPanel().clear();
-				mainView.getProfileTabBar().clear();
-				mainView.getOptionsTabBar().clear();
-				mainView.getProfileTabBar().display(ConformanceTestTab.super.tabConfig, "Profiles", newActorTypeId);
-				selectProfileAndOptionTab();
+			refreshActorView(newActorTypeId);
 //			}
 		}
+	}
+
+	protected void refreshActorView(String newActorTypeId) {
+		getMainView().getInitializationPanel().clear();
+		getMainView().getTestsPanel().clear();
+		mainView.getProfileTabBar().clear();
+		mainView.getOptionsTabBar().clear();
+		mainView.getProfileTabBar().display(ConformanceTestTab.super.tabConfig, "Profiles", newActorTypeId);
+		selectProfileAndOptionTab();
 	}
 
 	private class ProfileSelectionHandler implements SelectionHandler<Integer> {
@@ -527,8 +535,9 @@ public class ConformanceTestTab extends ToolWindowWithMenu implements TestRunner
 		}
 
 		if (foundSelectedActorTab) {
-		    getMainView().getTestsPanel().clear();
-			getMainView().getActorTabBar().selectTab(idx, true);
+			getMainView().getActorTabBar().selectTab(idx, false);
+		    refreshActorView(currentActorOption.getActorTypeId());
+//			getMainView().getActorTabBar().selectTab(idx, true);
 			// . Set index in tab config
 //			Window.alert("" + getMainView().getProfileTabBar().tabConfigs.size() + " " + getMainView().getProfileTabBar().isVisible());
 
@@ -615,10 +624,8 @@ public class ConformanceTestTab extends ToolWindowWithMenu implements TestRunner
 				displayActorsTabBar(mainView.getActorTabBar());
 				// 2. Write the site map here
 
-				if (getInitTestSession()==null) {
-
-					displayMenu(mainView.getTestsPanel());
-
+				if (mainView.getActorTabBar()!=null && mainView.getActorTabBar().getSelectedTab()==-1) { // Only display the menu when actor is not selected.
+						displayMenu(mainView.getTestsPanel());
 				}
 
 

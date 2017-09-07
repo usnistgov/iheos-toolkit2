@@ -198,10 +198,6 @@ public abstract class ToolWindowWithMenu extends ToolWindow {
         return treeItem;
     }
 
-    // . TODO: create TabConfigTreeItem class, set user object (widget code ref. line 1390, line 1818)
-    // . TODO add tree onselection event handler, open the tab
-
-
     protected class TabConfigTreeItem extends TreeItem {
         private int index;
         public TabConfigTreeItem(TabConfig tabConfig) {
