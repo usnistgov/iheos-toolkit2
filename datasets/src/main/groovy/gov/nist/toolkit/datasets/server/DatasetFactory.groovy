@@ -19,8 +19,9 @@ class DatasetFactory {
         if (!datasetsDir.exists() || !datasetsDir.isDirectory() || !datasetsDir.canRead()) return names
 
         datasetsDir.listFiles().each { File f ->
-            if (f.isDirectory())
+            if (f.isDirectory()) {
                 names << f.name
+            }
         }
         names
     }
@@ -51,7 +52,7 @@ class DatasetFactory {
         String type = resourceTypeDir.name
         resourceTypeDir.listFiles().each { File file ->
             if (file.path.endsWith('.xml') || file.path.endsWith('.json')) {
-                model.add(new DatasetElement(name, type, file.absolutePath - root - '/' - type - '/'))
+                model.add(new DatasetElement(name, type, file.name))
             }
         }
     }
