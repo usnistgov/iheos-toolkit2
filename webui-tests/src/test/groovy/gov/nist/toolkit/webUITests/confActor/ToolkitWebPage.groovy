@@ -36,6 +36,7 @@ abstract class ToolkitWebPage extends Specification  {
     }
 
     void loadPage(String url) {
+        System.out.println("Loading page: " + url)
 
         if (webClient!=null) webClient.close()
 

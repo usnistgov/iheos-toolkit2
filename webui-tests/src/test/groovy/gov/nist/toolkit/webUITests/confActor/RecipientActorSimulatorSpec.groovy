@@ -14,7 +14,7 @@ import spock.lang.Timeout
  * Created by skb1 on 6/22/2017.
  */
 @Stepwise
-@Timeout(120)
+@Timeout(360)
 class RecipientActorSimulatorSpec extends ConformanceActor {
 
     static final String simName = "recip" /* Sim names should be lowered cased */

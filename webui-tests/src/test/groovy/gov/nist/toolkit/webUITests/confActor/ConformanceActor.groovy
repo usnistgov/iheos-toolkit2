@@ -88,6 +88,33 @@ abstract class ConformanceActor extends ToolkitWebPage {
 
     }
 
+    def 'Select the test session in Test Context.'() {
+        when:
+        System.out.println("in test context TS selector.")
+        List<HtmlSelect> selectList = page.getByXPath("//select[contains(@class, 'gwt-ListBox') and contains(@class, 'confActorTestSessionSelectorMc')]")  // Substring match. No other CSS class must contain this string.
+
+        then:
+        selectList!=null && selectList.size()==1 // Should be only one
+
+        when:
+        HtmlSelect tsSelector = selectList.get(0)
+
+        List<HtmlOption> optionsList= tsSelector.getOptions()
+        HtmlOption tsOption = null
+        for (HtmlOption optionElement : optionsList) {
+            if (simUser == optionElement.getText() && simUser == optionElement.getValueAttribute()) {
+                page = optionElement.setSelected(true)
+                tsOption = optionElement
+                break
+            }
+        }
+
+        then:
+        tsOption !=null
+        tsOption.isSelected()
+
+    }
+
     def 'Select the newly created sim.'() {
         when:
         List<HtmlSelect> selectList = page.getByXPath("//select[contains(@class, 'gwt-ListBox') and contains(@class, 'confActorSutSelectorMc')]")  // Substring match. No other CSS class must contain this string.
@@ -102,7 +129,7 @@ abstract class ConformanceActor extends ToolkitWebPage {
         HtmlOption newlyCreatedSutOption = null
         for (HtmlOption optionElement : optionsList) {
             if (getSimId() == optionElement.getText() && getSimId() == optionElement.getValueAttribute()) {
-                optionElement.setSelected(true)
+                page = optionElement.setSelected(true)
                 newlyCreatedSutOption = optionElement
                 break
             }
@@ -111,7 +138,6 @@ abstract class ConformanceActor extends ToolkitWebPage {
         then:
         newlyCreatedSutOption !=null
         newlyCreatedSutOption.isSelected()
-
     }
 
     def 'Click the Assign System... button'() {

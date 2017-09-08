@@ -1,7 +1,7 @@
 package gov.nist.toolkit.webUITests.confActor
 
 import com.gargoylesoftware.htmlunit.html.*
-import gov.nist.toolkit.configDatatypes.SimulatorProperties
+import gov.nist.toolkit.configDatatypes.server.SimulatorProperties
 import gov.nist.toolkit.toolkitApi.DocumentRepository
 import gov.nist.toolkit.toolkitServicesCommon.SimConfig
 import spock.lang.Shared
@@ -11,7 +11,7 @@ import spock.lang.Timeout
  * Created by skb1 on 6/5/2017.
  */
 @Stepwise
-@Timeout(120)
+@Timeout(360)
 class RepositoryActorSimulatorSpec extends ConformanceActor {
 
     static final String simName = "rep" /* Sim names should be lowered cased */

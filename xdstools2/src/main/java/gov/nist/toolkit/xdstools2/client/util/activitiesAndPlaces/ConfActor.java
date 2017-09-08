@@ -5,7 +5,7 @@ import com.google.gwt.place.shared.PlaceTokenizer;
 
 /**
  * The URL will be created as
- * http://APP#ConfActor:TestSessionName/ActorType/profile/option
+ * http://APP#ConfActor:EnvironmentName/TestSessionName/ActorType/profile/option
  */
 public class ConfActor extends Place {
     public static class Tokenizer implements PlaceTokenizer<ConfActor> {

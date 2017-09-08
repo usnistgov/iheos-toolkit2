@@ -73,6 +73,7 @@ class TestContextDialog extends DialogBox {
 
         HorizontalFlowPanel testSessionEdit = new HorizontalFlowPanel();
         testSessionEdit.add(new HTML("Test Session"));
+        testSessionListBox.addStyleName("confActorTestSessionSelectorMc");
         testSessionListBox.setVisibleItemCount(10);
         testSessionListBox.addChangeHandler(new TestSessionChangeHandler());
         loadTestSessions(toolWindow.getCurrentTestSession());
