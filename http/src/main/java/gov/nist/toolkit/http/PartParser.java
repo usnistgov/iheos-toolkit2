@@ -23,6 +23,7 @@ public class PartParser extends HttpParser {
 		logger.debug("new PartParser(" + this.toString() + ")");
 		this.er = er;
 		this.appendixV = appendixV;
+		String msgAsString = new String(msg);
 		init(msg, part, er);
 		initPart();
 	}

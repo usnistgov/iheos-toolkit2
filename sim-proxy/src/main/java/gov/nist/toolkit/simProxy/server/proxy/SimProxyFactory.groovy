@@ -55,8 +55,11 @@ class SimProxyFactory extends AbstractActorFactory implements IActorFactory{
         // link the two sims
         addFixedConfig(config, SimulatorProperties.proxyPartner, ParamType.SELECTION, simId2.toString())
         addFixedConfig(config2, SimulatorProperties.proxyPartner, ParamType.SELECTION, simId.toString())
+        addEditableConfig(config, SimulatorProperties.simProxyTransformations, ParamType.LIST, actorType.proxyTransformClassNames)
 
         addEditableConfig(config, SimulatorProperties.proxyForwardSite, ParamType.SELECTION, "");
+
+        isSimProxy = true;
 
         return new Simulator([config, config2])
     }

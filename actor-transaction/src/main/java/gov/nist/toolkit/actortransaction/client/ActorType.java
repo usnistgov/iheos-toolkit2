@@ -412,7 +412,8 @@ public enum ActorType implements IsSerializable, Serializable {
             null,   // httpSimulatorClassName
             null,    // http transaction types
             false,    // is fhir
-            Arrays.asList("")   // proxy transform classes (extend AbstractProxyTransform)
+            new ArrayList<String>()
+            //Arrays.asList("")   // proxy transform classes (extend AbstractProxyTransform)
     ),
     ANY(
             "Any",
@@ -472,7 +473,10 @@ public enum ActorType implements IsSerializable, Serializable {
        this.httpTransactionTypes = httpTt;
        this.httpSimulatorClassName = httpSimulatorClassName;
        this.isFhir = isFhir;
+       if (proxyTransformClassNames == null)
+           proxyTransformClassNames = new ArrayList<>();
        this.proxyTransformClassNames = proxyTransformClassNames;
+
    }
 
    public boolean isFhir() { return isFhir; }

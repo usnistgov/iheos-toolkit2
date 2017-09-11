@@ -6,6 +6,7 @@ import gov.nist.toolkit.configDatatypes.server.SimulatorActorType
 import gov.nist.toolkit.configDatatypes.server.SimulatorProperties
 import gov.nist.toolkit.installation.Installation
 import gov.nist.toolkit.itTests.support.ToolkitSpecification
+import gov.nist.toolkit.results.client.Result
 import gov.nist.toolkit.results.client.TestInstance
 import gov.nist.toolkit.session.client.logtypes.TestOverviewDTO
 import gov.nist.toolkit.simcommon.client.SimId
@@ -14,11 +15,12 @@ import gov.nist.toolkit.testengine.scripts.BuildCollections
 import gov.nist.toolkit.toolkitApi.SimulatorBuilder
 import gov.nist.toolkit.toolkitServicesCommon.SimConfig
 import gov.nist.toolkit.toolkitServicesCommon.ToolkitFactory
+import gov.nist.toolkit.toolkitServicesCommon.resource.SimIdResource
 import spock.lang.Shared
 /**
  * Test SimProxy with MHD -> XDS transformation as front end to RegRepSpec simulator
  */
-class MhdSimProxy extends ToolkitSpecification {
+class MhdSimProxySpec extends ToolkitSpecification {
     @Shared SimulatorBuilder spi
 
 
@@ -35,6 +37,8 @@ class MhdSimProxy extends ToolkitSpecification {
     @Shared SimId simProxyId = new SimId(simProxyName)
     @Shared SimConfig fhirServerConfig
     @Shared SimConfig proxySimConfig
+    @Shared SimConfig updatedProxySimConfig
+    @Shared TestInstance testInstance = new TestInstance('FhirTestClientCreate')
 
     def setupSpec() {   // one time setup done when class launched
         startGrizzly('8889')
@@ -78,10 +82,10 @@ class MhdSimProxy extends ToolkitSpecification {
 
         // add MhdSubmissionTransformation to transforms
         List<String> transformations = proxySimConfig.asList(SimulatorProperties.simProxyTransformations)
-        transformations.add('gov.nist.toolkit.simProxy.server.proxy.MhdSubmissionTransformation')
+        transformations.add('gov.nist.toolkit.simProxy.server.proxy.MhdSubmissionTransform')
         proxySimConfig.setProperty(SimulatorProperties.simProxyTransformations, transformations)
 
-        spi.update(proxySimConfig)
+        updatedProxySimConfig = spi.update(proxySimConfig)
     }
 
     def cleanupSpec() {  // one time shutdown when everything is done
@@ -94,18 +98,24 @@ class MhdSimProxy extends ToolkitSpecification {
         println "${api.getSiteNames(true)}"
     }
 
-    def 'send pnr through simproxy'() {
+    def 'verify transformations installed' () {
         when:
-        SiteSpec siteSpec = new SiteSpec(simProxyName)
-        TestInstance testInstance = new TestInstance('12360')
-        List<String> sections = ['submit']
-        Map<String, String> params = new HashMap<>()
-        params.put('$patientid$', "P20160803215512.2^^^&1.3.6.1.4.1.21367.2005.13.20.1000&ISO");
-
-        TestOverviewDTO testOverviewDTO = session.xdsTestServiceManager().runTest(envName, testSession, siteSpec, testInstance, sections, params, null, true)
+        def xforms = updatedProxySimConfig.asList(SimulatorProperties.simProxyTransformations)
 
         then:
-        testOverviewDTO.sections.get('submit').pass
+        xforms.size() ==1
+        xforms.find { it == 'gov.nist.toolkit.simProxy.server.proxy.MhdSubmissionTransform' }
+    }
+
+    def 'send create through simproxy'() {
+        when:
+        def sections = ['create']
+        def params = [ :]
+        List<Result> results = api.runTest(testSession, simProxyName, testInstance, sections, params, true)
+
+        then:
+        results.size() == 1
+        results.get(0).passed()
     }
 
 //    def 'send pnr and query through simproxy'() {

@@ -109,6 +109,7 @@ public abstract class AbstractActorFactory {
 	static final String description = "Description";
 
 	private boolean transactionOnly = false;
+	public boolean isSimProxy = false;
 
 	PropertyServiceManager propertyServiceMgr = null;
 
@@ -202,6 +203,18 @@ public abstract class AbstractActorFactory {
 				BaseActorSimulator sim = RuntimeManager.getSimulatorRuntime(conf.getId());
 				logger.info("calling onCreate:" + conf.getId().toString());
 				sim.onCreate(conf);
+			}
+
+			if (isSimProxy) {
+				for (SimulatorConfig conf : simulator.getConfigs()) {
+					conf.getId().forFhir();  // label it FHIR so it gets re-saved there
+					AbstractActorFactory actorFactory = getActorFactory(conf);
+					saveConfiguration(conf);
+
+					BaseActorSimulator sim = RuntimeManager.getSimulatorRuntime(conf.getId());
+					logger.info("calling onCreate:" + conf.getId().toString());
+					sim.onCreate(conf);
+				}
 			}
 		}
 
@@ -486,7 +499,11 @@ public abstract class AbstractActorFactory {
 		addUser(sc, new SimulatorConfigElement(name, type, value));
 	}
 
-    public void addEditableConfig(SimulatorConfig sc, String name, ParamType type, List<String> values, boolean isMultiSelect) {
+	public void addEditableConfig(SimulatorConfig sc, String name, ParamType type, List<String> value) {
+		addUser(sc, new SimulatorConfigElement(name, type, value));
+	}
+
+	public void addEditableConfig(SimulatorConfig sc, String name, ParamType type, List<String> values, boolean isMultiSelect) {
         addUser(sc, new SimulatorConfigElement(name, type, values, isMultiSelect));
     }
 
@@ -495,6 +512,10 @@ public abstract class AbstractActorFactory {
     }
 
 	public void addFixedConfig(SimulatorConfig sc, String name, ParamType type, Boolean value) {
+		addFixed(sc, new SimulatorConfigElement(name, type, value));
+	}
+
+	public void addFixedConfig(SimulatorConfig sc, String name, ParamType type, List<String> value) {
 		addFixed(sc, new SimulatorConfigElement(name, type, value));
 	}
 

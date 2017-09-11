@@ -26,7 +26,7 @@ class SimProxySimulator extends BaseActorSimulator {
 
     SimProxySimulator() {}
 
-    public boolean run(TransactionType transactionType, MessageValidatorEngine mvc, String validation) throws IOException {
+    boolean run(TransactionType transactionType, MessageValidatorEngine mvc, String validation) throws IOException {
         SimId simId2 = new SimId(config.getConfigEle(SimulatorProperties.proxyPartner).asString())
         String actor = db.actor
         String transaction = db.transaction
@@ -36,31 +36,90 @@ class SimProxySimulator extends BaseActorSimulator {
         // db is front side of proxy
         // db2 is back side of proxy
 
-        String rawHeader = db.getRequestMessageHeader()
-        MyHeaders headers = new MyHeaders()
-        RequestLine requestLine = null
-        // grab headers
-        rawHeader.eachLine {String line ->
-            line = line.trim()
-            if (requestLine) {
-                if (line)
-                    headers.add(line)
+        MyHeaders headers = parseHeaders(db.getRequestMessageHeader())
+
+        deleteChunkedHeader(headers)
+
+        Site forwardSite = lookupForwardSite()
+
+        def transformClassNames = config.get(SimulatorProperties.simProxyTransformations).asList()
+
+        StringBuilder headerBuilder = new StringBuilder()
+
+        headers.props.each { String key, value ->
+            if (key) { // status line will be posted with null key
+                headerBuilder.append(key).append(': ').append(value).append('\r\n')  // save for logs
             }
-            else
-                requestLine = new RequestLine(line)
+        }
+        String transformInHeaders = headerBuilder.toString()
+        byte[] transformInBody = db.getRequestMessageBody()
+        String bodyString = new String(transformInBody)
+
+        def (transformOutHeaders, transformOutBody, forwardTransactionType) = processTransformations(transformClassNames, transformInHeaders, transformInBody)
+
+        if (!forwardTransactionType)
+            forwardTransactionType = transactionType
+
+        // find endpoint to forward message to
+        def (EndpointParser eparser, String endpoint) = lookupForwardEndpoint(forwardSite, forwardTransactionType)
+        headerBuilder.insert(0, "POST ${eparser.service} HTTP/1.1\r\n")
+
+        // log host name that we are forwarding to
+        db2.setClientIpAddess(eparser.host)
+
+
+        def post = new URL(endpoint).openConnection()
+        post.setRequestMethod("POST")
+        post.setDoOutput(true)
+        headers.props.each { String key, value ->
+            if (key) { // status line will be posted with null key
+                post.setRequestProperty(key, value)    // add to outgoing message
+            }
         }
 
-        // delete chunked header if it exists
+
+        db2.putRequestHeaderFile(transformOutHeaders.bytes)
+        db2.putRequestBodyFile(transformOutBody)
+
+        post.getOutputStream().write(transformOutBody)
+        def responseCode = post.getResponseCode()
+
+        HttpServletResponse responseToClient = common.response
+        responseToClient.setStatus(responseCode)
+
+        StringBuilder responseToClientHeaders = new StringBuilder()
+        Map<String, List<String>> hdrs = post.getHeaderFields()
+        hdrs.each { String name, List<String> values ->
+            String value = values.join('; ')
+            if (name) {
+                responseToClient.addHeader(name, value)
+                responseToClientHeaders.append("${name}: ${value}\r\n")
+            } else {
+                responseToClientHeaders.append("${value}\r\n")
+            }
+        }
+        String returnHeaders = responseToClientHeaders.toString()
+        db2.getResponseHdrFile().text = returnHeaders
+        db.getResponseHdrFile().text = returnHeaders
+
+        if (responseCode < 300) {
+            byte[] responseBytes = post.getInputStream().bytes
+            responseToClient.getOutputStream().write(responseBytes)
+            responseToClient.getOutputStream().close()
+            db2.putResponseBody(new String(responseBytes))
+            db.putResponseBody(new String(responseBytes))
+        }
+
+        return false
+    }
+
+    def deleteChunkedHeader(MyHeaders headers) {
         String encoding = headers.get('transfer-encoding')
         if (encoding && 'chunked' == encoding.toLowerCase())
             headers.remove('transfer-encoding')
+    }
 
-//        String endpoint = config.getConfigEle(SimulatorProperties.proxyForwardEndpoint).asString()
-
-//        String endpointConfigElementName = transactionType.getEndpointSimPropertyName()
-//        if (!endpointConfigElementName) {
-//            throw new XdsInternalException("Not configured to forward transaction type ${transactionType} to actor type ${actor} - see table TransactionType.java")
-//        }
+    Site lookupForwardSite() {
         String forwardSiteName = config.getConfigEle(SimulatorProperties.proxyForwardSite)?.asString()
         if (!forwardSiteName) {
             def msg = 'No Proxy forward system configured'
@@ -68,76 +127,14 @@ class SimProxySimulator extends BaseActorSimulator {
             common.getCommonErrorRecorder().err(XdsErrorCode.Code.NoCode, e)
             throw e
         }
-        Site site = findForwardSite(forwardSiteName)
-        if (!site) {
+        Site forwardSite = findForwardSite(forwardSiteName)
+        if (!forwardSite) {
             def msg = "Proxy configured to forward to System ${forwardSiteName} which does not exist"
             Exception e = new XdsInternalException(msg)
             common.getCommonErrorRecorder().err(XdsErrorCode.Code.NoCode, e)
             throw e
         }
-
-        // find endpoint to forward message to
-        def (EndpointParser eparser, String endpoint) = lookupForwardEndpoint(site, transactionType)
-
-        // log host name that we are forwarding to
-        db2.setClientIpAddess(eparser.host)
-
-        StringBuilder outHeaders = new StringBuilder()
-
-        outHeaders.append("POST ${eparser.service} HTTP/1.1\r\n")
-
-        def post = new URL(endpoint).openConnection()
-        post.setRequestMethod("POST")
-        post.setDoOutput(true)
-        headers.props.each { String key, value ->
-            if (key) { // status line will be posted with null key
-                post.setRequestProperty(key, value)
-                outHeaders.append(key).append(': ').append(value).append('\r\n')
-            }
-        }
-
-
-        String outputHeaders = outHeaders.toString()
-        byte[] outputBody = db.getRequestMessageBody()
-
-        def transformClassNames = common.actorType.proxyTransformClassNames
-
-        def (outHdrs, outBody, forwardTransactionType) = processTransformations(transformClassNames, outputHeaders, outputBody)
-
-        db2.putRequestHeaderFile(outHdrs.bytes)
-        db2.putRequestBodyFile(outBody)
-
-
-
-        post.getOutputStream().write(outBody)
-        def responseCode = post.getResponseCode()
-
-        HttpServletResponse response = common.response
-        response.setStatus(responseCode)
-
-        StringBuilder inHeaders = new StringBuilder()
-        Map<String, List<String>> hdrs = post.getHeaderFields()
-        hdrs.each { String name, List<String> values ->
-            String value = values.join('; ')
-            if (name) {
-                response.addHeader(name, value)
-                inHeaders.append("${name}: ${value}\r\n")
-            } else {
-                inHeaders.append("${value}\r\n")
-            }
-        }
-        String inputHeaders = inHeaders.toString()
-        db2.getResponseHdrFile().text = inputHeaders
-        db.getResponseHdrFile().text = inputHeaders
-        if (responseCode < 300) {
-            byte[] responseBytes = post.getInputStream().bytes
-            response.getOutputStream().write(responseBytes)
-            response.getOutputStream().close()
-            db2.putResponseBody(new String(responseBytes))
-            db.putResponseBody(new String(responseBytes))
-        }
-
-        return false
+        return forwardSite
     }
 
     private List lookupForwardEndpoint(Site site, TransactionType transactionType) {
@@ -165,9 +162,11 @@ class SimProxySimulator extends BaseActorSimulator {
      * @return [ outHeader, outBody, forwardTransactionType]
      */
     List processTransformations(transformClassNames, String transformInHeader, byte[] transformInBody) {
+        assert transformInHeader
+        assert transformInBody
         TransactionType forwardTransactionType = null
 
-        common.actorType.proxyTransformClassNames?.each { String transformClassName ->
+        transformClassNames?.each { String transformClassName ->
             assert transformClassName
             def instance = Class.forName(transformClassName).newInstance()
             if (!(instance instanceof AbstractProxyTransform)) {
@@ -188,6 +187,9 @@ class SimProxySimulator extends BaseActorSimulator {
             transformInHeader = transform.outputHeader
             transformInBody = transform.outputBody
         }
+
+        assert transformInHeader
+        assert transformInBody
         return [transformInHeader, transformInBody, forwardTransactionType]
 
     }
@@ -203,6 +205,29 @@ class SimProxySimulator extends BaseActorSimulator {
         if (new SimDb().getSimulator(simId))
             return SimManager.getSite(simId)
         return null
+    }
+
+    MyHeaders parseHeaders(String rawHeaders) {
+        MyHeaders headers = new MyHeaders()
+        RequestLine requestLine = null
+        // grab headers
+        rawHeaders.eachLine {String line ->
+            line = strip(line)
+            if (requestLine) {
+                if (line)
+                    headers.add(line)
+            }
+            else
+                requestLine = new RequestLine(line)
+        }
+        return headers
+    }
+
+    def strip(String line) {
+        line = line.trim()
+        while (line.size() > 0 && (line.endsWith('\r') || line.endsWith('\n')) )
+            line = line.substring(0, line.size() - 1)
+        return line
     }
 
 

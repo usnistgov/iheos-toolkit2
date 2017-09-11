@@ -13,7 +13,8 @@ public enum ParamType implements IsSerializable, Serializable {
     TEXT,
     BOOLEAN,
     TIME,
-    SELECTION;
+    SELECTION,
+    LIST;
 
 	ParamType() {
 	} // for GWT

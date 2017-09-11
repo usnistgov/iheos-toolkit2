@@ -124,8 +124,10 @@ public class MultipartParser {
 		boolean multi = isMultipart();
 		message.boundary = contentTypeHeader.getParam("boundary");
 		logger.debug("MultipartParser(" + this.toString() + ") - boundary = " + message.boundary);
-		er.detail(contentTypeHeader.asString());
-		er.detail("boundary = " + message.boundary);
+		if (er != null) {
+			er.detail(contentTypeHeader.asString());
+			er.detail("boundary = " + message.boundary);
+		}
 		if (message.boundary == null || message.boundary.equals("")) {
 			message = null;
 			return;

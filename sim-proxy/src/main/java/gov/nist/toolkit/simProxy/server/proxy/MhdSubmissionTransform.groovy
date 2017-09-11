@@ -22,6 +22,10 @@ class MhdSubmissionTransform extends AbstractProxyTransform {
 
         HttpParser parser = new HttpParser(buf.toString().bytes)
 
+        if (parser.isMultipart()) {
+
+        }
+
         String contentType = parser.getHeaderValue('Content-Type')
 
         if (contentType.indexOf('xml') != -1) {
