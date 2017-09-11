@@ -42,6 +42,8 @@ class SimProxyFactory extends AbstractActorFactory implements IActorFactory{
         else
             config = new SimulatorConfig()
 
+        addFixedConfig(config, SimulatorProperties.isProxyFrontEnd, ParamType.BOOLEAN, true)
+
 //        addEditableNullEndpoint(config, SimulatorProperties.proxyForwardEndpoint, ActorType.ANY , TransactionType.ANY, false);
 //        addEditableNullEndpoint(config, SimulatorProperties.proxyTlsForwardEndpoint, ActorType.ANY, TransactionType.ANY, true);
 
@@ -91,9 +93,12 @@ class SimProxyFactory extends AbstractActorFactory implements IActorFactory{
             int transactionCount = aSite.transactions().size()
             AbstractActorFactory af = new GenericSimulatorFactory().getActorFactory(actorType)
             if (af) {
+                af.asSimProxy()
                 af.setTransactionOnly(true)  // don't include PIF - we will run out of ports - not needed for SimProxy
                 Simulator sim = af.buildNew(new SimManager(EnvSetting.DEFAULTSESSIONID), asc.getId(), true)
-                aSite = af.getActorFactory(actorType).getActorSite(sim.getConfig(0), (aSite) ? aSite : site)
+//                AbstractActorFactory factory  = af.getActorFactory(actorType).asSimProxy()
+                SimulatorConfig config = sim.getConfig(0)
+                aSite = af.getActorSite(config, (aSite) ? aSite : site)
                 assert aSite.transactions().size() >= transactionCount, "ActorFactory ${af.getClass().getName()} does not maintain list of Transactions correctly"
             }
         }

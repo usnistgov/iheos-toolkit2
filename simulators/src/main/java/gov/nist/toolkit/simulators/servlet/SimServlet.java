@@ -62,6 +62,8 @@ public class SimServlet  extends HttpServlet {
 	//	File simDbDir;
 	MessageValidationResults mvr;
 	PatientIdentityFeedServlet patientIdentityFeedServlet;
+	boolean isProxy;
+	boolean isFhir;
 
 
 	@Override
@@ -444,11 +446,22 @@ public class SimServlet  extends HttpServlet {
 		try {
 			simid = new SimId(uriParts[simIndex + 1]);
 			actor = uriParts[simIndex + 2];
-			transaction = uriParts[simIndex + 3];
+			if (uriParts.length > simIndex + 3)
+				transaction = uriParts[simIndex + 3];
+			else
+				transaction = "any";  // this happens with a FHIR transaction through the simproxy
 		}
 		catch (Exception e) {
 			sendSoapFault(response, "Simulator: Do not understand endpoint http://" + request.getLocalName() + ":" + request.getLocalPort() + uri + endpointFormat + " - " + e.getClass().getName() + ": " + e.getMessage(), mvc, vc);
 			return;
+		}
+
+		simid = SimDb.getFullSimId(simid);
+		isProxy = ActorType.findActor(simid.getActorType()).equals(ActorType.SIM_PROXY);
+		isFhir = simid.isFhir();
+		if (isProxy && isFhir) {
+			transaction = TransactionType.FHIR.getCode();
+			actor = ActorType.FHIR_SERVER.getShortName();
 		}
 
 		try {
@@ -515,7 +528,10 @@ public class SimServlet  extends HttpServlet {
 			//
 			//////////////////////////////////////////////////////////////
 
-			response.setContentType("application/soap+xml");
+			if (actorType == ActorType.FHIR_SERVER)
+				response.setContentType("application/fhir+xml");  // TODO - JSON
+			else
+				response.setContentType("application/soap+xml");
 
 //			BaseDsActorSimulator sim = getSimulatorRuntime(simid);
 			BaseActorSimulator baseSim = RuntimeManager.getSimulatorRuntime(simid);
@@ -785,6 +801,10 @@ public class SimServlet  extends HttpServlet {
 
 	private void sendSoapFault(HttpServletResponse response, String message, MessageValidatorEngine mvc, ValidationContext vc) {
 		try {
+			if (isFhir) {
+				response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, message);
+				return;
+			}
 			SoapFault sf = new SoapFault(SoapFault.FaultCodes.Sender, message);
 			SimCommon c = new SimCommon(response);
 			c.vc = vc;

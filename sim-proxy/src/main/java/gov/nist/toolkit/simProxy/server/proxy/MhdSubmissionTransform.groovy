@@ -18,18 +18,21 @@ class MhdSubmissionTransform extends AbstractProxyTransform {
         FhirContext ctx = ResourceCache.ctx
         StringBuilder buf = new StringBuilder()
 
-        buf.append(inputHeader.trim()).append('\n\n').append(new String(inputBody))
+        String body = new String(inputBody)
+
+        buf.append(inputHeader.trim()).append('\n\n').append(body)
 
         HttpParser parser = new HttpParser(buf.toString().bytes)
 
-        if (parser.isMultipart()) {
-
-        }
-
         String contentType = parser.getHeaderValue('Content-Type')
 
-        if (contentType.indexOf('xml') != -1) {
-            def bundle = ctx.newXmlParser().parseResource(inputBody)
+        if (contentType.indexOf('application/fhir') != -1) {
+            def bundle = null
+            if (contentType.contains('+xml'))
+                bundle = ctx.newXmlParser().parseResource(body)
+            else if (contentType.contains('+json'))
+                bundle = ctx.newJsonParser().parseResource(body)
+            assert bundle
             Submission s = new MhdGenerator(ResourceCacheFactory.resourceCacheMgr).buildSubmission(bundle)
             assert s.attachments.size() > 0
         }

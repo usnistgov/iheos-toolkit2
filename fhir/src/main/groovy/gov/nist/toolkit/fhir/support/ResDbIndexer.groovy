@@ -53,14 +53,18 @@ class ResDbIndexer {
     }
 
     protected close() {
-        if (indexWriter)
-            indexWriter.close()
-        indexWriter = null
+        try {
+            if (indexWriter)
+                indexWriter.close()
+            indexWriter = null
 
-        if (indexDirectory) indexDirectory.close()
-        indexDirectory = null
-        if (indexReader) indexReader.close()
-        indexReader = null
+            if (indexDirectory) indexDirectory.close()
+            indexDirectory = null
+            if (indexReader) indexReader.close()
+            indexReader = null
+        } catch (Exception e) {
+
+        }
     }
 
     static String PATH_FIELD = 'path'

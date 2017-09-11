@@ -111,6 +111,16 @@ public abstract class AbstractActorFactory {
 	private boolean transactionOnly = false;
 	public boolean isSimProxy = false;
 
+	public AbstractActorFactory asSimProxy() {
+		isSimProxy = true;
+		return this;
+	}
+
+	public AbstractActorFactory asNotSimProxy() {
+		isSimProxy = false;
+		return this;
+	}
+
 	PropertyServiceManager propertyServiceMgr = null;
 
 	static public ActorType getActorTypeFromName(String name) {
@@ -303,7 +313,7 @@ public abstract class AbstractActorFactory {
 //		+ "/"  context name includes preceding /
 				+ contextName
 				+ "/"
-				+ "fsim"
+				+ ((isSimProxy) ? "sim" : "fsim")
 				+ "/"
 				+ asc.getId();
 	}
