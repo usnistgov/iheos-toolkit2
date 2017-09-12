@@ -3,11 +3,15 @@ package gov.nist.toolkit.simProxy.server.proxy
 import ca.uhn.fhir.context.FhirContext
 import gov.nist.toolkit.actortransaction.server.AbstractProxyTransform
 import gov.nist.toolkit.configDatatypes.client.TransactionType
+import gov.nist.toolkit.fhir.mhd.Attachment
 import gov.nist.toolkit.fhir.mhd.MhdGenerator
-import gov.nist.toolkit.fhir.mhd.ResourceCache
-import gov.nist.toolkit.fhir.mhd.ResourceCacheFactory
+import gov.nist.toolkit.installation.Installation
+import gov.nist.toolkit.installation.ResourceCache
+import gov.nist.toolkit.installation.ResourceCacheFactory
 import gov.nist.toolkit.fhir.mhd.Submission
 import gov.nist.toolkit.http.HttpParser
+import gov.nist.toolkit.simProxy.server.util.PartSpec
+import gov.nist.toolkit.simProxy.server.util.SoapBuilder
 
 /**
  *
@@ -33,9 +37,18 @@ class MhdSubmissionTransform extends AbstractProxyTransform {
             else if (contentType.contains('+json'))
                 bundle = ctx.newJsonParser().parseResource(body)
             assert bundle
-            Submission s = new MhdGenerator(ResourceCacheFactory.resourceCacheMgr).buildSubmission(bundle)
+            Submission s = new MhdGenerator(Installation.instance().resourceCacheMgr()).buildSubmission(bundle)
             assert s.attachments.size() > 0
+            List<PartSpec> parts = []
+            parts << new PartSpec('application/xop+xml; charset=UTF-8; type="application/soap+xml"', s.metadata)
+            s.attachments.each { Attachment a ->
+                parts << new PartSpec(a.contentType, new String(a.content))
+            }
+
+            def (header, body1) = new SoapBuilder().mtomSoap('/theservice', 'localhost', '8080', 'noaction', parts)
+            this.outputHeader = header
+            this.outputBody = body1
         }
-        return TransactionType.FHIR
+        return TransactionType.PROVIDE_AND_REGISTER
     }
 }

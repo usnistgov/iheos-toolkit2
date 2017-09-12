@@ -1,6 +1,7 @@
-package gov.nist.toolkit.fhir.mhd
+package gov.nist.toolkit.installation
 
 import gov.nist.toolkit.installation.Installation
+import gov.nist.toolkit.installation.ResourceCacheMgr
 
 /**
  *

@@ -7,9 +7,9 @@ import gov.nist.toolkit.configDatatypes.client.TransactionType
  */
 abstract class AbstractProxyTransform {
     String inputHeader
-    byte[] inputBody
+    String inputBody
     String outputHeader
-    byte[] outputBody
+    String outputBody
 
     /**
      * takes inputHeader, inputBody and produces outputHeader, outputBody

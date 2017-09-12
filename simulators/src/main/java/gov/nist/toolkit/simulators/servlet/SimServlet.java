@@ -483,6 +483,7 @@ public class SimServlet  extends HttpServlet {
 			sendSoapFault(response, "Simulator: Do not understand the actor requested by this endpoint (" + actor + ") in http://" + request.getLocalName() + ":" + request.getLocalPort() + uri + endpointFormat, mvc, vc);
 			return;
 		}
+		isFhir = actorType.isFhir();
 
 		boolean transactionOk = true;
 
@@ -618,6 +619,11 @@ public class SimServlet  extends HttpServlet {
 			responseSent = true;
 		}
 		catch (Exception e) {
+			sendSoapFault(response, ExceptionUtil.exception_details(e), mvc, vc);
+			logger.error(ExceptionUtil.exception_details(e));
+			responseSent = true;
+		}
+		catch (AssertionError e) {
 			sendSoapFault(response, ExceptionUtil.exception_details(e), mvc, vc);
 			logger.error(ExceptionUtil.exception_details(e));
 			responseSent = true;

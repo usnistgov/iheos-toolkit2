@@ -52,8 +52,7 @@ class SimProxySimulator extends BaseActorSimulator {
             }
         }
         String transformInHeaders = headerBuilder.toString()
-        byte[] transformInBody = db.getRequestMessageBody()
-        String bodyString = new String(transformInBody)
+        String transformInBody = new String(db.getRequestMessageBody())
 
         def (transformOutHeaders, transformOutBody, forwardTransactionType) = processTransformations(transformClassNames, transformInHeaders, transformInBody)
 
@@ -79,10 +78,11 @@ class SimProxySimulator extends BaseActorSimulator {
 
 
         db2.putRequestHeaderFile(transformOutHeaders.bytes)
-        db2.putRequestBodyFile(transformOutBody)
+        db2.putRequestBodyFile(transformOutBody.bytes)
 
-        post.getOutputStream().write(transformOutBody)
+        post.getOutputStream().write(transformOutBody.bytes)
         def responseCode = post.getResponseCode()
+        assert (200..299).contains(responseCode), "POST to ${endpoint} returned code ${responseCode}"
 
         HttpServletResponse responseToClient = common.response
         responseToClient.setStatus(responseCode)
@@ -161,7 +161,7 @@ class SimProxySimulator extends BaseActorSimulator {
      * @param transformInBody
      * @return [ outHeader, outBody, forwardTransactionType]
      */
-    List processTransformations(transformClassNames, String transformInHeader, byte[] transformInBody) {
+    List processTransformations(transformClassNames, String transformInHeader, String transformInBody) {
         assert transformInHeader
         assert transformInBody
         TransactionType forwardTransactionType = null

@@ -1,8 +1,9 @@
-package gov.nist.toolkit.fhir.mhd
+package gov.nist.toolkit.installation
 
 import ca.uhn.fhir.context.FhirContext
 import gov.nist.toolkit.utilities.io.Io
 import org.hl7.fhir.dstu3.model.Resource
+import org.hl7.fhir.instance.model.api.IBaseResource
 
 /**
  * Local cache of FHIR resources
@@ -22,7 +23,7 @@ class ResourceCache {
         baseUrl = props.getProperty('baseUrl')
     }
 
-    Resource getResource(relativeUrl) {
+    IBaseResource getResource(relativeUrl) {
         File cacheFile = cacheFile(relativeUrl, 'xml')
         return ctx.newXmlParser().parseResource(cacheFile.text)
     }

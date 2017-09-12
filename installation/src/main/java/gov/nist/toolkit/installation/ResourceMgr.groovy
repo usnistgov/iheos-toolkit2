@@ -1,4 +1,4 @@
-package gov.nist.toolkit.fhir.mhd
+package gov.nist.toolkit.installation
 
 import org.hl7.fhir.dstu3.model.DomainResource
 
@@ -85,7 +85,8 @@ class ResourceMgr {
         }
         if (resources[referenceUrl]) return [referenceUrl, resources[referenceUrl]]
         def isRelativeReference = ResourceMgr.isRelative(referenceUrl)
-        if (relativeReferenceRequired && !isRelativeReference) return [null, null]
+        if (relativeReferenceRequired && !isRelativeReference)
+            return [null, null]
         def type = resourceTypeFromUrl(referenceUrl)
         if (!isAbsolute(containingUrl) && isRelative(referenceUrl)) {
             def x = resources.find {

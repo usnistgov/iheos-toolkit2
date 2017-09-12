@@ -112,11 +112,13 @@ public class SimDb {
 	}
 
 	static boolean isSim(File simRoot) {
-		isPrefix(simRoot, getSimDbFile())
+		//isPrefix(simRoot, getSimDbFile())
+		!ActorType.findActor(new File(simRoot, 'sim_type.txt').text).isFhir()
 	}
 
 	static boolean isFSim(File simRoot) {
-		isPrefix(simRoot, getFSimDbFile())
+		//isPrefix(simRoot, getFSimDbFile())
+		ActorType.findActor(new File(simRoot, 'sim_type.txt').text).isFhir()
 	}
 
 	static boolean isPrefix(File file, File possiblePrefix) {

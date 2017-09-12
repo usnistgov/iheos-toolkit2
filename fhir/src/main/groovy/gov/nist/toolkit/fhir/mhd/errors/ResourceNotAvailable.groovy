@@ -1,7 +1,7 @@
 package gov.nist.toolkit.fhir.mhd.errors
 
 import gov.nist.toolkit.fhir.mhd.ErrorLogger
-import gov.nist.toolkit.fhir.mhd.ResourceMgr
+import gov.nist.toolkit.installation.ResourceMgr
 
 /**
  *

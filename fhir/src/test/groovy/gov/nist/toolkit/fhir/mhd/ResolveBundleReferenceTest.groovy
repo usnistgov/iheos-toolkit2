@@ -1,5 +1,6 @@
 package gov.nist.toolkit.fhir.mhd
 
+import gov.nist.toolkit.installation.ResourceMgr
 import org.hl7.fhir.dstu3.model.DocumentReference
 import spock.lang.Shared
 import spock.lang.Specification

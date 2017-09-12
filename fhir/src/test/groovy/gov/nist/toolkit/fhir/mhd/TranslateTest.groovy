@@ -2,7 +2,10 @@ package gov.nist.toolkit.fhir.mhd
 
 import ca.uhn.fhir.context.FhirContext
 import gov.nist.toolkit.fhir.mhd.errors.ResourceNotAvailable
-import gov.nist.toolkit.fhir.support.UnitTestResourceCacheFactory
+import gov.nist.toolkit.installation.Installation
+import gov.nist.toolkit.installation.TestResourceCacheFactory
+import gov.nist.toolkit.installation.ResourceCache
+import gov.nist.toolkit.installation.ResourceCacheMgr
 import groovy.xml.MarkupBuilder
 import org.hl7.fhir.dstu3.model.*
 import spock.lang.Shared
@@ -12,8 +15,14 @@ import spock.lang.Specification
  */
 class TranslateTest extends Specification {
     @Shared FhirContext ctx = ResourceCache.ctx
-    @Shared ResourceCacheMgr resourceCacheMgr = UnitTestResourceCacheFactory.getResourceCacheMgr()
-    @Shared MhdGenerator u = new MhdGenerator(resourceCacheMgr)
+    @Shared ResourceCacheMgr resourceCacheMgr
+    @Shared MhdGenerator u
+
+    def setupSpec() {
+        resourceCacheMgr = TestResourceCacheFactory.getResourceCacheMgr()
+        Installation.instance().resourceCacheMgr(resourceCacheMgr)
+        u = new MhdGenerator(resourceCacheMgr)
+    }
 
     def 'is uuid test'() {
         when:
@@ -43,7 +52,7 @@ class TranslateTest extends Specification {
 
     def 'patient id from patient resource' () {
         when:
-        ResourceCacheMgr cacheMgr = UnitTestResourceCacheFactory.getResourceCacheMgr()
+        ResourceCacheMgr cacheMgr = TestResourceCacheFactory.getResourceCacheMgr()
         def patient = cacheMgr.getResource('http://localhost:8080/fhir/Patient/a2')
 
         then:

@@ -3,8 +3,8 @@
     <TestStep id="mhd_submit">
         <ExpectedStatus>Success</ExpectedStatus>
         <FhirCreateTransaction>
-            <ResourceFile>patient.json</ResourceFile>
-            <UrlExtension>/Patient</UrlExtension>
+            <ResourceFile>singledocsubmit.xml</ResourceFile>
+            <UrlExtension>/mhdrec/pdb</UrlExtension>
         </FhirCreateTransaction>
     </TestStep>
 </TestPlan>

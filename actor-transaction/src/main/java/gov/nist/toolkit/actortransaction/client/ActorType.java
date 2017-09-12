@@ -400,6 +400,17 @@ public enum ActorType implements IsSerializable, Serializable {
             null,
             true
     ),
+    MHD_DOC_RECIPIENT(
+            "MHD Document Recipient",
+            Arrays.asList(""),
+            "mhdrec",
+            "gov.nist.toolkit.simcommon.server.factories.FhirActorFactory",  //  ???
+            "gov.nist.toolkit.fhir.simulators.FhirSimulator",                // ???
+            Arrays.asList(TransactionType.FHIR),
+            true,
+            null,
+            true
+    ),
     SIM_PROXY(
             "Sim Proxy",
             Arrays.asList(""),

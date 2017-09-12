@@ -1,12 +1,12 @@
-package gov.nist.toolkit.fhir.mhd
+package gov.nist.toolkit.installation
 
 import org.hl7.fhir.dstu3.model.Resource
 
 /**
- * build by a factory - either UnitTestResourceCacheFactory or ResourceCacheFactory
+ * build by a factory - either TestResourceCacheFactory or ResourceCacheFactory
  */
 class ResourceCacheMgr {
-    Map<String, ResourceCache> caches = [:]  // baseUrl -> cache
+    static Map<String, ResourceCache> caches = [:]  // baseUrl -> cache
 
     ResourceCacheMgr(File cacheCollectionDir) {
         cacheCollectionDir.listFiles().each {File cache ->
@@ -22,7 +22,7 @@ class ResourceCacheMgr {
         assert ResourceMgr.isAbsolute(fullUrl)
         def baseUrl = ResourceMgr.baseUrlFromUrl(fullUrl)
         ResourceCache cache = caches[baseUrl]
-        assert cache, "No cache defined for baseUrl ${baseUrl}\nCaches exist for ${caches.keySet()}"
+        assert cache, "Cannot access ${fullUrl}\nNo cache defined for baseUrl ${baseUrl}\nCaches exist for ${caches.keySet()}"
         return cache.getResource(ResourceMgr.relativeUrl(fullUrl))
     }
 

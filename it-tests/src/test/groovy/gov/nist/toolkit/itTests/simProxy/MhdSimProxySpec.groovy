@@ -8,14 +8,11 @@ import gov.nist.toolkit.installation.Installation
 import gov.nist.toolkit.itTests.support.ToolkitSpecification
 import gov.nist.toolkit.results.client.Result
 import gov.nist.toolkit.results.client.TestInstance
-import gov.nist.toolkit.session.client.logtypes.TestOverviewDTO
 import gov.nist.toolkit.simcommon.client.SimId
-import gov.nist.toolkit.sitemanagement.client.SiteSpec
 import gov.nist.toolkit.testengine.scripts.BuildCollections
 import gov.nist.toolkit.toolkitApi.SimulatorBuilder
 import gov.nist.toolkit.toolkitServicesCommon.SimConfig
 import gov.nist.toolkit.toolkitServicesCommon.ToolkitFactory
-import gov.nist.toolkit.toolkitServicesCommon.resource.SimIdResource
 import spock.lang.Shared
 /**
  * Test SimProxy with MHD -> XDS transformation as front end to RegRepSpec simulator
@@ -29,16 +26,16 @@ class MhdSimProxySpec extends ToolkitSpecification {
     @Shared String patientId2 = 'BR15^^^&1.2.360&ISO'
     @Shared String envName = 'test'
     @Shared String testSession = 'bill';
-    @Shared String id = 'fhir'
+    @Shared String id = 'rr'
     @Shared String fhirServer = "${testSession}__${id}"
     @Shared SimId simId = new SimId(fhirServer)  // ultimate destination
     @Shared String proxyId = "simproxy"
     @Shared String simProxyName = "${testSession}__${proxyId}"
     @Shared SimId simProxyId = new SimId(simProxyName)
-    @Shared SimConfig fhirServerConfig
+    @Shared SimConfig rrConfig
     @Shared SimConfig proxySimConfig
     @Shared SimConfig updatedProxySimConfig
-    @Shared TestInstance testInstance = new TestInstance('FhirTestClientCreate')
+    @Shared TestInstance testInstance = new TestInstance('MhdSubmit')
 
     def setupSpec() {   // one time setup done when class launched
         startGrizzly('8889')
@@ -62,10 +59,10 @@ class MhdSimProxySpec extends ToolkitSpecification {
 
         Installation.instance().defaultEnvironmentName()
 
-        fhirServerConfig = spi.create(
+        rrConfig = spi.create(
                 id,
                 testSession,
-                SimulatorActorType.FHIR_SERVER,
+                SimulatorActorType.REPOSITORY_REGISTRY,
                 envName)
 
         proxySimConfig = spi.create(
@@ -75,8 +72,8 @@ class MhdSimProxySpec extends ToolkitSpecification {
                 envName
         )
 
-//        fhirServerConfig.setProperty(SimulatorProperties.VALIDATE_AGAINST_PATIENT_IDENTITY_FEED, false)
-//        spi.update(fhirServerConfig)
+//        rrConfig.setProperty(SimulatorProperties.VALIDATE_AGAINST_PATIENT_IDENTITY_FEED, false)
+//        spi.update(rrConfig)
 
         proxySimConfig.setProperty(SimulatorProperties.proxyForwardSite, fhirServer)
 
@@ -109,7 +106,7 @@ class MhdSimProxySpec extends ToolkitSpecification {
 
     def 'send create through simproxy'() {
         when:
-        def sections = ['create']
+        def sections = ['submit']
         def params = [ :]
         List<Result> results = api.runTest(testSession, simProxyName, testInstance, sections, params, true)
 
