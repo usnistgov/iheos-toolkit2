@@ -1,10 +1,8 @@
-package gov.nist.toolkit.soap.http;
+package gov.nist.toolkit.soap.http
 
-import gov.nist.toolkit.commondatatypes.MetadataSupport;
-import org.apache.axiom.om.OMElement;
-
-import java.util.ArrayList;
-import java.util.List;
+import gov.nist.toolkit.commondatatypes.MetadataSupport
+import gov.nist.toolkit.utilities.xml.OMFormatter
+import org.apache.axiom.om.OMElement
 
 public class SoapFault {
 	String faultCode = null;
@@ -22,17 +20,28 @@ public class SoapFault {
 		details.add(adetail);
 	}
 
+	public SoapFault(String xml) {
+		def fault = new XmlSlurper(false, true).parseText(xml)
+		faultCode = fault?.Code?.Value
+		if (faultCode?.contains(':'))
+			faultCode = faultCode.substring(faultCode.indexOf(':') + 1)
+		faultCode = faultCode?.trim()
+		faultReason = fault?.Reason?.Text
+		faultReason = faultReason?.trim()
+	}
+
+
 	String getCodeString(FaultCodes code) {
 		switch (code) {
-		case VersionMismatch:
+		case FaultCodes.VersionMismatch:
 			return "VersionMismatch";
-		case MustUnderstand:
+		case FaultCodes.MustUnderstand:
 			return "MustUnderstand";
-		case DataEncodingUnknown:
+		case FaultCodes.DataEncodingUnknown:
 			return "DataEncodingUnknown";
-		case Sender:
+		case FaultCodes.Sender:
 			return "Sender";
-		case Receiver:
+		case FaultCodes.Receiver:
 			return "Receiver";
 		}
 
@@ -67,22 +76,37 @@ public class SoapFault {
 		reason.addChild(text);
 		root.addChild(reason);
 
-//		if (details.size() > 0) {
-//			OMElement detail = MetadataSupport.om_factory.createOMElement(MetadataSupport.fault_detail_qnamens);
-//
-//			for (String d : details) {
-//				OMElement r = MetadataSupport.om_factory.createOMElement("Nit", null);
-//				r.setText(d);
-//				detail.addChild(r);
-//			}
-//
-//			root.addChild(detail);
-//		}
-
 		return root;
+	}
+
+	public String asString() {
+		return new OMFormatter(getXML()).toString();
 	}
 
 	public void setFaultCode(FaultCodes code) {
 		faultCode = getCodeString(code);
+	}
+
+	boolean equals(o) {
+		if (this.is(o)) return true
+		if (getClass() != o.class) return false
+
+		SoapFault soapFault = (SoapFault) o
+
+		if (faultCode != soapFault.faultCode) return false
+		if (faultReason != soapFault.faultReason) return false
+
+		return true
+	}
+
+	int hashCode() {
+		int result
+		result = (faultCode != null ? faultCode.hashCode() : 0)
+		result = 31 * result + (faultReason != null ? faultReason.hashCode() : 0)
+		return result
+	}
+
+	public String toString() {
+		return "Fault: code=${faultCode?.trim()} reason=${faultReason?.trim()}"
 	}
 }

@@ -79,7 +79,7 @@ class MhdSimProxySpec extends ToolkitSpecification {
 
         // add MhdSubmissionTransformation to transforms
         List<String> transformations = proxySimConfig.asList(SimulatorProperties.simProxyTransformations)
-        transformations.add('gov.nist.toolkit.simProxy.server.proxy.MhdSubmissionTransform')
+        transformations.add('gov.nist.toolkit.simProxy.server.transforms.MhdSubmissionTransform')
         proxySimConfig.setProperty(SimulatorProperties.simProxyTransformations, transformations)
 
         updatedProxySimConfig = spi.update(proxySimConfig)
@@ -101,7 +101,7 @@ class MhdSimProxySpec extends ToolkitSpecification {
 
         then:
         xforms.size() ==1
-        xforms.find { it == 'gov.nist.toolkit.simProxy.server.proxy.MhdSubmissionTransform' }
+        xforms.find { it == 'gov.nist.toolkit.simProxy.server.transforms.MhdSubmissionTransform' }
     }
 
     def 'send create through simproxy'() {

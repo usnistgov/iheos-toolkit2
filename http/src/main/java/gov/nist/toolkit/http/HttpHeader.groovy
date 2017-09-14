@@ -1,12 +1,6 @@
-package gov.nist.toolkit.http;
+package gov.nist.toolkit.http
 
-import gov.nist.toolkit.errorrecording.ErrorRecorder;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
+import gov.nist.toolkit.errorrecording.ErrorRecorder
 
 public class HttpHeader {
 	private String line;
@@ -48,7 +42,7 @@ public class HttpHeader {
 	}
 
 	public String toString() {
-		return line;
+		return line
 	}
 
 	public String getName()  {
@@ -91,45 +85,7 @@ public class HttpHeader {
 		params = hp.getParams();
 	}
 
-	public void parseOld()  {
-		if (parsed)
-			return;
-		parsed = true;
-		int colonI = line.indexOf(':');
-		if (colonI == -1) 
-			return ; //throw new HttpHeaderParseException("Expected HTTP header with format: [headername : headervalue] found [" + line + "] instead");
-
-		name = line.substring(0, colonI).trim();
-		String rest = line.substring(colonI+1);
-		String[] parts = rest.split(";");
-
-		params = new HashMap<String, String>();
-		unnamedParams = new ArrayList<String>();
-
-		if (parts.length == 0 || parts.length == 1) {
-			value = rest.trim();
-			return;
-		}
-
-		for (int i=0; i<parts.length; i++ ) {
-			if (i == 0) {
-				value = parts[i].trim();
-				continue;
-			}
-			String[] parts2 = parts[i].split("=");
-			if (parts2.length != 2) {
-				unnamedParams.add(parts[i]);
-//				throw new HttpHeaderParseException("Does not parse as parameter: " + parts[i]);
-			} else {
-				String v = parts2[1].trim();
-				if (v != null && v.startsWith("\"") && v.endsWith("\""))
-					v = v.substring(0, v.length()-1).substring(1);
-				params.put(parts2[0].trim(), v);
-			}
-		}
-	}
-
-	public String toHeader() {
+	public String toHeaderString() {
 		StringBuffer buf = new StringBuffer();
 
 		buf.append(name);

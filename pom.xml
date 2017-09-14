@@ -87,6 +87,7 @@
         <module>fhir</module>
         <module>datasets</module>
         <module>sim-proxy</module>
+        <module>it-tests</module>
     </modules>
 
     <profiles>

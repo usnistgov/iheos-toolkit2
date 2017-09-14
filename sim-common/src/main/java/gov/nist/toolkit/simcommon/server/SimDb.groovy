@@ -452,7 +452,8 @@ public class SimDb {
 			simIdBuilder(dir)
 		}
 
-		(soapSimIds + fhirSimIds) as List<SimId>
+		def ids = (soapSimIds + fhirSimIds) as Set<SimId>
+		return ids as List<SimId>
 	}
 
 	/**

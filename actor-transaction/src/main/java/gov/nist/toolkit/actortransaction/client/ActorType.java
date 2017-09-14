@@ -46,6 +46,7 @@ public enum ActorType implements IsSerializable, Serializable {
             null,
             null,
             false,
+            null,
             null
     ),
     REGISTRY_MPQ(
@@ -376,6 +377,7 @@ public enum ActorType implements IsSerializable, Serializable {
             "gov.nist.toolkit.simulators.sim.ids.IdsHttpActorSimulator",
             Arrays.asList(TransactionType.WADO_RETRIEVE),
             false,
+            null,
             null
         ),
     IMAGING_DOC_CONSUMER(
@@ -423,8 +425,8 @@ public enum ActorType implements IsSerializable, Serializable {
             null,   // httpSimulatorClassName
             null,    // http transaction types
             false,    // is fhir
+            new ArrayList<String>(),
             new ArrayList<String>()
-            //Arrays.asList("")   // proxy transform classes (extend AbstractProxyTransform)
     ),
     ANY(
             "Any",
@@ -453,6 +455,7 @@ public enum ActorType implements IsSerializable, Serializable {
     String httpSimulatorClassName;
     boolean isFhir;
     List<String> proxyTransformClassNames;
+    List<String> proxyResponseTransformClassNames;
 
     ActorType() {
     } // for GWT
@@ -477,7 +480,8 @@ public enum ActorType implements IsSerializable, Serializable {
        String simulatorClassName, List<TransactionType> tt, boolean showInConfig,
        String actorsFileLabel, String httpSimulatorClassName, List<TransactionType> httpTt,
               boolean isFhir,
-              List<String> proxyTransformClassNames) {
+              List<String> proxyTransformClassNames,
+              List<String> proxyResponseTransformClassNames) {
        this(name, altNames, shortName, simulatorFactoryName, simulatorClassName, tt, showInConfig, actorsFileLabel, false);
        if (httpTt == null)
            httpTt = new ArrayList<>();
@@ -487,7 +491,7 @@ public enum ActorType implements IsSerializable, Serializable {
        if (proxyTransformClassNames == null)
            proxyTransformClassNames = new ArrayList<>();
        this.proxyTransformClassNames = proxyTransformClassNames;
-
+       this.proxyResponseTransformClassNames = proxyResponseTransformClassNames;
    }
 
    public boolean isFhir() { return isFhir; }

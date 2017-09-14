@@ -2,9 +2,10 @@ package gov.nist.toolkit.simProxy.server.proxy
 
 import gov.nist.toolkit.actortransaction.EndpointParser
 import gov.nist.toolkit.actortransaction.server.AbstractProxyTransform
-import gov.nist.toolkit.configDatatypes.server.SimulatorProperties
 import gov.nist.toolkit.configDatatypes.client.TransactionType
+import gov.nist.toolkit.configDatatypes.server.SimulatorProperties
 import gov.nist.toolkit.errorrecording.client.XdsErrorCode
+import gov.nist.toolkit.simProxy.server.util.HttpHeaders
 import gov.nist.toolkit.simcommon.client.SimId
 import gov.nist.toolkit.simcommon.server.BaseActorSimulator
 import gov.nist.toolkit.simcommon.server.SimCache
@@ -16,6 +17,7 @@ import gov.nist.toolkit.xdsexception.client.XdsInternalException
 import org.apache.log4j.Logger
 
 import javax.servlet.http.HttpServletResponse
+
 /**
  * Gazelle has good example of terminology and display at
  * https://gazelle.ihe.net/proxy/messages/http.seam?id=1808249&conversationId=35
@@ -27,6 +29,7 @@ class SimProxySimulator extends BaseActorSimulator {
     SimProxySimulator() {}
 
     boolean run(TransactionType transactionType, MessageValidatorEngine mvc, String validation) throws IOException {
+        boolean isClientFhir = transactionType.isFhir()
         SimId simId2 = new SimId(config.getConfigEle(SimulatorProperties.proxyPartner).asString())
         String actor = db.actor
         String transaction = db.transaction
@@ -36,52 +39,51 @@ class SimProxySimulator extends BaseActorSimulator {
         // db is front side of proxy
         // db2 is back side of proxy
 
-        MyHeaders headers = parseHeaders(db.getRequestMessageHeader())
+        // input message was automatically logged by sim infrastructure
+        String hdrs1 = db.getRequestMessageHeader()
+        HttpHeaders inHeaders = parseHeaders(db.getRequestMessageHeader())
+        String inBody = new String(db.getRequestMessageBody())
 
-        deleteChunkedHeader(headers)
+        deleteChunkedHeader(inHeaders)
 
         Site forwardSite = lookupForwardSite()
 
         def transformClassNames = config.get(SimulatorProperties.simProxyTransformations).asList()
 
-        StringBuilder headerBuilder = new StringBuilder()
 
-        headers.props.each { String key, value ->
-            if (key) { // status line will be posted with null key
-                headerBuilder.append(key).append(': ').append(value).append('\r\n')  // save for logs
-            }
-        }
-        String transformInHeaders = headerBuilder.toString()
-        String transformInBody = new String(db.getRequestMessageBody())
-
-        def (transformOutHeaders, transformOutBody, forwardTransactionType) = processTransformations(transformClassNames, transformInHeaders, transformInBody)
+        def (HttpHeaders transformOutHeaders, transformOutBody, forwardTransactionType) = processTransformations(transformClassNames, inHeaders, inBody)
 
         if (!forwardTransactionType)
             forwardTransactionType = transactionType
 
+        boolean isServerFhir = forwardTransactionType.isFhir()
+
         // find endpoint to forward message to
         def (EndpointParser eparser, String endpoint) = lookupForwardEndpoint(forwardSite, forwardTransactionType)
-        headerBuilder.insert(0, "POST ${eparser.service} HTTP/1.1\r\n")
+        String serverCmd = "POST ${eparser.service} HTTP/1.1\r\n"
 
         // log host name that we are forwarding to
         db2.setClientIpAddess(eparser.host)
 
-
-        def post = new URL(endpoint).openConnection()
-        post.setRequestMethod("POST")
-        post.setDoOutput(true)
-        headers.props.each { String key, value ->
-            if (key) { // status line will be posted with null key
-                post.setRequestProperty(key, value)    // add to outgoing message
-            }
-        }
-
-
         db2.putRequestHeaderFile(transformOutHeaders.bytes)
         db2.putRequestBodyFile(transformOutBody.bytes)
 
+        // Forward to downstream system
+        def post = new URL(endpoint).openConnection()
+        post.setRequestMethod("POST")
+        post.setDoOutput(true)
+        headers.props.each { String key, values ->
+            if (key) { // status line will be posted with null key
+                post.setRequestProperty(key, values.join(';'))    // add to outgoing message
+            }
+        }
+
         post.getOutputStream().write(transformOutBody.bytes)
         def responseCode = post.getResponseCode()
+
+        // handle response
+
+        // TODO - remove this later
         assert (200..299).contains(responseCode), "POST to ${endpoint} returned code ${responseCode}"
 
         HttpServletResponse responseToClient = common.response
@@ -100,20 +102,23 @@ class SimProxySimulator extends BaseActorSimulator {
         }
         String returnHeaders = responseToClientHeaders.toString()
         db2.getResponseHdrFile().text = returnHeaders
+
         db.getResponseHdrFile().text = returnHeaders
 
         if (responseCode < 300) {
             byte[] responseBytes = post.getInputStream().bytes
+            String responseBody = new String(responseBytes)
+            db2.putResponseBody(responseBody)
+            db.putResponseBody(new String(responseBytes))
+
             responseToClient.getOutputStream().write(responseBytes)
             responseToClient.getOutputStream().close()
-            db2.putResponseBody(new String(responseBytes))
-            db.putResponseBody(new String(responseBytes))
         }
 
         return false
     }
 
-    def deleteChunkedHeader(MyHeaders headers) {
+    def deleteChunkedHeader(HttpHeaders headers) {
         String encoding = headers.get('transfer-encoding')
         if (encoding && 'chunked' == encoding.toLowerCase())
             headers.remove('transfer-encoding')
@@ -161,7 +166,7 @@ class SimProxySimulator extends BaseActorSimulator {
      * @param transformInBody
      * @return [ outHeader, outBody, forwardTransactionType]
      */
-    List processTransformations(transformClassNames, String transformInHeader, String transformInBody) {
+    List processTransformations(transformClassNames, HttpHeaders transformInHeader, String transformInBody) {
         assert transformInHeader
         assert transformInBody
         TransactionType forwardTransactionType = null
@@ -207,8 +212,8 @@ class SimProxySimulator extends BaseActorSimulator {
         return null
     }
 
-    MyHeaders parseHeaders(String rawHeaders) {
-        MyHeaders headers = new MyHeaders()
+    HttpHeaders parseHeaders(String rawHeaders) {
+        HttpHeaders headers = new HttpHeaders()
         RequestLine requestLine = null
         // grab headers
         rawHeaders.eachLine {String line ->
@@ -231,50 +236,6 @@ class SimProxySimulator extends BaseActorSimulator {
     }
 
 
-    class MyHeader {
-        String name
-        String value
-
-        MyHeader(String h) {
-            h = h.trim()
-            int i = h.indexOf(':')
-            if (i == -1) {
-                name = h
-                value = ""
-            } else {
-                name = h.substring(0, i)
-                value = h.substring(i+1)
-            }
-        }
-    }
-
-    class MyHeaders {
-        Properties props = new Properties()
-
-        def add(String header) {
-            MyHeader myHeader = new MyHeader(header)
-            props.setProperty(myHeader.name, myHeader.value)
-        }
-
-        def get(String name) {
-            String key = key(name)
-            if (!key) return null
-            return props.getProperty(key).trim()
-        }
-
-        def key(String name) {
-            String lowerName = name.toLowerCase()
-            String key = props.keySet().find { String akey ->
-                String lowerKey = akey.toLowerCase()
-                lowerKey == lowerName
-            }
-            key
-        }
-
-        def remove(String key) {
-            props.remove(key)
-        }
-    }
 
     class RequestLine {
         def method

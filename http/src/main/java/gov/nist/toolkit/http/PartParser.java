@@ -47,7 +47,7 @@ public class PartParser extends HttpParser {
 			} else {
 				part.contentID = unWrap(part.contentID);
 			}
-		} catch (ParseException e) {
+		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}
