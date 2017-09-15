@@ -38,6 +38,7 @@ public class ElementalReverseProxy {
     static final String HTTP_OUT_CONN = "http.proxy.out-conn";
     static final String HTTP_CONN_KEEPALIVE = "http.proxy.conn-keepalive";
 
+    // localhost:8889 7777
     public static void main(final String[] args) throws Exception {
         if (args.length < 1) {
             System.out.println("Usage: <hostname[:port]> [listener port]");
