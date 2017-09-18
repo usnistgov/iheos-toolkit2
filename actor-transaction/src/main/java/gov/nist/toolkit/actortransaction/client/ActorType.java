@@ -417,8 +417,8 @@ public enum ActorType implements IsSerializable, Serializable {
             "Sim Proxy",
             Arrays.asList(""),
             "simproxy",
-            "gov.nist.toolkit.simProxy.server.proxy.SimProxyFactory",
-            "gov.nist.toolkit.simProxy.server.proxy.SimProxySimulator",
+            "gov.nist.toolkit.simulators.proxy.sim.SimProxyFactory",
+            "gov.nist.toolkit.simulators.proxy.sim.SimProxySimulator",  // only constructor should be used
             Arrays.asList(TransactionType.PIF),  // place holder - transaction types
             true,  // show in config
             null,  // actorsFileLabel

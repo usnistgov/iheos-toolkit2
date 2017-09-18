@@ -83,6 +83,12 @@ public class EndpointParser {
         return hp[1];
     }
 
+    public void setPort(String port) {
+        String[] hp = parts[2].split(":");
+        String r = hp[0] + ':' + port;
+        parts[2] = r;
+    }
+
     public String getEndpoint() {
         StringBuilder buf = new StringBuilder();
 

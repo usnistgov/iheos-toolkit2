@@ -1,4 +1,4 @@
-package gov.nist.toolkit.proxy;
+package gov.nist.toolkit.simulators.proxy.service;
 
 import org.apache.http.*;
 import org.apache.http.config.MessageConstraints;
@@ -54,7 +54,7 @@ class RequestListenerThread extends Thread {
                 outhttpproc,
                 httpexecutor));
 
-        // Set up the HTTP service
+        // Set up the HTTP service (the listener)
         this.httpService = new HttpService(inhttpproc, reqistry);
     }
 

@@ -188,9 +188,18 @@ public class SimDb {
 
 	}
 
+	void openMostRecentEvent(ActorType actor, TransactionType transaction) {
+		openMostRecentEvent(actor.shortName, transaction.shortName)
+	}
+
 	void openMostRecentEvent(String actor, String transaction) {
 		transactionDir = transactionDirectory(actor, transaction)
-		event = transactionDir.list().sort().last()
+		def trans = transactionDir.listFiles()
+		String eventFullPath = (trans.size()) ? trans.sort().last() : null
+		if (eventFullPath) {
+			File eventFile = new File(eventFullPath)
+			event = eventFile.name
+		}
 	}
 
 	static SimDb open(SimDbEvent event) {
@@ -232,33 +241,37 @@ public class SimDb {
 		return eventDate;
 	}
 
-	/**
-	 * create new sim
-	 * @param simId
-	 * @param actor
-	 * @param transaction
-	 * @throws IOException
-	 * @throws NoSimException
-	 */
-	public SimDb(SimId simId, String actor, String transaction) /*throws IOException, NoSimException*/ {
+	SimDb(SimId simId, ActorType actor, TransactionType transaction) {
+		this(simId, actor, transaction, false)
+	}
+
+	SimDb(SimId simId, ActorType actor, TransactionType transaction, boolean openToLastTransaction) {
+		this(simId, actor.shortName, transaction.shortName, openToLastTransaction)
+	}
+
+	public SimDb(SimId simId, String actor, String transaction) {
+		this(simId, actor, transaction, false)
+	}
+
+	public SimDb(SimId simId, String actor, String transaction, boolean openToLastTransaction) {
 		this(simId);
+		assert actor
 		this.actor = actor;
 		this.transaction = transaction;
 
 		if (actor != null && transaction != null) {
-//			String transdir = new File(new File(simDir, actor), transaction).path;
-//			transactionDir = new File(transdir);
-//			transactionDir.mkdirs();
-//			if (!transactionDir.isDirectory())
-//				throw new IOException("Cannot create content in Simulator database, creation of " + transactionDir + " failed");
 			transactionDir = transactionDirectory(actor, transaction)
 		} else
 			return;
 
-		eventDate = new Date();
-		File eventDir = mkEventDir(eventDate);
-		eventDir.mkdirs();
-		Serialize.out(new File(eventDir, "date.ser"), eventDate);
+		if (openToLastTransaction) {
+			openMostRecentEvent(actor, transaction)
+		} else {
+			eventDate = new Date();
+			File eventDir = mkEventDir(eventDate);
+			eventDir.mkdirs();
+			Serialize.out(new File(eventDir, "date.ser"), eventDate);
+		}
 	}
 
 	static SimDb createMarker(SimId simId) {
@@ -770,6 +783,9 @@ public class SimDb {
 	}
 
 	private File getDBFilePrefix(String event) {
+		assert simDir
+		assert actor
+		assert transaction
 		File f = new File(new File(new File(simDir, actor), transaction), event)
 		f.mkdirs();
 		return f;
@@ -782,6 +798,10 @@ public class SimDb {
 
 	public void putResponseBody(String content) throws IOException {
 		Io.stringToFile(getResponseBodyFile(), content);
+	}
+
+	public void putResponseBody(byte[] content) throws IOException {
+		Io.bytesToFile(getResponseBodyFile(), content);
 	}
 
 	public String getResponseBody() throws IOException {
@@ -1042,6 +1062,12 @@ public class SimDb {
 			out.close();
 		}
 	}
+
+	void putResponseHeaderFile(byte[] bytes) {
+		Io.bytesToFile(getResponseHdrFile(), bytes)
+	}
+
+
 
 	public void putResponse(HttpMessage msg) throws IOException {
 		File hdrFile = getResponseHdrFile();

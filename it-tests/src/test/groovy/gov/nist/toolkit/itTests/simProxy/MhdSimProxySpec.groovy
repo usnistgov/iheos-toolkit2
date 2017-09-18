@@ -78,9 +78,13 @@ class MhdSimProxySpec extends ToolkitSpecification {
         proxySimConfig.setProperty(SimulatorProperties.proxyForwardSite, fhirServer)
 
         // add MhdSubmissionTransformation to transforms
-        List<String> transformations = proxySimConfig.asList(SimulatorProperties.simProxyTransformations)
-        transformations.add('gov.nist.toolkit.simProxy.server.transforms.MhdSubmissionTransform')
-        proxySimConfig.setProperty(SimulatorProperties.simProxyTransformations, transformations)
+        List<String> requestTransformations = proxySimConfig.asList(SimulatorProperties.simProxyRequestTransformations)
+        requestTransformations.add('gov.nist.toolkit.simulators.proxy.transforms.EndpointTransform')
+        proxySimConfig.setProperty(SimulatorProperties.simProxyRequestTransformations, requestTransformations)
+
+        List<String> responseTransformations = proxySimConfig.asList(SimulatorProperties.simProxyResponseTransformations)
+        //responseTransformations.add('gov.nist.toolkit.simProxy.server.transforms.MhdSubmissionTransform')
+        proxySimConfig.setProperty(SimulatorProperties.simProxyResponseTransformations, responseTransformations)
 
         updatedProxySimConfig = spi.update(proxySimConfig)
     }
@@ -95,14 +99,14 @@ class MhdSimProxySpec extends ToolkitSpecification {
         println "${api.getSiteNames(true)}"
     }
 
-    def 'verify transformations installed' () {
-        when:
-        def xforms = updatedProxySimConfig.asList(SimulatorProperties.simProxyTransformations)
-
-        then:
-        xforms.size() ==1
-        xforms.find { it == 'gov.nist.toolkit.simProxy.server.transforms.MhdSubmissionTransform' }
-    }
+//    def 'verify transformations installed' () {
+//        when:
+//        def xforms = updatedProxySimConfig.asList(SimulatorProperties.simProxyRequestTransformations)
+//
+//        then:
+//        xforms.size() ==1
+//        xforms.find { it == 'gov.nist.toolkit.simProxy.server.transforms.MhdSubmissionTransform' }
+//    }
 
     def 'send create through simproxy'() {
         when:

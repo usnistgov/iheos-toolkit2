@@ -16,6 +16,7 @@ import gov.nist.toolkit.simcommon.client.SimId;
 import gov.nist.toolkit.simcommon.client.SimulatorConfig;
 import gov.nist.toolkit.simcommon.client.config.SimulatorConfigElement;
 import gov.nist.toolkit.simcommon.server.*;
+import gov.nist.toolkit.simulators.proxy.service.ElementalReverseProxy;
 import gov.nist.toolkit.simulators.sim.reg.store.MetadataCollection;
 import gov.nist.toolkit.simulators.sim.reg.store.RegIndex;
 import gov.nist.toolkit.simulators.sim.rep.RepIndex;
@@ -35,6 +36,7 @@ import gov.nist.toolkit.xdsexception.ExceptionUtil;
 import gov.nist.toolkit.xdsexception.client.XdsException;
 import org.apache.axiom.om.OMElement;
 import org.apache.commons.io.FileUtils;
+import org.apache.http.HttpHost;
 import org.apache.log4j.Logger;
 
 import javax.servlet.ServletConfig;
@@ -88,6 +90,12 @@ public class SimServlet  extends HttpServlet {
 		onServiceStart();
 
 		logger.info("SimServlet initialized");
+
+		try {
+			ElementalReverseProxy.start(7777, new HttpHost("localhost", 8889));
+		} catch (IOException e) {
+			throw new ServletException(e);
+		}
 	}
 
 	@Override
@@ -160,14 +168,12 @@ public class SimServlet  extends HttpServlet {
 		}
 
 		if (actor == null || actor.equals("null")) {
-//			try {
-				SimDb sdb = new SimDb(new SimId(simid), null, null);
+			try {
+				SimDb sdb = new SimDb(new SimId(simid));
 				actor = sdb.getActorsForSimulator().get(0);
-//			} catch (IOException e) {
-//				e.printStackTrace();
-//			} catch (NoSimException e) {
-//				e.printStackTrace();
-//			}
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
 		}
 
 		if (actor == null || actor.equals("null")) {
@@ -254,14 +260,12 @@ public class SimServlet  extends HttpServlet {
 		}
 
 		if (actor == null || actor.equals("null")) {
-//			try {
-				SimDb sdb = new SimDb(new SimId(simid), null, null);
+			try {
+				SimDb sdb = new SimDb(new SimId(simid));
 				actor = sdb.getActorsForSimulator().get(0);
-//			} catch (IOException e) {
-//				e.printStackTrace();
-//			} catch (NoSimException e) {
-//				e.printStackTrace();
-//			}
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
 		}
 
 		if (actor == null || actor.equals("null")) {
@@ -339,14 +343,12 @@ public class SimServlet  extends HttpServlet {
 		}
 
 		if (actor == null || actor.equals("null")) {
-//			try {
-				SimDb sdb = new SimDb(new SimId(simid), null, null);
+			try {
+				SimDb sdb = new SimDb(new SimId(simid));
 				actor = sdb.getActorsForSimulator().get(0);
-//			} catch (IOException e) {
-//				e.printStackTrace();
-//			} catch (NoSimException e) {
-//				e.printStackTrace();
-//			}
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
 		}
 
 		if (actor == null || actor.equals("null")) {

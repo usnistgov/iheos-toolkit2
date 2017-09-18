@@ -1,5 +1,6 @@
-package gov.nist.toolkit.proxy;
+package gov.nist.toolkit.simulators.proxy.service;
 
+import gov.nist.toolkit.xdsexception.ExceptionUtil;
 import org.apache.http.ConnectionClosedException;
 import org.apache.http.HttpException;
 import org.apache.http.impl.DefaultBHttpClientConnection;
@@ -60,6 +61,8 @@ class ProxyThread extends Thread {
             System.err.println("I/O error: " + ex.getMessage());
         } catch (final HttpException ex) {
             System.err.println("Unrecoverable HTTP protocol violation: " + ex.getMessage());
+        } catch (final Exception e) {
+            System.err.println("Unknown Exception: " + ExceptionUtil.exception_details(e));
         } finally {
             try {
                 this.inconn.shutdown();

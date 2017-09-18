@@ -1,6 +1,8 @@
 package gov.nist.toolkit.itTests.simProxy
 
+import gov.nist.toolkit.actortransaction.client.ActorType
 import gov.nist.toolkit.adt.ListenerFactory
+import gov.nist.toolkit.configDatatypes.client.TransactionType
 import gov.nist.toolkit.configDatatypes.server.SimulatorActorType
 import gov.nist.toolkit.configDatatypes.server.SimulatorProperties
 import gov.nist.toolkit.installation.Installation
@@ -8,6 +10,7 @@ import gov.nist.toolkit.itTests.support.ToolkitSpecification
 import gov.nist.toolkit.results.client.TestInstance
 import gov.nist.toolkit.session.client.logtypes.TestOverviewDTO
 import gov.nist.toolkit.simcommon.client.SimId
+import gov.nist.toolkit.simcommon.server.SimDb
 import gov.nist.toolkit.sitemanagement.client.SiteSpec
 import gov.nist.toolkit.testengine.scripts.BuildCollections
 import gov.nist.toolkit.toolkitApi.SimulatorBuilder
@@ -33,6 +36,7 @@ class RecipientSpec extends ToolkitSpecification {
     @Shared SimId simProxyId = new SimId(simProxyName)
     @Shared SimConfig recSimConfig
     @Shared SimConfig proxySimConfig
+    @Shared SimConfig updatedProxySimConfig
 
     def setupSpec() {   // one time setup done when class launched
         startGrizzly('8889')
@@ -69,7 +73,14 @@ class RecipientSpec extends ToolkitSpecification {
         )
 
         proxySimConfig.setProperty(SimulatorProperties.proxyForwardSite, rec)
-        spi.update(proxySimConfig)
+        List<String> requestTransformations = proxySimConfig.asList(SimulatorProperties.simProxyRequestTransformations)
+        requestTransformations.add('gov.nist.toolkit.simulators.proxy.transforms.EndpointTransform')
+        proxySimConfig.setProperty(SimulatorProperties.simProxyRequestTransformations, requestTransformations)
+
+        List<String> responseTransformations = proxySimConfig.asList(SimulatorProperties.simProxyResponseTransformations)
+        //responseTransformations.add('gov.nist.toolkit.simProxy.server.transforms.MhdSubmissionTransform')
+        proxySimConfig.setProperty(SimulatorProperties.simProxyResponseTransformations, responseTransformations)
+        updatedProxySimConfig = spi.update(proxySimConfig)
     }
 
     def cleanupSpec() {  // one time shutdown when everything is done
@@ -101,9 +112,14 @@ class RecipientSpec extends ToolkitSpecification {
         params.put('$patientid$', "P20160803215512.2^^^&1.3.6.1.4.1.21367.2005.13.20.1000&ISO");
 
         TestOverviewDTO testOverviewDTO = session.xdsTestServiceManager().runTest(envName, testSession, siteSpec, testInstance, sections, params, null, true)
+        SimDb simDb = new SimDb(simProxyId, ActorType.REPOSITORY, TransactionType.PROVIDE_AND_REGISTER, true)
 
         then:
         testOverviewDTO.sections.get('submit').pass
+        simDb.getRequestHeaderFile().exists()
+        simDb.getRequestBodyFile().exists()
+        simDb.getResponseHdrFile().exists()
+        simDb.getResponseBodyFile().exists()
     }
 
 }

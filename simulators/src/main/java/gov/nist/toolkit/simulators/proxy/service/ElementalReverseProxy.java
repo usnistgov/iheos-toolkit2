@@ -25,9 +25,11 @@
  *
  */
 
-package gov.nist.toolkit.proxy;
+package gov.nist.toolkit.simulators.proxy.service;
 
 import org.apache.http.HttpHost;
+
+import java.io.IOException;
 
 /**
  * Elemental HTTP/1.1 reverse proxy.
@@ -50,6 +52,11 @@ public class ElementalReverseProxy {
             port = Integer.parseInt(args[1]);
         }
 
+        start(port, targetHost);
+
+    }
+
+    static public void start(int port, HttpHost targetHost) throws IOException {
         System.out.println("Reverse proxy to " + targetHost);
 
         final Thread t = new RequestListenerThread(port, targetHost);

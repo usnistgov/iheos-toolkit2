@@ -51,6 +51,7 @@ public class Installation {
     }
 
     static {
+        logger.info("Attempting static initialization of WARHOME");
         // This works for unit tests if warhome.txt is installed as part of a unit test environment
         String warhomeTxt = null;
         try {
@@ -58,6 +59,7 @@ public class Installation {
         } catch (Throwable t) {}
         if (warhomeTxt != null) {
             instance().warHome(new File(warhomeTxt).getParentFile());
+            logger.info("WARHOME initialized to " + instance().warHome);
         }
     }
 

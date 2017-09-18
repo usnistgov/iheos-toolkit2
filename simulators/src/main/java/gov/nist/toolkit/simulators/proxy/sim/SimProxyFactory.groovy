@@ -1,4 +1,4 @@
-package gov.nist.toolkit.simProxy.server.proxy
+package gov.nist.toolkit.simulators.proxy.sim
 
 import gov.nist.toolkit.actortransaction.client.ActorType
 import gov.nist.toolkit.actortransaction.client.ParamType
@@ -57,7 +57,7 @@ class SimProxyFactory extends AbstractActorFactory implements IActorFactory{
         // link the two sims
         addFixedConfig(config, SimulatorProperties.proxyPartner, ParamType.SELECTION, simId2.toString())
         addFixedConfig(config2, SimulatorProperties.proxyPartner, ParamType.SELECTION, simId.toString())
-        addEditableConfig(config, SimulatorProperties.simProxyTransformations, ParamType.LIST, actorType.proxyTransformClassNames)
+        addEditableConfig(config, SimulatorProperties.simProxyRequestTransformations, ParamType.LIST, actorType.proxyTransformClassNames)
 
         addEditableConfig(config, SimulatorProperties.proxyForwardSite, ParamType.SELECTION, "");
 
@@ -102,6 +102,7 @@ class SimProxyFactory extends AbstractActorFactory implements IActorFactory{
                 assert aSite.transactions().size() >= transactionCount, "ActorFactory ${af.getClass().getName()} does not maintain list of Transactions correctly"
             }
         }
+        aSite.updateNonTlsTransactionsToPort('7777');
         locked = false
         return aSite
     }

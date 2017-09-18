@@ -1,5 +1,6 @@
-package gov.nist.toolkit.proxy;
+package gov.nist.toolkit.simulators.proxy.service;
 
+import gov.nist.toolkit.simulators.proxy.util.ProxyLogger;
 import gov.nist.toolkit.utilities.io.Io;
 import org.apache.http.*;
 import org.apache.http.config.MessageConstraints;
@@ -17,12 +18,9 @@ import java.nio.charset.CharsetDecoder;
 import java.nio.charset.CharsetEncoder;
 
 /**
- *
+ * proxy acting as client to eventual server
  */
 public class ClientConnection extends DefaultBHttpClientConnection {
-    public ClientConnection(int buffersize, int fragmentSizeHint, CharsetDecoder chardecoder, CharsetEncoder charencoder, MessageConstraints constraints, ContentLengthStrategy incomingContentStrategy, ContentLengthStrategy outgoingContentStrategy, HttpMessageWriterFactory<HttpRequest> requestWriterFactory, HttpMessageParserFactory<HttpResponse> responseParserFactory) {
-        super(buffersize, fragmentSizeHint, chardecoder, charencoder, constraints, incomingContentStrategy, outgoingContentStrategy, requestWriterFactory, responseParserFactory);
-    }
 
     public ClientConnection(int buffersize) {
         super(buffersize);

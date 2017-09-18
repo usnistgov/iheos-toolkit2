@@ -1,11 +1,10 @@
-package gov.nist.toolkit.simProxy.server.proxy
+package gov.nist.toolkit.simulators.proxy.sim
 
 import gov.nist.toolkit.actortransaction.EndpointParser
 import gov.nist.toolkit.actortransaction.server.AbstractProxyTransform
 import gov.nist.toolkit.configDatatypes.client.TransactionType
 import gov.nist.toolkit.configDatatypes.server.SimulatorProperties
 import gov.nist.toolkit.errorrecording.client.XdsErrorCode
-import gov.nist.toolkit.simProxy.server.util.HttpHeaders
 import gov.nist.toolkit.simcommon.client.SimId
 import gov.nist.toolkit.simcommon.server.BaseActorSimulator
 import gov.nist.toolkit.simcommon.server.SimCache
@@ -14,6 +13,7 @@ import gov.nist.toolkit.simcommon.server.SimManager
 import gov.nist.toolkit.sitemanagement.client.Site
 import gov.nist.toolkit.valsupport.engine.MessageValidatorEngine
 import gov.nist.toolkit.xdsexception.client.XdsInternalException
+import org.apache.http.HttpHeaders
 import org.apache.log4j.Logger
 
 import javax.servlet.http.HttpServletResponse
@@ -48,7 +48,7 @@ class SimProxySimulator extends BaseActorSimulator {
 
         Site forwardSite = lookupForwardSite()
 
-        def transformClassNames = config.get(SimulatorProperties.simProxyTransformations).asList()
+        def transformClassNames = config.get(SimulatorProperties.simProxyRequestTransformations).asList()
 
 
         def (HttpHeaders transformOutHeaders, transformOutBody, forwardTransactionType) = processTransformations(transformClassNames, inHeaders, inBody)
