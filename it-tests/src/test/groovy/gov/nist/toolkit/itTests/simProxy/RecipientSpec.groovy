@@ -56,6 +56,7 @@ class RecipientSpec extends ToolkitSpecification {
 
         spi.delete(id, testSession)
         spi.delete(proxyId, testSession)
+        spi.delete(proxyId + '_be', testSession)
 
         Installation.instance().defaultEnvironmentName()
 
@@ -74,7 +75,7 @@ class RecipientSpec extends ToolkitSpecification {
 
         proxySimConfig.setProperty(SimulatorProperties.proxyForwardSite, rec)
         List<String> requestTransformations = proxySimConfig.asList(SimulatorProperties.simProxyRequestTransformations)
-        requestTransformations.add('gov.nist.toolkit.simulators.proxy.transforms.EndpointTransform')
+        requestTransformations.add('gov.nist.toolkit.simulators.proxy.transforms.NullEndpointTransform')
         proxySimConfig.setProperty(SimulatorProperties.simProxyRequestTransformations, requestTransformations)
 
         List<String> responseTransformations = proxySimConfig.asList(SimulatorProperties.simProxyResponseTransformations)

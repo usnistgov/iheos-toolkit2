@@ -9,9 +9,9 @@ import org.apache.http.RequestLine
 import org.apache.http.message.BasicRequestLine
 
 /**
- *
+ * basic pass through - update endpoint to match target system configuration
  */
-class EndpointTransform implements RequestTransform {
+class NullEndpointTransform implements RequestTransform {
 
     HttpRequest run(SimProxyBase base, HttpRequest request) {
         base.setTargetType(base.clientActorType, base.clientTransactionType)

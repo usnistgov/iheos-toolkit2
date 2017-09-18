@@ -47,6 +47,7 @@ public class SimProxyBase {
 
         SimId simId = SimIdParser.parse(url);
         this.simId = simId;
+        // no new transaction - setTargetType() called first and already did that
         simDb = new SimDb(simId, clientActorType, clientTransactionType, true);
         config = simDb.getSimulator(simId);
         if (config == null) throw new BadSimIdException("Simulator " + simId +  " does not exist");
