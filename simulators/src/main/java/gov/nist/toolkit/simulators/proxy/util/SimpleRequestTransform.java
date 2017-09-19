@@ -5,6 +5,6 @@ import org.apache.http.HttpRequest;
 /**
  *
  */
-public interface RequestTransform {
+public interface SimpleRequestTransform {
     HttpRequest run(SimProxyBase base, HttpRequest request);
 }

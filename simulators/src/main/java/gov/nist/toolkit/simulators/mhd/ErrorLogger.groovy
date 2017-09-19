@@ -1,6 +1,6 @@
-package gov.nist.toolkit.fhir.mhd
+package gov.nist.toolkit.simulators.mhd
 
-import gov.nist.toolkit.fhir.mhd.errors.AbstractError
+import gov.nist.toolkit.simulators.mhd.errors.AbstractError
 
 /**
  *

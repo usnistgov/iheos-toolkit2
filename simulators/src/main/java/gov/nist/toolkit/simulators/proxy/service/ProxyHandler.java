@@ -1,10 +1,7 @@
 package gov.nist.toolkit.simulators.proxy.service;
 
 import gov.nist.toolkit.simcommon.client.BadSimIdException;
-import gov.nist.toolkit.simcommon.client.NoSimException;
 import gov.nist.toolkit.simulators.proxy.util.ProxyLogger;
-import gov.nist.toolkit.simulators.proxy.util.SimDoesNotExistException;
-import gov.nist.toolkit.simulators.servlet.SimServlet;
 import gov.nist.toolkit.xdsexception.ExceptionUtil;
 import org.apache.http.*;
 import org.apache.http.impl.DefaultBHttpClientConnection;
@@ -46,8 +43,14 @@ class ProxyHandler implements HttpRequestHandler {
         ProxyLogger clientLogger;
         ProxyLogger targetLogger;
         try {
-            String uri = request.getRequestLine().getUri();
-            proxyBase = new SimProxyBase(uri);
+//            String uri = request.getRequestLine().getUri();
+
+            Object pb = context.getAttribute(ElementalReverseProxy.HTTP_PROXY_BASE);
+            if (pb != null && pb instanceof SimProxyBase) {
+                proxyBase = (SimProxyBase) pb;
+            } else
+                throw new Exception("SimProxyBase not available in ProxyHandler");
+
             clientLogger = proxyBase.getClientLogger();
         }
         catch (BadSimIdException e) {

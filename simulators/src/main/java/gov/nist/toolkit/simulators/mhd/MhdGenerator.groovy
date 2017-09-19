@@ -1,6 +1,6 @@
-package gov.nist.toolkit.fhir.mhd
+package gov.nist.toolkit.simulators.mhd
 
-import gov.nist.toolkit.fhir.mhd.errors.ResourceNotAvailable
+import gov.nist.toolkit.simulators.mhd.errors.ResourceNotAvailable
 import gov.nist.toolkit.installation.ResourceCacheMgr
 import gov.nist.toolkit.installation.ResourceMgr
 import groovy.xml.MarkupBuilder
@@ -482,7 +482,7 @@ class MhdGenerator {
 
         submission.metadata = translateBundle(bundle, true)
         rMgr.resources?.values().findAll { it instanceof Binary }.each { Binary b ->
-            Attachment a = new gov.nist.toolkit.fhir.mhd.Attachment()
+            Attachment a = new gov.nist.toolkit.simulators.mhd.Attachment()
             a.contentType = b.contentType
             a.content = b.content
             submission.attachments << a

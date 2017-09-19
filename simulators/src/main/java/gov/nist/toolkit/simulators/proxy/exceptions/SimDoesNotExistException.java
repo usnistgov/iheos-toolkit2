@@ -1,4 +1,4 @@
-package gov.nist.toolkit.simulators.proxy.util;
+package gov.nist.toolkit.simulators.proxy.exceptions;
 
 /**
  *

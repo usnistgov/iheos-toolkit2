@@ -1,5 +1,6 @@
 package gov.nist.toolkit.simulators.proxy.service;
 
+import gov.nist.toolkit.simulators.proxy.util.SimProxyBase;
 import org.apache.http.*;
 import org.apache.http.config.MessageConstraints;
 import org.apache.http.entity.ContentLengthStrategy;
@@ -66,7 +67,7 @@ class RequestListenerThread extends Thread {
                 final int bufsize = 8 * 1024;
                 // Set up incoming HTTP connection
                 final Socket insocket = this.serversocket.accept();
-                final DefaultBHttpServerConnection inconn = new ServerConnection(bufsize);    //new DefaultBHttpServerConnection(bufsize);
+                final DefaultBHttpServerConnection inconn = new ServerConnection(bufsize, new SimProxyBase());    //new DefaultBHttpServerConnection(bufsize);
                 System.out.println("Incoming connection from " + insocket.getInetAddress());
                 inconn.bind(insocket);
 

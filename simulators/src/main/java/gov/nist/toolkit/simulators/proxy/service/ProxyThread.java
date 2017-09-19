@@ -39,6 +39,11 @@ class ProxyThread extends Thread {
         context.setAttribute(ElementalReverseProxy.HTTP_IN_CONN, this.inconn);
         context.setAttribute(ElementalReverseProxy.HTTP_OUT_CONN, this.outconn);
 
+        if (this.inconn instanceof ServerConnection) {
+            ServerConnection con = (ServerConnection) this.inconn;
+            context.setAttribute(ElementalReverseProxy.HTTP_PROXY_BASE, con.getSimProxyBase());
+        }
+
         try {
             while (!Thread.interrupted()) {
                 if (!this.inconn.isOpen()) {

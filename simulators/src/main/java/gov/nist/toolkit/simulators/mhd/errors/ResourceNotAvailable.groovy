@@ -1,6 +1,6 @@
-package gov.nist.toolkit.fhir.mhd.errors
+package gov.nist.toolkit.simulators.mhd.errors
 
-import gov.nist.toolkit.fhir.mhd.ErrorLogger
+import gov.nist.toolkit.simulators.mhd.ErrorLogger
 import gov.nist.toolkit.installation.ResourceMgr
 
 /**

@@ -1,38 +1,37 @@
 package gov.nist.toolkit.simulators.proxy.service;
 
-import gov.nist.toolkit.simulators.proxy.util.ProxyLogger;
 import gov.nist.toolkit.simulators.proxy.util.SimProxyBase;
 import gov.nist.toolkit.utilities.io.Io;
-import org.apache.http.*;
-import org.apache.http.config.MessageConstraints;
+import org.apache.http.HttpEntity;
+import org.apache.http.HttpEntityEnclosingRequest;
+import org.apache.http.HttpException;
+import org.apache.http.HttpResponse;
 import org.apache.http.entity.BasicHttpEntity;
-import org.apache.http.entity.ContentLengthStrategy;
 import org.apache.http.impl.DefaultBHttpServerConnection;
-import org.apache.http.io.HttpMessageParserFactory;
-import org.apache.http.io.HttpMessageWriterFactory;
 import org.apache.http.util.Args;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.nio.charset.CharsetDecoder;
-import java.nio.charset.CharsetEncoder;
 
 /**
  * extend server connection class and add capture of request message from client
  */
 class ServerConnection extends DefaultBHttpServerConnection {
-    ProxyLogger proxyLogger;
+    private SimProxyBase proxyBase;
 
-    public ServerConnection(int buffersize) {
+    ServerConnection(int buffersize, SimProxyBase base) {
         super(buffersize);
+        this.proxyBase = base;
     }
+
+    SimProxyBase getSimProxyBase() { return proxyBase; }
 
     @Override
     public void receiveRequestEntity(final HttpEntityEnclosingRequest request) throws IOException, HttpException {
         Args.notNull(request, "HTTP request");
         ensureOpen();
-        proxyLogger = SimProxyBase.getProxyLoggerForRequest(request);
+        proxyBase.init(request);
         final HttpEntity entity = prepareInput(request);
         if (entity != null && entity instanceof BasicHttpEntity) {
             System.out.println("Got Client Request entity");
@@ -43,7 +42,7 @@ class ServerConnection extends DefaultBHttpServerConnection {
             final BasicHttpEntity entity3 = new BasicHttpEntity();
             entity3.setContent(Io.bytesToInputStream(buffer));
             request.setEntity(entity3);
-            proxyLogger.logRequestEntity(buffer);
+            proxyBase.getClientLogger().logRequestEntity(buffer);
             return;
         }
         request.setEntity(entity);
@@ -66,7 +65,7 @@ class ServerConnection extends DefaultBHttpServerConnection {
 
             entity3.writeTo(outstream);
             outstream.close();
-            proxyLogger.logResponseEntity(buffer);
+            proxyBase.getClientLogger().logResponseEntity(buffer);
             return;
         }
         if(entity != null) {

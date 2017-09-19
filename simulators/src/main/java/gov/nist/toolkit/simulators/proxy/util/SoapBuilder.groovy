@@ -1,7 +1,6 @@
-package gov.nist.toolkit.simProxy.server.util
+package gov.nist.toolkit.simulators.proxy.util
 
 import org.apache.commons.lang.text.StrSubstitutor
-
 /**
  * Build either SIMPLE SOAP or MTOM message from components
  */

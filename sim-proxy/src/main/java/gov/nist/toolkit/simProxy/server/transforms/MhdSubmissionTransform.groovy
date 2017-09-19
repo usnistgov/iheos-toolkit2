@@ -3,14 +3,14 @@ package gov.nist.toolkit.simProxy.server.transforms
 import ca.uhn.fhir.context.FhirContext
 import gov.nist.toolkit.actortransaction.server.AbstractProxyTransform
 import gov.nist.toolkit.configDatatypes.client.TransactionType
-import gov.nist.toolkit.fhir.mhd.Attachment
-import gov.nist.toolkit.fhir.mhd.MhdGenerator
-import gov.nist.toolkit.fhir.mhd.Submission
+import gov.nist.toolkit.simulators.mhd.Attachment
+import gov.nist.toolkit.simulators.mhd.MhdGenerator
+import gov.nist.toolkit.simulators.mhd.Submission
 import gov.nist.toolkit.http.HttpParser
 import gov.nist.toolkit.installation.Installation
 import gov.nist.toolkit.installation.ResourceCache
-import gov.nist.toolkit.simProxy.server.util.PartSpec
-import gov.nist.toolkit.simProxy.server.util.SoapBuilder
+import gov.nist.toolkit.simulators.proxy.util.PartSpec
+import gov.nist.toolkit.simulators.proxy.util.SoapBuilder
 /**
  * for translating MHD ITI-65 to XDS PnR
  */

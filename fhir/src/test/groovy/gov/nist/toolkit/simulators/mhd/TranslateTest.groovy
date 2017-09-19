@@ -1,7 +1,7 @@
-package gov.nist.toolkit.fhir.mhd
+package gov.nist.toolkit.simulators.mhd
 
 import ca.uhn.fhir.context.FhirContext
-import gov.nist.toolkit.fhir.mhd.errors.ResourceNotAvailable
+import gov.nist.toolkit.simulators.mhd.errors.ResourceNotAvailable
 import gov.nist.toolkit.installation.Installation
 import gov.nist.toolkit.installation.TestResourceCacheFactory
 import gov.nist.toolkit.installation.ResourceCache

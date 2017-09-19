@@ -1,19 +1,13 @@
 package gov.nist.toolkit.simulators.proxy.util
 
 import gov.nist.toolkit.simcommon.server.SimDb
-import org.apache.http.Header
-import org.apache.http.HeaderElement
-import org.apache.http.HttpEntity
-import org.apache.http.HttpMessage
-import org.apache.http.HttpRequest
-import org.apache.http.HttpResponse
-import org.apache.http.NameValuePair
-
+import org.apache.http.*
 /**
  *
  */
 class ProxyLogger {
     SimDb simDb
+    byte[] content
 
     ProxyLogger(SimDb simDb) {
         assert simDb
@@ -25,6 +19,7 @@ class ProxyLogger {
     }
 
     def logRequestEntity(byte[] content) {
+        this.content = content
         simDb.putRequestBodyFile(content);
     }
 
@@ -32,8 +27,9 @@ class ProxyLogger {
         simDb.putResponseHeaderFile(asString(response).bytes)
     }
 
-    def logResponseEntity(byte[] entity) {
-        simDb.putResponseBody(entity)
+    def logResponseEntity(byte[] content) {
+        this.content = content
+        simDb.putResponseBody(content)
     }
 
      String asString(HttpResponse response) {

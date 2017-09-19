@@ -1,4 +1,4 @@
-package gov.nist.toolkit.fhir.mhd
+package gov.nist.toolkit.simulators.mhd
 
 /**
  *

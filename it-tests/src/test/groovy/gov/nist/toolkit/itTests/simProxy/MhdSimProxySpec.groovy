@@ -79,7 +79,8 @@ class MhdSimProxySpec extends ToolkitSpecification {
 
         // add MhdSubmissionTransformation to transforms
         List<String> requestTransformations = proxySimConfig.asList(SimulatorProperties.simProxyRequestTransformations)
-        requestTransformations.add('gov.nist.toolkit.simulators.proxy.transforms.NullEndpointTransform')
+        requestTransformations << 'gov.nist.toolkit.simulators.proxy.transforms.MhdToXdsEndpointTransform'
+        requestTransformations << 'gov.nist.toolkit.simulators.proxy.transforms.MhdToPnrContentTransform'
         proxySimConfig.setProperty(SimulatorProperties.simProxyRequestTransformations, requestTransformations)
 
         List<String> responseTransformations = proxySimConfig.asList(SimulatorProperties.simProxyResponseTransformations)
