@@ -43,9 +43,6 @@ class ProxyHandler implements HttpRequestHandler {
         ProxyLogger clientLogger;
         ProxyLogger targetLogger;
         try {
-//            String uri = request.getRequestLine().getUri();
-
-            target = new HttpHost("localhost", 6666);
             Object pb = context.getAttribute(ElementalReverseProxy.HTTP_PROXY_BASE);
             if (pb != null && pb instanceof SimProxyBase) {
                 proxyBase = (SimProxyBase) pb;

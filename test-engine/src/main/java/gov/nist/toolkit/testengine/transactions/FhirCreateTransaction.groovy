@@ -33,7 +33,8 @@ class FhirCreateTransaction extends BasicFhirTransaction {
         reportManager.add('Url', fullEndpoint)
 
         def (BasicStatusLine statusLine, String content, FhirId fhirId) = FhirClient.post(new URI(fullEndpoint), fhirCtx.newJsonParser().encodeResourceToString(resource))
-        assert fhirId
+        if (!fhirId)
+            throw new XdsInternalException("No FHIR Resource ID returned from CREATE request")
         if (statusLine.statusCode in 400..599)  {
             stepContext.set_error("Status:${statusLine}")
         }

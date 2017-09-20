@@ -85,10 +85,10 @@ public class SimProxyBase {
         responseTransformClassNames.each { String className ->
             assert className
             def instance = Class.forName(className).newInstance()
-            if (!(instance instanceof ResponseTransform))
+            if (!(instance instanceof SimpleResponseTransform))
                 throw new SimProxyTransformException("Proxy Transform named ${className} cannot be created.")
 
-            response = ((ResponseTransform) instance).run(this, response)
+            response = ((SimpleResponseTransform) instance).run(this, response)
         }
         return response
     }

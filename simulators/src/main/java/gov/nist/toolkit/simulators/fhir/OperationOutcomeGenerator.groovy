@@ -1,4 +1,4 @@
-package gov.nist.toolkit.fhir.support
+package gov.nist.toolkit.simulators.fhir
 
 import gov.nist.toolkit.soap.http.SoapFault
 import org.hl7.fhir.dstu3.model.OperationOutcome

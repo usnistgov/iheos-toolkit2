@@ -1,11 +1,10 @@
 package gov.nist.toolkit.http;
 
-import java.util.ArrayList;
-import java.util.List;
-
+import edu.emory.mathcs.backport.java.util.Arrays;
 import org.apache.log4j.Logger;
 
-import edu.emory.mathcs.backport.java.util.Arrays;
+import java.util.ArrayList;
+import java.util.List;
 
 public class HeaderTokenizer {
 	String inputString;
@@ -15,7 +14,7 @@ public class HeaderTokenizer {
 	Token currentToken = null;
 	Token previousToken = null;
 	static final Logger logger = Logger.getLogger(HeaderTokenizer.class);
-	boolean debug = true;
+	boolean debug = false;
 	
 	public HeaderTokenizer(String inputString) {
 		this.inputString = inputString.trim();

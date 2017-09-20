@@ -67,12 +67,13 @@ class RequestListenerThread extends Thread {
                 final int bufsize = 8 * 1024;
                 // Set up incoming HTTP connection
                 final Socket insocket = this.serversocket.accept();
-                final DefaultBHttpServerConnection inconn = new ServerConnection(bufsize, new SimProxyBase());    //new DefaultBHttpServerConnection(bufsize);
+                SimProxyBase proxyBase = new SimProxyBase();
+                final DefaultBHttpServerConnection inconn = new ServerConnection(bufsize, proxyBase);    //new DefaultBHttpServerConnection(bufsize);
                 System.out.println("Incoming connection from " + insocket.getInetAddress());
                 inconn.bind(insocket);
 
                 // Set up outgoing HTTP connection
-                final DefaultBHttpClientConnection outconn = new ClientConnection(bufsize);
+                final DefaultBHttpClientConnection outconn = new ClientConnection(bufsize, proxyBase);
 
                 // Start worker thread
                 final Thread t = new ProxyThread(this.httpService, inconn, outconn);

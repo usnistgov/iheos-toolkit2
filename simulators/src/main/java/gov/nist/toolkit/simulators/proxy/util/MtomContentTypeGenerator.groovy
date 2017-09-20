@@ -2,7 +2,7 @@ package gov.nist.toolkit.simulators.proxy.util
 
 import org.apache.commons.lang.text.StrSubstitutor
 import org.apache.http.Header
-import org.apache.http.client.utils.URLEncodedUtils
+import org.apache.http.NameValuePair
 import org.apache.http.message.BasicHeader
 import org.apache.http.message.BasicHeaderElement
 import org.apache.http.message.BasicNameValuePair
@@ -16,14 +16,14 @@ class MtomContentTypeGenerator {
     static final startInfo = 'application/soap+xml'
 
     static Header buildHeader(String action) {
-        def nameValuePairs = []
-        nameValuePairs << new BasicNameValuePair('boundary', boundary)
-        nameValuePairs << new BasicNameValuePair('type', type)
-        nameValuePairs << new BasicNameValuePair('start', start)
-        nameValuePairs << new BasicNameValuePair('start-info', startInfo)
-        nameValuePairs << new BasicNameValuePair('action', action)
+        NameValuePair[] nameValuePairs = new NameValuePair[5]
+        nameValuePairs[0] =  new BasicNameValuePair('boundary', encode(boundary))
+        nameValuePairs[1] =  new BasicNameValuePair('type', encode(type))
+        nameValuePairs[2] =  new BasicNameValuePair('start', encode(start))
+        nameValuePairs[3] = new BasicNameValuePair('start-info', encode(startInfo))
+        nameValuePairs[4] =  new BasicNameValuePair('action', encode(action))
 
-        nameValuePairs = URLEncodedUtils.format(nameValuePairs, 'UTF-8')
+        //nameValuePairs = URLEncodedUtils.format(nameValuePairs, 'UTF-8')
 //        BasicHeaderElement ele = new BasicHeaderElement('Content-Type', 'multipart/related', nameValuePairs)
         BasicHeaderElement ele = new BasicHeaderElement('multipart/related', null, nameValuePairs)
         Header contentType = new BasicHeader('Content-Type', ele.toString())
@@ -36,8 +36,8 @@ class MtomContentTypeGenerator {
 //        return request
     }
 
-    String encode(String input) {
-
+    static String encode(String input) {
+        '"' + input + '"'
     }
 
     static byte[] buildBody(List<PartSpec> parts) {

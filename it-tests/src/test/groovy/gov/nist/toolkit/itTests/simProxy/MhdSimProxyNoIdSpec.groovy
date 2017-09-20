@@ -17,7 +17,7 @@ import spock.lang.Shared
 /**
  * Test SimProxy with MHD -> XDS transformation as front end to RegRepSpec simulator
  */
-class MhdSimProxySpec extends ToolkitSpecification {
+class MhdSimProxyNoIdSpec extends ToolkitSpecification {
     @Shared SimulatorBuilder spi
 
 
@@ -84,7 +84,7 @@ class MhdSimProxySpec extends ToolkitSpecification {
         proxySimConfig.setProperty(SimulatorProperties.simProxyRequestTransformations, requestTransformations)
 
         List<String> responseTransformations = proxySimConfig.asList(SimulatorProperties.simProxyResponseTransformations)
-        responseTransformations << 'gov.nist.toolkit.simulators.proxy.transforms.RegistryResponseToOperationOutcomeTransform'
+        //responseTransformations.add('gov.nist.toolkit.simProxy.server.transforms.MhdSubmissionTransform')
         proxySimConfig.setProperty(SimulatorProperties.simProxyResponseTransformations, responseTransformations)
 
         updatedProxySimConfig = spi.update(proxySimConfig)
@@ -109,7 +109,7 @@ class MhdSimProxySpec extends ToolkitSpecification {
 //        xforms.find { it == 'gov.nist.toolkit.simProxy.server.transforms.MhdSubmissionTransform' }
 //    }
 
-    def 'send create through simproxy'() {
+    def 'send create through simproxy - no FHIR Resource ID returned'() {
         when:
         def sections = ['submit']
         def params = [ :]
@@ -117,7 +117,8 @@ class MhdSimProxySpec extends ToolkitSpecification {
 
         then:
         results.size() == 1
-        results.get(0).passed()
+        !results.get(0).passed()
+        assertionsContain(results, 'No FHIR Resource ID')
     }
 
 //    def 'send pnr and query through simproxy'() {

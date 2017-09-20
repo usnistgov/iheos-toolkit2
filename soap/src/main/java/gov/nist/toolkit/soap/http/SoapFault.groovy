@@ -16,6 +16,10 @@ public class SoapFault {
 		faultReason = reason;
 	}
 
+	public SoapFault(String code, String reason) {
+		this(FaultCodes.values().find { it.name() == code}, reason)
+	}
+
 	public void addDetail(String adetail) {
 		details.add(adetail);
 	}

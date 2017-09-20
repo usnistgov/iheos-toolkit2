@@ -2,16 +2,18 @@ package gov.nist.toolkit.simulators.proxy.transforms
 
 import ca.uhn.fhir.context.FhirContext
 import gov.nist.toolkit.configDatatypes.client.TransactionType
+import gov.nist.toolkit.installation.Installation
+import gov.nist.toolkit.installation.ResourceCache
 import gov.nist.toolkit.simulators.mhd.Attachment
 import gov.nist.toolkit.simulators.mhd.MhdGenerator
 import gov.nist.toolkit.simulators.mhd.Submission
-import gov.nist.toolkit.installation.Installation
-import gov.nist.toolkit.installation.ResourceCache
 import gov.nist.toolkit.simulators.proxy.exceptions.SimProxyTransformException
-import gov.nist.toolkit.simulators.proxy.util.*
+import gov.nist.toolkit.simulators.proxy.util.ContentRequestTransform
+import gov.nist.toolkit.simulators.proxy.util.MtomContentTypeGenerator
+import gov.nist.toolkit.simulators.proxy.util.PartSpec
+import gov.nist.toolkit.simulators.proxy.util.SimProxyBase
 import gov.nist.toolkit.utilities.io.Io
 import org.apache.http.Header
-import org.apache.http.HttpEntity
 import org.apache.http.HttpRequest
 import org.apache.http.entity.BasicHttpEntity
 import org.apache.http.message.BasicHttpEntityEnclosingRequest

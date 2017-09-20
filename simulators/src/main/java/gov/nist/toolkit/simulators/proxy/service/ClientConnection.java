@@ -1,29 +1,28 @@
 package gov.nist.toolkit.simulators.proxy.service;
 
-import gov.nist.toolkit.simulators.proxy.util.ProxyLogger;
+import gov.nist.toolkit.simulators.proxy.util.SimProxyBase;
 import gov.nist.toolkit.utilities.io.Io;
-import org.apache.http.*;
-import org.apache.http.config.MessageConstraints;
+import org.apache.http.HttpEntity;
+import org.apache.http.HttpEntityEnclosingRequest;
+import org.apache.http.HttpException;
+import org.apache.http.HttpResponse;
 import org.apache.http.entity.BasicHttpEntity;
-import org.apache.http.entity.ContentLengthStrategy;
 import org.apache.http.impl.DefaultBHttpClientConnection;
-import org.apache.http.io.HttpMessageParserFactory;
-import org.apache.http.io.HttpMessageWriterFactory;
 import org.apache.http.util.Args;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.nio.charset.CharsetDecoder;
-import java.nio.charset.CharsetEncoder;
 
 /**
  * proxy acting as client to eventual server
  */
 public class ClientConnection extends DefaultBHttpClientConnection {
+    private SimProxyBase proxyBase;
 
-    public ClientConnection(int buffersize) {
+    public ClientConnection(int buffersize, SimProxyBase base) {
         super(buffersize);
+        this.proxyBase = base;
     }
 
     @Override
@@ -46,6 +45,7 @@ public class ClientConnection extends DefaultBHttpClientConnection {
             final OutputStream outstream = this.prepareOutput(request);
             entity3.writeTo(outstream);
             outstream.close();
+            proxyBase.getTargetLogger().logRequestEntity(buffer);
             return;
         }
         final OutputStream outstream = prepareOutput(request);
@@ -69,6 +69,7 @@ public class ClientConnection extends DefaultBHttpClientConnection {
             final BasicHttpEntity entity3 = new BasicHttpEntity();
             entity3.setContent(Io.bytesToInputStream(buffer));
             response.setEntity(entity3);
+            proxyBase.getTargetLogger().logResponseEntity(buffer);
             return;
         }
         response.setEntity(entity);
