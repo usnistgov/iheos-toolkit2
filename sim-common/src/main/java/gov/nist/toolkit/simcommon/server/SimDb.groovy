@@ -35,7 +35,7 @@ public class SimDb {
 	private String actor = null;
 	private String transaction = null;
 	private File transactionDir = null;
-	static private Logger logger = Logger.getLogger(SimDb.class);
+	static private final Logger logger = Logger.getLogger(SimDb.class);
 
 	static final String MARKER = 'MARKER';
 

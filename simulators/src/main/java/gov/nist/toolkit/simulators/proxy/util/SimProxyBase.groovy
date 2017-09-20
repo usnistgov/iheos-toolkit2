@@ -31,8 +31,8 @@ public class SimProxyBase {
      Site proxySite
      ActorType clientActorType;
      TransactionType clientTransactionType;
-    ActorType serverActorType
-    TransactionType serverTransactionType
+    ActorType targetActorType
+    TransactionType targetTransactionType
     SimEndpoint endpoint
     Site targetSite
     ProxyLogger clientLogger = null
@@ -44,10 +44,10 @@ public class SimProxyBase {
      * @param transactionType
      */
     def setTargetType(ActorType actorType, TransactionType transactionType) {
-        serverActorType = actorType
-        serverTransactionType = transactionType
+        targetActorType = actorType
+        targetTransactionType = transactionType
 
-        simDb2 = new SimDb(simId2, serverActorType, serverTransactionType)
+        simDb2 = new SimDb(simId2, targetActorType, targetTransactionType)
         config2 = simDb.getSimulator(simId2);
         if (config2 == null) throw new BadSimIdException("Simulator " + simId2 +  " does not exist");
     }
@@ -57,7 +57,7 @@ public class SimProxyBase {
      * @return
      */
     String getTargetEndpoint() {
-        return targetSite.getEndpoint(clientTransactionType, isSecure(), false)
+        return targetSite.getEndpoint(targetTransactionType, isSecure(), false)
     }
 
     HttpRequest preProcessRequest(HttpRequest request) {
@@ -76,6 +76,7 @@ public class SimProxyBase {
                 throw new SimProxyTransformException("Proxy Transform named ${className} cannot be created.")
 
             request = ((SimpleRequestTransform) instance).run(this, request)
+            assert request, "${className} returned null request"
         }
         return request
     }

@@ -15,7 +15,7 @@ public class HeaderTokenizer {
 	Token currentToken = null;
 	Token previousToken = null;
 	static final Logger logger = Logger.getLogger(HeaderTokenizer.class);
-	boolean debug = false;
+	boolean debug = true;
 	
 	public HeaderTokenizer(String inputString) {
 		this.inputString = inputString.trim();

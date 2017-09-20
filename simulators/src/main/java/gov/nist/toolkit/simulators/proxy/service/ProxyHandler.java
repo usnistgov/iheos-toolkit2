@@ -18,7 +18,7 @@ import java.net.Socket;
  */
 class ProxyHandler implements HttpRequestHandler {
     static Logger logger = Logger.getLogger(ProxyHandler.class);
-    private final HttpHost target;
+    private HttpHost target;
     private final HttpProcessor httpproc;
     private final HttpRequestExecutor httpexecutor;
     private final ConnectionReuseStrategy connStrategy;
@@ -45,6 +45,7 @@ class ProxyHandler implements HttpRequestHandler {
         try {
 //            String uri = request.getRequestLine().getUri();
 
+            target = new HttpHost("localhost", 6666);
             Object pb = context.getAttribute(ElementalReverseProxy.HTTP_PROXY_BASE);
             if (pb != null && pb instanceof SimProxyBase) {
                 proxyBase = (SimProxyBase) pb;
@@ -97,7 +98,6 @@ class ProxyHandler implements HttpRequestHandler {
         targetLogger = proxyBase.getTargetLogger();
 
         this.httpexecutor.preProcess(targetRequest, this.httpproc, context);
-        targetLogger.logRequest(targetRequest);
 
         final HttpResponse targetResponse1 = this.httpexecutor.execute(targetRequest, conn, context);
         targetLogger.logResponse(targetResponse1);
