@@ -13,6 +13,7 @@ import gov.nist.toolkit.simcommon.server.SimEndpoint
 import gov.nist.toolkit.simulators.proxy.exceptions.SimProxyTransformException
 import gov.nist.toolkit.simulators.proxy.sim.SimProxyFactory
 import gov.nist.toolkit.sitemanagement.client.Site
+import org.apache.http.Header
 import org.apache.http.HttpRequest
 import org.apache.http.HttpResponse
 /**
@@ -37,6 +38,7 @@ public class SimProxyBase {
     Site targetSite
     ProxyLogger clientLogger = null
     ProxyLogger targetLogger = null
+    String clientContentType
 
     /**
      * called by the first transform when something is known about the target system transaction
@@ -129,6 +131,9 @@ public class SimProxyBase {
 
         requestTransformClassNames = config.get(SimulatorProperties.simProxyRequestTransformations)?.asList();
         responseTransformClassNames = config.get(SimulatorProperties.simProxyResponseTransformations)?.asList();
+
+        Header contentTypeHeader = request.getFirstHeader('Content-Type')
+        clientContentType = contentTypeHeader.value
 
         String targetSiteName = config.get(SimulatorProperties.proxyForwardSite)?.asString()
         assert targetSiteName, "Proxy forward site not configured"

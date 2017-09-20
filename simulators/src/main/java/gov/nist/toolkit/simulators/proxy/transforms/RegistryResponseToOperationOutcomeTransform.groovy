@@ -13,8 +13,10 @@ import org.apache.http.Header
 import org.apache.http.HttpResponse
 import org.apache.http.HttpStatus
 import org.apache.http.ProtocolVersion
+import org.apache.http.entity.StringEntity
 import org.apache.http.message.BasicHttpResponse
 import org.apache.http.message.BasicStatusLine
+import org.apache.http.protocol.HttpDateGenerator
 import org.apache.log4j.Logger
 import org.hl7.fhir.dstu3.model.OperationOutcome
 /**
@@ -51,10 +53,19 @@ class RegistryResponseToOperationOutcomeTransform implements ContentResponseTran
                 println "Reason is ${reason}"
                 SoapFault soapFault = new SoapFault(code, reason)
                 OperationOutcome operationOutcome = OperationOutcomeGenerator.translate(soapFault)
-                BasicHttpResponse outcome = new BasicHttpResponse(new BasicStatusLine(new ProtocolVersion('http', 1,1), HttpStatus.SC_BAD_REQUEST, ''))
-
+                BasicHttpResponse outcome = new BasicHttpResponse(new BasicStatusLine(new ProtocolVersion('HTTP', 1,1), HttpStatus.SC_OK, 'OK'))
+                outcome.addHeader('Content-Type', base.clientContentType)
+                outcome.addHeader('Date', new HttpDateGenerator().currentDate)
+                String content
+                if (base.clientContentType.contains('json')) {
+                    content = ctx.newJsonParser().encodeResourceToString(operationOutcome)
+                } else {
+                    content = ctx.newXmlParser().encodeResourceToString(operationOutcome)
+                }
+                outcome.setEntity(new StringEntity(content))
+                return outcome
             }
         }
-        return null
+        throw new SimProxyTransformException('Not Implemented')
     }
 }

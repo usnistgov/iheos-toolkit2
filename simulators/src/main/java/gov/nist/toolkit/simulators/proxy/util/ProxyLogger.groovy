@@ -35,7 +35,7 @@ class ProxyLogger {
      String asString(HttpResponse response) {
         StringBuilder buf = new StringBuilder()
 
-        buf.append(response.statusLine.toString())
+        buf.append(response.statusLine.toString()).append('\r\n')
         asString((HttpMessage) response, buf)
 
         return buf.toString()

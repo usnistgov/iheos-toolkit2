@@ -17,7 +17,11 @@ public class SoapFault {
 	}
 
 	public SoapFault(String code, String reason) {
-		this(FaultCodes.values().find { it.name() == code}, reason)
+		if (code.contains(':'))
+			code = code.split(':')[1]
+		FaultCodes cod = FaultCodes.values().find { it.name() == code}
+		setFaultCode(cod)
+		faultReason = reason
 	}
 
 	public void addDetail(String adetail) {
