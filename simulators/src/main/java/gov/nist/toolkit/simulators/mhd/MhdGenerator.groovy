@@ -20,6 +20,16 @@ import java.text.SimpleDateFormat
 // TODO - add referenceIdList
 // TODO - add case where Patient not in bundle
 
+/**
+ * Association id = ID06
+ *    source = SubmissionSet_ID02
+ *    target = Document_ID01
+ *
+ * RegistryPackage id = 234...
+ *
+ * ExtrinsicObject id = ID07
+ */
+
 class MhdGenerator {
     ErrorLogger errorLogger = new ErrorLogger()
     int newIdCounter = 1
@@ -161,8 +171,8 @@ class MhdGenerator {
                 nodeRepresentation: "${value}",
                 classifiedObject: "${registryObject}"
         ) {
-            addName(builder, displayName)
             addSlot(builder, 'codingScheme', [codeScheme])
+            addName(builder, displayName)
         }
     }
 
@@ -243,13 +253,6 @@ class MhdGenerator {
             if (dr.description)
                 addName(builder, dr.description)
 
-            if (dr.masterIdentifier?.value)
-                addExternalIdentifier(builder, 'urn:uuid:2e82c1f6-a085-4c72-9da3-8640a32e42ab', unURN(dr.masterIdentifier.value), newId(), drId, 'XDSDocumentEntry.uniqueId')
-
-            if (dr.subject) {
-                addSubject(builder, fullUrl, drId, 'urn:uuid:58a6f841-87b3-4a3e-92fd-a8ffeff98427', dr.subject, 'XDSDocumentEntry.patientId')
-            }
-
             if (dr.type)
                 addClassificationFromCodeableConcept(builder, dr.type, 'urn:uuid:f0306f51-975f-434e-a61c-c59651d33983', drId)
 
@@ -268,6 +271,13 @@ class MhdGenerator {
 
             if (dr.context?.event)
                 addClassificationFromCodeableConcept(builder, dr.context.event, 'urn:uuid:2c6b8cb7-8b2a-4051-b291-b1ae6a575ef4', drId)
+
+            if (dr.masterIdentifier?.value)
+                addExternalIdentifier(builder, 'urn:uuid:2e82c1f6-a085-4c72-9da3-8640a32e42ab', unURN(dr.masterIdentifier.value), newId(), drId, 'XDSDocumentEntry.uniqueId')
+
+            if (dr.subject) {
+                addSubject(builder, fullUrl, drId, 'urn:uuid:58a6f841-87b3-4a3e-92fd-a8ffeff98427', dr.subject, 'XDSDocumentEntry.patientId')
+            }
 
         }
     }
@@ -362,20 +372,21 @@ class MhdGenerator {
             if (dm.description)
                 addName(builder, dm.description)
 
+            addClassification(builder, 'urn:uuid:a54d6aa5-d40d-43f9-88c5-b4633d873bdd', newId(), dmId)
+
             if (dm.masterIdentifier?.value)
                 addExternalIdentifier(builder, 'urn:uuid:96fdda7c-d067-4183-912e-bf5ee74998a8', unURN(dm.masterIdentifier.value), newId(), dmId, 'XDSDocumentEntry.uniqueId')
 
             if (dm.subject)
                 addSubject(builder, fullUrl, dmId, 'urn:uuid:6b5aea1a-874d-4603-a4bc-96a0a7b38446', dm.subject, 'XDSSubmissionSet.patientId')
 
-            addClassification(builder, 'urn:uuid:a54d6aa5-d40d-43f9-88c5-b4633d873bdd', newId(), dmId)
         }
     }
 
     def addAssociation(xml, type, source, target) {
         xml.Association(
-                source: "${source}",
-                target: "${target}",
+                sourceObject: "${source}",
+                targetObject: "${target}",
                 associationType: "${type}",
                 objectType: 'urn:oasis:names:tc:ebxml-regrep:ObjectType:RegistryObject:Association',
                 id: "${newId()}"

@@ -49,7 +49,7 @@ class MhdToPnrContentTransform implements ContentRequestTransform {
         Submission s = new MhdGenerator(Installation.instance().resourceCacheMgr()).buildSubmission(bundle)
         assert s.attachments.size() > 0
         List<PartSpec> parts = []
-        parts << new PartSpec('application/xop+xml; charset=UTF-8; type="application/soap+xml"', s.metadata)
+        parts << new PartSpec('application/xop+xml; charset=UTF-8; type="application/soap+xml"', s.metadataInSoapWrapper())
         s.attachments.each { Attachment a ->
             parts << new PartSpec(a.contentType, new String(a.content))
         }

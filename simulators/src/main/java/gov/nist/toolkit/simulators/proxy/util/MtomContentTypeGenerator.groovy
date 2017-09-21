@@ -54,7 +54,8 @@ class MtomContentTypeGenerator {
         }
         buf.append(getClass().getResource('/templates/mtom_close.txt').text)
 
-        return buf.toString().bytes
+        String s = buf.toString()
+        return s.bytes
 
     }
 }
