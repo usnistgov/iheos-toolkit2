@@ -8,10 +8,6 @@ import com.google.gwt.event.logical.shared.ResizeEvent;
 import com.google.gwt.event.logical.shared.ResizeHandler;
 import com.google.gwt.user.cellview.client.CellTable;
 import com.google.gwt.user.client.Window;
-import com.google.gwt.user.client.rpc.AsyncCallback;
-import com.google.gwt.user.client.ui.*;
-import gov.nist.toolkit.actortransaction.client.ActorType;
-import gov.nist.toolkit.configDatatypes.server.SimulatorProperties;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.FlexTable;
 import com.google.gwt.user.client.ui.FlowPanel;
@@ -29,9 +25,11 @@ import gov.nist.toolkit.simcommon.client.SimId;
 import gov.nist.toolkit.simcommon.client.Simulator;
 import gov.nist.toolkit.simcommon.client.SimulatorConfig;
 import gov.nist.toolkit.simcommon.client.SimulatorStats;
-import gov.nist.toolkit.sitemanagement.client.Site;
 import gov.nist.toolkit.sitemanagement.client.StringSort;
-import gov.nist.toolkit.xdstools2.client.command.command.*;
+import gov.nist.toolkit.xdstools2.client.command.command.GetActorTypeNamesCommand;
+import gov.nist.toolkit.xdstools2.client.command.command.GetAllSimConfigsCommand;
+import gov.nist.toolkit.xdstools2.client.command.command.GetNewSimulatorCommand;
+import gov.nist.toolkit.xdstools2.client.command.command.GetSimulatorStatsCommand;
 import gov.nist.toolkit.xdstools2.client.event.TabSelectedEvent;
 import gov.nist.toolkit.xdstools2.client.event.Xdstools2EventBus;
 import gov.nist.toolkit.xdstools2.client.siteActorManagers.BaseSiteActorManager;
@@ -44,7 +42,6 @@ import gov.nist.toolkit.xdstools2.shared.command.request.GetNewSimulatorRequest;
 import gov.nist.toolkit.xdstools2.shared.command.request.GetSimulatorStatsRequest;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 
 public class SimulatorControlTab extends GenericQueryTab {
@@ -188,8 +185,10 @@ public class SimulatorControlTab extends GenericQueryTab {
 
     @Override
 	protected void bindUI() {
+        // This comment looks
 		// force loading of sites in the back end
 		// funny errors occur without this
+        /* Is this really required?
 		new GetAllSitesCommand() {
 
             @Override
@@ -197,6 +196,7 @@ public class SimulatorControlTab extends GenericQueryTab {
 
             }
         }.run(getCommandContext());
+        */
 
 
 		loadSimStatus();
