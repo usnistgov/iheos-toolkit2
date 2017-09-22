@@ -12,6 +12,7 @@ class ResourceMgr {
 
     String toString() {
         StringBuilder buf = new StringBuilder()
+        buf.append("Resources:\n")
 
         resources.each { url, resource ->
             buf.append(url).append('   ').append(resource.class.name).append('\n')

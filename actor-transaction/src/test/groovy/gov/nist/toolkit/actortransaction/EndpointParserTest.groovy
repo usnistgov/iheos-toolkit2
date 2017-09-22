@@ -1,5 +1,6 @@
 package gov.nist.toolkit.actortransaction
 
+import gov.nist.toolkit.actortransaction.server.EndpointParser
 import spock.lang.Specification
 
 /**

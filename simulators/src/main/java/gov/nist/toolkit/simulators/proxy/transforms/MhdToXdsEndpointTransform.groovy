@@ -1,9 +1,8 @@
 package gov.nist.toolkit.simulators.proxy.transforms
 
-import gov.nist.toolkit.actortransaction.EndpointParser
+import gov.nist.toolkit.actortransaction.server.EndpointParser
 import gov.nist.toolkit.actortransaction.client.ActorType
 import gov.nist.toolkit.configDatatypes.client.TransactionType
-import gov.nist.toolkit.simcommon.server.SimEndpoint
 import gov.nist.toolkit.simulators.proxy.util.HttpRequestBuilder
 import gov.nist.toolkit.simulators.proxy.util.SimProxyBase
 import gov.nist.toolkit.simulators.proxy.util.SimpleRequestTransform

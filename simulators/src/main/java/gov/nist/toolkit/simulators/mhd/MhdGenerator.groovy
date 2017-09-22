@@ -1,5 +1,6 @@
 package gov.nist.toolkit.simulators.mhd
 
+import gov.nist.toolkit.simulators.fhir.validators.BundleFullUrlValidator
 import gov.nist.toolkit.simulators.mhd.errors.ResourceNotAvailable
 import gov.nist.toolkit.installation.ResourceCacheMgr
 import gov.nist.toolkit.installation.ResourceMgr
@@ -103,7 +104,8 @@ class MhdGenerator {
         return 'urn:uuid:' + uuid
     }
 
-    static unURN(String uuid) {
+    static unURN(def uuid) {
+        assert uuid instanceof String
         if (uuid.startsWith('urn:uuid:')) return uuid.substring(9)
         if (uuid.startsWith('urn:oid:')) return uuid.substring(8)
         return uuid
@@ -212,7 +214,8 @@ class MhdGenerator {
         assert theCoding
         def cxi_5 = theCoding.code
 
-        return cxi_1 + '^^^&' + unURN(cxi_4) + '&ISO'+ ( (cxi_5) ? "^${cxi_5}" : '')
+        def val = cxi_1 + '^^^&' + unURN(cxi_4) + '&ISO'+ ( (cxi_5) ? "^${cxi_5}" : '')
+        return val
     }
 
     // TODO - no profile guidance on how to convert coding.system URL to existing OIDs
@@ -231,7 +234,7 @@ class MhdGenerator {
 
 
     def addExtrinsicObject(builder, fullUrl, dr) {
-        String drId = getEntryUuidValue(fullUrl, dr.identifier)
+        String drId = dr.id // getEntryUuidValue(fullUrl, dr.identifier)
         assert dr.content
         assert dr.content[0]
         assert dr.content[0].attachment
@@ -250,6 +253,12 @@ class MhdGenerator {
             if (dr.context?.period?.end)
                 addSlot(builder, 'serviceStopTime', [translateDateTime(dr.context.period.end)])
 
+            if (dr.content?.attachment?.language)
+                addSlot(builder, 'languageCode', [dr.content.attachment.language])
+
+            if (dr.subject)
+                addSourcePatient(builder, fullUrl, drId, 'urn:uuid:58a6f841-87b3-4a3e-92fd-a8ffeff98427', dr.subject, 'XDSDocumentEntry.patientId')
+
             if (dr.description)
                 addName(builder, dr.description)
 
@@ -258,6 +267,9 @@ class MhdGenerator {
 
             if (dr.class_)
                 addClassificationFromCodeableConcept(builder, dr.class_, 'urn:uuid:41a5887f-8865-4c09-adf7-e362475b143a', drId)
+
+            if (dr.securityLabel?.coding)
+                addClassificationFromCoding(builder, dr.securityLabel[0].coding[0], 'urn:uuid:f4f85eac-e6cb-4883-b524-f2705394840f', drId)
 
             if (dr.content?.format) {
                 addClassificationFromCoding(builder, dr.content[0].format, 'urn:uuid:a09d5840-386c-46f2-b5ad-9c3699a4309d', drId)
@@ -275,9 +287,9 @@ class MhdGenerator {
             if (dr.masterIdentifier?.value)
                 addExternalIdentifier(builder, 'urn:uuid:2e82c1f6-a085-4c72-9da3-8640a32e42ab', unURN(dr.masterIdentifier.value), newId(), drId, 'XDSDocumentEntry.uniqueId')
 
-            if (dr.subject) {
+            if (dr.subject)
                 addSubject(builder, fullUrl, drId, 'urn:uuid:58a6f841-87b3-4a3e-92fd-a8ffeff98427', dr.subject, 'XDSDocumentEntry.patientId')
-            }
+
 
         }
     }
@@ -292,6 +304,35 @@ class MhdGenerator {
      * @param attName
      * @return
      */
+
+    // TODO this is supposed to be constrained to be 'contained'
+    def addSourcePatient(builder, fullUrl, containingObjectId, scheme,  org.hl7.fhir.dstu3.model.Reference subject, attName) {
+        def ref1 = subject.getReference()
+        def (url, ref) = resolveReference(fullUrl, ref1, false, true)
+        if (!ref) {
+            new ResourceNotAvailable(errorLogger, fullUrl, ref1, 'All DocumentReference.subject and DocumentManifest.subject values shall be\nReferences to FHIR Patient Resources identified by an absolute external reference (URL).', '3.65.4.1.2.2 Patient Identity')
+            return
+        }
+        assert ref instanceof Patient
+
+        Patient patient = (Patient) ref
+
+        List<Identifier> identifiers = patient.getIdentifier()
+        Identifier official = getOfficial(identifiers)
+        assert official, 'Appendix Z, section E.3 Identifier Type'
+
+        assert official.value, 'Appendix Z, section E.3 Identifier Type'
+        assert official.system, 'Appendix Z, section E.3 Identifier Type'
+
+        String value = official.value
+        String system = official.system
+        String oid = unURN(system)
+        def pid = "${value}^^^&${oid}&ISO"
+
+        addSlot(builder, 'sourcePatientId', [pid])
+    }
+
+    // TODO must be absolute reference
     def addSubject(builder, fullUrl, containingObjectId, scheme,  org.hl7.fhir.dstu3.model.Reference subject, attName) {
         def ref1 = subject.getReference()
         def (url, ref) = resolveReference(fullUrl, ref1, false, true)
@@ -305,10 +346,20 @@ class MhdGenerator {
 
         List<Identifier> identifiers = patient.getIdentifier()
         Identifier official = getOfficial(identifiers)
-        assert official
+        assert official, 'Appendix Z, section E.3 Identifier Type'
 
-        addExternalIdentifier(builder, scheme, official.value, newId(), containingObjectId, attName)
+        assert official.value, 'Appendix Z, section E.3 Identifier Type'
+        assert official.system, 'Appendix Z, section E.3 Identifier Type'
+
+        String value = official.value
+        String system = official.system
+        String oid = unURN(system)
+        def pid = "${value}^^^&${oid}&ISO"
+
+        addExternalIdentifier(builder, scheme, pid, newId(), containingObjectId, attName)
     }
+
+
 
     /**
      *
@@ -342,7 +393,7 @@ class MhdGenerator {
     }
 
     def addSubmissionSet(builder, fullUrl, dm) {
-        String dmId = getEntryUuidValue(fullUrl, dm.identifier)
+        String dmId = dm.id // getEntryUuidValue(fullUrl, dm.identifier)
         builder.RegistryPackage(
                 id: dmId,
                 objectType: 'urn:oasis:names:tc:ebxml-regrep:ObjectType:RegistryObject:RegistryPackage',
@@ -374,8 +425,15 @@ class MhdGenerator {
 
             addClassification(builder, 'urn:uuid:a54d6aa5-d40d-43f9-88c5-b4633d873bdd', newId(), dmId)
 
+            if (dm.type)
+                addClassificationFromCodeableConcept(builder, dm.type, 'urn:uuid:aa543740-bdda-424e-8c96-df4873be8500', dmId)
+
             if (dm.masterIdentifier?.value)
-                addExternalIdentifier(builder, 'urn:uuid:96fdda7c-d067-4183-912e-bf5ee74998a8', unURN(dm.masterIdentifier.value), newId(), dmId, 'XDSDocumentEntry.uniqueId')
+                addExternalIdentifier(builder, 'urn:uuid:96fdda7c-d067-4183-912e-bf5ee74998a8', unURN(dm.masterIdentifier.value), newId(), dmId, 'XDSSubmissionSet.uniqueId')
+
+            if (dm.source?.value) {
+                addExternalIdentifier(builder, 'urn:uuid:554ac39e-e3fe-47fe-b233-965d2a147832', unURN(dm.source), newId(), dmId, 'XDSSubmissionSet.sourceId')
+            }
 
             if (dm.subject)
                 addSubject(builder, fullUrl, dmId, 'urn:uuid:6b5aea1a-874d-4603-a4bc-96a0a7b38446', dm.subject, 'XDSSubmissionSet.patientId')
@@ -383,14 +441,19 @@ class MhdGenerator {
         }
     }
 
-    def addAssociation(xml, type, source, target) {
-        xml.Association(
+    def addAssociation(xml, type, source, target, slotName, slotValues) {
+        def assoc = xml.Association(
                 sourceObject: "${source}",
                 targetObject: "${target}",
                 associationType: "${type}",
                 objectType: 'urn:oasis:names:tc:ebxml-regrep:ObjectType:RegistryObject:Association',
                 id: "${newId()}"
-        )
+        ) {
+            if (slotName) {
+                addSlot(xml, slotName, slotValues)
+            }
+        }
+        return assoc
     }
 
     def addSubmissionSetAssociations(xml, DocumentManifest dm) {
@@ -399,7 +462,7 @@ class MhdGenerator {
             Reference ref = component.PReference
             def (url, res) = resolveReference(null, ref.reference, true, true)
             assert res
-            addAssociation(xml, 'urn:oasis:names:tc:ebxml-regrep:AssociationType:HasMember', dm.id, res.id)
+            def assoc = addAssociation(xml, 'urn:oasis:names:tc:ebxml-regrep:AssociationType:HasMember', dm.id, res.id, 'SubmissionSetStatus', ['Original'])
         }
     }
 
@@ -433,6 +496,18 @@ class MhdGenerator {
                 assignId(component.getResource())
                 rMgr.addResource(component.fullUrl, component.getResource())
             }
+        }
+        println rMgr.toString()
+        bundleValidations(bundle)
+    }
+
+    def bundleValidations(Bundle bundle) {
+        fullUrlValidation(bundle)
+    }
+
+    def fullUrlValidation(Bundle bundle) {
+        bundle.getEntry().each { Bundle.BundleEntryComponent component ->
+            new BundleFullUrlValidator(component, null)
         }
     }
 
