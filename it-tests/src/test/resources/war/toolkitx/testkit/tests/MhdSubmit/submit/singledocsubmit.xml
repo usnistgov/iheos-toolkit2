@@ -20,7 +20,7 @@
                 </text>
                 <masterIdentifier>
                     <system value="urn:ietf:rfc:3986"/>
-                    <value value="urn:oid:129.6.58.92.88336"/>
+                    <value value="urn:oid:1.2.129.6.58.92.88336"/>
                 </masterIdentifier>
                 <status value="current"/>
                 <type>
@@ -79,6 +79,13 @@
                             <display value="General Medicine"/>
                         </coding>
                     </practiceSetting>
+                    <facilityType>
+                        <coding>
+                            <system value="http://ihe.net/connectathon/facilityType"/>
+                            <code value="Outpatient"/>
+                            <display value="Outpatient"/>
+                        </coding>
+                    </facilityType>
                 </context>
             </DocumentReference>
         </resource>
@@ -122,10 +129,15 @@
                 </identifier>
                 <status value="current"/>
                 <type>
+                    <coding>
+                        <system value="http://hl7.org/fhir/v3/TypeCode"/>
+                        <code value="History and Physical"/>
+                        <display value="History and Physical"/>
+                    </coding>
                     <text value="History and Physical"/>
                 </type>
                 <subject>
-                    <reference value="http://localhost:8080/fhir/Patient/xcda"/>
+                    <reference value="http://localhost:8080/fhir/Patient/a2"/>
                 </subject>
                 <created value="2004-12-25T23:50:50-05:00"/>
                 <author>

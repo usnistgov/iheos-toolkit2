@@ -1,6 +1,6 @@
 package gov.nist.toolkit.simulators.servlet;
 
-import gov.nist.toolkit.actortransaction.EndpointParser;
+import gov.nist.toolkit.actortransaction.server.EndpointParser;
 import gov.nist.toolkit.configDatatypes.server.SimulatorProperties;
 import gov.nist.toolkit.installation.Installation;
 import gov.nist.toolkit.simcommon.client.SimId;

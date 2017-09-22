@@ -1,9 +1,9 @@
-package gov.nist.toolkit.actortransaction;
+package gov.nist.toolkit.actortransaction.server;
 
 /**
  * Parse and validqte SOAP endpoints and HTTP urls
  */
-public class EndpointParser {
+public class EndpointParser  {
     private String endpoint;
     private String[] parts;
     private String error = null;

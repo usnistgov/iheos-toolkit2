@@ -1,7 +1,6 @@
 package gov.nist.toolkit.sitemanagement.client;
 
 import com.google.gwt.user.client.rpc.IsSerializable;
-import gov.nist.toolkit.actortransaction.EndpointParser;
 import gov.nist.toolkit.actortransaction.client.ActorType;
 import gov.nist.toolkit.configDatatypes.client.TransactionType;
 import gov.nist.toolkit.sitemanagement.client.TransactionBean.RepositoryType;
@@ -49,7 +48,7 @@ import java.util.Set;
 public class Site  implements IsSerializable, Serializable {
 	private static final long serialVersionUID = 1L;
 	private String name = null;
-	TransactionCollection transactions = new TransactionCollection(false);
+	public TransactionCollection transactions = new TransactionCollection(false);
 	// There can be only one ODDS, one XDS.b, and one IDS repository in a site.
 	// An XDS.b Repository and a ODDS Repository
 	// can have the same repositoryUniqueId and endpoint. But
@@ -383,14 +382,4 @@ public class Site  implements IsSerializable, Serializable {
 
 	public boolean isSimulator() { return isASimulator; }
 
-	public void updateNonTlsTransactionsToPort(String port) {
-		for (TransactionBean  tr : transactions.transactions) {
-			if (!tr.isSecure) {
-				String end = tr.getEndpoint();
-				EndpointParser ep = new EndpointParser(end);
-				ep.setPort(port);
-				tr.setEndpoint(ep.getEndpoint());
-			}
-		}
-	}
 }

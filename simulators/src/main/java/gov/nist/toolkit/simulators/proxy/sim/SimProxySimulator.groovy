@@ -1,6 +1,6 @@
 package gov.nist.toolkit.simulators.proxy.sim
 
-import gov.nist.toolkit.actortransaction.EndpointParser
+import gov.nist.toolkit.actortransaction.server.EndpointParser
 import gov.nist.toolkit.actortransaction.server.AbstractProxyTransform
 import gov.nist.toolkit.configDatatypes.client.TransactionType
 import gov.nist.toolkit.configDatatypes.server.SimulatorProperties
