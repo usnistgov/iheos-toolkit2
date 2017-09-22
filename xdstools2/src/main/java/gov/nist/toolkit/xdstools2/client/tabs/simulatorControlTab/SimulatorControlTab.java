@@ -78,7 +78,7 @@ public class SimulatorControlTab extends GenericQueryTab {
         ((Xdstools2EventBus) ClientUtils.INSTANCE.getEventBus()).addTabSelectedEventHandler(new TabSelectedEvent.TabSelectedEventHandler() {
             @Override
             public void onTabSelection(TabSelectedEvent event) {
-                if (event.getTabName().equals(tabName)){
+                if (event.getTabName().equals(tabName) || tabName.equals(event.getTabName().replace(" .",""))){
                     loadSimStatus();
                 }
             }
