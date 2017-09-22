@@ -343,8 +343,10 @@ public class MetadataInspectorTab extends ToolWindow {
 				DataModel dm = new DataModel(data);
 				dm.combinedMetadata = stepResult.getMetadata(); 
 				dm.allDocs = stepResult.documents;
-				
-				new ListingDisplay(this, dm, new TreeThing(stepTreeItem)).listing();
+
+				new HcIdListingDisplay(this, dm, new TreeThing(stepTreeItem));
+
+//				new ListingDisplay(this, dm, new TreeThing(stepTreeItem)).listing();
 				
 //				listing(stepResult.getMetadata(), stepResult.documents, new TreeThing(stepTreeItem));
 
