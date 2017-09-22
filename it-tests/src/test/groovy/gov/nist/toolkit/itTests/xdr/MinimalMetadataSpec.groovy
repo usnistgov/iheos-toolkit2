@@ -72,7 +72,9 @@ class MinimalMetadataSpec extends ToolkitSpecification {
         )
 
         // set DOC REC endpoint into DOC SRC
-        documentSource.setProperty(SimulatorProperties.pnrEndpoint, documentRecipient.asString(SimulatorProperties.pnrEndpoint))
+        String endpoint = documentRecipient.asString(SimulatorProperties.pnrEndpoint)
+        println "Configuring test to send to endpoint ${endpoint}"
+        documentSource.setProperty(SimulatorProperties.pnrEndpoint, endpoint)
         SimConfig updatedVersion = documentSource.update(documentSource.getConfig())
     }
 

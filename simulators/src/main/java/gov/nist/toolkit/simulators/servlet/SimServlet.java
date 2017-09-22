@@ -16,6 +16,7 @@ import gov.nist.toolkit.simcommon.client.SimId;
 import gov.nist.toolkit.simcommon.client.SimulatorConfig;
 import gov.nist.toolkit.simcommon.client.config.SimulatorConfigElement;
 import gov.nist.toolkit.simcommon.server.*;
+import gov.nist.toolkit.simulators.proxy.service.ElementalReverseProxy;
 import gov.nist.toolkit.simulators.sim.reg.store.MetadataCollection;
 import gov.nist.toolkit.simulators.sim.reg.store.RegIndex;
 import gov.nist.toolkit.simulators.sim.rep.RepIndex;
@@ -35,6 +36,7 @@ import gov.nist.toolkit.xdsexception.ExceptionUtil;
 import gov.nist.toolkit.xdsexception.client.XdsException;
 import org.apache.axiom.om.OMElement;
 import org.apache.commons.io.FileUtils;
+import org.apache.http.HttpHost;
 import org.apache.log4j.Logger;
 
 import javax.servlet.ServletConfig;
@@ -62,6 +64,8 @@ public class SimServlet  extends HttpServlet {
 	//	File simDbDir;
 	MessageValidationResults mvr;
 	PatientIdentityFeedServlet patientIdentityFeedServlet;
+	boolean isProxy;
+	boolean isFhir;
 
 
 	@Override
@@ -86,6 +90,12 @@ public class SimServlet  extends HttpServlet {
 		onServiceStart();
 
 		logger.info("SimServlet initialized");
+
+		try {
+			ElementalReverseProxy.start(7777, new HttpHost("localhost", 8889));
+		} catch (IOException e) {
+			throw new ServletException(e);
+		}
 	}
 
 	@Override
@@ -158,14 +168,12 @@ public class SimServlet  extends HttpServlet {
 		}
 
 		if (actor == null || actor.equals("null")) {
-//			try {
-				SimDb sdb = new SimDb(new SimId(simid), null, null);
+			try {
+				SimDb sdb = new SimDb(new SimId(simid));
 				actor = sdb.getActorsForSimulator().get(0);
-//			} catch (IOException e) {
-//				e.printStackTrace();
-//			} catch (NoSimException e) {
-//				e.printStackTrace();
-//			}
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
 		}
 
 		if (actor == null || actor.equals("null")) {
@@ -252,14 +260,12 @@ public class SimServlet  extends HttpServlet {
 		}
 
 		if (actor == null || actor.equals("null")) {
-//			try {
-				SimDb sdb = new SimDb(new SimId(simid), null, null);
+			try {
+				SimDb sdb = new SimDb(new SimId(simid));
 				actor = sdb.getActorsForSimulator().get(0);
-//			} catch (IOException e) {
-//				e.printStackTrace();
-//			} catch (NoSimException e) {
-//				e.printStackTrace();
-//			}
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
 		}
 
 		if (actor == null || actor.equals("null")) {
@@ -337,14 +343,12 @@ public class SimServlet  extends HttpServlet {
 		}
 
 		if (actor == null || actor.equals("null")) {
-//			try {
-				SimDb sdb = new SimDb(new SimId(simid), null, null);
+			try {
+				SimDb sdb = new SimDb(new SimId(simid));
 				actor = sdb.getActorsForSimulator().get(0);
-//			} catch (IOException e) {
-//				e.printStackTrace();
-//			} catch (NoSimException e) {
-//				e.printStackTrace();
-//			}
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
 		}
 
 		if (actor == null || actor.equals("null")) {
@@ -444,11 +448,22 @@ public class SimServlet  extends HttpServlet {
 		try {
 			simid = new SimId(uriParts[simIndex + 1]);
 			actor = uriParts[simIndex + 2];
-			transaction = uriParts[simIndex + 3];
+			if (uriParts.length > simIndex + 3)
+				transaction = uriParts[simIndex + 3];
+			else
+				transaction = "any";  // this happens with a FHIR transaction through the simproxy
 		}
 		catch (Exception e) {
 			sendSoapFault(response, "Simulator: Do not understand endpoint http://" + request.getLocalName() + ":" + request.getLocalPort() + uri + endpointFormat + " - " + e.getClass().getName() + ": " + e.getMessage(), mvc, vc);
 			return;
+		}
+
+		simid = SimDb.getFullSimId(simid);
+		isProxy = ActorType.findActor(simid.getActorType()).equals(ActorType.SIM_PROXY);
+		isFhir = simid.isFhir();
+		if (isProxy && isFhir) {
+			transaction = TransactionType.FHIR.getCode();
+			actor = ActorType.FHIR_SERVER.getShortName();
 		}
 
 		try {
@@ -470,6 +485,7 @@ public class SimServlet  extends HttpServlet {
 			sendSoapFault(response, "Simulator: Do not understand the actor requested by this endpoint (" + actor + ") in http://" + request.getLocalName() + ":" + request.getLocalPort() + uri + endpointFormat, mvc, vc);
 			return;
 		}
+		isFhir = actorType.isFhir();
 
 		boolean transactionOk = true;
 
@@ -515,7 +531,10 @@ public class SimServlet  extends HttpServlet {
 			//
 			//////////////////////////////////////////////////////////////
 
-			response.setContentType("application/soap+xml");
+			if (actorType == ActorType.FHIR_SERVER)
+				response.setContentType("application/fhir+xml");  // TODO - JSON
+			else
+				response.setContentType("application/soap+xml");
 
 //			BaseDsActorSimulator sim = getSimulatorRuntime(simid);
 			BaseActorSimulator baseSim = RuntimeManager.getSimulatorRuntime(simid);
@@ -602,6 +621,11 @@ public class SimServlet  extends HttpServlet {
 			responseSent = true;
 		}
 		catch (Exception e) {
+			sendSoapFault(response, ExceptionUtil.exception_details(e), mvc, vc);
+			logger.error(ExceptionUtil.exception_details(e));
+			responseSent = true;
+		}
+		catch (AssertionError e) {
 			sendSoapFault(response, ExceptionUtil.exception_details(e), mvc, vc);
 			logger.error(ExceptionUtil.exception_details(e));
 			responseSent = true;
@@ -785,6 +809,10 @@ public class SimServlet  extends HttpServlet {
 
 	private void sendSoapFault(HttpServletResponse response, String message, MessageValidatorEngine mvc, ValidationContext vc) {
 		try {
+			if (isFhir) {
+				response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, message);
+				return;
+			}
 			SoapFault sf = new SoapFault(SoapFault.FaultCodes.Sender, message);
 			SimCommon c = new SimCommon(response);
 			c.vc = vc;

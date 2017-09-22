@@ -46,6 +46,7 @@ public enum ActorType implements IsSerializable, Serializable {
             null,
             null,
             false,
+            null,
             null
     ),
     REGISTRY_MPQ(
@@ -376,6 +377,7 @@ public enum ActorType implements IsSerializable, Serializable {
             "gov.nist.toolkit.simulators.sim.ids.IdsHttpActorSimulator",
             Arrays.asList(TransactionType.WADO_RETRIEVE),
             false,
+            null,
             null
         ),
     IMAGING_DOC_CONSUMER(
@@ -400,19 +402,31 @@ public enum ActorType implements IsSerializable, Serializable {
             null,
             true
     ),
+    MHD_DOC_RECIPIENT(
+            "MHD Document Recipient",
+            Arrays.asList(""),
+            "mhdrec",
+            "gov.nist.toolkit.simcommon.server.factories.FhirActorFactory",  //  ???
+            "gov.nist.toolkit.fhir.simulators.FhirSimulator",                // ???
+            Arrays.asList(TransactionType.FHIR),
+            true,
+            null,
+            true
+    ),
     SIM_PROXY(
             "Sim Proxy",
             Arrays.asList(""),
             "simproxy",
-            "gov.nist.toolkit.simProxy.server.proxy.SimProxyFactory",
-            "gov.nist.toolkit.simProxy.server.proxy.SimProxySimulator",
+            "gov.nist.toolkit.simulators.proxy.sim.SimProxyFactory",
+            "gov.nist.toolkit.simulators.proxy.sim.SimProxySimulator",  // only constructor should be used
             Arrays.asList(TransactionType.PIF),  // place holder - transaction types
             true,  // show in config
             null,  // actorsFileLabel
             null,   // httpSimulatorClassName
             null,    // http transaction types
             false,    // is fhir
-            Arrays.asList("")   // proxy transform classes (extend AbstractProxyTransform)
+            new ArrayList<String>(),
+            new ArrayList<String>()
     ),
     ANY(
             "Any",
@@ -441,6 +455,7 @@ public enum ActorType implements IsSerializable, Serializable {
     String httpSimulatorClassName;
     boolean isFhir;
     List<String> proxyTransformClassNames;
+    List<String> proxyResponseTransformClassNames;
 
     ActorType() {
     } // for GWT
@@ -465,14 +480,18 @@ public enum ActorType implements IsSerializable, Serializable {
        String simulatorClassName, List<TransactionType> tt, boolean showInConfig,
        String actorsFileLabel, String httpSimulatorClassName, List<TransactionType> httpTt,
               boolean isFhir,
-              List<String> proxyTransformClassNames) {
+              List<String> proxyTransformClassNames,
+              List<String> proxyResponseTransformClassNames) {
        this(name, altNames, shortName, simulatorFactoryName, simulatorClassName, tt, showInConfig, actorsFileLabel, false);
        if (httpTt == null)
            httpTt = new ArrayList<>();
        this.httpTransactionTypes = httpTt;
        this.httpSimulatorClassName = httpSimulatorClassName;
        this.isFhir = isFhir;
+       if (proxyTransformClassNames == null)
+           proxyTransformClassNames = new ArrayList<>();
        this.proxyTransformClassNames = proxyTransformClassNames;
+       this.proxyResponseTransformClassNames = proxyResponseTransformClassNames;
    }
 
    public boolean isFhir() { return isFhir; }

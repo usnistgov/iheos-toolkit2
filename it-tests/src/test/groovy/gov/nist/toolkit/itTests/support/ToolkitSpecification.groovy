@@ -4,6 +4,8 @@ import gov.nist.toolkit.adt.ListenerFactory
 import gov.nist.toolkit.configDatatypes.client.Pid
 import gov.nist.toolkit.grizzlySupport.GrizzlyController
 import gov.nist.toolkit.installation.Installation
+import gov.nist.toolkit.results.client.AssertionResult
+import gov.nist.toolkit.results.client.AssertionResults
 import gov.nist.toolkit.results.client.Result
 import gov.nist.toolkit.results.client.TestInstance
 import gov.nist.toolkit.results.client.TestLogs
@@ -110,5 +112,20 @@ class ToolkitSpecification extends Specification {
         assert results.get(0).passed()
         return testLogs
     }
+
+    boolean assertionsContain(List<Result> results, String target) {
+        boolean found = false
+
+        results.each { Result result ->
+            result.assertions.each { AssertionResults ars->
+                ars.assertions.each { AssertionResult ar ->
+                    if (ar.assertion.contains(target)) found = true
+                }
+            }
+        }
+
+        return found
+    }
+
 
 }

@@ -1,6 +1,7 @@
 package gov.nist.toolkit.sitemanagement.client;
 
 import com.google.gwt.user.client.rpc.IsSerializable;
+import gov.nist.toolkit.actortransaction.EndpointParser;
 import gov.nist.toolkit.actortransaction.client.ActorType;
 import gov.nist.toolkit.configDatatypes.client.TransactionType;
 import gov.nist.toolkit.sitemanagement.client.TransactionBean.RepositoryType;
@@ -381,4 +382,15 @@ public class Site  implements IsSerializable, Serializable {
 	}
 
 	public boolean isSimulator() { return isASimulator; }
+
+	public void updateNonTlsTransactionsToPort(String port) {
+		for (TransactionBean  tr : transactions.transactions) {
+			if (!tr.isSecure) {
+				String end = tr.getEndpoint();
+				EndpointParser ep = new EndpointParser(end);
+				ep.setPort(port);
+				tr.setEndpoint(ep.getEndpoint());
+			}
+		}
+	}
 }

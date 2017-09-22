@@ -109,6 +109,17 @@ public abstract class AbstractActorFactory {
 	static final String description = "Description";
 
 	private boolean transactionOnly = false;
+	public boolean isSimProxy = false;
+
+	public AbstractActorFactory asSimProxy() {
+		isSimProxy = true;
+		return this;
+	}
+
+	public AbstractActorFactory asNotSimProxy() {
+		isSimProxy = false;
+		return this;
+	}
 
 	PropertyServiceManager propertyServiceMgr = null;
 
@@ -203,6 +214,18 @@ public abstract class AbstractActorFactory {
 				logger.info("calling onCreate:" + conf.getId().toString());
 				sim.onCreate(conf);
 			}
+
+			if (isSimProxy) {
+				for (SimulatorConfig conf : simulator.getConfigs()) {
+					conf.getId().forFhir();  // label it FHIR so it gets re-saved there
+					AbstractActorFactory actorFactory = getActorFactory(conf);
+					saveConfiguration(conf);
+
+					BaseActorSimulator sim = RuntimeManager.getSimulatorRuntime(conf.getId());
+					logger.info("calling onCreate:" + conf.getId().toString());
+					sim.onCreate(conf);
+				}
+			}
 		}
 
 		return simulator;
@@ -290,7 +313,7 @@ public abstract class AbstractActorFactory {
 //		+ "/"  context name includes preceding /
 				+ contextName
 				+ "/"
-				+ "fsim"
+				+ ((isSimProxy) ? "sim" : "fsim")
 				+ "/"
 				+ asc.getId();
 	}
@@ -486,7 +509,11 @@ public abstract class AbstractActorFactory {
 		addUser(sc, new SimulatorConfigElement(name, type, value));
 	}
 
-    public void addEditableConfig(SimulatorConfig sc, String name, ParamType type, List<String> values, boolean isMultiSelect) {
+	public void addEditableConfig(SimulatorConfig sc, String name, ParamType type, List<String> value) {
+		addUser(sc, new SimulatorConfigElement(name, type, value));
+	}
+
+	public void addEditableConfig(SimulatorConfig sc, String name, ParamType type, List<String> values, boolean isMultiSelect) {
         addUser(sc, new SimulatorConfigElement(name, type, values, isMultiSelect));
     }
 
@@ -495,6 +522,10 @@ public abstract class AbstractActorFactory {
     }
 
 	public void addFixedConfig(SimulatorConfig sc, String name, ParamType type, Boolean value) {
+		addFixed(sc, new SimulatorConfigElement(name, type, value));
+	}
+
+	public void addFixedConfig(SimulatorConfig sc, String name, ParamType type, List<String> value) {
 		addFixed(sc, new SimulatorConfigElement(name, type, value));
 	}
 

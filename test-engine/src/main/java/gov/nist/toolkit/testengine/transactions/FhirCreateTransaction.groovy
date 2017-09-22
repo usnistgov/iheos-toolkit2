@@ -1,5 +1,7 @@
 package gov.nist.toolkit.testengine.transactions
 
+import ca.uhn.fhir.context.FhirContext
+import gov.nist.toolkit.installation.ResourceCache
 import gov.nist.toolkit.testengine.engine.StepContext
 import gov.nist.toolkit.testengine.fhir.FhirClient
 import gov.nist.toolkit.testengine.fhir.FhirId
@@ -7,8 +9,9 @@ import gov.nist.toolkit.xdsexception.client.MetadataException
 import gov.nist.toolkit.xdsexception.client.XdsInternalException
 import org.apache.axiom.om.OMElement
 import org.apache.http.message.BasicStatusLine
+import org.hl7.fhir.dstu3.model.CodeableConcept
+import org.hl7.fhir.dstu3.model.OperationOutcome
 import org.hl7.fhir.instance.model.api.IBaseResource
-
 /**
  *
  */
@@ -32,14 +35,40 @@ class FhirCreateTransaction extends BasicFhirTransaction {
         reportManager.add('Base', endpoint)
         reportManager.add('Url', fullEndpoint)
 
+//        fullEndpoint = fullEndpoint.replace('7777', '6666')
+
         def (BasicStatusLine statusLine, String content, FhirId fhirId) = FhirClient.post(new URI(fullEndpoint), fhirCtx.newJsonParser().encodeResourceToString(resource))
-        if (statusLine.statusCode in 400..599)  {
-            stepContext.set_error("Status:${statusLine}")
+        if (content) {
+            OperationOutcome oo = (OperationOutcome) parse(content)
+
+            stepContext.set_error(simpleErrorMsg(oo))
         }
+//        if (statusLine.statusCode in 400..599)  {
+//            stepContext.set_error("Status:${statusLine}")
+//        }
 //        reportManager.add("FhirIdWithHistory", fhirId.toString())
 //        reportManager.add('RefWithHistory', "${endpoint}/${fhirId}")
-        reportManager.add("Type_ID", fhirId.withoutHistory())
-        reportManager.add('Ref', "${endpoint}/${fhirId.withoutHistory()}")
+        if (fhirId) {
+            reportManager.add("Type_ID", fhirId.withoutHistory())
+            reportManager.add('Ref', "${endpoint}/${fhirId.withoutHistory()}")
+        }
+    }
+
+    def simpleErrorMsg(OperationOutcome oo) {
+        assert oo
+        def errs = []
+        oo.issue.each { OperationOutcome.OperationOutcomeIssueComponent comp ->
+            String diagnostics = comp.diagnostics
+            String code = comp.codeElement?.value?.display
+            String location = comp.location
+            CodeableConcept details = comp.details
+            String detailsStr
+            if (details) {
+                detailsStr = details.textElement
+            }
+            errs << detailsStr + '|' + code + '|' + diagnostics + '|' + location
+        }
+        return errs.join('\n')
     }
 
     @Override
@@ -50,6 +79,17 @@ class FhirCreateTransaction extends BasicFhirTransaction {
     @Override
     protected String getBasicTransactionName() {
         return 'fhir'
+    }
+
+    IBaseResource parse(String content) {
+        FhirContext ctx = ResourceCache.ctx
+        content = content.trim()
+        if (content.startsWith('{')) {
+            return ctx.newJsonParser().parseResource(content)
+        } else {
+            return ctx.newXmlParser().parseResource(content)
+        }
+        return null
     }
 
 }

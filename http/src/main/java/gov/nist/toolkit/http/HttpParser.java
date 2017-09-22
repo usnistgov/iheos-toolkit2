@@ -143,7 +143,7 @@ public class HttpParser {
 	}
 
 	public HttpParser(byte[] msg) throws HttpParseException, HttpHeaderParseException, ParseException {
-		logger.debug("new HttpParser(" + this.toString() + ")");
+	//	logger.debug("new HttpParser(" + this.toString() + ")");
 		er = null;
 		init(msg, null, er);
 	}
@@ -163,20 +163,23 @@ public class HttpParser {
 	
 	public void init(byte[] msg, HttpMessage hmessage, ErrorRecorder er) throws ParseException, HttpParseException  {
 		input = msg;
+		String strMsg = new String(msg);
 		if (hmessage != null)
 			message = hmessage;
 		parse();
 		tryMultipart();
 
 		if (isMultipart()) {
-			er.detail("Multipart parsed");
+			if (er != null)
+				er.detail("Multipart parsed");
 			for (Enumeration<String> en=message.getHeaderNames(); en.hasMoreElements(); ) {
 				String hdr = en.nextElement();
 				String hdrVal = message.getHeader(hdr);
 				System.out.println(hdrVal);
 			}
 		} else {
-			er.detail("Simple Part parsed");
+			if (er != null)
+				er.detail("Simple Part parsed");
 			for (Enumeration<String> en=message.getHeaderNames(); en.hasMoreElements(); ) {
 				String hdr = en.nextElement();
 				String hdrVal = message.getHeader(hdr);
@@ -241,6 +244,7 @@ public class HttpParser {
 	}
 
 	String nextHeader() throws EoIException, LastHeaderException, HttpParseException {
+		String inputString = new String(input);
 		from = to;
 		while (true) {
 			while (!isEol())
@@ -262,15 +266,18 @@ public class HttpParser {
 		}
 		else  {
 			String header = new String(headerBytes);
-			if (header.equals("\r")) {
+			if (header.equals("\n")) {
 				if (isEol())
 					findStartOfNextHeader();
 				throw new LastHeaderException("");
 			}
 			header = header.trim();
+			if (header.equals(""))
+				throw new LastHeaderException("");
 			message.addHeader(header);
 			to = findStartOfNextHeader();
-			er.detail("Header: " + header);
+			if (er != null)
+				er.detail("Header: " + header);
 			return header;
 		}
 	}

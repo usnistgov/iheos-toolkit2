@@ -31,7 +31,11 @@ abstract class BasicFhirTransaction extends BasicTransaction {
         useMtom = false
         IBaseResource resource = null
         if (resourceFile) {
-            resource = fhirCtx.newJsonParser().parseResource(resourceFile.text)
+            String content = resourceFile.text.trim()
+            if (content.startsWith('<'))
+                resource = fhirCtx.newXmlParser().parseResource(resourceFile.text)
+            else
+                resource = fhirCtx.newJsonParser().parseResource(resourceFile.text)
         }
         doRun(resource, urlExtension)
     }
