@@ -1,6 +1,9 @@
 package gov.nist.toolkit.adt;
 
 
+import ca.uhn.hl7v2.model.*;
+import ca.uhn.hl7v2.parser.PipeParser;
+import ca.uhn.hl7v2.util.Terser;
 import gov.nist.toolkit.xdsexception.ExceptionUtil;
 import org.apache.log4j.Logger;
 
@@ -12,6 +15,8 @@ import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.SocketTimeoutException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 /**
  * This should only be invoked from ListenerFactory.
@@ -133,65 +138,148 @@ public class AdtSocketListener implements Runnable{
                 logger.error(e);
             }
 
-            AdtMessage message = null;
-            try {
-                message = new AdtMessage(input.toString());
-                switch (message.isValid()) {
-                    case ERROR_INCORRECT_BEGINNING:
-                        sendError = true;
-                        break;
-                    case ERROR_INCORRECT_ENDING:
-                        sendError = true;
-                        break;
-                    case ERROR_INCORRECT_MESSAGE_TYPE:
-                        sendError = true;
-                        break;
-                    case ERROR_INCORRECT_NUMBER_OF_LINES:
-                        sendError = true;
-                        break;
-                    case NO_ERROR:
-                        break;
-                }
+            // Parse incoming message
+            PipeParser pipeParser = new PipeParser();
+            Message msg = pipeParser.parse(input.toString());
+            Terser terser = new Terser(msg);
+            String msh9 = getFieldString(terser, "/MSH", 9);
 
-                try {
-                    String patientId = message.getPatientId();
-                    String patientName = message.getPatientName();
-                    logger.info("Incoming PatientID = " + patientId + "  Patient Name = " + patientName + " SimId = " + threadPoolItem.simId);
-                    threadPoolItem.pifCallback.addPatient(threadPoolItem.simId, patientId);
+            // Process depending on MSH-9
+            switch (msh9) {
+
+                // PIX Query IHE ITI TF-2a 3.9 (quick and dirty, no validation)
+                case "QBP^Q23^QBP_21":
+                    String pidIn = terser.get("/QPD-3-1");
+                    String pidOut = new StringBuilder(pidIn).reverse().toString();
+                    String qpd = getSegmentString(terser, "/QPD");
+
+                    String out = "MSH|^~\\&|||||||RSP^K23^RSP_K23|HL7RSP00001|P|2.5\r" +
+                                 "MSA|AA|HL7MSG00001\r" +
+                                 "QAK||OK\r" +
+                                 qpd + "\r" +
+                                 "PID|||" + pidOut + "^^^ADT01^MR^Good Health Hospital||Winchell^Walter\r";
+                    Message outMsg = pipeParser.parse(out);
+                    Terser  outTerser = new Terser(outMsg);
+                    outTerser.set("/MSH-3", terser.get("/MSH-5"));
+                    outTerser.set("/MSH-4", terser.get("/MSH-6"));
+                    outTerser.set("/MSH-5", terser.get("/MSH-3"));
+                    outTerser.set("/MSH-6", terser.get("/MSH-4"));
+                    SimpleDateFormat df = new SimpleDateFormat("yyyyMMddHHmmss.SSSZ");
+                    outTerser.set("/MSH-7", df.format(new Date()));
+
+                    outTerser.set("/MSA-2", terser.get("/MSH-10"));
+
+                    outTerser.set("/QAK-1", terser.get("/QPD-2"));
+
+                    String outMsgStr = outMsg.encode();
+                    outMsgStr = outMsgStr.replaceAll("\r", "\r\n");
+                    writer.write(outMsgStr);
+                    writer.flush();
+                    socket.shutdownOutput();
+                    socket.close();
+                    break;
+
+
+                // Original ADT msg processing
+                default:
+                    AdtMessage message = null;
+                    try {
+                        message = new AdtMessage(input.toString());
+                        switch (message.isValid()) {
+                            case ERROR_INCORRECT_BEGINNING:
+                                sendError = true;
+                                break;
+                            case ERROR_INCORRECT_ENDING:
+                                sendError = true;
+                                break;
+                            case ERROR_INCORRECT_MESSAGE_TYPE:
+                                sendError = true;
+                                break;
+                            case ERROR_INCORRECT_NUMBER_OF_LINES:
+                                sendError = true;
+                                break;
+                            case NO_ERROR:
+                                break;
+                        }
+
+                        try {
+                            String patientId = message.getPatientId();
+                            String patientName = message.getPatientName();
+                            logger.info("Incoming PatientID = " + patientId + "  Patient Name = " + patientName + " SimId = " + threadPoolItem.simId);
+                            threadPoolItem.pifCallback.addPatient(threadPoolItem.simId, patientId);
 //                    Adt.addPatientId(threadPoolItem.simId, patientId);
-                } catch (AdtMessageParseException e) {
-                    sendError = true;
-                    logger.error(e);
-                } catch (Exception e) {
-                    sendError = true;
-                    logger.fatal(ExceptionUtil.exception_details(e));
-                }
-                if(sendError)
-                    writer.write(message.getNack());
-                else {
-                    StringBuilder buf = new StringBuilder();
+                        } catch (AdtMessageParseException e) {
+                            sendError = true;
+                            logger.error(e);
+                        } catch (Exception e) {
+                            sendError = true;
+                            logger.fatal(ExceptionUtil.exception_details(e));
+                        }
+                        if (sendError)
+                            writer.write(message.getNack());
+                        else {
+                            StringBuilder buf = new StringBuilder();
 
-                    for (int i=0; i<ackTemplate.length; i++) {
-                        buf.append(ackTemplate[i].trim()).append("\r\b");
+                            for (int i = 0; i < ackTemplate.length; i++) {
+                                buf.append(ackTemplate[i].trim()).append("\r\b");
+                            }
+                            String adtAckFile = AdtSocketListener.class.getResource("/adt/ACK.txt").getFile();
+                            logger.info("Loading template from " + adtAckFile);
+
+                            writer.write(0x0b);
+                            writer.write(buf.toString());
+                            writer.write(0x1c);
+                            writer.write(0x0d);
+                            //writer.write(message.getAck());
+                        }
+                        writer.flush();
+                        socket.shutdownOutput();
+                        socket.close();
+                    } catch (IOException e) {
+                        logger.error("Problem closing socket connection (already closed?)", e);
                     }
-                    String adtAckFile = AdtSocketListener.class.getResource("/adt/ACK.txt").getFile();
-                    logger.info("Loading template from " + adtAckFile);
-
-                    writer.write(0x0b);
-                    writer.write(buf.toString());
-                    writer.write(0x1c);
-                    writer.write(0x0d);
-                    //writer.write(message.getAck());
-                }
-                writer.flush();
-                socket.shutdownOutput();
-                socket.close();
-            } catch (IOException e) {
-                logger.error("Problem closing socket connection (already closed?)", e);
             }
 
         } catch (Exception e)   {
             logger.error("Cannot save anything (log or adt).  Cannot send ACK response.", e);
         }
+    }
+
+    /**
+     * Gets entire contents of segment field as string
+     * @param terser existing terser for message
+     * @param segId segment ID for Segment (use leading "/" or "." as appropriate)
+     * @param field field number in Segment (starting with 1
+     * @return String contents of segment, including separators.
+     * @throws Exception on error
+     */
+    private String getFieldString(Terser terser, String segId, int field) throws Exception {
+        Segment seg = terser.getSegment(segId);
+        String s = seg.getField(field)[0].toString();
+        return s.substring(s.indexOf("[") + 1, s.length() - 1);
+    }
+
+    /**
+     * Get entire contents of segment as string
+     * @param terser existing terser for message
+     * @param segId segment ID for Segment (use leading "/" or "." as appropriate)
+     * @return String contents of segment, including separators.
+     * @throws Exception on error.
+     */
+    private String getSegmentString(Terser terser, String segId) throws Exception  {
+        Segment seg = terser.getSegment(segId);
+        if (segId.startsWith("/") || segId.startsWith(".")) segId = segId.substring(1);
+        String str = segId;
+        for (int i = 1; i <= seg.numFields(); i++) {
+            Type[] fld = seg.getField(i);
+            str += "|";
+            for (int j = 0; j < fld.length; j++) {
+                Varies f = (Varies) fld[j];
+                String s = f.toString();
+                String p = s.substring(s.indexOf("[") + 1, s.length() - 1);
+                str += p;
+            }
+        }
+        return str;
     }
 }
