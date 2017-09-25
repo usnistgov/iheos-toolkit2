@@ -16,17 +16,21 @@ class Submission {
       <xdsb:ProvideAndRegisterDocumentSetRequest xmlns:xdsb="urn:ihe:iti:xds-b:2007">
           <lcm:SubmitObjectsRequest xmlns:lcm="urn:oasis:names:tc:ebxml-regrep:xsd:lcm:3.0">
 '''
-    def trailer = '''
+    def trailer1 = '''
           </lcm:SubmitObjectsRequest>
+'''
+    def trailer2 = '''
       </xdsb:ProvideAndRegisterDocumentSetRequest>
    </soapenv:Body>
 </soapenv:Envelope>
 '''
 
-    String metadata
+    String registryObjectList
+    String documentDefinitions
     List<Attachment> attachments = []
+    String contentId   // for metadata
 
     String metadataInSoapWrapper() {
-        return header + metadata + trailer
+        return header + registryObjectList + trailer1 + documentDefinitions + trailer2
     }
 }

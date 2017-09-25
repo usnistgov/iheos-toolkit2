@@ -19,7 +19,7 @@ class NullEndpointTransform implements SimpleRequestTransform {
         logger.info('Running NullEndpointTransform')
         base.setTargetType(base.clientActorType, base.clientTransactionType)
 
-        String targetEndpointString = base.getEndpoint()
+        String targetEndpointString = base.getTargetEndpoint()
         SimEndpoint targetEndpoint = new SimEndpoint(targetEndpointString)
         RequestLine requestLine = new BasicRequestLine(request.requestLine.method, targetEndpoint.service, request.requestLine.protocolVersion)
         return HttpRequestBuilder.build(request, requestLine)

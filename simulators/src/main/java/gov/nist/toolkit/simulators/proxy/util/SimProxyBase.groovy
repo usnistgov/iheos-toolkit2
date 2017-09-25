@@ -16,6 +16,8 @@ import gov.nist.toolkit.sitemanagement.client.Site
 import org.apache.http.Header
 import org.apache.http.HttpRequest
 import org.apache.http.HttpResponse
+import org.hl7.fhir.dstu3.model.Resource
+
 /**
  *
  */
@@ -39,6 +41,7 @@ public class SimProxyBase {
     ProxyLogger clientLogger = null
     ProxyLogger targetLogger = null
     String clientContentType
+    List<Resource> resourcesSubmitted = []
 
     /**
      * called by the first transform when something is known about the target system transaction

@@ -1,6 +1,7 @@
 package gov.nist.toolkit.simulators.proxy.transforms
 
 import ca.uhn.fhir.context.FhirContext
+import gov.nist.toolkit.installation.Installation
 import gov.nist.toolkit.installation.ResourceCache
 import gov.nist.toolkit.simulators.fhir.OperationOutcomeGenerator
 import gov.nist.toolkit.simulators.fhir.WrapResourceInHttpResponse
@@ -15,8 +16,10 @@ import org.apache.http.Header
 import org.apache.http.HttpResponse
 import org.apache.http.message.BasicHttpResponse
 import org.apache.log4j.Logger
+import org.hl7.fhir.dstu3.model.Bundle
 import org.hl7.fhir.dstu3.model.CodeableConcept
 import org.hl7.fhir.dstu3.model.OperationOutcome
+import org.hl7.fhir.dstu3.model.Resource
 import org.hl7.fhir.dstu3.model.StringType
 /**
  *
@@ -83,7 +86,21 @@ class RegistryResponseToOperationOutcomeTransform implements ContentResponseTran
                     }
                 }
             }
-            throw new SimProxyTransformException('RegistryResponseToOperationOutcomeTransform: Not Implemented')
+            // Success
+            Bundle bundle = new Bundle()
+            bundle.type = Bundle.BundleType.TRANSACTIONRESPONSE
+            base.resourcesSubmitted.each { Resource resource ->
+                Bundle.BundleEntryComponent comp = new Bundle.BundleEntryComponent()
+                Bundle.BundleEntryResponseComponent rcomp = new Bundle.BundleEntryResponseComponent()
+                comp.setResponse(rcomp)
+                comp.fullUrl = makeLocalFullUrl(resource)
+                comp.resource = resource
+                rcomp.status = '200'
+                bundle.addEntry(comp)
+            }
+
+            return WrapResourceInHttpResponse.wrap(base, bundle)
+
         } catch (Exception e) {
             OperationOutcome oo = new OperationOutcome()
             OperationOutcome.OperationOutcomeIssueComponent com = new OperationOutcome.OperationOutcomeIssueComponent()
@@ -93,5 +110,9 @@ class RegistryResponseToOperationOutcomeTransform implements ContentResponseTran
             oo.addIssue(com)
             return WrapResourceInHttpResponse.wrap(base, oo)
         }
+    }
+
+    String makeLocalFullUrl(Resource resource) {
+        return Installation.instance().getToolkitAsFhirServerBaseUrl() + '/' + resource.getClass().getSimpleName() + '/' + resource.id
     }
 }

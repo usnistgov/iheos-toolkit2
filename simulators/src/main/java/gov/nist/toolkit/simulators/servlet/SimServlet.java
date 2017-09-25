@@ -514,6 +514,11 @@ public class SimServlet  extends HttpServlet {
 			if (asce != null)
 				vc.setCodesFilename(asce.asString());
 
+			asce = asc.get(SimulatorProperties.VALIDATE_CODES);
+			if (asce != null) {
+				vc.isValidateCodes = asce.asBoolean();
+			}
+
 			SimCommon common= new SimCommon(db, request.isSecure(), vc, response, mvc);
 			DsSimCommon dsSimCommon = new DsSimCommon(common, regIndex, repIndex, mvc);
 
@@ -550,15 +555,6 @@ public class SimServlet  extends HttpServlet {
 					transactionOk = sim.run(transactionType, mvc, validation);
 					sim.onTransactionEnd(asc);
 				}
-			} else {
-				// this is custom for the SimProxy - but maybe others over time
-				baseSim.db = db;
-				baseSim.common = common;
-				baseSim.config = asc;
-				baseSim.onTransactionBegin(asc);
-				transactionOk = baseSim.run(transactionType, mvc, validation);
-				baseSim.onTransactionEnd(asc);
-
 			}
 
 			// Archive logs

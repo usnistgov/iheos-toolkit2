@@ -1,6 +1,7 @@
 package gov.nist.toolkit.itTests.simProxy
 
 import gov.nist.toolkit.actortransaction.client.ActorType
+import gov.nist.toolkit.actortransaction.client.ParamType
 import gov.nist.toolkit.adt.ListenerFactory
 import gov.nist.toolkit.configDatatypes.server.SimulatorActorType
 import gov.nist.toolkit.configDatatypes.server.SimulatorProperties
@@ -88,6 +89,11 @@ class MhdSimProxySpec extends ToolkitSpecification {
         proxySimConfig.setProperty(SimulatorProperties.simProxyResponseTransformations, responseTransformations)
 
         updatedProxySimConfig = spi.update(proxySimConfig)
+
+        rrConfig.setProperty(SimulatorProperties.VALIDATE_AGAINST_PATIENT_IDENTITY_FEED, false)
+        rrConfig.setProperty(SimulatorProperties.VALIDATE_CODES, false);
+        spi.update(rrConfig)
+
     }
 
     def cleanupSpec() {  // one time shutdown when everything is done

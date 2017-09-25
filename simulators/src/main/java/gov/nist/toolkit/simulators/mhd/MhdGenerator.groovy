@@ -4,6 +4,7 @@ import gov.nist.toolkit.simulators.fhir.validators.BundleFullUrlValidator
 import gov.nist.toolkit.simulators.mhd.errors.ResourceNotAvailable
 import gov.nist.toolkit.installation.ResourceCacheMgr
 import gov.nist.toolkit.installation.ResourceMgr
+import gov.nist.toolkit.simulators.proxy.util.SimProxyBase
 import groovy.xml.MarkupBuilder
 import org.hl7.fhir.dstu3.model.*
 import org.hl7.fhir.dstu3.model.codesystems.DocumentReferenceStatus
@@ -35,10 +36,12 @@ class MhdGenerator {
     ErrorLogger errorLogger = new ErrorLogger()
     int newIdCounter = 1
     ResourceCacheMgr resourceCacheMgr
+    SimProxyBase proxyBase
 
     ResourceMgr rMgr = new ResourceMgr()
 
-    MhdGenerator(ResourceCacheMgr resourceCacheMgr1) {
+    MhdGenerator(SimProxyBase proxyBase, ResourceCacheMgr resourceCacheMgr1) {
+        this.proxyBase = proxyBase
         resourceCacheMgr = resourceCacheMgr1
     }
 
@@ -57,8 +60,10 @@ class MhdGenerator {
 //        println "NYC time is ${nyTime}"
         isoFormat.setTimeZone(TimeZone.getTimeZone('UTC'))   // UTC
         String utcTime = isoFormat.format(theDate)
+        if (utcTime.size() > 14)
+            utcTime = utcTime.substring(0, 14)
         println "UTC time is ${utcTime}"
-        utcTime = trimTrailingZeros(utcTime)
+        //utcTime = trimTrailingZeros(utcTime)
         return utcTime
     }
 
@@ -232,6 +237,11 @@ class MhdGenerator {
         addClassification(builder, scheme, newId(), classifiedObjectId, coding.code, coding.system, coding.display)
     }
 
+    def addDocument(builder, drId, contentId) {
+        builder.Document(id:drId, xmlns: 'urn:ihe:iti:xds-b:2007') {
+            Include(href: "cid:${contentId}", xmlns: 'http://www.w3.org/2004/08/xop/include')
+        }
+    }
 
     def addExtrinsicObject(builder, fullUrl, dr) {
         String drId = dr.id // getEntryUuidValue(fullUrl, dr.identifier)
@@ -254,7 +264,7 @@ class MhdGenerator {
                 addSlot(builder, 'serviceStopTime', [translateDateTime(dr.context.period.end)])
 
             if (dr.content?.attachment?.language)
-                addSlot(builder, 'languageCode', [dr.content.attachment.language])
+                addSlot(builder, 'languageCode', dr.content.attachment.language)
 
             if (dr.subject)
                 addSourcePatient(builder, fullUrl, drId, 'urn:uuid:58a6f841-87b3-4a3e-92fd-a8ffeff98427', dr.subject, 'XDSDocumentEntry.patientId')
@@ -475,7 +485,8 @@ class MhdGenerator {
         }
     }
 
-    def assignId(Resource resource) {
+    // TODO needs to be real UUID
+    String assignId(Resource resource) {
         if (!resource.id || isUUID(resource.id)) {
             if (resource instanceof DocumentReference)
                 resource.id = 'Document_' + newId()
@@ -484,6 +495,7 @@ class MhdGenerator {
             else
                 resource.id = newId()
         }
+        return resource.id
     }
 
     def loadBundle(IBaseResource bundle) {
@@ -510,6 +522,20 @@ class MhdGenerator {
             new BundleFullUrlValidator(component, null)
         }
     }
+
+    // only used for unit test
+    def translateResource(def xml, Resource resource) {
+        assert (resource instanceof DocumentManifest) || (resource instanceof DocumentReference)
+        loadContained(resource)
+        if (resource instanceof DocumentManifest) {
+            assignId(resource)
+            addSubmissionSet(xml, resource.getId(), resource)
+        } else if (resource instanceof DocumentReference) {
+            assignId(resource)
+            addExtrinsicObject(xml, resource.getId(), resource)
+        }
+    }
+
 
     //**************************************************************************
     //
@@ -551,28 +577,60 @@ class MhdGenerator {
         return writer.toString()
     }
 
-    def translateResource(def xml, Resource resource) {
-        assert (resource instanceof DocumentManifest) || (resource instanceof DocumentReference)
-        loadContained(resource)
-        if (resource instanceof DocumentManifest) {
-            assignId(resource)
-            addSubmissionSet(xml, resource.getId(), resource)
-        } else if (resource instanceof DocumentReference) {
-            assignId(resource)
-            addExtrinsicObject(xml, resource.getId(), resource)
-        }
-    }
+    def baseContentId = '.de1e4efca5ccc4886c8528535d2afb251e0d5fa31d58a815@ihexds.nist.gov'
 
     Submission buildSubmission(Bundle bundle) {
-        Submission submission = new Submission()
 
-        submission.metadata = translateBundle(bundle, true)
-        rMgr.resources?.values().findAll { it instanceof Binary }.each { Binary b ->
-            Attachment a = new gov.nist.toolkit.simulators.mhd.Attachment()
-            a.contentType = b.contentType
-            a.content = b.content
-            submission.attachments << a
+        loadBundle(bundle)
+
+        Submission submission = new Submission()
+        submission.contentId = 'm' + baseContentId
+
+        int index = 1
+
+        def documents = [:]
+
+        def writer = new StringWriter()
+        def xml = new MarkupBuilder(writer)
+        xml.RegistryObjectList(xmlns: 'urn:oasis:names:tc:ebxml-regrep:xsd:rim:3.0') {
+            rMgr.resources.each { url, resource ->
+                if (resource instanceof DocumentManifest) {
+                    assignId(resource)
+                    proxyBase.resourcesSubmitted << resource
+                    loadContained(resource)
+                    DocumentManifest dm = (DocumentManifest) resource
+                    addSubmissionSet(xml, dm.getId(), dm)
+                    addSubmissionSetAssociations(xml, dm)
+                }
+                if (resource instanceof DocumentReference) {
+                    assignId(resource)
+                    proxyBase.resourcesSubmitted << resource
+                    loadContained(resource)
+                    DocumentReference dr = (DocumentReference) resource
+                    def (ref, binary) = rMgr.resolveReference(url, dr.content[0].attachment.url, true, false)
+                    assert binary instanceof Binary
+                    Binary b = binary
+                    Attachment a = new Attachment()
+                    a.contentId = Integer.toString(index) + baseContentId
+                    a.contentType = b.contentType
+                    a.content = b.content
+                    submission.attachments << a
+                    index++
+
+                    addExtrinsicObject(xml, dr.getId(), dr)
+                    documents[dr.getId()] = a.contentId
+                }
+            }
         }
+        submission.registryObjectList = writer.toString()
+
+        writer = new StringWriter()
+        xml = new MarkupBuilder(writer)
+        documents.each { id, contentId ->
+            addDocument(xml, id, contentId)
+        }
+        submission.documentDefinitions = writer.toString()
+
 
         return submission
     }

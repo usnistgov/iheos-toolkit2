@@ -2,7 +2,7 @@ package gov.nist.toolkit.simulators.proxy.util
 
 
 import gov.nist.toolkit.simcommon.client.SimId
-import gov.nist.toolkit.simulators.proxy.exceptions.SimDoesNotExistException
+import gov.nist.toolkit.simcommon.server.SimDoesNotExistException
 
 /**
  *

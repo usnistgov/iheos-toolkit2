@@ -46,15 +46,15 @@ class MhdToPnrContentTransform implements ContentRequestTransform {
             resource = ctx.newJsonParser().parseResource(new String(clientContent))
         assert resource instanceof Bundle
         Bundle bundle = resource
-        Submission s = new MhdGenerator(Installation.instance().resourceCacheMgr()).buildSubmission(bundle)
+        Submission s = new MhdGenerator(base, Installation.instance().resourceCacheMgr()).buildSubmission(bundle)
         assert s.attachments.size() > 0
         List<PartSpec> parts = []
-        parts << new PartSpec('application/xop+xml; charset=UTF-8; type="application/soap+xml"', s.metadataInSoapWrapper())
+        parts << new PartSpec('application/xop+xml; charset=UTF-8; type="application/soap+xml"', s.metadataInSoapWrapper(), s.contentId)
         s.attachments.each { Attachment a ->
-            parts << new PartSpec(a.contentType, new String(a.content))
+            parts << new PartSpec(a.contentType, new String(a.content), a.contentId)
         }
 
-        Header targetContentTypeHeader = MtomContentTypeGenerator.buildHeader(TransactionType.PROVIDE_AND_REGISTER.requestAction)
+        Header targetContentTypeHeader = MtomContentTypeGenerator.buildHeader(TransactionType.PROVIDE_AND_REGISTER.requestAction, s.contentId)
         request.setHeader(targetContentTypeHeader)
         BasicHttpEntity entity = new BasicHttpEntity()
         byte[] body = MtomContentTypeGenerator.buildBody(parts)

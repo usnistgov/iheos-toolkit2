@@ -9,6 +9,7 @@ import gov.nist.toolkit.xdsexception.client.MetadataException
 import gov.nist.toolkit.xdsexception.client.XdsInternalException
 import org.apache.axiom.om.OMElement
 import org.apache.http.message.BasicStatusLine
+import org.hl7.fhir.dstu3.model.Bundle
 import org.hl7.fhir.dstu3.model.CodeableConcept
 import org.hl7.fhir.dstu3.model.OperationOutcome
 import org.hl7.fhir.instance.model.api.IBaseResource
@@ -39,19 +40,33 @@ class FhirCreateTransaction extends BasicFhirTransaction {
 
         def (BasicStatusLine statusLine, String content, FhirId fhirId) = FhirClient.post(new URI(fullEndpoint), fhirCtx.newJsonParser().encodeResourceToString(resource))
         if (content) {
-            OperationOutcome oo = (OperationOutcome) parse(content)
+            if (content instanceof OperationOutcome) {
+                OperationOutcome oo = (OperationOutcome) parse(content)
 
-            stepContext.set_error(simpleErrorMsg(oo))
+                stepContext.set_error(simpleErrorMsg(oo))
+            } else if (content instanceof Bundle) {
+                Bundle bundle = content
+                bundle.entry.each { Bundle.BundleEntryComponent comp ->
+                    assert comp.response.status == '200'
+                    if (comp.fullUrl) {
+                        reportManager.add('Ref', new FhirId(comp.fullUrl).withoutHistory())
+                    }
+                    FhirId myId = new FhirId(comp.response?.outcome?.id)
+                    if (myId)
+                        reportManager.add('Ref', myId.withoutHistory())
+                }
+            }
         }
+        if (!content && fhirId) {
+            reportManager.add("Type_ID", fhirId.withoutHistory())
+            reportManager.add('Ref', "${endpoint}/${fhirId.withoutHistory()}")
+        }
+
 //        if (statusLine.statusCode in 400..599)  {
 //            stepContext.set_error("Status:${statusLine}")
 //        }
 //        reportManager.add("FhirIdWithHistory", fhirId.toString())
 //        reportManager.add('RefWithHistory', "${endpoint}/${fhirId}")
-        if (fhirId) {
-            reportManager.add("Type_ID", fhirId.withoutHistory())
-            reportManager.add('Ref', "${endpoint}/${fhirId.withoutHistory()}")
-        }
     }
 
     def simpleErrorMsg(OperationOutcome oo) {

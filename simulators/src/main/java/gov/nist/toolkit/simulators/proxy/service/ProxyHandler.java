@@ -93,6 +93,7 @@ class ProxyHandler implements HttpRequestHandler {
 
         HttpRequest targetRequest = proxyBase.preProcessRequest(request);
         targetLogger = proxyBase.getTargetLogger();
+        targetLogger.logRequest(targetRequest);
 
         this.httpexecutor.preProcess(targetRequest, this.httpproc, context);
 
