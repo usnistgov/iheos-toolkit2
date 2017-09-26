@@ -174,7 +174,7 @@ public abstract class AbstractActorFactory {
 	}
 
 	protected AbstractActorFactory() {
-		logger.info("AbstractActorFactory");
+
 	}
 
 	// Returns list since multiple simulators could be built as a grouping/cluster

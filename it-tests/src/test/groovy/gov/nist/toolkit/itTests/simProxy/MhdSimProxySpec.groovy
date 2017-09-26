@@ -1,26 +1,17 @@
 package gov.nist.toolkit.itTests.simProxy
 
-import ca.uhn.fhir.context.FhirContext
-import ca.uhn.fhir.rest.client.IGenericClient
 import gov.nist.toolkit.actortransaction.client.ActorType
-import gov.nist.toolkit.actortransaction.client.ParamType
-import gov.nist.toolkit.adt.ListenerFactory
 import gov.nist.toolkit.configDatatypes.server.SimulatorActorType
 import gov.nist.toolkit.configDatatypes.server.SimulatorProperties
 import gov.nist.toolkit.installation.Installation
-import gov.nist.toolkit.installation.ResourceCache
 import gov.nist.toolkit.itTests.support.ToolkitSpecification
 import gov.nist.toolkit.results.client.Result
 import gov.nist.toolkit.results.client.TestInstance
 import gov.nist.toolkit.simcommon.client.SimId
 import gov.nist.toolkit.testengine.scripts.BuildCollections
-import gov.nist.toolkit.testkitutilities.TestDefinition
-import gov.nist.toolkit.testkitutilities.TestKit
 import gov.nist.toolkit.toolkitApi.SimulatorBuilder
 import gov.nist.toolkit.toolkitServicesCommon.SimConfig
 import gov.nist.toolkit.toolkitServicesCommon.ToolkitFactory
-import org.hl7.fhir.dstu3.model.Bundle
-import org.hl7.fhir.instance.model.api.IBaseResource
 import spock.lang.Shared
 /**
  * Test SimProxy with MHD -> XDS transformation as front end to RegRepSpec simulator
@@ -103,10 +94,10 @@ class MhdSimProxySpec extends ToolkitSpecification {
 
     }
 
-    def cleanupSpec() {  // one time shutdown when everything is done
-        server.stop()
-        ListenerFactory.terminateAll()
-    }
+//    def cleanupSpec() {  // one time shutdown when everything is done
+//        server.stop()
+//        ListenerFactory.terminateAll()
+//    }
 
     def setup() {
         println "EC is ${Installation.instance().externalCache().toString()}"

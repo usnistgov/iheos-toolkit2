@@ -1,7 +1,6 @@
 package gov.nist.toolkit.itTests.simProxy
 
 import gov.nist.toolkit.actortransaction.client.ActorType
-import gov.nist.toolkit.adt.ListenerFactory
 import gov.nist.toolkit.configDatatypes.client.TransactionType
 import gov.nist.toolkit.configDatatypes.server.SimulatorActorType
 import gov.nist.toolkit.configDatatypes.server.SimulatorProperties
@@ -29,12 +28,12 @@ class RecipientSpec extends ToolkitSpecification {
     @Shared String envName = 'test'
     @Shared String testSession = 'bill';
     @Shared String id = 'regrep'
-    @Shared String rec = "${testSession}__${id}"
-    @Shared SimId simId = new SimId(rec)  // ultimate destination
+    @Shared String rr = "${testSession}__${id}"
+    @Shared SimId simId = new SimId(rr)  // ultimate destination
     @Shared String proxyId = "simproxy"
     @Shared String simProxyName = "${testSession}__${proxyId}"
     @Shared SimId simProxyId = new SimId(simProxyName)
-    @Shared SimConfig recSimConfig
+    @Shared SimConfig rrSimConfig
     @Shared SimConfig proxySimConfig
     @Shared SimConfig updatedProxySimConfig
 
@@ -60,10 +59,10 @@ class RecipientSpec extends ToolkitSpecification {
 
         Installation.instance().defaultEnvironmentName()
 
-        recSimConfig = spi.create(
+        rrSimConfig = spi.create(
                 id,
                 testSession,
-                SimulatorActorType.DOCUMENT_RECIPIENT,
+                SimulatorActorType.REPOSITORY_REGISTRY,
                 envName)
 
         proxySimConfig = spi.create(
@@ -73,7 +72,7 @@ class RecipientSpec extends ToolkitSpecification {
                 envName
         )
 
-        proxySimConfig.setProperty(SimulatorProperties.proxyForwardSite, rec)
+        proxySimConfig.setProperty(SimulatorProperties.proxyForwardSite, rr)
         List<String> requestTransformations = proxySimConfig.asList(SimulatorProperties.simProxyRequestTransformations)
         requestTransformations.add('gov.nist.toolkit.simulators.proxy.transforms.NullEndpointTransform')
         proxySimConfig.setProperty(SimulatorProperties.simProxyRequestTransformations, requestTransformations)
@@ -82,12 +81,15 @@ class RecipientSpec extends ToolkitSpecification {
         //responseTransformations.add('gov.nist.toolkit.simProxy.server.transforms.MhdSubmissionTransform')
         proxySimConfig.setProperty(SimulatorProperties.simProxyResponseTransformations, responseTransformations)
         updatedProxySimConfig = spi.update(proxySimConfig)
+
+        rrSimConfig.setProperty(SimulatorProperties.VALIDATE_AGAINST_PATIENT_IDENTITY_FEED, false)
+        spi.update(rrSimConfig)
     }
 
-    def cleanupSpec() {  // one time shutdown when everything is done
-        server.stop()
-        ListenerFactory.terminateAll()
-    }
+//    def cleanupSpec() {  // one time shutdown when everything is done
+//        server.stop()
+//        ListenerFactory.terminateAll()
+//    }
 
     def setup() {
         println "EC is ${Installation.instance().externalCache().toString()}"
@@ -104,7 +106,7 @@ class RecipientSpec extends ToolkitSpecification {
 //        }
     }
 
-    def 'send pnr through simproxy'() {
+    def 'send XDR through simproxy'() {
         when:
         SiteSpec siteSpec = new SiteSpec(simProxyName)
         TestInstance testInstance = new TestInstance('12360')

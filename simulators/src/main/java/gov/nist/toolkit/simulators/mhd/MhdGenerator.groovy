@@ -331,8 +331,8 @@ class MhdGenerator {
         Identifier official = getOfficial(identifiers)
         assert official, 'Appendix Z, section E.3 Identifier Type'
 
-        assert official.value, 'Appendix Z, section E.3 Identifier Type'
-        assert official.system, 'Appendix Z, section E.3 Identifier Type'
+        assert official.value, 'Error: Patient Resource identifier value is null. Appendix E, section E.3 Identifier Type'
+        assert official.system, 'Error: Patient Resource identifier system is null. See Appendix E, section E.3 Identifier Type'
 
         String value = official.value
         String system = official.system

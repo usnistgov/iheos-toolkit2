@@ -786,6 +786,7 @@ public class SimDb {
 		assert simDir
 		assert actor
 		assert transaction
+		assert event
 		File f = new File(new File(new File(simDir, actor), transaction), event)
 		f.mkdirs();
 		return f;
@@ -824,27 +825,33 @@ public class SimDb {
 	static final String REQUEST_URI_FILE = 'request_uri.txt'
 
 	private File getRequestMsgHdrFile(String filenamebase) {
+		assert filenamebase
 		return new File(getDBFilePrefix(filenamebase), REQUEST_HEADER_FILE);
 	}
 
 	File getRequestURIFile(String filenamebase) {
+		assert filenamebase
 		return new File(getDBFilePrefix(filenamebase), REQUEST_URI_FILE)
 	}
 
 	private File getRequestMsgBodyFile(String filenamebase) {
+		assert filenamebase
 		return new File(getDBFilePrefix(filenamebase), REQUEST_BODY_BIN_FILE);
 	}
 
 	private File getAlternateRequestMsgBodyFile(String filenamebase) {
+		assert filenamebase
 		return new File(getDBFilePrefix(filenamebase), REQUEST_BODY_TXT_FILE);
 	}
 
 	private File getResponseMsgHdrFile(String filenamebase) {
+		assert filenamebase
 		return new File(getDBFilePrefix(filenamebase), RESPONSE_HEADER_FILE);
 	}
 
 	@Obsolete
 	private File getResponseMsgBodyFile(String filenamebase) {
+		assert filenamebase
 		return new File(getDBFilePrefix(filenamebase), RESPONSE_BODY_TXT_FILE);
 	}
 
@@ -1014,18 +1021,22 @@ public class SimDb {
 	}
 
 	File getRequestURIFile() {
+		assert event
 		return getRequestURIFile(event)
 	}
 
 	public File getRequestHeaderFile() {
+		assert event
 		return getRequestMsgHdrFile(event);
 	}
 
 	public File getRequestBodyFile() {
+		assert event
 		return getRequestMsgBodyFile(event);
 	}
 
 	private File getAlternateRequestBodyFile() {
+		assert event
 		return getAlternateRequestMsgBodyFile(event);
 	}
 

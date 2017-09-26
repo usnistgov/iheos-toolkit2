@@ -58,7 +58,7 @@ public class ElementalReverseProxy {
     }
 
     static public void start(int port, HttpHost targetHost) throws IOException {
-        System.out.println("Reverse proxy to " + targetHost);
+        System.out.println("Starting Reverse proxy for " + targetHost + " on...");
 
         final Thread t = new RequestListenerThread(port, targetHost);
         t.setDaemon(false);

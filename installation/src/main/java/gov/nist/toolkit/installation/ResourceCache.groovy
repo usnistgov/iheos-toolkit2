@@ -2,13 +2,13 @@ package gov.nist.toolkit.installation
 
 import ca.uhn.fhir.context.FhirContext
 import gov.nist.toolkit.utilities.io.Io
-import org.hl7.fhir.dstu3.model.Resource
+import org.apache.log4j.Logger
 import org.hl7.fhir.instance.model.api.IBaseResource
-
 /**
  * Local cache of FHIR resources
  */
 class ResourceCache {
+    private static final Logger logger = Logger.getLogger(ResourceCache.class)
     static FhirContext ctx = FhirContext.forDstu3()
 
     File cacheDir
@@ -21,6 +21,7 @@ class ResourceCache {
         Properties props = new Properties()
         props.load(Io.getInputStreamFromFile(propFile))
         baseUrl = props.getProperty('baseUrl')
+        logger.info("New Resource cache: ${baseUrl}  --> ${cacheDir}")
     }
 
     IBaseResource getResource(relativeUrl) {

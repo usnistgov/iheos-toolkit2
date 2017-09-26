@@ -1,6 +1,8 @@
 package gov.nist.toolkit.simulators.mhd
 
+import gov.nist.toolkit.installation.ResourceCacheMgr
 import gov.nist.toolkit.installation.ResourceMgr
+import gov.nist.toolkit.simulators.proxy.util.SimProxyBase
 import org.hl7.fhir.dstu3.model.DocumentReference
 import spock.lang.Shared
 import spock.lang.Specification
@@ -12,7 +14,7 @@ import spock.lang.Specification
  * When looking at reference, entry.fullUrl is documented as the base URL
  */
 class ResolveBundleReferenceTest extends Specification {
-    @Shared MhdGenerator u = new MhdGenerator()
+    @Shared MhdGenerator u = new MhdGenerator(new SimProxyBase(), new ResourceCacheMgr())
 
     def 'absolute absolute' () {
         given:
