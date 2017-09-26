@@ -1,19 +1,26 @@
 package gov.nist.toolkit.itTests.simProxy
 
+import ca.uhn.fhir.context.FhirContext
+import ca.uhn.fhir.rest.client.IGenericClient
 import gov.nist.toolkit.actortransaction.client.ActorType
 import gov.nist.toolkit.actortransaction.client.ParamType
 import gov.nist.toolkit.adt.ListenerFactory
 import gov.nist.toolkit.configDatatypes.server.SimulatorActorType
 import gov.nist.toolkit.configDatatypes.server.SimulatorProperties
 import gov.nist.toolkit.installation.Installation
+import gov.nist.toolkit.installation.ResourceCache
 import gov.nist.toolkit.itTests.support.ToolkitSpecification
 import gov.nist.toolkit.results.client.Result
 import gov.nist.toolkit.results.client.TestInstance
 import gov.nist.toolkit.simcommon.client.SimId
 import gov.nist.toolkit.testengine.scripts.BuildCollections
+import gov.nist.toolkit.testkitutilities.TestDefinition
+import gov.nist.toolkit.testkitutilities.TestKit
 import gov.nist.toolkit.toolkitApi.SimulatorBuilder
 import gov.nist.toolkit.toolkitServicesCommon.SimConfig
 import gov.nist.toolkit.toolkitServicesCommon.ToolkitFactory
+import org.hl7.fhir.dstu3.model.Bundle
+import org.hl7.fhir.instance.model.api.IBaseResource
 import spock.lang.Shared
 /**
  * Test SimProxy with MHD -> XDS transformation as front end to RegRepSpec simulator
@@ -106,16 +113,7 @@ class MhdSimProxySpec extends ToolkitSpecification {
         println "${api.getSiteNames(true)}"
     }
 
-//    def 'verify transformations installed' () {
-//        when:
-//        def xforms = updatedProxySimConfig.asList(SimulatorProperties.simProxyRequestTransformations)
-//
-//        then:
-//        xforms.size() ==1
-//        xforms.find { it == 'gov.nist.toolkit.simProxy.server.transforms.MhdSubmissionTransform' }
-//    }
-
-    def 'send create through simproxy'() {
+    def 'send provide document bundle through simproxy'() {
         when:
         def sections = ['submit']
         def params = [ :]
@@ -126,19 +124,26 @@ class MhdSimProxySpec extends ToolkitSpecification {
         results.get(0).passed()
     }
 
-//    def 'send pnr and query through simproxy'() {
-//        when:
-//        SiteSpec siteSpec = new SiteSpec(simProxyName)
-//        TestInstance testInstance = new TestInstance('12360')
-//        List<String> sections = []
-//        Map<String, String> params = new HashMap<>()
-//        params.put('$patientid$', "P20160803215512.2^^^&1.3.6.1.4.1.21367.2005.13.20.1000&ISO");
+    // HAPI is broken - generates GET instead of POST for transaction
+//    def 'send provide document bundle from hapi client' () {
+//        setup:
+//        FhirContext ctx = ResourceCache.ctx
+//        TestKit testKit = new TestKit(Installation.instance().internalTestkitFile())
+//        TestDefinition testDef = testKit.getTestDef('MhdSubmit')
+//        File testDir = testDef.testDir
+//        File bundleFile = new File(new File(testDir, 'submit'), 'singledocsubmit.xml')
+//        assert bundleFile.exists()
+//        Bundle bundle = ctx.newXmlParser().parseResource(new FileReader(bundleFile))
+//        String serverBase = 'http://localhost:7777/sim/bill__simproxy'
 //
-//        TestOverviewDTO testOverviewDTO = session.xdsTestServiceManager().runTest(envName, testSession, siteSpec, testInstance, sections, params, null, true)
+//        when:
+//        IGenericClient client = ctx.newRestfulGenericClient(serverBase)
+//        client.transaction().
+//        def response = client.transaction().withBundle(bundle).execute()
 //
 //        then:
-//        testOverviewDTO.sections.get('submit').pass
-//        testOverviewDTO.sections.get('query').pass
-//        testOverviewDTO.pass
+//        response
+//        response.size() == 2
+//
 //    }
 }
