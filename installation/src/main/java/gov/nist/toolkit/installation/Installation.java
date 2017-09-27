@@ -5,7 +5,6 @@ import gov.nist.toolkit.tk.TkLoader;
 import gov.nist.toolkit.tk.client.TkProps;
 import gov.nist.toolkit.utilities.io.Io;
 import gov.nist.toolkit.xdsexception.ExceptionUtil;
-import groovy.lang.Closure;
 import org.apache.log4j.Logger;
 
 import javax.servlet.ServletContext;
@@ -365,6 +364,12 @@ public class Installation {
 
     public File internalEnvironmentsFile() {
         return new File(toolkitxFile(), "environment");
+    }
+    public File internalDatasetsFile() {
+        return new File(toolkitxFile(), "datasets");
+    }
+    public File internalResourceCacheFile() {
+        return new File(toolkitxFile(), "resourceCache");
     }
 
     public File sessionLogFile(String sessionId) {

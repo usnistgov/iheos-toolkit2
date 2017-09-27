@@ -58,7 +58,7 @@ public class ElementalReverseProxy {
     }
 
     static public void start(int port) throws IOException {
-        System.out.println("Starting Reverse proxy on...");
+        System.out.println("Starting Sim Proxy on...");
 
         final Thread t = new RequestListenerThread(port);
         t.setDaemon(false);
