@@ -1,6 +1,7 @@
 package gov.nist.toolkit.simulators.proxy.util
 
 import gov.nist.toolkit.actortransaction.client.ActorType
+import gov.nist.toolkit.actortransaction.server.EndpointParser
 import gov.nist.toolkit.configDatatypes.client.TransactionType
 import gov.nist.toolkit.configDatatypes.server.SimulatorProperties
 import gov.nist.toolkit.simcommon.client.BadSimIdException
@@ -14,15 +15,15 @@ import gov.nist.toolkit.simulators.proxy.exceptions.SimProxyTransformException
 import gov.nist.toolkit.simulators.proxy.sim.SimProxyFactory
 import gov.nist.toolkit.sitemanagement.client.Site
 import org.apache.http.Header
+import org.apache.http.HttpHost
 import org.apache.http.HttpRequest
 import org.apache.http.HttpResponse
 import org.hl7.fhir.dstu3.model.Resource
-
 /**
  *
  */
 public class SimProxyBase {
-    String uri
+    String uri = null
      SimId simId;
      SimId simId2;
      SimDb simDb;
@@ -49,6 +50,8 @@ public class SimProxyBase {
      * @param transactionType
      */
     def setTargetType(ActorType actorType, TransactionType transactionType) {
+        assert actorType
+        assert transactionType
         targetActorType = actorType
         targetTransactionType = transactionType
 
@@ -62,7 +65,14 @@ public class SimProxyBase {
      * @return
      */
     String getTargetEndpoint() {
-        return targetSite.getEndpoint(targetTransactionType, isSecure(), false)
+        assert targetSite
+        assert targetTransactionType
+        boolean isSecure = false
+        return targetSite.getEndpoint(targetTransactionType, isSecure, false)
+    }
+
+    HttpHost getTargetHost() {
+        return new EndpointParser(getTargetEndpoint()).getHttpHost()
     }
 
     HttpRequest preProcessRequest(HttpRequest request) {
@@ -82,7 +92,9 @@ public class SimProxyBase {
 
             request = ((SimpleRequestTransform) instance).run(this, request)
             assert request, "${className} returned null request"
+
         }
+        assert targetTransactionType, "SimProxyBase#runRequestTransform: none of the input transforms declared the targetTransaction."
         return request
     }
 
@@ -114,8 +126,9 @@ public class SimProxyBase {
     }
 
     def init(HttpRequest request) {
+        if (uri) return
         uri = request.requestLine.uri
-        endpoint = new SimEndpoint(uri)
+        SimEndpoint endpoint = new SimEndpoint(uri)
         clientActorType = ActorType.findActor(endpoint.actorType)
         assert clientActorType
         clientTransactionType = TransactionType.find(endpoint.transactionType)
@@ -144,5 +157,6 @@ public class SimProxyBase {
         assert targetSite, "Site ${targetSiteName} does not exist"
         return new ProxyLogger(simDb)
     }
+
 
 }

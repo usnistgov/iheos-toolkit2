@@ -5,6 +5,7 @@ import gov.nist.toolkit.actortransaction.client.ParamType
 import gov.nist.toolkit.configDatatypes.server.SimulatorProperties
 import gov.nist.toolkit.configDatatypes.client.TransactionType
 import gov.nist.toolkit.envSetting.EnvSetting
+import gov.nist.toolkit.installation.Installation
 import gov.nist.toolkit.simcommon.client.SimId
 import gov.nist.toolkit.simcommon.client.Simulator
 import gov.nist.toolkit.simcommon.client.SimulatorConfig
@@ -104,7 +105,7 @@ class SimProxyFactory extends AbstractActorFactory implements IActorFactory{
                 assert aSite.transactions().size() >= transactionCount, "ActorFactory ${af.getClass().getName()} does not maintain list of Transactions correctly"
             }
         }
-        SiteEndpointFactory.updateNonTlsTransactionsToPort(aSite, '7777');
+        SiteEndpointFactory.updateNonTlsTransactionsToPort(aSite, Installation.instance().propertyServiceManager().getProxyPort());
         locked = false
         return aSite
     }

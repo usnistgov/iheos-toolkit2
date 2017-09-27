@@ -335,6 +335,7 @@ public class Site  implements IsSerializable, Serializable {
 		return name;
 	}
 
+
 	public String getEndpoint(TransactionType transaction, boolean isSecure, boolean isAsync) throws Exception {
 		String endpoint = getRawEndpoint(transaction, isSecure, isAsync);
 		if (endpoint == null) 

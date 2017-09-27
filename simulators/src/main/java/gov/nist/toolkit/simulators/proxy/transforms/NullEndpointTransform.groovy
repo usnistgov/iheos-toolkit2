@@ -8,7 +8,6 @@ import org.apache.http.HttpRequest
 import org.apache.http.RequestLine
 import org.apache.http.message.BasicRequestLine
 import org.apache.log4j.Logger
-
 /**
  * basic pass through - update endpoint to match target system configuration
  */
@@ -17,6 +16,7 @@ class NullEndpointTransform implements SimpleRequestTransform {
 
     HttpRequest run(SimProxyBase base, HttpRequest request) {
         logger.info('Running NullEndpointTransform')
+        // this allows endpoint to be chosen
         base.setTargetType(base.clientActorType, base.clientTransactionType)
 
         String targetEndpointString = base.getTargetEndpoint()

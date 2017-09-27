@@ -3,8 +3,8 @@ package gov.nist.toolkit.simulators.servlet;
 import gov.nist.toolkit.actorfactory.PatientIdentityFeedServlet;
 import gov.nist.toolkit.actortransaction.client.ATFactory;
 import gov.nist.toolkit.actortransaction.client.ActorType;
-import gov.nist.toolkit.configDatatypes.server.SimulatorProperties;
 import gov.nist.toolkit.configDatatypes.client.TransactionType;
+import gov.nist.toolkit.configDatatypes.server.SimulatorProperties;
 import gov.nist.toolkit.errorrecording.ErrorRecorder;
 import gov.nist.toolkit.errorrecording.GwtErrorRecorderBuilder;
 import gov.nist.toolkit.http.HttpHeader;
@@ -22,7 +22,6 @@ import gov.nist.toolkit.simulators.sim.reg.store.RegIndex;
 import gov.nist.toolkit.simulators.sim.rep.RepIndex;
 import gov.nist.toolkit.simulators.support.BaseDsActorSimulator;
 import gov.nist.toolkit.simulators.support.DsSimCommon;
-import gov.nist.toolkit.simcommon.server.SimCommon;
 import gov.nist.toolkit.sitemanagement.SeparateSiteLoader;
 import gov.nist.toolkit.sitemanagement.client.Site;
 import gov.nist.toolkit.soap.http.SoapFault;
@@ -36,7 +35,6 @@ import gov.nist.toolkit.xdsexception.ExceptionUtil;
 import gov.nist.toolkit.xdsexception.client.XdsException;
 import org.apache.axiom.om.OMElement;
 import org.apache.commons.io.FileUtils;
-import org.apache.http.HttpHost;
 import org.apache.log4j.Logger;
 
 import javax.servlet.ServletConfig;
@@ -91,9 +89,11 @@ public class SimServlet  extends HttpServlet {
 
 		logger.info("SimServlet initialized");
 
+
+		// Initialize SimProxy
 		try {
-			ElementalReverseProxy.start(7777, new HttpHost("localhost", 8889));
-		} catch (IOException e) {
+			ElementalReverseProxy.start(Installation.instance().propertyServiceManager().getProxyPort());
+		} catch (Exception e) {
 			throw new ServletException(e);
 		}
 	}

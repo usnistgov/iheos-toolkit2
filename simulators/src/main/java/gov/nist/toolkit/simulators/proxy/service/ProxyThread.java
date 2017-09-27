@@ -3,7 +3,6 @@ package gov.nist.toolkit.simulators.proxy.service;
 import gov.nist.toolkit.xdsexception.ExceptionUtil;
 import org.apache.http.ConnectionClosedException;
 import org.apache.http.HttpException;
-import org.apache.http.impl.DefaultBHttpClientConnection;
 import org.apache.http.impl.DefaultBHttpServerConnection;
 import org.apache.http.protocol.BasicHttpContext;
 import org.apache.http.protocol.HttpContext;
@@ -18,16 +17,14 @@ class ProxyThread extends Thread {
 
     private final HttpService httpservice;
     private final DefaultBHttpServerConnection inconn;
-    private final DefaultBHttpClientConnection outconn;
+//    private final DefaultBHttpClientConnection outconn;
 
     public ProxyThread(
             final HttpService httpservice,
-            final DefaultBHttpServerConnection inconn,
-            final DefaultBHttpClientConnection outconn) {
+            final DefaultBHttpServerConnection inconn) {
         super();
         this.httpservice = httpservice;
         this.inconn = inconn;
-        this.outconn = outconn;
     }
 
     @Override
@@ -37,7 +34,7 @@ class ProxyThread extends Thread {
 
         // Bind connection objects to the execution context
         context.setAttribute(ElementalReverseProxy.HTTP_IN_CONN, this.inconn);
-        context.setAttribute(ElementalReverseProxy.HTTP_OUT_CONN, this.outconn);
+//        context.setAttribute(ElementalReverseProxy.HTTP_OUT_CONN, this.outconn);
 
         if (this.inconn instanceof ServerConnection) {
             ServerConnection con = (ServerConnection) this.inconn;
@@ -47,7 +44,7 @@ class ProxyThread extends Thread {
         try {
             while (!Thread.interrupted()) {
                 if (!this.inconn.isOpen()) {
-                    this.outconn.close();
+                    //this.outconn.close();
                     break;
                 }
 
@@ -55,7 +52,7 @@ class ProxyThread extends Thread {
 
                 final Boolean keepalive = (Boolean) context.getAttribute(ElementalReverseProxy.HTTP_CONN_KEEPALIVE);
                 if (!Boolean.TRUE.equals(keepalive)) {
-                    this.outconn.close();
+                   // this.outconn.close();
                     this.inconn.close();
                     break;
                 }
@@ -73,10 +70,10 @@ class ProxyThread extends Thread {
                 this.inconn.shutdown();
             } catch (final IOException ignore) {
             }
-            try {
-                this.outconn.shutdown();
-            } catch (final IOException ignore) {
-            }
+//            try {
+//                this.outconn.shutdown();
+//            } catch (final IOException ignore) {
+//            }
         }
     }
 

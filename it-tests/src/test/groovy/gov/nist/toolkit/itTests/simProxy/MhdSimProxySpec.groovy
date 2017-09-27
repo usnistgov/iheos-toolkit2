@@ -26,8 +26,8 @@ class MhdSimProxySpec extends ToolkitSpecification {
     @Shared String envName = 'test'
     @Shared String testSession = 'bill';
     @Shared String id = 'rr'
-    @Shared String fhirServer = "${testSession}__${id}"
-    @Shared SimId simId = new SimId(fhirServer)  // ultimate destination
+    @Shared String rrId = "${testSession}__${id}"
+    @Shared SimId simId = new SimId(rrId)  // ultimate destination
     @Shared String proxyId = "simproxy"
     @Shared String simProxyName = "${testSession}__${proxyId}"
     @Shared SimId simProxyId = new SimId(simProxyName)
@@ -42,9 +42,6 @@ class MhdSimProxySpec extends ToolkitSpecification {
         // Initialize remote api for talking to toolkit on Grizzly
         // Needed to build simulators
         spi = getSimulatorApi(remoteToolkitPort)
-
-//        api.deleteSimulatorIfItExists(simId)
-//        api.deleteSimulatorIfItExists(simProxyId)
 
         api.createTestSession(testSession)
 
@@ -71,10 +68,7 @@ class MhdSimProxySpec extends ToolkitSpecification {
                 envName
         )
 
-//        rrConfig.setProperty(SimulatorProperties.VALIDATE_AGAINST_PATIENT_IDENTITY_FEED, false)
-//        spi.update(rrConfig)
-
-        proxySimConfig.setProperty(SimulatorProperties.proxyForwardSite, fhirServer)
+        proxySimConfig.setProperty(SimulatorProperties.proxyForwardSite, rrId)
 
         // add MhdSubmissionTransformation to transforms
         List<String> requestTransformations = proxySimConfig.asList(SimulatorProperties.simProxyRequestTransformations)
@@ -94,11 +88,6 @@ class MhdSimProxySpec extends ToolkitSpecification {
 
     }
 
-//    def cleanupSpec() {  // one time shutdown when everything is done
-//        server.stop()
-//        ListenerFactory.terminateAll()
-//    }
-
     def setup() {
         println "EC is ${Installation.instance().externalCache().toString()}"
         println "${api.getSiteNames(true)}"
@@ -114,27 +103,4 @@ class MhdSimProxySpec extends ToolkitSpecification {
         results.size() == 1
         results.get(0).passed()
     }
-
-    // HAPI is broken - generates GET instead of POST for transaction
-//    def 'send provide document bundle from hapi client' () {
-//        setup:
-//        FhirContext ctx = ResourceCache.ctx
-//        TestKit testKit = new TestKit(Installation.instance().internalTestkitFile())
-//        TestDefinition testDef = testKit.getTestDef('MhdSubmit')
-//        File testDir = testDef.testDir
-//        File bundleFile = new File(new File(testDir, 'submit'), 'singledocsubmit.xml')
-//        assert bundleFile.exists()
-//        Bundle bundle = ctx.newXmlParser().parseResource(new FileReader(bundleFile))
-//        String serverBase = 'http://localhost:7777/sim/bill__simproxy'
-//
-//        when:
-//        IGenericClient client = ctx.newRestfulGenericClient(serverBase)
-//        client.transaction().
-//        def response = client.transaction().withBundle(bundle).execute()
-//
-//        then:
-//        response
-//        response.size() == 2
-//
-//    }
 }

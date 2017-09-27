@@ -129,6 +129,10 @@ public class PropertyServiceManager {
 		return getPropertyManager().getDefaultAssigningAuthority();
 	}
 
+	public String getProxyPort() {
+		return getPropertyManager().getProxyPort();
+	}
+
 	public PropertyManager getPropertyManager() {
 		loadPropertyManager();
 		return propertyManager;

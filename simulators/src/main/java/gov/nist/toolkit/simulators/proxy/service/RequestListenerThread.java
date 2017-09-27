@@ -22,12 +22,10 @@ import java.nio.charset.CharsetEncoder;
  */
 class RequestListenerThread extends Thread {
 
-    private final HttpHost target;
     private final ServerSocket serversocket;
     private final HttpService httpService;
 
-    public RequestListenerThread(final int port, final HttpHost target) throws IOException {
-        this.target = target;
+    public RequestListenerThread(final int port) throws IOException {
         this.serversocket = new ServerSocket(port);
 
         // Set up HTTP protocol processor for incoming connections
@@ -51,7 +49,6 @@ class RequestListenerThread extends Thread {
         // Set up incoming request handler
         final UriHttpRequestHandlerMapper reqistry = new UriHttpRequestHandlerMapper();
         reqistry.register("*", new ProxyHandler(
-                this.target,
                 outhttpproc,
                 httpexecutor));
 
@@ -73,10 +70,10 @@ class RequestListenerThread extends Thread {
                 inconn.bind(insocket);
 
                 // Set up outgoing HTTP connection
-                final DefaultBHttpClientConnection outconn = new ClientConnection(bufsize, proxyBase);
+                //final DefaultBHttpClientConnection outconn = new ClientConnection(bufsize, proxyBase);
 
                 // Start worker thread
-                final Thread t = new ProxyThread(this.httpService, inconn, outconn);
+                final Thread t = new ProxyThread(this.httpService, inconn);
                 t.setDaemon(true);
                 t.start();
             } catch (final InterruptedIOException ex) {

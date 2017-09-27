@@ -53,16 +53,19 @@ public class ElementalReverseProxy {
             port = Integer.parseInt(args[1]);
         }
 
-        start(port, targetHost);
+        start(port);
 
     }
 
-    static public void start(int port, HttpHost targetHost) throws IOException {
-        System.out.println("Starting Reverse proxy for " + targetHost + " on...");
+    static public void start(int port) throws IOException {
+        System.out.println("Starting Reverse proxy on...");
 
-        final Thread t = new RequestListenerThread(port, targetHost);
+        final Thread t = new RequestListenerThread(port);
         t.setDaemon(false);
         t.start();
     }
 
+    static public void start(String port) throws Exception {
+        start(Integer.parseInt(port));
+    }
 }
