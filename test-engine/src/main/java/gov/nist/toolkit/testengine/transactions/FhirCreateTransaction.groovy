@@ -61,6 +61,11 @@ class FhirCreateTransaction extends BasicFhirTransaction {
             reportManager.add("Type_ID", fhirId.withoutHistory())
             reportManager.add('Ref', "${endpoint}/${fhirId.withoutHistory()}")
         }
+        if (!content) {
+            if (statusLine.statusCode > 201) {
+                stepContext.set_error(statusLine.reasonPhrase)
+            }
+        }
 
 //        if (statusLine.statusCode in 400..599)  {
 //            stepContext.set_error("Status:${statusLine}")

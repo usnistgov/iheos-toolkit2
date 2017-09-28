@@ -38,7 +38,7 @@ public class RepositoryActorFactory extends AbstractActorFactory implements IAct
 		isRecipient = true;
 	}
 
-	public Simulator buildNew(SimManager simm, SimId simId, boolean configureBase) {
+	public Simulator buildNew(SimManager simm, SimId simId, boolean configureBase) throws Exception {
 		ActorType actorType = ActorType.REPOSITORY;
 //		logger.debug("Creating " + actorType.getName() + " with id " + simId);
 		SimulatorConfig sc;

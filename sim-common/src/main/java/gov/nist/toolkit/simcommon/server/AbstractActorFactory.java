@@ -42,7 +42,7 @@ public abstract class AbstractActorFactory {
 	 *
 	 */
 	protected abstract Simulator buildNew(SimManager simm, SimId simId, boolean configureBase) throws Exception;
-	protected abstract void verifyActorConfigurationOptions(SimulatorConfig config);
+	protected abstract void verifyActorConfigurationOptions(SimulatorConfig config) throws Exception;
 	public abstract Site getActorSite(SimulatorConfig asc, Site site) throws NoSimulatorException;
 	public abstract List<TransactionType> getIncomingTransactions();
 
@@ -190,15 +190,25 @@ public abstract class AbstractActorFactory {
 
 	}
 
+	private ActorType actorType = null;
+
+	public ActorType getActorType() {
+		return actorType;
+	}
+
 	public Simulator buildNewSimulator(SimManager simm, ActorType at, SimId simID, boolean save) throws Exception {
 		logger.info("Build new Simulator of type " + getClass().getSimpleName() + " simID: " + simID);
 
 		// This is the simulator-specific factory
-        String actorTypeName = at.getName();
+        String actorTypeName;
+		actorTypeName = at.getName();
 		AbstractActorFactory af = factories().get(actorTypeName);
+		actorType = ActorType.findActor(actorTypeName);
 
 		if (af == null)
 			throw new Exception(String.format("Cannot build simulator of type %s - cannot find Factory for ActorType", actorTypeName));
+
+		af.actorType = actorType;
 
         if (simID.getId().contains("__"))
             throw new Exception("Simulator ID cannot contain double underscore (__)");
@@ -275,11 +285,15 @@ public abstract class AbstractActorFactory {
         }
 	}
 
-	String mkEndpoint(SimulatorConfig asc, SimulatorConfigElement ele, boolean isTLS) {
+	String mkEndpoint(SimulatorConfig asc, SimulatorConfigElement ele, boolean isTLS) throws Exception {
 		return mkEndpoint(asc, ele, asc.getActorType().toLowerCase(), isTLS);
 	}
 
-	protected String mkEndpoint(SimulatorConfig asc, SimulatorConfigElement ele, String actor, boolean isTLS) {
+	protected String mkEndpoint(SimulatorConfig asc, SimulatorConfigElement ele, String actor, boolean isTLS) throws Exception {
+		return mkEndpoint(asc, ele, actor, isTLS, false);
+	}
+
+	protected String mkEndpoint(SimulatorConfig asc, SimulatorConfigElement ele, String actor, boolean isTLS, boolean isProxy) throws Exception {
 		String transtype = SimDb.getTransactionDirName(ele.transType);
 
 		String contextName = Installation.instance().getServletContextName();
@@ -288,7 +302,8 @@ public abstract class AbstractActorFactory {
 		+ ((isTLS) ? "s" : "")
 		+ "://" 
 		+ Installation.instance().propertyServiceManager().getToolkitHost()
-		+ ":" 
+		+ ":"
+				+ getEndpointPort(isTLS, isProxy)
 		+ ((isTLS) ? Installation.instance().propertyServiceManager().getToolkitTlsPort() : Installation.instance().propertyServiceManager().getToolkitPort())
 //		+ "/"  context name includes preceding /
 		+ contextName  
@@ -300,8 +315,12 @@ public abstract class AbstractActorFactory {
 		+ transtype;
 	}
 
-	protected String mkFhirEndpoint(SimulatorConfig asc, SimulatorConfigElement ele, String actor, boolean isTLS) {
-		String transtype = SimDb.getTransactionDirName(ele.transType);
+	protected String mkFhirEndpoint(SimulatorConfig asc, SimulatorConfigElement ele, String actor, boolean isTLS) throws Exception {
+		return mkFhirEndpoint(asc, ele, actor, isTLS, false);
+	}
+
+	protected String mkFhirEndpoint(SimulatorConfig asc, SimulatorConfigElement ele, String actor, boolean isTLS, boolean isProxy) throws Exception {
+//		String transtype = SimDb.getTransactionDirName(ele.transType);
 
 		String contextName = Installation.instance().getServletContextName();
 
@@ -310,13 +329,23 @@ public abstract class AbstractActorFactory {
 				+ "://"
 				+ Installation.instance().propertyServiceManager().getToolkitHost()
 				+ ":"
-				+ ((isTLS) ? Installation.instance().propertyServiceManager().getToolkitTlsPort() : Installation.instance().propertyServiceManager().getToolkitPort())
+				+ getEndpointPort(isTLS, isProxy)
+//				+ ((isTLS) ? Installation.instance().propertyServiceManager().getToolkitTlsPort() : Installation.instance().propertyServiceManager().getToolkitPort())
 //		+ "/"  context name includes preceding /
 				+ contextName
-				+ "/"
-				+ ((isSimProxy) ? "sim" : "fsim")
-				+ "/"
-				+ asc.getId();
+				+ "/sim/"
+//				+ ((isSimProxy) ? "sim" : "fsim")
+				+ asc.getId()
+				+ "/fhir"
+				;
+	}
+
+	private String getEndpointPort(boolean isTLS, boolean isProxy) throws Exception {
+		if (isTLS && isProxy)
+			throw new Exception("Proxy does not support TLS");
+		if (isProxy)
+			return Installation.instance().propertyServiceManager().getProxyPort();
+		return (isTLS) ? Installation.instance().propertyServiceManager().getToolkitTlsPort() : Installation.instance().propertyServiceManager().getToolkitPort();
 	}
 
 	public void saveConfiguration(SimulatorConfig config) throws Exception {
@@ -546,7 +575,7 @@ public abstract class AbstractActorFactory {
 		ele.setBooleanValue(value);
 	}
 
-	public void addEditableEndpoint(SimulatorConfig sc, String endpointName, ActorType actorType, TransactionType transactionType, boolean tls) {
+	public void addEditableEndpoint(SimulatorConfig sc, String endpointName, ActorType actorType, TransactionType transactionType, boolean tls) throws Exception {
 		SimulatorConfigElement ele = new SimulatorConfigElement();
 		ele.name = endpointName;
 		ele.type = ParamType.ENDPOINT;
@@ -566,7 +595,7 @@ public abstract class AbstractActorFactory {
 		addUser(sc, ele);
 	}
 
-	public void addFixedEndpoint(SimulatorConfig sc, String endpointName, ActorType actorType, TransactionType transactionType, boolean tls) {
+	public void addFixedEndpoint(SimulatorConfig sc, String endpointName, ActorType actorType, TransactionType transactionType, boolean tls) throws Exception {
 		SimulatorConfigElement ele = new SimulatorConfigElement();
 		ele.name = endpointName;
 		ele.type = ParamType.ENDPOINT;
@@ -576,12 +605,12 @@ public abstract class AbstractActorFactory {
 		addFixed(sc, ele);
 	}
 
-	public void addFixedFhirEndpoint(SimulatorConfig sc, String endpointName, ActorType actorType, TransactionType transactionType, boolean tls) {
+	public void addFixedFhirEndpoint(SimulatorConfig sc, String endpointName, ActorType actorType, TransactionType transactionType, boolean tls, boolean proxy) throws Exception {
 		SimulatorConfigElement ele = new SimulatorConfigElement();
 		ele.name = endpointName;
 		ele.type = ParamType.ENDPOINT;
 		ele.transType = transactionType;
-		ele.setStringValue(mkFhirEndpoint(sc, ele, actorType.getShortName(), tls));
+		ele.setStringValue(mkFhirEndpoint(sc, ele, actorType.getShortName(), tls, proxy));
 		ele.setTls(tls);
 		addFixed(sc, ele);
 	}

@@ -12,13 +12,14 @@ import gov.nist.toolkit.simcommon.server.SimCache
 import gov.nist.toolkit.simcommon.server.SimDb
 import gov.nist.toolkit.simcommon.server.SimEndpoint
 import gov.nist.toolkit.simulators.proxy.exceptions.SimProxyTransformException
+import gov.nist.toolkit.simulators.proxy.service.ServerConnection
 import gov.nist.toolkit.simulators.proxy.sim.SimProxyFactory
 import gov.nist.toolkit.sitemanagement.client.Site
-import org.apache.http.Header
-import org.apache.http.HttpHost
-import org.apache.http.HttpRequest
-import org.apache.http.HttpResponse
+import org.apache.http.*
+import org.apache.http.message.BasicHttpResponse
+import org.apache.http.message.BasicStatusLine
 import org.hl7.fhir.dstu3.model.Resource
+
 /**
  *
  */
@@ -125,14 +126,18 @@ public class SimProxyBase {
         return targetLogger
     }
 
-    def init(HttpRequest request) {
+    ServerConnection serverConnection
+
+    def init(HttpRequest request, ServerConnection serverConnection) {
         if (uri) return
         uri = request.requestLine.uri
+        if (serverConnection)
+            this.serverConnection = serverConnection
         SimEndpoint endpoint = new SimEndpoint(uri)
         clientActorType = ActorType.findActor(endpoint.actorType)
-        assert clientActorType
+        assert clientActorType, "ActorType name was ${endpoint.actorType}"
         clientTransactionType = TransactionType.find(endpoint.transactionType)
-        assert clientTransactionType
+        assert clientTransactionType, "TransactionType name was ${endpoint.transactionType}"
         simId = SimIdParser.parse(uri)
         simDb = new SimDb(simId, endpoint.actorType, endpoint.transactionType)
         config = simDb.getSimulator(simId);
@@ -152,11 +157,24 @@ public class SimProxyBase {
         clientContentType = contentTypeHeader.value
 
         String targetSiteName = config.get(SimulatorProperties.proxyForwardSite)?.asString()
-        assert targetSiteName, "Proxy forward site not configured"
+        if (!targetSiteName) handleException(new Exception("Proxy forward site not configured"))
         targetSite = SimCache.getSite(targetSiteName)
-        assert targetSite, "Site ${targetSiteName} does not exist"
+        if (!targetSite) handleException(new Exception("Site ${targetSiteName} does not exist"))
         return new ProxyLogger(simDb)
     }
+
+    def handleException(Exception e) {
+        if (clientTransactionType.isFhir()) {
+            BasicHttpResponse response = new BasicHttpResponse(new BasicStatusLine(new ProtocolVersion('http', 1, 1), 500, e.getMessage()))
+            OutputStream outstream = serverConnection.prepareOutputStream(response)
+            outstream.write(response.toString().getBytes())
+            outstream.flush()
+            outstream.close()
+            throw e
+        }
+        assert true, "handleException - non-FHIR exceptions not implemented"
+    }
+
 
 
 }

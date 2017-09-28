@@ -258,6 +258,8 @@ public interface ToolkitServiceAsync {
 
     void fhirCreate(FhirCreateRequest request, AsyncCallback<List<Result>> async);
 
+    void fhirTransaction(FhirTransactionRequest request, AsyncCallback<List<Result>> async);
+
     void getFullSimId(GetFullSimIdRequest request, AsyncCallback<SimId> async);
 
     // Tab configuration

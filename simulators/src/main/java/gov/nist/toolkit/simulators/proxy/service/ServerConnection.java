@@ -2,10 +2,7 @@ package gov.nist.toolkit.simulators.proxy.service;
 
 import gov.nist.toolkit.simulators.proxy.util.SimProxyBase;
 import gov.nist.toolkit.utilities.io.Io;
-import org.apache.http.HttpEntity;
-import org.apache.http.HttpEntityEnclosingRequest;
-import org.apache.http.HttpException;
-import org.apache.http.HttpResponse;
+import org.apache.http.*;
 import org.apache.http.entity.BasicHttpEntity;
 import org.apache.http.impl.DefaultBHttpServerConnection;
 import org.apache.http.util.Args;
@@ -17,7 +14,7 @@ import java.io.OutputStream;
 /**
  * extend server connection class and add capture of request message from client
  */
-class ServerConnection extends DefaultBHttpServerConnection {
+public class ServerConnection extends DefaultBHttpServerConnection {
     private SimProxyBase proxyBase;
 
     ServerConnection(int buffersize, SimProxyBase base) {
@@ -31,7 +28,7 @@ class ServerConnection extends DefaultBHttpServerConnection {
     public void receiveRequestEntity(final HttpEntityEnclosingRequest request) throws IOException, HttpException {
         Args.notNull(request, "HTTP request");
         ensureOpen();
-        proxyBase.init(request);
+        proxyBase.init(request, this);
         final HttpEntity entity = prepareInput(request);
         if (entity != null && entity instanceof BasicHttpEntity) {
             System.out.println("Got Client Request entity");
@@ -75,5 +72,8 @@ class ServerConnection extends DefaultBHttpServerConnection {
         }
     }
 
+    public OutputStream prepareOutputStream(final HttpMessage message) throws HttpException {
+        return prepareOutput(message);
+    }
 
 }

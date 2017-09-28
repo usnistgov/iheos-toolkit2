@@ -25,7 +25,7 @@ public class IGActorFactory extends AbstractActorFactory implements IActorFactor
       Arrays.asList(TransactionType.STORED_QUERY, TransactionType.RETRIEVE);
 
    public Simulator buildNew(SimManager simm, SimId newID,
-                             boolean configureBase) {
+                             boolean configureBase) throws Exception {
       this.newID = newID;
 
       ActorType actorType = ActorType.INITIATING_GATEWAY;

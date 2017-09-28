@@ -1,5 +1,6 @@
 package gov.nist.toolkit.xdstools2.client.util;
 
+import com.google.gwt.core.client.GWT;
 import gov.nist.toolkit.configDatatypes.client.TransactionType;
 import gov.nist.toolkit.simcommon.client.SimId;
 import gov.nist.toolkit.sitemanagement.client.Site;
@@ -46,6 +47,22 @@ public class SiteFilter {
                 keeps.addAll(transactionOfferings.map.get(transactionType));
             if (includeTls)
                 keeps.addAll(transactionOfferings.tmap.get(transactionType));
+        }
+
+        filter(keeps);
+        return this;
+    }
+
+    public SiteFilter fhirOnly(List<TransactionType> transactionTypes) {
+        Set<Site> keeps = new HashSet<>();
+        for (TransactionType transactionType : transactionTypes) {
+            GWT.log("Inspecting " + transactionType.getName());
+            if (transactionType.isFhir()) {
+                List<Site> keepers = transactionOfferings.map.get(transactionType);
+                GWT.log("Keep " + keepers);
+                if (keepers != null)
+                    keeps.addAll(transactionOfferings.map.get(transactionType));
+            }
         }
 
         filter(keeps);

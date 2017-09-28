@@ -46,10 +46,11 @@ class SimEndpoint {
         simServiceType = parts[simStart]
 
         if (!simServiceType.contains('sim')) throw new InvalidSimEndpointException(endpoint, 'Service name must start with /sim/')
-        assert parts.size() >= 4
-        simIdString = parts[simStart+1]
-        actorType = parts[simStart+2]
-        transactionType = parts[simStart+3]
+//        assert parts.size() >= 4
+        List partsList = parts as List  // index beyond end with list -> returns null instead of exception
+        simIdString = partsList[simStart+1]
+        actorType = partsList[simStart+2]
+        transactionType = partsList[simStart+3]   // with FHIR this is sometimes null
     }
 
     HttpHost getHost() {

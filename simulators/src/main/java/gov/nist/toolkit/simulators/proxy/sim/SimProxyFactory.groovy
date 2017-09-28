@@ -2,19 +2,16 @@ package gov.nist.toolkit.simulators.proxy.sim
 
 import gov.nist.toolkit.actortransaction.client.ActorType
 import gov.nist.toolkit.actortransaction.client.ParamType
-import gov.nist.toolkit.configDatatypes.server.SimulatorProperties
 import gov.nist.toolkit.configDatatypes.client.TransactionType
-import gov.nist.toolkit.envSetting.EnvSetting
-import gov.nist.toolkit.installation.Installation
+import gov.nist.toolkit.configDatatypes.server.SimulatorProperties
 import gov.nist.toolkit.simcommon.client.SimId
 import gov.nist.toolkit.simcommon.client.Simulator
 import gov.nist.toolkit.simcommon.client.SimulatorConfig
 import gov.nist.toolkit.simcommon.server.AbstractActorFactory
-import gov.nist.toolkit.simcommon.server.GenericSimulatorFactory
 import gov.nist.toolkit.simcommon.server.IActorFactory
 import gov.nist.toolkit.simcommon.server.SimManager
-import gov.nist.toolkit.sitemanagement.SiteEndpointFactory
 import gov.nist.toolkit.sitemanagement.client.Site
+import gov.nist.toolkit.sitemanagement.client.TransactionBean
 import gov.nist.toolkit.xdsexception.NoSimulatorException
 /**
  * A singleton factory for creating Sim Proxy
@@ -30,21 +27,20 @@ import gov.nist.toolkit.xdsexception.NoSimulatorException
 class SimProxyFactory extends AbstractActorFactory implements IActorFactory{
     static final List<TransactionType> incomingTransactions = TransactionType.asList()  // accepts all known transactions
 
-    @Override
-    ActorType getActorType() {
-        return ActorType.SIM_PROXY
-    }
+//    @Override
+//    ActorType getActorType() {
+//        return ActorType.SIM_PROXY
+//    }
 
     @Override
     protected Simulator buildNew(SimManager simm, SimId simId, boolean configureBase) throws Exception {
-        ActorType actorType = ActorType.SIM_PROXY
+        ActorType actorType = getActorType(); //ActorType.SIM_PROXY
         SimulatorConfig config
         if (configureBase)
             config = configureBaseElements(actorType, simId)
         else
             config = new SimulatorConfig()
 
-        addFixedConfig(config, SimulatorProperties.isProxyFrontEnd, ParamType.BOOLEAN, true)
 
 //        addEditableNullEndpoint(config, SimulatorProperties.proxyForwardEndpoint, ActorType.ANY , TransactionType.ANY, false);
 //        addEditableNullEndpoint(config, SimulatorProperties.proxyTlsForwardEndpoint, ActorType.ANY, TransactionType.ANY, true);
@@ -55,6 +51,19 @@ class SimProxyFactory extends AbstractActorFactory implements IActorFactory{
             config2 = configureBaseElements(actorType, simId2)
         else
             config2 = new SimulatorConfig()
+
+        addFixedConfig(config, SimulatorProperties.isProxyFrontEnd, ParamType.BOOLEAN, true)
+        addFixedConfig(config2, SimulatorProperties.isProxyFrontEnd, ParamType.BOOLEAN, false)
+
+        actorType.transactions.each { TransactionType transactionType ->
+            if (transactionType.isFhir()) {
+                addFixedFhirEndpoint(config, transactionType.endpointSimPropertyName, actorType, transactionType, false, true)
+//                addFixedFhirEndpoint(config, transactionType.tlsEndpointSimPropertyName, actorType, transactionType, true)
+            } else {
+                addFixedEndpoint(config, transactionType.endpointSimPropertyName, actorType, transactionType, false)
+                addFixedEndpoint(config, transactionType.tlsEndpointSimPropertyName, actorType, transactionType, true)
+            }
+        }
 
         // link the two sims
         addFixedConfig(config, SimulatorProperties.proxyPartner, ParamType.SELECTION, simId2.toString())
@@ -88,26 +97,52 @@ class SimProxyFactory extends AbstractActorFactory implements IActorFactory{
     @Override
     Site getActorSite(SimulatorConfig asc, Site site) throws NoSimulatorException {
         Site aSite = (site) ? site : new Site(asc.defaultName)
-        if (locked) return aSite;
-        locked = true
-        Set<ActorType> types = ActorType.getAllActorTypes()
-        for (ActorType actorType : types) {
-            if (actorType.equals(ActorType.SIM_PROXY)) continue;
-            int transactionCount = aSite.transactions().size()
-            AbstractActorFactory af = new GenericSimulatorFactory().getActorFactory(actorType)
-            if (af) {
-                af.asSimProxy()
-                af.setTransactionOnly(true)  // don't include PIF - we will run out of ports - not needed for SimProxy
-                Simulator sim = af.buildNew(new SimManager(EnvSetting.DEFAULTSESSIONID), asc.getId(), true)
-//                AbstractActorFactory factory  = af.getActorFactory(actorType).asSimProxy()
-                SimulatorConfig config = sim.getConfig(0)
-                aSite = af.getActorSite(config, (aSite) ? aSite : site)
-                assert aSite.transactions().size() >= transactionCount, "ActorFactory ${af.getClass().getName()} does not maintain list of Transactions correctly"
-            }
+
+        if (!asc.get(SimulatorProperties.isProxyFrontEnd).asBoolean())
+            return aSite  // back end gets no transactions
+
+        boolean isAsync = false
+
+        ActorType actorType = ActorType.findActor(asc.actorType)
+        actorType.transactions.each { TransactionType transactionType ->
+            aSite.addTransaction(new TransactionBean(
+                    transactionType.getCode(),
+                    TransactionBean.RepositoryType.NONE,
+                    asc.get(transactionType.endpointSimPropertyName).asString(),
+                    false,
+                    isAsync
+            ))
+//            aSite.addTransaction(new TransactionBean(
+//                    transactionType.getCode(),
+//                    TransactionBean.RepositoryType.NONE,
+//                    asc.get(transactionType.tlsEndpointSimPropertyName).asString(),
+//                    true,
+//                    isAsync
+//            ))
         }
-        SiteEndpointFactory.updateNonTlsTransactionsToPort(aSite, Installation.instance().propertyServiceManager().getProxyPort());
-        locked = false
+
         return aSite
+
+//        if (locked) return aSite;
+//        locked = true
+//        Set<ActorType> types = ActorType.getAllActorTypes()
+//        for (ActorType actorType : types) {
+//            if (actorType.equals(ActorType.SIM_PROXY)) continue;
+//            int transactionCount = aSite.transactions().size()
+//            AbstractActorFactory af = new GenericSimulatorFactory().getActorFactory(actorType)
+//            if (af) {
+//                af.asSimProxy()
+//                af.setTransactionOnly(true)  // don't include PIF - we will run out of ports - not needed for SimProxy
+//                Simulator sim = af.buildNew(new SimManager(EnvSetting.DEFAULTSESSIONID), asc.getId(), true)
+////                AbstractActorFactory factory  = af.getActorFactory(actorType).asSimProxy()
+//                SimulatorConfig config = sim.getConfig(0)
+//                aSite = af.getActorSite(config, (aSite) ? aSite : site)
+//                assert aSite.transactions().size() >= transactionCount, "ActorFactory ${af.getClass().getName()} does not maintain list of Transactions correctly"
+//            }
+//        }
+//        SiteEndpointFactory.updateNonTlsTransactionsToPort(aSite, Installation.instance().propertyServiceManager().getProxyPort());
+//        locked = false
+//        return aSite
     }
 
     @Override

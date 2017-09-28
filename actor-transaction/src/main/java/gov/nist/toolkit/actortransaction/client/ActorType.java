@@ -420,13 +420,35 @@ public enum ActorType implements IsSerializable, Serializable {
             "gov.nist.toolkit.simulators.proxy.sim.SimProxyFactory",
             "gov.nist.toolkit.simulators.proxy.sim.SimProxySimulator",  // only constructor should be used
             Arrays.asList(TransactionType.PIF),  // place holder - transaction types
-            true,  // show in config
+            false,  // show in config - only partially configured - only used in IT tests
             null,  // actorsFileLabel
             null,   // httpSimulatorClassName
             null,    // http transaction types
             false,    // is fhir
             new ArrayList<String>(),
             new ArrayList<String>()
+    ),
+    XDS_on_FHIR_Recipient(
+            "XDS on FHIR Recipient",
+            Arrays.asList(""),
+            "xdsonfhir",
+            "gov.nist.toolkit.simulators.proxy.sim.SimProxyFactory",
+            "gov.nist.toolkit.simulators.proxy.sim.SimProxySimulator",  // only constructor should be used
+            Arrays.asList(TransactionType.PROV_DOC_BUNDLE),  // place holder - transaction types
+            true,  // show in config - only partially configured - only used in IT tests
+            null,  // actorsFileLabel
+            null,   // httpSimulatorClassName
+            null,    // http transaction types
+            false,    // is fhir
+            // request transform classes
+            Arrays.asList(
+                    "gov.nist.toolkit.simulators.proxy.transforms.MhdToXdsEndpointTransform",
+                    "gov.nist.toolkit.simulators.proxy.transforms.MhdToPnrContentTransform"
+            ),
+            // response transform classes
+            Arrays.asList(
+                    "gov.nist.toolkit.simulators.proxy.transforms.RegistryResponseToOperationOutcomeTransform"
+            )
     ),
     ANY(
             "Any",

@@ -44,7 +44,7 @@ public class OnDemandDocumentSourceActorFactory extends AbstractActorFactory imp
 	}
 
 	@Override
-	public Simulator buildNew(SimManager simm, SimId simId, boolean configureBase) {
+	public Simulator buildNew(SimManager simm, SimId simId, boolean configureBase) throws Exception {
 		ActorType actorType = ActorType.ONDEMAND_DOCUMENT_SOURCE;
 //		logger.debug("Creating " + actorType.getName() + " with id " + simId);
 		SimulatorConfig sc;

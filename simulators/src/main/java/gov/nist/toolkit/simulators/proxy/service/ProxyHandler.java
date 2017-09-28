@@ -65,7 +65,7 @@ class ProxyHandler implements HttpRequestHandler {
 
         clientLogger.logRequest(request);
 
-        proxyBase.init(request);
+        proxyBase.init(request, null);
 
         System.out.println(">> Request URI: " + request.getRequestLine().getUri());
 

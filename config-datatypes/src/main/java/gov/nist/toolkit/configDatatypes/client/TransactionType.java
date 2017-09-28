@@ -50,7 +50,7 @@ public enum TransactionType implements Serializable, IsSerializable {
     boolean requiresMtom = false;
     boolean http = false; // Is this Http only (non-SOAP) transaction
 //    Map<String, TransactionType> basicTypeMap = new HashMap<>();
-    boolean fhir = true;
+    boolean fhir = false;
     String endpointSimPropertyName;
     String tlsEndpointSimPropertyName;
 
