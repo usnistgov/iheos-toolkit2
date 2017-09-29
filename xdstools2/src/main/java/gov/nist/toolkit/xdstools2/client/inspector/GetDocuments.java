@@ -2,13 +2,13 @@ package gov.nist.toolkit.xdstools2.client.inspector;
 
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.user.client.rpc.AsyncCallback;
 import gov.nist.toolkit.registrymetadata.client.AnyIds;
 import gov.nist.toolkit.registrymetadata.client.ObjectRef;
 import gov.nist.toolkit.registrymetadata.client.ObjectRefs;
 import gov.nist.toolkit.results.client.Result;
 import gov.nist.toolkit.results.client.StepResult;
 import gov.nist.toolkit.results.client.TestInstance;
+import gov.nist.toolkit.sitemanagement.client.SiteSpec;
 import gov.nist.toolkit.xdstools2.client.command.command.GetDocumentsCommand;
 import gov.nist.toolkit.xdstools2.client.util.ClientUtils;
 import gov.nist.toolkit.xdstools2.shared.command.request.GetDocumentsRequest;
@@ -21,6 +21,7 @@ public class GetDocuments implements ClickHandler {
 	StepResult originatingResult = null;
 	ObjectRefs ids;
 	boolean isLid = false;
+	private SiteSpec siteSpec;
 
 	void run() {
 		AnyIds aids = new AnyIds(ids);
@@ -41,16 +42,17 @@ public class GetDocuments implements ClickHandler {
 					it.addToHistory(result);
 				}
 			}
-		}.run(new GetDocumentsRequest(ClientUtils.INSTANCE.getCommandContext(),null,aids));
+		}.run(new GetDocumentsRequest(ClientUtils.INSTANCE.getCommandContext(),siteSpec,aids));
 		if (originatingResult != null)
 			originatingResult.rmFromToBeRetrieved(ids);
 	}
 
-	public GetDocuments(MetadataInspectorTab it, StepResult originatingResult, ObjectRefs ids, boolean isLid) {
+	public GetDocuments(MetadataInspectorTab it, StepResult originatingResult, ObjectRefs ids, boolean isLid, SiteSpec siteSpec) {
 		this.it = it;
 		this.originatingResult = originatingResult;
 		this.ids = ids;
 		this.isLid = isLid;
+		this.siteSpec = siteSpec;
 	}
 
 	public GetDocuments(MetadataInspectorTab it, ObjectRef id, boolean isLid) {

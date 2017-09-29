@@ -1,14 +1,31 @@
 package gov.nist.toolkit.xdstools2.client.inspector;
 
+import com.google.gwt.core.client.GWT;
+import com.google.gwt.dom.client.Style;
+import com.google.gwt.event.dom.client.ChangeEvent;
+import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.rpc.AsyncCallback;
-import com.google.gwt.user.client.ui.*;
+import com.google.gwt.user.client.ui.FlexTable;
+import com.google.gwt.user.client.ui.HTML;
+import com.google.gwt.user.client.ui.HorizontalPanel;
+import com.google.gwt.user.client.ui.ListBox;
+import com.google.gwt.user.client.ui.RadioButton;
+import com.google.gwt.user.client.ui.Tree;
+import com.google.gwt.user.client.ui.TreeItem;
+import com.google.gwt.user.client.ui.VerticalPanel;
 import gov.nist.toolkit.registrymetadata.client.ObjectRefs;
-import gov.nist.toolkit.results.client.*;
+import gov.nist.toolkit.results.client.AssertionResult;
+import gov.nist.toolkit.results.client.AssertionResults;
+import gov.nist.toolkit.results.client.Result;
+import gov.nist.toolkit.results.client.StepResult;
+import gov.nist.toolkit.results.client.TestLog;
+import gov.nist.toolkit.results.client.TestLogs;
 import gov.nist.toolkit.sitemanagement.client.SiteSpec;
-import gov.nist.toolkit.xdstools2.client.widgets.PopupMessage;
 import gov.nist.toolkit.xdstools2.client.ToolWindow;
+import gov.nist.toolkit.xdstools2.client.util.InformationLink;
+import gov.nist.toolkit.xdstools2.client.widgets.PopupMessage;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -36,7 +53,9 @@ public class MetadataInspectorTab extends ToolWindow {
 	RadioButton selectHistory = null;
 	RadioButton selectContents = null;
 	RadioButton selectDiff = null;
-	
+	ListBox groupByListBox;
+	HorizontalPanel groupByPanel = new HorizontalPanel();
+
 	// Data for test being displayed.
 	DataModel data;
 	Logger logger = Logger.getLogger("");
@@ -67,7 +86,7 @@ public class MetadataInspectorTab extends ToolWindow {
 	HorizontalPanel hpanel;
 	
 	Collection<Result> results;
-	SiteSpec siteSpec;
+	private SiteSpec siteSpec;
 	
 	public void setResults(Collection<Result> results) { this.results = results; }
 	public void setSiteSpec(SiteSpec ss) { siteSpec = ss; }
@@ -80,6 +99,8 @@ public class MetadataInspectorTab extends ToolWindow {
 		data = new DataModel();
 		
 		data.siteSpec = siteSpec;
+
+//		GWT.log("In MetadataInsp siteSpec is " + siteSpec.name);
 		
 		if (siteSpec == null)
 			data.enableActions = false;
@@ -109,6 +130,17 @@ public class MetadataInspectorTab extends ToolWindow {
 		structPanel.add(HyperlinkFactory.addHTML("<h3>Structure</h3>"));
 		hpanel.add(structPanel);
 
+		groupByListBox = new ListBox();
+		groupByListBox.addItem("(none)"); // No group by
+		groupByListBox.addItem("homeCommunityId"); // hcId groups object types
+		groupByListBox.addItem("repositoryId");		// Object type groups repositoryId
+		groupByListBox.addChangeHandler(new ChangeHandler() {
+			@Override
+			public void onChange(ChangeEvent changeEvent) {
+				showHistoryOrContents();
+			}
+		});
+
 
 		addToHistory(results);
 
@@ -116,6 +148,7 @@ public class MetadataInspectorTab extends ToolWindow {
 			if (selectHistory != null) selectHistory.setEnabled(false);
 			if (selectContents != null) selectContents.setEnabled(true);
 			if (selectDiff != null) selectDiff.setEnabled(false);
+			if (groupByListBox != null) groupByListBox.setEnabled(false);
 			
 			if (results.size() == 1 && !hasContents(results))
 				showAssertions(results.iterator().next());
@@ -241,15 +274,25 @@ public class MetadataInspectorTab extends ToolWindow {
 		ft.setWidget(0, 2, selectDiff);
 
 		panel.add(ft);
+
+		groupByPanel.clear();
+		groupByPanel.getElement().getStyle().setMargin(2, Style.Unit.PX);
+		groupByPanel.add(new HTML("Group by"));
+		groupByPanel.add(groupByListBox);
+		groupByPanel.add(new HTML("&nbsp;"));
+		groupByPanel.add(new InformationLink("Help with GroupBy feature", "Inspector-GroupBy-feature").asWidget()); // Todo.
+
+		panel.add(groupByPanel);
 	}
 
 	class HistorySelectChange implements ClickHandler {
 
 		public void onClick(ClickEvent event) {
+			groupByPanel.setVisible(selectHistory.getValue().booleanValue());
 			showHistoryOrContents();
 		}
-
 	}
+
    /**
     * Return passed text as HTML in red font
     * @param in text
@@ -344,15 +387,20 @@ public class MetadataInspectorTab extends ToolWindow {
 				dm.combinedMetadata = stepResult.getMetadata(); 
 				dm.allDocs = stepResult.documents;
 
-				new HcIdListingDisplay(this, dm, new TreeThing(stepTreeItem));
+				String selectedGroupByValue = groupByListBox.getValue(groupByListBox.getSelectedIndex());
+				if ("(none)".equals(selectedGroupByValue)) {
+					new ListingDisplay(this, dm, new TreeThing(stepTreeItem)).listing();
+				} else if ("homeCommunityId".equals(selectedGroupByValue)) {
+					new HcIdListingDisplay(this, dm, new TreeThing(stepTreeItem), stepResult);
+				} else if ("repositoryId".equals(selectedGroupByValue)) {
+					new RepositoryIdListingDisplay(this, dm, new TreeThing(stepTreeItem)).listing();
+				}
 
-//				new ListingDisplay(this, dm, new TreeThing(stepTreeItem)).listing();
-				
 //				listing(stepResult.getMetadata(), stepResult.documents, new TreeThing(stepTreeItem));
 
 				if (data.enableActions && stepResult.toBeRetrieved.size() > 0) {
 					ObjectRefs ors = stepResult.nextNObjectRefs(10);
-					TreeItem getNextItem = new TreeItem(HyperlinkFactory.getDocuments(this, stepResult, ors, "Action: Get Full Metadata for next " + ors.objectRefs.size(), false));
+					TreeItem getNextItem = new TreeItem(HyperlinkFactory.getDocuments(this, stepResult, ors, "Action: Get Full Metadata for next " + ors.objectRefs.size(), false, siteSpec));
 					stepTreeItem.addItem(getNextItem);
 				}
 
@@ -495,6 +543,7 @@ public class MetadataInspectorTab extends ToolWindow {
 	boolean isEmpty(String b) { return b == null || b.equals(""); }
 
 
-
-
+	public SiteSpec getSiteSpec() {
+		return siteSpec;
+	}
 }

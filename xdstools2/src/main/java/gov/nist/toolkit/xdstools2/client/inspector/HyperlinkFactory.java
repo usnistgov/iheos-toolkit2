@@ -7,6 +7,7 @@ import com.google.gwt.user.client.ui.Hyperlink;
 import gov.nist.toolkit.registrymetadata.client.*;
 import gov.nist.toolkit.results.client.AssertionResults;
 import gov.nist.toolkit.results.client.StepResult;
+import gov.nist.toolkit.sitemanagement.client.SiteSpec;
 import gov.nist.toolkit.xdstools2.client.widgets.PopupMessage;
 import gov.nist.toolkit.xdstools2.client.TestDocumentation;
 import gov.nist.toolkit.xdstools2.client.tabs.GetRelatedTab;
@@ -20,10 +21,10 @@ public class HyperlinkFactory {
 		return h;
 	}
 	
-	static Hyperlink getDocuments(MetadataInspectorTab it, StepResult originatingResult, ObjectRefs ids, String text, boolean isLid)  {
+	static Hyperlink getDocuments(MetadataInspectorTab it, StepResult originatingResult, ObjectRefs ids, String text, boolean isLid, SiteSpec siteSpec)  {
 		Hyperlink h = new Hyperlink();
 		h.setText(text);
-		h.addClickHandler(new GetDocuments(it, originatingResult, ids, isLid));
+		h.addClickHandler(new GetDocuments(it, originatingResult, ids, isLid, siteSpec));
 		return h;
 	}
 	

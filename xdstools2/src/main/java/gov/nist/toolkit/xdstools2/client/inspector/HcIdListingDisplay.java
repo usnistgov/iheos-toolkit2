@@ -7,9 +7,10 @@ import gov.nist.toolkit.registrymetadata.client.Document;
 import gov.nist.toolkit.registrymetadata.client.DocumentEntry;
 import gov.nist.toolkit.registrymetadata.client.Folder;
 import gov.nist.toolkit.registrymetadata.client.ObjectRef;
+import gov.nist.toolkit.registrymetadata.client.ObjectRefs;
 import gov.nist.toolkit.registrymetadata.client.SubmissionSet;
+import gov.nist.toolkit.results.client.StepResult;
 
-import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.TreeMap;
@@ -30,23 +31,13 @@ public class HcIdListingDisplay {
 
     Map<String, ListingDisplay> hcIdListings = new HashMap<String, ListingDisplay>();
 
-    public HcIdListingDisplay(MetadataInspectorTab tab, DataModel data, TreeThing root) {
+    public HcIdListingDisplay(MetadataInspectorTab tab, DataModel data, TreeThing root, StepResult stepResult) {
         this.tab = tab;
         this.data = data;
         this.root = root;
 
         if (spliceByHcId()) {
-            Map<String, ListingDisplay> treeMap = new TreeMap<String, ListingDisplay>(
-                    new Comparator<String>() {
-
-                        @Override
-                        public int compare(String o1, String o2) {
-                            return o2.compareTo(o1);
-                        }
-
-                    });
-
-            treeMap.putAll(hcIdListings);
+            Map<String, ListingDisplay> treeMap = new TreeMap<>(hcIdListings);
 
             for (Map.Entry<String, ListingDisplay> entry : treeMap.entrySet()) {
 
@@ -58,14 +49,30 @@ public class HcIdListingDisplay {
 
                 listingDisplay.root = new TreeThing(hcIdTreeItem);
                 listingDisplay.listing();
+
+
+
+                if (data.enableActions && stepResult.toBeRetrieved.size() > 0) {
+
+                    StepResult hcIdStepResult = stepResult.clone();
+
+                    for (ObjectRef o : stepResult.toBeRetrieved) {
+                       if (!o.home.equals(entry.getKey()))  {
+                            hcIdStepResult.toBeRetrieved.remove(o);
+                       }
+                    }
+                    ObjectRefs ors = hcIdStepResult.nextNObjectRefs(10);
+
+                    if (ors.objectRefs.size()>0) {
+//                        GWT.log("In HcIdListing listingDisplay.data.siteSpec is " + listingDisplay.data.siteSpec);
+                        TreeItem getNextItem = new TreeItem(HyperlinkFactory.getDocuments(tab, stepResult, ors, "Action: Get Full Metadata for next " + ors.objectRefs.size(), false, listingDisplay.data.siteSpec));
+                        hcIdTreeItem.addItem(getNextItem);
+                    }
+                }
             }
         } else {
             new ListingDisplay(tab, data, root).listing();
         }
-
-
-
-
 
     }
 
@@ -153,7 +160,12 @@ public class HcIdListingDisplay {
        if (hcIdListings.containsKey(hcId))  {
            return hcIdListings.get(hcId);
        } else {
-           return hcIdListings.put(hcId, new ListingDisplay(tab,new DataModel(),root));
+           DataModel dm = ListingDisplay.newDataModel(data.results);
+           dm.siteSpec = data.siteSpec;
+
+           ListingDisplay listingDisplay = new ListingDisplay(tab,dm,root);
+           hcIdListings.put(hcId, listingDisplay);
+           return listingDisplay;
        }
 
     }
