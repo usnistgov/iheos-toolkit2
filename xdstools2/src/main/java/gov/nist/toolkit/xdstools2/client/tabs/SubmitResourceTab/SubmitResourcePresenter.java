@@ -1,6 +1,7 @@
 package gov.nist.toolkit.xdstools2.client.tabs.SubmitResourceTab;
 
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.Label;
 import gov.nist.toolkit.configDatatypes.client.TransactionType;
 import gov.nist.toolkit.datasets.shared.DatasetElement;
@@ -10,15 +11,13 @@ import gov.nist.toolkit.results.client.Result;
 import gov.nist.toolkit.sitemanagement.client.SiteSpec;
 import gov.nist.toolkit.sitemanagement.client.TransactionOfferings;
 import gov.nist.toolkit.xdstools2.client.abstracts.AbstractPresenter;
-import gov.nist.toolkit.xdstools2.client.command.command.FhirCreateCommand;
-import gov.nist.toolkit.xdstools2.client.command.command.FhirTransactionCommand;
-import gov.nist.toolkit.xdstools2.client.command.command.GetAllDatasetsCommand;
-import gov.nist.toolkit.xdstools2.client.command.command.GetTransactionOfferingsCommand;
+import gov.nist.toolkit.xdstools2.client.command.command.*;
 import gov.nist.toolkit.xdstools2.client.util.ASite;
 import gov.nist.toolkit.xdstools2.client.util.ClientUtils;
 import gov.nist.toolkit.xdstools2.client.util.SiteFilter;
 import gov.nist.toolkit.xdstools2.shared.command.request.FhirCreateRequest;
 import gov.nist.toolkit.xdstools2.shared.command.request.FhirTransactionRequest;
+import gov.nist.toolkit.xdstools2.shared.command.request.GetDatasetElementContentRequest;
 
 import java.util.List;
 
@@ -70,6 +69,14 @@ public class SubmitResourcePresenter extends AbstractPresenter<SubmitResourceVie
     void doResourceSelected(DatasetElement datasetElement) {
         selectedDatasetElement = datasetElement;
         getView().setRunEnabled(isRunable());
+
+        new GetDatasetElementContentCommand() {
+
+            @Override
+            public void onComplete(String result) {
+                getView().setContent(new HTML(result));
+            }
+        }.run(new GetDatasetElementContentRequest(ClientUtils.INSTANCE.getCommandContext(), selectedDatasetElement));
     }
 
     void doRun() {

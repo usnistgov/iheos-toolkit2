@@ -306,4 +306,6 @@ public interface ToolkitService extends RemoteService  {
     List<Result> fhirCreate(FhirCreateRequest request) throws Exception;
 
 	List<Result> fhirTransaction(FhirTransactionRequest request) throws Exception;
+
+    String getDatasetContent(GetDatasetElementContentRequest var1);
 }

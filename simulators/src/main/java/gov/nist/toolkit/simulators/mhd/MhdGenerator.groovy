@@ -5,6 +5,7 @@ import gov.nist.toolkit.simulators.mhd.errors.ResourceNotAvailable
 import gov.nist.toolkit.installation.ResourceCacheMgr
 import gov.nist.toolkit.installation.ResourceMgr
 import gov.nist.toolkit.simulators.proxy.util.SimProxyBase
+import gov.nist.toolkit.utilities.id.UuidAllocator
 import groovy.xml.MarkupBuilder
 import org.hl7.fhir.dstu3.model.*
 import org.hl7.fhir.dstu3.model.codesystems.DocumentReferenceStatus
@@ -489,9 +490,9 @@ class MhdGenerator {
     String assignId(Resource resource) {
         if (!resource.id || isUUID(resource.id)) {
             if (resource instanceof DocumentReference)
-                resource.id = 'Document_' + newId()
+                resource.id = UuidAllocator.allocate()  //'Document_' + newId()
             else if (resource instanceof DocumentManifest)
-                resource.id = 'SubmissionSet_' + newId()
+                resource.id = UuidAllocator.allocate()   // 'SubmissionSet_' + newId()
             else
                 resource.id = newId()
         }

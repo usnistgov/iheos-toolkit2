@@ -99,11 +99,16 @@ class MhdSimProxySpec extends ToolkitSpecification {
         def ids = results[0].assertions.assertions.findAll {
             it.assertion.contains('Ref =')
         }.collect { AssertionResult ar ->
-            ar.assertion.substring('Ref = '.size()).trim() }
+            ar.assertion.substring('Ref = '.size()).trim()  // collect the References returned
+        }.collect { it.split('=')[1].trim()}  // format is Builder: Ref = DocumentManifest/SubmissionSet_ID02
 
-        then:
+        then:  'type included'
         ids.size() == 2
-        ids[0].startsWith('DocumentManifest')
-        ids[1].startsWith('DocumentReference')
+        ids[1].startsWith('DocumentManifest')
+        ids[0].startsWith('DocumentReference')
+
+        // id's are UUIDs
+        ids[0].split('/')[1].startsWith('urn:uuid:')
+        ids[1].split('/')[1].startsWith('urn:uuid:')
     }
 }
