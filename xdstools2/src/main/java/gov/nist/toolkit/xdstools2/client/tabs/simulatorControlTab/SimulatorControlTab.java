@@ -6,7 +6,6 @@ import com.google.gwt.event.dom.client.KeyUpEvent;
 import com.google.gwt.event.dom.client.KeyUpHandler;
 import com.google.gwt.event.logical.shared.ResizeEvent;
 import com.google.gwt.event.logical.shared.ResizeHandler;
-import com.google.gwt.user.cellview.client.CellTable;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.FlexTable;
@@ -19,7 +18,6 @@ import com.google.gwt.user.client.ui.TextArea;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
-import com.google.gwt.view.client.ListDataProvider;
 import gov.nist.toolkit.http.client.HtmlMarkup;
 import gov.nist.toolkit.simcommon.client.SimId;
 import gov.nist.toolkit.simcommon.client.Simulator;
@@ -52,12 +50,7 @@ public class SimulatorControlTab extends GenericQueryTab {
     TextArea        simIdsTextArea = new TextArea();
     TextBox         newSimIdTextBox = new TextBox();
     private Button          createActorSimulatorButton = new Button("Create Actor Simulator");
-    Button          loadSimulatorsButton = new Button("Load Simulators");
     private FlexTable       table = new FlexTable();
-    // Cell table
-    CellTable<SimInfo> newSimTable = new CellTable<SimInfo>();
-    // Create a data provider.
-    ListDataProvider<SimInfo> dataProvider = new ListDataProvider<SimInfo>();
     private FlowPanel simCtrlContainer;
 
     SimConfigSuper simConfigSuper;
