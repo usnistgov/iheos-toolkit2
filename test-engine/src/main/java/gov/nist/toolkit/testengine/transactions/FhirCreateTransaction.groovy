@@ -38,22 +38,24 @@ class FhirCreateTransaction extends BasicFhirTransaction {
 
 //        fullEndpoint = fullEndpoint.replace('7777', '6666')
 
+        // No fhirID from transaction
         def (BasicStatusLine statusLine, String content, FhirId fhirId) = FhirClient.post(new URI(fullEndpoint), fhirCtx.newJsonParser().encodeResourceToString(resource))
         if (content) {
-            if (content instanceof OperationOutcome) {
-                OperationOutcome oo = (OperationOutcome) parse(content)
+            IBaseResource baseResource = parse(content)
+            if (baseResource instanceof OperationOutcome) {
+                OperationOutcome oo = (OperationOutcome) baseResource
 
-                stepContext.set_error(simpleErrorMsg(oo))
-            } else if (content instanceof Bundle) {
-                Bundle bundle = content
+                simpleErrorMsg(oo, stepContext)
+            } else if (baseResource instanceof Bundle) {
+                Bundle bundle = baseResource
                 bundle.entry.each { Bundle.BundleEntryComponent comp ->
                     assert comp.response.status == '200'
                     if (comp.fullUrl) {
                         reportManager.add('Ref', new FhirId(comp.fullUrl).withoutHistory())
                     }
-                    FhirId myId = new FhirId(comp.response?.outcome?.id)
-                    if (myId)
-                        reportManager.add('Ref', myId.withoutHistory())
+//                    FhirId myId = new FhirId(comp.response?.outcome?.id)
+//                    if (myId)
+//                        reportManager.add('Ref', myId.withoutHistory())
                 }
             }
         }
@@ -74,7 +76,7 @@ class FhirCreateTransaction extends BasicFhirTransaction {
 //        reportManager.add('RefWithHistory', "${endpoint}/${fhirId}")
     }
 
-    def simpleErrorMsg(OperationOutcome oo) {
+    def simpleErrorMsg(OperationOutcome oo, StepContext sc) {
         assert oo
         def errs = []
         oo.issue.each { OperationOutcome.OperationOutcomeIssueComponent comp ->
@@ -86,9 +88,8 @@ class FhirCreateTransaction extends BasicFhirTransaction {
             if (details) {
                 detailsStr = details.textElement
             }
-            errs << detailsStr + '|' + code + '|' + diagnostics + '|' + location
+            sc.set_error(detailsStr + '|' + code + '|' + diagnostics + '|' + location)
         }
-        return errs.join('\n')
     }
 
     @Override

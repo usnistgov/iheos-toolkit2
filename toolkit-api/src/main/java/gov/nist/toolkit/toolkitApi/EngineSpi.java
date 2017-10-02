@@ -69,7 +69,8 @@ public class EngineSpi {
 //            }
 //            throw new ToolkitServiceException(response.readEntity(OperationResultResource.class));
 //        }
-        return response.readEntity(SimConfigResource.class);
+        SimConfigResource scr = response.readEntity(SimConfigResource.class);
+        return scr;
     }
 
     private void exceptionOnNot200(Response response) throws ToolkitServiceException {

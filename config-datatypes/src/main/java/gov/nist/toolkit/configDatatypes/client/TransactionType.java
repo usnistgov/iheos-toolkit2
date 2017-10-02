@@ -51,8 +51,8 @@ public enum TransactionType implements Serializable, IsSerializable {
     boolean http = false; // Is this Http only (non-SOAP) transaction
 //    Map<String, TransactionType> basicTypeMap = new HashMap<>();
     boolean fhir = false;
-    String endpointSimPropertyName;
-    String tlsEndpointSimPropertyName;
+    String endpointSimPropertyName;  // TODO is this irrelevant?
+    String tlsEndpointSimPropertyName;  // TODO is this irrelevant?
 
 	TransactionType() {
 	}  // For GWT

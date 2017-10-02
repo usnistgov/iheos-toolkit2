@@ -59,27 +59,31 @@ public class ExternalCacheManager {
             logger.info("Environments exist - not updating.");
         }
 
-        if (!Installation.instance().datasets().exists()) {
+//        if (!Installation.instance().datasets().exists()) {
             logger.info("Initializing datasets in " + externalCache);
             try {
-                FileUtils.copyDirectory(Installation.instance().datasets(), new File(externalCache, "datasets"));
+                FileUtils.copyDirectory(Installation.instance().internalDatasetsFile(), new File(externalCache, "datasets"));
             } catch (IOException e) {
-                throw new XdsException("Cannot initialize datasets area of External Cache at " + externalCache, "", e);
+                String msg = "Cannot initialize datasets area of External Cache at " + externalCache + " - " + e.getMessage();
+                logger.error(msg);
+                //throw new XdsException(msg, "", e);
             }
-        } else {
-            logger.info("Datasets exist - not updating.");
-        }
+//        } else {
+//            logger.info("Datasets exist - not updating.");
+//        }
 
-        if (!Installation.instance().resourceCacheFile().exists()) {
+//        if (!Installation.instance().resourceCacheFile().exists()) {
             logger.info("Initializing resource cache in " + externalCache);
             try {
-                FileUtils.copyDirectory(Installation.instance().resourceCacheFile(), new File(externalCache, "resourceCache"));
+                FileUtils.copyDirectory(Installation.instance().internalResourceCacheFile(), new File(externalCache, "resourceCache"));
             } catch (IOException e) {
-                throw new XdsException("Cannot initialize resource cache area of External Cache at " + externalCache, "", e);
+                String msg = "Cannot initialize resourceCache area of External Cache at " + externalCache + " - " + e.getMessage();
+                logger.error(msg);
+               // throw new XdsException(msg, "", e);
             }
-        } else {
-            logger.info("Resource cache exists - not updating.");
-        }
+//        } else {
+//            logger.info("Resource cache exists - not updating.");
+//        }
     }
 
     private static void initializeDefaultSites() throws XdsException {

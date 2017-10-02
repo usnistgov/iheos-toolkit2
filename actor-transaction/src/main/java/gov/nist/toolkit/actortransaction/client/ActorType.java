@@ -495,6 +495,7 @@ public enum ActorType implements IsSerializable, Serializable {
         this.httpTransactionTypes = new ArrayList<>();
         this.httpSimulatorClassName = null;
         this.isFhir = isFhir;
+        this.proxyTransformClassNames = null;
     }
 
     // All growth happens here
@@ -514,6 +515,12 @@ public enum ActorType implements IsSerializable, Serializable {
            proxyTransformClassNames = new ArrayList<>();
        this.proxyTransformClassNames = proxyTransformClassNames;
        this.proxyResponseTransformClassNames = proxyResponseTransformClassNames;
+   }
+
+   public boolean isProxy() {
+        if (proxyTransformClassNames == null) return false;
+        if (proxyTransformClassNames.size() == 0) return false;
+        return true;
    }
 
    public boolean isFhir() { return isFhir; }
@@ -709,5 +716,9 @@ public enum ActorType implements IsSerializable, Serializable {
 
     public List<String> getProxyTransformClassNames() {
         return proxyTransformClassNames;
+    }
+
+    public List<String> getProxyResponseTransformClassNames() {
+       return proxyResponseTransformClassNames;
     }
 }

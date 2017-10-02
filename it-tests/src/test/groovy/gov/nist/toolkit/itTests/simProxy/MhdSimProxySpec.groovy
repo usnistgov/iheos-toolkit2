@@ -5,6 +5,7 @@ import gov.nist.toolkit.configDatatypes.server.SimulatorActorType
 import gov.nist.toolkit.configDatatypes.server.SimulatorProperties
 import gov.nist.toolkit.installation.Installation
 import gov.nist.toolkit.itTests.support.ToolkitSpecification
+import gov.nist.toolkit.results.client.AssertionResult
 import gov.nist.toolkit.results.client.Result
 import gov.nist.toolkit.results.client.TestInstance
 import gov.nist.toolkit.simcommon.client.SimId
@@ -64,21 +65,11 @@ class MhdSimProxySpec extends ToolkitSpecification {
         proxySimConfig = spi.create(
                 proxyId,
                 testSession,
-                SimulatorActorType.SIM_PROXY,
+                SimulatorActorType.XDS_on_FHIR_Recipient,
                 envName
         )
 
         proxySimConfig.setProperty(SimulatorProperties.proxyForwardSite, rrId)
-
-        // add MhdSubmissionTransformation to transforms
-        List<String> requestTransformations = proxySimConfig.asList(SimulatorProperties.simProxyRequestTransformations)
-        requestTransformations << 'gov.nist.toolkit.simulators.proxy.transforms.MhdToXdsEndpointTransform'
-        requestTransformations << 'gov.nist.toolkit.simulators.proxy.transforms.MhdToPnrContentTransform'
-        proxySimConfig.setProperty(SimulatorProperties.simProxyRequestTransformations, requestTransformations)
-
-        List<String> responseTransformations = proxySimConfig.asList(SimulatorProperties.simProxyResponseTransformations)
-        responseTransformations << 'gov.nist.toolkit.simulators.proxy.transforms.RegistryResponseToOperationOutcomeTransform'
-        proxySimConfig.setProperty(SimulatorProperties.simProxyResponseTransformations, responseTransformations)
 
         updatedProxySimConfig = spi.update(proxySimConfig)
 
@@ -95,12 +86,24 @@ class MhdSimProxySpec extends ToolkitSpecification {
 
     def 'send provide document bundle through simproxy'() {
         when:
-        def sections = ['submit']
+        def sections = ['pdb']
         def params = [ :]
         List<Result> results = api.runTest(testSession, simProxyName, testInstance, sections, params, true)
 
         then:
         results.size() == 1
         results.get(0).passed()
+        results[0].assertions.getAssertionsThatContains('Ref =').size() == 2
+
+        when:  // parse ids
+        def ids = results[0].assertions.assertions.findAll {
+            it.assertion.contains('Ref =')
+        }.collect { AssertionResult ar ->
+            ar.assertion.substring('Ref = '.size()).trim() }
+
+        then:
+        ids.size() == 2
+        ids[0].startsWith('DocumentManifest')
+        ids[1].startsWith('DocumentReference')
     }
 }

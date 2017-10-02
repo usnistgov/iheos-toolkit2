@@ -126,18 +126,19 @@ public class SimProxyBase {
         return targetLogger
     }
 
-    ServerConnection serverConnection
+    //ServerConnection serverConnection
+    Exception earlyException = null
 
-    def init(HttpRequest request, ServerConnection serverConnection) {
+    def init(HttpRequest request) {
         if (uri) return
         uri = request.requestLine.uri
-        if (serverConnection)
-            this.serverConnection = serverConnection
+       // if (serverConnection)
+       //     this.serverConnection = serverConnection
         SimEndpoint endpoint = new SimEndpoint(uri)
         clientActorType = ActorType.findActor(endpoint.actorType)
-        assert clientActorType, "ActorType name was ${endpoint.actorType}"
+        if (!clientActorType) return handleEarlyException(new Exception("ActorType name was ${endpoint.actorType}"))
         clientTransactionType = TransactionType.find(endpoint.transactionType)
-        assert clientTransactionType, "TransactionType name was ${endpoint.transactionType}"
+        if (!clientTransactionType) return handleEarlyException(new Exception("TransactionType name was ${endpoint.transactionType}"))
         simId = SimIdParser.parse(uri)
         simDb = new SimDb(simId, endpoint.actorType, endpoint.transactionType)
         config = simDb.getSimulator(simId);
@@ -157,22 +158,24 @@ public class SimProxyBase {
         clientContentType = contentTypeHeader.value
 
         String targetSiteName = config.get(SimulatorProperties.proxyForwardSite)?.asString()
-        if (!targetSiteName) handleException(new Exception("Proxy forward site not configured"))
+        if (!targetSiteName) return handleEarlyException(new Exception("Proxy forward site not configured"))
         targetSite = SimCache.getSite(targetSiteName)
-        if (!targetSite) handleException(new Exception("Site ${targetSiteName} does not exist"))
-        return new ProxyLogger(simDb)
+        if (!targetSite) return handleEarlyException(new Exception("Site ${targetSiteName} does not exist"))
+        return null
+        //return new ProxyLogger(simDb)
     }
 
-    def handleException(Exception e) {
-        if (clientTransactionType.isFhir()) {
-            BasicHttpResponse response = new BasicHttpResponse(new BasicStatusLine(new ProtocolVersion('http', 1, 1), 500, e.getMessage()))
-            OutputStream outstream = serverConnection.prepareOutputStream(response)
-            outstream.write(response.toString().getBytes())
-            outstream.flush()
-            outstream.close()
-            throw e
-        }
-        assert true, "handleException - non-FHIR exceptions not implemented"
+    Exception handleEarlyException(Exception e) {
+        earlyException = e
+//        if (clientTransactionType.isFhir()) {
+//            BasicHttpResponse response = new BasicHttpResponse(new BasicStatusLine(new ProtocolVersion('http', 1, 1), 500, e.getMessage()))
+//            OutputStream outstream = serverConnection.prepareOutputStream(response)
+//            outstream.write(response.toString().getBytes())
+//            outstream.flush()
+//            outstream.close()
+//            return e
+//        }
+//        assert true, "handleEarlyException - non-FHIR exceptions not implemented"
     }
 
 

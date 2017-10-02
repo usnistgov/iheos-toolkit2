@@ -23,7 +23,7 @@ class DatasetFactory {
                 names << f.name
             }
         }
-        names
+        names.sort()
     }
 
     static DatasetModel getDataset(File root, String name) {
@@ -59,7 +59,7 @@ class DatasetFactory {
 
     static List<DatasetModel> getAllDatasets() {
         List<DatasetModel> all = new ArrayList<>();
-        def names = datasetNames
+        def names = datasetNames.sort()
         names.each { all << getDataset(it) }
         all
     }

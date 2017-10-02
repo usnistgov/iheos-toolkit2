@@ -28,7 +28,7 @@ public class ServerConnection extends DefaultBHttpServerConnection {
     public void receiveRequestEntity(final HttpEntityEnclosingRequest request) throws IOException, HttpException {
         Args.notNull(request, "HTTP request");
         ensureOpen();
-        proxyBase.init(request, this);
+        proxyBase.init(request);
         final HttpEntity entity = prepareInput(request);
         if (entity != null && entity instanceof BasicHttpEntity) {
             System.out.println("Got Client Request entity");

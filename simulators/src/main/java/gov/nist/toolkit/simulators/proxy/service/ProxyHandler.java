@@ -3,8 +3,10 @@ package gov.nist.toolkit.simulators.proxy.service;
 import gov.nist.toolkit.simcommon.client.BadSimIdException;
 import gov.nist.toolkit.simulators.proxy.util.ProxyLogger;
 import gov.nist.toolkit.simulators.proxy.util.SimProxyBase;
+import gov.nist.toolkit.utilities.io.Io;
 import gov.nist.toolkit.xdsexception.ExceptionUtil;
 import org.apache.http.*;
+import org.apache.http.entity.BufferedHttpEntity;
 import org.apache.http.impl.DefaultBHttpClientConnection;
 import org.apache.http.impl.DefaultConnectionReuseStrategy;
 import org.apache.http.protocol.*;
@@ -65,7 +67,17 @@ class ProxyHandler implements HttpRequestHandler {
 
         clientLogger.logRequest(request);
 
-        proxyBase.init(request, null);
+        if (proxyBase.getEarlyException() != null) {
+            returnInternalError(response, clientLogger, proxyBase.getEarlyException());
+            return;
+        }
+
+        proxyBase.init(request);
+
+        if (proxyBase.getEarlyException() != null) {
+            returnInternalError(response, clientLogger, proxyBase.getEarlyException());
+            return;
+        }
 
         System.out.println(">> Request URI: " + request.getRequestLine().getUri());
 
@@ -131,8 +143,10 @@ class ProxyHandler implements HttpRequestHandler {
 
             response.setStatusLine(targetResponse.getStatusLine());
             response.setHeaders(targetResponse.getAllHeaders());
-            response.setEntity(targetResponse.getEntity());
+            HttpEntity responseEntity = new BufferedHttpEntity(targetResponse.getEntity());  // re-readable
+            response.setEntity(responseEntity);
             clientLogger.logResponse(response);
+            clientLogger.logResponseEntity(Io.getBytesFromInputStream(responseEntity.getContent()));
 
             System.out.println("<< Response: " + response.getStatusLine());
 
@@ -147,9 +161,10 @@ class ProxyHandler implements HttpRequestHandler {
         }
     }
 
+    // TODO if this is FHIR return OperationOutcome
     private void returnInternalError(HttpResponse response, ProxyLogger clientLogger, Throwable e) {
         response.setStatusCode(HttpStatus.SC_INTERNAL_SERVER_ERROR);
-        response.setReasonPhrase("TargetSystem - " + e.getMessage());
+        response.setReasonPhrase("SimProxy error - " + e.getMessage().replaceAll("\n", "|"));
         logger.error(ExceptionUtil.exception_details(e));
         clientLogger.logResponse(response);
     }

@@ -2,6 +2,7 @@ package gov.nist.toolkit.installation
 
 import org.apache.log4j.Logger
 import org.hl7.fhir.dstu3.model.Resource
+import org.hl7.fhir.instance.model.api.IBaseResource
 
 /**
  * build by a factory - either TestResourceCacheFactory or ResourceCacheFactory
@@ -22,11 +23,11 @@ class ResourceCacheMgr {
         }
     }
 
-    Resource getResource(fullUrl) {
+    IBaseResource getResource(fullUrl) {
         assert ResourceMgr.isAbsolute(fullUrl)
         def baseUrl = ResourceMgr.baseUrlFromUrl(fullUrl)
         ResourceCache cache = caches[baseUrl]
-        assert cache, "Cannot access ${fullUrl}\nNo cache defined for baseUrl ${baseUrl}\nCaches exist for ${caches.keySet()}"
+        if (!cache) throw new Exception("Cannot access ${fullUrl}\nNo cache defined for baseUrl ${baseUrl}\nCaches exist for ${caches.keySet()}")
         return cache.getResource(ResourceMgr.relativeUrl(fullUrl))
     }
 

@@ -304,7 +304,7 @@ public abstract class AbstractActorFactory {
 		+ Installation.instance().propertyServiceManager().getToolkitHost()
 		+ ":"
 				+ getEndpointPort(isTLS, isProxy)
-		+ ((isTLS) ? Installation.instance().propertyServiceManager().getToolkitTlsPort() : Installation.instance().propertyServiceManager().getToolkitPort())
+//		+ ((isTLS) ? Installation.instance().propertyServiceManager().getToolkitTlsPort() : Installation.instance().propertyServiceManager().getToolkitPort())
 //		+ "/"  context name includes preceding /
 		+ contextName  
 		+ (ele.transType.isHttpOnly() ? "/httpsim/" : "/sim/" )
@@ -605,7 +605,10 @@ public abstract class AbstractActorFactory {
 		addFixed(sc, ele);
 	}
 
-	public void addFixedFhirEndpoint(SimulatorConfig sc, String endpointName, ActorType actorType, TransactionType transactionType, boolean tls, boolean proxy) throws Exception {
+	public void addFixedFhirEndpoint(SimulatorConfig sc, String endpointName, ActorType actorType, TransactionType transactionType, boolean tls) throws Exception {
+		addFixedFhirEndpoint(sc, endpointName, actorType, transactionType, tls, false);
+	}
+		public void addFixedFhirEndpoint(SimulatorConfig sc, String endpointName, ActorType actorType, TransactionType transactionType, boolean tls, boolean proxy) throws Exception {
 		SimulatorConfigElement ele = new SimulatorConfigElement();
 		ele.name = endpointName;
 		ele.type = ParamType.ENDPOINT;

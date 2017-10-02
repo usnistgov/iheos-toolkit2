@@ -113,13 +113,17 @@ public class SubmitResourceView extends AbstractView<SubmitResourcePresenter> {
         logTitle.addStyleName("tool-section-header");
         thePanel.add(logTitle);
 
+        ScrollPanel logWrapperPanel = new ScrollPanel();
+        logWrapperPanel.add(logPanel);
+
         TabLayoutPanel bottomPanel = new TabLayoutPanel(1.5, Style.Unit.EM);
-        bottomPanel.setWidth("800px");
+        bottomPanel.setWidth("100%");
+//        bottomPanel.setWidth("800px");
         bottomPanel.setHeight("400px");
         thePanel.add(bottomPanel);
         logPanel.setWidth("100%");
         logPanel.setHeight("100%");
-        bottomPanel.add(logPanel, "[Log]");
+        bottomPanel.add(logWrapperPanel, "[Log]");
 
         bottomPanel.add(inspectorPanel, "[Inspector]");
         inspectorPanel.setWidth("100%");

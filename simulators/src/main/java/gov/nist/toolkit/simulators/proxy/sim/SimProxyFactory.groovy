@@ -7,6 +7,7 @@ import gov.nist.toolkit.configDatatypes.server.SimulatorProperties
 import gov.nist.toolkit.simcommon.client.SimId
 import gov.nist.toolkit.simcommon.client.Simulator
 import gov.nist.toolkit.simcommon.client.SimulatorConfig
+import gov.nist.toolkit.simcommon.client.config.SimulatorConfigElement
 import gov.nist.toolkit.simcommon.server.AbstractActorFactory
 import gov.nist.toolkit.simcommon.server.IActorFactory
 import gov.nist.toolkit.simcommon.server.SimManager
@@ -57,11 +58,14 @@ class SimProxyFactory extends AbstractActorFactory implements IActorFactory{
 
         actorType.transactions.each { TransactionType transactionType ->
             if (transactionType.isFhir()) {
-                addFixedFhirEndpoint(config, transactionType.endpointSimPropertyName, actorType, transactionType, false, true)
+                if (transactionType.endpointSimPropertyName)
+                    addFixedFhirEndpoint(config, transactionType.endpointSimPropertyName, actorType, transactionType, false, true)
 //                addFixedFhirEndpoint(config, transactionType.tlsEndpointSimPropertyName, actorType, transactionType, true)
             } else {
-                addFixedEndpoint(config, transactionType.endpointSimPropertyName, actorType, transactionType, false)
-                addFixedEndpoint(config, transactionType.tlsEndpointSimPropertyName, actorType, transactionType, true)
+                if (transactionType.endpointSimPropertyName) {
+                    addFixedEndpoint(config, transactionType.endpointSimPropertyName, actorType, transactionType, false)
+                    addFixedEndpoint(config, transactionType.tlsEndpointSimPropertyName, actorType, transactionType, true)
+                }
             }
         }
 
@@ -69,7 +73,7 @@ class SimProxyFactory extends AbstractActorFactory implements IActorFactory{
         addFixedConfig(config, SimulatorProperties.proxyPartner, ParamType.SELECTION, simId2.toString())
         addFixedConfig(config2, SimulatorProperties.proxyPartner, ParamType.SELECTION, simId.toString())
         addEditableConfig(config, SimulatorProperties.simProxyRequestTransformations, ParamType.LIST, actorType.proxyTransformClassNames)
-        addEditableConfig(config, SimulatorProperties.simProxyResponseTransformations, ParamType.LIST, [])
+        addEditableConfig(config, SimulatorProperties.simProxyResponseTransformations, ParamType.LIST, actorType.proxyResponseTransformClassNames)
 
         addEditableConfig(config, SimulatorProperties.proxyForwardSite, ParamType.SELECTION, "");
 
@@ -105,13 +109,17 @@ class SimProxyFactory extends AbstractActorFactory implements IActorFactory{
 
         ActorType actorType = ActorType.findActor(asc.actorType)
         actorType.transactions.each { TransactionType transactionType ->
-            aSite.addTransaction(new TransactionBean(
-                    transactionType.getCode(),
-                    TransactionBean.RepositoryType.NONE,
-                    asc.get(transactionType.endpointSimPropertyName).asString(),
-                    false,
-                    isAsync
-            ))
+            asc.elements.findAll { SimulatorConfigElement sce ->
+                sce.type == ParamType.ENDPOINT && sce.transType == transactionType
+            }.each { SimulatorConfigElement sce ->
+                aSite.addTransaction(new TransactionBean(
+                        transactionType.getCode(),
+                        TransactionBean.RepositoryType.NONE,
+                        sce.asString(),   // endpoint
+                        false,
+                        isAsync
+                ))
+            }
 //            aSite.addTransaction(new TransactionBean(
 //                    transactionType.getCode(),
 //                    TransactionBean.RepositoryType.NONE,

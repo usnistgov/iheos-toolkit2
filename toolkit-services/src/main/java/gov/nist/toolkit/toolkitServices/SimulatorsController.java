@@ -169,12 +169,13 @@ public class SimulatorsController {
                 throw new BadSimConfigException(String.format("Create simulator %s - %s", simId.toString(), errors));
             Simulator simulator = api.createSimulator(simId);
             SimConfigResource bean = ToolkitFactory.asSimConfigBean(simulator.getConfig(0));
-            return Response
+            Response r = Response
                     .ok(bean)
                     .header("Location",
                             String.format("%s/%s", _uriInfo.getAbsolutePath().toString(),
                                     simId.getId()))
                     .build();
+            return r;
         }
         catch (Exception e) {
            logger.warn(e.getMessage());
