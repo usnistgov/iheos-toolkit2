@@ -5,6 +5,7 @@ import ca.uhn.fhir.model.primitive.IdDt
 import ca.uhn.fhir.parser.IParser
 import ca.uhn.fhir.rest.api.MethodOutcome
 import ca.uhn.fhir.rest.method.RequestDetails
+import ca.uhn.fhir.rest.server.IResourceProvider
 import ca.uhn.fhir.rest.server.exceptions.InternalErrorException
 import gov.nist.toolkit.fhir.context.ToolkitFhirContext
 import gov.nist.toolkit.fhir.search.SearchByTypeAndId
@@ -41,6 +42,13 @@ class ToolkitResourceProvider {
         SimDb simDb = a.simDb
         assert simDb, 'SimDb not set by logging interceptor'
         simContext = new SimContext(simDb)
+    }
+
+    static IResourceProvider findProvider(DomainResource resource) {
+        def type = resource.getClass().getSimpleName()
+        def providerClassName = "gov.nist.toolkit.fhir.server.resourceProvider.${type}ResourceProvider"
+        Class clas = providerClassName as Class
+        return clas.newInstance()
     }
 
     String resourceTypeAsString() {

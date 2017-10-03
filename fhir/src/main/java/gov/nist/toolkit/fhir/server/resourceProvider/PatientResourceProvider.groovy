@@ -17,13 +17,14 @@ import org.apache.lucene.search.BooleanClause
 import org.apache.lucene.search.BooleanQuery
 import org.apache.lucene.search.TermQuery
 import org.hl7.fhir.dstu3.model.CodeableConcept
+import org.hl7.fhir.dstu3.model.DomainResource
 import org.hl7.fhir.dstu3.model.IdType
 import org.hl7.fhir.dstu3.model.OperationOutcome
 import org.hl7.fhir.dstu3.model.Patient
 /**
  *
  */
-public class PatientResourceProvider implements IResourceProvider {
+public class PatientResourceProvider implements IToolkitResourceProvider {
     static Logger logger = Logger.getLogger(PatientResourceProvider.class);
 
     /**
@@ -37,7 +38,7 @@ public class PatientResourceProvider implements IResourceProvider {
     }
 
     @Create()
-    public MethodOutcome createPatient(@ResourceParam Patient thePatient,
+    public MethodOutcome create(@ResourceParam DomainResource thePatient,
                                        RequestDetails requestDetails) {
 
         logger.info("Create Patient")
@@ -173,4 +174,5 @@ public class PatientResourceProvider implements IResourceProvider {
             throw new UnprocessableEntityException(outcome);
         }
     }
+
 }
