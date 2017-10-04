@@ -1,39 +1,24 @@
 package gov.nist.toolkit.xdstools2.client.tabs.simulatorControlTab;
 
-import com.google.gwt.cell.client.ActionCell;
-import com.google.gwt.cell.client.Cell;
-import com.google.gwt.cell.client.CheckboxCell;
-import com.google.gwt.cell.client.CompositeCell;
-import com.google.gwt.cell.client.FieldUpdater;
-import com.google.gwt.cell.client.HasCell;
+import com.google.gwt.cell.client.*;
 import com.google.gwt.dom.builder.shared.DivBuilder;
 import com.google.gwt.dom.builder.shared.TableCellBuilder;
 import com.google.gwt.dom.builder.shared.TableRowBuilder;
 import com.google.gwt.dom.client.Style;
+import com.google.gwt.event.logical.shared.ValueChangeEvent;
+import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.i18n.client.DateTimeFormat;
 import com.google.gwt.safehtml.shared.SafeHtml;
 import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
 import com.google.gwt.safehtml.shared.SafeHtmlUtils;
-import com.google.gwt.user.cellview.client.AbstractCellTable;
-import com.google.gwt.user.cellview.client.AbstractHeaderOrFooterBuilder;
-import com.google.gwt.user.cellview.client.Column;
-import com.google.gwt.user.cellview.client.ColumnSortEvent;
-import com.google.gwt.user.cellview.client.DataGrid;
-import com.google.gwt.user.cellview.client.Header;
-import com.google.gwt.user.cellview.client.SimplePager;
-import com.google.gwt.user.cellview.client.TextColumn;
+import com.google.gwt.user.cellview.client.*;
 import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.Window;
+import com.google.gwt.user.client.ui.CheckBox;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
-import com.google.gwt.view.client.CellPreviewEvent;
-import com.google.gwt.view.client.DefaultSelectionEventManager;
-import com.google.gwt.view.client.ListDataProvider;
-import com.google.gwt.view.client.MultiSelectionModel;
-import com.google.gwt.view.client.ProvidesKey;
-import com.google.gwt.view.client.SelectionChangeEvent;
-import com.google.gwt.view.client.SelectionModel;
+import com.google.gwt.view.client.*;
 import gov.nist.toolkit.actortransaction.client.ActorType;
 import gov.nist.toolkit.actortransaction.client.TransactionInstance;
 import gov.nist.toolkit.configDatatypes.server.SimulatorProperties;
@@ -41,19 +26,14 @@ import gov.nist.toolkit.simcommon.client.SimulatorConfig;
 import gov.nist.toolkit.simcommon.client.SimulatorStats;
 import gov.nist.toolkit.simcommon.client.config.SimulatorConfigElement;
 import gov.nist.toolkit.xdstools2.client.command.command.GetTransactionInstancesCommand;
-import gov.nist.toolkit.xdstools2.client.tabs.SimulatorMessageViewTab;
 import gov.nist.toolkit.xdstools2.client.tabs.genericQueryTab.GenericQueryTab;
+import gov.nist.toolkit.xdstools2.client.tabs.simMsgViewerTab.SimMsgViewer;
 import gov.nist.toolkit.xdstools2.client.tabs.simulatorControlTab.od.OddsEditTab;
+import gov.nist.toolkit.xdstools2.client.toolLauncher.NewToolLauncher;
 import gov.nist.toolkit.xdstools2.shared.command.CommandContext;
 import gov.nist.toolkit.xdstools2.shared.command.request.GetTransactionRequest;
 
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.Date;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 /**
  * Created by skb1 on 08/14/17.
@@ -79,8 +59,9 @@ public class SimManagerWidget2 extends Composite {
     private SimInfo placeHolderSimInfo = new SimInfo();
     private String testSession = "";
 
-
+    SelectionModel<SimInfo> selectionModel;
     private int rows;
+    CheckBox multiSelect = new CheckBox("Multiple selection");
 
     public SimManagerWidget2() {
     }
@@ -129,7 +110,18 @@ public class SimManagerWidget2 extends Composite {
 //        txTable.setStyleName("txDataGridNoTableSpacing");
         newSimTable.getElement().getStyle().setProperty("wordWrap","break-word");
 
+        multiSelect.addValueChangeHandler(new ValueChangeHandler<Boolean>() {
+            @Override
+            public void onValueChange(ValueChangeEvent<Boolean> valueChangeEvent) {
+                if (multiSelect.isEnabled() && multiSelect.getValue()) {
+                    setupMultiSelectionMode();
+                } else {
+                    setupSingleSelectionMode();
+                }
+            }
 
+        });
+        containerPanel.add(multiSelect);
         containerPanel.add(newSimTable);
 
 
@@ -154,7 +146,7 @@ public class SimManagerWidget2 extends Composite {
         initWidget(containerPanel);
     }
 
-    protected void popCellTable(String testSession, List<SimulatorConfig> configs, List<SimulatorStats> statsList) {
+    protected int popCellTable(String testSession, List<SimulatorConfig> configs, List<SimulatorStats> statsList) {
         // Add the data to the data provider, which automatically pushes it to the
         // widget.
         final List<SimInfo> list = dataProvider.getList();
@@ -233,6 +225,8 @@ public class SimManagerWidget2 extends Composite {
             }
         }
 
+        multiSelect.setEnabled(rows>1);
+        return rows;
 
     }
 
@@ -573,8 +567,11 @@ public class SimManagerWidget2 extends Composite {
                     @Override
                     public void execute(SimInfo simInfo) {
                         SimulatorConfig config = simInfo.getSimulatorConfig();
-                        SimulatorMessageViewTab viewTab = new SimulatorMessageViewTab();
-                        viewTab.onTabLoad(config.getId());
+//                        SimulatorMessageViewTab viewTab = new SimulatorMessageViewTab();
+//                        viewTab.onTabLoad(config.getId());
+
+                        // Use the newer Sim Log Viewer
+                        new NewToolLauncher().launch(new SimMsgViewer(config.getId().toString()));
                     }
                 })) {
                     @Override
@@ -625,13 +622,24 @@ public class SimManagerWidget2 extends Composite {
 //                        deleteSimInfo.setSimInfoList(Arrays.asList(new SimInfo[]{simInfo}));
 //                        deleteSimInfo.delete();
 
-                        Set<SimInfo> mySelection = ((MultiSelectionModel) newSimTable.getSelectionModel()).getSelectedSet();
+                        Set<SimInfo> mySelection = null;
+                        boolean multiple = false;
+                        if (getSelectionModel() instanceof MultiSelectionModel) {
+                            multiple = true;
+                            mySelection = ((MultiSelectionModel) newSimTable.getSelectionModel()).getSelectedSet();
+                        } else {
+                           mySelection = new HashSet<SimInfo>(actionDataProvider.getList());
+                        }
 
                         DeleteSimInfo deleteSimInfo = new DeleteSimInfo(containerPanel,hostTab);
                         deleteSimInfo.setSimInfoList(new ArrayList<SimInfo>(mySelection));
                         deleteSimInfo.delete();
 
-                        ((MultiSelectionModel) newSimTable.getSelectionModel()).clear();
+                        if (multiple)
+                            ((MultiSelectionModel) newSimTable.getSelectionModel()).clear();
+                        else
+                            ((SingleSelectionModel) newSimTable.getSelectionModel()).clear();
+
                     }
 
 
@@ -671,47 +679,8 @@ public class SimManagerWidget2 extends Composite {
                 };
 
 
-
-
-
-        // Add a selection model so we can select cells.
-        final SelectionModel<SimInfo> selectionModel =
-                new MultiSelectionModel<SimInfo>(KEY_PROVIDER);
-
-            newSimTable.setSelectionModel(selectionModel,
-                    DefaultSelectionEventManager.createCustomManager(
-                            new DefaultSelectionEventManager.CheckboxEventTranslator<SimInfo>() {
-                                @Override
-                                public DefaultSelectionEventManager.SelectAction translateSelectionEvent(CellPreviewEvent<SimInfo> event) {
-                                    DefaultSelectionEventManager.SelectAction action = super.translateSelectionEvent(event);
-                                    if (action.equals(DefaultSelectionEventManager.SelectAction.IGNORE)) {
-//                                    selectionModel.clear();
-                                        return DefaultSelectionEventManager.SelectAction.TOGGLE;
-                                    }
-                                    return action;
-//                                return DefaultSelectionEventManager.SelectAction.DEFAULT;
-                                }
-                            }
-                    ));
-
-
-        selectionModel.addSelectionChangeHandler(new SelectionChangeEvent.Handler() {
-            @Override
-            public void onSelectionChange(SelectionChangeEvent selectionChangeEvent) {
-                final List<SimInfo> list = actionDataProvider.getList();
-                Set<SimInfo> mySelection = ((MultiSelectionModel) newSimTable.getSelectionModel()).getSelectedSet();
-                list.clear();
-                if (mySelection.size()==1) {
-
-                    for (SimInfo simInfo : mySelection) {
-                        list.add(simInfo);
-                    }
-
-                } else if (mySelection.size()==0 || mySelection.size()>1) {
-                    list.add(placeHolderSimInfo);
-                }
-            }
-        });
+            // Selection model can be coded here
+        setupSingleSelectionMode();
 
 
         Column<SimInfo, Boolean> checkColumn =
@@ -826,9 +795,12 @@ public class SimManagerWidget2 extends Composite {
     }
 
     SafeHtml getImgHtml(String iconFilePath, String title, boolean supportsMultiple) {
-        Set<SimInfo> mySelection = ((MultiSelectionModel) newSimTable.getSelectionModel()).getSelectedSet();
+//        Set<SimInfo> mySelection = ((MultiSelectionModel) newSimTable.getSelectionModel()).getSelectedSet();
+        Set<SimInfo> mySelection = null;
+        if (getSelectionModel() instanceof MultiSelectionModel)
+             mySelection = ((MultiSelectionModel) getSelectionModel()).getSelectedSet();
 //        Window.alert("selection size is " + mySelection.size() + "; icon is " + iconFilePath + "; supportsMultiple " + supportsMultiple);
-        if (mySelection.size()>1) {
+        if (mySelection!=null && mySelection.size()>1) {
 
             if (supportsMultiple)
                 return new SafeHtmlBuilder().appendHtmlConstant("<img style=\"width: 24px; height: 24px;\" title=\"" + title + "\" src=\"" + iconFilePath + "\">").toSafeHtml();
@@ -1055,6 +1027,62 @@ public class SimManagerWidget2 extends Composite {
         }
     }
 
+    protected void setupSingleSelectionMode() {
+        setSelectionModel(new SingleSelectionModel<SimInfo>(SimManagerWidget2.getKeyProvider()));
+        getNewSimTable().setSelectionModel(getSelectionModel());
+        getSelectionModel().addSelectionChangeHandler(new SelectionChangeEvent.Handler() {
+            @Override
+            public void onSelectionChange(SelectionChangeEvent selectionChangeEvent) {
+                final List<SimInfo> list = getActionDataProvider().getList();
+                SimInfo mySelection = ((SingleSelectionModel<SimInfo>) getSelectionModel()).getSelectedObject();
+                list.clear();
+                if (mySelection!=null) {
+                    list.add(mySelection);
+                }
+            }
+        });
+    }
+    protected void setupMultiSelectionMode() {
+        // Add a selection model so we can select cells.
+
+        setSelectionModel(new MultiSelectionModel<SimInfo>(SimManagerWidget2.getKeyProvider()));
+
+        getNewSimTable().setSelectionModel(getSelectionModel(),
+                DefaultSelectionEventManager.createCustomManager(
+                        new DefaultSelectionEventManager.CheckboxEventTranslator<SimInfo>() {
+                            @Override
+                            public DefaultSelectionEventManager.SelectAction translateSelectionEvent(CellPreviewEvent<SimInfo> event) {
+                                DefaultSelectionEventManager.SelectAction action = super.translateSelectionEvent(event);
+                                if (action.equals(DefaultSelectionEventManager.SelectAction.IGNORE)) {
+//                                    selectionModel.clear();
+                                    return DefaultSelectionEventManager.SelectAction.TOGGLE;
+                                }
+                                return action;
+//                                return DefaultSelectionEventManager.SelectAction.DEFAULT;
+                            }
+                        }
+                ));
+
+
+        getSelectionModel().addSelectionChangeHandler(new SelectionChangeEvent.Handler() {
+            @Override
+            public void onSelectionChange(SelectionChangeEvent selectionChangeEvent) {
+                final List<SimInfo> list = getActionDataProvider().getList();
+                Set<SimInfo> mySelection = ((MultiSelectionModel) getSelectionModel()).getSelectedSet();
+                list.clear();
+                if (mySelection.size()==1) {
+
+                    for (SimInfo simInfo : mySelection) {
+                        list.add(simInfo);
+                    }
+
+                } else if (mySelection.size()==0 || mySelection.size()>1) {
+                    list.add(getPlaceHolderSimInfo());
+                }
+            }
+        });
+    }
+
     public String getTestSession() {
         return testSession;
     }
@@ -1062,5 +1090,29 @@ public class SimManagerWidget2 extends Composite {
     public void setTestSession(String testSession) {
         if (testSession!=null)
             this.testSession = testSession;
+    }
+
+    public DataGrid<SimInfo> getNewSimTable() {
+        return newSimTable;
+    }
+
+    public static ProvidesKey<SimInfo> getKeyProvider() {
+        return KEY_PROVIDER;
+    }
+
+    public SelectionModel<SimInfo> getSelectionModel() {
+        return selectionModel;
+    }
+
+    public void setSelectionModel(SelectionModel<SimInfo> selectionModel) {
+        this.selectionModel = selectionModel;
+    }
+
+    public ListDataProvider<SimInfo> getActionDataProvider() {
+        return actionDataProvider;
+    }
+
+    public SimInfo getPlaceHolderSimInfo() {
+        return placeHolderSimInfo;
     }
 }
