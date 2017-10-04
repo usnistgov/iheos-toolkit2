@@ -1,0 +1,475 @@
+package gov.nist.toolkit.xdstools2.client.inspector;
+
+import com.google.gwt.core.client.GWT;
+import com.google.gwt.user.client.ui.HTML;
+import gov.nist.toolkit.results.client.Result;
+import gov.nist.toolkit.sitemanagement.client.SiteSpec;
+import gov.nist.toolkit.xdstools2.client.abstracts.AbstractPresenter;
+
+import java.util.ArrayList;
+import java.util.Collection;
+
+public class InspectorPresenter extends AbstractPresenter<InspectorView> {
+    @Override
+    public void init() {
+       GWT.log("Init InspectorPresenter");
+    }
+
+
+    boolean freezeStructDisplay = false;
+
+    // Data for test being displayed.
+    DataModel data;
+    Logger logger = Logger.getLogger("");
+
+    /**
+     * Add test results to DataModel and redisplay history
+     * @param results to add
+     */
+    public void addToHistory(Collection<Result> results) {
+        for (Result result : results)
+            addToHistory(result);
+    }
+
+    /**
+     * Add test result to DataModel and redisplay history
+     * @param result to add
+     */
+    public void addToHistory(Result result) {
+        if (result != null) {
+            if (data.results == null)
+                data.results = new ArrayList<Result>();
+            data.results.add(result);
+        }
+        data.buildCombined();
+        showHistoryOrContents();
+    }
+
+    Collection<Result> results;
+    private SiteSpec siteSpec;
+
+    public void setResults(Collection<Result> results) { this.results = results; }
+    public void setSiteSpec(SiteSpec ss) { siteSpec = ss; }
+
+    @Override
+    public void onTabLoad(boolean select, String eventName) {
+
+        GWT.log("Inspector started");
+
+        data = new DataModel();
+
+        data.setSiteSpec(siteSpec);
+
+//		GWT.log("In MetadataInsp siteSpec is " + siteSpec.name);
+
+        if (siteSpec == null)
+            data.setEnableActions(false);
+
+//        registerTab(select, "Inspector");
+        tabTopPanel.setWidth("100%");
+
+//        HTML title = new HTML();
+//        title.setHTML("<h2>Inspector</h2>");
+//        tabTopPanel.add(title);
+        setTitle("Inspector");
+
+//        hpanel = new HorizontalPanel();
+//        tabTopPanel.add(hpanel);
+//        hpanel.setBorderWidth(1);
+
+
+
+        if (!data.enableActions) {
+            if (selectHistory != null) selectHistory.setEnabled(false);
+            if (selectContents != null) selectContents.setEnabled(true);
+            if (selectDiff != null) selectDiff.setEnabled(false);
+            if (groupByListBox != null) groupByListBox.setEnabled(false);
+
+            if (results.size() == 1 && !hasContents(results))
+                showAssertions(results.iterator().next());
+            else
+                showHistory();
+        }
+    }
+
+    void doShowHistoryOrContents() {
+        if (isHistory())
+            showHistory();
+        else if (isDiff())
+            new DiffDisplay(this, data.combinedMetadata).showDiff(historyPanel);
+        else
+            showContents();
+    }
+
+
+    /**
+     * Is there any metadata content in Result steps
+     * @param results
+     * @return true if any metadata exists anywhere, false otherwise.
+     */
+    boolean hasContents(Collection<Result> results) {
+        for (Result result : results) {
+            if (result.hasContent()) return true;
+        }
+        return false;
+    }
+
+    protected AsyncCallback<Result> metdataLoadCallback = new AsyncCallback<Result>() {
+
+        public void onFailure(Throwable caught) {
+            showMessage(caught);
+        }
+
+        public void onSuccess(Result result) {
+            addToHistory(result);
+        }
+
+    };
+
+    void showHistoryOrContents() {
+
+    }
+
+
+    void showAssertions(Result result) {
+        historyPanel.clear();
+//		detailPanel.setVisible(false);
+//		structPanel.setVisible(false);
+        detailPanel.removeFromParent();
+        structPanel.removeFromParent();
+
+        historyPanel.add(new HTML("<h3>Assertions</h3>"));
+
+        StringBuffer buf = new StringBuffer();
+        for (AssertionResult ar : result.assertions.assertions) {
+            if (!isEmpty(ar.assertion))
+                buf.append(redAsText(htmlize(ar.assertion), ar.status)).append("<br />");
+            if (!isEmpty(ar.info))
+                buf.append(redAsText(htmlize(ar.info), ar.status)).append("<br />");
+        }
+        historyPanel.add(new HTML(buf.toString()));
+
+    }
+
+    String htmlize(String s) {
+        return s.replaceAll("\\n", "<br />");
+    }
+
+    void showContents() {
+        historyPanel.clear();
+
+        HTML title = new HTML();
+        title.setHTML("<h3>Contents</h3>");
+        historyPanel.add(title);
+
+        addHistoryContentsSelector(historyPanel);
+
+        selectHistory.setValue(false);
+        selectContents.setValue(true);
+        selectDiff.setValue(false);
+
+        if (data.combinedMetadata != null) {
+
+            Tree contentTree = new Tree();
+
+            new ListingDisplay(this, data, new TreeThing(contentTree)).listing();
+
+            historyPanel.add(contentTree);
+        }
+    }
+
+
+    void addHistoryContentsSelector(VerticalPanel panel) {
+        FlexTable ft = new FlexTable();
+
+        selectHistory = new RadioButton("historyContents", "History");
+        selectContents = new RadioButton("historyContents", "Contents");
+        selectDiff = new RadioButton("historyContents", "Diff");
+
+        selectHistory.addClickHandler(new HistorySelectChange());
+        selectContents.addClickHandler(new HistorySelectChange());
+        selectDiff.addClickHandler(new HistorySelectChange());
+
+        ft.setWidget(0, 0, selectHistory);
+        ft.setWidget(0, 1, selectContents);
+        ft.setWidget(0, 2, selectDiff);
+
+        panel.add(ft);
+
+        groupByPanel.clear();
+        groupByPanel.getElement().getStyle().setMargin(2, Style.Unit.PX);
+        groupByPanel.add(new HTML("Group by"));
+        groupByPanel.add(groupByListBox);
+        groupByPanel.add(new HTML("&nbsp;"));
+        groupByPanel.add(new InformationLink("Help with GroupBy feature", "Inspector-GroupBy-feature").asWidget()); // Todo.
+
+        panel.add(groupByPanel);
+    }
+    boolean isHistory() {
+        if (selectContents == null)
+            return true;
+        if (selectContents.getValue())
+            return false;
+        if (selectHistory.getValue())
+            return true;
+        return false;
+    }
+
+    boolean isDiff() {
+        return selectDiff.getValue();
+    }
+
+    /**
+     * Return passed text as HTML in red font
+     * @param in text
+     * @return HTML, with color="#FF0000"
+     */
+    HTML redAsHTML(String in) {
+        HTML h = new HTML();
+        h.setHTML("<font color=\"#FF0000\">" + in + "</font>");
+        return h;
+    }
+
+    /**
+     * Return passed text as text in red font
+     * @param in text to process
+     * @return String {@code <font color="#FF0000">in</font>}
+     */
+    String redAsText(String in) {
+        return "<font color=\"#FF0000\">" + in + "</font>";
+    }
+    /**
+     * Return passed text as HTML in red font, if condition not met (that is,
+     * passed condition is false)
+     * @param in text text to process
+     * @param condition test
+     * @return HTML with color="#FF0000" if condition is false otherwise with
+     * no color attribute.
+     */
+    HTML redAsHTML(String in, boolean condition) {
+        if (!condition)
+            return redAsHTML(in);
+        HTML h = new HTML();
+        h.setText(in);
+        return h;
+    }
+
+    String redAsText(String in, boolean condition) {
+        if (!condition)
+            return redAsText(in);
+        return in;
+    }
+
+    /**
+     * Show the history display in the history/contents/difference panel
+     */
+    void showHistory() {
+        historyPanel.clear();
+        // History panel title
+        HTML title = new HTML();
+        title.setHTML("<h3>History</h3>");
+        historyPanel.add(title);
+        // Radio button group
+        addHistoryContentsSelector(historyPanel);
+        // set history button on, others off
+        selectHistory.setValue(true);
+        selectContents.setValue(false);
+        selectDiff.setValue(false);
+
+        if (data.results == null)
+            return;
+        // Pass tests, displaying history results for each test.
+        for (Result res : data.results) {
+            AssertionResults ares = res.assertions;
+            // Tree widget created for each test
+            Tree historyTree = new Tree();
+            // tree element for test with test id & time stamp, red if test failed
+            TreeItem historyElement =
+                    new TreeItem(redAsHTML(res.testInstance.getId() + "   (" + res.timestamp + ")", !ares.isFailed()));
+            historyTree.addItem(historyElement);
+
+            int stepCount = res.stepResults.size();
+
+            // Pass steps for test
+            for (StepResult stepResult : res.stepResults) {
+
+                TreeItem stepTreeItem;
+				/* If there is more than one step in the test, each step has a
+				 * step element in the tree, listing the step and section names,
+				 * in red if the step failed. If only one step, the test element
+				 * is used as the step element.
+				 */
+                if (stepCount > 1) {
+                    stepTreeItem = new TreeItem(redAsHTML("Step: " + stepResult.section + "/" + stepResult.stepName, stepResult.status));
+                    historyElement.addItem(stepTreeItem);
+                } else {
+                    stepTreeItem = historyElement;
+                }
+
+				/* New datamodel copied from test one, but using metadata and
+				 * documents from this step
+				 */
+                DataModel dm = new DataModel(data);
+                dm.combinedMetadata = stepResult.getMetadata();
+                dm.allDocs = stepResult.documents;
+
+                String selectedGroupByValue = groupByListBox.getValue(groupByListBox.getSelectedIndex());
+                if ("(none)".equals(selectedGroupByValue)) {
+                    new ListingDisplay(this, dm, new TreeThing(stepTreeItem)).listing();
+                } else if ("homeCommunityId".equals(selectedGroupByValue)) {
+                    new HcIdListingDisplay(this, dm, new TreeThing(stepTreeItem), stepResult);
+                } else if ("repositoryId".equals(selectedGroupByValue)) {
+                    new RepositoryIdListingDisplay(this, dm, new TreeThing(stepTreeItem)).listing();
+                }
+
+//				listing(stepResult.getMetadata(), stepResult.documents, new TreeThing(stepTreeItem));
+
+                if (data.enableActions && stepResult.toBeRetrieved.size() > 0) {
+                    ObjectRefs ors = stepResult.nextNObjectRefs(10);
+                    TreeItem getNextItem = new TreeItem(HyperlinkFactory.getDocuments(this, stepResult, ors, "Action: Get Full Metadata for next " + ors.objectRefs.size(), false, siteSpec));
+                    stepTreeItem.addItem(getNextItem);
+                }
+
+
+                if (stepResult.getTestLog() != null) {
+                    buildLogMenu(stepResult, stepTreeItem);
+                }
+            } // EO loop through test steps
+
+            if (res.stepResults.size() > 0) {
+                StepResult firstStepResult = res.stepResults.get(0);
+                if (firstStepResult.getTestLog() == null) {
+
+                    RawLogLoader ll = new RawLogLoader(this, res.logId, res.stepResults);
+//					ll.loadTestLogs();
+                    TreeItem loadLogs = new TreeItem(HyperlinkFactory.link("load logs", ll));
+                    ll.setLoadLogsTreeItem(loadLogs);
+
+                    historyElement.addItem(loadLogs);
+                }
+
+            }
+
+//			if (data.enableActions) {
+            TreeItem asserts = new TreeItem(HyperlinkFactory.link(this, ares, redAsText("assertions", !ares.isFailed())));
+            historyElement.addItem(asserts);
+//				if (ares.isFailed())
+//					asserts.setState(true);
+//			}
+
+            historyPanel.add(historyTree);
+            if (data.results.size() == 1) {
+                historyElement.setSelected(true);
+                historyElement.setState(true);
+            }
+
+        } // EO loop  through tests
+    } // EO showHistory method
+
+
+    void buildLogMenu(StepResult stepResult, TreeItem stepTreeItem) {
+        TreeItem ti;
+        TreeItem logsItem = new TreeItem();
+        logsItem.setText("logs");
+        stepTreeItem.addItem(logsItem);
+
+        TestLog stepLog = stepResult.getTestLog();
+
+        ti = new TreeItem();
+        ti.setHTML("status : " + ((stepLog.status) ? "pass" : "<font color=\"#FF0000\">fail</font>"));
+        logsItem.addItem(ti);
+        logsItem.addItem(new TreeItem(HyperlinkFactory.link("endpoint", new TextDisplay(this, stepLog.endpoint))));
+        logsItem.addItem(new TreeItem(HyperlinkFactory.link("request", new TextDisplay(this, stepLog.inputMetadata))));
+        logsItem.addItem(new TreeItem(HyperlinkFactory.link("response", new TextDisplay(this, stepLog.result))));
+        logsItem.addItem(new TreeItem(HyperlinkFactory.link("request header", new TextDisplay(this, stepLog.outHeader))));
+        logsItem.addItem(new TreeItem(HyperlinkFactory.link("response header", new TextDisplay(this, stepLog.inHeader))));
+        if (stepLog.errors != null && !stepLog.errors.equals(""))
+            logsItem.addItem(new TreeItem(HyperlinkFactory.link("<font color=\"#FF0000\">errors</font>", new TextDisplay(this, stepLog.errors))));
+        logsItem.addItem(new TreeItem(HyperlinkFactory.link("full log", new TextDisplay(this, stepLog.log))));
+    }
+
+    void expandLogMenu(StepResult stepResult, TreeItem loadLogsTreeItem) {
+        TreeItem logsItem = new TreeItem();
+        logsItem.setText("logs");
+        //		stepTreeItem.addItem(logsItem);
+
+        TestLog stepLog = stepResult.getTestLog();
+
+        TreeItem ti;
+        ti = new TreeItem();
+        ti.setHTML("status : " + ((stepLog.status) ? "pass" : "<font color=\"#FF0000\">fail</font>"));
+        logsItem.addItem(ti);
+
+        logsItem.addItem(new TreeItem(HyperlinkFactory.link("endpoint", new TextDisplay(this, stepLog.endpoint))));
+        logsItem.addItem(new TreeItem(HyperlinkFactory.link("request", new TextDisplay(this, stepLog.inputMetadata))));
+        logsItem.addItem(new TreeItem(HyperlinkFactory.link("response", new TextDisplay(this, stepLog.result))));
+        logsItem.addItem(new TreeItem(HyperlinkFactory.link("request header", new TextDisplay(this, stepLog.outHeader))));
+        logsItem.addItem(new TreeItem(HyperlinkFactory.link("response header", new TextDisplay(this, stepLog.inHeader))));
+        if (stepLog.errors != null && !stepLog.errors.equals(""))
+            logsItem.addItem(new TreeItem(HyperlinkFactory.link("<font color=\"#FF0000\">errors</font>", new TextDisplay(this, stepLog.errors))));
+        logsItem.addItem(new TreeItem(HyperlinkFactory.link("full log", new TextDisplay(this, stepLog.log))));
+
+        replace(loadLogsTreeItem, logsItem);
+
+    }
+
+    void replace(TreeItem old, TreeItem neww) {
+        TreeItem parent = old.getParentItem();
+        int oldIndex = parent.getChildIndex(old);
+        parent.removeItem(old);
+        parent.insertItem(oldIndex, neww);
+        neww.setSelected(true);
+        neww.setState(true);  // open
+    }
+
+    void error(String msg) {
+        detailPanel.clear();
+        detailPanel.add(HyperlinkFactory.addHTML("<font color=\"#FF0000\">" + msg + "</font>"));
+    }
+
+    void installTestLogs(TestLogs testLogs) {
+        Result result = findResultbyLogId(testLogs);
+        if (result == null) {
+            return;
+        }
+
+        for (TestLog testLog : testLogs.logs) {
+            String stepName = testLog.stepName;
+            StepResult stepResult = result.findStep(stepName);
+            if (stepResult == null) {
+                new PopupMessage("Received log for step " + stepName + " which does not exist in client");
+                return;
+            }
+            stepResult.setTestLog(testLog);
+        }
+
+    }
+
+    Result findResultbyLogId(TestLogs testLogs) {
+        if (testLogs.testInstance == null)
+            return null;
+        for (Result result : data.results) {
+            if (testLogs.testInstance.equals(result.logId)) {
+                return result;
+            }
+        }
+        return null;
+    }
+
+
+
+    public String getWindowShortName() {
+        return "metadatainspector";
+    }
+
+
+
+
+
+    boolean isEmpty(String b) { return b == null || b.equals(""); }
+
+
+    public SiteSpec getSiteSpec() {
+        return siteSpec;
+    }
+}
