@@ -6,6 +6,7 @@ import ca.uhn.fhir.parser.IParser
 import ca.uhn.fhir.rest.api.MethodOutcome
 import ca.uhn.fhir.rest.method.RequestDetails
 import ca.uhn.fhir.rest.server.IResourceProvider
+import ca.uhn.fhir.rest.server.IRestfulServerDefaults
 import ca.uhn.fhir.rest.server.exceptions.InternalErrorException
 import gov.nist.toolkit.fhir.context.ToolkitFhirContext
 import gov.nist.toolkit.fhir.search.SearchByTypeAndId
@@ -19,6 +20,8 @@ import gov.nist.toolkit.simcommon.server.SimDb
 import gov.nist.toolkit.utilities.id.UuidAllocator
 import org.hl7.fhir.dstu3.model.DomainResource
 import org.hl7.fhir.dstu3.model.IdType
+
+import java.nio.charset.Charset
 
 /**
  * Collection of utilities for linking HAPI ResourceProvider
@@ -34,7 +37,7 @@ class ToolkitResourceProvider {
         this.resourceType = resourceType
         this.requestDetails = requestDetails
 
-        // get simgleton copy - expensive to build
+        // get singleton copy - expensive to build
         fhirContext = ToolkitFhirContext.get()
 
         // linkage to ResDb simulator environment
@@ -44,11 +47,64 @@ class ToolkitResourceProvider {
         simContext = new SimContext(simDb)
     }
 
-    static IResourceProvider findProvider(DomainResource resource) {
+    static MethodOutcome create(DomainResource resource, SimId simId) {
+        IResourceProvider provider = findProvider(resource)
+        def requestDetails = getRequestDetails()
+        Attributes attributes = new Attributes(requestDetails)
+        SimDb simDb = new SimDb(simId, SimDb.BASE_TYPE, SimDb.ANY_TRANSACTION)
+        attributes.setSimId(simId)
+        attributes.setSimDb(simDb)
+        return provider.create(resource, requestDetails)
+    }
+
+    static IToolkitResourceProvider findProvider(DomainResource resource) {
         def type = resource.getClass().getSimpleName()
         def providerClassName = "gov.nist.toolkit.fhir.server.resourceProvider.${type}ResourceProvider"
         Class clas = providerClassName as Class
         return clas.newInstance()
+    }
+
+    static RequestDetails getRequestDetails() {
+        new RequestDetails() {
+            @Override
+            protected byte[] getByteStreamRequestContents() {
+                return new byte[0]
+            }
+
+            @Override
+            Charset getCharset() {
+                return null
+            }
+
+            @Override
+            String getHeader(String s) {
+                return null
+            }
+
+            @Override
+            List<String> getHeaders(String s) {
+                return null
+            }
+            @Override
+            InputStream getInputStream() throws IOException {
+                return null
+            }
+
+            @Override
+            Reader getReader() throws IOException {
+                return null
+            }
+
+            @Override
+            IRestfulServerDefaults getServer() {
+                return null
+            }
+
+            @Override
+            String getServerBaseForRequest() {
+                return null
+            }
+        }
     }
 
     String resourceTypeAsString() {

@@ -40,7 +40,7 @@ class PatientQueryByNameSpec extends FhirSpecification {
 
     def 'submit patient'() {
         when:
-        def (BasicStatusLine statusLine, String results, FhirId locationHeader) = post("http://localhost:${remoteToolkitPort}/xdstools2/fsim/${simId}/Patient", patient)
+        def (BasicStatusLine statusLine, String results, FhirId locationHeader) = post("http://localhost:${remoteToolkitPort}/xdstools2/fsim/${simId}/fhir/Patient", patient)
         OperationOutcome oo
         if (results) {
             IBaseResource resource = ourCtx.newJsonParser().parseResource(results)
@@ -58,7 +58,7 @@ class PatientQueryByNameSpec extends FhirSpecification {
     // depends on previous
     def 'query by last name'() {
         when:
-        def (BasicStatusLine statusLine2, String results2) = get("http://localhost:${remoteToolkitPort}/xdstools2/fsim/${simId}/Patient?family=Chalmers")
+        def (BasicStatusLine statusLine2, String results2) = get("http://localhost:${remoteToolkitPort}/xdstools2/fsim/${simId}/fhir/Patient?family=Chalmers")
 
         then:
         statusLine2.statusCode == 200
@@ -87,7 +87,7 @@ class PatientQueryByNameSpec extends FhirSpecification {
     // depends on above submission
     def 'query by first and last name'() {
         when:
-        def (BasicStatusLine statusLine2, String results2) = get("http://localhost:${remoteToolkitPort}/xdstools2/fsim/${simId}/Patient?family=Chalmers&given=Peter")
+        def (BasicStatusLine statusLine2, String results2) = get("http://localhost:${remoteToolkitPort}/xdstools2/fsim/${simId}/fhir/Patient?family=Chalmers&given=Peter")
 
         then:
         statusLine2.statusCode == 200

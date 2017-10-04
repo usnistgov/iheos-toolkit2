@@ -2,24 +2,15 @@ package gov.nist.toolkit.itTests.fhir
 
 import ca.uhn.fhir.context.FhirContext
 import ca.uhn.fhir.rest.api.MethodOutcome
-import ca.uhn.fhir.rest.method.RequestDetails
-import ca.uhn.fhir.rest.server.IResourceProvider
-import ca.uhn.fhir.rest.server.IRestfulServerDefaults
-import gov.nist.toolkit.fhir.server.resourceProvider.PatientResourceProvider
 import gov.nist.toolkit.fhir.server.resourceProvider.ToolkitResourceProvider
-import gov.nist.toolkit.fhir.servlet.Attributes
 import gov.nist.toolkit.fhir.support.SimIndexManager
 import gov.nist.toolkit.installation.Installation
 import gov.nist.toolkit.itTests.support.FhirSpecification
 import gov.nist.toolkit.simcommon.client.SimId
 import gov.nist.toolkit.simcommon.server.SimDb
 import gov.nist.toolkit.toolkitApi.SimulatorBuilder
-import org.hl7.fhir.dstu3.model.DomainResource
 import org.hl7.fhir.dstu3.model.Patient
 import spock.lang.Shared
-
-import java.nio.charset.Charset
-
 /**
  *
  */
@@ -62,61 +53,10 @@ class DirectInsertPatientResourceSpec  extends FhirSpecification {
     def 'create a patient'() {
         when:
         Patient patient = ourCtx.newJsonParser().parseResource(patientJson)
-        IResourceProvider provider = ToolkitResourceProvider.findProvider(patient)
-        def requestDetails = getRequestDetails()
-        Attributes attributes = new Attributes(requestDetails)
-        attributes.setSimId(simId)
-        attributes.setSimDb(simDb)
-
-        MethodOutcome outcome = provider.createPatient(patient, requestDetails)
+        MethodOutcome outcome = ToolkitResourceProvider.create(patient, simId)
 
         then:
-        outcome
-    }
-
-
-
-    RequestDetails getRequestDetails() {
-        new RequestDetails() {
-            @Override
-            protected byte[] getByteStreamRequestContents() {
-                return new byte[0]
-            }
-
-            @Override
-            Charset getCharset() {
-                return null
-            }
-
-            @Override
-            String getHeader(String s) {
-                return null
-            }
-
-            @Override
-            List<String> getHeaders(String s) {
-                return null
-            }
-            @Override
-            InputStream getInputStream() throws IOException {
-                return null
-            }
-
-            @Override
-            Reader getReader() throws IOException {
-                return null
-            }
-
-            @Override
-            IRestfulServerDefaults getServer() {
-                return null
-            }
-
-            @Override
-            String getServerBaseForRequest() {
-                return null
-            }
-        }
+        outcome.id
     }
 
 

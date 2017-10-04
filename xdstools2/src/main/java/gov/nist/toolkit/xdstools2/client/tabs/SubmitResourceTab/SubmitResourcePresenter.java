@@ -102,11 +102,15 @@ public class SubmitResourcePresenter extends AbstractPresenter<SubmitResourceVie
 
     private void displayResult(Result result) {
         getView().addLog("At " + result.getTimestamp());
+        String prefix = "ReportBuilder: ";
         for (AssertionResult ar: result.assertions.assertions) {
+            String content = ar.assertion;
+            if (content.startsWith(prefix));
+            content = content.substring(prefix.length());
             if (ar.status)
-                getView().addLog(ar.assertion);
+                getView().addLog(content);
             else {
-                Label l = new Label(ar.assertion);
+                Label l = new Label(content);
                 l.setStyleName("testFail");
                 getView().addLog(l);
             }
