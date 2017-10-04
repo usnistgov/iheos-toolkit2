@@ -64,7 +64,6 @@ public class SimulatorControlTab extends GenericQueryTab {
     private FlowPanel simCtrlContainer;
 
     SimConfigSuper simConfigSuper;
-    private SimulatorControlTab self;
     private SimManagerWidget2 simManagerWidget;
 
 
@@ -78,7 +77,6 @@ public class SimulatorControlTab extends GenericQueryTab {
     @Override
 	protected Widget buildUI() {
         simCtrlContainer = new FlowPanel();
-        self = this;
 
         ((Xdstools2EventBus) ClientUtils.INSTANCE.getEventBus()).addTabSelectedEventHandler(new TabSelectedEvent.TabSelectedEventHandler() {
             @Override
@@ -142,7 +140,9 @@ public class SimulatorControlTab extends GenericQueryTab {
         simConfigWrapperPanel.add(simConfigPanel);
 
 
+
         simManagerWidget = new SimManagerWidget2(getCommandContext(), this);
+
 
         Window.addResizeHandler(new ResizeHandler() {
             @Override
@@ -160,7 +160,7 @@ public class SimulatorControlTab extends GenericQueryTab {
 	}
 
 
-	protected void resizeSimMgrWidget(HorizontalPanel container, SimManagerWidget2 widget2) {
+    protected void resizeSimMgrWidget(HorizontalPanel container, SimManagerWidget2 widget2) {
 
         int containerWidth;
 
@@ -267,7 +267,7 @@ public class SimulatorControlTab extends GenericQueryTab {
                         public void onComplete(final List<SimulatorStats> simulatorStatses) {
 //                        buildTable(configs, simulatorStatses);
 //                            Window.alert("Calling widget " + user);
-                            simManagerWidget.popCellTable(user, configs, simulatorStatses);
+                            int rows =  simManagerWidget.popCellTable(user, configs, simulatorStatses);
                             resizeSimMgrWidget(simConfigWrapperPanel, simManagerWidget);
 
                         }
