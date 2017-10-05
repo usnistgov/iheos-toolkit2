@@ -37,7 +37,7 @@ import java.util.Map;
 public class RSNAEdgeTestTab extends GenericQueryTab implements GatewayTool {
 //    final protected ToolkitServiceAsync toolkitService = GWT
 //            .create(ToolkitService.class);
-    String selectedActor = ActorType.RSNA_EDGE_DEVICE.getShortName();
+    String selectedActor = ActorType.EDGE_SERVER.getShortName();
     SimulatorConfig config;
     GenericQueryTab genericQueryTab;
     static final String COLLECTION_NAME =  "rsnaedgetool";

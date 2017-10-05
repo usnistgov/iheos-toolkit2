@@ -63,7 +63,7 @@ public class ToolLauncher implements ClickHandler {
 	final static public String iigTestsTabLabel = "Initiating Imaging Gateway Tests";
 	final static public String rigTestsTabLabel = "Responding Imaging Gateway Tests";
 	final static public String idsTestsTabLabel = "Imaging Document Source Tests";
-	final static public String rsnaedgeTestsTabLabel = "RSNA Edge Device Tests";
+	final static public String esTestsTabLabel = "Edge Server";
 	final static public String imagingDocumentSetRetrieveTabLabel = "RetrieveImagingDocumentSet";
 	final static public String homeTabLabel = "Home";
 	final static public String SysConfigTabLabel = "SUT Configuration";
@@ -117,7 +117,7 @@ public class ToolLauncher implements ClickHandler {
 		tools.add(new ToolDef(iigTestsTabLabel, "IIGTests", "IIGTests"));
 		tools.add(new ToolDef(rigTestsTabLabel, "RIGTests", "RIGTests"));
 		tools.add(new ToolDef(idsTestsTabLabel, "IDSTests", "IDSTests"));
-		tools.add(new ToolDef(rsnaedgeTestsTabLabel, "RSNA Edge Tests", "RSNAEdgeTests"));
+		tools.add(new ToolDef(esTestsTabLabel, "Edge Server Tests", "EdgeServerTests"));
 		tools.add(new ToolDef(rgTestsTabLabel, "RGTests", "RGTests"));
 		tools.add(new ToolDef(imagingDocumentSetRetrieveTabLabel, "RetIDS", "RetIDS"));
 		tools.add(new ToolDef(conformanceTestsLabel, "ConfTests", "ConfTests"));
@@ -183,7 +183,7 @@ public class ToolLauncher implements ClickHandler {
 		if (menuName.equals(iigTestsTabLabel)) return new IIGTestTab();
 		if (menuName.equals(rigTestsTabLabel)) return new RIGTestTab();
 		if (menuName.equals(idsTestsTabLabel)) return new IDSTestTab();
-		if (menuName.equals(rsnaedgeTestsTabLabel)) return new RSNAEdgeTestTab();
+		if (menuName.equals(esTestsTabLabel)) return new ESTestTab();
 		if (menuName.equals(submitResourceTabLabel)) return new NewToolLauncher().launch(new SubmitResource());
 		return null;
 	}

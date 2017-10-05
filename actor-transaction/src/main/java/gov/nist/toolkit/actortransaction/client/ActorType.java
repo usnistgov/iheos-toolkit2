@@ -312,13 +312,13 @@ public enum ActorType implements IsSerializable, Serializable {
        null,
             false
     ),
-    RSNA_EDGE_DEVICE(
-            "RSNA Image Sharing Source",
-            Arrays.asList("RSNA_EDGE"),
-            "ris",
+    EDGE_SERVER(
+            "Edge Server",
+            Arrays.asList("EDGE_SERVER"),
+            "es",
             null,
-            "gov.nist.toolkit.simulators.sim.ris.RisActorSimulator", //TODO: Change to correct domainß
-            Arrays.asList(TransactionType.RET_IMG_DOC_SET_GW), //TODO: Change to correct Transaction Type
+            null,
+            null,
             true,
             null,
             false

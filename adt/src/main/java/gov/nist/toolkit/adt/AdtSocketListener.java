@@ -17,6 +17,7 @@ import java.net.Socket;
 import java.net.SocketTimeoutException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Random;
 
 /**
  * This should only be invoked from ListenerFactory.
@@ -139,18 +140,22 @@ public class AdtSocketListener implements Runnable{
             }
 
             // Parse incoming message
+            String dateDir = new SimpleDateFormat("yyyy_MM_dd_HH_mm_ss_SSS").format(new Date());
             PipeParser pipeParser = new PipeParser();
             Message msg = pipeParser.parse(input.toString());
             Terser terser = new Terser(msg);
             String msh9 = getFieldString(terser, "/MSH", 9);
+            threadPoolItem.pifCallback.addhl7v2Msg(threadPoolItem.simId, input.toString(), msh9, dateDir, true);
 
             // Process depending on MSH-9
+            String responseString = null;
             switch (msh9) {
 
                 // PIX Query IHE ITI TF-2a 3.9 (quick and dirty, no validation)
                 case "QBP^Q23^QBP_21":
                     String pidIn = terser.get("/QPD-3-1");
                     String pidOut = new StringBuilder(pidIn).reverse().toString();
+                    String mrn = generateId(pidIn);
                     String qpd = getSegmentString(terser, "/QPD");
 
                     String out = "MSH|^~\\&|||||||RSP^K23^RSP_K23|HL7RSP00001|P|2.5\r" +
@@ -170,13 +175,15 @@ public class AdtSocketListener implements Runnable{
                     outTerser.set("/MSA-2", terser.get("/MSH-10"));
 
                     outTerser.set("/QAK-1", terser.get("/QPD-2"));
+                    outTerser.set("/PID-18", mrn);
 
                     String outMsgStr = outMsg.encode();
-                    outMsgStr = outMsgStr.replaceAll("\r", "\r\n");
-                    writer.write(outMsgStr);
+                    responseString = outMsgStr.replaceAll("\r", "\r\n");
+                    writer.write(responseString);
                     writer.flush();
                     socket.shutdownOutput();
                     socket.close();
+                    threadPoolItem.pifCallback.addhl7v2Msg(threadPoolItem.simId, responseString, msh9, dateDir, false);
                     break;
 
 
@@ -215,8 +222,10 @@ public class AdtSocketListener implements Runnable{
                             sendError = true;
                             logger.fatal(ExceptionUtil.exception_details(e));
                         }
-                        if (sendError)
+                        if (sendError) {
+                            responseString = message.getNack().toString();
                             writer.write(message.getNack());
+                        }
                         else {
                             StringBuilder buf = new StringBuilder();
 
@@ -226,6 +235,7 @@ public class AdtSocketListener implements Runnable{
                             String adtAckFile = AdtSocketListener.class.getResource("/adt/ACK.txt").getFile();
                             logger.info("Loading template from " + adtAckFile);
 
+                            responseString = buf.toString();
                             writer.write(0x0b);
                             writer.write(buf.toString());
                             writer.write(0x1c);
@@ -235,6 +245,7 @@ public class AdtSocketListener implements Runnable{
                         writer.flush();
                         socket.shutdownOutput();
                         socket.close();
+                        threadPoolItem.pifCallback.addhl7v2Msg(threadPoolItem.simId, responseString, msh9, dateDir, false);
                     } catch (IOException e) {
                         logger.error("Problem closing socket connection (already closed?)", e);
                     }
@@ -281,5 +292,25 @@ public class AdtSocketListener implements Runnable{
             }
         }
         return str;
+    }
+
+    /**
+     * Generate a "random" id from an inputId. The same input will always generate the
+     * same output unless the input is blank, which results in a random output.
+     * The generated id will of the form XXX-999999.
+     * @param seedId seed id
+     * @return "random" generated id.
+     */
+    private String generateId(String seedId) {
+        long seed = 0;
+        for (int i=0; i<seedId.length(); i++) seed += seedId.charAt(i);
+        Random rand = new Random(seed);
+        String id = "";
+        for (int i=0; i<10; i++) {
+            if (i < 3) id += (char) ('A' + rand.nextInt(26));
+            else if (i == 3) id += "-";
+            else id += (char) ('0' + rand.nextInt(10));
+        }
+        return id;
     }
 }

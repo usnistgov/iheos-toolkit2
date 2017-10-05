@@ -16,6 +16,21 @@ import gov.nist.toolkit.xdsexception.client.ToolkitRuntimeException
 import groovy.transform.TypeChecked
 import org.apache.http.annotation.Obsolete
 import org.apache.log4j.Logger
+import org.dcm4che3.hl7.HL7Parser
+import org.xml.sax.SAXException
+
+import javax.xml.transform.OutputKeys
+import javax.xml.transform.TransformerConfigurationException
+import javax.xml.transform.TransformerFactory
+import javax.xml.transform.sax.SAXTransformerFactory
+import javax.xml.transform.sax.TransformerHandler
+import javax.xml.transform.stream.StreamResult
+import java.nio.charset.Charset
+import java.nio.file.Files
+import java.nio.file.Path
+import java.nio.file.Paths
+import java.text.SimpleDateFormat
+
 /**
  * Each simulator has an on-disk presence that keeps track of its long
  * term status and a log of its input/output messages. This class
@@ -598,6 +613,18 @@ public class SimDb {
 		pidDb.addPatientId(patientId);
 	}
 
+	public void addhl7v2Msg(String hl7msg, String msh9, String dateDir, boolean inboundMsg) {
+		if (hl7msg == null || hl7msg.isEmpty()) hl7msg="null or empty hl7 msg";
+		String xmlmsg = hl7v2ToXml(hl7msg);
+		if (msh9 == null || msh9.isEmpty()) msh9 = "none";
+		String hl7fn = inboundMsg ? "Request.txt" : "Response.txt";
+		String xmlfn = inboundMsg ? "Request.xml" : "Response.xml";
+		File dir = Paths.get(simDir.getPath(),"hl7v2", msh9, dateDir).toFile();
+		dir.mkdirs();
+		Files.write(dir.toPath().resolve(hl7fn), hl7msg.getBytes("UTF-8"));
+		Files.write(dir.toPath().resolve(xmlfn), xmlmsg.getBytes("UTF-8"));
+	}
+
 	public boolean deletePatientIds(List<Pid> toDelete) {
 		return pidDb.deletePatientIds(toDelete);
 	}
@@ -1167,7 +1194,27 @@ public class SimDb {
 		return db;
 	}
 
-
-
+	/**
+	 * Converts hl7 V2 message to XML
+	 * @param inMsg hl7 v2 message.
+	 * @return XML equivalent. On error, returns error message and original hl7 msg.
+	 */
+	public String hl7v2ToXml(String inMsg) {
+		try {
+			Reader reader = new StringReader(inMsg);
+			SAXTransformerFactory tf = (SAXTransformerFactory) TransformerFactory.newInstance();
+			TransformerHandler th = tf.newTransformerHandler();
+			th.getTransformer().setOutputProperty(OutputKeys.INDENT, "yes");
+			ByteArrayOutputStream baos = new ByteArrayOutputStream();
+			th.setResult(new StreamResult(baos));
+			HL7Parser hl7Parser = new HL7Parser(th);
+			hl7Parser.setIncludeNamespaceDeclaration(false);
+			hl7Parser.parse(reader);
+			return baos.toString("UTF-8");
+		} catch (Exception e) {
+			return "Error converting to XML: " + e.getMessage() +
+				System.getProperty("line.separator") + inMsg;
+		}
+	}
 
 }

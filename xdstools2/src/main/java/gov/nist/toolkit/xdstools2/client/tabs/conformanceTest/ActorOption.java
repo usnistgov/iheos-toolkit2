@@ -90,8 +90,8 @@ public class ActorOption {
                 && ActorType.RESPONDING_IMAGING_GATEWAY.getShortName().equals(actorTypeId);
     }
 
-    public boolean isEdgeServerSut() {
-        return false;
+    public boolean isEs() {
+        return actorTypeId != null && ActorType.EDGE_SERVER.getShortName().equals(actorTypeId);
     }
 
     public boolean isOnDemand() {

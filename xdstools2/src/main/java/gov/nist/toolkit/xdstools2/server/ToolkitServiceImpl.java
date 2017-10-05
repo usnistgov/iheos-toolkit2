@@ -22,6 +22,7 @@ import gov.nist.toolkit.results.client.Result;
 import gov.nist.toolkit.results.client.TestInstance;
 import gov.nist.toolkit.results.client.TestLogs;
 import gov.nist.toolkit.results.shared.Test;
+import gov.nist.toolkit.services.client.EsOrchestrationRequest;
 import gov.nist.toolkit.services.client.IdcOrchestrationRequest;
 import gov.nist.toolkit.services.client.RawResponse;
 import gov.nist.toolkit.services.server.RawResponseBuilder;
@@ -517,6 +518,12 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements
         Session s = getSession();
         if (s == null) return RawResponseBuilder.build(new NoServletSessionException(""));
         return new OrchestrationManager().buildIdcTestEnvironment(s, request);
+    }
+    @Override
+    public RawResponse buildEsTestOrchestration(BuildEsTestOrchestrationRequest request) {
+        Session s = getSession();
+        if (s == null) return RawResponseBuilder.build(new NoServletSessionException(""));
+        return new OrchestrationManager().buildEstTestEnvironment(s, request.getEsOrchestrationRequest());
     }
     @Override
     public RawResponse buildRSNAEdgeTestOrchestration(BuildRSNAEdgeTestOrchestrationRequest request) throws Exception{

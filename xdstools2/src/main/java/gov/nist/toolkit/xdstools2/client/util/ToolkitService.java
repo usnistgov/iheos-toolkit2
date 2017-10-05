@@ -13,6 +13,7 @@ import gov.nist.toolkit.results.client.Result;
 import gov.nist.toolkit.results.client.TestInstance;
 import gov.nist.toolkit.results.client.TestLogs;
 import gov.nist.toolkit.results.shared.Test;
+import gov.nist.toolkit.services.client.EsOrchestrationRequest;
 import gov.nist.toolkit.services.client.IdcOrchestrationRequest;
 import gov.nist.toolkit.services.client.RawResponse;
 import gov.nist.toolkit.services.shared.Message;
@@ -211,7 +212,8 @@ public interface ToolkitService extends RemoteService  {
 	RawResponse buildRepTestOrchestration(BuildRepTestOrchestrationRequest request) throws Exception;
 	RawResponse buildRegTestOrchestration(BuildRegTestOrchestrationRequest request) throws Exception;
 	RawResponse buildRSNAEdgeTestOrchestration(BuildRSNAEdgeTestOrchestrationRequest request) throws Exception;
-   RawResponse buildIdcTestOrchestration(IdcOrchestrationRequest request);
+    RawResponse buildIdcTestOrchestration(IdcOrchestrationRequest request);
+	RawResponse buildEsTestOrchestration(BuildEsTestOrchestrationRequest request);
 
 	Map<String, String> getSessionProperties() throws NoServletSessionException;
 	void setSessionProperties(Map<String, String> props) throws NoServletSessionException;
