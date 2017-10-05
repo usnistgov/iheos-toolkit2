@@ -30,11 +30,11 @@ public class BuildIGTestOrchestrationButton extends AbstractOrchestrationButton 
     private TestContext testContext;
     private TestContextView testContextView;
     private TestRunner testRunner;
-    private ActorOption actorOption;
+    private ActorOptionConfig actorOption;
     private Panel initializationPanel;
     private FlowPanel initializationResultsPanel = new FlowPanel();
 
-    public BuildIGTestOrchestrationButton(ConformanceTestTab testTab, Panel initializationPanel, String label, TestContext testContext, TestContextView testContextView, TestRunner testRunner, boolean includeIG, ActorOption actorOption
+    public BuildIGTestOrchestrationButton(ConformanceTestTab testTab, Panel initializationPanel, String label, TestContext testContext, TestContextView testContextView, TestRunner testRunner, boolean includeIG, ActorOptionConfig actorOption
     ) {
         this.initializationPanel = initializationPanel;
         this.testTab = testTab;

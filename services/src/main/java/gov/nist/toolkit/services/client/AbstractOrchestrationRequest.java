@@ -15,6 +15,7 @@ abstract public class AbstractOrchestrationRequest implements Serializable, IsSe
     private SiteSpec registrySut;
     private boolean useExistingState = true;   // useExistingState == !reset
     private boolean selfTest = false;
+    private ActorOption actorOption;
 
     public String getUserName() {
         return userName;

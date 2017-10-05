@@ -3,6 +3,7 @@ package gov.nist.toolkit.xdstools2.client.tabs.conformanceTest;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import gov.nist.toolkit.actortransaction.client.ActorType;
 import gov.nist.toolkit.results.client.TestInstance;
+import gov.nist.toolkit.services.client.ActorOption;
 import gov.nist.toolkit.xdstools2.client.command.command.GetCollectionMembersCommand;
 import gov.nist.toolkit.xdstools2.client.tabs.GatewayTestsTabs.BuildRGTestOrchestrationButton;
 import gov.nist.toolkit.xdstools2.client.util.ClientUtils;
@@ -13,24 +14,25 @@ import java.util.List;
 /**
  * A type that takes into account both the actor type and option selected
  */
-public class ActorOption {
-    String actorTypeId;
-    String profileId;
-    String optionId;
-    TabConfig tabConfig;
+public class ActorOptionConfig extends ActorOption {
+    private TabConfig tabConfig;
 
-    public ActorOption(String actorTypeId) {
+    public ActorOptionConfig() {
+
+    }
+
+    public ActorOptionConfig(String actorTypeId) {
         this.actorTypeId = actorTypeId;
         profileId = "xds";
         optionId = "";
     }
 
-    public ActorOption(String actorTypeId, String optionId) {
+    public ActorOptionConfig(String actorTypeId, String optionId) {
         this(actorTypeId);
         this.optionId = optionId;
     }
 
-    public ActorOption(String actorTypeId, String profileId, String optionId) {
+    public ActorOptionConfig(String actorTypeId, String profileId, String optionId) {
         this(actorTypeId, optionId);
         this.profileId = profileId;
     }
@@ -134,7 +136,7 @@ public class ActorOption {
 
     @Override
     public String toString() {
-        return "ActorOption: actorType=" + actorTypeId + " option=" + optionId;
+        return "ActorOptionConfig: actorType=" + actorTypeId + " option=" + optionId;
     }
 
     @Override
@@ -142,7 +144,7 @@ public class ActorOption {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
 
-        ActorOption that = (ActorOption) o;
+        ActorOptionConfig that = (ActorOptionConfig) o;
 
         if (actorTypeId != null ? !actorTypeId.equals(that.actorTypeId) : that.actorTypeId != null) return false;
         return optionId != null ? optionId.equals(that.optionId) : that.optionId == null;

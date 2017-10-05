@@ -28,7 +28,7 @@ public abstract class ToolWindowWithMenu extends ToolWindow {
     }
 
     public abstract void onMenuSelect(TabConfig actor, Map<String,TabConfig> target);
-    public abstract void setTestStatistics(HTML statsBar, ActorOption actorOption);
+    public abstract void setTestStatistics(HTML statsBar, ActorOptionConfig actorOption);
 
     public boolean displayMenu(Panel destinationPanel) {
         if (tabConfig!=null) {
@@ -153,7 +153,7 @@ public abstract class ToolWindowWithMenu extends ToolWindow {
 //                        Window.alert(""+tcCodeMap.get("actor") + tcCodeMap.get("profile") + tcCodeMap.get("option"));
 
                         if (tcCodeMap.get("actor")!=null) {
-                            ActorOption actorOption = new ActorOption(tcCodeMap.get("actor"));
+                            ActorOptionConfig actorOption = new ActorOptionConfig(tcCodeMap.get("actor"));
                             if (tcCodeMap.get("profile")!=null) {
                                 actorOption.setProfileId(tcCodeMap.get("profile"));
 

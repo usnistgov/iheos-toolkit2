@@ -29,7 +29,7 @@ public class ActorOptionManager {
 
 
     /*
-    public static ActorAndOption actorDetails(ActorOption actorOption) {
+    public static ActorAndOption actorDetails(ActorOptionConfig actorOption) {
         List<ActorAndOption> aaos = actorOptions.get(actorOption.actorTypeId);
         if (aaos == null) return null;
         for (ActorAndOption aao : aaos) {

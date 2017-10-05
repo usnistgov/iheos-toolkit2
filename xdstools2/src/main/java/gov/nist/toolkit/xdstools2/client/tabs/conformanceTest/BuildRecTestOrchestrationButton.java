@@ -13,9 +13,6 @@ import gov.nist.toolkit.xdstools2.client.widgets.OrchestrationSupportTestsDispla
 import gov.nist.toolkit.xdstools2.client.widgets.buttons.AbstractOrchestrationButton;
 import gov.nist.toolkit.xdstools2.shared.command.request.BuildRecTestOrchestrationRequest;
 
-import java.util.ArrayList;
-import java.util.List;
-
 /**
  *
  */
@@ -26,12 +23,12 @@ public class BuildRecTestOrchestrationButton extends AbstractOrchestrationButton
     private TestContextView testContextView;
     private FlowPanel initializationResultsPanel = new FlowPanel();
 
-    public static List<ActorAndOption> ACTOR_OPTIONS = new ArrayList<>();
-    static {
-        ACTOR_OPTIONS = java.util.Arrays.asList(
-                new ActorAndOption("rec", "", "Required", false),
-                new ActorAndOption("rec_xua", XUA_OPTION, "XUA Option", false));
-    }
+//    public static List<ActorAndOption> ACTOR_OPTIONS = new ArrayList<>();
+//    static {
+//        ACTOR_OPTIONS = java.util.Arrays.asList(
+//                new ActorAndOption("rec", "", "Required", false),
+//                new ActorAndOption("rec_xua", XUA_OPTION, "XUA Option", false));
+//    }
 
     BuildRecTestOrchestrationButton(ConformanceTestTab testTab, TestContext testContext, TestContextView testContextView, Panel initializationPanel, String label) {
         this.initializationPanel = initializationPanel;
