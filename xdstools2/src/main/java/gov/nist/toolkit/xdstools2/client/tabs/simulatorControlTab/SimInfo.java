@@ -43,4 +43,19 @@ public class SimInfo {
     public List<TransactionInstance> getTopThreeTransInstances() {
         return topThreeTransInstances;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        SimInfo simInfo = (SimInfo) o;
+
+        return simulatorConfig != null && simulatorConfig.getId() != null ? simulatorConfig.getId().toString().equals(simInfo.simulatorConfig.getId().toString()) : simInfo.simulatorConfig == null;
+    }
+
+    @Override
+    public int hashCode() {
+        return simulatorConfig != null  && simulatorConfig.getId() != null ? simulatorConfig.getId().toString().hashCode() : 0;
+    }
 }
