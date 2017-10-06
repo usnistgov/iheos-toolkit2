@@ -67,7 +67,7 @@ import java.util.Set;
  */
 public class SimManagerWidget2 extends Composite {
 
-    private static final int ROW_BUFFER = 38;
+    protected static final int ROW_BUFFER = 38;
     private static final int PAGE_SIZE = 25;
 
     CommandContext commandContext;
@@ -235,11 +235,12 @@ public class SimManagerWidget2 extends Composite {
                                 for (int idx = 0; idx < SimInfo.TOP_TRANSACTION_CT; idx++) {
                                     if (result.size() > idx) {
                                         simInfo.getTopThreeTransInstances().add(TransactionInstance.copy(result.get(idx)));
-                                        try {
-                                            newSimTable.redraw();
-                                            actionTable.redraw();
-                                        } catch (Exception ex) {
-                                        }
+//                                        try {
+                                            // xx
+//                                            newSimTable.redraw();
+//                                            actionTable.redraw();
+//                                        } catch (Exception ex) {
+//                                        }
                                     }
                                 }
                             }
@@ -675,7 +676,9 @@ public class SimManagerWidget2 extends Composite {
                             ((SingleSelectionModel) newSimTable.getSelectionModel()).clear();
 
                         // When the newSimTable selection model list gets cleared, the object is also removed from the actionDataProvider. Insert a placeholder into the actionData.
+                        actionDataProvider.getList().clear();
                         actionDataProvider.getList().add(placeHolderSimInfo);
+                        // xx
                         actionTable.redraw();
 
                     }
@@ -1032,12 +1035,17 @@ public class SimManagerWidget2 extends Composite {
 
             float tableHeight = 100F;
             if (rows>0)
-                tableHeight =  (rowHeight * (rows>PAGE_SIZE?PAGE_SIZE:rows) + ROW_BUFFER);
+                tableHeight = calcTableHeight(rowHeight);
 
             newSimTable.setHeight("" + tableHeight + "px");
+            // xx
             newSimTable.redraw();
             actionTable.redraw();
         }
+    }
+
+    protected float calcTableHeight(float rowHeight) {
+        return rowHeight * (rows>PAGE_SIZE?PAGE_SIZE:rows) + ROW_BUFFER;
     }
 
 
@@ -1141,6 +1149,10 @@ public class SimManagerWidget2 extends Composite {
 
     public DataGrid<SimInfo> getNewSimTable() {
         return newSimTable;
+    }
+
+    public DataGrid<SimInfo> getActionTable() {
+        return actionTable;
     }
 
     public static ProvidesKey<SimInfo> getKeyProvider() {
