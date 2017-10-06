@@ -1,11 +1,13 @@
 package gov.nist.toolkit.xdstools2.client.tabs.simulatorControlTab;
 
 import com.google.gwt.dom.client.Style;
+import com.google.gwt.dom.client.TableRowElement;
 import com.google.gwt.event.dom.client.KeyCodes;
 import com.google.gwt.event.dom.client.KeyUpEvent;
 import com.google.gwt.event.dom.client.KeyUpHandler;
 import com.google.gwt.event.logical.shared.ResizeEvent;
 import com.google.gwt.event.logical.shared.ResizeHandler;
+import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.FlexTable;
@@ -62,6 +64,7 @@ public class SimulatorControlTab extends GenericQueryTab {
     }
 
     public SimulatorControlTab() {  super(new FindDocumentsSiteActorManager());	}
+    boolean tableRowExists = false;
 
 
     @Override
@@ -143,8 +146,21 @@ public class SimulatorControlTab extends GenericQueryTab {
             }
         });
         simCtrlContainer.add(simManagerWidget);
-
         resizeSimMgrWidget(simConfigWrapperPanel, simManagerWidget);
+        do {
+            new Timer() {
+                @Override
+                public void run() {
+                    try {
+                        TableRowElement tre = simManagerWidget.getNewSimTable().getRowElement(0);
+                        resizeSimMgrWidget(simConfigWrapperPanel, simManagerWidget);
+                        tableRowExists = true;
+                    } catch (Exception ex) {
+                    }
+                }
+            }.schedule(500);
+        } while (!tableRowExists && simManagerWidget.getDataProvider().getList().size()>0);
+
 
         return simCtrlContainer;
 	}
@@ -160,19 +176,7 @@ public class SimulatorControlTab extends GenericQueryTab {
            containerWidth = (int)(Window.getClientWidth() * .80);
         }
 
-//        int containerHeight;
-//        try {
-//            containerHeight = (int)(container.getParent().getElement().getClientHeight() * .50); // Window.getClientHeight()
-//        } catch (Exception ex) {
-//            containerHeight = (int)(Window.getClientHeight() * .5);
-//        }
-
-//        Window.alert(containerWidth + " height: " + containerHeight);
-
         widget2.resizeTable(containerWidth);
-
-//        widget2.setHeightInPx(containerHeight);
-
     }
 
 
@@ -262,10 +266,8 @@ public class SimulatorControlTab extends GenericQueryTab {
 //                            Window.alert("Calling widget " + user);
                             int rows =  simManagerWidget.popCellTable(user, configs, simulatorStatses);
                             resizeSimMgrWidget(simConfigWrapperPanel, simManagerWidget);
-
                         }
                     }.run(new GetSimulatorStatsRequest(getCommandContext(), simIds));
-
                 }catch (Exception ex) {}
             }
         }.run(new GetAllSimConfigsRequest(getCommandContext(), user));
