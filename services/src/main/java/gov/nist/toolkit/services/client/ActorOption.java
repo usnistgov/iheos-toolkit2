@@ -36,4 +36,10 @@ public class ActorOption implements Serializable, IsSerializable {
     public void setActorTypeId(String actorTypeId) {
         this.actorTypeId = actorTypeId;
     }
+
+    public void copyFrom(ActorOption ao) {
+        profileId = ao.profileId;
+        optionId = ao.optionId;
+        actorTypeId = ao.actorTypeId;
+    }
 }

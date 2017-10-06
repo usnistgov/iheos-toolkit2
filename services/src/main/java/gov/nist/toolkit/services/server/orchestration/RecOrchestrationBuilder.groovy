@@ -3,6 +3,7 @@ package gov.nist.toolkit.services.server.orchestration
 import gov.nist.toolkit.actortransaction.client.ActorType
 import gov.nist.toolkit.configDatatypes.client.Pid
 import gov.nist.toolkit.configDatatypes.client.PidBuilder
+import gov.nist.toolkit.services.client.ActorOption
 import gov.nist.toolkit.services.client.RawResponse
 import gov.nist.toolkit.services.client.RecOrchestrationRequest
 import gov.nist.toolkit.services.client.RecOrchestrationResponse
@@ -18,16 +19,25 @@ class RecOrchestrationBuilder {
     private Session session
     private RecOrchestrationRequest request
     private Util util
+    private ActorOption actorOption = new ActorOption()
 
     public RecOrchestrationBuilder(ToolkitApi api, Session session, RecOrchestrationRequest request) {
         this.api = api
         this.request = request
         this.session = session
         this.util = new Util(api)
+        this.actorOption.copyFrom(request.actorOption)
     }
 
     RawResponse buildTestEnvironment() {
+
         RecOrchestrationResponse response = new RecOrchestrationResponse()
+
+        if (actorOption.optionId.equals(ActorType.XDS_on_FHIR_Recipient.shortName)) {
+
+        } else {
+
+        }
         Map<String, TestInstanceManager> pidNameMap = [
                 // RecPIF does not really exist as a test.  It will never be sent.  Just a
                 // name for the TestInstanceManager to use in storing the property
