@@ -1,19 +1,14 @@
 package gov.nist.toolkit.xdstools2.client.tabs.simulatorControlTab;
 
 import com.google.gwt.dom.client.Style;
-import com.google.gwt.dom.client.TableRowElement;
 import com.google.gwt.event.dom.client.KeyCodes;
 import com.google.gwt.event.dom.client.KeyUpEvent;
 import com.google.gwt.event.dom.client.KeyUpHandler;
 import com.google.gwt.event.logical.shared.ResizeEvent;
 import com.google.gwt.event.logical.shared.ResizeHandler;
 import com.google.gwt.user.cellview.client.CellTable;
-import com.google.gwt.user.client.Timer;
+import com.google.gwt.user.cellview.client.LoadingStateChangeEvent;
 import com.google.gwt.user.client.Window;
-import com.google.gwt.user.client.rpc.AsyncCallback;
-import com.google.gwt.user.client.ui.*;
-import gov.nist.toolkit.actortransaction.client.ActorType;
-import gov.nist.toolkit.configDatatypes.server.SimulatorProperties;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.FlexTable;
 import com.google.gwt.user.client.ui.FlowPanel;
@@ -156,20 +151,46 @@ public class SimulatorControlTab extends GenericQueryTab {
             }
         });
         simCtrlContainer.add(simManagerWidget);
-        resizeSimMgrWidget(simConfigWrapperPanel, simManagerWidget);
-        do {
-            new Timer() {
-                @Override
-                public void run() {
-                    try {
-                        TableRowElement tre = simManagerWidget.getNewSimTable().getRowElement(0);
-                        resizeSimMgrWidget(simConfigWrapperPanel, simManagerWidget);
-                        tableRowExists = true;
-                    } catch (Exception ex) {
+        simManagerWidget.getNewSimTable().addLoadingStateChangeHandler(new LoadingStateChangeEvent.Handler() {
+            @Override
+            public void onLoadingStateChanged(LoadingStateChangeEvent event) {
+                if(event.getLoadingState() == LoadingStateChangeEvent.LoadingState.LOADED) {
+//                    GWT.log("In onLoaded");
+                    int rows = simManagerWidget.getRows();
+//                    GWT.log("rows: " + rows);
+                    if (rows > 0) {
+                        int rowHeight = 0;
+                        try {
+                            rowHeight = simManagerWidget.getNewSimTable().getRowElement(0).getClientHeight();
+                        } catch (Exception ex) {
+                        }
+//                            GWT.log("rowHeight: " + rowHeight);
+                            String tableHeightInPx = null;
+                            int pxIdx = -1;
+                            try {
+                                tableHeightInPx = simManagerWidget.getNewSimTable().getElement().getStyle().getHeight();
+                                pxIdx = tableHeightInPx.indexOf("px");
+                            } catch (Exception ex) {
+                            }
+//                            GWT.log("tableHeight: " + tableHeightInPx);
+                            if (tableHeightInPx!=null && pxIdx>-1) {
+                                int currentHeight = new Integer(tableHeightInPx.substring(0, pxIdx)).intValue();
+//                                GWT.log("currentHeight: " + currentHeight);
+
+                                if (simManagerWidget.calcTableHeight(rowHeight) != currentHeight) {
+                                    resizeSimMgrWidget(simConfigWrapperPanel, simManagerWidget);
+//                                    GWT.log("Table resize complete.");
+                                }
+                            } else {
+                                resizeSimMgrWidget(simConfigWrapperPanel, simManagerWidget);
+//                                GWT.log("Initial table resize complete.");
+                            }
                     }
+
                 }
-            }.schedule(500);
-        } while (!tableRowExists && simManagerWidget.getDataProvider().getList().size()>0);
+            }
+        });
+
 
 
         return simCtrlContainer;
