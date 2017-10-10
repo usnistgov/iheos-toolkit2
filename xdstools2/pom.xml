@@ -24,11 +24,18 @@
 	<profiles>
 		<profile>
 			<id>Bill</id>
+			<properties>
+				<build.profile.id>Bill</build.profile.id>
+			</properties>
+		</profile>
+
+		<profile>
+			<id>KM</id>
 			<activation>
 				<activeByDefault>true</activeByDefault>
 			</activation>
 			<properties>
-				<build.profile.id>Bill</build.profile.id>
+				<build.profile.id>KM</build.profile.id>
 			</properties>
 		</profile>
 
