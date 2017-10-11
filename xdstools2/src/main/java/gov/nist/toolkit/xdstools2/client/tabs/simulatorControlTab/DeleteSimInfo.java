@@ -1,8 +1,9 @@
 package gov.nist.toolkit.xdstools2.client.tabs.simulatorControlTab;
 
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
-import com.google.gwt.user.client.Window;
+import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.FlowPanel;
@@ -12,6 +13,8 @@ import gov.nist.toolkit.configDatatypes.server.SimulatorProperties;
 import gov.nist.toolkit.simcommon.client.config.SimulatorConfigElement;
 import gov.nist.toolkit.xdstools2.client.ClickHandlerData;
 import gov.nist.toolkit.xdstools2.client.PasswordManagement;
+import gov.nist.toolkit.xdstools2.client.event.Xdstools2EventBus;
+import gov.nist.toolkit.xdstools2.client.util.ClientUtils;
 import gov.nist.toolkit.xdstools2.client.widgets.AdminPasswordDialogBox;
 import gov.nist.toolkit.xdstools2.client.widgets.PopupMessage;
 
@@ -96,17 +99,29 @@ List<SimInfo> simInfoList;
                 new ClickHandlerData<List<SimInfo>>(simInfoList) {
                     @Override
                     public void onClick(ClickEvent clickEvent) {
-                        int cx = 1;
+                        Timer refreshTimer = null;
                         for (SimInfo simInfo : simInfoList) {
                             try {
                                 DeleteButtonClickHandler handler = new DeleteButtonClickHandler(hostTab, simInfo.getSimulatorConfig());
-                                handler.delete(cx==simInfoList.size());
+                                handler.delete(false);
 
                             } catch (Exception ex) {
-                                Window.alert("Delete failed simId: " + simInfo.getSimulatorConfig().getId().toString() + ". Exception: " + ex.toString());
+                                GWT.log("Delete failed simId: " + simInfo.getSimulatorConfig().getId().toString() + ". Exception: " + ex.toString());
+                            } finally {
+                                if (refreshTimer!=null)
+                                    refreshTimer.cancel();
+                                refreshTimer = new Timer() {
+                                    @Override
+                                    public void run() {
+                                        hostTab.loadSimStatus();
+                                        ((Xdstools2EventBus) ClientUtils.INSTANCE.getEventBus()).fireSimulatorsUpdatedEvent();
+                                    }
+                                };
+                                refreshTimer.schedule(1000);
                             }
-                            cx++;
+
                         }
+
                     }
                 }
         );
