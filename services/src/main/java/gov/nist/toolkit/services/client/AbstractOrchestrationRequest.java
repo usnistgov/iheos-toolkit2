@@ -1,6 +1,7 @@
 package gov.nist.toolkit.services.client;
 
 import com.google.gwt.user.client.rpc.IsSerializable;
+import gov.nist.toolkit.actortransaction.client.ActorOption;
 import gov.nist.toolkit.sitemanagement.client.SiteSpec;
 
 import java.io.Serializable;
@@ -63,5 +64,9 @@ abstract public class AbstractOrchestrationRequest implements Serializable, IsSe
 
     public ActorOption getActorOption() {
         return actorOption;
+    }
+
+    public void setActorOption(ActorOption actorOption) {
+        this.actorOption = actorOption;
     }
 }

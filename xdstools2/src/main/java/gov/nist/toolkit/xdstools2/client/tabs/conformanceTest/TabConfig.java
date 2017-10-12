@@ -65,6 +65,10 @@ public class TabConfig implements Serializable, IsSerializable {
         return externalStart;
     }
 
+    public boolean isExternalStart() {
+        return externalStart != null && externalStart;
+    }
+
     public void setExternalStart(Boolean externalStart) {
         this.externalStart = externalStart;
     }

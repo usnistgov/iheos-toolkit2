@@ -10,6 +10,13 @@ import java.util.*;
 
 /**
  * Actor types defined by test engine.  A subset of these are available as simulators.
+ *
+ * The profile/actor/option are now coded in a subtle way.  The shortName (third parameter to the constuctor)
+ * is interpreted as profile_actor_option with the _ being the separator.  If the shortName has only two parts
+ * then the profile is assumed missing and defaults to xds.  This aligns with the Conformance Tool configuration file
+ * ConfTestsTabs.xml which lives in toolkitx.
+ *
+ * So the big picture is that the actor type is now, in some cases, actually the profile/actor/option type.
  */
 public enum ActorType implements IsSerializable, Serializable {
     XDR_DOC_SRC(
@@ -428,10 +435,10 @@ public enum ActorType implements IsSerializable, Serializable {
             new ArrayList<String>(),
             new ArrayList<String>()
     ),
-    XDS_on_FHIR_Recipient(
+    XDS_on_FHIR_Recipient(   //
             "XDS on FHIR Recipient",
             Arrays.asList(""),
-            "xdsonfhir",
+            "mhd_rec_xdsonfhir",
             "gov.nist.toolkit.simulators.proxy.sim.SimProxyFactory",
             "gov.nist.toolkit.simulators.proxy.sim.SimProxySimulator",  // only constructor should be used
             Arrays.asList(TransactionType.PROV_DOC_BUNDLE),  // place holder - transaction types
@@ -515,6 +522,22 @@ public enum ActorType implements IsSerializable, Serializable {
            proxyTransformClassNames = new ArrayList<>();
        this.proxyTransformClassNames = proxyTransformClassNames;
        this.proxyResponseTransformClassNames = proxyResponseTransformClassNames;
+   }
+
+   public ActorOption getActorOption()  {
+        return new ActorOption(shortName);
+   }
+
+   public String getProfile()  {
+        return new ActorOption(shortName).getProfileId();
+   }
+
+   public String getActor()  {
+        return new ActorOption(shortName).getActorTypeId();
+   }
+
+   public String getOption()  {
+        return new ActorOption(shortName).getOptionId();
    }
 
    public boolean isProxy() {

@@ -779,7 +779,7 @@ public class ConformanceTestTab extends ToolWindowWithMenu implements TestRunner
 			initializationPanel.add(orchInit.panel());
 		}
 		else if (currentActorOption.isRec()) {
-			orchInit = new BuildRecTestOrchestrationButton(this, testContext, testContextView, initializationPanel, label);
+			orchInit = new BuildRecTestOrchestrationButton(this, testContext, testContextView, initializationPanel, label, currentActorOption);
 			orchInit.addSelfTestClickHandler(new RefreshTestCollectionHandler());
 			initializationPanel.add(orchInit.panel());
 		}
@@ -1037,9 +1037,9 @@ public class ConformanceTestTab extends ToolWindowWithMenu implements TestRunner
 			setPatientId(parms, regOrchestrationResponse.getRegisterPid().asString());
 		}
 
-		if (getSiteToIssueTestAgainst() == null) {
+		if (getSiteToIssueTestAgainst() == null && !currentActorOption.getTabConfig().isExternalStart()) {
 			new PopupMessage("Test Setup must be initialized");
-			return null;
+			return parms;
 		}
 		return parms;
 	}

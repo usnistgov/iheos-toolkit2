@@ -3,7 +3,7 @@ package gov.nist.toolkit.xdstools2.client.tabs.conformanceTest;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import gov.nist.toolkit.actortransaction.client.ActorType;
 import gov.nist.toolkit.results.client.TestInstance;
-import gov.nist.toolkit.services.client.ActorOption;
+import gov.nist.toolkit.actortransaction.client.ActorOption;
 import gov.nist.toolkit.xdstools2.client.command.command.GetCollectionMembersCommand;
 import gov.nist.toolkit.xdstools2.client.tabs.GatewayTestsTabs.BuildRGTestOrchestrationButton;
 import gov.nist.toolkit.xdstools2.client.util.ClientUtils;
