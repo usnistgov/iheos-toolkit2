@@ -15,6 +15,7 @@ import gov.nist.toolkit.valsupport.engine.DefaultValidationContextFactory;
 import gov.nist.toolkit.valsupport.engine.MessageValidatorEngine;
 import gov.nist.toolkit.valsupport.engine.ValidationStep;
 import gov.nist.toolkit.valsupport.registry.RegistryValidationInterface;
+import gov.nist.toolkit.xdsexception.ExceptionUtil;
 import org.apache.axiom.om.OMElement;
 import org.apache.axiom.om.OMNode;
 import org.apache.axiom.om.xpath.AXIOMXPath;
@@ -163,7 +164,7 @@ public class CommonMessageValidatorFactory implements MessageValidatorFactory2I 
 			xml.build();
 		} catch (Exception e) {
 			mvc = (mvc == null) ? new MessageValidatorEngine() : mvc;
-			ErrorRecorder er = ValUtil.reportError(erBuilder, mvc, "XML Parser", e.getMessage());
+			ErrorRecorder er = ValUtil.reportError(erBuilder, mvc, "XML Parser", ExceptionUtil.exception_details(e));
 			if (input == null)
 				er.detail("Input was null");
 			else
@@ -206,7 +207,7 @@ public class CommonMessageValidatorFactory implements MessageValidatorFactory2I 
 		} catch (Exception e) {
 			if (mvc == null)
 				mvc = new MessageValidatorEngine();
-			ErrorRecorder er = ValUtil.reportError(erBuilder, mvc, "XML Parser", e.getMessage());
+			ErrorRecorder er = ValUtil.reportError(erBuilder, mvc, "XML Parser", ExceptionUtil.exception_details(e));
 			if (input == null)
 				er.detail("Input was null");
 			else
@@ -251,7 +252,7 @@ public class CommonMessageValidatorFactory implements MessageValidatorFactory2I 
 		} catch (Exception e) {
 			if (mvc == null)
 				mvc = new MessageValidatorEngine();
-			ErrorRecorder er = ValUtil.reportError(erBuilder, mvc, "XML Parser", e.getMessage());
+			ErrorRecorder er = ValUtil.reportError(erBuilder, mvc, "XML Parser", ExceptionUtil.exception_details(e));
 			if (input == null)
 				er.detail("Input was null");
 			else {

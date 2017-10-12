@@ -337,5 +337,8 @@ public class SimulatorProperties {
 
     public static final String proxyPartner = "Proxy Partner";
 
-    public static final String simProxyTransformations = "SimProxy Sim Transformations";  // dynamic ones for testing
+    public static final String isProxyFrontEnd = "Is Proxy Front End";
+
+    public static final String simProxyRequestTransformations = "SimProxy Request Transformations";
+    public static final String simProxyResponseTransformations = "SimProxy Response Transformations";
 }

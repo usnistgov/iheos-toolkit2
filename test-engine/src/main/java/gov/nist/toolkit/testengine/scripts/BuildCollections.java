@@ -46,6 +46,7 @@ public class BuildCollections extends HttpServlet {
       collectionsDir.mkdirs(); // create if doesn't exist
       actorCollectionsDir.mkdirs();
 
+      logger.info("Updating Collections...");
       logger.info("Collections found:\n" + collections.keySet());
 
       for (Iterator <String> it = collections.keySet().iterator(); it.hasNext();) {

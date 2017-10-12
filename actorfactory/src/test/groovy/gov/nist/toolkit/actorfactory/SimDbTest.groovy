@@ -62,4 +62,8 @@ class SimDbTest extends Specification {
         file.exists()
         new SimDb().getAllSimIds().size() == 1
     }
+
+    def pause() {
+        sleep(5)
+    }
 }

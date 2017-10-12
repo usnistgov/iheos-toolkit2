@@ -1597,11 +1597,30 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements
         return DatasetFactory.getAllDatasets();
     }
 
+
     @Override
     public List<Result> fhirCreate(FhirCreateRequest request) throws Exception {
         installCommandContext(request);
         logger.debug(sessionID + ": fhirCreate()");
-        return new FhirServiceManager(session()).create(request.getSite(), request.getDatasetElement());
+        List<Result> results = new FhirServiceManager(session()).create(request.getSite(), request.getDatasetElement());
+        return results;
+    }
+
+    @Override
+    public List<Result> fhirTransaction(FhirTransactionRequest request) throws Exception {
+        installCommandContext(request);
+        logger.debug(sessionID + ": fhirTransaction()");
+        List<Result> results = new FhirServiceManager(session()).transaction(request.getSite(), request.getDatasetElement());
+        return results;
+    }
+
+    @Override
+    public String getDatasetContent(GetDatasetElementContentRequest request)  {
+        try {
+            return DatasetFactory.getContentForDisplay(request.getDatasetElement());
+        } catch (Exception e) {
+            return e.getMessage();
+        }
     }
 
 }

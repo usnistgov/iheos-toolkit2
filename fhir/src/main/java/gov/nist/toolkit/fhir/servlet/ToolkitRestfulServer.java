@@ -34,17 +34,26 @@ public class ToolkitRestfulServer extends RestfulServer implements IRestfulServe
         // What is important is that resourceName start with the resourcename (and ID etc following if present)
         // so we need to look for /fsim/ in serverBase and take everything after it
 
-        int fsimI = serverBase.indexOf("fsim/");
+//        String simStr = "fsim/";
+//
+//        int fsimI = serverBase.indexOf(simStr);
+//        if (fsimI == -1) {
+//            simStr = "sim/";
+//            fsimI = serverBase.indexOf(simStr);
+//        }
         String requestPath;
-        if (fsimI == -1) {
-            requestPath = theRequestPath.substring(serverBase.length());
-        } else {
-            requestPath = theRequestPath.substring(fsimI + "fsim/".length() - 1);
-            // requestPath now points to simID
-            requestPath = requestPath.substring(requestPath.indexOf('/') +1);
-            // requestPath now points to resource name
-        }
+//        if (fsimI == -1) {
+//            requestPath = theRequestPath.substring(serverBase.length());
+//        } else {
+//            requestPath = theRequestPath.substring(fsimI + simStr.length() - 1);
+//            // requestPath now points to simID
+//            requestPath = requestPath.substring(requestPath.indexOf('/') +1);
+//            // requestPath now points to resource name
+//        }
 
+        // requestPath is part of URL following base address
+
+        requestPath = theRequestPath.substring(serverBase.length());
 
         StringTokenizer tok = new UrlPathTokenizer(requestPath);
         String resourceName = null;

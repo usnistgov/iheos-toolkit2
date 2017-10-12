@@ -66,7 +66,7 @@ public class SoapMessageValidatorFactory implements MessageValidatorFactory2I {
             xml = Util.parse_xml(body);
             xml.build();
         } catch (Exception e) {
-            ErrorRecorder er = ValUtil.reportError(erBuilder, mvc, "XML Parser", e.getMessage());
+            ErrorRecorder er = ValUtil.reportError(erBuilder, mvc, "XML Parser", ExceptionUtil.exception_details(e));
             if (body == null)
                 er.detail("Input was null");
             else
@@ -118,7 +118,7 @@ public class SoapMessageValidatorFactory implements MessageValidatorFactory2I {
             xml = Util.parse_xml(body);
             xml.build();
         } catch (Exception e) {
-            ErrorRecorder er = ValUtil.reportError(erBuilder, mvc, "XML Parser", e.getMessage());
+            ErrorRecorder er = ValUtil.reportError(erBuilder, mvc, "XML Parser", ExceptionUtil.exception_details(e));
             if (body == null)
                 er.detail("Input was null");
             else
@@ -188,7 +188,7 @@ public class SoapMessageValidatorFactory implements MessageValidatorFactory2I {
         } catch (Exception e) {
             if (mvc == null)
                 mvc = new MessageValidatorEngine();
-            ErrorRecorder er = ValUtil.reportError(erBuilder, mvc, "XML Parser", e.getMessage());
+            ErrorRecorder er = ValUtil.reportError(erBuilder, mvc, "XML Parser", ExceptionUtil.exception_details(e));
             if (input == null)
                 er.detail("Input was null");
             else {
@@ -220,12 +220,12 @@ public class SoapMessageValidatorFactory implements MessageValidatorFactory2I {
         } catch (HttpParseException e) {
             mvc = (mvc == null) ? new MessageValidatorEngine() : mvc;
             String msg = "Input does not parse as an HTTP stream: " + ExceptionUtil.exception_details(e);
-            ValUtil.reportError(erBuilder, mvc, "HTTP Parser", msg + e.getMessage());
+            ValUtil.reportError(erBuilder, mvc, "HTTP Parser", msg + ExceptionUtil.exception_details(e));
             return mvc;
         } catch (ParseException e) {
             mvc = (mvc == null) ? new MessageValidatorEngine() : mvc;
             String msg = "Input does not parse as an HTTP stream: " + ExceptionUtil.exception_details(e);
-            ValUtil.reportError(erBuilder, mvc, "HTTP Parser", msg + e.getMessage());
+            ValUtil.reportError(erBuilder, mvc, "HTTP Parser", msg + ExceptionUtil.exception_details(e));
             return mvc;
         }
     }

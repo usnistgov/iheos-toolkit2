@@ -287,4 +287,9 @@ public class PropertyManager {
 	public void setExternalCache(String externalCache){
 		toolkitProperties.setProperty(EXTERNAL_CACHE,externalCache);
 	}
+
+    public String getProxyPort() {
+		loadProperties();
+		return (String) toolkitProperties.getProperty("Proxy_Port");
+    }
 }

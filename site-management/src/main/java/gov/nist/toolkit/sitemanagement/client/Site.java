@@ -48,7 +48,7 @@ import java.util.Set;
 public class Site  implements IsSerializable, Serializable {
 	private static final long serialVersionUID = 1L;
 	private String name = null;
-	TransactionCollection transactions = new TransactionCollection(false);
+	public TransactionCollection transactions = new TransactionCollection(false);
 	// There can be only one ODDS, one XDS.b, and one IDS repository in a site.
 	// An XDS.b Repository and a ODDS Repository
 	// can have the same repositoryUniqueId and endpoint. But
@@ -335,6 +335,7 @@ public class Site  implements IsSerializable, Serializable {
 		return name;
 	}
 
+
 	public String getEndpoint(TransactionType transaction, boolean isSecure, boolean isAsync) throws Exception {
 		String endpoint = getRawEndpoint(transaction, isSecure, isAsync);
 		if (endpoint == null) 
@@ -381,4 +382,5 @@ public class Site  implements IsSerializable, Serializable {
 	}
 
 	public boolean isSimulator() { return isASimulator; }
+
 }

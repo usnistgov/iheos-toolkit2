@@ -27,14 +27,31 @@ public class Installation {
 
     private PropertyServiceManager propertyServiceMgr = null;
     private static Logger logger = Logger.getLogger(Installation.class);
+    private ResourceCacheMgr resourceCacheMgr = null;
 
     static Installation me = null;
+
+    /**
+     * will self initialize to the production manager.  For testing purposes
+     * it can be initialized with TestResourceCacheFactory
+     * @return
+     */
+    public ResourceCacheMgr resourceCacheMgr() {
+        if (resourceCacheMgr == null)
+            resourceCacheMgr = ResourceCacheFactory.getResourceCacheMgr();
+        return resourceCacheMgr;
+    }
+
+    public void resourceCacheMgr(ResourceCacheMgr mgr) {
+        resourceCacheMgr = mgr;
+    }
 
     public String toString() {
         return String.format("warHome=%s externalCache=%s", warHome, externalCache);
     }
 
     static {
+        logger.info("Attempting static initialization of WARHOME");
         // This works for unit tests if warhome.txt is installed as part of a unit test environment
         String warhomeTxt = null;
         try {
@@ -42,6 +59,7 @@ public class Installation {
         } catch (Throwable t) {}
         if (warhomeTxt != null) {
             instance().warHome(new File(warhomeTxt).getParentFile());
+            logger.info("WARHOME initialized to " + instance().warHome);
         }
     }
 
@@ -235,7 +253,7 @@ public class Installation {
    }
 
     public File fhirSimDbFile() {
-        return new File(externalCache(), "resdb");
+        return new File(externalCache(), "simdb");
     }
 
     public List<String> getListenerPortRange() {
@@ -347,6 +365,12 @@ public class Installation {
     public File internalEnvironmentsFile() {
         return new File(toolkitxFile(), "environment");
     }
+    public File internalDatasetsFile() {
+        return new File(toolkitxFile(), "datasets");
+    }
+    public File internalResourceCacheFile() {
+        return new File(toolkitxFile(), "resourceCache");
+    }
 
     public File sessionLogFile(String sessionId) {
         return new File(warHome + sep + "SessionCache" + sep + sessionId);
@@ -426,4 +450,7 @@ public class Installation {
 		this.servletContextName = servletContextName;
 	}
 
+    public String getToolkitAsFhirServerBaseUrl() {
+        return "http://" + propertyServiceManager().getToolkitHost() + ":" + propertyServiceManager().getToolkitPort() + "/" + getServletContextName() + "/fhir";
+    }
 }

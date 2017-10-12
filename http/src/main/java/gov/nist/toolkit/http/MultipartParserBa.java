@@ -221,7 +221,7 @@ public class MultipartParserBa {
 			String name;
 			try {
 				contentTypeHeader = new HttpHeader(hp.message.getHeader("Content-Type"));
-			} catch (ParseException e) {
+			} catch (Exception e) {
 				return false;
 			}
 			name = contentTypeHeader.getName();

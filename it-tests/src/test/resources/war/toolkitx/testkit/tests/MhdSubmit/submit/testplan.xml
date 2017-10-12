@@ -1,0 +1,10 @@
+<TestPlan>
+    <Test>FhirTestClientCreate/create</Test>
+    <TestStep id="mhd_submit">
+        <ExpectedStatus>Success</ExpectedStatus>
+        <FhirCreateTransaction>
+            <ResourceFile>singledocsubmit.xml</ResourceFile>
+            <UrlExtension>/mhdrec/pdb</UrlExtension>
+        </FhirCreateTransaction>
+    </TestStep>
+</TestPlan>

@@ -1,15 +1,16 @@
 package gov.nist.toolkit.actortransaction.server
 
 import gov.nist.toolkit.configDatatypes.client.TransactionType
+import org.apache.http.HttpHeaders
 
 /**
  *
  */
 abstract class AbstractProxyTransform {
-    String inputHeader
-    byte[] inputBody
-    String outputHeader
-    byte[] outputBody
+    HttpHeaders inputHeaders
+    String inputBody
+    HttpHeaders outputHeaders
+    String outputBody
 
     /**
      * takes inputHeader, inputBody and produces outputHeader, outputBody

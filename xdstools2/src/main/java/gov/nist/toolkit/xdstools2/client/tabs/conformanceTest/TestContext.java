@@ -30,6 +30,10 @@ public class TestContext implements SiteManager {
     }
 
     public String verifyTestContext() {
+        return verifyTestContext(false);
+    }
+
+    public String verifyTestContext(boolean ignoreSiteSelection) {
         String msg;
         msg = verifyEnvironmentSelection();
         if (msg != null) return msg;
@@ -37,8 +41,10 @@ public class TestContext implements SiteManager {
         msg = verifyTestSession();
         if (msg != null) return msg;
 
-        msg = verifySite();
-        if (msg != null) return msg;
+        if (!ignoreSiteSelection) {
+            msg = verifySite();
+            if (msg != null) return msg;
+        }
 
         return null;  // good
     }

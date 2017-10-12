@@ -12,7 +12,7 @@ import gov.nist.toolkit.datasets.shared.DatasetModel;
 import gov.nist.toolkit.xdstools2.client.abstracts.AbstractView;
 import gov.nist.toolkit.xdstools2.client.abstracts.MessagePanel;
 import gov.nist.toolkit.xdstools2.client.util.ASite;
-import gov.nist.toolkit.xdstools2.client.widgets.DatasetTreeModel;
+import gov.nist.toolkit.xdstools2.client.widgets.datasetTreeModel.DatasetTreeModel;
 import gov.nist.toolkit.xdstools2.client.widgets.HorizontalFlowPanel;
 import gov.nist.toolkit.xdstools2.client.widgets.SystemSelector;
 
@@ -29,15 +29,17 @@ public class SubmitResourceView extends AbstractView<SubmitResourcePresenter> {
 //    private FlexTable siteTable = new FlexTable();
     private SimplePanel datasetsPanel = new SimplePanel();
     private Button runButton = new Button("Send Resource (CREATE)");
-    private Button viewResourceButton = new Button("View selected resource");
     private FlowPanel thePanel = new FlowPanel();
     private FlowPanel siteTablePanel = new FlowPanel();
     private FlowPanel logPanel = new FlowPanel();
     private FlowPanel inspectorPanel = new FlowPanel();
+    private FlowPanel viewPanel = new FlowPanel();
+    private FlowPanel simLogPanel = new FlowPanel();
 
     private HTML datasetLabel = new HTML("Data Set");
     private HTML resourceTypeLabel = new HTML("Resource Type");
     private HTML resourceLabel = new HTML("Resource");
+    private FlowPanel contentPanel = new FlowPanel();
 
     private SystemSelector systemSelector = new SystemSelector("To System") {
         @Override
@@ -95,6 +97,8 @@ public class SubmitResourceView extends AbstractView<SubmitResourcePresenter> {
         datasetWrapper2.add(datasetWrapper);
         thePanel.add(datasetWrapper2);
 
+        tabTopPanel.add(contentPanel);
+
         HTML buttonPanelTitle = new HTML("Actions");
         buttonPanelTitle.addStyleName("tool-section-header");
         buttonPanelTitle.setWidth("100%");
@@ -103,9 +107,7 @@ public class SubmitResourceView extends AbstractView<SubmitResourcePresenter> {
 
         HorizontalFlowPanel buttonPanel = new HorizontalFlowPanel();
         runButton.setEnabled(false);
-        viewResourceButton.setEnabled(false);
         buttonPanel.add(runButton);
-        buttonPanel.add(viewResourceButton);
         thePanel.add(buttonPanel);
 
         thePanel.add(new HTML("<br />"));
@@ -113,15 +115,27 @@ public class SubmitResourceView extends AbstractView<SubmitResourcePresenter> {
         logTitle.addStyleName("tool-section-header");
         thePanel.add(logTitle);
 
+        ScrollPanel logWrapperPanel = new ScrollPanel();
+        logWrapperPanel.add(logPanel);
+
         TabLayoutPanel bottomPanel = new TabLayoutPanel(1.5, Style.Unit.EM);
-        bottomPanel.setWidth("800px");
+        bottomPanel.setWidth("100%");
+//        bottomPanel.setWidth("800px");
         bottomPanel.setHeight("400px");
         thePanel.add(bottomPanel);
         logPanel.setWidth("100%");
         logPanel.setHeight("100%");
-        bottomPanel.add(logPanel, "[Log]");
-
+        bottomPanel.add(logWrapperPanel, "[Log]");
         bottomPanel.add(inspectorPanel, "[Inspector]");
+
+        ScrollPanel viewScrollPanel = new ScrollPanel();
+        viewScrollPanel.add(viewPanel);
+        bottomPanel.add(viewScrollPanel, "[Resource]");
+
+        ScrollPanel simLogScrollPanel = new ScrollPanel();
+        simLogScrollPanel.add(simLogPanel);
+        bottomPanel.add(simLogScrollPanel, "[SimLog");
+
         inspectorPanel.setWidth("100%");
 
         return tabTopPanel;
@@ -176,7 +190,6 @@ public class SubmitResourceView extends AbstractView<SubmitResourcePresenter> {
 
     void setRunEnabled(boolean enabled) {
         runButton.setEnabled(enabled);
-        viewResourceButton.setEnabled((enabled));
     }
 
     void addLog(String msg) {
@@ -189,4 +202,12 @@ public class SubmitResourceView extends AbstractView<SubmitResourcePresenter> {
 
     void clearLog() { logPanel.clear(); }
 
+    void setContent(Widget content) {
+        viewPanel.clear();
+        viewPanel.add(content);
+    }
+
+    void clearContent() {
+        contentPanel.setVisible(false);
+    }
 }

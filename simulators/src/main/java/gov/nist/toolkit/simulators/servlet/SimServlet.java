@@ -3,8 +3,8 @@ package gov.nist.toolkit.simulators.servlet;
 import gov.nist.toolkit.actorfactory.PatientIdentityFeedServlet;
 import gov.nist.toolkit.actortransaction.client.ATFactory;
 import gov.nist.toolkit.actortransaction.client.ActorType;
-import gov.nist.toolkit.configDatatypes.server.SimulatorProperties;
 import gov.nist.toolkit.configDatatypes.client.TransactionType;
+import gov.nist.toolkit.configDatatypes.server.SimulatorProperties;
 import gov.nist.toolkit.errorrecording.ErrorRecorder;
 import gov.nist.toolkit.errorrecording.GwtErrorRecorderBuilder;
 import gov.nist.toolkit.http.HttpHeader;
@@ -16,12 +16,12 @@ import gov.nist.toolkit.simcommon.client.SimId;
 import gov.nist.toolkit.simcommon.client.SimulatorConfig;
 import gov.nist.toolkit.simcommon.client.config.SimulatorConfigElement;
 import gov.nist.toolkit.simcommon.server.*;
+import gov.nist.toolkit.simulators.proxy.service.ElementalReverseProxy;
 import gov.nist.toolkit.simulators.sim.reg.store.MetadataCollection;
 import gov.nist.toolkit.simulators.sim.reg.store.RegIndex;
 import gov.nist.toolkit.simulators.sim.rep.RepIndex;
 import gov.nist.toolkit.simulators.support.BaseDsActorSimulator;
 import gov.nist.toolkit.simulators.support.DsSimCommon;
-import gov.nist.toolkit.simcommon.server.SimCommon;
 import gov.nist.toolkit.sitemanagement.SeparateSiteLoader;
 import gov.nist.toolkit.sitemanagement.client.Site;
 import gov.nist.toolkit.soap.http.SoapFault;
@@ -62,6 +62,8 @@ public class SimServlet  extends HttpServlet {
 	//	File simDbDir;
 	MessageValidationResults mvr;
 	PatientIdentityFeedServlet patientIdentityFeedServlet;
+	boolean isProxy;
+	boolean isFhir;
 
 
 	@Override
@@ -86,6 +88,14 @@ public class SimServlet  extends HttpServlet {
 		onServiceStart();
 
 		logger.info("SimServlet initialized");
+
+
+		// Initialize SimProxy
+		try {
+			ElementalReverseProxy.start(Installation.instance().propertyServiceManager().getProxyPort());
+		} catch (Exception e) {
+			throw new ServletException(e);
+		}
 	}
 
 	@Override
@@ -158,14 +168,12 @@ public class SimServlet  extends HttpServlet {
 		}
 
 		if (actor == null || actor.equals("null")) {
-//			try {
-				SimDb sdb = new SimDb(new SimId(simid), null, null);
+			try {
+				SimDb sdb = new SimDb(new SimId(simid));
 				actor = sdb.getActorsForSimulator().get(0);
-//			} catch (IOException e) {
-//				e.printStackTrace();
-//			} catch (NoSimException e) {
-//				e.printStackTrace();
-//			}
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
 		}
 
 		if (actor == null || actor.equals("null")) {
@@ -252,14 +260,12 @@ public class SimServlet  extends HttpServlet {
 		}
 
 		if (actor == null || actor.equals("null")) {
-//			try {
-				SimDb sdb = new SimDb(new SimId(simid), null, null);
+			try {
+				SimDb sdb = new SimDb(new SimId(simid));
 				actor = sdb.getActorsForSimulator().get(0);
-//			} catch (IOException e) {
-//				e.printStackTrace();
-//			} catch (NoSimException e) {
-//				e.printStackTrace();
-//			}
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
 		}
 
 		if (actor == null || actor.equals("null")) {
@@ -337,14 +343,12 @@ public class SimServlet  extends HttpServlet {
 		}
 
 		if (actor == null || actor.equals("null")) {
-//			try {
-				SimDb sdb = new SimDb(new SimId(simid), null, null);
+			try {
+				SimDb sdb = new SimDb(new SimId(simid));
 				actor = sdb.getActorsForSimulator().get(0);
-//			} catch (IOException e) {
-//				e.printStackTrace();
-//			} catch (NoSimException e) {
-//				e.printStackTrace();
-//			}
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
 		}
 
 		if (actor == null || actor.equals("null")) {
@@ -444,11 +448,22 @@ public class SimServlet  extends HttpServlet {
 		try {
 			simid = new SimId(uriParts[simIndex + 1]);
 			actor = uriParts[simIndex + 2];
-			transaction = uriParts[simIndex + 3];
+			if (uriParts.length > simIndex + 3)
+				transaction = uriParts[simIndex + 3];
+			else
+				transaction = "any";  // this happens with a FHIR transaction through the simproxy
 		}
 		catch (Exception e) {
 			sendSoapFault(response, "Simulator: Do not understand endpoint http://" + request.getLocalName() + ":" + request.getLocalPort() + uri + endpointFormat + " - " + e.getClass().getName() + ": " + e.getMessage(), mvc, vc);
 			return;
+		}
+
+		simid = SimDb.getFullSimId(simid);
+		isProxy = ActorType.findActor(simid.getActorType()).equals(ActorType.SIM_PROXY);
+		isFhir = simid.isFhir();
+		if (isProxy && isFhir) {
+			transaction = TransactionType.FHIR.getCode();
+			actor = ActorType.FHIR_SERVER.getShortName();
 		}
 
 		try {
@@ -470,6 +485,7 @@ public class SimServlet  extends HttpServlet {
 			sendSoapFault(response, "Simulator: Do not understand the actor requested by this endpoint (" + actor + ") in http://" + request.getLocalName() + ":" + request.getLocalPort() + uri + endpointFormat, mvc, vc);
 			return;
 		}
+		isFhir = actorType.isFhir();
 
 		boolean transactionOk = true;
 
@@ -498,6 +514,11 @@ public class SimServlet  extends HttpServlet {
 			if (asce != null)
 				vc.setCodesFilename(asce.asString());
 
+			asce = asc.get(SimulatorProperties.VALIDATE_CODES);
+			if (asce != null) {
+				vc.isValidateCodes = asce.asBoolean();
+			}
+
 			SimCommon common= new SimCommon(db, request.isSecure(), vc, response, mvc);
 			DsSimCommon dsSimCommon = new DsSimCommon(common, regIndex, repIndex, mvc);
 
@@ -515,7 +536,10 @@ public class SimServlet  extends HttpServlet {
 			//
 			//////////////////////////////////////////////////////////////
 
-			response.setContentType("application/soap+xml");
+			if (actorType == ActorType.FHIR_SERVER)
+				response.setContentType("application/fhir+xml");  // TODO - JSON
+			else
+				response.setContentType("application/soap+xml");
 
 //			BaseDsActorSimulator sim = getSimulatorRuntime(simid);
 			BaseActorSimulator baseSim = RuntimeManager.getSimulatorRuntime(simid);
@@ -531,15 +555,6 @@ public class SimServlet  extends HttpServlet {
 					transactionOk = sim.run(transactionType, mvc, validation);
 					sim.onTransactionEnd(asc);
 				}
-			} else {
-				// this is custom for the SimProxy - but maybe others over time
-				baseSim.db = db;
-				baseSim.common = common;
-				baseSim.config = asc;
-				baseSim.onTransactionBegin(asc);
-				transactionOk = baseSim.run(transactionType, mvc, validation);
-				baseSim.onTransactionEnd(asc);
-
 			}
 
 			// Archive logs
@@ -602,6 +617,11 @@ public class SimServlet  extends HttpServlet {
 			responseSent = true;
 		}
 		catch (Exception e) {
+			sendSoapFault(response, ExceptionUtil.exception_details(e), mvc, vc);
+			logger.error(ExceptionUtil.exception_details(e));
+			responseSent = true;
+		}
+		catch (AssertionError e) {
 			sendSoapFault(response, ExceptionUtil.exception_details(e), mvc, vc);
 			logger.error(ExceptionUtil.exception_details(e));
 			responseSent = true;
@@ -785,6 +805,10 @@ public class SimServlet  extends HttpServlet {
 
 	private void sendSoapFault(HttpServletResponse response, String message, MessageValidatorEngine mvc, ValidationContext vc) {
 		try {
+			if (isFhir) {
+				response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, message);
+				return;
+			}
 			SoapFault sf = new SoapFault(SoapFault.FaultCodes.Sender, message);
 			SimCommon c = new SimCommon(response);
 			c.vc = vc;

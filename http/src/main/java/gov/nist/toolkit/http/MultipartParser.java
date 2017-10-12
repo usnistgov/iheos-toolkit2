@@ -3,10 +3,9 @@ package gov.nist.toolkit.http;
 import gov.nist.toolkit.errorrecording.ErrorRecorder;
 import gov.nist.toolkit.errorrecording.client.XdsErrorCode;
 import gov.nist.toolkit.http.HttpHeader.HttpHeaderParseException;
+import org.apache.log4j.Logger;
 
 import java.util.List;
-
-import org.apache.log4j.Logger;
 
 public class MultipartParser {
 	HttpParser hp;
@@ -124,8 +123,10 @@ public class MultipartParser {
 		boolean multi = isMultipart();
 		message.boundary = contentTypeHeader.getParam("boundary");
 		logger.debug("MultipartParser(" + this.toString() + ") - boundary = " + message.boundary);
-		er.detail(contentTypeHeader.asString());
-		er.detail("boundary = " + message.boundary);
+		if (er != null) {
+			er.detail(contentTypeHeader.asString());
+			er.detail("boundary = " + message.boundary);
+		}
 		if (message.boundary == null || message.boundary.equals("")) {
 			message = null;
 			return;
@@ -217,7 +218,7 @@ public class MultipartParser {
 		String name;
 		try {
 			contentTypeHeader = new HttpHeader(hp.message.getHeader("Content-Type"));
-		} catch (ParseException e) {
+		} catch (Exception e) {
 			return false;
 		}
 		name = contentTypeHeader.getName();

@@ -3,6 +3,8 @@ package gov.nist.toolkit.datasets.server
 import gov.nist.toolkit.datasets.shared.DatasetElement
 import gov.nist.toolkit.datasets.shared.DatasetModel
 import gov.nist.toolkit.installation.Installation
+import gov.nist.toolkit.utilities.xml.OMFormatter
+
 /**
  *
  */
@@ -23,7 +25,7 @@ class DatasetFactory {
                 names << f.name
             }
         }
-        names
+        names.sort()
     }
 
     static DatasetModel getDataset(File root, String name) {
@@ -48,6 +50,15 @@ class DatasetFactory {
         }
     }
 
+    static String getContentForDisplay(DatasetElement ele) {
+        File f =  new File(Installation.instance().datasets(), ele.file)
+        if (!f.exists()) throw new Exception("File ${f} does not exist. - name is ${ele.name} type is ${ele.type} file is ${ele.file}");
+        String txt = f.text
+        if (txt.trim().startsWith('<'))
+            txt = new OMFormatter(txt).toHtml()
+        return txt
+    }
+
     static void scanResources(DatasetModel model, String name, String root, File resourceTypeDir) {
         String type = resourceTypeDir.name
         resourceTypeDir.listFiles().each { File file ->
@@ -59,7 +70,7 @@ class DatasetFactory {
 
     static List<DatasetModel> getAllDatasets() {
         List<DatasetModel> all = new ArrayList<>();
-        def names = datasetNames
+        def names = datasetNames.sort()
         names.each { all << getDataset(it) }
         all
     }

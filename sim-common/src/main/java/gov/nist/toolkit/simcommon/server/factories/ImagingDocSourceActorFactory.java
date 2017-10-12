@@ -29,7 +29,7 @@ public class ImagingDocSourceActorFactory extends AbstractActorFactory implement
 				TransactionType.WADO_RETRIEVE
 				);
 
-	protected Simulator buildNew(SimManager simm, SimId newID, boolean configureBase) {
+	protected Simulator buildNew(SimManager simm, SimId newID, boolean configureBase) throws Exception {
 		this.newID = newID;
 
 		ActorType actorType = ActorType.IMAGING_DOC_SOURCE;

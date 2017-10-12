@@ -159,8 +159,10 @@ public abstract class GenericQueryTab  extends ToolWindow {
         ClientUtils.INSTANCE.getEventBus().addHandler(TestSessionChangedEvent.TYPE, new TestSessionChangedEventHandler() {
             @Override
             public void onTestSessionChanged(TestSessionChangedEvent event) {
-                reloadTransactionOfferings();
-                refreshData();
+                if (event.getChangeType() == TestSessionChangedEvent.ChangeType.SELECT) {
+                    reloadTransactionOfferings();
+                    refreshData();
+                }
             }
         });
         ((Xdstools2EventBus) ClientUtils.INSTANCE.getEventBus()).addEnvironmentChangedEventHandler(new EnvironmentChangedEvent.EnvironmentChangedEventHandler() {

@@ -1,6 +1,6 @@
 package gov.nist.toolkit.itTests.sim
 
-import gov.nist.toolkit.actortransaction.EndpointParser
+import gov.nist.toolkit.actortransaction.server.EndpointParser
 import gov.nist.toolkit.actortransaction.client.ActorType
 import gov.nist.toolkit.configDatatypes.server.SimulatorProperties
 import gov.nist.toolkit.services.server.ToolkitApi

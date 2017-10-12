@@ -23,6 +23,7 @@ public class PartParser extends HttpParser {
 		logger.debug("new PartParser(" + this.toString() + ")");
 		this.er = er;
 		this.appendixV = appendixV;
+		String msgAsString = new String(msg);
 		init(msg, part, er);
 		initPart();
 	}
@@ -46,7 +47,7 @@ public class PartParser extends HttpParser {
 			} else {
 				part.contentID = unWrap(part.contentID);
 			}
-		} catch (ParseException e) {
+		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}

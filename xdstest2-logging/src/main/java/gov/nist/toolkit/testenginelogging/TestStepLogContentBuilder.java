@@ -126,16 +126,18 @@ public class TestStepLogContentBuilder {
     private void parseReports() {
         // without use of the map we get duplicates because of the Assertions
         // section of the log.xml file format
-        Map<String, String> map = new HashMap<>();
+//        Map<String, String> map = new HashMap<>();
         for (OMElement ele : XmlUtil.decendentsWithLocalName(root, "Report")) {
             String name = ele.getAttributeValue(nameQname);
             String value = ele.getText();
-            map.put(name, value);
+            c.getReportsSummary().add(name + " = " + value);
+            c.addReportDTO(new ReportDTO(name, value));
+//            map.put(name, value);
         }
-        for(String key : map.keySet()) {
-            c.getReportsSummary().add(key + " = " + map.get(key));
-            c.addReportDTO(new ReportDTO(key, map.get(key)));
-        }
+//        for(String key : map.keySet()) {
+//            c.getReportsSummary().add(key + " = " + map.get(key));
+//            c.addReportDTO(new ReportDTO(key, map.get(key)));
+//        }
 
     }
 

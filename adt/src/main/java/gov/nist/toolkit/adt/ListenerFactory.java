@@ -103,7 +103,8 @@ public class ListenerFactory {
     public static void terminateAll() {
         for (ThreadPoolItem tpi : threadPool) {
             if (tpi.getInUse()) {
-                tpi.thread.interrupt();
+                if (tpi.thread != null)
+                    tpi.thread.interrupt();
                 tpi.release();
             }
         }

@@ -79,7 +79,7 @@ public class ConformanceTestTab extends ToolWindowWithMenu implements TestRunner
 
 	private final TestStatistics testStatistics = new TestStatistics();
 
-	private final ActorOption currentActorOption = new ActorOption("none");
+	private final ActorOptionConfig currentActorOption = new ActorOptionConfig("none");
 	private String currentActorTypeDescription;
 	private SiteSpec siteToIssueTestAgainst = null;
 
@@ -95,7 +95,7 @@ public class ConformanceTestTab extends ToolWindowWithMenu implements TestRunner
 	private Map<TestInstance, TestOverviewDTO> testOverviewDTOs = new HashMap<>();
 
 	// for each actor type id, the list of tests for it
-	private Map<ActorOption, List<TestInstance>> testsPerActorOption = new HashMap<>();
+	private Map<ActorOptionConfig, List<TestInstance>> testsPerActorOption = new HashMap<>();
 
 	private ConformanceTestMainView mainView;
 	private AbstractOrchestrationButton orchInit = null;
@@ -198,7 +198,7 @@ public class ConformanceTestTab extends ToolWindowWithMenu implements TestRunner
 
 
 
-	private List<TestOverviewDTO> testOverviews(Map<ActorOption, List<TestInstance>> testsPerActorOption, Map<TestInstance, TestOverviewDTO> testOverviewDTOs, ActorOption actorOption) {
+	private List<TestOverviewDTO> testOverviews(Map<ActorOptionConfig, List<TestInstance>> testsPerActorOption, Map<TestInstance, TestOverviewDTO> testOverviewDTOs, ActorOptionConfig actorOption) {
 		List<TestInstance> testsForThisActorOption = testsPerActorOption.get(actorOption);
 		List<TestOverviewDTO> overviews = new ArrayList<>();
 		for (TestOverviewDTO dto : testOverviewDTOs.values()) {
@@ -220,7 +220,7 @@ public class ConformanceTestTab extends ToolWindowWithMenu implements TestRunner
 		return !externalStart || selfTest;
 	}
 
-	private TabConfig getOptionTabConfig(ActorOption actorOption) {
+	private TabConfig getOptionTabConfig(ActorOptionConfig actorOption) {
 		TabConfig tabConfig = actorOption.getTabConfig();
 		TabConfig profiles = tabConfig.getFirstChildTabConfig();
 		for (TabConfig profile : profiles.getChildTabConfigs())  {
@@ -269,7 +269,7 @@ public class ConformanceTestTab extends ToolWindowWithMenu implements TestRunner
 	 * updates the build since it could not be constructed correctly at first.
 	 * This must be called after testCollectionDefinitionDAOs is initialized.
 	 */
-	private void updateTestsOverviewHeader(Map<ActorOption, List<TestInstance>> testsPerActorOption, Map<TestInstance, TestOverviewDTO> testOverviewDTOs, TestStatistics testStatistics, ActorOption actorOption) {
+	private void updateTestsOverviewHeader(Map<ActorOptionConfig, List<TestInstance>> testsPerActorOption, Map<TestInstance, TestOverviewDTO> testOverviewDTOs, TestStatistics testStatistics, ActorOptionConfig actorOption) {
 		updateTestStatistics(testsPerActorOption, testOverviewDTOs, testStatistics, actorOption);
 
 		// Display testStatus with statistics
@@ -277,7 +277,7 @@ public class ConformanceTestTab extends ToolWindowWithMenu implements TestRunner
 		testsHeaderView.update(testStatistics, currentActorTypeDescription + " - " + getCurrentOptionTitle());
 	}
 
-	private void updateTestStatistics(Map<ActorOption, List<TestInstance>> testsPerActorOption, Map<TestInstance, TestOverviewDTO> testOverviewDTOs, TestStatistics testStatistics, ActorOption actorOption) {
+	private void updateTestStatistics(Map<ActorOptionConfig, List<TestInstance>> testsPerActorOption, Map<TestInstance, TestOverviewDTO> testOverviewDTOs, TestStatistics testStatistics, ActorOptionConfig actorOption) {
 		Collection<TestOverviewDTO> items = testOverviews(testsPerActorOption, testOverviewDTOs, actorOption);
 		resetStatistics(testStatistics,items.size());
 		for (TestOverviewDTO testOverview : items) {
@@ -291,11 +291,11 @@ public class ConformanceTestTab extends ToolWindowWithMenu implements TestRunner
 		}
 	}
 
-	public void setTestStatistics(final HTML statsBar,  final ActorOption actorOption) {
+	public void setTestStatistics(final HTML statsBar,  final ActorOptionConfig actorOption) {
 		final TestStatistics testStatistics = new TestStatistics();
 
 	    final Map<TestInstance, TestOverviewDTO> myTestOverviewDTOs = new HashMap<>();
-		final Map<ActorOption, List<TestInstance>> myTestsPerActorOption = new HashMap<>();
+		final Map<ActorOptionConfig, List<TestInstance>> myTestsPerActorOption = new HashMap<>();
 
 		String loadImgHtmlStr = "<img style=\"float:left;\" src=\"icons2/ajax-loader.gif\"/>";
 
@@ -779,7 +779,7 @@ public class ConformanceTestTab extends ToolWindowWithMenu implements TestRunner
 			initializationPanel.add(orchInit.panel());
 		}
 		else if (currentActorOption.isRec()) {
-			orchInit = new BuildRecTestOrchestrationButton(this, testContext, testContextView, initializationPanel, label);
+			orchInit = new BuildRecTestOrchestrationButton(this, testContext, testContextView, initializationPanel, label, currentActorOption);
 			orchInit.addSelfTestClickHandler(new RefreshTestCollectionHandler());
 			initializationPanel.add(orchInit.panel());
 		}
@@ -867,9 +867,9 @@ public class ConformanceTestTab extends ToolWindowWithMenu implements TestRunner
 	}
 
 	private class DeleteAllClickHandler implements ClickHandler {
-		ActorOption actorOption;
+		ActorOptionConfig actorOption;
 
-		DeleteAllClickHandler(ActorOption actorOption) {
+		DeleteAllClickHandler(ActorOptionConfig actorOption) {
 			this.actorOption = actorOption;
 		}
 
@@ -1037,9 +1037,9 @@ public class ConformanceTestTab extends ToolWindowWithMenu implements TestRunner
 			setPatientId(parms, regOrchestrationResponse.getRegisterPid().asString());
 		}
 
-		if (getSiteToIssueTestAgainst() == null) {
+		if (getSiteToIssueTestAgainst() == null && !currentActorOption.getTabConfig().isExternalStart()) {
 			new PopupMessage("Test Setup must be initialized");
-			return null;
+			return parms;
 		}
 		return parms;
 	}
@@ -1124,6 +1124,6 @@ public class ConformanceTestTab extends ToolWindowWithMenu implements TestRunner
 	}
 
 	@Override
-	public ActorOption getCurrentActorOption() { return currentActorOption; }
+	public ActorOptionConfig getCurrentActorOption() { return currentActorOption; }
 
 }

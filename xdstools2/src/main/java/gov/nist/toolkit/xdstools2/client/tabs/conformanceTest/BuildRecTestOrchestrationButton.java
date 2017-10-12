@@ -3,6 +3,8 @@ package gov.nist.toolkit.xdstools2.client.tabs.conformanceTest;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.Panel;
+import gov.nist.toolkit.actortransaction.client.ActorOption;
+import gov.nist.toolkit.actortransaction.client.ActorType;
 import gov.nist.toolkit.services.client.RawResponse;
 import gov.nist.toolkit.services.client.RecOrchestrationRequest;
 import gov.nist.toolkit.services.client.RecOrchestrationResponse;
@@ -13,9 +15,6 @@ import gov.nist.toolkit.xdstools2.client.widgets.OrchestrationSupportTestsDispla
 import gov.nist.toolkit.xdstools2.client.widgets.buttons.AbstractOrchestrationButton;
 import gov.nist.toolkit.xdstools2.shared.command.request.BuildRecTestOrchestrationRequest;
 
-import java.util.ArrayList;
-import java.util.List;
-
 /**
  *
  */
@@ -23,21 +22,16 @@ public class BuildRecTestOrchestrationButton extends AbstractOrchestrationButton
     private ConformanceTestTab testTab;
     private Panel initializationPanel;
     private TestContext testContext;
+    private ActorOption actorOption;
     private TestContextView testContextView;
     private FlowPanel initializationResultsPanel = new FlowPanel();
 
-    public static List<ActorAndOption> ACTOR_OPTIONS = new ArrayList<>();
-    static {
-        ACTOR_OPTIONS = java.util.Arrays.asList(
-                new ActorAndOption("rec", "", "Required", false),
-                new ActorAndOption("rec_xua", XUA_OPTION, "XUA Option", false));
-    }
-
-    BuildRecTestOrchestrationButton(ConformanceTestTab testTab, TestContext testContext, TestContextView testContextView, Panel initializationPanel, String label) {
+    BuildRecTestOrchestrationButton(ConformanceTestTab testTab, TestContext testContext, TestContextView testContextView, Panel initializationPanel, String label, ActorOption actorOption) {
         this.initializationPanel = initializationPanel;
         this.testTab = testTab;
         this.testContext = testContext;
         this.testContextView = testContextView;
+        this.actorOption = actorOption;
 
         setParentPanel(initializationPanel);
 
@@ -45,8 +39,21 @@ public class BuildRecTestOrchestrationButton extends AbstractOrchestrationButton
         panel().add(initializationResultsPanel);
     }
 
+
+    /**
+     * MHD orchestration requirements:
+     *
+     * Document Source SUT
+     * Build Registry/Repository sim
+     * Build XDS_on_FHIR_Recipient simproxy
+     * Link simproxy to sim
+     * advertise the details of both
+     *
+     */
+    @Override
     public void orchestrate() {
-        String msg = testContext.verifyTestContext();
+        final boolean testingAClient = actorOption.optionId.equals(ActorType.XDS_on_FHIR_Recipient.getOption());
+        String msg = testContext.verifyTestContext(testingAClient);
         if (msg != null) {
             testContextView.launchDialog(msg);
             return;
@@ -55,17 +62,20 @@ public class BuildRecTestOrchestrationButton extends AbstractOrchestrationButton
         initializationResultsPanel.clear();
         testTab.getMainView().showLoadingMessage("Initializing...");
 
-        RecOrchestrationRequest request = new RecOrchestrationRequest();
+        RecOrchestrationRequest request = new RecOrchestrationRequest(actorOption);
         request.setUserName(testTab.getCurrentTestSession());
         request.setEnvironmentName(testTab.getEnvironmentSelection());
         request.setUseExistingState(!isResetRequested());
-        SiteSpec sutSiteSpec = testContext.getSiteUnderTest().siteSpec();
-        if (isSaml()) {
-            setSamlAssertion(sutSiteSpec);
-        }
-        request.setRegistrySut(sutSiteSpec);
+        request.getActorOption().copyFrom(testTab.getCurrentActorOption());
+        if (!testingAClient) {
+            SiteSpec sutSiteSpec = testContext.getSiteUnderTest().siteSpec();
+            if (isSaml()) {
+                setSamlAssertion(sutSiteSpec);
+            }
+            request.setRegistrySut(sutSiteSpec);
 
-        testTab.setSiteToIssueTestAgainst(sutSiteSpec);
+            testTab.setSiteToIssueTestAgainst(sutSiteSpec);
+        }
 
         new BuildRecTestOrchestrationCommand(){
             @Override
@@ -80,7 +90,7 @@ public class BuildRecTestOrchestrationButton extends AbstractOrchestrationButton
 
                 initializationResultsPanel.add(new HTML("Initialization Complete"));
 
-                if (testContext.getSiteUnderTest() != null) {
+                if (testContext.getSiteUnderTest() != null && !testingAClient) {
                     initializationResultsPanel.add(new SiteDisplay("System Under Test Configuration", testContext.getSiteUnderTest()));
                 }
 
@@ -100,4 +110,5 @@ public class BuildRecTestOrchestrationButton extends AbstractOrchestrationButton
             }
         }.run(new BuildRecTestOrchestrationRequest(ClientUtils.INSTANCE.getCommandContext(),request));
     }
+
 }

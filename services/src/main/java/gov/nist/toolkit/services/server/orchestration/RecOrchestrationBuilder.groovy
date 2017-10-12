@@ -3,11 +3,18 @@ package gov.nist.toolkit.services.server.orchestration
 import gov.nist.toolkit.actortransaction.client.ActorType
 import gov.nist.toolkit.configDatatypes.client.Pid
 import gov.nist.toolkit.configDatatypes.client.PidBuilder
+import gov.nist.toolkit.configDatatypes.server.SimulatorProperties
+import gov.nist.toolkit.actortransaction.client.ActorOption
 import gov.nist.toolkit.services.client.RawResponse
 import gov.nist.toolkit.services.client.RecOrchestrationRequest
 import gov.nist.toolkit.services.client.RecOrchestrationResponse
+import gov.nist.toolkit.services.server.RawResponseBuilder
 import gov.nist.toolkit.services.server.ToolkitApi
 import gov.nist.toolkit.session.server.Session
+import gov.nist.toolkit.simcommon.client.SimId
+import gov.nist.toolkit.simcommon.client.SimulatorConfig
+import gov.nist.toolkit.simcommon.client.config.SimulatorConfigElement
+import gov.nist.toolkit.simcommon.server.SimCache
 import groovy.transform.TypeChecked
 /**
  *
@@ -18,42 +25,124 @@ class RecOrchestrationBuilder {
     private Session session
     private RecOrchestrationRequest request
     private Util util
+    private ActorOption actorOption = new ActorOption()
 
     public RecOrchestrationBuilder(ToolkitApi api, Session session, RecOrchestrationRequest request) {
         this.api = api
         this.request = request
         this.session = session
         this.util = new Util(api)
+        this.actorOption.copyFrom(request.actorOption)
     }
 
     RawResponse buildTestEnvironment() {
-        RecOrchestrationResponse response = new RecOrchestrationResponse()
-        Map<String, TestInstanceManager> pidNameMap = [
-                // RecPIF does not really exist as a test.  It will never be sent.  Just a
-                // name for the TestInstanceManager to use in storing the property
-                // in Orch Props
-                RecPIF:  new TestInstanceManager(request, response, 'RecPIF')
-        ]
 
-        boolean forceNewPatientIds = !request.isUseExistingState()
 
-        OrchestrationProperties orchProps = new OrchestrationProperties(session, request.userName, ActorType.DOCUMENT_RECIPIENT, pidNameMap.keySet(), forceNewPatientIds)
-
-        Pid registerPid
-        if (forceNewPatientIds) {
-            registerPid = session.allocateNewPid()
-            orchProps.setProperty("RecPIF", registerPid.asString())
+        if (actorOption.optionId.equals(ActorType.XDS_on_FHIR_Recipient.shortName)) {
+            return setupXdsOnFhir()
         } else {
-            registerPid = PidBuilder.createPid(orchProps.getProperty("RecPIF"))
+            RecOrchestrationResponse response = new RecOrchestrationResponse()
+            Map<String, TestInstanceManager> pidNameMap = [
+                    // RecPIF does not really exist as a test.  It will never be sent.  Just a
+                    // name for the TestInstanceManager to use in storing the property
+                    // in Orch Props
+                    RecPIF:  new TestInstanceManager(request, response, 'RecPIF')
+            ]
+
+            boolean forceNewPatientIds = !request.isUseExistingState()
+
+            OrchestrationProperties orchProps = new OrchestrationProperties(session, request.userName, ActorType.DOCUMENT_RECIPIENT, pidNameMap.keySet(), forceNewPatientIds)
+
+            Pid registerPid
+            if (forceNewPatientIds) {
+                registerPid = session.allocateNewPid()
+                orchProps.setProperty("RecPIF", registerPid.asString())
+            } else {
+                registerPid = PidBuilder.createPid(orchProps.getProperty("RecPIF"))
+            }
+
+            response.setRegisterPid(registerPid)
+
+            orchProps.save();
+
+            return response
+
         }
-
-        response.setRegisterPid(registerPid)
-
-        orchProps.save();
-
-        return response
     }
 
+/**
+ * MHD orchestration requirements:
+ *
+ * MHD Document Source SUT
+ * Build Registry/Repository sim
+ * Build XDS_on_FHIR_Recipient simproxy
+ * Link simproxy to sim
+ * advertise the details of both
+ *
+ */
+    RawResponse setupXdsOnFhir() {
+        try {
+            String supportIdName = 'xdsonfhir_test_support'
+            SimId rrSimId
+            SimulatorConfig rrSimConfig
+            String simProxyIdName = 'xdsonfhir_simproxy'
+            SimId proxySimId
+            SimulatorConfig simProxyConfig
 
+            RecOrchestrationResponse response = new RecOrchestrationResponse()
+            Map<String, TestInstanceManager> pidNameMap = [
+                    pid:  new TestInstanceManager(request, response, ''), // No testId needed since PIF won't be sent
+            ]
 
+            boolean forceNewPatientIds = !request.isUseExistingState()
+
+            boolean reuse = false  // updated as we progress
+            rrSimId = new SimId(request.userName, supportIdName, ActorType.REPOSITORY_REGISTRY.name, request.environmentName)
+            proxySimId = new SimId(request.userName, simProxyIdName, ActorType.SIM_PROXY.name, request.environmentName)
+            OrchestrationProperties orchProps = new OrchestrationProperties(session, request.userName, ActorType.REPOSITORY_REGISTRY, pidNameMap.keySet(), !request.useExistingState)
+            Pid pid
+
+            if (!request.isUseExistingSimulator()) {
+                api.deleteSimulatorIfItExists(rrSimId)
+                api.deleteSimulatorIfItExists(proxySimId)
+                orchProps.clear()
+            }
+            if (api.simulatorExists(rrSimId)) {
+                rrSimConfig = api.getConfig(rrSimId)
+                simProxyConfig = api.getConfig(proxySimId)
+                reuse = true
+            } else {
+                rrSimConfig = api.createSimulator(rrSimId).getConfig(0)
+                simProxyConfig = api.createSimulator(proxySimId).getConfig(0)
+            }
+            if (orchProps.getProperty("pid") != null && !forceNewPatientIds) {
+                pid = PidBuilder.createPid(orchProps.getProperty("pid"))
+            } else {
+                pid  = session.allocateNewPid()
+                orchProps.setProperty("pid", pid.asString())
+            }
+            response.setRegisterPid(pid)
+
+            if (!request.isUseExistingSimulator()) {
+                // disable checking of Patient Identity Feed
+                SimulatorConfigElement idsEle = rrSimConfig.getConfigEle(SimulatorProperties.VALIDATE_AGAINST_PATIENT_IDENTITY_FEED)
+                idsEle.setBooleanValue(false)
+                api.saveSimulator(rrSimConfig)
+
+                SimulatorConfigElement forwardEle = simProxyConfig.getConfigEle(SimulatorProperties.proxyForwardSite)
+                forwardEle.setStringValue(rrSimId.toString())
+
+                api.saveSimulator(simProxyConfig)
+            }
+            orchProps.save()
+
+            response.rrConfig = rrSimConfig
+            response.simProxyConfig = simProxyConfig
+            response.supportSite = SimCache.getSite(session.getId(), rrSimId.toString())
+
+            return response
+        } catch (Exception e) {
+            return RawResponseBuilder.build(e);
+        }
+    }
 }

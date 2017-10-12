@@ -1,11 +1,10 @@
 package gov.nist.toolkit.http;
 
-import java.util.ArrayList;
-import java.util.List;
-
+import edu.emory.mathcs.backport.java.util.Arrays;
 import org.apache.log4j.Logger;
 
-import edu.emory.mathcs.backport.java.util.Arrays;
+import java.util.ArrayList;
+import java.util.List;
 
 public class HeaderTokenizer {
 	String inputString;

@@ -26,7 +26,7 @@ public class SimulatorConfigElement implements Serializable,IsSerializable {
 
 
 	// cannot use Object class - will not serialize so tricks are necessary
-	public enum ValueType implements IsSerializable { BOOLEAN, STRING , SINGLE_SELECT_LIST, MULTI_SELECT_LIST, PATIENT_ERROR_MAP};
+	public enum ValueType implements IsSerializable { BOOLEAN, STRING , SINGLE_SELECT_LIST, MULTI_SELECT_LIST, SIMPLE_LIST, PATIENT_ERROR_MAP};
 	private ValueType valueType = ValueType.STRING;
 	private boolean booleanValue = false;
 	private String  stringValue = "";
@@ -57,7 +57,13 @@ public class SimulatorConfigElement implements Serializable,IsSerializable {
         setListValueWithType(values, ((isMultiSelect) ? ValueType.MULTI_SELECT_LIST : ValueType.SINGLE_SELECT_LIST));
     }
 
-    public SimulatorConfigElement(String name, ParamType type, String[] vals, boolean isMultiSelect) {
+	public SimulatorConfigElement(String name, ParamType type, List<String> values) {
+		this.name = name;
+		this.type = type;
+		setListValueWithType(values, ValueType.SIMPLE_LIST);
+	}
+
+	public SimulatorConfigElement(String name, ParamType type, String[] vals, boolean isMultiSelect) {
         this.name = name;
         this.type = type;
         List<String> values = new ArrayList<>();
@@ -116,7 +122,7 @@ public class SimulatorConfigElement implements Serializable,IsSerializable {
 	public boolean hasString() { return valueType == ValueType.STRING;  }
     public boolean hasSingleList() { return valueType == ValueType.SINGLE_SELECT_LIST; }
     public boolean hasMultiList() { return valueType == ValueType.MULTI_SELECT_LIST; }
-    public boolean hasList() { return hasSingleList() || hasMultiList(); }
+    public boolean hasList() { return hasSingleList() || hasMultiList() || valueType == ValueType.SIMPLE_LIST; }
 	// removed because it breaks Jackson serialization
 //    public boolean isPatientErrorMap() { return valueType == ValueType.PATIENT_ERROR_MAP; }
 

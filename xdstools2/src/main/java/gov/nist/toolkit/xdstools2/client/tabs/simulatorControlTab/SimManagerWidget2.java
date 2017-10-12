@@ -46,9 +46,10 @@ import gov.nist.toolkit.simcommon.client.SimulatorConfig;
 import gov.nist.toolkit.simcommon.client.SimulatorStats;
 import gov.nist.toolkit.simcommon.client.config.SimulatorConfigElement;
 import gov.nist.toolkit.xdstools2.client.command.command.GetTransactionInstancesCommand;
-import gov.nist.toolkit.xdstools2.client.tabs.SimulatorMessageViewTab;
 import gov.nist.toolkit.xdstools2.client.tabs.genericQueryTab.GenericQueryTab;
+import gov.nist.toolkit.xdstools2.client.tabs.simMsgViewerTab.SimMsgViewer;
 import gov.nist.toolkit.xdstools2.client.tabs.simulatorControlTab.od.OddsEditTab;
+import gov.nist.toolkit.xdstools2.client.toolLauncher.NewToolLauncher;
 import gov.nist.toolkit.xdstools2.shared.command.CommandContext;
 import gov.nist.toolkit.xdstools2.shared.command.request.GetTransactionRequest;
 
@@ -602,8 +603,8 @@ public class SimManagerWidget2 extends Composite {
                     @Override
                     public void execute(SimInfo simInfo) {
                         SimulatorConfig config = simInfo.getSimulatorConfig();
-                        SimulatorMessageViewTab viewTab = new SimulatorMessageViewTab();
-                        viewTab.onTabLoad(config.getId());
+                        // Use the newer Sim Log Viewer
+                        new NewToolLauncher().launch(new SimMsgViewer(config.getId().toString()));
                     }
                 })) {
                     @Override

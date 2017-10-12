@@ -9,6 +9,7 @@ import gov.nist.toolkit.valsupport.engine.MessageValidatorEngine;
 import gov.nist.toolkit.valsupport.message.MessageBody;
 import gov.nist.toolkit.valsupport.message.MessageBodyContainer;
 import gov.nist.toolkit.valsupport.registry.RegistryValidationInterface;
+import gov.nist.toolkit.xdsexception.ExceptionUtil;
 import org.apache.axiom.om.OMElement;
 import org.apache.log4j.Logger;
 
@@ -36,7 +37,7 @@ public class RootElementValidatorFactory {
             xml = Util.parse_xml(body);
             xml.build();
         } catch (Exception e) {
-            ErrorRecorder er = ValUtil.reportError(erBuilder, mvc, "XML Parser", e.getMessage());
+            ErrorRecorder er = ValUtil.reportError(erBuilder, mvc, "XML Parser", ExceptionUtil.exception_details(e));
             if (body == null)
                 er.detail("Input was null");
             else

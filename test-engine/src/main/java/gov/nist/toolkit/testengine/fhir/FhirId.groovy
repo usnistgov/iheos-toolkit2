@@ -19,6 +19,7 @@ class FhirId {
             vid = locationParts[historyIndex + 1]
         } else {
             id = locationParts[locationParts.size()-1]
+            type = locationParts[locationParts.size()-2]
         }
 
     }

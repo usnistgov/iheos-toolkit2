@@ -1,6 +1,7 @@
 package gov.nist.toolkit.simulators.servlet;
 
-import gov.nist.toolkit.actortransaction.EndpointParser;
+import gov.nist.toolkit.actortransaction.client.ActorType;
+import gov.nist.toolkit.actortransaction.server.EndpointParser;
 import gov.nist.toolkit.configDatatypes.server.SimulatorProperties;
 import gov.nist.toolkit.installation.Installation;
 import gov.nist.toolkit.simcommon.client.SimId;
@@ -24,11 +25,13 @@ public class ReconfigureSimulators extends HttpServlet {
     private String configuredHost;
     private String configuredPort;
     private String configuredTlsPort;
+    private String configuredProxyPort;
 
     // These are used for testing only
     private String overrideHost = null;
     private String overridePort = null;
     private String overrideTlsPort = null;
+    private String overrideProxyPort = null;
 
     private static Logger logger = Logger.getLogger(ReconfigureSimulators.class);
 
@@ -36,8 +39,9 @@ public class ReconfigureSimulators extends HttpServlet {
         configuredHost = Installation.instance().propertyServiceManager().getToolkitHost();
         configuredPort = Installation.instance().propertyServiceManager().getToolkitPort();
         configuredTlsPort = Installation.instance().propertyServiceManager().getToolkitTlsPort();
+        configuredProxyPort = Installation.instance().propertyServiceManager().getProxyPort();
 
-        for (SimId simId : new SimDb().getAllSimIds()) {
+        for (SimId simId : SimDb.getAllSimIds()) {
             reconfigure(simId);
         }
     }
@@ -54,6 +58,14 @@ public class ReconfigureSimulators extends HttpServlet {
             return;
         }
 
+        ActorType actorType = ActorType.findActor(config.getActorType());
+        if (actorType == null) {
+            logger.error("ERROR: Simulator " + simId + " of ActorType " + config.getActorType() + " - actor type does not exist");
+            return;
+        }
+
+        boolean isProxy = actorType.isProxy();
+
         for (SimulatorConfigElement ele : config.getEndpointConfigs()) {
             boolean isTls = SimulatorProperties.isTlsEndpoint(ele.getName());
             String existingEndpoint = ele.asString();
@@ -67,17 +79,27 @@ public class ReconfigureSimulators extends HttpServlet {
             String host = ep.getHost();
             String port = ep.getPort();
 
-            if (isTls) {
-                if (!host.equals(getConfiguredHost()) || !port.equals(getConfiguredTlsPort())) {
-                    ep.updateHostAndPort(getConfiguredHost(), getConfiguredTlsPort());
-                    ele.setStringValue(ep.getEndpoint());
-                    updated = true;
+            if (isProxy) {
+                if (!isTls) {
+                    if (!port.equals(getConfiguredPort())) {
+                        ep.updateHostAndPort(getConfiguredHost(), getConfiguredProxyPort());
+                        ele.setStringValue(ep.getEndpoint());
+                        updated = true;
+                    }
                 }
             } else {
-                if (!host.equals(getConfiguredHost()) || !port.equals(getConfiguredPort())) {
-                    ep.updateHostAndPort(getConfiguredHost(), getConfiguredPort());
-                    ele.setStringValue(ep.getEndpoint());
-                    updated = true;
+                if (isTls) {
+                    if (!host.equals(getConfiguredHost()) || !port.equals(getConfiguredTlsPort())) {
+                        ep.updateHostAndPort(getConfiguredHost(), getConfiguredTlsPort());
+                        ele.setStringValue(ep.getEndpoint());
+                        updated = true;
+                    }
+                } else {
+                    if (!host.equals(getConfiguredHost()) || !port.equals(getConfiguredPort())) {
+                        ep.updateHostAndPort(getConfiguredHost(), getConfiguredPort());
+                        ele.setStringValue(ep.getEndpoint());
+                        updated = true;
+                    }
                 }
             }
         }
@@ -107,18 +129,24 @@ public class ReconfigureSimulators extends HttpServlet {
         this.overrideTlsPort = overrideTlsPort;
     }
 
-    public String getConfiguredHost() {
+    private String getConfiguredHost() {
         if (overrideHost != null) return overrideHost;
         return configuredHost;
     }
 
-    public String getConfiguredPort() {
+    private String getConfiguredPort() {
         if (overridePort != null) return overridePort;
         return configuredPort;
     }
 
-    public String getConfiguredTlsPort() {
+    private String getConfiguredTlsPort() {
         if (overrideTlsPort != null) return overrideTlsPort;
         return configuredTlsPort;
     }
+
+    private String getConfiguredProxyPort() {
+        if (overrideProxyPort != null) return overrideProxyPort;
+        return configuredProxyPort;
+    }
+
 }

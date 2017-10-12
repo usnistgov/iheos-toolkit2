@@ -8,7 +8,6 @@ import gov.nist.toolkit.errorrecording.GwtErrorRecorderBuilder;
 import gov.nist.toolkit.simcommon.client.NoSimException;
 import gov.nist.toolkit.simcommon.client.SimId;
 import gov.nist.toolkit.simcommon.client.SimulatorConfig;
-import gov.nist.toolkit.simcommon.server.SimDb;
 import gov.nist.toolkit.utilities.io.Io;
 import gov.nist.toolkit.valsupport.client.ValidationContext;
 import gov.nist.toolkit.valsupport.engine.MessageValidatorEngine;
@@ -131,16 +130,14 @@ public class SimCommon {
 
 
 	static public void deleteSim(SimId simulatorId) {
-//		try {
+		try {
 			logger.info("Delete sim " + simulatorId);
-			SimDb simdb = new SimDb(simulatorId, null, null);
+			SimDb simdb = new SimDb(simulatorId);
 			File simdir = simdb.getIpDir();
 			Io.delete(simdir);
-//		} catch (IOException e) {
-//			// doesn't exist - ok
-//		} catch (NoSimException e) {
-//			// doesn't exist - ok
-//		}
+		} catch (Exception e) {
+			// doesn't exist - ok
+		}
 	}
 	
 	public void setLogger(Logger log) {

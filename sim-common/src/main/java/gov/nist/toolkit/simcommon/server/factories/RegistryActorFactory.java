@@ -3,8 +3,8 @@ package gov.nist.toolkit.simcommon.server.factories;
 import gov.nist.toolkit.actortransaction.client.ActorType;
 import gov.nist.toolkit.actortransaction.client.ParamType;
 import gov.nist.toolkit.adt.ListenerFactory;
-import gov.nist.toolkit.configDatatypes.server.SimulatorProperties;
 import gov.nist.toolkit.configDatatypes.client.TransactionType;
+import gov.nist.toolkit.configDatatypes.server.SimulatorProperties;
 import gov.nist.toolkit.envSetting.EnvSetting;
 import gov.nist.toolkit.installation.Installation;
 import gov.nist.toolkit.simcommon.client.SimId;
@@ -17,8 +17,6 @@ import gov.nist.toolkit.simcommon.server.SimManager;
 import gov.nist.toolkit.sitemanagement.client.Site;
 import gov.nist.toolkit.sitemanagement.client.TransactionBean;
 import gov.nist.toolkit.sitemanagement.client.TransactionBean.RepositoryType;
-import gov.nist.toolkit.xdsexception.NoSessionException;
-import gov.nist.toolkit.xdsexception.client.EnvironmentNotSelectedException;
 
 import java.io.File;
 import java.util.Arrays;
@@ -46,7 +44,7 @@ public class RegistryActorFactory extends AbstractActorFactory implements IActor
 	// and the caller gets the responsibility for starting the listeners
 	// Listeners cannot be started until the sim config is saved
 	@Override
-	public Simulator buildNew(SimManager simm, SimId simId, boolean configureBase) throws EnvironmentNotSelectedException, NoSessionException {
+	public Simulator buildNew(SimManager simm, SimId simId, boolean configureBase) throws Exception {
 		ActorType actorType = ActorType.REGISTRY;
 		SimulatorConfig sc;
 		if (configureBase)
@@ -97,7 +95,7 @@ public class RegistryActorFactory extends AbstractActorFactory implements IActor
 
 	public void asRecipient() { isRecipient = true; }
 
-	protected void verifyActorConfigurationOptions(SimulatorConfig config) {
+	protected void verifyActorConfigurationOptions(SimulatorConfig config) throws Exception {
 		SimulatorConfigElement ele = config.get(SimulatorProperties.UPDATE_METADATA_OPTION);
 		if (ele == null)
 			return;
@@ -139,7 +137,7 @@ public class RegistryActorFactory extends AbstractActorFactory implements IActor
 			site = new Site(siteName);
 
 		site.user = asc.getId().user;  // labels this site as coming from a sim
-		site.user = asc.getId().user;  // labels this site as coming from a sim
+		//site.user = asc.getId().user;  // labels this site as coming from a sim
 
 		boolean isAsync = false;
 		

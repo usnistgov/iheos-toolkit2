@@ -3,6 +3,8 @@ package gov.nist.toolkit.xdstools2.client.widgets;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.event.logical.shared.ValueChangeEvent;
+import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.user.client.ui.*;
 import gov.nist.toolkit.xdstools2.client.util.ASite;
 
@@ -16,6 +18,8 @@ abstract public class SystemSelector implements IsWidget {
     private FlowPanel thePanel = new FlowPanel();
     private FlowPanel siteTablePanel = new FlowPanel();
     private List<Button> siteButtons = new ArrayList<>();
+    private CheckBox showAllCheckBox = new CheckBox("Show All");
+    private List<ASite> sites;
 
     abstract public void doSiteSelected(String label);
 
@@ -26,18 +30,34 @@ abstract public class SystemSelector implements IsWidget {
         siteTableTitle.addStyleName("tool-section-header");
         thePanel.add(siteTableTitle);
         thePanel.add(siteTablePanel);
-        siteTablePanel.add(new HTML("No appropriate systems to show"));
+        //siteTablePanel.add(new HTML("No appropriate systems to show"));
+        showAllCheckBox.setValue(true);
+        showAllCheckBox.addValueChangeHandler(new ValueChangeHandler<Boolean>() {
+            @Override
+            public void onValueChange(ValueChangeEvent<Boolean> valueChangeEvent) {
+                displaySites();
+            }
+        });
     }
 
-
     public void setSiteNames(List<ASite> sites) {
-        if (!sites.isEmpty()) siteTablePanel.clear();
+        this.sites = sites;
+        siteTablePanel.add(showAllCheckBox);
+        displaySites();
+    }
+
+    private void displaySites() {
+        //if (!sites.isEmpty())
+        while (siteTablePanel.getWidgetCount() > 1)
+            siteTablePanel.remove(siteTablePanel.getWidgetCount() - 1);
         for (ASite site : sites) {
-            Button b = new Button(site.getName());
-            b.setText(site.getName());
-            b.setEnabled(site.isEnabled());
-            siteButtons.add(b);
-            siteTablePanel.add(b);
+            if (isShowAll() || site.isEnabled()) {
+                Button b = new Button(site.getName());
+                b.setText(site.getName());
+                b.setEnabled(site.isEnabled());
+                siteButtons.add(b);
+                siteTablePanel.add(b);
+            }
         }
         bindSites();
     }
@@ -90,6 +110,10 @@ abstract public class SystemSelector implements IsWidget {
         if (siteButtons.size() > 0)
             return siteButtons.get(0);
         return new Button("Fake");
+    }
+
+    private boolean isShowAll() {
+        return showAllCheckBox.getValue();
     }
 
     @Override

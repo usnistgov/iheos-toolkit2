@@ -10,6 +10,13 @@ import java.util.*;
 
 /**
  * Actor types defined by test engine.  A subset of these are available as simulators.
+ *
+ * The profile/actor/option are now coded in a subtle way.  The shortName (third parameter to the constuctor)
+ * is interpreted as profile_actor_option with the _ being the separator.  If the shortName has only two parts
+ * then the profile is assumed missing and defaults to xds.  This aligns with the Conformance Tool configuration file
+ * ConfTestsTabs.xml which lives in toolkitx.
+ *
+ * So the big picture is that the actor type is now, in some cases, actually the profile/actor/option type.
  */
 public enum ActorType implements IsSerializable, Serializable {
     XDR_DOC_SRC(
@@ -46,6 +53,7 @@ public enum ActorType implements IsSerializable, Serializable {
             null,
             null,
             false,
+            null,
             null
     ),
     REGISTRY_MPQ(
@@ -376,6 +384,7 @@ public enum ActorType implements IsSerializable, Serializable {
             "gov.nist.toolkit.simulators.sim.ids.IdsHttpActorSimulator",
             Arrays.asList(TransactionType.WADO_RETRIEVE),
             false,
+            null,
             null
         ),
     IMAGING_DOC_CONSUMER(
@@ -400,19 +409,53 @@ public enum ActorType implements IsSerializable, Serializable {
             null,
             true
     ),
+    MHD_DOC_RECIPIENT(
+            "MHD Document Recipient",
+            Arrays.asList(""),
+            "mhdrec",
+            "gov.nist.toolkit.simcommon.server.factories.FhirActorFactory",  //  ???
+            "gov.nist.toolkit.fhir.simulators.FhirSimulator",                // ???
+            Arrays.asList(TransactionType.FHIR),
+            true,
+            null,
+            true
+    ),
     SIM_PROXY(
             "Sim Proxy",
             Arrays.asList(""),
             "simproxy",
-            "gov.nist.toolkit.simProxy.server.proxy.SimProxyFactory",
-            "gov.nist.toolkit.simProxy.server.proxy.SimProxySimulator",
+            "gov.nist.toolkit.simulators.proxy.sim.SimProxyFactory",
+            "gov.nist.toolkit.simulators.proxy.sim.SimProxySimulator",  // only constructor should be used
             Arrays.asList(TransactionType.PIF),  // place holder - transaction types
-            true,  // show in config
+            false,  // show in config - only partially configured - only used in IT tests
             null,  // actorsFileLabel
             null,   // httpSimulatorClassName
             null,    // http transaction types
             false,    // is fhir
-            Arrays.asList("")   // proxy transform classes (extend AbstractProxyTransform)
+            new ArrayList<String>(),
+            new ArrayList<String>()
+    ),
+    XDS_on_FHIR_Recipient(   //
+            "XDS on FHIR Recipient",
+            Arrays.asList(""),
+            "mhd_rec_xdsonfhir",
+            "gov.nist.toolkit.simulators.proxy.sim.SimProxyFactory",
+            "gov.nist.toolkit.simulators.proxy.sim.SimProxySimulator",  // only constructor should be used
+            Arrays.asList(TransactionType.PROV_DOC_BUNDLE),  // place holder - transaction types
+            true,  // show in config - only partially configured - only used in IT tests
+            null,  // actorsFileLabel
+            null,   // httpSimulatorClassName
+            null,    // http transaction types
+            false,    // is fhir
+            // request transform classes
+            Arrays.asList(
+                    "gov.nist.toolkit.simulators.proxy.transforms.MhdToXdsEndpointTransform",
+                    "gov.nist.toolkit.simulators.proxy.transforms.MhdToPnrContentTransform"
+            ),
+            // response transform classes
+            Arrays.asList(
+                    "gov.nist.toolkit.simulators.proxy.transforms.RegistryResponseToOperationOutcomeTransform"
+            )
     ),
     ANY(
             "Any",
@@ -441,6 +484,7 @@ public enum ActorType implements IsSerializable, Serializable {
     String httpSimulatorClassName;
     boolean isFhir;
     List<String> proxyTransformClassNames;
+    List<String> proxyResponseTransformClassNames;
 
     ActorType() {
     } // for GWT
@@ -458,6 +502,7 @@ public enum ActorType implements IsSerializable, Serializable {
         this.httpTransactionTypes = new ArrayList<>();
         this.httpSimulatorClassName = null;
         this.isFhir = isFhir;
+        this.proxyTransformClassNames = null;
     }
 
     // All growth happens here
@@ -465,14 +510,40 @@ public enum ActorType implements IsSerializable, Serializable {
        String simulatorClassName, List<TransactionType> tt, boolean showInConfig,
        String actorsFileLabel, String httpSimulatorClassName, List<TransactionType> httpTt,
               boolean isFhir,
-              List<String> proxyTransformClassNames) {
+              List<String> proxyTransformClassNames,
+              List<String> proxyResponseTransformClassNames) {
        this(name, altNames, shortName, simulatorFactoryName, simulatorClassName, tt, showInConfig, actorsFileLabel, false);
        if (httpTt == null)
            httpTt = new ArrayList<>();
        this.httpTransactionTypes = httpTt;
        this.httpSimulatorClassName = httpSimulatorClassName;
        this.isFhir = isFhir;
+       if (proxyTransformClassNames == null)
+           proxyTransformClassNames = new ArrayList<>();
        this.proxyTransformClassNames = proxyTransformClassNames;
+       this.proxyResponseTransformClassNames = proxyResponseTransformClassNames;
+   }
+
+   public ActorOption getActorOption()  {
+        return new ActorOption(shortName);
+   }
+
+   public String getProfile()  {
+        return new ActorOption(shortName).getProfileId();
+   }
+
+   public String getActor()  {
+        return new ActorOption(shortName).getActorTypeId();
+   }
+
+   public String getOption()  {
+        return new ActorOption(shortName).getOptionId();
+   }
+
+   public boolean isProxy() {
+        if (proxyTransformClassNames == null) return false;
+        if (proxyTransformClassNames.size() == 0) return false;
+        return true;
    }
 
    public boolean isFhir() { return isFhir; }
@@ -668,5 +739,9 @@ public enum ActorType implements IsSerializable, Serializable {
 
     public List<String> getProxyTransformClassNames() {
         return proxyTransformClassNames;
+    }
+
+    public List<String> getProxyResponseTransformClassNames() {
+       return proxyResponseTransformClassNames;
     }
 }

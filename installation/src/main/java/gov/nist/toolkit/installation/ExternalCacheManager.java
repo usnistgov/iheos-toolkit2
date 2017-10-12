@@ -28,7 +28,7 @@ public class ExternalCacheManager {
         if (Installation.instance().externalCache() == null)
             Installation.instance().externalCache(location);
         // initialize environment
-        initializeDefaultEnvironment(location, Installation.instance().environmentFile());
+        initializeExternalCacheWithInternalData(location);
         return null;
     }
 
@@ -39,23 +39,51 @@ public class ExternalCacheManager {
         if (error != null) throw new XdsException(error, "");
         File environment = Installation.instance().environmentFile();
         // initialize environment
-        initializeDefaultEnvironment(location, environment);
+        initializeExternalCacheWithInternalData(location);
         // initialize test log cache
         Installation.instance().testLogCache().mkdirs();
         // initialize SimDb
         Installation.instance().simDbFile().mkdirs();
     }
 
-    private static void initializeDefaultEnvironment(File location, File environment) throws XdsException {
-        logger.info("initialize default environment check");
-        if (!environment.exists() || !Installation.instance().environmentFile(Installation.DEFAULT_ENVIRONMENT_NAME).exists()) {
-            logger.info("Initializing environments in " + location);
+    private static void initializeExternalCacheWithInternalData(File externalCache) throws XdsException {
+        logger.info("Initialize external cache check");
+        if (!Installation.instance().environmentFile().exists() || !Installation.instance().environmentFile(Installation.DEFAULT_ENVIRONMENT_NAME).exists()) {
+            logger.info("Initializing environments in " + externalCache);
             try {
-                FileUtils.copyDirectory(Installation.instance().internalEnvironmentsFile(), new File(location, "environment"));
+                FileUtils.copyDirectory(Installation.instance().internalEnvironmentsFile(), new File(externalCache, "environment"));
             } catch (IOException e) {
-                throw new XdsException("Cannot initialize environments area of External Cache at " + location, "", e);
+                throw new XdsException("Cannot initialize environments area of External Cache at " + externalCache, "", e);
             }
+        } else {
+            logger.info("Environments exist - not updating.");
         }
+
+//        if (!Installation.instance().datasets().exists()) {
+            logger.info("Initializing datasets in " + externalCache);
+            try {
+                FileUtils.copyDirectory(Installation.instance().internalDatasetsFile(), new File(externalCache, "datasets"));
+            } catch (IOException e) {
+                String msg = "Cannot initialize datasets area of External Cache at " + externalCache + " - " + e.getMessage();
+                logger.error(msg);
+                //throw new XdsException(msg, "", e);
+            }
+//        } else {
+//            logger.info("Datasets exist - not updating.");
+//        }
+
+//        if (!Installation.instance().resourceCacheFile().exists()) {
+            logger.info("Initializing resource cache in " + externalCache);
+            try {
+                FileUtils.copyDirectory(Installation.instance().internalResourceCacheFile(), new File(externalCache, "resourceCache"));
+            } catch (IOException e) {
+                String msg = "Cannot initialize resourceCache area of External Cache at " + externalCache + " - " + e.getMessage();
+                logger.error(msg);
+               // throw new XdsException(msg, "", e);
+            }
+//        } else {
+//            logger.info("Resource cache exists - not updating.");
+//        }
     }
 
     private static void initializeDefaultSites() throws XdsException {

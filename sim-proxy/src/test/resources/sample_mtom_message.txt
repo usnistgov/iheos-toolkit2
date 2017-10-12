@@ -1,7 +1,7 @@
 --MIMEBoundary_494859fac46e21a68c012f8f4fe208a370fc32b6e07ae79f
 Content-Type: application/xop+xml; charset=UTF-8; type="application/soap+xml"
 Content-Transfer-Encoding: binary
-Content-ID: <1.694859fac46e21a68c012f8f4fe208a370fc32b6e07ae79f@apache.org>
+Content-ID: <1.694859fac46e21a68c012f8f4fe208a370fc32b6e07ae79f>
 
 <?xml version='1.0' encoding='UTF-8'?><soapenv:Envelope xmlns:soapenv="http://www.w3.org/2003/05/soap-envelope"><soapenv:Header xmlns:wsa="http://www.w3.org/2005/08/addressing"><wsa:To soapenv:mustUnderstand="true">http://localhost:8888/sim/default__rr/rep/prb</wsa:To><wsa:MessageID soapenv:mustUnderstand="true">urn:uuid:B163C7B266257EAA091504010553455</wsa:MessageID><wsa:Action soapenv:mustUnderstand="true">urn:ihe:iti:2007:ProvideAndRegisterDocumentSet-b</wsa:Action></soapenv:Header><soapenv:Body><xdsb:ProvideAndRegisterDocumentSetRequest xmlns:xdsb="urn:ihe:iti:xds-b:2007"><lcm:SubmitObjectsRequest xmlns:lcm="urn:oasis:names:tc:ebxml-regrep:xsd:lcm:3.0"><rim:RegistryObjectList xmlns:rim="urn:oasis:names:tc:ebxml-regrep:xsd:rim:3.0"><rim:ExtrinsicObject id="Document01" objectType="urn:uuid:7edca82f-054d-47f2-a032-9b2a5b5186c1" mimeType="text/plain"><rim:Slot name="creationTime"><rim:ValueList><rim:Value>20061224</rim:Value>
 
@@ -238,7 +238,7 @@ Content-ID: <1.694859fac46e21a68c012f8f4fe208a370fc32b6e07ae79f@apache.org>
 --MIMEBoundary_494859fac46e21a68c012f8f4fe208a370fc32b6e07ae79f
 Content-Type: text/plain
 Content-Transfer-Encoding: binary
-Content-ID: <2.694859fac46e21a68c012f8f4fe208a370fc32b6e07ae79f@apache.org>
+Content-ID: <2.694859fac46e21a68c012f8f4fe208a370fc32b6e07ae79f>
 
 This is my document.
 
