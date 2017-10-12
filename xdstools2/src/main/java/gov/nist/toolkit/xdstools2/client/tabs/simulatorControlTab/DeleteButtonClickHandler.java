@@ -23,7 +23,7 @@ class DeleteButtonClickHandler implements ClickHandler {
 		delete(true);
 	}
 
-	public void delete(boolean refresh) {
+	public void delete(final boolean refresh) {
 		new DeleteConfigCommand(){
 			@Override
 			public void onComplete(String result) {
