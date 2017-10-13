@@ -16,16 +16,16 @@ public class ActorOption implements Serializable, IsSerializable {
     public ActorOption(String actorTypeShortName)  {
         String[] parts = actorTypeShortName.split("_");
         if (parts.length >= 3) {
-            profileId = parts[0];
-            actorTypeId = parts[1];
+            actorTypeId = parts[0];
+            profileId = parts[1];
             optionId = parts[2];
         } else if (parts.length == 2) {
-            profileId = "xds";
             actorTypeId = parts[0];
+            profileId = "xds";
             optionId = parts[1];
         } else if (parts.length == 1) {
-            profileId = "xds";
             actorTypeId = parts[0];
+            profileId = "xds";
             optionId = "";
         }
     }
