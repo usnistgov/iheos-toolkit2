@@ -38,29 +38,37 @@ class ToolTabConfigVerifyTcCodesTest extends Specification {
 
             TabConfig profiles = actorTabConfig.getFirstChildTabConfig()
             "Profiles".equals(profiles.getLabel())
-            TabConfig xdsProfile = profiles.getFirstChildTabConfig()
-            "XDS".equals(xdsProfile.getLabel())
-            TabConfig options = xdsProfile.getFirstChildTabConfig()
-            "Options".equals(options.getLabel())
 
-            int optionCt = 0
-            for (TabConfig option: options.getChildTabConfigs()) {
-                String actorTypeCode = actorTabConfig.getTcCode()
-                if (!"".equals(option.getTcCode())) {
-                    actorTypeCode += "_" + option.getTcCode()
-                }
-                boolean foundMatch = false
-                for (ActorType actorType : ActorType) {
-                    if (actorType.getShortName().equals(actorTypeCode))
-                        foundMatch = true
-                }
-                if (!foundMatch)
-                    print "Code: " + actorTypeCode + " not found!"
-                assert foundMatch
-                optionCt++
+            String actorTypeCode = actorTabConfig.getTcCode()
+            for (TabConfig profile : profiles.getChildTabConfigs()) {
+                String profileTypeCode = profile.getTcCode();
+                int optionCt = 0
+                TabConfig options = profile.getFirstChildTabConfig()
+               for (TabConfig option : options.getChildTabConfigs())  {
+                   StringBuilder actorTypeShortName =  new StringBuilder(actorTypeCode)
+                   if (!"".equals(profileTypeCode)&&!"xds".equals(profileTypeCode)) {
+                      actorTypeShortName.append("_")
+                      actorTypeShortName.append(profileTypeCode)
+                   }
+                   if (!"".equals(option.getTcCode())) { // "" translates to Required option
+                       actorTypeShortName.append("_")
+                       actorTypeShortName.append(option.getTcCode())
+                   }
+                   boolean foundMatch = false
+                   String shortNameStr = actorTypeShortName.toString()
+                   for (ActorType actorType : ActorType) {
+                       if (actorType.getShortName().equals(shortNameStr))
+                           foundMatch = true
+                   }
+                   if (!foundMatch)
+                       print "ActorTypeCode: " + shortNameStr+ " not found!"
+                   assert foundMatch
+                   optionCt++
+               }
+               println optionCt + " " + profileTypeCode + " option(s) verified using ActorType enum."
             }
 
-            println optionCt + " option(s) verified using ActorType enum."
+
         }
 
         /*

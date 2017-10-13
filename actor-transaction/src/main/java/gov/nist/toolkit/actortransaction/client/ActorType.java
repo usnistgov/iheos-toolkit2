@@ -438,7 +438,7 @@ public enum ActorType implements IsSerializable, Serializable {
     XDS_on_FHIR_Recipient(   //
             "XDS on FHIR Recipient",
             Arrays.asList(""),
-            "mhd_rec_xdsonfhir",
+            "rec_mhd_xdsonfhir",
             "gov.nist.toolkit.simulators.proxy.sim.SimProxyFactory",
             "gov.nist.toolkit.simulators.proxy.sim.SimProxySimulator",  // only constructor should be used
             Arrays.asList(TransactionType.PROV_DOC_BUNDLE),  // place holder - transaction types
