@@ -297,7 +297,7 @@ public class ConformanceTestTab extends ToolWindowWithMenu implements TestRunner
 	    final Map<TestInstance, TestOverviewDTO> myTestOverviewDTOs = new HashMap<>();
 		final Map<ActorOptionConfig, List<TestInstance>> myTestsPerActorOption = new HashMap<>();
 
-		String loadImgHtmlStr = "<img style=\"float:left;\" src=\"icons2/ajax-loader.gif\"/>";
+		String loadImgHtmlStr = "<img style=\"width:10px;height:14px;border:1px solid white;float:left;margin-right:2px;\" src=\"icons2/ajax-loader.gif\"/>";
 
 		statsBar.setHTML(loadImgHtmlStr);
 
@@ -320,9 +320,9 @@ public class ConformanceTestTab extends ToolWindowWithMenu implements TestRunner
 						}
 
 						updateTestStatistics(myTestsPerActorOption, myTestOverviewDTOs, testStatistics, actorOption);
-
+						String htmlStr = "<div style=\"width:10px;height:14px;border:1px solid;float:left;margin-right:2px;";
 						if (testStatistics.getTestCount()>0 && testStatistics.getNotRun() != testStatistics.getTestCount()) { // Don't show anything if not run is 100%
-							String htmlStr = "<div style=\"width:10px;height:14px;border:1px solid;float:left;margin-right:2px\">\n";
+							htmlStr += "border-color:black;\">\n";
 							if (testStatistics.getSuccesses()==testStatistics.getTestCount()) {
 								htmlStr += "<div style=\"background-color:cyan;height:100%\"></div>\n";
 							} else if (testStatistics.getFailures()==testStatistics.getTestCount()) {
@@ -372,8 +372,9 @@ public class ConformanceTestTab extends ToolWindowWithMenu implements TestRunner
 							htmlStr += "</div>\n";
 							statsBar.setHTML(htmlStr);
 						} else {
-							statsBar.setHTML("");
-							statsBar.setVisible(false);
+							htmlStr += "border-color:white;\">\n";
+							htmlStr += "<div style=\"background-color:white;height:100%\"></div>\n";
+							statsBar.setHTML(htmlStr);
 						}
 					}
 				}.run(new GetTestsOverviewRequest(getCommandContext(), testInstances));
@@ -851,7 +852,7 @@ public class ConformanceTestTab extends ToolWindowWithMenu implements TestRunner
 		if (parts.length>1) {
 			return parts[parts.length-1];
 		} else {
-			new PopupMessage("Test Id needs to be in this format: actor_option_Xuausername.");
+			new PopupMessage("Test Id needs be suffixed with '_Xuausername': TestId_Xuausername.");
 			return null;
 		}
 	}
