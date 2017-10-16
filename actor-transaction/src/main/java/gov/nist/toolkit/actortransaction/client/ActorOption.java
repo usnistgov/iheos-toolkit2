@@ -9,6 +9,21 @@ public class ActorOption implements Serializable, IsSerializable {
     public String optionId;
     public String actorTypeId;
 
+    @Override
+    public String toString() {
+        StringBuilder buf = new StringBuilder();
+
+        buf
+                .append("profile=")
+                .append(profileId)
+                .append(" option=")
+                .append(optionId)
+                .append(" actorType=")
+                .append(actorTypeId);
+
+        return buf.toString();
+    }
+
     public ActorOption() {
 
     }

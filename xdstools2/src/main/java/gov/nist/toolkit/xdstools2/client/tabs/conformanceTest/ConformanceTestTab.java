@@ -719,6 +719,7 @@ public class ConformanceTestTab extends ToolWindowWithMenu implements TestRunner
 			public void onSuccess(List<TestInstance> testInstances) {
 				mainView.showLoadingMessage("Loading...");
 				displayTests(testsPanel, testInstances, allowRun());
+				mainView.clearLoadingMessage();
 			}
 		});
 	}
@@ -750,7 +751,13 @@ public class ConformanceTestTab extends ToolWindowWithMenu implements TestRunner
 //                testStatistics.setTestCount(testOverviews.size());
 				for (TestOverviewDTO testOverview : testOverviews) {
 					updateTestOverview(testOverview);
-					InteractionDiagramDisplay diagramDisplay = new InteractionDiagramDisplay(testOverview, testContext.getTestSession(), getSiteToIssueTestAgainst(), testContext.getSiteUnderTestAsSiteSpec().getName(),currentActorOption, getTestInstancePatientId(testOverview.getTestInstance(), parms));
+					InteractionDiagramDisplay diagramDisplay = new InteractionDiagramDisplay(
+							testOverview,
+							testContext.getTestSession(),
+							getSiteToIssueTestAgainst(),
+							((testContext.getSiteUnderTestAsSiteSpec() != null) ? testContext.getSiteUnderTestAsSiteSpec().getName() : ""),
+							currentActorOption,
+							getTestInstancePatientId(testOverview.getTestInstance(), parms));
 					TestDisplay testDisplay = testDisplayGroup.display(testOverview, diagramDisplay);
 					testsPanel.add(testDisplay.asWidget());
 				}
@@ -1038,7 +1045,8 @@ public class ConformanceTestTab extends ToolWindowWithMenu implements TestRunner
 		}
 
 		if (getSiteToIssueTestAgainst() == null && !currentActorOption.getTabConfig().isExternalStart()) {
-			new PopupMessage("Test Setup must be initialized");
+			new PopupMessage("Test Setup must be initialized  [site=" + getSiteToIssueTestAgainst() +
+			" actorOptionConfig=[" + currentActorOption + "]]");
 			return parms;
 		}
 		return parms;
