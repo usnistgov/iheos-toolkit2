@@ -33,6 +33,8 @@ class SimProxyFactory extends AbstractActorFactory implements IActorFactory{
 //        return ActorType.SIM_PROXY
 //    }
 
+    SimProxyFactory() {}
+
     @Override
     protected Simulator buildNew(SimManager simm, SimId simId, boolean configureBase) throws Exception {
         ActorType actorType = getActorType(); //ActorType.SIM_PROXY
@@ -69,17 +71,23 @@ class SimProxyFactory extends AbstractActorFactory implements IActorFactory{
             }
         }
 
-        // link the two sims
+        // link the two sims making up the front end and the back end of the simproxy
         addFixedConfig(config, SimulatorProperties.proxyPartner, ParamType.SELECTION, simId2.toString())
         addFixedConfig(config2, SimulatorProperties.proxyPartner, ParamType.SELECTION, simId.toString())
         addEditableConfig(config, SimulatorProperties.simProxyRequestTransformations, ParamType.LIST, actorType.proxyTransformClassNames)
         addEditableConfig(config, SimulatorProperties.simProxyResponseTransformations, ParamType.LIST, actorType.proxyResponseTransformClassNames)
 
-        addEditableConfig(config, SimulatorProperties.proxyForwardSite, ParamType.SELECTION, "");
+        buildExtensions(simm, config, config2)
+//        addEditableConfig(config, SimulatorProperties.proxyForwardSite, ParamType.SELECTION, "");
 
         isSimProxy = true;
 
         return new Simulator([config, config2])
+    }
+
+    // This is separate so it can be overriden by an extension class
+    void buildExtensions(SimManager simm, SimulatorConfig config, SimulatorConfig config2) {
+        addEditableConfig(config, SimulatorProperties.proxyForwardSite, ParamType.SELECTION, "");
     }
 
     @Override
