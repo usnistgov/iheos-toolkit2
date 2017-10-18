@@ -77,16 +77,16 @@ class SimProxyFactory extends AbstractActorFactory implements IActorFactory{
         addEditableConfig(config, SimulatorProperties.simProxyRequestTransformations, ParamType.LIST, actorType.proxyTransformClassNames)
         addEditableConfig(config, SimulatorProperties.simProxyResponseTransformations, ParamType.LIST, actorType.proxyResponseTransformClassNames)
 
-        buildExtensions(simm, config, config2)
+        List<SimulatorConfig> configs = buildExtensions(simm, config, config2)
 //        addEditableConfig(config, SimulatorProperties.proxyForwardSite, ParamType.SELECTION, "");
 
         isSimProxy = true;
 
-        return new Simulator([config, config2])
+        return new Simulator(configs)
     }
 
     // This is separate so it can be overriden by an extension class
-    void buildExtensions(SimManager simm, SimulatorConfig config, SimulatorConfig config2) {
+    List<SimulatorConfig> buildExtensions(SimManager simm, SimulatorConfig config, SimulatorConfig config2) {
         addEditableConfig(config, SimulatorProperties.proxyForwardSite, ParamType.SELECTION, "");
     }
 

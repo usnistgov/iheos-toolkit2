@@ -3,14 +3,11 @@ package gov.nist.toolkit.xdstools2.client.tabs.simulatorControlTab;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.rpc.AsyncCallback;
-import com.google.gwt.user.client.ui.Button;
-import com.google.gwt.user.client.ui.FlexTable;
-import com.google.gwt.user.client.ui.FlowPanel;
-import com.google.gwt.user.client.ui.HorizontalPanel;
+import com.google.gwt.user.client.ui.*;
 import gov.nist.toolkit.actortransaction.client.ActorType;
-import gov.nist.toolkit.configDatatypes.server.SimulatorProperties;
 import gov.nist.toolkit.configDatatypes.client.PatientErrorMap;
 import gov.nist.toolkit.configDatatypes.client.TransactionType;
+import gov.nist.toolkit.configDatatypes.server.SimulatorProperties;
 import gov.nist.toolkit.http.client.HtmlMarkup;
 import gov.nist.toolkit.simcommon.client.SimulatorConfig;
 import gov.nist.toolkit.simcommon.client.config.SimulatorConfigElement;
@@ -20,6 +17,8 @@ import gov.nist.toolkit.xdstools2.client.tabs.simulatorControlTab.intf.SimConfig
 import gov.nist.toolkit.xdstools2.client.util.ClientUtils;
 import gov.nist.toolkit.xdstools2.client.widgets.AdminPasswordDialogBox;
 import gov.nist.toolkit.xdstools2.shared.command.request.SimConfigRequest;
+
+import java.util.List;
 
 /**
  * Manages the content of a single Simulator on the screen
@@ -92,6 +91,17 @@ public abstract class BaseSimConfigMgr implements SimConfigMgrIntf {
             // Boolean
             else if (ele.hasBoolean()) {
                 new ConfigBooleanBox(ele, tbl, row);
+                row++;
+            }
+
+            // List
+            else if (ele.hasList()) {
+                tbl.setWidget(row, 0, HtmlMarkup.html(ele.name));
+                FlowPanel values = new FlowPanel();
+                List<String> vals = ele.asList();
+                for (String val : vals) values.add(new Label(val));
+                panel.add(values);
+                tbl.setWidget(row, 1, values);
                 row++;
             }
 

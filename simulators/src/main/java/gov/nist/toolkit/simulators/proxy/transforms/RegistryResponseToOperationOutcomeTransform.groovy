@@ -12,15 +12,12 @@ import gov.nist.toolkit.simulators.proxy.util.SimProxyBase
 import gov.nist.toolkit.soap.http.SoapFault
 import gov.nist.toolkit.utilities.io.Io
 import gov.nist.toolkit.xdsexception.ExceptionUtil
+import org.apache.commons.httpclient.HttpStatus
 import org.apache.http.Header
 import org.apache.http.HttpResponse
 import org.apache.http.message.BasicHttpResponse
 import org.apache.log4j.Logger
-import org.hl7.fhir.dstu3.model.Bundle
-import org.hl7.fhir.dstu3.model.CodeableConcept
-import org.hl7.fhir.dstu3.model.OperationOutcome
-import org.hl7.fhir.dstu3.model.Resource
-import org.hl7.fhir.dstu3.model.StringType
+import org.hl7.fhir.dstu3.model.*
 /**
  *
  */
@@ -57,7 +54,7 @@ class RegistryResponseToOperationOutcomeTransform implements ContentResponseTran
                     println "Reason is ${reason}"
                     SoapFault soapFault = new SoapFault(code, reason)
                     OperationOutcome operationOutcome = OperationOutcomeGenerator.translate(soapFault)
-                    return WrapResourceInHttpResponse.wrap(base, operationOutcome)
+                    return WrapResourceInHttpResponse.wrap(base, operationOutcome, HttpStatus.SC_OK)
                 }
                 def body = root?.Body
                 def bodyName = body?.name()
@@ -82,7 +79,7 @@ class RegistryResponseToOperationOutcomeTransform implements ContentResponseTran
                             com.setDetails(cc)
                             oo.addIssue(com)
                         }
-                        return WrapResourceInHttpResponse.wrap(base, oo)
+                        return WrapResourceInHttpResponse.wrap(base, oo, HttpStatus.SC_BAD_REQUEST)
                     }
                 }
             }
@@ -99,7 +96,7 @@ class RegistryResponseToOperationOutcomeTransform implements ContentResponseTran
                 bundle.addEntry(comp)
             }
 
-            return WrapResourceInHttpResponse.wrap(base, bundle)
+            return WrapResourceInHttpResponse.wrap(base, bundle, HttpStatus.SC_OK)
 
         } catch (Exception e) {
             OperationOutcome oo = new OperationOutcome()
@@ -108,7 +105,7 @@ class RegistryResponseToOperationOutcomeTransform implements ContentResponseTran
             com.setCode(OperationOutcome.IssueType.EXCEPTION)
             com.setDiagnostics(ExceptionUtil.exception_details(e))
             oo.addIssue(com)
-            return WrapResourceInHttpResponse.wrap(base, oo)
+            return WrapResourceInHttpResponse.wrap(base, oo, HttpStatus.SC_OK)
         }
     }
 

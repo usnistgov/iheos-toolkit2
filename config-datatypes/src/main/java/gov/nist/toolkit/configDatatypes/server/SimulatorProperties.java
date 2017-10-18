@@ -341,4 +341,6 @@ public class SimulatorProperties {
 
     public static final String simProxyRequestTransformations = "SimProxy Request Transformations";
     public static final String simProxyResponseTransformations = "SimProxy Response Transformations";
+
+    public static final String simulatorGroup = "Simulator Group";
 }
