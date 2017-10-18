@@ -2,6 +2,7 @@ package gov.nist.toolkit.xdstools2.client.tabs.conformanceTest;
 
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import gov.nist.toolkit.actortransaction.client.ActorType;
+import gov.nist.toolkit.actortransaction.client.IheItiProfile;
 import gov.nist.toolkit.results.client.TestInstance;
 import gov.nist.toolkit.actortransaction.client.ActorOption;
 import gov.nist.toolkit.xdstools2.client.command.command.GetCollectionMembersCommand;
@@ -23,7 +24,7 @@ public class ActorOptionConfig extends ActorOption {
 
     public ActorOptionConfig(String actorTypeId) {
         this.actorTypeId = actorTypeId;
-        profileId = "xds";
+        profileId = IheItiProfile.XDS;
         optionId = "";
     }
 
@@ -32,27 +33,30 @@ public class ActorOptionConfig extends ActorOption {
         this.optionId = optionId;
     }
 
-    public ActorOptionConfig(String actorTypeId, String profileId, String optionId) {
+    public ActorOptionConfig(String actorTypeId, IheItiProfile profileId, String optionId) {
         this(actorTypeId, optionId);
         this.profileId = profileId;
     }
 
-    // . TODO: change all tests to actor_profile_option ?? Or assume xds if actor_option and extract profile when three parts are found?
-
     /**
-     * Tests for options are listed in collections as actorType_optionName
+     * Tests for options are listed in collections as
+     * actor
+     * actor_option
+     * actor(profile)
+     * actor(profile)_option
      * @param callback with list of testIds
      */
     void loadTests(final AsyncCallback<List<TestInstance>> callback) {
         GetCollectionRequest request;
-        if ((profileId==null || "".equals(profileId) || "xds".equals(profileId))) {
-                if (optionId == null || optionId.equals(""))   {
+        String optionCode = (optionId!=null && !"".equals(optionId))?"_"+optionId:"";
+        if ((profileId==null || "".equals(profileId) || "xds".equals(profileId.toString()))) {
+                if (optionId == null || "".equals(optionId))   {
                     request = new GetCollectionRequest(ClientUtils.INSTANCE.getCommandContext(), "actorcollections", actorTypeId);
                 } else {
-                    request = new GetCollectionRequest(ClientUtils.INSTANCE.getCommandContext(), "collections", actorTypeId + "_" + optionId);
+                    request = new GetCollectionRequest(ClientUtils.INSTANCE.getCommandContext(), "collections", actorTypeId + optionCode);
                 }
-        } else { // All three must be present
-            request = new GetCollectionRequest(ClientUtils.INSTANCE.getCommandContext(), "collections", actorTypeId + "_" + profileId + "_" + optionId);
+        } else { // actor(profile)_option
+            request = new GetCollectionRequest(ClientUtils.INSTANCE.getCommandContext(), "collections", actorTypeId + "(" + profileId + ")" + optionCode);
         }
         new GetCollectionMembersCommand() {
             @Override
@@ -63,33 +67,33 @@ public class ActorOptionConfig extends ActorOption {
     }
 
     public boolean isRep() {
-        return actorTypeId != null && ActorType.REPOSITORY.getShortName().equals(actorTypeId);
+        return actorTypeId != null && ActorType.REPOSITORY.getActorCode().equals(actorTypeId);
     }
 
     public boolean isRg() {
-        return actorTypeId != null && ActorType.RESPONDING_GATEWAY.getShortName().equals(actorTypeId);
+        return actorTypeId != null && ActorType.RESPONDING_GATEWAY.getActorCode().equals(actorTypeId);
     }
 
     public boolean isIg() {
-        return actorTypeId != null && ActorType.INITIATING_GATEWAY.getShortName().equals(actorTypeId);
+        return actorTypeId != null && ActorType.INITIATING_GATEWAY.getActorCode().equals(actorTypeId);
     }
 
     public boolean isReg() {
-        return actorTypeId != null && ActorType.REGISTRY.getShortName().equals(actorTypeId);
+        return actorTypeId != null && ActorType.REGISTRY.getActorCode().equals(actorTypeId);
     }
 
     public boolean isRec() {
-        return actorTypeId != null && ActorType.DOCUMENT_RECIPIENT.getShortName().equals(actorTypeId);
+        return actorTypeId != null && ActorType.DOCUMENT_RECIPIENT.getActorCode().equals(actorTypeId);
     }
 
     public boolean isInitiatingImagingGatewaySut() {
         return actorTypeId != null
-                && ActorType.INITIATING_IMAGING_GATEWAY.getShortName().equals(actorTypeId);
+                && ActorType.INITIATING_IMAGING_GATEWAY.getActorCode().equals(actorTypeId);
     }
 
     public boolean isRespondingingImagingGatewaySut() {
         return actorTypeId != null
-                && ActorType.RESPONDING_IMAGING_GATEWAY.getShortName().equals(actorTypeId);
+                && ActorType.RESPONDING_IMAGING_GATEWAY.getActorCode().equals(actorTypeId);
     }
 
     public boolean isEdgeServerSut() {
@@ -102,12 +106,12 @@ public class ActorOptionConfig extends ActorOption {
 
     public boolean isImagingDocSourceSut() {
         return actorTypeId != null
-                && ActorType.IMAGING_DOC_SOURCE.getShortName().equals(actorTypeId);
+                && ActorType.IMAGING_DOC_SOURCE.getActorCode().equals(actorTypeId);
     }
     
     public boolean isIDC() {
        return actorTypeId != null 
-                && ActorType.IMAGING_DOC_CONSUMER.getShortName().equals(actorTypeId);
+                && ActorType.IMAGING_DOC_CONSUMER.getActorCode().equals(actorTypeId);
     }
 
     public void setOptionId(String optionId) {
@@ -120,14 +124,6 @@ public class ActorOptionConfig extends ActorOption {
 
     public void setActorTypeId(String actorTypeId) {
         this.actorTypeId = actorTypeId;
-    }
-
-    public String getProfileId() {
-        return profileId;
-    }
-
-    public void setProfileId(String profileId) {
-        this.profileId = profileId;
     }
 
     public String getOptionId() {

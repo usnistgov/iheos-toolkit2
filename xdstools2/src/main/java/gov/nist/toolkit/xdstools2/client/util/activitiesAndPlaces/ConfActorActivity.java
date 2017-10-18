@@ -3,6 +3,7 @@ package gov.nist.toolkit.xdstools2.client.util.activitiesAndPlaces;
 import com.google.gwt.activity.shared.AbstractActivity;
 import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.user.client.ui.AcceptsOneWidget;
+import gov.nist.toolkit.actortransaction.client.IheItiProfile;
 import gov.nist.toolkit.xdstools2.client.ToolWindow;
 import gov.nist.toolkit.xdstools2.client.Xdstools2;
 import gov.nist.toolkit.xdstools2.client.tabs.conformanceTest.ConformanceTestTab;
@@ -29,7 +30,7 @@ public class ConfActorActivity extends AbstractActivity {
             ConformanceTestTab conformanceTestTab = (ConformanceTestTab) toolWindow;
             conformanceTestTab.setInitTestSession(confActor.getTestSessionName());
             conformanceTestTab.getCurrentActorOption().setActorTypeId(confActor.getActorType());
-            conformanceTestTab.getCurrentActorOption().setProfileId(confActor.getProfileId());
+            conformanceTestTab.getCurrentActorOption().setProfileId(IheItiProfile.find(confActor.getProfileId()));
             conformanceTestTab.getCurrentActorOption().setOptionId(confActor.getOptionId());
             xdstools2view.resizeToolkit();
         }

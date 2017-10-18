@@ -1,6 +1,8 @@
 package gov.nist.toolkit.testengine.scripts;
 
+import gov.nist.toolkit.actortransaction.client.ActorOption;
 import gov.nist.toolkit.actortransaction.client.ActorType;
+import gov.nist.toolkit.actortransaction.client.OptionType;
 import gov.nist.toolkit.configDatatypes.client.TransactionType;
 import gov.nist.toolkit.installation.Installation;
 import gov.nist.toolkit.utilities.io.Io;
@@ -80,8 +82,11 @@ public class BuildCollections extends HttpServlet {
 
          collectionName = collectionName.toLowerCase();
 
-         at = ActorType.findActor(collectionName);
-         if (at != null) return at;
+        ActorOption actorOption = new ActorOption(collectionName);
+        if (OptionType.REQUIRED.equals(actorOption.optionId)) {
+            at = ActorType.findActor(actorOption.actorTypeId);
+            if (at != null) return at;
+        }
 
          TransactionType tt = TransactionType.find(collectionName);
          if (tt == null) return null;

@@ -1,5 +1,6 @@
 package gov.nist.toolkit.xdstools2.client.tabs.conformanceTest;
 
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.logical.shared.SelectionEvent;
@@ -11,7 +12,9 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.Panel;
 import com.google.gwt.user.client.ui.TabBar;
+import gov.nist.toolkit.actortransaction.client.ActorOption;
 import gov.nist.toolkit.actortransaction.client.ActorType;
+import gov.nist.toolkit.actortransaction.client.IheItiProfile;
 import gov.nist.toolkit.interactiondiagram.client.events.DiagramClickedEvent;
 import gov.nist.toolkit.interactiondiagram.client.events.DiagramPartClickedEventHandler;
 import gov.nist.toolkit.interactiondiagram.client.widgets.InteractionDiagram;
@@ -224,7 +227,7 @@ public class ConformanceTestTab extends ToolWindowWithMenu implements TestRunner
 		TabConfig tabConfig = actorOption.getTabConfig();
 		TabConfig profiles = tabConfig.getFirstChildTabConfig();
 		for (TabConfig profile : profiles.getChildTabConfigs())  {
-			if (actorOption.getProfileId().equals(profile.getTcCode())) {
+			if (actorOption.getProfileId().toString().equals(profile.getTcCode())) {
 				TabConfig options = profile.getFirstChildTabConfig();
 
 				for (TabConfig option : options.getChildTabConfigs()) {
@@ -446,10 +449,13 @@ public class ConformanceTestTab extends ToolWindowWithMenu implements TestRunner
 		public void onSelection(SelectionEvent<Integer> selectionEvent) {
 			// 3. Draw out all actor tabs (profile & option)
 			int i = selectionEvent.getSelectedItem();
-			String newActorTypeId = TestCollectionDefinitionDAO.getNonOption(testCollectionDefinitionDAOs).get(i).getCollectionID();
+			String newActorTypeId = new ActorOption(TestCollectionDefinitionDAO.getNonOption(testCollectionDefinitionDAOs).get(i).getCollectionID()).actorTypeId;
 				orchestrationResponse = null;  // so we know orchestration not set up
 				currentActorOption.setActorTypeId(newActorTypeId);
-				currentActorOption.setOptionId("");
+				if (getInitTestSession()==null) {
+					currentActorOption.setProfileId(null);
+					currentActorOption.setOptionId("");
+				}
 
 				setCurrentActorTabConfig(newActorTypeId);
 				refreshActorView(newActorTypeId);
@@ -470,7 +476,8 @@ public class ConformanceTestTab extends ToolWindowWithMenu implements TestRunner
 		mainView.getProfileTabBar().clear();
 		mainView.getOptionsTabBar().clear();
 		mainView.getProfileTabBar().display(ConformanceTestTab.super.tabConfig, "Profiles", newActorTypeId);
-		selectProfileAndOptionTab();
+		selectProfileTab();
+		GWT.log("actor was refreshed. init session: " + (getInitTestSession()==null));
 	}
 
 	private class ProfileSelectionHandler implements SelectionHandler<Integer> {
@@ -482,14 +489,17 @@ public class ConformanceTestTab extends ToolWindowWithMenu implements TestRunner
 			TabConfig profiles = currentActorOption.getTabConfig().getFirstChildTabConfig();
 			if ("Profiles".equals(profiles.getLabel())) {
 				TabConfig profile = profiles.getChildTabConfigs().get(i);
-				currentActorOption.setProfileId(profile.getTcCode());
+				currentActorOption.setProfileId(IheItiProfile.find(profile.getTcCode()));
 				getMainView().getInitializationPanel().clear();
 				getMainView().getTestsPanel().clear();
 				mainView.getOptionsTabBar().clear();
 				mainView.getOptionsTabBar().display(currentActorOption.getTabConfig(), "Options", profile.getTcCode());
+				GWT.log("profile was selected. init session: " + (getInitTestSession()==null));
+				if (getInitTestSession()==null) {
+					currentActorOption.setOptionId(null);
+				}
+				selectOptionTab();
 			}
-
-
 		}
 	}
 
@@ -500,10 +510,12 @@ public class ConformanceTestTab extends ToolWindowWithMenu implements TestRunner
 			getMainView().getTestsPanel().clear();
 			int i = selectionEvent.getSelectedItem();
 
+			GWT.log("option was selected. init session: " + (getInitTestSession()==null));
+
 			TabConfig profiles = currentActorOption.getTabConfig().getFirstChildTabConfig();
 			if ("Profiles".equals(profiles.getLabel())) {
 				for (TabConfig profile : profiles.getChildTabConfigs()) {
-					if (profile.getTcCode().equals(currentActorOption.getProfileId())) {
+					if (profile.getTcCode().equals(currentActorOption.getProfileId().toString())) {
 						TabConfig options =  profile.getFirstChildTabConfig();
 						if ("Options".equals(options.getLabel())) {
 							TabConfig option = options.getChildTabConfigs().get(i);
@@ -529,7 +541,7 @@ public class ConformanceTestTab extends ToolWindowWithMenu implements TestRunner
 		int idx=0;
 		boolean foundSelectedActorTab = false;
 		for (TestCollectionDefinitionDAO tcd : TestCollectionDefinitionDAO.getNonOption(testCollectionDefinitionDAOs)) {
-			if (currentActorOption.getActorTypeId().equals(tcd.getCollectionID())) {
+			if (currentActorOption.getActorTypeId().equals(new ActorOption(tcd.getCollectionID()).actorTypeId)) {
 				foundSelectedActorTab = true;
 				break;
 			}
@@ -549,32 +561,35 @@ public class ConformanceTestTab extends ToolWindowWithMenu implements TestRunner
 
 	}
 
-	private void selectProfileAndOptionTab() {
+	private void selectProfileTab() {
 		// If profile is not provided and there is only one profile, select it.
 		UserDefinedTabBar profileTabBar = getMainView().getProfileTabBar();
 		if (profileTabBar!=null && currentActorOption.getProfileId()==null) {
-            if (profileTabBar.getTabConfigs().size()==1) {
-                 currentActorOption.setProfileId(profileTabBar.getTabConfigs().get(0).getTcCode());
+            if (profileTabBar.getTabConfigs().size()>0) {
+                 currentActorOption.setProfileId(IheItiProfile.find(profileTabBar.getTabConfigs().get(0).getTcCode()));
             }
         }
 
 		if (currentActorOption.getProfileId()!=null) {
-			selectTab(currentActorOption.getProfileId(), profileTabBar);
+			selectTab(currentActorOption.getProfileId().toString(), profileTabBar);
 
-            mainView.getOptionsTabBar().clear();
-            mainView.getOptionsTabBar().display(currentActorOption.getTabConfig(), "Options", currentActorOption.getProfileId());
+		}
+	}
 
-            // If option is not provided, automatically select the first tab.
-            String optionCode = currentActorOption.getOptionId();
-            if (optionCode==null) {
-                if (mainView.getOptionsTabBar().getTabConfigs().size()>0) {
-                    currentActorOption.setOptionId(mainView.getOptionsTabBar().getTabConfigs().get(0).getTcCode());
-                }
+	private void selectOptionTab() {
+		mainView.getOptionsTabBar().clear();
+		mainView.getOptionsTabBar().display(currentActorOption.getTabConfig(), "Options", currentActorOption.getProfileId().toString());
+
+		// If option is not provided, automatically select the first tab.
+		String optionCode = currentActorOption.getOptionId();
+		if (optionCode==null) {
+            if (mainView.getOptionsTabBar().getTabConfigs().size()>0) {
+                currentActorOption.setOptionId(mainView.getOptionsTabBar().getTabConfigs().get(0).getTcCode());
             }
+        }
 
-            if (currentActorOption.getOptionId()!=null) {
-                selectTab(currentActorOption.getOptionId(), getMainView().getOptionsTabBar());
-            }
+		if (currentActorOption.getOptionId()!=null) {
+            selectTab(currentActorOption.getOptionId(), getMainView().getOptionsTabBar());
         }
 	}
 
@@ -589,10 +604,10 @@ public class ConformanceTestTab extends ToolWindowWithMenu implements TestRunner
 	}
 
 
-	private String getDescriptionForTestCollection(String collectionId) {
+	private String getDescriptionForTestCollection(String actorTypeId) {
 		if (testCollectionDefinitionDAOs == null) return "not initialized";
 		for (TestCollectionDefinitionDAO dao : testCollectionDefinitionDAOs) {
-			if (dao.getCollectionID().equals(collectionId)) { return dao.getCollectionTitle(); }
+			if (new ActorOption(dao.getCollectionID()).actorTypeId.equals(actorTypeId)) { return dao.getCollectionTitle(); }
 		}
 		return "???";
 	}
@@ -608,8 +623,9 @@ public class ConformanceTestTab extends ToolWindowWithMenu implements TestRunner
 				me.testCollectionDefinitionDAOs =  new ArrayList<>();
 				for (TabConfig tabConfig : ConformanceTestTab.super.tabConfig.getChildTabConfigs()) {
 					for (TestCollectionDefinitionDAO tcd : testCollectionDefinitionDAOs) {
-					    if (tcd.getCollectionID().equals(tabConfig.getTcCode())) {
+					    if (tabConfig.getTcCode().equals(new ActorOption(tcd.getCollectionID()).actorTypeId)) {
 					    	me.testCollectionDefinitionDAOs.add(tcd);
+					    	break;
 						}
 					}
 				}
@@ -651,9 +667,11 @@ public class ConformanceTestTab extends ToolWindowWithMenu implements TestRunner
 		if (target.get("actor")!=null)
 			currentActorOption.setActorTypeId(target.get("actor").getTcCode());
 		if (target.get("profile")!=null)
-			currentActorOption.setProfileId(target.get("profile").getTcCode());
+			currentActorOption.setProfileId(IheItiProfile.find(target.get("profile").getTcCode()));
 		if (target.get("option")!=null)
 			currentActorOption.setOptionId(target.get("option").getTcCode());
+
+		GWT.log(currentActorOption.getActorTypeId() + " " + currentActorOption.getProfileId() + " " + currentActorOption.getOptionId());
 
 		updateDisplayedActorAndOptionType();
 	}

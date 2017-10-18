@@ -5,6 +5,7 @@ import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.Panel;
 import gov.nist.toolkit.actortransaction.client.ActorOption;
 import gov.nist.toolkit.actortransaction.client.ActorType;
+import gov.nist.toolkit.actortransaction.client.OptionType;
 import gov.nist.toolkit.services.client.RawResponse;
 import gov.nist.toolkit.services.client.RecOrchestrationRequest;
 import gov.nist.toolkit.services.client.RecOrchestrationResponse;
@@ -25,6 +26,7 @@ public class BuildRecTestOrchestrationButton extends AbstractOrchestrationButton
     private ActorOption actorOption;
     private TestContextView testContextView;
     private FlowPanel initializationResultsPanel = new FlowPanel();
+    private boolean testingAClient = false;
 
     BuildRecTestOrchestrationButton(ConformanceTestTab testTab, TestContext testContext, TestContextView testContextView, Panel initializationPanel, String label, ActorOption actorOption) {
         this.initializationPanel = initializationPanel;
@@ -52,7 +54,13 @@ public class BuildRecTestOrchestrationButton extends AbstractOrchestrationButton
      */
     @Override
     public void orchestrate() {
-        final boolean testingAClient = actorOption.optionId.equals(ActorType.XDS_on_FHIR_Recipient.getOption());
+        for (OptionType optionType : ActorType.XDS_on_FHIR_Recipient.getOptions()) {
+           if (optionType.equals(actorOption.optionId)) {
+               testingAClient = true;
+               break;
+           }
+        }
+
         String msg = testContext.verifyTestContext(testingAClient);
         if (msg != null) {
             testContextView.launchDialog(msg);

@@ -85,7 +85,7 @@ See collections.txt file for indexing.
 
 	<tab label="Imaging Document Consumer" type="actor" tcCode="idc" displayColorCode="#a6ffd0">
 		<tabs label="Profiles">
-			<tab label="XDS" type="profile" tcCode="xds">
+			<tab label="XDS-I" type="profile" tcCode="xds-i">
 				<tabs label="Options">
 					<tab label="Required"  type="option" tcCode="" externalStart="false"/>
 				</tabs>
@@ -95,7 +95,7 @@ See collections.txt file for indexing.
 
 	<tab label="Imaging Document Source" type="actor" tcCode="ids" displayColorCode="#a6ffd0">
 		<tabs label="Profiles">
-			<tab label="XDS" type="profile" tcCode="xds">
+			<tab label="XDS-I" type="profile" tcCode="xds-i">
 				<tabs label="Options">
 					<tab label="Required"  type="option" tcCode="" externalStart="false"/>
 				</tabs>
@@ -105,7 +105,7 @@ See collections.txt file for indexing.
 
 	<tab label="Initiating Imaging Gateway" type="actor" tcCode="iig" displayColorCode="#f8eefd">
 		<tabs label="Profiles">
-			<tab label="XDS" type="profile" tcCode="xds">
+			<tab label="XCA-I" type="profile" tcCode="xca-i">
 				<tabs label="Options">
 					<tab label="Required"  type="option" tcCode="" externalStart="false"/>
 				</tabs>
@@ -116,7 +116,7 @@ See collections.txt file for indexing.
 
 	<tab label="Responding Imaging Gateway" type="actor" tcCode="rig" displayColorCode="#f8eefd">
 		<tabs label="Profiles">
-			<tab label="XDS" type="profile" tcCode="xds">
+			<tab label="XCA-I" type="profile" tcCode="xca-i">
 				<tabs label="Options">
 					<tab label="Required" type="option" tcCode="" externalStart="false"/>
 				</tabs>

@@ -9,6 +9,7 @@ import com.google.gwt.user.client.ui.Panel;
 import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.Tree;
 import com.google.gwt.user.client.ui.TreeItem;
+import gov.nist.toolkit.actortransaction.client.IheItiProfile;
 import gov.nist.toolkit.xdstools2.client.ToolWindow;
 
 import java.util.HashMap;
@@ -155,7 +156,7 @@ public abstract class ToolWindowWithMenu extends ToolWindow {
                         if (tcCodeMap.get("actor")!=null) {
                             ActorOptionConfig actorOption = new ActorOptionConfig(tcCodeMap.get("actor"));
                             if (tcCodeMap.get("profile")!=null) {
-                                actorOption.setProfileId(tcCodeMap.get("profile"));
+                                actorOption.setProfileId(IheItiProfile.find(tcCodeMap.get("profile")));
 
                                 if (tcCodeMap.get("option")!=null) {
                                     actorOption.setOptionId(tcCodeMap.get("option"));

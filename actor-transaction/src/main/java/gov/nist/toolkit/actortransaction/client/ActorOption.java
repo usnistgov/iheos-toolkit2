@@ -5,7 +5,7 @@ import com.google.gwt.user.client.rpc.IsSerializable;
 import java.io.Serializable;
 
 public class ActorOption implements Serializable, IsSerializable {
-    public String profileId;
+    public IheItiProfile profileId;
     public String optionId;
     public String actorTypeId;
 
@@ -13,29 +13,40 @@ public class ActorOption implements Serializable, IsSerializable {
 
     }
 
+    /**
+     * Will parse codes such as:
+     * actor        # Required option
+     * actor_option
+     * actor(profile) # Required
+     * actor(profile)_option
+     * @param actorTypeShortName
+     */
     public ActorOption(String actorTypeShortName)  {
         String[] parts = actorTypeShortName.split("_");
-        if (parts.length >= 3) {
-            actorTypeId = parts[0];
-            profileId = parts[1];
-            optionId = parts[2];
-        } else if (parts.length == 2) {
-            actorTypeId = parts[0];
-            profileId = "xds";
+
+        if (actorTypeShortName.contains("_")) {
             optionId = parts[1];
-        } else if (parts.length == 1) {
+        } else {
+               optionId = "";
+         }
+        if (actorTypeShortName.contains("(") && actorTypeShortName.contains(")"))  {
+            String[] actorProfile = actorTypeShortName.split("\\(");
+            actorTypeId = actorProfile[0];
+            String profileId = actorProfile[1].replace(")","");
+            this.profileId = IheItiProfile.find(profileId);
+        } else {
             actorTypeId = parts[0];
-            profileId = "xds";
-            optionId = "";
+            profileId = IheItiProfile.XDS;
         }
+
     }
 
-    public String getProfileId() {
+    public IheItiProfile getProfileId() {
         return profileId;
     }
 
-    public void setProfileId(String profileId) {
-        this.profileId = profileId;
+    public void setProfileId(IheItiProfile profile) {
+        this.profileId = profile;
     }
 
     public String getOptionId() {
@@ -78,5 +89,14 @@ public class ActorOption implements Serializable, IsSerializable {
         result = 31 * result + (optionId != null ? optionId.hashCode() : 0);
         result = 31 * result + (actorTypeId != null ? actorTypeId.hashCode() : 0);
         return result;
+    }
+
+    @Override
+    public String toString() {
+        return "ActorOption{" +
+                "profileId=" + profileId +
+                ", optionId='" + optionId + '\'' +
+                ", actorTypeId='" + actorTypeId + '\'' +
+                '}';
     }
 }
