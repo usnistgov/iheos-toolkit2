@@ -195,7 +195,7 @@ public enum ActorType implements IsSerializable, Serializable {
             true,
             null,
             false,
-            null,
+            null, // means use short name
             IheItiProfile.XDS,
             Arrays.asList(OptionType.REQUIRED,OptionType.AFFINITY_DOMAIN,OptionType.XUA)
     ),
@@ -323,6 +323,26 @@ public enum ActorType implements IsSerializable, Serializable {
             IheItiProfile.XDS, // TODO: which profile?
             Arrays.asList(OptionType.REQUIRED)
     ),
+    DOC_SOURCE(
+            "Document Source",
+            Arrays.asList(""),
+            "mhdsrc",
+            "",
+            "",
+            Arrays.asList(TransactionType.PROV_DOC_BUNDLE),  // place holder - transaction types
+            true,  // show in config - only partially configured - only used in IT tests
+            null,  // actorsFileLabel
+            null,   // httpSimulatorClassName
+            null,    // http transaction types
+            true,    // is fhir
+            // request transform classes
+            Arrays.asList(""),
+            // response transform classes
+            Arrays.asList(""),
+            "src",   // must match src from src(mhd) in collections.txt
+            IheItiProfile.MHD,
+            Arrays.asList(OptionType.REQUIRED)
+    ),
     MHD_DOC_RECIPIENT(
             "MHD Document Recipient",
             Arrays.asList(""),
@@ -344,7 +364,7 @@ public enum ActorType implements IsSerializable, Serializable {
             Arrays.asList(
                     "gov.nist.toolkit.simulators.proxy.transforms.RegistryResponseToOperationOutcomeTransform"
             ),
-            null,
+            null,   // must match src from src(mhd) in collections.txt
             IheItiProfile.MHD,
             Arrays.asList(OptionType.REQUIRED)
     ),
