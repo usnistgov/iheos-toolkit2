@@ -194,9 +194,8 @@ public class Io {
 		try {
 			out.write(string);
 		} finally {
-			if (out!=null)
+				out.flush();
 				out.close();
-			if (fw!=null)
 				fw.close();
 		}
 	}

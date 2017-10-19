@@ -50,7 +50,7 @@ class MhdSimProxySpec extends ToolkitSpecification {
 
         new BuildCollections().init(null)
 
-        spi.delete(ToolkitFactory.newSimId(id, testSession, ActorType.FHIR_SERVER.name, envName, true))
+        spi.delete(ToolkitFactory.newSimId(id, testSession, ActorType.FHIR_SERVER.name, envName, true))  //??????????
         spi.delete(ToolkitFactory.newSimId(proxyId, testSession, ActorType.SIM_PROXY.name, envName, true))
         spi.delete(proxyId, testSession)
 

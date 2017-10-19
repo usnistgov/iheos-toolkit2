@@ -18,6 +18,11 @@ import java.util.List;
 public class ActorOptionConfig extends ActorOption {
     private TabConfig tabConfig;
 
+    @Override
+    public String toString() {
+        return "ActorOption=[" + super.toString() + "] " + ((tabConfig != null) ? "tabConfig=[" + tabConfig.toString() + "]" : " tabConfig=null");
+    }
+
     public ActorOptionConfig() {
 
     }
@@ -128,11 +133,6 @@ public class ActorOptionConfig extends ActorOption {
 
     public String getOptionId() {
         return optionId;
-    }
-
-    @Override
-    public String toString() {
-        return "ActorOptionConfig: actorType=" + actorTypeId + " option=" + optionId;
     }
 
     @Override

@@ -904,7 +904,7 @@ public class SimManagerWidget2 extends Composite {
                 SimulatorConfig config = object.getSimulatorConfig();
                 // Generic state-less type simulators
                 GenericQueryTab editTab = new EditTab(hostTab, config);
-                editTab.onTabLoad(true, "SimConfig");
+                editTab.onTabLoad(true, "SimConfig " + config.getId().toString());
             }
 
             @Override
@@ -972,7 +972,7 @@ public class SimManagerWidget2 extends Composite {
         } else {
             // Generic state-less type simulators
             GenericQueryTab editTab = new EditTab(hostTab, config);
-            editTab.onTabLoad(true, "SimConfig");
+            editTab.onTabLoad(true, "SimConfig " + config.getId().toString());
         }
     }
 

@@ -215,6 +215,16 @@ public abstract class AbstractActorFactory {
 
 		Simulator simulator = af.buildNew(simm, simID, true);
 
+		if (simulator.size() > 1) {
+			List<String> simIdsInGroup = new ArrayList<>();
+			for (SimulatorConfig conf : simulator.getConfigs())
+				simIdsInGroup.add(conf.getId().toString());
+			for (SimulatorConfig conf : simulator.getConfigs()) {
+				SimulatorConfigElement ele = new SimulatorConfigElement(SimulatorProperties.simulatorGroup, ParamType.LIST, simIdsInGroup);
+				conf.add(ele);
+			}
+		}
+
 		// This is out here instead of being attached to a simulator-specific factory - why?
 		if (save) {
 			for (SimulatorConfig conf : simulator.getConfigs()) {

@@ -53,7 +53,7 @@ See collections.txt file for indexing.
 			</tab>
 			<tab label="MHD" type="profile" tcCode="mhd">
 				<tabs label="Options">
-					<tab label="XDSonFHIR" type="option" tcCode="xdsonfhir" externalStart="false"/>
+					<tab label="XDSonFHIR" type="option" tcCode="xdsonfhir" externalStart="true"/>
 				</tabs>
 			</tab>
 		</tabs>

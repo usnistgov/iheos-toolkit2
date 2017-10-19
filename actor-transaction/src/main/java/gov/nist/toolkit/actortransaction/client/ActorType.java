@@ -323,16 +323,27 @@ public enum ActorType implements IsSerializable, Serializable {
             IheItiProfile.XDS, // TODO: which profile?
             Arrays.asList(OptionType.REQUIRED)
     ),
-    MHD_DOC_RECIPIENT( // Is this used?
+    MHD_DOC_RECIPIENT(
             "MHD Document Recipient",
             Arrays.asList(""),
-            "mhdrec1",
-            "gov.nist.toolkit.simcommon.server.factories.FhirActorFactory",  //  ???
-            "gov.nist.toolkit.fhir.simulators.FhirSimulator",                // ???
-            Arrays.asList(TransactionType.FHIR),
-            true,
-            null,
-            true,
+            "mhddocrec",
+            "gov.nist.toolkit.simulators.proxy.sim.MhdRecipientFactory",
+            "gov.nist.toolkit.simulators.proxy.sim.MhdRecipientSimulator",
+            Arrays.asList(TransactionType.PROV_DOC_BUNDLE),  // place holder - transaction types
+            true,  // show in config - only partially configured - only used in IT tests
+            null,  // actorsFileLabel
+            null,   // httpSimulatorClassName
+            null,    // http transaction types
+            false,    // is fhir
+            // request transform classes
+            Arrays.asList(
+                    "gov.nist.toolkit.simulators.proxy.transforms.MhdToXdsEndpointTransform",
+                    "gov.nist.toolkit.simulators.proxy.transforms.MhdToPnrContentTransform"
+            ),
+            // response transform classes
+            Arrays.asList(
+                    "gov.nist.toolkit.simulators.proxy.transforms.RegistryResponseToOperationOutcomeTransform"
+            ),
             null,
             IheItiProfile.MHD,
             Arrays.asList(OptionType.REQUIRED)
@@ -358,7 +369,7 @@ public enum ActorType implements IsSerializable, Serializable {
     XDS_on_FHIR_Recipient(   //
             "XDS on FHIR Recipient",
             Arrays.asList(""),
-            "mhdrec",
+            "mhdfhirrec",
             "gov.nist.toolkit.simulators.proxy.sim.SimProxyFactory",
             "gov.nist.toolkit.simulators.proxy.sim.SimProxySimulator",  // only constructor should be used
             Arrays.asList(TransactionType.PROV_DOC_BUNDLE),  // place holder - transaction types
