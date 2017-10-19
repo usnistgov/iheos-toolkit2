@@ -330,7 +330,7 @@ public enum ActorType implements IsSerializable, Serializable {
             "",
             "",
             Arrays.asList(TransactionType.PROV_DOC_BUNDLE),  // place holder - transaction types
-            true,  // show in config - only partially configured - only used in IT tests
+            false,  // show in config - only partially configured - only used in IT tests
             null,  // actorsFileLabel
             null,   // httpSimulatorClassName
             null,    // http transaction types
@@ -630,7 +630,7 @@ public enum ActorType implements IsSerializable, Serializable {
 
         for (ActorType actor : values()) {
             if (actor.name.equals(name)) return actor;
-            if (actor.shortName.equals(name)) return actor;
+            if (actor.getActorCode().equals(name)) return actor;
             if (actor.altNames.contains(name)) return actor;
         }
         return null;
