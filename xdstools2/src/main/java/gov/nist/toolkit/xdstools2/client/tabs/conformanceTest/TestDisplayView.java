@@ -21,6 +21,7 @@ class TestDisplayView extends FlowPanel implements TestStatusDisplay {
     private HTML time = new HTML();
     private Image play = null;
     private Image delete = null;
+    private Image validate = null;
     private Image inspect = null;
     private Image statusIcon = null;
     private Image testKitSourceIcon = null;
@@ -45,6 +46,7 @@ class TestDisplayView extends FlowPanel implements TestStatusDisplay {
         header.add(title);
         header.add(time);
         if (play != null) header.add(play);
+        if (validate != null) header.add(validate);
 
         // flush right stuff
         if (testKitSourceIcon!=null) header.add(testKitSourceIcon);
@@ -82,6 +84,13 @@ class TestDisplayView extends FlowPanel implements TestStatusDisplay {
         delete.addStyleName("iconStyle");
         delete.addClickHandler(clickHandler);
         delete.setTitle(title);
+    }
+
+    void setValidate(String title, ClickHandler clickHandler) {
+        validate = new Image("icons2/validate.png");
+        validate.addStyleName("iconStyle");
+        validate.addClickHandler(clickHandler);
+        validate.setTitle(title);
     }
 
     void setInspect(String title, ClickHandler clickHandler) {

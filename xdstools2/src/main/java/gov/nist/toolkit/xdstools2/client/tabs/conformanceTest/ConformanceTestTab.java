@@ -238,7 +238,7 @@ public class ConformanceTestTab extends ToolWindowWithMenu implements TestRunner
 		return null;
 	}
 
-	private boolean showValidate() {
+	private boolean allowValidate() {
 		boolean selfTest = isSelfTest();
 		boolean externalStart = getOptionTabConfig(currentActorOption).getExternalStart();
 		return externalStart && !selfTest;
@@ -747,7 +747,7 @@ public class ConformanceTestTab extends ToolWindowWithMenu implements TestRunner
 		// results (including logs) for a collection of tests
 
 		testDisplayGroup.allowRun(allowRun);
-		testDisplayGroup.showValidate(showValidate());
+		testDisplayGroup.allowValidate(allowValidate());
 
 		new GetTestsOverviewCommand() {
 			@Override

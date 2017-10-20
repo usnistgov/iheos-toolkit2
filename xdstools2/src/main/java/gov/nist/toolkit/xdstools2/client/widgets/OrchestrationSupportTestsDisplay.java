@@ -25,10 +25,17 @@ public class OrchestrationSupportTestsDisplay extends FlowPanel {
                 TestDisplayGroup orchGroup = new TestDisplayGroup(testContext, testContextView, testRunner);
                 orchGroup.allowRun(false);
                 orchGroup.allowDelete(false);
+                boolean hasTests = false;
                 for (TestOverviewDTO testOverview : testOverviews) {
-                    TestDisplay testDisplay = orchGroup.display(testOverview,null);
-                    testDisplay.addExtraStyle("orchestrationTestMc");
-                    add(testDisplay.asWidget());
+                    if (testOverview.getName() != null && !testOverview.getName().equals("")) {
+                        TestDisplay testDisplay = orchGroup.display(testOverview, null);
+                        testDisplay.addExtraStyle("orchestrationTestMc");
+                        add(testDisplay.asWidget());
+                        hasTests = true;
+                    }
+                }
+                if (!hasTests) {
+                    add(new HTML("No utilities configured"));
                 }
             }
         }.run(new GetTestsOverviewRequest(ClientUtils.INSTANCE.getCommandContext(),orchResponse.getTestInstances()));

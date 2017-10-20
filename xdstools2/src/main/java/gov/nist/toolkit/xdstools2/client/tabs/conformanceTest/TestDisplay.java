@@ -20,7 +20,7 @@ public class TestDisplay  implements IsWidget {
     private TestInstance testInstance;
     private boolean allowDelete= true;
     private boolean allowRun = true;
-    private boolean showValidate = false;
+    private boolean allowValidate = false;
     private TestDisplayView view = new TestDisplayView();
     private InteractionDiagramDisplay diagramDisplay;
 
@@ -40,6 +40,11 @@ public class TestDisplay  implements IsWidget {
         this.allowRun = allowRun;
     }
 
+    public void allowValidate(boolean allowValidate) {
+        if (allowValidate) allowRun = false;
+        this.allowValidate = allowValidate;
+    }
+
     public void display(TestOverviewDTO testOverview) {
 
         if (testOverview.isRun()) {
@@ -53,6 +58,7 @@ public class TestDisplay  implements IsWidget {
         view.setTime(testOverview.getLatestSectionTime());
 
         if (allowRun) view.setPlay("Run", new RunClickHandler(testRunner, testInstance, testContext, testContextView));
+        if (allowValidate) view.setValidate("Validate", new RunClickHandler(testRunner, testInstance, testContext, testContextView));
 
         if (testOverview.isRun()) {
             if (allowDelete) view.setDelete("Delete Log", new DeleteClickHandler(testDisplayGroup, testContext, testRunner, testInstance));
@@ -90,7 +96,7 @@ public class TestDisplay  implements IsWidget {
     }
 
     public void showValidate(boolean showValidate) {
-        this.showValidate = showValidate;
+        this.allowValidate = showValidate;
     }
 
     public Widget asWidget() { return view; }
