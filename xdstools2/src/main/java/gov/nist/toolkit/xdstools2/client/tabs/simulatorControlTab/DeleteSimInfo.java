@@ -100,6 +100,9 @@ List<SimInfo> simInfoList;
                     @Override
                     public void onClick(ClickEvent clickEvent) {
                         Timer refreshTimer = null;
+                        final int delayMillis = 500 * simInfoList.size();
+                        hostTab.getSimManagerWidget().asWidget().getElement().removeClassName("loading");
+                        hostTab.getSimManagerWidget().asWidget().getElement().addClassName("loading");
                         for (SimInfo simInfo : simInfoList) {
                             try {
                                 DeleteButtonClickHandler handler = new DeleteButtonClickHandler(hostTab, simInfo.getSimulatorConfig());
@@ -113,11 +116,12 @@ List<SimInfo> simInfoList;
                                 refreshTimer = new Timer() {
                                     @Override
                                     public void run() {
+                                        hostTab.getSimManagerWidget().asWidget().getElement().removeClassName("loading");
                                         hostTab.loadSimStatus();
                                         ((Xdstools2EventBus) ClientUtils.INSTANCE.getEventBus()).fireSimulatorsUpdatedEvent();
                                     }
                                 };
-                                refreshTimer.schedule(1000);
+                                refreshTimer.schedule(delayMillis);
                             }
 
                         }

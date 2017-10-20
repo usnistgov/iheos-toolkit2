@@ -320,4 +320,8 @@ public class SimulatorControlTab extends GenericQueryTab {
     public String getWindowShortName() {
         return "simmgr";
     }
+
+    public SimManagerWidget2 getSimManagerWidget() {
+        return simManagerWidget;
+    }
 }
