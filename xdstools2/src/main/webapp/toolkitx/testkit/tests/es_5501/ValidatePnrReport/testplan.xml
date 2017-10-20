@@ -15,6 +15,7 @@
                 Document=//rim:RegistryObjectList/rim:ExtrinsicObject[${i}]
                 DocAuthor=${Document}/rim:Classification[@classificationScheme='urn:uuid:93606bcf-9494-43ec-9b4e-a7748d1a838d']
                 ClassCode=${Document}/rim:Classification[@classificationScheme='urn:uuid:41a5887f-8865-4c09-adf7-e362475b143a']
+                ConfidentialityCode=${Document}/rim:Classification[@classificationScheme='urn:uuid:f4f85eac-e6cb-4883-b524-f2705394840f']
             </Parameters>
             <SimTransaction id="rep_reg" transaction="prb"/>
             <Assertions>
@@ -68,6 +69,7 @@
                         id="author person" process="Matches" value="^RSNA ISN\^RSNA ISN\^RSNA ISN.+ISO$">
                     ${DocAuthor}/rim:Slot[@name='authorPerson']/rim:ValueList/rim:Value/text()
                 </Assert>
+
                 <Assert forEach="${Document}" instanceId="${Document}/@id"
                         id="class code: code" process="Equals" value="REPORTS">
                     ${ClassCode}/@nodeRepresentation
@@ -77,8 +79,29 @@
                     ${ClassCode}/rim:Name/rim:LocalizedString/@value
                 </Assert>
                 <Assert forEach="${Document}" instanceId="${Document}/@id"
-                        id="class code: display name" process="Equals" value="Report">
-                    ${ClassCode}/rim:Name/rim:LocalizedString/@value
+                        id="class code: scheme name" process="Equals" value="1.3.6.1.4.1.19376.1.2.6.1">
+                    ${ClassCode}/rim:Slot[@name='codingScheme']/rim:ValueList/rim:Value/text()
+                </Assert>
+
+                <Assert forEach="${Document}" instanceId="${Document}/@id"
+                        id="confidentialityCode: code" process="Equals" value="V">
+                    ${ConfidentialityCode}/@nodeRepresentation
+                </Assert>
+                <Assert forEach="${Document}" instanceId="${Document}/@id"
+                        id="confidentialityCode: display name" process="Equals" value="very restricted">
+                    ${ConfidentialityCode}/rim:Name/rim:LocalizedString/@value
+                </Assert>
+                <Assert forEach="${Document}" instanceId="${Document}/@id"
+                        id="confidentialityCode: scheme name" process="Equals" value="2.16.840.1.113883.5.25">
+                    ${ConfidentialityCode}/rim:Slot[@name='codingScheme']/rim:ValueList/rim:Value/text()
+                </Assert>
+                <Assert forEach="${Document}" instanceId="${Document}/@id"
+                        id="creation time" process="Equals" value="DateTime">
+                    ${Document}/rim:Slot[@name='creationTime']/rim:ValueList/rim:Value/text()
+                </Assert>
+                <Assert forEach="${Document}" instanceId="${Document}/@id"
+                        id="entry id" process="Equals" value="UUID">
+                    ${Document}/@id
                 </Assert>
             </Assertions>
         </XMLValidation>
