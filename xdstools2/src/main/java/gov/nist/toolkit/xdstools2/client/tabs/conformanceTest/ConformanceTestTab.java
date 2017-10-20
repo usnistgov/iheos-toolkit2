@@ -19,10 +19,7 @@ import gov.nist.toolkit.interactiondiagram.client.events.DiagramClickedEvent;
 import gov.nist.toolkit.interactiondiagram.client.events.DiagramPartClickedEventHandler;
 import gov.nist.toolkit.interactiondiagram.client.widgets.InteractionDiagram;
 import gov.nist.toolkit.results.client.TestInstance;
-import gov.nist.toolkit.services.client.AbstractOrchestrationResponse;
-import gov.nist.toolkit.services.client.RecOrchestrationResponse;
-import gov.nist.toolkit.services.client.RegOrchestrationResponse;
-import gov.nist.toolkit.services.client.RepOrchestrationResponse;
+import gov.nist.toolkit.services.client.*;
 import gov.nist.toolkit.session.client.logtypes.TestOverviewDTO;
 import gov.nist.toolkit.session.client.sort.TestSorter;
 import gov.nist.toolkit.sitemanagement.client.Site;
@@ -79,6 +76,7 @@ public class ConformanceTestTab extends ToolWindowWithMenu implements TestRunner
 	private RepOrchestrationResponse repOrchestrationResponse;
 	private RecOrchestrationResponse recOrchestrationResponse;
 	private RegOrchestrationResponse regOrchestrationResponse;
+	private SrcOrchestrationResponse srcOrchestrationResponse;
 
 	private final TestStatistics testStatistics = new TestStatistics();
 
@@ -794,6 +792,7 @@ public class ConformanceTestTab extends ToolWindowWithMenu implements TestRunner
 
 	private void displayOrchestrationHeader(Panel initializationPanel) {
 		String label = "Initialize Test Environment";
+		ActorOptionConfig currentActorOption = this.currentActorOption;
 		if (currentActorOption.isRep()) {
 			orchInit = new BuildRepTestOrchestrationButton(this, testContext, testContextView, initializationPanel, label);
 			orchInit.addSelfTestClickHandler(new RefreshTestCollectionHandler());
@@ -841,6 +840,11 @@ public class ConformanceTestTab extends ToolWindowWithMenu implements TestRunner
 		}
 		else if (currentActorOption.isEdgeServerSut()) {
 			// TODO not implemented yet.
+		}
+		else if (currentActorOption.isSrc() && currentActorOption.isMhd()) {
+			orchInit = new BuildSrcTestOrchestrationButton(this, testContext, testContextView, initializationPanel, label, currentActorOption);
+			orchInit.addSelfTestClickHandler(new RefreshTestCollectionHandler());
+			initializationPanel.add(orchInit.panel());
 		}
 		else {
 			if (testContext.getSiteUnderTest() != null)
@@ -1045,25 +1049,26 @@ public class ConformanceTestTab extends ToolWindowWithMenu implements TestRunner
 
 	private Map<String, String> initializeTestParameters() {
 		Map<String, String> parms = new HashMap<>();
+		ActorOptionConfig currentActorOption = this.currentActorOption;
 
 		if (orchestrationResponse == null) {
 			new PopupMessage("Initialize Test Environment before running tests.");
 			return null;
 		}
 
-		if (ActorType.REPOSITORY.getShortName().equals(currentActorOption.actorTypeId)) {
+		if (ActorType.REPOSITORY.getActorCode().equals(currentActorOption.actorTypeId)) {
 			setPatientId(parms, repOrchestrationResponse.getPid().asString());
 		}
 
-		if (ActorType.DOCUMENT_RECIPIENT.getShortName().equals(currentActorOption.actorTypeId)) {
+		if (ActorType.DOCUMENT_RECIPIENT.getActorCode().equals(currentActorOption.actorTypeId)) {
 			setPatientId(parms, recOrchestrationResponse.getRegisterPid().asString());
 		}
 
-		if (ActorType.REGISTRY.getShortName().equals(currentActorOption.actorTypeId)) {
+		if (ActorType.REGISTRY.getActorCode().equals(currentActorOption.actorTypeId)) {
 			setPatientId(parms, regOrchestrationResponse.getRegisterPid().asString());
 		}
 
-		if (getSiteToIssueTestAgainst() == null && !currentActorOption.getTabConfig().isExternalStart()) {
+		if (getSiteToIssueTestAgainst() == null && !getOptionTabConfig(currentActorOption).isExternalStart()) {
 			new PopupMessage("Test Setup must be initialized  [site=" + getSiteToIssueTestAgainst() +
 			" actorOptionConfig=[" + currentActorOption + "]]");
 			return parms;
@@ -1089,6 +1094,11 @@ public class ConformanceTestTab extends ToolWindowWithMenu implements TestRunner
 	void setRecOrchestrationResponse(RecOrchestrationResponse recOrchestrationResponse) {
 		this.recOrchestrationResponse = recOrchestrationResponse;
 		setOrchestrationResponse(recOrchestrationResponse);
+	}
+
+	void setSrcOrchestrationResponse(SrcOrchestrationResponse srcOrchestrationResponse) {
+		this.srcOrchestrationResponse = srcOrchestrationResponse;
+		setOrchestrationResponse(srcOrchestrationResponse);
 	}
 
 	void setRegOrchestrationResponse(RegOrchestrationResponse regOrchestrationResponse) {

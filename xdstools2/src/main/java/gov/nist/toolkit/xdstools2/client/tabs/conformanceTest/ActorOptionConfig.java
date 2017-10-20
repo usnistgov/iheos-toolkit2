@@ -71,6 +71,14 @@ public class ActorOptionConfig extends ActorOption {
         }.run(request);
     }
 
+    public boolean isSrc() {
+        return actorTypeId != null && ActorType.DOC_SOURCE.getActorCode().equals(actorTypeId);
+    }
+
+    public boolean isMhd() {
+        return profileId != null && IheItiProfile.MHD.equals(profileId);
+    }
+
     public boolean isRep() {
         return actorTypeId != null && ActorType.REPOSITORY.getActorCode().equals(actorTypeId);
     }

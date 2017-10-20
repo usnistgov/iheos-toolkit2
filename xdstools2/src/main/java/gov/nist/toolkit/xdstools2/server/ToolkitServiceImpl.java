@@ -525,6 +525,15 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements
         if (s == null) return RawResponseBuilder.build(new NoServletSessionException(""));
         return new OrchestrationManager().buildRSNAEdgeTestEnvironment(s, request.getRsnaEdgeOrchestrationRequest());
     }
+
+    @Override
+    public RawResponse buildSrcTestOrchestration(BuildSrcTestOrchestrationRequest request) throws Exception {
+        installCommandContext(request);
+        Session s = getSession();
+        if (s == null) return RawResponseBuilder.build(new NoServletSessionException(""));
+        return new OrchestrationManager().buildSrcTestEnvironment(s, request.getSrcOrchestrationRequest());
+    }
+
     /*
 	@Override
    public RawResponse buildRepTestOrchestration(RepOrchestrationRequest request) {
@@ -1623,5 +1632,6 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements
             return e.getMessage();
         }
     }
+
 
 }

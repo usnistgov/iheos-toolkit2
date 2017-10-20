@@ -1,6 +1,10 @@
 package gov.nist.toolkit.actortransaction.client;
 
-public enum IheItiProfile {
+import com.google.gwt.user.client.rpc.IsSerializable;
+
+import java.io.Serializable;
+
+public enum IheItiProfile  implements IsSerializable, Serializable {
     XDS("xds"),
     MHD("mhd"),
     XCA_I("xca-i"),
@@ -41,6 +45,8 @@ public enum IheItiProfile {
     public boolean equals(String s) {
         return (this.toString().equals(s));
     }
+
+    public String getCode() { return code; }
 
 
 }
