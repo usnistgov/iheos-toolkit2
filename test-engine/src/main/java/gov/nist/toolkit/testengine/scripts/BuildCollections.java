@@ -68,7 +68,7 @@ public class BuildCollections extends HttpServlet {
       }
 
       for (ActorType actorType : actorTestMap.keySet()) {
-         String name = actorType.getShortName();
+         String name = actorType.getActorCode();
          String descriptiveName = actorType.getName();
          logger.info(String.format("Writing %s", new File(actorCollectionsDir + File.separator + name + ".tc")));
          Io.stringToFile(new File(actorCollectionsDir + File.separator + name + ".tc"),
