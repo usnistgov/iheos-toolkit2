@@ -129,12 +129,13 @@ public class BuildIIGTestOrchestrationButton extends AbstractOrchestrationButton
 
             if (testContext.getSiteUnderTest() != null) {
                initializationResultsPanel.add(new HTML("<h2>System Under Test Configuration</h2>"));
-               initializationResultsPanel.add(new HTML("Site: " + testContext.getSiteUnderTest().getName()));
+               initializationResultsPanel.add(new HTML("Site: " + testContext.getSiteUnderTestName()));
                FlexTable table = new FlexTable();
                int row = 0;
                table.setText(row, 0, "Retrieve Img Doc Set: ");
                try {
-                  table.setText(row++ , 1,
+                  if (testContext.getSiteUnderTest() !=null )
+                     table.setText(row++ , 1,
                           testContext.getSiteUnderTest().getRawEndpoint(TransactionType.RET_IMG_DOC_SET_GW, false, false));
                } catch (Exception e) {}
 

@@ -92,7 +92,7 @@ public class BuildRegTestOrchestrationButton extends AbstractOrchestrationButton
         request.setUserName(testTab.getCurrentTestSession());
         request.setEnvironmentName(testTab.getEnvironmentSelection());
         request.setUseExistingState(!isResetRequested());
-        SiteSpec sutSiteSpec = testContext.getSiteUnderTest().siteSpec();
+        SiteSpec sutSiteSpec = (testContext.getSiteUnderTest() == null) ? null : testContext.getSiteUnderTest().siteSpec();
         if (isSaml()) {
             setSamlAssertion(sutSiteSpec);
         }

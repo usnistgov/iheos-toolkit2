@@ -159,25 +159,28 @@ public class BuildIDSTestOrchestrationButton extends AbstractOrchestrationButton
 
                 if (testContext.getSiteUnderTest() != null) {
                     initializationResultsPanel.add(new HTML("<h2>System Under Test Configuration</h2>"));
-                    initializationResultsPanel.add(new HTML("Site: " + testContext.getSiteUnderTest().getName()));
+                    initializationResultsPanel.add(new HTML("Site: " + testContext.getSiteUnderTestName()));
                     FlexTable table = new FlexTable();
                     int row = 0;
                     table.setText(row, 0, "Retrieve Image Document Set");
                     try {
-                        table.setText(row++, 1, testContext.getSiteUnderTest().getRawEndpoint(TransactionType.RET_IMG_DOC_SET, false, false));
+                        if (testContext.getSiteUnderTest() !=null )
+                            table.setText(row++, 1, testContext.getSiteUnderTest().getRawEndpoint(TransactionType.RET_IMG_DOC_SET, false, false));
                     } catch (Exception e) {
                     }
 
                table.setText(row, 0, "Repository Unique ID");
                 String repositoryUid = "UNKNOWN";
                 try {
-                    repositoryUid = testContext.getSiteUnderTest().getRepositoryUniqueId(TransactionBean.RepositoryType.REPOSITORY);
+                    if (testContext.getSiteUnderTest() !=null )
+                        repositoryUid = testContext.getSiteUnderTest().getRepositoryUniqueId(TransactionBean.RepositoryType.REPOSITORY);
                 } catch (Exception e) {
                     repositoryUid = "UNKNOWN";
                 }
                try {
                    if (repositoryUid.equals("UNKNOWN")) {
-                       repositoryUid = testContext.getSiteUnderTest().getRepositoryUniqueId(TransactionBean.RepositoryType.IDS);
+                       if (testContext.getSiteUnderTest() !=null )
+                               repositoryUid = testContext.getSiteUnderTest().getRepositoryUniqueId(TransactionBean.RepositoryType.IDS);
                    }
                } catch (Exception e) {
                   new PopupMessage("sut config: " + e.getMessage());

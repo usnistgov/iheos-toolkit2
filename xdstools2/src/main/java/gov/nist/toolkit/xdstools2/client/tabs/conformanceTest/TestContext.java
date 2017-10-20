@@ -112,6 +112,11 @@ public class TestContext implements SiteManager {
         return siteUnderTest;
     }
 
+    public String getSiteUnderTestName() {
+        if (siteUnderTest == null) return null;
+        return siteUnderTest.getName();
+    }
+
     public SiteSpec getSiteUnderTestAsSiteSpec() {
         return (siteUnderTest == null) ? null : siteUnderTest.siteSpec();
     }
