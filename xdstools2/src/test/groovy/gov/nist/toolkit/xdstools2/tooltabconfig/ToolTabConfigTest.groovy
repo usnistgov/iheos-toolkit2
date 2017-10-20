@@ -63,6 +63,12 @@ class ToolTabConfigTest extends Specification {
         "".equals(requiredOpt.getTcCode())
         !requiredOpt.getExternalStart()
 
+        expect:
+        for (TabConfig option : options.getChildTabConfigs()) {
+            println "label: " + option.getLabel() + " tcCode: " + option.getTcCode() + " externalStart: " + option.getExternalStart()
+        }
+
+
         println "done."
     }
 
