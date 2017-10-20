@@ -193,7 +193,7 @@ public class SimDb {
 			try {
 				// add this for safety when deleting simulators -
 				Io.stringToFile(simSafetyFile(), simId.toString());
-                hasSafetyFile=true;
+				hasSafetyFile=true;
 			} catch (Exception ex) {
 				Thread.sleep(1000);
 			}
@@ -497,7 +497,7 @@ public class SimDb {
 		SimulatorConfig config = null;
 		boolean okIfNotExist = true;
 		int retry = 3;
-        // Sometimes loadSimulator returns Null even though there is valid simulator
+		// Sometimes loadSimulator returns Null even though there is valid simulator
 		while (config == null && retry-->0) {
 			try {
 				config = GenericSimulatorFactory.loadSimulator(simId, okIfNotExist);
@@ -1208,12 +1208,12 @@ public class SimDb {
 			ByteArrayOutputStream baos = new ByteArrayOutputStream();
 			th.setResult(new StreamResult(baos));
 			HL7Parser hl7Parser = new HL7Parser(th);
-			hl7Parser.setIncludeNamespaceDeclaration(false);
+			hl7Parser.setIncludeNamespaceDeclaration(true);
 			hl7Parser.parse(reader);
 			return baos.toString("UTF-8");
 		} catch (Exception e) {
 			return "Error converting to XML: " + e.getMessage() +
-				System.getProperty("line.separator") + inMsg;
+					System.getProperty("line.separator") + inMsg;
 		}
 	}
 

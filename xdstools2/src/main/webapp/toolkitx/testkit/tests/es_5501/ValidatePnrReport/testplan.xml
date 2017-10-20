@@ -1,0 +1,86 @@
+<TestPlan>
+    <Test>es_5501/validatePnrReport</Test>
+    <TestStep id="validate PnR Request Metadata for Report">
+        <Goal>Validate messages sent from Edge Server</Goal>
+        <ExpectedStatus>Success</ExpectedStatus>
+        <XMLValidation rootXpath="//*[local-name()='SubmitObjectsRequest']">
+            <UseReport reportName="returnedId" section="validatePIX" step="saveReturnedId" useAs="$returnedId$"/>
+            <Parameters>
+                RegPackage=//rim:RegistryObjectList/rim:RegistryPackage
+                Class=${RegPackage}/rim:Classification
+                contentTypeCode=${Class}[@classificationScheme='urn:uuid:aa543740-bdda-424e-8c96-df4873be8500']
+                PatientId=${RegPackage}/rim:ExternalIdentifier[@identificationScheme='urn:uuid:6b5aea1a-874d-4603-a4bc-96a0a7b38446']
+                SourceId=${RegPackage}/rim:ExternalIdentifier[@identificationScheme='urn:uuid:554ac39e-e3fe-47fe-b233-965d2a147832']
+                UniqueId=${RegPackage}/rim:ExternalIdentifier[@identificationScheme='urn:uuid:96fdda7c-d067-4183-912e-bf5ee74998a8']
+                Document=//rim:RegistryObjectList/rim:ExtrinsicObject[${i}]
+                DocAuthor=${Document}/rim:Classification[@classificationScheme='urn:uuid:93606bcf-9494-43ec-9b4e-a7748d1a838d']
+                ClassCode=${Document}/rim:Classification[@classificationScheme='urn:uuid:41a5887f-8865-4c09-adf7-e362475b143a']
+            </Parameters>
+            <SimTransaction id="rep_reg" transaction="prb"/>
+            <Assertions>
+                <Assert id="Submission Set: author Institution" process="Equals" value="RSNA ISN">
+                    ${Class}/rim:Slot[@name='authorInstitution']/rim:ValueList/rim:Value/text()
+                </Assert>
+                <Assert id="Submission Set: author person" process="Matches" value="^RSNA ISN\^RSNA ISN\^RSNA ISN\^.+ISO$">
+                    ${Class}/rim:Slot[@name='authorPerson']/rim:ValueList/rim:Value/text()
+                </Assert>
+                <Assert id="content type code: code" process="Equals" value="Imaging Exam">
+                    ${contentTypeCode}/@nodeRepresentation
+                </Assert>
+                <Assert id="content type code: display name" process="Equals" value="Imaging Exam">
+                    ${contentTypeCode}/rim:Name/rim:LocalizedString/@value
+                </Assert>
+                <Assert id="content type code: scheme name" process="Equals" value="1.3.6.1.4.1.19376.3.840.1.1.3">
+                    ${contentTypeCode}/rim:Slot[@name='codingScheme']/rim:ValueList/rim:Value/text()
+                </Assert>
+                <Assert id="entry UUID" process="Equals" value="UUID">
+                    ${RegPackage}/@id
+                </Assert>
+                <Assert id="Patient Id" process="Matches" value="^$returnedId$\^\^\^.+ISO$">
+                    ${PatientId}/@value
+                </Assert>
+                <Assert id="Patient Id: Localized string" process="Equals" value="XDSSubmissionSet.patientId">
+                    ${PatientId}/rim:Name[1]/rim:LocalizedString/@value
+                </Assert>
+                <Assert id="Submission Time" process="Equals" value="DateTime">
+                    ${RegPackage}/rim:Slot[@name='submissionTime']/rim:ValueList[1]/rim:Value[1]/text()
+                </Assert>
+                <Assert id="Source Id: Value" process="Equals" value="OID">
+                    ${SourceId}/@value
+                </Assert>
+                <Assert id="Source Id: Localized string" process="Equals" value="XDSSubmissionSet.sourceId">
+                    ${SourceId}/rim:Name[1]/rim:LocalizedString/@value
+                </Assert>
+                <Assert id="Unique Id: Value" process="Required">
+                    ${UniqueId}/@value
+                </Assert>
+                <Assert id="Unique Id: Localized string" process="Equals" value="XDSSubmissionSet.uniqueId">
+                    ${UniqueId}/rim:Name[1]/rim:LocalizedString/@value
+                </Assert>
+                <Assert id="number of documents" process="Equals" value="1">
+                    count(//rim:RegistryObjectList/rim:ExtrinsicObject)
+                </Assert>
+                <Assert forEach="${Document}" instanceId="${Document}/@id"
+                        id="author institution" process="Equals" value="RSNA ISN">
+                    ${DocAuthor}/rim:Slot[@name='authorInstitution']/rim:ValueList/rim:Value/text()
+                </Assert>
+                <Assert forEach="${Document}" instanceId="${Document}/@id"
+                        id="author person" process="Matches" value="^RSNA ISN\^RSNA ISN\^RSNA ISN.+ISO$">
+                    ${DocAuthor}/rim:Slot[@name='authorPerson']/rim:ValueList/rim:Value/text()
+                </Assert>
+                <Assert forEach="${Document}" instanceId="${Document}/@id"
+                        id="class code: code" process="Equals" value="REPORTS">
+                    ${ClassCode}/@nodeRepresentation
+                </Assert>
+                <Assert forEach="${Document}" instanceId="${Document}/@id"
+                        id="class code: display name" process="Equals" value="Report">
+                    ${ClassCode}/rim:Name/rim:LocalizedString/@value
+                </Assert>
+                <Assert forEach="${Document}" instanceId="${Document}/@id"
+                        id="class code: display name" process="Equals" value="Report">
+                    ${ClassCode}/rim:Name/rim:LocalizedString/@value
+                </Assert>
+            </Assertions>
+        </XMLValidation>
+    </TestStep>
+</TestPlan>

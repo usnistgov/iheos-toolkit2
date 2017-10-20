@@ -1,0 +1,31 @@
+<TestPlan>
+    <Test>es_5501/validateADT</Test>
+    <TestStep id="validate_ADT_message">
+        <Goal>Validate messages sent from Edge Server</Goal>
+        <ExpectedStatus>Success</ExpectedStatus>
+        <Hl7v2Validation>
+            <NoPatientId/>
+            <SimHl7v2Transaction id="rep_reg" transaction="ADT^A04" msg="Request"/>
+            <Assertions>
+                <Assert id="MSH 3:Sending Application" process="Required"/>
+                <Assert id="MSH 4: Sending Facility" process="Required"/>
+                <Assert id="MSH 5: Receiving Application" process="Required"/>
+                <Assert id="MSH 6: Receiving Facility" process="Required"/>
+                <Assert id="MSH 7: Date/Time of Message" process="Required"/>
+                <Assert id="MSH 9: Message Type" process="Equals">ADT</Assert>
+                <Assert id="MSH 9.1: Message Type" process="Equals">A04</Assert>
+                <Assert id="MSH 10: Message Control ID" process="Required"/>
+                <Assert id="MSH 11: Processing ID" process="Equals">P</Assert>
+                <Assert id="MSH 12: Version ID" process="Equals">2.3.1</Assert>
+                <Assert id="EVN 1: Event TypeCode" process="OneOf">,A01,A04</Assert>
+                <Assert id="EVN 2: Recorded Date/Time" process="Required"/>
+                <Assert id="PID 3: Hash/Identifier" process="SHA256" reportAs="hashId"/>
+                <Assert id="PID 3.3.1: Assigning Authority UID" process="Equals">1.3.6.1.4.1.19376.2.840.1.1.1.1</Assert>
+                <Assert id="PID 3.3.2: Assigning Authority Type" process="Equals">ISO</Assert>
+                <Assert id="PID : No PHI" process="NoPHI">3</Assert>
+                <Assert id="PV1 2: Patient Class" process="Equals">O</Assert>
+                <Assert id="PV1 : No PHI" process="NoPHI">2</Assert>
+            </Assertions>
+        </Hl7v2Validation>
+    </TestStep>
+</TestPlan>

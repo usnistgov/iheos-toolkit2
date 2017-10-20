@@ -1,0 +1,13 @@
+<TestPlan>
+    <Test>es_5501/validatePnrReport</Test>
+    <TestStep id="validate PnR Request Metadata for Report">
+        <Goal>Validate messages sent from Edge Server</Goal>
+        <ExpectedStatus>Success</ExpectedStatus>
+        <XMLValidation rootXpath="SubmitObjectsRequest[1]">
+            <SimTransaction id="rep_reg" transaction="prb"/>
+            <Assertions>
+
+            </Assertions>
+        </XMLValidation>
+    </TestStep>
+</TestPlan>

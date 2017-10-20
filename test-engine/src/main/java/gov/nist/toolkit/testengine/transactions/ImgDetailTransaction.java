@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package gov.nist.toolkit.testengine.transactions;
 
@@ -88,10 +88,10 @@ public class ImgDetailTransaction extends BasicTransaction {
       pMgr = Installation.instance().propertyServiceManager().getPropertyManager();
       this.step = step;
    }
-
+   // What is this override for ?
    @Override
-   public void runAssertionEngine(OMElement step_output, ErrorReportingInterface eri, OMElement assertion_output)
-      throws XdsInternalException {
+   public AssertionEngine runAssertionEngine(OMElement step_output, ErrorReportingInterface eri, OMElement assertion_output)
+           throws XdsInternalException {
 
       AssertionEngine engine = new AssertionEngine();
       engine.setDataRefs(data_refs);
@@ -110,6 +110,7 @@ public class ImgDetailTransaction extends BasicTransaction {
       engine.setOutput(step_output);
       engine.setTestConfig(testConfig);
       engine.run(eri, assertion_output);
+      return engine;
    }
 
    @Override
@@ -140,50 +141,50 @@ public class ImgDetailTransaction extends BasicTransaction {
     */
    @Override
    public void processAssertion(AssertionEngine engine, Assertion a, OMElement assertion_output)
-      throws XdsInternalException {
+           throws XdsInternalException {
       XdsInternalException xdsInternalException = null;
       errs = new ArrayList <>();
       try {
-      switch (a.process) {
-         case "sameReqImgs":
-            prsSameReqImgs(engine, a, assertion_output);
-            break;
-         case "sameRetImgs":
-            prsSameRetImgs(engine, a, assertion_output);
-            break;
-         case "sameRegErrors":
-            prsSameRegErrors(engine, a, assertion_output);
-            break;
-         case "registryErrorListNotEmpty":
-            prsRegistryErrorListNotEmpty(engine, a, assertion_output);
-            break;
-         case "sameDcmImgs":
-            prsSameDcmImgs(engine, a, assertion_output);
-            break;
-         case "sameKOSDcm":
-            prsSameKOSDcm(engine, a, assertion_output);
-            break;
-         case "sameKOSMetadata":
-            prsSameKOSMetadata(engine, a, assertion_output);
-            break;
-         case "sameWADOResp":
-            prsSameWADOResp(engine, a, assertion_output);
-            break;
-         case "sameQuery":
-            this.prsSameQuery(engine, a, assertion_output);
-            break;
-         case "sameRetrieve":
-            this.prsSameRetrieve(engine, a, assertion_output);
-            break;
-         case "loadSOAPSimTransaction":
-            this.prsLoadSOAPSimTransaction(engine, a, assertion_output);
-            break;
-         case "matchHomeCommunityIds":
-            this.prsMatchHomeCommunityIds(engine, a, assertion_output);
-            break;
-         default:
-            throw new XdsInternalException("ImgDetailTransaction: Unknown assertion.process " + a.process);
-      }
+         switch (a.process) {
+            case "sameReqImgs":
+               prsSameReqImgs(engine, a, assertion_output);
+               break;
+            case "sameRetImgs":
+               prsSameRetImgs(engine, a, assertion_output);
+               break;
+            case "sameRegErrors":
+               prsSameRegErrors(engine, a, assertion_output);
+               break;
+            case "registryErrorListNotEmpty":
+               prsRegistryErrorListNotEmpty(engine, a, assertion_output);
+               break;
+            case "sameDcmImgs":
+               prsSameDcmImgs(engine, a, assertion_output);
+               break;
+            case "sameKOSDcm":
+               prsSameKOSDcm(engine, a, assertion_output);
+               break;
+            case "sameKOSMetadata":
+               prsSameKOSMetadata(engine, a, assertion_output);
+               break;
+            case "sameWADOResp":
+               prsSameWADOResp(engine, a, assertion_output);
+               break;
+            case "sameQuery":
+               this.prsSameQuery(engine, a, assertion_output);
+               break;
+            case "sameRetrieve":
+               this.prsSameRetrieve(engine, a, assertion_output);
+               break;
+            case "loadSOAPSimTransaction":
+               this.prsLoadSOAPSimTransaction(engine, a, assertion_output);
+               break;
+            case "matchHomeCommunityIds":
+               this.prsMatchHomeCommunityIds(engine, a, assertion_output);
+               break;
+            default:
+               throw new XdsInternalException("ImgDetailTransaction: Unknown assertion.process " + a.process);
+         }
       } catch (XdsInternalException ie) {
          xdsInternalException = ie;
          errs.add(ie.getMessage());
@@ -191,7 +192,7 @@ public class ImgDetailTransaction extends BasicTransaction {
       if (errs.isEmpty() == false) {
          ILogger testLogger = new TestLogFactory().getLogger();
          testLogger.add_name_value_with_id(assertion_output, "AssertionStatus", a.id, "fail");
-         for (String err : errs) 
+         for (String err : errs)
             s_ctx.fail(err);
       }
       if (xdsInternalException != null) throw xdsInternalException;
@@ -215,7 +216,7 @@ public class ImgDetailTransaction extends BasicTransaction {
     * present.
     */
    private void prsSameWADOResp(AssertionEngine engine, Assertion a, OMElement assertion_output)
-      throws XdsInternalException {
+           throws XdsInternalException {
       try {
          OMElement std = getStdElement("HttpResponseCodes");
          // process Transactions elements
@@ -276,7 +277,7 @@ public class ImgDetailTransaction extends BasicTransaction {
    }
 
    private void prsSameReqImgs(AssertionEngine engine, Assertion a, OMElement assertion_output)
-      throws XdsInternalException {
+           throws XdsInternalException {
       try {
          // Get gold standard request, validate
          String stdName = a.assertElement.getAttributeValue(new QName("std"));
@@ -284,7 +285,7 @@ public class ImgDetailTransaction extends BasicTransaction {
          OMElement std = getStdElement(stdName);
          String t = std.getLocalName();
          if (t.endsWith("RetrieveImagingDocumentSetRequest") == false) { throw new XdsInternalException(
-            "sameReQImgs assertion only applies to RetrieveImagingDocumentSetRequest"); }
+                 "sameReqImgs assertion only applies to RetrieveImagingDocumentSetRequest"); }
          // get test request
          OMElement test = getTestTrans(a, "request");
          // load requested docs data for test/std
@@ -311,15 +312,15 @@ public class ImgDetailTransaction extends BasicTransaction {
             // found, but not everything matches
             store(engine, CAT.SUCCESS, "test doc UID " + testKey + ", found in std.");
             if (!comp(stdImg.studyUID, testImg.studyUID)) store(engine, CAT.ERROR, "for doc with UID: " + testKey
-               + " studyUID mismatch (std/test): (" + stdImg.studyUID + "/" + testImg.studyUID + ")");
+                    + " studyUID mismatch (std/test): (" + stdImg.studyUID + "/" + testImg.studyUID + ")");
             if (!comp(stdImg.seriesUID, testImg.seriesUID)) store(engine, CAT.ERROR, "for doc with UID: " + testKey
-               + " seriesUID mismatch (std/test): (" + stdImg.seriesUID + "/" + testImg.seriesUID + ")");
+                    + " seriesUID mismatch (std/test): (" + stdImg.seriesUID + "/" + testImg.seriesUID + ")");
             if (!comp(stdImg.homeCommunityUID, testImg.homeCommunityUID))
                store(engine, CAT.ERROR, "for doc with UID: " + testKey + " homeCommunityID mismatch (std/test): ("
-                  + stdImg.homeCommunityUID + "/" + testImg.homeCommunityUID + ")");
+                       + stdImg.homeCommunityUID + "/" + testImg.homeCommunityUID + ")");
             if (!comp(stdImg.repositoryUID, testImg.repositoryUID))
                store(engine, CAT.ERROR, "for doc with UID: " + testKey + " RepositoryUniqueID mismatch (std/test): ("
-                  + stdImg.repositoryUID + "/" + testImg.repositoryUID + ")");
+                       + stdImg.repositoryUID + "/" + testImg.repositoryUID + ")");
          }
          // list any std docs which weren't in test
          for (String key : stdImgs.keySet())
@@ -392,21 +393,21 @@ public class ImgDetailTransaction extends BasicTransaction {
 
    private boolean comp(ReqImg std, ReqImg test) {
       return comp(std.studyUID, test.studyUID) && comp(std.seriesUID, test.seriesUID)
-         && comp(std.homeCommunityUID, test.homeCommunityUID) && comp(std.repositoryUID, test.repositoryUID);
+              && comp(std.homeCommunityUID, test.homeCommunityUID) && comp(std.repositoryUID, test.repositoryUID);
    }
 
    /**
     * Matches documents and status in a {@code <RetrieveDocumentSetResponse>}
     * against a "gold standard" response which is in the {@code <ResponseBody>}
     * child element of the testplan.xml {@code <Standard>} element.
-    * 
+    *
     * @param engine AssertionEngine instance
     * @param a Assert being processed
     * @param assertion_output log.xml output element for that assert
     * @throws XdsInternalException on error
     */
    private void prsSameRetImgs(AssertionEngine engine, Assertion a, OMElement assertion_output)
-      throws XdsInternalException {
+           throws XdsInternalException {
       try {
          OMElement std = getStdElement("ResponseBody");
          OMElement test = getTestTrans(a, "response");
@@ -420,7 +421,7 @@ public class ImgDetailTransaction extends BasicTransaction {
             store(engine, CAT.SUCCESS, "RegistryResponse status match: " + testStatus);
          } else {
             store(engine, CAT.ERROR,
-               " RegistryResponse status mismatch (std/test): (" + stdStatus + "/" + testStatus + ")");
+                    " RegistryResponse status mismatch (std/test): (" + stdStatus + "/" + testStatus + ")");
          }
          Map <String, RetImg> testImgs = loadRetImgs(engine, a, test);
          Map <String, RetImg> stdImgs = loadRetImgs(engine, a, std);
@@ -439,11 +440,11 @@ public class ImgDetailTransaction extends BasicTransaction {
             }
             store(engine, CAT.SUCCESS, "test doc UID " + testKey + ", found in std.");
             if (comp(stdImg.home, testImg.home) == false) store(engine, CAT.ERROR, "for doc with UID: " + testKey
-               + " homeCommunityID mismatch (std/test): (" + stdImg.home + "/" + testImg.home + ")");
+                    + " homeCommunityID mismatch (std/test): (" + stdImg.home + "/" + testImg.home + ")");
             if (comp(stdImg.repo, testImg.repo) == false) store(engine, CAT.ERROR, "for doc with UID: " + testKey
-               + " RepositoryUniqueID mismatch (std/test): (" + stdImg.repo + "/" + testImg.repo + ")");
+                    + " RepositoryUniqueID mismatch (std/test): (" + stdImg.repo + "/" + testImg.repo + ")");
             if (comp(stdImg.mime, testImg.mime) == false) store(engine, CAT.ERROR, "for doc with UID: " + testKey
-               + " mimeType mismatch (std/test): (" + stdImg.mime + "/" + testImg.mime + ")");
+                    + " mimeType mismatch (std/test): (" + stdImg.mime + "/" + testImg.mime + ")");
          }
          if (stdImgs.isEmpty()) return;
          Set <String> stdKeys = stdImgs.keySet();
@@ -455,7 +456,7 @@ public class ImgDetailTransaction extends BasicTransaction {
    }
 
    private void prsSameRegErrors(AssertionEngine engine, Assertion a, OMElement assertion_output)
-      throws XdsInternalException {
+           throws XdsInternalException {
       // key is errorCode:severity
       Map <String, RegErr> map = new HashMap <>();
 
@@ -491,7 +492,7 @@ public class ImgDetailTransaction extends BasicTransaction {
          for (RegErr error : errors) {
             String severity = StringUtils.substringAfterLast(error.severity, ":");
             String msg = error.errorCode + ":" + severity + " - " + "Expected " + error.expected + ", found "
-               + error.found + "\n" + error.codeContext + " " + error.location;
+                    + error.found + "\n" + error.codeContext + " " + error.location;
             CAT cat = CAT.SUCCESS;
             if (error.expected == 0) cat = CAT.WARNING;
             if (error.expected > error.found) cat = CAT.ERROR;
@@ -628,7 +629,7 @@ public class ImgDetailTransaction extends BasicTransaction {
    /**
     * Matches DICOM tag values in returned images to standard. Uses this format
     * of assert tag in testplan.xml:
-    * 
+    *
     * <pre>
     * {@code
     * <Assert id="Returned img(s)" process="sameDcmImgs" >
@@ -640,8 +641,8 @@ public class ImgDetailTransaction extends BasicTransaction {
     *          file contents is used as the comparison value rather than the
     *          contents of a DICOM tag
     *       3. Have the Element name "TAG" and an attribute "hex" with
-    *       a value which is a valid dicom tag group and element number 
-    *       separated by a comma (for example hex="0020,0020") There are 
+    *       a value which is a valid dicom tag group and element number
+    *       separated by a comma (for example hex="0020,0020") There are
     *       four optional attributes for these elements:
     *       1. type - which should have the type of assertion, taken from
     *          the TYPE enum in DCMAssertion. The default value is "SAME",
@@ -649,9 +650,9 @@ public class ImgDetailTransaction extends BasicTransaction {
     *       2. value - which should have the string value which the DICOM
     *          tag should match. Only used in CONSTANT type assertions.
     *          The default value is the empty string.
-    *       3. passCat - which should have the string CAT value to be used if 
+    *       3. passCat - which should have the string CAT value to be used if
     *          the assertion succeeds. The default value is SUCCESS.
-    *       4. failCat - which should have the string CAT value to be used if 
+    *       4. failCat - which should have the string CAT value to be used if
     *          the assertion fails. The default value is ERROR.
     *       <SOPClassUID />
     *       <SOPInstanceUID />
@@ -670,19 +671,19 @@ public class ImgDetailTransaction extends BasicTransaction {
     *       <StdDir>path2</StdDir>
     *       <StdDir>path3</StdDir>
     *       TestDir element contains the path where the test images from
-    *       the test are to be stored. Only one directory. May be 
+    *       the test are to be stored. Only one directory. May be
     *       absolute, or relative to the test step log directory. Default
     *       is "testImages" in the test step log directory. TestDir element may
     *       also have testDir attribute, in which case directory is
     *       relative to that test step log directory.
     *       <TestDir>path</TestDir>
     *    </DirList>
-    * </Assert> 
+    * </Assert>
     * }
     * </pre>
     */
    private void prsSameDcmImgs(AssertionEngine engine, Assertion a, OMElement assertion_output)
-      throws XdsInternalException {
+           throws XdsInternalException {
       try {
          OMElement assertElement = a.assertElement;
          // Pull TagList and DirList child elements
@@ -707,7 +708,7 @@ public class ImgDetailTransaction extends BasicTransaction {
          OMElement testResponseBody = getTestTrans(a, "response");
          if (testResponseBody != null ) {
             testImgDir.mkdirs();
-            FileUtils.cleanDirectory(testImgDir);            
+            FileUtils.cleanDirectory(testImgDir);
             storeFiles(testResponseBody, testImgPath);
          }
          // Make list of test image pfns
@@ -744,26 +745,26 @@ public class ImgDetailTransaction extends BasicTransaction {
             if (tagName.equalsIgnoreCase("HASH")) {
                dcmTag = -1;
             } else
-            // Tag defined with hex value
-            if (tagName.equalsIgnoreCase("Tag")) {
-               String hex = tag.getAttributeValue(new QName("hex"));
-               if (hex == null) throw new Exception("TagList Tag element has no hex attribute");
-               String[] tkns = hex.split(",");
-               if (tkns.length != 2) throw new Exception("TagList Tag element inv hex attr value [" + hex + "]");
-               int group = 0, element = 0;
-               try {
-                  group = Integer.parseInt(tkns[0], 16);
-                  element = Integer.parseInt(tkns[1], 16);
-               } catch (Exception e) {
-                  throw new Exception("TagList Tag element inv hex attr value [" + hex + "] " + e.getMessage());
+               // Tag defined with hex value
+               if (tagName.equalsIgnoreCase("Tag")) {
+                  String hex = tag.getAttributeValue(new QName("hex"));
+                  if (hex == null) throw new Exception("TagList Tag element has no hex attribute");
+                  String[] tkns = hex.split(",");
+                  if (tkns.length != 2) throw new Exception("TagList Tag element inv hex attr value [" + hex + "]");
+                  int group = 0, element = 0;
+                  try {
+                     group = Integer.parseInt(tkns[0], 16);
+                     element = Integer.parseInt(tkns[1], 16);
+                  } catch (Exception e) {
+                     throw new Exception("TagList Tag element inv hex attr value [" + hex + "] " + e.getMessage());
+                  }
+                  dcmTag = TagUtils.toTag(group, element);
+                  tagName = TagUtils.toString(dcmTag);
+               } else {
+                  // tags defined in tag map.
+                  if (tagMap.containsKey(tagName) == false) throw new Exception("Unknown DICOM Tag " + tagName);
+                  dcmTag = tagMap.get(tagName);
                }
-               dcmTag = TagUtils.toTag(group, element);
-               tagName = TagUtils.toString(dcmTag);
-            } else {
-               // tags defined in tag map.
-               if (tagMap.containsKey(tagName) == false) throw new Exception("Unknown DICOM Tag " + tagName);
-               dcmTag = tagMap.get(tagName);
-            }
             String typeName = tag.getAttributeValue(new QName("type"));
             if (typeName == null) typeName = "SAME";
             typeName = typeName.trim().toUpperCase();
@@ -795,7 +796,7 @@ public class ImgDetailTransaction extends BasicTransaction {
 
    // Matches values in KOS to standard. Used on PnR transactions
    private void prsSameKOSDcm(AssertionEngine engine, Assertion a, OMElement assertion_output)
-      throws XdsInternalException {
+           throws XdsInternalException {
       try {
          // pfn of std KON.dcm
          String pfn = a.xpath.trim();
@@ -826,7 +827,7 @@ public class ImgDetailTransaction extends BasicTransaction {
    }
 
    private void prsSameKOSMetadata(AssertionEngine engine, Assertion a, OMElement assertion_output)
-      throws XdsInternalException {
+           throws XdsInternalException {
       try {
          // pfn of std metadata
          String pfn = a.xpath.trim();
@@ -847,27 +848,27 @@ public class ImgDetailTransaction extends BasicTransaction {
          throw new XdsInternalException("ImgDetailTransaction - sameKOSMetadata: " + e.getMessage());
       }
    }
-   
+
    private void prsSameQuery(AssertionEngine engine, Assertion a, OMElement assertion_output)
-      throws XdsInternalException {
+           throws XdsInternalException {
       try {
-      String pfn = a.xpath.trim();
-      String stdPfn = Paths.get(testConfig.testplanDir.getAbsolutePath(), pfn).toString();
-      SimulatorTransaction simTran = getSimulatorTransaction(a);
-      simTran.setStdPfn(stdPfn);
-      TestITI18 testInstance = new TestITI18();
-      testInstance.initializeTest(a.process, simTran);
-      testInstance.runTest();
-      Results results = testInstance.getResults(a.process);
-      String rep = results.toString();
-      CAT cat = CAT.SUCCESS;
-      if (results.getErrorCount() > 0) cat = CAT.ERROR;
-      store(engine, cat, rep);
+         String pfn = a.xpath.trim();
+         String stdPfn = Paths.get(testConfig.testplanDir.getAbsolutePath(), pfn).toString();
+         SimulatorTransaction simTran = getSimulatorTransaction(a);
+         simTran.setStdPfn(stdPfn);
+         TestITI18 testInstance = new TestITI18();
+         testInstance.initializeTest(a.process, simTran);
+         testInstance.runTest();
+         Results results = testInstance.getResults(a.process);
+         String rep = results.toString();
+         CAT cat = CAT.SUCCESS;
+         if (results.getErrorCount() > 0) cat = CAT.ERROR;
+         store(engine, cat, rep);
       } catch (Exception e) {
          throw new XdsInternalException("ImgDetailTransaction - sameQuery: " + e.getMessage());
       }
    }
-   
+
    private void prsLoadSOAPSimTransaction(AssertionEngine engine, Assertion a, OMElement assertion_output) {
       store(engine, CAT.SUCCESS, "currently a no op");
 //      try {
@@ -877,9 +878,9 @@ public class ImgDetailTransaction extends BasicTransaction {
 //         store(engine, CAT.ERROR, "");
 //      }
    }
-   
+
    private void prsSameRetrieve(AssertionEngine engine, Assertion a, OMElement assertion_output)
-      throws XdsInternalException {
+           throws XdsInternalException {
       String pfn = a.xpath.trim();
       String stdPfn = Paths.get(testConfig.testplanDir.getAbsolutePath(), pfn).toString();
       SimulatorTransaction simTran = getSimulatorTransaction(a);
@@ -916,27 +917,27 @@ public class ImgDetailTransaction extends BasicTransaction {
       } catch (Exception e) {}
       return status;
    }
-   
+
    /**
-    * Matches documents and homecommunity id values in a 
+    * Matches documents and homecommunity id values in a
     * {@code <RetrieveDocumentSetResponse>}
     * against a "gold standard" response which is in the {@code <ResponseBody>}
     * child element of the testplan.xml {@code <Standard>} element.
-    * 
+    *
     * @param engine AssertionEngine instance
     * @param a Assert being processed
     * @param assertion_output log.xml output element for that assert
     * @throws XdsInternalException on error
     */
    private void prsMatchHomeCommunityIds(AssertionEngine engine, Assertion a, OMElement assertion_output)
-            throws XdsInternalException {
+           throws XdsInternalException {
       try {
          OMElement std = getStdElement("ResponseBody");
          OMElement test = getTestTrans(a, "response");
          String t = std.getLocalName();
          if (t.endsWith("RetrieveDocumentSetResponse") == false)
             throw new XdsInternalException("matchHomeCommunityIds assertion only applies to RetrieveDocumentSetResponse");
-        
+
          Map <String, RetImg> testImgs = loadRetImgs(engine, a, test);
          Map <String, RetImg> stdImgs = loadRetImgs(engine, a, std);
          Set <String> testKeys = testImgs.keySet();
@@ -951,10 +952,10 @@ public class ImgDetailTransaction extends BasicTransaction {
             store(engine, CAT.SUCCESS, "test doc UID " + testKey + ", found in std.");
             if (compMandatory(stdImg.home, testImg.home)) {
                store(engine, CAT.SUCCESS, "for doc with UID: " + testKey +
-               " homeCommunityID match (std/test): (" + stdImg.home + "/" + testImg.home + ")");
+                       " homeCommunityID match (std/test): (" + stdImg.home + "/" + testImg.home + ")");
             } else {
                store(engine, CAT.ERROR, "for doc with UID: " + testKey +
-               " homeCommunityID mismatch (std/test): (" + stdImg.home + "/" + testImg.home + ")");
+                       " homeCommunityID mismatch (std/test): (" + stdImg.home + "/" + testImg.home + ")");
             }
          }
          if (stdImgs.isEmpty()) return;
@@ -968,7 +969,7 @@ public class ImgDetailTransaction extends BasicTransaction {
 
    /**
     * Expects the current testplan.xml {@code <TestStep>} element to contain:
-    * 
+    *
     * <pre>
     *  {@code
     * <Standard>
@@ -979,7 +980,7 @@ public class ImgDetailTransaction extends BasicTransaction {
     *    ...
     * </Standard>}
     * </pre>
-    * 
+    *
     * @param name String element name for {@code <Standard>} child element to
     * return.
     * @return OMElement for the internal element, in this example
@@ -1038,18 +1039,18 @@ public class ImgDetailTransaction extends BasicTransaction {
 
    private SimulatorTransaction getSimulatorTransaction(Assertion a) throws XdsInternalException {
       try {
-      OMElement simTransactionElement = XmlUtil.firstChildWithLocalName(a.assertElement, "SimTransaction");
-      if (simTransactionElement == null)
-         throw new XdsInternalException(a.toString() + " has no SimTransaction element");
-      String id = simTransactionElement.getAttributeValue(new QName("id"));
-      String trans = simTransactionElement.getAttributeValue(new QName("transaction"));
-      String pid = simTransactionElement.getAttributeValue(new QName("pid"));
-      TransactionType tType = TransactionType.find(trans);
-      if (tType == null) throw new XdsInternalException(a.toString() + " invalid transaction");
-      ActorType aType = ActorType.getActorType(tType);
-      TestInstance ti = testConfig.testInstance;
-      SimId simId = new SimId(ti.getUser(), id, aType.getShortName());
-      return SimulatorTransaction.get(simId, tType, pid, null);
+         OMElement simTransactionElement = XmlUtil.firstChildWithLocalName(a.assertElement, "SimTransaction");
+         if (simTransactionElement == null)
+            throw new XdsInternalException(a.toString() + " has no SimTransaction element");
+         String id = simTransactionElement.getAttributeValue(new QName("id"));
+         String trans = simTransactionElement.getAttributeValue(new QName("transaction"));
+         String pid = simTransactionElement.getAttributeValue(new QName("pid"));
+         TransactionType tType = TransactionType.find(trans);
+         if (tType == null) throw new XdsInternalException(a.toString() + " invalid transaction");
+         ActorType aType = ActorType.getActorType(tType);
+         TestInstance ti = testConfig.testInstance;
+         SimId simId = new SimId(ti.getUser(), id, aType.getShortName());
+         return SimulatorTransaction.get(simId, tType, pid, null);
       } catch (XdsInternalException ie) {
          errs.add("Error loading simulator transaction" + ie.getMessage());
          throw ie;
@@ -1086,10 +1087,10 @@ public class ImgDetailTransaction extends BasicTransaction {
       if (test == null || test.length() == 0) return false;
       return std.equals(test);
    }
-   
+
    /*
     * helper method for string compares between std and test where an empty or
-    * null std value is considered to match an empty or null test value. Used 
+    * null std value is considered to match an empty or null test value. Used
     * for home and repository UIDs.
     */
    private boolean compMandatory(String std, String test) {

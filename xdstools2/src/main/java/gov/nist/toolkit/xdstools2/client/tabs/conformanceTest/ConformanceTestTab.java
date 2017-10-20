@@ -768,7 +768,6 @@ public class ConformanceTestTab extends ToolWindowWithMenu implements TestRunner
 	}
 
 	private void displayOrchestrationHeader(Panel initializationPanel) {
-		new PopupMessage("ConformanceTestTab#displayOrchestrationHeader " + currentActorOption.toString());
 		String label = "Initialize Test Environment";
 		if (currentActorOption.isRep()) {
 			orchInit = new BuildRepTestOrchestrationButton(this, testContext, testContextView, initializationPanel, label);
@@ -816,7 +815,6 @@ public class ConformanceTestTab extends ToolWindowWithMenu implements TestRunner
 			initializationPanel.add(orchInit.panel());
 		}
 		else if (currentActorOption.isEs()) {
-			new PopupMessage("ConformanceTestTab:818");
 			orchInit = new BuildEsTestOrchestrationButton(this, testContext, testContextView, initializationPanel, label);
 			orchInit.addSelfTestClickHandler(new RefreshTestCollectionHandler());
 			initializationPanel.add(orchInit.panel());

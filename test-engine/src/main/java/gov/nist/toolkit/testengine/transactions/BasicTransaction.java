@@ -77,7 +77,7 @@ public abstract class BasicTransaction  {
 	protected boolean async = false;
 	protected boolean isStableOrODDE = false;
 	/**
-	HttpTransaction uses a separate Body.txt file. In this case we need to tell not run reportManagerPreRun since the subclass will run the parameter replacement on its own.
+	 HttpTransaction uses a separate Body.txt file. In this case we need to tell not run reportManagerPreRun since the subclass will run the parameter replacement on its own.
 	 */
 	boolean noReportManagerPreRun = false;
 	boolean noMetadataProcessing = false;  // example Retrieve request - no metadata to process
@@ -234,25 +234,25 @@ public abstract class BasicTransaction  {
 		if ( ! step_failure ) {
 
 			if (reportManager != null ) {
-                //reportStepParameters();
+				//reportStepParameters();
 
 				reportManager.setXML(instruction_output);
-                logger.info("Reporting run parameters: " + getPlan().getExtraLinkage());
-                reportManager.report(getPlan().getExtraLinkage());
+				logger.info("Reporting run parameters: " + getPlan().getExtraLinkage());
+				reportManager.report(getPlan().getExtraLinkage());
 				reportManager.generate();
-                // report run parameters as Reports
+				// report run parameters as Reports
 
 				testLog.add_name_value(instruction_output, reportManager.toXML());
 
-            }
+			}
 
 		}
 	}
 
 	protected void reportManagerPreRun(OMElement metadata_element) throws XdsInternalException,
-	XdsInternalException {
+			XdsInternalException {
 
-        compileExtraLinkage(metadata_element);
+		compileExtraLinkage(metadata_element);
 
 		if (useReportManager != null) {
 
@@ -309,30 +309,30 @@ public abstract class BasicTransaction  {
 		return new StringBuffer()
 //		.append("Called From:\n")
 //		.append(exceptionString)
-		.append("BasicTransaction\n")
-		.append("Step = ").append(s_ctx.getId()).append("\n")
-		.append("transaction = ").append(this.getClass().getName()).append("\n")
-		.append("step_failure = ").append(step_failure).append("\n")
-		.append("parse_metadata = ").append(parse_metadata).append("\n")
-		.append("xds_version = ").append(xdsVersionName()).append("\n")
-		.append("use_id = ").append((use_id == null) ? null : use_id.toString())
-		.append("use_xpath = ").append((use_xpath == null) ? null : use_xpath.toString())
-		.append("use_object_ref = ").append((use_object_ref == null) ? null : use_object_ref.toString())
-		.append("use_repository_unique_id = ").append((use_repository_unique_id == null) ? null : use_repository_unique_id.toString())
-		.append("data_refs = ").append((data_refs == null) ? null : data_refs.toString())
-		.append("assertionEleList = ").append((assertionEleList == null) ? null : assertionEleList.toString())
-		.append("endpoint = ").append(endpoint).append("\n")
-		.append("linkage = ").append((local_linkage_data == null) ? null : local_linkage_data.toString())
-		.append("metadata_filename = ").append(metadata_filename).append("\n")
-		.append("assign_uuids = ").append(assign_uuids).append("\n")
-		.append("assign_uids = ").append(assign_uids).append("\n")
-		.append("no_assign_uid_to = ").append(no_assign_uid_to).append("\n")
-		.append("assign_patient_id = ").append(assign_patient_id).append("\n")
-		.append("soap_1_2 = ").append(soap_1_2).append("\n")
-		.append("repositoryUniqueId = ").append(repositoryUniqueId).append("\n")
-		.append("nameUuidMap = ").append(nameUuidMap).append("\n")
+				.append("BasicTransaction\n")
+				.append("Step = ").append(s_ctx.getId()).append("\n")
+				.append("transaction = ").append(this.getClass().getName()).append("\n")
+				.append("step_failure = ").append(step_failure).append("\n")
+				.append("parse_metadata = ").append(parse_metadata).append("\n")
+				.append("xds_version = ").append(xdsVersionName()).append("\n")
+				.append("use_id = ").append((use_id == null) ? null : use_id.toString())
+				.append("use_xpath = ").append((use_xpath == null) ? null : use_xpath.toString())
+				.append("use_object_ref = ").append((use_object_ref == null) ? null : use_object_ref.toString())
+				.append("use_repository_unique_id = ").append((use_repository_unique_id == null) ? null : use_repository_unique_id.toString())
+				.append("data_refs = ").append((data_refs == null) ? null : data_refs.toString())
+				.append("assertionEleList = ").append((assertionEleList == null) ? null : assertionEleList.toString())
+				.append("endpoint = ").append(endpoint).append("\n")
+				.append("linkage = ").append((local_linkage_data == null) ? null : local_linkage_data.toString())
+				.append("metadata_filename = ").append(metadata_filename).append("\n")
+				.append("assign_uuids = ").append(assign_uuids).append("\n")
+				.append("assign_uids = ").append(assign_uids).append("\n")
+				.append("no_assign_uid_to = ").append(no_assign_uid_to).append("\n")
+				.append("assign_patient_id = ").append(assign_patient_id).append("\n")
+				.append("soap_1_2 = ").append(soap_1_2).append("\n")
+				.append("repositoryUniqueId = ").append(repositoryUniqueId).append("\n")
+				.append("nameUuidMap = ").append(nameUuidMap).append("\n")
 
-		.toString();
+				.toString();
 
 
 	}
@@ -365,7 +365,7 @@ public abstract class BasicTransaction  {
 		local_linkage_data = new HashMap<String, String>();
 		isSQ = false;
 
-    }
+	}
 
 	String xds_version_name() {
 		if (xds_version == xds_a)
@@ -436,7 +436,7 @@ public abstract class BasicTransaction  {
 		vc.isResponse = true;
 		vc.isStableOrODDE = isStableOrODDE;
 		try {
-            SecurityParams sp = s_ctx.getTransactionSettings().securityParams;
+			SecurityParams sp = s_ctx.getTransactionSettings().securityParams;
 			logger.info("Codes file is " + sp.getCodesFile());
 			vc.setCodesFilename(this.s_ctx.getTransactionSettings().securityParams.getCodesFile().toString());
 		} catch (Exception e) {}
@@ -486,7 +486,7 @@ public abstract class BasicTransaction  {
 	}
 
 	protected void validateSchema(OMElement registry_result, int metadata_type)
-	throws XdsInternalException {
+			throws XdsInternalException {
 		// schema validate response
 		String schema_results = "";
 		try {
@@ -502,7 +502,7 @@ public abstract class BasicTransaction  {
 	}
 
 	void eval_expected_status(String status,
-			ArrayList<String> returned_code_contexts) throws XdsInternalException {
+							  ArrayList<String> returned_code_contexts) throws XdsInternalException {
 		TransactionStatus currentStatus = new TransactionStatus(status);
 		List<TransactionStatus> expectedStatus = s_ctx.getExpectedStatus();
 		//		if (!expected_status) {
@@ -805,23 +805,23 @@ public abstract class BasicTransaction  {
 		s_ctx.set_error(msg);
 	}
 
-    public void fail(List<String> msgs) throws XdsInternalException {
-        failMsgs = msgs;
-        failed();
-        for (String x : msgs) s_ctx.set_error(x);
-    }
+	public void fail(List<String> msgs) throws XdsInternalException {
+		failMsgs = msgs;
+		failed();
+		for (String x : msgs) s_ctx.set_error(x);
+	}
 
-    String asString(List<String> strs) {
-        StringBuilder buf = new StringBuilder();
-        for (String x : strs) buf.append(x).append("\n");
-        return buf.toString();
-    }
+	String asString(List<String> strs) {
+		StringBuilder buf = new StringBuilder();
+		for (String x : strs) buf.append(x).append("\n");
+		return buf.toString();
+	}
 
-    List<String> asList(String str) {
-        List<String> lst = new ArrayList<>();
-        lst.add(str);
-        return lst;
-    }
+	List<String> asList(String str) {
+		List<String> lst = new ArrayList<>();
+		lst.add(str);
+		return lst;
+	}
 
 	public String getFail() {
 		if (failMsgs == null) return null;
@@ -844,9 +844,9 @@ public abstract class BasicTransaction  {
 
 	Metadata prepareMetadata() throws XdsInternalException, XdsInternalException, MetadataException, FactoryConfigurationError {
 		Metadata metadata = null;
-        logger.debug("metadata_filename is " + metadata_filename);
-        if (metadata_filename != null && !metadata_filename.equals(""))
-            request_element = Util.parse_xml(new File(metadata_filename));
+		logger.debug("metadata_filename is " + metadata_filename);
+		if (metadata_filename != null && !metadata_filename.equals(""))
+			request_element = Util.parse_xml(new File(metadata_filename));
 
 //        if (request_element == null)
 //            fatal("BasicTransaction:prepare_metadata(): metadata_element is null");
@@ -923,11 +923,11 @@ public abstract class BasicTransaction  {
 				reportManager.report(nameUuidMap, "_uuid");
 			}
 
-            // Insert test/section/step into authorPerson.id
-            String stepId = getStep().getId();
-            String testId = getStep().getPlan().getTestNum();
-            String sectionId = getStep().getPlan().getCurrentSection();
-            String id = String.format("%s/%s/%s", testId, sectionId, stepId);
+			// Insert test/section/step into authorPerson.id
+			String stepId = getStep().getId();
+			String testId = getStep().getPlan().getTestNum();
+			String sectionId = getStep().getPlan().getCurrentSection();
+			String id = String.format("%s/%s/%s", testId, sectionId, stepId);
 
 //            if ("true".equals(Configuration.getProperty("testclient.addTestAsAuthor"))) {
 //                if (metadata != null)
@@ -994,22 +994,22 @@ public abstract class BasicTransaction  {
 		}
 	}
 
-    // report the parameters to the request as Reports so they can be referenced
-    // in assertionEleList
-    void reportStepParameters() {
-        logger.info("generating linkageAsReports");
-        if (reportManager == null)
-            reportManager = new ReportManager(testConfig);
-        Map<String, String> params = getStep().getPlan().getExtraLinkage();
-        logger.info("transaction: " + params);
-        for (String name : params.keySet()) {
-            String value = params.get(name);
-            ReportDTO reportDTO = new ReportDTO(name, value);
-            logger.info("adding ReportDTO " + reportDTO);
-            reportManager.addReport(reportDTO);
-            logger.info("ReportBuilder manager has " + reportManager.toString());
-        }
-    }
+	// report the parameters to the request as Reports so they can be referenced
+	// in assertionEleList
+	void reportStepParameters() {
+		logger.info("generating linkageAsReports");
+		if (reportManager == null)
+			reportManager = new ReportManager(testConfig);
+		Map<String, String> params = getStep().getPlan().getExtraLinkage();
+		logger.info("transaction: " + params);
+		for (String name : params.keySet()) {
+			String value = params.get(name);
+			ReportDTO reportDTO = new ReportDTO(name, value);
+			logger.info("adding ReportDTO " + reportDTO);
+			reportManager.addReport(reportDTO);
+			logger.info("ReportBuilder manager has " + reportManager.toString());
+		}
+	}
 
 	protected void parseBasicInstruction(OMElement part) throws XdsInternalException {
 		String part_name = part.getLocalName();
@@ -1135,7 +1135,7 @@ public abstract class BasicTransaction  {
 				fatal("WaitBefore failed: " + e.getMessage());
 			}
 		} else if (part_name.equals("InteractionSequence")) {
-				// Nothing to parse here at the moment.
+			// Nothing to parse here at the moment.
 		} else {
 			throw new XdsInternalException("BasicTransaction: Don't understand instruction " + part_name);
 		}
@@ -1147,13 +1147,13 @@ public abstract class BasicTransaction  {
 
 	protected void parseUseReportInstruction(OMElement part) throws XdsInternalException {
 		if (useReportManager == null)
-            useReportManager = new UseReportManager(testConfig);
+			useReportManager = new UseReportManager(testConfig);
 		useReportManager.add(part);
 	}
 
 	protected void parseReportInstruction(OMElement part) {
 		if (reportManager == null)
-            reportManager = new ReportManager(testConfig);
+			reportManager = new ReportManager(testConfig);
 		reportManager.addReport(part);
 	}
 
@@ -1166,8 +1166,8 @@ public abstract class BasicTransaction  {
 
 	// called from RetrieveTransaction#retrieve_a only
 	protected DocDetails getDocDetailsFromLogfile(OMElement uri_ref)
-	throws FactoryConfigurationError, XdsInternalException, XdsInternalException,
-	MetadataException, MetadataValidationException {
+			throws FactoryConfigurationError, XdsInternalException, XdsInternalException,
+			MetadataException, MetadataValidationException {
 		DocDetails dd = new DocDetails();
 		String log_file = uri_ref.getAttributeValue(new QName("log_file"));
 		String step_id = uri_ref.getAttributeValue(new QName("step_id"));
@@ -1210,25 +1210,27 @@ public abstract class BasicTransaction  {
 		return dd;
 	}
 
-	public void runAssertionEngine(OMElement step_output, ErrorReportingInterface eri, OMElement assertion_output) throws XdsInternalException {
+	public AssertionEngine runAssertionEngine(OMElement step_output, ErrorReportingInterface eri, OMElement assertion_output) throws XdsInternalException {
 
-      AssertionEngine engine = new AssertionEngine();
-      engine.setDataRefs(data_refs);
-      engine.setCaller(this);
+		AssertionEngine engine = new AssertionEngine();
+		engine.setDataRefs(data_refs);
+		engine.setCaller(this);
 
-        try {
-            if (useReportManager != null) {
-                useReportManager.apply(assertionEleList);
-            }
-        } catch (Exception e) {
-            failed();
-        }
+		try {
+			if (useReportManager != null) {
+				useReportManager.apply(assertionEleList);
+			}
+		} catch (Exception e) {
+			failed();
+		}
 
 		engine.setAssertions(assertionEleList);
 		engine.setLinkage(linkage);
 		engine.setOutput(step_output);
 		engine.setTestConfig(testConfig);
 		engine.run(eri, assertion_output);
+
+		return engine;
 	}
 
 	public void setEndpoint(String endpoint) {
@@ -1296,8 +1298,8 @@ public abstract class BasicTransaction  {
 
 	public OMElement getSecurityEl(String assertionStr) throws XdsInternalException  {
 		String wsse = "<wsse:Security soapenv:mustUnderstand=\"true\" xmlns:soapenv=\"http://www.w3.org/2003/05/soap-envelope\" xmlns:wsse=\"http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-secext-1.0.xsd\">"
-		+ assertionStr
-		+ "</wsse:Security>";
+				+ assertionStr
+				+ "</wsse:Security>";
 
 		return Util.parse_xml(wsse);
 	}
@@ -1335,7 +1337,7 @@ public abstract class BasicTransaction  {
 			for (OMElement hdr : additionalHeaders)
 //				try {
 //					soap.addHeader(Util.deep_copy(hdr));
-					soap.addHeader(hdr);
+				soap.addHeader(hdr);
 //				} catch (XdsInternalException e) {
 //					s_ctx.set_error(e.getMessage());
 //					failed();
@@ -1409,9 +1411,9 @@ public abstract class BasicTransaction  {
 			RegistryResponseParser registry_response = new RegistryResponseParser(getSoapResult());
 			List<String> errs = registry_response.get_regrep_error_msgs();
 			if (errs.size() > 0) {
-                System.out.println("Received errors in response");
-                for (String err : errs)
-				    s_ctx.set_error(err);
+				System.out.println("Received errors in response");
+				for (String err : errs)
+					s_ctx.set_error(err);
 				failed();
 				return false;
 			}
@@ -1477,8 +1479,8 @@ public abstract class BasicTransaction  {
 		this.request_element = metadata_ele;
 	}
 	protected String validate_assertions(OMElement result, int metadata_type, OMElement test_assertions)
-	throws XdsInternalException, MetadataException,
-	MetadataValidationException {
+			throws XdsInternalException, MetadataException,
+			MetadataValidationException {
 
 		Metadata m = MetadataParser.parseNonSubmission(result);
 
@@ -1487,25 +1489,25 @@ public abstract class BasicTransaction  {
 		v.setTestConfig(testConfig);
 		v.run_test_assertions(m);
 
-      return v.getErrors();
-   }
+		return v.getErrors();
+	}
 
-   /**
-    * This method is overriden in subclasses which implement custom assertion
-    * processing routines, as indicated by the {@code <Assertion>} element
-    * having a process attribute. This code would only be called if an
-    * {@code <Assertion>} element had such a value erroneously, that is, the
-    * subclass does not actually implement this method. It is placed here to
-    * avoid having to instantiate it in those classes.
-    * @param engine AssertionEngine instance
-    * @param assertion Assert being processed
-    * @param assertion_output log.xml output element for that assert
-    * @throws XdsInternalException if this method is invoked.
-    */
-   public void processAssertion(AssertionEngine engine, Assertion assertion, OMElement assertion_output)
-      throws XdsInternalException {
-      throw new XdsInternalException("BasicTransaction#processAssertion: unknown process " + assertion.toString());
-   }
+	/**
+	 * This method is overridden in subclasses which implement custom assertion
+	 * processing routines, as indicated by the {@code <Assertion>} element
+	 * having a process attribute. This code would only be called if an
+	 * {@code <Assertion>} element had such a value erroneously, that is, the
+	 * subclass does not actually implement this method. It is placed here to
+	 * avoid having to instantiate it in those classes.
+	 * @param engine AssertionEngine instance
+	 * @param assertion Assert being processed
+	 * @param assertion_output log.xml output element for that assert
+	 * @throws XdsInternalException if this method is invoked.
+	 */
+	public void processAssertion(AssertionEngine engine, Assertion assertion, OMElement assertion_output)
+			throws XdsInternalException {
+		throw new XdsInternalException("BasicTransaction#processAssertion: unknown process " + assertion.toString());
+	}
 
 	public boolean isNoReportManagerPreRun() {
 		return noReportManagerPreRun;

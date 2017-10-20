@@ -22,7 +22,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class UseReportManager  {
-    private final static Logger logger = Logger.getLogger(UseReportManager.class);
+	private final static Logger logger = Logger.getLogger(UseReportManager.class);
 	List<UseReport> useReports;
 	RetrievedDocumentModel retrievedDocumentModel;
 	ReportManager reportManager; // things reported from query results
@@ -63,10 +63,10 @@ public class UseReportManager  {
 				System.out.println("\tLoading logs for test " + testInstance + " section " + section + "...");
 			TestLogDetails tspec = null;
 			tspec = new TestLogDetails(testDefinition, testInstance);
-            System.out.println("TestLogDetails are: " + tspec.toString());
+			System.out.println("TestLogDetails are: " + tspec.toString());
 			tspec.setLogRepository(config.logRepository);
 			File testlogFile = tspec.getTestLog(testInstance, section);
-            System.out.println("Loading log " + testlogFile);
+			System.out.println("Loading log " + testlogFile);
 			if (testlogFile != null)
 				sectionLogMapDTO.put(section, new LogFileContentBuilder().build(testlogFile));
 		}
@@ -113,14 +113,14 @@ public class UseReportManager  {
 //    }
 
 
-    static QName test_qname = new QName("test");
+	static QName test_qname = new QName("test");
 	static QName section_qname = new QName("section");
 	static QName step_qname = new QName("step");
 	static QName reportName_qname = new QName("reportName");
 	static QName useas_qname = new QName("useAs");
 
 	public void add(OMElement useRep) throws XdsInternalException {
-        logger.info("Parsing " + new OMFormatter(useRep).toString());
+		logger.info("Parsing " + new OMFormatter(useRep).toString());
 		UseReport u = new UseReport();
 		u.testInstance = new TestInstance(useRep.getAttributeValue(test_qname));
 		u.section = useRep.getAttributeValue(section_qname);
@@ -128,7 +128,7 @@ public class UseReportManager  {
 		u.reportName = useRep.getAttributeValue(reportName_qname);
 		u.useAs = useRep.getAttributeValue(useas_qname);
 
-        logger.info("Parsing UseReport " + u.reportName);
+		logger.info("Parsing UseReport " + u.reportName);
 
 		if (u.section == null || u.section.equals(""))
 			u.section = "None";
@@ -169,8 +169,8 @@ public class UseReportManager  {
 
 	public void resolve(SectionLogMapDTO previousLogs) throws XdsInternalException {
 		for (UseReport useReport : useReports) {
-            if (useReport.isResolved())
-                continue;
+			if (useReport.isResolved())
+				continue;
 
 			LogFileContentDTO logFileContentDTO = previousLogs.get(useReport.section);
 			if (logFileContentDTO == null)
@@ -180,7 +180,7 @@ public class UseReportManager  {
 
 			TestStepLogContentDTO testStepLogContentDTO = logFileContentDTO.getStepLog(useReport.step);
 			if (testStepLogContentDTO == null)
-                throw new XdsInternalException("UseReportManager#resolve: cannot find Report for " + useReport.getURI() + "\n");
+				throw new XdsInternalException("UseReportManager#resolve: cannot find Report for " + useReport.getURI() + "\n");
 
 			String reportName = useReport.reportName;
 			boolean satisfied = false;
@@ -192,7 +192,7 @@ public class UseReportManager  {
 				}
 			}
 			if (!satisfied)
-                throw new XdsInternalException("UseReportManager#resolve: cannot find Report for " + useReport.getURI() + "\n");
+				throw new XdsInternalException("UseReportManager#resolve: cannot find Report for " + useReport.getURI() + "\n");
 
 //			for (OMElement rep : XmlUtil.childrenWithLocalName(reportEles, "Report")) {
 //				ReportDTO r = ReportBuilder.parse(rep);
@@ -211,7 +211,7 @@ public class UseReportManager  {
 	}
 
 	public void apply(OMElement xml) throws XdsInternalException {
-        logger.info("apply UseReports");
+		logger.info("apply UseReports");
 		if (xml == null)
 			return;
 		Linkage l = new Linkage(testConfig);
@@ -221,9 +221,9 @@ public class UseReportManager  {
 			try {
 				if (useAs == null || useAs.equals("") ||
 						value == null || value.equals("")) {
-                    logger.info("Skipping UseReport " + ur);
-                    continue;
-                }
+					logger.info("Skipping UseReport " + ur);
+					continue;
+				}
 //                logger.info(String.format("Apply %s to %s", ur, new OMFormatter(xml).toString()));
 				l.replace_string_in_text_and_attributes(xml, ur.useAs, ur.value);
 			} catch (Exception e) {
@@ -238,6 +238,10 @@ public class UseReportManager  {
 				return ur.value;
 		}
 		return null;
+	}
+
+	public List<UseReport> get() {
+		return useReports;
 	}
 
 }

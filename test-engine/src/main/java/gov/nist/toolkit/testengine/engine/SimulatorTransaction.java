@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package gov.nist.toolkit.testengine.engine;
 
@@ -20,14 +20,15 @@ import java.util.Date;
 import java.util.List;
 
 /**
- * Used to retrieve results of a transaction previously sent to a simulator
- * 
+ * Used to retrieve results of a transaction previously sent to a simulator.
+ * For hl7 v2 transactions, see {@link SimulatorTransactionHl7v2}
+ *
  * @author Ralph Moulton / MIR WUSTL IHE Development Project <a
  * href="mailto:moultonr@mir.wustl.edu">moultonr@mir.wustl.edu</a>
  *
  */
 public class SimulatorTransaction {
-      
+
    private SimId simId;
    private TransactionType transactionType;
    private String pid;
@@ -43,16 +44,16 @@ public class SimulatorTransaction {
    private List<String> pfns = new ArrayList<>();
    private String stdPfn;
    private String url;
-   
+
    private UseReportManager useReportManager = null;
-   
+
    private SimulatorTransaction(SimId simId, TransactionType transactionType, String pid, Date timeStamp) {
       this.simId = simId;
       this.transactionType = transactionType;
       this.pid = pid;
       this.timeStamp = timeStamp;
    }
-   
+
    /**
     * @return the {@link #simId} value.
     */
@@ -227,7 +228,7 @@ public class SimulatorTransaction {
    public void setResponseBody(String responseBody) {
       this.responseBody = responseBody;
    }
-   
+
    /**
     * @return the {@link #pfns} value.
     */
@@ -241,7 +242,7 @@ public class SimulatorTransaction {
    public void setPfns(List <String> pfns) {
       this.pfns = pfns;
    }
-   
+
    /**
     * @return the {@link #stdPfn} value.
     */
@@ -263,7 +264,7 @@ public class SimulatorTransaction {
    public void setUrl(String url) {
       this.url = url;
    }
-   
+
    /**
     * Returns value for name from useReportMananger
     * @param name use as name
@@ -275,7 +276,7 @@ public class SimulatorTransaction {
       }
       return "unavailable";
    }
-   
+
 
    /**
     * @return the {@link #useReportManager} value.
@@ -294,11 +295,11 @@ public class SimulatorTransaction {
    /**
     * Generates instance of this class for specified simulator transaction.
     * @param simId for the simulator which received the transaction. Must exist.
-    * @param transactionType TransactionType value we are looking for. For 
+    * @param transactionType TransactionType value we are looking for. For
     * example {@link TransactionType#PROVIDE_AND_REGISTER}.
     * @param pid <u>Complete</u> patient id if transaction is for a particular
     * patient. Null or blank string if any patient will do or transaction is
-    * not patient based. For example, 
+    * not patient based. For example,
     * "P20160831112743.2^^^&1.3.6.1.4.1.21367.2005.13.20.1000&ISO".
     * @param timeStamp of transaction. Earliest transaction not preceding this
     * time will be returned. If null, most recent transaction will be returned.
@@ -306,9 +307,9 @@ public class SimulatorTransaction {
     * @throws XdsInternalException on error, such as: no such simulator, no
     * transaction matching parameters, and so on.
     */
-   public static SimulatorTransaction get(SimId simId, 
-      TransactionType transactionType, String pid, Date timeStamp) 
-      throws XdsInternalException {
+   public static SimulatorTransaction get(SimId simId,
+                                          TransactionType transactionType, String pid, Date timeStamp)
+           throws XdsInternalException {
       try {
          // Verify that simId represents an existing file
          Installation installation = Installation.instance();
@@ -319,7 +320,7 @@ public class SimulatorTransaction {
          String name = simId.toString();
          Path simPath = Paths.get(cache, "simdb", name);
          Utility.isValidPfn("simulator " + name,  simPath, PfnType.DIRECTORY, "r");
-         
+
          // Load simulator type
          String actorType = new String(Files.readAllBytes(simPath.resolve("sim_type.txt"))).trim();
          String requestedActorType = StringUtils.trimToEmpty(simId.getActorType());
@@ -332,27 +333,27 @@ public class SimulatorTransaction {
             case "rep":
             case "reg":
                if (actorType.equalsIgnoreCase("rr")) break;
-            // All other types much match
-            //$FALL-THROUGH$
+               // All other types much match
+               //$FALL-THROUGH$
             default:
                if (actorType.equalsIgnoreCase(requestedActorType)) break;
                String em = simId.toString() + " is actor type " + actorType +
-                  ". actor type " + requestedActorType + " expected.";
+                       ". actor type " + requestedActorType + " expected.";
                throw new Exception(em);
          }
-         
+
          // Create instance and load transaction
-         SimulatorTransaction trn = 
-            new SimulatorTransaction(simId, transactionType, pid, timeStamp);
+         SimulatorTransaction trn =
+                 new SimulatorTransaction(simId, transactionType, pid, timeStamp);
          PrsSimLogs.loadTransaction(trn);
-         
+
          return trn;
       } catch (Exception e) {
-         throw new XdsInternalException("SimulatorTransaction.get error: " + 
-            e.getMessage());
+         throw new XdsInternalException("SimulatorTransaction.get error: " +
+                 e.getMessage());
       }
    }
 
-   
+
 
 }

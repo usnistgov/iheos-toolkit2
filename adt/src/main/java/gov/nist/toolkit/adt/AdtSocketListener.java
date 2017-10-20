@@ -152,17 +152,16 @@ public class AdtSocketListener implements Runnable{
             switch (msh9) {
 
                 // PIX Query IHE ITI TF-2a 3.9 (quick and dirty, no validation)
-                case "QBP^Q23^QBP_21":
+                case "QBP^Q23^QBP_Q21":
                     String pidIn = terser.get("/QPD-3-1");
-                    String pidOut = new StringBuilder(pidIn).reverse().toString();
                     String mrn = generateId(pidIn);
                     String qpd = getSegmentString(terser, "/QPD");
 
                     String out = "MSH|^~\\&|||||||RSP^K23^RSP_K23|HL7RSP00001|P|2.5\r" +
-                                 "MSA|AA|HL7MSG00001\r" +
-                                 "QAK||OK\r" +
-                                 qpd + "\r" +
-                                 "PID|||" + pidOut + "^^^ADT01^MR^Good Health Hospital||Winchell^Walter\r";
+                            "MSA|AA|HL7MSG00001\r" +
+                            "QAK||OK\r" +
+                            qpd + "\r" +
+                            "PID|||" + mrn + "^^^&1.2.3&ISO||\r";
                     Message outMsg = pipeParser.parse(out);
                     Terser  outTerser = new Terser(outMsg);
                     outTerser.set("/MSH-3", terser.get("/MSH-5"));
@@ -175,7 +174,6 @@ public class AdtSocketListener implements Runnable{
                     outTerser.set("/MSA-2", terser.get("/MSH-10"));
 
                     outTerser.set("/QAK-1", terser.get("/QPD-2"));
-                    outTerser.set("/PID-18", mrn);
 
                     String outMsgStr = outMsg.encode();
                     responseString = outMsgStr.replaceAll("\r", "\r\n");

@@ -18,7 +18,7 @@ import java.util.List;
 public class StepContext extends BasicContext implements ErrorReportingInterface {
 	OMElement output = null;
 	OMElement test_step_output = null;
-//	boolean expectedstatus = true;
+	//	boolean expectedstatus = true;
 //	TransactionStatus expectedStatus = new TransactionStatus();
 	List<TransactionStatus> expectedStatus = new ArrayList<>();
 	String expectedErrorMessage = "";
@@ -62,13 +62,13 @@ public class StepContext extends BasicContext implements ErrorReportingInterface
 	boolean status = true;
 
 	@Override
-   public String toString() {
+	public String toString() {
 		StringBuffer buf = new StringBuffer();
 
 		buf
 //		.append("XDS Version = ").append(xdsVersionName()).append("\n")
-		.append("Expected Status = ").append(Arrays.toString(expectedStatus.toArray())).append("\n")
-		.append("Expected Error Message = ").append(expectedErrorMessage).append("\n");
+				.append("Expected Status = ").append(Arrays.toString(expectedStatus.toArray())).append("\n")
+				.append("Expected Error Message = ").append(expectedErrorMessage).append("\n");
 
 		return buf.toString();
 	}
@@ -114,9 +114,9 @@ public class StepContext extends BasicContext implements ErrorReportingInterface
 		return status;
 	}
 
-    public void addDetail(String name, String value) {
-        addDetail(test_step_output, name, value);
-    }
+	public void addDetail(String name, String value) {
+		addDetail(test_step_output, name, value);
+	}
 
 	public  void set_error(String msg) throws XdsInternalException {
 		setStatus(false);
@@ -269,7 +269,7 @@ public class StepContext extends BasicContext implements ErrorReportingInterface
 				expected_error_code = instruction.getText();
 				testLog.add_name_value(test_step_output, instruction);
 			}
-            else if (instruction_name.equals("Standard")) {
+			else if (instruction_name.equals("Standard")) {
 			} else {
 				resetStatus();
 				OMElement instruction_output = null;
@@ -278,144 +278,149 @@ public class StepContext extends BasicContext implements ErrorReportingInterface
 				instruction_output = testLog.add_simple_element(test_step_output, instruction_name);
 				instruction_output.addAttribute("step", step_id, null);
 
-            switch (instruction_name) {
-               case "SqlQueryTransaction":
-                  transaction = new SqlQueryTransaction(this, instruction, instruction_output);
-                  break;
-               case "StoredQueryTransaction":
-                  transaction = new StoredQueryTransaction(this, instruction, instruction_output);
-                  break;
-               case "GenericSoap11Transaction":
-                  transaction = new GenericSoap11Transaction(this, instruction, instruction_output);
-                  break;
-               case "DsubSubscribeTransaction":
-                  transaction = new DsubSubscribeTransaction(this, instruction, instruction_output);
-                  break;
-               case "PatientIdentityFeedTransaction":
-                  transaction = new PatientIdentityFeedTransaction(this, instruction, instruction_output);
-                  break;
-               case "IGQTransaction":
-                  transaction = new IGQTransaction(this, instruction, instruction_output);
-                  break;
-               case "XCQTransaction":
-                  transaction = new XCQTransaction(this, instruction, instruction_output);
-                  break;
-               case "EpsosTransaction":
-                  transaction = new EpsosTransaction(this, instruction, instruction_output);
-                  break;
-               case "MPQTransaction":
-                  transaction = new MPQTransaction(this, instruction, instruction_output);
-                  break;
-               case "SimpleTransaction":
-                  transaction = new SimpleTransaction(this, instruction, instruction_output);
-                  break;
-               case "RetrieveTransaction":
-                  transaction = new RetrieveTransaction(this, instruction, instruction_output);
-                  break;
-               case "NullTransaction":
-                  transaction = new NullTransaction(this, instruction, instruction_output);
-                  break;
-               case "XCRTransaction":
-                  transaction = new RetrieveTransaction(this, instruction, instruction_output);
-                  ((RetrieveTransaction) transaction).setIsXca(true);
-                  break;
-               case "IGRTransaction":
-                  transaction = new RetrieveTransaction(this, instruction, instruction_output);
-                  ((RetrieveTransaction) transaction).setIsXca(true);
-                  ((RetrieveTransaction) transaction).setUseIG(true);
-                  break;
-               case "RegisterTransaction":
-                  transaction = new RegisterTransaction(this, instruction, instruction_output);
-                  break;
-               case "RegisterODDETransaction":
-                  transaction = new RegisterODDETransaction(this, instruction, instruction_output);
-                  break;
-               case "MuTransaction":
-                  transaction = new MuTransaction(this, instruction, instruction_output);
-                  break;
-               case "PublishTransaction":
-                  transaction = new DsubPublishTransaction(this, instruction, instruction_output);
-                  break;
-               case "MockTransaction":
-                  transaction = new MockTransaction(this, instruction, instruction_output);
-                  break;
-               case "ProvideAndRegisterTransaction":
-                  transaction = new ProvideAndRegisterTransaction(this, instruction, instruction_output);
-                  break;
-               case "XDRProvideAndRegisterTransaction":
-                  transaction = new XDRProvideAndRegisterTransaction(this, instruction, instruction_output);
-                  break;
-				case "XcpdTransaction":
-					transaction = new XcpdTransaction(this, instruction, instruction_output);
-					break;
-               case "EchoV2Transaction":
-                  transaction = new EchoV2Transaction(this, instruction, instruction_output);
-                  break;
-               case "EchoV3Transaction":
-                  transaction = new EchoV3Transaction(this, instruction, instruction_output);
-                  break;
-               case "SocketTransaction":
-                  transaction = new SocketTransaction(this, instruction, instruction_output);
-                  break;
-               case "ImagingDocSetRetrieveTransaction":
-                  transaction = new RetrieveImgDocSetTransaction(this, 
-                     instruction, instruction_output, TransactionType.RET_IMG_DOC_SET);
-                  break;
-               case "ImagingDocSetIigRetrieveTransaction":
-                  transaction = new RetrieveImgDocSetTransaction(this, 
-                     instruction, instruction_output, TransactionType.RET_IMG_DOC_SET_GW);
-                  break;
-               case "ImagingDocSetRigRetrieveTransaction":
-                  transaction = new RetrieveImgDocSetTransaction(this, 
-                     instruction, instruction_output, TransactionType.XC_RET_IMG_DOC_SET);
-                  break;
-               case "ImgDetailTransaction":
-               case "XmlDetailTransaction":
-                  transaction = new ImgDetailTransaction(this, step, instruction, instruction_output);
-                  break;
-               case "WADOTransaction":
-                  transaction = new WADOTransaction(this, instruction, instruction_output);
-                  break;
-				case "FhirCreateTransaction":
-					transaction = new FhirCreateTransaction(this, instruction, instruction_output);
-					break;
-				case "FhirReadTransaction":
-					transaction = new FhirReadTransaction(this, instruction, instruction_output);
-					break;
-				case "FhirSearchTransaction":
-					transaction = new FhirSearchTransaction(this, instruction, instruction_output);
-					break;
-			   case "HttpTransaction":
-					HTTPTransaction hTransaction = new HTTPTransaction(this, instruction, instruction_output);
-					hTransaction.setNoMetadataProcessing(true);
-					hTransaction.setNoReportManagerPreRun(true);
-				    hTransaction.setTransType(instruction.getAttributeValue(new QName("type")));
-				    String hasLinkageValueStr = instruction.getAttributeValue(new QName("hasLinkage"));  // The body must be XML parsable, not just any HTTP data.
-				    if (hasLinkageValueStr!=null && !"".equals(hasLinkageValueStr)) {
-					   hTransaction.setHasLinkage(Boolean.parseBoolean(hasLinkageValueStr));
-			   		}
-					transaction = hTransaction;
-					break;
-				case "StsTransaction":
-					HTTPTransaction stsTransaction = new HTTPTransaction(this, instruction, instruction_output);
-					stsTransaction.setNoMetadataProcessing(true);
-					stsTransaction.setNoReportManagerPreRun(true);
-					stsTransaction.setTransType(TransactionType.STS.getCode());
-					stsTransaction.setStsQuery(instruction.getAttributeValue(new QName("stsQuery")));
-					transaction = stsTransaction;
-					break;
-				case "Gather":
-					GatherTransaction gatherTransaction = new GatherTransaction(this, instruction, instruction_output);
-					transaction = gatherTransaction;
-					break;
-				case "EdgeServerTransaction":
-					EdgeServerTransaction edgeServerTransaction = new EdgeServerTransaction(this, step, instruction, instruction_output);
-					transaction = edgeServerTransaction;
-               default:
-                  dumpContextIntoOutput(test_step_output);
-                  throw new XdsInternalException(
-                     ins_context.error("StepContext: Don't understand instruction named " + instruction_name));
-            }
+				switch (instruction_name) {
+					case "SqlQueryTransaction":
+						transaction = new SqlQueryTransaction(this, instruction, instruction_output);
+						break;
+					case "StoredQueryTransaction":
+						transaction = new StoredQueryTransaction(this, instruction, instruction_output);
+						break;
+					case "GenericSoap11Transaction":
+						transaction = new GenericSoap11Transaction(this, instruction, instruction_output);
+						break;
+					case "DsubSubscribeTransaction":
+						transaction = new DsubSubscribeTransaction(this, instruction, instruction_output);
+						break;
+					case "PatientIdentityFeedTransaction":
+						transaction = new PatientIdentityFeedTransaction(this, instruction, instruction_output);
+						break;
+					case "IGQTransaction":
+						transaction = new IGQTransaction(this, instruction, instruction_output);
+						break;
+					case "XCQTransaction":
+						transaction = new XCQTransaction(this, instruction, instruction_output);
+						break;
+					case "EpsosTransaction":
+						transaction = new EpsosTransaction(this, instruction, instruction_output);
+						break;
+					case "MPQTransaction":
+						transaction = new MPQTransaction(this, instruction, instruction_output);
+						break;
+					case "SimpleTransaction":
+						transaction = new SimpleTransaction(this, instruction, instruction_output);
+						break;
+					case "RetrieveTransaction":
+						transaction = new RetrieveTransaction(this, instruction, instruction_output);
+						break;
+					case "NullTransaction":
+						transaction = new NullTransaction(this, instruction, instruction_output);
+						break;
+					case "XCRTransaction":
+						transaction = new RetrieveTransaction(this, instruction, instruction_output);
+						((RetrieveTransaction) transaction).setIsXca(true);
+						break;
+					case "IGRTransaction":
+						transaction = new RetrieveTransaction(this, instruction, instruction_output);
+						((RetrieveTransaction) transaction).setIsXca(true);
+						((RetrieveTransaction) transaction).setUseIG(true);
+						break;
+					case "RegisterTransaction":
+						transaction = new RegisterTransaction(this, instruction, instruction_output);
+						break;
+					case "RegisterODDETransaction":
+						transaction = new RegisterODDETransaction(this, instruction, instruction_output);
+						break;
+					case "MuTransaction":
+						transaction = new MuTransaction(this, instruction, instruction_output);
+						break;
+					case "PublishTransaction":
+						transaction = new DsubPublishTransaction(this, instruction, instruction_output);
+						break;
+					case "MockTransaction":
+						transaction = new MockTransaction(this, instruction, instruction_output);
+						break;
+					case "ProvideAndRegisterTransaction":
+						transaction = new ProvideAndRegisterTransaction(this, instruction, instruction_output);
+						break;
+					case "XDRProvideAndRegisterTransaction":
+						transaction = new XDRProvideAndRegisterTransaction(this, instruction, instruction_output);
+						break;
+					case "XcpdTransaction":
+						transaction = new XcpdTransaction(this, instruction, instruction_output);
+						break;
+					case "EchoV2Transaction":
+						transaction = new EchoV2Transaction(this, instruction, instruction_output);
+						break;
+					case "EchoV3Transaction":
+						transaction = new EchoV3Transaction(this, instruction, instruction_output);
+						break;
+					case "SocketTransaction":
+						transaction = new SocketTransaction(this, instruction, instruction_output);
+						break;
+					case "ImagingDocSetRetrieveTransaction":
+						transaction = new RetrieveImgDocSetTransaction(this,
+								instruction, instruction_output, TransactionType.RET_IMG_DOC_SET);
+						break;
+					case "ImagingDocSetIigRetrieveTransaction":
+						transaction = new RetrieveImgDocSetTransaction(this,
+								instruction, instruction_output, TransactionType.RET_IMG_DOC_SET_GW);
+						break;
+					case "ImagingDocSetRigRetrieveTransaction":
+						transaction = new RetrieveImgDocSetTransaction(this,
+								instruction, instruction_output, TransactionType.XC_RET_IMG_DOC_SET);
+						break;
+					case "ImgDetailTransaction":
+					case "XmlDetailTransaction":
+						transaction = new ImgDetailTransaction(this, step, instruction, instruction_output);
+						break;
+					case "WADOTransaction":
+						transaction = new WADOTransaction(this, instruction, instruction_output);
+						break;
+					case "FhirCreateTransaction":
+						transaction = new FhirCreateTransaction(this, instruction, instruction_output);
+						break;
+					case "FhirReadTransaction":
+						transaction = new FhirReadTransaction(this, instruction, instruction_output);
+						break;
+					case "FhirSearchTransaction":
+						transaction = new FhirSearchTransaction(this, instruction, instruction_output);
+						break;
+					case "HttpTransaction":
+						HTTPTransaction hTransaction = new HTTPTransaction(this, instruction, instruction_output);
+						hTransaction.setNoMetadataProcessing(true);
+						hTransaction.setNoReportManagerPreRun(true);
+						hTransaction.setTransType(instruction.getAttributeValue(new QName("type")));
+						String hasLinkageValueStr = instruction.getAttributeValue(new QName("hasLinkage"));  // The body must be XML parsable, not just any HTTP data.
+						if (hasLinkageValueStr!=null && !"".equals(hasLinkageValueStr)) {
+							hTransaction.setHasLinkage(Boolean.parseBoolean(hasLinkageValueStr));
+						}
+						transaction = hTransaction;
+						break;
+					case "StsTransaction":
+						HTTPTransaction stsTransaction = new HTTPTransaction(this, instruction, instruction_output);
+						stsTransaction.setNoMetadataProcessing(true);
+						stsTransaction.setNoReportManagerPreRun(true);
+						stsTransaction.setTransType(TransactionType.STS.getCode());
+						stsTransaction.setStsQuery(instruction.getAttributeValue(new QName("stsQuery")));
+						transaction = stsTransaction;
+						break;
+					case "Gather":
+						GatherTransaction gatherTransaction = new GatherTransaction(this, instruction, instruction_output);
+						transaction = gatherTransaction;
+						break;
+					case "Hl7v2Validation":
+						Hl7v2Validation hl7v2Validation = new Hl7v2Validation(this, step, instruction, instruction_output);
+						transaction = hl7v2Validation;
+						break;
+					case "XMLValidation":
+						XMLValidation xmlValidation = new XMLValidation(this, step, instruction, instruction_output);
+						transaction = xmlValidation;
+						break;
+					default:
+						dumpContextIntoOutput(test_step_output);
+						throw new XdsInternalException(
+								ins_context.error("StepContext: Don't understand instruction named " + instruction_name));
+				}
 
 				setTransaction(transaction);
 				transaction.setPlanContext(plan_context);
@@ -462,8 +467,8 @@ public class StepContext extends BasicContext implements ErrorReportingInterface
 		parent_context.set("transaction", transaction);
 	}
 
-   public String getRegistryEndpoint() {
-      return getRecursive("RegistryEndpoint");
-   }
+	public String getRegistryEndpoint() {
+		return getRecursive("RegistryEndpoint");
+	}
 
 }

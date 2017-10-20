@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<TestPlan>
+   <Test>es_5500/submit</Test>
+    <TestStep id="submit">
+    	<Goal>Submit PDF Document to Repository</Goal>
+        <ExpectedStatus>Success</ExpectedStatus>
+        <ProvideAndRegisterTransaction>
+            <XDSb/>
+            <NoPatientId/>
+            <MetadataFile>metadata.xml</MetadataFile>
+            <Document id="Document01">my_document.pdf</Document>
+        </ProvideAndRegisterTransaction>
+    </TestStep>
+</TestPlan>

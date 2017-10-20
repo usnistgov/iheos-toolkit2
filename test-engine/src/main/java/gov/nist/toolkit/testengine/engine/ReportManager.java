@@ -19,7 +19,7 @@ import java.util.Map;
 
 public class ReportManager {
    private final static Logger logger = Logger.getLogger(ReportManager.class);
-   List <ReportDTO> reportDTOs;
+   private List <ReportDTO> reportDTOs;
    OMElement root;
    Map <String, OMElement> sections;
    TestConfig testConfig;
@@ -83,16 +83,16 @@ public class ReportManager {
    public void generate() throws XdsInternalException {
       for (ReportDTO reportDTO : reportDTOs) {
          logger.info("Generating Report " + reportDTO.toString());
-         
+
          AXIOMXPath xpathExpression;
          try {
             if (StringUtils.isBlank(reportDTO.getXpath())) continue;
-            
+
             OMElement section = getSection(reportDTO.getSection());
             logger.info("Got section: " + section.toString());
-            
+
             xpathExpression = new AXIOMXPath(reportDTO.getXpath());
-            
+
             String val;
             try {
                if ("true".equals(reportDTO.getEscapedCharsInXml())) {
@@ -115,7 +115,7 @@ public class ReportManager {
             reportDTO.setValue(val);
             if (StringUtils.isBlank(val)) {
                val = "Report " + reportDTO.getName() + " which has XPath " + reportDTO.getXpath() + " evaluates to ["
-                  + val + "] when evaluated " + "against section " + reportDTO.getSection();
+                       + val + "] when evaluated " + "against section " + reportDTO.getSection();
                logger.info(val);
             }
          } catch (JaxenException e) {
@@ -169,10 +169,10 @@ public class ReportManager {
 
    public void setRetInfo(RetrievedDocumentModel ri, int docIndex) {
 
-          add("$repuid_doc" + Integer.toString(docIndex)  + "$", ri.getRepUid());
-          add("$mimetype_doc" + Integer.toString(docIndex)  + "$", ri.getContent_type());
-          add("$hash_doc" + Integer.toString(docIndex)  + "$", ri.getHash());
-          add("$home_doc" + Integer.toString(docIndex)  + "$", ri.getHome());
-          add("$size_doc" + Integer.toString(docIndex)  + "$", Integer.toString(ri.getSize()));
-       }
+      add("$repuid_doc" + Integer.toString(docIndex)  + "$", ri.getRepUid());
+      add("$mimetype_doc" + Integer.toString(docIndex)  + "$", ri.getContent_type());
+      add("$hash_doc" + Integer.toString(docIndex)  + "$", ri.getHash());
+      add("$home_doc" + Integer.toString(docIndex)  + "$", ri.getHome());
+      add("$size_doc" + Integer.toString(docIndex)  + "$", Integer.toString(ri.getSize()));
+   }
 }
