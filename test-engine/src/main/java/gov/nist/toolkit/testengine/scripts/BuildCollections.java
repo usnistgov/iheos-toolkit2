@@ -83,8 +83,27 @@ public class BuildCollections extends HttpServlet {
          collectionName = collectionName.toLowerCase();
 
         ActorOption actorOption = new ActorOption(collectionName);
+        at = ActorType.findActorByTcCode(actorOption.actorTypeId);
+        // This is to handle a case where an actor only has optional test but no required tests. In this case, the default actorcollections will contain the first option tests.
+        if (at!=null) {
+           if (at.getOptions().contains(OptionType.REQUIRED)) {
+               if (OptionType.REQUIRED.equals(actorOption.optionId)) {
+                   return at;
+               }
+           } else {
+               // Get first option in the list
+               if (!at.getOptions().isEmpty()) {
+                   OptionType firstOption = at.getOptions().get(0);
+                   if (firstOption.equals(actorOption.optionId)) {
+                       return at;
+                   }
+               }
+           }
+        }
+
+
         if (OptionType.REQUIRED.equals(actorOption.optionId)) {
-            at = ActorType.findActor(actorOption.actorTypeId);
+            at = ActorType.findActorByTcCode(actorOption.actorTypeId);
             if (at != null) return at;
         }
 

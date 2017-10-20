@@ -12,12 +12,15 @@ import java.util.*;
 /**
  * Actor types defined by test engine.  A subset of these are available as simulators.
  *
- * The profile/actor/option are now coded in a subtle way.  The shortName (third parameter to the constuctor)
- * is interpreted as profile_actor_option with the _ being the separator.  If the shortName has only two parts
- * then the profile is assumed missing and defaults to xds.  This aligns with the Conformance Tool configuration file
+ * The profile/actor/option are now coded in the following way.
+ * Test collections.txt uses the actor(profile)_option format.
+ * actorCode should match the actor code used in the actor part of the test collections.txt file.
+ * profile should match the profile part of the test collections.txt file. If the profile is not specified, XDS is assumed, but the ActorType actorCode will need to declare XDS in its profile.
+ * option should match the option part of the test collections.txt file. If the option is not specified, Required is assumed, but the options list needs to contain the Required option.
+ * This aligns with the Conformance Tool configuration file
  * ConfTestsTabs.xml which lives in toolkitx.
  *
- * So the big picture is that the actor type is now, in some cases, actually the profile/actor/option type.
+ * So the big picture is that the actorCode/profile/option is now, in some cases, actually the profile/actor/option type.
  */
 public enum ActorType implements IsSerializable, Serializable {
     XDR_DOC_SRC(
@@ -630,8 +633,23 @@ public enum ActorType implements IsSerializable, Serializable {
 
         for (ActorType actor : values()) {
             if (actor.name.equals(name)) return actor;
-            if (actor.getActorCode().equals(name)) return actor;
+            if (actor.shortName.equals(name)) return actor;
             if (actor.altNames.contains(name)) return actor;
+        }
+        return null;
+    }
+
+    /**
+     * Finds actor type by its test collection code.
+     * @param tcCode
+     * @return
+     */
+    static public ActorType findActorByTcCode(String tcCode) {
+        if (tcCode == null)
+            return null;
+
+        for (ActorType actor : values()) {
+            if (actor.getActorCode().equals(tcCode)) return actor;
         }
         return null;
     }
