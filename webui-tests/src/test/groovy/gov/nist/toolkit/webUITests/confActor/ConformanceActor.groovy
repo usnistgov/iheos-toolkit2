@@ -63,10 +63,30 @@ abstract class ConformanceActor extends ToolkitWebPage {
 
         when:
         page = conformanceTestAnchor.click()
+        webClient.waitForBackgroundJavaScript(2000)
 
         then:
         page.asText().contains("Test Context")
 
+    }
+
+    def 'Cancel off any unexpected dialog box.'() {
+        when:
+        List<HtmlDivision> divList = getDialogBox()
+        boolean unexpectedDialogBox = divList!=null && divList.size()==1
+        if (unexpectedDialogBox) {
+            println "Error: unexpected dialog box found! --> " + divList.toString()
+            List<HtmlButton> okButtonList = page.getByXPath("//button[contains(@class,'gwt-Button') and text()='Ok']")
+            listHasOnlyOneItem(okButtonList)
+            page = okButtonList.get(0).click()
+        }
+        // Cancel it of
+        divList = getDialogBox()
+        unexpectedDialogBox = divList!=null && divList.size()==1
+
+        // No more dialog boxes should be there
+        then:
+        !unexpectedDialogBox
     }
 
     def 'Find and click the Test Context box.'() {
