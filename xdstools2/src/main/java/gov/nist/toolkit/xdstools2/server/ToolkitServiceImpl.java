@@ -951,9 +951,13 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements
     }
     // this deletes a simulator
     @Override
-    public String deleteConfig(SimConfigRequest config) throws Exception {
-        installCommandContext(config);
-        return new SimulatorServiceManager(session()).deleteConfig(config.getConfig());
+    public String deleteConfig(SimConfigRequest request) throws Exception {
+        installCommandContext(request);
+        if (request.getConfig()!=null)
+            return new SimulatorServiceManager(session()).deleteConfig(request.getConfig());
+        else if (request.getConfigList()!=null)
+            return new SimulatorServiceManager(session()).deleteConfigs(request.getConfigList());
+        return "";
     }
     @Override
     public void renameSimFile(RenameSimFileRequest request) throws Exception {

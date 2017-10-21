@@ -1,23 +1,22 @@
 package gov.nist.toolkit.xdstools2.client.tabs.simulatorControlTab;
 
-import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
-import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import gov.nist.toolkit.configDatatypes.server.SimulatorProperties;
+import gov.nist.toolkit.simcommon.client.SimulatorConfig;
 import gov.nist.toolkit.simcommon.client.config.SimulatorConfigElement;
 import gov.nist.toolkit.xdstools2.client.ClickHandlerData;
 import gov.nist.toolkit.xdstools2.client.PasswordManagement;
-import gov.nist.toolkit.xdstools2.client.event.Xdstools2EventBus;
-import gov.nist.toolkit.xdstools2.client.util.ClientUtils;
+import gov.nist.toolkit.xdstools2.client.util.SimpleCallback;
 import gov.nist.toolkit.xdstools2.client.widgets.AdminPasswordDialogBox;
 import gov.nist.toolkit.xdstools2.client.widgets.PopupMessage;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class DeleteSimInfo {
@@ -99,10 +98,25 @@ List<SimInfo> simInfoList;
                 new ClickHandlerData<List<SimInfo>>(simInfoList) {
                     @Override
                     public void onClick(ClickEvent clickEvent) {
-                        Timer refreshTimer = null;
-                        final int delayMillis = 500 * simInfoList.size();
+//                        Timer refreshTimer = null;
+//                        final int delayMillis = 500 * simInfoList.size();
                         hostTab.getSimManagerWidget().asWidget().getElement().removeClassName("loading");
                         hostTab.getSimManagerWidget().asWidget().getElement().addClassName("loading");
+
+                        List<SimulatorConfig> configList = new ArrayList<>();
+                        for (SimInfo simInfo : simInfoList) {
+                            configList.add(simInfo.getSimulatorConfig());
+                        }
+
+                        DeleteButtonClickHandler handler = new DeleteButtonClickHandler(hostTab, configList);
+                        handler.delete(true, new SimpleCallback() {
+                            @Override
+                            public void run() {
+                                hostTab.getSimManagerWidget().asWidget().getElement().removeClassName("loading");
+                            }
+                        });
+
+                        /*
                         for (SimInfo simInfo : simInfoList) {
                             try {
                                 DeleteButtonClickHandler handler = new DeleteButtonClickHandler(hostTab, simInfo.getSimulatorConfig());
@@ -123,8 +137,8 @@ List<SimInfo> simInfoList;
                                 };
                                 refreshTimer.schedule(delayMillis);
                             }
-
                         }
+                        */
 
                     }
                 }

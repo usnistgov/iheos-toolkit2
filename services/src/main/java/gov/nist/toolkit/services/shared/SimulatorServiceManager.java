@@ -360,6 +360,18 @@ public class SimulatorServiceManager extends CommonService {
 //		return "";
 	}
 
+	public String deleteConfigs(List<SimulatorConfig> configs) {
+		String errors = "";
+		for (SimulatorConfig config : configs)	{
+			try {
+				deleteConfig(config);
+			} catch (Exception ex) {
+				errors += ex.getMessage() + ".";
+			}
+		}
+		return errors;
+	}
+
 	/**
 	 * get all SimIds
 	 * @param userFilter - if not null, only return simids for this user
