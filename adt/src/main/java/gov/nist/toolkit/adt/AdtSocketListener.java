@@ -5,12 +5,10 @@ import ca.uhn.hl7v2.model.*;
 import ca.uhn.hl7v2.parser.PipeParser;
 import ca.uhn.hl7v2.util.Terser;
 import gov.nist.toolkit.xdsexception.ExceptionUtil;
+import org.apache.commons.io.FileUtils;
 import org.apache.log4j.Logger;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.io.PrintWriter;
+import java.io.*;
 import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
@@ -141,7 +139,8 @@ public class AdtSocketListener implements Runnable{
 
             // Parse incoming message
             String dateDir = new SimpleDateFormat("yyyy_MM_dd_HH_mm_ss_SSS").format(new Date());
-            String inputStr = input.toString().replace('\n', '\r');
+
+            String inputStr = input.toString().trim().replace('\n', '\r');
             PipeParser pipeParser = new PipeParser();
             Message msg = pipeParser.parse(inputStr);
             Terser terser = new Terser(msg);
