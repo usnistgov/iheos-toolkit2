@@ -141,8 +141,9 @@ public class AdtSocketListener implements Runnable{
 
             // Parse incoming message
             String dateDir = new SimpleDateFormat("yyyy_MM_dd_HH_mm_ss_SSS").format(new Date());
+            String inputStr = input.toString().replace('\n', '\r');
             PipeParser pipeParser = new PipeParser();
-            Message msg = pipeParser.parse(input.toString());
+            Message msg = pipeParser.parse(inputStr);
             Terser terser = new Terser(msg);
             String msh9 = getFieldString(terser, "/MSH", 9);
             threadPoolItem.pifCallback.addhl7v2Msg(threadPoolItem.simId, input.toString(), msh9, dateDir, true);
