@@ -28,6 +28,11 @@ public class AdtSocketListener implements Runnable{
         ackTemplate[1] = "MSA|AA|HL7MSG00001";
     }
 
+    private static final byte SB = 0x0B; // <SB>
+    private static final byte EB = 0x1C; // <EB>
+    private static final byte CR = 0x0D; // <CR>
+    private static final byte LV = 0x00; // low values
+
     ServerSocket server = null;
     ThreadPoolItem threadPoolItem;
 
@@ -109,17 +114,17 @@ public class AdtSocketListener implements Runnable{
                 return;
             }
             StringBuffer input = new StringBuffer();
-            byte[] lastTwo = { 0x00, 0x00 };
+            byte nxt = LV, last = LV;
 
             try {
                 int i = is.read();
                 while (i != -1) {
                     char c = (char) i;
                     input.append(c);
-                    lastTwo[0] = lastTwo[1];
-                    lastTwo[1] = (byte) i;
+                    nxt = last;
+                    last = (byte) i;
 
-                    if (lastTwo[0] == 0x1c && lastTwo[1] == 0x0d)
+                    if (nxt == EB && last == CR)
                         break;
                     i = is.read();
                 }
@@ -176,8 +181,9 @@ public class AdtSocketListener implements Runnable{
                     outTerser.set("/QAK-1", terser.get("/QPD-2"));
 
                     String outMsgStr = outMsg.encode();
-                    responseString = outMsgStr.replaceAll("\r", "\r\n");
+                    writer.write(SB);
                     writer.write(responseString);
+                    writer.write(EB); writer.write(CR);
                     writer.flush();
                     socket.shutdownOutput();
                     socket.close();
@@ -234,10 +240,10 @@ public class AdtSocketListener implements Runnable{
                             logger.info("Loading template from " + adtAckFile);
 
                             responseString = buf.toString();
-                            writer.write(0x0b);
+                            writer.write(SB);
                             writer.write(buf.toString());
-                            writer.write(0x1c);
-                            writer.write(0x0d);
+                            writer.write(EB);
+                            writer.write(CR);
                             //writer.write(message.getAck());
                         }
                         writer.flush();
