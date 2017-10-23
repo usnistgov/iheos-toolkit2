@@ -189,7 +189,7 @@ public class OddsSimConfigMgr implements SimConfigMgrIntf {
         newRow();
         tbl.setWidget(getRow(), 0, new HTML(""
                 + "<h3 style='padding: 0px;margin: 0px;'>Persistence Option</h3>"
-                + "<p>If you choose to enable the Persistence Option checking the box below, please select a Repository which should be configured to forward registry requests to the same Registry site where you intend to register this ODDE.</p>" ));
+                + "<p>If you choose to enable the Persistence Option checking the box below, please select a repository. This repository should be configured to forward registry requests to the same Registry site where you intend to register this ODDE.</p>" ));
         tbl.getFlexCellFormatter().setColSpan(getRow(),0,2);
 
         final SimulatorConfigElement persistenceOption = config.get(SimulatorProperties.PERSISTENCE_OF_RETRIEVED_DOCS);
@@ -667,9 +667,17 @@ public class OddsSimConfigMgr implements SimConfigMgrIntf {
                     errMsg += "<li>Persistence option requires a repository but none are found/configured. Please display a Repository using the Simulator Manager or configure a Site that supports a PnR transaction.</li>";
                 }
             } else {
-                errMsg += "<li>siteSelectionPresenter is null!</li>";
+                errMsg += "<li>Repository siteSelectionPresenter is null!</li>";
             }
 
+            if (regSSP !=null) {
+                List<String> selectedReg = regSSP.getSelected();
+                if ((selectedReg != null && selectedReg.size() == 0)) {
+                    errMsg += "<li>Please select a registry site.</li>";
+                }
+            } else {
+                errMsg += "<li>Registry siteSelectionPresenter is null!</li>";
+            }
         }
 
         if (!"".equals(errMsg)) {
