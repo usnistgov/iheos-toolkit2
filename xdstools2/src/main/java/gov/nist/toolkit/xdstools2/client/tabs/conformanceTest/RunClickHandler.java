@@ -13,6 +13,15 @@ public class RunClickHandler implements ClickHandler {
     private TestRunner testRunner;
     private TestContext testContext;
     private TestContextView testContextView;
+    private boolean ignoreSiteSelection = false;
+
+    RunClickHandler(TestRunner testRunner, TestInstance testInstance, TestContext testContext, TestContextView testContextView, boolean ignoreSiteSelection) {
+        this.testRunner = testRunner;
+        this.testInstance = testInstance;
+        this.testContext = testContext;
+        this.testContextView = testContextView;
+        this.ignoreSiteSelection = ignoreSiteSelection;
+    }
 
     RunClickHandler(TestRunner testRunner, TestInstance testInstance, TestContext testContext, TestContextView testContextView) {
         this.testRunner = testRunner;
@@ -33,7 +42,7 @@ public class RunClickHandler implements ClickHandler {
         clickEvent.preventDefault();
         clickEvent.stopPropagation();
 
-        String msg = testContext.verifyTestContext();
+        String msg = testContext.verifyTestContext(ignoreSiteSelection);
         if (msg == null)
             testRunner.runTest(testInstance, null, null);
         else {

@@ -368,7 +368,7 @@ public enum ActorType implements IsSerializable, Serializable {
             IheItiProfile.MHD,
             Arrays.asList(OptionType.REQUIRED)
     ),
-    SIM_PROXY(
+    SIM_PROXY(   // this is really an abstract type - offers no transactions in configuration, PIF is only placeholder
             "Sim Proxy",
             Arrays.asList(""),
             "simproxy",

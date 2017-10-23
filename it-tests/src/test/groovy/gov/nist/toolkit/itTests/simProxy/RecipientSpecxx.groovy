@@ -100,9 +100,9 @@ class RecipientSpecxx extends ToolkitSpecification {
 //            api.createSimulator(ActorType.REGISTRY, simId)
 //        }
 //
-//        if (!api.simulatorExists(simProxyId)) {
-//            println "Creating sim ${simProxyId}"
-//            api.createSimulator(ActorType.SIM_PROXY, simProxyId)
+//        if (!api.simulatorExists(mhdSimId)) {
+//            println "Creating sim ${mhdSimId}"
+//            api.createSimulator(ActorType.SIM_PROXY, mhdSimId)
 //        }
     }
 

@@ -10,6 +10,8 @@ import gov.nist.toolkit.simcommon.server.BaseActorSimulator
 import gov.nist.toolkit.simcommon.server.SimCache
 import gov.nist.toolkit.simcommon.server.SimDb
 import gov.nist.toolkit.simcommon.server.SimManager
+import gov.nist.toolkit.utilities.html.HeaderBlock
+import gov.nist.toolkit.utilities.html.HeaderParser
 import gov.nist.toolkit.sitemanagement.client.Site
 import gov.nist.toolkit.valsupport.engine.MessageValidatorEngine
 import gov.nist.toolkit.xdsexception.client.XdsInternalException
@@ -42,7 +44,7 @@ class SimProxySimulator extends BaseActorSimulator {
 
         // input message was automatically logged by sim infrastructure
         String hdrs1 = db.getRequestMessageHeader()
-        HttpHeaders inHeaders = parseHeaders(db.getRequestMessageHeader())
+        HeaderBlock inHeaders = HeaderParser.parseHeaders(db.getRequestMessageHeader())
         String inBody = new String(db.getRequestMessageBody())
 
         deleteChunkedHeader(inHeaders)
@@ -119,7 +121,7 @@ class SimProxySimulator extends BaseActorSimulator {
         return false
     }
 
-    def deleteChunkedHeader(HttpHeaders headers) {
+    def deleteChunkedHeader(HeaderBlock headers) {
         String encoding = headers.get('transfer-encoding')
         if (encoding && 'chunked' == encoding.toLowerCase())
             headers.remove('transfer-encoding')
@@ -167,7 +169,7 @@ class SimProxySimulator extends BaseActorSimulator {
      * @param transformInBody
      * @return [ outHeader, outBody, forwardTransactionType]
      */
-    List processTransformations(transformClassNames, HttpHeaders transformInHeader, String transformInBody) {
+    List processTransformations(transformClassNames, HeaderBlock transformInHeader, String transformInBody) {
         assert transformInHeader
         assert transformInBody
         TransactionType forwardTransactionType = null
@@ -183,14 +185,14 @@ class SimProxySimulator extends BaseActorSimulator {
             }
 
             AbstractProxyTransform transform = (AbstractProxyTransform) instance
-            transform.inputHeader = transformInHeader
+            transform.inputHeaders = transformInHeader
             transform.inputBody = transformInBody
 
             TransactionType tt = transform.run()
             if (tt) forwardTransactionType = tt
 
             // set up for next transform
-            transformInHeader = transform.outputHeader
+            transformInHeader = transform.outputHeaders
             transformInBody = transform.outputBody
         }
 
@@ -213,42 +215,5 @@ class SimProxySimulator extends BaseActorSimulator {
         return null
     }
 
-    HttpHeaders parseHeaders(String rawHeaders) {
-        HttpHeaders headers = new HttpHeaders()
-        RequestLine requestLine = null
-        // grab headers
-        rawHeaders.eachLine {String line ->
-            line = strip(line)
-            if (requestLine) {
-                if (line)
-                    headers.add(line)
-            }
-            else
-                requestLine = new RequestLine(line)
-        }
-        return headers
-    }
-
-    def strip(String line) {
-        line = line.trim()
-        while (line.size() > 0 && (line.endsWith('\r') || line.endsWith('\n')) )
-            line = line.substring(0, line.size() - 1)
-        return line
-    }
-
-
-
-    class RequestLine {
-        def method
-        def uri
-        def httpversion
-
-        RequestLine(String line) {
-            String[] parts = line.trim().split(' ')
-            method = parts[0]
-            uri = parts[1]
-            httpversion = parts[2]
-        }
-    }
 
 }

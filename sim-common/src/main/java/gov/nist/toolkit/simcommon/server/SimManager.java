@@ -101,6 +101,7 @@ public class SimManager {
 
 	public boolean exists(String siteName) {
 		try {
+			if (siteName.equals("client")) return true;
 			if (SiteServiceManager.getSiteServiceManager().getCommonSites().exists(siteName)) return true;
 			for (SimId simId : SimDb.getAllSimIds()) {
 				if (siteName.equals(simId.toString())) return true;

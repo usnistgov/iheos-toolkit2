@@ -203,9 +203,15 @@ public class SimDb {
 	}
 
 	static SimDb open(SimDbEvent event) {
+		assert event
+		assert event.simId
+		assert event.actor
+		assert event.trans
 		SimDb db = new SimDb(event.simId)
 		db.transactionDir = db.transactionDirectory(event.actor, event.trans)
 		db.event =  event.eventId
+		db.actor = event.actor
+		db.transaction = event.trans
 		return db
 	}
 
@@ -278,6 +284,11 @@ public class SimDb {
 		return new SimDb(simId, MARKER, MARKER)
 	}
 
+	/**
+	 * Events returned most recent first
+	 * If no marker then return all events
+	 * @return
+	 */
 	List<SimDbEvent> getEventsSinceMarker() {
 		List<SimDbEvent> events = getAllEvents()
 		Map<String, SimDbEvent> eventMap = [:]
@@ -946,7 +957,7 @@ public class SimDb {
 		return null;
 	}
 
-	private List<SimDbEvent> getAllEvents() {
+	List<SimDbEvent> getAllEvents() {
 		List<SimDbEvent> eventDirs = []
 		for (File actorDir : simDir.listFiles()) {
 			if (!actorDir.isDirectory()) continue
@@ -1207,7 +1218,11 @@ public class SimDb {
 		return db;
 	}
 
+	void setActor(String actor) {
+		this.actor = actor
+	}
 
-
-
+	void setTransaction(String transaction) {
+		this.transaction = transaction
+	}
 }

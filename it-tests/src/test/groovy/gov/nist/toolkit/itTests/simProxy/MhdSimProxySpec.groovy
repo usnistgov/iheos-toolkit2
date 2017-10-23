@@ -1,6 +1,7 @@
 package gov.nist.toolkit.itTests.simProxy
 
 import gov.nist.toolkit.actortransaction.client.ActorType
+import gov.nist.toolkit.configDatatypes.client.TransactionType
 import gov.nist.toolkit.configDatatypes.server.SimulatorActorType
 import gov.nist.toolkit.configDatatypes.server.SimulatorProperties
 import gov.nist.toolkit.installation.Installation
@@ -9,10 +10,12 @@ import gov.nist.toolkit.results.client.AssertionResult
 import gov.nist.toolkit.results.client.Result
 import gov.nist.toolkit.results.client.TestInstance
 import gov.nist.toolkit.simcommon.client.SimId
+import gov.nist.toolkit.testengine.engine.FhirSimulatorTransaction
 import gov.nist.toolkit.testengine.scripts.BuildCollections
 import gov.nist.toolkit.toolkitApi.SimulatorBuilder
 import gov.nist.toolkit.toolkitServicesCommon.SimConfig
 import gov.nist.toolkit.toolkitServicesCommon.ToolkitFactory
+import gov.nist.toolkit.toolkitServicesCommon.resource.SimIdResource
 import spock.lang.Shared
 /**
  * Test SimProxy with MHD -> XDS transformation as front end to RegRepSpec simulator
@@ -26,16 +29,12 @@ class MhdSimProxySpec extends ToolkitSpecification {
     @Shared String patientId2 = 'BR15^^^&1.2.360&ISO'
     @Shared String envName = 'test'
     @Shared String testSession = 'bill';
-    @Shared String id = 'rr'
-    @Shared String rrId = "${testSession}__${id}"
-    @Shared SimId simId = new SimId(rrId)  // ultimate destination
-    @Shared String proxyId = "simproxy"
-    @Shared String simProxyName = "${testSession}__${proxyId}"
-    @Shared SimId simProxyId = new SimId(simProxyName)
-    @Shared SimConfig rrConfig
-    @Shared SimConfig proxySimConfig
-    @Shared SimConfig updatedProxySimConfig
+    @Shared String mhdId = "mhd"
+    @Shared String mhdName = "${testSession}__${mhdId}"
+    @Shared SimId mhdSimId = new SimId(mhdName)
+    @Shared SimConfig mhdSimConfig
     @Shared TestInstance testInstance = new TestInstance('MhdSubmit')
+    @Shared Map<String, SimConfig> simGroup = [:]
 
     def setupSpec() {   // one time setup done when class launched
         startGrizzly('8889')
@@ -44,39 +43,7 @@ class MhdSimProxySpec extends ToolkitSpecification {
         // Needed to build simulators
         spi = getSimulatorApi(remoteToolkitPort)
 
-        api.createTestSession(testSession)
-
-        // local customization
-
         new BuildCollections().init(null)
-
-        spi.delete(ToolkitFactory.newSimId(id, testSession, ActorType.FHIR_SERVER.name, envName, true))  //??????????
-        spi.delete(ToolkitFactory.newSimId(proxyId, testSession, ActorType.SIM_PROXY.name, envName, true))
-        spi.delete(proxyId, testSession)
-
-        Installation.instance().defaultEnvironmentName()
-
-        rrConfig = spi.create(
-                id,
-                testSession,
-                SimulatorActorType.REPOSITORY_REGISTRY,
-                envName)
-
-        proxySimConfig = spi.create(
-                proxyId,
-                testSession,
-                SimulatorActorType.XDS_on_FHIR_Recipient,
-                envName
-        )
-
-        proxySimConfig.setProperty(SimulatorProperties.proxyForwardSite, rrId)
-
-        updatedProxySimConfig = spi.update(proxySimConfig)
-
-        rrConfig.setProperty(SimulatorProperties.VALIDATE_AGAINST_PATIENT_IDENTITY_FEED, false)
-        rrConfig.setProperty(SimulatorProperties.VALIDATE_CODES, false);
-        spi.update(rrConfig)
-
     }
 
     def setup() {
@@ -85,10 +52,36 @@ class MhdSimProxySpec extends ToolkitSpecification {
     }
 
     def 'send provide document bundle through simproxy'() {
+        setup:
+        api.createTestSession(testSession)
+
+        spi.delete(ToolkitFactory.newSimId(mhdId, testSession, ActorType.MHD_DOC_RECIPIENT.name, envName, true))
+
+        Installation.instance().defaultEnvironmentName()
+
+        mhdSimConfig = spi.create(
+                mhdId,
+                testSession,
+                SimulatorActorType.MHD_DOC_RECIPIENT,
+                envName
+        )
+
+        mhdSimConfig.asList(SimulatorProperties.simulatorGroup).each { String simIdString ->
+            SimId theSimId = new SimId(simIdString)
+            SimConfig config = spi.get(spi.get(theSimId.user, theSimId.id))
+            simGroup[simIdString] = config
+        }
+
+        //println simGroup
+        SimConfig rrConfig = simGroup['bill__mhd_regrep']
+        rrConfig.setProperty(SimulatorProperties.VALIDATE_CODES, false)
+        rrConfig.setProperty(SimulatorProperties.VALIDATE_AGAINST_PATIENT_IDENTITY_FEED, false)
+        spi.update(rrConfig)
+
         when:
         def sections = ['pdb']
         def params = [ :]
-        List<Result> results = api.runTest(testSession, simProxyName, testInstance, sections, params, true)
+        List<Result> results = api.runTest(testSession, mhdName, testInstance, sections, params, true)
 
         then:
         results.size() == 1
@@ -110,5 +103,13 @@ class MhdSimProxySpec extends ToolkitSpecification {
         // id's are UUIDs
         ids[0].split('/')[1].startsWith('urn:uuid:')
         ids[1].split('/')[1].startsWith('urn:uuid:')
+    }
+
+    def 'find transactions in simulator log'() {
+        when:
+        List<FhirSimulatorTransaction> trans = FhirSimulatorTransaction.getAll(mhdSimId, TransactionType.FHIR)
+
+        then:
+        trans.size() == 1
     }
 }

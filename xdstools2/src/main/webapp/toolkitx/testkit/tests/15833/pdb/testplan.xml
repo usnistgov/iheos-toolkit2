@@ -2,9 +2,10 @@
     <Test>FHIR/create</Test>
     <TestStep id="pdb">
         <ExpectedStatus>Success</ExpectedStatus>
-        <ProvideDocumentBundleTransaction>
-            <ResourceFile>singledocsubmit.xml</ResourceFile>
-            <UrlExtension>/fhir</UrlExtension>
-        </ProvideDocumentBundleTransaction>
+        <MhdClientTransaction>
+            <Assertions>
+                <Assert id="""xxxx"
+            </Assertions>
+        </MhdClientTransaction>
     </TestStep>
 </TestPlan>

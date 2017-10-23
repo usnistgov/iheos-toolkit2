@@ -59,4 +59,12 @@ class SimDbEvent {
     String getResponseHeader() {
         return getResponseHeaderFile().text
     }
+
+    void setActor(String actor) {
+        this.actor = actor
+    }
+
+    void setTrans(String trans) {
+        this.trans = trans
+    }
 }

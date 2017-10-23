@@ -58,7 +58,7 @@ public class TestDisplay  implements IsWidget {
         view.setTime(testOverview.getLatestSectionTime());
 
         if (allowRun) view.setPlay("Run", new RunClickHandler(testRunner, testInstance, testContext, testContextView));
-        if (allowValidate) view.setValidate("Validate", new RunClickHandler(testRunner, testInstance, testContext, testContextView));
+        if (allowValidate) view.setValidate("Validate", new RunClickHandler(testRunner, testInstance, testContext, testContextView, true));
 
         if (testOverview.isRun()) {
             if (allowDelete) view.setDelete("Delete Log", new DeleteClickHandler(testDisplayGroup, testContext, testRunner, testInstance));

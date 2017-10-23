@@ -67,6 +67,8 @@ public class SiteSpec implements Serializable, IsSerializable {
 		this("", null, null);
 	}
 
+	public boolean isNullSite() { return name.equals(""); }
+
 	public String toString() {
 		StringBuffer buf = new StringBuffer();
 		

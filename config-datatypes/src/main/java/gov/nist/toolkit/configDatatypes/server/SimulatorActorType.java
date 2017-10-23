@@ -75,7 +75,9 @@ public enum SimulatorActorType {
 
     SIM_PROXY("simproxy"),
 
-    XDS_on_FHIR_Recipient("xdsonfhir");
+    XDS_on_FHIR_Recipient("xdsonfhir"),
+
+    MHD_DOC_RECIPIENT("mhddocrec");
 
     String name;  // name that matches ActorType.java
 

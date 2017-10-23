@@ -1116,7 +1116,7 @@ public class ConformanceTestTab extends ToolWindowWithMenu implements TestRunner
 
 	@Override
 	public SiteSpec getSiteToIssueTestAgainst() {
-		return siteToIssueTestAgainst;
+		return (siteToIssueTestAgainst == null ? new SiteSpec("client") : siteToIssueTestAgainst);
 	}
 
 	public void setSiteToIssueTestAgainst(SiteSpec siteToIssueTestAgainst) {

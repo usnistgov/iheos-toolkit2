@@ -88,6 +88,7 @@ class SimProxyFactory extends AbstractActorFactory implements IActorFactory{
     // This is separate so it can be overriden by an extension class
     List<SimulatorConfig> buildExtensions(SimManager simm, SimulatorConfig config, SimulatorConfig config2) {
         addEditableConfig(config, SimulatorProperties.proxyForwardSite, ParamType.SELECTION, "");
+        return [config, config2]
     }
 
     @Override

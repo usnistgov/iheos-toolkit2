@@ -87,7 +87,7 @@ class TestDisplayView extends FlowPanel implements TestStatusDisplay {
     }
 
     void setValidate(String title, ClickHandler clickHandler) {
-        validate = new Image("icons2/validate.png");
+        validate = new Image("icons2/validate-32.png");
         validate.addStyleName("iconStyle");
         validate.addClickHandler(clickHandler);
         validate.setTitle(title);
