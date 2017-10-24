@@ -704,7 +704,7 @@ public class ConformanceTestTab extends ToolWindowWithMenu implements TestRunner
 //		loadingMessage = new HTML("Initializing...");
 //		loadingMessage.setStyleName("loadingMessage");
 //		testsPanel.add(loadingMessage);
-		mainView.showLoadingMessage("Initializing...");
+//		mainView.showLoadingMessage("Initializing...");
 		testsHeaderView.showSelfTestWarning(isSelfTest());
 
 		new AutoInitConformanceTestingCommand() {
