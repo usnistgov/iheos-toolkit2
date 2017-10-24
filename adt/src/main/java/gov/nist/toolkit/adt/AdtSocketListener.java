@@ -180,7 +180,7 @@ public class AdtSocketListener implements Runnable{
 
                     outTerser.set("/QAK-1", terser.get("/QPD-2"));
 
-                    String outMsgStr = outMsg.encode();
+                    responseString = outMsg.encode();
                     writer.write(SB);
                     writer.write(responseString);
                     writer.write(EB); writer.write(CR);
@@ -234,7 +234,7 @@ public class AdtSocketListener implements Runnable{
                             StringBuilder buf = new StringBuilder();
 
                             for (int i = 0; i < ackTemplate.length; i++) {
-                                buf.append(ackTemplate[i].trim()).append("\r\b");
+                                buf.append(ackTemplate[i].trim()).append("\r");
                             }
                             String adtAckFile = AdtSocketListener.class.getResource("/adt/ACK.txt").getFile();
                             logger.info("Loading template from " + adtAckFile);

@@ -16,6 +16,8 @@
                 DocAuthor=${Document}/rim:Classification[@classificationScheme='urn:uuid:93606bcf-9494-43ec-9b4e-a7748d1a838d']
                 ClassCode=${Document}/rim:Classification[@classificationScheme='urn:uuid:41a5887f-8865-4c09-adf7-e362475b143a']
                 ConfidentialityCode=${Document}/rim:Classification[@classificationScheme='urn:uuid:f4f85eac-e6cb-4883-b524-f2705394840f']
+                FormatCode=${Document}/rim:Classification[@classificationScheme='urn:uuid:a09d5840-386c-46f2-b5ad-9c3699a4309d']
+                HealthCareFacility=${Document}/rim:Classification[@classificationScheme='urn:uuid:f33fb8ac-18af-42cc-ae0e-ed0b0bdb91e1']
             </Parameters>
             <SimTransaction id="rep_reg" transaction="prb"/>
             <Assertions>
@@ -95,14 +97,58 @@
                         id="confidentialityCode: scheme name" process="Equals" value="2.16.840.1.113883.5.25">
                     ${ConfidentialityCode}/rim:Slot[@name='codingScheme']/rim:ValueList/rim:Value/text()
                 </Assert>
+
                 <Assert forEach="${Document}" instanceId="${Document}/@id"
                         id="creation time" process="Equals" value="DateTime">
                     ${Document}/rim:Slot[@name='creationTime']/rim:ValueList/rim:Value/text()
                 </Assert>
+
                 <Assert forEach="${Document}" instanceId="${Document}/@id"
                         id="entry id" process="Equals" value="UUID">
                     ${Document}/@id
                 </Assert>
+
+                // This is in spec, but not in xls. ????
+                <Assert forEach="${Document}" instanceId="${Document}/@id"
+                        id="eventCodeList" process="Required" >
+                    ${Document}
+                </Assert>
+
+                // This is in spec, and there is one in submission set but not in xls for document. ????
+                <Assert forEach="${Document}" instanceId="${Document}/@id"
+                        id="eventCodeList" process="Required" >
+                    ${Document}
+                </Assert>
+
+                // This is in spec, but the value is currently lined out ????
+                <Assert forEach="${Document}" instanceId="${Document}/@id"
+                        id="formatCode: code" process="Required" >
+                    ${FormatCode}/@nodeRepresentation
+                </Assert>
+                // this value is for report. For image, SOP class UID of DICOM object
+                <Assert forEach="${Document}" instanceId="${Document}/@id"
+                        id="formatCode: display name" process="Equals" value="urn:ihe:rad:PDF">
+                    ${FormatCode}/rim:Name/rim:LocalizedString/@value
+                </Assert>
+                // this value is for report. for image, value is "1.2.840.10008.2.6.1"
+                <Assert forEach="${Document}" instanceId="${Document}/@id"
+                        id="formatCode: scheme name" process="Equals" value="1.3.6.1.4.1.19376.1.2.3">
+                    ${FormatCode}/rim:Slot[@name='codingScheme']/rim:ValueList/rim:Value/text()
+                </Assert>
+
+                <Assert forEach="${Document}" instanceId="${Document}/@id"
+                        id="health care facility: code" process="Equals" value="33022008" >
+                    ${HealthCareFacility}/@nodeRepresentation
+                </Assert>
+                <Assert forEach="${Document}" instanceId="${Document}/@id"
+                        id="health care facility: display name" process="Equals" value="Hospital-based outpatient clinic or department--OTHER-NOT LISTED">
+                    ${HealthCareFacility}/rim:Name/rim:LocalizedString/@value
+                </Assert>
+                <Assert forEach="${Document}" instanceId="${Document}/@id"
+                        id="health care facility: scheme name" process="Equals" value="2.16.840.1.113883.3.88.12.80.67">
+                    ${HealthCareFacility}/rim:Slot[@name='codingScheme']/rim:ValueList/rim:Value/text()
+                </Assert>
+
             </Assertions>
         </XMLValidation>
     </TestStep>
