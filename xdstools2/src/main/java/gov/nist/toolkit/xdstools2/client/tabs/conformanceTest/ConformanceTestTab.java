@@ -494,7 +494,7 @@ public class ConformanceTestTab extends ToolWindowWithMenu implements TestRunner
 				getMainView().getTestsPanel().clear();
 				mainView.getOptionsTabBar().clear();
 				mainView.getOptionsTabBar().display(currentActorOption.getTabConfig(), "Options", profile.getTcCode());
-				GWT.log("profile was selected. init session: " + (getInitTestSession()==null));
+				GWT.log("profile was selected. Is init session null: " + (getInitTestSession()==null));
 				if (getInitTestSession()==null) {
 					currentActorOption.setOptionId(null);
 				}
