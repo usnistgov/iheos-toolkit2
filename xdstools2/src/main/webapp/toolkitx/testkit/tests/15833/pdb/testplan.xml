@@ -4,7 +4,9 @@
         <ExpectedStatus>Success</ExpectedStatus>
         <MhdClientTransaction>
             <Assertions>
-                <Assert id="""xxxx"
+                <Assert id="xxxx" process="find">
+                    <SimReference id="mhdrec_support" transaction="pdb"/>
+                </Assert>
             </Assertions>
         </MhdClientTransaction>
     </TestStep>

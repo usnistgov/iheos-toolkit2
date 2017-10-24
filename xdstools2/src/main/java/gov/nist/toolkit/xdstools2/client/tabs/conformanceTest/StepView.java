@@ -96,21 +96,29 @@ public class StepView implements IsWidget {
            FlexTable errTbl = new FlexTable();
            errTbl.setStyleName("with-border");
            int row = 0;
-           errTbl.setWidget(row, 0, new HTML("Message"));
-           errTbl.setWidget(row, 1, new HTML("Step"));
+           errTbl.setWidget(row, 0, new HTML("Step"));
+           errTbl.setWidget(row, 1, new HTML("Message"));
            row++;
            String last = "";
            for (String error : errors) {
-              String msg = substringBeforeLast(error, "(stepId=");
-              String stp = substringAfterLast(error, "(stepId=");
-              stp = substringBeforeLast(stp, ")");
-              if (stp.equals(last)) stp = "";
-              else last = stp;
-              errTbl.setWidget(row, 0, new HTML(msg));
-              errTbl.setWidget(row, 1, new HTML(stp));
-              row++;
+               if (error.contains("(stepId=")) {
+                   String msg = substringBeforeLast(error, "(stepId=");
+                   String stp = substringAfterLast(error, "(stepId=");
+                   stp = substringBeforeLast(stp, ")");
+                   if (stp.equals(last)) stp = "";
+                   else last = stp;
+                   errTbl.setWidget(row, 1, new HTML(msg));
+                   errTbl.setWidget(row, 0, new HTML(stp));
+                   row++;
+               } else {
+                   String[] parts = error.split("\n");
+                   for (String part : parts) {
+                       errTbl.setWidget(row, 1, new HTML(part));
+                       row++;
+                   }
+               }
            }
-           stepBody.add(new HTML("Error:"));
+           stepBody.add(new HTML("Errors:"));
            stepBody.add(errTbl);
         }
 //        for (String error : step.getErrors()) {

@@ -14,28 +14,31 @@ public class RunClickHandler implements ClickHandler {
     private TestContext testContext;
     private TestContextView testContextView;
     private boolean ignoreSiteSelection = false;
+    private Controller controller = null;
 
-    RunClickHandler(TestRunner testRunner, TestInstance testInstance, TestContext testContext, TestContextView testContextView, boolean ignoreSiteSelection) {
+    RunClickHandler(TestRunner testRunner, TestInstance testInstance, TestContext testContext, TestContextView testContextView, Controller controller, boolean ignoreSiteSelection) {
         this.testRunner = testRunner;
         this.testInstance = testInstance;
         this.testContext = testContext;
         this.testContextView = testContextView;
+        this.controller = controller;
         this.ignoreSiteSelection = ignoreSiteSelection;
     }
 
-    RunClickHandler(TestRunner testRunner, TestInstance testInstance, TestContext testContext, TestContextView testContextView) {
+    RunClickHandler(TestRunner testRunner, TestInstance testInstance, TestContext testContext, TestContextView testContextView, Controller controller) {
         this.testRunner = testRunner;
         this.testInstance = testInstance;
         this.testContext = testContext;
+        this.controller = controller;
         this.testContextView = testContextView;
     }
 
-    RunClickHandler(TestRunner testRunner, TestInstance testInstance, TestContext testContext) {
-        this.testRunner = testRunner;
-        this.testInstance = testInstance;
-        this.testContext = testContext;
-        this.testContextView = null;
-    }
+//    RunClickHandler(TestRunner testRunner, TestInstance testInstance, TestContext testContext) {
+//        this.testRunner = testRunner;
+//        this.testInstance = testInstance;
+//        this.testContext = testContext;
+//        this.testContextView = null;
+//    }
 
     @Override
     public void onClick(ClickEvent clickEvent) {
@@ -50,6 +53,9 @@ public class RunClickHandler implements ClickHandler {
                 testContextView.launchDialog(msg);
             else
                 Window.alert(msg);
+        }
+        if (controller != null) {
+            controller.getRefreshTestCollectionClickHandler().onClick(null);
         }
     }
 }

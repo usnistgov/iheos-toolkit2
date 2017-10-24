@@ -329,7 +329,7 @@ public enum ActorType implements IsSerializable, Serializable {
             "mhdsrc",
             "",
             "",
-            Arrays.asList(TransactionType.PROV_DOC_BUNDLE),  // place holder - transaction types
+            Arrays.asList(TransactionType.PIF),  // place holder - transaction types
             false,  // show in config - only partially configured - only used in IT tests
             null,  // actorsFileLabel
             null,   // httpSimulatorClassName

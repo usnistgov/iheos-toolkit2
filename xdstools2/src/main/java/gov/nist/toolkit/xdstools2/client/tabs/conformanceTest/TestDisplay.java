@@ -23,13 +23,15 @@ public class TestDisplay  implements IsWidget {
     private boolean allowValidate = false;
     private TestDisplayView view = new TestDisplayView();
     private InteractionDiagramDisplay diagramDisplay;
+    private Controller controller;
 
-    public TestDisplay(TestInstance testInstance, TestDisplayGroup testDisplayGroup, TestRunner testRunner, TestContext testContext, TestContextView testContextView) {
+    public TestDisplay(TestInstance testInstance, TestDisplayGroup testDisplayGroup, TestRunner testRunner, TestContext testContext, TestContextView testContextView, Controller controller) {
         this.testInstance = testInstance;
         this.testRunner = testRunner;
         this.testDisplayGroup = testDisplayGroup;
         this.testContext = testContext;
         this.testContextView = testContextView;
+        this.controller = controller;
     }
 
     public void allowDelete(boolean allowDelete) {
@@ -57,8 +59,8 @@ public class TestDisplay  implements IsWidget {
         view.setTestTitle("Test: " + testOverview.getName() + " - " +testOverview.getTitle());
         view.setTime(testOverview.getLatestSectionTime());
 
-        if (allowRun) view.setPlay("Run", new RunClickHandler(testRunner, testInstance, testContext, testContextView));
-        if (allowValidate) view.setValidate("Validate", new RunClickHandler(testRunner, testInstance, testContext, testContextView, true));
+        if (allowRun) view.setPlay("Run", new RunClickHandler(testRunner, testInstance, testContext, testContextView, controller));
+        if (allowValidate) view.setValidate("Validate", new RunClickHandler(testRunner, testInstance, testContext, testContextView, controller, true));
 
         if (testOverview.isRun()) {
             if (allowDelete) view.setDelete("Delete Log", new DeleteClickHandler(testDisplayGroup, testContext, testRunner, testInstance));

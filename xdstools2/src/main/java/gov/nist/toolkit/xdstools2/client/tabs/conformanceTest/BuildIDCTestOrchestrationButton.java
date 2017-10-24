@@ -178,7 +178,7 @@ public class BuildIDCTestOrchestrationButton extends AbstractOrchestrationButton
 
             initializationResultsPanel.add(new HTML("<br />"));
 
-            initializationResultsPanel.add(new OrchestrationSupportTestsDisplay(orchResponse, testContext, testContextView, testRunner ));
+            initializationResultsPanel.add(new OrchestrationSupportTestsDisplay(orchResponse, testContext, testContextView, testRunner, testTab ));
 
             initializationResultsPanel.add(new HTML("<br />"));
 

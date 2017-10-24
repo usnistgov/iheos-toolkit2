@@ -80,7 +80,7 @@ public class BuildSrcTestOrchestrationButton  extends AbstractOrchestrationButto
                 handleMessages(initializationResultsPanel, orchResponse);
 
                 // Display tests run as part of orchestration - so links to their logs are available
-                initializationResultsPanel.add(new OrchestrationSupportTestsDisplay(orchResponse, testContext, testContextView, testTab ));
+                initializationResultsPanel.add(new OrchestrationSupportTestsDisplay(orchResponse, testContext, testContextView, testTab , testTab));
 
                 initializationResultsPanel.add(new HTML("<br />"));
 

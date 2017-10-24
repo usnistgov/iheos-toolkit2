@@ -378,7 +378,7 @@ public class XdsTestServiceManager extends CommonService {
 		}
 		return tis;
       } catch (Exception e) {
-		   logger.debug(ExceptionUtil.exception_details(e, "getCollectionsMembers error: "));
+		   logger.error(ExceptionUtil.exception_details(e, "getCollectionsMembers error: "));
          throw e;
       }
 	}

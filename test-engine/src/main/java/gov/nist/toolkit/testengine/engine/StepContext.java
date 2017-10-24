@@ -388,6 +388,9 @@ public class StepContext extends BasicContext implements ErrorReportingInterface
 				case "FhirSearchTransaction":
 					transaction = new FhirSearchTransaction(this, instruction, instruction_output);
 					break;
+				case "MhdClientTransaction":
+					transaction = new MhdClientTransaction(this, instruction, instruction_output);
+					break;
 			   case "HttpTransaction":
 					HTTPTransaction hTransaction = new HTTPTransaction(this, instruction, instruction_output);
 					hTransaction.setNoMetadataProcessing(true);

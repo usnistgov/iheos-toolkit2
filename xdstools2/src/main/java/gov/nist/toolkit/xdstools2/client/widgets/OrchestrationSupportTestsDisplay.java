@@ -17,12 +17,12 @@ import java.util.List;
 public class OrchestrationSupportTestsDisplay extends FlowPanel {
 
     //    public OrchestrationSupportTestsDisplay(final AbstractOrchestrationResponse orchResponse, final String testSession, final SiteSpec siteSpec) {
-    public OrchestrationSupportTestsDisplay(final AbstractOrchestrationResponse orchResponse, final TestContext testContext, final TestContextView testContextView, final TestRunner testRunner) {
+    public OrchestrationSupportTestsDisplay(final AbstractOrchestrationResponse orchResponse, final TestContext testContext, final TestContextView testContextView, final TestRunner testRunner, final Controller controller) {
         new GetTestsOverviewCommand(){
             @Override
             public void onComplete(List<TestOverviewDTO> testOverviews) {
                 add(new HTML("Utilities run to initialize environment"));
-                TestDisplayGroup orchGroup = new TestDisplayGroup(testContext, testContextView, testRunner);
+                TestDisplayGroup orchGroup = new TestDisplayGroup(testContext, testContextView, testRunner, controller);
                 orchGroup.allowRun(false);
                 orchGroup.allowDelete(false);
                 boolean hasTests = false;

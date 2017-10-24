@@ -62,7 +62,7 @@ import static gov.nist.toolkit.xdstools2.client.tabs.conformanceTest.TestContext
 /**
  * All Conformance tests will be run out of here
  */
-public class ConformanceTestTab extends ToolWindowWithMenu implements TestRunner, TestTarget, TestsHeaderView.Controller {
+public class ConformanceTestTab extends ToolWindowWithMenu implements TestRunner, TestTarget, Controller {
 
 	private final ConformanceTestTab me;
 
@@ -107,7 +107,7 @@ public class ConformanceTestTab extends ToolWindowWithMenu implements TestRunner
 		mainView = new ConformanceTestMainView(this);
 		testContextView = new TestContextView(this, mainView.getTestSessionDescription(), testContext, new SiteSelectionValidatorImpl());
 		testContext.setTestContextView(testContextView);
-		testDisplayGroup = new TestDisplayGroup(testContext, testContextView, this);
+		testDisplayGroup = new TestDisplayGroup(testContext, testContextView, this, this);
 	}
 
 	@Override
@@ -913,7 +913,7 @@ public class ConformanceTestTab extends ToolWindowWithMenu implements TestRunner
 					@Override
 					public void onComplete(TestOverviewDTO testOverviewDTO) {
 						updateTestOverview(testOverviewDTO);
-						InteractionDiagramDisplay diagramDisplay = new InteractionDiagramDisplay(testOverviewDTO, testContext.getTestSession(), getSiteToIssueTestAgainst(), testContext.getSiteUnderTestAsSiteSpec().getName(),actorOption,null);
+						InteractionDiagramDisplay diagramDisplay = new InteractionDiagramDisplay(testOverviewDTO, testContext.getTestSession(), getSiteToIssueTestAgainst(), testContext.getSiteUnderTestName(),actorOption,null);
 						testDisplayGroup.display(testOverviewDTO, diagramDisplay);
 						updateTestsOverviewHeader(testsPerActorOption, testOverviewDTOs, testStatistics, actorOption);
 					}
@@ -943,7 +943,7 @@ public class ConformanceTestTab extends ToolWindowWithMenu implements TestRunner
 			new RunTestCommand(){
 				@Override
 				public void onComplete(TestOverviewDTO testOverviewDTO) {
-					InteractionDiagramDisplay diagramDisplay = new InteractionDiagramDisplay(testOverviewDTO, testContext.getTestSession(), getSiteToIssueTestAgainst(), testContext.getSiteUnderTestAsSiteSpec().getName(),currentActorOption,patientId);
+					InteractionDiagramDisplay diagramDisplay = new InteractionDiagramDisplay(testOverviewDTO, testContext.getTestSession(), getSiteToIssueTestAgainst(), testContext.getSiteUnderTestName(),currentActorOption,patientId);
 					// returned testStatus of entire test
 					testDisplayGroup.display(testOverviewDTO, diagramDisplay);
 					Collection<TestOverviewDTO> overviews = updateTestOverview(testOverviewDTO);
@@ -1020,7 +1020,7 @@ public class ConformanceTestTab extends ToolWindowWithMenu implements TestRunner
 			new RunTestCommand(){
 				@Override
 				public void onComplete(TestOverviewDTO testOverviewDTO) {
-				    InteractionDiagramDisplay diagramDisplay = new InteractionDiagramDisplay(testOverviewDTO, testContext.getTestSession(), getSiteToIssueTestAgainst(), testContext.getSiteUnderTestAsSiteSpec().getName(),currentActorOption,patientId);
+				    InteractionDiagramDisplay diagramDisplay = new InteractionDiagramDisplay(testOverviewDTO, testContext.getTestSession(), getSiteToIssueTestAgainst(), testContext.getSiteUnderTestName(),currentActorOption,patientId);
 					// returned testStatus of entire test
 					testDisplayGroup.display(testOverviewDTO, diagramDisplay);
 					updateTestOverview(testOverviewDTO);
