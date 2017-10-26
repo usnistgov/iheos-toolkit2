@@ -1,7 +1,6 @@
 package gov.nist.toolkit.testengine.simLogs
 
 import ca.uhn.fhir.context.FhirContext
-import edu.wustl.mir.erl.ihe.xdsi.util.PrsSimLogs
 import edu.wustl.mir.erl.ihe.xdsi.util.Utility
 import gov.nist.toolkit.configDatatypes.client.TransactionType
 import gov.nist.toolkit.installation.Installation
@@ -12,17 +11,11 @@ import gov.nist.toolkit.simcommon.client.SimId
 import gov.nist.toolkit.simcommon.server.SimDb
 import gov.nist.toolkit.simcommon.server.SimDbEvent
 import gov.nist.toolkit.testengine.engine.FhirSimulatorTransaction
-import gov.nist.toolkit.testengine.engine.SimulatorTransaction
 import gov.nist.toolkit.utilities.html.HeaderParser
-import org.apache.http.HttpHeaders
 import org.apache.log4j.Logger
-import org.hl7.fhir.dstu3.model.Resource
-import org.hl7.fhir.instance.model.api.IBaseResource
 
-import java.nio.file.Path
 import java.nio.file.Paths
 import java.text.SimpleDateFormat
-
 /**
  *
  */
@@ -62,6 +55,7 @@ class FhirTransactionLoader {
             } else {
                 trn.setResponse(ctx.newXmlParser().parseResource(body))
             }
+            trn.url =  event.simLogUrl
             trn
         }
     }

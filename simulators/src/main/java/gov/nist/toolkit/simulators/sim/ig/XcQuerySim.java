@@ -212,7 +212,7 @@ public class XcQuerySim extends AbstractMessageValidator implements MetadataGene
 					m.copy(mr);
 			} else {
 
-				// filter out XDSUnknownPatientId errors before adding to general response
+				// validate out XDSUnknownPatientId errors before adding to general response
 				List<String> codesToFilter = new ArrayList<String>();
 				codesToFilter.add(XdsErrorCode.Code.XDSUnknownPatientId.toString());
 //				response.getRegistryErrorList().addRegistryErrorList(rgResponse.getRegistryErrorListEle(), codesToFilter, null);

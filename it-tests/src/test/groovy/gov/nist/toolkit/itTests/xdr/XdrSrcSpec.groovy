@@ -82,7 +82,7 @@ class XdrSrcSpec extends ToolkitSpecification implements TransactionNotification
                 recParams.environmentName
         )
 
-        and:  'This is un-verifiable since notifications are handled through the servlet filter chain which is not configured here'
+        and:  'This is un-verifiable since notifications are handled through the servlet validate chain which is not configured here'
         println 'STEP - UPDATE - REGISTER NOTIFICATION'
         documentRecipient.setProperty(SimulatorProperties.TRANSACTION_NOTIFICATION_URI, urlRoot + '/rest/toolkitcallback')
         documentRecipient.setProperty(SimulatorProperties.TRANSACTION_NOTIFICATION_CLASS, 'gov.nist.toolkit.itTests.xdr.XdrSrcTest')

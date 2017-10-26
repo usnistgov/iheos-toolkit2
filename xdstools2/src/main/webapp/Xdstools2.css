@@ -92,6 +92,14 @@ h3 {
 	background-color: #D8D8D8
 }
 
+.detail-table-header {
+  background-color: #D8D8D8
+}
+
+.error-table-header {
+  background-color: #D8D8D8
+}
+
 .my-table-noband {
 	background-color: white
 }

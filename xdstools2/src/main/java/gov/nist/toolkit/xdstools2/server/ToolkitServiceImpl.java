@@ -150,8 +150,9 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements
             throw new Exception("Servlet Context Name is null");
 //        response.setToolkitBaseUrl("http://" + props.getToolkitHost()
 //                + ":" + props.getToolkitPort()  + servletContext().getServletContextName() +"Xdstools2.html");
-        response.setToolkitBaseUrl("http://" + props.getToolkitHost()
-                + ":" + props.getToolkitPort()  + contextName +"/Xdstools2.html");
+//        response.setToolkitBaseUrl("http://" + props.getToolkitHost()
+//                + ":" + props.getToolkitPort()  + contextName +"/Xdstools2.html");
+        response.setToolkitBaseUrl(Installation.instance().getToolkitBaseUrl());
         logger.info("Base URL is " + response.getToolkitBaseUrl());
         response.setWikiBaseUrl(Installation.instance().wikiBaseAddress());
         return response;

@@ -42,6 +42,15 @@ public class Installation {
         return resourceCacheMgr;
     }
 
+    public String getToolkitBaseUrl() {
+        return "http://"
+                + propertyServiceMgr.getToolkitHost()
+                + ":"
+                + propertyServiceMgr.getToolkitPort()
+                + getServletContextName()
+                + "/Xdstools2.html";
+    }
+
     public void resourceCacheMgr(ResourceCacheMgr mgr) {
         resourceCacheMgr = mgr;
     }

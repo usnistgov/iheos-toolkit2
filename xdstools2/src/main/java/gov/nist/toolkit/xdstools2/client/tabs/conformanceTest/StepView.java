@@ -1,9 +1,6 @@
 package gov.nist.toolkit.xdstools2.client.tabs.conformanceTest;
 
 import com.google.gwt.user.client.ui.*;
-
-import org.apache.commons.lang.StringUtils;
-
 import gov.nist.toolkit.results.client.TestInstance;
 import gov.nist.toolkit.session.client.logtypes.SectionOverviewDTO;
 import gov.nist.toolkit.session.client.logtypes.TestPartFileDTO;
@@ -53,6 +50,47 @@ public class StepView implements IsWidget {
         build();
     }
 
+    private int displayErrorMsg(FlexTable errTbl, int column, int startingRow, String msg) {
+        String[] lines = msg.split("\n");
+        for (String line : lines) {
+            errTbl.setWidget(startingRow++, column, new HTML(line));
+        }
+        return startingRow;
+    }
+
+    private void formatErrorMessages(FlowPanel stepBody, List<String> errors ) {
+        if (errors != null && !errors.isEmpty()) {
+            FlexTable errTbl = new FlexTable();
+            errTbl.setStyleName("with-border");
+            errTbl.setCellPadding(3);
+            int row = 0;
+            HTML header0 = new HTML("Step");
+            header0.addStyleName("error-table-header");
+            HTML header1 = new HTML("Message");
+            header1.addStyleName("error-table-header");
+            errTbl.setWidget(row, 0, header0);
+            errTbl.setWidget(row, 1, header1);
+            row++;
+            String last = "";
+            for (String error : errors) {
+                if (error.contains("(stepId=")) {
+                    String msg = substringBeforeLast(error, "(stepId=");
+                    String stp = substringAfterLast(error, "(stepId=");
+                    stp = substringBeforeLast(stp, ")");
+                    if (stp.equals(last)) stp = "";
+                    else last = stp;
+                    errTbl.setWidget(row, 0, new HTML(stp));
+                    row = displayErrorMsg(errTbl, 1, row, msg);
+                    row++;
+                } else {
+                    row = displayErrorMsg(errTbl, 1, row, error);
+                }
+            }
+            stepBody.add(new HTML("Errors:"));
+            stepBody.add(errTbl);
+        }
+    }
+
     private void build() {
         if (sectionTp.getStepTpfMap()!=null && sectionTp.getStepTpfMap().get(stepName)!=null) {
             MetadataDisplay metadataViewerPanel = new MetadataDisplay(sectionTp.getStepTpfMap().get(stepName), testSession, testInstance, section);
@@ -79,51 +117,50 @@ public class StepView implements IsWidget {
             buf.append("Fault: " + fault).append("<br />");
         }
         stepBody.add(new HTML(buf.toString()));
-        
+
         List<String> dtls = step.getDetails();
-        if (dtls != null && dtls.isEmpty() == false) {
-           FlexTable errTbl = new FlexTable();
-           errTbl.setStyleName("with-border");
-           for (int row = 0; row < dtls.size(); row++) {
-              errTbl.setWidget(row, 0, new HTML(dtls.get(row)));
-           }
-           stepBody.add(new HTML("Detail:"));
-           stepBody.add(errTbl);
+        if (dtls != null && !dtls.isEmpty()) {
+            FlexTable errTbl = new FlexTable();
+            errTbl.setStyleName("with-border");
+            errTbl.setCellPadding(3);
+            String lastLink = null;
+            for (int row = 0; row < dtls.size(); row++) {
+                String content = dtls.get(row);
+                String[] parts = content.split("=");
+                String link = parts[0].trim();
+                boolean isHeader = false;
+                if (link.startsWith("#")) {
+                    link = link.substring(1).trim();
+                    isHeader = true;
+                }
+                String details = parts[1].trim();
+                if (content.startsWith("http")) {
+                    if (!link.equals(lastLink)) {
+                        lastLink = link;
+                        // format as simlog event and details
+                        Anchor anchor = new Anchor();
+                        anchor.setText("Message");
+                        anchor.setHref(link);
+                        anchor.setTarget("_blank");
+                        errTbl.setWidget(row, 0, anchor);
+                    }
+                } else {
+                    HTML it = new HTML(link);
+                    if (isHeader)
+                        it.addStyleName("detail-table-header");
+                    errTbl.setWidget(row, 0, it);
+                }
+                HTML it = new HTML(details);
+                if (isHeader)
+                    it.addStyleName("detail-table-header");
+                errTbl.setWidget(row, 1, it);
+            }
+            stepBody.add(new HTML("Detail:"));
+            stepBody.add(errTbl);
         }
-        
+
         List<String> errors = step.getErrors();
-        if (errors != null && errors.isEmpty() == false) {
-           FlexTable errTbl = new FlexTable();
-           errTbl.setStyleName("with-border");
-           int row = 0;
-           errTbl.setWidget(row, 0, new HTML("Step"));
-           errTbl.setWidget(row, 1, new HTML("Message"));
-           row++;
-           String last = "";
-           for (String error : errors) {
-               if (error.contains("(stepId=")) {
-                   String msg = substringBeforeLast(error, "(stepId=");
-                   String stp = substringAfterLast(error, "(stepId=");
-                   stp = substringBeforeLast(stp, ")");
-                   if (stp.equals(last)) stp = "";
-                   else last = stp;
-                   errTbl.setWidget(row, 1, new HTML(msg));
-                   errTbl.setWidget(row, 0, new HTML(stp));
-                   row++;
-               } else {
-                   String[] parts = error.split("\n");
-                   for (String part : parts) {
-                       errTbl.setWidget(row, 1, new HTML(part));
-                       row++;
-                   }
-               }
-           }
-           stepBody.add(new HTML("Errors:"));
-           stepBody.add(errTbl);
-        }
-//        for (String error : step.getErrors()) {
-//            buf.append("Error: " + error).append("<br />");
-//        }
+        formatErrorMessages(stepBody, step.getErrors());
 
         // ******************************************************
         // IDs
@@ -133,14 +170,20 @@ public class StepView implements IsWidget {
         Set<String> idNames = new HashSet<String>();
         idNames.addAll(assignedIds.keySet());
         idNames.addAll(assignedUids.keySet());
+        int row = 0;
         FlexTable idTable = new FlexTable();
         idTable.setCellPadding(3);
         idTable.setStyleName("with-border");
-        int row = 0;
         idTable.setTitle("Assigned IDs");
-        idTable.setWidget(row, 0, new HTML("Object"));
-        idTable.setWidget(row, 1, new HTML("ID"));
-        idTable.setWidget(row, 2, new HTML("UID"));
+        HTML objectHeader = new HTML("Object");
+        objectHeader.addStyleName("detail-table-header");
+        HTML idHeader = new HTML("ID");
+        idHeader.addStyleName("detail-table-header");
+        HTML uidHeader = new HTML("UID");
+        uidHeader.addStyleName("detail-table-header");
+        idTable.setWidget(row, 0, objectHeader);
+        idTable.setWidget(row, 1, idHeader);
+        idTable.setWidget(row, 2, uidHeader);
         row++;
 
         for (String idName : idNames) {
@@ -167,6 +210,9 @@ public class StepView implements IsWidget {
         useTable.setWidget(row, 3, new HTML("Test"));
         useTable.setWidget(row, 4, new HTML("Section"));
         useTable.setWidget(row, 5, new HTML("Step"));
+        for (int col=0; col<useTable.getCellCount(row); col++) {
+            useTable.getWidget(row, col).addStyleName("detail-table-header");
+        }
         row++;
         List<UseReportDTO> useReports = step.getUseReports();
         for (UseReportDTO useReport : useReports) {
@@ -191,6 +237,9 @@ public class StepView implements IsWidget {
         row = 0;
         reportsTable.setWidget(row, 0, new HTML("Name"));
         reportsTable.setWidget(row, 1, new HTML("Value"));
+        for (int col=0; col<reportsTable.getCellCount(row); col++) {
+            reportsTable.getWidget(row, col).addStyleName("detail-table-header");
+        }
         row++;
         for (ReportDTO report : reports) {
             reportsTable.setWidget(row, 0, new HTML(report.getName()));
@@ -206,16 +255,16 @@ public class StepView implements IsWidget {
     public Widget asWidget() {
         return stepPanel;
     }
-    
+
     private String substringBeforeLast(String str, String sep) {
-       int i = str.lastIndexOf(sep);
-       if (i < 0) return str;
-       return str.substring(0, i);
+        int i = str.lastIndexOf(sep);
+        if (i < 0) return str;
+        return str.substring(0, i);
     }
     private String substringAfterLast(String str, String sep) {
-       int i = str.lastIndexOf(sep);
-       if (i < 0) return str;
-       i += sep.length();
-       return str.substring(i);
+        int i = str.lastIndexOf(sep);
+        if (i < 0) return str;
+        i += sep.length();
+        return str.substring(i);
     }
 }

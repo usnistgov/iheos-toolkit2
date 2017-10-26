@@ -3,6 +3,7 @@ package gov.nist.toolkit.xdstools2.client.util.activitiesAndPlaces;
 import com.google.gwt.place.shared.Place;
 import com.google.gwt.place.shared.PlaceTokenizer;
 import gov.nist.toolkit.actortransaction.client.TransactionInstance;
+import gov.nist.toolkit.simcommon.client.SimLogEventLinkBuilder;
 
 
 /**
@@ -19,7 +20,8 @@ public class SimLog extends Place {
 
         @Override
         public String getToken(SimLog simLog) {
-            return simLog.simIdString + "/" + simLog.actor + "/" + simLog.trans + "/" + simLog.messageId;
+            return SimLogEventLinkBuilder.buildToken(simLog.simIdString, simLog.actor, simLog.trans, simLog.messageId);
+//            return simLog.simIdString + "/" + simLog.actor + "/" + simLog.trans + "/" + simLog.messageId;
         }
     }
 

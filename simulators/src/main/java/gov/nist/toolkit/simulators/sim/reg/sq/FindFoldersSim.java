@@ -37,14 +37,14 @@ public class FindFoldersSim extends FindFolders {
 		// match on patient id
 		results = mc.folCollection.findByPid(patient_id);
 
-		// filter on availabilityStatus
+		// validate on availabilityStatus
 		List<StatusValue> statuses = ri.translateStatusValues(this.status);
 		results = mc.folCollection.filterByStatus(statuses, results);
 		
-		// filter on lastUpdateTime
+		// validate on lastUpdateTime
 		results = mc.folCollection.filterBylastUpdateTime(update_time_from, update_time_to, results);
 		
-		// filter on folderCodeList
+		// validate on folderCodeList
 		if (codes != null && !codes.isEmpty()) {
 			if (codes instanceof SQCodeOr) {
 				results = mc.folCollection.filterByFolderCodeList((SQCodeOr)codes, results);

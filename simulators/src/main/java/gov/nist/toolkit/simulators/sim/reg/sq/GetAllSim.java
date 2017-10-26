@@ -61,30 +61,30 @@ public class GetAllSim extends GetAll {
 //        System.out.println("   SS: " + ssResults);
 //        System.out.println("   FOL: " + folResults);
 
-        // filter on DE availabilityStatus
+        // validate on DE availabilityStatus
         List<StatusValue> deStatuses = ri.translateStatusValues(deStatus);
         deResults = mc.docEntryCollection.filterByStatus(deStatuses, deResults);
 
-        // filter on SS availabilityStatus
+        // validate on SS availabilityStatus
         List<StatusValue> ssStatuses = ri.translateStatusValues(ssStatus);
         ssResults = mc.subSetCollection.filterByStatus(ssStatuses, ssResults);
 
-        // filter on FOL availabilityStatus
+        // validate on FOL availabilityStatus
         List<StatusValue> folStatuses = ri.translateStatusValues(folStatus);
         folResults = mc.folCollection.filterByStatus(folStatuses, folResults);
 
-//        System.out.println("After status filter:");
+//        System.out.println("After status validate:");
 //        System.out.println("   DE: " + deResults);
 //        System.out.println("   SS: " + ssResults);
 //        System.out.println("   FOL: " + folResults);
 
-        // filter on DEType
+        // validate on DEType
         deResults = mc.docEntryCollection.filterByObjectType(deObjectTypes, deResults);
 
-//        System.out.println("After model type filter:");
+//        System.out.println("After model type validate:");
 //        System.out.println("   DE: " + deResults);
 
-        // filter on formatCode
+        // validate on formatCode
         if (format_codes != null && !format_codes.isEmpty()) {
             if (format_codes instanceof SQCodeOr) {
                 deResults = mc.docEntryCollection.filterByFormatCode((SQCodeOr)format_codes, deResults);
@@ -93,10 +93,10 @@ public class GetAllSim extends GetAll {
             }
         }
 
-//        System.out.println("After format code filter:");
+//        System.out.println("After format code validate:");
 //        System.out.println("   DE: " + deResults);
 
-        // filter on confCode
+        // validate on confCode
         if (conf_codes != null && !conf_codes.isEmpty()) {
             if (conf_codes instanceof SQCodeOr) {
                 deResults = mc.docEntryCollection.filterByConfCode((SQCodeOr)conf_codes, deResults);
@@ -109,7 +109,7 @@ public class GetAllSim extends GetAll {
             }
         }
 
-//        System.out.println("After conf code filter:");
+//        System.out.println("After conf code validate:");
 //        System.out.println("   DE: " + deResults);
 
 //        System.out.println("deIds - " + mc.getIdsForObjects(deResults));

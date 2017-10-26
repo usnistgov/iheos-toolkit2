@@ -47,7 +47,7 @@ public class SiteSelectionPresenter {
      */
     public SiteSelectionPresenter(/*ToolkitServiceAsync toolkitService, */final List<String> selected, final Panel panel) {
         // Sorry, this method is not yet implemented.
-        // It can be added when all sites are desired without a transactionType filter.
+        // It can be added when all sites are desired without a transactionType validate.
     }
 
     void bind() {}

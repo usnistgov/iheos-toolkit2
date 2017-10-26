@@ -31,7 +31,7 @@ public class GetSSandContents extends CommonService {
 
 				// XDS Codes
 				List<String> deType = codeSpec.get(CodesConfiguration.DocumentEntryType);
-				// Only apply the deType code when provided, otherwise get the normal submission set without this filter
+				// Only apply the deType code when provided, otherwise get the normal submission set without this validate
 				if (deType != null) {
 					// DocumentEntryType
 					int i=0;

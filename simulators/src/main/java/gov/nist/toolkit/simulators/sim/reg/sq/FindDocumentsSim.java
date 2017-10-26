@@ -39,26 +39,26 @@ public class FindDocumentsSim extends FindDocuments {
 		// match on patient id
 		results = mc.docEntryCollection.findByPid(patient_id);
 
-		// filter on availabilityStatus
+		// validate on availabilityStatus
 		List<StatusValue> statuses = ri.translateStatusValues(this.status);
 		results = mc.docEntryCollection.filterByStatus(statuses, results);
 		
-		// filter on authorPerson
+		// validate on authorPerson
 		results = mc.docEntryCollection.filterByAuthorPerson(author_person, results);
 		
-		// filter on creation time
+		// validate on creation time
 		results = mc.docEntryCollection.filterByCreationTime(creation_time_from, creation_time_to, results);
 		
-		// filter on serviceStartTime
+		// validate on serviceStartTime
 		results = mc.docEntryCollection.filterByServiceStartTime(service_start_time_from, service_start_time_to, results);
 		
-		// filter on serviceStopTime
+		// validate on serviceStopTime
 		results = mc.docEntryCollection.filterByServiceStopTime(service_stop_time_from, service_stop_time_to, results);
 
-		// filter on objectType
+		// validate on objectType
 		results = mc.docEntryCollection.filterByObjectType(entry_type, results);
 
-		// filter on formatCode
+		// validate on formatCode
 		if (format_codes != null && !format_codes.isEmpty()) {
 			if (format_codes instanceof SQCodeOr) {
 				results = mc.docEntryCollection.filterByFormatCode((SQCodeOr)format_codes, results);
@@ -67,7 +67,7 @@ public class FindDocumentsSim extends FindDocuments {
 			}
 		}
 		
-		// filter on classCode
+		// validate on classCode
 		if (class_codes != null && !class_codes.isEmpty()) {
 			if (class_codes instanceof SQCodeOr) {
 				results = mc.docEntryCollection.filterByClassCode((SQCodeOr)class_codes, results);
@@ -76,7 +76,7 @@ public class FindDocumentsSim extends FindDocuments {
 			}
 		}
 		
-		// filter on typeCode
+		// validate on typeCode
 		if (type_codes != null && !type_codes.isEmpty()) {
 			if (type_codes instanceof SQCodeOr) {
 				results = mc.docEntryCollection.filterByTypeCode((SQCodeOr)type_codes, results);
@@ -85,7 +85,7 @@ public class FindDocumentsSim extends FindDocuments {
 			}
 		}
 		
-		// filter on practiceSettingCode
+		// validate on practiceSettingCode
 		if (practice_setting_codes != null && !practice_setting_codes.isEmpty()) {
 			if (practice_setting_codes instanceof SQCodeOr) {
 				results = mc.docEntryCollection.filterByPracticeSettingCode((SQCodeOr)practice_setting_codes, results);
@@ -94,7 +94,7 @@ public class FindDocumentsSim extends FindDocuments {
 			}
 		}
 		
-		// filter on hcftCode
+		// validate on hcftCode
 		if (hcft_codes != null && !hcft_codes.isEmpty()) {
 			if (hcft_codes instanceof SQCodeOr) {
 				results = mc.docEntryCollection.filterByHcftCode((SQCodeOr)hcft_codes, results);
@@ -103,7 +103,7 @@ public class FindDocumentsSim extends FindDocuments {
 			}
 		}
 		
-		// filter on eventCode
+		// validate on eventCode
 		if (event_codes != null && !event_codes.isEmpty()) {
 			if (event_codes instanceof SQCodeOr) {
 				results = mc.docEntryCollection.filterByEventCode((SQCodeOr)event_codes, results);
@@ -115,7 +115,7 @@ public class FindDocumentsSim extends FindDocuments {
 			}
 		}
 		
-		// filter on confCode
+		// validate on confCode
 		if (conf_codes != null && !conf_codes.isEmpty()) {
 			if (conf_codes instanceof SQCodeOr) {
 				results = mc.docEntryCollection.filterByConfCode((SQCodeOr)conf_codes, results);

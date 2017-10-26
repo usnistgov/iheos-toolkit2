@@ -4,7 +4,6 @@
 package gov.nist.toolkit.testengine.engine;
 
 import edu.wustl.mir.erl.ihe.xdsi.util.PfnType;
-import edu.wustl.mir.erl.ihe.xdsi.util.PrsSimLogs;
 import edu.wustl.mir.erl.ihe.xdsi.util.Utility;
 import gov.nist.toolkit.actortransaction.client.ActorType;
 import gov.nist.toolkit.configDatatypes.client.TransactionType;
@@ -16,14 +15,10 @@ import gov.nist.toolkit.utilities.html.HeaderBlock;
 import gov.nist.toolkit.xdsexception.ExceptionUtil;
 import gov.nist.toolkit.xdsexception.client.XdsInternalException;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.http.HttpHeaders;
-import org.hl7.fhir.dstu3.model.Resource;
 import org.hl7.fhir.instance.model.api.IBaseResource;
 
-import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -36,19 +31,14 @@ public class FhirSimulatorTransaction {
 
    private SimId simId;
    private TransactionType transactionType;
-//   private String pid;
-//   private Date timeStamp;
+   private Date timeStamp;
 //   private Path logDirPath;
 //   private String transactionDirectory;
    private IBaseResource request;
    private IBaseResource response;
    private HeaderBlock requestHeaders;
    private HeaderBlock responseHeaders;
-//   private String requestBody;
-//   private String responseBody;
-//   private List<String> pfns = new ArrayList<>();
-//   private String stdPfn;
-//   private String url;
+   private String url;
 
    private UseReportManager useReportManager = null;
 
@@ -228,4 +218,19 @@ public class FhirSimulatorTransaction {
       }
    }
 
+   public Date getTimeStamp() {
+      return timeStamp;
+   }
+
+   public void setTimeStamp(Date timeStamp) {
+      this.timeStamp = timeStamp;
+   }
+
+   public String getUrl() {
+      return url;
+   }
+
+   public void setUrl(String url) {
+      this.url = url;
+   }
 }

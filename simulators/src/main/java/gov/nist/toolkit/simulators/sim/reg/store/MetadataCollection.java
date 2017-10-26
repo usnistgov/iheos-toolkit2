@@ -553,7 +553,7 @@ public class MetadataCollection implements Serializable, RegistryValidationInter
 		storeMetadata(ele, false);
 	}
 
-	// for the registry objects that are associatons, filter out those who reference
+	// for the registry objects that are associatons, validate out those who reference
 	// model not in this set
 	public List<Ro> filterAssocs(List<Ro> ros) {
 		List<Ro> out = new ArrayList<Ro>();

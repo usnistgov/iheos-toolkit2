@@ -43,7 +43,7 @@
   
    -->
 
-<!--  The filter is necessary so the simulator response headers can be captured for the message log -->
+<!--  The validate is necessary so the simulator response headers can be captured for the message log -->
 	<filter>
 		<filter-name>response-header-log</filter-name>
 		<filter-class>gov.nist.toolkit.simulators.servlet.SimServletFilter</filter-class>

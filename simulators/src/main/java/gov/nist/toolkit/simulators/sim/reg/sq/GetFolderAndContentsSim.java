@@ -70,7 +70,7 @@ public class GetFolderAndContentsSim extends GetFolderAndContents {
 			
 		}
 		
-		// next remove docs that don't meet filter requirements based on formatCode and confidentialityCode
+		// next remove docs that don't meet validate requirements based on formatCode and confidentialityCode
 		try {
 			if (format_code != null)
 				docEntries = mc.docEntryCollection.filterByFormatCode(format_code, docEntries);

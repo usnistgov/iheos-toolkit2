@@ -38,21 +38,21 @@ public class FindSubmissionSetsSim extends FindSubmissionSets {
 		// match on patient id
 		results = mc.subSetCollection.findByPid(patient_id);
 		
-		// filter on availabilityStatus
+		// validate on availabilityStatus
 		List<StatusValue> statuses = ri.translateStatusValues(this.status);
 		results = mc.subSetCollection.filterByStatus(statuses, results);
 		
-		// filter on sourceId
+		// validate on sourceId
 		if (source_id != null)
 			results = mc.subSetCollection.filterBySourceId(source_id, results);
 		
-		// filter on submissionTime
+		// validate on submissionTime
 		results = mc.subSetCollection.filterBySubmissionTime(submission_time_from, submission_time_to,  results);
 		
-		// filter on authorPerson
+		// validate on authorPerson
 		results = mc.subSetCollection.filterByAuthorPerson(author_person, results);
 		
-		// filter on contentType
+		// validate on contentType
 		if (content_type != null && !content_type.isEmpty()) {
 			if (content_type instanceof SQCodeOr) {
 				results = mc.subSetCollection.filterByContentTypeCode((SQCodeOr)content_type, results);

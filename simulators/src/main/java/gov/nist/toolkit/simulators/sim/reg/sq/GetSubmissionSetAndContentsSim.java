@@ -84,7 +84,7 @@ public class GetSubmissionSetAndContentsSim extends GetSubmissionSetAndContents 
 			}
 		}
 		
-		// next remove docs that don't meet filter requirements based on formatCode and confidentialityCode
+		// next remove docs that don't meet validate requirements based on formatCode and confidentialityCode
 		try {
 			if (format_code != null)
 				docEntries = mc.docEntryCollection.filterByFormatCode(format_code, docEntries);
@@ -122,9 +122,9 @@ public class GetSubmissionSetAndContentsSim extends GetSubmissionSetAndContents 
 		ros.addAll(assocs);
 		ros.addAll(folderAssocs);
 		
-		// filter out assocs who reference objects not in the set
-		// this is done twice because the first time could filter out a Fol-Doc assoc
-		// the second time could filter out the SS-Assoc assoc that references the above assoc
+		// validate out assocs who reference objects not in the set
+		// this is done twice because the first time could validate out a Fol-Doc assoc
+		// the second time could validate out the SS-Assoc assoc that references the above assoc
 		ros = mc.filterAssocs(ros);
 		ros = mc.filterAssocs(ros);
 		

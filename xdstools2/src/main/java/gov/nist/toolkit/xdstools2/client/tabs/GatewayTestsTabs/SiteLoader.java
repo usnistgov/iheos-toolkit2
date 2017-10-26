@@ -12,7 +12,7 @@ public class SiteLoader {
     TransactionOfferings transactionOfferings;
     String user;
 
-    // if user is not null it is a filter for sites
+    // if user is not null it is a validate for sites
     public SiteLoader(TransactionOfferings transactionOfferings, String user) {
         this.transactionOfferings = transactionOfferings;
         this.user = user;

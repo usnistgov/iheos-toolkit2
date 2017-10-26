@@ -126,7 +126,7 @@ public class HttpSimServlet extends HttpServlet {
       try {
          
          SimDb db = new SimDb(simid, actor, transaction);
-         // These are passed to the filter for logging
+         // These are passed to the validate for logging
          request.setAttribute("SimDb", db);
          logRequest(request, db, actor, transaction);
          request.setAttribute("mvc", mvc);

@@ -2,7 +2,9 @@ package gov.nist.toolkit.simcommon.server
 
 import gov.nist.toolkit.actortransaction.client.ActorType
 import gov.nist.toolkit.configDatatypes.client.TransactionType
+import gov.nist.toolkit.installation.Installation
 import gov.nist.toolkit.simcommon.client.SimId
+import gov.nist.toolkit.simcommon.client.SimLogEventLinkBuilder
 
 /**
  * See SimDbEvents for how this is used
@@ -22,6 +24,10 @@ class SimDbEvent {
 
     SimDb open() {
         return SimDb.open(this)
+    }
+
+    String getSimLogUrl() {
+        SimLogEventLinkBuilder.build(Installation.instance().getToolkitBaseUrl(), simId.toString(), actor, trans, eventId)
     }
 
     ActorType getActorType() { return ActorType.findActor(actor) }

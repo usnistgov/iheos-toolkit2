@@ -36,7 +36,7 @@ public class FindDocuments2Params {
     Label errorLabel;
 
     public FindDocuments2Params(/*ToolkitServiceAsync toolkitService, */GenericQueryTab genericQueryTab){
-        // The collective filter bank being assembled
+        // The collective validate bank being assembled
         codeFilterBank = new CodeFilterBank(/*toolkitService, */genericQueryTab);
 
         errorLabel = new Label();

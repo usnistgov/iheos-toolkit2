@@ -10,31 +10,18 @@ import gov.nist.toolkit.testengine.engine.FhirSimulatorTransaction
 import gov.nist.toolkit.testengine.engine.ILogger
 import gov.nist.toolkit.testengine.engine.StepContext
 import gov.nist.toolkit.testengine.engine.TestLogFactory
+import gov.nist.toolkit.testengine.engine.fhirValidations.*
 import gov.nist.toolkit.utilities.xml.XmlUtil
 import gov.nist.toolkit.xdsexception.client.MetadataException
 import gov.nist.toolkit.xdsexception.client.XdsInternalException
 import org.apache.axiom.om.OMElement
 
 import javax.xml.namespace.QName
-
 /**
  *
  */
 class MhdClientTransaction extends BasicTransaction {
 
-    class SimReference {
-        SimId simId
-        TransactionType transactionType
-
-        SimReference(SimId _simId, TransactionType _transactionType) {
-            simId = _simId
-            transactionType = _transactionType
-        }
-
-        String toString() {
-            "[SimReference ${simId}: ${transactionType}]"
-        }
-    }
 
     @Override
     protected void run(OMElement request) throws Exception {
@@ -49,8 +36,8 @@ class MhdClientTransaction extends BasicTransaction {
         try {
             SimReference simReference = getSimReference(a)
             switch (a.process) {
-                case "find":
-                    verifyResponse(simReference)
+                case "FindSingleDRSubmit":
+                    verifyFindSingleDRSubmit(simReference)
                     break
                 default:
                     throw new XdsInternalException("MhdClientTransaction: Unknown assertion.process: ${a.process}");
@@ -65,12 +52,48 @@ class MhdClientTransaction extends BasicTransaction {
             for (String err : errs)
                 s_ctx.fail(err);
         }
-        if (xdsInternalException != null) throw xdsInternalException;
+        //if (xdsInternalException != null) throw xdsInternalException;
     }
 
-    def verifyResponse(SimReference simReference) {
+    def verifyFindSingleDRSubmit(SimReference simReference) {
+        List<AbstractValidater> validaters = [
+                new PostValidater(simReference),
+                new StatusValidater(simReference, '201'),
+                new SingleDocSubmissionValidater(simReference)
+        ]
         List<FhirSimulatorTransaction> transactions = getSimulatorTransactions(simReference)
-        if (transactions.size() == 0) throw new XdsInternalException("No ${simReference.transactionType.name} transactions found in simlog for ${simReference.simId}")
+        if (transactions.size() == 0)
+            throw new XdsInternalException("No ${simReference.transactionType.name} transactions found in simlog for ${simReference.simId}")
+
+        s_ctx.addDetail("#Validations run against all ${simReference.transactionType.name} transactions", '')
+        validaters.each {AbstractValidater val ->
+            s_ctx.addDetail(val.filterDescription, '')
+        }
+
+        boolean goodMessageFound = false
+        s_ctx.addDetail("#${simReference.transactionType.name} Messages", "Failed Validation")
+        transactions.each { FhirSimulatorTransaction transaction ->
+            String thisUrl = transaction.url
+            boolean hasError = false
+            validaters.collect { AbstractValidater validater ->
+                validater.validate(transaction)
+            }.each {ValidaterResult result ->
+                if (result.match) {
+                    hasError = true
+                    s_ctx.addDetail(result.transaction.url, result.filter.filterDescription)
+                    //goodMessageFound = true
+                } else {
+                    s_ctx.addDetail(result.transaction.url, result.filter.filterDescription)
+                    hasError = true
+                }
+            }
+            if (!hasError) {
+                s_ctx.addDetail(thisUrl, '')
+                goodMessageFound = true
+            }
+        }
+        if (!goodMessageFound)
+            throw new XdsInternalException("No acceptable ${simReference.transactionType.name} transactions found in simlog for ${simReference.simId}")
     }
 
     SimReference getSimReference(Assertion a) {

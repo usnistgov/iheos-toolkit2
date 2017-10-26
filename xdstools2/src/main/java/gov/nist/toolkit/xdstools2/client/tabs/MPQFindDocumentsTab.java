@@ -79,7 +79,7 @@ public class MPQFindDocumentsTab extends GenericQueryTab {
 
 
 		prow = codeFilterBank.addCodeFiltersByName(patientIdAlternateFilterNames, paramGrid, prow, 1, 2);
-		paramGrid.setText(prow, 0, "Optionally also filter by:");
+		paramGrid.setText(prow, 0, "Optionally also validate by:");
 		prow++;
 		prow = codeFilterBank.addCodeFiltersByName(otherFilterNames, paramGrid, prow, 1, 2);
 

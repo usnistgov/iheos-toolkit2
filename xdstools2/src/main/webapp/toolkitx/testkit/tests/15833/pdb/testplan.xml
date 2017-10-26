@@ -4,7 +4,7 @@
         <ExpectedStatus>Success</ExpectedStatus>
         <MhdClientTransaction>
             <Assertions>
-                <Assert id="xxxx" process="find">
+                <Assert id="SingleDocSubmit" process="FindSingleDRSubmit">
                     <SimReference id="mhdrec_support" transaction="pdb"/>
                 </Assert>
             </Assertions>

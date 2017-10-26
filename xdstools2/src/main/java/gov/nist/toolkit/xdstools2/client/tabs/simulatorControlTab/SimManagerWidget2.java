@@ -766,7 +766,7 @@ public class SimManagerWidget2 extends Composite {
 
         /*
          * Columns
-         * Name	ID	[created dt] [last tran] [last accessed dt == filter on date],  Type	Patient Feed Port	SubmissionSets	DocumentEntries	Folders	Documents	PatientIds	Action
+         * Name	ID	[created dt] [last tran] [last accessed dt == validate on date],  Type	Patient Feed Port	SubmissionSets	DocumentEntries	Folders	Documents	PatientIds	Action
          *
          * Sorting
          * Use the Hl7 date values in the comparator
