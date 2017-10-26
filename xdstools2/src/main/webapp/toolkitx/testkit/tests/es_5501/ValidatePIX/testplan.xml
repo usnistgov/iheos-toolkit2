@@ -5,7 +5,7 @@
         <ExpectedStatus>Success</ExpectedStatus>
         <Hl7v2Validation>
             <UseReport reportName="hashId" section="validateADT" step="validate_ADT_message" useAs="$hashId$"/>
-            <SimHl7v2Transaction id="rep_reg" transaction="QBP^Q23^QBP_Q21" msg="Request"/>
+            <SimHl7v2Transaction id="rr" transaction="QBP^Q23^QBP_Q21" msg="Request"/>
             <Assertions>
                 <Assert id="MSH 3: Sending Application" process="Required"/>
                 <Assert id="MSH 4: Sending Facility" process="Required"/>
@@ -33,7 +33,7 @@
         <Goal>Save the pid returned by the query</Goal>
         <ExpectedStatus>Success</ExpectedStatus>
         <Hl7v2Validation>
-            <SimHl7v2Transaction id="rep_reg" transaction="QBP^Q23^QBP_Q21" msg="Response"/>
+            <SimHl7v2Transaction id="rr" transaction="QBP^Q23^QBP_Q21" msg="Response"/>
             <Assertions>
                 <Assert id="PID 3: Returned Identifier" process="Required" reportAs="returnedId"/>
             </Assertions>

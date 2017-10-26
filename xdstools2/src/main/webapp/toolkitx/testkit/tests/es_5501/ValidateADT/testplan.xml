@@ -5,7 +5,7 @@
         <ExpectedStatus>Success</ExpectedStatus>
         <Hl7v2Validation>
             <NoPatientId/>
-            <SimHl7v2Transaction id="rep_reg" transaction="ADT^A04" msg="Request"/>
+            <SimHl7v2Transaction id="rr" transaction="ADT^A04" msg="Request"/>
             <Assertions>
                 <Assert id="MSH 3:Sending Application" process="Required"/>
                 <Assert id="MSH 4: Sending Facility" process="Required"/>

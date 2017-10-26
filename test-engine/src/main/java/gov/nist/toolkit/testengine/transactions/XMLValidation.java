@@ -288,6 +288,12 @@ public class XMLValidation extends BasicTransaction {
                 else errs.add(mmsg);
                 break;
 
+            case "b": // Begins with value
+                String bmsg = id + " Begins with " + value + " found: " + result;
+                if (result.startsWith(value)) details.add(bmsg);
+                else errs.add(bmsg);
+                break;
+
             case "e": // Equals
             case "=":
                 String emsg = id +  " Equals " + value + " found: " + result;

@@ -4,7 +4,7 @@
         <Goal>Validate messages sent from Edge Server</Goal>
         <ExpectedStatus>Success</ExpectedStatus>
         <XMLValidation rootXpath="SubmitObjectsRequest[1]">
-            <SimTransaction id="rep_reg" transaction="prb"/>
+            <SimTransaction id="rr" transaction="prb"/>
             <Assertions>
 
             </Assertions>
