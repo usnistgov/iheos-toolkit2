@@ -21,6 +21,7 @@ import javax.xml.namespace.QName;
 import javax.xml.parsers.FactoryConfigurationError;
 import java.io.File;
 import java.util.*;
+import java.util.regex.Matcher;
 
 /**
  * Builds a Map {@link #linkage} of key value pairs which can then be applied
@@ -286,7 +287,7 @@ public class Linkage extends BasicLinkage {
       // text
       String text = e.getText();
       if (text.contains(old_text)) {
-         text = text.replaceAll(escape_pattern(old_text), new_text);
+         text = text.replaceAll(escape_pattern(old_text), Matcher.quoteReplacement(new_text));
          e.setText(text);
       }
 
