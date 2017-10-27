@@ -268,7 +268,8 @@ public class SimMsgViewerView extends AbstractView<SimMsgViewerPresenter> {
     protected void bindUI() {
         eventListBox.addChangeHandler(new ChangeHandler() {
             @Override
-            public void onChange(ChangeEvent changeEvent) { getPresenter().doUpdateChosenEvent(selectedEvent()); }
+            public void onChange(ChangeEvent changeEvent) {
+                getPresenter().doUpdateChosenEvent(selectedEvent()); }
         });
 
         inspectRequestButton.addClickHandler(new ClickHandler() {
@@ -338,17 +339,18 @@ public class SimMsgViewerView extends AbstractView<SimMsgViewerPresenter> {
         systemSelector.updateSiteSelectedView(simId);
     }
 
-    void displayEvents(List<EventInfo> events) {
+    void displayEvents(List<EventInfo> events, String preselectedEventId) {
         eventListBox.clear();
         for (EventInfo e : events) {
             eventListBox.addItem(e.getDisplay(), e.getId());
+            if (preselectedEventId!=null && e.getId().equals(preselectedEventId)) {
+               eventListBox.setSelectedIndex(eventListBox.getItemCount()-1);
+            }
         }
-        if (events.size() > 0) {
+        if (preselectedEventId==null && eventListBox.getItemCount()>0) {
             eventListBox.setItemSelected(0, true);
-            EventInfo eventInfo = events.get(0);
-            String id = eventInfo.getId();
-            getPresenter().doUpdateChosenEvent(id);
         }
+
     }
 
     /**

@@ -109,22 +109,23 @@ public class SimMsgViewerPresenter extends AbstractPresenter<SimMsgViewerView> {
         }.run(new GetTransactionRequest(ClientUtils.INSTANCE.getCommandContext(), currentSimId));
     }
 
-    private void displayEvents(List<TransactionInstance> events) {
+    private void displayEvents(List<TransactionInstance> events, String preselectedEventId) {
         this.events = events;
         List<EventInfo> eventInfos = new ArrayList<>();
         for (TransactionInstance ti : events) {
             eventInfos.add(new EventInfo(ti.messageId, ti.toString()));
         }
-        getView().displayEvents(eventInfos);
+        getView().displayEvents(eventInfos,preselectedEventId);
+
+        if (preselectedEventId!=null)
+            doUpdateChosenEvent(preselectedEventId);
+        else if (eventInfos.size()>0)
+            doUpdateChosenEvent(eventInfos.get(0).getId());
+
     }
 
-    void preselectEvent(final String eventId) {
-        loadEventsForSimulator(new SimpleCallback() {
-            @Override
-            public void run() {
-                doUpdateChosenEvent(eventId);
-            }
-        });
+    void preselectEvent(String eventId) {
+        loadEventsForSimulator("all", null, eventId);
     }
 
     void doUpdateChosenEvent(String messageId) {
@@ -171,14 +172,15 @@ public class SimMsgViewerPresenter extends AbstractPresenter<SimMsgViewerView> {
     }
 
     private void loadEventsForSimulator(SimpleCallback callback) {
-        loadEventsForSimulator("all", callback);
+        loadEventsForSimulator("all", callback, null);
     }
 
     private void loadEventsForSimulator(String transNameFilter) {
-        loadEventsForSimulator(transNameFilter, null);
+        loadEventsForSimulator(transNameFilter, null, null);
     }
 
-    private void loadEventsForSimulator(String transNameFilter, final SimpleCallback callback) {
+    private void loadEventsForSimulator(String transNameFilter, final SimpleCallback callback, final String preselectedEventId) {
+        GWT.log("loadEventsForSimulator transNameFilter: " + transNameFilter + " preselect: " + preselectedEventId);
         if (currentSimId == null) {
             getView().message("Select Simulator from the list");
             return;
@@ -191,7 +193,7 @@ public class SimMsgViewerPresenter extends AbstractPresenter<SimMsgViewerView> {
         new GetTransactionInstancesCommand(){
             @Override
             public void onComplete(List<TransactionInstance> events) {
-                displayEvents(events);
+                displayEvents(events, preselectedEventId);
                 if (callback != null)
                     callback.run();
             }
