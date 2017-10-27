@@ -46,8 +46,19 @@ abstract class BasicFhirTransaction extends BasicTransaction {
 
         if (part_name == 'ResourceFile') {
             String localPath = part.getText()
-            resourceFile = (localPath.startsWith('/')) ? new File(localPath) : new File(this.testConfig.testplanDir, localPath)
+            resourceFile = new File(localPath)
 //            resourceFile = new File(this.testConfig.testplanDir, part.getText())
+
+            if (!resourceFile.exists()) {
+               // Try the testplanDir
+                File tempFile = new File(this.testConfig.testplanDir, localPath)
+                if (!tempFile.exists()) {
+                    throw new XdsInternalException("resourceFile not found: " + resourceFile)
+                } else {
+                    resourceFile = tempFile
+                }
+            }
+
             testLog.add_name_value(this.instruction_output, "ResourceFile", resourceFile.path)
         } else if (part_name == 'UrlExtension') {
             urlExtension = part.getText()
