@@ -91,12 +91,13 @@ public class SimMsgViewerActivity extends AbstractToolkitActivity implements IsW
     }
 
     private void finish(AcceptsOneWidget acceptsOneWidget, EventBus eventBus) {
-        mvp = buildMVP();
-        mvp.init();
 
         if (event != null) {
-            presenter.preselectEvent(event);
+            presenter.setPreSelectEvent(event);
         }
+
+        mvp = buildMVP();
+        mvp.init();
 
         presenter.setActivityDisplayer(displayer);  // so presenter can update tab title
         displayer.display(getContainer(), presenter.getTitle(), this, acceptsOneWidget, eventBus);
