@@ -12,12 +12,15 @@ import java.util.*;
 /**
  * Actor types defined by test engine.  A subset of these are available as simulators.
  *
- * The profile/actor/option are now coded in a subtle way.  The shortName (third parameter to the constuctor)
- * is interpreted as profile_actor_option with the _ being the separator.  If the shortName has only two parts
- * then the profile is assumed missing and defaults to xds.  This aligns with the Conformance Tool configuration file
+ * The profile/actor/option are now coded in the following way.
+ * Test collections.txt uses the actor(profile)_option format.
+ * actorCode should match the actor code used in the actor part of the test collections.txt file.
+ * profile should match the profile part of the test collections.txt file. If the profile is not specified, XDS is assumed, but the ActorType actorCode will need to declare XDS in its profile.
+ * option should match the option part of the test collections.txt file. If the option is not specified, Required is assumed, but the options list needs to contain the Required option.
+ * This aligns with the Conformance Tool configuration file
  * ConfTestsTabs.xml which lives in toolkitx.
  *
- * So the big picture is that the actor type is now, in some cases, actually the profile/actor/option type.
+ * So the big picture is that the actorCode/profile/option is now, in some cases, actually the profile/actor/option type.
  */
 public enum ActorType implements IsSerializable, Serializable {
     XDR_DOC_SRC(
@@ -30,7 +33,7 @@ public enum ActorType implements IsSerializable, Serializable {
             false,
             null,
             false,
-            null,
+            Constants.USE_SHORTNAME,
             IheItiProfile.XDS,
             Arrays.asList(OptionType.REQUIRED)
     ),
@@ -44,7 +47,7 @@ public enum ActorType implements IsSerializable, Serializable {
             true,
             null,
             false,
-            null,
+            Constants.USE_SHORTNAME,
             IheItiProfile.XDS,
             Arrays.asList(OptionType.REQUIRED, OptionType.METADATA_UPDATE, OptionType.MULTI_PATIENT_QUERY, OptionType.XUA, OptionType.CAT_FOLDER, OptionType.CAT_LIFECYCLE,OptionType.ISR,OptionType.ON_DEMAND)
     ),
@@ -68,7 +71,7 @@ public enum ActorType implements IsSerializable, Serializable {
             true,
             "repository",
             false,
-            null,
+            Constants.USE_SHORTNAME,
             IheItiProfile.XDS,
             Arrays.asList(OptionType.REQUIRED, OptionType.XUA)
     ),
@@ -83,7 +86,7 @@ public enum ActorType implements IsSerializable, Serializable {
             true,
             "odds",
             false,
-            null,
+            Constants.USE_SHORTNAME,
             IheItiProfile.XDS,
             Arrays.asList(OptionType.REQUIRED)
     ),
@@ -97,7 +100,7 @@ public enum ActorType implements IsSerializable, Serializable {
             true,
             "isr",
             false,
-            null,
+            Constants.USE_SHORTNAME,
             IheItiProfile.XDS,
             Arrays.asList(OptionType.REQUIRED)
     ),
@@ -111,7 +114,7 @@ public enum ActorType implements IsSerializable, Serializable {
             true,
             null,
             false,
-            null,
+            Constants.USE_SHORTNAME,
             IheItiProfile.XDS,
             Arrays.asList(OptionType.REQUIRED)
     ),
@@ -125,7 +128,7 @@ public enum ActorType implements IsSerializable, Serializable {
             true,
             null,
             false,
-            null,
+            Constants.USE_SHORTNAME,
             IheItiProfile.XDS,
             Arrays.asList(OptionType.REQUIRED,OptionType.XUA)
     ),
@@ -139,7 +142,7 @@ public enum ActorType implements IsSerializable, Serializable {
             true,
             null,
             false,
-            null,
+            Constants.USE_SHORTNAME,
             IheItiProfile.XDS,
             Arrays.asList(OptionType.REQUIRED,OptionType.ON_DEMAND,OptionType.XUA)
     ),
@@ -153,7 +156,7 @@ public enum ActorType implements IsSerializable, Serializable {
             true,
             null,
             false,
-            null,
+            Constants.USE_SHORTNAME,
             IheItiProfile.XDS,
             Arrays.asList(OptionType.REQUIRED)
     ),
@@ -166,10 +169,10 @@ public enum ActorType implements IsSerializable, Serializable {
        Arrays.asList(TransactionType.XC_RET_IMG_DOC_SET),
        true,
        null,
-            false,
-            null,
-            IheItiProfile.XCA_I,
-            Arrays.asList(OptionType.REQUIRED)
+       false,
+       Constants.USE_SHORTNAME,
+       IheItiProfile.XCA_I,
+       Arrays.asList(OptionType.REQUIRED)
     ),
     COMBINED_RESPONDING_GATEWAY(
        "Combined Responding Gateway",
@@ -180,10 +183,10 @@ public enum ActorType implements IsSerializable, Serializable {
        Arrays.asList(TransactionType.XC_QUERY, TransactionType.XC_RETRIEVE, TransactionType.XC_RET_IMG_DOC_SET),
        true,
        null,
-            false,
-            null,
-            IheItiProfile.XCA_I, // Is this right?
-            Arrays.asList(OptionType.REQUIRED)
+       false,
+       Constants.USE_SHORTNAME,
+       IheItiProfile.XCA_I, // Is this right?
+       Arrays.asList(OptionType.REQUIRED)
 ),
     INITIATING_GATEWAY(
             "Initiating Gateway",
@@ -195,7 +198,7 @@ public enum ActorType implements IsSerializable, Serializable {
             true,
             null,
             false,
-            null, // means use short name
+            Constants.USE_SHORTNAME,
             IheItiProfile.XDS,
             Arrays.asList(OptionType.REQUIRED,OptionType.AFFINITY_DOMAIN,OptionType.XUA)
     ),
@@ -208,10 +211,10 @@ public enum ActorType implements IsSerializable, Serializable {
        Arrays.asList(TransactionType.RET_IMG_DOC_SET_GW),
        true,
        null,
-            false,
-            null,
-            IheItiProfile.XCA_I,
-            Arrays.asList(OptionType.REQUIRED)
+       false,
+       Constants.USE_SHORTNAME,
+       IheItiProfile.XCA_I,
+       Arrays.asList(OptionType.REQUIRED)
     ),
     RSNA_EDGE_DEVICE(
             "RSNA Image Sharing Source",
@@ -223,7 +226,7 @@ public enum ActorType implements IsSerializable, Serializable {
             true,
             null,
             false,
-            null,
+            Constants.USE_SHORTNAME,
             IheItiProfile.XDS, // TODO: This is right?
             Arrays.asList(OptionType.REQUIRED)
     ),
@@ -236,10 +239,10 @@ public enum ActorType implements IsSerializable, Serializable {
        Arrays.asList(TransactionType.IG_QUERY, TransactionType.IG_RETRIEVE,TransactionType.RET_IMG_DOC_SET_GW),
        true,
        null,
-            false,
-            null,
-            IheItiProfile.XCA_I, // TODO: Is this right?
-            Arrays.asList(OptionType.REQUIRED)
+       false,
+       Constants.USE_SHORTNAME,
+       IheItiProfile.XCA_I, // TODO: Is this right?
+       Arrays.asList(OptionType.REQUIRED)
        ),
     INITIALIZE_FOR_STORED_QUERY (  // this is an artificial type used by test indexer
             "Initialize for Stored Query",
@@ -251,7 +254,7 @@ public enum ActorType implements IsSerializable, Serializable {
             false,
             null,
             false,
-            null,
+            Constants.USE_SHORTNAME,
             IheItiProfile.XDS,
             Arrays.asList(OptionType.REQUIRED)
     ),
@@ -273,7 +276,7 @@ public enum ActorType implements IsSerializable, Serializable {
             false,
             null,
             false,
-            null,
+            Constants.USE_SHORTNAME,
             IheItiProfile.XDS,
             Arrays.asList(OptionType.REQUIRED)
     ),
@@ -291,7 +294,7 @@ public enum ActorType implements IsSerializable, Serializable {
             false,
             null,
             null,
-            null,
+            Constants.USE_SHORTNAME,
             IheItiProfile.XDS_I,
             Arrays.asList(OptionType.REQUIRED)
         ),
@@ -305,7 +308,7 @@ public enum ActorType implements IsSerializable, Serializable {
             false,
             null,
             false,
-            null,
+            Constants.USE_SHORTNAME,
             IheItiProfile.XDS_I,
             Arrays.asList(OptionType.REQUIRED)
     ),
@@ -319,7 +322,7 @@ public enum ActorType implements IsSerializable, Serializable {
             true,
             null,
             true,
-            null,
+            Constants.USE_SHORTNAME,
             IheItiProfile.XDS, // TODO: which profile?
             Arrays.asList(OptionType.REQUIRED)
     ),
@@ -364,7 +367,7 @@ public enum ActorType implements IsSerializable, Serializable {
             Arrays.asList(
                     "gov.nist.toolkit.simulators.proxy.transforms.RegistryResponseToOperationOutcomeTransform"
             ),
-            null,   // must match src from src(mhd) in collections.txt
+            Constants.USE_SHORTNAME,   // must match src from src(mhd) in collections.txt
             IheItiProfile.MHD,
             Arrays.asList(OptionType.REQUIRED)
     ),
@@ -382,7 +385,7 @@ public enum ActorType implements IsSerializable, Serializable {
             false,    // is fhir
             new ArrayList<String>(),
             new ArrayList<String>(),
-            null,
+            Constants.USE_SHORTNAME,
             IheItiProfile.XDS,
             Arrays.asList(OptionType.REQUIRED)
     ),
@@ -421,7 +424,7 @@ public enum ActorType implements IsSerializable, Serializable {
             false,
             null,
             false,
-            null,
+            Constants.USE_SHORTNAME,
             IheItiProfile.XDS,
             Arrays.asList(OptionType.REQUIRED)
     );
@@ -630,8 +633,23 @@ public enum ActorType implements IsSerializable, Serializable {
 
         for (ActorType actor : values()) {
             if (actor.name.equals(name)) return actor;
-            if (actor.getActorCode().equals(name)) return actor;
+            if (actor.shortName.equals(name)) return actor;
             if (actor.altNames.contains(name)) return actor;
+        }
+        return null;
+    }
+
+    /**
+     * Finds actor type by its test collection code.
+     * @param tcCode
+     * @return
+     */
+    static public ActorType findActorByTcCode(String tcCode) {
+        if (tcCode == null)
+            return null;
+
+        for (ActorType actor : values()) {
+            if (actor.getActorCode().equals(tcCode)) return actor;
         }
         return null;
     }
@@ -731,5 +749,9 @@ public enum ActorType implements IsSerializable, Serializable {
 
     public List<OptionType> getOptions() {
         return options;
+    }
+
+    private static class Constants {
+        public static final String USE_SHORTNAME = null;
     }
 }

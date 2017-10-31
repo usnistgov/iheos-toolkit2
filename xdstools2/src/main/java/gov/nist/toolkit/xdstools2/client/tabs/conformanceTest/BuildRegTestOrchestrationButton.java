@@ -76,7 +76,6 @@ public class BuildRegTestOrchestrationButton extends AbstractOrchestrationButton
     }
 
     public void orchestrate() {
-        testTab.getMainView().showLoadingMessage("Initializing...");
         String msg = testContext.verifyTestContext();
         if (msg != null) {
             testContextView.launchDialog(msg);

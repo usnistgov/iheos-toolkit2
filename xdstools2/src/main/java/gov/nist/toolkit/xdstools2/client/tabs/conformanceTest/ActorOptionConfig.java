@@ -16,6 +16,9 @@ import java.util.List;
  * A type that takes into account both the actor type and option selected
  */
 public class ActorOptionConfig extends ActorOption {
+    /**
+     * Contains the actor-root level tab config not the option level tab config.
+     */
     private TabConfig tabConfig;
 
     @Override
@@ -162,6 +165,9 @@ public class ActorOptionConfig extends ActorOption {
         return result;
     }
 
+    /**
+     * Gets the actor-root level tab config not the option level tab config.
+     */
     public TabConfig getTabConfig() {
         return tabConfig;
     }
