@@ -10,6 +10,7 @@ import gov.nist.toolkit.configDatatypes.client.TransactionType;
 import gov.nist.toolkit.installation.Installation;
 import gov.nist.toolkit.simcommon.client.SimId;
 import gov.nist.toolkit.simcommon.server.SimDb;
+import gov.nist.toolkit.simcommon.server.SimDbEvent;
 import gov.nist.toolkit.testengine.simLogs.FhirTransactionLoader;
 import gov.nist.toolkit.utilities.html.HeaderBlock;
 import gov.nist.toolkit.xdsexception.ExceptionUtil;
@@ -28,7 +29,7 @@ import java.util.List;
  *
  */
 public class FhirSimulatorTransaction {
-
+   private SimDbEvent simDbEvent;
    private SimId simId;
    private TransactionType transactionType;
    private Date timeStamp;
@@ -39,6 +40,7 @@ public class FhirSimulatorTransaction {
    private HeaderBlock requestHeaders;
    private HeaderBlock responseHeaders;
    private String url;
+   private String placeToken;
 
    private UseReportManager useReportManager = null;
 
@@ -232,5 +234,21 @@ public class FhirSimulatorTransaction {
 
    public void setUrl(String url) {
       this.url = url;
+   }
+
+   public SimDbEvent getSimDbEvent() {
+      return simDbEvent;
+   }
+
+   public void setSimDbEvent(SimDbEvent simDbEvent) {
+      this.simDbEvent = simDbEvent;
+   }
+
+   public String getPlaceToken() {
+      return placeToken;
+   }
+
+   public void setPlaceToken(String placeToken) {
+      this.placeToken = placeToken;
    }
 }

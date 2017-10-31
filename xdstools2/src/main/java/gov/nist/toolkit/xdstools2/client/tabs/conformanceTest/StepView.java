@@ -1,5 +1,8 @@
 package gov.nist.toolkit.xdstools2.client.tabs.conformanceTest;
 
+import com.google.gwt.dom.client.Style;
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.ui.*;
 import gov.nist.toolkit.results.client.TestInstance;
 import gov.nist.toolkit.session.client.logtypes.SectionOverviewDTO;
@@ -7,12 +10,11 @@ import gov.nist.toolkit.session.client.logtypes.TestPartFileDTO;
 import gov.nist.toolkit.testenginelogging.client.ReportDTO;
 import gov.nist.toolkit.testenginelogging.client.TestStepLogContentDTO;
 import gov.nist.toolkit.testenginelogging.client.UseReportDTO;
+import gov.nist.toolkit.xdstools2.client.tabs.simMsgViewerTab.SimMsgViewer;
+import gov.nist.toolkit.xdstools2.client.toolLauncher.NewToolLauncher;
 import gov.nist.toolkit.xdstools2.client.widgets.HorizontalFlowPanel;
 
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 /**
  *
@@ -91,6 +93,139 @@ public class StepView implements IsWidget {
         }
     }
 
+    class Link {
+        String text;
+        String link;
+        Anchor anchor;
+        Anchor image;
+    }
+
+    class SimLogClickHandler implements ClickHandler {
+        String token;
+
+        SimLogClickHandler(String token) {
+            this.token = token;
+        }
+
+        @Override
+        public void onClick(ClickEvent clickEvent) {
+            new NewToolLauncher().launch(new SimMsgViewer(token));
+        }
+    }
+
+    // Link format is
+    // #http://xxxxxxx [internal place token] (link text)
+    // link (with link text) will generate new tab if internal place token is supplied
+    //   otherwise it will generate new browser tab
+    // Image will always link to new browser tab
+    private Link parseLinkInternals(String content) {
+        Link link = new Link();
+        int start;
+        int end;
+
+        // parse internal place token
+        String token = null;
+        start = content.indexOf('[');
+        if (start != -1) {
+            end = content.indexOf(']', start);
+            start++;
+            token = content.substring(start, end);
+            if (token.length() == 0)
+                token = null;
+        }
+
+        String linkText = null;
+        start = content.indexOf('(');
+        if (start != -1) {
+            start++;
+            end = content.indexOf(')', start);
+            linkText = content.substring(start, end);
+        }
+        if (linkText == null)
+            return null;  // no link information found
+        link.text = linkText;
+
+        int httpStart = content.indexOf("http");
+        int httpEnd = (content.contains("[")) ?
+                content.indexOf("[")
+                :
+                content.indexOf("(");
+        String hyperlink = content.substring(httpStart, httpEnd).trim();
+        link.link = hyperlink;
+
+        ClickHandler internal = null;
+        if (token != null)
+            internal = new SimLogClickHandler(token);
+
+        Image openExternal = new Image("icons2/open_external-16.png");
+        Anchor hiddenAnchor = new Anchor("", hyperlink, "_blank");
+        hiddenAnchor.getElement().getStyle().setCursor(Style.Cursor.POINTER);
+        hiddenAnchor.getElement().appendChild(openExternal.getElement());
+
+        Anchor anchor = new Anchor();
+        anchor.setText(linkText);
+        if (internal != null)
+            anchor.addClickHandler(internal);
+        else {
+            anchor.setHref(hyperlink);
+            anchor.setTarget("_blank");
+        }
+//        link.hiddenAnchor = hiddenAnchor;
+        link.anchor = anchor;
+        link.image = hiddenAnchor;
+        return link;
+    }
+
+    /**
+     * format a single detail row
+     *  example is for simlog viewer but this depends on the link values coded on the server
+     * @param content #link [internalLink] (linktext) = validation message where
+     *                # indicates a header (Markdown syntax)
+     *                link is for opening simlogviewer in a new browser tab (throw places)
+     *                internalLink is for opening simlogviewer in new toolkit tab (through places)
+     *                linktext is the text to display in the link
+     * @param lastLink linktext displayed last - so that repetitions can leave field blank
+     * @param errTbl  table being built
+     * @param row   row to update
+     * @return  lastLink for next time called
+     */
+    private String formatDetailRow(String content, String lastLink, FlexTable errTbl, int row) {
+        List<Widget> widgets = new ArrayList<>();
+
+        // label = details
+        String[] parts = content.split("=");
+        String label = parts[0].trim();
+        String details = parts[1].trim();
+
+        boolean isHeader = label.startsWith("#");
+        if (isHeader)
+            label = label.substring(1);
+
+        Link theLink = parseLinkInternals(label);
+
+        if (theLink == null) {
+            HTML it = new HTML(label);
+            if (isHeader)
+                it.addStyleName("detail-table-header");
+            errTbl.setWidget(row, 0, it);
+        } else if (!theLink.link.equals(lastLink)){
+            HorizontalPanel panel = new HorizontalPanel();
+            panel.add(theLink.anchor);
+            panel.add(theLink.image);
+            if (isHeader)
+                panel.addStyleName("detail-table-header");
+            errTbl.setWidget(row, 0, panel);
+        }
+        HTML it = new HTML(details);
+        if (isHeader)
+            it.addStyleName("detail-table-header");
+        errTbl.setWidget(row, 1, it);
+
+        if (theLink != null)
+            return theLink.text;
+        return "";
+    }
+
     private void build() {
         if (sectionTp.getStepTpfMap()!=null && sectionTp.getStepTpfMap().get(stepName)!=null) {
             MetadataDisplay metadataViewerPanel = new MetadataDisplay(sectionTp.getStepTpfMap().get(stepName), testSession, testInstance, section);
@@ -118,6 +253,14 @@ public class StepView implements IsWidget {
         }
         stepBody.add(new HTML(buf.toString()));
 
+        // ******************************************************
+        // Errors
+        // ******************************************************
+        formatErrorMessages(stepBody, step.getErrors());
+
+        // ******************************************************
+        // Detail
+        // ******************************************************
         List<String> dtls = step.getDetails();
         if (dtls != null && !dtls.isEmpty()) {
             FlexTable errTbl = new FlexTable();
@@ -126,41 +269,11 @@ public class StepView implements IsWidget {
             String lastLink = null;
             for (int row = 0; row < dtls.size(); row++) {
                 String content = dtls.get(row);
-                String[] parts = content.split("=");
-                String link = parts[0].trim();
-                boolean isHeader = false;
-                if (link.startsWith("#")) {
-                    link = link.substring(1).trim();
-                    isHeader = true;
-                }
-                String details = parts[1].trim();
-                if (content.startsWith("http")) {
-                    if (!link.equals(lastLink)) {
-                        lastLink = link;
-                        // format as simlog event and details
-                        Anchor anchor = new Anchor();
-                        anchor.setText("Message");
-                        anchor.setHref(link);
-                        anchor.setTarget("_blank");
-                        errTbl.setWidget(row, 0, anchor);
-                    }
-                } else {
-                    HTML it = new HTML(link);
-                    if (isHeader)
-                        it.addStyleName("detail-table-header");
-                    errTbl.setWidget(row, 0, it);
-                }
-                HTML it = new HTML(details);
-                if (isHeader)
-                    it.addStyleName("detail-table-header");
-                errTbl.setWidget(row, 1, it);
+                lastLink = formatDetailRow(content, lastLink, errTbl, row);
             }
             stepBody.add(new HTML("Detail:"));
             stepBody.add(errTbl);
         }
-
-        List<String> errors = step.getErrors();
-        formatErrorMessages(stepBody, step.getErrors());
 
         // ******************************************************
         // IDs

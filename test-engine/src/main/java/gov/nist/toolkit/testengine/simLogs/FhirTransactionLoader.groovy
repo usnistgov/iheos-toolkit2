@@ -36,6 +36,7 @@ class FhirTransactionLoader {
 
         simDb.getEventsSinceMarker().collect { SimDbEvent event ->
             FhirSimulatorTransaction trn = new FhirSimulatorTransaction(simId, transactionType)
+            trn.setSimDbEvent(event)
             // Load request
             trn.setRequestHeaders(HeaderParser.parseHeaders(event.requestHeader))
             String mimeType = HeaderParser.mimeType(trn.getRequestHeaders())
@@ -56,6 +57,7 @@ class FhirTransactionLoader {
                 trn.setResponse(ctx.newXmlParser().parseResource(body))
             }
             trn.url =  event.simLogUrl
+            trn.placeToken = event.simLogPlaceToken
             trn
         }
     }

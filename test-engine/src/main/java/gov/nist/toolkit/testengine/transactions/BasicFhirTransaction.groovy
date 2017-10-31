@@ -47,7 +47,6 @@ abstract class BasicFhirTransaction extends BasicTransaction {
         if (part_name == 'ResourceFile') {
             String localPath = part.getText()
             resourceFile = new File(localPath)
-//            resourceFile = new File(this.testConfig.testplanDir, part.getText())
 
             if (!resourceFile.exists()) {
                // Try the testplanDir

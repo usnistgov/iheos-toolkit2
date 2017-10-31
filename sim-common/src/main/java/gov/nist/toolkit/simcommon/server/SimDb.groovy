@@ -180,7 +180,7 @@ public class SimDb {
 			try {
 				// add this for safety when deleting simulators -
 				Io.stringToFile(simSafetyFile(), simId.toString());
-                hasSafetyFile=true;
+				hasSafetyFile=true;
 			} catch (Exception ex) {
 				Thread.sleep(1000);
 			}
@@ -509,7 +509,7 @@ public class SimDb {
 		SimulatorConfig config = null;
 		boolean okIfNotExist = true;
 		int retry = 3;
-        // Sometimes loadSimulator returns Null even though there is valid simulator
+		// Sometimes loadSimulator returns Null even though there is valid simulator
 		while (config == null && retry-->0) {
 			try {
 				config = GenericSimulatorFactory.loadSimulator(simId, okIfNotExist);
@@ -734,33 +734,8 @@ public class SimDb {
 					if (!inst.isDirectory())
 						continue;
 					names.add(inst.getName() + " " + name);
-					TransactionInstance t = new TransactionInstance();
-					t.simId = simId.toString();
-					t.actorType = ActorType.findActor(actor.getName());
-					t.messageId = inst.getName();
-					t.trans = name;
 
-					transactionDir = new File(actor, name);
-					//logger.debug("transaction dir is " + transactionDir);
-					event = t.messageId;
-					Date date = null;
-					try {
-						date = retrieveEventDate();
-					} catch (IOException e) {
-					} catch (ClassNotFoundException e) {
-					}
-					if (date == null) continue;  // only interested in transactions that have dates
-					t.labelInterpretedAsDate = (date == null) ? "oops" : date.toString();
-					t.nameInterpretedAsTransactionType = TransactionType.find(t.trans);
-
-					String ipAddr = null;
-					File ipAddrFile = new File(inst, "ip.txt");
-					try {
-						ipAddr = Io.stringFromFile(ipAddrFile);
-						if (ipAddr != null && !ipAddr.equals("")) {
-							t.ipAddress = ipAddr;
-						}
-					} catch (IOException e) {}
+					TransactionInstance t = buildTransactionInstance(actor, inst, name)
 
 					//logger.debug("Found " + t);
 					transList.add(t);
@@ -776,6 +751,46 @@ public class SimDb {
 		transactionDir = transDir_save;
 		logger.debug("returning " + transList);
 		return transList;
+	}
+
+	private File getActorDir(String actor) {
+		new File(simDir, actor)
+	}
+
+	TransactionInstance buildTransactionInstance(String actor, String messageId, String trans) {
+		buildTransactionInstance(getActorDir(actor), new File(messageId) , trans)
+	}
+
+	// This nesses with transactionDir which must be saved before and restored afterwards
+	TransactionInstance buildTransactionInstance(File actor, File inst, String name) {
+		TransactionInstance t = new TransactionInstance();
+		t.simId = simId.toString();
+		t.actorType = ActorType.findActor(actor.getName());
+		t.messageId = inst.getName();
+		t.trans = name;
+		transactionDir = new File(actor, name);
+		//logger.debug("transaction dir is " + transactionDir);
+		event = t.messageId;
+		Date date = null;
+		try {
+			date = retrieveEventDate();
+		} catch (IOException e) {
+		} catch (ClassNotFoundException e) {
+		}
+//					if (date == null) continue;  // only interested in transactions that have dates
+		t.labelInterpretedAsDate = (date == null) ? "oops" : date.toString();
+		t.nameInterpretedAsTransactionType = TransactionType.find(t.trans);
+
+		String ipAddr = null;
+		File ipAddrFile = new File(inst, "ip.txt");
+		try {
+			ipAddr = Io.stringFromFile(ipAddrFile);
+			if (ipAddr != null && !ipAddr.equals("")) {
+				t.ipAddress = ipAddr;
+			}
+		} catch (IOException e) {
+		}
+		t
 	}
 
 //	// this cannot be stuffed into TransactionInstance since that is a client class
