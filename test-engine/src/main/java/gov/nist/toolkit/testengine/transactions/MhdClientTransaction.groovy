@@ -1,9 +1,11 @@
 package gov.nist.toolkit.testengine.transactions
 
 import gov.nist.toolkit.actortransaction.client.ActorType
+import gov.nist.toolkit.actortransaction.client.TransactionInstance
 import gov.nist.toolkit.configDatatypes.client.TransactionType
 import gov.nist.toolkit.results.client.TestInstance
 import gov.nist.toolkit.simcommon.client.SimId
+import gov.nist.toolkit.simcommon.server.SimDb
 import gov.nist.toolkit.testengine.assertionEngine.Assertion
 import gov.nist.toolkit.testengine.assertionEngine.AssertionEngine
 import gov.nist.toolkit.testengine.engine.FhirSimulatorTransaction
@@ -52,15 +54,16 @@ class MhdClientTransaction extends BasicTransaction {
             for (String err : errs)
                 s_ctx.fail(err);
         }
-        //if (xdsInternalException != null) throw xdsInternalException;
     }
 
     def verifyFindSingleDRSubmit(SimReference simReference) {
         List<AbstractValidater> validaters = [
                 new PostValidater(simReference),
-                new StatusValidater(simReference, '201'),
+                new StatusValidater(simReference, '200'),
                 new SingleDocSubmissionValidater(simReference)
         ]
+        SimDb simDb = new SimDb(simReference.simId)
+        String trans = simReference.transactionType.code
         List<FhirSimulatorTransaction> transactions = getSimulatorTransactions(simReference)
         if (transactions.size() == 0)
             throw new XdsInternalException("No ${simReference.transactionType.name} transactions found in simlog for ${simReference.simId}")
@@ -71,27 +74,47 @@ class MhdClientTransaction extends BasicTransaction {
         }
 
         boolean goodMessageFound = false
-        s_ctx.addDetail("#${simReference.transactionType.name} Messages", "Failed Validation")
+        List<FhirSimulatorTransaction> passing = []
+        List<ValidaterResult> failing = []
         transactions.each { FhirSimulatorTransaction transaction ->
-            String thisUrl = transaction.url
+            TransactionInstance ti = simDb.buildTransactionInstance(transaction.simDbEvent.actor, transaction.simDbEvent.eventId, trans)
+            String label = ti.toString()
+            String thisUrl = transaction.url + " (${label})"
             boolean hasError = false
             validaters.collect { AbstractValidater validater ->
                 validater.validate(transaction)
             }.each {ValidaterResult result ->
                 if (result.match) {
-                    hasError = true
-                    s_ctx.addDetail(result.transaction.url, result.filter.filterDescription)
-                    //goodMessageFound = true
                 } else {
-                    s_ctx.addDetail(result.transaction.url, result.filter.filterDescription)
+                    failing << result
                     hasError = true
                 }
             }
             if (!hasError) {
-                s_ctx.addDetail(thisUrl, '')
+                passing << transaction
                 goodMessageFound = true
             }
         }
+        s_ctx.addDetailHeader('Validating Messages')
+        passing.each { FhirSimulatorTransaction transaction ->
+            TransactionInstance ti = simDb.buildTransactionInstance(transaction.simDbEvent.actor, transaction.simDbEvent.eventId, trans)
+//            String internalUrl = ''
+            String label = ti.toString()
+//            String externalUrl = "${transaction.url} [${transaction.placeToken}] (${label})"
+//            s_ctx.addDetail(externalUrl, '')
+            s_ctx.addDetailLink(transaction.url, transaction.placeToken, label, '')
+        }
+        s_ctx.addDetailHeader('Non-Validating Messages')
+        failing.each { ValidaterResult result ->
+            FhirSimulatorTransaction transaction = result.transaction
+            TransactionInstance ti = simDb.buildTransactionInstance(transaction.simDbEvent.actor, transaction.simDbEvent.eventId, trans)
+            String label = ti.toString()
+//            String internalUrl = ''
+//            String externalUrl = "${transaction.url} [${transaction.placeToken}] (${label})"
+//            s_ctx.addDetail(externalUrl, result.filter.filterDescription)
+            s_ctx.addDetailLink(transaction.url, transaction.placeToken, label, result.filter.filterDescription)
+        }
+
         if (!goodMessageFound)
             throw new XdsInternalException("No acceptable ${simReference.transactionType.name} transactions found in simlog for ${simReference.simId}")
     }

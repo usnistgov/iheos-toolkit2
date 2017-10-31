@@ -118,6 +118,14 @@ public class StepContext extends BasicContext implements ErrorReportingInterface
         addDetail(test_step_output, name, value);
     }
 
+    public void addDetailHeader(String headerText) {
+		addDetail("#" + headerText, "");
+	}
+
+	public void addDetailLink(String externalLink, String internalPlaceToken, String linkText, String content) {
+		addDetail(externalLink + " [" + internalPlaceToken + "] (" + linkText + ")", content);
+	}
+
 	public  void set_error(String msg) throws XdsInternalException {
 		setStatus(false);
 		error(test_step_output, msg);

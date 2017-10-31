@@ -46,7 +46,7 @@ abstract class BasicFhirTransaction extends BasicTransaction {
 
         if (part_name == 'ResourceFile') {
             String localPath = part.getText()
-            resourceFile = (localPath.startsWith('/')) ? new File(localPath) : new File(this.testConfig.testplanDir, localPath)
+            resourceFile = (localPath.startsWith(File.separator)) ? new File(localPath) : new File(this.testConfig.testplanDir, localPath)
 //            resourceFile = new File(this.testConfig.testplanDir, part.getText())
             testLog.add_name_value(this.instruction_output, "ResourceFile", resourceFile.path)
         } else if (part_name == 'UrlExtension') {

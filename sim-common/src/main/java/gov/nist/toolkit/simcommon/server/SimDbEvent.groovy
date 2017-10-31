@@ -27,7 +27,11 @@ class SimDbEvent {
     }
 
     String getSimLogUrl() {
-        SimLogEventLinkBuilder.build(Installation.instance().getToolkitBaseUrl(), simId.toString(), actor, trans, eventId)
+        SimLogEventLinkBuilder.buildUrl(Installation.instance().getToolkitBaseUrl(), simId.toString(), actor, trans, eventId)
+    }
+
+    String getSimLogPlaceToken() {
+        SimLogEventLinkBuilder.buildToken(simId.toString(), actor, trans, eventId)
     }
 
     ActorType getActorType() { return ActorType.findActor(actor) }
