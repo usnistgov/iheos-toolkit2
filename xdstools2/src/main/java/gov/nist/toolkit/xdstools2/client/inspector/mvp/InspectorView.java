@@ -10,18 +10,18 @@ import gov.nist.toolkit.xdstools2.client.abstracts.AbstractView;
 import java.util.List;
 import java.util.Map;
 
-class InspectorView extends AbstractView<InspectorPresenter> {
+public class InspectorView extends AbstractView<InspectorPresenter> {
     FlowPanel containerPanel = new FlowPanel();
 
-    private ObjectRefDataTable objectRefTable = new ObjectRefDataTable() {
+    private ObjectRefDataTable objectRefTable = new ObjectRefDataTable(10) {
         @Override
         void doGetDocuments(List<ObjectRef> objectRefs) {
-            getPresenter().do
+//            getPresenter().do
         }
 
         @Override
         void defaultDoubleClickAction(ObjectRef row) {
-            getPresenter().do
+//            getPresenter().do
         }
 
         @Override
@@ -41,11 +41,11 @@ class InspectorView extends AbstractView<InspectorPresenter> {
 
         containerPanel.add(new HTML("Step"));
         containerPanel.add(new HTML("# ObjectRefs "));
-        containerPanel.add(objectRefTable.asWidget());
+//        containerPanel.add(objectRefTable.asWidget());
 
         containerPanel.add(new HTML("Load Logs"));
 
-        objectRefTable.setData(null);
+//        objectRefTable.setData(null);
 
         return containerPanel;
     }
