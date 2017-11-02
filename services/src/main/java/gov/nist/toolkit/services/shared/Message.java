@@ -10,7 +10,11 @@ import java.util.List;
  *
  */
 public class Message implements Serializable, IsSerializable {
+    // header and body
     private List<String> parts = new ArrayList<>();
+
+    // structured representation of the body
+    List<SubMessage> subMessages = new ArrayList<>();
 
     public Message() {
     }
@@ -24,8 +28,27 @@ public class Message implements Serializable, IsSerializable {
         parts.add(in2);
     }
 
+    public List<SubMessage> getSubMessages() {
+        return subMessages;
+    }
+
     public void add(String part) {
         parts.add(part);
+    }
+
+    public void addSubMessage(String name, String value) {
+        SubMessage sm = new SubMessage(name, value);
+        subMessages.add(sm);
+    }
+
+    public int getSubMessageCount() { return subMessages.size(); }
+
+    public boolean hasSubMessages() { return getSubMessageCount() > 0; }
+
+    public SubMessage getSubMessage(int i) {
+        if (i >= getSubMessageCount())
+            return new SubMessage("", "");
+        return subMessages.get(i);
     }
 
     public List<String> getParts() { return parts; }
@@ -39,4 +62,9 @@ public class Message implements Serializable, IsSerializable {
         }
         return b.toString();
     }
+
+    public void addSubMessage(SubMessage subMessage) {
+        subMessages.add(subMessage);
+    }
+
 }

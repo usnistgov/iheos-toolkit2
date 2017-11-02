@@ -1,10 +1,12 @@
 package gov.nist.toolkit.services.shared;
 
+import ca.uhn.fhir.context.FhirContext;
 import gov.nist.toolkit.actortransaction.client.ActorType;
 import gov.nist.toolkit.actortransaction.client.TransactionInstance;
 import gov.nist.toolkit.configDatatypes.client.Pid;
 import gov.nist.toolkit.errorrecording.GwtErrorRecorderBuilder;
 import gov.nist.toolkit.errorrecording.client.XdsErrorCode;
+import gov.nist.toolkit.fhir.context.ToolkitFhirContext;
 import gov.nist.toolkit.http.HttpHeader;
 import gov.nist.toolkit.http.HttpParseException;
 import gov.nist.toolkit.http.ParseException;
@@ -23,6 +25,7 @@ import gov.nist.toolkit.simcommon.server.GenericSimulatorFactory;
 import gov.nist.toolkit.simcommon.server.SimCache;
 import gov.nist.toolkit.simcommon.server.SimDb;
 import gov.nist.toolkit.simcommon.server.SimManager;
+import gov.nist.toolkit.simulators.proxy.util.ResourceParser;
 import gov.nist.toolkit.simulators.servlet.ServletSimulator;
 import gov.nist.toolkit.simulators.servlet.SimServlet;
 import gov.nist.toolkit.simulators.sim.reg.RegistryActorSimulator;
@@ -40,8 +43,10 @@ import groovy.json.JsonOutput;
 import groovy.util.XmlNodePrinter;
 import groovy.util.XmlParser;
 import org.apache.log4j.Logger;
+import org.hl7.fhir.dstu3.model.Bundle;
+import org.hl7.fhir.dstu3.model.Resource;
+import org.hl7.fhir.instance.model.api.IBaseResource;
 import org.xml.sax.SAXException;
-
 
 import javax.xml.parsers.ParserConfigurationException;
 import java.io.File;
@@ -191,10 +196,30 @@ public class SimulatorServiceManager extends CommonService {
 
 			String body = new String(Io.bytesFromFile(bodyFile));
 			body = formatMessage(body);
-			return new Message(Io.stringFromFile(headerFile), body);
+			return subParseMessage(new Message(Io.stringFromFile(headerFile), body));
 		} catch (Exception e) {
 			return new Message("Error: " + e.getMessage());
 		}
+	}
+
+	private Message subParseMessage(Message message) {
+		try {
+			IBaseResource resource = ResourceParser.parse(message.getParts().get(1));
+			if (resource instanceof Bundle) {
+				Bundle bundle = (Bundle) resource;
+				for (Bundle.BundleEntryComponent c : bundle.getEntry()) {
+					String fullUrl = c.getFullUrl();
+					Resource theResource = c.getResource();
+					FhirContext ctx = ToolkitFhirContext.get();
+					String str = ctx.newJsonParser().encodeResourceToString(theResource);
+//					SubMessage entry  = new SubMessage("Entry", "");
+//					entry.addSubMessage("FullUrl", fullUrl);
+//					entry.addSubMessage(theResource.fhirType(), formatMessage(str));
+					message.addSubMessage(theResource.fhirType(), "FullUrl: " + fullUrl + "\n" + formatMessage(str));
+				}
+			}
+		} catch (Exception e) {}
+		return message;
 	}
 
 	private String formatMessage(String message) throws IOException, SAXException, ParserConfigurationException {
@@ -237,9 +262,9 @@ public class SimulatorServiceManager extends CommonService {
 
 			String body = new String(Io.bytesFromFile(bodyFile));
 			body = formatMessage(body);
-			return new Message(
+			return subParseMessage(new Message(
 					((headerFile.exists()) ? Io.stringFromFile(headerFile) : "")
-							, body);
+							, body));
 		} catch (Exception e) {
 			return new Message("Error: " + e.getMessage());
 		}
