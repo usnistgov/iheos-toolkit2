@@ -66,12 +66,12 @@ public class StepView implements IsWidget {
             errTbl.setStyleName("with-border");
             errTbl.setCellPadding(3);
             int row = 0;
-            HTML header0 = new HTML("Step");
-            header0.addStyleName("error-table-header");
+//            HTML header0 = new HTML("Step");
+//            header0.addStyleName("detail-table-header");
             HTML header1 = new HTML("Message");
-            header1.addStyleName("error-table-header");
-            errTbl.setWidget(row, 0, header0);
-            errTbl.setWidget(row, 1, header1);
+            header1.addStyleName("detail-table-header");
+//            errTbl.setWidget(row, 0, header0);
+            errTbl.setWidget(row, 0, header1);
             row++;
             String last = "";
             for (String error : errors) {
@@ -81,14 +81,16 @@ public class StepView implements IsWidget {
                     stp = substringBeforeLast(stp, ")");
                     if (stp.equals(last)) stp = "";
                     else last = stp;
-                    errTbl.setWidget(row, 0, new HTML(stp));
-                    row = displayErrorMsg(errTbl, 1, row, msg);
+//                    errTbl.setWidget(row, 0, new HTML(stp));
+                    row = displayErrorMsg(errTbl, 0, row, msg);
                     row++;
                 } else {
-                    row = displayErrorMsg(errTbl, 1, row, error);
+                    row = displayErrorMsg(errTbl, 0, row, error);
                 }
             }
-            stepBody.add(new HTML("Errors:"));
+            HTML title = new HTML("Errors:");
+            title.addStyleName("detail-section-header");
+            stepBody.add(title);
             stepBody.add(errTbl);
         }
     }
@@ -205,21 +207,23 @@ public class StepView implements IsWidget {
 
         if (theLink == null) {
             HTML it = new HTML(label);
-            if (isHeader)
-                it.addStyleName("detail-table-header");
             errTbl.setWidget(row, 0, it);
         } else if (!theLink.link.equals(lastLink)){
             HorizontalPanel panel = new HorizontalPanel();
             panel.add(theLink.anchor);
             panel.add(theLink.image);
-            if (isHeader)
-                panel.addStyleName("detail-table-header");
             errTbl.setWidget(row, 0, panel);
         }
         HTML it = new HTML(details);
         if (isHeader)
             it.addStyleName("detail-table-header");
         errTbl.setWidget(row, 1, it);
+
+        if (isHeader) {
+            errTbl.getWidget(row, 0).addStyleName("detail-table-header");
+            if (details.equals(""))
+            errTbl.getFlexCellFormatter().setColSpan(row, 0, 2);
+        }
 
         if (theLink != null)
             return theLink.text;
@@ -271,13 +275,17 @@ public class StepView implements IsWidget {
                 String content = dtls.get(row);
                 lastLink = formatDetailRow(content, lastLink, errTbl, row);
             }
-            stepBody.add(new HTML("Detail:"));
+            HTML title = new HTML("Detail:");
+            title.addStyleName("detail-section-header");
+            stepBody.add(title);
             stepBody.add(errTbl);
         }
 
         // ******************************************************
         // IDs
         // ******************************************************
+        boolean hasContent = false;
+
         Map<String, String> assignedIds = step.getAssignedIds();
         Map<String, String> assignedUids = step.getAssignedUids();
         Set<String> idNames = new HashSet<String>();
@@ -301,18 +309,28 @@ public class StepView implements IsWidget {
 
         for (String idName : idNames) {
             idTable.setWidget(row, 0, new HTML(idName));
-            if (assignedIds.containsKey(idName))
+            if (assignedIds.containsKey(idName)) {
                 idTable.setWidget(row, 1, new HTML(assignedIds.get(idName)));
-            if (assignedUids.containsKey(idName))
+                hasContent = true;
+            }
+            if (assignedUids.containsKey(idName)) {
                 idTable.setWidget(row, 2, new HTML(assignedUids.get(idName)));
+                hasContent = true;
+            }
             row++;
         }
-        stepBody.add(new HTML("IDs"));
-        stepBody.add(idTable);
+        HTML header;
+        if (hasContent) {
+            header = new HTML("IDs");
+            header.addStyleName("detail-section-header");
+            stepBody.add(header);
+            stepBody.add(idTable);
+        }
 
         // ******************************************************
         // UseReports
         // ******************************************************
+        hasContent = false;
         FlexTable useTable = new FlexTable();
         useTable.setStyleName("with-border");
         useTable.setCellPadding(3);
@@ -336,13 +354,19 @@ public class StepView implements IsWidget {
             useTable.setWidget(row, 4, new HTML(useReport.getSection()));
             useTable.setWidget(row, 5, new HTML(useReport.getStep()));
             row++;
+            hasContent = true;
         }
-        stepBody.add(new HTML("Use Reports"));
-        stepBody.add(useTable);
+        if (hasContent) {
+            header = new HTML("Use Reports");
+            header.addStyleName("detail-section-header");
+            stepBody.add(header);
+            stepBody.add(useTable);
+        }
 
         // ******************************************************
         // Reports
         // ******************************************************
+        hasContent = false;
         FlexTable reportsTable = new FlexTable();
         reportsTable.setStyleName("with-border");
         reportsTable.setCellPadding(3);
@@ -358,9 +382,16 @@ public class StepView implements IsWidget {
             reportsTable.setWidget(row, 0, new HTML(report.getName()));
             reportsTable.setWidget(row, 1, new HTML(report.getValue()));
             row++;
+            String theValue  = report.getValue();
+            if (theValue != null && !theValue.equals(""))
+                hasContent = true;
         }
-        stepBody.add(new HTML("Reports"));
-        stepBody.add(reportsTable);
+        if (hasContent) {
+            header = new HTML("Reports");
+            header.addStyleName("detail-section-header");
+            stepBody.add(header);
+            stepBody.add(reportsTable);
+        }
 
     }
 

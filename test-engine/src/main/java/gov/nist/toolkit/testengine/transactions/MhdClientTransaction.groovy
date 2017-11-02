@@ -104,7 +104,7 @@ class MhdClientTransaction extends BasicTransaction {
 //            s_ctx.addDetail(externalUrl, '')
             s_ctx.addDetailLink(transaction.url, transaction.placeToken, label, '')
         }
-        s_ctx.addDetailHeader('Non-Validating Messages')
+        s_ctx.addDetailHeader('Non-Validating Messages', 'Failed Validations')
         failing.each { ValidaterResult result ->
             FhirSimulatorTransaction transaction = result.transaction
             TransactionInstance ti = simDb.buildTransactionInstance(transaction.simDbEvent.actor, transaction.simDbEvent.eventId, trans)

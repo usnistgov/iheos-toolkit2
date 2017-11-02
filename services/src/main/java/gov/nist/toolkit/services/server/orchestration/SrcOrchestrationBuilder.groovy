@@ -2,12 +2,7 @@ package gov.nist.toolkit.services.server.orchestration
 
 import gov.nist.toolkit.actortransaction.client.ActorOption
 import gov.nist.toolkit.actortransaction.client.ActorType
-import gov.nist.toolkit.configDatatypes.client.Pid
-import gov.nist.toolkit.configDatatypes.client.PidBuilder
-import gov.nist.toolkit.configDatatypes.server.SimulatorProperties
 import gov.nist.toolkit.services.client.RawResponse
-import gov.nist.toolkit.services.client.RecOrchestrationRequest
-import gov.nist.toolkit.services.client.RecOrchestrationResponse
 import gov.nist.toolkit.services.client.SrcOrchestrationRequest
 import gov.nist.toolkit.services.client.SrcOrchestrationResponse
 import gov.nist.toolkit.services.server.RawResponseBuilder
@@ -15,10 +10,8 @@ import gov.nist.toolkit.services.server.ToolkitApi
 import gov.nist.toolkit.session.server.Session
 import gov.nist.toolkit.simcommon.client.SimId
 import gov.nist.toolkit.simcommon.client.SimulatorConfig
-import gov.nist.toolkit.simcommon.client.config.SimulatorConfigElement
 import gov.nist.toolkit.simcommon.server.SimCache
 import groovy.transform.TypeChecked
-
 /**
  *
  */
@@ -75,7 +68,9 @@ class SrcOrchestrationBuilder {
             orchProps.save()
 
             response.config = simConfig
-            response.supportSite = SimCache.getSite(session.getId(), simId.toString())
+            response.simProxySite = SimCache.getSite(session.getId(), simId.toString())
+            response.simProxyBeSite = SimCache.getSite(session.getId(), simId.toString() + "_be")
+            response.regrepSite = SimCache.getSite(session.getId(), simId.toString() + "_regrep")
 
             return response
 

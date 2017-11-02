@@ -92,8 +92,15 @@ h3 {
 	background-color: #D8D8D8
 }
 
+.detail-section-header {
+  font-size: 12pt;
+  font-weight: bold;
+}
+
 .detail-table-header {
-  background-color: #D8D8D8
+  background-color: #D8D8D8;
+  font-size: 12pt;
+  font-weight: bold;
 }
 
 .error-table-header {

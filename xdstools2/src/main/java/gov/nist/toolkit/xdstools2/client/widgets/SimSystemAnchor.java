@@ -17,7 +17,9 @@ import java.util.List;
 public class SimSystemAnchor extends HorizontalFlowPanel {
 
     public SimSystemAnchor(String title, final SiteSpec siteSpec) {
-        add(new HTML(title));
+        HTML h = new HTML(title);
+        h.addStyleName("detail-table-header");
+        add(h);
 
         List<SimId> simIds = new ArrayList<>();
         simIds.add(new SimId(siteSpec));

@@ -18,14 +18,24 @@ public class SiteTransactionTable extends FlexTable {
     public SiteTransactionTable(Site site, String title) {
         if (title!=null && !"".equals(title))
             addStyleName(title.replace(" ",""));
+        addStyleName("with-border");
         build(site);
     }
 
     private void build(Site site) {
         SiteSorter sorter = new SiteSorter();
         HTML ei = new HTML("Endpoints and IDs");
-        ei.addStyleName("bold-face");
-        setWidget(row++, 0, ei);
+        ei.addStyleName("detail-table-header");
+        setWidget(row, 0, ei);
+        ei = new HTML("Secure");
+        ei.addStyleName("detail-table-header");
+        setWidget(row, 1, ei);
+        ei = new HTML("Non-secure");
+        ei.addStyleName("detail-table-header");
+        setWidget(row, 2, ei);
+        row++;
+
+        boolean hasContent = false;
 
         for (TransactionBean trans : site.transactions().transactions) {
             sorter.add(trans.getName(), trans.getEndpoint());
@@ -35,6 +45,7 @@ public class SiteTransactionTable extends FlexTable {
         for (TransactionBean trans : site.transactions().transactions) {
             if (alreadyDisplayed.contains(trans.getName()))
                 continue;
+            hasContent = true;
             setText(row, 0, trans.getName());
             setText(row, 1, sorter.getTls(trans.getName()));
             setText(row++, 2, sorter.getNoTls(trans.getName()));
@@ -52,13 +63,23 @@ public class SiteTransactionTable extends FlexTable {
             String label = "Repository (" + repo.getName() + ")";
             if (alreadyDisplayed.contains(label))
                 continue;
+            hasContent = true;
             setText(row, 0, label);
             setText(row, 1, sorter.getTls(label));
             setText(row++, 2, sorter.getNoTls(label));
             alreadyDisplayed.add(label);
         }
 
-        setText(row, 0, "homeCommunityId");
-        setText(row++, 1, site.getHome());
+        String home = site.getHome();
+        if (home != null && !home.equals("")) {
+            hasContent = true;
+            setText(row, 0, "homeCommunityId");
+            setText(row++, 1, site.getHome());
+        }
+
+        if (!hasContent) {
+            clear();
+            setWidget(0,0, new HTML("No Configuration"));
+        }
     }
 }

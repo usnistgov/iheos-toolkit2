@@ -122,6 +122,10 @@ public class StepContext extends BasicContext implements ErrorReportingInterface
 		addDetail("#" + headerText, "");
 	}
 
+	public void addDetailHeader(String headerText, String value) {
+		addDetail("#" + headerText, value);
+	}
+
 	public void addDetailLink(String externalLink, String internalPlaceToken, String linkText, String content) {
 		addDetail(externalLink + " [" + internalPlaceToken + "] (" + linkText + ")", content);
 	}
