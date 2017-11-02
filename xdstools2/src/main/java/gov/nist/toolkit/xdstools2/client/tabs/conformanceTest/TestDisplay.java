@@ -86,10 +86,10 @@ public class TestDisplay  implements IsWidget {
                diagramDisplay.getTestOverviewDTO().getSections().put(sectionName,sectionOverview);
 
                 TestSectionDisplay sectionComponent = new TestSectionDisplay(testContext.getTestSession(), testOverview.getTestInstance(), sectionOverview, testRunner, allowRun, diagramDisplay);
-                view.addSection(sectionComponent.asWidget());
+                view.addSection(sectionComponent);
             } else {
                 TestSectionDisplay sectionComponent = new TestSectionDisplay(testContext.getTestSession(), testOverview.getTestInstance(), sectionOverview, testRunner, allowRun, null);
-                view.addSection(sectionComponent.asWidget());
+                view.addSection(sectionComponent);
             }
 
         }
