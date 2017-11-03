@@ -5,6 +5,7 @@ import com.google.gwt.dom.builder.shared.DivBuilder;
 import com.google.gwt.dom.builder.shared.TableCellBuilder;
 import com.google.gwt.dom.builder.shared.TableRowBuilder;
 import com.google.gwt.dom.client.Style;
+import com.google.gwt.dom.client.TableRowElement;
 import com.google.gwt.event.logical.shared.ResizeEvent;
 import com.google.gwt.event.logical.shared.ResizeHandler;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
@@ -105,7 +106,8 @@ abstract class DataTable<T> implements IsWidget {
     protected void addPager(int pageSize) {
         SimplePager simplePager = new SimplePager();
         simplePager.getElement().getStyle().setMarginTop(7, Style.Unit.PX);
-        simplePager.getElement().getStyle().setMarginLeft(40, Style.Unit.PCT);
+        int marginLeftInPx = new Double(getWidthInPx() * .30).intValue();
+        simplePager.getElement().getStyle().setMarginLeft(marginLeftInPx, Style.Unit.PX);
         simplePager.setDisplay(dataTable);
         simplePager.setPageSize(pageSize);
 
@@ -124,9 +126,9 @@ abstract class DataTable<T> implements IsWidget {
         dataTable.setSkipRowHoverFloatElementCheck(true);
         dataTable.getElement().getStyle().setProperty("wordWrap","break-word");
 
-        setupDataTableResizeHandlers();
-
         containerPanel.add(dataTable);
+
+        setupDataTableResizeHandlers();
     }
 
     protected void addActionTable() {
@@ -150,10 +152,7 @@ abstract class DataTable<T> implements IsWidget {
         Window.addResizeHandler(new ResizeHandler() {
         @Override
         public void onResize(ResizeEvent event) {
-
-            dataTable.setWidth(calcTableWidth() + "px");
-            dataTable.setHeight(calcTableHeight(100) + "px");
-
+            resizeTable();
         }
         });
         dataTable.addLoadingStateChangeHandler(new LoadingStateChangeEvent.Handler() {
@@ -162,9 +161,9 @@ abstract class DataTable<T> implements IsWidget {
                 if(event.getLoadingState() == LoadingStateChangeEvent.LoadingState.LOADED) {
 //                    GWT.log("In onLoaded");
                     int rows = dataTable.getRowCount();
-//                    GWT.log("rows: " + rows);
+                    GWT.log("rows: " + rows);
                     if (rows > 0) {
-                        int rowHeight = 0;
+                        int rowHeight = 40;
                         rowHeight = getRowHeight(rowHeight);
 //                            GWT.log("rowHeight: " + rowHeight);
                         String tableHeightInPx = null;
@@ -177,13 +176,13 @@ abstract class DataTable<T> implements IsWidget {
 //                            GWT.log("tableHeight: " + tableHeightInPx);
                         if (tableHeightInPx!=null && pxIdx>-1) {
                             int currentHeight = new Integer(tableHeightInPx.substring(0, pxIdx)).intValue();
-//                                GWT.log("currentHeight: " + currentHeight);
+                                GWT.log("currentHeight: " + currentHeight);
 
                             float estimatedHeight = calcTableHeight(rowHeight);
                             if (estimatedHeight != currentHeight) {
                                 dataTable.setWidth(calcTableWidth() + "px");
                                 dataTable.setHeight(estimatedHeight + "px");
-//                                    GWT.log("Table resize complete.");
+                                    GWT.log("Table resize complete.");
                             }
                         } else {
                             dataTable.setWidth(calcTableWidth() + "px");
@@ -197,11 +196,19 @@ abstract class DataTable<T> implements IsWidget {
         });
     }
 
+    public void resizeTable() {
+        dataTable.setWidth(calcTableWidth() + "px");
+        dataTable.setHeight(calcTableHeight(getRowHeight(40)) + "px");
+    }
+
+    TableRowElement tableRowElement = null;
     protected int getRowHeight(int defaultRowHeight) {
         try {
             return dataTable.getRowElement(0).getClientHeight();
         } catch (Exception ex) {
             GWT.log("getRowHeight: " + ex.toString());
+            GWT.log("dataTab isVisible? " + dataTable.isVisible());
+            GWT.log("data rows: " + dataTable.getRowCount());
         }
         return defaultRowHeight;
     }
@@ -344,6 +351,7 @@ abstract class DataTable<T> implements IsWidget {
         try {
             containerWidth = (int)(getWidthInPx() * .80); // Window.getClientWidth())
         } catch (Exception ex) {
+            GWT.log("calcTableWidth error: " + ex.toString());
             containerWidth = (int)(Window.getClientWidth() * .80);
         }
 

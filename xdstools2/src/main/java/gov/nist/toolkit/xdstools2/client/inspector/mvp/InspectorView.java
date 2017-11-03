@@ -1,5 +1,6 @@
 package gov.nist.toolkit.xdstools2.client.inspector.mvp;
 
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HTML;
@@ -13,7 +14,7 @@ import java.util.Map;
 public class InspectorView extends AbstractView<InspectorPresenter> {
     FlowPanel containerPanel = new FlowPanel();
 
-    private ObjectRefDataTable objectRefTable = new ObjectRefDataTable(10) {
+    ObjectRefDataTable objectRefTable = new ObjectRefDataTable(10) {
         @Override
         void doGetDocuments(List<ObjectRef> objectRefs) {
 //            getPresenter().do
@@ -30,6 +31,7 @@ public class InspectorView extends AbstractView<InspectorPresenter> {
             try {
                 width = (int)(containerPanel.getParent().getElement().getClientWidth() * .80);
             } catch (Exception ex) {
+                GWT.log("containerPanel error: " + ex.toString());
                 width = (int)(Window.getClientWidth() * .80);
             }
             return width;
@@ -40,12 +42,11 @@ public class InspectorView extends AbstractView<InspectorPresenter> {
     protected Widget buildUI() {
 
         containerPanel.add(new HTML("Step"));
-        containerPanel.add(new HTML("# ObjectRefs "));
-//        containerPanel.add(objectRefTable.asWidget());
+        containerPanel.add(new HTML("ObjectRefs: "
+                + (objectRefTable.dataTable!=null?objectRefTable.dataTable.getRowCount():"null")));
+        containerPanel.add(objectRefTable.asWidget());
 
         containerPanel.add(new HTML("Load Logs"));
-
-//        objectRefTable.setData(null);
 
         return containerPanel;
     }

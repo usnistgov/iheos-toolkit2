@@ -21,11 +21,13 @@ public class InspectorActivity extends AbstractToolkitActivity {
     private InspectorView view;
     private InspectorPresenter presenter;
     private ActivityDisplayer displayer;
+    private ResultInspector place;
 
     private String name;
 
     public InspectorActivity(ResultInspector place) {
         super();
+        this.place = place;
         GWT.log("Start activity ");
         if (place != null) {
             this.name = place.getName();
@@ -60,6 +62,8 @@ public class InspectorActivity extends AbstractToolkitActivity {
         assert(presenter != null);
 
         presenter.setTitle("xResultInspector");
+        presenter.setResults(place.getResults());
+        presenter.setSiteSpec(place.getSiteSpec());
         finish(acceptsOneWidget, eventBus);
     }
 
@@ -68,7 +72,9 @@ public class InspectorActivity extends AbstractToolkitActivity {
         mvp.init();
 
         presenter.setActivityDisplayer(displayer);  // so presenter can update tab title
+        GWT.log("Calling activityDisplay");
         displayer.display(getContainer(), presenter.getTitle(), this, acceptsOneWidget, eventBus);
+
     }
 
     private GenericMVP<Result, InspectorView, InspectorPresenter> buildMVP() {

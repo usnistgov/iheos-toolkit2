@@ -26,6 +26,7 @@ abstract class ObjectRefDataTable extends DataTable<ObjectRef> implements IsWidg
 
     public ObjectRefDataTable(int pageSize) {
         super(pageSize, new ObjectRef());
+        mainPanel.add(super.asWidget());
     }
 
     @Override
@@ -75,8 +76,8 @@ abstract class ObjectRefDataTable extends DataTable<ObjectRef> implements IsWidg
                     }
                 });
 
-        dataTable.addColumn(idColumn, "ID");
-        dataTable.addColumn(homeColumn,"Created Date");
+        dataTable.addColumn(idColumn, "Id");
+        dataTable.addColumn(homeColumn,"HomeId");
 
     }
 
