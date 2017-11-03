@@ -67,4 +67,7 @@ public class Message implements Serializable, IsSerializable {
         subMessages.add(subMessage);
     }
 
+    public void addSubMessages(List<SubMessage> theSubMessages) {
+        subMessages.addAll(theSubMessages);
+    }
 }
