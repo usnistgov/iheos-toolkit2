@@ -18,10 +18,10 @@
             <groupId>gov.nist.toolkit</groupId>
             <artifactId>actorfactory</artifactId>
         </dependency>
-        <dependency>
-            <groupId>gov.nist.toolkit</groupId>
-            <artifactId>simulators</artifactId>
-        </dependency>
+        <!--<dependency>-->
+            <!--<groupId>gov.nist.toolkit</groupId>-->
+            <!--<artifactId>simulators</artifactId>-->
+        <!--</dependency>-->
         <dependency>
             <groupId>org.codehaus.groovy</groupId>
             <artifactId>groovy-all</artifactId>

@@ -1,7 +1,7 @@
 package gov.nist.toolkit.simProxy
 
-import gov.nist.toolkit.simulators.proxy.util.PartSpec
-import gov.nist.toolkit.simulators.proxy.util.SoapBuilder
+import gov.nist.toolkit.fhir.simulators.proxy.util.PartSpec
+import gov.nist.toolkit.fhir.simulators.proxy.util.SoapBuilder
 import spock.lang.Specification
 
 /**

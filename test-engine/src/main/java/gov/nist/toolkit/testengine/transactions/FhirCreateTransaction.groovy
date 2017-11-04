@@ -1,7 +1,7 @@
 package gov.nist.toolkit.testengine.transactions
 
 import ca.uhn.fhir.context.FhirContext
-import gov.nist.toolkit.installation.ResourceCache
+import gov.nist.toolkit.fhir.resourceMgr.ResourceCache
 import gov.nist.toolkit.testengine.engine.StepContext
 import gov.nist.toolkit.testengine.fhir.FhirClient
 import gov.nist.toolkit.testengine.fhir.FhirId

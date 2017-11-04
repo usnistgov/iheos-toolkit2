@@ -5,10 +5,10 @@ import gov.nist.toolkit.errorrecording.GwtErrorRecorder
 import gov.nist.toolkit.http.HttpMessageBa
 import gov.nist.toolkit.simcommon.client.SimulatorConfig
 import gov.nist.toolkit.simcommon.server.SimDb
-import gov.nist.toolkit.simulators.sim.ids.WadoRetrieveResponseSim
-import gov.nist.toolkit.simulators.support.DsSimCommon
+import gov.nist.toolkit.fhir.simulators.sim.ids.WadoRetrieveResponseSim
+import gov.nist.toolkit.fhir.simulators.support.DsSimCommon
 import gov.nist.toolkit.simcommon.server.SimCommon
-import gov.nist.toolkit.simulators.support.StoredDocument
+import gov.nist.toolkit.fhir.simulators.support.StoredDocument
 import gov.nist.toolkit.valsupport.client.ValidationContext
 import gov.nist.toolkit.valsupport.engine.MessageValidatorEngine
 import org.apache.http.NameValuePair

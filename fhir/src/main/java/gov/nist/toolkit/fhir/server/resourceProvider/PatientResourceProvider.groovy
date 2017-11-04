@@ -10,7 +10,6 @@ import ca.uhn.fhir.rest.server.IResourceProvider
 import ca.uhn.fhir.rest.server.exceptions.InternalErrorException
 import ca.uhn.fhir.rest.server.exceptions.UnprocessableEntityException
 import gov.nist.toolkit.fhir.search.BaseQuery
-import gov.nist.toolkit.session.server.serviceManager.UtilityRunner
 import org.apache.log4j.Logger
 import org.apache.lucene.index.Term
 import org.apache.lucene.search.BooleanClause

@@ -27,7 +27,6 @@ public class Installation {
 
     private PropertyServiceManager propertyServiceMgr = null;
     private static Logger logger = Logger.getLogger(Installation.class);
-    private ResourceCacheMgr resourceCacheMgr = null;
 
     static Installation me = null;
 
@@ -36,11 +35,6 @@ public class Installation {
      * it can be initialized with TestResourceCacheFactory
      * @return
      */
-    public ResourceCacheMgr resourceCacheMgr() {
-        if (resourceCacheMgr == null)
-            resourceCacheMgr = ResourceCacheFactory.getResourceCacheMgr();
-        return resourceCacheMgr;
-    }
 
     public String getToolkitBaseUrl() {
         return "http://"
@@ -49,10 +43,6 @@ public class Installation {
                 + propertyServiceMgr.getToolkitPort()
                 + getServletContextName()
                 + "/Xdstools2.html";
-    }
-
-    public void resourceCacheMgr(ResourceCacheMgr mgr) {
-        resourceCacheMgr = mgr;
     }
 
     public String toString() {

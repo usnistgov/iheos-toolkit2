@@ -74,7 +74,7 @@ class RecipientSpecxx extends ToolkitSpecification {
 
         proxySimConfig.setProperty(SimulatorProperties.proxyForwardSite, rr)
         List<String> requestTransformations = proxySimConfig.asList(SimulatorProperties.simProxyRequestTransformations)
-        requestTransformations.add('gov.nist.toolkit.simulators.proxy.transforms.NullEndpointTransform')
+        requestTransformations.add('gov.nist.toolkit.fhir.simulators.proxy.transforms.NullEndpointTransform')
         proxySimConfig.setProperty(SimulatorProperties.simProxyRequestTransformations, requestTransformations)
 
         List<String> responseTransformations = proxySimConfig.asList(SimulatorProperties.simProxyResponseTransformations)

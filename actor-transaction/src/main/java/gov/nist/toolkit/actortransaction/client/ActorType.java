@@ -28,7 +28,7 @@ public enum ActorType implements IsSerializable, Serializable {
             Arrays.asList("XDR_Source"),
             "xdrsrc",
             "gov.nist.toolkit.simcommon.server.factories.XdrDocSrcActorFactory",
-            "gov.nist.toolkit.simulators.sim.src.XdrDocSrcActorSimulator",
+            "gov.nist.toolkit.fhir.simulators.sim.src.XdrDocSrcActorSimulator",
             Arrays.asList(TransactionType.XDR_PROVIDE_AND_REGISTER),
             false,
             null,
@@ -42,7 +42,7 @@ public enum ActorType implements IsSerializable, Serializable {
             Arrays.asList("DOC_REGISTRY", "registryb", "initialize_for_stored_query"),
             "reg",
             "gov.nist.toolkit.simcommon.server.factories.RegistryActorFactory",
-            "gov.nist.toolkit.simulators.sim.reg.RegistryActorSimulator",
+            "gov.nist.toolkit.fhir.simulators.sim.reg.RegistryActorSimulator",
             Arrays.asList(TransactionType.REGISTER, TransactionType.REGISTER_ODDE, TransactionType.STORED_QUERY, TransactionType.UPDATE, TransactionType.MPQ),
             true,
             null,
@@ -66,7 +66,7 @@ public enum ActorType implements IsSerializable, Serializable {
             Arrays.asList("DOC_REPOSITORY", "repositoryb"),
             "rep",
             "gov.nist.toolkit.simcommon.server.factories.RepositoryActorFactory",
-            "gov.nist.toolkit.simulators.sim.rep.RepositoryActorSimulator",
+            "gov.nist.toolkit.fhir.simulators.sim.rep.RepositoryActorSimulator",
             Arrays.asList(TransactionType.PROVIDE_AND_REGISTER, TransactionType.RETRIEVE),
             true,
             "repository",
@@ -80,7 +80,7 @@ public enum ActorType implements IsSerializable, Serializable {
             Arrays.asList("ODDS", "ON_DEMAND_DOC_SOURCE"),
             "odds",
             "gov.nist.toolkit.simcommon.server.factories.OnDemandDocumentSourceActorFactory",
-            "gov.nist.toolkit.simulators.sim.rep.od.OddsActorSimulator",
+            "gov.nist.toolkit.fhir.simulators.sim.rep.od.OddsActorSimulator",
 //            Arrays.asList(TransactionType.RETRIEVE),
             Arrays.asList(TransactionType.ODDS_RETRIEVE),
             true,
@@ -109,7 +109,7 @@ public enum ActorType implements IsSerializable, Serializable {
             new ArrayList<String>(),
             "rr",
             "gov.nist.toolkit.simcommon.server.factories.RepositoryRegistryActorFactory",
-            "gov.nist.toolkit.simulators.sim.RegRepActorSimulator",
+            "gov.nist.toolkit.fhir.simulators.sim.RegRepActorSimulator",
             Arrays.asList(TransactionType.REGISTER, TransactionType.STORED_QUERY, TransactionType.UPDATE, TransactionType.MPQ, TransactionType.PROVIDE_AND_REGISTER, TransactionType.RETRIEVE),
             true,
             null,
@@ -123,7 +123,7 @@ public enum ActorType implements IsSerializable, Serializable {
             Arrays.asList("DOC_RECIPIENT"),
             "rec",
             "gov.nist.toolkit.simcommon.server.factories.RecipientActorFactory",
-            "gov.nist.toolkit.simulators.sim.RegRepActorSimulator",
+            "gov.nist.toolkit.fhir.simulators.sim.RegRepActorSimulator",
             Arrays.asList(TransactionType.XDR_PROVIDE_AND_REGISTER),
             true,
             null,
@@ -137,7 +137,7 @@ public enum ActorType implements IsSerializable, Serializable {
             Arrays.asList("RESP_GATEWAY"),
             "rg",
             "gov.nist.toolkit.simcommon.server.factories.RGActorFactory",
-            "gov.nist.toolkit.simulators.sim.rg.RGADActorSimulator",
+            "gov.nist.toolkit.fhir.simulators.sim.rg.RGADActorSimulator",
             Arrays.asList(TransactionType.XC_QUERY, TransactionType.XC_RETRIEVE, TransactionType.XCPD),
             true,
             null,
@@ -151,7 +151,7 @@ public enum ActorType implements IsSerializable, Serializable {
             Arrays.asList("On_DEMAND_RESP_GATEWAY"),
             "odrg",
             "gov.nist.toolkit.simcommon.server.factories.ODRGActorFactory",
-            "gov.nist.toolkit.simulators.sim.rg.ODRGActorSimulator",
+            "gov.nist.toolkit.fhir.simulators.sim.rg.ODRGActorSimulator",
             Arrays.asList(TransactionType.XC_QUERY, TransactionType.XC_RETRIEVE),
             true,
             null,
@@ -165,7 +165,7 @@ public enum ActorType implements IsSerializable, Serializable {
        Arrays.asList("RESP_IMG_GATEWAY"),
        "rig",
             "gov.nist.toolkit.simcommon.server.factories.RigActorFactory",
-       "gov.nist.toolkit.simulators.sim.rig.RigActorSimulator",
+       "gov.nist.toolkit.fhir.simulators.sim.rig.RigActorSimulator",
        Arrays.asList(TransactionType.XC_RET_IMG_DOC_SET),
        true,
        null,
@@ -179,7 +179,7 @@ public enum ActorType implements IsSerializable, Serializable {
        Arrays.asList("COMB_RESP_GATEWAY"),
        "crg",
             "gov.nist.toolkit.simcommon.server.factories.CrgActorFactory",
-       "gov.nist.toolkit.simulators.sim.CrgActorSimulator",
+       "gov.nist.toolkit.fhir.simulators.sim.CrgActorSimulator",
        Arrays.asList(TransactionType.XC_QUERY, TransactionType.XC_RETRIEVE, TransactionType.XC_RET_IMG_DOC_SET),
        true,
        null,
@@ -193,7 +193,7 @@ public enum ActorType implements IsSerializable, Serializable {
             Arrays.asList("INIT_GATEWAY"),
             "ig",
             "gov.nist.toolkit.simcommon.server.factories.IGActorFactory",
-            "gov.nist.toolkit.simulators.sim.ig.IgActorSimulator",
+            "gov.nist.toolkit.fhir.simulators.sim.ig.IgActorSimulator",
             Arrays.asList(TransactionType.IG_QUERY, TransactionType.IG_RETRIEVE),
             true,
             null,
@@ -207,7 +207,7 @@ public enum ActorType implements IsSerializable, Serializable {
        Arrays.asList("INIT_IMG_GATEWAY"),
        "iig",
             "gov.nist.toolkit.simcommon.server.factories.IigActorFactory",
-       "gov.nist.toolkit.simulators.sim.iig.IigActorSimulator",
+       "gov.nist.toolkit.fhir.simulators.sim.iig.IigActorSimulator",
        Arrays.asList(TransactionType.RET_IMG_DOC_SET_GW),
        true,
        null,
@@ -221,7 +221,7 @@ public enum ActorType implements IsSerializable, Serializable {
             Arrays.asList("RSNA_EDGE"),
             "ris",
             null,
-            "gov.nist.toolkit.simulators.sim.ris.RisActorSimulator", //TODO: Change to correct domainß
+            "gov.nist.toolkit.fhir.simulators.sim.ris.RisActorSimulator", //TODO: Change to correct domainß
             Arrays.asList(TransactionType.RET_IMG_DOC_SET_GW), //TODO: Change to correct Transaction Type
             true,
             null,
@@ -235,7 +235,7 @@ public enum ActorType implements IsSerializable, Serializable {
        Arrays.asList("COMB_INIT_GATEWAY"),
        "cig",
             "gov.nist.toolkit.simcommon.server.factories.CigActorFactory",
-       "gov.nist.toolkit.simulators.sim.CigActorSimulator",
+       "gov.nist.toolkit.fhir.simulators.sim.CigActorSimulator",
        Arrays.asList(TransactionType.IG_QUERY, TransactionType.IG_RETRIEVE,TransactionType.RET_IMG_DOC_SET_GW),
        true,
        null,
@@ -271,7 +271,7 @@ public enum ActorType implements IsSerializable, Serializable {
             Arrays.asList("XDS_Consumer", "doccons"),
             "cons",
             "gov.nist.toolkit.simcommon.server.factories.ConsumerActorFactory",
-            "gov.nist.toolkit.simulators.sim.cons.DocConsActorSimulator",
+            "gov.nist.toolkit.fhir.simulators.sim.cons.DocConsActorSimulator",
             Arrays.asList(TransactionType.STORED_QUERY, TransactionType.RETRIEVE),
             false,
             null,
@@ -285,11 +285,11 @@ public enum ActorType implements IsSerializable, Serializable {
             Arrays.asList("IMAGING_DOC_SOURCE"),
             "ids",
             "gov.nist.toolkit.simcommon.server.factories.ImagingDocSourceActorFactory",
-            "gov.nist.toolkit.simulators.sim.ids.IdsActorSimulator",
+            "gov.nist.toolkit.fhir.simulators.sim.ids.IdsActorSimulator",
             Arrays.asList(TransactionType.RET_IMG_DOC_SET),
             true,
             null,
-            "gov.nist.toolkit.simulators.sim.ids.IdsHttpActorSimulator",
+            "gov.nist.toolkit.fhir.simulators.sim.ids.IdsHttpActorSimulator",
             Arrays.asList(TransactionType.WADO_RETRIEVE),
             false,
             null,
@@ -303,7 +303,7 @@ public enum ActorType implements IsSerializable, Serializable {
             Arrays.asList("IMAGING_DOC_CONSUMER", "XDSI_Consumer"),
             "idc",
             "gov.nist.toolkit.simcommon.server.factories.ImgConsumerActorFactory",
-            "gov.nist.toolkit.simulators.sim.idc.ImgDocConsActorSimulator",
+            "gov.nist.toolkit.fhir.simulators.sim.idc.ImgDocConsActorSimulator",
             Arrays.asList(TransactionType.RET_IMG_DOC_SET),
             false,
             null,
@@ -350,8 +350,8 @@ public enum ActorType implements IsSerializable, Serializable {
             "MHD Document Recipient",
             Arrays.asList(""),
             "mhddocrec",
-            "gov.nist.toolkit.simulators.proxy.sim.MhdRecipientFactory",
-            "gov.nist.toolkit.simulators.proxy.sim.MhdRecipientSimulator",
+            "gov.nist.toolkit.fhir.simulators.proxy.sim.MhdRecipientFactory",
+            "gov.nist.toolkit.fhir.simulators.proxy.sim.MhdRecipientSimulator",
             Arrays.asList(TransactionType.PROV_DOC_BUNDLE),  // place holder - transaction types
             true,  // show in config - only partially configured - only used in IT tests
             null,  // actorsFileLabel
@@ -360,12 +360,12 @@ public enum ActorType implements IsSerializable, Serializable {
             false,    // is fhir
             // request transform classes
             Arrays.asList(
-                    "gov.nist.toolkit.simulators.proxy.transforms.MhdToXdsEndpointTransform",
-                    "gov.nist.toolkit.simulators.proxy.transforms.MhdToPnrContentTransform"
+                    "gov.nist.toolkit.fhir.simulators.proxy.transforms.MhdToXdsEndpointTransform",
+                    "gov.nist.toolkit.fhir.simulators.proxy.transforms.MhdToPnrContentTransform"
             ),
             // response transform classes
             Arrays.asList(
-                    "gov.nist.toolkit.simulators.proxy.transforms.RegistryResponseToOperationOutcomeTransform"
+                    "gov.nist.toolkit.fhir.simulators.proxy.transforms.RegistryResponseToOperationOutcomeTransform"
             ),
             Constants.USE_SHORTNAME,   // must match src from src(mhd) in collections.txt
             IheItiProfile.MHD,
@@ -375,8 +375,8 @@ public enum ActorType implements IsSerializable, Serializable {
             "Sim Proxy",
             Arrays.asList(""),
             "simproxy",
-            "gov.nist.toolkit.simulators.proxy.sim.SimProxyFactory",
-            "gov.nist.toolkit.simulators.proxy.sim.SimProxySimulator",  // only constructor should be used
+            "gov.nist.toolkit.fhir.simulators.proxy.sim.SimProxyFactory",
+            "gov.nist.toolkit.fhir.simulators.proxy.sim.SimProxySimulator",  // only constructor should be used
             Arrays.asList(TransactionType.PIF),  // place holder - transaction types
             false,  // show in config - only partially configured - only used in IT tests
             null,  // actorsFileLabel
@@ -393,8 +393,8 @@ public enum ActorType implements IsSerializable, Serializable {
             "XDS on FHIR Recipient",
             Arrays.asList(""),
             "mhdfhirrec",
-            "gov.nist.toolkit.simulators.proxy.sim.SimProxyFactory",
-            "gov.nist.toolkit.simulators.proxy.sim.SimProxySimulator",  // only constructor should be used
+            "gov.nist.toolkit.fhir.simulators.proxy.sim.SimProxyFactory",
+            "gov.nist.toolkit.fhir.simulators.proxy.sim.SimProxySimulator",  // only constructor should be used
             Arrays.asList(TransactionType.PROV_DOC_BUNDLE),  // place holder - transaction types
             true,  // show in config - only partially configured - only used in IT tests
             null,  // actorsFileLabel
@@ -403,12 +403,12 @@ public enum ActorType implements IsSerializable, Serializable {
             false,    // is fhir
             // request transform classes
             Arrays.asList(
-                    "gov.nist.toolkit.simulators.proxy.transforms.MhdToXdsEndpointTransform",
-                    "gov.nist.toolkit.simulators.proxy.transforms.MhdToPnrContentTransform"
+                    "gov.nist.toolkit.fhir.simulators.proxy.transforms.MhdToXdsEndpointTransform",
+                    "gov.nist.toolkit.fhir.simulators.proxy.transforms.MhdToPnrContentTransform"
             ),
             // response transform classes
             Arrays.asList(
-                    "gov.nist.toolkit.simulators.proxy.transforms.RegistryResponseToOperationOutcomeTransform"
+                    "gov.nist.toolkit.fhir.simulators.proxy.transforms.RegistryResponseToOperationOutcomeTransform"
             ),
             "rec",
             IheItiProfile.MHD,
