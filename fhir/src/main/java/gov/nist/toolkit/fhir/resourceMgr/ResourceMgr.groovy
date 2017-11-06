@@ -1,8 +1,8 @@
 package gov.nist.toolkit.fhir.resourceMgr
 
-import org.hl7.fhir.dstu3.model.Bundle
-import org.hl7.fhir.dstu3.model.DomainResource
-
+import gov.nist.toolkit.fhir.validators.BundleFullUrlValidator
+import gov.nist.toolkit.utilities.id.UuidAllocator
+import org.hl7.fhir.dstu3.model.*
 /**
  *
  */
@@ -10,7 +10,95 @@ class ResourceMgr {
     Bundle bundle
     // Object is some Resource type
     def resources = [:]   // url -> resource
+    int newIdCounter = 1
+
+    // for current resource
     def containedResources = [:]
+    def fullUrl
+
+    // resource cache mgr
+    ResourceCacheMgr resourceCacheMgr = null
+
+    ResourceMgr() {
+        bundle = null
+    }
+
+    ResourceMgr(Bundle bundle) {
+        this.bundle = bundle
+        if (bundle)
+            parseBundle()
+    }
+
+    def addResourceCacheMgr(ResourceCacheMgr resourceCacheMgr) {
+        this.resourceCacheMgr = resourceCacheMgr
+    }
+
+    def parseBundle() {
+        bundle.getEntry().each { Bundle.BundleEntryComponent component ->
+            if (component.hasResource()) {
+                assignId(component.getResource())
+                addResource(component.fullUrl, component.getResource())
+            }
+        }
+        println toString()
+        bundleValidations(bundle)
+    }
+
+    def bundleValidations(Bundle bundle) {
+        fullUrlValidation(bundle)
+    }
+
+    def fullUrlValidation(Bundle bundle) {
+        bundle.getEntry().each { Bundle.BundleEntryComponent component ->
+            new BundleFullUrlValidator(component, null)
+        }
+    }
+
+    def currentResource(resource) {
+        clearContainedResources()
+        assert resource instanceof DomainResource
+        def contained = resource.contained
+        contained?.each { Resource r ->
+            addContainedResource(r)
+        }
+
+        fullUrl = url(resource)
+    }
+
+    def hexChars = ('0'..'9') + ('a'..'f')
+    boolean isUUID(String u) {
+        if (u.startsWith('urn:uuid:')) return true
+        try {
+            int total = 0
+            total += (0..7).sum { (hexChars.contains(u[it])) ? 0 : 1 }
+            total += (9..12).sum { (hexChars.contains(u[it])) ? 0 : 1 }
+            total += (14..17).sum { (hexChars.contains(u[it])) ? 0 : 1 }
+            total += (19..22).sum { (hexChars.contains(u[it])) ? 0 : 1 }
+            total += (24..35).sum { (hexChars.contains(u[it])) ? 0 : 1 }
+            total += (u[8]) ? 0 : 1
+            total += (u[13]) ? 0 : 1
+            total += (u[18]) ? 0 : 1
+            total += (u[23]) ? 0 : 1
+            return total == 0
+        } catch (Exception e) {
+            return false
+        }
+    }
+
+    // TODO needs to be real UUID
+    String assignId(Resource resource) {
+        if (!resource.id || isUUID(resource.id)) {
+            if (resource instanceof DocumentReference)
+                resource.id = UuidAllocator.allocate()  //'Document_' + newId()
+            else if (resource instanceof DocumentManifest)
+                resource.id = UuidAllocator.allocate()   // 'SubmissionSet_' + newId()
+            else
+                resource.id = newId()
+        }
+        return resource.id
+    }
+
+    def newId() { String.format("ID%02d", newIdCounter++) }
 
     String toString() {
         StringBuilder buf = new StringBuilder()
@@ -44,6 +132,10 @@ class ResourceMgr {
         return null
     }
 
+    List getResourceObjects() {
+        resources.values() as List
+    }
+
     def addResource(url, resource) {
         resources[url] = resource
     }
@@ -62,15 +154,26 @@ class ResourceMgr {
         return containedResources[id]
     }
 
+    def url(resource) {
+        resources.entrySet().find { Map.Entry entry ->
+            entry.value == resource
+        }.key
+    }
+
+
     /**
      *
      * @param type
      * @return list of [url, Resource]
      */
-    def getAllOfType(type) {
+    def getResourcesByType(type) {
         def all = []
         resources.each { url, resource -> if (type == resource.class.simpleName) all.add([url, resource])}
         all
+    }
+
+    def resolveReference(String referenceUrl) {
+        resolveReference(fullUrl, referenceUrl, true, false)
     }
 
     /**
@@ -104,6 +207,9 @@ class ResourceMgr {
             def url = rebase(containingUrl, referenceUrl)
             if (resources[url])
                 return [url, resources[url]]
+            def resource = resourceCacheMgr.getResource(url)
+            if (resource)
+                return [url, resource]
         }
         [null, null]
     }
@@ -148,10 +254,12 @@ class ResourceMgr {
     }
 
     static boolean isRelative( url) {
+        assert url
         url && !url.startsWith('http') && url.split('/').size() ==2
     }
 
     static boolean isAbsolute(url) {
+        assert url
         url.startsWith('http')
     }
 

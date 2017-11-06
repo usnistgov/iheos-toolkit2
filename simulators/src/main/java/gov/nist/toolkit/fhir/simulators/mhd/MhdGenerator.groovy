@@ -1,18 +1,17 @@
 package gov.nist.toolkit.fhir.simulators.mhd
 
+import gov.nist.toolkit.errorrecording.ErrorRecorder
+import gov.nist.toolkit.errorrecording.GwtErrorRecorderBuilder
 import gov.nist.toolkit.fhir.resourceMgr.ResourceCacheMgr
 import gov.nist.toolkit.fhir.resourceMgr.ResourceMgr
-import gov.nist.toolkit.fhir.simulators.fhir.validators.BundleFullUrlValidator
 import gov.nist.toolkit.fhir.simulators.mhd.errors.ResourceNotAvailable
 import gov.nist.toolkit.fhir.simulators.proxy.util.SimProxyBase
-import gov.nist.toolkit.utilities.id.UuidAllocator
 import groovy.xml.MarkupBuilder
 import org.hl7.fhir.dstu3.model.*
 import org.hl7.fhir.dstu3.model.codesystems.DocumentReferenceStatus
 import org.hl7.fhir.instance.model.api.IBaseResource
 
 import java.text.SimpleDateFormat
-
 /**
  *
  */
@@ -36,11 +35,11 @@ import java.text.SimpleDateFormat
 
 class MhdGenerator {
     ErrorLogger errorLogger = new ErrorLogger()
-    int newIdCounter = 1
     ResourceCacheMgr resourceCacheMgr
     SimProxyBase proxyBase
-
-    ResourceMgr rMgr = new ResourceMgr()
+    GwtErrorRecorderBuilder gerb = new GwtErrorRecorderBuilder();
+    ErrorRecorder er = gerb.buildNewErrorRecorder()
+    ResourceMgr rMgr
 
     MhdGenerator(SimProxyBase proxyBase, ResourceCacheMgr resourceCacheMgr1) {
         this.proxyBase = proxyBase
@@ -48,11 +47,8 @@ class MhdGenerator {
     }
 
     def clear() {
-        rMgr = new ResourceMgr()
         errorLogger = new ErrorLogger()
     }
-
-    def newId() { String.format("ID%02d", newIdCounter++) }
 
     static String translateDateTime(Date theDate) {
         // TODO - hour is not right - don't know why
@@ -69,12 +65,12 @@ class MhdGenerator {
         return utcTime
     }
 
-    static trimTrailingZeros(String input) {
-        while (input.size() > 0 && input[input.size()-1] == '0') {
-            input = input.substring(0, input.size()-1)
-        }
-        input
-    }
+//    static trimTrailingZeros(String input) {
+//        while (input.size() > 0 && input[input.size()-1] == '0') {
+//            input = input.substring(0, input.size()-1)
+//        }
+//        input
+//    }
 
     static Identifier getOfficial(List<Identifier> identifiers) {
         if (identifiers.size() ==1) return identifiers[0]
@@ -83,27 +79,6 @@ class MhdGenerator {
 
     static boolean isUuidUrn(ref) {
         ref.startsWith('urn:uuid') || ref.startsWith('urn:oid')
-    }
-
-
-    def hexChars = ('0'..'9') + ('a'..'f')
-    boolean isUUID(String u) {
-        if (u.startsWith('urn:uuid:')) return true
-        try {
-            int total = 0
-            total += (0..7).sum { (hexChars.contains(u[it])) ? 0 : 1 }
-            total += (9..12).sum { (hexChars.contains(u[it])) ? 0 : 1 }
-            total += (14..17).sum { (hexChars.contains(u[it])) ? 0 : 1 }
-            total += (19..22).sum { (hexChars.contains(u[it])) ? 0 : 1 }
-            total += (24..35).sum { (hexChars.contains(u[it])) ? 0 : 1 }
-            total += (u[8]) ? 0 : 1
-            total += (u[13]) ? 0 : 1
-            total += (u[18]) ? 0 : 1
-            total += (u[23]) ? 0 : 1
-            return total == 0
-        } catch (Exception e) {
-            return false
-        }
     }
 
     static asUUID(String uuid) {
@@ -185,20 +160,20 @@ class MhdGenerator {
         }
     }
 
-    def getEntryUuidValue(fullUrl, List<Identifier> identifier) {
-        if (fullUrl && ResourceMgr.isAbsolute(fullUrl))  {
-            def id = ResourceMgr.resourceIdFromUrl(fullUrl)
-            if (isUUID(id)) {
-                return asUUID(id)
-            }
-        }
-        if (identifier) {
-            Identifier officialEntryUuidId = getOfficial(identifier)
-            if (officialEntryUuidId) return officialEntryUuidId.value
-        }
-        if (fullUrl && isUuidUrn(fullUrl)) return fullUrl
-        return newId()
-    }
+//    def getEntryUuidValue(fullUrl, List<Identifier> identifier) {
+//        if (fullUrl && ResourceMgr.isAbsolute(fullUrl))  {
+//            def id = ResourceMgr.resourceIdFromUrl(fullUrl)
+//            if (isUUID(id)) {
+//                return asUUID(id)
+//            }
+//        }
+//        if (identifier) {
+//            Identifier officialEntryUuidId = getOfficial(identifier)
+//            if (officialEntryUuidId) return officialEntryUuidId.value
+//        }
+//        if (fullUrl && isUuidUrn(fullUrl)) return fullUrl
+//        return newId()
+//    }
 
     static getStatus(obj) {
         (obj?.status == DocumentReferenceStatus.SUPERSEDED) ? 'urn:oasis:names:tc:ebxml-regrep:StatusType:Deprecated' : 'urn:oasis:names:tc:ebxml-regrep:StatusType:Approved'
@@ -236,7 +211,7 @@ class MhdGenerator {
 
     def addClassificationFromCoding(builder, Coding coding, scheme, classifiedObjectId) {
         assert coding
-        addClassification(builder, scheme, newId(), classifiedObjectId, coding.code, coding.system, coding.display)
+        addClassification(builder, scheme, rMgr.newId(), classifiedObjectId, coding.code, coding.system, coding.display)
     }
 
     def addDocument(builder, drId, contentId) {
@@ -297,7 +272,7 @@ class MhdGenerator {
                 addClassificationFromCodeableConcept(builder, dr.context.event, 'urn:uuid:2c6b8cb7-8b2a-4051-b291-b1ae6a575ef4', drId)
 
             if (dr.masterIdentifier?.value)
-                addExternalIdentifier(builder, 'urn:uuid:2e82c1f6-a085-4c72-9da3-8640a32e42ab', unURN(dr.masterIdentifier.value), newId(), drId, 'XDSDocumentEntry.uniqueId')
+                addExternalIdentifier(builder, 'urn:uuid:2e82c1f6-a085-4c72-9da3-8640a32e42ab', unURN(dr.masterIdentifier.value), rMgr.newId(), drId, 'XDSDocumentEntry.uniqueId')
 
             if (dr.subject)
                 addSubject(builder, fullUrl, drId, 'urn:uuid:58a6f841-87b3-4a3e-92fd-a8ffeff98427', dr.subject, 'XDSDocumentEntry.patientId')
@@ -368,7 +343,7 @@ class MhdGenerator {
         String oid = unURN(system)
         def pid = "${value}^^^&${oid}&ISO"
 
-        addExternalIdentifier(builder, scheme, pid, newId(), containingObjectId, attName)
+        addExternalIdentifier(builder, scheme, pid, rMgr.newId(), containingObjectId, attName)
     }
 
 
@@ -406,6 +381,7 @@ class MhdGenerator {
 
     def addSubmissionSet(builder, fullUrl, dm) {
         String dmId = dm.id // getEntryUuidValue(fullUrl, dm.identifier)
+        er.detail("New SubmissionSet(${dmId})")
         builder.RegistryPackage(
                 id: dmId,
                 objectType: 'urn:oasis:names:tc:ebxml-regrep:ObjectType:RegistryObject:RegistryPackage',
@@ -435,16 +411,16 @@ class MhdGenerator {
             if (dm.description)
                 addName(builder, dm.description)
 
-            addClassification(builder, 'urn:uuid:a54d6aa5-d40d-43f9-88c5-b4633d873bdd', newId(), dmId)
+            addClassification(builder, 'urn:uuid:a54d6aa5-d40d-43f9-88c5-b4633d873bdd', rMgr.newId(), dmId)
 
             if (dm.type)
                 addClassificationFromCodeableConcept(builder, dm.type, 'urn:uuid:aa543740-bdda-424e-8c96-df4873be8500', dmId)
 
             if (dm.masterIdentifier?.value)
-                addExternalIdentifier(builder, 'urn:uuid:96fdda7c-d067-4183-912e-bf5ee74998a8', unURN(dm.masterIdentifier.value), newId(), dmId, 'XDSSubmissionSet.uniqueId')
+                addExternalIdentifier(builder, 'urn:uuid:96fdda7c-d067-4183-912e-bf5ee74998a8', unURN(dm.masterIdentifier.value), rMgr.newId(), dmId, 'XDSSubmissionSet.uniqueId')
 
             if (dm.source?.value) {
-                addExternalIdentifier(builder, 'urn:uuid:554ac39e-e3fe-47fe-b233-965d2a147832', unURN(dm.source), newId(), dmId, 'XDSSubmissionSet.sourceId')
+                addExternalIdentifier(builder, 'urn:uuid:554ac39e-e3fe-47fe-b233-965d2a147832', unURN(dm.source), rMgr.newId(), dmId, 'XDSSubmissionSet.sourceId')
             }
 
             if (dm.subject)
@@ -459,7 +435,7 @@ class MhdGenerator {
                 targetObject: "${target}",
                 associationType: "${type}",
                 objectType: 'urn:oasis:names:tc:ebxml-regrep:ObjectType:RegistryObject:Association',
-                id: "${newId()}"
+                id: "${rMgr.newId()}"
         ) {
             if (slotName) {
                 addSlot(xml, slotName, slotValues)
@@ -478,62 +454,25 @@ class MhdGenerator {
         }
     }
 
-    def loadContained(resource) {
-        rMgr.clearContainedResources()
-        assert resource instanceof DomainResource
-        def contained = resource.contained
-        contained?.each { Resource r ->
-            rMgr.addContainedResource(r)
-        }
-    }
 
-    // TODO needs to be real UUID
-    String assignId(Resource resource) {
-        if (!resource.id || isUUID(resource.id)) {
-            if (resource instanceof DocumentReference)
-                resource.id = UuidAllocator.allocate()  //'Document_' + newId()
-            else if (resource instanceof DocumentManifest)
-                resource.id = UuidAllocator.allocate()   // 'SubmissionSet_' + newId()
-            else
-                resource.id = newId()
-        }
-        return resource.id
-    }
 
     def loadBundle(IBaseResource bundle) {
         assert bundle
         assert bundle instanceof Bundle
         assert bundle.type == Bundle.BundleType.TRANSACTION
 
-        bundle.getEntry().each { Bundle.BundleEntryComponent component ->
-            if (component.hasResource()) {
-                assignId(component.getResource())
-                rMgr.addResource(component.fullUrl, component.getResource())
-            }
-        }
-        println rMgr.toString()
-        bundleValidations(bundle)
-    }
-
-    def bundleValidations(Bundle bundle) {
-        fullUrlValidation(bundle)
-    }
-
-    def fullUrlValidation(Bundle bundle) {
-        bundle.getEntry().each { Bundle.BundleEntryComponent component ->
-            new BundleFullUrlValidator(component, null)
-        }
+        rMgr = new ResourceMgr(bundle)
     }
 
     // only used for unit test
     def translateResource(def xml, Resource resource) {
         assert (resource instanceof DocumentManifest) || (resource instanceof DocumentReference)
-        loadContained(resource)
+        rMgr.currentResource(resource)
         if (resource instanceof DocumentManifest) {
-            assignId(resource)
+            rMgr.assignId(resource)
             addSubmissionSet(xml, resource.getId(), resource)
         } else if (resource instanceof DocumentReference) {
-            assignId(resource)
+            rMgr.assignId(resource)
             addExtrinsicObject(xml, resource.getId(), resource)
         }
     }
@@ -550,22 +489,21 @@ class MhdGenerator {
         loadBundle(bundle)
 
         xml.RegistryObjectList(xmlns: 'urn:oasis:names:tc:ebxml-regrep:xsd:rim:3.0') {
-            rMgr.getAllOfType('DocumentManifest').each { url, resource ->
-                assignId(resource)
-                loadContained(resource)
+            rMgr.getResourcesByType('DocumentManifest').each { url, resource ->
+                rMgr.assignId(resource)
+                rMgr.currentResource(resource)
                 DocumentManifest dm = (DocumentManifest) resource
                 addSubmissionSet(xml, dm.getId(), dm)
                 if (isSubmission)
                     addSubmissionSetAssociations(xml, dm)
             }
-            rMgr.getAllOfType('DocumentReference').each { url, resource ->
-                assignId(resource)
-                loadContained(resource)
+            rMgr.getResourcesByType('DocumentReference').each { url, resource ->
+                rMgr.assignId(resource)
+                rMgr.currentResource(resource)
                 DocumentReference dr = (DocumentReference) resource
                 def (ref, binary) = rMgr.resolveReference(url, dr.content[0].attachment.url, true, false)
                 assert binary instanceof Binary
                 addExtrinsicObject(xml, dr.getId(), dr)
-
             }
         }
     }
@@ -597,17 +535,17 @@ class MhdGenerator {
         xml.RegistryObjectList(xmlns: 'urn:oasis:names:tc:ebxml-regrep:xsd:rim:3.0') {
             rMgr.resources.each { url, resource ->
                 if (resource instanceof DocumentManifest) {
-                    assignId(resource)
+                    rMgr.assignId(resource)
                     proxyBase.resourcesSubmitted << resource
-                    loadContained(resource)
+                    rMgr.currentResource(resource)
                     DocumentManifest dm = (DocumentManifest) resource
                     addSubmissionSet(xml, dm.getId(), dm)
                     addSubmissionSetAssociations(xml, dm)
                 }
                 if (resource instanceof DocumentReference) {
-                    assignId(resource)
+                    rMgr.assignId(resource)
                     proxyBase.resourcesSubmitted << resource
-                    loadContained(resource)
+                    rMgr.currentResource(resource)
                     DocumentReference dr = (DocumentReference) resource
                     def (ref, binary) = rMgr.resolveReference(url, dr.content[0].attachment.url, true, false)
                     assert binary instanceof Binary

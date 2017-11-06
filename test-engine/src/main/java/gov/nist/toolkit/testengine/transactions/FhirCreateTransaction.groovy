@@ -3,15 +3,14 @@ package gov.nist.toolkit.testengine.transactions
 import ca.uhn.fhir.context.FhirContext
 import gov.nist.toolkit.fhir.resourceMgr.ResourceCache
 import gov.nist.toolkit.testengine.engine.StepContext
+import gov.nist.toolkit.testengine.engine.UniqueIdAllocator
 import gov.nist.toolkit.testengine.fhir.FhirClient
 import gov.nist.toolkit.testengine.fhir.FhirId
 import gov.nist.toolkit.xdsexception.client.MetadataException
 import gov.nist.toolkit.xdsexception.client.XdsInternalException
 import org.apache.axiom.om.OMElement
 import org.apache.http.message.BasicStatusLine
-import org.hl7.fhir.dstu3.model.Bundle
-import org.hl7.fhir.dstu3.model.CodeableConcept
-import org.hl7.fhir.dstu3.model.OperationOutcome
+import org.hl7.fhir.dstu3.model.*
 import org.hl7.fhir.instance.model.api.IBaseResource
 /**
  *
@@ -21,9 +20,27 @@ class FhirCreateTransaction extends BasicFhirTransaction {
         super(s_ctx, instruction, instruction_output)
     }
 
+    def updateMasterIdentifier(def resource) {
+        if ((resource instanceof DocumentManifest) || (resource instanceof DocumentReference)) {
+            Identifier id = resource.getMasterIdentifier()
+            id.value = UniqueIdAllocator.getInstance(null).allocate()
+            resource.masterIdentifier = id
+        } else if (resource instanceof Bundle) {
+            Bundle bundle = resource
+            bundle.entry.each { Bundle.BundleEntryComponent comp ->
+                Resource res = comp.getResource()
+                updateMasterIdentifier(res)
+            }
+        }
+    }
+
     @Override
     void doRun(IBaseResource resource, String urlExtension) {
         assert endpoint, 'TestClient:FhirCreateTransaction: endpoint is null'
+
+        // assign new new masterIdentifier to all DocumentRefernce and Documeent Manifest objects
+        if (resource instanceof Resource)
+            updateMasterIdentifier(resource)
 
         if (urlExtension && !urlExtension.startsWith('/'))
             urlExtension = "/${urlExtension}"

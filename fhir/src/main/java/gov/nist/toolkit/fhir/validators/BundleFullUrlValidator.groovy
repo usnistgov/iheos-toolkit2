@@ -1,4 +1,4 @@
-package gov.nist.toolkit.fhir.simulators.fhir.validators
+package gov.nist.toolkit.fhir.validators
 
 import org.hl7.fhir.dstu3.model.Bundle
 import org.hl7.fhir.dstu3.model.Resource

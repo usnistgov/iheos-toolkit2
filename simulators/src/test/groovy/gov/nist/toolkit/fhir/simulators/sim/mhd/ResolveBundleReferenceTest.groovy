@@ -98,7 +98,7 @@ class ResolveBundleReferenceTest extends Specification {
         u.rMgr.addResource('url', dr)
 
         when:
-        def all = u.rMgr.getAllOfType('DocumentReference')
+        def all = u.rMgr.getResourcesByType('DocumentReference')
 
         then:
         all == [['url', dr]]

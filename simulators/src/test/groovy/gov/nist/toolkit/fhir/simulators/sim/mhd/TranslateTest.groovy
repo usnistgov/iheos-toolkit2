@@ -100,14 +100,14 @@ class TranslateTest extends Specification {
         u.translateBundle(xml, bundle, true)
 
         and:
-        DocumentReference dr = u.rMgr.getAllOfType('DocumentReference')[0][1]    // returns List of [url, Resource]
+        DocumentReference dr = u.rMgr.getResourcesByType('DocumentReference')[0][1]    // returns List of [url, Resource]
         def xmlText = writer.toString()
         println xmlText
         def ol = new XmlSlurper().parseText(xmlText)
 
         then:
-        u.rMgr.getAllOfType('DocumentReference').size() == 1
-        u.rMgr.getAllOfType('Binary').size() == 1
+        u.rMgr.getResourcesByType('DocumentReference').size() == 1
+        u.rMgr.getResourcesByType('Binary').size() == 1
 
         '20130701' == u.translateDateTime(dr.indexed).substring(0, 8)
 //        '20130701231133' == utcTime   // this tests for "wrong" hour
@@ -137,7 +137,7 @@ class TranslateTest extends Specification {
         u.translateBundle(xml, bundle, true)
 
         and:
-        DocumentReference dr = u.rMgr.getAllOfType('DocumentReference')[0][1]
+        DocumentReference dr = u.rMgr.getResourcesByType('DocumentReference')[0][1]
         def xmlText = writer.toString()
         println xmlText
         def ol = new XmlSlurper().parseText(xmlText)
@@ -149,8 +149,8 @@ class TranslateTest extends Specification {
 
         u.errorLogger.size() == 0
 
-        u.rMgr.getAllOfType('DocumentReference').size() == 1
-        u.rMgr.getAllOfType('Binary').size() == 1
+        u.rMgr.getResourcesByType('DocumentReference').size() == 1
+        u.rMgr.getResourcesByType('Binary').size() == 1
 
         '20130701' == u.translateDateTime(dr.indexed).substring(0, 8)
 //        '20130701231133' == utcTime   // this tests for "wrong" hour
@@ -181,7 +181,7 @@ class TranslateTest extends Specification {
 //        u.translateBundle(xml, bundle, true)
 //
 //        and:
-//        DocumentReference dr = u.rMgr.getAllOfType('DocumentReference')[0][1]
+//        DocumentReference dr = u.rMgr.getResourcesByType('DocumentReference')[0][1]
 //        def xmlText = writer.toString()
 //        println xmlText
 //        def ol = new XmlSlurper().parseText(xmlText)
@@ -193,8 +193,8 @@ class TranslateTest extends Specification {
 //
 //        u.errorLogger.size() == 0
 //
-//        u.rMgr.getAllOfType('DocumentReference').size() == 1
-//        u.rMgr.getAllOfType('Binary').size() == 1
+//        u.rMgr.getResourcesByType('DocumentReference').size() == 1
+//        u.rMgr.getResourcesByType('Binary').size() == 1
 //
 //        '20130701' == u.translateDateTime(dr.indexed).substring(0, 8)
 ////        '20130701231133' == utcTime   // this tests for "wrong" hour
@@ -225,7 +225,7 @@ class TranslateTest extends Specification {
 //        u.translateBundle(xml, bundle, true)
 //
 //        and:
-//        DocumentReference dr = u.rMgr.getAllOfType('DocumentReference')[0][1]
+//        DocumentReference dr = u.rMgr.getResourcesByType('DocumentReference')[0][1]
 //        def xmlText = writer.toString()
 //        println xmlText
 //        def ol = new XmlSlurper().parseText(xmlText)

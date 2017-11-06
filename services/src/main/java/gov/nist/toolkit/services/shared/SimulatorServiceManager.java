@@ -184,7 +184,12 @@ public class SimulatorServiceManager extends CommonService {
 
 			String body = new String(Io.bytesFromFile(bodyFile));
 			body = MessageBuilder.formatMessage(body);
-			return subParseMessage(new Message(Io.stringFromFile(headerFile), body));
+			String header;
+			if (headerFile.exists())
+				header = Io.stringFromFile(headerFile);
+			else
+				header = "";
+			return subParseMessage(new Message(header, body));
 		} catch (Exception e) {
 			return new Message("Error: " + e.getMessage());
 		}
@@ -193,9 +198,11 @@ public class SimulatorServiceManager extends CommonService {
 	private Message subParseMessage(Message message) {
 		try {
 			IBaseResource resource = ResourceParser.parse(message.getParts().get(1));
-			return new MessageBuilder().build(resource);
+			Message message2 = new MessageBuilder().build(resource);
+			message2.getParts().set(0, message.getParts().get(0));
+			return message2;
 		} catch (Exception e) {
-			logger.error("Cannot parse FHIR message for display: " + ExceptionUtil.exception_details(e));
+			logger.info("Message not FHIR format");
 		}
 		return message;
 	}
@@ -218,9 +225,12 @@ public class SimulatorServiceManager extends CommonService {
 
 			String body = new String(Io.bytesFromFile(bodyFile));
 			body = MessageBuilder.formatMessage(body);
-			return subParseMessage(new Message(
-					((headerFile.exists()) ? Io.stringFromFile(headerFile) : "")
-							, body));
+			String header;
+			if (headerFile.exists())
+				header = Io.stringFromFile(headerFile);
+			else
+				header = "";
+			return subParseMessage(new Message(header, body));
 		} catch (Exception e) {
 			return new Message("Error: " + e.getMessage());
 		}

@@ -31,13 +31,15 @@ public abstract class IdAllocator {
 	//
 
 	public IdAllocator(TestConfig config) {
-		testConfig = config;
-		mgmt_dir = testConfig.testmgmt_dir;
-		patientIdFile = new File(mgmt_dir +  File.separator + "patientid.txt");
-		altPatientIdFile = new File(mgmt_dir +  File.separator + "patientid_alt.txt");
-		uniqueIdBaseFile = new File(mgmt_dir +  File.separator + "uniqueid_base.txt");
-		uniqueIdIncrFile = new File(mgmt_dir +  File.separator + "uniqueid_incr.txt");
-		sourceIdFile = new File(mgmt_dir +  File.separator + "sourceid.txt");
+		if (config != null) {
+			testConfig = config;
+			mgmt_dir = testConfig.testmgmt_dir;
+			patientIdFile = new File(mgmt_dir + File.separator + "patientid.txt");
+			altPatientIdFile = new File(mgmt_dir + File.separator + "patientid_alt.txt");
+			uniqueIdBaseFile = new File(mgmt_dir + File.separator + "uniqueid_base.txt");
+			uniqueIdIncrFile = new File(mgmt_dir + File.separator + "uniqueid_incr.txt");
+			sourceIdFile = new File(mgmt_dir + File.separator + "sourceid.txt");
+		}
 	}
 
 	IdAllocator() {}

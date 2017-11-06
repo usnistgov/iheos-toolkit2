@@ -3,6 +3,7 @@ package gov.nist.toolkit.fhir.simulators.proxy.transforms
 import ca.uhn.fhir.context.FhirContext
 import gov.nist.toolkit.configDatatypes.client.TransactionType
 import gov.nist.toolkit.fhir.resourceMgr.ResourceCache
+import gov.nist.toolkit.fhir.resourceMgr.ResourceCacheMgr
 import gov.nist.toolkit.fhir.simulators.mhd.Attachment
 import gov.nist.toolkit.fhir.simulators.mhd.MhdGenerator
 import gov.nist.toolkit.fhir.simulators.mhd.Submission
@@ -11,7 +12,6 @@ import gov.nist.toolkit.fhir.simulators.proxy.util.ContentRequestTransform
 import gov.nist.toolkit.fhir.simulators.proxy.util.MtomContentTypeGenerator
 import gov.nist.toolkit.fhir.simulators.proxy.util.PartSpec
 import gov.nist.toolkit.fhir.simulators.proxy.util.SimProxyBase
-import gov.nist.toolkit.installation.Installation
 import gov.nist.toolkit.utilities.io.Io
 import org.apache.http.Header
 import org.apache.http.HttpRequest
@@ -20,7 +20,6 @@ import org.apache.http.message.BasicHttpEntityEnclosingRequest
 import org.apache.log4j.Logger
 import org.hl7.fhir.dstu3.model.Bundle
 import org.hl7.fhir.instance.model.api.IBaseResource
-
 /**
  *
  */
@@ -47,7 +46,7 @@ class MhdToPnrContentTransform implements ContentRequestTransform {
             resource = ctx.newJsonParser().parseResource(new String(clientContent))
         assert resource instanceof Bundle
         Bundle bundle = resource
-        Submission s = new MhdGenerator(base, Installation.instance().resourceCacheMgr()).buildSubmission(bundle)
+        Submission s = new MhdGenerator(base, ResourceCacheMgr.instance()).buildSubmission(bundle)
         assert s.attachments.size() > 0
         List<PartSpec> parts = []
         parts << new PartSpec('application/xop+xml; charset=UTF-8; type="application/soap+xml"', s.metadataInSoapWrapper(), s.contentId)

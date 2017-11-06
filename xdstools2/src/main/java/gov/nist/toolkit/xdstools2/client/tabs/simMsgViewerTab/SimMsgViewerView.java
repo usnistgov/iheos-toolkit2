@@ -365,12 +365,12 @@ public class SimMsgViewerView extends AbstractView<SimMsgViewerPresenter> {
     private void setMessageDetail(String tabName, Message message) {
         Tab tab = getTab(tabName);
         tab.menuPanel.clear();
-        if (message.hasSubMessages()){
+//        if (message.hasSubMessages()){
             MessageDisplay messageDisplay = new MessageDisplay(message);
 
             tab.menuPanel.add(messageDisplay.getMenuPanel());
             tab.getContentPanel().add(messageDisplay.getContentPanel());
-        }
+//        }
     }
 
     void setLogDetail(String details) {
