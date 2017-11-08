@@ -4,7 +4,7 @@
         <ExpectedStatus>Success</ExpectedStatus>
         <ProvideDocumentBundleTransaction>
             <ResourceFile>singledocsubmit.xml</ResourceFile>
-            <UrlExtension>/fhir</UrlExtension>
+            <UrlExtension>/pdb</UrlExtension>
         </ProvideDocumentBundleTransaction>
     </TestStep>
 </TestPlan>

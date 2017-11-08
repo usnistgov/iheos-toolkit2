@@ -4,6 +4,7 @@ import gov.nist.toolkit.actortransaction.client.ActorType
 import gov.nist.toolkit.actortransaction.client.TransactionInstance
 import gov.nist.toolkit.configDatatypes.client.Pid
 import gov.nist.toolkit.configDatatypes.client.TransactionType
+import gov.nist.toolkit.errorrecording.GwtErrorRecorder
 import gov.nist.toolkit.http.*
 import gov.nist.toolkit.installation.Installation
 import gov.nist.toolkit.simcommon.client.BadSimIdException
@@ -193,6 +194,8 @@ public class SimDb {
 	}
 
 	void openMostRecentEvent(String actor, String transaction) {
+		this.actor = ActorType.findActor(actor).shortName
+		this.transaction = TransactionType.find(transaction).shortName
 		transactionDir = transactionDirectory(actor, transaction)
 		def trans = transactionDir.listFiles()
 		String eventFullPath = (trans.size()) ? trans.sort().last() : null
@@ -931,6 +934,10 @@ public class SimDb {
 		if (!f.exists())
 			throw new IOException("SimDB: Do not understand filename " + f);
 		return Io.bytesFromFile(f);
+	}
+
+	void logErrorRecorder(GwtErrorRecorder er) {
+		Io.stringToFile(getLogFile(), er.toString())
 	}
 
 	public File getLogFile() {

@@ -346,7 +346,8 @@ public abstract class AbstractActorFactory {
 //				+ "/sim/"
 				+ ((isSimProxy) ? "/sim/" : "/fsim/")
 				+ asc.getId()
-				+ "/fhir"
+//				+ "/fhir"
+				+ "/" + actor
 				;
 	}
 

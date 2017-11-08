@@ -10,12 +10,12 @@ import gov.nist.toolkit.results.client.AssertionResult
 import gov.nist.toolkit.results.client.Result
 import gov.nist.toolkit.results.client.TestInstance
 import gov.nist.toolkit.simcommon.client.SimId
+import gov.nist.toolkit.simcommon.server.SimDb
 import gov.nist.toolkit.testengine.engine.FhirSimulatorTransaction
 import gov.nist.toolkit.testengine.scripts.BuildCollections
 import gov.nist.toolkit.toolkitApi.SimulatorBuilder
 import gov.nist.toolkit.toolkitServicesCommon.SimConfig
 import gov.nist.toolkit.toolkitServicesCommon.ToolkitFactory
-import gov.nist.toolkit.toolkitServicesCommon.resource.SimIdResource
 import spock.lang.Shared
 /**
  * Test SimProxy with MHD -> XDS transformation as front end to RegRepSpec simulator
@@ -82,6 +82,11 @@ class MhdSimProxySpec extends ToolkitSpecification {
         def sections = ['pdb']
         def params = [ :]
         List<Result> results = api.runTest(testSession, mhdName, testInstance, sections, params, true)
+
+        and:
+        SimDb simDb = new SimDb(mhdSimId)
+        simDb.openMostRecentEvent(ActorType.MHD_DOC_RECIPIENT, TransactionType.PROV_DOC_BUNDLE)
+        println simDb.getLogFile().text
 
         then:
         results.size() == 1

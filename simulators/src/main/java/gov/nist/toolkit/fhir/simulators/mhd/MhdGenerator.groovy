@@ -1,9 +1,10 @@
 package gov.nist.toolkit.fhir.simulators.mhd
 
-import gov.nist.toolkit.errorrecording.ErrorRecorder
+import gov.nist.toolkit.errorrecording.GwtErrorRecorder
 import gov.nist.toolkit.errorrecording.GwtErrorRecorderBuilder
 import gov.nist.toolkit.fhir.resourceMgr.ResourceCacheMgr
 import gov.nist.toolkit.fhir.resourceMgr.ResourceMgr
+import gov.nist.toolkit.fhir.simulators.mhd.Attachment
 import gov.nist.toolkit.fhir.simulators.mhd.errors.ResourceNotAvailable
 import gov.nist.toolkit.fhir.simulators.proxy.util.SimProxyBase
 import groovy.xml.MarkupBuilder
@@ -38,12 +39,13 @@ class MhdGenerator {
     ResourceCacheMgr resourceCacheMgr
     SimProxyBase proxyBase
     GwtErrorRecorderBuilder gerb = new GwtErrorRecorderBuilder();
-    ErrorRecorder er = gerb.buildNewErrorRecorder()
+    GwtErrorRecorder er = gerb.buildNewErrorRecorder()
     ResourceMgr rMgr
 
     MhdGenerator(SimProxyBase proxyBase, ResourceCacheMgr resourceCacheMgr1) {
         this.proxyBase = proxyBase
         resourceCacheMgr = resourceCacheMgr1
+        er.sectionHeading('MhdGenerator started')
     }
 
     def clear() {
@@ -461,7 +463,7 @@ class MhdGenerator {
         assert bundle instanceof Bundle
         assert bundle.type == Bundle.BundleType.TRANSACTION
 
-        rMgr = new ResourceMgr(bundle)
+        rMgr = new ResourceMgr(bundle, er)
     }
 
     // only used for unit test
@@ -506,6 +508,8 @@ class MhdGenerator {
                 addExtrinsicObject(xml, dr.getId(), dr)
             }
         }
+
+        close()
     }
 
     String translateBundle(Bundle bundle, isSubmission) {
@@ -536,6 +540,7 @@ class MhdGenerator {
             rMgr.resources.each { url, resource ->
                 if (resource instanceof DocumentManifest) {
                     rMgr.assignId(resource)
+                    er.sectionHeading("DocumentManifest(${resource.id})  URL is ${url}")
                     proxyBase.resourcesSubmitted << resource
                     rMgr.currentResource(resource)
                     DocumentManifest dm = (DocumentManifest) resource
@@ -544,10 +549,12 @@ class MhdGenerator {
                 }
                 if (resource instanceof DocumentReference) {
                     rMgr.assignId(resource)
+                    er.sectionHeading("DocumentReference(${resource.id})  URL is ${url}")
                     proxyBase.resourcesSubmitted << resource
                     rMgr.currentResource(resource)
                     DocumentReference dr = (DocumentReference) resource
                     def (ref, binary) = rMgr.resolveReference(url, dr.content[0].attachment.url, true, false)
+                    er.detail("References Binary ${ref}")
                     assert binary instanceof Binary
                     Binary b = binary
                     Attachment a = new Attachment()
@@ -571,8 +578,14 @@ class MhdGenerator {
         }
         submission.documentDefinitions = writer.toString()
 
+        close()
 
         return submission
+    }
+
+    def close() {
+        er.sectionHeading("MhdGenerator done")
+        proxyBase.simDb.logErrorRecorder(er)
     }
 
 }

@@ -100,8 +100,7 @@ class SimProxyFactory extends AbstractActorFactory implements IActorFactory{
     private boolean locked = false;
 
     /**
-     * Build Site with ALL transactions defined so we don't have to know
-     * what it will be used for
+     *
      * @param asc
      * @param site
      * @return

@@ -1,5 +1,6 @@
 package gov.nist.toolkit.fhir.resourceMgr
 
+import gov.nist.toolkit.errorrecording.ErrorRecorder
 import gov.nist.toolkit.fhir.validators.BundleFullUrlValidator
 import gov.nist.toolkit.utilities.id.UuidAllocator
 import org.hl7.fhir.dstu3.model.*
@@ -7,7 +8,7 @@ import org.hl7.fhir.dstu3.model.*
  *
  */
 class ResourceMgr {
-    Bundle bundle
+    Bundle bundle = null
     // Object is some Resource type
     def resources = [:]   // url -> resource
     int newIdCounter = 1
@@ -19,12 +20,14 @@ class ResourceMgr {
     // resource cache mgr
     ResourceCacheMgr resourceCacheMgr = null
 
+    ErrorRecorder er = null;
+
     ResourceMgr() {
-        bundle = null
     }
 
-    ResourceMgr(Bundle bundle) {
+    ResourceMgr(Bundle bundle, ErrorRecorder er) {
         this.bundle = bundle
+        this.er = er;
         if (bundle)
             parseBundle()
     }
@@ -40,7 +43,10 @@ class ResourceMgr {
                 addResource(component.fullUrl, component.getResource())
             }
         }
-        println toString()
+        if (er) {
+            er.sectionHeading('Load Resources')
+            er.detail(toString())
+        }
         bundleValidations(bundle)
     }
 
@@ -105,7 +111,7 @@ class ResourceMgr {
         buf.append("Resources:\n")
 
         resources.each { url, resource ->
-            buf.append(url).append('   ').append(resource.class.name).append('\n')
+            buf.append(url).append('   ').append(resource.class.simpleName).append('\n')
         }
         buf
     }
@@ -178,8 +184,8 @@ class ResourceMgr {
 
     /**
      *
-     * @param containingUrl
-     * @param referenceUrl
+     * @param containingUrl  (fullUrl)
+     * @param referenceUrl   (reference)
      * @return [url, Resource]
      */
     def resolveReference(String containingUrl, String referenceUrl, relativeReferenceOk, relativeReferenceRequired) {
@@ -211,6 +217,10 @@ class ResourceMgr {
             if (resource)
                 return [url, resource]
         }
+
+        // external
+
+
         [null, null]
     }
 
