@@ -35,7 +35,7 @@ class ResourceCacheMgr {
         def baseUrl = ResourceMgr.baseUrlFromUrl(fullUrl)
         ResourceCache cache = caches[baseUrl]
         if (!cache) throw new Exception("Cannot access ${fullUrl}\nNo cache defined for baseUrl ${baseUrl}\nCaches exist for ${caches.keySet()}")
-        return cache.getResource(ResourceMgr.relativeUrl(fullUrl))
+        return cache.readResource(ResourceMgr.relativeUrl(fullUrl))
     }
 
 }

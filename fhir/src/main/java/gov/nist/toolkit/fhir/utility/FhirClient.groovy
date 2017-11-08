@@ -1,5 +1,6 @@
-package gov.nist.toolkit.testengine.fhir
+package gov.nist.toolkit.fhir.utility
 
+import gov.nist.toolkit.fhir.context.ToolkitFhirContext
 import gov.nist.toolkit.utilities.io.Io
 import gov.nist.toolkit.xdsexception.ExceptionUtil
 import org.apache.http.HttpEntity
@@ -13,7 +14,7 @@ import org.apache.http.impl.client.HttpClientBuilder
 import org.apache.http.impl.client.HttpClients
 import org.apache.http.message.BasicStatusLine
 import org.apache.log4j.Logger
-
+import org.hl7.fhir.instance.model.api.IBaseResource
 /**
  *
  */
@@ -69,8 +70,20 @@ class FhirClient {
         HttpGet request = new HttpGet(uri)
         request.addHeader('Content-Type', 'application/fhir+json')
         HttpResponse response = client.execute(request)
-        return [response.statusLine, Io.getStringFromInputStream(response.getEntity().content)]
+        def statusLine = response.getStatusLine()
+        return [statusLine, Io.getStringFromInputStream(response.getEntity().content)]
     }
 
+    static IBaseResource readResource(def uri) {
+        try {
+            def (statusLine, body) = get(uri)
+            if (statusLine.statusCode != 200)
+                return null
+            return ToolkitFhirContext.get().newJsonParser().parseResource(body)
+        }
+        catch (Exception e) {
+            return null
+        }
+    }
 
 }

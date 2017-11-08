@@ -35,7 +35,7 @@ class ResolveBundleReferenceTest extends Specification {
         def ref = 'Patient/3'
 
         when:
-        def resolve = u.rMgr.resolveUrl(full, ref)
+        def resolve = ResourceMgr.resolveUrl(full, ref)
 
         then:
         resolve == 'http://example.com/fhir/Patient/3'
@@ -47,7 +47,7 @@ class ResolveBundleReferenceTest extends Specification {
         def ref = 'http://example.com/fhir/Patient/3'
 
         when:
-        def resolve = u.rMgr.resolveUrl(full, ref)
+        def resolve = ResourceMgr.resolveUrl(full, ref)
 
         then:
         resolve == ref
@@ -59,7 +59,7 @@ class ResolveBundleReferenceTest extends Specification {
         def ref = 'Patient/3'
 
         when:
-        def resolve = u.rMgr.resolveUrl(full, ref)
+        def resolve = ResourceMgr.resolveUrl(full, ref)
 
         then:
         resolve == ref
@@ -88,17 +88,18 @@ class ResolveBundleReferenceTest extends Specification {
 //        rMgr.resolveReference(fullUrl, 'urn:oid:1.2.3')[1] == bob  // local ref
 //        rMgr.resolveReference(fullUrl, 'urn:oid:1.2.4')[1] == alice  // different local ref
 //        rMgr.resolveReference(fullUrl, 'http://example.com/fhir/Person/1')[1] == internal  // in bundle
-        rMgr.resolveReference(fullUrl, 'Person/1', true, false)[1] == internal    // should get 'adopted' by full url base
-        rMgr.resolveReference(fullUrl, 'http://example.com/fhir/Person/2', true, false)[1] == null  // not available from bundle
+        rMgr.resolveReference(fullUrl, 'Person/1', true, false, false, true)[1] == internal    // should get 'adopted' by full url base
+        rMgr.resolveReference(fullUrl, 'http://example.com/fhir/Person/2', true, false, false, true)[1] == null  // not available from bundle
     }
 
     def 'get all of type' () {
         given:
+        ResourceMgr rMgr = new ResourceMgr()
         def dr = new DocumentReference()
-        u.rMgr.addResource('url', dr)
+        rMgr.addResource('url', dr)
 
         when:
-        def all = u.rMgr.getResourcesByType('DocumentReference')
+        def all = rMgr.getResourcesByType('DocumentReference')
 
         then:
         all == [['url', dr]]

@@ -4,8 +4,8 @@ import ca.uhn.fhir.context.FhirContext
 import gov.nist.toolkit.fhir.resourceMgr.ResourceCache
 import gov.nist.toolkit.testengine.engine.StepContext
 import gov.nist.toolkit.testengine.engine.UniqueIdAllocator
-import gov.nist.toolkit.testengine.fhir.FhirClient
-import gov.nist.toolkit.testengine.fhir.FhirId
+import gov.nist.toolkit.fhir.utility.FhirClient
+import gov.nist.toolkit.fhir.utility.FhirId
 import gov.nist.toolkit.xdsexception.client.MetadataException
 import gov.nist.toolkit.xdsexception.client.XdsInternalException
 import org.apache.axiom.om.OMElement

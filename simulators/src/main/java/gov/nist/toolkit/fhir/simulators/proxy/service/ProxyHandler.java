@@ -1,5 +1,6 @@
 package gov.nist.toolkit.fhir.simulators.proxy.service;
 
+import gov.nist.toolkit.fhir.simulators.proxy.util.ReturnableErrorException;
 import gov.nist.toolkit.simcommon.client.BadSimIdException;
 import gov.nist.toolkit.fhir.simulators.proxy.util.ProxyLogger;
 import gov.nist.toolkit.fhir.simulators.proxy.util.SimProxyBase;
@@ -97,6 +98,19 @@ class ProxyHandler implements HttpRequestHandler {
             // throws exception if target endpoint is not produced by one of
             // the transforms
             targetRequest = proxyBase.preProcessRequest(request);
+        } catch (ReturnableErrorException e) {
+            HttpResponse err = e.getResponse();
+            response.setStatusLine(err.getStatusLine());
+            response.setHeaders(err.getAllHeaders());
+            HttpEntity responseEntity = new BufferedHttpEntity(err.getEntity());  // re-readable
+            response.setEntity(responseEntity);
+            clientLogger.logResponse(response);
+            clientLogger.logResponseEntity(Io.getBytesFromInputStream(responseEntity.getContent()));
+            System.out.println("<< Response: " + response.getStatusLine());
+
+            final boolean keepalive = this.connStrategy.keepAlive(response, context);
+            context.setAttribute(ElementalReverseProxy.HTTP_CONN_KEEPALIVE, new Boolean(keepalive));
+            return;
         } catch (Throwable e) {
             returnInternalError(response, clientLogger, e);
             return;

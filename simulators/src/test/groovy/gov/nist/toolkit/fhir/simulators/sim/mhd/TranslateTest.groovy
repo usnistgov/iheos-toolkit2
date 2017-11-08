@@ -3,16 +3,15 @@ package gov.nist.toolkit.fhir.simulators.sim.mhd
 import ca.uhn.fhir.context.FhirContext
 import gov.nist.toolkit.fhir.resourceMgr.ResourceCache
 import gov.nist.toolkit.fhir.resourceMgr.ResourceCacheMgr
+import gov.nist.toolkit.fhir.resourceMgr.ResourceMgr
 import gov.nist.toolkit.fhir.resourceMgr.TestResourceCacheFactory
 import gov.nist.toolkit.fhir.simulators.mhd.MhdGenerator
 import gov.nist.toolkit.fhir.simulators.proxy.util.SimProxyBase
-import gov.nist.toolkit.installation.Installation
 import groovy.xml.MarkupBuilder
 import org.hl7.fhir.dstu3.model.DocumentReference
 import org.hl7.fhir.dstu3.model.Patient
 import spock.lang.Shared
 import spock.lang.Specification
-
 /**
  *
  */
@@ -21,11 +20,13 @@ class TranslateTest extends Specification {
     @Shared ResourceCacheMgr resourceCacheMgr
     @Shared MhdGenerator u
     @Shared SimProxyBase proxyBase
+    @Shared ResourceMgr r
 
     def setupSpec() {
         resourceCacheMgr = TestResourceCacheFactory.getResourceCacheMgr()
-        Installation.instance().resourceCacheMgr(resourceCacheMgr)
+//        Installation.instance().resourceCacheMgr(resourceCacheMgr)
         u = new MhdGenerator(proxyBase, resourceCacheMgr)
+        r = new ResourceMgr()
     }
 
     def 'is uuid test'() {
@@ -33,7 +34,7 @@ class TranslateTest extends Specification {
         def value = '3fdc72f4-a11d-4a9d-9260-a9f745779e1d'
 
         then:
-        u.isUUID(value)
+        r.isUUID(value)
     }
 
 
@@ -42,16 +43,16 @@ class TranslateTest extends Specification {
         def fullUrl = 'http://localhost:80/fhir/Partient/A'
 
         then:
-        'http://localhost:80/fhir' == u.rMgr.baseUrlFromUrl(fullUrl)
+        'http://localhost:80/fhir' == r.baseUrlFromUrl(fullUrl)
     }
 
     def 'relative reference in bundle' () {
         when:
         def bundle = ctx.newXmlParser().parseResource(getClass().getResource('/resources/docrefrelativebundle1.xml').text)
-        u.loadBundle(bundle)
+        r = new ResourceMgr(bundle, null)
 
         then: // only one Resource with relative url Practitioner/a3
-        u.rMgr.resolveReference('urn:uuid:1', 'Practitioner/a3', true, false)[0] == 'http://localhost:9556/svc/fhir/Practitioner/a3'
+        r.resolveReference('urn:uuid:1', 'Practitioner/a3', true, false, false, false)[0] == 'http://localhost:9556/svc/fhir/Practitioner/a3'
     }
 
     def 'patient id from patient resource' () {
@@ -175,7 +176,7 @@ class TranslateTest extends Specification {
 //        u.clear()
 //        def writer = new StringWriter()
 //        def xml = new MarkupBuilder(writer)
-//        def bundle = ctx.newXmlParser().parseResource(getClass().getResource('/resources/docrefpatientinbundle.xml').text)
+//        def bundle = ctx.newXmlParser().parseResource(getClass().readResource('/resources/docrefpatientinbundle.xml').text)
 //
 //        when:
 //        u.translateBundle(xml, bundle, true)
@@ -219,7 +220,7 @@ class TranslateTest extends Specification {
 //        u.clear()
 //        def writer = new StringWriter()
 //        def xml = new MarkupBuilder(writer)
-//        def bundle = ctx.newXmlParser().parseResource(getClass().getResource('/resources/docrefpatientrelinbundle.xml').text)
+//        def bundle = ctx.newXmlParser().parseResource(getClass().readResource('/resources/docrefpatientrelinbundle.xml').text)
 //
 //        when:
 //        u.translateBundle(xml, bundle, true)

@@ -14,6 +14,8 @@ class ErrorLogger {
 
     int size() { log.size() }
 
+    boolean hasErrors() { size() > 0}
+
     def asString()  {
         StringBuilder buf = new StringBuilder()
 //        log.each { buf.append(it.reference).append('\n')}
@@ -25,5 +27,9 @@ class ErrorLogger {
         if (i < log.size())
             return log[i]
         return null
+    }
+
+    List getErrors() {
+        return log
     }
 }

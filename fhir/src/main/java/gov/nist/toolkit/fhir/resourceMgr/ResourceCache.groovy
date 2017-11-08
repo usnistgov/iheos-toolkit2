@@ -24,8 +24,10 @@ class ResourceCache {
         logger.info("New Resource cache: ${baseUrl}  --> ${cacheDir}")
     }
 
-    IBaseResource getResource(relativeUrl) {
+    IBaseResource readResource(relativeUrl) {
         File cacheFile = cacheFile(relativeUrl, 'xml')
+        if (!cacheFile.exists())
+            return null
         return ctx.newXmlParser().parseResource(cacheFile.text)
     }
 

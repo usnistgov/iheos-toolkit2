@@ -110,6 +110,50 @@ class MhdSimProxySpec extends ToolkitSpecification {
         ids[1].split('/')[1].startsWith('urn:uuid:')
     }
 
+    def 'send provide document bundle through simproxy - reference to Patient is not in cache'() {
+        setup:
+        api.createTestSession(testSession)
+
+        spi.delete(ToolkitFactory.newSimId(mhdId, testSession, ActorType.MHD_DOC_RECIPIENT.name, envName, true))
+
+        Installation.instance().defaultEnvironmentName()
+
+        mhdSimConfig = spi.create(
+                mhdId,
+                testSession,
+                SimulatorActorType.MHD_DOC_RECIPIENT,
+                envName
+        )
+
+        mhdSimConfig.asList(SimulatorProperties.simulatorGroup).each { String simIdString ->
+            SimId theSimId = new SimId(simIdString)
+            SimConfig config = spi.get(spi.get(theSimId.user, theSimId.id))
+            simGroup[simIdString] = config
+        }
+
+        //println simGroup
+        SimConfig rrConfig = simGroup['bill__mhd_regrep']
+        rrConfig.setProperty(SimulatorProperties.VALIDATE_CODES, false)
+        rrConfig.setProperty(SimulatorProperties.VALIDATE_AGAINST_PATIENT_IDENTITY_FEED, false)
+        spi.update(rrConfig)
+
+        when:
+        def sections = ['pdb_external_patient']
+        def params = [ :]
+        List<Result> results = api.runTest(testSession, mhdName, testInstance, sections, params, true)
+
+        and:
+        SimDb simDb = new SimDb(mhdSimId)
+        simDb.openMostRecentEvent(ActorType.MHD_DOC_RECIPIENT, TransactionType.PROV_DOC_BUNDLE)
+
+        then:
+        results.size() == 1
+        !results.get(0).passed()
+        results[0].assertions.assertions.find { AssertionResult ar ->
+            ar.toString().contains('Patient reference')
+        }
+    }
+
     def 'find transactions in simulator log'() {
         when:
         List<FhirSimulatorTransaction> trans = FhirSimulatorTransaction.getAll(mhdSimId, TransactionType.FHIR)

@@ -1,9 +1,12 @@
 package gov.nist.toolkit.fhir.resourceMgr
 
 import gov.nist.toolkit.errorrecording.ErrorRecorder
+import gov.nist.toolkit.fhir.utility.FhirClient
 import gov.nist.toolkit.fhir.validators.BundleFullUrlValidator
 import gov.nist.toolkit.utilities.id.UuidAllocator
 import org.hl7.fhir.dstu3.model.*
+import org.hl7.fhir.instance.model.api.IBaseResource
+
 /**
  *
  */
@@ -163,7 +166,7 @@ class ResourceMgr {
     def url(resource) {
         resources.entrySet().find { Map.Entry entry ->
             entry.value == resource
-        }.key
+        }?.key
     }
 
 
@@ -179,7 +182,7 @@ class ResourceMgr {
     }
 
     def resolveReference(String referenceUrl) {
-        resolveReference(fullUrl, referenceUrl, true, false)
+        resolveReference(fullUrl, referenceUrl, true, false, false, false)
     }
 
     /**
@@ -188,38 +191,46 @@ class ResourceMgr {
      * @param referenceUrl   (reference)
      * @return [url, Resource]
      */
-    def resolveReference(String containingUrl, String referenceUrl, relativeReferenceOk, relativeReferenceRequired) {
+    def resolveReference(String containingUrl, String referenceUrl, relativeReferenceOk, relativeReferenceRequired, externalRequired, internalrequired) {
         assert referenceUrl
-        if (relativeReferenceOk && referenceUrl.startsWith('#')) {
-            def res = getContainedResource(referenceUrl)
-            def val =  [referenceUrl, res]
-            return val
-        }
-        if (resources[referenceUrl]) return [referenceUrl, resources[referenceUrl]]
-        def isRelativeReference = isRelative(referenceUrl)
-        if (relativeReferenceRequired && !isRelativeReference)
-            return [null, null]
-        def type = resourceTypeFromUrl(referenceUrl)
-        if (!isAbsolute(containingUrl) && isRelative(referenceUrl)) {
-            def x = resources.find {
-                def key = it.key
-                // for Patient, it must be absolute reference
-                if ('Patient' == type && isRelativeReference && !relativeReferenceOk) return false
-                key.endsWith(referenceUrl)
+
+        // internal
+        if (!externalRequired) {
+            if (relativeReferenceOk && referenceUrl.startsWith('#')) {
+                def res = getContainedResource(referenceUrl)
+                def val = [referenceUrl, res]
+                return val
             }
-            if (x) return [x.key, x.value]
-        }
-        if (isAbsolute(containingUrl) && isRelative(referenceUrl)) {
-            def url = rebase(containingUrl, referenceUrl)
-            if (resources[url])
-                return [url, resources[url]]
-            def resource = resourceCacheMgr.getResource(url)
-            if (resource)
-                return [url, resource]
+            if (resources[referenceUrl]) return [referenceUrl, resources[referenceUrl]]
+            def isRelativeReference = isRelative(referenceUrl)
+            if (relativeReferenceRequired && !isRelativeReference)
+                return [null, null]
+            def type = resourceTypeFromUrl(referenceUrl)
+            if (!isAbsolute(containingUrl) && isRelative(referenceUrl)) {
+                def x = resources.find {
+                    def key = it.key
+                    // for Patient, it must be absolute reference
+                    if ('Patient' == type && isRelativeReference && !relativeReferenceOk) return false
+                    key.endsWith(referenceUrl)
+                }
+                if (x) return [x.key, x.value]
+            }
+            if (isAbsolute(containingUrl) && isRelative(referenceUrl)) {
+                def url = rebase(containingUrl, referenceUrl)
+                if (resources[url])
+                    return [url, resources[url]]
+                def resource = resourceCacheMgr.getResource(url)
+                if (resource)
+                    return [url, resource]
+            }
         }
 
         // external
-
+        if (!internalrequired && isAbsolute(referenceUrl)) {
+            IBaseResource res = FhirClient.readResource(referenceUrl)
+            if (res)
+                return [referenceUrl, res]
+        }
 
         [null, null]
     }

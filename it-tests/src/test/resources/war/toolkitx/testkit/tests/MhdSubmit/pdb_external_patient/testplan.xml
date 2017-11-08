@@ -1,0 +1,10 @@
+<TestPlan>
+    <Test>FHIR/create</Test>
+    <TestStep id="pdb">
+        <ExpectedStatus>Success</ExpectedStatus>
+        <ProvideDocumentBundleTransaction>
+            <ResourceFile>singledocsubmit.xml</ResourceFile>
+            <UrlExtension>/pdb</UrlExtension>
+        </ProvideDocumentBundleTransaction>
+    </TestStep>
+</TestPlan>

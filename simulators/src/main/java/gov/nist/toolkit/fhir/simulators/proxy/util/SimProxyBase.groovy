@@ -73,7 +73,7 @@ public class SimProxyBase {
         return new EndpointParser(getTargetEndpoint()).getHttpHost()
     }
 
-    HttpRequest preProcessRequest(HttpRequest request) {
+    HttpRequest preProcessRequest(HttpRequest request)  throws ReturnableErrorException {
         return runRequestTransforms(request)
     }
 
@@ -81,7 +81,7 @@ public class SimProxyBase {
         return runResponseTransforms(response)
     }
 
-    HttpRequest runRequestTransforms(HttpRequest request) {
+    HttpRequest runRequestTransforms(HttpRequest request) throws ReturnableErrorException {
         requestTransformClassNames.each { String className ->
             assert className
             def instance = Class.forName(className).newInstance()

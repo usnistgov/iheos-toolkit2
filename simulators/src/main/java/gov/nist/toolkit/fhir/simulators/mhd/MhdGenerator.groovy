@@ -6,6 +6,7 @@ import gov.nist.toolkit.fhir.resourceMgr.ResourceCacheMgr
 import gov.nist.toolkit.fhir.resourceMgr.ResourceMgr
 import gov.nist.toolkit.fhir.simulators.mhd.Attachment
 import gov.nist.toolkit.fhir.simulators.mhd.errors.ResourceNotAvailable
+import gov.nist.toolkit.fhir.simulators.proxy.util.ReturnableErrorException
 import gov.nist.toolkit.fhir.simulators.proxy.util.SimProxyBase
 import groovy.xml.MarkupBuilder
 import org.hl7.fhir.dstu3.model.*
@@ -46,6 +47,7 @@ class MhdGenerator {
         this.proxyBase = proxyBase
         resourceCacheMgr = resourceCacheMgr1
         er.sectionHeading('MhdGenerator started')
+        rMgr = new ResourceMgr()
     }
 
     def clear() {
@@ -297,7 +299,7 @@ class MhdGenerator {
     // TODO this is supposed to be constrained to be 'contained'
     def addSourcePatient(builder, fullUrl, containingObjectId, scheme,  org.hl7.fhir.dstu3.model.Reference subject, attName) {
         def ref1 = subject.getReference()
-        def (url, ref) = resolveReference(fullUrl, ref1, false, true)
+        def (url, ref) = resolveReference(fullUrl, ref1, false, true, false, false)
         if (!ref) {
             new ResourceNotAvailable(errorLogger, fullUrl, ref1, 'All DocumentReference.subject and DocumentManifest.subject values shall be\nReferences to FHIR Patient Resources identified by an absolute external reference (URL).', '3.65.4.1.2.2 Patient Identity')
             return
@@ -324,7 +326,7 @@ class MhdGenerator {
     // TODO must be absolute reference
     def addSubject(builder, fullUrl, containingObjectId, scheme,  org.hl7.fhir.dstu3.model.Reference subject, attName) {
         def ref1 = subject.getReference()
-        def (url, ref) = resolveReference(fullUrl, ref1, false, true)
+        def (url, ref) = resolveReference(fullUrl, ref1, false, true, true, false)
         if (!ref) {
             new ResourceNotAvailable(errorLogger, fullUrl, ref1, 'All DocumentReference.subject and DocumentManifest.subject values shall be\nReferences to FHIR Patient Resources identified by an absolute external reference (URL).', '3.65.4.1.2.2 Patient Identity')
             return
@@ -356,8 +358,8 @@ class MhdGenerator {
      * @param reference
      * @return [url, Resource]
      */
-    def resolveReference(fullUrl, reference, relativeReferenceOk, relativeReferenceRequired) {
-        def (url, ref) = rMgr.resolveReference(fullUrl, reference, relativeReferenceOk, relativeReferenceRequired)
+    def resolveReference(fullUrl, reference, relativeReferenceOk, relativeReferenceRequired, externalRequired, internalRequired) {
+        def (url, ref) = rMgr.resolveReference(fullUrl, reference, relativeReferenceOk, relativeReferenceRequired, externalRequired, internalRequired)
         if (!ref) {
             // not available in bundle - try local cache next
             if (ResourceMgr.isAbsolute(reference)) {
@@ -450,7 +452,7 @@ class MhdGenerator {
         if (!dm.content) return
         dm.content.each { DocumentManifest.DocumentManifestContentComponent component ->
             Reference ref = component.PReference
-            def (url, res) = resolveReference(null, ref.reference, true, true)
+            def (url, res) = resolveReference(null, ref.reference, true, true, false, false)
             assert res
             def assoc = addAssociation(xml, 'urn:oasis:names:tc:ebxml-regrep:AssociationType:HasMember', dm.id, res.id, 'SubmissionSetStatus', ['Original'])
         }
@@ -503,7 +505,7 @@ class MhdGenerator {
                 rMgr.assignId(resource)
                 rMgr.currentResource(resource)
                 DocumentReference dr = (DocumentReference) resource
-                def (ref, binary) = rMgr.resolveReference(url, dr.content[0].attachment.url, true, false)
+                def (ref, binary) = rMgr.resolveReference(url, dr.content[0].attachment.url, true, false, false, true)
                 assert binary instanceof Binary
                 addExtrinsicObject(xml, dr.getId(), dr)
             }
@@ -524,68 +526,74 @@ class MhdGenerator {
     def baseContentId = '.de1e4efca5ccc4886c8528535d2afb251e0d5fa31d58a815@ihexds.nist.gov'
 
     Submission buildSubmission(Bundle bundle) {
+        try {
+            loadBundle(bundle)
 
-        loadBundle(bundle)
+            Submission submission = new Submission()
+            submission.contentId = 'm' + baseContentId
 
-        Submission submission = new Submission()
-        submission.contentId = 'm' + baseContentId
+            int index = 1
 
-        int index = 1
+            def documents = [:]
 
-        def documents = [:]
+            def writer = new StringWriter()
+            def xml = new MarkupBuilder(writer)
+            xml.RegistryObjectList(xmlns: 'urn:oasis:names:tc:ebxml-regrep:xsd:rim:3.0') {
+                rMgr.resources.each { url, resource ->
+                    if (resource instanceof DocumentManifest) {
+                        rMgr.assignId(resource)
+                        er.sectionHeading("DocumentManifest(${resource.id})  URL is ${url}")
+                        proxyBase.resourcesSubmitted << resource
+                        rMgr.currentResource(resource)
+                        DocumentManifest dm = (DocumentManifest) resource
+                        addSubmissionSet(xml, dm.getId(), dm)
+                        addSubmissionSetAssociations(xml, dm)
+                    }
+                    if (resource instanceof DocumentReference) {
+                        rMgr.assignId(resource)
+                        er.sectionHeading("DocumentReference(${resource.id})  URL is ${url}")
+                        proxyBase.resourcesSubmitted << resource
+                        rMgr.currentResource(resource)
+                        DocumentReference dr = (DocumentReference) resource
+                        def (ref, binary) = rMgr.resolveReference(url, dr.content[0].attachment.url, true, false, false, true)
+                        er.detail("References Binary ${ref}")
+                        assert binary instanceof Binary
+                        Binary b = binary
+                        Attachment a = new Attachment()
+                        a.contentId = Integer.toString(index) + baseContentId
+                        a.contentType = b.contentType
+                        a.content = b.content
+                        submission.attachments << a
+                        index++
 
-        def writer = new StringWriter()
-        def xml = new MarkupBuilder(writer)
-        xml.RegistryObjectList(xmlns: 'urn:oasis:names:tc:ebxml-regrep:xsd:rim:3.0') {
-            rMgr.resources.each { url, resource ->
-                if (resource instanceof DocumentManifest) {
-                    rMgr.assignId(resource)
-                    er.sectionHeading("DocumentManifest(${resource.id})  URL is ${url}")
-                    proxyBase.resourcesSubmitted << resource
-                    rMgr.currentResource(resource)
-                    DocumentManifest dm = (DocumentManifest) resource
-                    addSubmissionSet(xml, dm.getId(), dm)
-                    addSubmissionSetAssociations(xml, dm)
-                }
-                if (resource instanceof DocumentReference) {
-                    rMgr.assignId(resource)
-                    er.sectionHeading("DocumentReference(${resource.id})  URL is ${url}")
-                    proxyBase.resourcesSubmitted << resource
-                    rMgr.currentResource(resource)
-                    DocumentReference dr = (DocumentReference) resource
-                    def (ref, binary) = rMgr.resolveReference(url, dr.content[0].attachment.url, true, false)
-                    er.detail("References Binary ${ref}")
-                    assert binary instanceof Binary
-                    Binary b = binary
-                    Attachment a = new Attachment()
-                    a.contentId = Integer.toString(index) + baseContentId
-                    a.contentType = b.contentType
-                    a.content = b.content
-                    submission.attachments << a
-                    index++
-
-                    addExtrinsicObject(xml, dr.getId(), dr)
-                    documents[dr.getId()] = a.contentId
+                        addExtrinsicObject(xml, dr.getId(), dr)
+                        documents[dr.getId()] = a.contentId
+                    }
                 }
             }
+            submission.registryObjectList = writer.toString()
+
+            writer = new StringWriter()
+            xml = new MarkupBuilder(writer)
+            documents.each { id, contentId ->
+                addDocument(xml, id, contentId)
+            }
+            submission.documentDefinitions = writer.toString()
+
+            close()
+
+            if (!errorLogger.hasErrors())
+                return submission
+        } catch (Throwable e) {
+            throw new Exception("xx")
         }
-        submission.registryObjectList = writer.toString()
+        throw new ReturnableErrorException(ErrorLoggerAsHttpResponse.buildHttpResponse(proxyBase, errorLogger))
 
-        writer = new StringWriter()
-        xml = new MarkupBuilder(writer)
-        documents.each { id, contentId ->
-            addDocument(xml, id, contentId)
-        }
-        submission.documentDefinitions = writer.toString()
-
-        close()
-
-        return submission
     }
 
     def close() {
         er.sectionHeading("MhdGenerator done")
-        proxyBase.simDb.logErrorRecorder(er)
+            proxyBase?.simDb?.logErrorRecorder(er)
     }
 
 }
