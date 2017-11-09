@@ -4,15 +4,21 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HTML;
+import com.google.gwt.user.client.ui.HeaderPanel;
+import com.google.gwt.user.client.ui.ProvidesResize;
+import com.google.gwt.user.client.ui.RequiresResize;
 import com.google.gwt.user.client.ui.Widget;
 import gov.nist.toolkit.registrymetadata.client.ObjectRef;
 import gov.nist.toolkit.xdstools2.client.abstracts.AbstractView;
+import gov.nist.toolkit.xdstools2.client.inspector.mvp.widgets.WorkflowDiagram;
 
 import java.util.List;
 import java.util.Map;
 
-public class InspectorView extends AbstractView<InspectorPresenter> {
-    FlowPanel containerPanel = new FlowPanel();
+public class InspectorView extends AbstractView<InspectorPresenter> implements ProvidesResize, RequiresResize {
+    HeaderPanel containerPanel = new HeaderPanel();
+
+    ActivityItem activityItem;
 
     ObjectRefDataTable objectRefTable = new ObjectRefDataTable(10) {
         @Override
@@ -39,15 +45,34 @@ public class InspectorView extends AbstractView<InspectorPresenter> {
     };
 
     @Override
+    public void onResize() {
+        objectRefTable.resizeTable();
+    }
+
+    @Override
     protected Widget buildUI() {
 
-        containerPanel.add(new HTML("Step"));
-        containerPanel.add(new HTML("ObjectRefs: "
-                + (objectRefTable.dataTable!=null?objectRefTable.dataTable.getRowCount():"null")));
-        containerPanel.add(objectRefTable.asWidget());
+//        HeaderPanel mainPanel = new HeaderPanel();
 
-        containerPanel.add(new HTML("Load Logs"));
+        FlowPanel resultPanel = new FlowPanel();
+        int resultPanelHeight = 0;
 
+        WorkflowDiagram activityDiagram = new WorkflowDiagram(activityItem);
+        resultPanel.add(activityDiagram);
+
+        resultPanel.add(objectRefTable.asWidget());
+//        resultPanelHeight = activityDiagram.getDiagramHeight() + (int)objectRefTable.guessTableHeight();
+//        GWT.log("setting North height to: " + resultPanelHeight + ". activityDiagram height is: " + activityDiagram.getDiagramHeight() + ". objectRef height: " + objectRefTable.asWidget().getElement().getStyle().getHeight());
+
+        containerPanel.setHeaderWidget(resultPanel);
+        containerPanel.setContentWidget(new HTML("content."));
+//        containerPanel.add(new HTML("add"));
+
+        //
+
+//        containerPanel.add(mainPanel);
+
+        //
         return containerPanel;
     }
 
@@ -59,5 +84,10 @@ public class InspectorView extends AbstractView<InspectorPresenter> {
     @Override
     protected Map<String, Widget> getPathToWidgetsMap() {
         return null;
+    }
+
+
+    public void setActivityItem(ActivityItem activityItem) {
+        this.activityItem = activityItem;
     }
 }

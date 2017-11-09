@@ -86,7 +86,7 @@ public class TabContainer {
 			((Xdstools2EventBus) ClientUtils.INSTANCE.getEventBus()).fireTabSelectedEvent(tabName);
 		}
 //		INNER_DECKPANEL.getElement().getStyle().setMargin(4, Style.Unit.PX);
-		GWT.log("Calling showWidget");
+//		GWT.log("Calling showWidget");
 		INNER_DECKPANEL.showWidget(dockLp);
 	}
 

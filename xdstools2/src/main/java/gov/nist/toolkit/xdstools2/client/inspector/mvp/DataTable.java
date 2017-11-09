@@ -25,6 +25,9 @@ import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.CheckBox;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.IsWidget;
+import com.google.gwt.user.client.ui.ProvidesResize;
+import com.google.gwt.user.client.ui.RequiresResize;
+import com.google.gwt.user.client.ui.ResizeComposite;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.view.client.CellPreviewEvent;
 import com.google.gwt.view.client.DefaultSelectionEventManager;
@@ -38,7 +41,7 @@ import com.google.gwt.view.client.SingleSelectionModel;
 import java.util.List;
 import java.util.Set;
 
-abstract class DataTable<T> implements IsWidget {
+abstract class DataTable<T> extends ResizeComposite implements RequiresResize, ProvidesResize, IsWidget {
 
     private FlowPanel containerPanel = new FlowPanel();
 
@@ -83,6 +86,7 @@ abstract class DataTable<T> implements IsWidget {
         addActionTable();
 
         addPager(pageSize);
+
     }
 
     protected void addSelectionModeCheckBox() {
@@ -120,8 +124,8 @@ abstract class DataTable<T> implements IsWidget {
         addTableColumns();
         dataProvider.addDataDisplay(dataTable);
 
-        dataTable.setWidth("640px");
-        dataTable.setHeight("75px");
+//        dataTable.setWidth("640px");
+//        dataTable.setHeight("75px");
         dataTable.setSkipRowHoverCheck(true);
         dataTable.setSkipRowHoverFloatElementCheck(true);
         dataTable.getElement().getStyle().setProperty("wordWrap","break-word");
@@ -149,6 +153,7 @@ abstract class DataTable<T> implements IsWidget {
     }
 
     protected void setupDataTableResizeHandlers() {
+
         Window.addResizeHandler(new ResizeHandler() {
         @Override
         public void onResize(ResizeEvent event) {
@@ -163,7 +168,7 @@ abstract class DataTable<T> implements IsWidget {
                     int rows = dataTable.getRowCount();
                     GWT.log("rows: " + rows);
                     if (rows > 0) {
-                        int rowHeight = 40;
+                        int rowHeight = 30;
                         rowHeight = getRowHeight(rowHeight);
 //                            GWT.log("rowHeight: " + rowHeight);
                         String tableHeightInPx = null;
@@ -198,17 +203,22 @@ abstract class DataTable<T> implements IsWidget {
 
     public void resizeTable() {
         dataTable.setWidth(calcTableWidth() + "px");
-        dataTable.setHeight(calcTableHeight(getRowHeight(40)) + "px");
+        dataTable.setHeight(guessTableHeight() + "px");
+    }
+
+    public float guessTableHeight() {
+        return calcTableHeight(getRowHeight(40));
     }
 
     TableRowElement tableRowElement = null;
     protected int getRowHeight(int defaultRowHeight) {
         try {
-            return dataTable.getRowElement(0).getClientHeight();
+            if (dataTable.getRowElement(0)!=null)
+                return dataTable.getRowElement(0).getClientHeight();
         } catch (Exception ex) {
-            GWT.log("getRowHeight: " + ex.toString());
-            GWT.log("dataTab isVisible? " + dataTable.isVisible());
-            GWT.log("data rows: " + dataTable.getRowCount());
+//            GWT.log("getRowHeight: " + ex.toString());
+//            GWT.log("dataTab isVisible? " + dataTable.isVisible());
+            GWT.log("Exception. data rows: " + dataTable.getRowCount());
         }
         return defaultRowHeight;
     }

@@ -18,6 +18,7 @@ public class StepResult implements IsSerializable, Serializable {
 	String registryResponseStatus;
 	public String section;
 	public String stepName;
+	public String transaction;
 	MetadataCollection metadata;
 	public List<Document> documents;
 	public List<ObjectRef> toBeRetrieved;
@@ -37,6 +38,7 @@ public class StepResult implements IsSerializable, Serializable {
 		r.status = status;
 		r.section = section;
 		r.stepName = stepName;
+		r.transaction = transaction;
 		r.metadata = metadata;
 		r.documents = new ArrayList<Document>();
 		if (documents!=null)
