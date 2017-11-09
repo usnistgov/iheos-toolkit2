@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?><TestPlan>
+  <Test>20100b/submit_assoc</Test>
+  <TestStep id="submit">
+    <Goal>Failure to add a FD-DE HM Association linking the previously submitted Folder and DocumentEntry objects.</Goal>
+    <ExpectedStatus>Failure</ExpectedStatus>
+	<MuTransaction>
+      <XDSb/>
+      <NoPatientId/>
+      <UseReport reportName="$patientid$" test="15817b" section="pif" step="step" useAs="$patientid$"/>
+      <UseReport reportName="DocUuid" test="20100b" section="submit_doc" step="submit" useAs="$doc_uuid$"/>
+	  <UseReport reportName="folid" test="20100b" section="submit_fd" step="submit" useAs="$fol_uuid$"/>
+      <MetadataFile>metadata.xml</MetadataFile>
+    </MuTransaction>
+  </TestStep>
+</TestPlan>

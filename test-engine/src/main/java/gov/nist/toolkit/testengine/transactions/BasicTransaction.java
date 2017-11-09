@@ -197,7 +197,7 @@ public abstract class BasicTransaction  implements ToolkitEnvironment {
 			if (async)
 				xds_version = BasicTransaction.xds_b;
 
-			if (trans.equals("sq") || trans.equals("pr") || trans.equals("r")) {
+			if (trans.equals("sq") || trans.equals("pr") || trans.equals("r") ||  trans.equals("xadpid")) {
 				//			if (async)
 				//				trans = trans + ".as";
 				//			else

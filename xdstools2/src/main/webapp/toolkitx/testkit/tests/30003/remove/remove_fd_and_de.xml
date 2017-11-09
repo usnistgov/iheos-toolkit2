@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urn:RemoveObjectsRequest id="urn:uuid:18176f9a-2424-4798-a50c-99999999999b" xmlns:urn="urn:oasis:names:tc:ebxml-regrep:xsd:lcm:3.0" xmlns:urn2="urn:oasis:names:tc:ebxml-regrep:xsd:rim:3.0">
+	<urn2:ObjectRefList >
+		<!--DE/FD-->
+		<urn2:ObjectRef id="$Document01$"/>
+		<urn2:ObjectRef id="$Folder01$"/>
+		<!--SS-HM-->
+		<urn2:ObjectRef id="$SS2DocHMAssoc$"/>
+		<urn2:ObjectRef id="$SS2FolHMAssoc$"/>
+		<!--FD-DE-->
+		<urn2:ObjectRef id="$SS2FDDEHMAssoc$"/>
+		<urn2:ObjectRef id="$Fol2DocAssoc$"/>
+	</urn2:ObjectRefList>
+</urn:RemoveObjectsRequest>

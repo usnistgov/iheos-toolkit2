@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<TestPlan>
+  <Test>30002/remove</Test>
+  <TestStep id="remove_submissionset">
+	<Goal>Failure to completely remove all metadata objects.</Goal>
+    <ExpectedStatus>Failure</ExpectedStatus>
+	<ExpectedErrorCode>ReferencesExistException</ExpectedErrorCode>
+    <RemoveMetadataTransaction>
+      <XDSb/>
+      <NoPatientId/>
+	  <ParseMetadata>False</ParseMetadata>
+	  <UseId testdir="../submit" step="submit" section="AssignedUuids" id="SubmissionSet01" symbol="$SubmissionSet01$"  />
+      <MetadataFile>remove.xml</MetadataFile>
+    </RemoveMetadataTransaction>
+  </TestStep>
+  <TestStep id="remove_folder_and_association">
+	<Goal>Failure to remove a metadata object with no remaining references.</Goal>	
+    <ExpectedStatus>Failure</ExpectedStatus>
+	<ExpectedErrorCode>XDSUnreferencedObjectException</ExpectedErrorCode>
+    <RemoveMetadataTransaction>
+      <XDSb/>
+      <NoPatientId/>
+	  <ParseMetadata>False</ParseMetadata>
+	  <UseId testdir="../submit" step="submit" section="AssignedUuids" id="Folder01" symbol="$Folder01$"  />
+	  <UseId testdir="../submit" step="submit" section="AssignedUuids" id="AssociationHM01" symbol="$AssociationHM01$"  />
+      <MetadataFile>remove_fd.xml</MetadataFile>
+    </RemoveMetadataTransaction>
+  </TestStep> 
+  <TestStep id="remove_all">
+	<Goal>Successfully remove all metadata objects.</Goal>
+    <ExpectedStatus>Success</ExpectedStatus>
+    <RemoveMetadataTransaction>
+      <XDSb/>
+      <NoPatientId/>
+	  <ParseMetadata>False</ParseMetadata>
+	  <UseId testdir="../submit" step="submit" section="AssignedUuids" id="SubmissionSet01" symbol="$SubmissionSet01$"  />
+	  <UseId testdir="../submit" step="submit" section="AssignedUuids" id="AssociationHM01" symbol="$AssociationHM01$"  />
+	  <UseId testdir="../submit" step="submit" section="AssignedUuids" id="Folder01" symbol="$Folder01$"  />
+      <MetadataFile>remove_all.xml</MetadataFile>
+    </RemoveMetadataTransaction>
+  </TestStep>   
+</TestPlan>

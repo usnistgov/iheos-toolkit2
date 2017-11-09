@@ -1,0 +1,1 @@
+Use the stored query, GetDocumentsAndAssociations, to verify verify all metadata objects are removed.

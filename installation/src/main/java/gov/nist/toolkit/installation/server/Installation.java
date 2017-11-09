@@ -68,7 +68,7 @@ public class Installation {
         // This works for unit tests if warhome.txt is installed as part of a unit test environment
         String warhomeTxt = null;
         try {
-            warhomeTxt = instance().getClass().getResource("/warhome/warhome.txt").getFile();
+            //warhomeTxt = instance().getClass().getResource("/warhome/warhome.txt").getFile();
         } catch (Throwable t) {}
         if (warhomeTxt != null) {
             instance().warHome(new File(warhomeTxt).getParentFile());

@@ -1,0 +1,18 @@
+ 
+<TestPlan>
+  <Test>31000/xadpid2</Test>
+  <Rule>Patient Identity Feed</Rule>
+  <TestStep id="step">
+    <Rule>
+      <Transaction>Patient Identity Feed</Transaction>
+    </Rule>
+    <ExpectedStatus>Success</ExpectedStatus>
+	<NewPatientId/>    
+    <PatientIdentityFeedTransaction>
+      <XDSb/>    	
+      <NoMetadata/>
+ 	  <CreateNewPatientId/>     
+    </PatientIdentityFeedTransaction>
+  </TestStep>
+</TestPlan>
+

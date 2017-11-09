@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<TestPlan>
+  <Test>21002/update</Test>
+  <TestStep id="submit">
+    <ExpectedStatus>Success</ExpectedStatus>
+    <MuTransaction>
+      <XDSb/>
+	  <AssignUuids/>
+	  <NoAssignUids id="Document01"/>
+	  <NoPatientId/>
+      <UseReport reportName="$patientid$" test="15817b" section="pif" step="step" useAs="$patientidDENew$"/>
+	  <UseId testdir="../original" step="submit" section="AssignedUuids" id="Document01" symbol="$DocUuidOrig$" />
+	  <UseId testdir="../original" step="submit" section="AssignedUids" id="Document01" symbol="$DocUidOrig$" />
+      <MetadataFile>single_doc.xml</MetadataFile>
+    </MuTransaction>
+  </TestStep>
+</TestPlan>

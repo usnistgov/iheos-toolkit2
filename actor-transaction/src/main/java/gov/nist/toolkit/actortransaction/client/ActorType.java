@@ -64,12 +64,42 @@ public enum ActorType implements IsSerializable, Serializable {
             "gov.nist.toolkit.simcommon.server.factories.RegistryActorFactory",
             "gov.nist.toolkit.fhir.simulators.sim.reg.RegistryActorSimulator",
             Arrays.asList(TransactionType.REGISTER, TransactionType.REGISTER_ODDE, TransactionType.STORED_QUERY, TransactionType.UPDATE, TransactionType.MPQ),
+            "gov.nist.toolkit.simulators.sim.reg.RegistryActorSimulator",
+            Arrays.asList(TransactionType.REGISTER, TransactionType.REGISTER_ODDE, TransactionType.STORED_QUERY, TransactionType.UPDATE, TransactionType.MPQ, TransactionType.REMOVE_METADATA),
             true,
             null,
             false,
             Constants.USE_SHORTNAME,
             IheItiProfile.XDS,
             Arrays.asList(OptionType.REQUIRED, OptionType.METADATA_UPDATE, OptionType.MULTI_PATIENT_QUERY, OptionType.XUA, OptionType.CAT_FOLDER, OptionType.CAT_LIFECYCLE,OptionType.ISR,OptionType.ON_DEMAND)
+    ),
+    REGISTRY_RMD(
+            "Remove Metadata",
+            Arrays.asList(""),
+            "reg_rm",
+            "",
+            "",
+            Arrays.asList(TransactionType.REMOVE_METADATA),
+            false,
+            null,
+            null,
+            null,
+            false,
+            null
+    ),
+    REGISTRY_XADPID(
+            "XAD_PID",
+            Arrays.asList(""),
+            "reg_xadpid",
+            "",
+            "",
+            Arrays.asList(TransactionType.XAD_PID),
+            false,
+            null,
+            null,
+            null,
+            false,
+            null
     ),
     // Update option on Document Registry
     // this should be removed once implications are re-discovered

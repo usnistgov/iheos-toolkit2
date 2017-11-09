@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?><TestPlan>
+  <Test>30002/eval</Test>
+  <TestStep id="by_uid">
+    <Goal>Retrieve Folder using GetSubmissionSetAndContents query</Goal>
+    <ExpectedStatus>Success</ExpectedStatus>
+    <StoredQueryTransaction>
+      <XDSb/>
+	  <UseId testdir="../submit" step="submit" section="AssignedUids" id="SubmissionSet01" symbol="$ssuid$" />
+      <MetadataFile>query.xml</MetadataFile>
+      <ExpectedContents>
+        <SSwithOneFol/>
+		<SSApproved/>
+		<FolApp/>
+      </ExpectedContents>  
+    </StoredQueryTransaction>
+  </TestStep>
+</TestPlan>

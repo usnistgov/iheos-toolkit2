@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<TestPlan>
+  <Test>20006/eval_success_update</Test>
+  <TestStep id="query_by_uniqueid">
+    <Goal>Query for both versions of the document and verify status and version.</Goal> 
+    <ExpectedStatus>Success</ExpectedStatus>
+    <StoredQueryTransaction>
+      <XDSb/>
+	  <UseId testdir="../submit" step="submit" section="AssignedUids" id="Document01" symbol="$DocumentUid$" />
+	  <UseReport reportName="Document01_uuid" section="submit" step="submit" useAs="$OrigDocumentUuid$"/>
+	  <UseReport reportName="Document01_uuid" section="success_update" step="update" useAs="$UpdateDocumentUuid$"/>
+      <MetadataFile>query_get_doc.xml</MetadataFile>
+      <ExpectedContents>
+		<Documents count="2"/>
+      </ExpectedContents>
+	  <Assertions>
+        <DataRef file="THIS" as="output"/>
+		<!--Check Doc01-->
+		<Assert id="check_version_1">
+               //*[local-name()='ExtrinsicObject'][@id="$OrigDocumentUuid$"]/*[local-name()='VersionInfo']/@versionName = '1'
+        </Assert>
+        <Assert id="version_1_is_deprecated">
+               //*[local-name()='ExtrinsicObject'][@id="$OrigDocumentUuid$"]/@status = 'urn:oasis:names:tc:ebxml-regrep:StatusType:Deprecated'
+        </Assert>
+		<Assert id="original_lid_same">
+               "$OrigDocumentUuid$" = //*[local-name()='ExtrinsicObject'][@id="$OrigDocumentUuid$"]/@lid
+        </Assert>
+		<!--Check Doc02-->
+		<Assert id="check_version_2">
+               //*[local-name()='ExtrinsicObject'][@id="$UpdateDocumentUuid$"]/*[local-name()='VersionInfo']/@versionName = '2'
+        </Assert>
+        <Assert id="version_2_is_approved">
+               //*[local-name()='ExtrinsicObject'][@id="$UpdateDocumentUuid$"]/@status = 'urn:oasis:names:tc:ebxml-regrep:StatusType:Approved'
+        </Assert>
+		<Assert id="original_lid_same">
+               "$OrigDocumentUuid$" = //*[local-name()='ExtrinsicObject'][@id="$UpdateDocumentUuid$"]/@lid
+        </Assert>		
+	  </Assertions>
+	</StoredQueryTransaction>
+  </TestStep>  
+  <TestStep id="query_for_related_doc">
+    <Goal>Confirm relationship association.</Goal> 
+    <ExpectedStatus>Success</ExpectedStatus>
+    <StoredQueryTransaction>
+      <XDSb/>
+	  <UseId testdir="../success_update" step="update" section="AssignedUuids" id="Document01" symbol="$DocumentUuid$" />
+	  <UseReport reportName="Document01_uuid" section="submit" step="submit" useAs="$OrigDocumentUuid$"/>
+	  <UseReport reportName="Document02_uuid" section="submit" step="submit" useAs="$ApndDocumentUuid$"/>
+	  <UseReport reportName="Document01_uuid" section="success_update" step="update" useAs="$UpdateDocumentUuid$"/>
+      <MetadataFile>query_get_related_doc.xml</MetadataFile>
+      <ExpectedContents>
+		<Associations count="1"/>
+		<Documents count="2"/>
+      </ExpectedContents>  
+	  <Assertions>
+        <DataRef file="THIS" as="output"/>
+        <Assert id="one_apnd">
+			count(//*[local-name()='Association'][@associationType='urn:ihe:iti:2007:AssociationType:APND']) = '1'
+		</Assert>
+		<!--Doc01V2-->
+        <Assert id="check_apnd_source">
+			//*[local-name()='Association'][@associationType="urn:ihe:iti:2007:AssociationType:APND"]/@sourceObject = "$UpdateDocumentUuid$"
+		</Assert>
+		<!--Doc02-->
+        <Assert id="check_apnd_target">
+			//*[local-name()='Association'][@associationType="urn:ihe:iti:2007:AssociationType:APND"]/@targetObject = "$ApndDocumentUuid$"
+		</Assert>
+	  </Assertions>
+    </StoredQueryTransaction>
+  </TestStep>
+</TestPlan>

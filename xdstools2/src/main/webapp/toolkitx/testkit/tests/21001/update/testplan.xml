@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?><TestPlan>
+  <Test>21001/update</Test>
+  <Rule>Successful Update Original DocumentEntry and Change Status</Rule>
+  <TestStep id="update">
+    <ExpectedStatus>Failure</ExpectedStatus>
+    <MuTransaction>
+      <XDSb/>
+      <NoPatientId/>
+      <UseReport reportName="$patientid$" test="15817" section="pif" step="step" useAs="$patientid$"/>
+      <AssignUuids/>
+      <MetadataFile>update.xml</MetadataFile>
+      <UseId testdir="../original" id="SubmissionSet01" symbol="$SubmissionSetOrig$" step="submit" section="AssignedUuids"/>
+    </MuTransaction>
+  </TestStep>
+</TestPlan>

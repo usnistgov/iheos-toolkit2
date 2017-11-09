@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?><TestPlan>
+  <Test>20003/query_original</Test>
+  <Rule>GetDocuments SQ Original DocumentEntry</Rule>
+  <TestStep id="uniqueid_query">
+    <Rule>
+      <Transaction>SQ</Transaction>
+      <SQ>GetDocuments</SQ>
+    </Rule>
+    <ExpectedStatus>Success</ExpectedStatus>
+    <StoredQueryTransaction>
+      <XDSb/>
+      <MetadataFile>query.xml</MetadataFile>
+      <UseId testdir="../original" id="Document01" symbol="$uid$" step="original" section="AssignedUids"/>
+      <ExpectedContents>
+        <Documents count="1"/>
+      </ExpectedContents>
+    </StoredQueryTransaction>
+  </TestStep>
+  <TestStep id="validate">
+    <NullTransaction>
+      <UseReport reportName="doc_uuid" section="original" step="original" useAs="orig_uuid"/>
+      <Assertions>
+        <DataRef file="THIS" as="output"/>
+        <Assert id="orig_is_version_1">
+               //*[local-name()='ExtrinsicObject'][@id="orig_uuid"]/*[local-name()='VersionInfo']/@versionName = '1'
+               </Assert>
+        <Assert id="orig_id_and_lid_same">
+               'orig_uuid' = //*[local-name()='ExtrinsicObject'][@id="orig_uuid"]/@lid
+               </Assert>
+        <Assert id="original_is_approved">
+               //*[local-name()='ExtrinsicObject'][@id="orig_uuid"]/@status = 'urn:oasis:names:tc:ebxml-regrep:StatusType:Approved'
+               </Assert>
+      </Assertions>
+    </NullTransaction>
+  </TestStep>
+</TestPlan>

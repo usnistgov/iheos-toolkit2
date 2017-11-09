@@ -1,0 +1,20 @@
+ 
+<TestPlan>
+  <Test>16101/move_local_PID</Test>
+  <Rule>Patient Move Feed</Rule>
+  <TestStep id="move">
+    <Rule>
+      <Transaction>Patient Move Feed</Transaction>
+    </Rule>
+    <ExpectedStatus>Success</ExpectedStatus>
+    <PatientMoveTransaction>
+      <NoPatientId/>
+      <XDSb/>
+      <NoMetadata/> 
+	  <UseReport reportName="baseSourcePatientId" test="16101" section="submit" step="loadDE" useAs="$NewLocalPID$"/>        	
+	  <UseReport reportName="basePatientId" test="16101" section="submit" step="loadDE" useAs="$OldXADPID$"/> 
+	  <UseReport reportName="$patientid$" test="16101" section="add_new_XADPID" step="register" useAs="$NewXADPID$"/>
+    </PatientMoveTransaction>
+  </TestStep>
+</TestPlan>
+

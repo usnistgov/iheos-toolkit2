@@ -29,6 +29,16 @@ See collections.txt file for indexing.
 					<tab label="CAT Lifecycle" type="option" tcCode="catlifecycle" externalStart="false"/>
 				</tabs>
 			</tab>
+			<tab label="RMD" type="profile" tcCode="rmd">
+				<tabs label="Options">
+					<tab label="Remote Registry Option" type="option" tcCode="rm" externalStart="false"/>
+				</tabs>
+			</tab>
+			<tab label="XAD-PID" type="profile" tcCode="xadpid">
+				<tabs label="Options">
+					<tab label="Required" type="option" tcCode="req" externalStart="false"/>
+				</tabs>
+			</tab>
 		</tabs>
 	</tab>
 
@@ -39,6 +49,11 @@ See collections.txt file for indexing.
 				<tabs label="Options">
 					<tab label="Required"  type="option" tcCode="" externalStart="false"/>
 					<tab label="XUA Option" type="option" tcCode="xua" externalStart="false"/> 
+				</tabs>
+			</tab>
+			<tab label="RMD" type="profile" tcCode="rmd">
+				<tabs label="Options">
+					<tab label="Remote Repository Option" type="option" tcCode="rd" externalStart="false"/>
 				</tabs>
 			</tab>
 		</tabs>

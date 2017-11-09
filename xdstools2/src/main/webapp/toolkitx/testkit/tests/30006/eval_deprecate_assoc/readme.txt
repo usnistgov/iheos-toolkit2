@@ -1,0 +1,1 @@
+Use SQ: GetRelatedDocuments to verify that UpdateAssociationStatus transaction was successful.

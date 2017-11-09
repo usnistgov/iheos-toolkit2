@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<TestPlan>
+  <Test>20100a/document1</Test>
+  <TestStep id="submit">
+    <ExpectedStatus>Success</ExpectedStatus>
+    <RegisterTransaction>
+      <AssignUuids/>
+      <XDSb/>
+	  <NoPatientId/>
+      <UseReport reportName="$patientid$" test="15817" section="pif" step="step" useAs="$patientid1$"/>
+      <MetadataFile>single_doc.xml</MetadataFile>
+      <Report name="DocUuid" section="InputMetadata">
+                //*[local-name()='ExtrinsicObject'][1]/@id
+      </Report>
+    </RegisterTransaction>
+  </TestStep>
+</TestPlan>

@@ -9,6 +9,12 @@ public class SimulatorProperties {
 
     static public boolean isTlsEndpoint(String name) { return name != null && name.indexOf("TLS") != -1; }
 
+    
+    /**
+     * Boolean property controlling whether Remove Metadata is enabled on Registry Simulator.
+     */
+    public static final String                 REMOVE_METADATA = "Remove_Metadata_Remote_Registry_Option";
+    
     /**
      * Boolean property controlling whether Metadata Update is enabled on Registry Simulator.
      */
@@ -128,6 +134,20 @@ public class SimulatorProperties {
      */
     public static final String                      updateTlsEndpoint = "update_TLS_endpoint";
 
+    /**
+     * Profile RMD: ITI-62
+     * Endpoint to use to send the indicated transaction to this Simulator.
+     * Updates to this property are ignored.
+     */
+    public static final String                         removeMetadataEndpoint = "removeMetadata_endpoint";
+
+    /**
+     * Profile RMD: ITI-62
+     * Endpoint to use to send the indicated transaction to this Simulator.
+     * Updates to this property are ignored.
+     */
+    public static final String                      removeMetadataTlsEndpoint = "removeMetadata_TLS_endpoint";
+    
     /**
      * Endpoint to use to send the indicated transaction to this Simulator.
      * Updates to this property are ignored.

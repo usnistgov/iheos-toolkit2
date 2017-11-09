@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urn:RemoveObjectsRequest id="urn:uuid:18176f9a-2424-4798-a50c-99999999999c" xmlns:urn="urn:oasis:names:tc:ebxml-regrep:xsd:lcm:3.0" xmlns:urn2="urn:oasis:names:tc:ebxml-regrep:xsd:rim:3.0">
+	<urn2:ObjectRefList>
+		<!--Original-->
+		<!--DE-->
+		<urn2:ObjectRef id="$Document00$"/>
+		<!--SS-DE HM-->
+		<urn2:ObjectRef id="$SSHM00Association$"/>
+		<!--SS-->
+        <urn2:ObjectRef id="$SubmissionSet00$"/>
+		<!--Replacement-->
+		<!--XFRM_RPLC-->
+		<urn2:ObjectRef id="$XFRM_RPLCAssociation$"/>	
+		<!--DE-->
+		<urn2:ObjectRef id="$Document01$"/>
+		<!--SS-DE HM-->
+		<urn2:ObjectRef id="$SSHM01Association$"/>
+		<!--SS-->
+        <urn2:ObjectRef id="$SubmissionSet01$"/>
+		<!--Replacement Append -->
+		<!--APND-->
+		<urn2:ObjectRef id="$APNDAssociation$"/>	
+		<!--DE-->
+		<urn2:ObjectRef id="$Document02$"/>
+		<!--SS-DE HM-->
+		<urn2:ObjectRef id="$SSHM02Association$"/>
+		<!--SS-->
+        <urn2:ObjectRef id="$SubmissionSet02$"/>
+	</urn2:ObjectRefList>
+</urn:RemoveObjectsRequest>
