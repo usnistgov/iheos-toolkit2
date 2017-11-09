@@ -39,7 +39,8 @@ public class RegistryActorFactory extends AbstractActorFactory implements IActor
 				TransactionType.REGISTER,
 				TransactionType.REGISTER_ODDE, // Optional ITI-61
 				TransactionType.STORED_QUERY,
-				TransactionType.UPDATE
+				TransactionType.UPDATE,
+				TransactionType.REMOVE_METADATA
 				);
 
 	// This does not start any listeners allocated.  The port assignment is made
@@ -73,6 +74,7 @@ public class RegistryActorFactory extends AbstractActorFactory implements IActor
                 addEditableConfig(sc, SimulatorProperties.codesEnvironment, ParamType.SELECTION, codesFile.toString());
             }
 
+            addEditableConfig(sc, SimulatorProperties.REMOVE_METADATA, ParamType.BOOLEAN, false);
 			addEditableConfig(sc, SimulatorProperties.UPDATE_METADATA_OPTION, ParamType.BOOLEAN, false);
 			addEditableConfig(sc, SimulatorProperties.VALIDATE_AGAINST_PATIENT_IDENTITY_FEED, ParamType.BOOLEAN, true);
 			addEditableConfig(sc, SimulatorProperties.extraMetadataSupported, ParamType.BOOLEAN, true);
@@ -87,9 +89,10 @@ public class RegistryActorFactory extends AbstractActorFactory implements IActor
 			addFixedEndpoint(sc, SimulatorProperties.registerOddeTlsEndpoint,    actorType, TransactionType.REGISTER_ODDE,     true);
 			addFixedEndpoint(sc, SimulatorProperties.storedQueryEndpoint,    actorType, TransactionType.STORED_QUERY, false);
 			addFixedEndpoint(sc, SimulatorProperties.storedQueryTlsEndpoint, actorType, TransactionType.STORED_QUERY, true);
-
             addFixedEndpoint(sc, SimulatorProperties.updateEndpoint,       actorType, TransactionType.UPDATE,     false);
             addFixedEndpoint(sc, SimulatorProperties.updateTlsEndpoint,    actorType, TransactionType.UPDATE,     true);
+            addFixedEndpoint(sc, SimulatorProperties.removeMetadataEndpoint,       actorType, TransactionType.REMOVE_METADATA,     false);
+            addFixedEndpoint(sc, SimulatorProperties.removeMetadataTlsEndpoint,    actorType, TransactionType.REMOVE_METADATA,     true);
 		}
 
 		return new Simulator(sc);
@@ -199,6 +202,20 @@ public class RegistryActorFactory extends AbstractActorFactory implements IActor
 					true, 
 					isAsync));
 //		}
+			
+			site.addTransaction(new TransactionBean(
+					TransactionType.REMOVE_METADATA.getCode(),
+					RepositoryType.NONE,
+					asc.get(SimulatorProperties.updateEndpoint).asString(),
+					false, 
+					isAsync));
+			site.addTransaction(new TransactionBean(
+					TransactionType.REMOVE_METADATA.getCode(),
+					RepositoryType.NONE,
+					asc.get(SimulatorProperties.updateTlsEndpoint).asString(),
+					true, 
+					isAsync));
+			
 		SimulatorConfigElement pifPortElement = asc.get(SimulatorProperties.PIF_PORT);
 		if (pifPortElement != null)
 			site.pifPort = pifPortElement.asString();

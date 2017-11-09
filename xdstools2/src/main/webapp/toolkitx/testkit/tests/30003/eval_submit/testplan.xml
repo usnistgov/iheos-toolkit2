@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<TestPlan>
+  <Test>30003/eval_ss</Test>
+  <Rule>Evaluate all SS contents.</Rule>
+  <TestStep id="eval_ss_contents">
+    <Goal>Confirm SubmissionSet content.</Goal>
+    <ExpectedStatus>Success</ExpectedStatus>
+    <StoredQueryTransaction>
+      <XDSb/>
+      <UseId testdir="../submit" step="submit" section="AssignedUids" id="SubmissionSet01" symbol="$ssuid$" />
+      <MetadataFile>query_ss.xml</MetadataFile>
+      <ExpectedContents>
+        <SSwithOneDocOneFol/>
+      </ExpectedContents>
+    </StoredQueryTransaction>
+  </TestStep>
+  <TestStep id="eval_fd_contents">
+	<Goal>Confirm all Folder contents.</Goal>
+	<Goal>SQ-GetFolderAndContents.</Goal>
+    <ExpectedStatus>Success</ExpectedStatus>
+    <StoredQueryTransaction>
+      <XDSb/>
+      <UseId testdir="../submit" step="submit" section="AssignedUids" id="Folder01" symbol="$foluid$"/>
+      <MetadataFile>query_fd.xml</MetadataFile>
+      <ExpectedContents>
+        <SubmissionSets count="0"/>
+        <Associations count="1"/>
+        <Documents count="1"/>
+        <Folders count="1"/>
+      </ExpectedContents>
+    </StoredQueryTransaction>
+  </TestStep>  
+</TestPlan>

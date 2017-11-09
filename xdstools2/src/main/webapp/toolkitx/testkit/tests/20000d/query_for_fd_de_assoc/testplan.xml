@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?><TestPlan>
+  <Test>20000d/query_for_fd_de_assoc</Test>
+  <Rule>Use GetFolderAndContents Check Created FD-DE HM Associations</Rule>
+  <TestStep id="folder_query">
+    <Rule>
+      <Transaction>SQ</Transaction>
+      <SQ>GetFolderAndContents</SQ>
+    </Rule>
+    <ExpectedStatus>Success</ExpectedStatus>
+    <StoredQueryTransaction>
+      <XDSb/>
+      <MetadataFile>query.xml</MetadataFile>
+      <UseId testdir="../update" step="update" section="AssignedUuids" id="Folder01" symbol="$uuid$"/>
+	  <!--[Testing for Approved - Level 1]-->
+      <ExpectedContents>
+        <Folders count="1"/>
+		<Documents count="2"/>
+		<Associations count="2"/>
+		<FolApp/>
+		<DocApp/>
+      </ExpectedContents>
+    </StoredQueryTransaction>
+  </TestStep>
+  <!--check both Associations confirming uuid of generated HM-->
+  <!-- -->
+	<TestStep id="validate">
+		<NullTransaction>
+			<UseReport section="query_for_ss_assoc" step="query" reportName="targetObject01" useAs="$targetObject01$"/>
+			<UseReport section="query_for_ss_assoc" step="query" reportName="targetObject02" useAs="$targetObject02$"/>
+			<Assertions>
+				<DataRef file="THIS" as="output"/>
+				<Assert id="found_targetObject01">
+					count(//*[local-name()='Association'][@id = "$targetObject01$"]) = 1
+				</Assert>
+				<Assert id="found_targetObject02">
+					count(//*[local-name()='Association'][@id = "$targetObject02$"]) = 1
+				</Assert>
+			</Assertions> 
+		</NullTransaction>
+	</TestStep>
+	
+</TestPlan>

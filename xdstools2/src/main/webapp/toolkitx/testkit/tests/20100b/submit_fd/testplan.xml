@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?><TestPlan>
+  <Test>20100b/submit_fd</Test>
+  <TestStep id="submit">
+    <Goal>Submit a single empty Folder</Goal>
+    <ExpectedStatus>Success</ExpectedStatus>
+    <RegisterTransaction>
+      <AssignUuids/>
+      <XDSb/>
+      <NoPatientId/>
+      <UseReport reportName="$patientid$" test="15817b" section="pif" step="step" useAs="$patientidFD$"/>
+      <MetadataFile>single_fd.xml</MetadataFile>
+      <Report name="folid" section="InputMetadata">
+                //*[local-name()='RegistryPackage' and descendant::*[local-name()='ExternalIdentifier'][@identificationScheme='urn:uuid:f64ffdf0-4b97-4e06-b79f-a52b38ec2f8a']]/@id            </Report>
+      <Report name="ssuid" section="InputMetadata">
+                //*[local-name()='RegistryPackage']/*[local-name()='ExternalIdentifier'][@identificationScheme='urn:uuid:96fdda7c-d067-4183-912e-bf5ee74998a8']/@value
+            </Report>
+    </RegisterTransaction>
+  </TestStep>
+</TestPlan>

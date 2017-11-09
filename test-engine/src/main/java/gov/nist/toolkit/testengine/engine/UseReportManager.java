@@ -23,7 +23,7 @@ import java.util.List;
 
 public class UseReportManager  {
     private final static Logger logger = Logger.getLogger(UseReportManager.class);
-	List<UseReport> useReports;
+	ArrayList<UseReport> useReports;
 	RetrievedDocumentModel retrievedDocumentModel;
 	ReportManager reportManager; // things reported from query results
 	TestConfig testConfig;
@@ -31,7 +31,7 @@ public class UseReportManager  {
 
 	public UseReportManager(TestConfig config) {
 		testConfig = config;
-		useReports = new ArrayList<>();
+		useReports = new ArrayList<UseReport>();
 		sectionLogMapDTO = new SectionLogMapDTO(testConfig.testInstance);
 	}
 
@@ -172,12 +172,29 @@ public class UseReportManager  {
             if (useReport.isResolved())
                 continue;
 
+            /**TODO Original Code**/
 			LogFileContentDTO logFileContentDTO = previousLogs.get(useReport.section);
 			if (logFileContentDTO == null)
 				logFileContentDTO = sectionLogMapDTO.get(useReport.section);
 			if (logFileContentDTO == null)
 				throw new XdsInternalException("UseReportManager#resolve: cannot find Report for " + useReport.getURI() + "\n");
 
+//            /**TODO - KM Added**/
+//            String useReportSearchKey;
+//            if(!useReport.section.equals("THIS")) {
+//            	useReportSearchKey = useReport.testInstance.getId() + ":" + useReport.section;
+//            }
+//            else {
+//            	useReportSearchKey = "THIS";
+//            }
+//            
+//			LogFileContentDTO logFileContentDTO = previousLogs.get(useReport.section);
+//			if (logFileContentDTO == null)
+//				logFileContentDTO = sectionLogMapDTO.get(useReportSearchKey);
+//			if (logFileContentDTO == null)
+//				throw new XdsInternalException("UseReportManager#resolve: cannot find Report for " + useReport.getURI() + "\n");
+//			/**TODO - End KM Added**/
+            
 			TestStepLogContentDTO testStepLogContentDTO = logFileContentDTO.getStepLog(useReport.step);
 			if (testStepLogContentDTO == null)
                 throw new XdsInternalException("UseReportManager#resolve: cannot find Report for " + useReport.getURI() + "\n");
@@ -221,7 +238,7 @@ public class UseReportManager  {
 			try {
 				if (useAs == null || useAs.equals("") ||
 						value == null || value.equals("")) {
-                    logger.info("Skipping UseReport " + ur);
+                    System.err.println("Skipping UseReport " + ur);
                     continue;
                 }
 //                logger.info(String.format("Apply %s to %s", ur, new OMFormatter(xml).toString()));
@@ -232,10 +249,17 @@ public class UseReportManager  {
 		}
 	}
 
+	/** TODO KM **/
 	public String get(String theUseAs) {
+		System.err.println("Getting value for value: " + theUseAs);
 		for (UseReport ur : useReports) {
-			if (theUseAs.equals(ur.useAs))
-				return ur.value;
+			System.err.println("UseReport: " + ur.toString());
+			if (theUseAs.equals(ur.useAs)) {
+				String tReturnValue = ur.value;
+				//return ur.value;
+				System.err.println("Returning UseReport value: " + tReturnValue);
+				return tReturnValue;
+			}
 		}
 		return null;
 	}

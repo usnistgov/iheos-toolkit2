@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<TestPlan>
+  <Test>21004/success_assoc</Test>
+  <TestStep id="submit">
+    <Goal>Submit Append Association linking both previously submitted DocumentEntries.</Goal>
+    <ExpectedStatus>Success</ExpectedStatus>
+	<MuTransaction>
+      <XDSb/>
+      <NoPatientId/>
+      <UseReport reportName="$patientid$" test="15817" section="pif" step="step" useAs="$patientid$"/>
+      <UseReport reportName="Document01_uuid" section="doc1" step="submit" useAs="$Document01Uuid$"/>
+	  <UseReport reportName="Document01_uuid" section="doc2" step="submit" useAs="$Document02Uuid$"/>
+      <MetadataFile>metadata.xml</MetadataFile>
+    </MuTransaction>
+  </TestStep>
+</TestPlan>

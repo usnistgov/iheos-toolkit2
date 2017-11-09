@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?><TestPlan>
+  <Test>21002/query_original</Test>
+  <Rule>GetDocuments SQ Original DocumentEntry</Rule>
+  <TestStep id="query">
+    <Rule>
+      <Transaction>SQ</Transaction>
+      <SQ>GetDocuments</SQ>
+    </Rule>
+    <ExpectedStatus>Success</ExpectedStatus>
+    <StoredQueryTransaction>
+      <XDSb/>
+      <MetadataFile>query.xml</MetadataFile>
+      <UseId testdir="../original" step="submit" section="AssignedUuids" id="Document01" symbol="$uuid$"/>
+      <ExpectedContents>
+        <Documents count="1"/>
+      </ExpectedContents>
+    </StoredQueryTransaction>
+  </TestStep>
+  <TestStep id="validate">
+    <NullTransaction>
+      <UseReport reportName="Document01_uuid" section="original" step="submit" useAs="orig_uuid"/>
+      <Assertions>
+        <DataRef file="THIS" as="output"/>
+        <Assert id="version">
+               //*[local-name()='ExtrinsicObject'][@id="orig_uuid"]/*[local-name()='VersionInfo']/@versionName = '1'
+               </Assert>
+        <Assert id="lid">
+               'orig_uuid' = //*[local-name()='ExtrinsicObject'][@id="orig_uuid"]/@lid
+               </Assert>
+        <Assert id="status">
+               //*[local-name()='ExtrinsicObject'][@id="orig_uuid"]/@status = 'urn:oasis:names:tc:ebxml-regrep:StatusType:Deprecated'
+               </Assert>
+      </Assertions>
+    </NullTransaction>
+  </TestStep>
+</TestPlan>

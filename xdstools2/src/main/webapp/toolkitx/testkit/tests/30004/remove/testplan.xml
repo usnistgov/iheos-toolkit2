@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<TestPlan>
+  <Test>30004/remove</Test>
+  <TestStep id="remove_assoc_only">
+	<Goal>Fail to remove the only DE-DE APND association.</Goal>
+    <ExpectedStatus>Failure</ExpectedStatus>
+    <ExpectedErrorCode>XDSMetadataModelException</ExpectedErrorCode>
+	<RemoveMetadataTransaction>
+      <XDSb/>
+      <NoPatientId/>
+	  <ParseMetadata>False</ParseMetadata>
+	  <UseId testdir="../apnd" step="apnd" section="AssignedUuids" id="APNDAssoc01" symbol="$uuid$"  />
+      <MetadataFile>remove.xml</MetadataFile>
+    </RemoveMetadataTransaction>
+  </TestStep> 
+  <TestStep id="remove_orig_set_only">
+	<Goal>Failure to remove the original document's metadata objects.</Goal>
+    <ExpectedStatus>Failure</ExpectedStatus>
+	<ExpectedErrorCode>XDSMetadataModelException</ExpectedErrorCode>
+    <RemoveMetadataTransaction>
+      <XDSb/>
+      <NoPatientId/>
+	  <ParseMetadata>False</ParseMetadata>
+	  <UseId testdir="../apnd" step="apnd" section="AssignedUuids" id="APNDAssoc01" symbol="$APNDAssociation$"  />
+	  <UseId testdir="../submit" step="submit" section="AssignedUuids" id="Document01" symbol="$Document01$"  />
+	  <UseId testdir="../submit" step="submit" section="AssignedUuids" id="SSHMAssoc01" symbol="$SSHM01Association$"  />
+	  <UseId testdir="../submit" step="submit" section="AssignedUuids" id="SubmissionSet01" symbol="$SubmissionSet01$"  />
+      <MetadataFile>remove_de.xml</MetadataFile>
+    </RemoveMetadataTransaction>
+  </TestStep>
+  <TestStep id="remove_apnd_set_only">
+	<Goal>Successfully remove appended document's metadata objects.</Goal>
+    <ExpectedStatus>Success</ExpectedStatus>
+    <RemoveMetadataTransaction>
+      <XDSb/>
+      <NoPatientId/>
+	  <ParseMetadata>False</ParseMetadata>
+	  <UseId testdir="../apnd" step="apnd" section="AssignedUuids" id="APNDAssoc01" symbol="$APNDAssociation$"  />
+	  <UseId testdir="../apnd" step="apnd" section="AssignedUuids" id="Document01" symbol="$Document01$"  />
+	  <UseId testdir="../apnd" step="apnd" section="AssignedUuids" id="SSHMAssoc01" symbol="$SSHM01Association$"  />
+	  <UseId testdir="../apnd" step="apnd" section="AssignedUuids" id="SubmissionSet01" symbol="$SubmissionSet01$"  />
+      <MetadataFile>remove_de.xml</MetadataFile>
+    </RemoveMetadataTransaction>
+  </TestStep>
+</TestPlan>

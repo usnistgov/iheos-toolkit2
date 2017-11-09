@@ -1,0 +1,1 @@
+Use SQ: GetRelatedDocuments to verify to the Update Association Status submission.

@@ -18,22 +18,24 @@ public class A01Sender {
         A01[3] = "PV1||I";
     }
 
-    static public void send(String server, int port, String patientId) throws IOException {
-//        String templateFile = A01Sender.class.getResource("/adt/A01.txt").getFile();
-//        logger.info("Loading template from " + templateFile);
+	static public void send(String server, int port, String patientId)
+			throws IOException, AdtMessageParseException, AdtMessageRejectedException {
+		// String templateFile =
+		// A01Sender.class.getResource("/adt/A01.txt").getFile();
+		// logger.info("Loading template from " + templateFile);
 
-        String[] msg = new String[4];
-        msg[0] = A01[0];
-        msg[1] = A01[1];
-        msg[2] = A01[2];
-        msg[3] = A01[3];
+		String[] msg = new String[4];
+		msg[0] = A01[0];
+		msg[1] = A01[1];
+		msg[2] = A01[2];
+		msg[3] = A01[3];
 
-        PropertyServiceManager pm = new PropertyServiceManager();
-        msg[0] = msg[0].replace("$MSH3$", pm.getMSH3());
-        msg[0] = msg[0].replace("$MSH4$", pm.getMSH4());
-        msg[0] = msg[0].replace("$MSH5$", pm.getMSH5());
-        msg[0] = msg[0].replace("$MSH6$", pm.getMSH6());
+		PropertyServiceManager pm = new PropertyServiceManager();
+		msg[0] = msg[0].replace("$MSH3$", pm.getMSH3());
+		msg[0] = msg[0].replace("$MSH4$", pm.getMSH4());
+		msg[0] = msg[0].replace("$MSH5$", pm.getMSH5());
+		msg[0] = msg[0].replace("$MSH6$", pm.getMSH6());
 
-        new AdtSender(msg, server, port).send(patientId);
-    }
+		new AdtSender(msg, server, port).send(patientId);
+	}
 }

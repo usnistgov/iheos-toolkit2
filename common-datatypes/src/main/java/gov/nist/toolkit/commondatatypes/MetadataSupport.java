@@ -399,6 +399,13 @@ public class MetadataSupport {
 
 	public static String documentAvailability_online = "urn:ihe:iti:2010:DocumentAvailability:Online";
 	public static String documentAvailability_offline = "urn:ihe:iti:2010:DocumentAvailability:Offline";
+	
+	//RMD
+	
+	public static String XDSRemoveDocumentsError = "XDSRemoveDocumentsError";
+	public static String UnresolvedReferenceException = "UnresolvedReferenceException";
+	public static String ReferencesExistException = "ReferencesExistException";
+	public static String XDSUnreferencedObjectException = "XDSUnreferencedObjectException";
 
 	// DSUB stuff
 
@@ -411,7 +418,7 @@ public class MetadataSupport {
 	public static String dsub_subscribe_response_action = "http://docs.oasis-open.org/wsn/bw-2/NotificationProducer/SubscribeResponse";
 
 	public static OMElement firstChildWithLocalName(OMElement ele, String localName) {
-		for (Iterator it=ele.getChildElements(); it.hasNext(); ) {
+		for (Iterator<?> it=ele.getChildElements(); it.hasNext(); ) {
 			OMElement child = (OMElement) it.next();
 			if (child.getLocalName().equals(localName))
 				return child;
@@ -420,7 +427,7 @@ public class MetadataSupport {
 	}
 
 	public static OMElement firstChildWithLocalNameEndingWith(OMElement ele, String localNameSuffix) {
-		for (Iterator it=ele.getChildElements(); it.hasNext(); ) {
+		for (Iterator<?> it=ele.getChildElements(); it.hasNext(); ) {
 			OMElement child = (OMElement) it.next();
 			if (child.getLocalName().endsWith(localNameSuffix))
 				return child;
@@ -430,7 +437,7 @@ public class MetadataSupport {
 
 	public static List<OMElement> childrenWithLocalName(OMElement ele, String localName) {
 		List<OMElement> al = new ArrayList<OMElement>();
-		for (Iterator it=ele.getChildElements(); it.hasNext(); ) {
+		for (Iterator<?> it=ele.getChildElements(); it.hasNext(); ) {
 			OMElement child = (OMElement) it.next();
 			if (child.getLocalName().equals(localName))
 				al.add(child);
@@ -440,7 +447,7 @@ public class MetadataSupport {
 
 	public static List<String> childrenLocalNames(OMElement ele) {
 		List<String> al = new ArrayList<String>();
-		for (Iterator it=ele.getChildElements(); it.hasNext(); ) {
+		for (Iterator<?> it=ele.getChildElements(); it.hasNext(); ) {
 			OMElement child = (OMElement) it.next();
 				al.add(child.getLocalName());
 		}
@@ -455,7 +462,7 @@ public class MetadataSupport {
 	 * @return
 	 */
 	public static OMElement getChild(OMElement ele, String localName, String id) {
-		for (Iterator it=ele.getChildElements(); it.hasNext(); ) {
+		for (Iterator<?> it=ele.getChildElements(); it.hasNext(); ) {
 			OMElement child = (OMElement) it.next();
 			if (child.getLocalName().equals(localName)) {
 				String idAttVal = child.getAttributeValue(MetadataSupport.id_qname);
@@ -487,7 +494,7 @@ public class MetadataSupport {
 	private static void decendentsWithLocalName1(List<OMElement> decendents, OMElement ele, String localName, int depth) {
 		if (depth == 0)
 			return;
-		for (Iterator it=ele.getChildElements(); it.hasNext(); ) {
+		for (Iterator<?> it=ele.getChildElements(); it.hasNext(); ) {
 			OMElement child = (OMElement) it.next();
 			if (child.getLocalName().equals(localName))
 				decendents.add(child);

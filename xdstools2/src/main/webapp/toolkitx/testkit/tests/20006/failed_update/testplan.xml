@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?><TestPlan>
+  <Test>20006/failed_update</Test>
+  <Rule>Update a DocumentEntry using Association Propagation and a Submit Association in same transaction.</Rule>
+  <TestStep id="update">
+    <Goal>Response message is expected to contain error code: XDSMetadataUpdateOperationError.</Goal>
+    <ExpectedStatus>Failure</ExpectedStatus>
+	<ExpectedErrorCode>XDSMetadataUpdateOperationError</ExpectedErrorCode>
+    <MuTransaction>
+      <NoAssignUids id="Document01"/>
+      <XDSb/>
+      <NoPatientId/>
+      <UseReport reportName="$patientid$" test="15817" section="pif" step="step" useAs="$patientid$"/>
+      <AssignUuids/>
+      <MetadataFile>single_doc_with_APND.xml</MetadataFile>
+      <UseId testdir="../submit" step="submit" section="AssignedUuids" id="Document01" symbol="$Document01_uuid$" />
+      <UseId testdir="../submit" step="submit" section="AssignedUids" id="Document01" symbol="$Document01_uid$" />
+	  <UseId testdir="../submit" step="submit" section="AssignedUuids" id="Document02" symbol="$Document02_uuid$" />
+      <Report name="update_doc_uuid" section="InputMetadata">
+                //*[local-name()='ExtrinsicObject'][1]/@id
+        </Report>
+    </MuTransaction>
+  </TestStep>
+</TestPlan>

@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?><TestPlan>
+  <Test>20100a/submit_apnd_assoc</Test>
+  <TestStep id="apnd">
+    <Goal>Failure to add an Append Association linking both previously submitted DocumentEntry objects.</Goal>
+    <ExpectedStatus>Failure</ExpectedStatus>
+	<MuTransaction>
+      <XDSb/>
+      <NoPatientId/>
+      <UseReport reportName="$patientid$" test="15817b" section="pif" step="step" useAs="$patientid$"/>
+      <UseReport reportName="DocUuid" section="document1" step="submit" useAs="$original_doc_uuid$"/>
+	  <UseReport reportName="DocUuid" section="document2" step="submit" useAs="$apnd_doc_uuid$"/>
+      <MetadataFile>metadata.xml</MetadataFile>
+    </MuTransaction>
+  </TestStep>
+</TestPlan>

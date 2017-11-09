@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<TestPlan>
+  <Test>20006/eval</Test>
+  <TestStep id="by_uid">
+    <Goal>Submission Set successfully registered. Both documents are approved.</Goal> 
+    <ExpectedStatus>Success</ExpectedStatus>
+    <StoredQueryTransaction>
+      <XDSb/>
+      <UseId testdir="../submit" id="SubmissionSet01" symbol="$ssuid$" step="submit" section="AssignedUids"/>
+      <MetadataFile>query.xml</MetadataFile>
+      <ExpectedContents>
+        <SSwithTwoDoc/>
+      </ExpectedContents>
+      <Report name="Doc01Uuid" section="Result">
+		 //*[local-name()='ExtrinsicObject'][1]/@id
+      </Report>
+      <Report name="Doc02Uuid" section="Result">
+		 //*[local-name()='ExtrinsicObject'][2]/@id
+      </Report>	  
+    </StoredQueryTransaction>
+  </TestStep>
+</TestPlan>

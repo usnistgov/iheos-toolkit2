@@ -1,0 +1,1 @@
+Submit a new version of the Folder object, but setting the Slot, AssociationPropagation, equaled to "no".

@@ -137,3 +137,16 @@ hs_err_pid*
 .hgsubstate
 .hgtags
 
+#Eclipse Files
+.prefs
+.project
+/bin/
+/actorfactory/.settings
+*.90
+*.80
+*.70
+*.1
+it-tests/src/test/resources/external_cache/ImageCache/sim/idc-dataset-a/1.3.6.1.4.1.21367.201599.1.201604021948007/1.3.6.1.4.1.21367.201599.2.201604021948008/1.3.6.1.4.1.21367.201599.3.201604021948008.1/1.2.840.10008.1.2.1
+it-tests/src/test/resources/external_cache/ImageCache/sim/idc-dataset-a/1.3.6.1.4.1.21367.201599.1.201604021948013/1.3.6.1.4.1.21367.201599.2.201604021948013/1.3.6.1.4.1.21367.201599.3.201604021948014/1.2.840.10008.1.2.1
+it-tests/src/test/resources/external_cache/ImageCache/sim/idc-dataset-a/1.3.6.1.4.1.21367.201599.1.201604021948019/1.3.6.1.4.1.21367.201599.2.201604021948019/1.3.6.1.4.1.21367.201599.3.201604021948019.1/1.2.840.10008.1.2.1
+it-tests/src/test/resources/external_cache/ImageCache/sim/idc-dataset-a/1.3.6.1.4.1.21367.201599.1.201604021948025/1.3.6.1.4.1.21367.201599.2.201604021948025/1.3.6.1.4.1.21367.201599.3.201604021948025.1/1.2.840.10008.1.2.1

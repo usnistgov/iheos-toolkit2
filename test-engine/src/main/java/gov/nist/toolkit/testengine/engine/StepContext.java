@@ -294,6 +294,9 @@ public class StepContext extends BasicContext implements ErrorReportingInterface
                case "PatientIdentityFeedTransaction":
                   transaction = new PatientIdentityFeedTransaction(this, instruction, instruction_output);
                   break;
+               case "PatientMoveTransaction":
+                   transaction = new PatientMoveTransaction(this, instruction, instruction_output);
+                   break;
                case "IGQTransaction":
                   transaction = new IGQTransaction(this, instruction, instruction_output);
                   break;
@@ -312,6 +315,9 @@ public class StepContext extends BasicContext implements ErrorReportingInterface
                case "RetrieveTransaction":
                   transaction = new RetrieveTransaction(this, instruction, instruction_output);
                   break;
+               case "RemoveMetadataTransaction":
+                   transaction = new RemoveMetadataTransaction(this, instruction, instruction_output);
+                   break; 
                case "NullTransaction":
                   transaction = new NullTransaction(this, instruction, instruction_output);
                   break;

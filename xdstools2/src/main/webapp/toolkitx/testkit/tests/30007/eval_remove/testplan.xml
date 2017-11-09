@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<TestPlan>
+  <Test>30007/eval_remove</Test>
+  <Rule>Evaluate all contents after Remove Metadata transaction.</Rule>
+  <TestStep id="query_xfrm_rplc_doc_assoc">
+	<Goal>SQ shall return the DocumentEntry and SS-HM Association.</Goal>
+    <ExpectedStatus>Success</ExpectedStatus>
+    <StoredQueryTransaction>
+      <XDSb/>
+	  <UseId testdir="../submit" step="submit" section="AssignedUuids" id="Document01" symbol="$Document00$"/>
+	  <UseId testdir="../xfrm_rplc" step="xfrm_rplc" section="AssignedUuids" id="Document01" symbol="$Document01$"/>
+	  <UseId testdir="../apnd_rplc" step="apnd_rplc" section="AssignedUuids" id="Document01" symbol="$Document02$"/>
+      <MetadataFile>query_doc_assoc.xml</MetadataFile>
+      <ExpectedContents>
+        <Documents count="0"/>
+		<Associations count="0"/>
+		<DocApp/>
+      </ExpectedContents>
+    </StoredQueryTransaction>
+  </TestStep>  
+</TestPlan>

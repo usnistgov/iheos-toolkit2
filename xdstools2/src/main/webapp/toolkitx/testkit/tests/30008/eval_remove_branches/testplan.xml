@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<TestPlan>
+  <Test>30008/eval_remove_branches</Test>
+  <Rule>Evaluate all contents after failed Remove Metadata transaction.</Rule>
+  <TestStep id="query_doc_assoc">
+	<Goal>No changes should be observed.</Goal>
+    <ExpectedStatus>Success</ExpectedStatus>
+    <StoredQueryTransaction>
+      <XDSb/>
+	  <UseId testdir="../submit" step="submit" section="AssignedUuids" id="Document01" symbol="$Document00$"/>
+	  <UseId testdir="../xfrm_rplc" step="xfrm_rplc" section="AssignedUuids" id="Document01" symbol="$Document01$"/>
+	  <UseId testdir="../apnd" step="apnd" section="AssignedUuids" id="Document01" symbol="$Document02$"/>
+      <MetadataFile>query_doc_assoc.xml</MetadataFile>
+      <ExpectedContents>
+        <Documents count="3"/>
+		<Associations count="5"/>
+      </ExpectedContents>
+    </StoredQueryTransaction>
+  </TestStep>  
+</TestPlan>
