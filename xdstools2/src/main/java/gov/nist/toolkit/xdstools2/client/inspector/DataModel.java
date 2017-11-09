@@ -46,7 +46,7 @@ public class DataModel {
 	
 	// content is loaded into results one query at a time
 	// this builds the combined structure
-	void buildCombined() {
+	public void buildCombined() {
 		combinedMetadata = new MetadataCollection();
 		combinedMetadata.init();
 
@@ -68,8 +68,53 @@ public class DataModel {
 		allDocs = new ArrayList<Document>();
 		if (docMap.values() != null)
 			allDocs.addAll(docMap.values());
-
-
 	}
 
+	public List<Result> getResults() {
+		return results;
+	}
+
+	public void setResults(List<Result> results) {
+		this.results = results;
+	}
+
+	public MetadataCollection getCombinedMetadata() {
+		return combinedMetadata;
+	}
+
+	public void setCombinedMetadata(MetadataCollection combinedMetadata) {
+		this.combinedMetadata = combinedMetadata;
+	}
+
+	public SiteSpec getSiteSpec() {
+		return siteSpec;
+	}
+
+	public void setSiteSpec(SiteSpec siteSpec) {
+		this.siteSpec = siteSpec;
+	}
+
+	public List<Document> getAllDocs() {
+		return allDocs;
+	}
+
+	public void setAllDocs(List<Document> allDocs) {
+		this.allDocs = allDocs;
+	}
+
+	public Map<String, Document> getDocMap() {
+		return docMap;
+	}
+
+	public void setDocMap(Map<String, Document> docMap) {
+		this.docMap = docMap;
+	}
+
+	public boolean isEnableActions() {
+		return enableActions;
+	}
+
+	public void setEnableActions(boolean enableActions) {
+		this.enableActions = enableActions;
+	}
 }

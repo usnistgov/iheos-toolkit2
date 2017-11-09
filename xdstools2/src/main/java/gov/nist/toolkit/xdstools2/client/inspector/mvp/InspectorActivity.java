@@ -62,7 +62,7 @@ public class InspectorActivity extends AbstractToolkitActivity {
         assert(presenter != null);
 
         presenter.setTitle("xResultInspector");
-        presenter.setResults(place.getResults());
+        presenter.setDataModel(place.getResults());
         presenter.setSiteSpec(place.getSiteSpec());
         finish(acceptsOneWidget, eventBus);
     }
