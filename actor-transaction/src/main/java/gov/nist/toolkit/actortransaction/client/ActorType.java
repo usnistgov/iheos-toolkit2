@@ -317,7 +317,7 @@ public enum ActorType implements IsSerializable, Serializable {
             Arrays.asList(""),
             "fhir",
             "gov.nist.toolkit.simcommon.server.factories.FhirActorFactory",
-            "gov.nist.toolkit.fhir.simulators.FhirSimulator",
+            "gov.nist.toolkit.fhir.simulators.fhir.FhirSimulator",
             Arrays.asList(TransactionType.FHIR),
             true,
             null,

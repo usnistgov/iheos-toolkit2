@@ -39,7 +39,7 @@ class FhirClient {
             FhirId locationHeader
             String lhdr = response.getFirstHeader('Location')
             if (lhdr) {
-                def (nametag, value) = lhdr.split(':')
+                def (nametag, value) = lhdr.split(':', 2)
                 locationHeader = new FhirId(value)
             }
             HttpEntity entity2

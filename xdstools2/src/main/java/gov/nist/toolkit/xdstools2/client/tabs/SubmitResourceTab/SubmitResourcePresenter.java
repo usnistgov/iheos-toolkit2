@@ -1,6 +1,7 @@
 package gov.nist.toolkit.xdstools2.client.tabs.SubmitResourceTab;
 
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.user.client.ui.Anchor;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.Label;
 import gov.nist.toolkit.configDatatypes.client.TransactionType;
@@ -15,6 +16,7 @@ import gov.nist.toolkit.xdstools2.client.command.command.*;
 import gov.nist.toolkit.xdstools2.client.util.ASite;
 import gov.nist.toolkit.xdstools2.client.util.ClientUtils;
 import gov.nist.toolkit.xdstools2.client.util.SiteFilter;
+import gov.nist.toolkit.xdstools2.client.widgets.HorizontalFlowPanel;
 import gov.nist.toolkit.xdstools2.shared.command.request.FhirCreateRequest;
 import gov.nist.toolkit.xdstools2.shared.command.request.FhirTransactionRequest;
 import gov.nist.toolkit.xdstools2.shared.command.request.GetDatasetElementContentRequest;
@@ -105,10 +107,23 @@ public class SubmitResourcePresenter extends AbstractPresenter<SubmitResourceVie
         String prefix = "ReportBuilder: ";
         for (AssertionResult ar: result.assertions.assertions) {
             String content = ar.assertion;
-            if (content.startsWith(prefix));
-            content = content.substring(prefix.length());
-            if (ar.status)
-                getView().addLog(content);
+            if (content.startsWith(prefix))
+                content = content.substring(prefix.length());
+            if (ar.status) {
+                content = content.trim();
+                if (content.startsWith("Ref =")) {
+                    String link = content.substring("Ref =".length()).trim();
+                    Anchor anchor = new Anchor();
+                    anchor.setTarget("_blank");
+                    anchor.setHref(link);
+                    anchor.setText(link);
+                    HorizontalFlowPanel fp = new HorizontalFlowPanel();
+                    fp.add(new Label("Ref = "));
+                    fp.add(anchor);
+                    getView().addLog(fp);
+                } else
+                    getView().addLog(content);
+            }
             else {
                 Label l = new Label(content);
                 l.setStyleName("testFail");

@@ -189,7 +189,11 @@ public class SimulatorServiceManager extends CommonService {
 				header = Io.stringFromFile(headerFile);
 			else
 				header = "";
-			return subParseMessage(new Message(header, body));
+			File uriFile = db.getRequestURIFile();
+			String uri = "";
+			if (uriFile.exists())
+				uri = Io.stringFromFile(uriFile);
+			return subParseMessage(new Message(uri + "\n" + header, body));
 		} catch (Exception e) {
 			return new Message("Error: " + e.getMessage());
 		}
