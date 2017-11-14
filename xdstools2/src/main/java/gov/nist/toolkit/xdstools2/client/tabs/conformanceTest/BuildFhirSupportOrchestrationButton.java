@@ -7,6 +7,7 @@ import com.google.gwt.user.client.ui.Panel;
 import gov.nist.toolkit.actortransaction.client.ActorOption;
 import gov.nist.toolkit.services.client.FhirSupportOrchestrationRequest;
 import gov.nist.toolkit.services.client.FhirSupportOrchestrationResponse;
+import gov.nist.toolkit.services.client.PatientDef;
 import gov.nist.toolkit.services.client.RawResponse;
 import gov.nist.toolkit.xdstools2.client.command.command.BuildFhirSupportOrchestrationCommand;
 import gov.nist.toolkit.xdstools2.client.widgets.OrchestrationSupportTestsDisplay;
@@ -70,6 +71,9 @@ public class BuildFhirSupportOrchestrationButton extends AbstractOrchestrationBu
 
                 initializationResultsPanel.add(new HTML("<h2>Patients</h2>"));
                 FlexTable table = new FlexTable();
+                table.setBorderWidth(2);
+                table.addStyleName("border-collapse");
+                table.addStyleName("wheat");
 
                 int row=0;
                 table.setWidget(row, 0, new HTML("Patient ID"));
@@ -77,7 +81,7 @@ public class BuildFhirSupportOrchestrationButton extends AbstractOrchestrationBu
                 table.setWidget(row, 2, new HTML("Last Name"));
                 table.setWidget(row, 3, new HTML("FHIR Resource"));
 
-                for (FhirSupportOrchestrationResponse.PatientDef pat : response.getPatients()) {
+                for (PatientDef pat : response.getPatients()) {
                     row++;
                     table.setWidget(row, 0, new HTML(pat.pid));
                     table.setWidget(row, 1, new HTML(pat.given));

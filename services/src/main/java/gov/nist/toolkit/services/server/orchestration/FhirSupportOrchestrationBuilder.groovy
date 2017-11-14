@@ -7,12 +7,15 @@ import gov.nist.toolkit.installation.Installation
 import gov.nist.toolkit.results.client.TestInstance
 import gov.nist.toolkit.services.client.FhirSupportOrchestrationRequest
 import gov.nist.toolkit.services.client.FhirSupportOrchestrationResponse
+import gov.nist.toolkit.services.client.PatientDef
 import gov.nist.toolkit.services.client.RawResponse
 import gov.nist.toolkit.services.server.ToolkitApi
 import gov.nist.toolkit.session.server.Session
 import gov.nist.toolkit.simcommon.client.SimId
 import gov.nist.toolkit.simcommon.client.SimulatorConfig
 import gov.nist.toolkit.sitemanagement.client.SiteSpec
+import gov.nist.toolkit.xdsexception.ExceptionUtil
+import org.apache.log4j.Logger
 import org.hl7.fhir.dstu3.model.Bundle
 import org.hl7.fhir.dstu3.model.Identifier
 import org.hl7.fhir.dstu3.model.Patient
@@ -20,6 +23,7 @@ import org.hl7.fhir.dstu3.model.Resource
 import org.hl7.fhir.instance.model.api.IBaseResource
 
 class FhirSupportOrchestrationBuilder {
+    static private final Logger logger = Logger.getLogger(FhirSupportOrchestrationBuilder.class);
     ToolkitApi api
     private Session session
     private FhirSupportOrchestrationRequest request
@@ -68,7 +72,9 @@ class FhirSupportOrchestrationBuilder {
             if (needsLoading)
                 util.submit(request.userName, siteSpec, testInstance)
         } catch (Exception e) {
-            response.addMessage(testInstance, false, "Error submiting Patients to FHIR server ${simId.toString()} - ${e.getMessage()}")
+            String error = "Error submiting Patients to FHIR server ${simId.toString()} \n ${ExceptionUtil.exception_details(e)}"
+            response.addMessage(testInstance, false, error)
+            logger.error(error)
             return response
         }
 
@@ -102,7 +108,7 @@ class FhirSupportOrchestrationBuilder {
                 String given = p.name?.get(0)?.given?.get(0)
                 String family = p.name?.get(0)?.family
                 String pUrl = comp.fullUrl
-                response.addPatient(new FhirSupportOrchestrationResponse.PatientDef(pid, given, family, pUrl))
+                response.addPatient(new PatientDef(pid, given, family, pUrl))
             }
         }
 

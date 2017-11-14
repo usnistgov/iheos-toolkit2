@@ -7,6 +7,9 @@ public class FhirSupportOrchestrationResponse extends AbstractOrchestrationRespo
     private static final long serialVersionUID = 1L;
     private List<PatientDef> patients = new ArrayList<>();   // patientID ==> Name ; url
 
+
+    public FhirSupportOrchestrationResponse() {}
+
     @Override
     public boolean isExternalStart() {
         return false;
@@ -20,17 +23,4 @@ public class FhirSupportOrchestrationResponse extends AbstractOrchestrationRespo
         this.patients.add(patient);
     }
 
-    static public class PatientDef {
-        public String pid;
-        public String given;
-        public String family;
-        public String url;
-
-        public PatientDef(String pid, String given, String family, String url) {
-            this.pid = pid;
-            this.given = given;
-            this.family = family;
-            this.url = url;
-        }
-    }
 }

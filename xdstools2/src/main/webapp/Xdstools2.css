@@ -205,6 +205,16 @@ h3 {
   border:2px solid darkslategray;
 }
 
+.border-collapse {
+  border-collapse: collapse;
+  border:2px solid darkslategray;
+  margin: 1px;
+}
+
+.wheat {
+  background-color: wheat;
+}
+
 .list-border {
   border: 1px solid rgba(169, 169, 169, 0.67);
 }

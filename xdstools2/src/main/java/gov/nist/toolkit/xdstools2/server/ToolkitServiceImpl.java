@@ -11,18 +11,18 @@ import gov.nist.toolkit.configDatatypes.client.PidSet;
 import gov.nist.toolkit.configDatatypes.client.TransactionType;
 import gov.nist.toolkit.datasets.server.DatasetFactory;
 import gov.nist.toolkit.datasets.shared.DatasetModel;
+import gov.nist.toolkit.fhir.simulators.sim.rep.RepIndex;
+import gov.nist.toolkit.fhir.simulators.support.StoredDocument;
+import gov.nist.toolkit.fhir.simulators.support.od.TransactionUtil;
 import gov.nist.toolkit.installation.ExternalCacheManager;
 import gov.nist.toolkit.installation.Installation;
 import gov.nist.toolkit.installation.PropertyServiceManager;
 import gov.nist.toolkit.interactionmapper.InteractionMapper;
 import gov.nist.toolkit.interactionmodel.client.InteractingEntity;
-import gov.nist.toolkit.results.client.CodesResult;
-import gov.nist.toolkit.results.client.DocumentEntryDetail;
-import gov.nist.toolkit.results.client.Result;
-import gov.nist.toolkit.results.client.TestInstance;
-import gov.nist.toolkit.results.client.TestLogs;
+import gov.nist.toolkit.results.client.*;
 import gov.nist.toolkit.results.shared.Test;
 import gov.nist.toolkit.services.client.FhirSupportOrchestrationRequest;
+import gov.nist.toolkit.services.client.FhirSupportOrchestrationResponse;
 import gov.nist.toolkit.services.client.IdcOrchestrationRequest;
 import gov.nist.toolkit.services.client.RawResponse;
 import gov.nist.toolkit.services.server.RawResponseBuilder;
@@ -43,9 +43,6 @@ import gov.nist.toolkit.simcommon.client.SimulatorStats;
 import gov.nist.toolkit.simcommon.server.SimDb;
 import gov.nist.toolkit.simcommon.server.SimManager;
 import gov.nist.toolkit.simcommon.server.SiteServiceManager;
-import gov.nist.toolkit.fhir.simulators.sim.rep.RepIndex;
-import gov.nist.toolkit.fhir.simulators.support.StoredDocument;
-import gov.nist.toolkit.fhir.simulators.support.od.TransactionUtil;
 import gov.nist.toolkit.sitemanagement.client.Site;
 import gov.nist.toolkit.sitemanagement.client.SiteSpec;
 import gov.nist.toolkit.sitemanagement.client.TransactionOfferings;
@@ -87,13 +84,7 @@ import java.io.IOException;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Scanner;
+import java.util.*;
 
 @SuppressWarnings("serial")
 public class ToolkitServiceImpl extends RemoteServiceServlet implements
@@ -541,7 +532,9 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements
     public RawResponse buildFhirSupportOrchestration(FhirSupportOrchestrationRequest request) throws Exception {
         Session s = getSession();
         if (s == null) return RawResponseBuilder.build(new NoServletSessionException(""));
-        return new OrchestrationManager().buildFhirSupportEnvironment(s, request);
+        RawResponse response = new OrchestrationManager().buildFhirSupportEnvironment(s, request);
+        FhirSupportOrchestrationResponse theResponse = (FhirSupportOrchestrationResponse) response;
+        return theResponse;
     }
 
     /*

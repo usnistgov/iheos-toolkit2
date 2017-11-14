@@ -400,8 +400,8 @@ public class XdsTestServiceManager extends CommonService {
 	}
 
 	public List<String> getTestSections(String test) throws Exception   {
-		if (session != null)
-			logger.debug(session.id() + ": " + "getTestSectionsReferencedInUseReports " + test);
+//		if (session != null)
+//			logger.debug(session.id() + ": " + "getTestSectionsReferencedInUseReports " + test);
 		TestKitSearchPath searchPath = session.getTestkitSearchPath();
 		TestDefinition def = session.getTestkitSearchPath().getTestDefinition(test);
 		return def.getSectionIndex();
@@ -617,8 +617,8 @@ public class XdsTestServiceManager extends CommonService {
 	 */
 	public TestOverviewDTO getTestOverview(String sessionName, TestInstance testInstance) throws Exception {
 		try {
-			if (session != null)
-				logger.debug(session.id() + ": " + "getTestOverview(" + testInstance + ")");
+			//if (session != null)
+				//logger.debug(session.id() + ": " + "getTestOverview(" + testInstance + ")");
 
 			testInstance.setUser(sessionName);
 
