@@ -53,6 +53,17 @@ See collections.txt file for indexing.
 		</tabs>
 	</tab>
 
+	<tab label="FHIR Support" type="actor" tcCode="fhirsupport" displayColorCode="#D0E4F6">
+		<tabs label="Profiles">
+			<tab label="FHIR Init" type="profile" tcCode="fhir-init">
+				<tabs label="Options">
+					<tab label="Required" type="option" tcCode="" externalStart="true"/>
+				</tabs>
+			</tab>
+		</tabs>
+	</tab>
+
+
 	<tab label="Document Recipient" type="actor" tcCode="rec" displayColorCode="#D0E4F6">
 		<tabs label="Profiles">
 			<tab label="XDS" type="profile" tcCode="xds">

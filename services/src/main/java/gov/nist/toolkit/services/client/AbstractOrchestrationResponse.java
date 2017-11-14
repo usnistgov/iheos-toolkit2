@@ -29,6 +29,14 @@ abstract public class AbstractOrchestrationResponse extends RawResponse {
 
     public Collection<MessageItem> getMessages() { return messages; }
 
+    public boolean hasError() {
+        for (MessageItem item : messages) {
+            if (!item.isSuccess())
+                return true;
+        }
+        return false;
+    }
+
     /**
      * Tests used to build up test environment
      * @return

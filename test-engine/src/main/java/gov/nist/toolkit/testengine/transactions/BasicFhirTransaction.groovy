@@ -32,10 +32,14 @@ abstract class BasicFhirTransaction extends BasicTransaction {
         IBaseResource resource = null
         if (resourceFile) {
             String content = resourceFile.text.trim()
-            if (content.startsWith('<'))
-                resource = fhirCtx.newXmlParser().parseResource(resourceFile.text)
-            else
-                resource = fhirCtx.newJsonParser().parseResource(resourceFile.text)
+            try {
+                if (content.startsWith('<'))
+                    resource = fhirCtx.newXmlParser().parseResource(resourceFile.text)
+                else
+                    resource = fhirCtx.newJsonParser().parseResource(resourceFile.text)
+            } catch (Exception e) {
+                throw new Exception("Failed to parse Resource from ${resourceFile}: ${e.getMessage()}", e)
+            }
         }
         doRun(resource, urlExtension)
     }

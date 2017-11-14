@@ -77,6 +77,7 @@ public class ConformanceTestTab extends ToolWindowWithMenu implements TestRunner
 	private RecOrchestrationResponse recOrchestrationResponse;
 	private RegOrchestrationResponse regOrchestrationResponse;
 	private SrcOrchestrationResponse srcOrchestrationResponse;
+	private FhirSupportOrchestrationResponse fhirSupportOrchestrationResponse;
 
 	private final TestStatistics testStatistics = new TestStatistics();
 
@@ -846,6 +847,11 @@ public class ConformanceTestTab extends ToolWindowWithMenu implements TestRunner
 			orchInit.addSelfTestClickHandler(new RefreshTestCollectionHandler());
 			initializationPanel.add(orchInit.panel());
 		}
+		else if (currentActorOption.isFhirSupport()) {
+			orchInit = new BuildFhirSupportOrchestrationButton(this, testContext, testContextView, initializationPanel, label, currentActorOption);
+			orchInit.addSelfTestClickHandler(new RefreshTestCollectionHandler());
+			initializationPanel.add(orchInit.panel());
+		}
 		else {
 			if (testContext.getSiteUnderTest() != null)
 				siteToIssueTestAgainst = testContext.getSiteUnderTestAsSiteSpec();
@@ -1104,6 +1110,11 @@ public class ConformanceTestTab extends ToolWindowWithMenu implements TestRunner
 	void setRegOrchestrationResponse(RegOrchestrationResponse regOrchestrationResponse) {
 		this.regOrchestrationResponse = regOrchestrationResponse;
 		setOrchestrationResponse(regOrchestrationResponse);
+	}
+
+	void setFhirSupportOrchestrationResponse(FhirSupportOrchestrationResponse fhirSupportOrchestrationResponse) {
+		this.fhirSupportOrchestrationResponse = fhirSupportOrchestrationResponse;
+		setOrchestrationResponse(fhirSupportOrchestrationResponse);
 	}
 
 	public void setOrchestrationResponse(AbstractOrchestrationResponse repOrchestrationResponse) {

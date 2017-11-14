@@ -117,6 +117,11 @@ public class SimDb {
 		!ActorType.findActor(new File(simRoot, 'sim_type.txt').text).isFhir()
 	}
 
+	static boolean isFSim(SimId simId) {
+		File base = getSimBase(simId)
+		return isFSim(base)
+	}
+
 	static boolean isFSim(File simRoot) {
 		//isPrefix(simRoot, getFSimDbFile())
 		ActorType.findActor(new File(simRoot, 'sim_type.txt').text).isFhir()
@@ -125,6 +130,18 @@ public class SimDb {
 	static boolean isPrefix(File file, File possiblePrefix) {
 		file.getCanonicalPath().startsWith(possiblePrefix.getCanonicalPath())
 	}
+
+//	List getAllResources(SimDbEvent event) {
+//		setEvent(event)
+//		getEventDir().listFiles().findAll { File f ->
+//			f.isDirectory()
+//		}.collect { File dir ->
+//			String resourceType = dir.name
+//			dir.listFiles().findAll { File rf ->
+//				rf.name.endsWith('json')
+//			}
+//		}
+//	}
 
 	/**
 	 * Does simulator exist?
@@ -364,6 +381,12 @@ public class SimDb {
 
 	public String getEvent() { return event; }
 	public void setEvent(String _event) { event = _event; }
+	void setEvent(SimDbEvent event) {
+		this.actor = event.actor
+		this.transaction = event.trans
+		configureTransactionDir()
+		this.event = event.eventId
+	}
 
 	public File getEventDir() {
 		return new File(transactionDir, event);
@@ -390,13 +413,17 @@ public class SimDb {
 		this.transaction = ti.trans;
 
 		if (actor != null && transaction != null) {
-			String transdir = new File(new File(simDir, actor), transaction).path;
-			transactionDir = new File(transdir);
-			transactionDir.mkdirs();
-			if (!transactionDir.isDirectory())
-				throw new IOException("Cannot create content in Simulator database, creation of " + transactionDir + " failed");
+			configureTransactionDir()
 		}
 		event = ti.messageId;
+	}
+
+	private void configureTransactionDir() {
+		String transdir = new File(new File(simDir, actor), transaction).path;
+		transactionDir = new File(transdir);
+		transactionDir.mkdirs();
+		if (!transactionDir.isDirectory())
+			throw new IOException("Cannot create content in Simulator database, creation of " + transactionDir + " failed");
 	}
 
 	// actor, transaction, and event must be filled in

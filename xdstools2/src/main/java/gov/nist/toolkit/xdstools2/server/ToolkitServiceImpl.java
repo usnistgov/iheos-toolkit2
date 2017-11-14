@@ -22,6 +22,7 @@ import gov.nist.toolkit.results.client.Result;
 import gov.nist.toolkit.results.client.TestInstance;
 import gov.nist.toolkit.results.client.TestLogs;
 import gov.nist.toolkit.results.shared.Test;
+import gov.nist.toolkit.services.client.FhirSupportOrchestrationRequest;
 import gov.nist.toolkit.services.client.IdcOrchestrationRequest;
 import gov.nist.toolkit.services.client.RawResponse;
 import gov.nist.toolkit.services.server.RawResponseBuilder;
@@ -533,6 +534,14 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements
         Session s = getSession();
         if (s == null) return RawResponseBuilder.build(new NoServletSessionException(""));
         return new OrchestrationManager().buildSrcTestEnvironment(s, request.getSrcOrchestrationRequest());
+    }
+
+
+    @Override
+    public RawResponse buildFhirSupportOrchestration(FhirSupportOrchestrationRequest request) throws Exception {
+        Session s = getSession();
+        if (s == null) return RawResponseBuilder.build(new NoServletSessionException(""));
+        return new OrchestrationManager().buildFhirSupportEnvironment(s, request);
     }
 
     /*

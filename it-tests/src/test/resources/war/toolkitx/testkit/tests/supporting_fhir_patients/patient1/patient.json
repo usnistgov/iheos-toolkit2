@@ -1,0 +1,60 @@
+{
+  "resourceType": "Patient",
+  "text": {
+    "status": "generated",
+    "div": "<div></div>"
+  },
+  "identifier": [
+    {
+      "fhir_comments": [
+        "Pre-installed supporting patient definition."
+      ],
+      "use": "usual",
+      "type": {
+        "coding": [
+          {
+            "system": "http://hl7.org/fhir/v2/0203",
+            "code": "MR"
+          }
+        ]
+      },
+      "system": "urn:oid:1.2.36.146.595.217.0.1",
+      "value": "12345",
+      "period": {
+        "start": "2001-05-06"
+      },
+      "assigner": {
+        "display": "XDS Toolkit"
+      }
+    }
+  ],
+  "active": true,
+  "name": [
+    {
+      "fhir_comments": [
+        "Mickey Mouse"
+      ],
+      "use": "official",
+      "family": [
+        "Mouse"
+      ],
+      "given": [
+        "Mickey"
+      ]
+    }
+  ],
+  "gender": "male",
+  "birthDate": "1928-09-18",
+  "deceasedBoolean": true,
+  "address": [
+    {
+      "use": "home",
+      "type": "both",
+      "line": [
+        "1 Unknown St."
+      ],
+      "city": "New York",
+      "state": "New York"
+    }
+  ]
+}

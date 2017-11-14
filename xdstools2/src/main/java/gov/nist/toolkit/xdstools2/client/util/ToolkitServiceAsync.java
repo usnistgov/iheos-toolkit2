@@ -7,6 +7,7 @@ import gov.nist.toolkit.datasets.shared.DatasetModel;
 import gov.nist.toolkit.interactionmodel.client.InteractingEntity;
 import gov.nist.toolkit.results.client.*;
 import gov.nist.toolkit.results.shared.Test;
+import gov.nist.toolkit.services.client.FhirSupportOrchestrationRequest;
 import gov.nist.toolkit.services.client.IdcOrchestrationRequest;
 import gov.nist.toolkit.services.client.RawResponse;
 import gov.nist.toolkit.services.shared.Message;
@@ -24,8 +25,6 @@ import gov.nist.toolkit.testkitutilities.client.SectionDefinitionDAO;
 import gov.nist.toolkit.testkitutilities.client.TestCollectionDefinitionDAO;
 import gov.nist.toolkit.tk.client.TkProps;
 import gov.nist.toolkit.valsupport.client.MessageValidationResults;
-import gov.nist.toolkit.xdstools2.client.command.command.BuildSrcTestOrchestrationCommand;
-import gov.nist.toolkit.xdstools2.client.command.command.GetDatasetElementContentCommand;
 import gov.nist.toolkit.xdstools2.client.tabs.conformanceTest.TabConfig;
 import gov.nist.toolkit.xdstools2.shared.RegistryStatus;
 import gov.nist.toolkit.xdstools2.shared.RepositoryStatus;
@@ -270,4 +269,6 @@ public interface ToolkitServiceAsync {
     void getDatasetContent(GetDatasetElementContentRequest var1, AsyncCallback<String> callback);
 
     void buildSrcTestOrchestration(BuildSrcTestOrchestrationRequest request, AsyncCallback<RawResponse> callback);
+
+    void buildFhirSupportOrchestration(FhirSupportOrchestrationRequest var1, AsyncCallback<RawResponse> callback);
 }

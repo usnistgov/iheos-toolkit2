@@ -346,6 +346,26 @@ public enum ActorType implements IsSerializable, Serializable {
             IheItiProfile.MHD,
             Arrays.asList(OptionType.REQUIRED)
     ),
+    FHIR_SUPPORT(
+            "FHIR Support",
+            Arrays.asList(""),
+            "fhirsupport",
+            "",
+            "",
+            Arrays.asList(TransactionType.PIF),  // place holder - transaction types
+            true,  // show in config - only partially configured - only used in IT tests
+            null,  // actorsFileLabel
+            null,   // httpSimulatorClassName
+            null,    // http transaction types
+            true,    // is fhir
+            // request transform classes
+            Arrays.asList(""),
+            // response transform classes
+            Arrays.asList(""),
+            Constants.USE_SHORTNAME,   // must match src from src(mhd) in collections.txt
+            IheItiProfile.FHIRINIT,
+            Arrays.asList(OptionType.REQUIRED)
+    ),
     MHD_DOC_RECIPIENT(
             "MHD Document Recipient",
             Arrays.asList(""),

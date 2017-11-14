@@ -8,7 +8,8 @@ public enum IheItiProfile  implements IsSerializable, Serializable {
     XDS("xds"),
     MHD("mhd"),
     XCA_I("xca-i"),
-    XDS_I("xds-i");
+    XDS_I("xds-i"),
+    FHIRINIT("fhir-init");
 
     private String code;
 
