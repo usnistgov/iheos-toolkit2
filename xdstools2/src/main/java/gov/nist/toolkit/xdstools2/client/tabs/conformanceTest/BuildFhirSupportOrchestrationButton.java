@@ -1,9 +1,6 @@
 package gov.nist.toolkit.xdstools2.client.tabs.conformanceTest;
 
-import com.google.gwt.user.client.ui.FlexTable;
-import com.google.gwt.user.client.ui.FlowPanel;
-import com.google.gwt.user.client.ui.HTML;
-import com.google.gwt.user.client.ui.Panel;
+import com.google.gwt.user.client.ui.*;
 import gov.nist.toolkit.actortransaction.client.ActorOption;
 import gov.nist.toolkit.services.client.FhirSupportOrchestrationRequest;
 import gov.nist.toolkit.services.client.FhirSupportOrchestrationResponse;
@@ -73,13 +70,12 @@ public class BuildFhirSupportOrchestrationButton extends AbstractOrchestrationBu
                 FlexTable table = new FlexTable();
                 table.setBorderWidth(2);
                 table.addStyleName("border-collapse");
-                table.addStyleName("wheat");
 
                 int row=0;
-                table.setWidget(row, 0, new HTML("Patient ID"));
-                table.setWidget(row, 1, new HTML("First Name"));
-                table.setWidget(row, 2, new HTML("Last Name"));
-                table.setWidget(row, 3, new HTML("FHIR Resource"));
+                table.setWidget(row, 0, tableHeader("Patient ID"));
+                table.setWidget(row, 1, tableHeader("First Name"));
+                table.setWidget(row, 2, tableHeader("Last Name"));
+                table.setWidget(row, 3, tableHeader("FHIR Resource"));
 
                 for (PatientDef pat : response.getPatients()) {
                     row++;
@@ -107,5 +103,11 @@ public class BuildFhirSupportOrchestrationButton extends AbstractOrchestrationBu
             }
         }.run(request);
 
+    }
+
+    Widget tableHeader(String text) {
+        HTML h = new HTML(text);
+        h.addStyleName("table-header");
+        return h;
     }
 }

@@ -57,7 +57,7 @@ See collections.txt file for indexing.
 		<tabs label="Profiles">
 			<tab label="FHIR Init" type="profile" tcCode="fhir-init">
 				<tabs label="Options">
-					<tab label="Required" type="option" tcCode="" externalStart="true"/>
+					<tab label="Required" type="option" tcCode="" externalStart="false"/>
 				</tabs>
 			</tab>
 		</tabs>

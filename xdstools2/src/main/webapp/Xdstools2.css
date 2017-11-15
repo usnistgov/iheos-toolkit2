@@ -211,8 +211,9 @@ h3 {
   margin: 1px;
 }
 
-.wheat {
+.table-header {
   background-color: wheat;
+  text-align: center;
 }
 
 .list-border {
