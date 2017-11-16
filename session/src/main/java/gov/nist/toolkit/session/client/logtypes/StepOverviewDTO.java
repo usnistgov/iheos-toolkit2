@@ -17,7 +17,7 @@ public class StepOverviewDTO implements BasicStepOverview, Serializable, IsSeria
     String transaction;
     List<String> errors = null;
     List<String> details;
-    List<String> goals = new ArrayList<>();
+    String goals = null;  // preformatted as HTML by server
     List<InteractingEntity> interactionSequence;
 
     public StepOverviewDTO() {}
@@ -63,11 +63,11 @@ public class StepOverviewDTO implements BasicStepOverview, Serializable, IsSeria
         this.details = details;
     }
 
-    public void setGoals(List<String> goals) {
+    public void setGoals(String goals) {
         this.goals = goals;
     }
 
-    public List<String> getGoals() {
+    public String getGoals() {
         return goals;
     }
 

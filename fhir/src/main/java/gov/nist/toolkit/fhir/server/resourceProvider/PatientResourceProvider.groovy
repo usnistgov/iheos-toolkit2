@@ -112,6 +112,27 @@ public class PatientResourceProvider implements IToolkitResourceProvider {
         return tk.searchResults(new BaseQuery(tk.simContext).execute(builder))
     }
 
+    @Search()
+    public List<Patient> getPatientById(
+            @RequiredParam(name = Patient.SP_IDENTIFIER) StringParam theParam,
+            RequestDetails requestDetails) {
+
+        // ID will be system|value
+        logger.info("Search Patient by ${theParam}")
+        ToolkitResourceProvider tk = new ToolkitResourceProvider(getResourceType(), requestDetails)
+
+        BooleanQuery.Builder builder = new BooleanQuery.Builder()
+
+        Term term
+        TermQuery termQuery
+
+        term = new Term(Patient.SP_IDENTIFIER, theParam.value)
+        termQuery = new TermQuery(term)
+        builder.add ( termQuery, BooleanClause.Occur.MUST )
+
+        return tk.searchResults(new BaseQuery(tk.simContext).execute(builder))
+    }
+
     @Search
     public List<Patient> getPatient(RequestDetails requestDetails) {
         logger.info("Search Patient")

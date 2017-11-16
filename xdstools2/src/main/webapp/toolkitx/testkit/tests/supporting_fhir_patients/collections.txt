@@ -1,1 +1,1 @@
-mhddocrec(mhd)
+fhirsupport(fhir-init)

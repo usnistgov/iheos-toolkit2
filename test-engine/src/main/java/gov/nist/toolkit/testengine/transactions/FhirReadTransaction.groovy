@@ -1,19 +1,27 @@
 package gov.nist.toolkit.testengine.transactions
 
-import gov.nist.toolkit.testengine.engine.StepContext
+import ca.uhn.fhir.context.FhirContext
+import gov.nist.toolkit.fhir.context.ToolkitFhirContext
 import gov.nist.toolkit.fhir.utility.FhirClient
+import gov.nist.toolkit.testengine.engine.StepContext
+import gov.nist.toolkit.testengine.fhir.FhirSupport
+import gov.nist.toolkit.utilities.xml.Util
 import gov.nist.toolkit.xdsexception.client.MetadataException
 import gov.nist.toolkit.xdsexception.client.XdsInternalException
 import org.apache.axiom.om.OMElement
 import org.apache.http.message.BasicStatusLine
 import org.hl7.fhir.instance.model.api.IBaseResource
-
 /**
  *
  */
 class FhirReadTransaction extends BasicFhirTransaction {
+    boolean requestXml = false
+    FhirContext ctx = ToolkitFhirContext.get()
+
     FhirReadTransaction(StepContext s_ctx, OMElement instruction, OMElement instruction_output) {
         super(s_ctx, instruction, instruction_output)
+
+        defaultEndpointProcessing = false
     }
 
     /**
@@ -29,11 +37,27 @@ class FhirReadTransaction extends BasicFhirTransaction {
 
         reportManager.add('Url', fullEndpoint)
 
-        def (BasicStatusLine statusLine, String content) = FhirClient.get(new URI(fullEndpoint))
+        def contentType = (requestXml) ? 'application/fhir+xml' : 'application/fhir+json'
+        def (BasicStatusLine statusLine, String content) = FhirClient.get(new URI(fullEndpoint), contentType)
         if (statusLine.statusCode in 400..599)  {
             stepContext.set_error("Status:${statusLine}")
+        } else {
+            // content is either JSON or XML
+            if (requestXml) {
+                OMElement f = testLog.add_simple_element(instruction_output, "Format")
+                f.addAttribute('value', 'xml', null)
+                testLog.add_name_value(instruction_output, "Result", content);
+            } else {
+                // by default JSON is requested
+                OMElement f = testLog.add_simple_element(instruction_output, "Format")
+                f.addAttribute('value', 'json', null)
+                IBaseResource baseResource = FhirSupport.parse(content)
+                String xml = ctx.newXmlParser().encodeResourceToString(baseResource)
+                OMElement xmlo = Util.parse_xml(xml)
+//                xml = new OMFormatter(xml).toString()
+                testLog.add_name_value(instruction_output, "Result", xmlo);
+            }
         }
-        testLog.add_name_value(instruction_output, "Result", content);
 
     }
 
@@ -44,7 +68,14 @@ class FhirReadTransaction extends BasicFhirTransaction {
 
     @Override
     protected void parseInstruction(OMElement part) throws XdsInternalException, MetadataException {
-        super.parseInstruction(part)
+        String part_name = part.getLocalName()
+
+        if (part_name == 'RequestXml') {
+            requestXml = true;
+        }
+        else {
+            super.parseInstruction(part)
+        }
     }
 
 }

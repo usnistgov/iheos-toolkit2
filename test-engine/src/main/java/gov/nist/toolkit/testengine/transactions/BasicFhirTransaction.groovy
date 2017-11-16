@@ -1,6 +1,7 @@
 package gov.nist.toolkit.testengine.transactions
 
 import ca.uhn.fhir.context.FhirContext
+import gov.nist.toolkit.fhir.context.ToolkitFhirContext
 import gov.nist.toolkit.testengine.engine.StepContext
 import gov.nist.toolkit.xdsexception.client.MetadataException
 import gov.nist.toolkit.xdsexception.client.XdsInternalException
@@ -13,7 +14,7 @@ abstract class BasicFhirTransaction extends BasicTransaction {
     File resourceFile = null
     String urlExtension = ''
     String queryParams = ''
-    FhirContext fhirCtx = FhirContext.forDstu3()
+    FhirContext fhirCtx = ToolkitFhirContext.get()    //FhirContext.forDstu3()
 
     abstract void doRun(IBaseResource resource, String urlExtension)
 

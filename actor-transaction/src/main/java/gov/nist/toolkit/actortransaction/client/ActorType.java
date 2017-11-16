@@ -132,6 +132,31 @@ public enum ActorType implements IsSerializable, Serializable {
             IheItiProfile.XDS,
             Arrays.asList(OptionType.REQUIRED,OptionType.XUA)
     ),
+    MHD_DOC_RECIPIENT(
+            "MHD Document Recipient",
+            Arrays.asList(""),
+            "mhddocrec",
+            "gov.nist.toolkit.fhir.simulators.proxy.sim.MhdRecipientFactory",
+            "gov.nist.toolkit.fhir.simulators.proxy.sim.MhdRecipientSimulator",
+            Arrays.asList(TransactionType.PROV_DOC_BUNDLE),  // place holder - transaction types
+            true,  // show in config - only partially configured - only used in IT tests
+            null,  // actorsFileLabel
+            null,   // httpSimulatorClassName
+            null,    // http transaction types
+            false,    // is fhir
+            // request transform classes
+            Arrays.asList(
+                    "gov.nist.toolkit.fhir.simulators.proxy.transforms.MhdToXdsEndpointTransform",
+                    "gov.nist.toolkit.fhir.simulators.proxy.transforms.MhdToPnrContentTransform"
+            ),
+            // response transform classes
+            Arrays.asList(
+                    "gov.nist.toolkit.fhir.simulators.proxy.transforms.RegistryResponseToOperationOutcomeTransform"
+            ),
+            "rec",   // must match rec from rec(mhd) in collections.txt
+            IheItiProfile.MHD,
+            Arrays.asList(OptionType.REQUIRED)
+    ),
     RESPONDING_GATEWAY(
             "Responding Gateway",
             Arrays.asList("RESP_GATEWAY"),
@@ -364,31 +389,6 @@ public enum ActorType implements IsSerializable, Serializable {
             Arrays.asList(""),
             Constants.USE_SHORTNAME,   // must match src from src(mhd) in collections.txt
             IheItiProfile.FHIRINIT,
-            Arrays.asList(OptionType.REQUIRED)
-    ),
-    MHD_DOC_RECIPIENT(
-            "MHD Document Recipient",
-            Arrays.asList(""),
-            "mhddocrec",
-            "gov.nist.toolkit.fhir.simulators.proxy.sim.MhdRecipientFactory",
-            "gov.nist.toolkit.fhir.simulators.proxy.sim.MhdRecipientSimulator",
-            Arrays.asList(TransactionType.PROV_DOC_BUNDLE),  // place holder - transaction types
-            true,  // show in config - only partially configured - only used in IT tests
-            null,  // actorsFileLabel
-            null,   // httpSimulatorClassName
-            null,    // http transaction types
-            false,    // is fhir
-            // request transform classes
-            Arrays.asList(
-                    "gov.nist.toolkit.fhir.simulators.proxy.transforms.MhdToXdsEndpointTransform",
-                    "gov.nist.toolkit.fhir.simulators.proxy.transforms.MhdToPnrContentTransform"
-            ),
-            // response transform classes
-            Arrays.asList(
-                    "gov.nist.toolkit.fhir.simulators.proxy.transforms.RegistryResponseToOperationOutcomeTransform"
-            ),
-            Constants.USE_SHORTNAME,   // must match src from src(mhd) in collections.txt
-            IheItiProfile.MHD,
             Arrays.asList(OptionType.REQUIRED)
     ),
     SIM_PROXY(   // this is really an abstract type - offers no transactions in configuration, PIF is only placeholder

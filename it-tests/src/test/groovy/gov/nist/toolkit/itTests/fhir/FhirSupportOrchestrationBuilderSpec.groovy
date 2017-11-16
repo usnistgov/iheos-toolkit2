@@ -3,6 +3,7 @@ package gov.nist.toolkit.itTests.fhir
 import gov.nist.toolkit.itTests.support.FhirSpecification
 import gov.nist.toolkit.services.client.FhirSupportOrchestrationRequest
 import gov.nist.toolkit.services.client.FhirSupportOrchestrationResponse
+import gov.nist.toolkit.services.client.PatientDef
 import gov.nist.toolkit.services.client.RawResponse
 import gov.nist.toolkit.services.server.orchestration.FhirSupportOrchestrationBuilder
 import gov.nist.toolkit.simcommon.client.SimId
@@ -35,7 +36,7 @@ class FhirSupportOrchestrationBuilderSpec extends FhirSpecification  {
         !response.hasError()
 
         when:
-        response.patients.each { FhirSupportOrchestrationResponse.PatientDef pd ->
+        response.patients.each { PatientDef pd ->
             println "${pd.pid}, ${pd.given}, ${pd.family}, ${pd.url}"
         }
 
