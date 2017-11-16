@@ -94,16 +94,7 @@ public abstract class BaseSimConfigMgr implements SimConfigMgrIntf {
                 row++;
             }
 
-            // List
-            else if (ele.hasList()) {
-                tbl.setWidget(row, 0, HtmlMarkup.html(ele.name));
-                FlowPanel values = new FlowPanel();
-                List<String> vals = ele.asList();
-                for (String val : vals) values.add(new Label(val));
-                panel.add(values);
-                tbl.setWidget(row, 1, values);
-                row++;
-            }
+
 
             // Selecting RGs for the IG
             else if (SimulatorProperties.respondingGateways.equals(ele.name)) {
@@ -215,6 +206,15 @@ public abstract class BaseSimConfigMgr implements SimConfigMgrIntf {
                             }
                         }
                 );
+                row++;
+            }    // List
+            else if (ele.hasList()) {
+                tbl.setWidget(row, 0, HtmlMarkup.html(ele.name));
+                FlowPanel values = new FlowPanel();
+                List<String> vals = ele.asList();
+                for (String val : vals) values.add(new Label(val));
+                panel.add(values);
+                tbl.setWidget(row, 1, values);
                 row++;
             } else {
                 // Base class does not recognize this element, addTest a spacer
