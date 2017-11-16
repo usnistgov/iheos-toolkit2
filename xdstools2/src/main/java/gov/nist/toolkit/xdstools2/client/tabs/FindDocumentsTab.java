@@ -72,7 +72,7 @@ public class FindDocumentsTab extends AbstractTool {
             @Override
             public void onComplete(List<Result> results) {
                 queryCallback.onSuccess(results);
-                transactionSelectionManager.selectSite(site);
+               // transactionSelectionManager.selectSite(site);
             }
         }.run(new FindDocumentsRequest(getCommandContext(), siteSpec, patientID.asString(), onDemand));
     }

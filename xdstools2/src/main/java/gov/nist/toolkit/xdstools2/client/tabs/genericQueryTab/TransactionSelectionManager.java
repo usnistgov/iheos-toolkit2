@@ -18,19 +18,68 @@ public class TransactionSelectionManager {
 //	Map<TransactionType, List<RadioButton>> perTransTypeRadioButtons;
 //	static ArrayList<String>
 	final int idHashCode = System.identityHashCode(this);
+
+	class ActorTran {
+		ActorType at;
+		TransactionType tt; // Unique (fits into perTransRB Map below
+
+		@Override
+		public boolean equals(Object o) {
+			if (this == o) return true;
+			if (o == null || getClass() != o.getClass()) return false;
+
+			ActorTran actorTran = (ActorTran) o;
+
+			if (!at.equals(actorTran.at)) return false;
+			return (tt.equals(actorTran.tt));
+		}
+
+		@Override
+		public int hashCode() {
+			int result = at != null ? at.hashCode() : 0;
+			result = 31 * result + (tt != null ? tt.hashCode() : 0);
+			return result;
+		}
+
+		public ActorTran(ActorType at, TransactionType tt) {
+			this.at = at;
+			this.tt = tt;
+
+		}
+	}
 	
 	class RbSite {
-		TransactionType tt; // Unique (fits into perTransRB Map below
+	    ActorTran actorTran;
 		Site site; // Many sites per TransactionType.
 		RadioButton rb;
+
+		@Override
+		public boolean equals(Object o) {
+			if (this == o) return true;
+			if (o == null || getClass() != o.getClass()) return false;
+
+			RbSite rbSite = (RbSite) o;
+
+			if (actorTran != null ? !actorTran.equals(rbSite.actorTran) : rbSite.actorTran != null) return false;
+			return  (site != null ? site.equals(rbSite.site) : false);
+		}
+
+		@Override
+		public int hashCode() {
+			int result = actorTran != null ? actorTran.hashCode() : 0;
+			result = 31 * result + (site != null ? site.hashCode() : 0);
+			result = 31 * result + (rb != null ? rb.hashCode() : 0);
+			return result;
+		}
 	}
-	Map<TransactionType, List<RbSite>> perTransRB = new HashMap<TransactionType, List<RbSite>>();
+	Map<ActorTran, List<RbSite>> perTransRB = new HashMap<ActorTran, List<RbSite>>();
 		
 	public TransactionSelectionManager(CoupledTransactions couplings, GenericQueryTab genericQueryTab) {
 		this.couplings = couplings;
 		this.genericQueryTab = genericQueryTab;
 	}
 
+	/*
 	public void selectSite(SiteSpec siteSpec) {
 		for (List<RbSite> rbSites : perTransRB.values()) {
 			for (RbSite rbSite : rbSites) {
@@ -41,27 +90,39 @@ public class TransactionSelectionManager {
 			}
 		}
 	}
+	*/
 	
-	public void addTransactionType(TransactionType tt, List<Site> sites) {
+	public void addTransactionType(ActorType at, TransactionType tt, List<Site> sites) {
 		ClickHandler ch= new ActorClickHandlerByTransaction(this, tt);
 
-		List<RbSite> rbSites = new ArrayList<RbSite>();
+		ActorTran actorTran = new ActorTran(at,tt);
+		if (perTransRB.get(actorTran)!=null) {
+			perTransRB.get(actorTran).clear();
+		}
+
 		for (Site site : sites) {
 			String siteName = site.getName();
-			RadioButton rb = new RadioButton("rbGroup_" + genericQueryTab.getWindowShortName() + "_" + tt.getName() + "_" + idHashCode, siteName);
+			String radioGroupName = "rbGroup_" + idHashCode + "_" + genericQueryTab.getWindowShortName() + "_" + tt.getName() ;
+			radioGroupName = radioGroupName.replaceAll(" ","");
+			RadioButton rb = new RadioButton(radioGroupName, siteName);
 			rb.addClickHandler(ch);
 			RbSite rbs = new RbSite();
-			rbs.tt = tt;
+
 			rbs.site = site;
 			rbs.rb = rb;
-			rbSites.add(rbs);
+			actorTran = new ActorTran(at,tt);
+            rbs.actorTran = actorTran;
+			if (!perTransRB.containsKey(actorTran)) {
+			   perTransRB.put(actorTran, new ArrayList<RbSite>());
+            }
+			List<RbSite> rbSites1 = perTransRB.get(actorTran);
+			rbSites1.add(rbs);
 		}
-		perTransRB.put(tt, rbSites);
 	}
 	
-	public List<RadioButton> getRadioButtons(TransactionType tt) {
+	public List<RadioButton> getRadioButtons(ActorType at, TransactionType tt) {
 		ArrayList<RadioButton> buttons = new ArrayList<RadioButton>();
-		List<RbSite> rbSites = perTransRB.get(tt);
+		List<RbSite> rbSites = perTransRB.get(new ActorTran(at, tt));
 		new ObjectSort().sort(rbSites, new Comparator<RbSite>() {
 			public int compare(RbSite ra, RbSite rb) {
 				return ra.site.getName().compareTo(rb.site.getName());
@@ -125,7 +186,7 @@ public class TransactionSelectionManager {
 		
 		if (selections.size() == 1) {
 			RbSite r = selections.get(0);
-			ss.actorType = ActorType.getActorType(r.tt);
+			ss.actorType = ActorType.getActorType(r.actorTran.tt);
 			ss.name = r.site.getName();
 			ss.homeId = r.site.home;
 			ss.isSaml = genericQueryTab.isSaml();
@@ -137,7 +198,7 @@ public class TransactionSelectionManager {
 		if (selections.size() == 2) { // First is IG second is RG
 			// Return site info from IG with home of RG
 			RbSite r = selections.get(0);
-			ss.actorType = ActorType.getActorType(r.tt);
+			ss.actorType = ActorType.getActorType(r.actorTran.tt);
 			ss.name = r.site.getName();
 			RbSite r2 = selections.get(1);
 			ss.isSaml = genericQueryTab.isSaml();
@@ -152,8 +213,8 @@ public class TransactionSelectionManager {
 	
 	List<RbSite> selections2() {
 		List<RbSite> selections = new ArrayList<RbSite>();
-		for (TransactionType t : perTransRB.keySet()) {
-			for (RbSite rbs : perTransRB.get(t)) {
+		for (ActorTran at : perTransRB.keySet()) {
+			for (RbSite rbs : perTransRB.get(at)) {
 				RadioButton rb = rbs.rb;
 				if (rb.getValue()) {
 					selections.add(rbs);
@@ -167,7 +228,7 @@ public class TransactionSelectionManager {
 	List<TransactionType> transactionTypes(List<RbSite> rbs) {
 		List<TransactionType> tts = new ArrayList<TransactionType>();
 		for (RbSite r : rbs)
-			tts.add(r.tt);
+			tts.add(r.actorTran.tt);
 		return tts;
 	}
 	
@@ -176,14 +237,18 @@ public class TransactionSelectionManager {
 	}
 	
 	void turnOffButtonsNotIn(TransactionType tt1, TransactionType tt2) {  // Not in tt1 or tt2
-		for (TransactionType t : perTransRB.keySet()) {
-			if (t == tt1)
+		for (ActorTran at : perTransRB.keySet()) {
+			if (at.tt == tt1)
 				continue;
-			if (t == tt2)
+			if (at.tt == tt2)
 				continue;
-			for (RbSite rbs : perTransRB.get(t)) {
+			for (RbSite rbs : perTransRB.get(at)) {
 				rbs.rb.setValue(false);
 			}
 		}
+	}
+
+	public List<RbSite> getPerTransRB(ActorType at, TransactionType tt) {
+		return perTransRB.get(new ActorTran(at,tt));
 	}
 }
