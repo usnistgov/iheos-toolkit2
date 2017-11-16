@@ -35,11 +35,15 @@ class ToolTabConfigVerifyTcCodesTest extends Specification {
         for (TabConfig actorTabConfig : confTestsTabConfig.getChildTabConfigs()) {
             print "Checking actor " + actorTabConfig.getLabel() + "... "
 
+            // Both the collections.txt and the actorCode must be lower-cased
+            String actorTypeCode = actorTabConfig.getTcCode()
+            if (actorTypeCode!=null) {
+                assert actorTypeCode.equals(actorTypeCode.toLowerCase())
+            }
 
             TabConfig profiles = actorTabConfig.getFirstChildTabConfig()
             "Profiles".equals(profiles.getLabel())
 
-            String actorTypeCode = actorTabConfig.getTcCode()
             for (TabConfig profile : profiles.getChildTabConfigs()) {
                 String profileTypeCode = profile.getTcCode();
                 IheItiProfile itiProfile = IheItiProfile.find(profileTypeCode)
