@@ -781,7 +781,7 @@ public class SimDb {
 		} catch (ClassNotFoundException e) {
 		}
 //					if (date == null) continue;  // only interested in transactions that have dates
-		t.labelInterpretedAsDate = (date == null) ? "oops" : date.toString();
+		t.labelInterpretedAsDate = (date == null) ? "" : date.toString();
 		t.nameInterpretedAsTransactionType = TransactionType.find(t.trans);
 
 		String ipAddr = null;
