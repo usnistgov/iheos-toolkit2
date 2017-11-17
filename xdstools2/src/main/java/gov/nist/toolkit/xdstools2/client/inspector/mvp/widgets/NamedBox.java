@@ -1,12 +1,12 @@
 package gov.nist.toolkit.xdstools2.client.inspector.mvp.widgets;
 
+import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.MouseEvent;
 import com.google.gwt.event.dom.client.MouseOutEvent;
 import com.google.gwt.event.dom.client.MouseOutHandler;
 import com.google.gwt.event.dom.client.MouseOverEvent;
 import com.google.gwt.event.dom.client.MouseOverHandler;
 import com.google.gwt.event.shared.EventHandler;
-import gov.nist.toolkit.xdstools2.client.inspector.mvp.ActivityItem;
 import org.vectomatic.dom.svg.OMSVGGElement;
 import org.vectomatic.dom.svg.OMSVGRectElement;
 import org.vectomatic.dom.svg.OMSVGTSpanElement;
@@ -16,10 +16,10 @@ import org.vectomatic.dom.svg.OMText;
 import java.util.ArrayList;
 import java.util.List;
 
-class ActivityBox {
+class NamedBox {
     GridLayout gridLayout;
-    final int l_r_margin = 4; // Left|<-margin-| Box |-margin->|Right
-    final int t_b_margin = 20;
+    final int l_r_margin = 4; // Left cell border|<-margin-| Box |-margin->|Right cell border
+    final int t_b_margin = 20; // Top cell border, ^ Box v,  bottom cell border
 
     int width;
     int height;
@@ -28,7 +28,7 @@ class ActivityBox {
     int verticalCenter;
 
     String id;
-    String name;
+    NamedBoxProperties properties;
     boolean root;
 
     static final int MAX_BOX_DISPLAY_NAME = 14;
@@ -38,20 +38,54 @@ class ActivityBox {
     OMSVGGElement boxGroupEl; // box svg group element
     private ToolTip tooltip = new ToolTip();
 
-    public ActivityBox(GridLayout gridLayout, ActivityItem activityItem) {
+
+    public NamedBox(GridLayout gridLayout, NamedBoxProperties properties, ClickHandler clickHandler) {
         this.gridLayout = gridLayout;
+        this.properties = properties;
         width = gridLayout.getGridUnitSize() - l_r_margin * 2;
         height = gridLayout.getGridUnitSize() - t_b_margin * 2;
 
-        create_Box(activityItem);
+        boxGroupEl = create_Box();
+
+        if (clickHandler!=null) {
+            boxGroupEl.addClickHandler(clickHandler);
+        }
     }
 
 
-    void create_Box(ActivityItem activityItem) {
-       name = activityItem.getTransaction();
-       // TODO: does activityItem really need an Id? ActivityBox is the only place it should be.
-       id = activityItem.getId();
+    OMSVGGElement create_Box() {
+        // this.name = name; // activityItem.getTransaction();
 
+        /*
+        TODO: What is this? Is this needed?
+        OMSVGTextElement text = gridLayout.getSvgDoc().createSVGTextElement();
+        text.setAttribute("x",""+horizontalCenter);
+        text.setAttribute("y",""+verticalCenter);
+        text.setAttribute("dy","3");
+        text.setAttribute("font-family","Verdana");
+        text.setAttribute("font-size","10");
+        text.setAttribute("text-anchor","middle");
+
+        String shortName = getShortName(label, MAX_BOX_DISPLAY_NAME);
+        OMText textValue = gridLayout.getSvgDoc().createTextNode(shortName);
+        text.appendChild(textValue);
+        */
+
+        OMSVGGElement group = gridLayout.getSvgDoc().createSVGGElement();
+
+        group.appendChild(createRectangle());
+
+//        boxDetail.add(activityItem.getOutput().timestamp);
+//        boxDetail.add(activityItem.getTransaction());
+
+        addTooltip(group,properties.getTooltips(), HIDE_TOOLTIP_ON_MOUSEOUT);
+
+        group.appendChild(createLabel());
+
+        return group;
+    }
+
+    OMSVGRectElement createRectangle() {
         OMSVGRectElement rect = gridLayout.getSvgDoc().createSVGRectElement();
         rect.setAttribute("width", ""+width);
         rect.setAttribute("height", ""+height);
@@ -67,36 +101,16 @@ class ActivityBox {
         String boxRgb = "rgb(255,255,255);";
         rect.setAttribute("style","fill:"+boxRgb+";stroke-width:2;stroke:rgb(0,0,0)" );
 
-        OMSVGTextElement text = gridLayout.getSvgDoc().createSVGTextElement();
-        text.setAttribute("x",""+horizontalCenter);
-        text.setAttribute("y",""+verticalCenter);
-        text.setAttribute("dy","3");
-        text.setAttribute("font-family","Verdana");
-        text.setAttribute("font-size","10");
-        text.setAttribute("text-anchor","middle");
+        return rect;
+    }
 
-        String shortName = getShortName(name, MAX_BOX_DISPLAY_NAME);
-        OMText textValue = gridLayout.getSvgDoc().createTextNode(shortName);
-        text.appendChild(textValue);
 
-        OMSVGGElement group = gridLayout.getSvgDoc().createSVGGElement();
-
-        List<String> boxDetail = new ArrayList<>();
-        boxDetail.add(activityItem.getOutput().timestamp);
-        boxDetail.add(activityItem.getTransaction());
-//        boxDetail.add(activityItem.getId());
-
-        addTooltip(group,boxDetail, HIDE_TOOLTIP_ON_MOUSEOUT);
-
-        group.appendChild(rect);
-
-        List<String> box_label = new ArrayList<>();
-        box_label.add(activityItem.getOutput().testInstance.getId());
-        if (activityItem.getOutput().d)
-        box_label.add()
-        group.appendChild(multiLineLabel(horizontalCenter,verticalCenter,box_label.toArray(new String[0]),9, MAX_BOX_DISPLAY_NAME));
-
-        boxGroupEl = group;
+    OMSVGTextElement createLabel() {
+        List<String> boxLabel = new ArrayList<>();
+//        box_info.add(activityItem.getOutput().testInstance.getId());
+        boxLabel.add(properties.getName());
+        boxLabel.addAll(properties.getDescription()); //        if (activityItem.getOutput().d)  TODO: add count of metadata object type
+        return multiLineLabel(horizontalCenter,verticalCenter,boxLabel.toArray(new String[0]),9, MAX_BOX_DISPLAY_NAME);
     }
 
     // **************************************

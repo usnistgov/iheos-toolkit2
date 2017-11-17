@@ -58,6 +58,7 @@ public class InspectorView extends AbstractView<InspectorPresenter> implements P
         int resultPanelHeight = 0;
 
         WorkflowDiagram activityDiagram = new WorkflowDiagram(activityItem);
+        // TODO: how to tie the NamedBox ClickHandler to the show-data table?
         resultPanel.add(activityDiagram);
 
         resultPanel.add(objectRefTable.asWidget());

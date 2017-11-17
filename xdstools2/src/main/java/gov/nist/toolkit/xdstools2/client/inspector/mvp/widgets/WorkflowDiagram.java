@@ -89,10 +89,10 @@ public class WorkflowDiagram extends Composite implements GridLayout {
     /**
      * Puts together sequence of activities in a visual form (using SVG).
      */
-    private void sequence(ActivityItem activityItem, ActivityBox parentBox) {
+    private void sequence(ActivityItem activityItem, NamedBox parentBox) {
 
         if (parentBox == null) {
-            parentBox = new ActivityBox(this, activityItem);
+            parentBox = new NamedBox(this, activityItem);
             svgsvgElement.appendChild(parentBox.boxGroupEl);
         }
 
@@ -102,8 +102,10 @@ public class WorkflowDiagram extends Composite implements GridLayout {
 //               if (!activityItem.getTransaction().equals(action.getTransaction())) {
                row++;
 //               }
-               ActivityBox actionBox = new ActivityBox(this, action);
+               NamedBox actionBox = new NamedBox(this, action);
                svgsvgElement.appendChild(actionBox.boxGroupEl);
+               // TODO: connect (draw the connecting line) from parentBox to actionBox
+               // TODO: create new click handler to load data into data table and set it in the activitybox
                if (action.getActionItems()!=null) {
                   sequence(action, actionBox);
                }
