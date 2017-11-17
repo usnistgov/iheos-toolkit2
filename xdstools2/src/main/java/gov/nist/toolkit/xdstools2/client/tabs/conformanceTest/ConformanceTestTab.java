@@ -322,7 +322,7 @@ public class ConformanceTestTab extends ToolWindowWithMenu implements TestRunner
 						}
 
 						updateTestStatistics(myTestsPerActorOption, myTestOverviewDTOs, testStatistics, actorOption);
-						String htmlStr = "<div style=\"width:10px;height:14px;border:1px solid;float:left;margin-right:2px;";
+						String htmlStr = "<div style=\"width:10px;height:13px;border:1px solid;float:left;margin-right:2px;";
 						if (testStatistics.getTestCount()>0 && testStatistics.getNotRun() != testStatistics.getTestCount()) { // Don't show anything if not run is 100%
 							htmlStr += "border-color:black;\">\n";
 							if (testStatistics.getSuccesses()==testStatistics.getTestCount()) {
