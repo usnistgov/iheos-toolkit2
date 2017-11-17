@@ -26,6 +26,7 @@ public class FhirServletFilter implements Filter
         // Log request via requestWrapper.getInputStream()
         // uri has form    /fsim/default__fire/Patient/1 for a READ operation
         String uri = httpServletRequest.getRequestURI();
+        String method = httpServletRequest.method
 
         String queryString = httpServletRequest.queryString
 
@@ -42,9 +43,9 @@ public class FhirServletFilter implements Filter
                 simDb.putRequestHeaderFile(headerblock.bytes)
                 simDb.putRequestBodyFile(requestWrapper.inputStream.bytes)
                 if (queryString)
-                    simDb.putRequestURI("${uri}?${queryString}")
+                    simDb.putRequestURI("${method} ${uri}?${queryString}")
                 else
-                    simDb.putRequestURI(uri)
+                    simDb.putRequestURI("${method} ${uri}")
                 requestWrapper.setAttribute(Attributes.SIMID, simId)
                 requestWrapper.setAttribute(Attributes.SIMDB, simDb)
             } catch (Exception e) {

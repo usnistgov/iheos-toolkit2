@@ -34,7 +34,7 @@ class FhirActorFactory extends AbstractActorFactory implements IActorFactory {
             sc = new SimulatorConfig()
 
         addFixedFhirEndpoint(sc, SimulatorProperties.fhirEndpoint, actorType, TransactionType.FHIR, false)
-        addFixedFhirEndpoint(sc, SimulatorProperties.fhirTlsEndpoint, actorType, TransactionType.FHIR, true)
+        //addFixedFhirEndpoint(sc, SimulatorProperties.fhirTlsEndpoint, actorType, TransactionType.FHIR, true)
 
 
         return new Simulator(sc)
@@ -60,12 +60,12 @@ class FhirActorFactory extends AbstractActorFactory implements IActorFactory {
                 asc.get(SimulatorProperties.fhirEndpoint).asString(),
                 false,
                 isAsync));
-        site.addTransaction(new TransactionBean(
-                TransactionType.FHIR.getCode(),
-                TransactionBean.RepositoryType.NONE,
-                asc.get(SimulatorProperties.fhirTlsEndpoint).asString(),
-                true,
-                isAsync));
+//        site.addTransaction(new TransactionBean(
+//                TransactionType.FHIR.getCode(),
+//                TransactionBean.RepositoryType.NONE,
+//                asc.get(SimulatorProperties.fhirTlsEndpoint).asString(),
+//                true,
+//                isAsync));
 
         return site
     }

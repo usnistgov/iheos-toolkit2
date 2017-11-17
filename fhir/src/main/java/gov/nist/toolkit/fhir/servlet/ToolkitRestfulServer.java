@@ -28,34 +28,23 @@ public class ToolkitRestfulServer extends RestfulServer implements IRestfulServe
          * This did not take into consideration the serverBaseForRequest
          * as registered with the IServerAddressStrategy
          */
-        String serverBase = theRequestDetails.getServerBaseForRequest();
 
-        // This might include /xdstools2/fsim or it may not depending on the environment (IT Test vs production)
-        // What is important is that resourceName start with the resourcename (and ID etc following if present)
-        // so we need to look for /fsim/ in serverBase and take everything after it
+        StringTokenizer tok = new UrlPathTokenizer(theRequestPath);
 
-//        String simStr = "fsim/";
-//
-//        int fsimI = serverBase.indexOf(simStr);
-//        if (fsimI == -1) {
-//            simStr = "sim/";
-//            fsimI = serverBase.indexOf(simStr);
-//        }
-        String requestPath;
-//        if (fsimI == -1) {
-//            requestPath = theRequestPath.substring(serverBase.length());
-//        } else {
-//            requestPath = theRequestPath.substring(fsimI + simStr.length() - 1);
-//            // requestPath now points to simID
-//            requestPath = requestPath.substring(requestPath.indexOf('/') +1);
-//            // requestPath now points to resource name
-//        }
+        String simIdString;
+        String transtype;
+        if (theRequestPath.contains("fsim/")) {
+            while(!tok.nextToken().equals("fsim"))
+                ;
+            simIdString = tok.nextToken();
+            transtype = tok.nextToken();  // always "fhir"
+            // now, next token wil be resource name
+        } else {
+            simIdString = tok.nextToken();
+            transtype = tok.nextToken();  // always "fhir"
+        }
 
-        // requestPath is part of URL following base address
 
-        requestPath = theRequestPath.substring(serverBase.length());
-
-        StringTokenizer tok = new UrlPathTokenizer(requestPath);
         String resourceName = null;
 
         IIdType id = null;

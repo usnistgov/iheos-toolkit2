@@ -39,7 +39,7 @@ class FhirClient {
             FhirId locationHeader
             String lhdr = response.getFirstHeader('Location')
             if (lhdr) {
-                def (nametag, value) = lhdr.split(':')
+                def (nametag, value) = lhdr.split(':', 2)
                 locationHeader = new FhirId(value)
             }
             HttpEntity entity2
@@ -66,17 +66,26 @@ class FhirClient {
      * @return [ BasicStatusLine, String contentReturned ]
      */
     static get(def uri) {
+        get(uri, 'application/fhir+json')
+    }
+
+
+    static get(def uri, def contentType) {
         HttpClient client = HttpClientBuilder.create().build()
         HttpGet request = new HttpGet(uri)
-        request.addHeader('Content-Type', 'application/fhir+json')
+        request.addHeader('Content-Type', contentType)
         HttpResponse response = client.execute(request)
         def statusLine = response.getStatusLine()
         return [statusLine, Io.getStringFromInputStream(response.getEntity().content)]
     }
 
     static IBaseResource readResource(def uri) {
+        readResource(uri, 'application/fhir+json')
+    }
+
+        static IBaseResource readResource(def uri, def contentType) {
         try {
-            def (statusLine, body) = get(uri)
+            def (statusLine, body) = get(uri, contentType)
             if (statusLine.statusCode != 200)
                 return null
             return ToolkitFhirContext.get().newJsonParser().parseResource(body)

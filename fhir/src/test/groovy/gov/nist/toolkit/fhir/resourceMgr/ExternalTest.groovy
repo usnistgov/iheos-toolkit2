@@ -30,7 +30,7 @@ class ExternalTest extends Specification {
 </Bundle>
 '''
         Bundle bundle = ctx.newXmlParser().parseResource(xml)
-        ResourceMgr mgr = new ResourceMgr(bundle)
+        ResourceMgr mgr = new ResourceMgr(bundle, null)
         mgr.addResourceCacheMgr(TestResourceCacheFactory.getResourceCacheMgr())
 
         // resources returned as [url, resource]

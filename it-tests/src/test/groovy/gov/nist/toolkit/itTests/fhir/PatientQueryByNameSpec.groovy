@@ -113,6 +113,38 @@ class PatientQueryByNameSpec extends FhirSpecification {
         patients.size() == 1
     }
 
+
+    // depends on above submission
+    def 'query by patientid'() {
+        when:
+        // ID is urn:oid:1.2.36.146.595.217.0.1|12345
+        def (BasicStatusLine statusLine2, String results2) = get("http://localhost:${remoteToolkitPort}/xdstools2/fsim/${simId}/fhir/Patient?identifier=urn:oid:1.2.36.146.595.217.0.1%7c12345")
+
+        then:
+        statusLine2.statusCode == 200
+
+        when:
+        IParser parser = ourCtx.newJsonParser()
+        IBaseResource bundleResource = parser.parseResource(results2)
+
+        then:
+        bundleResource instanceof Bundle
+
+        when:
+        Bundle bundle = (Bundle) bundleResource
+        def patients = bundle.getEntry().collect { Bundle.BundleEntryComponent comp ->
+            Resource resource = comp.getResource()
+            assert resource instanceof Patient
+            Patient patient = (Patient) resource
+            assert patient.name.get(0).family == 'Chalmers'
+            resource
+        }
+
+        then:
+        patients.size() == 1
+    }
+
+
     def patient = '''
 {
   "resourceType": "Patient",

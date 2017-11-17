@@ -81,6 +81,7 @@ class RgRegOddsConsumerSpec extends ToolkitSpecification {
     def cleanupSpec() {  // one time shutdown when everything is done
 //        spi.delete('rg', testSession)
 //        spi.delete('od', testSession)
+        spi.delete(id, testSession)
         server.stop()
         ListenerFactory.terminateAll()
     }

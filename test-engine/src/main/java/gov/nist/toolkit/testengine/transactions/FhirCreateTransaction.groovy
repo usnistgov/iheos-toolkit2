@@ -1,11 +1,10 @@
 package gov.nist.toolkit.testengine.transactions
 
-import ca.uhn.fhir.context.FhirContext
-import gov.nist.toolkit.fhir.resourceMgr.ResourceCache
-import gov.nist.toolkit.testengine.engine.StepContext
-import gov.nist.toolkit.testengine.engine.UniqueIdAllocator
 import gov.nist.toolkit.fhir.utility.FhirClient
 import gov.nist.toolkit.fhir.utility.FhirId
+import gov.nist.toolkit.testengine.engine.StepContext
+import gov.nist.toolkit.testengine.engine.UniqueIdAllocator
+import gov.nist.toolkit.testengine.fhir.FhirSupport
 import gov.nist.toolkit.xdsexception.client.MetadataException
 import gov.nist.toolkit.xdsexception.client.XdsInternalException
 import org.apache.axiom.om.OMElement
@@ -34,9 +33,37 @@ class FhirCreateTransaction extends BasicFhirTransaction {
         }
     }
 
+    def updatePidIdentifier(def resource, String value, String system) {
+        if ((resource instanceof DocumentManifest) || (resource instanceof DocumentReference)) {
+            List<Identifier> ids = resource.getIdentifier()
+            if (ids.size() > 0) {
+                Identifier id = ids[0]
+                id.system = system
+                id.value = value
+            }
+        } else if (resource instanceof Bundle) {
+            Bundle bundle = resource
+            bundle.entry.each { Bundle.BundleEntryComponent comp ->
+                Resource res = comp.getResource()
+                updatePidIdentifier(res, value, system)
+            }
+        }
+    }
+
     @Override
     void doRun(IBaseResource resource, String urlExtension) {
         assert endpoint, 'TestClient:FhirCreateTransaction: endpoint is null'
+
+        String pid_value = null
+        String pid_system = null
+
+        if (useReportManager) {
+            pid_value = useReportManager.get('$pid_value$');
+            pid_system = useReportManager.get('$pid_system$');
+        }
+
+        if (pid_value && pid_system)
+            updatePidIdentifier(resource, pid_value, pid_system)
 
         // assign new new masterIdentifier to all DocumentRefernce and Documeent Manifest objects
         if (resource instanceof Resource)
@@ -58,7 +85,7 @@ class FhirCreateTransaction extends BasicFhirTransaction {
         // No fhirID from transaction
         def (BasicStatusLine statusLine, String content, FhirId fhirId) = FhirClient.post(new URI(fullEndpoint), fhirCtx.newJsonParser().encodeResourceToString(resource))
         if (content) {
-            IBaseResource baseResource = parse(content)
+            IBaseResource baseResource = FhirSupport.parse(content)
             if (baseResource instanceof OperationOutcome) {
                 OperationOutcome oo = (OperationOutcome) baseResource
 
@@ -119,15 +146,5 @@ class FhirCreateTransaction extends BasicFhirTransaction {
         return 'fhir'
     }
 
-    IBaseResource parse(String content) {
-        FhirContext ctx = ResourceCache.ctx
-        content = content.trim()
-        if (content.startsWith('{')) {
-            return ctx.newJsonParser().parseResource(content)
-        } else {
-            return ctx.newXmlParser().parseResource(content)
-        }
-        return null
-    }
 
 }

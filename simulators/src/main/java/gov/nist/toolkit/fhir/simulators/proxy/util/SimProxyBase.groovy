@@ -135,9 +135,11 @@ public class SimProxyBase {
         clientActorType = ActorType.findActor(endpoint.actorType)
         if (!clientActorType) return handleEarlyException(new Exception("ActorType name was ${endpoint.actorType}"))
         clientTransactionType = TransactionType.find(endpoint.transactionType)
+        if (!clientTransactionType && clientActorType.transactions.size() == 1)
+            clientTransactionType = clientActorType.transactions[0]
         if (!clientTransactionType) return handleEarlyException(new Exception("TransactionType name was ${endpoint.transactionType}"))
         simId = SimIdParser.parse(uri)
-        simDb = new SimDb(simId, endpoint.actorType, endpoint.transactionType)
+        simDb = new SimDb(simId, endpoint.actorType, clientTransactionType.shortName)
         config = simDb.getSimulator(simId);
         if (config == null) throw new BadSimIdException("Simulator " + simId +  " does not exist");
 

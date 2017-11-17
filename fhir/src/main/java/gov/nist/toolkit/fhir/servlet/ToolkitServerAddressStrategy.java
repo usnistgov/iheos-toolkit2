@@ -18,6 +18,7 @@ public class ToolkitServerAddressStrategy implements IServerAddressStrategy {
             return base;
 
 
+
         String uri =  httpServletRequest.getRequestURI();
 
         int index = uri.indexOf(HttpRequestParser.CONTEXT);   // CONTEXT is fsim - the FHIR sim URI element
@@ -30,7 +31,7 @@ public class ToolkitServerAddressStrategy implements IServerAddressStrategy {
         index++;
         index = uri.indexOf("/", index);  // / following "fhir"
 
-        base = uri.substring(0, index);
+        base = "http://localhost:8888" + uri.substring(0, index);
         return base;
     }
 }

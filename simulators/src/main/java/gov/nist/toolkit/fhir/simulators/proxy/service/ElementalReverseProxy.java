@@ -57,15 +57,16 @@ public class ElementalReverseProxy {
 
     }
 
-    static public void start(int port) throws IOException {
-        System.out.println("Starting Sim Proxy on...");
+    static public RequestListenerThread start(int port) throws IOException {
+        System.out.println("Proxy Operation: Starting Sim Proxy on port " + port);
 
-        final Thread t = new RequestListenerThread(port);
+        final RequestListenerThread t = new RequestListenerThread(port);
         t.setDaemon(false);
         t.start();
+        return t;
     }
 
-    static public void start(String port) throws Exception {
-        start(Integer.parseInt(port));
+    static public RequestListenerThread start(String port) throws Exception {
+        return start(Integer.parseInt(port));
     }
 }

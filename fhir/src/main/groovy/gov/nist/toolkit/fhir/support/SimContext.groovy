@@ -5,6 +5,8 @@ import gov.nist.toolkit.fhir.resourceIndexer.IResourceIndexer
 import gov.nist.toolkit.simcommon.client.NoSimException
 import gov.nist.toolkit.simcommon.client.SimId
 import gov.nist.toolkit.simcommon.server.SimDb
+import gov.nist.toolkit.xdsexception.ExceptionUtil
+import org.apache.log4j.Logger
 import org.apache.lucene.search.IndexSearcher
 import org.hl7.fhir.dstu3.model.DomainResource
 
@@ -12,6 +14,7 @@ import org.hl7.fhir.dstu3.model.DomainResource
  *
  */
 public class SimContext {
+    static private final Logger logger = Logger.getLogger(SimContext.class);
     private SimId simId = null
     private Event event = null
     private SimDb simDb = null
@@ -42,7 +45,13 @@ public class SimContext {
     }
 
     IndexSearcher getIndexSearcher() {
-        SimIndexManager.getIndexer(simId).indexSearcher
+        try {
+            IndexSearcher s = SimIndexManager.getIndexer(simId).indexSearcher
+            return s
+        } catch (Exception e) {
+            logger.error("Error getting index searcher for Lucene: ${ExceptionUtil.exception_details(e)}")
+            throw new Exception("Error getting index searcher for Lucene", e)
+        }
     }
 
     /**

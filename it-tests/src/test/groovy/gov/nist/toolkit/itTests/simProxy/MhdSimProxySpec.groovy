@@ -110,7 +110,7 @@ class MhdSimProxySpec extends ToolkitSpecification {
         ids[1].split('/')[1].startsWith('urn:uuid:')
     }
 
-    def 'send provide document bundle through simproxy - reference to Patient is not in cache'() {
+    def 'send provide document bundle through simproxy - bad reference to Patient'() {
         setup:
         api.createTestSession(testSession)
 

@@ -1,7 +1,8 @@
 package gov.nist.toolkit.fhir.simulators.proxy.service;
 
 import gov.nist.toolkit.fhir.simulators.proxy.util.SimProxyBase;
-import org.apache.http.*;
+import org.apache.http.HttpRequest;
+import org.apache.http.HttpResponse;
 import org.apache.http.config.MessageConstraints;
 import org.apache.http.entity.ContentLengthStrategy;
 import org.apache.http.impl.DefaultBHttpClientConnection;
@@ -9,23 +10,26 @@ import org.apache.http.impl.DefaultBHttpServerConnection;
 import org.apache.http.io.HttpMessageParserFactory;
 import org.apache.http.io.HttpMessageWriterFactory;
 import org.apache.http.protocol.*;
+import org.apache.log4j.Logger;
 
 import java.io.IOException;
-import java.io.InterruptedIOException;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.net.SocketTimeoutException;
 import java.nio.charset.CharsetDecoder;
 import java.nio.charset.CharsetEncoder;
 
 /**
- *
+ * this is a singleton
  */
-class RequestListenerThread extends Thread {
-
+public class RequestListenerThread extends Thread {
+    private static Logger logger = Logger.getLogger(RequestListenerThread.class);
     private final ServerSocket serversocket;
     private final HttpService httpService;
+    private boolean running = false;
 
     public RequestListenerThread(final int port) throws IOException {
+        logger.info("Starting proxy listener thread on " + port);
         this.serversocket = new ServerSocket(port);
 
         // Set up HTTP protocol processor for incoming connections
@@ -58,10 +62,17 @@ class RequestListenerThread extends Thread {
 
     @Override
     public void run() {
-        System.out.println("Listening on port " + this.serversocket.getLocalPort());
+        long id = Thread.currentThread().getId();
+        System.out.println("Proxy Operation: Listening on port " + this.serversocket.getLocalPort() + "(" + id + ")");
         while (!Thread.interrupted()) {
             try {
+                running = true;
                 final int bufsize = 8 * 1024;
+                // This will generate a SocketTimeoutException every second essentially
+                // polling for Thread.interrupted.  The wait on the socket will
+                // not be canceled when we terminate the thread so polling
+                // is the preferred approach
+                this.serversocket.setSoTimeout(1000);
                 // Set up incoming HTTP connection
                 final Socket insocket = this.serversocket.accept();
                 SimProxyBase proxyBase = new SimProxyBase();
@@ -76,14 +87,36 @@ class RequestListenerThread extends Thread {
                 final Thread t = new ProxyThread(this.httpService, inconn);
                 t.setDaemon(true);
                 t.start();
-            } catch (final InterruptedIOException ex) {
-                break;
-            } catch (final IOException e) {
-                System.err.println("I/O error initialising connection thread: "
+            }
+            catch (SocketTimeoutException e) {
+                ;// continue waiting - this just allows the thread interupt to work
+            }
+//            catch (final InterruptedIOException ex) {
+//                logger.info("Proxy main thread interrupted");
+//                break;
+//            }
+            catch (final IOException e) {
+                System.err.println("I/O error in Proxy thread: "
                         + e.getMessage());
                 break;
             }
         }
+        id = Thread.currentThread().getId();
+        logger.info("Proxy Operation: main thread interrupted (" + id + ")");
+        running = false;
+        try {
+            this.serversocket.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public boolean isRunning() {
+        return running;
+    }
+
+    public ServerSocket getServersocket() {
+        return serversocket;
     }
 
     class MyClientConnection extends DefaultBHttpClientConnection {

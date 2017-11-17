@@ -166,4 +166,18 @@ class OrchestrationManager {
             return RawResponseBuilder.build(e);
         }
     }
+
+    RawResponse buildFhirSupportEnvironment(Session session, FhirSupportOrchestrationRequest request) {
+        try {
+            ToolkitApi api
+            if(Installation.instance().warHome()) {
+                api = ToolkitApi.forNormalUse(session)
+            } else {
+                api = ToolkitApi.forInternalUse()
+            }
+            return new FhirSupportOrchestrationBuilder(api, session, request).buildTestEnvironment();
+        } catch (Exception e) {
+            return RawResponseBuilder.build(e);
+        }
+    }
 }

@@ -6,7 +6,6 @@ import ca.uhn.fhir.rest.annotation.*
 import ca.uhn.fhir.rest.api.MethodOutcome
 import ca.uhn.fhir.rest.method.RequestDetails
 import ca.uhn.fhir.rest.param.StringParam
-import ca.uhn.fhir.rest.server.IResourceProvider
 import ca.uhn.fhir.rest.server.exceptions.InternalErrorException
 import ca.uhn.fhir.rest.server.exceptions.UnprocessableEntityException
 import gov.nist.toolkit.fhir.search.BaseQuery
@@ -15,11 +14,7 @@ import org.apache.lucene.index.Term
 import org.apache.lucene.search.BooleanClause
 import org.apache.lucene.search.BooleanQuery
 import org.apache.lucene.search.TermQuery
-import org.hl7.fhir.dstu3.model.CodeableConcept
-import org.hl7.fhir.dstu3.model.DomainResource
-import org.hl7.fhir.dstu3.model.IdType
-import org.hl7.fhir.dstu3.model.OperationOutcome
-import org.hl7.fhir.dstu3.model.Patient
+import org.hl7.fhir.dstu3.model.*
 /**
  *
  */
@@ -115,7 +110,38 @@ public class PatientResourceProvider implements IToolkitResourceProvider {
         }
 
         return tk.searchResults(new BaseQuery(tk.simContext).execute(builder))
+    }
 
+    @Search()
+    public List<Patient> getPatientById(
+            @RequiredParam(name = Patient.SP_IDENTIFIER) StringParam theParam,
+            RequestDetails requestDetails) {
+
+        // ID will be system|value
+        logger.info("Search Patient by ${theParam}")
+        ToolkitResourceProvider tk = new ToolkitResourceProvider(getResourceType(), requestDetails)
+
+        BooleanQuery.Builder builder = new BooleanQuery.Builder()
+
+        Term term
+        TermQuery termQuery
+
+        term = new Term(Patient.SP_IDENTIFIER, theParam.value)
+        termQuery = new TermQuery(term)
+        builder.add ( termQuery, BooleanClause.Occur.MUST )
+
+        return tk.searchResults(new BaseQuery(tk.simContext).execute(builder))
+    }
+
+    @Search
+    public List<Patient> getPatient(RequestDetails requestDetails) {
+        logger.info("Search Patient")
+        ToolkitResourceProvider tk = new ToolkitResourceProvider(getResourceType(), requestDetails)
+
+        BooleanQuery.Builder builder = new BooleanQuery.Builder()
+
+        List<Patient> patients = tk.searchResults(new BaseQuery(tk.simContext).execute())
+        return patients;
     }
 
     /**  NOT LINKED TO RESDB YET

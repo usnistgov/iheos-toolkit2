@@ -1,0 +1,30 @@
+<TestPlan>
+    <Test>FhirTestClientCreate/create</Test>
+    <TestStep id="PatientLookup">
+        <Goal>
+            Lookup the Patient resource submitted in section patient1 of test
+            supporting_fhir_patients which is created by a conformance test for the actor
+            FHIR Support.  This fake actor exists only to build a supporting FHIR environment
+            to support tests like this one.
+        </Goal>
+        <ExpectedStatus>Success</ExpectedStatus>
+        <FhirReadTransaction>
+            <UseReport test="supporting_fhir_patients" reportName="Ref" section="patient1" step="create" useAs="Ref"/>
+            <Report name="pid_system" section="Result">
+                substring(//*[local-name()='Patient']/*[local-name()='identifier'][1]/*[local-name()='system']/@value, 9)
+            </Report>
+            <Report name="pid_value" section="Result">
+                //*[local-name()='Patient']/*[local-name()='identifier'][1]/*[local-name()='value']/@value
+            </Report>
+        </FhirReadTransaction>
+    </TestStep>
+    <TestStep id="SendPdb">
+        <ExpectedStatus>Success</ExpectedStatus>
+        <ProvideDocumentBundleTransaction>
+            <UseReport step="PatientLookup" section="THIS" reportName="pid_value" useAs="$pid_value$"/>
+            <UseReport step="PatientLookup" section="THIS" reportName="pid_system" useAs="$pid_system$"/>
+            <ResourceFile>SingleDocSubmit.xml</ResourceFile>
+            <!--<UrlExtension></UrlExtension>-->
+        </ProvideDocumentBundleTransaction>
+    </TestStep>
+</TestPlan>
