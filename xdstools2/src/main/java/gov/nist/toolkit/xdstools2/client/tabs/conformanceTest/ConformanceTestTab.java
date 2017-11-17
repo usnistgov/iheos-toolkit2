@@ -484,6 +484,7 @@ public class ConformanceTestTab extends ToolWindowWithMenu implements TestRunner
 		public void onSelection(SelectionEvent<Integer> selectionEvent) {
 			int i = selectionEvent.getSelectedItem();
 
+			GWT.log("profile was selected. Was launched from internal menu: " + (getInitTestSession()==null) + ". Profile tab index is: " + i);
 
 			TabConfig profiles = currentActorOption.getTabConfig().getFirstChildTabConfig();
 			if ("Profiles".equals(profiles.getLabel())) {
@@ -493,8 +494,7 @@ public class ConformanceTestTab extends ToolWindowWithMenu implements TestRunner
 				getMainView().getTestsPanel().clear();
 				mainView.getOptionsTabBar().clear();
 				mainView.getOptionsTabBar().display(currentActorOption.getTabConfig(), "Options", profile.getTcCode());
-				GWT.log("profile was selected. Is init session null: " + (getInitTestSession()==null));
-				if (getInitTestSession()==null) {
+				if (!currentActorOption.isLaunchedFromMenu() && getInitTestSession()==null) {
 					currentActorOption.setOptionId(null);
 				}
 				selectOptionTab();
@@ -509,7 +509,7 @@ public class ConformanceTestTab extends ToolWindowWithMenu implements TestRunner
 			getMainView().getTestsPanel().clear();
 			int i = selectionEvent.getSelectedItem();
 
-			GWT.log("option was selected. init session: " + (getInitTestSession()==null));
+			GWT.log("option was selected. Was launched from activity URL: " + (getInitTestSession()!=null));
 
 			TabConfig profiles = currentActorOption.getTabConfig().getFirstChildTabConfig();
 			if ("Profiles".equals(profiles.getLabel())) {
@@ -571,7 +571,6 @@ public class ConformanceTestTab extends ToolWindowWithMenu implements TestRunner
 
 		if (currentActorOption.getProfileId()!=null) {
 			selectTab(currentActorOption.getProfileId().toString(), profileTabBar);
-
 		}
 	}
 
@@ -657,6 +656,8 @@ public class ConformanceTestTab extends ToolWindowWithMenu implements TestRunner
 	@Override
 	public void onMenuSelect(TabConfig actor, Map<String,TabConfig> target) {
 		mainView.getTabBarPanel().setVisible(true);
+
+		currentActorOption.setLaunchedFromMenu(true);
 
 		currentActorOption.setTabConfig(actor);
 		currentActorOption.setActorTypeId(null);

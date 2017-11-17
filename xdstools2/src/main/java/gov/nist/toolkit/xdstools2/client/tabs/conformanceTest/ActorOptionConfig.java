@@ -20,6 +20,7 @@ public class ActorOptionConfig extends ActorOption {
      * Contains the actor-root level tab config not the option level tab config.
      */
     private TabConfig tabConfig;
+    private boolean launchedFromMenu = false;
 
     @Override
     public String toString() {
@@ -59,7 +60,7 @@ public class ActorOptionConfig extends ActorOption {
         String optionCode = (optionId!=null && !"".equals(optionId))?"_"+optionId:"";
         if ((profileId==null || "".equals(profileId) || "xds".equals(profileId.toString()))) {
                 if (optionId == null || "".equals(optionId))   {
-                    request = new GetCollectionRequest(ClientUtils.INSTANCE.getCommandContext(), "actorcollections", actorTypeId);
+                    request = new GetCollectionRequest(ClientUtils.INSTANCE.getCommandContext(), "collections", actorTypeId);
                 } else {
                     request = new GetCollectionRequest(ClientUtils.INSTANCE.getCommandContext(), "collections", actorTypeId + optionCode);
                 }
@@ -70,6 +71,7 @@ public class ActorOptionConfig extends ActorOption {
             @Override
             public void onComplete(List<TestInstance> result) {
                 callback.onSuccess(result);
+                launchedFromMenu = false;
             }
         }.run(request);
     }
@@ -178,5 +180,13 @@ public class ActorOptionConfig extends ActorOption {
 
     public void setTabConfig(TabConfig tabConfig) {
         this.tabConfig = tabConfig;
+    }
+
+    public boolean isLaunchedFromMenu() {
+        return launchedFromMenu;
+    }
+
+    public void setLaunchedFromMenu(boolean launchedFromMenu) {
+        this.launchedFromMenu = launchedFromMenu;
     }
 }
