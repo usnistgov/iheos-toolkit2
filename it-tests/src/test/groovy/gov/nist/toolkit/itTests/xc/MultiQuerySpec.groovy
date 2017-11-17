@@ -17,6 +17,7 @@ import spock.lang.Shared
  */
 class MultiQuerySpec extends ToolkitSpecification {
     @Shared SimulatorBuilder spi
+    def userName = 'joe'
 
     def setupSpec() {   // one time setup done when class launched
         startGrizzly('8889')
@@ -32,7 +33,7 @@ class MultiQuerySpec extends ToolkitSpecification {
         when:
         def igConfig
         def rgConfigs
-        (igConfig, rgConfigs) = GatewayBuilder.build(api, spi, 1, 'bill', 'test', patientId)
+        (igConfig, rgConfigs) = GatewayBuilder.build(api, spi, 1, userName, 'test', patientId)
         def igSite = new SiteSpec(igConfig.fullId, ActorType.INITIATING_GATEWAY, null)
 
         Map<String, List<String>> selectedCodes = new HashMap<>()
@@ -56,7 +57,7 @@ class MultiQuerySpec extends ToolkitSpecification {
         when:
         def igConfig
         def rgConfigs
-        (igConfig, rgConfigs) = GatewayBuilder.build(api, spi, 2, 'bill', 'test', patientId)
+        (igConfig, rgConfigs) = GatewayBuilder.build(api, spi, 2, userName, 'test', patientId)
         def igSite = new SiteSpec(igConfig.fullId, ActorType.INITIATING_GATEWAY, null)
 
         Map<String, List<String>> selectedCodes = new HashMap<>()

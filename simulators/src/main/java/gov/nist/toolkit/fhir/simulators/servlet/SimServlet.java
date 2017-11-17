@@ -7,6 +7,13 @@ import gov.nist.toolkit.configDatatypes.client.TransactionType;
 import gov.nist.toolkit.configDatatypes.server.SimulatorProperties;
 import gov.nist.toolkit.errorrecording.ErrorRecorder;
 import gov.nist.toolkit.errorrecording.GwtErrorRecorderBuilder;
+import gov.nist.toolkit.fhir.simulators.proxy.service.ElementalReverseProxy;
+import gov.nist.toolkit.fhir.simulators.proxy.service.RequestListenerThread;
+import gov.nist.toolkit.fhir.simulators.sim.reg.store.MetadataCollection;
+import gov.nist.toolkit.fhir.simulators.sim.reg.store.RegIndex;
+import gov.nist.toolkit.fhir.simulators.sim.rep.RepIndex;
+import gov.nist.toolkit.fhir.simulators.support.BaseDsActorSimulator;
+import gov.nist.toolkit.fhir.simulators.support.DsSimCommon;
 import gov.nist.toolkit.http.HttpHeader;
 import gov.nist.toolkit.http.HttpHeader.HttpHeaderParseException;
 import gov.nist.toolkit.http.ParseException;
@@ -16,12 +23,6 @@ import gov.nist.toolkit.simcommon.client.SimId;
 import gov.nist.toolkit.simcommon.client.SimulatorConfig;
 import gov.nist.toolkit.simcommon.client.config.SimulatorConfigElement;
 import gov.nist.toolkit.simcommon.server.*;
-import gov.nist.toolkit.fhir.simulators.proxy.service.ElementalReverseProxy;
-import gov.nist.toolkit.fhir.simulators.sim.reg.store.MetadataCollection;
-import gov.nist.toolkit.fhir.simulators.sim.reg.store.RegIndex;
-import gov.nist.toolkit.fhir.simulators.sim.rep.RepIndex;
-import gov.nist.toolkit.fhir.simulators.support.BaseDsActorSimulator;
-import gov.nist.toolkit.fhir.simulators.support.DsSimCommon;
 import gov.nist.toolkit.sitemanagement.SeparateSiteLoader;
 import gov.nist.toolkit.sitemanagement.client.Site;
 import gov.nist.toolkit.soap.http.SoapFault;
@@ -64,6 +65,7 @@ public class SimServlet  extends HttpServlet {
 	PatientIdentityFeedServlet patientIdentityFeedServlet;
 	boolean isProxy;
 	boolean isFhir;
+	private RequestListenerThread proxyThread = null;
 
 
 	@Override
@@ -92,7 +94,11 @@ public class SimServlet  extends HttpServlet {
 
 		// Initialize SimProxy
 		try {
-			ElementalReverseProxy.start(Installation.instance().propertyServiceManager().getProxyPort());
+			long id = Thread.currentThread().getId();
+			Object it = this;
+			logger.info("Proxy Operation: want to start proxy from SimServlet (" + id + ")");
+			logger.info("Proxy Operation: Starting Proxy from SimServlet (" + Thread.currentThread().getId() + ")");
+			proxyThread = ElementalReverseProxy.start(Installation.instance().propertyServiceManager().getProxyPort());
 		} catch (Exception e) {
 			throw new ServletException(e);
 		}
@@ -100,6 +106,20 @@ public class SimServlet  extends HttpServlet {
 
 	@Override
 	public void destroy() {
+		// stop SimProxy
+		if (proxyThread != null) {
+			Object it = this;
+			long id = Thread.currentThread().getId();
+			logger.info("Proxy Operation: shutdown started from SimServlet {"+ id + ")");
+			try {
+				proxyThread.getServersocket().close();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+			id = Thread.currentThread().getId();
+			logger.info("Proxy Operation: shutdown completed from SimServlet {"+ id + ")");
+			proxyThread = null;
+		}
 		onServiceStop();
 	}
 

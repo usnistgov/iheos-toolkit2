@@ -38,7 +38,7 @@ class ReferenceTest extends Specification {
 </Bundle>
 '''
         Bundle bundle = ctx.newXmlParser().parseResource(xml)
-        ResourceMgr mgr = new ResourceMgr(bundle)
+        ResourceMgr mgr = new ResourceMgr(bundle, null)
 
         // resources returned as [url, resource]
         expect:
@@ -94,7 +94,7 @@ class ReferenceTest extends Specification {
 </Bundle>
 '''
         Bundle bundle = ctx.newXmlParser().parseResource(xml)
-        ResourceMgr mgr = new ResourceMgr(bundle)
+        ResourceMgr mgr = new ResourceMgr(bundle, null)
 
         // resources returned as [url, resource]
         expect:

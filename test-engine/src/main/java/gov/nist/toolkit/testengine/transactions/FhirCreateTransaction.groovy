@@ -54,8 +54,13 @@ class FhirCreateTransaction extends BasicFhirTransaction {
     void doRun(IBaseResource resource, String urlExtension) {
         assert endpoint, 'TestClient:FhirCreateTransaction: endpoint is null'
 
-        String pid_value = useReportManager.get('$pid_value$');
-        String pid_system = useReportManager.get('$pid_system$');
+        String pid_value = null
+        String pid_system = null
+
+        if (useReportManager) {
+            pid_value = useReportManager.get('$pid_value$');
+            pid_system = useReportManager.get('$pid_system$');
+        }
 
         if (pid_value && pid_system)
             updatePidIdentifier(resource, pid_value, pid_system)

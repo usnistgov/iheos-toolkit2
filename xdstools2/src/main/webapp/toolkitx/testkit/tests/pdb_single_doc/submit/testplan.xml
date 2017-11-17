@@ -18,7 +18,7 @@
             </Report>
         </FhirReadTransaction>
     </TestStep>
-    <TestStep id="create">
+    <TestStep id="SendPdb">
         <ExpectedStatus>Success</ExpectedStatus>
         <ProvideDocumentBundleTransaction>
             <UseReport step="PatientLookup" section="THIS" reportName="pid_value" useAs="$pid_value$"/>
