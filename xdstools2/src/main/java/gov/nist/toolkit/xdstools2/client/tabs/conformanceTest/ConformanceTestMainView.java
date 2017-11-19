@@ -45,8 +45,6 @@ public class ConformanceTestMainView {
         actorpanel.add(new InformationLink("Help with Conformance Test tool", "Conformance-Test-Tool").asWidget());
         toolPanel.add(actorpanel);
         tabBarPanel.add(actorTabBar);
-        // . TODO create a panel for the bars and hide it by default? Unless access by URL.
-        // 0. TODO: create a profile tab here
         tabBarPanel.add(new HTML("Profile"));
         tabBarPanel.add(profileTabBar);
         tabBarPanel.add(new HTML("Option"));

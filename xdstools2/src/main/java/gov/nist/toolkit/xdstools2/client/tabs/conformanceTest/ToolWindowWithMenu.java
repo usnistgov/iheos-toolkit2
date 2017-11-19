@@ -36,6 +36,8 @@ public abstract class ToolWindowWithMenu extends ToolWindow {
             destinationPanel .clear();
             destinationPanel.getElement().getStyle().setMarginTop(10, Style.Unit.PX);
 
+            destinationPanel.add(new HTML("Tests are organized as: Actor Profile Option. Select the option you are interested in. "));
+
             int colWidth = 100 / menuCols;
             int menuCt = 0;
             /**
@@ -171,17 +173,25 @@ public abstract class ToolWindowWithMenu extends ToolWindow {
                         }
                     }
 
-                    HTML label = new HTML("<span style='font-size:14px;'>" + tc.getLabel() + "</span>");
-                    flowPanel.add(label);
-                    ti.setWidget(flowPanel);
-                    ti.setIndex(idx++);
+                    // Do not display group headers in the tree.
+                    if (tc.isHeader()) {
+                        if (tc.hasChildren()) {
+                            flattenedTabConfig(tcCodeMap, treeItem, tc);
+                        }
+                    } else {
+                        HTML label = new HTML("<span style='font-size:14px;'>" + tc.getLabel() + "</span>");
+                        flowPanel.add(label);
+                        ti.setWidget(flowPanel);
+                        ti.setIndex(idx++);
 
-                    if (treeItem!=null)
-                        treeItem.addItem(ti);
+                        if (treeItem!=null)
+                            treeItem.addItem(ti);
 
-                    if (tc.hasChildren()) {
-                        flattenedTabConfig(tcCodeMap, ti, tc);
+                        if (tc.hasChildren()) {
+                            flattenedTabConfig(tcCodeMap, ti, tc);
+                        }
                     }
+
                 }
 
             } else if (!tabConfig.isHeader() && !tabConfig.hasChildren()){

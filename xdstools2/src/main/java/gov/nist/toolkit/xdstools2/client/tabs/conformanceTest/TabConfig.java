@@ -110,6 +110,10 @@ public class TabConfig implements Serializable, IsSerializable {
         this.childTabConfigs = childTabConfigs;
     }
 
+    /**
+     * Represents a tab group header or the document root where the type attribute is null or does not exist in both cases.
+     * @return
+     */
     public boolean isHeader() {
        return type==null;
     }
