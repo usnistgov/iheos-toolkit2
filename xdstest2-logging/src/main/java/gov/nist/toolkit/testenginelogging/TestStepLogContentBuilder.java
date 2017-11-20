@@ -13,14 +13,15 @@ import gov.nist.toolkit.utilities.xml.OMFormatter;
 import gov.nist.toolkit.utilities.xml.Util;
 import gov.nist.toolkit.utilities.xml.XmlUtil;
 import gov.nist.toolkit.xdsexception.ExceptionUtil;
-import gov.nist.toolkit.xdsexception.client.MetadataException;
-import gov.nist.toolkit.xdsexception.client.MetadataValidationException;
 import gov.nist.toolkit.xdsexception.client.XdsInternalException;
 import org.apache.axiom.om.OMElement;
 
 import javax.xml.namespace.QName;
 import javax.xml.parsers.FactoryConfigurationError;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 
 /**
  *
@@ -166,14 +167,23 @@ public class TestStepLogContentBuilder {
 
     private void parseInputMetadata() {
         try {
-            c.setInputMetadata(xmlFormat( getRawInputMetadata()));
+            c.setInputMetadata(getFormattedInputMetadata());
         } catch (Exception e) {
         }
     }
 
     private void parseResult() {
         try {
-            OMElement copy = Util.deep_copy(XmlUtil.firstDecendentWithLocalName(root, "Result").getFirstElement());
+            OMElement result = XmlUtil.firstDecendentWithLocalName(root, "Result");
+            if (result == null) {
+                c.setResult("");
+                return;
+            }
+            if (!hasChildElement(result)) {
+                c.setResult(result.getText());
+                return;
+            }
+            OMElement copy = Util.deep_copy(result.getFirstElement());
             for (OMElement ele : XmlUtil.decendentsWithLocalName(copy, "Document", 4)) {
                 String original = ele.getText();
                 int size = (original == null || original.equals("")) ? 0 : original.length();
@@ -184,17 +194,31 @@ public class TestStepLogContentBuilder {
         }
     }
 
+    private boolean hasChildElement(OMElement ele) {
+        OMElement valueEle = ele.getFirstElement();
+        return valueEle != null;
+    }
 
     private void parseOutHeader() {
         try {
-            c.setOutHeader(xmlFormat(XmlUtil.firstDecendentWithLocalName(root, "OutHeader").getFirstElement()));
+            OMElement hdr = XmlUtil.firstDecendentWithLocalName(root, "OutHeader");
+            if (!hasChildElement(hdr)) {
+                c.setOutHeader(hdr.getText());
+                return;
+            }
+            c.setOutHeader(xmlFormat(hdr.getFirstElement()));
         } catch (Exception e) {
         }
     }
 
     private void parseInHeader() {
         try {
-            c.setInHeader(xmlFormat(XmlUtil.firstDecendentWithLocalName(root, "InHeader").getFirstElement()));
+            OMElement hdr = XmlUtil.firstDecendentWithLocalName(root, "InHeader");
+            if (!hasChildElement(hdr)) {
+                c.setInHeader(hdr.getText());
+                return;
+            }
+            c.setInHeader(xmlFormat(hdr.getFirstElement()));
         } catch (Exception e) {
         }
     }
@@ -335,6 +359,14 @@ public class TestStepLogContentBuilder {
         }
     }
 
+    private String getFormattedInputMetadata() throws XdsInternalException {
+        OMElement ele = XmlUtil.firstDecendentWithLocalName(root, "InputMetadata");
+        if (ele == null) return "";
+        if (ele.getFirstElement() != null)
+            return xmlFormat(ele.getFirstElement());
+        return ele.getText();
+    }
+
     private OMElement getRawInputMetadata() {
         return XmlUtil.firstDecendentWithLocalName(root, "InputMetadata").getFirstElement();
     }
@@ -358,9 +390,9 @@ public class TestStepLogContentBuilder {
         c.setSoapFaults(errs);
     }
 
-    public Metadata getParsedInputMetadata() throws MetadataValidationException, MetadataException {
-        return MetadataParser.parseNonSubmission(getRawInputMetadata());
-    }
+//    public Metadata getParsedInputMetadata() throws MetadataValidationException, MetadataException {
+//        return MetadataParser.parseNonSubmission(getRawInputMetadata());
+//    }
 
     public String getId() {
         return id;

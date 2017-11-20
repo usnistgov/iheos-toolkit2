@@ -307,8 +307,9 @@ public class XdsTestServiceManager extends CommonService {
 			return testLogs;
 		} catch (Exception e) {
 			TestLogs testLogs = new TestLogs();
-			testLogs.assertionResult = new AssertionResult(
-					ExceptionUtil.exception_details(e), false);
+			String details = ExceptionUtil.exception_details(e);
+			logger.error(details);
+			testLogs.assertionResult = new AssertionResult(details,false);
 			return testLogs;
 		}
 	}
@@ -947,7 +948,7 @@ public class XdsTestServiceManager extends CommonService {
 							} catch (Exception e) {
 
 							}
-							if (response != null) {
+							if (response != null && response.trim().startsWith("<")) {
 								OMElement rdsr = Util.parse_xml(response);
 								if (!rdsr.getLocalName().equals(
 										"RetrieveDocumentSetResponse"))

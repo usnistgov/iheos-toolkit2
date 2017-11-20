@@ -14,7 +14,20 @@ class FhirSupport {
         } else {
             return ctx.newXmlParser().parseResource(content)
         }
-        return null
+    }
+
+
+    static String format(String content) {
+        FhirContext ctx = ToolkitFhirContext.get()
+        content = content.trim()
+        IBaseResource resource
+        if (content.startsWith('{')) {
+            resource = ctx.newJsonParser().parseResource(content)
+            ctx.newJsonParser().setPrettyPrint(true).encodeResourceToString(resource)
+        } else {
+            resource =  ctx.newXmlParser().parseResource(content)
+            ctx.newXmlParser().setPrettyPrint(true).encodeResourceToString(resource)
+        }
     }
 
 }

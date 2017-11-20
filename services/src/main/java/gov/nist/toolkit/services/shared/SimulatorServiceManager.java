@@ -173,10 +173,12 @@ public class SimulatorServiceManager extends CommonService {
 			String trans, String event) {
 		logger.debug(session.id() + ": " + "getTransactionRequest - " + simid + " - " + actor + " - " + trans + " - " + event);
 		try {
-			SimDb db = new SimDb(simid);
+			SimDb db = new SimDb(simid, actor, trans);
 
 			if (actor == null)
 				actor = db.getSimulatorActorType().toString();
+
+			db.setEvent(event);
 
 			File headerFile = db.getRequestHeaderFile(simid, actor, trans,
 					event);
@@ -194,8 +196,9 @@ public class SimulatorServiceManager extends CommonService {
 			if (uriFile.exists())
 				uri = Io.stringFromFile(uriFile);
 			return subParseMessage(new Message(uri + "\n" + header, body));
-		} catch (Exception e) {
-			return new Message("Error: " + e.getMessage());
+		} catch (Throwable e) {
+			logger.error(ExceptionUtil.exception_details(e));
+			return new Message("Error: " + ExceptionUtil.exception_details(e));
 		}
 	}
 
@@ -217,10 +220,12 @@ public class SimulatorServiceManager extends CommonService {
 			String trans, String event) {
 		logger.debug(session.id() + ": " + "getTransactionResponse - " + simid + " - " + actor + " - " + trans + " - " + event);
 		try {
-			SimDb db = new SimDb(simid);
+			SimDb db = new SimDb(simid, actor, trans);
 
 			if (actor == null)
 				actor = db.getSimulatorActorType().toString();
+
+			db.setEvent(event);
 
 			File headerFile = db.getResponseHeaderFile(simid, actor, trans,
 					event);
@@ -235,8 +240,9 @@ public class SimulatorServiceManager extends CommonService {
 			else
 				header = "";
 			return subParseMessage(new Message(header, body));
-		} catch (Exception e) {
-			return new Message("Error: " + e.getMessage());
+		} catch (Throwable e) {
+			logger.error(ExceptionUtil.exception_details(e));
+			return new Message("Error: " + ExceptionUtil.exception_details(e));
 		}
 	}
 

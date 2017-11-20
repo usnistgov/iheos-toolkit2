@@ -38,6 +38,7 @@ class FhirReadTransaction extends BasicFhirTransaction {
         reportManager.add('Url', fullEndpoint)
 
         def contentType = (requestXml) ? 'application/fhir+xml' : 'application/fhir+json'
+        testLog.add_name_value(instruction_output, 'OutHeader', "GET ${fullEndpoint}")
         def (BasicStatusLine statusLine, String content) = FhirClient.get(new URI(fullEndpoint), contentType)
         if (statusLine.statusCode in 400..599)  {
             stepContext.set_error("Status:${statusLine}")
@@ -46,7 +47,7 @@ class FhirReadTransaction extends BasicFhirTransaction {
             if (requestXml) {
                 OMElement f = testLog.add_simple_element(instruction_output, "Format")
                 f.addAttribute('value', 'xml', null)
-                testLog.add_name_value(instruction_output, "Result", content);
+                testLog.add_name_value(instruction_output, "Result", FhirSupport.format(content));
             } else {
                 // by default JSON is requested
                 OMElement f = testLog.add_simple_element(instruction_output, "Format")

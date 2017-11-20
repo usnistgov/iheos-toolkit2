@@ -82,15 +82,21 @@ class FhirCreateTransaction extends BasicFhirTransaction {
 
 //        fullEndpoint = fullEndpoint.replace('7777', '6666')
 
+        testLog.add_name_value(instruction_output, 'OutHeader', "POST ${fullEndpoint}")
+
+        def sendContent = fhirCtx.newJsonParser().setPrettyPrint(true).encodeResourceToString(resource)
+        testLog.add_name_value(instruction_output, 'InputMetadata', sendContent)
+
         // No fhirID from transaction
-        def (BasicStatusLine statusLine, String content, FhirId fhirId) = FhirClient.post(new URI(fullEndpoint), fhirCtx.newJsonParser().encodeResourceToString(resource))
+        def (BasicStatusLine statusLine, String content, FhirId fhirId) = FhirClient.post(new URI(fullEndpoint), sendContent)
         if (content) {
             IBaseResource baseResource = FhirSupport.parse(content)
             if (baseResource instanceof OperationOutcome) {
                 OperationOutcome oo = (OperationOutcome) baseResource
-
+                testLog.add_name_value(instruction_output, "Result", fhirCtx.newXmlParser().setPrettyPrint(true).encodeResourceToString(oo));
                 simpleErrorMsg(oo, stepContext)
             } else if (baseResource instanceof Bundle) {
+                testLog.add_name_value(instruction_output, "Result", fhirCtx.newXmlParser().setPrettyPrint(true).encodeResourceToString(baseResource));
                 Bundle bundle = baseResource
                 bundle.entry.each { Bundle.BundleEntryComponent comp ->
                     assert comp.response.status == '200'
@@ -103,6 +109,8 @@ class FhirCreateTransaction extends BasicFhirTransaction {
                 }
             }
         }
+        testLog.add_name_value(instruction_output, 'InHeader', statusLine.toString())
+
         if (!content && fhirId) {
             reportManager.add("Type_ID", fhirId.withoutHistory())
             reportManager.add('Ref', "${endpoint}/${fhirId.withoutHistory()}")
