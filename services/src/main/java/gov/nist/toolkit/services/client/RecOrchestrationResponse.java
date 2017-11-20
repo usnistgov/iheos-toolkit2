@@ -10,8 +10,9 @@ import gov.nist.toolkit.sitemanagement.client.Site;
 public class RecOrchestrationResponse extends AbstractOrchestrationResponse {
     private Pid registerPid = null;
     private SimulatorConfig rrConfig = null;
-    private SimulatorConfig simProxyConfig = null;
+    private Site rrSite = null;
     private Site supportSite = null;  // not used in UI
+    private FhirSupportOrchestrationResponse supportResponse;
 
     public RecOrchestrationResponse() {
     }
@@ -40,16 +41,24 @@ public class RecOrchestrationResponse extends AbstractOrchestrationResponse {
         this.supportSite = supportSite;
     }
 
-    public SimulatorConfig getSimProxyConfig() {
-        return simProxyConfig;
+    public Site getRRSite() {
+        return rrSite;
     }
 
-    public void setSimProxyConfig(SimulatorConfig simProxyConfig) {
-        this.simProxyConfig = simProxyConfig;
+    public void setRRSite(Site rrSite) {
+        this.rrSite = rrSite;
     }
 
     @Override
     public boolean isExternalStart() {
         return false;
+    }
+
+    public FhirSupportOrchestrationResponse getSupportResponse() {
+        return supportResponse;
+    }
+
+    public void setSupportResponse(FhirSupportOrchestrationResponse supportResponse) {
+        this.supportResponse = supportResponse;
     }
 }

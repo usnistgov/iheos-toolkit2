@@ -10,6 +10,9 @@ import gov.nist.toolkit.xdstools2.client.command.command.BuildFhirSupportOrchest
 import gov.nist.toolkit.xdstools2.client.widgets.OrchestrationSupportTestsDisplay;
 import gov.nist.toolkit.xdstools2.client.widgets.buttons.AbstractOrchestrationButton;
 
+import static gov.nist.toolkit.xdstools2.client.tabs.conformanceTest.OrchSupport.buildTable;
+import static gov.nist.toolkit.xdstools2.client.tabs.conformanceTest.OrchSupport.tableHeader;
+
 public class BuildFhirSupportOrchestrationButton extends AbstractOrchestrationButton {
     private ConformanceTestTab testTab;
     private Panel initializationPanel;
@@ -63,29 +66,7 @@ public class BuildFhirSupportOrchestrationButton extends AbstractOrchestrationBu
 
                 initializationResultsPanel.add(new HTML("Initialization Complete"));
 
-                initializationResultsPanel.add(new HTML("<h2>Supporting FHIR Server</h2>"));
-                initializationResultsPanel.add(new HTML("<p>A supporting FHIR server has been created..."));
-
-                initializationResultsPanel.add(new HTML("<h2>Patients</h2>"));
-                FlexTable table = new FlexTable();
-                table.setBorderWidth(2);
-                table.addStyleName("border-collapse");
-
-                int row=0;
-                table.setWidget(row, 0, tableHeader("Patient ID"));
-                table.setWidget(row, 1, tableHeader("First Name"));
-                table.setWidget(row, 2, tableHeader("Last Name"));
-                table.setWidget(row, 3, tableHeader("FHIR Resource"));
-
-                for (PatientDef pat : response.getPatients()) {
-                    row++;
-                    table.setWidget(row, 0, new HTML(pat.pid));
-                    table.setWidget(row, 1, new HTML(pat.given));
-                    table.setWidget(row, 2, new HTML(pat.family));
-                    table.setWidget(row, 3, new HTML(pat.url));
-                }
-
-                initializationResultsPanel.add(table);
+                supportingFhirServerConfigUI(initializationResultsPanel, response, false);
 
                 handleMessages(initializationResultsPanel, response);
 
@@ -105,9 +86,43 @@ public class BuildFhirSupportOrchestrationButton extends AbstractOrchestrationBu
 
     }
 
-    Widget tableHeader(String text) {
-        HTML h = new HTML(text);
-        h.addStyleName("table-header");
-        return h;
+    public static void supportingFhirServerConfigUI(FlowPanel initializationResultsPanel, FhirSupportOrchestrationResponse response, boolean explain) {
+        explain = true;
+        initializationResultsPanel.add(new HTML("<h2>Supporting FHIR Server</h2>"));
+        initializationResultsPanel.add(new HTML("<p>A supporting FHIR server has been created..."));
+        if (explain) {
+            initializationResultsPanel.add(new HTML("<p>" +
+                    "This server is managed within the Conformance Tool under the fake Actor type FHIR Support. This server is run as a " +
+                    "Toolkit simulator so it can also be found in the Simulator Manager tool." +
+                    "<p>The Provide Document Bundle transaction requires a reference to a Patient Resource. It " +
+                    "cannot be included in the bundle. It must be a reference to an external server. " +
+                    "Below are the Patient resources currently loaded in this server. " +
+                    "Several are included in the default configuration. More can be " +
+                    "added but only the default set are reference by included tests. " +
+                    "This server can be reset (deleted, re-created, and loaded) from its " +
+                    "Conformance Tool tab or from any Conformnace Tool tab that references it by " +
+                    "resetting the testing environment (controls provided at the top of the tool)."
+            ));
+        }
+
+        initializationResultsPanel.add(new HTML("<h2>Patients</h2>"));
+        FlexTable table = buildTable();
+
+        int row=0;
+        table.setWidget(row, 0, tableHeader("Patient ID"));
+        table.setWidget(row, 1, tableHeader("First Name"));
+        table.setWidget(row, 2, tableHeader("Last Name"));
+        table.setWidget(row, 3, tableHeader("FHIR Resource"));
+
+        for (PatientDef pat : response.getPatients()) {
+            row++;
+            table.setWidget(row, 0, new HTML(pat.pid));
+            table.setWidget(row, 1, new HTML(pat.given));
+            table.setWidget(row, 2, new HTML(pat.family));
+            table.setWidget(row, 3, new HTML(pat.url));
+        }
+
+        initializationResultsPanel.add(table);
     }
+
 }

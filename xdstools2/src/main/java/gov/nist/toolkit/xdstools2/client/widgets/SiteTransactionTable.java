@@ -4,6 +4,7 @@ import com.google.gwt.user.client.ui.FlexTable;
 import com.google.gwt.user.client.ui.HTML;
 import gov.nist.toolkit.sitemanagement.client.Site;
 import gov.nist.toolkit.sitemanagement.client.TransactionBean;
+import gov.nist.toolkit.xdstools2.client.tabs.conformanceTest.OrchSupport;
 import gov.nist.toolkit.xdstools2.client.widgets.SiteSelectionWidget_old.SiteSorter;
 
 import java.util.ArrayList;
@@ -18,21 +19,16 @@ public class SiteTransactionTable extends FlexTable {
     public SiteTransactionTable(Site site, String title) {
         if (title!=null && !"".equals(title))
             addStyleName(title.replace(" ",""));
-        addStyleName("with-border");
+        OrchSupport.stylize(this);
+//        addStyleName("with-border");
         build(site);
     }
 
     private void build(Site site) {
         SiteSorter sorter = new SiteSorter();
-        HTML ei = new HTML("Endpoints and IDs");
-        ei.addStyleName("detail-table-header");
-        setWidget(row, 0, ei);
-        ei = new HTML("Secure");
-        ei.addStyleName("detail-table-header");
-        setWidget(row, 1, ei);
-        ei = new HTML("Non-secure");
-        ei.addStyleName("detail-table-header");
-        setWidget(row, 2, ei);
+        setWidget(row, 0, OrchSupport.tableHeader("Endpoints and IDs"));
+        setWidget(row, 1, OrchSupport.tableHeader("Secure"));
+        setWidget(row, 2, OrchSupport.tableHeader("Non-secure"));
         row++;
 
         boolean hasContent = false;

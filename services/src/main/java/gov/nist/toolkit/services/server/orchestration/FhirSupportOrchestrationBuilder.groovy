@@ -8,7 +8,6 @@ import gov.nist.toolkit.results.client.TestInstance
 import gov.nist.toolkit.services.client.FhirSupportOrchestrationRequest
 import gov.nist.toolkit.services.client.FhirSupportOrchestrationResponse
 import gov.nist.toolkit.services.client.PatientDef
-import gov.nist.toolkit.services.client.RawResponse
 import gov.nist.toolkit.services.server.ToolkitApi
 import gov.nist.toolkit.session.server.Session
 import gov.nist.toolkit.simcommon.client.SimId
@@ -46,7 +45,18 @@ class FhirSupportOrchestrationBuilder {
         this.siteSpec = new SiteSpec(siteName)
     }
 
-    RawResponse buildTestEnvironment() {
+    FhirSupportOrchestrationBuilder(ToolkitApi api, Session session, String userName, boolean useExistingState) {
+        this(api, session, requestBuilder(userName, useExistingState))
+    }
+
+    private static FhirSupportOrchestrationRequest requestBuilder(String userName, boolean useExistingState) {
+        FhirSupportOrchestrationRequest request = new FhirSupportOrchestrationRequest()
+        request.userName = userName
+        request.useExistingState = useExistingState
+        return request
+    }
+
+    FhirSupportOrchestrationResponse buildTestEnvironment() {
         FhirSupportOrchestrationResponse response = new FhirSupportOrchestrationResponse()
         FhirOrchestrationProperties orchProps = new FhirOrchestrationProperties(request.userName, !request.useExistingState)
         SimulatorConfig simConfig

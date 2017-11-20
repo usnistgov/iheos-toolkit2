@@ -105,7 +105,7 @@ public class TestOverviewBuilder {
 
                             StringBuilder buf = new StringBuilder();
                             for (String goal : sectionDef.getStep(stepName).getGoals()) {
-                                buf.append(goal);
+                                buf.append(goal).append(" ");
 //                                buf.append("<br />");
                             }
                             stepOverview.setGoals(Markdown.toHtml(buf.toString()));

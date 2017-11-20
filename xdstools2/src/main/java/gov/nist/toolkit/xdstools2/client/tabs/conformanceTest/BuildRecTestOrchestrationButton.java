@@ -4,8 +4,6 @@ import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.Panel;
 import gov.nist.toolkit.actortransaction.client.ActorOption;
-import gov.nist.toolkit.actortransaction.client.ActorType;
-import gov.nist.toolkit.actortransaction.client.OptionType;
 import gov.nist.toolkit.services.client.RawResponse;
 import gov.nist.toolkit.services.client.RecOrchestrationRequest;
 import gov.nist.toolkit.services.client.RecOrchestrationResponse;
@@ -54,12 +52,12 @@ public class BuildRecTestOrchestrationButton extends AbstractOrchestrationButton
      */
     @Override
     public void orchestrate() {
-        for (OptionType optionType : ActorType.XDS_on_FHIR_Recipient.getOptions()) {
-           if (optionType.equals(actorOption.optionId)) {
-               testingAClient = true;
-               break;
-           }
-        }
+//        for (OptionType optionType : ActorType.XDS_on_FHIR_Recipient.getOptions()) {
+//           if (optionType.equals(actorOption.optionId)) {
+//               testingAClient = true;
+//               break;
+//           }
+//        }
 
         String msg = testContext.verifyTestContext(testingAClient);
         if (msg != null) {
@@ -98,11 +96,21 @@ public class BuildRecTestOrchestrationButton extends AbstractOrchestrationButton
 
                 initializationResultsPanel.add(new HTML("Initialization Complete"));
 
-                if (testContext.getSiteUnderTest() != null && !testingAClient) {
+                if (testContext.getSiteUnderTest() != null) {
                     initializationResultsPanel.add(new SiteDisplay("System Under Test Configuration", testContext.getSiteUnderTest()));
                 }
 
-                initializationResultsPanel.add(new HTML("<h2>Supporting Environment Configuration</h2>"));
+                if (orchResponse.getRRSite() != null) {
+                    HTML seDoc = new HTML("<p>This is a Registry and Repository that should receive resulting " +
+                    "Provide and Register transactions.");
+                    initializationResultsPanel.add(new SiteDisplay("Supporting Environment Configuration", seDoc, orchResponse.getRRSite()));
+                }
+
+
+                BuildFhirSupportOrchestrationButton.supportingFhirServerConfigUI(initializationResultsPanel, orchResponse.getSupportResponse(), true);
+
+
+
 
                 handleMessages(initializationResultsPanel, orchResponse);
 
@@ -111,8 +119,8 @@ public class BuildRecTestOrchestrationButton extends AbstractOrchestrationButton
 
                 initializationResultsPanel.add(new HTML("<br />"));
 
-                initializationResultsPanel.add(new HTML("Patient ID for all tests: " + orchResponse.getRegisterPid().toString()));
-                initializationResultsPanel.add(new HTML("<br />"));
+//                initializationResultsPanel.add(new HTML("Patient ID for all tests: " + orchResponse.getRegisterPid().toString()));
+//                initializationResultsPanel.add(new HTML("<br />"));
 
                 testTab.displayTestCollection(testTab.getMainView().getTestsPanel());
             }

@@ -1,5 +1,5 @@
 <TestPlan>
-    <Test>FhirTestClientCreate/create</Test>
+    <Test>pdb_single_doc_xof/submit</Test>
     <TestStep id="PatientLookup">
         <Goal>
             Lookup the Patient resource submitted for Patient ID
@@ -21,7 +21,7 @@
     </TestStep>
     <TestStep id="SendPdb">
         <Goal>
-            Send a Provide Document Bundle transaction to the Document Recipient. The bundle
+            Send a Provide Document Bundle transaction to the (MHD) Document Recipient. The bundle
             contains a DocumentManifest, a single DocumentReference which references an included
             Binary resource.  Both the DocumentManifest and the DocumentReference reference
             the Patient Resource described in the previous step.

@@ -14,10 +14,6 @@ public class SiteDisplay extends FlowPanel {
 
     public SiteDisplay(String title, Site site) {
         this(title, null, site);
-//        add(new HTML("<h2>" + title + "</h2>"));
-//        add(new SimSystemAnchor("System: " + site.getName(), site.siteSpec()));
-//        add(new HTML("<br />"));
-//        add(new SiteTransactionTable(site,title));
     }
 
     public SiteDisplay(String title, Widget documentation, Site site) {
@@ -25,7 +21,9 @@ public class SiteDisplay extends FlowPanel {
         if (documentation != null)
             add(documentation);
         add(new HTML("<br />"));
-        add(new SimSystemAnchor("Simulator: " + site.getName(), site.siteSpec()));
+        add(new SimSystemAnchor(
+                (site.isSimulator()) ? "Simulator: " + site.getName() : site.getName(),
+                site.siteSpec()));
         add(new HTML("<br />"));
         add(new SiteTransactionTable(site,title));
     }
