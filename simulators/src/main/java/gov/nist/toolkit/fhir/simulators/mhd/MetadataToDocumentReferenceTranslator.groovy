@@ -1,17 +1,18 @@
-package gov.nist.toolkit.fhir.simulators.proxy.transforms
+package gov.nist.toolkit.fhir.simulators.mhd
 
-import gov.nist.toolkit.fhir.simulators.mhd.DateTransform
 import gov.nist.toolkit.fhir.utility.IFhirSearch
 import gov.nist.toolkit.registrymetadata.client.DocumentEntry
 import org.hl7.fhir.dstu3.model.*
 import org.hl7.fhir.instance.model.api.IBaseResource
 
-class MetadataToDocumentReferenceTransform {
-    def supportServerBase
+class MetadataToDocumentReferenceTranslator {
+    List<String> supportServerBases  // FHIR servers to hunt for Patient references
     IFhirSearch searcher
 
-    MetadataToDocumentReferenceTransform(String supportServerBase, IFhirSearch searcher) {
-        this.supportServerBase = supportServerBase
+    MetadataToDocumentReferenceTranslator(List<String> supportServerBases, IFhirSearch searcher) {
+        assert !supportServerBases?.empty()
+        assert searcher
+        this.supportServerBases = supportServerBases
         this.searcher = searcher
     }
 
@@ -22,11 +23,12 @@ class MetadataToDocumentReferenceTransform {
         // TODO - sourcePatientId
         // TODO - authors
         // TODO sourcePatientInfo
+        // TODO reference to binary
 
         dr.addContent(new DocumentReference.DocumentReferenceContentComponent())
         dr.content[0].attachment.contentType = de.mimeType
         if (de.hash)
-            dr.content[0].attachment.hash = HashTransform.toByteArray(de.hash)
+            dr.content[0].attachment.hash = HashTranslator.toByteArray(de.hash)
         if (de.lang)
             dr.content[0].attachment.language = de.lang
         if (de.size)

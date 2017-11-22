@@ -1,6 +1,7 @@
 package gov.nist.toolkit.fhir.simulators.proxy.transforms
 
 import gov.nist.toolkit.fhir.context.ToolkitFhirContext
+import gov.nist.toolkit.fhir.simulators.mhd.MetadataToDocumentReferenceTranslator
 import gov.nist.toolkit.fhir.utility.IFhirSearch
 import gov.nist.toolkit.registrymetadata.Metadata
 import gov.nist.toolkit.registrymetadata.MetadataParser
@@ -21,7 +22,7 @@ class MetadataToDocumentReferenceTransformTest extends Specification {
         DocumentEntry de = col.docEntries[0]
 
         when:
-        MetadataToDocumentReferenceTransform xfrm = new MetadataToDocumentReferenceTransform('fhirbase', new Searcher())
+        MetadataToDocumentReferenceTranslator xfrm = new MetadataToDocumentReferenceTranslator('fhirbase', new Searcher())
         DocumentReference dr = xfrm.run(de)
 
         then:

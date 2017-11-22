@@ -1,8 +1,8 @@
-package gov.nist.toolkit.fhir.simulators.proxy.transforms
+package gov.nist.toolkit.fhir.simulators.mhd
 
 import javax.xml.bind.DatatypeConverter
 
-class HashTransform {
+class HashTranslator {
 
     static byte[] toByteArray(String hash) {
         DatatypeConverter.parseHexBinary(hash)

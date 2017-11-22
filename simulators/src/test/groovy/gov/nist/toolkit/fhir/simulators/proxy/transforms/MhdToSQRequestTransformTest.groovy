@@ -1,10 +1,12 @@
 package gov.nist.toolkit.fhir.simulators.proxy.transforms
 
+import gov.nist.toolkit.fhir.simulators.mhd.SQParamTranslator
+import gov.nist.toolkit.fhir.simulators.mhd.SQTranslator
 import spock.lang.Specification
 
 class MhdToSQRequestTransformTest extends Specification {
-    SQParamTransform paramXfrm = new SQParamTransform()
-    SQTransform xfrm = new SQTransform()
+    SQParamTranslator paramXfrm = new SQParamTranslator()
+    SQTranslator xfrm = new SQTranslator()
 
     def 'patient.identifier'() {
         when:

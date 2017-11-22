@@ -20,7 +20,7 @@ import spock.lang.Shared
 /**
  * Test SimProxy with MHD -> XDS transformation as front end to RegRepSpec simulator
  */
-class MhdSimProxySpec extends ToolkitSpecification {
+class MhdSimProxySubmitSpec extends ToolkitSpecification {
     @Shared SimulatorBuilder spi
 
 

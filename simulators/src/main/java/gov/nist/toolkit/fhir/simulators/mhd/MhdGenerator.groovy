@@ -585,7 +585,7 @@ class MhdGenerator {
             if (!errorLogger.hasErrors())
                 return submission
         } catch (Throwable e) {
-            throw new Exception("xx")
+            throw new Exception("Provide Document Bundle to Provide and Register translation failed", e)
         }
         throw new ReturnableErrorException(ErrorLoggerAsHttpResponse.buildHttpResponse(proxyBase, errorLogger))
 

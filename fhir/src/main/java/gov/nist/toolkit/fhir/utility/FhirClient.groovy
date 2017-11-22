@@ -72,12 +72,17 @@ class FhirClient implements IFhirSearch {
 
 
     static get(def uri, def contentType) {
-        HttpClient client = HttpClientBuilder.create().build()
-        HttpGet request = new HttpGet(uri)
-        request.addHeader('Content-Type', contentType)
-        HttpResponse response = client.execute(request)
-        def statusLine = response.getStatusLine()
-        return [statusLine, Io.getStringFromInputStream(response.getEntity().content)]
+        try {
+            HttpClient client = HttpClientBuilder.create().build()
+            HttpGet request = new HttpGet(uri)
+            request.addHeader('Content-Type', contentType)
+            HttpResponse response = client.execute(request)
+            def statusLine = response.getStatusLine()
+            return [statusLine, Io.getStringFromInputStream(response.getEntity().content)]
+        }
+        catch (Throwable e) {
+            throw new Exception("GET from ${uri} for content type ${contentType} failed.", e)
+        }
     }
 
     static IBaseResource readResource(def uri) {
@@ -85,15 +90,15 @@ class FhirClient implements IFhirSearch {
     }
 
         static IBaseResource readResource(def uri, def contentType) {
-        try {
+//        try {
             def (statusLine, body) = get(uri, contentType)
             if (statusLine.statusCode != 200)
                 return null
             return ToolkitFhirContext.get().newJsonParser().parseResource(body)
-        }
-        catch (Exception e) {
-            return null
-        }
+//        }
+//        catch (Exception e) {
+//            return null
+//        }
     }
 
     /**

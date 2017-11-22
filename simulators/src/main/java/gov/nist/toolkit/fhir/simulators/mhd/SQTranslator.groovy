@@ -1,8 +1,9 @@
-package gov.nist.toolkit.fhir.simulators.proxy.transforms
+package gov.nist.toolkit.fhir.simulators.mhd
 
+import gov.nist.toolkit.fhir.simulators.mhd.SQParamTranslator
 import groovy.xml.MarkupBuilder
 
-class SQTransform {
+class SQTranslator {
     // TODO - test encoding
 
     /**
@@ -12,14 +13,14 @@ class SQTransform {
      */
     String run(String query) {
         List params = query.split(';')
-        Map model = new SQParamTransform().run(params)
+        Map model = new SQParamTranslator().run(params)
         return toXml(model, true)
     }
 
     String toXml(Map theModel, boolean leafClass) {
         Map model = [:] << theModel  // copy
-        String queryType = model[SQParamTransform.queryType][0]
-        model.remove(SQParamTransform.queryType)
+        String queryType = model[SQParamTranslator.queryType][0]
+        model.remove(SQParamTranslator.queryType)
 
         def writer = new StringWriter()
         def xml = new MarkupBuilder(writer)
@@ -31,7 +32,7 @@ class SQTransform {
                     Slot(name: paramName) {
                         ValueList() {
                             paramValues.each { paramValue ->
-                                if (SQParamTransform.codedTypes.contains(paramName))
+                                if (SQParamTranslator.codedTypes.contains(paramName))
                                     paramValue = "('${paramValue}')"
                                 Value(paramValue)
                             }

@@ -1,10 +1,11 @@
 package gov.nist.toolkit.fhir.simulators.proxy.transforms
 
+import gov.nist.toolkit.fhir.simulators.mhd.SQParamTranslator
 import spock.lang.Ignore
 import spock.lang.Specification
 
 class MhdToSQParamRequestTransformTest extends Specification {
-    SQParamTransform xfrm = new SQParamTransform()
+    SQParamTranslator xfrm = new SQParamTranslator()
 
     // TODO - add tests using search modifiers
 
@@ -198,11 +199,11 @@ class MhdToSQParamRequestTransformTest extends Specification {
     }
 
     Map fd() {
-        ['QueryType':[SQParamTransform.FindDocsKey]]
+        ['QueryType':[SQParamTranslator.FindDocsKey]]
     }
 
     Map fdr() {
-        ['QueryType':[SQParamTransform.FindDocsByRefIdKey]]
+        ['QueryType':[SQParamTranslator.FindDocsByRefIdKey]]
     }
 
 }

@@ -1,11 +1,8 @@
-package gov.nist.toolkit.fhir.simulators.proxy.transforms
-
-import gov.nist.toolkit.fhir.simulators.mhd.DateTransform
-
+package gov.nist.toolkit.fhir.simulators.mhd
 /**
  * generate SQ parameters from MHD query spec.  Inputs and outputs are in a Map-based model.
  */
-class SQParamTransform {
+class SQParamTranslator {
     // SQ parameters
     static statusKey = '$XDSDocumentEntryStatus'
     static patientIdKey = '$XDSDocumentEntryPatientId'

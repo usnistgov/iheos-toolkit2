@@ -99,7 +99,7 @@ class RegistryResponseToOperationOutcomeTransform implements ContentResponseTran
 
             return WrapResourceInHttpResponse.wrap(base, bundle, HttpStatus.SC_OK)
 
-        } catch (Exception e) {
+        } catch (Throwable e) {
             OperationOutcome oo = new OperationOutcome()
             OperationOutcome.OperationOutcomeIssueComponent com = new OperationOutcome.OperationOutcomeIssueComponent()
             com.setSeverity(OperationOutcome.IssueSeverity.FATAL)
