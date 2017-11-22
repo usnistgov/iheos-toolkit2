@@ -10,11 +10,16 @@ class DateTransform {
 
     static String dtmToFhir(String dtm) {
         int dsize = dtm.size()
-        String pattern = dtmPattern.substring(0, dsize)
-        SimpleDateFormat dtmFormat = new SimpleDateFormat(pattern)
-        Date date = dtmFormat.parse(dtm)
+        Date date = dtmToDate(dtm)
         int fsize = fsizeFromDsize(dsize)
         return fhirFormat.format(date).substring(0, fsize)
+    }
+
+    static Date dtmToDate(String dtm) {
+        int dsize = dtm.size()
+        String pattern = dtmPattern.substring(0, dsize)
+        SimpleDateFormat dtmFormat = new SimpleDateFormat(pattern)
+        dtmFormat.parse(dtm)
     }
 
     static String fhirToDtm(String fhir) {

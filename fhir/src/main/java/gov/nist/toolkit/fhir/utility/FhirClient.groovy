@@ -14,11 +14,12 @@ import org.apache.http.impl.client.HttpClientBuilder
 import org.apache.http.impl.client.HttpClients
 import org.apache.http.message.BasicStatusLine
 import org.apache.log4j.Logger
+import org.hl7.fhir.dstu3.model.Bundle
 import org.hl7.fhir.instance.model.api.IBaseResource
 /**
  *
  */
-class FhirClient {
+class FhirClient implements IFhirSearch {
     static private final Logger logger = Logger.getLogger(FhirClient.class);
 
     /**
@@ -93,6 +94,32 @@ class FhirClient {
         catch (Exception e) {
             return null
         }
+    }
+
+    /**
+     *
+     * @param base  FHIR server base URL
+     * @param resourceType "Patient" for example
+     * @param params List of "name=value"
+     * @return  fullUrl ==> Resource
+     */
+    Map<String, IBaseResource> search(String base, String resourceType, List params) {
+        IBaseResource theBundle = readResource(buildURL(base, resourceType, params))
+        if (theBundle instanceof Bundle) {
+            Bundle bundle = theBundle
+            Map<String, IBaseResource> map = [:]
+            bundle.entry.each { Bundle.BundleEntryComponent comp ->
+                def fullUrl = comp.fullUrl
+                IBaseResource resource = comp.resource
+                map[fullUrl] = resource
+            }
+            return map
+        }
+        return new HashMap()
+    }
+
+    private static String buildURL(String base, String resourceType, List params) {
+       "${base}/${resourceType}?${params.join(';')}"
     }
 
 }
