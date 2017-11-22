@@ -2,6 +2,7 @@ package gov.nist.toolkit.xdstools2.client.inspector.mvp;
 
 import com.google.gwt.cell.client.ActionCell;
 import com.google.gwt.cell.client.Cell;
+import com.google.gwt.cell.client.CheckboxCell;
 import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
 import com.google.gwt.user.cellview.client.Column;
 import com.google.gwt.user.cellview.client.TextColumn;
@@ -11,11 +12,17 @@ import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.view.client.ProvidesKey;
 import gov.nist.toolkit.registrymetadata.client.ObjectRef;
 
+import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
 
 abstract class ObjectRefDataTable extends DataTable<ObjectRef> implements IsWidget {
-    private FlowPanel mainPanel = new FlowPanel();
+    private FlowPanel widgetPanel = new FlowPanel();
+    private static String ID_COLUMN_NAME = "Id";
+    private static String HOME_ID_COLUMN_NAME = "HomeId";
+    private FlowPanel columnSelectionPanel = new FlowPanel();
+
+    private static List<String> columnNames = Arrays.asList(ID_COLUMN_NAME, HOME_ID_COLUMN_NAME);
 
     private static final ProvidesKey<ObjectRef> KEY_PROVIDER = new ProvidesKey<ObjectRef>() {
         @Override
@@ -25,18 +32,37 @@ abstract class ObjectRefDataTable extends DataTable<ObjectRef> implements IsWidg
     };
 
     public ObjectRefDataTable(int pageSize) {
-        super(pageSize, new ObjectRef());
-        mainPanel.add(super.asWidget());
+        super(columnNames, pageSize, new ObjectRef(), true, false);
+        widgetPanel.add(columnSelectionPanel);
+        widgetPanel.add(super.asWidget());
     }
+
 
     @Override
     void addTableColumns() {
+
+        if (diffSelect.isEnabled() && diffSelect.getValue()) {
+            dataTable.addColumn(new Column<ObjectRef, Boolean>(new CheckboxCell(true, false)) {
+                @Override
+                public Boolean getValue(ObjectRef object) {
+                        return dataTable.getSelectionModel().isSelected(object);
+                }
+
+                @Override
+                public void render(Cell.Context context, ObjectRef object, SafeHtmlBuilder sb) {
+//               if(dataProvider.getList().size()<3)
+                    super.render(context, object, sb);
+                }
+            }, "Select");
+        }
+
 
         TextColumn<ObjectRef> idColumn = new TextColumn<ObjectRef>() {
             @Override
             public String getValue(ObjectRef objectRef) {
                 return objectRef.getId().toString();
             }
+
         };
         idColumn.setSortable(true);
         columnSortHandler.setComparator(idColumn,
@@ -53,32 +79,34 @@ abstract class ObjectRefDataTable extends DataTable<ObjectRef> implements IsWidg
                         return -1;
                     }
                 });
+        dataTable.addColumn(idColumn, ID_COLUMN_NAME);
 
-        TextColumn<ObjectRef> homeColumn = new TextColumn<ObjectRef>() {
-            @Override
-            public String getValue(ObjectRef objectRef) {
-                return objectRef.home;
-            }
-        };
-        homeColumn.setSortable(true);
-        columnSortHandler.setComparator(homeColumn,
-                new Comparator<ObjectRef>() {
-                    public int compare(ObjectRef o1, ObjectRef o2) {
-                        if (o1 == o2) {
-                            return 0;
+
+        if (columnToBeDisplayedIsChecked(HOME_ID_COLUMN_NAME)) {
+            TextColumn<ObjectRef> homeColumn = new TextColumn<ObjectRef>() {
+                @Override
+                public String getValue(ObjectRef objectRef) {
+                    return objectRef.home;
+                }
+            };
+            homeColumn.setSortable(true);
+            columnSortHandler.setComparator(homeColumn,
+                    new Comparator<ObjectRef>() {
+                        public int compare(ObjectRef o1, ObjectRef o2) {
+                            if (o1 == o2) {
+                                return 0;
+                            }
+
+                            // Compare the name columns.
+                            if (o1 != null && o1.home!=null) {
+                                return (o2 != null && o2.home!=null) ? o1.home.toString().compareTo(o2.home.toString()) : 1;
+                            }
+                            return -1;
                         }
+                    });
 
-                        // Compare the name columns.
-                        if (o1 != null && o1.home!=null) {
-                            return (o2 != null && o2.home!=null) ? o1.home.toString().compareTo(o2.home.toString()) : 1;
-                        }
-                        return -1;
-                    }
-                });
-
-        dataTable.addColumn(idColumn, "Id");
-        dataTable.addColumn(homeColumn,"HomeId");
-
+            dataTable.addColumn(homeColumn,HOME_ID_COLUMN_NAME);
+        }
     }
 
 
@@ -131,6 +159,6 @@ abstract class ObjectRefDataTable extends DataTable<ObjectRef> implements IsWidg
 
     @Override
     public Widget asWidget() {
-        return mainPanel;
+        return widgetPanel;
     }
 }

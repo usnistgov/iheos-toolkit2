@@ -38,7 +38,6 @@ class NamedBox {
     OMSVGGElement boxGroupEl; // box svg group element
     private ToolTip tooltip = new ToolTip();
 
-
     public NamedBox(GridLayout gridLayout, NamedBoxProperties properties, ClickHandler clickHandler) {
         this.gridLayout = gridLayout;
         this.properties = properties;

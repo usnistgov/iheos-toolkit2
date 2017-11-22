@@ -7,7 +7,7 @@ import org.vectomatic.dom.svg.OMSVGDocument;
 import org.vectomatic.dom.svg.OMSVGSVGElement;
 import org.vectomatic.dom.svg.utils.OMSVGParser;
 
-public class WorkflowDiagram extends Composite implements GridLayout {
+public abstract class WorkflowDiagram extends Composite implements GridLayout {
 
     static final int gridUnitSize = 90;
 
@@ -92,7 +92,13 @@ public class WorkflowDiagram extends Composite implements GridLayout {
     private void sequence(ActivityItem activityItem, NamedBox parentBox) {
 
         if (parentBox == null) {
-            parentBox = new NamedBox(this, activityItem);
+            /*
+            NamedBoxProperties namedBoxProperties = new NamedBoxProperties(
+                            activityItem.getOutput().testInstance.getId()
+                            , count // display all non-zero count objects
+                    // );
+                    */
+//            parentBox = new NamedBox(this, activityItem);
             svgsvgElement.appendChild(parentBox.boxGroupEl);
         }
 
@@ -102,12 +108,12 @@ public class WorkflowDiagram extends Composite implements GridLayout {
 //               if (!activityItem.getTransaction().equals(action.getTransaction())) {
                row++;
 //               }
-               NamedBox actionBox = new NamedBox(this, action);
-               svgsvgElement.appendChild(actionBox.boxGroupEl);
+//               NamedBox actionBox = new NamedBox(this, action);
+//               svgsvgElement.appendChild(actionBox.boxGroupEl);
                // TODO: connect (draw the connecting line) from parentBox to actionBox
                // TODO: create new click handler to load data into data table and set it in the activitybox
                if (action.getActionItems()!=null) {
-                  sequence(action, actionBox);
+//                  sequence(action, actionBox);
                }
            }
         }

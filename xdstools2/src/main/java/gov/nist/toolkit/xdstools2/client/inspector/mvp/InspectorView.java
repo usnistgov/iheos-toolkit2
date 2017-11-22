@@ -10,7 +10,6 @@ import com.google.gwt.user.client.ui.RequiresResize;
 import com.google.gwt.user.client.ui.Widget;
 import gov.nist.toolkit.registrymetadata.client.ObjectRef;
 import gov.nist.toolkit.xdstools2.client.abstracts.AbstractView;
-import gov.nist.toolkit.xdstools2.client.inspector.mvp.widgets.WorkflowDiagram;
 
 import java.util.List;
 import java.util.Map;
@@ -57,9 +56,9 @@ public class InspectorView extends AbstractView<InspectorPresenter> implements P
         FlowPanel resultPanel = new FlowPanel();
         int resultPanelHeight = 0;
 
-        WorkflowDiagram activityDiagram = new WorkflowDiagram(activityItem);
+//        WorkflowDiagram activityDiagram = new WorkflowDiagram(activityItem);
         // TODO: how to tie the NamedBox ClickHandler to the show-data table?
-        resultPanel.add(activityDiagram);
+//        resultPanel.add(activityDiagram);
 
         resultPanel.add(objectRefTable.asWidget());
 //        resultPanelHeight = activityDiagram.getDiagramHeight() + (int)objectRefTable.guessTableHeight();

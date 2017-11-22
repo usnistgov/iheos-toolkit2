@@ -44,14 +44,14 @@ public class InspectorPresenter extends AbstractPresenter<InspectorView> {
             boolean tableExists() {
                 try {
                    int height = view.objectRefTable.dataTable.getRowElement(0).getClientHeight();
-//                   GWT.log("table row height is: " + height);
+                   GWT.log("table row height is: " + height);
                    return true;
                 } catch (Exception ex) {
                     return false;
                 }
             }
 
-        },250);
+        },200);
 
 
     }
@@ -61,7 +61,7 @@ public class InspectorPresenter extends AbstractPresenter<InspectorView> {
 
         dataModel.buildCombined();
         GWT.log("result list size is: " + dataModel.getResults().size());
-        // At this point there should be only one Result. Need to revisit this if there are more!?
+        // At this point there should be only one Result.TODO: Need to revisit this if there are more!? -- Conformance tests!
         view.setActivityItem(new ActivityItem(dataModel.getResults().get(0)));
         view.objectRefTable.setData(composeTableData());
 //        view.objectRefTable.resizeTable();
