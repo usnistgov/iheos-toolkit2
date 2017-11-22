@@ -8,7 +8,7 @@ class MhdToSQRequestTransformTest extends Specification {
 
     def 'patient.identifier'() {
         when:
-        def f = 'patient.identifier=urn:oid:1.2.3|123;indexed=lt2013-01-14;indexed=gt2011-01-14'
+        def f = 'patient.identifier=urn:oid:1.2.3|123;indexed=lt2013-01-14;indexed=gt2011-01-14;class=urn:class:system|class1'
         String sq = xfrm.run(f)
         println sq
 

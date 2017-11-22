@@ -31,6 +31,8 @@ class SQTransform {
                     Slot(name: paramName) {
                         ValueList() {
                             paramValues.each { paramValue ->
+                                if (SQParamTransform.codedTypes.contains(paramName))
+                                    paramValue = "('${paramValue}')"
                                 Value(paramValue)
                             }
                         }

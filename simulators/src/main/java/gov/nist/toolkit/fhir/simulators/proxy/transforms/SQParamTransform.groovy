@@ -25,6 +25,18 @@ class SQParamTransform {
     static relatedKey = '$XDSDocumentEntryReferenceIdList'
     static String queryType = 'QueryType'
 
+    // coded types
+    static codedTypes = [
+            classKey,
+            typeKey,
+            settingKey,
+            facilityKey,
+            eventKey,
+            confKey,
+            formatKey,
+            relatedKey
+    ]
+
     // Query Types
     static FindDocsKey = 'urn:uuid:14d4debf-8f97-4251-9a74-a90016b0af0d'
     static FindDocsByRefIdKey = 'urn:uuid:12941a89-e02e-4be5-967c-ce4bfc8fe492'
