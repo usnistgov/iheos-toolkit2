@@ -4,6 +4,7 @@ import gov.nist.toolkit.errorrecording.ErrorRecorder
 import gov.nist.toolkit.fhir.utility.FhirClient
 import gov.nist.toolkit.fhir.validators.BundleFullUrlValidator
 import gov.nist.toolkit.utilities.id.UuidAllocator
+import org.apache.log4j.Logger
 import org.hl7.fhir.dstu3.model.*
 import org.hl7.fhir.instance.model.api.IBaseResource
 
@@ -11,6 +12,7 @@ import org.hl7.fhir.instance.model.api.IBaseResource
  *
  */
 class ResourceMgr {
+    static private final Logger logger = Logger.getLogger(ResourceMgr.class);
     Bundle bundle = null
     // Object is some Resource type
     def resources = [:]   // url -> resource
@@ -26,6 +28,7 @@ class ResourceMgr {
     ErrorRecorder er = null;
 
     ResourceMgr() {
+        er = null
     }
 
     ResourceMgr(Bundle bundle, ErrorRecorder er) {
@@ -40,9 +43,11 @@ class ResourceMgr {
     }
 
     def parseBundle() {
+        logger.info("Load Bundle...")
         bundle.getEntry().each { Bundle.BundleEntryComponent component ->
             if (component.hasResource()) {
                 assignId(component.getResource())
+                logger.info("...${component.fullUrl}")
                 addResource(component.fullUrl, component.getResource())
             }
         }
@@ -182,7 +187,7 @@ class ResourceMgr {
     }
 
     def resolveReference(String referenceUrl) {
-        resolveReference(fullUrl, referenceUrl, true, false, false, false)
+        resolveReference(fullUrl, referenceUrl, new ResolverConfig())
     }
 
     /**
@@ -191,47 +196,91 @@ class ResourceMgr {
      * @param referenceUrl   (reference)
      * @return [url, Resource]
      */
-    def resolveReference(String containingUrl, String referenceUrl, relativeReferenceOk, relativeReferenceRequired, externalRequired, internalrequired) {
-        assert referenceUrl
+    def resolveReference(String containingUrl, String referenceUrl, ResolverConfig config) {
+        assert referenceUrl, "Reference from ${containingUrl} is null"
+        logger.info("Resolver: Resolve URL ${referenceUrl}... ${config}"
 
-        // internal
-        if (!externalRequired) {
-            if (relativeReferenceOk && referenceUrl.startsWith('#')) {
+        )
+        if (config.containedRequired) {
+            if (config.relativeReferenceOk && referenceUrl.startsWith('#') && config.containedOk) {
+                def res = getContainedResource(referenceUrl)
+                logger.info("Resolver: ...contained")
+                return [referenceUrl, res]
+            }
+            return [null, null]
+        }
+        if (!config.externalRequired) {
+            if (config.relativeReferenceOk && referenceUrl.startsWith('#') && config.containedOk) {
                 def res = getContainedResource(referenceUrl)
                 def val = [referenceUrl, res]
+                logger.info("Resolver: ...contained")
                 return val
             }
-            if (resources[referenceUrl]) return [referenceUrl, resources[referenceUrl]]
+            if (resources[referenceUrl]) {
+                logger.info("Resolver: ...in bundle")
+                return [referenceUrl, resources[referenceUrl]]
+            }
             def isRelativeReference = isRelative(referenceUrl)
-            if (relativeReferenceRequired && !isRelativeReference)
+            if (config.relativeReferenceRequired && !isRelativeReference) {
+                logger.warn("Resolver: ...relative reference required - not relative")
                 return [null, null]
+            }
             def type = resourceTypeFromUrl(referenceUrl)
             if (!isAbsolute(containingUrl) && isRelative(referenceUrl)) {
                 def x = resources.find {
                     def key = it.key
                     // for Patient, it must be absolute reference
-                    if ('Patient' == type && isRelativeReference && !relativeReferenceOk) return false
+                    if ('Patient' == type && isRelativeReference && !config.relativeReferenceOk)
+                        return false
                     key.endsWith(referenceUrl)
                 }
-                if (x) return [x.key, x.value]
+                if (x) {
+                    logger.info("Resolver: ...found via relative reference")
+                    return [x.key, x.value]
+                }
             }
             if (isAbsolute(containingUrl) && isRelative(referenceUrl)) {
                 def url = rebase(containingUrl, referenceUrl)
-                if (resources[url])
+                if (resources[url]) {
+                    logger.info("Resolver: ...found in bundle")
                     return [url, resources[url]]
-                def resource = resourceCacheMgr.getResource(url)
-                if (resource)
-                    return [url, resource]
+                }
+                if (resourceCacheMgr) {
+                    logger.info("Resolver: ...looking in Resource Cache")
+                    def resource = resourceCacheMgr.getResource(url)
+                    if (resource) {
+                        logger.info("Resolver: ...returned from cache")
+                        return [url, resource]
+                    }
+                } else
+                    logger.info("Resource Cache not configured")
             }
         }
 
         // external
-        if (!internalrequired && isAbsolute(referenceUrl)) {
-            IBaseResource res = FhirClient.readResource(referenceUrl)
-            if (res)
-                return [referenceUrl, res]
+        if (!config.internalRequired && isAbsolute(referenceUrl)) {
+            if (resourceCacheMgr) {
+                logger.info("Resolver: ...looking in Resource Cache")
+                def resource = resourceCacheMgr.getResource(referenceUrl)
+                if (resource) {
+                    logger.info("Resolver: ...returned from cache")
+                    return [referenceUrl, resource]
+                }
+            } else
+                logger.info("Resource Cache not configured")
+            try {
+                IBaseResource res = FhirClient.readResource(referenceUrl)
+                if (res) {
+                    logger.info("Resolver: ...found")
+                    return [referenceUrl, res]
+                }
+            }
+            catch (Exception e) {
+                logger.warn("Resolver: ${referenceUrl} ...not available")
+            }
         }
 
+        logger.warn("Resolver: ...failed")
         [null, null]
     }
 
@@ -255,7 +304,7 @@ class ResourceMgr {
     }
 
     static id(url) {
-        List<String> parts = url.split('/')
+        List<String> parts = url.split('\\/')
         return parts[parts.size() - 1]
     }
 

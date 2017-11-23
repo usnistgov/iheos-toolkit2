@@ -2,13 +2,16 @@ package gov.nist.toolkit.fhir.simulators.mhd
 
 import gov.nist.toolkit.errorrecording.GwtErrorRecorder
 import gov.nist.toolkit.errorrecording.GwtErrorRecorderBuilder
+import gov.nist.toolkit.fhir.resourceMgr.ResolverConfig
 import gov.nist.toolkit.fhir.resourceMgr.ResourceCacheMgr
 import gov.nist.toolkit.fhir.resourceMgr.ResourceMgr
 import gov.nist.toolkit.fhir.simulators.mhd.Attachment
 import gov.nist.toolkit.fhir.simulators.mhd.errors.ResourceNotAvailable
 import gov.nist.toolkit.fhir.simulators.proxy.util.ReturnableErrorException
 import gov.nist.toolkit.fhir.simulators.proxy.util.SimProxyBase
+import gov.nist.toolkit.xdsexception.ExceptionUtil
 import groovy.xml.MarkupBuilder
+import org.apache.log4j.Logger
 import org.hl7.fhir.dstu3.model.*
 import org.hl7.fhir.dstu3.model.codesystems.DocumentReferenceStatus
 import org.hl7.fhir.instance.model.api.IBaseResource
@@ -36,6 +39,7 @@ import java.text.SimpleDateFormat
  */
 
 class MhdGenerator {
+    static private final Logger logger = Logger.getLogger(MhdGenerator.class);
     ErrorLogger errorLogger = new ErrorLogger()
     ResourceCacheMgr resourceCacheMgr
     SimProxyBase proxyBase
@@ -48,6 +52,7 @@ class MhdGenerator {
         resourceCacheMgr = resourceCacheMgr1
         er.sectionHeading('MhdGenerator started')
         rMgr = new ResourceMgr()
+        rMgr.addResourceCacheMgr(resourceCacheMgr)
     }
 
     def clear() {
@@ -64,7 +69,7 @@ class MhdGenerator {
         String utcTime = isoFormat.format(theDate)
         if (utcTime.size() > 14)
             utcTime = utcTime.substring(0, 14)
-        println "UTC time is ${utcTime}"
+//        println "UTC time is ${utcTime}"
         //utcTime = trimTrailingZeros(utcTime)
         return utcTime
     }
@@ -79,6 +84,11 @@ class MhdGenerator {
     static Identifier getOfficial(List<Identifier> identifiers) {
         if (identifiers.size() ==1) return identifiers[0]
         return identifiers.find { it.getUse() == Identifier.IdentifierUse.OFFICIAL }
+    }
+
+    static Identifier getUsual(List<Identifier> identifiers) {
+        if (identifiers.size() ==1) return identifiers[0]
+        return identifiers.find { it.getUse() == Identifier.IdentifierUse.USUAL }
     }
 
     static boolean isUuidUrn(ref) {
@@ -247,8 +257,8 @@ class MhdGenerator {
             if (dr.content?.attachment?.language)
                 addSlot(builder, 'languageCode', dr.content.attachment.language)
 
-            if (dr.subject)
-                addSourcePatient(builder, fullUrl, drId, 'urn:uuid:58a6f841-87b3-4a3e-92fd-a8ffeff98427', dr.subject, 'XDSDocumentEntry.patientId')
+            if (dr.context?.sourcePatientInfo)
+                this.addSourcePatient(builder, dr.context.sourcePatientInfo)
 
             if (dr.description)
                 addName(builder, dr.description)
@@ -296,27 +306,42 @@ class MhdGenerator {
      * @return
      */
 
-    // TODO this is supposed to be constrained to be 'contained'
-    def addSourcePatient(builder, fullUrl, containingObjectId, scheme,  org.hl7.fhir.dstu3.model.Reference subject, attName) {
-        def ref1 = subject.getReference()
-        def (url, ref) = resolveReference(fullUrl, ref1, false, true, false, false)
+    // TODO sourcePatientInfo is not populated
+    def addSourcePatient(builder, Reference sourcePatient) {
+        logger.info("Resolve ${sourcePatient.reference} as SourcePatient")
+        def extra = 'DocumentReference.context.sourcePatientInfo must reference Contained Patient resource with Patient.identifier.use element set to "usual"'
+        def (url, ref) = rMgr.resolveReference(null, sourcePatient.reference, new ResolverConfig().containedRequired())
         if (!ref) {
-            new ResourceNotAvailable(errorLogger, fullUrl, ref1, 'All DocumentReference.subject and DocumentManifest.subject values shall be\nReferences to FHIR Patient Resources identified by an absolute external reference (URL).', '3.65.4.1.2.2 Patient Identity')
+            new ResourceNotAvailable(errorLogger, null, sourcePatient.reference, extra, 'Table 4.5.1.1-1: FHIR DocumentReference mapping to DocumentEntry')
             return
         }
-        assert ref instanceof Patient
+        logger.info("SourcePatient found")
+
+        if (!(ref instanceof Patient)) {
+            new ResourceNotAvailable(errorLogger, null, sourcePatient.reference, extra + "\nReference to ${ref.getClass().getSimpleName()} instead of Patient", 'Table 4.5.1.1-1: FHIR DocumentReference mapping to DocumentEntry')
+            return
+        }
 
         Patient patient = (Patient) ref
 
         List<Identifier> identifiers = patient.getIdentifier()
-        Identifier official = getOfficial(identifiers)
-        assert official, 'Appendix Z, section E.3 Identifier Type'
+        Identifier usual = getUsual(identifiers)
+        if (!usual) {
+            new ResourceNotAvailable(errorLogger, null, sourcePatient.reference, extra + "\nPatient Identifier must be labeled 'usual'", 'Table 4.5.1.1-1: FHIR DocumentReference mapping to DocumentEntry')
+            return
+        }
 
-        assert official.value, 'Error: Patient Resource identifier value is null. Appendix E, section E.3 Identifier Type'
-        assert official.system, 'Error: Patient Resource identifier system is null. See Appendix E, section E.3 Identifier Type'
+        if (!usual.value) {
+            new ResourceNotAvailable(errorLogger, null, sourcePatient.reference, extra + "\nPatient Identifier.value is null", 'Appendix E, section E.3 Identifier Type')
+            return
+        }
+        if (!usual.system) {
+            new ResourceNotAvailable(errorLogger, null, sourcePatient.reference, extra + "\nPatient Identifier.system is null", 'Appendix E, section E.3 Identifier Type')
+            return
+        }
 
-        String value = official.value
-        String system = official.system
+        String value = usual.value
+        String system = usual.system
         String oid = unURN(system)
         def pid = "${value}^^^&${oid}&ISO"
 
@@ -326,7 +351,7 @@ class MhdGenerator {
     // TODO must be absolute reference
     def addSubject(builder, fullUrl, containingObjectId, scheme,  org.hl7.fhir.dstu3.model.Reference subject, attName) {
         def ref1 = subject.getReference()
-        def (url, ref) = resolveReference(fullUrl, ref1, false, true, true, false)
+        def (url, ref) = rMgr.resolveReference(fullUrl, ref1, new ResolverConfig().externalRequired())
         if (!ref) {
             new ResourceNotAvailable(errorLogger, fullUrl, ref1, 'All DocumentReference.subject and DocumentManifest.subject values shall be\nReferences to FHIR Patient Resources identified by an absolute external reference (URL).', '3.65.4.1.2.2 Patient Identity')
             return
@@ -350,31 +375,8 @@ class MhdGenerator {
         addExternalIdentifier(builder, scheme, pid, rMgr.newId(), containingObjectId, attName)
     }
 
-
-
-    /**
-     *
-     * @param fullUrl
-     * @param reference
-     * @return [url, Resource]
-     */
-    def resolveReference(fullUrl, reference, relativeReferenceOk, relativeReferenceRequired, externalRequired, internalRequired) {
-        def (url, ref) = rMgr.resolveReference(fullUrl, reference, relativeReferenceOk, relativeReferenceRequired, externalRequired, internalRequired)
-        if (!ref) {
-            // not available in bundle - try local cache next
-            if (ResourceMgr.isAbsolute(reference)) {
-                ref = resourceCacheMgr.getResource(reference)
-            }
-        }
-        return [url, ref]
-    }
-
     def resolveId(id) {
         return rMgr.resolveId(id)
-    }
-
-    def resolveReference(fullUrl, reference) {
-        return resolveReference(fullUrl, reference, true, false)
     }
 
     def buildXonXcnXtn(resource) {
@@ -452,7 +454,7 @@ class MhdGenerator {
         if (!dm.content) return
         dm.content.each { DocumentManifest.DocumentManifestContentComponent component ->
             Reference ref = component.PReference
-            def (url, res) = resolveReference(null, ref.reference, true, true, false, false)
+            def (url, res) = rMgr.resolveReference(null, ref.reference, new ResolverConfig().internalRequired())
             assert res
             def assoc = addAssociation(xml, 'urn:oasis:names:tc:ebxml-regrep:AssociationType:HasMember', dm.id, res.id, 'SubmissionSetStatus', ['Original'])
         }
@@ -466,6 +468,7 @@ class MhdGenerator {
         assert bundle.type == Bundle.BundleType.TRANSACTION
 
         rMgr = new ResourceMgr(bundle, er)
+        rMgr.addResourceCacheMgr(resourceCacheMgr)
     }
 
     // only used for unit test
@@ -505,7 +508,7 @@ class MhdGenerator {
                 rMgr.assignId(resource)
                 rMgr.currentResource(resource)
                 DocumentReference dr = (DocumentReference) resource
-                def (ref, binary) = rMgr.resolveReference(url, dr.content[0].attachment.url, true, false, false, true)
+                def (ref, binary) = rMgr.resolveReference(url, dr.content[0].attachment.url, new ResolverConfig().internalRequired())
                 assert binary instanceof Binary
                 addExtrinsicObject(xml, dr.getId(), dr)
             }
@@ -539,7 +542,7 @@ class MhdGenerator {
             def writer = new StringWriter()
             def xml = new MarkupBuilder(writer)
             xml.RegistryObjectList(xmlns: 'urn:oasis:names:tc:ebxml-regrep:xsd:rim:3.0') {
-                rMgr.resources.each { url, resource ->
+                rMgr.resources.each { String url, IBaseResource resource ->
                     if (resource instanceof DocumentManifest) {
                         rMgr.assignId(resource)
                         er.sectionHeading("DocumentManifest(${resource.id})  URL is ${url}")
@@ -555,7 +558,7 @@ class MhdGenerator {
                         proxyBase.resourcesSubmitted << resource
                         rMgr.currentResource(resource)
                         DocumentReference dr = (DocumentReference) resource
-                        def (ref, binary) = rMgr.resolveReference(url, dr.content[0].attachment.url, true, false, false, true)
+                        def (ref, binary) = rMgr.resolveReference(url, dr.content[0].attachment.url, new ResolverConfig().internalRequired())
                         er.detail("References Binary ${ref}")
                         assert binary instanceof Binary
                         Binary b = binary
@@ -585,6 +588,7 @@ class MhdGenerator {
             if (!errorLogger.hasErrors())
                 return submission
         } catch (Throwable e) {
+            logger.error(ExceptionUtil.exception_details(e))
             throw new Exception("Provide Document Bundle to Provide and Register translation failed", e)
         }
         throw new ReturnableErrorException(ErrorLoggerAsHttpResponse.buildHttpResponse(proxyBase, errorLogger))

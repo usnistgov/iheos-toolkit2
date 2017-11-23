@@ -30,6 +30,11 @@ class ResourceCacheMgr {
         }
     }
 
+    /**
+     * return resource or throw exception
+     * @param fullUrl
+     * @return
+     */
     IBaseResource getResource(fullUrl) {
         assert ResourceMgr.isAbsolute(fullUrl)
         def baseUrl = ResourceMgr.baseUrlFromUrl(fullUrl)

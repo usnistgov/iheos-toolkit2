@@ -150,7 +150,51 @@ class MhdSimProxySubmitSpec extends ToolkitSpecification {
         results.size() == 1
         !results.get(0).passed()
         results[0].assertions.assertions.find { AssertionResult ar ->
-            ar.toString().contains('Patient reference')
+            ar.toString().contains('Patient/external1 cannot be resolved')
+        }
+    }
+
+    def 'send provide document bundle through simproxy - missing sourcePatient'() {
+        setup:
+        api.createTestSession(testSession)
+
+        spi.delete(ToolkitFactory.newSimId(mhdId, testSession, ActorType.MHD_DOC_RECIPIENT.name, envName, true))
+
+        Installation.instance().defaultEnvironmentName()
+
+        mhdSimConfig = spi.create(
+                mhdId,
+                testSession,
+                SimulatorActorType.MHD_DOC_RECIPIENT,
+                envName
+        )
+
+        mhdSimConfig.asList(SimulatorProperties.simulatorGroup).each { String simIdString ->
+            SimId theSimId = new SimId(simIdString)
+            SimConfig config = spi.get(spi.get(theSimId.user, theSimId.id))
+            simGroup[simIdString] = config
+        }
+
+        //println simGroup
+        SimConfig rrConfig = simGroup['bill__mhd_regrep']
+        rrConfig.setProperty(SimulatorProperties.VALIDATE_CODES, false)
+        rrConfig.setProperty(SimulatorProperties.VALIDATE_AGAINST_PATIENT_IDENTITY_FEED, false)
+        spi.update(rrConfig)
+
+        when:
+        def sections = ['pdb_missing_sourcePatient']
+        def params = [ :]
+        List<Result> results = api.runTest(testSession, mhdName, testInstance, sections, params, true)
+
+        and:
+        SimDb simDb = new SimDb(mhdSimId)
+        simDb.openMostRecentEvent(ActorType.MHD_DOC_RECIPIENT, TransactionType.PROV_DOC_BUNDLE)
+
+        then:
+        results.size() == 1
+        !results.get(0).passed()
+        results[0].assertions.assertions.find { AssertionResult ar ->
+            ar.toString().contains('#a2 cannot be resolved')
         }
     }
 
