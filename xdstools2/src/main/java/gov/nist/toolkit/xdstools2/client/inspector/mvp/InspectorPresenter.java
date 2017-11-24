@@ -44,7 +44,7 @@ public class InspectorPresenter extends AbstractPresenter<InspectorView> {
             boolean tableExists() {
                 try {
                    int height = view.objectRefTable.dataTable.getRowElement(0).getClientHeight();
-                   GWT.log("table row height is: " + height);
+//                   GWT.log("table row height is: " + height);
                    return true;
                 } catch (Exception ex) {
                     return false;

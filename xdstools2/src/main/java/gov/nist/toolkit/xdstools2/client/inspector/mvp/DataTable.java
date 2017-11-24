@@ -55,8 +55,7 @@ abstract class DataTable<T> extends ResizeComposite implements RequiresResize, P
     List<CheckBox> columnsToDisplay = new ArrayList<>();
     List<String> columnNames;
 
-    SelectionModel<T> singleSelectionModel;
-    SelectionModel<T> multipleSelectionModel;
+    SelectionModel<T> selectionModel;
     CheckBox multiSelect = new CheckBox("Multiple selection");
     CheckBox diffSelect = new CheckBox("Diff");
 
@@ -71,6 +70,7 @@ abstract class DataTable<T> extends ResizeComposite implements RequiresResize, P
     protected T placeHolderRow;
 
     private ProvidesKey<T> keyProvider;
+    T lastSelectedObject;
 
     abstract ProvidesKey<T> getKeyProvider();
     abstract void defaultDoubleClickAction(T row);
@@ -83,21 +83,28 @@ abstract class DataTable<T> extends ResizeComposite implements RequiresResize, P
         this.placeHolderRow = placeHolderRow;
         this.keyProvider = keyProvider;
 
-        initSingleSelectionMode();
+
+
+        // Begin adding to the containerPanel
+        addColumnSelectionCheckboxes();
+        addDiffModeCheckbox();
+
+        addDataTable();
+
         if (displayDiff) {
             diffSelect.setVisible(true);
-            multiSelect.setVisible(false);
             initDiffSelectionMode();
+            multiSelect.setVisible(false);
         } else {
             diffSelect.setVisible(false);
             multiSelect.setVisible(true);
             initMultiSelectionMode();
         }
-        // Begin adding to the containerPanel
-        addColumnSelectionCheckboxes();
-        addSelectionModeCheckBox();
-
-        addDataTable();
+        // Default selection mode
+        initSingleSelectionMode();
+//        assignSingleSelectionModel();
+        dataTable.setSelectionModel(selectionModel);
+        diffModeSelectionHandler();
 
         if (displayAction)
             addActionTable();
@@ -106,31 +113,36 @@ abstract class DataTable<T> extends ResizeComposite implements RequiresResize, P
         // end
     }
 
-    protected void addSelectionModeCheckBox() {
+    protected void addDiffModeCheckbox() {
+        containerPanel.add(diffSelect);
+        containerPanel.add(multiSelect);
+    }
 
+    private void diffModeSelectionHandler() {
         if (diffSelect.isVisible()) {
             diffSelect.addValueChangeHandler(new ValueChangeHandler<Boolean>() {
                 @Override
                 public void onValueChange(ValueChangeEvent<Boolean> valueChangeEvent) {
-                    /*
-                    if (dataTable.getSelectionModel() instanceof SingleSelectionModel) {
-                        ((SingleSelectionModel)dataTable.getSelectionModel()).getSelectedSet().clear();
-                    } else if (dataTable.getSelectionModel() instanceof  MultiSelectionModel) {
-                        ((MultiSelectionModel) dataTable.getSelectionModel()).getSelectedSet().clear();
-                    }
-                    */
-                    if (diffSelect.isEnabled() && diffSelect.getValue()) {
-                        initSingleSelectionMode();
-                        enableDiffSelect();
+                    if (diffSelect.getValue()) {
+                        clearActionDataList();
                         removeTableColumns();
                         addTableColumns();
+                        initDiffSelectionMode();
+//                        assignDiffSelectionModel();
                         resizeTable();
+           if (lastSelectedObject!=null) {
+                selectionModel.setSelected(lastSelectedObject,true);
+            }
                     } else {
-                        initMultiSelectionMode();
-                      enableSingleSelect();
+                       clearActionDataList();
                       removeTableColumns();
                       addTableColumns();
+                      initSingleSelectionMode();
                       resizeTable();
+//                      GWT.log("singleMode: lasSelectedObject is null? " + (lastSelectedObject==null));
+                        if (lastSelectedObject!=null) {
+                                selectionModel.setSelected(lastSelectedObject,true);
+                        }
                     }
                 }
             });
@@ -139,20 +151,14 @@ abstract class DataTable<T> extends ResizeComposite implements RequiresResize, P
                 @Override
                 public void onValueChange(ValueChangeEvent<Boolean> valueChangeEvent) {
                     if (multiSelect.isEnabled() && multiSelect.getValue()) {
-                        enableMultiSelect();
+                        assignMultiSelectionModel();
                     } else {
-                        enableSingleSelect();
+                        assignSingleSelectionModel();
                     }
                 }
 
             });
         }
-
-        // Default to single selection model
-        dataTable.setSelectionModel(singleSelectionModel);
-
-        containerPanel.add(diffSelect);
-        containerPanel.add(multiSelect);
     }
 
     private void addColumnSelectionCheckboxes() {
@@ -175,32 +181,29 @@ abstract class DataTable<T> extends ResizeComposite implements RequiresResize, P
         containerPanel.add(columnSelectionPanel);
     }
 
-    void enableSingleSelect() {
+    void clearActionDataList() {
         actionBtnProvider.getList().clear();
-        actionBtnProvider.getList().add(placeHolderRow);
-        dataTable.setSelectionModel(singleSelectionModel);
-    }
-
-    void enableMultiSelect() {
-        actionBtnProvider.getList().clear();
-        actionBtnProvider.getList().add(placeHolderRow);
-        dataTable.setSelectionModel(multipleSelectionModel);
-    }
-
-    void enableDiffSelect() {
-        actionBtnProvider.getList().clear();
-        dataTable.setSelectionModel(multipleSelectionModel);
     }
 
     protected void initSingleSelectionMode() {
-        GWT.log("setting up single selection model.");
-        this.singleSelectionModel = new SingleSelectionModel<T>(getKeyProvider());
+//        GWT.log("setting up single selection model.");
+        selectionModel = new SingleSelectionModel<T>(getKeyProvider());
 
-        singleSelectionModel.addSelectionChangeHandler(new SelectionChangeEvent.Handler() {
+        dataTable.setSelectionModel(selectionModel);
+//        if (lastSelectedObject!=null) {
+//            dataTable.getSelectionModel().setSelected(lastSelectedObject,true);
+//        }
+//        if (lastSelectedObject!=null) {
+//            if (selectionModel instanceof  SingleSelectionModel) {
+//                dataTable.getSelectionModel().setSelected(lastSelectedObject,true);
+//            }
+//        }
+        selectionModel.addSelectionChangeHandler(new SelectionChangeEvent.Handler() {
             @Override
             public void onSelectionChange(SelectionChangeEvent selectionChangeEvent) {
                 final List<T> list = actionBtnProvider.getList();
-                T mySelection = ((SingleSelectionModel<T>) singleSelectionModel).getSelectedObject();
+                T mySelection = ((SingleSelectionModel<T>) selectionModel).getSelectedObject();
+                lastSelectedObject = mySelection;
                 list.clear();
                 if (mySelection!=null) {
                     list.add(mySelection);
@@ -209,18 +212,68 @@ abstract class DataTable<T> extends ResizeComposite implements RequiresResize, P
                 }
             }
         });
+    }
 
+    void assignSingleSelectionModel() {
+        if (selectionModel!=null) {
+            if (dataTable.getSelectionModel() instanceof SingleSelectionModel) {
+                ((SingleSelectionModel)dataTable.getSelectionModel()).getSelectedSet().clear();
+            }
+            dataTable.setSelectionModel(selectionModel);
+        }
     }
 
     protected void initDiffSelectionMode() {
-        GWT.log("setting up diff selection model.");
+//        GWT.log("setting up diff selection model.");
 
-        multipleSelectionModel = new MultiSelectionModel<T>(getKeyProvider());
-        multipleSelectionModel.addSelectionChangeHandler(new SelectionChangeEvent.Handler() {
+        selectionModel = new MultiSelectionModel<T>(getKeyProvider());
+
+        dataTable.setSelectionModel(selectionModel,
+                DefaultSelectionEventManager.createCustomManager(
+                        new DefaultSelectionEventManager.CheckboxEventTranslator<T>() {
+                            @Override
+                            public DefaultSelectionEventManager.SelectAction translateSelectionEvent(CellPreviewEvent<T> event) {
+
+                                if (selectionModel instanceof  MultiSelectionModel ) {
+                                    Set<T> mySelection = ((MultiSelectionModel) selectionModel).getSelectedSet();
+                                    if (mySelection.size() > 2) {
+                                        dataTable.getSelectionModel().setSelected(event.getValue(),false);
+                                        return DefaultSelectionEventManager.SelectAction.IGNORE;
+                                    } /*else if (mySelection.size()==0 && lastSelectedObject!=null) {
+                                        dataTable.getSelectionModel().setSelected(lastSelectedObject,true);
+                                        return DefaultSelectionEventManager.SelectAction.SELECT;
+                                    }*/
+                                }
+
+                                DefaultSelectionEventManager.SelectAction action = super.translateSelectionEvent(event);
+                                if (action.equals(DefaultSelectionEventManager.SelectAction.IGNORE)) {
+                                    lastSelectedObject=null;
+                                    return DefaultSelectionEventManager.SelectAction.TOGGLE;
+                                }
+                                return action;
+//                                    return DefaultSelectionEventManager.SelectAction.IGNORE;
+                            }
+                        }
+                ));
+
+        selectionModel.addSelectionChangeHandler(new SelectionChangeEvent.Handler() {
+                                                     @Override
+                                                     public void onSelectionChange(SelectionChangeEvent selectionChangeEvent) {
+                                                         if (selectionModel instanceof MultiSelectionModel) {
+                                                             Set<T> mySelection = ((MultiSelectionModel<T>) selectionModel).getSelectedSet();
+                                                             if (mySelection.size() > 0) {
+                                                                 lastSelectedObject = mySelection.iterator().next();
+                                                             }
+                                                         }
+                                                     }
+                                                 }
+        );
+        /*
+        selectionModel.addSelectionChangeHandler(new SelectionChangeEvent.Handler() {
             @Override
             public void onSelectionChange(SelectionChangeEvent selectionChangeEvent) {
                 final List<T> actionList = actionBtnProvider.getList();
-                Set<T> mySelection = ((MultiSelectionModel) multipleSelectionModel).getSelectedSet();
+                Set<T> mySelection = ((MultiSelectionModel) selectionModel).getSelectedSet();
                 if (mySelection.size()==2) {
                     for (T item: mySelection) {
                         actionList.add(item);
@@ -228,14 +281,33 @@ abstract class DataTable<T> extends ResizeComposite implements RequiresResize, P
                 }
             }
         });
-        dataTable.setSelectionModel(multipleSelectionModel, DefaultSelectionEventManager.<T> createCheckboxManager());
+        */
+
+    }
+
+    void assignDiffSelectionModel() {
+        if (selectionModel!=null) {
+            if (selectionModel instanceof MultiSelectionModel) {
+                ((MultiSelectionModel)dataTable.getSelectionModel()).getSelectedSet().clear();
+            }
+//            dataTable.setSelectionModel(selectionModel, DefaultSelectionEventManager.<T> createCheckboxManager());
+
+
+
+            selectionModel.addSelectionChangeHandler(new SelectionChangeEvent.Handler() {
+                @Override
+                public void onSelectionChange(SelectionChangeEvent selectionChangeEvent) {
+                    final List<T> actionList = actionBtnProvider.getList();
+                }
+            });
+        }
     }
 
 
     protected void initMultiSelectionMode() {
-        GWT.log("setting up multiple selection model.");
-        this.multipleSelectionModel = new MultiSelectionModel<T>(getKeyProvider());
-        dataTable.setSelectionModel(multipleSelectionModel,
+//        GWT.log("setting up multiple selection model.");
+        selectionModel = new MultiSelectionModel<T>(getKeyProvider());
+        dataTable.setSelectionModel(selectionModel,
                 DefaultSelectionEventManager.createCustomManager(
                         new DefaultSelectionEventManager.CheckboxEventTranslator<T>() {
                             @Override
@@ -249,11 +321,11 @@ abstract class DataTable<T> extends ResizeComposite implements RequiresResize, P
                         }
                 ));
 
-        multipleSelectionModel.addSelectionChangeHandler(new SelectionChangeEvent.Handler() {
+        selectionModel.addSelectionChangeHandler(new SelectionChangeEvent.Handler() {
             @Override
             public void onSelectionChange(SelectionChangeEvent selectionChangeEvent) {
                 final List<T> actionList = actionBtnProvider.getList();
-                Set<T> mySelection = ((MultiSelectionModel) multipleSelectionModel).getSelectedSet();
+                Set<T> mySelection = ((MultiSelectionModel) selectionModel).getSelectedSet();
                 actionList.clear();
                 if (mySelection.size()==1) {
                     for (T item: mySelection) {
@@ -264,6 +336,15 @@ abstract class DataTable<T> extends ResizeComposite implements RequiresResize, P
                 }
             }
         });
+    }
+
+    void assignMultiSelectionModel() {
+        if (selectionModel !=null) {
+            if (selectionModel instanceof MultiSelectionModel) {
+                ((MultiSelectionModel) dataTable.getSelectionModel()).getSelectedSet().clear();
+            }
+            dataTable.setSelectionModel(selectionModel);
+        }
     }
 
     protected void addPager(int pageSize) {
@@ -364,7 +445,7 @@ abstract class DataTable<T> extends ResizeComposite implements RequiresResize, P
                             if (estimatedHeight != currentHeight) {
                                 dataTable.setWidth(calcTableWidth() + "px");
                                 dataTable.setHeight(estimatedHeight + "px");
-                                    GWT.log("Table resize complete.");
+//                                    GWT.log("Table resize complete.");
                             }
                         } else {
                             dataTable.setWidth(calcTableWidth() + "px");
@@ -379,9 +460,10 @@ abstract class DataTable<T> extends ResizeComposite implements RequiresResize, P
     }
 
     public void resizeTable() {
+        dataTable.redraw();
+        dataTable.redrawFooters();
         dataTable.setWidth(calcTableWidth() + "px");
         dataTable.setHeight(guessTableHeight() + "px");
-        dataTable.redrawFooters();
     }
 
     public float guessTableHeight() {

@@ -41,17 +41,40 @@ abstract class ObjectRefDataTable extends DataTable<ObjectRef> implements IsWidg
     @Override
     void addTableColumns() {
 
-        if (diffSelect.isEnabled() && diffSelect.getValue()) {
+        if (diffSelect.getValue()) {
             dataTable.addColumn(new Column<ObjectRef, Boolean>(new CheckboxCell(true, false)) {
                 @Override
                 public Boolean getValue(ObjectRef object) {
+
+                    /*
+                    try {
+                        if (diffSelect.getValue() && dataTable.getSelectionModel() instanceof MultiSelectionModel) {
+                            MultiSelectionModel selectionModel = (MultiSelectionModel) dataTable.getSelectionModel();
+                            int selectionSize = selectionModel.getSelectedSet().size();
+//                            GWT.log("selection size is: " + selectionSize);
+//                            if (selectionSize > 2) {
+//                                selectionModel.setSelected(object, false);
+//                            }
+                        }
+                    } catch (Exception ex) {}
+                    */
+//                    if (lastSelectedObject!=null && lastSelectedObject == object) {
+//                        dataTable.getSelectionModel().setSelected(object,true);
+//                        return true;
+//                    }
+
                         return dataTable.getSelectionModel().isSelected(object);
                 }
 
                 @Override
                 public void render(Cell.Context context, ObjectRef object, SafeHtmlBuilder sb) {
-//               if(dataProvider.getList().size()<3)
+
+                    /* if (dataTable.getSelectionModel() instanceof SingleSelectionModel) {
+                        ((SingleSelectionModel)dataTable.getSelectionModel()).getSelectedSet().
+                    } else */
+
                     super.render(context, object, sb);
+
                 }
             }, "Select");
         }
