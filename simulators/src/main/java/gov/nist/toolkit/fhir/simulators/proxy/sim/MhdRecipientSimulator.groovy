@@ -6,6 +6,10 @@ import gov.nist.toolkit.fhir.simulators.sim.RegRepActorSimulator
 import gov.nist.toolkit.valsupport.engine.MessageValidatorEngine
 import org.apache.log4j.Logger
 
+/**
+ * this sim gets built but never runs.  The runtime is handled by the reverse proxy
+ * code base.
+ */
 class MhdRecipientSimulator extends RegRepActorSimulator {
     static final Logger logger = Logger.getLogger(MhdRecipientSimulator.class);
     SimProxySimulator simProx;
@@ -26,7 +30,14 @@ class MhdRecipientSimulator extends RegRepActorSimulator {
         simProx = new SimProxySimulator()
     }
 
-
+    /**
+     * never used - SimProxy has its own runtime environment
+     * @param transactionType
+     * @param mvc
+     * @param validation
+     * @return
+     * @throws IOException
+     */
     @Override
     boolean run(TransactionType transactionType, MessageValidatorEngine mvc, String validation) throws IOException {
         if (transactionType == TransactionType.PROV_DOC_BUNDLE) {

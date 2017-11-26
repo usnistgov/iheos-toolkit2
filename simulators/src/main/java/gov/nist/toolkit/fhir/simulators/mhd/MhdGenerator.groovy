@@ -9,6 +9,7 @@ import gov.nist.toolkit.fhir.simulators.mhd.Attachment
 import gov.nist.toolkit.fhir.simulators.mhd.errors.ResourceNotAvailable
 import gov.nist.toolkit.fhir.simulators.proxy.util.ReturnableErrorException
 import gov.nist.toolkit.fhir.simulators.proxy.util.SimProxyBase
+import gov.nist.toolkit.fhir.utility.UriBuilder
 import gov.nist.toolkit.xdsexception.ExceptionUtil
 import groovy.xml.MarkupBuilder
 import org.apache.log4j.Logger
@@ -234,7 +235,9 @@ class MhdGenerator {
         }
     }
 
-    def addExtrinsicObject(builder, fullUrl, dr) {
+    def addExtrinsicObject(builder,  fullUrl, dr) {
+        if (fullUrl && (fullUrl instanceof String))
+            fullUrl = UriBuilder.build(fullUrl)
         String drId = dr.id // getEntryUuidValue(fullUrl, dr.identifier)
         assert dr.content
         assert dr.content[0]
@@ -349,8 +352,8 @@ class MhdGenerator {
     }
 
     // TODO must be absolute reference
-    def addSubject(builder, fullUrl, containingObjectId, scheme,  org.hl7.fhir.dstu3.model.Reference subject, attName) {
-        def ref1 = subject.getReference()
+    def addSubject(builder, URI fullUrl, containingObjectId, scheme,  org.hl7.fhir.dstu3.model.Reference subject, attName) {
+        def ref1 = UriBuilder.build(subject.getReference())
         def (url, ref) = rMgr.resolveReference(fullUrl, ref1, new ResolverConfig().externalRequired())
         if (!ref) {
             new ResourceNotAvailable(errorLogger, fullUrl, ref1, 'All DocumentReference.subject and DocumentManifest.subject values shall be\nReferences to FHIR Patient Resources identified by an absolute external reference (URL).', '3.65.4.1.2.2 Patient Identity')
@@ -379,13 +382,9 @@ class MhdGenerator {
         return rMgr.resolveId(id)
     }
 
-    def buildXonXcnXtn(resource) {
-        if (resource instanceof Practitioner) {
-
-        }
-    }
-
     def addSubmissionSet(builder, fullUrl, dm) {
+        if (fullUrl && (fullUrl instanceof String))
+            fullUrl = UriBuilder.build(fullUrl)
         String dmId = dm.id // getEntryUuidValue(fullUrl, dm.identifier)
         er.detail("New SubmissionSet(${dmId})")
         builder.RegistryPackage(
@@ -542,7 +541,7 @@ class MhdGenerator {
             def writer = new StringWriter()
             def xml = new MarkupBuilder(writer)
             xml.RegistryObjectList(xmlns: 'urn:oasis:names:tc:ebxml-regrep:xsd:rim:3.0') {
-                rMgr.resources.each { String url, IBaseResource resource ->
+                rMgr.resources.each { URI url, IBaseResource resource ->
                     if (resource instanceof DocumentManifest) {
                         rMgr.assignId(resource)
                         er.sectionHeading("DocumentManifest(${resource.id})  URL is ${url}")
@@ -558,7 +557,7 @@ class MhdGenerator {
                         proxyBase.resourcesSubmitted << resource
                         rMgr.currentResource(resource)
                         DocumentReference dr = (DocumentReference) resource
-                        def (ref, binary) = rMgr.resolveReference(url, dr.content[0].attachment.url, new ResolverConfig().internalRequired())
+                        def (ref, binary) = rMgr.resolveReference(url, UriBuilder.build(dr.content[0].attachment.url), new ResolverConfig().internalRequired())
                         er.detail("References Binary ${ref}")
                         assert binary instanceof Binary
                         Binary b = binary

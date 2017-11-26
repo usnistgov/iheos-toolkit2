@@ -1,6 +1,7 @@
 package gov.nist.toolkit.fhir.resourceMgr
 
 import ca.uhn.fhir.context.FhirContext
+import gov.nist.toolkit.fhir.utility.UriBuilder
 import gov.nist.toolkit.utilities.io.Io
 import org.apache.log4j.Logger
 import org.hl7.fhir.instance.model.api.IBaseResource
@@ -12,7 +13,7 @@ class ResourceCache {
     static FhirContext ctx = FhirContext.forDstu3()
 
     File cacheDir
-    String baseUrl
+    URI baseUrl
 
     ResourceCache(File cacheDir) {
         this.cacheDir = cacheDir
@@ -20,8 +21,9 @@ class ResourceCache {
         assert propFile
         Properties props = new Properties()
         props.load(Io.getInputStreamFromFile(propFile))
-        baseUrl = props.getProperty('baseUrl')
-        logger.info("New Resource cache: ${baseUrl}  --> ${cacheDir}")
+        def base = props.getProperty('baseUrl')
+        baseUrl = UriBuilder.build(base)
+        logger.info("New Resource cache: ${base}  --> ${cacheDir}")
     }
 
     IBaseResource readResource(relativeUrl) {
@@ -31,7 +33,7 @@ class ResourceCache {
         return ctx.newXmlParser().parseResource(cacheFile.text)
     }
 
-    File cacheFile(relativeUrl, fileType) {
+    File cacheFile(URI relativeUrl, fileType) {
         assert ResourceMgr.isRelative(relativeUrl)
         def type = ResourceMgr.resourceTypeFromUrl(relativeUrl)
         def id = ResourceMgr.id(relativeUrl) + ((fileType) ? ".${fileType}" : '')

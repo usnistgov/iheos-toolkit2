@@ -1,5 +1,6 @@
 package gov.nist.toolkit.fhir.simulators.proxy.sim
 
+import gov.nist.toolkit.actortransaction.client.ProxyTransformConfig
 import gov.nist.toolkit.actortransaction.server.EndpointParser
 import gov.nist.toolkit.actortransaction.server.AbstractProxyTransform
 import gov.nist.toolkit.configDatatypes.client.TransactionType
@@ -16,15 +17,19 @@ import gov.nist.toolkit.sitemanagement.client.Site
 import gov.nist.toolkit.valsupport.engine.MessageValidatorEngine
 import gov.nist.toolkit.xdsexception.client.XdsInternalException
 import org.apache.http.HttpHeaders
+import org.apache.http.annotation.Obsolete
 import org.apache.log4j.Logger
 
 import javax.servlet.http.HttpServletResponse
 
 /**
  *
+ * Originally designed to be the SimProxy - now handled by a separate service
+ *
  * Gazelle has good example of terminology and display at
  * https://gazelle.ihe.net/proxy/messages/http.seam?id=1808249&conversationId=35
  */
+@Obsolete
 class SimProxySimulator extends BaseActorSimulator {
     private static Logger logger = Logger.getLogger(SimProxySimulator.class)
     static List<TransactionType> transactions = TransactionType.asList()
@@ -51,10 +56,11 @@ class SimProxySimulator extends BaseActorSimulator {
 
         Site forwardSite = lookupForwardSite()
 
-        def transformClassNames = config.get(SimulatorProperties.simProxyRequestTransformations).asList()
+        List<ProxyTransformConfig> transformations = config.get(SimulatorProperties.simProxyTransformations).asList()
+        .collect { ProxyTransformConfig.parse(it)}
 
 
-        def (HttpHeaders transformOutHeaders, transformOutBody, forwardTransactionType) = processTransformations(transformClassNames, inHeaders, inBody)
+        def (HttpHeaders transformOutHeaders, transformOutBody, forwardTransactionType) = processTransformations(transformations, inHeaders, inBody, transactionType)
 
         if (!forwardTransactionType)
             forwardTransactionType = transactionType
@@ -164,21 +170,22 @@ class SimProxySimulator extends BaseActorSimulator {
 
     /**
      *
-     * @param transformClassNames
+     * @param transformations
      * @param transformInHeader
      * @param transformInBody
      * @return [ outHeader, outBody, forwardTransactionType]
      */
-    List processTransformations(transformClassNames, HeaderBlock transformInHeader, String transformInBody) {
+    List processTransformations(List<ProxyTransformConfig> transformations, HeaderBlock transformInHeader, String transformInBody, TransactionType transactionType) {
         assert transformInHeader
         assert transformInBody
         TransactionType forwardTransactionType = null
 
-        transformClassNames?.each { String transformClassName ->
-            assert transformClassName
-            def instance = Class.forName(transformClassName).newInstance()
+        transformations?.each { ProxyTransformConfig config ->
+            assert config
+            def className = config.transformClassName
+            def instance = Class.forName(className).newInstance()
             if (!(instance instanceof AbstractProxyTransform)) {
-                def msg = "Proxy Transform named ${transformClassName} cannot be created."
+                def msg = "Proxy Transform named ${config} cannot be created."
                 Exception e = new XdsInternalException(msg)
                 common.getCommonErrorRecorder().err(XdsErrorCode.Code.NoCode, e)
                 throw e

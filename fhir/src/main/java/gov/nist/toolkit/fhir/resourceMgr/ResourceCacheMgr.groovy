@@ -16,7 +16,7 @@ class ResourceCacheMgr {
 
 
     private static final Logger logger = Logger.getLogger(ResourceCacheMgr.class)
-    static Map<String, ResourceCache> caches = [:]  // baseUrl -> cache
+    static Map<URI, ResourceCache> caches = [:]  // baseUrl -> cache
 
     ResourceCacheMgr(File cacheCollectionDir) {
         if (!cacheCollectionDir)
@@ -35,7 +35,7 @@ class ResourceCacheMgr {
      * @param fullUrl
      * @return
      */
-    IBaseResource getResource(fullUrl) {
+    static IBaseResource getResource(fullUrl) {
         assert ResourceMgr.isAbsolute(fullUrl)
         def baseUrl = ResourceMgr.baseUrlFromUrl(fullUrl)
         ResourceCache cache = caches[baseUrl]

@@ -16,6 +16,8 @@ public class EndpointParser  {
             this.parts = endpoint.split("\\/");
     }
 
+    public String toString() { return endpoint; }
+
     public boolean validate() {
         if (endpoint == null || endpoint.equals("") || parts == null || parts.length < 1) {
             error = "null or empty endpoint";

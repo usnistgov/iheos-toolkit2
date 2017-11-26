@@ -1,9 +1,13 @@
 package gov.nist.toolkit.fhir.simulators.proxy.util
 
 import gov.nist.toolkit.actortransaction.client.ActorType
+import gov.nist.toolkit.actortransaction.client.ProxyTransformConfig
+import gov.nist.toolkit.actortransaction.client.TransactionDirection
 import gov.nist.toolkit.actortransaction.server.EndpointParser
 import gov.nist.toolkit.configDatatypes.client.TransactionType
 import gov.nist.toolkit.configDatatypes.server.SimulatorProperties
+import gov.nist.toolkit.fhir.simulators.proxy.exceptions.SimProxyTransformException
+import gov.nist.toolkit.fhir.simulators.proxy.sim.SimProxyFactory
 import gov.nist.toolkit.simcommon.client.BadSimIdException
 import gov.nist.toolkit.simcommon.client.SimId
 import gov.nist.toolkit.simcommon.client.SimulatorConfig
@@ -11,10 +15,11 @@ import gov.nist.toolkit.simcommon.client.config.SimulatorConfigElement
 import gov.nist.toolkit.simcommon.server.SimCache
 import gov.nist.toolkit.simcommon.server.SimDb
 import gov.nist.toolkit.simcommon.server.SimEndpoint
-import gov.nist.toolkit.fhir.simulators.proxy.exceptions.SimProxyTransformException
-import gov.nist.toolkit.fhir.simulators.proxy.sim.SimProxyFactory
 import gov.nist.toolkit.sitemanagement.client.Site
-import org.apache.http.*
+import org.apache.http.Header
+import org.apache.http.HttpHost
+import org.apache.http.HttpRequest
+import org.apache.http.HttpResponse
 import org.hl7.fhir.dstu3.model.Resource
 
 /**
@@ -28,8 +33,8 @@ public class SimProxyBase {
      SimDb simDb2;
      SimulatorConfig config;
      SimulatorConfig config2;
-     List<String> requestTransformClassNames;
-    List<String> responseTransformClassNames;
+     List<ProxyTransformConfig> transformConfigs;
+//    List<String> responseTransformClassNames;
      Site proxySite
      ActorType clientActorType;
      TransactionType clientTransactionType;
@@ -82,28 +87,36 @@ public class SimProxyBase {
     }
 
     HttpRequest runRequestTransforms(HttpRequest request) throws ReturnableErrorException {
-        requestTransformClassNames.each { String className ->
-            assert className
-            def instance = Class.forName(className).newInstance()
-            if (!(instance instanceof SimpleRequestTransform))
-                throw new SimProxyTransformException("Proxy Transform named ${className} cannot be created.")
+        def transformsRun = []
+        transformConfigs.each { ProxyTransformConfig config ->
+            assert config
+            if (config.transactionDirection == TransactionDirection.REQUEST && config.transactionType == clientTransactionType) {
+                def className = config.transformClassName
+                transformsRun << className
+                def instance = Class.forName(className).newInstance()
+                if (!(instance instanceof SimpleRequestTransform))
+                    throw new SimProxyTransformException("Proxy Transform named ${className} cannot be created.")
 
-            request = ((SimpleRequestTransform) instance).run(this, request)
-            assert request, "${className} returned null request"
+                request = ((SimpleRequestTransform) instance).run(this, request)
+                assert request, "${className} returned null request"
+        }
 
         }
-        assert targetTransactionType, "SimProxyBase#runRequestTransform: none of the input transforms declared the targetTransaction."
+        assert transformsRun.size() > 0, "SimProxyBase#runRequestTransform: none of the input transforms declared the targetTransaction."
         return request
     }
 
     HttpResponse runResponseTransforms(HttpResponse response) {
-        responseTransformClassNames.each { String className ->
-            assert className
-            def instance = Class.forName(className).newInstance()
-            if (!(instance instanceof SimpleResponseTransform))
-                throw new SimProxyTransformException("Proxy Transform named ${className} cannot be created.")
+        transformConfigs.each { ProxyTransformConfig config ->
+            assert config
+            if (config.transactionDirection == TransactionDirection.RESPONSE && config.transactionType == clientTransactionType) {
+                def className = config.transformClassName
+                def instance = Class.forName(className).newInstance()
+                if (!(instance instanceof SimpleResponseTransform))
+                    throw new SimProxyTransformException("Proxy Transform named ${className} cannot be created.")
 
-            response = ((SimpleResponseTransform) instance).run(this, response)
+                response = ((SimpleResponseTransform) instance).run(this, response)
+            }
         }
         return response
     }
@@ -150,8 +163,12 @@ public class SimProxyBase {
 
         simId2 = new SimId(ele.asString());
 
-        requestTransformClassNames = config.get(SimulatorProperties.simProxyRequestTransformations)?.asList();
-        responseTransformClassNames = config.get(SimulatorProperties.simProxyResponseTransformations)?.asList();
+        transformConfigs =
+        config.get(SimulatorProperties.simProxyTransformations)?.asList()?.collect {
+            ProxyTransformConfig.parse(it)
+        }
+//        transformConfigs = ProxyTransformConfig.parse();
+//        responseTransformClassNames = config.get(SimulatorProperties.simProxyResponseTransformations)?.asList();
 
         Header contentTypeHeader = request.getFirstHeader('Content-Type')
         clientContentType = contentTypeHeader.value

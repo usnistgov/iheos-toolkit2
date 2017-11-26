@@ -17,7 +17,7 @@ class BundleFullUrlValidator implements BaseValidator {
 
     @Override
     void validate() {
-        Resource resource = component.resource
+        Resource resource = component.getResource()
         String id = resource.getIdElement()
         String fullUrl = component.fullUrl
         if (id && fullUrl && component.fullUrl != id)

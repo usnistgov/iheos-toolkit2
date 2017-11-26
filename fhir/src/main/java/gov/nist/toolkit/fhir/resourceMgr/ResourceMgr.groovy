@@ -2,12 +2,11 @@ package gov.nist.toolkit.fhir.resourceMgr
 
 import gov.nist.toolkit.errorrecording.ErrorRecorder
 import gov.nist.toolkit.fhir.utility.FhirClient
-import gov.nist.toolkit.fhir.validators.BundleFullUrlValidator
+import gov.nist.toolkit.fhir.utility.UriBuilder
 import gov.nist.toolkit.utilities.id.UuidAllocator
 import org.apache.log4j.Logger
 import org.hl7.fhir.dstu3.model.*
 import org.hl7.fhir.instance.model.api.IBaseResource
-
 /**
  *
  */
@@ -15,12 +14,12 @@ class ResourceMgr {
     static private final Logger logger = Logger.getLogger(ResourceMgr.class);
     Bundle bundle = null
     // Object is some Resource type
-    def resources = [:]   // url -> resource
+    Map<URI, IBaseResource> resources = [:]   // url -> resource
     int newIdCounter = 1
 
     // for current resource
-    def containedResources = [:]
-    def fullUrl
+    Map<URI, Resource> containedResources = [:]
+    URI fullUrl
 
     // resource cache mgr
     ResourceCacheMgr resourceCacheMgr = null
@@ -55,18 +54,18 @@ class ResourceMgr {
             er.sectionHeading('Load Resources')
             er.detail(toString())
         }
-        bundleValidations(bundle)
+//        bundleValidations(bundle)
     }
 
-    def bundleValidations(Bundle bundle) {
-        fullUrlValidation(bundle)
-    }
+//    static bundleValidations(Bundle bundle) {
+//        fullUrlValidation(bundle)
+//    }
 
-    def fullUrlValidation(Bundle bundle) {
-        bundle.getEntry().each { Bundle.BundleEntryComponent component ->
-            new BundleFullUrlValidator(component, null)
-        }
-    }
+//    static fullUrlValidation(Bundle bundle) {
+//        bundle.getEntry().each { Bundle.BundleEntryComponent component ->
+//            new BundleFullUrlValidator(component, null).validate()
+//        }
+//    }
 
     def currentResource(resource) {
         clearContainedResources()
@@ -124,39 +123,43 @@ class ResourceMgr {
         buf
     }
 
-    static resolveUrl(containingUrl, referenceUrl) {
-        if (isAbsolute(containingUrl) && isAbsolute(referenceUrl)) return referenceUrl
-        if (isAbsolute(containingUrl) && isRelative(referenceUrl)) return baseUrlFromUrl(containingUrl) + '/' + referenceUrl
-        if (isRelative(containingUrl) && isAbsolute(referenceUrl)) return referenceUrl
-        if (isRelative(containingUrl) && isRelative(referenceUrl)) return referenceUrl
-        if (containingUrl.startsWith('urn')) {
-            return referenceUrl
-        }
-        assert false, 'Impossible'
-    }
+//    static URI resolveUrl(URI containingUrl, URI referenceUrl) {
+//        if (isAbsolute(referenceUrl))
+//            return referenceUrl
+//        if (isAbsolute(containingUrl) && isRelative(referenceUrl))
+//            return baseUrlFromUrl(containingUrl) + '/' + referenceUrl
+//        if (isRelative(containingUrl) && isRelative(referenceUrl))
+//            return referenceUrl
+//        if (containingUrl.toString().startsWith('urn')) {
+//            return referenceUrl
+//        }
+//        assert false, 'Impossible'
+//    }
 
     Object getResource(referenceUrl) {
         return resources[referenceUrl]
     }
 
-    Object getResource(containingUrl, referenceUrl) {
-        def url = resolveUrl(containingUrl, referenceUrl)
-        if (url)
-            return resources[url]
-        return null
-    }
+//    Object getResource(containingUrl, referenceUrl) {
+//        def url = resolveUrl(containingUrl, referenceUrl)
+//        if (url)
+//            return resources[url]
+//        return null
+//    }
 
     List getResourceObjects() {
         resources.values() as List
     }
 
     def addResource(url, resource) {
+        if (url instanceof String)
+            url = UriBuilder.build(url)
         resources[url] = resource
     }
 
     def addContainedResource(resource) {
         assert resource instanceof DomainResource
-        containedResources[resource.id] = resource
+        containedResources[UriBuilder.build(resource.id)] = resource
     }
 
     def clearContainedResources() {
@@ -168,7 +171,7 @@ class ResourceMgr {
         return containedResources[id]
     }
 
-    def url(resource) {
+    URI url(resource) {
         resources.entrySet().find { Map.Entry entry ->
             entry.value == resource
         }?.key
@@ -186,7 +189,7 @@ class ResourceMgr {
         all
     }
 
-    def resolveReference(String referenceUrl) {
+    def resolveReference(URI referenceUrl) {
         resolveReference(fullUrl, referenceUrl, new ResolverConfig())
     }
 
@@ -196,13 +199,17 @@ class ResourceMgr {
      * @param referenceUrl   (reference)
      * @return [url, Resource]
      */
-    def resolveReference(String containingUrl, String referenceUrl, ResolverConfig config) {
+    def resolveReference(containingUrl, referenceUrl, ResolverConfig config) {
         assert referenceUrl, "Reference from ${containingUrl} is null"
-        logger.info("Resolver: Resolve URL ${referenceUrl}... ${config}"
+        logger.info("Resolver: Resolve URL ${referenceUrl}... ${config}")
 
-        )
+        if (containingUrl instanceof String)
+            containingUrl = UriBuilder.build(containingUrl)
+        if (referenceUrl && (referenceUrl instanceof String))
+            referenceUrl = UriBuilder.build(referenceUrl)
+
         if (config.containedRequired) {
-            if (config.relativeReferenceOk && referenceUrl.startsWith('#') && config.containedOk) {
+            if (config.relativeReferenceOk && referenceUrl.toString().startsWith('#') && config.containedOk) {
                 def res = getContainedResource(referenceUrl)
                 logger.info("Resolver: ...contained")
                 return [referenceUrl, res]
@@ -210,7 +217,7 @@ class ResourceMgr {
             return [null, null]
         }
         if (!config.externalRequired) {
-            if (config.relativeReferenceOk && referenceUrl.startsWith('#') && config.containedOk) {
+            if (config.relativeReferenceOk && referenceUrl.toString().startsWith('#') && config.containedOk) {
                 def res = getContainedResource(referenceUrl)
                 def val = [referenceUrl, res]
                 logger.info("Resolver: ...contained")
@@ -284,12 +291,15 @@ class ResourceMgr {
         [null, null]
     }
 
-    static String rebase(String containingUrl, String referenceUrl) {
+    static String rebase(containingUrl, referenceUrl) {
+        if (containingUrl) containingUrl = containingUrl.toString()
+        if (referenceUrl) referenceUrl = referenceUrl.toString()
         baseUrlFromUrl(containingUrl) + '/' + referenceUrl
     }
 
-    static String resourceTypeFromUrl(String fullUrl) {
+    static String resourceTypeFromUrl(fullUrl) {
         assert fullUrl
+        fullUrl = fullUrl.toString()
         if (fullUrl.startsWith('#')) return null
         fullUrl.reverse().split('/')[1].reverse()
     }
@@ -298,13 +308,15 @@ class ResourceMgr {
         fullUrl.reverse().split('/')[0].reverse()
     }
 
-    static String relativeUrl(String fullUrl) {
+    static URI relativeUrl(fullUrl) {
+        fullUrl = fullUrl.toString()
         List<String> parts = fullUrl.split('/')
-        [parts[parts.size() - 2], parts[parts.size() - 1]].join('/')
+        UriBuilder.build([parts[parts.size() - 2], parts[parts.size() - 1]].join('/'))
     }
 
     static id(url) {
-        List<String> parts = url.split('\\/')
+        url = url.toString()
+        List<String> parts = url.split('/')
         return parts[parts.size() - 1]
     }
 
@@ -315,22 +327,28 @@ class ResourceMgr {
         return base + '/' + type + '/' + newid
     }
 
-    static String baseUrlFromUrl(String fullUrl) {
-        if (fullUrl.startsWith('urn')) return fullUrl
-        List<String> parts = fullUrl.split('/')
+    /**
+     * strips off id and resource type
+     * @param fullUrl - fhirBase + ResourceType + id
+     * @return
+     */
+    static URI baseUrlFromUrl(URI fullUrl) {
+        if (fullUrl.toString().startsWith('urn')) return fullUrl
+        List<String> parts = fullUrl.toString().split('/')
         parts.remove(parts.size() - 1)
         parts.remove(parts.size() - 1)
-        parts.join('/')
+        UriBuilder.build(parts.join('/'))
     }
 
-    static boolean isRelative( url) {
+    static boolean isRelative(url) {
         assert url
-        url && !url.startsWith('http') && url.split('/').size() ==2
+        url = url.toString()
+        url && !url.startsWith('http') && url.split('\\/').size() ==2
     }
 
     static boolean isAbsolute(url) {
         assert url
-        url.startsWith('http')
+        url.toString().startsWith('http')
     }
 
     /**

@@ -1,6 +1,5 @@
 package gov.nist.toolkit.fhir.simulators.mhd
 
-import gov.nist.toolkit.fhir.simulators.mhd.SQParamTranslator
 import groovy.xml.MarkupBuilder
 
 class SQTranslator {
@@ -9,7 +8,7 @@ class SQTranslator {
     /**
      *
      * @param query is param1=value1;param2=value2...
-     * @return
+     * @return StoredQuery
      */
     String run(String query) {
         List params = query.split(';')
@@ -17,7 +16,7 @@ class SQTranslator {
         return toXml(model, true)
     }
 
-    String toXml(Map theModel, boolean leafClass) {
+    private static String toXml(Map theModel, boolean leafClass) {
         Map model = [:] << theModel  // copy
         String queryType = model[SQParamTranslator.queryType][0]
         model.remove(SQParamTranslator.queryType)

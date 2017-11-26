@@ -20,7 +20,7 @@ class MhdSimProxySearchSpec extends ToolkitSpecification {
     @Shared SimulatorBuilder spi
 
 
-    @Shared String urlRoot = String.format("http://localhost:%s/xdstools2", remoteToolkitPort)
+    @Shared String urlRoot // = String.format("http://localhost:%s/xdstools2", remoteToolkitPort)
     @Shared String patientId = 'BR14^^^&1.2.360&ISO'
     @Shared String patientId2 = 'BR15^^^&1.2.360&ISO'
     @Shared String envName = 'test'
@@ -31,11 +31,12 @@ class MhdSimProxySearchSpec extends ToolkitSpecification {
     @Shared SimConfig mhdSimConfig
     @Shared TestInstance testInstance = new TestInstance('MhdSubmit')
     @Shared Map<String, SimConfig> simGroup = [:]
-    @Shared String baseAddress = "${urlRoot}/fsim/${mhdName}/fhir"
+    @Shared String baseAddress //= "${urlRoot}/fsim/${mhdName}/fhir"
 
     def setupSpec() {   // one time setup done when class launched
         startGrizzly('8889')
-
+        urlRoot = String.format("http://localhost:%s/xdstools2", remoteToolkitPort)
+        baseAddress = "${urlRoot}/fsim/${mhdName}/fhir"
         // Initialize remote api for talking to toolkit on Grizzly
         // Needed to build simulators
         spi = getSimulatorApi(remoteToolkitPort)

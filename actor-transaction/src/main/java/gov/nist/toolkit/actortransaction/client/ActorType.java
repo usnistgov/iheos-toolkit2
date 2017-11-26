@@ -3,6 +3,7 @@ package gov.nist.toolkit.actortransaction.client;
 import com.google.gwt.user.client.rpc.IsSerializable;
 import gov.nist.toolkit.configDatatypes.client.TransactionType;
 import gov.nist.toolkit.xdsexception.client.TkActorNotFoundException;
+import org.apache.http.annotation.Obsolete;
 
 import java.io.Serializable;
 import java.util.*;
@@ -144,14 +145,27 @@ public enum ActorType implements IsSerializable, Serializable {
             null,   // httpSimulatorClassName
             null,    // http transaction types
             false,    // is fhir
-            // request transform classes
+            // proxy transaform configs
             Arrays.asList(
-                    "gov.nist.toolkit.fhir.simulators.proxy.transforms.MhdToXdsEndpointTransform",
-                    "gov.nist.toolkit.fhir.simulators.proxy.transforms.MhdToPnrContentTransform"
-            ),
-            // response transform classes
-            Arrays.asList(
-                    "gov.nist.toolkit.fhir.simulators.proxy.transforms.RegistryResponseToOperationOutcomeTransform"
+                    new ProxyTransformConfig(TransactionType.PROV_DOC_BUNDLE,
+                            TransactionDirection.REQUEST,
+                            "gov.nist.toolkit.fhir.simulators.proxy.transforms.MhdToXdsEndpointTransform").toString(),
+                    new ProxyTransformConfig(TransactionType.PROV_DOC_BUNDLE,
+                            TransactionDirection.REQUEST,
+                            "gov.nist.toolkit.fhir.simulators.proxy.transforms.MhdToPnrContentTransform").toString(),
+                    new ProxyTransformConfig(TransactionType.PROV_DOC_BUNDLE,
+                            TransactionDirection.RESPONSE,
+                            "gov.nist.toolkit.fhir.simulators.proxy.transforms.RegistryResponseToOperationOutcomeTransform").toString(),
+
+                    new ProxyTransformConfig(TransactionType.FIND_DOC_REFS,
+                            TransactionDirection.REQUEST,
+                            "gov.nist.toolkit.fhir.simulators.proxy.transforms.MhdToXdsEndpointTransform").toString(),
+                    new ProxyTransformConfig(TransactionType.FIND_DOC_REFS,
+                            TransactionDirection.REQUEST,
+                            "gov.nist.toolkit.fhir.simulators.proxy.transforms.MhdToSQRequestTransform").toString(),
+                    new ProxyTransformConfig(TransactionType.FIND_DOC_REFS,
+                            TransactionDirection.RESPONSE,
+                            "gov.nist.toolkit.fhir.simulators.proxy.transforms.SQResponseToFhirSearchResponseTransform").toString()
             ),
             "rec",   // must match rec from rec(mhd) in collections.txt
             IheItiProfile.MHD,
@@ -318,7 +332,6 @@ public enum ActorType implements IsSerializable, Serializable {
             Arrays.asList(TransactionType.WADO_RETRIEVE),
             false,
             null,
-            null,
             Constants.USE_SHORTNAME,
             IheItiProfile.XDS_I,
             Arrays.asList(OptionType.REQUIRED)
@@ -364,9 +377,7 @@ public enum ActorType implements IsSerializable, Serializable {
             null,    // http transaction types
             true,    // is fhir
             // request transform classes
-            Arrays.asList(""),
-            // response transform classes
-            Arrays.asList(""),
+            null,
             "src",   // must match src from src(mhd) in collections.txt
             IheItiProfile.MHD,
             Arrays.asList(OptionType.REQUIRED)
@@ -383,10 +394,8 @@ public enum ActorType implements IsSerializable, Serializable {
             null,   // httpSimulatorClassName
             null,    // http transaction types
             true,    // is fhir
-            // request transform classes
-            Arrays.asList(""),
-            // response transform classes
-            Arrays.asList(""),
+            // proxy transform classes
+            null,
             Constants.USE_SHORTNAME,   // must match src from src(mhd) in collections.txt
             IheItiProfile.FHIRINIT,
             Arrays.asList(OptionType.REQUIRED)
@@ -403,8 +412,7 @@ public enum ActorType implements IsSerializable, Serializable {
             null,   // httpSimulatorClassName
             null,    // http transaction types
             false,    // is fhir
-            new ArrayList<String>(),
-            new ArrayList<String>(),
+            null,
             Constants.USE_SHORTNAME,
             IheItiProfile.XDS,
             Arrays.asList(OptionType.REQUIRED)
@@ -421,20 +429,34 @@ public enum ActorType implements IsSerializable, Serializable {
             null,   // httpSimulatorClassName
             null,    // http transaction types
             false,    // is fhir
-            // request transform classes
+            // proxy transform classes
             Arrays.asList(
-                    "gov.nist.toolkit.fhir.simulators.proxy.transforms.MhdToXdsEndpointTransform",
-                    "gov.nist.toolkit.fhir.simulators.proxy.transforms.MhdToPnrContentTransform"
-            ),
-            // response transform classes
-            Arrays.asList(
-                    "gov.nist.toolkit.fhir.simulators.proxy.transforms.RegistryResponseToOperationOutcomeTransform"
+                    new ProxyTransformConfig(TransactionType.PROV_DOC_BUNDLE,
+                            TransactionDirection.REQUEST,
+                            "gov.nist.toolkit.fhir.simulators.proxy.transforms.MhdToXdsEndpointTransform").toString(),
+                    new ProxyTransformConfig(TransactionType.PROV_DOC_BUNDLE,
+                            TransactionDirection.REQUEST,
+                            "gov.nist.toolkit.fhir.simulators.proxy.transforms.MhdToPnrContentTransform").toString(),
+                    new ProxyTransformConfig(TransactionType.PROV_DOC_BUNDLE,
+                            TransactionDirection.RESPONSE,
+                            "gov.nist.toolkit.fhir.simulators.proxy.transforms.RegistryResponseToOperationOutcomeTransform").toString(),
+
+                    new ProxyTransformConfig(TransactionType.FIND_DOC_REFS,
+                            TransactionDirection.REQUEST,
+                            "gov.nist.toolkit.fhir.simulators.proxy.transforms.MhdToXdsEndpointTransform").toString(),
+                    new ProxyTransformConfig(TransactionType.FIND_DOC_REFS,
+                            TransactionDirection.REQUEST,
+                            "gov.nist.toolkit.fhir.simulators.proxy.transforms.MhdToSQRequestTransform").toString(),
+                    new ProxyTransformConfig(TransactionType.FIND_DOC_REFS,
+                            TransactionDirection.RESPONSE,
+                            "gov.nist.toolkit.fhir.simulators.proxy.transforms.SQResponseToFhirSearchResponseTransform").toString()
             ),
             "rec",
             IheItiProfile.MHD,
             Arrays.asList(OptionType.XDS_ON_FHIR)
     ),
-    XDS_on_FHIR_Responder(   //
+    @Obsolete
+    XDS_on_FHIR_Responder(
             "XDS on FHIR Responder",
             Arrays.asList(""),
             "mhdfhirres",
@@ -446,14 +468,27 @@ public enum ActorType implements IsSerializable, Serializable {
             null,   // httpSimulatorClassName
             null,    // http transaction types
             false,    // is fhir
-            // request transform classes
+            // proxy transform classes
             Arrays.asList(
-                    "gov.nist.toolkit.fhir.simulators.proxy.transforms.MhdToXdsEndpointTransform",
-                    "gov.nist.toolkit.fhir.simulators.proxy.transforms.MhdToPnrContentTransform"
-            ),
-            // response transform classes
-            Arrays.asList(
-                    "gov.nist.toolkit.fhir.simulators.proxy.transforms.RegistryResponseToOperationOutcomeTransform"
+                    new ProxyTransformConfig(TransactionType.PROV_DOC_BUNDLE,
+                            TransactionDirection.REQUEST,
+                            "gov.nist.toolkit.fhir.simulators.proxy.transforms.MhdToXdsEndpointTransform").toString(),
+                    new ProxyTransformConfig(TransactionType.PROV_DOC_BUNDLE,
+                            TransactionDirection.REQUEST,
+                            "gov.nist.toolkit.fhir.simulators.proxy.transforms.MhdToPnrContentTransform").toString(),
+                    new ProxyTransformConfig(TransactionType.PROV_DOC_BUNDLE,
+                            TransactionDirection.RESPONSE,
+                            "gov.nist.toolkit.fhir.simulators.proxy.transforms.RegistryResponseToOperationOutcomeTransform").toString(),
+
+                    new ProxyTransformConfig(TransactionType.FIND_DOC_REFS,
+                            TransactionDirection.REQUEST,
+                            "gov.nist.toolkit.fhir.simulators.proxy.transforms.MhdToXdsEndpointTransform").toString(),
+                    new ProxyTransformConfig(TransactionType.FIND_DOC_REFS,
+                            TransactionDirection.REQUEST,
+                            "gov.nist.toolkit.fhir.simulators.proxy.transforms.MhdToSQRequestTransform").toString(),
+                    new ProxyTransformConfig(TransactionType.FIND_DOC_REFS,
+                            TransactionDirection.RESPONSE,
+                            "gov.nist.toolkit.fhir.simulators.proxy.transforms.SQResponseToFhirSearchResponseTransform").toString()
             ),
             "rec",
             IheItiProfile.MHD,
@@ -486,8 +521,7 @@ public enum ActorType implements IsSerializable, Serializable {
     List<TransactionType> httpTransactionTypes;
     String httpSimulatorClassName;
     boolean isFhir;
-    List<String> proxyTransformClassNames;
-    List<String> proxyResponseTransformClassNames;
+    List<String> proxyTransforms;
     String actorCode;
     IheItiProfile profile;
     List<OptionType> options;
@@ -508,7 +542,7 @@ public enum ActorType implements IsSerializable, Serializable {
         this.httpTransactionTypes = new ArrayList<>();
         this.httpSimulatorClassName = null;
         this.isFhir = isFhir;
-        this.proxyTransformClassNames = null;
+        this.proxyTransforms = null;
         this.actorCode = actorCode;
         this.profile = profile;
         this.options = options;
@@ -519,18 +553,17 @@ public enum ActorType implements IsSerializable, Serializable {
        String simulatorClassName, List<TransactionType> tt, boolean showInConfig,
        String actorsFileLabel, String httpSimulatorClassName, List<TransactionType> httpTt,
               boolean isFhir,
-              List<String> proxyTransformClassNames,
-              List<String> proxyResponseTransformClassNames, String actorCode, IheItiProfile profile, List<OptionType> options) {
+              List<String> proxyTransforms,
+              String actorCode, IheItiProfile profile, List<OptionType> options) {
        this(name, altNames, shortName, simulatorFactoryName, simulatorClassName, tt, showInConfig, actorsFileLabel, false, actorCode, profile, options);
        if (httpTt == null)
            httpTt = new ArrayList<>();
        this.httpTransactionTypes = httpTt;
        this.httpSimulatorClassName = httpSimulatorClassName;
        this.isFhir = isFhir;
-       if (proxyTransformClassNames == null)
-           proxyTransformClassNames = new ArrayList<>();
-       this.proxyTransformClassNames = proxyTransformClassNames;
-       this.proxyResponseTransformClassNames = proxyResponseTransformClassNames;
+       if (proxyTransforms == null)
+           proxyTransforms = new ArrayList<>();
+       this.proxyTransforms = proxyTransforms;
    }
 
     public String getActor()  {
@@ -538,8 +571,8 @@ public enum ActorType implements IsSerializable, Serializable {
    }
 
    public boolean isProxy() {
-        if (proxyTransformClassNames == null) return false;
-        if (proxyTransformClassNames.size() == 0) return false;
+        if (proxyTransforms == null) return false;
+        if (proxyTransforms.size() == 0) return false;
         return true;
    }
 
@@ -773,12 +806,8 @@ public enum ActorType implements IsSerializable, Serializable {
         return false;
     }
 
-    public List<String> getProxyTransformClassNames() {
-        return proxyTransformClassNames;
-    }
-
-    public List<String> getProxyResponseTransformClassNames() {
-       return proxyResponseTransformClassNames;
+    public List<String> getProxyTransforms() {
+        return proxyTransforms;
     }
 
     public String getActorCode() {
