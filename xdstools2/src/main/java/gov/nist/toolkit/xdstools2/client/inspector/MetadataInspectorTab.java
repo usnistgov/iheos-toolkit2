@@ -16,6 +16,7 @@ import com.google.gwt.user.client.ui.Tree;
 import com.google.gwt.user.client.ui.TreeItem;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
+import gov.nist.toolkit.registrymetadata.client.MetadataCollection;
 import gov.nist.toolkit.registrymetadata.client.ObjectRefs;
 import gov.nist.toolkit.results.client.AssertionResult;
 import gov.nist.toolkit.results.client.AssertionResults;
@@ -524,7 +525,7 @@ public class MetadataInspectorTab extends ToolWindow implements IsWidget {
 			data.enableActions = false;
 	}
 
-	public void init() {
+	public MetadataCollection init() {
 		hpanel.setBorderWidth(1);
 
 		historyPanel = new VerticalPanel();
@@ -565,6 +566,7 @@ public class MetadataInspectorTab extends ToolWindow implements IsWidget {
 				showHistory();
 		}
 
+		return data.combinedMetadata;
 	}
 
 	@Override

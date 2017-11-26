@@ -41,7 +41,7 @@ public class SubmitResourceView extends AbstractView<SubmitResourcePresenter> {
 
     private SystemSelector systemSelector = new SystemSelector("To System") {
         @Override
-        public void doSiteSelected(String label) {
+        public void doSelected(String label) {
             getPresenter().doSiteSelected(label);
         }
     };
@@ -169,7 +169,7 @@ public class SubmitResourceView extends AbstractView<SubmitResourcePresenter> {
     }
 
     void setSiteNames(List<ASite> sites) {
-        systemSelector.setSiteNames(sites);
+        systemSelector.setNames(sites);
     }
 
     MessagePanel getMessagePanel() { return messagePanel; }

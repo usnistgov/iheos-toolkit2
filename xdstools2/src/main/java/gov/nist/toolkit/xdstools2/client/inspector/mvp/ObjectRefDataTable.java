@@ -174,9 +174,9 @@ abstract class ObjectRefDataTable extends DataTable<ObjectRef> implements IsWidg
         dataProvider.getList().addAll(objectRefList);
 
         // populate test data
-        for (int x=0; x<10; x++) {
-            dataProvider.getList().add(new ObjectRef(""+x, ""));
-        }
+//        for (int x=0; x<10; x++) {
+//            dataProvider.getList().add(new ObjectRef(""+x, ""));
+//        }
     }
 
 

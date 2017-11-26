@@ -3,6 +3,7 @@ package gov.nist.toolkit.xdstools2.client.inspector.mvp;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.FlowPanel;
+import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HeaderPanel;
 import com.google.gwt.user.client.ui.ProvidesResize;
 import com.google.gwt.user.client.ui.RequiresResize;
@@ -10,6 +11,7 @@ import com.google.gwt.user.client.ui.Widget;
 import gov.nist.toolkit.registrymetadata.client.ObjectRef;
 import gov.nist.toolkit.xdstools2.client.abstracts.AbstractView;
 import gov.nist.toolkit.xdstools2.client.inspector.MetadataInspectorTab;
+import gov.nist.toolkit.xdstools2.client.widgets.ButtonListSelector;
 
 import java.util.List;
 import java.util.Map;
@@ -19,14 +21,25 @@ public class InspectorView extends AbstractView<InspectorPresenter> implements P
 
     ActivityItem activityItem;
 
+    /* TODO: create a new widget to select Object Types (using the same style as the SystemSelector).
+     Clicking on it should display the data table.
+     */
+
+    ButtonListSelector metadataObjectSelector = new ButtonListSelector("Metadata Object","Metadata Object") {
+        @Override
+        public void doSelected(String label) {
+            getPresenter().doUpdateChosenMetadataObjectType(label);
+        }
+    };
+
     ObjectRefDataTable objectRefTable = new ObjectRefDataTable(10) {
         @Override
-        void doGetDocuments(List<ObjectRef> objectRefs) {
+        void doGetDocuments(List<ObjectRef> objectRefs) { // TODO: remove this
 //            getPresenter().do
         }
 
         @Override
-        void defaultDoubleClickAction(ObjectRef row) {
+        void defaultDoubleClickAction(ObjectRef row) { // TODO: 1. change to just (single) Click. 2. Wire this into inspector to navigate (or focus) object into view
 //            getPresenter().do
         }
 
@@ -55,19 +68,21 @@ public class InspectorView extends AbstractView<InspectorPresenter> implements P
 
 //        HeaderPanel mainPanel = new HeaderPanel();
 
-        FlowPanel resultPanel = new FlowPanel();
+        FlowPanel topNavPanel = new FlowPanel();
         int resultPanelHeight = 0;
 
 //        WorkflowDiagram activityDiagram = new WorkflowDiagram(activityItem);
         // TODO: how to tie the NamedBox ClickHandler to the show-data table?
 //        resultPanel.add(activityDiagram);
 
-        resultPanel.add(objectRefTable.asWidget());
+        topNavPanel.add(metadataObjectSelector.asWidget());
+        topNavPanel.add(new HTML("<br/>"));
+        topNavPanel.add(objectRefTable.asWidget());
 //        resultPanelHeight = activityDiagram.getDiagramHeight() + (int)objectRefTable.guessTableHeight();
 //        GWT.log("setting North height to: " + resultPanelHeight + ". activityDiagram height is: " + activityDiagram.getDiagramHeight() + ". objectRef height: " + objectRefTable.asWidget().getElement().getStyle().getHeight());
 
-        containerPanel.setHeaderWidget(resultPanel);
-        containerPanel.setContentWidget(metadataInspector.asWidget());
+        containerPanel.setHeaderWidget(topNavPanel);
+        containerPanel.setContentWidget(metadataInspector.asWidget()); // TODO: put this in a scroll panel.
 //        containerPanel.add(new HTML("add"));
 
         //
