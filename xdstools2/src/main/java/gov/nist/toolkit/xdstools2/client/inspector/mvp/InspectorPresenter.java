@@ -7,7 +7,6 @@ import gov.nist.toolkit.results.client.Result;
 import gov.nist.toolkit.results.client.StepResult;
 import gov.nist.toolkit.sitemanagement.client.SiteSpec;
 import gov.nist.toolkit.xdstools2.client.abstracts.AbstractPresenter;
-import gov.nist.toolkit.xdstools2.client.inspector.DataModel;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -16,7 +15,7 @@ import java.util.List;
  *
  */
 public class InspectorPresenter extends AbstractPresenter<InspectorView> {
-    private DataModel dataModel;
+    private List<Result> results;
     private SiteSpec siteSpec;
 
     @Override
@@ -59,12 +58,13 @@ public class InspectorPresenter extends AbstractPresenter<InspectorView> {
     private void setData() {
         GWT.log("In setData");
 
-        dataModel.buildCombined();
-        GWT.log("result list size is: " + dataModel.getResults().size());
+        GWT.log("result list size is: " + results.size());
         // At this point there should be only one Result.TODO: Need to revisit this if there are more!? -- Conformance tests!
-        view.setActivityItem(new ActivityItem(dataModel.getResults().get(0)));
         view.objectRefTable.setData(composeTableData());
-//        view.objectRefTable.resizeTable();
+        view.metadataInspector.setResults(results);
+        view.metadataInspector.setSiteSpec(siteSpec);
+        view.metadataInspector.preInit();
+        view.metadataInspector.init();
     }
 
     /*
@@ -77,8 +77,7 @@ public class InspectorPresenter extends AbstractPresenter<InspectorView> {
     public List<ObjectRef> composeTableData() {
         List<ObjectRef> objectRefs = new ArrayList<>();
 
-        if (dataModel!=null && dataModel.getResults()!=null && !dataModel.getResults().isEmpty()) {
-            for (Result result : dataModel.getResults())  {
+            for (Result result : results)  {
                for (StepResult stepResult : result.stepResults)  {
                     if (stepResult.toBeRetrieved!=null && !stepResult.toBeRetrieved.isEmpty())  {
                        objectRefs.addAll(stepResult.toBeRetrieved);
@@ -90,20 +89,13 @@ public class InspectorPresenter extends AbstractPresenter<InspectorView> {
                 // TODO:
                 break;
             }
-        }
         return objectRefs;
     }
 
 
-    public DataModel getDataModel() {
-        return dataModel;
-    }
 
     public void setDataModel(List<Result> results) {
-        if (dataModel==null)  {
-            dataModel = new DataModel();
-        }
-        dataModel.setResults(results);
+        this.results = results;
     }
 
     public void setSiteSpec(SiteSpec siteSpec) {

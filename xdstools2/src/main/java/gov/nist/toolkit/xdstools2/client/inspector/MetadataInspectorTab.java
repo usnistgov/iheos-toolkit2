@@ -1,6 +1,5 @@
 package gov.nist.toolkit.xdstools2.client.inspector;
 
-import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Style;
 import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
@@ -10,11 +9,13 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.FlexTable;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HorizontalPanel;
+import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.RadioButton;
 import com.google.gwt.user.client.ui.Tree;
 import com.google.gwt.user.client.ui.TreeItem;
 import com.google.gwt.user.client.ui.VerticalPanel;
+import com.google.gwt.user.client.ui.Widget;
 import gov.nist.toolkit.registrymetadata.client.ObjectRefs;
 import gov.nist.toolkit.results.client.AssertionResult;
 import gov.nist.toolkit.results.client.AssertionResults;
@@ -35,7 +36,7 @@ import java.util.logging.Logger;
 /**
  * Supports the test results inspector tab 
  */
-public class MetadataInspectorTab extends ToolWindow {
+public class MetadataInspectorTab extends ToolWindow implements IsWidget {
    
    /* 
     * Main panels below tab title display.
@@ -60,7 +61,14 @@ public class MetadataInspectorTab extends ToolWindow {
 	DataModel data;
 	Logger logger = Logger.getLogger("");
 
-   /**
+	public MetadataInspectorTab() {
+	}
+
+	public MetadataInspectorTab(boolean isWidget) {
+		super(isWidget);
+	}
+
+	/**
     * Add test results to DataModel and redisplay history
     * @param results to add
     */
@@ -83,8 +91,7 @@ public class MetadataInspectorTab extends ToolWindow {
 		showHistoryOrContents();
 	}
 	// main panel
-	HorizontalPanel hpanel;
-	
+	HorizontalPanel hpanel = new HorizontalPanel();
 	Collection<Result> results;
 	private SiteSpec siteSpec;
 	
@@ -94,18 +101,15 @@ public class MetadataInspectorTab extends ToolWindow {
 	@Override
 	public void onTabLoad(boolean select, String eventName) {
 
-		logger.log(Level.INFO, "Inspector started");
+		logger.log(Level.INFO, "onTabLoad Inspector ");
 
-		data = new DataModel();
-		
-		data.siteSpec = siteSpec;
+		preInit();
+		tabTitle(select);
+		init();
+	}
 
-//		GWT.log("In MetadataInsp siteSpec is " + siteSpec.name);
-		
-		if (siteSpec == null)
-			data.enableActions = false;
-
-//		data.toolkitService = toolkitService;
+	private void tabTitle(boolean select) {
+		//		data.toolkitService = toolkitService;
 		registerTab(select, "Inspector");
 		tabTopPanel.setWidth("100%");
 
@@ -113,49 +117,10 @@ public class MetadataInspectorTab extends ToolWindow {
 		title.setHTML("<h2>Inspector</h2>");
 		tabTopPanel.add(title);
 
-		hpanel = new HorizontalPanel();
 		tabTopPanel.add(hpanel);
 //		tabTopPanel.setCellWidth(hpanel, "100%");
-		hpanel.setBorderWidth(1);
-
-		historyPanel = new VerticalPanel();
-		hpanel.add(historyPanel);
-		hpanel.setCellWidth(historyPanel, "30%");
-
-		detailPanel = new VerticalPanel();
-		detailPanel.add(HyperlinkFactory.addHTML("<h3>Detail</h3>"));
-		hpanel.add(detailPanel);
-
-		structPanel = new VerticalPanel();
-		structPanel.add(HyperlinkFactory.addHTML("<h3>Structure</h3>"));
-		hpanel.add(structPanel);
-
-		groupByListBox = new ListBox();
-		groupByListBox.addItem("(none)"); // No group by
-		groupByListBox.addItem("homeCommunityId"); // hcId groups object types
-		groupByListBox.addItem("repositoryId");		// Object type groups repositoryId
-		groupByListBox.addChangeHandler(new ChangeHandler() {
-			@Override
-			public void onChange(ChangeEvent changeEvent) {
-				showHistoryOrContents();
-			}
-		});
-
-
-		addToHistory(results);
-
-		if (!data.enableActions) {
-			if (selectHistory != null) selectHistory.setEnabled(false);
-			if (selectContents != null) selectContents.setEnabled(true);
-			if (selectDiff != null) selectDiff.setEnabled(false);
-			if (groupByListBox != null) groupByListBox.setEnabled(false);
-			
-			if (results.size() == 1 && !hasContents(results))
-				showAssertions(results.iterator().next());
-			else 
-				showHistory();
-		}
 	}
+
 	/**
 	 * Is there any metadata content in Result steps
 	 * @param results
@@ -545,5 +510,65 @@ public class MetadataInspectorTab extends ToolWindow {
 
 	public SiteSpec getSiteSpec() {
 		return siteSpec;
+	}
+
+ 	public void preInit() {
+
+		data = new DataModel();
+
+		data.siteSpec = siteSpec;
+
+//		GWT.log("In MetadataInsp siteSpec is " + siteSpec.name);
+
+		if (siteSpec == null)
+			data.enableActions = false;
+	}
+
+	public void init() {
+		hpanel.setBorderWidth(1);
+
+		historyPanel = new VerticalPanel();
+		hpanel.add(historyPanel);
+		hpanel.setCellWidth(historyPanel, "30%");
+
+		detailPanel = new VerticalPanel();
+		detailPanel.add(HyperlinkFactory.addHTML("<h3>Detail</h3>"));
+		hpanel.add(detailPanel);
+
+		structPanel = new VerticalPanel();
+		structPanel.add(HyperlinkFactory.addHTML("<h3>Structure</h3>"));
+		hpanel.add(structPanel);
+
+		groupByListBox = new ListBox();
+		groupByListBox.addItem("(none)"); // No group by
+		groupByListBox.addItem("homeCommunityId"); // hcId groups object types
+		groupByListBox.addItem("repositoryId");		// Object type groups repositoryId
+		groupByListBox.addChangeHandler(new ChangeHandler() {
+			@Override
+			public void onChange(ChangeEvent changeEvent) {
+				showHistoryOrContents();
+			}
+		});
+
+
+		addToHistory(results);
+
+		if (!data.enableActions) {
+			if (selectHistory != null) selectHistory.setEnabled(false);
+			if (selectContents != null) selectContents.setEnabled(true);
+			if (selectDiff != null) selectDiff.setEnabled(false);
+			if (groupByListBox != null) groupByListBox.setEnabled(false);
+
+			if (results.size() == 1 && !hasContents(results))
+				showAssertions(results.iterator().next());
+			else
+				showHistory();
+		}
+
+	}
+
+	@Override
+	public Widget asWidget() {
+	    return hpanel;
 	}
 }

@@ -3,13 +3,13 @@ package gov.nist.toolkit.xdstools2.client.inspector.mvp;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.FlowPanel;
-import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HeaderPanel;
 import com.google.gwt.user.client.ui.ProvidesResize;
 import com.google.gwt.user.client.ui.RequiresResize;
 import com.google.gwt.user.client.ui.Widget;
 import gov.nist.toolkit.registrymetadata.client.ObjectRef;
 import gov.nist.toolkit.xdstools2.client.abstracts.AbstractView;
+import gov.nist.toolkit.xdstools2.client.inspector.MetadataInspectorTab;
 
 import java.util.List;
 import java.util.Map;
@@ -43,6 +43,8 @@ public class InspectorView extends AbstractView<InspectorPresenter> implements P
         }
     };
 
+    MetadataInspectorTab metadataInspector = new MetadataInspectorTab(true);
+
     @Override
     public void onResize() {
         objectRefTable.resizeTable();
@@ -65,7 +67,7 @@ public class InspectorView extends AbstractView<InspectorPresenter> implements P
 //        GWT.log("setting North height to: " + resultPanelHeight + ". activityDiagram height is: " + activityDiagram.getDiagramHeight() + ". objectRef height: " + objectRefTable.asWidget().getElement().getStyle().getHeight());
 
         containerPanel.setHeaderWidget(resultPanel);
-        containerPanel.setContentWidget(new HTML("content."));
+        containerPanel.setContentWidget(metadataInspector.asWidget());
 //        containerPanel.add(new HTML("add"));
 
         //
