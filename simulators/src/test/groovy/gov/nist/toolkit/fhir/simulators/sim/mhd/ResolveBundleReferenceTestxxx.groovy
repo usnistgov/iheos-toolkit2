@@ -4,6 +4,7 @@ import gov.nist.toolkit.fhir.resourceMgr.ResourceCacheMgr
 import gov.nist.toolkit.fhir.resourceMgr.ResourceMgr
 import gov.nist.toolkit.fhir.simulators.mhd.MhdGenerator
 import gov.nist.toolkit.fhir.simulators.proxy.util.SimProxyBase
+import gov.nist.toolkit.fhir.utility.UriBuilder
 import org.hl7.fhir.dstu3.model.DocumentReference
 import spock.lang.Shared
 import spock.lang.Specification
@@ -14,16 +15,16 @@ import spock.lang.Specification
  * entry.fullUrl is absolute URL for reference or UUID/OID
  * When looking at reference, entry.fullUrl is documented as the base URL
  */
-class ResolveBundleReferenceTest extends Specification {
+class ResolveBundleReferenceTestxxx extends Specification {
     @Shared MhdGenerator u = new MhdGenerator(new SimProxyBase(), new ResourceCacheMgr())
 
     def 'absolute absolute' () {
         given:
-        def full = 'http://example.com/fhir/DocumentReference/1'
-        def ref = 'http://example.com/fhir/Patient/3'
+        def full = UriBuilder.build('http://example.com/fhir/DocumentReference/1')
+        def ref = UriBuilder.build('http://example.com/fhir/Patient/3')
 
         when:
-        def resolve = ResourceMgr.resolveUrl(full, ref)
+        def (resolve, resource) = new ResourceMgr().resolveReference(full, ref)
 
         then:
         resolve == ref

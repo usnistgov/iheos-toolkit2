@@ -45,25 +45,25 @@ class ReferenceTest extends Specification {
         mgr.getResourcesByType(Patient.simpleName).size() == 1
         mgr.getResourcesByType(Observation.simpleName).size() == 1
 
-        mgr.getResourcesByType(Patient.simpleName)[0][0] == 'http://example.org/fhir/Patient/23'
+        mgr.getResourcesByType(Patient.simpleName)[0][0].toString() == 'http://example.org/fhir/Patient/23'
         mgr.isAbsolute(mgr.getResourcesByType(Patient.simpleName)[0][0])
 
-        mgr.getResourcesByType(Observation.simpleName)[0][0] == 'http://example.org/fhir/Observation/123'
+        mgr.getResourcesByType(Observation.simpleName)[0][0].toString() == 'http://example.org/fhir/Observation/123'
 
-        mgr.url(mgr.getResourcesByType(Patient.simpleName)[0][1]) == 'http://example.org/fhir/Patient/23'
+        mgr.url(mgr.getResourcesByType(Patient.simpleName)[0][1]).toString() == 'http://example.org/fhir/Patient/23'
 
         when:
         mgr.currentResource(mgr.getResourcesByType(Observation.simpleName)[0][1])
 
         then:
-        mgr.fullUrl == 'http://example.org/fhir/Observation/123'
+        mgr.fullUrl.toString() == 'http://example.org/fhir/Observation/123'
 
         when:
-        def (url, resource) = mgr.resolveReference('Patient/23')
+        def (url, resource) = mgr.resolveReference(new URI(null, 'Patient/23', null))
 
         then:
         resource.class.simpleName == Patient.simpleName
-        url == 'http://example.org/fhir/Patient/23'
+        url.toString() == 'http://example.org/fhir/Patient/23'
     }
 
     def 'absolute url'() {
@@ -101,24 +101,24 @@ class ReferenceTest extends Specification {
         mgr.getResourcesByType(Patient.simpleName).size() == 1
         mgr.getResourcesByType(Observation.simpleName).size() == 1
 
-        mgr.getResourcesByType(Patient.simpleName)[0][0] == 'http://example.org/fhir/Patient/23'
+        mgr.getResourcesByType(Patient.simpleName)[0][0].toString() == 'http://example.org/fhir/Patient/23'
         mgr.isAbsolute(mgr.getResourcesByType(Patient.simpleName)[0][0])
 
-        mgr.getResourcesByType(Observation.simpleName)[0][0] == 'http://example.org/fhir/Observation/123'
+        mgr.getResourcesByType(Observation.simpleName)[0][0].toString() == 'http://example.org/fhir/Observation/123'
 
-        mgr.url(mgr.getResourcesByType(Patient.simpleName)[0][1]) == 'http://example.org/fhir/Patient/23'
+        mgr.url(mgr.getResourcesByType(Patient.simpleName)[0][1]).toString() == 'http://example.org/fhir/Patient/23'
 
         when:
         mgr.currentResource(mgr.getResourcesByType(Observation.simpleName)[0][1])
 
         then:
-        mgr.fullUrl == 'http://example.org/fhir/Observation/123'
+        mgr.fullUrl.toString() == 'http://example.org/fhir/Observation/123'
 
         when:
-        def (url, resource) = mgr.resolveReference('Patient/23')
+        def (url, resource) = mgr.resolveReference(new URI(null,'Patient/23', null))
 
         then:
         resource.class.simpleName == Patient.simpleName
-        url == 'http://example.org/fhir/Patient/23'
+        url.toString() == 'http://example.org/fhir/Patient/23'
     }
 }

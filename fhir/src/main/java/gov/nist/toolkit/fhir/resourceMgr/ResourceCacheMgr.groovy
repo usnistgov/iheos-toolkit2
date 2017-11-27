@@ -1,8 +1,10 @@
 package gov.nist.toolkit.fhir.resourceMgr
 
+import gov.nist.toolkit.fhir.utility.UriBuilder
 import gov.nist.toolkit.installation.Installation
 import org.apache.log4j.Logger
 import org.hl7.fhir.instance.model.api.IBaseResource
+
 /**
  * build by a factory - either TestResourceCacheFactory or ResourceCacheFactory
  */
@@ -36,6 +38,8 @@ class ResourceCacheMgr {
      * @return
      */
     static IBaseResource getResource(fullUrl) {
+        if (fullUrl instanceof String)
+            fullUrl = UriBuilder.build(fullUrl)
         assert ResourceMgr.isAbsolute(fullUrl)
         def baseUrl = ResourceMgr.baseUrlFromUrl(fullUrl)
         ResourceCache cache = caches[baseUrl]

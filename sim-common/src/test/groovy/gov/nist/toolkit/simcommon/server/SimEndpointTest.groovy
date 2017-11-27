@@ -8,7 +8,7 @@ class SimEndpointTest extends Specification {
 
     def 'pdb'() {
         when:
-        def endpoint = '/fsim/bill__mhd/mhddocrec/fhir/pdb'
+        def endpoint = '/fsim/bill__mhd/mhddocrec/pdb'
         SimEndpoint ep = new SimEndpoint(endpoint)
 
         then:
@@ -20,12 +20,12 @@ class SimEndpointTest extends Specification {
 
     def 'fdr'() {
         when:
-        def endpoint = '/fsim/bill__mhd/mhddocrec/fhir/DocumentReference?patient.identifier=urn:oid:1.2.3.4.5.6%7CMRN'
+        def endpoint = '/fsim/bill__mhd/mhddocrec/DocumentReference?patient.identifier=urn:oid:1.2.3.4.5.6%7CMRN'
         SimEndpoint ep = new SimEndpoint(endpoint)
 
         then:
         ep.actorType == 'mhddocrec'
-        ep.transactionType == 'fhir'
+        ep.transactionType == 'DocumentReference'
         ep.simIdString == 'bill__mhd'
         ep.resourceType == 'DocumentReference'
         ep.query == 'patient.identifier=urn:oid:1.2.3.4.5.6%7CMRN'

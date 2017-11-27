@@ -311,6 +311,8 @@ class MhdGenerator {
 
     // TODO sourcePatientInfo is not populated
     def addSourcePatient(builder, Reference sourcePatient) {
+        if (!sourcePatient.reference)
+            return
         logger.info("Resolve ${sourcePatient.reference} as SourcePatient")
         def extra = 'DocumentReference.context.sourcePatientInfo must reference Contained Patient resource with Patient.identifier.use element set to "usual"'
         def (url, ref) = rMgr.resolveReference(null, sourcePatient.reference, new ResolverConfig().containedRequired())

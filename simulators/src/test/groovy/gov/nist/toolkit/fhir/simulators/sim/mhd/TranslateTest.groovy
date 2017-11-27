@@ -7,6 +7,7 @@ import gov.nist.toolkit.fhir.resourceMgr.ResourceMgr
 import gov.nist.toolkit.fhir.resourceMgr.TestResourceCacheFactory
 import gov.nist.toolkit.fhir.simulators.mhd.MhdGenerator
 import gov.nist.toolkit.fhir.simulators.proxy.util.SimProxyBase
+import gov.nist.toolkit.fhir.utility.UriBuilder
 import groovy.xml.MarkupBuilder
 import org.hl7.fhir.dstu3.model.DocumentReference
 import org.hl7.fhir.dstu3.model.Patient
@@ -43,7 +44,7 @@ class TranslateTest extends Specification {
         def fullUrl = 'http://localhost:80/fhir/Partient/A'
 
         then:
-        'http://localhost:80/fhir' == r.baseUrlFromUrl(fullUrl)
+        'http://localhost:80/fhir' == r.baseUrlFromUrl(UriBuilder.build(fullUrl)).toString()
     }
 
     def 'relative reference in bundle' () {
@@ -52,7 +53,7 @@ class TranslateTest extends Specification {
         r = new ResourceMgr(bundle, null)
 
         then: // only one Resource with relative url Practitioner/a3
-        r.resolveReference('urn:uuid:1', 'Practitioner/a3', true, false, false, false)[0] == 'http://localhost:9556/svc/fhir/Practitioner/a3'
+        r.resolveReference('urn:uuid:1', 'Practitioner/a3')[0].toString() == 'http://localhost:9556/svc/fhir/Practitioner/a3'
     }
 
     def 'patient id from patient resource' () {

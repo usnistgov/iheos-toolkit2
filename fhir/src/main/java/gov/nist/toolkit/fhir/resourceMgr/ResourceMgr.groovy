@@ -181,7 +181,7 @@ class ResourceMgr {
     /**
      *
      * @param type
-     * @return list of [url, Resource]
+     * @return list of [URI, Resource]
      */
     def getResourcesByType(type) {
         def all = []
@@ -191,6 +191,10 @@ class ResourceMgr {
 
     def resolveReference(URI referenceUrl) {
         resolveReference(fullUrl, referenceUrl, new ResolverConfig())
+    }
+
+    def resolveReference(containingUrl, referenceUrl) {
+        resolveReference(containingUrl, referenceUrl, new ResolverConfig())
     }
 
     /**
@@ -208,7 +212,7 @@ class ResourceMgr {
         if (referenceUrl && (referenceUrl instanceof String))
             referenceUrl = UriBuilder.build(referenceUrl)
 
-        if (config.containedRequired) {
+        if (config.containedRequired || (config.containedOk && referenceUrl.toString().startsWith('#'))) {
             if (config.relativeReferenceOk && referenceUrl.toString().startsWith('#') && config.containedOk) {
                 def res = getContainedResource(referenceUrl)
                 logger.info("Resolver: ...contained")
@@ -239,7 +243,7 @@ class ResourceMgr {
                     // for Patient, it must be absolute reference
                     if ('Patient' == type && isRelativeReference && !config.relativeReferenceOk)
                         return false
-                    key.endsWith(referenceUrl)
+                    key.toString().endsWith(referenceUrl.toString())
                 }
                 if (x) {
                     logger.info("Resolver: ...found via relative reference")
@@ -247,7 +251,7 @@ class ResourceMgr {
                 }
             }
             if (isAbsolute(containingUrl) && isRelative(referenceUrl)) {
-                def url = rebase(containingUrl, referenceUrl)
+                URI url = rebase(containingUrl, referenceUrl)
                 if (resources[url]) {
                     logger.info("Resolver: ...found in bundle")
                     return [url, resources[url]]
@@ -291,10 +295,10 @@ class ResourceMgr {
         [null, null]
     }
 
-    static String rebase(containingUrl, referenceUrl) {
-        if (containingUrl) containingUrl = containingUrl.toString()
+    static URI rebase(URI containingUrl, referenceUrl) {
+//        if (containingUrl) containingUrl = containingUrl.toString()
         if (referenceUrl) referenceUrl = referenceUrl.toString()
-        baseUrlFromUrl(containingUrl) + '/' + referenceUrl
+        UriBuilder.build(baseUrlFromUrl(containingUrl).toString() + '/' + referenceUrl)
     }
 
     static String resourceTypeFromUrl(fullUrl) {

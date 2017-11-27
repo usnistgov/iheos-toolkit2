@@ -42,19 +42,19 @@ class ContainedTest extends Specification {
         mgr.getResourcesByType(Patient.simpleName).size() == 0
         mgr.getResourcesByType(Observation.simpleName).size() == 1
 
-        mgr.getResourcesByType(Observation.simpleName)[0][0] == 'http://example.org/fhir/Observation/123'
+        mgr.getResourcesByType(Observation.simpleName)[0][0].toString() == 'http://example.org/fhir/Observation/123'
 
         when:
         mgr.currentResource(mgr.getResourcesByType(Observation.simpleName)[0][1])
 
         then:
-        mgr.fullUrl == 'http://example.org/fhir/Observation/123'
+        mgr.fullUrl.toString() == 'http://example.org/fhir/Observation/123'
 
         when:
-        def (url, resource) = mgr.resolveReference('#23')
+        def (url, resource) = mgr.resolveReference(mgr.fullUrl, new URI(null, null,'#23'), new ResolverConfig().containedOk())
 
         then:
         resource.class.simpleName == Patient.simpleName
-        url == '#23'
+        url.toString() == '#%2323'
     }
 }

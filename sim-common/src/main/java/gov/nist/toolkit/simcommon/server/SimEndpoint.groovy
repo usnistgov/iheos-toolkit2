@@ -56,14 +56,15 @@ class SimEndpoint {
         actorType = partsList[simStart+2]
         transactionType = partsList[simStart+3]// with FHIR this is sometimes null
         def isQuery = service.contains('?')
-        if ('fhir' == transactionType && partsList?.get(simStart+4)) {// is FHIR transaction - this says what type
+//        if ('fhir' == transactionType && partsList?.get(simStart+4)) {// is FHIR transaction - this says what type
+        if (partsList?.get(simStart+3)) {// is FHIR transaction - this says what type
             if (isQuery) {
-                def resAndQuery = partsList[simStart+4]
+                def resAndQuery = partsList[simStart+3]
                 (resourceType, query) = resAndQuery.split('\\?', 2)
                 transactionType = resourceType
             }
             else
-                transactionType = partsList[simStart + 4]
+                transactionType = partsList[simStart + 3]
         }
     }
 
